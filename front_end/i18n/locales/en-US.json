@@ -1880,157 +1880,157 @@
   "issues/issues-meta.ts | showIssues": {
     "message": "Show Issues"
   },
-  "issues/IssuesPane.js | affectedResources": {
-    "message": "Affected Resources"
-  },
-  "issues/IssuesPane.js | blocked": {
-    "message": "blocked"
-  },
-  "issues/IssuesPane.js | blockedResource": {
-    "message": "Blocked Resource"
-  },
-  "issues/IssuesPane.js | clickToRevealTheViolatingDomNode": {
-    "message": "Click to reveal the violating DOM node in the Elements panel"
-  },
-  "issues/IssuesPane.js | contentSecurityPolicy": {
+  "issues/IssuesPane.ts | contentSecurityPolicy": {
     "message": "Content Security Policy"
   },
-  "issues/IssuesPane.js | cookie": {
-    "message": "cookie"
-  },
-  "issues/IssuesPane.js | cookies": {
-    "message": "cookies"
-  },
-  "issues/IssuesPane.js | cpuPeakLimit": {
-    "message": "CPU peak limit"
-  },
-  "issues/IssuesPane.js | cpuTotalLimit": {
-    "message": "CPU total limit"
-  },
-  "issues/IssuesPane.js | crossOriginEmbedderPolicy": {
+  "issues/IssuesPane.ts | crossOriginEmbedderPolicy": {
     "message": "Cross Origin Embedder Policy"
   },
-  "issues/IssuesPane.js | directive": {
-    "message": "directive"
-  },
-  "issues/IssuesPane.js | directiveC": {
-    "message": "Directive"
-  },
-  "issues/IssuesPane.js | directives": {
-    "message": "directives"
-  },
-  "issues/IssuesPane.js | domain": {
-    "message": "Domain"
-  },
-  "issues/IssuesPane.js | element": {
-    "message": "Element"
-  },
-  "issues/IssuesPane.js | frameUrl": {
-    "message": "Frame URL"
-  },
-  "issues/IssuesPane.js | groupByCategory": {
+  "issues/IssuesPane.ts | groupByCategory": {
     "message": "Group by category"
   },
-  "issues/IssuesPane.js | groupDisplayedIssuesUnder": {
+  "issues/IssuesPane.ts | groupDisplayedIssuesUnder": {
     "message": "Group displayed issues under associated categories"
   },
-  "issues/IssuesPane.js | heavyAds": {
+  "issues/IssuesPane.ts | heavyAds": {
     "message": "Heavy Ads"
   },
-  "issues/IssuesPane.js | includeCookieIssuesCausedBy": {
+  "issues/IssuesPane.ts | includeCookieIssuesCausedBy": {
     "message": "Include cookie Issues caused by third-party sites"
   },
-  "issues/IssuesPane.js | includeThirdpartyCookieIssues": {
+  "issues/IssuesPane.ts | includeThirdpartyCookieIssues": {
     "message": "Include third-party cookie issues"
   },
-  "issues/IssuesPane.js | issuesPertainingToSOperation": {
+  "issues/IssuesPane.ts | issuesPertainingToSOperation": {
     "message": "Issues pertaining to {PH1} operation detected."
   },
-  "issues/IssuesPane.js | issuesPertainingToSOperations": {
+  "issues/IssuesPane.ts | issuesPertainingToSOperations": {
     "message": "Issues pertaining to {PH1} operations detected."
   },
-  "issues/IssuesPane.js | isThisIssueMessageHelpfulToYou": {
-    "message": "Is this issue message helpful to you?"
-  },
-  "issues/IssuesPane.js | learnMoreS": {
-    "message": "Learn more: {PH1}"
-  },
-  "issues/IssuesPane.js | limitExceeded": {
-    "message": "Limit exceeded"
-  },
-  "issues/IssuesPane.js | mixedContent": {
+  "issues/IssuesPane.ts | mixedContent": {
     "message": "Mixed Content"
   },
-  "issues/IssuesPane.js | name": {
-    "message": "Name"
-  },
-  "issues/IssuesPane.js | networkLimit": {
-    "message": "Network limit"
-  },
-  "issues/IssuesPane.js | noIssuesDetectedSoFar": {
+  "issues/IssuesPane.ts | noIssuesDetectedSoFar": {
     "message": "No issues detected so far"
   },
-  "issues/IssuesPane.js | onlyThirdpartyCookieIssues": {
+  "issues/IssuesPane.ts | onlyThirdpartyCookieIssues": {
     "message": "Only third-party cookie issues detected so far"
   },
-  "issues/IssuesPane.js | other": {
+  "issues/IssuesPane.ts | other": {
     "message": "Other"
   },
-  "issues/IssuesPane.js | parentFrame": {
-    "message": "Parent Frame"
-  },
-  "issues/IssuesPane.js | path": {
-    "message": "Path"
-  },
-  "issues/IssuesPane.js | removed": {
-    "message": "Removed"
-  },
-  "issues/IssuesPane.js | reportonly": {
-    "message": "report-only"
-  },
-  "issues/IssuesPane.js | request": {
-    "message": "request"
-  },
-  "issues/IssuesPane.js | requestC": {
-    "message": "Request"
-  },
-  "issues/IssuesPane.js | requests": {
-    "message": "requests"
-  },
-  "issues/IssuesPane.js | resolutionStatus": {
-    "message": "Resolution Status"
-  },
-  "issues/IssuesPane.js | resource": {
-    "message": "resource"
-  },
-  "issues/IssuesPane.js | resourceC": {
-    "message": "Resource"
-  },
-  "issues/IssuesPane.js | resources": {
-    "message": "resources"
-  },
-  "issues/IssuesPane.js | restrictionStatus": {
-    "message": "Restriction Status"
-  },
-  "issues/IssuesPane.js | samesiteCookie": {
+  "issues/IssuesPane.ts | samesiteCookie": {
     "message": "SameSite Cookie"
   },
-  "issues/IssuesPane.js | source": {
-    "message": "source"
-  },
-  "issues/IssuesPane.js | sourceLocation": {
-    "message": "Source Location"
-  },
-  "issues/IssuesPane.js | sources": {
-    "message": "sources"
-  },
-  "issues/IssuesPane.js | status": {
-    "message": "Status"
-  },
-  "issues/IssuesPane.js | trustedWebActivity": {
+  "issues/IssuesPane.ts | trustedWebActivity": {
     "message": "Trusted Web Activity"
   },
-  "issues/IssuesPane.js | warned": {
+  "issues/IssueView.js | affectedResources": {
+    "message": "Affected Resources"
+  },
+  "issues/IssueView.js | blocked": {
+    "message": "blocked"
+  },
+  "issues/IssueView.js | blockedResource": {
+    "message": "Blocked Resource"
+  },
+  "issues/IssueView.js | clickToRevealTheViolatingDomNode": {
+    "message": "Click to reveal the violating DOM node in the Elements panel"
+  },
+  "issues/IssueView.js | cookie": {
+    "message": "cookie"
+  },
+  "issues/IssueView.js | cookies": {
+    "message": "cookies"
+  },
+  "issues/IssueView.js | cpuPeakLimit": {
+    "message": "CPU peak limit"
+  },
+  "issues/IssueView.js | cpuTotalLimit": {
+    "message": "CPU total limit"
+  },
+  "issues/IssueView.js | directive": {
+    "message": "directive"
+  },
+  "issues/IssueView.js | directiveC": {
+    "message": "Directive"
+  },
+  "issues/IssueView.js | directives": {
+    "message": "directives"
+  },
+  "issues/IssueView.js | domain": {
+    "message": "Domain"
+  },
+  "issues/IssueView.js | element": {
+    "message": "Element"
+  },
+  "issues/IssueView.js | frameUrl": {
+    "message": "Frame URL"
+  },
+  "issues/IssueView.js | isThisIssueMessageHelpfulToYou": {
+    "message": "Is this issue message helpful to you?"
+  },
+  "issues/IssueView.js | learnMoreS": {
+    "message": "Learn more: {PH1}"
+  },
+  "issues/IssueView.js | limitExceeded": {
+    "message": "Limit exceeded"
+  },
+  "issues/IssueView.js | name": {
+    "message": "Name"
+  },
+  "issues/IssueView.js | networkLimit": {
+    "message": "Network limit"
+  },
+  "issues/IssueView.js | parentFrame": {
+    "message": "Parent Frame"
+  },
+  "issues/IssueView.js | path": {
+    "message": "Path"
+  },
+  "issues/IssueView.js | removed": {
+    "message": "Removed"
+  },
+  "issues/IssueView.js | reportonly": {
+    "message": "report-only"
+  },
+  "issues/IssueView.js | request": {
+    "message": "request"
+  },
+  "issues/IssueView.js | requestC": {
+    "message": "Request"
+  },
+  "issues/IssueView.js | requests": {
+    "message": "requests"
+  },
+  "issues/IssueView.js | resolutionStatus": {
+    "message": "Resolution Status"
+  },
+  "issues/IssueView.js | resource": {
+    "message": "resource"
+  },
+  "issues/IssueView.js | resourceC": {
+    "message": "Resource"
+  },
+  "issues/IssueView.js | resources": {
+    "message": "resources"
+  },
+  "issues/IssueView.js | restrictionStatus": {
+    "message": "Restriction Status"
+  },
+  "issues/IssueView.js | source": {
+    "message": "source"
+  },
+  "issues/IssueView.js | sourceLocation": {
+    "message": "Source Location"
+  },
+  "issues/IssueView.js | sources": {
+    "message": "sources"
+  },
+  "issues/IssueView.js | status": {
+    "message": "Status"
+  },
+  "issues/IssueView.js | warned": {
     "message": "Warned"
   },
   "issues/ModuleUIStrings.js | issuesView": {

@@ -12,7 +12,7 @@ Issues = Issues || {};
 /**
  * @constructor
  */
-Issues.IssuesPane = IssuesModule.IssuesPane.IssuesPaneImpl;
+Issues.IssuesPane = IssuesModule.IssuesPane.IssuesPane;
 
 Issues.IssueRevealer = IssuesModule.IssueRevealer.IssueRevealer;
 

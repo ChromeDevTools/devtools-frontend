@@ -7,7 +7,7 @@ import * as SDK from '../sdk/sdk.js';
 
 import {AffectedResourcesView} from './AffectedResourcesView.js';
 import {AggregatedIssue} from './IssueAggregator.js';
-import {IssueView} from './IssuesPane.js';
+import {IssueView} from './IssueView.js';
 
 export const UIStrings = {
   /**

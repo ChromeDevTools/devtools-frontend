@@ -8,7 +8,7 @@ import * as i18n from '../i18n/i18n.js';
 import * as SDK from '../sdk/sdk.js';
 
 import {AffectedItem, AffectedResourcesView} from './AffectedResourcesView.js';
-import {IssueView} from './IssuesPane.js';
+import {IssueView} from './IssueView.js';
 
 export const UIStrings = {
   /**

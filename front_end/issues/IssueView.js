@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as BrowserSDK from '../browser_sdk/browser_sdk.js';
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
 import * as Components from '../components/components.js';
 import * as Elements from '../elements/elements.js';
@@ -19,8 +18,8 @@ import {AffectedElementsWithLowContrastView} from './AffectedElementsWithLowCont
 import {AffectedItem, AffectedResourcesView, extractShortPath} from './AffectedResourcesView.js';
 import {AffectedSharedArrayBufferIssueDetailsView} from './AffectedSharedArrayBufferIssueDetailsView.js';
 import {AffectedTrustedWebActivityIssueDetailsView} from './AffectedTrustedWebActivityIssueDetailsView.js';
-import {AggregatedIssue, Events as IssueAggregatorEvents, IssueAggregator} from './IssueAggregator.js';  // eslint-disable-line no-unused-vars
-import {createIssueDescriptionFromMarkdown, IssueDescription} from './MarkdownIssueDescription.js';  // eslint-disable-line no-unused-vars
+import {AggregatedIssue} from './IssueAggregator.js';            // eslint-disable-line no-unused-vars
+import {IssueDescription} from './MarkdownIssueDescription.js';  // eslint-disable-line no-unused-vars
 
 export const UIStrings = {
   /**
@@ -156,34 +155,6 @@ export const UIStrings = {
   */
   blockedResource: 'Blocked Resource',
   /**
-  *@description Category title for a group of cross origin embedder policy (COEP) issues
-  */
-  crossOriginEmbedderPolicy: 'Cross Origin Embedder Policy',
-  /**
-  *@description Category title for a group of mixed content issues
-  */
-  mixedContent: 'Mixed Content',
-  /**
-  *@description Category title for a group of SameSite cookie issues
-  */
-  samesiteCookie: 'SameSite Cookie',
-  /**
-  *@description Category title for a group of heavy ads issues
-  */
-  heavyAds: 'Heavy Ads',
-  /**
-  *@description Category title for a group of content security policy (CSP) issues
-  */
-  contentSecurityPolicy: 'Content Security Policy',
-  /**
-  *@description Category title for a group of trusted web activity issues
-  */
-  trustedWebActivity: 'Trusted Web Activity',
-  /**
-  *@description Text for other types of items
-  */
-  other: 'Other',
-  /**
   *@description Header for the section listing affected resources
   */
   affectedResources: 'Affected Resources',
@@ -196,43 +167,10 @@ export const UIStrings = {
   *@description Link text for opening a survey in the expended view of an Issue in the issue view
   */
   isThisIssueMessageHelpfulToYou: 'Is this issue message helpful to you?',
-  /**
-  *@description Title for a checkbox which toggles grouping by category in the issues tab
-  */
-  groupDisplayedIssuesUnder: 'Group displayed issues under associated categories',
-  /**
-  *@description Label for a checkbox which toggles grouping by category in the issues tab
-  */
-  groupByCategory: 'Group by category',
-  /**
-  *@description Title for a checkbox. Whether the issues tab should include third-party issues or not.
-  */
-  includeCookieIssuesCausedBy: 'Include cookie Issues caused by third-party sites',
-  /**
-  *@description Label for a checkbox. Whether the issues tab should include third-party issues or not.
-  */
-  includeThirdpartyCookieIssues: 'Include third-party cookie issues',
-  /**
-  *@description Tooltip shown for the issues count in several places of the UI
-  *@example {1} PH1
-  */
-  issuesPertainingToSOperation: 'Issues pertaining to {PH1} operation detected.',
-  /**
-  *@description Tooltip shown for the issues count in several places of the UI
-  *@example {13} PH1
-  */
-  issuesPertainingToSOperations: 'Issues pertaining to {PH1} operations detected.',
-  /**
-  *@description Label on the issues tab
-  */
-  onlyThirdpartyCookieIssues: 'Only third-party cookie issues detected so far',
-  /**
-  *@description Label in the issues panel
-  */
-  noIssuesDetectedSoFar: 'No issues detected so far',
 };
-const str_ = i18n.i18n.registerUIStrings('issues/IssuesPane.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('issues/IssueView.js', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+
 class AffectedDirectivesView extends AffectedResourcesView {
   /**
    * @param {!IssueView} parent
@@ -849,55 +787,6 @@ class AffectedBlockedByResponseView extends AffectedResourcesView {
   }
 }
 
-/** @type {!Map<!SDK.Issue.IssueCategory, string>} */
-export const IssueCategoryNames = new Map([
-  [SDK.Issue.IssueCategory.CrossOriginEmbedderPolicy, i18nString(UIStrings.crossOriginEmbedderPolicy)],
-  [SDK.Issue.IssueCategory.MixedContent, i18nString(UIStrings.mixedContent)],
-  [SDK.Issue.IssueCategory.SameSiteCookie, i18nString(UIStrings.samesiteCookie)],
-  [SDK.Issue.IssueCategory.HeavyAd, i18nString(UIStrings.heavyAds)],
-  [SDK.Issue.IssueCategory.ContentSecurityPolicy, i18nString(UIStrings.contentSecurityPolicy)],
-  [SDK.Issue.IssueCategory.TrustedWebActivity, i18nString(UIStrings.trustedWebActivity)],
-  [SDK.Issue.IssueCategory.Other, i18nString(UIStrings.other)]
-]);
-
-class IssueCategoryView extends UI.TreeOutline.TreeElement {
-  /**
-   * @param {!SDK.Issue.IssueCategory} category
-   */
-  constructor(category) {
-    super();
-    this._category = category;
-    /** @type {!Array<!AggregatedIssue>} */
-    this._issues = [];
-
-    this.toggleOnClick = true;
-    this.listItemElement.classList.add('issue-category');
-  }
-
-  getCategoryName() {
-    return IssueCategoryNames.get(this._category) || i18nString(UIStrings.other);
-  }
-
-  /**
-   * @override
-   */
-  onattach() {
-    this._appendHeader();
-  }
-
-  _appendHeader() {
-    const header = document.createElement('div');
-    header.classList.add('header');
-
-    const title = document.createElement('div');
-    title.classList.add('title');
-    title.textContent = this.getCategoryName();
-    header.appendChild(title);
-
-    this.listItemElement.appendChild(header);
-  }
-}
-
 // These come from chrome/browser/ui/hats/hats_service.cc.
 /** @type {!Map<!SDK.Issue.IssueCategory, string|null>} */
 const issueSurveyTriggers = new Map([
@@ -911,7 +800,7 @@ const issueSurveyTriggers = new Map([
 export class IssueView extends UI.TreeOutline.TreeElement {
   /**
    *
-   * @param {!IssuesPaneImpl} parent
+   * @param {!UI.Widget.VBox} parent
    * @param {!AggregatedIssue} issue
    * @param {!IssueDescription} description
    */
@@ -1104,247 +993,6 @@ export class IssueView extends UI.TreeOutline.TreeElement {
       this.expand();
     } else {
       this.collapse();
-    }
-  }
-}
-
-/** @return {!Common.Settings.Setting<boolean>} */
-export function getGroupIssuesByCategorySetting() {
-  return Common.Settings.Settings.instance().createSetting('groupIssuesByCategory', false);
-}
-
-/** @type {!IssuesPaneImpl} */
-let issuesPaneInstance;
-
-
-export class IssuesPaneImpl extends UI.Widget.VBox {
-  /**
-   * @private
-   */
-  constructor() {
-    super(true);
-    this.registerRequiredCSS('issues/issuesPane.css', {enableLegacyPatching: false});
-    this.contentElement.classList.add('issues-pane');
-
-    this._categoryViews = new Map();
-    this._issueViews = new Map();
-    this._showThirdPartyCheckbox = null;
-
-    const {toolbarContainer, updateToolbarIssuesCount} = this._createToolbars();
-    this._issuesToolbarContainer = toolbarContainer;
-    this._updateToolbarIssuesCount = updateToolbarIssuesCount;
-
-    this._issuesTree = new UI.TreeOutline.TreeOutlineInShadow();
-    this._issuesTree.registerRequiredCSS('issues/issuesTree.css', {enableLegacyPatching: true});
-    this._issuesTree.setShowSelectionOnKeyboardFocus(true);
-    this._issuesTree.contentElement.classList.add('issues');
-    this.contentElement.appendChild(this._issuesTree.element);
-
-    this._noIssuesMessageDiv = document.createElement('div');
-    this._noIssuesMessageDiv.classList.add('issues-pane-no-issues');
-    this.contentElement.appendChild(this._noIssuesMessageDiv);
-
-    /** @type {!BrowserSDK.IssuesManager.IssuesManager} */
-    this._issuesManager = BrowserSDK.IssuesManager.IssuesManager.instance();
-    /** @type {!IssueAggregator} */
-    this._aggregator = new IssueAggregator(this._issuesManager);
-    this._aggregator.addEventListener(IssueAggregatorEvents.AggregatedIssueUpdated, this._issueUpdated, this);
-    this._aggregator.addEventListener(IssueAggregatorEvents.FullUpdateRequired, this._fullUpdate, this);
-    for (const issue of this._aggregator.aggregatedIssues()) {
-      this._updateIssueView(issue);
-    }
-    this._issuesManager.addEventListener(BrowserSDK.IssuesManager.Events.IssuesCountUpdated, this._updateCounts, this);
-    this._updateCounts();
-  }
-
-  /**
-   * @param {{forceNew: ?boolean}} opts
-   */
-  static instance(opts = {forceNew: null}) {
-    const {forceNew} = opts;
-    if (!issuesPaneInstance || forceNew) {
-      issuesPaneInstance = new IssuesPaneImpl();
-    }
-
-    return issuesPaneInstance;
-  }
-
-  /**
-   * @override
-   * @return {!Array<!Element>}
-   */
-  elementsToRestoreScrollPositionsFor() {
-    return [this._issuesTree.element];
-  }
-
-  /**
-   * @returns {!{toolbarContainer: !Element, updateToolbarIssuesCount: function(number):void}}
-   */
-  _createToolbars() {
-    const toolbarContainer = this.contentElement.createChild('div', 'issues-toolbar-container');
-    new UI.Toolbar.Toolbar('issues-toolbar-left', toolbarContainer);
-    const rightToolbar = new UI.Toolbar.Toolbar('issues-toolbar-right', toolbarContainer);
-
-    const groupByCategorySetting = getGroupIssuesByCategorySetting();
-    const groupByCategoryCheckbox = new UI.Toolbar.ToolbarSettingCheckbox(
-        groupByCategorySetting, i18nString(UIStrings.groupDisplayedIssuesUnder), i18nString(UIStrings.groupByCategory));
-    // Hide the option to toggle category grouping for now.
-    groupByCategoryCheckbox.setVisible(false);
-    rightToolbar.appendToolbarItem(groupByCategoryCheckbox);
-    groupByCategorySetting.addChangeListener(() => {
-      this._fullUpdate();
-    });
-
-    const thirdPartySetting = SDK.Issue.getShowThirdPartyIssuesSetting();
-    this._showThirdPartyCheckbox = new UI.Toolbar.ToolbarSettingCheckbox(
-        thirdPartySetting, i18nString(UIStrings.includeCookieIssuesCausedBy),
-        i18nString(UIStrings.includeThirdpartyCookieIssues));
-    rightToolbar.appendToolbarItem(this._showThirdPartyCheckbox);
-    this.setDefaultFocusedElement(this._showThirdPartyCheckbox.inputElement);
-
-    rightToolbar.appendSeparator();
-    const toolbarWarnings = document.createElement('div');
-    toolbarWarnings.classList.add('toolbar-warnings');
-    const breakingChangeIcon = new WebComponents.Icon.Icon();
-    breakingChangeIcon.data = {iconName: 'breaking_change_icon', color: '', width: '16px', height: '16px'};
-    breakingChangeIcon.classList.add('breaking-change');
-    toolbarWarnings.appendChild(breakingChangeIcon);
-    const toolbarIssuesCount = toolbarWarnings.createChild('span', 'warnings-count-label');
-    const toolbarIssuesItem = new UI.Toolbar.ToolbarItem(toolbarWarnings);
-    rightToolbar.appendToolbarItem(toolbarIssuesItem);
-    /** @param {number} count */
-    const updateToolbarIssuesCount = count => {
-      toolbarIssuesCount.textContent = `${count}`;
-      if (count === 1) {
-        toolbarIssuesItem.setTitle(i18nString(UIStrings.issuesPertainingToSOperation, {PH1: count}));
-      } else {
-        toolbarIssuesItem.setTitle(i18nString(UIStrings.issuesPertainingToSOperations, {PH1: count}));
-      }
-    };
-    return {toolbarContainer, updateToolbarIssuesCount};
-  }
-
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  _issueUpdated(event) {
-    const issue = /** @type {!AggregatedIssue} */ (event.data);
-    this._updateIssueView(issue);
-  }
-
-  /**
-   * @param {!AggregatedIssue} issue
-   */
-  _updateIssueView(issue) {
-    if (!this._issueViews.has(issue.code())) {
-      const description = issue.getDescription();
-      if (!description) {
-        console.warn('Could not find description for issue code:', issue.code());
-        return;
-      }
-      const markdownDescription = createIssueDescriptionFromMarkdown(description);
-      const view = new IssueView(this, issue, markdownDescription);
-      this._issueViews.set(issue.code(), view);
-      const parent = this._getIssueViewParent(issue);
-      parent.appendChild(view, (a, b) => {
-        if (a instanceof IssueView && b instanceof IssueView) {
-          return a.getIssueTitle().localeCompare(b.getIssueTitle());
-        }
-        console.error('The issues tree should only contain IssueView objects as direct children');
-        return 0;
-      });
-    }
-    this._issueViews.get(issue.code()).update();
-    this._updateCounts();
-  }
-
-  /**
-   * @param {!AggregatedIssue} issue
-   * @returns {!UI.TreeOutline.TreeOutline | !UI.TreeOutline.TreeElement}
-   */
-  _getIssueViewParent(issue) {
-    if (!getGroupIssuesByCategorySetting().get()) {
-      return this._issuesTree;
-    }
-
-    const category = issue.getCategory();
-    const view = this._categoryViews.get(category);
-    if (view) {
-      return view;
-    }
-
-    const newView = new IssueCategoryView(category);
-    this._issuesTree.appendChild(newView, (a, b) => {
-      if (a instanceof IssueCategoryView && b instanceof IssueCategoryView) {
-        return a.getCategoryName().localeCompare(b.getCategoryName());
-      }
-      return 0;
-    });
-    this._categoryViews.set(category, newView);
-    return newView;
-  }
-
-  /**
-   * @param {!Map<*, !UI.TreeOutline.TreeElement>} views
-   */
-  _clearViews(views) {
-    for (const view of views.values()) {
-      view.parent && view.parent.removeChild(view);
-    }
-    views.clear();
-  }
-
-  _fullUpdate() {
-    this._clearViews(this._categoryViews);
-    this._clearViews(this._issueViews);
-    if (this._aggregator) {
-      for (const issue of this._aggregator.aggregatedIssues()) {
-        this._updateIssueView(issue);
-      }
-    }
-    this._updateCounts();
-  }
-
-  _updateCounts() {
-    const count = this._issuesManager.numberOfIssues();
-    this._updateToolbarIssuesCount(count);
-    this._showIssuesTreeOrNoIssuesDetectedMessage(count);
-  }
-
-  /**
-   * @param {number} issuesCount
-   */
-  _showIssuesTreeOrNoIssuesDetectedMessage(issuesCount) {
-    if (issuesCount > 0) {
-      this._issuesTree.element.hidden = false;
-      this._noIssuesMessageDiv.style.display = 'none';
-      const firstChild = this._issuesTree.firstChild();
-      if (firstChild) {
-        firstChild.select(/** omitFocus= */ true);
-        this.setDefaultFocusedElement(firstChild.listItemElement);
-      }
-    } else {
-      this._issuesTree.element.hidden = true;
-      if (this._showThirdPartyCheckbox) {
-        this.setDefaultFocusedElement(this._showThirdPartyCheckbox.inputElement);
-      }
-      // We alreay know that issesCount is zero here.
-      const hasOnlyThirdPartyIssues = this._issuesManager.numberOfAllStoredIssues() > 0;
-      this._noIssuesMessageDiv.textContent = hasOnlyThirdPartyIssues ?
-          i18nString(UIStrings.onlyThirdpartyCookieIssues) :
-          i18nString(UIStrings.noIssuesDetectedSoFar);
-      this._noIssuesMessageDiv.style.display = 'flex';
-    }
-  }
-
-  /**
-   * @param {string} code
-   */
-  revealByCode(code) {
-    const issueView = this._issueViews.get(code);
-    if (issueView) {
-      issueView.expand();
-      issueView.reveal();
     }
   }
 }

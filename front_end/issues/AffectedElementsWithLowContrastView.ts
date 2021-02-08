@@ -8,7 +8,7 @@ import * as SDK from '../sdk/sdk.js';
 
 import {AffectedElementsView} from './AffectedElementsView.js';
 import {AggregatedIssue} from './IssueAggregator.js';
-import {IssueView} from './IssuesPane.js';
+import {IssueView} from './IssueView.js';
 
 export class AffectedElementsWithLowContrastView extends AffectedElementsView {
   private aggregateIssue: AggregatedIssue;

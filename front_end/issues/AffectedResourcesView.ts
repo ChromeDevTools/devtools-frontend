@@ -11,7 +11,7 @@ import * as SDK from '../sdk/sdk.js';
 import * as WebComponents from '../ui/components/components.js';
 import * as UI from '../ui/ui.js';
 
-import {IssueView} from './IssuesPane.js';
+import {IssueView} from './IssueView.js';
 
 export const UIStrings = {
   /**

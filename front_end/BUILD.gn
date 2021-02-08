@@ -12,10 +12,11 @@ group("front_end") {
   public_deps = [
     ":devtools_app",
     ":embedder-scripts",
-    ":entrypoint_copy",
     ":html_entrypoints",
     ":inspector",
+    ":integration_test_runner",
     ":js_app",
+    ":legacy_css",
     ":legacy_entrypoints",
     ":ndb_app",
     ":node_app",
@@ -69,11 +70,6 @@ group("front_end") {
     "worker_service:bundle",
     "workspace:bundle",
     "workspace_diff:bundle",
-  ]
-
-  data_deps = [
-    ":html_entrypoints",
-    ":legacy_css",
   ]
 }
 
@@ -328,7 +324,19 @@ ts_library("worker_app") {
   ]
 }
 
-copy_sources_to_resources("entrypoint_copy") {
+group("integration_test_runner") {
+  public_deps = [
+    ":integration_test_runner-gen",
+    ":integration_test_runner-resources",
+  ]
+  data_deps = public_deps
+}
+
+copy_sources_to_resources("integration_test_runner-resources") {
+  sources = [ "integration_test_runner.html" ]
+}
+
+copy_to_gen("integration_test_runner-gen") {
   sources = [ "integration_test_runner.html" ]
 }
 
@@ -368,10 +376,25 @@ copy("html_entrypoints") {
 
   outputs = [ "$resources_out_dir/{{source_file_part}}" ]
 
-  deps = [ ":html_entrypoints-generation" ]
+  public_deps = [ ":html_entrypoints-generation" ]
+  data_deps = [ ":html_entrypoints-generation" ]
 }
 
-copy_sources_to_resources("embedder-scripts") {
+group("embedder-scripts") {
+  public_deps = [
+    ":gen-embedder-scripts",
+    ":resources-embedder-scripts",
+  ]
+}
+
+copy_sources_to_resources("resources-embedder-scripts") {
+  sources = [
+    "Tests.js",
+    "devtools_compatibility.js",
+  ]
+}
+
+copy_to_gen("gen-embedder-scripts") {
   sources = [
     "Tests.js",
     "devtools_compatibility.js",

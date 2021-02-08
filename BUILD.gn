@@ -276,7 +276,7 @@ action("generate_devtools_grd") {
   }
 
   foreach(_input_file, _unique_frontend_files) {
-    _grd_files += [ "$resources_out_dir/$_input_file" ]
+    _grd_files += [ "$target_gen_dir/front_end/$_input_file" ]
   }
 
   inputs = _grd_files + front_end_image_files
@@ -286,8 +286,7 @@ action("generate_devtools_grd") {
   # //out/{Target} at the start, others with front_end
   _normalized_inputs = []
   foreach(input, inputs) {
-    _normalized_inputs +=
-        [ string_replace(input, resources_out_dir, "front_end") ]
+    _normalized_inputs += [ string_replace(input, "$target_gen_dir/", "") ]
   }
 
   # Always assume the release files are included.
@@ -315,7 +314,7 @@ action("generate_devtools_grd") {
   outputs = [ outfile ]
 
   relative_path_dirs = [
-    resources_out_dir,
+    "$target_gen_dir/front_end",
     "front_end",
   ]
 

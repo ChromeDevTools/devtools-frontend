@@ -1976,7 +1976,7 @@ export class ConfirmDialog {
 export function createInlineButton(toolbarButton) {
   const element = document.createElement('span');
   const shadowRoot = createShadowRootWithCoreStyles(
-      element, {cssFile: 'ui/inlineButton.css', enableLegacyPatching: true, delegatesFocus: undefined});
+      element, {cssFile: 'ui/inlineButton.css', enableLegacyPatching: false, delegatesFocus: undefined});
   element.classList.add('inline-button');
   const toolbar = new Toolbar('');
   toolbar.appendToolbarItem(toolbarButton);

@@ -871,7 +871,7 @@ export class NetworkDispatcher {
    * @override
    * @param {!Protocol.Network.ResponseReceivedExtraInfoEvent} request
    */
-  responseReceivedExtraInfo({requestId, blockedCookies, headers, headersText}) {
+  responseReceivedExtraInfo({requestId, blockedCookies, headers, headersText, resourceIPAddressSpace}) {
     /** @type {!ExtraResponseInfo} */
     const extraResponseInfo = {
       blockedResponseCookies: blockedCookies.map(blockedCookie => {
@@ -882,7 +882,8 @@ export class NetworkDispatcher {
         };
       }),
       responseHeaders: this._headersMapToHeadersArray(headers),
-      responseHeadersText: headersText
+      responseHeadersText: headersText,
+      resourceIPAddressSpace,
     };
     this._getExtraInfoBuilder(requestId).addResponseExtraInfo(extraResponseInfo);
   }

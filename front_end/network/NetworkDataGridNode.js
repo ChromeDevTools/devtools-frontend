@@ -851,6 +851,20 @@ export class NetworkRequestNode extends NetworkNode {
    * @param {!NetworkNode} b
    * @return {number}
    */
+  static RemoteAddressSpaceComparator(a, b) {
+    const aRequest = a.requestOrFirstKnownChildRequest();
+    const bRequest = b.requestOrFirstKnownChildRequest();
+    if (!aRequest || !bRequest) {
+      return !aRequest ? -1 : 1;
+    }
+    return aRequest.remoteAddressSpace().localeCompare(bRequest.remoteAddressSpace());
+  }
+
+  /**
+   * @param {!NetworkNode} a
+   * @param {!NetworkNode} b
+   * @return {number}
+   */
   static RequestCookiesCountComparator(a, b) {
     // TODO(allada) Handle this properly for group nodes.
     const aRequest = a.requestOrFirstKnownChildRequest();
@@ -1224,6 +1238,10 @@ export class NetworkRequestNode extends NetworkNode {
         this._setTextAndTitle(cell, this._request.remoteAddress());
         break;
       }
+      case 'remoteaddress-space': {
+        this._renderAddressSpaceCell(cell, this._request.remoteAddressSpace());
+        break;
+      }
       case 'cookies': {
         this._setTextAndTitle(cell, this._arrayLength(this._request.includedRequestCookies()));
         break;
@@ -1250,7 +1268,11 @@ export class NetworkRequestNode extends NetworkNode {
         break;
       }
       case 'initiator-address-space': {
-        this._renderInitiatorAddressSpaceCell(cell);
+        const clientSecurityState = this._request.clientSecurityState();
+        this._renderAddressSpaceCell(
+            cell,
+            clientSecurityState ? clientSecurityState.initiatorIPAddressSpace :
+                                  Protocol.Network.IPAddressSpace.Unknown);
         break;
       }
       case 'size': {
@@ -1562,11 +1584,11 @@ export class NetworkRequestNode extends NetworkNode {
 
   /**
    * @param {!HTMLElement} cell
+   * @param {Protocol.Network.IPAddressSpace} ipAddressSpace
    */
-  _renderInitiatorAddressSpaceCell(cell) {
-    const clientSecurityState = this._request.clientSecurityState();
-    if (clientSecurityState) {
-      UI.UIUtils.createTextChild(cell, clientSecurityState.initiatorIPAddressSpace);
+  _renderAddressSpaceCell(cell, ipAddressSpace) {
+    if (ipAddressSpace !== Protocol.Network.IPAddressSpace.Unknown) {
+      UI.UIUtils.createTextChild(cell, ipAddressSpace);
     }
   }
 

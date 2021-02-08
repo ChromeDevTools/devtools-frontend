@@ -170,6 +170,10 @@ export const UIStrings = {
   *@description Text in Network Log View Columns of the Network panel
   */
   vary: '`Vary`',
+  /**
+  *@description Text in Network Log View Columns of the Network panel
+  */
+  remoteAddressSpace: 'Remote Address Space',
 };
 const str_ = i18n.i18n.registerUIStrings('network/NetworkLogViewColumns.js', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -1043,6 +1047,13 @@ const _temporaryDefaultColumns = [
     weight: 10,
     align: DataGrid.DataGrid.Align.Right,
     sortingFunction: NetworkRequestNode.RemoteAddressComparator
+  },
+  {
+    id: 'remoteaddress-space',
+    title: i18nString(UIStrings.remoteAddressSpace),
+    visible: false,
+    weight: 10,
+    sortingFunction: NetworkRequestNode.RemoteAddressSpaceComparator
   },
   {id: 'type', title: i18nString(UIStrings.type), visible: true, sortingFunction: NetworkRequestNode.TypeComparator},
   {

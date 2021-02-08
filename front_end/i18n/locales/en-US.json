@@ -3611,6 +3611,9 @@
   "network/NetworkLogViewColumns.js | remoteAddress": {
     "message": "Remote Address"
   },
+  "network/NetworkLogViewColumns.js | remoteAddressSpace": {
+    "message": "Remote Address Space"
+  },
   "network/NetworkLogViewColumns.js | responseHeaders": {
     "message": "Response Headers"
   },

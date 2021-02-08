@@ -142,6 +142,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper {
     this._requestHeaderValues = {};
 
     this._remoteAddress = '';
+    this._remoteAddressSpace = Protocol.Network.IPAddressSpace.Unknown;
 
     /** @type {?Protocol.Network.RequestReferrerPolicy} */
     this._referrerPolicy = null;
@@ -304,6 +305,13 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper {
    */
   remoteAddress() {
     return this._remoteAddress;
+  }
+
+  /**
+   * @return {Protocol.Network.IPAddressSpace}
+   */
+  remoteAddressSpace() {
+    return this._remoteAddressSpace;
   }
 
   /**
@@ -1630,6 +1638,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper {
         this.setRequestHeadersText(requestHeadersText);
       }
     }
+    this._remoteAddressSpace = extraResponseInfo.resourceIPAddressSpace;
 
     this._hasExtraResponseInfo = true;
   }
@@ -1911,7 +1920,8 @@ export let ExtraRequestInfo;
   * @typedef {!{
   *   blockedResponseCookies: !Array<!BlockedSetCookieWithReason>,
   *   responseHeaders: !Array<!NameValue>,
-  *   responseHeadersText: (string|undefined)
+  *   responseHeadersText: (string|undefined),
+  *   resourceIPAddressSpace: Protocol.Network.IPAddressSpace,
   * }}
   */
 // @ts-ignore typedef

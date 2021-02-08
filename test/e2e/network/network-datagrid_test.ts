@@ -164,4 +164,35 @@ describe('The Network Tab', async () => {
       });
     });
   });
+
+  it('shows the correct remote address space', async () => {
+    const {target, frontend} = getBrowserAndPages();
+
+    await navigateToNetworkTab('fetch.html');
+
+    // Reload to populate network request table
+    await target.reload({waitUntil: 'networkidle0'});
+
+    await waitForSomeRequestsToAppear(2);
+
+    await step('Open the contextmenu for all network column', async () => {
+      await click('.name-column', {clickOptions: {button: 'right'}});
+    });
+
+    await step('Enable the Remote Address Space column in the network datagrid', async () => {
+      const remoteAddressSpace = await waitForAria('Remote Address Space, unchecked');
+      await click(remoteAddressSpace);
+    });
+
+    await step('Wait for the Remote Address Space column to have the expected values', async () => {
+      const expectedValues = JSON.stringify(['Remote Address Space', 'Local', 'Local']);
+      await waitForFunction(async () => {
+        const remoteAddressSpaceValues = await frontend.$$eval(
+            'pierce/.remoteaddress-space-column',
+            cells => cells.map(element => element.textContent),
+        );
+        return JSON.stringify(remoteAddressSpaceValues) === expectedValues;
+      });
+    });
+  });
 });

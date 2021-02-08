@@ -1,8 +1,7 @@
 {
   "dependencies": [
     "sdk",
-    "ui",
-    "protocol_client"
+    "ui"
   ],
   "modules": [
     "mobile_throttling.js",

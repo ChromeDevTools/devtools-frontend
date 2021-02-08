@@ -1,9 +1,0 @@
-{
-  "modules": [
-    "../generated/InspectorBackendCommands.js",
-    "protocol_client.js",
-    "protocol_client-legacy.js",
-    "NodeURL.js",
-    "InspectorBackend.js"
-  ]
-}

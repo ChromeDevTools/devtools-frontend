@@ -1,6 +1,5 @@
 {
   "dependencies": [
-    "protocol_client",
     "text_utils"
   ], "modules": [
     "../generated/SupportedCSSProperties.js",

@@ -275,7 +275,6 @@ all_devtools_files = [
   "front_end/developer_resources/developerResourcesListView.css",
   "front_end/protocol_monitor/module.json",
   "front_end/protocol_monitor/protocolMonitor.css",
-  "front_end/protocol_client/module.json",
   "front_end/quick_open/filteredListWidget.css",
   "front_end/quick_open/module.json",
   "front_end/resources/appManifestView.css",

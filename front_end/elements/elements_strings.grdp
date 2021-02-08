@@ -135,9 +135,6 @@
   <message name="IDS_DEVTOOLS_2dff19d6ed78c6ca35cb3beab7b5bf55" desc="Section title text content in Platform Fonts Widget of the Elements panel">
     Rendered Fonts
   </message>
-  <message name="IDS_DEVTOOLS_2e6591ba49ec23bf6725b74589b66ba3" desc="The UI destination when right clicking an item that can be revealed">
-    styles sidebar
-  </message>
   <message name="IDS_DEVTOOLS_2f76fab71405b40cf521f64eab0d350f" desc="A context menu item in the Elements Tree Element of the Elements panel">
     Delete element
   </message>
@@ -341,9 +338,6 @@
   </message>
   <message name="IDS_DEVTOOLS_bd0ca6be53b0f3d2886fd53fcb52574e" desc="Text in Event Listeners Widget of the Elements panel">
     Blocking
-  </message>
-  <message name="IDS_DEVTOOLS_be9548cd999232697505d4ca2eed2a23" desc="The UI destination when right clicking an item that can be revealed">
-    Elements panel
   </message>
   <message name="IDS_DEVTOOLS_bf22eb56a74b42a33fecf10c831e9509" desc="Text in Elements Tree Element of the Elements panel, copy should be used as a verb">
     Copy outerHTML

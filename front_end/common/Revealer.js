@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {ls} from '../platform/platform.js';
 import * as Root from '../root/root.js';
 
 /**
@@ -23,14 +24,15 @@ export class Revealer {
  * @param {boolean=} omitFocus
  * @return {!Promise.<void>}
  */
-export let reveal = function(revealable, omitFocus) {
+export let reveal = async function(revealable, omitFocus) {
   if (!revealable) {
     return Promise.reject(new Error('Can\'t reveal ' + revealable));
   }
-  return Root.Runtime.Runtime.instance()
-      .allInstances(Revealer, revealable)
-      .then(revealers => reveal(/** @type {!Array<!Revealer>} */ (revealers)));
+  const legacyRevealers =
+      /** @type {!Array<!Revealer>} */ (await Root.Runtime.Runtime.instance().allInstances(Revealer, revealable));
+  const revealers = await loadApplicableRegisteredRevealers(revealable);
 
+  return reveal([...legacyRevealers, ...revealers]);
   /**
    * @param {!Array.<!Revealer>} revealers
    * @return {!Promise.<void>}
@@ -61,4 +63,54 @@ export const revealDestination = function(revealable) {
     return null;
   }
   return extension.descriptor()['destination'];
+};
+
+/** @type {!Array<!RevealerRegistration>} */
+const registeredRevealers = [];
+
+/**
+ * @param {!RevealerRegistration} registration
+ */
+export function registerRevealer(registration) {
+  registeredRevealers.push(registration);
+}
+
+/**
+ * @param {!Object} revealable
+ * @return {!Promise<Array<Revealer>>}
+ */
+async function loadApplicableRegisteredRevealers(revealable) {
+  return Promise.all(
+      registeredRevealers.filter(isRevealerApplicableToContextTypes).map(registration => registration.loadRevealer()));
+
+  /**
+   * @param {!RevealerRegistration} revealerRegistration
+   * @return {boolean}
+   */
+  function isRevealerApplicableToContextTypes(revealerRegistration) {
+    if (!revealerRegistration.contextTypes) {
+      return true;
+    }
+    for (const contextType of revealerRegistration.contextTypes()) {
+      if (revealable instanceof contextType) {
+        return true;
+      }
+    }
+    return false;
+  }
+}
+
+/**
+ * @typedef {{
+  *  contextTypes: function(): !Array<?>,
+  *  loadRevealer: function(): !Promise<!Revealer>,
+  *  destination: (undefined|RevealerDestination)
+  * }} */
+// @ts-ignore typedef
+export let RevealerRegistration;
+
+/** @enum {string} */
+export const RevealerDestination = {
+  ELEMENTS_PANEL: ls`Elements panel`,
+  STYLES_SIDEBAR: ls`styles sidebar`,
 };

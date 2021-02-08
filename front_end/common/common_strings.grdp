@@ -15,6 +15,9 @@
   <message name="IDS_DEVTOOLS_2c56c360580420d293172f42d85dfbed" desc="Text that appears on a button for the css resource type filter.">
     CSS
   </message>
+  <message name="IDS_DEVTOOLS_2e6591ba49ec23bf6725b74589b66ba3" desc="The UI destination when right clicking an item that can be revealed">
+    styles sidebar
+  </message>
   <message name="IDS_DEVTOOLS_375c9558f2166cab6515a7ab774c1735" desc="Name of a network resource type">
     TextTrack
   </message>
@@ -65,6 +68,9 @@
   </message>
   <message name="IDS_DEVTOOLS_be53a0541a6d36f6ecb879fa2c584b08" desc="Text in Image View of the Sources panel">
     Image
+  </message>
+  <message name="IDS_DEVTOOLS_be9548cd999232697505d4ca2eed2a23" desc="The UI destination when right clicking an item that can be revealed">
+    Elements panel
   </message>
   <message name="IDS_DEVTOOLS_bef61d7d03206d267fdbab45fdca247d" desc="Name of a network resource type">
     SignedExchange

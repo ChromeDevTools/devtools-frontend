@@ -9,30 +9,12 @@
       "className": "Elements.ElementsTreeOutline.Renderer"
     },
     {
-      "type": "@Common.Revealer",
-      "contextTypes": [
-        "SDK.DOMNode",
-        "SDK.DeferredDOMNode",
-        "SDK.RemoteObject"
-      ],
-      "destination": "Elements panel",
-      "className": "Elements.ElementsPanel.DOMNodeRevealer"
-    },
-    {
       "type": "@Common.Linkifier",
       "contextTypes": [
         "SDK.DOMNode",
         "SDK.DeferredDOMNode"
       ],
       "className": "Elements.DOMLinkifier.Linkifier"
-    },
-    {
-      "type": "@Common.Revealer",
-      "contextTypes": [
-        "SDK.CSSProperty"
-      ],
-      "destination": "styles sidebar",
-      "className": "Elements.ElementsPanel.CSSPropertyRevealer"
     },
     {
       "type": "@UI.ToolbarItem.Provider",

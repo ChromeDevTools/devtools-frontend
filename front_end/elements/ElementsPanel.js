@@ -1199,11 +1199,24 @@ export class ContextMenuProvider {
     return contextMenuProviderInstance;
   }
 }
-
+/** @type {DOMNodeRevealer} */
+let dOMNodeRevealerInstance;
 /**
  * @implements {Common.Revealer.Revealer}
  */
 export class DOMNodeRevealer {
+  /**
+   * @param {{forceNew: ?boolean}} opts
+   */
+  static instance(opts = {forceNew: null}) {
+    const {forceNew} = opts;
+    if (!dOMNodeRevealerInstance || forceNew) {
+      dOMNodeRevealerInstance = new DOMNodeRevealer();
+    }
+
+    return dOMNodeRevealerInstance;
+  }
+
   /**
    * @override
    * @param {!Object} node
@@ -1298,10 +1311,26 @@ export class DOMNodeRevealer {
   }
 }
 
+/** @type {CSSPropertyRevealer} */
+let cSSPropertyRevealerInstance;
+
+
 /**
  * @implements {Common.Revealer.Revealer}
  */
 export class CSSPropertyRevealer {
+  /**
+   * @param {{forceNew: ?boolean}} opts
+   */
+  static instance(opts = {forceNew: null}) {
+    const {forceNew} = opts;
+    if (!cSSPropertyRevealerInstance || forceNew) {
+      cSSPropertyRevealerInstance = new CSSPropertyRevealer();
+    }
+
+    return cSSPropertyRevealerInstance;
+  }
+
   /**
    * @override
    * @param {!Object} property

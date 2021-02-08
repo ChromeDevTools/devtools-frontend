@@ -324,3 +324,31 @@ UI.ViewManager.registerLocationResolver({
     return Elements.ElementsPanel.ElementsPanel.instance();
   },
 });
+
+Common.Revealer.registerRevealer({
+  contextTypes() {
+    return [
+      SDK.DOMModel.DOMNode,
+      SDK.DOMModel.DeferredDOMNode,
+      SDK.RemoteObject.RemoteObject,
+    ];
+  },
+  destination: Common.Revealer.RevealerDestination.ELEMENTS_PANEL,
+  async loadRevealer() {
+    const Elements = await loadElementsModule();
+    return Elements.ElementsPanel.DOMNodeRevealer.instance();
+  },
+});
+
+Common.Revealer.registerRevealer({
+  contextTypes() {
+    return [
+      SDK.CSSProperty.CSSProperty,
+    ];
+  },
+  destination: Common.Revealer.RevealerDestination.STYLES_SIDEBAR,
+  async loadRevealer() {
+    const Elements = await loadElementsModule();
+    return Elements.ElementsPanel.CSSPropertyRevealer.instance();
+  },
+});

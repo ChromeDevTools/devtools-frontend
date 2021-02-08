@@ -479,10 +479,7 @@ function _createElementDescription(elementInfo: ElementInfo, colorFormat: string
     const parsedFgColor = parseHexa(fgColor);
     const parsedBgColor = parseHexa(contrast.backgroundColor);
     // Merge text opacity into the alpha channel of the color.
-    // TODO(alexrudenko): backward compatibility check and can be removed after the next chromium roll.
-    if (contrast.textOpacity !== undefined) {
-      parsedFgColor[3] *= contrast.textOpacity;
-    }
+    parsedFgColor[3] *= contrast.textOpacity;
     const valueElement = addRow('Contrast', '', 'element-info-value-contrast');
     const sampleText = createChild(valueElement, 'div', 'contrast-text');
     sampleText.style.color = formatRgba(parsedFgColor, 'rgb');

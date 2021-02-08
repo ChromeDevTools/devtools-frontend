@@ -403,7 +403,7 @@ def _CollectStrings(input_api, output_api):
     results.extend(_checkWithNodeScript(input_api, output_api, script_path))
     results.append(
         output_api.PresubmitNotifyResult(
-            'Please commit en-US.json if changes are generated.'))
+            'Please commit en-US.json/en-XL.json if changes are generated.'))
     return results
 
 

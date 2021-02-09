@@ -18,6 +18,7 @@ ts_library("sdk") {
     "OverlayColorGenerator_test.ts",
     "OverlayPersistentHighlighter_test.ts",
     "PageResourceLoader_test.ts",
+    "RemoteObject_test.ts",
     "ServerTiming_test.ts",
     "SourceMap_test.ts",
     "StubIssue.ts",

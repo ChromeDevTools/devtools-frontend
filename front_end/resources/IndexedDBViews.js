@@ -28,15 +28,122 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import * as Common from '../common/common.js';
+import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
 import * as DataGrid from '../data_grid/data_grid.js';
+import * as i18n from '../i18n/i18n.js';
 import * as ObjectUI from '../object_ui/object_ui.js';
-import {ls} from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../ui/ui.js';
 
 import {Database, DatabaseId, Entry, Index, IndexedDBModel, ObjectStore, ObjectStoreMetadata} from './IndexedDBModel.js';  // eslint-disable-line no-unused-vars
 
+export const UIStrings = {
+  /**
+  *@description Text when something is loading
+  */
+  loading: 'Loading…',
+  /**
+  *@description Text in Indexed DBViews of the Application panel
+  */
+  securityOrigin: 'Security origin',
+  /**
+  *@description Text in Indexed DBViews of the Application panel
+  */
+  version: 'Version',
+  /**
+  *@description Text in Indexed DBViews of the Application panel
+  */
+  objectStores: 'Object stores',
+  /**
+  *@description Text of button in Indexed DBViews of the Application panel
+  */
+  deleteDatabase: 'Delete database',
+  /**
+  *@description Text of button in Indexed DBViews of the Application panel
+  */
+  refreshDatabase: 'Refresh database',
+  /**
+  *@description Text in Indexed DBViews of the Application panel
+  *@example {msb} PH1
+  */
+  pleaseConfirmDeleteOfSDatabase: 'Please confirm delete of "{PH1}" database.',
+  /**
+  *@description Text in Indexed DBViews of the Application panel
+  */
+  idb: 'IDB',
+  /**
+  *@description Text to refresh the page
+  */
+  refresh: 'Refresh',
+  /**
+  *@description Tooltip text that appears when hovering over the largeicon delete button in the Indexed DBViews of the Application panel
+  */
+  deleteSelected: 'Delete selected',
+  /**
+  *@description Tooltip text that appears when hovering over the largeicon clear button in the Indexed DBViews of the Application panel
+  */
+  clearObjectStore: 'Clear object store',
+  /**
+  *@description Text in Indexed DBViews of the Application panel
+  */
+  dataMayBeStale: 'Data may be stale',
+  /**
+  *@description Title of needs refresh in indexed dbviews of the application panel
+  */
+  someEntriesMayHaveBeenModified: 'Some entries may have been modified',
+  /**
+  *@description Text in DOMStorage Items View of the Application panel
+  */
+  keyString: 'Key',
+  /**
+  *@description Text in Indexed DBViews of the Application panel
+  */
+  primaryKey: 'Primary key',
+  /**
+  *@description Text for the value of something
+  */
+  valueString: 'Value',
+  /**
+  *@description Data grid name for Indexed DB data grids
+  */
+  indexedDb: 'Indexed DB',
+  /**
+  *@description Text in Indexed DBViews of the Application panel
+  */
+  keyPath: 'Key path: ',
+  /**
+  *@description Tooltip text that appears when hovering over the largeicon play back button in the Indexed DBViews of the Application panel
+  */
+  showPreviousPage: 'Show previous page',
+  /**
+  *@description Tooltip text that appears when hovering over the largeicon play button in the Indexed DBViews of the Application panel
+  */
+  showNextPage: 'Show next page',
+  /**
+  *@description Text in Indexed DBViews of the Application panel
+  */
+  startFromKey: 'Start from key',
+  /**
+  *@description Text in Context menu for expanding objects in IndexedDB tables
+  */
+  expandRecursively: 'Expand Recursively',
+  /**
+  *@description Text in Context menu for collapsing objects in IndexedDB tables
+  */
+  collapse: 'Collapse',
+  /**
+  *@description Span text content in Indexed DBViews of the Application panel
+  *@example {2} PH1
+  */
+  totalEntriesS: 'Total entries: {PH1}',
+  /**
+  *@description Text in Indexed DBViews of the Application panel
+  *@example {2} PH1
+  */
+  keyGeneratorValueS: 'Key generator value: {PH1}',
+};
+const str_ = i18n.i18n.registerUIStrings('resources/IndexedDBViews.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class IDBDatabaseView extends UI.Widget.VBox {
   /**
    * @param {!IndexedDBModel} model
@@ -46,7 +153,7 @@ export class IDBDatabaseView extends UI.Widget.VBox {
     super();
 
     this._model = model;
-    const databaseName = database ? database.databaseId.name : ls`Loading…`;
+    const databaseName = database ? database.databaseId.name : i18nString(UIStrings.loading);
 
     /** @type {!Database} */
     this._database;
@@ -62,17 +169,18 @@ export class IDBDatabaseView extends UI.Widget.VBox {
 
 
     const bodySection = this._reportView.appendSection('');
-    this._securityOriginElement = bodySection.appendField(ls`Security origin`);
-    this._versionElement = bodySection.appendField(ls`Version`);
-    this._objectStoreCountElement = bodySection.appendField(ls`Object stores`);
+    this._securityOriginElement = bodySection.appendField(i18nString(UIStrings.securityOrigin));
+    this._versionElement = bodySection.appendField(i18nString(UIStrings.version));
+    this._objectStoreCountElement = bodySection.appendField(i18nString(UIStrings.objectStores));
 
     const footer = this._reportView.appendSection('').appendRow();
-    this._clearButton =
-        UI.UIUtils.createTextButton(ls`Delete database`, () => this._deleteDatabase(), ls`Delete database`);
+    this._clearButton = UI.UIUtils.createTextButton(
+        i18nString(UIStrings.deleteDatabase), () => this._deleteDatabase(), i18nString(UIStrings.deleteDatabase));
     footer.appendChild(this._clearButton);
 
     this._refreshButton = UI.UIUtils.createTextButton(
-        ls`Refresh database`, () => this._refreshDatabaseButtonClicked(), ls`Refresh database`);
+        i18nString(UIStrings.refreshDatabase), () => this._refreshDatabaseButtonClicked(),
+        i18nString(UIStrings.refreshDatabase));
     footer.appendChild(this._refreshButton);
 
     if (database) {
@@ -109,8 +217,7 @@ export class IDBDatabaseView extends UI.Widget.VBox {
 
   async _deleteDatabase() {
     const ok = await UI.UIUtils.ConfirmDialog.show(
-        Common.UIString.UIString('Please confirm delete of "%s" database.', this._database.databaseId.name),
-        this.element);
+        i18nString(UIStrings.pleaseConfirmDeleteOfSDatabase, {PH1: this._database.databaseId.name}), this.element);
     if (ok) {
       this._model.deleteDatabase(this._database.databaseId);
     }
@@ -126,7 +233,7 @@ export class IDBDataView extends UI.View.SimpleView {
    * @param {function():void} refreshObjectStoreCallback
    */
   constructor(model, databaseId, objectStore, index, refreshObjectStoreCallback) {
-    super(Common.UIString.UIString('IDB'));
+    super(i18nString(UIStrings.idb));
     this.registerRequiredCSS('resources/indexedDBViews.css', {enableLegacyPatching: false});
 
     this._model = model;
@@ -136,24 +243,23 @@ export class IDBDataView extends UI.View.SimpleView {
 
     this.element.classList.add('indexed-db-data-view', 'storage-view');
 
-    this._refreshButton = new UI.Toolbar.ToolbarButton(Common.UIString.UIString('Refresh'), 'largeicon-refresh');
+    this._refreshButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.refresh), 'largeicon-refresh');
     this._refreshButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this._refreshButtonClicked, this);
 
-    this._deleteSelectedButton =
-        new UI.Toolbar.ToolbarButton(Common.UIString.UIString('Delete selected'), 'largeicon-delete');
+    this._deleteSelectedButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.deleteSelected), 'largeicon-delete');
     this._deleteSelectedButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, event => {
       this._deleteButtonClicked(null);
     });
 
-    this._clearButton = new UI.Toolbar.ToolbarButton(Common.UIString.UIString('Clear object store'), 'largeicon-clear');
+    this._clearButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.clearObjectStore), 'largeicon-clear');
     this._clearButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, event => {
       this._clearButtonClicked(event);
     }, this);
 
     this._needsRefresh = new UI.Toolbar.ToolbarItem(
-        UI.UIUtils.createIconLabel(Common.UIString.UIString('Data may be stale'), 'smallicon-warning'));
+        UI.UIUtils.createIconLabel(i18nString(UIStrings.dataMayBeStale), 'smallicon-warning'));
     this._needsRefresh.setVisible(false);
-    this._needsRefresh.setTitle(Common.UIString.UIString('Some entries may have been modified'));
+    this._needsRefresh.setTitle(i18nString(UIStrings.someEntriesMayHaveBeenModified));
     this._clearingObjectStore = false;
 
     this._createEditorToolbar();
@@ -218,27 +324,27 @@ export class IDBDataView extends UI.View.SimpleView {
     };
 
     columns.push(/** @type {!DataGrid.DataGrid.ColumnDescriptor} */ (
-        {...columnDefaults, id: 'number', title: ls`#`, sortable: false, width: '50px'}));
+        {...columnDefaults, id: 'number', title: '#', sortable: false, width: '50px'}));
     columns.push(/** @type {!DataGrid.DataGrid.ColumnDescriptor} */ ({
       ...columnDefaults,
       id: 'key',
-      titleDOMFragment: this._keyColumnHeaderFragment(ls`Key`, keyPath),
+      titleDOMFragment: this._keyColumnHeaderFragment(i18nString(UIStrings.keyString), keyPath),
       sortable: false
     }));
     if (this._isIndex) {
       columns.push(/** @type {!DataGrid.DataGrid.ColumnDescriptor} */ ({
         ...columnDefaults,
         id: 'primaryKey',
-        titleDOMFragment: this._keyColumnHeaderFragment(ls`Primary key`, this._objectStore.keyPath),
+        titleDOMFragment: this._keyColumnHeaderFragment(i18nString(UIStrings.primaryKey), this._objectStore.keyPath),
         sortable: false
       }));
     }
-    const title = ls`Value`;
+    const title = i18nString(UIStrings.valueString);
     columns.push(
         /** @type {!DataGrid.DataGrid.ColumnDescriptor} */ ({...columnDefaults, id: 'value', title, sortable: false}));
 
     const dataGrid = new DataGrid.DataGrid.DataGridImpl({
-      displayName: ls`Indexed DB`,
+      displayName: i18nString(UIStrings.indexedDb),
       columns,
       deleteCallback: this._deleteButtonClicked.bind(this),
       refreshCallback: this._updateData.bind(this, true),
@@ -261,7 +367,7 @@ export class IDBDataView extends UI.View.SimpleView {
       return keyColumnHeaderFragment;
     }
 
-    UI.UIUtils.createTextChild(keyColumnHeaderFragment, ' (' + Common.UIString.UIString('Key path: '));
+    UI.UIUtils.createTextChild(keyColumnHeaderFragment, ' (' + i18nString(UIStrings.keyPath));
     if (Array.isArray(keyPath)) {
       UI.UIUtils.createTextChild(keyColumnHeaderFragment, '[');
       for (let i = 0; i < keyPath.length; ++i) {
@@ -299,19 +405,17 @@ export class IDBDataView extends UI.View.SimpleView {
 
     editorToolbar.appendToolbarItem(new UI.Toolbar.ToolbarSeparator());
 
-    this._pageBackButton =
-        new UI.Toolbar.ToolbarButton(Common.UIString.UIString('Show previous page'), 'largeicon-play-back');
+    this._pageBackButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.showPreviousPage), 'largeicon-play-back');
     this._pageBackButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this._pageBackButtonClicked, this);
     editorToolbar.appendToolbarItem(this._pageBackButton);
 
-    this._pageForwardButton =
-        new UI.Toolbar.ToolbarButton(Common.UIString.UIString('Show next page'), 'largeicon-play');
+    this._pageForwardButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.showNextPage), 'largeicon-play');
     this._pageForwardButton.setEnabled(false);
     this._pageForwardButton.addEventListener(
         UI.Toolbar.ToolbarButton.Events.Click, this._pageForwardButtonClicked, this);
     editorToolbar.appendToolbarItem(this._pageForwardButton);
 
-    this._keyInput = new UI.Toolbar.ToolbarInput(ls`Start from key`, '', 0.5);
+    this._keyInput = new UI.Toolbar.ToolbarInput(i18nString(UIStrings.startFromKey), '', 0.5);
     this._keyInput.addEventListener(UI.Toolbar.ToolbarInput.Event.TextChanged, this._updateData.bind(this, false));
     editorToolbar.appendToolbarItem(this._keyInput);
     editorToolbar.appendToolbarItem(new UI.Toolbar.ToolbarSeparator());
@@ -344,13 +448,13 @@ export class IDBDataView extends UI.View.SimpleView {
   _populateContextMenu(contextMenu, gridNode) {
     const node = /** @type {!IDBDataGridNode} */ (gridNode);
     if (node.valueObjectPresentation) {
-      contextMenu.revealSection().appendItem(ls`Expand Recursively`, () => {
+      contextMenu.revealSection().appendItem(i18nString(UIStrings.expandRecursively), () => {
         if (!node.valueObjectPresentation) {
           return;
         }
         node.valueObjectPresentation.objectTreeElement().expandRecursively();
       });
-      contextMenu.revealSection().appendItem(ls`Collapse`, () => {
+      contextMenu.revealSection().appendItem(i18nString(UIStrings.collapse), () => {
         if (!node.valueObjectPresentation) {
           return;
         }
@@ -478,11 +582,11 @@ export class IDBDataView extends UI.View.SimpleView {
     const separator = '\u2002\u2758\u2002';
 
     const span = this._summaryBarElement.createChild('span');
-    span.textContent = ls`Total entries: ${String(metadata.entriesCount)}`;
+    span.textContent = i18nString(UIStrings.totalEntriesS, {PH1: String(metadata.entriesCount)});
 
     if (this._objectStore.autoIncrement) {
       span.textContent += separator;
-      span.textContent += ls`Key generator value: ${String(metadata.keyGeneratorValue)}`;
+      span.textContent += i18nString(UIStrings.keyGeneratorValueS, {PH1: String(metadata.keyGeneratorValue)});
     }
   }
 

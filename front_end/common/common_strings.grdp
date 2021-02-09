@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <grit-part>
+  <message name="IDS_DEVTOOLS_0945359809dad1fbf3dea1c95a0da951" desc="Name of a network resource type">
+    Document
+  </message>
   <message name="IDS_DEVTOOLS_194f5394ae2e9c74dc3c441b92862d1d" desc="Text that appears on a button for the font resource type filter.">
     Font
   </message>
@@ -38,6 +41,9 @@
   </message>
   <message name="IDS_DEVTOOLS_5bc06f5800d415cc95e1349edbaca425" desc="Text that appears on a button for the JavaScript resource type filter.">
     JS
+  </message>
+  <message name="IDS_DEVTOOLS_76c3e002d3c052bd6a909366a8dc3845" desc="Text that appears on a button for the manifest resource type filter.">
+    Manifest
   </message>
   <message name="IDS_DEVTOOLS_7a48ae1b7387f8a8159c488fbd850021" desc="Text that appears on a button for the document resource type filter.">
     Doc

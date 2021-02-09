@@ -4,19 +4,85 @@
 
 import * as Common from '../common/common.js';
 import * as DataGrid from '../data_grid/data_grid.js';
+import * as i18n from '../i18n/i18n.js';
 import * as Network from '../network/network.js';
 import * as Platform from '../platform/platform.js';
-import {ls} from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
+export const UIStrings = {
+  /**
+  *@description Text in Application Panel Sidebar of the Application panel
+  */
+  cache: 'Cache',
+  /**
+  *@description Text to refresh the page
+  */
+  refresh: 'Refresh',
+  /**
+  *@description Tooltip text that appears when hovering over the largeicon delete button in the Service Worker Cache Views of the Application panel
+  */
+  deleteSelected: 'Delete Selected',
+  /**
+  *@description Text in Service Worker Cache Views of the Application panel
+  */
+  filterByPath: 'Filter by Path',
+  /**
+  *@description Text in Service Worker Cache Views of the Application panel
+  */
+  selectACacheEntryAboveToPreview: 'Select a cache entry above to preview',
+  /**
+  *@description Text for the name of something
+  */
+  name: 'Name',
+  /**
+  *@description Text in Service Worker Cache Views of the Application panel
+  */
+  responsetype: 'Response-Type',
+  /**
+  *@description Text in Service Worker Cache Views of the Application panel
+  */
+  contenttype: 'Content-Type',
+  /**
+  *@description Text for the network request Content-Length header
+  */
+  contentlength: '`Content-Length`',
+  /**
+  *@description Text in Service Worker Cache Views of the Application panel
+  */
+  timeCached: 'Time Cached',
+  /**
+  *@description Text used to show that data was retrieved from ServiceWorker Cache
+  */
+  serviceWorkerCache: '`Service Worker` Cache',
+  /**
+  *@description Span text content in Service Worker Cache Views of the Application panel
+  *@example {2} PH1
+  */
+  matchingEntriesS: 'Matching entries: {PH1}',
+  /**
+  *@description Span text content in Indexed DBViews of the Application panel
+  *@example {2} PH1
+  */
+  totalEntriesS: 'Total entries: {PH1}',
+  /**
+  *@description Text for network request headers
+  */
+  headers: 'Headers',
+  /**
+  *@description Text for previewing items
+  */
+  preview: 'Preview',
+};
+const str_ = i18n.i18n.registerUIStrings('resources/ServiceWorkerCacheViews.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class ServiceWorkerCacheView extends UI.View.SimpleView {
   /**
    * @param {!SDK.ServiceWorkerCacheModel.ServiceWorkerCacheModel} model
    * @param {!SDK.ServiceWorkerCacheModel.Cache} cache
    */
   constructor(model, cache) {
-    super(Common.UIString.UIString('Cache'));
+    super(i18nString(UIStrings.cache));
     this.registerRequiredCSS('resources/serviceWorkerCacheViews.css', {enableLegacyPatching: true});
 
     this._model = model;
@@ -41,18 +107,17 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
     /** @type {?DataGrid.DataGrid.DataGridImpl<!DataGridNode>} */
     this._dataGrid = null;
     this._refreshThrottler = new Common.Throttler.Throttler(300);
-    this._refreshButton = new UI.Toolbar.ToolbarButton(Common.UIString.UIString('Refresh'), 'largeicon-refresh');
+    this._refreshButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.refresh), 'largeicon-refresh');
     this._refreshButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this._refreshButtonClicked, this);
     editorToolbar.appendToolbarItem(this._refreshButton);
 
-    this._deleteSelectedButton =
-        new UI.Toolbar.ToolbarButton(Common.UIString.UIString('Delete Selected'), 'largeicon-delete');
+    this._deleteSelectedButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.deleteSelected), 'largeicon-delete');
     this._deleteSelectedButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, event => {
       this._deleteButtonClicked(null);
     });
     editorToolbar.appendToolbarItem(this._deleteSelectedButton);
 
-    const entryPathFilterBox = new UI.Toolbar.ToolbarInput(ls`Filter by Path`, '', 1);
+    const entryPathFilterBox = new UI.Toolbar.ToolbarInput(i18nString(UIStrings.filterByPath), '', 1);
     editorToolbar.appendToolbarItem(entryPathFilterBox);
     const entryPathFilterThrottler = new Common.Throttler.Throttler(300);
     this._entryPathFilter = '';
@@ -109,7 +174,7 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
       this._preview.detach();
     }
     if (!preview) {
-      preview = new UI.EmptyWidget.EmptyWidget(Common.UIString.UIString('Select a cache entry above to preview'));
+      preview = new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.selectACacheEntryAboveToPreview));
     }
     this._preview = preview;
     this._preview.show(this._previewPanel.element);
@@ -121,18 +186,23 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
   _createDataGrid() {
     const columns = /** @type {!Array<!DataGrid.DataGrid.ColumnDescriptor>} */ ([
       {id: 'number', title: '#', sortable: false, width: '3px'},
-      {id: 'name', title: Common.UIString.UIString('Name'), weight: 4, sortable: true},
-      {id: 'responseType', title: ls`Response-Type`, weight: 1, align: DataGrid.DataGrid.Align.Right, sortable: true},
-      {id: 'contentType', title: Common.UIString.UIString('Content-Type'), weight: 1, sortable: true}, {
+      {id: 'name', title: i18nString(UIStrings.name), weight: 4, sortable: true}, {
+        id: 'responseType',
+        title: i18nString(UIStrings.responsetype),
+        weight: 1,
+        align: DataGrid.DataGrid.Align.Right,
+        sortable: true
+      },
+      {id: 'contentType', title: i18nString(UIStrings.contenttype), weight: 1, sortable: true}, {
         id: 'contentLength',
-        title: Common.UIString.UIString('Content-Length'),
+        title: i18nString(UIStrings.contentlength),
         weight: 1,
         align: DataGrid.DataGrid.Align.Right,
         sortable: true
       },
       {
         id: 'responseTime',
-        title: Common.UIString.UIString('Time Cached'),
+        title: i18nString(UIStrings.timeCached),
         width: '12em',
         weight: 1,
         align: DataGrid.DataGrid.Align.Right,
@@ -140,7 +210,7 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
       }
     ]);
     const dataGrid = new DataGrid.DataGrid.DataGridImpl({
-      displayName: ls`Service Worker Cache`,
+      displayName: i18nString(UIStrings.serviceWorkerCache),
       columns,
       deleteCallback: this._deleteButtonClicked.bind(this),
       refreshCallback: this._updateData.bind(this, true),
@@ -219,9 +289,9 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
 
     const span = this._summaryBarElement.createChild('span');
     if (this._entryPathFilter) {
-      span.textContent = ls`Matching entries: ${this._returnCount}`;
+      span.textContent = i18nString(UIStrings.matchingEntriesS, {PH1: this._returnCount});
     } else {
-      span.textContent = ls`Total entries: ${this._returnCount}`;
+      span.textContent = i18nString(UIStrings.totalEntriesS, {PH1: this._returnCount});
     }
   }
 
@@ -454,9 +524,9 @@ export class RequestView extends UI.Widget.VBox {
     this._resourceViewTabSetting = Common.Settings.Settings.instance().createSetting('cacheStorageViewTab', 'preview');
 
     this._tabbedPane.appendTab(
-        'headers', Common.UIString.UIString('Headers'), new Network.RequestHeadersView.RequestHeadersView(request));
+        'headers', i18nString(UIStrings.headers), new Network.RequestHeadersView.RequestHeadersView(request));
     this._tabbedPane.appendTab(
-        'preview', Common.UIString.UIString('Preview'), new Network.RequestPreviewView.RequestPreviewView(request));
+        'preview', i18nString(UIStrings.preview), new Network.RequestPreviewView.RequestPreviewView(request));
     this._tabbedPane.show(this.element);
   }
 

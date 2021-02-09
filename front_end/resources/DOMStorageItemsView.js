@@ -26,7 +26,7 @@
 
 import * as Common from '../common/common.js';
 import * as DataGrid from '../data_grid/data_grid.js';
-import {ls} from '../platform/platform.js';
+import * as i18n from '../i18n/i18n.js';
 import * as SourceFrame from '../source_frame/source_frame.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as UI from '../ui/ui.js';
@@ -34,30 +34,47 @@ import * as UI from '../ui/ui.js';
 import {DOMStorage} from './DOMStorageModel.js';
 import {StorageItemsView} from './StorageItemsView.js';
 
+export const UIStrings = {
+  /**
+  *@description Text in DOMStorage Items View of the Application panel
+  */
+  domStorage: 'DOM Storage',
+  /**
+  *@description Text in DOMStorage Items View of the Application panel
+  */
+  key: 'Key',
+  /**
+  *@description Text for the value of something
+  */
+  value: 'Value',
+  /**
+  *@description Data grid name for DOM Storage Items data grids
+  */
+  domStorageItems: 'DOM Storage Items',
+  /**
+  *@description Text in DOMStorage Items View of the Application panel
+  */
+  selectAValueToPreview: 'Select a value to preview',
+};
+const str_ = i18n.i18n.registerUIStrings('resources/DOMStorageItemsView.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class DOMStorageItemsView extends StorageItemsView {
   /**
    * @param {!DOMStorage} domStorage
    */
   constructor(domStorage) {
-    super(Common.UIString.UIString('DOM Storage'), 'domStoragePanel');
+    super(i18nString(UIStrings.domStorage), 'domStoragePanel');
 
     this._domStorage = domStorage;
 
     this.element.classList.add('storage-view', 'table');
 
     const columns = /** @type {!Array<!DataGrid.DataGrid.ColumnDescriptor>} */ ([
-      {id: 'key', title: Common.UIString.UIString('Key'), sortable: false, editable: true, longText: true, weight: 50},
-      {
-        id: 'value',
-        title: Common.UIString.UIString('Value'),
-        sortable: false,
-        editable: true,
-        longText: true,
-        weight: 50
-      }
+      {id: 'key', title: i18nString(UIStrings.key), sortable: false, editable: true, longText: true, weight: 50},
+      {id: 'value', title: i18nString(UIStrings.value), sortable: false, editable: true, longText: true, weight: 50}
     ]);
     this._dataGrid = new DataGrid.DataGrid.DataGridImpl({
-      displayName: ls`DOM Storage Items`,
+      displayName: i18nString(UIStrings.domStorageItems),
       columns,
       editCallback: this._editingCallback.bind(this),
       deleteCallback: this._deleteCallback.bind(this),
@@ -308,7 +325,7 @@ export class DOMStorageItemsView extends StorageItemsView {
       this._preview.detach();
     }
     if (!preview) {
-      preview = new UI.EmptyWidget.EmptyWidget(Common.UIString.UIString('Select a value to preview'));
+      preview = new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.selectAValueToPreview));
     }
     this._previewValue = value;
     this._preview = preview;

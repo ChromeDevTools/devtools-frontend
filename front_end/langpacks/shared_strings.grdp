@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Strings in this file are shared, i.e. they appear multiple times. -->
 <grit-part>
-  <message name="IDS_DEVTOOLS_0945359809dad1fbf3dea1c95a0da951" desc="Name of a network resource type">
-    Document
-  </message>
   <message name="IDS_DEVTOOLS_0b484cfcf50c8fabff48c0aad426f544" desc="Text to dock the DevTools to the left of the browser tab">
     Dock to left
   </message>
@@ -19,17 +16,8 @@
   <message name="IDS_DEVTOOLS_29260f495ba8adcc62fd1307c758ff4e" desc="Text to show the measuring rulers on the target">
     Show rulers
   </message>
-  <message name="IDS_DEVTOOLS_2b81bb9b3deebcbfa05edad7a845005a" desc="Text for rendering frames">
-    Frames
-  </message>
-  <message name="IDS_DEVTOOLS_31fde7b05ac8952dacf4af8a704074ec" desc="Text for previewing items">
-    Preview
-  </message>
   <message name="IDS_DEVTOOLS_3793ea52a7be2d7deafd858fda50775c" desc="Text exposed to screen readers on checked items.">
     checked
-  </message>
-  <message name="IDS_DEVTOOLS_3afbd9828e011526955ca93b48b57524" desc="Text for one or a group of screenshots">
-    Screenshot
   </message>
   <message name="IDS_DEVTOOLS_3b563524fdb17b4a86590470d40bef74" desc="Text that appears on a button for the media resource type filter.">
     Media
@@ -59,9 +47,6 @@
   <message name="IDS_DEVTOOLS_6311ae17c1ee52b36e68aaf4ad066387" desc="Text for other types of items">
     Other
   </message>
-  <message name="IDS_DEVTOOLS_63a6a88c066880c5ac42394a22803ca6" desc="Text to refresh the page">
-    Refresh
-  </message>
   <message name="IDS_DEVTOOLS_6a0d9eaee314c567fd72fb97ee707a36" desc="Text to record a series of actions for analysis">
     Record
   </message>
@@ -70,9 +55,6 @@
   </message>
   <message name="IDS_DEVTOOLS_6adf97f83acf6453d4a6a4b1070f3754" desc="Text to show there is nothing">
     None
-  </message>
-  <message name="IDS_DEVTOOLS_6f6cb72d544962fa333e2e34ce64f719" desc="Text for the size of something">
-    Size
   </message>
   <message name="IDS_DEVTOOLS_6feab1a8f70b4209f82a628b7395ede3" desc="Message to display if a setting change requires a reload of DevTools">
     One or more settings have changed which requires a reload to take effect.
@@ -83,9 +65,6 @@
   <message name="IDS_DEVTOOLS_74540c79e377bea903e1023a46df5574" desc="Text to open a file">
     Open file
   </message>
-  <message name="IDS_DEVTOOLS_76c3e002d3c052bd6a909366a8dc3845" desc="Text that appears on a button for the manifest resource type filter.">
-    Manifest
-  </message>
   <message name="IDS_DEVTOOLS_87bfda183c4f851a101e97bbb1bbace7" desc="Title of the Layers tool">
     Layers
   </message>
@@ -95,14 +74,8 @@
   <message name="IDS_DEVTOOLS_886f598a8a9e6a4bfe0c09fcf7779611" desc="Title of a Rendering setting that can be invoked through the Command Menu">
     Emulate a focused page
   </message>
-  <message name="IDS_DEVTOOLS_8d9da4bc0e49a50e09ac9f7e56789d39" desc="Text to indicate the network connectivity is offline">
-    Offline
-  </message>
   <message name="IDS_DEVTOOLS_90da6f38945a1c7e7ba11e3adcbe6919" desc="Text for pausing the debugger on exceptions">
     Pause on exceptions
-  </message>
-  <message name="IDS_DEVTOOLS_93cba07454f06a4a960172bbd6e2a435" desc="Text in Timeline indicating that input has happened recently">
-    Yes
   </message>
   <message name="IDS_DEVTOOLS_9446a98ad14416153cc4d45ab8b531bf" desc="Text for the performance of something">
     Performance
@@ -113,23 +86,11 @@
   <message name="IDS_DEVTOOLS_a02c83a7dbd96295beaefb72c2bee2de" desc="Text that refers to the main target">
     Main
   </message>
-  <message name="IDS_DEVTOOLS_a1fa27779242b4902f7ae3bdd5c6d508" desc="Text that refers to some types">
-    Type
-  </message>
-  <message name="IDS_DEVTOOLS_a3d5de3eac8bb00ae86fd1a1005f1500" desc="Text for timestamps of items">
-    Timestamp
-  </message>
-  <message name="IDS_DEVTOOLS_a4ecfc70574394990cf17bd83df499f7" desc="Text that refers to some events">
-    Event
-  </message>
   <message name="IDS_DEVTOOLS_a6e8f9aed2ac6481dc25a18a33342d03" desc="Title of the Rendering tool">
     Rendering
   </message>
   <message name="IDS_DEVTOOLS_aa56a2e65d8106aef3c61e4f6bf94fdb" desc="Title of the Elements Panel">
     Elements
-  </message>
-  <message name="IDS_DEVTOOLS_abbd64f40c34c537d3a571af068fce29" desc="Text for the orientation of something">
-    Orientation
   </message>
   <message name="IDS_DEVTOOLS_ad91a1da588ce256d30b1af38f78f84e" desc="Text exposed to screen readers on unchecked items.">
     unchecked
@@ -143,9 +104,6 @@
   <message name="IDS_DEVTOOLS_b1c94ca2fbc3e78fc30069c8d0f01680" desc="Text for everything">
     All
   </message>
-  <message name="IDS_DEVTOOLS_b5a7adde1af5c87d7fd797b6245c2a39" desc="Text for the description of something">
-    Description
-  </message>
   <message name="IDS_DEVTOOLS_b94d8a074eddd267702810179875737f" desc="Text that refers to the debugger">
     Debugger
   </message>
@@ -155,20 +113,11 @@
   <message name="IDS_DEVTOOLS_ba5b676ccf658f863ef2e3df082ee262" desc="Text for the event that an animation frame is fired">
     Animation Frame Fired
   </message>
-  <message name="IDS_DEVTOOLS_bafd7322c6e97d25b6299b5d6fe8920b" desc="Text in Timeline indicating that input has not happened recently">
-    No
-  </message>
   <message name="IDS_DEVTOOLS_bccaa4aa80831b76c11240a16447975f" desc="Title of the Console tool">
     Console
   </message>
-  <message name="IDS_DEVTOOLS_be8545ae7ab0276e15898aae7acfbd7a" desc="Text that refers to the resources of the web page">
-    Resource
-  </message>
   <message name="IDS_DEVTOOLS_bec25a46972e4fa86df9413508add5c2" desc="Text that refers to disabling local fonts">
     Disable local fonts
-  </message>
-  <message name="IDS_DEVTOOLS_c1ea3facd2946b59df718d8dd2737cfa" desc="Text in Application Panel Sidebar of the Application panel">
-    Background Services
   </message>
   <message name="IDS_DEVTOOLS_c9ad95228aa735bdda1aebf38da022af" desc="Text to parse something">
     Parse
@@ -194,9 +143,6 @@
   <message name="IDS_DEVTOOLS_d7778d0c64b6ba21494c97f77a66885a" desc="Text to filter result items">
     Filter
   </message>
-  <message name="IDS_DEVTOOLS_dc30bc0c7914db5918da4263fce93ad2" desc="Text to clear content">
-    Clear
-  </message>
   <message name="IDS_DEVTOOLS_dde38f333e095c2293593f504fd701a2" desc="Title of the 'JavaScript Profiler' tool">
     JavaScript Profiler
   </message>
@@ -215,20 +161,11 @@
   <message name="IDS_DEVTOOLS_e576c23d915755d83e2d1f47bd9f6c22" desc="Text to show no results have been found">
     No results found
   </message>
-  <message name="IDS_DEVTOOLS_e6b391a8d2c4d45902a23a8b6585703d" desc="Text for web URLs">
-    URL
-  </message>
   <message name="IDS_DEVTOOLS_ebd9bec4d70abc789d439c1f136b0538" desc="Text in Timeline UIUtils of the Performance panel">
     Layout
   </message>
   <message name="IDS_DEVTOOLS_ec211f7c20af43e742bf2570c3cb84f9" desc="Text to add something">
     Add
-  </message>
-  <message name="IDS_DEVTOOLS_ec21eddec143497cea80ab45444a5dab" desc="Related node label in Timeline UIUtils of the Performance panel">
-    Owner Element
-  </message>
-  <message name="IDS_DEVTOOLS_ec53a8c4f07baed5d8825072c89799be" desc="Text for the status of something">
-    Status
   </message>
   <message name="IDS_DEVTOOLS_ee1cab1975e28575b1631ee8fc4ea749" desc="Title of an action in the emulation tool to capture node screenshot">
     Capture node screenshot
@@ -244,9 +181,6 @@
   </message>
   <message name="IDS_DEVTOOLS_f28128b38efbc6134dc40751ee21fd29" desc="Text for documents, a type of resources">
     Documents
-  </message>
-  <message name="IDS_DEVTOOLS_f2a6c498fb90ee345d997f888fce3b18" desc="Text to delete something">
-    Delete
   </message>
   <message name="IDS_DEVTOOLS_f53944c3a55bdb5ad65c6226e358a626" desc="Text to undock the DevTools">
     Undock into separate window

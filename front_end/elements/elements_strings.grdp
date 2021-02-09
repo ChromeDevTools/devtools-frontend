@@ -24,6 +24,9 @@
   <message name="IDS_DEVTOOLS_19c8cfef89a0b0409f4502b3bcc4860e" desc="Command for showing the 'Layout' tool">
     Show Layout
   </message>
+  <message name="IDS_DEVTOOLS_63a6a88c066880c5ac42394a22803ca6" desc="Text to refresh the page">
+    Refresh
+  </message>
   <message name="IDS_DEVTOOLS_bea4c2c8eb82d05891ddd71584881b56" desc="Text of a link to a HaTS survey in the Layout panel">
     Feedback
   </message>

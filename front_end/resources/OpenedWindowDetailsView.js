@@ -3,14 +3,94 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
-import {ls} from '../platform/platform.js';
+import * as i18n from '../i18n/i18n.js';
 import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../ui/ui.js';
 
+export const UIStrings = {
+  /**
+  *@description Text in Timeline indicating that input has happened recently
+  */
+  yes: 'Yes',
+  /**
+  *@description Text in Timeline indicating that input has not happened recently
+  */
+  no: 'No',
+  /**
+  *@description Title for a link to the Elements panel
+  */
+  clickToRevealInElementsPanel: 'Click to reveal in Elements panel',
+  /**
+  *@description Name of a network resource type
+  */
+  document: 'Document',
+  /**
+  *@description Text for web URLs
+  */
+  url: 'URL',
+  /**
+  *@description Title of the 'Security' tool
+  */
+  security: 'Security',
+  /**
+  *@description Label for link to Opener Frame in Detail View for Opened Window
+  */
+  openerFrame: 'Opener Frame',
+  /**
+  *@description Label in opened window's details view whether window has access to its opener
+  */
+  accessToOpener: 'Access to opener',
+  /**
+  *@description Description for the 'Access to Opener' field
+  */
+  showsWhetherTheOpenedWindowIs: 'Shows whether the opened window is able to access its opener and vice versa',
+  /**
+  *@description Text in Frames View of the Application panel
+  */
+  windowWithoutTitle: 'Window without title',
+  /**
+  *@description Label suffix in the Application Panel Frames section for windows which are already closed
+  */
+  closed: 'closed',
+  /**
+  *@description Default name for worker
+  */
+  worker: 'worker',
+  /**
+  *@description Text that refers to some types
+  */
+  type: 'Type',
+  /**
+  *@description Section header in the Frame Details view
+  */
+  securityIsolation: 'Security & Isolation',
+  /**
+  *@description Row title in the Frame Details view
+  */
+  crossoriginEmbedderPolicy: 'Cross-Origin Embedder Policy',
+  /**
+  *@description Label for worker type: web worker
+  */
+  webWorker: 'Web Worker',
+  /**
+  *@description Text in Request Timing View of the Network panel
+  */
+  serviceWorker: '`Service Worker`',
+  /**
+  *@description Text for an unspecified service worker response source
+  */
+  unknown: 'Unknown',
+  /**
+  *@description This label specifies the server endpoints to which the server is reporting errors and warnings through the Report-to API
+  */
+  reportingTo: 'reporting to',
+};
+const str_ = i18n.i18n.registerUIStrings('resources/OpenedWindowDetailsView.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /**
  * @param {boolean} b
  */
-const booleanToYesNo = b => b ? ls`Yes` : ls`No`;
+const booleanToYesNo = b => b ? i18nString(UIStrings.yes) : i18nString(UIStrings.no);
 
 /**
  * @param {string} iconType
@@ -58,7 +138,7 @@ async function maybeCreateLinkToElementsPanel(opener) {
     return null;
   }
   const linkElement = linkifyIcon(
-      'mediumicon-elements-panel', ls`Click to reveal in Elements panel`,
+      'mediumicon-elements-panel', i18nString(UIStrings.clickToRevealInElementsPanel),
       () => Common.Revealer.reveal(linkTargetDOMNode));
   const label = document.createElement('span');
   label.textContent = `<${linkTargetDOMNode.nodeName().toLocaleLowerCase()}>`;
@@ -91,15 +171,14 @@ export class OpenedWindowDetailsView extends UI.ThrottledWidget.ThrottledWidget 
     this._reportView.show(this.contentElement);
     this._reportView.element.classList.add('frame-details-report-container');
 
-    this._documentSection = this._reportView.appendSection(ls`Document`);
-    this._URLFieldValue = this._documentSection.appendField(ls`URL`);
+    this._documentSection = this._reportView.appendSection(i18nString(UIStrings.document));
+    this._URLFieldValue = this._documentSection.appendField(i18nString(UIStrings.url));
 
-    this._securitySection = this._reportView.appendSection(ls`Security`);
-    this._openerElementField = this._securitySection.appendField(ls`Opener Frame`);
-    this._securitySection.setFieldVisible(ls`Opener Frame`, false);
-    this._hasDOMAccessValue = this._securitySection.appendField(ls`Access to opener`);
-    UI.Tooltip.Tooltip.install(
-        this._hasDOMAccessValue, ls`Shows whether the opened window is able to access its opener and vice versa`);
+    this._securitySection = this._reportView.appendSection(i18nString(UIStrings.security));
+    this._openerElementField = this._securitySection.appendField(i18nString(UIStrings.openerFrame));
+    this._securitySection.setFieldVisible(i18nString(UIStrings.openerFrame), false);
+    this._hasDOMAccessValue = this._securitySection.appendField(i18nString(UIStrings.accessToOpener));
+    UI.Tooltip.Tooltip.install(this._hasDOMAccessValue, i18nString(UIStrings.showsWhetherTheOpenedWindowIs));
     this.update();
   }
 
@@ -119,19 +198,19 @@ export class OpenedWindowDetailsView extends UI.ThrottledWidget.ThrottledWidget 
     const linkElement = await maybeCreateLinkToElementsPanel(this._targetInfo.openerFrameId);
     if (linkElement) {
       this._openerElementField.append(linkElement);
-      this._securitySection.setFieldVisible(ls`Opener Frame`, true);
+      this._securitySection.setFieldVisible(i18nString(UIStrings.openerFrame), true);
       return;
     }
-    this._securitySection.setFieldVisible(ls`Opener Frame`, false);
+    this._securitySection.setFieldVisible(i18nString(UIStrings.openerFrame), false);
   }
 
   /**
    * @return {string}
    */
   buildTitle() {
-    let title = this._targetInfo.title || ls`Window without title`;
+    let title = this._targetInfo.title || i18nString(UIStrings.windowWithoutTitle);
     if (this._isWindowClosed) {
-      title += ` (${ls`closed`})`;
+      title += ` (${i18nString(UIStrings.closed)})`;
     }
     return title;
   }
@@ -161,19 +240,20 @@ export class WorkerDetailsView extends UI.ThrottledWidget.ThrottledWidget {
     this.registerRequiredCSS('resources/frameDetailsReportView.css', {enableLegacyPatching: false});
     this.contentElement.classList.add('frame-details-container');
     // TODO(crbug.com/1156978): Replace UI.ReportView.ReportView with ReportView.ts web component.
-    this._reportView = new UI.ReportView.ReportView(this._targetInfo.title || this._targetInfo.url || ls`worker`);
+    this._reportView =
+        new UI.ReportView.ReportView(this._targetInfo.title || this._targetInfo.url || i18nString(UIStrings.worker));
     this._reportView.registerRequiredCSS('resources/frameDetailsReportView.css', {enableLegacyPatching: false});
     this._reportView.show(this.contentElement);
     this._reportView.element.classList.add('frame-details-report-container');
 
-    this._documentSection = this._reportView.appendSection(ls`Document`);
-    this._URLFieldValue = this._documentSection.appendField(ls`URL`);
+    this._documentSection = this._reportView.appendSection(i18nString(UIStrings.document));
+    this._URLFieldValue = this._documentSection.appendField(i18nString(UIStrings.url));
     this._URLFieldValue.textContent = this._targetInfo.url;
-    const workerType = this._documentSection.appendField(ls`Type`);
+    const workerType = this._documentSection.appendField(i18nString(UIStrings.type));
     workerType.textContent = this.workerTypeToString(this._targetInfo.type);
 
-    this._isolationSection = this._reportView.appendSection(ls`Security & Isolation`);
-    this._coepPolicy = this._isolationSection.appendField(ls`Cross-Origin Embedder Policy`);
+    this._isolationSection = this._reportView.appendSection(i18nString(UIStrings.securityIsolation));
+    this._coepPolicy = this._isolationSection.appendField(i18nString(UIStrings.crossoriginEmbedderPolicy));
     this.update();
   }
 
@@ -182,12 +262,12 @@ export class WorkerDetailsView extends UI.ThrottledWidget.ThrottledWidget {
    */
   workerTypeToString(type) {
     if (type === 'worker') {
-      return ls`Web Worker`;
+      return i18nString(UIStrings.webWorker);
     }
     if (type === 'service_worker') {
-      return ls`Service Worker`;
+      return i18nString(UIStrings.serviceWorker);
     }
-    return ls`Unknown`;
+    return i18nString(UIStrings.unknown);
   }
 
   async _updateCoopCoepStatus() {
@@ -229,7 +309,7 @@ export class WorkerDetailsView extends UI.ThrottledWidget.ThrottledWidget {
     const endpoint = enabled ? info.reportingEndpoint : info.reportOnlyReportingEndpoint;
     if (endpoint) {
       const reportingEndpointPrefix = field.createChild('span', 'inline-name');
-      reportingEndpointPrefix.textContent = ls`reporting to`;
+      reportingEndpointPrefix.textContent = i18nString(UIStrings.reportingTo);
       const reportingEndpointName = field.createChild('span');
       reportingEndpointName.textContent = endpoint;
     }

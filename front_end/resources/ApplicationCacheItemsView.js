@@ -23,27 +23,67 @@
  * THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import * as Common from '../common/common.js';
+import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
 import * as DataGrid from '../data_grid/data_grid.js';
+import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
-import {ls} from '../platform/platform.js';
 import * as UI from '../ui/ui.js';
 
 import {ApplicationCacheModel, CHECKING, DOWNLOADING, IDLE, OBSOLETE, UNCACHED, UPDATEREADY} from './ApplicationCacheModel.js';  // eslint-disable-line no-unused-vars
 
+export const UIStrings = {
+  /**
+  *@description Text in Application Cache Items View of the Application panel
+  */
+  appcache: 'AppCache',
+  /**
+  *@description Text to delete something
+  */
+  deleteString: 'Delete',
+  /**
+  *@description Text in Application Cache Items View of the Application panel
+  */
+  noApplicationCacheInformation: 'No Application Cache information available.',
+  /**
+  *@description Text to indicate the network connectivity is online
+  */
+  online: 'Online',
+  /**
+  *@description Text to indicate the network connectivity is offline
+  */
+  offline: 'Offline',
+  /**
+  *@description Text that refers to the resources of the web page
+  */
+  resource: 'Resource',
+  /**
+  *@description Text that refers to some types
+  */
+  typeString: 'Type',
+  /**
+  *@description Text for the size of something
+  */
+  sizeString: 'Size',
+  /**
+  *@description Text in Application Panel Sidebar of the Application panel
+  */
+  applicationCache: 'Application Cache',
+};
+const str_ = i18n.i18n.registerUIStrings('resources/ApplicationCacheItemsView.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class ApplicationCacheItemsView extends UI.View.SimpleView {
   /**
    * @param {!ApplicationCacheModel} model
    * @param {!Protocol.Page.FrameId} frameId
    */
   constructor(model, frameId) {
-    super(Common.UIString.UIString('AppCache'));
+    super(i18nString(UIStrings.appcache));
 
     this._model = model;
 
     this.element.classList.add('storage-view', 'table');
 
-    this._deleteButton = new UI.Toolbar.ToolbarButton(Common.UIString.UIString('Delete'), 'largeicon-delete');
+    this._deleteButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.deleteString), 'largeicon-delete');
     this._deleteButton.setVisible(false);
     this._deleteButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this._deleteButtonClicked, this);
 
@@ -56,8 +96,7 @@ export class ApplicationCacheItemsView extends UI.View.SimpleView {
 
     this._frameId = frameId;
 
-    this._emptyWidget =
-        new UI.EmptyWidget.EmptyWidget(Common.UIString.UIString('No Application Cache information available.'));
+    this._emptyWidget = new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.noApplicationCacheInformation));
     this._emptyWidget.show(this.element);
 
     this._markDirty();
@@ -146,10 +185,10 @@ export class ApplicationCacheItemsView extends UI.View.SimpleView {
   updateNetworkState(isNowOnline) {
     if (isNowOnline) {
       this._connectivityIcon.type = 'smallicon-green-ball';
-      this._connectivityIcon.textContent = Common.UIString.UIString('Online');
+      this._connectivityIcon.textContent = i18nString(UIStrings.online);
     } else {
       this._connectivityIcon.type = 'smallicon-red-ball';
-      this._connectivityIcon.textContent = Common.UIString.UIString('Offline');
+      this._connectivityIcon.textContent = i18nString(UIStrings.offline);
     }
   }
 
@@ -191,23 +230,18 @@ export class ApplicationCacheItemsView extends UI.View.SimpleView {
 
     // FIXME: For Chrome, put creationTime and updateTime somewhere.
     // NOTE: localizedString has not yet been added.
-    // Common.UIString.UIString("(%s) Created: %s Updated: %s", this._size, this._creationTime, this._updateTime);
+    // i18nString("(%s) Created: %s Updated: %s", this._size, this._creationTime, this._updateTime);
   }
 
   _createDataGrid() {
     const columns = /** @type {!Array<!DataGrid.DataGrid.ColumnDescriptor>} */ ([
-      {
-        id: 'resource',
-        title: Common.UIString.UIString('Resource'),
-        sort: DataGrid.DataGrid.Order.Ascending,
-        sortable: true
-      },
-      {id: 'type', title: Common.UIString.UIString('Type'), sortable: true},
-      {id: 'size', title: Common.UIString.UIString('Size'), align: DataGrid.DataGrid.Align.Right, sortable: true}
+      {id: 'resource', title: i18nString(UIStrings.resource), sort: DataGrid.DataGrid.Order.Ascending, sortable: true},
+      {id: 'type', title: i18nString(UIStrings.typeString), sortable: true},
+      {id: 'size', title: i18nString(UIStrings.sizeString), align: DataGrid.DataGrid.Align.Right, sortable: true}
     ]);
     /** @type {!DataGrid.DataGrid.Parameters} */
     const parameters = {
-      displayName: ls`Application Cache`,
+      displayName: i18nString(UIStrings.applicationCache),
       columns,
       editCallback: undefined,
       deleteCallback: undefined,

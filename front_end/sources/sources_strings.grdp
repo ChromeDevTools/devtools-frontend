@@ -681,6 +681,9 @@
   <message name="IDS_DEVTOOLS_f20658650d987d31063b593c05980397" desc="Title of the sources watch">
     Watch
   </message>
+  <message name="IDS_DEVTOOLS_f2a6c498fb90ee345d997f888fce3b18" desc="Text to delete something">
+    Delete
+  </message>
   <message name="IDS_DEVTOOLS_f2e95c3adb199ba9a0ec03526b6126ba" desc="Text in Sources View of the Sources panel">
     Drop in a folder to add to workspace
   </message>

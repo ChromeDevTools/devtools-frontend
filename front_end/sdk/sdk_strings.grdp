@@ -195,6 +195,9 @@
   <message name="IDS_DEVTOOLS_880e498d5a62f26071be2f50f12deb4d" desc="Tooltip to explain why a cookie was blocked due to Schemeful Same-Site">
     This cookie didn&apos;t specify a &quot;SameSite&quot; attribute when it was stored, was defaulted to &quot;SameSite=Lax&quot;, and was blocked because the request was cross-site and was not initiated by a top-level navigation. This request is considered cross-site because the URL has a different scheme than the current site.
   </message>
+  <message name="IDS_DEVTOOLS_8d9da4bc0e49a50e09ac9f7e56789d39" desc="Text to indicate the network connectivity is offline">
+    Offline
+  </message>
   <message name="IDS_DEVTOOLS_8e7a5db68bb12f3fc9484d2962e45147" desc="Title of a setting under the Rendering drawer that can be invoked through the Command Menu">
     color-gamut: p3
   </message>

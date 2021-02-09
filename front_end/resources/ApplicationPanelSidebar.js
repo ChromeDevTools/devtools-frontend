@@ -30,8 +30,8 @@
 
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
+import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
-import {ls} from '../platform/platform.js';
 import * as Root from '../root/root.js';
 import * as SDK from '../sdk/sdk.js';
 import * as SourceFrame from '../source_frame/source_frame.js';
@@ -57,6 +57,131 @@ import {ServiceWorkersView} from './ServiceWorkersView.js';
 import {StorageView} from './StorageView.js';
 import {TrustTokensTreeElement} from './TrustTokensView.js';
 
+export const UIStrings = {
+  /**
+  *@description Text in Application Panel Sidebar of the Application panel
+  */
+  application: 'Application',
+  /**
+  *@description Text in Application Panel Sidebar of the Application panel
+  */
+  storage: 'Storage',
+  /**
+  *@description Text in Application Panel Sidebar of the Application panel
+  */
+  localStorage: 'Local Storage',
+  /**
+  *@description Text in Application Panel Sidebar of the Application panel
+  */
+  sessionStorage: 'Session Storage',
+  /**
+  *@description Text in Application Panel Sidebar of the Application panel
+  */
+  webSql: 'Web SQL',
+  /**
+  *@description Text for web cookies
+  */
+  cookies: 'Cookies',
+  /**
+  *@description Text in Application Panel Sidebar of the Application panel
+  */
+  cache: 'Cache',
+  /**
+  *@description Text in Application Panel Sidebar of the Application panel
+  */
+  applicationCache: 'Application Cache',
+  /**
+  *@description Text in Application Panel Sidebar of the Application panel
+  */
+  backgroundServices: 'Background Services',
+  /**
+  *@description Text for rendering frames
+  */
+  frames: 'Frames',
+  /**
+  *@description Text in Application Panel Sidebar of the Application panel
+  */
+  serviceWorkers: '`Service Workers`',
+  /**
+  *@description Text that appears on a button for the manifest resource type filter.
+  */
+  manifest: 'Manifest',
+  /**
+  *@description Text in Application Panel Sidebar of the Application panel
+  */
+  indexeddb: 'IndexedDB',
+  /**
+  *@description A context menu item in the Application Panel Sidebar of the Application panel
+  */
+  refreshIndexeddb: 'Refresh IndexedDB',
+  /**
+  *@description Tooltip in Application Panel Sidebar of the Application panel
+  *@example {1.0} PH1
+  */
+  versionSEmpty: 'Version: {PH1} (empty)',
+  /**
+  *@description Tooltip in Application Panel Sidebar of the Application panel
+  *@example {1.0} PH1
+  */
+  versionS: 'Version: {PH1}',
+  /**
+  *@description Text to clear content
+  */
+  clear: 'Clear',
+  /**
+  *@description Text in Application Panel Sidebar of the Application panel
+  *@example {"key path"} PH1
+  */
+  keyPathS: 'Key path: {PH1}',
+  /**
+  *@description Text in Application Panel Sidebar of the Application panel
+  */
+  autoincrement: 'autoIncrement',
+  /**
+  *@description Text in Application Panel Sidebar of the Application panel
+  */
+  unique: 'unique',
+  /**
+  *@description Text in Application Panel Sidebar of the Application panel
+  */
+  multientry: 'multiEntry',
+  /**
+  *@description Text in Application Panel Sidebar of the Application panel
+  */
+  localFiles: 'Local Files',
+  /**
+  *@description Tooltip in Application Panel Sidebar of the Application panel
+  *@example {https://example.com} PH1
+  */
+  cookiesUsedByFramesFromS: 'Cookies used by frames from {PH1}',
+  /**
+  *@description Text in Frames View of the Application panel
+  */
+  openedWindows: 'Opened Windows',
+  /**
+  *@description Label for plural of worker type: web workers
+  */
+  webWorkers: 'Web Workers',
+  /**
+  *@description Label in frame tree for unavailable document
+  */
+  documentNotAvailable: 'Document not available',
+  /**
+  *@description Description of content of unavailable document in Application panel
+  */
+  theContentOfThisDocumentHasBeen:
+      'The content of this document has been generated dynamically via \'document.write()\'.',
+  /**
+  *@description Text in Frames View of the Application panel
+  */
+  windowWithoutTitle: 'Window without title',
+  /**
+  *@description Default name for worker
+  */
+  worker: 'worker',
+};
+const str_ = i18n.i18n.registerUIStrings('resources/ApplicationPanelSidebar.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /**
  * @implements {SDK.SDKModel.Observer}
  */
@@ -85,7 +210,7 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox {
 
     this.contentElement.appendChild(this._sidebarTree.element);
 
-    const applicationSectionTitle = ls`Application`;
+    const applicationSectionTitle = i18nString(UIStrings.application);
     this._applicationTreeElement = this._addSidebarSection(applicationSectionTitle);
     const manifestTreeElement = new AppManifestTreeElement(panel);
     this._applicationTreeElement.appendChild(manifestTreeElement);
@@ -94,10 +219,10 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox {
     const clearStorageTreeElement = new ClearStorageTreeElement(panel);
     this._applicationTreeElement.appendChild(clearStorageTreeElement);
 
-    const storageSectionTitle = ls`Storage`;
+    const storageSectionTitle = i18nString(UIStrings.storage);
     const storageTreeElement = this._addSidebarSection(storageSectionTitle);
     this.localStorageListTreeElement =
-        new ExpandableApplicationPanelTreeElement(panel, Common.UIString.UIString('Local Storage'), 'LocalStorage');
+        new ExpandableApplicationPanelTreeElement(panel, i18nString(UIStrings.localStorage), 'LocalStorage');
     this.localStorageListTreeElement.setLink(
         'https://developers.google.com/web/tools/chrome-devtools/storage/localstorage?utm_source=devtools');
     const localStorageIcon = UI.Icon.Icon.create('mediumicon-table', 'resource-tree-item');
@@ -105,7 +230,7 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox {
 
     storageTreeElement.appendChild(this.localStorageListTreeElement);
     this.sessionStorageListTreeElement =
-        new ExpandableApplicationPanelTreeElement(panel, Common.UIString.UIString('Session Storage'), 'SessionStorage');
+        new ExpandableApplicationPanelTreeElement(panel, i18nString(UIStrings.sessionStorage), 'SessionStorage');
     this.sessionStorageListTreeElement.setLink(
         'https://developers.google.com/web/tools/chrome-devtools/storage/sessionstorage?utm_source=devtools');
     const sessionStorageIcon = UI.Icon.Icon.create('mediumicon-table', 'resource-tree-item');
@@ -117,7 +242,7 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox {
         'https://developers.google.com/web/tools/chrome-devtools/storage/indexeddb?utm_source=devtools');
     storageTreeElement.appendChild(this.indexedDBListTreeElement);
     this.databasesListTreeElement =
-        new ExpandableApplicationPanelTreeElement(panel, Common.UIString.UIString('Web SQL'), 'Databases');
+        new ExpandableApplicationPanelTreeElement(panel, i18nString(UIStrings.webSql), 'Databases');
     this.databasesListTreeElement.setLink(
         'https://developers.google.com/web/tools/chrome-devtools/storage/websql?utm_source=devtools');
     const databaseIcon = UI.Icon.Icon.create('mediumicon-database', 'resource-tree-item');
@@ -125,7 +250,7 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox {
 
     storageTreeElement.appendChild(this.databasesListTreeElement);
     this.cookieListTreeElement =
-        new ExpandableApplicationPanelTreeElement(panel, Common.UIString.UIString('Cookies'), 'Cookies');
+        new ExpandableApplicationPanelTreeElement(panel, i18nString(UIStrings.cookies), 'Cookies');
     this.cookieListTreeElement.setLink(
         'https://developers.google.com/web/tools/chrome-devtools/storage/cookies?utm_source=devtools');
     const cookieIcon = UI.Icon.Icon.create('mediumicon-cookie', 'resource-tree-item');
@@ -135,12 +260,12 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox {
     this.trustTokensTreeElement = new TrustTokensTreeElement(panel);
     storageTreeElement.appendChild(this.trustTokensTreeElement);
 
-    const cacheSectionTitle = ls`Cache`;
+    const cacheSectionTitle = i18nString(UIStrings.cache);
     const cacheTreeElement = this._addSidebarSection(cacheSectionTitle);
     this.cacheStorageListTreeElement = new ServiceWorkerCacheTreeElement(panel);
     cacheTreeElement.appendChild(this.cacheStorageListTreeElement);
-    this.applicationCacheListTreeElement = new ExpandableApplicationPanelTreeElement(
-        panel, Common.UIString.UIString('Application Cache'), 'ApplicationCache');
+    this.applicationCacheListTreeElement =
+        new ExpandableApplicationPanelTreeElement(panel, i18nString(UIStrings.applicationCache), 'ApplicationCache');
     this.applicationCacheListTreeElement.setLink(
         'https://developers.google.com/web/tools/chrome-devtools/storage/applicationcache?utm_source=devtools');
     const applicationCacheIcon = UI.Icon.Icon.create('mediumicon-table', 'resource-tree-item');
@@ -149,7 +274,7 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox {
     cacheTreeElement.appendChild(this.applicationCacheListTreeElement);
 
     if (Root.Runtime.experiments.isEnabled('backgroundServices')) {
-      const backgroundServiceSectionTitle = ls`Background Services`;
+      const backgroundServiceSectionTitle = i18nString(UIStrings.backgroundServices);
       const backgroundServiceTreeElement = this._addSidebarSection(backgroundServiceSectionTitle);
 
       this.backgroundFetchTreeElement =
@@ -178,7 +303,7 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox {
         backgroundServiceTreeElement.appendChild(this.pushMessagingTreeElement);
       }
     }
-    const resourcesSectionTitle = ls`Frames`;
+    const resourcesSectionTitle = i18nString(UIStrings.frames);
     const resourcesTreeElement = this._addSidebarSection(resourcesSectionTitle);
     this._resourcesSection = new ResourcesSection(panel, resourcesTreeElement);
 
@@ -969,7 +1094,7 @@ export class ServiceWorkersTreeElement extends ApplicationPanelTreeElement {
    * @param {!ResourcesPanel} storagePanel
    */
   constructor(storagePanel) {
-    super(storagePanel, Common.UIString.UIString('Service Workers'), false);
+    super(storagePanel, i18nString(UIStrings.serviceWorkers), false);
     const icon = UI.Icon.Icon.create('mediumicon-service-worker', 'resource-tree-item');
     this.setLeadingIcons([icon]);
   }
@@ -1005,7 +1130,7 @@ export class AppManifestTreeElement extends ApplicationPanelTreeElement {
    * @param {!ResourcesPanel} storagePanel
    */
   constructor(storagePanel) {
-    super(storagePanel, Common.UIString.UIString('Manifest'), false);
+    super(storagePanel, i18nString(UIStrings.manifest), false);
     const icon = UI.Icon.Icon.create('mediumicon-manifest', 'resource-tree-item');
     this.setLeadingIcons([icon]);
   }
@@ -1041,7 +1166,7 @@ export class ClearStorageTreeElement extends ApplicationPanelTreeElement {
    * @param {!ResourcesPanel} storagePanel
    */
   constructor(storagePanel) {
-    super(storagePanel, Common.UIString.UIString('Storage'), false);
+    super(storagePanel, i18nString(UIStrings.storage), false);
     const icon = UI.Icon.Icon.create('mediumicon-database', 'resource-tree-item');
     this.setLeadingIcons([icon]);
   }
@@ -1074,7 +1199,7 @@ export class IndexedDBTreeElement extends ExpandableApplicationPanelTreeElement 
    * @param {!ResourcesPanel} storagePanel
    */
   constructor(storagePanel) {
-    super(storagePanel, Common.UIString.UIString('IndexedDB'), 'IndexedDB');
+    super(storagePanel, i18nString(UIStrings.indexeddb), 'IndexedDB');
     const icon = UI.Icon.Icon.create('mediumicon-database', 'resource-tree-item');
     this.setLeadingIcons([icon]);
     /** @type {!Array.<!IDBDatabaseTreeElement>} */
@@ -1125,8 +1250,7 @@ export class IndexedDBTreeElement extends ExpandableApplicationPanelTreeElement 
    */
   _handleContextMenuEvent(event) {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
-    contextMenu.defaultSection().appendItem(
-        Common.UIString.UIString('Refresh IndexedDB'), this.refreshIndexedDB.bind(this));
+    contextMenu.defaultSection().appendItem(i18nString(UIStrings.refreshIndexeddb), this.refreshIndexedDB.bind(this));
     contextMenu.show();
   }
 
@@ -1263,8 +1387,7 @@ export class IDBDatabaseTreeElement extends ApplicationPanelTreeElement {
    */
   _handleContextMenuEvent(event) {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
-    contextMenu.defaultSection().appendItem(
-        Common.UIString.UIString('Refresh IndexedDB'), this._refreshIndexedDB.bind(this));
+    contextMenu.defaultSection().appendItem(i18nString(UIStrings.refreshIndexeddb), this._refreshIndexedDB.bind(this));
     contextMenu.show();
   }
 
@@ -1320,9 +1443,9 @@ export class IDBDatabaseTreeElement extends ApplicationPanelTreeElement {
   _updateTooltip() {
     const version = this._database ? this._database.version : '-';
     if (Object.keys(this._idbObjectStoreTreeElements).length === 0) {
-      this.tooltip = ls`Version: ${version} (empty)`;
+      this.tooltip = i18nString(UIStrings.versionSEmpty, {PH1: version});
     } else {
-      this.tooltip = ls`Version: ${version}`;
+      this.tooltip = i18nString(UIStrings.versionS, {PH1: version});
     }
   }
 
@@ -1415,7 +1538,7 @@ export class IDBObjectStoreTreeElement extends ApplicationPanelTreeElement {
    */
   _handleContextMenuEvent(event) {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
-    contextMenu.defaultSection().appendItem(Common.UIString.UIString('Clear'), this._clearObjectStore.bind(this));
+    contextMenu.defaultSection().appendItem(i18nString(UIStrings.clear), this._clearObjectStore.bind(this));
     contextMenu.show();
   }
 
@@ -1478,9 +1601,9 @@ export class IDBObjectStoreTreeElement extends ApplicationPanelTreeElement {
 
   _updateTooltip() {
     const keyPathString = this._objectStore.keyPathString;
-    let tooltipString = keyPathString !== null ? ls`Key path: ${keyPathString}` : '';
+    let tooltipString = keyPathString !== null ? i18nString(UIStrings.keyPathS, {PH1: keyPathString}) : '';
     if (this._objectStore.autoIncrement) {
-      tooltipString += '\n' + Common.UIString.UIString('autoIncrement');
+      tooltipString += '\n' + i18nString(UIStrings.autoincrement);
     }
     this.tooltip = tooltipString;
   }
@@ -1581,12 +1704,12 @@ export class IDBIndexTreeElement extends ApplicationPanelTreeElement {
   _updateTooltip() {
     const tooltipLines = [];
     const keyPathString = this._index.keyPathString;
-    tooltipLines.push(ls`Key path: ${keyPathString}`);
+    tooltipLines.push(i18nString(UIStrings.keyPathS, {PH1: keyPathString}));
     if (this._index.unique) {
-      tooltipLines.push(Common.UIString.UIString('unique'));
+      tooltipLines.push(i18nString(UIStrings.unique));
     }
     if (this._index.multiEntry) {
-      tooltipLines.push(Common.UIString.UIString('multiEntry'));
+      tooltipLines.push(i18nString(UIStrings.multientry));
     }
     this.tooltip = tooltipLines.join('\n');
   }
@@ -1621,8 +1744,7 @@ export class DOMStorageTreeElement extends ApplicationPanelTreeElement {
    */
   constructor(storagePanel, domStorage) {
     super(
-        storagePanel, domStorage.securityOrigin ? domStorage.securityOrigin : Common.UIString.UIString('Local Files'),
-        false);
+        storagePanel, domStorage.securityOrigin ? domStorage.securityOrigin : i18nString(UIStrings.localFiles), false);
     this._domStorage = domStorage;
     const icon = UI.Icon.Icon.create('mediumicon-table', 'resource-tree-item');
     this.setLeadingIcons([icon]);
@@ -1661,7 +1783,7 @@ export class DOMStorageTreeElement extends ApplicationPanelTreeElement {
    */
   _handleContextMenuEvent(event) {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
-    contextMenu.defaultSection().appendItem(Common.UIString.UIString('Clear'), () => this._domStorage.clear());
+    contextMenu.defaultSection().appendItem(i18nString(UIStrings.clear), () => this._domStorage.clear());
     contextMenu.show();
   }
 }
@@ -1673,10 +1795,10 @@ export class CookieTreeElement extends ApplicationPanelTreeElement {
    * @param {string} cookieDomain
    */
   constructor(storagePanel, frame, cookieDomain) {
-    super(storagePanel, cookieDomain ? cookieDomain : Common.UIString.UIString('Local Files'), false);
+    super(storagePanel, cookieDomain ? cookieDomain : i18nString(UIStrings.localFiles), false);
     this._target = frame.resourceTreeModel().target();
     this._cookieDomain = cookieDomain;
-    this.tooltip = ls`Cookies used by frames from ${cookieDomain}`;
+    this.tooltip = i18nString(UIStrings.cookiesUsedByFramesFromS, {PH1: cookieDomain});
     const icon = UI.Icon.Icon.create('mediumicon-cookie', 'resource-tree-item');
     this.setLeadingIcons([icon]);
   }
@@ -1707,7 +1829,7 @@ export class CookieTreeElement extends ApplicationPanelTreeElement {
   _handleContextMenuEvent(event) {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
     contextMenu.defaultSection().appendItem(
-        Common.UIString.UIString('Clear'), () => this.resourcesPanel.clearCookies(this._target, this._cookieDomain));
+        i18nString(UIStrings.clear), () => this.resourcesPanel.clearCookies(this._target, this._cookieDomain));
     contextMenu.show();
   }
 
@@ -2169,8 +2291,8 @@ export class FrameTreeElement extends ApplicationPanelTreeElement {
     const categoryKey = 'OpenedWindows';
     let categoryElement = this._categoryElements.get(categoryKey);
     if (!categoryElement) {
-      categoryElement =
-          new ExpandableApplicationPanelTreeElement(this._section._panel, ls`Opened Windows`, categoryKey);
+      categoryElement = new ExpandableApplicationPanelTreeElement(
+          this._section._panel, i18nString(UIStrings.openedWindows), categoryKey);
       this._categoryElements.set(categoryKey, categoryElement);
       this.appendChild(categoryElement, FrameTreeElement._presentationOrderCompare);
     }
@@ -2186,7 +2308,8 @@ export class FrameTreeElement extends ApplicationPanelTreeElement {
    */
   workerCreated(targetInfo) {
     const categoryKey = targetInfo.type === 'service_worker' ? 'Service Workers' : 'Web Workers';
-    const categoryName = targetInfo.type === 'service_worker' ? ls`Service Workers` : ls`Web Workers`;
+    const categoryName =
+        targetInfo.type === 'service_worker' ? i18nString(UIStrings.serviceWorkers) : i18nString(UIStrings.webWorkers);
     let categoryElement = this._categoryElements.get(categoryKey);
     if (!categoryElement) {
       categoryElement = new ExpandableApplicationPanelTreeElement(this._section._panel, categoryName, categoryKey);
@@ -2266,7 +2389,8 @@ export class FrameResourceTreeElement extends ApplicationPanelTreeElement {
    * @param {!SDK.Resource.Resource} resource
    */
   constructor(storagePanel, resource) {
-    super(storagePanel, resource.isGenerated ? ls`Document not available` : resource.displayName, false);
+    super(
+        storagePanel, resource.isGenerated ? i18nString(UIStrings.documentNotAvailable) : resource.displayName, false);
     this._panel = storagePanel;
     /** @type {!SDK.Resource.Resource} */
     this._resource = resource;
@@ -2321,8 +2445,7 @@ export class FrameResourceTreeElement extends ApplicationPanelTreeElement {
   onselect(selectedByUser) {
     super.onselect(selectedByUser);
     if (this._resource.isGenerated) {
-      this._panel.showCategoryView(
-          ls`The content of this document has been generated dynamically via 'document.write()'.`, null);
+      this._panel.showCategoryView(i18nString(UIStrings.theContentOfThisDocumentHasBeen), null);
     } else {
       this._panel.scheduleShowView(this._preparePreview());
     }
@@ -2392,7 +2515,7 @@ class FrameWindowTreeElement extends ApplicationPanelTreeElement {
    * @param {!Protocol.Target.TargetInfo} targetInfo
    */
   constructor(storagePanel, targetInfo) {
-    super(storagePanel, targetInfo.title || ls`Window without title`, false);
+    super(storagePanel, targetInfo.title || i18nString(UIStrings.windowWithoutTitle), false);
     this._targetInfo = targetInfo;
     this._isWindowClosed = false;
     this._view = null;
@@ -2462,7 +2585,7 @@ class WorkerTreeElement extends ApplicationPanelTreeElement {
    * @param {!Protocol.Target.TargetInfo} targetInfo
    */
   constructor(storagePanel, targetInfo) {
-    super(storagePanel, targetInfo.title || targetInfo.url || ls`worker`, false);
+    super(storagePanel, targetInfo.title || targetInfo.url || i18nString(UIStrings.worker), false);
     this._targetInfo = targetInfo;
     this._view = null;
     const icon = UI.Icon.Icon.create('mediumicon-service-worker', 'navigator-file-tree-item');

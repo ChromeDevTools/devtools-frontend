@@ -2,14 +2,45 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Platform from '../platform/platform.js';
-import {ls} from '../platform/platform.js';
 import * as Root from '../root/root.js';
 import * as UI from '../ui/ui.js';
 
 // eslint-disable-next-line rulesdir/es_modules_import
 import type * as Resources from './resources.js';
 
+import * as i18n from '../i18n/i18n.js';
+export const UIStrings = {
+  /**
+  *@description Text in Application Panel Sidebar of the Application panel
+  */
+  application: 'Application',
+  /**
+  *@description Command for showing the 'Application' tool
+  */
+  showApplication: 'Show Application',
+  /**
+  *@description A tag of Application Panel that can be searched in the command menu
+  */
+  pwa: 'pwa',
+  /**
+  *@description Text of button in Clear Storage View of the Application panel
+  */
+  clearSiteData: 'Clear site data',
+  /**
+  *@description Title of an action that clears all site data including 3rd party cookies
+  */
+  clearSiteDataIncludingThirdparty: 'Clear site data (including third-party cookies)',
+  /**
+  *@description Title of an action under the Background Services category that can be invoked through the Command Menu
+  */
+  startRecordingEvents: 'Start recording events',
+  /**
+  *@description Title of an action under the Background Services category that can be invoked through the Command Menu
+  */
+  stopRecordingEvents: 'Stop recording events',
+};
+const str_ = i18n.i18n.registerUIStrings('resources/resources-meta.ts', UIStrings);
+const i18nString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 let loadedResourcesModule: (typeof Resources|undefined);
 
 async function loadResourcesModule(): Promise<typeof Resources> {
@@ -31,20 +62,20 @@ function maybeRetrieveContextTypes<T = unknown>(getClassCallBack: (elementsModul
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.PANEL,
   id: 'resources',
-  title: (): Platform.UIString.LocalizedString => ls`Application`,
-  commandPrompt: (): Platform.UIString.LocalizedString => ls`Show Application`,
+  title: i18nString(UIStrings.application),
+  commandPrompt: i18nString(UIStrings.showApplication),
   order: 70,
   async loadView() {
     const Resources = await loadResourcesModule();
     return Resources.ResourcesPanel.ResourcesPanel.instance();
   },
-  tags: [(): Platform.UIString.LocalizedString => ls`pwa`],
+  tags: [i18nString(UIStrings.pwa)],
 });
 
 UI.ActionRegistration.registerActionExtension({
   category: UI.ActionRegistration.ActionCategory.RESOURCES,
   actionId: 'resources.clear',
-  title: (): Platform.UIString.LocalizedString => ls`Clear site data`,
+  title: i18nString(UIStrings.clearSiteData),
   async loadActionDelegate() {
     const Resources = await loadResourcesModule();
     return Resources.StorageView.ActionDelegate.instance();
@@ -54,7 +85,7 @@ UI.ActionRegistration.registerActionExtension({
 UI.ActionRegistration.registerActionExtension({
   category: UI.ActionRegistration.ActionCategory.RESOURCES,
   actionId: 'resources.clear-incl-third-party-cookies',
-  title: (): Platform.UIString.LocalizedString => ls`Clear site data (including third-party cookies)`,
+  title: i18nString(UIStrings.clearSiteDataIncludingThirdparty),
   async loadActionDelegate() {
     const Resources = await loadResourcesModule();
     return Resources.StorageView.ActionDelegate.instance();
@@ -79,11 +110,11 @@ UI.ActionRegistration.registerActionExtension({
   options: [
     {
       value: true,
-      title: (): Platform.UIString.LocalizedString => ls`Start recording events`,
+      title: i18nString(UIStrings.startRecordingEvents),
     },
     {
       value: false,
-      title: (): Platform.UIString.LocalizedString => ls`Stop recording events`,
+      title: i18nString(UIStrings.stopRecordingEvents),
     },
   ],
   bindings: [

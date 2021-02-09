@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../common/common.js';
-import {ls} from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as LitHtml from '../third_party/lit-html/lit-html.js';
 import * as Components from '../ui/components/components.js';
@@ -13,11 +11,32 @@ import type {ResourcesPanel} from './ResourcesPanel.js';
 
 import {ApplicationPanelTreeElement} from './ApplicationPanelTreeElement.js';
 
+import * as i18n from '../i18n/i18n.js';
+export const UIStrings = {
+  /**
+  *@description Hover text for an info icon in the Trust Token panel
+  */
+  trustTokens: 'Trust Tokens',
+  /**
+  *@description Text for the issuer of an item
+  */
+  issuer: 'Issuer',
+  /**
+  *@description Column header for Trust Token table
+  */
+  storedTokenCount: 'Stored token count',
+  /**
+  *@description Hover text for an info icon in the Trust Token panel
+  */
+  allStoredTrustTokensAvailableIn: 'All stored Trust Tokens available in this browser instance.',
+};
+const str_ = i18n.i18n.registerUIStrings('resources/TrustTokensView.ts', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class TrustTokensTreeElement extends ApplicationPanelTreeElement {
   private view?: TrustTokensViewWidgetWrapper;
 
   constructor(storagePanel: ResourcesPanel) {
-    super(storagePanel, Common.UIString.UIString('Trust Tokens'), false);
+    super(storagePanel, i18nString(UIStrings.trustTokens), false);
     const icon = UI.Icon.Icon.create('mediumicon-database', 'resource-tree-item');
     this.setLeadingIcons([icon]);
   }
@@ -75,8 +94,22 @@ export class TrustTokensView extends HTMLElement {
   private render(): void {
     const gridData: Components.DataGridController.DataGridControllerData = {
       columns: [
-        {id: 'issuer', title: ls`Issuer`, widthWeighting: 2, hideable: false, visible: true, sortable: true},
-        {id: 'count', title: ls`Stored token count`, widthWeighting: 1, hideable: false, visible: true, sortable: true},
+        {
+          id: 'issuer',
+          title: i18nString(UIStrings.issuer),
+          widthWeighting: 2,
+          hideable: false,
+          visible: true,
+          sortable: true,
+        },
+        {
+          id: 'count',
+          title: i18nString(UIStrings.storedTokenCount),
+          widthWeighting: 1,
+          hideable: false,
+          visible: true,
+          sortable: true,
+        },
       ],
       rows: this.buildRowsFromTokens(),
       initialSort: {
@@ -108,7 +141,7 @@ export class TrustTokensView extends HTMLElement {
       </style>
       <div>
         <span class="heading">Trust Tokens</span>
-        <devtools-icon class="info-icon" title=${ls`All stored Trust Tokens available in this browser instance.`}
+        <devtools-icon class="info-icon" title=${i18nString(UIStrings.allStoredTrustTokensAvailableIn)}
           .data=${
             {iconName: 'ic_info_black_18dp', color: 'var(--color-link)', width: '14px'} as
             Components.Icon.IconWithName}>

@@ -2,10 +2,36 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {ls} from '../platform/platform.js';
+import * as i18n from '../i18n/i18n.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
+export const UIStrings = {
+  /**
+  *@description Text in Indexed DBViews of the Application panel
+  */
+  version: 'Version',
+  /**
+  *@description Table heading for Service Workers update information. Update is a noun.
+  */
+  updateActivity: 'Update Activity',
+  /**
+  *@description Title for the timeline tab.
+  */
+  timeline: 'Timeline',
+  /**
+  *@description Text in Service Workers Update Life Cycle
+  *@example {2} PH1
+  */
+  startTimeS: 'Start time: {PH1}',
+  /**
+  *@description Text for end time of an event
+  *@example {2} PH1
+  */
+  endTimeS: 'End time: {PH1}',
+};
+const str_ = i18n.i18n.registerUIStrings('resources/ServiceWorkerUpdateCycleHelper.ts', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class ServiceWorkerUpdateCycleHelper {
   static calculateServiceWorkerUpdateRanges(registration: SDK.ServiceWorkerManager.ServiceWorkerRegistration):
       Array<ServiceWorkerUpdateRange> {
@@ -104,9 +130,9 @@ export class ServiceWorkerUpdateCycleHelper {
 
   private static createTimingTableHead(tableElement: Element): void {
     const serverHeader = tableElement.createChild('tr', 'service-worker-update-timing-table-header');
-    UI.UIUtils.createTextChild(serverHeader.createChild('td'), ls`Version`);
-    UI.UIUtils.createTextChild(serverHeader.createChild('td'), ls`Update Activity`);
-    UI.UIUtils.createTextChild(serverHeader.createChild('td'), ls`Timeline`);
+    UI.UIUtils.createTextChild(serverHeader.createChild('td'), i18nString(UIStrings.version));
+    UI.UIUtils.createTextChild(serverHeader.createChild('td'), i18nString(UIStrings.updateActivity));
+    UI.UIUtils.createTextChild(serverHeader.createChild('td'), i18nString(UIStrings.timeline));
   }
 
   private static removeRows(tableElement: Element): void {
@@ -173,14 +199,14 @@ export class ServiceWorkerUpdateCycleHelper {
 
     const startTimeItem = document.createElementWithClass('div', 'service-worker-update-details-treeitem');
     const startTime = (new Date(range.start)).toISOString();
-    startTimeItem.textContent = ls`Start time: ${startTime}`;
+    startTimeItem.textContent = i18nString(UIStrings.startTimeS, {PH1: startTime});
 
     const startTimeTreeElement = new UI.TreeOutline.TreeElement(startTimeItem);
     detailsView.appendChild(startTimeTreeElement);
 
     const endTimeItem = document.createElementWithClass('div', 'service-worker-update-details-treeitem');
     const endTime = (new Date(range.end)).toISOString();
-    endTimeItem.textContent = ls`End time: ${endTime}`;
+    endTimeItem.textContent = i18nString(UIStrings.endTimeS, {PH1: endTime});
 
     const endTimeTreeElement = new UI.TreeOutline.TreeElement(endTimeItem);
     detailsView.appendChild(endTimeTreeElement);

@@ -880,6 +880,7 @@ grd_files_debug_sources = [
   "front_end/resources/FrameDetailsView.js",
   "front_end/resources/IndexedDBModel.js",
   "front_end/resources/IndexedDBViews.js",
+  "front_end/resources/ModuleUIStrings.js",
   "front_end/resources/OpenedWindowDetailsView.js",
   "front_end/resources/ResourcesPanel.js",
   "front_end/resources/ServiceWorkerCacheViews.js",

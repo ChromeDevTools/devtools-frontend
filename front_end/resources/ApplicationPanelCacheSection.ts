@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
-import {ls} from '../platform/platform.js';
+import * as i18n from '../i18n/i18n.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
@@ -12,6 +12,22 @@ import {ApplicationPanelTreeElement, ExpandableApplicationPanelTreeElement} from
 import {ResourcesPanel} from './ResourcesPanel.js';
 import {ServiceWorkerCacheView} from './ServiceWorkerCacheViews.js';
 
+export const UIStrings = {
+  /**
+  *@description Text in Application Panel Sidebar of the Application panel
+  */
+  cacheStorage: 'Cache Storage',
+  /**
+  *@description A context menu item in the Application Panel Sidebar of the Application panel
+  */
+  refreshCaches: 'Refresh Caches',
+  /**
+  *@description Text to delete something
+  */
+  delete: 'Delete',
+};
+const str_ = i18n.i18n.registerUIStrings('resources/ApplicationPanelCacheSection.ts', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class ApplicationCacheManifestTreeElement extends ApplicationPanelTreeElement {
   private readonly manifestURL: string;
 
@@ -38,7 +54,7 @@ export class ServiceWorkerCacheTreeElement extends ExpandableApplicationPanelTre
   private swCacheTreeElements: Set<SWCacheTreeElement>;
 
   constructor(resourcesPanel: ResourcesPanel) {
-    super(resourcesPanel, ls`Cache Storage`, 'CacheStorage');
+    super(resourcesPanel, i18nString(UIStrings.cacheStorage), 'CacheStorage');
     const icon = UI.Icon.Icon.create('mediumicon-database', 'resource-tree-item');
     this.setLink('https://developers.google.com/web/tools/chrome-devtools/storage/cache?utm_source=devtools');
     this.setLeadingIcons([icon]);
@@ -69,7 +85,7 @@ export class ServiceWorkerCacheTreeElement extends ExpandableApplicationPanelTre
 
   private handleContextMenuEvent(event: MouseEvent): void {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
-    contextMenu.defaultSection().appendItem(ls`Refresh Caches`, this.refreshCaches.bind(this));
+    contextMenu.defaultSection().appendItem(i18nString(UIStrings.refreshCaches), this.refreshCaches.bind(this));
     contextMenu.show();
   }
 
@@ -147,7 +163,7 @@ export class SWCacheTreeElement extends ApplicationPanelTreeElement {
 
   private handleContextMenuEvent(event: MouseEvent): void {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
-    contextMenu.defaultSection().appendItem(ls`Delete`, this.clearCache.bind(this));
+    contextMenu.defaultSection().appendItem(i18nString(UIStrings.delete), this.clearCache.bind(this));
     contextMenu.show();
   }
 

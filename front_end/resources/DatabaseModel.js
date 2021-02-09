@@ -26,9 +26,22 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import * as Common from '../common/common.js';
+import * as i18n from '../i18n/i18n.js';
 import * as SDK from '../sdk/sdk.js';
 
+export const UIStrings = {
+  /**
+  *@description Message in Database Model of the Application panel
+  */
+  databaseNoLongerHasExpected: 'Database no longer has expected version.',
+  /**
+  *@description Message in Database Model of the Application panel
+  *@example {-197} PH1
+  */
+  anUnexpectedErrorSOccurred: 'An unexpected error {PH1} occurred.',
+};
+const str_ = i18n.i18n.registerUIStrings('resources/DatabaseModel.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class Database {
   /**
    * @param {!DatabaseModel} model
@@ -110,9 +123,9 @@ export class Database {
     if (sqlError.message) {
       message = sqlError.message;
     } else if (sqlError.code === 2) {
-      message = Common.UIString.UIString('Database no longer has expected version.');
+      message = i18nString(UIStrings.databaseNoLongerHasExpected);
     } else {
-      message = Common.UIString.UIString('An unexpected error %s occurred.', sqlError.code);
+      message = i18nString(UIStrings.anUnexpectedErrorSOccurred, {PH1: sqlError.code});
     }
     onError(message);
   }

@@ -306,6 +306,9 @@
   <message name="IDS_DEVTOOLS_a7e2da1e5160847a88912b69027bca09" desc="Stage element title in Sensors View of the Device Toolbar">
     Enable orientation to rotate
   </message>
+  <message name="IDS_DEVTOOLS_abbd64f40c34c537d3a571af068fce29" desc="Text for the orientation of something">
+    Orientation
+  </message>
   <message name="IDS_DEVTOOLS_ba4ff28193ef85288d9658df2a6f6138" desc="Error message in the Device settings pane that shows that the entered brands list has wrong syntax">
     Brands list is not a valid structured fields list.
   </message>

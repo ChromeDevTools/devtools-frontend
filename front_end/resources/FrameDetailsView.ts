@@ -13,8 +13,187 @@ import * as Root from '../root/root.js';
 import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../ui/ui.js';
 import * as Workspace from '../workspace/workspace.js';
-import {ls} from '../platform/platform.js';
 
+import * as i18n from '../i18n/i18n.js';
+export const UIStrings = {
+  /**
+  *@description Section header in the Frame Details view
+  */
+  additionalInformation: 'Additional Information',
+  /**
+  *@description Explanation for why the additional information section is being shown
+  */
+  thisAdditionalDebugging:
+      'This additional (debugging) information is shown because the \'Protocol Monitor\' experiment is enabled.',
+  /**
+  *@description Label for subtitle of frame details view
+  */
+  frameId: 'Frame ID',
+  /**
+  *@description Name of a network resource type
+  */
+  document: 'Document',
+  /**
+  *@description Text for web URLs
+  */
+  url: 'URL',
+  /**
+  *@description Title for a link to the Sources panel
+  */
+  clickToRevealInSourcesPanel: 'Click to reveal in Sources panel',
+  /**
+  *@description Title for a link to the Network panel
+  */
+  clickToRevealInNetworkPanel: 'Click to reveal in Network panel',
+  /**
+  *@description Title for unreachable URL field
+  */
+  unreachableUrl: 'Unreachable URL',
+  /**
+  *@description Title for a link that applies a filter to the network panel
+  */
+  clickToRevealInNetworkPanelMight: 'Click to reveal in Network panel (might require page reload)',
+  /**
+  *@description Text for the origin of something
+  */
+  origin: 'Origin',
+  /**
+  *@description Related node label in Timeline UIUtils of the Performance panel
+  */
+  ownerElement: 'Owner Element',
+  /**
+  *@description Title for a link to the Elements panel
+  */
+  clickToRevealInElementsPanel: 'Click to reveal in Elements panel',
+  /**
+  *@description Title for ad frame type field
+  */
+  adStatus: 'Ad Status',
+  /**
+  *@description Description for ad frame type
+  */
+  thisFrameHasBeenIdentifiedAsThe: 'This frame has been identified as the root frame of an ad',
+  /**
+  *@description Value for ad frame type
+  */
+  root: 'root',
+  /**
+  *@description Description for ad frame type
+  */
+  thisFrameHasBeenIdentifiedAsTheA: 'This frame has been identified as the a child frame of an ad',
+  /**
+  *@description Value for ad frame type
+  */
+  child: 'child',
+  /**
+  *@description Section header in the Frame Details view
+  */
+  securityIsolation: 'Security & Isolation',
+  /**
+  *@description Row title for in the Frame Details view
+  */
+  secureContext: 'Secure Context',
+  /**
+  *@description Text in Timeline indicating that input has happened recently
+  */
+  yes: 'Yes',
+  /**
+  *@description Text in Timeline indicating that input has not happened recently
+  */
+  no: 'No',
+  /**
+  *@description Row title for in the Frame Details view
+  */
+  crossoriginIsolated: 'Cross-Origin Isolated',
+  /**
+  *@description Explanatory text in the Frame Details view
+  */
+  localhostIsAlwaysASecureContext: 'Localhost is always a secure context',
+  /**
+  *@description Explanatory text in the Frame Details view
+  */
+  aFrameAncestorIsAnInsecure: 'A frame ancestor is an insecure context',
+  /**
+  *@description Explanatory text in the Frame Details view
+  */
+  theFramesSchemeIsInsecure: 'The frame\'s scheme is insecure',
+  /**
+  *@description Row title in the Frame Details view
+  */
+  crossoriginEmbedderPolicy: 'Cross-Origin Embedder Policy',
+  /**
+  *@description Row title in the Frame Details view
+  */
+  crossoriginOpenerPolicy: 'Cross-Origin Opener Policy',
+  /**
+  *@description This label specifies the server endpoints to which the server is reporting errors and warnings through the Report-to API
+  */
+  reportingTo: 'reporting to',
+  /**
+  *@description Section header in the Frame Details view
+  */
+  apiAvailability: 'API availability',
+  /**
+  *@description Explanatory text in the Frame Details view for the API availability section
+  */
+  availabilityOfCertainApisDepends: 'Availability of certain APIs depends on the document being cross-origin isolated.',
+  /**
+  *@description Description of the SharedArrayBuffer status
+  */
+  availableTransferable: 'available, transferable',
+  /**
+  *@description Description of the SharedArrayBuffer status
+  */
+  availableNotTransferable: 'available, not transferable',
+  /**
+  *@description Explanation for the SharedArrayBuffer availability status
+  */
+  unavailable: 'unavailable',
+  /**
+  *@description Tooltip for the SharedArrayBuffer availability status
+  */
+  sharedarraybufferConstructorIs:
+      'SharedArrayBuffer constructor is available and SABs can be transferred via postMessage',
+  /**
+  *@description Tooltip for the SharedArrayBuffer availability status
+  */
+  sharedarraybufferConstructorIsAvailable:
+      'SharedArrayBuffer constructor is available but SABs cannot be transferred via postMessage',
+  /**
+  *@description Entry in the API availability section of the frame details view
+  */
+  sharedArrayBuffers: 'Shared Array Buffers',
+  /**
+  *@description Explanation for the SharedArrayBuffer availability status
+  */
+  WillRequireCrossoriginIsolated: '⚠️ will require cross-origin isolated context in the future',
+  /**
+  *@description Explanation for the SharedArrayBuffer availability status
+  */
+  requiresCrossoriginIsolated: 'requires cross-origin isolated context',
+  /**
+  *@description Explanation for the Measure Memory availability status
+  */
+  available: 'available',
+  /**
+  *@description Tooltip for the Measure Memory availability status
+  */
+  thePerformanceAPI: 'The performance.measureUserAgentSpecificMemory() API is available',
+  /**
+  *@description Tooltip for the Measure Memory availability status
+  */
+  thePerformancemeasureuseragentspecificmemory: 'The performance.measureUserAgentSpecificMemory() API is not available',
+  /**
+  *@description Entry in the API availability section of the frame details view
+  */
+  measureMemory: 'Measure Memory',
+  /**
+  *@description Text that is usually a hyperlink to more documentation
+  */
+  learnMore: 'Learn more',
+};
+const str_ = i18n.i18n.registerUIStrings('resources/FrameDetailsView.ts', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class FrameDetailsView extends UI.ThrottledWidget.ThrottledWidget {
   private readonly reportView = new FrameDetailsReportView();
   private readonly frame: SDK.ResourceTreeModel.ResourceTreeFrame;
@@ -127,8 +306,8 @@ export class FrameDetailsReportView extends HTMLElement {
     }
 
     return LitHtml.html`
-      <devtools-report-section-header>${ls`Document`}</devtools-report-section-header>
-      <devtools-report-key>${ls`URL`}</devtools-report-key>
+      <devtools-report-section-header>${i18nString(UIStrings.document)}</devtools-report-section-header>
+      <devtools-report-key>${i18nString(UIStrings.url)}</devtools-report-key>
       <devtools-report-value>
         <div class="inline-items">
           ${this.maybeRenderSourcesLinkForURL()}
@@ -151,7 +330,7 @@ export class FrameDetailsReportView extends HTMLElement {
     const sourceCode = this.uiSourceCodeForFrame(this.frame);
     return this.renderIconLink(
         'sources_panel_icon',
-        ls`Click to reveal in Sources panel`,
+        i18nString(UIStrings.clickToRevealInSourcesPanel),
         (): Promise<void> => Common.Revealer.reveal(sourceCode),
     );
   }
@@ -163,7 +342,7 @@ export class FrameDetailsReportView extends HTMLElement {
         const request = resource.request;
         return this.renderIconLink(
             'network_panel_icon',
-            ls`Click to reveal in Network panel`,
+            i18nString(UIStrings.clickToRevealInNetworkPanel),
             (): Promise<void> =>
                 Network.NetworkPanel.NetworkPanel.selectAndShowRequest(request, Network.NetworkItemView.Tabs.Headers),
         );
@@ -209,7 +388,7 @@ export class FrameDetailsReportView extends HTMLElement {
       return LitHtml.nothing;
     }
     return LitHtml.html`
-      <devtools-report-key>${ls`Unreachable URL`}</devtools-report-key>
+      <devtools-report-key>${i18nString(UIStrings.unreachableUrl)}</devtools-report-key>
       <devtools-report-value>
         <div class="inline-items">
           ${this.renderNetworkLinkForUnreachableURL()}
@@ -225,7 +404,7 @@ export class FrameDetailsReportView extends HTMLElement {
       if (unreachableUrl) {
         return this.renderIconLink(
             'network_panel_icon',
-            ls`Click to reveal in Network panel (might require page reload)`,
+            i18nString(UIStrings.clickToRevealInNetworkPanelMight),
             ():
                 void => {
                   Network.NetworkPanel.NetworkPanel.revealAndFilter([
@@ -248,7 +427,7 @@ export class FrameDetailsReportView extends HTMLElement {
   private maybeRenderOrigin(): LitHtml.TemplateResult|{} {
     if (this.frame && this.frame.securityOrigin && this.frame.securityOrigin !== '://') {
       return LitHtml.html`
-        <devtools-report-key>${ls`Origin`}</devtools-report-key>
+        <devtools-report-key>${i18nString(UIStrings.origin)}</devtools-report-key>
         <devtools-report-value>
           <div class="text-ellipsis" title=${this.frame.securityOrigin}>${this.frame.securityOrigin}</div>
         </devtools-report-value>
@@ -269,9 +448,9 @@ export class FrameDetailsReportView extends HTMLElement {
               vertical-align: sub;
             }
           </style>
-          <devtools-report-key>${ls`Owner Element`}</devtools-report-key>
+            <devtools-report-key>${i18nString(UIStrings.ownerElement)}</devtools-report-key>
           <devtools-report-value>
-            <button class="link" role="link" tabindex=0 title=${ls`Click to reveal in Elements panel`}
+              <button class="link" role="link" tabindex=0 title=${i18nString(UIStrings.clickToRevealInElementsPanel)}
               @mouseenter=${(): Promise<void>|undefined => this.frame?.highlight()}
               @mouseleave=${(): void => SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight()}
               @click=${(): Promise<void> => Common.Revealer.reveal(linkTargetDOMNode)}
@@ -296,16 +475,16 @@ export class FrameDetailsReportView extends HTMLElement {
     if (this.frame) {
       if (this.frame.adFrameType() === Protocol.Page.AdFrameType.Root) {
         return LitHtml.html`
-          <devtools-report-key>${ls`Ad Status`}</devtools-report-key>
-          <devtools-report-value title=${ls`This frame has been identified as the root frame of an ad`}>${
-            ls`root`}</devtools-report-value>
+          <devtools-report-key>${i18nString(UIStrings.adStatus)}</devtools-report-key>
+          <devtools-report-value title=${i18nString(UIStrings.thisFrameHasBeenIdentifiedAsThe)}>${
+            i18nString(UIStrings.root)}</devtools-report-value>
         `;
       }
       if (this.frame.adFrameType() === Protocol.Page.AdFrameType.Child) {
         return LitHtml.html`
-          <devtools-report-key>${ls`Ad Status`}</devtools-report-key>
-          <devtools-report-value title=${ls`This frame has been identified as the a child frame of an ad`}>${
-            ls`child`}</devtools-report-value>
+          <devtools-report-key>${i18nString(UIStrings.adStatus)}</devtools-report-key>
+          <devtools-report-value title=${i18nString(UIStrings.thisFrameHasBeenIdentifiedAsTheA)}>${
+            i18nString(UIStrings.child)}</devtools-report-value>
         `;
       }
     }
@@ -317,15 +496,15 @@ export class FrameDetailsReportView extends HTMLElement {
       return LitHtml.nothing;
     }
     return LitHtml.html`
-      <devtools-report-section-header>${ls`Security & Isolation`}</devtools-report-section-header>
-      <devtools-report-key>${ls`Secure Context`}</devtools-report-key>
+      <devtools-report-section-header>${i18nString(UIStrings.securityIsolation)}</devtools-report-section-header>
+      <devtools-report-key>${i18nString(UIStrings.secureContext)}</devtools-report-key>
       <devtools-report-value>
-        ${this.frame.isSecureContext() ? ls`Yes` : ls`No`}
+        ${this.frame.isSecureContext() ? i18nString(UIStrings.yes) : i18nString(UIStrings.no)}
         ${this.maybeRenderSecureContextExplanation()}
       </devtools-report-value>
-      <devtools-report-key>${ls`Cross-Origin Isolated`}</devtools-report-key>
+      <devtools-report-key>${i18nString(UIStrings.crossoriginIsolated)}</devtools-report-key>
       <devtools-report-value>
-        ${this.frame.isCrossOriginIsolated() ? ls`Yes` : ls`No`}
+        ${this.frame.isCrossOriginIsolated() ? i18nString(UIStrings.yes) : i18nString(UIStrings.no)}
       </devtools-report-value>
       ${LitHtml.Directives.until(this.maybeRenderCoopCoepStatus(), LitHtml.nothing)}
       <devtools-report-divider></devtools-report-divider>
@@ -347,11 +526,11 @@ export class FrameDetailsReportView extends HTMLElement {
       case Protocol.Page.SecureContextType.Secure:
         return null;
       case Protocol.Page.SecureContextType.SecureLocalhost:
-        return ls`Localhost is always a secure context`;
+        return i18nString(UIStrings.localhostIsAlwaysASecureContext);
       case Protocol.Page.SecureContextType.InsecureAncestor:
-        return ls`A frame ancestor is an insecure context`;
+        return i18nString(UIStrings.aFrameAncestorIsAnInsecure);
       case Protocol.Page.SecureContextType.InsecureScheme:
-        return ls`The frame's scheme is insecure`;
+        return i18nString(UIStrings.theFramesSchemeIsInsecure);
     }
     return null;
   }
@@ -364,10 +543,12 @@ export class FrameDetailsReportView extends HTMLElement {
         return LitHtml.html`
           ${
             this.maybeRenderCrossOriginStatus(
-                info.coep, ls`Cross-Origin Embedder Policy`, Protocol.Network.CrossOriginEmbedderPolicyValue.None)}
+                info.coep, i18nString(UIStrings.crossoriginEmbedderPolicy),
+                Protocol.Network.CrossOriginEmbedderPolicyValue.None)}
           ${
             this.maybeRenderCrossOriginStatus(
-                info.coop, ls`Cross-Origin Opener Policy`, Protocol.Network.CrossOriginOpenerPolicyValue.UnsafeNone)}
+                info.coop, i18nString(UIStrings.crossoriginOpenerPolicy),
+                Protocol.Network.CrossOriginOpenerPolicyValue.UnsafeNone)}
         `;
       }
     }
@@ -390,7 +571,9 @@ export class FrameDetailsReportView extends HTMLElement {
       <devtools-report-value>
         ${isEnabled ? info.value : info.reportOnlyValue}
         ${isReportOnly ? LitHtml.html`<span class="inline-comment">report-only</span>` : LitHtml.nothing}
-        ${endpoint ? LitHtml.html`<span class="inline-name">${ls`reporting to`}</span>${endpoint}` : LitHtml.nothing}
+        ${
+        endpoint ? LitHtml.html`<span class="inline-name">${i18nString(UIStrings.reportingTo)}</span>${endpoint}` :
+                   LitHtml.nothing}
       </devtools-report-value>
     `;
   }
@@ -408,9 +591,9 @@ export class FrameDetailsReportView extends HTMLElement {
           line-height: 28px;
         }
       </style>
-      <devtools-report-section-header>${ls`API availability`}</devtools-report-section-header>
+      <devtools-report-section-header>${i18nString(UIStrings.apiAvailability)}</devtools-report-section-header>
       <div class="span-cols">
-        ${ls`Availability of certain APIs depends on the document being cross-origin isolated.`}
+        ${i18nString(UIStrings.availabilityOfCertainApisDepends)}
         <x-link href="https://web.dev/why-coop-coep/" class="link">Learn more</x-link>
       </div>
       ${this.renderSharedArrayBufferAvailability()}
@@ -427,25 +610,23 @@ export class FrameDetailsReportView extends HTMLElement {
         const sabTransferAvailable =
             sabAvailable && features.includes(Protocol.Page.GatedAPIFeatures.SharedArrayBuffersTransferAllowed);
         const availabilityText = sabTransferAvailable ?
-            ls`available, transferable` :
-            (sabAvailable ? ls`available, not transferable` : ls`unavailable`);
+            i18nString(UIStrings.availableTransferable) :
+            (sabAvailable ? i18nString(UIStrings.availableNotTransferable) : i18nString(UIStrings.unavailable));
         const tooltipText = sabTransferAvailable ?
-            ls`SharedArrayBuffer constructor is available and SABs can be transferred via postMessage` :
-            (sabAvailable ?
-                 ls`SharedArrayBuffer constructor is available but SABs cannot be transferred via postMessage` :
-                 '');
+            i18nString(UIStrings.sharedarraybufferConstructorIs) :
+            (sabAvailable ? i18nString(UIStrings.sharedarraybufferConstructorIsAvailable) : '');
 
         // Disabled until https://crbug.com/1079231 is fixed.
         // clang-format off
         return LitHtml.html`
-          <devtools-report-key>${ls`Shared Array Buffers`}</devtools-report-key>
+          <devtools-report-key>${i18nString(UIStrings.sharedArrayBuffers)}</devtools-report-key>
           <devtools-report-value title=${tooltipText}>
             ${availabilityText}
             ${!this.frame.isCrossOriginIsolated() ?
               (sabAvailable ?
                 LitHtml.html`<span class="inline-comment">${
-                  ls`⚠️ will require cross-origin isolated context in the future`}</span>` :
-                LitHtml.html`<span class="inline-comment">${ls`requires cross-origin isolated context`}</span>`) :
+                  i18nString(UIStrings.WillRequireCrossoriginIsolated)}</span>` :
+                LitHtml.html`<span class="inline-comment">${i18nString(UIStrings.requiresCrossoriginIsolated)}</span>`) :
               LitHtml.nothing}
           </devtools-report-value>
         `;
@@ -458,15 +639,16 @@ export class FrameDetailsReportView extends HTMLElement {
   private renderMeasureMemoryAvailability(): LitHtml.TemplateResult|{} {
     if (this.frame) {
       const measureMemoryAvailable = this.frame.isCrossOriginIsolated();
-      const availabilityText = measureMemoryAvailable ? ls`available` : ls`unavailable`;
-      const tooltipText = measureMemoryAvailable ?
-          ls`The performance.measureUserAgentSpecificMemory() API is available` :
-          ls`The performance.measureUserAgentSpecificMemory() API is not available`;
+      const availabilityText =
+          measureMemoryAvailable ? i18nString(UIStrings.available) : i18nString(UIStrings.unavailable);
+      const tooltipText = measureMemoryAvailable ? i18nString(UIStrings.thePerformanceAPI) :
+                                                   i18nString(UIStrings.thePerformancemeasureuseragentspecificmemory);
       return LitHtml.html`
-        <devtools-report-key>${ls`Measure Memory`}</devtools-report-key>
+        <devtools-report-key>${i18nString(UIStrings.measureMemory)}</devtools-report-key>
         <devtools-report-value>
           <span title=${tooltipText}>${availabilityText}</span>
-          <x-link class="link" href="https://web.dev/monitor-total-page-memory-usage/">${ls`Learn more`}</a>
+          <x-link class="link" href="https://web.dev/monitor-total-page-memory-usage/">${
+          i18nString(UIStrings.learnMore)}</a>
         </devtools-report-value>
       `;
     }
@@ -480,10 +662,9 @@ export class FrameDetailsReportView extends HTMLElement {
 
     return LitHtml.html`
       <devtools-report-section-header
-        title=${
-        ls`This additional (debugging) information is shown because the 'Protocol Monitor' experiment is enabled.`}
-      >${ls`Additional Information`}</devtools-report-section-header>
-      <devtools-report-key>${ls`Frame ID`}</devtools-report-key>
+        title=${i18nString(UIStrings.thisAdditionalDebugging)}
+      >${i18nString(UIStrings.additionalInformation)}</devtools-report-section-header>
+      <devtools-report-key>${i18nString(UIStrings.frameId)}</devtools-report-key>
       <devtools-report-value>
         <div class="text-ellipsis" title=${this.frame.id}>${this.frame.id}</div>
       </devtools-report-value>

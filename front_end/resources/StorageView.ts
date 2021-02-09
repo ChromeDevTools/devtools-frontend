@@ -6,7 +6,6 @@ import * as Common from '../common/common.js';
 import * as i18n from '../i18n/i18n.js';
 import * as PerfUI from '../perf_ui/perf_ui.js';
 import * as Platform from '../platform/platform.js';
-import {ls} from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
@@ -33,6 +32,107 @@ export const UIStrings = {
    * @example {1.5 MB} PH1
    */
   storageWithCustomMarker: '{PH1} (custom)',
+  /**
+   * @description Text in Application Panel Sidebar of the Application panel
+   */
+  storageTitle: 'Storage',
+  /**
+   * @description Text in Clear Storage View of the Application panel
+   */
+  usage: 'Usage',
+  /**
+   * @description Unit for data size in DevTools
+   */
+  mb: 'MB',
+  /**
+   * @description Link to learn more about Progressive Web Apps
+   */
+  learnMore: 'Learn more',
+  /**
+   * @description Text of button in Clear Storage View of the Application panel
+   */
+  clearSiteData: 'Clear site data',
+  /**
+   * @description Text in Application Panel Sidebar of the Application panel
+   */
+  application: 'Application',
+  /**
+   * @description Text in Application Panel Sidebar of the Application panel
+   */
+  unregisterServiceWorker: 'Unregister service workers',
+  /**
+   * @description Text in Clear Storage View of the Application panel
+   */
+  localAndSessionStorage: 'Local and session storage',
+  /**
+   * @description Text in Application Panel Sidebar of the Application panel
+   */
+  indexDB: 'IndexedDB',
+  /**
+   * @description Text in Application Panel Sidebar of the Application panel
+   */
+  webSql: 'Web SQL',
+  /**
+   * @description Text in Application Panel Sidebar of the Application panel
+   */
+  cookies: 'Cookies',
+  /**
+   * @description Text in Application Panel Sidebar of the Application panel
+   */
+  cache: 'Cache',
+  /**
+   * @description Text in Application Panel Sidebar of the Application panel
+   */
+  cacheStorage: 'Cache storage',
+  /**
+   * @description Text in Application Panel Sidebar of the Application panel
+   */
+  applicationCache: 'Application cache',
+  /**
+   * @description Text in Application Panel Sidebar of the Application panel
+   */
+  includingThirdPartyCookies: 'including third-party cookies',
+  /**
+   * @description Text for error message in Application Quota Override
+   * @example {Image} PH1
+   */
+  sFailedToLoad: '{PH1} (failed to load)',
+  /**
+   * @description Text for error message in Application Quota Override
+   */
+  internalError: 'Internal error',
+  /**
+   * @description Text for error message in Application Quota Override
+   */
+  pleaseEnterANumber: 'Please enter a number',
+  /**
+   * @description Text for error message in Application Quota Override
+   */
+  numberMustBeNonNegative: 'Number must be non-negative',
+  /**
+   * @description Clear button text content in Clear Storage View of the Application panel
+   */
+  clearing: 'Clearing...',
+  /**
+   * @description Quota row title in Clear Storage View of the Application panel
+   */
+  storageQuotaIsLimitedIn: 'Storage quota is limited in Incognito mode',
+  /**
+   * @description Text in Application Panel Sidebar of the Application panel
+   */
+  fileSystem: 'File System',
+  /**
+   * @description Text in Application Panel Sidebar of the Application panel
+   */
+  other: 'Other',
+  /**
+   * @description Text in Application Panel Sidebar of the Application panel
+   */
+  storageUsage: 'Storage usage',
+  /**
+   * @description Text in Application Panel Sidebar of the Application panel
+   */
+  serviceWorkers: 'Service Workers',
 };
 const str_ = i18n.i18n.registerUIStrings('resources/StorageView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -73,7 +173,7 @@ export class StorageView extends UI.ThrottledWidget.ThrottledWidget {
     ]);
 
     // TODO(crbug.com/1156978): Replace UI.ReportView.ReportView with ReportView.ts web component.
-    this.reportView = new UI.ReportView.ReportView(ls`Storage`);
+    this.reportView = new UI.ReportView.ReportView(i18nString(UIStrings.storageTitle));
     this.reportView.registerRequiredCSS('resources/storageView.css', {enableLegacyPatching: false});
     this.reportView.element.classList.add('clear-storage-header');
     this.reportView.show(this.contentElement);
@@ -90,13 +190,13 @@ export class StorageView extends UI.ThrottledWidget.ThrottledWidget {
     this.includeThirdPartyCookiesSetting =
         Common.Settings.Settings.instance().createSetting('clear-storage-include-third-party-cookies', false);
 
-    const quota = this.reportView.appendSection(ls`Usage`);
+    const quota = this.reportView.appendSection(i18nString(UIStrings.usage));
     this.quotaRow = quota.appendSelectableRow();
     this.quotaRow.classList.add('quota-usage-row');
     const learnMoreRow = quota.appendRow();
     const learnMore = UI.XLink.XLink.create(
         'https://developers.google.com/web/tools/chrome-devtools/progressive-web-apps#opaque-responses',
-        ls`Learn more`);
+        i18nString(UIStrings.learnMore));
     learnMoreRow.appendChild(learnMore);
     this.quotaUsage = null;
     this.pieChart = new PerfUI.PieChart.PieChart();
@@ -114,7 +214,7 @@ export class StorageView extends UI.ThrottledWidget.ThrottledWidget {
     /** @type {!HTMLInputElement} */
     this.quotaOverrideEditor =
         this.quotaOverrideControlRow.createChild('input', 'quota-override-notification-editor') as HTMLInputElement;
-    this.quotaOverrideControlRow.appendChild(UI.UIUtils.createLabel(ls`MB`));
+    this.quotaOverrideControlRow.appendChild(UI.UIUtils.createLabel(i18nString(UIStrings.mb)));
     this.quotaOverrideControlRow.classList.add('hidden');
     this.quotaOverrideEditor.addEventListener('keyup', event => {
       if (event.key === 'Enter') {
@@ -131,29 +231,30 @@ export class StorageView extends UI.ThrottledWidget.ThrottledWidget {
     this.quotaOverrideErrorMessage = errorMessageRow.createChild('div', 'quota-override-error');
 
     const clearButtonSection = this.reportView.appendSection('', 'clear-storage-button').appendRow();
-    this.clearButton = UI.UIUtils.createTextButton(ls`Clear site data`, this.clear.bind(this));
+    this.clearButton = UI.UIUtils.createTextButton(i18nString(UIStrings.clearSiteData), this.clear.bind(this));
     this.clearButton.id = 'storage-view-clear-button';
     clearButtonSection.appendChild(this.clearButton);
 
     const includeThirdPartyCookiesCheckbox = UI.SettingsUI.createSettingCheckbox(
-        ls`including third-party cookies`, this.includeThirdPartyCookiesSetting, true);
+        i18nString(UIStrings.includingThirdPartyCookies), this.includeThirdPartyCookiesSetting, true);
     includeThirdPartyCookiesCheckbox.classList.add('include-third-party-cookies');
     clearButtonSection.appendChild(includeThirdPartyCookiesCheckbox);
 
-    const application = this.reportView.appendSection(ls`Application`);
-    this.appendItem(application, ls`Unregister service workers`, Protocol.Storage.StorageType.Service_workers);
+    const application = this.reportView.appendSection(i18nString(UIStrings.application));
+    this.appendItem(
+        application, i18nString(UIStrings.unregisterServiceWorker), Protocol.Storage.StorageType.Service_workers);
     application.markFieldListAsGroup();
 
-    const storage = this.reportView.appendSection(ls`Storage`);
-    this.appendItem(storage, ls`Local and session storage`, Protocol.Storage.StorageType.Local_storage);
-    this.appendItem(storage, ls`IndexedDB`, Protocol.Storage.StorageType.Indexeddb);
-    this.appendItem(storage, ls`Web SQL`, Protocol.Storage.StorageType.Websql);
-    this.appendItem(storage, ls`Cookies`, Protocol.Storage.StorageType.Cookies);
+    const storage = this.reportView.appendSection(i18nString(UIStrings.storageTitle));
+    this.appendItem(storage, i18nString(UIStrings.localAndSessionStorage), Protocol.Storage.StorageType.Local_storage);
+    this.appendItem(storage, i18nString(UIStrings.indexDB), Protocol.Storage.StorageType.Indexeddb);
+    this.appendItem(storage, i18nString(UIStrings.webSql), Protocol.Storage.StorageType.Websql);
+    this.appendItem(storage, i18nString(UIStrings.cookies), Protocol.Storage.StorageType.Cookies);
     storage.markFieldListAsGroup();
 
-    const caches = this.reportView.appendSection(ls`Cache`);
-    this.appendItem(caches, ls`Cache storage`, Protocol.Storage.StorageType.Cache_storage);
-    this.appendItem(caches, ls`Application cache`, Protocol.Storage.StorageType.Appcache);
+    const caches = this.reportView.appendSection(i18nString(UIStrings.cache));
+    this.appendItem(caches, i18nString(UIStrings.cacheStorage), Protocol.Storage.StorageType.Cache_storage);
+    this.appendItem(caches, i18nString(UIStrings.applicationCache), Protocol.Storage.StorageType.Appcache);
     caches.markFieldListAsGroup();
 
     SDK.SDKModel.TargetManager.instance().observeTargets(this);
@@ -200,7 +301,7 @@ export class StorageView extends UI.ThrottledWidget.ThrottledWidget {
     const oldOrigin = this.securityOrigin;
     if (unreachableMainOrigin) {
       this.securityOrigin = unreachableMainOrigin;
-      this.reportView.setSubtitle(ls`${unreachableMainOrigin} (failed to load)`);
+      this.reportView.setSubtitle(i18nString(UIStrings.sFailedToLoad, {PH1: unreachableMainOrigin}));
     } else {
       this.securityOrigin = mainOrigin;
       this.reportView.setSubtitle(mainOrigin);
@@ -216,7 +317,7 @@ export class StorageView extends UI.ThrottledWidget.ThrottledWidget {
 
   private async applyQuotaOverrideFromInputField(): Promise<void> {
     if (!this.target || !this.securityOrigin) {
-      this.quotaOverrideErrorMessage.textContent = ls`Internal error`;
+      this.quotaOverrideErrorMessage.textContent = i18nString(UIStrings.internalError);
       return;
     }
     this.quotaOverrideErrorMessage.textContent = '';
@@ -228,11 +329,11 @@ export class StorageView extends UI.ThrottledWidget.ThrottledWidget {
     }
     const quota = parseFloat(editorString);
     if (!Number.isFinite(quota)) {
-      this.quotaOverrideErrorMessage.textContent = ls`Please enter a number`;
+      this.quotaOverrideErrorMessage.textContent = i18nString(UIStrings.pleaseEnterANumber);
       return;
     }
     if (quota < 0) {
-      this.quotaOverrideErrorMessage.textContent = ls`Number must be non-negative`;
+      this.quotaOverrideErrorMessage.textContent = i18nString(UIStrings.numberMustBeNonNegative);
       return;
     }
     const bytesPerMB = 1000 * 1000;
@@ -281,7 +382,7 @@ export class StorageView extends UI.ThrottledWidget.ThrottledWidget {
 
     this.clearButton.disabled = true;
     const label = this.clearButton.textContent;
-    this.clearButton.textContent = ls`Clearing...`;
+    this.clearButton.textContent = i18nString(UIStrings.clearing);
     setTimeout(() => {
       this.clearButton.disabled = false;
       this.clearButton.textContent = label;
@@ -374,7 +475,7 @@ export class StorageView extends UI.ThrottledWidget.ThrottledWidget {
             {PH1: response.usage.toLocaleString(), PH2: response.quota.toLocaleString()}));
 
     if (!response.overrideActive && response.quota < 125829120) {  // 120 MB
-      UI.Tooltip.Tooltip.install(this.quotaRow, ls`Storage quota is limited in Incognito mode`);
+      UI.Tooltip.Tooltip.install(this.quotaRow, i18nString(UIStrings.storageQuotaIsLimitedIn));
       this.quotaRow.appendChild(UI.Icon.Icon.create('smallicon-info'));
     }
 
@@ -399,7 +500,7 @@ export class StorageView extends UI.ThrottledWidget.ThrottledWidget {
 
   private populatePieChart(total: number, slices: PerfUI.PieChart.Slice[]): void {
     this.pieChart.data = {
-      chartName: ls`Storage usage`,
+      chartName: i18nString(UIStrings.storageUsage),
       size: 110,
       formatter: Platform.NumberUtilities.bytesToString,
       showLegend: true,
@@ -411,19 +512,19 @@ export class StorageView extends UI.ThrottledWidget.ThrottledWidget {
   private getStorageTypeName(type: Protocol.Storage.StorageType): string {
     switch (type) {
       case Protocol.Storage.StorageType.File_systems:
-        return ls`File System`;
+        return i18nString(UIStrings.fileSystem);
       case Protocol.Storage.StorageType.Websql:
-        return ls`Web SQL`;
+        return i18nString(UIStrings.webSql);
       case Protocol.Storage.StorageType.Appcache:
-        return ls`Application Cache`;
+        return i18nString(UIStrings.application);
       case Protocol.Storage.StorageType.Indexeddb:
-        return ls`IndexedDB`;
+        return i18nString(UIStrings.indexDB);
       case Protocol.Storage.StorageType.Cache_storage:
-        return ls`Cache Storage`;
+        return i18nString(UIStrings.cacheStorage);
       case Protocol.Storage.StorageType.Service_workers:
-        return ls`Service Workers`;
+        return i18nString(UIStrings.serviceWorkers);
       default:
-        return ls`Other`;
+        return i18nString(UIStrings.other);
     }
   }
 }

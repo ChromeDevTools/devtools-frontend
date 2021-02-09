@@ -39,6 +39,9 @@
   <message name="IDS_DEVTOOLS_3a39eb38e879f66d1c57dedd478272da" desc="label to open link externally">
     Open in new tab
   </message>
+  <message name="IDS_DEVTOOLS_3afbd9828e011526955ca93b48b57524" desc="Text for one or a group of screenshots">
+    Screenshot
+  </message>
   <message name="IDS_DEVTOOLS_3b41735478b3a3fd8bcc06f6c7a6b56c" desc="label to copy link address">
     Copy link address
   </message>
@@ -143,6 +146,9 @@
   </message>
   <message name="IDS_DEVTOOLS_b94d1b250ba62f06dadf0edc4a947f5c" desc="Text in UIUtils">
     Promise resolved (async)
+  </message>
+  <message name="IDS_DEVTOOLS_c1ea3facd2946b59df718d8dd2737cfa" desc="Text in Application Panel Sidebar of the Application panel">
+    Background Services
   </message>
   <message name="IDS_DEVTOOLS_c486d3222f16146af0711d84a14b62fb" desc="Sub millis format in UIUtils">
     <ph name="PH1">$1.2f<ex>2.14</ex></ph> ms

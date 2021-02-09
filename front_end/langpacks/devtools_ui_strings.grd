@@ -20,7 +20,6 @@
       <part file="../inspector_main/inspector_main_strings.grdp" />
       <part file="../main/main_strings.grdp" />
       <part file="../quick_open/quick_open_strings.grdp" />
-      <part file="../resources/resources_strings.grdp" />
       <part file="../sdk/sdk_strings.grdp" />
       <part file="../sources/sources_strings.grdp" />
       <part file="../timeline/timeline_strings.grdp" />

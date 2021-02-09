@@ -24,11 +24,24 @@
  */
 
 import * as DataGrid from '../data_grid/data_grid.js';
-import {ls} from '../platform/platform.js';
+import * as i18n from '../i18n/i18n.js';
 import * as UI from '../ui/ui.js';
 
 import {Database} from './DatabaseModel.js';  // eslint-disable-line no-unused-vars
 
+export const UIStrings = {
+  /**
+  *@description Data grid name for Database Query data grids
+  */
+  databaseQuery: 'Database Query',
+  /**
+  *@description Aria text for table selected in WebSQL DatabaseQueryView in Application panel
+  *@example {"SELECT * FROM LOGS"} PH1
+  */
+  queryS: 'Query: {PH1}',
+};
+const str_ = i18n.i18n.registerUIStrings('resources/DatabaseQueryView.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class DatabaseQueryView extends UI.Widget.VBox {
   /**
    * @param {!Database} database
@@ -255,7 +268,8 @@ export class DatabaseQueryView extends UI.Widget.VBox {
    * @param {!Array<*>} values
    */
   _queryFinished(query, columnNames, values) {
-    const dataGrid = DataGrid.SortableDataGrid.SortableDataGrid.create(columnNames, values, ls`Database Query`);
+    const dataGrid =
+        DataGrid.SortableDataGrid.SortableDataGrid.create(columnNames, values, i18nString(UIStrings.databaseQuery));
     const trimmedQuery = query.trim();
 
     let view = null;
@@ -314,7 +328,7 @@ export class DatabaseQueryView extends UI.Widget.VBox {
     element.className = 'database-user-query';
     element.tabIndex = -1;
 
-    UI.ARIAUtils.setAccessibleName(element, ls`Query: ${query}`);
+    UI.ARIAUtils.setAccessibleName(element, i18nString(UIStrings.queryS, {PH1: query}));
     this._queryResults.push(element);
     this._updateFocusedItem();
 

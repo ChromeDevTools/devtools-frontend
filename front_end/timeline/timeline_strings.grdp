@@ -232,6 +232,9 @@ Click the reload button <ph name="RELOADBUTTON">$3s<ex>reload</ex></ph> or hit <
   <message name="IDS_DEVTOOLS_2b66d07a14b9e6da66cde6baab473e92" desc="Text in Timeline UIUtils of the Performance panel">
     <ph name="SELFCATEGORY_TITLE">$1s<ex>blink.console</ex></ph> (children)
   </message>
+  <message name="IDS_DEVTOOLS_2b81bb9b3deebcbfa05edad7a845005a" desc="Text for rendering frames">
+    Frames
+  </message>
   <message name="IDS_DEVTOOLS_2b912aa1a87361a536122b08c7d08829" desc="Label for Cumulative Layout records, indicating where they moved to">
     Moved to
   </message>
@@ -270,6 +273,9 @@ Click the reload button <ph name="RELOADBUTTON">$3s<ex>reload</ex></ph> or hit <
   </message>
   <message name="IDS_DEVTOOLS_31c6b3fdfaaa80dba2dbf92a4600524c" desc="Text in Timeline UIUtils of the Performance panel">
     Sign
+  </message>
+  <message name="IDS_DEVTOOLS_31fde7b05ac8952dacf4af8a704074ec" desc="Text for previewing items">
+    Preview
   </message>
   <message name="IDS_DEVTOOLS_3227e479f6541c685b08023affdc8c69" desc="Text in Timeline UIUtils of the Performance panel">
     Consumed Cache Size
@@ -565,6 +571,9 @@ Click the reload button <ph name="RELOADBUTTON">$3s<ex>reload</ex></ph> or hit <
   <message name="IDS_DEVTOOLS_6ebfbd6a11e852377844c8fd6e1608cc" desc="Text in UIDevtools Utils of the Performance panel">
     View::OnPaint
   </message>
+  <message name="IDS_DEVTOOLS_6f6cb72d544962fa333e2e34ce64f719" desc="Text for the size of something">
+    Size
+  </message>
   <message name="IDS_DEVTOOLS_70582905817c902e7a334c24718cba88" desc="Text in Timeline UIUtils of the Performance panel">
     Touch End
   </message>
@@ -741,6 +750,9 @@ Then, zoom and pan the timeline with the mousewheel or <ph name="NAVIGATENODE">$
   <message name="IDS_DEVTOOLS_93c8e71d1b0e18d58736d3e255a14533" desc="Text in Timeline Panel of the Performance panel">
     Buffer usage
   </message>
+  <message name="IDS_DEVTOOLS_93cba07454f06a4a960172bbd6e2a435" desc="Text in Timeline indicating that input has happened recently">
+    Yes
+  </message>
   <message name="IDS_DEVTOOLS_9467817bf2985168e61e3f2b23f87a81" desc="Text in Timeline UIUtils of the Performance panel">
     <ph name="TITLE">$1s<ex>StyleInvalidator for element</ex></ph>. <ph name="STACK">$2s<ex>Stack trace: function @ line</ex></ph>
   </message>
@@ -789,14 +801,23 @@ Then, zoom and pan the timeline with the mousewheel or <ph name="NAVIGATENODE">$
   <message name="IDS_DEVTOOLS_a10717d996573373c8f9a01c49bbb6a5" desc="Text in Timeline Panel of the Performance panel">
     Loading profile…
   </message>
+  <message name="IDS_DEVTOOLS_a1fa27779242b4902f7ae3bdd5c6d508" desc="Text that refers to some types">
+    Type
+  </message>
   <message name="IDS_DEVTOOLS_a34991663b140f981410a06acc058849" desc="Text in UIDevtools Utils of the Performance panel">
     ThreadControllerImpl::RunTask
   </message>
   <message name="IDS_DEVTOOLS_a3b61900010aa9472919c6c7ac247fed" desc="Text of a DOM element in Timeline UIUtils of the Performance panel">
     (changed id to &quot;<ph name="INVALIDATION_CHANGEDID">$1s<ex>id2</ex></ph>&quot;<ph name="EXTRADATA">$2s<ex>a, b</ex></ph>)
   </message>
+  <message name="IDS_DEVTOOLS_a3d5de3eac8bb00ae86fd1a1005f1500" desc="Text for timestamps of items">
+    Timestamp
+  </message>
   <message name="IDS_DEVTOOLS_a45da96d0bf6575970f2d27af22be28a" desc="Text in Timeline UIUtils of the Performance panel">
     System
+  </message>
+  <message name="IDS_DEVTOOLS_a4ecfc70574394990cf17bd83df499f7" desc="Text that refers to some events">
+    Event
   </message>
   <message name="IDS_DEVTOOLS_a5d91e1697b7c75863fb9c6163a3446e" desc="Text in Timeline Event Overview of the Performance panel">
     COVERAGE
@@ -879,6 +900,9 @@ Then, zoom and pan the timeline with the mousewheel or <ph name="NAVIGATENODE">$
   <message name="IDS_DEVTOOLS_b59387e4d62a4e3fe4285a1311dcd272" desc="Text in Timeline Details View of the Performance panel">
     Event Log
   </message>
+  <message name="IDS_DEVTOOLS_b5a7adde1af5c87d7fd797b6245c2a39" desc="Text for the description of something">
+    Description
+  </message>
   <message name="IDS_DEVTOOLS_b6434258c743f8673997b5aeb3721c27" desc="Text that refers to the network request method">
     Request Method
   </message>
@@ -900,11 +924,17 @@ Then, zoom and pan the timeline with the mousewheel or <ph name="NAVIGATENODE">$
   <message name="IDS_DEVTOOLS_b9f3a3a888d3796e0248b3f65b14349e" desc="Text in Timeline Details View of the Performance panel">
     Bottom-Up
   </message>
+  <message name="IDS_DEVTOOLS_bafd7322c6e97d25b6299b5d6fe8920b" desc="Text in Timeline indicating that input has not happened recently">
+    No
+  </message>
   <message name="IDS_DEVTOOLS_bd03acccca092608aac93f5fadb091d5" desc="Text in Timeline UIUtils of the Performance panel">
     Streamed
   </message>
   <message name="IDS_DEVTOOLS_be7e368875c5373b1cfbc3b97abc8742" desc="Text in Events Timeline Tree View of the Performance panel">
     ≥ <ph name="DURATIONMS">$1d<ex>2</ex></ph> ms
+  </message>
+  <message name="IDS_DEVTOOLS_be8545ae7ab0276e15898aae7acfbd7a" desc="Text that refers to the resources of the web page">
+    Resource
   </message>
   <message name="IDS_DEVTOOLS_be85f6b3661854c85ddbde4c1429b2a2" desc="Text in Timeline UIUtils of the Performance panel">
     (<ph name="CLIP___">$1s<ex>2</ex></ph>, <ph name="CLIP___">$2s<ex>2</ex></ph>)
@@ -1047,6 +1077,9 @@ Then, zoom and pan the timeline with the mousewheel or <ph name="NAVIGATENODE">$
   <message name="IDS_DEVTOOLS_dc16531c312e4d4c024ffd577d123887" desc="Text in Counters Graph of the Performance panel">
     Listeners
   </message>
+  <message name="IDS_DEVTOOLS_dc30bc0c7914db5918da4263fce93ad2" desc="Text to clear content">
+    Clear
+  </message>
   <message name="IDS_DEVTOOLS_dd694dc279a5fbefed6a8323c15f4e67" desc="Text in Timeline UIUtils of the Performance panel">
     Cancel Idle Callback
   </message>
@@ -1086,6 +1119,9 @@ Then, zoom and pan the timeline with the mousewheel or <ph name="NAVIGATENODE">$
   <message name="IDS_DEVTOOLS_e5cfc515f312c9e85f367e9854d9963e" desc="Text in Timeline UIUtils of the Performance panel">
     Digest
   </message>
+  <message name="IDS_DEVTOOLS_e6b391a8d2c4d45902a23a8b6585703d" desc="Text for web URLs">
+    URL
+  </message>
   <message name="IDS_DEVTOOLS_e6dd8524d6da96536b22201a9a46285a" desc="Text in Counters Graph of the Performance panel">
     GPU Memory
   </message>
@@ -1097,6 +1133,12 @@ Then, zoom and pan the timeline with the mousewheel or <ph name="NAVIGATENODE">$
   </message>
   <message name="IDS_DEVTOOLS_eaeb30f9f18e0c50b178676f3eaef45f" desc="Text in Timeline UIUtils of the Performance panel">
     Task
+  </message>
+  <message name="IDS_DEVTOOLS_ec21eddec143497cea80ab45444a5dab" desc="Related node label in Timeline UIUtils of the Performance panel">
+    Owner Element
+  </message>
+  <message name="IDS_DEVTOOLS_ec53a8c4f07baed5d8825072c89799be" desc="Text for the status of something">
+    Status
   </message>
   <message name="IDS_DEVTOOLS_ecfc2dffe568c10a67dbc6d3724cfde2" desc="Text in Timeline Tree View of the Performance panel">
     Activity

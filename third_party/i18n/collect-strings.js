@@ -583,6 +583,18 @@ function collectAllStringsInDir(dir) {
     const parsedMessages = parseUIStrings(justUIStrings);
     for (const [key, parsed] of Object.entries(parsedMessages)) {
       const {message, description, examples} = parsed;
+
+      // IntlMessageFormat does not work well with multiline strings, they also
+      // usually indicate layout happening in i18n, so disallow its use.
+      if (/(\\n)/.test(message)) {
+        const malformedStringsEx = `The following string contains new line characters (\\n): which are not allowed:
+            message: ${message}
+            description: ${description}
+            please remove them from the string and try again.
+            `;
+        throw new Error(malformedStringsEx);
+      }
+
       const converted = convertMessageToCtc(message, examples);
 
       // Don't include placeholders if there are none.

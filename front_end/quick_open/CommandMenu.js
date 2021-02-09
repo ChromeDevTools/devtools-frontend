@@ -7,7 +7,6 @@ import * as Diff from '../diff/diff.js';
 import * as Host from '../host/host.js';
 import * as Platform from '../platform/platform.js';
 import {ls} from '../platform/platform.js';
-import * as Root from '../root/root.js';
 import * as UI from '../ui/ui.js';
 
 import {FilteredListWidget, Provider} from './FilteredListWidget.js';
@@ -134,30 +133,12 @@ export class CommandMenu {
   }
 
   _loadCommands() {
-    // TODO(crbug.com/1134103): replace this implementation for the one on _loadCommandsFromPreRegisteredExtensions once
-    // all settings, views and type lookups extensions have been migrated.
     const locations = new Map();
-    // TODO(crbug.com/1134103): Remove this call when all ViewLocationResolver lookups are migrated
-    Root.Runtime.Runtime.instance().extensions(UI.View.ViewLocationResolver).forEach(extension => {
-      const category = extension.descriptor()['category'];
-      const name = extension.descriptor()['name'];
-      if (category && name) {
-        locations.set(name, ls(category));
-      }
-    });
     for (const {category, name} of UI.ViewManager.getRegisteredLocationResolvers()) {
       if (category && name) {
         locations.set(name, category);
       }
     }
-
-    this._loadCommandsFromPreRegisteredExtensions(locations);
-  }
-
-  /**
-   * @param {!Map<string,string>} locations
-   */
-  _loadCommandsFromPreRegisteredExtensions(locations) {
     const views = UI.ViewManager.getRegisteredViewExtensions();
     for (const view of views) {
       const viewLocation = view.location();
@@ -189,7 +170,6 @@ export class CommandMenu {
       }
     }
   }
-
 
   /**
    * @return {!Array.<!Command>}

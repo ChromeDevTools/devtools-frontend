@@ -5,7 +5,6 @@
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
 import {ls} from '../platform/platform.js';
-import * as Root from '../root/root.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
 import {ContextMenu} from './ContextMenu.js';  // eslint-disable-line no-unused-vars
@@ -347,18 +346,10 @@ export class ViewManager {
     if (!location) {
       return /** @type {!Promise<?_Location>} */ (Promise.resolve(null));
     }
-    // TODO(crbug.com/1134103): Remove this call when all ViewLocationResolver lookups are migrated
-    const legacyResolverExtensions = Root.Runtime.Runtime.instance()
-                                         .extensions(ViewLocationResolver)
-                                         .filter(extension => extension.descriptor()['name'] === location);
     const registeredResolvers = getRegisteredLocationResolvers().filter(resolver => resolver.name === location);
 
-    if (legacyResolverExtensions.length + registeredResolvers.length > 1) {
+    if (registeredResolvers.length > 1) {
       throw new Error('Duplicate resolver for location: ' + location);
-    }
-    if (legacyResolverExtensions.length) {
-      const resolver = /** @type {!ViewLocationResolver} */ (await legacyResolverExtensions[0].instance());
-      return /** @type {?_Location} */ (resolver.resolveLocation(location));
     }
     if (registeredResolvers.length) {
       const resolver = /** @type {!ViewLocationResolver} */ (await registeredResolvers[0].loadResolver());

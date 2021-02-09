@@ -220,9 +220,26 @@ export class ResourcesPanel extends UI.Panel.PanelWithSidebar {
 }
 
 /**
+ * @type {!ResourceRevealer}
+ */
+let resourceRevealerInstance;
+
+/**
  * @implements {Common.Revealer.Revealer}
  */
 export class ResourceRevealer {
+  /**
+   * @param {{forceNew: ?boolean}} opts
+   */
+  static instance(opts = {forceNew: null}) {
+    const {forceNew} = opts;
+    if (!resourceRevealerInstance || forceNew) {
+      resourceRevealerInstance = new ResourceRevealer();
+    }
+
+    return resourceRevealerInstance;
+  }
+
   /**
    * @override
    * @param {!Object} resource
@@ -237,11 +254,26 @@ export class ResourceRevealer {
     await sidebar.showResource(resource);
   }
 }
+/**
+ * @type {!CookieReferenceRevealer}
+ */
+let cookieReferenceRevealerInstance;
 
 /**
  * @implements {Common.Revealer.Revealer}
  */
 export class CookieReferenceRevealer {
+  /**
+   * @param {{forceNew: ?boolean}} opts
+   */
+  static instance(opts = {forceNew: null}) {
+    const {forceNew} = opts;
+    if (!cookieReferenceRevealerInstance || forceNew) {
+      cookieReferenceRevealerInstance = new CookieReferenceRevealer();
+    }
+
+    return cookieReferenceRevealerInstance;
+  }
   /**
    * @override
    * @param {!Object} cookie

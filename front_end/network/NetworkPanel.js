@@ -873,11 +873,24 @@ export class ContextMenuProvider {
     NetworkPanel._instance().appendApplicableItems(event, contextMenu, target);
   }
 }
-
+/** @type {!RequestRevealer} */
+let requestRevealerInstance;
 /**
  * @implements {Common.Revealer.Revealer}
  */
 export class RequestRevealer {
+  /**
+   * @param {{forceNew: ?boolean}} opts
+   */
+  static instance(opts = {forceNew: null}) {
+    const {forceNew} = opts;
+    if (!requestRevealerInstance || forceNew) {
+      requestRevealerInstance = new RequestRevealer();
+    }
+
+    return requestRevealerInstance;
+  }
+
   /**
    * @override
    * @param {!Object} request
@@ -1063,10 +1076,25 @@ export class ActionDelegate {
   }
 }
 
+/** @type {!RequestLocationRevealer} */
+let requestLocationRevealerInstance;
+
 /**
  * @implements {Common.Revealer.Revealer}
  */
 export class RequestLocationRevealer {
+  /**
+   * @param {{forceNew: ?boolean}=} opts
+   * @return {RequestLocationRevealer}
+   */
+  static instance(opts = {forceNew: null}) {
+    const {forceNew} = opts;
+    if (!requestLocationRevealerInstance || forceNew) {
+      requestLocationRevealerInstance = new RequestLocationRevealer();
+    }
+    return requestLocationRevealerInstance;
+  }
+
   /**
    * @override
    * @param {!Object} match

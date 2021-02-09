@@ -352,3 +352,28 @@ UI.ContextMenu.registerProvider({
   },
   experiment: undefined,
 });
+
+Common.Revealer.registerRevealer({
+  contextTypes() {
+    return [
+      SDK.NetworkRequest.NetworkRequest,
+    ];
+  },
+  destination: Common.Revealer.RevealerDestination.NETWORK_PANEL,
+  async loadRevealer() {
+    const Network = await loadNetworkModule();
+    return Network.NetworkPanel.RequestRevealer.instance();
+  },
+});
+
+
+Common.Revealer.registerRevealer({
+  contextTypes() {
+    return maybeRetrieveContextTypes(Network => [Network.NetworkSearchScope.UIRequestLocation]);
+  },
+  async loadRevealer() {
+    const Network = await loadNetworkModule();
+    return Network.NetworkPanel.RequestLocationRevealer.instance();
+  },
+  destination: undefined,
+});

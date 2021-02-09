@@ -1,21 +1,4 @@
 {
-  "extensions": [
-    {
-      "type": "@Common.Revealer",
-      "contextTypes": [
-        "SDK.NetworkRequest"
-      ],
-      "destination": "Network panel",
-      "className": "Network.NetworkPanel.RequestRevealer"
-    },
-    {
-      "type": "@Common.Revealer",
-      "contextTypes": [
-        "Network.UIRequestLocation"
-      ],
-      "className": "Network.NetworkPanel.RequestLocationRevealer"
-    }
-  ],
   "dependencies": [
     "browser_sdk",
     "client_variations",

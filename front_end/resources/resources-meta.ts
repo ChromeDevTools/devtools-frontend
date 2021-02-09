@@ -2,7 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
 import * as Root from '../root/root.js';
+import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
 // eslint-disable-next-line rulesdir/es_modules_import
@@ -127,4 +129,30 @@ UI.ActionRegistration.registerActionExtension({
       shortcut: 'Meta+E',
     },
   ],
+});
+
+Common.Revealer.registerRevealer({
+  contextTypes() {
+    return [
+      SDK.Resource.Resource,
+    ];
+  },
+  destination: Common.Revealer.RevealerDestination.APPLICATION_PANEL,
+  async loadRevealer() {
+    const Resources = await loadResourcesModule();
+    return Resources.ResourcesPanel.ResourceRevealer.instance();
+  },
+});
+
+Common.Revealer.registerRevealer({
+  contextTypes() {
+    return [
+      SDK.Cookie.CookieReference,
+    ];
+  },
+  destination: Common.Revealer.RevealerDestination.APPLICATION_PANEL,
+  async loadRevealer() {
+    const Resources = await loadResourcesModule();
+    return Resources.ResourcesPanel.CookieReferenceRevealer.instance();
+  },
 });

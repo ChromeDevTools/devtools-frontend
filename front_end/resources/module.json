@@ -1,22 +1,4 @@
 {
-  "extensions": [
-    {
-      "type": "@Common.Revealer",
-      "contextTypes": [
-        "SDK.Resource"
-      ],
-      "destination": "Application panel",
-      "className": "Resources.ResourcesPanel.ResourceRevealer"
-    },
-    {
-      "type": "@Common.Revealer",
-      "contextTypes": [
-        "SDK.CookieReference"
-      ],
-      "destination": "Application panel",
-      "className": "Resources.ResourcesPanel.CookieReferenceRevealer"
-    }
-  ],
   "dependencies": [
     "source_frame",
     "cookie_table",

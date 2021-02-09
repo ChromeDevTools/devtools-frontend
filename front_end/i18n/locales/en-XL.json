@@ -3086,9 +3086,6 @@
   "network/HARWriter.js | writingFile": {
     "message": "Ŵŕît́îńĝ f́îĺê…"
   },
-  "network/ModuleUIStrings.js | networkPanel": {
-    "message": "N̂ét̂ẃôŕk̂ ṕâńêĺ"
-  },
   "network/network-meta.ts | colorCode": {
     "message": "ĉól̂ór̂ ćôd́ê"
   },
@@ -5917,9 +5914,6 @@
   },
   "resources/IndexedDBViews.js | version": {
     "message": "V̂ér̂śîón̂"
-  },
-  "resources/ModuleUIStrings.js | applicationPanel": {
-    "message": "Âṕp̂ĺîćât́îón̂ ṕâńêĺ"
   },
   "resources/OpenedWindowDetailsView.js | accessToOpener": {
     "message": "Âćĉéŝś t̂ó ôṕêńêŕ"

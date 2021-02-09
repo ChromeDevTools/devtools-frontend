@@ -27,6 +27,9 @@
   <message name="IDS_DEVTOOLS_441d3aea2e55865603a26ca972779831" desc="Text that appears in a tooltip the xhr and fetch resource types filter.">
     XHR and Fetch
   </message>
+  <message name="IDS_DEVTOOLS_4566ce384ed4a889beb6f6432d5906d7" desc="The UI destination when right clicking an item that can be revealed">
+    Network panel
+  </message>
   <message name="IDS_DEVTOOLS_45edc1b96407d9d213dd1135962a32a0" desc="Name of a network resource type">
     WebSocket
   </message>
@@ -62,6 +65,9 @@
   </message>
   <message name="IDS_DEVTOOLS_a83f1ca5ad00b39773d9e6a26b0e70b2" desc="Text that appears in a tooltip for the JavaScript types filter.">
     Scripts
+  </message>
+  <message name="IDS_DEVTOOLS_b5dc9b0e6beecb1e80f6f1b5b3050f12" desc="The UI destination when right clicking an item that can be revealed">
+    Application panel
   </message>
   <message name="IDS_DEVTOOLS_b85815d04cec053ce6deb8021f2df1b8" desc="Name of a network resource type">
     Ping

@@ -115,4 +115,6 @@ export const RevealerDestination = {
   STYLES_SIDEBAR: ls`styles sidebar`,
   CHANGES_DRAWER: ls`Changes drawer`,
   ISSUES_VIEW: ls`Issues view`,
+  NETWORK_PANEL: ls`Network panel`,
+  APPLICATION_PANEL: ls`Application panel`,
 };

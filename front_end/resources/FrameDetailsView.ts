@@ -447,9 +447,13 @@ export class FrameDetailsReportView extends HTMLElement {
             .button-icon-with-text {
               vertical-align: sub;
             }
+
+            .without-min-width {
+              min-width: auto;
+            }
           </style>
             <devtools-report-key>${i18nString(UIStrings.ownerElement)}</devtools-report-key>
-          <devtools-report-value>
+          <devtools-report-value class="without-min-width">
               <button class="link" role="link" tabindex=0 title=${i18nString(UIStrings.clickToRevealInElementsPanel)}
               @mouseenter=${(): Promise<void>|undefined => this.frame?.highlight()}
               @mouseleave=${(): void => SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight()}
@@ -462,7 +466,7 @@ export class FrameDetailsReportView extends HTMLElement {
                 height: '16px',
               } as Components.Icon.IconData}></devtools-icon>
               <${linkTargetDOMNode.nodeName().toLocaleLowerCase()}>
-            </a>
+            </button>
           </devtools-report-value>
         `;
         // clang-format on
@@ -648,7 +652,7 @@ export class FrameDetailsReportView extends HTMLElement {
         <devtools-report-value>
           <span title=${tooltipText}>${availabilityText}</span>
           <x-link class="link" href="https://web.dev/monitor-total-page-memory-usage/">${
-          i18nString(UIStrings.learnMore)}</a>
+          i18nString(UIStrings.learnMore)}</x-link>
         </devtools-report-value>
       `;
     }

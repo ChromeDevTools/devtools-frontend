@@ -38,30 +38,9 @@ export async function tabExistsInDrawer(tabId: string) {
   await waitFor(tabId, drawer);
 }
 
-export const checkIfTabExistsInMainPanel = async (tabId: string) => {
-  const mainPanel = await waitFor(MAIN_PANEL_SELECTOR);
-  const header = await waitFor(TAB_HEADER_SELECTOR, mainPanel);
-  const tab = await header.$(tabId);
-  return Boolean(tab);
-};
-
 export const checkIfTabExistsInDrawer = async (tabId: string) => {
   const drawer = await waitFor(DRAWER_PANEL_SELECTOR);
   const header = await waitFor(TAB_HEADER_SELECTOR, drawer);
   const tab = await header.$(tabId);
   return Boolean(tab);
-};
-
-export const moveTabToDrawer = async (tabId: string) => {
-  if (!checkIfTabExistsInMainPanel(tabId)) {
-    return;
-  }
-  await clickOnContextMenuItemFromTab(tabId, MOVE_TO_DRAWER_SELECTOR);
-};
-
-export const moveTabToMainPanel = async (tabId: string) => {
-  if (!checkIfTabExistsInDrawer(tabId)) {
-    return;
-  }
-  await clickOnContextMenuItemFromTab(tabId, MOVE_TO_MAIN_PANEL_SELECTOR);
 };

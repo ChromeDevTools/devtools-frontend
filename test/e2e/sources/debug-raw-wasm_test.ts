@@ -7,7 +7,7 @@ import * as puppeteer from 'puppeteer';
 
 import {$, click, getBrowserAndPages, goToResource, installEventListener, step, timeout, waitFor, waitForFunction} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {addBreakpointForLine, checkBreakpointDidNotActivate, checkBreakpointIsActive, checkBreakpointIsNotActive, clearSourceFilesAdded, DEBUGGER_PAUSED_EVENT, getBreakpointDecorators, getNonBreakableLines, listenForSourceFilesAdded, openSourceCodeEditorForFile, openSourcesPanel, RESUME_BUTTON, retrieveSourceFilesAdded, retrieveTopCallFrameScriptLocation, retrieveTopCallFrameWithoutResuming, SCOPE_LOCAL_VALUES_SELECTOR, SELECTED_THREAD_SELECTOR, sourceLineNumberSelector, stepThroughTheCode, TURNED_OFF_PAUSE_BUTTON_SELECTOR, waitForAdditionalSourceFiles, waitForSourceCodeLines} from '../helpers/sources-helpers.js';
+import {addBreakpointForLine, checkBreakpointDidNotActivate, checkBreakpointIsActive, checkBreakpointIsNotActive, clearSourceFilesAdded, DEBUGGER_PAUSED_EVENT, getBreakpointDecorators, getCallFrameLocations, getCallFrameNames, getNonBreakableLines, listenForSourceFilesAdded, openSourceCodeEditorForFile, openSourcesPanel, RESUME_BUTTON, retrieveSourceFilesAdded, retrieveTopCallFrameScriptLocation, retrieveTopCallFrameWithoutResuming, SCOPE_LOCAL_VALUES_SELECTOR, SELECTED_THREAD_SELECTOR, sourceLineNumberSelector, stepThroughTheCode, switchToCallFrame, TURNED_OFF_PAUSE_BUTTON_SELECTOR, waitForAdditionalSourceFiles, waitForSourceCodeLines} from '../helpers/sources-helpers.js';
 
 describe('Sources Tab', async function() {
   // The tests in this suite are particularly slow, as they perform a lot of actions
@@ -519,16 +519,18 @@ describe('Sources Tab', async function() {
 });
 
 describe('Raw-Wasm', async () => {
-  // Failing on Windows-only
-  it.skip('[crbug.com/1098707]: displays correct location in Wasm source', async () => {
-    const {frontend} = getBrowserAndPages();
+  it('displays correct location in Wasm source', async () => {
+    const {target} = getBrowserAndPages();
 
     // Have the target load the page.
-    await goToResource('sources/wasm/callstack-wasm-to-js.html');
+    await openSourceCodeEditorForFile('callstack-wasm-to-js.wasm', 'wasm/callstack-wasm-to-js.html');
+
+    // Go
+    const fooPromise = target.evaluate('foo();');  // Don't await this, the target hits a debugger statement.
 
     // This page automatically enters debugging.
-    const messageElement = await frontend.waitForSelector('.paused-message');
-    const statusMain = await $('.status-main', messageElement);
+    const messageElement = await waitFor('.paused-message');
+    const statusMain = await waitFor('.status-main', messageElement);
 
     if (!statusMain) {
       assert.fail('Unable to find .status-main element');
@@ -539,44 +541,26 @@ describe('Raw-Wasm', async () => {
 
     assert.strictEqual(pauseMessage, 'Debugger paused');
 
-    const sidebar = await messageElement.evaluateHandle(n => n.parentElement);
-
     // Find second frame of call stack
-    const callFrame = (await $('.call-frame-item.selected + .call-frame-item', sidebar));
-    if (!callFrame) {
-      assert.fail('Unable to find callframe');
-      return;
-    }
+    const titles = await getCallFrameNames();
+    const locations = await getCallFrameLocations();
 
-    const callFrameTitle = (await $('.call-frame-title-text', callFrame));
-    if (!callFrameTitle) {
-      assert.fail('Unable to find callframe title');
-      return;
-    }
+    assert.isAbove(titles.length, 1);
+    assert.isAbove(locations.length, 1);
+    assert.strictEqual(titles[1], 'foo');
+    assert.strictEqual(locations[1], 'callstack-wasm-to-js.wasm:0x32');
 
-    const title = await callFrameTitle.evaluate(n => n.textContent);
-    const callFrameLocation = await $('.call-frame-location', callFrame);
-    if (!callFrameLocation) {
-      assert.fail('Unable to find callframe location');
-      return;
-    }
-
-    const location = await callFrameLocation.evaluate(n => n.textContent);
-
-    assert.strictEqual(title, 'foo');
-    assert.strictEqual(location, 'callstack-wasm-to-js.wasm:0x32');
-
-    // Select next call frame.
-    await callFrame.press('ArrowDown');
-    await callFrame.press('Space');
+    // Select second call frame.
+    await switchToCallFrame(2);
 
     // Wasm code for function call should be highlighted
-    const codeLine = await frontend.waitForSelector('.cm-execution-line pre');
+    const codeLine = await waitFor('.cm-execution-line pre');
     const codeText = await codeLine.evaluate(n => n.textContent);
 
     assert.strictEqual(codeText, '    call $bar');
 
     // Resume the evaluation
     await click(RESUME_BUTTON);
+    await fooPromise;
   });
 });

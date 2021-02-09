@@ -4,6 +4,17 @@
 
 import("../../../scripts/build/ninja/copy.gni")
 
-copy_sources_to_resources("axe-core") {
+group("axe-core") {
+  public_deps = [
+    ":gen",
+    ":resources",
+  ]
+}
+
+copy_to_gen("gen") {
+  sources = [ "axe.js" ]
+}
+
+copy_sources_to_resources("resources") {
   sources = [ "axe.js" ]
 }

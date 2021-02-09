@@ -4,7 +4,20 @@
 
 import("../../scripts/build/ninja/copy.gni")
 
-copy_sources_to_resources("bundle") {
+group("bundle") {
+  public_deps = [
+    ":gen",
+    ":resources",
+  ]
+}
+
+copy_to_gen("gen") {
+  sources = [ "axe_core_test_runner.js" ]
+
+  deps = [ "../third_party/axe-core" ]
+}
+
+copy_sources_to_resources("resources") {
   sources = [ "axe_core_test_runner.js" ]
 
   deps = [ "../third_party/axe-core" ]

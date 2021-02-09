@@ -107,4 +107,49 @@ describeWithMockConnection('Linkifier', async () => {
     const observer = new MutationObserver(callback);
     observer.observe(anchor, {childList: true});
   });
+
+  it('uses url to identify script if scriptId cannot be found', done => {
+    const {target, linkifier} = setUpEnvironment();
+    const scriptId = 'script';
+    const lineNumber = 4;
+    const url = 'https://www.google.com/script.js';
+
+    const scriptParsedEvent = {
+      scriptId,
+      url,
+      startLine: 0,
+      startColumn: 0,
+      endLine: 10,
+      endColumn: 10,
+      executionContextId: 1234,
+      hash: '',
+      isLiveEdit: false,
+      sourceMapURL: undefined,
+      hasSourceURL: false,
+      hasSyntaxError: false,
+      length: 10,
+    };
+    dispatchEvent(target, 'Debugger.scriptParsed', scriptParsedEvent);
+
+    // Ask for a link to a script that has not been registered yet, but has the same url.
+    const anchor = linkifier.maybeLinkifyScriptLocation(target, scriptId + '2', url, lineNumber);
+    assertNotNull(anchor);
+
+    const callback: MutationCallback = function(mutations: MutationRecord[]) {
+      for (const mutation of mutations) {
+        if (mutation.type === 'childList') {
+          const info = Components.Linkifier.Linkifier.linkInfo(anchor);
+          assertNotNull(info);
+          assertNotNull(info.uiLocation);
+
+          // Make sure that a uiSourceCode is linked to that anchor.
+          assertNotNull(info.uiLocation.uiSourceCode);
+          observer.disconnect();
+          done();
+        }
+      }
+    };
+    const observer = new MutationObserver(callback);
+    observer.observe(anchor, {childList: true});
+  });
 });

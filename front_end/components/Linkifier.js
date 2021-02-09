@@ -262,8 +262,12 @@ export class Linkifier {
     if (scriptId) {
       rawLocation = debuggerModel.createRawLocationByScriptId(scriptId, lineNumber || 0, columnNumber);
     }
-    if (!rawLocation) {
-      rawLocation = debuggerModel.createRawLocationByURL(sourceURL, lineNumber || 0, columnNumber);
+    // The function createRawLocationByScriptId will always return a raw location. Normally
+    // we rely on the live location that is created from it to update missing information
+    // to create the link. If we, however, already have a similar script with the same source url,
+    // use that one.
+    if (!rawLocation?.script()) {
+      rawLocation = debuggerModel.createRawLocationByURL(sourceURL, lineNumber || 0, columnNumber) || rawLocation;
     }
 
     if (!rawLocation) {

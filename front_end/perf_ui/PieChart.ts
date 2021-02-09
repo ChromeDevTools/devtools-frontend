@@ -134,7 +134,7 @@ export class PieChart extends HTMLElement {
           top: 1px;
           position: relative;
           border: 1px solid rgb(100 100 100 / 20%); /* stylelint-disable-line plugin/use_theme_colors */
-          /*See: crbug.com/1152736 for color variable migration.*/
+          /* See: crbug.com/1152736 for color variable migration. */
         }
 
         .pie-chart-swatch.pie-chart-empty-swatch {

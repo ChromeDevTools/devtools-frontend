@@ -122,17 +122,17 @@ export class CSSAngleEditor extends HTMLElement {
           height: 6em;
           background-color: var(--color-background);
           border: 0.5em solid var(--border-color); /* stylelint-disable-line plugin/use_theme_colors */
-          /*See: crbug.com/1152736 for color variable migration.*/
+          /* See: crbug.com/1152736 for color variable migration. */
           border-radius: 9em;
           box-shadow: var(--drop-shadow), inset 0 0 15px hsl(0deg 0% 0% / 25%); /* stylelint-disable-line plugin/use_theme_colors */
-          /*See: crbug.com/1152736 for color variable migration.*/
+          /* See: crbug.com/1152736 for color variable migration. */
           transform: translateX(-3em);
         }
 
         .center,
         .hand {
           box-shadow: 0 0 2px hsl(0deg 0% 0% / 20%); /* stylelint-disable-line plugin/use_theme_colors */
-          /*See: crbug.com/1152736 for color variable migration.*/
+          /* See: crbug.com/1152736 for color variable migration. */
         }
 
         .pointer {
@@ -188,7 +188,7 @@ export class CSSAngleEditor extends HTMLElement {
           border-radius: 1em;
           cursor: pointer;
           box-shadow: 0 0 5px hsl(0deg 0% 0% / 30%); /* stylelint-disable-line plugin/use_theme_colors */
-          /*See: crbug.com/1152736 for color variable migration.*/
+          /* See: crbug.com/1152736 for color variable migration. */
         }
 
         .hand::before,

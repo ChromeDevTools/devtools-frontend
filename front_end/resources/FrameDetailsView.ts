@@ -444,7 +444,7 @@ export class FrameDetailsReportView extends HTMLElement {
         // clang-format off
         return LitHtml.html`
           <style>
-              .button-icon-with-text {
+            .button-icon-with-text {
               vertical-align: sub;
             }
           </style>

@@ -682,4 +682,48 @@ describeWithEnvironment('CSSPropertyIconResolver', async () => {
           `Test align-self(${JSON.stringify(test.style)}) failed.`);
     }
   });
+
+  it('can find an icon for flex-wrap properties', () => {
+    const tests = [
+      {
+        style: {
+          'flex-direction': 'row',
+          'flex-wrap': 'wrap',
+        },
+        iconName: 'flex-wrap-icon',
+        expected: Elements.CSSPropertyIconResolver.PhysicalFlexDirection.LEFT_TO_RIGHT,
+      },
+      {
+        style: {
+          'flex-direction': 'row',
+          'flex-wrap': 'nowrap',
+        },
+        iconName: 'flex-nowrap-icon',
+        expected: Elements.CSSPropertyIconResolver.PhysicalFlexDirection.LEFT_TO_RIGHT,
+      },
+      {
+        style: {
+          'flex-direction': 'column',
+          'flex-wrap': 'wrap',
+        },
+        iconName: 'flex-wrap-icon',
+        expected: Elements.CSSPropertyIconResolver.PhysicalFlexDirection.TOP_TO_BOTTOM,
+      },
+      {
+        style: {
+          'flex-direction': 'column',
+          'flex-wrap': 'nowrap',
+        },
+        iconName: 'flex-nowrap-icon',
+        expected: Elements.CSSPropertyIconResolver.PhysicalFlexDirection.TOP_TO_BOTTOM,
+      },
+    ];
+
+    for (const test of tests) {
+      assert.deepEqual(
+          Elements.CSSPropertyIconResolver.findIcon(`flex-wrap: ${test.style['flex-wrap']}`, mapFromStyle(test.style)),
+          Elements.CSSPropertyIconResolver.roateFlexWrapIcon(test.iconName, test.expected),
+          `Test flex-wrap(${JSON.stringify(test.style)}) failed.`);
+    }
+  });
 });

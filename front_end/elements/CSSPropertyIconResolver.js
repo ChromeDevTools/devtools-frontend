@@ -290,6 +290,38 @@ function flexAlignSelfIcon(iconName) {
 }
 
 /**
+ * @param {string} iconName
+ * @param {PhysicalFlexDirection} direction
+ * @returns
+ */
+export function roateFlexWrapIcon(iconName, direction) {
+  return {
+    iconName,
+    rotate:
+        direction === PhysicalFlexDirection.BOTTOM_TO_TOP || direction === PhysicalFlexDirection.TOP_TO_BOTTOM ? 90 : 0,
+    scaleX: 1,
+    scaleY: 1,
+  };
+}
+/**
+ *
+ * @param {string} iconName
+ * @return {function(!Map<string, string>):!IconInfo}
+ */
+function flexWrapIcon(iconName) {
+  /**
+   * @param {!Map<string, string>} computedStyles
+   * @return {!IconInfo}
+   */
+  function getIcon(computedStyles) {
+    const directions = getPhysicalFlexDirections(computedStyles);
+    const computedFlexDirection = computedStyles.get('flex-direction') || 'row';
+    return roateFlexWrapIcon(iconName, directions[computedFlexDirection]);
+  }
+  return getIcon;
+}
+
+/**
  * @type {!Map<string, function(!Map<string, string>, !Map<string, string>):!IconInfo>}
  */
 const textToIconResolver = new Map([
@@ -331,6 +363,8 @@ const textToIconResolver = new Map([
   ['align-self: flex-start', flexAlignSelfIcon('flex-align-self-flex-start-icon')],
   ['align-self: flex-end', flexAlignSelfIcon('flex-align-self-flex-end-icon')],
   ['align-self: stretch', flexAlignSelfIcon('flex-align-self-stretch-icon')],
+  ['flex-wrap: wrap', flexWrapIcon('flex-wrap-icon')],
+  ['flex-wrap: nowrap', flexWrapIcon('flex-nowrap-icon')],
 ]);
 
 /**

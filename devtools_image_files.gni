@@ -37,6 +37,8 @@ devtools_image_files = [
   "flex-align-content-space-evenly-icon.svg",
   "flex-align-content-stretch-icon.svg",
   "flex-justify-content-center-icon.svg",
+  "flex-wrap-icon.svg",
+  "flex-nowrap-icon.svg",
   "flex-justify-content-flex-end-icon.svg",
   "flex-justify-content-flex-start-icon.svg",
   "flex-justify-content-space-around-icon.svg",

@@ -13,10 +13,12 @@ ts_library("ui") {
     "SyntaxHighlighter_test.ts",
     "Treeoutline-keyboard_test.ts",
     "UIUtils_test.ts",
+    "ViewLocation_test.ts",
     "utils/measured-scrollbar-width_test.ts",
   ]
 
   deps = [
+    "../../../../front_end/platform:bundle",
     "../../../../front_end/ui:bundle",
     "../helpers",
   ]

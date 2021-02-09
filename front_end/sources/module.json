@@ -24,38 +24,6 @@
       "actionId": "quickOpen.show"
     },
     {
-      "type": "@Common.Revealer",
-      "contextTypes": [
-        "Workspace.UILocation"
-      ],
-      "destination": "Sources panel",
-      "className": "Sources.SourcesPanel.UILocationRevealer"
-    },
-    {
-      "type": "@Common.Revealer",
-      "contextTypes": [
-        "SDK.DebuggerModel.Location"
-      ],
-      "destination": "Sources panel",
-      "className": "Sources.SourcesPanel.DebuggerLocationRevealer"
-    },
-    {
-      "type": "@Common.Revealer",
-      "contextTypes": [
-        "Workspace.UISourceCode"
-      ],
-      "destination": "Sources panel",
-      "className": "Sources.SourcesPanel.UISourceCodeRevealer"
-    },
-    {
-      "type": "@Common.Revealer",
-      "contextTypes": [
-        "SDK.DebuggerPausedDetails"
-      ],
-      "destination": "Sources panel",
-      "className": "Sources.SourcesPanel.DebuggerPausedDetailsRevealer"
-    },
-    {
       "type": "@Sources.SourcesView.EditorAction",
       "className": "Sources.InplaceFormatterEditorAction"
     },

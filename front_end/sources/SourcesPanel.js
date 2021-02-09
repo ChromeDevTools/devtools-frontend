@@ -1157,10 +1157,25 @@ export class SourcesPanel extends UI.Panel.Panel {
 export let lastModificationTimeout = 200;
 export const minToolbarWidth = 215;
 
+/** @type {!UILocationRevealer} */
+let uILocationRevealerInstance;
+
 /**
  * @implements {Common.Revealer.Revealer}
  */
 export class UILocationRevealer {
+  /**
+   * @param {{forceNew: ?boolean}} opts
+   */
+  static instance(opts = {forceNew: null}) {
+    const {forceNew} = opts;
+    if (!uILocationRevealerInstance || forceNew) {
+      uILocationRevealerInstance = new UILocationRevealer();
+    }
+
+    return uILocationRevealerInstance;
+  }
+
   /**
    * @override
    * @param {!Object} uiLocation
@@ -1176,10 +1191,25 @@ export class UILocationRevealer {
   }
 }
 
+/** @type {!DebuggerLocationRevealer} */
+let debuggerLocationRevealerInstance;
+
 /**
  * @implements {Common.Revealer.Revealer}
  */
 export class DebuggerLocationRevealer {
+  /**
+   * @param {{forceNew: ?boolean}} opts
+   */
+  static instance(opts = {forceNew: null}) {
+    const {forceNew} = opts;
+    if (!debuggerLocationRevealerInstance || forceNew) {
+      debuggerLocationRevealerInstance = new DebuggerLocationRevealer();
+    }
+
+    return debuggerLocationRevealerInstance;
+  }
+
   /**
    * @override
    * @param {!Object} rawLocation
@@ -1199,10 +1229,25 @@ export class DebuggerLocationRevealer {
   }
 }
 
+/** @type {!UISourceCodeRevealer} */
+let uISourceCodeRevealerInstance;
+
 /**
  * @implements {Common.Revealer.Revealer}
  */
 export class UISourceCodeRevealer {
+  /**
+   * @param {{forceNew: ?boolean}} opts
+   */
+  static instance(opts = {forceNew: null}) {
+    const {forceNew} = opts;
+    if (!uISourceCodeRevealerInstance || forceNew) {
+      uISourceCodeRevealerInstance = new UISourceCodeRevealer();
+    }
+
+    return uISourceCodeRevealerInstance;
+  }
+
   /**
    * @override
    * @param {!Object} uiSourceCode
@@ -1218,10 +1263,25 @@ export class UISourceCodeRevealer {
   }
 }
 
+/** @type {!DebuggerPausedDetailsRevealer} */
+let debuggerPausedDetailsRevealerInstance;
+
 /**
  * @implements {Common.Revealer.Revealer}
  */
 export class DebuggerPausedDetailsRevealer {
+  /**
+   * @param {{forceNew: ?boolean}} opts
+   */
+  static instance(opts = {forceNew: null}) {
+    const {forceNew} = opts;
+    if (!debuggerPausedDetailsRevealerInstance || forceNew) {
+      debuggerPausedDetailsRevealerInstance = new DebuggerPausedDetailsRevealer();
+    }
+
+    return debuggerPausedDetailsRevealerInstance;
+  }
+
   /**
    * @override
    * @param {!Object} object

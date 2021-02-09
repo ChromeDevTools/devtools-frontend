@@ -165,9 +165,6 @@
   <message name="IDS_DEVTOOLS_3e27fe84bd1fddd585c8d06e6307b67a" desc="Text in Debugger Plugin of the Sources panel">
     Remove all breakpoints in line
   </message>
-  <message name="IDS_DEVTOOLS_3fd3dddd9661349b90b648bba2748f1b" desc="The UI destination when right clicking an item that can be revealed">
-    Sources panel
-  </message>
   <message name="IDS_DEVTOOLS_41c03dfb0ea5890d60756ad55c6e47b1" desc="Title of a setting under the Sources category that can be invoked through the Command Menu">
     Detect indentation
   </message>

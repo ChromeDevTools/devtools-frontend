@@ -1252,3 +1252,55 @@ UI.ContextMenu.registerProvider({
     ];
   },
 });
+
+Common.Revealer.registerRevealer({
+  contextTypes() {
+    return [
+      Workspace.UISourceCode.UILocation,
+    ];
+  },
+  destination: Common.Revealer.RevealerDestination.SOURCES_PANEL,
+  async loadRevealer() {
+    const Sources = await loadSourcesModule();
+    return Sources.SourcesPanel.UILocationRevealer.instance();
+  },
+});
+
+Common.Revealer.registerRevealer({
+  contextTypes() {
+    return [
+      SDK.DebuggerModel.Location,
+    ];
+  },
+  destination: Common.Revealer.RevealerDestination.SOURCES_PANEL,
+  async loadRevealer() {
+    const Sources = await loadSourcesModule();
+    return Sources.SourcesPanel.DebuggerLocationRevealer.instance();
+  },
+});
+
+Common.Revealer.registerRevealer({
+  contextTypes() {
+    return [
+      Workspace.UISourceCode.UISourceCode,
+    ];
+  },
+  destination: Common.Revealer.RevealerDestination.SOURCES_PANEL,
+  async loadRevealer() {
+    const Sources = await loadSourcesModule();
+    return Sources.SourcesPanel.UISourceCodeRevealer.instance();
+  },
+});
+
+Common.Revealer.registerRevealer({
+  contextTypes() {
+    return [
+      SDK.DebuggerModel.DebuggerPausedDetails,
+    ];
+  },
+  destination: Common.Revealer.RevealerDestination.SOURCES_PANEL,
+  async loadRevealer() {
+    const Sources = await loadSourcesModule();
+    return Sources.SourcesPanel.DebuggerPausedDetailsRevealer.instance();
+  },
+});

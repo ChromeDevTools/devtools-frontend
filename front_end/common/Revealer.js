@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import {ls} from '../platform/platform.js';
-import * as Root from '../root/root.js';
 
 /**
  * @interface
@@ -28,11 +27,10 @@ export let reveal = async function(revealable, omitFocus) {
   if (!revealable) {
     return Promise.reject(new Error('Can\'t reveal ' + revealable));
   }
-  const legacyRevealers =
-      /** @type {!Array<!Revealer>} */ (await Root.Runtime.Runtime.instance().allInstances(Revealer, revealable));
-  const revealers = await loadApplicableRegisteredRevealers(revealable);
+  const revealers =
+      await Promise.all(getApplicableRegisteredRevealers(revealable).map(registration => registration.loadRevealer()));
 
-  return reveal([...legacyRevealers, ...revealers]);
+  return reveal(revealers);
   /**
    * @param {!Array.<!Revealer>} revealers
    * @return {!Promise.<void>}
@@ -58,11 +56,17 @@ export function setRevealForTest(newReveal) {
  * @return {?string}
  */
 export const revealDestination = function(revealable) {
-  const extension = Root.Runtime.Runtime.instance().extension(Revealer, revealable);
+  if (!revealable) {
+    if (!registeredRevealers[0]) {
+      return null;
+    }
+    return registeredRevealers[0].destination || null;
+  }
+  const extension = revealable ? getApplicableRegisteredRevealers(revealable)[0] : registeredRevealers[0];
   if (!extension) {
     return null;
   }
-  return extension.descriptor()['destination'];
+  return extension.destination || null;
 };
 
 /** @type {!Array<!RevealerRegistration>} */
@@ -77,11 +81,10 @@ export function registerRevealer(registration) {
 
 /**
  * @param {!Object} revealable
- * @return {!Promise<Array<Revealer>>}
+ * @return {!Array<RevealerRegistration>}
  */
-async function loadApplicableRegisteredRevealers(revealable) {
-  return Promise.all(
-      registeredRevealers.filter(isRevealerApplicableToContextTypes).map(registration => registration.loadRevealer()));
+function getApplicableRegisteredRevealers(revealable) {
+  return registeredRevealers.filter(isRevealerApplicableToContextTypes);
 
   /**
    * @param {!RevealerRegistration} revealerRegistration
@@ -117,4 +120,5 @@ export const RevealerDestination = {
   ISSUES_VIEW: ls`Issues view`,
   NETWORK_PANEL: ls`Network panel`,
   APPLICATION_PANEL: ls`Application panel`,
+  SOURCES_PANEL: ls`Sources panel`,
 };

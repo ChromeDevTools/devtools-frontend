@@ -61,7 +61,19 @@ export class Context {
    * @template T
    */
   _dispatchFlavorChange(flavorType, flavorValue) {
-    for (const extension of Root.Runtime.Runtime.instance().extensions(ContextFlavorListener)) {
+    const extensions = [
+      ...Root.Runtime.Runtime.instance().extensions(ContextFlavorListener),
+      ...getRegisteredListeners().map(contextFlavorListener => {
+        return {
+          hasContextType() {
+            contextFlavorListener.contextTypes().includes(flavorType);
+          },
+          instance: contextFlavorListener.loadListener
+        };
+      }),
+    ];
+
+    for (const extension of extensions) {
       if (extension.hasContextType(flavorType)) {
         extension.instance().then(
             instance => /** @type {!ContextFlavorListener} */ (instance).flavorChanged(flavorValue));
@@ -142,3 +154,26 @@ export class Context {
 const Events = {
   FlavorChanged: Symbol('FlavorChanged')
 };
+
+/** @type {!Array<!ContextFlavorListenerRegistration>} */
+const registeredListeners = [];
+
+/**
+ * @param {!ContextFlavorListenerRegistration} registration
+ */
+export function registerListener(registration) {
+  registeredListeners.push(registration);
+}
+
+function getRegisteredListeners() {
+  return registeredListeners;
+}
+
+/**
+ * @typedef {{
+  *  contextTypes: function(): !Array<?>,
+  *  loadListener: function(): !Promise<!ContextFlavorListener>,
+  * }}
+  */
+// @ts-ignore typedef
+export let ContextFlavorListenerRegistration;

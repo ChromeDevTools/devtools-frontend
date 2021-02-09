@@ -1,25 +1,11 @@
 {
   "extensions": [
     {
-      "type": "@UI.ContextFlavorListener",
-      "contextTypes": [
-        "SDK.DebuggerPausedDetails"
-      ],
-      "className": "BrowserDebugger.XHRBreakpointsSidebarPane"
-    },
-    {
       "type": "@Elements.MarkerDecorator",
       "factoryName": "Elements.GenericDecorator",
       "marker": "breakpoint-marker",
       "title": "DOM Breakpoint",
       "color": "rgb(105, 140, 254)"
-    },
-    {
-      "type": "@UI.ContextFlavorListener",
-      "contextTypes": [
-        "SDK.DebuggerPausedDetails"
-      ],
-      "className": "BrowserDebugger.DOMBreakpointsSidebarPane"
     },
     {
       "type": "@Sources.NavigatorView",

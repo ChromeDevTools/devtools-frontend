@@ -238,3 +238,23 @@ UI.ContextMenu.registerProvider({
   },
   experiment: undefined,
 });
+
+UI.Context.registerListener({
+  contextTypes() {
+    return [SDK.DebuggerModel.DebuggerPausedDetails];
+  },
+  async loadListener() {
+    const BrowserDebugger = await loadBrowserDebuggerModule();
+    return BrowserDebugger.XHRBreakpointsSidebarPane.XHRBreakpointsSidebarPane.instance();
+  },
+});
+
+UI.Context.registerListener({
+  contextTypes() {
+    return [SDK.DebuggerModel.DebuggerPausedDetails];
+  },
+  async loadListener() {
+    const BrowserDebugger = await loadBrowserDebuggerModule();
+    return BrowserDebugger.DOMBreakpointsSidebarPane.DOMBreakpointsSidebarPane.instance();
+  },
+});

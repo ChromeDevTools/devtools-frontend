@@ -188,7 +188,7 @@ devtools_module_entrypoint_sources = [
   "text_utils/text_utils.js",
   "theme_support/theme_support.js",
   "third_party/acorn/acorn.js",
-  "third_party/i18n/i18n.js",
+  "third_party/i18n/i18n-bundle.js",
   "third_party/lighthouse/lighthouse-dt-bundle.js",
   "third_party/lit-html/lit-html.js",
   "third_party/marked/marked.js",

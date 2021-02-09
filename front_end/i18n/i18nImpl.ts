@@ -4,7 +4,7 @@
 
 import * as Platform from '../platform/platform.js';
 // eslint-disable-next-line
-import i18nBundle from '../third_party/i18n/i18n.js';
+import i18nBundle from '../third_party/i18n/i18n-bundle.js';
 
 import * as i18nTypes from './i18nTypes.js';
 

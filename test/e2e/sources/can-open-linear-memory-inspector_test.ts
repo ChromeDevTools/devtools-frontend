@@ -7,7 +7,7 @@ import {assert} from 'chai';
 import {$, $$, click, enableExperiment, getBrowserAndPages, goToResource, step, waitFor} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {checkIfTabExistsInDrawer, DRAWER_PANEL_SELECTOR} from '../helpers/cross-tool-helper.js';
-import {addBreakpointForLine, inspectMemory, openSourceCodeEditorForFile, PAUSE_BUTTON, RESUME_BUTTON, waitForSourceCodeLines} from '../helpers/sources-helpers.js';
+import {addBreakpointForLine, inspectMemory, openSourceCodeEditorForFile, PAUSE_BUTTON, reloadPageAndWaitForSourceFile, RESUME_BUTTON} from '../helpers/sources-helpers.js';
 
 const LINEAR_MEMORY_INSPECTOR_TAB_SELECTOR = '#tab-linear-memory-inspector';
 const LINEAR_MEMORY_INSPECTOR_TABBED_PANE_SELECTOR = DRAWER_PANEL_SELECTOR + ' .tabbed-pane';
@@ -19,8 +19,8 @@ describe('Scope View', async () => {
     await enableExperiment('wasmDWARFDebugging');
 
     const {frontend, target} = getBrowserAndPages();
-    const breakpointLine = 5;
-    const numberOfLines = 7;
+    const breakpointLine = '0x039';
+    const fileName = 'memory.wasm';
 
     await step('navigate to a page and open the Sources tab', async () => {
       await openSourceCodeEditorForFile('memory.wasm', 'wasm/memory.html');
@@ -31,11 +31,7 @@ describe('Scope View', async () => {
     });
 
     await step('reload the page', async () => {
-      await target.reload();
-    });
-
-    await step('wait for all the source code to appear', async () => {
-      await waitForSourceCodeLines(numberOfLines);
+      await reloadPageAndWaitForSourceFile(frontend, target, fileName);
     });
 
     await step('expand the module scope', async () => {

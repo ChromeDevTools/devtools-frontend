@@ -306,6 +306,7 @@ export class UISourceCodeFrame extends SourceFrame.SourceFrame.SourceFrameImpl {
     }
     this._decorateAllTypes();
     this._ensurePluginsLoaded();
+    Common.EventTarget.fireEvent('source-file-loaded', this._uiSourceCode.displayName());
   }
 
   /**

@@ -1,8 +1,5 @@
 #!/usr/bin/env lucicfg
 
-# Enable luci.tree_closer.
-lucicfg.enable_experiment("crbug.com/1054172")
-
 # Tell lucicfg what files it is allowed to touch
 lucicfg.config(
     config_dir = "generated",

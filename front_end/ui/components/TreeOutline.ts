@@ -277,12 +277,13 @@ export class TreeOutline extends HTMLElement {
           margin-right: -2px;
           height: 12px;
           width: 13px;
-          display: inline-block;
           overflow: hidden;
         }
+
         li:not(.parent) > .arrow-and-key-wrapper > .arrow-icon {
           -webkit-mask-size: 0;
         }
+
         li.parent.expanded > .arrow-and-key-wrapper > .arrow-icon {
           -webkit-mask-position: -16px 0;
         }
@@ -290,11 +291,14 @@ export class TreeOutline extends HTMLElement {
         .arrow-and-key-wrapper {
           border: 2px solid transparent;
         }
+
         [role="treeitem"]:focus {
           outline: 0;
         }
+
         [role="treeitem"]:focus > .arrow-and-key-wrapper {
-        border-color: black;
+          /* stylelint-disable-next-line color-named */
+          border-color: black;
         }
       </style>
       <div class="wrapping-container">

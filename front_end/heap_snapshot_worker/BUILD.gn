@@ -7,10 +7,10 @@ import("../../scripts/build/ninja/devtools_module.gni")
 
 devtools_module("heap_snapshot_worker") {
   sources = [
-    "AllocationProfile.js",
-    "HeapSnapshot.js",
-    "HeapSnapshotLoader.js",
-    "HeapSnapshotWorkerDispatcher.js",
+    "AllocationProfile.ts",
+    "HeapSnapshot.ts",
+    "HeapSnapshotLoader.ts",
+    "HeapSnapshotWorkerDispatcher.ts",
   ]
 
   deps = [
@@ -37,7 +37,7 @@ devtools_entrypoint("worker_entrypoint") {
 }
 
 devtools_entrypoint("legacy") {
-  entrypoint = "heap_snapshot_worker-legacy.js"
+  entrypoint = "heap_snapshot_worker-legacy.ts"
 
   deps = [
     ":worker_entrypoint",

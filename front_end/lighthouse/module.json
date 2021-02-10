@@ -4,8 +4,7 @@
     "emulation",
     "timeline",
     "inspector_main",
-    "ui",
-    "theme_support"
+    "ui"
   ],
   "modules": [
     "lighthouse-legacy.js"

@@ -19,6 +19,7 @@ template("devtools_pre_built") {
     sources = invoker.sources
 
     public_deps = [ _copy_target_dep ]
+    data_deps = [ _copy_target_dep ]
   }
 
   if (is_debug) {

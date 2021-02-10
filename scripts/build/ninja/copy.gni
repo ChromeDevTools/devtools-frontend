@@ -5,7 +5,9 @@ import("./node.gni")
 import("./vars.gni")
 
 template("copy_to_gen") {
-  node_action(target_name) {
+  _copy_action_name = "$target_name-copy"
+  _copy_action_dep = ":$_copy_action_name"
+  node_action(_copy_action_name) {
     forward_variables_from(invoker,
                            [
                              "sources",
@@ -30,6 +32,13 @@ template("copy_to_gen") {
       outputs += [ "$target_gen_dir/$_input" ]
     }
   }
+
+  group(target_name) {
+    public_deps = [ _copy_action_dep ]
+    data_deps = [ _copy_action_dep ]
+
+    forward_variables_from(invoker, [ "testonly" ])
+  }
 }
 
 template("copy_sources_to_resources") {
@@ -40,6 +49,7 @@ template("copy_sources_to_resources") {
                              "sources",
                              "deps",
                              "public_deps",
+                             "data_deps",
                              "testonly",
                            ])
 
@@ -87,6 +97,7 @@ template("copy_gen_to_resources") {
                              "sources",
                              "deps",
                              "public_deps",
+                             "data_deps",
                              "testonly",
                            ])
 

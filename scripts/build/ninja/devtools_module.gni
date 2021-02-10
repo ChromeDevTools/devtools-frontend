@@ -49,6 +49,7 @@ template("devtools_module") {
   } else {
     group(target_name) {
       public_deps = [ _typescript_target_dep ]
+      data_deps = [ _typescript_target_dep ]
 
       visibility = invoker.visibility + [ ":*" ]
     }

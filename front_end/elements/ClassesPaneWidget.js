@@ -265,16 +265,32 @@ export class ClassesPaneWidget extends UI.Widget.Widget {
 /** @type {!WeakMap<!SDK.DOMModel.DOMNode, !Map<string, boolean>>} */
 const cachedClassesMap = new WeakMap();
 
+/** @type {!ButtonProvider} */
+let buttonProviderInstance;
+
 /**
  * @implements {UI.Toolbar.Provider}
  */
 export class ButtonProvider {
+  /** @private */
   constructor() {
     this._button = new UI.Toolbar.ToolbarToggle(Common.UIString.UIString('Element Classes'), '');
     this._button.setText('.cls');
     this._button.element.classList.add('monospace');
     this._button.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this._clicked, this);
     this._view = new ClassesPaneWidget();
+  }
+
+  /**
+   * @param {{forceNew: ?boolean}} opts
+   */
+  static instance(opts = {forceNew: null}) {
+    const {forceNew} = opts;
+    if (!buttonProviderInstance || forceNew) {
+      buttonProviderInstance = new ButtonProvider();
+    }
+
+    return buttonProviderInstance;
   }
 
   _clicked() {

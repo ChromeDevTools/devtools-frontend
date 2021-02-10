@@ -17,24 +17,6 @@
       "className": "Elements.DOMLinkifier.Linkifier"
     },
     {
-      "type": "@UI.ToolbarItem.Provider",
-      "className": "Elements.ElementStatePaneWidget.ButtonProvider",
-      "order": 1,
-      "location": "styles-sidebarpane-toolbar"
-    },
-    {
-      "type": "@UI.ToolbarItem.Provider",
-      "className": "Elements.ClassesPaneWidget.ButtonProvider",
-      "order": 2,
-      "location": "styles-sidebarpane-toolbar"
-    },
-    {
-      "type": "@UI.ToolbarItem.Provider",
-      "className": "Elements.StylesSidebarPane.ButtonProvider",
-      "order": 100,
-      "location": "styles-sidebarpane-toolbar"
-    },
-    {
       "type": "@Elements.MarkerDecorator",
       "className": "Elements.ElementsPanel.PseudoStateMarkerDecorator",
       "marker": "pseudo-state-marker"
@@ -45,12 +27,6 @@
       "marker": "hidden-marker",
       "title": "Element is hidden",
       "color": "#555"
-    },
-    {
-      "type": "@UI.ToolbarItem.Provider",
-      "actionId": "elements.toggle-element-search",
-      "location": "main-toolbar-left",
-      "order": 0
     }
   ],
   "dependencies": [

@@ -3231,10 +3231,14 @@ export class StylesSidebarPropertyRenderer {
   }
 }
 
+/** @type {!ButtonProvider} */
+let buttonProviderInstance;
+
 /**
  * @implements {UI.Toolbar.Provider}
  */
 export class ButtonProvider {
+  /** @private */
   constructor() {
     this._button = new UI.Toolbar.ToolbarButton(Common.UIString.UIString('New Style Rule'), 'largeicon-add');
     this._button.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this._clicked, this);
@@ -3253,6 +3257,18 @@ export class ButtonProvider {
       node = node ? node.enclosingElementOrSelf() : null;
       this._button.setEnabled(Boolean(node));
     }
+  }
+
+  /**
+   * @param {{forceNew: ?boolean}} opts
+   */
+  static instance(opts = {forceNew: null}) {
+    const {forceNew} = opts;
+    if (!buttonProviderInstance || forceNew) {
+      buttonProviderInstance = new ButtonProvider();
+    }
+
+    return buttonProviderInstance;
   }
 
   /**

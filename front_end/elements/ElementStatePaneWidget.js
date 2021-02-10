@@ -125,16 +125,32 @@ export class ElementStatePaneWidget extends UI.Widget.Widget {
   }
 }
 
+/** @type {!ButtonProvider} */
+let buttonProviderInstance;
+
 /**
  * @implements {UI.Toolbar.Provider}
  */
 export class ButtonProvider {
+  /** @private */
   constructor() {
     this._button = new UI.Toolbar.ToolbarToggle(Common.UIString.UIString('Toggle Element State'), '');
     this._button.setText(Common.UIString.UIString(':hov'));
     this._button.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this._clicked, this);
     this._button.element.classList.add('monospace');
     this._view = new ElementStatePaneWidget();
+  }
+
+  /**
+   * @param {{forceNew: ?boolean}} opts
+   */
+  static instance(opts = {forceNew: null}) {
+    const {forceNew} = opts;
+    if (!buttonProviderInstance || forceNew) {
+      buttonProviderInstance = new ButtonProvider();
+    }
+
+    return buttonProviderInstance;
   }
 
   _clicked() {

@@ -1258,4 +1258,5 @@ export const ToolbarItemLocation = {
   FILES_NAVIGATION_TOOLBAR: 'files-navigator-toolbar',
   MAIN_TOOLBAR_RIGHT: 'main-toolbar-right',
   MAIN_TOOLBAR_LEFT: 'main-toolbar-left',
+  STYLES_SIDEBARPANE_TOOLBAR: 'styles-sidebarpane-toolbar',
 };

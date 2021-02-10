@@ -352,3 +352,52 @@ Common.Revealer.registerRevealer({
     return Elements.ElementsPanel.CSSPropertyRevealer.instance();
   },
 });
+
+UI.Toolbar.registerToolbarItem({
+  async loadItem() {
+    const Elements = await loadElementsModule();
+    return Elements.ElementStatePaneWidget.ButtonProvider.instance();
+  },
+  order: 1,
+  location: UI.Toolbar.ToolbarItemLocation.STYLES_SIDEBARPANE_TOOLBAR,
+  showLabel: undefined,
+  condition: undefined,
+  separator: undefined,
+  actionId: undefined,
+});
+
+UI.Toolbar.registerToolbarItem({
+  async loadItem() {
+    const Elements = await loadElementsModule();
+    return Elements.ClassesPaneWidget.ButtonProvider.instance();
+  },
+  order: 2,
+  location: UI.Toolbar.ToolbarItemLocation.STYLES_SIDEBARPANE_TOOLBAR,
+  showLabel: undefined,
+  condition: undefined,
+  separator: undefined,
+  actionId: undefined,
+});
+
+UI.Toolbar.registerToolbarItem({
+  async loadItem() {
+    const Elements = await loadElementsModule();
+    return Elements.StylesSidebarPane.ButtonProvider.instance();
+  },
+  order: 100,
+  location: UI.Toolbar.ToolbarItemLocation.STYLES_SIDEBARPANE_TOOLBAR,
+  showLabel: undefined,
+  condition: undefined,
+  separator: undefined,
+  actionId: undefined,
+});
+
+UI.Toolbar.registerToolbarItem({
+  actionId: 'elements.toggle-element-search',
+  location: UI.Toolbar.ToolbarItemLocation.MAIN_TOOLBAR_LEFT,
+  order: 0,
+  showLabel: undefined,
+  condition: undefined,
+  separator: undefined,
+  loadItem: undefined,
+});

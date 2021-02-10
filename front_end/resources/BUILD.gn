@@ -24,7 +24,6 @@ devtools_module("resources") {
     "FrameDetailsView.ts",
     "IndexedDBModel.js",
     "IndexedDBViews.js",
-    "ModuleUIStrings.js",
     "OpenedWindowDetailsView.js",
     "ResourcesPanel.js",
     "ServiceWorkerCacheViews.js",

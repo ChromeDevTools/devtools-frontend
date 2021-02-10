@@ -13,7 +13,6 @@ devtools_module("perf_ui") {
     "GCActionDelegate.js",
     "LineLevelProfile.js",
     "LiveHeapProfile.js",
-    "ModuleUIStrings.js",
     "NetworkPriorities.js",
     "OverviewGrid.js",
     "PieChart.ts",

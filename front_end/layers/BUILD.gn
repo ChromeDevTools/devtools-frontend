@@ -10,7 +10,6 @@ devtools_module("layers") {
     "LayerPaintProfilerView.ts",
     "LayerTreeModel.ts",
     "LayersPanel.ts",
-    "ModuleUIStrings.ts",
   ]
 
   deps = [

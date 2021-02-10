@@ -25,7 +25,6 @@ devtools_module("issues") {
     "MarkdownLink.ts",
     "MarkdownLinksMap.ts",
     "MarkdownView.ts",
-    "ModuleUIStrings.js",
   ]
 
   deps = [

@@ -9,7 +9,6 @@ devtools_module("developer_resources") {
   sources = [
     "DeveloperResourcesListView.ts",
     "DeveloperResourcesView.ts",
-    "ModuleUIStrings.ts",
   ]
 
   deps = [

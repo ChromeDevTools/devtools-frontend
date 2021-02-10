@@ -9,7 +9,6 @@ devtools_module("settings") {
   sources = [
     "FrameworkIgnoreListSettingsTab.ts",
     "KeybindsSettingsTab.ts",
-    "ModuleUIStrings.ts",
     "SettingsScreen.ts",
   ]
 

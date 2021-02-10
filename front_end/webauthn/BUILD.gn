@@ -6,10 +6,7 @@ import("../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../scripts/build/ninja/devtools_module.gni")
 
 devtools_module("webauthn") {
-  sources = [
-    "ModuleUIStrings.ts",
-    "WebauthnPane.ts",
-  ]
+  sources = [ "WebauthnPane.ts" ]
 
   deps = [
     "../common:bundle",

@@ -12,7 +12,6 @@ devtools_module("animation") {
     "AnimationScreenshotPopover.ts",
     "AnimationTimeline.ts",
     "AnimationUI.ts",
-    "ModuleUIStrings.ts",
   ]
 
   deps = [

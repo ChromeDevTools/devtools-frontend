@@ -1757,24 +1757,6 @@
   "input/InputTimeline.ts | saveProfile": {
     "message": "Save profile…"
   },
-  "input/ModuleUIStrings.ts | inputs": {
-    "message": "Inputs"
-  },
-  "input/ModuleUIStrings.ts | pause": {
-    "message": "Pause"
-  },
-  "input/ModuleUIStrings.ts | resume": {
-    "message": "Resume"
-  },
-  "input/ModuleUIStrings.ts | startRecording": {
-    "message": "Start recording"
-  },
-  "input/ModuleUIStrings.ts | startReplaying": {
-    "message": "Start replaying"
-  },
-  "input/ModuleUIStrings.ts | stopRecording": {
-    "message": "Stop recording"
-  },
   "issues/AffectedElementsView.ts | element": {
     "message": "element"
   },
@@ -7015,9 +6997,6 @@
   },
   "web_audio/WebAudioView.ts | openAPageThatUsesWebAudioApiTo": {
     "message": "Open a page that uses Web Audio API to start monitoring."
-  },
-  "webauthn/ModuleUIStrings.ts | webauthn": {
-    "message": "WebAuthn"
   },
   "webauthn/webauthn-meta.ts | showWebauthn": {
     "message": "Show WebAuthn"

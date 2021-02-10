@@ -9,7 +9,6 @@ devtools_module("input") {
   sources = [
     "InputModel.ts",
     "InputTimeline.ts",
-    "ModuleUIStrings.ts",
   ]
 
   deps = [

@@ -1757,24 +1757,6 @@
   "input/InputTimeline.ts | saveProfile": {
     "message": "Ŝáv̂é p̂ŕôf́îĺê…"
   },
-  "input/ModuleUIStrings.ts | inputs": {
-    "message": "Îńp̂út̂ś"
-  },
-  "input/ModuleUIStrings.ts | pause": {
-    "message": "P̂áûśê"
-  },
-  "input/ModuleUIStrings.ts | resume": {
-    "message": "R̂éŝúm̂é"
-  },
-  "input/ModuleUIStrings.ts | startRecording": {
-    "message": "Ŝt́âŕt̂ ŕêćôŕd̂ín̂ǵ"
-  },
-  "input/ModuleUIStrings.ts | startReplaying": {
-    "message": "Ŝt́âŕt̂ ŕêṕl̂áŷín̂ǵ"
-  },
-  "input/ModuleUIStrings.ts | stopRecording": {
-    "message": "Ŝt́ôṕ r̂éĉór̂d́îńĝ"
-  },
   "issues/AffectedElementsView.ts | element": {
     "message": "êĺêḿêńt̂"
   },
@@ -7015,9 +6997,6 @@
   },
   "web_audio/WebAudioView.ts | openAPageThatUsesWebAudioApiTo": {
     "message": "Ôṕêń â ṕâǵê t́ĥát̂ úŝéŝ Ẃêb́ Âúd̂íô ÁP̂Í t̂ó ŝt́âŕt̂ ḿôńît́ôŕîńĝ."
-  },
-  "webauthn/ModuleUIStrings.ts | webauthn": {
-    "message": "Ŵéb̂Áût́ĥń"
   },
   "webauthn/webauthn-meta.ts | showWebauthn": {
     "message": "Ŝh́ôẃ Ŵéb̂Áût́ĥń"

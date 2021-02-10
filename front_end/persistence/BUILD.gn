@@ -12,7 +12,6 @@ devtools_module("persistence") {
     "FileSystemWorkspaceBinding.js",
     "IsolatedFileSystem.js",
     "IsolatedFileSystemManager.js",
-    "ModuleUIStrings.js",
     "NetworkPersistenceManager.js",
     "PersistenceActions.js",
     "PersistenceImpl.js",

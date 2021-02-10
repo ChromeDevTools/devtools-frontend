@@ -11,7 +11,6 @@ devtools_module("layer_viewer") {
     "LayerTreeOutline.ts",
     "LayerViewHost.ts",
     "Layers3DView.ts",
-    "ModuleUIStrings.ts",
     "PaintProfilerView.ts",
     "TransformController.ts",
   ]

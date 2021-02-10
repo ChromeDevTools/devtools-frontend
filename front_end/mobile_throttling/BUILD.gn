@@ -8,7 +8,6 @@ import("../../scripts/build/ninja/devtools_module.gni")
 devtools_module("mobile_throttling") {
   sources = [
     "MobileThrottlingSelector.ts",
-    "ModuleUIStrings.ts",
     "NetworkPanelIndicator.ts",
     "NetworkThrottlingSelector.ts",
     "ThrottlingManager.ts",

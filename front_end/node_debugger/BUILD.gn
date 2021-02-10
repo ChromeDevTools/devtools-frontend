@@ -5,16 +5,10 @@
 import("../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../scripts/build/ninja/devtools_module.gni")
 
-devtools_module("node_debugger") {
-  sources = [ "ModuleUIStrings.ts" ]
-
-  deps = [ "../i18n:bundle" ]
-}
-
 devtools_entrypoint("bundle") {
   entrypoint = "node_debugger.ts"
 
-  deps = [ ":node_debugger" ]
+  deps = []
 }
 
 devtools_entrypoint("meta") {

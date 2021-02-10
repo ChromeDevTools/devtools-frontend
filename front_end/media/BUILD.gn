@@ -11,7 +11,6 @@ devtools_module("media") {
     "EventTimelineView.ts",
     "MainView.ts",
     "MediaModel.ts",
-    "ModuleUIStrings.ts",
     "PlayerDetailView.ts",
     "PlayerListView.ts",
     "PlayerMessagesView.ts",

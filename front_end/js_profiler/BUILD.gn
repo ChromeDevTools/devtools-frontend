@@ -5,16 +5,10 @@
 import("../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../scripts/build/ninja/devtools_module.gni")
 
-devtools_module("js_profiler") {
-  sources = [ "ModuleUIStrings.ts" ]
-
-  deps = [ "../i18n:bundle" ]
-}
-
 devtools_entrypoint("bundle") {
   entrypoint = "js_profiler.ts"
 
-  deps = [ ":js_profiler" ]
+  deps = []
 }
 
 devtools_entrypoint("meta") {
@@ -22,6 +16,7 @@ devtools_entrypoint("meta") {
 
   deps = [
     ":bundle",
+    "../i18n:bundle",
     "../profiler:bundle",
   ]
 }

@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
 import * as Host from '../host/host.js';
 import * as i18n from '../i18n/i18n.js';
@@ -31,29 +33,26 @@ export const UIStrings = {
   */
   networkAddressEgLocalhost: 'Network address (e.g. localhost:9229)',
 };
-const str_ = i18n.i18n.registerUIStrings('node_main/NodeConnectionsPanel.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('node_main/NodeConnectionsPanel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-/** @type {!NodeConnectionsPanel} */
-let nodeConnectionsPanelInstance;
+let nodeConnectionsPanelInstance: NodeConnectionsPanel;
 
 export class NodeConnectionsPanel extends UI.Panel.Panel {
-  /** @private */
-  constructor() {
+  _config!: Adb.Config;
+  _networkDiscoveryView: NodeConnectionsView;
+  private constructor() {
     super('node-connection');
     this.registerRequiredCSS('node_main/nodeConnectionsPanel.css', {enableLegacyPatching: false});
     this.contentElement.classList.add('node-panel');
 
     const container = this.contentElement.createChild('div', 'node-panel-center');
 
-    const image = /** @type {!HTMLImageElement} */ (container.createChild('img', 'node-panel-logo'));
+    const image = (container.createChild('img', 'node-panel-logo') as HTMLImageElement);
     image.src = 'https://nodejs.org/static/images/logos/nodejs-new-pantone-black.svg';
 
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
         Host.InspectorFrontendHostAPI.Events.DevicesDiscoveryConfigChanged, this._devicesDiscoveryConfigChanged, this);
-
-    /** @type {!Adb.Config} */
-    this._config;
 
     this.contentElement.tabIndex = 0;
     this.setDefaultFocusedElement(this.contentElement);
@@ -69,10 +68,9 @@ export class NodeConnectionsPanel extends UI.Panel.Panel {
     this._networkDiscoveryView.show(container);
   }
 
-  /**
-   * @param {{forceNew: ?boolean}} opts
-   */
-  static instance(opts = {forceNew: null}) {
+  static instance(opts: {
+    forceNew: boolean|null,
+  } = {forceNew: null}): NodeConnectionsPanel {
     const {forceNew} = opts;
     if (!nodeConnectionsPanelInstance || forceNew) {
       nodeConnectionsPanelInstance = new NodeConnectionsPanel();
@@ -81,23 +79,20 @@ export class NodeConnectionsPanel extends UI.Panel.Panel {
     return nodeConnectionsPanelInstance;
   }
 
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  _devicesDiscoveryConfigChanged(event) {
-    this._config = /** @type {!Adb.Config} */ (event.data);
+  _devicesDiscoveryConfigChanged(event: Common.EventTarget.EventTargetEvent): void {
+    this._config = (event.data as Adb.Config);
     this._networkDiscoveryView.discoveryConfigChanged(this._config.networkDiscoveryConfig);
   }
 }
 
-/**
- * @implements {UI.ListWidget.Delegate<Adb.PortForwardingRule>}
- */
-export class NodeConnectionsView extends UI.Widget.VBox {
-  /**
-   * @param {function(!Adb.NetworkDiscoveryConfig):void} callback
-   */
-  constructor(callback) {
+export class NodeConnectionsView extends UI.Widget.VBox implements UI.ListWidget.Delegate<Adb.PortForwardingRule> {
+  _callback: (arg0: Adb.NetworkDiscoveryConfig) => void;
+  _list: UI.ListWidget.ListWidget<Adb.PortForwardingRule>;
+  _editor: UI.ListWidget.Editor<Adb.PortForwardingRule>|null;
+  _networkDiscoveryConfig: {
+    address: string,
+  }[];
+  constructor(callback: (arg0: Adb.NetworkDiscoveryConfig) => void) {
     super();
     this._callback = callback;
     this.element.classList.add('network-discovery-view');
@@ -108,7 +103,6 @@ export class NodeConnectionsView extends UI.Widget.VBox {
     networkDiscoveryFooter.appendChild(
         i18n.i18n.getFormatLocalizedString(str_, UIStrings.specifyNetworkEndpointAnd, {PH1: documentationLink}));
 
-    /** @type {!UI.ListWidget.ListWidget<!Adb.PortForwardingRule>} */
     this._list = new UI.ListWidget.ListWidget(this);
     this._list.registerRequiredCSS('node_main/nodeConnectionsPanel.css', {enableLegacyPatching: false});
     this._list.element.classList.add('network-discovery-list');
@@ -117,7 +111,6 @@ export class NodeConnectionsView extends UI.Widget.VBox {
     placeholder.textContent = i18nString(UIStrings.noConnectionsSpecified);
     this._list.setEmptyPlaceholder(placeholder);
     this._list.show(this.element);
-    /** @type {?UI.ListWidget.Editor<!Adb.PortForwardingRule>} */
     this._editor = null;
 
     const addButton = UI.UIUtils.createTextButton(
@@ -125,25 +118,21 @@ export class NodeConnectionsView extends UI.Widget.VBox {
         'add-network-target-button', true /* primary */);
     this.element.appendChild(addButton);
 
-    /** @type {!Array<{address: string}>} */
     this._networkDiscoveryConfig = [];
 
     this.element.classList.add('node-frontend');
   }
 
-  _update() {
+  _update(): void {
     const config = this._networkDiscoveryConfig.map(item => item.address);
     this._callback.call(null, config);
   }
 
-  _addNetworkTargetButtonClicked() {
+  _addNetworkTargetButtonClicked(): void {
     this._list.addNewItem(this._networkDiscoveryConfig.length, {address: '', port: ''});
   }
 
-  /**
-   * @param {!Adb.NetworkDiscoveryConfig} networkDiscoveryConfig
-   */
-  discoveryConfigChanged(networkDiscoveryConfig) {
+  discoveryConfigChanged(networkDiscoveryConfig: Adb.NetworkDiscoveryConfig): void {
     this._networkDiscoveryConfig = [];
     this._list.clear();
     for (const address of networkDiscoveryConfig) {
@@ -153,37 +142,20 @@ export class NodeConnectionsView extends UI.Widget.VBox {
     }
   }
 
-  /**
-   * @override
-   * @param {!Adb.PortForwardingRule} rule
-   * @param {boolean} editable
-   * @return {!Element}
-   */
-  renderItem(rule, editable) {
+  renderItem(rule: Adb.PortForwardingRule, _editable: boolean): Element {
     const element = document.createElement('div');
     element.classList.add('network-discovery-list-item');
     element.createChild('div', 'network-discovery-value network-discovery-address').textContent = rule.address;
     return element;
   }
 
-  /**
-   * @override
-   * @param {!Adb.PortForwardingRule} rule
-   * @param {number} index
-   */
-  removeItemRequested(rule, index) {
+  removeItemRequested(rule: Adb.PortForwardingRule, index: number): void {
     this._networkDiscoveryConfig.splice(index, 1);
     this._list.removeItem(index);
     this._update();
   }
 
-  /**
-   * @override
-   * @param {!Adb.PortForwardingRule} rule
-   * @param {!UI.ListWidget.Editor<!Adb.PortForwardingRule>} editor
-   * @param {boolean} isNew
-   */
-  commitEdit(rule, editor, isNew) {
+  commitEdit(rule: Adb.PortForwardingRule, editor: UI.ListWidget.Editor<Adb.PortForwardingRule>, isNew: boolean): void {
     rule.address = editor.control('address').value.trim();
     if (isNew) {
       this._networkDiscoveryConfig.push(rule);
@@ -191,26 +163,18 @@ export class NodeConnectionsView extends UI.Widget.VBox {
     this._update();
   }
 
-  /**
-   * @override
-   * @param {!Adb.PortForwardingRule} rule
-   * @return {!UI.ListWidget.Editor<!Adb.PortForwardingRule>}
-   */
-  beginEdit(rule) {
+  beginEdit(rule: Adb.PortForwardingRule): UI.ListWidget.Editor<Adb.PortForwardingRule> {
     const editor = this._createEditor();
     editor.control('address').value = rule.address;
     return editor;
   }
 
-  /**
-   * @return {!UI.ListWidget.Editor<!Adb.PortForwardingRule>}
-   */
-  _createEditor() {
+  _createEditor(): UI.ListWidget.Editor<Adb.PortForwardingRule> {
     if (this._editor) {
       return this._editor;
     }
 
-    const editor = new UI.ListWidget.Editor();
+    const editor = new UI.ListWidget.Editor<Adb.PortForwardingRule>();
     this._editor = editor;
     const content = editor.contentElement();
     const fields = content.createChild('div', 'network-discovery-edit-row');
@@ -219,13 +183,8 @@ export class NodeConnectionsView extends UI.Widget.VBox {
     fields.createChild('div', 'network-discovery-value network-discovery-address').appendChild(input);
     return editor;
 
-    /**
-     * @param {!Adb.PortForwardingRule} rule
-     * @param {number} index
-     * @param {!HTMLInputElement|!HTMLSelectElement} input
-     * @return {!UI.ListWidget.ValidatorResult}
-     */
-    function addressValidator(rule, index, input) {
+    function addressValidator(_rule: Adb.PortForwardingRule, _index: number, input: HTMLInputElement|HTMLSelectElement):
+        UI.ListWidget.ValidatorResult {
       const match = input.value.trim().match(/^([a-zA-Z0-9\.\-_]+):(\d+)$/);
       if (!match) {
         return {

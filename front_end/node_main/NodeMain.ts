@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Common from '../common/common.js';
 import * as Components from '../components/components.js';
 import * as Host from '../host/host.js';
@@ -20,16 +22,10 @@ export const UIStrings = {
   */
   nodejsS: 'Node.js: {PH1}',
 };
-const str_ = i18n.i18n.registerUIStrings('node_main/NodeMain.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('node_main/NodeMain.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-/**
- * @implements {Common.Runnable.Runnable}
- */
-export class NodeMainImpl extends Common.ObjectWrapper.ObjectWrapper {
-  /**
-   * @override
-   */
-  async run() {
+export class NodeMainImpl extends Common.ObjectWrapper.ObjectWrapper implements Common.Runnable.Runnable {
+  async run(): Promise<void> {
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.ConnectToNodeJSFromFrontend);
     SDK.Connections.initMainConnection(async () => {
       const target = SDK.SDKModel.TargetManager.instance().createTarget(
@@ -39,21 +35,18 @@ export class NodeMainImpl extends Common.ObjectWrapper.ObjectWrapper {
   }
 }
 
-/**
- * @implements {ProtocolProxyApi.TargetDispatcher}
- */
-export class NodeChildTargetManager extends SDK.SDKModel.SDKModel {
-  /**
-   * @param {!SDK.SDKModel.Target} parentTarget
-   */
-  constructor(parentTarget) {
+export class NodeChildTargetManager extends SDK.SDKModel.SDKModel implements ProtocolProxyApi.TargetDispatcher {
+  _targetManager: SDK.SDKModel.TargetManager;
+  _parentTarget: SDK.SDKModel.Target;
+  _targetAgent: ProtocolProxyApi.TargetApi;
+  _childTargets: Map<string, SDK.SDKModel.Target>;
+  _childConnections: Map<string, NodeConnection>;
+  constructor(parentTarget: SDK.SDKModel.Target) {
     super(parentTarget);
     this._targetManager = parentTarget.targetManager();
     this._parentTarget = parentTarget;
     this._targetAgent = parentTarget.targetAgent();
-    /** @type {!Map<string, !SDK.SDKModel.Target>} */
     this._childTargets = new Map();
-    /** @type {!Map<string, !NodeConnection>} */
     this._childConnections = new Map();
 
     parentTarget.registerTargetDispatcher(this);
@@ -65,11 +58,8 @@ export class NodeChildTargetManager extends SDK.SDKModel.SDKModel {
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.setDevicesUpdatesEnabled(true);
   }
 
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  _devicesDiscoveryConfigChanged(event) {
-    const config = /** @type {!Adb.Config} */ (event.data);
+  _devicesDiscoveryConfigChanged(event: Common.EventTarget.EventTargetEvent): void {
+    const config = (event.data as Adb.Config);
     const locations = [];
     for (const address of config.networkDiscoveryConfig) {
       const parts = address.split(':');
@@ -81,10 +71,7 @@ export class NodeChildTargetManager extends SDK.SDKModel.SDKModel {
     this._targetAgent.invoke_setRemoteLocations({locations});
   }
 
-  /**
-   * @override
-   */
-  dispose() {
+  dispose(): void {
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.removeEventListener(
         Host.InspectorFrontendHostAPI.Events.DevicesDiscoveryConfigChanged, this._devicesDiscoveryConfigChanged, this);
 
@@ -93,35 +80,19 @@ export class NodeChildTargetManager extends SDK.SDKModel.SDKModel {
     }
   }
 
-  /**
-   * @override
-   * @param {!Protocol.Target.TargetCreatedEvent} event
-   */
-  targetCreated({targetInfo}) {
+  targetCreated({targetInfo}: Protocol.Target.TargetCreatedEvent): void {
     if (targetInfo.type === 'node' && !targetInfo.attached) {
       this._targetAgent.invoke_attachToTarget({targetId: targetInfo.targetId, flatten: false});
     }
   }
 
-  /**
-   * @override
-   * @param {!Protocol.Target.TargetInfoChangedEvent} event
-   */
-  targetInfoChanged(event) {
+  targetInfoChanged(_event: Protocol.Target.TargetInfoChangedEvent): void {
   }
 
-  /**
-   * @override
-   * @param {!Protocol.Target.TargetDestroyedEvent} event
-   */
-  targetDestroyed(event) {
+  targetDestroyed(_event: Protocol.Target.TargetDestroyedEvent): void {
   }
 
-  /**
-   * @override
-   * @param {!Protocol.Target.AttachedToTargetEvent} event
-   */
-  attachedToTarget({sessionId, targetInfo}) {
+  attachedToTarget({sessionId, targetInfo}: Protocol.Target.AttachedToTargetEvent): void {
     const name = i18nString(UIStrings.nodejsS, {PH1: targetInfo.url});
     const connection = new NodeConnection(this._targetAgent, sessionId);
     this._childConnections.set(sessionId, connection);
@@ -131,11 +102,7 @@ export class NodeChildTargetManager extends SDK.SDKModel.SDKModel {
     target.runtimeAgent().invoke_runIfWaitingForDebugger();
   }
 
-  /**
-   * @override
-   * @param {!Protocol.Target.DetachedFromTargetEvent} event
-   */
-  detachedFromTarget({sessionId}) {
+  detachedFromTarget({sessionId}: Protocol.Target.DetachedFromTargetEvent): void {
     const childTarget = this._childTargets.get(sessionId);
     if (childTarget) {
       childTarget.dispose('target terminated');
@@ -144,11 +111,7 @@ export class NodeChildTargetManager extends SDK.SDKModel.SDKModel {
     this._childConnections.delete(sessionId);
   }
 
-  /**
-   * @override
-   * @param {!Protocol.Target.ReceivedMessageFromTargetEvent} event
-   */
-  receivedMessageFromTarget({sessionId, message}) {
+  receivedMessageFromTarget({sessionId, message}: Protocol.Target.ReceivedMessageFromTargetEvent): void {
     const connection = this._childConnections.get(sessionId);
     const onMessage = connection ? connection._onMessage : null;
     if (onMessage) {
@@ -156,57 +119,35 @@ export class NodeChildTargetManager extends SDK.SDKModel.SDKModel {
     }
   }
 
-  /**
-   * @param {!Protocol.Target.TargetCrashedEvent} event
-   */
-  targetCrashed(event) {
+  targetCrashed(_event: Protocol.Target.TargetCrashedEvent): void {
   }
 }
 
-/**
- * @implements {ProtocolClient.InspectorBackend.Connection}
- */
-export class NodeConnection {
-  /**
-   * @param {!ProtocolProxyApi.TargetApi} targetAgent
-   * @param {string} sessionId
-   */
-  constructor(targetAgent, sessionId) {
+export class NodeConnection implements ProtocolClient.InspectorBackend.Connection {
+  _targetAgent: ProtocolProxyApi.TargetApi;
+  _sessionId: string;
+  _onMessage: ((arg0: (Object|string)) => void)|null;
+  _onDisconnect: ((arg0: string) => void)|null;
+  constructor(targetAgent: ProtocolProxyApi.TargetApi, sessionId: string) {
     this._targetAgent = targetAgent;
     this._sessionId = sessionId;
     this._onMessage = null;
     this._onDisconnect = null;
   }
 
-  /**
-   * @override
-   * @param {function((!Object|string)):void} onMessage
-   */
-  setOnMessage(onMessage) {
+  setOnMessage(onMessage: (arg0: (Object|string)) => void): void {
     this._onMessage = onMessage;
   }
 
-  /**
-   * @override
-   * @param {function(string):void} onDisconnect
-   */
-  setOnDisconnect(onDisconnect) {
+  setOnDisconnect(onDisconnect: (arg0: string) => void): void {
     this._onDisconnect = onDisconnect;
   }
 
-  /**
-   * @override
-   * @param {string} message
-   */
-  sendRawMessage(message) {
+  sendRawMessage(message: string): void {
     this._targetAgent.invoke_sendMessageToTarget({message, sessionId: this._sessionId});
   }
 
-  /**
-   * @override
-   * @return {!Promise<void>}
-   */
-  async disconnect() {
+  async disconnect(): Promise<void> {
     if (this._onDisconnect) {
       this._onDisconnect.call(null, 'force disconnect');
     }

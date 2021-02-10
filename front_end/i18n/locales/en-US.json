@@ -4235,25 +4235,25 @@
   "node_main/node_main-meta.ts | showConnection": {
     "message": "Show Connection"
   },
-  "node_main/NodeConnectionsPanel.js | addConnection": {
+  "node_main/NodeConnectionsPanel.ts | addConnection": {
     "message": "Add connection"
   },
-  "node_main/NodeConnectionsPanel.js | networkAddressEgLocalhost": {
+  "node_main/NodeConnectionsPanel.ts | networkAddressEgLocalhost": {
     "message": "Network address (e.g. localhost:9229)"
   },
-  "node_main/NodeConnectionsPanel.js | noConnectionsSpecified": {
+  "node_main/NodeConnectionsPanel.ts | noConnectionsSpecified": {
     "message": "No connections specified"
   },
-  "node_main/NodeConnectionsPanel.js | nodejsDebuggingGuide": {
+  "node_main/NodeConnectionsPanel.ts | nodejsDebuggingGuide": {
     "message": "Node.js debugging guide"
   },
-  "node_main/NodeConnectionsPanel.js | specifyNetworkEndpointAnd": {
+  "node_main/NodeConnectionsPanel.ts | specifyNetworkEndpointAnd": {
     "message": "Specify network endpoint and DevTools will connect to it automatically. Read {PH1} to learn more."
   },
-  "node_main/NodeMain.js | main": {
+  "node_main/NodeMain.ts | main": {
     "message": "Main"
   },
-  "node_main/NodeMain.js | nodejsS": {
+  "node_main/NodeMain.ts | nodejsS": {
     "message": "Node.js: {PH1}"
   },
   "object_ui/CustomPreviewComponent.js | showAsJavascriptObject": {

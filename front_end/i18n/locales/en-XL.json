@@ -4235,25 +4235,25 @@
   "node_main/node_main-meta.ts | showConnection": {
     "message": "Ŝh́ôẃ Ĉón̂ńêćt̂íôń"
   },
-  "node_main/NodeConnectionsPanel.js | addConnection": {
+  "node_main/NodeConnectionsPanel.ts | addConnection": {
     "message": "Âd́d̂ ćôńn̂éĉt́îón̂"
   },
-  "node_main/NodeConnectionsPanel.js | networkAddressEgLocalhost": {
+  "node_main/NodeConnectionsPanel.ts | networkAddressEgLocalhost": {
     "message": "N̂ét̂ẃôŕk̂ ád̂d́r̂éŝś (ê.ǵ. l̂óĉál̂h́ôśt̂:9229)"
   },
-  "node_main/NodeConnectionsPanel.js | noConnectionsSpecified": {
+  "node_main/NodeConnectionsPanel.ts | noConnectionsSpecified": {
     "message": "N̂ó ĉón̂ńêćt̂íôńŝ śp̂éĉíf̂íêd́"
   },
-  "node_main/NodeConnectionsPanel.js | nodejsDebuggingGuide": {
+  "node_main/NodeConnectionsPanel.ts | nodejsDebuggingGuide": {
     "message": "N̂ód̂é.ĵś d̂éb̂úĝǵîńĝ ǵûíd̂é"
   },
-  "node_main/NodeConnectionsPanel.js | specifyNetworkEndpointAnd": {
+  "node_main/NodeConnectionsPanel.ts | specifyNetworkEndpointAnd": {
     "message": "Ŝṕêćîf́ŷ ńêt́ŵór̂ḱ êńd̂ṕôín̂t́ âńd̂ D́êv́T̂óôĺŝ ẃîĺl̂ ćôńn̂éĉt́ t̂ó ît́ âút̂óm̂át̂íĉál̂ĺŷ. Ŕêád̂ {PH1} t́ô ĺêár̂ń m̂ór̂é."
   },
-  "node_main/NodeMain.js | main": {
+  "node_main/NodeMain.ts | main": {
     "message": "M̂áîń"
   },
-  "node_main/NodeMain.js | nodejsS": {
+  "node_main/NodeMain.ts | nodejsS": {
     "message": "N̂ód̂é.ĵś: {PH1}"
   },
   "object_ui/CustomPreviewComponent.js | showAsJavascriptObject": {

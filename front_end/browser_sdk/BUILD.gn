@@ -8,10 +8,10 @@ import("../../scripts/build/ninja/devtools_module.gni")
 devtools_module("browser_sdk") {
   sources = [
     "ContrastCheckTrigger.ts",
-    "IssuesManager.js",
-    "LogManager.js",
+    "IssuesManager.ts",
+    "LogManager.ts",
     "MarkdownHelpers.ts",
-    "RelatedIssue.js",
+    "RelatedIssue.ts",
     "SourceFrameIssuesManager.ts",
   ]
 
@@ -26,7 +26,7 @@ devtools_module("browser_sdk") {
 }
 
 devtools_entrypoint("bundle") {
-  entrypoint = "browser_sdk.js"
+  entrypoint = "browser_sdk.ts"
 
   deps = [ ":browser_sdk" ]
 }

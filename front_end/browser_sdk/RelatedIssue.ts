@@ -2,22 +2,16 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Common from '../common/common.js';
 import * as SDK from '../sdk/sdk.js';
 import {IssuesManager} from './IssuesManager.js';
 
-/**
- * @typedef {!SDK.NetworkRequest.NetworkRequest | !SDK.Cookie.Cookie}
- */
-// @ts-ignore typedef
-export let IssuesAssociatable;
+export type IssuesAssociatable = SDK.NetworkRequest.NetworkRequest|SDK.Cookie.Cookie;
 
-/**
- * @param {!Array<!SDK.Issue.Issue>} issues
- * @param {!SDK.NetworkRequest.NetworkRequest} request
- * @return {!Array<!SDK.Issue.Issue>}
- */
-function issuesAssociatedWithNetworkRequest(issues, request) {
+function issuesAssociatedWithNetworkRequest(
+    issues: SDK.Issue.Issue[], request: SDK.NetworkRequest.NetworkRequest): SDK.Issue.Issue[] {
   return issues.filter(issue => {
     for (const affectedRequest of issue.requests()) {
       if (affectedRequest.requestId === request.requestId()) {
@@ -28,14 +22,8 @@ function issuesAssociatedWithNetworkRequest(issues, request) {
   });
 }
 
-/**
- * @param {!Array<!SDK.Issue.Issue>} issues
- * @param {string} domain
- * @param {string} name
- * @param {string} path
- * @return {!Array<!SDK.Issue.Issue>}
- */
-function issuesAssociatedWithCookie(issues, domain, name, path) {
+function issuesAssociatedWithCookie(
+    issues: SDK.Issue.Issue[], domain: string, name: string, path: string): SDK.Issue.Issue[] {
   return issues.filter(issue => {
     for (const cookie of issue.cookies()) {
       if (cookie.domain === domain && cookie.name === name && cookie.path === path) {
@@ -47,12 +35,9 @@ function issuesAssociatedWithCookie(issues, domain, name, path) {
 }
 
 /**
- * @param {!Array<!SDK.Issue.Issue>} issues
- * @param {!IssuesAssociatable} obj
- * @return {!Array<!SDK.Issue.Issue>}
  * @throws In case obj has an unsupported type (i.e. not part of the IssuesAssociatble union).
  */
-export function issuesAssociatedWith(issues, obj) {
+export function issuesAssociatedWith(issues: SDK.Issue.Issue[], obj: IssuesAssociatable): SDK.Issue.Issue[] {
   if (obj instanceof SDK.NetworkRequest.NetworkRequest) {
     return issuesAssociatedWithNetworkRequest(issues, obj);
   }
@@ -62,31 +47,17 @@ export function issuesAssociatedWith(issues, obj) {
   throw new Error(`issues can not be associated with ${JSON.stringify(obj)}`);
 }
 
-/**
- * @param {!IssuesAssociatable} obj
- * @return {boolean}
- */
-export function hasIssues(obj) {
+export function hasIssues(obj: IssuesAssociatable): boolean {
   const issues = Array.from(IssuesManager.instance().issues());
   return issuesAssociatedWith(issues, obj).length > 0;
 }
 
-/**
- * @param {!IssuesAssociatable} obj
- * @param {!SDK.Issue.IssueCategory} category
- * @return {boolean}
- */
-export function hasIssueOfCategory(obj, category) {
+export function hasIssueOfCategory(obj: IssuesAssociatable, category: symbol): boolean {
   const issues = Array.from(IssuesManager.instance().issues());
   return issuesAssociatedWith(issues, obj).some(issue => issue.getCategory() === category);
 }
 
-/**
- * @param {!IssuesAssociatable} obj
- * @param {!SDK.Issue.IssueCategory=} category
- * @return {!Promise<undefined | void>}
- */
-export async function reveal(obj, category) {
+export async function reveal(obj: IssuesAssociatable, category?: symbol): Promise<void|undefined> {
   const issues = Array.from(IssuesManager.instance().issues());
   const candidates = issuesAssociatedWith(issues, obj).filter(issue => !category || issue.getCategory() === category);
   if (candidates.length > 0) {

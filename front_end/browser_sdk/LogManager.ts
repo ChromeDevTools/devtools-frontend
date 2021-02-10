@@ -2,46 +2,36 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Common from '../common/common.js';
 import * as SDK from '../sdk/sdk.js';
 
-/** @type {!WeakMap<!SDK.LogModel.LogModel, !Array<!Common.EventTarget.EventDescriptor>>} */
-const modelToEventListeners = new WeakMap();
+const modelToEventListeners = new WeakMap<SDK.LogModel.LogModel, Common.EventTarget.EventDescriptor[]>();
 
-/**
- * @implements {SDK.SDKModel.SDKModelObserver<!SDK.LogModel.LogModel>}
- */
-export class LogManager {
+export class LogManager implements SDK.SDKModel.SDKModelObserver<SDK.LogModel.LogModel> {
   constructor() {
     SDK.SDKModel.TargetManager.instance().observeModels(SDK.LogModel.LogModel, this);
   }
 
-  /**
-   * @override
-   * @param {!SDK.LogModel.LogModel} logModel
-   */
-  modelAdded(logModel) {
+  modelAdded(logModel: SDK.LogModel.LogModel): void {
     const eventListeners = [];
     eventListeners.push(logModel.addEventListener(SDK.LogModel.Events.EntryAdded, this._logEntryAdded, this));
     modelToEventListeners.set(logModel, eventListeners);
   }
 
-  /**
-   * @override
-   * @param {!SDK.LogModel.LogModel} logModel
-   */
-  modelRemoved(logModel) {
+  modelRemoved(logModel: SDK.LogModel.LogModel): void {
     const eventListeners = modelToEventListeners.get(logModel);
     if (eventListeners) {
       Common.EventTarget.EventTarget.removeEventListeners(eventListeners);
     }
   }
 
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  _logEntryAdded(event) {
-    const data = /** @type {{logModel: !SDK.LogModel.LogModel, entry: !Protocol.Log.LogEntry}} */ (event.data);
+  _logEntryAdded(event: Common.EventTarget.EventTargetEvent): void {
+    const data = event.data as {
+      logModel: SDK.LogModel.LogModel,
+      entry: Protocol.Log.LogEntry,
+    };
     const target = data.logModel.target();
 
     const consoleMessage = new SDK.ConsoleModel.ConsoleMessage(

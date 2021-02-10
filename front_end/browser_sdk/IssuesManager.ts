@@ -2,12 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Common from '../common/common.js';
 import * as SDK from '../sdk/sdk.js';
 import {SourceFrameIssuesManager} from './SourceFrameIssuesManager.js';
 
-/** @type {?IssuesManager} */
-let issuesManagerInstance = null;
+let issuesManagerInstance: IssuesManager|null = null;
 
 /**
  * The `IssuesManager` is the central storage for issues. It collects issues from all the
@@ -19,18 +20,21 @@ let issuesManagerInstance = null;
  * Additionally, the `IssuesManager` can filter Issues. All Issues are stored, but only
  * Issues that are accepted by the filter cause events to be fired or are returned by
  * `IssuesManager#issues()`.
- *
- * @implements {SDK.SDKModel.SDKModelObserver<!SDK.IssuesModel.IssuesModel>}
  */
-export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper {
+export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper implements
+    SDK.SDKModel.SDKModelObserver<SDK.IssuesModel.IssuesModel> {
+  _eventListeners: WeakMap<SDK.IssuesModel.IssuesModel, Common.EventTarget.EventDescriptor>;
+  _issues: Map<string, SDK.Issue.Issue>;
+  _filteredIssues: Map<string, SDK.Issue.Issue>;
+  _hasSeenTopFrameNavigated: boolean;
+  _showThirdPartySettingsChangeListener: Common.EventTarget.EventDescriptor|null;
+  _sourceFrameIssuesManager: SourceFrameIssuesManager;
+
   constructor() {
     super();
-    /** @type {!WeakMap<!SDK.IssuesModel.IssuesModel, !Common.EventTarget.EventDescriptor>} */
     this._eventListeners = new WeakMap();
     SDK.SDKModel.TargetManager.instance().observeModels(SDK.IssuesModel.IssuesModel, this);
-    /** @type {!Map<string, !SDK.Issue.Issue>} */
     this._issues = new Map();
-    /** @type {!Map<string, !SDK.Issue.Issue>} */
     this._filteredIssues = new Map();
     this._hasSeenTopFrameNavigated = false;
     SDK.FrameManager.FrameManager.instance().addEventListener(
@@ -38,17 +42,12 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper {
     SDK.FrameManager.FrameManager.instance().addEventListener(
         SDK.FrameManager.Events.FrameAddedToTarget, this._onFrameAddedToTarget, this);
 
-    /** @type {?Common.EventTarget.EventDescriptor} */
     this._showThirdPartySettingsChangeListener = null;
 
     this._sourceFrameIssuesManager = new SourceFrameIssuesManager(this);
   }
 
-  /**
-   * @param {{forceNew: boolean}} opts
-   * @return {!IssuesManager}
-   */
-  static instance({forceNew} = {forceNew: false}) {
+  static instance({forceNew}: {forceNew: boolean} = {forceNew: false}): IssuesManager {
     if (!issuesManagerInstance || forceNew) {
       issuesManagerInstance = new IssuesManager();
     }
@@ -61,19 +60,16 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper {
    * that we also collected issues that were reported during the navigation to the current
    * page. If we haven't seen a main frame navigated, we might have missed issues that arose
    * during navigation.
-   *
-   * @return {boolean}
    */
-  reloadForAccurateInformationRequired() {
+  reloadForAccurateInformationRequired(): boolean {
     return !this._hasSeenTopFrameNavigated;
   }
 
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  _onTopFrameNavigated(event) {
-    const {frame} = /** @type {!{frame:!SDK.ResourceTreeModel.ResourceTreeFrame}} */ (event.data);
-    const keptIssues = new Map();
+  _onTopFrameNavigated(event: Common.EventTarget.EventTargetEvent): void {
+    const {frame} = event.data as {
+      frame: SDK.ResourceTreeModel.ResourceTreeFrame,
+    };
+    const keptIssues = new Map<string, SDK.Issue.Issue>();
     for (const [key, issue] of this._issues.entries()) {
       if (issue.isAssociatedWithRequestId(frame.loaderId)) {
         keptIssues.set(key, issue);
@@ -84,11 +80,10 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper {
     this._updateFilteredIssues();
   }
 
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  _onFrameAddedToTarget(event) {
-    const {frame} = /** @type {!{frame:!SDK.ResourceTreeModel.ResourceTreeFrame}} */ (event.data);
+  _onFrameAddedToTarget(event: Common.EventTarget.EventTargetEvent): void {
+    const {frame} = event.data as {
+      frame: SDK.ResourceTreeModel.ResourceTreeFrame,
+    };
     // Determining third-party status usually requires the registered domain of the top frame.
     // When DevTools is opened after navigation has completed, issues may be received
     // before the top frame is available. Thus, we trigger a recalcuation of third-party-ness
@@ -98,32 +93,23 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper {
     }
   }
 
-  /**
-   * @override
-   * @param {!SDK.IssuesModel.IssuesModel} issuesModel
-   */
-  modelAdded(issuesModel) {
+  modelAdded(issuesModel: SDK.IssuesModel.IssuesModel): void {
     const listener = issuesModel.addEventListener(SDK.IssuesModel.Events.IssueAdded, this._issueAdded, this);
     this._eventListeners.set(issuesModel, listener);
   }
 
-  /**
-   * @override
-   * @param {!SDK.IssuesModel.IssuesModel} issuesModel
-   */
-  modelRemoved(issuesModel) {
+  modelRemoved(issuesModel: SDK.IssuesModel.IssuesModel): void {
     const listener = this._eventListeners.get(issuesModel);
     if (listener) {
       Common.EventTarget.EventTarget.removeEventListeners([listener]);
     }
   }
 
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  _issueAdded(event) {
-    const {issuesModel, issue} =
-        /** @type {{issuesModel: !SDK.IssuesModel.IssuesModel, issue: !SDK.Issue.Issue}} */ (event.data);
+  _issueAdded(event: Common.EventTarget.EventTargetEvent): void {
+    const {issuesModel, issue} = event.data as {
+      issuesModel: SDK.IssuesModel.IssuesModel,
+      issue: SDK.Issue.Issue,
+    };
     // Ignore issues without proper description; they are invisible to the user and only cause confusion.
     if (!issue.getDescription()) {
       return;
@@ -143,32 +129,19 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper {
     this.dispatchEventToListeners(Events.IssuesCountUpdated);
   }
 
-  /**
-   * @return {!Iterable<!SDK.Issue.Issue>}
-   */
-  issues() {
+  issues(): Iterable<SDK.Issue.Issue> {
     return this._filteredIssues.values();
   }
 
-  /**
-   * @return {number}
-   */
-  numberOfIssues() {
+  numberOfIssues(): number {
     return this._filteredIssues.size;
   }
 
-  /**
-   * @return {number}
-   */
-  numberOfAllStoredIssues() {
+  numberOfAllStoredIssues(): number {
     return this._issues.size;
   }
 
-  /**
-   * @param {!SDK.Issue.Issue} issue
-   * @return {boolean}
-   */
-  _issueFilter(issue) {
+  _issueFilter(issue: SDK.Issue.Issue): boolean {
     if (!this._showThirdPartySettingsChangeListener) {
       // _issueFilter uses the 'showThirdPartyIssues' setting. Clients of IssuesManager need
       // a full update when the setting changes to get an up-to-date issues list.
@@ -185,7 +158,7 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper {
     return showThirdPartyIssuesSetting.get() || !issue.isCausedByThirdParty();
   }
 
-  _updateFilteredIssues() {
+  _updateFilteredIssues(): void {
     this._filteredIssues.clear();
     for (const [key, issue] of this._issues) {
       if (this._issueFilter(issue)) {
@@ -198,18 +171,16 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper {
   }
 }
 
-/** @enum {symbol} */
-export const Events = {
-  IssuesCountUpdated: Symbol('IssuesCountUpdated'),
-  IssueAdded: Symbol('IssueAdded'),
-  FullUpdateRequired: Symbol('FullUpdateRequired'),
-};
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum Events {
+  IssuesCountUpdated = 'IssuesCountUpdated',
+  IssueAdded = 'IssueAdded',
+  FullUpdateRequired = 'FullUpdateRequired',
+}
 
-/**
- * @param {Protocol.Audits.InspectorIssue} issue
- */
 // @ts-ignore
-globalThis.addIssueForTest = issue => {
+globalThis.addIssueForTest = (issue: Protocol.Audits.InspectorIssue): void => {
   const mainTarget = SDK.SDKModel.TargetManager.instance().mainTarget();
   const issuesModel = mainTarget?.model(SDK.IssuesModel.IssuesModel);
   issuesModel?.issueAdded({issue});

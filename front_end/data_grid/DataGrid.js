@@ -362,7 +362,7 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
       }
       const children = this._enumerateChildren(this._rootNode, [], 1);
       const items = i18nString(UIStrings.rowsS, {PH1: children.length});
-      accessibleText = i18nString(UIStrings.sSUseTheUpAndDownArrowKeysTo, {PH1: items});
+      accessibleText = i18nString(UIStrings.sSUseTheUpAndDownArrowKeysTo, {PH1: this._displayName, PH2: items});
     }
     UI.ARIAUtils.alert(accessibleText, this.element);
   }

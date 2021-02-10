@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as i18n from '../i18n/i18n.js';
 import * as SDK from '../sdk/sdk.js';
 import * as LitHtml from '../third_party/lit-html/lit-html.js';
 import * as Components from '../ui/components/components.js';
@@ -11,7 +12,6 @@ import type {ResourcesPanel} from './ResourcesPanel.js';
 
 import {ApplicationPanelTreeElement} from './ApplicationPanelTreeElement.js';
 
-import * as i18n from '../i18n/i18n.js';
 export const UIStrings = {
   /**
   *@description Hover text for an info icon in the Trust Token panel
@@ -32,6 +32,10 @@ export const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('resources/TrustTokensView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+
+/** Fetch the Trust Token data regularly from the backend while the panel is open */
+const REFRESH_INTERVAL_MS = 1000;
+
 export class TrustTokensTreeElement extends ApplicationPanelTreeElement {
   private view?: TrustTokensViewWidgetWrapper;
 
@@ -55,22 +59,24 @@ export class TrustTokensTreeElement extends ApplicationPanelTreeElement {
   }
 }
 
-class TrustTokensViewWidgetWrapper extends UI.Widget.VBox {
+class TrustTokensViewWidgetWrapper extends UI.ThrottledWidget.ThrottledWidget {
   private readonly trustTokensView = new TrustTokensView();
 
   constructor() {
-    super();
+    super(/* isWebComponent */ false, REFRESH_INTERVAL_MS);
     this.contentElement.appendChild(this.trustTokensView);
+    this.update();
   }
 
-  async wasShown(): Promise<void> {
+  protected async doUpdate(): Promise<void> {
     const mainTarget = SDK.SDKModel.TargetManager.instance().mainTarget();
     if (!mainTarget) {
       return;
     }
-
     const {tokens} = await mainTarget.storageAgent().invoke_getTrustTokens();
     this.trustTokensView.data = {tokens};
+
+    this.update();
   }
 }
 

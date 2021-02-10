@@ -138,7 +138,6 @@ non_autostart_non_remote_modules = [
   "diff/diff_module.js",
   "elements/elements_module.js",
   "event_listeners/event_listeners_module.js",
-  "formatter/formatter_module.js",
   "har_importer/har_importer_module.js",
   "heap_snapshot_model/heap_snapshot_model_module.js",
   "help/help_module.js",

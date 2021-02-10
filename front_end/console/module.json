@@ -3,7 +3,6 @@
     "components",
     "data_grid",
     "object_ui",
-    "formatter",
     "browser_sdk"
   ],
   "modules": [

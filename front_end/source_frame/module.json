@@ -3,7 +3,6 @@
     "text_editor",
     "ui",
     "persistence",
-    "formatter",
     "object_ui",
     "workspace_diff"
   ],

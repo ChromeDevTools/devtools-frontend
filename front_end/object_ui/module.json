@@ -10,8 +10,7 @@
   ],
   "dependencies": [
     "ui",
-    "components",
-    "formatter"
+    "components"
   ],
   "modules": [
     "object_ui.js",

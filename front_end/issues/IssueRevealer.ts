@@ -7,17 +7,10 @@ import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 import {IssuesPane} from './IssuesPane.js';  // eslint-disable-line no-unused-vars
 
-/** @type {!IssueRevealer} */
-let issueRevealerInstance;
+let issueRevealerInstance: IssueRevealer;
 
-/**
- * @implements {Common.Revealer.Revealer}
- */
-export class IssueRevealer {
-  /**
-   * @param {{forceNew: ?boolean}} opts
-   */
-  static instance(opts = {forceNew: null}) {
+export class IssueRevealer implements Common.Revealer.Revealer {
+  static instance(opts: {forceNew: boolean|null} = {forceNew: null}): IssueRevealer {
     const {forceNew} = opts;
     if (!issueRevealerInstance || forceNew) {
       issueRevealerInstance = new IssueRevealer();
@@ -26,21 +19,19 @@ export class IssueRevealer {
     return issueRevealerInstance;
   }
 
-
-  /**
-   * @override
-   * @param {!Object} issue
-   * @return {!Promise<void>}
-   */
-  async reveal(issue) {
+  async reveal(issue: Object): Promise<void> {
     if (!(issue instanceof SDK.Issue.Issue)) {
       throw new Error('Internal error: not a issue');
     }
     await UI.ViewManager.ViewManager.instance().showView('issues-pane');
     const view = UI.ViewManager.ViewManager.instance().view('issues-pane');
     if (view) {
-      const issuesPane = /** @type {!IssuesPane} */ (await view.widget());
-      issuesPane.revealByCode(issue.code());
+      const issuesPane = await view.widget();
+      if (issuesPane instanceof IssuesPane) {
+        issuesPane.revealByCode(issue.code());
+      } else {
+        throw new Error('Expected issues pane to be an instance of IssuesPane');
+      }
     }
   }
 }

@@ -25,7 +25,7 @@ async function prettyPrintMinifiedFile(frontend: puppeteer.Page) {
   await click(PRETTY_PRINT_BUTTON);
 
   // A separate editor is opened which shows the formatted file
-  await frontend.waitForFunction(previousTextContent => {
+  await frontend.waitForFunction((previousTextContent: string) => {
     const code = document.querySelector('.CodeMirror-code');
     if (!code) {
       throw new Error('Could not find .CodeMirror-code element.');

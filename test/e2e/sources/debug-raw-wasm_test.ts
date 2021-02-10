@@ -459,7 +459,6 @@ describe('Raw-Wasm', async () => {
 
     if (!statusMain) {
       assert.fail('Unable to find .status-main element');
-      return;
     }
 
     const pauseMessage = await statusMain.evaluate(n => n.textContent);

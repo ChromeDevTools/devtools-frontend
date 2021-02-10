@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 /*
- * TODO(jacktfranklin): these tests currently do not run automatically on any infrastructure
+ * TODO(jacktfranklin) these tests currently do not run automatically on any infrastructure
  * but will do soon in a future CL
  * in the mean time you can run them locally via:
  * npx mocha test/unittests/scripts/localization/utils/parse_typescript_files_test.js

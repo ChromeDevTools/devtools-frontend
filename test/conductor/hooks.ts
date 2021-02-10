@@ -73,10 +73,10 @@ function launchChrome() {
     '--enable-experimental-web-platform-features',
     '--ignore-certificate-errors',
   ];
-  const opts: puppeteer.LaunchOptions = {
+  // TODO(jacktfranklin): crbug.com/1176642 expose this as a cleaner type in Puppeteer and update this type.
+  const opts: puppeteer.LaunchOptions&puppeteer.ChromeArgOptions&puppeteer.BrowserOptions = {
     headless,
     executablePath: envChromeBinary,
-    defaultViewport: null,
     dumpio: !headless,
     slowMo: envSlowMo,
   };
@@ -185,6 +185,9 @@ async function loadTargetPageAndFrontend(testServerPort: number) {
   });
 
   if (!unhandledRejectionSet) {
+    if (!browserProcess) {
+      throw new Error('browserProcess is unexpectedly not defined.');
+    }
     browserProcess.on('unhandledRejection', error => {
       throw new Error(`Unhandled rejection in Frontend: ${error}`);
     });

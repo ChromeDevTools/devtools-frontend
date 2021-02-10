@@ -41,7 +41,7 @@ describe('Idle Emulation on Sensors panel', () => {
   async function waitForState(state: string) {
     const {target} = getBrowserAndPages();
     await step(`Waiting for state \'${state}\'`, async () => {
-      await target.waitForFunction(_state => {
+      await target.waitForFunction((_state: string) => {
         const stateEl = document.getElementById('state');
         return _state === (stateEl ? stateEl.innerText : '');
       }, {}, state);

@@ -67,5 +67,12 @@ export const closeDrawer = async () => {
 export const getSelectedItemText = async () => {
   const quickOpenElement = await waitFor(QUICK_OPEN_SELECTOR);
   const selectedRow = await waitFor(QUICK_OPEN_SELECTED_ITEM_SELECTOR, quickOpenElement);
-  return await (await selectedRow.getProperty('textContent')).jsonValue();
+  const textContent = await selectedRow.getProperty('textContent');
+  if (!textContent) {
+    assert.fail('Quick open: could not get selected item textContent');
+  }
+  // TODO(jacktfranklin) crbug.com/1176642: a bug in the Puppeteer 7.0.4 types states jsonValue
+  // should be a Record but in fact it can just be a string if the handler is
+  // string. This can be fixed in Puppeteer and removed once we upgrade.
+  return await textContent.jsonValue() as unknown as string;
 };

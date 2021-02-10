@@ -79,7 +79,7 @@ export async function getCurrentConsoleMessages(withAnchor = false, callback?: (
   }
 
   // Ensure all messages are populated.
-  await asyncScope.exec(() => frontend.waitForFunction(CONSOLE_FIRST_MESSAGES_SELECTOR => {
+  await asyncScope.exec(() => frontend.waitForFunction((CONSOLE_FIRST_MESSAGES_SELECTOR: string) => {
     return Array.from(document.querySelectorAll(CONSOLE_FIRST_MESSAGES_SELECTOR))
         .every(message => message.childNodes.length > 0);
   }, {timeout: 0}, CONSOLE_FIRST_MESSAGES_SELECTOR));
@@ -105,7 +105,7 @@ export async function getStructuredConsoleMessages() {
   await waitFor(CONSOLE_MESSAGES_SELECTOR, undefined, asyncScope);
 
   // Ensure all messages are populated.
-  await asyncScope.exec(() => frontend.waitForFunction(CONSOLE_FIRST_MESSAGES_SELECTOR => {
+  await asyncScope.exec(() => frontend.waitForFunction((CONSOLE_FIRST_MESSAGES_SELECTOR: string) => {
     return Array.from(document.querySelectorAll(CONSOLE_FIRST_MESSAGES_SELECTOR))
         .every(message => message.childNodes.length > 0);
   }, {timeout: 0}, CONSOLE_FIRST_MESSAGES_SELECTOR));
@@ -159,7 +159,8 @@ export async function typeIntoConsole(frontend: puppeteer.Page, message: string)
     consoleElement.press('Escape');
   }
   await asyncScope.exec(
-      () => frontend.waitForFunction((msg, ln) => ln.textContent === msg, {timeout: 0}, message, line));
+      () =>
+          frontend.waitForFunction((msg: string, ln: Element) => ln.textContent === msg, {timeout: 0}, message, line));
   await consoleElement.press('Enter');
 }
 
@@ -171,7 +172,7 @@ export async function typeIntoConsoleAndWaitForResult(frontend: puppeteer.Page, 
 
   await typeIntoConsole(frontend, message);
 
-  await new AsyncScope().exec(() => frontend.waitForFunction(originalLength => {
+  await new AsyncScope().exec(() => frontend.waitForFunction((originalLength: number) => {
     return document.querySelectorAll('.console-user-command-result').length === originalLength + 1;
   }, {timeout: 0}, originalLength));
 }

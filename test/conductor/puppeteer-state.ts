@@ -3,21 +3,6 @@
 // found in the LICENSE file.
 
 import * as puppeteer from 'puppeteer';
-declare module 'puppeteer' {
-  interface CustomQueryHandler {
-    queryOne?: (element: Element|Document, selector: string) => Element | null;
-    queryAll?: (element: Element|Document, selector: string) => Element[] | NodeListOf<Element>;
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  function registerCustomQueryHandler(name: string, queryHandler: CustomQueryHandler): void;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  function unregisterCustomQueryHandler(name: string): void;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  function customQueryHandlerNames(): string[];
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  function clearCustomQueryHandlers(): void;
-}
 
 import {querySelectorShadowTextAll, querySelectorShadowTextOne} from './custom-query-handlers.js';
 

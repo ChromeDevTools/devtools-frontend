@@ -35,7 +35,7 @@ describe('The Console Tab', async () => {
       await frontend.keyboard.press('Enter');
 
       // Wait for the console to be usable again.
-      await frontend.waitForFunction(CONSOLE_SELECTOR => {
+      await frontend.waitForFunction((CONSOLE_SELECTOR: string) => {
         return document.querySelectorAll(CONSOLE_SELECTOR).length === 1;
       }, {}, CONSOLE_SELECTOR);
     });

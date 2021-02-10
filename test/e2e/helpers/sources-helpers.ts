@@ -458,6 +458,9 @@ export async function getValuesForScope(scope: string, expandCount: number, wait
 export async function getPausedMessages() {
   const {frontend} = getBrowserAndPages();
   const messageElement = await frontend.waitForSelector('.paused-message');
+  if (!messageElement) {
+    assert.fail('getPausedMessages: did not find .paused-message element.');
+  }
   const statusMain = await waitFor('.status-main', messageElement);
   const statusSub = await waitFor('.status-sub', messageElement);
   return {

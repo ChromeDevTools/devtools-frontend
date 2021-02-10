@@ -18,7 +18,7 @@ const RULE1_SELECTOR = '.rule1';
 const RULE2_SELECTOR = '.rule2';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const deletePropertyByBackspace = async (selector: string, root?: puppeteer.JSHandle<any>) => {
+const deletePropertyByBackspace = async (selector: string, root?: puppeteer.ElementHandle<Element>) => {
   const {frontend} = getBrowserAndPages();
   await click(selector, {root});
   await frontend.keyboard.press('Backspace');

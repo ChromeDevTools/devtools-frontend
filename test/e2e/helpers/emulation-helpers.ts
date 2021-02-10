@@ -50,7 +50,7 @@ export const startEmulationWithDualScreenFlag = async () => {
   await openDeviceToolbar();
 };
 
-export const getButtonDisabled = async (spanButton: puppeteer.JSHandle<HTMLButtonElement>) => {
+export const getButtonDisabled = async (spanButton: puppeteer.ElementHandle<HTMLButtonElement>) => {
   return await spanButton.evaluate((e: HTMLButtonElement) => {
     return e.disabled;
   });
@@ -64,7 +64,7 @@ const clickDevicesDropDown = async () => {
 
 export const selectToggleButton = async () => {
   // button that toggles between single and double screen.
-  const toggleButton = await $(DUAL_SCREEN_BUTTON_SELECTOR) as puppeteer.JSHandle<HTMLButtonElement>;
+  const toggleButton = await $(DUAL_SCREEN_BUTTON_SELECTOR) as puppeteer.ElementHandle<HTMLButtonElement>;
   return toggleButton;
 };
 

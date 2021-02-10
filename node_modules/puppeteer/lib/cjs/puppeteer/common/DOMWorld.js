@@ -56,6 +56,7 @@ class DOMWorld {
     }
     async _setContext(context) {
         if (context) {
+            this._ctxBindings.clear();
             this._contextResolveCallback.call(null, context);
             this._contextResolveCallback = null;
             for (const waitTask of this._waitTasks)

@@ -88,6 +88,9 @@ describe('Recorder', function() {
     await target.click('aria/Open Popup');
     const newTarget = await newTargetPromise;
     const newPage = await newTarget.page();
+    if (!newPage) {
+      assert.fail('Could not create new page.');
+    }
     await newPage.waitForSelector('aria/Button in Popup');
     await newPage.click('aria/Button in Popup');
     await waitForScriptToChange();

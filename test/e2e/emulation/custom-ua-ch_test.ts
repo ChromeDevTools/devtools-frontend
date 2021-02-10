@@ -21,6 +21,9 @@ async function elementTextContent(element: puppeteer.JSHandle): Promise<string> 
 async function targetTextContent(selector: string): Promise<string> {
   const {target} = getBrowserAndPages();
   const handle = await target.waitForSelector(selector);
+  if (!handle) {
+    assert.fail(`targetTextContent: could not find element for ${selector}`);
+  }
   return elementTextContent(handle);
 }
 

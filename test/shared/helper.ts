@@ -131,7 +131,7 @@ export const pressKey = async (key: string, modifiers?: {control?: boolean, alt?
       await frontend.keyboard.down('Shift');
     }
   }
-  await frontend.keyboard.press(key);
+  await frontend.keyboard.press(key as puppeteer.KeyInput);
   if (modifiers) {
     if (modifiers.shift) {
       await frontend.keyboard.up('Shift');
@@ -310,7 +310,8 @@ export const goTo = async (url: string) => {
   await target.goto(url);
 };
 
-export const overridePermissions = async (permissions: puppeteer.Permission[]) => {
+export const overridePermissions = async (permissions: string[]) => {
+  // TODO(jacktfranklin) crbug.com/1176642: change permissions type to puppeteer.Permissions once Puppeteer ships that type.
   const {browser} = getBrowserAndPages();
   await browser.defaultBrowserContext().overridePermissions(`https://localhost:${getTestServerPort()}`, permissions);
 };
@@ -450,8 +451,8 @@ export const enableCDPLogging = async () => {
   });
 };
 
-export const selectOption = async (select: puppeteer.JSHandle<HTMLSelectElement>, value: string) => {
-  await select.evaluate(async (node, _value) => {
+export const selectOption = async (select: puppeteer.ElementHandle<HTMLSelectElement>, value: string) => {
+  await select.evaluate(async (node: HTMLSelectElement, _value: string) => {
     node.value = _value;
     const event = document.createEvent('HTMLEvents');
     event.initEvent('change', false, true);
@@ -498,7 +499,7 @@ export const getPendingEvents = function(frontend: puppeteer.Page, eventType: st
   }, eventType);
 };
 
-export const waitForClass = async(element: puppeteer.ElementHandle<Element>, classname: string): Promise<void> => {
+export const waitForClass = async (element: puppeteer.ElementHandle<Element>, classname: string): Promise<void> => {
   await waitForFunction(async () => {
     return await element.evaluate((el, classname) => el.classList.contains(classname), classname);
   });

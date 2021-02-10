@@ -475,7 +475,7 @@ export async function waitForPropertyToHighlight(ruleSelector: string, propertyN
 export const getBreadcrumbsTextContent = async () => {
   const crumbs = await $$('li.crumb > a > devtools-node-text');
 
-  const crumbsAsText: string[] = await Promise.all(crumbs.map(node => node.evaluate(node => {
+  const crumbsAsText: string[] = await Promise.all(crumbs.map(node => node.evaluate((node: Element) => {
     if (!node.shadowRoot) {
       assert.fail('Found breadcrumbs node that unexpectedly has no shadowRoot.');
     }
@@ -486,7 +486,7 @@ export const getBreadcrumbsTextContent = async () => {
 
 export const getSelectedBreadcrumbTextContent = async () => {
   const selectedCrumb = await waitFor('li.crumb.selected > a > devtools-node-text');
-  const text = selectedCrumb.evaluate(node => {
+  const text = selectedCrumb.evaluate((node: Element) => {
     if (!node.shadowRoot) {
       assert.fail('Found breadcrumbs node that unexpectedly has no shadowRoot.');
     }
@@ -511,7 +511,7 @@ export const toggleClassesPane = async () => {
 };
 
 export const typeInClassesPaneInput =
-    async (text: string, commitWith: string = 'Enter', waitForNodeChange: Boolean = true) => {
+    async (text: string, commitWith: puppeteer.KeyInput = 'Enter', waitForNodeChange: Boolean = true) => {
   await step(`Typing in new class names ${text}`, async () => {
     const clsInput = await waitFor(CLS_INPUT_SELECTOR);
     await clsInput.type(text, {delay: 50});

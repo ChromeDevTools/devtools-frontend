@@ -213,9 +213,10 @@ export const UIStrings = {
       'Manifest contains \'`display_override`\' field, and the first supported display mode must be one of \'`standalone`\', \'`fullscreen`\', or \'`minimal-ui`\'',
   /**
   *@description Warning message for offline capability check
+  *@example {https://developer.chrome.com/blog/improved-pwa-offline-detection} PH1
   */
   pageDoesNotWorkOfflineThePage:
-      'Page does not work offline. Starting in Chrome 93, the installability criteria is changing, and this site will not be installable. https://goo.gle/improved-pwa-offline-detection for more information.',
+      'Page does not work offline. Starting in Chrome 93, the installability criteria is changing, and this site will not be installable. {PH1} for more information.',
   /**
   *@description Text to indicate the source of an image
   *@example {example.com} PH1
@@ -727,7 +728,9 @@ export class AppManifestView extends UI.Widget.VBox {
           errorMessage = i18nString(UIStrings.manifestContainsDisplayoverride);
           break;
         case 'warn-not-offline-capable':
-          errorMessage = i18nString(UIStrings.pageDoesNotWorkOfflineThePage);
+          errorMessage = i18nString(
+              UIStrings.pageDoesNotWorkOfflineThePage,
+              {PH1: 'https://developer.chrome.com/blog/improved-pwa-offline-detection/'});
           break;
         default:
           console.error(`Installability error id '${installabilityError.errorId}' is not recognized`);

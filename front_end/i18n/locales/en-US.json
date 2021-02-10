@@ -5463,7 +5463,7 @@
     "message": "Page does not work offline"
   },
   "resources/AppManifestView.js | pageDoesNotWorkOfflineThePage": {
-    "message": "Page does not work offline. Starting in Chrome 93, the installability criteria is changing, and this site will not be installable. https://goo.gle/improved-pwa-offline-detection for more information."
+    "message": "Page does not work offline. Starting in Chrome 93, the installability criteria is changing, and this site will not be installable. {PH1} for more information."
   },
   "resources/AppManifestView.js | pageHasNoManifestLinkUrl": {
     "message": "Page has no manifest <link> URL"

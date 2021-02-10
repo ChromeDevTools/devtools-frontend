@@ -5463,7 +5463,7 @@
     "message": "P̂áĝé d̂óêś n̂ót̂ ẃôŕk̂ óf̂f́l̂ín̂é"
   },
   "resources/AppManifestView.js | pageDoesNotWorkOfflineThePage": {
-    "message": "P̂áĝé d̂óêś n̂ót̂ ẃôŕk̂ óf̂f́l̂ín̂é. Ŝt́âŕt̂ín̂ǵ îń Ĉh́r̂óm̂é 93, t̂h́ê ín̂śt̂ál̂ĺâb́îĺît́ŷ ćr̂ít̂ér̂íâ íŝ ćĥán̂ǵîńĝ, án̂d́ t̂h́îś ŝít̂é ŵíl̂ĺ n̂ót̂ b́ê ín̂śt̂ál̂ĺâb́l̂é. ĥt́t̂ṕŝ://ǵôó.ĝĺê/ím̂ṕr̂óv̂éd̂-ṕŵá-ôf́f̂ĺîńê-d́êt́êćt̂íôń f̂ór̂ ḿôŕê ín̂f́ôŕm̂át̂íôń."
+    "message": "P̂áĝé d̂óêś n̂ót̂ ẃôŕk̂ óf̂f́l̂ín̂é. Ŝt́âŕt̂ín̂ǵ îń Ĉh́r̂óm̂é 93, t̂h́ê ín̂śt̂ál̂ĺâb́îĺît́ŷ ćr̂ít̂ér̂íâ íŝ ćĥán̂ǵîńĝ, án̂d́ t̂h́îś ŝít̂é ŵíl̂ĺ n̂ót̂ b́ê ín̂śt̂ál̂ĺâb́l̂é. {PH1} f̂ór̂ ḿôŕê ín̂f́ôŕm̂át̂íôń."
   },
   "resources/AppManifestView.js | pageHasNoManifestLinkUrl": {
     "message": "P̂áĝé ĥáŝ ńô ḿâńîf́êśt̂ <ĺîńk̂> URL"

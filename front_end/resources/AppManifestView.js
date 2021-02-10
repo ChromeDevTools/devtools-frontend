@@ -395,7 +395,7 @@ export class AppManifestView extends UI.Widget.VBox {
           break;
         case 'warn-not-offline-capable':
           errorMessage =
-              ls`Page does not work offline. Starting in Chrome 93, the installability criteria is changing, and this site will not be installable. https://goo.gle/improved-pwa-offline-detection for more information.`;
+              ls`Page does not work offline. Starting in Chrome 93, the installability criteria is changing, and this site will not be installable. https://developer.chrome.com/blog/improved-pwa-offline-detection for more information.`;
           break;
         default:
           console.error(`Installability error id '${installabilityError.errorId}' is not recognized`);

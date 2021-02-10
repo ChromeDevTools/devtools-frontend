@@ -933,9 +933,8 @@ declare namespace Protocol {
     }
 
     /**
-     * Details for a request that has been blocked with the BLOCKED_BY_RESPONSE
-     * code. Currently only used for COEP/COOP, but may be extended to include
-     * some CSP errors in the future.
+     * Details for a issue arising from an SAB being instantiated in, or
+     * transfered to a context that is not cross-origin isolated.
      */
     export interface SharedArrayBufferIssueDetails {
       sourceCodeLocation: SourceCodeLocation;
@@ -979,6 +978,18 @@ declare namespace Protocol {
     }
 
     /**
+     * Details for a CORS related issue, e.g. a warning or error related to
+     * CORS RFC1918 enforcement.
+     */
+    export interface CorsIssueDetails {
+      corsErrorStatus: Network.CorsErrorStatus;
+      isWarning: boolean;
+      request: AffectedRequest;
+      resourceIPAddressSpace?: Network.IPAddressSpace;
+      clientSecurityState?: Network.ClientSecurityState;
+    }
+
+    /**
      * A unique identifier for the type of issue. Each type may use one of the
      * optional fields in InspectorIssueDetails to convey more specific
      * information about the kind of issue.
@@ -992,6 +1003,7 @@ declare namespace Protocol {
       SharedArrayBufferIssue = 'SharedArrayBufferIssue',
       TrustedWebActivityIssue = 'TrustedWebActivityIssue',
       LowTextContrastIssue = 'LowTextContrastIssue',
+      CorsIssue = 'CorsIssue',
     }
 
     /**
@@ -1008,6 +1020,7 @@ declare namespace Protocol {
       sharedArrayBufferIssueDetails?: SharedArrayBufferIssueDetails;
       twaQualityEnforcementDetails?: TrustedWebActivityIssueDetails;
       lowTextContrastIssueDetails?: LowTextContrastIssueDetails;
+      corsIssueDetails?: CorsIssueDetails;
     }
 
     /**
@@ -7100,6 +7113,8 @@ declare namespace Protocol {
       SchemefulSameSiteStrict = 'SchemefulSameSiteStrict',
       SchemefulSameSiteLax = 'SchemefulSameSiteLax',
       SchemefulSameSiteUnspecifiedTreatedAsLax = 'SchemefulSameSiteUnspecifiedTreatedAsLax',
+      SamePartyFromCrossPartyContext = 'SamePartyFromCrossPartyContext',
+      SamePartyConflictsWithOtherAttributes = 'SamePartyConflictsWithOtherAttributes',
     }
 
     /**
@@ -7118,6 +7133,7 @@ declare namespace Protocol {
       SchemefulSameSiteStrict = 'SchemefulSameSiteStrict',
       SchemefulSameSiteLax = 'SchemefulSameSiteLax',
       SchemefulSameSiteUnspecifiedTreatedAsLax = 'SchemefulSameSiteUnspecifiedTreatedAsLax',
+      SamePartyFromCrossPartyContext = 'SamePartyFromCrossPartyContext',
     }
 
     /**
@@ -7410,6 +7426,7 @@ declare namespace Protocol {
     export enum PrivateNetworkRequestPolicy {
       Allow = 'Allow',
       BlockFromInsecureToMorePrivate = 'BlockFromInsecureToMorePrivate',
+      WarnFromInsecureToMorePrivate = 'WarnFromInsecureToMorePrivate',
     }
 
     export enum IPAddressSpace {
@@ -8598,6 +8615,24 @@ declare namespace Protocol {
       crossAlignment?: LineStyle;
     }
 
+    /**
+     * Configuration data for the highlighting of Flex item elements.
+     */
+    export interface FlexItemHighlightConfig {
+      /**
+       * Style of the box representing the item's base size
+       */
+      baseSizeBox?: BoxStyle;
+      /**
+       * Style of the border around the box representing the item's base size
+       */
+      baseSizeBorder?: LineStyle;
+      /**
+       * Style of the arrow representing if the item grew or shrank
+       */
+      flexibilityArrow?: LineStyle;
+    }
+
     export enum LineStylePattern {
       Dashed = 'dashed',
       Dotted = 'dotted',
@@ -8705,6 +8740,10 @@ declare namespace Protocol {
        * The flex container highlight configuration (default: all transparent).
        */
       flexContainerHighlightConfig?: FlexContainerHighlightConfig;
+      /**
+       * The flex item highlight configuration (default: all transparent).
+       */
+      flexItemHighlightConfig?: FlexItemHighlightConfig;
       /**
        * The contrast algorithm to use for the contrast ratio (default: aa).
        */

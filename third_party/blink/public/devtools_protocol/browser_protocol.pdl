@@ -667,9 +667,8 @@ experimental domain Audits
       TransferIssue
       CreationIssue
 
-  # Details for a request that has been blocked with the BLOCKED_BY_RESPONSE
-  # code. Currently only used for COEP/COOP, but may be extended to include
-  # some CSP errors in the future.
+  # Details for a issue arising from an SAB being instantiated in, or
+  # transfered to a context that is not cross-origin isolated.
   type SharedArrayBufferIssueDetails extends object
     properties
       SourceCodeLocation sourceCodeLocation
@@ -705,6 +704,16 @@ experimental domain Audits
       string fontSize
       string fontWeight
 
+  # Details for a CORS related issue, e.g. a warning or error related to
+  # CORS RFC1918 enforcement.
+  type CorsIssueDetails extends object
+    properties
+      Network.CorsErrorStatus corsErrorStatus
+      boolean isWarning
+      AffectedRequest request
+      optional Network.IPAddressSpace resourceIPAddressSpace
+      optional Network.ClientSecurityState clientSecurityState
+
   # A unique identifier for the type of issue. Each type may use one of the
   # optional fields in InspectorIssueDetails to convey more specific
   # information about the kind of issue.
@@ -718,6 +727,7 @@ experimental domain Audits
       SharedArrayBufferIssue
       TrustedWebActivityIssue
       LowTextContrastIssue
+      CorsIssue
 
   # This struct holds a list of optional fields with additional information
   # specific to the kind of issue. When adding a new issue code, please also
@@ -732,6 +742,7 @@ experimental domain Audits
       optional SharedArrayBufferIssueDetails sharedArrayBufferIssueDetails
       optional TrustedWebActivityIssueDetails twaQualityEnforcementDetails
       optional LowTextContrastIssueDetails lowTextContrastIssueDetails
+      optional CorsIssueDetails corsIssueDetails
 
   # An inspector issue reported from the back-end.
   type InspectorIssue extends object
@@ -4844,6 +4855,12 @@ domain Network
       # value.
       # This is the "Schemeful Same-Site" version of the blocked reason.
       SchemefulSameSiteUnspecifiedTreatedAsLax
+      # The cookie had the "SameParty" attribute but came from a cross-party response.
+      SamePartyFromCrossPartyContext
+      # The cookie had the "SameParty" attribute but did not specify the "Secure" attribute
+      # (which is required in order to use "SameParty"); or specified the "SameSite=Strict"
+      # attribute (which is forbidden when using "SameParty").
+      SamePartyConflictsWithOtherAttributes
 
   # Types of reasons why a cookie may not be sent with a request.
   experimental type CookieBlockedReason extends string
@@ -4886,6 +4903,8 @@ domain Network
       # value.
       # This is the "Schemeful Same-Site" version of the blocked reason.
       SchemefulSameSiteUnspecifiedTreatedAsLax
+      # The cookie had the "SameParty" attribute and the request was made from a cross-party context.
+      SamePartyFromCrossPartyContext
 
   # A cookie which was not stored from a response with the corresponding reason.
   experimental type BlockedSetCookieWithReason extends object
@@ -5592,6 +5611,7 @@ domain Network
     enum
       Allow
       BlockFromInsecureToMorePrivate
+      WarnFromInsecureToMorePrivate
 
   experimental type IPAddressSpace extends string
     enum
@@ -5821,6 +5841,16 @@ experimental domain Overlay
       # Style of the self-alignment line (align-items).
       optional LineStyle crossAlignment
 
+  # Configuration data for the highlighting of Flex item elements.
+  type FlexItemHighlightConfig extends object
+    properties
+      # Style of the box representing the item's base size
+      optional BoxStyle baseSizeBox
+      # Style of the border around the box representing the item's base size
+      optional LineStyle baseSizeBorder
+      # Style of the arrow representing if the item grew or shrank
+      optional LineStyle flexibilityArrow
+
   # Style information for drawing a line.
   type LineStyle extends object
     properties
@@ -5880,6 +5910,8 @@ experimental domain Overlay
       optional GridHighlightConfig gridHighlightConfig
       # The flex container highlight configuration (default: all transparent).
       optional FlexContainerHighlightConfig flexContainerHighlightConfig
+      # The flex item highlight configuration (default: all transparent).
+      optional FlexItemHighlightConfig flexItemHighlightConfig
       # The contrast algorithm to use for the contrast ratio (default: aa).
       optional ContrastAlgorithm contrastAlgorithm
 

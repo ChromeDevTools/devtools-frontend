@@ -261,7 +261,8 @@ export function registerCommands(inspectorBackend) {
     ContentSecurityPolicyIssue: 'ContentSecurityPolicyIssue',
     SharedArrayBufferIssue: 'SharedArrayBufferIssue',
     TrustedWebActivityIssue: 'TrustedWebActivityIssue',
-    LowTextContrastIssue: 'LowTextContrastIssue'
+    LowTextContrastIssue: 'LowTextContrastIssue',
+    CorsIssue: 'CorsIssue'
   });
   inspectorBackend.registerEvent('Audits.issueAdded', ['issue']);
   inspectorBackend.registerEnum('Audits.GetEncodedResponseRequestEncoding', {Webp: 'webp', Jpeg: 'jpeg', Png: 'png'});
@@ -1479,7 +1480,9 @@ export function registerCommands(inspectorBackend) {
     UnknownError: 'UnknownError',
     SchemefulSameSiteStrict: 'SchemefulSameSiteStrict',
     SchemefulSameSiteLax: 'SchemefulSameSiteLax',
-    SchemefulSameSiteUnspecifiedTreatedAsLax: 'SchemefulSameSiteUnspecifiedTreatedAsLax'
+    SchemefulSameSiteUnspecifiedTreatedAsLax: 'SchemefulSameSiteUnspecifiedTreatedAsLax',
+    SamePartyFromCrossPartyContext: 'SamePartyFromCrossPartyContext',
+    SamePartyConflictsWithOtherAttributes: 'SamePartyConflictsWithOtherAttributes'
   });
   inspectorBackend.registerEnum('Network.CookieBlockedReason', {
     SecureOnly: 'SecureOnly',
@@ -1493,7 +1496,8 @@ export function registerCommands(inspectorBackend) {
     UnknownError: 'UnknownError',
     SchemefulSameSiteStrict: 'SchemefulSameSiteStrict',
     SchemefulSameSiteLax: 'SchemefulSameSiteLax',
-    SchemefulSameSiteUnspecifiedTreatedAsLax: 'SchemefulSameSiteUnspecifiedTreatedAsLax'
+    SchemefulSameSiteUnspecifiedTreatedAsLax: 'SchemefulSameSiteUnspecifiedTreatedAsLax',
+    SamePartyFromCrossPartyContext: 'SamePartyFromCrossPartyContext'
   });
   inspectorBackend.registerEnum('Network.AuthChallengeSource', {Server: 'Server', Proxy: 'Proxy'});
   inspectorBackend.registerEnum(
@@ -1508,9 +1512,11 @@ export function registerCommands(inspectorBackend) {
     SignatureValidityUrl: 'signatureValidityUrl',
     SignatureTimestamps: 'signatureTimestamps'
   });
-  inspectorBackend.registerEnum(
-      'Network.PrivateNetworkRequestPolicy',
-      {Allow: 'Allow', BlockFromInsecureToMorePrivate: 'BlockFromInsecureToMorePrivate'});
+  inspectorBackend.registerEnum('Network.PrivateNetworkRequestPolicy', {
+    Allow: 'Allow',
+    BlockFromInsecureToMorePrivate: 'BlockFromInsecureToMorePrivate',
+    WarnFromInsecureToMorePrivate: 'WarnFromInsecureToMorePrivate'
+  });
   inspectorBackend.registerEnum(
       'Network.IPAddressSpace', {Local: 'Local', Private: 'Private', Public: 'Public', Unknown: 'Unknown'});
   inspectorBackend.registerEnum('Network.CrossOriginOpenerPolicyValue', {

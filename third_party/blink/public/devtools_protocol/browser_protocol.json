@@ -1356,7 +1356,7 @@
                 },
                 {
                     "id": "SharedArrayBufferIssueDetails",
-                    "description": "Details for a request that has been blocked with the BLOCKED_BY_RESPONSE\ncode. Currently only used for COEP/COOP, but may be extended to include\nsome CSP errors in the future.",
+                    "description": "Details for a issue arising from an SAB being instantiated in, or\ntransfered to a context that is not cross-origin isolated.",
                     "type": "object",
                     "properties": [
                         {
@@ -1449,6 +1449,35 @@
                     ]
                 },
                 {
+                    "id": "CorsIssueDetails",
+                    "description": "Details for a CORS related issue, e.g. a warning or error related to\nCORS RFC1918 enforcement.",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "corsErrorStatus",
+                            "$ref": "Network.CorsErrorStatus"
+                        },
+                        {
+                            "name": "isWarning",
+                            "type": "boolean"
+                        },
+                        {
+                            "name": "request",
+                            "$ref": "AffectedRequest"
+                        },
+                        {
+                            "name": "resourceIPAddressSpace",
+                            "optional": true,
+                            "$ref": "Network.IPAddressSpace"
+                        },
+                        {
+                            "name": "clientSecurityState",
+                            "optional": true,
+                            "$ref": "Network.ClientSecurityState"
+                        }
+                    ]
+                },
+                {
                     "id": "InspectorIssueCode",
                     "description": "A unique identifier for the type of issue. Each type may use one of the\noptional fields in InspectorIssueDetails to convey more specific\ninformation about the kind of issue.",
                     "type": "string",
@@ -1460,7 +1489,8 @@
                         "ContentSecurityPolicyIssue",
                         "SharedArrayBufferIssue",
                         "TrustedWebActivityIssue",
-                        "LowTextContrastIssue"
+                        "LowTextContrastIssue",
+                        "CorsIssue"
                     ]
                 },
                 {
@@ -1507,6 +1537,11 @@
                             "name": "lowTextContrastIssueDetails",
                             "optional": true,
                             "$ref": "LowTextContrastIssueDetails"
+                        },
+                        {
+                            "name": "corsIssueDetails",
+                            "optional": true,
+                            "$ref": "CorsIssueDetails"
                         }
                     ]
                 },
@@ -10496,7 +10531,9 @@
                         "UnknownError",
                         "SchemefulSameSiteStrict",
                         "SchemefulSameSiteLax",
-                        "SchemefulSameSiteUnspecifiedTreatedAsLax"
+                        "SchemefulSameSiteUnspecifiedTreatedAsLax",
+                        "SamePartyFromCrossPartyContext",
+                        "SamePartyConflictsWithOtherAttributes"
                     ]
                 },
                 {
@@ -10516,7 +10553,8 @@
                         "UnknownError",
                         "SchemefulSameSiteStrict",
                         "SchemefulSameSiteLax",
-                        "SchemefulSameSiteUnspecifiedTreatedAsLax"
+                        "SchemefulSameSiteUnspecifiedTreatedAsLax",
+                        "SamePartyFromCrossPartyContext"
                     ]
                 },
                 {
@@ -10906,7 +10944,8 @@
                     "type": "string",
                     "enum": [
                         "Allow",
-                        "BlockFromInsecureToMorePrivate"
+                        "BlockFromInsecureToMorePrivate",
+                        "WarnFromInsecureToMorePrivate"
                     ]
                 },
                 {
@@ -12619,6 +12658,31 @@
                     ]
                 },
                 {
+                    "id": "FlexItemHighlightConfig",
+                    "description": "Configuration data for the highlighting of Flex item elements.",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "baseSizeBox",
+                            "description": "Style of the box representing the item's base size",
+                            "optional": true,
+                            "$ref": "BoxStyle"
+                        },
+                        {
+                            "name": "baseSizeBorder",
+                            "description": "Style of the border around the box representing the item's base size",
+                            "optional": true,
+                            "$ref": "LineStyle"
+                        },
+                        {
+                            "name": "flexibilityArrow",
+                            "description": "Style of the arrow representing if the item grew or shrank",
+                            "optional": true,
+                            "$ref": "LineStyle"
+                        }
+                    ]
+                },
+                {
                     "id": "LineStyle",
                     "description": "Style information for drawing a line.",
                     "type": "object",
@@ -12769,6 +12833,12 @@
                             "description": "The flex container highlight configuration (default: all transparent).",
                             "optional": true,
                             "$ref": "FlexContainerHighlightConfig"
+                        },
+                        {
+                            "name": "flexItemHighlightConfig",
+                            "description": "The flex item highlight configuration (default: all transparent).",
+                            "optional": true,
+                            "$ref": "FlexItemHighlightConfig"
                         },
                         {
                             "name": "contrastAlgorithm",

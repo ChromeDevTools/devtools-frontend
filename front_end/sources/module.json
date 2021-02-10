@@ -53,13 +53,6 @@
       "experiment": "recorder"
     },
     {
-      "type": "@UI.ToolbarItem.Provider",
-      "actionId": "sources.add-folder-to-workspace",
-      "location": "files-navigator-toolbar",
-      "showLabel": true,
-      "condition": "!sources.hide_add_folder"
-    },
-    {
       "type": "@UI.ContextFlavorListener",
       "contextTypes": [
         "SDK.DebuggerPausedDetails"

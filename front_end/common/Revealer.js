@@ -56,12 +56,6 @@ export function setRevealForTest(newReveal) {
  * @return {?string}
  */
 export const revealDestination = function(revealable) {
-  if (!revealable) {
-    if (!registeredRevealers[0]) {
-      return null;
-    }
-    return registeredRevealers[0].destination || null;
-  }
   const extension = revealable ? getApplicableRegisteredRevealers(revealable)[0] : registeredRevealers[0];
   if (!extension) {
     return null;

@@ -410,18 +410,37 @@ export class Toolbar {
    * @return {!Promise<void>}
    */
   async appendItemsAtLocation(location) {
-    const extensions = Root.Runtime.Runtime.instance().extensions(Provider);
-    const filtered = extensions.filter(e => e.descriptor()['location'] === location);
+    /** @type {!Array<!ToolbarItemRegistration>} */
+    const extensions = [
+      ...Root.Runtime.Runtime.instance().extensions(Provider).map(extension => {
+        return {
+          .../** @type {*} */ (extension.descriptor()),
+          loadItem: /** @type {function(): !Promise<!Provider>} */ (extension.instance.bind(extension)),
+        };
+      }),
+      ...getRegisteredToolbarItems()
+    ];
+
+    extensions.sort((extension1, extension2) => {
+      const order1 = extension1.order || 0;
+      const order2 = extension2.order || 0;
+      return order1 - order2;
+    });
+
+    const filtered = extensions.filter(e => e.location === location);
     const items = await Promise.all(filtered.map(extension => {
-      const descriptor = extension.descriptor();
-      if (/** @type {*} */ (descriptor)['separator']) {
+      const {separator, actionId, showLabel, loadItem} = extension;
+      if (separator) {
         return new ToolbarSeparator();
       }
-      if (descriptor['actionId']) {
-        return Toolbar.createActionButtonForId(
-            descriptor['actionId'], {showLabel: /** @type {*} */ (descriptor)['showLabel'], userActionCode: undefined});
+      if (actionId) {
+        return Toolbar.createActionButtonForId(actionId, {showLabel: Boolean(showLabel), userActionCode: undefined});
       }
-      return extension.instance().then(p => /** @type {!Provider} */ (p).item());
+      // TODO(crbug.com/1134103) constratint the case checked with this if using TS type definitions once UI is TS-authored.
+      if (!loadItem) {
+        throw new Error('Could not load a toolbar item registration with no loadItem function');
+      }
+      return loadItem().then(p => /** @type {!Provider} */ (p).item());
     }));
 
     for (const item of items) {
@@ -1201,3 +1220,40 @@ export class ToolbarSettingCheckbox extends ToolbarCheckbox {
     bindCheckbox(this.inputElement, setting);
   }
 }
+
+/** @type {!Array<!ToolbarItemRegistration>} */
+const registeredToolbarItems = [];
+
+/**
+ * @param {!ToolbarItemRegistration} registration
+ */
+export function registerToolbarItem(registration) {
+  registeredToolbarItems.push(registration);
+}
+
+/**
+ * @return {!Array<ToolbarItemRegistration>}
+ */
+function getRegisteredToolbarItems() {
+  return registeredToolbarItems.filter(
+      item => Root.Runtime.Runtime.isDescriptorEnabled({experiment: undefined, condition: item.condition}));
+}
+
+/**
+ * @typedef {{
+  *  order: (number|undefined),
+  *  location: !ToolbarItemLocation,
+  *  separator: (boolean|undefined),
+  *  showLabel: (boolean|undefined),
+  *  actionId: (string|undefined),
+  *  condition: (!Root.Runtime.ConditionName|undefined),
+  *  loadItem: (undefined|function(): !Promise<!Provider>)
+  * }} */
+// @ts-ignore typedef
+export let ToolbarItemRegistration;
+
+
+/** @enum {string} */
+export const ToolbarItemLocation = {
+  FILES_NAVIGATION_TOOLBAR: 'files-navigator-toolbar',
+};

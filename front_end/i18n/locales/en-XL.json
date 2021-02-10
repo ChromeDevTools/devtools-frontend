@@ -515,88 +515,88 @@
   "browser_debugger/browser_debugger-meta.ts | xhrfetchBreakpoints": {
     "message": "X̂H́R̂/f́êt́ĉh́ B̂ŕêák̂ṕôín̂t́ŝ"
   },
-  "browser_debugger/CategorizedBreakpointsSidebarPane.js | breakpointHit": {
+  "browser_debugger/CategorizedBreakpointsSidebarPane.ts | breakpointHit": {
     "message": "b̂ŕêák̂ṕôín̂t́ ĥít̂"
   },
-  "browser_debugger/DOMBreakpointsSidebarPane.js | attributeModified": {
+  "browser_debugger/DOMBreakpointsSidebarPane.ts | attributeModified": {
     "message": "Ât́t̂ŕîb́ût́ê ḿôd́îf́îéd̂"
   },
-  "browser_debugger/DOMBreakpointsSidebarPane.js | breakOn": {
+  "browser_debugger/DOMBreakpointsSidebarPane.ts | breakOn": {
     "message": "B̂ŕêák̂ ón̂"
   },
-  "browser_debugger/DOMBreakpointsSidebarPane.js | breakpointHit": {
+  "browser_debugger/DOMBreakpointsSidebarPane.ts | breakpointHit": {
     "message": "b̂ŕêák̂ṕôín̂t́ ĥít̂"
   },
-  "browser_debugger/DOMBreakpointsSidebarPane.js | checked": {
+  "browser_debugger/DOMBreakpointsSidebarPane.ts | checked": {
     "message": "ĉh́êćk̂éd̂"
   },
-  "browser_debugger/DOMBreakpointsSidebarPane.js | domBreakpointsList": {
+  "browser_debugger/DOMBreakpointsSidebarPane.ts | domBreakpointsList": {
     "message": "D̂ÓM̂ B́r̂éâḱp̂óîńt̂ś l̂íŝt́"
   },
-  "browser_debugger/DOMBreakpointsSidebarPane.js | noBreakpoints": {
+  "browser_debugger/DOMBreakpointsSidebarPane.ts | noBreakpoints": {
     "message": "N̂ó b̂ŕêák̂ṕôín̂t́ŝ"
   },
-  "browser_debugger/DOMBreakpointsSidebarPane.js | nodeRemoved": {
+  "browser_debugger/DOMBreakpointsSidebarPane.ts | nodeRemoved": {
     "message": "N̂ód̂é r̂ém̂óv̂éd̂"
   },
-  "browser_debugger/DOMBreakpointsSidebarPane.js | removeAllDomBreakpoints": {
+  "browser_debugger/DOMBreakpointsSidebarPane.ts | removeAllDomBreakpoints": {
     "message": "R̂ém̂óv̂é âĺl̂ D́ÔḾ b̂ŕêák̂ṕôín̂t́ŝ"
   },
-  "browser_debugger/DOMBreakpointsSidebarPane.js | removeBreakpoint": {
+  "browser_debugger/DOMBreakpointsSidebarPane.ts | removeBreakpoint": {
     "message": "R̂ém̂óv̂é b̂ŕêák̂ṕôín̂t́"
   },
-  "browser_debugger/DOMBreakpointsSidebarPane.js | revealDomNodeInElementsPanel": {
+  "browser_debugger/DOMBreakpointsSidebarPane.ts | revealDomNodeInElementsPanel": {
     "message": "R̂év̂éâĺ D̂ÓM̂ ńôd́ê ín̂ Él̂ém̂én̂t́ŝ ṕâńêĺ"
   },
-  "browser_debugger/DOMBreakpointsSidebarPane.js | sBreakpointHit": {
+  "browser_debugger/DOMBreakpointsSidebarPane.ts | sBreakpointHit": {
     "message": "{PH1} b̂ŕêák̂ṕôín̂t́ ĥít̂"
   },
-  "browser_debugger/DOMBreakpointsSidebarPane.js | sS": {
+  "browser_debugger/DOMBreakpointsSidebarPane.ts | sS": {
     "message": "{PH1}: {PH2}"
   },
-  "browser_debugger/DOMBreakpointsSidebarPane.js | subtreeModified": {
+  "browser_debugger/DOMBreakpointsSidebarPane.ts | subtreeModified": {
     "message": "Ŝúb̂t́r̂éê ḿôd́îf́îéd̂"
   },
-  "browser_debugger/DOMBreakpointsSidebarPane.js | unchecked": {
+  "browser_debugger/DOMBreakpointsSidebarPane.ts | unchecked": {
     "message": "ûńĉh́êćk̂éd̂"
   },
-  "browser_debugger/ModuleUIStrings.js | domBreakpoint": {
+  "browser_debugger/ModuleUIStrings.ts | domBreakpoint": {
     "message": "D̂ÓM̂ B́r̂éâḱp̂óîńt̂"
   },
-  "browser_debugger/ObjectEventListenersSidebarPane.js | refreshGlobalListeners": {
+  "browser_debugger/ObjectEventListenersSidebarPane.ts | refreshGlobalListeners": {
     "message": "R̂éf̂ŕêśĥ ǵl̂ób̂ál̂ ĺîśt̂én̂ér̂ś"
   },
-  "browser_debugger/XHRBreakpointsSidebarPane.js | addBreakpoint": {
+  "browser_debugger/XHRBreakpointsSidebarPane.ts | addBreakpoint": {
     "message": "Âd́d̂ b́r̂éâḱp̂óîńt̂"
   },
-  "browser_debugger/XHRBreakpointsSidebarPane.js | addXhrfetchBreakpoint": {
+  "browser_debugger/XHRBreakpointsSidebarPane.ts | addXhrfetchBreakpoint": {
     "message": "Âd́d̂ X́ĤŔ/f̂ét̂ćĥ b́r̂éâḱp̂óîńt̂"
   },
-  "browser_debugger/XHRBreakpointsSidebarPane.js | anyXhrOrFetch": {
+  "browser_debugger/XHRBreakpointsSidebarPane.ts | anyXhrOrFetch": {
     "message": "Âńŷ X́ĤŔ ôŕ f̂ét̂ćĥ"
   },
-  "browser_debugger/XHRBreakpointsSidebarPane.js | breakpointHit": {
+  "browser_debugger/XHRBreakpointsSidebarPane.ts | breakpointHit": {
     "message": "b̂ŕêák̂ṕôín̂t́ ĥít̂"
   },
-  "browser_debugger/XHRBreakpointsSidebarPane.js | breakWhenUrlContains": {
+  "browser_debugger/XHRBreakpointsSidebarPane.ts | breakWhenUrlContains": {
     "message": "B̂ŕêák̂ ẃĥén̂ ÚR̂Ĺ ĉón̂t́âín̂ś:"
   },
-  "browser_debugger/XHRBreakpointsSidebarPane.js | noBreakpoints": {
+  "browser_debugger/XHRBreakpointsSidebarPane.ts | noBreakpoints": {
     "message": "N̂ó b̂ŕêák̂ṕôín̂t́ŝ"
   },
-  "browser_debugger/XHRBreakpointsSidebarPane.js | removeAllBreakpoints": {
+  "browser_debugger/XHRBreakpointsSidebarPane.ts | removeAllBreakpoints": {
     "message": "R̂ém̂óv̂é âĺl̂ b́r̂éâḱp̂óîńt̂ś"
   },
-  "browser_debugger/XHRBreakpointsSidebarPane.js | removeBreakpoint": {
+  "browser_debugger/XHRBreakpointsSidebarPane.ts | removeBreakpoint": {
     "message": "R̂ém̂óv̂é b̂ŕêák̂ṕôín̂t́"
   },
-  "browser_debugger/XHRBreakpointsSidebarPane.js | urlBreakpoint": {
+  "browser_debugger/XHRBreakpointsSidebarPane.ts | urlBreakpoint": {
     "message": "ÛŔL̂ B́r̂éâḱp̂óîńt̂"
   },
-  "browser_debugger/XHRBreakpointsSidebarPane.js | urlContainsS": {
+  "browser_debugger/XHRBreakpointsSidebarPane.ts | urlContainsS": {
     "message": "ÛŔL̂ ćôńt̂áîńŝ \"{PH1}\""
   },
-  "browser_debugger/XHRBreakpointsSidebarPane.js | xhrfetchBreakpoints": {
+  "browser_debugger/XHRBreakpointsSidebarPane.ts | xhrfetchBreakpoints": {
     "message": "X̂H́R̂/f́êt́ĉh́ B̂ŕêák̂ṕôín̂t́ŝ"
   },
   "browser_sdk/browser_sdk-meta.ts | clear": {

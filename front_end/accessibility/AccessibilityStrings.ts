@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as i18n from '../i18n/i18n.js';
 export const UIStrings = {
   /**
@@ -429,18 +431,18 @@ export const UIStrings = {
   */
   valueFromNativeHtmlUnknownSource: 'Value from native HTML (unknown source).',
 };
-const str_ = i18n.i18n.registerUIStrings('accessibility/AccessibilityStrings.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('accessibility/AccessibilityStrings.ts', UIStrings);
 const i18nString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 export const AXAttributes = {
   'disabled': {
     name: i18nString(UIStrings.disabled),
     description: i18nString(UIStrings.ifTrueThisElementCurrentlyCannot),
-    group: 'AXGlobalStates'
+    group: 'AXGlobalStates',
   },
   'invalid': {
     name: i18nString(UIStrings.invalidUserEntry),
     description: i18nString(UIStrings.ifTrueThisElementsUserentered),
-    group: 'AXGlobalStates'
+    group: 'AXGlobalStates',
   },
   'editable': {name: i18nString(UIStrings.editable), description: i18nString(UIStrings.ifAndHowThisElementCanBeEdited)},
   'focusable':
@@ -451,158 +453,158 @@ export const AXAttributes = {
   'live': {
     name: i18nString(UIStrings.liveRegion),
     description: i18nString(UIStrings.whetherAndWhatPriorityOfLive),
-    group: 'AXLiveRegionAttributes'
+    group: 'AXLiveRegionAttributes',
   },
   'atomic': {
     name: i18nString(UIStrings.atomicLiveRegions),
     description: i18nString(UIStrings.ifThisElementMayReceiveLive),
-    group: 'AXLiveRegionAttributes'
+    group: 'AXLiveRegionAttributes',
   },
   'relevant': {
     name: i18nString(UIStrings.relevantLiveRegions),
     description: i18nString(UIStrings.ifThisElementMayReceiveLiveUpdates),
-    group: 'AXLiveRegionAttributes'
+    group: 'AXLiveRegionAttributes',
   },
   'busy': {
     name: i18nString(UIStrings.busyLiveRegions),
     description: i18nString(UIStrings.whetherThisElementOrItsSubtree),
-    group: 'AXLiveRegionAttributes'
+    group: 'AXLiveRegionAttributes',
   },
   'root': {
     name: i18nString(UIStrings.liveRegionRoot),
     description: i18nString(UIStrings.ifThisElementMayReceiveLiveUpdatesThe),
-    group: 'AXLiveRegionAttributes'
+    group: 'AXLiveRegionAttributes',
   },
   'autocomplete': {
     name: i18nString(UIStrings.hasAutocomplete),
     description: i18nString(UIStrings.whetherAndWhatTypeOfAutocomplete),
-    group: 'AXWidgetAttributes'
+    group: 'AXWidgetAttributes',
   },
   'haspopup': {
     name: i18nString(UIStrings.hasPopup),
     description: i18nString(UIStrings.whetherThisElementHasCausedSome),
-    group: 'AXWidgetAttributes'
+    group: 'AXWidgetAttributes',
   },
   'level': {
     name: i18nString(UIStrings.level),
     description: i18nString(UIStrings.theHierarchicalLevelOfThis),
-    group: 'AXWidgetAttributes'
+    group: 'AXWidgetAttributes',
   },
   'multiselectable': {
     name: i18nString(UIStrings.multiselectable),
     description: i18nString(UIStrings.whetherAUserMaySelectMoreThanOne),
-    group: 'AXWidgetAttributes'
+    group: 'AXWidgetAttributes',
   },
   'orientation': {
     name: i18nString(UIStrings.orientation),
     description: i18nString(UIStrings.whetherThisLinearElements),
-    group: 'AXWidgetAttributes'
+    group: 'AXWidgetAttributes',
   },
   'multiline': {
     name: i18nString(UIStrings.multiline),
     description: i18nString(UIStrings.whetherThisTextBoxMayHaveMore),
-    group: 'AXWidgetAttributes'
+    group: 'AXWidgetAttributes',
   },
   'readonly': {
     name: i18nString(UIStrings.readonlyString),
     description: i18nString(UIStrings.ifTrueThisElementMayBeInteracted),
-    group: 'AXWidgetAttributes'
+    group: 'AXWidgetAttributes',
   },
   'required': {
     name: i18nString(UIStrings.requiredString),
     description: i18nString(UIStrings.whetherThisElementIsARequired),
-    group: 'AXWidgetAttributes'
+    group: 'AXWidgetAttributes',
   },
   'valuemin': {
     name: i18nString(UIStrings.minimumValue),
     description: i18nString(UIStrings.forARangeWidgetTheMinimumAllowed),
-    group: 'AXWidgetAttributes'
+    group: 'AXWidgetAttributes',
   },
   'valuemax': {
     name: i18nString(UIStrings.maximumValue),
     description: i18nString(UIStrings.forARangeWidgetTheMaximumAllowed),
-    group: 'AXWidgetAttributes'
+    group: 'AXWidgetAttributes',
   },
   'valuetext': {
     name: i18nString(UIStrings.valueDescription),
     description: i18nString(UIStrings.aHumanreadableVersionOfTheValue),
-    group: 'AXWidgetAttributes'
+    group: 'AXWidgetAttributes',
   },
   'checked': {
     name: i18nString(UIStrings.checked),
     description: i18nString(UIStrings.whetherThisCheckboxRadioButtonOr),
-    group: 'AXWidgetStates'
+    group: 'AXWidgetStates',
   },
   'expanded': {
     name: i18nString(UIStrings.expanded),
     description: i18nString(UIStrings.whetherThisElementOrAnother),
-    group: 'AXWidgetStates'
+    group: 'AXWidgetStates',
   },
   'pressed': {
     name: i18nString(UIStrings.pressed),
     description: i18nString(UIStrings.whetherThisToggleButtonIs),
-    group: 'AXWidgetStates'
+    group: 'AXWidgetStates',
   },
   'selected': {
     name: i18nString(UIStrings.selectedString),
     description: i18nString(UIStrings.whetherTheOptionRepresentedBy),
-    group: 'AXWidgetStates'
+    group: 'AXWidgetStates',
   },
   'activedescendant': {
     name: i18nString(UIStrings.activeDescendant),
     description: i18nString(UIStrings.theDescendantOfThisElementWhich),
-    group: 'AXRelationshipAttributes'
+    group: 'AXRelationshipAttributes',
   },
   'flowto': {
     name: i18nString(UIStrings.flowsTo),
     description: i18nString(UIStrings.elementToWhichTheUserMayChooseTo),
-    group: 'AXRelationshipAttributes'
+    group: 'AXRelationshipAttributes',
   },
   'controls': {
     name: i18nString(UIStrings.controls),
     description: i18nString(UIStrings.elementOrElementsWhoseContentOr),
-    group: 'AXRelationshipAttributes'
+    group: 'AXRelationshipAttributes',
   },
   'describedby': {
     name: i18nString(UIStrings.describedBy),
     description: i18nString(UIStrings.elementOrElementsWhichFormThe),
-    group: 'AXRelationshipAttributes'
+    group: 'AXRelationshipAttributes',
   },
   'labelledby': {
     name: i18nString(UIStrings.labeledBy),
     description: i18nString(UIStrings.elementOrElementsWhichMayFormThe),
-    group: 'AXRelationshipAttributes'
+    group: 'AXRelationshipAttributes',
   },
   'owns': {
     name: i18nString(UIStrings.ownsText),
     description: i18nString(UIStrings.elementOrElementsWhichShouldBe),
-    group: 'AXRelationshipAttributes'
+    group: 'AXRelationshipAttributes',
   },
   'name': {
     name: i18nString(UIStrings.nameString),
     description: i18nString(UIStrings.theComputedNameOfThisElement),
-    group: 'Default'
+    group: 'Default',
   },
   'role': {
     name: i18nString(UIStrings.role),
     description: i18nString(UIStrings.indicatesThePurposeOfThisElement),
-    group: 'Default'
+    group: 'Default',
   },
   'value': {
     name: i18nString(UIStrings.value),
     description: i18nString(UIStrings.theValueOfThisElementThisMayBe),
-    group: 'Default'
+    group: 'Default',
   },
   'help': {
     name: i18nString(UIStrings.help),
     description: i18nString(UIStrings.theComputedHelpTextForThis),
-    group: 'Default'
+    group: 'Default',
   },
   'description': {
     name: i18nString(UIStrings.description),
     description: i18nString(UIStrings.theAccessibleDescriptionForThis),
-    group: 'Default'
-  }
+    group: 'Default',
+  },
 };
 
 export const AXSourceTypes = {
@@ -615,10 +617,10 @@ export const AXSourceTypes = {
   'contents': {name: i18nString(UIStrings.contents), description: i18nString(UIStrings.valueFromElementContents)},
   'placeholder': {
     name: i18nString(UIStrings.fromPlaceholderAttribute),
-    description: i18nString(UIStrings.valueFromPlaceholderAttribute)
+    description: i18nString(UIStrings.valueFromPlaceholderAttribute),
   },
   'relatedElement':
-      {name: i18nString(UIStrings.relatedElement), description: i18nString(UIStrings.valueFromRelatedElement)}
+      {name: i18nString(UIStrings.relatedElement), description: i18nString(UIStrings.valueFromRelatedElement)},
 };
 
 export const AXNativeSourceTypes = {

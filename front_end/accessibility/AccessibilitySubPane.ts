@@ -2,60 +2,40 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../ui/ui.js';
 
 export class AccessibilitySubPane extends UI.View.SimpleView {
-  /**
-   * @param {string} name
-   */
-  constructor(name) {
+  _axNode: SDK.AccessibilityModel.AccessibilityNode|null;
+  _node?: SDK.DOMModel.DOMNode|null;
+  constructor(name: string) {
     super(name);
 
-    /**
-     * @protected
-     * @type {?SDK.AccessibilityModel.AccessibilityNode}
-     */
     this._axNode = null;
     this.registerRequiredCSS('accessibility/accessibilityProperties.css', {enableLegacyPatching: false});
   }
 
-  /**
-   * @param {?SDK.AccessibilityModel.AccessibilityNode} axNode
-   */
-  setAXNode(axNode) {
+  setAXNode(_axNode: SDK.AccessibilityModel.AccessibilityNode|null): void {
   }
 
-  /**
-   * @return {?SDK.DOMModel.DOMNode}
-   */
-  node() {
+  node(): SDK.DOMModel.DOMNode|null {
     return this._node || null;
   }
 
-  /**
-   * @param {?SDK.DOMModel.DOMNode} node
-   */
-  setNode(node) {
+  setNode(node: SDK.DOMModel.DOMNode|null): void {
     this._node = node;
   }
 
-  /**
-   * @param {string} textContent
-   * @param {string=} className
-   * @return {!Element}
-   */
-  createInfo(textContent, className) {
+  createInfo(textContent: string, className?: string): Element {
     const classNameOrDefault = className || 'gray-info-message';
     const info = this.element.createChild('div', classNameOrDefault);
     info.textContent = textContent;
     return info;
   }
 
-  /**
-   * @return {!UI.TreeOutline.TreeOutline}
-   */
-  createTreeOutline() {
+  createTreeOutline(): UI.TreeOutline.TreeOutline {
     const treeOutline = new UI.TreeOutline.TreeOutlineInShadow();
     treeOutline.registerRequiredCSS('accessibility/accessibilityNode.css', {enableLegacyPatching: false});
     treeOutline.registerRequiredCSS('accessibility/accessibilityProperties.css', {enableLegacyPatching: false});

@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
 import * as Root from '../root/root.js';
 import * as SDK from '../sdk/sdk.js';
@@ -12,12 +14,19 @@ import {ARIAAttributesPane} from './ARIAAttributesView.js';
 import {AXBreadcrumbsPane} from './AXBreadcrumbsPane.js';
 import {SourceOrderPane} from './SourceOrderView.js';
 
-/** @type {!AccessibilitySidebarView} */
-let accessibilitySidebarViewInstance;
+let accessibilitySidebarViewInstance: AccessibilitySidebarView;
 
 export class AccessibilitySidebarView extends UI.ThrottledWidget.ThrottledWidget {
-  /** @private */
-  constructor() {
+  _sourceOrderViewerExperimentEnabled: boolean;
+  _node: SDK.DOMModel.DOMNode|null;
+  _axNode: SDK.AccessibilityModel.AccessibilityNode|null;
+  _skipNextPullNode: boolean;
+  _sidebarPaneStack: UI.View.ViewLocation;
+  _breadcrumbsSubPane: AXBreadcrumbsPane;
+  _ariaSubPane: ARIAAttributesPane;
+  _axNodeSubPane: AXNodeSubPane;
+  _sourceOrderSubPane: SourceOrderPane|undefined;
+  private constructor() {
     super();
     this._sourceOrderViewerExperimentEnabled = Root.Runtime.experiments.isEnabled('sourceOrderViewer');
     this._node = null;
@@ -39,41 +48,28 @@ export class AccessibilitySidebarView extends UI.ThrottledWidget.ThrottledWidget
     this._pullNode();
   }
 
-  static instance() {
+  static instance(): AccessibilitySidebarView {
     if (!accessibilitySidebarViewInstance) {
       accessibilitySidebarViewInstance = new AccessibilitySidebarView();
     }
     return accessibilitySidebarViewInstance;
   }
 
-  /**
-   * @return {?SDK.DOMModel.DOMNode}
-   */
-  node() {
+  node(): SDK.DOMModel.DOMNode|null {
     return this._node;
   }
 
-  /**
-   * @return {?SDK.AccessibilityModel.AccessibilityNode}
-   */
-  axNode() {
+  axNode(): SDK.AccessibilityModel.AccessibilityNode|null {
     return this._axNode;
   }
 
-  /**
-   * @param {?SDK.DOMModel.DOMNode} node
-   * @param {boolean=} fromAXTree
-   */
-  setNode(node, fromAXTree) {
+  setNode(node: SDK.DOMModel.DOMNode|null, fromAXTree?: boolean): void {
     this._skipNextPullNode = Boolean(fromAXTree);
     this._node = node;
     this.update();
   }
 
-  /**
-   * @param {?SDK.AccessibilityModel.AccessibilityNode} axNode
-   */
-  accessibilityNodeCallback(axNode) {
+  accessibilityNodeCallback(axNode: SDK.AccessibilityModel.AccessibilityNode|null): void {
     if (!axNode) {
       return;
     }
@@ -94,12 +90,7 @@ export class AccessibilitySidebarView extends UI.ThrottledWidget.ThrottledWidget
     }
   }
 
-  /**
-   * @override
-   * @protected
-   * @return {!Promise.<void>}
-   */
-  async doUpdate() {
+  async doUpdate(): Promise<void> {
     const node = this.node();
     this._axNodeSubPane.setNode(node);
     this._ariaSubPane.setNode(node);
@@ -119,10 +110,7 @@ export class AccessibilitySidebarView extends UI.ThrottledWidget.ThrottledWidget
     this.accessibilityNodeCallback(accessibilityModel.axNodeForDOMNode(node));
   }
 
-  /**
-   * @override
-   */
-  wasShown() {
+  wasShown(): void {
     super.wasShown();
 
     // Pull down the latest date for this node.
@@ -138,10 +126,7 @@ export class AccessibilitySidebarView extends UI.ThrottledWidget.ThrottledWidget
         SDK.DOMModel.DOMModel, SDK.DOMModel.Events.ChildNodeCountUpdated, this._onNodeChange, this);
   }
 
-  /**
-   * @override
-   */
-  willHide() {
+  willHide(): void {
     SDK.SDKModel.TargetManager.instance().removeModelListener(
         SDK.DOMModel.DOMModel, SDK.DOMModel.Events.AttrModified, this._onAttrChange, this);
     SDK.SDKModel.TargetManager.instance().removeModelListener(
@@ -152,7 +137,7 @@ export class AccessibilitySidebarView extends UI.ThrottledWidget.ThrottledWidget
         SDK.DOMModel.DOMModel, SDK.DOMModel.Events.ChildNodeCountUpdated, this._onNodeChange, this);
   }
 
-  _pullNode() {
+  _pullNode(): void {
     if (this._skipNextPullNode) {
       this._skipNextPullNode = false;
       return;
@@ -160,10 +145,7 @@ export class AccessibilitySidebarView extends UI.ThrottledWidget.ThrottledWidget
     this.setNode(UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode));
   }
 
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  _onAttrChange(event) {
+  _onAttrChange(event: Common.EventTarget.EventTargetEvent): void {
     if (!this.node()) {
       return;
     }
@@ -174,10 +156,7 @@ export class AccessibilitySidebarView extends UI.ThrottledWidget.ThrottledWidget
     this.update();
   }
 
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  _onNodeChange(event) {
+  _onNodeChange(event: Common.EventTarget.EventTargetEvent): void {
     if (!this.node()) {
       return;
     }

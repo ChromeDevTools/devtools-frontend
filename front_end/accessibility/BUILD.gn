@@ -7,14 +7,14 @@ import("../../scripts/build/ninja/devtools_module.gni")
 
 devtools_module("accessibility") {
   sources = [
-    "ARIAAttributesView.js",
-    "ARIAMetadata.js",
-    "AXBreadcrumbsPane.js",
-    "AccessibilityNodeView.js",
-    "AccessibilitySidebarView.js",
-    "AccessibilityStrings.js",
-    "AccessibilitySubPane.js",
-    "SourceOrderView.js",
+    "ARIAAttributesView.ts",
+    "ARIAMetadata.ts",
+    "AXBreadcrumbsPane.ts",
+    "AccessibilityNodeView.ts",
+    "AccessibilitySidebarView.ts",
+    "AccessibilityStrings.ts",
+    "AccessibilitySubPane.ts",
+    "SourceOrderView.ts",
   ]
 
   deps = [
@@ -34,7 +34,7 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_entrypoint("legacy") {
-  entrypoint = "accessibility-legacy.js"
+  entrypoint = "accessibility-legacy.ts"
 
   deps = [ ":bundle" ]
 }

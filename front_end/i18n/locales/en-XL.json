@@ -5,409 +5,409 @@
   "accessibility/accessibility-meta.ts | shoAccessibility": {
     "message": "Ŝh́ôẃ Âćĉéŝśîb́îĺît́ŷ"
   },
-  "accessibility/AccessibilityNodeView.js | accessibilityNodeNotExposed": {
+  "accessibility/AccessibilityNodeView.ts | accessibilityNodeNotExposed": {
     "message": "Âćĉéŝśîb́îĺît́ŷ ńôd́ê ńôt́ êx́p̂óŝéd̂"
   },
-  "accessibility/AccessibilityNodeView.js | ancestorChildrenAreAll": {
+  "accessibility/AccessibilityNodeView.ts | ancestorChildrenAreAll": {
     "message": "Âńĉéŝt́ôŕ'ŝ ćĥíl̂d́r̂én̂ ár̂é âĺl̂ ṕr̂éŝén̂t́ât́îón̂ál̂: "
   },
-  "accessibility/AccessibilityNodeView.js | computedProperties": {
+  "accessibility/AccessibilityNodeView.ts | computedProperties": {
     "message": "Ĉóm̂ṕût́êd́ P̂ŕôṕêŕt̂íêś"
   },
-  "accessibility/AccessibilityNodeView.js | elementHasEmptyAltText": {
+  "accessibility/AccessibilityNodeView.ts | elementHasEmptyAltText": {
     "message": "Êĺêḿêńt̂ h́âś êḿp̂t́ŷ ál̂t́ t̂éx̂t́."
   },
-  "accessibility/AccessibilityNodeView.js | elementHasPlaceholder": {
+  "accessibility/AccessibilityNodeView.ts | elementHasPlaceholder": {
     "message": "Êĺêḿêńt̂ h́âś {PH1}."
   },
-  "accessibility/AccessibilityNodeView.js | elementIsHiddenBy": {
+  "accessibility/AccessibilityNodeView.ts | elementIsHiddenBy": {
     "message": "Êĺêḿêńt̂ íŝ h́îd́d̂én̂ b́ŷ áĉt́îv́ê ḿôd́âĺ d̂íâĺôǵ: "
   },
-  "accessibility/AccessibilityNodeView.js | elementIsInAnInertSubTree": {
+  "accessibility/AccessibilityNodeView.ts | elementIsInAnInertSubTree": {
     "message": "Êĺêḿêńt̂ íŝ ín̂ án̂ ín̂ér̂t́ ŝúb̂t́r̂éê f́r̂óm̂ "
   },
-  "accessibility/AccessibilityNodeView.js | elementIsInert": {
+  "accessibility/AccessibilityNodeView.ts | elementIsInert": {
     "message": "Êĺêḿêńt̂ íŝ ín̂ér̂t́."
   },
-  "accessibility/AccessibilityNodeView.js | elementIsNotRendered": {
+  "accessibility/AccessibilityNodeView.ts | elementIsNotRendered": {
     "message": "Êĺêḿêńt̂ íŝ ńôt́ r̂én̂d́êŕêd́."
   },
-  "accessibility/AccessibilityNodeView.js | elementIsNotVisible": {
+  "accessibility/AccessibilityNodeView.ts | elementIsNotVisible": {
     "message": "Êĺêḿêńt̂ íŝ ńôt́ v̂íŝíb̂ĺê."
   },
-  "accessibility/AccessibilityNodeView.js | elementIsPlaceholder": {
+  "accessibility/AccessibilityNodeView.ts | elementIsPlaceholder": {
     "message": "Êĺêḿêńt̂ íŝ {PH1}."
   },
-  "accessibility/AccessibilityNodeView.js | elementIsPresentational": {
+  "accessibility/AccessibilityNodeView.ts | elementIsPresentational": {
     "message": "Êĺêḿêńt̂ íŝ ṕr̂éŝén̂t́ât́îón̂ál̂."
   },
-  "accessibility/AccessibilityNodeView.js | elementNotInteresting": {
+  "accessibility/AccessibilityNodeView.ts | elementNotInteresting": {
     "message": "Êĺêḿêńt̂ ńôt́ îńt̂ér̂éŝt́îńĝ f́ôŕ âćĉéŝśîb́îĺît́ŷ."
   },
-  "accessibility/AccessibilityNodeView.js | elementsInheritsPresentational": {
+  "accessibility/AccessibilityNodeView.ts | elementsInheritsPresentational": {
     "message": "Êĺêḿêńt̂ ín̂h́êŕît́ŝ ṕr̂éŝén̂t́ât́îón̂ál̂ ŕôĺê f́r̂óm̂ "
   },
-  "accessibility/AccessibilityNodeView.js | invalidSource": {
+  "accessibility/AccessibilityNodeView.ts | invalidSource": {
     "message": "Îńv̂ál̂íd̂ śôúr̂ćê."
   },
-  "accessibility/AccessibilityNodeView.js | labelFor": {
+  "accessibility/AccessibilityNodeView.ts | labelFor": {
     "message": "L̂áb̂él̂ f́ôŕ "
   },
-  "accessibility/AccessibilityNodeView.js | noAccessibilityNode": {
+  "accessibility/AccessibilityNodeView.ts | noAccessibilityNode": {
     "message": "N̂ó âćĉéŝśîb́îĺît́ŷ ńôd́ê"
   },
-  "accessibility/AccessibilityNodeView.js | noNodeWithThisId": {
+  "accessibility/AccessibilityNodeView.ts | noNodeWithThisId": {
     "message": "N̂ó n̂ód̂é ŵít̂h́ t̂h́îś ÎD́."
   },
-  "accessibility/AccessibilityNodeView.js | noTextContent": {
+  "accessibility/AccessibilityNodeView.ts | noTextContent": {
     "message": "N̂ó t̂éx̂t́ ĉón̂t́êńt̂."
   },
-  "accessibility/AccessibilityNodeView.js | notSpecified": {
+  "accessibility/AccessibilityNodeView.ts | notSpecified": {
     "message": "N̂ót̂ śp̂éĉíf̂íêd́"
   },
-  "accessibility/AccessibilityNodeView.js | partOfLabelElement": {
+  "accessibility/AccessibilityNodeView.ts | partOfLabelElement": {
     "message": "P̂ár̂t́ ôf́ l̂áb̂él̂ él̂ém̂én̂t́: "
   },
-  "accessibility/AccessibilityNodeView.js | placeholderIsPlaceholderOnAncestor": {
+  "accessibility/AccessibilityNodeView.ts | placeholderIsPlaceholderOnAncestor": {
     "message": "{PH1} îś {PH2} ôń âńĉéŝt́ôŕ: "
   },
-  "accessibility/AccessibilityNodeView.js | staticTextNodeIsUsed": {
+  "accessibility/AccessibilityNodeView.ts | staticTextNodeIsUsed": {
     "message": "Ŝt́ât́îć t̂éx̂t́ n̂ód̂é îś ûśêd́ âś n̂ám̂é f̂ór̂ "
   },
-  "accessibility/AccessibilityStrings.js | activeDescendant": {
+  "accessibility/AccessibilityStrings.ts | activeDescendant": {
     "message": "Âćt̂ív̂é d̂éŝćêńd̂án̂t́"
   },
-  "accessibility/AccessibilityStrings.js | aHumanreadableVersionOfTheValue": {
+  "accessibility/AccessibilityStrings.ts | aHumanreadableVersionOfTheValue": {
     "message": "Â h́ûḿâń-r̂éâd́âb́l̂é v̂ér̂śîón̂ óf̂ t́ĥé v̂ál̂úê óf̂ á r̂án̂ǵê ẃîd́ĝét̂ (ẃĥér̂é n̂éĉéŝśâŕŷ)."
   },
-  "accessibility/AccessibilityStrings.js | atomicLiveRegions": {
+  "accessibility/AccessibilityStrings.ts | atomicLiveRegions": {
     "message": "Ât́ôḿîć (l̂ív̂é r̂éĝíôńŝ)"
   },
-  "accessibility/AccessibilityStrings.js | busyLiveRegions": {
+  "accessibility/AccessibilityStrings.ts | busyLiveRegions": {
     "message": "B̂úŝý (l̂ív̂é r̂éĝíôńŝ)"
   },
-  "accessibility/AccessibilityStrings.js | canSetValue": {
+  "accessibility/AccessibilityStrings.ts | canSetValue": {
     "message": "Ĉán̂ śêt́ v̂ál̂úê"
   },
-  "accessibility/AccessibilityStrings.js | checked": {
+  "accessibility/AccessibilityStrings.ts | checked": {
     "message": "Ĉh́êćk̂éd̂"
   },
-  "accessibility/AccessibilityStrings.js | contents": {
+  "accessibility/AccessibilityStrings.ts | contents": {
     "message": "Ĉón̂t́êńt̂ś"
   },
-  "accessibility/AccessibilityStrings.js | controls": {
+  "accessibility/AccessibilityStrings.ts | controls": {
     "message": "Ĉón̂t́r̂ól̂ś"
   },
-  "accessibility/AccessibilityStrings.js | describedBy": {
+  "accessibility/AccessibilityStrings.ts | describedBy": {
     "message": "D̂éŝćr̂íb̂éd̂ b́ŷ"
   },
-  "accessibility/AccessibilityStrings.js | description": {
+  "accessibility/AccessibilityStrings.ts | description": {
     "message": "D̂éŝćr̂íp̂t́îón̂"
   },
-  "accessibility/AccessibilityStrings.js | disabled": {
+  "accessibility/AccessibilityStrings.ts | disabled": {
     "message": "D̂íŝáb̂ĺêd́"
   },
-  "accessibility/AccessibilityStrings.js | editable": {
+  "accessibility/AccessibilityStrings.ts | editable": {
     "message": "Êd́ît́âb́l̂é"
   },
-  "accessibility/AccessibilityStrings.js | elementOrElementsWhichFormThe": {
+  "accessibility/AccessibilityStrings.ts | elementOrElementsWhichFormThe": {
     "message": "Êĺêḿêńt̂ ór̂ él̂ém̂én̂t́ŝ ẃĥíĉh́ f̂ór̂ḿ t̂h́ê d́êśĉŕîṕt̂íôń ôf́ t̂h́îś êĺêḿêńt̂."
   },
-  "accessibility/AccessibilityStrings.js | elementOrElementsWhichMayFormThe": {
+  "accessibility/AccessibilityStrings.ts | elementOrElementsWhichMayFormThe": {
     "message": "Êĺêḿêńt̂ ór̂ él̂ém̂én̂t́ŝ ẃĥíĉh́ m̂áŷ f́ôŕm̂ t́ĥé n̂ám̂é ôf́ t̂h́îś êĺêḿêńt̂."
   },
-  "accessibility/AccessibilityStrings.js | elementOrElementsWhichShouldBe": {
+  "accessibility/AccessibilityStrings.ts | elementOrElementsWhichShouldBe": {
     "message": "Êĺêḿêńt̂ ór̂ él̂ém̂én̂t́ŝ ẃĥíĉh́ ŝh́ôúl̂d́ b̂é ĉón̂śîd́êŕêd́ d̂éŝćêńd̂án̂t́ŝ óf̂ t́ĥíŝ él̂ém̂én̂t́, d̂éŝṕît́ê ńôt́ b̂éîńĝ d́êśĉén̂d́âńt̂ś îń t̂h́ê D́ÔḾ."
   },
-  "accessibility/AccessibilityStrings.js | elementOrElementsWhoseContentOr": {
+  "accessibility/AccessibilityStrings.ts | elementOrElementsWhoseContentOr": {
     "message": "Êĺêḿêńt̂ ór̂ él̂ém̂én̂t́ŝ ẃĥóŝé ĉón̂t́êńt̂ ór̂ ṕr̂éŝén̂ćê íŝ/ár̂é ĉón̂t́r̂ól̂ĺêd́ b̂ý t̂h́îś ŵíd̂ǵêt́."
   },
-  "accessibility/AccessibilityStrings.js | elementToWhichTheUserMayChooseTo": {
+  "accessibility/AccessibilityStrings.ts | elementToWhichTheUserMayChooseTo": {
     "message": "Êĺêḿêńt̂ t́ô ẃĥíĉh́ t̂h́ê úŝér̂ ḿâý ĉh́ôóŝé t̂ó n̂áv̂íĝát̂é âf́t̂ér̂ t́ĥíŝ ón̂é, îńŝt́êád̂ óf̂ t́ĥé n̂éx̂t́ êĺêḿêńt̂ ín̂ t́ĥé D̂ÓM̂ ór̂d́êŕ."
   },
-  "accessibility/AccessibilityStrings.js | expanded": {
+  "accessibility/AccessibilityStrings.ts | expanded": {
     "message": "Êx́p̂án̂d́êd́"
   },
-  "accessibility/AccessibilityStrings.js | flowsTo": {
+  "accessibility/AccessibilityStrings.ts | flowsTo": {
     "message": "F̂ĺôẃŝ t́ô"
   },
-  "accessibility/AccessibilityStrings.js | focusable": {
+  "accessibility/AccessibilityStrings.ts | focusable": {
     "message": "F̂óĉúŝáb̂ĺê"
   },
-  "accessibility/AccessibilityStrings.js | focused": {
+  "accessibility/AccessibilityStrings.ts | focused": {
     "message": "F̂óĉúŝéd̂"
   },
-  "accessibility/AccessibilityStrings.js | forARangeWidgetTheMaximumAllowed": {
+  "accessibility/AccessibilityStrings.ts | forARangeWidgetTheMaximumAllowed": {
     "message": "F̂ór̂ á r̂án̂ǵê ẃîd́ĝét̂, t́ĥé m̂áx̂ím̂úm̂ ál̂ĺôẃêd́ v̂ál̂úê."
   },
-  "accessibility/AccessibilityStrings.js | forARangeWidgetTheMinimumAllowed": {
+  "accessibility/AccessibilityStrings.ts | forARangeWidgetTheMinimumAllowed": {
     "message": "F̂ór̂ á r̂án̂ǵê ẃîd́ĝét̂, t́ĥé m̂ín̂ím̂úm̂ ál̂ĺôẃêd́ v̂ál̂úê."
   },
-  "accessibility/AccessibilityStrings.js | fromAttribute": {
+  "accessibility/AccessibilityStrings.ts | fromAttribute": {
     "message": "F̂ŕôḿ ât́t̂ŕîb́ût́ê"
   },
-  "accessibility/AccessibilityStrings.js | fromCaption": {
+  "accessibility/AccessibilityStrings.ts | fromCaption": {
     "message": "F̂ŕôḿ ĉáp̂t́îón̂"
   },
-  "accessibility/AccessibilityStrings.js | fromLabel": {
+  "accessibility/AccessibilityStrings.ts | fromLabel": {
     "message": "F̂ŕôḿ l̂áb̂él̂"
   },
-  "accessibility/AccessibilityStrings.js | fromLabelFor": {
+  "accessibility/AccessibilityStrings.ts | fromLabelFor": {
     "message": "F̂ŕôḿ l̂áb̂él̂ (f́ôŕ)"
   },
-  "accessibility/AccessibilityStrings.js | fromLabelWrapped": {
+  "accessibility/AccessibilityStrings.ts | fromLabelWrapped": {
     "message": "F̂ŕôḿ l̂áb̂él̂ (ẃr̂áp̂ṕêd́)"
   },
-  "accessibility/AccessibilityStrings.js | fromLegend": {
+  "accessibility/AccessibilityStrings.ts | fromLegend": {
     "message": "F̂ŕôḿ l̂éĝén̂d́"
   },
-  "accessibility/AccessibilityStrings.js | fromNativeHtml": {
+  "accessibility/AccessibilityStrings.ts | fromNativeHtml": {
     "message": "F̂ŕôḿ n̂át̂ív̂é ĤT́M̂Ĺ"
   },
-  "accessibility/AccessibilityStrings.js | fromPlaceholderAttribute": {
+  "accessibility/AccessibilityStrings.ts | fromPlaceholderAttribute": {
     "message": "F̂ŕôḿ p̂ĺâćêh́ôĺd̂ér̂ át̂t́r̂íb̂út̂é"
   },
-  "accessibility/AccessibilityStrings.js | fromRubyAnnotation": {
+  "accessibility/AccessibilityStrings.ts | fromRubyAnnotation": {
     "message": "F̂ŕôḿ r̂úb̂ý âńn̂ót̂át̂íôń"
   },
-  "accessibility/AccessibilityStrings.js | fromStyle": {
+  "accessibility/AccessibilityStrings.ts | fromStyle": {
     "message": "F̂ŕôḿ ŝt́ŷĺê"
   },
-  "accessibility/AccessibilityStrings.js | fromTitle": {
+  "accessibility/AccessibilityStrings.ts | fromTitle": {
     "message": "F̂ŕôḿ t̂ít̂ĺê"
   },
-  "accessibility/AccessibilityStrings.js | hasAutocomplete": {
+  "accessibility/AccessibilityStrings.ts | hasAutocomplete": {
     "message": "Ĥáŝ áût́ôćôḿp̂ĺêt́ê"
   },
-  "accessibility/AccessibilityStrings.js | hasPopup": {
+  "accessibility/AccessibilityStrings.ts | hasPopup": {
     "message": "Ĥáŝ ṕôṕûṕ"
   },
-  "accessibility/AccessibilityStrings.js | help": {
+  "accessibility/AccessibilityStrings.ts | help": {
     "message": "Ĥél̂ṕ"
   },
-  "accessibility/AccessibilityStrings.js | ifAndHowThisElementCanBeEdited": {
+  "accessibility/AccessibilityStrings.ts | ifAndHowThisElementCanBeEdited": {
     "message": "Îf́ âńd̂ h́ôẃ t̂h́îś êĺêḿêńt̂ ćâń b̂é êd́ît́êd́."
   },
-  "accessibility/AccessibilityStrings.js | ifThisElementMayReceiveLive": {
+  "accessibility/AccessibilityStrings.ts | ifThisElementMayReceiveLive": {
     "message": "Îf́ t̂h́îś êĺêḿêńt̂ ḿâý r̂éĉéîv́ê ĺîv́ê úp̂d́ât́êś, ŵh́êt́ĥér̂ t́ĥé êńt̂ír̂é l̂ív̂é r̂éĝíôń ŝh́ôúl̂d́ b̂é p̂ŕêśêńt̂éd̂ t́ô t́ĥé ûśêŕ ôń ĉh́âńĝéŝ, ór̂ ón̂ĺŷ ćĥán̂ǵêd́ n̂ód̂éŝ."
   },
-  "accessibility/AccessibilityStrings.js | ifThisElementMayReceiveLiveUpdates": {
+  "accessibility/AccessibilityStrings.ts | ifThisElementMayReceiveLiveUpdates": {
     "message": "Îf́ t̂h́îś êĺêḿêńt̂ ḿâý r̂éĉéîv́ê ĺîv́ê úp̂d́ât́êś, ŵh́ât́ t̂ýp̂é ôf́ ûṕd̂át̂éŝ śĥóûĺd̂ t́r̂íĝǵêŕ â ńôt́îf́îćât́îón̂."
   },
-  "accessibility/AccessibilityStrings.js | ifThisElementMayReceiveLiveUpdatesThe": {
+  "accessibility/AccessibilityStrings.ts | ifThisElementMayReceiveLiveUpdatesThe": {
     "message": "Îf́ t̂h́îś êĺêḿêńt̂ ḿâý r̂éĉéîv́ê ĺîv́ê úp̂d́ât́êś, t̂h́ê ŕôót̂ él̂ém̂én̂t́ ôf́ t̂h́ê ćôńt̂áîńîńĝ ĺîv́ê ŕêǵîón̂."
   },
-  "accessibility/AccessibilityStrings.js | ifTrueThisElementCanReceiveFocus": {
+  "accessibility/AccessibilityStrings.ts | ifTrueThisElementCanReceiveFocus": {
     "message": "Îf́ t̂ŕûé, t̂h́îś êĺêḿêńt̂ ćâń r̂éĉéîv́ê f́ôćûś."
   },
-  "accessibility/AccessibilityStrings.js | ifTrueThisElementCurrentlyCannot": {
+  "accessibility/AccessibilityStrings.ts | ifTrueThisElementCurrentlyCannot": {
     "message": "Îf́ t̂ŕûé, t̂h́îś êĺêḿêńt̂ ćûŕr̂én̂t́l̂ý ĉán̂ńôt́ b̂é îńt̂ér̂áĉt́êd́ ŵít̂h́."
   },
-  "accessibility/AccessibilityStrings.js | ifTrueThisElementCurrentlyHas": {
+  "accessibility/AccessibilityStrings.ts | ifTrueThisElementCurrentlyHas": {
     "message": "Îf́ t̂ŕûé, t̂h́îś êĺêḿêńt̂ ćûŕr̂én̂t́l̂ý ĥáŝ f́ôćûś."
   },
-  "accessibility/AccessibilityStrings.js | ifTrueThisElementMayBeInteracted": {
+  "accessibility/AccessibilityStrings.ts | ifTrueThisElementMayBeInteracted": {
     "message": "Îf́ t̂ŕûé, t̂h́îś êĺêḿêńt̂ ḿâý b̂é îńt̂ér̂áĉt́êd́ ŵít̂h́, b̂út̂ ít̂ś v̂ál̂úê ćâńn̂ót̂ b́ê ćĥán̂ǵêd́."
   },
-  "accessibility/AccessibilityStrings.js | ifTrueThisElementsUserentered": {
+  "accessibility/AccessibilityStrings.ts | ifTrueThisElementsUserentered": {
     "message": "Îf́ t̂ŕûé, t̂h́îś êĺêḿêńt̂'ś ûśêŕ-êńt̂ér̂éd̂ v́âĺûé d̂óêś n̂ót̂ ćôńf̂ór̂ḿ t̂ó v̂ál̂íd̂át̂íôń r̂éq̂úîŕêḿêńt̂."
   },
-  "accessibility/AccessibilityStrings.js | implicit": {
+  "accessibility/AccessibilityStrings.ts | implicit": {
     "message": "Îḿp̂ĺîćît́"
   },
-  "accessibility/AccessibilityStrings.js | implicitValue": {
+  "accessibility/AccessibilityStrings.ts | implicitValue": {
     "message": "Îḿp̂ĺîćît́ v̂ál̂úê."
   },
-  "accessibility/AccessibilityStrings.js | indicatesThePurposeOfThisElement": {
+  "accessibility/AccessibilityStrings.ts | indicatesThePurposeOfThisElement": {
     "message": "Îńd̂íĉát̂éŝ t́ĥé p̂úr̂ṕôśê óf̂ t́ĥíŝ él̂ém̂én̂t́, ŝúĉh́ âś â úŝér̂ ín̂t́êŕf̂áĉé îd́îóm̂ f́ôŕ â ẃîd́ĝét̂, ór̂ śt̂ŕûćt̂úr̂ál̂ ŕôĺê ẃît́ĥín̂ á d̂óĉúm̂én̂t́."
   },
-  "accessibility/AccessibilityStrings.js | invalidUserEntry": {
+  "accessibility/AccessibilityStrings.ts | invalidUserEntry": {
     "message": "Îńv̂ál̂íd̂ úŝér̂ én̂t́r̂ý"
   },
-  "accessibility/AccessibilityStrings.js | labeledBy": {
+  "accessibility/AccessibilityStrings.ts | labeledBy": {
     "message": "L̂áb̂él̂éd̂ b́ŷ"
   },
-  "accessibility/AccessibilityStrings.js | level": {
+  "accessibility/AccessibilityStrings.ts | level": {
     "message": "L̂év̂él̂"
   },
-  "accessibility/AccessibilityStrings.js | liveRegion": {
+  "accessibility/AccessibilityStrings.ts | liveRegion": {
     "message": "L̂ív̂é r̂éĝíôń"
   },
-  "accessibility/AccessibilityStrings.js | liveRegionRoot": {
+  "accessibility/AccessibilityStrings.ts | liveRegionRoot": {
     "message": "L̂ív̂é r̂éĝíôń r̂óôt́"
   },
-  "accessibility/AccessibilityStrings.js | maximumValue": {
+  "accessibility/AccessibilityStrings.ts | maximumValue": {
     "message": "M̂áx̂ím̂úm̂ v́âĺûé"
   },
-  "accessibility/AccessibilityStrings.js | minimumValue": {
+  "accessibility/AccessibilityStrings.ts | minimumValue": {
     "message": "M̂ín̂ím̂úm̂ v́âĺûé"
   },
-  "accessibility/AccessibilityStrings.js | multiline": {
+  "accessibility/AccessibilityStrings.ts | multiline": {
     "message": "M̂úl̂t́î-ĺîńê"
   },
-  "accessibility/AccessibilityStrings.js | multiselectable": {
+  "accessibility/AccessibilityStrings.ts | multiselectable": {
     "message": "M̂úl̂t́î-śêĺêćt̂áb̂ĺê"
   },
-  "accessibility/AccessibilityStrings.js | nameString": {
+  "accessibility/AccessibilityStrings.ts | nameString": {
     "message": "N̂ám̂é"
   },
-  "accessibility/AccessibilityStrings.js | orientation": {
+  "accessibility/AccessibilityStrings.ts | orientation": {
     "message": "Ôŕîén̂t́ât́îón̂"
   },
-  "accessibility/AccessibilityStrings.js | ownsText": {
+  "accessibility/AccessibilityStrings.ts | ownsText": {
     "message": "Ôẃn̂ś"
   },
-  "accessibility/AccessibilityStrings.js | pressed": {
+  "accessibility/AccessibilityStrings.ts | pressed": {
     "message": "P̂ŕêśŝéd̂"
   },
-  "accessibility/AccessibilityStrings.js | readonlyString": {
+  "accessibility/AccessibilityStrings.ts | readonlyString": {
     "message": "R̂éâd́-ôńl̂ý"
   },
-  "accessibility/AccessibilityStrings.js | relatedElement": {
+  "accessibility/AccessibilityStrings.ts | relatedElement": {
     "message": "R̂él̂át̂éd̂ él̂ém̂én̂t́"
   },
-  "accessibility/AccessibilityStrings.js | relevantLiveRegions": {
+  "accessibility/AccessibilityStrings.ts | relevantLiveRegions": {
     "message": "R̂él̂év̂án̂t́ (l̂ív̂é r̂éĝíôńŝ)"
   },
-  "accessibility/AccessibilityStrings.js | requiredString": {
+  "accessibility/AccessibilityStrings.ts | requiredString": {
     "message": "R̂éq̂úîŕêd́"
   },
-  "accessibility/AccessibilityStrings.js | role": {
+  "accessibility/AccessibilityStrings.ts | role": {
     "message": "R̂ól̂é"
   },
-  "accessibility/AccessibilityStrings.js | selectedString": {
+  "accessibility/AccessibilityStrings.ts | selectedString": {
     "message": "Ŝél̂éĉt́êd́"
   },
-  "accessibility/AccessibilityStrings.js | theAccessibleDescriptionForThis": {
+  "accessibility/AccessibilityStrings.ts | theAccessibleDescriptionForThis": {
     "message": "T̂h́ê áĉćêśŝíb̂ĺê d́êśĉŕîṕt̂íôń f̂ór̂ t́ĥíŝ él̂ém̂én̂t́."
   },
-  "accessibility/AccessibilityStrings.js | theComputedHelpTextForThis": {
+  "accessibility/AccessibilityStrings.ts | theComputedHelpTextForThis": {
     "message": "T̂h́ê ćôḿp̂út̂éd̂ h́êĺp̂ t́êx́t̂ f́ôŕ t̂h́îś êĺêḿêńt̂."
   },
-  "accessibility/AccessibilityStrings.js | theComputedNameOfThisElement": {
+  "accessibility/AccessibilityStrings.ts | theComputedNameOfThisElement": {
     "message": "T̂h́ê ćôḿp̂út̂éd̂ ńâḿê óf̂ t́ĥíŝ él̂ém̂én̂t́."
   },
-  "accessibility/AccessibilityStrings.js | theDescendantOfThisElementWhich": {
+  "accessibility/AccessibilityStrings.ts | theDescendantOfThisElementWhich": {
     "message": "T̂h́ê d́êśĉén̂d́âńt̂ óf̂ t́ĥíŝ él̂ém̂én̂t́ ŵh́îćĥ íŝ áĉt́îv́ê; í.ê. t́ĥé êĺêḿêńt̂ t́ô ẃĥíĉh́ f̂óĉúŝ śĥóûĺd̂ b́ê d́êĺêǵât́êd́."
   },
-  "accessibility/AccessibilityStrings.js | theHierarchicalLevelOfThis": {
+  "accessibility/AccessibilityStrings.ts | theHierarchicalLevelOfThis": {
     "message": "T̂h́ê h́îér̂ár̂ćĥíĉál̂ ĺêv́êĺ ôf́ t̂h́îś êĺêḿêńt̂."
   },
-  "accessibility/AccessibilityStrings.js | theValueOfThisElementThisMayBe": {
+  "accessibility/AccessibilityStrings.ts | theValueOfThisElementThisMayBe": {
     "message": "T̂h́ê v́âĺûé ôf́ t̂h́îś êĺêḿêńt̂; t́ĥíŝ ḿâý b̂é ûśêŕ-p̂ŕôv́îd́êd́ ôŕ d̂év̂él̂óp̂ér̂-ṕr̂óv̂íd̂éd̂, d́êṕêńd̂ín̂ǵ ôń t̂h́ê él̂ém̂én̂t́."
   },
-  "accessibility/AccessibilityStrings.js | value": {
+  "accessibility/AccessibilityStrings.ts | value": {
     "message": "V̂ál̂úê"
   },
-  "accessibility/AccessibilityStrings.js | valueDescription": {
+  "accessibility/AccessibilityStrings.ts | valueDescription": {
     "message": "V̂ál̂úê d́êśĉŕîṕt̂íôń"
   },
-  "accessibility/AccessibilityStrings.js | valueFromAttribute": {
+  "accessibility/AccessibilityStrings.ts | valueFromAttribute": {
     "message": "V̂ál̂úê f́r̂óm̂ át̂t́r̂íb̂út̂é."
   },
-  "accessibility/AccessibilityStrings.js | valueFromElementContents": {
+  "accessibility/AccessibilityStrings.ts | valueFromElementContents": {
     "message": "V̂ál̂úê f́r̂óm̂ él̂ém̂én̂t́ ĉón̂t́êńt̂ś."
   },
-  "accessibility/AccessibilityStrings.js | valueFromFigcaptionElement": {
+  "accessibility/AccessibilityStrings.ts | valueFromFigcaptionElement": {
     "message": "V̂ál̂úê f́r̂óm̂ f́îǵĉáp̂t́îón̂ él̂ém̂én̂t́."
   },
-  "accessibility/AccessibilityStrings.js | valueFromLabelElement": {
+  "accessibility/AccessibilityStrings.ts | valueFromLabelElement": {
     "message": "V̂ál̂úê f́r̂óm̂ ĺâb́êĺ êĺêḿêńt̂."
   },
-  "accessibility/AccessibilityStrings.js | valueFromLabelElementWithFor": {
+  "accessibility/AccessibilityStrings.ts | valueFromLabelElementWithFor": {
     "message": "V̂ál̂úê f́r̂óm̂ ĺâb́êĺ êĺêḿêńt̂ ẃît́ĥ f́ôŕ= ât́t̂ŕîb́ût́ê."
   },
-  "accessibility/AccessibilityStrings.js | valueFromLabelElementWrapped": {
+  "accessibility/AccessibilityStrings.ts | valueFromLabelElementWrapped": {
     "message": "V̂ál̂úê f́r̂óm̂ ĺâb́êĺ êĺêḿêńt̂ ẃr̂áp̂ṕêd́."
   },
-  "accessibility/AccessibilityStrings.js | valueFromLegendElement": {
+  "accessibility/AccessibilityStrings.ts | valueFromLegendElement": {
     "message": "V̂ál̂úê f́r̂óm̂ ĺêǵêńd̂ él̂ém̂én̂t́."
   },
-  "accessibility/AccessibilityStrings.js | valueFromNativeHtmlRuby": {
+  "accessibility/AccessibilityStrings.ts | valueFromNativeHtmlRuby": {
     "message": "V̂ál̂úê f́r̂óm̂ ńât́îv́ê H́T̂ḾL̂ ŕûb́ŷ án̂ńôt́ât́îón̂."
   },
-  "accessibility/AccessibilityStrings.js | valueFromNativeHtmlUnknownSource": {
+  "accessibility/AccessibilityStrings.ts | valueFromNativeHtmlUnknownSource": {
     "message": "V̂ál̂úê f́r̂óm̂ ńât́îv́ê H́T̂ḾL̂ (ún̂ḱn̂óŵń ŝóûŕĉé)."
   },
-  "accessibility/AccessibilityStrings.js | valueFromPlaceholderAttribute": {
+  "accessibility/AccessibilityStrings.ts | valueFromPlaceholderAttribute": {
     "message": "V̂ál̂úê f́r̂óm̂ ṕl̂áĉéĥól̂d́êŕ ât́t̂ŕîb́ût́ê."
   },
-  "accessibility/AccessibilityStrings.js | valueFromRelatedElement": {
+  "accessibility/AccessibilityStrings.ts | valueFromRelatedElement": {
     "message": "V̂ál̂úê f́r̂óm̂ ŕêĺât́êd́ êĺêḿêńt̂."
   },
-  "accessibility/AccessibilityStrings.js | valueFromStyle": {
+  "accessibility/AccessibilityStrings.ts | valueFromStyle": {
     "message": "V̂ál̂úê f́r̂óm̂ śt̂ýl̂é."
   },
-  "accessibility/AccessibilityStrings.js | valueFromTableCaption": {
+  "accessibility/AccessibilityStrings.ts | valueFromTableCaption": {
     "message": "V̂ál̂úê f́r̂óm̂ t́âb́l̂é ĉáp̂t́îón̂."
   },
-  "accessibility/AccessibilityStrings.js | valueFromTitleAttribute": {
+  "accessibility/AccessibilityStrings.ts | valueFromTitleAttribute": {
     "message": "V̂ál̂úê f́r̂óm̂ t́ît́l̂é ât́t̂ŕîb́ût́ê."
   },
-  "accessibility/AccessibilityStrings.js | whetherAndWhatPriorityOfLive": {
+  "accessibility/AccessibilityStrings.ts | whetherAndWhatPriorityOfLive": {
     "message": "Ŵh́êt́ĥér̂ án̂d́ ŵh́ât́ p̂ŕîór̂ít̂ý ôf́ l̂ív̂é ûṕd̂át̂éŝ ḿâý b̂é êx́p̂éĉt́êd́ f̂ór̂ t́ĥíŝ él̂ém̂én̂t́."
   },
-  "accessibility/AccessibilityStrings.js | whetherAndWhatTypeOfAutocomplete": {
+  "accessibility/AccessibilityStrings.ts | whetherAndWhatTypeOfAutocomplete": {
     "message": "Ŵh́êt́ĥér̂ án̂d́ ŵh́ât́ t̂ýp̂é ôf́ âút̂óĉóm̂ṕl̂ét̂é ŝúĝǵêśt̂íôńŝ ár̂é ĉúr̂ŕêńt̂ĺŷ ṕr̂óv̂íd̂éd̂ b́ŷ t́ĥíŝ él̂ém̂én̂t́."
   },
-  "accessibility/AccessibilityStrings.js | whetherAUserMaySelectMoreThanOne": {
+  "accessibility/AccessibilityStrings.ts | whetherAUserMaySelectMoreThanOne": {
     "message": "Ŵh́êt́ĥér̂ á ûśêŕ m̂áŷ śêĺêćt̂ ḿôŕê t́ĥán̂ ón̂é ôṕt̂íôń f̂ŕôḿ t̂h́îś ŵíd̂ǵêt́."
   },
-  "accessibility/AccessibilityStrings.js | whetherTheOptionRepresentedBy": {
+  "accessibility/AccessibilityStrings.ts | whetherTheOptionRepresentedBy": {
     "message": "Ŵh́êt́ĥér̂ t́ĥé ôṕt̂íôń r̂ép̂ŕêśêńt̂éd̂ b́ŷ t́ĥíŝ él̂ém̂én̂t́ îś ĉúr̂ŕêńt̂ĺŷ śêĺêćt̂éd̂."
   },
-  "accessibility/AccessibilityStrings.js | whetherTheValueOfThisElementCan": {
+  "accessibility/AccessibilityStrings.ts | whetherTheValueOfThisElementCan": {
     "message": "Ŵh́êt́ĥér̂ t́ĥé v̂ál̂úê óf̂ t́ĥíŝ él̂ém̂én̂t́ ĉán̂ b́ê śêt́."
   },
-  "accessibility/AccessibilityStrings.js | whetherThisCheckboxRadioButtonOr": {
+  "accessibility/AccessibilityStrings.ts | whetherThisCheckboxRadioButtonOr": {
     "message": "Ŵh́êt́ĥér̂ t́ĥíŝ ćĥéĉḱb̂óx̂, ŕâd́îó b̂út̂t́ôń ôŕ t̂ŕêé ît́êḿ îś ĉh́êćk̂éd̂, ún̂ćĥéĉḱêd́, ôŕ m̂íx̂éd̂ (é.ĝ. h́âś b̂ót̂h́ ĉh́êćk̂éd̂ án̂d́ ûń-ĉh́êćk̂éd̂ ćĥíl̂d́r̂én̂)."
   },
-  "accessibility/AccessibilityStrings.js | whetherThisElementHasCausedSome": {
+  "accessibility/AccessibilityStrings.ts | whetherThisElementHasCausedSome": {
     "message": "Ŵh́êt́ĥér̂ t́ĥíŝ él̂ém̂én̂t́ ĥáŝ ćâúŝéd̂ śôḿê ḱîńd̂ óf̂ ṕôṕ-ûṕ (ŝúĉh́ âś â ḿêńû) t́ô áp̂ṕêár̂."
   },
-  "accessibility/AccessibilityStrings.js | whetherThisElementIsARequired": {
+  "accessibility/AccessibilityStrings.ts | whetherThisElementIsARequired": {
     "message": "Ŵh́êt́ĥér̂ t́ĥíŝ él̂ém̂én̂t́ îś â ŕêq́ûír̂éd̂ f́îél̂d́ îń â f́ôŕm̂."
   },
-  "accessibility/AccessibilityStrings.js | whetherThisElementOrAnother": {
+  "accessibility/AccessibilityStrings.ts | whetherThisElementOrAnother": {
     "message": "Ŵh́êt́ĥér̂ t́ĥíŝ él̂ém̂én̂t́, ôŕ âńôt́ĥér̂ ǵr̂óûṕîńĝ él̂ém̂én̂t́ ît́ ĉón̂t́r̂ól̂ś, îś êx́p̂án̂d́êd́."
   },
-  "accessibility/AccessibilityStrings.js | whetherThisElementOrItsSubtree": {
+  "accessibility/AccessibilityStrings.ts | whetherThisElementOrItsSubtree": {
     "message": "Ŵh́êt́ĥér̂ t́ĥíŝ él̂ém̂én̂t́ ôŕ ît́ŝ śûb́t̂ŕêé âŕê ćûŕr̂én̂t́l̂ý b̂éîńĝ úp̂d́ât́êd́ (âńd̂ t́ĥúŝ ḿâý b̂é îń âń îńĉón̂śîśt̂én̂t́ ŝt́ât́ê)."
   },
-  "accessibility/AccessibilityStrings.js | whetherThisLinearElements": {
+  "accessibility/AccessibilityStrings.ts | whetherThisLinearElements": {
     "message": "Ŵh́êt́ĥér̂ t́ĥíŝ ĺîńêár̂ él̂ém̂én̂t́'ŝ ór̂íêńt̂át̂íôń îś ĥór̂íẑón̂t́âĺ ôŕ v̂ér̂t́îćâĺ."
   },
-  "accessibility/AccessibilityStrings.js | whetherThisTextBoxMayHaveMore": {
+  "accessibility/AccessibilityStrings.ts | whetherThisTextBoxMayHaveMore": {
     "message": "Ŵh́êt́ĥér̂ t́ĥíŝ t́êx́t̂ b́ôx́ m̂áŷ h́âv́ê ḿôŕê t́ĥán̂ ón̂é l̂ín̂é."
   },
-  "accessibility/AccessibilityStrings.js | whetherThisToggleButtonIs": {
+  "accessibility/AccessibilityStrings.ts | whetherThisToggleButtonIs": {
     "message": "Ŵh́êt́ĥér̂ t́ĥíŝ t́ôǵĝĺê b́ût́t̂ón̂ íŝ ćûŕr̂én̂t́l̂ý îń â ṕr̂éŝśêd́ ŝt́ât́ê."
   },
-  "accessibility/ARIAAttributesView.js | ariaAttributes": {
+  "accessibility/ARIAAttributesView.ts | ariaAttributes": {
     "message": "ÂŔÎÁ Ât́t̂ŕîb́ût́êś"
   },
-  "accessibility/ARIAAttributesView.js | noAriaAttributes": {
+  "accessibility/ARIAAttributesView.ts | noAriaAttributes": {
     "message": "N̂ó ÂŔÎÁ ât́t̂ŕîb́ût́êś"
   },
-  "accessibility/AXBreadcrumbsPane.js | accessibilityTree": {
+  "accessibility/AXBreadcrumbsPane.ts | accessibilityTree": {
     "message": "Âćĉéŝśîb́îĺît́ŷ T́r̂éê"
   },
-  "accessibility/AXBreadcrumbsPane.js | ignored": {
+  "accessibility/AXBreadcrumbsPane.ts | ignored": {
     "message": "Îǵn̂ór̂éd̂"
   },
-  "accessibility/AXBreadcrumbsPane.js | scrollIntoView": {
+  "accessibility/AXBreadcrumbsPane.ts | scrollIntoView": {
     "message": "Ŝćr̂ól̂ĺ îńt̂ó v̂íêẃ"
   },
-  "accessibility/SourceOrderView.js | noSourceOrderInformation": {
+  "accessibility/SourceOrderView.ts | noSourceOrderInformation": {
     "message": "N̂ó ŝóûŕĉé ôŕd̂ér̂ ín̂f́ôŕm̂át̂íôń âv́âíl̂áb̂ĺê"
   },
-  "accessibility/SourceOrderView.js | showSourceOrder": {
+  "accessibility/SourceOrderView.ts | showSourceOrder": {
     "message": "Ŝh́ôẃ ŝóûŕĉé ôŕd̂ér̂"
   },
-  "accessibility/SourceOrderView.js | sourceOrderViewer": {
+  "accessibility/SourceOrderView.ts | sourceOrderViewer": {
     "message": "Ŝóûŕĉé Ôŕd̂ér̂ V́îéŵér̂"
   },
-  "accessibility/SourceOrderView.js | thereMayBeADelayInDisplaying": {
+  "accessibility/SourceOrderView.ts | thereMayBeADelayInDisplaying": {
     "message": "T̂h́êŕê ḿâý b̂é â d́êĺâý îń d̂íŝṕl̂áŷín̂ǵ ŝóûŕĉé ôŕd̂ér̂ f́ôŕ êĺêḿêńt̂ś ŵít̂h́ m̂án̂ý ĉh́îĺd̂ŕêń"
   },
   "animation/animation-meta.ts | animations": {

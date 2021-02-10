@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Common from '../common/common.js';
 import * as i18n from '../i18n/i18n.js';
 import * as SDK from '../sdk/sdk.js';
@@ -24,13 +26,17 @@ export const UIStrings = {
   */
   ignored: 'Ignored',
 };
-const str_ = i18n.i18n.registerUIStrings('accessibility/AXBreadcrumbsPane.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('accessibility/AXBreadcrumbsPane.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class AXBreadcrumbsPane extends AccessibilitySubPane {
-  /**
-   * @param {!AccessibilitySidebarView} axSidebarView
-   */
-  constructor(axSidebarView) {
+  _axSidebarView: AccessibilitySidebarView;
+  _preselectedBreadcrumb: AXBreadcrumb|null;
+  _inspectedNodeBreadcrumb: AXBreadcrumb|null;
+  _collapsingBreadcrumbId: number;
+  _hoveredBreadcrumb: AXBreadcrumb|null;
+  _rootElement: HTMLElement;
+
+  constructor(axSidebarView: AccessibilitySidebarView) {
     super(i18nString(UIStrings.accessibilityTree));
 
     this.element.classList.add('ax-subpane');
@@ -39,14 +45,11 @@ export class AXBreadcrumbsPane extends AccessibilitySubPane {
 
     this._axSidebarView = axSidebarView;
 
-    /** @type {?AXBreadcrumb} */
     this._preselectedBreadcrumb = null;
-    /** @type {?AXBreadcrumb} */
     this._inspectedNodeBreadcrumb = null;
 
     this._collapsingBreadcrumbId = -1;
 
-    /** @type {?AXBreadcrumb} */
     this._hoveredBreadcrumb = null;
     this._rootElement = this.element.createChild('div', 'ax-breadcrumbs');
 
@@ -59,10 +62,7 @@ export class AXBreadcrumbsPane extends AccessibilitySubPane {
     this.registerRequiredCSS('accessibility/axBreadcrumbs.css', {enableLegacyPatching: false});
   }
 
-  /**
-   * @override
-   */
-  focus() {
+  focus(): void {
     if (this._inspectedNodeBreadcrumb) {
       this._inspectedNodeBreadcrumb.nodeElement().focus();
     } else {
@@ -70,11 +70,7 @@ export class AXBreadcrumbsPane extends AccessibilitySubPane {
     }
   }
 
-  /**
-   * @param {?SDK.AccessibilityModel.AccessibilityNode} axNode
-   * @override
-   */
-  setAXNode(axNode) {
+  setAXNode(axNode: SDK.AccessibilityModel.AccessibilityNode|null): void {
     const hadFocus = this.element.hasFocus();
     super.setAXNode(axNode);
 
@@ -85,10 +81,7 @@ export class AXBreadcrumbsPane extends AccessibilitySubPane {
     }
 
     const ancestorChain = [];
-    /**
-     * @type {?SDK.AccessibilityModel.AccessibilityNode}
-     */
-    let ancestor = axNode;
+    let ancestor: (SDK.AccessibilityModel.AccessibilityNode|null)|SDK.AccessibilityModel.AccessibilityNode = axNode;
     while (ancestor) {
       ancestorChain.push(ancestor);
       ancestor = ancestor.parentNode();
@@ -96,10 +89,10 @@ export class AXBreadcrumbsPane extends AccessibilitySubPane {
     ancestorChain.reverse();
 
     let depth = 0;
-    let breadcrumb = null;
-    let parent = null;
+    let parent: AXBreadcrumb|null = null;
+    this._inspectedNodeBreadcrumb = null;
     for (ancestor of ancestorChain) {
-      breadcrumb = new AXBreadcrumb(ancestor, depth, (ancestor === axNode));
+      const breadcrumb = new AXBreadcrumb(ancestor, depth, (ancestor === axNode));
       if (parent) {
         parent.appendChild(breadcrumb);
       } else {
@@ -107,21 +100,17 @@ export class AXBreadcrumbsPane extends AccessibilitySubPane {
       }
       parent = breadcrumb;
       depth++;
+      this._inspectedNodeBreadcrumb = breadcrumb;
     }
 
-    this._inspectedNodeBreadcrumb = breadcrumb;
     if (this._inspectedNodeBreadcrumb) {
       this._inspectedNodeBreadcrumb.setPreselected(true, hadFocus);
     }
 
     this._setPreselectedBreadcrumb(this._inspectedNodeBreadcrumb);
 
-    /**
-     * @param {!AXBreadcrumb} parentBreadcrumb
-     * @param {!SDK.AccessibilityModel.AccessibilityNode} axNode
-     * @param {number} localDepth
-     */
-    function append(parentBreadcrumb, axNode, localDepth) {
+    function append(
+        parentBreadcrumb: AXBreadcrumb, axNode: SDK.AccessibilityModel.AccessibilityNode, localDepth: number): void {
       const childBreadcrumb = new AXBreadcrumb(axNode, localDepth, false);
       parentBreadcrumb.appendChild(childBreadcrumb);
 
@@ -142,22 +131,16 @@ export class AXBreadcrumbsPane extends AccessibilitySubPane {
     this._collapsingBreadcrumbId = -1;
   }
 
-  /**
-   * @override
-   */
-  willHide() {
+  willHide(): void {
     this._setPreselectedBreadcrumb(null);
   }
 
-  /**
-   * @param {!Event} event
-   */
-  _onKeyDown(event) {
+  _onKeyDown(event: Event): void {
     const preselectedBreadcrumb = this._preselectedBreadcrumb;
     if (!preselectedBreadcrumb) {
       return;
     }
-    const keyboardEvent = /** @type {!KeyboardEvent} */ (event);
+    const keyboardEvent = event as KeyboardEvent;
     if (!keyboardEvent.composedPath().some(element => element === preselectedBreadcrumb.element())) {
       return;
     }
@@ -187,10 +170,7 @@ export class AXBreadcrumbsPane extends AccessibilitySubPane {
     }
   }
 
-  /**
-   * @return {boolean}
-   */
-  _preselectPrevious() {
+  _preselectPrevious(): boolean {
     if (!this._preselectedBreadcrumb) {
       return false;
     }
@@ -202,10 +182,7 @@ export class AXBreadcrumbsPane extends AccessibilitySubPane {
     return true;
   }
 
-  /**
-   * @return {boolean}
-   */
-  _preselectNext() {
+  _preselectNext(): boolean {
     if (!this._preselectedBreadcrumb) {
       return false;
     }
@@ -217,10 +194,7 @@ export class AXBreadcrumbsPane extends AccessibilitySubPane {
     return true;
   }
 
-  /**
-   * @return {boolean}
-   */
-  _preselectParent() {
+  _preselectParent(): boolean {
     if (!this._preselectedBreadcrumb) {
       return false;
     }
@@ -232,10 +206,7 @@ export class AXBreadcrumbsPane extends AccessibilitySubPane {
     return true;
   }
 
-  /**
-   * @param {?AXBreadcrumb} breadcrumb
-   */
-  _setPreselectedBreadcrumb(breadcrumb) {
+  _setPreselectedBreadcrumb(breadcrumb: AXBreadcrumb|null): void {
     if (breadcrumb === this._preselectedBreadcrumb) {
       return;
     }
@@ -257,10 +228,7 @@ export class AXBreadcrumbsPane extends AccessibilitySubPane {
     }
   }
 
-  /**
-   * @param {!AXBreadcrumb} breadcrumb
-   */
-  _collapseBreadcrumb(breadcrumb) {
+  _collapseBreadcrumb(breadcrumb: AXBreadcrumb): void {
     if (!breadcrumb.parentBreadcrumb()) {
       return;
     }
@@ -274,18 +242,12 @@ export class AXBreadcrumbsPane extends AccessibilitySubPane {
     }
   }
 
-  /**
-   * @param {!Event} event
-   */
-  _onMouseLeave(event) {
+  _onMouseLeave(_event: Event): void {
     this._setHoveredBreadcrumb(null);
   }
 
-  /**
-   * @param {!Event} event
-   */
-  _onMouseMove(event) {
-    const target = /** @type {?Element} */ (event.target);
+  _onMouseMove(event: Event): void {
+    const target = event.target as Element | null;
     if (!target) {
       return;
     }
@@ -301,21 +263,15 @@ export class AXBreadcrumbsPane extends AccessibilitySubPane {
     this._setHoveredBreadcrumb(breadcrumb);
   }
 
-  /**
-   * @param {!Event} event
-   */
-  _onFocusOut(event) {
+  _onFocusOut(event: Event): void {
     if (!this._preselectedBreadcrumb || event.target !== this._preselectedBreadcrumb.nodeElement()) {
       return;
     }
     this._setPreselectedBreadcrumb(null);
   }
 
-  /**
-   * @param {!Event} event
-   */
-  _onClick(event) {
-    const target = /** @type {?Element} */ (event.target);
+  _onClick(event: Event): void {
+    const target = event.target as Element | null;
     if (!target) {
       return;
     }
@@ -340,10 +296,7 @@ export class AXBreadcrumbsPane extends AccessibilitySubPane {
     this._inspectDOMNode(breadcrumb.axNode());
   }
 
-  /**
-   * @param {?AXBreadcrumb} breadcrumb
-   */
-  _setHoveredBreadcrumb(breadcrumb) {
+  _setHoveredBreadcrumb(breadcrumb: AXBreadcrumb|null): void {
     if (breadcrumb === this._hoveredBreadcrumb) {
       return;
     }
@@ -362,11 +315,7 @@ export class AXBreadcrumbsPane extends AccessibilitySubPane {
     this._hoveredBreadcrumb = breadcrumb;
   }
 
-  /**
-   * @param {!SDK.AccessibilityModel.AccessibilityNode} axNode
-   * @return {boolean}
-   */
-  _inspectDOMNode(axNode) {
+  _inspectDOMNode(axNode: SDK.AccessibilityModel.AccessibilityNode): boolean {
     if (!axNode.isDOMNode()) {
       return false;
     }
@@ -382,11 +331,8 @@ export class AXBreadcrumbsPane extends AccessibilitySubPane {
     return true;
   }
 
-  /**
-   * @param {!Event} event
-   */
-  _contextMenuEventFired(event) {
-    const target = /** @type {?Element} */ (event.target);
+  _contextMenuEventFired(event: Event): void {
+    const target = event.target as Element | null;
     if (!target) {
       return;
     }
@@ -427,19 +373,21 @@ export class AXBreadcrumbsPane extends AccessibilitySubPane {
   }
 }
 
-/**
- * @type {!WeakMap<!Element, !AXBreadcrumb>}
- */
-const elementsToAXBreadcrumb = new WeakMap();
+const elementsToAXBreadcrumb = new WeakMap<Element, AXBreadcrumb>();
 
 export class AXBreadcrumb {
-  /**
-   * @param {!SDK.AccessibilityModel.AccessibilityNode} axNode
-   * @param {number} depth
-   * @param {boolean} inspected
-   */
-  constructor(axNode, depth, inspected) {
-    /** @type {!SDK.AccessibilityModel.AccessibilityNode} */
+  _axNode: SDK.AccessibilityModel.AccessibilityNode;
+  _element: HTMLDivElement;
+  _nodeElement: HTMLDivElement;
+  _nodeWrapper: HTMLDivElement;
+  _selectionElement: HTMLDivElement;
+  _childrenGroupElement: HTMLDivElement;
+  _children: AXBreadcrumb[];
+  _hovered: boolean;
+  _preselected: boolean;
+  _parent: AXBreadcrumb|null;
+  _inspected: boolean;
+  constructor(axNode: SDK.AccessibilityModel.AccessibilityNode, depth: number, inspected: boolean) {
     this._axNode = axNode;
 
     this._element = document.createElement('div');
@@ -465,7 +413,6 @@ export class AXBreadcrumb {
     UI.ARIAUtils.markAsGroup(this._childrenGroupElement);
     this._element.appendChild(this._childrenGroupElement);
 
-    /** @type {!Array<!AXBreadcrumb>} */
     this._children = [];
     this._hovered = false;
     this._preselected = false;
@@ -483,7 +430,7 @@ export class AXBreadcrumb {
       const axNodeName = this._axNode.name();
       if (axNodeName && axNodeName.value) {
         this._nodeWrapper.createChild('span', 'separator').textContent = '\xA0';
-        this._appendNameElement(/** @type {string} */ (axNodeName.value));
+        this._appendNameElement(axNodeName.value as string);
       }
     }
 
@@ -497,24 +444,15 @@ export class AXBreadcrumb {
     }
   }
 
-  /**
-   * @return {!HTMLElement}
-   */
-  element() {
-    return /** @type {!HTMLElement} */ (this._element);
+  element(): HTMLElement {
+    return /** @type {!HTMLElement} */ this._element as HTMLElement;
   }
 
-  /**
-   * @return {!HTMLElement}
-   */
-  nodeElement() {
-    return /** @type {!HTMLElement} */ (this._nodeElement);
+  nodeElement(): HTMLElement {
+    return /** @type {!HTMLElement} */ this._nodeElement as HTMLElement;
   }
 
-  /**
-   * @param {!AXBreadcrumb} breadcrumb
-   */
-  appendChild(breadcrumb) {
+  appendChild(breadcrumb: AXBreadcrumb): void {
     this._children.push(breadcrumb);
     breadcrumb.setParent(this);
     this._nodeElement.classList.add('parent');
@@ -522,29 +460,19 @@ export class AXBreadcrumb {
     this._childrenGroupElement.appendChild(breadcrumb.element());
   }
 
-  hasExpandedChildren() {
+  hasExpandedChildren(): number {
     return this._children.length;
   }
 
-  /**
-   * @param {!AXBreadcrumb} breadcrumb
-   */
-  setParent(breadcrumb) {
+  setParent(breadcrumb: AXBreadcrumb): void {
     this._parent = breadcrumb;
   }
 
-  /**
-   * @return {boolean}
-   */
-  preselected() {
+  preselected(): boolean {
     return this._preselected;
   }
 
-  /**
-   * @param {boolean} preselected
-   * @param {boolean} selectedByUser
-   */
-  setPreselected(preselected, selectedByUser) {
+  setPreselected(preselected: boolean, selectedByUser: boolean): void {
     if (this._preselected === preselected) {
       return;
     }
@@ -567,10 +495,7 @@ export class AXBreadcrumb {
     }
   }
 
-  /**
-   * @param {boolean} hovered
-   */
-  setHovered(hovered) {
+  setHovered(hovered: boolean): void {
     if (this._hovered === hovered) {
       return;
     }
@@ -582,75 +507,54 @@ export class AXBreadcrumb {
     }
   }
 
-  /**
-   * @return {!SDK.AccessibilityModel.AccessibilityNode}
-   */
-  axNode() {
+  axNode(): SDK.AccessibilityModel.AccessibilityNode {
     return this._axNode;
   }
 
-  /**
-   * @return {boolean}
-   */
-  inspected() {
+  inspected(): boolean {
     return this._inspected;
   }
 
-  /**
-   * @return {boolean}
-   */
-  isDOMNode() {
+  isDOMNode(): boolean {
     return this._axNode.isDOMNode();
   }
 
-  /**
-   * @return {?AXBreadcrumb}
-   */
-  nextBreadcrumb() {
+  nextBreadcrumb(): AXBreadcrumb|null {
     if (this._children.length) {
       return this._children[0];
     }
     const nextSibling = this.element().nextSibling;
     if (nextSibling) {
-      return elementsToAXBreadcrumb.get(/** @type {!HTMLElement} */ (nextSibling)) || null;
+      return elementsToAXBreadcrumb.get(nextSibling as HTMLElement) || null;
     }
     return null;
   }
 
-  /**
-   * @return {?AXBreadcrumb}
-   */
-  previousBreadcrumb() {
+  previousBreadcrumb(): AXBreadcrumb|null {
     const previousSibling = this.element().previousSibling;
     if (previousSibling) {
-      return elementsToAXBreadcrumb.get(/** @type {!HTMLElement} */ (previousSibling)) || null;
+      return elementsToAXBreadcrumb.get(previousSibling as HTMLElement) || null;
     }
 
     return this._parent;
   }
 
-  parentBreadcrumb() {
+  parentBreadcrumb(): AXBreadcrumb|null {
     return this._parent;
   }
 
-  lastChild() {
+  lastChild(): AXBreadcrumb {
     return this._children[this._children.length - 1];
   }
 
-  /**
-   * @param {string} name
-   */
-  _appendNameElement(name) {
+  _appendNameElement(name: string): void {
     const nameElement = document.createElement('span');
     nameElement.textContent = '"' + name + '"';
     nameElement.classList.add('ax-readable-string');
     this._nodeWrapper.appendChild(nameElement);
   }
 
-  /**
-   * @param {?Protocol.Accessibility.AXValue} role
-   */
-  _appendRoleElement(role) {
+  _appendRoleElement(role: Protocol.Accessibility.AXValue|null): void {
     if (!role) {
       return;
     }
@@ -663,7 +567,7 @@ export class AXBreadcrumb {
     this._nodeWrapper.appendChild(roleElement);
   }
 
-  _appendIgnoredNodeElement() {
+  _appendIgnoredNodeElement(): void {
     const ignoredNodeElement = document.createElement('span');
     ignoredNodeElement.classList.add('monospace');
     ignoredNodeElement.textContent = i18nString(UIStrings.ignored);
@@ -672,8 +576,11 @@ export class AXBreadcrumb {
   }
 }
 
-/** @type {!Object<string, string>} */
-export const RoleStyles = {
+type RoleStyles = {
+  [type: string]: string,
+};
+
+export const RoleStyles: RoleStyles = {
   internalRole: 'ax-internal-role',
   role: 'ax-role',
 };

@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Common from '../common/common.js';
 import * as i18n from '../i18n/i18n.js';
 import * as SDK from '../sdk/sdk.js';
@@ -108,16 +110,17 @@ export const UIStrings = {
   */
   elementNotInteresting: 'Element not interesting for accessibility.',
 };
-const str_ = i18n.i18n.registerUIStrings('accessibility/AccessibilityNodeView.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('accessibility/AccessibilityNodeView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class AXNodeSubPane extends AccessibilitySubPane {
+  _axNode: SDK.AccessibilityModel.AccessibilityNode|null;
+  _noNodeInfo: Element;
+  _ignoredInfo: Element;
+  _treeOutline: UI.TreeOutline.TreeOutline;
+  _ignoredReasonsTree: UI.TreeOutline.TreeOutline;
   constructor() {
     super(i18nString(UIStrings.computedProperties));
 
-    /**
-     * @protected
-     * @type {?SDK.AccessibilityModel.AccessibilityNode}
-     */
     this._axNode = null;
 
     this.contentElement.classList.add('ax-subpane');
@@ -133,11 +136,7 @@ export class AXNodeSubPane extends AccessibilitySubPane {
     this._treeOutline.setFocusable(true);
   }
 
-  /**
-   * @param {?SDK.AccessibilityModel.AccessibilityNode} axNode
-   * @override
-   */
-  setAXNode(axNode) {
+  setAXNode(axNode: SDK.AccessibilityModel.AccessibilityNode|null): void {
     if (this._axNode === axNode) {
       return;
     }
@@ -166,14 +165,11 @@ export class AXNodeSubPane extends AccessibilitySubPane {
 
       this._ignoredInfo.classList.remove('hidden');
       ignoredReasons.element.classList.remove('hidden');
-      /**
-       * @param {!Protocol.Accessibility.AXProperty} property
-       */
-      function addIgnoredReason(property) {
-        ignoredReasons.appendChild(new AXNodeIgnoredReasonTreeElement(
-            property, /** @type {!SDK.AccessibilityModel.AccessibilityNode} */ (axNode)));
+      function addIgnoredReason(property: Protocol.Accessibility.AXProperty): void {
+        ignoredReasons.appendChild(
+            new AXNodeIgnoredReasonTreeElement(property, axNode as SDK.AccessibilityModel.AccessibilityNode));
       }
-      const ignoredReasonsArray = /** @type {!Array<!Protocol.Accessibility.AXProperty>} */ (axNode.ignoredReasons());
+      const ignoredReasonsArray = axNode.ignoredReasons() as Protocol.Accessibility.AXProperty[];
       for (const reason of ignoredReasonsArray) {
         addIgnoredReason(reason);
       }
@@ -190,12 +186,9 @@ export class AXNodeSubPane extends AccessibilitySubPane {
 
     treeOutline.element.classList.remove('hidden');
 
-    /**
-     * @param {!SDK.AccessibilityModel.CoreOrProtocolAxProperty} property
-     */
-    function addProperty(property) {
-      treeOutline.appendChild(new AXNodePropertyTreePropertyElement(
-          property, /** @type {!SDK.AccessibilityModel.AccessibilityNode} */ (axNode)));
+    function addProperty(property: SDK.AccessibilityModel.CoreOrProtocolAxProperty): void {
+      treeOutline.appendChild(
+          new AXNodePropertyTreePropertyElement(property, axNode as SDK.AccessibilityModel.AccessibilityNode));
     }
 
     for (const property of axNode.coreProperties()) {
@@ -204,11 +197,14 @@ export class AXNodeSubPane extends AccessibilitySubPane {
 
     const role = axNode.role();
     if (role) {
-      /** @type {!SDK.AccessibilityModel.CoreOrProtocolAxProperty} */
-      const roleProperty = {name: SDK.AccessibilityModel.CoreAxPropertyName.Role, value: role};
+      const roleProperty: SDK.AccessibilityModel.CoreOrProtocolAxProperty = {
+        name: SDK.AccessibilityModel.CoreAxPropertyName.Role,
+        value: role,
+      };
       addProperty(roleProperty);
     }
-    for (const property of /** @type {!Array.<!Protocol.Accessibility.AXProperty>} */ (axNode.properties())) {
+    for (const property of /** @type {!Array.<!Protocol.Accessibility.AXProperty>} */ axNode.properties() as
+         Protocol.Accessibility.AXProperty[]) {
       addProperty(property);
     }
 
@@ -218,32 +214,21 @@ export class AXNodeSubPane extends AccessibilitySubPane {
     }
   }
 
-  /**
-   * @override
-   * @param {?SDK.DOMModel.DOMNode} node
-   */
-  setNode(node) {
+  setNode(node: SDK.DOMModel.DOMNode|null): void {
     super.setNode(node);
     this._axNode = null;
   }
 }
 
 export class AXNodePropertyTreeElement extends UI.TreeOutline.TreeElement {
-  /**
-   * @param {!SDK.AccessibilityModel.AccessibilityNode} axNode
-   */
-  constructor(axNode) {
+  _axNode: SDK.AccessibilityModel.AccessibilityNode;
+  constructor(axNode: SDK.AccessibilityModel.AccessibilityNode) {
     // Pass an empty title, the title gets made later in onattach.
     super('');
     this._axNode = axNode;
   }
 
-  /**
-   * @param {?Protocol.Accessibility.AXValueType} type
-   * @param {string} value
-   * @return {!Element}
-   */
-  static createSimpleValueElement(type, value) {
+  static createSimpleValueElement(type: Protocol.Accessibility.AXValueType|null, value: string): Element {
     let valueElement;
     const AXValueType = Protocol.Accessibility.AXValueType;
     if (!type || type === AXValueType.ValueUndefined || type === AXValueType.ComputedString) {
@@ -272,22 +257,14 @@ export class AXNodePropertyTreeElement extends UI.TreeOutline.TreeElement {
     return valueElement;
   }
 
-  /**
-   * @param {string} tooltip
-   * @return {!Element}
-   */
-  static createExclamationMark(tooltip) {
-    const exclamationElement =
-        /** @type {!UI.UIUtils.DevToolsIconLabel} */ (document.createElement('span', {is: 'dt-icon-label'}));
+  static createExclamationMark(tooltip: string): Element {
+    const exclamationElement = document.createElement('span', {is: 'dt-icon-label'}) as UI.UIUtils.DevToolsIconLabel;
     exclamationElement.type = 'smallicon-warning';
     UI.Tooltip.Tooltip.install(exclamationElement, tooltip);
     return exclamationElement;
   }
 
-  /**
-   * @param {string} name
-   */
-  appendNameElement(name) {
+  appendNameElement(name: string): void {
     const nameElement = document.createElement('span');
     if (name in AXAttributes) {
       // @ts-ignore TS can't cast name here but we checked it's valid.
@@ -303,10 +280,7 @@ export class AXNodePropertyTreeElement extends UI.TreeOutline.TreeElement {
     this.listItemElement.appendChild(nameElement);
   }
 
-  /**
-   * @param {!Protocol.Accessibility.AXValue} value
-   */
-  appendValueElement(value) {
+  appendValueElement(value: Protocol.Accessibility.AXValue): void {
     const AXValueType = Protocol.Accessibility.AXValueType;
     if (value.type === AXValueType.Idref || value.type === AXValueType.Node || value.type === AXValueType.IdrefList ||
         value.type === AXValueType.NodeList) {
@@ -326,11 +300,7 @@ export class AXNodePropertyTreeElement extends UI.TreeOutline.TreeElement {
     this.listItemElement.appendChild(element);
   }
 
-  /**
-   * @param {!Protocol.Accessibility.AXRelatedNode} relatedNode
-   * @param {number} index
-   */
-  appendRelatedNode(relatedNode, index) {
+  appendRelatedNode(relatedNode: Protocol.Accessibility.AXRelatedNode, _index: number): void {
     const deferredNode =
         new SDK.DOMModel.DeferredDOMNode(this._axNode.accessibilityModel().target(), relatedNode.backendDOMNodeId);
     const nodeTreeElement =
@@ -338,20 +308,14 @@ export class AXNodePropertyTreeElement extends UI.TreeOutline.TreeElement {
     this.appendChild(nodeTreeElement);
   }
 
-  /**
-   * @param {!Protocol.Accessibility.AXRelatedNode} relatedNode
-   */
-  appendRelatedNodeInline(relatedNode) {
+  appendRelatedNodeInline(relatedNode: Protocol.Accessibility.AXRelatedNode): void {
     const deferredNode =
         new SDK.DOMModel.DeferredDOMNode(this._axNode.accessibilityModel().target(), relatedNode.backendDOMNodeId);
     const linkedNode = new AXRelatedNodeElement({deferredNode: deferredNode, idref: undefined}, relatedNode);
     this.listItemElement.appendChild(linkedNode.render());
   }
 
-  /**
-   * @param {!Protocol.Accessibility.AXValue} value
-   */
-  appendRelatedNodeListValueElement(value) {
+  appendRelatedNodeListValueElement(value: Protocol.Accessibility.AXValue): void {
     if (value.relatedNodes && value.relatedNodes.length === 1 && !value.value) {
       this.appendRelatedNodeInline(value.relatedNodes[0]);
       return;
@@ -368,8 +332,9 @@ export class AXNodePropertyTreeElement extends UI.TreeOutline.TreeElement {
   }
 }
 
-/** @type {!Object<string, string>} */
-export const TypeStyles = {
+export const TypeStyles: {
+  [x: string]: string,
+} = {
   attribute: 'ax-value-string',
   boolean: 'object-value-boolean',
   booleanOrUndefined: 'object-value-boolean',
@@ -382,21 +347,21 @@ export const TypeStyles = {
   role: 'ax-role',
   string: 'ax-value-string',
   tristate: 'object-value-boolean',
-  valueUndefined: 'ax-value-undefined'
+  valueUndefined: 'ax-value-undefined',
 };
 
-/** @type {!Set.<!Protocol.Accessibility.AXValueType>} */
-export const StringProperties = new Set([
-  Protocol.Accessibility.AXValueType.String, Protocol.Accessibility.AXValueType.ComputedString,
-  Protocol.Accessibility.AXValueType.IdrefList, Protocol.Accessibility.AXValueType.Idref
+export const StringProperties = new Set<Protocol.Accessibility.AXValueType>([
+  Protocol.Accessibility.AXValueType.String,
+  Protocol.Accessibility.AXValueType.ComputedString,
+  Protocol.Accessibility.AXValueType.IdrefList,
+  Protocol.Accessibility.AXValueType.Idref,
 ]);
 
 export class AXNodePropertyTreePropertyElement extends AXNodePropertyTreeElement {
-  /**
-   * @param {!SDK.AccessibilityModel.CoreOrProtocolAxProperty} property
-   * @param {!SDK.AccessibilityModel.AccessibilityNode} axNode
-   */
-  constructor(property, axNode) {
+  _property: SDK.AccessibilityModel.CoreOrProtocolAxProperty;
+  toggleOnClick: boolean;
+  constructor(
+      property: SDK.AccessibilityModel.CoreOrProtocolAxProperty, axNode: SDK.AccessibilityModel.AccessibilityNode) {
     super(axNode);
 
     this._property = property;
@@ -405,14 +370,11 @@ export class AXNodePropertyTreePropertyElement extends AXNodePropertyTreeElement
     this.listItemElement.classList.add('property');
   }
 
-  /**
-   * @override
-   */
-  onattach() {
+  onattach(): void {
     this._update();
   }
 
-  _update() {
+  _update(): void {
     this.listItemElement.removeChildren();
 
     this.appendNameElement(this._property.name);
@@ -424,37 +386,24 @@ export class AXNodePropertyTreePropertyElement extends AXNodePropertyTreeElement
 }
 
 export class AXValueSourceTreeElement extends AXNodePropertyTreeElement {
-  /**
-   * @param {!Protocol.Accessibility.AXValueSource} source
-   * @param {!SDK.AccessibilityModel.AccessibilityNode} axNode
-   */
-  constructor(source, axNode) {
+  _source: Protocol.Accessibility.AXValueSource;
+  constructor(source: Protocol.Accessibility.AXValueSource, axNode: SDK.AccessibilityModel.AccessibilityNode) {
     super(axNode);
     this._source = source;
   }
 
-  /**
-   * @override
-   */
-  onattach() {
+  onattach(): void {
     this._update();
   }
 
-  /**
-   * @param {!Protocol.Accessibility.AXRelatedNode} relatedNode
-   * @param {string} idref
-   */
-  appendRelatedNodeWithIdref(relatedNode, idref) {
+  appendRelatedNodeWithIdref(relatedNode: Protocol.Accessibility.AXRelatedNode, idref: string): void {
     const deferredNode =
         new SDK.DOMModel.DeferredDOMNode(this._axNode.accessibilityModel().target(), relatedNode.backendDOMNodeId);
     const nodeTreeElement = new AXRelatedNodeSourceTreeElement({deferredNode: deferredNode, idref: idref}, relatedNode);
     this.appendChild(nodeTreeElement);
   }
 
-  /**
-   * @param {!Protocol.Accessibility.AXValue} value
-   */
-  appendIDRefValueElement(value) {
+  appendIDRefValueElement(value: Protocol.Accessibility.AXValue): void {
     if (value.value === null) {
       return;
     }
@@ -489,11 +438,7 @@ export class AXValueSourceTreeElement extends AXNodePropertyTreeElement {
     }
   }
 
-  /**
-   * @param {!Protocol.Accessibility.AXValue} value
-   * @override
-   */
-  appendRelatedNodeListValueElement(value) {
+  appendRelatedNodeListValueElement(value: Protocol.Accessibility.AXValue): void {
     const relatedNodes = value.relatedNodes;
     const numNodes = relatedNodes ? relatedNodes.length : 0;
 
@@ -504,7 +449,6 @@ export class AXValueSourceTreeElement extends AXNodePropertyTreeElement {
       super.appendRelatedNodeListValueElement(value);
     }
 
-
     if (numNodes <= 3) {
       this.expand();
     } else {
@@ -512,10 +456,7 @@ export class AXValueSourceTreeElement extends AXNodePropertyTreeElement {
     }
   }
 
-  /**
-   * @param {!Protocol.Accessibility.AXValueSource} source
-   */
-  appendSourceNameElement(source) {
+  appendSourceNameElement(source: Protocol.Accessibility.AXValueSource): void {
     const nameElement = document.createElement('span');
     const AXValueSourceType = Protocol.Accessibility.AXValueSourceType;
     const type = source.type;
@@ -547,7 +488,7 @@ export class AXValueSourceTreeElement extends AXNodePropertyTreeElement {
     this.listItemElement.appendChild(nameElement);
   }
 
-  _update() {
+  _update(): void {
     this.listItemElement.removeChildren();
 
     if (this._source.invalid) {
@@ -587,11 +528,15 @@ export class AXValueSourceTreeElement extends AXNodePropertyTreeElement {
 }
 
 export class AXRelatedNodeSourceTreeElement extends UI.TreeOutline.TreeElement {
-  /**
-   * @param {{deferredNode: (!SDK.DOMModel.DeferredDOMNode|undefined), idref: (string|undefined)}} node
-   * @param {!Protocol.Accessibility.AXRelatedNode=} value
-   */
-  constructor(node, value) {
+  _value: Protocol.Accessibility.AXRelatedNode|undefined;
+  _axRelatedNodeElement: AXRelatedNodeElement;
+
+  constructor(
+      node: {
+        deferredNode?: SDK.DOMModel.DeferredDOMNode,
+        idref?: string,
+      },
+      value?: Protocol.Accessibility.AXRelatedNode) {
     super('');
 
     this._value = value;
@@ -599,10 +544,7 @@ export class AXRelatedNodeSourceTreeElement extends UI.TreeOutline.TreeElement {
     this.selectable = true;
   }
 
-  /**
-   * @override
-   */
-  onattach() {
+  onattach(): void {
     this.listItemElement.appendChild(this._axRelatedNodeElement.render());
     if (!this._value) {
       return;
@@ -614,30 +556,28 @@ export class AXRelatedNodeSourceTreeElement extends UI.TreeOutline.TreeElement {
     }
   }
 
-  /**
-   * @override
-   */
-  onenter() {
+  onenter(): boolean {
     this._axRelatedNodeElement.revealNode();
     return true;
   }
 }
 
 export class AXRelatedNodeElement {
-  /**
-   * @param {{deferredNode: (!SDK.DOMModel.DeferredDOMNode|undefined), idref: (string|undefined)}} node
-   * @param {!Protocol.Accessibility.AXRelatedNode=} value
-   */
-  constructor(node, value) {
+  _deferredNode: SDK.DOMModel.DeferredDOMNode|undefined;
+  _idref: string|undefined;
+  _value: Protocol.Accessibility.AXRelatedNode|undefined;
+  constructor(
+      node: {
+        deferredNode?: SDK.DOMModel.DeferredDOMNode,
+        idref?: string,
+      },
+      value?: Protocol.Accessibility.AXRelatedNode) {
     this._deferredNode = node.deferredNode;
     this._idref = node.idref;
     this._value = value;
   }
 
-  /**
-   * @return {!Element}
-   */
-  render() {
+  render(): Element {
     const element = document.createElement('span');
 
     if (this._deferredNode) {
@@ -660,7 +600,7 @@ export class AXRelatedNodeElement {
   /**
    * Attempts to cause the node referred to by the related node to be selected in the tree.
    */
-  revealNode() {
+  revealNode(): void {
     if (this._deferredNode) {
       this._deferredNode.resolvePromise().then(node => Common.Revealer.reveal(node));
     }
@@ -668,11 +608,12 @@ export class AXRelatedNodeElement {
 }
 
 export class AXNodeIgnoredReasonTreeElement extends AXNodePropertyTreeElement {
-  /**
-   * @param {!Protocol.Accessibility.AXProperty} property
-   * @param {!SDK.AccessibilityModel.AccessibilityNode} axNode
-   */
-  constructor(property, axNode) {
+  _property: Protocol.Accessibility.AXProperty;
+  _axNode: SDK.AccessibilityModel.AccessibilityNode;
+  toggleOnClick: boolean;
+  _reasonElement?: Element|null;
+
+  constructor(property: Protocol.Accessibility.AXProperty, axNode: SDK.AccessibilityModel.AccessibilityNode) {
     super(axNode);
     this._property = property;
     this._axNode = axNode;
@@ -680,13 +621,8 @@ export class AXNodeIgnoredReasonTreeElement extends AXNodePropertyTreeElement {
     this.selectable = false;
   }
 
-  /**
-   * @param {?string} reason
-   * @param {?SDK.AccessibilityModel.AccessibilityNode} axNode
-   * @return {?Element}
-   */
-  static createReasonElement(reason, axNode) {
-    let reasonElement = null;
+  static createReasonElement(reason: string|null, axNode: SDK.AccessibilityModel.AccessibilityNode|null): Element|null {
+    let reasonElement: Element|null = null;
     switch (reason) {
       case 'activeModalDialog':
         reasonElement = i18n.i18n.getFormatLocalizedString(str_, UIStrings.elementIsHiddenBy, {});
@@ -756,10 +692,7 @@ export class AXNodeIgnoredReasonTreeElement extends AXNodePropertyTreeElement {
     return reasonElement;
   }
 
-  /**
-   * @override
-   */
-  onattach() {
+  onattach(): void {
     this.listItemElement.removeChildren();
 
     this._reasonElement = AXNodeIgnoredReasonTreeElement.createReasonElement(this._property.name, this._axNode);

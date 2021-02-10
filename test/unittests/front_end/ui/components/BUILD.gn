@@ -3,10 +3,10 @@ import("../../../../../third_party/typescript/typescript.gni")
 ts_library("components") {
   testonly = true
   sources = [
-    "CounterButton_test.ts",
     "DataGridController_test.ts",
     "DataGridHelpers.ts",
     "DataGrid_test.ts",
+    "IconButton_test.ts",
     "Linkifier_test.ts",
     "ReportView_test.ts",
     "SurveyLink_test.ts",

@@ -5,34 +5,34 @@
 import * as LitHtml from '../../third_party/lit-html/lit-html.js';
 import {IconData} from './Icon.js';
 
-export interface CounterData {
+export interface IconWithTextData {
   iconName: string;
   iconColor?: string;
-  count?: number;
+  text?: string;
 }
 
-export interface CounterButtonData {
+export interface IconButtonData {
   clickHandler: () => void;
-  counters: CounterData[];
+  groups: IconWithTextData[];
 }
 
-export class CounterButton extends HTMLElement {
+export class IconButton extends HTMLElement {
   private readonly shadow = this.attachShadow({mode: 'open'});
   private clickHandler: () => void = () => {};
-  private counters: CounterData[] = [];
+  private groups: IconWithTextData[] = [];
 
-  set data(data: CounterButtonData) {
-    this.counters = data.counters;
+  set data(data: IconButtonData) {
+    this.groups = data.groups;
     this.clickHandler = data.clickHandler;
     this.render();
   }
 
-  setCounts(counts: number[]): void {
-    if (counts.length !== this.counters.length) {
-      throw new Error(`Wrong number of texts, expected ${this.counters.length} but got ${counts.length}`);
+  setTexts(texts: (string|undefined)[]): void {
+    if (texts.length !== this.groups.length) {
+      throw new Error(`Wrong number of texts, expected ${this.groups.length} but got ${texts.length}`);
     }
-    for (let i = 0; i < counts.length; ++i) {
-      this.counters[i].count = counts[i];
+    for (let i = 0; i < texts.length; ++i) {
+      this.groups[i].text = texts[i];
     }
     this.render();
   }
@@ -51,7 +51,7 @@ export class CounterButton extends HTMLElement {
           white-space: normal;
         }
 
-        .counter-button {
+        .icon-button {
           cursor: pointer;
           background-color: var(--toolbar-bg-color);
           border: 1px solid var(--divider-color);
@@ -62,12 +62,12 @@ export class CounterButton extends HTMLElement {
           align-items: center;
         }
 
-        .counter-button:hover,
-        .counter-button:focus-visible {
+        .icon-button:hover,
+        .icon-button:focus-visible {
           background-color: var(--toolbar-hover-bg-color);
         }
 
-        .counter-button-title {
+        .icon-button-title {
           margin-left: 0.5ex;
         }
 
@@ -79,24 +79,24 @@ export class CounterButton extends HTMLElement {
           margin-left: inherit;
         }
       </style>
-      <button class="counter-button" @click=${this.onClickHandler}>
-      ${this.counters.filter(counter => Boolean(counter.count)).map(counter =>
+      <button class="icon-button" @click=${this.onClickHandler}>
+      ${this.groups.filter(counter => counter.text !== undefined).map(counter =>
       LitHtml.html`
       <devtools-icon class="status-icon"
       .data=${{iconName: counter.iconName, color: counter.iconColor || '', width: '1.5ex', height: '1.5ex'} as IconData}>
       </devtools-icon>
-      <span class="counter-button-title">${counter.count}</span>
+      <span class="icon-button-title">${counter.text}</span>
       </button>`)}
     `, this.shadow, { eventContext: this});
     // clang-format on
   }
 }
 
-customElements.define('counter-button', CounterButton);
+customElements.define('icon-button', IconButton);
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
-    'counter-button': CounterButton;
+    'icon-button': IconButton;
   }
 }

@@ -9,22 +9,22 @@ import * as Components from '../../ui/components/components.js';
 await ComponentHelpers.ComponentServerSetup.setup();
 await FrontendHelpers.initializeGlobalVars();
 
-const component = new Components.CounterButton.CounterButton();
+const component = new Components.IconButton.IconButton();
 
 component.data = {
   clickHandler: (): void => {},
-  counters: [{iconName: 'feedback_thin_16x16_icon', iconColor: 'black', count: 12}],
+  groups: [{iconName: 'feedback_thin_16x16_icon', iconColor: 'black', text: '1 item'}],
 };
 
 document.getElementById('container')?.appendChild(component);
 
-const component2 = new Components.CounterButton.CounterButton();
+const component2 = new Components.IconButton.IconButton();
 
 component2.data = {
   clickHandler: (): void => {},
-  counters: [
-    {iconName: 'feedback_thin_16x16_icon', iconColor: 'blue', count: 12},
-    {iconName: 'warning_icon', iconColor: '', count: 1},
+  groups: [
+    {iconName: 'feedback_thin_16x16_icon', iconColor: 'blue', text: 'Test'},
+    {iconName: 'warning_icon', iconColor: '', text: '1'},
   ],
 };
 

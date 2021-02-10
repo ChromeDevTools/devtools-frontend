@@ -81,31 +81,31 @@ export class WarningErrorCounter {
     this._toolbarItem = new UI.Toolbar.ToolbarItem(countersWrapper);
     this._toolbarItem.setVisible(false);
 
-    this._consoleCounter = new Components.CounterButton.CounterButton();
+    this._consoleCounter = new Components.IconButton.IconButton();
     countersWrapper.appendChild(this._consoleCounter);
     this._consoleCounter.data = {
       clickHandler: Common.Console.Console.instance().show.bind(Common.Console.Console.instance()),
-      counters: [{iconName: 'error_icon'}, {iconName: 'warning_icon'}],
+      groups: [{iconName: 'error_icon'}, {iconName: 'warning_icon'}],
     };
 
     this._violationCounter = null;
     if (Root.Runtime.experiments.isEnabled('spotlight')) {
-      this._violationCounter = new Components.CounterButton.CounterButton();
+      this._violationCounter = new Components.IconButton.IconButton();
       countersWrapper.appendChild(this._violationCounter);
       this._violationCounter.data = {
         clickHandler: () => UI.ViewManager.ViewManager.instance().showView('lighthouse'),
-        counters: [{iconName: 'ic_info_black_18dp', iconColor: '#2a53cd'}],
+        groups: [{iconName: 'ic_info_black_18dp', iconColor: '#2a53cd'}],
       };
     }
 
-    this._issuesCounter = new Components.CounterButton.CounterButton();
+    this._issuesCounter = new Components.IconButton.IconButton();
     countersWrapper.appendChild(this._issuesCounter);
     this._issuesCounter.data = {
       clickHandler: () => {
         Host.userMetrics.issuesPanelOpenedFrom(Host.UserMetrics.IssueOpener.StatusBarIssuesCounter);
         UI.ViewManager.ViewManager.instance().showView('issues-pane');
       },
-      counters: [{iconName: 'issue-text-icon', iconColor: '#1a73e8'}],
+      groups: [{iconName: 'issue-text-icon', iconColor: '#1a73e8'}],
     };
 
     this._throttler = new Common.Throttler.Throttler(100);
@@ -144,6 +144,9 @@ export class WarningErrorCounter {
     const violations = this._violationCounter ? SDK.ConsoleModel.ConsoleModel.instance().violations() : 0;
     const issues = BrowserSDK.IssuesManager.IssuesManager.instance().numberOfIssues();
 
+    /** @param {number} c */
+    const countToText = c => c === 0 ? undefined : `${c}`;
+
     /* Update consoleCounter items. */
     let errorCountTitle = '';
     if (errors === 1) {
@@ -157,7 +160,7 @@ export class WarningErrorCounter {
     } else {
       warningCountTitle = i18nString(UIStrings.sWarnings, {PH1: warnings});
     }
-    this._consoleCounter.setCounts([errors, warnings]);
+    this._consoleCounter.setTexts([countToText(errors), countToText(warnings)]);
     let consoleSummary = '';
     if (errors && warnings) {
       consoleSummary = `${errorCountTitle}, ${warningCountTitle}`;
@@ -174,7 +177,7 @@ export class WarningErrorCounter {
 
     /* Update violationCounter items. */
     if (this._violationCounter) {
-      this._violationCounter.setCounts([violations]);
+      this._violationCounter.setTexts([countToText(violations)]);
       let violationSummary = '';
       if (violations === 1) {
         violationSummary = i18nString(UIStrings.sViolation, {PH1: violations});
@@ -189,7 +192,7 @@ export class WarningErrorCounter {
     }
 
     /* Update issuesCounter items. */
-    this._issuesCounter.setCounts([issues]);
+    this._issuesCounter.setTexts([countToText(issues)]);
     let issuesSummary = '';
     if (issues === 1) {
       issuesSummary = i18nString(UIStrings.sIssue, {PH1: issues});

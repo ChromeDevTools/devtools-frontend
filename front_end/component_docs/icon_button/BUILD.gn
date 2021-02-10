@@ -16,7 +16,7 @@ ts_library("ts") {
   ]
 }
 
-copy_to_gen("counter_button") {
+copy_to_gen("icon_button") {
   testonly = true
   sources = [ "basic.html" ]
 

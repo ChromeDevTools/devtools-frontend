@@ -75,7 +75,7 @@ UI.ActionRegistration.registerActionExtension({
     },
     {
       platform: UI.ActionRegistration.Platforms.Mac,
-      shortcut: 'Meta+0',
+      shortcut: 'Meta+O',
       keybindSets: [
         UI.ActionRegistration.KeybindSet.DEVTOOLS_DEFAULT,
         UI.ActionRegistration.KeybindSet.VS_CODE,
@@ -91,7 +91,7 @@ UI.ActionRegistration.registerActionExtension({
     },
     {
       platform: UI.ActionRegistration.Platforms.WindowsLinux,
-      shortcut: 'Ctrl+0',
+      shortcut: 'Ctrl+O',
       keybindSets: [
         UI.ActionRegistration.KeybindSet.DEVTOOLS_DEFAULT,
         UI.ActionRegistration.KeybindSet.VS_CODE,

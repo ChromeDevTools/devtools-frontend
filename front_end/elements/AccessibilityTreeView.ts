@@ -28,4 +28,8 @@ export class AccessibilityTreeView extends UI.Widget.VBox {
       node: inspectedNode,
     };
   }
+
+  wasShown(): void {
+    this.accessibilityTreeComponent.wasShown();
+  }
 }

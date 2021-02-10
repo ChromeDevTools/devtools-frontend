@@ -5,6 +5,8 @@
 import * as Platform from '../platform/platform.js';
 import {ls} from '../platform/platform.js';
 import * as LitHtml from '../third_party/lit-html/lit-html.js';
+
+import {AccessibilityTree} from './AccessibilityTree.js';
 import {AXNode} from './AccessibilityTreeUtils.js';
 
 export interface AccessibilityNodeData {
@@ -12,26 +14,181 @@ export interface AccessibilityNodeData {
 }
 
 export class AccessibilityNode extends HTMLElement {
-  private readonly shadow = this.attachShadow({mode: 'open'});
+  private readonly shadow = this.attachShadow({
+    mode: 'open',
+    delegatesFocus: false,
+  });
   private axNode: AXNode|null = null;
+  private axTree: AccessibilityTree|null = null;
   private expanded: boolean = true;
   private loadedChildren: boolean = false;
   private hovered: boolean = false;
+  private isSelected: boolean = false;
 
   constructor() {
     super();
     this.addEventListener('click', this.onClick.bind(this));
     this.addEventListener('mousemove', this.onMouseMove.bind(this));
     this.addEventListener('mouseleave', this.onMouseLeave.bind(this));
+    this.tabIndex = -1;
   }
 
   set data(data: AccessibilityNodeData) {
     this.axNode = data.axNode;
+    this.axTree = this.axNode.axTree;
     this.shadow.host.setAttribute('role', 'treeitem');
     this.render();
   }
 
+  set selected(selected: boolean) {
+    this.isSelected = selected;
+    this.render();
+
+    if (this.isSelected) {
+      this.focus();
+    }
+  }
+
+  get isExpanded(): boolean {
+    return this.expanded;
+  }
+
+  selectPreviousNode(): void {
+    if (!this.axTree) {
+      return;
+    }
+
+    const previousNode = this.getPreviousSibling();
+    if (previousNode) {
+      this.axTree.selectedAXNode = previousNode;
+    }
+  }
+
+  selectNextNode(): void {
+    if (!this.axTree) {
+      return;
+    }
+
+    if (this.expanded) {
+      this.selectFirstChild();
+      return;
+    }
+
+    const nextNode = this.getNextSibling();
+    if (nextNode) {
+      this.axTree.selectedAXNode = nextNode;
+    }
+  }
+
+  selectParent(): void {
+    if (!this.axTree) {
+      return;
+    }
+
+    const parent = this.getParentNode();
+    if (parent) {
+      this.axTree.selectedAXNode = parent;
+    }
+  }
+
+  selectFirstChild(): void {
+    const firstChild = this.getFirstChild();
+    if (this.axTree && firstChild) {
+      this.axTree.selectedAXNode = firstChild;
+    }
+  }
+
+  defaultAction(): void {
+    this.toggleChildren();
+  }
+
+  getLastChild(): AccessibilityNode|null {
+    if (!this.axTree || !this.axNode) {
+      return null;
+    }
+
+    if (this.expanded && this.axNode.numChildren) {
+      const lastChildIndex = this.axNode.numChildren - 1;
+      const lastChild = this.axTree.getNodeByAXID(this.axNode.children[lastChildIndex].id);
+      if (lastChild) {
+        return lastChild;
+      }
+    }
+
+    return null;
+  }
+
+  private getNextSibling(): AccessibilityNode|null {
+    const parent = this.getParentNode();
+    if (!parent || !parent.axNode) {
+      return null;
+    }
+
+    const indexInParent = parent.indexOf(this);
+    if (indexInParent + 1 < parent.axNode.numChildren) {
+      return parent.getChild(indexInParent + 1);
+    }
+
+    return parent.getNextSibling();
+  }
+
+  private getPreviousSibling(): AccessibilityNode|null {
+    const parent = this.getParentNode();
+    if (!parent) {
+      return null;
+    }
+
+    const indexInParent = parent.indexOf(this);
+    if (indexInParent === 0) {
+      return parent;
+    }
+
+    let previousSibling = parent.getChild(indexInParent - 1);
+    while (previousSibling && previousSibling.expanded) {
+      previousSibling = previousSibling.getLastChild();
+    }
+
+    return previousSibling;
+  }
+
+  private getChild(index: number): AccessibilityNode|null {
+    if (!this.axNode || !this.axNode.numChildren || !this.axTree) {
+      return null;
+    }
+
+    return this.axTree.getNodeByAXID(this.axNode.children[index].id);
+  }
+
+  private getFirstChild(): AccessibilityNode|null {
+    if (!this.axNode || !this.axNode.numChildren || !this.axTree) {
+      return null;
+    }
+
+    return this.axTree.getNodeByAXID(this.axNode.children[0].id);
+  }
+
+  private getParentNode(): AccessibilityNode|null {
+    if (!this.axNode || !this.axNode.parent || !this.axTree) {
+      return null;
+    }
+
+    return this.axTree.getNodeByAXID(this.axNode.parent.id);
+  }
+
+  private indexOf(node: AccessibilityNode): number {
+    const childAXNode = node.axNode;
+    if (!this.axNode || !childAXNode) {
+      return -1;
+    }
+
+    return this.axNode.children.indexOf(childAXNode);
+  }
+
   private onClick(e: MouseEvent): void {
+    if (this.axTree) {
+      this.axTree.selectedAXNode = this;
+    }
+
     e.stopPropagation();
     this.toggleChildren();
   }
@@ -58,7 +215,7 @@ export class AccessibilityNode extends HTMLElement {
   }
 
   private toggleChildren(): void {
-    if (!this.axNode || !this.axNode.children) {
+    if (!this.axNode || !this.axNode.numChildren) {
       return;
     }
 
@@ -133,7 +290,7 @@ export class AccessibilityNode extends HTMLElement {
   }
 
   private render(): void {
-    if (!this.axNode) {
+    if (!this.axNode || !this.axTree) {
       return;
     }
 
@@ -153,9 +310,17 @@ export class AccessibilityNode extends HTMLElement {
         this.shadow.host.classList.add('parent', 'expanded');
       } else {
         this.shadow.host.classList.add('no-children');
+        this.expanded = false;
       }
-      parts.push(LitHtml.html`<div class='wrapper'>${nodeContent}</div>`);
+
+      const classes = LitHtml.Directives.classMap({
+        'wrapper': true,
+        'selected': this.isSelected,
+      });
+      parts.push(LitHtml.html`<div class=${classes}>${nodeContent}</div>`);
     }
+
+    this.axTree.appendToNodeMap(this.axNode.id, this);
 
     const children = this.renderChildren(this.axNode);
     parts.push(children);
@@ -227,13 +392,21 @@ export class AccessibilityNode extends HTMLElement {
 
           .wrapper {
             display: inline-block;
+            width: 96%;
           }
 
           .wrapper:hover {
             background: var(--color-background-elevation-2);
-            width: 96%;
           }
 
+          .wrapper.selected {
+            outline: none;
+            background: var(--selection-bg-color);
+          }
+
+          :focus {
+            outline: none;
+          }
       </style>
       ${parts}
       `;

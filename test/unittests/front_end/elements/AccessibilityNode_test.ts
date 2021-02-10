@@ -19,6 +19,7 @@ const makeAXNode = (overrides: Partial<ElementsModule.AccessibilityTreeUtils.AXN
     children: [],
     numChildren: 0,
     hasOnlyUnloadedChildren: false,
+    axTree: null,
     loadChildren: async () => {},
     highlightNode: () => {},
     clearHighlight: () => {},
@@ -41,7 +42,7 @@ describeWithEnvironment('AccessibilityTree', () => {
 
   describe('render node text', () => {
     it('returns WebArea for root node', async () => {
-      const node = makeAXNode({role: 'WebArea'});
+      const node = makeAXNode({role: 'WebArea', axTree: new Elements.AccessibilityTree.AccessibilityTree()});
       const component = new Elements.AccessibilityNode.AccessibilityNode();
       renderElementIntoDOM(component);
       component.data = {
@@ -51,7 +52,8 @@ describeWithEnvironment('AccessibilityTree', () => {
     });
 
     it('returns the node role and name', () => {
-      const node = makeAXNode({role: 'button', name: 'Click Me'});
+      const node =
+          makeAXNode({role: 'button', name: 'Click Me', axTree: new Elements.AccessibilityTree.AccessibilityTree()});
       const component = new Elements.AccessibilityNode.AccessibilityNode();
       renderElementIntoDOM(component);
       component.data = {
@@ -61,7 +63,8 @@ describeWithEnvironment('AccessibilityTree', () => {
     });
 
     it('ignored node displays as Ignored', () => {
-      const node = makeAXNode({role: 'presentation', ignored: true});
+      const node =
+          makeAXNode({role: 'presentation', ignored: true, axTree: new Elements.AccessibilityTree.AccessibilityTree()});
       const component = new Elements.AccessibilityNode.AccessibilityNode();
       renderElementIntoDOM(component);
       component.data = {
@@ -73,7 +76,12 @@ describeWithEnvironment('AccessibilityTree', () => {
 
   describe('unloaded children', () => {
     it('returns expanded = false', () => {
-      const node = makeAXNode({role: 'paragraph', name: 'text', hasOnlyUnloadedChildren: true});
+      const node = makeAXNode({
+        role: 'paragraph',
+        name: 'text',
+        hasOnlyUnloadedChildren: true,
+        axTree: new Elements.AccessibilityTree.AccessibilityTree(),
+      });
       const component = new Elements.AccessibilityNode.AccessibilityNode();
       renderElementIntoDOM(component);
       component.data = {
@@ -83,7 +91,12 @@ describeWithEnvironment('AccessibilityTree', () => {
     });
 
     it('returns no children', () => {
-      const node = makeAXNode({role: 'paragraph', name: 'text', hasOnlyUnloadedChildren: true});
+      const node = makeAXNode({
+        role: 'paragraph',
+        name: 'text',
+        hasOnlyUnloadedChildren: true,
+        axTree: new Elements.AccessibilityTree.AccessibilityTree(),
+      });
       const component = new Elements.AccessibilityNode.AccessibilityNode();
       renderElementIntoDOM(component);
       component.data = {
@@ -96,12 +109,14 @@ describeWithEnvironment('AccessibilityTree', () => {
 
   describe('ancestor chain of a parent with one child', () => {
     it('parent button has one text child', () => {
-      const childNode = makeAXNode({role: 'text', name: 'me'});
+      const childNode =
+          makeAXNode({role: 'text', name: 'me', axTree: new Elements.AccessibilityTree.AccessibilityTree()});
       const parentNode = makeAXNode({
         role: 'button',
         name: 'click',
         children: [childNode],
         numChildren: 1,
+        axTree: new Elements.AccessibilityTree.AccessibilityTree(),
       });
       childNode.parent = parentNode;
 
@@ -118,7 +133,12 @@ describeWithEnvironment('AccessibilityTree', () => {
 
   describe('click behaviour of accessibility nodes', () => {
     it('expanded class is toggled on click', () => {
-      const node = makeAXNode({role: 'paragraph', name: 'text', numChildren: 1});
+      const node = makeAXNode({
+        role: 'paragraph',
+        name: 'text',
+        numChildren: 1,
+        axTree: new Elements.AccessibilityTree.AccessibilityTree(),
+      });
       const component = new Elements.AccessibilityNode.AccessibilityNode();
       renderElementIntoDOM(component);
       component.data = {
@@ -137,7 +157,8 @@ describeWithEnvironment('AccessibilityTree', () => {
 
   describe('mouse behaviour of accessibility nodes', () => {
     it('node is highlighted on mouse hover', () => {
-      const node = makeAXNode({role: 'paragraph', name: 'text'});
+      const node =
+          makeAXNode({role: 'paragraph', name: 'text', axTree: new Elements.AccessibilityTree.AccessibilityTree()});
       const component = new Elements.AccessibilityNode.AccessibilityNode();
       renderElementIntoDOM(component);
       component.data = {

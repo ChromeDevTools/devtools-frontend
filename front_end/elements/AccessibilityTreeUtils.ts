@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as SDK from '../sdk/sdk.js';
+import {AccessibilityTree} from './AccessibilityTree.js';
 
 export interface AXNode {
   id: string;
@@ -13,12 +14,14 @@ export interface AXNode {
   children: AXNode[];
   numChildren: number;
   hasOnlyUnloadedChildren: boolean;
+  axTree: AccessibilityTree|null;
   loadChildren: () => Promise<void>;
   highlightNode: () => void;
   clearHighlight: () => void;
 }
 
-export function SDKNodeToAXNode(parent: AXNode|null, sdkNode: SDK.AccessibilityModel.AccessibilityNode): AXNode {
+export function SDKNodeToAXNode(
+    parent: AXNode|null, sdkNode: SDK.AccessibilityModel.AccessibilityNode, tree: AccessibilityTree): AXNode {
   const axChildren: AXNode[] = [];
   const axNode = {
     id: sdkNode.id(),
@@ -29,11 +32,12 @@ export function SDKNodeToAXNode(parent: AXNode|null, sdkNode: SDK.AccessibilityM
     children: axChildren,
     numChildren: sdkNode.numChildren(),
     hasOnlyUnloadedChildren: sdkNode.hasOnlyUnloadedChildren(),
+    axTree: tree,
     loadChildren: async(): Promise<void> => {
       const loadedChildren = await sdkNode.accessibilityModel().requestAXChildren(sdkNode.id());
       if (loadedChildren) {
         for (const child of loadedChildren) {
-          axChildren.push(SDKNodeToAXNode(parent, child));
+          axChildren.push(SDKNodeToAXNode(axNode, child, tree));
         }
       }
     },
@@ -42,7 +46,7 @@ export function SDKNodeToAXNode(parent: AXNode|null, sdkNode: SDK.AccessibilityM
   };
 
   for (const child of sdkNode.children()) {
-    axNode.children.push(SDKNodeToAXNode(axNode, child));
+    axNode.children.push(SDKNodeToAXNode(axNode, child, tree));
   }
 
   return axNode;

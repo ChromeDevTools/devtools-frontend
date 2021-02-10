@@ -1,7 +1,0 @@
-{
-  "modules": [
-    "services.js",
-    "services-legacy.js",
-    "ServiceManager.js"
-  ]
-}

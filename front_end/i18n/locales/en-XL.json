@@ -797,37 +797,37 @@
   "components/TargetDetachedDialog.js | websocketDisconnected": {
     "message": "Ŵéb̂Śôćk̂ét̂ d́îśĉón̂ńêćt̂éd̂"
   },
-  "console_counters/WarningErrorCounter.js | openConsoleToViewS": {
+  "console_counters/WarningErrorCounter.ts | openConsoleToViewS": {
     "message": "Ôṕêń Ĉón̂śôĺê t́ô v́îéŵ {PH1}"
   },
-  "console_counters/WarningErrorCounter.js | openIssuesToViewS": {
+  "console_counters/WarningErrorCounter.ts | openIssuesToViewS": {
     "message": "Ôṕêń Îśŝúêś t̂ó v̂íêẃ {PH1}"
   },
-  "console_counters/WarningErrorCounter.js | openLighthouseToViewS": {
+  "console_counters/WarningErrorCounter.ts | openLighthouseToViewS": {
     "message": "Ôṕêń L̂íĝh́t̂h́ôúŝé t̂ó v̂íêẃ {PH1}"
   },
-  "console_counters/WarningErrorCounter.js | sError": {
+  "console_counters/WarningErrorCounter.ts | sError": {
     "message": "{PH1} êŕr̂ór̂"
   },
-  "console_counters/WarningErrorCounter.js | sErrors": {
+  "console_counters/WarningErrorCounter.ts | sErrors": {
     "message": "{PH1} êŕr̂ór̂ś"
   },
-  "console_counters/WarningErrorCounter.js | sIssue": {
+  "console_counters/WarningErrorCounter.ts | sIssue": {
     "message": "{PH1} îśŝúê"
   },
-  "console_counters/WarningErrorCounter.js | sIssues": {
+  "console_counters/WarningErrorCounter.ts | sIssues": {
     "message": "{PH1} îśŝúêś"
   },
-  "console_counters/WarningErrorCounter.js | sViolation": {
+  "console_counters/WarningErrorCounter.ts | sViolation": {
     "message": "{PH1} v̂íôĺât́îón̂"
   },
-  "console_counters/WarningErrorCounter.js | sViolations": {
+  "console_counters/WarningErrorCounter.ts | sViolations": {
     "message": "{PH1} v̂íôĺât́îón̂ś"
   },
-  "console_counters/WarningErrorCounter.js | sWarning": {
+  "console_counters/WarningErrorCounter.ts | sWarning": {
     "message": "{PH1} ŵár̂ńîńĝ"
   },
-  "console_counters/WarningErrorCounter.js | sWarnings": {
+  "console_counters/WarningErrorCounter.ts | sWarnings": {
     "message": "{PH1} ŵár̂ńîńĝś"
   },
   "console/console-meta.ts | autocompleteFromHistory": {

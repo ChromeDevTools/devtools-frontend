@@ -797,37 +797,37 @@
   "components/TargetDetachedDialog.js | websocketDisconnected": {
     "message": "WebSocket disconnected"
   },
-  "console_counters/WarningErrorCounter.js | openConsoleToViewS": {
+  "console_counters/WarningErrorCounter.ts | openConsoleToViewS": {
     "message": "Open Console to view {PH1}"
   },
-  "console_counters/WarningErrorCounter.js | openIssuesToViewS": {
+  "console_counters/WarningErrorCounter.ts | openIssuesToViewS": {
     "message": "Open Issues to view {PH1}"
   },
-  "console_counters/WarningErrorCounter.js | openLighthouseToViewS": {
+  "console_counters/WarningErrorCounter.ts | openLighthouseToViewS": {
     "message": "Open Lighthouse to view {PH1}"
   },
-  "console_counters/WarningErrorCounter.js | sError": {
+  "console_counters/WarningErrorCounter.ts | sError": {
     "message": "{PH1} error"
   },
-  "console_counters/WarningErrorCounter.js | sErrors": {
+  "console_counters/WarningErrorCounter.ts | sErrors": {
     "message": "{PH1} errors"
   },
-  "console_counters/WarningErrorCounter.js | sIssue": {
+  "console_counters/WarningErrorCounter.ts | sIssue": {
     "message": "{PH1} issue"
   },
-  "console_counters/WarningErrorCounter.js | sIssues": {
+  "console_counters/WarningErrorCounter.ts | sIssues": {
     "message": "{PH1} issues"
   },
-  "console_counters/WarningErrorCounter.js | sViolation": {
+  "console_counters/WarningErrorCounter.ts | sViolation": {
     "message": "{PH1} violation"
   },
-  "console_counters/WarningErrorCounter.js | sViolations": {
+  "console_counters/WarningErrorCounter.ts | sViolations": {
     "message": "{PH1} violations"
   },
-  "console_counters/WarningErrorCounter.js | sWarning": {
+  "console_counters/WarningErrorCounter.ts | sWarning": {
     "message": "{PH1} warning"
   },
-  "console_counters/WarningErrorCounter.js | sWarnings": {
+  "console_counters/WarningErrorCounter.ts | sWarnings": {
     "message": "{PH1} warnings"
   },
   "console/console-meta.ts | autocompleteFromHistory": {

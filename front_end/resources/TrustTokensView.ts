@@ -29,6 +29,10 @@ export const UIStrings = {
   *@description Hover text for an info icon in the Trust Token panel
   */
   allStoredTrustTokensAvailableIn: 'All stored Trust Tokens available in this browser instance.',
+  /**
+   * @description Text shown instead of a table when the table would be empty.
+   */
+  noTrustTokensStored: 'No Trust Tokens are currently stored.',
 };
 const str_ = i18n.i18n.registerUIStrings('resources/TrustTokensView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -98,6 +102,49 @@ export class TrustTokensView extends HTMLElement {
   }
 
   private render(): void {
+    LitHtml.render(
+        LitHtml.html`
+      <style>
+        :host {
+          padding: 20px;
+        }
+
+        .heading {
+          font-size: 15px;
+        }
+
+        devtools-data-grid-controller {
+          border: 1px solid var(--color-details-hairline);
+          margin-top: 20px;
+        }
+
+        .info-icon {
+          vertical-align: text-bottom;
+          height: 14px;
+        }
+
+        .no-tt-message {
+          margin-top: 20px;
+        }
+      </style>
+      <div>
+        <span class="heading">Trust Tokens</span>
+        <devtools-icon class="info-icon" title=${i18nString(UIStrings.allStoredTrustTokensAvailableIn)}
+          .data=${
+            {iconName: 'ic_info_black_18dp', color: 'var(--color-link)', width: '14px'} as
+            Components.Icon.IconWithName}>
+        </devtools-icon>
+        ${this.renderGridOrNoDataMessage()}
+      </div>
+    `,
+        this.shadow);
+  }
+
+  private renderGridOrNoDataMessage(): LitHtml.TemplateResult {
+    if (this.tokens.length === 0) {
+      return LitHtml.html`<div class="no-tt-message">${i18nString(UIStrings.noTrustTokensStored)}</div>`;
+    }
+
     const gridData: Components.DataGridController.DataGridControllerData = {
       columns: [
         {
@@ -124,39 +171,10 @@ export class TrustTokensView extends HTMLElement {
       },
     };
 
-    LitHtml.render(
-        LitHtml.html`
-      <style>
-        :host {
-          padding: 20px;
-        }
-
-        .heading {
-          font-size: 15px;
-        }
-
-        devtools-data-grid-controller {
-          border: 1px solid var(--color-details-hairline);
-          margin-top: 20px;
-        }
-
-        .info-icon {
-          vertical-align: text-bottom;
-          height: 14px;
-        }
-      </style>
-      <div>
-        <span class="heading">Trust Tokens</span>
-        <devtools-icon class="info-icon" title=${i18nString(UIStrings.allStoredTrustTokensAvailableIn)}
-          .data=${
-            {iconName: 'ic_info_black_18dp', color: 'var(--color-link)', width: '14px'} as
-            Components.Icon.IconWithName}>
-        </devtools-icon>
-        <devtools-data-grid-controller .data=${
-            gridData as Components.DataGridController.DataGridControllerData}></devtools-data-grid-controller>
-      </div>
-    `,
-        this.shadow);
+    return LitHtml.html`
+      <devtools-data-grid-controller .data=${
+        gridData as Components.DataGridController.DataGridControllerData}></devtools-data-grid-controller>
+    `;
   }
 
   private buildRowsFromTokens(): Components.DataGridUtils.Row[] {

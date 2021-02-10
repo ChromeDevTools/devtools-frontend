@@ -6260,6 +6260,9 @@
   "resources/TrustTokensView.ts | issuer": {
     "message": "Issuer"
   },
+  "resources/TrustTokensView.ts | noTrustTokensStored": {
+    "message": "No Trust Tokens are currently stored."
+  },
   "resources/TrustTokensView.ts | storedTokenCount": {
     "message": "Stored token count"
   },

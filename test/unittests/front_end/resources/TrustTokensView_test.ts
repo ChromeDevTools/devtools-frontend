@@ -5,7 +5,7 @@
 import * as Coordinator from '../../../../front_end/render_coordinator/render_coordinator.js';
 import * as Resources from '../../../../front_end/resources/resources.js';
 import * as Components from '../../../../front_end/ui/components/components.js';
-import {assertShadowRoot, getElementWithinComponent, renderElementIntoDOM} from '../helpers/DOMHelpers.js';
+import {assertElement, assertShadowRoot, getElementWithinComponent, renderElementIntoDOM} from '../helpers/DOMHelpers.js';
 import {getValuesOfAllBodyRows} from '../ui/components/DataGridHelpers.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
@@ -71,5 +71,16 @@ describe('TrustTokensView', () => {
       ['example.com', '20'],
       ['sub.domain.org', '14'],
     ]);
+  });
+
+  it('hides trust token table when there are no trust tokens', async () => {
+    const component = await renderTrustTokensView([]);
+    assertShadowRoot(component.shadowRoot);
+
+    const nullGridElement = component.shadowRoot.querySelector('devtools-data-grid-controller');
+    assert.isNull(nullGridElement);
+
+    const noTrustTokensElement = component.shadowRoot.querySelector('div.no-tt-message');
+    assertElement(noTrustTokensElement, HTMLDivElement);
   });
 });

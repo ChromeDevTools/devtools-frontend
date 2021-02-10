@@ -6260,6 +6260,9 @@
   "resources/TrustTokensView.ts | issuer": {
     "message": "Îśŝúêŕ"
   },
+  "resources/TrustTokensView.ts | noTrustTokensStored": {
+    "message": "N̂ó T̂ŕûśt̂ T́ôḱêńŝ ár̂é ĉúr̂ŕêńt̂ĺŷ śt̂ór̂éd̂."
+  },
   "resources/TrustTokensView.ts | storedTokenCount": {
     "message": "Ŝt́ôŕêd́ t̂ók̂én̂ ćôún̂t́"
   },

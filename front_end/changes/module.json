@@ -2,7 +2,6 @@
   "dependencies": [
     "workspace_diff",
     "text_editor",
-    "workspace",
     "diff",
     "persistence",
     "snippets",

@@ -1,7 +1,6 @@
 {
   "dependencies": [
     "test_runner",
-    "workspace",
     "diff",
     "persistence"
   ],

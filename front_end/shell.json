@@ -9,7 +9,6 @@
     { "name": "services", "type": "autostart" },
     { "name": "theme_support", "type": "autostart" },
     { "name": "ui", "type": "autostart" },
-    { "name": "workspace", "type": "autostart" },
 
     { "name": "changes" },
     { "name": "client_variations" },

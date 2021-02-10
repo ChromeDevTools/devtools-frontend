@@ -1,6 +1,5 @@
 {
   "dependencies": [
-    "workspace",
     "components"
   ],
   "modules": [

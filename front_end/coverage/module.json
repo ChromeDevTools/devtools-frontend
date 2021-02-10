@@ -10,8 +10,7 @@
     "data_grid",
     "formatter",
     "source_frame",
-    "ui",
-    "workspace"
+    "ui"
   ],
   "modules": [
     "coverage-legacy.js"

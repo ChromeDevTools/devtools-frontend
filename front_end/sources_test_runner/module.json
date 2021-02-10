@@ -2,7 +2,6 @@
   "dependencies": [
     "test_runner",
     "sources",
-    "workspace",
     "source_frame",
     "text_editor",
     "browser_debugger"

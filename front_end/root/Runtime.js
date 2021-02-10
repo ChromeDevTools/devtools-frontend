@@ -462,9 +462,7 @@ export class ModuleDescriptor {
 // These two do not share the same structure
 export class RuntimeExtensionDescriptor {
   constructor() {
-    /**
-     * @type {string}
-     */
+    /** @type {string} */
     this.type;
 
     /**
@@ -482,21 +480,8 @@ export class RuntimeExtensionDescriptor {
      */
     this.contextTypes;
 
-    /**
-     * @type {!Array.<!{
-     *   shortcut: string,
-     *   platform: (string|undefined),
-     *   keybindSets: (!Array.<string>|undefined)
-     * }>|
-     * undefined}
-     */
-    this.bindings;
-
     /** @type {number} */
     this.order;
-
-    /** @type {string|null} */
-    this.extension;
 
     /** @type {string|null} */
     this.actionId;
@@ -506,21 +491,6 @@ export class RuntimeExtensionDescriptor {
 
     /** @type {string|null} */
     this.condition;
-
-    /** @type {string} */
-    this.settingName;
-
-    /** @type {string|null} */
-    this.settingType;
-
-    /** @type {*} */
-    this.defaultValue;
-
-    /** @type {string|null} */
-    this.storageType;
-
-    /** @type {string|null} */
-    this.userActionCondition;
 
     /** @type {string|null} */
     this.startPage;
@@ -543,23 +513,11 @@ export class RuntimeExtensionDescriptor {
     /** @type {string|null} */
     this.category;
 
-    /** @type {string|null} */
-    this.tags;
-
     /** @type {boolean|null|undefined} */
     this.reloadRequired;
 
-    /** @type {string} */
-    this.id;
-
     /** @type {string|null} */
     this.location;
-
-    /** @type {?string} */
-    this.title;
-
-    /** @type {!Array<!Option>|undefined} */
-    this.options;
 
     /** @type {!Array<string>|undefined} */
     this.settings;
@@ -576,17 +534,6 @@ export class RuntimeExtensionDescriptor {
     this.persistence;
     /** @type {?string} */
     this.setting;
-    /** @type {?string} */
-    this.name;
-
-    /** @type {string} */
-    this.fileName;
-
-    /** @type {!Array<string>|undefined} */
-    this.mimeTypes;
-
-    /** @type {!Array<string>|undefined} */
-    this.dependencies;
   }
 }
 

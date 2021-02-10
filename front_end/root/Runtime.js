@@ -159,6 +159,10 @@ export class Runtime {
     runtimePlatform = platform;
   }
 
+  static platform() {
+    return runtimePlatform;
+  }
+
   /**
    * @param {!{experiment: (?string|undefined), condition: (?string|undefined)}} descriptor
    * @return {boolean}

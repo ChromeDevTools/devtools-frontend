@@ -73,7 +73,7 @@ export class Settings {
           this.createRegExpSetting(settingName, defaultValue, undefined, storageType) :
           this.createSetting(settingName, defaultValue, storageType);
 
-      if (registration.titleMac) {
+      if (Root.Runtime.Runtime.platform() === 'mac' && registration.titleMac) {
         setting.setTitleFunction(registration.titleMac);
       } else {
         setting.setTitleFunction(registration.title);

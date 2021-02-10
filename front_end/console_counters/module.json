@@ -13,8 +13,5 @@
   ],
   "modules": [
     "console_counters-legacy.js"
-  ],
-  "resources": [
-    "warningErrorCounter.css"
   ]
 }

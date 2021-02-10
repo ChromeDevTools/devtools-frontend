@@ -102,7 +102,6 @@ group("legacy_css") {
     "cm:legacy_css",
     "components:legacy_css",
     "console:legacy_css",
-    "console_counters:legacy_css",
     "data_grid:legacy_css",
     "elements:legacy_css",
     "emulation:legacy_css",

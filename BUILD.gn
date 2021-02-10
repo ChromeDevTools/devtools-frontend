@@ -135,7 +135,6 @@ non_autostart_non_remote_modules = [
   "coverage/coverage_module.js",
   "css_overview/css_overview_module.js",
   "data_grid/data_grid_module.js",
-  "diff/diff_module.js",
   "elements/elements_module.js",
   "event_listeners/event_listeners_module.js",
   "har_importer/har_importer_module.js",

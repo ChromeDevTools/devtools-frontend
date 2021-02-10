@@ -15,7 +15,6 @@
     { "name": "console" },
     { "name": "coverage" },
     { "name": "data_grid" },
-    { "name": "diff" },
     { "name": "event_listeners" },
     { "name": "heap_snapshot_model" },
     { "name": "inline_editor" },

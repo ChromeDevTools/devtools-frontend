@@ -23,8 +23,7 @@
     }
   ],
   "dependencies": [
-    "ui",
-    "diff"
+    "ui"
   ],
   "modules": [
     "quick_open-legacy.js"

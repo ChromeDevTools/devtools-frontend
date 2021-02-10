@@ -53,27 +53,6 @@
       "experiment": "recorder"
     },
     {
-      "type": "@UI.ContextFlavorListener",
-      "contextTypes": [
-        "SDK.DebuggerPausedDetails"
-      ],
-      "className": "Sources.JavaScriptBreakpointsSidebarPane"
-    },
-    {
-      "type": "@UI.ContextFlavorListener",
-      "contextTypes": [
-        "SDK.DebuggerPausedDetails"
-      ],
-      "className": "Sources.CallStackSidebarPane"
-    },
-    {
-      "type": "@UI.ContextFlavorListener",
-      "contextTypes": [
-        "SDK.DebuggerModel.CallFrame"
-      ],
-      "className": "Sources.ScopeChainSidebarPane"
-    },
-    {
       "type": "context-menu-item",
       "location": "mainMenu/default",
       "actionId": "sources.search"

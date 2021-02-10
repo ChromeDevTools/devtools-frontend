@@ -5,7 +5,7 @@
 import * as Common from '../common/common.js';
 import * as Root from '../root/root.js';  // eslint-disable-line no-unused-vars
 
-import {ContextFlavorListener} from './ContextFlavorListener.js';
+import {ContextFlavorListener} from './ContextFlavorListener.js';  // eslint-disable-line no-unused-vars
 
 /** @type {!Context} */
 let contextInstance;
@@ -61,22 +61,9 @@ export class Context {
    * @template T
    */
   _dispatchFlavorChange(flavorType, flavorValue) {
-    const extensions = [
-      ...Root.Runtime.Runtime.instance().extensions(ContextFlavorListener),
-      ...getRegisteredListeners().map(contextFlavorListener => {
-        return {
-          hasContextType() {
-            contextFlavorListener.contextTypes().includes(flavorType);
-          },
-          instance: contextFlavorListener.loadListener
-        };
-      }),
-    ];
-
-    for (const extension of extensions) {
-      if (extension.hasContextType(flavorType)) {
-        extension.instance().then(
-            instance => /** @type {!ContextFlavorListener} */ (instance).flavorChanged(flavorValue));
+    for (const extension of getRegisteredListeners()) {
+      if (extension.contextTypes().includes(flavorType)) {
+        extension.loadListener().then(instance => instance.flavorChanged(flavorValue));
       }
     }
     const dispatcher = this._eventDispatchers.get(flavorType);

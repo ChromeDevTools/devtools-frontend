@@ -222,10 +222,25 @@ export class ToggleDockActionDelegate {
   }
 }
 
+/** @type {!CloseButtonProvider} */
+let closeButtonProviderInstance;
+
 /**
  * @implements {Provider}
  */
 export class CloseButtonProvider {
+  /**
+   * @param {{forceNew: ?boolean}} opts
+   */
+  static instance(opts = {forceNew: null}) {
+    const {forceNew} = opts;
+    if (!closeButtonProviderInstance || forceNew) {
+      closeButtonProviderInstance = new CloseButtonProvider();
+    }
+
+    return closeButtonProviderInstance;
+  }
+
   /**
    * @override
    * @return {?ToolbarItem}

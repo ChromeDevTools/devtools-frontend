@@ -595,3 +595,61 @@ UI.ContextMenu.registerProvider({
   },
   experiment: undefined,
 });
+
+UI.Toolbar.registerToolbarItem({
+  separator: true,
+  location: UI.Toolbar.ToolbarItemLocation.MAIN_TOOLBAR_LEFT,
+  order: 100,
+  showLabel: undefined,
+  actionId: undefined,
+  condition: undefined,
+  loadItem: undefined,
+});
+
+UI.Toolbar.registerToolbarItem({
+  separator: true,
+  order: 97,
+  location: UI.Toolbar.ToolbarItemLocation.MAIN_TOOLBAR_RIGHT,
+  showLabel: undefined,
+  actionId: undefined,
+  condition: undefined,
+  loadItem: undefined,
+});
+
+UI.Toolbar.registerToolbarItem({
+  async loadItem() {
+    const Main = await loadMainModule();
+    return Main.MainImpl.SettingsButtonProvider.instance();
+  },
+  order: 98,
+  location: UI.Toolbar.ToolbarItemLocation.MAIN_TOOLBAR_RIGHT,
+  showLabel: undefined,
+  condition: undefined,
+  separator: undefined,
+  actionId: undefined,
+});
+
+UI.Toolbar.registerToolbarItem({
+  async loadItem() {
+    const Main = await loadMainModule();
+    return Main.MainImpl.MainMenuItem.instance();
+  },
+  order: 99,
+  location: UI.Toolbar.ToolbarItemLocation.MAIN_TOOLBAR_RIGHT,
+  showLabel: undefined,
+  condition: undefined,
+  separator: undefined,
+  actionId: undefined,
+});
+
+UI.Toolbar.registerToolbarItem({
+  async loadItem() {
+    return UI.DockController.CloseButtonProvider.instance();
+  },
+  order: 100,
+  location: UI.Toolbar.ToolbarItemLocation.MAIN_TOOLBAR_RIGHT,
+  showLabel: undefined,
+  condition: undefined,
+  separator: undefined,
+  actionId: undefined,
+});

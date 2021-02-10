@@ -6,36 +6,6 @@
       "order": 10
     },
     {
-      "type": "@UI.ToolbarItem.Provider",
-      "separator": true,
-      "location": "main-toolbar-left",
-      "order": 100
-    },
-    {
-      "type": "@UI.ToolbarItem.Provider",
-      "separator": true,
-      "order": 97,
-      "location": "main-toolbar-right"
-    },
-    {
-      "type": "@UI.ToolbarItem.Provider",
-      "className": "Main.Main.SettingsButtonProvider",
-      "order": 98,
-      "location": "main-toolbar-right"
-    },
-    {
-      "type": "@UI.ToolbarItem.Provider",
-      "className": "Main.Main.MainMenuItem",
-      "order": 99,
-      "location": "main-toolbar-right"
-    },
-    {
-      "type": "@UI.ToolbarItem.Provider",
-      "className": "UI.DockController.CloseButtonProvider",
-      "order": 100,
-      "location": "main-toolbar-right"
-    },
-    {
       "type": "@UI.SettingUI",
       "category": "Extensions",
       "className": "Components.Linkifier.LinkHandlerSettingUI"

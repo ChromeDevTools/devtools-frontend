@@ -411,15 +411,7 @@ export class Toolbar {
    */
   async appendItemsAtLocation(location) {
     /** @type {!Array<!ToolbarItemRegistration>} */
-    const extensions = [
-      ...Root.Runtime.Runtime.instance().extensions(Provider).map(extension => {
-        return {
-          .../** @type {*} */ (extension.descriptor()),
-          loadItem: /** @type {function(): !Promise<!Provider>} */ (extension.instance.bind(extension)),
-        };
-      }),
-      ...getRegisteredToolbarItems()
-    ];
+    const extensions = getRegisteredToolbarItems();
 
     extensions.sort((extension1, extension2) => {
       const order1 = extension1.order || 0;

@@ -667,6 +667,8 @@ export class SearchActionDelegate {
     return false;
   }
 }
+/** @type {!MainMenuItem} */
+let mainMenuItemInstance;
 
 /**
  * @implements {UI.Toolbar.Provider}
@@ -675,6 +677,18 @@ export class MainMenuItem {
   constructor() {
     this._item = new UI.Toolbar.ToolbarMenuButton(this._handleContextMenu.bind(this), true);
     this._item.setTitle(Common.UIString.UIString('Customize and control DevTools'));
+  }
+
+  /**
+   * @param {{forceNew: ?boolean}} opts
+   */
+  static instance(opts = {forceNew: null}) {
+    const {forceNew} = opts;
+    if (!mainMenuItemInstance || forceNew) {
+      mainMenuItemInstance = new MainMenuItem();
+    }
+
+    return mainMenuItemInstance;
   }
 
   /**
@@ -821,14 +835,30 @@ export class MainMenuItem {
   }
 }
 
+/** @type {!SettingsButtonProvider} */
+let settingsButtonProviderInstance;
+
 /**
  * @implements {UI.Toolbar.Provider}
  */
 export class SettingsButtonProvider {
+  /** @private */
   constructor() {
     const settingsActionId = 'settings.show';
     this._settingsButton =
         UI.Toolbar.Toolbar.createActionButtonForId(settingsActionId, {showLabel: false, userActionCode: undefined});
+  }
+
+  /**
+   * @param {{forceNew: ?boolean}} opts
+   */
+  static instance(opts = {forceNew: null}) {
+    const {forceNew} = opts;
+    if (!settingsButtonProviderInstance || forceNew) {
+      settingsButtonProviderInstance = new SettingsButtonProvider();
+    }
+
+    return settingsButtonProviderInstance;
   }
 
   /**

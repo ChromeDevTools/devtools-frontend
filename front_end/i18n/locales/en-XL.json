@@ -665,88 +665,88 @@
   "changes/ChangesView.ts | SkippingDMatchingLines": {
     "message": "( … Ŝḱîṕp̂ín̂ǵ {PH1} m̂át̂ćĥín̂ǵ l̂ín̂éŝ … )"
   },
-  "color_picker/ContrastDetails.js | aa": {
+  "color_picker/ContrastDetails.ts | aa": {
     "message": "ÂÁ"
   },
-  "color_picker/ContrastDetails.js | aaa": {
+  "color_picker/ContrastDetails.ts | aaa": {
     "message": "ÂÁÂ"
   },
-  "color_picker/ContrastDetails.js | apca": {
+  "color_picker/ContrastDetails.ts | apca": {
     "message": "ÂṔĈÁ"
   },
-  "color_picker/ContrastDetails.js | contrastRatio": {
+  "color_picker/ContrastDetails.ts | contrastRatio": {
     "message": "Ĉón̂t́r̂áŝt́ r̂át̂íô"
   },
-  "color_picker/ContrastDetails.js | noContrastInformationAvailable": {
+  "color_picker/ContrastDetails.ts | noContrastInformationAvailable": {
     "message": "N̂ó ĉón̂t́r̂áŝt́ îńf̂ór̂ḿât́îón̂ áv̂áîĺâb́l̂é"
   },
-  "color_picker/ContrastDetails.js | pickBackgroundColor": {
+  "color_picker/ContrastDetails.ts | pickBackgroundColor": {
     "message": "P̂íĉḱ b̂áĉḱĝŕôún̂d́ ĉól̂ór̂"
   },
-  "color_picker/ContrastDetails.js | placeholderWithColon": {
+  "color_picker/ContrastDetails.ts | placeholderWithColon": {
     "message": ": {PH1}"
   },
-  "color_picker/ContrastDetails.js | showLess": {
+  "color_picker/ContrastDetails.ts | showLess": {
     "message": "Ŝh́ôẃ l̂éŝś"
   },
-  "color_picker/ContrastDetails.js | showMore": {
+  "color_picker/ContrastDetails.ts | showMore": {
     "message": "Ŝh́ôẃ m̂ór̂é"
   },
-  "color_picker/ContrastDetails.js | toggleBackgroundColorPicker": {
+  "color_picker/ContrastDetails.ts | toggleBackgroundColorPicker": {
     "message": "T̂óĝǵl̂é b̂áĉḱĝŕôún̂d́ ĉól̂ór̂ ṕîćk̂ér̂"
   },
-  "color_picker/ContrastDetails.js | useSuggestedColorStoFixLow": {
+  "color_picker/ContrastDetails.ts | useSuggestedColorStoFixLow": {
     "message": "Ûśê śûǵĝéŝt́êd́ ĉól̂ór̂ {PH1}t́ô f́îx́ l̂óŵ ćôńt̂ŕâśt̂"
   },
-  "color_picker/Spectrum.js | addToPalette": {
+  "color_picker/Spectrum.ts | addToPalette": {
     "message": "Âd́d̂ t́ô ṕâĺêt́t̂é"
   },
-  "color_picker/Spectrum.js | changeAlpha": {
+  "color_picker/Spectrum.ts | changeAlpha": {
     "message": "Ĉh́âńĝé âĺp̂h́â"
   },
-  "color_picker/Spectrum.js | changeColorFormat": {
+  "color_picker/Spectrum.ts | changeColorFormat": {
     "message": "Ĉh́âńĝé ĉól̂ór̂ f́ôŕm̂át̂"
   },
-  "color_picker/Spectrum.js | changeHue": {
+  "color_picker/Spectrum.ts | changeHue": {
     "message": "Ĉh́âńĝé ĥúê"
   },
-  "color_picker/Spectrum.js | clearPalette": {
+  "color_picker/Spectrum.ts | clearPalette": {
     "message": "Ĉĺêár̂ ṕâĺêt́t̂é"
   },
-  "color_picker/Spectrum.js | colorPalettes": {
+  "color_picker/Spectrum.ts | colorPalettes": {
     "message": "Ĉól̂ór̂ Ṕâĺêt́t̂éŝ"
   },
-  "color_picker/Spectrum.js | colorS": {
+  "color_picker/Spectrum.ts | colorS": {
     "message": "Ĉól̂ór̂ {PH1}"
   },
-  "color_picker/Spectrum.js | copyColorToClipboard": {
+  "color_picker/Spectrum.ts | copyColorToClipboard": {
     "message": "Ĉóp̂ý ĉól̂ór̂ t́ô ćl̂íp̂b́ôár̂d́"
   },
-  "color_picker/Spectrum.js | hex": {
+  "color_picker/Spectrum.ts | hex": {
     "message": "ĤÉX̂"
   },
-  "color_picker/Spectrum.js | longclickOrLongpressSpaceToShow": {
+  "color_picker/Spectrum.ts | longclickOrLongpressSpaceToShow": {
     "message": "L̂ón̂ǵ-ĉĺîćk̂ ór̂ ĺôńĝ-ṕr̂éŝś ŝṕâćê t́ô śĥóŵ ál̂t́êŕn̂át̂é ŝh́âd́êś ôf́ {PH1}"
   },
-  "color_picker/Spectrum.js | pressArrowKeysMessage": {
+  "color_picker/Spectrum.ts | pressArrowKeysMessage": {
     "message": "P̂ŕêśŝ ár̂ŕôẃ k̂éŷś ŵít̂h́ ôŕ ŵít̂h́ôút̂ ḿôd́îf́îér̂ś t̂ó m̂óv̂é ŝẃât́ĉh́ p̂óŝít̂íôń. Âŕr̂óŵ ḱêý ŵít̂h́ Ŝh́îf́t̂ ḱêý m̂óv̂éŝ ṕôśît́îón̂ ĺâŕĝél̂ý, ŵít̂h́ Ĉt́r̂ĺ k̂éŷ ít̂ íŝ ĺêśŝ án̂d́ ŵít̂h́ Âĺt̂ ḱêý ît́ îś êv́êń l̂éŝś"
   },
-  "color_picker/Spectrum.js | previewPalettes": {
+  "color_picker/Spectrum.ts | previewPalettes": {
     "message": "P̂ŕêv́îéŵ ṕâĺêt́t̂éŝ"
   },
-  "color_picker/Spectrum.js | removeAllToTheRight": {
+  "color_picker/Spectrum.ts | removeAllToTheRight": {
     "message": "R̂ém̂óv̂é âĺl̂ t́ô t́ĥé r̂íĝh́t̂"
   },
-  "color_picker/Spectrum.js | removeColor": {
+  "color_picker/Spectrum.ts | removeColor": {
     "message": "R̂ém̂óv̂é ĉól̂ór̂"
   },
-  "color_picker/Spectrum.js | returnToColorPicker": {
+  "color_picker/Spectrum.ts | returnToColorPicker": {
     "message": "R̂ét̂úr̂ń t̂ó ĉól̂ór̂ ṕîćk̂ér̂"
   },
-  "color_picker/Spectrum.js | sInS": {
+  "color_picker/Spectrum.ts | sInS": {
     "message": "{PH1} îń {PH2}"
   },
-  "color_picker/Spectrum.js | toggleColorPicker": {
+  "color_picker/Spectrum.ts | toggleColorPicker": {
     "message": "T̂óĝǵl̂é ĉól̂ór̂ ṕîćk̂ér̂"
   },
   "components/ImagePreview.js | imageFromS": {

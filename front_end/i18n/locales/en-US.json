@@ -665,88 +665,88 @@
   "changes/ChangesView.ts | SkippingDMatchingLines": {
     "message": "( … Skipping {PH1} matching lines … )"
   },
-  "color_picker/ContrastDetails.js | aa": {
+  "color_picker/ContrastDetails.ts | aa": {
     "message": "AA"
   },
-  "color_picker/ContrastDetails.js | aaa": {
+  "color_picker/ContrastDetails.ts | aaa": {
     "message": "AAA"
   },
-  "color_picker/ContrastDetails.js | apca": {
+  "color_picker/ContrastDetails.ts | apca": {
     "message": "APCA"
   },
-  "color_picker/ContrastDetails.js | contrastRatio": {
+  "color_picker/ContrastDetails.ts | contrastRatio": {
     "message": "Contrast ratio"
   },
-  "color_picker/ContrastDetails.js | noContrastInformationAvailable": {
+  "color_picker/ContrastDetails.ts | noContrastInformationAvailable": {
     "message": "No contrast information available"
   },
-  "color_picker/ContrastDetails.js | pickBackgroundColor": {
+  "color_picker/ContrastDetails.ts | pickBackgroundColor": {
     "message": "Pick background color"
   },
-  "color_picker/ContrastDetails.js | placeholderWithColon": {
+  "color_picker/ContrastDetails.ts | placeholderWithColon": {
     "message": ": {PH1}"
   },
-  "color_picker/ContrastDetails.js | showLess": {
+  "color_picker/ContrastDetails.ts | showLess": {
     "message": "Show less"
   },
-  "color_picker/ContrastDetails.js | showMore": {
+  "color_picker/ContrastDetails.ts | showMore": {
     "message": "Show more"
   },
-  "color_picker/ContrastDetails.js | toggleBackgroundColorPicker": {
+  "color_picker/ContrastDetails.ts | toggleBackgroundColorPicker": {
     "message": "Toggle background color picker"
   },
-  "color_picker/ContrastDetails.js | useSuggestedColorStoFixLow": {
+  "color_picker/ContrastDetails.ts | useSuggestedColorStoFixLow": {
     "message": "Use suggested color {PH1}to fix low contrast"
   },
-  "color_picker/Spectrum.js | addToPalette": {
+  "color_picker/Spectrum.ts | addToPalette": {
     "message": "Add to palette"
   },
-  "color_picker/Spectrum.js | changeAlpha": {
+  "color_picker/Spectrum.ts | changeAlpha": {
     "message": "Change alpha"
   },
-  "color_picker/Spectrum.js | changeColorFormat": {
+  "color_picker/Spectrum.ts | changeColorFormat": {
     "message": "Change color format"
   },
-  "color_picker/Spectrum.js | changeHue": {
+  "color_picker/Spectrum.ts | changeHue": {
     "message": "Change hue"
   },
-  "color_picker/Spectrum.js | clearPalette": {
+  "color_picker/Spectrum.ts | clearPalette": {
     "message": "Clear palette"
   },
-  "color_picker/Spectrum.js | colorPalettes": {
+  "color_picker/Spectrum.ts | colorPalettes": {
     "message": "Color Palettes"
   },
-  "color_picker/Spectrum.js | colorS": {
+  "color_picker/Spectrum.ts | colorS": {
     "message": "Color {PH1}"
   },
-  "color_picker/Spectrum.js | copyColorToClipboard": {
+  "color_picker/Spectrum.ts | copyColorToClipboard": {
     "message": "Copy color to clipboard"
   },
-  "color_picker/Spectrum.js | hex": {
+  "color_picker/Spectrum.ts | hex": {
     "message": "HEX"
   },
-  "color_picker/Spectrum.js | longclickOrLongpressSpaceToShow": {
+  "color_picker/Spectrum.ts | longclickOrLongpressSpaceToShow": {
     "message": "Long-click or long-press space to show alternate shades of {PH1}"
   },
-  "color_picker/Spectrum.js | pressArrowKeysMessage": {
+  "color_picker/Spectrum.ts | pressArrowKeysMessage": {
     "message": "Press arrow keys with or without modifiers to move swatch position. Arrow key with Shift key moves position largely, with Ctrl key it is less and with Alt key it is even less"
   },
-  "color_picker/Spectrum.js | previewPalettes": {
+  "color_picker/Spectrum.ts | previewPalettes": {
     "message": "Preview palettes"
   },
-  "color_picker/Spectrum.js | removeAllToTheRight": {
+  "color_picker/Spectrum.ts | removeAllToTheRight": {
     "message": "Remove all to the right"
   },
-  "color_picker/Spectrum.js | removeColor": {
+  "color_picker/Spectrum.ts | removeColor": {
     "message": "Remove color"
   },
-  "color_picker/Spectrum.js | returnToColorPicker": {
+  "color_picker/Spectrum.ts | returnToColorPicker": {
     "message": "Return to color picker"
   },
-  "color_picker/Spectrum.js | sInS": {
+  "color_picker/Spectrum.ts | sInS": {
     "message": "{PH1} in {PH2}"
   },
-  "color_picker/Spectrum.js | toggleColorPicker": {
+  "color_picker/Spectrum.ts | toggleColorPicker": {
     "message": "Toggle color picker"
   },
   "components/ImagePreview.js | imageFromS": {

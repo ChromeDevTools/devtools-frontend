@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Common from '../common/common.js';
 import * as Root from '../root/root.js';
 import * as UI from '../ui/ui.js';
@@ -9,18 +11,21 @@ import * as UI from '../ui/ui.js';
 import {ContrastInfo, Events} from './ContrastInfo.js';  // eslint-disable-line no-unused-vars
 
 export class ContrastOverlay {
-  /**
-   * @param {!ContrastInfo} contrastInfo
-   * @param {!Element} colorElement
-   */
-  constructor(contrastInfo, colorElement) {
-    /** @type {!ContrastInfo} */
+  _contrastInfo: ContrastInfo;
+  _visible: boolean;
+  _contrastRatioSVG: Element;
+  _contrastRatioLines: Map<string, Element>;
+  _width: number;
+  _height: number;
+  _contrastRatioLineBuilder: ContrastRatioLineBuilder;
+  _contrastRatioLinesThrottler: Common.Throttler.Throttler;
+  _drawContrastRatioLinesBound: () => Promise<void>;
+  constructor(contrastInfo: ContrastInfo, colorElement: Element) {
     this._contrastInfo = contrastInfo;
 
     this._visible = false;
 
     this._contrastRatioSVG = UI.UIUtils.createSVGChild(colorElement, 'svg', 'spectrum-contrast-container fill');
-    /** @type {!Map<string, !Element>} */
     this._contrastRatioLines = new Map();
     if (Root.Runtime.experiments.isEnabled('APCA')) {
       this._contrastRatioLines.set(
@@ -43,7 +48,7 @@ export class ContrastOverlay {
     this._contrastInfo.addEventListener(Events.ContrastInfoUpdated, this._update.bind(this));
   }
 
-  _update() {
+  _update(): void {
     if (!this._visible || this._contrastInfo.isNull()) {
       return;
     }
@@ -56,29 +61,21 @@ export class ContrastOverlay {
     this._contrastRatioLinesThrottler.schedule(this._drawContrastRatioLinesBound);
   }
 
-  /**
-   * @param {number} width
-   * @param {number} height
-   */
-  setDimensions(width, height) {
+  setDimensions(width: number, height: number): void {
     this._width = width;
     this._height = height;
     this._update();
   }
 
-  /**
-   * @param {boolean} visible
-   */
-  setVisible(visible) {
+  setVisible(visible: boolean): void {
     this._visible = visible;
     this._contrastRatioSVG.classList.toggle('hidden', !visible);
     this._update();
   }
 
-  async _drawContrastRatioLines() {
+  async _drawContrastRatioLines(): Promise<void> {
     for (const [level, element] of this._contrastRatioLines) {
-      const path = this._contrastRatioLineBuilder.drawContrastRatioLine(
-          this._width, this._height, /** @type {string} */ (level));
+      const path = this._contrastRatioLineBuilder.drawContrastRatioLine(this._width, this._height, level as string);
       if (path) {
         element.setAttribute('d', path);
       } else {
@@ -89,21 +86,12 @@ export class ContrastOverlay {
 }
 
 export class ContrastRatioLineBuilder {
-  /**
-   * @param {!ContrastInfo} contrastInfo
-   */
-  constructor(contrastInfo) {
-    /** @type {!ContrastInfo} */
+  _contrastInfo: ContrastInfo;
+  constructor(contrastInfo: ContrastInfo) {
     this._contrastInfo = contrastInfo;
   }
 
-  /**
-   * @param {number} width
-   * @param {number} height
-   * @param {string} level
-   * @return {?string}
-   */
-  drawContrastRatioLine(width, height, level) {
+  drawContrastRatioLine(width: number, height: number, level: string): string|null {
     const isAPCA = Root.Runtime.experiments.isEnabled('APCA');
     const requiredContrast =
         isAPCA ? this._contrastInfo.contrastRatioAPCAThreshold() : this._contrastInfo.contrastRatioThreshold(level);
@@ -127,8 +115,7 @@ export class ContrastRatioLineBuilder {
     const fgHSVA = color.hsva();
     const bgRGBA = bgColor.rgba();
     const bgLuminance = Common.ColorUtils.luminance(bgRGBA);
-    /** @type {!Array<number>} */
-    let blendedRGBA = Common.ColorUtils.blendColors(fgRGBA, bgRGBA);
+    let blendedRGBA: number[] = Common.ColorUtils.blendColors(fgRGBA, bgRGBA);
     const fgLuminance = Common.ColorUtils.luminance(blendedRGBA);
     const fgIsLighter = fgLuminance > bgLuminance;
     const desiredLuminance = isAPCA ?
@@ -141,28 +128,22 @@ export class ContrastRatioLineBuilder {
       return null;
     }
 
-    let lastV = fgHSVA[V];
+    let lastV: number = fgHSVA[V];
     let currentSlope = 0;
     const candidateHSVA = [fgHSVA[H], 0, 0, fgHSVA[A]];
-    let pathBuilder = [];
-    /** @type {!Array<number>} */
-    const candidateRGBA = [];
+    let pathBuilder: string[] = [];
+    const candidateRGBA: number[] = [];
     Common.Color.Color.hsva2rgba(candidateHSVA, candidateRGBA);
     blendedRGBA = Common.ColorUtils.blendColors(candidateRGBA, bgRGBA);
 
-    /**
-     * @param {!Array<number>} candidateHSVA
-     */
-    let candidateLuminance = candidateHSVA => {
-      return Common.ColorUtils.luminance(
-          Common.ColorUtils.blendColors(Common.Color.Color.fromHSVA(candidateHSVA).rgba(), bgRGBA));
-    };
+    let candidateLuminance: ((candidateHSVA: number[]) => number)|((candidateHSVA: number[]) => number) =
+        (candidateHSVA: number[]): number => {
+          return Common.ColorUtils.luminance(
+              Common.ColorUtils.blendColors(Common.Color.Color.fromHSVA(candidateHSVA).rgba(), bgRGBA));
+        };
 
     if (Root.Runtime.experiments.isEnabled('APCA')) {
-      /**
-       * @param {!Array<number>} candidateHSVA
-       */
-      candidateLuminance = candidateHSVA => {
+      candidateLuminance = (candidateHSVA: number[]): number => {
         return Common.ColorUtils.luminanceAPCA(
             Common.ColorUtils.blendColors(Common.Color.Color.fromHSVA(candidateHSVA).rgba(), bgRGBA));
       };

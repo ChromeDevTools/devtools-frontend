@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
 import * as i18n from '../i18n/i18n.js';
@@ -59,52 +61,62 @@ export const UIStrings = {
   */
   showLess: 'Show less',
 };
-const str_ = i18n.i18n.registerUIStrings('color_picker/ContrastDetails.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('color_picker/ContrastDetails.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper {
-  /**
-   * @param {!ContrastInfo} contrastInfo
-   * @param {!Element} contentElement
-   * @param {function(boolean=, !Common.EventTarget.EventTargetEvent=):void} toggleMainColorPickerCallback
-   * @param {function():void} expandedChangedCallback
-   * @param {function(!Common.Color.Color):void} colorSelectedCallback
-   */
+  _contrastInfo: ContrastInfo;
+  _element: HTMLElement;
+  _toggleMainColorPicker: (arg0?: boolean|undefined, arg1?: Common.EventTarget.EventTargetEvent|undefined) => void;
+  _expandedChangedCallback: () => void;
+  _colorSelectedCallback: (arg0: Common.Color.Color) => void;
+  _expanded: boolean;
+  _passesAA: boolean;
+  _contrastUnknown: boolean;
+  _visible: boolean;
+  _noContrastInfoAvailable: Element;
+  _contrastValueBubble: HTMLElement;
+  _contrastValue: HTMLElement;
+  _contrastValueBubbleIcons: Node[];
+  _expandButton: UI.Toolbar.ToolbarButton;
+  _expandedDetails: HTMLElement;
+  _contrastThresholds: HTMLElement;
+  _contrastAA: HTMLElement;
+  _contrastPassFailAA: HTMLElement;
+  _contrastAAA: HTMLElement;
+  _contrastPassFailAAA: HTMLElement;
+  _contrastAPCA: HTMLElement;
+  _contrastPassFailAPCA: HTMLElement;
+  _chooseBgColor: HTMLElement;
+  _bgColorPickerButton: UI.Toolbar.ToolbarToggle;
+  _bgColorPickedBound: (event: Common.EventTarget.EventTargetEvent) => void;
+  _bgColorSwatch: Swatch;
   constructor(
-      contrastInfo, contentElement, toggleMainColorPickerCallback, expandedChangedCallback, colorSelectedCallback) {
+      contrastInfo: ContrastInfo, contentElement: Element,
+      toggleMainColorPickerCallback:
+          (arg0?: boolean|undefined, arg1?: Common.EventTarget.EventTargetEvent|undefined) => void,
+      expandedChangedCallback: () => void, colorSelectedCallback: (arg0: Common.Color.Color) => void) {
     super();
-    /** @type {!ContrastInfo} */
     this._contrastInfo = contrastInfo;
+    this._element = contentElement.createChild('div', 'spectrum-contrast-details collapsed') as HTMLElement;
 
-    /** @type {!HTMLElement} */
-    this._element =
-        /** @type {!HTMLElement} */ (contentElement.createChild('div', 'spectrum-contrast-details collapsed'));
-
-    /** @type {function(boolean=, !Common.EventTarget.EventTargetEvent=):void} */
     this._toggleMainColorPicker = toggleMainColorPickerCallback;
 
-    /** @type {function():void} */
     this._expandedChangedCallback = expandedChangedCallback;
 
-    /** @type {function(!Common.Color.Color):void} */
     this._colorSelectedCallback = colorSelectedCallback;
 
-    /** @type {boolean} */
     this._expanded = false;
 
-    /** @type {boolean} */
     this._passesAA = true;
 
-    /** @type {boolean} */
     this._contrastUnknown = false;
 
     // This will not be visible if we don't get ContrastInfo,
     // e.g. for a non-font color property such as border-color.
-    /** @type {boolean} */
     this._visible = false;
 
     // No contrast info message is created to show if it's not possible to provide the extended details.
 
-    /** @type {!Element} */
     this._noContrastInfoAvailable = contentElement.createChild('div', 'no-contrast-info-available');
     this._noContrastInfoAvailable.textContent = i18nString(UIStrings.noContrastInformationAvailable);
     this._noContrastInfoAvailable.classList.add('hidden');
@@ -116,18 +128,16 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper {
 
     this._contrastValueBubble = contrastValueRowContents.createChild('span', 'contrast-details-value');
     this._contrastValue = this._contrastValueBubble.createChild('span');
-    /** @type {!Array<!Node>} */
     this._contrastValueBubbleIcons = [];
     this._contrastValueBubbleIcons.push(
         this._contrastValueBubble.appendChild(UI.Icon.Icon.create('smallicon-checkmark-square')));
     this._contrastValueBubbleIcons.push(
         this._contrastValueBubble.appendChild(UI.Icon.Icon.create('smallicon-checkmark-behind')));
     this._contrastValueBubbleIcons.push(this._contrastValueBubble.appendChild(UI.Icon.Icon.create('smallicon-no')));
-    this._contrastValueBubbleIcons.forEach(
-        button => button.addEventListener('click', /** @param {!Event} event */ event => {
-          ContrastDetails._showHelp();
-          event.consume(false);
-        }));
+    this._contrastValueBubbleIcons.forEach(button => button.addEventListener('click', (event: Event) => {
+      ContrastDetails._showHelp();
+      event.consume(false);
+    }));
 
     const expandToolbar = new UI.Toolbar.Toolbar('expand', contrastValueRowContents);
     this._expandButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.showMore), 'smallicon-expand-more');
@@ -167,18 +177,15 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper {
     this._contrastInfo.addEventListener(ContrastInfoEvents.ContrastInfoUpdated, this._update.bind(this));
   }
 
-  _showNoContrastInfoAvailableMessage() {
+  _showNoContrastInfoAvailableMessage(): void {
     this._noContrastInfoAvailable.classList.remove('hidden');
   }
 
-  _hideNoContrastInfoAvailableMessage() {
+  _hideNoContrastInfoAvailableMessage(): void {
     this._noContrastInfoAvailable.classList.add('hidden');
   }
 
-  /**
-   * @param {string} threshold
-   */
-  _computeSuggestedColor(threshold) {
+  _computeSuggestedColor(threshold: string): Common.Color.Color|null|undefined {
     const fgColor = this._contrastInfo.color();
     const bgColor = this._contrastInfo.bgColor();
     if (!fgColor || !bgColor) {
@@ -203,10 +210,7 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper {
     return Common.Color.Color.findFgColorForContrast(fgColor, bgColor, requiredContrast + 0.1);
   }
 
-  /**
-   * @param {string} threshold
-   */
-  _onSuggestColor(threshold) {
+  _onSuggestColor(threshold: string): void {
     Host.userMetrics.colorFixed(threshold);
     const color = this._computeSuggestedColor(threshold);
     if (color) {
@@ -214,12 +218,8 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper {
     }
   }
 
-  /**
-   * @param {!Element} parent
-   * @param {!Common.Color.Color} suggestedColor
-   */
-  _createFixColorButton(parent, suggestedColor) {
-    const button = /** @type {!HTMLElement} */ (parent.createChild('button', 'contrast-fix-button'));
+  _createFixColorButton(parent: Element, suggestedColor: Common.Color.Color): HTMLElement {
+    const button = parent.createChild('button', 'contrast-fix-button') as HTMLElement;
     const originalColorFormat = this._contrastInfo.colorFormat();
     const colorFormat = originalColorFormat && originalColorFormat !== Common.Color.Format.Nickname &&
             originalColorFormat !== Common.Color.Format.Original ?
@@ -235,7 +235,7 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper {
     return button;
   }
 
-  _update() {
+  _update(): void {
     if (this._contrastInfo.isNull()) {
       this._showNoContrastInfoAvailableMessage();
       this.setVisible(false);
@@ -287,7 +287,7 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper {
           fixAPCA.addEventListener('click', () => this._onSuggestColor('APCA'));
         }
       }
-      labelAPCA.addEventListener('click', /** @param {!Event} event */ event => ContrastDetails._showHelp());
+      labelAPCA.addEventListener('click', (_event: Event) => ContrastDetails._showHelp());
       this._element.classList.toggle('contrast-fail', !passesAPCA);
       this._contrastValueBubble.classList.toggle('contrast-aa', passesAPCA);
       return;
@@ -351,45 +351,32 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper {
       }
     }
 
-    [labelAA, labelAAA].forEach(
-        e => e.addEventListener('click', /** @param {!Event} event */ event => ContrastDetails._showHelp()));
+    [labelAA, labelAAA].forEach(e => e.addEventListener('click', () => ContrastDetails._showHelp()));
 
     this._element.classList.toggle('contrast-fail', !this._passesAA);
     this._contrastValueBubble.classList.toggle('contrast-aa', this._passesAA);
     this._contrastValueBubble.classList.toggle('contrast-aaa', passesAAA);
   }
 
-  static _showHelp() {
+  static _showHelp(): void {
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(
         UI.UIUtils.addReferrerToURL('https://web.dev/color-and-contrast-accessibility/'));
   }
 
-  /**
-   * @param {boolean} visible
-   */
-  setVisible(visible) {
+  setVisible(visible: boolean): void {
     this._visible = visible;
     this._element.classList.toggle('hidden', !visible);
   }
 
-  /**
-   * @return {boolean}
-   */
-  visible() {
+  visible(): boolean {
     return this._visible;
   }
 
-  /**
-   * @return {!HTMLElement}
-   */
-  element() {
+  element(): HTMLElement {
     return this._element;
   }
 
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  _expandButtonClicked(event) {
+  _expandButtonClicked(_event: Common.EventTarget.EventTargetEvent): void {
     const selection = this._contrastValueBubble.getComponentSelection();
     if (selection) {
       selection.empty();
@@ -397,10 +384,7 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper {
     this._toggleExpanded();
   }
 
-  /**
-   * @param {!Event} event
-   */
-  _topRowClicked(event) {
+  _topRowClicked(event: Event): void {
     const selection = this._contrastValueBubble.getComponentSelection();
     if (selection) {
       selection.empty();
@@ -409,7 +393,7 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper {
     event.consume(true);
   }
 
-  _toggleExpanded() {
+  _toggleExpanded(): void {
     this._expanded = !this._expanded;
     UI.ARIAUtils.setExpanded(this._expandButton.element, this._expanded);
     this._element.classList.toggle('collapsed', !this._expanded);
@@ -428,39 +412,25 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper {
     this._expandedChangedCallback();
   }
 
-  collapse() {
+  collapse(): void {
     this._element.classList.remove('expanded');
     this._toggleBackgroundColorPicker(false);
     this._toggleMainColorPicker(false);
   }
 
-  /**
-   * @return {boolean}
-   */
-  expanded() {
+  expanded(): boolean {
     return this._expanded;
   }
 
-  /**
-   * @returns {boolean}
-   */
-  backgroundColorPickerEnabled() {
+  backgroundColorPickerEnabled(): boolean {
     return this._bgColorPickerButton.toggled();
   }
 
-  /**
-   * @param {boolean} enabled
-   */
-
-  toggleBackgroundColorPicker(enabled) {
+  toggleBackgroundColorPicker(enabled: boolean): void {
     this._toggleBackgroundColorPicker(enabled, false);
   }
 
-  /**
-   * @param {boolean=} enabled
-   * @param {boolean=} shouldTriggerEvent
-   */
-  _toggleBackgroundColorPicker(enabled, shouldTriggerEvent = true) {
+  _toggleBackgroundColorPicker(enabled?: boolean, shouldTriggerEvent: boolean|undefined = true): void {
     if (enabled === undefined) {
       enabled = !this._bgColorPickerButton.toggled();
     }
@@ -480,11 +450,13 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper {
     }
   }
 
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  _bgColorPicked(event) {
-    const rgbColor = /** @type {!{r: number, g: number, b: number, a: number}} */ (event.data);
+  _bgColorPicked(event: Common.EventTarget.EventTargetEvent): void {
+    const rgbColor = event.data as {
+      r: number,
+      g: number,
+      b: number,
+      a: number,
+    };
     const rgba = [rgbColor.r, rgbColor.g, rgbColor.b, (rgbColor.a / 2.55 | 0) / 100];
     const color = Common.Color.Color.fromRGBA(rgba);
     this._contrastInfo.setBgColor(color);
@@ -494,31 +466,25 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper {
 }
 
 export const Events = {
-  BackgroundColorPickerWillBeToggled: Symbol('BackgroundColorPickerWillBeToggled')
+  BackgroundColorPickerWillBeToggled: Symbol('BackgroundColorPickerWillBeToggled'),
 };
 
 export class Swatch {
-  /**
-   * @param {!Element} parentElement
-   */
-  constructor(parentElement) {
+  _parentElement: Element;
+  _swatchElement: Element;
+  _swatchInnerElement: HTMLElement;
+  _textPreview: HTMLElement;
+  constructor(parentElement: Element) {
     this._parentElement = parentElement;
     this._swatchElement = parentElement.createChild('span', 'swatch contrast swatch-inner-white');
-    /** @type {!HTMLElement} */
-    this._swatchInnerElement = /** @type {!HTMLElement} */ (this._swatchElement.createChild('span', 'swatch-inner'));
-    /** @type {!HTMLElement} */
-    this._textPreview = /** @type {!HTMLElement} */ (this._swatchElement.createChild('div', 'text-preview'));
+    this._swatchInnerElement = this._swatchElement.createChild('span', 'swatch-inner') as HTMLElement;
+    this._textPreview = this._swatchElement.createChild('div', 'text-preview') as HTMLElement;
     this._textPreview.textContent = 'Aa';
   }
 
-  /**
-   * @param {!Common.Color.Color} fgColor
-   * @param {!Common.Color.Color} bgColor
-   */
-  setColors(fgColor, bgColor) {
-    this._textPreview.style.color = /** @type {string} */ (fgColor.asString(Common.Color.Format.RGBA));
-    this._swatchInnerElement.style.backgroundColor =
-        /** @type {string} */ (bgColor.asString(Common.Color.Format.RGBA));
+  setColors(fgColor: Common.Color.Color, bgColor: Common.Color.Color): void {
+    this._textPreview.style.color = fgColor.asString(Common.Color.Format.RGBA) as string;
+    this._swatchInnerElement.style.backgroundColor = bgColor.asString(Common.Color.Format.RGBA) as string;
     // Show border if the swatch is white.
     this._swatchElement.classList.toggle('swatch-inner-white', bgColor.hsla()[2] > 0.9);
   }

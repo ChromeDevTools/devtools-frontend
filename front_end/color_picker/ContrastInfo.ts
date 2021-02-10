@@ -2,28 +2,30 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Common from '../common/common.js';
 
 export class ContrastInfo extends Common.ObjectWrapper.ObjectWrapper {
-  /**
-   * @param {?ContrastInfoType} contrastInfo
-   */
-  constructor(contrastInfo) {
+  _isNull: boolean;
+  _contrastRatio: number|null;
+  _contrastRatioAPCA: number|null;
+  _contrastRatioThresholds: {
+    [x: string]: number,
+  }|null;
+  _contrastRationAPCAThreshold: number|null;
+  _fgColor: Common.Color.Color|null;
+  _bgColor: Common.Color.Color|null;
+  _colorFormat!: string|undefined;
+  constructor(contrastInfo: ContrastInfoType|null) {
     super();
     this._isNull = true;
-    /** @type {?number} */
     this._contrastRatio = null;
-    /** @type {?number} */
     this._contrastRatioAPCA = null;
-    /** @type {?Object<string, number>} */
     this._contrastRatioThresholds = null;
     this._contrastRationAPCAThreshold = 0;
-    /** @type {?Common.Color.Color} */
     this._fgColor = null;
-    /** @type {?Common.Color.Color} */
     this._bgColor = null;
-    /** @type {string|undefined} */
-    this._colorFormat;
 
     if (!contrastInfo) {
       return;
@@ -46,71 +48,43 @@ export class ContrastInfo extends Common.ObjectWrapper.ObjectWrapper {
     }
   }
 
-  /**
-   * @return {boolean}
-   */
-  isNull() {
+  isNull(): boolean {
     return this._isNull;
   }
 
-  /**
-   * @param {!Common.Color.Color} fgColor
-   * @param {string=} colorFormat
-   */
-  setColor(fgColor, colorFormat) {
+  setColor(fgColor: Common.Color.Color, colorFormat?: string): void {
     this._fgColor = fgColor;
     this._colorFormat = colorFormat;
     this._updateContrastRatio();
     this.dispatchEventToListeners(Events.ContrastInfoUpdated);
   }
 
-  /**
-   * @return {string|undefined}
-   */
-  colorFormat() {
+  colorFormat(): string|undefined {
     return this._colorFormat;
   }
 
-  /**
-   * @return {?Common.Color.Color}
-   */
-  color() {
+  color(): Common.Color.Color|null {
     return this._fgColor;
   }
 
-  /**
-   * @return {?number}
-   */
-  contrastRatio() {
+  contrastRatio(): number|null {
     return this._contrastRatio;
   }
 
-  /**
-   * @return {?number}
-   */
-  contrastRatioAPCA() {
+  contrastRatioAPCA(): number|null {
     return this._contrastRatioAPCA;
   }
 
-  /**
-   * @return {?number}
-   */
-  contrastRatioAPCAThreshold() {
+  contrastRatioAPCAThreshold(): number|null {
     return this._contrastRationAPCAThreshold;
   }
 
-  /**
-   * @param {!Common.Color.Color} bgColor
-   */
-  setBgColor(bgColor) {
+  setBgColor(bgColor: Common.Color.Color): void {
     this._setBgColorInternal(bgColor);
     this.dispatchEventToListeners(Events.ContrastInfoUpdated);
   }
 
-  /**
-   * @param {!Common.Color.Color} bgColor
-   */
-  _setBgColorInternal(bgColor) {
+  _setBgColorInternal(bgColor: Common.Color.Color): void {
     this._bgColor = bgColor;
 
     if (!this._fgColor) {
@@ -123,8 +97,7 @@ export class ContrastInfo extends Common.ObjectWrapper.ObjectWrapper {
     // background, draw the line for the "worst case" scenario: where
     // the unknown background is the same color as the text.
     if (bgColor.hasAlpha()) {
-      /** @type {!Array<number>} */
-      const blendedRGBA = Common.ColorUtils.blendColors(bgColor.rgba(), fgRGBA);
+      const blendedRGBA: number[] = Common.ColorUtils.blendColors(bgColor.rgba(), fgRGBA);
       this._bgColor = new Common.Color.Color(blendedRGBA, Common.Color.Format.RGBA);
     }
 
@@ -132,14 +105,11 @@ export class ContrastInfo extends Common.ObjectWrapper.ObjectWrapper {
     this._contrastRatioAPCA = Common.ColorUtils.contrastRatioAPCA(this._fgColor.rgba(), this._bgColor.rgba());
   }
 
-  /**
-   * @return {?Common.Color.Color}
-   */
-  bgColor() {
+  bgColor(): Common.Color.Color|null {
     return this._bgColor;
   }
 
-  _updateContrastRatio() {
+  _updateContrastRatio(): void {
     if (!this._bgColor || !this._fgColor) {
       return;
     }
@@ -147,11 +117,7 @@ export class ContrastInfo extends Common.ObjectWrapper.ObjectWrapper {
     this._contrastRatioAPCA = Common.ColorUtils.contrastRatioAPCA(this._fgColor.rgba(), this._bgColor.rgba());
   }
 
-  /**
-   * @param {string} level
-   * @return {?number}
-   */
-  contrastRatioThreshold(level) {
+  contrastRatioThreshold(level: string): number|null {
     if (!this._contrastRatioThresholds) {
       return null;
     }
@@ -159,11 +125,12 @@ export class ContrastInfo extends Common.ObjectWrapper.ObjectWrapper {
   }
 }
 
-/** @enum {symbol} */
-export const Events = {
-  ContrastInfoUpdated: Symbol('ContrastInfoUpdated')
-};
+export const enum Events {
+  ContrastInfoUpdated = 'ContrastInfoUpdated',
+}
 
-/** @typedef {{backgroundColors: ?Array<string>, computedFontSize: string, computedFontWeight: string}} */
-// @ts-ignore typedef
-export let ContrastInfoType;
+export interface ContrastInfoType {
+  backgroundColors: string[]|null;
+  computedFontSize: string;
+  computedFontWeight: string;
+}

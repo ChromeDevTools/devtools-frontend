@@ -7,10 +7,10 @@ import("../../scripts/build/ninja/devtools_module.gni")
 
 devtools_module("color_picker") {
   sources = [
-    "ContrastDetails.js",
-    "ContrastInfo.js",
-    "ContrastOverlay.js",
-    "Spectrum.js",
+    "ContrastDetails.ts",
+    "ContrastInfo.ts",
+    "ContrastOverlay.ts",
+    "Spectrum.ts",
   ]
 
   deps = [
@@ -31,7 +31,7 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_entrypoint("legacy") {
-  entrypoint = "color_picker-legacy.js"
+  entrypoint = "color_picker-legacy.ts"
 
   deps = [ ":bundle" ]
 }

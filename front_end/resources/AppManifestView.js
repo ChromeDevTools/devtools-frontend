@@ -215,7 +215,7 @@ export const UIStrings = {
   *@description Warning message for offline capability check
   */
   pageDoesNotWorkOfflineThePage:
-      'Page does not work offline. The page will not be regarded as installable after Chrome 93, stable release August 2021.',
+      'Page does not work offline. Starting in Chrome 93, the installability criteria is changing, and this site will not be installable. https://goo.gle/improved-pwa-offline-detection for more information.',
   /**
   *@description Text to indicate the source of an image
   *@example {example.com} PH1

@@ -1661,9 +1661,6 @@
   "inline_editor/CSSShadowEditor.js | yOffset": {
     "message": "Y offset"
   },
-  "inline_editor/CSSVarSwatch.ts | jumpToDefinition": {
-    "message": "Jump to definition"
-  },
   "inline_editor/CSSVarSwatch.ts | sIsNotDefined": {
     "message": "{PH1} is not defined"
   },

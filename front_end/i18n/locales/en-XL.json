@@ -1661,9 +1661,6 @@
   "inline_editor/CSSShadowEditor.js | yOffset": {
     "message": "Ŷ óf̂f́ŝét̂"
   },
-  "inline_editor/CSSVarSwatch.ts | jumpToDefinition": {
-    "message": "Ĵúm̂ṕ t̂ó d̂éf̂ín̂ít̂íôń"
-  },
   "inline_editor/CSSVarSwatch.ts | sIsNotDefined": {
     "message": "{PH1} îś n̂ót̂ d́êf́îńêd́"
   },

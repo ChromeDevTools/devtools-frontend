@@ -51,7 +51,7 @@ describe('CSSVarSwatch', () => {
 
     assertSwatch(component, {
       valueTooltip: '2px',
-      linkTooltip: 'Jump to definition',
+      linkTooltip: '2px',
       isDefined: true,
       varText: '--test',
     });
@@ -141,7 +141,7 @@ describe('CSSVarSwatch', () => {
 
     assertSwatch(component, {
       valueTooltip: 'red',
-      linkTooltip: 'Jump to definition',
+      linkTooltip: 'red',
       isDefined: true,
       varText: '--test',
     });
@@ -159,7 +159,7 @@ describe('CSSVarSwatch', () => {
 
     assertSwatch(component, {
       valueTooltip: 'red',
-      linkTooltip: 'Jump to definition',
+      linkTooltip: 'red',
       isDefined: true,
       varText: ' --test ',
     });

@@ -317,3 +317,13 @@ Common.Settings.registerSettingExtension({
     },
   ],
 });
+
+UI.Toolbar.registerToolbarItem({
+  actionId: 'emulation.toggle-device-mode',
+  condition: Root.Runtime.ConditionName.CAN_DOCK,
+  location: UI.Toolbar.ToolbarItemLocation.MAIN_TOOLBAR_LEFT,
+  order: 1,
+  showLabel: undefined,
+  loadItem: undefined,
+  separator: undefined,
+});

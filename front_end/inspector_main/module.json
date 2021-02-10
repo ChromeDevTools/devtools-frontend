@@ -3,12 +3,6 @@
     {
       "type": "early-initialization",
       "className": "InspectorMain.InspectorMain"
-    },
-    {
-      "type": "@UI.ToolbarItem.Provider",
-      "className": "InspectorMain.NodeIndicator",
-      "order": 2,
-      "location": "main-toolbar-left"
     }
   ],
   "dependencies": [

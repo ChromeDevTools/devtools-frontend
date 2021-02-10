@@ -70,10 +70,15 @@ export const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('console_counters/WarningErrorCounter.js', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+
+/** @type {!WarningErrorCounter} */
+let warningErrorCounterInstance;
+
 /**
  * @implements {UI.Toolbar.Provider}
  */
 export class WarningErrorCounter {
+  /** @private */
   constructor() {
     WarningErrorCounter._instanceForTest = this;
 
@@ -120,6 +125,18 @@ export class WarningErrorCounter {
         BrowserSDK.IssuesManager.Events.IssuesCountUpdated, this._update, this);
 
     this._update();
+  }
+
+  /**
+   * @param {{forceNew: ?boolean}} opts
+   */
+  static instance(opts = {forceNew: null}) {
+    const {forceNew} = opts;
+    if (!warningErrorCounterInstance || forceNew) {
+      warningErrorCounterInstance = new WarningErrorCounter();
+    }
+
+    return warningErrorCounterInstance;
   }
 
   _updatedForTest() {

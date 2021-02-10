@@ -131,10 +131,14 @@ export class FocusDebuggeeActionDelegate {
   }
 }
 
+/** @type {!NodeIndicator} */
+let nodeIndicatorInstance;
+
 /**
  * @implements {UI.Toolbar.Provider}
  */
 export class NodeIndicator {
+  /** @private */
   constructor() {
     const element = document.createElement('div');
     const shadowRoot = UI.Utils.createShadowRootWithCoreStyles(
@@ -149,6 +153,17 @@ export class NodeIndicator {
         event => this._update(/** @type {!Array<!Protocol.Target.TargetInfo>} */ (event.data)));
     this._button.setVisible(false);
     this._update([]);
+  }
+  /**
+   * @param {{forceNew: ?boolean}} opts
+   */
+  static instance(opts = {forceNew: null}) {
+    const {forceNew} = opts;
+    if (!nodeIndicatorInstance || forceNew) {
+      nodeIndicatorInstance = new NodeIndicator();
+    }
+
+    return nodeIndicatorInstance;
   }
 
   /**

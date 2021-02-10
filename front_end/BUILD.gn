@@ -30,7 +30,6 @@ group("front_end") {
     "common:bundle",
     "component_helpers:bundle",
     "components:bundle",
-    "console_counters:bundle",
     "cookie_table:bundle",
     "data_grid:bundle",
     "diff:bundle",
@@ -201,6 +200,7 @@ ts_library("shell") {
     "components:legacy",
     "console:meta",
     "console_counters:legacy",
+    "console_counters:meta",
     "coverage:meta",
     "dom_extension:bundle",
     "extensions:legacy",
@@ -265,6 +265,7 @@ ts_library("inspector") {
 
   deps = [
     ":devtools_app",
+    "screencast:meta",
     "startup:bundle",
   ]
 }

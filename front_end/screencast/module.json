@@ -6,12 +6,6 @@
       "order": 1
     },
     {
-      "type": "@UI.ToolbarItem.Provider",
-      "className": "Screencast.ScreencastApp.ToolbarButtonProvider",
-      "order": 1,
-      "location": "main-toolbar-left"
-    },
-    {
       "type": "context-menu-item",
       "location": "mainMenu",
       "order": 10,

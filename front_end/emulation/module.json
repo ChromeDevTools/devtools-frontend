@@ -13,13 +13,6 @@
       "actionId": "emulation.capture-screenshot"
     },
     {
-      "type": "@UI.ToolbarItem.Provider",
-      "actionId": "emulation.toggle-device-mode",
-      "condition": "can_dock",
-      "location": "main-toolbar-left",
-      "order": 1
-    },
-    {
       "type": "context-menu-item",
       "location": "deviceModeMenu/save",
       "order": 13,

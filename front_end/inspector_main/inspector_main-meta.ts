@@ -154,3 +154,16 @@ Common.Settings.registerSettingExtension({
   settingType: Common.Settings.SettingTypeObject.BOOLEAN,
   defaultValue: false,
 });
+
+UI.Toolbar.registerToolbarItem({
+  async loadItem() {
+    const InspectorMain = await loadInspectorMainModule();
+    return InspectorMain.InspectorMain.NodeIndicator.instance();
+  },
+  order: 2,
+  location: UI.Toolbar.ToolbarItemLocation.MAIN_TOOLBAR_LEFT,
+  showLabel: undefined,
+  condition: undefined,
+  separator: undefined,
+  actionId: undefined,
+});

@@ -107,7 +107,18 @@ export class ScreencastApp implements Common.App.App,
   }
 }
 
+let toolbarButtonProviderInstance: ToolbarButtonProvider;
+
 export class ToolbarButtonProvider implements UI.Toolbar.Provider {
+  static instance(opts: {forceNew: boolean} = {forceNew: false}): ToolbarButtonProvider {
+    const {forceNew} = opts;
+    if (!toolbarButtonProviderInstance || forceNew) {
+      toolbarButtonProviderInstance = new ToolbarButtonProvider();
+    }
+
+    return toolbarButtonProviderInstance;
+  }
+
   item(): UI.Toolbar.ToolbarItem|null {
     return ScreencastApp._instance()._toggleButton;
   }

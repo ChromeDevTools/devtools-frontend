@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
@@ -22,31 +24,21 @@ export const UIStrings = {
   */
   thePropertyIsComputedWithAGetter: 'The property is computed with a getter',
 };
-const str_ = i18n.i18n.registerUIStrings('object_ui/RemoteObjectPreviewFormatter.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('object_ui/RemoteObjectPreviewFormatter.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class RemoteObjectPreviewFormatter {
-  /**
-   * @param {!Protocol.Runtime.PropertyPreview} a
-   * @param {!Protocol.Runtime.PropertyPreview} b
-   * @return {number}
-   */
-  static _objectPropertyComparator(a, b) {
+  static _objectPropertyComparator(a: Protocol.Runtime.PropertyPreview, b: Protocol.Runtime.PropertyPreview): number {
     return sortValue(a) - sortValue(b);
 
-    /**
-     * @param {!Protocol.Runtime.PropertyPreview} property
-     * @return {number}
-     */
-    function sortValue(property) {
+    function sortValue(property: Protocol.Runtime.PropertyPreview): number {
       // TODO(einbinder) expose whether preview properties are actually internal.
-      const internalName = _internalName;
-      if (property.name === internalName.PromiseState) {
+      if (property.name === InternalName.PromiseState) {
         return 1;
       }
-      if (property.name === internalName.PromiseResult) {
+      if (property.name === InternalName.PromiseResult) {
         return 2;
       }
-      if (property.name === internalName.GeneratorState || property.name === internalName.PrimitiveValue) {
+      if (property.name === InternalName.GeneratorState || property.name === InternalName.PrimitiveValue) {
         return 3;
       }
       if (property.type !== Protocol.Runtime.PropertyPreviewType.Function && !property.name.startsWith('#')) {
@@ -56,14 +48,10 @@ export class RemoteObjectPreviewFormatter {
     }
   }
 
-  /**
-   * @param {!DocumentFragment|!Element} parentElement
-   * @param {!Protocol.Runtime.ObjectPreview} preview
-   * @param {boolean} isEntry
-   */
-  appendObjectPreview(parentElement, preview, isEntry) {
+  appendObjectPreview(
+      parentElement: DocumentFragment|Element, preview: Protocol.Runtime.ObjectPreview, isEntry: boolean): void {
     const description = preview.description;
-    const subTypesWithoutValuePreview = new Set([
+    const subTypesWithoutValuePreview = new Set<Protocol.Runtime.ObjectPreviewSubtype|'internal#entry'|'trustedtype'>([
       Protocol.Runtime.ObjectPreviewSubtype.Arraybuffer,
       Protocol.Runtime.ObjectPreviewSubtype.Dataview,
       Protocol.Runtime.ObjectPreviewSubtype.Error,
@@ -115,11 +103,7 @@ export class RemoteObjectPreviewFormatter {
     UI.UIUtils.createTextChild(propertiesElement, isArrayOrTypedArray ? ']' : '}');
   }
 
-  /**
-   * @param {string} description
-   * @return {string}
-   */
-  _abbreviateFullQualifiedClassName(description) {
+  _abbreviateFullQualifiedClassName(description: string): string {
     const abbreviatedDescription = description.split('.');
     for (let i = 0; i < abbreviatedDescription.length - 1; ++i) {
       abbreviatedDescription[i] = Platform.StringUtilities.trimMiddle(abbreviatedDescription[i], 3);
@@ -127,12 +111,7 @@ export class RemoteObjectPreviewFormatter {
     return abbreviatedDescription.join('.');
   }
 
-  /**
-   * @param {!Element} parentElement
-   * @param {!Protocol.Runtime.ObjectPreview} preview
-   */
-  _appendObjectPropertiesPreview(parentElement, preview) {
-    const internalName = _internalName;
+  _appendObjectPropertiesPreview(parentElement: Element, preview: Protocol.Runtime.ObjectPreview): void {
     const properties = preview.properties.filter(p => p.type !== 'accessor')
                            .sort(RemoteObjectPreviewFormatter._objectPropertyComparator);
     for (let i = 0; i < properties.length; ++i) {
@@ -144,19 +123,19 @@ export class RemoteObjectPreviewFormatter {
       const name = property.name;
       // Internal properties are given special formatting, e.g. Promises `<rejected>: 123`.
       // @ts-ignore https://bugs.chromium.org/p/v8/issues/detail?id=11143
-      if (preview.subtype === 'promise' && name === internalName.PromiseState) {
+      if (preview.subtype === 'promise' && name === InternalName.PromiseState) {
         parentElement.appendChild(this._renderDisplayName('<' + property.value + '>'));
         const nextProperty = i + 1 < properties.length ? properties[i + 1] : null;
-        if (nextProperty && nextProperty.name === internalName.PromiseResult) {
+        if (nextProperty && nextProperty.name === InternalName.PromiseResult) {
           if (property.value !== 'pending') {
             UI.UIUtils.createTextChild(parentElement, ': ');
             parentElement.appendChild(this._renderPropertyPreviewOrAccessor([nextProperty]));
           }
           i++;
         }
-      } else if (preview.subtype === 'generator' && name === internalName.GeneratorState) {
+      } else if (preview.subtype === 'generator' && name === InternalName.GeneratorState) {
         parentElement.appendChild(this._renderDisplayName('<' + property.value + '>'));
-      } else if (name === internalName.PrimitiveValue) {
+      } else if (name === InternalName.PrimitiveValue) {
         parentElement.appendChild(this._renderPropertyPreviewOrAccessor([property]));
       } else {
         parentElement.appendChild(this._renderDisplayName(name));
@@ -166,30 +145,17 @@ export class RemoteObjectPreviewFormatter {
     }
   }
 
-  /**
-   * @param {!Element} parentElement
-   * @param {!Protocol.Runtime.ObjectPreview} preview
-   */
-  _appendArrayPropertiesPreview(parentElement, preview) {
+  _appendArrayPropertiesPreview(parentElement: Element, preview: Protocol.Runtime.ObjectPreview): void {
     const arrayLength = SDK.RemoteObject.RemoteObject.arrayLength(preview);
     const indexProperties = preview.properties.filter(p => toArrayIndex(p.name) !== -1).sort(arrayEntryComparator);
     const otherProperties = preview.properties.filter(p => toArrayIndex(p.name) === -1)
                                 .sort(RemoteObjectPreviewFormatter._objectPropertyComparator);
 
-    /**
-     * @param {!Protocol.Runtime.PropertyPreview} a
-     * @param {!Protocol.Runtime.PropertyPreview} b
-     * @return {number}
-     */
-    function arrayEntryComparator(a, b) {
+    function arrayEntryComparator(a: Protocol.Runtime.PropertyPreview, b: Protocol.Runtime.PropertyPreview): number {
       return toArrayIndex(a.name) - toArrayIndex(b.name);
     }
 
-    /**
-     * @param {string} name
-     * @return {number}
-     */
-    function toArrayIndex(name) {
+    function toArrayIndex(name: string): number {
       // We need to differentiate between property accesses and array index accesses
       // Therefore, we need to make sure we are always dealing with an i32, in the event
       // that a particular property also exists, but as the literal string. For example
@@ -245,10 +211,7 @@ export class RemoteObjectPreviewFormatter {
       elementsAdded = true;
     }
 
-    /**
-     * @param {number} index
-     */
-    function appendUndefined(index) {
+    function appendUndefined(index: number): void {
       const span = parentElement.createChild('span', 'object-value-undefined');
       const count = index - lastNonEmptyArrayIndex - 1;
       span.textContent = count !== 1 ? i18nString(UIStrings.emptyD, {PH1: count}) : i18nString(UIStrings.empty);
@@ -256,11 +219,7 @@ export class RemoteObjectPreviewFormatter {
     }
   }
 
-  /**
-   * @param {!Element} parentElement
-   * @param {!Protocol.Runtime.ObjectPreview} preview
-   */
-  _appendEntriesPreview(parentElement, preview) {
+  _appendEntriesPreview(parentElement: Element, preview: Protocol.Runtime.ObjectPreview): void {
     if (!preview.entries) {
       return;
     }
@@ -278,11 +237,7 @@ export class RemoteObjectPreviewFormatter {
     }
   }
 
-  /**
-   * @param {string} name
-   * @return {!Element}
-   */
-  _renderDisplayName(name) {
+  _renderDisplayName(name: string): Element {
     const result = document.createElement('span');
     result.classList.add('name');
     const needsQuotes = /^\s|\s$|^$|\n/.test(name);
@@ -290,28 +245,16 @@ export class RemoteObjectPreviewFormatter {
     return result;
   }
 
-  /**
-   * @param {!Array.<!Protocol.Runtime.PropertyPreview>} propertyPath
-   * @return {!Element}
-   */
-  _renderPropertyPreviewOrAccessor(propertyPath) {
+  _renderPropertyPreviewOrAccessor(propertyPath: Protocol.Runtime.PropertyPreview[]): Element {
     const property = propertyPath[propertyPath.length - 1];
     if (!property) {
       throw new Error('Could not find property');
     }
-    return this.renderPropertyPreview(
-        property.type, /** @type {string} */ (property.subtype), property.name, property.value);
+    return this.renderPropertyPreview(property.type, (property.subtype as string), property.name, property.value);
   }
 
-  /**
-   * @param {string} type
-   * @param {string=} subtype
-   * @param {(?string|undefined)=} className
-   * @param {string=} description
-   * @return {!HTMLElement}
-   */
-  renderPropertyPreview(type, subtype, className, description) {
-    const span = /** @type {!HTMLElement} */ (document.createElement('span'));
+  renderPropertyPreview(type: string, subtype?: string, className?: string|null, description?: string): HTMLElement {
+    const span = (document.createElement('span') as HTMLElement);
     span.classList.add('object-value-' + (subtype || type));
     description = description || '';
 
@@ -356,19 +299,14 @@ export class RemoteObjectPreviewFormatter {
   }
 }
 
-/** @enum {string} */
-const _internalName = {
-  GeneratorState: '[[GeneratorState]]',
-  PrimitiveValue: '[[PrimitiveValue]]',
-  PromiseState: '[[PromiseState]]',
-  PromiseResult: '[[PromiseResult]]'
-};
+const enum InternalName {
+  GeneratorState = '[[GeneratorState]]',
+  PrimitiveValue = '[[PrimitiveValue]]',
+  PromiseState = '[[PromiseState]]',
+  PromiseResult = '[[PromiseResult]]',
+}
 
-/**
- * @param {!Element} container
- * @param {string} nodeTitle
- */
-export const createSpansForNodeTitle = function(container, nodeTitle) {
+export const createSpansForNodeTitle = function(container: Element, nodeTitle: string): void {
   const match = nodeTitle.match(/([^#.]+)(#[^.]+)?(\..*)?/);
   if (!match) {
     return;
@@ -382,12 +320,7 @@ export const createSpansForNodeTitle = function(container, nodeTitle) {
   }
 };
 
-/**
- * @param {!Element} span
- * @param {string} description
- * @param {string} className
- */
-export const createSpanForTrustedType = function(span, description, className) {
+export const createSpanForTrustedType = function(span: Element, description: string, className: string): void {
   UI.UIUtils.createTextChildren(span, `${className} `);
   const trustedContentSpan = document.createElement('span');
   trustedContentSpan.classList.add('object-value-string');

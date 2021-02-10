@@ -4259,73 +4259,73 @@
   "node_main/NodeMain.ts | nodejsS": {
     "message": "Node.js: {PH1}"
   },
-  "object_ui/CustomPreviewComponent.js | showAsJavascriptObject": {
+  "object_ui/CustomPreviewComponent.ts | showAsJavascriptObject": {
     "message": "Show as JavaScript object"
   },
-  "object_ui/JavaScriptAutocomplete.js | keys": {
+  "object_ui/JavaScriptAutocomplete.ts | keys": {
     "message": "Keys"
   },
-  "object_ui/JavaScriptAutocomplete.js | keywords": {
+  "object_ui/JavaScriptAutocomplete.ts | keywords": {
     "message": "keywords"
   },
-  "object_ui/JavaScriptAutocomplete.js | lexicalScopeVariables": {
+  "object_ui/JavaScriptAutocomplete.ts | lexicalScopeVariables": {
     "message": "Lexical scope variables"
   },
-  "object_ui/ObjectPropertiesSection.js | collapseChildren": {
+  "object_ui/ObjectPropertiesSection.ts | collapseChildren": {
     "message": "Collapse children"
   },
-  "object_ui/ObjectPropertiesSection.js | copy": {
+  "object_ui/ObjectPropertiesSection.ts | copy": {
     "message": "Copy"
   },
-  "object_ui/ObjectPropertiesSection.js | copyPropertyPath": {
+  "object_ui/ObjectPropertiesSection.ts | copyPropertyPath": {
     "message": "Copy property path"
   },
-  "object_ui/ObjectPropertiesSection.js | copyValue": {
+  "object_ui/ObjectPropertiesSection.ts | copyValue": {
     "message": "Copy value"
   },
-  "object_ui/ObjectPropertiesSection.js | dots": {
+  "object_ui/ObjectPropertiesSection.ts | dots": {
     "message": "(...)"
   },
-  "object_ui/ObjectPropertiesSection.js | exceptionS": {
+  "object_ui/ObjectPropertiesSection.ts | exceptionS": {
     "message": "[Exception: {PH1}]"
   },
-  "object_ui/ObjectPropertiesSection.js | expandRecursively": {
+  "object_ui/ObjectPropertiesSection.ts | expandRecursively": {
     "message": "Expand recursively"
   },
-  "object_ui/ObjectPropertiesSection.js | invokePropertyGetter": {
+  "object_ui/ObjectPropertiesSection.ts | invokePropertyGetter": {
     "message": "Invoke property getter"
   },
-  "object_ui/ObjectPropertiesSection.js | longTextWasTruncatedS": {
+  "object_ui/ObjectPropertiesSection.ts | longTextWasTruncatedS": {
     "message": "long text was truncated ({PH1})"
   },
-  "object_ui/ObjectPropertiesSection.js | noProperties": {
+  "object_ui/ObjectPropertiesSection.ts | noProperties": {
     "message": "No properties"
   },
-  "object_ui/ObjectPropertiesSection.js | noPropertyGetter": {
+  "object_ui/ObjectPropertiesSection.ts | noPropertyGetter": {
     "message": "No property getter"
   },
-  "object_ui/ObjectPropertiesSection.js | showAllD": {
+  "object_ui/ObjectPropertiesSection.ts | showAllD": {
     "message": "Show all {PH1}"
   },
-  "object_ui/ObjectPropertiesSection.js | showMoreS": {
+  "object_ui/ObjectPropertiesSection.ts | showMoreS": {
     "message": "Show more ({PH1})"
   },
-  "object_ui/ObjectPropertiesSection.js | stringIsTooLargeToEdit": {
+  "object_ui/ObjectPropertiesSection.ts | stringIsTooLargeToEdit": {
     "message": "<string is too large to edit>"
   },
-  "object_ui/ObjectPropertiesSection.js | unknown": {
+  "object_ui/ObjectPropertiesSection.ts | unknown": {
     "message": "unknown"
   },
-  "object_ui/ObjectPropertiesSection.js | unreadable": {
+  "object_ui/ObjectPropertiesSection.ts | unreadable": {
     "message": "<unreadable>"
   },
-  "object_ui/RemoteObjectPreviewFormatter.js | empty": {
+  "object_ui/RemoteObjectPreviewFormatter.ts | empty": {
     "message": "empty"
   },
-  "object_ui/RemoteObjectPreviewFormatter.js | emptyD": {
+  "object_ui/RemoteObjectPreviewFormatter.ts | emptyD": {
     "message": "empty × {PH1}"
   },
-  "object_ui/RemoteObjectPreviewFormatter.js | thePropertyIsComputedWithAGetter": {
+  "object_ui/RemoteObjectPreviewFormatter.ts | thePropertyIsComputedWithAGetter": {
     "message": "The property is computed with a getter"
   },
   "perf_ui/FilmStripView.js | doubleclickToZoomImageClickTo": {

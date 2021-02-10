@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Platform from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
@@ -9,17 +11,13 @@ import * as UI from '../ui/ui.js';
 import {RemoteObjectPreviewFormatter} from './RemoteObjectPreviewFormatter.js';
 
 export class JavaScriptREPL {
-  /**
-   * @param {string} code
-   * @return {string}
-   */
-  static wrapObjectLiteral(code) {
+  static wrapObjectLiteral(code: string): string {
     // Only parenthesize what appears to be an object literal.
     if (!(/^\s*\{/.test(code) && /\}\s*$/.test(code))) {
       return code;
     }
 
-    const parse = (async () => 0).constructor;
+    const parse = (async(): Promise<number> => 0).constructor;
     try {
       // Check if the code can be interpreted as an expression.
       parse('return ' + code + ';');
@@ -34,28 +32,23 @@ export class JavaScriptREPL {
     }
   }
 
-  /**
-   * @param {string} text
-   * @return {string}
-   */
-  static preprocessExpression(text) {
+  static preprocessExpression(text: string): string {
     return JavaScriptREPL.wrapObjectLiteral(text);
   }
 
-  /**
-   * @param {string} text
-   * @param {boolean} throwOnSideEffect
-   * @param {number=} timeout
-   * @param {boolean=} allowErrors
-   * @param {string=} objectGroup
-   * @return {!Promise<!{preview: !DocumentFragment, result: ?SDK.RuntimeModel.EvaluationResult}>}
-   */
-  static async evaluateAndBuildPreview(text, throwOnSideEffect, timeout, allowErrors, objectGroup) {
-    const globalObject = /** @type {?} */ (window);
+  static async evaluateAndBuildPreview(
+      text: string, throwOnSideEffect: boolean, timeout?: number, allowErrors?: boolean,
+      objectGroup?: string): Promise<{
+    preview: DocumentFragment,
+    result: SDK.RuntimeModel.EvaluationResult|null,
+  }> {
+    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const globalObject = (window as any);
     const replInstance = globalObject.ObjectUI.JavaScriptREPL;
     const executionContext = UI.Context.Context.instance().flavor(SDK.RuntimeModel.ExecutionContext);
     const maxLength = typeof replInstance._MaxLengthForEvaluation !== 'undefined' ?
-        /** @type {number} */ (replInstance._MaxLengthForEvaluation) :
+        replInstance._MaxLengthForEvaluation as number :
         MaxLengthForEvaluation;
     const isTextLong = text.length > maxLength;
     if (!text || !executionContext || (throwOnSideEffect && isTextLong)) {
@@ -74,19 +67,14 @@ export class JavaScriptREPL {
       replMode: true,
       silent: undefined,
       returnByValue: undefined,
-      allowUnsafeEvalBlockedByCSP: undefined
+      allowUnsafeEvalBlockedByCSP: undefined,
     };
     const result = await executionContext.evaluate(options, false /* userGesture */, false /* awaitPromise */);
     const preview = JavaScriptREPL._buildEvaluationPreview(result, allowErrors);
     return {preview, result};
   }
 
-  /**
-   * @param {!SDK.RuntimeModel.EvaluationResult} result
-   * @param {boolean=} allowErrors
-   * @return {!DocumentFragment}
-   */
-  static _buildEvaluationPreview(result, allowErrors) {
+  static _buildEvaluationPreview(result: SDK.RuntimeModel.EvaluationResult, allowErrors?: boolean): DocumentFragment {
     const fragment = document.createDocumentFragment();
     if ('error' in result) {
       return fragment;
@@ -115,6 +103,5 @@ export class JavaScriptREPL {
 
 /**
  * @const
- * @type {number}
  */
-export const MaxLengthForEvaluation = 2000;
+export const MaxLengthForEvaluation: number = 2000;

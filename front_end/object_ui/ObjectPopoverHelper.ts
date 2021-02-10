@@ -28,6 +28,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Components from '../components/components.js';
 import * as Platform from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
@@ -37,16 +39,14 @@ import {CustomPreviewComponent} from './CustomPreviewComponent.js';
 import {ObjectPropertiesSection} from './ObjectPropertiesSection.js';
 
 export class ObjectPopoverHelper {
-  /**
-   * @param {?Components.Linkifier.Linkifier} linkifier
-   * @param {boolean} resultHighlightedAsDOM
-   */
-  constructor(linkifier, resultHighlightedAsDOM) {
+  _linkifier: Components.Linkifier.Linkifier|null;
+  _resultHighlightedAsDOM: boolean;
+  constructor(linkifier: Components.Linkifier.Linkifier|null, resultHighlightedAsDOM: boolean) {
     this._linkifier = linkifier;
     this._resultHighlightedAsDOM = resultHighlightedAsDOM;
   }
 
-  dispose() {
+  dispose(): void {
     if (this._resultHighlightedAsDOM) {
       SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();
     }
@@ -55,16 +55,12 @@ export class ObjectPopoverHelper {
     }
   }
 
-  /**
-   * @param {!SDK.RemoteObject.RemoteObject} result
-   * @param {!UI.GlassPane.GlassPane} popover
-   * @return {!Promise<?ObjectPopoverHelper>}
-   */
-  static async buildObjectPopover(result, popover) {
+  static async buildObjectPopover(result: SDK.RemoteObject.RemoteObject, popover: UI.GlassPane.GlassPane):
+      Promise<ObjectPopoverHelper|null> {
     const description = Platform.StringUtilities.trimEndWithMaxLength(result.description || '', MaxPopoverTextLength);
-    let popoverContentElement = null;
+    let popoverContentElement: HTMLSpanElement|HTMLDivElement|null = null;
     if (result.type === 'object') {
-      let linkifier = null;
+      let linkifier: Components.Linkifier.Linkifier|null = null;
       let resultHighlightedAsDOM = false;
       if (result.subtype === 'node') {
         SDK.OverlayModel.OverlayModel.highlightObjectAsDOMNode(result);
@@ -129,11 +125,10 @@ export class ObjectPopoverHelper {
     const linkContainer = title.createChild('div', 'function-title-link-container');
     const script = rawLocation && rawLocation.script();
     const sourceURL = script && script.sourceURL;
-    let linkifier = null;
+    let linkifier: Components.Linkifier.Linkifier|null = null;
     if (sourceURL) {
       linkifier = new Components.Linkifier.Linkifier(undefined, undefined, popover.positionContent.bind(popover));
-      linkContainer.appendChild(
-          linkifier.linkifyRawLocation(/** @type {!SDK.DebuggerModel.Location} */ (rawLocation), sourceURL));
+      linkContainer.appendChild(linkifier.linkifyRawLocation((rawLocation as SDK.DebuggerModel.Location), sourceURL));
     }
     container.appendChild(popoverContentElement);
     popover.contentElement.appendChild(container);

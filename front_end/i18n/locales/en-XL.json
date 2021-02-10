@@ -4259,73 +4259,73 @@
   "node_main/NodeMain.ts | nodejsS": {
     "message": "N̂ód̂é.ĵś: {PH1}"
   },
-  "object_ui/CustomPreviewComponent.js | showAsJavascriptObject": {
+  "object_ui/CustomPreviewComponent.ts | showAsJavascriptObject": {
     "message": "Ŝh́ôẃ âś Ĵáv̂áŜćr̂íp̂t́ ôb́ĵéĉt́"
   },
-  "object_ui/JavaScriptAutocomplete.js | keys": {
+  "object_ui/JavaScriptAutocomplete.ts | keys": {
     "message": "K̂éŷś"
   },
-  "object_ui/JavaScriptAutocomplete.js | keywords": {
+  "object_ui/JavaScriptAutocomplete.ts | keywords": {
     "message": "k̂éŷẃôŕd̂ś"
   },
-  "object_ui/JavaScriptAutocomplete.js | lexicalScopeVariables": {
+  "object_ui/JavaScriptAutocomplete.ts | lexicalScopeVariables": {
     "message": "L̂éx̂íĉál̂ śĉóp̂é v̂ár̂íâb́l̂éŝ"
   },
-  "object_ui/ObjectPropertiesSection.js | collapseChildren": {
+  "object_ui/ObjectPropertiesSection.ts | collapseChildren": {
     "message": "Ĉól̂ĺâṕŝé ĉh́îĺd̂ŕêń"
   },
-  "object_ui/ObjectPropertiesSection.js | copy": {
+  "object_ui/ObjectPropertiesSection.ts | copy": {
     "message": "Ĉóp̂ý"
   },
-  "object_ui/ObjectPropertiesSection.js | copyPropertyPath": {
+  "object_ui/ObjectPropertiesSection.ts | copyPropertyPath": {
     "message": "Ĉóp̂ý p̂ŕôṕêŕt̂ý p̂át̂h́"
   },
-  "object_ui/ObjectPropertiesSection.js | copyValue": {
+  "object_ui/ObjectPropertiesSection.ts | copyValue": {
     "message": "Ĉóp̂ý v̂ál̂úê"
   },
-  "object_ui/ObjectPropertiesSection.js | dots": {
+  "object_ui/ObjectPropertiesSection.ts | dots": {
     "message": "(...)"
   },
-  "object_ui/ObjectPropertiesSection.js | exceptionS": {
+  "object_ui/ObjectPropertiesSection.ts | exceptionS": {
     "message": "[Êx́ĉép̂t́îón̂: {PH1}]"
   },
-  "object_ui/ObjectPropertiesSection.js | expandRecursively": {
+  "object_ui/ObjectPropertiesSection.ts | expandRecursively": {
     "message": "Êx́p̂án̂d́ r̂éĉúr̂śîv́êĺŷ"
   },
-  "object_ui/ObjectPropertiesSection.js | invokePropertyGetter": {
+  "object_ui/ObjectPropertiesSection.ts | invokePropertyGetter": {
     "message": "Îńv̂ók̂é p̂ŕôṕêŕt̂ý ĝét̂t́êŕ"
   },
-  "object_ui/ObjectPropertiesSection.js | longTextWasTruncatedS": {
+  "object_ui/ObjectPropertiesSection.ts | longTextWasTruncatedS": {
     "message": "l̂ón̂ǵ t̂éx̂t́ ŵáŝ t́r̂ún̂ćât́êd́ ({PH1})"
   },
-  "object_ui/ObjectPropertiesSection.js | noProperties": {
+  "object_ui/ObjectPropertiesSection.ts | noProperties": {
     "message": "N̂ó p̂ŕôṕêŕt̂íêś"
   },
-  "object_ui/ObjectPropertiesSection.js | noPropertyGetter": {
+  "object_ui/ObjectPropertiesSection.ts | noPropertyGetter": {
     "message": "N̂ó p̂ŕôṕêŕt̂ý ĝét̂t́êŕ"
   },
-  "object_ui/ObjectPropertiesSection.js | showAllD": {
+  "object_ui/ObjectPropertiesSection.ts | showAllD": {
     "message": "Ŝh́ôẃ âĺl̂ {PH1}"
   },
-  "object_ui/ObjectPropertiesSection.js | showMoreS": {
+  "object_ui/ObjectPropertiesSection.ts | showMoreS": {
     "message": "Ŝh́ôẃ m̂ór̂é ({PH1})"
   },
-  "object_ui/ObjectPropertiesSection.js | stringIsTooLargeToEdit": {
+  "object_ui/ObjectPropertiesSection.ts | stringIsTooLargeToEdit": {
     "message": "<ŝt́r̂ín̂ǵ îś t̂óô ĺâŕĝé t̂ó êd́ît́>"
   },
-  "object_ui/ObjectPropertiesSection.js | unknown": {
+  "object_ui/ObjectPropertiesSection.ts | unknown": {
     "message": "ûńk̂ńôẃn̂"
   },
-  "object_ui/ObjectPropertiesSection.js | unreadable": {
+  "object_ui/ObjectPropertiesSection.ts | unreadable": {
     "message": "<ûńr̂éâd́âb́l̂é>"
   },
-  "object_ui/RemoteObjectPreviewFormatter.js | empty": {
+  "object_ui/RemoteObjectPreviewFormatter.ts | empty": {
     "message": "êḿp̂t́ŷ"
   },
-  "object_ui/RemoteObjectPreviewFormatter.js | emptyD": {
+  "object_ui/RemoteObjectPreviewFormatter.ts | emptyD": {
     "message": "êḿp̂t́ŷ × {PH1}"
   },
-  "object_ui/RemoteObjectPreviewFormatter.js | thePropertyIsComputedWithAGetter": {
+  "object_ui/RemoteObjectPreviewFormatter.ts | thePropertyIsComputedWithAGetter": {
     "message": "T̂h́ê ṕr̂óp̂ér̂t́ŷ íŝ ćôḿp̂út̂éd̂ ẃît́ĥ á ĝét̂t́êŕ"
   },
   "perf_ui/FilmStripView.js | doubleclickToZoomImageClickTo": {

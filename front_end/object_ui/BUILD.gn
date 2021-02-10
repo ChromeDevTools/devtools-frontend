@@ -7,12 +7,12 @@ import("../../scripts/build/ninja/devtools_module.gni")
 
 devtools_module("object_ui") {
   sources = [
-    "CustomPreviewComponent.js",
-    "JavaScriptAutocomplete.js",
-    "JavaScriptREPL.js",
-    "ObjectPopoverHelper.js",
-    "ObjectPropertiesSection.js",
-    "RemoteObjectPreviewFormatter.js",
+    "CustomPreviewComponent.ts",
+    "JavaScriptAutocomplete.ts",
+    "JavaScriptREPL.ts",
+    "ObjectPopoverHelper.ts",
+    "ObjectPropertiesSection.ts",
+    "RemoteObjectPreviewFormatter.ts",
   ]
 
   deps = [
@@ -40,13 +40,13 @@ copy_to_gen("legacy_css") {
 }
 
 devtools_entrypoint("bundle") {
-  entrypoint = "object_ui.js"
+  entrypoint = "object_ui.ts"
 
   deps = [ ":object_ui" ]
 }
 
 devtools_entrypoint("legacy") {
-  entrypoint = "object_ui-legacy.js"
+  entrypoint = "object_ui-legacy.ts"
 
   deps = [ ":bundle" ]
 }

@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Common from '../common/common.js';
 import * as Components from '../components/components.js';
 import * as i18n from '../i18n/i18n.js';
@@ -25,14 +27,10 @@ export const UIStrings = {
   */
   linkedToS: 'Linked to {PH1}',
 };
-const str_ = i18n.i18n.registerUIStrings('persistence/PersistenceUtils.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('persistence/PersistenceUtils.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class PersistenceUtils {
-  /**
-   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
-   * @return {string}
-   */
-  static tooltipForUISourceCode(uiSourceCode) {
+  static tooltipForUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode): string {
     const binding = PersistenceImpl.instance().binding(uiSourceCode);
     if (!binding) {
       return '';
@@ -47,11 +45,7 @@ export class PersistenceUtils {
     return i18nString(UIStrings.linkedToS, {PH1: Platform.StringUtilities.trimMiddle(binding.network.url(), 150)});
   }
 
-  /**
-   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
-   * @return {?UI.Icon.Icon}
-   */
-  static iconForUISourceCode(uiSourceCode) {
+  static iconForUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode): UI.Icon.Icon|null {
     const binding = PersistenceImpl.instance().binding(uiSourceCode);
     if (binding) {
       if (!binding.fileSystem.url().startsWith('file://')) {
@@ -76,34 +70,19 @@ export class PersistenceUtils {
   }
 }
 
-/**
- * @extends {Common.ObjectWrapper.ObjectWrapper}
- * @implements {Components.Linkifier.LinkDecorator}
- */
-export class LinkDecorator extends Common.ObjectWrapper.ObjectWrapper {
-  /**
-   * @param {!PersistenceImpl} persistence
-   */
-  constructor(persistence) {
+export class LinkDecorator extends Common.ObjectWrapper.ObjectWrapper implements Components.Linkifier.LinkDecorator {
+  constructor(persistence: PersistenceImpl) {
     super();
     persistence.addEventListener(Events.BindingCreated, this._bindingChanged, this);
     persistence.addEventListener(Events.BindingRemoved, this._bindingChanged, this);
   }
 
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  _bindingChanged(event) {
-    const binding = /** @type {!PersistenceBinding} */ (event.data);
+  _bindingChanged(event: Common.EventTarget.EventTargetEvent): void {
+    const binding = event.data as PersistenceBinding;
     this.dispatchEventToListeners(Components.Linkifier.LinkDecorator.Events.LinkIconChanged, binding.network);
   }
 
-  /**
-   * @override
-   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
-   * @return {?UI.Icon.Icon}
-   */
-  linkIcon(uiSourceCode) {
+  linkIcon(uiSourceCode: Workspace.UISourceCode.UISourceCode): UI.Icon.Icon|null {
     return PersistenceUtils.iconForUISourceCode(uiSourceCode);
   }
 }

@@ -7,17 +7,17 @@ import("../../scripts/build/ninja/devtools_module.gni")
 
 devtools_module("persistence") {
   sources = [
-    "Automapping.js",
-    "EditFileSystemView.js",
-    "FileSystemWorkspaceBinding.js",
-    "IsolatedFileSystem.js",
-    "IsolatedFileSystemManager.js",
-    "NetworkPersistenceManager.js",
-    "PersistenceActions.js",
-    "PersistenceImpl.js",
-    "PersistenceUtils.js",
-    "PlatformFileSystem.js",
-    "WorkspaceSettingsTab.js",
+    "Automapping.ts",
+    "EditFileSystemView.ts",
+    "FileSystemWorkspaceBinding.ts",
+    "IsolatedFileSystem.ts",
+    "IsolatedFileSystemManager.ts",
+    "NetworkPersistenceManager.ts",
+    "PersistenceActions.ts",
+    "PersistenceImpl.ts",
+    "PersistenceUtils.ts",
+    "PlatformFileSystem.ts",
+    "WorkspaceSettingsTab.ts",
   ]
 
   deps = [
@@ -42,13 +42,13 @@ copy_to_gen("legacy_css") {
 }
 
 devtools_entrypoint("bundle") {
-  entrypoint = "persistence.js"
+  entrypoint = "persistence.ts"
 
   deps = [ ":persistence" ]
 }
 
 devtools_entrypoint("legacy") {
-  entrypoint = "persistence-legacy.js"
+  entrypoint = "persistence-legacy.ts"
 
   deps = [ ":bundle" ]
 }

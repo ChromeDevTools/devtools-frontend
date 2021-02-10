@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as i18n from '../i18n/i18n.js';
 import * as UI from '../ui/ui.js';
 
@@ -34,15 +36,17 @@ export const UIStrings = {
   */
   remove: 'Remove',
 };
-const str_ = i18n.i18n.registerUIStrings('persistence/WorkspaceSettingsTab.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('persistence/WorkspaceSettingsTab.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-/** @type {!WorkspaceSettingsTab} */
-let workspaceSettingsTabInstance;
+let workspaceSettingsTabInstance: WorkspaceSettingsTab;
 
 export class WorkspaceSettingsTab extends UI.Widget.VBox {
-  /** @private */
-  constructor() {
+  containerElement: HTMLElement;
+  _fileSystemsListContainer: HTMLElement;
+  _elementByPath: Map<string, Element>;
+  _mappingViewByPath: Map<string, EditFileSystemView>;
+  private constructor() {
     super();
     this.registerRequiredCSS('persistence/workspaceSettingsTab.css', {enableLegacyPatching: true});
 
@@ -53,10 +57,9 @@ export class WorkspaceSettingsTab extends UI.Widget.VBox {
                                 .createChild('div', 'settings-tab settings-content settings-container');
 
     IsolatedFileSystemManager.instance().addEventListener(
-        Events.FileSystemAdded, event => this._fileSystemAdded(/** @type {!PlatformFileSystem} */ (event.data)), this);
+        Events.FileSystemAdded, event => this._fileSystemAdded(event.data as PlatformFileSystem), this);
     IsolatedFileSystemManager.instance().addEventListener(
-        Events.FileSystemRemoved, event => this._fileSystemRemoved(/** @type {!PlatformFileSystem} */ (event.data)),
-        this);
+        Events.FileSystemRemoved, event => this._fileSystemRemoved(event.data as PlatformFileSystem), this);
 
     const folderExcludePatternInput = this._createFolderExcludePatternInput();
     folderExcludePatternInput.classList.add('folder-exclude-pattern');
@@ -72,10 +75,8 @@ export class WorkspaceSettingsTab extends UI.Widget.VBox {
     this.containerElement.appendChild(addButton);
     this.setDefaultFocusedElement(addButton);
 
-    /** @type {!Map<string, !Element>} */
     this._elementByPath = new Map();
 
-    /** @type {!Map<string, !EditFileSystemView>} */
     this._mappingViewByPath = new Map();
 
     const fileSystems = IsolatedFileSystemManager.instance().fileSystems();
@@ -84,10 +85,7 @@ export class WorkspaceSettingsTab extends UI.Widget.VBox {
     }
   }
 
-  /**
-   * @param {{forceNew: ?boolean}} opts
-   */
-  static instance(opts = {forceNew: null}) {
+  static instance(opts: {forceNew: boolean|null} = {forceNew: null}): WorkspaceSettingsTab {
     const {forceNew} = opts;
     if (!workspaceSettingsTabInstance || forceNew) {
       workspaceSettingsTabInstance = new WorkspaceSettingsTab();
@@ -96,10 +94,7 @@ export class WorkspaceSettingsTab extends UI.Widget.VBox {
     return workspaceSettingsTabInstance;
   }
 
-  /**
-   * @return {!Element}
-   */
-  _createFolderExcludePatternInput() {
+  _createFolderExcludePatternInput(): Element {
     const p = document.createElement('p');
     const labelElement = p.createChild('label');
     labelElement.textContent = i18nString(UIStrings.folderExcludePattern);
@@ -114,11 +109,7 @@ export class WorkspaceSettingsTab extends UI.Widget.VBox {
     setValue(folderExcludeSetting.get());
     return p;
 
-    /**
-     * @param {string} value
-     * @return {{valid: boolean, errorMessage: (string|undefined)}}
-     */
-    function regexValidator(value) {
+    function regexValidator(value: string): {valid: boolean, errorMessage: (string|undefined)} {
       let regex;
       try {
         regex = new RegExp(value);
@@ -129,18 +120,15 @@ export class WorkspaceSettingsTab extends UI.Widget.VBox {
     }
   }
 
-  /**
-   * @param {!PlatformFileSystem} fileSystem
-   */
-  _addItem(fileSystem) {
+  _addItem(fileSystem: PlatformFileSystem): void {
     // Support managing only instances of IsolatedFileSystem.
     if (!(fileSystem instanceof IsolatedFileSystem)) {
       return;
     }
     const networkPersistenceProject = NetworkPersistenceManager.instance().project();
     if (networkPersistenceProject &&
-        IsolatedFileSystemManager.instance().fileSystem(
-            /** @type {!FileSystem} */ (networkPersistenceProject).fileSystemPath()) === fileSystem) {
+        IsolatedFileSystemManager.instance().fileSystem((networkPersistenceProject as FileSystem).fileSystemPath()) ===
+            fileSystem) {
       return;
     }
     const element = this._renderFileSystem(fileSystem);
@@ -154,11 +142,7 @@ export class WorkspaceSettingsTab extends UI.Widget.VBox {
     mappingView.show(element);
   }
 
-  /**
-   * @param {!PlatformFileSystem} fileSystem
-   * @return {!Element}
-   */
-  _renderFileSystem(fileSystem) {
+  _renderFileSystem(fileSystem: PlatformFileSystem): Element {
     const fileSystemPath = fileSystem.path();
     const lastIndexOfSlash = fileSystemPath.lastIndexOf('/');
     const folderName = fileSystemPath.substr(lastIndexOfSlash + 1);
@@ -184,28 +168,19 @@ export class WorkspaceSettingsTab extends UI.Widget.VBox {
     return element;
   }
 
-  /**
-   * @param {!PlatformFileSystem} fileSystem
-   */
-  _removeFileSystemClicked(fileSystem) {
+  _removeFileSystemClicked(fileSystem: PlatformFileSystem): void {
     IsolatedFileSystemManager.instance().removeFileSystem(fileSystem);
   }
 
-  _addFileSystemClicked() {
+  _addFileSystemClicked(): void {
     IsolatedFileSystemManager.instance().addFileSystem();
   }
 
-  /**
-   * @param {!PlatformFileSystem} fileSystem
-   */
-  _fileSystemAdded(fileSystem) {
+  _fileSystemAdded(fileSystem: PlatformFileSystem): void {
     this._addItem(fileSystem);
   }
 
-  /**
-   * @param {!PlatformFileSystem} fileSystem
-   */
-  _fileSystemRemoved(fileSystem) {
+  _fileSystemRemoved(fileSystem: PlatformFileSystem): void {
     const mappingView = this._mappingViewByPath.get(fileSystem.path());
     if (mappingView) {
       mappingView.dispose();

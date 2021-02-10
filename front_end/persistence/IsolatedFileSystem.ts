@@ -28,6 +28,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
 import * as i18n from '../i18n/i18n.js';
@@ -64,49 +66,41 @@ export const UIStrings = {
   */
   linkedToS: 'Linked to {PH1}',
 };
-const str_ = i18n.i18n.registerUIStrings('persistence/IsolatedFileSystem.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('persistence/IsolatedFileSystem.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class IsolatedFileSystem extends PlatformFileSystem {
-  /**
-   * @param {!IsolatedFileSystemManager} manager
-   * @param {string} path
-   * @param {string} embedderPath
-   * @param {!FileSystem} domFileSystem
-   * @param {string} type
-   */
-  constructor(manager, path, embedderPath, domFileSystem, type) {
+  _manager: IsolatedFileSystemManager;
+  _embedderPath: string;
+  _domFileSystem: FileSystem;
+  _excludedFoldersSetting: Common.Settings.Setting<{[path: string]: string[]}>;
+  _excludedFolders: Set<string>;
+  _excludedEmbedderFolders: string[];
+  _initialFilePaths: Set<string>;
+  _initialGitFolders: Set<string>;
+  _fileLocks: Map<string, Promise<void>>;
+
+  constructor(
+      manager: IsolatedFileSystemManager, path: string, embedderPath: string, domFileSystem: FileSystem, type: string) {
     super(path, type);
     this._manager = manager;
     this._embedderPath = embedderPath;
     this._domFileSystem = domFileSystem;
     this._excludedFoldersSetting =
         Common.Settings.Settings.instance().createLocalSetting('workspaceExcludedFolders', {});
-    /** @type {!Set<string>} */
     this._excludedFolders = new Set(this._excludedFoldersSetting.get()[path] || []);
-    /** @type {!Array<string>} */
     this._excludedEmbedderFolders = [];
 
-    /** @type {!Set<string>} */
     this._initialFilePaths = new Set();
-    /** @type {!Set<string>} */
     this._initialGitFolders = new Set();
-    /** @type {!Map<string, !Promise<?>>} */
     this._fileLocks = new Map();
   }
 
-  /**
-   * @param {!IsolatedFileSystemManager} manager
-   * @param {string} path
-   * @param {string} embedderPath
-   * @param {string} type
-   * @param {string} name
-   * @param {string} rootURL
-   * @return {!Promise<?IsolatedFileSystem>}
-   */
-  static create(manager, path, embedderPath, type, name, rootURL) {
+  static create(
+      manager: IsolatedFileSystemManager, path: string, embedderPath: string, type: string, name: string,
+      rootURL: string): Promise<IsolatedFileSystem|null> {
     const domFileSystem = Host.InspectorFrontendHost.InspectorFrontendHostInstance.isolatedFileSystem(name, rootURL);
     if (!domFileSystem) {
-      return Promise.resolve(/** @type {?IsolatedFileSystem} */ (null));
+      return Promise.resolve(null as IsolatedFileSystem | null);
     }
 
     const fileSystem = new IsolatedFileSystem(manager, path, embedderPath, domFileSystem, type);
@@ -116,95 +110,55 @@ export class IsolatedFileSystem extends PlatformFileSystem {
     });
   }
 
-  /**
-   * @param {*} error
-   * @return {string}
-   */
-  static errorMessage(error) {
-    return i18nString(UIStrings.fileSystemErrorS, {PH1: /** @type {*} */ (error).message});
+  static errorMessage(error: DOMError): string {
+    // @ts-ignore TODO(crbug.com/1172300) Properly type this after jsdoc to ts migration
+    return i18nString(UIStrings.fileSystemErrorS, {PH1: error.message});
   }
 
-  /**
-   * @template T
-   * @param {string} path
-   * @param {function():!Promise<T>} operation
-   * @return {!Promise<T>}
-   */
-  _serializedFileOperation(path, operation) {
+  _serializedFileOperation<T>(path: string, operation: () => Promise<T>): Promise<T> {
     const promise = Promise.resolve(this._fileLocks.get(path)).then(() => operation.call(null));
-    this._fileLocks.set(path, promise);
+    this._fileLocks.set(path, promise as unknown as Promise<void>);
     return promise;
   }
 
-  /**
-   * @override
-   * @param {string} path
-   * @return {!Promise<?{modificationTime: !Date, size: number}>}
-   */
-  getMetadata(path) {
-    /** @type {function(?{modificationTime: !Date, size: number}):void} */
-    let fulfill;
-    const promise = new Promise(f => {
+  getMetadata(path: string): Promise<Metadata|null> {
+    let fulfill: (arg0: Metadata|null) => void;
+    const promise = new Promise<Metadata|null>(f => {
       fulfill = f;
     });
     this._domFileSystem.root.getFile(path, undefined, fileEntryLoaded, errorHandler);
     return promise;
 
-    /**
-     * @param {!FileEntry} entry
-     */
-    function fileEntryLoaded(entry) {
+    function fileEntryLoaded(entry: FileEntry): void {
       entry.getMetadata(fulfill, errorHandler);
     }
 
-    /**
-     * @param {!DOMError} error
-     */
-    function errorHandler(error) {
+    function errorHandler(error: DOMError): void {
       const errorMessage = IsolatedFileSystem.errorMessage(error);
       console.error(errorMessage + ' when getting file metadata \'' + path);
       fulfill(null);
     }
   }
 
-  /**
-   * @override
-   * @return {!Array<string>}
-   */
-  initialFilePaths() {
+  initialFilePaths(): string[] {
     return [...this._initialFilePaths];
   }
 
-  /**
-   * @override
-   * @return {!Array<string>}
-   */
-  initialGitFolders() {
+  initialGitFolders(): string[] {
     return [...this._initialGitFolders];
   }
 
-  /**
-   * @override
-   * @return {string}
-   */
-  embedderPath() {
+  embedderPath(): string {
     return this._embedderPath;
   }
 
-  /**
-   * @return {!Promise<void>}
-   */
-  _initializeFilePaths() {
+  _initializeFilePaths(): Promise<void> {
     return new Promise(fulfill => {
       let pendingRequests = 1;
       const boundInnerCallback = innerCallback.bind(this);
       this._requestEntries('', boundInnerCallback);
 
-      /**
-       * @param {!Array.<!FileEntry>} entries
-       * @this {IsolatedFileSystem}
-       */
-      function innerCallback(entries) {
+      function innerCallback(this: IsolatedFileSystem, entries: FileEntry[]): void {
         for (let i = 0; i < entries.length; ++i) {
           const entry = entries[i];
           if (!entry.isDirectory) {
@@ -234,13 +188,9 @@ export class IsolatedFileSystem extends PlatformFileSystem {
     });
   }
 
-  /**
-   * @param {string} folderPath
-   * @return {!Promise<?DirectoryEntry>}
-   */
-  async _createFoldersIfNotExist(folderPath) {
+  async _createFoldersIfNotExist(folderPath: string): Promise<DirectoryEntry|null> {
     // Fast-path. If parent directory already exists we return it immidiatly.
-    let dirEntry = await new Promise(
+    let dirEntry = await new Promise<DirectoryEntry|null>(
         resolve => this._domFileSystem.root.getDirectory(folderPath, undefined, resolve, () => resolve(null)));
     if (dirEntry) {
       return dirEntry;
@@ -257,11 +207,7 @@ export class IsolatedFileSystem extends PlatformFileSystem {
     return dirEntry;
   }
 
-  /**
-   * @param {string} path
-   * @return {!Promise<?DirectoryEntry>}
-   */
-  _innerCreateFolderIfNeeded(path) {
+  _innerCreateFolderIfNeeded(path: string): Promise<DirectoryEntry|null> {
     return new Promise(resolve => {
       this._domFileSystem.root.getDirectory(path, {create: true}, dirEntry => resolve(dirEntry), error => {
         const errorMessage = IsolatedFileSystem.errorMessage(error);
@@ -271,102 +217,71 @@ export class IsolatedFileSystem extends PlatformFileSystem {
     });
   }
 
-  /**
-   * @override
-   * @param {string} path
-   * @param {?string} name
-   * @return {!Promise<?string>}
-   */
-  async createFile(path, name) {
+  async createFile(path: string, name: string|null): Promise<string|null> {
     const dirEntry = await this._createFoldersIfNotExist(path);
     if (!dirEntry) {
       return null;
     }
-    const fileEntry = await this._serializedFileOperation(path, createFileCandidate.bind(this, name || 'NewFile'));
+    const fileEntry =
+        await this._serializedFileOperation(path, createFileCandidate.bind(this, name || 'NewFile')) as FileEntry |
+        null;
     if (!fileEntry) {
       return null;
     }
     return fileEntry.fullPath.substr(1);
 
-    /**
-     * @param {string} name
-     * @param {number=} newFileIndex
-     * @return {!Promise<?FileEntry>}
-     * @this {IsolatedFileSystem}
-     */
-    function createFileCandidate(name, newFileIndex) {
+    function createFileCandidate(
+        this: IsolatedFileSystem, name: string, newFileIndex?: number): Promise<FileEntry|null> {
       return new Promise(resolve => {
         const nameCandidate = name + (newFileIndex || '');
-        /** @type {!DirectoryEntry} */ (dirEntry).getFile(
-            nameCandidate, {create: true, exclusive: true}, resolve, error => {
-              if (error.name === 'InvalidModificationError') {
-                resolve(createFileCandidate.call(this, name, (newFileIndex ? newFileIndex + 1 : 1)));
-                return;
-              }
-              const errorMessage = IsolatedFileSystem.errorMessage(error);
-              console.error(
-                  errorMessage + ' when testing if file exists \'' + (this.path() + '/' + path + '/' + nameCandidate) +
-                  '\'');
-              resolve(null);
-            });
+        (dirEntry as DirectoryEntry).getFile(nameCandidate, {create: true, exclusive: true}, resolve, error => {
+          if (error.name === 'InvalidModificationError') {
+            resolve(createFileCandidate.call(this, name, (newFileIndex ? newFileIndex + 1 : 1)));
+            return;
+          }
+          const errorMessage = IsolatedFileSystem.errorMessage(error);
+          console.error(
+              errorMessage + ' when testing if file exists \'' + (this.path() + '/' + path + '/' + nameCandidate) +
+              '\'');
+          resolve(null);
+        });
       });
     }
   }
 
-  /**
-   * @override
-   * @param {string} path
-   * @return {!Promise<boolean>}
-   */
-  deleteFile(path) {
-    /** @type {function(boolean):void} */
-    let resolveCallback;
-    const promise = new Promise(resolve => {
+  deleteFile(path: string): Promise<boolean> {
+    let resolveCallback: (arg0: boolean) => void;
+    const promise = new Promise<boolean>(resolve => {
       resolveCallback = resolve;
     });
     this._domFileSystem.root.getFile(path, undefined, fileEntryLoaded.bind(this), errorHandler.bind(this));
     return promise;
 
-    /**
-     * @param {!FileEntry} fileEntry
-     * @this {IsolatedFileSystem}
-     */
-    function fileEntryLoaded(fileEntry) {
+    function fileEntryLoaded(this: IsolatedFileSystem, fileEntry: FileEntry): void {
       fileEntry.remove(fileEntryRemoved, errorHandler.bind(this));
     }
 
-    function fileEntryRemoved() {
+    function fileEntryRemoved(): void {
       resolveCallback(true);
     }
 
     /**
-     * @param {!DOMError} error
-     * @this {IsolatedFileSystem}
      * TODO(jsbell): Update externs replacing DOMError with DOMException. https://crbug.com/496901
      */
-    function errorHandler(error) {
+    function errorHandler(this: IsolatedFileSystem, error: DOMError): void {
       const errorMessage = IsolatedFileSystem.errorMessage(error);
       console.error(errorMessage + ' when deleting file \'' + (this.path() + '/' + path) + '\'');
       resolveCallback(false);
     }
   }
 
-  /**
-   * @override
-   * @param {string} path
-   * @return {!Promise<?Blob>}
-   */
-  requestFileBlob(path) {
+  requestFileBlob(path: string): Promise<Blob|null> {
     return new Promise(resolve => {
       this._domFileSystem.root.getFile(path, undefined, entry => {
         entry.file(resolve, errorHandler.bind(this));
       }, errorHandler.bind(this));
 
-      /**
-       * @param {!DOMError} error
-       * @this {IsolatedFileSystem}
-       */
-      function errorHandler(error) {
+      function errorHandler(this: IsolatedFileSystem, error: DOMError): void {
         if (error.name === 'NotFoundError') {
           resolve(null);
           return;
@@ -379,20 +294,11 @@ export class IsolatedFileSystem extends PlatformFileSystem {
     });
   }
 
-  /**
-   * @override
-   * @param {string} path
-   * @returns {!Promise<!TextUtils.ContentProvider.DeferredContent>}
-   */
-  requestFileContent(path) {
+  requestFileContent(path: string): Promise<TextUtils.ContentProvider.DeferredContent> {
     return this._serializedFileOperation(path, () => this._innerRequestFileContent(path));
   }
 
-  /**
-   * @param {string} path
-   * @return {!Promise<!TextUtils.ContentProvider.DeferredContent>}
-   */
-  async _innerRequestFileContent(path) {
+  async _innerRequestFileContent(path: string): Promise<TextUtils.ContentProvider.DeferredContent> {
     const blob = await this.requestFileBlob(path);
     if (!blob) {
       return {content: null, error: i18nString(UIStrings.blobCouldNotBeLoaded), isEncoded: false};
@@ -415,10 +321,10 @@ export class IsolatedFileSystem extends PlatformFileSystem {
       console.error(error);
       return {content: null, isEncoded: false, error};
     }
-    let result = null;
-    let error = null;
+    let result: string|null = null;
+    let error: Common.UIString.LocalizedString|null = null;
     try {
-      result = /** @type {string} */ (reader.result);
+      result = reader.result as string;
     } catch (e) {
       result = null;
       error = i18nString(UIStrings.cantReadFileSS, {PH1: path, PH2: e.message});
@@ -431,18 +337,12 @@ export class IsolatedFileSystem extends PlatformFileSystem {
     return {isEncoded: encoded, content: encoded ? btoa(result) : result};
   }
 
-  /**
-   * @override
-   * @param {string} path
-   * @param {string} content
-   * @param {boolean} isBase64
-   */
-  async setFileContent(path, content, isBase64) {
+  async setFileContent(path: string, content: string, isBase64: boolean): Promise<void> {
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.FileSavedInWorkspace);
-    /** @type {function(*):void} */
-    let callback;
-    const innerSetFileContent = () => {
-      const promise = new Promise(x => {
+    let callback: (event?: ProgressEvent<EventTarget>) => void;
+    const innerSetFileContent = (): Promise<ProgressEvent<EventTarget>> => {
+      const promise = new Promise<ProgressEvent<EventTarget>>(x => {
+        // @ts-ignore TODO(crbug.com/1172300) Properly type this after jsdoc to ts migration
         callback = x;
       });
       this._domFileSystem.root.getFile(path, {create: true}, fileEntryLoaded.bind(this), errorHandler.bind(this));
@@ -451,23 +351,14 @@ export class IsolatedFileSystem extends PlatformFileSystem {
 
     this._serializedFileOperation(path, innerSetFileContent);
 
-    /**
-     * @param {!FileEntry} entry
-     * @this {IsolatedFileSystem}
-     */
-    function fileEntryLoaded(entry) {
+    function fileEntryLoaded(this: IsolatedFileSystem, entry: FileEntry): void {
       entry.createWriter(fileWriterCreated.bind(this), errorHandler.bind(this));
     }
 
-    /**
-     * @param {!FileWriter} fileWriter
-     * @this {IsolatedFileSystem}
-     */
-    async function fileWriterCreated(fileWriter) {
+    async function fileWriterCreated(this: IsolatedFileSystem, fileWriter: FileWriter): Promise<void> {
       fileWriter.onerror = errorHandler.bind(this);
       fileWriter.onwriteend = fileWritten;
-      /** @type {!Blob} */
-      let blob;
+      let blob: Blob;
       if (isBase64) {
         blob = await (await fetch(`data:application/octet-stream;base64,${content}`)).blob();
       } else {
@@ -475,47 +366,32 @@ export class IsolatedFileSystem extends PlatformFileSystem {
       }
       fileWriter.write(blob);
 
-      function fileWritten() {
+      function fileWritten(): void {
         fileWriter.onwriteend = callback;
         fileWriter.truncate(blob.size);
       }
     }
 
-    /**
-     * @param {*} error
-     * @this {IsolatedFileSystem}
-     */
-    function errorHandler(error) {
+    function errorHandler(this: IsolatedFileSystem, error: DOMError|ProgressEvent<EventTarget>): void {
+      // @ts-ignore TODO(crbug.com/1172300) Properly type this after jsdoc to ts migration
       const errorMessage = IsolatedFileSystem.errorMessage(error);
       console.error(errorMessage + ' when setting content for file \'' + (this.path() + '/' + path) + '\'');
       callback(undefined);
     }
   }
 
-  /**
-   * @override
-   * @param {string} path
-   * @param {string} newName
-   * @param {function(boolean, string=):void} callback
-   */
-  renameFile(path, newName, callback) {
+  renameFile(path: string, newName: string, callback: (arg0: boolean, arg1?: string|undefined) => void): void {
     newName = newName ? newName.trim() : newName;
     if (!newName || newName.indexOf('/') !== -1) {
       callback(false);
       return;
     }
-    /** @type {!FileEntry} */
-    let fileEntry;
-    /** @type {!DirectoryEntry} */
-    let dirEntry;
+    let fileEntry: FileEntry;
+    let dirEntry: DirectoryEntry;
 
     this._domFileSystem.root.getFile(path, undefined, fileEntryLoaded.bind(this), errorHandler.bind(this));
 
-    /**
-     * @param {!FileEntry} entry
-     * @this {IsolatedFileSystem}
-     */
-    function fileEntryLoaded(entry) {
+    function fileEntryLoaded(this: IsolatedFileSystem, entry: FileEntry): void {
       if (entry.name === newName) {
         callback(false);
         return;
@@ -525,27 +401,16 @@ export class IsolatedFileSystem extends PlatformFileSystem {
       fileEntry.getParent(dirEntryLoaded.bind(this), errorHandler.bind(this));
     }
 
-    /**
-     * @param {!Entry} entry
-     * @this {IsolatedFileSystem}
-     */
-    function dirEntryLoaded(entry) {
-      dirEntry = /** @type {!DirectoryEntry} */ (entry);
+    function dirEntryLoaded(this: IsolatedFileSystem, entry: Entry): void {
+      dirEntry = entry as DirectoryEntry;
       dirEntry.getFile(newName, undefined, newFileEntryLoaded, newFileEntryLoadErrorHandler.bind(this));
     }
 
-    /**
-     * @param {!FileEntry} entry
-     */
-    function newFileEntryLoaded(entry) {
+    function newFileEntryLoaded(_entry: FileEntry): void {
       callback(false);
     }
 
-    /**
-     * @param {!DOMError} error
-     * @this {IsolatedFileSystem}
-     */
-    function newFileEntryLoadErrorHandler(error) {
+    function newFileEntryLoadErrorHandler(this: IsolatedFileSystem, error: DOMError): void {
       if (error.name !== 'NotFoundError') {
         callback(false);
         return;
@@ -553,37 +418,22 @@ export class IsolatedFileSystem extends PlatformFileSystem {
       fileEntry.moveTo(dirEntry, newName, fileRenamed, errorHandler.bind(this));
     }
 
-    /**
-     * @param {!Entry} entry
-     */
-    function fileRenamed(entry) {
+    function fileRenamed(entry: Entry): void {
       callback(true, entry.name);
     }
 
-    /**
-     * @param {!DOMError} error
-     * @this {IsolatedFileSystem}
-     */
-    function errorHandler(error) {
+    function errorHandler(this: IsolatedFileSystem, error: DOMError): void {
       const errorMessage = IsolatedFileSystem.errorMessage(error);
       console.error(errorMessage + ' when renaming file \'' + (this.path() + '/' + path) + '\' to \'' + newName + '\'');
       callback(false);
     }
   }
 
-  /**
-   * @param {!DirectoryEntry} dirEntry
-   * @param {function(!Array.<!FileEntry>):void} callback
-   */
-  _readDirectory(dirEntry, callback) {
+  _readDirectory(dirEntry: DirectoryEntry, callback: (arg0: Array<FileEntry>) => void): void {
     const dirReader = dirEntry.createReader();
-    /** @type {!Array.<!FileEntry>} */
-    let entries = [];
+    let entries: FileEntry[] = [];
 
-    /**
-     * @param {!Array.<!Entry>} results
-     */
-    function innerCallback(results) {
+    function innerCallback(results: Entry[]): void {
       if (!results.length) {
         callback(entries.sort());
       } else {
@@ -592,163 +442,97 @@ export class IsolatedFileSystem extends PlatformFileSystem {
       }
     }
 
-    /**
-     * @param {!Array.<!Entry>} list
-     */
-    function toArray(list) {
+    function toArray(list: Entry[]): FileEntry[] {
       return Array.prototype.slice.call(list || [], 0);
     }
 
     dirReader.readEntries(innerCallback, errorHandler);
 
-    /**
-     * @param {!DOMError} error
-     */
-    function errorHandler(error) {
+    function errorHandler(error: DOMError): void {
       const errorMessage = IsolatedFileSystem.errorMessage(error);
       console.error(errorMessage + ' when reading directory \'' + dirEntry.fullPath + '\'');
       callback([]);
     }
   }
 
-  /**
-   * @param {string} path
-   * @param {function(!Array.<!FileEntry>):void} callback
-   */
-  _requestEntries(path, callback) {
+  _requestEntries(path: string, callback: (arg0: Array<FileEntry>) => void): void {
     this._domFileSystem.root.getDirectory(path, undefined, innerCallback.bind(this), errorHandler);
 
-    /**
-     * @param {!DirectoryEntry} dirEntry
-     * @this {IsolatedFileSystem}
-     */
-    function innerCallback(dirEntry) {
+    function innerCallback(this: IsolatedFileSystem, dirEntry: DirectoryEntry): void {
       this._readDirectory(dirEntry, callback);
     }
 
-    /**
-     * @param {!DOMError} error
-     */
-    function errorHandler(error) {
+    function errorHandler(error: DOMError): void {
       const errorMessage = IsolatedFileSystem.errorMessage(error);
       console.error(errorMessage + ' when requesting entry \'' + path + '\'');
       callback([]);
     }
   }
 
-  _saveExcludedFolders() {
+  _saveExcludedFolders(): void {
     const settingValue = this._excludedFoldersSetting.get();
     settingValue[this.path()] = [...this._excludedFolders];
     this._excludedFoldersSetting.set(settingValue);
   }
 
-  /**
-   * @override
-   * @param {string} path
-   */
-  addExcludedFolder(path) {
+  addExcludedFolder(path: string): void {
     this._excludedFolders.add(path);
     this._saveExcludedFolders();
     this._manager.dispatchEventToListeners(Events.ExcludedFolderAdded, path);
   }
 
-  /**
-   * @override
-   * @param {string} path
-   */
-  removeExcludedFolder(path) {
+  removeExcludedFolder(path: string): void {
     this._excludedFolders.delete(path);
     this._saveExcludedFolders();
     this._manager.dispatchEventToListeners(Events.ExcludedFolderRemoved, path);
   }
 
-  /**
-   * @override
-   */
-  fileSystemRemoved() {
+  fileSystemRemoved(): void {
     const settingValue = this._excludedFoldersSetting.get();
     delete settingValue[this.path()];
     this._excludedFoldersSetting.set(settingValue);
   }
 
-  /**
-   * @override
-   * @param {string} folderPath
-   * @return {boolean}
-   */
-  isFileExcluded(folderPath) {
+  isFileExcluded(folderPath: string): boolean {
     if (this._excludedFolders.has(folderPath)) {
       return true;
     }
-    const regex =
-        /** @type {!Common.Settings.RegExpSetting} */ (this._manager.workspaceFolderExcludePatternSetting()).asRegExp();
+    const regex = (this._manager.workspaceFolderExcludePatternSetting() as Common.Settings.RegExpSetting).asRegExp();
     return Boolean(regex && regex.test(folderPath));
   }
 
-  /**
-   * @override
-   * @return {!Set<string>}
-   */
-  excludedFolders() {
+  excludedFolders(): Set<string> {
     return this._excludedFolders;
   }
 
-  /**
-   * @override
-   * @param {string} query
-   * @param {!Common.Progress.Progress} progress
-   * @return {!Promise<!Array<string>>}
-   */
-  searchInPath(query, progress) {
+  searchInPath(query: string, progress: Common.Progress.Progress): Promise<string[]> {
     return new Promise(resolve => {
       const requestId = this._manager.registerCallback(innerCallback);
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.searchInPath(requestId, this._embedderPath, query);
 
-      /**
-       * @param {!Array<string>} files
-       */
-      function innerCallback(files) {
+      function innerCallback(files: string[]): void {
         resolve(files.map(path => Common.ParsedURL.ParsedURL.platformPathToURL(path)));
         progress.worked(1);
       }
     });
   }
 
-  /**
-   * @override
-   * @param {!Common.Progress.Progress} progress
-   */
-  indexContent(progress) {
+  indexContent(progress: Common.Progress.Progress): void {
     progress.setTotalWork(1);
     const requestId = this._manager.registerProgress(progress);
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.indexPath(
         requestId, this._embedderPath, JSON.stringify(this._excludedEmbedderFolders));
   }
 
-  /**
-   * @override
-   * @param {string} path
-   * @return {string}
-   */
-  mimeFromPath(path) {
+  mimeFromPath(path: string): string {
     return Common.ResourceType.ResourceType.mimeFromURL(path) || 'text/plain';
   }
 
-  /**
-   * @override
-   * @param {string} path
-   * @return {boolean}
-   */
-  canExcludeFolder(path) {
+  canExcludeFolder(path: string): boolean {
     return Boolean(path) && this.type() !== 'overrides';
   }
 
-  /**
-   * @override
-   * @param {string} path
-   * @return {!Common.ResourceType.ResourceType}
-   */
-  contentType(path) {
+  contentType(path: string): Common.ResourceType.ResourceType {
     const extension = Common.ParsedURL.ParsedURL.extractExtension(path);
     if (_styleSheetExtensions.has(extension)) {
       return Common.ResourceType.resourceTypes.Stylesheet;
@@ -766,45 +550,88 @@ export class IsolatedFileSystem extends PlatformFileSystem {
                                              Common.ResourceType.resourceTypes.Document;
   }
 
-  /**
-   * @override
-   * @param {string} url
-   * @return {string}
-   */
-  tooltipForURL(url) {
+  tooltipForURL(url: string): string {
     const path = Platform.StringUtilities.trimMiddle(
         Common.ParsedURL.ParsedURL.urlToPlatformPath(url, Host.Platform.isWin()), 150);
     return i18nString(UIStrings.linkedToS, {PH1: path});
   }
 
-  /**
-   * @override
-   * @return {boolean}
-   */
-  supportsAutomapping() {
+  supportsAutomapping(): boolean {
     return this.type() !== 'overrides';
   }
 }
 
-const _styleSheetExtensions = new Set(['css', 'scss', 'sass', 'less']);
-const _documentExtensions = new Set(['htm', 'html', 'asp', 'aspx', 'phtml', 'jsp']);
+const _styleSheetExtensions = new Set<string>(['css', 'scss', 'sass', 'less']);
+const _documentExtensions = new Set<string>(['htm', 'html', 'asp', 'aspx', 'phtml', 'jsp']);
 
-const _scriptExtensions = new Set([
+const _scriptExtensions = new Set<string>([
   'asp', 'aspx', 'c', 'cc', 'cljs', 'coffee', 'cpp', 'cs', 'dart', 'java', 'js',
-  'jsp', 'jsx',  'h', 'm',  'mjs',  'mm',     'py',  'sh', 'ts',   'tsx',  'ls'
+  'jsp', 'jsx',  'h', 'm',  'mjs',  'mm',     'py',  'sh', 'ts',   'tsx',  'ls',
 ]);
 
-const ImageExtensions = new Set(['jpeg', 'jpg', 'svg', 'gif', 'webp', 'png', 'ico', 'tiff', 'tif', 'bmp']);
+const ImageExtensions = new Set<string>(['jpeg', 'jpg', 'svg', 'gif', 'webp', 'png', 'ico', 'tiff', 'tif', 'bmp']);
 
-export const BinaryExtensions = new Set([
+export const BinaryExtensions = new Set<string>([
   // Executable extensions, roughly taken from https://en.wikipedia.org/wiki/Comparison_of_executable_file_formats
-  'cmd', 'com', 'exe',
+  'cmd',
+  'com',
+  'exe',
   // Archive extensions, roughly taken from https://en.wikipedia.org/wiki/List_of_archive_formats
-  'a', 'ar', 'iso', 'tar', 'bz2', 'gz', 'lz', 'lzma', 'z', '7z', 'apk', 'arc', 'cab', 'dmg', 'jar', 'pak', 'rar', 'zip',
+  'a',
+  'ar',
+  'iso',
+  'tar',
+  'bz2',
+  'gz',
+  'lz',
+  'lzma',
+  'z',
+  '7z',
+  'apk',
+  'arc',
+  'cab',
+  'dmg',
+  'jar',
+  'pak',
+  'rar',
+  'zip',
   // Audio file extensions, roughly taken from https://en.wikipedia.org/wiki/Audio_file_format#List_of_formats
-  '3gp', 'aac', 'aiff', 'flac', 'm4a', 'mmf', 'mp3', 'ogg', 'oga', 'raw', 'sln', 'wav', 'wma', 'webm',
+  '3gp',
+  'aac',
+  'aiff',
+  'flac',
+  'm4a',
+  'mmf',
+  'mp3',
+  'ogg',
+  'oga',
+  'raw',
+  'sln',
+  'wav',
+  'wma',
+  'webm',
   // Video file extensions, roughly taken from https://en.wikipedia.org/wiki/Video_file_format
-  'mkv', 'flv', 'vob', 'ogv', 'gifv', 'avi', 'mov', 'qt', 'mp4', 'm4p', 'm4v', 'mpg', 'mpeg',
+  'mkv',
+  'flv',
+  'vob',
+  'ogv',
+  'gifv',
+  'avi',
+  'mov',
+  'qt',
+  'mp4',
+  'm4p',
+  'm4v',
+  'mpg',
+  'mpeg',
   // Image file extensions
-  'jpeg', 'jpg', 'gif', 'webp', 'png', 'ico', 'tiff', 'tif', 'bmp'
+  'jpeg',
+  'jpg',
+  'gif',
+  'webp',
+  'png',
+  'ico',
+  'tiff',
+  'tif',
+  'bmp',
 ]);

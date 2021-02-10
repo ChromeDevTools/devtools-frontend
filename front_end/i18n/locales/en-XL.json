@@ -4466,46 +4466,46 @@
   "performance_monitor/PerformanceMonitor.ts | styleRecalcsSec": {
     "message": "Ŝt́ŷĺê ŕêćâĺĉś / ŝéĉ"
   },
-  "persistence/Automapping.js | theAttemptToBindSInTheWorkspace": {
+  "persistence/Automapping.ts | theAttemptToBindSInTheWorkspace": {
     "message": "T̂h́ê át̂t́êḿp̂t́ t̂ó b̂ín̂d́ \"{PH1}\" îń t̂h́ê ẃôŕk̂śp̂áĉé f̂áîĺêd́ âś t̂h́îś ÛŔÎ íŝ ḿâĺf̂ór̂ḿêd́."
   },
-  "persistence/EditFileSystemView.js | add": {
+  "persistence/EditFileSystemView.ts | add": {
     "message": "Âd́d̂"
   },
-  "persistence/EditFileSystemView.js | enterAPath": {
+  "persistence/EditFileSystemView.ts | enterAPath": {
     "message": "Êńt̂ér̂ á p̂át̂h́"
   },
-  "persistence/EditFileSystemView.js | enterAUniquePath": {
+  "persistence/EditFileSystemView.ts | enterAUniquePath": {
     "message": "Êńt̂ér̂ á ûńîq́ûé p̂át̂h́"
   },
-  "persistence/EditFileSystemView.js | excludedFolders": {
+  "persistence/EditFileSystemView.ts | excludedFolders": {
     "message": "Êx́ĉĺûd́êd́ f̂ól̂d́êŕŝ"
   },
-  "persistence/EditFileSystemView.js | folderPath": {
+  "persistence/EditFileSystemView.ts | folderPath": {
     "message": "F̂ól̂d́êŕ p̂át̂h́"
   },
-  "persistence/EditFileSystemView.js | none": {
+  "persistence/EditFileSystemView.ts | none": {
     "message": "N̂ón̂é"
   },
-  "persistence/EditFileSystemView.js | sViaDevtools": {
+  "persistence/EditFileSystemView.ts | sViaDevtools": {
     "message": "{PH1} (v̂íâ .d́êv́t̂óôĺŝ)"
   },
-  "persistence/IsolatedFileSystem.js | blobCouldNotBeLoaded": {
+  "persistence/IsolatedFileSystem.ts | blobCouldNotBeLoaded": {
     "message": "B̂ĺôb́ ĉóûĺd̂ ńôt́ b̂é l̂óâd́êd́."
   },
-  "persistence/IsolatedFileSystem.js | cantReadFileSS": {
+  "persistence/IsolatedFileSystem.ts | cantReadFileSS": {
     "message": "Ĉán̂'t́ r̂éâd́ f̂íl̂é: {PH1}: {PH2}"
   },
-  "persistence/IsolatedFileSystem.js | fileSystemErrorS": {
+  "persistence/IsolatedFileSystem.ts | fileSystemErrorS": {
     "message": "F̂íl̂é ŝýŝt́êḿ êŕr̂ór̂: {PH1}"
   },
-  "persistence/IsolatedFileSystem.js | linkedToS": {
+  "persistence/IsolatedFileSystem.ts | linkedToS": {
     "message": "L̂ín̂ḱêd́ t̂ó {PH1}"
   },
-  "persistence/IsolatedFileSystem.js | unknownErrorReadingFileS": {
+  "persistence/IsolatedFileSystem.ts | unknownErrorReadingFileS": {
     "message": "Ûńk̂ńôẃn̂ ér̂ŕôŕ r̂éâd́îńĝ f́îĺê: {PH1}"
   },
-  "persistence/IsolatedFileSystemManager.js | unableToAddFilesystemS": {
+  "persistence/IsolatedFileSystemManager.ts | unableToAddFilesystemS": {
     "message": "Ûńâb́l̂é t̂ó âd́d̂ f́îĺêśŷśt̂ém̂: {PH1}"
   },
   "persistence/persistence-meta.ts | disableOverrideNetworkRequests": {
@@ -4538,40 +4538,40 @@
   "persistence/persistence-meta.ts | workspace": {
     "message": "Ŵór̂ḱŝṕâćê"
   },
-  "persistence/PersistenceActions.js | openInContainingFolder": {
+  "persistence/PersistenceActions.ts | openInContainingFolder": {
     "message": "Ôṕêń îń ĉón̂t́âín̂ín̂ǵ f̂ól̂d́êŕ"
   },
-  "persistence/PersistenceActions.js | saveAs": {
+  "persistence/PersistenceActions.ts | saveAs": {
     "message": "Ŝáv̂é âś..."
   },
-  "persistence/PersistenceActions.js | saveForOverrides": {
+  "persistence/PersistenceActions.ts | saveForOverrides": {
     "message": "Ŝáv̂é f̂ór̂ óv̂ér̂ŕîd́êś"
   },
-  "persistence/PersistenceActions.js | saveImage": {
+  "persistence/PersistenceActions.ts | saveImage": {
     "message": "Ŝáv̂é îḿâǵê"
   },
-  "persistence/PersistenceUtils.js | linkedToS": {
+  "persistence/PersistenceUtils.ts | linkedToS": {
     "message": "L̂ín̂ḱêd́ t̂ó {PH1}"
   },
-  "persistence/PersistenceUtils.js | linkedToSourceMapS": {
+  "persistence/PersistenceUtils.ts | linkedToSourceMapS": {
     "message": "L̂ín̂ḱêd́ t̂ó ŝóûŕĉé m̂áp̂: {PH1}"
   },
-  "persistence/PlatformFileSystem.js | unableToReadFilesWithThis": {
+  "persistence/PlatformFileSystem.ts | unableToReadFilesWithThis": {
     "message": "Ûńâb́l̂é t̂ó r̂éâd́ f̂íl̂éŝ ẃît́ĥ t́ĥíŝ ím̂ṕl̂ém̂én̂t́ât́îón̂."
   },
-  "persistence/WorkspaceSettingsTab.js | addFolder": {
+  "persistence/WorkspaceSettingsTab.ts | addFolder": {
     "message": "Âd́d̂ f́ôĺd̂ér̂…"
   },
-  "persistence/WorkspaceSettingsTab.js | folderExcludePattern": {
+  "persistence/WorkspaceSettingsTab.ts | folderExcludePattern": {
     "message": "F̂ól̂d́êŕ êx́ĉĺûd́ê ṕât́t̂ér̂ń"
   },
-  "persistence/WorkspaceSettingsTab.js | mappingsAreInferredAutomatically": {
+  "persistence/WorkspaceSettingsTab.ts | mappingsAreInferredAutomatically": {
     "message": "M̂áp̂ṕîńĝś âŕê ín̂f́êŕr̂éd̂ áût́ôḿât́îćâĺl̂ý."
   },
-  "persistence/WorkspaceSettingsTab.js | remove": {
+  "persistence/WorkspaceSettingsTab.ts | remove": {
     "message": "R̂ém̂óv̂é"
   },
-  "persistence/WorkspaceSettingsTab.js | workspace": {
+  "persistence/WorkspaceSettingsTab.ts | workspace": {
     "message": "Ŵór̂ḱŝṕâćê"
   },
   "profiler/CPUProfileView.js | aggregatedSelfTime": {

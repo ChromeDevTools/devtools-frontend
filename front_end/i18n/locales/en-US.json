@@ -4466,46 +4466,46 @@
   "performance_monitor/PerformanceMonitor.ts | styleRecalcsSec": {
     "message": "Style recalcs / sec"
   },
-  "persistence/Automapping.js | theAttemptToBindSInTheWorkspace": {
+  "persistence/Automapping.ts | theAttemptToBindSInTheWorkspace": {
     "message": "The attempt to bind \"{PH1}\" in the workspace failed as this URI is malformed."
   },
-  "persistence/EditFileSystemView.js | add": {
+  "persistence/EditFileSystemView.ts | add": {
     "message": "Add"
   },
-  "persistence/EditFileSystemView.js | enterAPath": {
+  "persistence/EditFileSystemView.ts | enterAPath": {
     "message": "Enter a path"
   },
-  "persistence/EditFileSystemView.js | enterAUniquePath": {
+  "persistence/EditFileSystemView.ts | enterAUniquePath": {
     "message": "Enter a unique path"
   },
-  "persistence/EditFileSystemView.js | excludedFolders": {
+  "persistence/EditFileSystemView.ts | excludedFolders": {
     "message": "Excluded folders"
   },
-  "persistence/EditFileSystemView.js | folderPath": {
+  "persistence/EditFileSystemView.ts | folderPath": {
     "message": "Folder path"
   },
-  "persistence/EditFileSystemView.js | none": {
+  "persistence/EditFileSystemView.ts | none": {
     "message": "None"
   },
-  "persistence/EditFileSystemView.js | sViaDevtools": {
+  "persistence/EditFileSystemView.ts | sViaDevtools": {
     "message": "{PH1} (via .devtools)"
   },
-  "persistence/IsolatedFileSystem.js | blobCouldNotBeLoaded": {
+  "persistence/IsolatedFileSystem.ts | blobCouldNotBeLoaded": {
     "message": "Blob could not be loaded."
   },
-  "persistence/IsolatedFileSystem.js | cantReadFileSS": {
+  "persistence/IsolatedFileSystem.ts | cantReadFileSS": {
     "message": "Can't read file: {PH1}: {PH2}"
   },
-  "persistence/IsolatedFileSystem.js | fileSystemErrorS": {
+  "persistence/IsolatedFileSystem.ts | fileSystemErrorS": {
     "message": "File system error: {PH1}"
   },
-  "persistence/IsolatedFileSystem.js | linkedToS": {
+  "persistence/IsolatedFileSystem.ts | linkedToS": {
     "message": "Linked to {PH1}"
   },
-  "persistence/IsolatedFileSystem.js | unknownErrorReadingFileS": {
+  "persistence/IsolatedFileSystem.ts | unknownErrorReadingFileS": {
     "message": "Unknown error reading file: {PH1}"
   },
-  "persistence/IsolatedFileSystemManager.js | unableToAddFilesystemS": {
+  "persistence/IsolatedFileSystemManager.ts | unableToAddFilesystemS": {
     "message": "Unable to add filesystem: {PH1}"
   },
   "persistence/persistence-meta.ts | disableOverrideNetworkRequests": {
@@ -4538,40 +4538,40 @@
   "persistence/persistence-meta.ts | workspace": {
     "message": "Workspace"
   },
-  "persistence/PersistenceActions.js | openInContainingFolder": {
+  "persistence/PersistenceActions.ts | openInContainingFolder": {
     "message": "Open in containing folder"
   },
-  "persistence/PersistenceActions.js | saveAs": {
+  "persistence/PersistenceActions.ts | saveAs": {
     "message": "Save as..."
   },
-  "persistence/PersistenceActions.js | saveForOverrides": {
+  "persistence/PersistenceActions.ts | saveForOverrides": {
     "message": "Save for overrides"
   },
-  "persistence/PersistenceActions.js | saveImage": {
+  "persistence/PersistenceActions.ts | saveImage": {
     "message": "Save image"
   },
-  "persistence/PersistenceUtils.js | linkedToS": {
+  "persistence/PersistenceUtils.ts | linkedToS": {
     "message": "Linked to {PH1}"
   },
-  "persistence/PersistenceUtils.js | linkedToSourceMapS": {
+  "persistence/PersistenceUtils.ts | linkedToSourceMapS": {
     "message": "Linked to source map: {PH1}"
   },
-  "persistence/PlatformFileSystem.js | unableToReadFilesWithThis": {
+  "persistence/PlatformFileSystem.ts | unableToReadFilesWithThis": {
     "message": "Unable to read files with this implementation."
   },
-  "persistence/WorkspaceSettingsTab.js | addFolder": {
+  "persistence/WorkspaceSettingsTab.ts | addFolder": {
     "message": "Add folder…"
   },
-  "persistence/WorkspaceSettingsTab.js | folderExcludePattern": {
+  "persistence/WorkspaceSettingsTab.ts | folderExcludePattern": {
     "message": "Folder exclude pattern"
   },
-  "persistence/WorkspaceSettingsTab.js | mappingsAreInferredAutomatically": {
+  "persistence/WorkspaceSettingsTab.ts | mappingsAreInferredAutomatically": {
     "message": "Mappings are inferred automatically."
   },
-  "persistence/WorkspaceSettingsTab.js | remove": {
+  "persistence/WorkspaceSettingsTab.ts | remove": {
     "message": "Remove"
   },
-  "persistence/WorkspaceSettingsTab.js | workspace": {
+  "persistence/WorkspaceSettingsTab.ts | workspace": {
     "message": "Workspace"
   },
   "profiler/CPUProfileView.js | aggregatedSelfTime": {

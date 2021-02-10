@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
 import * as i18n from '../i18n/i18n.js';
@@ -31,21 +33,13 @@ export const UIStrings = {
   */
   openInContainingFolder: 'Open in containing folder',
 };
-const str_ = i18n.i18n.registerUIStrings('persistence/PersistenceActions.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('persistence/PersistenceActions.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-/**
- * @type {ContextMenuProvider}
- */
-let contextMenuProviderInstance;
 
-/**
- * @implements {UI.ContextMenu.Provider}
- */
-export class ContextMenuProvider {
-  /**
-   * @param {{forceNew: ?boolean}} opts
-   */
-  static instance(opts = {forceNew: null}) {
+let contextMenuProviderInstance: ContextMenuProvider;
+
+export class ContextMenuProvider implements UI.ContextMenu.Provider {
+  static instance(opts: {forceNew: boolean|null} = {forceNew: null}): ContextMenuProvider {
     const {forceNew} = opts;
     if (!contextMenuProviderInstance || forceNew) {
       contextMenuProviderInstance = new ContextMenuProvider();
@@ -54,30 +48,24 @@ export class ContextMenuProvider {
     return contextMenuProviderInstance;
   }
 
-  /**
-   * @override
-   * @param {!Event} event
-   * @param {!UI.ContextMenu.ContextMenu} contextMenu
-   * @param {!Object} target
-   */
-  appendApplicableItems(event, contextMenu, target) {
-    const contentProvider = /** @type {!TextUtils.ContentProvider.ContentProvider} */ (target);
+  appendApplicableItems(event: Event, contextMenu: UI.ContextMenu.ContextMenu, target: Object): void {
+    const contentProvider = target as TextUtils.ContentProvider.ContentProvider;
 
-    async function saveAs() {
+    async function saveAs(): Promise<void> {
       if (contentProvider instanceof Workspace.UISourceCode.UISourceCode) {
-        /** @type {!Workspace.UISourceCode.UISourceCode} */ (contentProvider).commitWorkingCopy();
+        (contentProvider as Workspace.UISourceCode.UISourceCode).commitWorkingCopy();
       }
-      let content = (await contentProvider.requestContent()).content || '';
+      let content: string = (await contentProvider.requestContent()).content || '';
       if (await contentProvider.contentEncoded()) {
         content = window.atob(content);
       }
       const url = contentProvider.contentURL();
-      Workspace.FileManager.FileManager.instance().save(url, /** @type {string} */ (content), true);
+      Workspace.FileManager.FileManager.instance().save(url, content as string, true);
       Workspace.FileManager.FileManager.instance().close(url);
     }
 
-    async function saveImage() {
-      const targetObject = /** @type {!SDK.Resource.Resource} */ (contentProvider);
+    async function saveImage(): Promise<void> {
+      const targetObject = contentProvider as SDK.Resource.Resource;
       const content = (await targetObject.requestContent()).content || '';
       const link = document.createElement('a');
       link.download = targetObject.displayName;
@@ -97,7 +85,7 @@ export class ContextMenuProvider {
       contextMenu.saveSection().appendItem(i18nString(UIStrings.saveForOverrides), () => {
         uiSourceCode.commitWorkingCopy();
         NetworkPersistenceManager.instance().saveUISourceCodeForOverrides(
-            /** @type {!Workspace.UISourceCode.UISourceCode} */ (uiSourceCode));
+            uiSourceCode as Workspace.UISourceCode.UISourceCode);
         Common.Revealer.reveal(uiSourceCode);
       });
     }

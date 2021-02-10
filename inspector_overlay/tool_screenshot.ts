@@ -7,13 +7,6 @@ import {Overlay} from './common.js';
 let anchor: {x: number, y: number}|null = null;
 let position: {x: number, y: number}|null = null;
 
-declare global {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  interface Window {
-    InspectorOverlayHost: {send(data: string): void};
-  }
-}
-
 export class ScreenshotOverlay extends Overlay {
   private zone!: HTMLElement;
 

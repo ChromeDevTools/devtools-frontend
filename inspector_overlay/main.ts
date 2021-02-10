@@ -24,6 +24,13 @@ import sourceOrderStyle from './tool_source_order.css';
 import {SourceOrderOverlay} from './tool_source_order.js';
 import {ViewportSizeOverlay} from './tool_viewport_size.js';
 
+declare global {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  interface Window {
+    InspectorOverlayHost: {send(data: string): void};
+  }
+}
+
 adoptStyleSheet(commonStyle);
 
 const gridStyleSheet = new CSSStyleSheet();

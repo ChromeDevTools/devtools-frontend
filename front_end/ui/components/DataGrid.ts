@@ -141,6 +141,12 @@ export class DataGrid extends HTMLElement {
   private userHasScrolled = false;
   private enqueuedRender = false;
 
+  constructor() {
+    super();
+    this.shadow.adoptedStyleSheets = [
+      ...ComponentHelpers.GetStylesheet.getStyleSheets('ui/inspectorScrollbars.css', {enableLegacyPatching: false}),
+    ];
+  }
   connectedCallback(): void {
     ComponentHelpers.SetCSSProperty.set(this, '--table-row-height', `${ROW_HEIGHT_PIXELS}px`);
   }

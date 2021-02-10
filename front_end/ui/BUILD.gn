@@ -91,6 +91,7 @@ copy_to_gen("legacy_css") {
     "infobar.css",
     "inlineButton.css",
     "inspectorCommon.css",
+    "inspectorScrollbars.css",
     "inspectorStyle.css",
     "inspectorSyntaxHighlight.css",
     "inspectorSyntaxHighlightDark.css",

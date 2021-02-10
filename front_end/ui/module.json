@@ -80,6 +80,7 @@
     "infobar.css",
     "inlineButton.css",
     "inspectorCommon.css",
+    "inspectorScrollbars.css",
     "inspectorStyle.css",
     "themeColors.css",
     "inspectorSyntaxHighlight.css",

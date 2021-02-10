@@ -369,6 +369,7 @@ all_devtools_files = [
   "front_end/ui/infobar.css",
   "front_end/ui/inlineButton.css",
   "front_end/ui/inspectorCommon.css",
+  "front_end/ui/inspectorScrollbars.css",
   "front_end/ui/inspectorStyle.css",
   "front_end/ui/themeColors.css",
   "front_end/ui/inspectorSyntaxHighlight.css",

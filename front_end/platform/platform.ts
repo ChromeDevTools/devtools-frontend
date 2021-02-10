@@ -61,5 +61,5 @@ export {
   NumberUtilities,
   SetUtilities,
   StringUtilities,
-  UIString
+  UIString,
 };

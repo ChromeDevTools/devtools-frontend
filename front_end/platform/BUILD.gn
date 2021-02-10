@@ -16,14 +16,14 @@ devtools_module("platform") {
     "set-utilities.ts",
     "string-utilities.ts",
     "typescript-utilities.ts",
-    "utilities.js",
+    "utilities.ts",
   ]
 
   deps = []
 }
 
 devtools_entrypoint("bundle") {
-  entrypoint = "platform.js"
+  entrypoint = "platform.ts"
 
   deps = [ ":platform" ]
 }

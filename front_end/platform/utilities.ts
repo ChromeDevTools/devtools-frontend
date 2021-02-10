@@ -1,3 +1,7 @@
+// Copyright 2020 The Chromium Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+
 /*
  * Copyright (C) 2007 Apple Inc.  All rights reserved.
  * Copyright (C) 2012 Google Inc. All rights reserved.
@@ -32,6 +36,8 @@
  * extensions but in the mean time if an old func in here depends on one
  * that has been migrated, it will need to be imported.
  */
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import {caseInsensetiveComparator, regexSpecialCharacters, sprintf} from './string-utilities.js';
 
 // Still used in the test runners that can't use ES modules :(
@@ -42,12 +48,7 @@ String.regexSpecialCharacters = regexSpecialCharacters;
 // @ts-ignore https://crbug.com/1050549
 String.caseInsensetiveComparator = caseInsensetiveComparator;
 
-/**
- * @param {string} query
- * @param {string=} flags
- * @return {!RegExp}
- */
-self.createPlainTextSearchRegex = function(query, flags) {
+self.createPlainTextSearchRegex = function(query: string, flags?: string): RegExp {
   // This should be kept the same as the one in StringUtil.cpp.
   let regex = '';
   for (let i = 0; i < query.length; ++i) {
@@ -60,11 +61,8 @@ self.createPlainTextSearchRegex = function(query, flags) {
   return new RegExp(regex, flags || '');
 };
 
-/**
- * @param {function():void} callback
- */
-export function runOnWindowLoad(callback) {
-  function windowLoaded() {
+export function runOnWindowLoad(callback: () => void): void {
+  function windowLoaded(): void {
     window.removeEventListener('DOMContentLoaded', windowLoaded, false);
     callback();
   }
@@ -76,20 +74,11 @@ export function runOnWindowLoad(callback) {
   }
 }
 
-/**
- * @param {never} type
- * @param {string} message
- * @return {never}
- */
-export function assertNever(type, message) {
+export function assertNever(type: never, message: string): never {
   throw new Error(message);
 }
 
-/**
- * @param {?string} content
- * @return {number}
- */
-self.base64ToSize = function(content) {
+self.base64ToSize = function(content: string|null): number {
   if (!content) {
     return 0;
   }

@@ -198,6 +198,9 @@
   <message name="IDS_DEVTOOLS_8d9da4bc0e49a50e09ac9f7e56789d39" desc="Text to indicate the network connectivity is offline">
     Offline
   </message>
+  <message name="IDS_DEVTOOLS_8e6a8482802c0a5499a104808476cb18" desc="Tooltip to explain why a cookie was blocked due to SameParty">
+    This cookie was blocked because it had the &quot;SameParty&quot; attribute but the request was cross-party. The request was considered cross-party because the domain of the resource&apos;s URL and the domains of the resource&apos;s enclosing frames/documents are neither owners nor members in the same First-Party Set.
+  </message>
   <message name="IDS_DEVTOOLS_8e7a5db68bb12f3fc9484d2962e45147" desc="Title of a setting under the Rendering drawer that can be invoked through the Command Menu">
     color-gamut: p3
   </message>
@@ -215,6 +218,9 @@
   </message>
   <message name="IDS_DEVTOOLS_9915b8ef9885af8c4381daed280b5248" desc="Title for CSS Grid tooling option">
     Do not show grid track sizes
+  </message>
+  <message name="IDS_DEVTOOLS_a180cdcdca3cf3285f3dc7207929e660" desc="Tooltip to explain why a cookie was blocked due to SameParty">
+    This Set-Cookie was blocked because it had the &quot;SameParty&quot; attribute but also had other conflicting attributes. Chrome requires cookies that use the &quot;SameParty&quot; attribute to also have the &quot;Secure&quot; attribute, and to not be restricted to &quot;SameSite=Strict&quot;.
   </message>
   <message name="IDS_DEVTOOLS_a56491b51306fc59e63d029cb33328ee" desc="Label for the link for Schemeful Same-Site Issues">
     How <ph name="FEATURE_NAME_SCHEMEFUL_SAME_SITE">Schemeful Same-Site</ph> Works
@@ -509,6 +515,9 @@
   </message>
   <message name="IDS_DEVTOOLS_ba76fecd860f5cf4a97da9177080fc1c" desc="Label for the link for Mixed Content Issues">
     Preventing mixed content
+  </message>
+  <message name="IDS_DEVTOOLS_bbb18c9d17bee9c5a67c0011d676d3de" desc="Tooltip to explain why a cookie was blocked due to SameParty">
+    This Set-Cookie was blocked because it had the &quot;SameParty&quot; attribute but the request was cross-party. The request was considered cross-party because the domain of the resource&apos;s URL and the domains of the resource&apos;s enclosing frames/documents are neither owners nor members in the same First-Party Set.
   </message>
   <message name="IDS_DEVTOOLS_bbe82d0b9010205fc45f5371b4e5f379" desc="Label for the link for Shared Array Buffer Issues">
     Enabling Shared Array Buffer

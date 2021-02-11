@@ -116,6 +116,10 @@ function isNodeI18nStringsCall(node) {
   return node.type === espreeTypes.IDENTIFIER && node.name === 'i18nString';
 }
 
+function isNodeI18nLazyStringsCall(node) {
+  return node.type === espreeTypes.IDENTIFIER && node.name === 'i18nLazyString';
+}
+
 function isNodeCommonUIStringFormat(node) {
   return node && node.type === espreeTypes.NEW_EXPR &&
       (verifyCallExpressionCallee(node.callee, 'Common', 'UIStringFormat') ||
@@ -133,7 +137,7 @@ function isNodelsTaggedTemplateExpression(node) {
 }
 
 function isNodeGetLocalizedStringCall(node) {
-  return isNodeI18nStringsCall(node);
+  return isNodeI18nStringsCall(node) || isNodeI18nLazyStringsCall(node);
 }
 
 function isNodeGetFormatLocalizedStringCall(node) {

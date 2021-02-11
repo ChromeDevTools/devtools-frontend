@@ -198,7 +198,8 @@ function analyzeI18nStringNode(node, filePath) {
   // For example,
   // node: i18nString(UIStrings.url)
   // firstArg : UIStrings.url
-  if ((!node.arguments || node.arguments.length < 1) && !(node.id && node.id.name === 'i18nString')) {
+  if ((!node.arguments || node.arguments.length < 1) &&
+      !(node.id && (node.id.name === 'i18nString' || node.id.name === 'i18nLazyString'))) {
     addError(`${localizationUtils.getRelativeFilePathFromSrc(filePath)}${
         localizationUtils.getLocationMessage(node.loc)}: i18nString call should have one argument`);
     return;

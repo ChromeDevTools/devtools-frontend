@@ -66,6 +66,11 @@ describe('isLocalizationV2Call', () => {
     assert.isTrue(isLocalizationV2Call(ast.body[0].expression));
   });
 
+  it('is true for a call to i18nLazyString', () => {
+    const ast = parseCode('i18nLazyString(UIStrings.fakeID)');
+    assert.isTrue(isLocalizationV2Call(ast.body[0].expression.callee));
+  });
+
   it('is true for a declaration of UIStrings', () => {
     const ast = parseCode('const UIStrings = {fakeID: "Hello World"}');
     assert.isTrue(isLocalizationV2Call(ast.body[0].declarations[0]));

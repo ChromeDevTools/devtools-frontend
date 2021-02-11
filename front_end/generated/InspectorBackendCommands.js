@@ -2854,7 +2854,8 @@ export function registerCommands(inspectorBackend) {
     Typedarray: 'typedarray',
     Arraybuffer: 'arraybuffer',
     Dataview: 'dataview',
-    Webassemblymemory: 'webassemblymemory'
+    Webassemblymemory: 'webassemblymemory',
+    Wasmvalue: 'wasmvalue'
   });
   inspectorBackend.registerEnum('Runtime.ObjectPreviewType', {
     Object: 'object',
@@ -2884,7 +2885,8 @@ export function registerCommands(inspectorBackend) {
     Typedarray: 'typedarray',
     Arraybuffer: 'arraybuffer',
     Dataview: 'dataview',
-    Webassemblymemory: 'webassemblymemory'
+    Webassemblymemory: 'webassemblymemory',
+    Wasmvalue: 'wasmvalue'
   });
   inspectorBackend.registerEnum('Runtime.PropertyPreviewType', {
     Object: 'object',
@@ -2915,7 +2917,8 @@ export function registerCommands(inspectorBackend) {
     Typedarray: 'typedarray',
     Arraybuffer: 'arraybuffer',
     Dataview: 'dataview',
-    Webassemblymemory: 'webassemblymemory'
+    Webassemblymemory: 'webassemblymemory',
+    Wasmvalue: 'wasmvalue'
   });
   inspectorBackend.registerEvent('Runtime.bindingCalled', ['name', 'payload', 'executionContextId']);
   inspectorBackend.registerEnum('Runtime.ConsoleAPICalledEventType', {

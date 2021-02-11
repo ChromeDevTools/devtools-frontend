@@ -21505,7 +21505,8 @@
                                 "typedarray",
                                 "arraybuffer",
                                 "dataview",
-                                "webassemblymemory"
+                                "webassemblymemory",
+                                "wasmvalue"
                             ]
                         },
                         {
@@ -21615,7 +21616,8 @@
                                 "typedarray",
                                 "arraybuffer",
                                 "dataview",
-                                "webassemblymemory"
+                                "webassemblymemory",
+                                "wasmvalue"
                             ]
                         },
                         {
@@ -21709,7 +21711,8 @@
                                 "typedarray",
                                 "arraybuffer",
                                 "dataview",
-                                "webassemblymemory"
+                                "webassemblymemory",
+                                "wasmvalue"
                             ]
                         }
                     ]

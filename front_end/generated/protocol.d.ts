@@ -14383,6 +14383,7 @@ declare namespace Protocol {
       Arraybuffer = 'arraybuffer',
       Dataview = 'dataview',
       Webassemblymemory = 'webassemblymemory',
+      Wasmvalue = 'wasmvalue',
     }
 
     /**
@@ -14471,6 +14472,7 @@ declare namespace Protocol {
       Arraybuffer = 'arraybuffer',
       Dataview = 'dataview',
       Webassemblymemory = 'webassemblymemory',
+      Wasmvalue = 'wasmvalue',
     }
 
     /**
@@ -14534,6 +14536,7 @@ declare namespace Protocol {
       Arraybuffer = 'arraybuffer',
       Dataview = 'dataview',
       Webassemblymemory = 'webassemblymemory',
+      Wasmvalue = 'wasmvalue',
     }
 
     export interface PropertyPreview {

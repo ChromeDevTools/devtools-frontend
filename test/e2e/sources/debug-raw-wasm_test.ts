@@ -7,7 +7,7 @@ import * as puppeteer from 'puppeteer';
 
 import {$, click, getBrowserAndPages, goToResource, installEventListener, step, waitFor, waitForFunction} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {addBreakpointForLine, checkBreakpointDidNotActivate, clearSourceFilesAdded, DEBUGGER_PAUSED_EVENT, getBreakpointDecorators, getCallFrameLocations, getCallFrameNames, getNonBreakableLines, isBreakpointSet, listenForSourceFilesAdded, openSourceCodeEditorForFile, openSourcesPanel, reloadPageAndWaitForSourceFile, removeBreakpointForLine, RESUME_BUTTON, retrieveSourceFilesAdded, retrieveTopCallFrameScriptLocation, retrieveTopCallFrameWithoutResuming, SCOPE_LOCAL_VALUES_SELECTOR, SELECTED_THREAD_SELECTOR, sourceLineNumberSelector, stepThroughTheCode, switchToCallFrame, TURNED_OFF_PAUSE_BUTTON_SELECTOR, waitForAdditionalSourceFiles} from '../helpers/sources-helpers.js';
+import {addBreakpointForLine, checkBreakpointDidNotActivate, clearSourceFilesAdded, DEBUGGER_PAUSED_EVENT, getBreakpointDecorators, getCallFrameLocations, getCallFrameNames, getNonBreakableLines, getValuesForScope, isBreakpointSet, listenForSourceFilesAdded, openSourceCodeEditorForFile, openSourcesPanel, reloadPageAndWaitForSourceFile, removeBreakpointForLine, RESUME_BUTTON, retrieveSourceFilesAdded, retrieveTopCallFrameScriptLocation, retrieveTopCallFrameWithoutResuming, SELECTED_THREAD_SELECTOR, sourceLineNumberSelector, stepThroughTheCode, switchToCallFrame, TURNED_OFF_PAUSE_BUTTON_SELECTOR, waitForAdditionalSourceFiles} from '../helpers/sources-helpers.js';
 
 describe('Sources Tab', async function() {
   // The tests in this suite are particularly slow, as they perform a lot of actions
@@ -149,8 +149,7 @@ describe('Sources Tab', async function() {
     assert.deepEqual(await getBreakpointDecorators(frontend), [0x023]);
   });
 
-  // Blocking chromium roll
-  it.skip('[crbug.com/1176663] is able to step with state', async () => {
+  it('is able to step with state', async () => {
     const {target, frontend} = getBrowserAndPages();
     const fileName = 'stepping-with-state.wasm';
 
@@ -179,14 +178,12 @@ describe('Sources Tab', async function() {
     });
 
     await step('check that the variables in the scope view show the correct values', async () => {
-      await waitFor(SCOPE_LOCAL_VALUES_SELECTOR);
-      const localScopeView = await waitFor(SCOPE_LOCAL_VALUES_SELECTOR);
-      await waitForFunction(async () => {
-        const local_scope_values = await localScopeView.evaluate(element => {
-          return (element as HTMLElement).innerText;
-        });
-        return local_scope_values === '$var0: 42\n$var1: 8\n$var2: 5';
-      });
+      const localScopeValues = await getValuesForScope('Local', 0, 3);
+      assert.deepEqual(localScopeValues, [
+        '$var0: 42 {type: "i32", value: 42}',
+        '$var1: 8 {type: "i32", value: 8}',
+        '$var2: 5 {type: "i32", value: 5}',
+      ]);
     });
 
     await step('remove the breakpoint from the line 0x060', async () => {
@@ -214,14 +211,12 @@ describe('Sources Tab', async function() {
     });
 
     await step('check that the variables in the scope view show the correct values', async () => {
-      await waitFor(SCOPE_LOCAL_VALUES_SELECTOR);
-      const localScopeView = await waitFor(SCOPE_LOCAL_VALUES_SELECTOR);
-      await waitForFunction(async () => {
-        const local_scope_values = await localScopeView.evaluate(element => {
-          return (element as HTMLElement).innerText;
-        });
-        return local_scope_values === '$var0: 50\n$var1: 5';
-      });
+      const localScopeValues = await getValuesForScope('Local', 0, 2);
+      assert.deepEqual(localScopeValues, [
+        '$var0: 50 {type: "i32", value: 50}',
+        '$var1: 5 {type: "i32", value: 5}',
+
+      ]);
     });
 
     await step('resume script execution', async () => {
@@ -232,8 +227,7 @@ describe('Sources Tab', async function() {
     await checkBreakpointDidNotActivate();
   });
 
-  // Blocking chromium roll
-  it.skip('[crbug.com/1176663] is able to step with state in multi-threaded code in main thread', async () => {
+  it('is able to step with state in multi-threaded code in main thread', async () => {
     const {target, frontend} = getBrowserAndPages();
     const fileName = 'stepping-with-state.wasm';
     await step('navigate to a page and open the Sources tab', async () => {
@@ -269,14 +263,12 @@ describe('Sources Tab', async function() {
     });
 
     await step('check that the variables in the scope view show the correct values', async () => {
-      await waitFor(SCOPE_LOCAL_VALUES_SELECTOR);
-      const localScopeView = await waitFor(SCOPE_LOCAL_VALUES_SELECTOR);
-      await waitForFunction(async () => {
-        const local_scope_values = await localScopeView.evaluate(element => {
-          return (element as HTMLElement).innerText;
-        });
-        return local_scope_values === '$var0: 42\n$var1: 8\n$var2: 5';
-      });
+      const localScopeValues = await getValuesForScope('Local', 0, 3);
+      assert.deepEqual(localScopeValues, [
+        '$var0: 42 {type: "i32", value: 42}',
+        '$var1: 8 {type: "i32", value: 8}',
+        '$var2: 5 {type: "i32", value: 5}',
+      ]);
     });
 
     await step('remove the breakpoint from the line 0x060', async () => {
@@ -312,14 +304,11 @@ describe('Sources Tab', async function() {
     });
 
     await step('check that the variables in the scope view show the correct values', async () => {
-      await waitFor(SCOPE_LOCAL_VALUES_SELECTOR);
-      const localScopeView = await waitFor(SCOPE_LOCAL_VALUES_SELECTOR);
-      await waitForFunction(async () => {
-        const local_scope_values = await localScopeView.evaluate(element => {
-          return (element as HTMLElement).innerText;
-        });
-        return local_scope_values === '$var0: 50\n$var1: 5';
-      });
+      const localScopeValues = await getValuesForScope('Local', 0, 2);
+      assert.deepEqual(localScopeValues, [
+        '$var0: 50 {type: "i32", value: 50}',
+        '$var1: 5 {type: "i32", value: 5}',
+      ]);
     });
 
     await step('remove the breakpoint from the 8th line', async () => {
@@ -382,14 +371,8 @@ describe('Sources Tab', async function() {
     });
 
     await step('check that the variables in the scope view show the correct values', async () => {
-      await waitFor(SCOPE_LOCAL_VALUES_SELECTOR);
-      const localScopeView = await waitFor(SCOPE_LOCAL_VALUES_SELECTOR);
-      await waitForFunction(async () => {
-        const local_scope_values = await localScopeView.evaluate(element => {
-          return (element as HTMLElement).innerText;
-        });
-        return local_scope_values === '"": 42';
-      });
+      const localScopeValues = await getValuesForScope('Local', 0, 1);
+      assert.deepEqual(localScopeValues, ['"": 42']);
     });
 
     await step('remove the breakpoint from the 30th line', async () => {
@@ -426,14 +409,8 @@ describe('Sources Tab', async function() {
     });
 
     await step('check that the variables in the scope view show the correct values', async () => {
-      await waitFor(SCOPE_LOCAL_VALUES_SELECTOR);
-      const localScopeView = await waitFor(SCOPE_LOCAL_VALUES_SELECTOR);
-      await waitForFunction(async () => {
-        const local_scope_values = await localScopeView.evaluate(element => {
-          return (element as HTMLElement).innerText;
-        });
-        return local_scope_values === '"": 42';
-      });
+      const localScopeValues = await getValuesForScope('Local', 0, 1);
+      assert.deepEqual(localScopeValues, ['"": 42']);
     });
 
     await step('resume script execution', async () => {

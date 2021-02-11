@@ -9,8 +9,7 @@ import {describe, it} from '../../shared/mocha-extensions.js';
 import {addBreakpointForLine, getScopeNames, getValuesForScope, openSourceCodeEditorForFile, PAUSE_INDICATOR_SELECTOR, reloadPageAndWaitForSourceFile, RESUME_BUTTON} from '../helpers/sources-helpers.js';
 
 describe('Source Tab', async () => {
-  // Blocking chromium roll
-  it.skip('[crbug.com/1176663] shows and updates the module, local, and stack scope while pausing', async () => {
+  it('shows and updates the module, local, and stack scope while pausing', async () => {
     const {frontend, target} = getBrowserAndPages();
     const breakpointLine = '0x05f';
     const fileName = 'scopes.wasm';
@@ -49,10 +48,10 @@ describe('Source Tab', async () => {
     await step('check that the local scope content is as expected', async () => {
       localScopeValues = await getValuesForScope('Local', 0, 4);
       assert.deepEqual(localScopeValues, [
-        '$f32_var: 5.5',
-        '$f64_var: 2.23e-11',
-        '$i32: 42',
-        '$i64_var: 9221120237041090n',
+        '$f32_var: 5.5 {type: "f32", value: 5.5}',
+        '$f64_var: 2.23e-11 {type: "f64", value: 2.23e-11}',
+        '$i32: 42 {type: "i32", value: 42}',
+        '$i64_var: 9221120237041090n {type: "i64", value: 9221120237041090n}',
       ]);
     });
 
@@ -88,7 +87,7 @@ describe('Source Tab', async () => {
 
     await step('check that the stack scope content is updated to reflect the change', async () => {
       const stackScopeValues = await getValuesForScope('Stack', 0, 1);
-      assert.deepEqual(stackScopeValues, ['0: 24']);
+      assert.deepEqual(stackScopeValues, ['0: 24 {type: "i32", value: 24}']);
     });
 
     await step('resume execution', async () => {

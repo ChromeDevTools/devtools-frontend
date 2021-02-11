@@ -6,7 +6,7 @@ import {assertNotNull} from '../../../../../front_end/platform/platform.js';
 import * as Coordinator from '../../../../../front_end/render_coordinator/render_coordinator.js';
 import * as UIComponents from '../../../../../front_end/ui/components/components.js';
 import {assertShadowRoot, dispatchClickEvent, renderElementIntoDOM} from '../../helpers/DOMHelpers.js';
-import {TEXT_NODE, withMutations, withNoMutations} from '../../helpers/MutationHelpers.js';
+import {TEXT_NODE, withMutations} from '../../helpers/MutationHelpers.js';
 
 import {getAllRows, getHeaderCellForColumnId, getValuesForColumn, getValuesOfAllBodyRows} from './DataGridHelpers.js';
 
@@ -261,38 +261,17 @@ describe('DataGridController', () => {
       ]);
     });
 
-    it('does not mutate the DOM when filtering', async () => {
+    it('renders only visible rows, but maintains proper aria-rowindexes for the rows that are rendered', async () => {
       const component = new UIComponents.DataGridController.DataGridController();
-      component.data = {rows, columns};
+      component.data = {rows, columns, filters: [createPlainTextFilter('bravo')]};
+
       renderElementIntoDOM(component);
       assertShadowRoot(component.shadowRoot);
       await coordinator.done();
-
       const internalDataGridShadow = getInternalDataGridShadowRoot(component);
-      await withNoMutations(internalDataGridShadow, async internalShadowRoot => {
-        component.data = {rows, columns, filters: [createPlainTextFilter('bravo')]};
-        await coordinator.done();
-        const renderedRowValues = getValuesOfAllBodyRows(internalShadowRoot, {onlyVisible: true});
-        assert.deepEqual(renderedRowValues, [
-          ['Letter B', 'Bravo'],
-        ]);
-      });
+      const renderedRows = getAllRows(internalDataGridShadow);
+      assert.deepEqual(renderedRows.map(row => row.getAttribute('aria-rowindex')), ['2']);
     });
-
-    it('renders all rows but applies a hidden class to hide non-matching rows, maintaining proper aria-rowindex labels',
-       async () => {
-         const component = new UIComponents.DataGridController.DataGridController();
-         component.data = {rows, columns, filters: [createPlainTextFilter('bravo')]};
-
-         renderElementIntoDOM(component);
-         assertShadowRoot(component.shadowRoot);
-         await coordinator.done();
-         const internalDataGridShadow = getInternalDataGridShadowRoot(component);
-         const renderedRows = getAllRows(internalDataGridShadow);
-         assert.lengthOf(renderedRows, 3);
-         assert.deepEqual(renderedRows.map(row => row.classList.contains('hidden')), [true, false, true]);
-         assert.deepEqual(renderedRows.map(row => row.getAttribute('aria-rowindex')), ['1', '2', '3']);
-       });
 
     it('shows all rows if the filter is then cleared', async () => {
       const component = new UIComponents.DataGridController.DataGridController();

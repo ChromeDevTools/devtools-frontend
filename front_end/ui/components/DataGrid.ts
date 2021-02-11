@@ -137,7 +137,7 @@ export class DataGrid extends HTMLElement {
    */
   private focusableCell: CellPosition = [0, 1];
   private hasRenderedAtLeastOnce = false;
-  private userHasFocused = false;
+  private userHasFocusInDataGrid = false;
   private userHasScrolled = false;
   private enqueuedRender = false;
 
@@ -208,7 +208,7 @@ export class DataGrid extends HTMLElement {
   }
 
   private scrollToBottomIfRequired(): void {
-    if (this.hasRenderedAtLeastOnce === false || this.userHasFocused || this.userHasScrolled) {
+    if (this.hasRenderedAtLeastOnce === false || this.userHasFocusInDataGrid || this.userHasScrolled) {
       // On the first render we don't want to assume the user wants to scroll to the bottom.
       // And if they have focused a cell we don't want to scroll them away from it.
       // If they have scrolled the table manually we also won't scroll and disrupt their scroll position.
@@ -248,7 +248,7 @@ export class DataGrid extends HTMLElement {
   }
 
   private focusCell([newColumnIndex, newRowIndex]: CellPosition): void {
-    this.userHasFocused = true;
+    this.userHasFocusInDataGrid = true;
 
     const [currentColumnIndex, currentRowIndex] = this.focusableCell;
     const newCellIsCurrentlyFocusedCell = (currentColumnIndex === newColumnIndex && currentRowIndex === newRowIndex);
@@ -623,13 +623,26 @@ export class DataGrid extends HTMLElement {
       let bottomVisibleRow = Math.ceil((scrollTop + clientHeight + padding) / ROW_HEIGHT_PIXELS);
 
       topVisibleRow = Math.max(0, topVisibleRow);
-      bottomVisibleRow = Math.min(this.rows.length, bottomVisibleRow);
+      bottomVisibleRow = Math.min(this.rows.filter(r => !r.hidden).length, bottomVisibleRow);
 
       return {
         topVisibleRow,
         bottomVisibleRow,
       };
     });
+  }
+
+  private onFocusOut(): void {
+    /**
+     * When any element in the data-grid loses focus, we set this to false. If
+     * the user then focuses another cell, that code will set the focus to true.
+     * We need to know if the user is focused because if they are and they've
+     * scrolled their focused cell out of rendering view and back in, we want to
+     * refocus it. But if they aren't focused and that happens, we don't, else
+     * we can steal focus away from the user if they are typing into an input
+     * box to filter the data-grid, for example.
+     */
+    this.userHasFocusInDataGrid = false;
   }
 
   /**
@@ -652,7 +665,8 @@ export class DataGrid extends HTMLElement {
 
     coordinator.read(async () => {
       const {topVisibleRow, bottomVisibleRow} = await this.calculateTopAndBottomRowIndexes();
-      const renderableRows = this.rows.filter((_, idx) => idx >= topVisibleRow && idx <= bottomVisibleRow);
+      const renderableRows =
+          this.rows.filter(row => !row.hidden).filter((_, idx) => idx >= topVisibleRow && idx <= bottomVisibleRow);
       const indexOfFirstVisibleColumn = this.columns.findIndex(col => col.visible);
       const anyColumnsSortable = this.columns.some(col => col.sortable === true);
 
@@ -786,7 +800,7 @@ export class DataGrid extends HTMLElement {
           */
           return this.renderResizeForCell(col, [columnIndex, 0]);
         })}
-        <div class="wrapping-container" @scroll=${this.onScroll} @wheel=${this.onWheel}>
+        <div class="wrapping-container" @scroll=${this.onScroll} @wheel=${this.onWheel} @focusout=${this.onFocusOut}>
           <table
             aria-rowcount=${this.rows.length}
             aria-colcount=${this.columns.length}
@@ -883,7 +897,7 @@ export class DataGrid extends HTMLElement {
               })}
               ${this.renderEmptyFillerRow()}
               <tr class="filler-row-bottom padding-row" style=${LitHtml.Directives.styleMap({
-                height: `${(this.rows.length - bottomVisibleRow) * ROW_HEIGHT_PIXELS}px`,
+                height: `${Math.max(0, renderableRows.length - bottomVisibleRow) * ROW_HEIGHT_PIXELS}px`,
               })}></tr>
             </tbody>
           </table>
@@ -901,7 +915,7 @@ export class DataGrid extends HTMLElement {
       // However, if the cell is a column header, we don't do this, as that
       // can never be not-rendered.
       const currentlyFocusedRowIndex = this.focusableCell[1];
-      if (this.userHasFocused && currentlyFocusedRowIndex > 0) {
+      if (this.userHasFocusInDataGrid && currentlyFocusedRowIndex > 0) {
         this.focusCell(this.focusableCell);
       }
       this.scrollToBottomIfRequired();

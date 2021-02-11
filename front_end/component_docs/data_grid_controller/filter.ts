@@ -14,21 +14,272 @@ const filterParser = new TextUtils.TextUtils.FilterParser(['key', 'value']);
 
 component.data = {
   columns: [
-    {id: 'key', title: 'Key', sortable: true, widthWeighting: 1, visible: true, hideable: false},
+    {id: 'key', title: 'Method', sortable: true, widthWeighting: 1, visible: true, hideable: false},
     {id: 'value', title: 'Value', sortable: false, widthWeighting: 1, visible: true, hideable: false},
   ],
   rows: [
-    // Each key is the ID of a column, and the value is the value for that column
     {
-      cells: [{columnId: 'key', value: 'Bravo', title: 'Bravo'}, {columnId: 'value', value: 'foobar', title: 'foobar'}],
-    },
-    {
-      cells: [{columnId: 'key', value: 'Alpha', title: 'Alpha'}, {columnId: 'value', value: 'bazbar', title: 'bazbar'}],
+      cells: [
+        {columnId: 'key', value: 'Overlay.showOverlay', title: 'Bravo'},
+        {columnId: 'value', value: 'foobar', title: 'foobar'},
+      ],
     },
     {
       cells: [
-        {columnId: 'key', value: 'Charlie', title: 'Charlie'},
-        {columnId: 'value', value: 'bazbar', title: 'bazbar'},
+        {columnId: 'key', value: 'Overlay.hideOverlay', title: 'Bravo'},
+        {columnId: 'value', value: 'foobar', title: 'foobar'},
+      ],
+    },
+    {
+      cells: [
+        {columnId: 'key', value: 'Overlay.showOverlay', title: 'Bravo'},
+        {columnId: 'value', value: 'foobar', title: 'foobar'},
+      ],
+    },
+    {
+      cells: [
+        {columnId: 'key', value: 'Overlay.hideOverlay', title: 'Bravo'},
+        {columnId: 'value', value: 'foobar', title: 'foobar'},
+      ],
+    },
+    {
+      cells: [
+        {columnId: 'key', value: 'Overlay.showOverlay', title: 'Bravo'},
+        {columnId: 'value', value: 'foobar', title: 'foobar'},
+      ],
+    },
+    {
+      cells: [
+        {columnId: 'key', value: 'Overlay.hideOverlay', title: 'Bravo'},
+        {columnId: 'value', value: 'foobar', title: 'foobar'},
+      ],
+    },
+    {
+      cells: [
+        {columnId: 'key', value: 'Overlay.showOverlay', title: 'Bravo'},
+        {columnId: 'value', value: 'foobar', title: 'foobar'},
+      ],
+    },
+    {
+      cells: [
+        {columnId: 'key', value: 'Overlay.hideOverlay', title: 'Bravo'},
+        {columnId: 'value', value: 'foobar', title: 'foobar'},
+      ],
+    },
+    {
+      cells: [
+        {columnId: 'key', value: 'Overlay.showOverlay', title: 'Bravo'},
+        {columnId: 'value', value: 'foobar', title: 'foobar'},
+      ],
+    },
+    {
+      cells: [
+        {columnId: 'key', value: 'Overlay.hideOverlay', title: 'Bravo'},
+        {columnId: 'value', value: 'foobar', title: 'foobar'},
+      ],
+    },
+    {
+      cells: [
+        {columnId: 'key', value: 'Overlay.showOverlay', title: 'Bravo'},
+        {columnId: 'value', value: 'foobar', title: 'foobar'},
+      ],
+    },
+    {
+      cells: [
+        {columnId: 'key', value: 'Overlay.hideOverlay', title: 'Bravo'},
+        {columnId: 'value', value: 'foobar', title: 'foobar'},
+      ],
+    },
+    {
+      cells: [
+        {columnId: 'key', value: 'Overlay.showOverlay', title: 'Bravo'},
+        {columnId: 'value', value: 'foobar', title: 'foobar'},
+      ],
+    },
+    {
+      cells: [
+        {columnId: 'key', value: 'Overlay.hideOverlay', title: 'Bravo'},
+        {columnId: 'value', value: 'foobar', title: 'foobar'},
+      ],
+    },
+    {
+      cells: [
+        {columnId: 'key', value: 'Overlay.showOverlay', title: 'Bravo'},
+        {columnId: 'value', value: 'foobar', title: 'foobar'},
+      ],
+    },
+    {
+      cells: [
+        {columnId: 'key', value: 'Overlay.hideOverlay', title: 'Bravo'},
+        {columnId: 'value', value: 'foobar', title: 'foobar'},
+      ],
+    },
+    {
+      cells: [
+        {columnId: 'key', value: 'Overlay.showOverlay', title: 'Bravo'},
+        {columnId: 'value', value: 'foobar', title: 'foobar'},
+      ],
+    },
+    {
+      cells: [
+        {columnId: 'key', value: 'Overlay.hideOverlay', title: 'Bravo'},
+        {columnId: 'value', value: 'foobar', title: 'foobar'},
+      ],
+    },
+    {
+      cells: [
+        {columnId: 'key', value: 'Overlay.showOverlay', title: 'Bravo'},
+        {columnId: 'value', value: 'foobar', title: 'foobar'},
+      ],
+    },
+    {
+      cells: [
+        {columnId: 'key', value: 'Overlay.hideOverlay', title: 'Bravo'},
+        {columnId: 'value', value: 'foobar', title: 'foobar'},
+      ],
+    },
+    {
+      cells: [
+        {columnId: 'key', value: 'Overlay.showOverlay', title: 'Bravo'},
+        {columnId: 'value', value: 'foobar', title: 'foobar'},
+      ],
+    },
+    {
+      cells: [
+        {columnId: 'key', value: 'Overlay.hideOverlay', title: 'Bravo'},
+        {columnId: 'value', value: 'foobar', title: 'foobar'},
+      ],
+    },
+    {
+      cells: [
+        {columnId: 'key', value: 'Overlay.showOverlay', title: 'Bravo'},
+        {columnId: 'value', value: 'foobar', title: 'foobar'},
+      ],
+    },
+    {
+      cells: [
+        {columnId: 'key', value: 'Overlay.hideOverlay', title: 'Bravo'},
+        {columnId: 'value', value: 'foobar', title: 'foobar'},
+      ],
+    },
+    {
+      cells: [
+        {columnId: 'key', value: 'Overlay.showOverlay', title: 'Bravo'},
+        {columnId: 'value', value: 'foobar', title: 'foobar'},
+      ],
+    },
+    {
+      cells: [
+        {columnId: 'key', value: 'Overlay.hideOverlay', title: 'Bravo'},
+        {columnId: 'value', value: 'foobar', title: 'foobar'},
+      ],
+    },
+    {
+      cells: [
+        {columnId: 'key', value: 'Overlay.showOverlay', title: 'Bravo'},
+        {columnId: 'value', value: 'foobar', title: 'foobar'},
+      ],
+    },
+    {
+      cells: [
+        {columnId: 'key', value: 'Overlay.hideOverlay', title: 'Bravo'},
+        {columnId: 'value', value: 'foobar', title: 'foobar'},
+      ],
+    },
+    {
+      cells: [
+        {columnId: 'key', value: 'Overlay.showOverlay', title: 'Bravo'},
+        {columnId: 'value', value: 'foobar', title: 'foobar'},
+      ],
+    },
+    {
+      cells: [
+        {columnId: 'key', value: 'Overlay.hideOverlay', title: 'Bravo'},
+        {columnId: 'value', value: 'foobar', title: 'foobar'},
+      ],
+    },
+    {
+      cells: [
+        {columnId: 'key', value: 'Overlay.showOverlay', title: 'Bravo'},
+        {columnId: 'value', value: 'foobar', title: 'foobar'},
+      ],
+    },
+    {
+      cells: [
+        {columnId: 'key', value: 'Overlay.hideOverlay', title: 'Bravo'},
+        {columnId: 'value', value: 'foobar', title: 'foobar'},
+      ],
+    },
+    {
+      cells: [
+        {columnId: 'key', value: 'Overlay.showOverlay', title: 'Bravo'},
+        {columnId: 'value', value: 'foobar', title: 'foobar'},
+      ],
+    },
+    {
+      cells: [
+        {columnId: 'key', value: 'Overlay.hideOverlay', title: 'Bravo'},
+        {columnId: 'value', value: 'foobar', title: 'foobar'},
+      ],
+    },
+    {
+      cells: [
+        {columnId: 'key', value: 'Overlay.showOverlay', title: 'Bravo'},
+        {columnId: 'value', value: 'foobar', title: 'foobar'},
+      ],
+    },
+    {
+      cells: [
+        {columnId: 'key', value: 'Overlay.hideOverlay', title: 'Bravo'},
+        {columnId: 'value', value: 'foobar', title: 'foobar'},
+      ],
+    },
+    {
+      cells: [
+        {columnId: 'key', value: 'Overlay.showOverlay', title: 'Bravo'},
+        {columnId: 'value', value: 'foobar', title: 'foobar'},
+      ],
+    },
+    {
+      cells: [
+        {columnId: 'key', value: 'Overlay.hideOverlay', title: 'Bravo'},
+        {columnId: 'value', value: 'foobar', title: 'foobar'},
+      ],
+    },
+    {
+      cells: [
+        {columnId: 'key', value: 'Overlay.showOverlay', title: 'Bravo'},
+        {columnId: 'value', value: 'foobar', title: 'foobar'},
+      ],
+    },
+    {
+      cells: [
+        {columnId: 'key', value: 'Overlay.hideOverlay', title: 'Bravo'},
+        {columnId: 'value', value: 'foobar', title: 'foobar'},
+      ],
+    },
+    {
+      cells: [
+        {columnId: 'key', value: 'Overlay.showOverlay', title: 'Bravo'},
+        {columnId: 'value', value: 'foobar', title: 'foobar'},
+      ],
+    },
+    {
+      cells: [
+        {columnId: 'key', value: 'Overlay.hideOverlay', title: 'Bravo'},
+        {columnId: 'value', value: 'foobar', title: 'foobar'},
+      ],
+    },
+    {
+      cells: [
+        {columnId: 'key', value: 'Overlay.showOverlay', title: 'Bravo'},
+        {columnId: 'value', value: 'foobar', title: 'foobar'},
+      ],
+    },
+    {
+      cells: [
+        {columnId: 'key', value: 'Overlay.hideOverlay', title: 'Bravo'},
+        {columnId: 'value', value: 'foobar', title: 'foobar'},
       ],
     },
   ],

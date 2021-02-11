@@ -91,11 +91,12 @@ export const getValuesOfAllBodyRows = (shadowRoot: ShadowRoot, options: {onlyVis
 }): string[][] => {
   const rows = getAllRows(shadowRoot);
   return rows
-      .map((row, index) => {
+      .map(row => {
         // now decide if the row should be included or not
         const rowIsHidden = row.classList.contains('hidden');
+        const rowIndex = window.parseInt(row.getAttribute('aria-rowindex') || '-1', 10);
         return {
-          rowValues: getValuesOfBodyRowByAriaIndex(shadowRoot, index + 1, options),
+          rowValues: getValuesOfBodyRowByAriaIndex(shadowRoot, rowIndex, options),
           hidden: options.onlyVisible && rowIsHidden,
         };
       })

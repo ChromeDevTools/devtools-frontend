@@ -33,6 +33,7 @@ devtools_module("elements") {
     "ElementsTreeElementHighlighter.js",
     "ElementsTreeOutline.js",
     "EventListenersWidget.js",
+    "FlexboxEditor.ts",
     "ImagePreviewPopover.js",
     "InspectElementModeController.js",
     "LayoutPane.ts",

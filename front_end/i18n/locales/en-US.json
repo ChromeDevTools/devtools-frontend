@@ -1586,6 +1586,12 @@
   "developer_resources/DeveloperResourcesView.ts | resourcesCurrentlyLoading": {
     "message": "{PH1} resources, {PH2} currently loading"
   },
+  "elements/FlexboxEditor.ts | deselectButton": {
+    "message": "Remove {propertyName}: {propertyValue}"
+  },
+  "elements/FlexboxEditor.ts | selectButton": {
+    "message": "Add {propertyName}: {propertyValue}"
+  },
   "event_listeners/EventListenersView.ts | deleteEventListener": {
     "message": "Delete event listener"
   },

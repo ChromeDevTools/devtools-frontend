@@ -50,6 +50,7 @@ import * as ElementsTreeElement from './ElementsTreeElement.js';
 import * as ElementsTreeElementHighlighter from './ElementsTreeElementHighlighter.js';
 import * as ElementsTreeOutline from './ElementsTreeOutline.js';
 import * as EventListenersWidget from './EventListenersWidget.js';
+import * as FlexboxEditor from './FlexboxEditor.js';
 import * as InspectElementModeController from './InspectElementModeController.js';
 import * as LayoutPane from './LayoutPane.js';
 import * as LayoutPaneUtils from './LayoutPaneUtils.js';
@@ -89,6 +90,7 @@ export {
   ElementsTreeElementHighlighter,
   ElementsTreeOutline,
   EventListenersWidget,
+  FlexboxEditor,
   InspectElementModeController,
   LayoutPane,
   LayoutPaneUtils,

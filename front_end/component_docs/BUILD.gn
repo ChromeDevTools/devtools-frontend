@@ -14,6 +14,7 @@ group("component_docs") {
     "./data_grid",
     "./data_grid_controller",
     "./elements_breadcrumbs",
+    "./flexbox_editor",
     "./icon_button",
     "./icon_component",
     "./layout_pane",

@@ -1586,6 +1586,12 @@
   "developer_resources/DeveloperResourcesView.ts | resourcesCurrentlyLoading": {
     "message": "{PH1} r̂éŝóûŕĉéŝ, {PH2} ćûŕr̂én̂t́l̂ý l̂óâd́îńĝ"
   },
+  "elements/FlexboxEditor.ts | deselectButton": {
+    "message": "R̂ém̂óv̂é {propertyName}: {propertyValue}"
+  },
+  "elements/FlexboxEditor.ts | selectButton": {
+    "message": "Âd́d̂ {propertyName}: {propertyValue}"
+  },
   "event_listeners/EventListenersView.ts | deleteEventListener": {
     "message": "D̂él̂ét̂é êv́êńt̂ ĺîśt̂én̂ér̂"
   },

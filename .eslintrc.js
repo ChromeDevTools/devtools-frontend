@@ -187,6 +187,9 @@ module.exports = {
       'rulesdir/const_enum': 2,
       'rulesdir/no_underscored_properties': 2,
       'rulesdir/prefer_readonly_keyword': 2,
+      'space-before-function-paren': 'off',
+      '@typescript-eslint/space-before-function-paren':
+          ['error', {'anonymous': 'never', 'named': 'never', 'asyncArrow': 'always'}]
     }
   }]
 };

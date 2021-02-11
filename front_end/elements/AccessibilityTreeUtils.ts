@@ -33,6 +33,8 @@ export function SDKNodeToAXNode(
     numChildren: sdkNode.numChildren(),
     hasOnlyUnloadedChildren: sdkNode.hasOnlyUnloadedChildren(),
     axTree: tree,
+    // TODO: Remove next line once crbug.com/1177242 is solved.
+    // eslint-disable-next-line @typescript-eslint/space-before-function-paren
     loadChildren: async(): Promise<void> => {
       const loadedChildren = await sdkNode.accessibilityModel().requestAXChildren(sdkNode.id());
       if (loadedChildren) {

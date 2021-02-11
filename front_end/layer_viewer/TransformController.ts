@@ -89,14 +89,20 @@ export class TransformController extends Common.ObjectWrapper.ObjectWrapper {
   _registerShortcuts(): void {
     const zoomFactor = 1.1;
     UI.ShortcutRegistry.ShortcutRegistry.instance().addShortcutListener(this.element, {
+      // TODO: Remove next line once crbug.com/1177242 is solved.
+      // eslint-disable-next-line @typescript-eslint/space-before-function-paren
       'layers.reset-view': async(): Promise<true> => {
         this.resetAndNotify();
         return true;
       },
+      // TODO: Remove next line once crbug.com/1177242 is solved.
+      // eslint-disable-next-line @typescript-eslint/space-before-function-paren
       'layers.pan-mode': async(): Promise<true> => {
         this._setMode(Modes.Pan);
         return true;
       },
+      // TODO: Remove next line once crbug.com/1177242 is solved.
+      // eslint-disable-next-line @typescript-eslint/space-before-function-paren
       'layers.rotate-mode': async(): Promise<true> => {
         this._setMode(Modes.Rotate);
         return true;

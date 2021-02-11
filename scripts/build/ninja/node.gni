@@ -16,7 +16,6 @@ template("node_action") {
                              "visibility",
                              "deps",
                              "public_deps",
-                             "data_deps",
                              "outputs",
                              "sources",
                              "inputs",

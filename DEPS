@@ -20,8 +20,8 @@ vars = {
   'inspector_protocol_url': 'https://chromium.googlesource.com/deps/inspector_protocol',
   'inspector_protocol_revision': '62c7be86bf5728a7b18a74408d77c07bd40ef383',
 
-  'clang_format_url': 'https://chromium.googlesource.com/chromium/llvm-project/cfe/tools/clang-format.git',
-  'clang_format_revision': '96636aa0e9f047f17447f2d45a094d0b59ed7917',
+  'clang_format_url': 'https://chromium.googlesource.com/external/github.com/llvm/llvm-project/clang/tools/clang-format.git',
+  'clang_format_revision': '99803d74e35962f63a775f29477882afd4d57d94',
 
   'emscripten_tag': 'dcf819a7821f8db0c8f15ac336fea8960ec204f5',
 

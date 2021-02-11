@@ -710,6 +710,11 @@ export class DataGrid extends HTMLElement {
             overflow: hidden;
           }
 
+          td:focus,
+          th:focus {
+            outline: var(--color-primary) auto 1px;
+          }
+
           .cell-resize-handle {
             top: 0;
             height: 100%;

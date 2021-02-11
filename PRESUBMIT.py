@@ -288,14 +288,26 @@ def _CheckDevToolsStyleCSS(input_api, output_api):
                                           [],
                                           ['.json', '.py', '.stylelintignore'])
 
-    should_bail_out, files_to_lint = _getFilesToLint(
+    css_should_bail_out, css_files_to_lint = _getFilesToLint(
         input_api, output_api, lint_config_files, default_linted_directories,
         ['.css'], results)
-    if should_bail_out:
-        return results
 
-    results.extend(
-        _checkWithNodeScript(input_api, output_api, lint_path, files_to_lint))
+    if not css_should_bail_out:
+        script_args = ["--syntax", "html", "--files"] + ts_files_to_lint
+        results.extend(
+            _checkWithNodeScript(input_api, output_api, lint_path,
+                                 css_files_to_lint))
+
+    ts_should_bail_out, ts_files_to_lint = _getFilesToLint(
+        input_api, output_api, lint_config_files, default_linted_directories,
+        ['.ts'], results)
+
+    if not ts_should_bail_out:
+        script_args = ["--syntax", "html", "--files"] + ts_files_to_lint
+        results.extend(
+            _checkWithNodeScript(input_api, output_api, lint_path,
+                                 script_args))
+
     return results
 
 

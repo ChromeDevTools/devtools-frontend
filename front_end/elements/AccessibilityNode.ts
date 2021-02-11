@@ -365,6 +365,10 @@ export class AccessibilityNode extends HTMLElement {
             padding-inline-start: 12px;
           }
 
+          :focus {
+            outline: none;
+          }
+
           :host(:not(.expanded)) .children {
             display: none;
           }
@@ -402,10 +406,6 @@ export class AccessibilityNode extends HTMLElement {
           .wrapper.selected {
             outline: none;
             background: var(--selection-bg-color);
-          }
-
-          :focus {
-            outline: none;
           }
       </style>
       ${parts}

@@ -114,6 +114,7 @@ export class CSSVarSwatch extends HTMLElement {
       }
 
       .css-var-link.undefined {
+        /* stylelint-disable-next-line plugin/use_theme_colors */
         color: hsl(0deg 0% 46%);
       }
       </style><span title="${this.computedValue || ''}">${functionParts.pre}${link}${functionParts.post}</span>`,

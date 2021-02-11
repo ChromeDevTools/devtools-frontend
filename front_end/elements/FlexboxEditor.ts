@@ -83,36 +83,46 @@ export class FlexboxEditor extends HTMLElement {
         .container {
           padding: 12px;
         }
+
         .row {
           padding: 0;
           color: var(--color-text-primary);
           padding-bottom: 16px;
         }
+
         .row:last-child {
           padding-bottom: 0;
         }
+
         .property {
           padding-bottom: 4px;
         }
+
         .property-name {
           color: var(--color-syntax-1);
         }
+
         .property-value {
           color: var(--color-text-primary);
         }
+
         .property-value.computed {
           color: var(--color-text-disabled);
         }
+
         .buttons {
           display: flex;
           flex-direction: row;
         }
+
         .buttons > :first-child {
           border-radius: 3px 0 0 3px;
         }
+
         .buttons > :last-child {
           border-radius: 0 3px 3px 0;
         }
+
         .button {
           border: 1px solid var(--color-background-elevation-2);
           background-color: var(--color-background);
@@ -127,15 +137,19 @@ export class FlexboxEditor extends HTMLElement {
           align-items: center;
           cursor: pointer;
         }
+
         .button:focus-visible {
           outline: auto 5px -webkit-focus-ring-color;
         }
+
         .button devtools-icon {
           --icon-color: var(--color-text-secondary);
         }
+
         .button.selected {
           background-color: var(--color-background-elevation-1);
         }
+
         .button.selected devtools-icon {
           --icon-color: var(--color-primary);
         }

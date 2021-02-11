@@ -213,6 +213,9 @@
   <message name="IDS_DEVTOOLS_9485d0acccd869b51a96f2b35fd0b620" desc="Title of a setting under the Rendering drawer that can be invoked through the Command Menu">
     Do not emulate CSS prefers-reduced-data
   </message>
+  <message name="IDS_DEVTOOLS_95bbad55f11c237ed89546e748093ba7" desc="Text for the request animation frame event">
+    Request Animation Frame
+  </message>
   <message name="IDS_DEVTOOLS_9696d05ebc70b0e74183e8c81250f3c5" desc="Title of a setting that enables AVIF format">
     Enable AVIF format
   </message>
@@ -516,6 +519,9 @@
   <message name="IDS_DEVTOOLS_ba50636875d999db0c9218b48b23027d" desc="Title of a setting under the Debugger category that can be invoked through the Command Menu">
     Do not capture async stack traces
   </message>
+  <message name="IDS_DEVTOOLS_ba5b676ccf658f863ef2e3df082ee262" desc="Text for the event that an animation frame is fired">
+    Animation Frame Fired
+  </message>
   <message name="IDS_DEVTOOLS_ba76fecd860f5cf4a97da9177080fc1c" desc="Label for the link for Mixed Content Issues">
     Preventing mixed content
   </message>
@@ -561,6 +567,9 @@
   <message name="IDS_DEVTOOLS_c89686a387d2b12b3c729ce35a0bcb5b" desc="Text in DOMDebugger Model">
     Window
   </message>
+  <message name="IDS_DEVTOOLS_c9ad95228aa735bdda1aebf38da022af" desc="Text to parse something">
+    Parse
+  </message>
   <message name="IDS_DEVTOOLS_c9d5135171a5ebdf8e5d6d1247bc7b31" desc="Link text for a link to external documentation">
     COOP and COEP
   </message>
@@ -588,8 +597,14 @@
   <message name="IDS_DEVTOOLS_d24a22fef757966373800aa9795458dc" desc="Text in Source Map">
     ? [sm]
   </message>
+  <message name="IDS_DEVTOOLS_d31827f0a164d52b636bb1f71ca4a351" desc="Text to cancel the animation frame">
+    Cancel Animation Frame
+  </message>
   <message name="IDS_DEVTOOLS_d662a8a1893561c3dd8dc74a64fd5477" desc="Title of a setting under the Rendering drawer that can be invoked through the Command Menu">
     Emulate CSS media feature prefers-reduced-data
+  </message>
+  <message name="IDS_DEVTOOLS_d6b6b668dbca9d4fe774bb654226ebe3" desc="Text that refers to the animation of the web page">
+    Animation
   </message>
   <message name="IDS_DEVTOOLS_d7eb928d99f0528e1929c9283d74080a" desc="Error message for canceled source map loads">
     Load canceled due to load timeout
@@ -614,6 +629,9 @@
   </message>
   <message name="IDS_DEVTOOLS_e485c975c1d6c17d9dfd81128b83f63a" desc="Text in the Event Listener Breakpoints Panel of the JavaScript Debugger in the Sources Panel">
     Set innerHTML
+  </message>
+  <message name="IDS_DEVTOOLS_e55f75a29310d7b60f7ac1d390c8ae42" desc="Text for a module, the programming concept">
+    Module
   </message>
   <message name="IDS_DEVTOOLS_e69d85cd1acdf030f0cede48b61d7720" desc="Title of a setting under the Rendering category that can be invoked through the Command Menu">
     Hide scroll performance bottlenecks

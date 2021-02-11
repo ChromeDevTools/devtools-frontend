@@ -5,8 +5,8 @@
 import * as Common from '../common/common.js';
 import * as Components from '../components/components.js';
 import * as DataGrid from '../data_grid/data_grid.js';
+import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
-import {ls} from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as TimelineModel from '../timeline_model/timeline_model.js';
 import * as UI from '../ui/ui.js';
@@ -16,6 +16,117 @@ import {TimelineRegExp} from './TimelineFilters.js';
 import {TimelineSelection} from './TimelinePanel.js';  // eslint-disable-line no-unused-vars
 import {TimelineUIUtils} from './TimelineUIUtils.js';
 
+export const UIStrings = {
+  /**
+  *@description Text for the performance of something
+  */
+  performance: 'Performance',
+  /**
+  *@description Text to filter result items
+  */
+  filter: 'Filter',
+  /**
+  *@description Time of a single activity, as opposed to the total time
+  */
+  selfTime: 'Self Time',
+  /**
+  *@description Text for the total time of something
+  */
+  totalTime: 'Total Time',
+  /**
+  *@description Text in Timeline Tree View of the Performance panel
+  */
+  activity: 'Activity',
+  /**
+  *@description Text of a DOM element in Timeline Tree View of the Performance panel
+  */
+  selectItemForDetails: 'Select item for details.',
+  /**
+  *@description Text to show something is not optimized
+  *@example {Optimized too many times} PH1
+  */
+  notOptimizedS: 'Not optimized: {PH1}',
+  /**
+  *@description Time in miliseconds
+  *@example {30.1} PH1
+  */
+  fms: '{PH1} ms',
+  /**
+  *@description Number followed by percent sign
+  *@example {20} PH1
+  */
+  percentPlaceholder: '{PH1} %',
+  /**
+  *@description Text in Timeline Tree View of the Performance panel
+  */
+  chromeExtensionsOverhead: '[`Chrome` extensions overhead]',
+  /**
+  *@description Text in Timeline Tree View of the Performance panel
+  */
+  vRuntime: '[`V8` Runtime]',
+  /**
+  *@description Text in Timeline Tree View of the Performance panel
+  */
+  unattributed: '[unattributed]',
+  /**
+  *@description Text in Timeline Tree View of the Performance panel
+  */
+  javascript: 'JavaScript',
+  /**
+  *@description Text that refers to one or a group of webpages
+  */
+  page: 'Page',
+  /**
+  *@description Text in Timeline Tree View of the Performance panel
+  */
+  noGrouping: 'No Grouping',
+  /**
+  *@description Text in Timeline Tree View of the Performance panel
+  */
+  groupByActivity: 'Group by Activity',
+  /**
+  *@description Text in Timeline Tree View of the Performance panel
+  */
+  groupByCategory: 'Group by Category',
+  /**
+  *@description Text in Timeline Tree View of the Performance panel
+  */
+  groupByDomain: 'Group by Domain',
+  /**
+  *@description Text in Timeline Tree View of the Performance panel
+  */
+  groupByFrame: 'Group by Frame',
+  /**
+  *@description Text in Timeline Tree View of the Performance panel
+  */
+  groupBySubdomain: 'Group by Subdomain',
+  /**
+  *@description Text in Timeline Tree View of the Performance panel
+  */
+  groupByUrl: 'Group by URL',
+  /**
+  *@description Aria-label for grouping combo box in Timeline Details View
+  */
+  groupBy: 'Group by',
+  /**
+  *@description Aria-label for filter bar in Call Tree view
+  */
+  filterCallTree: 'Filter call tree',
+  /**
+  *@description Aria-label for the filter bar in Bottom-Up view
+  */
+  filterBottomup: 'Filter bottom-up',
+  /**
+  *@description Header text content in Timeline Tree View of the Performance panel
+  */
+  heaviestStack: 'Heaviest stack',
+  /**
+  *@description Data grid name for Timeline Stack data grids
+  */
+  timelineStack: 'Timeline Stack',
+};
+const str_ = i18n.i18n.registerUIStrings('timeline/TimelineTreeView.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /**
  * @implements {UI.SearchableView.Searchable}
  */
@@ -120,7 +231,7 @@ export class TimelineTreeView extends UI.Widget.VBox {
     this.populateToolbar(toolbar);
 
     this.dataGrid = new DataGrid.SortableDataGrid.SortableDataGrid({
-      displayName: ls`Performance`,
+      displayName: i18nString(UIStrings.performance),
       columns,
       refreshCallback: undefined,
       editCallback: undefined,
@@ -207,7 +318,7 @@ export class TimelineTreeView extends UI.Widget.VBox {
    */
   populateToolbar(toolbar) {
     const textFilterUI =
-        new UI.Toolbar.ToolbarInput(Common.UIString.UIString('Filter'), this.getToolbarInputAccessiblePlaceHolder());
+        new UI.Toolbar.ToolbarInput(i18nString(UIStrings.filter), this.getToolbarInputAccessiblePlaceHolder());
     textFilterUI.addEventListener(UI.Toolbar.ToolbarInput.Event.TextChanged, () => {
       const searchQuery = textFilterUI.value();
       this._textFilter.setRegExp(searchQuery ? createPlainTextSearchRegex(searchQuery, 'i') : null);
@@ -339,23 +450,13 @@ export class TimelineTreeView extends UI.Widget.VBox {
    */
   populateColumns(columns) {
     columns.push(
-        /** @type {!DataGrid.DataGrid.ColumnDescriptor} */ ({
-          id: 'self',
-          title: Common.UIString.UIString('Self Time'),
-          width: '120px',
-          fixedWidth: true,
-          sortable: true
-        }));
+        /** @type {!DataGrid.DataGrid.ColumnDescriptor} */ (
+            {id: 'self', title: i18nString(UIStrings.selfTime), width: '120px', fixedWidth: true, sortable: true}));
     columns.push(
-        /** @type {!DataGrid.DataGrid.ColumnDescriptor} */ ({
-          id: 'total',
-          title: Common.UIString.UIString('Total Time'),
-          width: '120px',
-          fixedWidth: true,
-          sortable: true
-        }));
+        /** @type {!DataGrid.DataGrid.ColumnDescriptor} */ (
+            {id: 'total', title: i18nString(UIStrings.totalTime), width: '120px', fixedWidth: true, sortable: true}));
     columns.push(/** @type {!DataGrid.DataGrid.ColumnDescriptor} */ (
-        {id: 'activity', title: Common.UIString.UIString('Activity'), disclosure: true, sortable: true}));
+        {id: 'activity', title: i18nString(UIStrings.activity), disclosure: true, sortable: true}));
   }
 
   _sortingChanged() {
@@ -449,7 +550,7 @@ export class TimelineTreeView extends UI.Widget.VBox {
       return;
     }
     const banner = this.detailsView.element.createChild('div', 'full-widget-dimmed-banner');
-    UI.UIUtils.createTextChild(banner, Common.UIString.UIString('Select item for details.'));
+    UI.UIUtils.createTextChild(banner, i18nString(UIStrings.selectItemForDetails));
   }
 
   /**
@@ -623,7 +724,7 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode {
       const deoptReason = data && data['deoptReason'];
       if (deoptReason) {
         container.createChild('div', 'activity-warning').title =
-            Common.UIString.UIString('Not optimized: %s', deoptReason);
+            i18nString(UIStrings.notOptimizedS, {PH1: deoptReason});
       }
 
       name.textContent = TimelineUIUtils.eventTitle(event);
@@ -679,11 +780,11 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode {
     const cell = this.createTD(columnId);
     cell.className = 'numeric-column';
     const textDiv = cell.createChild('div');
-    textDiv.createChild('span').textContent = Common.UIString.UIString('%.1f\xa0ms', value);
+    textDiv.createChild('span').textContent = i18nString(UIStrings.fms, {PH1: value.toFixed(1)});
 
     if (showPercents && this._treeView._exposePercentages()) {
       textDiv.createChild('span', 'percent-column').textContent =
-          Common.UIString.UIString('%.1f\xa0%%', value / this._grandTotalTime * 100);
+          i18nString(UIStrings.percentPlaceholder, {PH1: (value / this._grandTotalTime * 100).toFixed(1)});
     }
     if (maxTime) {
       textDiv.classList.add('background-percent-bar');
@@ -787,9 +888,9 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
    */
   _beautifyDomainName(name) {
     if (AggregatedTimelineTreeView._isExtensionInternalURL(name)) {
-      name = Common.UIString.UIString('[Chrome extensions overhead]');
+      name = i18nString(UIStrings.chromeExtensionsOverhead);
     } else if (AggregatedTimelineTreeView._isV8NativeURL(name)) {
-      name = Common.UIString.UIString('[V8 Runtime]');
+      name = i18nString(UIStrings.vRuntime);
     } else if (name.startsWith('chrome-extension')) {
       name = this._executionContextNamesByOrigin.get(name) || name;
     }
@@ -804,7 +905,7 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
     const categories = TimelineUIUtils.categories();
     const color = node.id ? TimelineUIUtils.eventColor(/** @type {!SDK.TracingModel.Event} */ (node.event)) :
                             categories['other'].color;
-    const unattributed = Common.UIString.UIString('[unattributed]');
+    const unattributed = i18nString(UIStrings.unattributed);
 
     const id = typeof node.id === 'symbol' ? undefined : node.id;
 
@@ -825,7 +926,7 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
           throw new Error('Unable to find event for group by operation');
         }
         const name = node.event.name === TimelineModel.TimelineModel.RecordType.JSFrame ?
-            Common.UIString.UIString('JavaScript') :
+            i18nString(UIStrings.javascript) :
             TimelineUIUtils.eventTitle(node.event);
         return {
           name: name,
@@ -844,7 +945,7 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
           throw new Error('Unable to find model for group by frame operation');
         }
         const frame = id ? this._model.timelineModel().pageFrameById(id) : undefined;
-        const frameName = frame ? TimelineUIUtils.displayNameForFrame(frame, 80) : Common.UIString.UIString('Page');
+        const frameName = frame ? TimelineUIUtils.displayNameForFrame(frame, 80) : i18nString(UIStrings.page);
         return {name: frameName, color: color, icon: undefined};
       }
 
@@ -862,17 +963,18 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
     super.populateToolbar(toolbar);
     const groupBy = AggregatedTimelineTreeView.GroupBy;
     const options = [
-      {label: Common.UIString.UIString('No Grouping'), value: groupBy.None},
-      {label: Common.UIString.UIString('Group by Activity'), value: groupBy.EventName},
-      {label: Common.UIString.UIString('Group by Category'), value: groupBy.Category},
-      {label: Common.UIString.UIString('Group by Domain'), value: groupBy.Domain},
-      {label: Common.UIString.UIString('Group by Frame'), value: groupBy.Frame},
-      {label: Common.UIString.UIString('Group by Subdomain'), value: groupBy.Subdomain},
-      {label: Common.UIString.UIString('Group by URL'), value: groupBy.URL},
+      {label: i18nString(UIStrings.noGrouping), value: groupBy.None},
+      {label: i18nString(UIStrings.groupByActivity), value: groupBy.EventName},
+      {label: i18nString(UIStrings.groupByCategory), value: groupBy.Category},
+      {label: i18nString(UIStrings.groupByDomain), value: groupBy.Domain},
+      {label: i18nString(UIStrings.groupByFrame), value: groupBy.Frame},
+      {label: i18nString(UIStrings.groupBySubdomain), value: groupBy.Subdomain},
+      {label: i18nString(UIStrings.groupByUrl), value: groupBy.URL},
     ];
-    toolbar.appendToolbarItem(new UI.Toolbar.ToolbarSettingComboBox(options, this._groupBySetting, ls`Group by`));
+    toolbar.appendToolbarItem(
+        new UI.Toolbar.ToolbarSettingComboBox(options, this._groupBySetting, i18nString(UIStrings.groupBy)));
     toolbar.appendSpacer();
-    toolbar.appendToolbarItem(this.splitWidget.createShowHideSidebarButton(Common.UIString.UIString('heaviest stack')));
+    toolbar.appendToolbarItem(this.splitWidget.createShowHideSidebarButton(i18nString(UIStrings.heaviestStack)));
   }
 
   /**
@@ -1048,7 +1150,7 @@ export class CallTreeTimelineTreeView extends AggregatedTimelineTreeView {
    * @return {string}
    */
   getToolbarInputAccessiblePlaceHolder() {
-    return ls`Filter call tree`;
+    return i18nString(UIStrings.filterCallTree);
   }
 
   /**
@@ -1072,7 +1174,7 @@ export class BottomUpTimelineTreeView extends AggregatedTimelineTreeView {
    * @return {string}
    */
   getToolbarInputAccessiblePlaceHolder() {
-    return ls`Filter bottom-up`;
+    return i18nString(UIStrings.filterBottomup);
   }
 
   /**
@@ -1093,14 +1195,14 @@ export class TimelineStackView extends UI.Widget.VBox {
   constructor(treeView) {
     super();
     const header = this.element.createChild('div', 'timeline-stack-view-header');
-    header.textContent = Common.UIString.UIString('Heaviest stack');
+    header.textContent = i18nString(UIStrings.heaviestStack);
     this._treeView = treeView;
     const columns = /** @type {!Array<!DataGrid.DataGrid.ColumnDescriptor>} */ ([
-      {id: 'total', title: Common.UIString.UIString('Total Time'), fixedWidth: true, width: '110px'},
-      {id: 'activity', title: Common.UIString.UIString('Activity')}
+      {id: 'total', title: i18nString(UIStrings.totalTime), fixedWidth: true, width: '110px'},
+      {id: 'activity', title: i18nString(UIStrings.activity)}
     ]);
     this._dataGrid = new DataGrid.ViewportDataGrid.ViewportDataGrid({
-      displayName: ls`Timeline Stack`,
+      displayName: i18nString(UIStrings.timelineStack),
       columns,
       deleteCallback: undefined,
       editCallback: undefined,

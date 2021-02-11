@@ -318,6 +318,9 @@
   <message name="IDS_DEVTOOLS_c15b53cb50624f0e86e1a9ef5a9dd120" desc="Title of the span/un-span button">
     Toggle dual-screen mode
   </message>
+  <message name="IDS_DEVTOOLS_ce5bf551379459c1c61d2a204061c455" desc="Title for a group of cities">
+    Location
+  </message>
   <message name="IDS_DEVTOOLS_e1566752956adc1106049319eae8a6f6" desc="Field in Devices pane letting customize which browser names and major versions edited device presents via User Agent Client Hints. Example should be kept exactly.">
     UA brands list (e.g. &quot;Chromium&quot;;v=&quot;87&quot;)
   </message>

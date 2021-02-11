@@ -4,7 +4,7 @@
 
 import * as Common from '../common/common.js';
 import * as DataGrid from '../data_grid/data_grid.js';
-import {ls} from '../platform/platform.js';
+import * as i18n from '../i18n/i18n.js';
 import * as SDK from '../sdk/sdk.js';                                  // eslint-disable-line no-unused-vars
 import * as TimelineModel from '../timeline_model/timeline_model.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../ui/ui.js';
@@ -14,6 +14,31 @@ import {TimelineModeViewDelegate, TimelineSelection} from './TimelinePanel.js'; 
 import {TimelineTreeView} from './TimelineTreeView.js';
 import {TimelineUIUtils} from './TimelineUIUtils.js';
 
+export const UIStrings = {
+  /**
+  *@description Aria-label for filter bar in Event Log view
+  */
+  filterEventLog: 'Filter event log',
+  /**
+  *@description Text for the start time of an activity
+  */
+  startTime: 'Start Time',
+  /**
+  *@description Screen reader label for a select box that filters the Performance panel Event Log by duration.
+  */
+  durationFilter: 'Duration filter',
+  /**
+  *@description Text in Events Timeline Tree View of the Performance panel
+  *@example {2} PH1
+  */
+  Dms: '{PH1} ms',
+  /**
+  *@description Text for everything
+  */
+  all: 'All',
+};
+const str_ = i18n.i18n.registerUIStrings('timeline/EventsTimelineTreeView.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class EventsTimelineTreeView extends TimelineTreeView {
   /**
    * @param {!TimelineModeViewDelegate} delegate
@@ -57,7 +82,7 @@ export class EventsTimelineTreeView extends TimelineTreeView {
    * @return {string}
    */
   getToolbarInputAccessiblePlaceHolder() {
-    return ls`Filter event log`;
+    return i18nString(UIStrings.filterEventLog);
   }
 
   /**
@@ -126,7 +151,7 @@ export class EventsTimelineTreeView extends TimelineTreeView {
   populateColumns(columns) {
     columns.push(/** @type {!DataGrid.DataGrid.ColumnDescriptor} */ ({
       id: 'startTime',
-      title: Common.UIString.UIString('Start Time'),
+      title: i18nString(UIStrings.startTime),
       width: '80px',
       fixedWidth: true,
       sortable: true,
@@ -193,10 +218,11 @@ export class Filters extends Common.ObjectWrapper.ObjectWrapper {
    * @param {!UI.Toolbar.Toolbar} toolbar
    */
   populateToolbar(toolbar) {
-    const durationFilterUI = new UI.Toolbar.ToolbarComboBox(durationFilterChanged.bind(this), ls`Duration filter`);
+    const durationFilterUI =
+        new UI.Toolbar.ToolbarComboBox(durationFilterChanged.bind(this), i18nString(UIStrings.durationFilter));
     for (const durationMs of Filters._durationFilterPresetsMs) {
       durationFilterUI.addOption(durationFilterUI.createOption(
-          durationMs ? Common.UIString.UIString('\u2265 %d\xa0ms', durationMs) : Common.UIString.UIString('All'),
+          durationMs ? `≥ ${i18nString(UIStrings.Dms, {PH1: durationMs})}` : i18nString(UIStrings.all),
           String(durationMs)));
     }
     toolbar.appendToolbarItem(durationFilterUI);

@@ -39,6 +39,7 @@ devtools_module("timeline") {
     "../data_grid:bundle",
     "../extensions:bundle",
     "../host:bundle",
+    "../i18n:bundle",
     "../layer_viewer:bundle",
     "../mobile_throttling:bundle",
     "../perf_ui:bundle",

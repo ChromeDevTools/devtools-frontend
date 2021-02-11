@@ -24,6 +24,12 @@
   <message name="IDS_DEVTOOLS_19c8cfef89a0b0409f4502b3bcc4860e" desc="Command for showing the 'Layout' tool">
     Show Layout
   </message>
+  <message name="IDS_DEVTOOLS_3bb3e8c8a24891ba0f7608bcc96f8b0a" desc="Text for a rendering frame">
+    Frame
+  </message>
+  <message name="IDS_DEVTOOLS_539dddc574d3cd85ba73df93df7a76d0" desc="Text for the execution stack trace">
+    Stack Trace
+  </message>
   <message name="IDS_DEVTOOLS_63a6a88c066880c5ac42394a22803ca6" desc="Text to refresh the page">
     Refresh
   </message>
@@ -380,6 +386,9 @@
   </message>
   <message name="IDS_DEVTOOLS_eb92025cb8c66f1850c13a9b602a1856" desc="Text in Computed Style Widget of the Elements panel">
     Show all
+  </message>
+  <message name="IDS_DEVTOOLS_ebd9bec4d70abc789d439c1f136b0538" desc="Text in Timeline UIUtils of the Performance panel">
+    Layout
   </message>
   <message name="IDS_DEVTOOLS_ec409e94ae4378283bc1ae36bf28a62e" desc="Accessible label for Elements panel adorners (suffix badges in Elements Tree Outline)">
     adorner

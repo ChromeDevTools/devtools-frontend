@@ -7010,6 +7010,1290 @@
   "timeline_model/TimelineModel.js | workerSS": {
     "message": "Worker: {PH1} — {PH2}"
   },
+  "timeline/CountersGraph.js | documents": {
+    "message": "D̂óĉúm̂én̂t́ŝ"
+  },
+  "timeline/CountersGraph.js | gpuMemory": {
+    "message": "ĜṔÛ Ḿêḿôŕŷ"
+  },
+  "timeline/CountersGraph.js | jsHeap": {
+    "message": "ĴŚ Ĥéâṕ"
+  },
+  "timeline/CountersGraph.js | listeners": {
+    "message": "L̂íŝt́êńêŕŝ"
+  },
+  "timeline/CountersGraph.js | nodes": {
+    "message": "N̂ód̂éŝ"
+  },
+  "timeline/CountersGraph.js | ss": {
+    "message": "[{PH1} – {PH2}]"
+  },
+  "timeline/EventsTimelineTreeView.js | all": {
+    "message": "Âĺl̂"
+  },
+  "timeline/EventsTimelineTreeView.js | Dms": {
+    "message": "{PH1} m̂ś"
+  },
+  "timeline/EventsTimelineTreeView.js | durationFilter": {
+    "message": "D̂úr̂át̂íôń f̂íl̂t́êŕ"
+  },
+  "timeline/EventsTimelineTreeView.js | filterEventLog": {
+    "message": "F̂íl̂t́êŕ êv́êńt̂ ĺôǵ"
+  },
+  "timeline/EventsTimelineTreeView.js | startTime": {
+    "message": "Ŝt́âŕt̂ T́îḿê"
+  },
+  "timeline/timeline-meta.ts | hideChromeFrameInLayersView": {
+    "message": "Ĥíd̂é chrome f̂ŕâḿê ín̂ Ĺâýêŕŝ v́îéŵ"
+  },
+  "timeline/timeline-meta.ts | javascriptProfiler": {
+    "message": "Ĵáv̂áŜćr̂íp̂t́ P̂ŕôf́îĺêŕ"
+  },
+  "timeline/timeline-meta.ts | loadProfile": {
+    "message": "L̂óâd́ p̂ŕôf́îĺê…"
+  },
+  "timeline/timeline-meta.ts | nextFrame": {
+    "message": "N̂éx̂t́ f̂ŕâḿê"
+  },
+  "timeline/timeline-meta.ts | nextRecording": {
+    "message": "N̂éx̂t́ r̂éĉór̂d́îńĝ"
+  },
+  "timeline/timeline-meta.ts | performance": {
+    "message": "P̂ér̂f́ôŕm̂án̂ćê"
+  },
+  "timeline/timeline-meta.ts | previousFrame": {
+    "message": "P̂ŕêv́îóûś f̂ŕâḿê"
+  },
+  "timeline/timeline-meta.ts | previousRecording": {
+    "message": "P̂ŕêv́îóûś r̂éĉór̂d́îńĝ"
+  },
+  "timeline/timeline-meta.ts | record": {
+    "message": "R̂éĉór̂d́"
+  },
+  "timeline/timeline-meta.ts | saveProfile": {
+    "message": "Ŝáv̂é p̂ŕôf́îĺê…"
+  },
+  "timeline/timeline-meta.ts | showJavascriptProfiler": {
+    "message": "Ŝh́ôẃ Ĵáv̂áŜćr̂íp̂t́ P̂ŕôf́îĺêŕ"
+  },
+  "timeline/timeline-meta.ts | showPerformance": {
+    "message": "Ŝh́ôẃ P̂ér̂f́ôŕm̂án̂ćê"
+  },
+  "timeline/timeline-meta.ts | showRecentTimelineSessions": {
+    "message": "Ŝh́ôẃ r̂éĉén̂t́ t̂ím̂él̂ín̂é ŝéŝśîón̂ś"
+  },
+  "timeline/timeline-meta.ts | startProfilingAndReloadPage": {
+    "message": "Ŝt́âŕt̂ ṕr̂óf̂íl̂ín̂ǵ âńd̂ ŕêĺôád̂ ṕâǵê"
+  },
+  "timeline/timeline-meta.ts | stop": {
+    "message": "Ŝt́ôṕ"
+  },
+  "timeline/TimelineController.js | cpuProfileForATargetIsNot": {
+    "message": "ĈṔÛ ṕr̂óf̂íl̂é f̂ór̂ á t̂ár̂ǵêt́ îś n̂ót̂ áv̂áîĺâb́l̂é."
+  },
+  "timeline/TimelineDetailsView.js | bottomup": {
+    "message": "B̂ót̂t́ôḿ-Ûṕ"
+  },
+  "timeline/TimelineDetailsView.js | callTree": {
+    "message": "Ĉál̂ĺ T̂ŕêé"
+  },
+  "timeline/TimelineDetailsView.js | estimated": {
+    "message": "êśt̂ím̂át̂éd̂"
+  },
+  "timeline/TimelineDetailsView.js | eventLog": {
+    "message": "Êv́êńt̂ Ĺôǵ"
+  },
+  "timeline/TimelineDetailsView.js | layers": {
+    "message": "L̂áŷér̂ś"
+  },
+  "timeline/TimelineDetailsView.js | learnMore": {
+    "message": "L̂éâŕn̂ ḿôŕê"
+  },
+  "timeline/TimelineDetailsView.js | paintProfiler": {
+    "message": "P̂áîńt̂ Ṕr̂óf̂íl̂ér̂"
+  },
+  "timeline/TimelineDetailsView.js | rangeSS": {
+    "message": "R̂án̂ǵê:  {PH1} – {PH2}"
+  },
+  "timeline/TimelineDetailsView.js | summary": {
+    "message": "Ŝúm̂ḿâŕŷ"
+  },
+  "timeline/TimelineDetailsView.js | totalBlockingTimeSmss": {
+    "message": "T̂ót̂ál̂ b́l̂óĉḱîńĝ t́îḿê: {PH1}ḿŝ{PH2}"
+  },
+  "timeline/TimelineEventOverview.js | coverage": {
+    "message": "ĈÓV̂ÉR̂ÁĜÉ"
+  },
+  "timeline/TimelineEventOverview.js | cpu": {
+    "message": "ĈṔÛ"
+  },
+  "timeline/TimelineEventOverview.js | fps": {
+    "message": "F̂ṔŜ"
+  },
+  "timeline/TimelineEventOverview.js | heap": {
+    "message": "ĤÉÂṔ"
+  },
+  "timeline/TimelineEventOverview.js | net": {
+    "message": "N̂ÉT̂"
+  },
+  "timeline/TimelineEventOverview.js | sSDash": {
+    "message": "{PH1} – {PH2}"
+  },
+  "timeline/TimelineFlameChartDataProvider.js | animation": {
+    "message": "Âńîḿât́îón̂"
+  },
+  "timeline/TimelineFlameChartDataProvider.js | console": {
+    "message": "Ĉón̂śôĺê"
+  },
+  "timeline/TimelineFlameChartDataProvider.js | droppedFrame": {
+    "message": "D̂ŕôṕp̂éd̂ F́r̂ám̂é"
+  },
+  "timeline/TimelineFlameChartDataProvider.js | experience": {
+    "message": "Êx́p̂ér̂íêńĉé"
+  },
+  "timeline/TimelineFlameChartDataProvider.js | frame": {
+    "message": "F̂ŕâḿê"
+  },
+  "timeline/TimelineFlameChartDataProvider.js | frames": {
+    "message": "F̂ŕâḿêś"
+  },
+  "timeline/TimelineFlameChartDataProvider.js | frameS": {
+    "message": "F̂ŕâḿê — {PH1}"
+  },
+  "timeline/TimelineFlameChartDataProvider.js | gpu": {
+    "message": "ĜṔÛ"
+  },
+  "timeline/TimelineFlameChartDataProvider.js | idleFrame": {
+    "message": "Îd́l̂é F̂ŕâḿê"
+  },
+  "timeline/TimelineFlameChartDataProvider.js | input": {
+    "message": "Îńp̂út̂"
+  },
+  "timeline/TimelineFlameChartDataProvider.js | interactions": {
+    "message": "Îńt̂ér̂áĉt́îón̂ś"
+  },
+  "timeline/TimelineFlameChartDataProvider.js | longFrame": {
+    "message": "L̂ón̂ǵ f̂ŕâḿê"
+  },
+  "timeline/TimelineFlameChartDataProvider.js | main": {
+    "message": "M̂áîń"
+  },
+  "timeline/TimelineFlameChartDataProvider.js | mainS": {
+    "message": "M̂áîń — {PH1}"
+  },
+  "timeline/TimelineFlameChartDataProvider.js | occurrencesS": {
+    "message": "Ôćĉúr̂ŕêńĉéŝ: {PH1}"
+  },
+  "timeline/TimelineFlameChartDataProvider.js | onIgnoreList": {
+    "message": "Ôń îǵn̂ór̂é l̂íŝt́"
+  },
+  "timeline/TimelineFlameChartDataProvider.js | raster": {
+    "message": "R̂áŝt́êŕ"
+  },
+  "timeline/TimelineFlameChartDataProvider.js | rasterizerThreadS": {
+    "message": "R̂áŝt́êŕîźêŕ T̂h́r̂éâd́ {PH1}"
+  },
+  "timeline/TimelineFlameChartDataProvider.js | sFfps": {
+    "message": "{PH1} ~ {PH2} f̂ṕŝ"
+  },
+  "timeline/TimelineFlameChartDataProvider.js | sSelfS": {
+    "message": "{PH1} (ŝél̂f́ {PH2})"
+  },
+  "timeline/TimelineFlameChartDataProvider.js | subframe": {
+    "message": "Ŝúb̂f́r̂ám̂é"
+  },
+  "timeline/TimelineFlameChartDataProvider.js | thread": {
+    "message": "T̂h́r̂éâd́"
+  },
+  "timeline/TimelineFlameChartDataProvider.js | threadS": {
+    "message": "T̂h́r̂éâd́ {PH1}"
+  },
+  "timeline/TimelineFlameChartDataProvider.js | timings": {
+    "message": "T̂ím̂ín̂ǵŝ"
+  },
+  "timeline/TimelineFlameChartDataProvider.js | unexpectedEntryindexD": {
+    "message": "Ûńêx́p̂éĉt́êd́ êńt̂ŕŷÍn̂d́êx́ {PH1}"
+  },
+  "timeline/TimelineFlameChartNetworkDataProvider.js | network": {
+    "message": "N̂ét̂ẃôŕk̂"
+  },
+  "timeline/TimelineFlameChartView.js | sAtS": {
+    "message": "{PH1} ât́ {PH2}"
+  },
+  "timeline/TimelineHistoryManager.js | currentSessionSS": {
+    "message": "Ĉúr̂ŕêńt̂ Śêśŝíôń: {PH1}. {PH2}"
+  },
+  "timeline/TimelineHistoryManager.js | moments": {
+    "message": "m̂óm̂én̂t́ŝ"
+  },
+  "timeline/TimelineHistoryManager.js | noRecordings": {
+    "message": "(n̂ó r̂éĉór̂d́îńĝś)"
+  },
+  "timeline/TimelineHistoryManager.js | sAgo": {
+    "message": "({PH1} âǵô)"
+  },
+  "timeline/TimelineHistoryManager.js | sD": {
+    "message": "{PH1} #{PH2}"
+  },
+  "timeline/TimelineHistoryManager.js | selectTimelineSession": {
+    "message": "Ŝél̂éĉt́ T̂ím̂él̂ín̂é Ŝéŝśîón̂"
+  },
+  "timeline/TimelineHistoryManager.js | sH": {
+    "message": "{PH1} ĥ"
+  },
+  "timeline/TimelineHistoryManager.js | sM": {
+    "message": "{PH1} m̂"
+  },
+  "timeline/TimelineLoader.js | legacyTimelineFormatIsNot": {
+    "message": "L̂éĝáĉý T̂ím̂él̂ín̂é f̂ór̂ḿât́ îś n̂ót̂ śûṕp̂ór̂t́êd́."
+  },
+  "timeline/TimelineLoader.js | malformedCpuProfileFormat": {
+    "message": "M̂ál̂f́ôŕm̂éd̂ ĆP̂Ú p̂ŕôf́îĺê f́ôŕm̂át̂"
+  },
+  "timeline/TimelineLoader.js | malformedTimelineDataS": {
+    "message": "M̂ál̂f́ôŕm̂éd̂ t́îḿêĺîńê d́ât́â: {PH1}"
+  },
+  "timeline/TimelineLoader.js | malformedTimelineDataUnknownJson": {
+    "message": "M̂ál̂f́ôŕm̂éd̂ t́îḿêĺîńê d́ât́â: Ún̂ḱn̂óŵń ĴŚÔŃ f̂ór̂ḿât́"
+  },
+  "timeline/TimelineLoader.js | malformedTimelineInputWrongJson": {
+    "message": "M̂ál̂f́ôŕm̂éd̂ t́îḿêĺîńê ín̂ṕût́, ŵŕôńĝ J́ŜÓN̂ b́r̂áĉḱêt́ŝ b́âĺâńĉé"
+  },
+  "timeline/TimelinePanel.js | afterRecordingSelectAnAreaOf": {
+    "message": "Âf́t̂ér̂ ŕêćôŕd̂ín̂ǵ, ŝél̂éĉt́ âń âŕêá ôf́ îńt̂ér̂éŝt́ îń t̂h́ê óv̂ér̂v́îéŵ b́ŷ d́r̂áĝǵîńĝ. T́ĥén̂, źôóm̂ án̂d́ p̂án̂ t́ĥé t̂ím̂él̂ín̂é ŵít̂h́ t̂h́ê ḿôúŝéŵh́êél̂ ór̂ {PH1} ḱêýŝ. {PH2}"
+  },
+  "timeline/TimelinePanel.js | bufferUsage": {
+    "message": "B̂úf̂f́êŕ ûśâǵê"
+  },
+  "timeline/TimelinePanel.js | capturesAdvancedPaint": {
+    "message": "Ĉáp̂t́ûŕêś âd́v̂án̂ćêd́ p̂áîńt̂ ín̂śt̂ŕûḿêńt̂át̂íôń, îńt̂ŕôd́ûćêś ŝíĝńîf́îćâńt̂ ṕêŕf̂ór̂ḿâńĉé ôv́êŕĥéâd́"
+  },
+  "timeline/TimelinePanel.js | captureScreenshots": {
+    "message": "Ĉáp̂t́ûŕê śĉŕêén̂śĥót̂ś"
+  },
+  "timeline/TimelinePanel.js | captureSettings": {
+    "message": "Ĉáp̂t́ûŕê śêt́t̂ín̂ǵŝ"
+  },
+  "timeline/TimelinePanel.js | clear": {
+    "message": "Ĉĺêár̂"
+  },
+  "timeline/TimelinePanel.js | clickTheRecordButtonSOrHitSTo": {
+    "message": "Ĉĺîćk̂ t́ĥé r̂éĉór̂d́ b̂út̂t́ôń {PH1} ôŕ ĥít̂ {PH2} t́ô śt̂ár̂t́ â ńêẃ r̂éĉór̂d́îńĝ. Ćl̂íĉḱ t̂h́ê ŕêĺôád̂ b́ût́t̂ón̂ {PH3} ór̂ h́ît́ {PH4} t̂ó r̂éĉór̂d́ t̂h́ê ṕâǵê ĺôád̂."
+  },
+  "timeline/TimelinePanel.js | close": {
+    "message": "Ĉĺôśê"
+  },
+  "timeline/TimelinePanel.js | coverage": {
+    "message": "Ĉóv̂ér̂áĝé"
+  },
+  "timeline/TimelinePanel.js | cpu": {
+    "message": "ĈṔÛ:"
+  },
+  "timeline/TimelinePanel.js | CpuThrottlingIsEnabled": {
+    "message": "- ĈṔÛ t́ĥŕôt́t̂ĺîńĝ íŝ én̂áb̂ĺêd́"
+  },
+  "timeline/TimelinePanel.js | description": {
+    "message": "D̂éŝćr̂íp̂t́îón̂"
+  },
+  "timeline/TimelinePanel.js | disableJavascriptSamples": {
+    "message": "D̂íŝáb̂ĺê J́âv́âŚĉŕîṕt̂ śâḿp̂ĺêś"
+  },
+  "timeline/TimelinePanel.js | disablesJavascriptSampling": {
+    "message": "D̂íŝáb̂ĺêś Ĵáv̂áŜćr̂íp̂t́ ŝám̂ṕl̂ín̂ǵ, r̂éd̂úĉéŝ óv̂ér̂h́êád̂ ẃĥén̂ ŕûńn̂ín̂ǵ âǵâín̂śt̂ ḿôb́îĺê d́êv́îćêś"
+  },
+  "timeline/TimelinePanel.js | dropTimelineFileOrUrlHere": {
+    "message": "D̂ŕôṕ t̂ím̂él̂ín̂é f̂íl̂é ôŕ ÛŔL̂ h́êŕê"
+  },
+  "timeline/TimelinePanel.js | enableAdvancedPaint": {
+    "message": "Êńâb́l̂é âd́v̂án̂ćêd́ p̂áîńt̂ ín̂śt̂ŕûḿêńt̂át̂íôń (ŝĺôẃ)"
+  },
+  "timeline/TimelinePanel.js | failedToSaveTimelineSSS": {
+    "message": "F̂áîĺêd́ t̂ó ŝáv̂é t̂ím̂él̂ín̂é: {PH1} ({PH2}, {PH3})"
+  },
+  "timeline/TimelinePanel.js | initializingProfiler": {
+    "message": "Îńît́îál̂íẑín̂ǵ p̂ŕôf́îĺêŕ…"
+  },
+  "timeline/TimelinePanel.js | JavascriptSamplingIsDisabled": {
+    "message": "- Ĵáv̂áŜćr̂íp̂t́ ŝám̂ṕl̂ín̂ǵ îś d̂íŝáb̂ĺêd́"
+  },
+  "timeline/TimelinePanel.js | learnmore": {
+    "message": "L̂éâŕn̂ ḿôŕê"
+  },
+  "timeline/TimelinePanel.js | loadingProfile": {
+    "message": "L̂óâd́îńĝ ṕr̂óf̂íl̂é…"
+  },
+  "timeline/TimelinePanel.js | loadProfile": {
+    "message": "L̂óâd́ p̂ŕôf́îĺê…"
+  },
+  "timeline/TimelinePanel.js | memory": {
+    "message": "M̂ém̂ór̂ý"
+  },
+  "timeline/TimelinePanel.js | network": {
+    "message": "N̂ét̂ẃôŕk̂:"
+  },
+  "timeline/TimelinePanel.js | networkConditions": {
+    "message": "N̂ét̂ẃôŕk̂ ćôńd̂ít̂íôńŝ"
+  },
+  "timeline/TimelinePanel.js | NetworkThrottlingIsEnabled": {
+    "message": "- N̂ét̂ẃôŕk̂ t́ĥŕôt́t̂ĺîńĝ íŝ én̂áb̂ĺêd́"
+  },
+  "timeline/TimelinePanel.js | processingProfile": {
+    "message": "P̂ŕôćêśŝín̂ǵ p̂ŕôf́îĺê…"
+  },
+  "timeline/TimelinePanel.js | profiling": {
+    "message": "P̂ŕôf́îĺîńĝ…"
+  },
+  "timeline/TimelinePanel.js | received": {
+    "message": "R̂éĉéîv́êd́"
+  },
+  "timeline/TimelinePanel.js | recordCoverageWithPerformance": {
+    "message": "R̂éĉór̂d́ ĉóv̂ér̂áĝé ŵít̂h́ p̂ér̂f́ôŕm̂án̂ćê t́r̂áĉé"
+  },
+  "timeline/TimelinePanel.js | recordingFailed": {
+    "message": "R̂éĉór̂d́îńĝ f́âíl̂éd̂"
+  },
+  "timeline/TimelinePanel.js | saveProfile": {
+    "message": "Ŝáv̂é p̂ŕôf́îĺê…"
+  },
+  "timeline/TimelinePanel.js | screenshots": {
+    "message": "Ŝćr̂éêńŝh́ôt́ŝ"
+  },
+  "timeline/TimelinePanel.js | showMemoryTimeline": {
+    "message": "Ŝh́ôẃ m̂ém̂ór̂ý t̂ím̂él̂ín̂é"
+  },
+  "timeline/TimelinePanel.js | showWebVitals": {
+    "message": "Ŝh́ôẃ Ŵéb̂ V́ît́âĺŝ"
+  },
+  "timeline/TimelinePanel.js | SignificantOverheadDueToPaint": {
+    "message": "- Ŝíĝńîf́îćâńt̂ óv̂ér̂h́êád̂ d́ûé t̂ó p̂áîńt̂ ín̂śt̂ŕûḿêńt̂át̂íôń"
+  },
+  "timeline/TimelinePanel.js | ssec": {
+    "message": "{PH1} ŝéĉ"
+  },
+  "timeline/TimelinePanel.js | status": {
+    "message": "Ŝt́ât́ûś"
+  },
+  "timeline/TimelinePanel.js | stop": {
+    "message": "Ŝt́ôṕ"
+  },
+  "timeline/TimelinePanel.js | stoppingTimeline": {
+    "message": "Ŝt́ôṕp̂ín̂ǵ t̂ím̂él̂ín̂é…"
+  },
+  "timeline/TimelinePanel.js | time": {
+    "message": "T̂ím̂é"
+  },
+  "timeline/TimelinePanel.js | wasd": {
+    "message": "ŴÁŜD́"
+  },
+  "timeline/TimelinePanel.js | webVitals": {
+    "message": "Ŵéb̂ V́ît́âĺŝ"
+  },
+  "timeline/TimelineTreeView.js | activity": {
+    "message": "Âćt̂ív̂ít̂ý"
+  },
+  "timeline/TimelineTreeView.js | chromeExtensionsOverhead": {
+    "message": "[Chrome êx́t̂én̂śîón̂ś ôv́êŕĥéâd́]"
+  },
+  "timeline/TimelineTreeView.js | filter": {
+    "message": "F̂íl̂t́êŕ"
+  },
+  "timeline/TimelineTreeView.js | filterBottomup": {
+    "message": "F̂íl̂t́êŕ b̂ót̂t́ôḿ-ûṕ"
+  },
+  "timeline/TimelineTreeView.js | filterCallTree": {
+    "message": "F̂íl̂t́êŕ ĉál̂ĺ t̂ŕêé"
+  },
+  "timeline/TimelineTreeView.js | fms": {
+    "message": "{PH1} m̂ś"
+  },
+  "timeline/TimelineTreeView.js | groupBy": {
+    "message": "Ĝŕôúp̂ b́ŷ"
+  },
+  "timeline/TimelineTreeView.js | groupByActivity": {
+    "message": "Ĝŕôúp̂ b́ŷ Áĉt́îv́ît́ŷ"
+  },
+  "timeline/TimelineTreeView.js | groupByCategory": {
+    "message": "Ĝŕôúp̂ b́ŷ Ćât́êǵôŕŷ"
+  },
+  "timeline/TimelineTreeView.js | groupByDomain": {
+    "message": "Ĝŕôúp̂ b́ŷ D́ôḿâín̂"
+  },
+  "timeline/TimelineTreeView.js | groupByFrame": {
+    "message": "Ĝŕôúp̂ b́ŷ F́r̂ám̂é"
+  },
+  "timeline/TimelineTreeView.js | groupBySubdomain": {
+    "message": "Ĝŕôúp̂ b́ŷ Śûb́d̂óm̂áîń"
+  },
+  "timeline/TimelineTreeView.js | groupByUrl": {
+    "message": "Ĝŕôúp̂ b́ŷ ÚR̂Ĺ"
+  },
+  "timeline/TimelineTreeView.js | heaviestStack": {
+    "message": "Ĥéâv́îéŝt́ ŝt́âćk̂"
+  },
+  "timeline/TimelineTreeView.js | javascript": {
+    "message": "Ĵáv̂áŜćr̂íp̂t́"
+  },
+  "timeline/TimelineTreeView.js | noGrouping": {
+    "message": "N̂ó Ĝŕôúp̂ín̂ǵ"
+  },
+  "timeline/TimelineTreeView.js | notOptimizedS": {
+    "message": "N̂ót̂ óp̂t́îḿîźêd́: {PH1}"
+  },
+  "timeline/TimelineTreeView.js | page": {
+    "message": "P̂áĝé"
+  },
+  "timeline/TimelineTreeView.js | percentPlaceholder": {
+    "message": "{PH1} %"
+  },
+  "timeline/TimelineTreeView.js | performance": {
+    "message": "P̂ér̂f́ôŕm̂án̂ćê"
+  },
+  "timeline/TimelineTreeView.js | selectItemForDetails": {
+    "message": "Ŝél̂éĉt́ ît́êḿ f̂ór̂ d́êt́âíl̂ś."
+  },
+  "timeline/TimelineTreeView.js | selfTime": {
+    "message": "Ŝél̂f́ T̂ím̂é"
+  },
+  "timeline/TimelineTreeView.js | timelineStack": {
+    "message": "T̂ím̂él̂ín̂é Ŝt́âćk̂"
+  },
+  "timeline/TimelineTreeView.js | totalTime": {
+    "message": "T̂ót̂ál̂ T́îḿê"
+  },
+  "timeline/TimelineTreeView.js | unattributed": {
+    "message": "[ûńât́t̂ŕîb́ût́êd́]"
+  },
+  "timeline/TimelineTreeView.js | vRuntime": {
+    "message": "[V8 R̂ún̂t́îḿê]"
+  },
+  "timeline/TimelineUIUtils.js | aggregatedTime": {
+    "message": "Âǵĝŕêǵât́êd́ T̂ím̂é"
+  },
+  "timeline/TimelineUIUtils.js | allottedTime": {
+    "message": "Âĺl̂ót̂t́êd́ T̂ím̂é"
+  },
+  "timeline/TimelineUIUtils.js | animation": {
+    "message": "Âńîḿât́îón̂"
+  },
+  "timeline/TimelineUIUtils.js | animationFrameFired": {
+    "message": "Âńîḿât́îón̂ F́r̂ám̂é F̂ír̂éd̂"
+  },
+  "timeline/TimelineUIUtils.js | animationFrameRequested": {
+    "message": "Âńîḿât́îón̂ F́r̂ám̂é R̂éq̂úêśt̂éd̂"
+  },
+  "timeline/TimelineUIUtils.js | async": {
+    "message": "Âśŷńĉ"
+  },
+  "timeline/TimelineUIUtils.js | asyncTask": {
+    "message": "Âśŷńĉ T́âśk̂"
+  },
+  "timeline/TimelineUIUtils.js | cachedWasmModule": {
+    "message": "Ĉáĉh́êd́ Ŵáŝḿ M̂ód̂úl̂é"
+  },
+  "timeline/TimelineUIUtils.js | callbackFunction": {
+    "message": "Ĉál̂ĺb̂áĉḱ F̂ún̂ćt̂íôń"
+  },
+  "timeline/TimelineUIUtils.js | callbackId": {
+    "message": "Ĉál̂ĺb̂áĉḱ ÎD́"
+  },
+  "timeline/TimelineUIUtils.js | callStacks": {
+    "message": "Ĉál̂ĺ Ŝt́âćk̂ś"
+  },
+  "timeline/TimelineUIUtils.js | cancelAnimationFrame": {
+    "message": "Ĉán̂ćêĺ Âńîḿât́îón̂ F́r̂ám̂é"
+  },
+  "timeline/TimelineUIUtils.js | cancelIdleCallback": {
+    "message": "Ĉán̂ćêĺ Îd́l̂é Ĉál̂ĺb̂áĉḱ"
+  },
+  "timeline/TimelineUIUtils.js | changedAttributeToSs": {
+    "message": "(ĉh́âńĝéd̂ át̂t́r̂íb̂út̂é t̂ó \"{PH1}\"{PH2})"
+  },
+  "timeline/TimelineUIUtils.js | changedClassToSs": {
+    "message": "(ĉh́âńĝéd̂ ćl̂áŝś t̂ó \"{PH1}\"{PH2})"
+  },
+  "timeline/TimelineUIUtils.js | changedIdToSs": {
+    "message": "(ĉh́âńĝéd̂ íd̂ t́ô \"{PH1}\"{PH2})"
+  },
+  "timeline/TimelineUIUtils.js | changedPesudoToSs": {
+    "message": "(ĉh́âńĝéd̂ ṕŝéûd́ô t́ô \"{PH1}\"{PH2})"
+  },
+  "timeline/TimelineUIUtils.js | changedSs": {
+    "message": "(ĉh́âńĝéd̂ \"{PH1}\"{PH2})"
+  },
+  "timeline/TimelineUIUtils.js | click": {
+    "message": "Ĉĺîćk̂"
+  },
+  "timeline/TimelineUIUtils.js | collected": {
+    "message": "Ĉól̂ĺêćt̂éd̂"
+  },
+  "timeline/TimelineUIUtils.js | compilationCacheSize": {
+    "message": "Ĉóm̂ṕîĺât́îón̂ ćâćĥé ŝíẑé"
+  },
+  "timeline/TimelineUIUtils.js | compilationCacheStatus": {
+    "message": "Ĉóm̂ṕîĺât́îón̂ ćâćĥé ŝt́ât́ûś"
+  },
+  "timeline/TimelineUIUtils.js | compile": {
+    "message": "Ĉóm̂ṕîĺê"
+  },
+  "timeline/TimelineUIUtils.js | compiledWasmModule": {
+    "message": "Ĉóm̂ṕîĺêd́ Ŵáŝḿ M̂ód̂úl̂é"
+  },
+  "timeline/TimelineUIUtils.js | compileModule": {
+    "message": "Ĉóm̂ṕîĺê Ḿôd́ûĺê"
+  },
+  "timeline/TimelineUIUtils.js | compileScript": {
+    "message": "Ĉóm̂ṕîĺê Śĉŕîṕt̂"
+  },
+  "timeline/TimelineUIUtils.js | compositeLayers": {
+    "message": "Ĉóm̂ṕôśît́ê Ĺâýêŕŝ"
+  },
+  "timeline/TimelineUIUtils.js | consoleTime": {
+    "message": "Ĉón̂śôĺê T́îḿê"
+  },
+  "timeline/TimelineUIUtils.js | consumedCacheSize": {
+    "message": "Ĉón̂śûḿêd́ Ĉáĉh́ê Śîźê"
+  },
+  "timeline/TimelineUIUtils.js | contextMenu": {
+    "message": "Ĉón̂t́êx́t̂ Ḿêńû"
+  },
+  "timeline/TimelineUIUtils.js | cpuTime": {
+    "message": "ĈṔÛ t́îḿê"
+  },
+  "timeline/TimelineUIUtils.js | createWebsocket": {
+    "message": "Ĉŕêát̂é Ŵéb̂Śôćk̂ét̂"
+  },
+  "timeline/TimelineUIUtils.js | cumulativeLayoutShifts": {
+    "message": "Ĉúm̂úl̂át̂ív̂é L̂áŷóût́ Ŝh́îf́t̂ś"
+  },
+  "timeline/TimelineUIUtils.js | cumulativeScore": {
+    "message": "Ĉúm̂úl̂át̂ív̂é Ŝćôŕê"
+  },
+  "timeline/TimelineUIUtils.js | dcl": {
+    "message": "DCL"
+  },
+  "timeline/TimelineUIUtils.js | decodedBody": {
+    "message": "D̂éĉód̂éd̂ B́ôd́ŷ"
+  },
+  "timeline/TimelineUIUtils.js | decrypt": {
+    "message": "D̂éĉŕŷṕt̂"
+  },
+  "timeline/TimelineUIUtils.js | decryptReply": {
+    "message": "D̂éĉŕŷṕt̂ Ŕêṕl̂ý"
+  },
+  "timeline/TimelineUIUtils.js | destroyWebsocket": {
+    "message": "D̂éŝt́r̂óŷ Ẃêb́Ŝóĉḱêt́"
+  },
+  "timeline/TimelineUIUtils.js | details": {
+    "message": "D̂ét̂áîĺŝ"
+  },
+  "timeline/TimelineUIUtils.js | digest": {
+    "message": "D̂íĝéŝt́"
+  },
+  "timeline/TimelineUIUtils.js | digestReply": {
+    "message": "D̂íĝéŝt́ R̂ép̂ĺŷ"
+  },
+  "timeline/TimelineUIUtils.js | dimensions": {
+    "message": "D̂ím̂én̂śîón̂ś"
+  },
+  "timeline/TimelineUIUtils.js | domcontentloadedEvent": {
+    "message": "D̂ÓM̂Ćôńt̂én̂t́L̂óâd́êd́ Êv́êńt̂"
+  },
+  "timeline/TimelineUIUtils.js | domGc": {
+    "message": "D̂ÓM̂ ǴĈ"
+  },
+  "timeline/TimelineUIUtils.js | drag": {
+    "message": "D̂ŕâǵ"
+  },
+  "timeline/TimelineUIUtils.js | drawFrame": {
+    "message": "D̂ŕâẃ F̂ŕâḿê"
+  },
+  "timeline/TimelineUIUtils.js | duration": {
+    "message": "D̂úr̂át̂íôń"
+  },
+  "timeline/TimelineUIUtils.js | elementsAffected": {
+    "message": "Êĺêḿêńt̂ś Âf́f̂éĉt́êd́"
+  },
+  "timeline/TimelineUIUtils.js | embedderCallback": {
+    "message": "Êḿb̂éd̂d́êŕ Ĉál̂ĺb̂áĉḱ"
+  },
+  "timeline/TimelineUIUtils.js | emptyPlaceholder": {
+    "message": "{PH1}"
+  },
+  "timeline/TimelineUIUtils.js | emptyPlaceholderColon": {
+    "message": ": {PH1}"
+  },
+  "timeline/TimelineUIUtils.js | encodedData": {
+    "message": "Êńĉód̂éd̂ D́ât́â"
+  },
+  "timeline/TimelineUIUtils.js | encrypt": {
+    "message": "Êńĉŕŷṕt̂"
+  },
+  "timeline/TimelineUIUtils.js | encryptReply": {
+    "message": "Êńĉŕŷṕt̂ Ŕêṕl̂ý"
+  },
+  "timeline/TimelineUIUtils.js | evaluateModule": {
+    "message": "Êv́âĺûát̂é M̂ód̂úl̂é"
+  },
+  "timeline/TimelineUIUtils.js | evaluateScript": {
+    "message": "Êv́âĺûát̂é Ŝćr̂íp̂t́"
+  },
+  "timeline/TimelineUIUtils.js | event": {
+    "message": "Êv́êńt̂"
+  },
+  "timeline/TimelineUIUtils.js | experience": {
+    "message": "Êx́p̂ér̂íêńĉé"
+  },
+  "timeline/TimelineUIUtils.js | failedToLoadScriptFromCache": {
+    "message": "f̂áîĺêd́ t̂ó l̂óâd́ ŝćr̂íp̂t́ f̂ŕôḿ ĉáĉh́ê"
+  },
+  "timeline/TimelineUIUtils.js | fcp": {
+    "message": "FCP"
+  },
+  "timeline/TimelineUIUtils.js | finishLoading": {
+    "message": "F̂ín̂íŝh́ L̂óâd́îńĝ"
+  },
+  "timeline/TimelineUIUtils.js | fireIdleCallback": {
+    "message": "F̂ír̂é Îd́l̂é Ĉál̂ĺb̂áĉḱ"
+  },
+  "timeline/TimelineUIUtils.js | firstContentfulPaint": {
+    "message": "F̂ír̂śt̂ Ćôńt̂én̂t́f̂úl̂ Ṕâín̂t́"
+  },
+  "timeline/TimelineUIUtils.js | firstInvalidated": {
+    "message": "F̂ír̂śt̂ Ín̂v́âĺîd́ât́êd́"
+  },
+  "timeline/TimelineUIUtils.js | firstLayoutInvalidation": {
+    "message": "F̂ír̂śt̂ Ĺâýôút̂ Ín̂v́âĺîd́ât́îón̂"
+  },
+  "timeline/TimelineUIUtils.js | firstPaint": {
+    "message": "F̂ír̂śt̂ Ṕâín̂t́"
+  },
+  "timeline/TimelineUIUtils.js | fling": {
+    "message": "F̂ĺîńĝ"
+  },
+  "timeline/TimelineUIUtils.js | flingHalt": {
+    "message": "F̂ĺîńĝ H́âĺt̂"
+  },
+  "timeline/TimelineUIUtils.js | flingStart": {
+    "message": "F̂ĺîńĝ Śt̂ár̂t́"
+  },
+  "timeline/TimelineUIUtils.js | forcedReflow": {
+    "message": "F̂ór̂ćêd́ r̂éf̂ĺôẃ"
+  },
+  "timeline/TimelineUIUtils.js | fp": {
+    "message": "FP"
+  },
+  "timeline/TimelineUIUtils.js | fps": {
+    "message": "F̂ṔŜ"
+  },
+  "timeline/TimelineUIUtils.js | frame": {
+    "message": "F̂ŕâḿê"
+  },
+  "timeline/TimelineUIUtils.js | frameStart": {
+    "message": "F̂ŕâḿê Śt̂ár̂t́"
+  },
+  "timeline/TimelineUIUtils.js | frameStartedLoading": {
+    "message": "F̂ŕâḿê Śt̂ár̂t́êd́ L̂óâd́îńĝ"
+  },
+  "timeline/TimelineUIUtils.js | frameStartMainThread": {
+    "message": "F̂ŕâḿê Śt̂ár̂t́ (m̂áîń t̂h́r̂éâd́)"
+  },
+  "timeline/TimelineUIUtils.js | FromCache": {
+    "message": " (f̂ŕôḿ ĉáĉh́ê)"
+  },
+  "timeline/TimelineUIUtils.js | FromMemoryCache": {
+    "message": " (f̂ŕôḿ m̂ém̂ór̂ý ĉáĉh́ê)"
+  },
+  "timeline/TimelineUIUtils.js | FromPush": {
+    "message": " (f̂ŕôḿ p̂úŝh́)"
+  },
+  "timeline/TimelineUIUtils.js | FromServiceWorker": {
+    "message": " (f̂ŕôḿ service worker)"
+  },
+  "timeline/TimelineUIUtils.js | function": {
+    "message": "F̂ún̂ćt̂íôń"
+  },
+  "timeline/TimelineUIUtils.js | functionCall": {
+    "message": "F̂ún̂ćt̂íôń Ĉál̂ĺ"
+  },
+  "timeline/TimelineUIUtils.js | gcEvent": {
+    "message": "ĜĆ Êv́êńt̂"
+  },
+  "timeline/TimelineUIUtils.js | gpu": {
+    "message": "ĜṔÛ"
+  },
+  "timeline/TimelineUIUtils.js | hadRecentInput": {
+    "message": "Ĥád̂ ŕêćêńt̂ ín̂ṕût́"
+  },
+  "timeline/TimelineUIUtils.js | handlerTookS": {
+    "message": "Ĥán̂d́l̂ér̂ t́ôók̂ {PH1}"
+  },
+  "timeline/TimelineUIUtils.js | hitTest": {
+    "message": "Ĥít̂ T́êśt̂"
+  },
+  "timeline/TimelineUIUtils.js | idle": {
+    "message": "Îd́l̂é"
+  },
+  "timeline/TimelineUIUtils.js | idleCallbackExecutionExtended": {
+    "message": "Îd́l̂é ĉál̂ĺb̂áĉḱ êx́êćût́îón̂ éx̂t́êńd̂éd̂ b́êýôńd̂ d́êád̂ĺîńê b́ŷ {PH1}"
+  },
+  "timeline/TimelineUIUtils.js | idleCallbackRequested": {
+    "message": "Îd́l̂é Ĉál̂ĺb̂áĉḱ R̂éq̂úêśt̂éd̂"
+  },
+  "timeline/TimelineUIUtils.js | imageDecode": {
+    "message": "Îḿâǵê D́êćôd́ê"
+  },
+  "timeline/TimelineUIUtils.js | imageResize": {
+    "message": "Îḿâǵê Ŕêśîźê"
+  },
+  "timeline/TimelineUIUtils.js | imageUrl": {
+    "message": "Îḿâǵê ÚR̂Ĺ"
+  },
+  "timeline/TimelineUIUtils.js | initiator": {
+    "message": "Îńît́îát̂ór̂"
+  },
+  "timeline/TimelineUIUtils.js | inputLatency": {
+    "message": "Îńp̂út̂ Ĺât́êńĉý"
+  },
+  "timeline/TimelineUIUtils.js | installTimer": {
+    "message": "Îńŝt́âĺl̂ T́îḿêŕ"
+  },
+  "timeline/TimelineUIUtils.js | invalidateLayout": {
+    "message": "Îńv̂ál̂íd̂át̂é L̂áŷóût́"
+  },
+  "timeline/TimelineUIUtils.js | invalidations": {
+    "message": "Îńv̂ál̂íd̂át̂íôńŝ"
+  },
+  "timeline/TimelineUIUtils.js | invokedByTimeout": {
+    "message": "Îńv̂ók̂éd̂ b́ŷ T́îḿêóût́"
+  },
+  "timeline/TimelineUIUtils.js | jank": {
+    "message": "ĵán̂ḱ"
+  },
+  "timeline/TimelineUIUtils.js | jsFrame": {
+    "message": "ĴŚ F̂ŕâḿê"
+  },
+  "timeline/TimelineUIUtils.js | keyCharacter": {
+    "message": "K̂éŷ Ćĥár̂áĉt́êŕ"
+  },
+  "timeline/TimelineUIUtils.js | keyDown": {
+    "message": "K̂éŷ D́ôẃn̂"
+  },
+  "timeline/TimelineUIUtils.js | keyUp": {
+    "message": "K̂éŷ Úp̂"
+  },
+  "timeline/TimelineUIUtils.js | largestContentfulPaint": {
+    "message": "L̂ár̂ǵêśt̂ Ćôńt̂én̂t́f̂úl̂ Ṕâín̂t́"
+  },
+  "timeline/TimelineUIUtils.js | layerRoot": {
+    "message": "L̂áŷér̂ Ŕôót̂"
+  },
+  "timeline/TimelineUIUtils.js | layerTree": {
+    "message": "L̂áŷér̂ t́r̂éê"
+  },
+  "timeline/TimelineUIUtils.js | layout": {
+    "message": "L̂áŷóût́"
+  },
+  "timeline/TimelineUIUtils.js | layoutForced": {
+    "message": "L̂áŷóût́ F̂ór̂ćêd́"
+  },
+  "timeline/TimelineUIUtils.js | layoutInvalidations": {
+    "message": "L̂áŷóût́ Îńv̂ál̂íd̂át̂íôńŝ"
+  },
+  "timeline/TimelineUIUtils.js | layoutRoot": {
+    "message": "L̂áŷóût́ r̂óôt́"
+  },
+  "timeline/TimelineUIUtils.js | layoutShift": {
+    "message": "L̂áŷóût́ Ŝh́îf́t̂"
+  },
+  "timeline/TimelineUIUtils.js | lcp": {
+    "message": "LCP"
+  },
+  "timeline/TimelineUIUtils.js | learnMore": {
+    "message": "L̂éâŕn̂ ḿôŕê"
+  },
+  "timeline/TimelineUIUtils.js | load": {
+    "message": "L"
+  },
+  "timeline/TimelineUIUtils.js | loadFromCache": {
+    "message": "l̂óâd́ f̂ŕôḿ ĉáĉh́ê"
+  },
+  "timeline/TimelineUIUtils.js | loading": {
+    "message": "L̂óâd́îńĝ"
+  },
+  "timeline/TimelineUIUtils.js | location": {
+    "message": "L̂óĉát̂íôń"
+  },
+  "timeline/TimelineUIUtils.js | longTask": {
+    "message": "L̂ón̂ǵ t̂áŝḱ"
+  },
+  "timeline/TimelineUIUtils.js | majorGc": {
+    "message": "M̂áĵór̂ ǴĈ"
+  },
+  "timeline/TimelineUIUtils.js | message": {
+    "message": "M̂éŝśâǵê"
+  },
+  "timeline/TimelineUIUtils.js | mimeType": {
+    "message": "M̂ím̂é T̂ýp̂é"
+  },
+  "timeline/TimelineUIUtils.js | mimeTypeCaps": {
+    "message": "M̂ÍM̂É T̂ýp̂é"
+  },
+  "timeline/TimelineUIUtils.js | minorGc": {
+    "message": "M̂ín̂ór̂ ǴĈ"
+  },
+  "timeline/TimelineUIUtils.js | module": {
+    "message": "M̂ód̂úl̂é"
+  },
+  "timeline/TimelineUIUtils.js | mouseDown": {
+    "message": "M̂óûśê D́ôẃn̂"
+  },
+  "timeline/TimelineUIUtils.js | mouseMove": {
+    "message": "M̂óûśê Ḿôv́ê"
+  },
+  "timeline/TimelineUIUtils.js | mouseUp": {
+    "message": "M̂óûśê Úp̂"
+  },
+  "timeline/TimelineUIUtils.js | mouseWheel": {
+    "message": "M̂óûśê Ẃĥéêĺ"
+  },
+  "timeline/TimelineUIUtils.js | movedFrom": {
+    "message": "M̂óv̂éd̂ f́r̂óm̂"
+  },
+  "timeline/TimelineUIUtils.js | movedTo": {
+    "message": "M̂óv̂éd̂ t́ô"
+  },
+  "timeline/TimelineUIUtils.js | networkRequest": {
+    "message": "N̂ét̂ẃôŕk̂ ŕêq́ûéŝt́"
+  },
+  "timeline/TimelineUIUtils.js | networkTransfer": {
+    "message": "n̂ét̂ẃôŕk̂ t́r̂án̂śf̂ér̂"
+  },
+  "timeline/TimelineUIUtils.js | no": {
+    "message": "N̂ó"
+  },
+  "timeline/TimelineUIUtils.js | node": {
+    "message": "N̂ód̂é:"
+  },
+  "timeline/TimelineUIUtils.js | nodes": {
+    "message": "N̂ód̂éŝ:"
+  },
+  "timeline/TimelineUIUtils.js | nodesThatNeedLayout": {
+    "message": "N̂ód̂éŝ T́ĥát̂ Ńêéd̂ Ĺâýôút̂"
+  },
+  "timeline/TimelineUIUtils.js | notOptimized": {
+    "message": "N̂ót̂ óp̂t́îḿîźêd́"
+  },
+  "timeline/TimelineUIUtils.js | onloadEvent": {
+    "message": "Ôńl̂óâd́ Êv́êńt̂"
+  },
+  "timeline/TimelineUIUtils.js | other": {
+    "message": "Ôt́ĥér̂"
+  },
+  "timeline/TimelineUIUtils.js | otherInvalidations": {
+    "message": "Ôt́ĥér̂ Ín̂v́âĺîd́ât́îón̂ś"
+  },
+  "timeline/TimelineUIUtils.js | ownerElement": {
+    "message": "Ôẃn̂ér̂ Él̂ém̂én̂t́"
+  },
+  "timeline/TimelineUIUtils.js | paint": {
+    "message": "P̂áîńt̂"
+  },
+  "timeline/TimelineUIUtils.js | paintImage": {
+    "message": "P̂áîńt̂ Ím̂áĝé"
+  },
+  "timeline/TimelineUIUtils.js | painting": {
+    "message": "P̂áîńt̂ín̂ǵ"
+  },
+  "timeline/TimelineUIUtils.js | paintProfiler": {
+    "message": "P̂áîńt̂ Ṕr̂óf̂íl̂ér̂"
+  },
+  "timeline/TimelineUIUtils.js | paintSetup": {
+    "message": "P̂áîńt̂ Śêt́ûṕ"
+  },
+  "timeline/TimelineUIUtils.js | parse": {
+    "message": "P̂ár̂śê"
+  },
+  "timeline/TimelineUIUtils.js | parseAndCompile": {
+    "message": "P̂ár̂śê án̂d́ Ĉóm̂ṕîĺê"
+  },
+  "timeline/TimelineUIUtils.js | parseHtml": {
+    "message": "P̂ár̂śê H́T̂ḾL̂"
+  },
+  "timeline/TimelineUIUtils.js | parseStylesheet": {
+    "message": "P̂ár̂śê Śt̂ýl̂éŝh́êét̂"
+  },
+  "timeline/TimelineUIUtils.js | pendingFor": {
+    "message": "P̂én̂d́îńĝ f́ôŕ"
+  },
+  "timeline/TimelineUIUtils.js | pinchBegin": {
+    "message": "P̂ín̂ćĥ B́êǵîń"
+  },
+  "timeline/TimelineUIUtils.js | pinchEnd": {
+    "message": "P̂ín̂ćĥ Én̂d́"
+  },
+  "timeline/TimelineUIUtils.js | pinchUpdate": {
+    "message": "P̂ín̂ćĥ Úp̂d́ât́ê"
+  },
+  "timeline/TimelineUIUtils.js | preview": {
+    "message": "P̂ŕêv́îéŵ"
+  },
+  "timeline/TimelineUIUtils.js | priority": {
+    "message": "P̂ŕîór̂ít̂ý"
+  },
+  "timeline/TimelineUIUtils.js | producedCacheSize": {
+    "message": "P̂ŕôd́ûćêd́ Ĉáĉh́ê Śîźê"
+  },
+  "timeline/TimelineUIUtils.js | range": {
+    "message": "R̂án̂ǵê"
+  },
+  "timeline/TimelineUIUtils.js | rasterizePaint": {
+    "message": "R̂áŝt́êŕîźê Ṕâín̂t́"
+  },
+  "timeline/TimelineUIUtils.js | recalculateStyle": {
+    "message": "R̂éĉál̂ćûĺât́ê Śt̂ýl̂é"
+  },
+  "timeline/TimelineUIUtils.js | recalculationForced": {
+    "message": "R̂éĉál̂ćûĺât́îón̂ F́ôŕĉéd̂"
+  },
+  "timeline/TimelineUIUtils.js | receiveData": {
+    "message": "R̂éĉéîv́ê D́ât́â"
+  },
+  "timeline/TimelineUIUtils.js | receiveResponse": {
+    "message": "R̂éĉéîv́ê Ŕêśp̂ón̂śê"
+  },
+  "timeline/TimelineUIUtils.js | receiveWebsocketHandshake": {
+    "message": "R̂éĉéîv́ê Ẃêb́Ŝóĉḱêt́ Ĥán̂d́ŝh́âḱê"
+  },
+  "timeline/TimelineUIUtils.js | recurringHandlerTookS": {
+    "message": "R̂éĉúr̂ŕîńĝ h́âńd̂ĺêŕ t̂óôḱ {PH1}"
+  },
+  "timeline/TimelineUIUtils.js | relatedNode": {
+    "message": "R̂él̂át̂éd̂ Ńôd́ê"
+  },
+  "timeline/TimelineUIUtils.js | removeTimer": {
+    "message": "R̂ém̂óv̂é T̂ím̂ér̂"
+  },
+  "timeline/TimelineUIUtils.js | rendering": {
+    "message": "R̂én̂d́êŕîńĝ"
+  },
+  "timeline/TimelineUIUtils.js | repeats": {
+    "message": "R̂ép̂éât́ŝ"
+  },
+  "timeline/TimelineUIUtils.js | requestAnimationFrame": {
+    "message": "R̂éq̂úêśt̂ Án̂ím̂át̂íôń F̂ŕâḿê"
+  },
+  "timeline/TimelineUIUtils.js | requestIdleCallback": {
+    "message": "R̂éq̂úêśt̂ Íd̂ĺê Ćâĺl̂b́âćk̂"
+  },
+  "timeline/TimelineUIUtils.js | requestMainThreadFrame": {
+    "message": "R̂éq̂úêśt̂ Ḿâín̂ T́ĥŕêád̂ F́r̂ám̂é"
+  },
+  "timeline/TimelineUIUtils.js | requestMethod": {
+    "message": "R̂éq̂úêśt̂ Ḿêt́ĥód̂"
+  },
+  "timeline/TimelineUIUtils.js | resource": {
+    "message": "R̂éŝóûŕĉé"
+  },
+  "timeline/TimelineUIUtils.js | response": {
+    "message": "R̂éŝṕôńŝé"
+  },
+  "timeline/TimelineUIUtils.js | reveal": {
+    "message": "R̂év̂éâĺ"
+  },
+  "timeline/TimelineUIUtils.js | runMicrotasks": {
+    "message": "R̂ún̂ Ḿîćr̂ót̂áŝḱŝ"
+  },
+  "timeline/TimelineUIUtils.js | sAndS": {
+    "message": "{PH1} âńd̂ {PH2}"
+  },
+  "timeline/TimelineUIUtils.js | sAndSOther": {
+    "message": "{PH1}, {PH2}, âńd̂ 1 ót̂h́êŕ"
+  },
+  "timeline/TimelineUIUtils.js | sAtS": {
+    "message": "{PH1} ât́ {PH2}"
+  },
+  "timeline/TimelineUIUtils.js | sAtSParentheses": {
+    "message": "{PH1} (ât́ {PH2})"
+  },
+  "timeline/TimelineUIUtils.js | sBytes": {
+    "message": "{PH1} B̂ýt̂éŝ"
+  },
+  "timeline/TimelineUIUtils.js | sCanResultInPoorUserExperiences": {
+    "message": "{PH1} ĉán̂ ŕêśûĺt̂ ín̂ ṕôór̂ úŝér̂ éx̂ṕêŕîén̂ćêś."
+  },
+  "timeline/TimelineUIUtils.js | scheduleStyleRecalculation": {
+    "message": "Ŝćĥéd̂úl̂é Ŝt́ŷĺê Ŕêćâĺĉúl̂át̂íôń"
+  },
+  "timeline/TimelineUIUtils.js | sChildren": {
+    "message": "{PH1} (ĉh́îĺd̂ŕêń)"
+  },
+  "timeline/TimelineUIUtils.js | sCollected": {
+    "message": "{PH1} ĉól̂ĺêćt̂éd̂"
+  },
+  "timeline/TimelineUIUtils.js | score": {
+    "message": "Ŝćôŕê"
+  },
+  "timeline/TimelineUIUtils.js | script": {
+    "message": "Ŝćr̂íp̂t́"
+  },
+  "timeline/TimelineUIUtils.js | scripting": {
+    "message": "Ŝćr̂íp̂t́îńĝ"
+  },
+  "timeline/TimelineUIUtils.js | scriptLoadedFromCache": {
+    "message": "ŝćr̂íp̂t́ l̂óâd́êd́ f̂ŕôḿ ĉáĉh́ê"
+  },
+  "timeline/TimelineUIUtils.js | scriptNotEligible": {
+    "message": "ŝćr̂íp̂t́ n̂ót̂ él̂íĝíb̂ĺê"
+  },
+  "timeline/TimelineUIUtils.js | scriptSavedToCache": {
+    "message": "ŝćr̂íp̂t́ ŝáv̂éd̂ t́ô ćâćĥé"
+  },
+  "timeline/TimelineUIUtils.js | scroll": {
+    "message": "Ŝćr̂ól̂ĺ"
+  },
+  "timeline/TimelineUIUtils.js | scrollBegin": {
+    "message": "Ŝćr̂ól̂ĺ B̂éĝín̂"
+  },
+  "timeline/TimelineUIUtils.js | scrollEnd": {
+    "message": "Ŝćr̂ól̂ĺ Êńd̂"
+  },
+  "timeline/TimelineUIUtils.js | scrollUpdate": {
+    "message": "Ŝćr̂ól̂ĺ Ûṕd̂át̂é"
+  },
+  "timeline/TimelineUIUtils.js | sDetails": {
+    "message": "{PH1} - D̂ét̂áîĺŝ"
+  },
+  "timeline/TimelineUIUtils.js | selfTime": {
+    "message": "Ŝél̂f́ T̂ím̂é"
+  },
+  "timeline/TimelineUIUtils.js | sendRequest": {
+    "message": "Ŝén̂d́ R̂éq̂úêśt̂"
+  },
+  "timeline/TimelineUIUtils.js | sendWebsocketHandshake": {
+    "message": "Ŝén̂d́ Ŵéb̂Śôćk̂ét̂ H́âńd̂śĥák̂é"
+  },
+  "timeline/TimelineUIUtils.js | sForS": {
+    "message": "{PH1} f̂ór̂ {PH2}"
+  },
+  "timeline/TimelineUIUtils.js | show": {
+    "message": "Ŝh́ôẃ"
+  },
+  "timeline/TimelineUIUtils.js | sign": {
+    "message": "Ŝíĝń"
+  },
+  "timeline/TimelineUIUtils.js | signReply": {
+    "message": "Ŝíĝń R̂ép̂ĺŷ"
+  },
+  "timeline/TimelineUIUtils.js | sIsALikelyPerformanceBottleneck": {
+    "message": "{PH1} îś â ĺîḱêĺŷ ṕêŕf̂ór̂ḿâńĉé b̂ót̂t́l̂én̂éĉḱ."
+  },
+  "timeline/TimelineUIUtils.js | size": {
+    "message": "Ŝíẑé"
+  },
+  "timeline/TimelineUIUtils.js | sLongFrameTimesAreAnIndicationOf": {
+    "message": "{PH1}. L̂ón̂ǵ f̂ŕâḿê t́îḿêś âŕê án̂ ín̂d́îćât́îón̂ óf̂ {PH2}"
+  },
+  "timeline/TimelineUIUtils.js | sOfS": {
+    "message": "{PH1} ôf́ {PH2}"
+  },
+  "timeline/TimelineUIUtils.js | sS": {
+    "message": "{PH1}: {PH2}"
+  },
+  "timeline/TimelineUIUtils.js | sSAndSOthers": {
+    "message": "{PH1}, {PH2}, âńd̂ {PH3} ót̂h́êŕŝ"
+  },
+  "timeline/TimelineUIUtils.js | sSCurlyBrackets": {
+    "message": "({PH1}, {PH2})"
+  },
+  "timeline/TimelineUIUtils.js | sSDimensions": {
+    "message": "{PH1} × {PH2}"
+  },
+  "timeline/TimelineUIUtils.js | sSDot": {
+    "message": "{PH1}. {PH2}"
+  },
+  "timeline/TimelineUIUtils.js | sSelf": {
+    "message": "{PH1} (ŝél̂f́)"
+  },
+  "timeline/TimelineUIUtils.js | sSs": {
+    "message": "{PH1} [{PH2}…{PH3}]"
+  },
+  "timeline/TimelineUIUtils.js | sSSquareBrackets": {
+    "message": "{PH1} [{PH2}…]"
+  },
+  "timeline/TimelineUIUtils.js | SSSResourceLoading": {
+    "message": " ({PH1} {PH2} + {PH3} r̂éŝóûŕĉé l̂óâd́îńĝ)"
+  },
+  "timeline/TimelineUIUtils.js | stackTrace": {
+    "message": "Ŝt́âćk̂ T́r̂áĉé"
+  },
+  "timeline/TimelineUIUtils.js | stackTraceColon": {
+    "message": "Ŝt́âćk̂ t́r̂áĉé:"
+  },
+  "timeline/TimelineUIUtils.js | state": {
+    "message": "Ŝt́ât́ê"
+  },
+  "timeline/TimelineUIUtils.js | statusCode": {
+    "message": "Ŝt́ât́ûś Ĉód̂é"
+  },
+  "timeline/TimelineUIUtils.js | sTookS": {
+    "message": "{PH1} t̂óôḱ {PH2}."
+  },
+  "timeline/TimelineUIUtils.js | streamed": {
+    "message": "Ŝt́r̂éâḿêd́"
+  },
+  "timeline/TimelineUIUtils.js | streamingCompileTask": {
+    "message": "Ŝt́r̂éâḿîńĝ Ćôḿp̂íl̂é T̂áŝḱ"
+  },
+  "timeline/TimelineUIUtils.js | streamingWasmResponse": {
+    "message": "Ŝt́r̂éâḿîńĝ Ẃâśm̂ Ŕêśp̂ón̂śê"
+  },
+  "timeline/TimelineUIUtils.js | styleInvalidations": {
+    "message": "Ŝt́ŷĺê Ín̂v́âĺîd́ât́îón̂ś"
+  },
+  "timeline/TimelineUIUtils.js | stylesheetUrl": {
+    "message": "Ŝt́ŷĺêśĥéêt́ ÛŔL̂"
+  },
+  "timeline/TimelineUIUtils.js | system": {
+    "message": "Ŝýŝt́êḿ"
+  },
+  "timeline/TimelineUIUtils.js | tap": {
+    "message": "T̂áp̂"
+  },
+  "timeline/TimelineUIUtils.js | tapBegin": {
+    "message": "T̂áp̂ B́êǵîń"
+  },
+  "timeline/TimelineUIUtils.js | tapDown": {
+    "message": "T̂áp̂ D́ôẃn̂"
+  },
+  "timeline/TimelineUIUtils.js | tapHalt": {
+    "message": "T̂áp̂ H́âĺt̂"
+  },
+  "timeline/TimelineUIUtils.js | task": {
+    "message": "T̂áŝḱ"
+  },
+  "timeline/TimelineUIUtils.js | timeout": {
+    "message": "T̂ím̂éôút̂"
+  },
+  "timeline/TimelineUIUtils.js | timerFired": {
+    "message": "T̂ím̂ér̂ F́îŕêd́"
+  },
+  "timeline/TimelineUIUtils.js | timerId": {
+    "message": "T̂ím̂ér̂ ÍD̂"
+  },
+  "timeline/TimelineUIUtils.js | timerInstalled": {
+    "message": "T̂ím̂ér̂ Ín̂śt̂ál̂ĺêd́"
+  },
+  "timeline/TimelineUIUtils.js | timeSpentInRendering": {
+    "message": "T̂ím̂é ŝṕêńt̂ ín̂ ŕêńd̂ér̂ín̂ǵ"
+  },
+  "timeline/TimelineUIUtils.js | timestamp": {
+    "message": "T̂ím̂éŝt́âḿp̂"
+  },
+  "timeline/TimelineUIUtils.js | timeWaitingForMainThread": {
+    "message": "T̂ím̂é Ŵáît́îńĝ f́ôŕ M̂áîń T̂h́r̂éâd́"
+  },
+  "timeline/TimelineUIUtils.js | totalTime": {
+    "message": "T̂ót̂ál̂ T́îḿê"
+  },
+  "timeline/TimelineUIUtils.js | touchCancel": {
+    "message": "T̂óûćĥ Ćâńĉél̂"
+  },
+  "timeline/TimelineUIUtils.js | touchEnd": {
+    "message": "T̂óûćĥ Én̂d́"
+  },
+  "timeline/TimelineUIUtils.js | touchMove": {
+    "message": "T̂óûćĥ Ḿôv́ê"
+  },
+  "timeline/TimelineUIUtils.js | touchStart": {
+    "message": "T̂óûćĥ Śt̂ár̂t́"
+  },
+  "timeline/TimelineUIUtils.js | type": {
+    "message": "T̂ýp̂é"
+  },
+  "timeline/TimelineUIUtils.js | uncategorized": {
+    "message": "Ûńĉát̂éĝór̂íẑéd̂"
+  },
+  "timeline/TimelineUIUtils.js | unknown": {
+    "message": "ûńk̂ńôẃn̂"
+  },
+  "timeline/TimelineUIUtils.js | unknownCause": {
+    "message": "Ûńk̂ńôẃn̂ ćâúŝé"
+  },
+  "timeline/TimelineUIUtils.js | UnknownNode": {
+    "message": "[ ûńk̂ńôẃn̂ ńôd́ê ]"
+  },
+  "timeline/TimelineUIUtils.js | updateLayer": {
+    "message": "Ûṕd̂át̂é L̂áŷér̂"
+  },
+  "timeline/TimelineUIUtils.js | updateLayerTree": {
+    "message": "Ûṕd̂át̂é L̂áŷér̂ T́r̂éê"
+  },
+  "timeline/TimelineUIUtils.js | url": {
+    "message": "Ûŕl̂"
+  },
+  "timeline/TimelineUIUtils.js | urlCaps": {
+    "message": "URL"
+  },
+  "timeline/TimelineUIUtils.js | userTiming": {
+    "message": "Ûśêŕ T̂ím̂ín̂ǵ"
+  },
+  "timeline/TimelineUIUtils.js | verify": {
+    "message": "V̂ér̂íf̂ý"
+  },
+  "timeline/TimelineUIUtils.js | verifyReply": {
+    "message": "V̂ér̂íf̂ý R̂ép̂ĺŷ"
+  },
+  "timeline/TimelineUIUtils.js | waitingForNetwork": {
+    "message": "Ŵáît́îńĝ f́ôŕ N̂ét̂ẃôŕk̂"
+  },
+  "timeline/TimelineUIUtils.js | warning": {
+    "message": "Ŵár̂ńîńĝ"
+  },
+  "timeline/TimelineUIUtils.js | wasmModuleCacheHit": {
+    "message": "Ŵáŝḿ M̂ód̂úl̂é Ĉáĉh́ê H́ît́"
+  },
+  "timeline/TimelineUIUtils.js | wasmModuleCacheInvalid": {
+    "message": "Ŵáŝḿ M̂ód̂úl̂é Ĉáĉh́ê Ín̂v́âĺîd́"
+  },
+  "timeline/TimelineUIUtils.js | websocketProtocol": {
+    "message": "Ŵéb̂Śôćk̂ét̂ Ṕr̂ót̂óĉól̂"
+  },
+  "timeline/TimelineUIUtils.js | willSendRequest": {
+    "message": "Ŵíl̂ĺ Ŝén̂d́ R̂éq̂úêśt̂"
+  },
+  "timeline/TimelineUIUtils.js | xhrLoad": {
+    "message": "X̂H́R̂ Ĺôád̂"
+  },
+  "timeline/TimelineUIUtils.js | xhrReadyStateChange": {
+    "message": "X̂H́R̂ Ŕêád̂ý Ŝt́ât́ê Ćĥán̂ǵê"
+  },
+  "timeline/TimelineUIUtils.js | yes": {
+    "message": "Ŷéŝ"
+  },
+  "timeline/UIDevtoolsUtils.js | drawFrame": {
+    "message": "D̂ŕâẃ F̂ŕâḿê"
+  },
+  "timeline/UIDevtoolsUtils.js | drawing": {
+    "message": "D̂ŕâẃîńĝ"
+  },
+  "timeline/UIDevtoolsUtils.js | frameStart": {
+    "message": "F̂ŕâḿê Śt̂ár̂t́"
+  },
+  "timeline/UIDevtoolsUtils.js | idle": {
+    "message": "Îd́l̂é"
+  },
+  "timeline/UIDevtoolsUtils.js | layout": {
+    "message": "L̂áŷóût́"
+  },
+  "timeline/UIDevtoolsUtils.js | painting": {
+    "message": "P̂áîńt̂ín̂ǵ"
+  },
+  "timeline/UIDevtoolsUtils.js | rasterizing": {
+    "message": "R̂áŝt́êŕîźîńĝ"
+  },
+  "timeline/UIDevtoolsUtils.js | system": {
+    "message": "Ŝýŝt́êḿ"
+  },
   "web_audio/AudioContextContentBuilder.ts | audiocontext": {
     "message": "Âúd̂íôĆôńt̂éx̂t́"
   },

@@ -5,6 +5,7 @@
 import * as Bindings from '../bindings/bindings.js';
 import * as Common from '../common/common.js';
 import * as Extensions from '../extensions/extensions.js';  // eslint-disable-line no-unused-vars
+import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
 import * as ProtocolClient from '../protocol_client/protocol_client.js';
 import * as Root from '../root/root.js';
@@ -15,6 +16,14 @@ import {ExtensionTracingSession} from './ExtensionTracingSession.js';
 import {PerformanceModel} from './PerformanceModel.js';
 import {Client as TimelineLoaderClient} from './TimelineLoader.js';  // eslint-disable-line no-unused-vars
 
+export const UIStrings = {
+  /**
+  *@description Text in Timeline Controller of the Performance panel
+  */
+  cpuProfileForATargetIsNot: 'CPU profile for a target is not available.',
+};
+const str_ = i18n.i18n.registerUIStrings('timeline/TimelineController.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /**
  * @implements {SDK.SDKModel.SDKModelObserver<!SDK.CPUProfilerModel.CPUProfilerModel>}
  * @implements {SDK.TracingManager.TracingManagerClient}
@@ -180,7 +189,7 @@ export class TimelineController {
    */
   _addCpuProfile(targetId, cpuProfile) {
     if (!cpuProfile) {
-      Common.Console.Console.instance().warn(Common.UIString.UIString('CPU profile for a target is not available.'));
+      Common.Console.Console.instance().warn(i18nString(UIStrings.cpuProfileForATargetIsNot));
       return;
     }
     if (!this._cpuProfiles) {

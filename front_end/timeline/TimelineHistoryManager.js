@@ -3,13 +3,56 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
+import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
-import {ls} from '../platform/platform.js';
 import * as UI from '../ui/ui.js';
 
 import {PerformanceModel} from './PerformanceModel.js';  // eslint-disable-line no-unused-vars
 import {TimelineEventOverviewCPUActivity, TimelineEventOverviewFrames, TimelineEventOverviewNetwork, TimelineEventOverviewResponsiveness,} from './TimelineEventOverview.js';
 
+export const UIStrings = {
+  /**
+  *@description Screen reader label for the Timeline History dropdown button
+  *@example {example.com #3} PH1
+  *@example {Show recent timeline sessions} PH2
+  */
+  currentSessionSS: 'Current Session: {PH1}. {PH2}',
+  /**
+  *@description Text that shows there is no recording
+  */
+  noRecordings: '(no recordings)',
+  /**
+  *@description Text in Timeline History Manager of the Performance panel
+  *@example {2s} PH1
+  */
+  sAgo: '({PH1} ago)',
+  /**
+  *@description Text in Timeline History Manager of the Performance panel
+  */
+  moments: 'moments',
+  /**
+  *@description Text in Timeline History Manager of the Performance panel
+  *@example {2} PH1
+  */
+  sM: '{PH1} m',
+  /**
+  *@description Text in Timeline History Manager of the Performance panel
+  *@example {2} PH1
+  */
+  sH: '{PH1} h',
+  /**
+  *@description Text in Timeline History Manager of the Performance panel
+  *@example {example.com} PH1
+  *@example {2} PH2
+  */
+  sD: '{PH1} #{PH2}',
+  /**
+  *@description Accessible label for the timeline session selection menu
+  */
+  selectTimelineSession: 'Select Timeline Session',
+};
+const str_ = i18n.i18n.registerUIStrings('timeline/TimelineHistoryManager.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class TimelineHistoryManager {
   constructor() {
     /** @type {!Array<!PerformanceModel>} */
@@ -47,7 +90,8 @@ export class TimelineHistoryManager {
     const modelTitle = this._title(performanceModel);
     this._button.setText(modelTitle);
     const buttonTitle = this._action.title();
-    UI.ARIAUtils.setAccessibleName(this._button.element, ls`Current Session: ${modelTitle}. ${buttonTitle}`);
+    UI.ARIAUtils.setAccessibleName(
+        this._button.element, i18nString(UIStrings.currentSessionSS, {PH1: modelTitle, PH2: buttonTitle}));
     this._updateState();
     if (this._recordings.length <= maxRecordings) {
       return;
@@ -86,7 +130,7 @@ export class TimelineHistoryManager {
     this._recordings = [];
     this._lastActiveModel = null;
     this._updateState();
-    this._button.setText(Common.UIString.UIString('(no recordings)'));
+    this._button.setText(i18nString(UIStrings.noRecordings));
     this._nextNumberByDomain.clear();
   }
 
@@ -148,7 +192,8 @@ export class TimelineHistoryManager {
     const modelTitle = this._title(model);
     const buttonTitle = this._action.title();
     this._button.setText(modelTitle);
-    UI.ARIAUtils.setAccessibleName(this._button.element, ls`Current Session: ${modelTitle}. ${buttonTitle}`);
+    UI.ARIAUtils.setAccessibleName(
+        this._button.element, i18nString(UIStrings.currentSessionSS, {PH1: modelTitle, PH2: buttonTitle}));
   }
 
   _updateState() {
@@ -166,7 +211,7 @@ export class TimelineHistoryManager {
     }
     const startedAt = performanceModel.recordStartTime();
     data.time.textContent =
-        startedAt ? Common.UIString.UIString('(%s ago)', TimelineHistoryManager._coarseAge(startedAt)) : '';
+        startedAt ? i18nString(UIStrings.sAgo, {PH1: TimelineHistoryManager._coarseAge(startedAt)}) : '';
     return data.preview;
   }
 
@@ -177,14 +222,14 @@ export class TimelineHistoryManager {
   static _coarseAge(time) {
     const seconds = Math.round((Date.now() - time) / 1000);
     if (seconds < 50) {
-      return Common.UIString.UIString('moments');
+      return i18nString(UIStrings.moments);
     }
     const minutes = Math.round(seconds / 60);
     if (minutes < 50) {
-      return Common.UIString.UIString('%s m', minutes);
+      return i18nString(UIStrings.sM, {PH1: minutes});
     }
     const hours = Math.round(minutes / 60);
-    return Common.UIString.UIString('%s h', hours);
+    return i18nString(UIStrings.sH, {PH1: hours});
   }
 
   /**
@@ -206,7 +251,7 @@ export class TimelineHistoryManager {
     const parsedURL = Common.ParsedURL.ParsedURL.fromString(performanceModel.timelineModel().pageURL());
     const domain = parsedURL ? parsedURL.host : '';
     const sequenceNumber = this._nextNumberByDomain.get(domain) || 1;
-    const title = Common.UIString.UIString('%s #%d', domain, sequenceNumber);
+    const title = i18nString(UIStrings.sD, {PH1: domain, PH2: sequenceNumber});
     this._nextNumberByDomain.set(domain, sequenceNumber + 1);
     const timeElement = document.createElement('span');
 
@@ -336,7 +381,7 @@ export class DropDown {
     listModel.replaceAll(models);
 
     UI.ARIAUtils.markAsMenu(this._listControl.element);
-    UI.ARIAUtils.setAccessibleName(this._listControl.element, ls`Select Timeline Session`);
+    UI.ARIAUtils.setAccessibleName(this._listControl.element, i18nString(UIStrings.selectTimelineSession));
     contentElement.appendChild(this._listControl.element);
     contentElement.addEventListener('keydown', this._onKeyDown.bind(this), false);
     contentElement.addEventListener('click', this._onClick.bind(this), false);

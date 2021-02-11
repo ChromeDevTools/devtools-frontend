@@ -3,8 +3,6 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
-import type * as Platform from '../platform/platform.js';
-import {ls} from '../platform/platform.js';
 import * as Root from '../root/root.js';
 import * as UI from '../ui/ui.js';
 
@@ -13,6 +11,71 @@ import type * as Timeline from './timeline.js';
 
 import type * as Profiler from '../profiler/profiler.js';
 
+import * as i18n from '../i18n/i18n.js';
+export const UIStrings = {
+  /**
+  *@description Text for the performance of something
+  */
+  performance: 'Performance',
+  /**
+  *@description Command for showing the 'Performance' tool
+  */
+  showPerformance: 'Show Performance',
+  /**
+  *@description Title of the 'JavaScript Profiler' tool
+  */
+  javascriptProfiler: 'JavaScript Profiler',
+  /**
+  *@description Command for showing the 'JavaScript Profiler' tool
+  */
+  showJavascriptProfiler: 'Show JavaScript Profiler',
+  /**
+  *@description Text to record a series of actions for analysis
+  */
+  record: 'Record',
+  /**
+  *@description Text of an item that stops the running task
+  */
+  stop: 'Stop',
+  /**
+  *@description Title of an action in the timeline tool to record reload
+  */
+  startProfilingAndReloadPage: 'Start profiling and reload page',
+  /**
+  *@description Tooltip text that appears when hovering over the largeicon download button
+  */
+  saveProfile: 'Save profile…',
+  /**
+  *@description Tooltip text that appears when hovering over the largeicon load button
+  */
+  loadProfile: 'Load profile…',
+  /**
+  *@description Prev button title in Film Strip View of the Performance panel
+  */
+  previousFrame: 'Previous frame',
+  /**
+  *@description Next button title in Film Strip View of the Performance panel
+  */
+  nextFrame: 'Next frame',
+  /**
+  *@description Title of an action in the timeline tool to show history
+  */
+  showRecentTimelineSessions: 'Show recent timeline sessions',
+  /**
+  *@description Title of an action that opens the previous recording in the performance panel
+  */
+  previousRecording: 'Previous recording',
+  /**
+  *@description Title of an action that opens the next recording in the performance panel
+  */
+  nextRecording: 'Next recording',
+  /**
+  *@description Title of a setting under the Performance category in Settings
+  */
+  hideChromeFrameInLayersView: 'Hide `chrome` frame in Layers view',
+};
+const str_ = i18n.i18n.registerUIStrings('timeline/timeline-meta.ts', UIStrings);
+const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 let loadedTimelineModule: (typeof Timeline|undefined);
 
 let loadedProfilerModule: (typeof Profiler|undefined);
@@ -52,8 +115,8 @@ function maybeRetrieveContextTypes<T = unknown>(getClassCallBack: (timelineModul
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.PANEL,
   id: 'timeline',
-  title: (): Platform.UIString.LocalizedString => ls`Performance`,
-  commandPrompt: (): Platform.UIString.LocalizedString => ls`Show Performance`,
+  title: i18nLazyString(UIStrings.performance),
+  commandPrompt: i18nLazyString(UIStrings.showPerformance),
   order: 50,
   async loadView() {
     const Timeline = await loadTimelineModule();
@@ -64,8 +127,8 @@ UI.ViewManager.registerViewExtension({
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.PANEL,
   id: 'js_profiler',
-  title: (): Platform.UIString.LocalizedString => ls`JavaScript Profiler`,
-  commandPrompt: (): Platform.UIString.LocalizedString => ls`Show JavaScript Profiler`,
+  title: i18nLazyString(UIStrings.javascriptProfiler),
+  commandPrompt: i18nLazyString(UIStrings.showJavascriptProfiler),
   persistence: UI.ViewManager.ViewPersistence.CLOSEABLE,
   order: 65,
   async loadView() {
@@ -91,11 +154,11 @@ UI.ActionRegistration.registerActionExtension({
   options: [
     {
       value: true,
-      title: (): Platform.UIString.LocalizedString => ls`Record`,
+      title: i18nLazyString(UIStrings.record),
     },
     {
       value: false,
-      title: (): Platform.UIString.LocalizedString => ls`Stop`,
+      title: i18nLazyString(UIStrings.stop),
     },
   ],
   bindings: [
@@ -118,7 +181,7 @@ UI.ActionRegistration.registerActionExtension({
     return maybeRetrieveContextTypes(Timeline => [Timeline.TimelinePanel.TimelinePanel]);
   },
   category: UI.ActionRegistration.ActionCategory.PERFORMANCE,
-  title: (): Platform.UIString.LocalizedString => ls`Start profiling and reload page`,
+  title: i18nLazyString(UIStrings.startProfilingAndReloadPage),
   async loadActionDelegate() {
     const Timeline = await loadTimelineModule();
     return Timeline.TimelinePanel.ActionDelegate.instance();
@@ -145,7 +208,7 @@ UI.ActionRegistration.registerActionExtension({
     const Timeline = await loadTimelineModule();
     return Timeline.TimelinePanel.ActionDelegate.instance();
   },
-  title: (): Platform.UIString.LocalizedString => ls`Save profile…`,
+  title: i18nLazyString(UIStrings.saveProfile),
   bindings: [
     {
       platform: UI.ActionRegistration.Platforms.WindowsLinux,
@@ -168,7 +231,7 @@ UI.ActionRegistration.registerActionExtension({
     const Timeline = await loadTimelineModule();
     return Timeline.TimelinePanel.ActionDelegate.instance();
   },
-  title: (): Platform.UIString.LocalizedString => ls`Load profile…`,
+  title: i18nLazyString(UIStrings.loadProfile),
   bindings: [
     {
       platform: UI.ActionRegistration.Platforms.WindowsLinux,
@@ -184,7 +247,7 @@ UI.ActionRegistration.registerActionExtension({
 UI.ActionRegistration.registerActionExtension({
   actionId: 'timeline.jump-to-previous-frame',
   category: UI.ActionRegistration.ActionCategory.PERFORMANCE,
-  title: (): Platform.UIString.LocalizedString => ls`Previous frame`,
+  title: i18nLazyString(UIStrings.previousFrame),
   contextTypes() {
     return maybeRetrieveContextTypes(Timeline => [Timeline.TimelinePanel.TimelinePanel]);
   },
@@ -202,7 +265,7 @@ UI.ActionRegistration.registerActionExtension({
 UI.ActionRegistration.registerActionExtension({
   actionId: 'timeline.jump-to-next-frame',
   category: UI.ActionRegistration.ActionCategory.PERFORMANCE,
-  title: (): Platform.UIString.LocalizedString => ls`Next frame`,
+  title: i18nLazyString(UIStrings.nextFrame),
   contextTypes() {
     return maybeRetrieveContextTypes(Timeline => [Timeline.TimelinePanel.TimelinePanel]);
   },
@@ -224,7 +287,7 @@ UI.ActionRegistration.registerActionExtension({
     return Timeline.TimelinePanel.ActionDelegate.instance();
   },
   category: UI.ActionRegistration.ActionCategory.PERFORMANCE,
-  title: (): Platform.UIString.LocalizedString => ls`Show recent timeline sessions`,
+  title: i18nLazyString(UIStrings.showRecentTimelineSessions),
   contextTypes() {
     return maybeRetrieveContextTypes(Timeline => [Timeline.TimelinePanel.TimelinePanel]);
   },
@@ -247,7 +310,7 @@ UI.ActionRegistration.registerActionExtension({
     const Timeline = await loadTimelineModule();
     return Timeline.TimelinePanel.ActionDelegate.instance();
   },
-  title: (): Platform.UIString.LocalizedString => ls`Previous recording`,
+  title: i18nLazyString(UIStrings.previousRecording),
   contextTypes() {
     return maybeRetrieveContextTypes(Timeline => [Timeline.TimelinePanel.TimelinePanel]);
   },
@@ -270,7 +333,7 @@ UI.ActionRegistration.registerActionExtension({
     const Timeline = await loadTimelineModule();
     return Timeline.TimelinePanel.ActionDelegate.instance();
   },
-  title: (): Platform.UIString.LocalizedString => ls`Next recording`,
+  title: i18nLazyString(UIStrings.nextRecording),
   contextTypes() {
     return maybeRetrieveContextTypes(Timeline => [Timeline.TimelinePanel.TimelinePanel]);
   },
@@ -288,7 +351,7 @@ UI.ActionRegistration.registerActionExtension({
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategoryObject.PERFORMANCE,
-  title: (): Platform.UIString.LocalizedString => ls`Hide chrome frame in Layers view`,
+  title: i18nLazyString(UIStrings.hideChromeFrameInLayersView),
   settingName: 'frameViewerHideChromeWindow',
   settingType: Common.Settings.SettingTypeObject.BOOLEAN,
   defaultValue: false,

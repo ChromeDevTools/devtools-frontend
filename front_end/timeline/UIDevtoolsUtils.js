@@ -28,11 +28,47 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import {ls} from '../platform/platform.js';
+import * as i18n from '../i18n/i18n.js';
 import * as Root from '../root/root.js';
 
 import {TimelineCategory, TimelineRecordStyle} from './TimelineUIUtils.js';
 
+export const UIStrings = {
+  /**
+  *@description Text in Timeline UIUtils of the Performance panel
+  */
+  frameStart: 'Frame Start',
+  /**
+  *@description Text in Timeline UIUtils of the Performance panel
+  */
+  drawFrame: 'Draw Frame',
+  /**
+  *@description Text in Timeline UIUtils of the Performance panel
+  */
+  layout: 'Layout',
+  /**
+  *@description Text in UIDevtools Utils of the Performance panel
+  */
+  rasterizing: 'Rasterizing',
+  /**
+  *@description Text in UIDevtools Utils of the Performance panel
+  */
+  drawing: 'Drawing',
+  /**
+  *@description Text in Timeline UIUtils of the Performance panel
+  */
+  painting: 'Painting',
+  /**
+  *@description Text in Timeline UIUtils of the Performance panel
+  */
+  system: 'System',
+  /**
+  *@description Text in Timeline UIUtils of the Performance panel
+  */
+  idle: 'Idle',
+};
+const str_ = i18n.i18n.registerUIStrings('timeline/UIDevtoolsUtils.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /** @type {?Object<string, !TimelineRecordStyle>} */
 let _eventStylesMap = null;
 
@@ -67,31 +103,31 @@ export class UIDevtoolsUtils {
     const eventStyles = {};
 
     // Paint Categories
-    eventStyles[type.ViewPaint] = new TimelineRecordStyle(ls`View::Paint`, painting);
-    eventStyles[type.ViewOnPaint] = new TimelineRecordStyle(ls`View::OnPaint`, painting);
-    eventStyles[type.ViewPaintChildren] = new TimelineRecordStyle(ls`View::PaintChildren`, painting);
-    eventStyles[type.ViewOnPaintBackground] = new TimelineRecordStyle(ls`View::OnPaintBackground`, painting);
-    eventStyles[type.ViewOnPaintBorder] = new TimelineRecordStyle(ls`View::OnPaintBorder`, painting);
+    eventStyles[type.ViewPaint] = new TimelineRecordStyle('View::Paint', painting);
+    eventStyles[type.ViewOnPaint] = new TimelineRecordStyle('View::OnPaint', painting);
+    eventStyles[type.ViewPaintChildren] = new TimelineRecordStyle('View::PaintChildren', painting);
+    eventStyles[type.ViewOnPaintBackground] = new TimelineRecordStyle('View::OnPaintBackground', painting);
+    eventStyles[type.ViewOnPaintBorder] = new TimelineRecordStyle('View::OnPaintBorder', painting);
     eventStyles[type.LayerPaintContentsToDisplayList] =
-        new TimelineRecordStyle(ls`Layer::PaintContentsToDisplayList`, painting);
+        new TimelineRecordStyle('Layer::PaintContentsToDisplayList', painting);
 
     // Layout Categories
-    eventStyles[type.ViewLayout] = new TimelineRecordStyle(ls`View::Layout`, layout);
-    eventStyles[type.ViewLayoutBoundsChanged] = new TimelineRecordStyle(ls`View::Layout(bounds_changed)`, layout);
+    eventStyles[type.ViewLayout] = new TimelineRecordStyle('View::Layout', layout);
+    eventStyles[type.ViewLayoutBoundsChanged] = new TimelineRecordStyle('View::Layout(bounds_changed)', layout);
 
     // Raster Categories
-    eventStyles[type.RasterTask] = new TimelineRecordStyle(ls`RasterTask`, rasterizing);
+    eventStyles[type.RasterTask] = new TimelineRecordStyle('RasterTask', rasterizing);
     eventStyles[type.RasterizerTaskImplRunOnWorkerThread] =
-        new TimelineRecordStyle(ls`RasterizerTaskImpl::RunOnWorkerThread`, rasterizing);
+        new TimelineRecordStyle('RasterizerTaskImpl::RunOnWorkerThread', rasterizing);
 
     // Draw Categories
-    eventStyles[type.DirectRendererDrawFrame] = new TimelineRecordStyle(ls`DirectRenderer::DrawFrame`, drawing);
-    eventStyles[type.BeginFrame] = new TimelineRecordStyle(ls`Frame Start`, drawing, true);
-    eventStyles[type.DrawFrame] = new TimelineRecordStyle(ls`Draw Frame`, drawing, true);
-    eventStyles[type.NeedsBeginFrameChanged] = new TimelineRecordStyle(ls`NeedsBeginFrameChanged`, drawing, true);
+    eventStyles[type.DirectRendererDrawFrame] = new TimelineRecordStyle('DirectRenderer::DrawFrame', drawing);
+    eventStyles[type.BeginFrame] = new TimelineRecordStyle(i18nString(UIStrings.frameStart), drawing, true);
+    eventStyles[type.DrawFrame] = new TimelineRecordStyle(i18nString(UIStrings.drawFrame), drawing, true);
+    eventStyles[type.NeedsBeginFrameChanged] = new TimelineRecordStyle('NeedsBeginFrameChanged', drawing, true);
 
     // Other Categories
-    eventStyles[type.ThreadControllerImplRunTask] = new TimelineRecordStyle(ls`ThreadControllerImpl::RunTask`, other);
+    eventStyles[type.ThreadControllerImplRunTask] = new TimelineRecordStyle('ThreadControllerImpl::RunTask', other);
 
     _eventStylesMap = eventStyles;
     return eventStyles;
@@ -105,13 +141,16 @@ export class UIDevtoolsUtils {
       return _categories;
     }
     _categories = {
-      layout: new TimelineCategory('layout', ls`Layout`, true, 'hsl(214, 67%, 74%)', 'hsl(214, 67%, 66%)'),
-      rasterizing:
-          new TimelineCategory('rasterizing', ls`Rasterizing`, true, 'hsl(43, 83%, 72%)', 'hsl(43, 83%, 64%) '),
-      drawing: new TimelineCategory('drawing', ls`Drawing`, true, 'hsl(256, 67%, 76%)', 'hsl(256, 67%, 70%)'),
-      painting: new TimelineCategory('painting', ls`Painting`, true, 'hsl(109, 33%, 64%)', 'hsl(109, 33%, 55%)'),
-      other: new TimelineCategory('other', ls`System`, false, 'hsl(0, 0%, 87%)', 'hsl(0, 0%, 79%)'),
-      idle: new TimelineCategory('idle', ls`Idle`, false, 'hsl(0, 0%, 98%)', 'hsl(0, 0%, 98%)')
+      layout: new TimelineCategory(
+          'layout', i18nString(UIStrings.layout), true, 'hsl(214, 67%, 74%)', 'hsl(214, 67%, 66%)'),
+      rasterizing: new TimelineCategory(
+          'rasterizing', i18nString(UIStrings.rasterizing), true, 'hsl(43, 83%, 72%)', 'hsl(43, 83%, 64%) '),
+      drawing: new TimelineCategory(
+          'drawing', i18nString(UIStrings.drawing), true, 'hsl(256, 67%, 76%)', 'hsl(256, 67%, 70%)'),
+      painting: new TimelineCategory(
+          'painting', i18nString(UIStrings.painting), true, 'hsl(109, 33%, 64%)', 'hsl(109, 33%, 55%)'),
+      other: new TimelineCategory('other', i18nString(UIStrings.system), false, 'hsl(0, 0%, 87%)', 'hsl(0, 0%, 79%)'),
+      idle: new TimelineCategory('idle', i18nString(UIStrings.idle), false, 'hsl(0, 0%, 98%)', 'hsl(0, 0%, 98%)')
     };
     return _categories;
   }

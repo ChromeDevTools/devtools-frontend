@@ -51,6 +51,9 @@
   <message name="IDS_DEVTOOLS_5bc06f5800d415cc95e1349edbaca425" desc="Text that appears on a button for the JavaScript resource type filter.">
     JS
   </message>
+  <message name="IDS_DEVTOOLS_6311ae17c1ee52b36e68aaf4ad066387" desc="Text for other types of items">
+    Other
+  </message>
   <message name="IDS_DEVTOOLS_76c3e002d3c052bd6a909366a8dc3845" desc="Text that appears on a button for the manifest resource type filter.">
     Manifest
   </message>
@@ -101,6 +104,9 @@
   </message>
   <message name="IDS_DEVTOOLS_ee02b74d0caebce3dabaf3b3e79b6a65" desc="The UI destination when right clicking an item that can be revealed">
     Issues view
+  </message>
+  <message name="IDS_DEVTOOLS_f28128b38efbc6134dc40751ee21fd29" desc="Text for documents, a type of resources">
+    Documents
   </message>
   <message name="IDS_DEVTOOLS_fff0d600f8a0b5e19e88bfb821dd1157" desc="Text that appears in a tooltip for the image types filter.">
     Images

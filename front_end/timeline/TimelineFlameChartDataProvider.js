@@ -31,9 +31,9 @@
 import * as Bindings from '../bindings/bindings.js';
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
+import * as i18n from '../i18n/i18n.js';
 import * as PerfUI from '../perf_ui/perf_ui.js';
 import * as Platform from '../platform/platform.js';
-import {ls} from '../platform/platform.js';
 import * as Root from '../root/root.js';
 import * as SDK from '../sdk/sdk.js';
 import * as ThemeSupport from '../theme_support/theme_support.js';
@@ -45,6 +45,120 @@ import {FlameChartStyle, Selection, TimelineFlameChartMarker} from './TimelineFl
 import {TimelineSelection} from './TimelinePanel.js';
 import {TimelineCategory, TimelineUIUtils} from './TimelineUIUtils.js';  // eslint-disable-line no-unused-vars
 
+export const UIStrings = {
+  /**
+  *@description Text in Timeline Flame Chart Data Provider of the Performance panel
+  */
+  onIgnoreList: 'On ignore list',
+  /**
+  *@description Title in Timeline Flame Chart Data Provider of the Performance panel
+  *@example {2} PH1
+  */
+  unexpectedEntryindexD: 'Unexpected entryIndex {PH1}',
+  /**
+  *@description Text in Timeline Flame Chart Data Provider of the Performance panel
+  */
+  input: 'Input',
+  /**
+  *@description Text that refers to the animation of the web page
+  */
+  animation: 'Animation',
+  /**
+  *@description Text in Timeline Flame Chart Data Provider of the Performance panel
+  */
+  timings: 'Timings',
+  /**
+  *@description Title of the Console tool
+  */
+  console: 'Console',
+  /**
+  *@description Text in Timeline Flame Chart Data Provider of the Performance panel
+  *@example {example.com} PH1
+  */
+  mainS: 'Main — {PH1}',
+  /**
+  *@description Text that refers to the main target
+  */
+  main: 'Main',
+  /**
+  *@description Text in Timeline Flame Chart Data Provider of the Performance panel
+  *@example {https://example.com} PH1
+  */
+  frameS: 'Frame — {PH1}',
+  /**
+  *@description Text in Timeline Flame Chart Data Provider of the Performance panel
+  */
+  subframe: 'Subframe',
+  /**
+  *@description Text in Timeline Flame Chart Data Provider of the Performance panel
+  */
+  raster: 'Raster',
+  /**
+  *@description Text in Timeline Flame Chart Data Provider of the Performance panel
+  *@example {2} PH1
+  */
+  rasterizerThreadS: 'Rasterizer Thread {PH1}',
+  /**
+  *@description Text in Timeline Flame Chart Data Provider of the Performance panel
+  */
+  gpu: 'GPU',
+  /**
+  *@description Text in Timeline Flame Chart Data Provider of the Performance panel
+  */
+  thread: 'Thread',
+  /**
+  *@description Text in Timeline for the Experience title
+  */
+  experience: 'Experience',
+  /**
+  *@description Text in Timeline Flame Chart Data Provider of the Performance panel
+  */
+  interactions: 'Interactions',
+  /**
+  *@description Text for rendering frames
+  */
+  frames: 'Frames',
+  /**
+  *@description Text in Timeline Flame Chart Data Provider of the Performance panel
+  *@example {10ms} PH1
+  *@example {10ms} PH2
+  */
+  sSelfS: '{PH1} (self {PH2})',
+  /**
+  *@description Tooltip text for the number of CLS occurences in Timeline
+  *@example {4} PH1
+  */
+  occurrencesS: 'Occurrences: {PH1}',
+  /**
+  *@description Text in Timeline Flame Chart Data Provider of the Performance panel
+  *@example {10ms} PH1
+  *@example {100.0} PH2
+  */
+  sFfps: '{PH1} ~ {PH2} fps',
+  /**
+  *@description Text in Timeline Flame Chart Data Provider of the Performance panel
+  */
+  idleFrame: 'Idle Frame',
+  /**
+  *@description Text in Timeline Frame Chart Data Provider of the Performance panel
+  */
+  droppedFrame: 'Dropped Frame',
+  /**
+  *@description Text for a rendering frame
+  */
+  frame: 'Frame',
+  /**
+  *@description Warning text content in Timeline Flame Chart Data Provider of the Performance panel
+  */
+  longFrame: 'Long frame',
+  /**
+  *@description Text for the name of a thread of the page
+  *@example {1} PH1
+  */
+  threadS: 'Thread {PH1}',
+};
+const str_ = i18n.i18n.registerUIStrings('timeline/TimelineFlameChartDataProvider.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /**
  * @implements {PerfUI.FlameChart.FlameChartDataProvider}
  */
@@ -180,7 +294,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
         return event.name + ':' + event.args['step'];
       }
       if (eventToDisallowRoot.get(event)) {
-        return Common.UIString.UIString('On ignore list');
+        return i18nString(UIStrings.onIgnoreList);
       }
       if (this._performanceModel && this._performanceModel.timelineModel().isMarkerEvent(event)) {
         return TimelineUIUtils.markerShortTitle(event);
@@ -196,7 +310,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     }
     let title = this._entryIndexToTitle[entryIndex];
     if (!title) {
-      title = Common.UIString.UIString('Unexpected entryIndex %d', entryIndex);
+      title = i18nString(UIStrings.unexpectedEntryindexD, {PH1: entryIndex});
       console.error(title);
     }
     return title;
@@ -353,21 +467,21 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       switch (track.type) {
         case TimelineModel.TimelineModel.TrackType.Input: {
           this._appendAsyncEventsGroup(
-              track, ls`Input`, track.asyncEvents, this._interactionsHeaderLevel2, eventEntryType,
+              track, i18nString(UIStrings.input), track.asyncEvents, this._interactionsHeaderLevel2, eventEntryType,
               false /* selectable */);
           break;
         }
 
         case TimelineModel.TimelineModel.TrackType.Animation: {
           this._appendAsyncEventsGroup(
-              track, ls`Animation`, track.asyncEvents, this._interactionsHeaderLevel2, eventEntryType,
+              track, i18nString(UIStrings.animation), track.asyncEvents, this._interactionsHeaderLevel2, eventEntryType,
               false /* selectable */);
           break;
         }
 
         case TimelineModel.TimelineModel.TrackType.Timings: {
           const style = track.asyncEvents.length > 0 ? this._collapsibleTimingsHeader : this._timingsHeader;
-          const group = this._appendHeader(ls`Timings`, style, true /* selectable */);
+          const group = this._appendHeader(i18nString(UIStrings.timings), style, true /* selectable */);
           group.track = track;
           this._appendPageMetrics();
           this._copyPerfMarkEvents(track);
@@ -378,22 +492,25 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
 
         case TimelineModel.TimelineModel.TrackType.Console: {
           this._appendAsyncEventsGroup(
-              track, ls`Console`, track.asyncEvents, this._headerLevel1, eventEntryType, true /* selectable */);
+              track, i18nString(UIStrings.console), track.asyncEvents, this._headerLevel1, eventEntryType,
+              true /* selectable */);
           break;
         }
 
         case TimelineModel.TimelineModel.TrackType.MainThread: {
           if (track.forMainFrame) {
             const group = this._appendSyncEvents(
-                track, track.events, track.url ? ls`Main \u2014 ${track.url}` : ls`Main`, this._headerLevel1,
-                eventEntryType, true /* selectable */);
+                track, track.events,
+                track.url ? i18nString(UIStrings.mainS, {PH1: track.url}) : i18nString(UIStrings.main),
+                this._headerLevel1, eventEntryType, true /* selectable */);
             if (group && this._timelineData) {
               this._timelineData.selectedGroup = group;
             }
           } else {
             this._appendSyncEvents(
-                track, track.events, track.url ? ls`Frame \u2014 ${track.url}` : ls`Subframe`, this._headerLevel1,
-                eventEntryType, true /* selectable */);
+                track, track.events,
+                track.url ? i18nString(UIStrings.frameS, {PH1: track.url}) : i18nString(UIStrings.subframe),
+                this._headerLevel1, eventEntryType, true /* selectable */);
           }
           break;
         }
@@ -406,24 +523,26 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
 
         case TimelineModel.TimelineModel.TrackType.Raster: {
           if (!rasterCount) {
-            this._appendHeader(ls`Raster`, this._headerLevel1, false /* selectable */);
+            this._appendHeader(i18nString(UIStrings.raster), this._headerLevel1, false /* selectable */);
           }
           ++rasterCount;
           this._appendSyncEvents(
-              track, track.events, ls`Rasterizer Thread ${rasterCount}`, this._headerLevel2, eventEntryType,
-              true /* selectable */);
+              track, track.events, i18nString(UIStrings.rasterizerThreadS, {PH1: rasterCount}), this._headerLevel2,
+              eventEntryType, true /* selectable */);
           break;
         }
 
         case TimelineModel.TimelineModel.TrackType.GPU: {
           this._appendSyncEvents(
-              track, track.events, ls`GPU`, this._headerLevel1, eventEntryType, true /* selectable */);
+              track, track.events, i18nString(UIStrings.gpu), this._headerLevel1, eventEntryType,
+              true /* selectable */);
           break;
         }
 
         case TimelineModel.TimelineModel.TrackType.Other: {
           this._appendSyncEvents(
-              track, track.events, track.name || ls`Thread`, this._headerLevel1, eventEntryType, true /* selectable */);
+              track, track.events, track.name || i18nString(UIStrings.thread), this._headerLevel1, eventEntryType,
+              true /* selectable */);
           this._appendAsyncEventsGroup(
               track, track.name, track.asyncEvents, this._headerLevel1, eventEntryType, true /* selectable */);
           break;
@@ -431,7 +550,8 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
 
         case TimelineModel.TimelineModel.TrackType.Experience: {
           this._appendSyncEvents(
-              track, track.events, ls`Experience`, this._experienceHeader, eventEntryType, true /* selectable */);
+              track, track.events, i18nString(UIStrings.experience), this._experienceHeader, eventEntryType,
+              true /* selectable */);
           break;
         }
       }
@@ -684,7 +804,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     if (!interactionRecords.length) {
       return;
     }
-    this._appendHeader(ls`Interactions`, this._interactionsHeaderLevel1, false /* selectable */);
+    this._appendHeader(i18nString(UIStrings.interactions), this._interactionsHeaderLevel1, false /* selectable */);
     for (const segment of interactionRecords) {
       const index = this._entryData.length;
       this._entryData.push(/** @type {!TimelineModel.TimelineIRModel.Phases} */ (segment.data));
@@ -833,7 +953,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     const screenshots = this._performanceModel.filmStripModel().frames();
     const hasFilmStrip = Boolean(screenshots.length);
     this._framesHeader.collapsible = hasFilmStrip;
-    this._appendHeader(Common.UIString.UIString('Frames'), this._framesHeader, false /* selectable */);
+    this._appendHeader(i18nString(UIStrings.frames), this._framesHeader, false /* selectable */);
     this._frameGroup = this._timelineData.groups[this._timelineData.groups.length - 1];
     const style = TimelineUIUtils.markerStyleForFrame();
 
@@ -896,8 +1016,9 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       const /** @const */ eps = 1e-6;
       if (typeof totalTime === 'number') {
         time = Math.abs(totalTime - selfTime) > eps && selfTime > eps ?
-            Common.UIString.UIString(
-                '%s (self %s)', Number.millisToString(totalTime, true), Number.millisToString(selfTime, true)) :
+            i18nString(
+                UIStrings.sSelfS,
+                {PH1: Number.millisToString(totalTime, true), PH2: Number.millisToString(selfTime, true)}) :
             Number.millisToString(totalTime, true);
       }
       if (this._performanceModel && this._performanceModel.timelineModel().isMarkerEvent(event)) {
@@ -910,7 +1031,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       if (this._model && this._model.isLayoutShiftEvent(event)) {
         // TODO: Update this to be dynamic when the trace data supports it.
         const occurrences = 1;
-        time = ls`Occurrences: ${occurrences}`;
+        time = i18nString(UIStrings.occurrencesS, {PH1: occurrences});
       }
 
       if (this._model && this._model.isParseHTMLEvent(event)) {
@@ -923,21 +1044,22 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
 
     } else if (type === EntryType.Frame) {
       const frame = /** @type {!TimelineModel.TimelineFrameModel.TimelineFrame} */ (this._entryData[entryIndex]);
-      time = Common.UIString.UIString(
-          '%s ~ %.0f\xa0fps', Number.preciseMillisToString(frame.duration, 1), (1000 / frame.duration));
+      time = i18nString(
+          UIStrings.sFfps,
+          {PH1: Number.preciseMillisToString(frame.duration, 1), PH2: (1000 / frame.duration).toFixed(0)});
 
       if (frame.idle) {
-        title = Common.UIString.UIString('Idle Frame');
+        title = i18nString(UIStrings.idleFrame);
       } else if (frame.dropped) {
-        title = Common.UIString.UIString('Dropped Frame');
+        title = i18nString(UIStrings.droppedFrame);
         nameSpanTimelineInfoTime = 'timeline-info-warning';
       } else {
-        title = Common.UIString.UIString('Frame');
+        title = i18nString(UIStrings.frame);
       }
 
       if (frame.hasWarnings()) {
         warning = document.createElement('span');
-        warning.textContent = Common.UIString.UIString('Long frame');
+        warning.textContent = i18nString(UIStrings.longFrame);
       }
     } else {
       return null;
@@ -1226,7 +1348,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     const style = singleTrack ? this._headerLevel2 : this._headerLevel1;
     let threadIndex = 0;
     for (const thread of allThreads) {
-      const title = singleTrack ? entry.title : thread.name() || ls`Thread ${++threadIndex}`;
+      const title = singleTrack ? entry.title : thread.name() || i18nString(UIStrings.threadS, {PH1: ++threadIndex});
       this._appendAsyncEventsGroup(null, title, thread.asyncEvents(), style, entryType, false /* selectable */);
       this._appendSyncEvents(null, thread.events(), title, style, entryType, false /* selectable */);
     }

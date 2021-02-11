@@ -48,6 +48,9 @@
   <message name="IDS_DEVTOOLS_0d09bbb2a0380f333de821bf7b3aec61" desc="Not paused message element text content in Call Stack Sidebar Pane of the Sources panel">
     Not paused
   </message>
+  <message name="IDS_DEVTOOLS_11a755d598c0c417f9a36758c3da7481" desc="Text of an item that stops the running task">
+    Stop
+  </message>
   <message name="IDS_DEVTOOLS_1223c0b07c7cf71289fa7f390c192ab5" desc="Title of a setting under the Sources category in Settings">
     Bracket matching
   </message>
@@ -290,6 +293,9 @@
   </message>
   <message name="IDS_DEVTOOLS_69a309503a6b6e3265981a5db92c82ac" desc="Text in Debugger Paused Message of the Sources panel">
     Paused on promise rejection
+  </message>
+  <message name="IDS_DEVTOOLS_6a0d9eaee314c567fd72fb97ee707a36" desc="Text to record a series of actions for analysis">
+    Record
   </message>
   <message name="IDS_DEVTOOLS_6ba3a9ac3e0d57683c56299484b7ee3b" desc="Text to remove all breakpoints">
     Remove all breakpoints

@@ -4,9 +4,9 @@
 
 import * as Bindings from '../bindings/bindings.js';
 import * as Common from '../common/common.js';
+import * as i18n from '../i18n/i18n.js';
 import * as PerfUI from '../perf_ui/perf_ui.js';
 import * as Platform from '../platform/platform.js';
-import {ls} from '../platform/platform.js';
 import * as Root from '../root/root.js';
 import * as SDK from '../sdk/sdk.js';
 import * as TimelineModel from '../timeline_model/timeline_model.js';
@@ -23,6 +23,16 @@ import {AggregatedTimelineTreeView} from './TimelineTreeView.js';
 import {TimelineMarkerStyle, TimelineUIUtils} from './TimelineUIUtils.js';  // eslint-disable-line no-unused-vars
 import {WebVitalsIntegrator} from './WebVitalsTimelineUtils.js';
 
+export const UIStrings = {
+  /**
+  *@description Text in Timeline Flame Chart View of the Performance panel
+  *@example {Frame} PH1
+  *@example {10ms} PH2
+  */
+  sAtS: '{PH1} at {PH2}',
+};
+const str_ = i18n.i18n.registerUIStrings('timeline/TimelineFlameChartView.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 class MainSplitWidget extends UI.SplitWidget.SplitWidget {
   /**
    * @param {boolean} isVertical
@@ -637,7 +647,7 @@ export class TimelineFlameChartMarker {
       return null;
     }
     const startTime = Number.millisToString(this._startOffset);
-    return ls`${this._style.title} at ${startTime}`;
+    return i18nString(UIStrings.sAtS, {PH1: this._style.title, PH2: startTime});
   }
 
   /**

@@ -7,9 +7,6 @@
   <message name="IDS_DEVTOOLS_1063e38cb53d94d386f21227fcd84717" desc="Label for an item to remove something">
     Remove
   </message>
-  <message name="IDS_DEVTOOLS_11a755d598c0c417f9a36758c3da7481" desc="Text of an item that stops the running task">
-    Stop
-  </message>
   <message name="IDS_DEVTOOLS_22b6fe30dec1ae9c09480cce01cd4065" desc="Text to run commands">
     Run command
   </message>
@@ -21,9 +18,6 @@
   </message>
   <message name="IDS_DEVTOOLS_3b563524fdb17b4a86590470d40bef74" desc="Text that appears on a button for the media resource type filter.">
     Media
-  </message>
-  <message name="IDS_DEVTOOLS_3bb3e8c8a24891ba0f7608bcc96f8b0a" desc="Text for a rendering frame">
-    Frame
   </message>
 
   <message name="IDS_DEVTOOLS_4789f23283b3a61f858b641a1bef19a3" desc="Text for the memory of the page">
@@ -38,17 +32,8 @@
   <message name="IDS_DEVTOOLS_5174d1309f275ba6f275db3af9eb3e18" desc="Title of a section on CSS Grid tooling">
     Grid
   </message>
-  <message name="IDS_DEVTOOLS_539dddc574d3cd85ba73df93df7a76d0" desc="Text for the execution stack trace">
-    Stack Trace
-  </message>
   <message name="IDS_DEVTOOLS_5de39fa1bce4bbf9232597a2120bc4d4" desc="Text to open the cubic bezier editor">
     Open cubic bezier editor.
-  </message>
-  <message name="IDS_DEVTOOLS_6311ae17c1ee52b36e68aaf4ad066387" desc="Text for other types of items">
-    Other
-  </message>
-  <message name="IDS_DEVTOOLS_6a0d9eaee314c567fd72fb97ee707a36" desc="Text to record a series of actions for analysis">
-    Record
   </message>
   <message name="IDS_DEVTOOLS_6a26f548831e6a8c26bfbbd9f6ec61e0" desc="Text for the viewing the help options">
     Help
@@ -65,9 +50,6 @@
   <message name="IDS_DEVTOOLS_74540c79e377bea903e1023a46df5574" desc="Text to open a file">
     Open file
   </message>
-  <message name="IDS_DEVTOOLS_87bfda183c4f851a101e97bbb1bbace7" desc="Title of the Layers tool">
-    Layers
-  </message>
   <message name="IDS_DEVTOOLS_87d17f4624a514e81dc7c8e016a7405c" desc="Text for the mobile platform, as opposed to desktop">
     Mobile
   </message>
@@ -79,9 +61,6 @@
   </message>
   <message name="IDS_DEVTOOLS_9446a98ad14416153cc4d45ab8b531bf" desc="Text for the performance of something">
     Performance
-  </message>
-  <message name="IDS_DEVTOOLS_95bbad55f11c237ed89546e748093ba7" desc="Text for the request animation frame event">
-    Request Animation Frame
   </message>
   <message name="IDS_DEVTOOLS_a02c83a7dbd96295beaefb72c2bee2de" desc="Text that refers to the main target">
     Main
@@ -110,41 +89,20 @@
   <message name="IDS_DEVTOOLS_b9dee6bade160c89fb7f0e539d453513" desc="Text to dock the DevTools to the bottom of the browser tab">
     Dock to bottom
   </message>
-  <message name="IDS_DEVTOOLS_ba5b676ccf658f863ef2e3df082ee262" desc="Text for the event that an animation frame is fired">
-    Animation Frame Fired
-  </message>
   <message name="IDS_DEVTOOLS_bccaa4aa80831b76c11240a16447975f" desc="Title of the Console tool">
     Console
   </message>
   <message name="IDS_DEVTOOLS_bec25a46972e4fa86df9413508add5c2" desc="Text that refers to disabling local fonts">
     Disable local fonts
   </message>
-  <message name="IDS_DEVTOOLS_c9ad95228aa735bdda1aebf38da022af" desc="Text to parse something">
-    Parse
-  </message>
   <message name="IDS_DEVTOOLS_c9cc8cce247e49bae79f15173ce97354" desc="Text to save something">
     Save
-  </message>
-  <message name="IDS_DEVTOOLS_ce5bf551379459c1c61d2a204061c455" desc="Title for a group of cities">
-    Location
-  </message>
-  <message name="IDS_DEVTOOLS_d31827f0a164d52b636bb1f71ca4a351" desc="Text to cancel the animation frame">
-    Cancel Animation Frame
-  </message>
-  <message name="IDS_DEVTOOLS_d3d2e617335f08df83599665eef8a418" desc="Text to close something">
-    Close
   </message>
   <message name="IDS_DEVTOOLS_d59048f21fd887ad520398ce677be586" desc="Text that is usually a hyperlink to more documentation">
     Learn more
   </message>
-  <message name="IDS_DEVTOOLS_d6b6b668dbca9d4fe774bb654226ebe3" desc="Text that refers to the animation of the web page">
-    Animation
-  </message>
   <message name="IDS_DEVTOOLS_d7778d0c64b6ba21494c97f77a66885a" desc="Text to filter result items">
     Filter
-  </message>
-  <message name="IDS_DEVTOOLS_dde38f333e095c2293593f504fd701a2" desc="Title of the 'JavaScript Profiler' tool">
-    JavaScript Profiler
   </message>
   <message name="IDS_DEVTOOLS_e0ac20adce6ffee48c7151b070aa5737" desc="Text that refers to device such as a phone">
     Device
@@ -155,14 +113,8 @@
   <message name="IDS_DEVTOOLS_e402c138065e7eece783dc30c6079192" desc="Text that appears on a button for the xhr resource type filter.">
     XHR
   </message>
-  <message name="IDS_DEVTOOLS_e55f75a29310d7b60f7ac1d390c8ae42" desc="Text for a module, the programming concept">
-    Module
-  </message>
   <message name="IDS_DEVTOOLS_e576c23d915755d83e2d1f47bd9f6c22" desc="Text to show no results have been found">
     No results found
-  </message>
-  <message name="IDS_DEVTOOLS_ebd9bec4d70abc789d439c1f136b0538" desc="Text in Timeline UIUtils of the Performance panel">
-    Layout
   </message>
   <message name="IDS_DEVTOOLS_ec211f7c20af43e742bf2570c3cb84f9" desc="Text to add something">
     Add
@@ -178,9 +130,6 @@
   </message>
   <message name="IDS_DEVTOOLS_f0f31c9700c6b10d8a20dc487b2ae6a8" desc="Text for the touch type to simulate on a device">
     Touch
-  </message>
-  <message name="IDS_DEVTOOLS_f28128b38efbc6134dc40751ee21fd29" desc="Text for documents, a type of resources">
-    Documents
   </message>
   <message name="IDS_DEVTOOLS_f53944c3a55bdb5ad65c6226e358a626" desc="Text to undock the DevTools">
     Undock into separate window

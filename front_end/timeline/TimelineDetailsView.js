@@ -2,9 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../common/common.js';
+import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
 import * as Components from '../components/components.js';
-import {ls} from '../platform/platform.js';
+import * as i18n from '../i18n/i18n.js';
 import * as SDK from '../sdk/sdk.js';
 import * as TimelineModel from '../timeline_model/timeline_model.js';
 import * as UI from '../ui/ui.js';
@@ -17,6 +17,54 @@ import {TimelineModeViewDelegate, TimelineSelection} from './TimelinePanel.js'; 
 import {BottomUpTimelineTreeView, CallTreeTimelineTreeView, TimelineTreeView} from './TimelineTreeView.js';  // eslint-disable-line no-unused-vars
 import {TimelineDetailsContentHelper, TimelineUIUtils} from './TimelineUIUtils.js';
 
+export const UIStrings = {
+  /**
+  *@description Text for the summary view
+  */
+  summary: 'Summary',
+  /**
+  *@description Text in Timeline Details View of the Performance panel
+  */
+  bottomup: 'Bottom-Up',
+  /**
+  *@description Text in Timeline Details View of the Performance panel
+  */
+  callTree: 'Call Tree',
+  /**
+  *@description Text in Timeline Details View of the Performance panel
+  */
+  eventLog: 'Event Log',
+  /**
+  *@description The label for estimated total blocking time in the performance panel
+  */
+  estimated: 'estimated',
+  /**
+  *@description Label for the total blocking time in the Performance Panel
+  *@example {320.23} PH1
+  *@example {(estimated)} PH2
+  */
+  totalBlockingTimeSmss: 'Total blocking time: {PH1}ms{PH2}',
+  /**
+  *@description Text that is usually a hyperlink to more documentation
+  */
+  learnMore: 'Learn more',
+  /**
+  *@description Title of the Layers tool
+  */
+  layers: 'Layers',
+  /**
+  *@description Title of the paint profiler, old name of the performance pane
+  */
+  paintProfiler: 'Paint Profiler',
+  /**
+  *@description Text in Timeline Details View of the Performance panel
+  *@example {1ms} PH1
+  *@example {10ms} PH2
+  */
+  rangeSS: 'Range:  {PH1} – {PH2}',
+};
+const str_ = i18n.i18n.registerUIStrings('timeline/TimelineDetailsView.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class TimelineDetailsView extends UI.Widget.VBox {
   /**
    * @param {!TimelineModeViewDelegate} delegate
@@ -36,22 +84,22 @@ export class TimelineDetailsView extends UI.Widget.VBox {
     this._defaultDetailsWidget.element.classList.add('timeline-details-view');
     this._defaultDetailsContentElement =
         this._defaultDetailsWidget.element.createChild('div', 'timeline-details-view-body vbox');
-    this._appendTab(tabIds.Details, Common.UIString.UIString('Summary'), this._defaultDetailsWidget);
+    this._appendTab(tabIds.Details, i18nString(UIStrings.summary), this._defaultDetailsWidget);
     this.setPreferredTab(tabIds.Details);
 
     /** @type Map<string, TimelineTreeView> */
     this._rangeDetailViews = new Map();
 
     const bottomUpView = new BottomUpTimelineTreeView();
-    this._appendTab(tabIds.BottomUp, Common.UIString.UIString('Bottom-Up'), bottomUpView);
+    this._appendTab(tabIds.BottomUp, i18nString(UIStrings.bottomup), bottomUpView);
     this._rangeDetailViews.set(tabIds.BottomUp, bottomUpView);
 
     const callTreeView = new CallTreeTimelineTreeView();
-    this._appendTab(tabIds.CallTree, Common.UIString.UIString('Call Tree'), callTreeView);
+    this._appendTab(tabIds.CallTree, i18nString(UIStrings.callTree), callTreeView);
     this._rangeDetailViews.set(tabIds.CallTree, callTreeView);
 
     const eventsView = new EventsTimelineTreeView(delegate);
-    this._appendTab(tabIds.EventLog, Common.UIString.UIString('Event Log'), eventsView);
+    this._appendTab(tabIds.EventLog, i18nString(UIStrings.eventLog), eventsView);
     this._rangeDetailViews.set(tabIds.EventLog, eventsView);
 
     this._additionalMetricsToolbar = new UI.Toolbar.Toolbar('timeline-additional-metrics');
@@ -90,16 +138,16 @@ export class TimelineDetailsView extends UI.Widget.VBox {
     this._additionalMetricsToolbar.removeToolbarItems();
     if (model && model.timelineModel()) {
       const {estimated, time} = model.timelineModel().totalBlockingTime();
-      const isEstimate = estimated ? ` (${ls`estimated`})` : '';
-      const message = ls`Total blocking time: ${time.toFixed(2)}ms${isEstimate}`;
+      const isEstimate = estimated ? ` (${i18nString(UIStrings.estimated)})` : '';
+      const message = i18nString(UIStrings.totalBlockingTimeSmss, {PH1: time.toFixed(2), PH2: isEstimate});
 
       const warning = document.createElement('span');
-      const clsLink = UI.XLink.XLink.create('https://web.dev/tbt/', ls`Learn more`);
+      const clsLink = UI.XLink.XLink.create('https://web.dev/tbt/', i18nString(UIStrings.learnMore));
       // crbug.com/1103188: In dark mode the focus ring is hidden by the surrounding
       // container of this link. For some additional spacing on the right to make
       // sure the ring is fully visible.
       clsLink.style.marginRight = '2px';
-      warning.appendChild(UI.UIUtils.formatLocalized('%s', [clsLink]));
+      warning.appendChild(clsLink);
 
       this._additionalMetricsToolbar.appendText(message);
       this._additionalMetricsToolbar.appendToolbarItem(new UI.Toolbar.ToolbarItem(warning));
@@ -199,7 +247,7 @@ export class TimelineDetailsView extends UI.Widget.VBox {
           const layersView = this._layersView();
           layersView.showLayerTree(frame.layerTree);
           if (!this._tabbedPane.hasTab(Tab.LayerViewer)) {
-            this._appendTab(Tab.LayerViewer, Common.UIString.UIString('Layers'), layersView);
+            this._appendTab(Tab.LayerViewer, i18nString(UIStrings.layers), layersView);
           }
         }
         break;
@@ -260,7 +308,7 @@ export class TimelineDetailsView extends UI.Widget.VBox {
     const paintProfilerView = this._paintProfilerView();
     paintProfilerView.setSnapshot(snapshot);
     if (!this._tabbedPane.hasTab(Tab.PaintProfiler)) {
-      this._appendTab(Tab.PaintProfiler, Common.UIString.UIString('Paint Profiler'), paintProfilerView, true);
+      this._appendTab(Tab.PaintProfiler, i18nString(UIStrings.paintProfiler), paintProfilerView, true);
     }
     this._tabbedPane.selectTab(Tab.PaintProfiler, true);
   }
@@ -293,7 +341,7 @@ export class TimelineDetailsView extends UI.Widget.VBox {
     if (this._tabbedPane.hasTab(Tab.PaintProfiler)) {
       return;
     }
-    this._appendTab(Tab.PaintProfiler, Common.UIString.UIString('Paint Profiler'), paintProfilerView);
+    this._appendTab(Tab.PaintProfiler, i18nString(UIStrings.paintProfiler), paintProfilerView);
   }
 
   /**
@@ -309,8 +357,8 @@ export class TimelineDetailsView extends UI.Widget.VBox {
     const endOffset = endTime - this._model.timelineModel().minimumRecordTime();
 
     const contentHelper = new TimelineDetailsContentHelper(null, null);
-    contentHelper.addSection(
-        ls`Range:  ${Number.millisToString(startOffset)} \u2013 ${Number.millisToString(endOffset)}`);
+    contentHelper.addSection(i18nString(
+        UIStrings.rangeSS, {PH1: Number.millisToString(startOffset), PH2: Number.millisToString(endOffset)}));
     const pieChart = TimelineUIUtils.generatePieChart(aggregatedStats);
     contentHelper.appendElementRow('', pieChart);
     this._setContent(contentHelper.fragment);

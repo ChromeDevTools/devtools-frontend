@@ -28,8 +28,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import * as Common from '../common/common.js';
 import * as Coverage from '../coverage/coverage.js';
+import * as i18n from '../i18n/i18n.js';
 import * as PerfUI from '../perf_ui/perf_ui.js';
 import * as Platform from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
@@ -39,6 +39,36 @@ import * as UI from '../ui/ui.js';
 import {PerformanceModel} from './PerformanceModel.js';  // eslint-disable-line no-unused-vars
 import {EventDispatchTypeDescriptor, TimelineCategory, TimelineRecordStyle, TimelineUIUtils} from './TimelineUIUtils.js';  // eslint-disable-line no-unused-vars
 
+export const UIStrings = {
+  /**
+  *@description Text in Timeline Event Overview of the Performance panel
+  */
+  net: 'NET',
+  /**
+  *@description Text in Timeline Event Overview of the Performance panel
+  */
+  cpu: 'CPU',
+  /**
+  *@description Text in Timeline Event Overview of the Performance panel
+  */
+  fps: 'FPS',
+  /**
+  *@description Text in Timeline Event Overview of the Performance panel
+  */
+  heap: 'HEAP',
+  /**
+  *@description Heap size label text content in Timeline Event Overview of the Performance panel
+  *@example {10 MB} PH1
+  *@example {30 MB} PH2
+  */
+  sSDash: '{PH1} – {PH2}',
+  /**
+  *@description Text in Timeline Event Overview of the Performance panel
+  */
+  coverage: 'COVERAGE',
+};
+const str_ = i18n.i18n.registerUIStrings('timeline/TimelineEventOverview.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class TimelineEventOverview extends PerfUI.TimelineOverviewPane.TimelineOverviewBase {
   /**
    * @param {string} id
@@ -136,7 +166,7 @@ export class TimelineEventOverviewInput extends TimelineEventOverview {
 
 export class TimelineEventOverviewNetwork extends TimelineEventOverview {
   constructor() {
-    super('network', Common.UIString.UIString('NET'));
+    super('network', i18nString(UIStrings.net));
   }
 
   /**
@@ -179,7 +209,7 @@ const categoryToIndex = new WeakMap();
 
 export class TimelineEventOverviewCPUActivity extends TimelineEventOverview {
   constructor() {
-    super('cpu-activity', Common.UIString.UIString('CPU'));
+    super('cpu-activity', i18nString(UIStrings.cpu));
     /** @type {!HTMLCanvasElement} */
     this._backgroundCanvas = /** @type {!HTMLCanvasElement} */ (this.element.createChild('canvas', 'fill background'));
   }
@@ -522,7 +552,7 @@ TimelineFilmStripOverview.Padding = 2;
 
 export class TimelineEventOverviewFrames extends TimelineEventOverview {
   constructor() {
-    super('framerate', Common.UIString.UIString('FPS'));
+    super('framerate', i18nString(UIStrings.fps));
   }
 
   /**
@@ -581,7 +611,7 @@ export class TimelineEventOverviewFrames extends TimelineEventOverview {
 
 export class TimelineEventOverviewMemory extends TimelineEventOverview {
   constructor() {
-    super('memory', Common.UIString.UIString('HEAP'));
+    super('memory', i18nString(UIStrings.heap));
     this._heapSizeLabel = this.element.createChild('div', 'memory-graph-label');
   }
 
@@ -699,9 +729,10 @@ export class TimelineEventOverviewMemory extends TimelineEventOverview {
     ctx.strokeStyle = 'hsl(220, 90%, 70%)';
     ctx.stroke();
 
-    this._heapSizeLabel.textContent = Common.UIString.UIString(
-        '%s \u2013 %s', Platform.NumberUtilities.bytesToString(minUsedHeapSize),
-        Platform.NumberUtilities.bytesToString(maxUsedHeapSize));
+    this._heapSizeLabel.textContent = i18nString(UIStrings.sSDash, {
+      PH1: Platform.NumberUtilities.bytesToString(minUsedHeapSize),
+      PH2: Platform.NumberUtilities.bytesToString(maxUsedHeapSize)
+    });
   }
 }
 
@@ -750,7 +781,7 @@ export class Quantizer {
 
 export class TimelineEventOverviewCoverage extends TimelineEventOverview {
   constructor() {
-    super('coverage', Common.UIString.UIString('COVERAGE'));
+    super('coverage', i18nString(UIStrings.coverage));
     this._heapSizeLabel = this.element.createChild('div', 'timeline-overview-coverage-label');
   }
 

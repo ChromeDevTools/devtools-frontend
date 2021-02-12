@@ -310,8 +310,7 @@ export const goTo = async (url: string) => {
   await target.goto(url);
 };
 
-export const overridePermissions = async (permissions: string[]) => {
-  // TODO(jacktfranklin) crbug.com/1176642: change permissions type to puppeteer.Permissions once Puppeteer ships that type.
+export const overridePermissions = async (permissions: puppeteer.Permission[]) => {
   const {browser} = getBrowserAndPages();
   await browser.defaultBrowserContext().overridePermissions(`https://localhost:${getTestServerPort()}`, permissions);
 };

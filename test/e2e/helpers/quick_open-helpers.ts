@@ -71,8 +71,5 @@ export const getSelectedItemText = async () => {
   if (!textContent) {
     assert.fail('Quick open: could not get selected item textContent');
   }
-  // TODO(jacktfranklin) crbug.com/1176642: a bug in the Puppeteer 7.0.4 types states jsonValue
-  // should be a Record but in fact it can just be a string if the handler is
-  // string. This can be fixed in Puppeteer and removed once we upgrade.
-  return await textContent.jsonValue() as unknown as string;
+  return await textContent.jsonValue<string>();
 };

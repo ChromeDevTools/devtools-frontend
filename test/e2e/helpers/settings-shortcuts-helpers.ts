@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import {assert} from 'chai';
-import {ElementHandle, JSHandle} from 'puppeteer';
+import {ElementHandle} from 'puppeteer';
 import {$$, $$textContent, click, platform, selectOption, waitFor, waitForElementsWithTextContent, waitForElementWithTextContent, waitForFunction} from '../../shared/helper.js';
 
 const CANCEL_BUTTON_SELECTOR = '[aria-label="Discard changes"]';
@@ -85,27 +85,16 @@ export const shortcutsForAction = async (shortcutText: string) => {
   const shortcutElements = await listItemElement.$$(SHORTCUT_DISPLAY_SELECTOR);
   const shortcutElementsTextContent =
       await Promise.all(shortcutElements.map(element => element.getProperty('textContent')));
-  return Promise.all(shortcutElementsTextContent.map(textContent => getJsonValue<string>(textContent)));
+  return Promise.all(shortcutElementsTextContent.map(async textContent => textContent ? await textContent.jsonValue<string>() : []));
 };
 
-/**
- * Work around for a bug in Puppeteer 7.0.4 types that incorrectly type jsonValue() as returning a Record.
- * TODO(jacktfranklin) crbug.com/1176642 once that is fixed, upgrade Puppeteer and remove helper.
- */
-async function getJsonValue<T>(value?: JSHandle): Promise<T> {
-  if (!value) {
-    assert.fail('Cannot get jsonValue on undefined.');
-  }
-  const json = await value.jsonValue();
-  return json as unknown as T;
-}
 export const shortcutInputValues = async () => {
   const shortcutInputs = await $$(SHORTCUT_INPUT_SELECTOR);
   if (!shortcutInputs.length) {
     assert.fail('shortcut input not found');
   }
   const shortcutValues = await Promise.all(shortcutInputs.map(async input => input.getProperty('value')));
-  return Promise.all(shortcutValues.map(async value => await getJsonValue<string>(value)));
+  return Promise.all(shortcutValues.map(async value => value ? await value.jsonValue<string>() : []));
 };
 
 export const clickAddShortcutLink = async () => {

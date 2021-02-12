@@ -13,6 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/**
+ * @public
+ */
 export const networkConditions = {
     'Slow 3G': {
         download: ((500 * 1000) / 8) * 0.8,

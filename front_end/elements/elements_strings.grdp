@@ -30,6 +30,9 @@
   <message name="IDS_DEVTOOLS_539dddc574d3cd85ba73df93df7a76d0" desc="Text for the execution stack trace">
     Stack Trace
   </message>
+  <message name="IDS_DEVTOOLS_626585724f35f9d9fce0bd36525cb7de" desc="Title of the Marker Decorator of Elements">
+    DOM Breakpoint
+  </message>
   <message name="IDS_DEVTOOLS_63a6a88c066880c5ac42394a22803ca6" desc="Text to refresh the page">
     Refresh
   </message>

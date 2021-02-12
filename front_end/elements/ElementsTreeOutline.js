@@ -38,6 +38,7 @@ import * as UI from '../ui/ui.js';
 import {linkifyDeferredNodeReference} from './DOMLinkifier.js';
 import {ElementsTreeElement, InitialChildrenLimit} from './ElementsTreeElement.js';
 import {ImagePreviewPopover} from './ImagePreviewPopover.js';
+import {MarkerDecoratorRegistration} from './MarkerDecorator.js';  // eslint-disable-line no-unused-vars
 
 /** @type {!WeakMap<!SDK.DOMModel.DOMModel, !ElementsTreeOutline>} */
 const elementsTreeOutlineByDOMModel = new WeakMap();
@@ -124,7 +125,7 @@ export class ElementsTreeOutline extends UI.TreeOutline.TreeOutline {
     /** @type {!Set<!ElementsTreeElement>} */
     this._treeElementsBeingUpdated = new Set();
 
-    /** @type {?Array<!Root.Runtime.Extension>} */
+    /** @type {?Array<!MarkerDecoratorRegistration>} */
     this.decoratorExtensions = null;
 
     this._showHTMLCommentsSetting = Common.Settings.Settings.instance().moduleSetting('showHTMLComments');

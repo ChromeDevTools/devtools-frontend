@@ -1401,10 +1401,23 @@ export class ElementsActionDelegate {
   }
 }
 
+/** @type {!PseudoStateMarkerDecorator} */
+let pseudoStateMarkerDecoratorInstance;
 /**
  * @implements {MarkerDecorator}
  */
 export class PseudoStateMarkerDecorator {
+  /**
+   * @param {{forceNew: ?boolean}} opts
+   */
+  static instance(opts = {forceNew: null}) {
+    const {forceNew} = opts;
+    if (!pseudoStateMarkerDecoratorInstance || forceNew) {
+      pseudoStateMarkerDecoratorInstance = new PseudoStateMarkerDecorator();
+    }
+
+    return pseudoStateMarkerDecoratorInstance;
+  }
   /**
    * @override
    * @param {!SDK.DOMModel.DOMNode} node

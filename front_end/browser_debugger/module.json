@@ -1,13 +1,6 @@
 {
   "extensions": [
     {
-      "type": "@Elements.MarkerDecorator",
-      "factoryName": "Elements.GenericDecorator",
-      "marker": "breakpoint-marker",
-      "title": "DOM Breakpoint",
-      "color": "rgb(105, 140, 254)"
-    },
-    {
       "type": "@Sources.NavigatorView",
       "viewId": "navigator-overrides",
       "className": "Sources.OverridesNavigatorView"

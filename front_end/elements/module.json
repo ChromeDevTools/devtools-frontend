@@ -15,18 +15,6 @@
         "SDK.DeferredDOMNode"
       ],
       "className": "Elements.DOMLinkifier.Linkifier"
-    },
-    {
-      "type": "@Elements.MarkerDecorator",
-      "className": "Elements.ElementsPanel.PseudoStateMarkerDecorator",
-      "marker": "pseudo-state-marker"
-    },
-    {
-      "type": "@Elements.MarkerDecorator",
-      "factoryName": "Elements.GenericDecorator",
-      "marker": "hidden-marker",
-      "title": "Element is hidden",
-      "color": "#555"
     }
   ],
   "dependencies": [

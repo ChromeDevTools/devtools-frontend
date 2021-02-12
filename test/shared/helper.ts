@@ -324,8 +324,13 @@ export const goToResource = async (path: string) => {
   await goTo(`${getResourcesPath()}/${path}`);
 };
 
-export const getResourcesPath = () => {
-  return `https://localhost:${getTestServerPort()}/test/e2e/resources`;
+export const goToResourceWithCustomHost = async (host: string, path: string) => {
+  assert.isTrue(host.endsWith('.test'), 'Only custom hosts with a .test domain are allowed.');
+  await goTo(`${getResourcesPath(host)}/${path}`);
+};
+
+export const getResourcesPath = (host: string = 'localhost') => {
+  return `https://${host}:${getTestServerPort()}/test/e2e/resources`;
 };
 
 export const step = async (description: string, step: Function) => {

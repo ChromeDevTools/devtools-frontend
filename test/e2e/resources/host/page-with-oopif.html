@@ -1,0 +1,25 @@
+<!--
+  Copyright 2021 The Chromium Authors. All rights reserved.
+  Use of this source code is governed by a BSD-style license that can be
+  found in the LICENSE file.
+-->
+
+<html>
+  <body id="content">
+  </body>
+
+  <script>
+    const OOPIF_HOST = 'devtools.oopif.test';
+    // Verify that this page was not loaded on the same origin as we plan
+    // to load the iframe, otherwise the iframe won't be truly out-of-process.
+    if (document.location.hostname === OOPIF_HOST) {
+      throw new Error(`Don't load page-with-oopif.html from ${OOPIF_HOST}`);
+    }
+
+    const iframe = document.createElement('iframe');
+    const content = document.getElementById("content");
+    content.append(iframe);
+
+    iframe.src = `https://${OOPIF_HOST}:${document.location.port}/test/e2e/resources/host/iframe.html`;
+  </script>
+</html>

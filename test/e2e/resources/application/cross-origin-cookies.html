@@ -7,8 +7,8 @@
   document.cookie = 'foo=bar;path=/';
   document.cookie = 'foo2=bar;path=/';
 
-  // Load cross origin resource by switching the hostname to 127.0.0.1
+  // Load cross origin resource by switching the hostname to devtools.oopif.test.
   const url = new URL('./set-cookies.rawresponse', document.location);
   const image = new Image();
-  image.src = url.toString().replace('localhost', '127.0.0.1');
+  image.src = url.toString().replace('localhost', 'devtools.oopif.test');
 </script>

@@ -8,5 +8,7 @@ copy_to_gen("host") {
   sources = [
     "cookie-issue.html",
     "css-editor.html",
+    "iframe.html",
+    "page-with-oopif.html",
   ]
 }

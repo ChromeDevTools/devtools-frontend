@@ -13,6 +13,7 @@ copy_to_gen("elements") {
     "css-variables.html",
     "element-breadcrumbs.html",
     "element-reveal-inline-issue.html",
+    "flexbox-editor.html",
     "focus.html",
     "hover.html",
     "low-contrast.html",

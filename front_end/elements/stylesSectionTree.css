@@ -185,6 +185,22 @@ ol.expanded {
   white-space: pre;
 }
 
+.styles-pane-button {
+  width: 15px;
+  height: 15px;
+  padding: 0;
+  border: 0;
+  margin: 0 0 0 6px;
+  position: absolute;
+  top: -1px;
+  background-color: var(--color-background-elevation-2);
+  border-radius: 3px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
 .tree-outline li.child-editing .styles-clipboard-only {
   display: none;
 }

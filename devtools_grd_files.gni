@@ -585,6 +585,7 @@ grd_files_debug_sources = [
   "front_end/elements/ElementsTreeOutline.js",
   "front_end/elements/EventListenersWidget.js",
   "front_end/elements/FlexboxEditor.js",
+  "front_end/elements/FlexboxEditorWidget.js",
   "front_end/elements/ImagePreviewPopover.js",
   "front_end/elements/InspectElementModeController.js",
   "front_end/elements/LayoutPane.js",

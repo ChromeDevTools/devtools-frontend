@@ -58,6 +58,13 @@ export interface FlexboxEditor extends HTMLElement {
       options?: boolean|AddEventListenerOptions): void;
   addEventListener(type: 'property-selected', callback: (event: PropertySelectedEvent) => void): void;
   addEventListener(type: 'property-deselected', callback: (event: PropertyDeselectedEvent) => void): void;
+  removeEventListener<K extends keyof HTMLElementEventMap>(
+      type: K,
+      listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) =>
+          any,  // eslint-disable-line @typescript-eslint/no-explicit-any
+      options?: boolean|AddEventListenerOptions): void;
+  removeEventListener(type: 'property-selected', callback: (event: PropertySelectedEvent) => void): void;
+  removeEventListener(type: 'property-deselected', callback: (event: PropertyDeselectedEvent) => void): void;
 }
 
 export class FlexboxEditor extends HTMLElement {
@@ -82,6 +89,7 @@ export class FlexboxEditor extends HTMLElement {
       <style>
         .container {
           padding: 12px;
+          min-width: 160px;
         }
 
         .row {
@@ -220,7 +228,7 @@ declare global {
   }
 }
 
-const enum PropertyNames {
+export const enum PropertyNames {
   FLEX_DIRECTION = 'flex-direction',
   FLEX_WRAP = 'flex-wrap',
   ALIGN_CONTENT = 'align-content',
@@ -228,7 +236,7 @@ const enum PropertyNames {
   ALIGN_ITEMS = 'align-items',
 }
 
-const EditableProperties = [
+export const EditableProperties = [
   {
     propertyName: PropertyNames.FLEX_DIRECTION,
     propertyValues: [

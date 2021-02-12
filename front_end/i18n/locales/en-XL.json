@@ -1610,6 +1610,9 @@
   "elements/FlexboxEditor.ts | selectButton": {
     "message": "Âd́d̂ {propertyName}: {propertyValue}"
   },
+  "elements/FlexboxEditorWidget.ts | editorButton": {
+    "message": "Ôṕêń F̂ĺêx́b̂óx̂ éd̂ít̂ór̂"
+  },
   "event_listeners/EventListenersView.ts | deleteEventListener": {
     "message": "D̂él̂ét̂é êv́êńt̂ ĺîśt̂én̂ér̂"
   },

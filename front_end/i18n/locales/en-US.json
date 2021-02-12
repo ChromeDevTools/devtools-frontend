@@ -1610,6 +1610,9 @@
   "elements/FlexboxEditor.ts | selectButton": {
     "message": "Add {propertyName}: {propertyValue}"
   },
+  "elements/FlexboxEditorWidget.ts | editorButton": {
+    "message": "Open Flexbox editor"
+  },
   "event_listeners/EventListenersView.ts | deleteEventListener": {
     "message": "Delete event listener"
   },

@@ -9,11 +9,13 @@ import * as Host from '../host/host.js';
 import * as InlineEditor from '../inline_editor/inline_editor.js';
 import * as Platform from '../platform/platform.js';
 import {ls} from '../platform/platform.js';
+import * as Root from '../root/root.js';
 import * as SDK from '../sdk/sdk.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as UI from '../ui/ui.js';
 
 import {BezierPopoverIcon, ColorSwatchPopoverIcon, ShadowSwatchPopoverHelper} from './ColorSwatchPopoverIcon.js';
+import {FlexboxEditorWidget} from './FlexboxEditorWidget.js';
 import {CSSPropertyPrompt, StylePropertiesSection, StylesSidebarPane, StylesSidebarPropertyRenderer,} from './StylesSidebarPane.js';  // eslint-disable-line no-unused-vars
 
 /** @type {!WeakMap<!StylesSidebarPane, !StylePropertyTreeElement>} */
@@ -637,6 +639,12 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       if (this.property.disabled) {
         UI.UIUtils.createTextChild(this.listItemElement.createChild('span', 'styles-clipboard-only'), ' */');
       }
+    }
+
+    const section = this.section();
+    if (Root.Runtime.experiments.isEnabled('cssFlexboxFeatures') && this.valueElement && section && section.editable &&
+        this.property.name === 'display' && (this.property.value === 'flex' || this.property.value === 'inline-flex')) {
+      this.listItemElement.appendChild(FlexboxEditorWidget.createFlexboxEditorButton(this._parentPane, section));
     }
 
     if (!this.property.parsedOk) {

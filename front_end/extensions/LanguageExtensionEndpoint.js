@@ -146,17 +146,6 @@ export class LanguageExtensionEndpoint extends Bindings.DebuggerLanguagePlugins.
         this._sendRequest(this._commands.ListVariablesInScope, {rawLocation}));
   }
 
-  /** Evaluate the content of a variable in a given lexical scope
-   * @override
-   * @param {string} name
-   * @param {!Bindings.DebuggerLanguagePlugins.RawLocation} location
-   * @return {!Promise<?Bindings.DebuggerLanguagePlugins.EvaluatorModule>}
-   */
-  evaluateVariable(name, location) {
-    return /** @type {!Promise<?Bindings.DebuggerLanguagePlugins.EvaluatorModule>}*/ (
-        this._sendRequest(this._commands.EvaluateVariable, {name, location}));
-  }
-
   /** List all function names (including inlined frames) at location
    * @override
    * @param {!Bindings.DebuggerLanguagePlugins.RawLocation} rawLocation

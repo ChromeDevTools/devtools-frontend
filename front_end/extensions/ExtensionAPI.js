@@ -95,7 +95,6 @@ export function defineCommonExtensionSymbols(apiPrivate) {
     RawLocationToSourceLocation: 'rawLocationToSourceLocation',
     GetScopeInfo: 'getScopeInfo',
     ListVariablesInScope: 'listVariablesInScope',
-    EvaluateVariable: 'evaluateVariable',
     GetTypeInfo: 'getTypeInfo',
     GetFormatter: 'getFormatter',
     GetInspectableAddress: 'getInspectableAddress',
@@ -420,8 +419,6 @@ self.injectedExtensionAPI = function(
             return plugin.getScopeInfo(parameters.type);
           case languageExtensionPluginCommands.ListVariablesInScope:
             return plugin.listVariablesInScope(parameters.rawLocation);
-          case languageExtensionPluginCommands.EvaluateVariable:
-            return plugin.evaluateVariable(parameters.name, parameters.location);
           case languageExtensionPluginCommands.GetTypeInfo:
             return plugin.getTypeInfo(parameters.expression, parameters.context);
           case languageExtensionPluginCommands.GetFormatter:

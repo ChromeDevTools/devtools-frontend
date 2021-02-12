@@ -52,18 +52,6 @@ type Variable = {
   nestedName?: Array<string>,
 };
 
-type VariableValue = {
-  value: string|Array<VariableValue>,
-  js_type: string,
-  type: string,
-  name: string,
-};
-
-type EvaluatorModule = {
-  code?: ArrayBuffer,
-  constantValue?: VariableValue,
-};
-
 type ScopeInfo = {
   type: string,
   typeName: string,
@@ -107,8 +95,6 @@ interface TestPluginImpl {
   getScopeInfo?(type: string): Promise<ScopeInfo>;
 
   listVariablesInScope?(rawLocation: RawLocation): Promise<Array<Variable>>;
-
-  evaluateVariable?(name: string, location: RawLocation): Promise<EvaluatorModule|null>;
 
   getTypeInfo?(expression: string, context: RawLocation): Promise<{typeInfos: TypeInfo[], base: EvalBase}|null>;
 
@@ -724,14 +710,6 @@ describe('The Debugger Language Plugins', async () => {
               // instruction is where we pause at, so it's really easy to find in the page and is a great mock variable
               // candidate.
               return [{scope: 'LOCAL', name: 'unreachable', type: 'int'}];
-            }
-
-            async evaluateVariable(
-                name: string, location: RawLocation) {  // eslint-disable-line @typescript-eslint/no-unused-vars
-              if (name === 'unreachable') {
-                return {constantValue: {value: '23', js_type: 'number', type: 'int', name: 'unreachable'}};
-              }
-              return null;
             }
 
             // eslint-disable-next-line @typescript-eslint/no-unused-vars

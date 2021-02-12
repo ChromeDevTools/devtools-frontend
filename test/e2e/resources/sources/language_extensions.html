@@ -88,18 +88,6 @@ class ExtensionPluginBase {
     return Promise.resolve({frames: []});
   }
 
-  /** Evaluate the content of a variable in a given lexical scope
-   * @param {string} name
-   * @param {!RawLocation} location
-   * @return {!Promise<?*>}
-   */
-  /*async*/ evaluateVariable(name, location) {
-    if (this._impl.evaluateVariable) {
-      return this._impl.evaluateVariable(name, location);
-    }
-    return Promise.resolve(null);
-  }
-
   /**
    * @param {string} expression
    * @param {!RawLocation} context

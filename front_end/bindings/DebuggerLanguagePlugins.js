@@ -1623,15 +1623,6 @@ export class DebuggerLanguagePlugin {
     throw new Error('Not implemented yet');
   }
 
-  /** Evaluate the content of a variable in a given lexical scope
-   * @param {string} name
-   * @param {!RawLocation} location
-   * @return {!Promise<?EvaluatorModule>}
-  */
-  async evaluateVariable(name, location) {
-    throw new Error('Not implemented yet');
-  }
-
   /**
    * Notifies the plugin that a script is removed.
    * @param {string} rawModuleId

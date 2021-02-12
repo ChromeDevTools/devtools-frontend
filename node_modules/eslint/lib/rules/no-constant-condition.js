@@ -106,9 +106,14 @@ module.exports = {
                      */
                     return operator === node.operator &&
                              (
-                                 isLogicalIdentity(node.left, node.operator) ||
-                                 isLogicalIdentity(node.right, node.operator)
+                                 isLogicalIdentity(node.left, operator) ||
+                                 isLogicalIdentity(node.right, operator)
                              );
+
+                case "AssignmentExpression":
+                    return ["||=", "&&="].includes(node.operator) &&
+                        operator === node.operator.slice(0, -1) &&
+                        isLogicalIdentity(node.right, operator);
 
                 // no default
             }
@@ -147,12 +152,18 @@ module.exports = {
                 }
 
                 case "UnaryExpression":
-                    if (node.operator === "void") {
+                    if (
+                        node.operator === "void" ||
+                        node.operator === "typeof" && inBooleanPosition
+                    ) {
                         return true;
                     }
 
-                    return (node.operator === "typeof" && inBooleanPosition) ||
-                        isConstant(node.argument, true);
+                    if (node.operator === "!") {
+                        return isConstant(node.argument, true);
+                    }
+
+                    return isConstant(node.argument, false);
 
                 case "BinaryExpression":
                     return isConstant(node.left, false) &&
@@ -171,7 +182,15 @@ module.exports = {
                 }
 
                 case "AssignmentExpression":
-                    return (node.operator === "=") && isConstant(node.right, inBooleanPosition);
+                    if (node.operator === "=") {
+                        return isConstant(node.right, inBooleanPosition);
+                    }
+
+                    if (["||=", "&&="].includes(node.operator) && inBooleanPosition) {
+                        return isLogicalIdentity(node.right, node.operator.slice(0, -1));
+                    }
+
+                    return false;
 
                 case "SequenceExpression":
                     return isConstant(node.expressions[node.expressions.length - 1], inBooleanPosition);

@@ -49,7 +49,7 @@ DEPS = {
     "bl": "4.0.3",
     "chai": "4.2.0",
     "escodegen": "2.0.0",
-    "eslint": "7.14.0",
+    "eslint": "7.19.0",
     "eslint-plugin-import": "2.22.1",
     "eslint-plugin-lit-a11y": "1.0.1",
     "eslint-plugin-mocha": "8.0.0",

@@ -1847,6 +1847,39 @@
   "issues/AffectedTrustedWebActivityIssueDetailsView.ts | url": {
     "message": "Url"
   },
+  "issues/CorsIssueDetailsView.ts | blocked": {
+    "message": "blocked"
+  },
+  "issues/CorsIssueDetailsView.ts | initiatorAddressSpace": {
+    "message": "Initiator Address"
+  },
+  "issues/CorsIssueDetailsView.ts | initiatorContext": {
+    "message": "Initiator Context"
+  },
+  "issues/CorsIssueDetailsView.ts | insecure": {
+    "message": "insecure"
+  },
+  "issues/CorsIssueDetailsView.ts | item": {
+    "message": "item"
+  },
+  "issues/CorsIssueDetailsView.ts | items": {
+    "message": "items"
+  },
+  "issues/CorsIssueDetailsView.ts | request": {
+    "message": "Request"
+  },
+  "issues/CorsIssueDetailsView.ts | resourceAddressSpace": {
+    "message": "Resource Address"
+  },
+  "issues/CorsIssueDetailsView.ts | secure": {
+    "message": "secure"
+  },
+  "issues/CorsIssueDetailsView.ts | status": {
+    "message": "Status"
+  },
+  "issues/CorsIssueDetailsView.ts | warning": {
+    "message": "warning"
+  },
   "issues/CSPViolationsView.ts | filter": {
     "message": "Filter"
   },

@@ -15,6 +15,7 @@ devtools_module("issues") {
     "CSPViolationsListView.ts",
     "CSPViolationsView.ts",
     "ComboBoxOfCheckBoxes.ts",
+    "CorsIssueDetailsView.ts",
     "IssueAggregator.js",
     "IssueRevealer.ts",
     "IssueView.js",

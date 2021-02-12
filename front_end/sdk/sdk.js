@@ -19,6 +19,7 @@ import * as ContentSecurityPolicyIssue from './ContentSecurityPolicyIssue.js';
 import * as Cookie from './Cookie.js';
 import * as CookieModel from './CookieModel.js';
 import * as CookieParser from './CookieParser.js';
+import * as CorsIssue from './CorsIssue.js';
 import * as CPUProfileDataModel from './CPUProfileDataModel.js';
 import * as CPUProfilerModel from './CPUProfilerModel.js';
 import * as CSSFontFace from './CSSFontFace.js';
@@ -88,6 +89,7 @@ export {
   Cookie,
   CookieModel,
   CookieParser,
+  CorsIssue,
   CPUProfileDataModel,
   CPUProfilerModel,
   CSSFontFace,

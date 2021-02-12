@@ -38,6 +38,8 @@ export class AggregatedIssue extends SDK.Issue.Issue {
     this._aggregatedIssuesCount = 0;
     /** @type {Set<SDK.SharedArrayBufferIssue.SharedArrayBufferIssue>} */
     this._sharedArrayBufferIssues = new Set();
+    /** @type {Set<SDK.CorsIssue.CorsIssue>} */
+    this._corsIssues = new Set();
   }
 
   /**
@@ -95,6 +97,12 @@ export class AggregatedIssue extends SDK.Issue.Issue {
     return this._trustedWebActivityIssues;
   }
 
+  /**
+   * @return {Iterable<SDK.CorsIssue.CorsIssue>}
+   */
+  corsIssues() {
+    return this._corsIssues;
+  }
 
   /**
    * @returns {!Iterable<!SDK.ContentSecurityPolicyIssue.ContentSecurityPolicyIssue>}
@@ -207,6 +215,9 @@ export class AggregatedIssue extends SDK.Issue.Issue {
     }
     if (issue instanceof SDK.LowTextContrastIssue.LowTextContrastIssue) {
       this._lowContrastIssues.add(issue);
+    }
+    if (issue instanceof SDK.CorsIssue.CorsIssue) {
+      this._corsIssues.add(issue);
     }
   }
 }

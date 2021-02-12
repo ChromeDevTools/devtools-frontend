@@ -3,6 +3,9 @@
   <message name="IDS_DEVTOOLS_0203e27fe44545283879b18e7084391b" desc="Error message when failing to load a script source text">
     Unable to fetch script source.
   </message>
+  <message name="IDS_DEVTOOLS_2eb412338beb67c81288a2f3e2da91e9" desc="Label for the link for CORS private network issues">
+    CORS for private networks (RFC1918)
+  </message>
   <message name="IDS_DEVTOOLS_46334eeb893715e9aefe809c08ce92b9" desc="Label for the link for Trusted Web Activity issue">
     Changes to quality criteria for PWAs using Trusted Web Activity
   </message>

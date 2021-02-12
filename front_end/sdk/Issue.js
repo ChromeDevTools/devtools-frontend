@@ -16,6 +16,7 @@ export const IssueCategory = {
   ContentSecurityPolicy: Symbol('ContentSecurityPolicy'),
   TrustedWebActivity: Symbol('TrustedWebActivity'),
   LowTextContrast: Symbol('LowTextContrast'),
+  Cors: Symbol('Cors'),
   Other: Symbol('Other')
 };
 

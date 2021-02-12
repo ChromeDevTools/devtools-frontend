@@ -18,6 +18,7 @@ import {AffectedElementsWithLowContrastView} from './AffectedElementsWithLowCont
 import {AffectedItem, AffectedResourcesView, extractShortPath} from './AffectedResourcesView.js';
 import {AffectedSharedArrayBufferIssueDetailsView} from './AffectedSharedArrayBufferIssueDetailsView.js';
 import {AffectedTrustedWebActivityIssueDetailsView} from './AffectedTrustedWebActivityIssueDetailsView.js';
+import {CorsIssueDetailsView} from './CorsIssueDetailsView.js';
 import {AggregatedIssue} from './IssueAggregator.js';            // eslint-disable-line no-unused-vars
 import {IssueDescription} from './MarkdownIssueDescription.js';  // eslint-disable-line no-unused-vars
 
@@ -829,6 +830,7 @@ export class IssueView extends UI.TreeOutline.TreeElement {
       new AffectedSharedArrayBufferIssueDetailsView(this, this._issue),
       new AffectedElementsWithLowContrastView(this, this._issue),
       new AffectedTrustedWebActivityIssueDetailsView(this, this._issue),
+      new CorsIssueDetailsView(this, this._issue),
     ];
 
     this._aggregatedIssuesCount = null;

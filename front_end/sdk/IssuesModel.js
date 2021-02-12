@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import {ContentSecurityPolicyIssue} from './ContentSecurityPolicyIssue.js';
+import {CorsIssue} from './CorsIssue.js';
 import {CrossOriginEmbedderPolicyIssue, isCrossOriginEmbedderPolicyIssue} from './CrossOriginEmbedderPolicyIssue.js';
 import {HeavyAdIssue} from './HeavyAdIssue.js';
 import {Issue} from './Issue.js';  // eslint-disable-line no-unused-vars
@@ -217,6 +218,20 @@ function createIssuesForLowTextContrastIssue(issuesModel, inspectorDetails) {
 }
 
 /**
+ * @param {!IssuesModel} issuesModel
+ * @param {!Protocol.Audits.InspectorIssueDetails} inspectorDetails
+ * @return {!Array<!Issue>}
+ */
+function createIssuesForCorsIssue(issuesModel, inspectorDetails) {
+  const corsIssueDetails = inspectorDetails.corsIssueDetails;
+  if (!corsIssueDetails) {
+    console.warn('Cors issue without details received.');
+    return [];
+  }
+  return [new CorsIssue(corsIssueDetails, issuesModel)];
+}
+
+/**
  * @type {!Map<!Protocol.Audits.InspectorIssueCode, function(!IssuesModel, !Protocol.Audits.InspectorIssueDetails):!Array<!Issue>>}
  */
 const issueCodeHandlers = new Map([
@@ -228,6 +243,7 @@ const issueCodeHandlers = new Map([
   [Protocol.Audits.InspectorIssueCode.SharedArrayBufferIssue, createIssuesForSharedArrayBufferIssue],
   [Protocol.Audits.InspectorIssueCode.TrustedWebActivityIssue, createIssuesForTrustedWebActivityIssue],
   [Protocol.Audits.InspectorIssueCode.LowTextContrastIssue, createIssuesForLowTextContrastIssue],
+  [Protocol.Audits.InspectorIssueCode.CorsIssue, createIssuesForCorsIssue],
 ]);
 
 /** @enum {symbol} */

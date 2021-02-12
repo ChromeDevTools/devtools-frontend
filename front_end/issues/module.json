@@ -23,6 +23,7 @@
     "descriptions/LowTextContrast.md",
     "descriptions/mixedContent.md",
     "descriptions/sharedArrayBuffer.md",
+    "descriptions/corsInsecurePrivateNetwork.md",
     "descriptions/SameSiteExcludeContextDowngradeRead.md",
     "descriptions/SameSiteExcludeContextDowngradeSet.md",
     "descriptions/SameSiteExcludeNavigationContextDowngrade.md",

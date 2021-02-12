@@ -247,6 +247,7 @@ all_devtools_files = [
   "front_end/issues/descriptions/heavyAd.md",
   "front_end/issues/descriptions/mixedContent.md",
   "front_end/issues/descriptions/sharedArrayBuffer.md",
+  "front_end/issues/descriptions/corsInsecurePrivateNetwork.md",
   "front_end/issues/descriptions/SameSiteExcludeContextDowngradeRead.md",
   "front_end/issues/descriptions/SameSiteExcludeContextDowngradeSet.md",
   "front_end/issues/descriptions/SameSiteExcludeNavigationContextDowngrade.md",

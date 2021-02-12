@@ -29,6 +29,7 @@ devtools_module("sdk") {
     "Cookie.js",
     "CookieModel.js",
     "CookieParser.js",
+    "CorsIssue.ts",
     "CrossOriginEmbedderPolicyIssue.js",
     "DOMDebuggerModel.js",
     "DOMModel.js",

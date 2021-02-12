@@ -1,11 +1,4 @@
 {
-  "extensions": [
-    {
-      "type": "@SourceFrame.LineDecorator",
-      "className": "Coverage.CoverageView.LineDecorator",
-      "decoratorType": "coverage"
-    }
-  ],
   "dependencies": [
     "data_grid",
     "source_frame",

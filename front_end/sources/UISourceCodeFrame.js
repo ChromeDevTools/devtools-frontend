@@ -586,16 +586,17 @@ export class UISourceCodeFrame extends SourceFrame.SourceFrame.SourceFrameImpl {
   /**
    * @param {string} type
    */
-  async _decorateTypeThrottled(type) {
+  _decorateTypeThrottled(type) {
     if (this._typeDecorationsPending.has(type)) {
       return;
     }
     this._typeDecorationsPending.add(type);
-    const extension = /** @type {!Root.Runtime.Extension} */ (
-        Root.Runtime.Runtime.instance()
-            .extensions(SourceFrame.SourceFrame.LineDecorator)
-            .find(extension => extension.descriptor()['decoratorType'] === type));
-    const decorator = /** @type {!SourceFrame.SourceFrame.LineDecorator} */ (await extension.instance());
+    const extension =
+        SourceFrame.SourceFrame.getRegisteredLineDecorators().find(extension => extension.decoratorType === type);
+    const decorator = extension && extension.lineDecorator();
+    if (!decorator) {
+      return;
+    }
     this._typeDecorationsPending.delete(type);
     /** @type {*} */ (this.textEditor.codeMirror()).operation(() => {
       decorator.decorate(
@@ -607,8 +608,8 @@ export class UISourceCodeFrame extends SourceFrame.SourceFrame.SourceFrameImpl {
     if (!this.loaded) {
       return;
     }
-    for (const extension of Root.Runtime.Runtime.instance().extensions(SourceFrame.SourceFrame.LineDecorator)) {
-      const type = extension.descriptor()['decoratorType'];
+    for (const extension of SourceFrame.SourceFrame.getRegisteredLineDecorators()) {
+      const type = extension.decoratorType;
       if (type !== null && this._uiSourceCode.decorationsForType(type)) {
         this._decorateTypeThrottled(type);
       }

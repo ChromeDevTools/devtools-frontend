@@ -290,10 +290,24 @@ export class Presentation {
   }
 }
 
+/** @type {!LineDecorator} */
+let lineDecoratorInstance;
+
 /**
  * @implements {SourceFrame.SourceFrame.LineDecorator}
  */
 export class LineDecorator {
+  /**
+   * @param {{forceNew: ?boolean}} opts
+   */
+  static instance(opts = {forceNew: null}) {
+    const {forceNew} = opts;
+    if (!lineDecoratorInstance || forceNew) {
+      lineDecoratorInstance = new LineDecorator();
+    }
+
+    return lineDecoratorInstance;
+  }
   /**
    * @override
    * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
@@ -348,3 +362,13 @@ export class LineDecorator {
     return element;
   }
 }
+
+SourceFrame.SourceFrame.registerLineDecorator({
+  lineDecorator: LineDecorator.instance,
+  decoratorType: SourceFrame.SourceFrame.DecoratorType.MEMORY,
+});
+
+SourceFrame.SourceFrame.registerLineDecorator({
+  lineDecorator: LineDecorator.instance,
+  decoratorType: SourceFrame.SourceFrame.DecoratorType.PERFORMANCE,
+});

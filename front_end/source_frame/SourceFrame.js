@@ -1028,3 +1028,36 @@ export class Transformer {
     throw new Error('Not implemented');
   }
 }
+
+/** @type {!Array<!LineDecoratorRegistration>} */
+const registeredLineDecorators = [];
+
+/**
+ * @param {!LineDecoratorRegistration} registration
+ */
+export function registerLineDecorator(registration) {
+  registeredLineDecorators.push(registration);
+}
+
+/**
+ * @return {!Array<!LineDecoratorRegistration>}
+ */
+export function getRegisteredLineDecorators() {
+  return registeredLineDecorators;
+}
+
+/** @enum {string} */
+export const DecoratorType = {
+  PERFORMANCE: 'performance',
+  MEMORY: 'memory',
+  COVERAGE: 'coverage',
+};
+
+/**
+  * @typedef {{
+  *  lineDecorator: function(): !LineDecorator,
+  *  decoratorType: DecoratorType,
+  * }}
+  */
+// @ts-ignore typedef
+export let LineDecoratorRegistration;

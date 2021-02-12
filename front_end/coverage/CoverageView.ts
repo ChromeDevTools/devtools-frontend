@@ -560,8 +560,16 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
     }
   }
 }
-
+let lineDecoratorInstance: LineDecorator;
 export class LineDecorator implements SourceFrame.SourceFrame.LineDecorator {
+  static instance({forceNew}: {forceNew: boolean} = {forceNew: false}): LineDecorator {
+    if (!lineDecoratorInstance || forceNew) {
+      lineDecoratorInstance = new LineDecorator();
+    }
+
+    return lineDecoratorInstance;
+  }
+
   _listeners:
       WeakMap<SourceFrame.SourcesTextEditor.SourcesTextEditor, (arg0: Common.EventTarget.EventTargetEvent) => void>;
   constructor() {
@@ -645,3 +653,8 @@ export class LineDecorator implements SourceFrame.SourceFrame.LineDecorator {
 
   static readonly GUTTER_TYPE = 'CodeMirror-gutter-coverage';
 }
+
+SourceFrame.SourceFrame.registerLineDecorator({
+  lineDecorator: LineDecorator.instance,
+  decoratorType: SourceFrame.SourceFrame.DecoratorType.COVERAGE,
+});

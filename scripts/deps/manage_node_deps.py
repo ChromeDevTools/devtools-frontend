@@ -36,7 +36,7 @@ LICENSES = [
 
 # List all DEPS here.
 DEPS = {
-    "@rollup/plugin-commonjs": "17.0.0",
+    "@rollup/plugin-commonjs": "17.1.0",
     "@types/chai": "4.2.15",
     "@types/codemirror": "0.0.108",
     "@types/karma-chai-sinon": "0.1.15",
@@ -67,7 +67,7 @@ DEPS = {
     "puppeteer": "7.1.0",
     "recast": "0.20.4",
     "rimraf": "3.0.2",
-    "rollup": "2.34.0",
+    "rollup": "2.38.5",
     "rollup-plugin-terser": "7.0.2",
     "sinon": "9.2.1",
     "source-map-support": "0.5.19",

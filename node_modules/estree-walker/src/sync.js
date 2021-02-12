@@ -1,39 +1,44 @@
-import { WalkerBase, WalkerContext } from "./walker";
-import { BaseNode } from "estree";
+// @ts-check
+import { WalkerBase } from './walker.js';
 
-export type AsyncWalker = {
-	enter?: AsyncWalkerHandler;
-	leave?: AsyncWalkerHandler;
-};
+/** @typedef { import('estree').BaseNode} BaseNode */
+/** @typedef { import('./walker.js').WalkerContext} WalkerContext */
 
-export type AsyncWalkerHandler = (
-	this: WalkerContext,
-	node: BaseNode,
-	parent: BaseNode,
-	key: string,
-	index: number
-) => Promise<void>;
+/** @typedef {(
+ *    this: WalkerContext,
+ *    node: BaseNode,
+ *    parent: BaseNode,
+ *    key: string,
+ *    index: number
+ * ) => void} SyncHandler */
 
-export class AsyncWalkerClass extends WalkerBase {
-	protected enter: AsyncWalker["enter"];
-	protected leave: AsyncWalker["leave"];
-
-	constructor(walker: AsyncWalker) {
+export class SyncWalker extends WalkerBase {
+	/**
+	 *
+	 * @param {SyncHandler} enter
+	 * @param {SyncHandler} leave
+	 */
+	constructor(enter, leave) {
 		super();
-		this.enter = walker.enter;
-		this.leave = walker.leave;
+
+		/** @type {SyncHandler} */
+		this.enter = enter;
+
+		/** @type {SyncHandler} */
+		this.leave = leave;
 	}
 
-	public async visit(
-		node: BaseNode,
-		parent: BaseNode,
-		enter: AsyncWalkerHandler,
-		leave: AsyncWalkerHandler,
-		prop?: string,
-		index?: number
-	): Promise<BaseNode> {
+	/**
+	 *
+	 * @param {BaseNode} node
+	 * @param {BaseNode} parent
+	 * @param {string} [prop]
+	 * @param {number} [index]
+	 * @returns {BaseNode}
+	 */
+	visit(node, parent, prop, index) {
 		if (node) {
-			if (enter) {
+			if (this.enter) {
 				const _should_skip = this.should_skip;
 				const _should_remove = this.should_remove;
 				const _replacement = this.replacement;
@@ -41,7 +46,7 @@ export class AsyncWalkerClass extends WalkerBase {
 				this.should_remove = false;
 				this.replacement = null;
 
-				await enter.call(this.context, node, parent, prop, index);
+				this.enter.call(this.context, node, parent, prop, index);
 
 				if (this.replacement) {
 					node = this.replacement;
@@ -64,31 +69,31 @@ export class AsyncWalkerClass extends WalkerBase {
 			}
 
 			for (const key in node) {
-				const value = (node as any)[key];
+				const value = node[key];
 
 				if (typeof value !== "object") {
 					continue;
 				} else if (Array.isArray(value)) {
 					for (let i = 0; i < value.length; i += 1) {
 						if (value[i] !== null && typeof value[i].type === 'string') {
-							if (!(await this.visit(value[i], node, enter, leave, key, i))) {
+							if (!this.visit(value[i], node, key, i)) {
 								// removed
 								i--;
 							}
 						}
 					}
 				} else if (value !== null && typeof value.type === "string") {
-					await this.visit(value, node, enter, leave, key, null);
+					this.visit(value, node, key, null);
 				}
 			}
 
-			if (leave) {
+			if (this.leave) {
 				const _replacement = this.replacement;
 				const _should_remove = this.should_remove;
 				this.replacement = null;
 				this.should_remove = false;
 
-				await leave.call(this.context, node, parent, prop, index);
+				this.leave.call(this.context, node, parent, prop, index);
 
 				if (this.replacement) {
 					node = this.replacement;

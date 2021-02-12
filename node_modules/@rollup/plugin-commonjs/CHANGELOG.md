@@ -1,5 +1,23 @@
 # @rollup/plugin-commonjs ChangeLog
 
+## v17.1.0
+
+_2021-01-29_
+
+### Bugfixes
+
+- fix: correctly replace shorthand `require` (#764)
+
+### Features
+
+- feature: load dynamic commonjs modules from es `import` (#766)
+- feature: support cache/resolve access inside dynamic modules (#728)
+- feature: allow keeping `require` calls inside try-catch (#729)
+
+### Updates
+
+- chore: fix lint error (#719)
+
 ## v17.0.0
 
 _2020-11-30_

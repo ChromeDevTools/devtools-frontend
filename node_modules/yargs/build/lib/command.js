@@ -15,8 +15,14 @@ export function command(yargs, usage, validation, globalMiddleware = [], shim) {
         const middlewares = commandMiddlewareFactory(commandMiddleware);
         handler = handler || (() => { });
         if (Array.isArray(cmd)) {
-            aliases = cmd.slice(1);
-            cmd = cmd[0];
+            if (isCommandAndAliases(cmd)) {
+                [cmd, ...aliases] = cmd;
+            }
+            else {
+                for (const command of cmd) {
+                    self.addHandler(command);
+                }
+            }
         }
         else if (isCommandHandlerDefinition(cmd)) {
             let command = Array.isArray(cmd.command) || typeof cmd.command === 'string'
@@ -27,45 +33,47 @@ export function command(yargs, usage, validation, globalMiddleware = [], shim) {
             self.addHandler(command, extractDesc(cmd), cmd.builder, cmd.handler, cmd.middlewares, cmd.deprecated);
             return;
         }
-        if (isCommandBuilderDefinition(builder)) {
+        else if (isCommandBuilderDefinition(builder)) {
             self.addHandler([cmd].concat(aliases), description, builder.builder, builder.handler, builder.middlewares, builder.deprecated);
             return;
         }
-        const parsedCommand = parseCommand(cmd);
-        aliases = aliases.map(alias => parseCommand(alias).cmd);
-        let isDefault = false;
-        const parsedAliases = [parsedCommand.cmd].concat(aliases).filter(c => {
-            if (DEFAULT_MARKER.test(c)) {
-                isDefault = true;
-                return false;
+        if (typeof cmd === 'string') {
+            const parsedCommand = parseCommand(cmd);
+            aliases = aliases.map(alias => parseCommand(alias).cmd);
+            let isDefault = false;
+            const parsedAliases = [parsedCommand.cmd].concat(aliases).filter(c => {
+                if (DEFAULT_MARKER.test(c)) {
+                    isDefault = true;
+                    return false;
+                }
+                return true;
+            });
+            if (parsedAliases.length === 0 && isDefault)
+                parsedAliases.push('$0');
+            if (isDefault) {
+                parsedCommand.cmd = parsedAliases[0];
+                aliases = parsedAliases.slice(1);
+                cmd = cmd.replace(DEFAULT_MARKER, parsedCommand.cmd);
             }
-            return true;
-        });
-        if (parsedAliases.length === 0 && isDefault)
-            parsedAliases.push('$0');
-        if (isDefault) {
-            parsedCommand.cmd = parsedAliases[0];
-            aliases = parsedAliases.slice(1);
-            cmd = cmd.replace(DEFAULT_MARKER, parsedCommand.cmd);
+            aliases.forEach(alias => {
+                aliasMap[alias] = parsedCommand.cmd;
+            });
+            if (description !== false) {
+                usage.command(cmd, description, isDefault, aliases, deprecated);
+            }
+            handlers[parsedCommand.cmd] = {
+                original: cmd,
+                description,
+                handler,
+                builder: builder || {},
+                middlewares,
+                deprecated,
+                demanded: parsedCommand.demanded,
+                optional: parsedCommand.optional,
+            };
+            if (isDefault)
+                defaultCommand = handlers[parsedCommand.cmd];
         }
-        aliases.forEach(alias => {
-            aliasMap[alias] = parsedCommand.cmd;
-        });
-        if (description !== false) {
-            usage.command(cmd, description, isDefault, aliases, deprecated);
-        }
-        handlers[parsedCommand.cmd] = {
-            original: cmd,
-            description,
-            handler,
-            builder: builder || {},
-            middlewares,
-            deprecated,
-            demanded: parsedCommand.demanded,
-            optional: parsedCommand.optional,
-        };
-        if (isDefault)
-            defaultCommand = handlers[parsedCommand.cmd];
     };
     self.addDirectory = function addDirectory(dir, context, req, callerFile, opts) {
         opts = opts || {};
@@ -226,7 +234,7 @@ export function command(yargs, usage, validation, globalMiddleware = [], shim) {
         if (isCommandBuilderCallback(builder)) {
             builder(yargs);
         }
-        else {
+        else if (!isCommandBuilderDefinition(builder)) {
             Object.keys(builder).forEach(key => {
                 yargs.option(key, builder[key]);
             });
@@ -350,17 +358,25 @@ export function command(yargs, usage, validation, globalMiddleware = [], shim) {
     };
     return self;
 }
-export function isCommandHandlerDefinition(cmd) {
-    return typeof cmd === 'object';
-}
 export function isCommandBuilderDefinition(builder) {
     return (typeof builder === 'object' &&
         !!builder.builder &&
         typeof builder.handler === 'function');
+}
+function isCommandAndAliases(cmd) {
+    if (cmd.every(c => typeof c === 'string')) {
+        return true;
+    }
+    else {
+        return false;
+    }
 }
 export function isCommandBuilderCallback(builder) {
     return typeof builder === 'function';
 }
 function isCommandBuilderOptionDefinitions(builder) {
     return typeof builder === 'object';
+}
+export function isCommandHandlerDefinition(cmd) {
+    return typeof cmd === 'object' && !Array.isArray(cmd);
 }

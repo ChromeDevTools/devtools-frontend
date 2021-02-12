@@ -46,7 +46,7 @@ DEPS = {
     "@types/sinon": "9.0.10",
     "@typescript-eslint/parser": "4.15.0",
     "@typescript-eslint/eslint-plugin": "4.15.0",
-    "bl": "4.0.3",
+    "bl": "4.1.0",
     "chai": "4.3.0",
     "escodegen": "2.0.0",
     "eslint": "7.19.0",
@@ -74,7 +74,7 @@ DEPS = {
     "stylelint": "13.10.0",
     "stylelint-config-standard": "20.0.0",
     "typescript": "4.2.0-beta",
-    "yargs": "16.1.1",
+    "yargs": "16.2.0",
 }
 
 def exec_command(cmd):

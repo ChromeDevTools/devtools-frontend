@@ -265,6 +265,7 @@ tape('test readUInt8 / readInt8', function (t) {
   const buf3 = Buffer.alloc(3)
   const bl = new BufferList()
 
+  buf1[0] = 0x1
   buf2[1] = 0x3
   buf2[2] = 0x4
   buf3[0] = 0x23
@@ -274,6 +275,7 @@ tape('test readUInt8 / readInt8', function (t) {
   bl.append(buf2)
   bl.append(buf3)
 
+  t.equal(bl.readUInt8(), 0x1)
   t.equal(bl.readUInt8(2), 0x3)
   t.equal(bl.readInt8(2), 0x3)
   t.equal(bl.readUInt8(3), 0x4)
@@ -292,6 +294,7 @@ tape('test readUInt16LE / readUInt16BE / readInt16LE / readInt16BE', function (t
   const buf3 = Buffer.alloc(3)
   const bl = new BufferList()
 
+  buf1[0] = 0x1
   buf2[1] = 0x3
   buf2[2] = 0x4
   buf3[0] = 0x23
@@ -301,6 +304,8 @@ tape('test readUInt16LE / readUInt16BE / readInt16LE / readInt16BE', function (t
   bl.append(buf2)
   bl.append(buf3)
 
+  t.equal(bl.readUInt16BE(), 0x0100)
+  t.equal(bl.readUInt16LE(), 0x0001)
   t.equal(bl.readUInt16BE(2), 0x0304)
   t.equal(bl.readUInt16LE(2), 0x0403)
   t.equal(bl.readInt16BE(2), 0x0304)
@@ -323,6 +328,7 @@ tape('test readUInt32LE / readUInt32BE / readInt32LE / readInt32BE', function (t
   const buf3 = Buffer.alloc(3)
   const bl = new BufferList()
 
+  buf1[0] = 0x1
   buf2[1] = 0x3
   buf2[2] = 0x4
   buf3[0] = 0x23
@@ -332,6 +338,8 @@ tape('test readUInt32LE / readUInt32BE / readInt32LE / readInt32BE', function (t
   bl.append(buf2)
   bl.append(buf3)
 
+  t.equal(bl.readUInt32BE(), 0x01000304)
+  t.equal(bl.readUInt32LE(), 0x04030001)
   t.equal(bl.readUInt32BE(2), 0x03042342)
   t.equal(bl.readUInt32LE(2), 0x42230403)
   t.equal(bl.readInt32BE(2), 0x03042342)
@@ -391,6 +399,7 @@ tape('test readFloatLE / readFloatBE', function (t) {
   const buf3 = Buffer.alloc(3)
   const bl = new BufferList()
 
+  buf1[0] = 0x01
   buf2[1] = 0x00
   buf2[2] = 0x00
   buf3[0] = 0x80
@@ -400,7 +409,11 @@ tape('test readFloatLE / readFloatBE', function (t) {
   bl.append(buf2)
   bl.append(buf3)
 
-  t.equal(bl.readFloatLE(2), 0x01)
+  const canonical = Buffer.concat([buf1, buf2, buf3])
+  t.equal(bl.readFloatLE(), canonical.readFloatLE())
+  t.equal(bl.readFloatBE(), canonical.readFloatBE())
+  t.equal(bl.readFloatLE(2), canonical.readFloatLE(2))
+  t.equal(bl.readFloatBE(2), canonical.readFloatBE(2))
 
   t.end()
 })
@@ -411,6 +424,7 @@ tape('test readDoubleLE / readDoubleBE', function (t) {
   const buf3 = Buffer.alloc(10)
   const bl = new BufferList()
 
+  buf1[0] = 0x01
   buf2[1] = 0x55
   buf2[2] = 0x55
   buf3[0] = 0x55
@@ -424,7 +438,11 @@ tape('test readDoubleLE / readDoubleBE', function (t) {
   bl.append(buf2)
   bl.append(buf3)
 
-  t.equal(bl.readDoubleLE(2), 0.3333333333333333)
+  const canonical = Buffer.concat([buf1, buf2, buf3])
+  t.equal(bl.readDoubleBE(), canonical.readDoubleBE())
+  t.equal(bl.readDoubleLE(), canonical.readDoubleLE())
+  t.equal(bl.readDoubleBE(2), canonical.readDoubleBE(2))
+  t.equal(bl.readDoubleLE(2), canonical.readDoubleLE(2))
 
   t.end()
 })

@@ -52,6 +52,7 @@ export function registerLocale(locale: string): void {
  * meta files used to register module extensions.
  */
 export function getLazilyComputedLocalizedString(
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     str_: (id: string, values: Object) => Platform.UIString.LocalizedString, id: string, values: Object = {}): () =>
     Platform.UIString.LocalizedString {
   return (): Platform.UIString.LocalizedString => getLocalizedString(str_, id, values);
@@ -61,6 +62,7 @@ export function getLazilyComputedLocalizedString(
  * Retrieve the localized string.
  */
 export function getLocalizedString(
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     str_: (id: string, values: Object) => Platform.UIString.LocalizedString, id: string,
     values: Object = {}): Platform.UIString.LocalizedString {
   if (!registeredLocale) {
@@ -106,6 +108,7 @@ export function registerUIStrings(path: string, stringStructure: Object): (id: s
  * Returns a span element that may contains other DOM element as placeholders
  */
 export function getFormatLocalizedString(
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     str_: (id: string, values: Object) => Platform.UIString.LocalizedString, stringId: string,
     placeholders: Record<string, Object>): Element {
   if (!registeredLocale) {

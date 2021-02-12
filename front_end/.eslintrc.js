@@ -7,39 +7,54 @@ const rulesDirPlugin = require('eslint-plugin-rulesdir');
 rulesDirPlugin.RULES_DIR = path.join(__dirname, '..', 'scripts', 'eslint_rules', 'lib');
 
 module.exports = {
-  'overrides': [{
-    'files': ['*.ts'],
-    'rules': {
-      '@typescript-eslint/explicit-function-return-type': 2,
+  'overrides': [
+    {
+      'files': ['*.ts'],
+      'rules': {
+        '@typescript-eslint/explicit-function-return-type': 2,
 
-      'rulesdir/kebab_case_events': 2,
-      'rulesdir/set_data_type_reference': 2,
-      'rulesdir/lit_html_data_as_type': 2,
-      'rulesdir/lit_no_style_interpolation': 2,
-      '@typescript-eslint/naming-convention': [
-        'error', {
-          'selector': 'property',
-          'modifiers': ['private', 'protected'],
-          'format': ['camelCase'],
-        },
-        {
-          'selector': 'method',
-          'modifiers': ['private', 'protected'],
-          'format': ['camelCase'],
-        },
-        {
-          'selector': 'accessor',
-          'format': ['camelCase'],
-        },
-        {
-          'selector': 'enum',
-          'format': ['PascalCase'],
-        },
-        {
-          'selector': 'class',
-          'format': ['PascalCase'],
-        }
-      ]
+        'rulesdir/kebab_case_events': 2,
+        'rulesdir/set_data_type_reference': 2,
+        'rulesdir/lit_html_data_as_type': 2,
+        'rulesdir/lit_no_style_interpolation': 2,
+        '@typescript-eslint/naming-convention': [
+          'error', {
+            'selector': 'property',
+            'modifiers': ['private', 'protected'],
+            'format': ['camelCase'],
+          },
+          {
+            'selector': 'method',
+            'modifiers': ['private', 'protected'],
+            'format': ['camelCase'],
+          },
+          {
+            'selector': 'accessor',
+            'format': ['camelCase'],
+          },
+          {
+            'selector': ['enum', 'class'],
+            'format': ['PascalCase'],
+          },
+          {
+            'selector': 'parameter',
+            'format': ['camelCase'],
+            'leadingUnderscore': 'allow',
+          }
+        ]
+      }
+    },
+    {
+      'files': ['*-meta.ts'],
+      'rules': {
+        '@typescript-eslint/naming-convention': [
+          'error', {
+            'selector': 'parameter',
+            'format': ['camelCase', 'PascalCase'],
+            'leadingUnderscore': 'allow',
+          }
+        ]
+      }
     }
-  }]
+  ]
 };

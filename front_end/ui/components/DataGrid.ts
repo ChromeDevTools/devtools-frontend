@@ -724,6 +724,16 @@ export class DataGrid extends HTMLElement {
             overflow: hidden;
           }
 
+          th {
+            font-weight: normal;
+            text-align: left;
+            border-bottom: 1px solid var(--color-details-hairline);
+            position: sticky;
+            top: 0;
+            z-index: 2;
+            background-color: var(--color-background-elevation-1);
+          }
+
           td:focus,
           th:focus {
             outline: var(--color-primary) auto 1px;
@@ -741,16 +751,6 @@ export class DataGrid extends HTMLElement {
           td.firstVisibleColumn,
           th.firstVisibleColumn {
             border-left: none;
-          }
-
-          th {
-            font-weight: normal;
-            text-align: left;
-            border-bottom: 1px solid var(--color-details-hairline);
-            position: sticky;
-            top: 0;
-            z-index: 2;
-            background-color: var(--color-background-elevation-1);
           }
 
           .hidden {

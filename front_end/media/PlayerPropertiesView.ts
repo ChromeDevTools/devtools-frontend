@@ -240,9 +240,9 @@ export class FormattedPropertyRenderer extends PropertyRenderer {
 }
 
 export class DefaultPropertyRenderer extends PropertyRenderer {
-  constructor(title: string, default_text: string) {
+  constructor(title: string, defaultText: string) {
     super(i18nString(title));
-    this.changeContents(default_text);
+    this.changeContents(defaultText);
   }
 }
 
@@ -374,11 +374,11 @@ class NoTracksPlaceholderMenu extends UI.Widget.VBox {
   _isPlaceholder: boolean;
   _wrapping: GenericTrackMenu;
 
-  constructor(wrapping: GenericTrackMenu, placeholder_text: string) {
+  constructor(wrapping: GenericTrackMenu, placeholderText: string) {
     super();
     this._isPlaceholder = true;
     this._wrapping = wrapping;
-    this._wrapping.appendTab('_placeholder', placeholder_text, new UI.Widget.VBox(), placeholder_text);
+    this._wrapping.appendTab('_placeholder', placeholderText, new UI.Widget.VBox(), placeholderText);
     this._wrapping.show(this.contentElement);
   }
 

@@ -32,27 +32,6 @@
       "className": "Sources.ScriptFormatterEditorAction"
     },
     {
-      "type": "@Sources.NavigatorView",
-      "viewId": "navigator-network",
-      "className": "Sources.NetworkNavigatorView"
-    },
-    {
-      "type": "@Sources.NavigatorView",
-      "viewId": "navigator-files",
-      "className": "Sources.FilesNavigatorView"
-    },
-    {
-      "type": "@Sources.NavigatorView",
-      "viewId": "navigator-snippets",
-      "className": "Sources.SnippetsNavigatorView"
-    },
-    {
-      "type": "@Sources.NavigatorView",
-      "viewId": "navigator-recordings",
-      "className": "Sources.RecordingsNavigatorView",
-      "experiment": "recorder"
-    },
-    {
       "type": "context-menu-item",
       "location": "mainMenu/default",
       "actionId": "sources.search"

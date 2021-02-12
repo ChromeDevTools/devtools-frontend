@@ -39,7 +39,8 @@ import * as Workspace from '../workspace/workspace.js';
 
 import {CallStackSidebarPane} from './CallStackSidebarPane.js';
 import {DebuggerPausedMessage} from './DebuggerPausedMessage.js';
-import {NavigatorView} from './NavigatorView.js';
+import {NavigatorView} from './NavigatorView.js';  // eslint-disable-line no-unused-vars
+import {ContentScriptsNavigatorView, FilesNavigatorView, NetworkNavigatorView, OverridesNavigatorView, RecordingsNavigatorView, SnippetsNavigatorView} from './SourcesNavigator.js';
 import {Events, SourcesView} from './SourcesView.js';
 import {ThreadsSidebarPane} from './ThreadsSidebarPane.js';
 import {UISourceCodeFrame} from './UISourceCodeFrame.js';
@@ -435,24 +436,15 @@ export class SourcesPanel extends UI.Panel.Panel {
    * @param {boolean=} skipReveal
    */
   _revealInNavigator(uiSourceCode, skipReveal) {
-    const extensions = Root.Runtime.Runtime.instance().extensions(NavigatorView);
-    Promise.all(extensions.map(extension => extension.instance())).then(filterNavigators.bind(this));
-
-    /**
-     * @this {SourcesPanel}
-     * @param {!Array.<!Object>} objects
-     */
-    function filterNavigators(objects) {
-      for (let i = 0; i < objects.length; ++i) {
-        const navigatorView = /** @type {!NavigatorView} */ (objects[i]);
-        const viewId = extensions[i].descriptor()['viewId'];
-        if (viewId && navigatorView.acceptProject(uiSourceCode.project())) {
-          navigatorView.revealUISourceCode(uiSourceCode, true);
-          if (skipReveal) {
-            this._navigatorTabbedLocation.tabbedPane().selectTab(viewId);
-          } else {
-            UI.ViewManager.ViewManager.instance().showView(viewId);
-          }
+    for (const navigator of registeredNavigatorViews) {
+      const navigatorView = navigator.navigatorView();
+      const viewId = navigator.viewId;
+      if (viewId && navigatorView.acceptProject(uiSourceCode.project())) {
+        navigatorView.revealUISourceCode(uiSourceCode, true);
+        if (skipReveal) {
+          this._navigatorTabbedLocation.tabbedPane().selectTab(viewId);
+        } else {
+          UI.ViewManager.ViewManager.instance().showView(viewId);
         }
       }
     }
@@ -1455,3 +1447,47 @@ export class WrapperView extends UI.Widget.VBox {
     this._view.show(this.element);
   }
 }
+
+/** @type {!Array<!NavigatorViewRegistration>} */
+const registeredNavigatorViews = [
+  {
+    viewId: 'navigator-network',
+    navigatorView: NetworkNavigatorView.instance,
+    experiment: undefined,
+  },
+  {
+    viewId: 'navigator-files',
+    navigatorView: FilesNavigatorView.instance,
+    experiment: undefined,
+  },
+  {
+    viewId: 'navigator-snippets',
+    navigatorView: SnippetsNavigatorView.instance,
+    experiment: undefined,
+  },
+  {
+    viewId: 'navigator-recordings',
+    navigatorView: RecordingsNavigatorView.instance,
+    experiment: Root.Runtime.ExperimentName.RECORDER,
+  },
+  {
+    viewId: 'navigator-overrides',
+    navigatorView: OverridesNavigatorView.instance,
+    experiment: undefined,
+  },
+  {
+    viewId: 'navigator-contentScripts',
+    navigatorView: ContentScriptsNavigatorView.instance,
+    experiment: undefined,
+  },
+];
+
+/**
+  * @typedef {{
+  *  navigatorView: function(): NavigatorView,
+  *  viewId: string,
+  *  experiment: Root.Runtime.ExperimentName|undefined,
+  * }}
+  */
+// @ts-ignore typedef
+export let NavigatorViewRegistration;

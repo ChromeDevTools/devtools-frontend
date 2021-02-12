@@ -1,16 +1,4 @@
 {
-  "extensions": [
-    {
-      "type": "@Sources.NavigatorView",
-      "viewId": "navigator-overrides",
-      "className": "Sources.OverridesNavigatorView"
-    },
-    {
-      "type": "@Sources.NavigatorView",
-      "viewId": "navigator-contentScripts",
-      "className": "Sources.ContentScriptsNavigatorView"
-    }
-  ],
   "dependencies": [
     "elements",
     "sources",

@@ -24,24 +24,24 @@ export class AccessibilityTree extends HTMLElement {
 
   constructor() {
     super();
+    this.setAttribute('role', 'tree');
     this.addEventListener('keydown', this.onKeyDown.bind(this));
   }
 
   set data(data: AccessibilityTreeData) {
     this.node = data.node;
-    this.shadow.host.setAttribute('role', 'tree');
     this.render();
   }
 
   set selectedAXNode(node: AccessibilityNode) {
     // Deselect previous node
     if (this.selectedNode && this.selectedNode !== node) {
-      this.selectedNode.selected = false;
+      this.selectedNode.deselect();
     }
 
     // Select and focus new node
     this.selectedNode = node;
-    this.selectedNode.selected = true;
+    this.selectedNode.select();
   }
 
   wasShown(): void {

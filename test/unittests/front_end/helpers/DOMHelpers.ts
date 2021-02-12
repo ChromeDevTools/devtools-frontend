@@ -147,6 +147,14 @@ export function dispatchKeyDownEvent<T extends Element>(element: T, options: Key
 }
 
 /**
+ * Dispatches a mouse over event.
+ */
+export function dispatchMouseOverEvent<T extends Element>(element: T, options: MouseEventInit = {}) {
+  const moveEvent = new MouseEvent('mouseover', options);
+  element.dispatchEvent(moveEvent);
+}
+
+/**
  * Dispatches a mouse move event.
  */
 export function dispatchMouseMoveEvent<T extends Element>(element: T, options: MouseEventInit = {}) {

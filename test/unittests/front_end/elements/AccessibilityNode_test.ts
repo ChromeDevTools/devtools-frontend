@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import type * as ElementsModule from '../../../../front_end/elements/elements.js';
-import {assertShadowRoot, dispatchClickEvent, dispatchMouseMoveEvent, dispatchMouseLeaveEvent, renderElementIntoDOM, assertElement} from '../helpers/DOMHelpers.js';
+import {assertShadowRoot, dispatchClickEvent, dispatchMouseOverEvent, dispatchMouseLeaveEvent, renderElementIntoDOM} from '../helpers/DOMHelpers.js';
 import {describeWithEnvironment} from '../helpers/EnvironmentHelpers.js';
 import {withNoMutations} from '../helpers/MutationHelpers.js';
 
@@ -156,28 +156,35 @@ describeWithEnvironment('AccessibilityTree', () => {
   });
 
   describe('mouse behaviour of accessibility nodes', () => {
-    it('node is highlighted on mouse hover', () => {
-      const node =
-          makeAXNode({role: 'paragraph', name: 'text', axTree: new Elements.AccessibilityTree.AccessibilityTree()});
+    it('node is highlighted on mouse hover', async () => {
+      let highlightCalls = 0;
+      let clearHightlightCalls = 0;
+      const node = makeAXNode({
+        role: 'paragraph',
+        name: 'text',
+        axTree: new Elements.AccessibilityTree.AccessibilityTree(),
+        highlightNode: () => {
+          highlightCalls++;
+        },
+        clearHighlight: () => {
+          clearHightlightCalls++;
+        },
+      });
       const component = new Elements.AccessibilityNode.AccessibilityNode();
       renderElementIntoDOM(component);
       component.data = {
         axNode: node,
       };
 
+      assert.strictEqual(highlightCalls, 0);
+      assert.strictEqual(clearHightlightCalls, 0);
       assertShadowRoot(component.shadowRoot);
-      withNoMutations(component.shadowRoot, shadowRoot => {
-        const nodeWrapper = shadowRoot.querySelector('.wrapper');
-        assertElement(nodeWrapper, HTMLDivElement);
-
-        assert.isUndefined(window.getComputedStyle(nodeWrapper, ':hover'));
-
-        dispatchMouseMoveEvent(component);
-        assert.isDefined(window.getComputedStyle(nodeWrapper, ':hover'));
-
+      await withNoMutations(component.shadowRoot, () => {
+        dispatchMouseOverEvent(component);
         dispatchMouseLeaveEvent(component);
-        assert.isUndefined(window.getComputedStyle(nodeWrapper, ':hover'));
       });
+      assert.strictEqual(highlightCalls, 1);
+      assert.strictEqual(clearHightlightCalls, 1);
     });
   });
 });

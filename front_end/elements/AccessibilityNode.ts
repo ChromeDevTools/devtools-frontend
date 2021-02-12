@@ -20,33 +20,65 @@ export class AccessibilityNode extends HTMLElement {
   });
   private axNode: AXNode|null = null;
   private axTree: AccessibilityTree|null = null;
-  private expanded: boolean = true;
+  // Only elements that contain child nodes can be expanded.
+  private expanded: boolean = false;
   private loadedChildren: boolean = false;
-  private hovered: boolean = false;
-  private isSelected: boolean = false;
+  private selected: boolean = false;
 
   constructor() {
     super();
     this.addEventListener('click', this.onClick.bind(this));
-    this.addEventListener('mousemove', this.onMouseMove.bind(this));
+    this.addEventListener('mouseover', this.onMouseOver.bind(this));
     this.addEventListener('mouseleave', this.onMouseLeave.bind(this));
     this.tabIndex = -1;
+    this.setAttribute('role', 'treeitem');
   }
 
   set data(data: AccessibilityNodeData) {
     this.axNode = data.axNode;
     this.axTree = this.axNode.axTree;
-    this.shadow.host.setAttribute('role', 'treeitem');
+    if (this.axNode.hasOnlyUnloadedChildren) {
+      this.classList.add('parent');
+      if (this.loadedChildren) {
+        this.expand();
+      }
+    } else if (this.axNode.numChildren) {
+      this.classList.add('parent');
+      this.expand();
+    } else {
+      this.classList.add('no-children');
+    }
+    if (this.axTree) {
+      this.axTree.appendToNodeMap(this.axNode.id, this);
+    }
     this.render();
   }
 
-  set selected(selected: boolean) {
-    this.isSelected = selected;
-    this.render();
-
-    if (this.isSelected) {
-      this.focus();
+  expand(): void {
+    if (!this.axNode?.numChildren) {
+      return;
     }
+    this.expanded = true;
+    this.classList.add('expanded');
+  }
+
+  collapse(): void {
+    if (!this.axNode?.numChildren) {
+      return;
+    }
+    this.expanded = false;
+    this.classList.remove('expanded');
+  }
+
+  select(): void {
+    this.selected = true;
+    this.render();
+    this.focus();
+  }
+
+  deselect(): void {
+    this.selected = false;
+    this.render();
   }
 
   get isExpanded(): boolean {
@@ -193,25 +225,12 @@ export class AccessibilityNode extends HTMLElement {
     this.toggleChildren();
   }
 
-  private onMouseMove(): void {
-    this.setHovered(true);
+  private onMouseOver(): void {
+    this.axNode?.highlightNode();
   }
 
   private onMouseLeave(): void {
-    this.setHovered(false);
-  }
-
-  private setHovered(hovered: boolean): void {
-    if (this.hovered === hovered || !this.axNode) {
-      return;
-    }
-
-    this.hovered = hovered;
-    if (this.hovered) {
-      this.axNode.highlightNode();
-    } else {
-      this.axNode.clearHighlight();
-    }
+    this.axNode?.clearHighlight();
   }
 
   private toggleChildren(): void {
@@ -290,7 +309,7 @@ export class AccessibilityNode extends HTMLElement {
   }
 
   private render(): void {
-    if (!this.axNode || !this.axTree) {
+    if (!this.axNode) {
       return;
     }
 
@@ -300,27 +319,12 @@ export class AccessibilityNode extends HTMLElement {
       parts.push(LitHtml.html`<span class='monospace ignored-node'>${ls`Ignored`}</span>`);
     } else {
       const nodeContent = this.renderNodeContent();
-
-      if (this.axNode.hasOnlyUnloadedChildren) {
-        this.shadow.host.classList.add('parent');
-        if (!this.loadedChildren) {
-          this.expanded = false;
-        }
-      } else if (this.axNode.numChildren) {
-        this.shadow.host.classList.add('parent', 'expanded');
-      } else {
-        this.shadow.host.classList.add('no-children');
-        this.expanded = false;
-      }
-
       const classes = LitHtml.Directives.classMap({
         'wrapper': true,
-        'selected': this.isSelected,
+        'selected': this.selected,
       });
       parts.push(LitHtml.html`<div class=${classes}>${nodeContent}</div>`);
     }
-
-    this.axTree.appendToNodeMap(this.axNode.id, this);
 
     const children = this.renderChildren(this.axNode);
     parts.push(children);

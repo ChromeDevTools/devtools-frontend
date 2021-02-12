@@ -1049,11 +1049,32 @@
   "console/ConsoleView.js | info": {
     "message": "Îńf̂ó"
   },
+  "console/ConsoleView.js | issueToolbarTooltipGeneral": {
+    "message": "Ŝóm̂é p̂ŕôb́l̂ém̂ś n̂ó l̂ón̂ǵêŕ ĝén̂ér̂át̂é ĉón̂śôĺê ḿêśŝáĝéŝ, b́ût́ âŕê śûŕf̂áĉéd̂ ín̂ t́ĥé îśŝúêś t̂áb̂."
+  },
+  "console/ConsoleView.js | issueToolbarTooltipHaveMultipleIssues": {
+    "message": "Ĉĺîćk̂ t́ô v́îéŵ {issueCount} íŝśûéŝ"
+  },
+  "console/ConsoleView.js | issueToolbarTooltipHaveNoIssues": {
+    "message": "Ĉĺîćk̂ t́ô ǵô t́ô t́ĥé îśŝúêś t̂áb̂."
+  },
+  "console/ConsoleView.js | issueToolbarTooltipHaveOneIssues": {
+    "message": "Ĉĺîćk̂ t́ô v́îéŵ 1 íŝśûé"
+  },
   "console/ConsoleView.js | logLevels": {
     "message": "L̂óĝ ĺêv́êĺŝ"
   },
   "console/ConsoleView.js | logLevelS": {
     "message": "L̂óĝ ĺêv́êĺ: {PH1}"
+  },
+  "console/ConsoleView.js | multipleIssues": {
+    "message": "{issueCount} Îśŝúêś"
+  },
+  "console/ConsoleView.js | noIssue": {
+    "message": "N̂ó Îśŝúêś"
+  },
+  "console/ConsoleView.js | oneIssue": {
+    "message": "1 Îśŝúê"
   },
   "console/ConsoleView.js | onlyShowMessagesFromTheCurrentContext": {
     "message": "Ôńl̂ý ŝh́ôẃ m̂éŝśâǵêś f̂ŕôḿ t̂h́ê ćûŕr̂én̂t́ ĉón̂t́êx́t̂ (top, iframe, worker, éx̂t́êńŝíôń)"

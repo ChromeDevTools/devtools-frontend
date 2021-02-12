@@ -4,7 +4,7 @@
 
 import * as puppeteer from 'puppeteer';
 
-import {$, $$, click, getBrowserAndPages, goToResource, pasteText, timeout, waitFor, waitForFunction} from '../../shared/helper.js';
+import {$, $$, assertNotNull, click, getBrowserAndPages, goToResource, pasteText, timeout, waitFor, waitForFunction} from '../../shared/helper.js';
 import {AsyncScope} from '../../shared/mocha-extensions.js';
 
 export const CONSOLE_TAB_SELECTOR = '#tab-console';
@@ -218,8 +218,8 @@ export async function waitForConsoleMessageAndClickOnLink() {
 
 export async function navigateToIssuesPanelViaInfoBar() {
   // Navigate to Issues panel
-  await waitFor('.infobar');
-  await click('.infobar .infobar-button');
+  await waitFor('#console-issues-counter');
+  await click('#console-issues-counter');
   await waitFor('.issues-pane');
 }
 
@@ -227,4 +227,12 @@ export async function turnOffHistoryAutocomplete() {
   await click(CONSOLE_SETTINGS_SELECTOR);
   await waitFor(AUTOCOMPLETE_FROM_HISTORY_SELECTOR);
   await click(AUTOCOMPLETE_FROM_HISTORY_SELECTOR);
+}
+
+export async function getIssueButtonLabel() {
+  const infobarButton = await waitFor('#console-issues-counter');
+  const titleElement = await waitFor('.icon-button-title', infobarButton);
+  assertNotNull(titleElement);
+  const infobarButtonText = await titleElement.evaluate(node => (node as HTMLElement).textContent);
+  return infobarButtonText;
 }

@@ -4,34 +4,53 @@
 
 import {assert} from 'chai';
 
-import {click, goToResource, waitFor} from '../../shared/helper.js';
+import {getBrowserAndPages, goToResource} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {navigateToConsoleTab} from '../helpers/console-helpers.js';
+import {getIssueButtonLabel, navigateToConsoleTab} from '../helpers/console-helpers.js';
 
 describe('The Console Tab', async () => {
-  it('shows infobar with button linking to issues tab', async () => {
-    // Navigate to page which causes a SameSiteCookieIssue.
-    await goToResource('console/cookie-issue.html');
+  it('shows the toolbar button for no issue correctly', async () => {
+    // Navigate to page which causes no issues.
+    await goToResource('console/empty.html');
     await navigateToConsoleTab();
 
-    const infobarButton = await waitFor('.infobar .infobar-button');
-    const infobarButtonText = await infobarButton.evaluate(node => node.textContent);
-    assert.strictEqual(infobarButtonText, 'View issues');
+    const infobarButtonText = await getIssueButtonLabel();
+    assert.strictEqual(infobarButtonText, 'No Issues');
   });
 
-  it('issues bar has a context menu', async () => {
+  it('shows the toolbar button for one issue correctly', async () => {
     // Navigate to page which causes a SameSiteCookieIssue.
     await goToResource('console/cookie-issue.html');
     await navigateToConsoleTab();
 
-    // Find the infobar and right-click it.
-    const selectedNode = await waitFor('.infobar-issue');
-    await click(selectedNode, {clickOptions: {button: 'right'}});
+    const infobarButtonText = await getIssueButtonLabel();
+    assert.strictEqual(infobarButtonText, '1 Issue');
+  });
 
-    // Wait for the context menu and compare its content.
-    const contextMenu = await waitFor('.soft-context-menu');
-    const actual = await contextMenu.evaluate(e => e.textContent);
-    assert.include(actual, 'Clear console history');
-    assert.include(actual, 'Save as...');
+  it('shows the toolbar button for two issues correctly', async () => {
+    // Navigate to page which causes two SameSiteCookieIssue.
+    await goToResource('console/two-cookie-issues.html');
+    await navigateToConsoleTab();
+
+    const infobarButtonText = await getIssueButtonLabel();
+    assert.strictEqual(infobarButtonText, '2 Issues');
+  });
+
+  it('updates the toolbar button correctly', async () => {
+    // Navigate to page which causes no issues.
+    await goToResource('console/empty.html');
+    await navigateToConsoleTab();
+
+    const infobarButtonText = await getIssueButtonLabel();
+    assert.strictEqual(infobarButtonText, 'No Issues');
+
+    const {target} = getBrowserAndPages();
+    await target.evaluate(() => {
+      // Trigger a SameSiteCookieIssue.
+      document.cookie = 'foo=bar;samesite=None';
+    });
+
+    const infobarButtonText2 = await getIssueButtonLabel();
+    assert.strictEqual(infobarButtonText2, '1 Issue');
   });
 });

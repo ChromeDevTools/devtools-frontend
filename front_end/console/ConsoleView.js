@@ -36,6 +36,7 @@ import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as TextUtils from '../text_utils/text_utils.js';
+import * as UIComponents from '../ui/components/components.js';
 import * as UI from '../ui/ui.js';
 
 import {ConsoleContextSelector} from './ConsoleContextSelector.js';
@@ -51,6 +52,36 @@ export const UIStrings = {
   *@description Label for link to issues tab
   */
   viewIssues: 'View issues',
+  /**
+  *@description Label for link to issues tab
+  */
+  noIssue: 'No Issues',
+  /**
+  *@description Label for link to issues tab
+  */
+  oneIssue: '1 Issue',
+  /**
+  *@description Label for link to issues tab
+  *@example {13} issueCount
+  */
+  multipleIssues: '{issueCount} Issues',
+  /**
+  *@description Text for the tooltip of the issue counter toolbar item
+  */
+  issueToolbarTooltipGeneral: 'Some problems no longer generate console messages, but are surfaced in the issues tab.',
+  /**
+   *@description Text for the tooltip of the issue counter toolbar item
+   */
+  issueToolbarTooltipHaveNoIssues: 'Click to go to the issues tab.',
+  /**
+  *@description Text for the tooltip of the issue counter toolbar item
+  */
+  issueToolbarTooltipHaveOneIssues: 'Click to view 1 issue',
+  /**
+  *@description Text for the tooltip of the issue counter toolbar item
+  *@example {12} issueCount
+  */
+  issueToolbarTooltipHaveMultipleIssues: 'Click to view {issueCount} issues',
   /**
   *@description Infobar text about messages being on the issues tab
   */
@@ -358,6 +389,18 @@ export class ConsoleView extends UI.Widget.VBox {
     toolbar.appendToolbarItem(this._filter._textFilterUI);
     toolbar.appendToolbarItem(this._filter._levelMenuButton);
     toolbar.appendToolbarItem(this._progressToolbarItem);
+    toolbar.appendSeparator();
+    this._issuesCounter = new UIComponents.IconButton.IconButton();
+    this._issuesCounter.id = 'console-issues-counter';
+    const issuesToolbarItem = new UI.Toolbar.ToolbarItem(this._issuesCounter);
+    this._issuesCounter.data = {
+      clickHandler: () => {
+        Host.userMetrics.issuesPanelOpenedFrom(Host.UserMetrics.IssueOpener.StatusBarIssuesCounter);
+        UI.ViewManager.ViewManager.instance().showView('issues-pane');
+      },
+      groups: [{iconName: 'issue-text-icon', iconColor: '#1a73e8'}],
+    };
+    toolbar.appendToolbarItem(issuesToolbarItem);
     rightToolbar.appendSeparator();
     rightToolbar.appendToolbarItem(this._filterStatusText);
     rightToolbar.appendToolbarItem(this._showSettingsPaneButton);
@@ -514,10 +557,7 @@ export class ConsoleView extends UI.Widget.VBox {
     this._issueMessage = undefined;
     const issuesManager = BrowserSDK.IssuesManager.IssuesManager.instance();
     issuesManager.addEventListener(
-        BrowserSDK.IssuesManager.Events.IssuesCountUpdated, this._onIssuesCountChanged.bind(this));
-    if (issuesManager.numberOfIssues()) {
-      this._onIssuesCountChanged();
-    }
+        BrowserSDK.IssuesManager.Events.IssuesCountUpdated, this._updateIssuesToolbarItem, this);
   }
 
   _onIssuesCountChanged() {
@@ -696,6 +736,7 @@ export class ConsoleView extends UI.Widget.VBox {
    * @override
    */
   wasShown() {
+    this._updateIssuesToolbarItem();
     this._viewport.refresh();
   }
 
@@ -753,6 +794,7 @@ export class ConsoleView extends UI.Widget.VBox {
    * @return {!Promise.<void>}
    */
   async _invalidateViewport() {
+    this._updateIssuesToolbarItem();
     if (this._muteViewportUpdates) {
       this._maybeDirtyWhileMuted = true;
       return;
@@ -764,6 +806,27 @@ export class ConsoleView extends UI.Widget.VBox {
       this._viewport.invalidate();
     }
     return;
+  }
+
+  _updateIssuesToolbarItem() {
+    const issueCount = BrowserSDK.IssuesManager.IssuesManager.instance().numberOfIssues();
+    let issuesSummary = '';
+    let issuesTitleGotoIssues = '';
+    if (issueCount === 0) {
+      issuesSummary = i18nString(UIStrings.noIssue);
+      issuesTitleGotoIssues = i18nString(UIStrings.issueToolbarTooltipHaveNoIssues);
+    } else if (issueCount === 1) {
+      issuesSummary = i18nString(UIStrings.oneIssue);
+      issuesTitleGotoIssues = i18nString(UIStrings.issueToolbarTooltipHaveOneIssues);
+    } else {
+      issuesSummary = i18nString(UIStrings.multipleIssues, {issueCount});
+      issuesTitleGotoIssues = i18nString(UIStrings.issueToolbarTooltipHaveMultipleIssues, {issueCount});
+    }
+    this._issuesCounter.setTexts([issuesSummary]);
+    const issuesTitleGeneral = i18nString(UIStrings.issueToolbarTooltipGeneral);
+    const issuesTitle = `${issuesTitleGeneral} ${issuesTitleGotoIssues}`;
+    UI.Tooltip.Tooltip.install(this._issuesCounter, issuesTitle);
+    UI.ARIAUtils.setAccessibleName(this._issuesCounter, issuesTitle);
   }
 
   _scheduleViewportRefresh() {

@@ -14,6 +14,7 @@ copy_to_gen("console") {
     "data-url-exceptions.html",
     "document-write.html",
     "dom-interactions.html",
+    "empty.html",
     "escaping.html",
     "log-source.js",
     "navigation/after-navigation.html",
@@ -26,6 +27,7 @@ copy_to_gen("console") {
     "source-url-exceptions.html",
     "stack-overflow.html",
     "structured-objects.html",
+    "two-cookie-issues.html",
     "uncaught-promise.html",
   ]
 }

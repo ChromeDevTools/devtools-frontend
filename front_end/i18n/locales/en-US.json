@@ -1049,11 +1049,32 @@
   "console/ConsoleView.js | info": {
     "message": "Info"
   },
+  "console/ConsoleView.js | issueToolbarTooltipGeneral": {
+    "message": "Some problems no longer generate console messages, but are surfaced in the issues tab."
+  },
+  "console/ConsoleView.js | issueToolbarTooltipHaveMultipleIssues": {
+    "message": "Click to view {issueCount} issues"
+  },
+  "console/ConsoleView.js | issueToolbarTooltipHaveNoIssues": {
+    "message": "Click to go to the issues tab."
+  },
+  "console/ConsoleView.js | issueToolbarTooltipHaveOneIssues": {
+    "message": "Click to view 1 issue"
+  },
   "console/ConsoleView.js | logLevels": {
     "message": "Log levels"
   },
   "console/ConsoleView.js | logLevelS": {
     "message": "Log level: {PH1}"
+  },
+  "console/ConsoleView.js | multipleIssues": {
+    "message": "{issueCount} Issues"
+  },
+  "console/ConsoleView.js | noIssue": {
+    "message": "No Issues"
+  },
+  "console/ConsoleView.js | oneIssue": {
+    "message": "1 Issue"
   },
   "console/ConsoleView.js | onlyShowMessagesFromTheCurrentContext": {
     "message": "Only show messages from the current context (top, iframe, worker, extension)"

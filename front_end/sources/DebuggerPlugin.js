@@ -180,7 +180,7 @@ export class DebuggerPlugin extends Plugin {
 
     /** @type {!Map.<number, !DecoratorWidget>} */
     this._valueWidgets = new Map();
-    /** @type {?Map<!CodeMirror.TextMarker, !Function>} */
+    /** @type {?Map<!CodeMirror.TextMarker<!CodeMirror.MarkerRange>, !Function>} */
     this._continueToLocationDecorations = null;
 
     UI.Context.Context.instance().addFlavorChangeListener(SDK.DebuggerModel.CallFrame, this._callFrameChanged, this);
@@ -765,6 +765,9 @@ export class DebuggerPlugin extends Plugin {
     }
     for (const decoration of this._continueToLocationDecorations.keys()) {
       const range = decoration.find();
+      if (!range) {
+        continue;
+      }
       if (range.from.line !== textPosition.startLine || range.to.line !== textPosition.startLine) {
         continue;
       }

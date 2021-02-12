@@ -255,7 +255,7 @@ export class SourcesTextEditor extends TextEditor.CodeMirrorTextEditor.CodeMirro
   /**
    * @param {!TextUtils.TextRange.TextRange} range
    * @param {string} cssClass
-   * @return {!CodeMirror.TextMarker}
+   * @return {!CodeMirror.TextMarker<!CodeMirror.MarkerRange>}
    */
   highlightRange(range, cssClass) {
     cssClass = 'CodeMirror-persist-highlight ' + cssClass;

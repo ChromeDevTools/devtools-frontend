@@ -1961,112 +1961,112 @@
   "issues/IssuesPane.ts | trustedWebActivity": {
     "message": "Trusted Web Activity"
   },
-  "issues/IssueView.js | affectedResources": {
+  "issues/IssueView.ts | affectedResources": {
     "message": "Affected Resources"
   },
-  "issues/IssueView.js | blocked": {
+  "issues/IssueView.ts | blocked": {
     "message": "blocked"
   },
-  "issues/IssueView.js | blockedResource": {
+  "issues/IssueView.ts | blockedResource": {
     "message": "Blocked Resource"
   },
-  "issues/IssueView.js | clickToRevealTheViolatingDomNode": {
+  "issues/IssueView.ts | clickToRevealTheViolatingDomNode": {
     "message": "Click to reveal the violating DOM node in the Elements panel"
   },
-  "issues/IssueView.js | cookie": {
+  "issues/IssueView.ts | cookie": {
     "message": "cookie"
   },
-  "issues/IssueView.js | cookies": {
+  "issues/IssueView.ts | cookies": {
     "message": "cookies"
   },
-  "issues/IssueView.js | cpuPeakLimit": {
+  "issues/IssueView.ts | cpuPeakLimit": {
     "message": "CPU peak limit"
   },
-  "issues/IssueView.js | cpuTotalLimit": {
+  "issues/IssueView.ts | cpuTotalLimit": {
     "message": "CPU total limit"
   },
-  "issues/IssueView.js | directive": {
+  "issues/IssueView.ts | directive": {
     "message": "directive"
   },
-  "issues/IssueView.js | directiveC": {
+  "issues/IssueView.ts | directiveC": {
     "message": "Directive"
   },
-  "issues/IssueView.js | directives": {
+  "issues/IssueView.ts | directives": {
     "message": "directives"
   },
-  "issues/IssueView.js | domain": {
+  "issues/IssueView.ts | domain": {
     "message": "Domain"
   },
-  "issues/IssueView.js | element": {
+  "issues/IssueView.ts | element": {
     "message": "Element"
   },
-  "issues/IssueView.js | frameUrl": {
+  "issues/IssueView.ts | frameUrl": {
     "message": "Frame URL"
   },
-  "issues/IssueView.js | isThisIssueMessageHelpfulToYou": {
+  "issues/IssueView.ts | isThisIssueMessageHelpfulToYou": {
     "message": "Is this issue message helpful to you?"
   },
-  "issues/IssueView.js | learnMoreS": {
+  "issues/IssueView.ts | learnMoreS": {
     "message": "Learn more: {PH1}"
   },
-  "issues/IssueView.js | limitExceeded": {
+  "issues/IssueView.ts | limitExceeded": {
     "message": "Limit exceeded"
   },
-  "issues/IssueView.js | name": {
+  "issues/IssueView.ts | name": {
     "message": "Name"
   },
-  "issues/IssueView.js | networkLimit": {
+  "issues/IssueView.ts | networkLimit": {
     "message": "Network limit"
   },
-  "issues/IssueView.js | parentFrame": {
+  "issues/IssueView.ts | parentFrame": {
     "message": "Parent Frame"
   },
-  "issues/IssueView.js | path": {
+  "issues/IssueView.ts | path": {
     "message": "Path"
   },
-  "issues/IssueView.js | removed": {
+  "issues/IssueView.ts | removed": {
     "message": "Removed"
   },
-  "issues/IssueView.js | reportonly": {
+  "issues/IssueView.ts | reportonly": {
     "message": "report-only"
   },
-  "issues/IssueView.js | request": {
+  "issues/IssueView.ts | request": {
     "message": "request"
   },
-  "issues/IssueView.js | requestC": {
+  "issues/IssueView.ts | requestC": {
     "message": "Request"
   },
-  "issues/IssueView.js | requests": {
+  "issues/IssueView.ts | requests": {
     "message": "requests"
   },
-  "issues/IssueView.js | resolutionStatus": {
+  "issues/IssueView.ts | resolutionStatus": {
     "message": "Resolution Status"
   },
-  "issues/IssueView.js | resource": {
+  "issues/IssueView.ts | resource": {
     "message": "resource"
   },
-  "issues/IssueView.js | resourceC": {
+  "issues/IssueView.ts | resourceC": {
     "message": "Resource"
   },
-  "issues/IssueView.js | resources": {
+  "issues/IssueView.ts | resources": {
     "message": "resources"
   },
-  "issues/IssueView.js | restrictionStatus": {
+  "issues/IssueView.ts | restrictionStatus": {
     "message": "Restriction Status"
   },
-  "issues/IssueView.js | source": {
+  "issues/IssueView.ts | source": {
     "message": "source"
   },
-  "issues/IssueView.js | sourceLocation": {
+  "issues/IssueView.ts | sourceLocation": {
     "message": "Source Location"
   },
-  "issues/IssueView.js | sources": {
+  "issues/IssueView.ts | sources": {
     "message": "sources"
   },
-  "issues/IssueView.js | status": {
+  "issues/IssueView.ts | status": {
     "message": "Status"
   },
-  "issues/IssueView.js | warned": {
+  "issues/IssueView.ts | warned": {
     "message": "Warned"
   },
   "js_profiler/js_profiler-meta.ts | profiler": {

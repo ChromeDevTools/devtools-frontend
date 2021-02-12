@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as BrowserSDK from '../browser_sdk/browser_sdk.js';
 import * as Common from '../common/common.js';
 import * as SDK from '../sdk/sdk.js';
@@ -12,169 +14,117 @@ import * as SDK from '../sdk/sdk.js';
  * of all resources that are affected by the aggregated issues.
  */
 export class AggregatedIssue extends SDK.Issue.Issue {
-  /**
-   * @param {string} code
-   */
-  constructor(code) {
+  _cookies: Map<string, {
+    cookie: Protocol.Audits.AffectedCookie,
+    hasRequest: boolean,
+  }>;
+  _requests: Map<string, Protocol.Audits.AffectedRequest>;
+  _representative: SDK.Issue.Issue|null;
+  _mixedContents: Map<string, Protocol.Audits.MixedContentIssueDetails>;
+  _heavyAdIssueDetails: Map<string, Protocol.Audits.HeavyAdIssueDetails>;
+  _cspIssues: Set<SDK.ContentSecurityPolicyIssue.ContentSecurityPolicyIssue>;
+  _lowContrastIssues: Set<SDK.LowTextContrastIssue.LowTextContrastIssue>;
+  _blockedByResponseDetails: Map<string, Protocol.Audits.BlockedByResponseIssueDetails>;
+  _trustedWebActivityIssues: Set<SDK.TrustedWebActivityIssue.TrustedWebActivityIssue>;
+  _aggregatedIssuesCount: number;
+  _sharedArrayBufferIssues: Set<SDK.SharedArrayBufferIssue.SharedArrayBufferIssue>;
+  _corsIssues: Set<SDK.CorsIssue.CorsIssue>;
+
+  constructor(code: string) {
     super(code);
-    /** @type {!Map<string, !{cookie: !Protocol.Audits.AffectedCookie, hasRequest: boolean}>} */
     this._cookies = new Map();
-    /** @type {!Map<string, !Protocol.Audits.AffectedRequest>} */
     this._requests = new Map();
-    /** @type {?SDK.Issue.Issue} */
     this._representative = null;
-    /** @type {!Map<string, !Protocol.Audits.MixedContentIssueDetails>} */
     this._mixedContents = new Map();
-    /** @type {!Map<string, !Protocol.Audits.HeavyAdIssueDetails>} */
     this._heavyAdIssueDetails = new Map();
-    /** @type {!Set<!SDK.ContentSecurityPolicyIssue.ContentSecurityPolicyIssue>} */
     this._cspIssues = new Set();
-    /** @type {!Set<!SDK.LowTextContrastIssue.LowTextContrastIssue>} */
     this._lowContrastIssues = new Set();
-    /** @type {!Map<string, !Protocol.Audits.BlockedByResponseIssueDetails>} */
     this._blockedByResponseDetails = new Map();
-    /** @type {!Set<SDK.TrustedWebActivityIssue.TrustedWebActivityIssue>} */
     this._trustedWebActivityIssues = new Set();
     this._aggregatedIssuesCount = 0;
-    /** @type {Set<SDK.SharedArrayBufferIssue.SharedArrayBufferIssue>} */
     this._sharedArrayBufferIssues = new Set();
-    /** @type {Set<SDK.CorsIssue.CorsIssue>} */
     this._corsIssues = new Set();
   }
 
-  /**
-   * @override
-   * @returns {string}
-   */
-  primaryKey() {
+  primaryKey(): string {
     throw new Error('This should never be called');
   }
 
-  /**
-   * @override
-   * @returns {!Iterable<Protocol.Audits.BlockedByResponseIssueDetails>}
-   */
-  blockedByResponseDetails() {
+  blockedByResponseDetails(): Iterable<Protocol.Audits.BlockedByResponseIssueDetails> {
     return this._blockedByResponseDetails.values();
   }
 
-  /**
-   * @override
-   * @returns {!Iterable<!Protocol.Audits.AffectedCookie>}
-   */
-  cookies() {
+  cookies(): Iterable<Protocol.Audits.AffectedCookie> {
     return Array.from(this._cookies.values()).map(x => x.cookie);
   }
 
-  /**
-   * @returns {!Iterable<!{cookie: !Protocol.Audits.AffectedCookie, hasRequest: boolean}>}
-   */
-  cookiesWithRequestIndicator() {
+  cookiesWithRequestIndicator(): Iterable<{
+    cookie: Protocol.Audits.AffectedCookie,
+    hasRequest: boolean,
+  }> {
     return this._cookies.values();
   }
 
-  /**
-   * @override
-   * @returns {!Iterable<!Protocol.Audits.HeavyAdIssueDetails>}
-   */
-  heavyAds() {
+  heavyAds(): Iterable<Protocol.Audits.HeavyAdIssueDetails> {
     return this._heavyAdIssueDetails.values();
   }
 
-  /**
-   * @override
-   * @returns {!Iterable<!Protocol.Audits.MixedContentIssueDetails>}
-   */
-  mixedContents() {
+  mixedContents(): Iterable<Protocol.Audits.MixedContentIssueDetails> {
     return this._mixedContents.values();
   }
 
-  /**
-   * @override
-   * @returns {!Iterable<!SDK.TrustedWebActivityIssue.TrustedWebActivityIssue>}
-   */
-  trustedWebActivityIssues() {
+  trustedWebActivityIssues(): Iterable<SDK.TrustedWebActivityIssue.TrustedWebActivityIssue> {
     return this._trustedWebActivityIssues;
   }
 
-  /**
-   * @return {Iterable<SDK.CorsIssue.CorsIssue>}
-   */
-  corsIssues() {
+  corsIssues(): Iterable<SDK.CorsIssue.CorsIssue> {
     return this._corsIssues;
   }
 
-  /**
-   * @returns {!Iterable<!SDK.ContentSecurityPolicyIssue.ContentSecurityPolicyIssue>}
-   */
-  cspIssues() {
+  cspIssues(): Iterable<SDK.ContentSecurityPolicyIssue.ContentSecurityPolicyIssue> {
     return this._cspIssues;
   }
 
-  /**
-   * @returns {!Iterable<!SDK.LowTextContrastIssue.LowTextContrastIssue>}
-   */
-  lowContrastIssues() {
+  lowContrastIssues(): Iterable<SDK.LowTextContrastIssue.LowTextContrastIssue> {
     return this._lowContrastIssues;
   }
 
-  /**
-   * @override
-   * @returns {!Iterable<!Protocol.Audits.AffectedRequest>}
-   */
-  requests() {
+  requests(): Iterable<Protocol.Audits.AffectedRequest> {
     return this._requests.values();
   }
 
-  /**
-   * @return {Iterable<SDK.SharedArrayBufferIssue.SharedArrayBufferIssue>}
-   */
-  sharedArrayBufferIssues() {
+  sharedArrayBufferIssues(): Iterable<SDK.SharedArrayBufferIssue.SharedArrayBufferIssue> {
     return this._sharedArrayBufferIssues;
   }
 
-  /**
-   * @override
-   */
-  getDescription() {
+  getDescription(): SDK.Issue.MarkdownIssueDescription|null {
     if (this._representative) {
       return this._representative.getDescription();
     }
     return null;
   }
 
-  /**
-   * @override
-   * @return {!SDK.Issue.IssueCategory}
-   */
-  getCategory() {
+  getCategory(): symbol {
     if (this._representative) {
       return this._representative.getCategory();
     }
     return SDK.Issue.IssueCategory.Other;
   }
 
-  /**
-   * @return {number}
-  */
-  getAggregatedIssuesCount() {
+  getAggregatedIssuesCount(): number {
     return this._aggregatedIssuesCount;
   }
 
   /**
    * Produces a primary key for a cookie. Use this instead of `JSON.stringify` in
    * case new fields are added to `AffectedCookie`.
-   * @param {!Protocol.Audits.AffectedCookie} cookie
    */
-  _keyForCookie(cookie) {
+  _keyForCookie(cookie: Protocol.Audits.AffectedCookie): string {
     const {domain, path, name} = cookie;
     return `${domain};${path};${name}`;
   }
 
-  /**
-   * @param {!SDK.Issue.Issue} issue
-   */
-  addInstance(issue) {
+  addInstance(issue: SDK.Issue.Issue): void {
     this._aggregatedIssuesCount++;
     if (!this._representative) {
       this._representative = issue;
@@ -223,14 +173,11 @@ export class AggregatedIssue extends SDK.Issue.Issue {
 }
 
 export class IssueAggregator extends Common.ObjectWrapper.ObjectWrapper {
-  /**
-   * @param {!BrowserSDK.IssuesManager.IssuesManager} issuesManager
-   */
-  constructor(issuesManager) {
+  _aggregatedIssuesByCode: Map<string, AggregatedIssue>;
+  _issuesManager: BrowserSDK.IssuesManager.IssuesManager;
+  constructor(issuesManager: BrowserSDK.IssuesManager.IssuesManager) {
     super();
-    /** @type {!Map<string, !AggregatedIssue>} */
     this._aggregatedIssuesByCode = new Map();
-    /** @type {!BrowserSDK.IssuesManager.IssuesManager} */
     this._issuesManager = issuesManager;
     this._issuesManager.addEventListener(BrowserSDK.IssuesManager.Events.IssueAdded, this._onIssueAdded, this);
     this._issuesManager.addEventListener(
@@ -240,16 +187,15 @@ export class IssueAggregator extends Common.ObjectWrapper.ObjectWrapper {
     }
   }
 
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  _onIssueAdded(event) {
-    const {issue} =
-        /** @type {!{issuesModel: !SDK.IssuesModel.IssuesModel, issue: !SDK.Issue.Issue}} */ (event.data);
+  _onIssueAdded(event: Common.EventTarget.EventTargetEvent): void {
+    const {issue} = (event.data as {
+      issuesModel: SDK.IssuesModel.IssuesModel,
+      issue: SDK.Issue.Issue,
+    });
     this._aggregateIssue(issue);
   }
 
-  _onFullUpdateRequired() {
+  _onFullUpdateRequired(): void {
     this._aggregatedIssuesByCode.clear();
     for (const issue of this._issuesManager.issues()) {
       this._aggregateIssue(issue);
@@ -257,11 +203,7 @@ export class IssueAggregator extends Common.ObjectWrapper.ObjectWrapper {
     this.dispatchEventToListeners(Events.FullUpdateRequired);
   }
 
-  /**
-   * @param {!SDK.Issue.Issue} issue
-   * @returns {!AggregatedIssue}
-   */
-  _aggregateIssue(issue) {
+  _aggregateIssue(issue: SDK.Issue.Issue): AggregatedIssue {
     let aggregatedIssue = this._aggregatedIssuesByCode.get(issue.code());
     if (!aggregatedIssue) {
       aggregatedIssue = new AggregatedIssue(issue.code());
@@ -272,23 +214,16 @@ export class IssueAggregator extends Common.ObjectWrapper.ObjectWrapper {
     return aggregatedIssue;
   }
 
-  /**
-   * @returns {!Iterable<!AggregatedIssue>}
-   */
-  aggregatedIssues() {
+  aggregatedIssues(): Iterable<AggregatedIssue> {
     return this._aggregatedIssuesByCode.values();
   }
 
-  /**
-   * @return {number}
-   */
-  numberOfAggregatedIssues() {
+  numberOfAggregatedIssues(): number {
     return this._aggregatedIssuesByCode.size;
   }
 }
 
-/** @enum {symbol} */
-export const Events = {
-  AggregatedIssueUpdated: Symbol('AggregatedIssueUpdated'),
-  FullUpdateRequired: Symbol('FullUpdateRequired'),
-};
+export const enum Events {
+  AggregatedIssueUpdated = 'AggregatedIssueUpdated',
+  FullUpdateRequired = 'FullUpdateRequired',
+}

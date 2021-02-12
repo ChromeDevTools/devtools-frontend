@@ -16,9 +16,9 @@ devtools_module("issues") {
     "CSPViolationsView.ts",
     "ComboBoxOfCheckBoxes.ts",
     "CorsIssueDetailsView.ts",
-    "IssueAggregator.js",
+    "IssueAggregator.ts",
     "IssueRevealer.ts",
-    "IssueView.js",
+    "IssueView.ts",
     "IssuesPane.ts",
     "MarkdownImage.ts",
     "MarkdownImagesMap.ts",
@@ -52,7 +52,7 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_entrypoint("legacy") {
-  entrypoint = "issues-legacy.js"
+  entrypoint = "issues-legacy.ts"
 
   deps = [ ":bundle" ]
 }

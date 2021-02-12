@@ -1961,112 +1961,112 @@
   "issues/IssuesPane.ts | trustedWebActivity": {
     "message": "T̂ŕûśt̂éd̂ Ẃêb́ Âćt̂ív̂ít̂ý"
   },
-  "issues/IssueView.js | affectedResources": {
+  "issues/IssueView.ts | affectedResources": {
     "message": "Âf́f̂éĉt́êd́ R̂éŝóûŕĉéŝ"
   },
-  "issues/IssueView.js | blocked": {
+  "issues/IssueView.ts | blocked": {
     "message": "b̂ĺôćk̂éd̂"
   },
-  "issues/IssueView.js | blockedResource": {
+  "issues/IssueView.ts | blockedResource": {
     "message": "B̂ĺôćk̂éd̂ Ŕêśôúr̂ćê"
   },
-  "issues/IssueView.js | clickToRevealTheViolatingDomNode": {
+  "issues/IssueView.ts | clickToRevealTheViolatingDomNode": {
     "message": "Ĉĺîćk̂ t́ô ŕêv́êál̂ t́ĥé v̂íôĺât́îńĝ D́ÔḾ n̂ód̂é îń t̂h́ê Él̂ém̂én̂t́ŝ ṕâńêĺ"
   },
-  "issues/IssueView.js | cookie": {
+  "issues/IssueView.ts | cookie": {
     "message": "ĉóôḱîé"
   },
-  "issues/IssueView.js | cookies": {
+  "issues/IssueView.ts | cookies": {
     "message": "ĉóôḱîéŝ"
   },
-  "issues/IssueView.js | cpuPeakLimit": {
+  "issues/IssueView.ts | cpuPeakLimit": {
     "message": "ĈṔÛ ṕêák̂ ĺîḿît́"
   },
-  "issues/IssueView.js | cpuTotalLimit": {
+  "issues/IssueView.ts | cpuTotalLimit": {
     "message": "ĈṔÛ t́ôt́âĺ l̂ím̂ít̂"
   },
-  "issues/IssueView.js | directive": {
+  "issues/IssueView.ts | directive": {
     "message": "d̂ír̂éĉt́îv́ê"
   },
-  "issues/IssueView.js | directiveC": {
+  "issues/IssueView.ts | directiveC": {
     "message": "D̂ír̂éĉt́îv́ê"
   },
-  "issues/IssueView.js | directives": {
+  "issues/IssueView.ts | directives": {
     "message": "d̂ír̂éĉt́îv́êś"
   },
-  "issues/IssueView.js | domain": {
+  "issues/IssueView.ts | domain": {
     "message": "D̂óm̂áîń"
   },
-  "issues/IssueView.js | element": {
+  "issues/IssueView.ts | element": {
     "message": "Êĺêḿêńt̂"
   },
-  "issues/IssueView.js | frameUrl": {
+  "issues/IssueView.ts | frameUrl": {
     "message": "F̂ŕâḿê ÚR̂Ĺ"
   },
-  "issues/IssueView.js | isThisIssueMessageHelpfulToYou": {
+  "issues/IssueView.ts | isThisIssueMessageHelpfulToYou": {
     "message": "Îś t̂h́îś îśŝúê ḿêśŝáĝé ĥél̂ṕf̂úl̂ t́ô ýôú?"
   },
-  "issues/IssueView.js | learnMoreS": {
+  "issues/IssueView.ts | learnMoreS": {
     "message": "L̂éâŕn̂ ḿôŕê: {PH1}"
   },
-  "issues/IssueView.js | limitExceeded": {
+  "issues/IssueView.ts | limitExceeded": {
     "message": "L̂ím̂ít̂ éx̂ćêéd̂éd̂"
   },
-  "issues/IssueView.js | name": {
+  "issues/IssueView.ts | name": {
     "message": "N̂ám̂é"
   },
-  "issues/IssueView.js | networkLimit": {
+  "issues/IssueView.ts | networkLimit": {
     "message": "N̂ét̂ẃôŕk̂ ĺîḿît́"
   },
-  "issues/IssueView.js | parentFrame": {
+  "issues/IssueView.ts | parentFrame": {
     "message": "P̂ár̂én̂t́ F̂ŕâḿê"
   },
-  "issues/IssueView.js | path": {
+  "issues/IssueView.ts | path": {
     "message": "P̂át̂h́"
   },
-  "issues/IssueView.js | removed": {
+  "issues/IssueView.ts | removed": {
     "message": "R̂ém̂óv̂éd̂"
   },
-  "issues/IssueView.js | reportonly": {
+  "issues/IssueView.ts | reportonly": {
     "message": "r̂ép̂ór̂t́-ôńl̂ý"
   },
-  "issues/IssueView.js | request": {
+  "issues/IssueView.ts | request": {
     "message": "r̂éq̂úêśt̂"
   },
-  "issues/IssueView.js | requestC": {
+  "issues/IssueView.ts | requestC": {
     "message": "R̂éq̂úêśt̂"
   },
-  "issues/IssueView.js | requests": {
+  "issues/IssueView.ts | requests": {
     "message": "r̂éq̂úêśt̂ś"
   },
-  "issues/IssueView.js | resolutionStatus": {
+  "issues/IssueView.ts | resolutionStatus": {
     "message": "R̂éŝól̂út̂íôń Ŝt́ât́ûś"
   },
-  "issues/IssueView.js | resource": {
+  "issues/IssueView.ts | resource": {
     "message": "r̂éŝóûŕĉé"
   },
-  "issues/IssueView.js | resourceC": {
+  "issues/IssueView.ts | resourceC": {
     "message": "R̂éŝóûŕĉé"
   },
-  "issues/IssueView.js | resources": {
+  "issues/IssueView.ts | resources": {
     "message": "r̂éŝóûŕĉéŝ"
   },
-  "issues/IssueView.js | restrictionStatus": {
+  "issues/IssueView.ts | restrictionStatus": {
     "message": "R̂éŝt́r̂íĉt́îón̂ Śt̂át̂úŝ"
   },
-  "issues/IssueView.js | source": {
+  "issues/IssueView.ts | source": {
     "message": "ŝóûŕĉé"
   },
-  "issues/IssueView.js | sourceLocation": {
+  "issues/IssueView.ts | sourceLocation": {
     "message": "Ŝóûŕĉé L̂óĉát̂íôń"
   },
-  "issues/IssueView.js | sources": {
+  "issues/IssueView.ts | sources": {
     "message": "ŝóûŕĉéŝ"
   },
-  "issues/IssueView.js | status": {
+  "issues/IssueView.ts | status": {
     "message": "Ŝt́ât́ûś"
   },
-  "issues/IssueView.js | warned": {
+  "issues/IssueView.ts | warned": {
     "message": "Ŵár̂ńêd́"
   },
   "js_profiler/js_profiler-meta.ts | profiler": {

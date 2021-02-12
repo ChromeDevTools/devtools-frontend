@@ -14,7 +14,7 @@ function link(node, _, context) {
   var value
   var stack
 
-  if (formatLinkAsAutolink(node)) {
+  if (formatLinkAsAutolink(node, context)) {
     // Hide the fact that we’re in phrasing, because escapes don’t work.
     stack = context.stack
     context.stack = []
@@ -65,6 +65,6 @@ function link(node, _, context) {
   return value
 }
 
-function linkPeek(node) {
-  return formatLinkAsAutolink(node) ? '<' : '['
+function linkPeek(node, _, context) {
+  return formatLinkAsAutolink(node, context) ? '<' : '['
 }

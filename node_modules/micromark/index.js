@@ -1,3 +1,3 @@
 'use strict'
 
-module.exports = require('./buffer')
+module.exports = require('./buffer.js')

@@ -165,6 +165,7 @@ export type Resolve = (events: Event[], context: Tokenizer) => Event[]
 export type Tokenize = (context: Tokenizer, effects: Effects) => State
 
 export interface Construct {
+  name?: string
   tokenize: Tokenize
   partial?: boolean
   resolve?: Resolve

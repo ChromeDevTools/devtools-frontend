@@ -25,7 +25,8 @@ entities.decodeHTML("asdf &amp; &yuml; &uuml; &apos;"); // "asdf & ÿ ü '"
 
 ## Performance
 
-This is how `entities` compares to other libraries on a very basic benchmark (see `scripts/benchmark.ts`, for 10,000,000 iterations):
+This is how `entities` compares to other libraries on a very basic benchmark
+(see `scripts/benchmark.ts`, for 10,000,000 iterations):
 
 | Library        | `decode` performance | `encode` performance | Bundle size                                                                |
 | -------------- | -------------------- | -------------------- | -------------------------------------------------------------------------- |
@@ -40,11 +41,17 @@ License: BSD-2-Clause
 
 ## Security contact information
 
-To report a security vulnerability, please use the [Tidelift security contact](https://tidelift.com/security).
-Tidelift will coordinate the fix and disclosure.
+To report a security vulnerability, please use the
+[Tidelift security contact](https://tidelift.com/security). Tidelift will
+coordinate the fix and disclosure.
 
 ## `entities` for enterprise
 
 Available as part of the Tidelift Subscription
 
-The maintainers of `entities` and thousands of other packages are working with Tidelift to deliver commercial support and maintenance for the open source dependencies you use to build your applications. Save time, reduce risk, and improve code health, while paying the maintainers of the exact dependencies you use. [Learn more.](https://tidelift.com/subscription/pkg/npm-entities?utm_source=npm-entities&utm_medium=referral&utm_campaign=enterprise&utm_term=repo)
+The maintainers of `entities` and thousands of other packages are working with
+Tidelift to deliver commercial support and maintenance for the open source
+dependencies you use to build your applications. Save time, reduce risk, and
+improve code health, while paying the maintainers of the exact dependencies you
+use.
+[Learn more.](https://tidelift.com/subscription/pkg/npm-entities?utm_source=npm-entities&utm_medium=referral&utm_campaign=enterprise&utm_term=repo)

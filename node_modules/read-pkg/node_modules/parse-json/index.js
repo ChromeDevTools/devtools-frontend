@@ -9,7 +9,7 @@ const JSONError = errorEx('JSONError', {
 	codeFrame: errorEx.append('\n\n%s\n')
 });
 
-module.exports = (string, reviver, filename) => {
+const parseJson = (string, reviver, filename) => {
 	if (typeof reviver === 'string') {
 		filename = reviver;
 		reviver = null;
@@ -48,3 +48,7 @@ module.exports = (string, reviver, filename) => {
 		throw jsonError;
 	}
 };
+
+parseJson.JSONError = JSONError;
+
+module.exports = parseJson;

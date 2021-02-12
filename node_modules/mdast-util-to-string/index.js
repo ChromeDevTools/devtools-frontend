@@ -19,10 +19,9 @@ function toString(node) {
 
 function all(values) {
   var result = []
-  var length = values.length
   var index = -1
 
-  while (++index < length) {
+  while (++index < values.length) {
     result[index] = toString(values[index])
   }
 

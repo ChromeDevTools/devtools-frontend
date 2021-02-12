@@ -1,4 +1,4 @@
-# parse-json [![Build Status](https://travis-ci.com/sindresorhus/parse-json.svg?branch=master)](https://travis-ci.com/github/sindresorhus/parse-json)
+# parse-json
 
 > Parse JSON with more helpful errors
 
@@ -51,7 +51,10 @@ JSONError: Unexpected token } in JSON at position 16 while parsing near '{      
 try {
 	parseJson(json);
 } catch (error) {
-	error.fileName = 'foo.json';
+	if (error instanceof parseJson.JSONError) {
+		error.fileName = 'foo.json';
+	}
+
 	throw error;
 }
 /*
@@ -67,6 +70,8 @@ JSONError: Unexpected token } in JSON at position 16 while parsing near '{      
 ## API
 
 ### parseJson(string, reviver?, filename?)
+
+Throws a `JSONError` when there is a parsing error.
 
 #### string
 
@@ -84,6 +89,22 @@ Prescribes how the value originally produced by parsing is transformed, before b
 Type: `string`
 
 Filename displayed in the error message.
+
+### parseJson.JSONError
+
+Exposed for `instanceof` checking.
+
+#### fileName
+
+Type: `string`
+
+The filename displayed in the error message.
+
+#### codeFrame
+
+Type: `string`
+
+The printable section of the JSON which produces the error.
 
 ---
 

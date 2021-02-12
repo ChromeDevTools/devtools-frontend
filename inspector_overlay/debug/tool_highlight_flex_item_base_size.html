@@ -1,0 +1,110 @@
+<!--
+Copyright 2021 The Chromium Authors. All rights reserved.
+Use of this source code is governed by a BSD-style license that can be
+found in the LICENSE file.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Debug</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <script type="module" src="/out/Default/resources/inspector_overlay/main.js"></script>
+</head>
+<body>
+  <script type="module">
+    const viewportWidth = document.documentElement.clientWidth;
+    const viewportHeight = document.documentElement.clientHeight;
+
+    dispatch(["setPlatform", "mac"]);
+    dispatch(["setOverlay", "highlight"]);
+    dispatch(["reset", {
+      viewportSize: {
+        width: viewportWidth,
+        height: viewportHeight,
+      },
+      deviceScaleFactor: 1,
+      pageScaleFactor: 1,
+      pageZoomFactor: 1,
+      emulationScaleFactor: 1,
+      scrollX: 0,
+      scrollY: 0,
+    }]);
+
+    const flexItemHighlightConfig = {
+      "baseSizeBox": { "fillColor": "transparent", "hatchColor": "#0000FF99" },
+      "baseSizeBorder": { "color": "#f06", "pattern": "solid" },
+      "flexibilityArrow": { "color": "#f06", "pattern": "solid" }
+    };
+
+    const item1 = {
+      "paths": [
+        { "path": [ "M", 194, 86, "L", 338, 86, "L", 338, 124, "L", 194, 124, "Z" ], "fillColor": "rgba(200, 100, 0, 0.3)", "outlineColor": "rgba(128, 0, 0, 0)", "name": "content" },
+        { "path": [ "M", 194, 86, "L", 338, 86, "L", 338, 124, "L", 194, 124, "Z" ], "fillColor": "rgba(0, 255, 0, 0.5)", "name": "padding" },
+        { "path": [ "M", 194, 86, "L", 338, 86, "L", 338, 124, "L", 194, 124, "Z" ], "fillColor": "rgba(0, 0, 255, 0.5)", "name": "border" },
+        { "path": [ "M", 184, 76, "L", 348, 76, "L", 348, 134, "L", 184, 134, "Z" ], "fillColor": "rgba(123, 100, 255, 0.5)", "name": "margin" }
+      ],
+      "flexItemInfo": [
+        {
+          "baseSize": 232,
+          "isHorizontalFlow": true,
+          "flexItemHighlightConfig": flexItemHighlightConfig,
+        }
+      ]
+    };
+
+    const item2 = {
+      "paths": [
+        { "path": [ "M", 194, 186, "L", 338, 186, "L", 338, 224, "L", 194, 224, "Z" ], "fillColor": "rgba(200, 100, 0, 0.3)", "outlineColor": "rgba(128, 0, 0, 0)", "name": "content" },
+        { "path": [ "M", 194, 186, "L", 338, 186, "L", 338, 224, "L", 194, 224, "Z" ], "fillColor": "rgba(0, 255, 0, 0.5)", "name": "padding" },
+        { "path": [ "M", 194, 186, "L", 338, 186, "L", 338, 224, "L", 194, 224, "Z" ], "fillColor": "rgba(0, 0, 255, 0.5)", "name": "border" },
+        { "path": [ "M", 184, 176, "L", 348, 176, "L", 348, 234, "L", 184, 234, "Z" ], "fillColor": "rgba(123, 100, 255, 0.5)", "name": "margin" }
+      ],
+      "flexItemInfo": [
+        {
+          "baseSize": 25,
+          "isHorizontalFlow": true,
+          "flexItemHighlightConfig": flexItemHighlightConfig,
+        }
+      ]
+    };
+
+    const item3 = {
+      "paths": [
+        { "path": [ "M", 194, 286, "L", 238, 286, "L", 238, 524, "L", 194, 524, "Z" ], "fillColor": "rgba(200, 100, 0, 0.3)", "outlineColor": "rgba(128, 0, 0, 0)", "name": "content" },
+        { "path": [ "M", 194, 286, "L", 238, 286, "L", 238, 524, "L", 194, 524, "Z" ], "fillColor": "rgba(0, 255, 0, 0.5)", "name": "padding" },
+        { "path": [ "M", 194, 286, "L", 238, 286, "L", 238, 524, "L", 194, 524, "Z" ], "fillColor": "rgba(0, 0, 255, 0.5)", "name": "border" },
+        { "path": [ "M", 184, 276, "L", 248, 276, "L", 248, 534, "L", 184, 534, "Z" ], "fillColor": "rgba(123, 100, 255, 0.5)", "name": "margin" }
+      ],
+      "flexItemInfo": [
+        {
+          "baseSize": 50,
+          "isHorizontalFlow": false,
+          "flexItemHighlightConfig": flexItemHighlightConfig,
+        }
+      ]
+    };
+
+    const item4 = {
+      "paths": [
+        { "path": [ "M", 394, 286, "L", 438, 286, "L", 438, 524, "L", 394, 524, "Z" ], "fillColor": "rgba(200, 100, 0, 0.3)", "outlineColor": "rgba(128, 0, 0, 0)", "name": "content" },
+        { "path": [ "M", 394, 286, "L", 438, 286, "L", 438, 524, "L", 394, 524, "Z" ], "fillColor": "rgba(0, 255, 0, 0.5)", "name": "padding" },
+        { "path": [ "M", 394, 286, "L", 438, 286, "L", 438, 524, "L", 394, 524, "Z" ], "fillColor": "rgba(0, 0, 255, 0.5)", "name": "border" },
+        { "path": [ "M", 384, 276, "L", 448, 276, "L", 448, 534, "L", 384, 534, "Z" ], "fillColor": "rgba(123, 100, 255, 0.5)", "name": "margin" }
+      ],
+      "flexItemInfo": [
+        {
+          "baseSize": 350,
+          "isHorizontalFlow": false,
+          "flexItemHighlightConfig": flexItemHighlightConfig,
+        }
+      ]
+    };
+
+    dispatch(["drawHighlight", item1]);
+    dispatch(["drawHighlight", item2]);
+    dispatch(["drawHighlight", item3]);
+    dispatch(["drawHighlight", item4]);
+  </script>
+</body>
+</html>

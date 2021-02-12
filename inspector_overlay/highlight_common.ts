@@ -72,6 +72,23 @@ export function drawPathWithLineStyle(
   }
 }
 
+export function fillPathWithBoxStyle(
+    context: CanvasRenderingContext2D, path: Path2D, bounds: PathBounds, angle: number, boxStyle?: BoxStyle) {
+  if (!boxStyle) {
+    return;
+  }
+
+  context.save();
+  if (boxStyle.fillColor) {
+    context.fillStyle = boxStyle.fillColor;
+    context.fill(path);
+  }
+  if (boxStyle.hatchColor) {
+    hatchFillPath(context, path, bounds, 10, boxStyle.hatchColor, angle, false);
+  }
+  context.restore();
+}
+
 export function buildPath(commands: Array<string|number>, bounds: PathBounds, emulationScaleFactor: number): Path2D {
   let commandsIndex = 0;
 

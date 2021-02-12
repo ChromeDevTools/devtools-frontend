@@ -32,7 +32,7 @@ import {contrastRatio, contrastRatioAPCA, getAPCAThreshold, getContrastThreshold
 
 import {Bounds, constrainNumber, createChild, createElement, createTextChild, ellipsify, Overlay, PathCommands, ResetData} from './common.js';
 import {buildPath, emptyBounds, formatColor, formatRgba, parseHexa, PathBounds} from './highlight_common.js';
-import {drawLayoutFlexContainerHighlight, FlexContainerHighlight} from './highlight_flex_common.js';
+import {drawLayoutFlexContainerHighlight, drawLayoutFlexItemHighlight, FlexContainerHighlight, FlexItemHighlight} from './highlight_flex_common.js';
 import {drawLayoutGridHighlight, GridHighlight} from './highlight_grid_common.js';
 import {PersistentOverlay} from './tool_persistent.js';
 
@@ -76,6 +76,7 @@ interface Highlight {
   colorFormat: string;
   gridInfo: GridHighlight[];
   flexInfo: FlexContainerHighlight[];
+  flexItemInfo: FlexItemHighlight[];
 }
 
 export class HighlightOverlay extends Overlay {
@@ -125,6 +126,7 @@ export class HighlightOverlay extends Overlay {
     this.context.save();
 
     const bounds = emptyBounds();
+    let contentPath: PathCommands|null = null;
 
     for (let paths = highlight.paths.slice(); paths.length;) {
       const path = paths.pop();
@@ -138,6 +140,10 @@ export class HighlightOverlay extends Overlay {
         drawPath(this.context, paths[paths.length - 1].path, 'red', undefined, bounds, this.emulationScaleFactor);
       }
       this.context.restore();
+
+      if (path.name === 'content') {
+        contentPath = path.path;
+      }
     }
     this.context.restore();
 
@@ -169,10 +175,24 @@ export class HighlightOverlay extends Overlay {
             this.gridLabelState);
       }
     }
+
     if (highlight.flexInfo) {
       for (const flex of highlight.flexInfo) {
         drawLayoutFlexContainerHighlight(
             flex, this.context, this.deviceScaleFactor, this.canvasWidth, this.canvasHeight, this.emulationScaleFactor);
+      }
+    }
+
+    // Draw the highlight for flex item only if the element isn't also a flex container.
+    const isFlexContainer = highlight.flexInfo?.length;
+    if (highlight.flexItemInfo && contentPath && !isFlexContainer) {
+      for (const flexItem of highlight.flexItemInfo) {
+        // TODO: both flex-basis and width/height determine the base size of the content-box by default, but if
+        // box-sizing is set to border-box, then they determine the base size of the border-box. So we should use the
+        // border-box path here in this case.
+        drawLayoutFlexItemHighlight(
+            flexItem, contentPath, this.context, this.deviceScaleFactor, this.canvasWidth, this.canvasHeight,
+            this.emulationScaleFactor);
       }
     }
     this.context.restore();

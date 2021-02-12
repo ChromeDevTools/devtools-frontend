@@ -515,6 +515,7 @@ export class OverlayModel extends SDKModel {
       showExtensionLines: showRulers,
       gridHighlightConfig: {},
       flexContainerHighlightConfig: {},
+      flexItemHighlightConfig: {},
       contrastAlgorithm: Root.Runtime.experiments.isEnabled('APCA') ? Protocol.Overlay.ContrastAlgorithm.Apca :
                                                                       Protocol.Overlay.ContrastAlgorithm.Aa,
     };
@@ -581,6 +582,19 @@ export class OverlayModel extends SDKModel {
             hatchColor: Common.Color.PageHighlight.GapHatch.toProtocolRGBA(),
             fillColor: Common.Color.PageHighlight.GapBackground.toProtocolRGBA(),
           },
+        };
+
+        highlightConfig.flexItemHighlightConfig = {
+          baseSizeBox: {
+            hatchColor: Common.Color.PageHighlight.GapHatch.toProtocolRGBA(),
+          },
+          baseSizeBorder: {
+            color: Common.Color.PageHighlight.LayoutLine.toProtocolRGBA(),
+            pattern: Protocol.Overlay.LineStylePattern.Dotted,
+          },
+          flexibilityArrow: {
+            color: Common.Color.PageHighlight.LayoutLine.toProtocolRGBA(),
+          }
         };
       }
     }

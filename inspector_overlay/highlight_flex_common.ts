@@ -3,17 +3,17 @@
 // found in the LICENSE file.
 
 import {PathCommands, Position, Quad} from './common.js';
-import {BoxStyle, buildPath, createPathForQuad, drawPathWithLineStyle, emptyBounds, hatchFillPath, LineStyle} from './highlight_common.js';
+import {BoxStyle, buildPath, createPathForQuad, drawPathWithLineStyle, emptyBounds, fillPathWithBoxStyle, hatchFillPath, LineStyle} from './highlight_common.js';
 
-type FlexLinesHighlight = FlexItemHighlight[][];
+type FlexLinesData = FlexItemData[][];
 
-interface FlexItemHighlight {
+interface FlexItemData {
   itemBorder: PathCommands;
   baseline: number;
 }
 export interface FlexContainerHighlight {
   containerBorder: PathCommands;
-  lines: FlexLinesHighlight;
+  lines: FlexLinesData;
   isHorizontalFlow: boolean;
   isReverse: boolean;
   alignItemsStyle: string;
@@ -29,6 +29,12 @@ export interface FlexContainerHighlight {
     columnGapSpace?: BoxStyle,
     crossAlignment?: LineStyle,
   };
+}
+
+export interface FlexItemHighlight {
+  baseSize: number;
+  isHorizontalFlow: boolean;
+  flexItemHighlightConfig: {baseSizeBox?: BoxStyle, baseSizeBorder?: LineStyle, flexibilityArrow?: LineStyle};
 }
 
 interface LineQuads {
@@ -48,6 +54,112 @@ const ALIGNMENT_ARROW_BODY_WIDTH = 5;
 const ALIGNMENT_ARROW_TIP_HEIGHT = 6;
 const ALIGNMENT_ARROW_TIP_WIDTH = 11;
 const ALIGNMENT_ARROW_DISTANCE_FROM_LINE = 2;
+const FLEXIBILITY_ARROW_THICKNESS = 1;
+const FLEXIBILITY_ARROW_TIP_SIZE = 5;
+
+export function drawLayoutFlexItemHighlight(
+    highlight: FlexItemHighlight, itemPath: PathCommands, context: CanvasRenderingContext2D, deviceScaleFactor: number,
+    canvasWidth: number, canvasHeight: number, emulationScaleFactor: number) {
+  const {baseSize, isHorizontalFlow} = highlight;
+
+  const itemQuad = rectPathToQuad(itemPath);
+  const baseSizeQuad = isHorizontalFlow ? {
+    p1: itemQuad.p1,
+    p2: getColinearPointAtDistance(itemQuad.p1, itemQuad.p2, baseSize),
+    p3: getColinearPointAtDistance(itemQuad.p4, itemQuad.p3, baseSize),
+    p4: itemQuad.p4,
+  } :
+                                          {
+                                            p1: itemQuad.p1,
+                                            p2: itemQuad.p2,
+                                            p3: getColinearPointAtDistance(itemQuad.p2, itemQuad.p3, baseSize),
+                                            p4: getColinearPointAtDistance(itemQuad.p1, itemQuad.p4, baseSize),
+                                          };
+
+  drawItemBaseSize(highlight, itemQuad, baseSizeQuad, context, emulationScaleFactor);
+  drawFlexibilityArrow(highlight, itemQuad, baseSizeQuad, context, emulationScaleFactor);
+}
+
+function drawItemBaseSize(
+    highlight: FlexItemHighlight, itemQuad: Quad, baseSizeQuad: Quad, context: CanvasRenderingContext2D,
+    emulationScaleFactor: number) {
+  const config = highlight.flexItemHighlightConfig;
+
+  const bounds = emptyBounds();
+  const path = buildPath(quadToPath(baseSizeQuad), bounds, emulationScaleFactor);
+
+  // Fill the base size box.
+  const angle = Math.atan2(itemQuad.p4.y - itemQuad.p1.y, itemQuad.p4.x - itemQuad.p1.x) + (Math.PI * 45 / 180);
+  fillPathWithBoxStyle(context, path, bounds, angle, config.baseSizeBox);
+
+  // Draw the base size border.
+  drawPathWithLineStyle(context, path, config.baseSizeBorder);
+}
+
+function drawFlexibilityArrow(
+    highlight: FlexItemHighlight, itemQuad: Quad, baseSizeQuad: Quad, context: CanvasRenderingContext2D,
+    emulationScaleFactor: number) {
+  const {isHorizontalFlow} = highlight;
+  const config = highlight.flexItemHighlightConfig;
+
+  if (!config.flexibilityArrow) {
+    return;
+  }
+
+  // Figure out where the arrow should start and end.
+  const from = isHorizontalFlow ? {
+    x: (baseSizeQuad.p2.x + baseSizeQuad.p3.x) / 2,
+    y: (baseSizeQuad.p2.y + baseSizeQuad.p3.y) / 2,
+  } :
+                                  {
+                                    x: (baseSizeQuad.p4.x + baseSizeQuad.p3.x) / 2,
+                                    y: (baseSizeQuad.p4.y + baseSizeQuad.p3.y) / 2,
+                                  };
+
+  const to = isHorizontalFlow ? {
+    x: (itemQuad.p2.x + itemQuad.p3.x) / 2,
+    y: (itemQuad.p2.y + itemQuad.p3.y) / 2,
+  } :
+                                {
+                                  x: (itemQuad.p4.x + itemQuad.p3.x) / 2,
+                                  y: (itemQuad.p4.y + itemQuad.p3.y) / 2,
+                                };
+
+  // Draw the arrow line.
+  const path = segmentToPath([from, to]);
+  drawPathWithLineStyle(
+      context, buildPath(path, emptyBounds(), emulationScaleFactor), config.flexibilityArrow,
+      FLEXIBILITY_ARROW_THICKNESS);
+
+  if (!config.flexibilityArrow.color) {
+    return;
+  }
+
+  // Draw the tip of the arrow.
+  const tipPath = buildPath(
+      [
+        'M',
+        to.x - FLEXIBILITY_ARROW_TIP_SIZE,
+        to.y - FLEXIBILITY_ARROW_TIP_SIZE,
+        'L',
+        to.x,
+        to.y,
+        'L',
+        to.x - FLEXIBILITY_ARROW_TIP_SIZE,
+        to.y + FLEXIBILITY_ARROW_TIP_SIZE,
+      ],
+      emptyBounds(), emulationScaleFactor);
+
+  const angle = Math.atan2(to.y - from.y, to.x - from.x);
+  context.save();
+  context.translate(to.x + .5, to.y + .5);
+  context.rotate(angle);
+  context.translate(-to.x - .5, -to.y - .5);
+
+  drawPathWithLineStyle(context, tipPath, config.flexibilityArrow, FLEXIBILITY_ARROW_THICKNESS);
+
+  context.restore();
+}
 
 export function drawLayoutFlexContainerHighlight(
     highlight: FlexContainerHighlight, context: CanvasRenderingContext2D, deviceScaleFactor: number,
@@ -442,7 +554,7 @@ function drawFlexSpaceInQuad(
  * @param isHorizontalFlow
  */
 export function getLinesAndItemsQuads(
-    container: PathCommands, lines: FlexLinesHighlight, isHorizontalFlow: boolean, isReverse: boolean): LineQuads[] {
+    container: PathCommands, lines: FlexLinesData, isHorizontalFlow: boolean, isReverse: boolean): LineQuads[] {
   const containerQuad = rectPathToQuad(container);
 
   // Create a quad for each line that's as big as the items it contains and extends to the edges of the container in the
@@ -583,6 +695,24 @@ function quadToVerticalLinesPath(quad: Quad, nextQuad: Quad|undefined): PathComm
   return skipEndLine ? startLine : [...startLine, 'M', quad.p3.x, quad.p3.y, 'L', quad.p2.x, quad.p2.y];
 }
 
+function quadToPath(quad: Quad): PathCommands {
+  return [
+    'M',
+    quad.p1.x,
+    quad.p1.y,
+    'L',
+    quad.p2.x,
+    quad.p2.y,
+    'L',
+    quad.p3.x,
+    quad.p3.y,
+    'L',
+    quad.p4.x,
+    quad.p4.y,
+    'Z',
+  ];
+}
+
 function segmentToPath(segment: [Position, Position]): PathCommands {
   return ['M', segment[0].x, segment[0].y, 'L', segment[1].x, segment[1].y];
 }
@@ -698,7 +828,7 @@ export function growQuadToEdgesOf(innerQuad: Quad, outerQuad: Quad, horizontally
  * @param segment2
  * @return the point where the segments intersect
  */
-function intersectSegments([p1, p2]: Position[], [p3, p4]: Position[]): Position {
+export function intersectSegments([p1, p2]: Position[], [p3, p4]: Position[]): Position {
   const x = (((p1.x * p2.y - p1.y * p2.x) * (p3.x - p4.x)) - ((p1.x - p2.x) * (p3.x * p4.y - p3.y * p4.x))) /
       (((p1.x - p2.x) * (p3.y - p4.y)) - (p1.y - p2.y) * (p3.x - p4.x));
   const y = (((p1.x * p2.y - p1.y * p2.x) * (p3.y - p4.y)) - ((p1.y - p2.y) * (p3.x * p4.y - p3.y * p4.x))) /
@@ -715,7 +845,7 @@ function intersectSegments([p1, p2]: Position[], [p3, p4]: Position[]): Position
  * @param segment
  * @param point
  */
-function segmentContains([p1, p2]: Position[], point: Position): boolean {
+export function segmentContains([p1, p2]: Position[], point: Position): boolean {
   if (p1.x < p2.x && (point.x < p1.x || point.x > p2.x)) {
     return false;
   }
@@ -735,6 +865,15 @@ function segmentContains([p1, p2]: Position[], point: Position): boolean {
   return (point.y - p1.y) * (p2.x - p1.x) === (p2.y - p1.y) * (point.x - p1.x);
 }
 
-function distance(p1: Position, p2: Position) {
+export function distance(p1: Position, p2: Position) {
   return Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2));
+}
+
+export function getColinearPointAtDistance(p1: Position, p2: Position, distance: number): Position {
+  const slope = (p2.y - p1.y) / (p2.x - p1.x);
+  const angle = Math.atan(slope);
+  return {
+    x: p1.x + distance * Math.cos(angle),
+    y: p1.y + distance * Math.sin(angle),
+  };
 }

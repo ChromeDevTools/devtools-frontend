@@ -4,8 +4,8 @@
 
 const {assert} = chai;
 
-import {getGapQuadBetweenQuads, getLinesAndItemsQuads, getGapQuads, growQuadToEdgesOf, uniteQuads} from '../../../inspector_overlay/highlight_flex_common.js';
-import {PathCommands, Quad} from '../../../inspector_overlay/common.js';
+import {distance, getColinearPointAtDistance, getGapQuadBetweenQuads, getLinesAndItemsQuads, getGapQuads, growQuadToEdgesOf, intersectSegments, segmentContains, uniteQuads} from '../../../inspector_overlay/highlight_flex_common.js';
+import {PathCommands, Position, Quad} from '../../../inspector_overlay/common.js';
 
 function createPathCommands(...points: number[]): PathCommands {
   if (points.length !== 8) {
@@ -416,5 +416,88 @@ describe('growQuadToEdgesOf', () => {
         true,
     );
     assert.deepStrictEqual(quad, createQuad(20, 70, 70, 20, 90, 40, 40, 90));
+  });
+});
+
+describe('getColinearPointAtDistance', () => {
+  function assertPoint(p1: Position, p2: Position, distance: number, expected: Position): void {
+    const point = getColinearPointAtDistance(p1, p2, distance);
+    assert.deepStrictEqual({x: Math.round(point.x), y: Math.round(point.y)}, expected);
+  }
+
+  it('returns the right coordinates when the line is horizontal', () => {
+    assertPoint({x: 0, y: 0}, {x: 10, y: 0}, 5, {x: 5, y: 0});
+  });
+
+  it('returns the right coordinates when the line is vertical', () => {
+    assertPoint({x: 0, y: 0}, {x: 0, y: 10}, 5, {x: 0, y: 5});
+  });
+
+  it('returns the right coordinates when the line is at an angle', () => {
+    assertPoint({x: 0, y: 0}, {x: 10, y: 10}, 5, {x: 4, y: 4});
+  });
+
+  it('also works when distance is longer than the p1-p2 segment', () => {
+    assertPoint({x: 10, y: 20}, {x: 10, y: 40}, 50, {x: 10, y: 70});
+  });
+});
+
+describe('distance', () => {
+  function assertDistance(p1: Position, p2: Position, expected: number): void {
+    const d = distance(p1, p2);
+    assert.deepStrictEqual(Math.round(d), expected);
+  }
+
+  it('works', () => {
+    assertDistance({x: 0, y: 0}, {x: 10, y: 0}, 10);
+    assertDistance({x: 0, y: 0}, {x: 100, y: 0}, 100);
+    assertDistance({x: 10, y: 0}, {x: 0, y: 0}, 10);
+    assertDistance({x: 10, y: 10}, {x: 10, y: 30}, 20);
+    assertDistance({x: 10, y: 10}, {x: 10, y: 5}, 5);
+    assertDistance({x: 10, y: 10}, {x: 20, y: 20}, 14);
+  });
+});
+
+describe('segmentContains', () => {
+  it('works with straight segments', () => {
+    assert.isFalse(segmentContains([{x: 0, y: 0}, {x: 0, y: 10}], {x: 10, y: 10}));
+    assert.isFalse(segmentContains([{x: 0, y: 10}, {x: 0, y: 0}], {x: 10, y: 10}));
+    assert.isFalse(segmentContains([{x: 10, y: 10}, {x: 100, y: 10}], {x: 10, y: 20}));
+    assert.isFalse(segmentContains([{x: 10, y: 10}, {x: 10, y: 100}], {x: 10, y: 0}));
+
+    assert.isTrue(segmentContains([{x: 0, y: 0}, {x: 0, y: 100}], {x: 0, y: 10}));
+    assert.isTrue(segmentContains([{x: 0, y: 100}, {x: 0, y: 0}], {x: 0, y: 10}));
+    assert.isTrue(segmentContains([{x: 10, y: 10}, {x: 20, y: 10}], {x: 15, y: 10}));
+    assert.isTrue(segmentContains([{x: 20, y: 10}, {x: 10, y: 10}], {x: 15, y: 10}));
+  });
+
+  it('works with other segments', () => {
+    assert.isFalse(segmentContains([{x: 0, y: 0}, {x: 10, y: 10}], {x: 10, y: 100}));
+    assert.isFalse(segmentContains([{x: 20, y: 20}, {x: 30, y: 0}], {x: 10, y: 100}));
+
+    assert.isTrue(segmentContains([{x: 0, y: 0}, {x: 100, y: 100}], {x: 50, y: 50}));
+    assert.isTrue(segmentContains([{x: 0, y: 100}, {x: 100, y: 0}], {x: 50, y: 50}));
+  });
+});
+
+describe('intersectSegments', () => {
+  function assertIntersection(s1: Position[], s2: Position[], expected: Position): void {
+    const point = intersectSegments(s1, s2);
+    assert.deepStrictEqual({x: Math.round(point.x), y: Math.round(point.y)}, expected);
+  }
+
+  it('works when x or y is 0', () => {
+    assertIntersection([{x: 0, y: 0}, {x: 0, y: 10}], [{x: 0, y: 5}, {x: 5, y: 5}], {x: 0, y: 5});
+    assertIntersection([{x: 0, y: 0}, {x: 100, y: 0}], [{x: 50, y: 0}, {x: 50, y: 5}], {x: 50, y: 0});
+    assertIntersection([{x: -5, y: 0}, {x: 5, y: 0}], [{x: 0, y: -5}, {x: 0, y: 5}], {x: 0, y: 0});
+  });
+
+  it('works in simple cases', () => {
+    assertIntersection([{x: 5, y: 15}, {x: 15, y: 5}], [{x: 5, y: 5}, {x: 15, y: 15}], {x: 10, y: 10});
+    assertIntersection([{x: 5, y: 10}, {x: 15, y: 10}], [{x: 10, y: 5}, {x: 10, y: 15}], {x: 10, y: 10});
+  });
+
+  it('works when segments only intersect outside their boundaries', () => {
+    assertIntersection([{x: 5, y: 5}, {x: 5, y: 15}], [{x: 15, y: 10}, {x: 25, y: 10}], {x: 5, y: 10});
   });
 });

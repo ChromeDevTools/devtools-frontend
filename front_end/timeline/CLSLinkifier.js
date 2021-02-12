@@ -21,9 +21,27 @@ export class CLSRect {
 }
 
 /**
+ * @type {!Linkifier}
+ */
+
+let linkifierInstance;
+
+/**
  * @implements {Common.Linkifier.Linkifier}
  */
 export class Linkifier {
+  /**
+   * @param {{forceNew: ?boolean}} opts
+   */
+  static instance(opts = {forceNew: null}) {
+    const {forceNew} = opts;
+    if (!linkifierInstance || forceNew) {
+      linkifierInstance = new Linkifier();
+    }
+
+    return linkifierInstance;
+  }
+
   /**
    * @override
    * @param {!Object} object

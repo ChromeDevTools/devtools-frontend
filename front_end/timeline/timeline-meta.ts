@@ -356,3 +356,13 @@ Common.Settings.registerSettingExtension({
   settingType: Common.Settings.SettingTypeObject.BOOLEAN,
   defaultValue: false,
 });
+
+Common.Linkifier.registerLinkifier({
+  contextTypes() {
+    return maybeRetrieveContextTypes(Timeline => [Timeline.CLSLinkifier.CLSRect]);
+  },
+  async loadLinkifier() {
+    const Timeline = await loadTimelineModule();
+    return Timeline.CLSLinkifier.Linkifier.instance();
+  },
+});

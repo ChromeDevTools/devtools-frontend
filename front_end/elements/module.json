@@ -1,14 +1,4 @@
 {
-  "extensions": [
-    {
-      "type": "@Common.Linkifier",
-      "contextTypes": [
-        "SDK.DOMNode",
-        "SDK.DeferredDOMNode"
-      ],
-      "className": "Elements.DOMLinkifier.Linkifier"
-    }
-  ],
   "dependencies": [
     "components",
     "extensions",

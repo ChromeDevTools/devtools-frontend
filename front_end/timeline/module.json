@@ -6,13 +6,6 @@
       "className": "Timeline.LoadTimelineHandler"
     },
     {
-      "type": "@Common.Linkifier",
-      "contextTypes": [
-          "Timeline.CLSLinkifier.CLSRect"
-      ],
-      "className": "Timeline.CLSLinkifier.Linkifier"
-    },
-    {
       "type": "context-menu-item",
       "location": "timelineMenu/open",
       "actionId": "timeline.load-from-file",

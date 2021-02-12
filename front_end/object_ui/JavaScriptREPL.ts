@@ -17,7 +17,7 @@ export class JavaScriptREPL {
       return code;
     }
 
-    const parse = (async(): Promise<number> => 0).constructor;
+    const parse = (async (): Promise<number> => 0).constructor;
     try {
       // Check if the code can be interpreted as an expression.
       parse('return ' + code + ';');

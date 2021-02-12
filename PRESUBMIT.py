@@ -229,6 +229,8 @@ def _CheckDevToolsStyleJS(input_api, output_api):
     eslint_related_files = [
         input_api.os_path.join(input_api.PresubmitLocalPath(), 'node_modules',
                                'eslint'),
+        input_api.os_path.join(input_api.PresubmitLocalPath(), 'node_modules',
+                               '@typescript-eslint'),
         input_api.os_path.join(input_api.PresubmitLocalPath(), '.eslintrc.js'),
         input_api.os_path.join(input_api.PresubmitLocalPath(),
                                '.eslintignore'),

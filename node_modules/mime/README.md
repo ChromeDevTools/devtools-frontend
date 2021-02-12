@@ -34,14 +34,14 @@ E.g. For the full version:
     <script src="https://wzrd.in/standalone/mime@latest"></script>
     <script>
     mime.getType(...); // etc.
-    <script>
+    </script>
 
 Or, for the `mime/lite` version:
 
     <script src="https://wzrd.in/standalone/mime%2flite@latest"></script>
     <script>
     mimelite.getType(...); // (Note `mimelite` here)
-    <script>
+    </script>
 
 ## Quick Start
 

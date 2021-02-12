@@ -1,5 +1,26 @@
 # Changes
 
+## 5.3.1
+
+- [`04e0faa`](https://github.com/sinonjs/samsam/commit/04e0faa88d8a08325c6d70febed9dad4e7eeabfe)
+  Distribute package as source (Morgan Roderick)
+    >
+    > This library is not meant for writing end user applications or even for
+    > being used directly when writing tests. It is not meant to be loaded
+    > directly by browsers.
+    >
+    > Consumers of this package are assumed to use their own bundlers, should
+    > they need to bundle code for use in browsers or workers.
+    >
+    > Therefore, it is safe to distribute the package as source files and not
+    > bundle them up.
+    >
+    > This allows us to remove the bundler and its transitive dependencies,
+    > which reduces the maintenance burden of managing the library.
+    >
+
+_Released on 2021-01-13._
+
 ## 5.3.0
 
 - [`fd8aabd`](https://github.com/sinonjs/samsam/commit/fd8aabd3768c199abc717dc6d793ef136419be72)

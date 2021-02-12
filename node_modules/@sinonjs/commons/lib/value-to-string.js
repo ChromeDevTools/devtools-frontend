@@ -8,7 +8,7 @@
  */
 function valueToString(value) {
     if (value && value.toString) {
-        /* eslint-disable-next-line local-rules/no-prototype-methods */
+        // eslint-disable-next-line @sinonjs/no-prototype-methods/no-prototype-methods
         return value.toString();
     }
     return String(value);

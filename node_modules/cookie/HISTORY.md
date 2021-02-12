@@ -1,3 +1,13 @@
+0.4.1 / 2020-04-21
+==================
+
+  * Fix `maxAge` option to reject invalid values
+
+0.4.0 / 2019-05-15
+==================
+
+  * Add `SameSite=None` support
+
 0.3.1 / 2016-05-26
 ==================
 

@@ -1,5 +1,16 @@
 # Changes
 
+## 1.8.2
+
+- [`6b7a796`](https://github.com/sinonjs/commons/commit/6b7a796ffc088b43dc283cc4477a7d641720dc96)
+  Add .d.ts files to package (Morgan Roderick)
+    >
+    > In order to improve the experience of TypeScript users, we are compiling
+    > `.d.ts` files from the JSDoc and distributing them with the package
+    >
+
+_Released on 2021-01-13._
+
 ## 1.8.1
 
 - [`07b9e7a`](https://github.com/sinonjs/commons/commit/07b9e7a1d784771273a9a58d74945bbc7319b5d4)

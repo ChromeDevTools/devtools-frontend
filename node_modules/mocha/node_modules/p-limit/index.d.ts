@@ -1,16 +1,6 @@
 declare namespace pLimit {
 	interface Limit {
 		/**
-		@param fn - Promise-returning/async function.
-		@param arguments - Any arguments to pass through to `fn`. Support for passing arguments on to the `fn` is provided in order to be able to avoid creating unnecessary closures. You probably don't need this optimization unless you're pushing a lot of functions.
-		@returns The promise returned by calling `fn(...arguments)`.
-		*/
-		<Arguments extends unknown[], ReturnType>(
-			fn: (...arguments: Arguments) => PromiseLike<ReturnType> | ReturnType,
-			...arguments: Arguments
-		): Promise<ReturnType>;
-
-		/**
 		The number of promises that are currently running.
 		*/
 		readonly activeCount: number;
@@ -28,6 +18,16 @@ declare namespace pLimit {
 		Note: This does not cancel promises that are already running.
 		*/
 		clearQueue: () => void;
+
+		/**
+		@param fn - Promise-returning/async function.
+		@param arguments - Any arguments to pass through to `fn`. Support for passing arguments on to the `fn` is provided in order to be able to avoid creating unnecessary closures. You probably don't need this optimization unless you're pushing a lot of functions.
+		@returns The promise returned by calling `fn(...arguments)`.
+		*/
+		<Arguments extends unknown[], ReturnType>(
+			fn: (...arguments: Arguments) => PromiseLike<ReturnType> | ReturnType,
+			...arguments: Arguments
+		): Promise<ReturnType>;
 	}
 }
 

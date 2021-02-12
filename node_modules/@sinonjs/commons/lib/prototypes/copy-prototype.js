@@ -3,7 +3,7 @@
 var call = Function.call;
 
 module.exports = function copyPrototypeMethods(prototype) {
-    /* eslint-disable local-rules/no-prototype-methods */
+    // eslint-disable-next-line @sinonjs/no-prototype-methods/no-prototype-methods
     return Object.getOwnPropertyNames(prototype).reduce(function(result, name) {
         // ignore size because it throws from Map
         if (

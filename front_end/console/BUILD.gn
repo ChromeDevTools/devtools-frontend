@@ -7,15 +7,15 @@ import("../../scripts/build/ninja/devtools_module.gni")
 
 devtools_module("console") {
   sources = [
-    "ConsoleContextSelector.js",
-    "ConsoleFilter.js",
-    "ConsolePanel.js",
-    "ConsolePinPane.js",
-    "ConsolePrompt.js",
-    "ConsoleSidebar.js",
-    "ConsoleView.js",
-    "ConsoleViewMessage.js",
-    "ConsoleViewport.js",
+    "ConsoleContextSelector.ts",
+    "ConsoleFilter.ts",
+    "ConsolePanel.ts",
+    "ConsolePinPane.ts",
+    "ConsolePrompt.ts",
+    "ConsoleSidebar.ts",
+    "ConsoleView.ts",
+    "ConsoleViewMessage.ts",
+    "ConsoleViewport.ts",
   ]
 
   deps = [
@@ -53,7 +53,7 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_entrypoint("legacy") {
-  entrypoint = "console-legacy.js"
+  entrypoint = "console-legacy.ts"
 
   deps = [ ":bundle" ]
 }

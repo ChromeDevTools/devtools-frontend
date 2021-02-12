@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Common from '../common/common.js';
 import * as i18n from '../i18n/i18n.js';
 import * as ObjectUI from '../object_ui/object_ui.js';
@@ -45,17 +47,16 @@ export const UIStrings = {
   */
   notAvailable: 'not available',
 };
-const str_ = i18n.i18n.registerUIStrings('console/ConsolePinPane.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('console/ConsolePinPane.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-/** @type {!WeakMap<!Element, !ConsolePin>} */
-const elementToConsolePin = new WeakMap();
+const elementToConsolePin = new WeakMap<Element, ConsolePin>();
 
 export class ConsolePinPane extends UI.ThrottledWidget.ThrottledWidget {
-  /**
-   * @param {!UI.Toolbar.ToolbarButton} liveExpressionButton
-   */
-  constructor(liveExpressionButton) {
+  _liveExpressionButton: UI.Toolbar.ToolbarButton;
+  _pins: Set<ConsolePin>;
+  _pinsSetting: Common.Settings.Setting<string[]>;
+  constructor(liveExpressionButton: UI.Toolbar.ToolbarButton) {
     super(true, 250);
     this._liveExpressionButton = liveExpressionButton;
     this.registerRequiredCSS('console/consolePinPane.css', {enableLegacyPatching: true});
@@ -63,7 +64,6 @@ export class ConsolePinPane extends UI.ThrottledWidget.ThrottledWidget {
     this.contentElement.classList.add('console-pins', 'monospace');
     this.contentElement.addEventListener('contextmenu', this._contextMenuEventFired.bind(this), false);
 
-    /** @type {!Set<!ConsolePin>} */
     this._pins = new Set();
     this._pinsSetting = Common.Settings.Settings.instance().createLocalSetting('consolePins', []);
     for (const expression of this._pinsSetting.get()) {
@@ -71,24 +71,18 @@ export class ConsolePinPane extends UI.ThrottledWidget.ThrottledWidget {
     }
   }
 
-  /**
-   * @override
-   */
-  willHide() {
+  willHide(): void {
     for (const pin of this._pins) {
       pin.setHovered(false);
     }
   }
 
-  _savePins() {
+  _savePins(): void {
     const toSave = Array.from(this._pins).map(pin => pin.expression());
     this._pinsSetting.set(toSave);
   }
 
-  /**
-   * @param {!Event} event
-   */
-  _contextMenuEventFired(event) {
+  _contextMenuEventFired(event: Event): void {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
     const target = UI.UIUtils.deepElementFromEvent(event);
     if (target) {
@@ -106,16 +100,13 @@ export class ConsolePinPane extends UI.ThrottledWidget.ThrottledWidget {
     contextMenu.show();
   }
 
-  _removeAllPins() {
+  _removeAllPins(): void {
     for (const pin of this._pins) {
       this._removePin(pin);
     }
   }
 
-  /**
-   * @param {!ConsolePin} pin
-   */
-  _removePin(pin) {
+  _removePin(pin: ConsolePin): void {
     pin.element().remove();
     const newFocusedPin = this._focusedPinAfterDeletion(pin);
     this._pins.delete(pin);
@@ -127,11 +118,7 @@ export class ConsolePinPane extends UI.ThrottledWidget.ThrottledWidget {
     }
   }
 
-  /**
-   * @param {string} expression
-   * @param {boolean=} userGesture
-   */
-  addPin(expression, userGesture) {
+  addPin(expression: string, userGesture?: boolean): void {
     const pin = new ConsolePin(expression, this);
     this.contentElement.appendChild(pin.element());
     this._pins.add(pin);
@@ -142,11 +129,7 @@ export class ConsolePinPane extends UI.ThrottledWidget.ThrottledWidget {
     this.update();
   }
 
-  /**
-   * @param {!ConsolePin} deletedPin
-   * @return {?ConsolePin}
-   */
-  _focusedPinAfterDeletion(deletedPin) {
+  _focusedPinAfterDeletion(deletedPin: ConsolePin): ConsolePin|null {
     const pinArray = Array.from(this._pins);
     for (let i = 0; i < pinArray.length; i++) {
       if (pinArray[i] === deletedPin) {
@@ -162,10 +145,7 @@ export class ConsolePinPane extends UI.ThrottledWidget.ThrottledWidget {
     return null;
   }
 
-  /**
-   * @override
-   */
-  async doUpdate() {
+  async doUpdate(): Promise<void> {
     if (!this._pins.size || !this.isShowing()) {
       return;
     }
@@ -177,19 +157,24 @@ export class ConsolePinPane extends UI.ThrottledWidget.ThrottledWidget {
     this._updatedForTest();
   }
 
-  _updatedForTest() {
+  _updatedForTest(): void {
   }
 }
 
 export class ConsolePin extends Common.ObjectWrapper.ObjectWrapper {
-  /**
-   * @param {string} expression
-   * @param {!ConsolePinPane} pinPane
-   */
-  constructor(expression, pinPane) {
+  _pinElement: Element;
+  _pinPreview: HTMLElement;
+  _lastResult: SDK.RuntimeModel.EvaluationResult|null;
+  _lastExecutionContext: SDK.RuntimeModel.ExecutionContext|null;
+  _editor: UI.TextEditor.TextEditor|null;
+  _committedExpression: string;
+  _hovered: boolean;
+  _lastNode: SDK.RemoteObject.RemoteObject|null;
+  _editorPromise: Promise<UI.TextEditor.TextEditor>;
+
+  constructor(expression: string, pinPane: ConsolePinPane) {
     super();
-    const deletePinIcon =
-        /** @type {!UI.UIUtils.DevToolsCloseButton} */ (document.createElement('div', {is: 'dt-close-button'}));
+    const deletePinIcon = (document.createElement('div', {is: 'dt-close-button'}) as UI.UIUtils.DevToolsCloseButton);
     deletePinIcon.gray = true;
     deletePinIcon.classList.add('close-button');
     deletePinIcon.setTabbable(true);
@@ -204,43 +189,34 @@ export class ConsolePin extends Common.ObjectWrapper.ObjectWrapper {
     });
 
     const fragment = UI.Fragment.Fragment.build`
-    <div class='console-pin'>
-      ${deletePinIcon}
-      <div class='console-pin-name' $='name'></div>
-      <div class='console-pin-preview' $='preview'></div>
-    </div>`;
+  <div class='console-pin'>
+  ${deletePinIcon}
+  <div class='console-pin-name' $='name'></div>
+  <div class='console-pin-preview' $='preview'></div>
+  </div>`;
     this._pinElement = fragment.element();
-    /** @type {!HTMLElement} */
-    this._pinPreview = /** @type {!HTMLElement} */ (fragment.$('preview'));
-    const nameElement = /** @type {!HTMLElement} */ (fragment.$('name'));
+    this._pinPreview = (fragment.$('preview') as HTMLElement);
+    const nameElement = (fragment.$('name') as HTMLElement);
     UI.Tooltip.Tooltip.install(nameElement, expression);
     elementToConsolePin.set(this._pinElement, this);
 
-    /** @type {?SDK.RuntimeModel.EvaluationResult} */
     this._lastResult = null;
-    /** @type {?SDK.RuntimeModel.ExecutionContext} */
     this._lastExecutionContext = null;
-    /** @type {?UI.TextEditor.TextEditor} */
     this._editor = null;
     this._committedExpression = expression;
     this._hovered = false;
-    /** @type {?SDK.RemoteObject.RemoteObject} */
     this._lastNode = null;
 
     this._pinPreview.addEventListener('mouseenter', this.setHovered.bind(this, true), false);
     this._pinPreview.addEventListener('mouseleave', this.setHovered.bind(this, false), false);
-    this._pinPreview.addEventListener('click', /** @param {!Event} event */ event => {
+    this._pinPreview.addEventListener('click', (event: Event) => {
       if (this._lastNode) {
         Common.Revealer.reveal(this._lastNode);
         event.consume();
       }
     }, false);
 
-    /**
-    * @param {!UI.TextEditor.TextEditorFactory} factory
-    * @return {!UI.TextEditor.TextEditor}
-    */
-    const createTextEditor = factory => {
+    const createTextEditor = (factory: UI.TextEditor.TextEditorFactory): UI.TextEditor.TextEditor => {
       this._editor = factory.createEditor({
         devtoolsAccessibleName: i18nString(UIStrings.liveExpressionEditor),
         lineNumbers: false,
@@ -272,7 +248,7 @@ export class ConsolePin extends Common.ObjectWrapper.ObjectWrapper {
           this._editor.setText(this._committedExpression);
         }
       }, true);
-      this._editor.widget().element.addEventListener('focusout', event => {
+      this._editor.widget().element.addEventListener('focusout', _event => {
         if (!this._editor) {
           return;
         }
@@ -293,17 +269,13 @@ export class ConsolePin extends Common.ObjectWrapper.ObjectWrapper {
       return this._editor;
     };
 
-    const extension = /** @type {!Root.Runtime.Extension} */ (
-        Root.Runtime.Runtime.instance().extension(UI.TextEditor.TextEditorFactory));
+    const extension =
+        (Root.Runtime.Runtime.instance().extension(UI.TextEditor.TextEditorFactory) as Root.Runtime.Extension);
 
-    this._editorPromise =
-        extension.instance().then(obj => createTextEditor(/** @type {!UI.TextEditor.TextEditorFactory} */ (obj)));
+    this._editorPromise = extension.instance().then(obj => createTextEditor((obj as UI.TextEditor.TextEditorFactory)));
   }
 
-  /**
-   * @param {boolean} hovered
-   */
-  setHovered(hovered) {
+  setHovered(hovered: boolean): void {
     if (this._hovered === hovered) {
       return;
     }
@@ -313,30 +285,21 @@ export class ConsolePin extends Common.ObjectWrapper.ObjectWrapper {
     }
   }
 
-  /**
-   * @return {string}
-   */
-  expression() {
+  expression(): string {
     return this._committedExpression;
   }
 
-  /**
-   * @return {!Element}
-   */
-  element() {
+  element(): Element {
     return this._pinElement;
   }
 
-  async focus() {
+  async focus(): Promise<void> {
     const editor = await this._editorPromise;
     editor.widget().focus();
     editor.setSelection(TextUtils.TextRange.TextRange.createFromLocation(Infinity, Infinity));
   }
 
-  /**
-   * @param {!UI.ContextMenu.ContextMenu} contextMenu
-   */
-  appendToContextMenu(contextMenu) {
+  appendToContextMenu(contextMenu: UI.ContextMenu.ContextMenu): void {
     if (this._lastResult && !('error' in this._lastResult) && this._lastResult.object) {
       contextMenu.appendApplicableItems(this._lastResult.object);
       // Prevent result from being released manually. It will release along with 'console' group.
@@ -344,10 +307,7 @@ export class ConsolePin extends Common.ObjectWrapper.ObjectWrapper {
     }
   }
 
-  /**
-   * @return {!Promise<void>}
-   */
-  async updatePreview() {
+  async updatePreview(): Promise<void> {
     if (!this._editor) {
       return;
     }
@@ -369,7 +329,7 @@ export class ConsolePin extends Common.ObjectWrapper.ObjectWrapper {
       this._pinPreview.removeChildren();
       if (result && SDK.RuntimeModel.RuntimeModel.isSideEffectFailure(result)) {
         const sideEffectLabel =
-            /** @type {!HTMLElement} */ (this._pinPreview.createChild('span', 'object-value-calculate-value-button'));
+            (this._pinPreview.createChild('span', 'object-value-calculate-value-button') as HTMLElement);
         sideEffectLabel.textContent = '(…)';
         UI.Tooltip.Tooltip.install(sideEffectLabel, i18nString(UIStrings.evaluateAllowingSideEffects));
       } else if (previewText) {
@@ -380,7 +340,7 @@ export class ConsolePin extends Common.ObjectWrapper.ObjectWrapper {
       UI.Tooltip.Tooltip.install(this._pinPreview, previewText);
     }
 
-    let node = null;
+    let node: SDK.RemoteObject.RemoteObject|null = null;
     if (result && !('error' in result) && result.object.type === 'object' && result.object.subtype === 'node') {
       node = result.object;
     }

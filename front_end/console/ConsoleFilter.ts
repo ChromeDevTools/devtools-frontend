@@ -2,75 +2,59 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as SDK from '../sdk/sdk.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 
 import {ConsoleViewMessage} from './ConsoleViewMessage.js';  // eslint-disable-line no-unused-vars
 
+export type LevelsMask = {
+  [x: string]: boolean,
+};
+
 export class ConsoleFilter {
-  /**
-   * @param {string} name
-   * @param {!Array<!TextUtils.TextUtils.ParsedFilter>} parsedFilters
-   * @param {?SDK.RuntimeModel.ExecutionContext} executionContext
-   * @param {!Object<string, boolean>=} levelsMask
-   */
-  constructor(name, parsedFilters, executionContext, levelsMask) {
+  name: string;
+  parsedFilters: TextUtils.TextUtils.ParsedFilter[];
+  executionContext: SDK.RuntimeModel.ExecutionContext|null;
+  levelsMask: LevelsMask;
+
+  constructor(
+      name: string, parsedFilters: TextUtils.TextUtils.ParsedFilter[],
+      executionContext: SDK.RuntimeModel.ExecutionContext|null, levelsMask?: LevelsMask) {
     this.name = name;
     this.parsedFilters = parsedFilters;
     this.executionContext = executionContext;
     this.levelsMask = levelsMask || ConsoleFilter.defaultLevelsFilterValue();
   }
 
-  /**
-   * @return {!Object<string, boolean>}
-   */
-  static allLevelsFilterValue() {
-    /**
-     * @type {!Object<string, boolean>}
-     */
-    const result = {};
+  static allLevelsFilterValue(): LevelsMask {
+    const result: LevelsMask = {};
     for (const name of Object.values(SDK.ConsoleModel.MessageLevel)) {
       result[name] = true;
     }
     return result;
   }
 
-  /**
-   * @return {!Object<string, boolean>}
-   */
-  static defaultLevelsFilterValue() {
+  static defaultLevelsFilterValue(): LevelsMask {
     const result = ConsoleFilter.allLevelsFilterValue();
     result[SDK.ConsoleModel.MessageLevel.Verbose] = false;
     return result;
   }
 
-  /**
-   * @param {string} level
-   * @return {!Object<string, boolean>}
-   */
-  static singleLevelMask(level) {
-    /**
-     * @type {!Object<string, boolean>}
-     */
-    const result = {};
+  static singleLevelMask(level: string): LevelsMask {
+    const result: LevelsMask = {};
     result[level] = true;
     return result;
   }
 
-  /**
-   * @return {!ConsoleFilter}
-   */
-  clone() {
+  clone(): ConsoleFilter {
     const parsedFilters = this.parsedFilters.map(TextUtils.TextUtils.FilterParser.cloneFilter);
     const levelsMask = Object.assign({}, this.levelsMask);
     return new ConsoleFilter(this.name, parsedFilters, this.executionContext, levelsMask);
   }
 
-  /**
-   * @param {!ConsoleViewMessage} viewMessage
-   * @return {boolean}
-   */
-  shouldBeVisible(viewMessage) {
+  shouldBeVisible(viewMessage: ConsoleViewMessage): boolean {
     const message = viewMessage.consoleMessage();
     if (this.executionContext &&
         (this.executionContext.runtimeModel !== message.runtimeModel() ||
@@ -82,8 +66,7 @@ export class ConsoleFilter {
         message.isGroupMessage()) {
       return true;
     }
-
-    if (message.level && !this.levelsMask[/** @type {string} */ (message.level)]) {
+    if (message.level && !this.levelsMask[message.level as string]) {
       return false;
     }
 
@@ -105,8 +88,7 @@ export class ConsoleFilter {
           }
           case FilterType.Source: {
             const sourceNameForMessage = message.source ?
-                SDK.ConsoleModel.MessageSourceDisplayName.get(
-                    /** @type {!SDK.ConsoleModel.MessageSource} */ (message.source)) :
+                SDK.ConsoleModel.MessageSourceDisplayName.get((message.source as SDK.ConsoleModel.MessageSource)) :
                 message.source;
             if (!passesFilter(filter, sourceNameForMessage, true /* exactMatch */)) {
               return false;
@@ -124,20 +106,15 @@ export class ConsoleFilter {
     }
     return true;
 
-    /**
-     * @param {!TextUtils.TextUtils.ParsedFilter} filter
-     * @param {?string|undefined} value
-     * @param {boolean} exactMatch
-     * @return {boolean}
-     */
-    function passesFilter(filter, value, exactMatch) {
+    function passesFilter(
+        filter: TextUtils.TextUtils.ParsedFilter, value: string|null|undefined, exactMatch: boolean): boolean {
       if (!filter.text) {
         return Boolean(value) === filter.negative;
       }
       if (!value) {
         return !filter.text === !filter.negative;
       }
-      const filterText = /** @type {string} */ (filter.text).toLowerCase();
+      const filterText = (filter.text as string).toLowerCase();
       const lowerCaseValue = value.toLowerCase();
       if (exactMatch && (lowerCaseValue === filterText) === filter.negative) {
         return false;
@@ -150,9 +127,10 @@ export class ConsoleFilter {
   }
 }
 
-/** @enum {string} */
-export const FilterType = {
-  Context: 'context',
-  Source: 'source',
-  Url: 'url'
-};
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum FilterType {
+  Context = 'context',
+  Source = 'source',
+  Url = 'url',
+}

@@ -899,295 +899,295 @@
   "console/console-meta.ts | treatEvaluationAsUserActivation": {
     "message": "Treat evaluation as user activation"
   },
-  "console/ConsoleContextSelector.js | extension": {
+  "console/ConsoleContextSelector.ts | extension": {
     "message": "Extension"
   },
-  "console/ConsoleContextSelector.js | javascriptContextNotSelected": {
+  "console/ConsoleContextSelector.ts | javascriptContextNotSelected": {
     "message": "JavaScript context: Not selected"
   },
-  "console/ConsoleContextSelector.js | javascriptContextS": {
+  "console/ConsoleContextSelector.ts | javascriptContextS": {
     "message": "JavaScript context: {PH1}"
   },
-  "console/ConsolePinPane.js | evaluateAllowingSideEffects": {
+  "console/ConsolePinPane.ts | evaluateAllowingSideEffects": {
     "message": "Evaluate, allowing side effects"
   },
-  "console/ConsolePinPane.js | expression": {
+  "console/ConsolePinPane.ts | expression": {
     "message": "Expression"
   },
-  "console/ConsolePinPane.js | liveExpressionEditor": {
+  "console/ConsolePinPane.ts | liveExpressionEditor": {
     "message": "Live expression editor"
   },
-  "console/ConsolePinPane.js | notAvailable": {
+  "console/ConsolePinPane.ts | notAvailable": {
     "message": "not available"
   },
-  "console/ConsolePinPane.js | removeAllExpressions": {
+  "console/ConsolePinPane.ts | removeAllExpressions": {
     "message": "Remove all expressions"
   },
-  "console/ConsolePinPane.js | removeBlankExpression": {
+  "console/ConsolePinPane.ts | removeBlankExpression": {
     "message": "Remove blank expression"
   },
-  "console/ConsolePinPane.js | removeExpression": {
+  "console/ConsolePinPane.ts | removeExpression": {
     "message": "Remove expression"
   },
-  "console/ConsolePinPane.js | removeExpressionS": {
+  "console/ConsolePinPane.ts | removeExpressionS": {
     "message": "Remove expression: {PH1}"
   },
-  "console/ConsolePrompt.js | consolePrompt": {
+  "console/ConsolePrompt.ts | consolePrompt": {
     "message": "Console prompt"
   },
-  "console/ConsoleSidebar.js | dErrors": {
+  "console/ConsoleSidebar.ts | dErrors": {
     "message": "{PH1} errors"
   },
-  "console/ConsoleSidebar.js | dInfo": {
+  "console/ConsoleSidebar.ts | dInfo": {
     "message": "{PH1} info"
   },
-  "console/ConsoleSidebar.js | dMessages": {
+  "console/ConsoleSidebar.ts | dMessages": {
     "message": "{PH1} messages"
   },
-  "console/ConsoleSidebar.js | dUserMessages": {
+  "console/ConsoleSidebar.ts | dUserMessages": {
     "message": "{PH1} user messages"
   },
-  "console/ConsoleSidebar.js | dVerbose": {
+  "console/ConsoleSidebar.ts | dVerbose": {
     "message": "{PH1} verbose"
   },
-  "console/ConsoleSidebar.js | dWarnings": {
+  "console/ConsoleSidebar.ts | dWarnings": {
     "message": "{PH1} warnings"
   },
-  "console/ConsoleSidebar.js | Error": {
+  "console/ConsoleSidebar.ts | Error": {
     "message": "1 error"
   },
-  "console/ConsoleSidebar.js | Info": {
+  "console/ConsoleSidebar.ts | Info": {
     "message": "1 info"
   },
-  "console/ConsoleSidebar.js | Message": {
+  "console/ConsoleSidebar.ts | Message": {
     "message": "1 message"
   },
-  "console/ConsoleSidebar.js | noErrors": {
+  "console/ConsoleSidebar.ts | noErrors": {
     "message": "No errors"
   },
-  "console/ConsoleSidebar.js | noInfo": {
+  "console/ConsoleSidebar.ts | noInfo": {
     "message": "No info"
   },
-  "console/ConsoleSidebar.js | noMessages": {
+  "console/ConsoleSidebar.ts | noMessages": {
     "message": "No messages"
   },
-  "console/ConsoleSidebar.js | noUserMessages": {
+  "console/ConsoleSidebar.ts | noUserMessages": {
     "message": "No user messages"
   },
-  "console/ConsoleSidebar.js | noVerbose": {
+  "console/ConsoleSidebar.ts | noVerbose": {
     "message": "No verbose"
   },
-  "console/ConsoleSidebar.js | noWarnings": {
+  "console/ConsoleSidebar.ts | noWarnings": {
     "message": "No warnings"
   },
-  "console/ConsoleSidebar.js | other": {
+  "console/ConsoleSidebar.ts | other": {
     "message": "<other>"
   },
-  "console/ConsoleSidebar.js | UserMessage": {
+  "console/ConsoleSidebar.ts | UserMessage": {
     "message": "1 user message"
   },
-  "console/ConsoleSidebar.js | Verbose": {
+  "console/ConsoleSidebar.ts | Verbose": {
     "message": "1 verbose"
   },
-  "console/ConsoleSidebar.js | Warning": {
+  "console/ConsoleSidebar.ts | Warning": {
     "message": "1 warning"
   },
-  "console/ConsoleView.js | allLevels": {
+  "console/ConsoleView.ts | allLevels": {
     "message": "All levels"
   },
-  "console/ConsoleView.js | consoleCleared": {
+  "console/ConsoleView.ts | consoleCleared": {
     "message": "Console cleared"
   },
-  "console/ConsoleView.js | consoleSettings": {
+  "console/ConsoleView.ts | consoleSettings": {
     "message": "Console settings"
   },
-  "console/ConsoleView.js | consoleSidebar": {
+  "console/ConsoleView.ts | consoleSidebar": {
     "message": "console sidebar"
   },
-  "console/ConsoleView.js | copyVisibleStyledSelection": {
+  "console/ConsoleView.ts | copyVisibleStyledSelection": {
     "message": "Copy visible styled selection"
   },
-  "console/ConsoleView.js | customLevels": {
+  "console/ConsoleView.ts | customLevels": {
     "message": "Custom levels"
   },
-  "console/ConsoleView.js | default": {
+  "console/ConsoleView.ts | default": {
     "message": "Default"
   },
-  "console/ConsoleView.js | defaultLevels": {
+  "console/ConsoleView.ts | defaultLevels": {
     "message": "Default levels"
   },
-  "console/ConsoleView.js | doNotClearLogOnPageReload": {
+  "console/ConsoleView.ts | doNotClearLogOnPageReload": {
     "message": "Do not clear log on page reload / navigation"
   },
-  "console/ConsoleView.js | eagerlyEvaluateTextInThePrompt": {
+  "console/ConsoleView.ts | eagerlyEvaluateTextInThePrompt": {
     "message": "Eagerly evaluate text in the prompt"
   },
-  "console/ConsoleView.js | egEventdCdnUrlacom": {
+  "console/ConsoleView.ts | egEventdCdnUrlacom": {
     "message": "e.g. /eventd/ -cdn url:a.com"
   },
-  "console/ConsoleView.js | errors": {
+  "console/ConsoleView.ts | errors": {
     "message": "Errors"
   },
-  "console/ConsoleView.js | filter": {
+  "console/ConsoleView.ts | filter": {
     "message": "Filter"
   },
-  "console/ConsoleView.js | findStringInLogs": {
+  "console/ConsoleView.ts | findStringInLogs": {
     "message": "Find string in logs"
   },
-  "console/ConsoleView.js | groupSimilarMessagesInConsole": {
+  "console/ConsoleView.ts | groupSimilarMessagesInConsole": {
     "message": "Group similar messages in console"
   },
-  "console/ConsoleView.js | hideAll": {
+  "console/ConsoleView.ts | hideAll": {
     "message": "Hide all"
   },
-  "console/ConsoleView.js | hideMessagesFromS": {
+  "console/ConsoleView.ts | hideMessagesFromS": {
     "message": "Hide messages from {PH1}"
   },
-  "console/ConsoleView.js | hideNetwork": {
+  "console/ConsoleView.ts | hideNetwork": {
     "message": "Hide network"
   },
-  "console/ConsoleView.js | info": {
+  "console/ConsoleView.ts | info": {
     "message": "Info"
   },
-  "console/ConsoleView.js | issueToolbarTooltipGeneral": {
+  "console/ConsoleView.ts | issueToolbarTooltipGeneral": {
     "message": "Some problems no longer generate console messages, but are surfaced in the issues tab."
   },
-  "console/ConsoleView.js | issueToolbarTooltipHaveMultipleIssues": {
+  "console/ConsoleView.ts | issueToolbarTooltipHaveMultipleIssues": {
     "message": "Click to view {issueCount} issues"
   },
-  "console/ConsoleView.js | issueToolbarTooltipHaveNoIssues": {
+  "console/ConsoleView.ts | issueToolbarTooltipHaveNoIssues": {
     "message": "Click to go to the issues tab."
   },
-  "console/ConsoleView.js | issueToolbarTooltipHaveOneIssues": {
+  "console/ConsoleView.ts | issueToolbarTooltipHaveOneIssues": {
     "message": "Click to view 1 issue"
   },
-  "console/ConsoleView.js | logLevels": {
+  "console/ConsoleView.ts | logLevels": {
     "message": "Log levels"
   },
-  "console/ConsoleView.js | logLevelS": {
+  "console/ConsoleView.ts | logLevelS": {
     "message": "Log level: {PH1}"
   },
-  "console/ConsoleView.js | multipleIssues": {
+  "console/ConsoleView.ts | multipleIssues": {
     "message": "{issueCount} Issues"
   },
-  "console/ConsoleView.js | noIssue": {
+  "console/ConsoleView.ts | noIssue": {
     "message": "No Issues"
   },
-  "console/ConsoleView.js | oneIssue": {
+  "console/ConsoleView.ts | oneIssue": {
     "message": "1 Issue"
   },
-  "console/ConsoleView.js | onlyShowMessagesFromTheCurrentContext": {
+  "console/ConsoleView.ts | onlyShowMessagesFromTheCurrentContext": {
     "message": "Only show messages from the current context (top, iframe, worker, extension)"
   },
-  "console/ConsoleView.js | overriddenByFilterSidebar": {
+  "console/ConsoleView.ts | overriddenByFilterSidebar": {
     "message": "Overridden by filter sidebar"
   },
-  "console/ConsoleView.js | preserveLog": {
+  "console/ConsoleView.ts | preserveLog": {
     "message": "Preserve log"
   },
-  "console/ConsoleView.js | replayXhr": {
+  "console/ConsoleView.ts | replayXhr": {
     "message": "Replay XHR"
   },
-  "console/ConsoleView.js | saveAs": {
+  "console/ConsoleView.ts | saveAs": {
     "message": "Save as..."
   },
-  "console/ConsoleView.js | searching": {
+  "console/ConsoleView.ts | searching": {
     "message": "Searching…"
   },
-  "console/ConsoleView.js | selectedContextOnly": {
+  "console/ConsoleView.ts | selectedContextOnly": {
     "message": "Selected context only"
   },
-  "console/ConsoleView.js | sHidden": {
+  "console/ConsoleView.ts | sHidden": {
     "message": "{PH1} hidden"
   },
-  "console/ConsoleView.js | someMessagesHaveBeenMovedToThe": {
+  "console/ConsoleView.ts | someMessagesHaveBeenMovedToThe": {
     "message": "Some messages have been moved to the Issues panel."
   },
-  "console/ConsoleView.js | sOnly": {
+  "console/ConsoleView.ts | sOnly": {
     "message": "{PH1} only"
   },
-  "console/ConsoleView.js | verbose": {
+  "console/ConsoleView.ts | verbose": {
     "message": "Verbose"
   },
-  "console/ConsoleView.js | viewIssues": {
+  "console/ConsoleView.ts | viewIssues": {
     "message": "View issues"
   },
-  "console/ConsoleView.js | warnings": {
+  "console/ConsoleView.ts | warnings": {
     "message": "Warnings"
   },
-  "console/ConsoleView.js | writingFile": {
+  "console/ConsoleView.ts | writingFile": {
     "message": "Writing file…"
   },
-  "console/ConsoleViewMessage.js | assertionFailed": {
+  "console/ConsoleViewMessage.ts | assertionFailed": {
     "message": "Assertion failed: "
   },
-  "console/ConsoleViewMessage.js | attribute": {
+  "console/ConsoleViewMessage.ts | attribute": {
     "message": "<attribute>"
   },
-  "console/ConsoleViewMessage.js | clearAllMessagesWithS": {
+  "console/ConsoleViewMessage.ts | clearAllMessagesWithS": {
     "message": "Clear all messages with {PH1}"
   },
-  "console/ConsoleViewMessage.js | console": {
+  "console/ConsoleViewMessage.ts | console": {
     "message": "Console"
   },
-  "console/ConsoleViewMessage.js | consoleclearWasPreventedDueTo": {
+  "console/ConsoleViewMessage.ts | consoleclearWasPreventedDueTo": {
     "message": "console.clear() was prevented due to 'Preserve log'"
   },
-  "console/ConsoleViewMessage.js | consoleWasCleared": {
+  "console/ConsoleViewMessage.ts | consoleWasCleared": {
     "message": "Console was cleared"
   },
-  "console/ConsoleViewMessage.js | deprecationS": {
+  "console/ConsoleViewMessage.ts | deprecationS": {
     "message": "[Deprecation] {PH1}"
   },
-  "console/ConsoleViewMessage.js | error": {
+  "console/ConsoleViewMessage.ts | error": {
     "message": "Error"
   },
-  "console/ConsoleViewMessage.js | errorS": {
+  "console/ConsoleViewMessage.ts | errorS": {
     "message": "Error {PH1}"
   },
-  "console/ConsoleViewMessage.js | exception": {
+  "console/ConsoleViewMessage.ts | exception": {
     "message": "<exception>"
   },
-  "console/ConsoleViewMessage.js | functionWasResolvedFromBound": {
+  "console/ConsoleViewMessage.ts | functionWasResolvedFromBound": {
     "message": "Function was resolved from bound function."
   },
-  "console/ConsoleViewMessage.js | index": {
+  "console/ConsoleViewMessage.ts | index": {
     "message": "(index)"
   },
-  "console/ConsoleViewMessage.js | interventionS": {
+  "console/ConsoleViewMessage.ts | interventionS": {
     "message": "[Intervention] {PH1}"
   },
-  "console/ConsoleViewMessage.js | Mxx": {
+  "console/ConsoleViewMessage.ts | Mxx": {
     "message": " M<XX>"
   },
-  "console/ConsoleViewMessage.js | repeatS": {
+  "console/ConsoleViewMessage.ts | repeatS": {
     "message": "Repeat {PH1}"
   },
-  "console/ConsoleViewMessage.js | someEvent": {
+  "console/ConsoleViewMessage.ts | someEvent": {
     "message": "<some> event"
   },
-  "console/ConsoleViewMessage.js | thisValueWasEvaluatedUponFirst": {
+  "console/ConsoleViewMessage.ts | thisValueWasEvaluatedUponFirst": {
     "message": "This value was evaluated upon first expanding. It may have changed since then."
   },
-  "console/ConsoleViewMessage.js | thisValueWillNotBeCollectedUntil": {
+  "console/ConsoleViewMessage.ts | thisValueWillNotBeCollectedUntil": {
     "message": "This value will not be collected until console is cleared."
   },
-  "console/ConsoleViewMessage.js | tookNms": {
+  "console/ConsoleViewMessage.ts | tookNms": {
     "message": "took <N>ms"
   },
-  "console/ConsoleViewMessage.js | url": {
+  "console/ConsoleViewMessage.ts | url": {
     "message": "<URL>"
   },
-  "console/ConsoleViewMessage.js | value": {
+  "console/ConsoleViewMessage.ts | value": {
     "message": "Value"
   },
-  "console/ConsoleViewMessage.js | violationS": {
+  "console/ConsoleViewMessage.ts | violationS": {
     "message": "[Violation] {PH1}"
   },
-  "console/ConsoleViewMessage.js | warning": {
+  "console/ConsoleViewMessage.ts | warning": {
     "message": "Warning"
   },
-  "console/ConsoleViewMessage.js | warningS": {
+  "console/ConsoleViewMessage.ts | warningS": {
     "message": "Warning {PH1}"
   },
   "cookie_table/CookiesTable.ts | cookies": {

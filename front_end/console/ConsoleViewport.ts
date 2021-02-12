@@ -28,18 +28,49 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Components from '../components/components.js';
 import * as Platform from '../platform/platform.js';
 import * as UI from '../ui/ui.js';
 
 import {ConsoleViewMessage} from './ConsoleViewMessage.js';  // eslint-disable-line no-unused-vars
 
+interface _Selection {
+  item: number;
+  node: Node;
+  offset: number;
+}
+
 export class ConsoleViewport {
-  /**
-   * @param {!ConsoleViewportProvider} provider
-   */
-  constructor(provider) {
-    this.element = /** @type {!HTMLElement} */ (document.createElement('div'));
+  element: HTMLElement;
+  _topGapElement: HTMLElement;
+  _topGapElementActive: boolean;
+  _contentElement: HTMLElement;
+  _bottomGapElement: HTMLElement;
+  _bottomGapElementActive: boolean;
+  _provider: ConsoleViewportProvider;
+  _virtualSelectedIndex: number;
+  _firstActiveIndex: number;
+  _lastActiveIndex: number;
+  _renderedItems: ConsoleViewportElement[];
+  _anchorSelection: _Selection|null;
+  _headSelection: _Selection|null;
+  _itemCount: number;
+  _cumulativeHeights: Int32Array;
+  _muteCopyHandler: boolean;
+  _observer: MutationObserver;
+  _observerConfig: {
+    childList: boolean,
+    subtree: boolean,
+  };
+  _stickToBottom: boolean;
+  _selectionIsBackward: boolean;
+  _lastSelectedElement?: HTMLElement|null;
+  _cachedProviderElements?: (ConsoleViewportElement|null)[];
+
+  constructor(provider: ConsoleViewportProvider) {
+    this.element = (document.createElement('div') as HTMLElement);
     this.element.style.overflow = 'auto';
     this._topGapElement = this.element.createChild('div');
     this._topGapElement.style.height = '0px';
@@ -61,22 +92,18 @@ export class ConsoleViewport {
 
     this._provider = provider;
     this.element.addEventListener('scroll', this._onScroll.bind(this), false);
-    this.element.addEventListener('copy', /** @type {!EventListener} */ (this._onCopy.bind(this)), false);
-    this.element.addEventListener('dragstart', /** @type {function(!Event):*} */ (this._onDragStart.bind(this)), false);
-    this._contentElement.addEventListener('focusin', /** @type {!EventListener} */ (this._onFocusIn.bind(this)), false);
-    this._contentElement.addEventListener(
-        'focusout', /** @type {!EventListener} */ (this._onFocusOut.bind(this)), false);
-    this._contentElement.addEventListener('keydown', /** @type {!EventListener} */ (this._onKeyDown.bind(this)), false);
+    this.element.addEventListener('copy', (this._onCopy.bind(this) as EventListener), false);
+    this.element.addEventListener('dragstart', (this._onDragStart.bind(this) as (arg0: Event) => unknown), false);
+    this._contentElement.addEventListener('focusin', (this._onFocusIn.bind(this) as EventListener), false);
+    this._contentElement.addEventListener('focusout', (this._onFocusOut.bind(this) as EventListener), false);
+    this._contentElement.addEventListener('keydown', (this._onKeyDown.bind(this) as EventListener), false);
     this._virtualSelectedIndex = -1;
     this._contentElement.tabIndex = -1;
 
     this._firstActiveIndex = -1;
     this._lastActiveIndex = -1;
-    /** @type {!Array<!ConsoleViewportElement>} */
     this._renderedItems = [];
-    /** @type {?{item: number, node: !Node, offset: number}} */
     this._anchorSelection = null;
-    /** @type {?{item: number, node: !Node, offset: number}} */
     this._headSelection = null;
     this._itemCount = 0;
     this._cumulativeHeights = new Int32Array(0);
@@ -91,17 +118,11 @@ export class ConsoleViewport {
     this._selectionIsBackward = false;
   }
 
-  /**
-   * @return {boolean}
-   */
-  stickToBottom() {
+  stickToBottom(): boolean {
     return this._stickToBottom;
   }
 
-  /**
-   * @param {boolean} value
-   */
-  setStickToBottom(value) {
+  setStickToBottom(value: boolean): void {
     this._stickToBottom = value;
     if (this._stickToBottom) {
       this._observer.observe(this._contentElement, this._observerConfig);
@@ -110,23 +131,17 @@ export class ConsoleViewport {
     }
   }
 
-  /**
-   * @return {boolean}
-   */
-  hasVirtualSelection() {
+  hasVirtualSelection(): boolean {
     return this._virtualSelectedIndex !== -1;
   }
 
-  copyWithStyles() {
+  copyWithStyles(): void {
     this._muteCopyHandler = true;
     this.element.ownerDocument.execCommand('copy');
     this._muteCopyHandler = false;
   }
 
-  /**
-   * @param {!ClipboardEvent} event
-   */
-  _onCopy(event) {
+  _onCopy(event: ClipboardEvent): void {
     if (this._muteCopyHandler) {
       return;
     }
@@ -145,18 +160,15 @@ export class ConsoleViewport {
     }
   }
 
-  /**
-   * @param {!FocusEvent} event
-   */
-  _onFocusIn(event) {
+  _onFocusIn(event: FocusEvent): void {
     const renderedIndex =
-        this._renderedItems.findIndex(item => item.element().isSelfOrAncestor(/** @type {?Node} */ (event.target)));
+        this._renderedItems.findIndex(item => item.element().isSelfOrAncestor((event.target as Node | null)));
     if (renderedIndex !== -1) {
       this._virtualSelectedIndex = this._firstActiveIndex + renderedIndex;
     }
     let focusLastChild = false;
     // Make default selection when moving from external (e.g. prompt) to the container.
-    if (this._virtualSelectedIndex === -1 && this._isOutsideViewport(/** @type {?Element} */ (event.relatedTarget)) &&
+    if (this._virtualSelectedIndex === -1 && this._isOutsideViewport((event.relatedTarget as Element | null)) &&
         event.target === this._contentElement && this._itemCount) {
       focusLastChild = true;
       this._virtualSelectedIndex = this._itemCount - 1;
@@ -168,29 +180,18 @@ export class ConsoleViewport {
     this._updateFocusedItem(focusLastChild);
   }
 
-  /**
-   * @param {!FocusEvent} event
-   */
-  _onFocusOut(event) {
-    // Remove selection when focus moves to external location (e.g. prompt).
-    if (this._isOutsideViewport(/** @type {?Element} */ (event.relatedTarget))) {
+  _onFocusOut(event: FocusEvent): void {
+    if (this._isOutsideViewport((event.relatedTarget as Element | null))) {
       this._virtualSelectedIndex = -1;
     }
     this._updateFocusedItem();
   }
 
-  /**
-   * @param {?Element} element
-   * @return {boolean}
-   */
-  _isOutsideViewport(element) {
+  _isOutsideViewport(element: Element|null): boolean {
     return element !== null && !element.isSelfOrDescendant(this._contentElement);
   }
 
-  /**
-   * @param {!DragEvent} event
-   */
-  _onDragStart(event) {
+  _onDragStart(event: DragEvent): boolean {
     const text = this._selectedText();
     if (!text) {
       return false;
@@ -203,10 +204,7 @@ export class ConsoleViewport {
     return true;
   }
 
-  /**
-   * @param {!KeyboardEvent} event
-   */
-  _onKeyDown(event) {
+  _onKeyDown(event: KeyboardEvent): void {
     if (UI.UIUtils.isEditing() || !this._itemCount || event.shiftKey) {
       return;
     }
@@ -241,10 +239,7 @@ export class ConsoleViewport {
     this._updateFocusedItem(isArrowUp);
   }
 
-  /**
-   * @param {boolean=} focusLastChild
-   */
-  _updateFocusedItem(focusLastChild) {
+  _updateFocusedItem(focusLastChild?: boolean): void {
     const selectedElement = this.renderedElementAt(this._virtualSelectedIndex);
     const changed = this._lastSelectedElement !== selectedElement;
     const containerHasFocus = this._contentElement === this.element.ownerDocument.deepActiveElement();
@@ -269,14 +264,11 @@ export class ConsoleViewport {
     this._lastSelectedElement = selectedElement;
   }
 
-  /**
-   * @return {!Element}
-   */
-  contentElement() {
+  contentElement(): Element {
     return this._contentElement;
   }
 
-  invalidate() {
+  invalidate(): void {
     delete this._cachedProviderElements;
     this._itemCount = this._provider.itemCount();
     if (this._virtualSelectedIndex > this._itemCount - 1) {
@@ -286,11 +278,7 @@ export class ConsoleViewport {
     this.refresh();
   }
 
-  /**
-   * @param {number} index
-   * @return {?ConsoleViewportElement}
-   */
-  _providerElement(index) {
+  _providerElement(index: number): ConsoleViewportElement|null {
     if (!this._cachedProviderElements) {
       this._cachedProviderElements = new Array(this._itemCount);
     }
@@ -302,7 +290,7 @@ export class ConsoleViewport {
     return element;
   }
 
-  _rebuildCumulativeHeights() {
+  _rebuildCumulativeHeights(): void {
     const firstActiveIndex = this._firstActiveIndex;
     const lastActiveIndex = this._lastActiveIndex;
     let height = 0;
@@ -317,7 +305,7 @@ export class ConsoleViewport {
     }
   }
 
-  _rebuildCumulativeHeightsIfNeeded() {
+  _rebuildCumulativeHeightsIfNeeded(): void {
     let totalCachedHeight = 0;
     let totalMeasuredHeight = 0;
     // Check whether current items in DOM have changed heights. Tolerate 1-pixel
@@ -338,19 +326,12 @@ export class ConsoleViewport {
     }
   }
 
-  /**
-   * @param {number} index
-   * @return {number}
-   */
-  _cachedItemHeight(index) {
+  _cachedItemHeight(index: number): number {
     return index === 0 ? this._cumulativeHeights[0] :
                          this._cumulativeHeights[index] - this._cumulativeHeights[index - 1];
   }
 
-  /**
-   * @param {?Selection} selection
-   */
-  _isSelectionBackwards(selection) {
+  _isSelectionBackwards(selection: Selection|null): boolean {
     if (!selection || !selection.rangeCount || !selection.anchorNode || !selection.focusNode) {
       return false;
     }
@@ -360,20 +341,15 @@ export class ConsoleViewport {
     return range.collapsed;
   }
 
-  /**
-   * @param {number} itemIndex
-   * @param {!Node} node
-   * @param {number} offset
-   * @return {!{item: number, node: !Node, offset: number}}
-   */
-  _createSelectionModel(itemIndex, node, offset) {
+  _createSelectionModel(itemIndex: number, node: Node, offset: number): {
+    item: number,
+    node: Node,
+    offset: number,
+  } {
     return {item: itemIndex, node: node, offset: offset};
   }
 
-  /**
-   * @param {?Selection} selection
-   */
-  _updateSelectionModel(selection) {
+  _updateSelectionModel(selection: Selection|null): boolean {
     const range = selection && selection.rangeCount ? selection.getRangeAt(0) : null;
     if (!range || (!selection || selection.isCollapsed) || !this.element.hasSelection()) {
       this._headSelection = null;
@@ -381,7 +357,7 @@ export class ConsoleViewport {
       return false;
     }
 
-    let firstSelectedIndex = Number.MAX_VALUE;
+    let firstSelectedIndex: number = Number.MAX_VALUE;
     let lastSelectedIndex = -1;
 
     let hasVisibleSelection = false;
@@ -410,13 +386,11 @@ export class ConsoleViewport {
     const isBackward = this._isSelectionBackwards(selection);
     const startSelection = this._selectionIsBackward ? this._headSelection : this._anchorSelection;
     const endSelection = this._selectionIsBackward ? this._anchorSelection : this._headSelection;
-    let firstSelected = null;
-    let lastSelected = null;
+    let firstSelected: _Selection|null = null;
+    let lastSelected: _Selection|null = null;
     if (hasVisibleSelection) {
-      firstSelected = this._createSelectionModel(
-          firstSelectedIndex, /** @type {!Node} */ (range.startContainer), range.startOffset);
-      lastSelected =
-          this._createSelectionModel(lastSelectedIndex, /** @type {!Node} */ (range.endContainer), range.endOffset);
+      firstSelected = this._createSelectionModel(firstSelectedIndex, (range.startContainer as Node), range.startOffset);
+      lastSelected = this._createSelectionModel(lastSelectedIndex, (range.endContainer as Node), range.endOffset);
     }
     if (topOverlap && bottomOverlap && hasVisibleSelection) {
       firstSelected = (firstSelected && firstSelected.item < startSelection.item) ? firstSelected : startSelection;
@@ -441,20 +415,15 @@ export class ConsoleViewport {
     return true;
   }
 
-  /**
-   * @param {?Selection} selection
-   */
-  _restoreSelection(selection) {
+  _restoreSelection(selection: Selection|null): void {
     if (!selection || !this._anchorSelection || !this._headSelection) {
       return;
     }
 
-    /**
-     * @param {!{item: number, node: !Node, offset: number}} selection
-     * @param {boolean} isSelectionBackwards
-     * @return {!{element: !Node, offset: number}}
-     */
-    const clampSelection = (selection, isSelectionBackwards) => {
+    const clampSelection = (selection: _Selection, isSelectionBackwards: boolean): {
+      element: Node,
+      offset: number,
+    } => {
       if (this._firstActiveIndex <= selection.item && selection.item <= this._lastActiveIndex) {
         return {element: selection.node, offset: selection.offset};
       }
@@ -469,7 +438,7 @@ export class ConsoleViewport {
     selection.setBaseAndExtent(anchorElement, anchorOffset, headElement, headOffset);
   }
 
-  _selectionContainsTable() {
+  _selectionContainsTable(): boolean {
     if (!this._anchorSelection || !this._headSelection) {
       return false;
     }
@@ -478,7 +447,7 @@ export class ConsoleViewport {
     const end = this._selectionIsBackward ? this._anchorSelection.item : this._headSelection.item;
 
     for (let i = start; i <= end; i++) {
-      const element = /** @type {!ConsoleViewMessage} */ (this._providerElement(i));
+      const element = (this._providerElement(i) as ConsoleViewMessage);
       if (element && element.consoleMessage().type === 'table') {
         return true;
       }
@@ -487,7 +456,7 @@ export class ConsoleViewport {
     return false;
   }
 
-  refresh() {
+  refresh(): void {
     this._observer.disconnect();
     this._innerRefresh();
     if (this._stickToBottom) {
@@ -495,7 +464,7 @@ export class ConsoleViewport {
     }
   }
 
-  _innerRefresh() {
+  _innerRefresh(): void {
     if (!this._visibleHeight()) {
       return;
     }  // Do nothing for invisible controls.
@@ -544,10 +513,7 @@ export class ConsoleViewport {
     const bottomGapHeight =
         this._cumulativeHeights[this._cumulativeHeights.length - 1] - this._cumulativeHeights[this._lastActiveIndex];
 
-    /**
-     * @this {ConsoleViewport}
-     */
-    function prepare() {
+    function prepare(this: ConsoleViewport): void {
       this._topGapElement.style.height = topGapHeight + 'px';
       this._bottomGapElement.style.height = bottomGapHeight + 'px';
       this._topGapElementActive = Boolean(topGapHeight);
@@ -566,12 +532,8 @@ export class ConsoleViewport {
     }
   }
 
-  /**
-   * @param {function():void} prepare
-   */
-  _partialViewportUpdate(prepare) {
-    /** @type {!Set<!ConsoleViewportElement>} */
-    const itemsToRender = new Set();
+  _partialViewportUpdate(prepare: () => void): void {
+    const itemsToRender = new Set<ConsoleViewportElement>();
     for (let i = this._firstActiveIndex; i <= this._lastActiveIndex; ++i) {
       const providerElement = this._providerElement(i);
       console.assert(Boolean(providerElement), 'Expected provider element to be defined');
@@ -591,7 +553,7 @@ export class ConsoleViewport {
     }
 
     const wasShown = [];
-    let anchor = this._contentElement.firstChild;
+    let anchor: (ChildNode|null) = this._contentElement.firstChild;
     for (const viewportElement of itemsToRender) {
       const element = viewportElement.element();
       if (element !== anchor) {
@@ -615,17 +577,14 @@ export class ConsoleViewport {
     this._updateFocusedItem();
   }
 
-  /**
-   * @return {?string}
-   */
-  _selectedText() {
+  _selectedText(): string|null {
     this._updateSelectionModel(this.element.getComponentSelection());
     if (!this._headSelection || !this._anchorSelection) {
       return null;
     }
 
-    let startSelection = null;
-    let endSelection = null;
+    let startSelection: _Selection|null = null;
+    let endSelection: _Selection|null = null;
     if (this._selectionIsBackward) {
       startSelection = this._headSelection;
       endSelection = this._anchorSelection;
@@ -665,18 +624,12 @@ export class ConsoleViewport {
     return textLines.join('\n');
   }
 
-  /**
-   * @param {!Element} itemElement
-   * @param {!Node} selectionNode
-   * @param {number} offset
-   * @return {number}
-   */
-  _textOffsetInNode(itemElement, selectionNode, offset) {
+  _textOffsetInNode(itemElement: Element, selectionNode: Node, offset: number): number {
     // If the selectionNode is not a TextNode, we may need to convert a child offset into a character offset.
     const textContentLength = selectionNode.textContent ? selectionNode.textContent.length : 0;
     if (selectionNode.nodeType !== Node.TEXT_NODE) {
       if (offset < selectionNode.childNodes.length) {
-        selectionNode = /** @type {!Node} */ (selectionNode.childNodes.item(offset));
+        selectionNode = (selectionNode.childNodes.item(offset) as Node);
         offset = 0;
       } else {
         offset = textContentLength;
@@ -684,8 +637,7 @@ export class ConsoleViewport {
     }
 
     let chars = 0;
-    /** @type {?Node} */
-    let node = itemElement;
+    let node: Node|null = itemElement;
     while ((node = node.traverseNextNode(itemElement)) && node !== selectionNode) {
       if (node.nodeType !== Node.TEXT_NODE ||
           (node.parentElement &&
@@ -702,17 +654,11 @@ export class ConsoleViewport {
     return chars + offset;
   }
 
-  /**
-   * @param {!Event} event
-   */
-  _onScroll(event) {
+  _onScroll(_event: Event): void {
     this.refresh();
   }
 
-  /**
-   * @return {number}
-   */
-  firstVisibleIndex() {
+  firstVisibleIndex(): number {
     if (!this._cumulativeHeights.length) {
       return -1;
     }
@@ -721,10 +667,7 @@ export class ConsoleViewport {
         this._cumulativeHeights, this.element.scrollTop + 1, Platform.ArrayUtilities.DEFAULT_COMPARATOR);
   }
 
-  /**
-   * @return {number}
-   */
-  lastVisibleIndex() {
+  lastVisibleIndex(): number {
     if (!this._cumulativeHeights.length) {
       return -1;
     }
@@ -735,22 +678,14 @@ export class ConsoleViewport {
         this._cumulativeHeights, scrollBottom, Platform.ArrayUtilities.DEFAULT_COMPARATOR, undefined, right);
   }
 
-  /**
-   * @param {number} index
-   * @return {?HTMLElement}
-   */
-  renderedElementAt(index) {
+  renderedElementAt(index: number): HTMLElement|null {
     if (index === -1 || index < this._firstActiveIndex || index > this._lastActiveIndex) {
       return null;
     }
     return this._renderedItems[index - this._firstActiveIndex].element();
   }
 
-  /**
-   * @param {number} index
-   * @param {boolean=} makeLast
-   */
-  scrollItemIntoView(index, makeLast) {
+  scrollItemIntoView(index: number, makeLast?: boolean): void {
     const firstVisibleIndex = this.firstVisibleIndex();
     const lastVisibleIndex = this.lastVisibleIndex();
     if (index > firstVisibleIndex && index < lastVisibleIndex) {
@@ -770,10 +705,7 @@ export class ConsoleViewport {
     }
   }
 
-  /**
-   * @param {number} index
-   */
-  forceScrollItemToBeFirst(index) {
+  forceScrollItemToBeFirst(index: number): void {
     console.assert(index >= 0 && index < this._itemCount, 'Cannot scroll item at invalid index');
     this.setStickToBottom(false);
     this._rebuildCumulativeHeightsIfNeeded();
@@ -789,10 +721,7 @@ export class ConsoleViewport {
     }
   }
 
-  /**
-   * @param {number} index
-   */
-  forceScrollItemToBeLast(index) {
+  forceScrollItemToBeLast(index: number): void {
     console.assert(index >= 0 && index < this._itemCount, 'Cannot scroll item at invalid index');
     this.setStickToBottom(false);
     this._rebuildCumulativeHeightsIfNeeded();
@@ -808,67 +737,22 @@ export class ConsoleViewport {
     }
   }
 
-  /**
-   * @return {number}
-   */
-  _visibleHeight() {
+  _visibleHeight(): number {
     // Use offsetHeight instead of clientHeight to avoid being affected by horizontal scroll.
     return this.element.offsetHeight;
   }
 }
 
-/**
- * @interface
- */
-export class ConsoleViewportProvider {
-  /**
-   * @param {number} index
-   * @return {number}
-   */
-  fastHeight(index) {
-    return 0;
-  }
-
-  /**
-   * @return {number}
-   */
-  itemCount() {
-    return 0;
-  }
-
-  /**
-   * @return {number}
-   */
-  minimumRowHeight() {
-    return 0;
-  }
-
-  /**
-   * @param {number} index
-   * @return {?ConsoleViewportElement}
-   */
-  itemElement(index) {
-    return null;
-  }
+export interface ConsoleViewportProvider {
+  fastHeight(index: number): number;
+  itemCount(): number;
+  minimumRowHeight(): number;
+  itemElement(index: number): ConsoleViewportElement|null;
 }
 
-/**
- * @interface
- */
-export class ConsoleViewportElement {
-  willHide() {
-  }
-
-  wasShown() {
-  }
-
-  /**
-   * @return {!HTMLElement}
-   */
-  element() {
-    throw new Error('Unimplemented method');
-  }
-
-  focusLastChildOrSelf() {
-  }
+export interface ConsoleViewportElement {
+  willHide(): void;
+  wasShown(): void;
+  element(): HTMLElement;
+  focusLastChildOrSelf(): void;
 }

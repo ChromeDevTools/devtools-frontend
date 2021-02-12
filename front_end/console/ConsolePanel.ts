@@ -1,3 +1,7 @@
+// Copyright 2020 The Chromium Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+
 /*
  * Copyright (C) 2009 Joseph Pecoraro
  *
@@ -26,25 +30,25 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../ui/ui.js';
 
 import {ConsoleView} from './ConsoleView.js';
 
-/** @type {!ConsolePanel} */
-let consolePanelInstance;
+let consolePanelInstance: ConsolePanel;
 
 export class ConsolePanel extends UI.Panel.Panel {
+  _view: ConsoleView;
   constructor() {
     super('console');
     this._view = ConsoleView.instance();
   }
 
-  /**
-   * @param {{forceNew: ?boolean}=} opts
-   * @return {!ConsolePanel}
-   */
-  static instance(opts = {forceNew: null}) {
+  static instance(opts: {
+    forceNew: boolean|null,
+  } = {forceNew: null}): ConsolePanel {
     const {forceNew} = opts;
     if (!consolePanelInstance || forceNew) {
       consolePanelInstance = new ConsolePanel();
@@ -53,15 +57,12 @@ export class ConsolePanel extends UI.Panel.Panel {
     return consolePanelInstance;
   }
 
-  static _updateContextFlavor() {
+  static _updateContextFlavor(): void {
     const consoleView = ConsolePanel.instance()._view;
     UI.Context.Context.instance().setFlavor(ConsoleView, consoleView.isShowing() ? consoleView : null);
   }
 
-  /**
-   * @override
-   */
-  wasShown() {
+  wasShown(): void {
     super.wasShown();
     const wrapper = wrapperViewInstance;
     if (wrapper && wrapper.isShowing()) {
@@ -71,10 +72,7 @@ export class ConsolePanel extends UI.Panel.Panel {
     ConsolePanel._updateContextFlavor();
   }
 
-  /**
-   * @override
-   */
-  willHide() {
+  willHide(): void {
     super.willHide();
     // The minimized drawer has 0 height, and showing Console inside may set
     // Console's scrollTop to 0. Unminimize before calling show to avoid this.
@@ -85,38 +83,31 @@ export class ConsolePanel extends UI.Panel.Panel {
     ConsolePanel._updateContextFlavor();
   }
 
-  /**
-   * @override
-   * @return {?UI.SearchableView.SearchableView}
-   */
-  searchableView() {
+  searchableView(): UI.SearchableView.SearchableView|null {
     return ConsoleView.instance().searchableView();
   }
 }
 
-/** @type {?WrapperView} */
-let wrapperViewInstance = null;
+let wrapperViewInstance: WrapperView|null = null;
 
 export class WrapperView extends UI.Widget.VBox {
-  /** @private */
-  constructor() {
+  _view: ConsoleView;
+
+  private constructor() {
     super();
     this.element.classList.add('console-view-wrapper');
 
     this._view = ConsoleView.instance();
   }
 
-  static instance() {
+  static instance(): WrapperView {
     if (!wrapperViewInstance) {
       wrapperViewInstance = new WrapperView();
     }
     return wrapperViewInstance;
   }
 
-  /**
-   * @override
-   */
-  wasShown() {
+  wasShown(): void {
     if (!ConsolePanel.instance().isShowing()) {
       this._showViewInWrapper();
     } else {
@@ -125,30 +116,22 @@ export class WrapperView extends UI.Widget.VBox {
     ConsolePanel._updateContextFlavor();
   }
 
-  /**
-   * @override
-   */
-  willHide() {
+  willHide(): void {
     UI.InspectorView.InspectorView.instance().setDrawerMinimized(false);
     ConsolePanel._updateContextFlavor();
   }
 
-  _showViewInWrapper() {
+  _showViewInWrapper(): void {
     this._view.show(this.element);
   }
 }
 
-/** @type {!ConsoleRevealer} */
-let consoleRevealerInstance;
+let consoleRevealerInstance: ConsoleRevealer;
 
-/**
- * @implements {Common.Revealer.Revealer}
- */
-export class ConsoleRevealer {
-  /**
-   * @param {{forceNew: ?boolean}} opts
-   */
-  static instance(opts = {forceNew: null}) {
+export class ConsoleRevealer implements Common.Revealer.Revealer {
+  static instance(opts: {
+    forceNew: boolean|null,
+  } = {forceNew: null}): ConsoleRevealer {
     const {forceNew} = opts;
     if (!consoleRevealerInstance || forceNew) {
       consoleRevealerInstance = new ConsoleRevealer();
@@ -157,12 +140,7 @@ export class ConsoleRevealer {
     return consoleRevealerInstance;
   }
 
-  /**
-   * @override
-   * @param {!Object} object
-   * @return {!Promise<void>}
-   */
-  async reveal(object) {
+  async reveal(_object: Object): Promise<void> {
     const consoleView = ConsoleView.instance();
     if (consoleView.isShowing()) {
       consoleView.focus();

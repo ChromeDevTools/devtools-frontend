@@ -1,14 +1,6 @@
 {
   "extensions": [
     {
-      "type": "@UI.Renderer",
-      "contextTypes": [
-        "SDK.DOMNode",
-        "SDK.DeferredDOMNode"
-      ],
-      "className": "Elements.ElementsTreeOutline.Renderer"
-    },
-    {
       "type": "@Common.Linkifier",
       "contextTypes": [
         "SDK.DOMNode",

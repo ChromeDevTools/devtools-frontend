@@ -1605,8 +1605,17 @@ export class ObjectPropertiesSectionsTreeExpandController {
     return result;
   }
 }
+let rendererInstance: Renderer;
 
 export class Renderer implements UI.UIUtils.Renderer {
+  static instance(opts: {forceNew: boolean} = {forceNew: false}): Renderer {
+    const {forceNew} = opts;
+    if (!rendererInstance || forceNew) {
+      rendererInstance = new Renderer();
+    }
+    return rendererInstance;
+  }
+
   render(object: Object, options?: UI.UIUtils.Options): Promise<{
     node: Node,
     tree: UI.TreeOutline.TreeOutline|null,

@@ -401,3 +401,13 @@ UI.Toolbar.registerToolbarItem({
   separator: undefined,
   loadItem: undefined,
 });
+
+UI.UIUtils.registerRenderer({
+  contextTypes() {
+    return [SDK.DOMModel.DOMNode, SDK.DOMModel.DeferredDOMNode];
+  },
+  async loadRenderer() {
+    const Elements = await loadElementsModule();
+    return Elements.ElementsTreeOutline.Renderer.instance();
+  },
+});

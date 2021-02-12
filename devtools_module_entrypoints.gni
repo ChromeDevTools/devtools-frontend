@@ -129,6 +129,7 @@ devtools_module_entrypoint_sources = [
   "node_main/node_main-meta.js",
   "node_main/node_main.js",
   "object_ui/object_ui-legacy.js",
+  "object_ui/object_ui-meta.js",
   "object_ui/object_ui.js",
   "perf_ui/perf_ui-legacy.js",
   "perf_ui/perf_ui-meta.js",

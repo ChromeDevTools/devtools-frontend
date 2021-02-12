@@ -1787,10 +1787,23 @@ export class UpdateRecord {
   }
 }
 
+/** @type {!Renderer} */
+let rendererInstance;
 /**
  * @implements {UI.UIUtils.Renderer}
  */
 export class Renderer {
+  /**
+   * @param {{forceNew: ?boolean}} opts
+   */
+  static instance(opts = {forceNew: null}) {
+    const {forceNew} = opts;
+    if (!rendererInstance || forceNew) {
+      rendererInstance = new Renderer();
+    }
+    return rendererInstance;
+  }
+
   /**
    * @override
    * @param {!Object} object

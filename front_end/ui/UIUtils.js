@@ -34,7 +34,6 @@ import * as DOMExtension from '../dom_extension/dom_extension.js';
 import * as Host from '../host/host.js';
 import * as Platform from '../platform/platform.js';
 import {ls} from '../platform/platform.js';
-import * as Root from '../root/root.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as ThemeSupport from '../theme_support/theme_support.js';
 
@@ -2007,12 +2006,12 @@ Renderer.render = async function(object, options) {
   if (!object) {
     throw new Error('Can\'t render ' + object);
   }
-  const extension = Root.Runtime.Runtime.instance().extension(Renderer, object);
+  const extension = getApplicableRegisteredRenderers(object)[0];
   if (!extension) {
     return null;
   }
-  const renderer = /** @type {?Renderer} */ (await extension.instance());
-  return renderer ? renderer.render(object, options) : null;
+  const renderer = await extension.loadRenderer();
+  return renderer.render(object, options);
 };
 
 /**
@@ -2146,3 +2145,45 @@ export const deepElementFromEvent = ev => {
   const root = event.target && /** @type {!Element} */ (event.target).getComponentRoot();
   return root ? deepElementFromPoint(/** @type {(!Document|!ShadowRoot)} */ (root), event.pageX, event.pageY) : null;
 };
+
+/** @type {!Array<!RendererRegistration>} */
+const registeredRenderers = [];
+
+/**
+ * @param {!RendererRegistration} registration
+ */
+export function registerRenderer(registration) {
+  registeredRenderers.push(registration);
+}
+/**
+ * @param {!Object} object
+ * @return {!Array<!RendererRegistration>}
+ */
+export function getApplicableRegisteredRenderers(object) {
+  return registeredRenderers.filter(isRendererApplicableToContextTypes);
+
+  /**
+   * @param {!RendererRegistration} rendererRegistration
+   * @return {boolean}
+   */
+  function isRendererApplicableToContextTypes(rendererRegistration) {
+    if (!rendererRegistration.contextTypes) {
+      return true;
+    }
+    for (const contextType of rendererRegistration.contextTypes()) {
+      if (object instanceof contextType) {
+        return true;
+      }
+    }
+    return false;
+  }
+}
+
+/**
+  * @typedef {{
+  *  loadRenderer: function(): !Promise<!Renderer>,
+  *  contextTypes: function(): !Array<?>,
+  * }}
+  */
+// @ts-ignore typedef
+export let RendererRegistration;

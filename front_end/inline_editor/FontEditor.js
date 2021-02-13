@@ -495,8 +495,11 @@ class FontPropertyInputs {
     this._boundUpdateCallback = updateCallback;
     this._boundResizeCallback = resizeCallback;
     this._selectedNode = UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode);
+    const propertyLabel = UI.UIUtils.createLabel(label, 'shadow-editor-label');
+    propertyField.append(propertyLabel);
     this._sliderInput = this._createSliderInput(propertyField, label);
     this._textBoxInput = this._createTextBoxInput(propertyField);
+    UI.ARIAUtils.bindLabelToControl(propertyLabel, this._textBoxInput);
     this._unitInput = this._createUnitInput(propertyField);
     this._selectorInput = this._createSelectorInput(propertyField);
     this._createTypeToggle(propertyField);
@@ -583,7 +586,6 @@ class FontPropertyInputs {
     const slider = /** @type {!UI.UIUtils.DevToolsSlider} */ (UI.UIUtils.createSlider(min, max, -1));
     slider.sliderElement.step = step.toString();
     slider.sliderElement.tabIndex = 0;
-    const sliderLabel = UI.UIUtils.createLabel(label, 'shadow-editor-label', slider);
     if (this._propertyInfo.value) {
       slider.value = parseFloat(this._propertyInfo.value);
     } else {
@@ -607,7 +609,6 @@ class FontPropertyInputs {
         this._applyNextInput = true;
       }
     });
-    field.appendChild(sliderLabel);
     field.appendChild(slider);
     UI.ARIAUtils.setAccessibleName(slider.sliderElement, i18nString(UIStrings.sSliderInput, {PH1: this._propertyName}));
     return slider;

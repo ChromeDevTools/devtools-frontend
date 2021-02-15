@@ -32,7 +32,8 @@ export const UIStrings = {
   */
   ifAndHowThisElementCanBeEdited: 'If and how this element can be edited.',
   /**
-  *@description Accessibility attribute name that appears under the Computed Properties section in the Accessibility pane of the Elements pane
+  *@description Adjective. Describes whether the currently selected HTML element of the page can receive focus at all (e.g. can the selected element receive user keyboard input).
+  *             Accessibility attribute name that appears under the Computed Properties section in the Accessibility pane of the Elements pane
   */
   focusable: 'Focusable',
   /**
@@ -40,7 +41,8 @@ export const UIStrings = {
   */
   ifTrueThisElementCanReceiveFocus: 'If true, this element can receive focus.',
   /**
-  *@description Accessibility attribute name that appears under the Computed Properties section in the Accessibility pane of the Elements pane
+  *@description Adjective. Describes whether the currently selected HTML element of the page is focused (e.g. the selected element receives user keyboard input).
+  *             Accessibility attribute name that appears under the Computed Properties section in the Accessibility pane of the Elements pane.
   */
   focused: 'Focused',
   /**

@@ -15,7 +15,8 @@ describe('The Application Tab', async () => {
     DOMAIN_SELECTOR = `${SESSION_STORAGE_SELECTOR} + ol > [aria-label="https://localhost:${getTestServerPort()}"]`;
   });
 
-  it('shows Session Storage keys and values', async () => {
+  // Flaky test
+  it.skip('[crbug.com/1178496] shows Session Storage keys and values', async () => {
     const {target} = getBrowserAndPages();
 
     await step('navigate to session-storage resource and open Application tab', async () => {

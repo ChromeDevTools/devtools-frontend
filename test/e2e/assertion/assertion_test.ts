@@ -20,7 +20,8 @@ describe('Assertions', async function() {
     assert.ok(expectedErrors.some(error => error.includes('expected failure 1')));
   });
 
-  it('[crbug.com/1145969]: console.error', async () => {
+  // Flaky test
+  it.skip('[crbug.com/1145969]: console.error', async () => {
     const {frontend} = getBrowserAndPages();
     await step('Check the evaluation results from console', async () => {
       frontend.evaluate(() => {

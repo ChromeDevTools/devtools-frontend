@@ -52,12 +52,17 @@ export const UIStrings = {
   */
   codeCoverage: 'Code Coverage',
   /**
-  *@description Cell title in Coverage List View of the Coverage tab
+  *@description Cell title in Coverage List View of the Coverage tab. The coverage tool tells
+  *developers which functions (logical groups of lines of code) were actually run/executed. If a
+  *function does get run, then it is marked in the UI to indicate that it was covered.
   */
   jsCoverageWithPerFunction:
       'JS coverage with per function granularity: Once a function was executed, the whole function is marked as covered.',
   /**
-  *@description Cell title in Coverage List View of the Coverage tab
+  *@description Cell title in Coverage List View of the Coverage tab. The coverage tool tells
+  *developers which blocks (logical groups of lines of code, smaller than a function) were actually
+  *run/executed. If a block does get run, then it is marked in the UI to indicate that it was
+  *covered.
   */
   jsCoverageWithPerBlock:
       'JS coverage with per block granularity: Once a block of JavaScript was executed, that block is marked as covered.',

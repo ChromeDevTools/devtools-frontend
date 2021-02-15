@@ -105,7 +105,7 @@ export const UIStrings = {
   */
   systemObjects: 'System objects',
   /**
-  *@description Text in Heap Profile View of a profiler tool
+  *@description The reported total size used in the selected time frame of the allocation sampling profile
   *@example {3 MB} PH1
   */
   selectedSizeS: 'Selected size: {PH1}',
@@ -167,7 +167,7 @@ export const UIStrings = {
   treatGlobalObjectsAsRoots:
       'Treat global objects as roots (recommended, unchecking this exposes internal nodes and introduces excessive detail, but might help debugging cycles in retaining paths)',
   /**
-  *@description Text in Heap Profile View of a profiler tool
+  *@description Progress update that the profiler is capturing a snapshot of the heap
   */
   snapshotting: 'Snapshotting…',
   /**

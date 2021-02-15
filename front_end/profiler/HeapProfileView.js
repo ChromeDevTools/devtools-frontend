@@ -19,28 +19,28 @@ import {ProfileView, WritableProfileHeader} from './ProfileView.js';
 
 export const UIStrings = {
   /**
-  *@description Text in Heap Profile View of a profiler tool
+  *@description The reported total size used in the selected time frame of the allocation sampling profile
   *@example {3 MB} PH1
   */
   selectedSizeS: 'Selected size: {PH1}',
   /**
-  *@description Text in Heap Profile View of a profiler tool
+  *@description Name of column header that reports the size (in terms of bytes) used for a particular part of the heap, excluding the size of the children nodes of this part of the heap
   */
   selfSizeBytes: 'Self Size (bytes)',
   /**
-  *@description Text in Heap Profile View of a profiler tool
+  *@description Name of column header that reports the total size (in terms of bytes) used for a particular part of the heap
   */
   totalSizeBytes: 'Total Size (bytes)',
   /**
-  *@description Text in Heap Profile View of a profiler tool
+  *@description Button text to stop profiling the heap
   */
   stopHeapProfiling: 'Stop heap profiling',
   /**
-  *@description Text in Heap Profile View of a profiler tool
+  *@description Button text to start profiling the heap
   */
   startHeapProfiling: 'Start heap profiling',
   /**
-  *@description Text in CPUProfile View of a profiler tool
+  *@description Progress update that the profiler is recording the contents of the heap
   */
   recording: 'Recording…',
   /**
@@ -48,15 +48,15 @@ export const UIStrings = {
   */
   heapProfilerIsRecording: 'Heap profiler is recording',
   /**
-  *@description Text in Heap Profile View of a profiler tool
+  *@description Progress update that the profiler is in the process of stopping its recording of the heap
   */
   stopping: 'Stopping…',
   /**
-  *@description Text in Heap Profile View of a profiler tool
+  *@description Sampling category to only profile allocations happening on the heap
   */
   allocationSampling: 'Allocation sampling',
   /**
-  *@description Text in Heap Profile View of a profiler tool
+  *@description The name of the collection of profiles that are gathered from various snapshots of the heap
   */
   samplingProfiles: 'SAMPLING PROFILES',
   /**
@@ -89,7 +89,7 @@ export const UIStrings = {
   */
   formatPercent: '{PH1} %',
   /**
-  *@description Text in Heap Profile View of a profiler tool
+  *@description The formatted size in kilobytes, abbreviated to kB
   *@example {1,021} PH1
   */
   skb: '{PH1} kB',
@@ -98,11 +98,11 @@ export const UIStrings = {
   */
   name: 'Name',
   /**
-  *@description Text in Heap Profile View of a profiler tool
+  *@description Tooltip of a cell that reports the size used for a particular part of the heap, excluding the size of the children nodes of this part of the heap
   */
   selfSize: 'Self size',
   /**
-  *@description Text in Heap Profile View of a profiler tool
+  *@description Tooltip of a cell that reports the total size used for a particular part of the heap
   */
   totalSize: 'Total size',
   /**

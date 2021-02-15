@@ -958,10 +958,6 @@ export class SecurityPanelSidebarTreeElement extends UI.TreeOutline.TreeElement 
     this.setSecurityState(Protocol.Security.SecurityState.Unknown);
   }
 
-  static SecurityStateComparator(a: SecurityPanelSidebarTreeElement, b: SecurityPanelSidebarTreeElement): number {
-    return SecurityModel.SecurityStateComparator(a.securityState(), b.securityState());
-  }
-
   setSecurityState(newSecurityState: Protocol.Security.SecurityState): void {
     if (this._securityState) {
       this._iconElement.classList.remove(this._cssPrefix + '-' + this._securityState);

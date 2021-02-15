@@ -36,7 +36,7 @@ import * as UI from '../ui/ui.js';
 
 import {ConsoleViewMessage} from './ConsoleViewMessage.js';  // eslint-disable-line no-unused-vars
 
-interface _Selection {
+interface SelectionModel {
   item: number;
   node: Node;
   offset: number;
@@ -54,8 +54,8 @@ export class ConsoleViewport {
   _firstActiveIndex: number;
   _lastActiveIndex: number;
   _renderedItems: ConsoleViewportElement[];
-  _anchorSelection: _Selection|null;
-  _headSelection: _Selection|null;
+  _anchorSelection: SelectionModel|null;
+  _headSelection: SelectionModel|null;
   _itemCount: number;
   _cumulativeHeights: Int32Array;
   _muteCopyHandler: boolean;
@@ -386,8 +386,8 @@ export class ConsoleViewport {
     const isBackward = this._isSelectionBackwards(selection);
     const startSelection = this._selectionIsBackward ? this._headSelection : this._anchorSelection;
     const endSelection = this._selectionIsBackward ? this._anchorSelection : this._headSelection;
-    let firstSelected: _Selection|null = null;
-    let lastSelected: _Selection|null = null;
+    let firstSelected: SelectionModel|null = null;
+    let lastSelected: SelectionModel|null = null;
     if (hasVisibleSelection) {
       firstSelected = this._createSelectionModel(firstSelectedIndex, (range.startContainer as Node), range.startOffset);
       lastSelected = this._createSelectionModel(lastSelectedIndex, (range.endContainer as Node), range.endOffset);
@@ -420,7 +420,7 @@ export class ConsoleViewport {
       return;
     }
 
-    const clampSelection = (selection: _Selection, isSelectionBackwards: boolean): {
+    const clampSelection = (selection: SelectionModel, isSelectionBackwards: boolean): {
       element: Node,
       offset: number,
     } => {
@@ -583,8 +583,8 @@ export class ConsoleViewport {
       return null;
     }
 
-    let startSelection: _Selection|null = null;
-    let endSelection: _Selection|null = null;
+    let startSelection: SelectionModel|null = null;
+    let endSelection: SelectionModel|null = null;
     if (this._selectionIsBackward) {
       startSelection = this._headSelection;
       endSelection = this._anchorSelection;

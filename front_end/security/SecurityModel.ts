@@ -61,6 +61,7 @@ export class SecurityModel extends SDK.SDKModel.SDKModel {
         SDK.NetworkManager.NetworkManager;
   }
 
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   static SecurityStateComparator(a: Protocol.Security.SecurityState|null, b: Protocol.Security.SecurityState|null):
       number {
     const securityStateMap = getOrCreateSecurityStateOrdinalMap();

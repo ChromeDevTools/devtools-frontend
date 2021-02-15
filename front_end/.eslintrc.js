@@ -25,15 +25,27 @@ module.exports = {
           },
           {
             'selector': 'method',
-            'modifiers': ['private', 'protected'],
             'format': ['camelCase'],
+          },
+          {
+            // Public methods are currently in transition and may still have leading underscores.
+            'selector': 'method',
+            'modifiers': ['public'],
+            'format': ['camelCase'],
+            'leadingUnderscore': 'allow',
+          },
+          {
+            // Object literals may be constructed as arguments to external libraries which follow different styles.
+            'selector': ['objectLiteralMethod', 'objectLiteralProperty'],
+            'modifiers': ['public'],
+            'format': null,
           },
           {
             'selector': 'accessor',
             'format': ['camelCase'],
           },
           {
-            'selector': ['enum', 'class'],
+            'selector': ['typeLike'],
             'format': ['PascalCase'],
           },
           {

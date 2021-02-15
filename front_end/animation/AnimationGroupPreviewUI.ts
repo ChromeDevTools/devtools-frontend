@@ -72,7 +72,7 @@ export class AnimationGroupPreviewUI {
       const y = String(Math.floor(this._viewBoxHeight / Math.max(6, numberOfAnimations) * i + 1));
       line.setAttribute('y1', y);
       line.setAttribute('y2', y);
-      line.style.stroke = AnimationUI.Color(this._model.animations()[i]);
+      line.style.stroke = AnimationUI.colorForAnimation(this._model.animations()[i]);
     }
   }
 }

@@ -296,7 +296,7 @@ export class TrackManager {
   }
 
   updateData(_name: string, value: string): void {
-    const tabs = this._view.GetTabs(this._type);
+    const tabs = this._view.getTabs(this._type);
 
     const newTabs = JSON.parse(value) as TabData[];
     let enumerate = 1;
@@ -440,7 +440,7 @@ export class PlayerPropertiesView extends UI.Widget.VBox {
     return textTracksTabs;
   }
 
-  GetTabs(type: string): GenericTrackMenu|NoTracksPlaceholderMenu {
+  getTabs(type: string): GenericTrackMenu|NoTracksPlaceholderMenu {
     if (type === 'audio') {
       return this._audioDecoderTabs;
     }

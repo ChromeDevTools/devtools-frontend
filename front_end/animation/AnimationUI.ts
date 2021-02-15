@@ -86,10 +86,10 @@ export class AnimationUI {
 
     this._movementInMs = 0;
     this._keyboardMovementRateMs = 50;
-    this._color = AnimationUI.Color(this._animation);
+    this._color = AnimationUI.colorForAnimation(this._animation);
   }
 
-  static Color(animation: AnimationImpl): string {
+  static colorForAnimation(animation: AnimationImpl): string {
     const names = Array.from(Colors.keys());
     const hashCode = Platform.StringUtilities.hashCode(animation.name() || animation.id());
     const cappedHashCode = hashCode % names.length;

@@ -199,7 +199,7 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
     return objectPropertiesSection;
   }
 
-  static CompareProperties(
+  static compareProperties(
       propertyA: SDK.RemoteObject.RemoteObjectProperty, propertyB: SDK.RemoteObject.RemoteObjectProperty): number {
     const a = propertyA.name;
     const b = propertyB.name;
@@ -699,7 +699,7 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
       internalProperties: SDK.RemoteObject.RemoteObjectProperty[]|null, skipProto: boolean,
       value: SDK.RemoteObject.RemoteObject|null, linkifier?: Components.Linkifier.Linkifier,
       emptyPlaceholder?: string|null): void {
-    properties.sort(ObjectPropertiesSection.CompareProperties);
+    properties.sort(ObjectPropertiesSection.compareProperties);
     internalProperties = internalProperties || [];
 
     const entriesProperty = internalProperties.find(property => property.name === '[[Entries]]');
@@ -1395,7 +1395,7 @@ export class ArrayGroupingTreeElement extends UI.TreeOutline.TreeElement {
     if (!properties) {
       return;
     }
-    properties.sort(ObjectPropertiesSection.CompareProperties);
+    properties.sort(ObjectPropertiesSection.compareProperties);
     for (let i = 0; i < properties.length; ++i) {
       parentMap.set(properties[i], this._object);
       const childTreeElement = new ObjectPropertyTreeElement(properties[i], linkifier);
@@ -1452,7 +1452,7 @@ export class ArrayGroupingTreeElement extends UI.TreeOutline.TreeElement {
       return;
     }
     const properties = allProperties.properties;
-    properties.sort(ObjectPropertiesSection.CompareProperties);
+    properties.sort(ObjectPropertiesSection.compareProperties);
     for (const property of properties) {
       parentMap.set(property, this._object);
       // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
@@ -1467,7 +1467,7 @@ export class ArrayGroupingTreeElement extends UI.TreeOutline.TreeElement {
 
     function buildObjectFragment(this: Object, skipGetOwnPropertyNames?: boolean): {
       // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/naming-convention
       __proto__: any,
     } {
       // @ts-ignore __proto__ exists on Object.

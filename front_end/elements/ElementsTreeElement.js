@@ -1729,9 +1729,9 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     const charToEntity = MappedCharToEntity;
     for (let i = 0, size = text.length; i < size; ++i) {
       const char = text.charAt(i);
-      if (charToEntity[char]) {
+      if (charToEntity.has(char)) {
         result += text.substring(lastIndexAfterEntity, i);
-        const entityValue = '&' + charToEntity[char] + ';';
+        const entityValue = '&' + charToEntity.get(char) + ';';
         entityRanges.push({offset: result.length, length: entityValue.length});
         result += entityValue;
         lastIndexAfterEntity = i + 1;

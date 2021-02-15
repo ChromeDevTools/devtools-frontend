@@ -1675,28 +1675,30 @@ ElementsTreeOutline.Events = {
 
 /**
  * @const
- * @type {!Object.<string, string>}
+ * @type {!Map.<string, string>}
  */
-export const MappedCharToEntity = {
-  '\xA0': 'nbsp',
-  '\xAD': 'shy',
-  '\u2002': 'ensp',
-  '\u2003': 'emsp',
-  '\u2009': 'thinsp',
-  '\u200a': 'hairsp',
-  '\u200b': 'ZeroWidthSpace',
-  '\u200c': 'zwnj',
-  '\u200d': 'zwj',
-  '\u200e': 'lrm',
-  '\u200f': 'rlm',
-  '\u202a': '#x202A',  // LRE
-  '\u202b': '#x202B',  // RLE
-  '\u202c': '#x202C',  // PDF
-  '\u202d': '#x202D',  // LRO
-  '\u202e': '#x202E',  // RLO
-  '\u2060': 'NoBreak',
-  '\ufeff': '#xFEFF',  // BOM
-};
+// clang-format off
+export const MappedCharToEntity = new Map([
+  ['\xA0', 'nbsp'],
+  ['\xAD', 'shy'],
+  ['\u2002', 'ensp'],
+  ['\u2003', 'emsp'],
+  ['\u2009', 'thinsp'],
+  ['\u200A', 'hairsp'],
+  ['\u200B', 'ZeroWidthSpace'],
+  ['\u200C', 'zwnj'],
+  ['\u200D', 'zwj'],
+  ['\u200E', 'lrm'],
+  ['\u200F', 'rlm'],
+  ['\u202A', '#x202A'],  // LRE
+  ['\u202B', '#x202B'],  // RLE
+  ['\u202C', '#x202C'],  // PDF
+  ['\u202D', '#x202D'],  // LRO
+  ['\u202E', '#x202E'],  // RLO
+  ['\u2060', 'NoBreak'],
+  ['\uFEFF', '#xFEFF'],  // BOM
+]);
+// clang-format on
 
 export class UpdateRecord {
   /**

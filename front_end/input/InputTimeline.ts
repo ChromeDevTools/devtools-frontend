@@ -49,7 +49,7 @@ export class InputTimeline extends UI.Widget.VBox implements Timeline.TimelineLo
 
   constructor() {
     super(true);
-    this.registerRequiredCSS('input/inputTimeline.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('input/inputTimeline.css', {enableLegacyPatching: false});
     this.element.classList.add('inputs-timeline');
 
     this._tracingClient = null;

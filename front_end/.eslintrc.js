@@ -19,7 +19,7 @@ module.exports = {
         'rulesdir/lit_no_style_interpolation': 2,
         '@typescript-eslint/naming-convention': [
           'error', {
-            'selector': 'property',
+            'selector': ['property', 'parameterProperty'],
             'format': ['camelCase'],
           },
           {
@@ -40,6 +40,26 @@ module.exports = {
           {
             'selector': 'function',
             'format': ['camelCase'],
+          },
+          {
+            'selector': 'variable',
+            'filter': {
+              // Ignore localization variables.
+              'regex': '^(UIStrings|str_)$',
+              'match': false
+            },
+            'format': ['camelCase'],
+          },
+          {
+            // We are using camelCase, PascalCase and UPPER_CASE for top-level constants, allow the for now.
+            'selector': 'variable',
+            'modifiers': ['const'],
+            'filter': {
+              // Ignore localization variables.
+              'regex': '^(UIStrings|str_)$',
+              'match': false
+            },
+            'format': ['camelCase', 'UPPER_CASE', 'PascalCase'],
           },
           {
             // Public methods are currently in transition and may still have leading underscores.

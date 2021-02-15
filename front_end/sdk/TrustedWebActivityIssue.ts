@@ -10,9 +10,9 @@ export class TrustedWebActivityIssue extends Issue {
   private issueDetails: Protocol.Audits.TrustedWebActivityIssueDetails;
 
   constructor(issueDetails: Protocol.Audits.TrustedWebActivityIssueDetails) {
-    const issue_code =
+    const issueCode =
         [Protocol.Audits.InspectorIssueCode.TrustedWebActivityIssue, issueDetails.violationType].join('::');
-    super(issue_code);
+    super(issueCode);
     this.issueDetails = issueDetails;
   }
 

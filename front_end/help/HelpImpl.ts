@@ -14,16 +14,16 @@ export const releaseVersionSeen = 'releaseNoteVersionSeen';
 
 export const releaseNoteViewId: string = 'release-note';
 
-let _latestReleaseNote: ReleaseNote;
+let latestReleaseNoteInstance: ReleaseNote;
 
 export function latestReleaseNote(): ReleaseNote {
   // @ts-ignore Included only for layout tests.
   const globalReleaseNotes: ReleaseNote[] = self.Help.releaseNoteText;
-  if (!_latestReleaseNote) {
-    _latestReleaseNote =
+  if (!latestReleaseNoteInstance) {
+    latestReleaseNoteInstance =
         (globalReleaseNotes || releaseNoteText).reduce((acc, note) => note.version > acc.version ? note : acc);
   }
-  return _latestReleaseNote;
+  return latestReleaseNoteInstance;
 }
 
 export function showReleaseNoteIfNeeded(): void {

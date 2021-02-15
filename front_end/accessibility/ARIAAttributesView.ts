@@ -56,7 +56,7 @@ export class ARIAAttributesPane extends AccessibilitySubPane {
   }
 
   _isARIAAttribute(attribute: SDK.DOMModel.Attribute): boolean {
-    return _attributes.has(attribute.name);
+    return ATTRIBUTES.has(attribute.name);
   }
 }
 
@@ -226,7 +226,7 @@ export class ARIAAttributePrompt extends UI.TextPrompt.TextPrompt {
 }
 
 // Keep this list in sync with https://w3c.github.io/aria/#state_prop_def
-const _attributes = new Set<string>([
+const ATTRIBUTES = new Set<string>([
   'role',
   'aria-activedescendant',
   'aria-atomic',

@@ -254,7 +254,7 @@ export class ScreencastView extends UI.Widget.VBox implements SDK.OverlayModel.H
           dimensionsCSS.width / this._imageElement.naturalWidth,
           dimensionsCSS.height / (this._imageElement.naturalWidth * deviceSizeRatio));
       this._viewportElement.classList.remove('hidden');
-      const bordersSize = _bordersSize;
+      const bordersSize = BORDERS_SIZE;
       if (this._imageZoom < 1.01 / window.devicePixelRatio) {
         this._imageZoom = 1 / window.devicePixelRatio;
       }
@@ -620,9 +620,9 @@ export class ScreencastView extends UI.Widget.VBox implements SDK.OverlayModel.H
 
   _viewportDimensions(): {width: number, height: number} {
     const gutterSize = 30;
-    const bordersSize = _bordersSize;
+    const bordersSize = BORDERS_SIZE;
     const width = this.element.offsetWidth - bordersSize - gutterSize;
-    const height = this.element.offsetHeight - bordersSize - gutterSize - _navBarHeight;
+    const height = this.element.offsetHeight - bordersSize - gutterSize - NAVBAR_HEIGHT;
     return {width: width, height: height};
   }
 
@@ -708,7 +708,7 @@ export class ScreencastView extends UI.Widget.VBox implements SDK.OverlayModel.H
     if (!url) {
       return;
     }
-    if (!url.match(_SchemeRegex)) {
+    if (!url.match(SCHEME_REGEX)) {
       url = 'http://' + url;
     }
 
@@ -739,7 +739,7 @@ export class ScreencastView extends UI.Widget.VBox implements SDK.OverlayModel.H
     this._navigationForward.disabled = this._historyIndex === (this._historyEntries.length - 1);
 
     let url: string = this._historyEntries[this._historyIndex].url;
-    const match = url.match(_HttpRegex);
+    const match = url.match(HTTP_REGEX);
     if (match) {
       url = match[1];
     }
@@ -754,10 +754,10 @@ export class ScreencastView extends UI.Widget.VBox implements SDK.OverlayModel.H
   }
 }
 
-export const _bordersSize = 44;
-export const _navBarHeight = 29;
-export const _HttpRegex = /^http:\/\/(.+)/;
-export const _SchemeRegex = /^(https?|about|chrome):/;
+export const BORDERS_SIZE = 44;
+export const NAVBAR_HEIGHT = 29;
+export const HTTP_REGEX = /^http:\/\/(.+)/;
+export const SCHEME_REGEX = /^(https?|about|chrome):/;
 
 export class ProgressTracker {
   _element: HTMLElement;

@@ -1919,21 +1919,21 @@ const MaxLengthToIgnoreHighlighter: number = 10000;
  */
 export const MaxLengthForLinks: number = 40;
 
-let _MaxTokenizableStringLength = 10000;
-let _LongStringVisibleLength = 5000;
+let maxTokenizableStringLength = 10000;
+let longStringVisibleLength = 5000;
 
 export const getMaxTokenizableStringLength = (): number => {
-  return _MaxTokenizableStringLength;
+  return maxTokenizableStringLength;
 };
 
 export const setMaxTokenizableStringLength = (length: number): void => {
-  _MaxTokenizableStringLength = length;
+  maxTokenizableStringLength = length;
 };
 
 export const getLongStringVisibleLength = (): number => {
-  return _LongStringVisibleLength;
+  return longStringVisibleLength;
 };
 
 export const setLongStringVisibleLength = (length: number): void => {
-  _LongStringVisibleLength = length;
+  longStringVisibleLength = length;
 };

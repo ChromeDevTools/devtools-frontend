@@ -270,13 +270,13 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
   }
 
   registerCallback(callback: (arg0: Array<string>) => void): number {
-    const requestId = ++_lastRequestId;
+    const requestId = ++lastRequestId;
     this._callbacks.set(requestId, callback);
     return requestId;
   }
 
   registerProgress(progress: Common.Progress.Progress): number {
-    const requestId = ++_lastRequestId;
+    const requestId = ++lastRequestId;
     this._progresses.set(requestId, progress);
     return requestId;
   }
@@ -341,7 +341,8 @@ export enum Events {
   ExcludedFolderRemoved = 'ExcludedFolderRemoved',
 }
 
-let _lastRequestId = 0;
+let lastRequestId = 0;
+
 export interface FileSystem {
   type: string;
   fileSystemName: string;

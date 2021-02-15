@@ -66,16 +66,16 @@ export class UIStringFormat {
   }
 }
 
-const _substitutionStrings = new WeakMap();
+const SUBSTITUTION_STRINGS = new WeakMap();
 
 export function ls(strings: TemplateStringsArray|string, ...vararg: unknown[]): LocalizedString {
   if (typeof strings === 'string') {
     return strings as LocalizedString;
   }
-  let substitutionString = _substitutionStrings.get(strings);
+  let substitutionString = SUBSTITUTION_STRINGS.get(strings);
   if (!substitutionString) {
     substitutionString = strings.join('%s');
-    _substitutionStrings.set(strings, substitutionString);
+    SUBSTITUTION_STRINGS.set(strings, substitutionString);
   }
   return UIString(substitutionString, ...vararg);
 }

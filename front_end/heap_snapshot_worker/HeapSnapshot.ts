@@ -723,13 +723,13 @@ export abstract class HeapSnapshot {
     this._edgeWeakType = this._edgeTypes.indexOf('weak');
     this._edgeInvisibleType = this._edgeTypes.indexOf('invisible');
 
-    const location_fields = meta.location_fields || [];
+    const locationFields = meta.location_fields || [];
 
-    this._locationIndexOffset = location_fields.indexOf('object_index');
-    this._locationScriptIdOffset = location_fields.indexOf('script_id');
-    this._locationLineOffset = location_fields.indexOf('line');
-    this._locationColumnOffset = location_fields.indexOf('column');
-    this._locationFieldCount = location_fields.length;
+    this._locationIndexOffset = locationFields.indexOf('object_index');
+    this._locationScriptIdOffset = locationFields.indexOf('script_id');
+    this._locationLineOffset = locationFields.indexOf('line');
+    this._locationColumnOffset = locationFields.indexOf('column');
+    this._locationFieldCount = locationFields.length;
 
     this.nodeCount = this.nodes.length / this._nodeFieldCount;
     this._edgeCount = this.containmentEdges.length / this._edgeFieldsCount;

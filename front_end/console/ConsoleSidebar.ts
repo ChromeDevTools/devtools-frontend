@@ -245,9 +245,9 @@ export class FilterTreeElement extends ConsoleSidebarTreeElement {
 
   _updateCounter(): void {
     if (!this._messageCount) {
-      this.title = _groupNoMessageTitleMap.get(this._filter.name) || '';
+      this.title = groupNoMessageTitleMap.get(this._filter.name) || '';
     } else if (this._messageCount === 1) {
-      this.title = _groupSingularTitleMap.get(this._filter.name) || '';
+      this.title = groupSingularTitleMap.get(this._filter.name) || '';
     } else {
       this.title = this._updatePluralTitle(this._filter.name, this._messageCount);
     }
@@ -256,7 +256,7 @@ export class FilterTreeElement extends ConsoleSidebarTreeElement {
   }
 
   _updatePluralTitle(filterName: string, messageCount: number): string {
-    const _groupPluralTitleMap = new Map([
+    const groupPluralTitleMap = new Map([
       [GroupName.ConsoleAPI, i18nString(UIStrings.dUserMessages, {PH1: messageCount})],
       [GroupName.All, i18nString(UIStrings.dMessages, {PH1: messageCount})],
       [GroupName.Error, i18nString(UIStrings.dErrors, {PH1: messageCount})],
@@ -264,7 +264,7 @@ export class FilterTreeElement extends ConsoleSidebarTreeElement {
       [GroupName.Info, i18nString(UIStrings.dInfo, {PH1: messageCount})],
       [GroupName.Verbose, i18nString(UIStrings.dVerbose, {PH1: messageCount})],
     ]);
-    return _groupPluralTitleMap.get(filterName as GroupName) || '';
+    return groupPluralTitleMap.get(filterName as GroupName) || '';
   }
   onMessageAdded(viewMessage: ConsoleViewMessage): void {
     const message = viewMessage.consoleMessage();
@@ -313,7 +313,7 @@ const enum GroupName {
   Verbose = 'verbose',
 }
 
-const _groupSingularTitleMap = new Map<string, string>([
+const groupSingularTitleMap = new Map<string, string>([
   [GroupName.ConsoleAPI, i18nString(UIStrings.UserMessage)],
   [GroupName.All, i18nString(UIStrings.Message)],
   [GroupName.Error, i18nString(UIStrings.Error)],
@@ -322,7 +322,7 @@ const _groupSingularTitleMap = new Map<string, string>([
   [GroupName.Verbose, i18nString(UIStrings.Verbose)],
 ]);
 
-const _groupNoMessageTitleMap = new Map<string, string>([
+const groupNoMessageTitleMap = new Map<string, string>([
   [GroupName.ConsoleAPI, i18nString(UIStrings.noUserMessages)],
   [GroupName.All, i18nString(UIStrings.noMessages)],
   [GroupName.Error, i18nString(UIStrings.noErrors)],

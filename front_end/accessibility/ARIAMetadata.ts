@@ -59,13 +59,13 @@ export class ARIAMetadata {
   }
 }
 
-let _instance: ARIAMetadata|undefined;
+let instance: ARIAMetadata|undefined;
 
 export function ariaMetadata(): ARIAMetadata {
-  if (!_instance) {
-    _instance = new ARIAMetadata(ARIAProperties.config as Config || null);
+  if (!instance) {
+    instance = new ARIAMetadata(ARIAProperties.config as Config || null);
   }
-  return _instance;
+  return instance;
 }
 
 export class Attribute {

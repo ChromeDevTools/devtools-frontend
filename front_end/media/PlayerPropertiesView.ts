@@ -164,9 +164,9 @@ export class PropertyRenderer extends UI.Widget.VBox {
   constructor(title: string) {
     super();
     this.contentElement.classList.add('media-property-renderer');
-    const _title = this.contentElement.createChild('span', 'media-property-renderer-title');
+    const titleElement = this.contentElement.createChild('span', 'media-property-renderer-title');
     this._contents = this.contentElement.createChild('span', 'media-property-renderer-contents');
-    UI.UIUtils.createTextChild(_title, title);
+    UI.UIUtils.createTextChild(titleElement, title);
     this._title = title;
     this._value = null;
     this._pseudoColorProtectionElement = null;

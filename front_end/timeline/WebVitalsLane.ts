@@ -68,8 +68,8 @@ export class WebVitalsEventLane extends WebVitalsLane {
       this.hoverMarker = null;
     } else {
       this.hoverMarker = this.markers.find(m => {
-        const _x = this.tX(m.timestamp);
-        return _x - 5 <= x && x <= _x + m.widthIncludingLabel;
+        const tX = this.tX(m.timestamp);
+        return tX - 5 <= x && x <= tX + m.widthIncludingLabel;
       }) ||
           null;
     }
@@ -213,19 +213,19 @@ export class WebVitalsEventLane extends WebVitalsLane {
 
     if (showDetails) {
       this.context.save();
-      const _x = this.tX(marker.timestamp) - 5 - 5;
-      const _y = 1;
-      const _width = widthIncludingTimestamp + 2 * 5;
-      const _height = this.timeline.getLineHeight() - 2;
+      const tX = this.tX(marker.timestamp) - 5 - 5;
+      const tY = 1;
+      const tWidth = widthIncludingTimestamp + 2 * 5;
+      const tHeight = this.timeline.getLineHeight() - 2;
 
 
       this.context.fillStyle = 'rgba(255, 255, 255, 0.8)';
-      this.context.fillRect(_x, _y, _width, _height);
+      this.context.fillRect(tX, tY, tWidth, tHeight);
 
       if (showFrame) {
         this.context.strokeStyle = '#1b73e7';
         this.context.lineWidth = 2;
-        this.context.strokeRect(_x, _y, _width, _height);
+        this.context.strokeRect(tX, tY, tWidth, tHeight);
         this.context.lineWidth = 1;
       }
 

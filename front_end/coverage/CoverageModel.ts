@@ -32,7 +32,7 @@ export enum Events {
 }
 
 
-const _coveragePollingPeriodMs: number = 200;
+const COVERAGE_POLLING_PERIOD_MS: number = 200;
 
 interface BacklogItem<T> {
   rawCoverageData: Array<T>;
@@ -137,7 +137,7 @@ export class CoverageModel extends SDK.SDKModel.SDKModel {
     this._currentPollPromise = this._pollAndCallback();
     await this._currentPollPromise;
     if (this._suspensionState === SuspensionState.Active || this._performanceTraceRecording) {
-      this._pollTimer = window.setTimeout(() => this._pollLoop(), _coveragePollingPeriodMs);
+      this._pollTimer = window.setTimeout(() => this._pollLoop(), COVERAGE_POLLING_PERIOD_MS);
     }
   }
 

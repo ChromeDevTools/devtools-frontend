@@ -534,16 +534,16 @@ export class IsolatedFileSystem extends PlatformFileSystem {
 
   contentType(path: string): Common.ResourceType.ResourceType {
     const extension = Common.ParsedURL.ParsedURL.extractExtension(path);
-    if (_styleSheetExtensions.has(extension)) {
+    if (STYLE_SHEET_EXTENSIONS.has(extension)) {
       return Common.ResourceType.resourceTypes.Stylesheet;
     }
-    if (_documentExtensions.has(extension)) {
+    if (DOCUMENT_EXTENSIONS.has(extension)) {
       return Common.ResourceType.resourceTypes.Document;
     }
-    if (ImageExtensions.has(extension)) {
+    if (IMAGE_EXTENSIONS.has(extension)) {
       return Common.ResourceType.resourceTypes.Image;
     }
-    if (_scriptExtensions.has(extension)) {
+    if (SCRIPT_EXTENSIONS.has(extension)) {
       return Common.ResourceType.resourceTypes.Script;
     }
     return BinaryExtensions.has(extension) ? Common.ResourceType.resourceTypes.Other :
@@ -561,15 +561,15 @@ export class IsolatedFileSystem extends PlatformFileSystem {
   }
 }
 
-const _styleSheetExtensions = new Set<string>(['css', 'scss', 'sass', 'less']);
-const _documentExtensions = new Set<string>(['htm', 'html', 'asp', 'aspx', 'phtml', 'jsp']);
+const STYLE_SHEET_EXTENSIONS = new Set<string>(['css', 'scss', 'sass', 'less']);
+const DOCUMENT_EXTENSIONS = new Set<string>(['htm', 'html', 'asp', 'aspx', 'phtml', 'jsp']);
 
-const _scriptExtensions = new Set<string>([
+const SCRIPT_EXTENSIONS = new Set<string>([
   'asp', 'aspx', 'c', 'cc', 'cljs', 'coffee', 'cpp', 'cs', 'dart', 'java', 'js',
   'jsp', 'jsx',  'h', 'm',  'mjs',  'mm',     'py',  'sh', 'ts',   'tsx',  'ls',
 ]);
 
-const ImageExtensions = new Set<string>(['jpeg', 'jpg', 'svg', 'gif', 'webp', 'png', 'ico', 'tiff', 'tif', 'bmp']);
+const IMAGE_EXTENSIONS = new Set<string>(['jpeg', 'jpg', 'svg', 'gif', 'webp', 'png', 'ico', 'tiff', 'tif', 'bmp']);
 
 export const BinaryExtensions = new Set<string>([
   // Executable extensions, roughly taken from https://en.wikipedia.org/wiki/Comparison_of_executable_file_formats

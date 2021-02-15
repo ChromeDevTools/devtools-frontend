@@ -204,7 +204,7 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
         // encodeURI() escapes all the unsafe filename characters except /:?*
         let encodedName = encodeURI(pathPart).replace(/[\/:\?\*]/g, match => '%' + match[0].charCodeAt(0).toString(16));
         // Windows does not allow a small set of filenames.
-        if (_reservedFileNames.has(encodedName.toLowerCase())) {
+        if (RESERVED_FILENAMES.has(encodedName.toLowerCase())) {
           encodedName = encodedName.split('').map(char => '%' + char.charCodeAt(0).toString(16)).join('');
         }
         // Windows does not allow the file to end in a space or dot (space should already be encoded).
@@ -483,7 +483,7 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
   }
 }
 
-const _reservedFileNames = new Set<string>([
+const RESERVED_FILENAMES = new Set<string>([
   'con',  'prn',  'aux',  'nul',  'com1', 'com2', 'com3', 'com4', 'com5', 'com6', 'com7',
   'com8', 'com9', 'lpt1', 'lpt2', 'lpt3', 'lpt4', 'lpt5', 'lpt6', 'lpt7', 'lpt8', 'lpt9',
 ]);

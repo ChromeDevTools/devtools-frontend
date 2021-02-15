@@ -159,8 +159,8 @@ export class PlayerListView extends UI.Widget.VBox implements TriggerDispatcher 
 
     // Url always has a value.
     if (property.name === PlayerPropertyKeys.FrameUrl) {
-      const url_path_component = property.value.substring(property.value.lastIndexOf('/') + 1);
-      this.setMediaElementPlayerTitle(playerID, url_path_component, true);
+      const urlPathComponent = property.value.substring(property.value.lastIndexOf('/') + 1);
+      this.setMediaElementPlayerTitle(playerID, urlPathComponent, true);
     }
   }
 

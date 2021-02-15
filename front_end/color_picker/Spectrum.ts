@@ -631,9 +631,9 @@ export class Spectrum extends UI.Widget.VBox {
     const mouseEvent = event as MouseEvent;
     const localX = mouseEvent.pageX - this._paletteContainer.totalOffsetLeft();
     const localY = mouseEvent.pageY - this._paletteContainer.totalOffsetTop();
-    const col = Math.min(localX / _colorChipSize | 0, _itemsPerPaletteRow - 1);
-    const row = (localY / _colorChipSize) | 0;
-    return Math.min(row * _itemsPerPaletteRow + col, this._customPaletteSetting.get().colors.length - 1);
+    const col = Math.min(localX / COLOR_CHIP_SIZE | 0, ITEMS_PER_PALETTE_ROW - 1);
+    const row = (localY / COLOR_CHIP_SIZE) | 0;
+    return Math.min(row * ITEMS_PER_PALETTE_ROW + col, this._customPaletteSetting.get().colors.length - 1);
   }
 
   _isDraggingToBin(event: Event): boolean {
@@ -650,8 +650,8 @@ export class Spectrum extends UI.Widget.VBox {
     const index = this._slotIndexForEvent(event);
     this._dragElement = element;
     const mouseEvent = event as MouseEvent;
-    this._dragHotSpotX = mouseEvent.pageX - (index % _itemsPerPaletteRow) * _colorChipSize;
-    this._dragHotSpotY = mouseEvent.pageY - (index / _itemsPerPaletteRow | 0) * _colorChipSize;
+    this._dragHotSpotX = mouseEvent.pageX - (index % ITEMS_PER_PALETTE_ROW) * COLOR_CHIP_SIZE;
+    this._dragHotSpotY = mouseEvent.pageY - (index / ITEMS_PER_PALETTE_ROW | 0) * COLOR_CHIP_SIZE;
     return true;
   }
 
@@ -665,8 +665,8 @@ export class Spectrum extends UI.Widget.VBox {
       return;
     }
     const newIndex = this._slotIndexForEvent(event);
-    const offsetX = mouseEvent.pageX - (newIndex % _itemsPerPaletteRow) * _colorChipSize;
-    const offsetY = mouseEvent.pageY - (newIndex / _itemsPerPaletteRow | 0) * _colorChipSize;
+    const offsetX = mouseEvent.pageX - (newIndex % ITEMS_PER_PALETTE_ROW) * COLOR_CHIP_SIZE;
+    const offsetY = mouseEvent.pageY - (newIndex / ITEMS_PER_PALETTE_ROW | 0) * COLOR_CHIP_SIZE;
 
     const isDeleting = this._isDraggingToBin(event);
     this._deleteIconToolbar.element.classList.add('dragging');
@@ -792,7 +792,7 @@ export class Spectrum extends UI.Widget.VBox {
     if (palette === this._customPaletteSetting.get()) {
       numColors++;
     }
-    const rowsNeeded = Math.max(1, Math.ceil(numColors / _itemsPerPaletteRow));
+    const rowsNeeded = Math.max(1, Math.ceil(numColors / ITEMS_PER_PALETTE_ROW));
     if (this._numPaletteRowsShown === rowsNeeded && !force) {
       return;
     }
@@ -831,10 +831,10 @@ export class Spectrum extends UI.Widget.VBox {
         nextColorIndex = colorIndex + 1;
         break;
       case 'ArrowUp':
-        nextColorIndex = colorIndex - _itemsPerPaletteRow;
+        nextColorIndex = colorIndex - ITEMS_PER_PALETTE_ROW;
         break;
       case 'ArrowDown':
-        nextColorIndex = colorIndex + _itemsPerPaletteRow;
+        nextColorIndex = colorIndex + ITEMS_PER_PALETTE_ROW;
         break;
     }
     if (nextColorIndex !== undefined && nextColorIndex > -1 &&
@@ -1213,8 +1213,8 @@ export enum Events {
   SizeChanged = 'SizeChanged',
 }
 
-const _colorChipSize = 24;
-const _itemsPerPaletteRow = 8;
+const COLOR_CHIP_SIZE = 24;
+const ITEMS_PER_PALETTE_ROW = 8;
 const GeneratedPaletteTitle = 'Page colors';
 
 export class PaletteGenerator {

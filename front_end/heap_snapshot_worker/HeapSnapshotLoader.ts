@@ -216,11 +216,11 @@ export class HeapSnapshotLoader {
     this._snapshot.edges = (edges as Uint32Array);
 
     if (this._snapshot.snapshot.trace_function_count) {
-      const trace_function_infos = await this._parseArray(
+      const traceFunctionInfos = await this._parseArray(
           '"trace_function_infos"', 'Loading allocation traces… {PH1}%',
           this._snapshot.snapshot.meta.trace_function_info_fields.length *
               this._snapshot.snapshot.trace_function_count);
-      this._snapshot.trace_function_infos = (trace_function_infos as Uint32Array);
+      this._snapshot.trace_function_infos = (traceFunctionInfos as Uint32Array);
 
       const thisTokenEndIndex = await this._findToken(':');
       const nextTokenIndex = await this._findToken('"', thisTokenEndIndex);

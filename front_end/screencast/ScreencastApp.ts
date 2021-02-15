@@ -19,7 +19,7 @@ export const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('screencast/ScreencastApp.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-let _appInstance: ScreencastApp;
+let appInstance: ScreencastApp;
 
 export class ScreencastApp implements Common.App.App,
                                       SDK.SDKModel.SDKModelObserver<SDK.ScreenCaptureModel.ScreenCaptureModel> {
@@ -38,10 +38,10 @@ export class ScreencastApp implements Common.App.App,
   }
 
   static _instance(): ScreencastApp {
-    if (!_appInstance) {
-      _appInstance = new ScreencastApp();
+    if (!appInstance) {
+      appInstance = new ScreencastApp();
     }
-    return _appInstance;
+    return appInstance;
   }
 
   presentUI(document: Document): void {

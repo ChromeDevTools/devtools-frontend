@@ -562,7 +562,7 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
 }
 
 /** @const */
-const _arrayLoadThreshold = 100;
+const ARRAY_LOAD_THRESHOLD = 100;
 
 /** @const */
 export const maxRenderableStringLength = 10000;
@@ -666,7 +666,7 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
       linkifier?: Components.Linkifier.Linkifier, emptyPlaceholder?: string|null, flattenProtoChain?: boolean,
       extraProperties?: SDK.RemoteObject.RemoteObjectProperty[],
       targetValue?: SDK.RemoteObject.RemoteObject): Promise<void> {
-    if (value.arrayLength() > _arrayLoadThreshold) {
+    if (value.arrayLength() > ARRAY_LOAD_THRESHOLD) {
       treeElement.removeChildren();
       ArrayGroupingTreeElement._populateArray(treeElement, value, 0, value.arrayLength() - 1, linkifier);
       return;

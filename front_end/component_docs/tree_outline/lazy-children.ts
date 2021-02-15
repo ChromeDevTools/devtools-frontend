@@ -9,6 +9,32 @@ import * as Components from '../../ui/components/components.js';
 await ComponentHelpers.ComponentServerSetup.setup();
 await FrontendHelpers.initializeGlobalVars();
 
+async function loadInSomeNodes(): Promise<Components.TreeOutlineUtils.TreeNode[]> {
+  const europeanOffices: Components.TreeOutlineUtils.TreeNode[] = [
+    {
+      key: 'UK',
+      children: (): Promise<Components.TreeOutlineUtils.TreeNode[]> => Promise.resolve([
+        {
+          key: 'LON',
+          children: (): Promise<Components.TreeOutlineUtils.TreeNode[]> =>
+              Promise.resolve([{key: '6PS'}, {key: 'CSG'}, {key: 'BEL'}]),
+        },
+      ]),
+    },
+    {
+      key: 'Germany',
+      children: (): Promise<Components.TreeOutlineUtils.TreeNode[]> => Promise.resolve([
+        {key: 'MUC'},
+        {key: 'BER'},
+      ]),
+    },
+  ];
+
+  return new Promise(resolve => {
+    setTimeout(() => resolve(europeanOffices), 250);
+  });
+}
+
 const data: Components.TreeOutline.TreeOutlineData = {
   tree: [
     {
@@ -16,25 +42,10 @@ const data: Components.TreeOutline.TreeOutlineData = {
       children: (): Promise<Components.TreeOutlineUtils.TreeNode[]> => Promise.resolve([
         {
           key: 'Europe',
-          children: (): Promise<Components.TreeOutlineUtils.TreeNode[]> => Promise.resolve([
-            {
-              key: 'UK',
-              children: (): Promise<Components.TreeOutlineUtils.TreeNode[]> => Promise.resolve([
-                {
-                  key: 'LON',
-                  children: (): Promise<Components.TreeOutlineUtils.TreeNode[]> =>
-                      Promise.resolve([{key: '6PS'}, {key: 'CSG'}, {key: 'BEL'}]),
-                },
-              ]),
-            },
-            {
-              key: 'Germany',
-              children: (): Promise<Components.TreeOutlineUtils.TreeNode[]> => Promise.resolve([
-                {key: 'MUC'},
-                {key: 'BER'},
-              ]),
-            },
-          ]),
+          chldren: async(): Promise<Components.TreeOutlineUtils.TreeNode[]> => {
+            const children = await loadInSomeNodes();
+            return children;
+          },
         },
       ]),
     },
@@ -54,6 +65,7 @@ const data: Components.TreeOutline.TreeOutlineData = {
           key: 'Calendar',
         },
       ]),
+
     },
   ],
 

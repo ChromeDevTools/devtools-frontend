@@ -6,7 +6,7 @@ import * as Platform from '../../platform/platform.js';
 import * as Coordinator from '../../render_coordinator/render_coordinator.js';
 import * as LitHtml from '../../third_party/lit-html/lit-html.js';
 
-import {findNextNodeForTreeOutlineKeyboardNavigation, isExpandableNode, trackDOMNodeToTreeNode, TreeNode} from './TreeOutlineUtils.js';
+import {findNextNodeForTreeOutlineKeyboardNavigation, isExpandableNode, trackDOMNodeToTreeNode, TreeNode, TreeNodeWithChildren} from './TreeOutlineUtils.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
@@ -18,6 +18,7 @@ export class TreeOutline extends HTMLElement {
   private readonly shadow = this.attachShadow({mode: 'open'});
   private treeData: readonly TreeNode[] = [];
   private nodeExpandedMap: WeakMap<TreeNode, boolean> = new WeakMap();
+  private nodeChildrenCacheMap: WeakMap<TreeNode, TreeNode[]> = new WeakMap();
   private domNodeToTreeNodeMap: WeakMap<HTMLLIElement, TreeNode> = new WeakMap();
   private hasRenderedAtLeastOnce = false;
   private focusableTreeNode: TreeNode|null = null;
@@ -50,29 +51,27 @@ export class TreeOutline extends HTMLElement {
    * depth is 0 indexed - so a maxDepth of 2 (default) will expand 3 levels: 0,
    * 1 and 2.
    */
-  expandRecursively(maxDepth = 2): void {
-    for (const rootNode of this.treeData) {
-      this.expandAndRecurse(rootNode, 0, maxDepth);
-    }
+  async expandRecursively(maxDepth = 2): Promise<void> {
+    await Promise.all(this.treeData.map(rootNode => this.expandAndRecurse(rootNode, 0, maxDepth)));
     this.render();
   }
 
-  collapseChildrenOfNode(domNode: HTMLLIElement): void {
+  async collapseChildrenOfNode(domNode: HTMLLIElement): Promise<void> {
     const treeNode = this.domNodeToTreeNodeMap.get(domNode);
     if (!treeNode) {
       return;
     }
-    this.recursivelyCollapseTreeNodeChildren(treeNode);
+    await this.recursivelyCollapseTreeNodeChildren(treeNode);
     this.render();
   }
 
-  private recursivelyCollapseTreeNodeChildren(treeNode: TreeNode): void {
+  private async recursivelyCollapseTreeNodeChildren(treeNode: TreeNode): Promise<void> {
     if (!isExpandableNode(treeNode) || !this.nodeIsExpanded(treeNode)) {
       return;
     }
-    for (const child of treeNode.children) {
-      this.recursivelyCollapseTreeNodeChildren(child);
-    }
+    const children = await this.fetchNodeChildren(treeNode);
+    const childRecursions = Promise.all(children.map(child => this.recursivelyCollapseTreeNodeChildren(child)));
+    await childRecursions;
     this.setNodeExpandedState(treeNode, false);
   }
 
@@ -83,6 +82,16 @@ export class TreeOutline extends HTMLElement {
     return this.focusableTreeNode;
   }
 
+  private async fetchNodeChildren(node: TreeNodeWithChildren): Promise<TreeNode[]> {
+    const cached = this.nodeChildrenCacheMap.get(node);
+    if (cached) {
+      return cached;
+    }
+    const children = await node.children();
+    this.nodeChildrenCacheMap.set(node, children);
+    return children;
+  }
+
   private setNodeExpandedState(node: TreeNode, newExpandedState: boolean): void {
     this.nodeExpandedMap.set(node, newExpandedState);
   }
@@ -91,7 +100,7 @@ export class TreeOutline extends HTMLElement {
     return this.nodeExpandedMap.get(node) || false;
   }
 
-  private expandAndRecurse(node: TreeNode, currentDepth: number, maxDepth: number): void {
+  private async expandAndRecurse(node: TreeNode, currentDepth: number, maxDepth: number): Promise<void> {
     if (!isExpandableNode(node)) {
       return;
     }
@@ -99,9 +108,8 @@ export class TreeOutline extends HTMLElement {
     if (currentDepth === maxDepth || !isExpandableNode(node)) {
       return;
     }
-    for (const childNode of node.children) {
-      this.expandAndRecurse(childNode, currentDepth + 1, maxDepth);
-    }
+    const children = await this.fetchNodeChildren(node);
+    await Promise.all(children.map(child => this.expandAndRecurse(child, currentDepth + 1, maxDepth)));
   }
 
   private onArrowClick(node: TreeNode): ((e: Event) => void) {
@@ -201,9 +209,9 @@ export class TreeOutline extends HTMLElement {
     }
   }
 
-  private renderNode(
+  private async renderNode(
       node: TreeNode, {depth, setSize, positionInSet}: {depth: number, setSize: number, positionInSet: number}):
-      LitHtml.TemplateResult {
+      Promise<LitHtml.TemplateResult> {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     let childrenToRender;
@@ -211,10 +219,11 @@ export class TreeOutline extends HTMLElement {
     if (!isExpandableNode(node) || !nodeIsExpanded) {
       childrenToRender = LitHtml.nothing;
     } else {
-      const childNodes = node.children.map((childNode, index) => {
-        return this.renderNode(childNode, {depth: depth + 1, setSize: node.children.length, positionInSet: index});
-      });
-      childrenToRender = LitHtml.html`<ul role="group">${childNodes}</ul>`;
+      const children = await this.fetchNodeChildren(node);
+      const childNodes = Promise.all(children.map((childNode, index) => {
+        return this.renderNode(childNode, {depth: depth + 1, setSize: children.length, positionInSet: index});
+      }));
+      childrenToRender = LitHtml.html`<ul role="group">${LitHtml.Directives.until(childNodes)}</ul>`;
     }
 
     const nodeIsFocusable = this.getFocusableTreeNode() === node;
@@ -304,11 +313,11 @@ export class TreeOutline extends HTMLElement {
       <div class="wrapping-container">
       <ul role="tree" @keydown=${this.onTreeKeyDown}>
         ${this.treeData.map((topLevelNode, index) => {
-          return this.renderNode(topLevelNode, {
+          return LitHtml.Directives.until(this.renderNode(topLevelNode, {
             depth: 0,
             setSize: this.treeData.length,
             positionInSet: index,
-          });
+          }));
         })}
       </ul>
       </div>

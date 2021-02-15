@@ -7,7 +7,10 @@ import("../../../third_party/typescript/typescript.gni")
 
 ts_library("ts") {
   testonly = true
-  sources = [ "basic.ts" ]
+  sources = [
+    "basic.ts",
+    "lazy-children.ts",
+  ]
 
   deps = [
     "../../../test/unittests/front_end/helpers",
@@ -18,7 +21,10 @@ ts_library("ts") {
 
 copy_to_gen("tree_outline") {
   testonly = true
-  sources = [ "basic.html" ]
+  sources = [
+    "basic.html",
+    "lazy-children.html",
+  ]
 
   deps = [ ":ts" ]
 }

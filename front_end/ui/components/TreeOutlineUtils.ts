@@ -8,10 +8,12 @@ interface BaseTreeNode {
   key: string;
 }
 
-interface TreeNodeWithChildren extends BaseTreeNode {
-  children: TreeNode[];
+export interface TreeNodeWithChildren extends BaseTreeNode {
+  children: () => Promise<TreeNode[]>;
 }
-interface LeafNode extends BaseTreeNode {}
+interface LeafNode extends BaseTreeNode {
+  children?: never;
+}
 
 export type TreeNode = TreeNodeWithChildren|LeafNode;
 

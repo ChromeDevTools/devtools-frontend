@@ -93,8 +93,10 @@ export const UIStrings = {
   */
   elementIsNotVisible: 'Element is not visible.',
   /**
-  *@description Reason element in Accessibility Node View of the Accessibility panel
-  @example {role=link} PH1
+  *@description Reason element in Accessibility Node View of the Accessibility panel. Indicates the
+  *ARIA role for this element, which will always have the format 'role=', but with different roles
+  *(which are not translated). https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles
+  *@example {role=link} PH1
   */
   elementHasPlaceholder: 'Element has {PH1}.',
   /**

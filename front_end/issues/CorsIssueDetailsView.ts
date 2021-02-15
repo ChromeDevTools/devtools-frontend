@@ -122,6 +122,6 @@ export class CorsIssueDetailsView extends AffectedResourcesView {
 
   update(): void {
     this.clear();
-    this.appendDetails(this.issue.corsIssues());
+    this.appendDetails(this.issue.getCorsIssues());
   }
 }

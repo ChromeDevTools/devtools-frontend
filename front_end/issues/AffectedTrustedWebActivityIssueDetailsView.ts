@@ -88,6 +88,6 @@ export class AffectedTrustedWebActivityIssueDetailsView extends AffectedResource
 
   update(): void {
     this.clear();
-    this.appendDetails(this.issue.trustedWebActivityIssues());
+    this.appendDetails(this.issue.getTrustedWebActivityIssues());
   }
 }

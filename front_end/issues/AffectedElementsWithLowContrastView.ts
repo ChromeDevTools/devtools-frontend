@@ -27,7 +27,7 @@ export class AffectedElementsWithLowContrastView extends AffectedElementsView {
 
   private async doUpdate(): Promise<void> {
     this.clear();
-    await this.appendLowContrastElements(this.aggregateIssue.lowContrastIssues());
+    await this.appendLowContrastElements(this.aggregateIssue.getLowContrastIssues());
   }
 
   private async appendLowContrastElement(issue: SDK.LowTextContrastIssue.LowTextContrastIssue): Promise<void> {

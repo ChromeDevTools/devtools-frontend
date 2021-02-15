@@ -321,7 +321,7 @@ class AffectedDirectivesView extends AffectedResourcesView {
 
   update(): void {
     this.clear();
-    this._appendAffectedContentSecurityPolicyDetails(this._issue.cspIssues());
+    this._appendAffectedContentSecurityPolicyDetails(this._issue.getCspIssues());
   }
 }
 
@@ -427,7 +427,7 @@ class AffectedRequestsView extends AffectedResourcesView {
   update(): void {
     this.clear();
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    for (const _ of this._issue.blockedByResponseDetails()) {
+    for (const _ of this._issue.getBlockedByResponseDetails()) {
       // If the issue has blockedByResponseDetails, the corresponding AffectedBlockedByResponseView
       // will take care of displaying the request.
       this.updateAffectedResourceCount(0);
@@ -484,13 +484,13 @@ const issueTypeToNetworkHeaderMap = new Map<symbol, string>([
 ]);
 
 class AffectedMixedContentView extends AffectedResourcesView {
-  _issue: SDK.Issue.Issue;
-  constructor(parent: IssueView, issue: SDK.Issue.Issue) {
+  _issue: AggregatedIssue;
+  constructor(parent: IssueView, issue: AggregatedIssue) {
     super(parent, {singular: i18nString(UIStrings.resource), plural: i18nString(UIStrings.resources)});
     this._issue = issue;
   }
 
-  _appendAffectedMixedContents(mixedContents: Iterable<Protocol.Audits.MixedContentIssueDetails>): void {
+  _appendAffectedMixedContentDetails(mixedContentIssues: Iterable<SDK.MixedContentIssue.MixedContentIssue>): void {
     const header = document.createElement('tr');
     this.appendColumnTitle(header, i18nString(UIStrings.name));
     this.appendColumnTitle(header, i18nString(UIStrings.restrictionStatus));
@@ -498,14 +498,15 @@ class AffectedMixedContentView extends AffectedResourcesView {
     this.affectedResources.appendChild(header);
 
     let count = 0;
-    for (const mixedContent of mixedContents) {
-      if (mixedContent.request) {
-        this.resolveRequestId(mixedContent.request.requestId).forEach(networkRequest => {
-          this.appendAffectedMixedContent(mixedContent, networkRequest);
+    for (const issue of mixedContentIssues) {
+      const details = issue.getDetails();
+      if (details.request) {
+        this.resolveRequestId(details.request.requestId).forEach(networkRequest => {
+          this.appendAffectedMixedContent(details, networkRequest);
           count++;
         });
       } else {
-        this.appendAffectedMixedContent(mixedContent);
+        this.appendAffectedMixedContent(details);
         count++;
       }
     }
@@ -544,7 +545,7 @@ class AffectedMixedContentView extends AffectedResourcesView {
 
   update(): void {
     this.clear();
-    this._appendAffectedMixedContents(this._issue.mixedContents());
+    this._appendAffectedMixedContentDetails(this._issue.getMixedContentIssues());
   }
 }
 
@@ -669,7 +670,7 @@ class AffectedBlockedByResponseView extends AffectedResourcesView {
 
   update(): void {
     this.clear();
-    this._appendDetails(this._issue.blockedByResponseDetails());
+    this._appendDetails(this._issue.getBlockedByResponseDetails());
   }
 }
 

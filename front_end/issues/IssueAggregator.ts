@@ -14,200 +14,200 @@ import * as SDK from '../sdk/sdk.js';
  * of all resources that are affected by the aggregated issues.
  */
 export class AggregatedIssue extends SDK.Issue.Issue {
-  _cookies: Map<string, {
+  private affectedCookies: Map<string, {
     cookie: Protocol.Audits.AffectedCookie,
     hasRequest: boolean,
   }>;
-  _requests: Map<string, Protocol.Audits.AffectedRequest>;
-  _representative: SDK.Issue.Issue|null;
-  _mixedContents: Map<string, Protocol.Audits.MixedContentIssueDetails>;
-  _heavyAdIssueDetails: Map<string, Protocol.Audits.HeavyAdIssueDetails>;
-  _cspIssues: Set<SDK.ContentSecurityPolicyIssue.ContentSecurityPolicyIssue>;
-  _lowContrastIssues: Set<SDK.LowTextContrastIssue.LowTextContrastIssue>;
-  _blockedByResponseDetails: Map<string, Protocol.Audits.BlockedByResponseIssueDetails>;
-  _trustedWebActivityIssues: Set<SDK.TrustedWebActivityIssue.TrustedWebActivityIssue>;
-  _aggregatedIssuesCount: number;
-  _sharedArrayBufferIssues: Set<SDK.SharedArrayBufferIssue.SharedArrayBufferIssue>;
-  _corsIssues: Set<SDK.CorsIssue.CorsIssue>;
+  private affectedRequests: Map<string, Protocol.Audits.AffectedRequest>;
+  private heavyAdIssueDetails: Map<string, Protocol.Audits.HeavyAdIssueDetails>;
+  private blockedByResponseDetails: Map<string, Protocol.Audits.BlockedByResponseIssueDetails>;
+  private corsIssues: Set<SDK.CorsIssue.CorsIssue>;
+  private cspIssues: Set<SDK.ContentSecurityPolicyIssue.ContentSecurityPolicyIssue>;
+  private lowContrastIssues: Set<SDK.LowTextContrastIssue.LowTextContrastIssue>;
+  private mixedContentIssues: Set<SDK.MixedContentIssue.MixedContentIssue>;
+  private sharedArrayBufferIssues: Set<SDK.SharedArrayBufferIssue.SharedArrayBufferIssue>;
+  private trustedWebActivityIssues: Set<SDK.TrustedWebActivityIssue.TrustedWebActivityIssue>;
+  private representative: SDK.Issue.Issue|null;
+  private aggregatedIssuesCount: number;
 
   constructor(code: string) {
     super(code);
-    this._cookies = new Map();
-    this._requests = new Map();
-    this._representative = null;
-    this._mixedContents = new Map();
-    this._heavyAdIssueDetails = new Map();
-    this._cspIssues = new Set();
-    this._lowContrastIssues = new Set();
-    this._blockedByResponseDetails = new Map();
-    this._trustedWebActivityIssues = new Set();
-    this._aggregatedIssuesCount = 0;
-    this._sharedArrayBufferIssues = new Set();
-    this._corsIssues = new Set();
+    this.affectedCookies = new Map();
+    this.affectedRequests = new Map();
+    this.heavyAdIssueDetails = new Map();
+    this.blockedByResponseDetails = new Map();
+    this.corsIssues = new Set();
+    this.cspIssues = new Set();
+    this.lowContrastIssues = new Set();
+    this.mixedContentIssues = new Set();
+    this.sharedArrayBufferIssues = new Set();
+    this.trustedWebActivityIssues = new Set();
+    this.representative = null;
+    this.aggregatedIssuesCount = 0;
   }
 
   primaryKey(): string {
     throw new Error('This should never be called');
   }
 
-  blockedByResponseDetails(): Iterable<Protocol.Audits.BlockedByResponseIssueDetails> {
-    return this._blockedByResponseDetails.values();
+  getBlockedByResponseDetails(): Iterable<Protocol.Audits.BlockedByResponseIssueDetails> {
+    return this.blockedByResponseDetails.values();
   }
 
   cookies(): Iterable<Protocol.Audits.AffectedCookie> {
-    return Array.from(this._cookies.values()).map(x => x.cookie);
+    return Array.from(this.affectedCookies.values()).map(x => x.cookie);
   }
 
   cookiesWithRequestIndicator(): Iterable<{
     cookie: Protocol.Audits.AffectedCookie,
     hasRequest: boolean,
   }> {
-    return this._cookies.values();
+    return this.affectedCookies.values();
   }
 
   heavyAds(): Iterable<Protocol.Audits.HeavyAdIssueDetails> {
-    return this._heavyAdIssueDetails.values();
+    return this.heavyAdIssueDetails.values();
   }
 
-  mixedContents(): Iterable<Protocol.Audits.MixedContentIssueDetails> {
-    return this._mixedContents.values();
+  getMixedContentIssues(): Iterable<SDK.MixedContentIssue.MixedContentIssue> {
+    return this.mixedContentIssues.values();
   }
 
-  trustedWebActivityIssues(): Iterable<SDK.TrustedWebActivityIssue.TrustedWebActivityIssue> {
-    return this._trustedWebActivityIssues;
+  getTrustedWebActivityIssues(): Iterable<SDK.TrustedWebActivityIssue.TrustedWebActivityIssue> {
+    return this.trustedWebActivityIssues;
   }
 
-  corsIssues(): Iterable<SDK.CorsIssue.CorsIssue> {
-    return this._corsIssues;
+  getCorsIssues(): Iterable<SDK.CorsIssue.CorsIssue> {
+    return this.corsIssues;
   }
 
-  cspIssues(): Iterable<SDK.ContentSecurityPolicyIssue.ContentSecurityPolicyIssue> {
-    return this._cspIssues;
+  getCspIssues(): Iterable<SDK.ContentSecurityPolicyIssue.ContentSecurityPolicyIssue> {
+    return this.cspIssues;
   }
 
-  lowContrastIssues(): Iterable<SDK.LowTextContrastIssue.LowTextContrastIssue> {
-    return this._lowContrastIssues;
+  getLowContrastIssues(): Iterable<SDK.LowTextContrastIssue.LowTextContrastIssue> {
+    return this.lowContrastIssues;
   }
 
   requests(): Iterable<Protocol.Audits.AffectedRequest> {
-    return this._requests.values();
+    return this.affectedRequests.values();
   }
 
-  sharedArrayBufferIssues(): Iterable<SDK.SharedArrayBufferIssue.SharedArrayBufferIssue> {
-    return this._sharedArrayBufferIssues;
+  getSharedArrayBufferIssues(): Iterable<SDK.SharedArrayBufferIssue.SharedArrayBufferIssue> {
+    return this.sharedArrayBufferIssues;
   }
 
   getDescription(): SDK.Issue.MarkdownIssueDescription|null {
-    if (this._representative) {
-      return this._representative.getDescription();
+    if (this.representative) {
+      return this.representative.getDescription();
     }
     return null;
   }
 
   getCategory(): symbol {
-    if (this._representative) {
-      return this._representative.getCategory();
+    if (this.representative) {
+      return this.representative.getCategory();
     }
     return SDK.Issue.IssueCategory.Other;
   }
 
   getAggregatedIssuesCount(): number {
-    return this._aggregatedIssuesCount;
+    return this.aggregatedIssuesCount;
   }
 
   /**
    * Produces a primary key for a cookie. Use this instead of `JSON.stringify` in
    * case new fields are added to `AffectedCookie`.
    */
-  _keyForCookie(cookie: Protocol.Audits.AffectedCookie): string {
+  private keyForCookie(cookie: Protocol.Audits.AffectedCookie): string {
     const {domain, path, name} = cookie;
     return `${domain};${path};${name}`;
   }
 
   addInstance(issue: SDK.Issue.Issue): void {
-    this._aggregatedIssuesCount++;
-    if (!this._representative) {
-      this._representative = issue;
+    this.aggregatedIssuesCount++;
+    if (!this.representative) {
+      this.representative = issue;
     }
     let hasRequest = false;
     for (const request of issue.requests()) {
       hasRequest = true;
-      if (!this._requests.has(request.requestId)) {
-        this._requests.set(request.requestId, request);
+      if (!this.affectedRequests.has(request.requestId)) {
+        this.affectedRequests.set(request.requestId, request);
       }
     }
     for (const cookie of issue.cookies()) {
-      const key = this._keyForCookie(cookie);
-      if (!this._cookies.has(key)) {
-        this._cookies.set(key, {cookie, hasRequest});
+      const key = this.keyForCookie(cookie);
+      if (!this.affectedCookies.has(key)) {
+        this.affectedCookies.set(key, {cookie, hasRequest});
       }
     }
-    for (const mixedContent of issue.mixedContents()) {
-      const key = JSON.stringify(mixedContent);
-      this._mixedContents.set(key, mixedContent);
+    if (issue instanceof SDK.MixedContentIssue.MixedContentIssue) {
+      this.mixedContentIssues.add(issue);
     }
     for (const heavyAds of issue.heavyAds()) {
       const key = JSON.stringify(heavyAds);
-      this._heavyAdIssueDetails.set(key, heavyAds);
+      this.heavyAdIssueDetails.set(key, heavyAds);
     }
-    for (const details of issue.blockedByResponseDetails()) {
+    for (const details of issue.getBlockedByResponseDetails()) {
       const key = JSON.stringify(details, ['parentFrame', 'blockedFrame', 'requestId', 'frameId', 'reason', 'request']);
-      this._blockedByResponseDetails.set(key, details);
+      this.blockedByResponseDetails.set(key, details);
     }
     if (issue instanceof SDK.TrustedWebActivityIssue.TrustedWebActivityIssue) {
-      this._trustedWebActivityIssues.add(issue);
+      this.trustedWebActivityIssues.add(issue);
     }
     if (issue instanceof SDK.ContentSecurityPolicyIssue.ContentSecurityPolicyIssue) {
-      this._cspIssues.add(issue);
+      this.cspIssues.add(issue);
     }
     if (issue instanceof SDK.SharedArrayBufferIssue.SharedArrayBufferIssue) {
-      this._sharedArrayBufferIssues.add(issue);
+      this.sharedArrayBufferIssues.add(issue);
     }
     if (issue instanceof SDK.LowTextContrastIssue.LowTextContrastIssue) {
-      this._lowContrastIssues.add(issue);
+      this.lowContrastIssues.add(issue);
     }
     if (issue instanceof SDK.CorsIssue.CorsIssue) {
-      this._corsIssues.add(issue);
+      this.corsIssues.add(issue);
     }
   }
 }
 
 export class IssueAggregator extends Common.ObjectWrapper.ObjectWrapper {
-  _aggregatedIssuesByCode: Map<string, AggregatedIssue>;
-  _issuesManager: BrowserSDK.IssuesManager.IssuesManager;
+  private aggregatedIssuesByCode: Map<string, AggregatedIssue>;
+  private issuesManager: BrowserSDK.IssuesManager.IssuesManager;
+
   constructor(issuesManager: BrowserSDK.IssuesManager.IssuesManager) {
     super();
-    this._aggregatedIssuesByCode = new Map();
-    this._issuesManager = issuesManager;
-    this._issuesManager.addEventListener(BrowserSDK.IssuesManager.Events.IssueAdded, this._onIssueAdded, this);
-    this._issuesManager.addEventListener(
-        BrowserSDK.IssuesManager.Events.FullUpdateRequired, this._onFullUpdateRequired, this);
-    for (const issue of this._issuesManager.issues()) {
-      this._aggregateIssue(issue);
+    this.aggregatedIssuesByCode = new Map();
+    this.issuesManager = issuesManager;
+    this.issuesManager.addEventListener(BrowserSDK.IssuesManager.Events.IssueAdded, this.onIssueAdded, this);
+    this.issuesManager.addEventListener(
+        BrowserSDK.IssuesManager.Events.FullUpdateRequired, this.onFullUpdateRequired, this);
+    for (const issue of this.issuesManager.issues()) {
+      this.aggregateIssue(issue);
     }
   }
 
-  _onIssueAdded(event: Common.EventTarget.EventTargetEvent): void {
+  private onIssueAdded(event: Common.EventTarget.EventTargetEvent): void {
     const {issue} = (event.data as {
       issuesModel: SDK.IssuesModel.IssuesModel,
       issue: SDK.Issue.Issue,
     });
-    this._aggregateIssue(issue);
+    this.aggregateIssue(issue);
   }
 
-  _onFullUpdateRequired(): void {
-    this._aggregatedIssuesByCode.clear();
-    for (const issue of this._issuesManager.issues()) {
-      this._aggregateIssue(issue);
+  private onFullUpdateRequired(): void {
+    this.aggregatedIssuesByCode.clear();
+    for (const issue of this.issuesManager.issues()) {
+      this.aggregateIssue(issue);
     }
     this.dispatchEventToListeners(Events.FullUpdateRequired);
   }
 
-  _aggregateIssue(issue: SDK.Issue.Issue): AggregatedIssue {
-    let aggregatedIssue = this._aggregatedIssuesByCode.get(issue.code());
+  private aggregateIssue(issue: SDK.Issue.Issue): AggregatedIssue {
+    let aggregatedIssue = this.aggregatedIssuesByCode.get(issue.code());
     if (!aggregatedIssue) {
       aggregatedIssue = new AggregatedIssue(issue.code());
-      this._aggregatedIssuesByCode.set(issue.code(), aggregatedIssue);
+      this.aggregatedIssuesByCode.set(issue.code(), aggregatedIssue);
     }
     aggregatedIssue.addInstance(issue);
     this.dispatchEventToListeners(Events.AggregatedIssueUpdated, aggregatedIssue);
@@ -215,11 +215,11 @@ export class IssueAggregator extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   aggregatedIssues(): Iterable<AggregatedIssue> {
-    return this._aggregatedIssuesByCode.values();
+    return this.aggregatedIssuesByCode.values();
   }
 
   numberOfAggregatedIssues(): number {
-    return this._aggregatedIssuesByCode.size;
+    return this.aggregatedIssuesByCode.size;
   }
 }
 

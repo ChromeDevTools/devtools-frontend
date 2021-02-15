@@ -54,7 +54,7 @@ describeWithEnvironment('AggregatedIssue', async () => {
 
     const aggregatedIssues = Array.from(aggregator.aggregatedIssues());
     assert.strictEqual(aggregatedIssues.length, 1);
-    const lowContrastIssues = Array.from(aggregatedIssues[0].lowContrastIssues());
+    const lowContrastIssues = Array.from(aggregatedIssues[0].getLowContrastIssues());
     assert.strictEqual(lowContrastIssues.length, 3);
     const violatingNodeIds = [];
     for (const contrastIssue of lowContrastIssues) {

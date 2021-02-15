@@ -93,7 +93,7 @@ export class Issue extends Common.ObjectWrapper.ObjectWrapper {
   /**
    * @return {!Iterable<!Protocol.Audits.BlockedByResponseIssueDetails>}
    */
-  blockedByResponseDetails() {
+  getBlockedByResponseDetails() {
     return [];
   }
 
@@ -115,13 +115,6 @@ export class Issue extends Common.ObjectWrapper.ObjectWrapper {
    * @returns {!Iterable<!Protocol.Audits.HeavyAdIssueDetails>}
    */
   heavyAds() {
-    return [];
-  }
-
-  /**
-   * @returns {!Iterable<!Protocol.Audits.MixedContentIssueDetails>}
-   */
-  mixedContents() {
     return [];
   }
 

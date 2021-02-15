@@ -49,7 +49,7 @@ export class CrossOriginEmbedderPolicyIssue extends Issue {
    * @override
    * @returns {!Iterable<Protocol.Audits.BlockedByResponseIssueDetails>}
    */
-  blockedByResponseDetails() {
+  getBlockedByResponseDetails() {
     return [this._details];
   }
 

@@ -36,12 +36,8 @@ export class MixedContentIssue extends Issue {
     return [];
   }
 
-  /**
-   * @override
-   * @returns {!Iterable<!Protocol.Audits.MixedContentIssueDetails>}
-   */
-  mixedContents() {
-    return [this._issueDetails];
+  getDetails() {
+    return this._issueDetails;
   }
 
   /**

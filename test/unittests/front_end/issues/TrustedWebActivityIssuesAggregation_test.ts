@@ -44,14 +44,14 @@ describeWithEnvironment('AggregatedIssue', async () => {
 
     const issues = Array.from(aggregator.aggregatedIssues());
     assert.strictEqual(issues.length, 1);
-    const violationType = [...issues[0].trustedWebActivityIssues()].map(r => r.details().violationType).sort();
+    const violationType = [...issues[0].getTrustedWebActivityIssues()].map(r => r.details().violationType).sort();
     assert.deepStrictEqual(violationType, [
       Protocol.Audits.TwaQualityEnforcementViolationType.KHttpError,
       Protocol.Audits.TwaQualityEnforcementViolationType.KHttpError,
     ]);
-    const httpStatusCode = [...issues[0].trustedWebActivityIssues()].map(r => r.details().httpStatusCode).sort();
+    const httpStatusCode = [...issues[0].getTrustedWebActivityIssues()].map(r => r.details().httpStatusCode).sort();
     assert.deepStrictEqual(httpStatusCode, [400, 500]);
-    const url = [...issues[0].trustedWebActivityIssues()].map(r => r.details().url).sort();
+    const url = [...issues[0].getTrustedWebActivityIssues()].map(r => r.details().url).sort();
     assert.deepStrictEqual(url, ['test.url1.com', 'test.url2.com']);
   });
 
@@ -86,7 +86,7 @@ describeWithEnvironment('AggregatedIssue', async () => {
     const issues = Array.from(aggregator.aggregatedIssues());
     assert.strictEqual(issues.length, 3);
     const violationType =
-        [...issues].map(r => Array.from(r.trustedWebActivityIssues())[0].details().violationType).sort();
+        [...issues].map(r => Array.from(r.getTrustedWebActivityIssues())[0].details().violationType).sort();
     assert.deepStrictEqual(violationType, [
       Protocol.Audits.TwaQualityEnforcementViolationType.KDigitalAssetLinks,
       Protocol.Audits.TwaQualityEnforcementViolationType.KHttpError,

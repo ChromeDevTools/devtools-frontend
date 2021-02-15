@@ -122,6 +122,6 @@ export class AffectedSharedArrayBufferIssueDetailsView extends AffectedResources
 
   update(): void {
     this.clear();
-    this.appendDetails(this.issue.sharedArrayBufferIssues());
+    this.appendDetails(this.issue.getSharedArrayBufferIssues());
   }
 }

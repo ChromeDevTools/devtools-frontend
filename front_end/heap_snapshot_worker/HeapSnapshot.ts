@@ -2021,24 +2021,24 @@ export abstract class HeapSnapshot {
 }
 
 class HeapSnapshotMetainfo {
-  location_fields: string[] = [];
-  node_fields: string[] = [];
-  node_types: string[][] = [];
-  edge_fields: string[] = [];
-  edge_types: string[][] = [];
-  trace_function_info_fields: string[] = [];
-  trace_node_fields: string[] = [];
-  sample_fields: string[] = [];
-  type_strings: {[key: string]: string} = {};
+  location_fields: string[] = [];              // eslint-disable-line @typescript-eslint/naming-convention
+  node_fields: string[] = [];                  // eslint-disable-line @typescript-eslint/naming-convention
+  node_types: string[][] = [];                 // eslint-disable-line @typescript-eslint/naming-convention
+  edge_fields: string[] = [];                  // eslint-disable-line @typescript-eslint/naming-convention
+  edge_types: string[][] = [];                 // eslint-disable-line @typescript-eslint/naming-convention
+  trace_function_info_fields: string[] = [];   // eslint-disable-line @typescript-eslint/naming-convention
+  trace_node_fields: string[] = [];            // eslint-disable-line @typescript-eslint/naming-convention
+  sample_fields: string[] = [];                // eslint-disable-line @typescript-eslint/naming-convention
+  type_strings: {[key: string]: string} = {};  // eslint-disable-line @typescript-eslint/naming-convention
 }
 
 export class HeapSnapshotHeader {
   title: string;
   meta: HeapSnapshotMetainfo;
-  node_count: number;
-  edge_count: number;
-  trace_function_count: number;
-  root_index: number;
+  node_count: number;            // eslint-disable-line @typescript-eslint/naming-convention
+  edge_count: number;            // eslint-disable-line @typescript-eslint/naming-convention
+  trace_function_count: number;  // eslint-disable-line @typescript-eslint/naming-convention
+  root_index: number;            // eslint-disable-line @typescript-eslint/naming-convention
   constructor() {
     // New format.
     this.title = '';

@@ -17,7 +17,9 @@ export class JavaScriptREPL {
       return code;
     }
 
-    const parse = (async (): Promise<number> => 0).constructor;
+    // TODO: Remove next line once crbug.com/1177242 is solved.
+    // eslint-disable-next-line @typescript-eslint/space-before-function-paren
+    const parse = (async(): Promise<number> => 0).constructor;
     try {
       // Check if the code can be interpreted as an expression.
       parse('return ' + code + ';');

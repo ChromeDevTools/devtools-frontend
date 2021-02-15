@@ -651,8 +651,10 @@ export class URLCoverageInfo extends Common.ObjectWrapper.ObjectWrapper {
 
     return entry;
   }
+}
 
-  static readonly Events = {
+export namespace URLCoverageInfo {
+  export const Events = {
     SizesChanged: Symbol('SizesChanged'),
   };
 }

@@ -35,8 +35,8 @@ export class ColorSwatch extends HTMLElement {
   private readonly shadow = this.attachShadow({mode: 'open'});
   private tooltip: string = i18nString(UIStrings.shiftclickToChangeColorFormat);
   private text: string|null = null;
-  private _color: Common.Color.Color|null = null;
-  private _format: string|null = null;
+  private color: Common.Color.Color|null = null;
+  private format: string|null = null;
 
   constructor() {
     super();
@@ -49,12 +49,12 @@ export class ColorSwatch extends HTMLElement {
     return element.localName === 'devtools-color-swatch';
   }
 
-  get color(): Common.Color.Color|null {
-    return this._color;
+  getColor(): Common.Color.Color|null {
+    return this.color;
   }
 
-  get format(): string|null {
-    return this._format;
+  getFormat(): string|null {
+    return this.format;
   }
 
   get anchorBox(): AnchorBox|null {
@@ -70,25 +70,25 @@ export class ColorSwatch extends HTMLElement {
    */
   renderColor(color: Common.Color.Color|string, formatOrUseUserSetting?: string|boolean, tooltip?: string): void {
     if (typeof color === 'string') {
-      this._color = Common.Color.Color.parse(color);
+      this.color = Common.Color.Color.parse(color);
       this.text = color;
-      if (!this._color) {
+      if (!this.color) {
         this.renderTextOnly();
         return;
       }
     } else {
-      this._color = color;
+      this.color = color;
     }
 
     if (typeof formatOrUseUserSetting === 'boolean' && formatOrUseUserSetting) {
-      this._format = Common.Settings.detectColorFormat(this._color);
+      this.format = Common.Settings.detectColorFormat(this.color);
     } else if (typeof formatOrUseUserSetting === 'string') {
-      this._format = formatOrUseUserSetting;
+      this.format = formatOrUseUserSetting;
     } else {
-      this._format = this._color.format();
+      this.format = this.color.format();
     }
 
-    this.text = this._color.asString(this._format);
+    this.text = this.color.asString(this.format);
 
     if (tooltip) {
       this.tooltip = tooltip;
@@ -136,21 +136,21 @@ export class ColorSwatch extends HTMLElement {
   }
 
   private toggleNextFormat(): void {
-    if (!this._color || !this._format) {
+    if (!this.color || !this.format) {
       return;
     }
 
     let currentValue;
     do {
-      this._format = nextColorFormat(this._color, this._format);
-      currentValue = this._color.asString(this._format);
+      this.format = nextColorFormat(this.color, this.format);
+      currentValue = this.color.asString(this.format);
     } while (currentValue === this.text);
 
     if (currentValue) {
       this.text = currentValue;
       this.render();
 
-      this.dispatchEvent(new FormatChangedEvent(this._format, this.text));
+      this.dispatchEvent(new FormatChangedEvent(this.format, this.text));
     }
   }
 }

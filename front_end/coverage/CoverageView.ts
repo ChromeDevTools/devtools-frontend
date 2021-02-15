@@ -494,7 +494,7 @@ export class CoverageView extends UI.Widget.VBox {
 
   _isVisible(ignoreTextFilter: boolean, coverageInfo: URLCoverageInfo): boolean {
     const url = coverageInfo.url();
-    if (url.startsWith(CoverageView._extensionBindingsURLPrefix)) {
+    if (url.startsWith(CoverageView.EXTENSION_BINDINGS_URL_PREFIX)) {
       return false;
     }
     if (coverageInfo.isContentScript() && !this._showContentScriptsSetting.get()) {
@@ -521,7 +521,7 @@ export class CoverageView extends UI.Widget.VBox {
     this._listView.selectByUrl(url);
   }
 
-  static readonly _extensionBindingsURLPrefix = 'extensions::';
+  static readonly EXTENSION_BINDINGS_URL_PREFIX = 'extensions::';
 }
 
 let actionDelegateInstance: ActionDelegate;
@@ -585,7 +585,7 @@ export class LineDecorator implements SourceFrame.SourceFrame.LineDecorator {
   _innerDecorate(
       uiSourceCode: Workspace.UISourceCode.UISourceCode, textEditor: SourceFrame.SourcesTextEditor.SourcesTextEditor,
       lineUsage: (boolean|undefined)[]): void {
-    const gutterType = LineDecorator._gutterType;
+    const gutterType = LineDecorator.GUTTER_TYPE;
     this._uninstallGutter(textEditor);
     if (lineUsage.length) {
       this._installGutter(textEditor, uiSourceCode.url());
@@ -605,7 +605,7 @@ export class LineDecorator implements SourceFrame.SourceFrame.LineDecorator {
   makeGutterClickHandler(url: string): (arg0: Common.EventTarget.EventTargetEvent) => void {
     function handleGutterClick(event: Common.EventTarget.EventTargetEvent): void {
       const eventData = event.data as SourceFrame.SourcesTextEditor.GutterClickEventData;
-      if (eventData.gutterType !== LineDecorator._gutterType) {
+      if (eventData.gutterType !== LineDecorator.GUTTER_TYPE) {
         return;
       }
       const coverageViewId = 'coverage';
@@ -630,12 +630,12 @@ export class LineDecorator implements SourceFrame.SourceFrame.LineDecorator {
       listener = this.makeGutterClickHandler(url);
       this._listeners.set(textEditor, listener);
     }
-    textEditor.installGutter(LineDecorator._gutterType, false);
+    textEditor.installGutter(LineDecorator.GUTTER_TYPE, false);
     textEditor.addEventListener(SourceFrame.SourcesTextEditor.Events.GutterClick, listener, this);
   }
 
   _uninstallGutter(textEditor: SourceFrame.SourcesTextEditor.SourcesTextEditor): void {
-    textEditor.uninstallGutter(LineDecorator._gutterType);
+    textEditor.uninstallGutter(LineDecorator.GUTTER_TYPE);
     const listener = this._listeners.get(textEditor);
     if (listener) {
       textEditor.removeEventListener(SourceFrame.SourcesTextEditor.Events.GutterClick, listener, this);
@@ -643,5 +643,5 @@ export class LineDecorator implements SourceFrame.SourceFrame.LineDecorator {
     }
   }
 
-  static readonly _gutterType = 'CodeMirror-gutter-coverage';
+  static readonly GUTTER_TYPE = 'CodeMirror-gutter-coverage';
 }

@@ -127,7 +127,7 @@ describe('ColorSwatch', () => {
     const swatch = createSwatch('red');
     const target = getClickTarget(swatch);
 
-    let currentFormat = swatch.format;
+    let currentFormat = swatch.getFormat();
     swatch.addEventListener('format-changed', (e: Event) => {
       currentFormat = (e as InlineEditor.ColorSwatchImpl.FormatChangedEvent).data.format;
     });

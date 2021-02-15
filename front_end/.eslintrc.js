@@ -20,8 +20,18 @@ module.exports = {
         '@typescript-eslint/naming-convention': [
           'error', {
             'selector': 'property',
-            'modifiers': ['private', 'protected'],
             'format': ['camelCase'],
+          },
+          {
+            'selector': 'property',
+            'modifiers': ['public'],
+            'format': ['camelCase'],
+            'leadingUnderscore': 'allow',
+          },
+          {
+            'selector': 'classProperty',
+            'modifiers': ['static', 'readonly'],
+            'format': ['UPPER_CASE'],
           },
           {
             'selector': 'method',

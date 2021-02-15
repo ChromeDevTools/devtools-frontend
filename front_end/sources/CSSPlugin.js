@@ -282,7 +282,7 @@ export class CSSPlugin extends Plugin {
       this._spectrum.addEventListener(ColorPicker.Spectrum.Events.SizeChanged, this._spectrumResized, this);
       this._spectrum.addEventListener(ColorPicker.Spectrum.Events.ColorChanged, this._spectrumChanged, this);
     }
-    this._spectrum.setColor(/** @type {!Common.Color.Color} */ (swatch.color), swatch.format || '');
+    this._spectrum.setColor(/** @type {!Common.Color.Color} */ (swatch.getColor()), swatch.getFormat() || '');
     this._swatchPopoverHelper.show(this._spectrum, swatch, this._swatchPopoverHidden.bind(this));
   }
 

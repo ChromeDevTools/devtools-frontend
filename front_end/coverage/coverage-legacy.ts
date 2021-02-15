@@ -44,6 +44,11 @@ Coverage.coverageTypeToString = CoverageModule.CoverageListView.coverageTypeToSt
 Coverage.URLCoverageInfo = CoverageModule.CoverageModel.URLCoverageInfo;
 
 /**
+ * @enum {symbol}
+ */
+Coverage.URLCoverageInfo.Events = CoverageModule.CoverageModel.URLCoverageInfo.Events;
+
+/**
  * @constructor
  */
 Coverage.CoverageInfo = CoverageModule.CoverageModel.CoverageInfo;

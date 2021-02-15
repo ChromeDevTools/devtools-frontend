@@ -159,7 +159,7 @@ export class PropertyRenderer extends UI.Widget.VBox {
   _title: string;
   _contents: HTMLElement;
   _value: string|null;
-  _pseudo_color_protection_element: HTMLDivElement|null;
+  _pseudoColorProtectionElement: HTMLDivElement|null;
 
   constructor(title: string) {
     super();
@@ -169,7 +169,7 @@ export class PropertyRenderer extends UI.Widget.VBox {
     UI.UIUtils.createTextChild(_title, title);
     this._title = title;
     this._value = null;
-    this._pseudo_color_protection_element = null;
+    this._pseudoColorProtectionElement = null;
     this.contentElement.classList.add('media-property-renderer-hidden');
   }
 
@@ -202,17 +202,17 @@ export class PropertyRenderer extends UI.Widget.VBox {
   changeContents(value: string|null): void {
     if (value === null) {
       this.contentElement.classList.add('media-property-renderer-hidden');
-      if (this._pseudo_color_protection_element === null) {
-        this._pseudo_color_protection_element = document.createElement('div');
-        this._pseudo_color_protection_element.classList.add('media-property-renderer');
-        this._pseudo_color_protection_element.classList.add('media-property-renderer-hidden');
+      if (this._pseudoColorProtectionElement === null) {
+        this._pseudoColorProtectionElement = document.createElement('div');
+        this._pseudoColorProtectionElement.classList.add('media-property-renderer');
+        this._pseudoColorProtectionElement.classList.add('media-property-renderer-hidden');
         (this.contentElement.parentNode as HTMLElement)
-            .insertBefore(this._pseudo_color_protection_element, this.contentElement);
+            .insertBefore(this._pseudoColorProtectionElement, this.contentElement);
       }
     } else {
-      if (this._pseudo_color_protection_element !== null) {
-        this._pseudo_color_protection_element.remove();
-        this._pseudo_color_protection_element = null;
+      if (this._pseudoColorProtectionElement !== null) {
+        this._pseudoColorProtectionElement.remove();
+        this._pseudoColorProtectionElement = null;
       }
       this.contentElement.classList.remove('media-property-renderer-hidden');
       this._contents.removeChildren();

@@ -169,8 +169,8 @@ export class ColorSwatchPopoverIcon {
       return;
     }
 
-    const color = this._swatch.color;
-    let format = this._swatch.format;
+    const color = this._swatch.getColor();
+    let format = this._swatch.getFormat();
     if (!color || !format) {
       return;
     }

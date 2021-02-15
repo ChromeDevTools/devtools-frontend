@@ -1678,8 +1678,8 @@ ElementsTreeOutline.Events = {
  * @type {!Object.<string, string>}
  */
 export const MappedCharToEntity = {
-  '\xA0': 'nbsp',
   '\x93': '#147',  // <control>
+  '\xA0': 'nbsp',
   '\xAD': 'shy',
   '\u2002': 'ensp',
   '\u2003': 'emsp',
@@ -1695,7 +1695,8 @@ export const MappedCharToEntity = {
   '\u202c': '#8236',  // PDF
   '\u202d': '#8237',  // LRO
   '\u202e': '#8238',  // RLO
-  '\ufeff': '#65279'  // BOM
+  '\u2060': 'NoBreak',
+  '\ufeff': '#65279',  // BOM
 };
 
 export class UpdateRecord {

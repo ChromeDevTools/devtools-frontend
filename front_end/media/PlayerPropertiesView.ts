@@ -128,31 +128,31 @@ type TabData = {
 
 // Keep this enum in sync with media/base/media_log_properties.h
 export const enum PlayerPropertyKeys {
-  kResolution = 'kResolution',
-  kTotalBytes = 'kTotalBytes',
-  kBitrate = 'kBitrate',
-  kMaxDuration = 'kMaxDuration',
-  kStartTime = 'kStartTime',
-  kIsVideoEncrypted = 'kIsVideoEncrypted',
-  kIsStreaming = 'kIsStreaming',
-  kFrameUrl = 'kFrameUrl',
-  kFrameTitle = 'kFrameTitle',
-  kIsSingleOrigin = 'kIsSingleOrigin',
-  kIsRangeHeaderSupported = 'kIsRangeHeaderSupported',
-  kVideoDecoderName = 'kVideoDecoderName',
-  kAudioDecoderName = 'kAudioDecoderName',
-  kIsPlatformVideoDecoder = 'kIsPlatformVideoDecoder',
-  kIsPlatformAudioDecoder = 'kIsPlatformAudioDecoder',
-  kVideoEncoderName = 'kVideoEncoderName',
-  kIsPlatformVideoEncoder = 'kIsPlatformVideoEncoder',
-  kIsVideoDecryptingDemuxerStream = 'kIsVideoDecryptingDemuxerStream',
-  kIsAudioDecryptingDemuxerStream = 'kIsAudioDecryptingDemuxerStream',
-  kAudioTracks = 'kAudioTracks',
-  kTextTracks = 'kTextTracks',
-  kVideoTracks = 'kVideoTracks',
-  kFramerate = 'kFramerate',
-  kVideoPlaybackRoughness = 'kVideoPlaybackRoughness',
-  kVideoPlaybackFreezing = 'kVideoPlaybackFreezing',
+  Resolution = 'kResolution',
+  TotalBytes = 'kTotalBytes',
+  Bitrate = 'kBitrate',
+  MaxDuration = 'kMaxDuration',
+  StartTime = 'kStartTime',
+  IsVideoEncrypted = 'kIsVideoEncrypted',
+  IsStreaming = 'kIsStreaming',
+  FrameUrl = 'kFrameUrl',
+  FrameTitle = 'kFrameTitle',
+  IsSingleOrigin = 'kIsSingleOrigin',
+  IsRangeHeaderSupported = 'kIsRangeHeaderSupported',
+  VideoDecoderName = 'kVideoDecoderName',
+  AudioDecoderName = 'kAudioDecoderName',
+  IsPlatformVideoDecoder = 'kIsPlatformVideoDecoder',
+  IsPlatformAudioDecoder = 'kIsPlatformAudioDecoder',
+  VideoEncoderName = 'kVideoEncoderName',
+  IsPlatformVideoEncoder = 'kIsPlatformVideoEncoder',
+  IsVideoDecryptingDemuxerStream = 'kIsVideoDecryptingDemuxerStream',
+  IsAudioDecryptingDemuxerStream = 'kIsAudioDecryptingDemuxerStream',
+  AudioTracks = 'kAudioTracks',
+  TextTracks = 'kTextTracks',
+  VideoTracks = 'kVideoTracks',
+  Framerate = 'kFramerate',
+  VideoPlaybackRoughness = 'kVideoPlaybackRoughness',
+  VideoPlaybackFreezing = 'kVideoPlaybackFreezing',
 }
 
 export class PropertyRenderer extends UI.Widget.VBox {
@@ -497,98 +497,98 @@ export class PlayerPropertiesView extends UI.Widget.VBox {
     /* Media properties */
     const resolution = new PropertyRenderer(i18nString(UIStrings.resolution));
     this._mediaElements.push(resolution);
-    this._attributeMap.set(PlayerPropertyKeys.kResolution, resolution);
+    this._attributeMap.set(PlayerPropertyKeys.Resolution, resolution);
 
     const fileSize = new FormattedPropertyRenderer(i18nString(UIStrings.fileSize), this.formatFileSize);
     this._mediaElements.push(fileSize);
-    this._attributeMap.set(PlayerPropertyKeys.kTotalBytes, fileSize);
+    this._attributeMap.set(PlayerPropertyKeys.TotalBytes, fileSize);
 
     const bitrate = new FormattedPropertyRenderer(i18nString(UIStrings.bitrate), this.formatKbps);
     this._mediaElements.push(bitrate);
-    this._attributeMap.set(PlayerPropertyKeys.kBitrate, bitrate);
+    this._attributeMap.set(PlayerPropertyKeys.Bitrate, bitrate);
 
     const duration = new FormattedPropertyRenderer(i18nString(UIStrings.duration), this.formatTime);
     this._mediaElements.push(duration);
-    this._attributeMap.set(PlayerPropertyKeys.kMaxDuration, duration);
+    this._attributeMap.set(PlayerPropertyKeys.MaxDuration, duration);
 
     const startTime = new PropertyRenderer(i18nString(UIStrings.startTime));
     this._mediaElements.push(startTime);
-    this._attributeMap.set(PlayerPropertyKeys.kStartTime, startTime);
+    this._attributeMap.set(PlayerPropertyKeys.StartTime, startTime);
 
     const streaming = new PropertyRenderer(i18nString(UIStrings.streaming));
     this._mediaElements.push(streaming);
-    this._attributeMap.set(PlayerPropertyKeys.kIsStreaming, streaming);
+    this._attributeMap.set(PlayerPropertyKeys.IsStreaming, streaming);
 
     const frameUrl = new PropertyRenderer(i18nString(UIStrings.playbackFrameUrl));
     this._mediaElements.push(frameUrl);
-    this._attributeMap.set(PlayerPropertyKeys.kFrameUrl, frameUrl);
+    this._attributeMap.set(PlayerPropertyKeys.FrameUrl, frameUrl);
 
     const frameTitle = new PropertyRenderer(i18nString(UIStrings.playbackFrameTitle));
     this._mediaElements.push(frameTitle);
-    this._attributeMap.set(PlayerPropertyKeys.kFrameTitle, frameTitle);
+    this._attributeMap.set(PlayerPropertyKeys.FrameTitle, frameTitle);
 
     const singleOrigin = new PropertyRenderer(i18nString(UIStrings.singleoriginPlayback));
     this._mediaElements.push(singleOrigin);
-    this._attributeMap.set(PlayerPropertyKeys.kIsSingleOrigin, singleOrigin);
+    this._attributeMap.set(PlayerPropertyKeys.IsSingleOrigin, singleOrigin);
 
     const rangeHeaders = new PropertyRenderer(i18nString(UIStrings.rangeHeaderSupport));
     this._mediaElements.push(rangeHeaders);
-    this._attributeMap.set(PlayerPropertyKeys.kIsRangeHeaderSupported, rangeHeaders);
+    this._attributeMap.set(PlayerPropertyKeys.IsRangeHeaderSupported, rangeHeaders);
 
     const frameRate = new PropertyRenderer(i18nString(UIStrings.frameRate));
     this._mediaElements.push(frameRate);
-    this._attributeMap.set(PlayerPropertyKeys.kFramerate, frameRate);
+    this._attributeMap.set(PlayerPropertyKeys.Framerate, frameRate);
 
     const roughness = new PropertyRenderer(i18nString(UIStrings.videoPlaybackRoughness));
     this._mediaElements.push(roughness);
-    this._attributeMap.set(PlayerPropertyKeys.kVideoPlaybackRoughness, roughness);
+    this._attributeMap.set(PlayerPropertyKeys.VideoPlaybackRoughness, roughness);
 
     const freezingScore = new PropertyRenderer(i18nString(UIStrings.videoFreezingScore));
     this._mediaElements.push(freezingScore);
-    this._attributeMap.set(PlayerPropertyKeys.kVideoPlaybackFreezing, freezingScore);
+    this._attributeMap.set(PlayerPropertyKeys.VideoPlaybackFreezing, freezingScore);
 
     /* Video Decoder Properties */
     const decoderName = new DefaultPropertyRenderer(i18nString(UIStrings.decoderName), i18nString(UIStrings.noDecoder));
     this._videoDecoderElements.push(decoderName);
-    this._attributeMap.set(PlayerPropertyKeys.kVideoDecoderName, decoderName);
+    this._attributeMap.set(PlayerPropertyKeys.VideoDecoderName, decoderName);
 
     const videoPlatformDecoder = new PropertyRenderer(i18nString(UIStrings.hardwareDecoder));
     this._videoDecoderElements.push(videoPlatformDecoder);
-    this._attributeMap.set(PlayerPropertyKeys.kIsPlatformVideoDecoder, videoPlatformDecoder);
+    this._attributeMap.set(PlayerPropertyKeys.IsPlatformVideoDecoder, videoPlatformDecoder);
 
     const encoderName = new DefaultPropertyRenderer(i18nString(UIStrings.encoderName), i18nString(UIStrings.noEncoder));
     this._videoDecoderElements.push(encoderName);
-    this._attributeMap.set(PlayerPropertyKeys.kVideoEncoderName, encoderName);
+    this._attributeMap.set(PlayerPropertyKeys.VideoEncoderName, encoderName);
 
     const videoPlatformEncoder = new PropertyRenderer(i18nString(UIStrings.hardwareEncoder));
     this._videoDecoderElements.push(videoPlatformEncoder);
-    this._attributeMap.set(PlayerPropertyKeys.kIsPlatformVideoEncoder, videoPlatformEncoder);
+    this._attributeMap.set(PlayerPropertyKeys.IsPlatformVideoEncoder, videoPlatformEncoder);
 
     const videoDDS = new PropertyRenderer(i18nString(UIStrings.decryptingDemuxer));
     this._videoDecoderElements.push(videoDDS);
-    this._attributeMap.set(PlayerPropertyKeys.kIsVideoDecryptingDemuxerStream, videoDDS);
+    this._attributeMap.set(PlayerPropertyKeys.IsVideoDecryptingDemuxerStream, videoDDS);
 
     const videoTrackManager = new VideoTrackManager(this);
-    this._attributeMap.set(PlayerPropertyKeys.kVideoTracks, videoTrackManager);
+    this._attributeMap.set(PlayerPropertyKeys.VideoTracks, videoTrackManager);
 
     /* Audio Decoder Properties */
     const audioDecoder =
         new DefaultPropertyRenderer(i18nString(UIStrings.decoderName), i18nString(UIStrings.noDecoder));
     this._audioDecoderElements.push(audioDecoder);
-    this._attributeMap.set(PlayerPropertyKeys.kAudioDecoderName, audioDecoder);
+    this._attributeMap.set(PlayerPropertyKeys.AudioDecoderName, audioDecoder);
 
     const audioPlatformDecoder = new PropertyRenderer(i18nString(UIStrings.hardwareDecoder));
     this._audioDecoderElements.push(audioPlatformDecoder);
-    this._attributeMap.set(PlayerPropertyKeys.kIsPlatformAudioDecoder, audioPlatformDecoder);
+    this._attributeMap.set(PlayerPropertyKeys.IsPlatformAudioDecoder, audioPlatformDecoder);
 
     const audioDDS = new PropertyRenderer(i18nString(UIStrings.decryptingDemuxer));
     this._audioDecoderElements.push(audioDDS);
-    this._attributeMap.set(PlayerPropertyKeys.kIsAudioDecryptingDemuxerStream, audioDDS);
+    this._attributeMap.set(PlayerPropertyKeys.IsAudioDecryptingDemuxerStream, audioDDS);
 
     const audioTrackManager = new AudioTrackManager(this);
-    this._attributeMap.set(PlayerPropertyKeys.kAudioTracks, audioTrackManager);
+    this._attributeMap.set(PlayerPropertyKeys.AudioTracks, audioTrackManager);
 
     const textTrackManager = new TextTrackManager(this);
-    this._attributeMap.set(PlayerPropertyKeys.kTextTracks, textTrackManager);
+    this._attributeMap.set(PlayerPropertyKeys.TextTracks, textTrackManager);
   }
 }

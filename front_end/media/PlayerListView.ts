@@ -153,12 +153,12 @@ export class PlayerListView extends UI.Widget.VBox implements TriggerDispatcher 
   onProperty(playerID: string, property: Protocol.Media.PlayerProperty): void {
     // Sometimes the title will be an empty string, since this is provided
     // by the website. We don't want to swap title to an empty string.
-    if (property.name === PlayerPropertyKeys.kFrameTitle && property.value) {
+    if (property.name === PlayerPropertyKeys.FrameTitle && property.value) {
       this.setMediaElementPlayerTitle(playerID, property.value as string, false);
     }
 
     // Url always has a value.
-    if (property.name === PlayerPropertyKeys.kFrameUrl) {
+    if (property.name === PlayerPropertyKeys.FrameUrl) {
       const url_path_component = property.value.substring(property.value.lastIndexOf('/') + 1);
       this.setMediaElementPlayerTitle(playerID, url_path_component, true);
     }

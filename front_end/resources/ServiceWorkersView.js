@@ -88,7 +88,7 @@ export const UIStrings = {
   */
   syncString: 'Sync',
   /**
-  *@description Text in Service Workers View of the Application panel
+  *@description Placeholder text for the input box where a user is asked for a test tag to sync. This is used as a compound noun, not as a verb.
   */
   syncTag: 'Sync tag',
   /**

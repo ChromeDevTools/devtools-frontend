@@ -82,7 +82,9 @@ export const UIStrings = {
   */
   showAllD: 'Show all {PH1}',
   /**
-  *@description Value element text content in Object Properties Section
+  *@description Value element text content in Object Properties Section. Shown when the developer is
+  *viewing a JavaScript object, but one of the properties is not readable and therefore can't be
+  *displayed. This string should be translated.
   */
   unreadable: '<unreadable>',
   /**

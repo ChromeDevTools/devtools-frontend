@@ -20,7 +20,7 @@ export interface AXNode {
   clearHighlight: () => void;
 }
 
-export function SDKNodeToAXNode(
+export function sdkNodeToAXNode(
     parent: AXNode|null, sdkNode: SDK.AccessibilityModel.AccessibilityNode, tree: AccessibilityTree): AXNode {
   const axChildren: AXNode[] = [];
   const axNode = {
@@ -39,7 +39,7 @@ export function SDKNodeToAXNode(
       const loadedChildren = await sdkNode.accessibilityModel().requestAXChildren(sdkNode.id());
       if (loadedChildren) {
         for (const child of loadedChildren) {
-          axChildren.push(SDKNodeToAXNode(axNode, child, tree));
+          axChildren.push(sdkNodeToAXNode(axNode, child, tree));
         }
       }
     },
@@ -48,7 +48,7 @@ export function SDKNodeToAXNode(
   };
 
   for (const child of sdkNode.children()) {
-    axNode.children.push(SDKNodeToAXNode(axNode, child, tree));
+    axNode.children.push(sdkNodeToAXNode(axNode, child, tree));
   }
 
   return axNode;

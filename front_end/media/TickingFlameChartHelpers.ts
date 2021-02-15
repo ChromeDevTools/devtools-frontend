@@ -4,7 +4,7 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-export function FormatMillisecondsToSeconds(ms: number, decimalPlaces: number): string {
+export function formatMillisecondsToSeconds(ms: number, decimalPlaces: number): string {
   const roundPower = Math.pow(10, 3 - decimalPlaces);
   const denominatorPower = Math.pow(10, Math.max(0, decimalPlaces));
   return `${Math.round(ms / roundPower) / denominatorPower} s`;

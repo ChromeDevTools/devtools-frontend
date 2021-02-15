@@ -38,6 +38,7 @@ export type LocalizedString = string&LocalizedStringTag;
 
 export const LocalizedEmptyString = '' as LocalizedString;
 
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function UIString(string: string, ..._vararg: unknown[]): LocalizedString {
   return StringUtilities.vsprintf(localize(string), Array.prototype.slice.call(arguments, 1)) as LocalizedString;
 }

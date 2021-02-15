@@ -11,7 +11,7 @@ import * as SDK from '../sdk/sdk.js';
 import * as ThemeSupport from '../theme_support/theme_support.js';
 import * as UI from '../ui/ui.js';
 
-import {Bounds, FormatMillisecondsToSeconds} from './TickingFlameChartHelpers.js';
+import {Bounds, formatMillisecondsToSeconds} from './TickingFlameChartHelpers.js';
 
 const defaultFont = '11px ' + Host.Platform.fontFamily();
 const defaultColor =
@@ -112,11 +112,11 @@ export class Event {
     htmlElement.createChild('span').textContent = `Name: ${this._title}`;
     htmlElement.createChild('br');
 
-    const startTimeReadable = FormatMillisecondsToSeconds(this.startTime, 2);
+    const startTimeReadable = formatMillisecondsToSeconds(this.startTime, 2);
     if (this._live) {
       htmlElement.createChild('span').textContent = `Duration: ${startTimeReadable} - LIVE!`;
     } else if (!isNaN(this.duration)) {
-      const durationReadable = FormatMillisecondsToSeconds(this.duration + this.startTime, 2);
+      const durationReadable = formatMillisecondsToSeconds(this.duration + this.startTime, 2);
       htmlElement.createChild('span').textContent = `Duration: ${startTimeReadable} - ${durationReadable}`;
     } else {
       htmlElement.createChild('span').textContent = `Time: ${startTimeReadable}`;
@@ -509,12 +509,12 @@ class TickingFlameChartDataProvider implements PerfUI.FlameChart.FlameChartDataP
     // would otherwise show the same number. At 3840 pixels wide, that cutoff
     // happens to be about 30 seconds for one decimal and 2.8 for two decimals.
     if (this._bounds.range < 2800) {
-      return FormatMillisecondsToSeconds(value, 2);
+      return formatMillisecondsToSeconds(value, 2);
     }
     if (this._bounds.range < 30000) {
-      return FormatMillisecondsToSeconds(value, 1);
+      return formatMillisecondsToSeconds(value, 1);
     }
-    return FormatMillisecondsToSeconds(value, 0);
+    return formatMillisecondsToSeconds(value, 0);
   }
 
   canJumpToEntry(_entryIndex: number): boolean {

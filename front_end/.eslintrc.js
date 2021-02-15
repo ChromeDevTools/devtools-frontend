@@ -38,6 +38,10 @@ module.exports = {
             'format': ['camelCase'],
           },
           {
+            'selector': 'function',
+            'format': ['camelCase'],
+          },
+          {
             // Public methods are currently in transition and may still have leading underscores.
             'selector': 'method',
             'modifiers': ['public'],

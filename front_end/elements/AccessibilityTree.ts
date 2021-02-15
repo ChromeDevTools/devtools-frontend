@@ -5,7 +5,7 @@
 import * as SDK from '../sdk/sdk.js';
 import * as LitHtml from '../third_party/lit-html/lit-html.js';
 
-import {AXNode, SDKNodeToAXNode} from './AccessibilityTreeUtils.js';
+import {AXNode, sdkNodeToAXNode} from './AccessibilityTreeUtils.js';
 import type {AccessibilityNode, AccessibilityNodeData} from './AccessibilityNode.js';
 
 export interface AccessibilityTreeData {
@@ -160,7 +160,7 @@ export class AccessibilityTree extends HTMLElement {
         return;
       }
 
-      this.rootNode = SDKNodeToAXNode(null, rootNode, this);
+      this.rootNode = sdkNodeToAXNode(null, rootNode, this);
 
       // clang-format off
       const output = LitHtml.html`

@@ -12,6 +12,7 @@ interface ParserConfig {
   mimeType: string;
 }
 
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function ChangesHighlighter(config: Object, parserConfig: ParserConfig): {
   startState: () => DiffState,
   token: (arg0: typeof CodeMirror.StringStream, arg1: DiffState) => string,

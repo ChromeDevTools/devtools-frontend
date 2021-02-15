@@ -63,7 +63,7 @@ export class ServiceWorkerUpdateCycleHelper {
       }
     }
 
-    function RangesForVersion(version: SDK.ServiceWorkerManager.ServiceWorkerVersion): Array<ServiceWorkerUpdateRange> {
+    function rangesForVersion(version: SDK.ServiceWorkerManager.ServiceWorkerVersion): Array<ServiceWorkerUpdateRange> {
       let state: SDK.ServiceWorkerManager.ServiceWorkerVersionState|null = version.currentState;
       let endActivateTime: number = 0;
       let beginActivateTime: number = 0;
@@ -111,7 +111,7 @@ export class ServiceWorkerUpdateCycleHelper {
     for (const mode of modes) {
       const version = versions.get(mode);
       if (version) {
-        const ranges = RangesForVersion(version);
+        const ranges = rangesForVersion(version);
         return ranges;
       }
     }

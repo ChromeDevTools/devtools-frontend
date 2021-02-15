@@ -23,12 +23,12 @@ describe('TickingFlameChartTests', () => {
   });
 
   it('checks that the formatter works correctly', () => {
-    assert.strictEqual(Media.TickingFlameChartHelpers.FormatMillisecondsToSeconds(901, 0), '1 s');
-    assert.strictEqual(Media.TickingFlameChartHelpers.FormatMillisecondsToSeconds(901, 1), '0.9 s');
-    assert.strictEqual(Media.TickingFlameChartHelpers.FormatMillisecondsToSeconds(901, 2), '0.9 s');
-    assert.strictEqual(Media.TickingFlameChartHelpers.FormatMillisecondsToSeconds(901, 3), '0.901 s');
+    assert.strictEqual(Media.TickingFlameChartHelpers.formatMillisecondsToSeconds(901, 0), '1 s');
+    assert.strictEqual(Media.TickingFlameChartHelpers.formatMillisecondsToSeconds(901, 1), '0.9 s');
+    assert.strictEqual(Media.TickingFlameChartHelpers.formatMillisecondsToSeconds(901, 2), '0.9 s');
+    assert.strictEqual(Media.TickingFlameChartHelpers.formatMillisecondsToSeconds(901, 3), '0.901 s');
 
-    assert.strictEqual(Media.TickingFlameChartHelpers.FormatMillisecondsToSeconds(89129, 2), '89.13 s');
+    assert.strictEqual(Media.TickingFlameChartHelpers.formatMillisecondsToSeconds(89129, 2), '89.13 s');
   });
 
   it('checks that the bounds are correct', () => {

@@ -38,7 +38,7 @@ export const UIStrings = {
   */
   noNodeWithThisId: 'No node with this ID.',
   /**
-  *@description Reason element in Accessibility Node View of the Accessibility panel
+  *@description Text which appears in the Accessibility Node View of the Accessibility panel when an element is covered by a modal/popup window
   */
   elementIsHiddenBy: 'Element is hidden by active modal dialog:\xA0',
   /**

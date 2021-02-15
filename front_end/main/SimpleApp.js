@@ -21,10 +21,27 @@ export class SimpleApp {
   }
 }
 
+
+/** @type {!SimpleAppProvider} */
+let simpleAppProviderInstance;
+
+
 /**
  * @implements {Common.AppProvider.AppProvider}
  */
 export class SimpleAppProvider {
+  /**
+   * @param {{forceNew: ?boolean}} opts
+   */
+  static instance(opts = {forceNew: null}) {
+    const {forceNew} = opts;
+    if (!simpleAppProviderInstance || forceNew) {
+      simpleAppProviderInstance = new SimpleAppProvider();
+    }
+
+    return simpleAppProviderInstance;
+  }
+
   /**
    * @override
    * @return {!Common.App.App}

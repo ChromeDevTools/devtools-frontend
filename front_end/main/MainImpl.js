@@ -376,11 +376,12 @@ export class MainImpl {
     this._registerMessageSinkListener();
 
     MainImpl.timeEnd('Main._createAppUI');
-    const appProvider = Root.Runtime.Runtime.instance().extension(Common.AppProvider.AppProvider);
+
+    const appProvider = Common.AppProvider.getRegisteredAppProviders()[0];
     if (!appProvider) {
       throw new Error('Unable to boot DevTools, as the appprovider is missing');
     }
-    this._showAppUI(await appProvider.instance());
+    this._showAppUI(await appProvider.loadAppProvider());
   }
 
   /**

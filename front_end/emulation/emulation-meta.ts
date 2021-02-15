@@ -327,3 +327,12 @@ UI.Toolbar.registerToolbarItem({
   loadItem: undefined,
   separator: undefined,
 });
+
+Common.AppProvider.registerAppProvider({
+  async loadAppProvider() {
+    const Emulation = await loadEmulationModule();
+    return Emulation.AdvancedApp.AdvancedAppProvider.instance();
+  },
+  condition: Root.Runtime.ConditionName.CAN_DOCK,
+  order: 0,
+});

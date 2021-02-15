@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
 import * as Root from '../root/root.js';
 import * as UI from '../ui/ui.js';
 
@@ -30,4 +31,13 @@ UI.Toolbar.registerToolbarItem({
   condition: undefined,
   separator: undefined,
   actionId: undefined,
+});
+
+Common.AppProvider.registerAppProvider({
+  async loadAppProvider() {
+    const Screencast = await loadScreencastModule();
+    return Screencast.ScreencastApp.ScreencastAppProvider.instance();
+  },
+  order: 1,
+  condition: undefined,
 });

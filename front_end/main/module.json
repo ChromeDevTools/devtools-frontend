@@ -1,11 +1,6 @@
 {
   "extensions": [
     {
-      "type": "@Common.AppProvider",
-      "className": "Main.SimpleAppProvider",
-      "order": 10
-    },
-    {
       "type": "@UI.SettingUI",
       "category": "Extensions",
       "className": "Components.Linkifier.LinkHandlerSettingUI"

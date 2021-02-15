@@ -1,12 +1,6 @@
 {
   "extensions": [
     {
-      "type": "@Common.AppProvider",
-      "condition": "can_dock",
-      "className": "Emulation.AdvancedAppProvider",
-      "order": 0
-    },
-    {
       "type": "context-menu-item",
       "location": "deviceModeMenu/save",
       "order": 12,

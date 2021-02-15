@@ -219,11 +219,25 @@ export class AdvancedApp {
   }
 }
 
+/** @type {!AdvancedAppProvider} */
+let advancedAppProviderInstance;
 
 /**
  * @implements {Common.AppProvider.AppProvider}
  */
 export class AdvancedAppProvider {
+  /**
+   * @param {{forceNew: ?boolean}} opts
+   */
+  static instance(opts = {forceNew: null}) {
+    const {forceNew} = opts;
+    if (!advancedAppProviderInstance || forceNew) {
+      advancedAppProviderInstance = new AdvancedAppProvider();
+    }
+
+    return advancedAppProviderInstance;
+  }
+
   /**
    * @override
    * @return {!Common.App.App}

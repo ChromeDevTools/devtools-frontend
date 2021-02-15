@@ -124,7 +124,18 @@ export class ToolbarButtonProvider implements UI.Toolbar.Provider {
   }
 }
 
+let screencastAppProviderInstance: ScreencastAppProvider;
+
 export class ScreencastAppProvider implements Common.AppProvider.AppProvider {
+  static instance(opts: {forceNew: boolean} = {forceNew: false}): ScreencastAppProvider {
+    const {forceNew} = opts;
+    if (!screencastAppProviderInstance || forceNew) {
+      screencastAppProviderInstance = new ScreencastAppProvider();
+    }
+
+    return screencastAppProviderInstance;
+  }
+
   createApp(): Common.App.App {
     return ScreencastApp._instance();
   }

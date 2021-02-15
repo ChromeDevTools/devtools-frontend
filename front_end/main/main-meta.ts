@@ -653,3 +653,12 @@ UI.Toolbar.registerToolbarItem({
   separator: undefined,
   actionId: undefined,
 });
+
+Common.AppProvider.registerAppProvider({
+  async loadAppProvider() {
+    const Main = await loadMainModule();
+    return Main.SimpleApp.SimpleAppProvider.instance();
+  },
+  order: 10,
+  condition: undefined,
+});

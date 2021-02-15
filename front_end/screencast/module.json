@@ -1,11 +1,6 @@
 {
   "extensions": [
     {
-      "type": "@Common.AppProvider",
-      "className": "Screencast.ScreencastAppProvider",
-      "order": 1
-    },
-    {
       "type": "context-menu-item",
       "location": "mainMenu",
       "order": 10,

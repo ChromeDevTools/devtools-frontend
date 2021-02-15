@@ -92,15 +92,15 @@ export const UIStrings = {
   */
   longclickOrLongpressSpaceToShow: 'Long-click or long-press space to show alternate shades of {PH1}',
   /**
-  *@description A context menu item in the Spectrum of the Color Picker
+  *@description A context menu item in the Color Picker to organize the user-defined color palette (removes the user-defined color to which this action is performed)"
   */
   removeColor: 'Remove color',
   /**
-  *@description A context menu item in the Spectrum of the Color Picker
+  *@description A context menu item in the Color Picker to organize the user-defined color palette (removes all user-defined colors to the right of the color to which this action is performed)"
   */
   removeAllToTheRight: 'Remove all to the right',
   /**
-  *@description A context menu item in the Spectrum of the Color Picker
+  *@description A context menu item in the Color Picker to organize the user-defined color palette (removes all user-defined colors)"
   */
   clearPalette: 'Clear palette',
   /**

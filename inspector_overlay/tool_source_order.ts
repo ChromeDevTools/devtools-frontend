@@ -87,7 +87,7 @@ export class SourceOrderOverlay extends Overlay {
     const outlineColor = path.outlineColor;
 
     this.context.save();
-    _drawPath(this.context, path.path, outlineColor, Boolean(sourceOrder), bounds, this.emulationScaleFactor);
+    drawPath(this.context, path.path, outlineColor, Boolean(sourceOrder), bounds, this.emulationScaleFactor);
     this.context.restore();
 
     this.context.save();
@@ -109,8 +109,8 @@ export class SourceOrderOverlay extends Overlay {
     const labelHeight = labelContainer.offsetHeight;
     const labelWidth = labelContainer.offsetWidth;
     const labelType =
-        _getLabelType(bounds, labelHeight, labelWidth, otherLabels as HTMLCollectionOf<HTMLElement>, this.canvasHeight);
-    const labelPosition = _getPositionFromLabelType(labelType, bounds, labelHeight);
+        getLabelType(bounds, labelHeight, labelWidth, otherLabels as HTMLCollectionOf<HTMLElement>, this.canvasHeight);
+    const labelPosition = getPositionFromLabelType(labelType, bounds, labelHeight);
 
     labelContainer.classList.add(labelType);
     labelContainer.style.top = labelPosition.contentTop + 'px';
@@ -158,6 +158,7 @@ const MAX_CHILD_ELEMENTS_THRESHOLD = 300;
  * bottomCornerTaller: |  L   |_____
  *                     |______|__E__|
  */
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export const LabelTypes = {
   topCorner: 'top-corner',
   aboveElement: 'above-element',
@@ -172,7 +173,7 @@ export const LabelTypes = {
 /**
  * Calculates the coordinates to place the label based on position type
  */
-export function _getPositionFromLabelType(positionType: string, bounds: Omit<Bounds, 'allPoints'>, labelHeight: number):
+export function getPositionFromLabelType(positionType: string, bounds: Omit<Bounds, 'allPoints'>, labelHeight: number):
     {contentTop: number, contentLeft: number} {
   let contentTop = 0;
   switch (positionType) {
@@ -203,7 +204,7 @@ export function _getPositionFromLabelType(positionType: string, bounds: Omit<Bou
  * Determines the position type of the label based on the element it's associated
  * with, avoiding overlaps between other labels
  */
-export function _getLabelType(
+export function getLabelType(
     bounds: Omit<Bounds, 'allPoints'>, labelHeight: number, labelWidth: number,
     otherLabels: HTMLCollectionOf<HTMLElement>, canvasHeight: number): string {
   let labelType;
@@ -260,7 +261,7 @@ export function _getLabelType(
   return labelType;
 }
 
-function _drawPath(
+function drawPath(
     context: CanvasRenderingContext2D, commands: Array<string|number>, outlineColor: string|undefined, isChild: boolean,
     bounds: PathBounds, emulationScaleFactor: number): Path2D {
   context.save();

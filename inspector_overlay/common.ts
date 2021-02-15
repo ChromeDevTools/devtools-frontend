@@ -62,9 +62,13 @@ export class Overlay {
   protected canvasWidth: number = 0;
   protected canvasHeight: number = 0;
   protected platform?: string;
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   private _window?: Window;
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   private _document?: Document;
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   private _context?: CanvasRenderingContext2D|null;
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   private _installed = false;
 
   constructor(window: Window, style: CSSStyleSheet[] = []) {

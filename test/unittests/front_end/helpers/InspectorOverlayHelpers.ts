@@ -6,7 +6,7 @@ const {assert} = chai;
 
 import {renderElementIntoDOM, assertElements, assertElement} from './DOMHelpers.js';
 
-import {_normalizePositionData, drawGridAreaNames, drawGridLineNumbers, drawGridLineNames, CanvasSize, GridPositionNormalizedDataWithNames, NormalizePositionDataConfig} from '../../../../inspector_overlay/css_grid_label_helpers.js';
+import {normalizePositionData, drawGridAreaNames, drawGridLineNumbers, drawGridLineNames, CanvasSize, GridPositionNormalizedDataWithNames, NormalizePositionDataConfig} from '../../../../inspector_overlay/css_grid_label_helpers.js';
 import {AreaBounds, Bounds} from '../../../../inspector_overlay/common.js';
 import {gridStyle} from '../../../../inspector_overlay/highlight_grid_common.js';
 
@@ -122,7 +122,7 @@ export function drawGridLineNumbersAndAssertLabels(
     config: NormalizePositionDataConfig&{writingMode?: string}, bounds: Bounds, canvasSize: CanvasSize, layerId: number,
     expectedLabels: ExpectedLineNumberLabel[]) {
   const el = getGridLineNumberLabelContainer(layerId);
-  const data = _normalizePositionData(config, bounds);
+  const data = normalizePositionData(config, bounds);
 
   // Note that this test helper is focused on testing the number and orientation of the labels, not their exact position
   // so we pass the identity matrix here in all cases, even when a different writing mode is provided.
@@ -144,7 +144,7 @@ export function drawGridLineNamesAndAssertLabels(
     config: NormalizePositionDataConfig, bounds: Bounds, canvasSize: CanvasSize, layerId: number,
     deviceEmulationFactor: number, expectedLabels: ExpectedLineNameLabel[]) {
   const el = getGridLineNameLabelContainer(layerId);
-  const data = _normalizePositionData(config, bounds);
+  const data = normalizePositionData(config, bounds);
   drawGridLineNames(el, data as GridPositionNormalizedDataWithNames, canvasSize, deviceEmulationFactor);
 
   const labels = el.querySelectorAll(`.${GRID_LINE_NAME_LABEL_CONTAINER_CLASS} .grid-label-content`);
@@ -244,7 +244,7 @@ export function drawMultipleGridLineNumbersAndAssertLabels(
     expectedLabelList: ExpectedLayerLabel[]) {
   for (const item of configs) {
     const el = getGridLineNumberLabelContainer(item.layerId);
-    const data = _normalizePositionData(item.config, bounds);
+    const data = normalizePositionData(item.config, bounds);
     drawGridLineNumbers(el, data, canvasSize, 1);
   }
 

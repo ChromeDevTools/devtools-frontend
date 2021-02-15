@@ -159,7 +159,7 @@ export class HighlightOverlay extends Overlay {
       }
 
       if (highlight.elementInfo) {
-        _drawElementTitle(highlight.elementInfo, highlight.colorFormat, bounds, this.canvasWidth, this.canvasHeight);
+        drawElementTitle(highlight.elementInfo, highlight.colorFormat, bounds, this.canvasWidth, this.canvasHeight);
       }
     }
     if (highlight.gridInfo) {
@@ -336,7 +336,7 @@ const gridBackgroundColor = 'rgba(255, 255, 255, 0.8)';
  * @param {Object} elementInfo The element information, part of the config object passed to drawHighlight
  * @return {String|null} The layout type of the object, or null if none was found
  */
-function _getElementLayoutType(elementInfo: ElementInfo): string|null {
+function getElementLayoutType(elementInfo: ElementInfo): string|null {
   if (elementInfo.layoutObjectName && elementInfo.layoutObjectName.endsWith('Grid')) {
     return 'grid';
   }
@@ -351,11 +351,11 @@ function _getElementLayoutType(elementInfo: ElementInfo): string|null {
 /**
  * Create the DOM node that displays the description of the highlighted element
  */
-function _createElementDescription(elementInfo: ElementInfo, colorFormat: string): Element {
+function createElementDescription(elementInfo: ElementInfo, colorFormat: string): Element {
   const elementInfoElement = createElement('div', 'element-info');
   const elementInfoHeaderElement = createChild(elementInfoElement, 'div', 'element-info-header');
 
-  const layoutType = _getElementLayoutType(elementInfo);
+  const layoutType = getElementLayoutType(elementInfo);
   if (layoutType) {
     createChild(elementInfoHeaderElement, 'div', `element-layout-type ${layoutType}`);
   }
@@ -512,7 +512,7 @@ function _createElementDescription(elementInfo: ElementInfo, colorFormat: string
  * @param {number} canvasWidth
  * @param {number} canvasHeight
  */
-function _drawElementTitle(
+function drawElementTitle(
     elementInfo: ElementInfo, colorFormat: string, bounds: Bounds, canvasWidth: number, canvasHeight: number) {
   // Get the tooltip container and empty it, there can only be one tooltip displayed at the same time.
   const tooltipContainer = document.getElementById('tooltip-container');
@@ -527,7 +527,7 @@ function _drawElementTitle(
   const tooltipContent = createChild(wrapper, 'div', 'tooltip-content');
 
   // Create the tooltip content and append it.
-  const tooltip = _createElementDescription(elementInfo, colorFormat);
+  const tooltip = createElementDescription(elementInfo, colorFormat);
   tooltipContent.appendChild(tooltip);
 
   const titleWidth = tooltipContent.offsetWidth;

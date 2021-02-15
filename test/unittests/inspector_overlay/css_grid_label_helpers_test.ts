@@ -5,7 +5,7 @@
 const {assert} = chai;
 
 import {drawGridAreaNamesAndAssertLabels, drawGridLineNumbersAndAssertLabels, drawMultipleGridLineNumbersAndAssertLabels, getGridLineNumberLabelContainer, getGridTrackSizesLabelContainer, initFrameForGridLabels, initFrameForMultipleGridLabels, drawGridLineNamesAndAssertLabels} from '../front_end/helpers/InspectorOverlayHelpers.js';
-import {drawGridLineNumbers, drawGridTrackSizes, generateLegibleTextColor, _normalizePositionData} from '../../../inspector_overlay/css_grid_label_helpers.js';
+import {drawGridLineNumbers, drawGridTrackSizes, generateLegibleTextColor, normalizePositionData} from '../../../inspector_overlay/css_grid_label_helpers.js';
 
 describe('drawGridLineNumbers label creation', () => {
   beforeEach(initFrameForGridLabels);
@@ -67,7 +67,7 @@ describe('drawGridLineNumbers label creation', () => {
   for (const {description, config, bounds, expectedLabels} of TESTS) {
     it(description, () => {
       const el = getGridLineNumberLabelContainer();
-      const data = _normalizePositionData(config, bounds);
+      const data = normalizePositionData(config, bounds);
       drawGridLineNumbers(el, data, {canvasWidth: 800, canvasHeight: 600}, 1);
 
       assert.strictEqual(el.children.length, expectedLabels.length, 'The right number of labels got created');
@@ -424,9 +424,9 @@ describe('drawGridLineNumbers label placement with vertical writing mode', () =>
   }
 });
 
-describe('_normalizePositionData', () => {
+describe('normalizePositionData', () => {
   it('returns an object with default values', () => {
-    const data = _normalizePositionData({}, {
+    const data = normalizePositionData({}, {
       minX: 0,
       maxX: 100,
       minY: 0,
@@ -472,7 +472,7 @@ describe('_normalizePositionData', () => {
   });
 
   it('rounds positions', () => {
-    const data = _normalizePositionData(
+    const data = normalizePositionData(
         {
           positiveRowLineNumberPositions: [{y: 1.54, x: 0}, {y: 5.89, x: 0}, {y: 10, x: 0}, {y: 123.7564353278, x: 0}],
           negativeRowLineNumberPositions: [{y: 3, x: 0}, {y: 6.3265, x: 0}, {y: 28.463532, x: 0}, {y: 50, x: 0}],
@@ -494,7 +494,7 @@ describe('_normalizePositionData', () => {
   });
 
   it('detects first and last positions', () => {
-    const data = _normalizePositionData(
+    const data = normalizePositionData(
         {
           positiveRowLineNumberPositions: [{y: 0, x: 0}, {y: 10, x: 0}, {y: 20, x: 0}],
           negativeRowLineNumberPositions: [{y: 10, x: 30}, {y: 20, x: 30}, {y: 30, x: 30}],
@@ -520,7 +520,7 @@ describe('_normalizePositionData', () => {
   });
 
   it('prefers line names over line numbers when present', () => {
-    const data = _normalizePositionData(
+    const data = normalizePositionData(
         {
           gridHighlightConfig: {showLineNames: true},
           positiveRowLineNumberPositions: [{x: 0, y: 10}, {x: 0, y: 20}, {x: 0, y: 30}],
@@ -545,7 +545,7 @@ describe('_normalizePositionData', () => {
   });
 
   it('returns the correct line name structure', () => {
-    const data = _normalizePositionData(
+    const data = normalizePositionData(
         {
           gridHighlightConfig: {showLineNames: true},
           rowLineNameOffsets: [

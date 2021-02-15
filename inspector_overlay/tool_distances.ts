@@ -79,7 +79,7 @@ function getVisualQuad(data: DistanceInfo): Quad {
   if (shouldUseVisualBorder(style)) {
     return data['border'];
   }
-  if (ShouldUseVisualPadding(style)) {
+  if (shouldUseVisualPadding(style)) {
     return data['padding'];
   }
   return data['content'];
@@ -87,33 +87,33 @@ function getVisualQuad(data: DistanceInfo): Quad {
   function shouldUseVisualBorder(style: Style): boolean {
     const sides = ['top', 'right', 'bottom', 'left'];
     for (const side of sides) {
-      const border_width = style[`border-${side}-width` as StyleKey];
-      const border_style = style[`border-${side}-style` as StyleKey];
-      const border_color = style[`border-${side}-color` as StyleKey];
-      if (border_width !== '0px' && border_style !== 'none' && !border_color.endsWith('00')) {
+      const borderWidth = style[`border-${side}-width` as StyleKey];
+      const borderStyle = style[`border-${side}-style` as StyleKey];
+      const borderColor = style[`border-${side}-color` as StyleKey];
+      if (borderWidth !== '0px' && borderStyle !== 'none' && !borderColor.endsWith('00')) {
         return true;
       }
     }
-    const outline_width = style['outline-width'];
-    const outline_style = style['outline-style'];
-    const outline_color = style['outline-color'];
-    if (outline_width !== '0px' && outline_style !== 'none' && !outline_color.endsWith('00')) {
+    const outlineWidth = style['outline-width'];
+    const outlineStyle = style['outline-style'];
+    const outlineColor = style['outline-color'];
+    if (outlineWidth !== '0px' && outlineStyle !== 'none' && !outlineColor.endsWith('00')) {
       return true;
     }
-    const box_shadow = style['box-shadow'];
-    if (box_shadow !== 'none') {
+    const boxShadow = style['box-shadow'];
+    if (boxShadow !== 'none') {
       return true;
     }
     return false;
   }
 
-  function ShouldUseVisualPadding(style: Style): boolean {
-    const bg_color = style['background-color'];
-    const bg_image = style['background-image'];
-    if (!bg_color.startsWith('#FFFFFF') && !bg_color.endsWith('00')) {
+  function shouldUseVisualPadding(style: Style): boolean {
+    const bgColor = style['background-color'];
+    const bgImage = style['background-image'];
+    if (!bgColor.startsWith('#FFFFFF') && !bgColor.endsWith('00')) {
       return true;
     }
-    if (bg_image !== 'none') {
+    if (bgImage !== 'none') {
       return true;
     }
     return false;

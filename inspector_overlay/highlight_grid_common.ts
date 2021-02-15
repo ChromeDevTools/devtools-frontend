@@ -251,7 +251,7 @@ export function drawLayoutGridHighlight(
 
   // Transform the context to match the current writing-mode.
   context.save();
-  _applyWritingModeTransformation(highlight.writingMode, gridBounds, context);
+  applyWritingModeTransformation(highlight.writingMode, gridBounds, context);
 
   // Draw grid background
   if (highlight.gridHighlightConfig.gridBackgroundColor) {
@@ -273,22 +273,22 @@ export function drawLayoutGridHighlight(
   }
 
   // Draw grid lines
-  const rowBounds = _drawGridLines(context, highlight, 'row', emulationScaleFactor);
-  const columnBounds = _drawGridLines(context, highlight, 'column', emulationScaleFactor);
+  const rowBounds = drawGridLines(context, highlight, 'row', emulationScaleFactor);
+  const columnBounds = drawGridLines(context, highlight, 'column', emulationScaleFactor);
 
   // Draw gaps
-  _drawGridGap(
+  drawGridGap(
       context, highlight.rowGaps, highlight.gridHighlightConfig.rowGapColor,
       highlight.gridHighlightConfig.rowHatchColor, highlight.rotationAngle, emulationScaleFactor,
       /* flipDirection */ true);
-  _drawGridGap(
+  drawGridGap(
       context, highlight.columnGaps, highlight.gridHighlightConfig.columnGapColor,
       highlight.gridHighlightConfig.columnHatchColor, highlight.rotationAngle, emulationScaleFactor,
       /* flipDirection */ false);
 
   // Draw named grid areas
   const areaBounds =
-      _drawGridAreas(context, highlight.areaNames, highlight.gridHighlightConfig.areaBorderColor, emulationScaleFactor);
+      drawGridAreas(context, highlight.areaNames, highlight.gridHighlightConfig.areaBorderColor, emulationScaleFactor);
 
   // The rest of the overlay is drawn without the writing-mode transformation, but we keep the matrix to transform relevant points.
   const writingModeMatrix = context.getTransform();
@@ -297,11 +297,11 @@ export function drawLayoutGridHighlight(
 
   if (highlight.gridHighlightConfig.showGridExtensionLines) {
     if (rowBounds) {
-      _drawExtendedGridLines(
+      drawExtendedGridLines(
           context, rowBounds, highlight.gridHighlightConfig.rowLineDash, writingModeMatrix, canvasWidth, canvasHeight);
     }
     if (columnBounds) {
-      _drawExtendedGridLines(
+      drawExtendedGridLines(
           context, columnBounds, highlight.gridHighlightConfig.columnLineDash, writingModeMatrix, canvasWidth,
           canvasHeight);
     }
@@ -313,7 +313,7 @@ export function drawLayoutGridHighlight(
       writingModeMatrix);
 }
 
-function _applyWritingModeTransformation(writingMode: string, gridBounds: Bounds, context: CanvasRenderingContext2D) {
+function applyWritingModeTransformation(writingMode: string, gridBounds: Bounds, context: CanvasRenderingContext2D) {
   if (writingMode !== 'vertical-rl' && writingMode !== 'vertical-lr') {
     return;
   }
@@ -338,7 +338,7 @@ function _applyWritingModeTransformation(writingMode: string, gridBounds: Bounds
   context.translate(topLeft.x * -1, topLeft.y * -1);
 }
 
-function _drawGridLines(
+function drawGridLines(
     context: CanvasRenderingContext2D, highlight: GridHighlight, direction: 'row'|'column',
     emulationScaleFactor: number) {
   const tracks = highlight[`${direction}s` as 'rows' | 'columns'];
@@ -369,7 +369,7 @@ function _drawGridLines(
   return bounds;
 }
 
-function _drawExtendedGridLines(
+function drawExtendedGridLines(
     context: CanvasRenderingContext2D, bounds: Bounds, dash: boolean|undefined, writingModeMatrix: DOMMatrix,
     canvasWidth: number, canvasHeight: number) {
   context.save();
@@ -430,7 +430,7 @@ function _drawExtendedGridLines(
  * Draw all of the named grid area paths. This does not draw the labels, as
  * placing labels in and around the grid for various things is handled later.
  */
-function _drawGridAreas(
+function drawGridAreas(
     context: CanvasRenderingContext2D, areas: {[key: string]: Array<string|number>}, borderColor: string|undefined,
     emulationScaleFactor: number): AreaBounds[] {
   if (!areas || !Object.keys(areas).length) {
@@ -461,7 +461,7 @@ function _drawGridAreas(
   return areaBounds;
 }
 
-function _drawGridGap(
+function drawGridGap(
     context: CanvasRenderingContext2D, gapCommands: Array<number|string>, gapColor: string|undefined,
     hatchColor: string|undefined, rotationAngle: number, emulationScaleFactor: number,
     flipDirection: boolean|undefined) {

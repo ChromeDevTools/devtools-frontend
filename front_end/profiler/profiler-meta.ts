@@ -188,7 +188,7 @@ UI.ActionRegistration.registerActionExtension({
 });
 
 Common.Settings.registerSettingExtension({
-  category: Common.Settings.SettingCategoryObject.PERFORMANCE,
+  category: Common.Settings.SettingCategory.PERFORMANCE,
   title: i18nString(UIStrings.showNativeFunctions),
   settingName: 'showNativeFunctionsInJSProfile',
   settingType: Common.Settings.SettingTypeObject.BOOLEAN,

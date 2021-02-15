@@ -44,7 +44,7 @@ const str_ = i18n.i18n.registerUIStrings('browser_sdk/browser_sdk-meta.ts', UISt
 const i18nString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 Common.Settings.registerSettingExtension({
-  category: Common.Settings.SettingCategoryObject.NETWORK,
+  category: Common.Settings.SettingCategory.NETWORK,
   title: i18nString(UIStrings.preserveLog),
   settingName: 'network_log.preserve-log',
   settingType: Common.Settings.SettingTypeObject.BOOLEAN,
@@ -67,7 +67,7 @@ Common.Settings.registerSettingExtension({
 });
 
 Common.Settings.registerSettingExtension({
-  category: Common.Settings.SettingCategoryObject.NETWORK,
+  category: Common.Settings.SettingCategory.NETWORK,
   title: i18nString(UIStrings.recordNetworkLog),
   settingName: 'network_log.record-log',
   settingType: Common.Settings.SettingTypeObject.BOOLEAN,

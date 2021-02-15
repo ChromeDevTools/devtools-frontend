@@ -10,11 +10,14 @@ import {deinitializeGlobalVars, initializeGlobalVars} from '../helpers/Environme
 const {assert} = chai;
 const settingName = 'mockSetting';
 const settingTitle = 'Mock setting';
-const settingCategory = Common.Settings.SettingCategoryObject.CONSOLE;
 const enableTitle = 'Enable mock setting';
 const disableTitle = 'Disable mock setting';
 
 describe('Setting registration', () => {
+  // const enum `SettingCategory` not available in top level scope, thats why
+  // its initialized here.
+  const settingCategory = Common.Settings.SettingCategory.CONSOLE;
+
   before(async () => {
     Common.Settings.registerSettingExtengionsForTest(
         [{
@@ -57,10 +60,12 @@ describe('Setting registration', () => {
 
   it('adds commands for changing a setting\'s value', () => {
     const allCommands = QuickOpen.CommandMenu.CommandMenu.instance({forceNew: true}).commands();
-    const disableSettingCommands =
-        allCommands.filter(command => command.title() === disableTitle && command.category() === settingCategory);
-    const enableSettingCommands =
-        allCommands.filter(command => command.title() === enableTitle && command.category() === settingCategory);
+    const disableSettingCommands = allCommands.filter(
+        command => command.title() === disableTitle &&
+            command.category() === Common.Settings.getLocalizedSettingsCategory(settingCategory));
+    const enableSettingCommands = allCommands.filter(
+        command => command.title() === enableTitle &&
+            command.category() === Common.Settings.getLocalizedSettingsCategory(settingCategory));
     assert.strictEqual(
         disableSettingCommands.length, 1, 'Commands for changing a setting\'s value were not added correctly');
     assert.strictEqual(

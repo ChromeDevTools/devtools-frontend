@@ -231,7 +231,7 @@ UI.ActionRegistration.registerActionExtension({
 });
 
 Common.Settings.registerSettingExtension({
-  category: Common.Settings.SettingCategoryObject.ELEMENTS,
+  category: Common.Settings.SettingCategory.ELEMENTS,
   order: 1,
   title: (): Platform.UIString.LocalizedString => ls`Show user agent shadow DOM`,
   settingName: 'showUAShadowDOM',
@@ -240,7 +240,7 @@ Common.Settings.registerSettingExtension({
 });
 
 Common.Settings.registerSettingExtension({
-  category: Common.Settings.SettingCategoryObject.ELEMENTS,
+  category: Common.Settings.SettingCategory.ELEMENTS,
   order: 2,
   title: (): Platform.UIString.LocalizedString => ls`Word wrap`,
   settingName: 'domWordWrap',
@@ -259,7 +259,7 @@ Common.Settings.registerSettingExtension({
 });
 
 Common.Settings.registerSettingExtension({
-  category: Common.Settings.SettingCategoryObject.ELEMENTS,
+  category: Common.Settings.SettingCategory.ELEMENTS,
   order: 3,
   title: (): Platform.UIString.LocalizedString => ls`Show HTML comments`,
   settingName: 'showHTMLComments',
@@ -278,7 +278,7 @@ Common.Settings.registerSettingExtension({
 });
 
 Common.Settings.registerSettingExtension({
-  category: Common.Settings.SettingCategoryObject.ELEMENTS,
+  category: Common.Settings.SettingCategory.ELEMENTS,
   order: 4,
   title: (): Platform.UIString.LocalizedString => ls`Reveal DOM node on hover`,
   settingName: 'highlightNodeOnHoverInOverlay',
@@ -287,7 +287,7 @@ Common.Settings.registerSettingExtension({
 });
 
 Common.Settings.registerSettingExtension({
-  category: Common.Settings.SettingCategoryObject.ELEMENTS,
+  category: Common.Settings.SettingCategory.ELEMENTS,
   order: 5,
   title: (): Platform.UIString.LocalizedString => ls`Show detailed inspect tooltip`,
   settingName: 'showDetailedInspectTooltip',

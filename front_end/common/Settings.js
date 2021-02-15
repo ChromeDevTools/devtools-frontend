@@ -35,7 +35,7 @@ import {Color, Format} from './Color.js';  // eslint-disable-line no-unused-vars
 import {Console} from './Console.js';
 import {EventDescriptor, EventTargetEvent} from './EventTarget.js';  // eslint-disable-line no-unused-vars
 import {ObjectWrapper} from './Object.js';
-import {getRegisteredSettings, RegExpSettingItem, registerSettingExtengionsForTest, registerSettingExtension, SettingCategory, SettingCategoryObject, SettingExtensionOption, SettingRegistration, SettingType, SettingTypeObject} from './SettingRegistration.js';  // eslint-disable-line no-unused-vars
+import {getLocalizedSettingsCategory, getRegisteredSettings, RegExpSettingItem, registerSettingExtengionsForTest, registerSettingExtension, SettingCategory, SettingExtensionOption, SettingRegistration, SettingType, SettingTypeObject} from './SettingRegistration.js';  // eslint-disable-line no-unused-vars
 
 /**
  * @type {!Settings|undefined}
@@ -1177,11 +1177,11 @@ export function detectColorFormat(color) {
 }
 
 export {
+  getLocalizedSettingsCategory,
   getRegisteredSettings,
   registerSettingExtension,
   RegExpSettingItem,
   SettingCategory,
-  SettingCategoryObject,
   SettingExtensionOption,
   SettingRegistration,
   SettingType,

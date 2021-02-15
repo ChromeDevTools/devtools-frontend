@@ -384,7 +384,7 @@ UI.ActionRegistration.registerActionExtension({
 });
 
 Common.Settings.registerSettingExtension({
-  category: Common.Settings.SettingCategoryObject.APPEARANCE,
+  category: Common.Settings.SettingCategory.APPEARANCE,
   title: (): Platform.UIString.LocalizedString => ls`Theme:`,
   settingName: 'uiTheme',
   settingType: Common.Settings.SettingTypeObject.ENUM,
@@ -414,7 +414,7 @@ Common.Settings.registerSettingExtension({
 });
 
 Common.Settings.registerSettingExtension({
-  category: Common.Settings.SettingCategoryObject.APPEARANCE,
+  category: Common.Settings.SettingCategory.APPEARANCE,
   title: (): Platform.UIString.LocalizedString => ls`Panel layout:`,
   settingName: 'sidebarPosition',
   settingType: Common.Settings.SettingTypeObject.ENUM,
@@ -439,7 +439,7 @@ Common.Settings.registerSettingExtension({
 });
 
 Common.Settings.registerSettingExtension({
-  category: Common.Settings.SettingCategoryObject.APPEARANCE,
+  category: Common.Settings.SettingCategory.APPEARANCE,
   title: (): Platform.UIString.LocalizedString => ls`Color format:`,
   settingName: 'colorFormat',
   settingType: Common.Settings.SettingTypeObject.ENUM,
@@ -472,7 +472,7 @@ Common.Settings.registerSettingExtension({
 });
 
 Common.Settings.registerSettingExtension({
-  category: Common.Settings.SettingCategoryObject.APPEARANCE,
+  category: Common.Settings.SettingCategory.APPEARANCE,
   title: (): Platform.UIString.LocalizedString => ls`Enable Ctrl + 1-9 shortcut to switch panels`,
   titleMac: (): Platform.UIString.LocalizedString => ls`Enable ⌘ + 1-9 shortcut to switch panels`,
   settingName: 'shortcutPanelSwitch',
@@ -482,7 +482,7 @@ Common.Settings.registerSettingExtension({
 
 
 Common.Settings.registerSettingExtension({
-  category: Common.Settings.SettingCategoryObject.GLOBAL,
+  category: Common.Settings.SettingCategory.GLOBAL,
   settingName: 'currentDockState',
   settingType: Common.Settings.SettingTypeObject.ENUM,
   defaultValue: 'right',

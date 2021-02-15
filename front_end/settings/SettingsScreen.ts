@@ -292,7 +292,7 @@ export class GenericSettingsTab extends SettingsTab {
       if (!extensionCategory) {
         continue;
       }
-      const sectionElement = this._sectionElement(extensionCategory);
+      const sectionElement = this._sectionElement(Common.Settings.getLocalizedSettingsCategory(extensionCategory));
       if (!sectionElement) {
         continue;
       }

@@ -81,7 +81,7 @@ UI.ViewManager.registerViewExtension({
 });
 
 Common.Settings.registerSettingExtension({
-  category: Common.Settings.SettingCategoryObject.PERSISTENCE,
+  category: Common.Settings.SettingCategory.PERSISTENCE,
   title: i18nString(UIStrings.enableLocalOverrides),
   settingName: 'persistenceNetworkOverridesEnabled',
   settingType: Common.Settings.SettingTypeObject.BOOLEAN,

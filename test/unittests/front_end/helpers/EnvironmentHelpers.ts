@@ -5,7 +5,6 @@
 import * as Common from '../../../../front_end/common/common.js';
 import * as Host from '../../../../front_end/host/host.js';
 import * as i18n from '../../../../front_end/i18n/i18n.js';
-import * as Platform from '../../../../front_end/platform/platform.js';
 import * as Root from '../../../../front_end/root/root.js';
 import * as SDK from '../../../../front_end/sdk/sdk.js';
 
@@ -67,10 +66,10 @@ export function createTarget({id = 'test', name = 'test', type = SDK.SDKModel.Ty
   return targetManager.createTarget(id, name, type, null);
 }
 
-function createSettingValue(category: string, settingName: string, defaultValue: unknown, settingType = 'boolean'):
-    Common.Settings.SettingRegistration {
-  const settingCategory = category as Platform.UIString.LocalizedString;
-  return {category: settingCategory, settingName, defaultValue, settingType};
+function createSettingValue(
+    category: Common.Settings.SettingCategory, settingName: string, defaultValue: unknown,
+    settingType = 'boolean'): Common.Settings.SettingRegistration {
+  return {category, settingName, defaultValue, settingType};
 }
 
 export async function initializeGlobalVars({reset = true} = {}) {
@@ -78,44 +77,47 @@ export async function initializeGlobalVars({reset = true} = {}) {
 
   // Create the appropriate settings needed to boot.
   const extensions = [
-    createSettingValue('Appearance', 'disablePausedStateOverlay', false),
-    createSettingValue('Console', 'customFormatters', false),
-    createSettingValue('Debugger', 'pauseOnCaughtException', false),
-    createSettingValue('Debugger', 'pauseOnExceptionEnabled', false),
-    createSettingValue('Debugger', 'disableAsyncStackTraces', false),
-    createSettingValue('Debugger', 'breakpointsActive', true),
-    createSettingValue('Debugger', 'javaScriptDisabled', false),
-    createSettingValue('Debugger', 'skipContentScripts', false),
-    createSettingValue('Debugger', 'skipStackFramesPattern', '', 'regex'),
-    createSettingValue('Elements', 'showDetailedInspectTooltip', true),
-    createSettingValue('Network', 'cacheDisabled', false),
-    createSettingValue('Rendering', 'avifFormatDisabled', false),
-    createSettingValue('Rendering', 'emulatedCSSMedia', '', 'enum'),
-    createSettingValue('Rendering', 'emulatedCSSMediaFeaturePrefersColorScheme', '', 'enum'),
-    createSettingValue('Rendering', 'emulatedCSSMediaFeaturePrefersReducedMotion', '', 'enum'),
-    createSettingValue('Rendering', 'emulatedCSSMediaFeaturePrefersReducedData', '', 'enum'),
-    createSettingValue('Rendering', 'emulatedCSSMediaFeatureColorGamut', '', 'enum'),
-    createSettingValue('Rendering', 'emulatedVisionDeficiency', '', 'enum'),
-    createSettingValue('Rendering', 'localFontsDisabled', false),
-    createSettingValue('Rendering', 'showPaintRects', false),
-    createSettingValue('Rendering', 'showLayoutShiftRegions', false),
-    createSettingValue('Rendering', 'showAdHighlights', false),
-    createSettingValue('Rendering', 'showDebugBorders', false),
-    createSettingValue('Rendering', 'showFPSCounter', false),
-    createSettingValue('Rendering', 'showScrollBottleneckRects', false),
-    createSettingValue('Rendering', 'showHitTestBorders', false),
-    createSettingValue('Rendering', 'showWebVitals', false),
-    createSettingValue('Rendering', 'webpFormatDisabled', false),
-    createSettingValue('Sources', 'cssSourceMapsEnabled', true),
-    createSettingValue('Sources', 'jsSourceMapsEnabled', true),
-    createSettingValue('Emulation', 'emulation.touch', '', 'enum'),
-    createSettingValue('Emulation', 'emulation.idleDetection', '', 'enum'),
-    createSettingValue('Grid', 'showGridLineLabels', true),
-    createSettingValue('Grid', 'extendGridLines', true),
-    createSettingValue('Grid', 'showGridAreas', true),
-    createSettingValue('Grid', 'showGridTrackSizes', true),
-    createSettingValue('', 'activeKeybindSet', '', 'enum'),
-    createSettingValue('', 'userShortcuts', [], 'array'),
+    createSettingValue(Common.Settings.SettingCategory.APPEARANCE, 'disablePausedStateOverlay', false),
+    createSettingValue(Common.Settings.SettingCategory.CONSOLE, 'customFormatters', false),
+    createSettingValue(Common.Settings.SettingCategory.DEBUGGER, 'pauseOnCaughtException', false),
+    createSettingValue(Common.Settings.SettingCategory.DEBUGGER, 'pauseOnExceptionEnabled', false),
+    createSettingValue(Common.Settings.SettingCategory.DEBUGGER, 'disableAsyncStackTraces', false),
+    createSettingValue(Common.Settings.SettingCategory.DEBUGGER, 'breakpointsActive', true),
+    createSettingValue(Common.Settings.SettingCategory.DEBUGGER, 'javaScriptDisabled', false),
+    createSettingValue(Common.Settings.SettingCategory.DEBUGGER, 'skipContentScripts', false),
+    createSettingValue(Common.Settings.SettingCategory.DEBUGGER, 'skipStackFramesPattern', '', 'regex'),
+    createSettingValue(Common.Settings.SettingCategory.ELEMENTS, 'showDetailedInspectTooltip', true),
+    createSettingValue(Common.Settings.SettingCategory.NETWORK, 'cacheDisabled', false),
+    createSettingValue(Common.Settings.SettingCategory.RENDERING, 'avifFormatDisabled', false),
+    createSettingValue(Common.Settings.SettingCategory.RENDERING, 'emulatedCSSMedia', '', 'enum'),
+    createSettingValue(
+        Common.Settings.SettingCategory.RENDERING, 'emulatedCSSMediaFeaturePrefersColorScheme', '', 'enum'),
+    createSettingValue(
+        Common.Settings.SettingCategory.RENDERING, 'emulatedCSSMediaFeaturePrefersReducedMotion', '', 'enum'),
+    createSettingValue(
+        Common.Settings.SettingCategory.RENDERING, 'emulatedCSSMediaFeaturePrefersReducedData', '', 'enum'),
+    createSettingValue(Common.Settings.SettingCategory.RENDERING, 'emulatedCSSMediaFeatureColorGamut', '', 'enum'),
+    createSettingValue(Common.Settings.SettingCategory.RENDERING, 'emulatedVisionDeficiency', '', 'enum'),
+    createSettingValue(Common.Settings.SettingCategory.RENDERING, 'localFontsDisabled', false),
+    createSettingValue(Common.Settings.SettingCategory.RENDERING, 'showPaintRects', false),
+    createSettingValue(Common.Settings.SettingCategory.RENDERING, 'showLayoutShiftRegions', false),
+    createSettingValue(Common.Settings.SettingCategory.RENDERING, 'showAdHighlights', false),
+    createSettingValue(Common.Settings.SettingCategory.RENDERING, 'showDebugBorders', false),
+    createSettingValue(Common.Settings.SettingCategory.RENDERING, 'showFPSCounter', false),
+    createSettingValue(Common.Settings.SettingCategory.RENDERING, 'showScrollBottleneckRects', false),
+    createSettingValue(Common.Settings.SettingCategory.RENDERING, 'showHitTestBorders', false),
+    createSettingValue(Common.Settings.SettingCategory.RENDERING, 'showWebVitals', false),
+    createSettingValue(Common.Settings.SettingCategory.RENDERING, 'webpFormatDisabled', false),
+    createSettingValue(Common.Settings.SettingCategory.SOURCES, 'cssSourceMapsEnabled', true),
+    createSettingValue(Common.Settings.SettingCategory.SOURCES, 'jsSourceMapsEnabled', true),
+    createSettingValue(Common.Settings.SettingCategory.EMULATION, 'emulation.touch', '', 'enum'),
+    createSettingValue(Common.Settings.SettingCategory.EMULATION, 'emulation.idleDetection', '', 'enum'),
+    createSettingValue(Common.Settings.SettingCategory.GRID, 'showGridLineLabels', true),
+    createSettingValue(Common.Settings.SettingCategory.GRID, 'extendGridLines', true),
+    createSettingValue(Common.Settings.SettingCategory.GRID, 'showGridAreas', true),
+    createSettingValue(Common.Settings.SettingCategory.GRID, 'showGridTrackSizes', true),
+    createSettingValue(Common.Settings.SettingCategory.NONE, 'activeKeybindSet', '', 'enum'),
+    createSettingValue(Common.Settings.SettingCategory.NONE, 'userShortcuts', [], 'array'),
   ];
 
   // We instantiate a Runtime with an empty module as the settings needed to boot up are

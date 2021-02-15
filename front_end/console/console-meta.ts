@@ -213,7 +213,7 @@ UI.ActionRegistration.registerActionExtension({
 });
 
 Common.Settings.registerSettingExtension({
-  category: Common.Settings.SettingCategoryObject.CONSOLE,
+  category: Common.Settings.SettingCategory.CONSOLE,
   title: i18nString(UIStrings.hideNetworkMessages),
   settingName: 'hideNetworkMessages',
   settingType: Common.Settings.SettingTypeObject.BOOLEAN,
@@ -231,7 +231,7 @@ Common.Settings.registerSettingExtension({
 });
 
 Common.Settings.registerSettingExtension({
-  category: Common.Settings.SettingCategoryObject.CONSOLE,
+  category: Common.Settings.SettingCategory.CONSOLE,
   title: i18nString(UIStrings.selectedContextOnly),
   settingName: 'selectedContextFilterEnabled',
   settingType: Common.Settings.SettingTypeObject.BOOLEAN,
@@ -249,7 +249,7 @@ Common.Settings.registerSettingExtension({
 });
 
 Common.Settings.registerSettingExtension({
-  category: Common.Settings.SettingCategoryObject.CONSOLE,
+  category: Common.Settings.SettingCategory.CONSOLE,
   title: i18nString(UIStrings.logXmlhttprequests),
   settingName: 'monitoringXHREnabled',
   settingType: Common.Settings.SettingTypeObject.BOOLEAN,
@@ -257,7 +257,7 @@ Common.Settings.registerSettingExtension({
 });
 
 Common.Settings.registerSettingExtension({
-  category: Common.Settings.SettingCategoryObject.CONSOLE,
+  category: Common.Settings.SettingCategory.CONSOLE,
   title: i18nString(UIStrings.showTimestamps),
   settingName: 'consoleTimestampsEnabled',
   settingType: Common.Settings.SettingTypeObject.BOOLEAN,
@@ -275,7 +275,7 @@ Common.Settings.registerSettingExtension({
 });
 
 Common.Settings.registerSettingExtension({
-  category: Common.Settings.SettingCategoryObject.CONSOLE,
+  category: Common.Settings.SettingCategory.CONSOLE,
   title: i18nString(UIStrings.autocompleteFromHistory),
   settingName: 'consoleHistoryAutocomplete',
   settingType: Common.Settings.SettingTypeObject.BOOLEAN,
@@ -293,7 +293,7 @@ Common.Settings.registerSettingExtension({
 });
 
 Common.Settings.registerSettingExtension({
-  category: Common.Settings.SettingCategoryObject.CONSOLE,
+  category: Common.Settings.SettingCategory.CONSOLE,
   title: i18nString(UIStrings.groupSimilarMessagesInConsole),
   settingName: 'consoleGroupSimilar',
   settingType: Common.Settings.SettingTypeObject.BOOLEAN,
@@ -311,7 +311,7 @@ Common.Settings.registerSettingExtension({
 });
 
 Common.Settings.registerSettingExtension({
-  category: Common.Settings.SettingCategoryObject.CONSOLE,
+  category: Common.Settings.SettingCategory.CONSOLE,
   title: i18nString(UIStrings.eagerEvaluation),
   settingName: 'consoleEagerEval',
   settingType: Common.Settings.SettingTypeObject.BOOLEAN,
@@ -329,7 +329,7 @@ Common.Settings.registerSettingExtension({
 });
 
 Common.Settings.registerSettingExtension({
-  category: Common.Settings.SettingCategoryObject.CONSOLE,
+  category: Common.Settings.SettingCategory.CONSOLE,
   title: i18nString(UIStrings.evaluateTriggersUserActivation),
   settingName: 'consoleUserActivationEval',
   settingType: Common.Settings.SettingTypeObject.BOOLEAN,

@@ -47,7 +47,7 @@ const str_ = i18n.i18n.registerUIStrings('source_frame/source_frame-meta.ts', UI
 const i18nString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 Common.Settings.registerSettingExtension({
-  category: Common.Settings.SettingCategoryObject.SOURCES,
+  category: Common.Settings.SettingCategory.SOURCES,
   title: i18nString(UIStrings.defaultIndentation),
   settingName: 'textEditorIndent',
   settingType: Common.Settings.SettingTypeObject.ENUM,

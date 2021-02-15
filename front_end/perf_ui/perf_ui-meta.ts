@@ -67,7 +67,7 @@ UI.ActionRegistration.registerActionExtension({
 });
 
 Common.Settings.registerSettingExtension({
-  category: Common.Settings.SettingCategoryObject.PERFORMANCE,
+  category: Common.Settings.SettingCategory.PERFORMANCE,
   title: i18nString(UIStrings.flamechartMouseWheelAction),
   settingName: 'flamechartMouseWheelAction',
   settingType: Common.Settings.SettingTypeObject.ENUM,
@@ -87,7 +87,7 @@ Common.Settings.registerSettingExtension({
 });
 
 Common.Settings.registerSettingExtension({
-  category: Common.Settings.SettingCategoryObject.MEMORY,
+  category: Common.Settings.SettingCategory.MEMORY,
   experiment: Root.Runtime.ExperimentName.LIVE_HEAP_PROFILE,
   title: i18nString(UIStrings.liveMemoryAllocationAnnotations),
   settingName: 'memoryLiveHeapProfile',

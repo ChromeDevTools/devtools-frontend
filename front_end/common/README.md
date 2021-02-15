@@ -9,7 +9,7 @@ All settings have to be registered using the function `Common.Settings.registerS
 As an example, take the registration of the `showHTMLComments` settting,  which allows users to determine if HTML comments are shown in the Elements tree:
 ```js
 Common.Settings.registerSettingExtension({
-  category:  Common.Settings.SettingCategoryObject.ELEMENTS,
+  category:  Common.Settings.SettingCategory.ELEMENTS,
   order:  3,
   title:  ls`Show HTML comments`,
   settingName:  'showHTMLComments',

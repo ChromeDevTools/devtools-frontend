@@ -102,7 +102,7 @@ UI.ActionRegistration.registerActionExtension({
 });
 
 Common.Settings.registerSettingExtension({
-  category: Common.Settings.SettingCategoryObject.NETWORK,
+  category: Common.Settings.SettingCategory.NETWORK,
   title: (): Platform.UIString.LocalizedString => ls`Force ad blocking on this site`,
   settingName: 'network.adBlockingEnabled',
   settingType: Common.Settings.SettingTypeObject.BOOLEAN,
@@ -121,7 +121,7 @@ Common.Settings.registerSettingExtension({
 });
 
 Common.Settings.registerSettingExtension({
-  category: Common.Settings.SettingCategoryObject.GLOBAL,
+  category: Common.Settings.SettingCategory.GLOBAL,
   title: (): Platform.UIString.LocalizedString => ls`Auto-open DevTools for popups`,
   settingName: 'autoAttachToCreatedPages',
   settingType: Common.Settings.SettingTypeObject.BOOLEAN,
@@ -140,7 +140,7 @@ Common.Settings.registerSettingExtension({
 });
 
 Common.Settings.registerSettingExtension({
-  category: Common.Settings.SettingCategoryObject.APPEARANCE,
+  category: Common.Settings.SettingCategory.APPEARANCE,
   title: (): Platform.UIString.LocalizedString => ls`Don't show Chrome Data Saver warning`,
   settingName: 'disableDataSaverInfobar',
   settingType: Common.Settings.SettingTypeObject.BOOLEAN,
@@ -148,7 +148,7 @@ Common.Settings.registerSettingExtension({
 });
 
 Common.Settings.registerSettingExtension({
-  category: Common.Settings.SettingCategoryObject.APPEARANCE,
+  category: Common.Settings.SettingCategory.APPEARANCE,
   title: (): Platform.UIString.LocalizedString => ls`Disable paused state overlay`,
   settingName: 'disablePausedStateOverlay',
   settingType: Common.Settings.SettingTypeObject.BOOLEAN,

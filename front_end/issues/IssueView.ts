@@ -134,7 +134,9 @@ export const UIStrings = {
   */
   warned: 'Warned',
   /**
-  *@description Reason for a Heavy Ad being flagged in issue view
+  *@description Reason for a Heavy Ad being flagged in issue view. The Ad has been flagged as a
+  *Heavy Ad because it exceeded the set limit for peak CPU usage, e.g. it blocked the main thread
+  *for more than 15 seconds in any 30-second window.
   */
   cpuPeakLimit: 'CPU peak limit',
   /**

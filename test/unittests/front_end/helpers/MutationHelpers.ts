@@ -57,9 +57,11 @@ const observedMutationsThatMatchExpected =
     };
 
 interface MutationCount {
+  /* eslint-disable @typescript-eslint/naming-convention */
   ADD: number;
   REMOVE: number;
   TEXT_UPDATE: number;
+  /* eslint-enable @typescript-eslint/naming-convention */
 }
 
 const getMutationsForTagName = (trackedMutations: Map<string, MutationCount>, tagName: string): MutationCount => {

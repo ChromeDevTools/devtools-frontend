@@ -18,9 +18,9 @@ export async function navigateToSiteWithAnimation() {
 }
 
 export async function waitForAnimationContent() {
-  const first_animation_preview_selector = '.animation-buffer-preview[aria-label="Animation Preview 1"]';
-  await waitFor(first_animation_preview_selector);
-  await click(first_animation_preview_selector);
+  const firstAnimationPreviewSelector = '.animation-buffer-preview[aria-label="Animation Preview 1"]';
+  await waitFor(firstAnimationPreviewSelector);
+  await click(firstAnimationPreviewSelector);
   await waitFor('.animation-node-row');
   await waitFor('svg.animation-ui');
 }

@@ -17,4 +17,46 @@ module.exports = {
     'rulesdir/avoid_assert_equal': 2,
     'rulesdir/no_repeated_tests': 2,
   },
+  'overrides': [{
+    'files': ['*.ts'],
+    'rules': {
+      '@typescript-eslint/naming-convention': [
+        'error',
+        {
+          'selector': ['function', 'accessor', 'method', 'property', 'parameterProperty'],
+          'format': ['camelCase'],
+        },
+        {
+          // Allow PascalCase as well as it is used for dynamic module imports.
+          'selector': 'variable',
+          'format': ['camelCase', 'PascalCase', 'UPPER_CASE'],
+        },
+        {
+          'selector': 'classProperty',
+          'modifiers': ['static', 'readonly'],
+          'format': ['UPPER_CASE'],
+        },
+        {
+          'selector': 'enumMember',
+          'format': ['PascalCase', 'UPPER_CASE'],
+        },
+        {
+          'selector': ['typeLike'],
+          'format': ['PascalCase'],
+        },
+        {
+          // Also allow UPPER_CASE so argument function to evaluate can take constants as arguments without renaming.
+          'selector': 'parameter',
+          'format': ['camelCase', 'UPPER_CASE'],
+          'leadingUnderscore': 'allow',
+        },
+        {
+          // Object literals may be constructed as arguments to external libraries which follow different styles.
+          'selector': ['objectLiteralMethod', 'objectLiteralProperty'],
+          'modifiers': ['public'],
+          'format': null,
+        },
+      ]
+    }
+  }]
 };

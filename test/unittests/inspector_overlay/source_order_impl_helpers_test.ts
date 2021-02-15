@@ -17,7 +17,7 @@ const defaultBounds = {
 };
 
 describe('getPositionFromLabelType', () => {
-  type positionId = 'to'|'ab'|'be'|'bo';
+  type PositionId = 'to'|'ab'|'be'|'bo';
   const expectedPositions = {
     'to': defaultBounds.minY,
     'ab': defaultBounds.minY - labelHeight,
@@ -31,7 +31,7 @@ describe('getPositionFromLabelType', () => {
       const positionId = positionType.slice(0, 2);
 
       assert.strictEqual(
-          position.contentTop, expectedPositions[<positionId>positionId], 'incorrect offset from the top of the page');
+          position.contentTop, expectedPositions[<PositionId>positionId], 'incorrect offset from the top of the page');
       assert.strictEqual(position.contentLeft, defaultBounds.minX, 'incorrect offset from the left of the page');
     });
   }

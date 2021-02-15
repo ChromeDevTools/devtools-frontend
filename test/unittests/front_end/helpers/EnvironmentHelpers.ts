@@ -53,6 +53,7 @@ let targetManager: SDK.SDKModel.TargetManager;
 function initializeTargetManagerIfNecessary() {
   // SDK.ResourceTree model has to exist to avoid a circular dependency, thus it
   // needs to be placed on the global if it is not already there.
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   const globalObject = (globalThis as unknown as {SDK: {ResourceTreeModel: SDK.ResourceTreeModel.ResourceTreeModel}});
   globalObject.SDK = globalObject.SDK || {};
   globalObject.SDK.ResourceTreeModel = globalObject.SDK.ResourceTreeModel || SDK.ResourceTreeModel.ResourceTreeModel;
@@ -156,6 +157,7 @@ export async function initializeGlobalVars({reset = true} = {}) {
 
 export async function deinitializeGlobalVars() {
   // Remove the global SDK.
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   const globalObject = (globalThis as unknown as {SDK?: {}, ls?: {}});
   delete globalObject.SDK;
   delete globalObject.ls;

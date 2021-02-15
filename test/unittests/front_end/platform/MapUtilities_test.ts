@@ -18,8 +18,7 @@ describe('MapUtilities', () => {
       const map = new Map(pairs);
 
       const inverse = Platform.MapUtilities.inverse(map);
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      for (const [_key, value] of pairs) {
+      for (const [, value] of pairs) {
         assert.sameMembers([...inverse.get(value)], [...getKeys(value)]);
       }
 

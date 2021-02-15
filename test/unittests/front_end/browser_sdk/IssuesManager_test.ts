@@ -20,7 +20,7 @@ describeWithEnvironment('IssuesManager', () => {
   it('collects issues from an issues model', () => {
     const issue1 = new StubIssue('StubIssue1', ['id1', 'id2'], []);
     const issue2 = new StubIssue('StubIssue2', ['id1', 'id2'], []);
-    const issue2_1 = new StubIssue('StubIssue2', ['id1', 'id2'], ['id3']);
+    const issue2b = new StubIssue('StubIssue2', ['id1', 'id2'], ['id3']);
 
     const mockModel = new MockIssuesModel([issue1]);
     const issuesManager = new BrowserSDK.IssuesManager.IssuesManager();
@@ -32,7 +32,7 @@ describeWithEnvironment('IssuesManager', () => {
 
     mockModel.dispatchEventToListeners(SDK.IssuesModel.Events.IssueAdded, {issuesModel: mockModel, issue: issue2});
 
-    mockModel.dispatchEventToListeners(SDK.IssuesModel.Events.IssueAdded, {issuesModel: mockModel, issue: issue2_1});
+    mockModel.dispatchEventToListeners(SDK.IssuesModel.Events.IssueAdded, {issuesModel: mockModel, issue: issue2b});
 
     assert.deepStrictEqual(dispatchedIssues.map(i => i.code()), ['StubIssue2', 'StubIssue2']);
 

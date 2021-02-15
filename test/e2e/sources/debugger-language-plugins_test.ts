@@ -17,6 +17,7 @@ const globalThis: any = global;
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface Window {
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     __sourceFilesAddedEvents: string[];
   }
 }
@@ -107,8 +108,10 @@ interface TestPluginImpl {
   dispose?(): void;
 }
 
+// eslint-disable-next-line @typescript-eslint/naming-convention
 declare function RegisterExtension(
     extensionAPI: unknown, pluginImpl: TestPluginImpl, name: string,
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     supportedScriptTypes: {language: string, symbol_types: string[]}): void;
 
 // This testcase reaches into DevTools internals to install the extension plugin. At this point, there is no sensible

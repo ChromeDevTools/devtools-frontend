@@ -10,9 +10,9 @@ import {mean, percentile, storeGeneratedResults} from '../helpers/perf-helper.js
 interface PerfTimings {
   bootperf: number[];
   mean: number;
-  percentile_50: number;
-  percentile_90: number;
-  percentile_99: number;
+  percentile50: number;
+  percentile90: number;
+  percentile99: number;
 }
 
 const RUNS = 37;
@@ -21,25 +21,25 @@ describe('Boot performance', () => {
   const times: PerfTimings = {
     bootperf: [],
     mean: 0,
-    percentile_50: 0,
-    percentile_90: 0,
-    percentile_99: 0,
+    percentile50: 0,
+    percentile90: 0,
+    percentile99: 0,
   };
 
   after(async () => {
     /* eslint-disable no-console */
     const values = times.bootperf;
     times.mean = Number(mean(values).toFixed(2));
-    times.percentile_50 = Number(percentile(values, 0.5).toFixed(2));
-    times.percentile_90 = Number(percentile(values, 0.9).toFixed(2));
-    times.percentile_99 = Number(percentile(values, 0.99).toFixed(2));
+    times.percentile50 = Number(percentile(values, 0.5).toFixed(2));
+    times.percentile90 = Number(percentile(values, 0.9).toFixed(2));
+    times.percentile99 = Number(percentile(values, 0.99).toFixed(2));
 
     await storeGeneratedResults('devtools-perf.json', JSON.stringify(times));
 
     console.log(`Mean boot time: ${times.mean}ms`);
-    console.log(`50th percentile boot time: ${times.percentile_50}ms`);
-    console.log(`90th percentile boot time: ${times.percentile_90}ms`);
-    console.log(`99th percentile boot time: ${times.percentile_99}ms`);
+    console.log(`50th percentile boot time: ${times.percentile50}ms`);
+    console.log(`90th percentile boot time: ${times.percentile90}ms`);
+    console.log(`99th percentile boot time: ${times.percentile99}ms`);
     /* eslint-enable no-console */
   });
 

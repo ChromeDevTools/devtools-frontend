@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 interface SupportedEnvVars {
+  /* eslint-disable @typescript-eslint/naming-convention */
   NO_SHUFFLE: boolean;      // Whether or not to shuffle tests.
   STRESS: boolean;          // Stress test (slowdown CPU; multiple iterations)
   VERBOSE: boolean;         // Log stdout from the workers.
@@ -17,6 +18,7 @@ interface SupportedEnvVars {
   INTERACTIVE: boolean;     // [Unused]: Placeholder for screenshot diffing.
   TIMEOUT: number;          // The timeout in ms to wait for tests.
   CHROME_FEATURES: string;  // --enable-features={} for the Chrome binary.
+  /* eslint-enable @typescript-eslint/naming-convention */
 }
 
 export function getEnvVar<Key extends keyof SupportedEnvVars>(

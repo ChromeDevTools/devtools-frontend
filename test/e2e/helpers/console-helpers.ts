@@ -212,8 +212,8 @@ export async function navigateToConsoleTab() {
 }
 
 export async function waitForConsoleMessageAndClickOnLink() {
-  const console_message = await waitFor('div.console-group-messages span.source-code');
-  await click('span.devtools-link', {root: console_message});
+  const consoleMessage = await waitFor('div.console-group-messages span.source-code');
+  await click('span.devtools-link', {root: consoleMessage});
 }
 
 export async function navigateToIssuesPanelViaInfoBar() {

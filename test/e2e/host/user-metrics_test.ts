@@ -29,12 +29,14 @@ interface LoadMetric {
 }
 
 interface UserMetrics {
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   Action: {[name: string]: number};
 }
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface Window {
+    /* eslint-disable @typescript-eslint/naming-convention */
     __caughtEvents: UserMetric[];
     __beginCatchEvents: () => void;
     __endCatchEvents: () => void;
@@ -65,6 +67,7 @@ declare global {
       },
     };
   }
+  /* eslint-enable @typescript-eslint/naming-convention */
 }
 
 async function beginCatchEvents(frontend: puppeteer.Page) {

@@ -272,9 +272,11 @@ export async function retrieveTopCallFrameWithoutResuming() {
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface Window {
+    /* eslint-disable @typescript-eslint/naming-convention */
     __sourceFilesAddedEvents: string[];
     __sourceFilesLoadedEvents: string[];
     __sourceFilesLoadedEventListenerAdded: boolean;
+    /* eslint-enable @typescript-eslint/naming-convention */
   }
 }
 

@@ -11,6 +11,7 @@ import {listenForSourceFilesAdded, openFileInSourcesPanel, retrieveSourceFilesAd
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface Window {
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     __sourceFilesAddedEvents: string[];
   }
 }

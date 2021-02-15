@@ -73,10 +73,10 @@ describeWithEnvironment('IssueAggregator', async () => {
   it('deduplicates issues with the same code added before its creation', () => {
     const issue1 = StubIssue.createFromRequestIds(['id1']);
     const issue2 = StubIssue.createFromRequestIds(['id2']);
-    const issue1_2 = StubIssue.createFromRequestIds(['id1']);  // Duplicate id.
+    const issue1b = StubIssue.createFromRequestIds(['id1']);  // Duplicate id.
     const issue3 = StubIssue.createFromRequestIds(['id3']);
 
-    const mockModel = new MockIssuesModel([issue1_2, issue3]);
+    const mockModel = new MockIssuesModel([issue1b, issue3]);
     const aggregator = new Issues.IssueAggregator.IssueAggregator(
         (mockModel as unknown) as BrowserSDKModule.IssuesManager.IssuesManager);
     mockModel.dispatchEventToListeners(
@@ -93,10 +93,10 @@ describeWithEnvironment('IssueAggregator', async () => {
   it('keeps issues with different codes separate', () => {
     const issue1 = new StubIssue('codeA', ['id1'], []);
     const issue2 = new StubIssue('codeB', ['id1'], []);
-    const issue1_2 = new StubIssue('codeC', ['id1'], []);
+    const issue1b = new StubIssue('codeC', ['id1'], []);
     const issue3 = new StubIssue('codeA', ['id1'], []);
 
-    const mockModel = new MockIssuesModel([issue1_2, issue3]);
+    const mockModel = new MockIssuesModel([issue1b, issue3]);
     const aggregator = new Issues.IssueAggregator.IssueAggregator(
         (mockModel as unknown) as BrowserSDKModule.IssuesManager.IssuesManager);
     mockModel.dispatchEventToListeners(

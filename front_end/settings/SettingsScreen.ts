@@ -244,26 +244,25 @@ let genericSettingsTabInstance: GenericSettingsTab;
 
 
 export class GenericSettingsTab extends SettingsTab {
-  _nameToSection: Map<string, Element>;
+  private categoryToSection = new Map<Common.Settings.SettingCategory, Element>();
 
   constructor() {
     super(i18nString(UIStrings.preferences), 'preferences-tab-content');
 
-    const explicitSectionOrder = [
-      '',
-      'Appearance',
-      'Sources',
-      'Elements',
-      'Network',
-      'Performance',
-      'Console',
-      'Extensions',
-      'Persistence',
-      'Debugger',
-      'Global',
+    const explicitSectionOrder: Common.Settings.SettingCategory[] = [
+      Common.Settings.SettingCategory.NONE,
+      Common.Settings.SettingCategory.APPEARANCE,
+      Common.Settings.SettingCategory.SOURCES,
+      Common.Settings.SettingCategory.ELEMENTS,
+      Common.Settings.SettingCategory.NETWORK,
+      Common.Settings.SettingCategory.PERFORMANCE,
+      Common.Settings.SettingCategory.CONSOLE,
+      Common.Settings.SettingCategory.EXTENSIONS,
+      Common.Settings.SettingCategory.PERSISTENCE,
+      Common.Settings.SettingCategory.DEBUGGER,
+      Common.Settings.SettingCategory.GLOBAL,
     ];
 
-    this._nameToSection = new Map();
     for (const sectionName of explicitSectionOrder) {
       this._createSectionElement(sectionName);
     }
@@ -292,7 +291,7 @@ export class GenericSettingsTab extends SettingsTab {
       if (!extensionCategory) {
         continue;
       }
-      const sectionElement = this._sectionElement(Common.Settings.getLocalizedSettingsCategory(extensionCategory));
+      const sectionElement = this._sectionElement(extensionCategory);
       if (!sectionElement) {
         continue;
       }
@@ -331,7 +330,7 @@ export class GenericSettingsTab extends SettingsTab {
 
   _addSettingUI(extension: Root.Runtime.Extension): void {
     const descriptor = extension.descriptor();
-    const sectionName = descriptor['category'] || '';
+    const sectionName = (descriptor['category'] || '') as Common.Settings.SettingCategory;
     extension.instance().then(appendCustomSetting.bind(this));
 
     function appendCustomSetting(this: GenericSettingsTab, object: Object): void {
@@ -347,15 +346,15 @@ export class GenericSettingsTab extends SettingsTab {
     }
   }
 
-  _createSectionElement(sectionName: string): Element {
-    const uiSectionName = sectionName && i18nString(sectionName);
+  _createSectionElement(category: Common.Settings.SettingCategory): Element {
+    const uiSectionName = Common.Settings.getLocalizedSettingsCategory(category);
     const sectionElement = this._appendSection(uiSectionName);
-    this._nameToSection.set(sectionName, sectionElement);
+    this.categoryToSection.set(category, sectionElement);
     return sectionElement;
   }
 
-  _sectionElement(sectionName: string): Element|null {
-    return this._nameToSection.get(sectionName) || null;
+  _sectionElement(category: Common.Settings.SettingCategory): Element|null {
+    return this.categoryToSection.get(category) || null;
   }
 }
 

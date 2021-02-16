@@ -51,6 +51,9 @@
   <message name="IDS_DEVTOOLS_5bc06f5800d415cc95e1349edbaca425" desc="Text that appears on a button for the JavaScript resource type filter.">
     JS
   </message>
+  <message name="IDS_DEVTOOLS_5e2f5f3c24ae8c6ab3eca618826b0e23" desc="A title of the 'Extensions' @UI.SettingUI category">
+    Extensions
+  </message>
   <message name="IDS_DEVTOOLS_6311ae17c1ee52b36e68aaf4ad066387" desc="Text for other types of items">
     Other
   </message>

@@ -18,6 +18,9 @@
   <message name="IDS_DEVTOOLS_15fa1acc2a998159c4ed2a950c5c231d" desc="Text in the Shortcuts page in settings to explain a keyboard shortcut">
     Toggle drawer
   </message>
+  <message name="IDS_DEVTOOLS_161ad92de902d4ca8e8d835c07fed8c7" desc="Legacy value, wont be translated in the future, please ignore">
+    <ph name="LOCKED_1">EXTENSIONS</ph>
+  </message>
   <message name="IDS_DEVTOOLS_2ac43aa43bf473f9a9c09b4b608619d3" desc="A tag of theme preference settings that can be searched in the command menu">
     light
   </message>
@@ -53,9 +56,6 @@
   </message>
   <message name="IDS_DEVTOOLS_586740a88e6502850bc64f9f2d04d380" desc="Title element title in Main">
     Placement of <ph name="LOCKED_1">DevTools</ph> relative to the page. (<ph name="TOGGLEDOCKSIDESHORCUTS____NAME">$1s<ex>Ctrl+Shift+D</ex></ph> to restore last position)
-  </message>
-  <message name="IDS_DEVTOOLS_5e2f5f3c24ae8c6ab3eca618826b0e23" desc="A title of the 'Extensions' @UI.SettingUI category">
-    Extensions
   </message>
   <message name="IDS_DEVTOOLS_60737985de866df2b4fee4562844ce8a" desc="A message to display prompting the user to reload DevTools if the OS color scheme changes.">
     The system-preferred color scheme has changed. To apply this change to DevTools, reload.

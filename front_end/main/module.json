@@ -2,7 +2,7 @@
   "extensions": [
     {
       "type": "@UI.SettingUI",
-      "category": "Extensions",
+      "category": "EXTENSIONS",
       "className": "Components.Linkifier.LinkHandlerSettingUI"
     }
   ],

@@ -34,17 +34,17 @@ import {DataGridNode} from './DataGrid.js';
 
 export const UIStrings = {
   /**
-  *@description Show next text content in Show More Data Grid Node of a data grid
+  *@description In a data grid, for a list of items with omitted items, display the first N omitted items
   *@example {5} PH1
   */
   showDBefore: 'Show {PH1} before',
   /**
-  *@description Show last text content in Show More Data Grid Node of a data grid
+  *@description In a data grid, for a list of items with omitted items, display the last N omitted items
   *@example {5} PH1
   */
   showDAfter: 'Show {PH1} after',
   /**
-  *@description Show all text content in Show More Data Grid Node of a data grid
+  *@description In a data grid, for a list of items with omitted items, display all omitted items
   *@example {50} PH1
   */
   showAllD: 'Show all {PH1}',

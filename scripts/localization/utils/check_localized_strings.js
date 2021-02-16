@@ -151,6 +151,7 @@ const migratedDirsSet = new Set([
   'security',
   'settings',
   'snippets',
+  'sources',
   'source_frame',
   'text_editor',
   'timeline',

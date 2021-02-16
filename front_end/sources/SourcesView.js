@@ -3,9 +3,9 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
+import * as i18n from '../i18n/i18n.js';
 import * as Persistence from '../persistence/persistence.js';
 import * as Platform from '../platform/platform.js';
-import {ls} from '../platform/platform.js';
 import * as QuickOpen from '../quick_open/quick_open.js';
 import * as Root from '../root/root.js';
 import * as SourceFrame from '../source_frame/source_frame.js';
@@ -16,6 +16,26 @@ import {EditingLocationHistoryManager} from './EditingLocationHistoryManager.js'
 import {Events as TabbedEditorContainerEvents, TabbedEditorContainer, TabbedEditorContainerDelegate} from './TabbedEditorContainer.js';  // eslint-disable-line no-unused-vars
 import {Events as UISourceCodeFrameEvents, UISourceCodeFrame} from './UISourceCodeFrame.js';
 
+export const UIStrings = {
+  /**
+  *@description Text to open a file
+  */
+  openFile: 'Open file',
+  /**
+  *@description Text to run commands
+  */
+  runCommand: 'Run command',
+  /**
+  *@description Text in Sources View of the Sources panel
+  */
+  dropInAFolderToAddToWorkspace: 'Drop in a folder to add to workspace',
+  /**
+  *@description Accessible label for Sources placeholder view actions list
+  */
+  sourceViewActions: 'Source View Actions',
+};
+const str_ = i18n.i18n.registerUIStrings('sources/SourcesView.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /**
  * @implements {TabbedEditorContainerDelegate}
  * @implements {UI.SearchableView.Searchable}
@@ -117,16 +137,16 @@ export class SourcesView extends UI.Widget.VBox {
     this._placeholderOptionArray = [];
 
     const shortcuts = [
-      {actionId: 'quickOpen.show', description: ls`Open file`},
-      {actionId: 'commandMenu.show', description: ls`Run command`},
-      {actionId: 'sources.add-folder-to-workspace', description: ls`Drop in a folder to add to workspace`}
+      {actionId: 'quickOpen.show', description: i18nString(UIStrings.openFile)},
+      {actionId: 'commandMenu.show', description: i18nString(UIStrings.runCommand)},
+      {actionId: 'sources.add-folder-to-workspace', description: i18nString(UIStrings.dropInAFolderToAddToWorkspace)}
     ];
 
     const element = document.createElement('div');
     const list = element.createChild('div', 'tabbed-pane-placeholder');
     list.addEventListener('keydown', this._placeholderOnKeyDown.bind(this), false);
     UI.ARIAUtils.markAsList(list);
-    UI.ARIAUtils.setAccessibleName(list, ls`Source View Actions`);
+    UI.ARIAUtils.setAccessibleName(list, i18nString(UIStrings.sourceViewActions));
 
     for (let i = 0; i < shortcuts.length; i++) {
       const shortcut = shortcuts[i];

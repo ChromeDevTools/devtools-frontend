@@ -12,6 +12,9 @@
   <message name="IDS_DEVTOOLS_103e6e056329361a5d169154f52771d0" desc="Text in UIUtils">
     <ph name="DESCRIPTION">$1s<ex>Promise</ex></ph> (async)
   </message>
+  <message name="IDS_DEVTOOLS_1063e38cb53d94d386f21227fcd84717" desc="Label for an item to remove something">
+    Remove
+  </message>
   <message name="IDS_DEVTOOLS_1886cc68b0d9c0a0f4a9436258cf11e1" desc="Days format in UIUtils">
     <ph name="PH1">$1.1f<ex>2.2</ex></ph> days
   </message>
@@ -35,6 +38,9 @@
   </message>
   <message name="IDS_DEVTOOLS_2f04f3e6eee339eeb0ddb6c39606424d" desc="Text for searching with regular expressinn">
     Use Regular Expression
+  </message>
+  <message name="IDS_DEVTOOLS_3793ea52a7be2d7deafd858fda50775c" desc="Text exposed to screen readers on checked items.">
+    checked
   </message>
   <message name="IDS_DEVTOOLS_3a39eb38e879f66d1c57dedd478272da" desc="label to open link externally">
     Open in new tab
@@ -132,6 +138,9 @@
   <message name="IDS_DEVTOOLS_a950da8e902568f9a6879abe4313efe7" desc="Text content of content element">
     Once page is reloaded, <ph name="LOCKED_1">DevTools</ph> will automatically reconnect.
   </message>
+  <message name="IDS_DEVTOOLS_ad91a1da588ce256d30b1af38f78f84e" desc="Text exposed to screen readers on unchecked items.">
+    unchecked
+  </message>
   <message name="IDS_DEVTOOLS_adf7e09e4a939c3d54adfe6f42b6ead9" desc="label to copy file name">
     Copy file name
   </message>
@@ -159,11 +168,17 @@
   <message name="IDS_DEVTOOLS_c949475bc69a57c419ac976fe8870652" desc="Text to search by matching case of the input">
     Match Case
   </message>
+  <message name="IDS_DEVTOOLS_c9cc8cce247e49bae79f15173ce97354" desc="Text to save something">
+    Save
+  </message>
   <message name="IDS_DEVTOOLS_d06337cfbcc777e0a7caa50ef1a9986a" desc="The aria label for the button to open more tabs at the right tabbed pane in Elements tools">
     More tabs
   </message>
   <message name="IDS_DEVTOOLS_d3d2e617335f08df83599665eef8a418" desc="Text to close something">
     Close
+  </message>
+  <message name="IDS_DEVTOOLS_d59048f21fd887ad520398ce677be586" desc="Text that is usually a hyperlink to more documentation">
+    Learn more
   </message>
   <message name="IDS_DEVTOOLS_d916eea6390ddc39ee5fbc5c984e940c" desc="Seconds format in UIUtils">
     <ph name="PH1">$1.2f<ex>2.14</ex></ph> s
@@ -188,6 +203,9 @@
   </message>
   <message name="IDS_DEVTOOLS_ea4788705e6873b424c65e91c2846b19" desc="Text to cancel something">
     Cancel
+  </message>
+  <message name="IDS_DEVTOOLS_ec211f7c20af43e742bf2570c3cb84f9" desc="Text to add something">
+    Add
   </message>
   <message name="IDS_DEVTOOLS_ee611c8b9dfbbc792a9318c9837b2bcd" desc="A title of the 'Inputs' action category">
     Inputs

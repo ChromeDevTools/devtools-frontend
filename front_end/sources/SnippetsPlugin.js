@@ -2,8 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
+import * as i18n from '../i18n/i18n.js';
 import * as Snippets from '../snippets/snippets.js';
 import * as SourceFrame from '../source_frame/source_frame.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../ui/ui.js';
@@ -11,6 +11,18 @@ import * as Workspace from '../workspace/workspace.js';  // eslint-disable-line 
 
 import {Plugin} from './Plugin.js';
 
+export const UIStrings = {
+  /**
+  *@description Text in Snippets Plugin of the Sources panel
+  */
+  enter: '⌘+Enter',
+  /**
+  *@description Text in Snippets Plugin of the Sources panel
+  */
+  ctrlenter: 'Ctrl+Enter',
+};
+const str_ = i18n.i18n.registerUIStrings('sources/SnippetsPlugin.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class SnippetsPlugin extends Plugin {
   /**
    * @param {!SourceFrame.SourcesTextEditor.SourcesTextEditor} textEditor
@@ -37,8 +49,7 @@ export class SnippetsPlugin extends Plugin {
    */
   async rightToolbarItems() {
     const runSnippet = UI.Toolbar.Toolbar.createActionButtonForId('debugger.run-snippet');
-    runSnippet.setText(
-        Host.Platform.isMac() ? Common.UIString.UIString('\u2318+Enter') : Common.UIString.UIString('Ctrl+Enter'));
+    runSnippet.setText(Host.Platform.isMac() ? i18nString(UIStrings.enter) : i18nString(UIStrings.ctrlenter));
 
     return [runSnippet];
   }

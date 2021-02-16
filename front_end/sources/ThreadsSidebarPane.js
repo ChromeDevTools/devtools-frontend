@@ -3,10 +3,18 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
-import {ls} from '../platform/platform.js';
+import * as i18n from '../i18n/i18n.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
+export const UIStrings = {
+  /**
+  *@description Text in Threads Sidebar Pane of the Sources panel
+  */
+  paused: 'paused',
+};
+const str_ = i18n.i18n.registerUIStrings('sources/ThreadsSidebarPane.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /** @type {!ThreadsSidebarPane} */
 let threadsSidebarPaneInstance;
 
@@ -75,7 +83,7 @@ export class ThreadsSidebarPane extends UI.Widget.VBox {
     }
 
     function updatePausedState() {
-      pausedState.textContent = debuggerModel.isPaused() ? ls`paused` : '';
+      pausedState.textContent = debuggerModel.isPaused() ? i18nString(UIStrings.paused) : '';
     }
 
     /**

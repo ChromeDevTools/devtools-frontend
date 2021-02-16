@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
-import {ls} from '../platform/platform.js';
+import * as i18n from '../i18n/i18n.js';
 import * as QuickOpen from '../quick_open/quick_open.js';
 import * as UI from '../ui/ui.js';
 import * as Workspace from '../workspace/workspace.js';  // eslint-disable-line no-unused-vars
@@ -11,6 +11,48 @@ import * as Workspace from '../workspace/workspace.js';  // eslint-disable-line 
 import {SourcesView} from './SourcesView.js';
 import {UISourceCodeFrame} from './UISourceCodeFrame.js';  // eslint-disable-line no-unused-vars
 
+export const UIStrings = {
+  /**
+  *@description Text in Go To Line Quick Open of the Sources panel
+  */
+  noFileSelected: 'No file selected.',
+  /**
+  *@description Text in Go To Line Quick Open of the Sources panel
+  */
+  typeANumberToGoToThatLine: 'Type a number to go to that line.',
+  /**
+  *@description Text in Go To Line Quick Open of the Sources panel
+  *@example {abc} PH1
+  *@example {000} PH2
+  *@example {bbb} PH3
+  */
+  currentPositionXsTypeAnOffset:
+      'Current position: 0x{PH1}. Type an offset between 0x{PH2} and 0x{PH3} to navigate to.',
+  /**
+  *@description Text in the GoToLine dialog of the Sources pane that describes the current line number, file line number range, and use of the GoToLine dialog
+  *@example {1} PH1
+  *@example {100} PH2
+  */
+  currentLineSTypeALineNumber: 'Current line: {PH1}. Type a line number between 1 and {PH2} to navigate to.',
+  /**
+  *@description Text in Go To Line Quick Open of the Sources panel
+  *@example {abc} PH1
+  */
+  goToOffsetXs: 'Go to offset 0x{PH1}.',
+  /**
+  *@description Text in Go To Line Quick Open of the Sources panel
+  *@example {2} PH1
+  *@example {2} PH2
+  */
+  goToLineSAndColumnS: 'Go to line {PH1} and column {PH2}.',
+  /**
+  *@description Text in Go To Line Quick Open of the Sources panel
+  *@example {2} PH1
+  */
+  goToLineS: 'Go to line {PH1}.',
+};
+const str_ = i18n.i18n.registerUIStrings('sources/GoToLineQuickOpen.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class GoToLineQuickOpen extends QuickOpen.FilteredListWidget.Provider {
   /**
    * @override
@@ -36,37 +78,32 @@ export class GoToLineQuickOpen extends QuickOpen.FilteredListWidget.Provider {
    */
   notFoundText(query) {
     if (!this._currentUISourceCode()) {
-      return Common.UIString.UIString('No file selected.');
+      return i18nString(UIStrings.noFileSelected);
     }
     const position = this._parsePosition(query);
     const sourceFrame = this._currentSourceFrame();
     if (!position) {
       if (!sourceFrame) {
-        return ls`Type a number to go to that line.`;
+        return i18nString(UIStrings.typeANumberToGoToThatLine);
       }
       const disassembly = sourceFrame.wasmDisassembly;
       const currentLineNumber = sourceFrame.textEditor.currentLineNumber();
       if (disassembly) {
         const lastBytecodeOffset = disassembly.lineNumberToBytecodeOffset(disassembly.lineNumbers - 1);
         const bytecodeOffsetDigits = lastBytecodeOffset.toString(16).length;
-        const currentPosition = disassembly.lineNumberToBytecodeOffset(currentLineNumber);
-        return ls`Current position: 0x${
-            currentPosition.toString(16).padStart(
-                bytecodeOffsetDigits,
-                '0')}. Type an offset between 0x${'0'.padStart(bytecodeOffsetDigits, '0')} and 0x${
-            lastBytecodeOffset.toString(16)} to navigate to.`;
+        return i18nString(UIStrings.currentPositionXsTypeAnOffset, {PH1: '0'.padStart(bytecodeOffsetDigits, '0')});
       }
       const linesCount = sourceFrame.textEditor.linesCount;
-      return ls`Current line: ${currentLineNumber}. Type a line number between 1 and ${linesCount} to navigate to.`;
+      return i18nString(UIStrings.currentLineSTypeALineNumber, {PH1: currentLineNumber, PH2: linesCount});
     }
 
     if (sourceFrame && sourceFrame.wasmDisassembly) {
-      return ls`Go to offset 0x${(position.column - 1).toString(16)}.`;
+      return i18nString(UIStrings.goToOffsetXs, {PH1: (position.column - 1).toString(16)});
     }
     if (position.column && position.column > 1) {
-      return ls`Go to line ${position.line} and column ${position.column}.`;
+      return i18nString(UIStrings.goToLineSAndColumnS, {PH1: position.line, PH2: position.column});
     }
-    return ls`Go to line ${position.line}.`;
+    return i18nString(UIStrings.goToLineS, {PH1: position.line});
   }
 
   /**

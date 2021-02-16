@@ -22,6 +22,7 @@ devtools_module("sources") {
     "InplaceFormatterEditorAction.js",
     "JavaScriptBreakpointsSidebarPane.js",
     "JavaScriptCompilerPlugin.js",
+    "ModuleUIStrings.js",
     "NavigatorView.js",
     "OpenFileQuickOpen.js",
     "OutlineQuickOpen.js",
@@ -53,6 +54,7 @@ devtools_module("sources") {
     "../extensions:bundle",
     "../formatter:bundle",
     "../host:bundle",
+    "../i18n:bundle",
     "../inline_editor:bundle",
     "../linear_memory_inspector:bundle",
     "../object_ui:bundle",
@@ -89,6 +91,7 @@ devtools_entrypoint("meta") {
 
   deps = [
     ":bundle",
+    "../i18n:bundle",
     "../sdk:bundle",
   ]
 }

@@ -30,9 +30,9 @@
 
 import * as Common from '../common/common.js';
 import * as Extensions from '../extensions/extensions.js';
+import * as i18n from '../i18n/i18n.js';
 import * as Persistence from '../persistence/persistence.js';
 import * as Platform from '../platform/platform.js';
-import {ls} from '../platform/platform.js';
 import * as Snippets from '../snippets/snippets.js';
 import * as SourceFrame from '../source_frame/source_frame.js';
 import * as TextUtils from '../text_utils/text_utils.js';
@@ -41,6 +41,23 @@ import * as Workspace from '../workspace/workspace.js';
 
 import {UISourceCodeFrame} from './UISourceCodeFrame.js';
 
+export const UIStrings = {
+  /**
+  *@description Text in Tabbed Editor Container of the Sources panel
+  *@example {example.file} PH1
+  */
+  areYouSureYouWantToCloseUnsaved: 'Are you sure you want to close unsaved file: {PH1}?',
+  /**
+  *@description Error message for tooltip showing that a file in Sources could not be loaded
+  */
+  unableToLoadThisContent: 'Unable to load this content.',
+  /**
+  *@description Icon title in Tabbed Editor Container of the Sources panel
+  */
+  changesToThisFileWereNotSavedTo: 'Changes to this file were not saved to file system.',
+};
+const str_ = i18n.i18n.registerUIStrings('sources/TabbedEditorContainer.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /**
  * @interface
  */
@@ -342,8 +359,7 @@ export class TabbedEditorContainer extends Common.ObjectWrapper.ObjectWrapper {
     }
     const shouldPrompt = uiSourceCode.isDirty() && uiSourceCode.project().canSetFileContent();
     // FIXME: this should be replaced with common Save/Discard/Cancel dialog.
-    if (!shouldPrompt ||
-        confirm(Common.UIString.UIString('Are you sure you want to close unsaved file: %s?', uiSourceCode.name()))) {
+    if (!shouldPrompt || confirm(i18nString(UIStrings.areYouSureYouWantToCloseUnsaved, {PH1: uiSourceCode.name()}))) {
       uiSourceCode.resetWorkingCopy();
       if (nextTabId) {
         this._tabbedPane.selectTab(nextTabId, true);
@@ -560,7 +576,7 @@ export class TabbedEditorContainer extends Common.ObjectWrapper.ObjectWrapper {
    */
   _addLoadErrorIcon(tabId) {
     const icon = UI.Icon.Icon.create('smallicon-error');
-    UI.Tooltip.Tooltip.install(icon, ls`Unable to load this content.`);
+    UI.Tooltip.Tooltip.install(icon, i18nString(UIStrings.unableToLoadThisContent));
     if (this._tabbedPane.tabView(tabId)) {
       this._tabbedPane.setTabIcon(tabId, icon);
     }
@@ -660,11 +676,10 @@ export class TabbedEditorContainer extends Common.ObjectWrapper.ObjectWrapper {
       let icon = null;
       if (uiSourceCode.loadError()) {
         icon = UI.Icon.Icon.create('smallicon-error');
-        UI.Tooltip.Tooltip.install(icon, ls`Unable to load this content.`);
+        UI.Tooltip.Tooltip.install(icon, i18nString(UIStrings.unableToLoadThisContent));
       } else if (Persistence.Persistence.PersistenceImpl.instance().hasUnsavedCommittedChanges(uiSourceCode)) {
         icon = UI.Icon.Icon.create('smallicon-warning');
-        UI.Tooltip.Tooltip.install(
-            icon, Common.UIString.UIString('Changes to this file were not saved to file system.'));
+        UI.Tooltip.Tooltip.install(icon, i18nString(UIStrings.changesToThisFileWereNotSavedTo));
       } else {
         icon = Persistence.PersistenceUtils.PersistenceUtils.iconForUISourceCode(uiSourceCode);
       }

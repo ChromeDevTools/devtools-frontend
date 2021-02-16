@@ -4,12 +4,27 @@
 
 import * as Bindings from '../bindings/bindings.js';
 import * as Components from '../components/components.js';
+import * as i18n from '../i18n/i18n.js';
 import * as SDK from '../sdk/sdk.js';                            // eslint-disable-line no-unused-vars
 import * as SourceFrame from '../source_frame/source_frame.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../ui/ui.js';
 import * as Workspace from '../workspace/workspace.js';  // eslint-disable-line no-unused-vars
 
 import {Plugin} from './Plugin.js';
+
+export const UIStrings = {
+  /**
+  *@description Text in Script Origin Plugin of the Sources panel
+  *@example {example.com} PH1
+  */
+  sourceMappedFromS: '(source mapped from {PH1})',
+  /**
+  *@description Text in Script Origin Plugin of the Sources panel
+  *@example {http://localhost/file.wasm} PH1
+  */
+  providedViaDebugInfoByS: '(provided via debug info by {PH1})',
+};
+const str_ = i18n.i18n.registerUIStrings('sources/ScriptOriginPlugin.js', UIStrings);
 
 export class ScriptOriginPlugin extends Plugin {
   /**
@@ -38,8 +53,8 @@ export class ScriptOriginPlugin extends Plugin {
   async rightToolbarItems() {
     const originURL = Bindings.CompilerScriptMapping.CompilerScriptMapping.uiSourceCodeOrigin(this._uiSourceCode);
     if (originURL) {
-      const item =
-          UI.UIUtils.formatLocalized('(source mapped from %s)', [Components.Linkifier.Linkifier.linkifyURL(originURL)]);
+      const item = i18n.i18n.getFormatLocalizedString(
+          str_, UIStrings.sourceMappedFromS, {PH1: Components.Linkifier.Linkifier.linkifyURL(originURL)});
       return [new UI.Toolbar.ToolbarItem(item)];
     }
 
@@ -47,8 +62,9 @@ export class ScriptOriginPlugin extends Plugin {
     if (pluginManager) {
       for (const originScript of pluginManager.scriptsForUISourceCode(this._uiSourceCode)) {
         if (originScript.hasSourceURL) {
-          const item = UI.UIUtils.formatLocalized(
-              '(provided via debug info by %s)', [Components.Linkifier.Linkifier.linkifyURL(originScript.sourceURL)]);
+          const item = i18n.i18n.getFormatLocalizedString(
+              str_, UIStrings.providedViaDebugInfoByS,
+              {PH1: Components.Linkifier.Linkifier.linkifyURL(originScript.sourceURL)});
           return [new UI.Toolbar.ToolbarItem(item)];
         }
       }

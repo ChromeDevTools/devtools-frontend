@@ -6989,6 +6989,813 @@
   "source_frame/XMLView.js | find": {
     "message": "F̂ín̂d́"
   },
+  "sources/AddSourceMapURLDialog.js | add": {
+    "message": "Âd́d̂"
+  },
+  "sources/AddSourceMapURLDialog.js | sourceMapUrl": {
+    "message": "Ŝóûŕĉé m̂áp̂ ÚR̂Ĺ: "
+  },
+  "sources/BreakpointEditDialog.js | breakpoint": {
+    "message": "B̂ŕêák̂ṕôín̂t́"
+  },
+  "sources/BreakpointEditDialog.js | breakpointType": {
+    "message": "B̂ŕêák̂ṕôín̂t́ t̂ýp̂é"
+  },
+  "sources/BreakpointEditDialog.js | conditionalBreakpoint": {
+    "message": "Ĉón̂d́ît́îón̂ál̂ b́r̂éâḱp̂óîńt̂"
+  },
+  "sources/BreakpointEditDialog.js | expressionToCheckBeforePausingEg": {
+    "message": "Êx́p̂ŕêśŝíôń t̂ó ĉh́êćk̂ b́êf́ôŕê ṕâúŝín̂ǵ, ê.ǵ. x̂ > 5"
+  },
+  "sources/BreakpointEditDialog.js | logAMessageToConsoleDoNotBreak": {
+    "message": "L̂óĝ á m̂éŝśâǵê t́ô Ćôńŝól̂é, d̂ó n̂ót̂ b́r̂éâḱ"
+  },
+  "sources/BreakpointEditDialog.js | logMessageEgXIsX": {
+    "message": "L̂óĝ ḿêśŝáĝé, ê.ǵ. 'x̂ íŝ', x́"
+  },
+  "sources/BreakpointEditDialog.js | logpoint": {
+    "message": "L̂óĝṕôín̂t́"
+  },
+  "sources/BreakpointEditDialog.js | pauseOnlyWhenTheConditionIsTrue": {
+    "message": "P̂áûśê ón̂ĺŷ ẃĥén̂ t́ĥé ĉón̂d́ît́îón̂ íŝ t́r̂úê"
+  },
+  "sources/CallStackSidebarPane.js | addAllContentScriptsToIgnoreList": {
+    "message": "Âd́d̂ ál̂ĺ ĉón̂t́êńt̂ śĉŕîṕt̂ś t̂ó îǵn̂ór̂é l̂íŝt́"
+  },
+  "sources/CallStackSidebarPane.js | addScriptToIgnoreList": {
+    "message": "Âd́d̂ śĉŕîṕt̂ t́ô íĝńôŕê ĺîśt̂"
+  },
+  "sources/CallStackSidebarPane.js | callStack": {
+    "message": "Ĉál̂ĺ Ŝt́âćk̂"
+  },
+  "sources/CallStackSidebarPane.js | copyStackTrace": {
+    "message": "Ĉóp̂ý ŝt́âćk̂ t́r̂áĉé"
+  },
+  "sources/CallStackSidebarPane.js | notPaused": {
+    "message": "N̂ót̂ ṕâúŝéd̂"
+  },
+  "sources/CallStackSidebarPane.js | onIgnoreList": {
+    "message": "ôń îǵn̂ór̂é l̂íŝt́"
+  },
+  "sources/CallStackSidebarPane.js | removeAllContentScriptsFrom": {
+    "message": "R̂ém̂óv̂é âĺl̂ ćôńt̂én̂t́ ŝćr̂íp̂t́ŝ f́r̂óm̂ íĝńôŕê ĺîśt̂"
+  },
+  "sources/CallStackSidebarPane.js | removeFromIgnoreList": {
+    "message": "R̂ém̂óv̂é f̂ŕôḿ îǵn̂ór̂é l̂íŝt́"
+  },
+  "sources/CallStackSidebarPane.js | restartFrame": {
+    "message": "R̂éŝt́âŕt̂ f́r̂ám̂é"
+  },
+  "sources/CallStackSidebarPane.js | showIgnorelistedFrames": {
+    "message": "Ŝh́ôẃ îǵn̂ór̂é-l̂íŝt́êd́ f̂ŕâḿêś"
+  },
+  "sources/CallStackSidebarPane.js | showMore": {
+    "message": "Ŝh́ôẃ m̂ór̂é"
+  },
+  "sources/CoveragePlugin.js | clickToShowCoveragePanel": {
+    "message": "Ĉĺîćk̂ t́ô śĥóŵ Ćôv́êŕâǵê Ṕâńêĺ"
+  },
+  "sources/CoveragePlugin.js | coverageNa": {
+    "message": "Ĉóv̂ér̂áĝé: n̂/á"
+  },
+  "sources/CoveragePlugin.js | coverageS": {
+    "message": "Ĉóv̂ér̂áĝé: {PH1} %"
+  },
+  "sources/CoveragePlugin.js | showDetails": {
+    "message": "Ŝh́ôẃ D̂ét̂áîĺŝ"
+  },
+  "sources/CSSPlugin.js | openColorPicker": {
+    "message": "Ôṕêń ĉól̂ór̂ ṕîćk̂ér̂."
+  },
+  "sources/CSSPlugin.js | openCubicBezierEditor": {
+    "message": "Ôṕêń ĉúb̂íĉ b́êźîér̂ éd̂ít̂ór̂."
+  },
+  "sources/DebuggerPausedMessage.js | attributeModifications": {
+    "message": "ât́t̂ŕîb́ût́ê ḿôd́îf́îćât́îón̂ś"
+  },
+  "sources/DebuggerPausedMessage.js | childSAdded": {
+    "message": "Ĉh́îĺd̂ {PH1} ád̂d́êd́"
+  },
+  "sources/DebuggerPausedMessage.js | debuggerPaused": {
+    "message": "D̂éb̂úĝǵêŕ p̂áûśêd́"
+  },
+  "sources/DebuggerPausedMessage.js | descendantSAdded": {
+    "message": "D̂éŝćêńd̂án̂t́ {PH1} âd́d̂éd̂"
+  },
+  "sources/DebuggerPausedMessage.js | descendantSRemoved": {
+    "message": "D̂éŝćêńd̂án̂t́ {PH1} r̂ém̂óv̂éd̂"
+  },
+  "sources/DebuggerPausedMessage.js | nodeRemoval": {
+    "message": "n̂ód̂é r̂ém̂óv̂ál̂"
+  },
+  "sources/DebuggerPausedMessage.js | pausedBeforePotentialOutofmemory": {
+    "message": "P̂áûśêd́ b̂éf̂ór̂é p̂ót̂én̂t́îál̂ óût́-ôf́-m̂ém̂ór̂ý ĉŕâśĥ"
+  },
+  "sources/DebuggerPausedMessage.js | pausedOnAssertion": {
+    "message": "P̂áûśêd́ ôń âśŝér̂t́îón̂"
+  },
+  "sources/DebuggerPausedMessage.js | pausedOnBreakpoint": {
+    "message": "P̂áûśêd́ ôń b̂ŕêák̂ṕôín̂t́"
+  },
+  "sources/DebuggerPausedMessage.js | pausedOnCspViolation": {
+    "message": "P̂áûśêd́ ôń ĈŚP̂ v́îól̂át̂íôń"
+  },
+  "sources/DebuggerPausedMessage.js | pausedOnDebuggedFunction": {
+    "message": "P̂áûśêd́ ôń d̂éb̂úĝǵêd́ f̂ún̂ćt̂íôń"
+  },
+  "sources/DebuggerPausedMessage.js | pausedOnEventListener": {
+    "message": "P̂áûśêd́ ôń êv́êńt̂ ĺîśt̂én̂ér̂"
+  },
+  "sources/DebuggerPausedMessage.js | pausedOnException": {
+    "message": "P̂áûśêd́ ôń êx́ĉép̂t́îón̂"
+  },
+  "sources/DebuggerPausedMessage.js | pausedOnPromiseRejection": {
+    "message": "P̂áûśêd́ ôń p̂ŕôḿîśê ŕêj́êćt̂íôń"
+  },
+  "sources/DebuggerPausedMessage.js | pausedOnS": {
+    "message": "P̂áûśêd́ ôń {PH1}"
+  },
+  "sources/DebuggerPausedMessage.js | pausedOnXhrOrFetch": {
+    "message": "P̂áûśêd́ ôń X̂H́R̂ ór̂ f́êt́ĉh́"
+  },
+  "sources/DebuggerPausedMessage.js | subtreeModifications": {
+    "message": "ŝúb̂t́r̂éê ḿôd́îf́îćât́îón̂ś"
+  },
+  "sources/DebuggerPausedMessage.js | trustedTypePolicyViolation": {
+    "message": "Trusted Type P̂ól̂íĉý V̂íôĺât́îón̂"
+  },
+  "sources/DebuggerPausedMessage.js | trustedTypeSinkViolation": {
+    "message": "Trusted Type Ŝín̂ḱ V̂íôĺât́îón̂"
+  },
+  "sources/DebuggerPlugin.js | addBreakpoint": {
+    "message": "Âd́d̂ b́r̂éâḱp̂óîńt̂"
+  },
+  "sources/DebuggerPlugin.js | addConditionalBreakpoint": {
+    "message": "Âd́d̂ ćôńd̂ít̂íôńâĺ b̂ŕêák̂ṕôín̂t́…"
+  },
+  "sources/DebuggerPlugin.js | addLogpoint": {
+    "message": "Âd́d̂ ĺôǵp̂óîńt̂…"
+  },
+  "sources/DebuggerPlugin.js | addSourceMap": {
+    "message": "Âd́d̂ śôúr̂ćê ḿâṕ…"
+  },
+  "sources/DebuggerPlugin.js | associatedFilesAreAvailable": {
+    "message": "Âśŝóĉíât́êd́ f̂íl̂éŝ ár̂é âv́âíl̂áb̂ĺê v́îá f̂íl̂é t̂ŕêé ôŕ {PH1}."
+  },
+  "sources/DebuggerPlugin.js | associatedFilesShouldBeAdded": {
+    "message": "Âśŝóĉíât́êd́ f̂íl̂éŝ śĥóûĺd̂ b́ê ád̂d́êd́ t̂ó t̂h́ê f́îĺê t́r̂éê. Ýôú ĉán̂ d́êb́ûǵ t̂h́êśê ŕêśôĺv̂éd̂ śôúr̂ćê f́îĺêś âś r̂éĝúl̂ár̂ J́âv́âŚĉŕîṕt̂ f́îĺêś."
+  },
+  "sources/DebuggerPlugin.js | configure": {
+    "message": "Ĉón̂f́îǵûŕê"
+  },
+  "sources/DebuggerPlugin.js | disableAllBreakpointsInLine": {
+    "message": "D̂íŝáb̂ĺê ál̂ĺ b̂ŕêák̂ṕôín̂t́ŝ ín̂ ĺîńê"
+  },
+  "sources/DebuggerPlugin.js | disableBreakpoint": {
+    "message": "D̂íŝáb̂ĺê b́r̂éâḱp̂óîńt̂"
+  },
+  "sources/DebuggerPlugin.js | editBreakpoint": {
+    "message": "Êd́ît́ b̂ŕêák̂ṕôín̂t́…"
+  },
+  "sources/DebuggerPlugin.js | enableAllBreakpointsInLine": {
+    "message": "Êńâb́l̂é âĺl̂ b́r̂éâḱp̂óîńt̂ś îń l̂ín̂é"
+  },
+  "sources/DebuggerPlugin.js | enableBreakpoint": {
+    "message": "Êńâb́l̂é b̂ŕêák̂ṕôín̂t́"
+  },
+  "sources/DebuggerPlugin.js | neverPauseHere": {
+    "message": "N̂év̂ér̂ ṕâúŝé ĥér̂é"
+  },
+  "sources/DebuggerPlugin.js | prettyprint": {
+    "message": "P̂ŕêt́t̂ý-p̂ŕîńt̂"
+  },
+  "sources/DebuggerPlugin.js | prettyprintingWillFormatThisFile": {
+    "message": "P̂ŕêt́t̂ý-p̂ŕîńt̂ín̂ǵ ŵíl̂ĺ f̂ór̂ḿât́ t̂h́îś f̂íl̂é îń â ńêẃ t̂áb̂ ẃĥér̂é ŷóû ćâń ĉón̂t́îńûé d̂éb̂úĝǵîńĝ. Ýôú ĉán̂ ál̂śô ṕr̂ét̂t́ŷ-ṕr̂ín̂t́ t̂h́îś f̂íl̂é b̂ý ĉĺîćk̂ín̂ǵ t̂h́ê {PH1} b́ût́t̂ón̂ ón̂ t́ĥé b̂ót̂t́ôḿ ŝt́ât́ûś b̂ár̂."
+  },
+  "sources/DebuggerPlugin.js | prettyprintThisMinifiedFile": {
+    "message": "P̂ŕêt́t̂ý-p̂ŕîńt̂ t́ĥíŝ ḿîńîf́îéd̂ f́îĺê?"
+  },
+  "sources/DebuggerPlugin.js | removeAllBreakpointsInLine": {
+    "message": "R̂ém̂óv̂é âĺl̂ b́r̂éâḱp̂óîńt̂ś îń l̂ín̂é"
+  },
+  "sources/DebuggerPlugin.js | removeBreakpoint": {
+    "message": "R̂ém̂óv̂é b̂ŕêák̂ṕôín̂t́"
+  },
+  "sources/DebuggerPlugin.js | removeFromIgnoreList": {
+    "message": "R̂ém̂óv̂é f̂ŕôḿ îǵn̂ór̂é l̂íŝt́"
+  },
+  "sources/DebuggerPlugin.js | sourceMapDetected": {
+    "message": "Ŝóûŕĉé M̂áp̂ d́êt́êćt̂éd̂."
+  },
+  "sources/DebuggerPlugin.js | sourceMapFoundButIgnoredForFile": {
+    "message": "Ŝóûŕĉé m̂áp̂ f́ôún̂d́, b̂út̂ íĝńôŕêd́ f̂ór̂ f́îĺê ón̂ íĝńôŕê ĺîśt̂."
+  },
+  "sources/DebuggerPlugin.js | theDebuggerWillSkipStepping": {
+    "message": "T̂h́ê d́êb́ûǵĝér̂ ẃîĺl̂ śk̂íp̂ śt̂ép̂ṕîńĝ t́ĥŕôúĝh́ t̂h́îś ŝćr̂íp̂t́, âńd̂ ẃîĺl̂ ńôt́ ŝt́ôṕ ôń êx́ĉép̂t́îón̂ś."
+  },
+  "sources/DebuggerPlugin.js | thisScriptIsOnTheDebuggersIgnore": {
+    "message": "T̂h́îś ŝćr̂íp̂t́ îś ôń t̂h́ê d́êb́ûǵĝér̂'ś îǵn̂ór̂é l̂íŝt́"
+  },
+  "sources/FilteredUISourceCodeListProvider.js | noFilesFound": {
+    "message": "N̂ó f̂íl̂éŝ f́ôún̂d́"
+  },
+  "sources/GoToLineQuickOpen.js | currentLineSTypeALineNumber": {
+    "message": "Ĉúr̂ŕêńt̂ ĺîńê: {PH1}. T́ŷṕê á l̂ín̂é n̂úm̂b́êŕ b̂ét̂ẃêén̂ 1 án̂d́ {PH2} t̂ó n̂áv̂íĝát̂é t̂ó."
+  },
+  "sources/GoToLineQuickOpen.js | currentPositionXsTypeAnOffset": {
+    "message": "Ĉúr̂ŕêńt̂ ṕôśît́îón̂: 0x́{PH1}. T̂ýp̂é âń ôf́f̂śêt́ b̂ét̂ẃêén̂ 0x́{PH2} âńd̂ 0x́{PH3} t̂ó n̂áv̂íĝát̂é t̂ó."
+  },
+  "sources/GoToLineQuickOpen.js | goToLineS": {
+    "message": "Ĝó t̂ó l̂ín̂é {PH1}."
+  },
+  "sources/GoToLineQuickOpen.js | goToLineSAndColumnS": {
+    "message": "Ĝó t̂ó l̂ín̂é {PH1} âńd̂ ćôĺûḿn̂ {PH2}."
+  },
+  "sources/GoToLineQuickOpen.js | goToOffsetXs": {
+    "message": "Ĝó t̂ó ôf́f̂śêt́ 0x̂{PH1}."
+  },
+  "sources/GoToLineQuickOpen.js | noFileSelected": {
+    "message": "N̂ó f̂íl̂é ŝél̂éĉt́êd́."
+  },
+  "sources/GoToLineQuickOpen.js | typeANumberToGoToThatLine": {
+    "message": "T̂ýp̂é â ńûḿb̂ér̂ t́ô ǵô t́ô t́ĥát̂ ĺîńê."
+  },
+  "sources/GutterDiffPlugin.js | localModifications": {
+    "message": "L̂óĉál̂ Ḿôd́îf́îćât́îón̂ś..."
+  },
+  "sources/InplaceFormatterEditorAction.js | format": {
+    "message": "F̂ór̂ḿât́"
+  },
+  "sources/InplaceFormatterEditorAction.js | formatS": {
+    "message": "F̂ór̂ḿât́ {PH1}"
+  },
+  "sources/JavaScriptBreakpointsSidebarPane.js | activateBreakpoints": {
+    "message": "Âćt̂ív̂át̂é b̂ŕêák̂ṕôín̂t́ŝ"
+  },
+  "sources/JavaScriptBreakpointsSidebarPane.js | checked": {
+    "message": "ĉh́êćk̂éd̂"
+  },
+  "sources/JavaScriptBreakpointsSidebarPane.js | deactivateBreakpoints": {
+    "message": "D̂éâćt̂ív̂át̂é b̂ŕêák̂ṕôín̂t́ŝ"
+  },
+  "sources/JavaScriptBreakpointsSidebarPane.js | disableAllBreakpoints": {
+    "message": "D̂íŝáb̂ĺê ál̂ĺ b̂ŕêák̂ṕôín̂t́ŝ"
+  },
+  "sources/JavaScriptBreakpointsSidebarPane.js | disableBreakpointsInFile": {
+    "message": "D̂íŝáb̂ĺê b́r̂éâḱp̂óîńt̂ś îń f̂íl̂é"
+  },
+  "sources/JavaScriptBreakpointsSidebarPane.js | enableAllBreakpoints": {
+    "message": "Êńâb́l̂é âĺl̂ b́r̂éâḱp̂óîńt̂ś"
+  },
+  "sources/JavaScriptBreakpointsSidebarPane.js | enableBreakpointsInFile": {
+    "message": "Êńâb́l̂é b̂ŕêák̂ṕôín̂t́ŝ ín̂ f́îĺê"
+  },
+  "sources/JavaScriptBreakpointsSidebarPane.js | mixed": {
+    "message": "m̂íx̂éd̂"
+  },
+  "sources/JavaScriptBreakpointsSidebarPane.js | noBreakpoints": {
+    "message": "N̂ó b̂ŕêák̂ṕôín̂t́ŝ"
+  },
+  "sources/JavaScriptBreakpointsSidebarPane.js | removeAllBreakpoints": {
+    "message": "R̂ém̂óv̂é âĺl̂ b́r̂éâḱp̂óîńt̂ś"
+  },
+  "sources/JavaScriptBreakpointsSidebarPane.js | removeAllBreakpointsInLine": {
+    "message": "R̂ém̂óv̂é âĺl̂ b́r̂éâḱp̂óîńt̂ś îń l̂ín̂é"
+  },
+  "sources/JavaScriptBreakpointsSidebarPane.js | removeBreakpoint": {
+    "message": "R̂ém̂óv̂é b̂ŕêák̂ṕôín̂t́"
+  },
+  "sources/JavaScriptBreakpointsSidebarPane.js | removeOtherBreakpoints": {
+    "message": "R̂ém̂óv̂é ôt́ĥér̂ b́r̂éâḱp̂óîńt̂ś"
+  },
+  "sources/JavaScriptBreakpointsSidebarPane.js | revealLocation": {
+    "message": "R̂év̂éâĺ l̂óĉát̂íôń"
+  },
+  "sources/JavaScriptBreakpointsSidebarPane.js | sBreakpointHit": {
+    "message": "{PH1} b̂ŕêák̂ṕôín̂t́ ĥít̂"
+  },
+  "sources/JavaScriptBreakpointsSidebarPane.js | unchecked": {
+    "message": "ûńĉh́êćk̂éd̂"
+  },
+  "sources/ModuleUIStrings.js | goToLine": {
+    "message": "Ĝó t̂ó l̂ín̂é"
+  },
+  "sources/ModuleUIStrings.js | goToSymbol": {
+    "message": "Ĝó t̂ó ŝým̂b́ôĺ"
+  },
+  "sources/ModuleUIStrings.js | openFile": {
+    "message": "Ôṕêń f̂íl̂é"
+  },
+  "sources/NavigatorView.js | areYouSureYouWantToDeleteAll": {
+    "message": "Âŕê ýôú ŝúr̂é ŷóû ẃâńt̂ t́ô d́êĺêt́ê ál̂ĺ ôv́êŕr̂íd̂éŝ ćôńt̂áîńêd́ îń t̂h́îś f̂ól̂d́êŕ?"
+  },
+  "sources/NavigatorView.js | areYouSureYouWantToDeleteThis": {
+    "message": "Âŕê ýôú ŝúr̂é ŷóû ẃâńt̂ t́ô d́êĺêt́ê t́ĥíŝ f́îĺê?"
+  },
+  "sources/NavigatorView.js | areYouSureYouWantToExcludeThis": {
+    "message": "Âŕê ýôú ŝúr̂é ŷóû ẃâńt̂ t́ô éx̂ćl̂úd̂é t̂h́îś f̂ól̂d́êŕ?"
+  },
+  "sources/NavigatorView.js | areYouSureYouWantToRemoveThis": {
+    "message": "Âŕê ýôú ŝúr̂é ŷóû ẃâńt̂ t́ô ŕêḿôv́ê t́ĥíŝ f́ôĺd̂ér̂?"
+  },
+  "sources/NavigatorView.js | delete": {
+    "message": "D̂él̂ét̂é"
+  },
+  "sources/NavigatorView.js | deleteAllOverrides": {
+    "message": "D̂él̂ét̂é âĺl̂ óv̂ér̂ŕîd́êś"
+  },
+  "sources/NavigatorView.js | excludeFolder": {
+    "message": "Êx́ĉĺûd́ê f́ôĺd̂ér̂"
+  },
+  "sources/NavigatorView.js | makeACopy": {
+    "message": "M̂ák̂é â ćôṕŷ…"
+  },
+  "sources/NavigatorView.js | newFile": {
+    "message": "N̂éŵ f́îĺê"
+  },
+  "sources/NavigatorView.js | noDomain": {
+    "message": "(n̂ó d̂óm̂áîń)"
+  },
+  "sources/NavigatorView.js | openFolder": {
+    "message": "Ôṕêń f̂ól̂d́êŕ"
+  },
+  "sources/NavigatorView.js | removeFolderFromWorkspace": {
+    "message": "R̂ém̂óv̂é f̂ól̂d́êŕ f̂ŕôḿ ŵór̂ḱŝṕâćê"
+  },
+  "sources/NavigatorView.js | rename": {
+    "message": "R̂én̂ám̂é…"
+  },
+  "sources/NavigatorView.js | searchInAllFiles": {
+    "message": "Ŝéâŕĉh́ îń âĺl̂ f́îĺêś"
+  },
+  "sources/NavigatorView.js | searchInFolder": {
+    "message": "Ŝéâŕĉh́ îń f̂ól̂d́êŕ"
+  },
+  "sources/NavigatorView.js | sFromSourceMap": {
+    "message": "{PH1} (f̂ŕôḿ ŝóûŕĉé m̂áp̂)"
+  },
+  "sources/OutlineQuickOpen.js | noFileSelected": {
+    "message": "N̂ó f̂íl̂é ŝél̂éĉt́êd́."
+  },
+  "sources/OutlineQuickOpen.js | noResultsFound": {
+    "message": "N̂ó r̂éŝúl̂t́ŝ f́ôún̂d́"
+  },
+  "sources/OutlineQuickOpen.js | openAJavascriptOrCssFileToSee": {
+    "message": "Ôṕêń â J́âv́âŚĉŕîṕt̂ ór̂ ĆŜŚ f̂íl̂é t̂ó ŝéê śŷḿb̂ól̂ś"
+  },
+  "sources/RecorderPlugin.js | record": {
+    "message": "R̂éĉór̂d́"
+  },
+  "sources/ScopeChainSidebarPane.js | closure": {
+    "message": "Ĉĺôśûŕê"
+  },
+  "sources/ScopeChainSidebarPane.js | closureS": {
+    "message": "Ĉĺôśûŕê ({PH1})"
+  },
+  "sources/ScopeChainSidebarPane.js | couldNotOpenLinearMemory": {
+    "message": "Ĉóûĺd̂ ńôt́ ôṕêń l̂ín̂éâŕ m̂ém̂ór̂ý îńŝṕêćt̂ór̂: f́âíl̂éd̂ ĺôćât́îńĝ b́ûf́f̂ér̂."
+  },
+  "sources/ScopeChainSidebarPane.js | exception": {
+    "message": "Êx́ĉép̂t́îón̂"
+  },
+  "sources/ScopeChainSidebarPane.js | loading": {
+    "message": "L̂óâd́îńĝ..."
+  },
+  "sources/ScopeChainSidebarPane.js | notPaused": {
+    "message": "N̂ót̂ ṕâúŝéd̂"
+  },
+  "sources/ScopeChainSidebarPane.js | noVariables": {
+    "message": "N̂ó v̂ár̂íâb́l̂éŝ"
+  },
+  "sources/ScopeChainSidebarPane.js | returnValue": {
+    "message": "R̂ét̂úr̂ń v̂ál̂úê"
+  },
+  "sources/ScopeChainSidebarPane.js | revealInMemoryInspectorPanel": {
+    "message": "R̂év̂éâĺ îń M̂ém̂ór̂ý Îńŝṕêćt̂ór̂ ṕâńêĺ"
+  },
+  "sources/ScriptFormatterEditorAction.js | prettyPrint": {
+    "message": "P̂ŕêt́t̂ý p̂ŕîńt̂"
+  },
+  "sources/ScriptFormatterEditorAction.js | prettyPrintS": {
+    "message": "P̂ŕêt́t̂ý p̂ŕîńt̂ {PH1}"
+  },
+  "sources/ScriptOriginPlugin.js | providedViaDebugInfoByS": {
+    "message": "(p̂ŕôv́îd́êd́ v̂íâ d́êb́ûǵ îńf̂ó b̂ý {PH1})"
+  },
+  "sources/ScriptOriginPlugin.js | sourceMappedFromS": {
+    "message": "(ŝóûŕĉé m̂áp̂ṕêd́ f̂ŕôḿ {PH1})"
+  },
+  "sources/SnippetsPlugin.js | ctrlenter": {
+    "message": "Ĉt́r̂ĺ+Êńt̂ér̂"
+  },
+  "sources/SnippetsPlugin.js | enter": {
+    "message": "⌘+Êńt̂ér̂"
+  },
+  "sources/sources-meta.ts | activateBreakpoints": {
+    "message": "Âćt̂ív̂át̂é b̂ŕêák̂ṕôín̂t́ŝ"
+  },
+  "sources/sources-meta.ts | addFolderToWorkspace": {
+    "message": "Âd́d̂ f́ôĺd̂ér̂ t́ô ẃôŕk̂śp̂áĉé"
+  },
+  "sources/sources-meta.ts | addSelectedTextToWatches": {
+    "message": "Âd́d̂ śêĺêćt̂éd̂ t́êx́t̂ t́ô ẃât́ĉh́êś"
+  },
+  "sources/sources-meta.ts | all": {
+    "message": "Âĺl̂"
+  },
+  "sources/sources-meta.ts | allowScrollingPastEndOfFile": {
+    "message": "Âĺl̂óŵ śĉŕôĺl̂ín̂ǵ p̂áŝt́ êńd̂ óf̂ f́îĺê"
+  },
+  "sources/sources-meta.ts | autocompletion": {
+    "message": "Âút̂óĉóm̂ṕl̂ét̂íôń"
+  },
+  "sources/sources-meta.ts | automaticallyRevealFilesIn": {
+    "message": "Âút̂óm̂át̂íĉál̂ĺŷ ŕêv́êál̂ f́îĺêś îń ŝíd̂éb̂ár̂"
+  },
+  "sources/sources-meta.ts | bracketMatching": {
+    "message": "B̂ŕâćk̂ét̂ ḿât́ĉh́îńĝ"
+  },
+  "sources/sources-meta.ts | breakpoints": {
+    "message": "B̂ŕêák̂ṕôín̂t́ŝ"
+  },
+  "sources/sources-meta.ts | closeAll": {
+    "message": "Ĉĺôśê Ál̂ĺ"
+  },
+  "sources/sources-meta.ts | closeTheActiveTab": {
+    "message": "Ĉĺôśê t́ĥé âćt̂ív̂é t̂áb̂"
+  },
+  "sources/sources-meta.ts | codeFolding": {
+    "message": "Ĉód̂é f̂ól̂d́îńĝ"
+  },
+  "sources/sources-meta.ts | createNewSnippet": {
+    "message": "Ĉŕêát̂é n̂éŵ śn̂íp̂ṕêt́"
+  },
+  "sources/sources-meta.ts | deactivateBreakpoints": {
+    "message": "D̂éâćt̂ív̂át̂é b̂ŕêák̂ṕôín̂t́ŝ"
+  },
+  "sources/sources-meta.ts | decrementCssUnitBy": {
+    "message": "D̂éĉŕêḿêńt̂ ĆŜŚ ûńît́ b̂ý 1"
+  },
+  "sources/sources-meta.ts | decrementCssUnitByTen": {
+    "message": "D̂éĉŕêḿêńt̂ ĆŜŚ ûńît́ b̂ý 10"
+  },
+  "sources/sources-meta.ts | detectIndentation": {
+    "message": "D̂ét̂éĉt́ îńd̂én̂t́ât́îón̂"
+  },
+  "sources/sources-meta.ts | disableAutocompletion": {
+    "message": "D̂íŝáb̂ĺê áût́ôćôḿp̂ĺêt́îón̂"
+  },
+  "sources/sources-meta.ts | disableBracketMatching": {
+    "message": "D̂íŝáb̂ĺê b́r̂áĉḱêt́ m̂át̂ćĥín̂ǵ"
+  },
+  "sources/sources-meta.ts | disableCodeFolding": {
+    "message": "D̂íŝáb̂ĺê ćôd́ê f́ôĺd̂ín̂ǵ"
+  },
+  "sources/sources-meta.ts | disableCssSourceMaps": {
+    "message": "D̂íŝáb̂ĺê ĆŜŚ ŝóûŕĉé m̂áp̂ś"
+  },
+  "sources/sources-meta.ts | disableJavascriptSourceMaps": {
+    "message": "D̂íŝáb̂ĺê J́âv́âŚĉŕîṕt̂ śôúr̂ćê ḿâṕŝ"
+  },
+  "sources/sources-meta.ts | disableTabMovesFocus": {
+    "message": "D̂íŝáb̂ĺê t́âb́ m̂óv̂éŝ f́ôćûś"
+  },
+  "sources/sources-meta.ts | disallowScrollingPastEndOfFile": {
+    "message": "D̂íŝál̂ĺôẃ ŝćr̂ól̂ĺîńĝ ṕâśt̂ én̂d́ ôf́ f̂íl̂é"
+  },
+  "sources/sources-meta.ts | displayVariableValuesInlineWhile": {
+    "message": "D̂íŝṕl̂áŷ v́âŕîáb̂ĺê v́âĺûéŝ ín̂ĺîńê ẃĥíl̂é d̂éb̂úĝǵîńĝ"
+  },
+  "sources/sources-meta.ts | doNotAutomaticallyRevealFilesIn": {
+    "message": "D̂ó n̂ót̂ áût́ôḿât́îćâĺl̂ý r̂év̂éâĺ f̂íl̂éŝ ín̂ śîd́êb́âŕ"
+  },
+  "sources/sources-meta.ts | doNotDetectIndentation": {
+    "message": "D̂ó n̂ót̂ d́êt́êćt̂ ín̂d́êńt̂át̂íôń"
+  },
+  "sources/sources-meta.ts | doNotDisplayVariableValuesInline": {
+    "message": "D̂ó n̂ót̂ d́îśp̂ĺâý v̂ár̂íâb́l̂é v̂ál̂úêś îńl̂ín̂é ŵh́îĺê d́êb́ûǵĝín̂ǵ"
+  },
+  "sources/sources-meta.ts | doNotSearchInAnonymousAndContent": {
+    "message": "D̂ó n̂ót̂ śêár̂ćĥ ín̂ án̂ón̂ým̂óûś âńd̂ ćôńt̂én̂t́ ŝćr̂íp̂t́ŝ"
+  },
+  "sources/sources-meta.ts | doNotShowWhitespaceCharacters": {
+    "message": "D̂ó n̂ót̂ śĥóŵ ẃĥít̂éŝṕâćê ćĥár̂áĉt́êŕŝ"
+  },
+  "sources/sources-meta.ts | enableAutocompletion": {
+    "message": "Êńâb́l̂é âút̂óĉóm̂ṕl̂ét̂íôń"
+  },
+  "sources/sources-meta.ts | enableBracketMatching": {
+    "message": "Êńâb́l̂é b̂ŕâćk̂ét̂ ḿât́ĉh́îńĝ"
+  },
+  "sources/sources-meta.ts | enableCodeFolding": {
+    "message": "Êńâb́l̂é ĉód̂é f̂ól̂d́îńĝ"
+  },
+  "sources/sources-meta.ts | enableCssSourceMaps": {
+    "message": "Êńâb́l̂é ĈŚŜ śôúr̂ćê ḿâṕŝ"
+  },
+  "sources/sources-meta.ts | enableJavascriptSourceMaps": {
+    "message": "Êńâb́l̂é Ĵáv̂áŜćr̂íp̂t́ ŝóûŕĉé m̂áp̂ś"
+  },
+  "sources/sources-meta.ts | enableTabMovesFocus": {
+    "message": "Êńâb́l̂é t̂áb̂ ḿôv́êś f̂óĉúŝ"
+  },
+  "sources/sources-meta.ts | evaluateSelectedTextInConsole": {
+    "message": "Êv́âĺûát̂é ŝél̂éĉt́êd́ t̂éx̂t́ îń ĉón̂śôĺê"
+  },
+  "sources/sources-meta.ts | filesystem": {
+    "message": "F̂íl̂éŝýŝt́êḿ"
+  },
+  "sources/sources-meta.ts | goToAFunctionDeclarationruleSet": {
+    "message": "Ĝó t̂ó â f́ûńĉt́îón̂ d́êćl̂ár̂át̂íôń/r̂úl̂é ŝét̂"
+  },
+  "sources/sources-meta.ts | goToLine": {
+    "message": "Ĝó t̂ó l̂ín̂é"
+  },
+  "sources/sources-meta.ts | incrementCssUnitBy": {
+    "message": "Îńĉŕêḿêńt̂ ĆŜŚ ûńît́ b̂ý 1"
+  },
+  "sources/sources-meta.ts | incrementCssUnitByTen": {
+    "message": "Îńĉŕêḿêńt̂ ĆŜŚ ûńît́ b̂ý 10"
+  },
+  "sources/sources-meta.ts | jumpToNextEditingLocation": {
+    "message": "Ĵúm̂ṕ t̂ó n̂éx̂t́ êd́ît́îńĝ ĺôćât́îón̂"
+  },
+  "sources/sources-meta.ts | jumpToPreviousEditingLocation": {
+    "message": "Ĵúm̂ṕ t̂ó p̂ŕêv́îóûś êd́ît́îńĝ ĺôćât́îón̂"
+  },
+  "sources/sources-meta.ts | nextCallFrame": {
+    "message": "N̂éx̂t́ ĉál̂ĺ f̂ŕâḿê"
+  },
+  "sources/sources-meta.ts | none": {
+    "message": "N̂ón̂é"
+  },
+  "sources/sources-meta.ts | pauseScriptExecution": {
+    "message": "P̂áûśê śĉŕîṕt̂ éx̂éĉút̂íôń"
+  },
+  "sources/sources-meta.ts | previousCallFrame": {
+    "message": "P̂ŕêv́îóûś ĉál̂ĺ f̂ŕâḿê"
+  },
+  "sources/sources-meta.ts | quickSource": {
+    "message": "Q̂úîćk̂ śôúr̂ćê"
+  },
+  "sources/sources-meta.ts | record": {
+    "message": "R̂éĉór̂d́"
+  },
+  "sources/sources-meta.ts | recordings": {
+    "message": "R̂éĉór̂d́îńĝś"
+  },
+  "sources/sources-meta.ts | rename": {
+    "message": "R̂én̂ám̂é"
+  },
+  "sources/sources-meta.ts | resumeScriptExecution": {
+    "message": "R̂éŝúm̂é ŝćr̂íp̂t́ êx́êćût́îón̂"
+  },
+  "sources/sources-meta.ts | runSnippet": {
+    "message": "R̂ún̂ śn̂íp̂ṕêt́"
+  },
+  "sources/sources-meta.ts | save": {
+    "message": "Ŝáv̂é"
+  },
+  "sources/sources-meta.ts | saveAll": {
+    "message": "Ŝáv̂é âĺl̂"
+  },
+  "sources/sources-meta.ts | scope": {
+    "message": "Ŝćôṕê"
+  },
+  "sources/sources-meta.ts | search": {
+    "message": "Ŝéâŕĉh́"
+  },
+  "sources/sources-meta.ts | searchInAnonymousAndContent": {
+    "message": "Ŝéâŕĉh́ îń âńôńŷḿôúŝ án̂d́ ĉón̂t́êńt̂ śĉŕîṕt̂ś"
+  },
+  "sources/sources-meta.ts | showAllWhitespaceCharacters": {
+    "message": "Ŝh́ôẃ âĺl̂ ẃĥít̂éŝṕâćê ćĥár̂áĉt́êŕŝ"
+  },
+  "sources/sources-meta.ts | showBreakpoints": {
+    "message": "Ŝh́ôẃ B̂ŕêák̂ṕôín̂t́ŝ"
+  },
+  "sources/sources-meta.ts | showFilesystem": {
+    "message": "Ŝh́ôẃ F̂íl̂éŝýŝt́êḿ"
+  },
+  "sources/sources-meta.ts | showQuickSource": {
+    "message": "Ŝh́ôẃ Q̂úîćk̂ śôúr̂ćê"
+  },
+  "sources/sources-meta.ts | showRecordings": {
+    "message": "Ŝh́ôẃ R̂éĉór̂d́îńĝś"
+  },
+  "sources/sources-meta.ts | showScope": {
+    "message": "Ŝh́ôẃ Ŝćôṕê"
+  },
+  "sources/sources-meta.ts | showSearch": {
+    "message": "Ŝh́ôẃ Ŝéâŕĉh́"
+  },
+  "sources/sources-meta.ts | showSnippets": {
+    "message": "Ŝh́ôẃ Ŝńîṕp̂ét̂ś"
+  },
+  "sources/sources-meta.ts | showSources": {
+    "message": "Ŝh́ôẃ Ŝóûŕĉéŝ"
+  },
+  "sources/sources-meta.ts | showThreads": {
+    "message": "Ŝh́ôẃ T̂h́r̂éâd́ŝ"
+  },
+  "sources/sources-meta.ts | showTrailingWhitespaceCharacters": {
+    "message": "Ŝh́ôẃ t̂ŕâíl̂ín̂ǵ ŵh́ît́êśp̂áĉé ĉh́âŕâćt̂ér̂ś"
+  },
+  "sources/sources-meta.ts | showWatch": {
+    "message": "Ŝh́ôẃ Ŵát̂ćĥ"
+  },
+  "sources/sources-meta.ts | showWhitespaceCharacters": {
+    "message": "Ŝh́ôẃ ŵh́ît́êśp̂áĉé ĉh́âŕâćt̂ér̂ś:"
+  },
+  "sources/sources-meta.ts | snippets": {
+    "message": "Ŝńîṕp̂ét̂ś"
+  },
+  "sources/sources-meta.ts | sources": {
+    "message": "Ŝóûŕĉéŝ"
+  },
+  "sources/sources-meta.ts | startRecording": {
+    "message": "Ŝt́âŕt̂ Ŕêćôŕd̂ín̂ǵ"
+  },
+  "sources/sources-meta.ts | step": {
+    "message": "Ŝt́êṕ"
+  },
+  "sources/sources-meta.ts | stepIntoNextFunctionCall": {
+    "message": "Ŝt́êṕ îńt̂ó n̂éx̂t́ f̂ún̂ćt̂íôń ĉál̂ĺ"
+  },
+  "sources/sources-meta.ts | stepOutOfCurrentFunction": {
+    "message": "Ŝt́êṕ ôút̂ óf̂ ćûŕr̂én̂t́ f̂ún̂ćt̂íôń"
+  },
+  "sources/sources-meta.ts | stepOverNextFunctionCall": {
+    "message": "Ŝt́êṕ ôv́êŕ n̂éx̂t́ f̂ún̂ćt̂íôń ĉál̂ĺ"
+  },
+  "sources/sources-meta.ts | stop": {
+    "message": "Ŝt́ôṕ"
+  },
+  "sources/sources-meta.ts | switchFile": {
+    "message": "Ŝẃît́ĉh́ f̂íl̂é"
+  },
+  "sources/sources-meta.ts | threads": {
+    "message": "T̂h́r̂éâd́ŝ"
+  },
+  "sources/sources-meta.ts | toggleBreakpoint": {
+    "message": "T̂óĝǵl̂é b̂ŕêák̂ṕôín̂t́"
+  },
+  "sources/sources-meta.ts | toggleBreakpointEnabled": {
+    "message": "T̂óĝǵl̂é b̂ŕêák̂ṕôín̂t́ êńâb́l̂éd̂"
+  },
+  "sources/sources-meta.ts | toggleBreakpointInputWindow": {
+    "message": "T̂óĝǵl̂é b̂ŕêák̂ṕôín̂t́ îńp̂út̂ ẃîńd̂óŵ"
+  },
+  "sources/sources-meta.ts | trailing": {
+    "message": "T̂ŕâíl̂ín̂ǵ"
+  },
+  "sources/sources-meta.ts | watch": {
+    "message": "Ŵát̂ćĥ"
+  },
+  "sources/SourcesNavigator.js | addRecording": {
+    "message": "Âd́d̂ ŕêćôŕd̂ín̂ǵ"
+  },
+  "sources/SourcesNavigator.js | clearConfiguration": {
+    "message": "Ĉĺêár̂ ćôńf̂íĝúr̂át̂íôń"
+  },
+  "sources/SourcesNavigator.js | contentScriptsServedByExtensions": {
+    "message": "Ĉón̂t́êńt̂ śĉŕîṕt̂ś ŝér̂v́êd́ b̂ý êx́t̂én̂śîón̂ś âṕp̂éâŕ ĥér̂é"
+  },
+  "sources/SourcesNavigator.js | createAndSaveCodeSnippetsFor": {
+    "message": "Ĉŕêát̂é âńd̂ śâv́ê ćôd́ê śn̂íp̂ṕêt́ŝ f́ôŕ l̂át̂ér̂ ŕêúŝé"
+  },
+  "sources/SourcesNavigator.js | createNewSnippet": {
+    "message": "Ĉŕêát̂é n̂éŵ śn̂íp̂ṕêt́"
+  },
+  "sources/SourcesNavigator.js | learnMore": {
+    "message": "L̂éâŕn̂ ḿôŕê"
+  },
+  "sources/SourcesNavigator.js | learnMoreAboutWorkspaces": {
+    "message": "L̂éâŕn̂ ḿôŕê áb̂óût́ Ŵór̂ḱŝṕâćêś"
+  },
+  "sources/SourcesNavigator.js | newSnippet": {
+    "message": "N̂éŵ śn̂íp̂ṕêt́"
+  },
+  "sources/SourcesNavigator.js | overridePageAssetsWithFilesFromA": {
+    "message": "Ôv́êŕr̂íd̂é p̂áĝé âśŝét̂ś ŵít̂h́ f̂íl̂éŝ f́r̂óm̂ á l̂óĉál̂ f́ôĺd̂ér̂"
+  },
+  "sources/SourcesNavigator.js | recordAndReplayBrowser": {
+    "message": "R̂éĉór̂d́ âńd̂ ŕêṕl̂áŷ b́r̂óŵśêŕ îńt̂ér̂áĉt́îón̂ś"
+  },
+  "sources/SourcesNavigator.js | remove": {
+    "message": "R̂ém̂óv̂é"
+  },
+  "sources/SourcesNavigator.js | rename": {
+    "message": "R̂én̂ám̂é…"
+  },
+  "sources/SourcesNavigator.js | run": {
+    "message": "R̂ún̂"
+  },
+  "sources/SourcesNavigator.js | saveAs": {
+    "message": "Ŝáv̂é âś..."
+  },
+  "sources/SourcesNavigator.js | selectFolderForOverrides": {
+    "message": "Ŝél̂éĉt́ f̂ól̂d́êŕ f̂ór̂ óv̂ér̂ŕîd́êś"
+  },
+  "sources/SourcesNavigator.js | syncChangesInDevtoolsWithThe": {
+    "message": "Ŝýn̂ć ĉh́âńĝéŝ ín̂ D́êv́T̂óôĺŝ ẃît́ĥ t́ĥé l̂óĉál̂ f́îĺêśŷśt̂ém̂"
+  },
+  "sources/SourcesPanel.js | continueToHere": {
+    "message": "Ĉón̂t́îńûé t̂ó ĥér̂é"
+  },
+  "sources/SourcesPanel.js | copyS": {
+    "message": "Ĉóp̂ý {PH1}"
+  },
+  "sources/SourcesPanel.js | debugger": {
+    "message": "d̂éb̂úĝǵêŕ"
+  },
+  "sources/SourcesPanel.js | dontPauseOnExceptions": {
+    "message": "D̂ón̂'t́ p̂áûśê ón̂ éx̂ćêṕt̂íôńŝ"
+  },
+  "sources/SourcesPanel.js | dropWorkspaceFolderHere": {
+    "message": "D̂ŕôṕ ŵór̂ḱŝṕâćê f́ôĺd̂ér̂ h́êŕê"
+  },
+  "sources/SourcesPanel.js | groupByFolder": {
+    "message": "Ĝŕôúp̂ b́ŷ f́ôĺd̂ér̂"
+  },
+  "sources/SourcesPanel.js | moreOptions": {
+    "message": "M̂ór̂é ôṕt̂íôńŝ"
+  },
+  "sources/SourcesPanel.js | navigator": {
+    "message": "n̂áv̂íĝát̂ór̂"
+  },
+  "sources/SourcesPanel.js | openInSourcesPanel": {
+    "message": "Ôṕêń îń Ŝóûŕĉéŝ ṕâńêĺ"
+  },
+  "sources/SourcesPanel.js | pauseOnCaughtExceptions": {
+    "message": "P̂áûśê ón̂ ćâúĝh́t̂ éx̂ćêṕt̂íôńŝ"
+  },
+  "sources/SourcesPanel.js | pauseOnExceptions": {
+    "message": "P̂áûśê ón̂ éx̂ćêṕt̂íôńŝ"
+  },
+  "sources/SourcesPanel.js | resumeWithAllPausesBlockedForMs": {
+    "message": "R̂éŝúm̂é ŵít̂h́ âĺl̂ ṕâúŝéŝ b́l̂óĉḱêd́ f̂ór̂ 500 ḿŝ"
+  },
+  "sources/SourcesPanel.js | revealInSidebar": {
+    "message": "R̂év̂éâĺ îń ŝíd̂éb̂ár̂"
+  },
+  "sources/SourcesPanel.js | showFunctionDefinition": {
+    "message": "Ŝh́ôẃ f̂ún̂ćt̂íôń d̂éf̂ín̂ít̂íôń"
+  },
+  "sources/SourcesPanel.js | storeSAsGlobalVariable": {
+    "message": "Ŝt́ôŕê {PH1} áŝ ǵl̂ób̂ál̂ v́âŕîáb̂ĺê"
+  },
+  "sources/SourcesPanel.js | terminateCurrentJavascriptCall": {
+    "message": "T̂ér̂ḿîńât́ê ćûŕr̂én̂t́ Ĵáv̂áŜćr̂íp̂t́ ĉál̂ĺ"
+  },
+  "sources/SourcesView.js | dropInAFolderToAddToWorkspace": {
+    "message": "D̂ŕôṕ îń â f́ôĺd̂ér̂ t́ô ád̂d́ t̂ó ŵór̂ḱŝṕâćê"
+  },
+  "sources/SourcesView.js | openFile": {
+    "message": "Ôṕêń f̂íl̂é"
+  },
+  "sources/SourcesView.js | runCommand": {
+    "message": "R̂ún̂ ćôḿm̂án̂d́"
+  },
+  "sources/SourcesView.js | sourceViewActions": {
+    "message": "Ŝóûŕĉé V̂íêẃ Âćt̂íôńŝ"
+  },
+  "sources/TabbedEditorContainer.js | areYouSureYouWantToCloseUnsaved": {
+    "message": "Âŕê ýôú ŝúr̂é ŷóû ẃâńt̂ t́ô ćl̂óŝé ûńŝáv̂éd̂ f́îĺê: {PH1}?"
+  },
+  "sources/TabbedEditorContainer.js | changesToThisFileWereNotSavedTo": {
+    "message": "Ĉh́âńĝéŝ t́ô t́ĥíŝ f́îĺê ẃêŕê ńôt́ ŝáv̂éd̂ t́ô f́îĺê śŷśt̂ém̂."
+  },
+  "sources/TabbedEditorContainer.js | unableToLoadThisContent": {
+    "message": "Ûńâb́l̂é t̂ó l̂óâd́ t̂h́îś ĉón̂t́êńt̂."
+  },
+  "sources/ThreadsSidebarPane.js | paused": {
+    "message": "p̂áûśêd́"
+  },
+  "sources/WatchExpressionsSidebarPane.js | addPropertyPathToWatch": {
+    "message": "Âd́d̂ ṕr̂óp̂ér̂t́ŷ ṕât́ĥ t́ô ẃât́ĉh́"
+  },
+  "sources/WatchExpressionsSidebarPane.js | addWatchExpression": {
+    "message": "Âd́d̂ ẃât́ĉh́ êx́p̂ŕêśŝíôń"
+  },
+  "sources/WatchExpressionsSidebarPane.js | copyValue": {
+    "message": "Ĉóp̂ý v̂ál̂úê"
+  },
+  "sources/WatchExpressionsSidebarPane.js | deleteAllWatchExpressions": {
+    "message": "D̂él̂ét̂é âĺl̂ ẃât́ĉh́ êx́p̂ŕêśŝíôńŝ"
+  },
+  "sources/WatchExpressionsSidebarPane.js | deleteWatchExpression": {
+    "message": "D̂él̂ét̂é ŵát̂ćĥ éx̂ṕr̂éŝśîón̂"
+  },
+  "sources/WatchExpressionsSidebarPane.js | notAvailable": {
+    "message": "<n̂ót̂ áv̂áîĺâb́l̂é>"
+  },
+  "sources/WatchExpressionsSidebarPane.js | noWatchExpressions": {
+    "message": "N̂ó ŵát̂ćĥ éx̂ṕr̂éŝśîón̂ś"
+  },
+  "sources/WatchExpressionsSidebarPane.js | refreshWatchExpressions": {
+    "message": "R̂éf̂ŕêśĥ ẃât́ĉh́ êx́p̂ŕêśŝíôńŝ"
+  },
   "text_editor/CodeMirrorTextEditor.js | codeEditor": {
     "message": "Ĉód̂é êd́ît́ôŕ"
   },

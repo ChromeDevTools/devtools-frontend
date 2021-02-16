@@ -2,11 +2,47 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as i18n from '../i18n/i18n.js';
 import * as ObjectUI from '../object_ui/object_ui.js';
-import {ls} from '../platform/platform.js';
 import * as Root from '../root/root.js';
 import * as UI from '../ui/ui.js';
 
+export const UIStrings = {
+  /**
+  *@description Screen reader label for a select box that chooses the breakpoint type in the Sources panel when editing a breakpoint
+  */
+  breakpointType: 'Breakpoint type',
+  /**
+  *@description Text in Breakpoint Edit Dialog of the Sources panel
+  */
+  breakpoint: 'Breakpoint',
+  /**
+  *@description Text in Breakpoint Edit Dialog of the Sources panel
+  */
+  conditionalBreakpoint: 'Conditional breakpoint',
+  /**
+  *@description Text in Breakpoint Edit Dialog of the Sources panel
+  */
+  logpoint: 'Logpoint',
+  /**
+  *@description Text in Breakpoint Edit Dialog of the Sources panel
+  */
+  expressionToCheckBeforePausingEg: 'Expression to check before pausing, e.g. x > 5',
+  /**
+  *@description Type selector element title in Breakpoint Edit Dialog of the Sources panel
+  */
+  pauseOnlyWhenTheConditionIsTrue: 'Pause only when the condition is true',
+  /**
+  *@description Text in Breakpoint Edit Dialog of the Sources panel
+  */
+  logMessageEgXIsX: 'Log message, e.g. \'x is\', x',
+  /**
+  *@description Type selector element title in Breakpoint Edit Dialog of the Sources panel
+  */
+  logAMessageToConsoleDoNotBreak: 'Log a message to Console, do not break',
+};
+const str_ = i18n.i18n.registerUIStrings('sources/BreakpointEditDialog.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class BreakpointEditDialog extends UI.Widget.Widget {
   /**
    * @param {number} editorLineNumber
@@ -35,10 +71,12 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
     const toolbar = new UI.Toolbar.Toolbar('source-frame-breakpoint-toolbar', this.contentElement);
     toolbar.appendText(`Line ${editorLineNumber + 1}:`);
 
-    this._typeSelector = new UI.Toolbar.ToolbarComboBox(this._onTypeChanged.bind(this), ls`Breakpoint type`);
-    this._typeSelector.createOption(ls`Breakpoint`, BreakpointType.Breakpoint);
-    const conditionalOption = this._typeSelector.createOption(ls`Conditional breakpoint`, BreakpointType.Conditional);
-    const logpointOption = this._typeSelector.createOption(ls`Logpoint`, BreakpointType.Logpoint);
+    this._typeSelector =
+        new UI.Toolbar.ToolbarComboBox(this._onTypeChanged.bind(this), i18nString(UIStrings.breakpointType));
+    this._typeSelector.createOption(i18nString(UIStrings.breakpoint), BreakpointType.Breakpoint);
+    const conditionalOption =
+        this._typeSelector.createOption(i18nString(UIStrings.conditionalBreakpoint), BreakpointType.Conditional);
+    const logpointOption = this._typeSelector.createOption(i18nString(UIStrings.logpoint), BreakpointType.Logpoint);
     this._typeSelector.select(this._isLogpoint ? logpointOption : conditionalOption);
     toolbar.appendToolbarItem(this._typeSelector);
 
@@ -109,13 +147,13 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
     }
     const selectedValue = option.value;
     if (selectedValue === BreakpointType.Conditional) {
-      this._editor.setPlaceholder(ls`Expression to check before pausing, e.g. x > 5`);
+      this._editor.setPlaceholder(i18nString(UIStrings.expressionToCheckBeforePausingEg));
       /** @type {!HTMLSpanElement} */ UI.Tooltip.Tooltip.install(
-          (this._typeSelector.element), ls`Pause only when the condition is true`);
+          (this._typeSelector.element), i18nString(UIStrings.pauseOnlyWhenTheConditionIsTrue));
     } else if (selectedValue === BreakpointType.Logpoint) {
-      this._editor.setPlaceholder(ls`Log message, e.g. 'x is', x`);
+      this._editor.setPlaceholder(i18nString(UIStrings.logMessageEgXIsX));
       /** @type {!HTMLSpanElement} */ UI.Tooltip.Tooltip.install(
-          (this._typeSelector.element), ls`Log a message to Console, do not break`);
+          (this._typeSelector.element), i18nString(UIStrings.logAMessageToConsoleDoNotBreak));
     }
   }
 

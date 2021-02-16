@@ -30,6 +30,9 @@
   <message name="IDS_DEVTOOLS_539dddc574d3cd85ba73df93df7a76d0" desc="Text for the execution stack trace">
     Stack Trace
   </message>
+  <message name="IDS_DEVTOOLS_5de39fa1bce4bbf9232597a2120bc4d4" desc="Text to open the cubic bezier editor">
+    Open cubic bezier editor.
+  </message>
   <message name="IDS_DEVTOOLS_626585724f35f9d9fce0bd36525cb7de" desc="Title of the Marker Decorator of Elements">
     DOM Breakpoint
   </message>
@@ -383,6 +386,9 @@
   </message>
   <message name="IDS_DEVTOOLS_e24ee2487879116dcab772c0ac4fe341" desc="Text to focus on something">
     Focus
+  </message>
+  <message name="IDS_DEVTOOLS_e3de97b1a66edbe3fceddb1d5db2df2d" desc="A context menu item in the Watch Expressions Sidebar Pane of the Sources panel and Network pane request.">
+    Copy value
   </message>
   <message name="IDS_DEVTOOLS_e861292dd862be2d3772ada299050acc" desc="Title of the show element button in the Layout pane of the Elements panel">
     Show element in the Elements panel

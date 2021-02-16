@@ -2,7 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../common/common.js';
+import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
+import * as i18n from '../i18n/i18n.js';
 import * as Persistence from '../persistence/persistence.js';
 import * as QuickOpen from '../quick_open/quick_open.js';
 import * as UI from '../ui/ui.js';
@@ -10,6 +11,14 @@ import * as Workspace from '../workspace/workspace.js';
 
 import {FilePathScoreFunction} from './FilePathScoreFunction.js';
 
+export const UIStrings = {
+  /**
+  *@description Text in Filtered UISource Code List Provider of the Sources panel
+  */
+  noFilesFound: 'No files found',
+};
+const str_ = i18n.i18n.registerUIStrings('sources/FilteredUISourceCodeListProvider.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class FilteredUISourceCodeListProvider extends QuickOpen.FilteredListWidget.Provider {
   constructor() {
     super();
@@ -246,7 +255,7 @@ export class FilteredUISourceCodeListProvider extends QuickOpen.FilteredListWidg
    * @return {string}
    */
   notFoundText() {
-    return Common.UIString.UIString('No files found');
+    return i18nString(UIStrings.noFilesFound);
   }
 
   /**

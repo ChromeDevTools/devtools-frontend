@@ -30,8 +30,8 @@
 
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
+import * as i18n from '../i18n/i18n.js';
 import * as Persistence from '../persistence/persistence.js';
-import {ls} from '../platform/platform.js';
 import * as Recorder from '../recorder/recorder.js';
 import * as SDK from '../sdk/sdk.js';
 import * as Snippets from '../snippets/snippets.js';
@@ -40,6 +40,74 @@ import * as Workspace from '../workspace/workspace.js';
 
 import {NavigatorUISourceCodeTreeNode, NavigatorView} from './NavigatorView.js';  // eslint-disable-line no-unused-vars
 
+export const UIStrings = {
+  /**
+  *@description Text in Sources Navigator of the Sources panel
+  */
+  syncChangesInDevtoolsWithThe: 'Sync changes in DevTools with the local filesystem',
+  /**
+  *@description Text for link in the Filesystem Side View in Sources Panel
+  */
+  learnMoreAboutWorkspaces: 'Learn more about Workspaces',
+  /**
+  *@description Text in Sources Navigator of the Sources panel
+  */
+  overridePageAssetsWithFilesFromA: 'Override page assets with files from a local folder',
+  /**
+  *@description Text that is usually a hyperlink to more documentation
+  */
+  learnMore: 'Learn more',
+  /**
+  *@description Tooltip text that appears when hovering over the largeicon clear button in the Sources Navigator of the Sources panel
+  */
+  clearConfiguration: 'Clear configuration',
+  /**
+  *@description Text in Sources Navigator of the Sources panel
+  */
+  selectFolderForOverrides: 'Select folder for overrides',
+  /**
+  *@description Text in Sources Navigator of the Sources panel
+  */
+  contentScriptsServedByExtensions: 'Content scripts served by extensions appear here',
+  /**
+  *@description Text in Sources Navigator of the Sources panel
+  */
+  createAndSaveCodeSnippetsFor: 'Create and save code snippets for later reuse',
+  /**
+  *@description Text in Sources Navigator of the Sources panel
+  */
+  newSnippet: 'New snippet',
+  /**
+  *@description Title of an action in the sources tool to create snippet
+  */
+  createNewSnippet: 'Create new snippet',
+  /**
+  *@description A context menu item in the Sources Navigator of the Sources panel
+  */
+  run: 'Run',
+  /**
+  *@description A context menu item in the Navigator View of the Sources panel
+  */
+  rename: 'Rename…',
+  /**
+  *@description Label for an item to remove something
+  */
+  remove: 'Remove',
+  /**
+  *@description Text to save content as a specific file type
+  */
+  saveAs: 'Save as...',
+  /**
+  *@description Text that describes what the recording feature does
+  */
+  recordAndReplayBrowser: 'Record and replay browser interactions',
+  /**
+  *@description Label for the button to add a new recording
+  */
+  addRecording: 'Add recording',
+};
+const str_ = i18n.i18n.registerUIStrings('sources/SourcesNavigator.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /** @type {!NetworkNavigatorView} */
 let networkNavigatorViewInstance;
 
@@ -121,10 +189,11 @@ export class FilesNavigatorView extends NavigatorView {
     const placeholder = new UI.EmptyWidget.EmptyWidget('');
     this.setPlaceholder(placeholder);
     placeholder.appendParagraph().appendChild(UI.Fragment.html`
-      <div>${ls`Sync changes in DevTools with the local filesystem`}</div><br />
+      <div>${i18nString(UIStrings.syncChangesInDevtoolsWithThe)}</div><br />
       ${
         UI.XLink.XLink.create(
-            'https://developers.google.com/web/tools/chrome-devtools/workspaces/', ls`Learn more about Workspaces`)}
+            'https://developers.google.com/web/tools/chrome-devtools/workspaces/',
+            i18nString(UIStrings.learnMoreAboutWorkspaces))}
     `);
 
     const toolbar = new UI.Toolbar.Toolbar('navigator-toolbar');
@@ -175,8 +244,10 @@ export class OverridesNavigatorView extends NavigatorView {
     const placeholder = new UI.EmptyWidget.EmptyWidget('');
     this.setPlaceholder(placeholder);
     placeholder.appendParagraph().appendChild(UI.Fragment.html`
-      <div>${ls`Override page assets with files from a local folder`}</div><br />
-      ${UI.XLink.XLink.create('https://developers.google.com/web/updates/2018/01/devtools#overrides', ls`Learn more`)}
+      <div>${i18nString(UIStrings.overridePageAssetsWithFilesFromA)}</div><br />
+      ${
+        UI.XLink.XLink.create(
+            'https://developers.google.com/web/updates/2018/01/devtools#overrides', i18nString(UIStrings.learnMore))}
     `);
 
     this._toolbar = new UI.Toolbar.Toolbar('navigator-toolbar');
@@ -233,15 +304,14 @@ export class OverridesNavigatorView extends NavigatorView {
       this._toolbar.appendToolbarItem(enableCheckbox);
 
       this._toolbar.appendToolbarItem(new UI.Toolbar.ToolbarSeparator(true));
-      const clearButton =
-          new UI.Toolbar.ToolbarButton(Common.UIString.UIString('Clear configuration'), 'largeicon-clear');
+      const clearButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.clearConfiguration), 'largeicon-clear');
       clearButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => {
         project.remove();
       });
       this._toolbar.appendToolbarItem(clearButton);
       return;
     }
-    const title = Common.UIString.UIString('Select folder for overrides');
+    const title = i18nString(UIStrings.selectFolderForOverrides);
     const setupButton = new UI.Toolbar.ToolbarButton(title, 'largeicon-add', title);
     setupButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, event => {
       this._setupNewWorkspace();
@@ -278,8 +348,10 @@ export class ContentScriptsNavigatorView extends NavigatorView {
     const placeholder = new UI.EmptyWidget.EmptyWidget('');
     this.setPlaceholder(placeholder);
     placeholder.appendParagraph().appendChild(UI.Fragment.html`
-      <div>${ls`Content scripts served by extensions appear here`}</div><br />
-      ${UI.XLink.XLink.create('https://developer.chrome.com/extensions/content_scripts', ls`Learn more`)}
+      <div>${i18nString(UIStrings.contentScriptsServedByExtensions)}</div><br />
+      ${
+        UI.XLink.XLink.create(
+            'https://developer.chrome.com/extensions/content_scripts', i18nString(UIStrings.learnMore))}
     `);
   }
 
@@ -315,15 +387,16 @@ export class SnippetsNavigatorView extends NavigatorView {
     const placeholder = new UI.EmptyWidget.EmptyWidget('');
     this.setPlaceholder(placeholder);
     placeholder.appendParagraph().appendChild(UI.Fragment.html`
-      <div>${ls`Create and save code snippets for later reuse`}</div><br />
+      <div>${i18nString(UIStrings.createAndSaveCodeSnippetsFor)}</div><br />
       ${
         UI.XLink.XLink.create(
-            'https://developers.google.com/web/tools/chrome-devtools/javascript/snippets', ls`Learn more`)}
+            'https://developers.google.com/web/tools/chrome-devtools/javascript/snippets',
+            i18nString(UIStrings.learnMore))}
     `);
 
     const toolbar = new UI.Toolbar.Toolbar('navigator-toolbar');
-    const newButton =
-        new UI.Toolbar.ToolbarButton(ls`New snippet`, 'largeicon-add', Common.UIString.UIString('New snippet'));
+    const newButton = new UI.Toolbar.ToolbarButton(
+        i18nString(UIStrings.newSnippet), 'largeicon-add', i18nString(UIStrings.newSnippet));
     newButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, event => {
       this.create(Snippets.ScriptSnippetFileSystem.findSnippetsProject(), '');
     });
@@ -354,7 +427,8 @@ export class SnippetsNavigatorView extends NavigatorView {
   handleContextMenu(event) {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
     contextMenu.headerSection().appendItem(
-        ls`Create new snippet`, () => this.create(Snippets.ScriptSnippetFileSystem.findSnippetsProject(), ''));
+        i18nString(UIStrings.createNewSnippet),
+        () => this.create(Snippets.ScriptSnippetFileSystem.findSnippetsProject(), ''));
     contextMenu.show();
   }
 
@@ -367,12 +441,11 @@ export class SnippetsNavigatorView extends NavigatorView {
     const uiSourceCode = node.uiSourceCode();
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
     contextMenu.headerSection().appendItem(
-        Common.UIString.UIString('Run'), () => Snippets.ScriptSnippetFileSystem.evaluateScriptSnippet(uiSourceCode));
-    contextMenu.editSection().appendItem(Common.UIString.UIString('Rename…'), () => this.rename(node, false));
+        i18nString(UIStrings.run), () => Snippets.ScriptSnippetFileSystem.evaluateScriptSnippet(uiSourceCode));
+    contextMenu.editSection().appendItem(i18nString(UIStrings.rename), () => this.rename(node, false));
     contextMenu.editSection().appendItem(
-        Common.UIString.UIString('Remove'), () => uiSourceCode.project().deleteFile(uiSourceCode));
-    contextMenu.saveSection().appendItem(
-        Common.UIString.UIString('Save as...'), this._handleSaveAs.bind(this, uiSourceCode));
+        i18nString(UIStrings.remove), () => uiSourceCode.project().deleteFile(uiSourceCode));
+    contextMenu.saveSection().appendItem(i18nString(UIStrings.saveAs), this._handleSaveAs.bind(this, uiSourceCode));
     contextMenu.show();
   }
 
@@ -399,10 +472,11 @@ export class RecordingsNavigatorView extends NavigatorView {
     const placeholder = new UI.EmptyWidget.EmptyWidget('');
     this.setPlaceholder(placeholder);
     const p = /** @type {!HTMLElement} */ (placeholder.appendParagraph());
-    p.innerText = ls`Record and replay browser interactions`;
+    p.innerText = i18nString(UIStrings.recordAndReplayBrowser);
 
     const toolbar = new UI.Toolbar.Toolbar('navigator-toolbar');
-    const newButton = new UI.Toolbar.ToolbarButton(ls`Add recording`, 'largeicon-add', ls`Add recording`);
+    const newButton = new UI.Toolbar.ToolbarButton(
+        i18nString(UIStrings.addRecording), 'largeicon-add', i18nString(UIStrings.addRecording));
     newButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, event => {
       this.create(Recorder.RecordingFileSystem.findRecordingsProject(), '{"steps": []}');
     });
@@ -433,7 +507,8 @@ export class RecordingsNavigatorView extends NavigatorView {
   handleContextMenu(event) {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
     contextMenu.headerSection().appendItem(
-        ls`Add recording`, () => this.create(Recorder.RecordingFileSystem.findRecordingsProject(), ''));
+        i18nString(UIStrings.addRecording),
+        () => this.create(Recorder.RecordingFileSystem.findRecordingsProject(), ''));
     contextMenu.show();
   }
 
@@ -445,11 +520,10 @@ export class RecordingsNavigatorView extends NavigatorView {
   handleFileContextMenu(event, node) {
     const uiSourceCode = node.uiSourceCode();
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
-    contextMenu.editSection().appendItem(Common.UIString.UIString('Rename…'), () => this.rename(node, false));
+    contextMenu.editSection().appendItem(i18nString(UIStrings.rename), () => this.rename(node, false));
     contextMenu.editSection().appendItem(
-        Common.UIString.UIString('Remove'), () => uiSourceCode.project().deleteFile(uiSourceCode));
-    contextMenu.saveSection().appendItem(
-        Common.UIString.UIString('Save as...'), this._handleSaveAs.bind(this, uiSourceCode));
+        i18nString(UIStrings.remove), () => uiSourceCode.project().deleteFile(uiSourceCode));
+    contextMenu.saveSection().appendItem(i18nString(UIStrings.saveAs), this._handleSaveAs.bind(this, uiSourceCode));
     contextMenu.show();
   }
 

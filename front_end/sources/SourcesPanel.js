@@ -28,8 +28,8 @@ import * as Bindings from '../bindings/bindings.js';
 import * as Common from '../common/common.js';
 import * as Extensions from '../extensions/extensions.js';
 import * as Host from '../host/host.js';
+import * as i18n from '../i18n/i18n.js';
 import * as ObjectUI from '../object_ui/object_ui.js';
-import {ls} from '../platform/platform.js';
 import * as Recorder from '../recorder/recorder.js';
 import * as Root from '../root/root.js';
 import * as SDK from '../sdk/sdk.js';
@@ -45,6 +45,76 @@ import {Events, SourcesView} from './SourcesView.js';
 import {ThreadsSidebarPane} from './ThreadsSidebarPane.js';
 import {UISourceCodeFrame} from './UISourceCodeFrame.js';
 
+export const UIStrings = {
+  /**
+  *@description Text that appears when user drag and drop something (for example, a file) in Sources Panel of the Sources panel
+  */
+  dropWorkspaceFolderHere: 'Drop workspace folder here',
+  /**
+  *@description Text to show more options
+  */
+  moreOptions: 'More options',
+  /**
+  *@description Title of the file navigator sidebar in the Sources panel
+  */
+  navigator: 'navigator',
+  /**
+  *@description Title of the debugger sidebar in the Sources panel
+  */
+  debugger: 'debugger',
+  /**
+  *@description Text in Sources Panel of the Sources panel
+  */
+  groupByFolder: 'Group by folder',
+  /**
+  *@description Text for pausing the debugger on exceptions
+  */
+  pauseOnExceptions: 'Pause on exceptions',
+  /**
+  *@description Text in Sources Panel of the Sources panel
+  */
+  dontPauseOnExceptions: 'Don\'t pause on exceptions',
+  /**
+  *@description Tooltip text that appears when hovering over the largeicon play button in the Sources Panel of the Sources panel
+  */
+  resumeWithAllPausesBlockedForMs: 'Resume with all pauses blocked for 500 ms',
+  /**
+  *@description Tooltip text that appears when hovering over the largeicon terminate execution button in the Sources Panel of the Sources panel
+  */
+  terminateCurrentJavascriptCall: 'Terminate current JavaScript call',
+  /**
+  *@description Text in Sources Panel of the Sources panel
+  */
+  pauseOnCaughtExceptions: 'Pause on caught exceptions',
+  /**
+  *@description A context menu item in the Sources Panel of the Sources panel
+  */
+  revealInSidebar: 'Reveal in sidebar',
+  /**
+  *@description A context menu item in the Sources Panel of the Sources panel
+  */
+  continueToHere: 'Continue to here',
+  /**
+  *@description A context menu item in the Console that stores selection as a temporary global variable
+  *@example {string} PH1
+  */
+  storeSAsGlobalVariable: 'Store {PH1} as global variable',
+  /**
+  *@description A context menu item in the Console, Sources, and Network panel
+  *@example {string} PH1
+  */
+  copyS: 'Copy {PH1}',
+  /**
+  *@description A context menu item in the Sources Panel of the Sources panel
+  */
+  showFunctionDefinition: 'Show function definition',
+  /**
+  *@description Text in Sources Panel of the Sources panel
+  */
+  openInSourcesPanel: 'Open in Sources panel',
+};
+const str_ = i18n.i18n.registerUIStrings('sources/SourcesPanel.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /** @type {!SourcesPanel} */
 let sourcesPanelInstance;
 /** @type {!WrapperView} */
@@ -60,7 +130,7 @@ export class SourcesPanel extends UI.Panel.Panel {
     super('sources');
     this.registerRequiredCSS('sources/sourcesPanel.css', {enableLegacyPatching: false});
     new UI.DropTarget.DropTarget(
-        this.element, [UI.DropTarget.Type.Folder], Common.UIString.UIString('Drop workspace folder here'),
+        this.element, [UI.DropTarget.Type.Folder], i18nString(UIStrings.dropWorkspaceFolderHere),
         this._handleDrop.bind(this));
 
     this._workspace = Workspace.Workspace.WorkspaceImpl.instance();
@@ -102,7 +172,7 @@ export class SourcesPanel extends UI.Panel.Panel {
     tabbedPane.setMinimumSize(100, 25);
     tabbedPane.element.classList.add('navigator-tabbed-pane');
     const navigatorMenuButton = new UI.Toolbar.ToolbarMenuButton(this._populateNavigatorMenu.bind(this), true);
-    navigatorMenuButton.setTitle(Common.UIString.UIString('More options'));
+    navigatorMenuButton.setTitle(i18nString(UIStrings.moreOptions));
     tabbedPane.rightToolbar().appendToolbarItem(navigatorMenuButton);
 
     if (UI.ViewManager.ViewManager.instance().hasViewsForLocation('run-view-sidebar')) {
@@ -122,8 +192,8 @@ export class SourcesPanel extends UI.Panel.Panel {
     this._sourcesView = new SourcesView();
     this._sourcesView.addEventListener(Events.EditorSelected, this._editorSelected.bind(this));
 
-    this._toggleNavigatorSidebarButton = this.editorView.createShowHideSidebarButton(ls`navigator`);
-    this._toggleDebuggerSidebarButton = this._splitWidget.createShowHideSidebarButton(ls`debugger`);
+    this._toggleNavigatorSidebarButton = this.editorView.createShowHideSidebarButton(i18nString(UIStrings.navigator));
+    this._toggleDebuggerSidebarButton = this._splitWidget.createShowHideSidebarButton(i18nString(UIStrings.debugger));
     this.editorView.setMainWidget(this._sourcesView);
 
     this._threadsSidebarPane = null;
@@ -457,7 +527,7 @@ export class SourcesPanel extends UI.Panel.Panel {
     const groupByFolderSetting = Common.Settings.Settings.instance().moduleSetting('navigatorGroupByFolder');
     contextMenu.appendItemsAtLocation('navigatorMenu');
     contextMenu.viewSection().appendCheckboxItem(
-        Common.UIString.UIString('Group by folder'), () => groupByFolderSetting.set(!groupByFolderSetting.get()),
+        i18nString(UIStrings.groupByFolder), () => groupByFolderSetting.set(!groupByFolderSetting.get()),
         groupByFolderSetting.get());
   }
 
@@ -512,7 +582,7 @@ export class SourcesPanel extends UI.Panel.Panel {
     const enabled = Common.Settings.Settings.instance().moduleSetting('pauseOnExceptionEnabled').get();
     const button = /** @type {!UI.Toolbar.ToolbarToggle} */ (this._pauseOnExceptionButton);
     button.setToggled(enabled);
-    button.setTitle(enabled ? ls`Pause on exceptions` : ls`Don't pause on exceptions`);
+    button.setTitle(enabled ? i18nString(UIStrings.pauseOnExceptions) : i18nString(UIStrings.dontPauseOnExceptions));
     this._debugToolbarDrawer.classList.toggle('expanded', enabled);
   }
 
@@ -762,11 +832,11 @@ export class SourcesPanel extends UI.Panel.Panel {
   _createDebugToolbar() {
     const debugToolbar = new UI.Toolbar.Toolbar('scripts-debug-toolbar');
 
-    const longResumeButton = new UI.Toolbar.ToolbarButton(
-        Common.UIString.UIString('Resume with all pauses blocked for 500 ms'), 'largeicon-play');
+    const longResumeButton =
+        new UI.Toolbar.ToolbarButton(i18nString(UIStrings.resumeWithAllPausesBlockedForMs), 'largeicon-play');
     longResumeButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this._longResume, this);
-    const terminateExecutionButton =
-        new UI.Toolbar.ToolbarButton(ls`Terminate current JavaScript call`, 'largeicon-terminate-execution');
+    const terminateExecutionButton = new UI.Toolbar.ToolbarButton(
+        i18nString(UIStrings.terminateCurrentJavascriptCall), 'largeicon-terminate-execution');
     terminateExecutionButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this._terminateExecution, this);
     debugToolbar.appendToolbarItem(UI.Toolbar.Toolbar.createLongPressActionButton(
         this._togglePauseAction, [terminateExecutionButton, longResumeButton], []));
@@ -791,7 +861,7 @@ export class SourcesPanel extends UI.Panel.Panel {
     const debugToolbarDrawer = document.createElement('div');
     debugToolbarDrawer.classList.add('scripts-debug-toolbar-drawer');
 
-    const label = Common.UIString.UIString('Pause on caught exceptions');
+    const label = i18nString(UIStrings.pauseOnCaughtExceptions);
     const setting = Common.Settings.Settings.instance().moduleSetting('pauseOnCaughtException');
     debugToolbarDrawer.appendChild(UI.SettingsUI.createSettingCheckbox(label, setting, true));
 
@@ -827,7 +897,7 @@ export class SourcesPanel extends UI.Panel.Panel {
     if (!uiSourceCode.project().isServiceProject() &&
         !eventTarget.isSelfOrDescendant(this._navigatorTabbedLocation.widget().element)) {
       contextMenu.revealSection().appendItem(
-          Common.UIString.UIString('Reveal in sidebar'), this._handleContextMenuReveal.bind(this, uiSourceCode));
+          i18nString(UIStrings.revealInSidebar), this._handleContextMenuReveal.bind(this, uiSourceCode));
     }
   }
 
@@ -869,7 +939,7 @@ export class SourcesPanel extends UI.Panel.Panel {
       const debuggerModel = target ? target.model(SDK.DebuggerModel.DebuggerModel) : null;
       if (debuggerModel && debuggerModel.isPaused()) {
         contextMenu.debugSection().appendItem(
-            Common.UIString.UIString('Continue to here'), this._continueToLocation.bind(this, uiLocation));
+            i18nString(UIStrings.continueToHere), this._continueToLocation.bind(this, uiLocation));
       }
 
       this._callstackPane.appendIgnoreListURLContextMenuItems(contextMenu, uiSourceCode);
@@ -908,7 +978,7 @@ export class SourcesPanel extends UI.Panel.Panel {
     const copyContextMenuTitle = getObjectTitle();
 
     contextMenu.debugSection().appendItem(
-        ls`Store ${copyContextMenuTitle} as global variable`,
+        i18nString(UIStrings.storeSAsGlobalVariable, {PH1: copyContextMenuTitle}),
         () => SDK.ConsoleModel.ConsoleModel.instance().saveToTempVariable(executionContext, remoteObject));
 
     // Copy object context menu.
@@ -923,12 +993,13 @@ export class SourcesPanel extends UI.Panel.Panel {
         Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(result);
       };
 
-      contextMenu.clipboardSection().appendItem(ls`Copy ${copyContextMenuTitle}`, copyDecodedValueHandler);
+      contextMenu.clipboardSection().appendItem(
+          i18nString(UIStrings.copyS, {PH1: copyContextMenuTitle}), copyDecodedValueHandler);
     }
 
     if (remoteObject.type === 'function') {
       contextMenu.debugSection().appendItem(
-          ls`Show function definition`, this._showFunctionDefinition.bind(this, remoteObject));
+          i18nString(UIStrings.showFunctionDefinition), this._showFunctionDefinition.bind(this, remoteObject));
     }
 
     /**
@@ -966,7 +1037,7 @@ export class SourcesPanel extends UI.Panel.Panel {
     if (!uiSourceCode) {
       return;
     }
-    const openText = Common.UIString.UIString('Open in Sources panel');
+    const openText = i18nString(UIStrings.openInSourcesPanel);
     /** @type {function():*} */
     const callback = this.showUILocation.bind(this, uiSourceCode.uiLocation(0, 0));
     contextMenu.revealSection().appendItem(openText, callback);

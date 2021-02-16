@@ -985,6 +985,7 @@ grd_files_debug_sources = [
   "front_end/sources/InplaceFormatterEditorAction.js",
   "front_end/sources/JavaScriptBreakpointsSidebarPane.js",
   "front_end/sources/JavaScriptCompilerPlugin.js",
+  "front_end/sources/ModuleUIStrings.js",
   "front_end/sources/NavigatorView.js",
   "front_end/sources/OpenFileQuickOpen.js",
   "front_end/sources/OutlineQuickOpen.js",

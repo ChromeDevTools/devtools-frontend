@@ -30,6 +30,7 @@
 
 import * as ColorPicker from '../color_picker/color_picker.js';
 import * as Common from '../common/common.js';
+import * as i18n from '../i18n/i18n.js';
 import * as InlineEditor from '../inline_editor/inline_editor.js';
 import * as Platform from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
@@ -41,6 +42,18 @@ import * as Workspace from '../workspace/workspace.js';  // eslint-disable-line 
 
 import {Plugin} from './Plugin.js';
 
+export const UIStrings = {
+  /**
+  *@description Swatch icon element title in CSSPlugin of the Sources panel
+  */
+  openColorPicker: 'Open color picker.',
+  /**
+  *@description Text to open the cubic bezier editor
+  */
+  openCubicBezierEditor: 'Open cubic bezier editor.',
+};
+const str_ = i18n.i18n.registerUIStrings('sources/CSSPlugin.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class CSSPlugin extends Plugin {
   /**
    * @param {!SourceFrame.SourcesTextEditor.SourcesTextEditor} textEditor
@@ -218,7 +231,7 @@ export class CSSPlugin extends Plugin {
       return null;
     }
     const swatch = new InlineEditor.ColorSwatch.ColorSwatch();
-    swatch.renderColor(color, false, Common.UIString.UIString('Open color picker.'));
+    swatch.renderColor(color, false, i18nString(UIStrings.openColorPicker));
     const value = swatch.createChild('span');
     value.textContent = text;
     value.setAttribute('hidden', 'true');
@@ -237,7 +250,7 @@ export class CSSPlugin extends Plugin {
     }
     const swatch = InlineEditor.Swatches.BezierSwatch.create();
     swatch.setBezierText(text);
-    UI.Tooltip.Tooltip.install(swatch.iconElement(), Common.UIString.UIString('Open cubic bezier editor.'));
+    UI.Tooltip.Tooltip.install(swatch.iconElement(), i18nString(UIStrings.openCubicBezierEditor));
     swatch.iconElement().addEventListener('click', this._swatchIconClicked.bind(this, swatch), false);
     swatch.hideText(true);
     return swatch;

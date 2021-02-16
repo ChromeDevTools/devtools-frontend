@@ -54,6 +54,9 @@
   <message name="IDS_DEVTOOLS_4c9b91fc2eab5f3085a58146a9befda9" desc="Tooltip text for the foldable 'User agent client hints' section's help button">
     User agent client hints are an alternative to the user agent string that identify the browser and the device in a more structured way with better privacy accounting. Click the button to learn more.
   </message>
+  <message name="IDS_DEVTOOLS_4dab36ac83853282fc0d7bae20c19e90" desc="Text to show more options">
+    More options
+  </message>
   <message name="IDS_DEVTOOLS_52089bab86bd75e95090797a7ff551e7" desc="Title of an option in Sensors tab idle emulation select">
     User active, screen unlocked
   </message>
@@ -68,6 +71,9 @@
   </message>
   <message name="IDS_DEVTOOLS_55e3f80f9fc4a59234368dd9ec20415e" desc="Error message in the Device settings pane that shows that the entered brands list includes the wrong information">
     Brands list must consist of strings, each with a v parameter with a string value.
+  </message>
+  <message name="IDS_DEVTOOLS_6adf97f83acf6453d4a6a4b1070f3754" desc="Text to show there is nothing">
+    None
   </message>
   <message name="IDS_DEVTOOLS_71b401e30652987d57dc21cc1a84875b" desc="Field in the Devices pane letting customize the name the edited device presents via User Agent Client Hints">
     Device model

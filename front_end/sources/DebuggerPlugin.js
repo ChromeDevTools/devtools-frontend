@@ -31,8 +31,8 @@
 import * as Bindings from '../bindings/bindings.js';
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
+import * as i18n from '../i18n/i18n.js';
 import * as ObjectUI from '../object_ui/object_ui.js';
-import {ls} from '../platform/platform.js';
 import * as Root from '../root/root.js';
 import * as SDK from '../sdk/sdk.js';
 import * as SourceFrame from '../source_frame/source_frame.js';
@@ -49,6 +49,106 @@ import {resolveExpression, resolveScopeInObject} from './SourceMapNamesResolver.
 import {SourcesPanel} from './SourcesPanel.js';
 import {EditorAction} from './SourcesView.js';
 
+export const UIStrings = {
+  /**
+  *@description Text in Debugger Plugin of the Sources panel
+  */
+  thisScriptIsOnTheDebuggersIgnore: 'This script is on the debugger\'s ignore list',
+  /**
+  *@description Text to stop preventing the debugger from stepping into library code
+  */
+  removeFromIgnoreList: 'Remove from ignore list',
+  /**
+  *@description Text of a button in the Sources panel Debugger Plugin to configure ignore listing in Settings
+  */
+  configure: 'Configure',
+  /**
+  *@description Text in Debugger Plugin of the Sources panel
+  */
+  sourceMapFoundButIgnoredForFile: 'Source map found, but ignored for file on ignore list.',
+  /**
+  *@description Text to add a breakpoint
+  */
+  addBreakpoint: 'Add breakpoint',
+  /**
+  *@description A context menu item in the Debugger Plugin of the Sources panel
+  */
+  addConditionalBreakpoint: 'Add conditional breakpoint…',
+  /**
+  *@description A context menu item in the Debugger Plugin of the Sources panel
+  */
+  addLogpoint: 'Add logpoint…',
+  /**
+  *@description A context menu item in the Debugger Plugin of the Sources panel
+  */
+  neverPauseHere: 'Never pause here',
+  /**
+  *@description Text to remove a breakpoint
+  */
+  removeBreakpoint: 'Remove breakpoint',
+  /**
+  *@description Text in Debugger Plugin of the Sources panel
+  */
+  removeAllBreakpointsInLine: 'Remove all breakpoints in line',
+  /**
+  *@description A context menu item in the Debugger Plugin of the Sources panel
+  */
+  editBreakpoint: 'Edit breakpoint…',
+  /**
+  *@description Text in Debugger Plugin of the Sources panel
+  */
+  disableBreakpoint: 'Disable breakpoint',
+  /**
+  *@description Text in Debugger Plugin of the Sources panel
+  */
+  disableAllBreakpointsInLine: 'Disable all breakpoints in line',
+  /**
+  *@description Text in Debugger Plugin of the Sources panel
+  */
+  enableBreakpoint: 'Enable breakpoint',
+  /**
+  *@description Text in Debugger Plugin of the Sources panel
+  */
+  enableAllBreakpointsInLine: 'Enable all breakpoints in line',
+  /**
+  *@description Text in Debugger Plugin of the Sources panel
+  */
+  addSourceMap: 'Add source map…',
+  /**
+  *@description Text in Debugger Plugin of the Sources panel
+  */
+  sourceMapDetected: 'Source Map detected.',
+  /**
+  *@description Text in Debugger Plugin of the Sources panel
+  */
+  prettyprintThisMinifiedFile: 'Pretty-print this minified file?',
+  /**
+  *@description Label of a button in the Sources panel to pretty-print the current file
+  */
+  prettyprint: 'Pretty-print',
+  /**
+  *@description Text in Debugger Plugin pretty-print details message of the Sources panel
+  *@example {Debug} PH1
+  */
+  prettyprintingWillFormatThisFile:
+      'Pretty-printing will format this file in a new tab where you can continue debugging. You can also pretty-print this file by clicking the {PH1} button on the bottom status bar.',
+  /**
+  *@description Title of the Filtered List WidgetProvider of Quick Open
+  *@example {Ctrl+P Ctrl+O} PH1
+  */
+  associatedFilesAreAvailable: 'Associated files are available via file tree or {PH1}.',
+  /**
+  *@description Text in Debugger Plugin of the Sources panel
+  */
+  associatedFilesShouldBeAdded:
+      'Associated files should be added to the file tree. You can debug these resolved source files as regular JavaScript files.',
+  /**
+  *@description Text in Debugger Plugin of the Sources panel
+  */
+  theDebuggerWillSkipStepping: 'The debugger will skip stepping through this script, and will not stop on exceptions.'
+};
+const str_ = i18n.i18n.registerUIStrings('sources/DebuggerPlugin.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 // eslint-disable-next-line no-unused-vars
 class DecoratorWidget extends HTMLDivElement {
   constructor() {
@@ -246,10 +346,10 @@ export class DebuggerPlugin extends Plugin {
       }
     }
 
-    const infobar = new UI.Infobar.Infobar(
-        UI.Infobar.Type.Warning, Common.UIString.UIString('This script is on the debugger\'s ignore list'), [
-          {text: ls`Remove from ignore list`, highlight: false, delegate: unIgnoreList, dismiss: true}, {
-            text: ls`Configure`,
+    const infobar =
+        new UI.Infobar.Infobar(UI.Infobar.Type.Warning, i18nString(UIStrings.thisScriptIsOnTheDebuggersIgnore), [
+          {text: i18nString(UIStrings.removeFromIgnoreList), highlight: false, delegate: unIgnoreList, dismiss: true}, {
+            text: i18nString(UIStrings.configure),
             highlight: false,
             delegate:
                 UI.ViewManager.ViewManager.instance().showView.bind(UI.ViewManager.ViewManager.instance(), 'blackbox'),
@@ -258,14 +358,12 @@ export class DebuggerPlugin extends Plugin {
         ]);
     this._ignoreListInfobar = infobar;
 
-    infobar.createDetailsRowMessage(Common.UIString.UIString(
-        'The debugger will skip stepping through this script, and will not stop on exceptions.'));
+    infobar.createDetailsRowMessage(i18nString(UIStrings.theDebuggerWillSkipStepping));
 
     const scriptFile =
         this._scriptFileForDebuggerModel.size ? this._scriptFileForDebuggerModel.values().next().value : null;
     if (scriptFile && scriptFile.hasSourceMapURL()) {
-      infobar.createDetailsRowMessage(
-          Common.UIString.UIString('Source map found, but ignored for file on ignore list.'));
+      infobar.createDetailsRowMessage(i18nString(UIStrings.sourceMapFoundButIgnoredForFile));
     }
     this._textEditor.attachInfobar(this._ignoreListInfobar);
   }
@@ -316,44 +414,43 @@ export class DebuggerPlugin extends Plugin {
     if (!breakpoints.length) {
       if (!this._textEditor.hasLineClass(editorLineNumber, 'cm-non-breakable-line')) {
         contextMenu.debugSection().appendItem(
-            Common.UIString.UIString('Add breakpoint'),
-            this._createNewBreakpoint.bind(this, editorLineNumber, '', true));
+            i18nString(UIStrings.addBreakpoint), this._createNewBreakpoint.bind(this, editorLineNumber, '', true));
         if (supportsConditionalBreakpoints) {
           contextMenu.debugSection().appendItem(
-              Common.UIString.UIString('Add conditional breakpoint…'),
+              i18nString(UIStrings.addConditionalBreakpoint),
               this._editBreakpointCondition.bind(this, editorLineNumber, null, null, false /* preferLogpoint */));
           contextMenu.debugSection().appendItem(
-              ls`Add logpoint…`,
+              i18nString(UIStrings.addLogpoint),
               this._editBreakpointCondition.bind(this, editorLineNumber, null, null, true /* preferLogpoint */));
           contextMenu.debugSection().appendItem(
-              Common.UIString.UIString('Never pause here'),
+              i18nString(UIStrings.neverPauseHere),
               this._createNewBreakpoint.bind(this, editorLineNumber, 'false', true));
         }
       }
     } else {
       const hasOneBreakpoint = breakpoints.length === 1;
-      const removeTitle = hasOneBreakpoint ? Common.UIString.UIString('Remove breakpoint') :
-                                             Common.UIString.UIString('Remove all breakpoints in line');
+      const removeTitle =
+          hasOneBreakpoint ? i18nString(UIStrings.removeBreakpoint) : i18nString(UIStrings.removeAllBreakpointsInLine);
       contextMenu.debugSection().appendItem(removeTitle, () => breakpoints.map(breakpoint => breakpoint.remove(false)));
       if (hasOneBreakpoint && supportsConditionalBreakpoints) {
         // Editing breakpoints only make sense for conditional breakpoints
         // and logpoints and both are currently only available for JavaScript
         // debugging.
         contextMenu.debugSection().appendItem(
-            Common.UIString.UIString('Edit breakpoint…'),
+            i18nString(UIStrings.editBreakpoint),
             this._editBreakpointCondition.bind(
                 this, editorLineNumber, breakpoints[0], null, false /* preferLogpoint */));
       }
       const hasEnabled = breakpoints.some(breakpoint => breakpoint.enabled());
       if (hasEnabled) {
-        const title = hasOneBreakpoint ? Common.UIString.UIString('Disable breakpoint') :
-                                         Common.UIString.UIString('Disable all breakpoints in line');
+        const title = hasOneBreakpoint ? i18nString(UIStrings.disableBreakpoint) :
+                                         i18nString(UIStrings.disableAllBreakpointsInLine);
         contextMenu.debugSection().appendItem(title, () => breakpoints.map(breakpoint => breakpoint.setEnabled(false)));
       }
       const hasDisabled = breakpoints.some(breakpoint => !breakpoint.enabled());
       if (hasDisabled) {
-        const title = hasOneBreakpoint ? Common.UIString.UIString('Enable breakpoint') :
-                                         Common.UIString.UIString('Enable all breakpoints in line');
+        const title = hasOneBreakpoint ? i18nString(UIStrings.enableBreakpoint) :
+                                         i18nString(UIStrings.enableAllBreakpointsInLine);
         contextMenu.debugSection().appendItem(title, () => breakpoints.map(breakpoint => breakpoint.setEnabled(true)));
       }
     }
@@ -395,7 +492,7 @@ export class DebuggerPlugin extends Plugin {
           !Bindings.IgnoreListManager.IgnoreListManager.instance().isIgnoreListedUISourceCode(this._uiSourceCode)) {
         if (this._scriptFileForDebuggerModel.size) {
           const scriptFile = this._scriptFileForDebuggerModel.values().next().value;
-          const addSourceMapURLLabel = Common.UIString.UIString('Add source map…');
+          const addSourceMapURLLabel = i18nString(UIStrings.addSourceMap);
           contextMenu.debugSection().appendItem(addSourceMapURLLabel, addSourceMapURL.bind(null, scriptFile));
         }
       }
@@ -1494,20 +1591,20 @@ export class DebuggerPlugin extends Plugin {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
     if (decoration.breakpoint) {
       contextMenu.debugSection().appendItem(
-          Common.UIString.UIString('Edit breakpoint…'),
+          i18nString(UIStrings.editBreakpoint),
           this._editBreakpointCondition.bind(
               this, editorLocation.lineNumber, decoration.breakpoint, null, false /* preferLogpoint */));
     } else {
       contextMenu.debugSection().appendItem(
-          Common.UIString.UIString('Add conditional breakpoint…'),
+          i18nString(UIStrings.addConditionalBreakpoint),
           this._editBreakpointCondition.bind(
               this, editorLocation.lineNumber, null, editorLocation, false /* preferLogpoint */));
       contextMenu.debugSection().appendItem(
-          ls`Add logpoint…`,
+          i18nString(UIStrings.addLogpoint),
           this._editBreakpointCondition.bind(
               this, editorLocation.lineNumber, null, editorLocation, true /* preferLogpoint */));
       contextMenu.debugSection().appendItem(
-          Common.UIString.UIString('Never pause here'),
+          i18nString(UIStrings.neverPauseHere),
           this._setBreakpoint.bind(this, location.lineNumber, location.columnNumber, 'false', true));
     }
     contextMenu.show();
@@ -1750,16 +1847,15 @@ export class DebuggerPlugin extends Plugin {
       return;
     }
     this._sourceMapInfobar = UI.Infobar.Infobar.create(
-        UI.Infobar.Type.Info, Common.UIString.UIString('Source Map detected.'), [],
+        UI.Infobar.Type.Info, i18nString(UIStrings.sourceMapDetected), [],
         Common.Settings.Settings.instance().createSetting('sourceMapInfobarDisabled', false));
     if (!this._sourceMapInfobar) {
       return;
     }
-    this._sourceMapInfobar.createDetailsRowMessage(Common.UIString.UIString(
-        'Associated files should be added to the file tree. You can debug these resolved source files as regular JavaScript files.'));
-    this._sourceMapInfobar.createDetailsRowMessage(Common.UIString.UIString(
-        'Associated files are available via file tree or %s.',
-        UI.ShortcutRegistry.ShortcutRegistry.instance().shortcutTitleForAction('quickOpen.show')));
+    this._sourceMapInfobar.createDetailsRowMessage(i18nString(UIStrings.associatedFilesShouldBeAdded));
+    this._sourceMapInfobar.createDetailsRowMessage(i18nString(
+        UIStrings.associatedFilesAreAvailable,
+        {PH1: UI.ShortcutRegistry.ShortcutRegistry.instance().shortcutTitleForAction('quickOpen.show')}));
     this._sourceMapInfobar.setCloseCallback(() => {
       this._sourceMapInfobar = null;
     });
@@ -1787,8 +1883,8 @@ export class DebuggerPlugin extends Plugin {
     }
 
     this._prettyPrintInfobar = UI.Infobar.Infobar.create(
-        UI.Infobar.Type.Info, Common.UIString.UIString('Pretty-print this minified file?'),
-        [{text: ls`Pretty-print`, delegate: formatterCallback, highlight: true, dismiss: true}],
+        UI.Infobar.Type.Info, i18nString(UIStrings.prettyprintThisMinifiedFile),
+        [{text: i18nString(UIStrings.prettyprint), delegate: formatterCallback, highlight: true, dismiss: true}],
         Common.Settings.Settings.instance().createSetting('prettyPrintInfobarDisabled', false));
     if (!this._prettyPrintInfobar) {
       return;
@@ -1806,9 +1902,8 @@ export class DebuggerPlugin extends Plugin {
     toolbar.element.style.pointerEvents = 'none';
     toolbar.element.tabIndex = -1;
     const element = this._prettyPrintInfobar.createDetailsRowMessage();
-    element.appendChild(UI.UIUtils.formatLocalized(
-        'Pretty-printing will format this file in a new tab where you can continue debugging. You can also pretty-print this file by clicking the %s button on the bottom status bar.',
-        [toolbar.element]));
+    element.appendChild(
+        i18n.i18n.getFormatLocalizedString(str_, UIStrings.prettyprintingWillFormatThisFile, {PH1: toolbar.element}));
     this._textEditor.attachInfobar(this._prettyPrintInfobar);
   }
 

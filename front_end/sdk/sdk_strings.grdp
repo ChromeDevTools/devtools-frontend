@@ -207,6 +207,9 @@
   <message name="IDS_DEVTOOLS_8e7a5db68bb12f3fc9484d2962e45147" desc="Title of a setting under the Rendering drawer that can be invoked through the Command Menu">
     color-gamut: p3
   </message>
+  <message name="IDS_DEVTOOLS_90da6f38945a1c7e7ba11e3adcbe6919" desc="Text for pausing the debugger on exceptions">
+    Pause on exceptions
+  </message>
   <message name="IDS_DEVTOOLS_9182eda0635ccdc88276ba9e013c5c1b" desc="Title of a Rendering setting that can be invoked through the Command Menu">
     Do not emulate a focused page
   </message>
@@ -254,6 +257,9 @@
   </message>
   <message name="IDS_DEVTOOLS_ae356ff81a018e6d1469671482fe27b9" desc="Title for the CSP eval link">
     Content Security Policy - Eval
+  </message>
+  <message name="IDS_DEVTOOLS_af4bb376939e77df0e7c2332b837a866" desc="Text that refers to closure as a programming term">
+    Closure
   </message>
   <message name="IDS_DEVTOOLS_b36857343b1291522b00bfce8e3b347c" desc="Title for CSP inline issue link">
     Content Security Policy - Inline Code

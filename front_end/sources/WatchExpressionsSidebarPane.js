@@ -31,14 +31,50 @@
 import * as Common from '../common/common.js';
 import * as Components from '../components/components.js';
 import * as Host from '../host/host.js';
+import * as i18n from '../i18n/i18n.js';
 import * as ObjectUI from '../object_ui/object_ui.js';
 import * as Platform from '../platform/platform.js';
-import {ls} from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
 import {UISourceCodeFrame} from './UISourceCodeFrame.js';
 
+export const UIStrings = {
+  /**
+  *@description A context menu item in the Watch Expressions Sidebar Pane of the Sources panel
+  */
+  addWatchExpression: 'Add watch expression',
+  /**
+  *@description Tooltip/screen reader label of a button in the Sources panel that refreshes all watch expressions.
+  */
+  refreshWatchExpressions: 'Refresh watch expressions',
+  /**
+  *@description Empty element text content in Watch Expressions Sidebar Pane of the Sources panel
+  */
+  noWatchExpressions: 'No watch expressions',
+  /**
+  *@description A context menu item in the Watch Expressions Sidebar Pane of the Sources panel
+  */
+  deleteAllWatchExpressions: 'Delete all watch expressions',
+  /**
+  *@description A context menu item in the Watch Expressions Sidebar Pane of the Sources panel
+  */
+  addPropertyPathToWatch: 'Add property path to watch',
+  /**
+  *@description A context menu item in the Watch Expressions Sidebar Pane of the Sources panel
+  */
+  deleteWatchExpression: 'Delete watch expression',
+  /**
+  *@description Value element text content in Watch Expressions Sidebar Pane of the Sources panel
+  */
+  notAvailable: '<not available>',
+  /**
+  *@description A context menu item in the Watch Expressions Sidebar Pane of the Sources panel and Network pane request.
+  */
+  copyValue: 'Copy value',
+};
+const str_ = i18n.i18n.registerUIStrings('sources/WatchExpressionsSidebarPane.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /** @type {!WatchExpressionsSidebarPane} */
 let watchExpressionsSidebarPaneInstance;
 
@@ -65,11 +101,12 @@ export class WatchExpressionsSidebarPane extends UI.ThrottledWidget.ThrottledWid
     this._emptyElement;
     this._watchExpressionsSetting = Common.Settings.Settings.instance().createLocalSetting('watchExpressions', []);
 
-    this._addButton = new UI.Toolbar.ToolbarButton(ls`Add watch expression`, 'largeicon-add');
+    this._addButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.addWatchExpression), 'largeicon-add');
     this._addButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, event => {
       this._addButtonClicked();
     });
-    this._refreshButton = new UI.Toolbar.ToolbarButton(ls`Refresh watch expressions`, 'largeicon-refresh');
+    this._refreshButton =
+        new UI.Toolbar.ToolbarButton(i18nString(UIStrings.refreshWatchExpressions), 'largeicon-refresh');
     this._refreshButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.update, this);
 
     this.contentElement.classList.add('watch-expressions');
@@ -147,7 +184,7 @@ export class WatchExpressionsSidebarPane extends UI.ThrottledWidget.ThrottledWid
     this._treeOutline.removeChildren();
     this._watchExpressions = [];
     this._emptyElement = /** @type {!HTMLElement} */ (this.contentElement.createChild('div', 'gray-info-message'));
-    this._emptyElement.textContent = Common.UIString.UIString('No watch expressions');
+    this._emptyElement.textContent = i18nString(UIStrings.noWatchExpressions);
     this._emptyElement.tabIndex = -1;
     const watchExpressionStrings = this._watchExpressionsSetting.get();
     if (watchExpressionStrings.length) {
@@ -215,12 +252,12 @@ export class WatchExpressionsSidebarPane extends UI.ThrottledWidget.ThrottledWid
 
     if (!isEditing) {
       contextMenu.debugSection().appendItem(
-          Common.UIString.UIString('Add watch expression'), this._addButtonClicked.bind(this));
+          i18nString(UIStrings.addWatchExpression), this._addButtonClicked.bind(this));
     }
 
     if (this._watchExpressions.length > 1) {
       contextMenu.debugSection().appendItem(
-          Common.UIString.UIString('Delete all watch expressions'), this._deleteAllButtonClicked.bind(this));
+          i18nString(UIStrings.deleteAllWatchExpressions), this._deleteAllButtonClicked.bind(this));
     }
 
 
@@ -291,7 +328,7 @@ export class WatchExpressionsSidebarPane extends UI.ThrottledWidget.ThrottledWid
   appendApplicableItems(event, contextMenu, target) {
     if (target instanceof ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement && !target.property.synthetic) {
       contextMenu.debugSection().appendItem(
-          ls`Add property path to watch`, this._addPropertyPathToWatch.bind(this, target));
+          i18nString(UIStrings.addPropertyPathToWatch), this._addPropertyPathToWatch.bind(this, target));
     }
 
     const frame = UI.Context.Context.instance().flavor(UISourceCodeFrame);
@@ -476,7 +513,7 @@ export class WatchExpression extends Common.ObjectWrapper.ObjectWrapper {
   _createWatchExpressionHeader(expressionValue, exceptionDetails) {
     const headerElement = this._element.createChild('div', 'watch-expression-header');
     const deleteButton = UI.Icon.Icon.create('smallicon-cross', 'watch-expression-delete-button');
-    UI.Tooltip.Tooltip.install(deleteButton, ls`Delete watch expression`);
+    UI.Tooltip.Tooltip.install(deleteButton, i18nString(UIStrings.deleteWatchExpression));
     deleteButton.addEventListener('click', this._deleteWatchExpression.bind(this), false);
 
     const titleElement = headerElement.createChild('div', 'watch-expression-title tree-element-title');
@@ -487,7 +524,7 @@ export class WatchExpression extends Common.ObjectWrapper.ObjectWrapper {
       this._valueElement.classList.add('watch-expression-error');
       this._valueElement.classList.add('value');
       titleElement.classList.add('dimmed');
-      this._valueElement.textContent = Common.UIString.UIString('<not available>');
+      this._valueElement.textContent = i18nString(UIStrings.notAvailable);
       if (exceptionDetails !== undefined && exceptionDetails.exception !== undefined &&
           exceptionDetails.exception.description !== undefined) {
         UI.Tooltip.Tooltip.install(this._valueElement, exceptionDetails.exception.description);
@@ -581,13 +618,13 @@ export class WatchExpression extends Common.ObjectWrapper.ObjectWrapper {
   _populateContextMenu(contextMenu, event) {
     if (!this.isEditing()) {
       contextMenu.editSection().appendItem(
-          Common.UIString.UIString('Delete watch expression'), this._updateExpression.bind(this, null));
+          i18nString(UIStrings.deleteWatchExpression), this._updateExpression.bind(this, null));
     }
 
 
     if (!this.isEditing() && this._result && (this._result.type === 'number' || this._result.type === 'string')) {
       contextMenu.clipboardSection().appendItem(
-          Common.UIString.UIString('Copy value'), this._copyValueButtonClicked.bind(this));
+          i18nString(UIStrings.copyValue), this._copyValueButtonClicked.bind(this));
     }
 
     const target = UI.UIUtils.deepElementFromEvent(event);

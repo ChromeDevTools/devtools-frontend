@@ -31,9 +31,9 @@
 import * as Bindings from '../bindings/bindings.js';
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
+import * as i18n from '../i18n/i18n.js';
 import * as Persistence from '../persistence/persistence.js';
 import * as Platform from '../platform/platform.js';
-import {ls} from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as Snippets from '../snippets/snippets.js';
 import * as UI from '../ui/ui.js';
@@ -41,6 +41,75 @@ import * as Workspace from '../workspace/workspace.js';
 
 import {SearchSourcesView} from './SearchSourcesView.js';
 
+export const UIStrings = {
+  /**
+  *@description Text in Navigator View of the Sources panel
+  */
+  searchInFolder: 'Search in folder',
+  /**
+  *@description Search label in Navigator View of the Sources panel
+  */
+  searchInAllFiles: 'Search in all files',
+  /**
+  *@description Text in Navigator View of the Sources panel
+  */
+  noDomain: '(no domain)',
+  /**
+  *@description Text in Navigator View of the Sources panel
+  */
+  areYouSureYouWantToExcludeThis: 'Are you sure you want to exclude this folder?',
+  /**
+  *@description Text in Navigator View of the Sources panel
+  */
+  areYouSureYouWantToDeleteThis: 'Are you sure you want to delete this file?',
+  /**
+  *@description A context menu item in the Navigator View of the Sources panel
+  */
+  rename: 'Rename…',
+  /**
+  *@description A context menu item in the Navigator View of the Sources panel
+  */
+  makeACopy: 'Make a copy…',
+  /**
+  *@description Text to delete something
+  */
+  delete: 'Delete',
+  /**
+  *@description Text in Navigator View of the Sources panel
+  */
+  areYouSureYouWantToDeleteAll: 'Are you sure you want to delete all overrides contained in this folder?',
+  /**
+  *@description A context menu item in the Navigator View of the Sources panel
+  */
+  openFolder: 'Open folder',
+  /**
+  *@description A context menu item in the Navigator View of the Sources panel
+  */
+  newFile: 'New file',
+  /**
+  *@description A context menu item in the Navigator View of the Sources panel
+  */
+  excludeFolder: 'Exclude folder',
+  /**
+  *@description A context menu item in the Navigator View of the Sources panel
+  */
+  removeFolderFromWorkspace: 'Remove folder from workspace',
+  /**
+  *@description Text in Navigator View of the Sources panel
+  */
+  areYouSureYouWantToRemoveThis: 'Are you sure you want to remove this folder?',
+  /**
+  *@description A context menu item in the Navigator View of the Sources panel
+  */
+  deleteAllOverrides: 'Delete all overrides',
+  /**
+  *@description Name of an item from source map
+  *@example {compile.html} PH1
+  */
+  sFromSourceMap: '{PH1} (from source map)',
+};
+const str_ = i18n.i18n.registerUIStrings('sources/NavigatorView.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export const Types = {
   Domain: 'domain',
   File: 'file',
@@ -153,10 +222,10 @@ export class NavigatorView extends UI.Widget.VBox {
    * @param {string=} path
    */
   static appendSearchItem(contextMenu, path) {
-    let searchLabel = Common.UIString.UIString('Search in folder');
+    let searchLabel = i18nString(UIStrings.searchInFolder);
     if (!path || !path.trim()) {
       path = '*';
-      searchLabel = Common.UIString.UIString('Search in all files');
+      searchLabel = i18nString(UIStrings.searchInAllFiles);
     }
     contextMenu.viewSection().appendItem(searchLabel, () => {
       if (path) {
@@ -688,7 +757,7 @@ export class NavigatorView extends UI.Widget.VBox {
     }
 
     if (!projectOrigin) {
-      return Common.UIString.UIString('(no domain)');
+      return i18nString(UIStrings.noDomain);
     }
 
     const parsedURL = new Common.ParsedURL.ParsedURL(projectOrigin);
@@ -841,7 +910,7 @@ export class NavigatorView extends UI.Widget.VBox {
    * @param {string} path
    */
   _handleContextMenuExclude(project, path) {
-    const shouldExclude = window.confirm(Common.UIString.UIString('Are you sure you want to exclude this folder?'));
+    const shouldExclude = window.confirm(i18nString(UIStrings.areYouSureYouWantToExcludeThis));
     if (shouldExclude) {
       UI.UIUtils.startBatchUpdate();
       project.excludeFolder(
@@ -854,7 +923,7 @@ export class NavigatorView extends UI.Widget.VBox {
    * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    */
   _handleContextMenuDelete(uiSourceCode) {
-    const shouldDelete = window.confirm(Common.UIString.UIString('Are you sure you want to delete this file?'));
+    const shouldDelete = window.confirm(i18nString(UIStrings.areYouSureYouWantToDeleteThis));
     if (shouldDelete) {
       uiSourceCode.project().deleteFile(uiSourceCode);
     }
@@ -872,12 +941,11 @@ export class NavigatorView extends UI.Widget.VBox {
     const project = uiSourceCode.project();
     if (project.type() === Workspace.Workspace.projectTypes.FileSystem) {
       contextMenu.editSection().appendItem(
-          Common.UIString.UIString('Rename…'), this._handleContextMenuRename.bind(this, node));
+          i18nString(UIStrings.rename), this._handleContextMenuRename.bind(this, node));
       contextMenu.editSection().appendItem(
-          Common.UIString.UIString('Make a copy…'),
-          this._handleContextMenuCreate.bind(this, project, '', uiSourceCode));
+          i18nString(UIStrings.makeACopy), this._handleContextMenuCreate.bind(this, project, '', uiSourceCode));
       contextMenu.editSection().appendItem(
-          Common.UIString.UIString('Delete'), this._handleContextMenuDelete.bind(this, uiSourceCode));
+          i18nString(UIStrings.delete), this._handleContextMenuDelete.bind(this, uiSourceCode));
     }
 
     contextMenu.show();
@@ -887,9 +955,7 @@ export class NavigatorView extends UI.Widget.VBox {
    * @param {!NavigatorTreeNode} node
    */
   _handleDeleteOverrides(node) {
-    const shouldRemove = window.confirm(
-      ls`Are you sure you want to delete all overrides contained in this folder?`
-    );
+    const shouldRemove = window.confirm(i18nString(UIStrings.areYouSureYouWantToDeleteAll));
     if (shouldRemove) {
       this._handleDeleteOverridesHelper(node);
     }
@@ -931,10 +997,10 @@ export class NavigatorView extends UI.Widget.VBox {
           Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.completeURL(project, path),
           Host.Platform.isWin());
       contextMenu.revealSection().appendItem(
-          Common.UIString.UIString('Open folder'),
+          i18nString(UIStrings.openFolder),
           () => Host.InspectorFrontendHost.InspectorFrontendHostInstance.showItemInFolder(folderPath));
       if (project.canCreateFile()) {
-        contextMenu.defaultSection().appendItem(Common.UIString.UIString('New file'), () => {
+        contextMenu.defaultSection().appendItem(i18nString(UIStrings.newFile), () => {
           this._handleContextMenuCreate(project, path, undefined);
         });
       }
@@ -942,14 +1008,14 @@ export class NavigatorView extends UI.Widget.VBox {
 
     if (project.canExcludeFolder(path)) {
       contextMenu.defaultSection().appendItem(
-          Common.UIString.UIString('Exclude folder'), this._handleContextMenuExclude.bind(this, project, path));
+          i18nString(UIStrings.excludeFolder), this._handleContextMenuExclude.bind(this, project, path));
     }
 
     if (project.type() === Workspace.Workspace.projectTypes.FileSystem) {
       contextMenu.defaultSection().appendAction('sources.add-folder-to-workspace', undefined, true);
       if (node instanceof NavigatorGroupTreeNode) {
-        contextMenu.defaultSection().appendItem(Common.UIString.UIString('Remove folder from workspace'), () => {
-          const shouldRemove = window.confirm(Common.UIString.UIString('Are you sure you want to remove this folder?'));
+        contextMenu.defaultSection().appendItem(i18nString(UIStrings.removeFolderFromWorkspace), () => {
+          const shouldRemove = window.confirm(i18nString(UIStrings.areYouSureYouWantToRemoveThis));
           if (shouldRemove) {
             project.remove();
           }
@@ -958,9 +1024,7 @@ export class NavigatorView extends UI.Widget.VBox {
       if (/** @type {!Persistence.FileSystemWorkspaceBinding.FileSystem} */ (project).fileSystem().type() ===
           'overrides') {
         contextMenu.defaultSection().appendItem(
-          ls`Delete all overrides`,
-          this._handleDeleteOverrides.bind(this, node)
-        );
+            i18nString(UIStrings.deleteAllOverrides), this._handleDeleteOverrides.bind(this, node));
       }
     }
 
@@ -1588,7 +1652,7 @@ export class NavigatorUISourceCodeTreeNode extends NavigatorTreeNode {
 
     let tooltip = this._uiSourceCode.url();
     if (this._uiSourceCode.contentType().isFromSourceMap()) {
-      tooltip = Common.UIString.UIString('%s (from source map)', this._uiSourceCode.displayName());
+      tooltip = i18nString(UIStrings.sFromSourceMap, {PH1: this._uiSourceCode.displayName()});
     }
     this._treeElement.tooltip = tooltip;
   }

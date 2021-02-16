@@ -556,6 +556,7 @@ all_typescript_module_sources = [
   "sources/InplaceFormatterEditorAction.js",
   "sources/JavaScriptBreakpointsSidebarPane.js",
   "sources/JavaScriptCompilerPlugin.js",
+  "sources/ModuleUIStrings.js",
   "sources/NavigatorView.js",
   "sources/OpenFileQuickOpen.js",
   "sources/OutlineQuickOpen.js",

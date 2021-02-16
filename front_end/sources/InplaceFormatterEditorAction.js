@@ -2,8 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../common/common.js';
+import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
 import * as Formatter from '../formatter/formatter.js';
+import * as i18n from '../i18n/i18n.js';
 import * as Persistence from '../persistence/persistence.js';
 import * as SourceFrame from '../source_frame/source_frame.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../ui/ui.js';
@@ -11,6 +12,19 @@ import * as Workspace from '../workspace/workspace.js';  // eslint-disable-line 
 
 import {EditorAction, Events, SourcesView} from './SourcesView.js';  // eslint-disable-line no-unused-vars
 
+export const UIStrings = {
+  /**
+  *@description Title of the format button in the Sources panel
+  *@example {file name} PH1
+  */
+  formatS: 'Format {PH1}',
+  /**
+  *@description Tooltip text that appears when hovering over the largeicon pretty print button in the Inplace Formatter Editor Action of the Sources panel
+  */
+  format: 'Format',
+};
+const str_ = i18n.i18n.registerUIStrings('sources/InplaceFormatterEditorAction.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /**
  * @implements {EditorAction}
  */
@@ -46,7 +60,7 @@ export class InplaceFormatterEditorAction {
     const isFormattable = this._isFormattable(uiSourceCode);
     this._button.element.classList.toggle('hidden', !isFormattable);
     if (uiSourceCode && isFormattable) {
-      this._button.setTitle(Common.UIString.UIString(`Format ${uiSourceCode.name()}`));
+      this._button.setTitle(i18nString(UIStrings.formatS, {PH1: uiSourceCode.name()}));
     }
   }
 
@@ -64,7 +78,7 @@ export class InplaceFormatterEditorAction {
     this._sourcesView.addEventListener(Events.EditorSelected, this._editorSelected.bind(this));
     this._sourcesView.addEventListener(Events.EditorClosed, this._editorClosed.bind(this));
 
-    this._button = new UI.Toolbar.ToolbarButton(Common.UIString.UIString('Format'), 'largeicon-pretty-print');
+    this._button = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.format), 'largeicon-pretty-print');
     this._button.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this._formatSourceInPlace, this);
     this._updateButton(sourcesView.currentUISourceCode());
 

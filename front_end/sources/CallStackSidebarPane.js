@@ -26,13 +26,61 @@
 import * as Bindings from '../bindings/bindings.js';
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
+import * as i18n from '../i18n/i18n.js';
 import * as Persistence from '../persistence/persistence.js';
 import * as Platform from '../platform/platform.js';
-import {ls} from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 import * as Workspace from '../workspace/workspace.js';
 
+export const UIStrings = {
+  /**
+  *@description Text in Call Stack Sidebar Pane of the Sources panel
+  */
+  callStack: 'Call Stack',
+  /**
+  *@description Not paused message element text content in Call Stack Sidebar Pane of the Sources panel
+  */
+  notPaused: 'Not paused',
+  /**
+  *@description Text exposed to screen reader when navigating through a ignore-listed call frame in the sources panel
+  */
+  onIgnoreList: 'on ignore list',
+  /**
+  *@description Show all link text content in Call Stack Sidebar Pane of the Sources panel
+  */
+  showIgnorelistedFrames: 'Show ignore-listed frames',
+  /**
+  *@description Text to show more content
+  */
+  showMore: 'Show more',
+  /**
+  *@description A context menu item in the Call Stack Sidebar Pane of the Sources panel
+  */
+  restartFrame: 'Restart frame',
+  /**
+  *@description A context menu item in the Call Stack Sidebar Pane of the Sources panel
+  */
+  copyStackTrace: 'Copy stack trace',
+  /**
+  *@description Text to stop preventing the debugger from stepping into library code
+  */
+  removeFromIgnoreList: 'Remove from ignore list',
+  /**
+  *@description Text for scripts that should not be stepped into when debugging
+  */
+  addScriptToIgnoreList: 'Add script to ignore list',
+  /**
+  *@description A context menu item in the Call Stack Sidebar Pane of the Sources panel
+  */
+  removeAllContentScriptsFrom: 'Remove all content scripts from ignore list',
+  /**
+  *@description A context menu item in the Call Stack Sidebar Pane of the Sources panel
+  */
+  addAllContentScriptsToIgnoreList: 'Add all content scripts to ignore list',
+};
+const str_ = i18n.i18n.registerUIStrings('sources/CallStackSidebarPane.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /** @type {!CallStackSidebarPane} */
 let callstackSidebarPaneInstance;
 
@@ -45,14 +93,14 @@ export class CallStackSidebarPane extends UI.View.SimpleView {
    * @private
    */
   constructor() {
-    super(Common.UIString.UIString('Call Stack'), true);
+    super(i18nString(UIStrings.callStack), true);
     this.registerRequiredCSS('sources/callStackSidebarPane.css', {enableLegacyPatching: true});
 
     this._ignoreListMessageElement = this._createIgnoreListMessageElement();
     this.contentElement.appendChild(this._ignoreListMessageElement);
 
     this._notPausedMessageElement = this.contentElement.createChild('div', 'gray-info-message');
-    this._notPausedMessageElement.textContent = Common.UIString.UIString('Not paused');
+    this._notPausedMessageElement.textContent = i18nString(UIStrings.notPaused);
     this._notPausedMessageElement.tabIndex = -1;
 
     /** @type {!UI.ListModel.ListModel<!Item>} */
@@ -247,7 +295,7 @@ export class CallStackSidebarPane extends UI.View.SimpleView {
       UI.Tooltip.Tooltip.install(linkElement, item.linkText);
       element.classList.toggle('ignore-listed-call-frame', item.isIgnoreListed);
       if (item.isIgnoreListed) {
-        UI.ARIAUtils.setDescription(element, ls`on ignore list`);
+        UI.ARIAUtils.setDescription(element, i18nString(UIStrings.onIgnoreList));
       }
       if (!itemToCallFrame.has(item)) {
         UI.ARIAUtils.setDisabled(element, true);
@@ -319,7 +367,7 @@ export class CallStackSidebarPane extends UI.View.SimpleView {
     element.classList.add('ignore-listed-message');
     element.createChild('span');
     const showAllLink = element.createChild('span', 'link');
-    showAllLink.textContent = Common.UIString.UIString('Show ignore-listed frames');
+    showAllLink.textContent = i18nString(UIStrings.showIgnorelistedFrames);
     UI.ARIAUtils.markAsLink(showAllLink);
     showAllLink.tabIndex = 0;
     const showAll = () => {
@@ -342,7 +390,7 @@ export class CallStackSidebarPane extends UI.View.SimpleView {
     element.classList.add('show-more-message');
     element.createChild('span');
     const showAllLink = element.createChild('span', 'link');
-    showAllLink.textContent = Common.UIString.UIString('Show more');
+    showAllLink.textContent = i18nString(UIStrings.showMore);
     showAllLink.addEventListener('click', () => {
       this._maxAsyncStackChainDepth += defaultMaxAsyncStackChainDepth;
       this._update();
@@ -361,11 +409,9 @@ export class CallStackSidebarPane extends UI.View.SimpleView {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
     const debuggerCallFrame = itemToCallFrame.get(item);
     if (debuggerCallFrame) {
-      contextMenu.defaultSection().appendItem(
-          Common.UIString.UIString('Restart frame'), () => debuggerCallFrame.restart());
+      contextMenu.defaultSection().appendItem(i18nString(UIStrings.restartFrame), () => debuggerCallFrame.restart());
     }
-    contextMenu.defaultSection().appendItem(
-        Common.UIString.UIString('Copy stack trace'), this._copyStackTrace.bind(this));
+    contextMenu.defaultSection().appendItem(i18nString(UIStrings.copyStackTrace), this._copyStackTrace.bind(this));
     if (item.uiLocation) {
       this.appendIgnoreListURLContextMenuItems(contextMenu, item.uiLocation.uiSourceCode);
     }
@@ -438,23 +484,19 @@ export class CallStackSidebarPane extends UI.View.SimpleView {
     if (canIgnoreList) {
       if (isIgnoreListed) {
         contextMenu.defaultSection().appendItem(
-            Common.UIString.UIString('Remove from ignore list'),
-            manager.unIgnoreListUISourceCode.bind(manager, uiSourceCode));
+            i18nString(UIStrings.removeFromIgnoreList), manager.unIgnoreListUISourceCode.bind(manager, uiSourceCode));
       } else {
         contextMenu.defaultSection().appendItem(
-            Common.UIString.UIString('Add script to ignore list'),
-            manager.ignoreListUISourceCode.bind(manager, uiSourceCode));
+            i18nString(UIStrings.addScriptToIgnoreList), manager.ignoreListUISourceCode.bind(manager, uiSourceCode));
       }
     }
     if (isContentScript) {
       if (isIgnoreListed) {
         contextMenu.defaultSection().appendItem(
-            Common.UIString.UIString('Remove all content scripts from ignore list'),
-            manager.ignoreListContentScripts.bind(manager));
+            i18nString(UIStrings.removeAllContentScriptsFrom), manager.ignoreListContentScripts.bind(manager));
       } else {
         contextMenu.defaultSection().appendItem(
-            Common.UIString.UIString('Add all content scripts to ignore list'),
-            manager.unIgnoreListContentScripts.bind(manager));
+            i18nString(UIStrings.addAllContentScriptsToIgnoreList), manager.unIgnoreListContentScripts.bind(manager));
       }
     }
   }

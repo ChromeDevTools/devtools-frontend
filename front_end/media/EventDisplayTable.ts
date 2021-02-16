@@ -25,7 +25,8 @@ export const UIStrings = {
   */
   value: 'Value',
   /**
-  *@description Data grid name for Event Display data grids
+  *@description The accessible name of a table that displays information about events that occurred
+  * while a video/media player was present on the page.
   */
   eventDisplay: 'Event display',
 };

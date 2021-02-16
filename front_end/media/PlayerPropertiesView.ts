@@ -101,7 +101,8 @@ export const UIStrings = {
   */
   hardwareDecoder: 'Hardware decoder',
   /**
-  *@description Media property signaling whether the content is encrypted
+  *@description Media property signaling whether the content is encrypted. This is a noun phrase for
+  *a demultiplexer that does decryption.
   */
   decryptingDemuxer: 'Decrypting demuxer',
 

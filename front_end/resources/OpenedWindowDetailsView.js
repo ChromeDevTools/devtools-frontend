@@ -81,7 +81,8 @@ export const UIStrings = {
   */
   unknown: 'Unknown',
   /**
-  *@description This label specifies the server endpoints to which the server is reporting errors and warnings through the Report-to API
+  *@description This label specifies the server endpoints to which the server is reporting errors
+  *and warnings through the Report-to API. Following this label will be the URL of the server.
   */
   reportingTo: 'reporting to',
 };

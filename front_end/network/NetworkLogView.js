@@ -204,47 +204,66 @@ export const UIStrings = {
   */
   copyAsFetch: 'Copy as fetch',
   /**
-  *@description Text in Network Log View of the Network panel
+  *@description Text in Network Log View of the Network panel. An action that copies a command to
+  * the developer's clipboard. The command allows the developer to replay this specific network
+  * request in Node.js, a desktop application/framework. 'Node.js fetch' is a noun phrase for the
+  * type of request that will be copied.
   */
   copyAsNodejsFetch: 'Copy as Node.js fetch',
   /**
-  *@description Text in Network Log View of the Network panel
+  *@description Text in Network Log View of the Network panel. An action that copies a command to
+  *the clipboard. It will copy the command in the format compatible with cURL (a program, not
+  *translatable).
   */
   copyAsCurlCmd: 'Copy as cURL (cmd)',
   /**
-  *@description Text in Network Log View of the Network panel
+  *@description Text in Network Log View of the Network panel. An action that copies a command to
+  *the clipboard. It will copy the command in the format compatible with a Bash script.
   */
   copyAsCurlBash: 'Copy as cURL (bash)',
   /**
-  *@description Text in Network Log View of the Network panel
+  *@description Text in Network Log View of the Network panel. An action that copies a command to
+  *the clipboard. It will copy the command in the format compatible with a PowerShell script.
   */
   copyAllAsPowershell: 'Copy all as PowerShell',
   /**
-  *@description Text in Network Log View of the Network panel
+  *@description Text in Network Log View of the Network panel. An action that copies a command to
+  *the clipboard. It will copy the command in the format compatible with a 'fetch' command (fetch
+  *should not be translated).
   */
   copyAllAsFetch: 'Copy all as fetch',
   /**
-  *@description Text in Network Log View of the Network panel
+  *@description Text in Network Log View of the Network panel. An action that copies a command to
+  *the clipboard. It will copy the command in the format compatible with a Node.js 'fetch' command
+  *(fetch and Node.js should not be translated).
   */
   copyAllAsNodejsFetch: 'Copy all as Node.js fetch',
   /**
-  *@description Text in Network Log View of the Network panel
+  *@description Text in Network Log View of the Network panel. An action that copies a command to
+  *the clipboard. It will copy the command in the format compatible with cURL (a program, not
+  *translatable).
   */
   copyAllAsCurlCmd: 'Copy all as cURL (cmd)',
   /**
-  *@description Text in Network Log View of the Network panel
+  *@description Text in Network Log View of the Network panel. An action that copies a command to
+  *the clipboard. It will copy the command in the format compatible with a Bash script.
   */
   copyAllAsCurlBash: 'Copy all as cURL (bash)',
   /**
-  *@description Text in Network Log View of the Network panel
+  *@description Text in Network Log View of the Network panel. An action that copies a command to
+  *the clipboard. It will copy the command in the format compatible with cURL (a program, not
+  *translatable).
   */
   copyAsCurl: 'Copy as cURL',
   /**
-  *@description Text in Network Log View of the Network panel
+  *@description Text in Network Log View of the Network panel. An action that copies a command to
+  *the clipboard. It will copy the command in the format compatible with cURL (a program, not
+  *translatable).
   */
   copyAllAsCurl: 'Copy all as cURL',
   /**
-  *@description Text in Network Log View of the Network panel
+  *@description Text in Network Log View of the Network panel. An action that copies data to the
+  *clipboard. It will copy the data in the HAR (not translatable) format.
   */
   copyAllAsHar: 'Copy all as HAR',
   /**

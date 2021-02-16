@@ -12,8 +12,9 @@ const path = require('path');
 
 const FRONT_END_FOLDER = path.join(__filename, '..', '..', '..', '..', 'front_end');
 
+const CURRENT_YEAR = new Date().getFullYear();
 const LINE_LICENSE_HEADER = [
-  'Copyright 2020 The Chromium Authors. All rights reserved.',
+  `Copyright ${CURRENT_YEAR} The Chromium Authors. All rights reserved.`,
   'Use of this source code is governed by a BSD-style license that can be',
   'found in the LICENSE file.',
 ];
@@ -48,7 +49,8 @@ const BLOCK_LICENSE_HEADER = [
   'OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.',
 ];
 
-const LINE_REGEXES = LINE_LICENSE_HEADER.map(line => new RegExp('[ ]?' + line.replace('2020', '(\\(c\\) )?\\d{4}')));
+const LINE_REGEXES =
+    LINE_LICENSE_HEADER.map(line => new RegExp('[ ]?' + line.replace(CURRENT_YEAR, '(\\(c\\) )?\\d{4}')));
 const BLOCK_REGEX = new RegExp('[\\s\\\\n\\*]*' + BLOCK_LICENSE_HEADER.join('[\\s\\\\n\\*]*'), 'm');
 
 const LICENSE_HEADER_ADDITION = LINE_LICENSE_HEADER.map(line => `// ${line}`).join('\n') + '\n\n';

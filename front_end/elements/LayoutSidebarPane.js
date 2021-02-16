@@ -189,8 +189,15 @@ export class LayoutSidebarPane extends UI.ThrottledWidget.ThrottledWidget {
     for (const settingName of this._settings) {
       const setting = Common.Settings.Settings.instance().moduleSetting(settingName);
       const settingValue = setting.get();
+      const settingType = setting.type();
+      if (!settingType) {
+        throw new Error('A setting provided to LayoutSidebarPane does not have a setting type');
+      }
+      if (settingType !== Common.Settings.SettingType.BOOLEAN && settingType !== Common.Settings.SettingType.ENUM) {
+        throw new Error('A setting provided to LayoutSidebarPane does not have a supported setting type');
+      }
       const mappedSetting = {
-        type: /** @type {*} */ (setting.type()),
+        type: settingType,
         name: setting.name,
         title: setting.title(),
       };

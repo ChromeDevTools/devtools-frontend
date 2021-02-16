@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../../../../front_end/common/common.js';
 import type * as ElementsModule from '../../../../front_end/elements/elements.js';
 import {describeWithEnvironment} from '../helpers/EnvironmentHelpers.js';
 import {assertElement, assertShadowRoot, getEventPromise, renderElementIntoDOM} from '../helpers/DOMHelpers.js';
@@ -36,7 +37,7 @@ describeWithEnvironment('LayoutPane', async () => {
       settings: [
         {
           name: 'booleanSetting',
-          type: Elements.LayoutPaneUtils.SettingType.BOOLEAN,
+          type: Common.Settings.SettingType.BOOLEAN,
           value: false,
           title: 'Boolean setting title',
           options: [
@@ -52,7 +53,7 @@ describeWithEnvironment('LayoutPane', async () => {
         },
         {
           name: 'enumSetting',
-          type: Elements.LayoutPaneUtils.SettingType.ENUM,
+          type: Common.Settings.SettingType.ENUM,
           value: 'both',
           title: 'Enum setting title',
           options: [
@@ -84,7 +85,7 @@ describeWithEnvironment('LayoutPane', async () => {
       settings: [
         {
           name: 'booleanSetting',
-          type: Elements.LayoutPaneUtils.SettingType.BOOLEAN,
+          type: Common.Settings.SettingType.BOOLEAN,
           value: false,
           title: 'Boolean setting title',
           options: [

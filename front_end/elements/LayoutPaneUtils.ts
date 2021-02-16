@@ -2,10 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-export const enum SettingType {
-  BOOLEAN = 'boolean',
-  ENUM = 'enum',
-}
+import * as Common from '../common/common.js';
+
 export interface BaseSettingOption {
   title: string;
 }
@@ -20,7 +18,7 @@ export interface EnumSettingOption extends BaseSettingOption {
 
 export interface BaseSetting {
   name: string;
-  type: SettingType;
+  type: Common.Settings.SettingType.BOOLEAN|Common.Settings.SettingType.ENUM;
   title: string;
 }
 

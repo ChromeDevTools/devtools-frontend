@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../../common/common.js';
 import * as ComponentHelpers from '../../component_helpers/component_helpers.js';
 import * as Elements from '../../elements/elements.js';
 
@@ -41,7 +42,7 @@ component.data = {
   settings: [
     {
       name: 'showGridTracks',
-      type: Elements.LayoutPaneUtils.SettingType.BOOLEAN,
+      type: Common.Settings.SettingType.BOOLEAN,
       value: false,
       title: 'Show grid tracks',
       options: [
@@ -57,7 +58,7 @@ component.data = {
     },
     {
       name: 'showGridBorders',
-      type: Elements.LayoutPaneUtils.SettingType.ENUM,
+      type: Common.Settings.SettingType.ENUM,
       value: 'both',
       title: 'Show grid borders',
       options: [

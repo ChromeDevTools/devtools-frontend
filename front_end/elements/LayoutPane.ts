@@ -10,7 +10,7 @@ import * as Host from '../host/host.js';
 import * as LitHtml from '../third_party/lit-html/lit-html.js';
 import * as Components from '../ui/components/components.js';
 
-import {BooleanSetting, EnumSetting, LayoutElement, Setting, SettingType} from './LayoutPaneUtils.js';
+import {BooleanSetting, EnumSetting, LayoutElement, Setting} from './LayoutPaneUtils.js';
 
 import type {NodeTextData} from './NodeText.js';
 
@@ -35,11 +35,11 @@ interface HTMLInputElementEvent extends Event {
 }
 
 function isEnumSetting(setting: Setting): setting is EnumSetting {
-  return setting.type === SettingType.ENUM;
+  return setting.type === Common.Settings.SettingType.ENUM;
 }
 
 function isBooleanSetting(setting: Setting): setting is BooleanSetting {
-  return setting.type === SettingType.BOOLEAN;
+  return setting.type === Common.Settings.SettingType.BOOLEAN;
 }
 
 export interface LayoutPaneData {

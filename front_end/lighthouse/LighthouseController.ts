@@ -12,18 +12,18 @@ import {ProtocolService} from './LighthouseProtocolService.js';  // eslint-disab
 
 export const UIStrings = {
   /**
-  *@description Text in Lighthouse Controller
+  *@description Explanation for user that Ligthhouse can only audit HTTP/HTTPS pages
   */
   canOnlyAuditHttphttpsPagesAnd:
       'Can only audit HTTP/HTTPS pages and `Chrome` extensions. Navigate to a different page to start an audit.',
   /**
-  *@description Text when stored data in one location may affect lighthouse run
+  *@description Text when stored data in one location may affect Lighthouse run
   *@example {IndexedDB} PH1
   */
   thereMayBeStoredDataAffectingSingular:
       'There may be stored data affecting loading performance in this location: {PH1}. Audit this page in an incognito window to prevent those resources from affecting your scores.',
   /**
-  *@description Text when stored data in multiple locations may affect lighthouse run
+  *@description Text when stored data in multiple locations may affect Lighthouse run
   *@example {IndexedDB, WebSQL} PH1
   */
   thereMayBeStoredDataAffectingLoadingPlural:
@@ -50,59 +50,59 @@ export const UIStrings = {
   */
   webSql: 'Web SQL',
   /**
-  *@description Text for the performance of something
+  *@description Text of checkbox to include running the performance audits in Lighthouse
   */
   performance: 'Performance',
   /**
-  *@description Text in Lighthouse Controller
+  *@description Tooltip text of checkbox to include running the performance audits in Lighthouse
   */
   howLongDoesThisAppTakeToShow: 'How long does this app take to show content and become usable',
   /**
-  *@description Text in Lighthouse Controller
+  *@description Text of checkbox to include running the Progressive Web App audits in Lighthouse
   */
   progressiveWebApp: 'Progressive Web App',
   /**
-  *@description Text in Lighthouse Controller
+  *@description Tooltip text of checkbox to include running the Progressive Web App audits in Lighthouse
   */
   doesThisPageMeetTheStandardOfA: 'Does this page meet the standard of a Progressive Web App',
   /**
-  *@description Text in Lighthouse Controller
+  *@description Text of checkbox to include running the Best Practices audits in Lighthouse
   */
   bestPractices: 'Best practices',
   /**
-  *@description Text in Lighthouse Controller
+  *@description Tooltip text of checkbox to include running the Best Practices audits in Lighthouse
   */
   doesThisPageFollowBestPractices: 'Does this page follow best practices for modern web development',
   /**
-  *@description Text for accessibility of the web page
+  *@description Text of checkbox to include running the Accessibility audits in Lighthouse
   */
   accessibility: 'Accessibility',
   /**
-  *@description Text in Lighthouse Controller
+  *@description Tooltip text of checkbox to include running the Accessibility audits in Lighthouse
   */
   isThisPageUsableByPeopleWith: 'Is this page usable by people with disabilities or impairments',
   /**
-  *@description Text in Lighthouse Controller
+  *@description Text of checkbox to include running the Search Engine Optimization audits in Lighthouse
   */
   seo: 'SEO',
   /**
-  *@description Text in Lighthouse Controller
+  *@description Tooltip text of checkbox to include running the Search Engine Optimization audits in Lighthouse
   */
   isThisPageOptimizedForSearch: 'Is this page optimized for search engine results ranking',
   /**
-  *@description Text in Lighthouse Controller
+  *@description Text of checkbox to include running the Ad speed and quality audits in Lighthouse
   */
   publisherAds: 'Publisher Ads',
   /**
-  *@description Help text in Lighthouse Controller
+  *@description Tooltip text of checkbox to include running the Ad speed and quality audits in Lighthouse
   */
   isThisPageOptimizedForAdSpeedAnd: 'Is this page optimized for ad speed and quality',
   /**
-  *@description Text in Lighthouse Controller
+  *@description Text of checkbox to emulate mobile device behavior when running audits in Lighthouse
   */
   applyMobileEmulation: 'Apply mobile emulation',
   /**
-  *@description Text in Lighthouse Controller
+  *@description Tooltip text of checkbox to emulate mobile device behavior when running audits in Lighthouse
   */
   applyMobileEmulationDuring: 'Apply mobile emulation during auditing',
   /**
@@ -123,11 +123,11 @@ export const UIStrings = {
   simulateASlowerPageLoadBasedOn:
       'Simulate a slower page load, based on data from an initial unthrottled load. If disabled, the page is actually slowed with applied throttling.',
   /**
-  *@description Text to clear storage of the web page
+  *@description Text of checkbox to reset storage features prior to running audits in Lighthouse
   */
   clearStorage: 'Clear storage',
   /**
-  *@description Text in Lighthouse Controller
+  *@description Tooltip text of checkbox to reset storage features prior to running audits in Lighthouse
   */
   resetStorageLocalstorage:
       'Reset storage (localStorage, IndexedDB, etc) before auditing. (Good for performance & PWA testing)',

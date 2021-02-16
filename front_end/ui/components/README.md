@@ -15,6 +15,8 @@ const columns = [
   { id: 'city', title: 'City', width: 50 },
   { id: 'country', title: 'Country', width: 50 },
 ]
+```
+
 # data-grid
 
 The data-grid component takes in tabular data and renders it into a table. It does not provide complex functionality such as sorting or filtering. For that, you should use a `data-grid-controller` component.
@@ -66,7 +68,7 @@ sorting.
 A data-grid-controller can optionally also take an array of filters. These
 should be created via `TextUtils.FilterParser`.
 
-```
+```ts
 const keys = ['city', 'country'];
 const parser = new TextUtils.FilterParser(keys);
 // Pass this into devtools-data-grid-controller to filter accordingly

@@ -71,7 +71,7 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper {
     recordLogSetting.addChangeListener(() => {
       const preserveLogSetting = Common.Settings.Settings.instance().moduleSetting('network_log.preserve-log');
       if (!preserveLogSetting.get() && recordLogSetting.get()) {
-        this.reset();
+        this.reset(true);
       }
       this.setIsRecording(/** @type{boolean} */ (recordLogSetting.get()));
     }, this);
@@ -367,7 +367,7 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper {
 
   _willReloadPage() {
     if (!Common.Settings.Settings.instance().moduleSetting('network_log.preserve-log').get()) {
-      this.reset();
+      this.reset(true);
     }
   }
 
@@ -388,6 +388,8 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper {
       return;
     }
 
+    const preserveLog = Common.Settings.Settings.instance().moduleSetting('network_log.preserve-log').get();
+
     const oldRequests = this._requests;
     const oldManagerRequests = this._requests.filter(request => NetworkManager.forRequest(request) === manager);
     const oldRequestsSet = this._requestsSet;
@@ -397,7 +399,7 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper {
     this._requestsSet = new Set();
     this._requestsMap.clear();
     this._unresolvedPreflightRequests.clear();
-    this.dispatchEventToListeners(Events.Reset);
+    this.dispatchEventToListeners(Events.Reset, {clearIfPreserved: !preserveLog});
 
     // Preserve requests from the new session.
     let currentPageLoad = null;
@@ -442,7 +444,7 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper {
       this._addRequest(request);
     }
 
-    if (Common.Settings.Settings.instance().moduleSetting('network_log.preserve-log').get()) {
+    if (preserveLog) {
       for (const request of oldRequestsSet) {
         this._addRequest(request);
       }
@@ -503,7 +505,7 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper {
    * @param {!Array<!NetworkRequest>} requests
    */
   importRequests(requests) {
-    this.reset();
+    this.reset(true);
     this._requests = [];
     this._sentNetworkRequests = [];
     this._receivedNetworkResponses = [];
@@ -582,7 +584,10 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper {
     }
   }
 
-  reset() {
+  /**
+   * @param {boolean} clearIfPreserved
+   */
+  reset(clearIfPreserved) {
     this._requests = [];
     this._sentNetworkRequests = [];
     this._receivedNetworkResponses = [];
@@ -596,7 +601,7 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper {
       }
     }
 
-    this.dispatchEventToListeners(Events.Reset);
+    this.dispatchEventToListeners(Events.Reset, {clearIfPreserved});
   }
 
   /**

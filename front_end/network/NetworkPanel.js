@@ -382,7 +382,7 @@ export class NetworkPanel extends UI.Panel.Panel {
     this._panelToolbar.appendToolbarItem(UI.Toolbar.Toolbar.createActionButton(this._toggleRecordAction));
     const clearButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.clear), 'largeicon-clear');
     clearButton.addEventListener(
-        UI.Toolbar.ToolbarButton.Events.Click, () => SDK.NetworkLog.NetworkLog.instance().reset(), this);
+        UI.Toolbar.ToolbarButton.Events.Click, () => SDK.NetworkLog.NetworkLog.instance().reset(true), this);
     this._panelToolbar.appendToolbarItem(clearButton);
     this._panelToolbar.appendSeparator();
 
@@ -497,9 +497,13 @@ export class NetworkPanel extends UI.Panel.Panel {
     this._networkLogView.addFilmStripFrames(timestamps);
   }
 
-  _onNetworkLogReset() {
+  /**
+   * @param {!Common.EventTarget.EventTargetEvent} event
+   */
+  _onNetworkLogReset(event) {
+    const {clearIfPreserved} = event.data;
     BlockedURLsPane.reset();
-    if (!this._preserveLogSetting.get()) {
+    if (!this._preserveLogSetting.get() || clearIfPreserved) {
       this._calculator.reset();
       this._overviewPane.reset();
     }

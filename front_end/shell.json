@@ -16,7 +16,6 @@
     { "name": "coverage" },
     { "name": "data_grid" },
     { "name": "event_listeners" },
-    { "name": "heap_snapshot_model" },
     { "name": "inline_editor" },
     { "name": "input"},
     { "name": "javascript_metadata" },

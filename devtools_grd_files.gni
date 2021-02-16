@@ -236,7 +236,6 @@ grd_files_release_sources = [
   "front_end/har_importer/har_importer_module.js",
   "front_end/heap_snapshot_model/heap_snapshot_model-legacy.js",
   "front_end/heap_snapshot_model/heap_snapshot_model.js",
-  "front_end/heap_snapshot_model/heap_snapshot_model_module.js",
   "front_end/heap_snapshot_worker/heap_snapshot_worker-entrypoint.js",
   "front_end/heap_snapshot_worker/heap_snapshot_worker-legacy.js",
   "front_end/heap_snapshot_worker/heap_snapshot_worker.js",

@@ -3,7 +3,6 @@
     "components",
     "perf_ui",
     "data_grid",
-    "heap_snapshot_model",
     "object_ui"
   ],
   "modules": [

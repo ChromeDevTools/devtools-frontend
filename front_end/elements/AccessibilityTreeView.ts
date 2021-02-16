@@ -6,6 +6,7 @@ import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
 import {AccessibilityTree} from './AccessibilityTree.js';
+import {sdkNodeToAXNode} from './AccessibilityTreeUtils.js';
 
 // This class simply acts as a wrapper around the AccessibilityTree web component for
 // compatibility with DevTools legacy UI widgets. It in itself contains no business logic
@@ -23,13 +24,23 @@ export class AccessibilityTreeView extends UI.Widget.VBox {
     this.contentElement.appendChild(this.accessibilityTreeComponent);
   }
 
-  setNode(inspectedNode: SDK.DOMModel.DOMNode): void {
-    this.accessibilityTreeComponent.data = {
-      node: inspectedNode,
-    };
+  async refreshAccessibilityTree(node: SDK.DOMModel.DOMNode): Promise<SDK.AccessibilityModel.AccessibilityNode|null> {
+    const accessibilityModel = node.domModel().target().model(SDK.AccessibilityModel.AccessibilityModel);
+    if (!accessibilityModel) {
+      return null;
+    }
+
+    const result = await accessibilityModel.requestRootNode();
+    return result || null;
   }
 
-  wasShown(): void {
-    this.accessibilityTreeComponent.wasShown();
+  async setNode(inspectedNode: SDK.DOMModel.DOMNode): Promise<void> {
+    const root = await this.refreshAccessibilityTree(inspectedNode);
+    if (!root) {
+      return;
+    }
+    this.accessibilityTreeComponent.data = {
+      rootNode: sdkNodeToAXNode(null, root, this.accessibilityTreeComponent),
+    };
   }
 }

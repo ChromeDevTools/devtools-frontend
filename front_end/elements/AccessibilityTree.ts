@@ -2,14 +2,14 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as SDK from '../sdk/sdk.js';
 import * as LitHtml from '../third_party/lit-html/lit-html.js';
 
-import {AXNode, sdkNodeToAXNode} from './AccessibilityTreeUtils.js';
+import {AXNode} from './AccessibilityTreeUtils.js';
+
 import type {AccessibilityNode, AccessibilityNodeData} from './AccessibilityNode.js';
 
 export interface AccessibilityTreeData {
-  node: SDK.DOMModel.DOMNode|null;
+  rootNode: AXNode;
 }
 
 export class AccessibilityTree extends HTMLElement {
@@ -17,7 +17,6 @@ export class AccessibilityTree extends HTMLElement {
     mode: 'open',
     delegatesFocus: false,
   });
-  private node: SDK.DOMModel.DOMNode|null = null;
   private nodeMap: Map<string, AccessibilityNode> = new Map();
   private rootNode: AXNode|null = null;
   private selectedNode: AccessibilityNode|null = null;
@@ -29,8 +28,13 @@ export class AccessibilityTree extends HTMLElement {
   }
 
   set data(data: AccessibilityTreeData) {
-    this.node = data.node;
+    this.rootNode = data.rootNode;
+    if (!this.rootNode) {
+      throw new Error('Root node is missing');
+    }
     this.render();
+    this.selectRootNode();
+    this.expandTree();
   }
 
   set selectedAXNode(node: AccessibilityNode) {
@@ -44,10 +48,19 @@ export class AccessibilityTree extends HTMLElement {
     this.selectedNode.select();
   }
 
-  wasShown(): void {
-    const rootNode = this.getRoot();
-    if (rootNode) {
-      this.selectedAXNode = rootNode;
+  async expandTree(): Promise<void> {
+    if (!this.rootNode) {
+      return;
+    }
+    let levelNodes = [this.rootNode];
+    // Expand the first 3 levels which are expected to be preloaded.
+    for (let level = 0; level < 3; level++) {
+      const nextLevelNodes = [];
+      for (const node of levelNodes) {
+        await this.nodeMap.get(node.id)?.expand();
+        nextLevelNodes.push(...(await node.children()));
+      }
+      levelNodes = nextLevelNodes;
     }
   }
 
@@ -57,20 +70,6 @@ export class AccessibilityTree extends HTMLElement {
 
   appendToNodeMap(id: string, node: AccessibilityNode): void {
     this.nodeMap.set(id, node);
-  }
-
-  async refreshAccessibilityTree(): Promise<SDK.AccessibilityModel.AccessibilityNode|null> {
-    if (!this.node) {
-      return null;
-    }
-
-    const accessibilityModel = this.node.domModel().target().model(SDK.AccessibilityModel.AccessibilityModel);
-    if (!accessibilityModel) {
-      return null;
-    }
-
-    const result = await accessibilityModel.requestRootNode();
-    return result || null;
   }
 
   private onKeyDown(e: KeyboardEvent): void {
@@ -155,32 +154,24 @@ export class AccessibilityTree extends HTMLElement {
   }
 
   private render(): void {
-    this.refreshAccessibilityTree().then(rootNode => {
-      if (!rootNode) {
-        return;
-      }
+    // clang-format off
+    const output = LitHtml.html`
+      <style>
+        :host {
+          overflow: auto;
+        }
 
-      this.rootNode = sdkNodeToAXNode(null, rootNode, this);
-
-      // clang-format off
-      const output = LitHtml.html`
-        <style>
-          :host {
-            overflow: auto;
-          }
-
-          :focus {
-            outline: none;
-          }
-        </style>
-        <devtools-accessibility-node .data=${{
-          axNode: this.rootNode,
-          } as AccessibilityNodeData}>
-        </devtools-accessibility-node>
-        `;
-      // clang-format on
-      LitHtml.render(output, this.shadow);
-    });
+        :focus {
+          outline: none;
+        }
+      </style>
+      <devtools-accessibility-node .data=${{
+        axNode: this.rootNode,
+      } as AccessibilityNodeData}>
+      </devtools-accessibility-node>
+      `;
+    // clang-format on
+    LitHtml.render(output, this.shadow);
   }
 }
 

@@ -19,10 +19,11 @@ export class AccessibilityNode extends HTMLElement {
     delegatesFocus: false,
   });
   private axNode: AXNode|null = null;
+  // Loaded child nodes.
+  private childAxNodes: AXNode[] = [];
   private axTree: AccessibilityTree|null = null;
   // Only elements that contain child nodes can be expanded.
   private expanded: boolean = false;
-  private loadedChildren: boolean = false;
   private selected: boolean = false;
 
   constructor() {
@@ -37,14 +38,8 @@ export class AccessibilityNode extends HTMLElement {
   set data(data: AccessibilityNodeData) {
     this.axNode = data.axNode;
     this.axTree = this.axNode.axTree;
-    if (this.axNode.hasOnlyUnloadedChildren) {
+    if (this.axNode.hasChildren()) {
       this.classList.add('parent');
-      if (this.loadedChildren) {
-        this.expand();
-      }
-    } else if (this.axNode.numChildren) {
-      this.classList.add('parent');
-      this.expand();
     } else {
       this.classList.add('no-children');
     }
@@ -54,16 +49,18 @@ export class AccessibilityNode extends HTMLElement {
     this.render();
   }
 
-  expand(): void {
-    if (!this.axNode?.numChildren) {
+  async expand(): Promise<void> {
+    if (!this.axNode?.hasChildren()) {
       return;
     }
+    this.childAxNodes = await this.axNode?.children();
     this.expanded = true;
     this.classList.add('expanded');
+    this.render();
   }
 
   collapse(): void {
-    if (!this.axNode?.numChildren) {
+    if (!this.axNode?.hasChildren()) {
       return;
     }
     this.expanded = false;
@@ -139,9 +136,9 @@ export class AccessibilityNode extends HTMLElement {
       return null;
     }
 
-    if (this.expanded && this.axNode.numChildren) {
-      const lastChildIndex = this.axNode.numChildren - 1;
-      const lastChild = this.axTree.getNodeByAXID(this.axNode.children[lastChildIndex].id);
+    if (this.expanded) {
+      const lastChildIndex = this.childAxNodes.length - 1;
+      const lastChild = this.axTree.getNodeByAXID(this.childAxNodes[lastChildIndex].id);
       if (lastChild) {
         return lastChild;
       }
@@ -157,7 +154,7 @@ export class AccessibilityNode extends HTMLElement {
     }
 
     const indexInParent = parent.indexOf(this);
-    if (indexInParent + 1 < parent.axNode.numChildren) {
+    if (indexInParent + 1 < parent.childAxNodes.length) {
       return parent.getChild(indexInParent + 1);
     }
 
@@ -184,19 +181,19 @@ export class AccessibilityNode extends HTMLElement {
   }
 
   private getChild(index: number): AccessibilityNode|null {
-    if (!this.axNode || !this.axNode.numChildren || !this.axTree) {
+    if (!this.axNode || !this.axNode.hasChildren() || !this.axTree) {
       return null;
     }
 
-    return this.axTree.getNodeByAXID(this.axNode.children[index].id);
+    return this.axTree.getNodeByAXID(this.childAxNodes[index].id);
   }
 
   private getFirstChild(): AccessibilityNode|null {
-    if (!this.axNode || !this.axNode.numChildren || !this.axTree) {
+    if (!this.axNode || !this.axNode.hasChildren() || !this.axTree) {
       return null;
     }
 
-    return this.axTree.getNodeByAXID(this.axNode.children[0].id);
+    return this.axTree.getNodeByAXID(this.childAxNodes[0].id);
   }
 
   private getParentNode(): AccessibilityNode|null {
@@ -213,7 +210,7 @@ export class AccessibilityNode extends HTMLElement {
       return -1;
     }
 
-    return this.axNode.children.indexOf(childAXNode);
+    return this.childAxNodes.indexOf(childAXNode);
   }
 
   private onClick(e: MouseEvent): void {
@@ -233,26 +230,17 @@ export class AccessibilityNode extends HTMLElement {
     this.axNode?.clearHighlight();
   }
 
-  private toggleChildren(): void {
-    if (!this.axNode || !this.axNode.numChildren) {
+  private async toggleChildren(): Promise<void> {
+    if (!this.axNode || !this.axNode.hasChildren()) {
       return;
     }
 
-    this.expanded = !this.expanded;
-    this.classList.toggle('expanded', this.expanded);
-
-    if (this.axNode.hasOnlyUnloadedChildren && !this.loadedChildren) {
-      this.getChildAXNodes();
-    }
-  }
-
-  private async getChildAXNodes(): Promise<void> {
-    if (!this.axNode) {
-      return;
+    if (this.expanded) {
+      this.collapse();
+    } else {
+      await this.expand();
     }
 
-    await this.axNode.loadChildren();
-    this.loadedChildren = true;
     this.render();
   }
 
@@ -262,7 +250,7 @@ export class AccessibilityNode extends HTMLElement {
     }
 
     const children = [];
-    for (const child of node.children) {
+    for (const child of this.childAxNodes) {
       const childTemplate = LitHtml.html`
         <devtools-accessibility-node .data=${{
         axNode: child,

@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import type * as ElementsModule from '../../../../front_end/elements/elements.js';
-import {assertShadowRoot, dispatchClickEvent, dispatchMouseOverEvent, dispatchMouseLeaveEvent, renderElementIntoDOM} from '../helpers/DOMHelpers.js';
+import {assertShadowRoot, dispatchMouseOverEvent, dispatchMouseLeaveEvent, renderElementIntoDOM} from '../helpers/DOMHelpers.js';
 import {describeWithEnvironment} from '../helpers/EnvironmentHelpers.js';
 import {withNoMutations} from '../helpers/MutationHelpers.js';
 
@@ -16,11 +16,9 @@ const makeAXNode = (overrides: Partial<ElementsModule.AccessibilityTreeUtils.AXN
     name: '',
     ignored: false,
     parent: null,
-    children: [],
-    numChildren: 0,
-    hasOnlyUnloadedChildren: false,
     axTree: null,
-    loadChildren: async () => {},
+    hasChildren: () => false,
+    children: async () => [],
     highlightNode: () => {},
     clearHighlight: () => {},
     ...overrides,
@@ -79,7 +77,6 @@ describeWithEnvironment('AccessibilityTree', () => {
       const node = makeAXNode({
         role: 'paragraph',
         name: 'text',
-        hasOnlyUnloadedChildren: true,
         axTree: new Elements.AccessibilityTree.AccessibilityTree(),
       });
       const component = new Elements.AccessibilityNode.AccessibilityNode();
@@ -94,7 +91,6 @@ describeWithEnvironment('AccessibilityTree', () => {
       const node = makeAXNode({
         role: 'paragraph',
         name: 'text',
-        hasOnlyUnloadedChildren: true,
         axTree: new Elements.AccessibilityTree.AccessibilityTree(),
       });
       const component = new Elements.AccessibilityNode.AccessibilityNode();
@@ -102,7 +98,7 @@ describeWithEnvironment('AccessibilityTree', () => {
       component.data = {
         axNode: node,
       };
-      assert.strictEqual(node.numChildren, 0);
+      assert.strictEqual(node.hasChildren(), false);
       assert.lengthOf(component.children, 0);
     });
   });
@@ -114,8 +110,8 @@ describeWithEnvironment('AccessibilityTree', () => {
       const parentNode = makeAXNode({
         role: 'button',
         name: 'click',
-        children: [childNode],
-        numChildren: 1,
+        children: async () => [childNode],
+        hasChildren: () => true,
         axTree: new Elements.AccessibilityTree.AccessibilityTree(),
       });
       childNode.parent = parentNode;
@@ -126,17 +122,19 @@ describeWithEnvironment('AccessibilityTree', () => {
         axNode: parentNode,
       };
 
-      assert.strictEqual(parentNode.children.length, 1);
       assert.isTrue(component.classList.contains('parent'));
     });
   });
 
   describe('click behaviour of accessibility nodes', () => {
-    it('expanded class is toggled on click', () => {
+    it('expanded class is toggled on expand/collapse for a node with children', async () => {
+      const childNode =
+          makeAXNode({role: 'text', name: 'me', axTree: new Elements.AccessibilityTree.AccessibilityTree()});
       const node = makeAXNode({
         role: 'paragraph',
         name: 'text',
-        numChildren: 1,
+        children: async () => [childNode],
+        hasChildren: () => true,
         axTree: new Elements.AccessibilityTree.AccessibilityTree(),
       });
       const component = new Elements.AccessibilityNode.AccessibilityNode();
@@ -145,13 +143,36 @@ describeWithEnvironment('AccessibilityTree', () => {
         axNode: node,
       };
 
-      assert.isTrue(component.classList.contains('expanded'));
-
-      dispatchClickEvent(component);
       assert.isFalse(component.classList.contains('expanded'));
 
-      dispatchClickEvent(component);
+      await component.expand();
       assert.isTrue(component.classList.contains('expanded'));
+
+      component.collapse();
+      assert.isFalse(component.classList.contains('expanded'));
+    });
+
+    it('expanded class is not present for a node without children', async () => {
+      const node = makeAXNode({
+        role: 'paragraph',
+        name: 'text',
+        children: async () => [],
+        hasChildren: () => false,
+        axTree: new Elements.AccessibilityTree.AccessibilityTree(),
+      });
+      const component = new Elements.AccessibilityNode.AccessibilityNode();
+      renderElementIntoDOM(component);
+      component.data = {
+        axNode: node,
+      };
+
+      assert.isFalse(component.classList.contains('expanded'));
+
+      await component.expand();
+      assert.isFalse(component.classList.contains('expanded'));
+
+      component.collapse();
+      assert.isFalse(component.classList.contains('expanded'));
     });
   });
 

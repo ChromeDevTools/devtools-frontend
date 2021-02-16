@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
@@ -12,14 +10,11 @@ import {IssuesPane} from './IssuesPane.js';  // eslint-disable-line no-unused-va
 let issueRevealerInstance: IssueRevealer;
 
 export class IssueRevealer implements Common.Revealer.Revealer {
-  static instance(opts: {
-    forceNew: boolean|null,
-  } = {forceNew: null}): IssueRevealer {
+  static instance(opts: {forceNew: boolean|null} = {forceNew: null}): IssueRevealer {
     const {forceNew} = opts;
     if (!issueRevealerInstance || forceNew) {
       issueRevealerInstance = new IssueRevealer();
     }
-
     return issueRevealerInstance;
   }
 

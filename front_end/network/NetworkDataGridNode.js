@@ -180,7 +180,7 @@ export const UIStrings = {
   */
   memoryCache: '(memory cache)',
   /**
-  *@description Cell title in Network Data Grid Node of the Network panel
+  *@description Cell title in Network Data Grid Node of the Network panel. Indicates that the response came from memory cache.
   *@example {50 B} PH1
   */
   servedFromMemoryCacheResource: 'Served from memory cache, resource size: {PH1}',

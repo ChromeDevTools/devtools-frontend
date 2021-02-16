@@ -74,7 +74,8 @@ export class Icon extends HTMLElement {
         webkitMaskImage: `url(${iconPath})`,
         webkitMaskPosition: 'center',
         webkitMaskRepeat: 'no-repeat',
-        webkitMaskSize: '100%',
+        // We are setting this to 99% to work around an issue where non-standard zoom levels would cause the icon to clip.
+        webkitMaskSize: '99%',
         backgroundColor: `var(--icon-color, ${color})`,
       };
     }
@@ -83,7 +84,8 @@ export class Icon extends HTMLElement {
       backgroundImage: `url(${iconPath})`,
       backgroundPosition: 'center',
       backgroundRepeat: 'no-repeat',
-      backgroundSize: '100%',
+      // We are setting this to 99% to work around an issue where non-standard zoom levels would cause the icon to clip.
+      backgroundSize: '99%',
     };
   }
 

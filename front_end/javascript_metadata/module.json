@@ -1,10 +1,4 @@
 {
-  "extensions": [
-    {
-      "type": "@Common.JavaScriptMetadata",
-      "className": "JavaScriptMetadata.JavaScriptMetadata"
-    }
-  ],
   "modules": [
     "javascript_metadata-legacy.js"
   ]

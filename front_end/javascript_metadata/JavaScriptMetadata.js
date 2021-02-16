@@ -6,10 +6,25 @@ import * as Common from '../common/common.js';  // eslint-disable-line no-unused
 
 import {NativeFunctions} from './NativeFunctions.js';
 
+
+/** @type {JavaScriptMetadataImpl} */
+let javaScriptMetadataInstance;
+
 /**
  * @implements {Common.JavaScriptMetaData.JavaScriptMetaData}
  */
 export class JavaScriptMetadataImpl {
+  /**
+   * @param {{forceNew: ?boolean}} opts
+   */
+  static instance(opts = {forceNew: null}) {
+    const {forceNew} = opts;
+    if (!javaScriptMetadataInstance || forceNew) {
+      javaScriptMetadataInstance = new JavaScriptMetadataImpl();
+    }
+
+    return javaScriptMetadataInstance;
+  }
   constructor() {
     /** @type {!Map<string, !Array<!Array<string>>>} */
     this._uniqueFunctions = new Map();

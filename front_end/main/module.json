@@ -1,11 +1,4 @@
 {
-  "extensions": [
-    {
-      "type": "@UI.SettingUI",
-      "category": "EXTENSIONS",
-      "className": "Components.Linkifier.LinkHandlerSettingUI"
-    }
-  ],
   "dependencies": [
     "extensions",
     "persistence"

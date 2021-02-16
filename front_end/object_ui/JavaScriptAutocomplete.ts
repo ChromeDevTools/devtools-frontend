@@ -4,11 +4,10 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../common/common.js';
 import * as Formatter from '../formatter/formatter.js';
 import * as i18n from '../i18n/i18n.js';
+import * as JavaScriptMetaData from '../javascript_metadata/javascript_metadata.js';
 import * as Platform from '../platform/platform.js';
-import * as Root from '../root/root.js';
 import * as SDK from '../sdk/sdk.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as UI from '../ui/ui.js';
@@ -164,11 +163,8 @@ export class JavaScriptAutocomplete {
         return clippedArgs;
       }
     }
-    const javaScriptMetadata =
-        (await (
-             Root.Runtime.Runtime.instance().extension(Common.JavaScriptMetaData.JavaScriptMetaData) as
-             Root.Runtime.Extension)
-             .instance() as Common.JavaScriptMetaData.JavaScriptMetaData);
+
+    const javaScriptMetadata = JavaScriptMetaData.JavaScriptMetadata.JavaScriptMetadataImpl.instance();
 
     const descriptionRegexResult = /^function ([^(]*)\(/.exec(description);
     const name = descriptionRegexResult && descriptionRegexResult[1] || parsedFunctionName;

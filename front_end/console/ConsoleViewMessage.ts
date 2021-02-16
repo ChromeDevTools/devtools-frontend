@@ -744,7 +744,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
 
   _formatParameterAsString(output: SDK.RemoteObject.RemoteObject): HTMLElement {
     const span = (document.createElement('span') as HTMLElement);
-    span.appendChild(this._linkifyStringAsFragment(output.description || ''));
+    span.appendChild(this._linkifyStringAsFragment((output.description ?? '').replace(/"/g, '\\"')));
 
     const result = (document.createElement('span') as HTMLElement);
     result.createChild('span', 'object-value-string-quote').textContent = '"';

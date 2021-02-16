@@ -89,7 +89,7 @@ export class FlexboxEditor extends HTMLElement {
       <style>
         .container {
           padding: 12px;
-          min-width: 160px;
+          min-width: 170px;
         }
 
         .row {
@@ -104,6 +104,7 @@ export class FlexboxEditor extends HTMLElement {
 
         .property {
           padding-bottom: 4px;
+          white-space: nowrap;
         }
 
         .property-name {

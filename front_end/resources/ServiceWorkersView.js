@@ -161,7 +161,8 @@ export const UIStrings = {
   */
   workerS: 'Worker: {PH1}',
   /**
-  *@description Text in Service Workers View of the Application panel
+  *@description Link text in Service Workers View of the Application panel. When the link is clicked,
+  * the focus is moved to the service worker's client page.
   */
   focus: 'focus',
 };

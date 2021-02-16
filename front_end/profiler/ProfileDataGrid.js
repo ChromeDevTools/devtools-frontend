@@ -30,8 +30,11 @@ import * as UI from '../ui/ui.js';
 
 export const UIStrings = {
   /**
-  *@description Text to show something is not optimized
-  *@example {Optimized too many times} PH1
+  * @description This message is presented as a tooltip when developers investigate the performance
+  * of a page. The tooltip alerts developers that some parts of code in execution were not optimized
+  * (made to run faster) and that associated timing information must be considered with this in
+  * mind. The placeholder text is the reason the code was not optimized.
+  * @example {Optimized too many times} PH1
   */
   notOptimizedS: 'Not optimized: {PH1}',
   /**

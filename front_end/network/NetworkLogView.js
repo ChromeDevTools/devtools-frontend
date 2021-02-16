@@ -93,7 +93,9 @@ export const UIStrings = {
   */
   performARequestOrHitSToRecordThe: 'Perform a request or hit {PH1} to record the reload.',
   /**
-  *@description Text in Network Log View of the Network panel
+  *@description Shown in the Network Log View of the Network panel when the user has not yet
+  * recorded any network activity. This is an instruction to the user to start recording in order to
+  * show network activity in the current UI.
   *@example {Ctrl + E} PH1
   */
   recordSToDisplayNetworkActivity: 'Record ({PH1}) to display network activity.',

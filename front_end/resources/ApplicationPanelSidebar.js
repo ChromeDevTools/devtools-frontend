@@ -142,7 +142,9 @@ export const UIStrings = {
   */
   unique: 'unique',
   /**
-  *@description Text in Application Panel Sidebar of the Application panel
+  *@description Shown in a tooltip for the Application Panel Sidebar of the Application panel.
+  *Indicates that an IndexedDB Index is multiEntry. Not to be translated as it is a property name
+  *used in code.
   */
   multientry: 'multiEntry',
   /**

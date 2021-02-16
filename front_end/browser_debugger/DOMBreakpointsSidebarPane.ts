@@ -93,7 +93,11 @@ export const UIStrings = {
   */
   nodeRemoved: 'Node removed',
   /**
-  *@description A context menu item in the DOMBreakpoints Sidebar Pane of the JavaScript Debugging pane in the Sources panel or the DOM Breakpoints pane in the Elements panel
+  *@description Entry in context menu of the elements pane, allowing developers to select a DOM
+  * breakpoint for the element that they have right-clicked on. Short for the action 'set a
+  * breakpoint on this DOM Element'. A breakpoint pauses the website when the code reaches a
+  * specified line, or when a specific action happen (in this case, when the DOM Element is
+  * modified).
   */
   breakOn: 'Break on',
 };

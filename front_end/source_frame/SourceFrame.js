@@ -53,8 +53,9 @@ export const UIStrings = {
   */
   loading: 'Loading…',
   /**
-  *@description Text in Source Frame of the Sources panel
-  *@example {2} PH1
+  * @description Shown at the bottom of the Sources panel when the user has made multiple
+  * simultaneous text selections in the text editor.
+  * @example {2} PH1
   */
   dSelectionRegions: '{PH1} selection regions',
   /**

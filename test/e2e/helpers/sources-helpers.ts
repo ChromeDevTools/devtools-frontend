@@ -6,6 +6,7 @@ import {assert} from 'chai';
 import * as puppeteer from 'puppeteer';
 
 import {$$, click, getBrowserAndPages, getPendingEvents, getTestServerPort, goToResource, pressKey, step, timeout, typeText, waitFor, waitForFunction} from '../../shared/helper.js';
+import {AsyncScope} from '../../shared/mocha-extensions.js';
 
 export const ACTIVE_LINE = '.CodeMirror-activeline > pre > span';
 export const PAUSE_ON_EXCEPTION_BUTTON = '[aria-label="Don\'t pause on exceptions"]';
@@ -19,25 +20,6 @@ export const SELECTED_THREAD_SELECTOR = 'div.thread-item.selected > div.thread-i
 export const TURNED_OFF_PAUSE_BUTTON_SELECTOR = 'button.toolbar-state-off';
 export const TURNED_ON_PAUSE_BUTTON_SELECTOR = 'button.toolbar-state-on';
 export const DEBUGGER_PAUSED_EVENT = 'DevTools.DebuggerPaused';
-
-export async function navigateToLine(frontend: puppeteer.Page, lineNumber: number|string) {
-  await frontend.keyboard.down('Control');
-  await frontend.keyboard.press('KeyG');
-  await frontend.keyboard.up('Control');
-  await frontend.keyboard.type(`${lineNumber}`);
-  await frontend.keyboard.press('Enter');
-}
-
-export async function getLineNumberElement(lineNumber: number|string) {
-  const visibleLines = await $$(CODE_LINE_SELECTOR);
-  for (let i = 0; i < visibleLines.length; i++) {
-    const lineValue = await visibleLines[i].evaluate(node => node.textContent);
-    if (lineValue === `${lineNumber}`) {
-      return visibleLines[i];
-    }
-  }
-  return null;
-}
 
 export async function doubleClickSourceTreeItem(selector: string) {
   const item = await waitFor(selector);
@@ -105,15 +87,11 @@ export async function createNewSnippet(snippetName: string) {
 }
 
 export async function openFileInEditor(sourceFile: string) {
-  const {frontend} = getBrowserAndPages();
-
-  await clearSourceFilesLoaded(frontend);
-  await listenForSourceFilesLoaded(frontend);
-
   // Open a particular file in the editor
   await doubleClickSourceTreeItem(`[aria-label="${sourceFile}, file"]`);
 
-  await waitForSourceLoadedEvent(frontend, sourceFile);
+  // Wait for the file to be formattable, this process is async after opening a file
+  await waitFor(`[aria-label="Pretty print ${sourceFile}"]`);
 }
 
 export async function openSourceCodeEditorForFile(sourceFile: string, testInput: string) {
@@ -137,41 +115,68 @@ export async function waitForHighlightedLineWhichIncludesText(expectedTextConten
   });
 }
 
-export async function addBreakpointForLine(
-    frontend: puppeteer.Page, index: number|string, expectedFail: boolean = false) {
-  await navigateToLine(frontend, index);
-  const breakpointLine = await getLineNumberElement(index);
-  assert.isNotNull(breakpointLine, 'Line is not visible or does not exist');
+// We can't use the click helper, as it is not possible to select a particular
+// line number element in CodeMirror.
+export async function addBreakpointForLine(frontend: puppeteer.Page, index: number, expectedFail: boolean = false) {
+  const asyncScope = new AsyncScope();
+  await asyncScope.exec(() => frontend.waitForFunction((index: number, CODE_LINE_SELECTOR: string) => {
+    return document.querySelectorAll(CODE_LINE_SELECTOR).length >= (index - 1);
+  }, {timeout: 0}, index, CODE_LINE_SELECTOR));
+  const breakpointLineNumber = await frontend.evaluate((index, CODE_LINE_SELECTOR) => {
+    const element = document.querySelectorAll(CODE_LINE_SELECTOR)[index - 1];
 
-  await waitForFunction(async () => !(await isBreakpointSet(index)));
-  await breakpointLine?.click();
+    const {left, top, width, height} = element.getBoundingClientRect();
+    return {
+      x: left + width * 0.5,
+      y: top + height * 0.5,
+    };
+  }, index, CODE_LINE_SELECTOR);
 
-  // FIXME(crbug/1172294): add an assertion to check that breakpoint hasn't been set
+  const currentBreakpointCount = await frontend.$$eval('.cm-breakpoint', nodes => nodes.length);
+
+  await frontend.mouse.click(breakpointLineNumber.x, breakpointLineNumber.y);
+
   if (expectedFail) {
     return;
   }
 
-  await waitForFunction(async () => await isBreakpointSet(index));
-}
-
-export async function removeBreakpointForLine(frontend: puppeteer.Page, index: number|string) {
-  await navigateToLine(frontend, index);
-  const breakpointLine = await getLineNumberElement(index);
-  assert.isNotNull(breakpointLine, 'Line is not visible or does not exist');
-
-  await waitForFunction(async () => await isBreakpointSet(index));
-  await breakpointLine?.click();
-  await waitForFunction(async () => !(await isBreakpointSet(index)));
+  await asyncScope.exec(() => frontend.waitForFunction((bpCount: number) => {
+    return document.querySelectorAll('.cm-breakpoint').length > bpCount &&
+        document.querySelectorAll('.cm-breakpoint-unbound').length === 0;
+  }, {timeout: 0}, currentBreakpointCount));
 }
 
 export function sourceLineNumberSelector(lineNumber: number) {
   return `div.CodeMirror-code > div:nth-child(${lineNumber}) div.CodeMirror-linenumber.CodeMirror-gutter-elt`;
 }
 
-export async function isBreakpointSet(lineNumber: number|string) {
-  const breakpointLineParentClasses =
-      await (await getLineNumberElement(lineNumber))?.evaluate(n => n.parentElement?.className);
-  return breakpointLineParentClasses?.includes('cm-breakpoint');
+export function waitForSourceCodeLines(noOfLines: number) {
+  return waitForFunction(async () => {
+    const elements = await $$(SOURCES_LINES_SELECTOR);
+    return elements.length >= noOfLines ? elements : undefined;
+  });
+}
+
+export async function checkBreakpointIsActive(lineNumber: number) {
+  await step(`check that the breakpoint is still active at line ${lineNumber}`, async () => {
+    const sourcesLines = await waitForSourceCodeLines(lineNumber);
+    const codeLineNums = await Promise.all(sourcesLines.map(elements => {
+      return elements.evaluate(el => el.className);
+    }));
+    assert.deepInclude(codeLineNums[lineNumber - 1], 'cm-breakpoint');
+    assert.notDeepInclude(codeLineNums[lineNumber - 1], 'cm-breakpoint-disabled');
+    assert.notDeepInclude(codeLineNums[lineNumber - 1], 'cm-breakpoint-unbound');
+  });
+}
+
+export async function checkBreakpointIsNotActive(lineNumber: number) {
+  await step(`check that the breakpoint is not active at line ${lineNumber}`, async () => {
+    const sourcesLines = await waitForSourceCodeLines(lineNumber);
+    const codeLineNums = await Promise.all(sourcesLines.map(elements => {
+      return elements.evaluate(el => el.className);
+    }));
+    assert.notDeepInclude(codeLineNums[lineNumber - 1], 'cm-breakpoint');
+  });
 }
 
 export async function checkBreakpointDidNotActivate() {
@@ -274,41 +279,7 @@ declare global {
   interface Window {
     /* eslint-disable @typescript-eslint/naming-convention */
     __sourceFilesAddedEvents: string[];
-    __sourceFilesLoadedEvents: string[];
-    __sourceFilesLoadedEventListenerAdded: boolean;
-    /* eslint-enable @typescript-eslint/naming-convention */
   }
-}
-
-export async function reloadPageAndWaitForSourceFile(
-    frontend: puppeteer.Page, target: puppeteer.Page, sourceFile: string) {
-  await clearSourceFilesLoaded(frontend);
-  await listenForSourceFilesLoaded(frontend);
-  await target.reload();
-  await waitForSourceLoadedEvent(frontend, sourceFile);
-}
-
-export function listenForSourceFilesLoaded(frontend: puppeteer.Page) {
-  return frontend.evaluate(() => {
-    if (!window.__sourceFilesLoadedEvents) {
-      window.__sourceFilesLoadedEvents = [];
-    }
-    if (!window.__sourceFilesLoadedEventListenerAdded) {
-      window.addEventListener('source-file-loaded', (event: Event) => {
-        const customEvent = event as CustomEvent<string>;
-        window.__sourceFilesLoadedEvents.push(customEvent.detail);
-      });
-      window.__sourceFilesLoadedEventListenerAdded = true;
-    }
-  });
-}
-
-export function waitForSourceLoadedEvent(frontend: puppeteer.Page, fileName: string) {
-  return waitForFunction(async () => {
-    return frontend.evaluate(fileName => {
-      return window.__sourceFilesLoadedEvents.includes(fileName);
-    }, fileName);
-  });
 }
 
 export function listenForSourceFilesAdded(frontend: puppeteer.Page) {
@@ -324,22 +295,14 @@ export function listenForSourceFilesAdded(frontend: puppeteer.Page) {
 }
 
 export function waitForAdditionalSourceFiles(frontend: puppeteer.Page, count = 1) {
-  return waitForFunction(async () => {
-    return frontend.evaluate(count => {
-      return window.__sourceFilesAddedEvents.length >= count;
-    }, count);
-  });
+  return frontend.waitForFunction((count: number) => {
+    return window.__sourceFilesAddedEvents.length >= count;
+  }, undefined, count);
 }
 
 export function clearSourceFilesAdded(frontend: puppeteer.Page) {
   return frontend.evaluate(() => {
     window.__sourceFilesAddedEvents = [];
-  });
-}
-
-export function clearSourceFilesLoaded(frontend: puppeteer.Page) {
-  return frontend.evaluate(() => {
-    window.__sourceFilesLoadedEvents = [];
   });
 }
 

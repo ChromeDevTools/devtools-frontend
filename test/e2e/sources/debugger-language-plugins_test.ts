@@ -7,7 +7,7 @@ import {assert} from 'chai';
 import {$, click, enableExperiment, getBrowserAndPages, getResourcesPath, goToResource, pasteText, waitFor, waitForFunction, waitForMany, waitForNone} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {CONSOLE_TAB_SELECTOR, focusConsolePrompt, getCurrentConsoleMessages} from '../helpers/console-helpers.js';
-import {addBreakpointForLine, getCallFrameLocations, getCallFrameNames, getValuesForScope, isBreakpointSet, listenForSourceFilesAdded, openFileInEditor, openFileInSourcesPanel, openSourcesPanel, PAUSE_ON_EXCEPTION_BUTTON, RESUME_BUTTON, retrieveSourceFilesAdded, retrieveTopCallFrameScriptLocation, switchToCallFrame, waitForAdditionalSourceFiles} from '../helpers/sources-helpers.js';
+import {addBreakpointForLine, checkBreakpointIsNotActive, getCallFrameLocations, getCallFrameNames, getValuesForScope, listenForSourceFilesAdded, openFileInEditor, openFileInSourcesPanel, openSourcesPanel, PAUSE_ON_EXCEPTION_BUTTON, RESUME_BUTTON, retrieveSourceFilesAdded, retrieveTopCallFrameScriptLocation, switchToCallFrame, waitForAdditionalSourceFiles} from '../helpers/sources-helpers.js';
 
 
 // TODO: Remove once Chromium updates its version of Node.js to 12+.
@@ -296,7 +296,7 @@ describe('The Debugger Language Plugins', async () => {
     const scriptLocation = await retrieveTopCallFrameScriptLocation('main();', target);
     assert.deepEqual(scriptLocation, 'global_variable.ll:9');
 
-    await waitForFunction(async () => !(await isBreakpointSet(4)));
+    await checkBreakpointIsNotActive(4);
   });
 
   it('shows top-level and nested variables', async () => {

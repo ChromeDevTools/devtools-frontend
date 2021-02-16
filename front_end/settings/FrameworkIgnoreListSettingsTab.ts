@@ -51,7 +51,8 @@ export const UIStrings = {
   */
   ignoreScriptsWhoseNamesMatchS: 'Ignore scripts whose names match \'{PH1}\'',
   /**
-  *@description Aria accessible name in Framework Ignore List Settings Tab of the Settings
+  *@description Aria accessible name in Framework Ignore List Settings Tab of the Settings. It labels the input
+  * field used to add new or edit existing regular expressions that match file names to ignore in the debugger.
   */
   pattern: 'Pattern',
   /**

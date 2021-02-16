@@ -22,6 +22,15 @@ exports.worker = function worker(methods) {
 };
 
 /**
+ * Sends an event to the parent worker pool.
+ * @param {any} payload 
+ */
+exports.workerEmit = function workerEmit(payload) {
+  var worker = require('./worker');
+  worker.emit(payload);
+};
+
+/**
  * Create a promise.
  * @type {Promise} promise
  */

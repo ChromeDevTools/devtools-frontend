@@ -15,6 +15,7 @@ import json
 import shutil
 import subprocess
 import sys
+from collections import OrderedDict
 
 scripts_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(scripts_path)
@@ -32,6 +33,7 @@ LICENSES = [
     "CC-BY-4.0",
     "ISC",
     "MPL-2.0",
+    "Python-2.0",
 ]
 
 # List all DEPS here.
@@ -63,7 +65,7 @@ DEPS = {
     "karma-sourcemap-loader": "0.3.8",
     "karma-spec-reporter": "0.0.32",
     "license-checker": "25.0.1",
-    "mocha": "8.2.1",
+    "mocha": "8.3.0",
     "puppeteer": "7.1.0",
     "recast": "0.20.4",
     "rimraf": "3.0.2",
@@ -76,6 +78,17 @@ DEPS = {
     "typescript": "4.2.0-beta",
     "yargs": "16.2.0",
 }
+
+def load_json_file(location):
+    # By default, json load uses a standard Python dictionary, which is not ordered.
+    # To prevent subsequent invocations of this script to erroneously alter the order
+    # of keys defined in package.json files, we should use an `OrderedDict`. This
+    # ensures not only that we use a strict ordering, it will also make sure we maintain
+    # the order defined by the NPM packages themselves. That in turn is important, since
+    # NPM packages can define `exports`, where the order of entrypoints is crucial for
+    # how an NPM package is loaded. If you would change the order, it could break loading
+    # that package.
+    return json.load(location, object_pairs_hook=OrderedDict)
 
 def exec_command(cmd):
     try:
@@ -114,7 +127,7 @@ def strip_private_fields():
     for pkg in packages:
         with open(pkg, 'r+') as pkg_file:
             try:
-                pkg_data = json.load(pkg_file)
+                pkg_data = load_json_file(pkg_file)
 
                 # Remove anything that begins with an underscore, as these are
                 # the private fields in a package.json
@@ -124,7 +137,7 @@ def strip_private_fields():
 
                 pkg_file.truncate(0)
                 pkg_file.seek(0)
-                json.dump(pkg_data, pkg_file, indent=2, sort_keys=True, separators=(',', ': '))
+                json.dump(pkg_data, pkg_file, indent=2, separators=(',', ': '))
                 pkg_file.write('\n')
             except:
                 print('Unable to fix: %s' % pkg)
@@ -137,7 +150,7 @@ def strip_private_fields():
 def install_missing_deps():
     with open(devtools_paths.package_lock_json_path(), 'r+') as pkg_lock_file:
         try:
-            pkg_lock_data = json.load(pkg_lock_file)
+            pkg_lock_data = load_json_file(pkg_lock_file)
             existing_deps = pkg_lock_data[u'dependencies']
             new_deps = []
 
@@ -162,14 +175,14 @@ def install_missing_deps():
 def append_package_json_entries():
     with open(devtools_paths.package_json_path(), 'r+') as pkg_file:
         try:
-            pkg_data = json.load(pkg_file)
+            pkg_data = load_json_file(pkg_file)
 
             # Replace the dev deps.
             pkg_data[u'devDependencies'] = DEPS
 
             pkg_file.truncate(0)
             pkg_file.seek(0)
-            json.dump(pkg_data, pkg_file, indent=2, sort_keys=True, separators=(',', ': '))
+            json.dump(pkg_data, pkg_file, indent=2, separators=(',', ': '))
             pkg_file.write('\n')
 
         except:
@@ -181,7 +194,7 @@ def append_package_json_entries():
 def remove_package_json_entries():
     with open(devtools_paths.package_json_path(), 'r+') as pkg_file:
         try:
-            pkg_data = json.load(pkg_file)
+            pkg_data = load_json_file(pkg_file)
 
             # Remove the dependencies and devDependencies from the root package.json
             # so that they can't be used to overwrite the node_modules managed by this file.
@@ -191,7 +204,7 @@ def remove_package_json_entries():
 
             pkg_file.truncate(0)
             pkg_file.seek(0)
-            json.dump(pkg_data, pkg_file, indent=2, sort_keys=True, separators=(',', ': '))
+            json.dump(pkg_data, pkg_file, indent=2, separators=(',', ': '))
             pkg_file.write('\n')
         except:
             print('Unable to fix: %s' % pkg)

@@ -202,10 +202,12 @@ The following options are available:
 
 A worker pool contains the following functions:
 
-- `Pool.exec(method: Function | string, params: Array | null) : Promise.<*, Error>`<br>
+- `Pool.exec(method: Function | string, params: Array | null [, options: Object]) : Promise.<*, Error>`<br>
   Execute a function on a worker with given arguments.
   - When `method` is a string, a method with this name must exist at the worker and must be registered to make it accessible via the pool. The function will be executed on the worker with given parameters.
   - When `method` is a function, the provided function `fn` will be stringified, send to the worker, and executed there with the provided parameters. The provided function must be static, it must not depend on variables in a surrounding scope.
+  - The following options are available:
+    - `on: (payload: any) => void`. An event listener, to handle events sent by the worker for this execution. See [Events](#events) for more details.
 
 - `Pool.proxy() : Promise.<Object, Error>`<br>
   Create a proxy for the worker pool. The proxy contains a proxy for all methods available on the worker. All methods return promises resolving the methods result.
@@ -337,6 +339,52 @@ function timeout(delay) {
 workerpool.worker({
   timeout: timeout
 });
+```
+
+### Events
+
+You can send data back from workers to the pool while the task is being executed using the `workerEmit` function:
+
+`workerEmit(payload: any)`
+
+This function only works inside a worker **and** during a task.
+
+Example:
+
+```js
+// file myWorker.js
+const workerpool = require('workerpool');
+
+function eventExample(delay) {
+  workerpool.workerEmit({
+    status: 'in_progress'
+  });
+
+  workerpool.workerEmit({
+    status: 'complete'
+  });
+  
+  return true;
+}
+
+// create a worker and register functions
+workerpool.worker({
+  eventExample: eventExample
+});
+```
+
+To receive those events, you can use the `on` option of the pool `exec` method:
+
+```js
+pool.exec('eventExample', [], {
+  on: function (payload) {
+    if (payload.status === 'in_progress') {
+      console.log('In progress...');
+    } else if (payload.status === 'complete') {
+      console.log('Done!');
+    }
+  }
+})
 ```
 
 ### Utilities

@@ -33,11 +33,11 @@ export const UIStrings = {
    */
   storageWithCustomMarker: '{PH1} (custom)',
   /**
-   * @description Text in Application Panel Sidebar of the Application panel
+   * @description Text in Application Panel Sidebar and title text of the Storage View of the Application panel
    */
   storageTitle: 'Storage',
   /**
-   * @description Text in Clear Storage View of the Application panel
+   * @description Title text in Storage View of the Application panel
    */
   usage: 'Usage',
   /**
@@ -49,47 +49,47 @@ export const UIStrings = {
    */
   learnMore: 'Learn more',
   /**
-   * @description Text of button in Clear Storage View of the Application panel
+   * @description Button text for the button in the Storage View of the Application panel for clearing site-specific storage
    */
   clearSiteData: 'Clear site data',
   /**
-   * @description Text in Application Panel Sidebar of the Application panel
+   * @description Category description in the Clear Storage section of the Storage View of the Application panel
    */
   application: 'Application',
   /**
-   * @description Text in Application Panel Sidebar of the Application panel
+   * @description Checkbox label in the Clear Storage section of the Storage View of the Application panel
    */
   unregisterServiceWorker: 'Unregister service workers',
   /**
-   * @description Text in Clear Storage View of the Application panel
+   * @description Checkbox label in the Clear Storage section of the Storage View of the Application panel
    */
   localAndSessionStorage: 'Local and session storage',
   /**
-   * @description Text in Application Panel Sidebar of the Application panel
+   * @description Checkbox label in the Clear Storage section of the Storage View of the Application panel
    */
   indexDB: 'IndexedDB',
   /**
-   * @description Text in Application Panel Sidebar of the Application panel
+   * @description Checkbox label in the Clear Storage section of the Storage View of the Application panel
    */
   webSql: 'Web SQL',
   /**
-   * @description Text in Application Panel Sidebar of the Application panel
+   * @description Checkbox label in the Clear Storage section of the Storage View of the Application panel
    */
   cookies: 'Cookies',
   /**
-   * @description Text in Application Panel Sidebar of the Application panel
+   * @description Category description in the Clear Storage section of the Storage View of the Application panel
    */
   cache: 'Cache',
   /**
-   * @description Text in Application Panel Sidebar of the Application panel
+   * @description Checkbox label in the Clear Storage section of the Storage View of the Application panel
    */
   cacheStorage: 'Cache storage',
   /**
-   * @description Text in Application Panel Sidebar of the Application panel
+   * @description Checkbox label in the Clear Storage section of the Storage View of the Application panel
    */
   applicationCache: 'Application cache',
   /**
-   * @description Text in Application Panel Sidebar of the Application panel
+   * @description Checkbox label in the Clear Storage section of the Storage View of the Application panel
    */
   includingThirdPartyCookies: 'including third-party cookies',
   /**
@@ -110,7 +110,7 @@ export const UIStrings = {
    */
   numberMustBeNonNegative: 'Number must be non-negative',
   /**
-   * @description Clear button text content in Clear Storage View of the Application panel
+   * @description Button text for the "Clear site data" button in the Storage View of the Application panel while the clearing action is pending
    */
   clearing: 'Clearing...',
   /**

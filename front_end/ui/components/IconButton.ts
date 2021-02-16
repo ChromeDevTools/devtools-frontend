@@ -56,10 +56,12 @@ export class IconButton extends HTMLElement {
           background-color: var(--toolbar-bg-color);
           border: 1px solid var(--divider-color);
           border-radius: 2px;
-          color: var(--tab-selected-fg-color);
           margin-right: 2px;
           display: inline-flex;
           align-items: center;
+          color: inherit;
+          font-size: inherit;
+          font-family: inherit;
         }
 
         .icon-button:hover,

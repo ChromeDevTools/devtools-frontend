@@ -11,7 +11,8 @@ export class CorsIssue extends Issue {
   private issueDetails: Protocol.Audits.CorsIssueDetails;
 
   constructor(issueDetails: Protocol.Audits.CorsIssueDetails, issuesModel: IssuesModel) {
-    super(Protocol.Audits.InspectorIssueCode.CorsIssue, issuesModel);
+    const issueCode = [Protocol.Audits.InspectorIssueCode.CorsIssue, issueDetails.corsErrorStatus.corsError].join('::');
+    super(issueCode, issuesModel);
     this.issueDetails = issueDetails;
   }
 

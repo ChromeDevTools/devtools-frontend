@@ -663,6 +663,7 @@ describe('User Metrics for sidebar panes', () => {
 
 describe('User Metrics for Issue Panel', () => {
   beforeEach(async () => {
+    await enableExperiment('contrastIssues');
     await openPanelViaMoreTools('Issues');
     const {frontend} = getBrowserAndPages();
     await beginCatchEvents(frontend);
@@ -686,6 +687,42 @@ describe('User Metrics for Issue Panel', () => {
       {
         name: 'DevTools.IssuesPanelIssueExpanded',
         value: 2,  // SameSiteCookie
+      },
+    ]);
+  });
+
+  it('dispatches an event when a LowTextContrastIssue is created', async () => {
+    await goToResource('elements/low-contrast.html');
+    await waitFor('.issue');
+
+    await assertCapturedEvents([
+      {
+        name: 'DevTools.IssueCreated',
+        value: 41,  // LowTextContrastIssue
+      },
+      {
+        name: 'DevTools.IssueCreated',
+        value: 41,  // LowTextContrastIssue
+      },
+      {
+        name: 'DevTools.IssueCreated',
+        value: 41,  // LowTextContrastIssue
+      },
+    ]);
+  });
+
+  it('dispatches an event when a SharedArrayBufferIssue is created', async () => {
+    await goToResource('issues/sab-issue.html');
+    await waitFor('.issue');
+
+    await assertCapturedEvents([
+      {
+        name: 'DevTools.IssueCreated',
+        value: 37,  // SharedArrayBufferIssue::CreationIssue
+      },
+      {
+        name: 'DevTools.IssueCreated',
+        value: 36,  // SharedArrayBufferIssue::TransferIssue
       },
     ]);
   });

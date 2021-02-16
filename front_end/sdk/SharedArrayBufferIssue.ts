@@ -11,7 +11,8 @@ export class SharedArrayBufferIssue extends Issue {
   private issueDetails: Protocol.Audits.SharedArrayBufferIssueDetails;
 
   constructor(issueDetails: Protocol.Audits.SharedArrayBufferIssueDetails, issuesModel: IssuesModel) {
-    super(Protocol.Audits.InspectorIssueCode.SharedArrayBufferIssue, issuesModel);
+    const umaCode = [Protocol.Audits.InspectorIssueCode.SharedArrayBufferIssue, issueDetails.type].join('::');
+    super({code: Protocol.Audits.InspectorIssueCode.SharedArrayBufferIssue, umaCode}, issuesModel);
     this.issueDetails = issueDetails;
   }
 

@@ -14,10 +14,10 @@ export class ContentSecurityPolicyIssue extends Issue {
    * @param {!IssuesModel} issuesModel
    */
   constructor(issueDetails, issuesModel) {
-    const issue_code = [
+    const issueCode = [
       Protocol.Audits.InspectorIssueCode.ContentSecurityPolicyIssue, issueDetails.contentSecurityPolicyViolationType
     ].join('::');
-    super(issue_code, issuesModel);
+    super(issueCode, issuesModel);
     this._issueDetails = issueDetails;
   }
 

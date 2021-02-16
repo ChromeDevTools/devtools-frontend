@@ -27,7 +27,7 @@ template("devtools_entrypoint") {
   _entrypoint_gen_file_location =
       "$target_gen_dir/$_entrypoint_output_file_name.js"
 
-  _ts_library_target_name = _entrypoint_target_name + "-typescript"
+  _devtools_entrypoint_deps = []
 
   _is_web_worker = defined(invoker.is_web_worker) && invoker.is_web_worker
 
@@ -58,6 +58,8 @@ template("devtools_entrypoint") {
 
       public_deps = [ _typescript_target_dep ]
     }
+
+    _devtools_entrypoint_deps += [ ":$_copy_gen_name" ]
   } else {
     # In release mode, we are running Rollup and thus bundle all
     # files in the (sub-)folder(s) into 1 file.
@@ -100,6 +102,8 @@ template("devtools_entrypoint") {
     _copy_target_name = _entrypoint_target_name + "-copy"
     _rollup_target_name = _entrypoint_target_name + "-rollup"
     _prebundle_target_name = _entrypoint_target_name + "-tsconfig"
+    _generated_declaration_target_name =
+        _entrypoint_target_name + "-generate-declaration"
 
     node_action(_copy_target_name) {
       script = "scripts/build/ninja/copy-file.js"
@@ -155,7 +159,7 @@ template("devtools_entrypoint") {
     # the public API of the `module.js` entrypoint. To do so, we copy
     # the generated `prebundle.d.ts` over, as the public API for a
     # rolled up bundle remains the same.
-    node_action(_ts_library_target_name) {
+    node_action(_generated_declaration_target_name) {
       script = "scripts/build/ninja/generate-declaration.js"
 
       args = [
@@ -170,6 +174,8 @@ template("devtools_entrypoint") {
 
       outputs = [ "$target_gen_dir/$_entrypoint_output_file_name.d.ts" ]
     }
+
+    _devtools_entrypoint_deps += [ ":$_generated_declaration_target_name" ]
   }
 
   # Because we change the filename before rolling up the bundle,
@@ -198,7 +204,7 @@ template("devtools_entrypoint") {
              rebase_path(invoker.entrypoint, root_build_dir),
            ] + invoker.deps
 
-    public_deps = [ ":$_ts_library_target_name" ]
+    public_deps = _devtools_entrypoint_deps
 
     outputs = [ _generated_tsconfig_location ]
   }
@@ -207,6 +213,8 @@ template("devtools_entrypoint") {
     sources = [ _entrypoint_gen_file_location ]
 
     public_deps = [ ":$_entrypoint_target_name" ]
+
+    data = [ _entrypoint_gen_file_location ]
   }
 
   _target_outputs = get_target_outputs(":" + target_name + "-copy")

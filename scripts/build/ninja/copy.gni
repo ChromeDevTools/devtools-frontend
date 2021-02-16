@@ -88,6 +88,7 @@ template("copy_gen_to_resources") {
                              "deps",
                              "public_deps",
                              "testonly",
+                             "data",
                            ])
 
     # Figure out what the relative path is to the front_end folder.

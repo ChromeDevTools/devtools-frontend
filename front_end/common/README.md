@@ -13,7 +13,7 @@ Common.Settings.registerSettingExtension({
   order:  3,
   title:  ls`Show HTML comments`,
   settingName:  'showHTMLComments',
-  settingType:  Common.Settings.SettingTypeObject.BOOLEAN,
+  settingType:  Common.Settings.SettingType.BOOLEAN,
   defaultValue:  true,
   options: [
     {

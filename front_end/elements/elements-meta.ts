@@ -235,7 +235,7 @@ Common.Settings.registerSettingExtension({
   order: 1,
   title: (): Platform.UIString.LocalizedString => ls`Show user agent shadow DOM`,
   settingName: 'showUAShadowDOM',
-  settingType: Common.Settings.SettingTypeObject.BOOLEAN,
+  settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: false,
 });
 
@@ -244,7 +244,7 @@ Common.Settings.registerSettingExtension({
   order: 2,
   title: (): Platform.UIString.LocalizedString => ls`Word wrap`,
   settingName: 'domWordWrap',
-  settingType: Common.Settings.SettingTypeObject.BOOLEAN,
+  settingType: Common.Settings.SettingType.BOOLEAN,
   options: [
     {
       value: true,
@@ -263,7 +263,7 @@ Common.Settings.registerSettingExtension({
   order: 3,
   title: (): Platform.UIString.LocalizedString => ls`Show HTML comments`,
   settingName: 'showHTMLComments',
-  settingType: Common.Settings.SettingTypeObject.BOOLEAN,
+  settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: true,
   options: [
     {
@@ -282,7 +282,7 @@ Common.Settings.registerSettingExtension({
   order: 4,
   title: (): Platform.UIString.LocalizedString => ls`Reveal DOM node on hover`,
   settingName: 'highlightNodeOnHoverInOverlay',
-  settingType: Common.Settings.SettingTypeObject.BOOLEAN,
+  settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: true,
 });
 
@@ -291,13 +291,13 @@ Common.Settings.registerSettingExtension({
   order: 5,
   title: (): Platform.UIString.LocalizedString => ls`Show detailed inspect tooltip`,
   settingName: 'showDetailedInspectTooltip',
-  settingType: Common.Settings.SettingTypeObject.BOOLEAN,
+  settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: true,
 });
 
 Common.Settings.registerSettingExtension({
   settingName: 'showEventListenersForAncestors',
-  settingType: Common.Settings.SettingTypeObject.BOOLEAN,
+  settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: true,
 });
 

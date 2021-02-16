@@ -98,14 +98,12 @@ export function getLocalizedSettingsCategory(category: SettingCategory): string|
   }
 }
 
-export const SettingTypeObject = {
-  ARRAY: 'array',
-  REGEX: 'regex',
-  ENUM: 'enum',
-  BOOLEAN: 'boolean',
-};
-
-export type SettingType = typeof SettingTypeObject[keyof typeof SettingTypeObject];
+export const enum SettingType {
+  ARRAY = 'array',
+  REGEX = 'regex',
+  ENUM = 'enum',
+  BOOLEAN = 'boolean',
+}
 
 export interface RegExpSettingItem {
   pattern: string;

@@ -186,9 +186,9 @@ class SettingsRuntimeExtensionDescriptor extends  // eslint-disable-line no-unus
 export const createControlForSetting = function(setting, subtitle) {
   const uiTitle = setting.title();
   switch (setting.type()) {
-    case Common.Settings.SettingTypeObject.BOOLEAN:
+    case Common.Settings.SettingType.BOOLEAN:
       return createSettingCheckbox(uiTitle, /** @type {!Common.Settings.Setting<boolean>} */ (setting));
-    case Common.Settings.SettingTypeObject.ENUM:
+    case Common.Settings.SettingType.ENUM:
       if (Array.isArray(setting.options())) {
         return createSettingSelect(uiTitle, setting.options(), setting.reloadRequired(), setting, subtitle);
       }

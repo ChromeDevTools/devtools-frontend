@@ -387,7 +387,7 @@ Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.APPEARANCE,
   title: (): Platform.UIString.LocalizedString => ls`Theme:`,
   settingName: 'uiTheme',
-  settingType: Common.Settings.SettingTypeObject.ENUM,
+  settingType: Common.Settings.SettingType.ENUM,
   defaultValue: 'systemPreferred',
   reloadRequired: true,
   options: [
@@ -417,7 +417,7 @@ Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.APPEARANCE,
   title: (): Platform.UIString.LocalizedString => ls`Panel layout:`,
   settingName: 'sidebarPosition',
-  settingType: Common.Settings.SettingTypeObject.ENUM,
+  settingType: Common.Settings.SettingType.ENUM,
   defaultValue: 'auto',
   options: [
     {
@@ -442,7 +442,7 @@ Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.APPEARANCE,
   title: (): Platform.UIString.LocalizedString => ls`Color format:`,
   settingName: 'colorFormat',
-  settingType: Common.Settings.SettingTypeObject.ENUM,
+  settingType: Common.Settings.SettingType.ENUM,
   defaultValue: 'original',
   options: [
     {
@@ -476,7 +476,7 @@ Common.Settings.registerSettingExtension({
   title: (): Platform.UIString.LocalizedString => ls`Enable Ctrl + 1-9 shortcut to switch panels`,
   titleMac: (): Platform.UIString.LocalizedString => ls`Enable ⌘ + 1-9 shortcut to switch panels`,
   settingName: 'shortcutPanelSwitch',
-  settingType: Common.Settings.SettingTypeObject.BOOLEAN,
+  settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: false,
 });
 
@@ -484,7 +484,7 @@ Common.Settings.registerSettingExtension({
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.GLOBAL,
   settingName: 'currentDockState',
-  settingType: Common.Settings.SettingTypeObject.ENUM,
+  settingType: Common.Settings.SettingType.ENUM,
   defaultValue: 'right',
   options: [
     {
@@ -512,7 +512,7 @@ Common.Settings.registerSettingExtension({
 
 Common.Settings.registerSettingExtension({
   settingName: 'activeKeybindSet',
-  settingType: Common.Settings.SettingTypeObject.ENUM,
+  settingType: Common.Settings.SettingType.ENUM,
   defaultValue: 'devToolsDefault',
   options: [
     {
@@ -530,7 +530,7 @@ Common.Settings.registerSettingExtension({
 
 Common.Settings.registerSettingExtension({
   settingName: 'userShortcuts',
-  settingType: Common.Settings.SettingTypeObject.ARRAY,
+  settingType: Common.Settings.SettingType.ARRAY,
   defaultValue: [],
 });
 

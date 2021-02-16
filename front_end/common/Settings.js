@@ -35,7 +35,7 @@ import {Color, Format} from './Color.js';  // eslint-disable-line no-unused-vars
 import {Console} from './Console.js';
 import {EventDescriptor, EventTargetEvent} from './EventTarget.js';  // eslint-disable-line no-unused-vars
 import {ObjectWrapper} from './Object.js';
-import {getLocalizedSettingsCategory, getRegisteredSettings, RegExpSettingItem, registerSettingExtengionsForTest, registerSettingExtension, SettingCategory, SettingExtensionOption, SettingRegistration, SettingType, SettingTypeObject} from './SettingRegistration.js';  // eslint-disable-line no-unused-vars
+import {getLocalizedSettingsCategory, getRegisteredSettings, RegExpSettingItem, registerSettingExtengionsForTest, registerSettingExtension, SettingCategory, SettingExtensionOption, SettingRegistration, SettingType} from './SettingRegistration.js';  // eslint-disable-line no-unused-vars
 
 /**
  * @type {!Settings|undefined}
@@ -67,7 +67,7 @@ export class Settings {
 
     for (const registration of getRegisteredSettings()) {
       const {settingName, defaultValue, storageType} = registration;
-      const isRegex = registration.settingType === SettingTypeObject.REGEX;
+      const isRegex = registration.settingType === SettingType.REGEX;
 
       const setting = isRegex && typeof defaultValue === 'string' ?
           this.createRegExpSetting(settingName, defaultValue, undefined, storageType) :
@@ -1185,7 +1185,6 @@ export {
   SettingExtensionOption,
   SettingRegistration,
   SettingType,
-  SettingTypeObject,
   registerSettingExtengionsForTest,
 };
 

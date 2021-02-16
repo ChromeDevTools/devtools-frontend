@@ -23,7 +23,7 @@ describe('Setting registration', () => {
         [{
           category: settingCategory,
           title: (): Platform.UIString.LocalizedString => settingTitle as Platform.UIString.LocalizedString,
-          settingType: 'boolean',
+          settingType: Common.Settings.SettingType.BOOLEAN,
           settingName,
           defaultValue: false,
           options: [
@@ -86,7 +86,7 @@ describe('Setting registration', () => {
     assert.throws(() => {
       Common.Settings.registerSettingExtension({
         settingName,
-        settingType: 'boolean',
+        settingType: Common.Settings.SettingType.BOOLEAN,
         defaultValue: false,
       });
     });

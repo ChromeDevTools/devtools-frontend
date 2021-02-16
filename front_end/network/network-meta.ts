@@ -288,7 +288,7 @@ Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.NETWORK,
   title: i18nString(UIStrings.colorcodeResourceTypes),
   settingName: 'networkColorCodeResourceTypes',
-  settingType: Common.Settings.SettingTypeObject.BOOLEAN,
+  settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: false,
   tags: [
     i18nString(UIStrings.colorCode),
@@ -310,7 +310,7 @@ Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.NETWORK,
   title: i18nString(UIStrings.groupNetworkLogByFrame),
   settingName: 'network.group-by-frame',
-  settingType: Common.Settings.SettingTypeObject.BOOLEAN,
+  settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: false,
   tags: [
     i18nString(UIStrings.netWork),

@@ -920,7 +920,7 @@ UI.ActionRegistration.registerActionExtension({
 
 Common.Settings.registerSettingExtension({
   settingName: 'navigatorGroupByFolder',
-  settingType: Common.Settings.SettingTypeObject.BOOLEAN,
+  settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: true,
 });
 
@@ -928,7 +928,7 @@ Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.SOURCES,
   title: (): Platform.UIString.LocalizedString => ls`Search in anonymous and content scripts`,
   settingName: 'searchInAnonymousAndContentScripts',
-  settingType: Common.Settings.SettingTypeObject.BOOLEAN,
+  settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: false,
   options: [
     {
@@ -946,7 +946,7 @@ Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.SOURCES,
   title: (): Platform.UIString.LocalizedString => ls`Automatically reveal files in sidebar`,
   settingName: 'autoRevealInNavigator',
-  settingType: Common.Settings.SettingTypeObject.BOOLEAN,
+  settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: false,
   options: [
     {
@@ -964,7 +964,7 @@ Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.SOURCES,
   title: (): Platform.UIString.LocalizedString => ls`Enable JavaScript source maps`,
   settingName: 'jsSourceMapsEnabled',
-  settingType: Common.Settings.SettingTypeObject.BOOLEAN,
+  settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: true,
   options: [
     {
@@ -982,7 +982,7 @@ Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.SOURCES,
   title: (): Platform.UIString.LocalizedString => ls`Enable tab moves focus`,
   settingName: 'textEditorTabMovesFocus',
-  settingType: Common.Settings.SettingTypeObject.BOOLEAN,
+  settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: false,
   options: [
     {
@@ -1000,7 +1000,7 @@ Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.SOURCES,
   title: (): Platform.UIString.LocalizedString => ls`Detect indentation`,
   settingName: 'textEditorAutoDetectIndent',
-  settingType: Common.Settings.SettingTypeObject.BOOLEAN,
+  settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: true,
   options: [
     {
@@ -1018,7 +1018,7 @@ Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.SOURCES,
   title: (): Platform.UIString.LocalizedString => ls`Autocompletion`,
   settingName: 'textEditorAutocompletion',
-  settingType: Common.Settings.SettingTypeObject.BOOLEAN,
+  settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: true,
   options: [
     {
@@ -1036,7 +1036,7 @@ Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.SOURCES,
   title: (): Platform.UIString.LocalizedString => ls`Bracket matching`,
   settingName: 'textEditorBracketMatching',
-  settingType: Common.Settings.SettingTypeObject.BOOLEAN,
+  settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: true,
   options: [
     {
@@ -1054,7 +1054,7 @@ Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.SOURCES,
   title: (): Platform.UIString.LocalizedString => ls`Code folding`,
   settingName: 'textEditorCodeFolding',
-  settingType: Common.Settings.SettingTypeObject.BOOLEAN,
+  settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: false,
   options: [
     {
@@ -1072,7 +1072,7 @@ Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.SOURCES,
   title: (): Platform.UIString.LocalizedString => ls`Show whitespace characters:`,
   settingName: 'showWhitespacesInEditor',
-  settingType: Common.Settings.SettingTypeObject.ENUM,
+  settingType: Common.Settings.SettingType.ENUM,
   defaultValue: 'original',
   options: [
     {
@@ -1097,7 +1097,7 @@ Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.SOURCES,
   title: (): Platform.UIString.LocalizedString => ls`Display variable values inline while debugging`,
   settingName: 'inlineVariableValues',
-  settingType: Common.Settings.SettingTypeObject.BOOLEAN,
+  settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: true,
   options: [
     {
@@ -1115,7 +1115,7 @@ Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.SOURCES,
   title: (): Platform.UIString.LocalizedString => ls`Enable CSS source maps`,
   settingName: 'cssSourceMapsEnabled',
-  settingType: Common.Settings.SettingTypeObject.BOOLEAN,
+  settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: true,
   options: [
     {
@@ -1133,7 +1133,7 @@ Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.SOURCES,
   title: (): Platform.UIString.LocalizedString => ls`Allow scrolling past end of file`,
   settingName: 'allowScrollPastEof',
-  settingType: Common.Settings.SettingTypeObject.BOOLEAN,
+  settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: true,
   options: [
     {

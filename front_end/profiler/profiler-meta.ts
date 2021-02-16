@@ -191,7 +191,7 @@ Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.PERFORMANCE,
   title: i18nString(UIStrings.showNativeFunctions),
   settingName: 'showNativeFunctionsInJSProfile',
-  settingType: Common.Settings.SettingTypeObject.BOOLEAN,
+  settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: true,
 });
 

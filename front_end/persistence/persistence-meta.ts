@@ -84,7 +84,7 @@ Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.PERSISTENCE,
   title: i18nString(UIStrings.enableLocalOverrides),
   settingName: 'persistenceNetworkOverridesEnabled',
-  settingType: Common.Settings.SettingTypeObject.BOOLEAN,
+  settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: false,
   tags: [
     i18nString(UIStrings.interception),

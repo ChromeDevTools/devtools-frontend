@@ -68,7 +68,7 @@ export function createTarget({id = 'test', name = 'test', type = SDK.SDKModel.Ty
 
 function createSettingValue(
     category: Common.Settings.SettingCategory, settingName: string, defaultValue: unknown,
-    settingType = 'boolean'): Common.Settings.SettingRegistration {
+    settingType = Common.Settings.SettingType.BOOLEAN): Common.Settings.SettingRegistration {
   return {category, settingName, defaultValue, settingType};
 }
 
@@ -85,19 +85,27 @@ export async function initializeGlobalVars({reset = true} = {}) {
     createSettingValue(Common.Settings.SettingCategory.DEBUGGER, 'breakpointsActive', true),
     createSettingValue(Common.Settings.SettingCategory.DEBUGGER, 'javaScriptDisabled', false),
     createSettingValue(Common.Settings.SettingCategory.DEBUGGER, 'skipContentScripts', false),
-    createSettingValue(Common.Settings.SettingCategory.DEBUGGER, 'skipStackFramesPattern', '', 'regex'),
+    createSettingValue(
+        Common.Settings.SettingCategory.DEBUGGER, 'skipStackFramesPattern', '', Common.Settings.SettingType.REGEX),
     createSettingValue(Common.Settings.SettingCategory.ELEMENTS, 'showDetailedInspectTooltip', true),
     createSettingValue(Common.Settings.SettingCategory.NETWORK, 'cacheDisabled', false),
     createSettingValue(Common.Settings.SettingCategory.RENDERING, 'avifFormatDisabled', false),
-    createSettingValue(Common.Settings.SettingCategory.RENDERING, 'emulatedCSSMedia', '', 'enum'),
     createSettingValue(
-        Common.Settings.SettingCategory.RENDERING, 'emulatedCSSMediaFeaturePrefersColorScheme', '', 'enum'),
+        Common.Settings.SettingCategory.RENDERING, 'emulatedCSSMedia', '', Common.Settings.SettingType.ENUM),
     createSettingValue(
-        Common.Settings.SettingCategory.RENDERING, 'emulatedCSSMediaFeaturePrefersReducedMotion', '', 'enum'),
+        Common.Settings.SettingCategory.RENDERING, 'emulatedCSSMediaFeaturePrefersColorScheme', '',
+        Common.Settings.SettingType.ENUM),
     createSettingValue(
-        Common.Settings.SettingCategory.RENDERING, 'emulatedCSSMediaFeaturePrefersReducedData', '', 'enum'),
-    createSettingValue(Common.Settings.SettingCategory.RENDERING, 'emulatedCSSMediaFeatureColorGamut', '', 'enum'),
-    createSettingValue(Common.Settings.SettingCategory.RENDERING, 'emulatedVisionDeficiency', '', 'enum'),
+        Common.Settings.SettingCategory.RENDERING, 'emulatedCSSMediaFeaturePrefersReducedMotion', '',
+        Common.Settings.SettingType.ENUM),
+    createSettingValue(
+        Common.Settings.SettingCategory.RENDERING, 'emulatedCSSMediaFeaturePrefersReducedData', '',
+        Common.Settings.SettingType.ENUM),
+    createSettingValue(
+        Common.Settings.SettingCategory.RENDERING, 'emulatedCSSMediaFeatureColorGamut', '',
+        Common.Settings.SettingType.ENUM),
+    createSettingValue(
+        Common.Settings.SettingCategory.RENDERING, 'emulatedVisionDeficiency', '', Common.Settings.SettingType.ENUM),
     createSettingValue(Common.Settings.SettingCategory.RENDERING, 'localFontsDisabled', false),
     createSettingValue(Common.Settings.SettingCategory.RENDERING, 'showPaintRects', false),
     createSettingValue(Common.Settings.SettingCategory.RENDERING, 'showLayoutShiftRegions', false),
@@ -110,14 +118,16 @@ export async function initializeGlobalVars({reset = true} = {}) {
     createSettingValue(Common.Settings.SettingCategory.RENDERING, 'webpFormatDisabled', false),
     createSettingValue(Common.Settings.SettingCategory.SOURCES, 'cssSourceMapsEnabled', true),
     createSettingValue(Common.Settings.SettingCategory.SOURCES, 'jsSourceMapsEnabled', true),
-    createSettingValue(Common.Settings.SettingCategory.EMULATION, 'emulation.touch', '', 'enum'),
-    createSettingValue(Common.Settings.SettingCategory.EMULATION, 'emulation.idleDetection', '', 'enum'),
+    createSettingValue(
+        Common.Settings.SettingCategory.EMULATION, 'emulation.touch', '', Common.Settings.SettingType.ENUM),
+    createSettingValue(
+        Common.Settings.SettingCategory.EMULATION, 'emulation.idleDetection', '', Common.Settings.SettingType.ENUM),
     createSettingValue(Common.Settings.SettingCategory.GRID, 'showGridLineLabels', true),
     createSettingValue(Common.Settings.SettingCategory.GRID, 'extendGridLines', true),
     createSettingValue(Common.Settings.SettingCategory.GRID, 'showGridAreas', true),
     createSettingValue(Common.Settings.SettingCategory.GRID, 'showGridTrackSizes', true),
-    createSettingValue(Common.Settings.SettingCategory.NONE, 'activeKeybindSet', '', 'enum'),
-    createSettingValue(Common.Settings.SettingCategory.NONE, 'userShortcuts', [], 'array'),
+    createSettingValue(Common.Settings.SettingCategory.NONE, 'activeKeybindSet', '', Common.Settings.SettingType.ENUM),
+    createSettingValue(Common.Settings.SettingCategory.NONE, 'userShortcuts', [], Common.Settings.SettingType.ARRAY),
   ];
 
   // We instantiate a Runtime with an empty module as the settings needed to boot up are

@@ -9,13 +9,13 @@ import {ls} from '../platform/platform.js';
 
 Common.Settings.registerSettingExtension({
   settingName: 'skipStackFramesPattern',
-  settingType: Common.Settings.SettingTypeObject.REGEX,
+  settingType: Common.Settings.SettingType.REGEX,
   defaultValue: '',
 });
 
 Common.Settings.registerSettingExtension({
   settingName: 'skipContentScripts',
-  settingType: Common.Settings.SettingTypeObject.BOOLEAN,
+  settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: false,
 });
 
@@ -23,7 +23,7 @@ Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.CONSOLE,
   title: (): Platform.UIString.LocalizedString => ls`Preserve log upon navigation`,
   settingName: 'preserveConsoleLog',
-  settingType: Common.Settings.SettingTypeObject.BOOLEAN,
+  settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: false,
   options: [
     {
@@ -40,7 +40,7 @@ Common.Settings.registerSettingExtension({
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.DEBUGGER,
   settingName: 'pauseOnExceptionEnabled',
-  settingType: Common.Settings.SettingTypeObject.BOOLEAN,
+  settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: false,
   options: [
     {
@@ -56,7 +56,7 @@ Common.Settings.registerSettingExtension({
 
 Common.Settings.registerSettingExtension({
   settingName: 'pauseOnCaughtException',
-  settingType: Common.Settings.SettingTypeObject.BOOLEAN,
+  settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: false,
 });
 
@@ -64,7 +64,7 @@ Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.DEBUGGER,
   title: (): Platform.UIString.LocalizedString => ls`Disable JavaScript`,
   settingName: 'javaScriptDisabled',
-  settingType: Common.Settings.SettingTypeObject.BOOLEAN,
+  settingType: Common.Settings.SettingType.BOOLEAN,
   storageType: Common.Settings.SettingStorageType.Session,
   order: 1,
   defaultValue: false,
@@ -84,7 +84,7 @@ Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.DEBUGGER,
   title: (): Platform.UIString.LocalizedString => ls`Disable async stack traces`,
   settingName: 'disableAsyncStackTraces',
-  settingType: Common.Settings.SettingTypeObject.BOOLEAN,
+  settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: false,
   order: 2,
   options: [
@@ -102,7 +102,7 @@ Common.Settings.registerSettingExtension({
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.DEBUGGER,
   settingName: 'breakpointsActive',
-  settingType: Common.Settings.SettingTypeObject.BOOLEAN,
+  settingType: Common.Settings.SettingType.BOOLEAN,
   storageType: Common.Settings.SettingStorageType.Session,
   defaultValue: true,
 });
@@ -111,7 +111,7 @@ Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.ELEMENTS,
   title: (): Platform.UIString.LocalizedString => ls`Show rulers`,
   settingName: 'showMetricsRulers',
-  settingType: Common.Settings.SettingTypeObject.BOOLEAN,
+  settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: false,
 });
 
@@ -119,7 +119,7 @@ Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.GRID,
   title: (): Platform.UIString.LocalizedString => ls`Show area names`,
   settingName: 'showGridAreas',
-  settingType: Common.Settings.SettingTypeObject.BOOLEAN,
+  settingType: Common.Settings.SettingType.BOOLEAN,
   options: [
     {
       value: true,
@@ -137,7 +137,7 @@ Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.GRID,
   title: (): Platform.UIString.LocalizedString => ls`Show track sizes`,
   settingName: 'showGridTrackSizes',
-  settingType: Common.Settings.SettingTypeObject.BOOLEAN,
+  settingType: Common.Settings.SettingType.BOOLEAN,
   options: [
     {
       value: true,
@@ -155,7 +155,7 @@ Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.GRID,
   title: (): Platform.UIString.LocalizedString => ls`Extend grid lines`,
   settingName: 'extendGridLines',
-  settingType: Common.Settings.SettingTypeObject.BOOLEAN,
+  settingType: Common.Settings.SettingType.BOOLEAN,
   options: [
     {
       value: true,
@@ -173,7 +173,7 @@ Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.GRID,
   title: (): Platform.UIString.LocalizedString => ls`Show line labels`,
   settingName: 'showGridLineLabels',
-  settingType: Common.Settings.SettingTypeObject.ENUM,
+  settingType: Common.Settings.SettingType.ENUM,
   options: [
     {
       title: (): Platform.UIString.LocalizedString => ls`Hide line labels`,
@@ -197,7 +197,7 @@ Common.Settings.registerSettingExtension({
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.RENDERING,
   settingName: 'showPaintRects',
-  settingType: Common.Settings.SettingTypeObject.BOOLEAN,
+  settingType: Common.Settings.SettingType.BOOLEAN,
   storageType: Common.Settings.SettingStorageType.Session,
   options: [
     {
@@ -215,7 +215,7 @@ Common.Settings.registerSettingExtension({
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.RENDERING,
   settingName: 'showLayoutShiftRegions',
-  settingType: Common.Settings.SettingTypeObject.BOOLEAN,
+  settingType: Common.Settings.SettingType.BOOLEAN,
   storageType: Common.Settings.SettingStorageType.Session,
   options: [
     {
@@ -233,7 +233,7 @@ Common.Settings.registerSettingExtension({
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.RENDERING,
   settingName: 'showAdHighlights',
-  settingType: Common.Settings.SettingTypeObject.BOOLEAN,
+  settingType: Common.Settings.SettingType.BOOLEAN,
   storageType: Common.Settings.SettingStorageType.Session,
   options: [
     {
@@ -251,7 +251,7 @@ Common.Settings.registerSettingExtension({
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.RENDERING,
   settingName: 'showDebugBorders',
-  settingType: Common.Settings.SettingTypeObject.BOOLEAN,
+  settingType: Common.Settings.SettingType.BOOLEAN,
   storageType: Common.Settings.SettingStorageType.Session,
   options: [
     {
@@ -269,7 +269,7 @@ Common.Settings.registerSettingExtension({
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.RENDERING,
   settingName: 'showWebVitals',
-  settingType: Common.Settings.SettingTypeObject.BOOLEAN,
+  settingType: Common.Settings.SettingType.BOOLEAN,
   storageType: Common.Settings.SettingStorageType.Session,
   options: [
     {
@@ -287,7 +287,7 @@ Common.Settings.registerSettingExtension({
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.RENDERING,
   settingName: 'showFPSCounter',
-  settingType: Common.Settings.SettingTypeObject.BOOLEAN,
+  settingType: Common.Settings.SettingType.BOOLEAN,
   storageType: Common.Settings.SettingStorageType.Session,
   options: [
     {
@@ -305,7 +305,7 @@ Common.Settings.registerSettingExtension({
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.RENDERING,
   settingName: 'showScrollBottleneckRects',
-  settingType: Common.Settings.SettingTypeObject.BOOLEAN,
+  settingType: Common.Settings.SettingType.BOOLEAN,
   storageType: Common.Settings.SettingStorageType.Session,
   options: [
     {
@@ -323,7 +323,7 @@ Common.Settings.registerSettingExtension({
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.RENDERING,
   settingName: 'showHitTestBorders',
-  settingType: Common.Settings.SettingTypeObject.BOOLEAN,
+  settingType: Common.Settings.SettingType.BOOLEAN,
   storageType: Common.Settings.SettingStorageType.Session,
   options: [
     {
@@ -342,7 +342,7 @@ Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.RENDERING,
   title: (): Platform.UIString.LocalizedString => ls`Emulate a focused page`,
   settingName: 'emulatePageFocus',
-  settingType: Common.Settings.SettingTypeObject.BOOLEAN,
+  settingType: Common.Settings.SettingType.BOOLEAN,
   storageType: Common.Settings.SettingStorageType.Session,
   defaultValue: false,
   options: [
@@ -360,7 +360,7 @@ Common.Settings.registerSettingExtension({
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.RENDERING,
   settingName: 'emulatedCSSMedia',
-  settingType: Common.Settings.SettingTypeObject.ENUM,
+  settingType: Common.Settings.SettingType.ENUM,
   storageType: Common.Settings.SettingStorageType.Session,
   defaultValue: '',
   options: [
@@ -389,7 +389,7 @@ Common.Settings.registerSettingExtension({
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.RENDERING,
   settingName: 'emulatedCSSMediaFeaturePrefersColorScheme',
-  settingType: Common.Settings.SettingTypeObject.ENUM,
+  settingType: Common.Settings.SettingType.ENUM,
   storageType: Common.Settings.SettingStorageType.Session,
   defaultValue: '',
   options: [
@@ -418,7 +418,7 @@ Common.Settings.registerSettingExtension({
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.RENDERING,
   settingName: 'emulatedCSSMediaFeaturePrefersReducedMotion',
-  settingType: Common.Settings.SettingTypeObject.ENUM,
+  settingType: Common.Settings.SettingType.ENUM,
   storageType: Common.Settings.SettingStorageType.Session,
   defaultValue: '',
   options: [
@@ -441,7 +441,7 @@ Common.Settings.registerSettingExtension({
 
 Common.Settings.registerSettingExtension({
   settingName: 'emulatedCSSMediaFeaturePrefersReducedData',
-  settingType: Common.Settings.SettingTypeObject.ENUM,
+  settingType: Common.Settings.SettingType.ENUM,
   storageType: Common.Settings.SettingStorageType.Session,
   defaultValue: '',
   options: [
@@ -461,7 +461,7 @@ Common.Settings.registerSettingExtension({
 
 Common.Settings.registerSettingExtension({
   settingName: 'emulatedCSSMediaFeatureColorGamut',
-  settingType: Common.Settings.SettingTypeObject.ENUM,
+  settingType: Common.Settings.SettingType.ENUM,
   storageType: Common.Settings.SettingStorageType.Session,
   defaultValue: '',
   options: [
@@ -492,7 +492,7 @@ Common.Settings.registerSettingExtension({
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.RENDERING,
   settingName: 'emulatedVisionDeficiency',
-  settingType: Common.Settings.SettingTypeObject.ENUM,
+  settingType: Common.Settings.SettingType.ENUM,
   storageType: Common.Settings.SettingStorageType.Session,
   defaultValue: 'none',
   options: [
@@ -536,7 +536,7 @@ Common.Settings.registerSettingExtension({
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.RENDERING,
   settingName: 'localFontsDisabled',
-  settingType: Common.Settings.SettingTypeObject.BOOLEAN,
+  settingType: Common.Settings.SettingType.BOOLEAN,
   storageType: Common.Settings.SettingStorageType.Session,
   options: [
     {
@@ -554,7 +554,7 @@ Common.Settings.registerSettingExtension({
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.RENDERING,
   settingName: 'avifFormatDisabled',
-  settingType: Common.Settings.SettingTypeObject.BOOLEAN,
+  settingType: Common.Settings.SettingType.BOOLEAN,
   storageType: Common.Settings.SettingStorageType.Session,
   options: [
     {
@@ -572,7 +572,7 @@ Common.Settings.registerSettingExtension({
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.RENDERING,
   settingName: 'webpFormatDisabled',
-  settingType: Common.Settings.SettingTypeObject.BOOLEAN,
+  settingType: Common.Settings.SettingType.BOOLEAN,
   storageType: Common.Settings.SettingStorageType.Session,
   options: [
     {
@@ -591,7 +591,7 @@ Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.CONSOLE,
   title: (): Platform.UIString.LocalizedString => ls`Enable custom formatters`,
   settingName: 'customFormatters',
-  settingType: Common.Settings.SettingTypeObject.BOOLEAN,
+  settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: false,
 });
 
@@ -599,7 +599,7 @@ Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.NETWORK,
   title: (): Platform.UIString.LocalizedString => ls`Enable network request blocking`,
   settingName: 'requestBlockingEnabled',
-  settingType: Common.Settings.SettingTypeObject.BOOLEAN,
+  settingType: Common.Settings.SettingType.BOOLEAN,
   storageType: Common.Settings.SettingStorageType.Session,
   defaultValue: false,
   options: [
@@ -618,7 +618,7 @@ Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.NETWORK,
   title: (): Platform.UIString.LocalizedString => ls`Disable cache (while DevTools is open)`,
   settingName: 'cacheDisabled',
-  settingType: Common.Settings.SettingTypeObject.BOOLEAN,
+  settingType: Common.Settings.SettingType.BOOLEAN,
   order: 0,
   defaultValue: false,
   userActionCondition: 'hasOtherClients',

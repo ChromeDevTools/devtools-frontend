@@ -131,6 +131,6 @@ UI.ActionRegistration.registerActionExtension({
 
 Common.Settings.registerSettingExtension({
   settingName: 'customNetworkConditions',
-  settingType: Common.Settings.SettingTypeObject.ARRAY,
+  settingType: Common.Settings.SettingType.ARRAY,
   defaultValue: [],
 });

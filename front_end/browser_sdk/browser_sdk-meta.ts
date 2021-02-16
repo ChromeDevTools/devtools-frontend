@@ -47,7 +47,7 @@ Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.NETWORK,
   title: i18nString(UIStrings.preserveLog),
   settingName: 'network_log.preserve-log',
-  settingType: Common.Settings.SettingTypeObject.BOOLEAN,
+  settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: false,
   tags: [
     i18nString(UIStrings.preserve),
@@ -70,7 +70,7 @@ Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.NETWORK,
   title: i18nString(UIStrings.recordNetworkLog),
   settingName: 'network_log.record-log',
-  settingType: Common.Settings.SettingTypeObject.BOOLEAN,
+  settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: true,
   storageType: Common.Settings.SettingStorageType.Session,
 });

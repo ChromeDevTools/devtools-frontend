@@ -92,7 +92,7 @@ Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.APPEARANCE,
   title: i18nString(UIStrings.showWhatsNewAfterEachUpdate),
   settingName: 'help.show-release-note',
-  settingType: Common.Settings.SettingTypeObject.BOOLEAN,
+  settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: true,
   options: [
     {

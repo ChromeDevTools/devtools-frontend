@@ -143,7 +143,7 @@ UI.ActionRegistration.registerActionExtension({
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.MOBILE,
   settingName: 'showMediaQueryInspector',
-  settingType: Common.Settings.SettingTypeObject.BOOLEAN,
+  settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: false,
   options: [
     {
@@ -161,7 +161,7 @@ Common.Settings.registerSettingExtension({
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.MOBILE,
   settingName: 'emulation.showRulers',
-  settingType: Common.Settings.SettingTypeObject.BOOLEAN,
+  settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: false,
   options: [
     {
@@ -179,7 +179,7 @@ Common.Settings.registerSettingExtension({
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.MOBILE,
   settingName: 'emulation.showDeviceOutline',
-  settingType: Common.Settings.SettingTypeObject.BOOLEAN,
+  settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: false,
   options: [
     {
@@ -196,7 +196,7 @@ Common.Settings.registerSettingExtension({
 
 Common.Settings.registerSettingExtension({
   settingName: 'emulation.locations',
-  settingType: Common.Settings.SettingTypeObject.ARRAY,
+  settingType: Common.Settings.SettingType.ARRAY,
   defaultValue: [
     {
       title: 'Berlin',
@@ -268,7 +268,7 @@ Common.Settings.registerSettingExtension({
   title: (): Platform.UIString.LocalizedString => ls`Touch`,
   reloadRequired: true,
   settingName: 'emulation.touch',
-  settingType: Common.Settings.SettingTypeObject.ENUM,
+  settingType: Common.Settings.SettingType.ENUM,
   defaultValue: 'none',
   options: [
     {
@@ -287,7 +287,7 @@ Common.Settings.registerSettingExtension({
 Common.Settings.registerSettingExtension({
   title: (): Platform.UIString.LocalizedString => ls`Emulate Idle Detector state`,
   settingName: 'emulation.idleDetection',
-  settingType: Common.Settings.SettingTypeObject.ENUM,
+  settingType: Common.Settings.SettingType.ENUM,
   defaultValue: 'none',
   options: [
     {

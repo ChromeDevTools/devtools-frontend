@@ -353,7 +353,7 @@ Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.PERFORMANCE,
   title: i18nLazyString(UIStrings.hideChromeFrameInLayersView),
   settingName: 'frameViewerHideChromeWindow',
-  settingType: Common.Settings.SettingTypeObject.BOOLEAN,
+  settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: false,
 });
 

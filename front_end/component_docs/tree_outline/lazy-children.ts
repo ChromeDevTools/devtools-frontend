@@ -42,6 +42,8 @@ const data: Components.TreeOutline.TreeOutlineData = {
       children: (): Promise<Components.TreeOutlineUtils.TreeNode[]> => Promise.resolve([
         {
           key: 'Europe',
+          // TODO: Remove next line once crbug.com/1177242 is solved.
+          // eslint-disable-next-line @typescript-eslint/space-before-function-paren
           chldren: async(): Promise<Components.TreeOutlineUtils.TreeNode[]> => {
             const children = await loadInSomeNodes();
             return children;

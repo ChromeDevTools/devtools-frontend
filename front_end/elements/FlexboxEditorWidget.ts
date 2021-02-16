@@ -94,6 +94,8 @@ export class FlexboxEditorWidget extends UI.Widget.VBox {
   static createFlexboxEditorButton(pane: StylesSidebarPane, section: StylePropertiesSection): HTMLElement {
     const flexboxEditorButton = createButton();
 
+    // TODO: Remove next line once crbug.com/1177242 is solved.
+    // eslint-disable-next-line @typescript-eslint/space-before-function-paren
     flexboxEditorButton.onclick = async(event): Promise<void> => {
       event.stopPropagation();
       const popoverHelper = pane.swatchPopoverHelper();

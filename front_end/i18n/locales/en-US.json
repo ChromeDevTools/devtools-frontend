@@ -1781,6 +1781,21 @@
   "input/InputTimeline.ts | saveProfile": {
     "message": "Save profile…"
   },
+  "issues/AffectedCookiesView.ts | cookie": {
+    "message": "cookie"
+  },
+  "issues/AffectedCookiesView.ts | cookies": {
+    "message": "cookies"
+  },
+  "issues/AffectedCookiesView.ts | domain": {
+    "message": "Domain"
+  },
+  "issues/AffectedCookiesView.ts | name": {
+    "message": "Name"
+  },
+  "issues/AffectedCookiesView.ts | path": {
+    "message": "Path"
+  },
   "issues/AffectedElementsView.ts | element": {
     "message": "element"
   },
@@ -1973,12 +1988,6 @@
   "issues/IssueView.ts | clickToRevealTheViolatingDomNode": {
     "message": "Click to reveal the violating DOM node in the Elements panel"
   },
-  "issues/IssueView.ts | cookie": {
-    "message": "cookie"
-  },
-  "issues/IssueView.ts | cookies": {
-    "message": "cookies"
-  },
   "issues/IssueView.ts | cpuPeakLimit": {
     "message": "CPU peak limit"
   },
@@ -1993,9 +2002,6 @@
   },
   "issues/IssueView.ts | directives": {
     "message": "directives"
-  },
-  "issues/IssueView.ts | domain": {
-    "message": "Domain"
   },
   "issues/IssueView.ts | element": {
     "message": "Element"
@@ -2020,9 +2026,6 @@
   },
   "issues/IssueView.ts | parentFrame": {
     "message": "Parent Frame"
-  },
-  "issues/IssueView.ts | path": {
-    "message": "Path"
   },
   "issues/IssueView.ts | removed": {
     "message": "Removed"

@@ -285,14 +285,18 @@ export class AffectedResourcesView extends UI.TreeOutline.TreeElement {
     header.appendChild(info);
   }
 
-  protected createIssueDetailCell(textContent: string): HTMLTableDataCellElement {
+  protected createIssueDetailCell(textContent: string, additionalClass: string|null = null): HTMLTableDataCellElement {
     const cell = document.createElement('td');
     cell.textContent = textContent;
+    if (additionalClass) {
+      cell.classList.add(additionalClass);
+    }
     return cell;
   }
 
-  protected appendIssueDetailCell(element: HTMLElement, textContent: string): HTMLTableDataCellElement {
-    const cell = this.createIssueDetailCell(textContent);
+  protected appendIssueDetailCell(element: HTMLElement, textContent: string, additionalClass: string|null = null):
+      HTMLTableDataCellElement {
+    const cell = this.createIssueDetailCell(textContent, additionalClass);
     element.appendChild(cell);
     return cell;
   }

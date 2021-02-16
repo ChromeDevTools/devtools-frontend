@@ -673,6 +673,7 @@ grd_files_debug_sources = [
   "front_end/input/InputTimeline.js",
   "front_end/inspector_main/InspectorMain.js",
   "front_end/inspector_main/RenderingOptions.js",
+  "front_end/issues/AffectedCookiesView.js",
   "front_end/issues/AffectedElementsView.js",
   "front_end/issues/AffectedElementsWithLowContrastView.js",
   "front_end/issues/AffectedResourcesView.js",

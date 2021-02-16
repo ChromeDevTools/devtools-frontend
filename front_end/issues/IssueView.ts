@@ -15,6 +15,7 @@ import * as SDK from '../sdk/sdk.js';
 import * as WebComponents from '../ui/components/components.js';
 import * as UI from '../ui/ui.js';
 
+import {AffectedCookiesView} from './AffectedCookiesView.js';
 import {AffectedElementsView} from './AffectedElementsView.js';
 import {AffectedElementsWithLowContrastView} from './AffectedElementsWithLowContrastView.js';
 import {AffectedItem, AffectedResourcesView, extractShortPath} from './AffectedResourcesView.js';
@@ -25,6 +26,10 @@ import {AggregatedIssue} from './IssueAggregator.js';            // eslint-disab
 import {IssueDescription} from './MarkdownIssueDescription.js';  // eslint-disable-line no-unused-vars
 
 export const UIStrings = {
+  /**
+  *@description Noun, singular. Label for a column or field containing the name of an entity.
+  */
+  name: 'Name',
   /**
   *@description Singular label for number of affected directive resource indication in issue view
   */
@@ -65,26 +70,6 @@ export const UIStrings = {
   *@description Text that refers to the resources of the web page
   */
   resourceC: 'Resource',
-  /**
-  *@description Label for number of affected resources indication in issue view
-  */
-  cookie: 'cookie',
-  /**
-  *@description Label for number of affected resources indication in issue view
-  */
-  cookies: 'cookies',
-  /**
-  *@description Text for the name of something
-  */
-  name: 'Name',
-  /**
-  *@description Text for the domain of a website
-  */
-  domain: 'Domain',
-  /**
-  *@description Text that refers to a file path
-  */
-  path: 'Path',
   /**
   *@description A tag of Enable Local Overrides setting that can be searched in the command menu
   */
@@ -324,73 +309,6 @@ class AffectedDirectivesView extends AffectedResourcesView {
   update(): void {
     this.clear();
     this._appendAffectedContentSecurityPolicyDetails(this._issue.getCspIssues());
-  }
-}
-
-class AffectedCookiesView extends AffectedResourcesView {
-  _issue: AggregatedIssue;
-  constructor(parent: IssueView, issue: AggregatedIssue) {
-    super(parent, {singular: i18nString(UIStrings.cookie), plural: i18nString(UIStrings.cookies)});
-    this._issue = issue;
-  }
-
-  _appendAffectedCookies(cookies: Iterable<{
-    cookie: Protocol.Audits.AffectedCookie,
-    hasRequest: boolean,
-  }>): void {
-    const header = document.createElement('tr');
-    this.appendColumnTitle(header, i18nString(UIStrings.name));
-    this.appendColumnTitle(
-        header, i18nString(UIStrings.domain) + ' & ' + i18nString(UIStrings.path),
-        'affected-resource-cookie-info-header');
-
-    this.affectedResources.appendChild(header);
-
-    let count = 0;
-    for (const cookie of cookies) {
-      count++;
-      this.appendAffectedCookie(cookie.cookie, cookie.hasRequest);
-    }
-    this.updateAffectedResourceCount(count);
-  }
-
-  appendAffectedCookie(cookie: Protocol.Audits.AffectedCookie, hasAssociatedRequest: boolean): void {
-    const element = document.createElement('tr');
-    element.classList.add('affected-resource-cookie');
-    const name = document.createElement('td');
-    if (hasAssociatedRequest) {
-      name.appendChild(UI.UIUtils.createTextButton(cookie.name, () => {
-        Host.userMetrics.issuesPanelResourceOpened(this._issue.getCategory(), AffectedItem.Cookie);
-        Network.NetworkPanel.NetworkPanel.revealAndFilter([
-          {
-            filterType: 'cookie-domain',
-            filterValue: cookie.domain,
-          },
-          {
-            filterType: 'cookie-name',
-            filterValue: cookie.name,
-          },
-          {
-            filterType: 'cookie-path',
-            filterValue: cookie.path,
-          },
-        ]);
-      }, 'link-style devtools-link'));
-    } else {
-      name.textContent = cookie.name;
-    }
-    const info = document.createElement('td');
-    info.classList.add('affected-resource-cookie-info');
-    info.textContent = `${cookie.domain}${cookie.path}`;
-
-    element.appendChild(name);
-    element.appendChild(info);
-    this.affectedResources.appendChild(element);
-  }
-
-  update(): void {
-    this.clear();
-    this._appendAffectedCookies(this._issue.cookiesWithRequestIndicator());
   }
 }
 

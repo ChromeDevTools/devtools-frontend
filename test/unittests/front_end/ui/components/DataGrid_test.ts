@@ -6,7 +6,7 @@ import * as Platform from '../../../../../front_end/platform/platform.js';
 import * as Coordinator from '../../../../../front_end/render_coordinator/render_coordinator.js';
 import * as LitHtml from '../../../../../front_end/third_party/lit-html/lit-html.js';
 import * as UIComponents from '../../../../../front_end/ui/components/components.js';
-import {assertElement, assertShadowRoot, dispatchClickEvent, dispatchKeyDownEvent, getEventPromise, renderElementIntoDOM} from '../../helpers/DOMHelpers.js';
+import {assertElement, assertShadowRoot, dispatchClickEvent, dispatchKeyDownEvent, getEventPromise, renderElementIntoDOM, stripLitHtmlCommentNodes} from '../../helpers/DOMHelpers.js';
 import {withMutations} from '../../helpers/MutationHelpers.js';
 
 import {assertCurrentFocusedCellIs, emulateUserFocusingCellAt, emulateUserKeyboardNavigation, focusTableCell, getAllRows, getCellByIndexes, getFocusableCell, getHeaderCellForColumnId, getHeaderCells, getValuesOfAllBodyRows, getValuesOfBodyRowByAriaIndex} from './DataGridHelpers.js';
@@ -59,14 +59,6 @@ const columnsWithNoneSortable = createColumns().map(col => {
 Object.freeze(columns);
 Object.freeze(columnsWithNoneSortable);
 Object.freeze(rows);
-
-/**
-  * It's useful to use innerHTML in the tests to have full confidence in the
-  * renderer output, but LitHtml uses comment nodes to split dynamic from
-  * static parts of a template, and we don't want our tests full of noise
-  * from those.
-  */
-const stripLitHtmlCommentNodes = (text: string) => text.replaceAll('<!---->', '');
 
 const renderDataGrid = (data: Partial<UIComponents.DataGrid.DataGridData>): UIComponents.DataGrid.DataGrid => {
   const component = new UIComponents.DataGrid.DataGrid();

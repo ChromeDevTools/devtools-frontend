@@ -977,6 +977,7 @@ export class SourceFrameImpl extends UI.View.SimpleView {
         this._sourcePosition.setText(i18nString(
             UIStrings.bytecodePositionXs, {PH1: bytecodeOffset.toString(16).padStart(bytecodeOffsetDigits, '0')}));
       } else {
+        this._textEditor.revealPosition(location[0], location[1], !this.canEditSource());
         this._sourcePosition.setText(i18nString(UIStrings.lineSColumnS, {PH1: location[0] + 1, PH2: location[1] + 1}));
       }
       return;

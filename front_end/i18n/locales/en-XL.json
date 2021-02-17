@@ -7655,6 +7655,9 @@
   "sources/GoToLineQuickOpen.js | currentPositionXsTypeAnOffset": {
     "message": "Ĉúr̂ŕêńt̂ ṕôśît́îón̂: 0x́{PH1}. T̂ýp̂é âń ôf́f̂śêt́ b̂ét̂ẃêén̂ 0x́{PH2} âńd̂ 0x́{PH3} t̂ó n̂áv̂íĝát̂é t̂ó."
   },
+  "sources/GoToLineQuickOpen.js | goToLine": {
+    "message": "Ĝó t̂ó l̂ín̂é"
+  },
   "sources/GoToLineQuickOpen.js | goToLineS": {
     "message": "Ĝó t̂ó l̂ín̂é {PH1}."
   },
@@ -7727,15 +7730,6 @@
   "sources/JavaScriptBreakpointsSidebarPane.js | unchecked": {
     "message": "ûńĉh́êćk̂éd̂"
   },
-  "sources/ModuleUIStrings.js | goToLine": {
-    "message": "Ĝó t̂ó l̂ín̂é"
-  },
-  "sources/ModuleUIStrings.js | goToSymbol": {
-    "message": "Ĝó t̂ó ŝým̂b́ôĺ"
-  },
-  "sources/ModuleUIStrings.js | openFile": {
-    "message": "Ôṕêń f̂íl̂é"
-  },
   "sources/NavigatorView.js | areYouSureYouWantToDeleteAll": {
     "message": "Âŕê ýôú ŝúr̂é ŷóû ẃâńt̂ t́ô d́êĺêt́ê ál̂ĺ ôv́êŕr̂íd̂éŝ ćôńt̂áîńêd́ îń t̂h́îś f̂ól̂d́êŕ?"
   },
@@ -7783,6 +7777,12 @@
   },
   "sources/NavigatorView.js | sFromSourceMap": {
     "message": "{PH1} (f̂ŕôḿ ŝóûŕĉé m̂áp̂)"
+  },
+  "sources/OpenFileQuickOpen.js | openFile": {
+    "message": "Ôṕêń f̂íl̂é"
+  },
+  "sources/OutlineQuickOpen.js | goToSymbol": {
+    "message": "Ĝó t̂ó ŝým̂b́ôĺ"
   },
   "sources/OutlineQuickOpen.js | noFileSelected": {
     "message": "N̂ó f̂íl̂é ŝél̂éĉt́êd́."

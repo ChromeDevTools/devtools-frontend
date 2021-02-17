@@ -7655,6 +7655,9 @@
   "sources/GoToLineQuickOpen.js | currentPositionXsTypeAnOffset": {
     "message": "Current position: 0x{PH1}. Type an offset between 0x{PH2} and 0x{PH3} to navigate to."
   },
+  "sources/GoToLineQuickOpen.js | goToLine": {
+    "message": "Go to line"
+  },
   "sources/GoToLineQuickOpen.js | goToLineS": {
     "message": "Go to line {PH1}."
   },
@@ -7727,15 +7730,6 @@
   "sources/JavaScriptBreakpointsSidebarPane.js | unchecked": {
     "message": "unchecked"
   },
-  "sources/ModuleUIStrings.js | goToLine": {
-    "message": "Go to line"
-  },
-  "sources/ModuleUIStrings.js | goToSymbol": {
-    "message": "Go to symbol"
-  },
-  "sources/ModuleUIStrings.js | openFile": {
-    "message": "Open file"
-  },
   "sources/NavigatorView.js | areYouSureYouWantToDeleteAll": {
     "message": "Are you sure you want to delete all overrides contained in this folder?"
   },
@@ -7783,6 +7777,12 @@
   },
   "sources/NavigatorView.js | sFromSourceMap": {
     "message": "{PH1} (from source map)"
+  },
+  "sources/OpenFileQuickOpen.js | openFile": {
+    "message": "Open file"
+  },
+  "sources/OutlineQuickOpen.js | goToSymbol": {
+    "message": "Go to symbol"
   },
   "sources/OutlineQuickOpen.js | noFileSelected": {
     "message": "No file selected."

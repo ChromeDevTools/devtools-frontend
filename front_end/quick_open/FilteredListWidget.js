@@ -698,3 +698,29 @@ export class Provider {
   detach() {
   }
 }
+
+/** @type {!Array<!ProviderRegistration>} */
+const registeredProviders = [];
+
+/**
+ * @param {!ProviderRegistration} registration
+ */
+export function registerProvider(registration) {
+  registeredProviders.push(registration);
+}
+/**
+ * @return {!Array<!ProviderRegistration>}
+ */
+export function getRegisteredProviders() {
+  return registeredProviders;
+}
+
+/**
+  * @typedef {{
+  *  provider: function(): !Promise<!Provider>,
+  *  title: function(): string,
+  *  prefix: string,
+  * }}
+  */
+// @ts-ignore typedef
+export let ProviderRegistration;

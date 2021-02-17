@@ -1,24 +1,6 @@
 {
   "extensions": [
     {
-      "type": "@QuickOpen.FilteredListWidget.Provider",
-      "title": "Open file",
-      "prefix": "",
-      "className": "Sources.OpenFileQuickOpen"
-    },
-    {
-      "type": "@QuickOpen.FilteredListWidget.Provider",
-      "title": "Go to line",
-      "prefix": ":",
-      "className": "Sources.GoToLineQuickOpen"
-    },
-    {
-      "type": "@QuickOpen.FilteredListWidget.Provider",
-      "title": "Go to symbol",
-      "prefix": "@",
-      "className": "Sources.OutlineQuickOpen"
-    },
-    {
       "type": "context-menu-item",
       "location": "navigatorMenu/default",
       "actionId": "quickOpen.show"

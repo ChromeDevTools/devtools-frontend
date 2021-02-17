@@ -5,7 +5,7 @@
 import * as Root from '../root/root.js';
 import * as UI from '../ui/ui.js';
 
-import {Provider} from './FilteredListWidget.js';
+import {getRegisteredProviders, Provider} from './FilteredListWidget.js';
 import {QuickOpenImpl} from './QuickOpen.js';
 
 export class HelpQuickOpen extends Provider {
@@ -13,15 +13,23 @@ export class HelpQuickOpen extends Provider {
     super();
     /** @type {!Array<{prefix: string, title: string}>} */
     this._providers = [];
-    Root.Runtime.Runtime.instance().extensions(Provider).forEach(this._addProvider.bind(this));
+    const unionOfProviders = [
+      ...getRegisteredProviders(), ...Root.Runtime.Runtime.instance().extensions(Provider).map(extension => {
+        return {
+          title: () => extension.title(),
+          prefix: extension.descriptor().prefix,
+        };
+      })
+    ];
+    unionOfProviders.forEach(this._addProvider.bind(this));
   }
 
   /**
-   * @param {!Root.Runtime.Extension} extension
+   * @param {!{prefix: ?string, title: function():string}} extension
    */
   _addProvider(extension) {
-    if (extension.title()) {
-      this._providers.push({prefix: extension.descriptor()['prefix'] || '', title: extension.title()});
+    if (extension.title) {
+      this._providers.push({prefix: extension.prefix || '', title: extension.title()});
     }
   }
 

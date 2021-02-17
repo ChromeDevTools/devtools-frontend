@@ -24,15 +24,37 @@ export const UIStrings = {
   *@description Text to show no results have been found
   */
   noResultsFound: 'No results found',
+  /**
+  *@description Title of the Filtered List WidgetProvider of Quick Open
+  */
+  goToSymbol: 'Go to symbol',
 };
 const str_ = i18n.i18n.registerUIStrings('sources/OutlineQuickOpen.js', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
+
+/** @type {!OutlineQuickOpen} */
+let outlineQuickOpenInstance;
+
 export class OutlineQuickOpen extends QuickOpen.FilteredListWidget.Provider {
+  /** @private */
   constructor() {
     super();
     /** @type {!Array<!Formatter.FormatterWorkerPool.OutlineItem>} */
     this._items = [];
     this._active = false;
+  }
+
+  /**
+   * @param {{forceNew: ?boolean}} opts
+   */
+  static instance(opts = {forceNew: null}) {
+    const {forceNew} = opts;
+    if (!outlineQuickOpenInstance || forceNew) {
+      outlineQuickOpenInstance = new OutlineQuickOpen();
+    }
+
+    return outlineQuickOpenInstance;
   }
 
   /**
@@ -151,3 +173,9 @@ export class OutlineQuickOpen extends QuickOpen.FilteredListWidget.Provider {
     return i18nString(UIStrings.noResultsFound);
   }
 }
+
+QuickOpen.FilteredListWidget.registerProvider({
+  prefix: '@',
+  title: i18nLazyString(UIStrings.goToSymbol),
+  provider: async () => OutlineQuickOpen.instance(),
+});

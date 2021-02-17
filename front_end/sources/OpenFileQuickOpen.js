@@ -4,12 +4,39 @@
 
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
+import * as i18n from '../i18n/i18n.js';
+import * as QuickOpen from '../quick_open/quick_open.js';
 import * as Workspace from '../workspace/workspace.js';  // eslint-disable-line no-unused-vars
 
 import {FilteredUISourceCodeListProvider} from './FilteredUISourceCodeListProvider.js';
 import {SourcesView} from './SourcesView.js';
 
+export const UIStrings = {
+  /**
+  *@description Text to open a file
+  */
+  openFile: 'Open file',
+};
+const str_ = i18n.i18n.registerUIStrings('sources/OpenFileQuickOpen.js', UIStrings);
+const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
+
+
+/** @type {!OpenFileQuickOpen} */
+let openFileQuickOpenInstance;
+
 export class OpenFileQuickOpen extends FilteredUISourceCodeListProvider {
+  /**
+   * @param {{forceNew: ?boolean}} opts
+   */
+  static instance(opts = {forceNew: null}) {
+    const {forceNew} = opts;
+    if (!openFileQuickOpenInstance || forceNew) {
+      openFileQuickOpenInstance = new OpenFileQuickOpen();
+    }
+
+    return openFileQuickOpenInstance;
+  }
+
   /**
    * @override
    */
@@ -54,3 +81,9 @@ export class OpenFileQuickOpen extends FilteredUISourceCodeListProvider {
     return true;
   }
 }
+
+QuickOpen.FilteredListWidget.registerProvider({
+  prefix: '',
+  title: i18nLazyString(UIStrings.openFile),
+  provider: async () => OpenFileQuickOpen.instance(),
+});

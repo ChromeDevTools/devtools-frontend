@@ -6,7 +6,7 @@ import {ls} from '../platform/platform.js';
 import * as Root from '../root/root.js';
 import * as UI from '../ui/ui.js';  // eslint-disable-line no-unused-vars
 
-import {FilteredListWidget, Provider} from './FilteredListWidget.js';
+import {FilteredListWidget, getRegisteredProviders, Provider} from './FilteredListWidget.js';
 
 /** @type {!Array<string>} */
 export const history = [];
@@ -22,7 +22,18 @@ export class QuickOpenImpl {
     this._prefixes = [];
     /** @type {?FilteredListWidget} */
     this._filteredListWidget = null;
-    Root.Runtime.Runtime.instance().extensions(Provider).forEach(this._addProvider.bind(this));
+    const unionOfProviders = [
+      ...Root.Runtime.Runtime.instance().extensions(Provider).map(extension => {
+        return {
+          title: extension.title(),
+          prefix: extension.descriptor().prefix,
+          provider: /** @type { function(): !Promise<!Provider>}*/ (extension.instance.bind(extension)),
+        };
+      }),
+      ...getRegisteredProviders()
+    ];
+
+    unionOfProviders.forEach(this._addProvider.bind(this));
     this._prefixes.sort((a, b) => b.length - a.length);
   }
 
@@ -40,17 +51,17 @@ export class QuickOpenImpl {
   }
 
   /**
-   * @param {!Root.Runtime.Extension} extension
+   * @param {!{prefix: ?string, provider: function(): !Promise<!Provider>}} extension
    */
   _addProvider(extension) {
-    const prefix = extension.descriptor().prefix;
+    const prefix = extension.prefix;
     if (prefix === null) {
       return;
     }
     this._prefixes.push(prefix);
     this._providers.set(
         prefix, /** @type {function():!Promise<!Provider>} */
-        (extension.instance.bind(extension)));
+        (extension.provider));
   }
 
   /**

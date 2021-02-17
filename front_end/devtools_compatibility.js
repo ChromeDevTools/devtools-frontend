@@ -970,7 +970,6 @@
       'dataGrid-cookiesTable',
       'dataGrid-DOMStorageItemsView',
       'debuggerSidebarHidden',
-      'disableDataSaverInfobar',
       'disablePausedStateOverlay',
       'domBreakpoints',
       'domWordWrap',

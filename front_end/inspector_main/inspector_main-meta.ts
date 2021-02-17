@@ -141,14 +141,6 @@ Common.Settings.registerSettingExtension({
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.APPEARANCE,
-  title: (): Platform.UIString.LocalizedString => ls`Don't show Chrome Data Saver warning`,
-  settingName: 'disableDataSaverInfobar',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  defaultValue: false,
-});
-
-Common.Settings.registerSettingExtension({
-  category: Common.Settings.SettingCategory.APPEARANCE,
   title: (): Platform.UIString.LocalizedString => ls`Disable paused state overlay`,
   settingName: 'disablePausedStateOverlay',
   settingType: Common.Settings.SettingType.BOOLEAN,

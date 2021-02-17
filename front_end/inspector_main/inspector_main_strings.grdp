@@ -75,9 +75,6 @@
   <message name="IDS_DEVTOOLS_7962fd6013e985379fd3a4964d769703" desc="Text in Rendering Options">
     Hit-test borders
   </message>
-  <message name="IDS_DEVTOOLS_7e9495c56e55fa2c5236512bf80e5d2b" desc="Title of a setting under the Appearance category in Settings">
-    Don&apos;t show <ph name="LOCKED_1">Chrome Data Saver</ph> warning
-  </message>
   <message name="IDS_DEVTOOLS_8339f28e0c74e2c821b05332280c754b" desc="Title of a setting under the Network category in Settings">
     Force ad blocking on this site
   </message>

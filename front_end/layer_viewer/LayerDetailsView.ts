@@ -266,9 +266,11 @@ export const UIStrings = {
   */
   shouldIsolateDescendantsToApplyA: 'Should isolate descendants to apply a blend effect.',
   /**
-  *@description Compositing reason description displayed in the Layer Details View of the Layers panel
+  *@description Compositing reason description displayed in the Layer Details View of the Layers panel. The
+                inspected HTML element has the CSS attribute 'position' set to 'fixed'. The inspected HTML
+                element also has multiple child HTML elements (= descendents).
   */
-  isAPositionfixedElementWith: 'Is a position:fixed element with composited descendants.',
+  isAPositionfixedElementWith: 'Is a `position:fixed` element with composited descendants.',
   /**
   *@description Compositing reason description displayed in the Layer Details View of the Layers panel
   */

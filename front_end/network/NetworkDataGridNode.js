@@ -98,9 +98,9 @@ export const UIStrings = {
   */
   subresourcefilter: 'subresource-filter',
   /**
-  *@description Reason in Network Data Grid Node of the Network panel
+  *@description Reason in Network Data Grid Node of the Network panel. Locked term. Don't translate.
   */
-  contenttype: 'content-type',
+  contenttype: '`content-type`',
   /**
   *@description Reason in Network Data Grid Node of the Network panel
   */

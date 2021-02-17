@@ -2181,7 +2181,7 @@
     "message": "Îś âń âćĉél̂ér̂át̂éd̂ v́îd́êó."
   },
   "layer_viewer/LayerDetailsView.ts | isAPositionfixedElementWith": {
-    "message": "Îś â ṕôśît́îón̂:f́îx́êd́ êĺêḿêńt̂ ẃît́ĥ ćôḿp̂óŝít̂éd̂ d́êśĉén̂d́âńt̂ś."
+    "message": "Îś â position:fixed él̂ém̂én̂t́ ŵít̂h́ ĉóm̂ṕôśît́êd́ d̂éŝćêńd̂án̂t́ŝ."
   },
   "layer_viewer/LayerDetailsView.ts | isAScrollableOverflowElement": {
     "message": "Îś â śĉŕôĺl̂áb̂ĺê óv̂ér̂f́l̂óŵ él̂ém̂én̂t́."
@@ -3243,7 +3243,7 @@
     "message": "ĈóêṕF̂ŕâḿêŔêśôúr̂ćêŃêéd̂śĈóêṕĤéâd́êŕ"
   },
   "network/NetworkDataGridNode.js | contenttype": {
-    "message": "ĉón̂t́êńt̂-t́ŷṕê"
+    "message": "content-type"
   },
   "network/NetworkDataGridNode.js | CoopSandboxedIframeCannot": {
     "message": "ĈóôṕŜán̂d́b̂óx̂éd̂Íf̂ŕâḿêĆâńn̂ót̂Ńâv́îǵât́êT́ôĆôóp̂Ṕâǵê"

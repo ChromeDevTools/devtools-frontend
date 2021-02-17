@@ -138,15 +138,17 @@ export const UIStrings = {
   */
   autoincrement: 'autoIncrement',
   /**
-  *@description Text in Application Panel Sidebar of the Application panel
+  * @description Shown in a tooltip for the Application Panel Sidebar of the Application panel.
+  * Indicates that an IndexedDB Index is multiEntry. Not to be translated as it is a property name
+  * used in code.
   */
-  unique: 'unique',
+  unique: '`unique`',
   /**
-  *@description Shown in a tooltip for the Application Panel Sidebar of the Application panel.
-  *Indicates that an IndexedDB Index is multiEntry. Not to be translated as it is a property name
-  *used in code.
+  * @description Shown in a tooltip for the Application Panel Sidebar of the Application panel.
+  * Indicates that an IndexedDB Index is unique. Not to be translated as it is a property name
+  * used in code.
   */
-  multientry: 'multiEntry',
+  multientry: '`multiEntry`',
   /**
   *@description Text in Application Panel Sidebar of the Application panel
   */

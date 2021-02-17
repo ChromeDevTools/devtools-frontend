@@ -234,10 +234,12 @@ export const UIStrings = {
   */
   icon: 'Icon',
   /**
-  *@description Warning message for image resources from the manifest
-  *@example {Image} PH1
+  * @description This is a warning message telling the user about a problem where the src attribute
+  * of an image has not be entered/provided correctly. 'src' is part of the DOM API and should not
+  * be translated.
+  * @example {ImageName} PH1
   */
-  sSrcIsNotSet: '{PH1} src is not set',
+  sSrcIsNotSet: '{PH1} `src` is not set',
   /**
   *@description Warning message for image resources from the manifest
   *@example {Image} PH1

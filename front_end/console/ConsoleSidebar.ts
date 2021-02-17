@@ -15,7 +15,10 @@ import {ConsoleViewMessage} from './ConsoleViewMessage.js';  // eslint-disable-l
 
 export const UIStrings = {
   /**
-  *@description Filter name in Console Sidebar of the Console panel
+  * @description Filter name in Console Sidebar of the Console panel. This is shown when we fail to
+  * parse a URL when trying to display console messages from each URL separately. This might be
+  * because the console message does not come from any particular URL. This should be translated as
+  * a term that indicates 'not one of the other URLs listed here'.
   */
   other: '<other>',
   /**

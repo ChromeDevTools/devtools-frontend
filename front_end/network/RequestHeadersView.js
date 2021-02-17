@@ -44,7 +44,8 @@ export const UIStrings = {
   */
   general: 'General',
   /**
-  *@description Text in Request Headers View of the Network panel
+  * @description Text in Request Headers View of the Network panel. This is a noun-phrase meaning the
+  * payload of a network request.
   */
   requestPayload: 'Request Payload',
   /**

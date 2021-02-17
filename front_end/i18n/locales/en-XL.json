@@ -147,19 +147,19 @@
     "message": "F̂ŕôḿ ât́t̂ŕîb́ût́ê"
   },
   "accessibility/AccessibilityStrings.ts | fromCaption": {
-    "message": "F̂ŕôḿ ĉáp̂t́îón̂"
+    "message": "F̂ŕôḿ caption"
   },
   "accessibility/AccessibilityStrings.ts | fromLabel": {
-    "message": "F̂ŕôḿ l̂áb̂él̂"
+    "message": "F̂ŕôḿ label"
   },
   "accessibility/AccessibilityStrings.ts | fromLabelFor": {
-    "message": "F̂ŕôḿ l̂áb̂él̂ (f́ôŕ)"
+    "message": "F̂ŕôḿ label (for)"
   },
   "accessibility/AccessibilityStrings.ts | fromLabelWrapped": {
-    "message": "F̂ŕôḿ l̂áb̂él̂ (ẃr̂áp̂ṕêd́)"
+    "message": "F̂ŕôḿ label (wrapped)"
   },
   "accessibility/AccessibilityStrings.ts | fromLegend": {
-    "message": "F̂ŕôḿ l̂éĝén̂d́"
+    "message": "F̂ŕôḿ legend"
   },
   "accessibility/AccessibilityStrings.ts | fromNativeHtml": {
     "message": "F̂ŕôḿ n̂át̂ív̂é ĤT́M̂Ĺ"
@@ -312,13 +312,13 @@
     "message": "V̂ál̂úê f́r̂óm̂ f́îǵĉáp̂t́îón̂ él̂ém̂én̂t́."
   },
   "accessibility/AccessibilityStrings.ts | valueFromLabelElement": {
-    "message": "V̂ál̂úê f́r̂óm̂ ĺâb́êĺ êĺêḿêńt̂."
+    "message": "V̂ál̂úê f́r̂óm̂ label él̂ém̂én̂t́."
   },
   "accessibility/AccessibilityStrings.ts | valueFromLabelElementWithFor": {
-    "message": "V̂ál̂úê f́r̂óm̂ ĺâb́êĺ êĺêḿêńt̂ ẃît́ĥ f́ôŕ= ât́t̂ŕîb́ût́ê."
+    "message": "V̂ál̂úê f́r̂óm̂ label él̂ém̂én̂t́ ŵít̂h́ for= ât́t̂ŕîb́ût́ê."
   },
   "accessibility/AccessibilityStrings.ts | valueFromLabelElementWrapped": {
-    "message": "V̂ál̂úê f́r̂óm̂ ĺâb́êĺ êĺêḿêńt̂ ẃr̂áp̂ṕêd́."
+    "message": "V̂ál̂úê f́r̂óm̂ label él̂ém̂én̂t́ ŵŕâṕp̂éd̂."
   },
   "accessibility/AccessibilityStrings.ts | valueFromLegendElement": {
     "message": "V̂ál̂úê f́r̂óm̂ ĺêǵêńd̂ él̂ém̂én̂t́."
@@ -5388,7 +5388,7 @@
     "message": "M̂án̂íf̂éŝt́"
   },
   "resources/ApplicationPanelSidebar.js | multientry": {
-    "message": "m̂úl̂t́îÉn̂t́r̂ý"
+    "message": "multiEntry"
   },
   "resources/ApplicationPanelSidebar.js | openedWindows": {
     "message": "Ôṕêńêd́ Ŵín̂d́ôẃŝ"
@@ -5409,7 +5409,7 @@
     "message": "T̂h́ê ćôńt̂én̂t́ ôf́ t̂h́îś d̂óĉúm̂én̂t́ ĥáŝ b́êén̂ ǵêńêŕât́êd́ d̂ýn̂ám̂íĉál̂ĺŷ v́îá 'd̂óĉúm̂én̂t́.ŵŕît́ê()'."
   },
   "resources/ApplicationPanelSidebar.js | unique": {
-    "message": "ûńîq́ûé"
+    "message": "unique"
   },
   "resources/ApplicationPanelSidebar.js | versionS": {
     "message": "V̂ér̂śîón̂: {PH1}"
@@ -5589,7 +5589,7 @@
     "message": "{PH1} {PH2} ĥéîǵĥt́ ŝh́ôúl̂d́ b̂é l̂éŝś t̂h́âń t̂ẃîćê t́ĥé ŵíd̂t́ĥ"
   },
   "resources/AppManifestView.js | sSrcIsNotSet": {
-    "message": "{PH1} ŝŕĉ íŝ ńôt́ ŝét̂"
+    "message": "{PH1} src îś n̂ót̂ śêt́"
   },
   "resources/AppManifestView.js | sSShouldSpecifyItsSizeAs": {
     "message": "{PH1} {PH2} ŝh́ôúl̂d́ ŝṕêćîf́ŷ ít̂ś ŝíẑé âś {width}x{height}"

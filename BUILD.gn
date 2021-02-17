@@ -146,7 +146,6 @@ non_autostart_non_remote_modules = [
   "layer_viewer/layer_viewer_module.js",
   "layers/layers_module.js",
   "lighthouse/lighthouse_module.js",
-  "linear_memory_inspector/linear_memory_inspector_module.js",
   "media/media_module.js",
   "network/network_module.js",
   "node_debugger/node_debugger_module.js",

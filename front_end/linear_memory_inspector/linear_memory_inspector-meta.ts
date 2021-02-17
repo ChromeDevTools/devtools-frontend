@@ -26,8 +26,6 @@ let loadedLinearMemoryInspectorModule: (typeof LinearMemoryInspector|undefined);
 
 async function loadLinearMemoryInspectorModule(): Promise<typeof LinearMemoryInspector> {
   if (!loadedLinearMemoryInspectorModule) {
-    // Side-effect import resources in module.json
-    await Root.Runtime.Runtime.instance().loadModulePromise('linear_memory_inspector');
     loadedLinearMemoryInspectorModule = await import('./linear_memory_inspector.js');
   }
   return loadedLinearMemoryInspectorModule;

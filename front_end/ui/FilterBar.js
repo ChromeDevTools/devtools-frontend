@@ -323,7 +323,7 @@ export class NamedBitSetFilterUI extends Common.ObjectWrapper.ObjectWrapper {
     this._filtersElement.createChild('div', 'filter-bitset-filter-divider');
 
     for (let i = 0; i < items.length; ++i) {
-      this._addBit(items[i].name, items[i].label, items[i].title);
+      this._addBit(items[i].name, items[i].label(), items[i].title);
     }
 
     if (setting) {
@@ -580,6 +580,6 @@ export class CheckboxFilterUI extends Common.ObjectWrapper.ObjectWrapper {
   }
 }
 
-/** @typedef {{name: string, label: string, title: (string|undefined)}} */
+/** @typedef {{name: string, label: function():string, title: (string|undefined)}} */
 // @ts-ignore typedef
 export let Item;

@@ -92,8 +92,9 @@ export const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('cookie_table/CookiesTable.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
-const expiresSessionValue = i18nString(UIStrings.session);
+const expiresSessionValue = i18nLazyString(UIStrings.session);
 
 export class CookiesTable extends UI.Widget.VBox {
   _saveCallback?: ((arg0: SDK.Cookie.Cookie, arg1: SDK.Cookie.Cookie|null) => Promise<boolean>);
@@ -519,13 +520,13 @@ export class CookiesTable extends UI.Widget.VBox {
       data[SDK.Cookie.Attributes.Expires] = Number.secondsToString(Math.floor(cookie.maxAge()));
     } else if (cookie.expires()) {
       if (cookie.expires() < 0) {
-        data[SDK.Cookie.Attributes.Expires] = expiresSessionValue;
+        data[SDK.Cookie.Attributes.Expires] = expiresSessionValue();
       } else {
         data[SDK.Cookie.Attributes.Expires] = new Date(cookie.expires()).toISOString();
       }
     } else {
       data[SDK.Cookie.Attributes.Expires] =
-          cookie.type() === SDK.Cookie.Type.Request ? i18nString(UIStrings.na) : expiresSessionValue;
+          cookie.type() === SDK.Cookie.Type.Request ? i18nString(UIStrings.na) : expiresSessionValue();
     }
 
     data[SDK.Cookie.Attributes.Size] = cookie.size();
@@ -573,7 +574,7 @@ export class CookiesTable extends UI.Widget.VBox {
       node.data[SDK.Cookie.Attributes.Path] = '/';
     }
     if (node.data[SDK.Cookie.Attributes.Expires] === null) {
-      node.data[SDK.Cookie.Attributes.Expires] = expiresSessionValue;
+      node.data[SDK.Cookie.Attributes.Expires] = expiresSessionValue();
     }
   }
 
@@ -600,7 +601,7 @@ export class CookiesTable extends UI.Widget.VBox {
 
     cookie.addAttribute(SDK.Cookie.Attributes.Domain, data[SDK.Cookie.Attributes.Domain]);
     cookie.addAttribute(SDK.Cookie.Attributes.Path, data[SDK.Cookie.Attributes.Path]);
-    if (data.expires && data.expires !== expiresSessionValue) {
+    if (data.expires && data.expires !== expiresSessionValue()) {
       cookie.addAttribute(SDK.Cookie.Attributes.Expires, (new Date(data[SDK.Cookie.Attributes.Expires])).toUTCString());
     }
     if (data[SDK.Cookie.Attributes.HttpOnly]) {
@@ -645,7 +646,7 @@ export class CookiesTable extends UI.Widget.VBox {
   }
 
   _isValidDate(date: string): boolean {
-    return date === '' || date === expiresSessionValue || !isNaN(Date.parse(date));
+    return date === '' || date === expiresSessionValue() || !isNaN(Date.parse(date));
   }
 
   _refresh(): void {

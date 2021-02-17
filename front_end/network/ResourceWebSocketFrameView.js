@@ -128,6 +128,7 @@ export const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('network/ResourceWebSocketFrameView.js', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 export class ResourceWebSocketFrameView extends UI.Widget.VBox {
   /**
    * @param {!SDK.NetworkRequest.NetworkRequest} request
@@ -184,7 +185,7 @@ export class ResourceWebSocketFrameView extends UI.Widget.VBox {
     this._filterTypeCombobox =
         new UI.Toolbar.ToolbarComboBox(this._updateFilterSetting.bind(this), i18nString(UIStrings.filter));
     for (const filterItem of _filterTypes) {
-      const option = this._filterTypeCombobox.createOption(filterItem.label, filterItem.name);
+      const option = this._filterTypeCombobox.createOption(filterItem.label(), filterItem.name);
       this._filterTypeCombobox.addOption(option);
     }
     this._mainToolbar.appendToolbarItem(this._filterTypeCombobox);
@@ -350,24 +351,24 @@ export const OpCodes = {
   PongFrame: 10
 };
 
-/** @type {!Array.<string> } */
+/** @type {!Array.<function():string> } */
 export const opCodeDescriptions = (function() {
   const opCodes = OpCodes;
   const map = [];
-  map[opCodes.ContinuationFrame] = i18nString(UIStrings.continuationFrame);
-  map[opCodes.TextFrame] = i18nString(UIStrings.textMessage);
-  map[opCodes.BinaryFrame] = i18nString(UIStrings.binaryMessage);
-  map[opCodes.ConnectionCloseFrame] = i18nString(UIStrings.connectionCloseMessage);
-  map[opCodes.PingFrame] = i18nString(UIStrings.pingMessage);
-  map[opCodes.PongFrame] = i18nString(UIStrings.pongMessage);
+  map[opCodes.ContinuationFrame] = i18nLazyString(UIStrings.continuationFrame);
+  map[opCodes.TextFrame] = i18nLazyString(UIStrings.textMessage);
+  map[opCodes.BinaryFrame] = i18nLazyString(UIStrings.binaryMessage);
+  map[opCodes.ConnectionCloseFrame] = i18nLazyString(UIStrings.connectionCloseMessage);
+  map[opCodes.PingFrame] = i18nLazyString(UIStrings.pingMessage);
+  map[opCodes.PongFrame] = i18nLazyString(UIStrings.pongMessage);
   return map;
 })();
 
 /** @type {!Array<!UI.FilterBar.Item>} */
 export const _filterTypes = [
-  {name: 'all', label: i18nString(UIStrings.all), title: undefined},
-  {name: 'send', label: i18nString(UIStrings.send), title: undefined},
-  {name: 'receive', label: i18nString(UIStrings.receive), title: undefined},
+  {name: 'all', label: i18nLazyString(UIStrings.all), title: undefined},
+  {name: 'send', label: i18nLazyString(UIStrings.send), title: undefined},
+  {name: 'receive', label: i18nLazyString(UIStrings.receive), title: undefined},
 ];
 
 /**
@@ -400,7 +401,7 @@ export class ResourceWebSocketFrameNode extends DataGrid.SortableDataGrid.Sortab
 
     } else if (frame.opCode === OpCodes.BinaryFrame) {
       length = Platform.NumberUtilities.bytesToString(base64ToSize(frame.text));
-      description = opCodeDescriptions[frame.opCode];
+      description = opCodeDescriptions[frame.opCode]();
 
     } else {
       dataText = description;

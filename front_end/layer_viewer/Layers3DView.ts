@@ -78,18 +78,6 @@ export const UIStrings = {
   *@description A context menu item in the DView of the Layers panel
   */
   showPaintProfiler: 'Show Paint Profiler',
-  /**
-  *@description Text in DView of the Layers panel
-  */
-  repaintsOnScroll: 'repaints on scroll',
-  /**
-  *@description Text in DView of the Layers panel
-  */
-  touchEventListener: 'touch event listener',
-  /**
-  *@description Text in DView of the Layers panel
-  */
-  mousewheelEventListener: 'mousewheel event listener',
 };
 const str_ = i18n.i18n.registerUIStrings('layer_viewer/Layers3DView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

@@ -223,6 +223,7 @@ export const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('network/RequestHeadersView.js', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 export class RequestHeadersView extends UI.Widget.VBox {
   /**
    * @param {!SDK.NetworkRequest.NetworkRequest} request
@@ -360,12 +361,12 @@ export class RequestHeadersView extends UI.Widget.VBox {
       const detailsNode = fragment.createChild('div', 'header-details');
       const callToAction = detailsNode.createChild('div', 'call-to-action');
       const callToActionBody = callToAction.createChild('div', 'call-to-action-body');
-      callToActionBody.createChild('div', 'explanation').textContent = header.details.explanation;
+      callToActionBody.createChild('div', 'explanation').textContent = header.details.explanation();
       for (const example of header.details.examples) {
         const exampleNode = callToActionBody.createChild('div', 'example');
         exampleNode.createChild('code').textContent = example.codeSnippet;
         if (example.comment) {
-          exampleNode.createChild('span', 'comment').textContent = example.comment;
+          exampleNode.createChild('span', 'comment').textContent = example.comment();
         }
       }
 
@@ -1166,8 +1167,8 @@ export class Category extends UI.TreeOutline.TreeElement {
  *   value: ?Object,
  *   headerValueIncorrect: ?boolean,
  *   details: !{
- *     explanation: string,
- *     examples: !Array<!{codeSnippet: string, comment:(string|undefined)}>,
+ *     explanation: function():string,
+ *     examples: !Array<!{codeSnippet: string, comment:(undefined|function():string)}>,
  *     link: ?{url:string},
  *   },
  *   headerNotSet: ?boolean,
@@ -1183,7 +1184,7 @@ const BlockedReasonDetails = new Map([
       value: null,
       headerValueIncorrect: null,
       details: {
-        explanation: i18nString(UIStrings.toEmbedThisFrameInYourDocument),
+        explanation: i18nLazyString(UIStrings.toEmbedThisFrameInYourDocument),
         examples: [{codeSnippet: 'Cross-Origin-Embedder-Policy: require-corp', comment: undefined}],
         link: {url: 'https://web.dev/coop-coep/'}
       },
@@ -1196,15 +1197,15 @@ const BlockedReasonDetails = new Map([
       value: null,
       headerValueIncorrect: null,
       details: {
-        explanation: i18nString(UIStrings.toUseThisResourceFromADifferent),
+        explanation: i18nLazyString(UIStrings.toUseThisResourceFromADifferent),
         examples: [
           {
             codeSnippet: 'Cross-Origin-Resource-Policy: same-site',
-            comment: i18nString(UIStrings.chooseThisOptionIfTheResourceAnd)
+            comment: i18nLazyString(UIStrings.chooseThisOptionIfTheResourceAnd)
           },
           {
             codeSnippet: 'Cross-Origin-Resource-Policy: cross-origin',
-            comment: i18nString(UIStrings.onlyChooseThisOptionIfAn)
+            comment: i18nLazyString(UIStrings.onlyChooseThisOptionIfAn)
           },
         ],
         link: {url: 'https://web.dev/coop-coep/'},
@@ -1218,7 +1219,7 @@ const BlockedReasonDetails = new Map([
       value: null,
       headerValueIncorrect: false,
       details: {
-        explanation: i18nString(UIStrings.thisDocumentWasBlockedFrom),
+        explanation: i18nLazyString(UIStrings.thisDocumentWasBlockedFrom),
         examples: [],
         link: {url: 'https://web.dev/coop-coep/'}
       },
@@ -1231,11 +1232,11 @@ const BlockedReasonDetails = new Map([
       value: null,
       headerValueIncorrect: true,
       details: {
-        explanation: i18nString(UIStrings.toUseThisResourceFromADifferentSite),
+        explanation: i18nLazyString(UIStrings.toUseThisResourceFromADifferentSite),
         examples: [
           {
             codeSnippet: 'Cross-Origin-Resource-Policy: cross-origin',
-            comment: i18nString(UIStrings.onlyChooseThisOptionIfAn)
+            comment: i18nLazyString(UIStrings.onlyChooseThisOptionIfAn)
           },
         ],
         link: null,
@@ -1249,15 +1250,15 @@ const BlockedReasonDetails = new Map([
       value: null,
       headerValueIncorrect: true,
       details: {
-        explanation: i18nString(UIStrings.toUseThisResourceFromADifferentOrigin),
+        explanation: i18nLazyString(UIStrings.toUseThisResourceFromADifferentOrigin),
         examples: [
           {
             codeSnippet: 'Cross-Origin-Resource-Policy: same-site',
-            comment: i18nString(UIStrings.chooseThisOptionIfTheResourceAnd)
+            comment: i18nLazyString(UIStrings.chooseThisOptionIfTheResourceAnd)
           },
           {
             codeSnippet: 'Cross-Origin-Resource-Policy: cross-origin',
-            comment: i18nString(UIStrings.onlyChooseThisOptionIfAn)
+            comment: i18nLazyString(UIStrings.onlyChooseThisOptionIfAn)
           },
         ],
         link: null,

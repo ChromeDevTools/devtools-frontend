@@ -2783,14 +2783,8 @@
   "layer_viewer/Layers3DView.ts | layerInformationIsNotYet": {
     "message": "Layer information is not yet available."
   },
-  "layer_viewer/Layers3DView.ts | mousewheelEventListener": {
-    "message": "mousewheel event listener"
-  },
   "layer_viewer/Layers3DView.ts | paints": {
     "message": "Paints"
-  },
-  "layer_viewer/Layers3DView.ts | repaintsOnScroll": {
-    "message": "repaints on scroll"
   },
   "layer_viewer/Layers3DView.ts | resetView": {
     "message": "Reset View"
@@ -2800,9 +2794,6 @@
   },
   "layer_viewer/Layers3DView.ts | slowScrollRects": {
     "message": "Slow scroll rects"
-  },
-  "layer_viewer/Layers3DView.ts | touchEventListener": {
-    "message": "touch event listener"
   },
   "layer_viewer/Layers3DView.ts | webglSupportIsDisabledInYour": {
     "message": "WebGL support is disabled in your browser."

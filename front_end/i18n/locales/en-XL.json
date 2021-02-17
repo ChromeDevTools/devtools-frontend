@@ -2783,14 +2783,8 @@
   "layer_viewer/Layers3DView.ts | layerInformationIsNotYet": {
     "message": "L̂áŷér̂ ín̂f́ôŕm̂át̂íôń îś n̂ót̂ ýêt́ âv́âíl̂áb̂ĺê."
   },
-  "layer_viewer/Layers3DView.ts | mousewheelEventListener": {
-    "message": "m̂óûśêẃĥéêĺ êv́êńt̂ ĺîśt̂én̂ér̂"
-  },
   "layer_viewer/Layers3DView.ts | paints": {
     "message": "P̂áîńt̂ś"
-  },
-  "layer_viewer/Layers3DView.ts | repaintsOnScroll": {
-    "message": "r̂ép̂áîńt̂ś ôń ŝćr̂ól̂ĺ"
   },
   "layer_viewer/Layers3DView.ts | resetView": {
     "message": "R̂éŝét̂ V́îéŵ"
@@ -2800,9 +2794,6 @@
   },
   "layer_viewer/Layers3DView.ts | slowScrollRects": {
     "message": "Ŝĺôẃ ŝćr̂ól̂ĺ r̂éĉt́ŝ"
-  },
-  "layer_viewer/Layers3DView.ts | touchEventListener": {
-    "message": "t̂óûćĥ év̂én̂t́ l̂íŝt́êńêŕ"
   },
   "layer_viewer/Layers3DView.ts | webglSupportIsDisabledInYour": {
     "message": "Ŵéb̂ǴL̂ śûṕp̂ór̂t́ îś d̂íŝáb̂ĺêd́ îń ŷóûŕ b̂ŕôẃŝér̂."

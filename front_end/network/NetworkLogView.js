@@ -411,7 +411,7 @@ export class NetworkLogView extends UI.Widget.VBox {
 
     const filterItems =
         Object.values(Common.ResourceType.resourceCategories)
-            .map(category => ({name: category.title, label: category.shortTitle, title: category.title}));
+            .map(category => ({name: category.title, label: () => category.shortTitle, title: category.title}));
     this._resourceCategoryFilterUI =
         new UI.FilterBar.NamedBitSetFilterUI(filterItems, this._networkResourceTypeFiltersSetting);
     UI.ARIAUtils.setAccessibleName(

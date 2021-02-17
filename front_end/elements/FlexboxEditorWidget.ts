@@ -43,6 +43,10 @@ export class FlexboxEditorWidget extends UI.Widget.VBox {
     this.onPropertyDeselected = this.onPropertyDeselected.bind(this);
   }
 
+  getSection(): StylePropertiesSection|undefined {
+    return this.section;
+  }
+
   async onPropertySelected(event: PropertySelectedEvent): Promise<void> {
     if (!this.section) {
       return;

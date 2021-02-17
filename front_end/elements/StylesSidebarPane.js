@@ -45,6 +45,7 @@ import {ComputedStyleModel} from './ComputedStyleModel.js';
 import {findIcon} from './CSSPropertyIconResolver.js';
 import {linkifyDeferredNodeReference} from './DOMLinkifier.js';
 import {ElementsSidebarPane} from './ElementsSidebarPane.js';
+import {FlexboxEditorWidget} from './FlexboxEditorWidget.js';
 import {ImagePreviewPopover} from './ImagePreviewPopover.js';
 import {StylePropertyHighlighter} from './StylePropertyHighlighter.js';
 import {Context, StylePropertyTreeElement} from './StylePropertyTreeElement.js';  // eslint-disable-line no-unused-vars
@@ -766,6 +767,7 @@ export class StylesSidebarPane extends ElementsSidebarPane {
     const focusedIndex = this.focusedSectionIndex();
 
     this._linkifier.reset();
+    const prevSections = this._sectionBlocks.map(block => block.sections).flat();
     this._sectionBlocks = [];
 
     const node = this.node();
@@ -778,6 +780,21 @@ export class StylesSidebarPane extends ElementsSidebarPane {
 
     this._sectionBlocks = await this._rebuildSectionsForMatchedStyleRules(
         /** @type {!SDK.CSSMatchedStyles.CSSMatchedStyles} */ (matchedStyles));
+
+    // Style sections maybe re-created when flexbox editor is activated.
+    // With the following code we re-bind the flexbox editor to the new
+    // section with the same index as the previous section had.
+    const newSections = this._sectionBlocks.map(block => block.sections).flat();
+    const flexEditorWidget = FlexboxEditorWidget.instance();
+    const boundSection = flexEditorWidget.getSection();
+    if (boundSection) {
+      flexEditorWidget.unbindContext();
+      for (const [index, prevSection] of prevSections.entries()) {
+        if (boundSection === prevSection && index < newSections.length) {
+          flexEditorWidget.bindContext(this, newSections[index]);
+        }
+      }
+    }
 
     this._sectionsContainer.removeChildren();
     const fragment = document.createDocumentFragment();

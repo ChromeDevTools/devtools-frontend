@@ -1394,6 +1394,8 @@ export function registerCommands(inspectorBackend) {
   inspectorBackend.registerEnum('Network.CookieSameSite', {Strict: 'Strict', Lax: 'Lax', None: 'None'});
   inspectorBackend.registerEnum('Network.CookiePriority', {Low: 'Low', Medium: 'Medium', High: 'High'});
   inspectorBackend.registerEnum(
+      'Network.CookieSourceScheme', {Unset: 'Unset', NonSecure: 'NonSecure', Secure: 'Secure'});
+  inspectorBackend.registerEnum(
       'Network.ResourcePriority',
       {VeryLow: 'VeryLow', Low: 'Low', Medium: 'Medium', High: 'High', VeryHigh: 'VeryHigh'});
   inspectorBackend.registerEnum('Network.RequestReferrerPolicy', {
@@ -1663,7 +1665,10 @@ export function registerCommands(inspectorBackend) {
         {'name': 'httpOnly', 'type': 'boolean', 'optional': true},
         {'name': 'sameSite', 'type': 'string', 'optional': true},
         {'name': 'expires', 'type': 'number', 'optional': true},
-        {'name': 'priority', 'type': 'string', 'optional': true}
+        {'name': 'priority', 'type': 'string', 'optional': true},
+        {'name': 'sameParty', 'type': 'boolean', 'optional': true},
+        {'name': 'sourceScheme', 'type': 'string', 'optional': true},
+        {'name': 'sourcePort', 'type': 'number', 'optional': true}
       ],
       ['success']);
   inspectorBackend.registerCommand(

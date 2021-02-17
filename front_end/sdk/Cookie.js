@@ -44,6 +44,12 @@ export class Cookie {
     if (protocolCookie.sameParty) {
       cookie.addAttribute('sameParty');
     }
+    if ('sourcePort' in protocolCookie) {
+      cookie.addAttribute('sourcePort', protocolCookie.sourcePort);
+    }
+    if ('sourceScheme' in protocolCookie) {
+      cookie.addAttribute('sourceScheme', protocolCookie.sourceScheme);
+    }
     cookie.setSize(protocolCookie['size']);
     return cookie;
   }
@@ -148,6 +154,20 @@ export class Cookie {
      */
   maxAge() {
     return /** @type {number} */ (this._attributes['max-age']);
+  }
+
+  /**
+   * @return {number}
+   */
+  sourcePort() {
+    return /** @type {number} */ (this._attributes['sourceport']);
+  }
+
+  /**
+   * @return {Protocol.Network.CookieSourceScheme}
+   */
+  sourceScheme() {
+    return /** @type {Protocol.Network.CookieSourceScheme} */ (this._attributes['sourcescheme']);
   }
 
   /**
@@ -295,6 +315,8 @@ export const Attributes = {
   SameSite: 'sameSite',
   SameParty: 'sameParty',
   Priority: 'priority',
+  SourceScheme: 'sourceScheme',
+  SourcePort: 'sourcePort',
 };
 
 /**

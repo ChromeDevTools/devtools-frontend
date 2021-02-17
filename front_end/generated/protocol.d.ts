@@ -6457,6 +6457,17 @@ declare namespace Protocol {
     }
 
     /**
+     * Represents the source scheme of the origin that originally set the cookie.
+     * A value of "Unset" allows protocol clients to emulate legacy cookie scope for the scheme.
+     * This is a temporary ability and it will be removed in the future.
+     */
+    export enum CookieSourceScheme {
+      Unset = 'Unset',
+      NonSecure = 'NonSecure',
+      Secure = 'Secure',
+    }
+
+    /**
      * Timing information for the request.
      */
     export interface ResourceTiming {
@@ -7092,6 +7103,16 @@ declare namespace Protocol {
        * True if cookie is SameParty.
        */
       sameParty: boolean;
+      /**
+       * Cookie source scheme type.
+       */
+      sourceScheme: CookieSourceScheme;
+      /**
+       * Cookie source port. Valid values are {-1, [1, 65535]}, -1 indicates an unspecified port.
+       * An unspecified port value allows protocol clients to emulate legacy cookie scope for the port.
+       * This is a temporary ability and it will be removed in the future.
+       */
+      sourcePort: integer;
     }
 
     /**
@@ -7185,7 +7206,7 @@ declare namespace Protocol {
       value: string;
       /**
        * The request-URI to associate with the setting of the cookie. This value can affect the
-       * default domain and path values of the created cookie.
+       * default domain, path, source port, and source scheme values of the created cookie.
        */
       url?: string;
       /**
@@ -7216,6 +7237,20 @@ declare namespace Protocol {
        * Cookie Priority.
        */
       priority?: CookiePriority;
+      /**
+       * True if cookie is SameParty.
+       */
+      sameParty?: boolean;
+      /**
+       * Cookie source scheme type.
+       */
+      sourceScheme?: CookieSourceScheme;
+      /**
+       * Cookie source port. Valid values are {-1, [1, 65535]}, -1 indicates an unspecified port.
+       * An unspecified port value allows protocol clients to emulate legacy cookie scope for the port.
+       * This is a temporary ability and it will be removed in the future.
+       */
+      sourcePort?: integer;
     }
 
     export enum AuthChallengeSource {
@@ -7777,7 +7812,7 @@ declare namespace Protocol {
       value: string;
       /**
        * The request-URI to associate with the setting of the cookie. This value can affect the
-       * default domain and path values of the created cookie.
+       * default domain, path, source port, and source scheme values of the created cookie.
        */
       url?: string;
       /**
@@ -7808,6 +7843,20 @@ declare namespace Protocol {
        * Cookie Priority type.
        */
       priority?: CookiePriority;
+      /**
+       * True if cookie is SameParty.
+       */
+      sameParty?: boolean;
+      /**
+       * Cookie source scheme type.
+       */
+      sourceScheme?: CookieSourceScheme;
+      /**
+       * Cookie source port. Valid values are {-1, [1, 65535]}, -1 indicates an unspecified port.
+       * An unspecified port value allows protocol clients to emulate legacy cookie scope for the port.
+       * This is a temporary ability and it will be removed in the future.
+       */
+      sourcePort?: integer;
     }
 
     export interface SetCookieResponse extends ProtocolResponseWithError {

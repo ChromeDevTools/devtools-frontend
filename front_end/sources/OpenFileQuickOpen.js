@@ -85,5 +85,5 @@ export class OpenFileQuickOpen extends FilteredUISourceCodeListProvider {
 QuickOpen.FilteredListWidget.registerProvider({
   prefix: '',
   title: i18nLazyString(UIStrings.openFile),
-  provider: async () => OpenFileQuickOpen.instance(),
+  provider: OpenFileQuickOpen.instance,
 });

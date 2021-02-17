@@ -1,12 +1,4 @@
 {
-  "extensions": [
-    {
-      "type": "@QuickOpen.FilteredListWidget.Provider",
-      "title": "Run snippet",
-      "prefix": "!",
-      "className": "Snippets.SnippetsQuickOpen"
-    }
-  ],
   "dependencies": [
     "quick_open",
     "persistence"

@@ -7331,9 +7331,6 @@
   "settings/SettingsScreen.ts | warning": {
     "message": "ŴÁR̂ŃÎŃĜ:"
   },
-  "snippets/ModuleUIStrings.ts | runSnippet": {
-    "message": "R̂ún̂ śn̂íp̂ṕêt́"
-  },
   "snippets/ScriptSnippetFileSystem.ts | linkedTo": {
     "message": "L̂ín̂ḱêd́ t̂ó {PH1}"
   },
@@ -7342,6 +7339,9 @@
   },
   "snippets/SnippetsQuickOpen.ts | noSnippetsFound": {
     "message": "N̂ó ŝńîṕp̂ét̂ś f̂óûńd̂."
+  },
+  "snippets/SnippetsQuickOpen.ts | runSnippet": {
+    "message": "R̂ún̂ śn̂íp̂ṕêt́"
   },
   "source_frame/FontView.js | font": {
     "message": "F̂ón̂t́"

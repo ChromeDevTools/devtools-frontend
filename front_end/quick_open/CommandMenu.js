@@ -9,7 +9,7 @@ import * as Platform from '../platform/platform.js';
 import {ls} from '../platform/platform.js';
 import * as UI from '../ui/ui.js';
 
-import {FilteredListWidget, Provider} from './FilteredListWidget.js';
+import {FilteredListWidget, Provider, registerProvider} from './FilteredListWidget.js';
 import {QuickOpenImpl} from './QuickOpen.js';
 
 /** @type {!CommandMenu} */
@@ -217,11 +217,27 @@ export let RevealViewCommandOptions;
 // @ts-ignore typedef
 export let CreateCommandOptions;
 
+/** @type {!CommandMenuProvider} */
+let commandMenuProviderInstance;
+
+
 export class CommandMenuProvider extends Provider {
+  /** @private */
   constructor() {
     super();
     /** @type {!Array<!Command>} */
     this._commands = [];
+  }
+  /**
+   * @param {{forceNew: ?boolean}} opts
+   */
+  static instance(opts = {forceNew: null}) {
+    const {forceNew} = opts;
+    if (!commandMenuProviderInstance || forceNew) {
+      commandMenuProviderInstance = new CommandMenuProvider();
+    }
+
+    return commandMenuProviderInstance;
   }
 
   /**
@@ -440,3 +456,9 @@ export class ShowActionDelegate {
     return true;
   }
 }
+
+registerProvider({
+  prefix: '>',
+  title: () => ls`Run command`,
+  provider: CommandMenuProvider.instance,
+});

@@ -177,5 +177,5 @@ export class OutlineQuickOpen extends QuickOpen.FilteredListWidget.Provider {
 QuickOpen.FilteredListWidget.registerProvider({
   prefix: '@',
   title: i18nLazyString(UIStrings.goToSymbol),
-  provider: async () => OutlineQuickOpen.instance(),
+  provider: OutlineQuickOpen.instance,
 });

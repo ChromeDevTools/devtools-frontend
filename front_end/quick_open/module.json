@@ -1,17 +1,6 @@
 {
   "extensions": [
     {
-      "type": "@QuickOpen.FilteredListWidget.Provider",
-      "title": "Run command",
-      "prefix": ">",
-      "className": "QuickOpen.CommandMenuProvider"
-    },
-    {
-      "type": "@QuickOpen.FilteredListWidget.Provider",
-      "prefix": "?",
-      "className": "QuickOpen.HelpQuickOpen"
-    },
-    {
       "type": "context-menu-item",
       "location": "mainMenu/default",
       "actionId": "commandMenu.show"

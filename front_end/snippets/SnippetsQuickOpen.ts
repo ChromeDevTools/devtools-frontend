@@ -15,16 +15,33 @@ export const UIStrings = {
   *@description Text in Snippets Quick Open of the Sources panel when opening snippets
   */
   noSnippetsFound: 'No snippets found.',
+  /**
+  *@description Text to run a code snippet
+  */
+  runSnippet: 'Run snippet',
 };
 const str_ = i18n.i18n.registerUIStrings('snippets/SnippetsQuickOpen.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
+
+let snippetsQuickOpenInstance: SnippetsQuickOpen;
 
 export class SnippetsQuickOpen extends QuickOpen.FilteredListWidget.Provider {
   _snippets: Workspace.UISourceCode.UISourceCode[];
-  constructor() {
+  private constructor() {
     super();
     this._snippets = [];
   }
+
+  static instance(opts: {forceNew: boolean|null} = {forceNew: null}): SnippetsQuickOpen {
+    const {forceNew} = opts;
+    if (!snippetsQuickOpenInstance || forceNew) {
+      snippetsQuickOpenInstance = new SnippetsQuickOpen();
+    }
+
+    return snippetsQuickOpenInstance;
+  }
+
   selectItem(itemIndex: number|null, _promptValue: string): void {
     if (itemIndex === null) {
       return;
@@ -58,3 +75,9 @@ export class SnippetsQuickOpen extends QuickOpen.FilteredListWidget.Provider {
     QuickOpen.FilteredListWidget.FilteredListWidget.highlightRanges(titleElement, query, true);
   }
 }
+
+QuickOpen.FilteredListWidget.registerProvider({
+  prefix: '!',
+  title: i18nLazyString(UIStrings.runSnippet),
+  provider: SnippetsQuickOpen.instance,
+});

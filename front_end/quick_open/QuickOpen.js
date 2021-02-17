@@ -3,10 +3,9 @@
 // found in the LICENSE file.
 
 import {ls} from '../platform/platform.js';
-import * as Root from '../root/root.js';
 import * as UI from '../ui/ui.js';  // eslint-disable-line no-unused-vars
 
-import {FilteredListWidget, getRegisteredProviders, Provider} from './FilteredListWidget.js';
+import {FilteredListWidget, getRegisteredProviders, Provider} from './FilteredListWidget.js';  // eslint-disable-line no-unused-vars
 
 /** @type {!Array<string>} */
 export const history = [];
@@ -16,24 +15,14 @@ export class QuickOpenImpl {
     /** @type {?string} */
     this._prefix = null;
     this._query = '';
-    /** @type {!Map<string, function():!Promise<!Provider>>} */
+    /** @type {!Map<string, function():!Provider>} */
     this._providers = new Map();
     /** @type {!Array<string>} */
     this._prefixes = [];
     /** @type {?FilteredListWidget} */
     this._filteredListWidget = null;
-    const unionOfProviders = [
-      ...Root.Runtime.Runtime.instance().extensions(Provider).map(extension => {
-        return {
-          title: extension.title(),
-          prefix: extension.descriptor().prefix,
-          provider: /** @type { function(): !Promise<!Provider>}*/ (extension.instance.bind(extension)),
-        };
-      }),
-      ...getRegisteredProviders()
-    ];
 
-    unionOfProviders.forEach(this._addProvider.bind(this));
+    getRegisteredProviders().forEach(this._addProvider.bind(this));
     this._prefixes.sort((a, b) => b.length - a.length);
   }
 
@@ -51,7 +40,7 @@ export class QuickOpenImpl {
   }
 
   /**
-   * @param {!{prefix: ?string, provider: function(): !Promise<!Provider>}} extension
+   * @param {!{prefix: string, provider: function(): !Provider}} extension
    */
   _addProvider(extension) {
     const prefix = extension.prefix;
@@ -59,9 +48,7 @@ export class QuickOpenImpl {
       return;
     }
     this._prefixes.push(prefix);
-    this._providers.set(
-        prefix, /** @type {function():!Promise<!Provider>} */
-        (extension.provider));
+    this._providers.set(prefix, extension.provider);
   }
 
   /**
@@ -79,17 +66,16 @@ export class QuickOpenImpl {
     }
     this._filteredListWidget.setPrefix(prefix);
     this._filteredListWidget.setProvider(null);
-    const provider = this._providers.get(prefix);
-    if (!provider) {
+    const providerFunction = this._providers.get(prefix);
+    if (!providerFunction) {
       return;
     }
-    provider().then(provider => {
-      if (this._prefix !== prefix || !this._filteredListWidget) {
-        return;
-      }
+    const provider = providerFunction();
+    if (this._prefix !== prefix || !this._filteredListWidget) {
+      return;
+    }
       this._filteredListWidget.setProvider(provider);
       this._providerLoadedForTest(provider);
-    });
   }
 
   /**

@@ -69,7 +69,7 @@ export const UIStrings = {
   whetherAndWhatPriorityOfLive: 'Whether and what priority of live updates may be expected for this element.',
   /**
   * @description Accessibility attribute name that appears under the Computed Properties section in
-  * the Accessibility pane of the Elements panel.
+  * the Accessibility pane of the Elements panel when inspecting an element with aria-relevant set.
   */
   atomicLiveRegions: 'Atomic (live regions)',
   /**
@@ -82,7 +82,7 @@ export const UIStrings = {
       'If this element may receive live updates, whether the entire live region should be presented to the user on changes, or only changed nodes.',
   /**
   * @description Accessibility attribute name that appears under the Computed Properties section in
-  * the Accessibility pane of the Elements panel.
+  * the Accessibility pane of the Elements panel when inspecting an element with aria-relevant set.
   */
   relevantLiveRegions: 'Relevant (live regions)',
   /**

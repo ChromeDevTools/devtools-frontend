@@ -29,11 +29,12 @@ template("devtools_pre_built") {
       _copy_resources_target_dep,
     ]
 
-    data = filter_include(get_target_outputs(_copy_gen_target_dep),
-                          [
-                            "*.js",
-                            "*.map",
-                          ])
+    data =
+        invoker.data + filter_include(get_target_outputs(_copy_gen_target_dep),
+                                      [
+                                        "*.js",
+                                        "*.map",
+                                      ])
   }
 
   if (is_debug) {
@@ -51,4 +52,5 @@ template("devtools_pre_built") {
 
 set_defaults("devtools_pre_built") {
   deps = []
+  data = []
 }

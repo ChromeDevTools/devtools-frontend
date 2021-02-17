@@ -26,6 +26,7 @@ devtools_module("main") {
     "../sdk:bundle",
     "../snippets:bundle",
     "../theme_support:bundle",
+    "../timeline:bundle",
     "../ui:bundle",
     "../workspace:bundle",
   ]

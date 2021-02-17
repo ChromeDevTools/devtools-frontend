@@ -1,11 +1,6 @@
 {
   "extensions": [
     {
-      "type": "@Common.QueryParamHandler",
-      "name": "loadTimelineFromURL",
-      "className": "Timeline.LoadTimelineHandler"
-    },
-    {
       "type": "context-menu-item",
       "location": "timelineMenu/open",
       "actionId": "timeline.load-from-file",

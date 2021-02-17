@@ -405,7 +405,6 @@ all_devtools_files = [
   "front_end/webauthn/webauthnPane.css",
   "front_end/recorder/module.json",
   "front_end/worker_main/module.json",
-  "front_end/worker_service/module.json",
   "front_end/workspace_diff/module.json",
 ]
 

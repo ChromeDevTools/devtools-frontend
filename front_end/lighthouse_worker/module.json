@@ -1,14 +1,4 @@
 {
-  "dependencies": [
-    "worker_service"
-  ],
-  "extensions": [
-    {
-      "type": "@Service",
-      "factoryName": "LighthouseService",
-      "name": "LighthouseService"
-    }
-  ],
   "modules": [
     "LighthouseService.js",
     "../third_party/lighthouse/lighthouse-dt-bundle.js"

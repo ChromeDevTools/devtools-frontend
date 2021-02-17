@@ -2,28 +2,18 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Common from '../common/common.js';
 import * as ProtocolClient from '../protocol_client/protocol_client.js';  // eslint-disable-line no-unused-vars
 import * as SDK from '../sdk/sdk.js';
-import * as Services from '../services/services.js';  // eslint-disable-line no-unused-vars
 
 import * as ReportRenderer from './LighthouseReporterTypes.js';  // eslint-disable-line no-unused-vars
 
-export class ProtocolService extends Common.ObjectWrapper.ObjectWrapper {
-  _rawConnection: ProtocolClient.InspectorBackend.Connection|null;
-  _backend: Services.ServiceManager.Service|null;
-  _backendPromise: Promise<void>|null;
-  _status: ((arg0: string) => void)|null;
+let lastId = 1;
 
-  constructor() {
-    super();
-    this._rawConnection = null;
-    this._backend = null;
-    this._backendPromise = null;
-    this._status = null;
-  }
+export class ProtocolService extends Common.ObjectWrapper.ObjectWrapper {
+  private rawConnection?: ProtocolClient.InspectorBackend.Connection;
+  private lighthouseWorkerPromise?: Promise<Worker>;
+  private lighthouseMessageUpdateCallback?: ((arg0: string) => void);
 
   async attach(): Promise<void> {
     await SDK.SDKModel.TargetManager.instance().suspendAllTargets();
@@ -35,11 +25,11 @@ export class ProtocolService extends Common.ObjectWrapper.ObjectWrapper {
     if (!childTargetManager) {
       throw new Error('Unable to find child target manager required for LightHouse');
     }
-    this._rawConnection = await childTargetManager.createParallelConnection(message => {
+    this.rawConnection = await childTargetManager.createParallelConnection(message => {
       if (typeof message === 'string') {
         message = JSON.parse(message);
       }
-      this._dispatchProtocolMessage(message);
+      this.dispatchProtocolMessage(message);
     });
   }
 
@@ -48,28 +38,34 @@ export class ProtocolService extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   startLighthouse(auditURL: string, categoryIDs: string[], flags: Object): Promise<ReportRenderer.RunnerResult> {
-    const locales = this.getLocales();
-    return this._send('start', {url: auditURL, categoryIDs, flags, locales});
+    return this.sendWithResponse('start', {url: auditURL, categoryIDs, flags, locales: this.getLocales()});
   }
 
   async detach(): Promise<void> {
-    await this._send('stop');
-    if (this._backend) {
-      await this._backend.dispose();
-      this._backend = null;
+    const oldLighthouseWorker = this.lighthouseWorkerPromise;
+    const oldRawConnection = this.rawConnection;
+
+    // When detaching, make sure that we remove the old promises, before we
+    // perform any async cleanups. That way, if there is a message coming from
+    // lighthouse while we are in the process of cleaning up, we shouldn't deliver
+    // them to the backend.
+    this.lighthouseWorkerPromise = undefined;
+    this.rawConnection = undefined;
+
+    if (oldLighthouseWorker) {
+      (await oldLighthouseWorker).terminate();
     }
-    this._backendPromise = null;
-    if (this._rawConnection) {
-      await this._rawConnection.disconnect();
+    if (oldRawConnection) {
+      await oldRawConnection.disconnect();
     }
     await SDK.SDKModel.TargetManager.instance().resumeAllTargets();
   }
 
   registerStatusCallback(callback: (arg0: string) => void): void {
-    this._status = callback;
+    this.lighthouseMessageUpdateCallback = callback;
   }
 
-  _dispatchProtocolMessage(message: Object): void {
+  private dispatchProtocolMessage(message: Object): void {
     // A message without a sessionId is the main session of the main target (call it "Main session").
     // A parallel connection and session was made that connects to the same main target (call it "Lighthouse session").
     // Messages from the "Lighthouse session" have a sessionId.
@@ -84,50 +80,76 @@ export class ProtocolService extends Common.ObjectWrapper.ObjectWrapper {
       method?: string,
     };
     if (protocolMessage.sessionId || (protocolMessage.method && protocolMessage.method.startsWith('Target'))) {
-      this._send('dispatchProtocolMessage', {message: JSON.stringify(message)});
+      this.sendWithoutResponse('dispatchProtocolMessage', {message: JSON.stringify(message)});
     }
   }
 
-  _initWorker(): Promise<void> {
-    const backendPromise =
-        Services.serviceManager.createAppService('lighthouse_worker', 'LighthouseService').then(backend => {
-          if (this._backend) {
-            return;
+  private initWorker(): Promise<Worker> {
+    this.lighthouseWorkerPromise = new Promise<Worker>(resolve => {
+      const worker = new Worker(new URL('../lighthouse_worker.js', import.meta.url), {type: 'module'});
+
+      worker.addEventListener('message', event => {
+        if (event.data === 'workerReady') {
+          resolve(worker);
+          return;
+        }
+
+        const lighthouseMessage = JSON.parse(event.data);
+
+        if (lighthouseMessage.method === 'statusUpdate') {
+          if (this.lighthouseMessageUpdateCallback && lighthouseMessage.params &&
+              'message' in lighthouseMessage.params) {
+            this.lighthouseMessageUpdateCallback(lighthouseMessage.params.message as string);
           }
-          this._backend = backend;
-          if (backend) {
-            backend.on('statusUpdate', (result?: {message?: string}) => {
-              if (this._status && result && 'message' in result) {
-                this._status(result.message as string);
-              }
-            });
-            backend.on('sendProtocolMessage', (result?: {message?: string}) => {
-              if (result && 'message' in result) {
-                this._sendProtocolMessage(result.message as string);
-              }
-            });
+        } else if (lighthouseMessage.method === 'sendProtocolMessage') {
+          if (lighthouseMessage.params && 'message' in lighthouseMessage.params) {
+            this.sendProtocolMessage(lighthouseMessage.params.message as string);
           }
-        });
-    this._backendPromise = backendPromise;
-    return backendPromise;
+        }
+      });
+    });
+    return this.lighthouseWorkerPromise;
   }
 
-  _sendProtocolMessage(message: string): void {
-    if (this._rawConnection) {
-      this._rawConnection.sendRawMessage(message);
+  private async ensureWorkerExists(): Promise<Worker> {
+    let worker: Worker;
+    if (!this.lighthouseWorkerPromise) {
+      worker = await this.initWorker();
+    } else {
+      worker = await this.lighthouseWorkerPromise;
+    }
+    return worker;
+  }
+
+  private sendProtocolMessage(message: string): void {
+    if (this.rawConnection) {
+      this.rawConnection.sendRawMessage(message);
     }
   }
 
-  async _send(method: string, params?: {[x: string]: string|string[]|Object}): Promise<ReportRenderer.RunnerResult> {
-    let backendPromise = this._backendPromise;
-    if (!backendPromise) {
-      backendPromise = this._initWorker();
-    }
+  private async sendWithoutResponse(method: string, params: {[x: string]: string|string[]|Object} = {}): Promise<void> {
+    const worker = await this.ensureWorkerExists();
+    const messageId = lastId++;
+    worker.postMessage(JSON.stringify({id: messageId, method, params: {...params, id: messageId}}));
+  }
 
-    await backendPromise;
-    if (!this._backend) {
-      throw new Error('Backend is missing to send LightHouse message to');
-    }
-    return this._backend.send(method, params) as Promise<ReportRenderer.RunnerResult>;
+  private async sendWithResponse(method: string, params: {[x: string]: string|string[]|Object} = {}):
+      Promise<ReportRenderer.RunnerResult> {
+    const worker = await this.ensureWorkerExists();
+    const messageId = lastId++;
+    const messageResult = new Promise<ReportRenderer.RunnerResult>(resolve => {
+      const workerListener = (event: MessageEvent): void => {
+        const lighthouseMessage = JSON.parse(event.data);
+
+        if (lighthouseMessage.id === messageId) {
+          worker.removeEventListener('message', workerListener);
+          resolve(lighthouseMessage.result);
+        }
+      };
+      worker.addEventListener('message', workerListener);
+    });
+    worker.postMessage(JSON.stringify({id: messageId, method, params: {...params, id: messageId}}));
+
+    return messageResult;
   }
 }

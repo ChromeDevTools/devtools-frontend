@@ -94,7 +94,7 @@ export const UIStrings = {
   */
   binaryMessage: 'Binary Message',
   /**
-  *@description Op codes continuation frame of map in Resource Web Socket Frame View of the Network panel
+  *@description Op codes continuation frame of map in Resource Web Socket Frame View of the Network panel indicating that the web socket connection has been closed.
   */
   connectionCloseMessage: 'Connection Close Message',
   /**
@@ -357,7 +357,7 @@ export const opCodeDescriptions = (function() {
   map[opCodes.ContinuationFrame] = i18nString(UIStrings.continuationFrame);
   map[opCodes.TextFrame] = i18nString(UIStrings.textMessage);
   map[opCodes.BinaryFrame] = i18nString(UIStrings.binaryMessage);
-  map[opCodes.ContinuationFrame] = i18nString(UIStrings.connectionCloseMessage);
+  map[opCodes.ConnectionCloseFrame] = i18nString(UIStrings.connectionCloseMessage);
   map[opCodes.PingFrame] = i18nString(UIStrings.pingMessage);
   map[opCodes.PongFrame] = i18nString(UIStrings.pongMessage);
   return map;

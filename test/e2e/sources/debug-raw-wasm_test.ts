@@ -182,7 +182,8 @@ describe('Sources Tab', async function() {
     assert.deepEqual(await getBreakpointDecorators(frontend), [0x023]);
   });
 
-  it('is able to step with state', async () => {
+  // Skip until the next Chromium DEPS roll.
+  it.skip('[crbug.com/1179251] is able to step with state', async () => {
     const {target, frontend} = getBrowserAndPages();
 
     await step('navigate to a page and open the Sources tab', async () => {

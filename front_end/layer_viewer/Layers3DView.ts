@@ -906,12 +906,6 @@ export const enum ChromeTexture {
   Right = 2,
 }
 
-export const ScrollRectTitles = {
-  RepaintsOnScroll: i18nString(UIStrings.repaintsOnScroll),
-  TouchEventHandler: i18nString(UIStrings.touchEventListener),
-  WheelEventHandler: i18nString(UIStrings.mousewheelEventListener),
-};
-
 export const FragmentShader = '' +
     'precision mediump float;\n' +
     'varying vec4 vColor;\n' +

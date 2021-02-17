@@ -91,11 +91,6 @@ LayerViewer.Layers3DView.Events = LayerViewerModule.Layers3DView.Events;
  */
 LayerViewer.Layers3DView.ChromeTexture = LayerViewerModule.Layers3DView.ChromeTexture;
 
-/**
- * @enum {string}
- */
-LayerViewer.Layers3DView.ScrollRectTitles = LayerViewerModule.Layers3DView.ScrollRectTitles;
-
 LayerViewer.Layers3DView.FragmentShader = LayerViewerModule.Layers3DView.FragmentShader;
 LayerViewer.Layers3DView.VertexShader = LayerViewerModule.Layers3DView.VertexShader;
 

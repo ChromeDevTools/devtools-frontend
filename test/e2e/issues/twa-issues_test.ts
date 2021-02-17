@@ -4,13 +4,13 @@
 
 import {assert} from 'chai';
 
-import {getBrowserAndPages, goToResource} from '../../shared/helper.js';
+import {assertNotNull, getBrowserAndPages, goToResource} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {expandIssue, extractTableFromResourceSection, getIssueByTitle, getResourcesElement, navigateToIssuesTab} from '../helpers/issues-helpers.js';
 
 describe('Trusted Web Activity issue', async () => {
   beforeEach(async () => {
-    await goToResource('issues/sab-issue.html');
+    await goToResource('issues/empty.html');
   });
 
   it('should display correct information for type kHttpError', async () => {
@@ -31,19 +31,15 @@ describe('Trusted Web Activity issue', async () => {
       window.addIssueForTest(issue);
     });
     await expandIssue();
-    const issueElement =
-        await getIssueByTitle('Ensure navigation within Trusted Web Activity doesn’t lead to a missing page');
-    assert.isNotNull(issueElement);
-    if (issueElement) {
-      const section = await getResourcesElement('1 resource', issueElement);
-      const table = await extractTableFromResourceSection(section.content);
-      assert.isNotNull(table);
-      if (table) {
-        assert.strictEqual(table.length, 2);
-        assert.deepEqual(table[0], ['Status code', 'Url']);
-        assert.deepEqual(table[1], ['404', 'test1.example.com']);
-      }
-    }
+    const issueElement = await getIssueByTitle(
+        'Trusted Web Activity navigations must succeed or be handled by the ServiceWorker. Your app may crash in the future.');
+    assertNotNull(issueElement);
+    const section = await getResourcesElement('1 resource', issueElement);
+    const table = await extractTableFromResourceSection(section.content);
+    assertNotNull(table);
+    assert.strictEqual(table.length, 2);
+    assert.deepEqual(table[0], ['Status code', 'Url']);
+    assert.deepEqual(table[1], ['404', 'test1.example.com']);
   });
 
   it('should display correct information for type kUnavailableOffline', async () => {
@@ -63,18 +59,15 @@ describe('Trusted Web Activity issue', async () => {
       window.addIssueForTest(issue);
     });
     await expandIssue();
-    const issueElement = await getIssueByTitle('Ensure Trusted Web Activity provides an offline experience');
-    assert.isNotNull(issueElement);
-    if (issueElement) {
-      const section = await getResourcesElement('1 resource', issueElement);
-      const table = await extractTableFromResourceSection(section.content);
-      assert.isNotNull(table);
-      if (table) {
-        assert.strictEqual(table.length, 2);
-        assert.deepEqual(table[0], ['Url']);
-        assert.deepEqual(table[1], ['test2.example.com']);
-      }
-    }
+    const issueElement = await getIssueByTitle(
+        'Trusted Web Activity does not work offline. In the future, your app may crash if the user’s device goes offline.');
+    assertNotNull(issueElement);
+    const section = await getResourcesElement('1 resource', issueElement);
+    const table = await extractTableFromResourceSection(section.content);
+    assertNotNull(table);
+    assert.strictEqual(table.length, 2);
+    assert.deepEqual(table[0], ['Url']);
+    assert.deepEqual(table[1], ['test2.example.com']);
   });
 
   it('should display correct information for type kDigitalAssetLinks', async () => {
@@ -96,18 +89,14 @@ describe('Trusted Web Activity issue', async () => {
       window.addIssueForTest(issue);
     });
     await expandIssue();
-    const issueElement =
-        await getIssueByTitle('Ensure Digital asset links of the Trusted Web Activity pass verification');
-    assert.isNotNull(issueElement);
-    if (issueElement) {
-      const section = await getResourcesElement('1 resource', issueElement);
-      const table = await extractTableFromResourceSection(section.content);
-      assert.isNotNull(table);
-      if (table) {
-        assert.strictEqual(table.length, 2);
-        assert.deepEqual(table[0], ['Package name', 'Url', 'Package signature']);
-        assert.deepEqual(table[1], ['test.package', 'test3.example.com', '1A:2B:3C']);
-      }
-    }
+    const issueElement = await getIssueByTitle(
+        'Digital asset links of the Trusted Web Activity failed verification. Your app may crash in the future.');
+    assertNotNull(issueElement);
+    const section = await getResourcesElement('1 resource', issueElement);
+    const table = await extractTableFromResourceSection(section.content);
+    assertNotNull(table);
+    assert.strictEqual(table.length, 2);
+    assert.deepEqual(table[0], ['Package name', 'Url', 'Package signature']);
+    assert.deepEqual(table[1], ['test.package', 'test3.example.com', '1A:2B:3C']);
   });
 });

@@ -5,5 +5,8 @@
 import("../../../../scripts/build/ninja/copy.gni")
 
 copy_to_gen("issues") {
-  sources = [ "sab-issue.html" ]
+  sources = [
+    "empty.html",
+    "sab-issue.html",
+  ]
 }

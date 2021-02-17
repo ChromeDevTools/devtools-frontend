@@ -1211,6 +1211,12 @@
   "cookie_table/CookiesTable.ts | size": {
     "message": "Size"
   },
+  "cookie_table/CookiesTable.ts | sourcePortTooltip": {
+    "message": "Shows the source port (range 1-65535) the cookie was set on. If the port is unknown, this shows -1."
+  },
+  "cookie_table/CookiesTable.ts | sourceSchemeTooltip": {
+    "message": "Shows the source scheme (Secure, NonSecure) the cookie was set on. If the scheme is unknown, this shows Unset."
+  },
   "cookie_table/CookiesTable.ts | value": {
     "message": "Value"
   },

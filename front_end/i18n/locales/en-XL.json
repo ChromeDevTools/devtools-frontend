@@ -1211,6 +1211,12 @@
   "cookie_table/CookiesTable.ts | size": {
     "message": "Ŝíẑé"
   },
+  "cookie_table/CookiesTable.ts | sourcePortTooltip": {
+    "message": "Ŝh́ôẃŝ t́ĥé ŝóûŕĉé p̂ór̂t́ (r̂án̂ǵê 1-65535) t́ĥé ĉóôḱîé ŵáŝ śêt́ ôń. Îf́ t̂h́ê ṕôŕt̂ íŝ ún̂ḱn̂óŵń, t̂h́îś ŝh́ôẃŝ -1."
+  },
+  "cookie_table/CookiesTable.ts | sourceSchemeTooltip": {
+    "message": "Ŝh́ôẃŝ t́ĥé ŝóûŕĉé ŝćĥém̂é (Secure, NonSecure) t̂h́ê ćôók̂íê ẃâś ŝét̂ ón̂. Íf̂ t́ĥé ŝćĥém̂é îś ûńk̂ńôẃn̂, t́ĥíŝ śĥóŵś Unset."
+  },
   "cookie_table/CookiesTable.ts | value": {
     "message": "V̂ál̂úê"
   },

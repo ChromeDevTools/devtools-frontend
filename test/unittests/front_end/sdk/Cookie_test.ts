@@ -70,7 +70,7 @@ describeWithEnvironment('Cookie', () => {
     assert.strictEqual(cookie.expires(), expires);
     assert.strictEqual(cookie.maxAge(), undefined);
     assert.strictEqual(cookie.size(), 23);
-    assert.strictEqual(cookie.url(), 'https://.example.com/test');
+    assert.strictEqual(cookie.url(), 'https://.example.com:443/test');
     assert.strictEqual(cookie.getCookieLine(), null);
     assert.strictEqual(cookie.sourcePort(), 443);
     assert.strictEqual(cookie.sourceScheme(), Protocol.Network.CookieSourceScheme.Secure);
@@ -110,7 +110,7 @@ describeWithEnvironment('Cookie', () => {
     assert.strictEqual(cookie.domain(), '.example.com');
     assert.strictEqual(cookie.maxAge(), undefined);
     assert.strictEqual(cookie.size(), 23);
-    assert.strictEqual(cookie.url(), 'http://.example.com/test');
+    assert.strictEqual(cookie.url(), 'http://.example.com:80/test');
     assert.strictEqual(cookie.getCookieLine(), null);
     assert.strictEqual(cookie.sourcePort(), 80);
     assert.strictEqual(cookie.sourceScheme(), Protocol.Network.CookieSourceScheme.NonSecure);

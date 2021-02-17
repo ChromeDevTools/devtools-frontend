@@ -226,6 +226,10 @@
   color: inherit;
 }
 
+.data-grid table.data tr.revealed.selected.dirty {
+  color: var(--selection-fg-color);
+}
+
 .data-grid.no-selection:focus-visible {
   border: 1px solid var(--accent-color) !important;
 }
@@ -233,6 +237,17 @@
 .data-grid:focus table.data tr.selected {
   background-color: var(--selection-bg-color);
   color: var(--selection-fg-color);
+}
+
+.data-grid:focus tr.selected.dirty {
+  /* See: crbug.com/1152736 for color variable migration. */
+  /* stylelint-disable-next-line plugin/use_theme_colors */
+  background-color: hsl(0deg 100% 70%);
+}
+
+.data-grid table.data tr.selected.dirty {
+  /* stylelint-disable-next-line plugin/use_theme_colors */
+  background-color: hsl(0deg 100% 30%);
 }
 
 .data-grid:focus tr.selected .devtools-link {
@@ -261,11 +276,6 @@
   color: #f00; /* stylelint-disable-line plugin/use_theme_colors */
   /* See: crbug.com/1152736 for color variable migration. */
   font-style: normal;
-}
-
-.data-grid:focus tr.selected.dirty {
-  background-color: hsl(0deg 100% 70%); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .data-grid td.show-more {

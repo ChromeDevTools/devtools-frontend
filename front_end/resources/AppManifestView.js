@@ -67,7 +67,10 @@ export const UIStrings = {
   */
   orientation: 'Orientation',
   /**
-  *@description Text in App Manifest View of the Application panel
+  *@description Title of the display attribute in App Manifest View of the Application panel
+  * The display attribute defines the preferred display mode for the app such fullscreen or
+  * standalone.
+  * For more details see https://www.w3.org/TR/appmanifest/#display-member.
   */
   display: 'Display',
   /**

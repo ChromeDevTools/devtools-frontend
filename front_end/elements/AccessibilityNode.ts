@@ -79,11 +79,13 @@ export class AccessibilityNode extends HTMLElement {
     this.selected = true;
     this.render();
     this.focus();
+    this.axNode?.highlightNode();
   }
 
   deselect(): void {
     this.selected = false;
     this.render();
+    this.axNode?.clearHighlight();
   }
 
   get isExpanded(): boolean {

@@ -176,7 +176,7 @@ describeWithEnvironment('AccessibilityTree', () => {
     });
   });
 
-  describe('mouse behaviour of accessibility nodes', () => {
+  describe('webpage overlay highlight', () => {
     it('node is highlighted on mouse hover', async () => {
       let highlightCalls = 0;
       let clearHightlightCalls = 0;
@@ -204,6 +204,36 @@ describeWithEnvironment('AccessibilityTree', () => {
         dispatchMouseOverEvent(component);
         dispatchMouseLeaveEvent(component);
       });
+      assert.strictEqual(highlightCalls, 1);
+      assert.strictEqual(clearHightlightCalls, 1);
+    });
+
+    it('node is highlighted when selected', async () => {
+      let highlightCalls = 0;
+      let clearHightlightCalls = 0;
+      const node = makeAXNode({
+        role: 'paragraph',
+        name: 'text',
+        axTree: new Elements.AccessibilityTree.AccessibilityTree(),
+        highlightNode: () => {
+          highlightCalls++;
+        },
+        clearHighlight: () => {
+          clearHightlightCalls++;
+        },
+      });
+      const component = new Elements.AccessibilityNode.AccessibilityNode();
+      renderElementIntoDOM(component);
+      component.data = {
+        axNode: node,
+      };
+
+      assert.strictEqual(highlightCalls, 0);
+      assert.strictEqual(clearHightlightCalls, 0);
+
+      component.select();
+      component.deselect();
+
       assert.strictEqual(highlightCalls, 1);
       assert.strictEqual(clearHightlightCalls, 1);
     });

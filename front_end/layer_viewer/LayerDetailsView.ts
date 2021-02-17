@@ -348,6 +348,7 @@ export const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('layer_viewer/LayerDetailsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 export class LayerDetailsView extends UI.Widget.Widget implements LayerView {
   _layerViewHost: LayerViewHost;
   _emptyWidget: UI.EmptyWidget.EmptyWidget;
@@ -424,7 +425,7 @@ export class LayerDetailsView extends UI.Widget.Widget implements LayerView {
       element.classList.add('active');
     }
     element.textContent = i18nString(UIStrings.scrollRectangleDimensions, {
-      PH1: slowScrollRectNames.get(scrollRect.type),
+      PH1: slowScrollRectNames.get(scrollRect.type)?.(),
       PH2: scrollRect.rect.width,
       PH3: scrollRect.rect.height,
       PH4: scrollRect.rect.x,
@@ -563,7 +564,7 @@ export class LayerDetailsView extends UI.Widget.Widget implements LayerView {
     for (const compositingReasonId of compositingReasonIds) {
       const compositingReason = compositingReasonIdToReason.get(compositingReasonId);
       if (compositingReason) {
-        compositingReasons.push(compositingReason);
+        compositingReasons.push(compositingReason());
       } else {
         console.error(`Compositing reason id '${compositingReasonId}' is not recognized.`);
       }
@@ -574,54 +575,54 @@ export class LayerDetailsView extends UI.Widget.Widget implements LayerView {
 
 // The compositing reason IDs are defined in third_party/blink/renderer/platform/graphics/compositing_reasons.cc
 const compositingReasonIdToReason = new Map([
-  ['transform3D', i18nString(UIStrings.hasADTransform)],
-  ['video', i18nString(UIStrings.isAnAcceleratedVideo)],
-  ['canvas', i18nString(UIStrings.isAnAcceleratedCanvasOrIsA)],
-  ['plugin', i18nString(UIStrings.isAnAcceleratedPlugin)],
-  ['iFrame', i18nString(UIStrings.isAnAcceleratedIframe)],
-  ['backfaceVisibilityHidden', i18nString(UIStrings.hasBackfacevisibilityHidden)],
-  ['activeTransformAnimation', i18nString(UIStrings.hasAnActiveAcceleratedTransform)],
-  ['activeOpacityAnimation', i18nString(UIStrings.hasAnActiveAcceleratedOpacity)],
-  ['activeFilterAnimation', i18nString(UIStrings.hasAnActiveAcceleratedFilter)],
-  ['activeBackdropFilterAnimation', i18nString(UIStrings.hasAnActiveAcceleratedBackdrop)],
-  ['immersiveArOverlay', i18nString(UIStrings.isDomOverlayForWebxrImmersivear)],
-  ['scrollDependentPosition', i18nString(UIStrings.isFixedOrStickyPosition)],
-  ['overflowScrolling', i18nString(UIStrings.isAScrollableOverflowElement)],
-  ['overflowScrollingParent', i18nString(UIStrings.scrollParentIsNotAnAncestor)],
-  ['outOfFlowClipping', i18nString(UIStrings.hasClippingAncestor)],
-  ['videoOverlay', i18nString(UIStrings.isOverlayControlsForVideo)],
-  ['willChangeTransform', i18nString(UIStrings.hasAWillchangeTransform)],
-  ['willChangeOpacity', i18nString(UIStrings.hasAWillchangeOpacityCompositing)],
-  ['willChangeOther', i18nString(UIStrings.hasAWillchangeCompositingHint)],
-  ['backdropFilter', i18nString(UIStrings.hasABackdropFilter)],
-  ['rootScroller', i18nString(UIStrings.isTheDocumentrootscroller)],
-  ['assumedOverlap', i18nString(UIStrings.mightOverlapOtherComposited)],
-  ['overlap', i18nString(UIStrings.overlapsOtherCompositedContent)],
-  ['negativeZIndexChildren', i18nString(UIStrings.parentWithCompositedNegative)],
-  ['squashingDisallowed', i18nString(UIStrings.layerWasSeparatelyComposited)],
-  ['opacityWithCompositedDescendants', i18nString(UIStrings.hasOpacityThatNeedsToBeAppliedBy)],
-  ['maskWithCompositedDescendants', i18nString(UIStrings.hasAMaskThatNeedsToBeKnownBy)],
-  ['reflectionWithCompositedDescendants', i18nString(UIStrings.hasAReflectionThatNeedsToBeKnown)],
-  ['filterWithCompositedDescendants', i18nString(UIStrings.hasAFilterEffectThatNeedsToBe)],
-  ['blendingWithCompositedDescendants', i18nString(UIStrings.hasABlendingEffectThatNeedsToBe)],
-  ['clipsCompositingDescendants', i18nString(UIStrings.hasAClipThatNeedsToBeKnownBy)],
-  ['perspectiveWith3DDescendants', i18nString(UIStrings.hasAPerspectiveTransformThat)],
-  ['preserve3DWith3DDescendants', i18nString(UIStrings.hasAPreservesdPropertyThatNeeds)],
-  ['isolateCompositedDescendants', i18nString(UIStrings.shouldIsolateDescendantsToApplyA)],
-  ['positionFixedWithCompositedDescendants', i18nString(UIStrings.isAPositionfixedElementWith)],
-  ['root', i18nString(UIStrings.isTheRootLayer)],
-  ['layerForHorizontalScrollbar', i18nString(UIStrings.secondaryLayerTheHorizontal)],
-  ['layerForVerticalScrollbar', i18nString(UIStrings.secondaryLayerTheVertical)],
-  ['layerForOverflowControlsHost', i18nString(UIStrings.secondaryLayerTheOverflow)],
-  ['layerForScrollCorner', i18nString(UIStrings.secondaryLayerTheScrollCorner)],
-  ['layerForScrollingContents', i18nString(UIStrings.secondaryLayerToHouseContents)],
-  ['layerForScrollingContainer', i18nString(UIStrings.secondaryLayerUsedToPositionThe)],
-  ['layerForSquashingContents', i18nString(UIStrings.secondaryLayerHomeForAGroupOf)],
-  ['layerForSquashingContainer', i18nString(UIStrings.secondaryLayerNoopLayerToPlace)],
-  ['layerForForeground', i18nString(UIStrings.secondaryLayerToContainAnyNormal)],
-  ['layerForMask', i18nString(UIStrings.secondaryLayerToContainTheMask)],
-  ['layerForDecoration', i18nString(UIStrings.layerPaintedOnTopOfOtherLayersAs)],
-  ['layerForOther', i18nString(UIStrings.layerForLinkHighlightFrame)],
+  ['transform3D', i18nLazyString(UIStrings.hasADTransform)],
+  ['video', i18nLazyString(UIStrings.isAnAcceleratedVideo)],
+  ['canvas', i18nLazyString(UIStrings.isAnAcceleratedCanvasOrIsA)],
+  ['plugin', i18nLazyString(UIStrings.isAnAcceleratedPlugin)],
+  ['iFrame', i18nLazyString(UIStrings.isAnAcceleratedIframe)],
+  ['backfaceVisibilityHidden', i18nLazyString(UIStrings.hasBackfacevisibilityHidden)],
+  ['activeTransformAnimation', i18nLazyString(UIStrings.hasAnActiveAcceleratedTransform)],
+  ['activeOpacityAnimation', i18nLazyString(UIStrings.hasAnActiveAcceleratedOpacity)],
+  ['activeFilterAnimation', i18nLazyString(UIStrings.hasAnActiveAcceleratedFilter)],
+  ['activeBackdropFilterAnimation', i18nLazyString(UIStrings.hasAnActiveAcceleratedBackdrop)],
+  ['immersiveArOverlay', i18nLazyString(UIStrings.isDomOverlayForWebxrImmersivear)],
+  ['scrollDependentPosition', i18nLazyString(UIStrings.isFixedOrStickyPosition)],
+  ['overflowScrolling', i18nLazyString(UIStrings.isAScrollableOverflowElement)],
+  ['overflowScrollingParent', i18nLazyString(UIStrings.scrollParentIsNotAnAncestor)],
+  ['outOfFlowClipping', i18nLazyString(UIStrings.hasClippingAncestor)],
+  ['videoOverlay', i18nLazyString(UIStrings.isOverlayControlsForVideo)],
+  ['willChangeTransform', i18nLazyString(UIStrings.hasAWillchangeTransform)],
+  ['willChangeOpacity', i18nLazyString(UIStrings.hasAWillchangeOpacityCompositing)],
+  ['willChangeOther', i18nLazyString(UIStrings.hasAWillchangeCompositingHint)],
+  ['backdropFilter', i18nLazyString(UIStrings.hasABackdropFilter)],
+  ['rootScroller', i18nLazyString(UIStrings.isTheDocumentrootscroller)],
+  ['assumedOverlap', i18nLazyString(UIStrings.mightOverlapOtherComposited)],
+  ['overlap', i18nLazyString(UIStrings.overlapsOtherCompositedContent)],
+  ['negativeZIndexChildren', i18nLazyString(UIStrings.parentWithCompositedNegative)],
+  ['squashingDisallowed', i18nLazyString(UIStrings.layerWasSeparatelyComposited)],
+  ['opacityWithCompositedDescendants', i18nLazyString(UIStrings.hasOpacityThatNeedsToBeAppliedBy)],
+  ['maskWithCompositedDescendants', i18nLazyString(UIStrings.hasAMaskThatNeedsToBeKnownBy)],
+  ['reflectionWithCompositedDescendants', i18nLazyString(UIStrings.hasAReflectionThatNeedsToBeKnown)],
+  ['filterWithCompositedDescendants', i18nLazyString(UIStrings.hasAFilterEffectThatNeedsToBe)],
+  ['blendingWithCompositedDescendants', i18nLazyString(UIStrings.hasABlendingEffectThatNeedsToBe)],
+  ['clipsCompositingDescendants', i18nLazyString(UIStrings.hasAClipThatNeedsToBeKnownBy)],
+  ['perspectiveWith3DDescendants', i18nLazyString(UIStrings.hasAPerspectiveTransformThat)],
+  ['preserve3DWith3DDescendants', i18nLazyString(UIStrings.hasAPreservesdPropertyThatNeeds)],
+  ['isolateCompositedDescendants', i18nLazyString(UIStrings.shouldIsolateDescendantsToApplyA)],
+  ['positionFixedWithCompositedDescendants', i18nLazyString(UIStrings.isAPositionfixedElementWith)],
+  ['root', i18nLazyString(UIStrings.isTheRootLayer)],
+  ['layerForHorizontalScrollbar', i18nLazyString(UIStrings.secondaryLayerTheHorizontal)],
+  ['layerForVerticalScrollbar', i18nLazyString(UIStrings.secondaryLayerTheVertical)],
+  ['layerForOverflowControlsHost', i18nLazyString(UIStrings.secondaryLayerTheOverflow)],
+  ['layerForScrollCorner', i18nLazyString(UIStrings.secondaryLayerTheScrollCorner)],
+  ['layerForScrollingContents', i18nLazyString(UIStrings.secondaryLayerToHouseContents)],
+  ['layerForScrollingContainer', i18nLazyString(UIStrings.secondaryLayerUsedToPositionThe)],
+  ['layerForSquashingContents', i18nLazyString(UIStrings.secondaryLayerHomeForAGroupOf)],
+  ['layerForSquashingContainer', i18nLazyString(UIStrings.secondaryLayerNoopLayerToPlace)],
+  ['layerForForeground', i18nLazyString(UIStrings.secondaryLayerToContainAnyNormal)],
+  ['layerForMask', i18nLazyString(UIStrings.secondaryLayerToContainTheMask)],
+  ['layerForDecoration', i18nLazyString(UIStrings.layerPaintedOnTopOfOtherLayersAs)],
+  ['layerForOther', i18nLazyString(UIStrings.layerForLinkHighlightFrame)],
 ]);
 
 // TODO(crbug.com/1167717): Make this a const enum again
@@ -631,9 +632,12 @@ export enum Events {
 }
 
 export const slowScrollRectNames = new Map([
-  [SDK.LayerTreeBase.Layer.ScrollRectType.NonFastScrollable, i18nString(UIStrings.nonFastScrollable)],
-  [SDK.LayerTreeBase.Layer.ScrollRectType.TouchEventHandler, i18nString(UIStrings.touchEventHandler)],
-  [SDK.LayerTreeBase.Layer.ScrollRectType.WheelEventHandler, i18nString(UIStrings.wheelEventHandler)],
-  [SDK.LayerTreeBase.Layer.ScrollRectType.RepaintsOnScroll, i18nString(UIStrings.repaintsOnScroll)],
-  [SDK.LayerTreeBase.Layer.ScrollRectType.MainThreadScrollingReason, i18nString(UIStrings.mainThreadScrollingReason)],
+  [SDK.LayerTreeBase.Layer.ScrollRectType.NonFastScrollable, i18nLazyString(UIStrings.nonFastScrollable)],
+  [SDK.LayerTreeBase.Layer.ScrollRectType.TouchEventHandler, i18nLazyString(UIStrings.touchEventHandler)],
+  [SDK.LayerTreeBase.Layer.ScrollRectType.WheelEventHandler, i18nLazyString(UIStrings.wheelEventHandler)],
+  [SDK.LayerTreeBase.Layer.ScrollRectType.RepaintsOnScroll, i18nLazyString(UIStrings.repaintsOnScroll)],
+  [
+    SDK.LayerTreeBase.Layer.ScrollRectType.MainThreadScrollingReason,
+    i18nLazyString(UIStrings.mainThreadScrollingReason),
+  ],
 ]);

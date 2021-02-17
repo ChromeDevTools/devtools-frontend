@@ -10,6 +10,7 @@ ts_library("ts") {
   sources = [
     "basic.ts",
     "lazy-children.ts",
+    "sample-data.ts",
   ]
 
   deps = [

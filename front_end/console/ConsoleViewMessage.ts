@@ -105,7 +105,7 @@ export const UIStrings = {
   */
   error: 'Error',
   /**
-  *@description Text in Console View Message of the Console panel
+  *@description Tooltip text for how often this particular console message was reported
   *@example {3} PH1
   */
   repeatS: 'Repeat {PH1}',
@@ -120,23 +120,23 @@ export const UIStrings = {
   */
   errorS: 'Error {PH1}',
   /**
-  *@description Text in Console View Message of the Console panel
+  *@description Text appended to grouped console messages that are related to URL requests
   */
   url: '<URL>',
   /**
-  *@description Text in Console View Message of the Console panel
+  *@description Text appended to grouped console messages about tasks that took longer than N ms
   */
   tookNms: 'took <N>ms',
   /**
-  *@description Text in Console View Message of the Console panel
+  *@description Text appended to grouped console messages about tasks that are related to some DOM event
   */
   someEvent: '<some> event',
   /**
-  *@description Text in Console View Message of the Console panel
+  *@description Text appended to grouped console messages about tasks that are related to a particular milestone
   */
   Mxx: ' M<XX>',
   /**
-  *@description Text in Console View Message of the Console panel
+  *@description Text appended to grouped console messages about tasks that are related to autofill completions
   */
   attribute: '<attribute>',
   /**

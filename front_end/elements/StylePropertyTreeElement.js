@@ -6,9 +6,9 @@ import * as Bindings from '../bindings/bindings.js';
 import * as ColorPicker from '../color_picker/color_picker.js';
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
+import * as i18n from '../i18n/i18n.js';
 import * as InlineEditor from '../inline_editor/inline_editor.js';
 import * as Platform from '../platform/platform.js';
-import {ls} from '../platform/platform.js';
 import * as Root from '../root/root.js';
 import * as SDK from '../sdk/sdk.js';
 import * as TextUtils from '../text_utils/text_utils.js';
@@ -18,6 +18,57 @@ import {BezierPopoverIcon, ColorSwatchPopoverIcon, ShadowSwatchPopoverHelper} fr
 import {FlexboxEditorWidget} from './FlexboxEditorWidget.js';
 import {CSSPropertyPrompt, StylePropertiesSection, StylesSidebarPane, StylesSidebarPropertyRenderer,} from './StylesSidebarPane.js';  // eslint-disable-line no-unused-vars
 
+export const UIStrings = {
+  /**
+  *@description Text in Color Swatch Popover Icon of the Elements panel
+  */
+  shiftClickToChangeColorFormat: 'Shift + Click to change color format.',
+  /**
+  *@description Swatch icon element title in Color Swatch Popover Icon of the Elements panel
+  *@example {Shift + Click to change color format.} PH1
+  */
+  openColorPickerS: 'Open color picker. {PH1}',
+  /**
+  *@description The warning text shown in Elements panel when font-variation-settings don't match allowed values
+  *@example {wdth} PH1
+  *@example {100} PH2
+  *@example {10} PH3
+  *@example {20} PH4
+  *@example {Arial} PH5
+  */
+  valueForSettingSSIsOutsideThe:
+      'Value for setting “{PH1}” {PH2} is outside the supported range [{PH3}, {PH4}] for font-family “{PH5}”.',
+  /**
+  *@description Context menu item for style property in edit mode
+  */
+  togglePropertyAndContinueEditing: 'Toggle property and continue editing',
+  /**
+  *@description Context menu item for style property in edit mode
+  */
+  revealInSourcesPanel: 'Reveal in Sources panel',
+  /**
+  *@description A context menu item in Styles panel to copy CSS declaration
+  */
+  copyDeclaration: 'Copy declaration',
+  /**
+  *@description A context menu item in Styles panel to copy CSS property
+  */
+  copyProperty: 'Copy property',
+  /**
+  *@description A context menu item in the Watch Expressions Sidebar Pane of the Sources panel and Network pane request.
+  */
+  copyValue: 'Copy value',
+  /**
+  *@description A context menu item in Styles panel to copy CSS rule
+  */
+  copyRule: 'Copy rule',
+  /**
+  *@description A context menu item in Styles panel to copy all CSS declarations
+  */
+  copyAllDeclarations: 'Copy all declarations',
+};
+const str_ = i18n.i18n.registerUIStrings('elements/StylePropertyTreeElement.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /** @type {!WeakMap<!StylesSidebarPane, !StylePropertyTreeElement>} */
 const parentMap = new WeakMap();
 
@@ -151,9 +202,9 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
    */
   _processColor(text, valueChild) {
     const useUserSettingFormat = this._editable();
-    const shiftClickMessage = Common.UIString.UIString('Shift + Click to change color format.');
+    const shiftClickMessage = i18nString(UIStrings.shiftClickToChangeColorFormat);
     const tooltip =
-        this._editable() ? Common.UIString.UIString('Open color picker. %s', shiftClickMessage) : shiftClickMessage;
+        this._editable() ? i18nString(UIStrings.openColorPickerS, {PH1: shiftClickMessage}) : shiftClickMessage;
 
     const swatch = new InlineEditor.ColorSwatch.ColorSwatch();
     swatch.renderColor(text, useUserSettingFormat, tooltip);
@@ -710,9 +761,13 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
           continue;
         }
         if (elementSetting.value < fontSetting.minValue || elementSetting.value > fontSetting.maxValue) {
-          warnings.push(
-              ls`Value for setting “${elementSetting.tag}” ${elementSetting.value} is outside the supported range [${
-                  fontSetting.minValue}, ${fontSetting.maxValue}] for font-family “${font.getFontFamily()}”.`);
+          warnings.push(i18nString(UIStrings.valueForSettingSSIsOutsideThe, {
+            PH1: elementSetting.tag,
+            PH2: elementSetting.value,
+            PH3: fontSetting.minValue,
+            PH4: fontSetting.maxValue,
+            PH5: font.getFontFamily()
+          }));
         }
       }
     }
@@ -764,20 +819,21 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
   _handleContextMenuEvent(context, event) {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
     if (this.property.parsedOk && this.section() && this.parent && this.parent.root) {
-      contextMenu.defaultSection().appendCheckboxItem(ls`Toggle property and continue editing`, async () => {
-        const sectionIndex = this._parentPane.focusedSectionIndex();
-        if (this.treeOutline) {
-          const propertyIndex = this.treeOutline.rootElement().indexOfChild(this);
-          // order matters here: this.editingCancelled may invalidate this.treeOutline.
-          this.editingCancelled(null, context);
-          await this._toggleDisabled(!this.property.disabled);
-          event.consume();
-          this._parentPane.continueEditingElement(sectionIndex, propertyIndex);
-        }
-      }, !this.property.disabled);
+      contextMenu.defaultSection().appendCheckboxItem(
+          i18nString(UIStrings.togglePropertyAndContinueEditing), async () => {
+            const sectionIndex = this._parentPane.focusedSectionIndex();
+            if (this.treeOutline) {
+              const propertyIndex = this.treeOutline.rootElement().indexOfChild(this);
+              // order matters here: this.editingCancelled may invalidate this.treeOutline.
+              this.editingCancelled(null, context);
+              await this._toggleDisabled(!this.property.disabled);
+              event.consume();
+              this._parentPane.continueEditingElement(sectionIndex, propertyIndex);
+            }
+          }, !this.property.disabled);
     }
     const revealCallback = /** @type {function():*} */ (this._navigateToSource.bind(this));
-    contextMenu.defaultSection().appendItem(ls`Reveal in Sources panel`, revealCallback);
+    contextMenu.defaultSection().appendItem(i18nString(UIStrings.revealInSourcesPanel), revealCallback);
     contextMenu.show();
   }
 
@@ -792,26 +848,26 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     }
 
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
-    contextMenu.clipboardSection().appendItem(ls`Copy declaration`, () => {
+    contextMenu.clipboardSection().appendItem(i18nString(UIStrings.copyDeclaration), () => {
       const propertyText = `${this.property.name}: ${this.property.value};`;
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(propertyText);
     });
 
-    contextMenu.clipboardSection().appendItem(ls`Copy property`, () => {
+    contextMenu.clipboardSection().appendItem(i18nString(UIStrings.copyProperty), () => {
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(this.property.name);
     });
 
-    contextMenu.clipboardSection().appendItem(ls`Copy value`, () => {
+    contextMenu.clipboardSection().appendItem(i18nString(UIStrings.copyValue), () => {
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(this.property.value);
     });
 
-    contextMenu.defaultSection().appendItem(ls`Copy rule`, () => {
+    contextMenu.defaultSection().appendItem(i18nString(UIStrings.copyRule), () => {
       const section = /** @type {!StylePropertiesSection} */ (this.section());
       const ruleText = StylesSidebarPane.formatLeadingProperties(section).ruleText;
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(ruleText);
     });
 
-    contextMenu.defaultSection().appendItem(ls`Copy all declarations`, () => {
+    contextMenu.defaultSection().appendItem(i18nString(UIStrings.copyAllDeclarations), () => {
       const section = /** @type {!StylePropertiesSection} */ (this.section());
       const allDeclarationText = StylesSidebarPane.formatLeadingProperties(section).allDeclarationText;
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(allDeclarationText);

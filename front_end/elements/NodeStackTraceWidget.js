@@ -3,10 +3,18 @@
 // found in the LICENSE file.
 
 import * as Components from '../components/components.js';
-import {ls} from '../platform/platform.js';
+import * as i18n from '../i18n/i18n.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
+export const UIStrings = {
+  /**
+  *@description Message displayed when no JavaScript stack trace is available for the DOM node in the Stack Trace widget of the Elements panel
+  */
+  noStackTraceAvailable: 'No stack trace available',
+};
+const str_ = i18n.i18n.registerUIStrings('elements/NodeStackTraceWidget.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /** @type {!NodeStackTraceWidget} */
 let nodeStackTraceWidgetInstance;
 
@@ -16,7 +24,7 @@ export class NodeStackTraceWidget extends UI.ThrottledWidget.ThrottledWidget {
     this.registerRequiredCSS('elements/nodeStackTraceWidget.css', {enableLegacyPatching: false});
 
     this._noStackTraceElement = this.contentElement.createChild('div', 'gray-info-message');
-    this._noStackTraceElement.textContent = ls`No stack trace available`;
+    this._noStackTraceElement.textContent = i18nString(UIStrings.noStackTraceAvailable);
     this._creationStackTraceElement = this.contentElement.createChild('div', 'stack-trace');
 
     this._linkifier = new Components.Linkifier.Linkifier(MaxLengthForLinks);

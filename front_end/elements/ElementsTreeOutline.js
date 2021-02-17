@@ -29,7 +29,7 @@
  */
 
 import * as Common from '../common/common.js';
-import {ls} from '../platform/platform.js';
+import * as i18n from '../i18n/i18n.js';
 import * as ProtocolClient from '../protocol_client/protocol_client.js';  // eslint-disable-line no-unused-vars
 import * as Root from '../root/root.js';                                  // eslint-disable-line no-unused-vars
 import * as SDK from '../sdk/sdk.js';
@@ -40,6 +40,27 @@ import {ElementsTreeElement, InitialChildrenLimit} from './ElementsTreeElement.j
 import {ImagePreviewPopover} from './ImagePreviewPopover.js';
 import {MarkerDecoratorRegistration} from './MarkerDecorator.js';  // eslint-disable-line no-unused-vars
 
+export const UIStrings = {
+  /**
+  *@description ARIA accessible name in Elements Tree Outline of the Elements panel
+  */
+  pageDom: 'Page DOM',
+  /**
+  *@description A context menu item to store a value as a global variable the Elements Panel
+  */
+  storeAsGlobalVariable: 'Store as global variable',
+  /**
+  *@description Tree element expand all button element button text content in Elements Tree Outline of the Elements panel
+  *@example {3} PH1
+  */
+  showAllNodesDMore: 'Show All Nodes ({PH1} More)',
+  /**
+  *@description Link text content in Elements Tree Outline of the Elements panel
+  */
+  reveal: 'reveal',
+};
+const str_ = i18n.i18n.registerUIStrings('elements/ElementsTreeOutline.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /** @type {!WeakMap<!SDK.DOMModel.DOMModel, !ElementsTreeOutline>} */
 const elementsTreeOutlineByDOMModel = new WeakMap();
 
@@ -67,7 +88,7 @@ export class ElementsTreeOutline extends UI.TreeOutline.TreeOutline {
     if (hideGutter) {
       this._element.classList.add('elements-hide-gutter');
     }
-    UI.ARIAUtils.setAccessibleName(this._element, Common.UIString.UIString('Page DOM'));
+    UI.ARIAUtils.setAccessibleName(this._element, i18nString(UIStrings.pageDom));
     this._element.addEventListener('focusout', this._onfocusout.bind(this), false);
     this._element.addEventListener('mousedown', this._onmousedown.bind(this), false);
     this._element.addEventListener('mousemove', this._onmousemove.bind(this), false);
@@ -900,7 +921,7 @@ export class ElementsTreeOutline extends UI.TreeOutline.TreeOutline {
     }
     const commentNode = node.enclosingNodeOrSelfWithClass('webkit-html-comment');
     contextMenu.saveSection().appendItem(
-        ls`Store as global variable`, this._saveNodeToTempVariable.bind(this, treeElement.node()));
+        i18nString(UIStrings.storeAsGlobalVariable), this._saveNodeToTempVariable.bind(this, treeElement.node()));
     if (textNode) {
       treeElement.populateTextContextMenu(contextMenu, textNode);
     } else if (isTag) {
@@ -1633,7 +1654,7 @@ export class ElementsTreeOutline extends UI.TreeOutline.TreeOutline {
       }
       treeElement.insertChild(treeElement.expandAllButtonElement, targetButtonIndex);
       treeElement.expandAllButtonElement.title =
-          Common.UIString.UIString('Show All Nodes (%d More)', visibleChildren.length - expandedChildCount);
+          i18nString(UIStrings.showAllNodesDMore, {PH1: visibleChildren.length - expandedChildCount});
     } else if (treeElement.expandAllButtonElement) {
       treeElement.expandAllButtonElement = null;
     }
@@ -1858,7 +1879,7 @@ export class ShortcutTreeElement extends UI.TreeOutline.TreeElement {
     const link = /** @type {!Element} */ (linkifyDeferredNodeReference(nodeShortcut.deferredNode));
     UI.UIUtils.createTextChild(this.listItemElement, ' ');
     link.classList.add('elements-tree-shortcut-link');
-    link.textContent = Common.UIString.UIString('reveal');
+    link.textContent = i18nString(UIStrings.reveal);
     this.listItemElement.appendChild(link);
     this._nodeShortcut = nodeShortcut;
   }

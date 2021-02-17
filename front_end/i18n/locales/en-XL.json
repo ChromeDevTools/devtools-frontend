@@ -1610,6 +1610,315 @@
   "developer_resources/DeveloperResourcesView.ts | resourcesCurrentlyLoading": {
     "message": "{PH1} r̂éŝóûŕĉéŝ, {PH2} ćûŕr̂én̂t́l̂ý l̂óâd́îńĝ"
   },
+  "elements/AccessibilityNode.ts | ignored": {
+    "message": "Îǵn̂ór̂éd̂"
+  },
+  "elements/Adorner.js | adorner": {
+    "message": "âd́ôŕn̂ér̂"
+  },
+  "elements/Adorner.js | adornerActive": {
+    "message": "âd́ôŕn̂ér̂ áĉt́îv́ê"
+  },
+  "elements/Adorner.js | sAdorner": {
+    "message": "{PH1} âd́ôŕn̂ér̂"
+  },
+  "elements/ClassesPaneWidget.js | addNewClass": {
+    "message": "Âd́d̂ ńêẃ ĉĺâśŝ"
+  },
+  "elements/ClassesPaneWidget.js | classesSAdded": {
+    "message": "Ĉĺâśŝéŝ {PH1} ád̂d́êd́."
+  },
+  "elements/ClassesPaneWidget.js | classSAdded": {
+    "message": "Ĉĺâśŝ {PH1} ád̂d́êd́."
+  },
+  "elements/ClassesPaneWidget.js | elementClasses": {
+    "message": "Êĺêḿêńt̂ Ćl̂áŝśêś"
+  },
+  "elements/ColorSwatchPopoverIcon.js | openCubicBezierEditor": {
+    "message": "Ôṕêń ĉúb̂íĉ b́êźîér̂ éd̂ít̂ór̂."
+  },
+  "elements/ColorSwatchPopoverIcon.js | openShadowEditor": {
+    "message": "Ôṕêń ŝh́âd́ôẃ êd́ît́ôŕ."
+  },
+  "elements/ComputedStyleWidget.js | filter": {
+    "message": "F̂íl̂t́êŕ"
+  },
+  "elements/ComputedStyleWidget.js | filterComputedStyles": {
+    "message": "F̂íl̂t́êŕ Ĉóm̂ṕût́êd́ Ŝt́ŷĺêś"
+  },
+  "elements/ComputedStyleWidget.js | group": {
+    "message": "Ĝŕôúp̂"
+  },
+  "elements/ComputedStyleWidget.js | navigateToSelectorSource": {
+    "message": "N̂áv̂íĝát̂é t̂ó ŝél̂éĉt́ôŕ ŝóûŕĉé"
+  },
+  "elements/ComputedStyleWidget.js | navigateToStyle": {
+    "message": "N̂áv̂íĝát̂é t̂ó ŝt́ŷĺê"
+  },
+  "elements/ComputedStyleWidget.js | noMatchingProperty": {
+    "message": "N̂ó m̂át̂ćĥín̂ǵ p̂ŕôṕêŕt̂ý"
+  },
+  "elements/ComputedStyleWidget.js | showAll": {
+    "message": "Ŝh́ôẃ âĺl̂"
+  },
+  "elements/DOMLinkifier.js | node": {
+    "message": "<n̂ód̂é>"
+  },
+  "elements/elements-meta.ts | captureAreaScreenshot": {
+    "message": "Ĉáp̂t́ûŕê ár̂éâ śĉŕêén̂śĥót̂"
+  },
+  "elements/elements-meta.ts | disableDomWordWrap": {
+    "message": "D̂íŝáb̂ĺê D́ÔḾ ŵór̂d́ ŵŕâṕ"
+  },
+  "elements/elements-meta.ts | duplicateElement": {
+    "message": "D̂úp̂ĺîćât́ê él̂ém̂én̂t́"
+  },
+  "elements/elements-meta.ts | editAsHtml": {
+    "message": "Êd́ît́ âś ĤT́M̂Ĺ"
+  },
+  "elements/elements-meta.ts | elements": {
+    "message": "Êĺêḿêńt̂ś"
+  },
+  "elements/elements-meta.ts | enableDomWordWrap": {
+    "message": "Êńâb́l̂é D̂ÓM̂ ẃôŕd̂ ẃr̂áp̂"
+  },
+  "elements/elements-meta.ts | eventListeners": {
+    "message": "Êv́êńt̂ Ĺîśt̂én̂ér̂ś"
+  },
+  "elements/elements-meta.ts | hideElement": {
+    "message": "Ĥíd̂é êĺêḿêńt̂"
+  },
+  "elements/elements-meta.ts | hideHtmlComments": {
+    "message": "Ĥíd̂é ĤT́M̂Ĺ ĉóm̂ḿêńt̂ś"
+  },
+  "elements/elements-meta.ts | layout": {
+    "message": "L̂áŷóût́"
+  },
+  "elements/elements-meta.ts | properties": {
+    "message": "P̂ŕôṕêŕt̂íêś"
+  },
+  "elements/elements-meta.ts | redo": {
+    "message": "R̂éd̂ó"
+  },
+  "elements/elements-meta.ts | revealDomNodeOnHover": {
+    "message": "R̂év̂éâĺ D̂ÓM̂ ńôd́ê ón̂ h́ôv́êŕ"
+  },
+  "elements/elements-meta.ts | selectAnElementInThePageTo": {
+    "message": "Ŝél̂éĉt́ âń êĺêḿêńt̂ ín̂ t́ĥé p̂áĝé t̂ó îńŝṕêćt̂ ít̂"
+  },
+  "elements/elements-meta.ts | showDetailedInspectTooltip": {
+    "message": "Ŝh́ôẃ d̂ét̂áîĺêd́ îńŝṕêćt̂ t́ôól̂t́îṕ"
+  },
+  "elements/elements-meta.ts | showElements": {
+    "message": "Ŝh́ôẃ Êĺêḿêńt̂ś"
+  },
+  "elements/elements-meta.ts | showEventListeners": {
+    "message": "Ŝh́ôẃ Êv́êńt̂ Ĺîśt̂én̂ér̂ś"
+  },
+  "elements/elements-meta.ts | showHtmlComments": {
+    "message": "Ŝh́ôẃ ĤT́M̂Ĺ ĉóm̂ḿêńt̂ś"
+  },
+  "elements/elements-meta.ts | showLayout": {
+    "message": "Ŝh́ôẃ L̂áŷóût́"
+  },
+  "elements/elements-meta.ts | showProperties": {
+    "message": "Ŝh́ôẃ P̂ŕôṕêŕt̂íêś"
+  },
+  "elements/elements-meta.ts | showStackTrace": {
+    "message": "Ŝh́ôẃ Ŝt́âćk̂ T́r̂áĉé"
+  },
+  "elements/elements-meta.ts | showUserAgentShadowDom": {
+    "message": "Ŝh́ôẃ user agent shadow DOM"
+  },
+  "elements/elements-meta.ts | stackTrace": {
+    "message": "Ŝt́âćk̂ T́r̂áĉé"
+  },
+  "elements/elements-meta.ts | undo": {
+    "message": "Ûńd̂ó"
+  },
+  "elements/elements-meta.ts | wordWrap": {
+    "message": "Ŵór̂d́ ŵŕâṕ"
+  },
+  "elements/ElementsBreadcrumbsUtils.ts | text": {
+    "message": "(t̂éx̂t́)"
+  },
+  "elements/ElementsPanel.js | computed": {
+    "message": "Ĉóm̂ṕût́êd́"
+  },
+  "elements/ElementsPanel.js | computedStylesSidebar": {
+    "message": "Ĉóm̂ṕût́êd́ Ŝt́ŷĺêś ŝíd̂éb̂ár̂"
+  },
+  "elements/ElementsPanel.js | elementStateS": {
+    "message": "Êĺêḿêńt̂ śt̂át̂é: {PH1}"
+  },
+  "elements/ElementsPanel.js | findByStringSelectorOrXpath": {
+    "message": "F̂ín̂d́ b̂ý ŝt́r̂ín̂ǵ, ŝél̂éĉt́ôŕ, ôŕ X̂Ṕât́ĥ"
+  },
+  "elements/ElementsPanel.js | frame": {
+    "message": "F̂ŕâḿê"
+  },
+  "elements/ElementsPanel.js | nodeCannotBeFoundInTheCurrent": {
+    "message": "N̂ód̂é ĉán̂ńôt́ b̂é f̂óûńd̂ ín̂ t́ĥé ĉúr̂ŕêńt̂ ṕâǵê."
+  },
+  "elements/ElementsPanel.js | revealInElementsPanel": {
+    "message": "R̂év̂éâĺ îń Êĺêḿêńt̂ś p̂án̂él̂"
+  },
+  "elements/ElementsPanel.js | styles": {
+    "message": "Ŝt́ŷĺêś"
+  },
+  "elements/ElementsPanel.js | switchToAccessibilityTreeView": {
+    "message": "Ŝẃît́ĉh́ t̂ó Âćĉéŝśîb́îĺît́ŷ T́r̂éê v́îéŵ"
+  },
+  "elements/ElementsPanel.js | switchToDomTreeView": {
+    "message": "Ŝẃît́ĉh́ t̂ó D̂ÓM̂ T́r̂éê v́îéŵ"
+  },
+  "elements/ElementsPanel.js | theDeferredDomNodeCouldNotBe": {
+    "message": "T̂h́ê d́êf́êŕr̂éd̂ D́ÔḾ N̂ód̂é ĉóûĺd̂ ńôt́ b̂é r̂éŝól̂v́êd́ îńt̂ó â v́âĺîd́ n̂ód̂é."
+  },
+  "elements/ElementsPanel.js | theRemoteObjectCouldNotBe": {
+    "message": "T̂h́ê ŕêḿôt́ê ób̂j́êćt̂ ćôúl̂d́ n̂ót̂ b́ê ŕêśôĺv̂éd̂ ín̂t́ô á v̂ál̂íd̂ ńôd́ê."
+  },
+  "elements/ElementStatePaneWidget.js | forceElementState": {
+    "message": "F̂ór̂ćê él̂ém̂én̂t́ ŝt́ât́ê"
+  },
+  "elements/ElementStatePaneWidget.js | hov": {
+    "message": ":ĥóv̂"
+  },
+  "elements/ElementStatePaneWidget.js | toggleElementState": {
+    "message": "T̂óĝǵl̂é Êĺêḿêńt̂ Śt̂át̂é"
+  },
+  "elements/ElementsTreeElement.js | addAttribute": {
+    "message": "Âd́d̂ át̂t́r̂íb̂út̂é"
+  },
+  "elements/ElementsTreeElement.js | captureNodeScreenshot": {
+    "message": "Ĉáp̂t́ûŕê ńôd́ê śĉŕêén̂śĥót̂"
+  },
+  "elements/ElementsTreeElement.js | children": {
+    "message": "Ĉh́îĺd̂ŕêń:"
+  },
+  "elements/ElementsTreeElement.js | collapseChildren": {
+    "message": "Ĉól̂ĺâṕŝé ĉh́îĺd̂ŕêń"
+  },
+  "elements/ElementsTreeElement.js | copy": {
+    "message": "Ĉóp̂ý"
+  },
+  "elements/ElementsTreeElement.js | copyElement": {
+    "message": "Ĉóp̂ý êĺêḿêńt̂"
+  },
+  "elements/ElementsTreeElement.js | copyFullXpath": {
+    "message": "Ĉóp̂ý f̂úl̂ĺ X̂Ṕât́ĥ"
+  },
+  "elements/ElementsTreeElement.js | copyJsPath": {
+    "message": "Ĉóp̂ý ĴŚ p̂át̂h́"
+  },
+  "elements/ElementsTreeElement.js | copyOuterhtml": {
+    "message": "Ĉóp̂ý ôút̂ér̂H́T̂ḾL̂"
+  },
+  "elements/ElementsTreeElement.js | copySelector": {
+    "message": "Ĉóp̂ý selector"
+  },
+  "elements/ElementsTreeElement.js | copyStyles": {
+    "message": "Ĉóp̂ý ŝt́ŷĺêś"
+  },
+  "elements/ElementsTreeElement.js | copyXpath": {
+    "message": "Ĉóp̂ý X̂Ṕât́ĥ"
+  },
+  "elements/ElementsTreeElement.js | cutElement": {
+    "message": "Ĉút̂ él̂ém̂én̂t́"
+  },
+  "elements/ElementsTreeElement.js | deleteElement": {
+    "message": "D̂él̂ét̂é êĺêḿêńt̂"
+  },
+  "elements/ElementsTreeElement.js | disableFlexMode": {
+    "message": "D̂íŝáb̂ĺê f́l̂éx̂ ḿôd́ê"
+  },
+  "elements/ElementsTreeElement.js | disableGridMode": {
+    "message": "D̂íŝáb̂ĺê ǵr̂íd̂ ḿôd́ê"
+  },
+  "elements/ElementsTreeElement.js | duplicateElement": {
+    "message": "D̂úp̂ĺîćât́ê él̂ém̂én̂t́"
+  },
+  "elements/ElementsTreeElement.js | editAsHtml": {
+    "message": "Êd́ît́ âś ĤT́M̂Ĺ"
+  },
+  "elements/ElementsTreeElement.js | editAttribute": {
+    "message": "Êd́ît́ ât́t̂ŕîb́ût́ê"
+  },
+  "elements/ElementsTreeElement.js | editText": {
+    "message": "Êd́ît́ t̂éx̂t́"
+  },
+  "elements/ElementsTreeElement.js | enableFlexMode": {
+    "message": "Êńâb́l̂é f̂ĺêx́ m̂ód̂é"
+  },
+  "elements/ElementsTreeElement.js | enableGridMode": {
+    "message": "Êńâb́l̂é ĝŕîd́ m̂ód̂é"
+  },
+  "elements/ElementsTreeElement.js | expandRecursively": {
+    "message": "Êx́p̂án̂d́ r̂éĉúr̂śîv́êĺŷ"
+  },
+  "elements/ElementsTreeElement.js | focus": {
+    "message": "F̂óĉúŝ"
+  },
+  "elements/ElementsTreeElement.js | forceState": {
+    "message": "F̂ór̂ćê śt̂át̂é"
+  },
+  "elements/ElementsTreeElement.js | hideElement": {
+    "message": "Ĥíd̂é êĺêḿêńt̂"
+  },
+  "elements/ElementsTreeElement.js | pasteElement": {
+    "message": "P̂áŝt́ê él̂ém̂én̂t́"
+  },
+  "elements/ElementsTreeElement.js | scrollIntoView": {
+    "message": "Ŝćr̂ól̂ĺ îńt̂ó v̂íêẃ"
+  },
+  "elements/ElementsTreeElement.js | thisFrameWasIdentifiedAsAnAd": {
+    "message": "T̂h́îś f̂ŕâḿê ẃâś îd́êńt̂íf̂íêd́ âś âń âd́ f̂ŕâḿê"
+  },
+  "elements/ElementsTreeElement.js | useSInTheConsoleToReferToThis": {
+    "message": "Ûśê {PH1} ín̂ t́ĥé ĉón̂śôĺê t́ô ŕêf́êŕ t̂ó t̂h́îś êĺêḿêńt̂."
+  },
+  "elements/ElementsTreeElement.js | valueIsTooLargeToEdit": {
+    "message": "<v̂ál̂úê íŝ t́ôó l̂ár̂ǵê t́ô éd̂ít̂>"
+  },
+  "elements/ElementsTreeOutline.js | pageDom": {
+    "message": "P̂áĝé D̂ÓM̂"
+  },
+  "elements/ElementsTreeOutline.js | reveal": {
+    "message": "r̂év̂éâĺ"
+  },
+  "elements/ElementsTreeOutline.js | showAllNodesDMore": {
+    "message": "Ŝh́ôẃ Âĺl̂ Ńôd́êś ({PH1} M̂ór̂é)"
+  },
+  "elements/ElementsTreeOutline.js | storeAsGlobalVariable": {
+    "message": "Ŝt́ôŕê áŝ ǵl̂ób̂ál̂ v́âŕîáb̂ĺê"
+  },
+  "elements/EventListenersWidget.js | all": {
+    "message": "Âĺl̂"
+  },
+  "elements/EventListenersWidget.js | ancestors": {
+    "message": "Âńĉéŝt́ôŕŝ"
+  },
+  "elements/EventListenersWidget.js | blocking": {
+    "message": "B̂ĺôćk̂ín̂ǵ"
+  },
+  "elements/EventListenersWidget.js | eventListenersCategory": {
+    "message": "Êv́êńt̂ ĺîśt̂én̂ér̂ś ĉát̂éĝór̂ý"
+  },
+  "elements/EventListenersWidget.js | frameworkListeners": {
+    "message": "Framework l̂íŝt́êńêŕŝ"
+  },
+  "elements/EventListenersWidget.js | passive": {
+    "message": "P̂áŝśîv́ê"
+  },
+  "elements/EventListenersWidget.js | refresh": {
+    "message": "R̂éf̂ŕêśĥ"
+  },
+  "elements/EventListenersWidget.js | resolveEventListenersBoundWith": {
+    "message": "R̂éŝól̂v́ê év̂én̂t́ l̂íŝt́êńêŕŝ b́ôún̂d́ ŵít̂h́ f̂ŕâḿêẃôŕk̂"
+  },
+  "elements/EventListenersWidget.js | showListenersOnTheAncestors": {
+    "message": "Ŝh́ôẃ l̂íŝt́êńêŕŝ ón̂ t́ĥé âńĉéŝt́ôŕŝ"
+  },
   "elements/FlexboxEditor.ts | deselectButton": {
     "message": "R̂ém̂óv̂é {propertyName}: {propertyValue}"
   },
@@ -1618,6 +1927,150 @@
   },
   "elements/FlexboxEditorWidget.ts | editorButton": {
     "message": "Ôṕêń F̂ĺêx́b̂óx̂ éd̂ít̂ór̂"
+  },
+  "elements/LayoutPane.ts | feedback": {
+    "message": "F̂éêd́b̂áĉḱ"
+  },
+  "elements/LayoutPane.ts | flexbox": {
+    "message": "F̂ĺêx́b̂óx̂"
+  },
+  "elements/LayoutPane.ts | flexboxOverlays": {
+    "message": "F̂ĺêx́b̂óx̂ óv̂ér̂ĺâýŝ"
+  },
+  "elements/LayoutPane.ts | grid": {
+    "message": "Ĝŕîd́"
+  },
+  "elements/LayoutPane.ts | gridOverlays": {
+    "message": "Ĝŕîd́ ôv́êŕl̂áŷś"
+  },
+  "elements/LayoutPane.ts | noFlexboxLayoutsFoundOnThisPage": {
+    "message": "N̂ó f̂ĺêx́b̂óx̂ ĺâýôút̂ś f̂óûńd̂ ón̂ t́ĥíŝ ṕâǵê"
+  },
+  "elements/LayoutPane.ts | noGridLayoutsFoundOnThisPage": {
+    "message": "N̂ó ĝŕîd́ l̂áŷóût́ŝ f́ôún̂d́ ôń t̂h́îś p̂áĝé"
+  },
+  "elements/LayoutPane.ts | overlayDisplaySettings": {
+    "message": "Ôv́êŕl̂áŷ d́îśp̂ĺâý ŝét̂t́îńĝś"
+  },
+  "elements/LayoutPane.ts | showElementInTheElementsPanel": {
+    "message": "Ŝh́ôẃ êĺêḿêńt̂ ín̂ t́ĥé Êĺêḿêńt̂ś p̂án̂él̂"
+  },
+  "elements/MarkerDecorator.js | domBreakpoint": {
+    "message": "D̂ÓM̂ B́r̂éâḱp̂óîńt̂"
+  },
+  "elements/MarkerDecorator.js | elementIsHidden": {
+    "message": "Êĺêḿêńt̂ íŝ h́îd́d̂én̂"
+  },
+  "elements/NodeStackTraceWidget.js | noStackTraceAvailable": {
+    "message": "N̂ó ŝt́âćk̂ t́r̂áĉé âv́âíl̂áb̂ĺê"
+  },
+  "elements/PlatformFontsWidget.js | dGlyph": {
+    "message": "(1 ĝĺŷṕĥ)"
+  },
+  "elements/PlatformFontsWidget.js | dGlyphs": {
+    "message": "({PH1} ĝĺŷṕĥś)"
+  },
+  "elements/PlatformFontsWidget.js | localFile": {
+    "message": "L̂óĉál̂ f́îĺê"
+  },
+  "elements/PlatformFontsWidget.js | networkResource": {
+    "message": "N̂ét̂ẃôŕk̂ ŕêśôúr̂ćê"
+  },
+  "elements/PlatformFontsWidget.js | renderedFonts": {
+    "message": "R̂én̂d́êŕêd́ F̂ón̂t́ŝ"
+  },
+  "elements/StylePropertyTreeElement.js | copyAllDeclarations": {
+    "message": "Ĉóp̂ý âĺl̂ d́êćl̂ár̂át̂íôńŝ"
+  },
+  "elements/StylePropertyTreeElement.js | copyDeclaration": {
+    "message": "Ĉóp̂ý d̂éĉĺâŕât́îón̂"
+  },
+  "elements/StylePropertyTreeElement.js | copyProperty": {
+    "message": "Ĉóp̂ý p̂ŕôṕêŕt̂ý"
+  },
+  "elements/StylePropertyTreeElement.js | copyRule": {
+    "message": "Ĉóp̂ý r̂úl̂é"
+  },
+  "elements/StylePropertyTreeElement.js | copyValue": {
+    "message": "Ĉóp̂ý v̂ál̂úê"
+  },
+  "elements/StylePropertyTreeElement.js | openColorPickerS": {
+    "message": "Ôṕêń ĉól̂ór̂ ṕîćk̂ér̂. {PH1}"
+  },
+  "elements/StylePropertyTreeElement.js | revealInSourcesPanel": {
+    "message": "R̂év̂éâĺ îń Ŝóûŕĉéŝ ṕâńêĺ"
+  },
+  "elements/StylePropertyTreeElement.js | shiftClickToChangeColorFormat": {
+    "message": "Ŝh́îf́t̂ + Ćl̂íĉḱ t̂ó ĉh́âńĝé ĉól̂ór̂ f́ôŕm̂át̂."
+  },
+  "elements/StylePropertyTreeElement.js | togglePropertyAndContinueEditing": {
+    "message": "T̂óĝǵl̂é p̂ŕôṕêŕt̂ý âńd̂ ćôńt̂ín̂úê éd̂ít̂ín̂ǵ"
+  },
+  "elements/StylePropertyTreeElement.js | valueForSettingSSIsOutsideThe": {
+    "message": "V̂ál̂úê f́ôŕ ŝét̂t́îńĝ “{PH1}” {PH2} íŝ óût́ŝíd̂é t̂h́ê śûṕp̂ór̂t́êd́ r̂án̂ǵê [{PH3}, {PH4}] f́ôŕ f̂ón̂t́-f̂ám̂íl̂ý “{PH5}”."
+  },
+  "elements/StylesSidebarPane.js | constructedStylesheet": {
+    "message": "ĉón̂śt̂ŕûćt̂éd̂ śt̂ýl̂éŝh́êét̂"
+  },
+  "elements/StylesSidebarPane.js | copyAllDeclarations": {
+    "message": "Ĉóp̂ý âĺl̂ d́êćl̂ár̂át̂íôńŝ"
+  },
+  "elements/StylesSidebarPane.js | copyRule": {
+    "message": "Ĉóp̂ý r̂úl̂é"
+  },
+  "elements/StylesSidebarPane.js | copySelector": {
+    "message": "Ĉóp̂ý selector"
+  },
+  "elements/StylesSidebarPane.js | filter": {
+    "message": "F̂íl̂t́êŕ"
+  },
+  "elements/StylesSidebarPane.js | filterStyles": {
+    "message": "F̂íl̂t́êŕ Ŝt́ŷĺêś"
+  },
+  "elements/StylesSidebarPane.js | incrementdecrementWithMousewheelHundred": {
+    "message": "Îńĉŕêḿêńt̂/d́êćr̂ém̂én̂t́ ŵít̂h́ m̂óûśêẃĥéêĺ ôŕ ûṕ/d̂óŵń k̂éŷś. {PH1}: ±100, Ŝh́îf́t̂: ±10, Ál̂t́: ±0.1"
+  },
+  "elements/StylesSidebarPane.js | incrementdecrementWithMousewheelOne": {
+    "message": "Îńĉŕêḿêńt̂/d́êćr̂ém̂én̂t́ ŵít̂h́ m̂óûśêẃĥéêĺ ôŕ ûṕ/d̂óŵń k̂éŷś. {PH1}: R̂ ±1, Śĥíf̂t́: Ĝ ±1, Ál̂t́: B̂ ±1"
+  },
+  "elements/StylesSidebarPane.js | inheritedFroms": {
+    "message": "Îńĥér̂ít̂éd̂ f́r̂óm̂ "
+  },
+  "elements/StylesSidebarPane.js | injectedStylesheet": {
+    "message": "îńĵéĉt́êd́ ŝt́ŷĺêśĥéêt́"
+  },
+  "elements/StylesSidebarPane.js | insertStyleRuleBelow": {
+    "message": "Îńŝér̂t́ Ŝt́ŷĺê Ŕûĺê B́êĺôẃ"
+  },
+  "elements/StylesSidebarPane.js | invalidPropertyValue": {
+    "message": "Îńv̂ál̂íd̂ ṕr̂óp̂ér̂t́ŷ v́âĺûé"
+  },
+  "elements/StylesSidebarPane.js | newStyleRule": {
+    "message": "N̂éŵ Śt̂ýl̂é R̂úl̂é"
+  },
+  "elements/StylesSidebarPane.js | noMatchingSelectorOrStyle": {
+    "message": "N̂ó m̂át̂ćĥín̂ǵ ŝél̂éĉt́ôŕ ôŕ ŝt́ŷĺê"
+  },
+  "elements/StylesSidebarPane.js | pseudoSElement": {
+    "message": "P̂śêúd̂ó ::{PH1} êĺêḿêńt̂"
+  },
+  "elements/StylesSidebarPane.js | sattributesStyle": {
+    "message": "{PH1}[Ât́t̂ŕîb́ût́êś Ŝt́ŷĺê]"
+  },
+  "elements/StylesSidebarPane.js | showAllPropertiesSMore": {
+    "message": "Ŝh́ôẃ Âĺl̂ Ṕr̂óp̂ér̂t́îéŝ ({PH1} ḿôŕê)"
+  },
+  "elements/StylesSidebarPane.js | styleAttribute": {
+    "message": "Ŝt́ŷĺê Át̂t́r̂íb̂út̂é"
+  },
+  "elements/StylesSidebarPane.js | unknownPropertyName": {
+    "message": "Ûńk̂ńôẃn̂ ṕr̂óp̂ér̂t́ŷ ńâḿê"
+  },
+  "elements/StylesSidebarPane.js | userAgentStylesheet": {
+    "message": "ûśêŕ âǵêńt̂ śt̂ýl̂éŝh́êét̂"
+  },
+  "elements/StylesSidebarPane.js | viaInspector": {
+    "message": "v̂íâ ín̂śp̂éĉt́ôŕ"
   },
   "event_listeners/EventListenersView.ts | deleteEventListener": {
     "message": "D̂él̂ét̂é êv́êńt̂ ĺîśt̂én̂ér̂"

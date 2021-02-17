@@ -2,18 +2,34 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../common/common.js';
+import * as i18n from '../i18n/i18n.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
 import {ElementsPanel} from './ElementsPanel.js';
 
+export const UIStrings = {
+  /**
+  *@description Text of a DOM element in Element State Pane Widget of the Elements panel
+  */
+  forceElementState: 'Force element state',
+  /**
+  *@description Text in Element State Pane Widget of the Elements panel
+  */
+  toggleElementState: 'Toggle Element State',
+  /**
+  *@description Text in Element State Pane Widget of the Elements panel
+  */
+  hov: ':hov',
+};
+const str_ = i18n.i18n.registerUIStrings('elements/ElementStatePaneWidget.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class ElementStatePaneWidget extends UI.Widget.Widget {
   constructor() {
     super(true);
     this.registerRequiredCSS('elements/elementStatePaneWidget.css', {enableLegacyPatching: true});
     this.contentElement.className = 'styles-element-state-pane';
-    UI.UIUtils.createTextChild(this.contentElement.createChild('div'), Common.UIString.UIString('Force element state'));
+    UI.UIUtils.createTextChild(this.contentElement.createChild('div'), i18nString(UIStrings.forceElementState));
     const table = document.createElement('table');
     table.classList.add('source-code');
     UI.ARIAUtils.markAsPresentation(table);
@@ -134,8 +150,8 @@ let buttonProviderInstance;
 export class ButtonProvider {
   /** @private */
   constructor() {
-    this._button = new UI.Toolbar.ToolbarToggle(Common.UIString.UIString('Toggle Element State'), '');
-    this._button.setText(Common.UIString.UIString(':hov'));
+    this._button = new UI.Toolbar.ToolbarToggle(i18nString(UIStrings.toggleElementState), '');
+    this._button.setText(i18nString(UIStrings.hov));
     this._button.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this._clicked, this);
     this._button.element.classList.add('monospace');
     this._view = new ElementStatePaneWidget();

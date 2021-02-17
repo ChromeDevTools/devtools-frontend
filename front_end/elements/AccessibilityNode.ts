@@ -2,13 +2,21 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
-import {ls} from '../platform/platform.js';
 import * as LitHtml from '../third_party/lit-html/lit-html.js';
 
 import {AccessibilityTree} from './AccessibilityTree.js';
 import {AXNode} from './AccessibilityTreeUtils.js';
 
+export const UIStrings = {
+  /**
+  *@description Ignored node element text content in AXBreadcrumbs Pane of the Accessibility panel
+  */
+  ignored: 'Ignored',
+};
+const str_ = i18n.i18n.registerUIStrings('elements/AccessibilityNode.ts', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export interface AccessibilityNodeData {
   axNode: AXNode;
 }
@@ -304,7 +312,7 @@ export class AccessibilityNode extends HTMLElement {
     const parts: LitHtml.TemplateResult[] = [];
     // TODO(annabelzhou): Ignored nodes (and their potential children) to be handled in the future.
     if (this.axNode.ignored) {
-      parts.push(LitHtml.html`<span class='monospace ignored-node'>${ls`Ignored`}</span>`);
+      parts.push(LitHtml.html`<span class='monospace ignored-node'>${i18nString(UIStrings.ignored)}</span>`);
     } else {
       const nodeContent = this.renderNodeContent();
       const classes = LitHtml.Directives.classMap({

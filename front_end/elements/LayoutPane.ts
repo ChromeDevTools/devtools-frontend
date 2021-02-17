@@ -14,12 +14,53 @@ import {BooleanSetting, EnumSetting, LayoutElement, Setting} from './LayoutPaneU
 
 import type {NodeTextData} from './NodeText.js';
 
+import * as i18n from '../i18n/i18n.js';
+export const UIStrings = {
+  /**
+  *@description Title of the show element button in the Layout pane of the Elements panel
+  */
+  showElementInTheElementsPanel: 'Show element in the Elements panel',
+  /**
+  *@description Title of a section on CSS Grid tooling
+  */
+  grid: 'Grid',
+  /**
+  *@description Title of a section in the Layout Sidebar pane of the Elements panel
+  */
+  overlayDisplaySettings: 'Overlay display settings',
+  /**
+  *@description Text of a link to a HaTS survey in the Layout panel
+  */
+  feedback: 'Feedback',
+  /**
+  *@description Title of a section in Layout sidebar pane
+  */
+  gridOverlays: 'Grid overlays',
+  /**
+  *@description Message in the Layout panel informing users that no CSS Grid layouts were found on the page
+  */
+  noGridLayoutsFoundOnThisPage: 'No grid layouts found on this page',
+  /**
+  *@description Title of the Flexbox section in the Layout panel
+  */
+  flexbox: 'Flexbox',
+  /**
+  *@description Title of a section in the Layout panel
+  */
+  flexboxOverlays: 'Flexbox overlays',
+  /**
+  *@description Text in the Layout panel, when no flexbox elements are found
+  */
+  noFlexboxLayoutsFoundOnThisPage: 'No flexbox layouts found on this page',
+};
+const str_ = i18n.i18n.registerUIStrings('elements/LayoutPane.ts', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 export {LayoutElement};
 
 const {render, html} = LitHtml;
-const ls = Common.ls;
 const getStyleSheets = ComponentHelpers.GetStylesheet.getStyleSheets;
-const showElementButtonTitle = ls`Show element in the Elements panel`;
+const showElementButtonTitle = i18nLazyString(UIStrings.showElementInTheElementsPanel);
 
 export class SettingChangedEvent extends Event {
   data: {setting: string, value: string|boolean};
@@ -96,17 +137,17 @@ export class LayoutPane extends HTMLElement {
     render(html`
       <details open>
         <summary class="header" @keydown=${this.onSummaryKeyDown}>
-          ${ls`Grid`}
+          ${i18nString(UIStrings.grid)}
         </summary>
         <div class="content-section">
           <div class="feedback-container">
             <div>
-              <h3 class="content-section-title">${ls`Overlay display settings`}</h3>
+              <h3 class="content-section-title">${i18nString(UIStrings.overlayDisplaySettings)}</h3>
             </div>
             <div class="feedback">
               <devtools-survey-link .data=${{
                 trigger: 'devtools-layout-panel',
-                promptText: ls`Feedback`,
+                promptText: i18nString(UIStrings.feedback),
                 canShowSurvey: Host.InspectorFrontendHost.InspectorFrontendHostInstance.canShowSurvey,
                 showSurvey: Host.InspectorFrontendHost.InspectorFrontendHostInstance.showSurvey,
               } as Components.SurveyLink.SurveyLinkData}></devtools-survey-link>
@@ -122,7 +163,7 @@ export class LayoutPane extends HTMLElement {
         ${this.gridElements ?
           html`<div class="content-section">
             <h3 class="content-section-title">
-              ${this.gridElements.length ? ls`Grid overlays` : ls`No grid layouts found on this page`}
+              ${this.gridElements.length ? i18nString(UIStrings.gridOverlays) : i18nString(UIStrings.noGridLayoutsFoundOnThisPage)}
             </h3>
             ${this.gridElements.length ?
               html`<div class="elements">
@@ -134,12 +175,12 @@ export class LayoutPane extends HTMLElement {
         html`
         <details open>
           <summary class="header" @keydown=${this.onSummaryKeyDown}>
-            ${ls`Flexbox`}
+            ${i18nString(UIStrings.flexbox)}
           </summary>
           ${this.flexContainerElements ?
             html`<div class="content-section">
               <h3 class="content-section-title">
-                ${this.flexContainerElements.length ? ls`Flexbox overlays` : ls`No flexbox layouts found on this page`}
+                ${this.flexContainerElements.length ? i18nString(UIStrings.flexboxOverlays) : i18nString(UIStrings.noFlexboxLayoutsFoundOnThisPage)}
               </h3>
               ${this.flexContainerElements.length ?
                 html`<div class="elements">

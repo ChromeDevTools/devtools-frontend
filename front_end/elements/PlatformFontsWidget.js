@@ -28,12 +28,37 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import * as Common from '../common/common.js';
+import * as i18n from '../i18n/i18n.js';
 import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../ui/ui.js';
 
 import {ComputedStyleModel, Events} from './ComputedStyleModel.js';  // eslint-disable-line no-unused-vars
 
+export const UIStrings = {
+  /**
+  *@description Section title text content in Platform Fonts Widget of the Elements panel
+  */
+  renderedFonts: 'Rendered Fonts',
+  /**
+  *@description Text in Platform Fonts Widget of the Elements panel
+  */
+  networkResource: 'Network resource',
+  /**
+  *@description Text in Platform Fonts Widget of the Elements panel
+  */
+  localFile: 'Local file',
+  /**
+  *@description Text in Platform Fonts Widget of the Elements panel
+  */
+  dGlyph: '(1 glyph)',
+  /**
+  *@description Text in Platform Fonts Widget of the Elements panel
+  *@example {4} PH1
+  */
+  dGlyphs: '({PH1} glyphs)',
+};
+const str_ = i18n.i18n.registerUIStrings('elements/PlatformFontsWidget.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class PlatformFontsWidget extends UI.ThrottledWidget.ThrottledWidget {
   /**
    * @param {!ComputedStyleModel} sharedModel
@@ -49,7 +74,7 @@ export class PlatformFontsWidget extends UI.ThrottledWidget.ThrottledWidget {
     this._sectionTitle.classList.add('title');
     this.contentElement.classList.add('platform-fonts');
     this.contentElement.appendChild(this._sectionTitle);
-    this._sectionTitle.textContent = Common.UIString.UIString('Rendered Fonts');
+    this._sectionTitle.textContent = i18nString(UIStrings.renderedFonts);
     this._fontStatsSection = this.contentElement.createChild('div', 'stats-section');
   }
 
@@ -98,13 +123,13 @@ export class PlatformFontsWidget extends UI.ThrottledWidget.ThrottledWidget {
       fontDelimeterElement.textContent = '\u2014';
 
       const fontOrigin = fontStatElement.createChild('span');
-      fontOrigin.textContent = platformFonts[i].isCustomFont ? Common.UIString.UIString('Network resource') :
-                                                               Common.UIString.UIString('Local file');
+      fontOrigin.textContent =
+          platformFonts[i].isCustomFont ? i18nString(UIStrings.networkResource) : i18nString(UIStrings.localFile);
 
       const fontUsageElement = fontStatElement.createChild('span', 'font-usage');
       const usage = platformFonts[i].glyphCount;
       fontUsageElement.textContent =
-          usage === 1 ? Common.UIString.UIString('(%d glyph)', usage) : Common.UIString.UIString('(%d glyphs)', usage);
+          usage === 1 ? i18nString(UIStrings.dGlyph) : i18nString(UIStrings.dGlyphs, {PH1: usage});
     }
   }
 }

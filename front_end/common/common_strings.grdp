@@ -42,6 +42,9 @@
   <message name="IDS_DEVTOOLS_4ea7755f84f02d23876d90be2f9765cf" desc="Name of a network resource type">
     Fetch
   </message>
+  <message name="IDS_DEVTOOLS_5174d1309f275ba6f275db3af9eb3e18" desc="Title of a section on CSS Grid tooling">
+    Grid
+  </message>
   <message name="IDS_DEVTOOLS_54df3baef130c81e6ae8432a2567320a" desc="Text that appears on a button for the websocket resource type filter.">
     WS
   </message>

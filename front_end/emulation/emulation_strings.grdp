@@ -339,6 +339,9 @@
   <message name="IDS_DEVTOOLS_eba743b98ec6a08b71ed80486f5cde13" desc="Command for showing the 'Devices' tool">
     Show Devices
   </message>
+  <message name="IDS_DEVTOOLS_ee1cab1975e28575b1631ee8fc4ea749" desc="Title of an action in the emulation tool to capture node screenshot">
+    Capture node screenshot
+  </message>
   <message name="IDS_DEVTOOLS_eebd338ddbd547e41e4a1296de82963a" desc="Title of Locations settings">
     Locations
   </message>

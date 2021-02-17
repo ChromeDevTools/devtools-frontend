@@ -147,6 +147,9 @@
   <message name="IDS_DEVTOOLS_af9ccba3ec4346e3acf785f9bea514d8" desc="Text to show a tool or panel">
     Show <ph name="EXTENSION_TITLE">$1s<ex>Audits</ex></ph>
   </message>
+  <message name="IDS_DEVTOOLS_b1c94ca2fbc3e78fc30069c8d0f01680" desc="Text for everything">
+    All
+  </message>
   <message name="IDS_DEVTOOLS_b6da8d6392710f305d7176a134971514" desc="Text in UIUtils">
     Promise rejected (async)
   </message>
@@ -179,6 +182,9 @@
   </message>
   <message name="IDS_DEVTOOLS_d59048f21fd887ad520398ce677be586" desc="Text that is usually a hyperlink to more documentation">
     Learn more
+  </message>
+  <message name="IDS_DEVTOOLS_d7778d0c64b6ba21494c97f77a66885a" desc="Text to filter result items">
+    Filter
   </message>
   <message name="IDS_DEVTOOLS_d916eea6390ddc39ee5fbc5c984e940c" desc="Seconds format in UIUtils">
     <ph name="PH1">$1.2f<ex>2.14</ex></ph> s

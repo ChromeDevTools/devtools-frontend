@@ -2,13 +2,29 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../common/common.js';
+import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../ui/ui.js';
 
 import {AdornerCategories} from './AdornerManager.js';
 
-const ls = Common.ls;
+export const UIStrings = {
+  /**
+  *@description Accessible label for Elements panel adorners (suffix badges in Elements Tree Outline)
+  */
+  adorner: 'adorner',
+  /**
+  *@description Accessible label for Elements panel adorners (suffix badges in Elements Tree Outline)
+  */
+  adornerActive: 'adorner active',
+  /**
+  *@description Accessible label for Elements panel adorners (suffix badges in Elements Tree Outline)
+  *@example {grid} PH1
+  */
+  sAdorner: '{PH1} adorner',
+};
+const str_ = i18n.i18n.registerUIStrings('elements/Adorner.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 const template = document.createElement('template');
 template.innerHTML = `
@@ -85,8 +101,8 @@ export class Adorner extends HTMLElement {
     this.name = '';
     this.category = AdornerCategories.Default;
     this._isToggle = false;
-    this._ariaLabelDefault = ls`adorner`;
-    this._ariaLabelActive = ls`adorner active`;
+    this._ariaLabelDefault = i18nString(UIStrings.adorner);
+    this._ariaLabelActive = i18nString(UIStrings.adornerActive);
   }
 
   /**
@@ -94,7 +110,7 @@ export class Adorner extends HTMLElement {
    */
   connectedCallback() {
     if (!this.getAttribute('aria-label')) {
-      UI.ARIAUtils.setAccessibleName(this, ls`${this.name} adorner`);
+      UI.ARIAUtils.setAccessibleName(this, i18nString(UIStrings.sAdorner, {PH1: this.name}));
     }
   }
 

@@ -6,13 +6,26 @@ import * as Bindings from '../bindings/bindings.js';
 import * as ColorPicker from '../color_picker/color_picker.js';
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
+import * as i18n from '../i18n/i18n.js';
 import * as InlineEditor from '../inline_editor/inline_editor.js';
 import * as Root from '../root/root.js';
 import * as UI from '../ui/ui.js';
 
-import {StylePropertyTreeElement} from './StylePropertyTreeElement.js';  // eslint-disable-line no-unused-vars
+import {StylePropertyTreeElement} from './StylePropertyTreeElement.js';            // eslint-disable-line no-unused-vars
 import {StylePropertiesSection, StylesSidebarPane} from './StylesSidebarPane.js';  // eslint-disable-line no-unused-vars
 
+export const UIStrings = {
+  /**
+  *@description Text to open the cubic bezier editor
+  */
+  openCubicBezierEditor: 'Open cubic bezier editor.',
+  /**
+  *@description Icon element title in Color Swatch Popover Icon of the Elements panel
+  */
+  openShadowEditor: 'Open shadow editor.',
+};
+const str_ = i18n.i18n.registerUIStrings('elements/ColorSwatchPopoverIcon.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class BezierPopoverIcon {
   /**
    * @param {!StylePropertyTreeElement} treeElement
@@ -24,7 +37,7 @@ export class BezierPopoverIcon {
     this._swatchPopoverHelper = swatchPopoverHelper;
     this._swatch = swatch;
 
-    UI.Tooltip.Tooltip.install(this._swatch.iconElement(), Common.UIString.UIString('Open cubic bezier editor.'));
+    UI.Tooltip.Tooltip.install(this._swatch.iconElement(), i18nString(UIStrings.openCubicBezierEditor));
     this._swatch.iconElement().addEventListener('click', this._iconClick.bind(this), false);
     this._swatch.iconElement().addEventListener(
         'mousedown', /** @param {!Event} event */ event => event.consume(), false);
@@ -267,7 +280,7 @@ export class ShadowSwatchPopoverHelper {
     this._shadowSwatch = shadowSwatch;
     this._iconElement = shadowSwatch.iconElement();
 
-    UI.Tooltip.Tooltip.install(this._iconElement, Common.UIString.UIString('Open shadow editor.'));
+    UI.Tooltip.Tooltip.install(this._iconElement, i18nString(UIStrings.openShadowEditor));
     this._iconElement.addEventListener('click', this._iconClick.bind(this), false);
     this._iconElement.addEventListener('mousedown', event => event.consume(), false);
 

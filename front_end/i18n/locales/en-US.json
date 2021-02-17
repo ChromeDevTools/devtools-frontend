@@ -1610,6 +1610,315 @@
   "developer_resources/DeveloperResourcesView.ts | resourcesCurrentlyLoading": {
     "message": "{PH1} resources, {PH2} currently loading"
   },
+  "elements/AccessibilityNode.ts | ignored": {
+    "message": "Ignored"
+  },
+  "elements/Adorner.js | adorner": {
+    "message": "adorner"
+  },
+  "elements/Adorner.js | adornerActive": {
+    "message": "adorner active"
+  },
+  "elements/Adorner.js | sAdorner": {
+    "message": "{PH1} adorner"
+  },
+  "elements/ClassesPaneWidget.js | addNewClass": {
+    "message": "Add new class"
+  },
+  "elements/ClassesPaneWidget.js | classesSAdded": {
+    "message": "Classes {PH1} added."
+  },
+  "elements/ClassesPaneWidget.js | classSAdded": {
+    "message": "Class {PH1} added."
+  },
+  "elements/ClassesPaneWidget.js | elementClasses": {
+    "message": "Element Classes"
+  },
+  "elements/ColorSwatchPopoverIcon.js | openCubicBezierEditor": {
+    "message": "Open cubic bezier editor."
+  },
+  "elements/ColorSwatchPopoverIcon.js | openShadowEditor": {
+    "message": "Open shadow editor."
+  },
+  "elements/ComputedStyleWidget.js | filter": {
+    "message": "Filter"
+  },
+  "elements/ComputedStyleWidget.js | filterComputedStyles": {
+    "message": "Filter Computed Styles"
+  },
+  "elements/ComputedStyleWidget.js | group": {
+    "message": "Group"
+  },
+  "elements/ComputedStyleWidget.js | navigateToSelectorSource": {
+    "message": "Navigate to selector source"
+  },
+  "elements/ComputedStyleWidget.js | navigateToStyle": {
+    "message": "Navigate to style"
+  },
+  "elements/ComputedStyleWidget.js | noMatchingProperty": {
+    "message": "No matching property"
+  },
+  "elements/ComputedStyleWidget.js | showAll": {
+    "message": "Show all"
+  },
+  "elements/DOMLinkifier.js | node": {
+    "message": "<node>"
+  },
+  "elements/elements-meta.ts | captureAreaScreenshot": {
+    "message": "Capture area screenshot"
+  },
+  "elements/elements-meta.ts | disableDomWordWrap": {
+    "message": "Disable DOM word wrap"
+  },
+  "elements/elements-meta.ts | duplicateElement": {
+    "message": "Duplicate element"
+  },
+  "elements/elements-meta.ts | editAsHtml": {
+    "message": "Edit as HTML"
+  },
+  "elements/elements-meta.ts | elements": {
+    "message": "Elements"
+  },
+  "elements/elements-meta.ts | enableDomWordWrap": {
+    "message": "Enable DOM word wrap"
+  },
+  "elements/elements-meta.ts | eventListeners": {
+    "message": "Event Listeners"
+  },
+  "elements/elements-meta.ts | hideElement": {
+    "message": "Hide element"
+  },
+  "elements/elements-meta.ts | hideHtmlComments": {
+    "message": "Hide HTML comments"
+  },
+  "elements/elements-meta.ts | layout": {
+    "message": "Layout"
+  },
+  "elements/elements-meta.ts | properties": {
+    "message": "Properties"
+  },
+  "elements/elements-meta.ts | redo": {
+    "message": "Redo"
+  },
+  "elements/elements-meta.ts | revealDomNodeOnHover": {
+    "message": "Reveal DOM node on hover"
+  },
+  "elements/elements-meta.ts | selectAnElementInThePageTo": {
+    "message": "Select an element in the page to inspect it"
+  },
+  "elements/elements-meta.ts | showDetailedInspectTooltip": {
+    "message": "Show detailed inspect tooltip"
+  },
+  "elements/elements-meta.ts | showElements": {
+    "message": "Show Elements"
+  },
+  "elements/elements-meta.ts | showEventListeners": {
+    "message": "Show Event Listeners"
+  },
+  "elements/elements-meta.ts | showHtmlComments": {
+    "message": "Show HTML comments"
+  },
+  "elements/elements-meta.ts | showLayout": {
+    "message": "Show Layout"
+  },
+  "elements/elements-meta.ts | showProperties": {
+    "message": "Show Properties"
+  },
+  "elements/elements-meta.ts | showStackTrace": {
+    "message": "Show Stack Trace"
+  },
+  "elements/elements-meta.ts | showUserAgentShadowDom": {
+    "message": "Show user agent shadow DOM"
+  },
+  "elements/elements-meta.ts | stackTrace": {
+    "message": "Stack Trace"
+  },
+  "elements/elements-meta.ts | undo": {
+    "message": "Undo"
+  },
+  "elements/elements-meta.ts | wordWrap": {
+    "message": "Word wrap"
+  },
+  "elements/ElementsBreadcrumbsUtils.ts | text": {
+    "message": "(text)"
+  },
+  "elements/ElementsPanel.js | computed": {
+    "message": "Computed"
+  },
+  "elements/ElementsPanel.js | computedStylesSidebar": {
+    "message": "Computed Styles sidebar"
+  },
+  "elements/ElementsPanel.js | elementStateS": {
+    "message": "Element state: {PH1}"
+  },
+  "elements/ElementsPanel.js | findByStringSelectorOrXpath": {
+    "message": "Find by string, selector, or XPath"
+  },
+  "elements/ElementsPanel.js | frame": {
+    "message": "Frame"
+  },
+  "elements/ElementsPanel.js | nodeCannotBeFoundInTheCurrent": {
+    "message": "Node cannot be found in the current page."
+  },
+  "elements/ElementsPanel.js | revealInElementsPanel": {
+    "message": "Reveal in Elements panel"
+  },
+  "elements/ElementsPanel.js | styles": {
+    "message": "Styles"
+  },
+  "elements/ElementsPanel.js | switchToAccessibilityTreeView": {
+    "message": "Switch to Accessibility Tree view"
+  },
+  "elements/ElementsPanel.js | switchToDomTreeView": {
+    "message": "Switch to DOM Tree view"
+  },
+  "elements/ElementsPanel.js | theDeferredDomNodeCouldNotBe": {
+    "message": "The deferred DOM Node could not be resolved into a valid node."
+  },
+  "elements/ElementsPanel.js | theRemoteObjectCouldNotBe": {
+    "message": "The remote object could not be resolved into a valid node."
+  },
+  "elements/ElementStatePaneWidget.js | forceElementState": {
+    "message": "Force element state"
+  },
+  "elements/ElementStatePaneWidget.js | hov": {
+    "message": ":hov"
+  },
+  "elements/ElementStatePaneWidget.js | toggleElementState": {
+    "message": "Toggle Element State"
+  },
+  "elements/ElementsTreeElement.js | addAttribute": {
+    "message": "Add attribute"
+  },
+  "elements/ElementsTreeElement.js | captureNodeScreenshot": {
+    "message": "Capture node screenshot"
+  },
+  "elements/ElementsTreeElement.js | children": {
+    "message": "Children:"
+  },
+  "elements/ElementsTreeElement.js | collapseChildren": {
+    "message": "Collapse children"
+  },
+  "elements/ElementsTreeElement.js | copy": {
+    "message": "Copy"
+  },
+  "elements/ElementsTreeElement.js | copyElement": {
+    "message": "Copy element"
+  },
+  "elements/ElementsTreeElement.js | copyFullXpath": {
+    "message": "Copy full XPath"
+  },
+  "elements/ElementsTreeElement.js | copyJsPath": {
+    "message": "Copy JS path"
+  },
+  "elements/ElementsTreeElement.js | copyOuterhtml": {
+    "message": "Copy outerHTML"
+  },
+  "elements/ElementsTreeElement.js | copySelector": {
+    "message": "Copy selector"
+  },
+  "elements/ElementsTreeElement.js | copyStyles": {
+    "message": "Copy styles"
+  },
+  "elements/ElementsTreeElement.js | copyXpath": {
+    "message": "Copy XPath"
+  },
+  "elements/ElementsTreeElement.js | cutElement": {
+    "message": "Cut element"
+  },
+  "elements/ElementsTreeElement.js | deleteElement": {
+    "message": "Delete element"
+  },
+  "elements/ElementsTreeElement.js | disableFlexMode": {
+    "message": "Disable flex mode"
+  },
+  "elements/ElementsTreeElement.js | disableGridMode": {
+    "message": "Disable grid mode"
+  },
+  "elements/ElementsTreeElement.js | duplicateElement": {
+    "message": "Duplicate element"
+  },
+  "elements/ElementsTreeElement.js | editAsHtml": {
+    "message": "Edit as HTML"
+  },
+  "elements/ElementsTreeElement.js | editAttribute": {
+    "message": "Edit attribute"
+  },
+  "elements/ElementsTreeElement.js | editText": {
+    "message": "Edit text"
+  },
+  "elements/ElementsTreeElement.js | enableFlexMode": {
+    "message": "Enable flex mode"
+  },
+  "elements/ElementsTreeElement.js | enableGridMode": {
+    "message": "Enable grid mode"
+  },
+  "elements/ElementsTreeElement.js | expandRecursively": {
+    "message": "Expand recursively"
+  },
+  "elements/ElementsTreeElement.js | focus": {
+    "message": "Focus"
+  },
+  "elements/ElementsTreeElement.js | forceState": {
+    "message": "Force state"
+  },
+  "elements/ElementsTreeElement.js | hideElement": {
+    "message": "Hide element"
+  },
+  "elements/ElementsTreeElement.js | pasteElement": {
+    "message": "Paste element"
+  },
+  "elements/ElementsTreeElement.js | scrollIntoView": {
+    "message": "Scroll into view"
+  },
+  "elements/ElementsTreeElement.js | thisFrameWasIdentifiedAsAnAd": {
+    "message": "This frame was identified as an ad frame"
+  },
+  "elements/ElementsTreeElement.js | useSInTheConsoleToReferToThis": {
+    "message": "Use {PH1} in the console to refer to this element."
+  },
+  "elements/ElementsTreeElement.js | valueIsTooLargeToEdit": {
+    "message": "<value is too large to edit>"
+  },
+  "elements/ElementsTreeOutline.js | pageDom": {
+    "message": "Page DOM"
+  },
+  "elements/ElementsTreeOutline.js | reveal": {
+    "message": "reveal"
+  },
+  "elements/ElementsTreeOutline.js | showAllNodesDMore": {
+    "message": "Show All Nodes ({PH1} More)"
+  },
+  "elements/ElementsTreeOutline.js | storeAsGlobalVariable": {
+    "message": "Store as global variable"
+  },
+  "elements/EventListenersWidget.js | all": {
+    "message": "All"
+  },
+  "elements/EventListenersWidget.js | ancestors": {
+    "message": "Ancestors"
+  },
+  "elements/EventListenersWidget.js | blocking": {
+    "message": "Blocking"
+  },
+  "elements/EventListenersWidget.js | eventListenersCategory": {
+    "message": "Event listeners category"
+  },
+  "elements/EventListenersWidget.js | frameworkListeners": {
+    "message": "Framework listeners"
+  },
+  "elements/EventListenersWidget.js | passive": {
+    "message": "Passive"
+  },
+  "elements/EventListenersWidget.js | refresh": {
+    "message": "Refresh"
+  },
+  "elements/EventListenersWidget.js | resolveEventListenersBoundWith": {
+    "message": "Resolve event listeners bound with framework"
+  },
+  "elements/EventListenersWidget.js | showListenersOnTheAncestors": {
+    "message": "Show listeners on the ancestors"
+  },
   "elements/FlexboxEditor.ts | deselectButton": {
     "message": "Remove {propertyName}: {propertyValue}"
   },
@@ -1618,6 +1927,150 @@
   },
   "elements/FlexboxEditorWidget.ts | editorButton": {
     "message": "Open Flexbox editor"
+  },
+  "elements/LayoutPane.ts | feedback": {
+    "message": "Feedback"
+  },
+  "elements/LayoutPane.ts | flexbox": {
+    "message": "Flexbox"
+  },
+  "elements/LayoutPane.ts | flexboxOverlays": {
+    "message": "Flexbox overlays"
+  },
+  "elements/LayoutPane.ts | grid": {
+    "message": "Grid"
+  },
+  "elements/LayoutPane.ts | gridOverlays": {
+    "message": "Grid overlays"
+  },
+  "elements/LayoutPane.ts | noFlexboxLayoutsFoundOnThisPage": {
+    "message": "No flexbox layouts found on this page"
+  },
+  "elements/LayoutPane.ts | noGridLayoutsFoundOnThisPage": {
+    "message": "No grid layouts found on this page"
+  },
+  "elements/LayoutPane.ts | overlayDisplaySettings": {
+    "message": "Overlay display settings"
+  },
+  "elements/LayoutPane.ts | showElementInTheElementsPanel": {
+    "message": "Show element in the Elements panel"
+  },
+  "elements/MarkerDecorator.js | domBreakpoint": {
+    "message": "DOM Breakpoint"
+  },
+  "elements/MarkerDecorator.js | elementIsHidden": {
+    "message": "Element is hidden"
+  },
+  "elements/NodeStackTraceWidget.js | noStackTraceAvailable": {
+    "message": "No stack trace available"
+  },
+  "elements/PlatformFontsWidget.js | dGlyph": {
+    "message": "(1 glyph)"
+  },
+  "elements/PlatformFontsWidget.js | dGlyphs": {
+    "message": "({PH1} glyphs)"
+  },
+  "elements/PlatformFontsWidget.js | localFile": {
+    "message": "Local file"
+  },
+  "elements/PlatformFontsWidget.js | networkResource": {
+    "message": "Network resource"
+  },
+  "elements/PlatformFontsWidget.js | renderedFonts": {
+    "message": "Rendered Fonts"
+  },
+  "elements/StylePropertyTreeElement.js | copyAllDeclarations": {
+    "message": "Copy all declarations"
+  },
+  "elements/StylePropertyTreeElement.js | copyDeclaration": {
+    "message": "Copy declaration"
+  },
+  "elements/StylePropertyTreeElement.js | copyProperty": {
+    "message": "Copy property"
+  },
+  "elements/StylePropertyTreeElement.js | copyRule": {
+    "message": "Copy rule"
+  },
+  "elements/StylePropertyTreeElement.js | copyValue": {
+    "message": "Copy value"
+  },
+  "elements/StylePropertyTreeElement.js | openColorPickerS": {
+    "message": "Open color picker. {PH1}"
+  },
+  "elements/StylePropertyTreeElement.js | revealInSourcesPanel": {
+    "message": "Reveal in Sources panel"
+  },
+  "elements/StylePropertyTreeElement.js | shiftClickToChangeColorFormat": {
+    "message": "Shift + Click to change color format."
+  },
+  "elements/StylePropertyTreeElement.js | togglePropertyAndContinueEditing": {
+    "message": "Toggle property and continue editing"
+  },
+  "elements/StylePropertyTreeElement.js | valueForSettingSSIsOutsideThe": {
+    "message": "Value for setting “{PH1}” {PH2} is outside the supported range [{PH3}, {PH4}] for font-family “{PH5}”."
+  },
+  "elements/StylesSidebarPane.js | constructedStylesheet": {
+    "message": "constructed stylesheet"
+  },
+  "elements/StylesSidebarPane.js | copyAllDeclarations": {
+    "message": "Copy all declarations"
+  },
+  "elements/StylesSidebarPane.js | copyRule": {
+    "message": "Copy rule"
+  },
+  "elements/StylesSidebarPane.js | copySelector": {
+    "message": "Copy selector"
+  },
+  "elements/StylesSidebarPane.js | filter": {
+    "message": "Filter"
+  },
+  "elements/StylesSidebarPane.js | filterStyles": {
+    "message": "Filter Styles"
+  },
+  "elements/StylesSidebarPane.js | incrementdecrementWithMousewheelHundred": {
+    "message": "Increment/decrement with mousewheel or up/down keys. {PH1}: ±100, Shift: ±10, Alt: ±0.1"
+  },
+  "elements/StylesSidebarPane.js | incrementdecrementWithMousewheelOne": {
+    "message": "Increment/decrement with mousewheel or up/down keys. {PH1}: R ±1, Shift: G ±1, Alt: B ±1"
+  },
+  "elements/StylesSidebarPane.js | inheritedFroms": {
+    "message": "Inherited from "
+  },
+  "elements/StylesSidebarPane.js | injectedStylesheet": {
+    "message": "injected stylesheet"
+  },
+  "elements/StylesSidebarPane.js | insertStyleRuleBelow": {
+    "message": "Insert Style Rule Below"
+  },
+  "elements/StylesSidebarPane.js | invalidPropertyValue": {
+    "message": "Invalid property value"
+  },
+  "elements/StylesSidebarPane.js | newStyleRule": {
+    "message": "New Style Rule"
+  },
+  "elements/StylesSidebarPane.js | noMatchingSelectorOrStyle": {
+    "message": "No matching selector or style"
+  },
+  "elements/StylesSidebarPane.js | pseudoSElement": {
+    "message": "Pseudo ::{PH1} element"
+  },
+  "elements/StylesSidebarPane.js | sattributesStyle": {
+    "message": "{PH1}[Attributes Style]"
+  },
+  "elements/StylesSidebarPane.js | showAllPropertiesSMore": {
+    "message": "Show All Properties ({PH1} more)"
+  },
+  "elements/StylesSidebarPane.js | styleAttribute": {
+    "message": "Style Attribute"
+  },
+  "elements/StylesSidebarPane.js | unknownPropertyName": {
+    "message": "Unknown property name"
+  },
+  "elements/StylesSidebarPane.js | userAgentStylesheet": {
+    "message": "user agent stylesheet"
+  },
+  "elements/StylesSidebarPane.js | viaInspector": {
+    "message": "via inspector"
   },
   "event_listeners/EventListenersView.ts | deleteEventListener": {
     "message": "Delete event listener"

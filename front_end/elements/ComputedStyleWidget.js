@@ -29,9 +29,9 @@
 
 import * as Common from '../common/common.js';
 import * as Components from '../components/components.js';
+import * as i18n from '../i18n/i18n.js';
 import * as InlineEditor from '../inline_editor/inline_editor.js';
 import * as Platform from '../platform/platform.js';
-import {ls} from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
@@ -43,6 +43,38 @@ import {PlatformFontsWidget} from './PlatformFontsWidget.js';
 import {categorizePropertyName, Category, DefaultCategoryOrder} from './PropertyNameCategories.js';  // eslint-disable-line no-unused-vars
 import {IdleCallbackManager, StylePropertiesSection, StylesSidebarPane, StylesSidebarPropertyRenderer} from './StylesSidebarPane.js';
 
+export const UIStrings = {
+  /**
+  *@description Text to filter result items
+  */
+  filter: 'Filter',
+  /**
+  *@description ARIA accessible name in Computed Style Widget of the Elements panel
+  */
+  filterComputedStyles: 'Filter Computed Styles',
+  /**
+  *@description Text in Computed Style Widget of the Elements panel
+  */
+  showAll: 'Show all',
+  /**
+  *@description Group toggle text in Computed Style Widget of the Elements panel
+  */
+  group: 'Group',
+  /**
+  *@description No matches element text content in Computed Style Widget of the Elements panel
+  */
+  noMatchingProperty: 'No matching property',
+  /**
+  *@description Context menu item in Elements panel to navigate to css selector source
+  */
+  navigateToSelectorSource: 'Navigate to selector source',
+  /**
+  *@description Context menu item in Elements panel to navigate to style in styles pane
+  */
+  navigateToStyle: 'Navigate to style',
+};
+const str_ = i18n.i18n.registerUIStrings('elements/ComputedStyleWidget.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /**
  * @param {!SDK.DOMModel.DOMNode} node
  * @param {string} propertyName
@@ -166,20 +198,21 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
 
     const hbox = this.contentElement.createChild('div', 'hbox styles-sidebar-pane-toolbar');
     const filterContainerElement = hbox.createChild('div', 'styles-sidebar-pane-filter-box');
-    const filterInput = StylesSidebarPane.createPropertyFilterElement(ls`Filter`, hbox, filterCallback.bind(this));
-    UI.ARIAUtils.setAccessibleName(filterInput, Common.UIString.UIString('Filter Computed Styles'));
+    const filterInput =
+        StylesSidebarPane.createPropertyFilterElement(i18nString(UIStrings.filter), hbox, filterCallback.bind(this));
+    UI.ARIAUtils.setAccessibleName(filterInput, i18nString(UIStrings.filterComputedStyles));
     filterContainerElement.appendChild(filterInput);
     /** @type {?RegExp} */
     this._filterRegex = null;
 
     const toolbar = new UI.Toolbar.Toolbar('styles-pane-toolbar', hbox);
     toolbar.appendToolbarItem(new UI.Toolbar.ToolbarSettingCheckbox(
-        this._showInheritedComputedStylePropertiesSetting, undefined, Common.UIString.UIString('Show all')));
+        this._showInheritedComputedStylePropertiesSetting, undefined, i18nString(UIStrings.showAll)));
     toolbar.appendToolbarItem(new UI.Toolbar.ToolbarSettingCheckbox(
-        this._groupComputedStylesSetting, undefined, Common.UIString.UIString('Group')));
+        this._groupComputedStylesSetting, undefined, i18nString(UIStrings.group)));
 
     this._noMatchesElement = this.contentElement.createChild('div', 'gray-info-message');
-    this._noMatchesElement.textContent = ls`No matching property`;
+    this._noMatchesElement.textContent = i18nString(UIStrings.noMatchingProperty);
 
     this._propertiesOutline = new UI.TreeOutline.TreeOutlineInShadow();
     this._propertiesOutline.hideOverflow();
@@ -543,13 +576,14 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
     if (rule) {
       const header = rule.styleSheetId ? matchedStyles.cssModel().styleSheetHeaderForId(rule.styleSheetId) : null;
       if (header && !header.isAnonymousInlineStyleSheet()) {
-        contextMenu.defaultSection().appendItem(ls`Navigate to selector source`, () => {
+        contextMenu.defaultSection().appendItem(i18nString(UIStrings.navigateToSelectorSource), () => {
           StylePropertiesSection.tryNavigateToRuleLocation(matchedStyles, rule);
         });
       }
     }
 
-    contextMenu.defaultSection().appendItem(ls`Navigate to style`, () => Common.Revealer.reveal(property));
+    contextMenu.defaultSection().appendItem(
+        i18nString(UIStrings.navigateToStyle), () => Common.Revealer.reveal(property));
     contextMenu.show();
   }
 

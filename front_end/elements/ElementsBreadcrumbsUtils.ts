@@ -2,8 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {ls} from '../platform/platform.js';
-
+import * as i18n from '../i18n/i18n.js';
+export const UIStrings = {
+  /**
+  *@description Text in Elements Breadcrumbs of the Elements panel
+  */
+  text: '(text)',
+};
+const str_ = i18n.i18n.registerUIStrings('elements/ElementsBreadcrumbsUtils.ts', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export interface DOMNode {
   parentNode: DOMNode|null;
   id: number;
@@ -92,7 +99,7 @@ export const determineElementTitle = (domNode: DOMNode): CrumbTitle => {
     }
 
     case Node.TEXT_NODE:
-      return makeCrumbTitle(ls`(text)`);
+      return makeCrumbTitle(i18nString(UIStrings.text));
     case Node.COMMENT_NODE:
       return makeCrumbTitle('<!-->');
     case Node.DOCUMENT_TYPE_NODE:

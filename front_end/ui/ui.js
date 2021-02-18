@@ -42,7 +42,6 @@ import * as SoftContextMenu from './SoftContextMenu.js';
 import * as SoftDropDown from './SoftDropDown.js';
 import * as SplitWidget from './SplitWidget.js';
 import * as SuggestBox from './SuggestBox.js';
-import * as SyntaxHighlighter from './SyntaxHighlighter.js';
 import * as TabbedPane from './TabbedPane.js';
 import * as TargetCrashedScreen from './TargetCrashedScreen.js';
 import * as TextEditor from './TextEditor.js';
@@ -102,7 +101,6 @@ export {
   SoftDropDown,
   SplitWidget,
   SuggestBox,
-  SyntaxHighlighter,
   TabbedPane,
   TargetCrashedScreen,
   TextEditor,

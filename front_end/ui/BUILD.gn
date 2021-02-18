@@ -47,7 +47,6 @@ devtools_module("ui") {
     "SoftDropDown.js",
     "SplitWidget.js",
     "SuggestBox.js",
-    "SyntaxHighlighter.js",
     "TabbedPane.js",
     "TargetCrashedScreen.js",
     "TextEditor.js",

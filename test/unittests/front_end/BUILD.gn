@@ -39,6 +39,7 @@ group("front_end") {
     "sdk",
     "sources",
     "test_setup",
+    "text_editor",
     "text_utils",
     "timeline",
     "timeline_model",

@@ -6,10 +6,12 @@ import './cm_modes.js';
 
 import * as CodeMirrorTextEditor from './CodeMirrorTextEditor.js';
 import * as CodeMirrorUtils from './CodeMirrorUtils.js';
+import * as SyntaxHighlighter from './SyntaxHighlighter.js';
 import * as TextEditorAutocompleteController from './TextEditorAutocompleteController.js';
 
 export {
   CodeMirrorTextEditor,
   CodeMirrorUtils,
+  SyntaxHighlighter,
   TextEditorAutocompleteController,
 };

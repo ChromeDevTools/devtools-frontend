@@ -9,6 +9,7 @@ devtools_module("text_editor") {
   sources = [
     "CodeMirrorTextEditor.js",
     "CodeMirrorUtils.js",
+    "SyntaxHighlighter.js",
     "TextEditorAutocompleteController.js",
     "cm_modes.js",
   ]

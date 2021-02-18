@@ -165,9 +165,6 @@ UI.SplitWidget = UIModule.SplitWidget.SplitWidget;
 UI.SuggestBox = UIModule.SuggestBox.SuggestBox;
 
 /** @constructor */
-UI.SyntaxHighlighter = UIModule.SyntaxHighlighter.SyntaxHighlighter;
-
-/** @constructor */
 UI.TabbedPane = UIModule.TabbedPane.TabbedPane;
 
 /** @enum {symbol} */

@@ -142,6 +142,8 @@ export class RequestInitiatorView extends UI.Widget.VBox {
     }
 
     const contentElement = new UI.TreeOutline.TreeElement(content, false);
+    contentElement.selectable = false;
+
 
     root.appendChild(contentElement);
     root.expand();

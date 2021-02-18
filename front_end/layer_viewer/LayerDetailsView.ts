@@ -52,7 +52,8 @@ export const UIStrings = {
   */
   scrollRectangleDimensions: '{PH1} {PH2} × {PH3} (at {PH4}, {PH5})',
   /**
-  *@description Text in Layer Details View of the Layers panel
+  * @description Text in Layer Details View of the Layers panel. Used to indicate that a particular
+  * layer of the website is unnamed (was not given a name/doesn't have one).
   */
   unnamed: '<unnamed>',
   /**

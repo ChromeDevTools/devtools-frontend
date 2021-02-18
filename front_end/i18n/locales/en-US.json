@@ -648,13 +648,13 @@
     "message": "Revert all changes to current file"
   },
   "changes/ChangesView.ts | sDeletion": {
-    "message": "{PH1} deletion (-)"
+    "message": "1 deletion (-)"
   },
   "changes/ChangesView.ts | sDeletions": {
     "message": "{PH1} deletions (-)"
   },
   "changes/ChangesView.ts | sInsertion": {
-    "message": "{PH1} insertion (+),"
+    "message": "1 insertion (+),"
   },
   "changes/ChangesView.ts | sInsertions": {
     "message": "{PH1} insertions (+),"

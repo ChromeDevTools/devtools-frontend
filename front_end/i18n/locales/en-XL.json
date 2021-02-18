@@ -648,13 +648,13 @@
     "message": "R̂év̂ér̂t́ âĺl̂ ćĥán̂ǵêś t̂ó ĉúr̂ŕêńt̂ f́îĺê"
   },
   "changes/ChangesView.ts | sDeletion": {
-    "message": "{PH1} d̂él̂ét̂íôń (-)"
+    "message": "1 d̂él̂ét̂íôń (-)"
   },
   "changes/ChangesView.ts | sDeletions": {
     "message": "{PH1} d̂él̂ét̂íôńŝ (-)"
   },
   "changes/ChangesView.ts | sInsertion": {
-    "message": "{PH1} îńŝér̂t́îón̂ (+),"
+    "message": "1 îńŝér̂t́îón̂ (+),"
   },
   "changes/ChangesView.ts | sInsertions": {
     "message": "{PH1} îńŝér̂t́îón̂ś (+),"
@@ -1476,25 +1476,25 @@
     "message": "ĈŚŜ Óv̂ér̂v́îéŵ"
   },
   "css_overview/CSSOverviewUnusedDeclarations.js | bottomAppliedToAStatically": {
-    "message": "B̂ót̂t́ôḿ âṕp̂ĺîéd̂ t́ô á ŝt́ât́îćâĺl̂ý p̂óŝít̂íôńêd́ êĺêḿêńt̂"
+    "message": "Bottom âṕp̂ĺîéd̂ t́ô á ŝt́ât́îćâĺl̂ý p̂óŝít̂íôńêd́ êĺêḿêńt̂"
   },
   "css_overview/CSSOverviewUnusedDeclarations.js | heightAppliedToAnInlineElement": {
-    "message": "Ĥéîǵĥt́ âṕp̂ĺîéd̂ t́ô án̂ ín̂ĺîńê él̂ém̂én̂t́"
+    "message": "Height âṕp̂ĺîéd̂ t́ô án̂ ín̂ĺîńê él̂ém̂én̂t́"
   },
   "css_overview/CSSOverviewUnusedDeclarations.js | leftAppliedToAStatically": {
-    "message": "L̂éf̂t́ âṕp̂ĺîéd̂ t́ô á ŝt́ât́îćâĺl̂ý p̂óŝít̂íôńêd́ êĺêḿêńt̂"
+    "message": "Left âṕp̂ĺîéd̂ t́ô á ŝt́ât́îćâĺl̂ý p̂óŝít̂íôńêd́ êĺêḿêńt̂"
   },
   "css_overview/CSSOverviewUnusedDeclarations.js | rightAppliedToAStatically": {
-    "message": "R̂íĝh́t̂ áp̂ṕl̂íêd́ t̂ó â śt̂át̂íĉál̂ĺŷ ṕôśît́îón̂éd̂ él̂ém̂én̂t́"
+    "message": "Right âṕp̂ĺîéd̂ t́ô á ŝt́ât́îćâĺl̂ý p̂óŝít̂íôńêd́ êĺêḿêńt̂"
   },
   "css_overview/CSSOverviewUnusedDeclarations.js | topAppliedToAStatically": {
-    "message": "T̂óp̂ áp̂ṕl̂íêd́ t̂ó â śt̂át̂íĉál̂ĺŷ ṕôśît́îón̂éd̂ él̂ém̂én̂t́"
+    "message": "Top âṕp̂ĺîéd̂ t́ô á ŝt́ât́îćâĺl̂ý p̂óŝít̂íôńêd́ êĺêḿêńt̂"
   },
   "css_overview/CSSOverviewUnusedDeclarations.js | verticalAlignmentAppliedTo": {
-    "message": "V̂ér̂t́îćâĺ âĺîǵn̂ḿêńt̂ áp̂ṕl̂íêd́ t̂ó êĺêḿêńt̂ ẃĥíĉh́ îś n̂éît́ĥér̂ ín̂ĺîńê ńôŕ t̂áb̂ĺê-ćêĺl̂"
+    "message": "V̂ér̂t́îćâĺ âĺîǵn̂ḿêńt̂ áp̂ṕl̂íêd́ t̂ó êĺêḿêńt̂ ẃĥíĉh́ îś n̂éît́ĥér̂ inline ńôŕ table-cell"
   },
   "css_overview/CSSOverviewUnusedDeclarations.js | widthAppliedToAnInlineElement": {
-    "message": "Ŵíd̂t́ĥ áp̂ṕl̂íêd́ t̂ó âń îńl̂ín̂é êĺêḿêńt̂"
+    "message": "Width âṕp̂ĺîéd̂ t́ô án̂ ín̂ĺîńê él̂ém̂én̂t́"
   },
   "data_grid/DataGrid.js | addNew": {
     "message": "Âd́d̂ ńêẃ"
@@ -3696,7 +3696,7 @@
     "message": "content-type"
   },
   "network/NetworkDataGridNode.js | CoopSandboxedIframeCannot": {
-    "message": "ĈóôṕŜán̂d́b̂óx̂éd̂Íf̂ŕâḿêĆâńn̂ót̂Ńâv́îǵât́êT́ôĆôóp̂Ṕâǵê"
+    "message": "CoopSandboxedIframeCannotNavigateToCoopPage"
   },
   "network/NetworkDataGridNode.js | corsError": {
     "message": "ĈÓR̂Ś êŕr̂ór̂"
@@ -5139,7 +5139,7 @@
     "message": "Ĥéâṕ p̂ŕôf́îĺêŕ îś r̂éĉór̂d́îńĝ"
   },
   "profiler/HeapProfileView.js | itProvidesGoodApproximation": {
-    "message": "Ît́ p̂ŕôv́îd́êś ĝóôd́ âṕp̂ŕôx́îḿât́îón̂ óf̂ ál̂ĺôćât́îón̂ś b̂ŕôḱêń d̂óŵń b̂ý Ĵáv̂áŜćr̂íp̂t́ êx́êćût́îón̂ śt̂áĉḱ."
+    "message": "Ît́ p̂ŕôv́îd́êś ĝóôd́ âṕp̂ŕôx́îḿât́îón̂ óf̂ ál̂ĺôćât́îón̂ś b̂ŕôḱêń d̂óŵń b̂ý JavaScript êx́êćût́îón̂ śt̂áĉḱ."
   },
   "profiler/HeapProfileView.js | name": {
     "message": "N̂ám̂é"
@@ -7413,7 +7413,7 @@
     "message": "T̂áb̂ ćĥár̂áĉt́êŕ"
   },
   "source_frame/SourceFrame.js | bytecodePositionXs": {
-    "message": "B̂ýt̂éĉód̂é p̂óŝít̂íôń 0x̂{PH1}"
+    "message": "B̂ýt̂éĉód̂é p̂óŝít̂íôń 0x{PH1}"
   },
   "source_frame/SourceFrame.js | dCharactersSelected": {
     "message": "{PH1} ĉh́âŕâćt̂ér̂ś ŝél̂éĉt́êd́"
@@ -9570,7 +9570,7 @@
     "message": "M̂áx̂ Óût́p̂út̂ Ćĥán̂ńêĺŝ"
   },
   "web_audio/AudioContextContentBuilder.ts | offlineaudiocontext": {
-    "message": "Ôf́f̂ĺîńêÁûd́îóĈón̂t́êx́t̂"
+    "message": "OfflineAudioContext"
   },
   "web_audio/AudioContextContentBuilder.ts | renderCapacity": {
     "message": "R̂én̂d́êŕ Ĉáp̂áĉít̂ý"

@@ -61,7 +61,9 @@ export const UIStrings = {
   */
   openUsingS: 'Open using {PH1}',
   /**
-  *@description Text in Linkifier
+  * @description The name of a setting which controls how links are handled in the UI. 'Handling'
+  * refers to the ability of extensions to DevTools to be able to intercept link clicks so that they
+  * can react to them.
   */
   linkHandling: 'Link handling:',
 };

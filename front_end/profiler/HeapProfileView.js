@@ -72,7 +72,7 @@ export const UIStrings = {
   *@description Description (part 3) in Heap Profile View of a profiler tool
   */
   itProvidesGoodApproximation:
-      'It provides good approximation of allocations broken down by JavaScript execution stack.',
+      'It provides good approximation of allocations broken down by `JavaScript` execution stack.',
   /**
   *@description Name of a profile
   *@example {2} PH1
@@ -418,6 +418,7 @@ export class SamplingHeapProfileType extends SamplingHeapProfileTypeBase {
    * @override
    */
   get description() {
+    // TODO(l10n): Do not concatenate localized strings.
     const formattedDescription = [
       i18nString(UIStrings.recordMemoryAllocations), i18nString(UIStrings.thisProfileTypeHasMinimal),
       i18nString(UIStrings.itProvidesGoodApproximation)

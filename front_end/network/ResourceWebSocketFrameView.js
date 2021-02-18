@@ -70,15 +70,20 @@ export const UIStrings = {
   */
   clearAllL: 'Clear all',
   /**
-  *@description Text in Resource Web Socket Frame View of the Network panel
-  *@example {Text Message} PH1
-  *@example {0} PH2
+  * @description Text in Resource Web Socket Frame View of the Network panel. Displays which Opcode
+  * is relevant to a particular operation. 'mask' indicates that the Opcode used a mask, which is a
+  * way of modifying a value by overlaying another value on top of it, partially covering/changing
+  * it, hence 'masking' it.
+  * https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API/Writing_WebSocket_servers
+  * @example {Localized name of the Opcode} PH1
+  * @example {0} PH2
   */
   sOpcodeSMask: '{PH1} (Opcode {PH2}, mask)',
   /**
-  *@description Text in Resource Web Socket Frame View of the Network panel
-  *@example {Text Message} PH1
-  *@example {0} PH2
+  * @description Text in Resource Web Socket Frame View of the Network panel. Displays which Opcode
+  * is relevant to a particular operation.
+  * @example {Localized name of the Opcode} PH1
+  * @example {0} PH2
   */
   sOpcodeS: '{PH1} (Opcode {PH2})',
   /**

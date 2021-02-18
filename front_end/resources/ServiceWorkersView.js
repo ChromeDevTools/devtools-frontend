@@ -76,7 +76,8 @@ export const UIStrings = {
   */
   clients: 'Clients',
   /**
-  *@description Text in Service Workers View of the Application panel
+  * @description Text in Service Workers View of the Application panel. Label for a section of the
+  * tool which allows the developer to send a test push message to the service worker.
   */
   pushString: 'Push',
   /**

@@ -47,7 +47,9 @@ export const UIStrings = {
   */
   add: 'Add',
   /**
-  *@description Text to show there is nothing
+  * @description Placeholder text for an area of the UI that shows which folders have been excluded
+  * from being show in DevTools. When the user has not yet chosen any folders to exclude, this text
+  * is shown.
   */
   none: 'None',
   /**

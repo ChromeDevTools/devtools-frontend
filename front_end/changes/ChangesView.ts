@@ -31,25 +31,24 @@ export const UIStrings = {
   */
   binaryData: 'Binary data',
   /**
-  *@description Insertion text in Changes View of the Changes tab
-  *@example {1} PH1
+  *@description Text in Changes View of the Changes tab when one code insertion has occurred.
   */
-  sInsertion: '{PH1} insertion (+),',
+  sInsertion: '1 insertion `(+)`,',
   /**
-  *@description Insertion text in Changes View of the Changes tab
-  *@example {2} PH1
+  * @description Text in Changes View of the Changes tab when multiple code insertions have
+  * occurred.
+  * @example {2} PH1
   */
-  sInsertions: '{PH1} insertions (+),',
+  sInsertions: '{PH1} insertions `(+)`,',
   /**
-  *@description Deletion text in Changes View of the Changes tab
-  *@example {1} PH1
+  *@description Text in Changes View of the Changes tab when one code deletion has occurred.
   */
-  sDeletion: '{PH1} deletion (-)',
+  sDeletion: '1 deletion `(-)`',
   /**
-  *@description Deletion text in Changes View of the Changes tab
-  *@example {2} PH1
+  * @description Text in Changes View of the Changes tab when multiple code deletions have occurred.
+  * @example {2} PH1
   */
-  sDeletions: '{PH1} deletions (-)',
+  sDeletions: '{PH1} deletions `(-)`',
   /**
   *@description Text in Changes View of the Changes tab
   *@example {2} PH1
@@ -263,14 +262,14 @@ export class ChangesView extends UI.Widget.VBox {
 
     let insertionText: Common.UIString.LocalizedString|'' = '';
     if (insertions === 1) {
-      insertionText = i18nString(UIStrings.sInsertion, {PH1: insertions});
+      insertionText = i18nString(UIStrings.sInsertion);
     } else {
       insertionText = i18nString(UIStrings.sInsertions, {PH1: insertions});
     }
 
     let deletionText: Common.UIString.LocalizedString|'' = '';
     if (deletions === 1) {
-      deletionText = i18nString(UIStrings.sDeletion, {PH1: deletions});
+      deletionText = i18nString(UIStrings.sDeletion);
     } else {
       deletionText = i18nString(UIStrings.sDeletions, {PH1: deletions});
     }

@@ -59,10 +59,11 @@ export const UIStrings = {
   */
   dSelectionRegions: '{PH1} selection regions',
   /**
-  *@description Position indicator in Source Frame of the Sources panel
-  *@example {abc} PH1
+  * @description Position indicator in Source Frame of the Sources panel. The placeholder is a
+  * hexadecimal number value, which is why it is prefixed with '0x'.
+  * @example {abc} PH1
   */
-  bytecodePositionXs: 'Bytecode position 0x{PH1}',
+  bytecodePositionXs: 'Bytecode position `0x`{PH1}',
   /**
   *@description Text in Source Frame of the Sources panel
   *@example {2} PH1

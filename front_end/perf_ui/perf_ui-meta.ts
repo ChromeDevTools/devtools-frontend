@@ -24,8 +24,11 @@ export const UIStrings = {
     */
   zoom: 'Zoom',
   /**
-     *@description Title of a setting under the Memory category in Settings
-    */
+   * @description Title of a setting under the Memory category in Settings. Live memory is memory
+   * that is still in-use by the program (not dead). Allocation of live memory is when the program
+   * creates new memory. This is a setting that turns on extra annotations in the UI to mark these
+   * allocations.
+   */
   liveMemoryAllocationAnnotations: 'Live memory allocation annotations',
   /**
      *@description Title of a setting under the Memory category that can be invoked through the Command Menu

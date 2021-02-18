@@ -14,7 +14,7 @@ export const UIStrings = {
   /**
   *@description Text in Audio Context Content Builder
   */
-  offlineaudiocontext: 'OfflineAudioContext',
+  offlineaudiocontext: '`OfflineAudioContext`',
   /**
   *@description The current state of an item
   */

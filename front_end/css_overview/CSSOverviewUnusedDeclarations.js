@@ -8,31 +8,31 @@ export const UIStrings = {
   /**
   *@description Label to explain why top values are ignored
   */
-  topAppliedToAStatically: 'Top applied to a statically positioned element',
+  topAppliedToAStatically: '`Top` applied to a statically positioned element',
   /**
-  *@description Label to explain why left values are ignored
+  *@description Label to explain why left (opposite to right) values are ignored.
   */
-  leftAppliedToAStatically: 'Left applied to a statically positioned element',
+  leftAppliedToAStatically: '`Left` applied to a statically positioned element',
   /**
   *@description Label to explain why right values are ignored
   */
-  rightAppliedToAStatically: 'Right applied to a statically positioned element',
+  rightAppliedToAStatically: '`Right` applied to a statically positioned element',
   /**
   *@description Label to explain why bottom values are ignored
   */
-  bottomAppliedToAStatically: 'Bottom applied to a statically positioned element',
+  bottomAppliedToAStatically: '`Bottom` applied to a statically positioned element',
   /**
   *@description Label to explain why width values are ignored
   */
-  widthAppliedToAnInlineElement: 'Width applied to an inline element',
+  widthAppliedToAnInlineElement: '`Width` applied to an inline element',
   /**
   *@description Label to explain why height values are ignored
   */
-  heightAppliedToAnInlineElement: 'Height applied to an inline element',
+  heightAppliedToAnInlineElement: '`Height` applied to an inline element',
   /**
   *@description Label to explain why vertical-align values are ignored
   */
-  verticalAlignmentAppliedTo: 'Vertical alignment applied to element which is neither inline nor table-cell',
+  verticalAlignmentAppliedTo: 'Vertical alignment applied to element which is neither `inline` nor `table-cell`',
 };
 const str_ = i18n.i18n.registerUIStrings('css_overview/CSSOverviewUnusedDeclarations.js', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

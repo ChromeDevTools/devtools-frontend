@@ -112,7 +112,7 @@ export const UIStrings = {
   /**
   *@description Text in Network Data Grid Node of the Network panel
   */
-  CoopSandboxedIframeCannot: 'CoopSandboxedIframeCannotNavigateToCoopPage',
+  CoopSandboxedIframeCannot: '`CoopSandboxedIframeCannotNavigateToCoopPage`',
   /**
   *@description Text in Network Data Grid Node of the Network panel
   */

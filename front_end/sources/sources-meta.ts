@@ -320,7 +320,8 @@ export const UIStrings = {
   */
   doNotShowWhitespaceCharacters: 'Do not show whitespace characters',
   /**
-  *@description Text to show there is nothing
+  * @description One value of an option that can be set to 'none', 'all', or 'trailing'. The setting
+  * controls how whitespace characters are shown in a text editor.
   */
   none: 'None',
   /**

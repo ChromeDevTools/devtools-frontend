@@ -64,6 +64,7 @@ export class RequestInitiatorView extends UI.Widget.VBox {
   _createTree() {
     const treeOutline = new UI.TreeOutline.TreeOutlineInShadow();
     treeOutline.registerRequiredCSS('network/requestInitiatorViewTree.css', {enableLegacyPatching: false});
+    treeOutline.contentElement.classList.add('request-initiator-view-tree');
 
     return treeOutline;
   }

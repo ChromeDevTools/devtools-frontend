@@ -6,7 +6,7 @@ import * as LitHtml from '../../third_party/lit-html/lit-html.js';
 
 interface BaseTreeNode {
   key: string;
-  renderer?: (key: string) => LitHtml.TemplateResult;
+  renderer?: (node: TreeNode, state: {isExpanded: boolean}) => LitHtml.TemplateResult;
 }
 
 export interface TreeNodeWithChildren extends BaseTreeNode {

@@ -14,8 +14,8 @@ const data: Components.TreeOutline.TreeOutlineData = {
   tree: [
     {
       key: 'Offices',
-      renderer: (key: string): LitHtml.TemplateResult =>
-          LitHtml.html`<strong style="color:red;">${key.toUpperCase()}</strong>`,
+      renderer: (node): LitHtml.TemplateResult =>
+          LitHtml.html`<strong style="color:red;">${node.key.toUpperCase()}</strong>`,
       children: (): Promise<Components.TreeOutlineUtils.TreeNode[]> => Promise.resolve([
         {
           key: 'Europe',

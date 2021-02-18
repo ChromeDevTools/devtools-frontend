@@ -212,8 +212,6 @@ export class TreeOutline extends HTMLElement {
   private async renderNode(
       node: TreeNode, {depth, setSize, positionInSet}: {depth: number, setSize: number, positionInSet: number}):
       Promise<LitHtml.TemplateResult> {
-    // Disabled until https://crbug.com/1079231 is fixed.
-    // clang-format off
     let childrenToRender;
     const nodeIsExpanded = this.nodeIsExpanded(node);
     if (!isExpandableNode(node) || !nodeIsExpanded) {
@@ -223,7 +221,10 @@ export class TreeOutline extends HTMLElement {
       const childNodes = Promise.all(children.map((childNode, index) => {
         return this.renderNode(childNode, {depth: depth + 1, setSize: children.length, positionInSet: index});
       }));
+      // Disabled until https://crbug.com/1079231 is fixed.
+      // clang-format off
       childrenToRender = LitHtml.html`<ul role="group">${LitHtml.Directives.until(childNodes)}</ul>`;
+      // clang-format on
     }
 
     const nodeIsFocusable = this.getFocusableTreeNode() === node;
@@ -234,8 +235,13 @@ export class TreeOutline extends HTMLElement {
     });
     const ariaExpandedAttribute = LitHtml.Directives.ifDefined(isExpandableNode(node) ? String(nodeIsExpanded) : undefined);
 
-    const renderedNodeKey = node.renderer ? node.renderer(node.key) : node.key;
+    const renderedNodeKey = node.renderer ? node.renderer(node, {
+      isExpanded: nodeIsExpanded,
+    }) :
+                                            node.key;
 
+    // Disabled until https://crbug.com/1079231 is fixed.
+    // clang-format off
     return LitHtml.html`
       <li role="treeitem"
         tabindex=${tabIndex}

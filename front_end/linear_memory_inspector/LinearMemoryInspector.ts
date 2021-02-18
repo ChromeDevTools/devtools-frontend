@@ -14,7 +14,7 @@ const {render, html} = LitHtml;
 import {Mode, AddressInputChangedEvent, HistoryNavigationEvent, LinearMemoryNavigatorData, Navigation, PageNavigationEvent} from './LinearMemoryNavigator.js';
 import type {EndiannessChangedEvent, LinearMemoryValueInterpreterData, ValueTypeToggledEvent} from './LinearMemoryValueInterpreter.js';
 import type {ByteSelectedEvent, LinearMemoryViewerData, ResizeEvent} from './LinearMemoryViewer.js';
-import {VALUE_INTEPRETER_MAX_NUM_BYTES, ValueType, Endianness, DEFAULT_MODE_MAPPING} from './ValueInterpreterDisplayUtils.js';
+import {VALUE_INTEPRETER_MAX_NUM_BYTES, Endianness, DEFAULT_MODE_MAPPING} from './ValueInterpreterDisplayUtils.js';
 import {formatAddress, parseAddress} from './LinearMemoryInspectorUtils.js';
 import type {ValueTypeModeChangedEvent} from './ValueInterpreterDisplay.js';
 
@@ -94,7 +94,7 @@ export class LinearMemoryInspector extends HTMLElement {
 
   private numBytesPerPage = 4;
 
-  private valueTypes = new Set([ValueType.Int8, ValueType.Float32]);
+  private valueTypes = new Set(DEFAULT_MODE_MAPPING.keys());
   private valueTypeModes = DEFAULT_MODE_MAPPING;
   private endianness = Endianness.Little;
 

@@ -23,10 +23,6 @@ export const UIStrings = {
   */
   sci: 'sci',
   /**
-  *@description Text that describes the type of a value in the Linear Memory Inspector
-  */
-  none: 'none',
-  /**
   *@description Text that describes the Endianness setting that can be selected in the select item in the Linear Memory Inspector
   */
   littleEndian: 'Little Endian',
@@ -75,7 +71,6 @@ export const enum ValueType {
   Int64 = 'Integer 64-bit',
   Float32 = 'Float 32-bit',
   Float64 = 'Float 64-bit',
-  String = 'String',
 }
 
 export const enum Endianness {
@@ -88,7 +83,6 @@ export const enum ValueTypeMode {
   Hexadecimal = 'hex',
   Octal = 'oct',
   Scientific = 'sci',
-  None = 'none',
 }
 
 export const DEFAULT_MODE_MAPPING = new Map([
@@ -98,7 +92,6 @@ export const DEFAULT_MODE_MAPPING = new Map([
   [ValueType.Int64, ValueTypeMode.Decimal],
   [ValueType.Float32, ValueTypeMode.Decimal],
   [ValueType.Float64, ValueTypeMode.Decimal],
-  [ValueType.String, ValueTypeMode.None],
 ]);
 
 export const VALUE_TYPE_MODE_LIST = [
@@ -106,7 +99,6 @@ export const VALUE_TYPE_MODE_LIST = [
   ValueTypeMode.Hexadecimal,
   ValueTypeMode.Octal,
   ValueTypeMode.Scientific,
-  ValueTypeMode.None,
 ];
 
 export function valueTypeModeToLocalizedString(mode: ValueTypeMode): string {
@@ -119,8 +111,6 @@ export function valueTypeModeToLocalizedString(mode: ValueTypeMode): string {
       return i18nString(UIStrings.oct);
     case ValueTypeMode.Scientific:
       return i18nString(UIStrings.sci);
-    case ValueTypeMode.None:
-      return i18nString(UIStrings.none);
     default:
       return Platform.assertNever(mode, `Unknown mode: ${mode}`);
   }
@@ -151,8 +141,6 @@ export function valueTypeToLocalizedString(valueType: ValueType): string {
       return i18nString(UIStrings.floatBit);
     case ValueType.Float64:
       return i18nString(UIStrings.float64Bit);
-    case ValueType.String:
-      return i18nString(UIStrings.string);
     default:
       return Platform.assertNever(valueType, `Unknown value type: ${valueType}`);
   }
@@ -168,8 +156,6 @@ export function isValidMode(type: ValueType, mode: ValueTypeMode): boolean {
     case ValueType.Float32:
     case ValueType.Float64:
       return mode === ValueTypeMode.Scientific || mode === ValueTypeMode.Decimal;
-    case ValueType.String:
-      return mode === ValueTypeMode.None;
     default:
       return Platform.assertNever(type, `Unknown value type: ${type}`);
   }
@@ -223,8 +209,6 @@ export function format(formatData: FormatData): string {
       case ValueType.Float64:
         value = valueView.getFloat64(0, isLittleEndian);
         return formatFloat(value, formatData.mode);
-      case ValueType.String:
-        throw new Error(`Type ${formatData.type} is not yet implemented`);
       default:
         return Platform.assertNever(formatData.type, `Unknown value type: ${formatData.type}`);
     }

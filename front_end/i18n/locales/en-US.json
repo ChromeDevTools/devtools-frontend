@@ -3173,9 +3173,6 @@
   "linear_memory_inspector/ValueInterpreterDisplayUtils.ts | littleEndian": {
     "message": "Little Endian"
   },
-  "linear_memory_inspector/ValueInterpreterDisplayUtils.ts | none": {
-    "message": "none"
-  },
   "linear_memory_inspector/ValueInterpreterDisplayUtils.ts | oct": {
     "message": "oct"
   },

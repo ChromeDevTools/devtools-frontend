@@ -4,5 +4,6 @@ ts_library("client_variations") {
   testonly = true
   sources = [ "ClientVariations_test.ts" ]
 
-  deps = [ "../../../../front_end/client_variations:bundle" ]
+  deps =
+      [ "../../../../front_end/third_party/chromium/client-variations:bundle" ]
 }

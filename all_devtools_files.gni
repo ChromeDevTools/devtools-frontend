@@ -58,7 +58,6 @@ all_devtools_files = [
   "front_end/changes/changesSidebar.css",
   "front_end/changes/changesView.css",
   "front_end/changes/module.json",
-  "front_end/client_variations/module.json",
   "front_end/cm_headless/module.json",
   "front_end/cm/codemirror.css",
   "front_end/cm/module.json",

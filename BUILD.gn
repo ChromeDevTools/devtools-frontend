@@ -127,7 +127,6 @@ non_autostart_non_remote_modules = [
   "animation/animation_module.js",
   "browser_debugger/browser_debugger_module.js",
   "changes/changes_module.js",
-  "client_variations/client_variations_module.js",
   "cm/cm_module.js",
   "color_picker/color_picker_module.js",
   "console/console_module.js",

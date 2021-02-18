@@ -29,13 +29,13 @@
  */
 
 import * as BrowserSDK from '../browser_sdk/browser_sdk.js';
-import * as ClientVariations from '../client_variations/client_variations.js';
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
 import * as i18n from '../i18n/i18n.js';
 import * as ObjectUI from '../object_ui/object_ui.js';
 import * as Platform from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
+import * as ClientVariations from '../third_party/chromium/client-variations/client-variations.js';
 import * as UI from '../ui/ui.js';
 
 export const UIStrings = {

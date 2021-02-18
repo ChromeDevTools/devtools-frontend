@@ -4,7 +4,7 @@
 
 const {assert} = chai;
 
-import * as ClientVariations from '../../../../front_end/client_variations/client_variations.js';
+import * as ClientVariations from '../../../../front_end/third_party/chromium/client-variations/client-variations.js';
 
 describe('formatClientVariations', () => {
   it('formats input containing both types of variation IDs', () => {

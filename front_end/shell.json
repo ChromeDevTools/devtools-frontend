@@ -9,7 +9,6 @@
     { "name": "ui", "type": "autostart" },
 
     { "name": "changes" },
-    { "name": "client_variations" },
     { "name": "cm" },
     { "name": "color_picker" },
     { "name": "console" },

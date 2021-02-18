@@ -28,15 +28,17 @@ export const UIStrings = {
   */
   profileName: 'Profile Name',
   /**
-  *@description Text in Throttling Settings Tab of the Network panel
+  * @description Label for a textbox that sets the download speed in the Throttling Settings Tab.
+  * Noun, short for 'download speed'.
   */
   download: 'Download',
   /**
-  *@description Text in Throttling Settings Tab of the Network panel
+  * @description Label for a textbox that sets the upload speed in the Throttling Settings Tab.
+  * Noun, short for 'upload speed'.
   */
   upload: 'Upload',
   /**
-  *@description Text for the latency of a task
+  * @description Label for a textbox that sets the latency in the Throttling Settings Tab.
   */
   latency: 'Latency',
   /**

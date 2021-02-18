@@ -82,9 +82,9 @@ export const UIStrings = {
   */
   csp: 'csp',
   /**
-  *@description Reason in Network Data Grid Node of the Network panel
+  *@description Reason in Network Data Grid Node of the Network panel. Locked term. Don't translate.
   */
-  mixedcontent: 'mixed-content',
+  mixedcontent: '`mixed-content`',
   /**
   *@description Reason in Network Data Grid Node of the Network panel
   */

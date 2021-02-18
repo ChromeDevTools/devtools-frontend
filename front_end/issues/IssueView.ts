@@ -111,11 +111,13 @@ export const UIStrings = {
   */
   frameUrl: 'Frame URL',
   /**
-  *@description The kind of resolution for a Heavy Ads issue
+  * @description When there is a Heavy Ad, the browser can choose to deal with it in different ways.
+  * This string indicates that the ad was bad enough that it was removed.
   */
   removed: 'Removed',
   /**
-  *@description The kind of resolution for a Heavy Ads issue
+  * @description When there is a Heavy Ad, the browser can choose to deal with it in different ways.
+  * This string indicates that the ad was only warned, and not removed.
   */
   warned: 'Warned',
   /**

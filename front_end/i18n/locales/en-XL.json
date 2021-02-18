@@ -129,7 +129,7 @@
     "message": "Êx́p̂án̂d́êd́"
   },
   "accessibility/AccessibilityStrings.ts | flowsTo": {
-    "message": "F̂ĺôẃŝ t́ô"
+    "message": "Flows to"
   },
   "accessibility/AccessibilityStrings.ts | focusable": {
     "message": "F̂óĉúŝáb̂ĺê"
@@ -2646,7 +2646,7 @@
     "message": "Îś â śĉŕôĺl̂áb̂ĺê óv̂ér̂f́l̂óŵ él̂ém̂én̂t́."
   },
   "layer_viewer/LayerDetailsView.ts | isDomOverlayForWebxrImmersivear": {
-    "message": "Îś D̂ÓM̂ óv̂ér̂ĺâý f̂ór̂ Ẃêb́X̂Ŕ îḿm̂ér̂śîv́ê-ár̂ ḿôd́ê."
+    "message": "Îś DOM ôv́êŕl̂áŷ f́ôŕ WebXR immersive-ar m̂ód̂é."
   },
   "layer_viewer/LayerDetailsView.ts | isFixedOrStickyPosition": {
     "message": "Îś f̂íx̂éd̂ ór̂ śt̂íĉḱŷ ṕôśît́îón̂."
@@ -3507,37 +3507,37 @@
     "message": "Ûṕl̂óâd́"
   },
   "network/BinaryResourceView.js | base": {
-    "message": "B̂áŝé64"
+    "message": "Base64"
   },
   "network/BinaryResourceView.js | binaryViewType": {
     "message": "B̂ín̂ár̂ý v̂íêẃ t̂ýp̂é"
   },
   "network/BinaryResourceView.js | copiedAsBase": {
-    "message": "Ĉóp̂íêd́ âś B̂áŝé64"
+    "message": "Ĉóp̂íêd́ âś Base64"
   },
   "network/BinaryResourceView.js | copiedAsHex": {
-    "message": "Ĉóp̂íêd́ âś Ĥéx̂"
+    "message": "Ĉóp̂íêd́ âś Hex"
   },
   "network/BinaryResourceView.js | copiedAsUtf": {
-    "message": "Ĉóp̂íêd́ âś ÛT́F̂-8"
+    "message": "Ĉóp̂íêd́ âś UTF-8"
   },
   "network/BinaryResourceView.js | copyAsBase": {
-    "message": "Ĉóp̂ý âś B̂áŝé64"
+    "message": "Ĉóp̂ý âś Base64"
   },
   "network/BinaryResourceView.js | copyAsHex": {
-    "message": "Ĉóp̂ý âś Ĥéx̂"
+    "message": "Ĉóp̂ý âś Hex"
   },
   "network/BinaryResourceView.js | copyAsUtf": {
-    "message": "Ĉóp̂ý âś ÛT́F̂-8"
+    "message": "Ĉóp̂ý âś UTF-8"
   },
   "network/BinaryResourceView.js | copyToClipboard": {
     "message": "Ĉóp̂ý t̂ó ĉĺîṕb̂óâŕd̂"
   },
   "network/BinaryResourceView.js | hexViewer": {
-    "message": "Ĥéx̂ V́îéŵér̂"
+    "message": "Hex V̂íêẃêŕ"
   },
   "network/BinaryResourceView.js | utf": {
-    "message": "ÛT́F̂-8"
+    "message": "UTF-8"
   },
   "network/BlockedURLsPane.js | addNetworkRequestBlockingPattern": {
     "message": "Âd́d̂ ńêt́ŵór̂ḱ r̂éq̂úêśt̂ b́l̂óĉḱîńĝ ṕât́t̂ér̂ń"
@@ -3744,7 +3744,7 @@
     "message": "(m̂ém̂ór̂ý ĉáĉh́ê)"
   },
   "network/NetworkDataGridNode.js | mixedcontent": {
-    "message": "m̂íx̂éd̂-ćôńt̂én̂t́"
+    "message": "mixed-content"
   },
   "network/NetworkDataGridNode.js | notsameorigin": {
     "message": "N̂ót̂ŚâḿêÓr̂íĝín̂"
@@ -4257,10 +4257,10 @@
     "message": "{PH1} l̂át̂én̂ćŷ, {PH2} d́ôẃn̂ĺôád̂ ({PH3} t́ôt́âĺ)"
   },
   "network/RequestCookiesView.js | cookiesThatWereReceivedFromThe": {
-    "message": "Ĉóôḱîéŝ t́ĥát̂ ẃêŕê ŕêćêív̂éd̂ f́r̂óm̂ t́ĥé ŝér̂v́êŕ îń t̂h́ê 'śêt́-ĉóôḱîé' ĥéâd́êŕ ôf́ t̂h́ê ŕêśp̂ón̂śê"
+    "message": "Ĉóôḱîéŝ t́ĥát̂ ẃêŕê ŕêćêív̂éd̂ f́r̂óm̂ t́ĥé ŝér̂v́êŕ îń t̂h́ê 'set-cookie' h́êád̂ér̂ óf̂ t́ĥé r̂éŝṕôńŝé"
   },
   "network/RequestCookiesView.js | cookiesThatWereReceivedFromTheServer": {
-    "message": "Ĉóôḱîéŝ t́ĥát̂ ẃêŕê ŕêćêív̂éd̂ f́r̂óm̂ t́ĥé ŝér̂v́êŕ îń t̂h́ê 'śêt́-ĉóôḱîé' ĥéâd́êŕ ôf́ t̂h́ê ŕêśp̂ón̂śê b́ût́ ŵér̂é m̂ál̂f́ôŕm̂éd̂"
+    "message": "Ĉóôḱîéŝ t́ĥát̂ ẃêŕê ŕêćêív̂éd̂ f́r̂óm̂ t́ĥé ŝér̂v́êŕ îń t̂h́ê 'set-cookie' h́êád̂ér̂ óf̂ t́ĥé r̂éŝṕôńŝé b̂út̂ ẃêŕê ḿâĺf̂ór̂ḿêd́"
   },
   "network/RequestCookiesView.js | cookiesThatWereSentToTheServerIn": {
     "message": "Ĉóôḱîéŝ t́ĥát̂ ẃêŕê śêńt̂ t́ô t́ĥé ŝér̂v́êŕ îń t̂h́ê 'ćôók̂íê' h́êád̂ér̂ óf̂ t́ĥé r̂éq̂úêśt̂"

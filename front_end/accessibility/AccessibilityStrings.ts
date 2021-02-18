@@ -246,7 +246,7 @@ export const UIStrings = {
   /**
   *@description Accessibility attribute name that appears under the Computed Properties section in the Accessibility pane of the Elements pane
   */
-  flowsTo: 'Flows to',
+  flowsTo: '`Flows to`',
   /**
   *@description Tooltip text that appears when hovering over the 'Flows to' attribute name under the Computed Properties section in the Accessibility pane of the Elements pane
   */

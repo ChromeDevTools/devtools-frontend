@@ -63,16 +63,17 @@ export const UIStrings = {
   *@description Tooltip to explain what response cookies are
   */
   cookiesThatWereReceivedFromThe:
-      'Cookies that were received from the server in the \'set-cookie\' header of the response',
+      'Cookies that were received from the server in the \'`set-cookie`\' header of the response',
   /**
   *@description Label for response cookies with invalid syntax
   */
   malformedResponseCookies: 'Malformed Response Cookies',
   /**
-  *@description Tooltip to explain what malformed response cookies are
+  * @description Tooltip to explain what malformed response cookies are. Malformed cookies are
+  * cookies that did not match the expected format and could not be interpreted, and are invalid.
   */
   cookiesThatWereReceivedFromTheServer:
-      'Cookies that were received from the server in the \'set-cookie\' header of the response but were malformed',
+      'Cookies that were received from the server in the \'`set-cookie`\' header of the response but were malformed',
 };
 const str_ = i18n.i18n.registerUIStrings('network/RequestCookiesView.js', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

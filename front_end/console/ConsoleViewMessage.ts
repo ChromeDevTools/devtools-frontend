@@ -1354,6 +1354,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
       this.contentElement().classList.add('repeated-message');
     }
     this._repeatCountElement.textContent = `${this._repeatCount}`;
+    // TODO(l10n): Don't concatenate localized strings here.
     let accessibleName = i18nString(UIStrings.repeatS, {PH1: this._repeatCount});
     if (this._message.level === SDK.ConsoleModel.MessageLevel.Warning) {
       accessibleName = i18nString(UIStrings.warningS, {PH1: accessibleName});

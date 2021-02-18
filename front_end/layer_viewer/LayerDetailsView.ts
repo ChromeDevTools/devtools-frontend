@@ -166,7 +166,7 @@ export const UIStrings = {
   /**
   *@description Compositing reason description displayed in the Layer Details View of the Layers panel
   */
-  isDomOverlayForWebxrImmersivear: 'Is DOM overlay for WebXR immersive-ar mode.',
+  isDomOverlayForWebxrImmersivear: 'Is `DOM` overlay for `WebXR` `immersive-ar` mode.',
   /**
   *@description Compositing reason description displayed in the Layer Details View of the Layers panel
   */

@@ -82,15 +82,18 @@ export const UIStrings = {
   */
   heapSnapshotConstructors: 'Heap Snapshot Constructors',
   /**
-  *@description Text in Heap Snapshot Data Grids of a profiler tool
+  *@description Column header in a table displaying the diff between two Heap Snapshots. This
+  * column is number of new objects in snapshot #2 compared to snapshot #1.
   */
   New: '# New',
   /**
-  *@description Text in Heap Snapshot Data Grids of a profiler tool
+  *@description Column header in a table displaying the diff between two Heap Snapshots. This
+  * column is number of deleted objects in snapshot #2 compared to snapshot #1.
   */
   Deleted: '# Deleted',
   /**
-  *@description Text in Heap Snapshot Data Grids of a profiler tool
+  * @description Column header in a table displaying the diff between two Heap Snapshots. This
+  * column is the difference (delta) between the # New and # Deleted objects in the snapshot.
   */
   Delta: '# Delta',
   /**

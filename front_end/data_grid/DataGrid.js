@@ -49,9 +49,11 @@ export const UIStrings = {
   */
   rowsS: 'Rows: {PH1}',
   /**
-  *@description Default Accessible Text for a Datagrid
-  *@example {Network} PH1
-  *@example {Rows: 27} PH2
+  * @description Default Accessible Text for a Datagrid. This text is read to the user by a
+  * screenreader when they navigate to a table structure. The placeholders tell the user something
+  * brief about the table contents i.e. the topic and how much data is in it.
+  * @example {Network} PH1
+  * @example {Rows: 27} PH2
   */
   sSUseTheUpAndDownArrowKeysTo:
       '{PH1} {PH2}, use the up and down arrow keys to navigate and interact with the rows of the table; Use browse mode to read cell by cell.',

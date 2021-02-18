@@ -12,15 +12,18 @@ import {Conditions, ConditionsList, MobileThrottlingConditionsGroup, ThrottlingP
 
 export const UIStrings = {
   /**
-  *@description Text to indicate something is not enabled
+  *@description Mobile throttling is disabled. The user can select this option to run mobile
+  *emulation at a normal speed instead of throttled.
   */
   disabled: 'Disabled',
   /**
-  *@description Title for a group of configuration options
+  *@description Title for a group of pre-decided configuration options for mobile throttling. These
+  *are useful default options that users might want.
   */
   presets: 'Presets',
   /**
-  *@description Text in Mobile Throttling Selector of the Network panel
+  *@description Title for a group of advanced configuration options for mobile throttling, which
+  *might not be applicable to every user or situation.
   */
   advanced: 'Advanced',
 };

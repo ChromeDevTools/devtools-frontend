@@ -13,27 +13,32 @@ export const UIStrings = {
   /**
   *@description Text in Binary Resource View of the Network panel
   */
-  base: 'Base64',
+  base: '`Base64`',
+  /**
+  * @description Text in Binary Resource View of the Network panel. Shown to the user as a status
+  * message after the current text has been copied to the clipboard. Base64 is a format for encoding
+  * data.
+  */
+  copiedAsBase: 'Copied as `Base64`',
   /**
   *@description Text in Binary Resource View of the Network panel
   */
-  copiedAsBase: 'Copied as Base64',
+  hexViewer: '`Hex` Viewer',
+  /**
+  * @description Text in Binary Resource View of the Network panel. Shown to the user as a status
+  * message after the current text has been copied to the clipboard. Hex is short for hexadecimal,
+  * and is a format for encoding data.
+  */
+  copiedAsHex: 'Copied as `Hex`',
   /**
   *@description Text in Binary Resource View of the Network panel
   */
-  hexViewer: 'Hex Viewer',
+  utf: '`UTF-8`',
   /**
-  *@description Text in Binary Resource View of the Network panel
+  *@description Text in Binary Resource View of the Network panel. Shown to the user as a status
+  * message after the current text has been copied to the clipboard. UTF-8 is a format for encoding data.
   */
-  copiedAsHex: 'Copied as Hex',
-  /**
-  *@description Text in Binary Resource View of the Network panel
-  */
-  utf: 'UTF-8',
-  /**
-  *@description Text in Binary Resource View of the Network panel
-  */
-  copiedAsUtf: 'Copied as UTF-8',
+  copiedAsUtf: 'Copied as `UTF-8`',
   /**
   *@description Screen reader label for a select box that chooses how to display binary data in the Network panel
   */
@@ -45,15 +50,15 @@ export const UIStrings = {
   /**
   *@description Text in Binary Resource View of the Network panel
   */
-  copyAsBase: 'Copy as Base64',
+  copyAsBase: 'Copy as `Base64`',
   /**
   *@description Text in Binary Resource View of the Network panel
   */
-  copyAsHex: 'Copy as Hex',
+  copyAsHex: 'Copy as `Hex`',
   /**
   *@description Text in Binary Resource View of the Network panel
   */
-  copyAsUtf: 'Copy as UTF-8',
+  copyAsUtf: 'Copy as `UTF-8`',
 };
 const str_ = i18n.i18n.registerUIStrings('network/BinaryResourceView.js', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

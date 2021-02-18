@@ -1016,6 +1016,18 @@ export class ResourceTreeFrame {
           {node: document, selectorList: ''}, 'all', true);
     }
   }
+
+  /**
+   * @returns {Promise<Array<Protocol.Page.PermissionsPolicyFeatureState>|null>}
+   */
+  async getPermissionsPolicyState() {
+    const response =
+        await this.resourceTreeModel().target().pageAgent().invoke_getPermissionsPolicyState({frameId: this._id});
+    if (response.getError()) {
+      return null;
+    }
+    return response.states;
+  }
 }
 
 /**

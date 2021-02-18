@@ -15,6 +15,7 @@ import * as UI from '../ui/ui.js';
 import * as Workspace from '../workspace/workspace.js';
 
 import * as i18n from '../i18n/i18n.js';
+
 export const UIStrings = {
   /**
   *@description Section header in the Frame Details view
@@ -295,10 +296,30 @@ export class FrameDetailsReportView extends HTMLElement {
         ${this.renderDocumentSection()}
         ${this.renderIsolationSection()}
         ${this.renderApiAvailabilitySection()}
+        ${LitHtml.Directives.until(this.renderPermissionPolicy(), LitHtml.nothing)}
         ${this.protocolMonitorExperimentEnabled ? this.renderAdditionalInfoSection() : LitHtml.nothing}
       </devtools-report>
     `, this.shadow);
     // clang-format on
+  }
+
+  private async renderPermissionPolicy(): Promise<LitHtml.TemplateResult|{}> {
+    const stats = await (this.frame && this.frame.getPermissionsPolicyState());
+    if (!stats) {
+      return LitHtml.nothing;
+    }
+    const allowed = stats.filter(s => s.allowed).map(s => s.feature).sort();
+    const disallowed = stats.filter(s => !s.allowed).map(s => s.feature).sort();
+    return LitHtml.html`<devtools-report-section-header>Permissions Policy</devtools-report-section-header>
+    ${
+        allowed.length ? LitHtml.html`<devtools-report-key>Allowed Features</devtools-report-key>
+    <devtools-report-value>${allowed.join(', ')}</devtools-report-value>` :
+                         LitHtml.nothing}
+    ${
+        disallowed.length ? LitHtml.html`<devtools-report-key>Disallowed Features</devtools-report-key>
+    <devtools-report-value>${disallowed.join(', ')}</devtools-report-value>` :
+                            LitHtml.nothing}
+    `;
   }
 
   private renderDocumentSection(): LitHtml.TemplateResult|{} {

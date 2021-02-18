@@ -141,7 +141,6 @@ non_autostart_non_remote_modules = [
   "help/help_module.js",
   "inline_editor/inline_editor_module.js",
   "input/input_module.js",
-  "javascript_metadata/javascript_metadata_module.js",
   "js_profiler/js_profiler_module.js",
   "layer_viewer/layer_viewer_module.js",
   "layers/layers_module.js",

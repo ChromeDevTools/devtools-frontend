@@ -158,7 +158,6 @@ all_devtools_files = [
   "front_end/inspector.json",
   "front_end/integration_test_runner.js",
   "front_end/integration_test_runner.json",
-  "front_end/javascript_metadata/module.json",
   "front_end/js_main/module.json",
   "front_end/js_profiler/module.json",
   "front_end/layer_viewer/layerDetailsView.css",

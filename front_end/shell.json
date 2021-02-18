@@ -18,7 +18,6 @@
     { "name": "event_listeners" },
     { "name": "inline_editor" },
     { "name": "input"},
-    { "name": "javascript_metadata" },
     { "name": "object_ui" },
     { "name": "perf_ui" },
     { "name": "profiler" },

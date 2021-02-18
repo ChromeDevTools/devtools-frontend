@@ -182,8 +182,7 @@ describe('Sources Tab', async function() {
     assert.deepEqual(await getBreakpointDecorators(frontend), [0x023]);
   });
 
-  // Skip until the next Chromium DEPS roll.
-  it.skip('[crbug.com/1179251] is able to step with state', async () => {
+  it('is able to step with state', async () => {
     const {target, frontend} = getBrowserAndPages();
 
     await step('navigate to a page and open the Sources tab', async () => {
@@ -225,9 +224,9 @@ describe('Sources Tab', async function() {
     await step('check that the variables in the scope view show the correct values', async () => {
       const localScopeValues = await getValuesForScope('Local', 0, 3);
       assert.deepEqual(localScopeValues, [
-        '$var0: 42 {type: "i32", value: 42}',
-        '$var1: 8 {type: "i32", value: 8}',
-        '$var2: 5 {type: "i32", value: 5}',
+        '$var0: i32 {value: 42}',
+        '$var1: i32 {value: 8}',
+        '$var2: i32 {value: 5}',
       ]);
     });
 
@@ -264,9 +263,8 @@ describe('Sources Tab', async function() {
     await step('check that the variables in the scope view show the correct values', async () => {
       const localScopeValues = await getValuesForScope('Local', 0, 2);
       assert.deepEqual(localScopeValues, [
-        '$var0: 50 {type: "i32", value: 50}',
-        '$var1: 5 {type: "i32", value: 5}',
-
+        '$var0: i32 {value: 50}',
+        '$var1: i32 {value: 5}',
       ]);
     });
 

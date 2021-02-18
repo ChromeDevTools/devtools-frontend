@@ -647,7 +647,8 @@
 
       function checkMetrics(consoleResult) {
         test.assertEquals(
-            '"' + JSON.stringify(metrics) + '"', consoleResult, 'Wrong metrics for params: ' + JSON.stringify(params));
+            JSON.stringify(JSON.stringify(metrics)), consoleResult,
+            'Wrong metrics for params: ' + JSON.stringify(params));
         callback();
       }
     }

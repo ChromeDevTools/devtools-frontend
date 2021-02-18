@@ -436,9 +436,8 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
     function createStringElement(): ObjectPropertyValue {
       const valueElement = document.createElement('span');
       valueElement.classList.add('object-value-string');
-      const text = description.replace(/\n/g, '\u21B5');
+      const text = JSON.stringify(description);
       let propertyValue;
-      valueElement.createChild('span', 'object-value-string-quote').textContent = '"';
       if (description.length >
           // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -447,9 +446,8 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
       } else {
         UI.UIUtils.createTextChild(valueElement, text);
         propertyValue = new ObjectPropertyValue(valueElement);
-        UI.Tooltip.Tooltip.install(valueElement, description || '');
+        UI.Tooltip.Tooltip.install(valueElement, description);
       }
-      valueElement.createChild('span', 'object-value-string-quote').textContent = '"';
       return propertyValue;
     }
 

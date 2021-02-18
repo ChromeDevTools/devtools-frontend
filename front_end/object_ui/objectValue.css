@@ -52,11 +52,6 @@
   color: rgb(242 139 84);
 }
 
-.object-value-string-quote {
-  color: #222; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
-}
-
 .object-value-node {
   position: relative;
   vertical-align: baseline;

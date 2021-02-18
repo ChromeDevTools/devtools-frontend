@@ -249,6 +249,7 @@ export class GenericSettingsTab extends SettingsTab {
   constructor() {
     super(i18nString(UIStrings.preferences), 'preferences-tab-content');
 
+    // GRID, MOBILE, EMULATION, and RENDERING are intentionally excluded from this list.
     const explicitSectionOrder: Common.Settings.SettingCategory[] = [
       Common.Settings.SettingCategory.NONE,
       Common.Settings.SettingCategory.APPEARANCE,
@@ -256,16 +257,13 @@ export class GenericSettingsTab extends SettingsTab {
       Common.Settings.SettingCategory.ELEMENTS,
       Common.Settings.SettingCategory.NETWORK,
       Common.Settings.SettingCategory.PERFORMANCE,
+      Common.Settings.SettingCategory.MEMORY,
       Common.Settings.SettingCategory.CONSOLE,
       Common.Settings.SettingCategory.EXTENSIONS,
       Common.Settings.SettingCategory.PERSISTENCE,
       Common.Settings.SettingCategory.DEBUGGER,
       Common.Settings.SettingCategory.GLOBAL,
     ];
-
-    for (const sectionName of explicitSectionOrder) {
-      this._createSectionElement(sectionName);
-    }
 
     // Some settings define their initial ordering.
     const preRegisteredSettings = Common.Settings.getRegisteredSettings().sort(
@@ -282,6 +280,16 @@ export class GenericSettingsTab extends SettingsTab {
           return 0;
         },
     );
+
+    const visibleSections = explicitSectionOrder.filter(category => {
+      return preRegisteredSettings.some(setting => {
+        return setting.category === category && GenericSettingsTab.isSettingVisible(setting);
+      });
+    });
+
+    for (const sectionName of visibleSections) {
+      this._createSectionElement(sectionName);
+    }
 
     for (const settingRegistration of preRegisteredSettings) {
       if (!GenericSettingsTab.isSettingVisible(settingRegistration)) {

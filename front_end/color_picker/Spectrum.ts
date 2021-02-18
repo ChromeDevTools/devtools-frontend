@@ -426,8 +426,7 @@ export class Spectrum extends UI.Widget.VBox {
 
     function appendSwitcherIcon(parentElement: Element): void {
       const switcherIcon = new WebComponents.Icon.Icon();
-      switcherIcon
-          .data = {iconName: 'switcherIconDark', color: 'var(--color-text-primary)', width: '16px', height: '16px'};
+      switcherIcon.data = {iconName: 'switcherIcon', color: 'var(--color-text-primary)', width: '16px', height: '16px'};
       parentElement.appendChild(switcherIcon);
     }
   }

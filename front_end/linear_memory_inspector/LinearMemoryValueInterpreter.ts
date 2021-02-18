@@ -70,7 +70,6 @@ export class LinearMemoryValueInterpreter extends HTMLElement {
     ];
   }
 
-
   set data(data: LinearMemoryValueInterpreterData) {
     this.endianness = data.endianness;
     this.buffer = data.value;
@@ -142,7 +141,7 @@ export class LinearMemoryValueInterpreter extends HTMLElement {
       </style>
       <div class="value-interpreter">
         <div class="settings-toolbar">
-          ${this.renderSetting()}
+          ${this.renderEndiannessSetting()}
           <button data-settings="true" class="settings-toolbar-button ${this.showSettings ? 'active' : ''}" title=${i18nString(UIStrings.toggleValueTypeSettings)} @click=${this.onSettingsToggle}>
             <devtools-icon
               .data=${{ iconName: 'settings_14x14_icon', color: 'var(--color-text-secondary)', width: '14px' } as Components.Icon.IconWithName}>
@@ -160,11 +159,11 @@ export class LinearMemoryValueInterpreter extends HTMLElement {
             html`
               <devtools-linear-memory-inspector-interpreter-display
                 .data=${{
-            buffer: this.buffer,
-            valueTypes: this.valueTypes,
-            endianness: this.endianness,
-            valueTypeModes: this.valueTypeModeConfig,
-          } as ValueDisplayData}>
+                  buffer: this.buffer,
+                  valueTypes: this.valueTypes,
+                  endianness: this.endianness,
+                  valueTypeModes: this.valueTypeModeConfig,
+                } as ValueDisplayData}
               </devtools-linear-memory-inspector-interpreter-display>`}
         </div>
       </div>
@@ -181,7 +180,7 @@ export class LinearMemoryValueInterpreter extends HTMLElement {
     this.dispatchEvent(new EndiannessChangedEvent(endianness));
   }
 
-  private renderSetting(): LitHtml.TemplateResult {
+  private renderEndiannessSetting(): LitHtml.TemplateResult {
     const onEnumSettingChange = this.onEndiannessChange.bind(this);
     return html`
     <label data-endianness-setting="true" title=${i18nString(UIStrings.changeEndianness)}>

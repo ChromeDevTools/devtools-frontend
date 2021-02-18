@@ -2,16 +2,21 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as ComponentHelpers from '../component_helpers/component_helpers.js';
 import * as i18n from '../i18n/i18n.js';
 import * as LitHtml from '../third_party/lit-html/lit-html.js';
 
-import {Endianness, format, isNumber, isValidMode, ValueType, ValueTypeMode, valueTypeModeToLocalizedString, valueTypeToLocalizedString} from './ValueInterpreterDisplayUtils.js';
+import {DEFAULT_MODE_MAPPING, Endianness, format, isNumber, isValidMode, VALUE_TYPE_MODE_LIST, ValueType, ValueTypeMode, valueTypeModeToLocalizedString, valueTypeToLocalizedString} from './ValueInterpreterDisplayUtils.js';
 
 export const UIStrings = {
   /**
   *@description Tooltip text that appears when hovering over an unsigned interpretation of the memory under the Value Interpreter
   */
   unsignedValue: 'Unsigned value',
+  /**
+   *@description Tooltip text that appears when hovering over the element to change value type modes of under the Value Interpreter
+   */
+  changeValueTypeMode: 'Change mode',
   /**
   *@description Tooltip text that appears when hovering over a signed interpretation of the memory under the Value Interpreter
   */
@@ -20,16 +25,7 @@ export const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('linear_memory_inspector/ValueInterpreterDisplay.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const {render, html} = LitHtml;
-
-const DEFAULT_MODE_MAPPING = new Map([
-  [ValueType.Int8, ValueTypeMode.Decimal],
-  [ValueType.Int16, ValueTypeMode.Decimal],
-  [ValueType.Int32, ValueTypeMode.Decimal],
-  [ValueType.Int64, ValueTypeMode.Decimal],
-  [ValueType.Float32, ValueTypeMode.Decimal],
-  [ValueType.Float64, ValueTypeMode.Decimal],
-  [ValueType.String, ValueTypeMode.None],
-]);
+const getStyleSheets = ComponentHelpers.GetStylesheet.getStyleSheets;
 
 const SORTED_VALUE_TYPES = Array.from(DEFAULT_MODE_MAPPING.keys());
 
@@ -40,12 +36,29 @@ export interface ValueDisplayData {
   valueTypeModes?: Map<ValueType, ValueTypeMode>;
 }
 
+export class ValueTypeModeChangedEvent extends Event {
+  data: {type: ValueType, mode: ValueTypeMode};
+
+  constructor(type: ValueType, mode: ValueTypeMode) {
+    super('value-type-mode-changed', {
+      composed: true,
+    });
+    this.data = {type, mode};
+  }
+}
 export class ValueInterpreterDisplay extends HTMLElement {
   private readonly shadow = this.attachShadow({mode: 'open'});
   private endianness = Endianness.Little;
   private buffer = new ArrayBuffer(0);
   private valueTypes: Set<ValueType> = new Set();
   private valueTypeModeConfig: Map<ValueType, ValueTypeMode> = DEFAULT_MODE_MAPPING;
+
+  constructor() {
+    super();
+    this.shadow.adoptedStyleSheets = [
+      ...getStyleSheets('ui/inspectorCommon.css', {enableLegacyPatching: true}),
+    ];
+  }
 
   set data(data: ValueDisplayData) {
     this.buffer = data.buffer;
@@ -86,8 +99,7 @@ export class ValueInterpreterDisplay extends HTMLElement {
           grid-column-gap: 24px;
           grid-row-gap: 4px;
           overflow: hidden;
-          padding-left: 12px;
-          padding-right: 12px;
+          padding: 2px 12px;
         }
 
         .value-type-cell-multiple-values {
@@ -95,11 +107,11 @@ export class ValueInterpreterDisplay extends HTMLElement {
         }
 
         .value-type-cell {
-          height: 21px;
           text-overflow: ellipsis;
           white-space: nowrap;
           overflow: hidden;
           display: flex;
+          align-items: center;
         }
 
         .value-type-cell-no-mode {
@@ -121,8 +133,6 @@ export class ValueInterpreterDisplay extends HTMLElement {
       throw new Error(`No mode found for type ${type}`);
     }
     const localizedType = valueTypeToLocalizedString(type);
-    const localizedMode = valueTypeModeToLocalizedString(mode);
-
     const unsignedValue = this.parse({type, signed: false});
     const signedValue = this.parse({type, signed: true});
     const showSignedAndUnsigned = signedValue !== unsignedValue;
@@ -132,7 +142,12 @@ export class ValueInterpreterDisplay extends HTMLElement {
       ${isNumber(type) ?
         html`
           <span class="value-type-cell">${localizedType}</span>
-          <span class="mode-type value-type-cell">${localizedMode}</span>` :
+            <select title=${i18nString(UIStrings.changeValueTypeMode)} data-mode-settings="true"  class="chrome-select" @change=${this.onValueTypeModeChange.bind(this, type)}>
+              ${VALUE_TYPE_MODE_LIST.filter(x => isValidMode(type, x)).map(mode => {
+                return html`<option value=${mode} .selected=${this.valueTypeModeConfig.get(type) === mode}>${
+                valueTypeModeToLocalizedString(mode)}</option>`;
+            })}
+            </select>` :
         html`
           <span class="value-type-cell-no-mode value-type-cell">${localizedType}</span>`}
 
@@ -147,6 +162,13 @@ export class ValueInterpreterDisplay extends HTMLElement {
           <span class="value-type-cell" data-value="true">${unsignedValue}</span>`}
     `;
     // clang-format on
+  }
+
+  private onValueTypeModeChange(type: ValueType, event: Event): void {
+    event.preventDefault();
+    const select = event.target as HTMLInputElement;
+    const mode = select.value as ValueTypeMode;
+    this.dispatchEvent(new ValueTypeModeChangedEvent(type, mode));
   }
 
   private parse(data: {type: ValueType, signed?: boolean}): string {

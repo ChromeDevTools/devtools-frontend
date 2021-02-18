@@ -91,6 +91,24 @@ export const enum ValueTypeMode {
   None = 'none',
 }
 
+export const DEFAULT_MODE_MAPPING = new Map([
+  [ValueType.Int8, ValueTypeMode.Decimal],
+  [ValueType.Int16, ValueTypeMode.Decimal],
+  [ValueType.Int32, ValueTypeMode.Decimal],
+  [ValueType.Int64, ValueTypeMode.Decimal],
+  [ValueType.Float32, ValueTypeMode.Decimal],
+  [ValueType.Float64, ValueTypeMode.Decimal],
+  [ValueType.String, ValueTypeMode.None],
+]);
+
+export const VALUE_TYPE_MODE_LIST = [
+  ValueTypeMode.Decimal,
+  ValueTypeMode.Hexadecimal,
+  ValueTypeMode.Octal,
+  ValueTypeMode.Scientific,
+  ValueTypeMode.None,
+];
+
 export function valueTypeModeToLocalizedString(mode: ValueTypeMode): string {
   switch (mode) {
     case ValueTypeMode.Decimal:
@@ -231,7 +249,7 @@ export function formatInteger(value: number|bigint, mode: ValueTypeMode): string
     case ValueTypeMode.Decimal:
       return value.toString();
     case ValueTypeMode.Hexadecimal:
-      return value.toString(16);
+      return '0x' + value.toString(16).toUpperCase();
     case ValueTypeMode.Octal:
       return value.toString(8);
     default:

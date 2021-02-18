@@ -3134,6 +3134,9 @@
   "linear_memory_inspector/LinearMemoryValueInterpreter.ts | toggleValueTypeSettings": {
     "message": "T̂óĝǵl̂é v̂ál̂úê t́ŷṕê śêt́t̂ín̂ǵŝ"
   },
+  "linear_memory_inspector/ValueInterpreterDisplay.ts | changeValueTypeMode": {
+    "message": "Ĉh́âńĝé m̂ód̂é"
+  },
   "linear_memory_inspector/ValueInterpreterDisplay.ts | signedValue": {
     "message": "Ŝíĝńêd́ v̂ál̂úê"
   },

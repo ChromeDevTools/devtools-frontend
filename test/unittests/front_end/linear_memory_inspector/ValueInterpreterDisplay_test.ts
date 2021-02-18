@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as LinearMemoryInspector from '../../../../front_end/linear_memory_inspector/linear_memory_inspector.js';
-import {getElementsWithinComponent, renderElementIntoDOM} from '../helpers/DOMHelpers.js';
+import {getElementsWithinComponent, getElementWithinComponent, getEventPromise, renderElementIntoDOM} from '../helpers/DOMHelpers.js';
 
 const {assert} = chai;
 
@@ -154,7 +154,7 @@ describe('ValueInterpreterDisplay', () => {
     const expectedInteger = 16;
     const actualValue = LinearMemoryInspector.ValueInterpreterDisplayUtils.formatInteger(
         expectedInteger, LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueTypeMode.Hexadecimal);
-    assert.strictEqual(actualValue, '10');
+    assert.strictEqual(actualValue, '0x10');
   });
 
   it('correctly formats integers in octal mode', () => {
@@ -190,5 +190,35 @@ describe('ValueInterpreterDisplay', () => {
     const actualValues = Array.from(dataValues).map(x => x.innerText);
     const expectedValues = ['33793', '-31743', '88328.01'];
     assert.deepStrictEqual(actualValues, expectedValues);
+  });
+
+  it('triggers a value changed event on selecting a new mode', async () => {
+    const component = new LinearMemoryInspector.ValueInterpreterDisplay.ValueInterpreterDisplay();
+    const array = [1, 132, 172, 71];
+    const oldMode = LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueTypeMode.Decimal;
+    const newMode = LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueTypeMode.Scientific;
+
+    const mapping = LinearMemoryInspector.ValueInterpreterDisplayUtils.DEFAULT_MODE_MAPPING;
+    mapping.set(LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType.Float32, oldMode);
+
+    component.data = {
+      buffer: new Uint8Array(array).buffer,
+      endianness: LinearMemoryInspector.ValueInterpreterDisplayUtils.Endianness.Little,
+      valueTypes: new Set([
+        LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType.Float32,
+      ]),
+      valueTypeModes: mapping,
+    };
+
+    const input = getElementWithinComponent(component, '[data-mode-settings]', HTMLSelectElement);
+    assert.strictEqual(input.value, oldMode);
+    input.value = newMode;
+    const eventPromise = getEventPromise<LinearMemoryInspector.ValueInterpreterDisplay.ValueTypeModeChangedEvent>(
+        component, 'value-type-mode-changed');
+    const changeEvent = new Event('change');
+    input.dispatchEvent(changeEvent);
+    const event = await eventPromise;
+    assert.deepEqual(
+        event.data, {type: LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType.Float32, mode: newMode});
   });
 });

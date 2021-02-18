@@ -244,6 +244,8 @@ Sources.SourcesView.Events = SourcesModule.SourcesView.Events;
 /** @interface */
 Sources.SourcesView.EditorAction = SourcesModule.SourcesView.EditorAction;
 
+Sources.SourcesView.getRegisteredEditorActions = SourcesModule.SourcesView.getRegisteredEditorActions;
+
 /** @constructor */
 Sources.SourcesView.SwitchFileActionDelegate = SourcesModule.SourcesView.SwitchFileActionDelegate;
 

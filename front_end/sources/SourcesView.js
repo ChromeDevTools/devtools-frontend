@@ -73,11 +73,9 @@ export class SourcesView extends UI.Widget.VBox {
     this._toolbarContainerElement = this.element.createChild('div', 'sources-toolbar');
     if (!Root.Runtime.experiments.isEnabled('sourcesPrettyPrint')) {
       const toolbarEditorActions = new UI.Toolbar.Toolbar('', this._toolbarContainerElement);
-      Root.Runtime.Runtime.instance().allInstances(EditorAction).then(actions => {
-        for (const action of /** @type {!Array<!EditorAction>} */ (actions)) {
-          toolbarEditorActions.appendToolbarItem(action.button(this));
-        }
-      });
+      for (const action of getRegisteredEditorActions()) {
+        toolbarEditorActions.appendToolbarItem(action.button(this));
+      }
     }
     this._scriptViewToolbar = new UI.Toolbar.Toolbar('', this._toolbarContainerElement);
     this._scriptViewToolbar.element.style.flex = 'auto';
@@ -723,6 +721,24 @@ export class EditorAction {
     throw new Error('Not implemented yet');
   }
 }
+
+/** @type {!Array<function(): !EditorAction>} */
+const registeredEditorActions = [];
+
+/**
+ * @param {function(): !EditorAction} editorAction
+ */
+export function registerEditorAction(editorAction) {
+  registeredEditorActions.push(editorAction);
+}
+
+/**
+ * @return {!Array<!EditorAction>}
+ */
+export function getRegisteredEditorActions() {
+  return registeredEditorActions.map(editorAction => editorAction());
+}
+
 
 /** @type {!SwitchFileActionDelegate} */
 let switchFileActionDelegateInstance;

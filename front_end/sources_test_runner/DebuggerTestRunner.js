@@ -694,15 +694,7 @@ SourcesTestRunner.checkUILocation = function(uiSourceCode, lineNumber, columnNum
 };
 
 SourcesTestRunner.scriptFormatter = function() {
-  return self.runtime.allInstances(Sources.SourcesView.EditorAction).then(function(editorActions) {
-    for (let i = 0; i < editorActions.length; ++i) {
-      if (editorActions[i] instanceof Sources.ScriptFormatterEditorAction) {
-        return editorActions[i];
-      }
-    }
-
-    return null;
-  });
+  return Promise.resolve(Sources.ScriptFormatterEditorAction.instance());
 };
 
 SourcesTestRunner.waitForExecutionContextInTarget = function(target, callback) {

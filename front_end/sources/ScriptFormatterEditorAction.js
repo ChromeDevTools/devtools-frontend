@@ -10,7 +10,7 @@ import * as SourceFrame from '../source_frame/source_frame.js';
 import * as UI from '../ui/ui.js';
 import * as Workspace from '../workspace/workspace.js';
 
-import {EditorAction, Events, SourcesView} from './SourcesView.js';  // eslint-disable-line no-unused-vars
+import {EditorAction, Events, registerEditorAction, SourcesView} from './SourcesView.js';  // eslint-disable-line no-unused-vars
 
 export const UIStrings = {
   /**
@@ -25,10 +25,15 @@ export const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('sources/ScriptFormatterEditorAction.js', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+
+/** @type {!ScriptFormatterEditorAction}*/
+let scriptFormatterEditorActionInstance;
+
 /**
  * @implements {EditorAction}
  */
 export class ScriptFormatterEditorAction {
+  /** @private */
   constructor() {
     /** @type {!Set<string>} */
     this._pathsToFormatOnLoad = new Set();
@@ -37,6 +42,18 @@ export class ScriptFormatterEditorAction {
     this._sourcesView;
     /** @type {!UI.Toolbar.ToolbarButton} */
     this._button;
+  }
+
+  /**
+   * @param {{forceNew: ?boolean}} opts
+   */
+  static instance(opts = {forceNew: null}) {
+    const {forceNew} = opts;
+    if (!scriptFormatterEditorActionInstance || forceNew) {
+      scriptFormatterEditorActionInstance = new ScriptFormatterEditorAction();
+    }
+
+    return scriptFormatterEditorActionInstance;
   }
 
   /**
@@ -169,3 +186,5 @@ export class ScriptFormatterEditorAction {
     this._sourcesView.showSourceLocation(formatData.formattedSourceCode, start[0], start[1]);
   }
 }
+
+registerEditorAction(ScriptFormatterEditorAction.instance);

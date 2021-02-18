@@ -10,7 +10,7 @@ import * as SourceFrame from '../source_frame/source_frame.js';  // eslint-disab
 import * as UI from '../ui/ui.js';
 import * as Workspace from '../workspace/workspace.js';  // eslint-disable-line no-unused-vars
 
-import {EditorAction, Events, SourcesView} from './SourcesView.js';  // eslint-disable-line no-unused-vars
+import {EditorAction, Events, registerEditorAction, SourcesView} from './SourcesView.js';  // eslint-disable-line no-unused-vars
 
 export const UIStrings = {
   /**
@@ -25,6 +25,10 @@ export const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('sources/InplaceFormatterEditorAction.js', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+
+/** @type {!InplaceFormatterEditorAction}*/
+let inplaceFormatterEditorActionInstance;
+
 /**
  * @implements {EditorAction}
  */
@@ -35,6 +39,18 @@ export class InplaceFormatterEditorAction {
     /** @type {!SourcesView} */
     this._sourcesView;
   }
+  /**
+   * @param {{forceNew: ?boolean}} opts
+   */
+  static instance(opts = {forceNew: null}) {
+    const {forceNew} = opts;
+    if (!inplaceFormatterEditorActionInstance || forceNew) {
+      inplaceFormatterEditorActionInstance = new InplaceFormatterEditorAction();
+    }
+
+    return inplaceFormatterEditorActionInstance;
+  }
+
   /**
    * @param {!Common.EventTarget.EventTargetEvent} event
    */
@@ -155,3 +171,5 @@ export class InplaceFormatterEditorAction {
     this._sourcesView.showSourceLocation(uiSourceCode, start[0], start[1]);
   }
 }
+
+registerEditorAction(InplaceFormatterEditorAction.instance);

@@ -47,7 +47,7 @@ import {Plugin} from './Plugin.js';
 import {ScriptFormatterEditorAction} from './ScriptFormatterEditorAction.js';
 import {resolveExpression, resolveScopeInObject} from './SourceMapNamesResolver.js';
 import {SourcesPanel} from './SourcesPanel.js';
-import {EditorAction} from './SourcesView.js';
+import {getRegisteredEditorActions} from './SourcesView.js';
 
 export const UIStrings = {
   /**
@@ -1868,7 +1868,7 @@ export class DebuggerPlugin extends Plugin {
       return;
     }
 
-    const editorActions = await Root.Runtime.Runtime.instance().allInstances(EditorAction);
+    const editorActions = getRegisteredEditorActions();
     /** @type {(function(): void) | null} */
     let formatterCallback = null;
     for (const editorAction of editorActions) {

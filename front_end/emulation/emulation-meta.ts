@@ -336,3 +336,15 @@ Common.AppProvider.registerAppProvider({
   condition: Root.Runtime.ConditionName.CAN_DOCK,
   order: 0,
 });
+
+UI.ContextMenu.registerItem({
+  location: UI.ContextMenu.ItemLocation.DEVICE_MODE_MENU_SAVE,
+  order: 12,
+  actionId: 'emulation.capture-screenshot',
+});
+
+UI.ContextMenu.registerItem({
+  location: UI.ContextMenu.ItemLocation.DEVICE_MODE_MENU_SAVE,
+  order: 13,
+  actionId: 'emulation.capture-full-height-screenshot',
+});

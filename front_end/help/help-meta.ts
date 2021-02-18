@@ -105,3 +105,15 @@ Common.Settings.registerSettingExtension({
     },
   ],
 });
+
+UI.ContextMenu.registerItem({
+  location: UI.ContextMenu.ItemLocation.MAIN_MENU_HELP_DEFAULT,
+  actionId: 'help.release-notes',
+  order: 10,
+});
+
+UI.ContextMenu.registerItem({
+  location: UI.ContextMenu.ItemLocation.MAIN_MENU_HELP_DEFAULT,
+  actionId: 'help.report-issue',
+  order: 11,
+});

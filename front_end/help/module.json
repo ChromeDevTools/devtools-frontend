@@ -1,18 +1,6 @@
 {
   "extensions": [
     {
-      "type": "context-menu-item",
-      "location": "mainMenuHelp/default",
-      "actionId": "help.release-notes",
-      "order": 10
-    },
-    {
-      "type": "context-menu-item",
-      "location": "mainMenuHelp/default",
-      "actionId": "help.report-issue",
-      "order": 11
-    },
-    {
       "type": "late-initialization",
       "className": "Help.HelpLateInitialization"
     }

@@ -1,18 +1,4 @@
 {
-  "extensions": [
-    {
-      "type": "context-menu-item",
-      "location": "deviceModeMenu/save",
-      "order": 12,
-      "actionId": "emulation.capture-screenshot"
-    },
-    {
-      "type": "context-menu-item",
-      "location": "deviceModeMenu/save",
-      "order": 13,
-      "actionId": "emulation.capture-full-height-screenshot"
-    }
-  ],
   "dependencies": [
     "components",
     "ui",

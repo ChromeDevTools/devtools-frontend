@@ -396,9 +396,20 @@ export class SubMenu extends Item {
    * @param {string} location
    */
   appendItemsAtLocation(location) {
-    for (const extension of Root.Runtime.Runtime.instance().extensions('context-menu-item')) {
-      const itemLocation = extension.descriptor()['location'] || '';
-      if (!itemLocation.startsWith(location + '/')) {
+    /** @type {!Array<!ContextMenuItemRegistration>} */
+    const unionOfItems = [
+      ...Root.Runtime.Runtime.instance().extensions('context-menu-item').map(extension => extension.descriptor()),
+      ...getRegisteredItems()
+    ];
+    unionOfItems.sort((firstItem, secondItem) => {
+      const order1 = firstItem.order || 0;
+      const order2 = secondItem.order || 0;
+      return order1 - order2;
+    });
+    for (const item of unionOfItems) {
+      const itemLocation = item.location;
+      const actionId = item.actionId;
+      if (!itemLocation || !itemLocation.startsWith(location + '/')) {
         continue;
       }
 
@@ -407,7 +418,6 @@ export class SubMenu extends Item {
         continue;
       }
 
-      const actionId = extension.descriptor().actionId;
       if (actionId) {
         this.section(section).appendAction(actionId);
       }
@@ -679,6 +689,29 @@ async function loadApplicableRegisteredProviders(target) {
   }
 }
 
+/** @type {!Array<!ContextMenuItemRegistration>} */
+const registeredItemsProviders = [];
+
+/**
+ * @param {!ContextMenuItemRegistration} registration
+ */
+export function registerItem(registration) {
+  registeredItemsProviders.push(registration);
+}
+
+/**
+ * @return {!Array<!ContextMenuItemRegistration>}
+ */
+function getRegisteredItems() {
+  return registeredItemsProviders;
+}
+
+/** @enum {string} */
+export const ItemLocation = {
+  DEVICE_MODE_MENU_SAVE: 'deviceModeMenu/save',
+  MAIN_MENU_HELP_DEFAULT: 'mainMenuHelp/default',
+};
+
 /**
  * @typedef {{
  *  contextTypes: function(): !Array<?>,
@@ -687,5 +720,14 @@ async function loadApplicableRegisteredProviders(target) {
  * }} */
 // @ts-ignore typedef
 export let ProviderRegistration;
+
+/**
+ * @typedef {{
+  *  location: ?ItemLocation,
+  *  actionId: ?string,
+  *  order: (undefined|number)
+  * }} */
+// @ts-ignore typedef
+export let ContextMenuItemRegistration;
 
 ContextMenu._groupWeights = _groupWeights;

@@ -1833,6 +1833,63 @@ export function registerCommands(inspectorBackend) {
     PerformanceMeasureMemory: 'PerformanceMeasureMemory',
     PerformanceProfile: 'PerformanceProfile'
   });
+  inspectorBackend.registerEnum('Page.PermissionsPolicyFeature', {
+    Accelerometer: 'accelerometer',
+    AmbientLightSensor: 'ambient-light-sensor',
+    Autoplay: 'autoplay',
+    Camera: 'camera',
+    ChDpr: 'ch-dpr',
+    ChDeviceMemory: 'ch-device-memory',
+    ChDownlink: 'ch-downlink',
+    ChEct: 'ch-ect',
+    ChLang: 'ch-lang',
+    ChRtt: 'ch-rtt',
+    ChUa: 'ch-ua',
+    ChUaArch: 'ch-ua-arch',
+    ChUaPlatform: 'ch-ua-platform',
+    ChUaModel: 'ch-ua-model',
+    ChUaMobile: 'ch-ua-mobile',
+    ChUaFullVersion: 'ch-ua-full-version',
+    ChUaPlatformVersion: 'ch-ua-platform-version',
+    ChViewportWidth: 'ch-viewport-width',
+    ChWidth: 'ch-width',
+    ClipboardRead: 'clipboard-read',
+    ClipboardWrite: 'clipboard-write',
+    ConversionMeasurement: 'conversion-measurement',
+    CrossOriginIsolated: 'cross-origin-isolated',
+    DisplayCapture: 'display-capture',
+    DocumentDomain: 'document-domain',
+    EncryptedMedia: 'encrypted-media',
+    ExecutionWhileOutOfViewport: 'execution-while-out-of-viewport',
+    ExecutionWhileNotRendered: 'execution-while-not-rendered',
+    FocusWithoutUserActivation: 'focus-without-user-activation',
+    Fullscreen: 'fullscreen',
+    Frobulate: 'frobulate',
+    Gamepad: 'gamepad',
+    Geolocation: 'geolocation',
+    Gyroscope: 'gyroscope',
+    Hid: 'hid',
+    IdleDetection: 'idle-detection',
+    InterestCohort: 'interest-cohort',
+    Magnetometer: 'magnetometer',
+    Microphone: 'microphone',
+    Midi: 'midi',
+    OtpCredentials: 'otp-credentials',
+    Payment: 'payment',
+    PictureInPicture: 'picture-in-picture',
+    PublickeyCredentialsGet: 'publickey-credentials-get',
+    ScreenWakeLock: 'screen-wake-lock',
+    Serial: 'serial',
+    StorageAccessAPI: 'storage-access-api',
+    SyncXhr: 'sync-xhr',
+    TrustTokenRedemption: 'trust-token-redemption',
+    Usb: 'usb',
+    VerticalScroll: 'vertical-scroll',
+    WebShare: 'web-share',
+    XrSpatialTracking: 'xr-spatial-tracking'
+  });
+  inspectorBackend.registerEnum(
+      'Page.PermissionsPolicyBlockReason', {Header: 'Header', IframeAttribute: 'IframeAttribute'});
   inspectorBackend.registerEnum('Page.TransitionType', {
     Link: 'link',
     Typed: 'typed',
@@ -2028,6 +2085,8 @@ export function registerCommands(inspectorBackend) {
       'Page.setAdBlockingEnabled', [{'name': 'enabled', 'type': 'boolean', 'optional': false}], []);
   inspectorBackend.registerCommand(
       'Page.setBypassCSP', [{'name': 'enabled', 'type': 'boolean', 'optional': false}], []);
+  inspectorBackend.registerCommand(
+      'Page.getPermissionsPolicyState', [{'name': 'frameId', 'type': 'string', 'optional': false}], ['states']);
   inspectorBackend.registerCommand(
       'Page.setDeviceMetricsOverride',
       [

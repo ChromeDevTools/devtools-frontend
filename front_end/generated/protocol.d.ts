@@ -9188,6 +9188,85 @@ declare namespace Protocol {
     }
 
     /**
+     * All Permissions Policy features. This enum should match the one defined
+     * in renderer/core/feature_policy/feature_policy_features.json5.
+     */
+    export enum PermissionsPolicyFeature {
+      Accelerometer = 'accelerometer',
+      AmbientLightSensor = 'ambient-light-sensor',
+      Autoplay = 'autoplay',
+      Camera = 'camera',
+      ChDpr = 'ch-dpr',
+      ChDeviceMemory = 'ch-device-memory',
+      ChDownlink = 'ch-downlink',
+      ChEct = 'ch-ect',
+      ChLang = 'ch-lang',
+      ChRtt = 'ch-rtt',
+      ChUa = 'ch-ua',
+      ChUaArch = 'ch-ua-arch',
+      ChUaPlatform = 'ch-ua-platform',
+      ChUaModel = 'ch-ua-model',
+      ChUaMobile = 'ch-ua-mobile',
+      ChUaFullVersion = 'ch-ua-full-version',
+      ChUaPlatformVersion = 'ch-ua-platform-version',
+      ChViewportWidth = 'ch-viewport-width',
+      ChWidth = 'ch-width',
+      ClipboardRead = 'clipboard-read',
+      ClipboardWrite = 'clipboard-write',
+      ConversionMeasurement = 'conversion-measurement',
+      CrossOriginIsolated = 'cross-origin-isolated',
+      DisplayCapture = 'display-capture',
+      DocumentDomain = 'document-domain',
+      EncryptedMedia = 'encrypted-media',
+      ExecutionWhileOutOfViewport = 'execution-while-out-of-viewport',
+      ExecutionWhileNotRendered = 'execution-while-not-rendered',
+      FocusWithoutUserActivation = 'focus-without-user-activation',
+      Fullscreen = 'fullscreen',
+      Frobulate = 'frobulate',
+      Gamepad = 'gamepad',
+      Geolocation = 'geolocation',
+      Gyroscope = 'gyroscope',
+      Hid = 'hid',
+      IdleDetection = 'idle-detection',
+      InterestCohort = 'interest-cohort',
+      Magnetometer = 'magnetometer',
+      Microphone = 'microphone',
+      Midi = 'midi',
+      OtpCredentials = 'otp-credentials',
+      Payment = 'payment',
+      PictureInPicture = 'picture-in-picture',
+      PublickeyCredentialsGet = 'publickey-credentials-get',
+      ScreenWakeLock = 'screen-wake-lock',
+      Serial = 'serial',
+      StorageAccessAPI = 'storage-access-api',
+      SyncXhr = 'sync-xhr',
+      TrustTokenRedemption = 'trust-token-redemption',
+      Usb = 'usb',
+      VerticalScroll = 'vertical-scroll',
+      WebShare = 'web-share',
+      XrSpatialTracking = 'xr-spatial-tracking',
+    }
+
+    /**
+     * Reason for a permissions policy feature to be disabled.
+     */
+    export enum PermissionsPolicyBlockReason {
+      Header = 'Header',
+      IframeAttribute = 'IframeAttribute',
+    }
+
+    export interface PermissionsPolicyBlockLocator {
+      frameId: FrameId;
+      blockReason: PermissionsPolicyBlockReason;
+    }
+
+    export interface PermissionsPolicyFeatureState {
+      feature: PermissionsPolicyFeature;
+      allowed: boolean;
+      locator?: PermissionsPolicyBlockLocator;
+    }
+
+    /**
      * Information about the Frame on the page.
      */
     export interface Frame {
@@ -10063,6 +10142,14 @@ declare namespace Protocol {
        * Whether to bypass page CSP.
        */
       enabled: boolean;
+    }
+
+    export interface GetPermissionsPolicyStateRequest {
+      frameId: FrameId;
+    }
+
+    export interface GetPermissionsPolicyStateResponse extends ProtocolResponseWithError {
+      states: PermissionsPolicyFeatureState[];
     }
 
     export interface SetDeviceMetricsOverrideRequest {

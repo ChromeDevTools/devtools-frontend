@@ -2301,6 +2301,12 @@ declare namespace ProtocolProxyApi {
     invoke_setBypassCSP(params: Protocol.Page.SetBypassCSPRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
+     * Get Permissions Policy state on given frame.
+     */
+    invoke_getPermissionsPolicyState(params: Protocol.Page.GetPermissionsPolicyStateRequest):
+        Promise<Protocol.Page.GetPermissionsPolicyStateResponse>;
+
+    /**
      * Overrides the values of device screen dimensions (window.screen.width, window.screen.height,
      * window.innerWidth, window.innerHeight, and "device-width"/"device-height"-related CSS media
      * query results).

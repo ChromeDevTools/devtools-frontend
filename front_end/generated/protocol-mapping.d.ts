@@ -2132,6 +2132,13 @@ export namespace ProtocolMapping {
      */
     'Page.setBypassCSP': {paramsType: [Protocol.Page.SetBypassCSPRequest]; returnType: void;};
     /**
+     * Get Permissions Policy state on given frame.
+     */
+    'Page.getPermissionsPolicyState': {
+      paramsType: [Protocol.Page.GetPermissionsPolicyStateRequest];
+      returnType: Protocol.Page.GetPermissionsPolicyStateResponse;
+    };
+    /**
      * Overrides the values of device screen dimensions (window.screen.width, window.screen.height,
      * window.innerWidth, window.innerHeight, and "device-width"/"device-height"-related CSS media
      * query results).

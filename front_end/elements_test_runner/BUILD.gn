@@ -9,6 +9,8 @@ group("bundle") {
     ":gen",
     ":resources",
   ]
+
+  data_deps = [ ":gen" ]
 }
 
 copy_to_gen("gen") {

@@ -148,7 +148,7 @@ class DragHandler {
   /**
    * @param {!Element} targetElement
    * @param {?function(!MouseEvent):boolean} elementDragStart
-   * @param {function(!MouseEvent):void} elementDrag
+   * @param {function(!MouseEvent):void|boolean} elementDrag
    * @param {?function(!MouseEvent):void} elementDragEnd
    * @param {?string} cursor
    * @param {!Event} ev

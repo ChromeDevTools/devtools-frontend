@@ -21,7 +21,8 @@ describe('The Network Tab', async () => {
     assert.strictEqual(checked, true, 'The disable cache checkbox should be checked');
   });
 
-  it('shows Last-Modified', async () => {
+  // Flaky test
+  it.skip('[crbug.com/1179656] shows Last-Modified', async () => {
     const {target, frontend} = getBrowserAndPages();
     await navigateToNetworkTab('last-modified.html');
 
@@ -134,7 +135,8 @@ describe('The Network Tab', async () => {
     ]);
   });
 
-  it('shows the correct initiator address space', async () => {
+  // Flaky test
+  it.skip('[crbug.com/1179656] shows the correct initiator address space', async () => {
     const {target, frontend} = getBrowserAndPages();
 
     await navigateToNetworkTab('fetch.html');
@@ -165,7 +167,8 @@ describe('The Network Tab', async () => {
     });
   });
 
-  it('shows the correct remote address space', async () => {
+  // Flaky test
+  it.skip('[crbug.com/1179656] shows the correct remote address space', async () => {
     const {target, frontend} = getBrowserAndPages();
 
     await navigateToNetworkTab('fetch.html');

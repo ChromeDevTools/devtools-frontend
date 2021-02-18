@@ -41,3 +41,9 @@ Common.AppProvider.registerAppProvider({
   order: 1,
   condition: undefined,
 });
+
+UI.ContextMenu.registerItem({
+  location: UI.ContextMenu.ItemLocation.MAIN_MENU,
+  order: 10,
+  actionId: 'components.request-app-banner',
+});

@@ -1,16 +1,4 @@
 {
-  "extensions": [
-    {
-      "type": "context-menu-item",
-      "location": "mainMenu/default",
-      "actionId": "commandMenu.show"
-    },
-    {
-      "type": "context-menu-item",
-      "location": "mainMenu/default",
-      "actionId": "quickOpen.show"
-    }
-  ],
   "dependencies": [
     "ui"
   ],

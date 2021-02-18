@@ -709,6 +709,9 @@ function getRegisteredItems() {
 /** @enum {string} */
 export const ItemLocation = {
   DEVICE_MODE_MENU_SAVE: 'deviceModeMenu/save',
+  MAIN_MENU: 'mainMenu',
+  MAIN_MENU_DEFAULT: 'mainMenu/default',
+  MAIN_MENU_FOOTER: 'mainMenu/footer',
   MAIN_MENU_HELP_DEFAULT: 'mainMenuHelp/default',
 };
 

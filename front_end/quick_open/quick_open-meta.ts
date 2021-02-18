@@ -99,3 +99,15 @@ UI.ActionRegistration.registerActionExtension({
     },
   ],
 });
+
+UI.ContextMenu.registerItem({
+  location: UI.ContextMenu.ItemLocation.MAIN_MENU_DEFAULT,
+  actionId: 'commandMenu.show',
+  order: undefined,
+});
+
+UI.ContextMenu.registerItem({
+  location: UI.ContextMenu.ItemLocation.MAIN_MENU_DEFAULT,
+  actionId: 'quickOpen.show',
+  order: undefined,
+});

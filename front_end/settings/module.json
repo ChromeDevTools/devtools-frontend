@@ -1,16 +1,4 @@
 {
-  "extensions": [
-    {
-      "type": "context-menu-item",
-      "location": "mainMenu/footer",
-      "actionId": "settings.shortcuts"
-    },
-    {
-      "type": "context-menu-item",
-      "location": "mainMenuHelp/default",
-      "actionId": "settings.documentation"
-    }
-  ],
   "dependencies": [
     "components"
   ],

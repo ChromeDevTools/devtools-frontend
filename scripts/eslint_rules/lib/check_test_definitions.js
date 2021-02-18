@@ -33,8 +33,9 @@ module.exports = {
   create: function(context) {
     return {
       MemberExpression(node) {
-        if (node.object.name === 'it' && node.property.name === 'skip' && node.parent.type === 'CallExpression') {
-          const testNameNode = node.parent.arguments[0];
+        if (node.object.name === 'it' && (node.property.name === 'skip' || node.property.name === 'skipOnPlatforms') &&
+            node.parent.type === 'CallExpression') {
+          const testNameNode = node.property.name === 'skip' ? node.parent.arguments[0] : node.parent.arguments[1];
 
           let textValue;
 

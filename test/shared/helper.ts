@@ -18,7 +18,8 @@ declare global {
   }
 }
 
-export let platform: string;
+export type Platform = 'mac'|'win32'|'linux';
+export let platform: Platform;
 switch (os.platform()) {
   case 'darwin':
     platform = 'mac';

@@ -8,6 +8,7 @@ import * as Path from 'path';
 import {getBrowserAndPages} from '../conductor/puppeteer-state.js';
 
 import {getEnvVar} from './config.js';
+import {Platform, platform} from './helper.js';
 
 export {beforeEach} from 'mocha';
 
@@ -106,6 +107,10 @@ export function it(name: string, callback: Mocha.Func|Mocha.AsyncFunc) {
 
 it.skip = function(name: string, callback: Mocha.Func|Mocha.AsyncFunc) {
   wrapMochaCall(Mocha.it.skip, name, callback);
+};
+
+it.skipOnPlatforms = function(platforms: Array<Platform>, name: string, callback: Mocha.Func|Mocha.AsyncFunc) {
+  wrapMochaCall(platforms.includes(platform) ? Mocha.it.skip : Mocha.it, name, callback);
 };
 
 it.only = function(name: string, callback: Mocha.Func|Mocha.AsyncFunc) {

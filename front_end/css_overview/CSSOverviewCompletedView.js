@@ -114,19 +114,14 @@ export const UIStrings = {
   */
   contrastIssues: 'Contrast issues',
   /**
-  *@description Singular of the term 'occurrence'
+  *@description Text that indicates that this CSS rule showed up one time.
   */
-  occurrence: 'occurrence',
+  oneOccurrence: '1 occurrence',
   /**
-  *@description Plural of the term 'occurrence'
+  * @description Text that indicates that this CSS rule showed multiple times.
+  * @example {12} count
   */
-  occurrences: 'occurrences',
-  /**
-  *@description Button title denoting the number of items found
-  *@example {12} PH1
-  *@example {items} PH2
-  */
-  sS: '{PH1} {PH2}',
+  nOccurrences: '{count} occurrences',
   /**
   *@description Section header for contrast issues in the CSS Overview Panel
   *@example {1} PH1
@@ -747,15 +742,14 @@ export class CSSOverviewCompletedView extends UI.Panel.PanelWithSidebar {
     return UI.Fragment.Fragment.build`<ul>
     ${values.map(([title, nodes]) => {
       const width = 100 * nodes.length / total;
-      const itemLabel = nodes.length === 1 ? i18nString(UIStrings.occurrence) : i18nString(UIStrings.occurrences);
+      // TODO(l10n): Plurals
+      const itemLabel = nodes.length === 1 ? i18nString(UIStrings.oneOccurrence) :
+                                             i18nString(UIStrings.nOccurrences, {count: nodes.length});
 
       return UI.Fragment.Fragment.build`<li>
         <div class="title">${title}</div>
         <button data-type="${type}" data-path="${path}" data-${dataLabel}="${title}">
-          <div class="details">${i18nString(UIStrings.sS, {
-        PH1: nodes.length,
-        PH2: itemLabel
-      })}</div>
+          <div class="details">${itemLabel}</div>
           <div class="bar-container">
             <div class="bar" style="width: ${width}%"></div>
           </div>

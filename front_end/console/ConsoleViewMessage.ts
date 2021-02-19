@@ -70,17 +70,17 @@ export const UIStrings = {
   *@description Message text in Console View Message of the Console panel
   *@example {console.log(1)} PH1
   */
-  violationS: '[Violation] {PH1}',
+  violationS: '`[Violation]` {PH1}',
   /**
   *@description Message text in Console View Message of the Console panel
   *@example {console.log(1)} PH1
   */
-  interventionS: '[Intervention] {PH1}',
+  interventionS: '`[Intervention]` {PH1}',
   /**
   *@description Message text in Console View Message of the Console panel
   *@example {console.log(1)} PH1
   */
-  deprecationS: '[Deprecation] {PH1}',
+  deprecationS: '`[Deprecation]` {PH1}',
   /**
   *@description Note title in Console View Message of the Console panel
   */
@@ -330,6 +330,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
         messageElement = this._formatAsNetworkRequest() || this._format([messageText]);
       } else {
         const messageInParameters = this._message.parameters && messageText === (this._message.parameters[0] as string);
+        // These terms are locked because the console message will not be translated anyway.
         if (this._message.source === SDK.ConsoleModel.MessageSource.Violation) {
           messageText = i18nString(UIStrings.violationS, {PH1: messageText});
         } else if (this._message.source === SDK.ConsoleModel.MessageSource.Intervention) {

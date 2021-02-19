@@ -1137,7 +1137,7 @@
     "message": "Ĉón̂śôĺê ẃâś ĉĺêár̂éd̂"
   },
   "console/ConsoleViewMessage.ts | deprecationS": {
-    "message": "[D̂ép̂ŕêćât́îón̂] {PH1}"
+    "message": "[Deprecation] {PH1}"
   },
   "console/ConsoleViewMessage.ts | error": {
     "message": "Êŕr̂ór̂"
@@ -1155,7 +1155,7 @@
     "message": "(îńd̂éx̂)"
   },
   "console/ConsoleViewMessage.ts | interventionS": {
-    "message": "[Îńt̂ér̂v́êńt̂íôń] {PH1}"
+    "message": "[Intervention] {PH1}"
   },
   "console/ConsoleViewMessage.ts | Mxx": {
     "message": " M̂<X́X̂>"
@@ -1182,7 +1182,7 @@
     "message": "V̂ál̂úê"
   },
   "console/ConsoleViewMessage.ts | violationS": {
-    "message": "[V̂íôĺât́îón̂] {PH1}"
+    "message": "[Violation] {PH1}"
   },
   "console/ConsoleViewMessage.ts | warning": {
     "message": "Ŵár̂ńîńĝ"
@@ -1418,14 +1418,14 @@
   "css_overview/CSSOverviewCompletedView.js | mediaQueries": {
     "message": "M̂éd̂íâ q́ûér̂íêś"
   },
+  "css_overview/CSSOverviewCompletedView.js | nOccurrences": {
+    "message": "{count} ôćĉúr̂ŕêńĉéŝ"
+  },
   "css_overview/CSSOverviewCompletedView.js | nonsimpleSelectors": {
     "message": "N̂ón̂-śîḿp̂ĺê śêĺêćt̂ór̂ś"
   },
-  "css_overview/CSSOverviewCompletedView.js | occurrence": {
-    "message": "ôćĉúr̂ŕêńĉé"
-  },
-  "css_overview/CSSOverviewCompletedView.js | occurrences": {
-    "message": "ôćĉúr̂ŕêńĉéŝ"
+  "css_overview/CSSOverviewCompletedView.js | oneOccurrence": {
+    "message": "1 ôćĉúr̂ŕêńĉé"
   },
   "css_overview/CSSOverviewCompletedView.js | overviewSummary": {
     "message": "Ôv́êŕv̂íêẃ ŝúm̂ḿâŕŷ"
@@ -1435,9 +1435,6 @@
   },
   "css_overview/CSSOverviewCompletedView.js | source": {
     "message": "Ŝóûŕĉé"
-  },
-  "css_overview/CSSOverviewCompletedView.js | sS": {
-    "message": "{PH1} {PH2}"
   },
   "css_overview/CSSOverviewCompletedView.js | styleRules": {
     "message": "Ŝt́ŷĺê ŕûĺêś"
@@ -3819,7 +3816,7 @@
     "message": "{PH1} + P̂ŕêf́l̂íĝh́t̂"
   },
   "network/NetworkDataGridNode.js | subresourcefilter": {
-    "message": "ŝúb̂ŕêśôúr̂ćê-f́îĺt̂ér̂"
+    "message": "subresource-filter"
   },
   "network/NetworkItemView.js | cookies": {
     "message": "Ĉóôḱîéŝ"

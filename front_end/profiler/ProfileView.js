@@ -26,7 +26,8 @@ export const UIStrings = {
   */
   profile: 'Profile',
   /**
-  *@description Text in Profile View of a profiler tool
+  *@description Placeholder text in the search box of the JavaScript profiler tool. Users can search
+  *the results by the cost in milliseconds, the name of the function, or the file name.
   */
   findByCostMsNameOrFile: 'Find by cost (>50ms), name or file',
   /**

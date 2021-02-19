@@ -11,16 +11,21 @@ import * as UI from '../ui/ui.js';
 
 export const UIStrings = {
   /**
-  *@description Text in Remote Object Preview Formatter
-  *@example {3} PH1
+  * @description Text shown in the console object preview. Shown when the user is inspecting a
+  * JavaScript object and there are multiple empty properties on the object (x =
+  * 'times'/'multiply').
+  * @example {3} PH1
   */
   emptyD: 'empty × {PH1}',
   /**
-  *@description Text to show an item is empty
+  * @description Shown when the user is inspecting a JavaScript object in the console and there is
+  * an empty property on the object..
   */
   empty: 'empty',
   /**
-  *@description Span title in Remote Object Preview Formatter
+  * @description Text shown when the user is inspecting a JavaScript object, but of the properties
+  * is not immediately available because it is a JavaScript 'getter' function, which means we have
+  * to run some code first in order to compute this property.
   */
   thePropertyIsComputedWithAGetter: 'The property is computed with a getter',
 };
@@ -214,6 +219,7 @@ export class RemoteObjectPreviewFormatter {
     function appendUndefined(index: number): void {
       const span = parentElement.createChild('span', 'object-value-undefined');
       const count = index - lastNonEmptyArrayIndex - 1;
+      // TODO(l10n): Plurals
       span.textContent = count !== 1 ? i18nString(UIStrings.emptyD, {PH1: count}) : i18nString(UIStrings.empty);
       elementsAdded = true;
     }

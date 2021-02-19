@@ -1418,14 +1418,14 @@
   "css_overview/CSSOverviewCompletedView.js | mediaQueries": {
     "message": "Media queries"
   },
+  "css_overview/CSSOverviewCompletedView.js | nOccurrences": {
+    "message": "{count} occurrences"
+  },
   "css_overview/CSSOverviewCompletedView.js | nonsimpleSelectors": {
     "message": "Non-simple selectors"
   },
-  "css_overview/CSSOverviewCompletedView.js | occurrence": {
-    "message": "occurrence"
-  },
-  "css_overview/CSSOverviewCompletedView.js | occurrences": {
-    "message": "occurrences"
+  "css_overview/CSSOverviewCompletedView.js | oneOccurrence": {
+    "message": "1 occurrence"
   },
   "css_overview/CSSOverviewCompletedView.js | overviewSummary": {
     "message": "Overview summary"
@@ -1435,9 +1435,6 @@
   },
   "css_overview/CSSOverviewCompletedView.js | source": {
     "message": "Source"
-  },
-  "css_overview/CSSOverviewCompletedView.js | sS": {
-    "message": "{PH1} {PH2}"
   },
   "css_overview/CSSOverviewCompletedView.js | styleRules": {
     "message": "Style rules"

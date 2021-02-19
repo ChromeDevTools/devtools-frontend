@@ -1061,6 +1061,11 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       this._applyFreeFlowStyleTextEdit(context);
     });
 
+    const invalidString = this.property.getInvalidStringForInvalidProperty();
+    if (invalidString && selectElement) {
+      UI.ARIAUtils.alert(invalidString, selectElement);
+    }
+
     if (selectElement) {
       const proxyElement = this._prompt.attachAndStartEditing(selectElement, blurListener.bind(this, context));
       this._navigateToSource(selectElement, true);

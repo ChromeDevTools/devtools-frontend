@@ -2048,6 +2048,9 @@
   "elements/StylesSidebarPane.js | invalidPropertyValue": {
     "message": "Invalid property value"
   },
+  "elements/StylesSidebarPane.js | invalidString": {
+    "message": "{PH1}, property name: {PH2}, property value: {PH3}"
+  },
   "elements/StylesSidebarPane.js | newStyleRule": {
     "message": "New Style Rule"
   },

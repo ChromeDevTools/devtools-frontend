@@ -41,6 +41,8 @@ export class CSSProperty {
     this._active = true;
     this._nameRange = null;
     this._valueRange = null;
+    /** @type {?string} */
+    this._invalidProperty = null;
   }
 
   /**
@@ -339,5 +341,21 @@ export class CSSProperty {
     const propertyText = this.text.trim();
     const text = disabled ? '/* ' + propertyText + ' */' : this.text.substring(2, propertyText.length - 2).trim();
     return this.setText(text, true, true);
+  }
+
+  /**
+   * This stores the warning string when a CSS Property is improperly parsed.
+   * @param {!Common.UIString.LocalizedString} invalidString
+   */
+  setDisplayedStringForInvalidProperty(invalidString) {
+    this._invalidString = invalidString;
+  }
+
+  /**
+   * Retrieve the warning string for a screen reader to announce when editing the property.
+   * @return {!Common.UIString.LocalizedString | undefined}
+   */
+  getInvalidStringForInvalidProperty() {
+    return this._invalidString;
   }
 }

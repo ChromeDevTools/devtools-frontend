@@ -2048,6 +2048,9 @@
   "elements/StylesSidebarPane.js | invalidPropertyValue": {
     "message": "Îńv̂ál̂íd̂ ṕr̂óp̂ér̂t́ŷ v́âĺûé"
   },
+  "elements/StylesSidebarPane.js | invalidString": {
+    "message": "{PH1}, p̂ŕôṕêŕt̂ý n̂ám̂é: {PH2}, p̂ŕôṕêŕt̂ý v̂ál̂úê: {PH3}"
+  },
   "elements/StylesSidebarPane.js | newStyleRule": {
     "message": "N̂éŵ Śt̂ýl̂é R̂úl̂é"
   },

@@ -139,6 +139,13 @@ export const UIStrings = {
   incrementdecrementWithMousewheelHundred:
       'Increment/decrement with mousewheel or up/down keys. {PH1}: ±100, Shift: ±10, Alt: ±0.1',
   /**
+  *@description Announcement string for invalid properties.
+  *@example {Invalid property value} PH1
+  *@example {font-size} PH2
+  *@example {invalidValue} PH3
+  */
+  invalidString: '{PH1}, property name: {PH2}, property value: {PH3}',
+  /**
   *@description Tooltip text that appears when hovering over the largeicon add button in the Styles Sidebar Pane of the Elements panel
   */
   newStyleRule: 'New Style Rule',
@@ -277,14 +284,23 @@ export class StylesSidebarPane extends ElementsSidebarPane {
     if (!StylesSidebarPane.ignoreErrorsForProperty(property)) {
       exclamationElement.type = 'smallicon-warning';
     }
+    /** @type {string | Common.UIString.LocalizedString} */
+    let invalidMessage;
     if (title) {
       UI.Tooltip.Tooltip.install(exclamationElement, title);
+      invalidMessage = title;
     } else {
-      UI.Tooltip.Tooltip.install(
-          exclamationElement,
-          SDK.CSSMetadata.cssMetadata().isCSSPropertyName(property.name) ? i18nString(UIStrings.invalidPropertyValue) :
-                                                                           i18nString(UIStrings.unknownPropertyName));
+      invalidMessage = SDK.CSSMetadata.cssMetadata().isCSSPropertyName(property.name) ?
+          i18nString(UIStrings.invalidPropertyValue) :
+          i18nString(UIStrings.unknownPropertyName);
+      UI.Tooltip.Tooltip.install(exclamationElement, invalidMessage);
     }
+    const invalidString =
+        i18nString(UIStrings.invalidString, {PH1: invalidMessage, PH2: property.name, PH3: property.value});
+
+    // Storing the invalidString for future screen reader support when editing the property
+    property.setDisplayedStringForInvalidProperty(invalidString);
+
     return exclamationElement;
   }
 

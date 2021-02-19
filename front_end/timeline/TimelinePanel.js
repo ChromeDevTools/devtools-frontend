@@ -195,11 +195,14 @@ export const UIStrings = {
   *@description Text in Timeline Panel of the Performance panel
   *@example {record} PH1
   *@example {Ctrl + R} PH2
-  *@example {reload} PH3
-  *@example {Ctrl + R} PH4
   */
-  clickTheRecordButtonSOrHitSTo:
-      'Click the record button {PH1} or hit {PH2} to start a new recording. Click the reload button {PH3} or hit {PH4} to record the page load.',
+  clickTheRecordButtonSOrHitSTo: 'Click the record button {PH1} or hit {PH2} to start a new recording.',
+  /**
+  * @description Text in Timeline Panel of the Performance panel
+  * @example {reload button} PH1
+  * @example {Ctrl + R} PH2
+  */
+  clickTheReloadButtonSOrHitSTo: 'Click the reload button {PH1} or hit {PH2} to record the page load.',
   /**
   *@description Text in Timeline Panel of the Performance panel
   *@example {Ctrl + U} PH1
@@ -1034,8 +1037,10 @@ export class TimelinePanel extends UI.Panel.Panel {
         UI.UIUtils.createInlineButton(UI.Toolbar.Toolbar.createActionButtonForId('timeline.record-reload'));
 
     centered.createChild('p').appendChild(i18n.i18n.getFormatLocalizedString(
-        str_, UIStrings.clickTheRecordButtonSOrHitSTo,
-        {PH1: recordButton, PH2: recordKey, PH3: reloadButton, PH4: reloadKey}));
+        str_, UIStrings.clickTheRecordButtonSOrHitSTo, {PH1: recordButton, PH2: recordKey}));
+
+    centered.createChild('p').appendChild(i18n.i18n.getFormatLocalizedString(
+        str_, UIStrings.clickTheReloadButtonSOrHitSTo, {PH1: reloadButton, PH2: reloadKey}));
 
     centered.createChild('p').appendChild(i18n.i18n.getFormatLocalizedString(
         str_, UIStrings.afterRecordingSelectAnAreaOf, {PH1: navigateNode, PH2: learnMoreNode}));

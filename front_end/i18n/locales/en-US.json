@@ -8406,7 +8406,10 @@
     "message": "Clear"
   },
   "timeline/TimelinePanel.js | clickTheRecordButtonSOrHitSTo": {
-    "message": "Click the record button {PH1} or hit {PH2} to start a new recording. Click the reload button {PH3} or hit {PH4} to record the page load."
+    "message": "Click the record button {PH1} or hit {PH2} to start a new recording."
+  },
+  "timeline/TimelinePanel.js | clickTheReloadButtonSOrHitSTo": {
+    "message": "Click the reload button {PH1} or hit {PH2} to record the page load."
   },
   "timeline/TimelinePanel.js | close": {
     "message": "Close"

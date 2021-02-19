@@ -8406,7 +8406,10 @@
     "message": "Ĉĺêár̂"
   },
   "timeline/TimelinePanel.js | clickTheRecordButtonSOrHitSTo": {
-    "message": "Ĉĺîćk̂ t́ĥé r̂éĉór̂d́ b̂út̂t́ôń {PH1} ôŕ ĥít̂ {PH2} t́ô śt̂ár̂t́ â ńêẃ r̂éĉór̂d́îńĝ. Ćl̂íĉḱ t̂h́ê ŕêĺôád̂ b́ût́t̂ón̂ {PH3} ór̂ h́ît́ {PH4} t̂ó r̂éĉór̂d́ t̂h́ê ṕâǵê ĺôád̂."
+    "message": "Ĉĺîćk̂ t́ĥé r̂éĉór̂d́ b̂út̂t́ôń {PH1} ôŕ ĥít̂ {PH2} t́ô śt̂ár̂t́ â ńêẃ r̂éĉór̂d́îńĝ."
+  },
+  "timeline/TimelinePanel.js | clickTheReloadButtonSOrHitSTo": {
+    "message": "Ĉĺîćk̂ t́ĥé r̂él̂óâd́ b̂út̂t́ôń {PH1} ôŕ ĥít̂ {PH2} t́ô ŕêćôŕd̂ t́ĥé p̂áĝé l̂óâd́."
   },
   "timeline/TimelinePanel.js | close": {
     "message": "Ĉĺôśê"

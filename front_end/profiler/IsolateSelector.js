@@ -27,7 +27,7 @@ export const UIStrings = {
   */
   totalPageJsHeapSizeAcrossAllVm: 'Total page JS heap size across all VM instances.',
   /**
-  *@description Text in Isolate Selector of a profiler tool
+  *@description Heap size change trend measured in kB/s
   *@example {2 kB} PH1
   */
   changeRate: '{PH1}/s',

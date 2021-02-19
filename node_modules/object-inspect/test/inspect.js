@@ -21,7 +21,25 @@ test('inspect custom symbol', { skip: !hasSymbols || !utilInspect || !utilInspec
 
     t.equal(inspect([obj, []]), '[ ' + (utilInspect.custom ? 'symbol' : 'string') + ', [] ]');
     t.equal(inspect([obj, []], { customInspect: true }), '[ ' + (utilInspect.custom ? 'symbol' : 'string') + ', [] ]');
-    t.equal(inspect([obj, []], { customInspect: false }), '[ { inspect: [Function: stringInspect] }, [] ]');
+    t.equal(
+        inspect([obj, []], { customInspect: false }),
+        '[ { inspect: [Function: stringInspect]' + (utilInspect.custom ? ', [' + inspect(utilInspect.custom) + ']: [Function: custom]' : '') + ' }, [] ]'
+    );
+});
+
+test('symbols', { skip: !hasSymbols }, function (t) {
+    t.plan(2);
+
+    var obj = { a: 1 };
+    obj[Symbol('test')] = 2;
+    obj[Symbol.iterator] = 3;
+    Object.defineProperty(obj, Symbol('non-enum'), {
+        enumerable: false,
+        value: 4
+    });
+
+    t.equal(inspect(obj), '{ a: 1, [Symbol(test)]: 2, [Symbol(Symbol.iterator)]: 3 }', 'object with symbols');
+    t.equal(inspect([obj, []]), '[ { a: 1, [Symbol(test)]: 2, [Symbol(Symbol.iterator)]: 3 }, [] ]', 'object with symbols');
 });
 
 test('maxStringLength', function (t) {

@@ -415,8 +415,8 @@ fg.sync('*.js', { absolute: true });  // ['/home/user/index.js']
 Mark the directory path with the final slash.
 
 ```js
-fs.sync('*', { onlyFiles: false, markDirectories: false }); // ['index.js', 'controllers']
-fs.sync('*', { onlyFiles: false, markDirectories: true });  // ['index.js', 'controllers/']
+fg.sync('*', { onlyFiles: false, markDirectories: false }); // ['index.js', 'controllers']
+fg.sync('*', { onlyFiles: false, markDirectories: true });  // ['index.js', 'controllers/']
 ```
 
 #### objectMode

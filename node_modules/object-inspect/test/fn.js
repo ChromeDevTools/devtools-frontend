@@ -12,9 +12,9 @@ test('function name', function (t) {
     var f = (function () {
         return function () {};
     }());
-    f.toString = function () { return 'function xxx () {}'; };
+    f.toString = function toStr() { return 'function xxx () {}'; };
     var obj = [1, 2, f, 4];
-    t.equal(inspect(obj), '[ 1, 2, [Function (anonymous)], 4 ]');
+    t.equal(inspect(obj), '[ 1, 2, [Function (anonymous)] { toString: [Function: toStr] }, 4 ]');
 });
 
 test('anon function', function (t) {

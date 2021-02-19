@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v1.0.3](https://github.com/es-shims/String.prototype.trimStart/compare/v1.0.2...v1.0.3) - 2020-11-21
+
+### Commits
+
+- [Tests] migrate tests to Github Actions [`fbc7519`](https://github.com/es-shims/String.prototype.trimStart/commit/fbc7519cce2b5bfff9fe28dea96fb5f6f82e19fd)
+- [Tests] add `implementation` test; run `es-shim-api` in postlint; use `tape` runner [`3c9330b`](https://github.com/es-shims/String.prototype.trimStart/commit/3c9330be9ad02497f78ff0fd94b7c918c3a4bc21)
+- [Tests] run `nyc` on all tests [`52229ca`](https://github.com/es-shims/String.prototype.trimStart/commit/52229ca28426be516c3826743e417be85144673e)
+- [Deps] replace `es-abstract` with `call-bind` [`5e5068d`](https://github.com/es-shims/String.prototype.trimStart/commit/5e5068d2cc85d0a6f2a441ea984521ee70470537)
+- [Dev Deps] update `eslint`, `aud`; add `safe-publish-latest` [`42a853e`](https://github.com/es-shims/String.prototype.trimStart/commit/42a853e2cb419378085098cb66e421ee94eed3ab)
+
 ## [v1.0.2](https://github.com/es-shims/String.prototype.trimStart/compare/v1.0.1...v1.0.2) - 2020-10-20
 
 ### Commits

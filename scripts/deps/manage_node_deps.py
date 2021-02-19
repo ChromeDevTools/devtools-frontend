@@ -44,6 +44,7 @@ DEPS = {
     "@types/karma-chai-sinon": "0.1.15",
     "@types/estree": "0.0.46",
     "@types/filesystem": "0.0.29",
+    "@types/node": "14.14.30",
     "@types/mocha": "8.2.0",
     "@types/sinon": "9.0.10",
     "@typescript-eslint/parser": "4.15.0",
@@ -271,7 +272,7 @@ def run_npm_command(npm_command_args=None):
     if not runs_analysis_command:
         if exec_command(['npm', 'ci']):
             return True
-        
+
         # To minimize disk usage for Chrome DevTools node_modules, always try to dedupe dependencies.
         # We need to perform this every time, as the order of dependencies added could lead to a
         # non-optimal dependency tree, resulting in unnecessary disk usage.

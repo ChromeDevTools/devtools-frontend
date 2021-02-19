@@ -38,7 +38,7 @@ export function startServer(server: 'hosted-mode'|'component-docs'): Promise<num
       if (message === 'ERROR') {
         reject('Could not start server');
       } else {
-        resolve(parseInt(message, 10));
+        resolve(Number(message));
       }
     });
     runningServer.on('error', handleServerError);

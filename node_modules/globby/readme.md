@@ -1,4 +1,4 @@
-# globby [![Build Status](https://travis-ci.org/sindresorhus/globby.svg?branch=master)](https://travis-ci.org/sindresorhus/globby)
+# globby
 
 > User-friendly glob matching
 

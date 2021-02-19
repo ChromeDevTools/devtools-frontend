@@ -1,6 +1,6 @@
 'use strict';
 
-var callBound = require('es-abstract/helpers/callBound');
+var callBound = require('call-bind/callBound');
 var $replace = callBound('String.prototype.replace');
 
 /* eslint-disable no-control-regex */

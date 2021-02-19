@@ -43,7 +43,7 @@ declare namespace globby {
 
 	interface GlobTask {
 		readonly pattern: string;
-		readonly options: globby.GlobbyOptions;
+		readonly options: GlobbyOptions;
 	}
 
 	interface GitignoreOptions {
@@ -55,6 +55,11 @@ declare namespace globby {
 }
 
 interface Gitignore {
+	/**
+	@returns A filter function indicating whether a given path is ignored via a `.gitignore` file.
+	*/
+	sync: (options?: globby.GitignoreOptions) => globby.FilterFunction;
+
 	/**
 	`.gitignore` files matched by the ignore config are not used for the resulting filter function.
 
@@ -71,14 +76,76 @@ interface Gitignore {
 	```
 	*/
 	(options?: globby.GitignoreOptions): Promise<globby.FilterFunction>;
-
-	/**
-	@returns A filter function indicating whether a given path is ignored via a `.gitignore` file.
-	*/
-	sync(options?: globby.GitignoreOptions): globby.FilterFunction;
 }
 
 declare const globby: {
+	/**
+	Find files and directories using glob patterns.
+
+	Note that glob patterns can only contain forward-slashes, not backward-slashes, so if you want to construct a glob pattern from path components, you need to use `path.posix.join()` instead of `path.join()`.
+
+	@param patterns - See the supported [glob patterns](https://github.com/sindresorhus/globby#globbing-patterns).
+	@param options - See the [`fast-glob` options](https://github.com/mrmlnc/fast-glob#options-3) in addition to the ones in this package.
+	@returns The matching paths.
+	*/
+	sync: (
+		patterns: string | readonly string[],
+		options?: globby.GlobbyOptions
+	) => string[];
+
+	/**
+	Find files and directories using glob patterns.
+
+	Note that glob patterns can only contain forward-slashes, not backward-slashes, so if you want to construct a glob pattern from path components, you need to use `path.posix.join()` instead of `path.join()`.
+
+	@param patterns - See the supported [glob patterns](https://github.com/sindresorhus/globby#globbing-patterns).
+	@param options - See the [`fast-glob` options](https://github.com/mrmlnc/fast-glob#options-3) in addition to the ones in this package.
+	@returns The stream of matching paths.
+
+	@example
+	```
+	import globby = require('globby');
+
+	(async () => {
+		for await (const path of globby.stream('*.tmp')) {
+			console.log(path);
+		}
+	})();
+	```
+	*/
+	stream: (
+		patterns: string | readonly string[],
+		options?: globby.GlobbyOptions
+	) => NodeJS.ReadableStream;
+
+	/**
+	Note that you should avoid running the same tasks multiple times as they contain a file system cache. Instead, run this method each time to ensure file system changes are taken into consideration.
+
+	@param patterns - See the supported [glob patterns](https://github.com/sindresorhus/globby#globbing-patterns).
+	@param options - See the [`fast-glob` options](https://github.com/mrmlnc/fast-glob#options-3) in addition to the ones in this package.
+	@returns An object in the format `{pattern: string, options: object}`, which can be passed as arguments to [`fast-glob`](https://github.com/mrmlnc/fast-glob). This is useful for other globbing-related packages.
+	*/
+	generateGlobTasks: (
+		patterns: string | readonly string[],
+		options?: globby.GlobbyOptions
+	) => globby.GlobTask[];
+
+	/**
+	Note that the options affect the results.
+
+	This function is backed by [`fast-glob`](https://github.com/mrmlnc/fast-glob#isdynamicpatternpattern-options).
+
+	@param patterns - See the supported [glob patterns](https://github.com/sindresorhus/globby#globbing-patterns).
+	@param options - See the [`fast-glob` options](https://github.com/mrmlnc/fast-glob#options-3).
+	@returns Whether there are any special glob characters in the `patterns`.
+	*/
+	hasMagic: (
+		patterns: string | readonly string[],
+		options?: FastGlobOptions
+	) => boolean;
+
+	readonly gitignore: Gitignore;
+
 	/**
 	Find files and directories using glob patterns.
 
@@ -104,73 +171,6 @@ declare const globby: {
 		patterns: string | readonly string[],
 		options?: globby.GlobbyOptions
 	): Promise<string[]>;
-
-	/**
-	Find files and directories using glob patterns.
-
-	Note that glob patterns can only contain forward-slashes, not backward-slashes, so if you want to construct a glob pattern from path components, you need to use `path.posix.join()` instead of `path.join()`.
-
-	@param patterns - See the supported [glob patterns](https://github.com/sindresorhus/globby#globbing-patterns).
-	@param options - See the [`fast-glob` options](https://github.com/mrmlnc/fast-glob#options-3) in addition to the ones in this package.
-	@returns The matching paths.
-	*/
-	sync(
-		patterns: string | readonly string[],
-		options?: globby.GlobbyOptions
-	): string[];
-
-	/**
-	Find files and directories using glob patterns.
-
-	Note that glob patterns can only contain forward-slashes, not backward-slashes, so if you want to construct a glob pattern from path components, you need to use `path.posix.join()` instead of `path.join()`.
-
-	@param patterns - See the supported [glob patterns](https://github.com/sindresorhus/globby#globbing-patterns).
-	@param options - See the [`fast-glob` options](https://github.com/mrmlnc/fast-glob#options-3) in addition to the ones in this package.
-	@returns The stream of matching paths.
-
-	@example
-	```
-	import globby = require('globby');
-
-	(async () => {
-		for await (const path of globby.stream('*.tmp')) {
-			console.log(path);
-		}
-	})();
-	```
-	*/
-	stream(
-		patterns: string | readonly string[],
-		options?: globby.GlobbyOptions
-	): NodeJS.ReadableStream;
-
-	/**
-	Note that you should avoid running the same tasks multiple times as they contain a file system cache. Instead, run this method each time to ensure file system changes are taken into consideration.
-
-	@param patterns - See the supported [glob patterns](https://github.com/sindresorhus/globby#globbing-patterns).
-	@param options - See the [`fast-glob` options](https://github.com/mrmlnc/fast-glob#options-3) in addition to the ones in this package.
-	@returns An object in the format `{pattern: string, options: object}`, which can be passed as arguments to [`fast-glob`](https://github.com/mrmlnc/fast-glob). This is useful for other globbing-related packages.
-	*/
-	generateGlobTasks(
-		patterns: string | readonly string[],
-		options?: globby.GlobbyOptions
-	): globby.GlobTask[];
-
-	/**
-	Note that the options affect the results.
-
-	This function is backed by [`fast-glob`](https://github.com/mrmlnc/fast-glob#isdynamicpatternpattern-options).
-
-	@param patterns - See the supported [glob patterns](https://github.com/sindresorhus/globby#globbing-patterns).
-	@param options - See the [`fast-glob` options](https://github.com/mrmlnc/fast-glob#options-3).
-	@returns Whether there are any special glob characters in the `patterns`.
-	*/
-	hasMagic(
-		patterns: string | readonly string[],
-		options?: FastGlobOptions
-	): boolean;
-
-	readonly gitignore: Gitignore;
 };
 
 export = globby;

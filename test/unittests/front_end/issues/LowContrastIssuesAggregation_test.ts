@@ -9,19 +9,22 @@ import type * as BrowserSDKModule from '../../../../front_end/browser_sdk/browse
 import type * as SDKModule from '../../../../front_end/sdk/sdk.js';
 import {describeWithEnvironment} from '../helpers/EnvironmentHelpers.js';
 import {MockIssuesModel} from '../sdk/MockIssuesModel.js';
+import {MockIssuesManager} from '../browser_sdk/MockIssuesManager.js';
 
 describeWithEnvironment('AggregatedIssue', async () => {
-  let BrowserSDK: typeof BrowserSDKModule;
   let Issues: typeof IssuesModule;
+  let BrowserSDK: typeof BrowserSDKModule;
   let SDK: typeof SDKModule;
   before(async () => {
     Issues = await import('../../../../front_end/issues/issues.js');
+
     BrowserSDK = await import('../../../../front_end/browser_sdk/browser_sdk.js');
     SDK = await import('../../../../front_end/sdk/sdk.js');
   });
 
   it('aggregates multiple issues with duplicates correctly', () => {
     const mockModel = new MockIssuesModel([]) as unknown as SDKModule.IssuesModel.IssuesModel;
+    const mockManager = new MockIssuesManager([]) as unknown as BrowserSDKModule.IssuesManager.IssuesManager;
     const commonDetails = {
       violatingNodeSelector: 'div',
       contrastRatio: 1,
@@ -46,10 +49,9 @@ describeWithEnvironment('AggregatedIssue', async () => {
     ];
     const issues = issueDetails.map(details => new SDK.LowTextContrastIssue.LowTextContrastIssue(details));
 
-    const aggregator = new Issues.IssueAggregator.IssueAggregator(
-        (mockModel as unknown) as BrowserSDKModule.IssuesManager.IssuesManager);
+    const aggregator = new Issues.IssueAggregator.IssueAggregator(mockManager);
     for (const issue of issues) {
-      mockModel.dispatchEventToListeners(BrowserSDK.IssuesManager.Events.IssueAdded, {issuesModel: mockModel, issue});
+      mockManager.dispatchEventToListeners(BrowserSDK.IssuesManager.Events.IssueAdded, {issuesModel: mockModel, issue});
     }
 
     const aggregatedIssues = Array.from(aggregator.aggregatedIssues());

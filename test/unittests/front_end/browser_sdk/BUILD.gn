@@ -4,6 +4,7 @@ ts_library("browser_sdk") {
   testonly = true
   sources = [
     "IssuesManager_test.ts",
+    "MockIssuesManager.ts",
     "RelatedIssue_test.ts",
   ]
 

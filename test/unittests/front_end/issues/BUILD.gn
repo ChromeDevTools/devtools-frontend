@@ -18,6 +18,7 @@ ts_library("issues") {
     "../../../../front_end/sdk:bundle",
     "../../../../front_end/third_party/marked:bundle",
     "../../../../front_end/ui/components:bundle",
+    "../browser_sdk",
     "../helpers",
     "../sdk",
   ]

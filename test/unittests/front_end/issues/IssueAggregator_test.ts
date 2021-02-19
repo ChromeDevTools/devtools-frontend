@@ -10,6 +10,7 @@ import type * as SDKModule from '../../../../front_end/sdk/sdk.js';
 import {describeWithEnvironment} from '../helpers/EnvironmentHelpers.js';
 import {StubIssue} from '../sdk/StubIssue.js';
 import {MockIssuesModel} from '../sdk/MockIssuesModel.js';
+import {MockIssuesManager} from '../browser_sdk/MockIssuesManager.js';
 
 describeWithEnvironment('AggregatedIssue', async () => {
   let Issues: typeof IssuesModule;
@@ -56,12 +57,12 @@ describeWithEnvironment('IssueAggregator', async () => {
     const issue1 = StubIssue.createFromRequestIds(['id1']);
     const issue2 = StubIssue.createFromRequestIds(['id2']);
 
-    const mockModel = new MockIssuesModel([]);
-    const aggregator = new Issues.IssueAggregator.IssueAggregator(
-        (mockModel as unknown) as BrowserSDKModule.IssuesManager.IssuesManager);
-    mockModel.dispatchEventToListeners(
+    const mockModel = new MockIssuesModel([]) as unknown as SDKModule.IssuesModel.IssuesModel;
+    const mockManager = new MockIssuesManager([]) as unknown as BrowserSDKModule.IssuesManager.IssuesManager;
+    const aggregator = new Issues.IssueAggregator.IssueAggregator(mockManager);
+    mockManager.dispatchEventToListeners(
         BrowserSDK.IssuesManager.Events.IssueAdded, {issuesModel: mockModel, issue: issue1});
-    mockModel.dispatchEventToListeners(
+    mockManager.dispatchEventToListeners(
         BrowserSDK.IssuesManager.Events.IssueAdded, {issuesModel: mockModel, issue: issue2});
 
     const issues = Array.from(aggregator.aggregatedIssues());
@@ -76,12 +77,13 @@ describeWithEnvironment('IssueAggregator', async () => {
     const issue1b = StubIssue.createFromRequestIds(['id1']);  // Duplicate id.
     const issue3 = StubIssue.createFromRequestIds(['id3']);
 
-    const mockModel = new MockIssuesModel([issue1b, issue3]);
-    const aggregator = new Issues.IssueAggregator.IssueAggregator(
-        (mockModel as unknown) as BrowserSDKModule.IssuesManager.IssuesManager);
-    mockModel.dispatchEventToListeners(
+    const mockModel = new MockIssuesModel([]) as unknown as SDKModule.IssuesModel.IssuesModel;
+    const mockManager =
+        new MockIssuesManager([issue1b, issue3]) as unknown as BrowserSDKModule.IssuesManager.IssuesManager;
+    const aggregator = new Issues.IssueAggregator.IssueAggregator(mockManager);
+    mockManager.dispatchEventToListeners(
         BrowserSDK.IssuesManager.Events.IssueAdded, {issuesModel: mockModel, issue: issue1});
-    mockModel.dispatchEventToListeners(
+    mockManager.dispatchEventToListeners(
         BrowserSDK.IssuesManager.Events.IssueAdded, {issuesModel: mockModel, issue: issue2});
 
     const issues = Array.from(aggregator.aggregatedIssues());
@@ -96,12 +98,13 @@ describeWithEnvironment('IssueAggregator', async () => {
     const issue1b = new StubIssue('codeC', ['id1'], []);
     const issue3 = new StubIssue('codeA', ['id1'], []);
 
-    const mockModel = new MockIssuesModel([issue1b, issue3]);
-    const aggregator = new Issues.IssueAggregator.IssueAggregator(
-        (mockModel as unknown) as BrowserSDKModule.IssuesManager.IssuesManager);
-    mockModel.dispatchEventToListeners(
+    const mockModel = new MockIssuesModel([]) as unknown as SDKModule.IssuesModel.IssuesModel;
+    const mockManager =
+        new MockIssuesManager([issue1b, issue3]) as unknown as BrowserSDKModule.IssuesManager.IssuesManager;
+    const aggregator = new Issues.IssueAggregator.IssueAggregator(mockManager);
+    mockManager.dispatchEventToListeners(
         BrowserSDK.IssuesManager.Events.IssueAdded, {issuesModel: mockModel, issue: issue1});
-    mockModel.dispatchEventToListeners(
+    mockManager.dispatchEventToListeners(
         BrowserSDK.IssuesManager.Events.IssueAdded, {issuesModel: mockModel, issue: issue2});
 
     const issues = Array.from(aggregator.aggregatedIssues());
@@ -112,13 +115,13 @@ describeWithEnvironment('IssueAggregator', async () => {
 });
 
 describeWithEnvironment('IssueAggregator', async () => {
-  let BrowserSDK: typeof BrowserSDKModule;
   let Issues: typeof IssuesModule;
   let SDK: typeof SDKModule;
+  let BrowserSDK: typeof BrowserSDKModule;
   before(async () => {
-    Issues = await import('../../../../front_end/issues/issues.js');
-    BrowserSDK = await import('../../../../front_end/browser_sdk/browser_sdk.js');
     SDK = await import('../../../../front_end/sdk/sdk.js');
+    BrowserSDK = await import('../../../../front_end/browser_sdk/browser_sdk.js');
+    Issues = await import('../../../../front_end/issues/issues.js');
   });
 
   it('aggregates heavy ad issues correctly', () => {
@@ -136,11 +139,11 @@ describeWithEnvironment('IssueAggregator', async () => {
     };
     const issue2 = new SDK.HeavyAdIssue.HeavyAdIssue(details2, mockModel);
 
-    const aggregator = new Issues.IssueAggregator.IssueAggregator(
-        (mockModel as unknown) as BrowserSDKModule.IssuesManager.IssuesManager);
-    mockModel.dispatchEventToListeners(
+    const mockManager = new MockIssuesManager([]) as unknown as BrowserSDKModule.IssuesManager.IssuesManager;
+    const aggregator = new Issues.IssueAggregator.IssueAggregator(mockManager);
+    mockManager.dispatchEventToListeners(
         BrowserSDK.IssuesManager.Events.IssueAdded, {issuesModel: mockModel, issue: issue1});
-    mockModel.dispatchEventToListeners(
+    mockManager.dispatchEventToListeners(
         BrowserSDK.IssuesManager.Events.IssueAdded, {issuesModel: mockModel, issue: issue2});
 
     const issues = Array.from(aggregator.aggregatedIssues());

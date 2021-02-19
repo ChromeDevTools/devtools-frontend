@@ -9,6 +9,7 @@ import type * as BrowserSDKModule from '../../../../front_end/browser_sdk/browse
 import type * as SDKModule from '../../../../front_end/sdk/sdk.js';
 import {describeWithEnvironment} from '../helpers/EnvironmentHelpers.js';
 import {MockIssuesModel} from '../sdk/MockIssuesModel.js';
+import {MockIssuesManager} from '../browser_sdk/MockIssuesManager.js';
 
 describeWithEnvironment('AggregatedIssue', async () => {
   let BrowserSDK: typeof BrowserSDKModule;
@@ -22,6 +23,7 @@ describeWithEnvironment('AggregatedIssue', async () => {
 
   it('aggregates two TWA issues with same violationType correctly', () => {
     const mockModel = new MockIssuesModel([]) as unknown as SDKModule.IssuesModel.IssuesModel;
+    const mockManager = new MockIssuesManager([]) as unknown as BrowserSDKModule.IssuesManager.IssuesManager;
     const details1 = {
       violationType: Protocol.Audits.TwaQualityEnforcementViolationType.KHttpError,
       url: 'test.url1.com',
@@ -35,11 +37,10 @@ describeWithEnvironment('AggregatedIssue', async () => {
     };
     const issue2 = new SDK.TrustedWebActivityIssue.TrustedWebActivityIssue(details2);
 
-    const aggregator = new Issues.IssueAggregator.IssueAggregator(
-        (mockModel as unknown) as BrowserSDKModule.IssuesManager.IssuesManager);
-    mockModel.dispatchEventToListeners(
+    const aggregator = new Issues.IssueAggregator.IssueAggregator(mockManager);
+    mockManager.dispatchEventToListeners(
         BrowserSDK.IssuesManager.Events.IssueAdded, {issuesModel: mockModel, issue: issue1});
-    mockModel.dispatchEventToListeners(
+    mockManager.dispatchEventToListeners(
         BrowserSDK.IssuesManager.Events.IssueAdded, {issuesModel: mockModel, issue: issue2});
 
     const issues = Array.from(aggregator.aggregatedIssues());
@@ -57,6 +58,7 @@ describeWithEnvironment('AggregatedIssue', async () => {
 
   it('TWA issues with different violationType do not aggregate', () => {
     const mockModel = new MockIssuesModel([]) as unknown as SDKModule.IssuesModel.IssuesModel;
+    const mockManager = new MockIssuesManager([]) as unknown as BrowserSDKModule.IssuesManager.IssuesManager;
     const details1 = {
       violationType: Protocol.Audits.TwaQualityEnforcementViolationType.KHttpError,
       url: 'test.url1.com',
@@ -74,13 +76,12 @@ describeWithEnvironment('AggregatedIssue', async () => {
     };
     const issue3 = new SDK.TrustedWebActivityIssue.TrustedWebActivityIssue(details3);
 
-    const aggregator = new Issues.IssueAggregator.IssueAggregator(
-        (mockModel as unknown) as BrowserSDKModule.IssuesManager.IssuesManager);
-    mockModel.dispatchEventToListeners(
+    const aggregator = new Issues.IssueAggregator.IssueAggregator(mockManager);
+    mockManager.dispatchEventToListeners(
         BrowserSDK.IssuesManager.Events.IssueAdded, {issuesModel: mockModel, issue: issue1});
-    mockModel.dispatchEventToListeners(
+    mockManager.dispatchEventToListeners(
         BrowserSDK.IssuesManager.Events.IssueAdded, {issuesModel: mockModel, issue: issue2});
-    mockModel.dispatchEventToListeners(
+    mockManager.dispatchEventToListeners(
         BrowserSDK.IssuesManager.Events.IssueAdded, {issuesModel: mockModel, issue: issue3});
 
     const issues = Array.from(aggregator.aggregatedIssues());

@@ -124,209 +124,6 @@ export const UIStrings = {
   */
   paintProfiler: 'Paint Profiler',
   /**
-  *@description Compositing reason description displayed in the Layer Details View of the Layers panel
-  */
-  hasADTransform: 'Has a 3d transform.',
-  /**
-  *@description Compositing reason description displayed in the Layer Details View of the Layers panel
-  */
-  isAnAcceleratedVideo: 'Is an accelerated video.',
-  /**
-  *@description Compositing reason description displayed in the Layer Details View of the Layers panel
-  */
-  isAnAcceleratedCanvasOrIsA:
-      'Is an accelerated canvas, or is a display list backed canvas that was promoted to a layer based on a performance heuristic.',
-  /**
-  *@description Compositing reason description displayed in the Layer Details View of the Layers panel
-  */
-  isAnAcceleratedPlugin: 'Is an accelerated plugin.',
-  /**
-  *@description Compositing reason description displayed in the Layer Details View of the Layers panel
-  */
-  isAnAcceleratedIframe: 'Is an accelerated iFrame.',
-  /**
-  *@description Compositing reason description displayed in the Layer Details View of the Layers panel
-  */
-  hasBackfacevisibilityHidden: 'Has backface-visibility: hidden.',
-  /**
-  *@description Compositing reason description displayed in the Layer Details View of the Layers panel
-  */
-  hasAnActiveAcceleratedTransform: 'Has an active accelerated transform animation or transition.',
-  /**
-  *@description Compositing reason description displayed in the Layer Details View of the Layers panel
-  */
-  hasAnActiveAcceleratedOpacity: 'Has an active accelerated opacity animation or transition.',
-  /**
-  *@description Compositing reason description displayed in the Layer Details View of the Layers panel
-  */
-  hasAnActiveAcceleratedFilter: 'Has an active accelerated filter animation or transition.',
-  /**
-  *@description Compositing reason description displayed in the Layer Details View of the Layers panel
-  */
-  hasAnActiveAcceleratedBackdrop: 'Has an active accelerated backdrop filter animation or transition.',
-  /**
-  *@description Compositing reason description displayed in the Layer Details View of the Layers panel
-  */
-  isDomOverlayForWebxrImmersivear: 'Is `DOM` overlay for `WebXR` `immersive-ar` mode.',
-  /**
-  *@description Compositing reason description displayed in the Layer Details View of the Layers panel
-  */
-  isFixedOrStickyPosition: 'Is fixed or sticky position.',
-  /**
-  *@description Compositing reason description displayed in the Layer Details View of the Layers panel
-  */
-  isAScrollableOverflowElement: 'Is a scrollable overflow element.',
-  /**
-  *@description Compositing reason description displayed in the Layer Details View of the Layers panel
-  */
-  scrollParentIsNotAnAncestor: 'Scroll parent is not an ancestor.',
-  /**
-  *@description Compositing reason description displayed in the Layer Details View of the Layers panel
-  */
-  hasClippingAncestor: 'Has clipping ancestor.',
-  /**
-  *@description Compositing reason description displayed in the Layer Details View of the Layers panel
-  */
-  isOverlayControlsForVideo: 'Is overlay controls for video.',
-  /**
-  *@description Compositing reason description displayed in the Layer Details View of the Layers panel
-  */
-  hasAWillchangeTransform: 'Has a will-change: transform compositing hint.',
-  /**
-  *@description Compositing reason description displayed in the Layer Details View of the Layers panel
-  */
-  hasAWillchangeOpacityCompositing: 'Has a will-change: opacity compositing hint.',
-  /**
-  *@description Compositing reason description displayed in the Layer Details View of the Layers panel
-  */
-  hasAWillchangeCompositingHint: 'Has a will-change compositing hint other than transform and opacity.',
-  /**
-  *@description Compositing reason description displayed in the Layer Details View of the Layers panel
-  */
-  hasABackdropFilter: 'Has a backdrop filter.',
-  /**
-  *@description Compositing reason description displayed in the Layer Details View of the Layers panel
-  */
-  isTheDocumentrootscroller: 'Is the document.rootScroller.',
-  /**
-  *@description Compositing reason description displayed in the Layer Details View of the Layers panel
-  */
-  mightOverlapOtherComposited: 'Might overlap other composited content.',
-  /**
-  *@description Compositing reason description displayed in the Layer Details View of the Layers panel
-  */
-  overlapsOtherCompositedContent: 'Overlaps other composited content.',
-  /**
-  *@description Compositing reason description displayed in the Layer Details View of the Layers panel
-  */
-  parentWithCompositedNegative: 'Parent with composited negative z-index content.',
-  /**
-  *@description Compositing reason description displayed in the Layer Details View of the Layers panel
-  */
-  layerWasSeparatelyComposited: 'Layer was separately composited because it could not be squashed.',
-  /**
-  *@description Compositing reason description displayed in the Layer Details View of the Layers panel
-  */
-  hasOpacityThatNeedsToBeAppliedBy:
-      'Has opacity that needs to be applied by compositor because of composited descendants.',
-  /**
-  *@description Compositing reason description displayed in the Layer Details View of the Layers panel
-  */
-  hasAMaskThatNeedsToBeKnownBy: 'Has a mask that needs to be known by compositor because of composited descendants.',
-  /**
-  *@description Compositing reason description displayed in the Layer Details View of the Layers panel
-  */
-  hasAReflectionThatNeedsToBeKnown:
-      'Has a reflection that needs to be known by compositor because of composited descendants.',
-  /**
-  *@description Compositing reason description displayed in the Layer Details View of the Layers panel
-  */
-  hasAFilterEffectThatNeedsToBe:
-      'Has a filter effect that needs to be known by compositor because of composited descendants.',
-  /**
-  *@description Compositing reason description displayed in the Layer Details View of the Layers panel
-  */
-  hasABlendingEffectThatNeedsToBe:
-      'Has a blending effect that needs to be known by compositor because of composited descendants.',
-  /**
-  *@description Compositing reason description displayed in the Layer Details View of the Layers panel
-  */
-  hasAClipThatNeedsToBeKnownBy: 'Has a clip that needs to be known by compositor because of composited descendants.',
-  /**
-  *@description Compositing reason description displayed in the Layer Details View of the Layers panel
-  */
-  hasAPerspectiveTransformThat:
-      'Has a perspective transform that needs to be known by compositor because of 3d descendants.',
-  /**
-  *@description Compositing reason description displayed in the Layer Details View of the Layers panel
-  */
-  hasAPreservesdPropertyThatNeeds:
-      'Has a preserves-3d property that needs to be known by compositor because of 3d descendants.',
-  /**
-  *@description Compositing reason description displayed in the Layer Details View of the Layers panel
-  */
-  shouldIsolateDescendantsToApplyA: 'Should isolate descendants to apply a blend effect.',
-  /**
-  *@description Compositing reason description displayed in the Layer Details View of the Layers panel. The
-                inspected HTML element has the CSS attribute 'position' set to 'fixed'. The inspected HTML
-                element also has multiple child HTML elements (= descendents).
-  */
-  isAPositionfixedElementWith: 'Is a `position:fixed` element with composited descendants.',
-  /**
-  *@description Compositing reason description displayed in the Layer Details View of the Layers panel
-  */
-  isTheRootLayer: 'Is the root layer.',
-  /**
-  *@description Compositing reason description displayed in the Layer Details View of the Layers panel
-  */
-  secondaryLayerTheHorizontal: 'Secondary layer, the horizontal scrollbar layer.',
-  /**
-  *@description Compositing reason description displayed in the Layer Details View of the Layers panel
-  */
-  secondaryLayerTheVertical: 'Secondary layer, the vertical scrollbar layer.',
-  /**
-  *@description Compositing reason description displayed in the Layer Details View of the Layers panel
-  */
-  secondaryLayerTheOverflow: 'Secondary layer, the overflow controls host layer.',
-  /**
-  *@description Compositing reason description displayed in the Layer Details View of the Layers panel
-  */
-  secondaryLayerTheScrollCorner: 'Secondary layer, the scroll corner layer.',
-  /**
-  *@description Compositing reason description displayed in the Layer Details View of the Layers panel
-  */
-  secondaryLayerToHouseContents: 'Secondary layer, to house contents that can be scrolled.',
-  /**
-  *@description Compositing reason description displayed in the Layer Details View of the Layers panel
-  */
-  secondaryLayerUsedToPositionThe: 'Secondary layer, used to position the scrolling contents while scrolling.',
-  /**
-  *@description Compositing reason description displayed in the Layer Details View of the Layers panel
-  */
-  secondaryLayerHomeForAGroupOf: 'Secondary layer, home for a group of squashable content.',
-  /**
-  *@description Compositing reason description displayed in the Layer Details View of the Layers panel
-  */
-  secondaryLayerNoopLayerToPlace:
-      'Secondary layer, no-op layer to place the squashing layer correctly in the composited layer tree.',
-  /**
-  *@description Compositing reason description displayed in the Layer Details View of the Layers panel
-  */
-  secondaryLayerToContainAnyNormal:
-      'Secondary layer, to contain any normal flow and positive z-index contents on top of a negative z-index layer.',
-  /**
-  *@description Compositing reason description displayed in the Layer Details View of the Layers panel
-  */
-  secondaryLayerToContainTheMask: 'Secondary layer, to contain the mask contents.',
-  /**
-  *@description Compositing reason description displayed in the Layer Details View of the Layers panel
-  */
-  layerPaintedOnTopOfOtherLayersAs: 'Layer painted on top of other layers as decoration.',
-  /**
-  *@description Compositing reason description displayed in the Layer Details View of the Layers panel
-  */
-  layerForLinkHighlightFrame: 'Layer for link highlight, frame overlay, etc.',
-  /**
   *@description Text in Layer Details View of the Layers panel
   */
   nonFastScrollable: 'Non fast scrollable',
@@ -560,12 +357,12 @@ export class LayerDetailsView extends UI.Widget.Widget implements LayerView {
     }
   }
 
-  static getCompositingReasons(compositingReasonIds: string[]): Platform.UIString.LocalizedString[] {
+  static getCompositingReasons(compositingReasonIds: string[]): string[] {
     const compositingReasons = [];
     for (const compositingReasonId of compositingReasonIds) {
       const compositingReason = compositingReasonIdToReason.get(compositingReasonId);
       if (compositingReason) {
-        compositingReasons.push(compositingReason());
+        compositingReasons.push(compositingReason);
       } else {
         console.error(`Compositing reason id '${compositingReasonId}' is not recognized.`);
       }
@@ -575,55 +372,89 @@ export class LayerDetailsView extends UI.Widget.Widget implements LayerView {
 }
 
 // The compositing reason IDs are defined in third_party/blink/renderer/platform/graphics/compositing_reasons.cc
+// These strings are not translated because they are implementation details from chromium that are hard to translate.
 const compositingReasonIdToReason = new Map([
-  ['transform3D', i18nLazyString(UIStrings.hasADTransform)],
-  ['video', i18nLazyString(UIStrings.isAnAcceleratedVideo)],
-  ['canvas', i18nLazyString(UIStrings.isAnAcceleratedCanvasOrIsA)],
-  ['plugin', i18nLazyString(UIStrings.isAnAcceleratedPlugin)],
-  ['iFrame', i18nLazyString(UIStrings.isAnAcceleratedIframe)],
-  ['backfaceVisibilityHidden', i18nLazyString(UIStrings.hasBackfacevisibilityHidden)],
-  ['activeTransformAnimation', i18nLazyString(UIStrings.hasAnActiveAcceleratedTransform)],
-  ['activeOpacityAnimation', i18nLazyString(UIStrings.hasAnActiveAcceleratedOpacity)],
-  ['activeFilterAnimation', i18nLazyString(UIStrings.hasAnActiveAcceleratedFilter)],
-  ['activeBackdropFilterAnimation', i18nLazyString(UIStrings.hasAnActiveAcceleratedBackdrop)],
-  ['immersiveArOverlay', i18nLazyString(UIStrings.isDomOverlayForWebxrImmersivear)],
-  ['scrollDependentPosition', i18nLazyString(UIStrings.isFixedOrStickyPosition)],
-  ['overflowScrolling', i18nLazyString(UIStrings.isAScrollableOverflowElement)],
-  ['overflowScrollingParent', i18nLazyString(UIStrings.scrollParentIsNotAnAncestor)],
-  ['outOfFlowClipping', i18nLazyString(UIStrings.hasClippingAncestor)],
-  ['videoOverlay', i18nLazyString(UIStrings.isOverlayControlsForVideo)],
-  ['willChangeTransform', i18nLazyString(UIStrings.hasAWillchangeTransform)],
-  ['willChangeOpacity', i18nLazyString(UIStrings.hasAWillchangeOpacityCompositing)],
-  ['willChangeOther', i18nLazyString(UIStrings.hasAWillchangeCompositingHint)],
-  ['backdropFilter', i18nLazyString(UIStrings.hasABackdropFilter)],
-  ['rootScroller', i18nLazyString(UIStrings.isTheDocumentrootscroller)],
-  ['assumedOverlap', i18nLazyString(UIStrings.mightOverlapOtherComposited)],
-  ['overlap', i18nLazyString(UIStrings.overlapsOtherCompositedContent)],
-  ['negativeZIndexChildren', i18nLazyString(UIStrings.parentWithCompositedNegative)],
-  ['squashingDisallowed', i18nLazyString(UIStrings.layerWasSeparatelyComposited)],
-  ['opacityWithCompositedDescendants', i18nLazyString(UIStrings.hasOpacityThatNeedsToBeAppliedBy)],
-  ['maskWithCompositedDescendants', i18nLazyString(UIStrings.hasAMaskThatNeedsToBeKnownBy)],
-  ['reflectionWithCompositedDescendants', i18nLazyString(UIStrings.hasAReflectionThatNeedsToBeKnown)],
-  ['filterWithCompositedDescendants', i18nLazyString(UIStrings.hasAFilterEffectThatNeedsToBe)],
-  ['blendingWithCompositedDescendants', i18nLazyString(UIStrings.hasABlendingEffectThatNeedsToBe)],
-  ['clipsCompositingDescendants', i18nLazyString(UIStrings.hasAClipThatNeedsToBeKnownBy)],
-  ['perspectiveWith3DDescendants', i18nLazyString(UIStrings.hasAPerspectiveTransformThat)],
-  ['preserve3DWith3DDescendants', i18nLazyString(UIStrings.hasAPreservesdPropertyThatNeeds)],
-  ['isolateCompositedDescendants', i18nLazyString(UIStrings.shouldIsolateDescendantsToApplyA)],
-  ['positionFixedWithCompositedDescendants', i18nLazyString(UIStrings.isAPositionfixedElementWith)],
-  ['root', i18nLazyString(UIStrings.isTheRootLayer)],
-  ['layerForHorizontalScrollbar', i18nLazyString(UIStrings.secondaryLayerTheHorizontal)],
-  ['layerForVerticalScrollbar', i18nLazyString(UIStrings.secondaryLayerTheVertical)],
-  ['layerForOverflowControlsHost', i18nLazyString(UIStrings.secondaryLayerTheOverflow)],
-  ['layerForScrollCorner', i18nLazyString(UIStrings.secondaryLayerTheScrollCorner)],
-  ['layerForScrollingContents', i18nLazyString(UIStrings.secondaryLayerToHouseContents)],
-  ['layerForScrollingContainer', i18nLazyString(UIStrings.secondaryLayerUsedToPositionThe)],
-  ['layerForSquashingContents', i18nLazyString(UIStrings.secondaryLayerHomeForAGroupOf)],
-  ['layerForSquashingContainer', i18nLazyString(UIStrings.secondaryLayerNoopLayerToPlace)],
-  ['layerForForeground', i18nLazyString(UIStrings.secondaryLayerToContainAnyNormal)],
-  ['layerForMask', i18nLazyString(UIStrings.secondaryLayerToContainTheMask)],
-  ['layerForDecoration', i18nLazyString(UIStrings.layerPaintedOnTopOfOtherLayersAs)],
-  ['layerForOther', i18nLazyString(UIStrings.layerForLinkHighlightFrame)],
+  ['transform3D', 'Has a 3D transform.'],
+  ['video', 'Is an accelerated video.'],
+  [
+    'canvas',
+    'Is an accelerated canvas, or is a display list backed canvas that was promoted to a layer based on a performance heuristic.',
+  ],
+  ['plugin', 'Is an accelerated plugin.'],
+  ['iFrame', 'Is an accelerated iFrame.'],
+  ['backfaceVisibilityHidden', 'Has backface-visibility: hidden.'],
+  ['activeTransformAnimation', 'Has an active accelerated transform animation or transition.'],
+  ['activeOpacityAnimation', 'Has an active accelerated opacity animation or transition.'],
+  ['activeFilterAnimation', 'Has an active accelerated filter animation or transition.'],
+  ['activeBackdropFilterAnimation', 'Has an active accelerated backdrop filter animation or transition.'],
+  ['immersiveArOverlay', 'Is DOM overlay for WebXR immersive-ar mode.'],
+  ['scrollDependentPosition', 'Is fixed or sticky position.'],
+  ['overflowScrolling', 'Is a scrollable overflow element.'],
+  ['overflowScrollingParent', 'Scroll parent is not an ancestor.'],
+  ['outOfFlowClipping', 'Has clipping ancestor.'],
+  ['videoOverlay', 'Is overlay controls for video.'],
+  ['willChangeTransform', 'Has a will-change: transform compositing hint.'],
+  ['willChangeOpacity', 'Has a will-change: opacity compositing hint.'],
+  ['willChangeOther', 'Has a will-change compositing hint other than transform and opacity.'],
+  ['backdropFilter', 'Has a backdrop filter.'],
+  ['rootScroller', 'Is the document.rootScroller.'],
+  ['assumedOverlap', 'Might overlap other composited content.'],
+  ['overlap', 'Overlaps other composited content.'],
+  ['negativeZIndexChildren', 'Parent with composited negative z-index content.'],
+  ['squashingDisallowed', 'Layer was separately composited because it could not be squashed.'],
+  [
+    'opacityWithCompositedDescendants',
+    'Has opacity that needs to be applied by the compositor because of composited descendants.',
+  ],
+  [
+    'maskWithCompositedDescendants',
+    'Has a mask that needs to be known by the compositor because of composited descendants.',
+  ],
+  [
+    'reflectionWithCompositedDescendants',
+    'Has a reflection that needs to be known by the compositor because of composited descendants.',
+  ],
+  [
+    'filterWithCompositedDescendants',
+    'Has a filter effect that needs to be known by the compositor because of composited descendants.',
+  ],
+  [
+    'blendingWithCompositedDescendants',
+    'Has a blending effect that needs to be known by the compositor because of composited descendants.',
+  ],
+  [
+    'clipsCompositingDescendants',
+    'Has a clip that needs to be known by the compositor because of composited descendants.',
+  ],
+  [
+    'perspectiveWith3DDescendants',
+    'Has a perspective transform that needs to be known by the compositor because of 3D descendants.',
+  ],
+  [
+    'preserve3DWith3DDescendants',
+    'Has a preserves-3D property that needs to be known by the compositor because of 3D descendants.',
+  ],
+  ['isolateCompositedDescendants', 'Should isolate descendants to apply a blend effect.'],
+  ['positionFixedWithCompositedDescendants', 'Is a position:fixed element with composited descendants.'],
+  ['root', 'Is the root layer.'],
+  ['layerForHorizontalScrollbar', 'Secondary layer, the horizontal scrollbar layer.'],
+  ['layerForVerticalScrollbar', 'Secondary layer, the vertical scrollbar layer.'],
+  ['layerForOverflowControlsHost', 'Secondary layer, the overflow controls host layer.'],
+  ['layerForScrollCorner', 'Secondary layer, the scroll corner layer.'],
+  ['layerForScrollingContents', 'Secondary layer, to house contents that can be scrolled.'],
+  ['layerForScrollingContainer', 'Secondary layer, used to position the scrolling contents while scrolling.'],
+  ['layerForSquashingContents', 'Secondary layer, home for a group of squashable content.'],
+  [
+    'layerForSquashingContainer',
+    'Secondary layer, no-op layer to place the squashing layer correctly in the composited layer tree.',
+  ],
+  [
+    'layerForForeground',
+    'Secondary layer, to contain any normal flow and positive z-index contents on top of a negative z-index layer.',
+  ],
+  ['layerForMask', 'Secondary layer, to contain the mask contents.'],
+  ['layerForDecoration', 'Layer painted on top of other layers as decoration.'],
+  ['layerForOther', 'Layer for link highlight, frame overlay, etc.'],
 ]);
 
 // TODO(crbug.com/1167717): Make this a const enum again

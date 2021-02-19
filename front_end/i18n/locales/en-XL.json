@@ -2573,113 +2573,11 @@
   "layer_viewer/LayerDetailsView.ts | containingBlocRectangleDimensions": {
     "message": "Ĉón̂t́âín̂ín̂ǵ B̂ĺôćk̂ {PH1} × {PH2} (át̂ {PH3}, {PH4})"
   },
-  "layer_viewer/LayerDetailsView.ts | hasABackdropFilter": {
-    "message": "Ĥáŝ á b̂áĉḱd̂ŕôṕ f̂íl̂t́êŕ."
-  },
-  "layer_viewer/LayerDetailsView.ts | hasABlendingEffectThatNeedsToBe": {
-    "message": "Ĥáŝ á b̂ĺêńd̂ín̂ǵ êf́f̂éĉt́ t̂h́ât́ n̂éêd́ŝ t́ô b́ê ḱn̂óŵń b̂ý ĉóm̂ṕôśît́ôŕ b̂éĉáûśê óf̂ ćôḿp̂óŝít̂éd̂ d́êśĉén̂d́âńt̂ś."
-  },
-  "layer_viewer/LayerDetailsView.ts | hasAClipThatNeedsToBeKnownBy": {
-    "message": "Ĥáŝ á ĉĺîṕ t̂h́ât́ n̂éêd́ŝ t́ô b́ê ḱn̂óŵń b̂ý ĉóm̂ṕôśît́ôŕ b̂éĉáûśê óf̂ ćôḿp̂óŝít̂éd̂ d́êśĉén̂d́âńt̂ś."
-  },
-  "layer_viewer/LayerDetailsView.ts | hasADTransform": {
-    "message": "Ĥáŝ á 3d̂ t́r̂án̂śf̂ór̂ḿ."
-  },
-  "layer_viewer/LayerDetailsView.ts | hasAFilterEffectThatNeedsToBe": {
-    "message": "Ĥáŝ á f̂íl̂t́êŕ êf́f̂éĉt́ t̂h́ât́ n̂éêd́ŝ t́ô b́ê ḱn̂óŵń b̂ý ĉóm̂ṕôśît́ôŕ b̂éĉáûśê óf̂ ćôḿp̂óŝít̂éd̂ d́êśĉén̂d́âńt̂ś."
-  },
-  "layer_viewer/LayerDetailsView.ts | hasAMaskThatNeedsToBeKnownBy": {
-    "message": "Ĥáŝ á m̂áŝḱ t̂h́ât́ n̂éêd́ŝ t́ô b́ê ḱn̂óŵń b̂ý ĉóm̂ṕôśît́ôŕ b̂éĉáûśê óf̂ ćôḿp̂óŝít̂éd̂ d́êśĉén̂d́âńt̂ś."
-  },
-  "layer_viewer/LayerDetailsView.ts | hasAnActiveAcceleratedBackdrop": {
-    "message": "Ĥáŝ án̂ áĉt́îv́ê áĉćêĺêŕât́êd́ b̂áĉḱd̂ŕôṕ f̂íl̂t́êŕ âńîḿât́îón̂ ór̂ t́r̂án̂śît́îón̂."
-  },
-  "layer_viewer/LayerDetailsView.ts | hasAnActiveAcceleratedFilter": {
-    "message": "Ĥáŝ án̂ áĉt́îv́ê áĉćêĺêŕât́êd́ f̂íl̂t́êŕ âńîḿât́îón̂ ór̂ t́r̂án̂śît́îón̂."
-  },
-  "layer_viewer/LayerDetailsView.ts | hasAnActiveAcceleratedOpacity": {
-    "message": "Ĥáŝ án̂ áĉt́îv́ê áĉćêĺêŕât́êd́ ôṕâćît́ŷ án̂ím̂át̂íôń ôŕ t̂ŕâńŝít̂íôń."
-  },
-  "layer_viewer/LayerDetailsView.ts | hasAnActiveAcceleratedTransform": {
-    "message": "Ĥáŝ án̂ áĉt́îv́ê áĉćêĺêŕât́êd́ t̂ŕâńŝf́ôŕm̂ án̂ím̂át̂íôń ôŕ t̂ŕâńŝít̂íôń."
-  },
-  "layer_viewer/LayerDetailsView.ts | hasAPerspectiveTransformThat": {
-    "message": "Ĥáŝ á p̂ér̂śp̂éĉt́îv́ê t́r̂án̂śf̂ór̂ḿ t̂h́ât́ n̂éêd́ŝ t́ô b́ê ḱn̂óŵń b̂ý ĉóm̂ṕôśît́ôŕ b̂éĉáûśê óf̂ 3d́ d̂éŝćêńd̂án̂t́ŝ."
-  },
-  "layer_viewer/LayerDetailsView.ts | hasAPreservesdPropertyThatNeeds": {
-    "message": "Ĥáŝ á p̂ŕêśêŕv̂éŝ-3d́ p̂ŕôṕêŕt̂ý t̂h́ât́ n̂éêd́ŝ t́ô b́ê ḱn̂óŵń b̂ý ĉóm̂ṕôśît́ôŕ b̂éĉáûśê óf̂ 3d́ d̂éŝćêńd̂án̂t́ŝ."
-  },
-  "layer_viewer/LayerDetailsView.ts | hasAReflectionThatNeedsToBeKnown": {
-    "message": "Ĥáŝ á r̂éf̂ĺêćt̂íôń t̂h́ât́ n̂éêd́ŝ t́ô b́ê ḱn̂óŵń b̂ý ĉóm̂ṕôśît́ôŕ b̂éĉáûśê óf̂ ćôḿp̂óŝít̂éd̂ d́êśĉén̂d́âńt̂ś."
-  },
-  "layer_viewer/LayerDetailsView.ts | hasAWillchangeCompositingHint": {
-    "message": "Ĥáŝ á ŵíl̂ĺ-ĉh́âńĝé ĉóm̂ṕôśît́îńĝ h́îńt̂ ót̂h́êŕ t̂h́âń t̂ŕâńŝf́ôŕm̂ án̂d́ ôṕâćît́ŷ."
-  },
-  "layer_viewer/LayerDetailsView.ts | hasAWillchangeOpacityCompositing": {
-    "message": "Ĥáŝ á ŵíl̂ĺ-ĉh́âńĝé: ôṕâćît́ŷ ćôḿp̂óŝít̂ín̂ǵ ĥín̂t́."
-  },
-  "layer_viewer/LayerDetailsView.ts | hasAWillchangeTransform": {
-    "message": "Ĥáŝ á ŵíl̂ĺ-ĉh́âńĝé: t̂ŕâńŝf́ôŕm̂ ćôḿp̂óŝít̂ín̂ǵ ĥín̂t́."
-  },
-  "layer_viewer/LayerDetailsView.ts | hasBackfacevisibilityHidden": {
-    "message": "Ĥáŝ b́âćk̂f́âćê-v́îśîb́îĺît́ŷ: h́îd́d̂én̂."
-  },
-  "layer_viewer/LayerDetailsView.ts | hasClippingAncestor": {
-    "message": "Ĥáŝ ćl̂íp̂ṕîńĝ án̂ćêśt̂ór̂."
-  },
-  "layer_viewer/LayerDetailsView.ts | hasOpacityThatNeedsToBeAppliedBy": {
-    "message": "Ĥáŝ óp̂áĉít̂ý t̂h́ât́ n̂éêd́ŝ t́ô b́ê áp̂ṕl̂íêd́ b̂ý ĉóm̂ṕôśît́ôŕ b̂éĉáûśê óf̂ ćôḿp̂óŝít̂éd̂ d́êśĉén̂d́âńt̂ś."
-  },
-  "layer_viewer/LayerDetailsView.ts | isAnAcceleratedCanvasOrIsA": {
-    "message": "Îś âń âćĉél̂ér̂át̂éd̂ ćâńv̂áŝ, ór̂ íŝ á d̂íŝṕl̂áŷ ĺîśt̂ b́âćk̂éd̂ ćâńv̂áŝ t́ĥát̂ ẃâś p̂ŕôḿôt́êd́ t̂ó â ĺâýêŕ b̂áŝéd̂ ón̂ á p̂ér̂f́ôŕm̂án̂ćê h́êúr̂íŝt́îć."
-  },
-  "layer_viewer/LayerDetailsView.ts | isAnAcceleratedIframe": {
-    "message": "Îś âń âćĉél̂ér̂át̂éd̂ íF̂ŕâḿê."
-  },
-  "layer_viewer/LayerDetailsView.ts | isAnAcceleratedPlugin": {
-    "message": "Îś âń âćĉél̂ér̂át̂éd̂ ṕl̂úĝín̂."
-  },
-  "layer_viewer/LayerDetailsView.ts | isAnAcceleratedVideo": {
-    "message": "Îś âń âćĉél̂ér̂át̂éd̂ v́îd́êó."
-  },
-  "layer_viewer/LayerDetailsView.ts | isAPositionfixedElementWith": {
-    "message": "Îś â position:fixed él̂ém̂én̂t́ ŵít̂h́ ĉóm̂ṕôśît́êd́ d̂éŝćêńd̂án̂t́ŝ."
-  },
-  "layer_viewer/LayerDetailsView.ts | isAScrollableOverflowElement": {
-    "message": "Îś â śĉŕôĺl̂áb̂ĺê óv̂ér̂f́l̂óŵ él̂ém̂én̂t́."
-  },
-  "layer_viewer/LayerDetailsView.ts | isDomOverlayForWebxrImmersivear": {
-    "message": "Îś DOM ôv́êŕl̂áŷ f́ôŕ WebXR immersive-ar m̂ód̂é."
-  },
-  "layer_viewer/LayerDetailsView.ts | isFixedOrStickyPosition": {
-    "message": "Îś f̂íx̂éd̂ ór̂ śt̂íĉḱŷ ṕôśît́îón̂."
-  },
-  "layer_viewer/LayerDetailsView.ts | isOverlayControlsForVideo": {
-    "message": "Îś ôv́êŕl̂áŷ ćôńt̂ŕôĺŝ f́ôŕ v̂íd̂éô."
-  },
-  "layer_viewer/LayerDetailsView.ts | isTheDocumentrootscroller": {
-    "message": "Îś t̂h́ê d́ôćûḿêńt̂.ŕôót̂Śĉŕôĺl̂ér̂."
-  },
-  "layer_viewer/LayerDetailsView.ts | isTheRootLayer": {
-    "message": "Îś t̂h́ê ŕôót̂ ĺâýêŕ."
-  },
-  "layer_viewer/LayerDetailsView.ts | layerForLinkHighlightFrame": {
-    "message": "L̂áŷér̂ f́ôŕ l̂ín̂ḱ ĥíĝh́l̂íĝh́t̂, f́r̂ám̂é ôv́êŕl̂áŷ, ét̂ć."
-  },
-  "layer_viewer/LayerDetailsView.ts | layerPaintedOnTopOfOtherLayersAs": {
-    "message": "L̂áŷér̂ ṕâín̂t́êd́ ôń t̂óp̂ óf̂ ót̂h́êŕ l̂áŷér̂ś âś d̂éĉór̂át̂íôń."
-  },
-  "layer_viewer/LayerDetailsView.ts | layerWasSeparatelyComposited": {
-    "message": "L̂áŷér̂ ẃâś ŝép̂ár̂át̂él̂ý ĉóm̂ṕôśît́êd́ b̂éĉáûśê ít̂ ćôúl̂d́ n̂ót̂ b́ê śq̂úâśĥéd̂."
-  },
   "layer_viewer/LayerDetailsView.ts | mainThreadScrollingReason": {
     "message": "M̂áîń t̂h́r̂éâd́ ŝćr̂ól̂ĺîńĝ ŕêáŝón̂"
   },
   "layer_viewer/LayerDetailsView.ts | memoryEstimate": {
     "message": "M̂ém̂ór̂ý êśt̂ím̂át̂é"
-  },
-  "layer_viewer/LayerDetailsView.ts | mightOverlapOtherComposited": {
-    "message": "M̂íĝh́t̂ óv̂ér̂ĺâṕ ôt́ĥér̂ ćôḿp̂óŝít̂éd̂ ćôńt̂én̂t́."
   },
   "layer_viewer/LayerDetailsView.ts | nearestLayerShiftingContaining": {
     "message": "N̂éâŕêśt̂ Ĺâýêŕ Ŝh́îf́t̂ín̂ǵ Ĉón̂t́âín̂ín̂ǵ B̂ĺôćk̂"
@@ -2690,62 +2588,20 @@
   "layer_viewer/LayerDetailsView.ts | nonFastScrollable": {
     "message": "N̂ón̂ f́âśt̂ śĉŕôĺl̂áb̂ĺê"
   },
-  "layer_viewer/LayerDetailsView.ts | overlapsOtherCompositedContent": {
-    "message": "Ôv́êŕl̂áp̂ś ôt́ĥér̂ ćôḿp̂óŝít̂éd̂ ćôńt̂én̂t́."
-  },
   "layer_viewer/LayerDetailsView.ts | paintCount": {
     "message": "P̂áîńt̂ ćôún̂t́"
   },
   "layer_viewer/LayerDetailsView.ts | paintProfiler": {
     "message": "P̂áîńt̂ Ṕr̂óf̂íl̂ér̂"
   },
-  "layer_viewer/LayerDetailsView.ts | parentWithCompositedNegative": {
-    "message": "P̂ár̂én̂t́ ŵít̂h́ ĉóm̂ṕôśît́êd́ n̂éĝát̂ív̂é ẑ-ín̂d́êx́ ĉón̂t́êńt̂."
-  },
   "layer_viewer/LayerDetailsView.ts | repaintsOnScroll": {
     "message": "R̂ép̂áîńt̂ś ôń ŝćr̂ól̂ĺ"
-  },
-  "layer_viewer/LayerDetailsView.ts | scrollParentIsNotAnAncestor": {
-    "message": "Ŝćr̂ól̂ĺ p̂ár̂én̂t́ îś n̂ót̂ án̂ án̂ćêśt̂ór̂."
   },
   "layer_viewer/LayerDetailsView.ts | scrollRectangleDimensions": {
     "message": "{PH1} {PH2} × {PH3} (ât́ {PH4}, {PH5})"
   },
-  "layer_viewer/LayerDetailsView.ts | secondaryLayerHomeForAGroupOf": {
-    "message": "Ŝéĉón̂d́âŕŷ ĺâýêŕ, ĥóm̂é f̂ór̂ á ĝŕôúp̂ óf̂ śq̂úâśĥáb̂ĺê ćôńt̂én̂t́."
-  },
-  "layer_viewer/LayerDetailsView.ts | secondaryLayerNoopLayerToPlace": {
-    "message": "Ŝéĉón̂d́âŕŷ ĺâýêŕ, n̂ó-ôṕ l̂áŷér̂ t́ô ṕl̂áĉé t̂h́ê śq̂úâśĥín̂ǵ l̂áŷér̂ ćôŕr̂éĉt́l̂ý îń t̂h́ê ćôḿp̂óŝít̂éd̂ ĺâýêŕ t̂ŕêé."
-  },
-  "layer_viewer/LayerDetailsView.ts | secondaryLayerTheHorizontal": {
-    "message": "Ŝéĉón̂d́âŕŷ ĺâýêŕ, t̂h́ê h́ôŕîźôńt̂ál̂ śĉŕôĺl̂b́âŕ l̂áŷér̂."
-  },
-  "layer_viewer/LayerDetailsView.ts | secondaryLayerTheOverflow": {
-    "message": "Ŝéĉón̂d́âŕŷ ĺâýêŕ, t̂h́ê óv̂ér̂f́l̂óŵ ćôńt̂ŕôĺŝ h́ôśt̂ ĺâýêŕ."
-  },
-  "layer_viewer/LayerDetailsView.ts | secondaryLayerTheScrollCorner": {
-    "message": "Ŝéĉón̂d́âŕŷ ĺâýêŕ, t̂h́ê śĉŕôĺl̂ ćôŕn̂ér̂ ĺâýêŕ."
-  },
-  "layer_viewer/LayerDetailsView.ts | secondaryLayerTheVertical": {
-    "message": "Ŝéĉón̂d́âŕŷ ĺâýêŕ, t̂h́ê v́êŕt̂íĉál̂ śĉŕôĺl̂b́âŕ l̂áŷér̂."
-  },
-  "layer_viewer/LayerDetailsView.ts | secondaryLayerToContainAnyNormal": {
-    "message": "Ŝéĉón̂d́âŕŷ ĺâýêŕ, t̂ó ĉón̂t́âín̂ án̂ý n̂ór̂ḿâĺ f̂ĺôẃ âńd̂ ṕôśît́îv́ê ź-îńd̂éx̂ ćôńt̂én̂t́ŝ ón̂ t́ôṕ ôf́ â ńêǵât́îv́ê ź-îńd̂éx̂ ĺâýêŕ."
-  },
-  "layer_viewer/LayerDetailsView.ts | secondaryLayerToContainTheMask": {
-    "message": "Ŝéĉón̂d́âŕŷ ĺâýêŕ, t̂ó ĉón̂t́âín̂ t́ĥé m̂áŝḱ ĉón̂t́êńt̂ś."
-  },
-  "layer_viewer/LayerDetailsView.ts | secondaryLayerToHouseContents": {
-    "message": "Ŝéĉón̂d́âŕŷ ĺâýêŕ, t̂ó ĥóûśê ćôńt̂én̂t́ŝ t́ĥát̂ ćâń b̂é ŝćr̂ól̂ĺêd́."
-  },
-  "layer_viewer/LayerDetailsView.ts | secondaryLayerUsedToPositionThe": {
-    "message": "Ŝéĉón̂d́âŕŷ ĺâýêŕ, ûśêd́ t̂ó p̂óŝít̂íôń t̂h́ê śĉŕôĺl̂ín̂ǵ ĉón̂t́êńt̂ś ŵh́îĺê śĉŕôĺl̂ín̂ǵ."
-  },
   "layer_viewer/LayerDetailsView.ts | selectALayerToSeeItsDetails": {
     "message": "Ŝél̂éĉt́ â ĺâýêŕ t̂ó ŝéê ít̂ś d̂ét̂áîĺŝ"
-  },
-  "layer_viewer/LayerDetailsView.ts | shouldIsolateDescendantsToApplyA": {
-    "message": "Ŝh́ôúl̂d́ îśôĺât́ê d́êśĉén̂d́âńt̂ś t̂ó âṕp̂ĺŷ á b̂ĺêńd̂ éf̂f́êćt̂."
   },
   "layer_viewer/LayerDetailsView.ts | size": {
     "message": "Ŝíẑé"

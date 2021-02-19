@@ -144,17 +144,11 @@
   <message name="IDS_DEVTOOLS_adf7e09e4a939c3d54adfe6f42b6ead9" desc="label to copy file name">
     Copy file name
   </message>
-  <message name="IDS_DEVTOOLS_af9ccba3ec4346e3acf785f9bea514d8" desc="Text to show a tool or panel">
-    Show <ph name="EXTENSION_TITLE">$1s<ex>Audits</ex></ph>
-  </message>
   <message name="IDS_DEVTOOLS_b1c94ca2fbc3e78fc30069c8d0f01680" desc="Text for everything">
     All
   </message>
   <message name="IDS_DEVTOOLS_b6da8d6392710f305d7176a134971514" desc="Text in UIUtils">
     Promise rejected (async)
-  </message>
-  <message name="IDS_DEVTOOLS_b79f0c59be8253d3acb4515071312bda" desc="Text on a button to hide sidebar">
-    Hide <ph name="THIS__SHOWHIDESIDEBARBUTTONTITLE">$1s<ex>Setting</ex></ph>
   </message>
   <message name="IDS_DEVTOOLS_b8da6df14bf06283cbf588df6998722e" desc="A title of the 'Panel' @UI.ViewLocationResolver category">
     Panel

@@ -16,13 +16,15 @@ import {StylePropertiesSection, StylesSidebarPane} from './StylesSidebarPane.js'
 
 export const UIStrings = {
   /**
-  *@description Text to open the cubic bezier editor
+  * @description Tooltip text for an icon that opens the cubic bezier editor, which is a tool that
+  * allows the user to edit cubic-bezier CSS properties directly.
   */
-  openCubicBezierEditor: 'Open cubic bezier editor.',
+  openCubicBezierEditor: 'Open cubic bezier editor',
   /**
-  *@description Icon element title in Color Swatch Popover Icon of the Elements panel
+  * @description Tooltip text for an icon that opens shadow editor. The shadow editor is a tool
+  * which allows the user to edit CSS shadow properties.
   */
-  openShadowEditor: 'Open shadow editor.',
+  openShadowEditor: 'Open shadow editor',
 };
 const str_ = i18n.i18n.registerUIStrings('elements/ColorSwatchPopoverIcon.js', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

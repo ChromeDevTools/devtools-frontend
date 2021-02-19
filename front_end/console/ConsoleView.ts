@@ -105,9 +105,15 @@ export const UIStrings = {
   */
   groupSimilarMessagesInConsole: 'Group similar messages in console',
   /**
-  *@description Title of the sidebar in the Console
+  * @description Tooltip for the the console sidebar toggle in the Console panel. Command to
+  * open/show the sidebar.
   */
-  consoleSidebar: 'console sidebar',
+  showConsoleSidebar: 'Show console sidebar',
+  /**
+  * @description Tooltip for the the console sidebar toggle in the Console panel. Command to
+  * open/show the sidebar.
+  */
+  hideConsoleSidebar: 'Hide console sidebar',
   /**
   *@description Tooltip text that appears on the setting to preserve log when hovering over the item
   */
@@ -404,7 +410,8 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
 
     const toolbar = new UI.Toolbar.Toolbar('console-main-toolbar', this._consoleToolbarContainer);
     const rightToolbar = new UI.Toolbar.Toolbar('', this._consoleToolbarContainer);
-    toolbar.appendToolbarItem(this._splitWidget.createShowHideSidebarButton(i18nString(UIStrings.consoleSidebar)));
+    toolbar.appendToolbarItem(this._splitWidget.createShowHideSidebarButton(
+        i18nString(UIStrings.showConsoleSidebar), i18nString(UIStrings.hideConsoleSidebar)));
     toolbar.appendToolbarItem(UI.Toolbar.Toolbar.createActionButton(
         (UI.ActionRegistry.ActionRegistry.instance().action('console.clear') as UI.ActionRegistration.Action)));
     toolbar.appendSeparator();

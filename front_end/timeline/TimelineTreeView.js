@@ -120,9 +120,20 @@ export const UIStrings = {
   */
   filterBottomup: 'Filter bottom-up',
   /**
-  *@description Header text content in Timeline Tree View of the Performance panel
+  * @description Title of the sidebar pane in the Performance panel which shows the stack (call
+  * stack) where the program spent the most time (out of all the call stacks) while executing.
   */
   heaviestStack: 'Heaviest stack',
+  /**
+  * @description Tooltip for the the Heaviest stack sidebar toggle in the Timeline Tree View of the
+  * Performance panel. Command to open/show the sidebar.
+  */
+  showHeaviestStack: 'Show Heaviest stack',
+  /**
+  * @description Tooltip for the the Heaviest stack sidebar toggle in the Timeline Tree View of the
+  * Performance panel. Command to close/hide the sidebar.
+  */
+  hideHeaviestStack: 'Hide Heaviest stack',
   /**
   *@description Data grid name for Timeline Stack data grids
   */
@@ -977,7 +988,8 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
     toolbar.appendToolbarItem(
         new UI.Toolbar.ToolbarSettingComboBox(options, this._groupBySetting, i18nString(UIStrings.groupBy)));
     toolbar.appendSpacer();
-    toolbar.appendToolbarItem(this.splitWidget.createShowHideSidebarButton(i18nString(UIStrings.heaviestStack)));
+    toolbar.appendToolbarItem(this.splitWidget.createShowHideSidebarButton(
+        i18nString(UIStrings.showHeaviestStack), i18nString(UIStrings.hideHeaviestStack)));
   }
 
   /**

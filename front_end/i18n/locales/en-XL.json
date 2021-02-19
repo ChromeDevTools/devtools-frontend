@@ -998,9 +998,6 @@
   "console/ConsoleView.ts | consoleSettings": {
     "message": "Ĉón̂śôĺê śêt́t̂ín̂ǵŝ"
   },
-  "console/ConsoleView.ts | consoleSidebar": {
-    "message": "ĉón̂śôĺê śîd́êb́âŕ"
-  },
   "console/ConsoleView.ts | copyVisibleStyledSelection": {
     "message": "Ĉóp̂ý v̂íŝíb̂ĺê śt̂ýl̂éd̂ śêĺêćt̂íôń"
   },
@@ -1036,6 +1033,9 @@
   },
   "console/ConsoleView.ts | hideAll": {
     "message": "Ĥíd̂é âĺl̂"
+  },
+  "console/ConsoleView.ts | hideConsoleSidebar": {
+    "message": "Ĥíd̂é ĉón̂śôĺê śîd́êb́âŕ"
   },
   "console/ConsoleView.ts | hideMessagesFromS": {
     "message": "Ĥíd̂é m̂éŝśâǵêś f̂ŕôḿ {PH1}"
@@ -1096,6 +1096,9 @@
   },
   "console/ConsoleView.ts | sHidden": {
     "message": "{PH1} ĥíd̂d́êń"
+  },
+  "console/ConsoleView.ts | showConsoleSidebar": {
+    "message": "Ŝh́ôẃ ĉón̂śôĺê śîd́êb́âŕ"
   },
   "console/ConsoleView.ts | someMessagesHaveBeenMovedToThe": {
     "message": "Ŝóm̂é m̂éŝśâǵêś ĥáv̂é b̂éêń m̂óv̂éd̂ t́ô t́ĥé Îśŝúêś p̂án̂él̂."
@@ -1626,19 +1629,19 @@
     "message": "Âd́d̂ ńêẃ ĉĺâśŝ"
   },
   "elements/ClassesPaneWidget.js | classesSAdded": {
-    "message": "Ĉĺâśŝéŝ {PH1} ád̂d́êd́."
+    "message": "Ĉĺâśŝéŝ {PH1} ád̂d́êd́"
   },
   "elements/ClassesPaneWidget.js | classSAdded": {
-    "message": "Ĉĺâśŝ {PH1} ád̂d́êd́."
+    "message": "Ĉĺâśŝ {PH1} ád̂d́êd́"
   },
   "elements/ClassesPaneWidget.js | elementClasses": {
     "message": "Êĺêḿêńt̂ Ćl̂áŝśêś"
   },
   "elements/ColorSwatchPopoverIcon.js | openCubicBezierEditor": {
-    "message": "Ôṕêń ĉúb̂íĉ b́êźîér̂ éd̂ít̂ór̂."
+    "message": "Ôṕêń ĉúb̂íĉ b́êźîér̂ éd̂ít̂ór̂"
   },
   "elements/ColorSwatchPopoverIcon.js | openShadowEditor": {
-    "message": "Ôṕêń ŝh́âd́ôẃ êd́ît́ôŕ."
+    "message": "Ôṕêń ŝh́âd́ôẃ êd́ît́ôŕ"
   },
   "elements/ComputedStyleWidget.js | filter": {
     "message": "F̂íl̂t́êŕ"
@@ -1668,7 +1671,7 @@
     "message": "Ĉáp̂t́ûŕê ár̂éâ śĉŕêén̂śĥót̂"
   },
   "elements/elements-meta.ts | disableDomWordWrap": {
-    "message": "D̂íŝáb̂ĺê D́ÔḾ ŵór̂d́ ŵŕâṕ"
+    "message": "D̂íŝáb̂ĺê DOM ẃôŕd̂ ẃr̂áp̂"
   },
   "elements/elements-meta.ts | duplicateElement": {
     "message": "D̂úp̂ĺîćât́ê él̂ém̂én̂t́"
@@ -1680,7 +1683,7 @@
     "message": "Êĺêḿêńt̂ś"
   },
   "elements/elements-meta.ts | enableDomWordWrap": {
-    "message": "Êńâb́l̂é D̂ÓM̂ ẃôŕd̂ ẃr̂áp̂"
+    "message": "Êńâb́l̂é DOM ŵór̂d́ ŵŕâṕ"
   },
   "elements/elements-meta.ts | eventListeners": {
     "message": "Êv́êńt̂ Ĺîśt̂én̂ér̂ś"
@@ -1689,7 +1692,7 @@
     "message": "Ĥíd̂é êĺêḿêńt̂"
   },
   "elements/elements-meta.ts | hideHtmlComments": {
-    "message": "Ĥíd̂é ĤT́M̂Ĺ ĉóm̂ḿêńt̂ś"
+    "message": "Ĥíd̂é HTML ĉóm̂ḿêńt̂ś"
   },
   "elements/elements-meta.ts | layout": {
     "message": "L̂áŷóût́"
@@ -1701,7 +1704,7 @@
     "message": "R̂éd̂ó"
   },
   "elements/elements-meta.ts | revealDomNodeOnHover": {
-    "message": "R̂év̂éâĺ D̂ÓM̂ ńôd́ê ón̂ h́ôv́êŕ"
+    "message": "R̂év̂éâĺ DOM n̂ód̂é ôń ĥóv̂ér̂"
   },
   "elements/elements-meta.ts | selectAnElementInThePageTo": {
     "message": "Ŝél̂éĉt́ âń êĺêḿêńt̂ ín̂ t́ĥé p̂áĝé t̂ó îńŝṕêćt̂ ít̂"
@@ -1716,7 +1719,7 @@
     "message": "Ŝh́ôẃ Êv́êńt̂ Ĺîśt̂én̂ér̂ś"
   },
   "elements/elements-meta.ts | showHtmlComments": {
-    "message": "Ŝh́ôẃ ĤT́M̂Ĺ ĉóm̂ḿêńt̂ś"
+    "message": "Ŝh́ôẃ HTML ĉóm̂ḿêńt̂ś"
   },
   "elements/elements-meta.ts | showLayout": {
     "message": "Ŝh́ôẃ L̂áŷóût́"
@@ -1745,23 +1748,26 @@
   "elements/ElementsPanel.js | computed": {
     "message": "Ĉóm̂ṕût́êd́"
   },
-  "elements/ElementsPanel.js | computedStylesSidebar": {
-    "message": "Ĉóm̂ṕût́êd́ Ŝt́ŷĺêś ŝíd̂éb̂ár̂"
-  },
   "elements/ElementsPanel.js | elementStateS": {
     "message": "Êĺêḿêńt̂ śt̂át̂é: {PH1}"
   },
   "elements/ElementsPanel.js | findByStringSelectorOrXpath": {
-    "message": "F̂ín̂d́ b̂ý ŝt́r̂ín̂ǵ, ŝél̂éĉt́ôŕ, ôŕ X̂Ṕât́ĥ"
+    "message": "F̂ín̂d́ b̂ý ŝt́r̂ín̂ǵ, ŝél̂éĉt́ôŕ, ôŕ XPath"
   },
   "elements/ElementsPanel.js | frame": {
     "message": "F̂ŕâḿê"
+  },
+  "elements/ElementsPanel.js | hideComputedStylesSidebar": {
+    "message": "Ĥíd̂é Ĉóm̂ṕût́êd́ Ŝt́ŷĺêś ŝíd̂éb̂ár̂"
   },
   "elements/ElementsPanel.js | nodeCannotBeFoundInTheCurrent": {
     "message": "N̂ód̂é ĉán̂ńôt́ b̂é f̂óûńd̂ ín̂ t́ĥé ĉúr̂ŕêńt̂ ṕâǵê."
   },
   "elements/ElementsPanel.js | revealInElementsPanel": {
     "message": "R̂év̂éâĺ îń Êĺêḿêńt̂ś p̂án̂él̂"
+  },
+  "elements/ElementsPanel.js | showComputedStylesSidebar": {
+    "message": "Ŝh́ôẃ Ĉóm̂ṕût́êd́ Ŝt́ŷĺêś ŝíd̂éb̂ár̂"
   },
   "elements/ElementsPanel.js | styles": {
     "message": "Ŝt́ŷĺêś"
@@ -8156,9 +8162,6 @@
   "sources/SourcesPanel.js | copyS": {
     "message": "Ĉóp̂ý {PH1}"
   },
-  "sources/SourcesPanel.js | debugger": {
-    "message": "d̂éb̂úĝǵêŕ"
-  },
   "sources/SourcesPanel.js | dontPauseOnExceptions": {
     "message": "D̂ón̂'t́ p̂áûśê ón̂ éx̂ćêṕt̂íôńŝ"
   },
@@ -8168,11 +8171,14 @@
   "sources/SourcesPanel.js | groupByFolder": {
     "message": "Ĝŕôúp̂ b́ŷ f́ôĺd̂ér̂"
   },
+  "sources/SourcesPanel.js | hideDebugger": {
+    "message": "Ĥíd̂é d̂éb̂úĝǵêŕ"
+  },
+  "sources/SourcesPanel.js | hideNavigator": {
+    "message": "Ĥíd̂é n̂áv̂íĝát̂ór̂"
+  },
   "sources/SourcesPanel.js | moreOptions": {
     "message": "M̂ór̂é ôṕt̂íôńŝ"
-  },
-  "sources/SourcesPanel.js | navigator": {
-    "message": "n̂áv̂íĝát̂ór̂"
   },
   "sources/SourcesPanel.js | openInSourcesPanel": {
     "message": "Ôṕêń îń Ŝóûŕĉéŝ ṕâńêĺ"
@@ -8189,8 +8195,14 @@
   "sources/SourcesPanel.js | revealInSidebar": {
     "message": "R̂év̂éâĺ îń ŝíd̂éb̂ár̂"
   },
+  "sources/SourcesPanel.js | showDebugger": {
+    "message": "Ŝh́ôẃ d̂éb̂úĝǵêŕ"
+  },
   "sources/SourcesPanel.js | showFunctionDefinition": {
     "message": "Ŝh́ôẃ f̂ún̂ćt̂íôń d̂éf̂ín̂ít̂íôń"
+  },
+  "sources/SourcesPanel.js | showNavigator": {
+    "message": "Ŝh́ôẃ n̂áv̂íĝát̂ór̂"
   },
   "sources/SourcesPanel.js | storeSAsGlobalVariable": {
     "message": "Ŝt́ôŕê {PH1} áŝ ǵl̂ób̂ál̂ v́âŕîáb̂ĺê"
@@ -8690,6 +8702,9 @@
   "timeline/TimelineTreeView.js | heaviestStack": {
     "message": "Ĥéâv́îéŝt́ ŝt́âćk̂"
   },
+  "timeline/TimelineTreeView.js | hideHeaviestStack": {
+    "message": "Ĥíd̂é Ĥéâv́îéŝt́ ŝt́âćk̂"
+  },
   "timeline/TimelineTreeView.js | javascript": {
     "message": "Ĵáv̂áŜćr̂íp̂t́"
   },
@@ -8713,6 +8728,9 @@
   },
   "timeline/TimelineTreeView.js | selfTime": {
     "message": "Ŝél̂f́ T̂ím̂é"
+  },
+  "timeline/TimelineTreeView.js | showHeaviestStack": {
+    "message": "Ŝh́ôẃ Ĥéâv́îéŝt́ ŝt́âćk̂"
   },
   "timeline/TimelineTreeView.js | timelineStack": {
     "message": "T̂ím̂él̂ín̂é Ŝt́âćk̂"

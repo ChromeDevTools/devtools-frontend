@@ -55,13 +55,25 @@ export const UIStrings = {
   */
   moreOptions: 'More options',
   /**
-  *@description Title of the file navigator sidebar in the Sources panel
+  * @description Tooltip for the the navigator toggle in the Sources panel. Command to open/show the
+  * sidebar containing the navigator tool.
   */
-  navigator: 'navigator',
+  showNavigator: 'Show navigator',
   /**
-  *@description Title of the debugger sidebar in the Sources panel
+  * @description Tooltip for the the navigator toggle in the Sources panel. Command to close/hide
+  * the sidebar containing the navigator tool.
   */
-  debugger: 'debugger',
+  hideNavigator: 'Hide navigator',
+  /**
+  * @description Tooltip for the the debugger toggle in the Sources panel. Command to open/show the
+  * sidebar containing the debugger tool.
+  */
+  showDebugger: 'Show debugger',
+  /**
+  * @description Tooltip for the the debugger toggle in the Sources panel. Command to close/hide the
+  * sidebar containing the debugger tool.
+  */
+  hideDebugger: 'Hide debugger',
   /**
   *@description Text in Sources Panel of the Sources panel
   */
@@ -192,8 +204,10 @@ export class SourcesPanel extends UI.Panel.Panel {
     this._sourcesView = new SourcesView();
     this._sourcesView.addEventListener(Events.EditorSelected, this._editorSelected.bind(this));
 
-    this._toggleNavigatorSidebarButton = this.editorView.createShowHideSidebarButton(i18nString(UIStrings.navigator));
-    this._toggleDebuggerSidebarButton = this._splitWidget.createShowHideSidebarButton(i18nString(UIStrings.debugger));
+    this._toggleNavigatorSidebarButton = this.editorView.createShowHideSidebarButton(
+        i18nString(UIStrings.showNavigator), i18nString(UIStrings.hideNavigator));
+    this._toggleDebuggerSidebarButton = this._splitWidget.createShowHideSidebarButton(
+        i18nString(UIStrings.showDebugger), i18nString(UIStrings.hideDebugger));
     this.editorView.setMainWidget(this._sourcesView);
 
     this._threadsSidebarPane = null;

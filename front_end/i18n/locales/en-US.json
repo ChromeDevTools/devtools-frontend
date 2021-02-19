@@ -998,9 +998,6 @@
   "console/ConsoleView.ts | consoleSettings": {
     "message": "Console settings"
   },
-  "console/ConsoleView.ts | consoleSidebar": {
-    "message": "console sidebar"
-  },
   "console/ConsoleView.ts | copyVisibleStyledSelection": {
     "message": "Copy visible styled selection"
   },
@@ -1036,6 +1033,9 @@
   },
   "console/ConsoleView.ts | hideAll": {
     "message": "Hide all"
+  },
+  "console/ConsoleView.ts | hideConsoleSidebar": {
+    "message": "Hide console sidebar"
   },
   "console/ConsoleView.ts | hideMessagesFromS": {
     "message": "Hide messages from {PH1}"
@@ -1096,6 +1096,9 @@
   },
   "console/ConsoleView.ts | sHidden": {
     "message": "{PH1} hidden"
+  },
+  "console/ConsoleView.ts | showConsoleSidebar": {
+    "message": "Show console sidebar"
   },
   "console/ConsoleView.ts | someMessagesHaveBeenMovedToThe": {
     "message": "Some messages have been moved to the Issues panel."
@@ -1626,19 +1629,19 @@
     "message": "Add new class"
   },
   "elements/ClassesPaneWidget.js | classesSAdded": {
-    "message": "Classes {PH1} added."
+    "message": "Classes {PH1} added"
   },
   "elements/ClassesPaneWidget.js | classSAdded": {
-    "message": "Class {PH1} added."
+    "message": "Class {PH1} added"
   },
   "elements/ClassesPaneWidget.js | elementClasses": {
     "message": "Element Classes"
   },
   "elements/ColorSwatchPopoverIcon.js | openCubicBezierEditor": {
-    "message": "Open cubic bezier editor."
+    "message": "Open cubic bezier editor"
   },
   "elements/ColorSwatchPopoverIcon.js | openShadowEditor": {
-    "message": "Open shadow editor."
+    "message": "Open shadow editor"
   },
   "elements/ComputedStyleWidget.js | filter": {
     "message": "Filter"
@@ -1745,9 +1748,6 @@
   "elements/ElementsPanel.js | computed": {
     "message": "Computed"
   },
-  "elements/ElementsPanel.js | computedStylesSidebar": {
-    "message": "Computed Styles sidebar"
-  },
   "elements/ElementsPanel.js | elementStateS": {
     "message": "Element state: {PH1}"
   },
@@ -1757,11 +1757,17 @@
   "elements/ElementsPanel.js | frame": {
     "message": "Frame"
   },
+  "elements/ElementsPanel.js | hideComputedStylesSidebar": {
+    "message": "Hide Computed Styles sidebar"
+  },
   "elements/ElementsPanel.js | nodeCannotBeFoundInTheCurrent": {
     "message": "Node cannot be found in the current page."
   },
   "elements/ElementsPanel.js | revealInElementsPanel": {
     "message": "Reveal in Elements panel"
+  },
+  "elements/ElementsPanel.js | showComputedStylesSidebar": {
+    "message": "Show Computed Styles sidebar"
   },
   "elements/ElementsPanel.js | styles": {
     "message": "Styles"
@@ -8156,9 +8162,6 @@
   "sources/SourcesPanel.js | copyS": {
     "message": "Copy {PH1}"
   },
-  "sources/SourcesPanel.js | debugger": {
-    "message": "debugger"
-  },
   "sources/SourcesPanel.js | dontPauseOnExceptions": {
     "message": "Don't pause on exceptions"
   },
@@ -8168,11 +8171,14 @@
   "sources/SourcesPanel.js | groupByFolder": {
     "message": "Group by folder"
   },
+  "sources/SourcesPanel.js | hideDebugger": {
+    "message": "Hide debugger"
+  },
+  "sources/SourcesPanel.js | hideNavigator": {
+    "message": "Hide navigator"
+  },
   "sources/SourcesPanel.js | moreOptions": {
     "message": "More options"
-  },
-  "sources/SourcesPanel.js | navigator": {
-    "message": "navigator"
   },
   "sources/SourcesPanel.js | openInSourcesPanel": {
     "message": "Open in Sources panel"
@@ -8189,8 +8195,14 @@
   "sources/SourcesPanel.js | revealInSidebar": {
     "message": "Reveal in sidebar"
   },
+  "sources/SourcesPanel.js | showDebugger": {
+    "message": "Show debugger"
+  },
   "sources/SourcesPanel.js | showFunctionDefinition": {
     "message": "Show function definition"
+  },
+  "sources/SourcesPanel.js | showNavigator": {
+    "message": "Show navigator"
   },
   "sources/SourcesPanel.js | storeSAsGlobalVariable": {
     "message": "Store {PH1} as global variable"
@@ -8690,6 +8702,9 @@
   "timeline/TimelineTreeView.js | heaviestStack": {
     "message": "Heaviest stack"
   },
+  "timeline/TimelineTreeView.js | hideHeaviestStack": {
+    "message": "Hide Heaviest stack"
+  },
   "timeline/TimelineTreeView.js | javascript": {
     "message": "JavaScript"
   },
@@ -8713,6 +8728,9 @@
   },
   "timeline/TimelineTreeView.js | selfTime": {
     "message": "Self Time"
+  },
+  "timeline/TimelineTreeView.js | showHeaviestStack": {
+    "message": "Show Heaviest stack"
   },
   "timeline/TimelineTreeView.js | timelineStack": {
     "message": "Timeline Stack"

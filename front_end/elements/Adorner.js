@@ -10,16 +10,23 @@ import {AdornerCategories} from './AdornerManager.js';
 
 export const UIStrings = {
   /**
-  *@description Accessible label for Elements panel adorners (suffix badges in Elements Tree Outline)
+  * @description Accessible label for Elements panel adorners. Adorners are small badges/tags
+  * displayed next to DOM Elements in the Elements tree. They provide extra information relating to
+  * the node at a quick glance.
   */
   adorner: 'adorner',
   /**
-  *@description Accessible label for Elements panel adorners (suffix badges in Elements Tree Outline)
+  * @description Accessible label for Elements panel adorners. Adorners are small badges/tags
+  * displayed next to DOM Elements in the Elements tree. They provide extra information relating to
+  * the node at a quick glance. Read by the screen reader when this adorner is currently active.
   */
   adornerActive: 'adorner active',
   /**
-  *@description Accessible label for Elements panel adorners (suffix badges in Elements Tree Outline)
-  *@example {grid} PH1
+  * @description Accessible label for Elements panel adorners. Adorners are small badges/tags
+  * displayed next to DOM Elements in the Elements tree. They provide extra information relating to
+  * the node at a quick glance. Read by the screen reader when this adorner is focused. The placeholder
+  * is the type of this adorner, e.g. grid, flex.
+  * @example {grid} PH1
   */
   sAdorner: '{PH1} adorner',
 };

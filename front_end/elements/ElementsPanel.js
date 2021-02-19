@@ -49,25 +49,34 @@ import {Events as StylesSidebarPaneEvents, StylesSidebarPane} from './StylesSide
 
 export const UIStrings = {
   /**
-  *@description Text in Elements Panel of the Elements panel
+  * @description Placeholder text for the search box the Elements Panel. Selector refers to CSS
+  * selectors.
   */
-  findByStringSelectorOrXpath: 'Find by string, selector, or XPath',
+  findByStringSelectorOrXpath: 'Find by string, selector, or `XPath`',
   /**
-  *@description Title of the switch to accessibility tree button in the Elements panel
+  * @description Button text for a button that takes the user to the Accessibility Tree View from the
+  * DOM tree view, in the Elements panel.
   */
   switchToAccessibilityTreeView: 'Switch to Accessibility Tree view',
   /**
-  *@description Title of the switch to DOM tree button in the Elements panel
+  * @description Button text for a button that takes the user to the DOM tree view from the
+  * Accessibility Tree View, in the Elements panel.
   */
   switchToDomTreeView: 'Switch to DOM Tree view',
   /**
-  *@description Text for a rendering frame
+  *@description Label for a link to a rendering frame.
   */
   frame: 'Frame',
   /**
-  *@description Title of the Computed Styles sidebar toggle in the Styles pane
+  * @description Tooltip for the the Computed Styles sidebar toggle in the Styles pane. Command to
+  * open/show the sidebar.
   */
-  computedStylesSidebar: 'Computed Styles sidebar',
+  showComputedStylesSidebar: 'Show Computed Styles sidebar',
+  /**
+  * @description Tooltip for the the Computed Styles sidebar toggle in the Styles pane. Command to
+  * close/hide the sidebar.
+  */
+  hideComputedStylesSidebar: 'Hide Computed Styles sidebar',
   /**
   *@description Text in Elements Panel of the Elements panel
   */
@@ -1015,8 +1024,8 @@ export class ElementsPanel extends UI.Panel.Panel {
       showMetricsWidgetInStylesPane();
     });
     this._stylesWidget.addEventListener(StylesSidebarPaneEvents.InitialUpdateCompleted, () => {
-      this._stylesWidget.appendToolbarItem(
-          stylesSplitWidget.createShowHideSidebarButton(i18nString(UIStrings.computedStylesSidebar)));
+      this._stylesWidget.appendToolbarItem(stylesSplitWidget.createShowHideSidebarButton(
+          i18nString(UIStrings.showComputedStylesSidebar), i18nString(UIStrings.hideComputedStylesSidebar)));
     });
 
     const showMetricsWidgetInComputedPane = () => {

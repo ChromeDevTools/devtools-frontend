@@ -5,7 +5,8 @@
 import * as i18n from '../i18n/i18n.js';
 export const UIStrings = {
   /**
-  *@description Text in Elements Breadcrumbs of the Elements panel
+  * @description Text in Elements Breadcrumbs of the Elements panel. Indicates that a HTML element
+  * is a text node, meaning it contains text only and no other HTML elements. Should be translatd.
   */
   text: '(text)',
 };

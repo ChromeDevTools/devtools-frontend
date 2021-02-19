@@ -5805,7 +5805,7 @@
     "message": "M̂án̂íf̂éŝt́ d̂óêś n̂ót̂ ćôńt̂áîń â 'name' ór̂ 'short_name' f́îél̂d́"
   },
   "resources/AppManifestView.js | manifestDoesNotContainASuitable": {
-    "message": "M̂án̂íf̂éŝt́ d̂óêś n̂ót̂ ćôńt̂áîń â śûít̂áb̂ĺê íĉón̂ - ṔN̂Ǵ, ŜV́Ĝ ór̂ Ẃêb́P̂ f́ôŕm̂át̂ óf̂ át̂ ĺêáŝt́ {PH1}p̂x́ îś r̂éq̂úîŕêd́, t̂h́ê śîźêś ât́t̂ŕîb́ût́ê ḿûśt̂ b́ê śêt́, âńd̂ t́ĥé p̂úr̂ṕôśê át̂t́r̂íb̂út̂é, îf́ ŝét̂, ḿûśt̂ ín̂ćl̂úd̂é \"âńŷ\" án̂d́ ŝh́ôúl̂d́ n̂ót̂ ín̂ćl̂úd̂é \"m̂áŝḱâb́l̂é\"."
+    "message": "M̂án̂íf̂éŝt́ d̂óêś n̂ót̂ ćôńt̂áîń â śûít̂áb̂ĺê íĉón̂ - ṔN̂Ǵ, ŜV́Ĝ ór̂ Ẃêb́P̂ f́ôŕm̂át̂ óf̂ át̂ ĺêáŝt́ {PH1}p̂x́ îś r̂éq̂úîŕêd́, t̂h́ê sizes át̂t́r̂íb̂út̂é m̂úŝt́ b̂é ŝét̂, án̂d́ t̂h́ê purpose át̂t́r̂íb̂út̂é, îf́ ŝét̂, ḿûśt̂ ín̂ćl̂úd̂é \"any\" âńd̂ śĥóûĺd̂ ńôt́ îńĉĺûd́ê \"maskable\"."
   },
   "resources/AppManifestView.js | manifestSpecifies": {
     "message": "M̂án̂íf̂éŝt́ ŝṕêćîf́îéŝ prefer_related_applications: t́r̂úê"

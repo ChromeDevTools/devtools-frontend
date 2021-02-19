@@ -148,7 +148,7 @@ export const UIStrings = {
   *@example {100} PH1
   */
   manifestDoesNotContainASuitable:
-      'Manifest does not contain a suitable icon - PNG, SVG or WebP format of at least {PH1}px is required, the sizes attribute must be set, and the purpose attribute, if set, must include "any" and should not include "maskable".',
+      'Manifest does not contain a suitable icon - PNG, SVG or WebP format of at least {PH1}px is required, the `sizes` attribute must be set, and the `purpose` attribute, if set, must include `"any"` and should not include `"maskable"`.',
   /**
   *@description Manifest installability error in the Application panel
   */

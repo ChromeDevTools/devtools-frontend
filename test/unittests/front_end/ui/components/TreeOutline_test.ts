@@ -10,11 +10,23 @@ import {assertElement, assertShadowRoot, dispatchClickEvent, dispatchKeyDownEven
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 const {assert} = chai;
 
-async function renderTreeOutline(data: UIComponents.TreeOutline.TreeOutlineData): Promise<{
-  component: UIComponents.TreeOutline.TreeOutline,
+async function renderTreeOutline<TreeNodeDataType>({
+  tree,
+  defaultRenderer,
+}: {
+  tree: UIComponents.TreeOutline.TreeOutlineData<TreeNodeDataType>['tree'],
+  // defaultRenderer is required usually but here we make it optinal and provide a default one as part of renderTreeOutline, to save duplication in every single test where we want to use a simple string renderer.
+  defaultRenderer?: UIComponents.TreeOutline.TreeOutlineData<TreeNodeDataType>['defaultRenderer'],
+}): Promise<{
+  component: UIComponents.TreeOutline.TreeOutline<TreeNodeDataType>,
   shadowRoot: ShadowRoot,
 }> {
-  const component = new UIComponents.TreeOutline.TreeOutline();
+  const component = new UIComponents.TreeOutline.TreeOutline<TreeNodeDataType>();
+  const data: UIComponents.TreeOutline.TreeOutlineData<TreeNodeDataType> = {
+    tree,
+    defaultRenderer: defaultRenderer ||
+        ((node: UIComponents.TreeOutlineUtils.TreeNode<TreeNodeDataType>) => LitHtml.html`${node.treeNodeData}`),
+  };
   component.data = data;
   renderElementIntoDOM(component);
   assertShadowRoot(component.shadowRoot);
@@ -52,28 +64,28 @@ The structure represented by basicTreeData is:
   - Drive
   - Calendar
 */
-const basicTreeData: UIComponents.TreeOutlineUtils.TreeNode[] = [
+const basicTreeData: UIComponents.TreeOutlineUtils.TreeNode<string>[] = [
   {
-    key: 'Offices',
-    children: (): Promise<UIComponents.TreeOutlineUtils.TreeNode[]> => Promise.resolve([
+    treeNodeData: 'Offices',
+    children: (): Promise<UIComponents.TreeOutlineUtils.TreeNode<string>[]> => Promise.resolve([
       {
-        key: 'Europe',
-        children: (): Promise<UIComponents.TreeOutlineUtils.TreeNode[]> => Promise.resolve([
+        treeNodeData: 'Europe',
+        children: (): Promise<UIComponents.TreeOutlineUtils.TreeNode<string>[]> => Promise.resolve([
           {
-            key: 'UK',
-            children: (): Promise<UIComponents.TreeOutlineUtils.TreeNode[]> => Promise.resolve([
+            treeNodeData: 'UK',
+            children: (): Promise<UIComponents.TreeOutlineUtils.TreeNode<string>[]> => Promise.resolve([
               {
-                key: 'LON',
-                children: (): Promise<UIComponents.TreeOutlineUtils.TreeNode[]> =>
-                    Promise.resolve([{key: '6PS'}, {key: 'CSG'}, {key: 'BEL'}]),
+                treeNodeData: 'LON',
+                children: (): Promise<UIComponents.TreeOutlineUtils.TreeNode<string>[]> =>
+                    Promise.resolve([{treeNodeData: '6PS'}, {treeNodeData: 'CSG'}, {treeNodeData: 'BEL'}]),
               },
             ]),
           },
           {
-            key: 'Germany',
-            children: (): Promise<UIComponents.TreeOutlineUtils.TreeNode[]> => Promise.resolve([
-              {key: 'MUC'},
-              {key: 'BER'},
+            treeNodeData: 'Germany',
+            children: (): Promise<UIComponents.TreeOutlineUtils.TreeNode<string>[]> => Promise.resolve([
+              {treeNodeData: 'MUC'},
+              {treeNodeData: 'BER'},
             ]),
           },
         ]),
@@ -81,26 +93,26 @@ const basicTreeData: UIComponents.TreeOutlineUtils.TreeNode[] = [
     ]),
   },
   {
-    key: 'Products',
-    children: (): Promise<UIComponents.TreeOutlineUtils.TreeNode[]> => Promise.resolve([
+    treeNodeData: 'Products',
+    children: (): Promise<UIComponents.TreeOutlineUtils.TreeNode<string>[]> => Promise.resolve([
       {
-        key: 'Chrome',
+        treeNodeData: 'Chrome',
       },
       {
-        key: 'YouTube',
+        treeNodeData: 'YouTube',
       },
       {
-        key: 'Drive',
+        treeNodeData: 'Drive',
       },
       {
-        key: 'Calendar',
+        treeNodeData: 'Calendar',
       },
     ]),
   },
 ];
 
 interface VisibleTreeNodeFromDOM {
-  key: string;
+  renderedKey: string;
   children?: VisibleTreeNodeFromDOM[];
 }
 /**
@@ -111,7 +123,7 @@ function visibleNodesToTree(shadowRoot: ShadowRoot): VisibleTreeNodeFromDOM[] {
 
   function buildTreeNode(node: HTMLLIElement): VisibleTreeNodeFromDOM {
     const item: VisibleTreeNodeFromDOM = {
-      key: treeNodeKeyText(node),
+      renderedKey: nodeKeyInnerHTML(node),
     };
 
     if (node.getAttribute('aria-expanded') && node.getAttribute('aria-expanded') === 'true') {
@@ -137,6 +149,14 @@ function treeNodeKeyText(node: HTMLLIElement) {
     throw new Error('Found tree node without a key within it.');
   }
   return keyNode.getAttribute('data-node-key') || '';
+}
+
+function nodeKeyInnerHTML(node: HTMLLIElement) {
+  const keyNode = node.querySelector('[data-node-key]');
+  if (!keyNode) {
+    throw new Error('Found tree node without a key within it.');
+  }
+  return stripLitHtmlCommentNodes(keyNode.innerHTML);
 }
 
 function getVisibleTreeNodeByText(shadowRoot: ShadowRoot, text: string): HTMLLIElement {
@@ -175,8 +195,59 @@ describe('TreeOutline', () => {
     await coordinator.done();
     const visibleTree = visibleNodesToTree(shadowRoot);
     assert.deepEqual(visibleTree, [
-      {key: 'Offices', children: [{key: 'Europe'}]},
-      {key: 'Products'},
+      {renderedKey: 'Offices', children: [{renderedKey: 'Europe'}]},
+      {renderedKey: 'Products'},
+    ]);
+  });
+
+  it('can take nodes with a custom key type', async () => {
+    interface CustomTreeKeyType {
+      property: string;
+      value: string;
+    }
+    const customRenderer = (node: UIComponents.TreeOutlineUtils.TreeNode<CustomTreeKeyType>) => {
+      return LitHtml.html`<h2 class="item">${node.treeNodeData.property.toUpperCase()}:</h2>${node.treeNodeData.value}`;
+    };
+    const tinyTree: UIComponents.TreeOutlineUtils.TreeNode<CustomTreeKeyType>[] = [{
+      treeNodeData: {property: 'name', value: 'jack'},
+      renderer: customRenderer,
+      children: () => Promise.resolve<UIComponents.TreeOutlineUtils.TreeNode<CustomTreeKeyType>[]>([
+        {
+          renderer: customRenderer,
+          treeNodeData: {property: 'locationGroupName', value: 'EMEA'},
+        },
+        {
+          renderer: customRenderer,
+          treeNodeData: {property: 'locationGroupName', value: 'USA'},
+        },
+        {
+          renderer: customRenderer,
+          treeNodeData: {property: 'locationGroupName', value: 'APAC'},
+        },
+      ]),
+    }];
+    const {component, shadowRoot} = await renderTreeOutline({
+      tree: tinyTree,
+    });
+
+    await component.expandRecursively();
+    await coordinator.done();
+    const visibleTree = visibleNodesToTree(shadowRoot);
+    assert.deepEqual(visibleTree, [
+      {
+        renderedKey: '<h2 class="item">NAME:</h2>jack',
+        children: [
+          {
+            renderedKey: '<h2 class="item">LOCATIONGROUPNAME:</h2>EMEA',
+          },
+          {
+            renderedKey: '<h2 class="item">LOCATIONGROUPNAME:</h2>USA',
+          },
+          {
+            renderedKey: '<h2 class="item">LOCATIONGROUPNAME:</h2>APAC',
+          },
+        ],
+      },
     ]);
   });
 
@@ -189,29 +260,29 @@ describe('TreeOutline', () => {
     const visibleTree = visibleNodesToTree(shadowRoot);
     assert.deepEqual(visibleTree, [
       {
-        key: 'Offices',
+        renderedKey: 'Offices',
         children: [{
-          key: 'Europe',
+          renderedKey: 'Europe',
           children: [
-            {key: 'UK', children: [{key: 'LON'}]},
-            {key: 'Germany', children: [{key: 'MUC'}, {key: 'BER'}]},
+            {renderedKey: 'UK', children: [{renderedKey: 'LON'}]},
+            {renderedKey: 'Germany', children: [{renderedKey: 'MUC'}, {renderedKey: 'BER'}]},
           ],
         }],
       },
       {
-        key: 'Products',
+        renderedKey: 'Products',
         children: [
           {
-            key: 'Chrome',
+            renderedKey: 'Chrome',
           },
           {
-            key: 'YouTube',
+            renderedKey: 'YouTube',
           },
           {
-            key: 'Drive',
+            renderedKey: 'Drive',
           },
           {
-            key: 'Calendar',
+            renderedKey: 'Calendar',
           },
         ],
       },
@@ -230,25 +301,25 @@ describe('TreeOutline', () => {
     const visibleTree = visibleNodesToTree(shadowRoot);
     assert.deepEqual(visibleTree, [
       {
-        key: 'Offices',
+        renderedKey: 'Offices',
         children: [{
-          key: 'Europe',
+          renderedKey: 'Europe',
         }],
       },
       {
-        key: 'Products',
+        renderedKey: 'Products',
         children: [
           {
-            key: 'Chrome',
+            renderedKey: 'Chrome',
           },
           {
-            key: 'YouTube',
+            renderedKey: 'YouTube',
           },
           {
-            key: 'Drive',
+            renderedKey: 'Drive',
           },
           {
-            key: 'Calendar',
+            renderedKey: 'Calendar',
           },
         ],
       },
@@ -256,22 +327,22 @@ describe('TreeOutline', () => {
   });
 
   it('caches async child nodes and only fetches them once', async () => {
-    const fetchChildrenSpy = sinon.spy<() => Promise<UIComponents.TreeOutlineUtils.TreeNode[]>>(() => {
+    const fetchChildrenSpy = sinon.spy<() => Promise<UIComponents.TreeOutlineUtils.TreeNode<string>[]>>(() => {
       return Promise.resolve([
         {
-          key: 'EMEA',
+          treeNodeData: 'EMEA',
         },
         {
-          key: 'USA',
+          treeNodeData: 'USA',
         },
         {
-          key: 'APAC',
+          treeNodeData: 'APAC',
         },
       ]);
     });
-    const tinyTree: UIComponents.TreeOutlineUtils.TreeNode[] = [
+    const tinyTree: UIComponents.TreeOutlineUtils.TreeNode<string>[] = [
       {
-        key: 'Offices',
+        treeNodeData: 'Offices',
         children: fetchChildrenSpy,
       },
     ];
@@ -295,31 +366,31 @@ describe('TreeOutline', () => {
     const visibleTree = visibleNodesToTree(shadowRoot);
     assert.deepEqual(visibleTree, [
       {
-        key: 'Offices',
+        renderedKey: 'Offices',
         children: [
           {
-            key: 'EMEA',
+            renderedKey: 'EMEA',
           },
-          {key: 'USA'},
-          {key: 'APAC'},
+          {renderedKey: 'USA'},
+          {renderedKey: 'APAC'},
         ],
       },
     ]);
   });
 
   it('allows a node to have a custom renderer', async () => {
-    const tinyTree: UIComponents.TreeOutlineUtils.TreeNode[] = [{
-      key: 'Offices',
-      renderer: node => LitHtml.html`<h2 class="top-node">${node.key.toUpperCase()}</h2>`,
+    const tinyTree: UIComponents.TreeOutlineUtils.TreeNode<string>[] = [{
+      treeNodeData: 'Offices',
+      renderer: node => LitHtml.html`<h2 class="top-node">${node.treeNodeData.toUpperCase()}</h2>`,
       children: () => Promise.resolve([
         {
-          key: 'EMEA',
+          treeNodeData: 'EMEA',
         },
         {
-          key: 'USA',
+          treeNodeData: 'USA',
         },
         {
-          key: 'APAC',
+          treeNodeData: 'APAC',
         },
       ]),
     }];
@@ -338,19 +409,20 @@ describe('TreeOutline', () => {
   });
 
   it('passes the custom renderer the expanded state', async () => {
-    const tinyTree: UIComponents.TreeOutlineUtils.TreeNode[] = [{
-      key: 'Offices',
-      renderer: (node, {isExpanded}) =>
-          LitHtml.html`<h2 class="top-node">${node.key.toUpperCase()}. Expanded: ${isExpanded}</h2>`,
+    const tinyTree: UIComponents.TreeOutlineUtils.TreeNode<string>[] = [{
+      treeNodeData: 'Offices',
+      renderer: (node, {isExpanded}) => {
+        return LitHtml.html`<h2 class="top-node">${node.treeNodeData.toUpperCase()}. Expanded: ${isExpanded}</h2>`;
+      },
       children: () => Promise.resolve([
         {
-          key: 'EMEA',
+          treeNodeData: 'EMEA',
         },
         {
-          key: 'USA',
+          treeNodeData: 'USA',
         },
         {
-          key: 'APAC',
+          treeNodeData: 'APAC',
         },
       ]),
     }];
@@ -649,25 +721,25 @@ describe('TreeOutline', () => {
         // The tree below "Europe" is hidden as the left arrow press closed that node.
         assert.deepEqual(visibleTree, [
           {
-            key: 'Offices',
+            renderedKey: 'Offices',
             children: [{
-              key: 'Europe',
+              renderedKey: 'Europe',
             }],
           },
           {
-            key: 'Products',
+            renderedKey: 'Products',
             children: [
               {
-                key: 'Chrome',
+                renderedKey: 'Chrome',
               },
               {
-                key: 'YouTube',
+                renderedKey: 'YouTube',
               },
               {
-                key: 'Drive',
+                renderedKey: 'Drive',
               },
               {
-                key: 'Calendar',
+                renderedKey: 'Calendar',
               },
             ],
           },

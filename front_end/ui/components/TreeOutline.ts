@@ -10,18 +10,33 @@ import {findNextNodeForTreeOutlineKeyboardNavigation, isExpandableNode, trackDOM
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
-export interface TreeOutlineData {
-  tree: TreeNode[];
+export interface TreeOutlineData<TreeNodeDataType> {
+  defaultRenderer: (node: TreeNode<TreeNodeDataType>, state: {isExpanded: boolean}) => LitHtml.TemplateResult;
+  tree: TreeNode<TreeNodeDataType>[];
 }
 
-export class TreeOutline extends HTMLElement {
+export function defaultRenderer(node: TreeNode<string>): LitHtml.TemplateResult {
+  return LitHtml.html`${node.treeNodeData}`;
+}
+
+export class TreeOutline<TreeNodeDataType> extends HTMLElement {
   private readonly shadow = this.attachShadow({mode: 'open'});
-  private treeData: readonly TreeNode[] = [];
-  private nodeExpandedMap: WeakMap<TreeNode, boolean> = new WeakMap();
-  private nodeChildrenCacheMap: WeakMap<TreeNode, TreeNode[]> = new WeakMap();
-  private domNodeToTreeNodeMap: WeakMap<HTMLLIElement, TreeNode> = new WeakMap();
+  private treeData: readonly TreeNode<TreeNodeDataType>[] = [];
+  private nodeExpandedMap: WeakMap<TreeNode<TreeNodeDataType>, boolean> = new WeakMap();
+  private nodeChildrenCacheMap: WeakMap<TreeNode<TreeNodeDataType>, TreeNode<TreeNodeDataType>[]> = new WeakMap();
+  private domNodeToTreeNodeMap: WeakMap<HTMLLIElement, TreeNode<TreeNodeDataType>> = new WeakMap();
   private hasRenderedAtLeastOnce = false;
-  private focusableTreeNode: TreeNode|null = null;
+  private focusableTreeNode: TreeNode<TreeNodeDataType>|null = null;
+  private defaultRenderer =
+      (node: TreeNode<TreeNodeDataType>, _state: {isExpanded: boolean}): LitHtml.TemplateResult => {
+        if (typeof node.treeNodeData !== 'string') {
+          console.warn(`The default TreeOutline renderer simply stringifies its given value. You passed in ${
+              JSON.stringify(
+                  node.treeNodeData, null,
+                  2)}. Consider providing a different defaultRenderer that can handle nodes of this type.`);
+        }
+        return LitHtml.html`${String(node.treeNodeData)}`;
+      };
 
   /**
    * scheduledRender = render() has been called and scheduled a render.
@@ -32,13 +47,15 @@ export class TreeOutline extends HTMLElement {
    */
   private enqueuedRender = false;
 
-  get data(): TreeOutlineData {
+  get data(): TreeOutlineData<TreeNodeDataType> {
     return {
-      tree: this.treeData as TreeNode[],
+      tree: this.treeData as TreeNode<TreeNodeDataType>[],
+      defaultRenderer: this.defaultRenderer,
     };
   }
 
-  set data(data: TreeOutlineData) {
+  set data(data: TreeOutlineData<TreeNodeDataType>) {
+    this.defaultRenderer = data.defaultRenderer;
     this.treeData = data.tree;
     if (!this.hasRenderedAtLeastOnce) {
       this.focusableTreeNode = this.treeData[0];
@@ -65,7 +82,7 @@ export class TreeOutline extends HTMLElement {
     this.render();
   }
 
-  private async recursivelyCollapseTreeNodeChildren(treeNode: TreeNode): Promise<void> {
+  private async recursivelyCollapseTreeNodeChildren(treeNode: TreeNode<TreeNodeDataType>): Promise<void> {
     if (!isExpandableNode(treeNode) || !this.nodeIsExpanded(treeNode)) {
       return;
     }
@@ -75,14 +92,14 @@ export class TreeOutline extends HTMLElement {
     this.setNodeExpandedState(treeNode, false);
   }
 
-  private getFocusableTreeNode(): TreeNode {
+  private getFocusableTreeNode(): TreeNode<TreeNodeDataType> {
     if (!this.focusableTreeNode) {
       throw new Error('getFocusableNode was called but focusableNode is null');
     }
     return this.focusableTreeNode;
   }
 
-  private async fetchNodeChildren(node: TreeNodeWithChildren): Promise<TreeNode[]> {
+  private async fetchNodeChildren(node: TreeNodeWithChildren<TreeNodeDataType>): Promise<TreeNode<TreeNodeDataType>[]> {
     const cached = this.nodeChildrenCacheMap.get(node);
     if (cached) {
       return cached;
@@ -92,15 +109,16 @@ export class TreeOutline extends HTMLElement {
     return children;
   }
 
-  private setNodeExpandedState(node: TreeNode, newExpandedState: boolean): void {
+  private setNodeExpandedState(node: TreeNode<TreeNodeDataType>, newExpandedState: boolean): void {
     this.nodeExpandedMap.set(node, newExpandedState);
   }
 
-  private nodeIsExpanded(node: TreeNode): boolean {
+  private nodeIsExpanded(node: TreeNode<TreeNodeDataType>): boolean {
     return this.nodeExpandedMap.get(node) || false;
   }
 
-  private async expandAndRecurse(node: TreeNode, currentDepth: number, maxDepth: number): Promise<void> {
+  private async expandAndRecurse(node: TreeNode<TreeNodeDataType>, currentDepth: number, maxDepth: number):
+      Promise<void> {
     if (!isExpandableNode(node)) {
       return;
     }
@@ -112,7 +130,7 @@ export class TreeOutline extends HTMLElement {
     await Promise.all(children.map(child => this.expandAndRecurse(child, currentDepth + 1, maxDepth)));
   }
 
-  private onArrowClick(node: TreeNode): ((e: Event) => void) {
+  private onArrowClick(node: TreeNode<TreeNodeDataType>): ((e: Event) => void) {
     return (event: Event): void => {
       event.stopPropagation();
       if (isExpandableNode(node)) {
@@ -209,9 +227,11 @@ export class TreeOutline extends HTMLElement {
     }
   }
 
-  private async renderNode(
-      node: TreeNode, {depth, setSize, positionInSet}: {depth: number, setSize: number, positionInSet: number}):
-      Promise<LitHtml.TemplateResult> {
+  private async renderNode(node: TreeNode<TreeNodeDataType>, {depth, setSize, positionInSet}: {
+    depth: number,
+    setSize: number,
+    positionInSet: number,
+  }): Promise<LitHtml.TemplateResult> {
     let childrenToRender;
     const nodeIsExpanded = this.nodeIsExpanded(node);
     if (!isExpandableNode(node) || !nodeIsExpanded) {
@@ -235,11 +255,12 @@ export class TreeOutline extends HTMLElement {
     });
     const ariaExpandedAttribute = LitHtml.Directives.ifDefined(isExpandableNode(node) ? String(nodeIsExpanded) : undefined);
 
-    const renderedNodeKey = node.renderer ? node.renderer(node, {
-      isExpanded: nodeIsExpanded,
-    }) :
-                                            node.key;
-
+    let renderedNodeKey: LitHtml.TemplateResult;
+    if (node.renderer) {
+      renderedNodeKey = node.renderer(node, {isExpanded: nodeIsExpanded});
+    } else {
+      renderedNodeKey = this.defaultRenderer(node, {isExpanded: nodeIsExpanded});
+    }
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     return LitHtml.html`
@@ -256,7 +277,7 @@ export class TreeOutline extends HTMLElement {
         <span class="arrow-and-key-wrapper">
           <span class="arrow-icon" @click=${this.onArrowClick(node)}>
           </span>
-          <span class="tree-node-key" data-node-key=${node.key}>${renderedNodeKey}</span>
+          <span class="tree-node-key" data-node-key=${node.treeNodeData}>${renderedNodeKey}</span>
         </span>
         ${childrenToRender}
       </li>
@@ -351,6 +372,6 @@ customElements.define('devtools-tree-outline', TreeOutline);
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
-    'devtools-tree-outline': TreeOutline;
+    'devtools-tree-outline': TreeOutline<unknown>;
   }
 }

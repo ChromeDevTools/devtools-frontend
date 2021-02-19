@@ -4,21 +4,23 @@
 import * as Platform from '../../platform/platform.js';
 import * as LitHtml from '../../third_party/lit-html/lit-html.js';
 
-interface BaseTreeNode {
-  key: string;
-  renderer?: (node: TreeNode, state: {isExpanded: boolean}) => LitHtml.TemplateResult;
+interface BaseTreeNode<TreeNodeDataType> {
+  treeNodeData: TreeNodeDataType;
+  renderer?: (node: TreeNode<TreeNodeDataType>, state: {isExpanded: boolean}) => LitHtml.TemplateResult;
 }
 
-export interface TreeNodeWithChildren extends BaseTreeNode {
-  children: () => Promise<TreeNode[]>;
+export interface TreeNodeWithChildren<TreeNodeDataType> extends BaseTreeNode<TreeNodeDataType> {
+  children: () => Promise<TreeNode<TreeNodeDataType>[]>;
 }
-interface LeafNode extends BaseTreeNode {
+
+interface LeafNode<TreeNodeDataType> extends BaseTreeNode<TreeNodeDataType> {
   children?: never;
 }
 
-export type TreeNode = TreeNodeWithChildren|LeafNode;
+export type TreeNode<TreeNodeDataType> = TreeNodeWithChildren<TreeNodeDataType>|LeafNode<TreeNodeDataType>;
 
-export function isExpandableNode(node: TreeNode): node is TreeNodeWithChildren {
+export function isExpandableNode<TreeNodeDataType>(node: TreeNode<TreeNodeDataType>):
+    node is TreeNodeWithChildren<TreeNodeDataType> {
   return 'children' in node;
 }
 
@@ -27,8 +29,9 @@ export function isExpandableNode(node: TreeNode): node is TreeNodeWithChildren {
  * creates and maps them to the tree node that was given to us. This means we
  * can navigate between real DOM node and structural tree node easily in code.
  */
-export const trackDOMNodeToTreeNode =
-    LitHtml.directive((weakMap: WeakMap<HTMLLIElement, TreeNode>, treeNode: TreeNode) => {
+export const trackDOMNodeToTreeNode = LitHtml.directive(
+    <TreeNodeDataType>(
+        weakMap: WeakMap<HTMLLIElement, TreeNode<TreeNodeDataType>>, treeNode: TreeNode<TreeNodeDataType>) => {
       return (part: LitHtml.Part): void => {
         if (!(part instanceof LitHtml.AttributePart)) {
           throw new Error('Ref directive must be used as an attribute.');
@@ -137,14 +140,15 @@ const getParentListItemForDOMNode = (currentDOMNode: HTMLLIElement): HTMLLIEleme
   return parentNode as HTMLLIElement;
 };
 
-interface KeyboardNavigationOptions {
+interface KeyboardNavigationOptions<TreeNodeDataType> {
   currentDOMNode: HTMLLIElement;
-  currentTreeNode: TreeNode;
+  currentTreeNode: TreeNode<TreeNodeDataType>;
   direction: Platform.KeyboardUtilities.ArrowKey;
-  setNodeExpandedState: (treeNode: TreeNode, expanded: boolean) => void;
+  setNodeExpandedState: (treeNode: TreeNode<TreeNodeDataType>, expanded: boolean) => void;
 }
 
-export const findNextNodeForTreeOutlineKeyboardNavigation = (options: KeyboardNavigationOptions): HTMLLIElement => {
+export const findNextNodeForTreeOutlineKeyboardNavigation = <TreeNodeDataType>(
+    options: KeyboardNavigationOptions<TreeNodeDataType>): HTMLLIElement => {
   const {
     currentDOMNode,
     currentTreeNode,

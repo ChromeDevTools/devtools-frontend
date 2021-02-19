@@ -9,22 +9,22 @@ import * as Components from '../../ui/components/components.js';
 await ComponentHelpers.ComponentServerSetup.setup();
 await FrontendHelpers.initializeGlobalVars();
 
-async function loadInSomeNodes(): Promise<Components.TreeOutlineUtils.TreeNode[]> {
-  const europeanOffices: Components.TreeOutlineUtils.TreeNode[] = [
+async function loadInSomeNodes(): Promise<Components.TreeOutlineUtils.TreeNode<string>[]> {
+  const europeanOffices: Components.TreeOutlineUtils.TreeNode<string>[] = [
     {
-      key: 'UK',
+      treeNodeData: 'UK',
       children: () => Promise.resolve([
         {
-          key: 'LON',
-          children: () => Promise.resolve([{key: '6PS'}, {key: 'CSG'}, {key: 'BEL'}]),
+          treeNodeData: 'LON',
+          children: () => Promise.resolve([{treeNodeData: '6PS'}, {treeNodeData: 'CSG'}, {treeNodeData: 'BEL'}]),
         },
       ]),
     },
     {
-      key: 'Germany',
+      treeNodeData: 'Germany',
       children: () => Promise.resolve([
-        {key: 'MUC'},
-        {key: 'BER'},
+        {treeNodeData: 'MUC'},
+        {treeNodeData: 'BER'},
       ]),
     },
   ];
@@ -34,16 +34,15 @@ async function loadInSomeNodes(): Promise<Components.TreeOutlineUtils.TreeNode[]
   });
 }
 
-const data: Components.TreeOutline.TreeOutlineData = {
+const data: Components.TreeOutline.TreeOutlineData<string> = {
+  defaultRenderer: Components.TreeOutline.defaultRenderer,
   tree: [
     {
-      key: 'Offices',
+      treeNodeData: 'Offices',
       children: () => Promise.resolve([
         {
-          key: 'Europe',
-          // TODO: Remove next line once crbug.com/1177242 is solved.
-          // eslint-disable-next-line @typescript-eslint/space-before-function-paren
-          chldren: async(): Promise<Components.TreeOutlineUtils.TreeNode[]> => {
+          treeNodeData: 'Europe',
+          async children() {
             const children = await loadInSomeNodes();
             return children;
           },
@@ -51,19 +50,19 @@ const data: Components.TreeOutline.TreeOutlineData = {
       ]),
     },
     {
-      key: 'Products',
+      treeNodeData: 'Products',
       children: () => Promise.resolve([
         {
-          key: 'Chrome',
+          treeNodeData: 'Chrome',
         },
         {
-          key: 'YouTube',
+          treeNodeData: 'YouTube',
         },
         {
-          key: 'Drive',
+          treeNodeData: 'Drive',
         },
         {
-          key: 'Calendar',
+          treeNodeData: 'Calendar',
         },
       ]),
 
@@ -71,7 +70,7 @@ const data: Components.TreeOutline.TreeOutlineData = {
   ],
 
 };
-const component = new Components.TreeOutline.TreeOutline();
+const component = new Components.TreeOutline.TreeOutline<string>();
 component.data = data;
 
 document.getElementById('container')?.appendChild(component);

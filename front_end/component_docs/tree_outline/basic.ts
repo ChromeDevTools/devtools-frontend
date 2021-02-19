@@ -10,8 +10,11 @@ import {officesAndProductsData} from './sample-data.js';
 await ComponentHelpers.ComponentServerSetup.setup();
 await FrontendHelpers.initializeGlobalVars();
 
-const component = new Components.TreeOutline.TreeOutline();
-component.data = officesAndProductsData;
+const component = new Components.TreeOutline.TreeOutline<string>();
+component.data = {
+  defaultRenderer: Components.TreeOutline.defaultRenderer,
+  tree: officesAndProductsData,
+};
 
 document.getElementById('container')?.appendChild(component);
 document.getElementById('recursively-expand')?.addEventListener('click', () => {

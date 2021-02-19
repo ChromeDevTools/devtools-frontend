@@ -3,51 +3,48 @@
 // found in the LICENSE file.
 
 import * as Components from '../../ui/components/components.js';
-export const officesAndProductsData: Components.TreeOutline.TreeOutlineData = {
-  tree: [
-    {
-      key: 'Offices',
-      children: () => Promise.resolve([
-        {
-          key: 'Europe',
-          children: () => Promise.resolve([
-            {
-              key: 'UK',
-              children: () => Promise.resolve([
-                {
-                  key: 'LON',
-                  children: () => Promise.resolve([{key: '6PS'}, {key: 'CSG'}, {key: 'BEL'}]),
-                },
-              ]),
-            },
-            {
-              key: 'Germany',
-              children: () => Promise.resolve([
-                {key: 'MUC'},
-                {key: 'BER'},
-              ]),
-            },
-          ]),
-        },
-      ]),
-    },
-    {
-      key: 'Products',
-      children: () => Promise.resolve([
-        {
-          key: 'Chrome',
-        },
-        {
-          key: 'YouTube',
-        },
-        {
-          key: 'Drive',
-        },
-        {
-          key: 'Calendar',
-        },
-      ]),
-    },
-  ],
-
-};
+export const officesAndProductsData: Components.TreeOutlineUtils.TreeNode<string>[] = [
+  {
+    treeNodeData: 'Offices',
+    children: () => Promise.resolve([
+      {
+        treeNodeData: 'Europe',
+        children: () => Promise.resolve([
+          {
+            treeNodeData: 'UK',
+            children: () => Promise.resolve([
+              {
+                treeNodeData: 'LON',
+                children: () => Promise.resolve([{treeNodeData: '6PS'}, {treeNodeData: 'CSG'}, {treeNodeData: 'BEL'}]),
+              },
+            ]),
+          },
+          {
+            treeNodeData: 'Germany',
+            children: () => Promise.resolve([
+              {treeNodeData: 'MUC'},
+              {treeNodeData: 'BER'},
+            ]),
+          },
+        ]),
+      },
+    ]),
+  },
+  {
+    treeNodeData: 'Products',
+    children: () => Promise.resolve([
+      {
+        treeNodeData: 'Chrome',
+      },
+      {
+        treeNodeData: 'YouTube',
+      },
+      {
+        treeNodeData: 'Drive',
+      },
+      {
+        treeNodeData: 'Calendar',
+      },
+    ]),
+  },
+];

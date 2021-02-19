@@ -78,7 +78,7 @@
   flex: 0 0 128px;
   text-align: right;
   padding: 0 6px;
-  white-space: pre;
+  white-space: pre-wrap;
 }
 
 .report-field-value {

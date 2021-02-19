@@ -24,8 +24,7 @@
   display: inline-block;
   width: 80px;
   text-align: right;
-  color: #aaa; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-text-primary);
   margin-right: 10px;
 }
 

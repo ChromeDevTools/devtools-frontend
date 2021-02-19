@@ -9,19 +9,19 @@ export const UIStrings = {
   /**
   *@description Text that describes the representation of a value in the Linear Memory Inspector, short for decimal
   */
-  dec: 'dec',
+  dec: '`dec`',
   /**
-  *@description Text that describes the representation of a value in the Linear Memory Inspector
+  *@description Text that describes the representation of a value in the Linear Memory Inspector, short for hexadecimal
   */
-  hex: 'hex',
+  hex: '`hex`',
   /**
   *@description Text that describes the representation of a value in the Linear Memory Inspector, short for octal
   */
-  oct: 'oct',
+  oct: '`oct`',
   /**
   *@description Text that describes the representation of a value in the Linear Memory Inspector, short for scientific
   */
-  sci: 'sci',
+  sci: '`sci`',
   /**
   *@description Text that describes the Endianness setting that can be selected in the select item in the Linear Memory Inspector
   */

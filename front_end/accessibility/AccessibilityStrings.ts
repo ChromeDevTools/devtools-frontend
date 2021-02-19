@@ -414,15 +414,17 @@ export const UIStrings = {
   /**
   * @description Accessibility attribute name that appears under the Computed Properties section in
   * the Accessibility pane of the Elements pane. Indicates that this element got assigned this
-  * attribute because there is a related label, hence it received it from the label. 'label
-  * (wrapped)' is part of the ARIA API and should not be translated. label (wrapped) is just a
-  * different type of label.
+  * attribute because there is a related label which wraps (encompasses, surrounds) this element,
+  * hence it received it from the label. 'wrapped' is not part of the ARIA API, and should be
+  * translated.
   */
-  fromLabelWrapped: 'From `label (wrapped)`',
+  fromLabelWrapped: 'From `label` (wrapped)',
   /**
-  *@description Tooltip text that appears when hovering over the 'From label (wrapped)' attribute name under the Computed Properties section in the Accessibility pane of the Elements pane
+  * @description Tooltip text that appears when hovering over the 'From label (wrapped)' attribute
+  * name under the Computed Properties section in the Accessibility pane of the Elements pane.
+  * Indicates that there is a label element wrapping (surrounding) this element.
   */
-  valueFromLabelElementWrapped: 'Value from `label` element wrapped.',
+  valueFromLabelElementWrapped: 'Value from a wrapping `label` element.',
   /**
   * @description Accessibility attribute name that appears under the Computed Properties section in
   * the Accessibility pane of the Elements pane. Indicates that this element got assigned this
@@ -433,7 +435,7 @@ export const UIStrings = {
   /**
   *@description Tooltip text that appears when hovering over the 'From legend' attribute name under the Computed Properties section in the Accessibility pane of the Elements pane
   */
-  valueFromLegendElement: 'Value from legend element.',
+  valueFromLegendElement: 'Value from `legend` element.',
   /**
   *@description Accessibility attribute name that appears under the Computed Properties section in the Accessibility pane of the Elements pane
   */

@@ -38,11 +38,11 @@ export const UIStrings = {
   /**
   *@description Text in Service Worker Cache Views of the Application panel
   */
-  responsetype: 'Response-Type',
+  responsetype: '`Response-Type`',
   /**
   *@description Text in Service Worker Cache Views of the Application panel
   */
-  contenttype: 'Content-Type',
+  contenttype: '`Content-Type`',
   /**
   *@description Text for the network request Content-Length header
   */

@@ -87,9 +87,9 @@ export const UIStrings = {
   documentationOnMaskableIcons: 'documentation on maskable icons',
   /**
   *@description Text wrapping a link pointing to more information on maskable icons in App Manifest view of the Application panel
-  *@example {https://example.com/} PH1
+  *@example {https://web.dev/maskable-icon/} PH1
   */
-  needHelpReadOurS: 'Need help? Read our {PH1}.',
+  needHelpReadOurS: 'Need help? Read {PH1}.',
   /**
   *@description Label for the primary icon loaded from the manifest
   *@example {https://example.com/} PH1

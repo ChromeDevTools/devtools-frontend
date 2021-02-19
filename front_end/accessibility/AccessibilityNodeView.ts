@@ -108,7 +108,9 @@ export const UIStrings = {
   */
   staticTextNodeIsUsed: 'Static text node is used as name for\xA0',
   /**
-  *@description Reason element in Accessibility Node View of the Accessibility pane
+  * @description Reason element in Accessibility Node View of the Accessibility pane. Here
+  * 'interesting' is from the perspective of the accessibility engine in Chrome. A non-interesting
+  * element doesn't have any special accessibility considerations
   */
   elementNotInteresting: 'Element not interesting for accessibility.',
 };

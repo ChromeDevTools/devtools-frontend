@@ -168,11 +168,11 @@ export const UIStrings = {
   /**
   *@description Comment used in decoded X-Client-Data HTTP header output in Headers View of the Network panel
   */
-  activeClientExperimentVariation: 'Active client experiment variation IDs.',
+  activeClientExperimentVariation: 'Active `client experiment variation IDs`.',
   /**
   *@description Comment used in decoded X-Client-Data HTTP header output in Headers View of the Network panel
   */
-  activeClientExperimentVariationIds: 'Active client experiment variation IDs that trigger server-side behavior.',
+  activeClientExperimentVariationIds: 'Active `client experiment variation IDs` that trigger server-side behavior.',
   /**
   *@description Text in Headers View of the Network panel for X-Client-Data HTTP headers
   */

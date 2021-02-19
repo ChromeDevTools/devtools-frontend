@@ -10,7 +10,8 @@ import {RecordType} from './TimelineModel.js';
 
 export const UIStrings = {
   /**
-  *@description Text in Timeline IRModel of the Performance panel
+  * @description Error text in Timeline IRModel of the Performance panel. Indicates that two fling
+  * gestures were detected at the same time, which should not be possible.
   *@example {2s} PH1
   *@example {3s} PH2
   */

@@ -47,8 +47,8 @@ export const UIStrings = {
   */
   sLatency: '{PH1} latency',
   /**
-  *@description Download format in Network Time Calculator of the Network panel
-  *@example {5} PH1
+  * @description Duration of the download in ms/s shown for a completed network request.
+  * @example {5ms} PH1
   */
   sDownload: '{PH1} download',
   /**

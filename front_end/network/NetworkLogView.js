@@ -128,9 +128,11 @@ export const UIStrings = {
   */
   sBSBTransferredOverNetwork: '{PH1} B / {PH2} B transferred over network',
   /**
-  *@description Text in Network Log View of the Network panel
-  *@example {40MB} PH1
-  *@example {50MB} PH2
+  * @description Text in Network Log View of the Network panel. Appears when a particular network
+  * resource is selected by the user. Shows how large the selected resource was (PH1) out of the
+  * total size (PH2).
+  * @example {40MB} PH1
+  * @example {50MB} PH2
   */
   sSResources: '{PH1} / {PH2} resources',
   /**

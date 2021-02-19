@@ -156,7 +156,7 @@
     "message": "F̂ŕôḿ label (for)"
   },
   "accessibility/AccessibilityStrings.ts | fromLabelWrapped": {
-    "message": "F̂ŕôḿ label (wrapped)"
+    "message": "F̂ŕôḿ label (ŵŕâṕp̂éd̂)"
   },
   "accessibility/AccessibilityStrings.ts | fromLegend": {
     "message": "F̂ŕôḿ legend"
@@ -318,10 +318,10 @@
     "message": "V̂ál̂úê f́r̂óm̂ label él̂ém̂én̂t́ ŵít̂h́ for= ât́t̂ŕîb́ût́ê."
   },
   "accessibility/AccessibilityStrings.ts | valueFromLabelElementWrapped": {
-    "message": "V̂ál̂úê f́r̂óm̂ label él̂ém̂én̂t́ ŵŕâṕp̂éd̂."
+    "message": "V̂ál̂úê f́r̂óm̂ á ŵŕâṕp̂ín̂ǵ label êĺêḿêńt̂."
   },
   "accessibility/AccessibilityStrings.ts | valueFromLegendElement": {
-    "message": "V̂ál̂úê f́r̂óm̂ ĺêǵêńd̂ él̂ém̂én̂t́."
+    "message": "V̂ál̂úê f́r̂óm̂ legend él̂ém̂én̂t́."
   },
   "accessibility/AccessibilityStrings.ts | valueFromNativeHtmlRuby": {
     "message": "V̂ál̂úê f́r̂óm̂ ńât́îv́ê H́T̂ḾL̂ ŕûb́ŷ án̂ńôt́ât́îón̂."
@@ -2997,7 +2997,7 @@
     "message": "B̂íĝ Én̂d́îán̂"
   },
   "linear_memory_inspector/ValueInterpreterDisplayUtils.ts | dec": {
-    "message": "d̂éĉ"
+    "message": "dec"
   },
   "linear_memory_inspector/ValueInterpreterDisplayUtils.ts | float64Bit": {
     "message": "F̂ĺôát̂ 64-b́ît́"
@@ -3006,7 +3006,7 @@
     "message": "F̂ĺôát̂ 32-b́ît́"
   },
   "linear_memory_inspector/ValueInterpreterDisplayUtils.ts | hex": {
-    "message": "ĥéx̂"
+    "message": "hex"
   },
   "linear_memory_inspector/ValueInterpreterDisplayUtils.ts | integer16Bit": {
     "message": "Îńt̂éĝér̂ 16-b́ît́"
@@ -3024,10 +3024,10 @@
     "message": "L̂ít̂t́l̂é Êńd̂íâń"
   },
   "linear_memory_inspector/ValueInterpreterDisplayUtils.ts | oct": {
-    "message": "ôćt̂"
+    "message": "oct"
   },
   "linear_memory_inspector/ValueInterpreterDisplayUtils.ts | sci": {
-    "message": "ŝćî"
+    "message": "sci"
   },
   "linear_memory_inspector/ValueInterpreterDisplayUtils.ts | string": {
     "message": "Ŝt́r̂ín̂ǵ"
@@ -3666,7 +3666,7 @@
     "message": "ŝíĝńêd́-êx́ĉh́âńĝé"
   },
   "network/NetworkDataGridNode.js | signedexchangeq": {
-    "message": "(ŝíĝńêd́-êx́ĉh́âńĝé)"
+    "message": "(signed-exchange)"
   },
   "network/NetworkDataGridNode.js | sPreflight": {
     "message": "{PH1} + P̂ŕêf́l̂íĝh́t̂"
@@ -4131,10 +4131,10 @@
     "message": "T̂h́îś r̂éq̂úêśt̂ h́âś n̂ó ĉóôḱîéŝ."
   },
   "network/RequestHeadersView.js | activeClientExperimentVariation": {
-    "message": "Âćt̂ív̂é ĉĺîén̂t́ êx́p̂ér̂ím̂én̂t́ v̂ár̂íât́îón̂ ÍD̂ś."
+    "message": "Âćt̂ív̂é client experiment variation IDs."
   },
   "network/RequestHeadersView.js | activeClientExperimentVariationIds": {
-    "message": "Âćt̂ív̂é ĉĺîén̂t́ êx́p̂ér̂ím̂én̂t́ v̂ár̂íât́îón̂ ÍD̂ś t̂h́ât́ t̂ŕîǵĝér̂ śêŕv̂ér̂-śîd́ê b́êh́âv́îór̂."
+    "message": "Âćt̂ív̂é client experiment variation IDs t̂h́ât́ t̂ŕîǵĝér̂ śêŕv̂ér̂-śîd́ê b́êh́âv́îór̂."
   },
   "network/RequestHeadersView.js | chooseThisOptionIfTheResourceAnd": {
     "message": "Ĉh́ôóŝé t̂h́îś ôṕt̂íôń îf́ t̂h́ê ŕêśôúr̂ćê án̂d́ t̂h́ê d́ôćûḿêńt̂ ár̂é ŝér̂v́êd́ f̂ŕôḿ t̂h́ê śâḿê śît́ê."
@@ -5814,7 +5814,7 @@
     "message": "N̂ám̂é"
   },
   "resources/AppManifestView.js | needHelpReadOurS": {
-    "message": "N̂éêd́ ĥél̂ṕ? R̂éâd́ ôúr̂ {PH1}."
+    "message": "N̂éêd́ ĥél̂ṕ? R̂éâd́ {PH1}."
   },
   "resources/AppManifestView.js | noManifestDetected": {
     "message": "N̂ó m̂án̂íf̂éŝt́ d̂ét̂éĉt́êd́"
@@ -6351,7 +6351,7 @@
     "message": "Content-Length"
   },
   "resources/ServiceWorkerCacheViews.js | contenttype": {
-    "message": "Ĉón̂t́êńt̂-T́ŷṕê"
+    "message": "Content-Type"
   },
   "resources/ServiceWorkerCacheViews.js | deleteSelected": {
     "message": "D̂él̂ét̂é Ŝél̂éĉt́êd́"
@@ -6375,7 +6375,7 @@
     "message": "R̂éf̂ŕêśĥ"
   },
   "resources/ServiceWorkerCacheViews.js | responsetype": {
-    "message": "R̂éŝṕôńŝé-T̂ýp̂é"
+    "message": "Response-Type"
   },
   "resources/ServiceWorkerCacheViews.js | selectACacheEntryAboveToPreview": {
     "message": "Ŝél̂éĉt́ â ćâćĥé êńt̂ŕŷ áb̂óv̂é t̂ó p̂ŕêv́îéŵ"

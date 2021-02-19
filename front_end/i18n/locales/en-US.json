@@ -318,7 +318,7 @@
     "message": "Value from label element with for= attribute."
   },
   "accessibility/AccessibilityStrings.ts | valueFromLabelElementWrapped": {
-    "message": "Value from label element wrapped."
+    "message": "Value from a wrapping label element."
   },
   "accessibility/AccessibilityStrings.ts | valueFromLegendElement": {
     "message": "Value from legend element."
@@ -5814,7 +5814,7 @@
     "message": "Name"
   },
   "resources/AppManifestView.js | needHelpReadOurS": {
-    "message": "Need help? Read our {PH1}."
+    "message": "Need help? Read {PH1}."
   },
   "resources/AppManifestView.js | noManifestDetected": {
     "message": "No manifest detected"

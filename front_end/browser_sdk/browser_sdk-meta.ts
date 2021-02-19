@@ -16,16 +16,22 @@ export const UIStrings = {
  */
   preserveLog: 'Preserve log',
   /**
- *@description A tag of Network preserve log settings that can be searched in the command menu
- */
+  * @description A term that can be used to search in the command menu, and will find the search
+  * result 'Preserve log on page reload / navigation'. This is an additional search term to help
+  * user find the setting even when they don't know the exact name of it.
+  */
   preserve: 'preserve',
   /**
- *@description A tag of Network preserve log settings that can be searched in the command menu
- */
+  * @description A term that can be used to search in the command menu, and will find the search
+  * result 'Preserve log on page reload / navigation'. This is an additional search term to help
+  * user find the setting even when they don't know the exact name of it.
+  */
   clear: 'clear',
   /**
- *@description A tag of Network preserve log settings that can be searched in the command menu
- */
+  * @description A term that can be used to search in the command menu, and will find the search
+  * result 'Preserve log on page reload / navigation'. This is an additional search term to help
+  * user find the setting even when they don't know the exact name of it.
+  */
   reset: 'reset',
   /**
  *@description Title of a setting under the Network category that can be invoked through the Command Menu

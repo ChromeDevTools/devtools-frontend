@@ -106,8 +106,9 @@ export const UIStrings = {
   */
   sRegistrationErrors: '{PH1} registration errors',
   /**
-  *@description Text in Service Workers View of the Application panel
-  *@example {7/3/2019, 3:38:37 PM} PH1
+  * @description Text in Service Workers View of the Application panel. The Date/time that a service
+  * worker version update was received by the webpage.
+  * @example {7/3/2019, 3:38:37 PM} PH1
   */
   receivedS: 'Received {PH1}',
   /**

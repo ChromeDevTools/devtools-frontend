@@ -196,7 +196,7 @@ export const UIStrings = {
   /**
   *@description Text of a DOM element in Network Data Grid Node of the Network panel
   */
-  signedexchangeq: '(signed-exchange)',
+  signedexchangeq: '`(signed-exchange)`',
   /**
   *@description Cell title in Network Data Grid Node of the Network panel
   *@example {4 B} PH1

@@ -268,8 +268,15 @@ def run_npm_command(npm_command_args=None):
     # By default, run the CI version of npm, which prevents updates to the versions of modules.
     # However, when we are analyzing the installed NPM dependencies, we don't need to run
     # the installation process again.
-    if not runs_analysis_command and exec_command(['npm', 'ci']):
-        return True
+    if not runs_analysis_command:
+        if exec_command(['npm', 'ci']):
+            return True
+        
+        # To minimize disk usage for Chrome DevTools node_modules, always try to dedupe dependencies.
+        # We need to perform this every time, as the order of dependencies added could lead to a
+        # non-optimal dependency tree, resulting in unnecessary disk usage.
+        if exec_command(['npm', 'dedupe']):
+            return True
 
     if run_custom_command:
         custom_command_result = exec_command(['npm'] + npm_command_args)

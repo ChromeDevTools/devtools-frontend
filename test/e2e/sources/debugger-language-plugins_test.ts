@@ -7,7 +7,7 @@ import {assert} from 'chai';
 import {$, click, enableExperiment, getBrowserAndPages, getResourcesPath, goToResource, pasteText, waitFor, waitForFunction, waitForMany, waitForNone} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {CONSOLE_TAB_SELECTOR, focusConsolePrompt, getCurrentConsoleMessages} from '../helpers/console-helpers.js';
-import {addBreakpointForLine, checkBreakpointIsNotActive, getCallFrameLocations, getCallFrameNames, getValuesForScope, listenForSourceFilesAdded, openFileInEditor, openFileInSourcesPanel, openSourcesPanel, PAUSE_ON_EXCEPTION_BUTTON, RESUME_BUTTON, retrieveSourceFilesAdded, retrieveTopCallFrameScriptLocation, switchToCallFrame, waitForAdditionalSourceFiles} from '../helpers/sources-helpers.js';
+import {addBreakpointForLine, checkBreakpointIsNotActive, getCallFrameLocations, getCallFrameNames, getValuesForScope, listenForSourceFilesAdded, openFileInEditor, openFileInSourcesPanel, openSourceCodeEditorForFile, openSourcesPanel, PAUSE_ON_EXCEPTION_BUTTON, RESUME_BUTTON, retrieveSourceFilesAdded, retrieveTopCallFrameScriptLocation, switchToCallFrame, waitForAdditionalSourceFiles} from '../helpers/sources-helpers.js';
 
 
 // TODO: Remove once Chromium updates its version of Node.js to 12+.
@@ -667,8 +667,7 @@ describe('The Debugger Language Plugins', async () => {
     ]);
   });
 
-  // Failing on the bots with a timeout
-  it.skip('[crbug.com/1169688]: shows variable value in popover', async () => {
+  it('shows variable value in popover', async () => {
     const {frontend} = getBrowserAndPages();
     await frontend.evaluateHandle(
         () => globalThis.installExtensionPlugin((extensionServerClient: unknown, extensionAPI: unknown) => {
@@ -750,7 +749,7 @@ describe('The Debugger Language Plugins', async () => {
 
     await openSourcesPanel();
     await click(PAUSE_ON_EXCEPTION_BUTTON);
-    await goToResource('sources/wasm/unreachable.html');
+    await openSourceCodeEditorForFile('unreachable.ll', 'wasm/unreachable.html');
     await waitFor(RESUME_BUTTON);
 
     const pausedPosition = await waitForFunction(async () => {

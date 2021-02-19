@@ -147,12 +147,14 @@ export const UIStrings = {
   */
   sRequests: '{PH1} requests',
   /**
-  *@description Text in Network Log View of the Network panel
+  *@description Message in the summary toolbar at the bottom of the Network log that shows the compressed size of
+  * all resources transferred over network during a network activity log.
   *@example {4 B} PH1
   */
   sTransferred: '{PH1} transferred',
   /**
-  *@description Text in Network Log View of the Network panel
+  *@description Message in a tooltip that shows the compressed size of all resources transferred over network during
+  * a network activity log.
   *@example {4} PH1
   */
   sBTransferredOverNetwork: '{PH1} B transferred over network',

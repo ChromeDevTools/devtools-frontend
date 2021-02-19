@@ -1779,10 +1779,10 @@
     "message": "Switch to DOM Tree view"
   },
   "elements/ElementsPanel.js | theDeferredDomNodeCouldNotBe": {
-    "message": "The deferred DOM Node could not be resolved into a valid node."
+    "message": "The deferred DOM Node could not be resolved to a valid node."
   },
   "elements/ElementsPanel.js | theRemoteObjectCouldNotBe": {
-    "message": "The remote object could not be resolved into a valid node."
+    "message": "The remote object could not be resolved to a valid node."
   },
   "elements/ElementStatePaneWidget.js | forceElementState": {
     "message": "Force element state"

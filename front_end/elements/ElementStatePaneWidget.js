@@ -10,17 +10,20 @@ import {ElementsPanel} from './ElementsPanel.js';
 
 export const UIStrings = {
   /**
-  *@description Text of a DOM element in Element State Pane Widget of the Elements panel
+  * @description Title of a section in the Element State Pane Widget of the Elements panel. The
+  * controls in this section allow users to force a particular state on the selected element, e.g. a
+  * focused state via :focus or a hover state via :hover.
   */
   forceElementState: 'Force element state',
   /**
-  *@description Text in Element State Pane Widget of the Elements panel
+  * @description Tooltip text in Element State Pane Widget of the Elements panel. For a button that
+  * opens a tool that toggles the various states of the selected element on/off.
   */
   toggleElementState: 'Toggle Element State',
   /**
-  *@description Text in Element State Pane Widget of the Elements panel
+  * @description Text in Element State Pane Widget of the Elements panel. Activates the :hov state.
   */
-  hov: ':hov',
+  hov: '`:hov`',
 };
 const str_ = i18n.i18n.registerUIStrings('elements/ElementStatePaneWidget.js', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

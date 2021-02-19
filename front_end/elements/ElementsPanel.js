@@ -64,7 +64,7 @@ export const UIStrings = {
   */
   switchToDomTreeView: 'Switch to DOM Tree view',
   /**
-  *@description Label for a link to a rendering frame.
+  * @description Label for a link to a rendering frame.
   */
   frame: 'Frame',
   /**
@@ -78,32 +78,40 @@ export const UIStrings = {
   */
   hideComputedStylesSidebar: 'Hide Computed Styles sidebar',
   /**
-  *@description Text in Elements Panel of the Elements panel
+  * @description Title of a pane in the Elements panel that shows computed styles for the selected
+  * HTML element. Computed styles are the final, actual styles of the element, including all
+  * implicit and specified styles.
   */
   computed: 'Computed',
   /**
-  *@description Text in Elements Panel of the Elements panel
+  * @description Title of a pane in the Elements panel that shows the CSS styles for the selected
+  * HTML element.
   */
   styles: 'Styles',
   /**
-  *@description A context menu item to reveal a node in the DOM tree of the Elements Panel
+  * @description A context menu item to reveal a node in the DOM tree of the Elements Panel
   */
   revealInElementsPanel: 'Reveal in Elements panel',
   /**
-  *@description Text when node can not be found in page
+  * @description Warning/error text displayed when a node cannot be found in the current page.
   */
   nodeCannotBeFoundInTheCurrent: 'Node cannot be found in the current page.',
   /**
-  *@description Console warning when a user tries to reveal a non-node type Remote Object.
+  * @description Console warning when a user tries to reveal a non-node type Remote Object. A remote
+  * object is a JavaScript object that is not stored in DevTools, that DevTools has a connection to.
+  * It should correspond to a local node.
   */
-  theRemoteObjectCouldNotBe: 'The remote object could not be resolved into a valid node.',
+  theRemoteObjectCouldNotBe: 'The remote object could not be resolved to a valid node.',
   /**
-  *@description Console warning when the user tries to reveal a deferred DOM Node that resolves as null.
+  * @description Console warning when the user tries to reveal a deferred DOM Node that resolves as
+  * null. A deferred DOM node is a node we know about but have not yet fetched from the backend (we
+  * defer the work until later).
   */
-  theDeferredDomNodeCouldNotBe: 'The deferred DOM Node could not be resolved into a valid node.',
+  theDeferredDomNodeCouldNotBe: 'The deferred `DOM` Node could not be resolved to a valid node.',
   /**
-  *@description Text in Elements Panel of the Elements panel
-  *@example {::after, ::before} PH1
+  * @description Text in Elements Panel of the Elements panel. Shows the current CSS Pseudo-classes
+  * applicable to the selected HTML element.
+  * @example {::after, ::before} PH1
   */
   elementStateS: 'Element state: {PH1}',
 };

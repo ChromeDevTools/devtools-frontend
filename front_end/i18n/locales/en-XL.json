@@ -1779,16 +1779,16 @@
     "message": "Ŝẃît́ĉh́ t̂ó D̂ÓM̂ T́r̂éê v́îéŵ"
   },
   "elements/ElementsPanel.js | theDeferredDomNodeCouldNotBe": {
-    "message": "T̂h́ê d́êf́êŕr̂éd̂ D́ÔḾ N̂ód̂é ĉóûĺd̂ ńôt́ b̂é r̂éŝól̂v́êd́ îńt̂ó â v́âĺîd́ n̂ód̂é."
+    "message": "T̂h́ê d́êf́êŕr̂éd̂ DOM Ńôd́ê ćôúl̂d́ n̂ót̂ b́ê ŕêśôĺv̂éd̂ t́ô á v̂ál̂íd̂ ńôd́ê."
   },
   "elements/ElementsPanel.js | theRemoteObjectCouldNotBe": {
-    "message": "T̂h́ê ŕêḿôt́ê ób̂j́êćt̂ ćôúl̂d́ n̂ót̂ b́ê ŕêśôĺv̂éd̂ ín̂t́ô á v̂ál̂íd̂ ńôd́ê."
+    "message": "T̂h́ê ŕêḿôt́ê ób̂j́êćt̂ ćôúl̂d́ n̂ót̂ b́ê ŕêśôĺv̂éd̂ t́ô á v̂ál̂íd̂ ńôd́ê."
   },
   "elements/ElementStatePaneWidget.js | forceElementState": {
     "message": "F̂ór̂ćê él̂ém̂én̂t́ ŝt́ât́ê"
   },
   "elements/ElementStatePaneWidget.js | hov": {
-    "message": ":ĥóv̂"
+    "message": ":hov"
   },
   "elements/ElementStatePaneWidget.js | toggleElementState": {
     "message": "T̂óĝǵl̂é Êĺêḿêńt̂ Śt̂át̂é"

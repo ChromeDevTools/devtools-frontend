@@ -1706,3 +1706,15 @@ UI.Context.registerListener({
     return Sources.ScopeChainSidebarPane.ScopeChainSidebarPane.instance();
   },
 });
+
+UI.ContextMenu.registerItem({
+  location: UI.ContextMenu.ItemLocation.NAVIGATOR_MENU_DEFAULT,
+  actionId: 'quickOpen.show',
+  order: undefined,
+});
+
+UI.ContextMenu.registerItem({
+  location: UI.ContextMenu.ItemLocation.MAIN_MENU_DEFAULT,
+  actionId: 'sources.search',
+  order: undefined,
+});

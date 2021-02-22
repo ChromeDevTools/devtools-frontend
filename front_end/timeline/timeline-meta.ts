@@ -366,3 +366,15 @@ Common.Linkifier.registerLinkifier({
     return Timeline.CLSLinkifier.Linkifier.instance();
   },
 });
+
+UI.ContextMenu.registerItem({
+  location: UI.ContextMenu.ItemLocation.TIMELINE_MENU_OPEN,
+  actionId: 'timeline.load-from-file',
+  order: 10,
+});
+
+UI.ContextMenu.registerItem({
+  location: UI.ContextMenu.ItemLocation.TIMELINE_MENU_OPEN,
+  actionId: 'timeline.save-to-file',
+  order: 15,
+});

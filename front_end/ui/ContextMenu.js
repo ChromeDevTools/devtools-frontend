@@ -397,16 +397,13 @@ export class SubMenu extends Item {
    */
   appendItemsAtLocation(location) {
     /** @type {!Array<!ContextMenuItemRegistration>} */
-    const unionOfItems = [
-      ...Root.Runtime.Runtime.instance().extensions('context-menu-item').map(extension => extension.descriptor()),
-      ...getRegisteredItems()
-    ];
-    unionOfItems.sort((firstItem, secondItem) => {
+    const items = getRegisteredItems();
+    items.sort((firstItem, secondItem) => {
       const order1 = firstItem.order || 0;
       const order2 = secondItem.order || 0;
       return order1 - order2;
     });
-    for (const item of unionOfItems) {
+    for (const item of items) {
       const itemLocation = item.location;
       const actionId = item.actionId;
       if (!itemLocation || !itemLocation.startsWith(location + '/')) {
@@ -713,6 +710,8 @@ export const ItemLocation = {
   MAIN_MENU_DEFAULT: 'mainMenu/default',
   MAIN_MENU_FOOTER: 'mainMenu/footer',
   MAIN_MENU_HELP_DEFAULT: 'mainMenuHelp/default',
+  NAVIGATOR_MENU_DEFAULT: 'navigatorMenu/default',
+  TIMELINE_MENU_OPEN: 'timelineMenu/open',
 };
 
 /**
@@ -726,8 +725,8 @@ export let ProviderRegistration;
 
 /**
  * @typedef {{
-  *  location: ?ItemLocation,
-  *  actionId: ?string,
+  *  location: !ItemLocation,
+  *  actionId: string,
   *  order: (undefined|number)
   * }} */
 // @ts-ignore typedef

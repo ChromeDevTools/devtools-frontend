@@ -1,16 +1,4 @@
 {
-  "extensions": [
-    {
-      "type": "context-menu-item",
-      "location": "navigatorMenu/default",
-      "actionId": "quickOpen.show"
-    },
-    {
-      "type": "context-menu-item",
-      "location": "mainMenu/default",
-      "actionId": "sources.search"
-    }
-  ],
   "dependencies": [
     "components",
     "search",

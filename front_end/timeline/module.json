@@ -1,18 +1,4 @@
 {
-  "extensions": [
-    {
-      "type": "context-menu-item",
-      "location": "timelineMenu/open",
-      "actionId": "timeline.load-from-file",
-      "order": 10
-    },
-    {
-      "type": "context-menu-item",
-      "location": "timelineMenu/open",
-      "actionId": "timeline.save-to-file",
-      "order": 15
-    }
-  ],
   "dependencies": [
     "components",
     "coverage",

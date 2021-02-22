@@ -363,7 +363,7 @@ export class AppManifestView extends UI.Widget.VBox {
 
     this._nameField = this._identitySection.appendField(i18nString(UIStrings.name));
     this._shortNameField = this._identitySection.appendField(i18nString(UIStrings.shortName));
-    this._descriptionField = this._identitySection.appendField(i18nString(UIStrings.description));
+    this._descriptionField = this._identitySection.appendFlexedField(i18nString(UIStrings.description));
 
     this._startURLField = this._presentationSection.appendField(i18nString(UIStrings.startUrl));
 

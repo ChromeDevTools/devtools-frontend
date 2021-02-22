@@ -89,6 +89,7 @@
 
 .report-field-value-is-flexed {
   display: flex;
+  white-space: pre-wrap;
 }
 
 .report-field-value-subtitle {

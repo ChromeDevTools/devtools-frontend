@@ -4,8 +4,7 @@
 
 import {click, waitFor, waitForAria} from '../../shared/helper.js';
 
-export const openPanelViaMoreTools = async (panelTitle: string) => {
-
+export const openPanelViaMoreTools = async (panelTitle: string, isLocalized = false) => {
   // Head to the triple dot menu.
   const tripleDotMenu = await waitForAria('Customize and control DevTools');
   await click(tripleDotMenu);
@@ -18,8 +17,10 @@ export const openPanelViaMoreTools = async (panelTitle: string) => {
   const menuItem = await waitForAria(`${panelTitle}[role="menuitem"]`);
   await click(menuItem);
 
+  const panelText = isLocalized ? 'p̂án̂él̂' : 'panel';
+
   // Wait for the corresponding panel to appear.
-  await waitForAria(`${panelTitle} panel[role="tabpanel"]`);
+  await waitForAria(`${panelTitle} ${panelText}[role="tabpanel"]`);
 };
 
 export const openSettingsTab = async (tabTitle: string) => {

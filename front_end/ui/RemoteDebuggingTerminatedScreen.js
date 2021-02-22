@@ -1,13 +1,25 @@
 // Copyright 2018 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+import * as i18n from '../i18n/i18n.js';
 
-import * as Common from '../common/common.js';
 import {Dialog} from './Dialog.js';
 import {SizeBehavior} from './GlassPane.js';
 import {createTextButton, formatLocalized} from './UIUtils.js';
 import {VBox} from './Widget.js';
 
+export const UIStrings = {
+  /**
+  *@description Text in a dialog box showing how to reconnect to DevTools when remote debugging has been terminated
+  */
+  reconnectWhenReadyByReopening: 'Reconnect when ready by reopening DevTools.',
+  /**
+  *@description Text on a button to reconnect Devtools when remote debugging terminated
+  */
+  reconnectDevtools: 'Reconnect DevTools'
+};
+const str_ = i18n.i18n.registerUIStrings('ui/RemoteDebuggingTerminatedScreen.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class RemoteDebuggingTerminatedScreen extends VBox {
   /**
    * @param {string} reason
@@ -19,9 +31,8 @@ export class RemoteDebuggingTerminatedScreen extends VBox {
     const reasonElement = message.createChild('span', 'reason');
     reasonElement.textContent = reason;
     message.appendChild(formatLocalized('Debugging connection was closed. Reason: %s', [reasonElement]));
-    this.contentElement.createChild('div', 'message').textContent =
-        Common.UIString.UIString('Reconnect when ready by reopening DevTools.');
-    const button = createTextButton(Common.UIString.UIString('Reconnect DevTools'), () => window.location.reload());
+    this.contentElement.createChild('div', 'message').textContent = i18nString(UIStrings.reconnectWhenReadyByReopening);
+    const button = createTextButton(i18nString(UIStrings.reconnectDevtools), () => window.location.reload());
     this.contentElement.createChild('div', 'button').appendChild(button);
   }
 

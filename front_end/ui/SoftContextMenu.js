@@ -29,7 +29,7 @@
  */
 
 import * as Host from '../host/host.js';
-import {ls} from '../platform/platform.js';
+import * as i18n from '../i18n/i18n.js';
 import * as ThemeSupport from '../theme_support/theme_support.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
@@ -37,6 +37,31 @@ import {AnchorBehavior, GlassPane, MarginBehavior, PointerEventsBehavior, SizeBe
 import {Icon} from './Icon.js';
 import {createTextChild, ElementFocusRestorer} from './UIUtils.js';
 
+export const UIStrings = {
+  /**
+  *@description Text exposed to screen readers on checked items.
+  */
+  checked: 'checked',
+  /**
+  *@description Text exposed to screen readers on unchecked items.
+  */
+  unchecked: 'unchecked',
+  /**
+  *@description Accessibility label for checkable SoftContextMenuItems with shortcuts
+  *@example {Open File} PH1
+  *@example {Ctrl + P} PH2
+  *@example {checked} PH3
+  */
+  sSS: '{PH1}, {PH2}, {PH3}',
+  /**
+  *@description Generic text with two placeholders separated by a comma
+  *@example {1 613 680} PH1
+  *@example {44 %} PH2
+  */
+  sS: '{PH1}, {PH2}',
+};
+const str_ = i18n.i18n.registerUIStrings('ui/SoftContextMenu.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class SoftContextMenu {
   /**
    * @param {!Array.<!SoftContextMenuDescriptor>} items
@@ -199,14 +224,14 @@ export class SoftContextMenu {
     let accessibleName = item.label || '';
 
     if (item.type === 'checkbox') {
-      const checkedState = item.checked ? ls`checked` : ls`unchecked`;
+      const checkedState = item.checked ? i18nString(UIStrings.checked) : i18nString(UIStrings.unchecked);
       if (item.shortcut) {
-        accessibleName = ls`${item.label}, ${item.shortcut}, ${checkedState}`;
+        accessibleName = i18nString(UIStrings.sSS, {PH1: item.label, PH2: item.shortcut, PH3: checkedState});
       } else {
-        accessibleName = ls`${item.label}, ${checkedState}`;
+        accessibleName = i18nString(UIStrings.sS, {PH1: item.label, PH2: checkedState});
       }
     } else if (item.shortcut) {
-      accessibleName = ls`${item.label}, ${item.shortcut}`;
+      accessibleName = i18nString(UIStrings.sS, {PH1: item.label, PH2: item.shortcut});
     }
     ARIAUtils.setAccessibleName(menuItemElement, accessibleName);
 

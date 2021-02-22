@@ -32,8 +32,8 @@
 import * as Common from '../common/common.js';
 import * as DOMExtension from '../dom_extension/dom_extension.js';
 import * as Host from '../host/host.js';
+import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
-import {ls} from '../platform/platform.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as ThemeSupport from '../theme_support/theme_support.js';
 
@@ -53,6 +53,89 @@ import {injectCoreStyles} from './utils/inject-core-styles.js';
 import {measuredScrollbarWidth} from './utils/measured-scrollbar-width.js';
 import {registerCustomElement} from './utils/register-custom-element.js';
 
+export const UIStrings = {
+  /**
+  *@description Micros format in UIUtils
+  *@example {2} PH1
+  */
+  fmms: '{PH1} μs',
+  /**
+  *@description Sub millis format in UIUtils
+  *@example {2.14} PH1
+  */
+  fms: '{PH1} ms',
+  /**
+  *@description Seconds format in UIUtils
+  *@example {2.14} PH1
+  */
+  fs: '{PH1} s',
+  /**
+  *@description Minutes format in UIUtils
+  *@example {2.2} PH1
+  */
+  fmin: '{PH1} min',
+  /**
+  *@description Hours format in UIUtils
+  *@example {2.2} PH1
+  */
+  fhrs: '{PH1} hrs',
+  /**
+  *@description Days format in UIUtils
+  *@example {2.2} PH1
+  */
+  fdays: '{PH1} days',
+  /**
+  *@description label to open link externally
+  */
+  openInNewTab: 'Open in new tab',
+  /**
+  *@description label to copy link address
+  */
+  copyLinkAddress: 'Copy link address',
+  /**
+  *@description label to copy file name
+  */
+  copyFileName: 'Copy file name',
+  /**
+  *@description label for the profiler control button
+  */
+  anotherProfilerIsAlreadyActive: 'Another profiler is already active',
+  /**
+  *@description Text in UIUtils
+  */
+  promiseResolvedAsync: 'Promise resolved (async)',
+  /**
+  *@description Text in UIUtils
+  */
+  promiseRejectedAsync: 'Promise rejected (async)',
+  /**
+  *@description Text in UIUtils
+  *@example {Promise} PH1
+  */
+  sAsync: '{PH1} (async)',
+  /**
+  *@description Text for the title of asynchronous function calls group in Call Stack
+  */
+  asyncCall: 'Async Call',
+  /**
+  *@description Text for the name of anonymous functions
+  */
+  anonymous: '(anonymous)',
+  /**
+  *@description Text to close something
+  */
+  close: 'Close',
+  /**
+  *@description Text on a button for message dialog
+  */
+  ok: 'OK',
+  /**
+  *@description Text to cancel something
+  */
+  cancel: 'Cancel',
+};
+const str_ = i18n.i18n.registerUIStrings('ui/UIUtils.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export const highlightedSearchResultClassName = 'highlighted-search-result';
 export const highlightedCurrentSearchResultClassName = 'current-search-result';
 
@@ -593,30 +676,8 @@ export function handleElementValueModifications(event, element, finishHandler, s
  */
 Number.preciseMillisToString = function(ms, precision) {
   precision = precision || 0;
-  const format = '%.' + precision + 'f\xa0ms';
-  return Common.UIString.UIString(format, ms);
+  return i18nString(UIStrings.fms, {PH1: ms.toFixed(precision)});
 };
-
-/** @type {!Common.UIString.UIStringFormat} */
-export const _microsFormat = new Common.UIString.UIStringFormat('%.0f\xa0\u03bcs');
-
-/** @type {!Common.UIString.UIStringFormat} */
-export const _subMillisFormat = new Common.UIString.UIStringFormat('%.2f\xa0ms');
-
-/** @type {!Common.UIString.UIStringFormat} */
-export const _millisFormat = new Common.UIString.UIStringFormat('%.0f\xa0ms');
-
-/** @type {!Common.UIString.UIStringFormat} */
-export const _secondsFormat = new Common.UIString.UIStringFormat('%.2f\xa0s');
-
-/** @type {!Common.UIString.UIStringFormat} */
-export const _minutesFormat = new Common.UIString.UIStringFormat('%.1f\xa0min');
-
-/** @type {!Common.UIString.UIStringFormat} */
-export const _hoursFormat = new Common.UIString.UIStringFormat('%.1f\xa0hrs');
-
-/** @type {!Common.UIString.UIStringFormat} */
-export const _daysFormat = new Common.UIString.UIStringFormat('%.1f\xa0days');
 
 /**
  * @param {number} ms
@@ -633,32 +694,32 @@ Number.millisToString = function(ms, higherResolution) {
   }
 
   if (higherResolution && ms < 0.1) {
-    return _microsFormat.format(ms * 1000);
+    return i18nString(UIStrings.fmms, {PH1: (ms * 1000).toFixed(0)});
   }
   if (higherResolution && ms < 1000) {
-    return _subMillisFormat.format(ms);
+    return i18nString(UIStrings.fms, {PH1: (ms).toFixed(2)});
   }
   if (ms < 1000) {
-    return _millisFormat.format(ms);
+    return i18nString(UIStrings.fms, {PH1: (ms).toFixed(0)});
   }
 
   const seconds = ms / 1000;
   if (seconds < 60) {
-    return _secondsFormat.format(seconds);
+    return i18nString(UIStrings.fs, {PH1: (seconds).toFixed(2)});
   }
 
   const minutes = seconds / 60;
   if (minutes < 60) {
-    return _minutesFormat.format(minutes);
+    return i18nString(UIStrings.fmin, {PH1: (minutes).toFixed(1)});
   }
 
   const hours = minutes / 60;
   if (hours < 24) {
-    return _hoursFormat.format(hours);
+    return i18nString(UIStrings.fhrs, {PH1: (hours).toFixed(1)});
   }
 
   const days = hours / 24;
-  return _daysFormat.format(days);
+  return i18nString(UIStrings.fdays, {PH1: (days).toFixed(1)});
 };
 
 /**
@@ -702,8 +763,7 @@ export function formatLocalized(format, substitutions) {
     a.appendChild(typeof b === 'string' ? document.createTextNode(b) : /** @type {!Element} */ (b));
     return a;
   }
-  return Platform.StringUtilities
-      .format(Common.UIString.UIString(format), substitutions, formatters, document.createElement('span'), append)
+  return Platform.StringUtilities.format(format, substitutions, formatters, document.createElement('span'), append)
       .formattedResult;
 }
 
@@ -711,14 +771,14 @@ export function formatLocalized(format, substitutions) {
  * @return {string}
  */
 export function openLinkExternallyLabel() {
-  return Common.UIString.UIString('Open in new tab');
+  return i18nString(UIStrings.openInNewTab);
 }
 
 /**
  * @return {string}
  */
 export function copyLinkAddressLabel() {
-  return Common.UIString.UIString('Copy link address');
+  return i18nString(UIStrings.copyLinkAddress);
 }
 
 
@@ -726,14 +786,14 @@ export function copyLinkAddressLabel() {
  * @return {string}
  */
 export function copyFileNameLabel() {
-  return ls`Copy file name`;
+  return i18nString(UIStrings.copyFileName);
 }
 
 /**
  * @return {string}
  */
 export function anotherProfilerActiveLabel() {
-  return Common.UIString.UIString('Another profiler is already active');
+  return i18nString(UIStrings.anotherProfilerIsAlreadyActive);
 }
 
 /**
@@ -743,14 +803,14 @@ export function anotherProfilerActiveLabel() {
 export function asyncStackTraceLabel(description) {
   if (description) {
     if (description === 'Promise.resolve') {
-      return ls`Promise resolved (async)`;
+      return i18nString(UIStrings.promiseResolvedAsync);
     }
     if (description === 'Promise.reject') {
-      return ls`Promise rejected (async)`;
+      return i18nString(UIStrings.promiseRejectedAsync);
     }
-    return ls`${description} (async)`;
+    return i18nString(UIStrings.sAsync, {PH1: description});
   }
-  return Common.UIString.UIString('Async Call');
+  return i18nString(UIStrings.asyncCall);
 }
 
 /**
@@ -1276,7 +1336,7 @@ export function initializeUIUtils(document, themeSetting) {
  * @return {string}
  */
 export function beautifyFunctionName(name) {
-  return name || Common.UIString.UIString('(anonymous)');
+  return name || i18nString(UIStrings.anonymous);
 }
 
 /**
@@ -1624,7 +1684,7 @@ export class DevToolsCloseButton extends HTMLDivElement {
         this, {cssFile: 'ui/closeButton.css', enableLegacyPatching: false, delegatesFocus: undefined});
     /** @type {!HTMLElement} */
     this._buttonElement = /** @type {!HTMLElement} */ (root.createChild('div', 'close-button'));
-    ARIAUtils.setAccessibleName(this._buttonElement, ls`Close`);
+    ARIAUtils.setAccessibleName(this._buttonElement, i18nString(UIStrings.close));
     ARIAUtils.markAsButton(this._buttonElement);
     const regularIcon = Icon.create('smallicon-cross', 'default-icon');
     this._hoverIcon = Icon.create('mediumicon-red-cross-hover', 'hover-icon');
@@ -1920,7 +1980,7 @@ export class MessageDialog {
         {cssFile: 'ui/confirmDialog.css', enableLegacyPatching: false, delegatesFocus: undefined});
     const content = shadowRoot.createChild('div', 'widget');
     await new Promise(resolve => {
-      const okButton = createTextButton(Common.UIString.UIString('OK'), resolve, '', true);
+      const okButton = createTextButton(i18nString(UIStrings.ok), resolve, '', true);
       content.createChild('div', 'message').createChild('span').textContent = message;
       content.createChild('div', 'button').appendChild(okButton);
       dialog.setOutsideClickCallback(event => {
@@ -1953,9 +2013,10 @@ export class ConfirmDialog {
     const buttonsBar = content.createChild('div', 'button');
     const result = await new Promise(resolve => {
       const okButton = createTextButton(
-          /* text= */ ls`OK`, /* clickHandler= */ () => resolve(true), /* className= */ '', /* primary= */ true);
+          /* text= */ i18nString(UIStrings.ok), /* clickHandler= */ () => resolve(true), /* className= */ '',
+          /* primary= */ true);
       buttonsBar.appendChild(okButton);
-      buttonsBar.appendChild(createTextButton(ls`Cancel`, () => resolve(false)));
+      buttonsBar.appendChild(createTextButton(i18nString(UIStrings.cancel), () => resolve(false)));
       dialog.setOutsideClickCallback(event => {
         event.consume();
         resolve(false);

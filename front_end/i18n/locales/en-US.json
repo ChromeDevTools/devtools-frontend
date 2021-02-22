@@ -9431,6 +9431,246 @@
   "timeline/UIDevtoolsUtils.js | system": {
     "message": "System"
   },
+  "ui/components/DataGrid.ts | headerOptions": {
+    "message": "Header Options"
+  },
+  "ui/components/DataGrid.ts | resetColumns": {
+    "message": "Reset Columns"
+  },
+  "ui/components/DataGrid.ts | sortBy": {
+    "message": "Sort By"
+  },
+  "ui/components/SurveyLink.ts | anErrorOccurredWithTheSurvey": {
+    "message": "An error occurred with the survey"
+  },
+  "ui/components/SurveyLink.ts | openingSurvey": {
+    "message": "Opening survey …"
+  },
+  "ui/components/SurveyLink.ts | thankYouForYourFeedback": {
+    "message": "Thank you for your feedback"
+  },
+  "ui/DockController.js | close": {
+    "message": "Close"
+  },
+  "ui/DockController.js | dockToBottom": {
+    "message": "Dock to bottom"
+  },
+  "ui/DockController.js | dockToLeft": {
+    "message": "Dock to left"
+  },
+  "ui/DockController.js | dockToRight": {
+    "message": "Dock to right"
+  },
+  "ui/DockController.js | undockIntoSeparateWindow": {
+    "message": "Undock into separate window"
+  },
+  "ui/EmptyWidget.js | learnMore": {
+    "message": "Learn more"
+  },
+  "ui/FilterBar.js | allStrings": {
+    "message": "All"
+  },
+  "ui/FilterBar.js | egSmalldUrlacomb": {
+    "message": "e.g. /small[d]+/ url:a.com/b"
+  },
+  "ui/FilterBar.js | filter": {
+    "message": "Filter"
+  },
+  "ui/FilterBar.js | sclickToSelectMultipleTypes": {
+    "message": "{PH1}Click to select multiple types"
+  },
+  "ui/Infobar.js | close": {
+    "message": "Close"
+  },
+  "ui/Infobar.js | dontShowAgain": {
+    "message": "Don't show again"
+  },
+  "ui/Infobar.js | learnMore": {
+    "message": "Learn more"
+  },
+  "ui/InspectorView.js | closeDrawer": {
+    "message": "Close drawer"
+  },
+  "ui/InspectorView.js | moreTools": {
+    "message": "More Tools"
+  },
+  "ui/InspectorView.js | moveToBottom": {
+    "message": "Move to bottom"
+  },
+  "ui/InspectorView.js | moveToTop": {
+    "message": "Move to top"
+  },
+  "ui/InspectorView.js | panels": {
+    "message": "Panels"
+  },
+  "ui/InspectorView.js | reloadDevtools": {
+    "message": "Reload DevTools"
+  },
+  "ui/ListWidget.js | addString": {
+    "message": "Add"
+  },
+  "ui/ListWidget.js | cancelString": {
+    "message": "Cancel"
+  },
+  "ui/ListWidget.js | editString": {
+    "message": "Edit"
+  },
+  "ui/ListWidget.js | removeString": {
+    "message": "Remove"
+  },
+  "ui/ListWidget.js | saveString": {
+    "message": "Save"
+  },
+  "ui/RemoteDebuggingTerminatedScreen.js | reconnectDevtools": {
+    "message": "Reconnect DevTools"
+  },
+  "ui/RemoteDebuggingTerminatedScreen.js | reconnectWhenReadyByReopening": {
+    "message": "Reconnect when ready by reopening DevTools."
+  },
+  "ui/SearchableView.js | cancel": {
+    "message": "Cancel"
+  },
+  "ui/SearchableView.js | dMatches": {
+    "message": "{PH1} matches"
+  },
+  "ui/SearchableView.js | dOfD": {
+    "message": "{PH1} of {PH2}"
+  },
+  "ui/SearchableView.js | findString": {
+    "message": "Find"
+  },
+  "ui/SearchableView.js | matchCase": {
+    "message": "Match Case"
+  },
+  "ui/SearchableView.js | matchString": {
+    "message": "1 match"
+  },
+  "ui/SearchableView.js | replace": {
+    "message": "Replace"
+  },
+  "ui/SearchableView.js | replaceAll": {
+    "message": "Replace all"
+  },
+  "ui/SearchableView.js | searchNext": {
+    "message": "Search next"
+  },
+  "ui/SearchableView.js | searchPrevious": {
+    "message": "Search previous"
+  },
+  "ui/SearchableView.js | useRegularExpression": {
+    "message": "Use Regular Expression"
+  },
+  "ui/SettingsUI.js | oneOrMoreSettingsHaveChanged": {
+    "message": "One or more settings have changed which requires a reload to take effect."
+  },
+  "ui/SettingsUI.js | srequiresReload": {
+    "message": "{PH1}Requires reload"
+  },
+  "ui/SoftContextMenu.js | checked": {
+    "message": "checked"
+  },
+  "ui/SoftContextMenu.js | sS": {
+    "message": "{PH1}, {PH2}"
+  },
+  "ui/SoftContextMenu.js | sSS": {
+    "message": "{PH1}, {PH2}, {PH3}"
+  },
+  "ui/SoftContextMenu.js | unchecked": {
+    "message": "unchecked"
+  },
+  "ui/SoftDropDown.js | noItemSelected": {
+    "message": "(no item selected)"
+  },
+  "ui/SplitWidget.js | hideS": {
+    "message": "Hide {PH1}"
+  },
+  "ui/SplitWidget.js | showS": {
+    "message": "Show {PH1}"
+  },
+  "ui/SuggestBox.js | sSuggestionSOfS": {
+    "message": "{PH1}, suggestion {PH2} of {PH3}"
+  },
+  "ui/TabbedPane.js | close": {
+    "message": "Close"
+  },
+  "ui/TabbedPane.js | closeAll": {
+    "message": "Close all"
+  },
+  "ui/TabbedPane.js | closeOthers": {
+    "message": "Close others"
+  },
+  "ui/TabbedPane.js | closeS": {
+    "message": "Close {PH1}"
+  },
+  "ui/TabbedPane.js | closeTabsToTheRight": {
+    "message": "Close tabs to the right"
+  },
+  "ui/TabbedPane.js | moreTabs": {
+    "message": "More tabs"
+  },
+  "ui/TargetCrashedScreen.js | devtoolsWasDisconnectedFromThe": {
+    "message": "DevTools was disconnected from the page."
+  },
+  "ui/TargetCrashedScreen.js | oncePageIsReloadedDevtoolsWill": {
+    "message": "Once page is reloaded, DevTools will automatically reconnect."
+  },
+  "ui/UIUtils.js | anonymous": {
+    "message": "(anonymous)"
+  },
+  "ui/UIUtils.js | anotherProfilerIsAlreadyActive": {
+    "message": "Another profiler is already active"
+  },
+  "ui/UIUtils.js | asyncCall": {
+    "message": "Async Call"
+  },
+  "ui/UIUtils.js | cancel": {
+    "message": "Cancel"
+  },
+  "ui/UIUtils.js | close": {
+    "message": "Close"
+  },
+  "ui/UIUtils.js | copyFileName": {
+    "message": "Copy file name"
+  },
+  "ui/UIUtils.js | copyLinkAddress": {
+    "message": "Copy link address"
+  },
+  "ui/UIUtils.js | fdays": {
+    "message": "{PH1} days"
+  },
+  "ui/UIUtils.js | fhrs": {
+    "message": "{PH1} hrs"
+  },
+  "ui/UIUtils.js | fmin": {
+    "message": "{PH1} min"
+  },
+  "ui/UIUtils.js | fmms": {
+    "message": "{PH1} μs"
+  },
+  "ui/UIUtils.js | fms": {
+    "message": "{PH1} ms"
+  },
+  "ui/UIUtils.js | fs": {
+    "message": "{PH1} s"
+  },
+  "ui/UIUtils.js | ok": {
+    "message": "OK"
+  },
+  "ui/UIUtils.js | openInNewTab": {
+    "message": "Open in new tab"
+  },
+  "ui/UIUtils.js | promiseRejectedAsync": {
+    "message": "Promise rejected (async)"
+  },
+  "ui/UIUtils.js | promiseResolvedAsync": {
+    "message": "Promise resolved (async)"
+  },
+  "ui/UIUtils.js | sAsync": {
+    "message": "{PH1} (async)"
+  },
+  "ui/ViewManager.js | sPanel": {
+    "message": "{PH1} panel"
+  },
   "web_audio/AudioContextContentBuilder.ts | audiocontext": {
     "message": "AudioContext"
   },

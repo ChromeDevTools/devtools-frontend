@@ -38,8 +38,8 @@ describe('With en-XL locale (debug)', async () => {
   });
 
   it('check that the reload button has the correct text', async () => {
-    await openPanelViaMoreTools('Ĉóv̂ér̂áĝé');
-    await waitFor('div[aria-label="Ĉóv̂ér̂áĝé panel"]');
+    await openPanelViaMoreTools('Ĉóv̂ér̂áĝé', true);
+    await waitFor('div[aria-label="Ĉóv̂ér̂áĝé p̂án̂él̂"]');
     await waitFor('.coverage-results .landing-page');
     const message = await getMessageContents();
 

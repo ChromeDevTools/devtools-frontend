@@ -4,7 +4,7 @@
 
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
-import {ls} from '../platform/platform.js';
+import * as i18n from '../i18n/i18n.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
 import {ContextMenu} from './ContextMenu.js';  // eslint-disable-line no-unused-vars
@@ -16,6 +16,15 @@ import {ProvidedView, TabbedViewLocation, View, ViewLocation, ViewLocationResolv
 import {getRegisteredLocationResolvers, getRegisteredViewExtensions, registerLocationResolver, registerViewExtension, ViewLocationCategoryValues, ViewLocationValues, ViewPersistence, ViewRegistration} from './ViewRegistration.js';
 import {VBox, Widget} from './Widget.js';  // eslint-disable-line no-unused-vars
 
+export const UIStrings = {
+  /**
+  *@description Aria label for the tab panel view container
+  *@example {Sensors} PH1
+  */
+  sPanel: '{PH1} panel',
+};
+const str_ = i18n.i18n.registerUIStrings('ui/ViewManager.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /**
  * @implements {View}
  */
@@ -415,7 +424,7 @@ export class ContainerWidget extends VBox {
     this._view = view;
     this.element.tabIndex = -1;
     ARIAUtils.markAsTabpanel(this.element);
-    ARIAUtils.setAccessibleName(this.element, ls`${view.title()} panel`);
+    ARIAUtils.setAccessibleName(this.element, i18nString(UIStrings.sPanel, {PH1: view.title()}));
     this.setDefaultFocusedElement(this.element);
   }
 

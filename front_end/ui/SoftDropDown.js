@@ -2,9 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../common/common.js';        // eslint-disable-line no-unused-vars
+import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
+import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';  // eslint-disable-line no-unused-vars
-import {ls} from '../platform/platform.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
 import {Size} from './Geometry.js';
@@ -15,6 +15,14 @@ import {Events as ListModelEvents, ListModel} from './ListModel.js';   // eslint
 import {appendStyle} from './utils/append-style.js';
 import {createShadowRootWithCoreStyles} from './utils/create-shadow-root-with-core-styles.js';
 
+export const UIStrings = {
+  /**
+  *@description Placeholder text in Soft Drop Down
+  */
+  noItemSelected: '(no item selected)',
+};
+const str_ = i18n.i18n.registerUIStrings('ui/SoftDropDown.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /**
  * @template T
  * @implements {ListDelegate<T>}
@@ -29,7 +37,7 @@ export class SoftDropDown {
     this._selectedItem = null;
     this._model = model;
 
-    this._placeholderText = ls`(no item selected)`;
+    this._placeholderText = i18nString(UIStrings.noItemSelected);
 
     this.element = document.createElement('button');
     this.element.classList.add('soft-dropdown');

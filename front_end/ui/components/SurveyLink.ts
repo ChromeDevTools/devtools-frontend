@@ -8,7 +8,23 @@ import * as LitHtml from '../../third_party/lit-html/lit-html.js';
 
 import type {IconData} from './Icon.js';
 
-const ls = Common.ls;
+import * as i18n from '../../i18n/i18n.js';
+export const UIStrings = {
+  /**
+  *@description Text shown when the link to open a survey is clicked but the survey has not yet appeared
+  */
+  openingSurvey: 'Opening survey …',
+  /**
+  *@description Text displayed instead of the survey link after the survey link is clicked, if the survey was shown successfully
+  */
+  thankYouForYourFeedback: 'Thank you for your feedback',
+  /**
+  *@description Text displayed instead of the survey link after the survey link is clicked, if the survey was not shown successfully
+  */
+  anErrorOccurredWithTheSurvey: 'An error occurred with the survey',
+};
+const str_ = i18n.i18n.registerUIStrings('ui/components/SurveyLink.ts', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export type CanShowSurveyCallback = (result: Host.InspectorFrontendHostAPI.CanShowSurveyResult) => void;
 export type ShowSurveyCallback = (result: Host.InspectorFrontendHostAPI.ShowSurveyResult) => void;
@@ -81,11 +97,11 @@ export class SurveyLink extends HTMLElement {
 
     let linkText = this.promptText;
     if (this.state === State.Sending) {
-      linkText = ls`Opening survey …`;
+      linkText = i18nString(UIStrings.openingSurvey);
     } else if (this.state === State.SurveyShown) {
-      linkText = ls`Thank you for your feedback`;
+      linkText = i18nString(UIStrings.thankYouForYourFeedback);
     } else if (this.state === State.Failed) {
-      linkText = ls`An error occurred with the survey`;
+      linkText = i18nString(UIStrings.anErrorOccurredWithTheSurvey);
     }
 
     let linkState = '';

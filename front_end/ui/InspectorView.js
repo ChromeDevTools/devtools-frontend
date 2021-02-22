@@ -30,7 +30,7 @@
 
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
-import {ls} from '../platform/platform.js';
+import * as i18n from '../i18n/i18n.js';
 import * as Root from '../root/root.js';
 
 import {ActionDelegate as ActionDelegateInterface} from './ActionRegistration.js';  // eslint-disable-line no-unused-vars
@@ -51,6 +51,34 @@ import {View, ViewLocation, ViewLocationResolver} from './View.js';  // eslint-d
 import {ViewManager} from './ViewManager.js';
 import {VBox, WidgetFocusRestorer} from './Widget.js';
 
+export const UIStrings = {
+  /**
+  *@description Title of more tabs button in inspector view
+  */
+  moreTools: 'More Tools',
+  /**
+  *@description Text that appears when hovor over the close button on the drawer view
+  */
+  closeDrawer: 'Close drawer',
+  /**
+  *@description The aria label for main tabbed pane that contains Panels
+  */
+  panels: 'Panels',
+  /**
+  *@description Title of an action that reloads the DevTools
+  */
+  reloadDevtools: 'Reload DevTools',
+  /**
+  *@description Text for context menu action to move a tab to the main panel
+  */
+  moveToTop: 'Move to top',
+  /**
+  *@description Text for context menu action to move a tab to the drawer
+  */
+  moveToBottom: 'Move to bottom',
+};
+const str_ = i18n.i18n.registerUIStrings('ui/InspectorView.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /** @type {!InspectorView} */
 let inspectorViewInstance;
 
@@ -75,11 +103,11 @@ export class InspectorView extends VBox {
     this._drawerTabbedLocation =
         ViewManager.instance().createTabbedLocation(this._showDrawer.bind(this, false), 'drawer-view', true, true);
     const moreTabsButton = this._drawerTabbedLocation.enableMoreTabsButton();
-    moreTabsButton.setTitle(ls`More Tools`);
+    moreTabsButton.setTitle(i18nString(UIStrings.moreTools));
     this._drawerTabbedPane = this._drawerTabbedLocation.tabbedPane();
     this._drawerTabbedPane.setMinimumSize(0, 27);
     this._drawerTabbedPane.element.classList.add('drawer-tabbed-pane');
-    const closeDrawerButton = new ToolbarButton(Common.UIString.UIString('Close drawer'), 'largeicon-delete');
+    const closeDrawerButton = new ToolbarButton(i18nString(UIStrings.closeDrawer), 'largeicon-delete');
     closeDrawerButton.addEventListener(ToolbarButton.Events.Click, this._closeDrawer, this);
     this._drawerTabbedPane.addEventListener(TabbedPaneEvents.TabSelected, this._tabSelected, this);
     this._drawerTabbedPane.setTabDelegate(this._tabDelegate);
@@ -105,7 +133,7 @@ export class InspectorView extends VBox {
     this._tabbedPane.element.classList.add('main-tabbed-pane');
     this._tabbedPane.registerRequiredCSS('ui/inspectorViewTabbedPane.css', {enableLegacyPatching: false});
     this._tabbedPane.addEventListener(TabbedPaneEvents.TabSelected, this._tabSelected, this);
-    this._tabbedPane.setAccessibleName(Common.UIString.UIString('Panels'));
+    this._tabbedPane.setAccessibleName(i18nString(UIStrings.panels));
     this._tabbedPane.setTabDelegate(this._tabDelegate);
 
     // Store the initial selected panel for use in launch histograms
@@ -427,7 +455,7 @@ export class InspectorView extends VBox {
     if (!this._reloadRequiredInfobar) {
       const infobar = new Infobar(InfobarType.Info, message, [
         {
-          text: ls`Reload DevTools`,
+          text: i18nString(UIStrings.reloadDevtools),
           highlight: true,
           delegate: () => {
             if (DockController.instance().canDock() && DockController.instance().dockSide() === State.Undocked) {
@@ -553,11 +581,9 @@ export class InspectorViewTabDelegate {
 
     const locationName = ViewManager.instance().locationNameForViewId(tabId);
     if (locationName === 'drawer-view') {
-      contextMenu.defaultSection().appendItem(
-          Common.UIString.UIString('Move to top'), this.moveToMainPanel.bind(this, tabId));
+      contextMenu.defaultSection().appendItem(i18nString(UIStrings.moveToTop), this.moveToMainPanel.bind(this, tabId));
     } else {
-      contextMenu.defaultSection().appendItem(
-          Common.UIString.UIString('Move to bottom'), this.moveToDrawer.bind(this, tabId));
+      contextMenu.defaultSection().appendItem(i18nString(UIStrings.moveToBottom), this.moveToDrawer.bind(this, tabId));
     }
   }
 }

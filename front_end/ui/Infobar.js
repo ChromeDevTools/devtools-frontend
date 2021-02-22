@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
-import {ls} from '../platform/platform.js';
+import * as i18n from '../i18n/i18n.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
 import {Keys} from './KeyboardShortcut.js';
@@ -11,6 +11,22 @@ import {createTextButton} from './UIUtils.js';
 import {createShadowRootWithCoreStyles} from './utils/create-shadow-root-with-core-styles.js';
 import {Widget} from './Widget.js';  // eslint-disable-line no-unused-vars
 
+export const UIStrings = {
+  /**
+  *@description Text on a button to close the infobar and never show the infobar in the future
+  */
+  dontShowAgain: 'Don\'t show again',
+  /**
+  *@description Text that is usually a hyperlink to more documentation
+  */
+  learnMore: 'Learn more',
+  /**
+  *@description Text to close something
+  */
+  close: 'Close',
+};
+const str_ = i18n.i18n.registerUIStrings('ui/Infobar.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class Infobar {
   /**
    * @param {!Type} type
@@ -59,19 +75,20 @@ export class Infobar {
     /** @type {?Common.Settings.Setting<*>} */
     this._disableSetting = disableSetting || null;
     if (disableSetting) {
-      const disableButton = createTextButton(ls`Don't show again`, this._onDisable.bind(this), 'infobar-button');
+      const disableButton =
+          createTextButton(i18nString(UIStrings.dontShowAgain), this._onDisable.bind(this), 'infobar-button');
       this._actionContainer.appendChild(disableButton);
     }
 
     this._closeContainer = this._mainRow.createChild('div', 'infobar-close-container');
-    this._toggleElement =
-        createTextButton(ls`Learn more`, this._onToggleDetails.bind(this), 'link-style devtools-link hidden');
+    this._toggleElement = createTextButton(
+        i18nString(UIStrings.learnMore), this._onToggleDetails.bind(this), 'link-style devtools-link hidden');
     this._closeContainer.appendChild(this._toggleElement);
     this._closeButton = this._closeContainer.createChild('div', 'close-button', 'dt-close-button');
     // @ts-ignore This is a custom element defined in UIUitls.js that has a `setTabbable` that TS doesn't
     //            know about.
     this._closeButton.setTabbable(true);
-    ARIAUtils.setDescription(this._closeButton, ls`Close`);
+    ARIAUtils.setDescription(this._closeButton, i18nString(UIStrings.close));
     self.onInvokeElement(this._closeButton, this.dispose.bind(this));
 
     if (type !== Type.Issue) {

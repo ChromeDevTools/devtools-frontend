@@ -30,6 +30,7 @@
 
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
+import * as i18n from '../i18n/i18n.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
 import {Icon} from './Icon.js';
@@ -42,6 +43,27 @@ import {Tooltip} from './Tooltip.js';
 import {CheckboxLabel, createTextChild} from './UIUtils.js';
 import {HBox} from './Widget.js';
 
+export const UIStrings = {
+  /**
+  *@description Text to filter result items
+  */
+  filter: 'Filter',
+  /**
+  *@description Text that appears when hover over the filter bar in the Network tool
+  */
+  egSmalldUrlacomb: 'e.g. `/small[\d]+/ url:a.com/b`',
+  /**
+  *@description Text that appears when hover over the All button in the Network tool
+  *@example {Ctrl + } PH1
+  */
+  sclickToSelectMultipleTypes: '{PH1}Click to select multiple types',
+  /**
+  *@description Text for everything
+  */
+  allStrings: 'All',
+};
+const str_ = i18n.i18n.registerUIStrings('ui/FilterBar.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class FilterBar extends HBox {
   /**
    * @param {string} name
@@ -55,8 +77,7 @@ export class FilterBar extends HBox {
 
     this._stateSetting =
         Common.Settings.Settings.instance().createSetting('filterBar-' + name + '-toggled', Boolean(visibleByDefault));
-    this._filterButton =
-        new ToolbarSettingToggle(this._stateSetting, 'largeicon-filter', Common.UIString.UIString('Filter'));
+    this._filterButton = new ToolbarSettingToggle(this._stateSetting, 'largeicon-filter', i18nString(UIStrings.filter));
 
     /** @type {!Array<!FilterUI>} */
     this._filters = [];
@@ -208,8 +229,8 @@ export class TextFilterUI extends Common.ObjectWrapper.ObjectWrapper {
     this._prompt.initialize(this._completions.bind(this), ' ', true);
     /** @type {!HTMLElement} */
     this._proxyElement = /** @type {!HTMLElement} */ (this._prompt.attach(this._filterInputElement));
-    Tooltip.install(this._proxyElement, Common.UIString.UIString('e.g. /small[\\d]+/ url:a.com/b'));
-    this._prompt.setPlaceholder(Common.UIString.UIString('Filter'));
+    Tooltip.install(this._proxyElement, i18nString(UIStrings.egSmalldUrlacomb));
+    this._prompt.setPlaceholder(i18nString(UIStrings.filter));
     this._prompt.addEventListener(Events.TextChanged, this._valueChanged.bind(this));
 
     /** @type {?function(string, string, boolean=):!Promise<!Suggestions>} */
@@ -307,10 +328,9 @@ export class NamedBitSetFilterUI extends Common.ObjectWrapper.ObjectWrapper {
     this._filtersElement.classList.add('filter-bitset-filter');
     ARIAUtils.markAsListBox(this._filtersElement);
     ARIAUtils.markAsMultiSelectable(this._filtersElement);
-    Tooltip.install(
-        this._filtersElement,
-        Common.UIString.UIString(
-            '%sClick to select multiple types', KeyboardShortcut.shortcutToString('', Modifiers.CtrlOrMeta)));
+    Tooltip.install(this._filtersElement, i18nString(UIStrings.sclickToSelectMultipleTypes, {
+                      PH1: KeyboardShortcut.shortcutToString('', Modifiers.CtrlOrMeta)
+                    }));
 
     /** @type {!WeakMap<!HTMLElement, string>} */
     this._typeFilterElementTypeNames = new WeakMap();
@@ -318,7 +338,7 @@ export class NamedBitSetFilterUI extends Common.ObjectWrapper.ObjectWrapper {
     this._allowedTypes = new Set();
     /** @type {!Array.<!HTMLElement>} */
     this._typeFilterElements = [];
-    this._addBit(NamedBitSetFilterUI.ALL_TYPES, Common.UIString.UIString('All'));
+    this._addBit(NamedBitSetFilterUI.ALL_TYPES, i18nString(UIStrings.allStrings));
     this._typeFilterElements[0].tabIndex = 0;
     this._filtersElement.createChild('div', 'filter-bitset-filter-divider');
 

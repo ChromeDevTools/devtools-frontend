@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../../common/common.js';
 import * as ComponentHelpers from '../../component_helpers/component_helpers.js';
 import * as Host from '../../host/host.js';
 import * as Platform from '../../platform/platform.js';
@@ -11,13 +10,28 @@ import * as LitHtml from '../../third_party/lit-html/lit-html.js';
 // eslint-disable-next-line rulesdir/es_modules_import
 import * as UI from '../../ui/ui.js';
 
-const {ls} = Common;
-
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 import {addColumnVisibilityCheckboxes, addSortableColumnItems} from './DataGridContextMenuUtils.js';
 import {calculateColumnWidthPercentageFromWeighting, calculateFirstFocusableCell, Cell, CellPosition, Column, ContextMenuHeaderResetClickEvent, getRowEntryForColumnId, handleArrowKeyNavigation, renderCellValue, Row, SortDirection, SortState} from './DataGridUtils.js';
 
+import * as i18n from '../../i18n/i18n.js';
+export const UIStrings = {
+  /**
+  *@description A context menu item in the Data Grid of a data grid
+  */
+  sortBy: 'Sort By',
+  /**
+  *@description A context menu item in data grids to reset the columns to their default weight
+  */
+  resetColumns: 'Reset Columns',
+  /**
+  *@description A context menu item in data grids to list header options.
+  */
+  headerOptions: 'Header Options',
+};
+const str_ = i18n.i18n.registerUIStrings('ui/components/DataGrid.ts', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export interface DataGridContextMenusConfiguration {
   headerRow?: (menu: UI.ContextMenu.ContextMenu, columns: readonly Column[]) => void;
   bodyRow?: (menu: UI.ContextMenu.ContextMenu, columns: readonly Column[], row: Readonly<Row>) => void;
@@ -514,10 +528,10 @@ export class DataGrid extends HTMLElement {
 
     const menu = new UI.ContextMenu.ContextMenu(event);
     addColumnVisibilityCheckboxes(this, menu);
-    const sortMenu = menu.defaultSection().appendSubMenuItem(ls`Sort By`);
+    const sortMenu = menu.defaultSection().appendSubMenuItem(i18nString(UIStrings.sortBy));
     addSortableColumnItems(this, sortMenu);
 
-    menu.defaultSection().appendItem(ls`Reset Columns`, () => {
+    menu.defaultSection().appendItem(i18nString(UIStrings.resetColumns), () => {
       this.dispatchEvent(new ContextMenuHeaderResetClickEvent());
     });
 
@@ -551,12 +565,12 @@ export class DataGrid extends HTMLElement {
     const rowThatWasClicked = this.rows[rowIndex - 1];
 
     const menu = new UI.ContextMenu.ContextMenu(event);
-    const sortMenu = menu.defaultSection().appendSubMenuItem(ls`Sort By`);
+    const sortMenu = menu.defaultSection().appendSubMenuItem(i18nString(UIStrings.sortBy));
     addSortableColumnItems(this, sortMenu);
 
-    const headerOptionsMenu = menu.defaultSection().appendSubMenuItem(ls`Header Options`);
+    const headerOptionsMenu = menu.defaultSection().appendSubMenuItem(i18nString(UIStrings.headerOptions));
     addColumnVisibilityCheckboxes(this, headerOptionsMenu);
-    headerOptionsMenu.defaultSection().appendItem(ls`Reset Columns`, () => {
+    headerOptionsMenu.defaultSection().appendItem(i18nString(UIStrings.resetColumns), () => {
       this.dispatchEvent(new ContextMenuHeaderResetClickEvent());
     });
 

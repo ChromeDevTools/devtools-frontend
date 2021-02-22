@@ -29,7 +29,7 @@
  */
 
 import * as Common from '../common/common.js';
-import {ls} from '../platform/platform.js';
+import * as i18n from '../i18n/i18n.js';
 import * as Root from '../root/root.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
@@ -37,6 +37,19 @@ import {InspectorView} from './InspectorView.js';
 import {Tooltip} from './Tooltip.js';
 import {CheckboxLabel} from './UIUtils.js';
 
+export const UIStrings = {
+  /**
+  *@description Note when a setting change will require the user to reload DevTools
+  *@example {*} PH1
+  */
+  srequiresReload: '{PH1}Requires reload',
+  /**
+  *@description Message to display if a setting change requires a reload of DevTools
+  */
+  oneOrMoreSettingsHaveChanged: 'One or more settings have changed which requires a reload to take effect.',
+};
+const str_ = i18n.i18n.registerUIStrings('ui/SettingsUI.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /**
  * @param {string} name
  * @param {!Common.Settings.Setting<boolean>} setting
@@ -92,7 +105,7 @@ const createSettingSelect = function(name, options, requiresReload, setting, sub
   let reloadWarning = /** @type {?Element} */ (null);
   if (requiresReload) {
     reloadWarning = settingSelectElement.createChild('span', 'reload-warning hidden');
-    reloadWarning.textContent = ls`${'*'}Requires reload`;
+    reloadWarning.textContent = i18nString(UIStrings.srequiresReload, {PH1: '*'});
     ARIAUtils.markAsAlert(reloadWarning);
   }
 
@@ -115,8 +128,7 @@ const createSettingSelect = function(name, options, requiresReload, setting, sub
     setting.set(options[select.selectedIndex].value);
     if (reloadWarning) {
       reloadWarning.classList.remove('hidden');
-      InspectorView.instance().displayReloadRequiredWarning(
-          ls`One or more settings have changed which requires a reload to take effect.`);
+      InspectorView.instance().displayReloadRequiredWarning(i18nString(UIStrings.oneOrMoreSettingsHaveChanged));
     }
   }
 };

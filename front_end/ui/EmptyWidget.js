@@ -28,10 +28,19 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import {ls} from '../platform/platform.js';
+import * as i18n from '../i18n/i18n.js';
+
 import {VBox} from './Widget.js';
 import {XLink} from './XLink.js';
 
+export const UIStrings = {
+  /**
+  *@description Text that is usually a hyperlink to more documentation
+  */
+  learnMore: 'Learn more',
+};
+const str_ = i18n.i18n.registerUIStrings('ui/EmptyWidget.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class EmptyWidget extends VBox {
   /**
@@ -58,7 +67,8 @@ export class EmptyWidget extends VBox {
    * @return {!HTMLElement}
    */
   appendLink(link) {
-    return /** @type {!HTMLElement} */ (this._contentElement.appendChild(XLink.create(link, ls`Learn more`)));
+    return /** @type {!HTMLElement} */ (
+        this._contentElement.appendChild(XLink.create(link, i18nString(UIStrings.learnMore))));
   }
 
   /**

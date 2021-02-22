@@ -28,9 +28,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import * as Common from '../common/common.js';
+import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
+import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
-import {ls} from '../platform/platform.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
 import {ContextMenu} from './ContextMenu.js';
@@ -42,6 +42,35 @@ import {installDragHandle, invokeOnceAfterBatchUpdate} from './UIUtils.js';
 import {VBox, Widget} from './Widget.js';  // eslint-disable-line no-unused-vars
 import {Events as ZoomManagerEvents, ZoomManager} from './ZoomManager.js';
 
+export const UIStrings = {
+  /**
+  *@description The aria label for the button to open more tabs at the right tabbed pane in Elements tools
+  */
+  moreTabs: 'More tabs',
+  /**
+  *@description Text in Tabbed Pane
+  *@example {tab} PH1
+  */
+  closeS: 'Close {PH1}',
+  /**
+  *@description Text to close something
+  */
+  close: 'Close',
+  /**
+  *@description Text on a menu option to close other drawers when right click on a drawer title
+  */
+  closeOthers: 'Close others',
+  /**
+  *@description Text on a menu option to close the drawer to the right when right click on a drawer title
+  */
+  closeTabsToTheRight: 'Close tabs to the right',
+  /**
+  *@description Text on a menu option to close all the drawers except Console when right click on a drawer title
+  */
+  closeAll: 'Close all',
+};
+const str_ = i18n.i18n.registerUIStrings('ui/TabbedPane.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class TabbedPane extends VBox {
   constructor() {
     super(true);
@@ -643,7 +672,7 @@ export class TabbedPane extends VBox {
     dropDownContainer.classList.add('tabbed-pane-header-tabs-drop-down-container');
     const chevronIcon = Icon.create('largeicon-chevron', 'chevron-icon');
     ARIAUtils.markAsMenuButton(dropDownContainer);
-    ARIAUtils.setAccessibleName(dropDownContainer, ls`More tabs`);
+    ARIAUtils.setAccessibleName(dropDownContainer, i18nString(UIStrings.moreTabs));
     dropDownContainer.tabIndex = 0;
     dropDownContainer.appendChild(chevronIcon);
     dropDownContainer.addEventListener('click', this._dropDownClicked.bind(this));
@@ -1270,7 +1299,7 @@ export class TabbedPaneTab {
       // @ts-ignore dt-close-button custom element has a `gray` attribute.
       closeButton.gray = true;
       // @ts-ignore dt-close-button custom element has its own custom `setAccessibleName`.
-      closeButton.setAccessibleName(ls`Close ${this.title}`);
+      closeButton.setAccessibleName(i18nString(UIStrings.closeS, {PH1: this.title}));
       tabElement.classList.add('closeable');
     }
 
@@ -1375,11 +1404,10 @@ export class TabbedPaneTab {
 
     const contextMenu = new ContextMenu(event);
     if (this._closeable) {
-      contextMenu.defaultSection().appendItem(Common.UIString.UIString('Close'), close.bind(this));
-      contextMenu.defaultSection().appendItem(Common.UIString.UIString('Close others'), closeOthers.bind(this));
-      contextMenu.defaultSection().appendItem(
-          Common.UIString.UIString('Close tabs to the right'), closeToTheRight.bind(this));
-      contextMenu.defaultSection().appendItem(Common.UIString.UIString('Close all'), closeAll.bind(this));
+      contextMenu.defaultSection().appendItem(i18nString(UIStrings.close), close.bind(this));
+      contextMenu.defaultSection().appendItem(i18nString(UIStrings.closeOthers), closeOthers.bind(this));
+      contextMenu.defaultSection().appendItem(i18nString(UIStrings.closeTabsToTheRight), closeToTheRight.bind(this));
+      contextMenu.defaultSection().appendItem(i18nString(UIStrings.closeAll), closeAll.bind(this));
     }
     if (this._delegate) {
       this._delegate.onContextMenu(this.id, contextMenu);

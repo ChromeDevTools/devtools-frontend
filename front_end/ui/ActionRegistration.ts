@@ -4,7 +4,6 @@
 
 import * as Common from '../common/common.js';
 import * as Platform from '../platform/platform.js';
-import {ls} from '../platform/platform.js';
 import * as Root from '../root/root.js';
 
 import {Context} from './Context.js';
@@ -177,28 +176,29 @@ export const Events = {
   Toggled: Symbol('Toggled'),
 };
 
+// TODO(crbug.com/1181019)
 export const ActionCategory = {
-  ELEMENTS: ls`Elements`,
-  SCREENSHOT: ls`Screenshot`,
-  NETWORK: ls`Network`,
-  MEMORY: ls`Memory`,
-  JAVASCRIPT_PROFILER: ls`JavaScript Profiler`,
-  CONSOLE: ls`Console`,
-  PERFORMANCE: ls`Performance`,
-  MOBILE: ls`Mobile`,
-  SENSORS: ls`Sensors`,
-  HELP: ls`Help`,
-  INPUTS: ls`Inputs`,
-  LAYERS: ls`Layers`,
-  NAVIGATION: ls`Navigation`,
-  DRAWER: ls`Drawer`,
-  GLOBAL: ls`Global`,
-  RESOURCES: ls`Resources`,
-  BACKGROUND_SERVICES: ls`Background Services`,
-  SETTINGS: ls`Settings`,
-  DEBUGGER: ls`Debugger`,
-  RECORDER: ls`Recorder`,
-  SOURCES: ls`Sources`,
+  ELEMENTS: 'Elements',
+  SCREENSHOT: 'Screenshot',
+  NETWORK: 'Network',
+  MEMORY: 'Memory',
+  JAVASCRIPT_PROFILER: 'JavaScript Profiler',
+  CONSOLE: 'Console',
+  PERFORMANCE: 'Performance',
+  MOBILE: 'Mobile',
+  SENSORS: 'Sensors',
+  HELP: 'Help',
+  INPUTS: 'Inputs',
+  LAYERS: 'Layers',
+  NAVIGATION: 'Navigation',
+  DRAWER: 'Drawer',
+  GLOBAL: 'Global',
+  RESOURCES: 'Resources',
+  BACKGROUND_SERVICES: 'Background Services',
+  SETTINGS: 'Settings',
+  DEBUGGER: 'Debugger',
+  RECORDER: 'Recorder',
+  SOURCES: 'Sources',
 };
 
 type ActionCategory = typeof ActionCategory[keyof typeof ActionCategory];

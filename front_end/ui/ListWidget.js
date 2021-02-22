@@ -2,7 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../common/common.js';
+
+import * as i18n from '../i18n/i18n.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
 import {Toolbar, ToolbarButton} from './Toolbar.js';
@@ -10,6 +11,30 @@ import {Tooltip} from './Tooltip.js';
 import {createInput, createTextButton, ElementFocusRestorer} from './UIUtils.js';
 import {VBox} from './Widget.js';
 
+export const UIStrings = {
+  /**
+  *@description Text on a button to start editing text
+  */
+  editString: 'Edit',
+  /**
+  *@description Label for an item to remove something
+  */
+  removeString: 'Remove',
+  /**
+  *@description Text to save something
+  */
+  saveString: 'Save',
+  /**
+  *@description Text to add something
+  */
+  addString: 'Add',
+  /**
+  *@description Text to cancel something
+  */
+  cancelString: 'Cancel',
+};
+const str_ = i18n.i18n.registerUIStrings('ui/ListWidget.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /**
  * @template T
  */
@@ -148,11 +173,11 @@ export class ListWidget extends VBox {
 
     const toolbar = new Toolbar('', buttons);
 
-    const editButton = new ToolbarButton(Common.UIString.UIString('Edit'), 'largeicon-edit');
+    const editButton = new ToolbarButton(i18nString(UIStrings.editString), 'largeicon-edit');
     editButton.addEventListener(ToolbarButton.Events.Click, onEditClicked.bind(this));
     toolbar.appendToolbarItem(editButton);
 
-    const removeButton = new ToolbarButton(Common.UIString.UIString('Remove'), 'largeicon-trash-bin');
+    const removeButton = new ToolbarButton(i18nString(UIStrings.removeString), 'largeicon-trash-bin');
     removeButton.addEventListener(ToolbarButton.Events.Click, onRemoveClicked.bind(this));
     toolbar.appendToolbarItem(removeButton);
 
@@ -222,7 +247,7 @@ export class ListWidget extends VBox {
     this._updatePlaceholder();
     this._list.insertBefore(this._editor.element, insertionPoint);
     this._editor.beginEdit(
-        item, index, element ? Common.UIString.UIString('Save') : Common.UIString.UIString('Add'),
+        item, index, element ? i18nString(UIStrings.saveString) : i18nString(UIStrings.addString),
         this._commitEditing.bind(this), this._stopEditing.bind(this));
   }
 
@@ -309,7 +334,7 @@ export class Editor {
     this._commitButton = createTextButton('', this._commitClicked.bind(this), '', true /* primary */);
     buttonsRow.appendChild(this._commitButton);
     this._cancelButton = createTextButton(
-        Common.UIString.UIString('Cancel'), this._cancelClicked.bind(this), '', true /* primary */, 'mousedown');
+        i18nString(UIStrings.cancelString), this._cancelClicked.bind(this), '', true /* primary */, 'mousedown');
     this._cancelButton.addEventListener(
         'keydown', onKeyDown.bind(null, event => event.key === 'Enter', this._cancelClicked.bind(this)), false);
     buttonsRow.appendChild(this._cancelButton);

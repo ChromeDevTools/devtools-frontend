@@ -70,6 +70,7 @@ devtools_module("ui") {
     "../common:bundle",
     "../dom_extension:bundle",
     "../host:bundle",
+    "../i18n:bundle",
     "../platform:bundle",
     "../text_utils:bundle",
     "../theme_support:bundle",

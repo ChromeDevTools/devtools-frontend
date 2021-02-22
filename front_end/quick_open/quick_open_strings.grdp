@@ -9,6 +9,9 @@
   <message name="IDS_DEVTOOLS_532ce4f18bb96f70d8ee338082ad7ed0" desc="Title of quick open dialog">
     Quick open
   </message>
+  <message name="IDS_DEVTOOLS_6feab1a8f70b4209f82a628b7395ede3" desc="Message to display if a setting change requires a reload of DevTools">
+    One or more settings have changed which requires a reload to take effect.
+  </message>
   <message name="IDS_DEVTOOLS_74540c79e377bea903e1023a46df5574" desc="Text to open a file">
     Open file
   </message>

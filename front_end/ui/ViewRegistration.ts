@@ -1,8 +1,8 @@
+
 // Copyright 2020 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as Platform from '../platform/platform.js';
-import {ls} from '../platform/platform.js';
 import * as Root from '../root/root.js';
 
 import type {ViewLocationResolver} from './View.js';
@@ -146,14 +146,15 @@ export function getRegisteredLocationResolvers(): Array<LocationResolverRegistra
   return registeredLocationResolvers;
 }
 
+// TODO(crbug.com/1181019)
 export const ViewLocationCategoryValues = {
-  ELEMENTS: ls`Elements`,
-  DRAWER: ls`Drawer`,
-  DRAWER_SIDEBAR: ls`Drawer sidebar`,
-  PANEL: ls`Panel`,
-  NETWORK: ls`Network`,
-  SETTINGS: ls`Settings`,
-  SOURCES: ls`Sources`,
+  ELEMENTS: 'Elements',
+  DRAWER: 'Drawer',
+  DRAWER_SIDEBAR: 'Drawer sidebar',
+  PANEL: 'Panel',
+  NETWORK: 'Network',
+  SETTINGS: 'Settings',
+  SOURCES: 'Sources',
 };
 
 type ViewLocationCategory = typeof ViewLocationCategoryValues[keyof typeof ViewLocationCategoryValues];

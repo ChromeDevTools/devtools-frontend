@@ -28,8 +28,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
-import {ls} from '../platform/platform.js';
 import * as TextUtils from '../text_utils/text_utils.js';  // eslint-disable-line no-unused-vars
 
 import * as ARIAUtils from './ARIAUtils.js';
@@ -42,6 +42,17 @@ import {measurePreferredSize} from './UIUtils.js';
 import {createShadowRootWithCoreStyles} from './utils/create-shadow-root-with-core-styles.js';
 import {measuredScrollbarWidth} from './utils/measured-scrollbar-width.js';
 
+export const UIStrings = {
+  /**
+  *@description Aria alert to read the suggestion for the suggestion box when typing in text editor
+  *@example {name} PH1
+  *@example {2} PH2
+  *@example {5} PH3
+  */
+  sSuggestionSOfS: '{PH1}, suggestion {PH2} of {PH3}',
+};
+const str_ = i18n.i18n.registerUIStrings('ui/SuggestBox.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /**
  * @interface
  */
@@ -174,7 +185,9 @@ export class SuggestBox {
   _applySuggestion(isIntermediateSuggestion) {
     if (this._onlyCompletion) {
       ARIAUtils.alert(
-          ls`${this._onlyCompletion.text}, suggestion ${this._list.selectedIndex() + 1} of ${this._items.length}`,
+          i18nString(
+              UIStrings.sSuggestionSOfS,
+              {PH1: this._onlyCompletion.text, PH2: this._list.selectedIndex() + 1, PH3: this._items.length}),
           this._element);
       this._suggestBoxDelegate.applySuggestion(this._onlyCompletion, isIntermediateSuggestion);
       return true;
@@ -182,8 +195,9 @@ export class SuggestBox {
     const suggestion = this._list.selectedItem();
     if (suggestion && suggestion.text) {
       ARIAUtils.alert(
-          ls`${suggestion.title || suggestion.text}, suggestion ${this._list.selectedIndex() + 1} of ${
-              this._items.length}`,
+          i18nString(
+              UIStrings.sSuggestionSOfS,
+              {PH1: suggestion.title || suggestion.text, PH2: this._list.selectedIndex() + 1, PH3: this._items.length}),
           this._element);
     }
     this._suggestBoxDelegate.applySuggestion(suggestion, isIntermediateSuggestion);

@@ -9431,6 +9431,246 @@
   "timeline/UIDevtoolsUtils.js | system": {
     "message": "Ŝýŝt́êḿ"
   },
+  "ui/components/DataGrid.ts | headerOptions": {
+    "message": "Ĥéâd́êŕ Ôṕt̂íôńŝ"
+  },
+  "ui/components/DataGrid.ts | resetColumns": {
+    "message": "R̂éŝét̂ Ćôĺûḿn̂ś"
+  },
+  "ui/components/DataGrid.ts | sortBy": {
+    "message": "Ŝór̂t́ B̂ý"
+  },
+  "ui/components/SurveyLink.ts | anErrorOccurredWithTheSurvey": {
+    "message": "Âń êŕr̂ór̂ óĉćûŕr̂éd̂ ẃît́ĥ t́ĥé ŝúr̂v́êý"
+  },
+  "ui/components/SurveyLink.ts | openingSurvey": {
+    "message": "Ôṕêńîńĝ śûŕv̂éŷ …"
+  },
+  "ui/components/SurveyLink.ts | thankYouForYourFeedback": {
+    "message": "T̂h́âńk̂ ýôú f̂ór̂ ýôúr̂ f́êéd̂b́âćk̂"
+  },
+  "ui/DockController.js | close": {
+    "message": "Ĉĺôśê"
+  },
+  "ui/DockController.js | dockToBottom": {
+    "message": "D̂óĉḱ t̂ó b̂ót̂t́ôḿ"
+  },
+  "ui/DockController.js | dockToLeft": {
+    "message": "D̂óĉḱ t̂ó l̂éf̂t́"
+  },
+  "ui/DockController.js | dockToRight": {
+    "message": "D̂óĉḱ t̂ó r̂íĝh́t̂"
+  },
+  "ui/DockController.js | undockIntoSeparateWindow": {
+    "message": "Ûńd̂óĉḱ îńt̂ó ŝép̂ár̂át̂é ŵín̂d́ôẃ"
+  },
+  "ui/EmptyWidget.js | learnMore": {
+    "message": "L̂éâŕn̂ ḿôŕê"
+  },
+  "ui/FilterBar.js | allStrings": {
+    "message": "Âĺl̂"
+  },
+  "ui/FilterBar.js | egSmalldUrlacomb": {
+    "message": "ê.ǵ. /small[d]+/ url:a.com/b"
+  },
+  "ui/FilterBar.js | filter": {
+    "message": "F̂íl̂t́êŕ"
+  },
+  "ui/FilterBar.js | sclickToSelectMultipleTypes": {
+    "message": "{PH1}Ĉĺîćk̂ t́ô śêĺêćt̂ ḿûĺt̂íp̂ĺê t́ŷṕêś"
+  },
+  "ui/Infobar.js | close": {
+    "message": "Ĉĺôśê"
+  },
+  "ui/Infobar.js | dontShowAgain": {
+    "message": "D̂ón̂'t́ ŝh́ôẃ âǵâín̂"
+  },
+  "ui/Infobar.js | learnMore": {
+    "message": "L̂éâŕn̂ ḿôŕê"
+  },
+  "ui/InspectorView.js | closeDrawer": {
+    "message": "Ĉĺôśê d́r̂áŵér̂"
+  },
+  "ui/InspectorView.js | moreTools": {
+    "message": "M̂ór̂é T̂óôĺŝ"
+  },
+  "ui/InspectorView.js | moveToBottom": {
+    "message": "M̂óv̂é t̂ó b̂ót̂t́ôḿ"
+  },
+  "ui/InspectorView.js | moveToTop": {
+    "message": "M̂óv̂é t̂ó t̂óp̂"
+  },
+  "ui/InspectorView.js | panels": {
+    "message": "P̂án̂él̂ś"
+  },
+  "ui/InspectorView.js | reloadDevtools": {
+    "message": "R̂él̂óâd́ D̂év̂T́ôól̂ś"
+  },
+  "ui/ListWidget.js | addString": {
+    "message": "Âd́d̂"
+  },
+  "ui/ListWidget.js | cancelString": {
+    "message": "Ĉán̂ćêĺ"
+  },
+  "ui/ListWidget.js | editString": {
+    "message": "Êd́ît́"
+  },
+  "ui/ListWidget.js | removeString": {
+    "message": "R̂ém̂óv̂é"
+  },
+  "ui/ListWidget.js | saveString": {
+    "message": "Ŝáv̂é"
+  },
+  "ui/RemoteDebuggingTerminatedScreen.js | reconnectDevtools": {
+    "message": "R̂éĉón̂ńêćt̂ D́êv́T̂óôĺŝ"
+  },
+  "ui/RemoteDebuggingTerminatedScreen.js | reconnectWhenReadyByReopening": {
+    "message": "R̂éĉón̂ńêćt̂ ẃĥén̂ ŕêád̂ý b̂ý r̂éôṕêńîńĝ D́êv́T̂óôĺŝ."
+  },
+  "ui/SearchableView.js | cancel": {
+    "message": "Ĉán̂ćêĺ"
+  },
+  "ui/SearchableView.js | dMatches": {
+    "message": "{PH1} m̂át̂ćĥéŝ"
+  },
+  "ui/SearchableView.js | dOfD": {
+    "message": "{PH1} ôf́ {PH2}"
+  },
+  "ui/SearchableView.js | findString": {
+    "message": "F̂ín̂d́"
+  },
+  "ui/SearchableView.js | matchCase": {
+    "message": "M̂át̂ćĥ Ćâśê"
+  },
+  "ui/SearchableView.js | matchString": {
+    "message": "1 m̂át̂ćĥ"
+  },
+  "ui/SearchableView.js | replace": {
+    "message": "R̂ép̂ĺâćê"
+  },
+  "ui/SearchableView.js | replaceAll": {
+    "message": "R̂ép̂ĺâćê ál̂ĺ"
+  },
+  "ui/SearchableView.js | searchNext": {
+    "message": "Ŝéâŕĉh́ n̂éx̂t́"
+  },
+  "ui/SearchableView.js | searchPrevious": {
+    "message": "Ŝéâŕĉh́ p̂ŕêv́îóûś"
+  },
+  "ui/SearchableView.js | useRegularExpression": {
+    "message": "Ûśê Ŕêǵûĺâŕ Êx́p̂ŕêśŝíôń"
+  },
+  "ui/SettingsUI.js | oneOrMoreSettingsHaveChanged": {
+    "message": "Ôńê ór̂ ḿôŕê śêt́t̂ín̂ǵŝ h́âv́ê ćĥán̂ǵêd́ ŵh́îćĥ ŕêq́ûír̂éŝ á r̂él̂óâd́ t̂ó t̂ák̂é êf́f̂éĉt́."
+  },
+  "ui/SettingsUI.js | srequiresReload": {
+    "message": "{PH1}R̂éq̂úîŕêś r̂él̂óâd́"
+  },
+  "ui/SoftContextMenu.js | checked": {
+    "message": "ĉh́êćk̂éd̂"
+  },
+  "ui/SoftContextMenu.js | sS": {
+    "message": "{PH1}, {PH2}"
+  },
+  "ui/SoftContextMenu.js | sSS": {
+    "message": "{PH1}, {PH2}, {PH3}"
+  },
+  "ui/SoftContextMenu.js | unchecked": {
+    "message": "ûńĉh́êćk̂éd̂"
+  },
+  "ui/SoftDropDown.js | noItemSelected": {
+    "message": "(n̂ó ît́êḿ ŝél̂éĉt́êd́)"
+  },
+  "ui/SplitWidget.js | hideS": {
+    "message": "Ĥíd̂é {PH1}"
+  },
+  "ui/SplitWidget.js | showS": {
+    "message": "Ŝh́ôẃ {PH1}"
+  },
+  "ui/SuggestBox.js | sSuggestionSOfS": {
+    "message": "{PH1}, ŝúĝǵêśt̂íôń {PH2} ôf́ {PH3}"
+  },
+  "ui/TabbedPane.js | close": {
+    "message": "Ĉĺôśê"
+  },
+  "ui/TabbedPane.js | closeAll": {
+    "message": "Ĉĺôśê ál̂ĺ"
+  },
+  "ui/TabbedPane.js | closeOthers": {
+    "message": "Ĉĺôśê ót̂h́êŕŝ"
+  },
+  "ui/TabbedPane.js | closeS": {
+    "message": "Ĉĺôśê {PH1}"
+  },
+  "ui/TabbedPane.js | closeTabsToTheRight": {
+    "message": "Ĉĺôśê t́âb́ŝ t́ô t́ĥé r̂íĝh́t̂"
+  },
+  "ui/TabbedPane.js | moreTabs": {
+    "message": "M̂ór̂é t̂áb̂ś"
+  },
+  "ui/TargetCrashedScreen.js | devtoolsWasDisconnectedFromThe": {
+    "message": "D̂év̂T́ôól̂ś ŵáŝ d́îśĉón̂ńêćt̂éd̂ f́r̂óm̂ t́ĥé p̂áĝé."
+  },
+  "ui/TargetCrashedScreen.js | oncePageIsReloadedDevtoolsWill": {
+    "message": "Ôńĉé p̂áĝé îś r̂él̂óâd́êd́, D̂év̂T́ôól̂ś ŵíl̂ĺ âút̂óm̂át̂íĉál̂ĺŷ ŕêćôńn̂éĉt́."
+  },
+  "ui/UIUtils.js | anonymous": {
+    "message": "(âńôńŷḿôúŝ)"
+  },
+  "ui/UIUtils.js | anotherProfilerIsAlreadyActive": {
+    "message": "Âńôt́ĥér̂ ṕr̂óf̂íl̂ér̂ íŝ ál̂ŕêád̂ý âćt̂ív̂é"
+  },
+  "ui/UIUtils.js | asyncCall": {
+    "message": "Âśŷńĉ Ćâĺl̂"
+  },
+  "ui/UIUtils.js | cancel": {
+    "message": "Ĉán̂ćêĺ"
+  },
+  "ui/UIUtils.js | close": {
+    "message": "Ĉĺôśê"
+  },
+  "ui/UIUtils.js | copyFileName": {
+    "message": "Ĉóp̂ý f̂íl̂é n̂ám̂é"
+  },
+  "ui/UIUtils.js | copyLinkAddress": {
+    "message": "Ĉóp̂ý l̂ín̂ḱ âd́d̂ŕêśŝ"
+  },
+  "ui/UIUtils.js | fdays": {
+    "message": "{PH1} d̂áŷś"
+  },
+  "ui/UIUtils.js | fhrs": {
+    "message": "{PH1} ĥŕŝ"
+  },
+  "ui/UIUtils.js | fmin": {
+    "message": "{PH1} m̂ín̂"
+  },
+  "ui/UIUtils.js | fmms": {
+    "message": "{PH1} μŝ"
+  },
+  "ui/UIUtils.js | fms": {
+    "message": "{PH1} m̂ś"
+  },
+  "ui/UIUtils.js | fs": {
+    "message": "{PH1} ŝ"
+  },
+  "ui/UIUtils.js | ok": {
+    "message": "ÔḰ"
+  },
+  "ui/UIUtils.js | openInNewTab": {
+    "message": "Ôṕêń îń n̂éŵ t́âb́"
+  },
+  "ui/UIUtils.js | promiseRejectedAsync": {
+    "message": "P̂ŕôḿîśê ŕêj́êćt̂éd̂ (áŝýn̂ć)"
+  },
+  "ui/UIUtils.js | promiseResolvedAsync": {
+    "message": "P̂ŕôḿîśê ŕêśôĺv̂éd̂ (áŝýn̂ć)"
+  },
+  "ui/UIUtils.js | sAsync": {
+    "message": "{PH1} (âśŷńĉ)"
+  },
+  "ui/ViewManager.js | sPanel": {
+    "message": "{PH1} p̂án̂él̂"
+  },
   "web_audio/AudioContextContentBuilder.ts | audiocontext": {
     "message": "Âúd̂íôĆôńt̂éx̂t́"
   },

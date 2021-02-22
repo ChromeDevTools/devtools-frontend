@@ -29,6 +29,7 @@
  */
 
 import * as Common from '../common/common.js';
+import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
 
 import {Constraints} from './Geometry.js';
@@ -37,6 +38,20 @@ import {ToolbarButton} from './Toolbar.js';
 import {Widget} from './Widget.js';
 import {Events as ZoomManagerEvents, ZoomManager} from './ZoomManager.js';
 
+export const UIStrings = {
+  /**
+  *@description Text to show a tool or panel
+  *@example {Audits} PH1
+  */
+  showS: 'Show {PH1}',
+  /**
+  *@description Text on a button to hide sidebar
+  *@example {Setting} PH1
+  */
+  hideS: 'Hide {PH1}',
+};
+const str_ = i18n.i18n.registerUIStrings('ui/SplitWidget.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class SplitWidget extends Widget {
   /**
@@ -981,7 +996,9 @@ export class SplitWidget extends Widget {
           (this.isSidebarSecond() ? 'largeicon-hide-bottom-sidebar' : 'largeicon-hide-top-sidebar');
     }
     this._showHideSidebarButton.setGlyph(glyph);
-    this._showHideSidebarButton.setTitle(sidebarHidden ? this._showSidebarButtonTitle : this._hideSidebarButtonTitle);
+    this._showHideSidebarButton.setTitle(
+        sidebarHidden ? i18nString(UIStrings.showS, {PH1: this._showSidebarButtonTitle}) :
+                        i18nString(UIStrings.hideS, {PH1: this._hideSidebarButtonTitle}));
   }
 }
 

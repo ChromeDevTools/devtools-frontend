@@ -15,6 +15,9 @@
   <message name="IDS_DEVTOOLS_0a0afb342478f201b92cbc89d19bf14d" desc="Title of a setting under the Appearance category that can be invoked through the Command Menu">
     Switch to dark theme
   </message>
+  <message name="IDS_DEVTOOLS_0b484cfcf50c8fabff48c0aad426f544" desc="Text to dock the DevTools to the left of the browser tab">
+    Dock to left
+  </message>
   <message name="IDS_DEVTOOLS_15fa1acc2a998159c4ed2a950c5c231d" desc="Text in the Shortcuts page in settings to explain a keyboard shortcut">
     Toggle drawer
   </message>
@@ -56,6 +59,12 @@
   </message>
   <message name="IDS_DEVTOOLS_60737985de866df2b4fee4562844ce8a" desc="A message to display prompting the user to reload DevTools if the OS color scheme changes.">
     The system-preferred color scheme has changed. To apply this change to DevTools, reload.
+  </message>
+  <message name="IDS_DEVTOOLS_6a26f548831e6a8c26bfbbd9f6ec61e0" desc="Text for the viewing the help options">
+    Help
+  </message>
+  <message name="IDS_DEVTOOLS_72507d307327a430052f9fcd914dfaee" desc="Title of an action that reloads the DevTools">
+    Reload DevTools
   </message>
   <message name="IDS_DEVTOOLS_7b91156d64b76a5dda815937fce9119d" desc="Text in the Shortcuts page to explain a keyboard shortcut (zoom in)">
     Zoom in
@@ -99,6 +108,9 @@
   <message name="IDS_DEVTOOLS_b9cd538a753713464d2ea17d7e975041" desc="A context menu item in the Main">
     More tools
   </message>
+  <message name="IDS_DEVTOOLS_b9dee6bade160c89fb7f0e539d453513" desc="Text to dock the DevTools to the bottom of the browser tab">
+    Dock to bottom
+  </message>
   <message name="IDS_DEVTOOLS_c0fef4f5cd015e4b1e5477f511dc3939" desc="Title of a setting under the Appearance category that can be invoked through the Command Menu">
     Use automatic panel layout
   </message>
@@ -141,10 +153,16 @@
   <message name="IDS_DEVTOOLS_f52a9fce93c15e9340054e40f837a7ef" desc="Title of an action that navigates to the next panel">
     Next panel
   </message>
+  <message name="IDS_DEVTOOLS_f53944c3a55bdb5ad65c6226e358a626" desc="Text to undock the DevTools">
+    Undock into separate window
+  </message>
   <message name="IDS_DEVTOOLS_fa480abba67730dd6bd15aa40308d78a" desc="Title of a setting under the Appearance category that can be invoked through the Command Menu">
     Set color format to HSL
   </message>
   <message name="IDS_DEVTOOLS_fa4ab936aaa8ad819e491af0ec0b674b" desc="Title of a setting under the Appearance category that can be invoked through the Command Menu">
     Switch to system preferred color theme
+  </message>
+  <message name="IDS_DEVTOOLS_fe7fb037b290768d6a6be30b237e183d" desc="Text to dock the DevTools to the right of the browser tab">
+    Dock to right
   </message>
 </grit-part>

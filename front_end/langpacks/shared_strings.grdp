@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Strings in this file are shared, i.e. they appear multiple times. -->
 <grit-part>
-  <message name="IDS_DEVTOOLS_0b484cfcf50c8fabff48c0aad426f544" desc="Text to dock the DevTools to the left of the browser tab">
-    Dock to left
-  </message>
   <message name="IDS_DEVTOOLS_29260f495ba8adcc62fd1307c758ff4e" desc="Text to show the measuring rulers on the target">
     Show rulers
   </message>
@@ -11,20 +8,8 @@
     Media
   </message>
 
-  <message name="IDS_DEVTOOLS_4789f23283b3a61f858b641a1bef19a3" desc="Text for the memory of the page">
-    Memory
-  </message>
   <message name="IDS_DEVTOOLS_4cc6684df7b4a92b1dec6fce3264fac8" desc="Text describing global shortcuts and settings that are available throughout the DevTools">
     Global
-  </message>
-  <message name="IDS_DEVTOOLS_6a26f548831e6a8c26bfbbd9f6ec61e0" desc="Text for the viewing the help options">
-    Help
-  </message>
-  <message name="IDS_DEVTOOLS_6feab1a8f70b4209f82a628b7395ede3" desc="Message to display if a setting change requires a reload of DevTools">
-    One or more settings have changed which requires a reload to take effect.
-  </message>
-  <message name="IDS_DEVTOOLS_72507d307327a430052f9fcd914dfaee" desc="Title of an action that reloads the DevTools">
-    Reload DevTools
   </message>
   <message name="IDS_DEVTOOLS_87d17f4624a514e81dc7c8e016a7405c" desc="Text for the mobile platform, as opposed to desktop">
     Mobile
@@ -32,29 +17,11 @@
   <message name="IDS_DEVTOOLS_886f598a8a9e6a4bfe0c09fcf7779611" desc="Title of a Rendering setting that can be invoked through the Command Menu">
     Emulate a focused page
   </message>
-  <message name="IDS_DEVTOOLS_9446a98ad14416153cc4d45ab8b531bf" desc="Text for the performance of something">
-    Performance
-  </message>
   <message name="IDS_DEVTOOLS_a02c83a7dbd96295beaefb72c2bee2de" desc="Text that refers to the main target">
     Main
   </message>
   <message name="IDS_DEVTOOLS_a6e8f9aed2ac6481dc25a18a33342d03" desc="Title of the Rendering tool">
     Rendering
-  </message>
-  <message name="IDS_DEVTOOLS_aa56a2e65d8106aef3c61e4f6bf94fdb" desc="Title of the Elements Panel">
-    Elements
-  </message>
-  <message name="IDS_DEVTOOLS_af29aa178ae43211319e28f627e96590" desc="Title of an action in the emulation tool to show sensors">
-    Sensors
-  </message>
-  <message name="IDS_DEVTOOLS_b94d8a074eddd267702810179875737f" desc="Text that refers to the debugger">
-    Debugger
-  </message>
-  <message name="IDS_DEVTOOLS_b9dee6bade160c89fb7f0e539d453513" desc="Text to dock the DevTools to the bottom of the browser tab">
-    Dock to bottom
-  </message>
-  <message name="IDS_DEVTOOLS_bccaa4aa80831b76c11240a16447975f" desc="Title of the Console tool">
-    Console
   </message>
   <message name="IDS_DEVTOOLS_bec25a46972e4fa86df9413508add5c2" desc="Text that refers to disabling local fonts">
     Disable local fonts
@@ -65,25 +32,13 @@
   <message name="IDS_DEVTOOLS_e402c138065e7eece783dc30c6079192" desc="Text that appears on a button for the xhr resource type filter.">
     XHR
   </message>
-  <message name="IDS_DEVTOOLS_eec89088ee408b80387155272b113256" desc="Title of the Network tool">
-    Network
-  </message>
   <message name="IDS_DEVTOOLS_ef95393ad48336d7c3543625354a3d56" desc="Text to highlight the rendering frames for ads">
     Highlight ad frames
   </message>
   <message name="IDS_DEVTOOLS_f0f31c9700c6b10d8a20dc487b2ae6a8" desc="Text for the touch type to simulate on a device">
     Touch
   </message>
-  <message name="IDS_DEVTOOLS_f53944c3a55bdb5ad65c6226e358a626" desc="Text to undock the DevTools">
-    Undock into separate window
-  </message>
   <message name="IDS_DEVTOOLS_f907e651164789346ae0a1e257c462d8" desc="Label for a group of JavaScript files">
     Script
-  </message>
-  <message name="IDS_DEVTOOLS_fb61758d0f0fda4ba867c3d5a46c16a7" desc="Name of the Sources panel">
-    Sources
-  </message>
-  <message name="IDS_DEVTOOLS_fe7fb037b290768d6a6be30b237e183d" desc="Text to dock the DevTools to the right of the browser tab">
-    Dock to right
   </message>
 </grit-part>

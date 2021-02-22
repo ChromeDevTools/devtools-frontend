@@ -36,6 +36,9 @@
   <message name="IDS_DEVTOOLS_45edc1b96407d9d213dd1135962a32a0" desc="Name of a network resource type">
     WebSocket
   </message>
+  <message name="IDS_DEVTOOLS_4789f23283b3a61f858b641a1bef19a3" desc="Text for the memory of the page">
+    Memory
+  </message>
   <message name="IDS_DEVTOOLS_4cafcd8bd18c79335c2484f1750ce3dd" desc="Name of a network initiator type">
     Preflight
   </message>
@@ -72,17 +75,29 @@
   <message name="IDS_DEVTOOLS_8cf6dd5e7b4fe7b6df3319b9803278f3" desc="Name of a network resource type">
     EventSource
   </message>
+  <message name="IDS_DEVTOOLS_9446a98ad14416153cc4d45ab8b531bf" desc="Text for the performance of something">
+    Performance
+  </message>
   <message name="IDS_DEVTOOLS_a1c58e94227389415de133efdf78ea6e" desc="Text for DevTools appearance">
     Appearance
   </message>
   <message name="IDS_DEVTOOLS_a83f1ca5ad00b39773d9e6a26b0e70b2" desc="Text that appears in a tooltip for the JavaScript types filter.">
     Scripts
   </message>
+  <message name="IDS_DEVTOOLS_aa56a2e65d8106aef3c61e4f6bf94fdb" desc="Title of the Elements Panel">
+    Elements
+  </message>
   <message name="IDS_DEVTOOLS_b5dc9b0e6beecb1e80f6f1b5b3050f12" desc="The UI destination when right clicking an item that can be revealed">
     Application panel
   </message>
   <message name="IDS_DEVTOOLS_b85815d04cec053ce6deb8021f2df1b8" desc="Name of a network resource type">
     Ping
+  </message>
+  <message name="IDS_DEVTOOLS_b94d8a074eddd267702810179875737f" desc="Text that refers to the debugger">
+    Debugger
+  </message>
+  <message name="IDS_DEVTOOLS_bccaa4aa80831b76c11240a16447975f" desc="Title of the Console tool">
+    Console
   </message>
   <message name="IDS_DEVTOOLS_be53a0541a6d36f6ecb879fa2c584b08" desc="Text in Image View of the Sources panel">
     Image
@@ -111,8 +126,14 @@
   <message name="IDS_DEVTOOLS_ee02b74d0caebce3dabaf3b3e79b6a65" desc="The UI destination when right clicking an item that can be revealed">
     Issues view
   </message>
+  <message name="IDS_DEVTOOLS_eec89088ee408b80387155272b113256" desc="Title of the Network tool">
+    Network
+  </message>
   <message name="IDS_DEVTOOLS_f28128b38efbc6134dc40751ee21fd29" desc="Text for documents, a type of resources">
     Documents
+  </message>
+  <message name="IDS_DEVTOOLS_fb61758d0f0fda4ba867c3d5a46c16a7" desc="Name of the Sources panel">
+    Sources
   </message>
   <message name="IDS_DEVTOOLS_fff0d600f8a0b5e19e88bfb821dd1157" desc="Text that appears in a tooltip for the image types filter.">
     Images

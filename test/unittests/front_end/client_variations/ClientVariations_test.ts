@@ -70,4 +70,13 @@ describe('parseClientVariations', () => {
       triggerVariationIds: [444, 555],
     });
   });
+
+  // Please refer crbug.com/1160346 for more details.
+  it('returns empty lists for invalid encoded data', () => {
+    const result = ClientVariations.parseClientVariations('Z2liYmVyaXNo');
+    assert.deepEqual(result, {
+      variationIds: [],
+      triggerVariationIds: [],
+    });
+  });
 });

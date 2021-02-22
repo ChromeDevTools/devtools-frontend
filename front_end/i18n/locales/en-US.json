@@ -7026,7 +7026,7 @@
     "message": "View certificate"
   },
   "security/SecurityPanel.ts | viewDRequestInNetworkPanel": {
-    "message": "View {PH1} request in Network Panel"
+    "message": "View 1 request in Network Panel"
   },
   "security/SecurityPanel.ts | viewDRequestsInNetworkPanel": {
     "message": "View {PH1} requests in Network Panel"

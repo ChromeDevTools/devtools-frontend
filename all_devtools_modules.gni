@@ -834,6 +834,7 @@ all_typescript_module_sources = [
 
 foreach(module, all_typescript_module_sources) {
   if (is_debug) {
-    generated_typescript_modules += [ "$resources_out_dir/$module" ]
+    generated_typescript_modules +=
+        [ "$root_gen_dir/" + devtools_location + "front_end/$module" ]
   }
 }

@@ -23,6 +23,7 @@ template("devtools_entrypoint") {
          "You must define the 'entrypoint' for a rollup target")
 
   _entrypoint_target_name = "devtools_entrypoint-" + target_name
+
   _entrypoint_output_file_name = get_path_info(invoker.entrypoint, "name")
   _entrypoint_gen_file_location =
       "$target_gen_dir/$_entrypoint_output_file_name.js"
@@ -45,21 +46,7 @@ template("devtools_entrypoint") {
       is_web_worker = _is_web_worker
     }
 
-    # In debug mode we also want to copy the sourcemap of the entrypoint into
-    # resources/inspector so that when you DevTools-on-DevTools it can find
-    # the sourcemaps. devtools_module takes care of copying all of the TS
-    # files but we also need the entrypoint's .js.map file copied from gen
-    # into resources/inspector
-    _typescript_target_dep = ":$_ts_library_target_name"
-    _copy_gen_name = _ts_library_target_name + "copy-source-maps"
-    copy_gen_to_resources(_copy_gen_name) {
-      sources = filter_include(get_target_outputs(_typescript_target_dep),
-                               [ "*.map" ])
-
-      public_deps = [ _typescript_target_dep ]
-    }
-
-    _devtools_entrypoint_deps += [ ":$_copy_gen_name" ]
+    _devtools_entrypoint_deps += [ ":$_ts_library_target_name" ]
   } else {
     # In release mode, we are running Rollup and thus bundle all
     # files in the (sub-)folder(s) into 1 file.
@@ -94,6 +81,7 @@ template("devtools_entrypoint") {
     #
     #   copy -> ts_library -> fix-tsconfig -> rollup
     #
+    _entrypoint_output_file_name = get_path_info(invoker.entrypoint, "name")
     _output_file_name =
         "$target_gen_dir/$_entrypoint_output_file_name.prebundle"
     _copy_output_file_name = "$_output_file_name.ts"
@@ -195,8 +183,9 @@ template("devtools_entrypoint") {
   # artificially mimics what `ts_library` would have generated.
   _generated_tsconfig_location =
       target_gen_dir + "/" + invoker.target_name + "-tsconfig.json"
+  _target_outputs = [ _entrypoint_gen_file_location ]
 
-  node_action(_entrypoint_target_name) {
+  node_action(target_name) {
     script = "scripts/build/ninja/generate-tsconfig.js"
 
     args = [
@@ -207,20 +196,15 @@ template("devtools_entrypoint") {
     public_deps = _devtools_entrypoint_deps
 
     outputs = [ _generated_tsconfig_location ]
+
+    data = _target_outputs
   }
 
-  copy_gen_to_resources(target_name) {
-    sources = [ _entrypoint_gen_file_location ]
-
-    public_deps = [ ":$_entrypoint_target_name" ]
-
-    data = [ _entrypoint_gen_file_location ]
-  }
-
-  _target_outputs = get_target_outputs(":" + target_name + "-copy")
   _target_name = invoker.entrypoint
   _filtered_target_outputs =
-      filter_exclude(_target_outputs, generated_module_entrypoint_sources)
+      filter_include(
+          filter_exclude(_target_outputs, generated_module_entrypoint_sources),
+          [ "*.js" ])
   assert(
       _filtered_target_outputs == [],
       "Entrypoint ($_target_name) is not listed in devtools_module_entrypoint_sources")

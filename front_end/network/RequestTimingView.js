@@ -39,9 +39,9 @@ import {Events, NetworkTimeCalculator} from './NetworkTimeCalculator.js';  // es
 
 export const UIStrings = {
   /**
-  *@description Text in Request Timing View of the Network panel
+  *@description Text used to label the time taken to receive an HTTP/2 Push message.
   */
-  receivingPush: 'Receiving Push',
+  receivingPush: 'Receiving `Push`',
   /**
   *@description Text in Request Timing View of the Network panel
   */
@@ -63,9 +63,9 @@ export const UIStrings = {
   */
   proxyNegotiation: 'Proxy negotiation',
   /**
-  *@description Text in Request Timing View of the Network panel
+  *@description Text used to label the time taken to read an HTTP/2 Push message.
   */
-  readingPush: 'Reading Push',
+  readingPush: 'Reading `Push`',
   /**
   *@description Text in Request Timing View of the Network panel
   */

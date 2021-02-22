@@ -199,8 +199,8 @@ table is empty.
   <message name="IDS_DEVTOOLS_4f3ade619e6f7281df9feb06ab0162ed" desc="Text in Frames View of the Application panel">
     Window without title
   </message>
-  <message name="IDS_DEVTOOLS_4ff155f5de75a45a6bf659d4e6bb9822" desc="Warning message for PWA offline capability check">
-    Page does not work offline. Starting in Chrome 93, the installability criteria is changing, and this site will not be installable. https://goo.gle/improved-pwa-offline-detection for more information.
+  <message name="IDS_DEVTOOLS_cb09bef2b379f9649cbb7869529f8cf5" desc="Warning message for PWA offline capability check">
+    Page does not work offline. Starting in Chrome 93, the installability criteria is changing, and this site will not be installable. <ph name="LOCKED_1">https://developer.chrome.com/blog/improved-pwa-offline-detection</ph> for more information.
   </message>
   <message name="IDS_DEVTOOLS_50868c2251b0c3b64ca50052891aec4c" desc="Text in Service Workers View of the Application panel">
     Push data

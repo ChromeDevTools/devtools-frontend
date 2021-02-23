@@ -308,7 +308,7 @@ export const UIStrings = {
   *@example {Image} PH1
   *@example {https://example.com/image.png} PH2
   */
-  sSSizeShouldBeAtLeast3840: '{PH1} {PH2} size should be at least 3840×3840',
+  sSSizeShouldBeAtMost3840: '{PH1} {PH2} size should be at most 3840×3840',
   /**
   *@description Warning message for image resources from the manifest
   *@example {Image} PH1
@@ -809,20 +809,27 @@ export class AppManifestView extends UI.Widget.VBox {
       if (!isScreenshot && (width !== height)) {
         imageResourceErrors.push(i18nString(UIStrings.sSDimensionsShouldBeSquare, {PH1: resourceName, PH2: imageUrl}));
       } else if (image.naturalWidth !== width && image.naturalHeight !== height) {
-        imageResourceErrors.push(i18nString(
-            UIStrings.actualSizeSspxOfSSDoesNotMatch,
-            {PH1: image.naturalWidth, PH2: image.naturalHeight, PH3: resourceName, PH4: width, PH5: height}));
+        imageResourceErrors.push(i18nString(UIStrings.actualSizeSspxOfSSDoesNotMatch, {
+          PH1: image.naturalWidth,
+          PH2: image.naturalHeight,
+          PH3: resourceName,
+          PH4: imageUrl,
+          PH5: width,
+          PH6: height
+        }));
       } else if (image.naturalWidth !== width) {
-        imageResourceErrors.push(
-            i18nString(UIStrings.actualWidthSpxOfSSDoesNotMatch, {PH1: image.naturalWidth, PH2: imageUrl, PH3: width}));
+        imageResourceErrors.push(i18nString(
+            UIStrings.actualWidthSpxOfSSDoesNotMatch,
+            {PH1: image.naturalWidth, PH2: resourceName, PH3: imageUrl, PH4: width}));
       } else if (image.naturalHeight !== height) {
         imageResourceErrors.push(i18nString(
-            UIStrings.actualHeightSpxOfSSDoesNotMatch, {PH1: image.naturalHeight, PH2: resourceName, PH3: height}));
+            UIStrings.actualHeightSpxOfSSDoesNotMatch,
+            {PH1: image.naturalHeight, PH2: resourceName, PH3: imageUrl, PH4: height}));
       } else if (isScreenshot) {
         if (width < 320 || height < 320) {
           imageResourceErrors.push(i18nString(UIStrings.sSSizeShouldBeAtLeast320, {PH1: resourceName, PH2: imageUrl}));
         } else if (width > 3840 || height > 3840) {
-          imageResourceErrors.push(i18nString(UIStrings.sSSizeShouldBeAtLeast3840, {PH1: resourceName, PH2: imageUrl}));
+          imageResourceErrors.push(i18nString(UIStrings.sSSizeShouldBeAtMost3840, {PH1: resourceName, PH2: imageUrl}));
         } else if (width > height * 2) {
           imageResourceErrors.push(
               i18nString(UIStrings.sSWidthShouldBeLessThanTwiceTheHeight, {PH1: resourceName, PH2: imageUrl}));

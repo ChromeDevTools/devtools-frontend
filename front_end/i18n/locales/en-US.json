@@ -5903,8 +5903,8 @@
   "resources/AppManifestView.js | sSSizeShouldBeAtLeast320": {
     "message": "{PH1} {PH2} size should be at least 320×320"
   },
-  "resources/AppManifestView.js | sSSizeShouldBeAtLeast3840": {
-    "message": "{PH1} {PH2} size should be at least 3840×3840"
+  "resources/AppManifestView.js | sSSizeShouldBeAtMost3840": {
+    "message": "{PH1} {PH2} size should be at most 3840×3840"
   },
   "resources/AppManifestView.js | sSWidthShouldBeLessThanTwiceTheHeight": {
     "message": "{PH1} {PH2} width should be less than twice the height"

@@ -5903,8 +5903,8 @@
   "resources/AppManifestView.js | sSSizeShouldBeAtLeast320": {
     "message": "{PH1} {PH2} ŝíẑé ŝh́ôúl̂d́ b̂é ât́ l̂éâśt̂ 320×320"
   },
-  "resources/AppManifestView.js | sSSizeShouldBeAtLeast3840": {
-    "message": "{PH1} {PH2} ŝíẑé ŝh́ôúl̂d́ b̂é ât́ l̂éâśt̂ 3840×3840"
+  "resources/AppManifestView.js | sSSizeShouldBeAtMost3840": {
+    "message": "{PH1} {PH2} ŝíẑé ŝh́ôúl̂d́ b̂é ât́ m̂óŝt́ 3840×3840"
   },
   "resources/AppManifestView.js | sSWidthShouldBeLessThanTwiceTheHeight": {
     "message": "{PH1} {PH2} ŵíd̂t́ĥ śĥóûĺd̂ b́ê ĺêśŝ t́ĥán̂ t́ŵíĉé t̂h́ê h́êíĝh́t̂"

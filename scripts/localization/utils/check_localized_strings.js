@@ -157,6 +157,7 @@ const migratedDirsSet = new Set([
   'text_editor',
   'timeline',
   'timeline_model',
+  'ui', // includes ui/components
   'web_audio',
   'webauthn',
   'workspace',

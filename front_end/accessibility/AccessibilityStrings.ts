@@ -441,9 +441,9 @@ export const UIStrings = {
   */
   fromRubyAnnotation: 'From ruby annotation',
   /**
-  *@description Tooltip text that appears when hovering over the 'From ruby annotation' attribute name under the Computed Properties section in the Accessibility pane of the Elements pane
+  *@description Tooltip text that appears when hovering over the 'From ruby annotation' attribute name under the Computed Properties section in the Accessibility pane of the Elements pane. Indicates that the value was taken from a plain HTML ruby tag (https://developer.mozilla.org/en-US/docs/Web/HTML/Element/ruby).
   */
-  valueFromNativeHtmlRuby: 'Value from native HTML ruby annotation.',
+  valueFromNativeHtmlRuby: 'Value from plain HTML ruby annotation.',
   /**
   *@description Tooltip text that appears when hovering over the 'From caption' attribute name under the Computed Properties section in the Accessibility pane of the Elements pane
   */

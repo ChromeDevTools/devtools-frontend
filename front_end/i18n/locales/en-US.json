@@ -324,7 +324,7 @@
     "message": "Value from legend element."
   },
   "accessibility/AccessibilityStrings.ts | valueFromNativeHtmlRuby": {
-    "message": "Value from native HTML ruby annotation."
+    "message": "Value from plain HTML ruby annotation."
   },
   "accessibility/AccessibilityStrings.ts | valueFromNativeHtmlUnknownSource": {
     "message": "Value from native HTML (unknown source)."

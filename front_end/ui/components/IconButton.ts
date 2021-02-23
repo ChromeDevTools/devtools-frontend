@@ -80,6 +80,18 @@ export class IconButton extends HTMLElement {
         .status-icon:first-child {
           margin-left: inherit;
         }
+
+        @media (forced-colors: active) {
+          .icon-button {
+            forced-color-adjust: none;
+            background-color: ButtonFace;
+          }
+
+          .icon-button:hover {
+            background-color: Highlight;
+            color: HighlightText;
+          }
+        }
       </style>
       <button class="icon-button" @click=${this.onClickHandler}>
       ${this.groups.filter(counter => counter.text !== undefined).map(counter =>

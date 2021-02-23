@@ -86,6 +86,7 @@ devtools_module("sdk") {
     "../host:bundle",
     "../platform:bundle",
     "../protocol_client:bundle",
+    "../text_editor:bundle",
     "../text_utils:bundle",
   ]
 }

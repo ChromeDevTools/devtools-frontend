@@ -2,25 +2,25 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Root from '../root/root.js';
-import * as TextUtils from '../text_utils/text_utils.js';
-import * as UI from '../ui/ui.js';
+import * as UI from '../ui/ui.js';  // eslint-disable-line no-unused-vars
+
+import {TokenizerFactory} from './CodeMirrorUtils.js';
 
 export class SyntaxHighlighter {
   /**
-     * @param {string} mimeType
-     * @param {boolean} stripExtraWhitespace
-     */
+   * @param {string} mimeType
+   * @param {boolean} stripExtraWhitespace
+   */
   constructor(mimeType, stripExtraWhitespace) {
     this._mimeType = mimeType;
     this._stripExtraWhitespace = stripExtraWhitespace;
   }
 
   /**
-     * @param {string} content
-     * @param {string} className
-     * @return {!Element}
-     */
+   * @param {string} content
+   * @param {string} className
+   * @return {!Element}
+   */
   createSpan(content, className) {
     const span = document.createElement('span');
     span.className = className.replace(/\S+/g, 'cm-$&');
@@ -42,20 +42,8 @@ export class SyntaxHighlighter {
     /** @type {string} */
     let line;
 
-    const extension = Root.Runtime.Runtime.instance().extension(TextUtils.TextUtils.TokenizerFactory);
-    if (extension) {
-      return extension.instance().then(
-          factory => processTokens.call(this, /** @type {!TextUtils.TextUtils.TokenizerFactory} */ (factory)));
-    }
-    return Promise.resolve();
-
-    /**
-     * @param {!TextUtils.TextUtils.TokenizerFactory} tokenizerFactory
-     * @this {SyntaxHighlighter}
-     */
-    function processTokens(tokenizerFactory) {
       node.removeChildren();
-      const tokenize = tokenizerFactory.createTokenizer(this._mimeType);
+      const tokenize = TokenizerFactory.instance().createTokenizer(this._mimeType);
       for (let i = 0; i < lines.length; ++i) {
         line = lines[i];
         plainTextStart = 0;
@@ -68,26 +56,26 @@ export class SyntaxHighlighter {
           UI.UIUtils.createTextChild(node, '\n');
         }
       }
-    }
+      return Promise.resolve();
 
-    /**
+      /**
      * @param {string} token
-    * @param {?string} tokenType
-    * @param {number} column
-    * @param {number} newColumn
-    * @this {SyntaxHighlighter}
-    */
-    function processToken(token, tokenType, column, newColumn) {
-      if (!tokenType) {
-        return;
-      }
+     * @param {?string} tokenType
+     * @param {number} column
+     * @param {number} newColumn
+     * @this {SyntaxHighlighter}
+     */
+      function processToken(token, tokenType, column, newColumn) {
+        if (!tokenType) {
+          return;
+        }
 
-      if (column > plainTextStart) {
-        const plainText = line.substring(plainTextStart, column);
-        UI.UIUtils.createTextChild(node, plainText);
+        if (column > plainTextStart) {
+          const plainText = line.substring(plainTextStart, column);
+          UI.UIUtils.createTextChild(node, plainText);
+        }
+        node.appendChild(this.createSpan(token, tokenType));
+        plainTextStart = newColumn;
       }
-      node.appendChild(this.createSpan(token, tokenType));
-      plainTextStart = newColumn;
-    }
   }
 }

@@ -36,7 +36,7 @@ import * as ObjectUI from '../object_ui/object_ui.js';
 import * as Root from '../root/root.js';
 import * as SDK from '../sdk/sdk.js';
 import * as SourceFrame from '../source_frame/source_frame.js';
-import * as TextEditor from '../text_editor/text_editor.js';
+import * as TextEditor from '../text_editor/text_editor.js';  // eslint-disable-line no-unused-vars
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as UI from '../ui/ui.js';
 import * as Workspace from '../workspace/workspace.js';
@@ -1231,7 +1231,7 @@ export class DebuggerPlugin extends Plugin {
     /** @type {!Map.<number, !Set<string>>} */
     const namesPerLine = new Map();
     let skipObjectProperty = false;
-    const tokenizer = new TextEditor.CodeMirrorUtils.TokenizerFactory().createTokenizer('text/javascript');
+    const tokenizer = TextEditor.CodeMirrorUtils.TokenizerFactory.instance().createTokenizer('text/javascript');
     tokenizer(this._textEditor.line(fromLine).substring(fromColumn), processToken.bind(this, fromLine));
     for (let i = fromLine + 1; i < toLine; ++i) {
       tokenizer(this._textEditor.line(i), processToken.bind(this, i));

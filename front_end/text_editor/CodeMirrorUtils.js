@@ -91,10 +91,25 @@ export function pullLines(codeMirror, linesCount) {
   }
 }
 
+/** @type {!TokenizerFactory} */
+let tokenizerFactoryInstance;
+
 /**
  * @implements {TextUtils.TextUtils.TokenizerFactory}
  */
 export class TokenizerFactory {
+  /**
+   * @param {{forceNew: ?boolean}} opts
+   */
+  static instance(opts = {forceNew: null}) {
+    const {forceNew} = opts;
+    if (!tokenizerFactoryInstance || forceNew) {
+      tokenizerFactoryInstance = new TokenizerFactory();
+    }
+
+    return tokenizerFactoryInstance;
+  }
+
   /**
    * @override
    * @param {string} mimeType

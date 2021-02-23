@@ -59,81 +59,86 @@ describe('The Network Tab', async () => {
     });
   });
 
-  it('shows the HTML response including cyrillic characters with utf-8 encoding', async () => {
-    const {target} = getBrowserAndPages();
-    await navigateToNetworkTab('utf-8.rawresponse');
+  // Flaky test
+  it.skipOnPlatforms(
+      ['win32'], '[crbug.com/1179656] the HTML response including cyrillic characters with utf-8 encoding',
+      async () => {
+        const {target} = getBrowserAndPages();
+        await navigateToNetworkTab('utf-8.rawresponse');
 
-    // Reload to populate network request table
-    await target.reload({waitUntil: 'networkidle0'});
+        // Reload to populate network request table
+        await target.reload({waitUntil: 'networkidle0'});
 
-    // Wait for the column to show up and populate its values
-    await waitForSomeRequestsToAppear(1);
+        // Wait for the column to show up and populate its values
+        await waitForSomeRequestsToAppear(1);
 
-    // Open the HTML file that was loaded
-    await click('td.name-column');
-    // Wait for the detailed network information pane to show up
-    await waitFor('[aria-label="Response"]');
-    // Open the raw response HTML
-    await click('[aria-label="Response"]');
-    // Wait for the raw response editor to show up
-    await waitFor('.CodeMirror-code');
+        // Open the HTML file that was loaded
+        await click('td.name-column');
+        // Wait for the detailed network information pane to show up
+        await waitFor('[aria-label="Response"]');
+        // Open the raw response HTML
+        await click('[aria-label="Response"]');
+        // Wait for the raw response editor to show up
+        await waitFor('.CodeMirror-code');
 
-    const codeMirrorEditor = await waitFor('.CodeMirror-code');
-    const htmlRawResponse = await codeMirrorEditor.evaluate(editor => editor.textContent);
+        const codeMirrorEditor = await waitFor('.CodeMirror-code');
+        const htmlRawResponse = await codeMirrorEditor.evaluate(editor => editor.textContent);
 
-    assert.strictEqual(
-        htmlRawResponse,
-        '1<html><body>The following word is written using cyrillic letters and should look like "SUCCESS": SU\u0421\u0421\u0415SS.</body></html>');
-  });
+        assert.strictEqual(
+            htmlRawResponse,
+            '1<html><body>The following word is written using cyrillic letters and should look like "SUCCESS": SU\u0421\u0421\u0415SS.</body></html>');
+      });
 
-  it('shows the correct MIME type when resources came from HTTP cache', async () => {
-    const {target, frontend} = getBrowserAndPages();
+  // Flaky test
+  it.skipOnPlatforms(
+      ['win32'], '[crbug.com/1179656] the correct MIME type when resources came from HTTP cache', async () => {
+        const {target, frontend} = getBrowserAndPages();
 
-    await navigateToNetworkTab('resources-from-cache.html');
+        await navigateToNetworkTab('resources-from-cache.html');
 
-    // Reload the page without a cache, to force a fresh load of the network resources
-    await click('[aria-label="Disable cache"]');
-    await target.reload({waitUntil: 'networkidle0'});
+        // Reload the page without a cache, to force a fresh load of the network resources
+        await click('[aria-label="Disable cache"]');
+        await target.reload({waitUntil: 'networkidle0'});
 
-    // Wait for the column to show up and populate its values
-    await waitForSomeRequestsToAppear(2);
+        // Wait for the column to show up and populate its values
+        await waitForSomeRequestsToAppear(2);
 
-    // Get the size of the first two network request responses (excluding header and favicon.ico).
-    const getNetworkRequestSize = () => frontend.evaluate(() => {
-      return Array.from(document.querySelectorAll('.size-column')).slice(1, 3).map(node => node.textContent);
-    });
-    const getNetworkRequestMimeTypes = () => frontend.evaluate(() => {
-      return Array.from(document.querySelectorAll('.type-column')).slice(1, 3).map(node => node.textContent);
-    });
-    const formatByteSize = (value: number) => {
-      return `${value}\xA0B`;
-    };
+        // Get the size of the first two network request responses (excluding header and favicon.ico).
+        const getNetworkRequestSize = () => frontend.evaluate(() => {
+          return Array.from(document.querySelectorAll('.size-column')).slice(1, 3).map(node => node.textContent);
+        });
+        const getNetworkRequestMimeTypes = () => frontend.evaluate(() => {
+          return Array.from(document.querySelectorAll('.type-column')).slice(1, 3).map(node => node.textContent);
+        });
+        const formatByteSize = (value: number) => {
+          return `${value}\xA0B`;
+        };
 
-    assert.deepEqual(await getNetworkRequestSize(), [
-      `${formatByteSize(361)}${formatByteSize(219)}`,
-      `${formatByteSize(362)}${formatByteSize(28)}`,
-    ]);
-    assert.deepEqual(await getNetworkRequestMimeTypes(), [
-      'document',
-      'script',
-    ]);
+        assert.deepEqual(await getNetworkRequestSize(), [
+          `${formatByteSize(361)}${formatByteSize(219)}`,
+          `${formatByteSize(362)}${formatByteSize(28)}`,
+        ]);
+        assert.deepEqual(await getNetworkRequestMimeTypes(), [
+          'document',
+          'script',
+        ]);
 
-    // Allow resources from the cache again and reload the page to load from cache
-    await click('[aria-label="Disable cache"]');
-    await target.reload({waitUntil: 'networkidle0'});
-    // Wait for the column to show up and populate its values
-    await waitForSomeRequestsToAppear(2);
+        // Allow resources from the cache again and reload the page to load from cache
+        await click('[aria-label="Disable cache"]');
+        await target.reload({waitUntil: 'networkidle0'});
+        // Wait for the column to show up and populate its values
+        await waitForSomeRequestsToAppear(2);
 
-    assert.deepEqual(await getNetworkRequestSize(), [
-      `${formatByteSize(361)}${formatByteSize(219)}`,
-      `(memory cache)${formatByteSize(28)}`,
-    ]);
+        assert.deepEqual(await getNetworkRequestSize(), [
+          `${formatByteSize(361)}${formatByteSize(219)}`,
+          `(memory cache)${formatByteSize(28)}`,
+        ]);
 
-    assert.deepEqual(await getNetworkRequestMimeTypes(), [
-      'document',
-      'script',
-    ]);
-  });
+        assert.deepEqual(await getNetworkRequestMimeTypes(), [
+          'document',
+          'script',
+        ]);
+      });
 
   // Flaky test
   it.skip('[crbug.com/1179656] shows the correct initiator address space', async () => {

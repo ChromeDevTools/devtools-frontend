@@ -33,6 +33,7 @@ template("devtools_pre_built") {
         invoker.data + filter_include(get_target_outputs(_copy_gen_target_dep),
                                       [
                                         "*.js",
+                                        "*.mjs",
                                         "*.map",
                                       ])
   }

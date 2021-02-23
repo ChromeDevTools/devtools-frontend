@@ -70,11 +70,9 @@ export const UIStrings = {
   */
   origin: 'Origin',
   /**
-  *@description Text in Background Service View of the Application panel. SW stands for Service
-  * Worker. The Scope is a URL associated with the Service Worker, which limits which pages/sites
-  * the Service Worker operates on.
+  *@description Text in Background Service View of the Application panel. The Scope is a URL associated with the Service Worker, which limits which pages/sites the Service Worker operates on.
   */
-  swScope: 'SW Scope',
+  swScope: 'Service Worker Scope',
   /**
   *@description Text in Background Service View of the Application panel
   */
@@ -356,7 +354,7 @@ export class BackgroundServiceView extends UI.Widget.VBox {
       {id: 'timestamp', title: i18nString(UIStrings.timestamp), weight: 8},
       {id: 'eventName', title: i18nString(UIStrings.event), weight: 10},
       {id: 'origin', title: i18nString(UIStrings.origin), weight: 10},
-      {id: 'swScope', title: i18nString(UIStrings.swScope), weight: 2},
+      {id: 'swScope', title: i18nString(UIStrings.swScope), weight: 5},
       {id: 'instanceId', title: i18nString(UIStrings.instanceId), weight: 10},
     ]);
     const dataGrid = new DataGrid.DataGrid.DataGridImpl({

@@ -6027,7 +6027,7 @@
     "message": "Stop recording events"
   },
   "resources/BackgroundServiceView.js | swScope": {
-    "message": "SW Scope"
+    "message": "Service Worker Scope"
   },
   "resources/BackgroundServiceView.js | timestamp": {
     "message": "Timestamp"

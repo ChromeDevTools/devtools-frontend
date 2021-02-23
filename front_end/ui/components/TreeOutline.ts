@@ -301,6 +301,9 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
       <style>
         li {
           list-style: none;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          min-height: 12px;
         }
 
         .arrow-icon {
@@ -316,6 +319,15 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
           height: 12px;
           width: 13px;
           overflow: hidden;
+        }
+
+        ul {
+          margin: 0;
+          padding: 0;
+        }
+
+        ul[role="group"] {
+          padding-left: 16px;
         }
 
         li:not(.parent) > .arrow-and-key-wrapper > .arrow-icon {

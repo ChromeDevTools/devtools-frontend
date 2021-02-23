@@ -8,6 +8,8 @@ import("./copy.gni")
 template("devtools_pre_built") {
   _copy_to_gen_target_name = target_name + "-copy-gen-javascript"
   _copy_gen_target_dep = ":$_copy_to_gen_target_name"
+  _copy_to_resources_target_name = target_name + "-copy-resources-javascript"
+  _copy_resources_target_dep = ":$_copy_to_resources_target_name"
 
   copy_to_gen(_copy_to_gen_target_name) {
     sources = invoker.sources
@@ -15,8 +17,17 @@ template("devtools_pre_built") {
     deps = invoker.deps
   }
 
-  group(target_name) {
+  copy_sources_to_resources(_copy_to_resources_target_name) {
+    sources = invoker.sources
+
     public_deps = [ _copy_gen_target_dep ]
+  }
+
+  group(target_name) {
+    public_deps = [
+      _copy_gen_target_dep,
+      _copy_resources_target_dep,
+    ]
 
     data =
         invoker.data + filter_include(get_target_outputs(_copy_gen_target_dep),
@@ -27,7 +38,8 @@ template("devtools_pre_built") {
   }
 
   if (is_debug) {
-    _target_outputs = get_target_outputs(_copy_gen_target_dep)
+    _target_outputs =
+        get_target_outputs(":" + _copy_to_resources_target_name + "-copy")
     _filtered_target_outputs =
         filter_include(
             filter_exclude(_target_outputs, generated_typescript_modules),

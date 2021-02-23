@@ -204,9 +204,10 @@ export class CSSProperty {
    * @param {string} indentation
    * @param {string} endIndentation
    * @param {!TextUtils.TextUtils.TokenizerFactory} tokenizerFactory
+   * @param {!CodeMirror.Mode<*>=} codeMirrorMode
    * @return {string}
    */
-  static _formatStyle(styleText, indentation, endIndentation, tokenizerFactory) {
+  static _formatStyle(styleText, indentation, endIndentation, tokenizerFactory, codeMirrorMode) {
     const doubleIndent = indentation.substring(endIndentation.length) + indentation;
     if (indentation) {
       indentation = '\n' + indentation;
@@ -216,7 +217,7 @@ export class CSSProperty {
     let propertyText = '';
     let insideProperty = false;
     let needsSemi = false;
-    const tokenize = tokenizerFactory.createTokenizer('text/css');
+    const tokenize = tokenizerFactory.createTokenizer('text/css', codeMirrorMode);
 
     tokenize('*{' + styleText + '}', processToken);
     if (insideProperty) {

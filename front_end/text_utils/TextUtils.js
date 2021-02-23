@@ -361,9 +361,10 @@ export class BalancedJSONTokenizer {
 export class TokenizerFactory {
   /**
    * @param {string} mimeType
+   * @param {!CodeMirror.Mode<*>=} mode
    * @return {function(string, function(string, ?string, number, number):void):void}
    */
-  createTokenizer(mimeType) {
+  createTokenizer(mimeType, mode) {
     throw new Error('not implemented');
   }
 }

@@ -111,13 +111,21 @@ export class TokenizerFactory {
   }
 
   /**
+   * @param {string} mimeType
+   */
+  getMode(mimeType) {
+    return CodeMirror.getMode({indentUnit: 2}, mimeType);
+  }
+  // https://crbug.com/1151919 * = CodeMirror.Mode
+  /**
    * @override
    * @param {string} mimeType
+   * @param {!*=} mode
    * @return {function(string, function(string, ?string, number, number))}
    */
-  createTokenizer(mimeType) {
-    const mode = CodeMirror.getMode({indentUnit: 2}, mimeType);
-    const state = CodeMirror.startState(mode);
+  createTokenizer(mimeType, mode) {
+    const cmMode = mode || CodeMirror.getMode({indentUnit: 2}, mimeType);
+    const state = CodeMirror.startState(cmMode);
     /**
      * @param {string} line
      * @param {function(string, (string|null), number, number):void} callback
@@ -125,8 +133,7 @@ export class TokenizerFactory {
     function tokenize(line, callback) {
       const stream = new CodeMirror.StringStream(line);
       while (!stream.eol()) {
-        // @ts-expect-error CodeMirror types specify token as optional.
-        const style = mode.token(stream, state);
+        const style = cmMode.token(stream, state);
         const value = stream.current();
         callback(value, style, stream.start, stream.start + value.length);
         stream.start = stream.pos;

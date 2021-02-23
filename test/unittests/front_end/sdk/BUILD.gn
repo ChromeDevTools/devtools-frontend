@@ -5,6 +5,7 @@ ts_library("sdk") {
   sources = [
     "AccessibilityModel_test.ts",
     "CSSPropertyParser_test.ts",
+    "CSSProperty_test.ts",
     "ConsoleModel_test.ts",
     "CookieModel_test.ts",
     "CookieParser_test.ts",
@@ -29,6 +30,7 @@ ts_library("sdk") {
     "../../../../front_end/common:bundle",
     "../../../../front_end/protocol_client:bundle",
     "../../../../front_end/sdk:bundle",
+    "../../../../front_end/text_editor:bundle",
     "../helpers",
   ]
 }

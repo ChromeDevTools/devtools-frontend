@@ -18,7 +18,6 @@
       <part file="../host/host_strings.grdp" />
       <part file="../inspector_main/inspector_main_strings.grdp" />
       <part file="../main/main_strings.grdp" />
-      <part file="../quick_open/quick_open_strings.grdp" />
       <part file="../sdk/sdk_strings.grdp" />
       <part file="shared_strings.grdp" />
     </messages>

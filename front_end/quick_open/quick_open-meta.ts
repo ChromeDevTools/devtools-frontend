@@ -2,10 +2,22 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Platform from '../platform/platform.js';
-import {ls} from '../platform/platform.js';
+import * as i18n from '../i18n/i18n.js';
 import * as Root from '../root/root.js';
 import * as UI from '../ui/ui.js';
+
+export const UIStrings = {
+  /**
+  *@description Title of action that opens a file
+  */
+  openFile: 'Open File',
+  /**
+  *@description Title of command that runs a Quick Open command
+  */
+  runCommand: 'Run command',
+};
+const str_ = i18n.i18n.registerUIStrings('quick_open/quick_open-meta.ts', UIStrings);
+const i18nString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 // eslint-disable-next-line rulesdir/es_modules_import
 import type * as QuickOpen from './quick_open.js';
@@ -24,7 +36,7 @@ async function loadQuickOpenModule(): Promise<typeof QuickOpen> {
 UI.ActionRegistration.registerActionExtension({
   actionId: 'commandMenu.show',
   category: UI.ActionRegistration.ActionCategory.GLOBAL,
-  title: (): Platform.UIString.LocalizedString => ls`Run command`,
+  title: i18nString(UIStrings.runCommand),
   async loadActionDelegate() {
     const QuickOpen = await loadQuickOpenModule();
     return QuickOpen.CommandMenu.ShowActionDelegate.instance();
@@ -58,7 +70,7 @@ UI.ActionRegistration.registerActionExtension({
 UI.ActionRegistration.registerActionExtension({
   actionId: 'quickOpen.show',
   category: UI.ActionRegistration.ActionCategory.GLOBAL,
-  title: (): Platform.UIString.LocalizedString => ls`Open file`,
+  title: i18nString(UIStrings.openFile),
   async loadActionDelegate() {
     const QuickOpen = await loadQuickOpenModule();
     return QuickOpen.QuickOpen.ShowActionDelegate.instance();

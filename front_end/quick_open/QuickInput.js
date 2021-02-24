@@ -2,8 +2,19 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {ls} from '../platform/platform.js';
+import * as i18n from '../i18n/i18n.js';
+
 import {FilteredListWidget, Provider} from './FilteredListWidget.js';
+
+export const UIStrings = {
+  /**
+  * @description Prompt for free-form input in the QuickInput dialog; Enter and Escape here are keyboard buttons and should be localized as appropriate.
+  * @example {Provide some information.} PH1
+  */
+  pressEnterToConfirmOrEscapeTo: '{PH1} (Press \'Enter\' to confirm or \'Escape\' to cancel.)',
+};
+const str_ = i18n.i18n.registerUIStrings('quick_open/QuickInput.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 /**
  * @typedef {{
@@ -76,7 +87,7 @@ class QuickInputProvider extends Provider {
    * @return {string}
    */
   notFoundText() {
-    return ls`${this._options.prompt} (Press 'Enter' to confirm or 'Escape' to cancel.)`;
+    return i18nString(UIStrings.pressEnterToConfirmOrEscapeTo, {PH1: this._options.prompt});
   }
 
   /**

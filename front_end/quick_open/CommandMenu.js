@@ -5,12 +5,29 @@
 import * as Common from '../common/common.js';
 import * as Diff from '../diff/diff.js';
 import * as Host from '../host/host.js';
+import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
-import {ls} from '../platform/platform.js';
 import * as UI from '../ui/ui.js';
 
 import {FilteredListWidget, Provider, registerProvider} from './FilteredListWidget.js';
 import {QuickOpenImpl} from './QuickOpen.js';
+
+export const UIStrings = {
+  /**
+  * @description Message to display if a setting change requires a reload of DevTools
+  */
+  oneOrMoreSettingsHaveChanged: 'One or more settings have changed which requires a reload to take effect.',
+  /**
+  * @description Text in Command Menu of the Command Menu
+  */
+  noCommandsFound: 'No commands found',
+  /**
+  * @description Text in Command Menu of the Command Menu
+  */
+  runCommand: 'Run Command',
+};
+const str_ = i18n.i18n.registerUIStrings('quick_open/CommandMenu.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 /** @type {!CommandMenu} */
 let commandMenuInstance;
@@ -82,7 +99,7 @@ export class CommandMenu {
         setting.set(value);
         if (reloadRequired) {
           UI.InspectorView.InspectorView.instance().displayReloadRequiredWarning(
-              ls`One or more settings have changed which requires a reload to take effect.`);
+              i18nString(UIStrings.oneOrMoreSettingsHaveChanged));
         }
       },
       availableHandler,
@@ -359,7 +376,7 @@ export class CommandMenuProvider extends Provider {
    * @return {string}
    */
   notFoundText() {
-    return ls`No commands found`;
+    return i18nString(UIStrings.noCommandsFound);
   }
 }
 
@@ -459,6 +476,6 @@ export class ShowActionDelegate {
 
 registerProvider({
   prefix: '>',
-  title: () => ls`Run command`,
+  title: () => i18nString(UIStrings.runCommand),
   provider: CommandMenuProvider.instance,
 });

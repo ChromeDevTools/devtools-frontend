@@ -2,10 +2,23 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {ls} from '../platform/platform.js';
+import * as i18n from '../i18n/i18n.js';
 import * as UI from '../ui/ui.js';  // eslint-disable-line no-unused-vars
 
 import {FilteredListWidget, getRegisteredProviders, Provider} from './FilteredListWidget.js';  // eslint-disable-line no-unused-vars
+
+export const UIStrings = {
+  /**
+  * @description Text in Quick Open of the Command Menu
+  */
+  typeToSeeAvailableCommands: 'Type \'?\' to see available commands',
+  /**
+  * @description Aria-placeholder text for quick open dialog prompt
+  */
+  typeQuestionMarkToSeeAvailable: 'Type question mark to see available commands',
+};
+const str_ = i18n.i18n.registerUIStrings('quick_open/QuickOpen.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 /** @type {!Array<string>} */
 export const history = [];
@@ -34,7 +47,7 @@ export class QuickOpenImpl {
     const filteredListWidget = new FilteredListWidget(null, history, quickOpen._queryChanged.bind(quickOpen));
     quickOpen._filteredListWidget = filteredListWidget;
     filteredListWidget.setPlaceholder(
-        ls`Type '?' to see available commands`, ls`Type question mark to see available commands`);
+        i18nString(UIStrings.typeToSeeAvailableCommands), i18nString(UIStrings.typeQuestionMarkToSeeAvailable));
     filteredListWidget.showAsDialog();
     filteredListWidget.setQuery(query);
   }

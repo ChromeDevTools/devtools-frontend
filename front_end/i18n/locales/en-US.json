@@ -5606,6 +5606,39 @@
   "protocol_monitor/ProtocolMonitor.ts | timestamp": {
     "message": "Timestamp"
   },
+  "quick_open/CommandMenu.js | noCommandsFound": {
+    "message": "No commands found"
+  },
+  "quick_open/CommandMenu.js | oneOrMoreSettingsHaveChanged": {
+    "message": "One or more settings have changed which requires a reload to take effect."
+  },
+  "quick_open/CommandMenu.js | runCommand": {
+    "message": "Run Command"
+  },
+  "quick_open/FilteredListWidget.js | noResultsFound": {
+    "message": "No results found"
+  },
+  "quick_open/FilteredListWidget.js | quickOpen": {
+    "message": "Quick open"
+  },
+  "quick_open/FilteredListWidget.js | quickOpenPrompt": {
+    "message": "Quick open prompt"
+  },
+  "quick_open/quick_open-meta.ts | openFile": {
+    "message": "Open File"
+  },
+  "quick_open/quick_open-meta.ts | runCommand": {
+    "message": "Run command"
+  },
+  "quick_open/QuickInput.js | pressEnterToConfirmOrEscapeTo": {
+    "message": "{PH1} (Press 'Enter' to confirm or 'Escape' to cancel.)"
+  },
+  "quick_open/QuickOpen.js | typeQuestionMarkToSeeAvailable": {
+    "message": "Type question mark to see available commands"
+  },
+  "quick_open/QuickOpen.js | typeToSeeAvailableCommands": {
+    "message": "Type '?' to see available commands"
+  },
   "recorder/RecordingFileSystem.ts | defaultRecordingName": {
     "message": "Recording #{nextId}"
   },

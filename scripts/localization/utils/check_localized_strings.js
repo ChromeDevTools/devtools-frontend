@@ -144,6 +144,7 @@ const migratedDirsSet = new Set([
   'platform',
   'protocol_monitor',
   'profiler',
+  'quick_open',
   'recorder',
   'resources',
   'screencast',

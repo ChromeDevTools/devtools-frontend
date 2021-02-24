@@ -19,6 +19,7 @@ devtools_module("quick_open") {
     "../common:bundle",
     "../diff:bundle",
     "../host:bundle",
+    "../i18n:bundle",
     "../platform:bundle",
     "../text_utils:bundle",
     "../ui:bundle",

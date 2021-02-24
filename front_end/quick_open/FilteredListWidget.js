@@ -2,12 +2,28 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../common/common.js';
 import * as Diff from '../diff/diff.js';
+import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
-import {ls} from '../platform/platform.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as UI from '../ui/ui.js';
+
+export const UIStrings = {
+  /**
+  * @description Aria label for quick open dialog prompt
+  */
+  quickOpenPrompt: 'Quick open prompt',
+  /**
+  * @description Title of quick open dialog
+  */
+  quickOpen: 'Quick open',
+  /**
+  * @description Text to show no results have been found
+  */
+  noResultsFound: 'No results found',
+};
+const str_ = i18n.i18n.registerUIStrings('quick_open/FilteredListWidget.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 /**
  * @implements {UI.ListControl.ListDelegate<number>}
@@ -39,7 +55,7 @@ export class FilteredListWidget extends UI.Widget.VBox {
     this.registerRequiredCSS('quick_open/filteredListWidget.css', {enableLegacyPatching: true});
 
     this._promptElement = this.contentElement.createChild('div', 'filtered-list-widget-input');
-    UI.ARIAUtils.setAccessibleName(this._promptElement, ls`Quick open prompt`);
+    UI.ARIAUtils.setAccessibleName(this._promptElement, i18nString(UIStrings.quickOpenPrompt));
     this._promptElement.setAttribute('spellcheck', 'false');
     this._promptElement.setAttribute('contenteditable', 'plaintext-only');
     this._prompt = new UI.TextPrompt.TextPrompt();
@@ -140,7 +156,11 @@ export class FilteredListWidget extends UI.Widget.VBox {
   /**
    * @param {string=} dialogTitle
    */
-  showAsDialog(dialogTitle = ls`Quick open`) {
+  showAsDialog(dialogTitle) {
+    if (!dialogTitle) {
+      dialogTitle = i18nString(UIStrings.quickOpen);
+    }
+
     this._dialog = new UI.Dialog.Dialog();
     UI.ARIAUtils.setAccessibleName(this._dialog.contentElement, dialogTitle);
     this._dialog.setMaxContentSize(new UI.Geometry.Size(504, 340));
@@ -692,7 +712,7 @@ export class Provider {
    * @return {string}
    */
   notFoundText(query) {
-    return Common.UIString.UIString('No results found');
+    return i18nString(UIStrings.noResultsFound);
   }
 
   detach() {

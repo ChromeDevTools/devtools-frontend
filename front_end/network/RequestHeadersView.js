@@ -93,17 +93,21 @@ export const UIStrings = {
   */
   viewSource: 'View source',
   /**
-  *@description Text for toggling header data (e.g. query string parameters) from decoded to encoded in the headers tab or in the cookies preview
+  * @description Text for toggling header data (e.g. query string parameters) from decoded to
+  * encoded in the headers tab or in the cookies preview. URL-encoded is a different data format for
+  * the same data, which the user sees when they click this command.
   */
-  viewUrlEncoded: 'View URL encoded',
+  viewUrlEncoded: 'View URL-encoded',
   /**
   *@description Text for toggling header data (e.g. query string parameters) from encoded to decoded in the headers tab or in the cookies preview
   */
   viewDecoded: 'View decoded',
   /**
-  *@description Text in Request Headers View of the Network panel
+  *@description Text for toggling header data (e.g. query string parameters) from decoded to
+  * encoded in the headers tab or in the cookies preview. URL-encoded is a different data format for
+  * the same data, which the user sees when they click this command.
   */
-  viewUrlEncodedL: 'view URL encoded',
+  viewUrlEncodedL: 'view URL-encoded',
   /**
   *@description Text in Request Headers View of the Network panel
   */

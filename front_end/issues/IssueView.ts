@@ -71,11 +71,11 @@ export const UIStrings = {
   */
   resourceC: 'Resource',
   /**
-  *@description A tag of Enable Local Overrides setting that can be searched in the command menu
+  *@description Label for a type of issue that can appear in the Issues view. Noun for a singular network request.
   */
   request: 'request',
   /**
-  *@description Label for number of affected resources indication in issue view
+  *@description Label for a type of issue that can appear in the Issues view. Noun for plural network requests.
   */
   requests: 'requests',
   /**

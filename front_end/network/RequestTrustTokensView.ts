@@ -49,7 +49,8 @@ export const UIStrings = {
   */
   numberOfIssuedTokens: 'Number of issued tokens',
   /**
-  *@description Text for the success status in the Network panel
+  * @description Text for the success status in the Network panel. Refers to the outcome of a network
+  * request which will either be 'Success' or 'Failure'.
   */
   success: 'Success',
   /**

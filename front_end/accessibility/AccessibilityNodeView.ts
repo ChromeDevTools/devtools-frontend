@@ -67,11 +67,11 @@ export const UIStrings = {
   /**
   *@description Reason element in Accessibility Node View of the Accessibility panel
   */
-  elementIsInert: 'Element is inert.',
+  elementIsInert: 'Element is `inert`.',
   /**
   *@description Reason element in Accessibility Node View of the Accessibility panel
   */
-  elementIsInAnInertSubTree: 'Element is in an inert subtree from\xA0',
+  elementIsInAnInertSubTree: 'Element is in an `inert` subtree from\xA0',
   /**
   *@description Reason element in Accessibility Node View of the Accessibility panel
   */

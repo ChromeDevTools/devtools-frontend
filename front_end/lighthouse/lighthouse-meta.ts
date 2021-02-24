@@ -13,19 +13,19 @@ export const UIStrings = {
   /**
   *@description Title of the 'Lighthouse' tool
   */
-  lighthouse: 'Lighthouse',
+  lighthouse: '`Lighthouse`',
   /**
   *@description A tag of Application Panel that can be searched in the command menu
   */
-  pwa: 'pwa',
+  pwa: '`pwa`',
   /**
-   *@description A tag of Lighthouse tool that can be searched in the command menu
+   *@description A tag of Lighthouse tool that can be searched in the command menu.
    */
-  lighthouseTag: 'lighthouse',
+  lighthouseTag: '`lighthouse`',
   /**
   *@description Command for showing the 'Lighthouse' tool
   */
-  showLighthouse: 'Show Lighthouse',
+  showLighthouse: 'Show `Lighthouse`',
 };
 
 const str_ = i18n.i18n.registerUIStrings('lighthouse/lighthouse-meta.ts', UIStrings);

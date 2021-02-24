@@ -24,7 +24,7 @@ export const UIStrings = {
   */
   direction: 'Direction',
   /**
-  *@description Text in Protocol Monitor of the Protocol Monitor tab
+  * @description Text in Protocol Monitor of the Protocol Monitor tab. Noun relating to a network request.
   */
   request: 'Request',
   /**

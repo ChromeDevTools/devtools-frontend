@@ -4257,10 +4257,10 @@
     "message": "view source"
   },
   "network/RequestHeadersView.js | viewUrlEncoded": {
-    "message": "View URL encoded"
+    "message": "View URL-encoded"
   },
   "network/RequestHeadersView.js | viewUrlEncodedL": {
-    "message": "view URL encoded"
+    "message": "view URL-encoded"
   },
   "network/RequestInitiatorView.js | requestCallStack": {
     "message": "Request call stack"

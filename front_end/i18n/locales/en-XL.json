@@ -24,10 +24,10 @@
     "message": "Êĺêḿêńt̂ íŝ h́îd́d̂én̂ b́ŷ áĉt́îv́ê ḿôd́âĺ d̂íâĺôǵ: "
   },
   "accessibility/AccessibilityNodeView.ts | elementIsInAnInertSubTree": {
-    "message": "Êĺêḿêńt̂ íŝ ín̂ án̂ ín̂ér̂t́ ŝúb̂t́r̂éê f́r̂óm̂ "
+    "message": "Êĺêḿêńt̂ íŝ ín̂ án̂ inert śûb́t̂ŕêé f̂ŕôḿ "
   },
   "accessibility/AccessibilityNodeView.ts | elementIsInert": {
-    "message": "Êĺêḿêńt̂ íŝ ín̂ér̂t́."
+    "message": "Êĺêḿêńt̂ íŝ inert."
   },
   "accessibility/AccessibilityNodeView.ts | elementIsNotRendered": {
     "message": "Êĺêḿêńt̂ íŝ ńôt́ r̂én̂d́êŕêd́."
@@ -204,7 +204,7 @@
     "message": "Îf́ t̂ŕûé, t̂h́îś êĺêḿêńt̂ ćûŕr̂én̂t́l̂ý ĉán̂ńôt́ b̂é îńt̂ér̂áĉt́êd́ ŵít̂h́."
   },
   "accessibility/AccessibilityStrings.ts | ifTrueThisElementCurrentlyHas": {
-    "message": "Îf́ t̂ŕûé, t̂h́îś êĺêḿêńt̂ ćûŕr̂én̂t́l̂ý ĥáŝ f́ôćûś."
+    "message": "Îf́ true, t̂h́îś êĺêḿêńt̂ ćûŕr̂én̂t́l̂ý ĥáŝ f́ôćûś."
   },
   "accessibility/AccessibilityStrings.ts | ifTrueThisElementMayBeInteracted": {
     "message": "Îf́ t̂ŕûé, t̂h́îś êĺêḿêńt̂ ḿâý b̂é îńt̂ér̂áĉt́êd́ ŵít̂h́, b̂út̂ ít̂ś v̂ál̂úê ćâńn̂ót̂ b́ê ćĥán̂ǵêd́."
@@ -2715,16 +2715,16 @@
     "message": "P̂ŕôf́îĺêŕ"
   },
   "lighthouse/lighthouse-meta.ts | lighthouse": {
-    "message": "L̂íĝh́t̂h́ôúŝé"
+    "message": "Lighthouse"
   },
   "lighthouse/lighthouse-meta.ts | lighthouseTag": {
-    "message": "l̂íĝh́t̂h́ôúŝé"
+    "message": "lighthouse"
   },
   "lighthouse/lighthouse-meta.ts | pwa": {
-    "message": "p̂ẃâ"
+    "message": "pwa"
   },
   "lighthouse/lighthouse-meta.ts | showLighthouse": {
-    "message": "Ŝh́ôẃ L̂íĝh́t̂h́ôúŝé"
+    "message": "Ŝh́ôẃ Lighthouse"
   },
   "lighthouse/LighthouseController.ts | accessibility": {
     "message": "Âćĉéŝśîb́îĺît́ŷ"
@@ -3513,13 +3513,13 @@
     "message": "Ûśê d́êf́âúl̂t́ ĉól̂ór̂ś"
   },
   "network/network-meta.ts | useragent": {
-    "message": "ûśêŕâǵêńt̂"
+    "message": "useragent"
   },
   "network/network-meta.ts | userAgent": {
-    "message": "ûśêŕ âǵêńt̂"
+    "message": "user agent"
   },
   "network/network-meta.ts | userdagent": {
-    "message": "ûśêŕ-âǵêńt̂"
+    "message": "user-agent"
   },
   "network/NetworkConfigView.js | caching": {
     "message": "Ĉáĉh́îńĝ"
@@ -3756,43 +3756,43 @@
     "message": "Ĉóp̂ý"
   },
   "network/NetworkLogView.js | copyAllAsCurl": {
-    "message": "Ĉóp̂ý âĺl̂ áŝ ćÛŔL̂"
+    "message": "Ĉóp̂ý âĺl̂ áŝ cURL"
   },
   "network/NetworkLogView.js | copyAllAsCurlBash": {
-    "message": "Ĉóp̂ý âĺl̂ áŝ ćÛŔL̂ (b́âśĥ)"
+    "message": "Ĉóp̂ý âĺl̂ áŝ cURL (bash)"
   },
   "network/NetworkLogView.js | copyAllAsCurlCmd": {
-    "message": "Ĉóp̂ý âĺl̂ áŝ ćÛŔL̂ (ćm̂d́)"
+    "message": "Ĉóp̂ý âĺl̂ áŝ cURL (cmd)"
   },
   "network/NetworkLogView.js | copyAllAsFetch": {
-    "message": "Ĉóp̂ý âĺl̂ áŝ f́êt́ĉh́"
+    "message": "Ĉóp̂ý âĺl̂ áŝ fetch"
   },
   "network/NetworkLogView.js | copyAllAsHar": {
-    "message": "Ĉóp̂ý âĺl̂ áŝ H́ÂŔ"
+    "message": "Ĉóp̂ý âĺl̂ áŝ HAR"
   },
   "network/NetworkLogView.js | copyAllAsNodejsFetch": {
-    "message": "Ĉóp̂ý âĺl̂ áŝ Ńôd́ê.j́ŝ f́êt́ĉh́"
+    "message": "Ĉóp̂ý âĺl̂ áŝ Node.js fetch"
   },
   "network/NetworkLogView.js | copyAllAsPowershell": {
-    "message": "Ĉóp̂ý âĺl̂ áŝ ṔôẃêŕŜh́êĺl̂"
+    "message": "Ĉóp̂ý âĺl̂ áŝ PowerShell"
   },
   "network/NetworkLogView.js | copyAsCurl": {
-    "message": "Ĉóp̂ý âś ĉÚR̂Ĺ"
+    "message": "Ĉóp̂ý âś cURL"
   },
   "network/NetworkLogView.js | copyAsCurlBash": {
-    "message": "Ĉóp̂ý âś ĉÚR̂Ĺ (b̂áŝh́)"
+    "message": "Ĉóp̂ý âś cURL (bash)"
   },
   "network/NetworkLogView.js | copyAsCurlCmd": {
-    "message": "Ĉóp̂ý âś ĉÚR̂Ĺ (ĉḿd̂)"
+    "message": "Ĉóp̂ý âś cURL (cmd)"
   },
   "network/NetworkLogView.js | copyAsFetch": {
-    "message": "Ĉóp̂ý âś f̂ét̂ćĥ"
+    "message": "Ĉóp̂ý âś fetch"
   },
   "network/NetworkLogView.js | copyAsNodejsFetch": {
-    "message": "Ĉóp̂ý âś N̂ód̂é.ĵś f̂ét̂ćĥ"
+    "message": "Ĉóp̂ý âś Node.js fetch"
   },
   "network/NetworkLogView.js | copyAsPowershell": {
-    "message": "Ĉóp̂ý âś P̂óŵér̂Śĥél̂ĺ"
+    "message": "Ĉóp̂ý âś PowerShell"
   },
   "network/NetworkLogView.js | copyRequestHeaders": {
     "message": "Ĉóp̂ý r̂éq̂úêśt̂ h́êád̂ér̂ś"
@@ -3855,7 +3855,7 @@
     "message": "R̂éŝóûŕĉé t̂ýp̂éŝ t́ô ín̂ćl̂úd̂é"
   },
   "network/NetworkLogView.js | saveAllAsHarWithContent": {
-    "message": "Ŝáv̂é âĺl̂ áŝ H́ÂŔ ŵít̂h́ ĉón̂t́êńt̂"
+    "message": "Ŝáv̂é âĺl̂ áŝ HAR ẃît́ĥ ćôńt̂én̂t́"
   },
   "network/NetworkLogView.js | sBResourcesLoadedByThePage": {
     "message": "{PH1} B̂ ŕêśôúr̂ćêś l̂óâd́êd́ b̂ý t̂h́ê ṕâǵê"
@@ -4257,10 +4257,10 @@
     "message": "v̂íêẃ ŝóûŕĉé"
   },
   "network/RequestHeadersView.js | viewUrlEncoded": {
-    "message": "V̂íêẃ ÛŔL̂ én̂ćôd́êd́"
+    "message": "V̂íêẃ ÛŔL̂-én̂ćôd́êd́"
   },
   "network/RequestHeadersView.js | viewUrlEncodedL": {
-    "message": "v̂íêẃ ÛŔL̂ én̂ćôd́êd́"
+    "message": "v̂íêẃ ÛŔL̂-én̂ćôd́êd́"
   },
   "network/RequestInitiatorView.js | requestCallStack": {
     "message": "R̂éq̂úêśt̂ ćâĺl̂ śt̂áĉḱ"

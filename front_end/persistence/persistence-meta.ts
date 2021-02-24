@@ -42,7 +42,8 @@ export const UIStrings = {
   */
   rewrite: 'rewrite',
   /**
-   *@description A tag of Enable Local Overrides setting that can be searched in the command menu
+   *@description A tag of Enable Local Overrides setting that can be searched in the command menu.
+   *Noun for network request.
   */
   request: 'request',
   /**

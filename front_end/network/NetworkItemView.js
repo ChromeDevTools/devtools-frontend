@@ -90,7 +90,9 @@ export const UIStrings = {
   */
   initiator: 'Initiator',
   /**
-  *@description Tooltip for initiator view in Network panel
+  * @description Tooltip for initiator view in Network panel. An initiator is a piece of code/entity
+  * in the code that initiated/started the network request, i.e. caused the network request. The 'call
+  * stack' is the location in the code where the initiation happened.
   */
   requestInitiatorCallStack: 'Request initiator call stack',
   /**

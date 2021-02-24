@@ -28,7 +28,8 @@ export const UIStrings = {
   */
   callbackBufferSize: 'Callback Buffer Size',
   /**
-  *@description Text in Audio Context Content Builder
+  * @description Label in the Audio Context Content Builder for the maximum number of output channels
+  * that this Audio Context has.
   */
   maxOutputChannels: 'Max Output Channels',
   /**

@@ -48,15 +48,15 @@ export const UIStrings = {
   /**
   *@description A tag of Network Conditions tool that can be searched in the command menu
   */
-  useragent: 'useragent',
+  useragent: '`useragent`',
   /**
   *@description A tag of Network Conditions tool that can be searched in the command menu
   */
-  userAgent: 'user agent',
+  userAgent: '`user agent`',
   /**
   *@description A tag of Network Conditions tool that can be searched in the command menu
   */
-  userdagent: 'user-agent',
+  userdagent: '`user-agent`',
   /**
   *@description Command for showing the 'Search' tool
   */

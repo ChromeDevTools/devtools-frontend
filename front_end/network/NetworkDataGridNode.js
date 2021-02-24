@@ -70,7 +70,8 @@ export const UIStrings = {
   */
   data: '(data)',
   /**
-  *@description Text in Network Data Grid Node of the Network panel
+  * @description Text in Network Data Grid Node of the Network panel. Indicates a network request has
+  * been canceled.
   */
   canceled: '(canceled)',
   /**

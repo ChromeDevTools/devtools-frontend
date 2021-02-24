@@ -54,7 +54,8 @@ export const UIStrings = {
   */
   consoleclearWasPreventedDueTo: '`console.clear()` was prevented due to \'Preserve log\'',
   /**
-  *@description Message element text content in Console View Message of the Console panel
+  * @description Text shown in the Console panel after the user has cleared the console, which
+  * removes all messages from the console so that it is empty.
   */
   consoleWasCleared: 'Console was cleared',
   /**

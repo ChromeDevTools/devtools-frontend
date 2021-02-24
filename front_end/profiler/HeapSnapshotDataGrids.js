@@ -105,7 +105,8 @@ export const UIStrings = {
   */
   freedSize: 'Freed Size',
   /**
-  *@description Text in Heap Snapshot Data Grids of a profiler tool
+  * @description Title of a column in a table in the Heap Snapshot tool. 'Delta' here means
+  * difference, so the whole string means 'difference in size'.
   */
   sizeDelta: 'Size Delta',
   /**

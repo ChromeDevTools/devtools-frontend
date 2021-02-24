@@ -81,7 +81,8 @@ export const UIStrings = {
   */
   filter: 'Filter',
   /**
-  *@description Filter label text in the Memory tool to filter class names for a heap snapshot
+  * @description Filter label text in the Memory tool to filter by JavaScript class names for a heap
+  * snapshot.
   */
   classFilter: 'Class filter',
   /**

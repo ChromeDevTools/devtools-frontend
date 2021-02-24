@@ -63,12 +63,12 @@ export const UIStrings = {
   */
   heavyBottomUp: 'Heavy (Bottom Up)',
   /**
-  *@description Text in Profile View of a profiler tool
+  *@description Text for selecting different profile views in the JS profiler tool. This option is a tree view.
   */
   treeTopDown: 'Tree (Top Down)',
   /**
-   *@description Name of a profile
-  *@example {2} PH1
+  * @description Name of a profile
+  * @example {2} PH1
   */
   profileD: 'Profile {PH1}',
   /**

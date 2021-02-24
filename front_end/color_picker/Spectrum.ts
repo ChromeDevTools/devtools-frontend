@@ -54,7 +54,8 @@ export const UIStrings = {
   */
   changeHue: 'Change hue',
   /**
-  *@description Aria label for alpha slider in Color Picker
+  * @description Aria label for alpha slider in Color Picker. Alpha refers to the alpha channel of a
+  * color, and this tool allows the user to change the alpha value.
   */
   changeAlpha: 'Change alpha',
   /**

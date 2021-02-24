@@ -708,6 +708,10 @@ describe('User Metrics for Issue Panel', () => {
         name: 'DevTools.IssueCreated',
         value: 41,  // LowTextContrastIssue
       },
+      {
+        name: 'DevTools.IssueCreated',
+        value: 41,  // LowTextContrastIssue
+      },
     ]);
   });
 

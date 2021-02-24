@@ -18,10 +18,10 @@ describe('Low contrast issues', async () => {
     await assertIssueTitle(issueTitle);
     const issueElement = await getIssueByTitle(issueTitle);
     assertNotNull(issueElement);
-    const section = await getResourcesElement('2 elements', issueElement);
+    const section = await getResourcesElement('3 elements', issueElement);
     const table = await extractTableFromResourceSection(section.content);
     assertNotNull(table);
-    assert.strictEqual(table.length, 3);
+    assert.strictEqual(table.length, 4);
     assert.deepEqual(table[0], [
       'Element',
       'Contrast ratio',
@@ -41,6 +41,14 @@ describe('Low contrast issues', async () => {
     assert.deepEqual(table[2], [
       'span#el2',
       '1',
+      '4.5',
+      '7',
+      '16px',
+      '400',
+    ]);
+    assert.deepEqual(table[3], [
+      'span#el3',
+      '1.49',
       '4.5',
       '7',
       '16px',

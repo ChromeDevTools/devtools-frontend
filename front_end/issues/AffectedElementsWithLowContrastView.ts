@@ -38,7 +38,7 @@ export class AffectedElementsWithLowContrastView extends AffectedElementsView {
 
     row.appendChild(await this.renderElementCell(
         {nodeName: details.violatingNodeSelector, backendNodeId: details.violatingNodeId}));
-    this.appendIssueDetailCell(row, String(Platform.NumberUtilities.floor(details.contrastRatio)));
+    this.appendIssueDetailCell(row, String(Platform.NumberUtilities.floor(details.contrastRatio, 2)));
     this.appendIssueDetailCell(row, String(details.thresholdAA));
     this.appendIssueDetailCell(row, String(details.thresholdAAA));
     this.appendIssueDetailCell(row, details.fontSize);

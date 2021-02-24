@@ -70,7 +70,7 @@ describeWithEnvironment('Cookie', () => {
     assert.strictEqual(cookie.expires(), expires);
     assert.strictEqual(cookie.maxAge(), undefined);
     assert.strictEqual(cookie.size(), 23);
-    assert.strictEqual(cookie.url(), 'https://.example.com:443/test');
+    assert.strictEqual(cookie.url(), 'https://.example.com/test');
     assert.strictEqual(cookie.getCookieLine(), null);
     assert.strictEqual(cookie.sourcePort(), 443);
     assert.strictEqual(cookie.sourceScheme(), Protocol.Network.CookieSourceScheme.Secure);
@@ -110,9 +110,48 @@ describeWithEnvironment('Cookie', () => {
     assert.strictEqual(cookie.domain(), '.example.com');
     assert.strictEqual(cookie.maxAge(), undefined);
     assert.strictEqual(cookie.size(), 23);
-    assert.strictEqual(cookie.url(), 'http://.example.com:80/test');
+    assert.strictEqual(cookie.url(), 'http://.example.com/test');
     assert.strictEqual(cookie.getCookieLine(), null);
     assert.strictEqual(cookie.sourcePort(), 80);
+    assert.strictEqual(cookie.sourceScheme(), Protocol.Network.CookieSourceScheme.NonSecure);
+  });
+
+  it('can be created from a protocol Cookie with no optional fields set and non-standard port', () => {
+    const cookie = SDK.Cookie.Cookie.fromProtocolCookie({
+      domain: '.example.com',
+      name: 'name',
+      path: '/test',
+      size: 23,
+      value: 'value',
+      expires: 0,
+      httpOnly: false,
+      sameParty: false,
+      secure: false,
+      session: true,
+      priority: Protocol.Network.CookiePriority.Medium,
+      sourcePort: 8000,
+      sourceScheme: Protocol.Network.CookieSourceScheme.NonSecure,
+    });
+
+    assert.strictEqual(cookie.key(), '.example.com name /test');
+    assert.strictEqual(cookie.name(), 'name');
+    assert.strictEqual(cookie.value(), 'value');
+
+    assert.strictEqual(cookie.type(), null);
+    assert.strictEqual(cookie.httpOnly(), false);
+    assert.strictEqual(cookie.secure(), false);
+    assert.strictEqual(cookie.sameSite(), undefined);
+    assert.strictEqual(cookie.sameParty(), false);
+    assert.strictEqual(cookie.priority(), 'Medium');
+    // Session cookie status is derived from the presence of max-age or expires fields.
+    assert.strictEqual(cookie.session(), true);
+    assert.strictEqual(cookie.path(), '/test');
+    assert.strictEqual(cookie.domain(), '.example.com');
+    assert.strictEqual(cookie.maxAge(), undefined);
+    assert.strictEqual(cookie.size(), 23);
+    assert.strictEqual(cookie.url(), 'http://.example.com:8000/test');
+    assert.strictEqual(cookie.getCookieLine(), null);
+    assert.strictEqual(cookie.sourcePort(), 8000);
     assert.strictEqual(cookie.sourceScheme(), Protocol.Network.CookieSourceScheme.NonSecure);
   });
 

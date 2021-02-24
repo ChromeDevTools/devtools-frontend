@@ -39,6 +39,7 @@ import * as Common from '../common/common.js';
 import * as DataGrid from '../data_grid/data_grid.js';
 import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
+import * as Root from '../root/root.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
@@ -203,22 +204,6 @@ export class CookiesTable extends UI.Widget.VBox {
         editable: editable,
       },
       {
-        id: SDK.Cookie.Attributes.SourceScheme,
-        title: 'SourceScheme',
-        sortable: true,
-        align: DataGrid.DataGrid.Align.Center,
-        weight: 7,
-        editable: editable,
-      },
-      {
-        id: SDK.Cookie.Attributes.SourcePort,
-        title: 'SourcePort',
-        sortable: true,
-        align: DataGrid.DataGrid.Align.Center,
-        weight: 7,
-        editable: editable,
-      },
-      {
         id: SDK.Cookie.Attributes.Priority,
         title: 'Priority',
         sortable: true,
@@ -227,6 +212,28 @@ export class CookiesTable extends UI.Widget.VBox {
         editable: editable,
       },
     ] as DataGrid.DataGrid.ColumnDescriptor[];
+
+    if (Root.Runtime.experiments.isEnabled('experimentalCookieFeatures')) {
+      const additionalColumns = [
+        {
+          id: SDK.Cookie.Attributes.SourceScheme,
+          title: 'SourceScheme',
+          sortable: true,
+          align: DataGrid.DataGrid.Align.Center,
+          weight: 7,
+          editable: editable,
+        },
+        {
+          id: SDK.Cookie.Attributes.SourcePort,
+          title: 'SourcePort',
+          sortable: true,
+          align: DataGrid.DataGrid.Align.Center,
+          weight: 7,
+          editable: editable,
+        },
+      ] as DataGrid.DataGrid.ColumnDescriptor[];
+      columns.push(...additionalColumns);
+    }
 
     if (editable) {
       this._dataGrid = new DataGrid.DataGrid.DataGridImpl({

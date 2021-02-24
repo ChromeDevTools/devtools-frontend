@@ -186,7 +186,9 @@ export class Cookie {
       return null;
     }
     let port = '';
-    if (this.sourcePort()) {
+    const sourcePort = this.sourcePort();
+    // Do not include standard ports to ensure the back-end will change standard ports according to the scheme.
+    if (sourcePort && sourcePort !== 80 && sourcePort !== 443) {
       port = `:${this.sourcePort()}`;
     }
     // We must not consider the this.sourceScheme() here, otherwise it will be impossible to set a cookie without

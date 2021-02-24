@@ -619,7 +619,8 @@ export const DevtoolsExperiments = {
   'fullAccessibilityTree': 42,
   'ignoreListJSFramesOnTimeline': 43,
   'contrastIssues': 44,
-  '__lastValidEnumPosition': 44,
+  'experimentalCookieFeatures': 45,
+  '__lastValidEnumPosition': 45,
 };
 
 /** @type {!Object<string, number>} */

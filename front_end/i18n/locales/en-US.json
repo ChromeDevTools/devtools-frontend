@@ -467,6 +467,33 @@
   "animation/AnimationUI.ts | sSlider": {
     "message": "{PH1} slider"
   },
+  "bindings/ContentProviderBasedProject.js | unknownErrorLoadingFile": {
+    "message": "Unknown error loading file"
+  },
+  "bindings/DebuggerLanguagePlugins.js | errorInDebuggerLanguagePlugin": {
+    "message": "Error in debugger language plugin: {PH1}"
+  },
+  "bindings/DebuggerLanguagePlugins.js | failedToLoadDebugSymbolsFor": {
+    "message": "[{PH1}] Failed to load debug symbols for {PH2} ({PH3})"
+  },
+  "bindings/DebuggerLanguagePlugins.js | loadedDebugSymbolsForButDidnt": {
+    "message": "[{PH1}] Loaded debug symbols for {PH2}, but didn't find any source files"
+  },
+  "bindings/DebuggerLanguagePlugins.js | loadedDebugSymbolsForFound": {
+    "message": "[{PH1}] Loaded debug symbols for {PH2}, found {PH3} source file(s)"
+  },
+  "bindings/DebuggerLanguagePlugins.js | loadingDebugSymbolsFor": {
+    "message": "[{PH1}] Loading debug symbols for {PH2}..."
+  },
+  "bindings/DebuggerLanguagePlugins.js | loadingDebugSymbolsForVia": {
+    "message": "[{PH1}] Loading debug symbols for {PH2} (via {PH3})..."
+  },
+  "bindings/ResourceScriptMapping.js | liveEditCompileFailed": {
+    "message": "LiveEdit compile failed: {PH1}"
+  },
+  "bindings/ResourceScriptMapping.js | liveEditFailed": {
+    "message": "LiveEdit failed: {PH1}"
+  },
   "browser_debugger/browser_debugger-meta.ts | contentScripts": {
     "message": "Content scripts"
   },

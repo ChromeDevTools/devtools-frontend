@@ -29,9 +29,18 @@
  */
 
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
-import {ls} from '../platform/platform.js';
+import * as i18n from '../i18n/i18n.js';
 import * as TextUtils from '../text_utils/text_utils.js';  // eslint-disable-line no-unused-vars
 import * as Workspace from '../workspace/workspace.js';
+
+export const UIStrings = {
+  /**
+  * @description Error message that is displayed in the Sources panel when can't be loaded.
+  */
+  unknownErrorLoadingFile: 'Unknown error loading file',
+};
+const str_ = i18n.i18n.registerUIStrings('bindings/ContentProviderBasedProject.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 /**
  * @typedef {{
@@ -76,7 +85,11 @@ export class ContentProviderBasedProject extends Workspace.Workspace.ProjectStor
       return {content: content.content, isEncoded, error: 'error' in content && content.error || ''};
     } catch (err) {
       // TODO(rob.paveza): CRBug 1013683 - Consider propagating exceptions full-stack
-      return {content: null, isEncoded: false, error: err ? String(err) : ls`Unknown error loading file`};
+      return {
+        content: null,
+        isEncoded: false,
+        error: err ? String(err) : i18nString(UIStrings.unknownErrorLoadingFile)
+      };
     }
   }
 

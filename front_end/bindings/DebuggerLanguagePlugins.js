@@ -3,13 +3,56 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
-import {ls} from '../platform/platform.js';
+import * as i18n from '../i18n/i18n.js';
 import * as SDK from '../sdk/sdk.js';
 import * as Workspace from '../workspace/workspace.js';
 
 import {ContentProviderBasedProject} from './ContentProviderBasedProject.js';
 import {DebuggerWorkspaceBinding} from './DebuggerWorkspaceBinding.js';  // eslint-disable-line no-unused-vars
 import {NetworkProject} from './NetworkProject.js';
+
+export const UIStrings = {
+  /**
+  *@description Error message that is displayed in the Console when language plugins report errors
+  *@example {File not found} PH1
+  */
+  errorInDebuggerLanguagePlugin: 'Error in debugger language plugin: {PH1}',
+  /**
+  *@description Status message that is shown in the Console when debugging information is being loaded
+  *@example {C/C++ DevTools Support (DWARF)} PH1
+  *@example {http://web.dev/file.wasm} PH2
+  *@example {http://web.dev/file.wasm.debug.wasm} PH3
+  */
+  loadingDebugSymbolsForVia: '[{PH1}] Loading debug symbols for {PH2} (via {PH3})...',
+  /**
+  *@description Status message that is shown in the Console when debugging information is being loaded
+  *@example {C/C++ DevTools Support (DWARF)} PH1
+  *@example {http://web.dev/file.wasm} PH2
+  */
+  loadingDebugSymbolsFor: '[{PH1}] Loading debug symbols for {PH2}...',
+  /**
+  *@description Warning message that is displayed in the Console when debugging information was loaded, but no source files were found
+  *@example {C/C++ DevTools Support (DWARF)} PH1
+  *@example {http://web.dev/file.wasm} PH2
+  */
+  loadedDebugSymbolsForButDidnt: '[{PH1}] Loaded debug symbols for {PH2}, but didn\'t find any source files',
+  /**
+  *@description Status message that is shown in the Console when debugging information is successfully loaded
+  *@example {C/C++ DevTools Support (DWARF)} PH1
+  *@example {http://web.dev/file.wasm} PH2
+  *@example {42} PH3
+  */
+  loadedDebugSymbolsForFound: '[{PH1}] Loaded debug symbols for {PH2}, found {PH3} source file(s)',
+  /**
+  *@description Error message that is displayed in the Console when debugging information cannot be loaded
+  *@example {C/C++ DevTools Support (DWARF)} PH1
+  *@example {http://web.dev/file.wasm} PH2
+  *@example {File not found} PH3
+  */
+  failedToLoadDebugSymbolsFor: '[{PH1}] Failed to load debug symbols for {PH2} ({PH3})',
+};
+const str_ = i18n.i18n.registerUIStrings('bindings/DebuggerLanguagePlugins.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 class SourceType {
   /**
@@ -908,7 +951,8 @@ export class DebuggerLanguagePluginManager {
       const scripts = rawModuleHandle.scripts.filter(script => script.debuggerModel !== debuggerModel);
       if (scripts.length === 0) {
         rawModuleHandle.plugin.removeRawModule(rawModuleId).catch(error => {
-          Common.Console.Console.instance().error(ls`Error in debugger language plugin: ${error.message}`);
+          Common.Console.Console.instance().error(
+              i18nString(UIStrings.errorInDebuggerLanguagePlugin, {PH1: error.message}));
         });
         this._rawModuleHandles.delete(rawModuleId);
       } else {
@@ -1039,7 +1083,8 @@ export class DebuggerLanguagePluginManager {
             sourceLocation.lineNumber, sourceLocation.columnNumber >= 0 ? sourceLocation.columnNumber : undefined);
       }
     } catch (error) {
-      Common.Console.Console.instance().error(ls`Error in debugger language plugin: ${error.message}`);
+      Common.Console.Console.instance().error(
+          i18nString(UIStrings.errorInDebuggerLanguagePlugin, {PH1: error.message}));
     }
     return null;
   }
@@ -1067,7 +1112,8 @@ export class DebuggerLanguagePluginManager {
     }
 
     return Promise.all(locationPromises).then(locations => locations.flat()).catch(error => {
-      Common.Console.Console.instance().error(ls`Error in debugger language plugin: ${error.message}`);
+      Common.Console.Console.instance().error(
+          i18nString(UIStrings.errorInDebuggerLanguagePlugin, {PH1: error.message}));
       return null;
     });
 
@@ -1143,9 +1189,9 @@ export class DebuggerLanguagePluginManager {
           const url = script.sourceURL;
           const symbolsUrl = (script.debugSymbols && script.debugSymbols.externalURL) || '';
           if (symbolsUrl) {
-            console.log(ls`[${plugin.name}] Loading debug symbols for ${url} (via ${symbolsUrl})...`);
+            console.log(i18nString(UIStrings.loadingDebugSymbolsForVia, {PH1: plugin.name, PH2: url, PH3: symbolsUrl}));
           } else {
-            console.log(ls`[${plugin.name}] Loading debug symbols for ${url}...`);
+            console.log(i18nString(UIStrings.loadingDebugSymbolsFor, {PH1: plugin.name, PH2: url}));
           }
           try {
             const code = (!symbolsUrl && url.startsWith('wasm://')) ? await script.getWasmBytecode() : undefined;
@@ -1158,14 +1204,15 @@ export class DebuggerLanguagePluginManager {
               return [];
             }
             if (sourceFileURLs.length === 0) {
-              console.warn(ls`[${plugin.name}] Loaded debug symbols for ${url}, but didn't find any source files`);
+              console.warn(i18nString(UIStrings.loadedDebugSymbolsForButDidnt, {PH1: plugin.name, PH2: url}));
             } else {
-              console.log(
-                  ls`[${plugin.name}] Loaded debug symbols for ${url}, found ${sourceFileURLs.length} source file(s)`);
+              console.log(i18nString(
+                  UIStrings.loadedDebugSymbolsForFound, {PH1: plugin.name, PH2: url, PH3: sourceFileURLs.length}));
             }
             return sourceFileURLs;
           } catch (error) {
-            console.error(ls`[${plugin.name}] Failed to load debug symbols for ${url} (${error.message})`);
+            console.error(
+                i18nString(UIStrings.failedToLoadDebugSymbolsFor, {PH1: plugin.name, PH2: url, PH3: error.message}));
             this._rawModuleHandles.delete(rawModuleId);
             return [];
           }
@@ -1230,7 +1277,8 @@ export class DebuggerLanguagePluginManager {
       }
       return Array.from(scopes.values());
     } catch (error) {
-      Common.Console.Console.instance().error(ls`Error in debugger language plugin: ${error.message}`);
+      Common.Console.Console.instance().error(
+          i18nString(UIStrings.errorInDebuggerLanguagePlugin, {PH1: error.message}));
       return null;
     }
   }
@@ -1259,7 +1307,7 @@ export class DebuggerLanguagePluginManager {
     try {
       return await plugin.getFunctionInfo(location);
     } catch (error) {
-      Common.Console.Console.instance().warn(ls`Error in debugger language plugin: ${error.message}`);
+      Common.Console.Console.instance().warn(i18nString(UIStrings.errorInDebuggerLanguagePlugin, {PH1: error.message}));
       return noDwarfInfo;
     }
   }
@@ -1295,7 +1343,7 @@ export class DebuggerLanguagePluginManager {
                 script.debuggerModel, script.scriptId, 0, Number(m.endOffset) + (script.codeOffset() || 0))
           }));
     } catch (error) {
-      Common.Console.Console.instance().warn(ls`Error in debugger language plugin: ${error.message}`);
+      Common.Console.Console.instance().warn(i18nString(UIStrings.errorInDebuggerLanguagePlugin, {PH1: error.message}));
       return [];
     }
   }
@@ -1331,7 +1379,7 @@ export class DebuggerLanguagePluginManager {
                 script.debuggerModel, script.scriptId, 0, Number(m.endOffset) + (script.codeOffset() || 0))
           }));
     } catch (error) {
-      Common.Console.Console.instance().warn(ls`Error in debugger language plugin: ${error.message}`);
+      Common.Console.Console.instance().warn(i18nString(UIStrings.errorInDebuggerLanguagePlugin, {PH1: error.message}));
       return [];
     }
   }

@@ -29,6 +29,7 @@
  */
 
 import * as Common from '../common/common.js';
+import * as i18n from '../i18n/i18n.js';
 import * as SDK from '../sdk/sdk.js';
 import * as Workspace from '../workspace/workspace.js';
 
@@ -37,6 +38,21 @@ import {ContentProviderBasedProject} from './ContentProviderBasedProject.js';
 import {DebuggerSourceMapping, DebuggerWorkspaceBinding} from './DebuggerWorkspaceBinding.js';  // eslint-disable-line no-unused-vars
 import {NetworkProject} from './NetworkProject.js';
 import {metadataForURL} from './ResourceUtils.js';
+
+export const UIStrings = {
+  /**
+  *@description Text in Resource Script Mapping
+  *@example {warning} PH1
+  */
+  liveEditFailed: 'LiveEdit failed: {PH1}',
+  /**
+  *@description Text in Resource Script Mapping
+  *@example {connection lost} PH1
+  */
+  liveEditCompileFailed: 'LiveEdit compile failed: {PH1}',
+};
+const str_ = i18n.i18n.registerUIStrings('bindings/ResourceScriptMapping.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 /**
  * @implements {DebuggerSourceMapping}
@@ -374,10 +390,10 @@ export class ResourceScriptFile extends Common.ObjectWrapper.ObjectWrapper {
     }
     if (!exceptionDetails) {
       Common.Console.Console.instance().addMessage(
-          Common.UIString.UIString('LiveEdit failed: %s', error), Common.Console.MessageLevel.Warning);
+          i18nString(UIStrings.liveEditFailed, {PH1: error}), Common.Console.MessageLevel.Warning);
       return;
     }
-    const messageText = Common.UIString.UIString('LiveEdit compile failed: %s', exceptionDetails.text);
+    const messageText = i18nString(UIStrings.liveEditCompileFailed, {PH1: exceptionDetails.text});
     this._uiSourceCode.addLineMessage(
         Workspace.UISourceCode.Message.Level.Error, messageText, exceptionDetails.lineNumber,
         exceptionDetails.columnNumber);

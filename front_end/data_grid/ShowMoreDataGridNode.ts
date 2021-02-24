@@ -28,6 +28,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as i18n from '../i18n/i18n.js';
 
 import {DataGridNode} from './DataGrid.js';
@@ -49,19 +51,22 @@ export const UIStrings = {
   */
   showAllD: 'Show all {PH1}',
 };
-const str_ = i18n.i18n.registerUIStrings('data_grid/ShowMoreDataGridNode.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('data_grid/ShowMoreDataGridNode.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-/**
- * @extends {DataGridNode<!ShowMoreDataGridNode>}
- */
-export class ShowMoreDataGridNode extends DataGridNode {
-  /**
-   * @param {function(number, number):Promise<*>} callback
-   * @param {number} startPosition
-   * @param {number} endPosition
-   * @param {number} chunkSize
-   */
-  constructor(callback, startPosition, endPosition, chunkSize) {
+
+type ShowMoreDataGridNodeCallback = (arg0: number, arg1: number) => Promise<void>;
+export class ShowMoreDataGridNode extends DataGridNode<ShowMoreDataGridNode> {
+  _callback: ShowMoreDataGridNodeCallback;
+  _startPosition: number;
+  _endPosition: number;
+  _chunkSize: number;
+  showNext: HTMLButtonElement;
+  showAll: HTMLButtonElement;
+  showLast: HTMLButtonElement;
+  selectable: boolean;
+  _hasCells?: boolean;
+
+  constructor(callback: ShowMoreDataGridNodeCallback, startPosition: number, endPosition: number, chunkSize: number) {
     super({summaryRow: true}, false);
     this._callback = callback;
     this._startPosition = startPosition;
@@ -89,19 +94,19 @@ export class ShowMoreDataGridNode extends DataGridNode {
     this.selectable = false;
   }
 
-  _showNextChunk() {
+  _showNextChunk(): void {
     this._callback(this._startPosition, this._startPosition + this._chunkSize);
   }
 
-  _showAll() {
+  _showAll(): void {
     this._callback(this._startPosition, this._endPosition);
   }
 
-  _showLastChunk() {
+  _showLastChunk(): void {
     this._callback(this._endPosition - this._chunkSize, this._endPosition);
   }
 
-  _updateLabels() {
+  _updateLabels(): void {
     const totalSize = this._endPosition - this._startPosition;
     if (totalSize > this._chunkSize) {
       this.showNext.classList.remove('hidden');
@@ -113,21 +118,12 @@ export class ShowMoreDataGridNode extends DataGridNode {
     this.showAll.textContent = i18nString(UIStrings.showAllD, {PH1: totalSize});
   }
 
-  /**
-   * @override
-   * @param {!Element} element
-   */
-  createCells(element) {
+  createCells(element: Element): void {
     this._hasCells = false;
     super.createCells(element);
   }
 
-  /**
-   * @override
-   * @param {string} columnIdentifier
-   * @return {!HTMLElement}
-   */
-  createCell(columnIdentifier) {
+  createCell(columnIdentifier: string): HTMLElement {
     const cell = this.createTD(columnIdentifier);
     cell.classList.add('show-more');
     if (!this._hasCells) {
@@ -142,30 +138,20 @@ export class ShowMoreDataGridNode extends DataGridNode {
     return cell;
   }
 
-  /**
-   * @param {number} from
-   */
-  setStartPosition(from) {
+  setStartPosition(from: number): void {
     this._startPosition = from;
     this._updateLabels();
   }
 
-  /**
-   * @param {number} to
-   */
-  setEndPosition(to) {
+  setEndPosition(to: number): void {
     this._endPosition = to;
     this._updateLabels();
   }
 
-  /**
-   * @override
-   * @return {number}
-   */
-  nodeSelfHeight() {
+  nodeSelfHeight(): number {
     return 40;
   }
 
-  dispose() {
+  dispose(): void {
   }
 }

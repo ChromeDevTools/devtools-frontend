@@ -23,6 +23,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* eslint-disable rulesdir/no_underscored_properties */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable rulesdir/check_license_header */
+
 import * as Common from '../common/common.js';
 import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
@@ -96,36 +100,68 @@ export const UIStrings = {
   */
   checked: 'checked',
 };
-const str_ = i18n.i18n.registerUIStrings('data_grid/DataGrid.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('data_grid/DataGrid.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-/** @type {!WeakMap<!Element, string>} */
-const elementToLongTextMap = new WeakMap();
+const elementToLongTextMap = new WeakMap<Element, string>();
 
-/** @type {!WeakMap<!Node, string>} */
-const nodeToColumnIdMap = new WeakMap();
+const nodeToColumnIdMap = new WeakMap<Node, string>();
 
-/** @type {!WeakMap<!Element, !UI.Icon.Icon>} */
-const elementToSortIconMap = new WeakMap();
+const elementToSortIconMap = new WeakMap<Element, UI.Icon.Icon>();
 
-/** @type {!WeakMap<!Element, number>} */
-const elementToPreferedWidthMap = new WeakMap();
+const elementToPreferedWidthMap = new WeakMap<Element, number>();
 
-/** @type {!WeakMap<!Element, number>} */
-const elementToPositionMap = new WeakMap();
+const elementToPositionMap = new WeakMap<Element, number>();
 
-/** @type {!WeakMap<!Element, number>} */
-const elementToIndexMap = new WeakMap();
+const elementToIndexMap = new WeakMap<Element, number>();
 
+export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper {
+  element: HTMLDivElement;
+  _displayName: string;
+  _editCallback: ((arg0: any, arg1: string, arg2: any, arg3: any) => any)|undefined;
+  _deleteCallback: ((arg0: any) => any)|undefined;
+  _refreshCallback: (() => any)|undefined;
+  _headerTable: Element;
+  _headerTableHeaders: {
+    [x: string]: Element,
+  };
+  _scrollContainer: Element;
+  _dataTable: Element;
+  _inline: boolean;
+  _columnsArray: ColumnDescriptor[];
+  _columns: {
+    [x: string]: ColumnDescriptor,
+  };
+  visibleColumnsArray: ColumnDescriptor[];
+  _cellClass: string|null;
+  _headerTableColumnGroup: Element;
+  _headerTableBody: HTMLTableSectionElement;
+  _headerRow: Element;
+  _dataTableColumnGroup: Element;
+  dataTableBody: Element;
+  _topFillerRow: HTMLElement;
+  _bottomFillerRow: HTMLElement;
+  _editing: boolean;
+  selectedNode: DataGridNode<T>|null;
+  expandNodesWhenArrowing: boolean;
+  indentWidth: number;
+  _resizers: HTMLElement[];
+  _columnWidthsInitialized: boolean;
+  _cornerWidth: number;
+  _resizeMethod: ResizeMethod;
+  _headerContextMenuCallback: ((arg0: UI.ContextMenu.SubMenu) => void)|null;
+  _rowContextMenuCallback: ((arg0: UI.ContextMenu.ContextMenu, arg1: DataGridNode<T>) => void)|null;
+  elementToDataGridNode: WeakMap<Node, DataGridNode<T>>;
+  disclosureColumnId?: string;
+  _sortColumnCell?: Element;
+  _rootNode?: DataGridNode<T>;
+  _editingNode?: DataGridNode<T>|null;
+  _columnWeightsSetting?: Common.Settings.Setting<any>;
+  creationNode?: CreationDataGridNode<any>;
+  _currentResizer?: EventTarget|null;
+  _dataGridWidget?: any;
 
-/**
- * @template NODE_TYPE
- */
-export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
-  /**
-   * @param {!Parameters} dataGridParameters
-   */
-  constructor(dataGridParameters) {
+  constructor(dataGridParameters: Parameters) {
     super();
     const {displayName, columns: columnsArray, editCallback, deleteCallback, refreshCallback} = dataGridParameters;
     this.element = document.createElement('div');
@@ -151,15 +187,11 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
     this._refreshCallback = refreshCallback;
 
     const headerContainer = this.element.createChild('div', 'header-container');
-    /** @type {!Element} */
     this._headerTable = headerContainer.createChild('table', 'header');
     // Hide the header table from screen readers since titles are also added to data table.
     UI.ARIAUtils.markAsHidden(this._headerTable);
-    /** @type {!Object.<string, !Element>} */
     this._headerTableHeaders = {};
-    /** @type {!Element} */
     this._scrollContainer = this.element.createChild('div', 'data-container');
-    /** @type {!Element} */
     this._dataTable = this._scrollContainer.createChild('table', 'data');
 
     // FIXME: Add a createCallback which is different from editCallback and has different
@@ -170,93 +202,58 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
     this._dataTable.addEventListener('mousedown', this._mouseDownInDataTable.bind(this));
     this._dataTable.addEventListener('click', this._clickInDataTable.bind(this), true);
 
-    /** @type {boolean} */
     this._inline = false;
 
-    /** @type {!Array.<!ColumnDescriptor>} */
     this._columnsArray = [];
-    /** @type {!Object.<string, !ColumnDescriptor>} */
     this._columns = {};
-    /** @type {!Array.<!ColumnDescriptor>} */
     this.visibleColumnsArray = columnsArray;
 
     columnsArray.forEach(column => this._innerAddColumn(column));
 
-    /** @type {?string} */
     this._cellClass = null;
 
-    /** @type {!Element} */
     this._headerTableColumnGroup = this._headerTable.createChild('colgroup');
-    /** @type {!HTMLTableSectionElement} */
-    this._headerTableBody = /** @type {!HTMLTableSectionElement} */ (this._headerTable.createChild('tbody'));
-    /** @type {!Element} */
+    this._headerTableBody = (this._headerTable.createChild('tbody') as HTMLTableSectionElement);
     this._headerRow = this._headerTableBody.createChild('tr');
 
-    /** @type {!Element} */
     this._dataTableColumnGroup = this._dataTable.createChild('colgroup');
-    /**
-     * @type {!Element}
-     */
     this.dataTableBody = this._dataTable.createChild('tbody');
-    /** @type {!HTMLElement} */
-    this._topFillerRow =
-        /** @type {!HTMLElement} */ (this.dataTableBody.createChild('tr', 'data-grid-filler-row revealed'));
-    /** @type {!HTMLElement} */
-    this._bottomFillerRow =
-        /** @type {!HTMLElement} */ (this.dataTableBody.createChild('tr', 'data-grid-filler-row revealed'));
+    this._topFillerRow = (this.dataTableBody.createChild('tr', 'data-grid-filler-row revealed') as HTMLElement);
+    this._bottomFillerRow = (this.dataTableBody.createChild('tr', 'data-grid-filler-row revealed') as HTMLElement);
 
     this.setVerticalPadding(0, 0);
     this._refreshHeader();
 
-    /** @type {boolean} */
     this._editing = false;
-    /** @type {?DataGridNode<!NODE_TYPE>} */
     this.selectedNode = null;
-    /** @type {boolean} */
     this.expandNodesWhenArrowing = false;
-    this.setRootNode(/** @type {!DataGridNode<!NODE_TYPE>} */ (new DataGridNode()));
+    this.setRootNode((new DataGridNode() as DataGridNode<T>));
 
     this.setHasSelection(false);
 
-    /** @type {number} */
     this.indentWidth = 15;
-    /** @type {!Array.<!HTMLElement>} */
     this._resizers = [];
-    /** @type {boolean} */
     this._columnWidthsInitialized = false;
-    /** @type {number} */
     this._cornerWidth = CornerWidth;
-    /** @type {!ResizeMethod} */
     this._resizeMethod = ResizeMethod.Nearest;
 
-    /** @type {?function(!UI.ContextMenu.SubMenu):void} */
     this._headerContextMenuCallback = null;
-    /** @type {?function(!UI.ContextMenu.ContextMenu, !DataGridNode<!NODE_TYPE>):void} */
     this._rowContextMenuCallback = null;
 
-    /**
-     * @type {!WeakMap<!Node, !DataGridNode<!NODE_TYPE>>}
-     */
     this.elementToDataGridNode = new WeakMap();
   }
 
-  /**
-   * @return {?DataGridNode<!NODE_TYPE>|undefined}
-   */
-  _firstSelectableNode() {
-    let firstSelectableNode = this._rootNode;
+  _firstSelectableNode(): DataGridNode<T>|null|undefined {
+    let firstSelectableNode: (DataGridNode<T>|undefined) = this._rootNode;
     while (firstSelectableNode && !firstSelectableNode.selectable) {
       firstSelectableNode = firstSelectableNode.traverseNextNode(true) || undefined;
     }
     return firstSelectableNode;
   }
 
-  /**
-   * @return {!DataGridNode<!NODE_TYPE>|undefined}
-   */
-  _lastSelectableNode() {
-    let lastSelectableNode = this._rootNode;
-    let iterator = this._rootNode;
+  _lastSelectableNode(): DataGridNode<T>|undefined {
+    let lastSelectableNode: DataGridNode<T>|(DataGridNode<T>| undefined) = this._rootNode;
+    let iterator: (DataGridNode<T>|undefined) = this._rootNode;
     while (iterator) {
       if (iterator.selectable) {
         lastSelectableNode = iterator;
@@ -266,29 +263,20 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
     return lastSelectableNode;
   }
 
-  /**
-   * @param {!Element} element
-   * @param {*} value
-   */
-  setElementContent(element, value) {
+  setElementContent(element: Element, value: any): void {
     const columnId = this.columnIdFromNode(element);
     if (!columnId) {
       return;
     }
     const column = this._columns[columnId];
     if (column.dataType === DataType.Boolean) {
-      DataGridImpl.setElementBoolean(element, /** @type {boolean} */ (Boolean(value)));
+      DataGridImpl.setElementBoolean(element, (Boolean(value) as boolean));
     } else if (value !== null) {
-      DataGridImpl.setElementText(element, /** @type {string} */ (value), Boolean(column.longText));
+      DataGridImpl.setElementText(element, (value as string), Boolean(column.longText));
     }
   }
 
-  /**
-   * @param {!Element} element
-   * @param {string} newText
-   * @param {boolean} longText
-   */
-  static setElementText(element, newText, longText) {
+  static setElementText(element: Element, newText: string, longText: boolean): void {
     if (longText && newText.length > 1000) {
       element.textContent = Platform.StringUtilities.trimEndWithMaxLength(newText, 1000);
       UI.Tooltip.Tooltip.install(element, newText);
@@ -300,53 +288,38 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
     }
   }
 
-  /**
-   * @param {!Element} element
-   * @param {boolean} value
-   */
-  static setElementBoolean(element, value) {
+  static setElementBoolean(element: Element, value: boolean): void {
     element.textContent = value ? '\u2713' : '';
     UI.Tooltip.Tooltip.install(element, '');
   }
 
-  /**
-   * @param {boolean} isStriped
-   */
-  setStriped(isStriped) {
+  setStriped(isStriped: boolean): void {
     this.element.classList.toggle('striped-data-grid', isStriped);
   }
 
-  /**
-   * @param {boolean} focusable
-   */
-  setFocusable(focusable) {
+  setFocusable(focusable: boolean): void {
     this.element.tabIndex = focusable ? 0 : -1;
     if (focusable === false) {
       UI.ARIAUtils.removeRole(this.element);
     }
   }
 
-  /**
-   * @param {boolean} hasSelected
-   */
-  setHasSelection(hasSelected) {
+  setHasSelection(hasSelected: boolean): void {
     // 'no-selection' class causes datagrid to have a focus-indicator border
     this.element.classList.toggle('no-selection', !hasSelected);
   }
 
-  /**
-   * @param {string=} text
-   */
-  updateGridAccessibleName(text) {
+  updateGridAccessibleName(text?: string): void {
     // Update the label with the provided text or the current selected node
-    const accessibleText = (this.selectedNode && this.selectedNode.existingElement()) ? this.selectedNode.nodeAccessibleText : '';
+    const accessibleText =
+        (this.selectedNode && this.selectedNode.existingElement()) ? this.selectedNode.nodeAccessibleText : '';
     if (this.element === this.element.ownerDocument.deepActiveElement()) {
       // Only alert if the datagrid has focus
       UI.ARIAUtils.alert(text ? text : accessibleText, this.element);
     }
   }
 
-  updateGridAccessibleNameOnFocus() {
+  updateGridAccessibleNameOnFocus(): void {
     // When a grid gets focus
     // 1) If an item is selected - Read the content of the row
     let accessibleText;
@@ -369,18 +342,11 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
     UI.ARIAUtils.alert(accessibleText, this.element);
   }
 
-  /**
-   * @return {!Element}
-   */
-  headerTableBody() {
+  headerTableBody(): Element {
     return this._headerTableBody;
   }
 
-  /**
-   * @param {!ColumnDescriptor} column
-   * @param {number=} position
-   */
-  _innerAddColumn(column, position) {
+  _innerAddColumn(column: ColumnDescriptor, position?: number): void {
     column.defaultWeight = column.weight;
 
     const columnId = column.id;
@@ -413,7 +379,6 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
 
     if (column.sort) {
       cell.classList.add(column.sort);
-      /** @type {!Element} */
       this._sortColumnCell = cell;
     }
 
@@ -426,18 +391,11 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
     }
   }
 
-  /**
-   * @param {!ColumnDescriptor} column
-   * @param {number=} position
-   */
-  addColumn(column, position) {
+  addColumn(column: ColumnDescriptor, position?: number): void {
     this._innerAddColumn(column, position);
   }
 
-  /**
-   * @param {string} columnId
-   */
-  _innerRemoveColumn(columnId) {
+  _innerRemoveColumn(columnId: string): void {
     const column = this._columns[columnId];
     if (!column) {
       return;
@@ -452,21 +410,15 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
     delete this._headerTableHeaders[columnId];
   }
 
-  /**
-   * @param {string} columnId
-   */
-  removeColumn(columnId) {
+  removeColumn(columnId: string): void {
     this._innerRemoveColumn(columnId);
   }
 
-  /**
-   * @param {string} cellClass
-   */
-  setCellClass(cellClass) {
+  setCellClass(cellClass: string): void {
     this._cellClass = cellClass;
   }
 
-  _refreshHeader() {
+  _refreshHeader(): void {
     this._headerTableColumnGroup.removeChildren();
     this._dataTableColumnGroup.removeChildren();
     this._headerRow.removeChildren();
@@ -476,15 +428,14 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
     for (let i = 0; i < this.visibleColumnsArray.length; ++i) {
       const column = this.visibleColumnsArray[i];
       const columnId = column.id;
-      const headerColumn = /** @type {!HTMLElement} */ (this._headerTableColumnGroup.createChild('col'));
-      const dataColumn = /** @type {!HTMLElement} */ (this._dataTableColumnGroup.createChild('col'));
+      const headerColumn = (this._headerTableColumnGroup.createChild('col') as HTMLElement);
+      const dataColumn = (this._dataTableColumnGroup.createChild('col') as HTMLElement);
       if (column.width) {
         headerColumn.style.width = column.width;
         dataColumn.style.width = column.width;
       }
       this._headerRow.appendChild(this._headerTableHeaders[columnId]);
-      const topFillerRowCell =
-          /** @type {!HTMLTableCellElement} */ (this._topFillerRow.createChild('th', 'top-filler-td'));
+      const topFillerRowCell = (this._topFillerRow.createChild('th', 'top-filler-td') as HTMLTableCellElement);
       topFillerRowCell.textContent = column.title || null;
       topFillerRowCell.scope = 'col';
       const bottomFillerRowChild = this._bottomFillerRow.createChild('td', 'bottom-filler-td');
@@ -492,8 +443,7 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
     }
 
     this._headerRow.createChild('th', 'corner');
-    const topFillerRowCornerCell =
-        /** @type {!HTMLTableCellElement} */ (this._topFillerRow.createChild('th', 'corner'));
+    const topFillerRowCornerCell = (this._topFillerRow.createChild('th', 'corner') as HTMLTableCellElement);
     topFillerRowCornerCell.classList.add('top-filler-td');
     topFillerRowCornerCell.scope = 'col';
     this._bottomFillerRow.createChild('td', 'corner').classList.add('bottom-filler-td');
@@ -501,12 +451,7 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
     this._dataTableColumnGroup.createChild('col', 'corner');
   }
 
-  /**
-   * @param {number} top
-   * @param {number} bottom
-   * @protected
-   */
-  setVerticalPadding(top, bottom) {
+  protected setVerticalPadding(top: number, bottom: number): void {
     const topPx = top + 'px';
     const bottomPx = (top || bottom) ? bottom + 'px' : 'auto';
     if (this._topFillerRow.style.height === topPx && this._bottomFillerRow.style.height === bottomPx) {
@@ -517,17 +462,12 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
     this.dispatchEventToListeners(Events.PaddingChanged);
   }
 
-  /**
-   * @param {!DataGridNode<!NODE_TYPE>} rootNode
-   * @protected
-   */
-  setRootNode(rootNode) {
+  protected setRootNode(rootNode: DataGridNode<T>): void {
     if (this._rootNode) {
       this._rootNode.removeChildren();
       this._rootNode.dataGrid = null;
       this._rootNode._isRoot = false;
     }
-    /** @type {!DataGridNode<!NODE_TYPE>} */
     this._rootNode = rootNode;
     rootNode._isRoot = true;
     rootNode.setHasChildren(false);
@@ -537,11 +477,8 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
     rootNode.dataGrid = this;
   }
 
-  /**
-   * @return {!DataGridNode<!NODE_TYPE>}
-   */
-  rootNode() {
-    let rootNode = this._rootNode;
+  rootNode(): DataGridNode<T> {
+    let rootNode: DataGridNode<T>|(DataGridNode<T>| undefined) = this._rootNode;
     if (!rootNode) {
       rootNode = new DataGridNode();
       this.setRootNode(rootNode);
@@ -549,28 +486,20 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
     return rootNode;
   }
 
-  /**
-   * @param {!Event} event
-   */
-  _ondblclick(event) {
+  _ondblclick(event: Event): void {
     if (this._editing || this._editingNode) {
       return;
     }
 
-    const columnId = this.columnIdFromNode(/** @type {!Node} */ (event.target));
+    const columnId = this.columnIdFromNode((event.target as Node));
     if (!columnId || !this._columns[columnId].editable) {
       return;
     }
-    this._startEditing(/** @type {!Node} */ (event.target));
+    this._startEditing((event.target as Node));
   }
 
-  /**
-   * @param {!DataGridNode<!NODE_TYPE>} node
-   * @param {number} cellIndex
-   */
-  _startEditingColumnOfDataGridNode(node, cellIndex) {
+  _startEditingColumnOfDataGridNode(node: DataGridNode<T>, cellIndex: number): void {
     this._editing = true;
-    /** @type {?DataGridNode<!NODE_TYPE>} */
     this._editingNode = node;
     this._editingNode.select();
 
@@ -585,7 +514,7 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
     }
     const column = this.visibleColumnsArray[cellIndex];
     if (column.dataType === DataType.Boolean) {
-      const checkboxLabel = UI.UIUtils.CheckboxLabel.create(undefined, /** @type {boolean} */ (node.data[column.id]));
+      const checkboxLabel = UI.UIUtils.CheckboxLabel.create(undefined, (node.data[column.id] as boolean));
       UI.ARIAUtils.setAccessibleName(checkboxLabel, column.title || '');
 
       let hasChanged = false;
@@ -635,11 +564,7 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
     }
   }
 
-  /**
-   * @param {!DataGridNode<!NODE_TYPE>} node
-   * @param {string} columnIdentifier
-   */
-  startEditingNextEditableColumnOfDataGridNode(node, columnIdentifier) {
+  startEditingNextEditableColumnOfDataGridNode(node: DataGridNode<T>, columnIdentifier: string): void {
     const column = this._columns[columnIdentifier];
     const cellIndex = this.visibleColumnsArray.indexOf(column);
     const nextEditableColumn = this._nextEditableColumn(cellIndex);
@@ -648,11 +573,8 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
     }
   }
 
-  /**
-   * @param {!Node} target
-   */
-  _startEditing(target) {
-    const element = /** @type {?Element} */ (UI.UIUtils.enclosingNodeOrSelfWithNodeName(target, 'td'));
+  _startEditing(target: Node): void {
+    const element = (UI.UIUtils.enclosingNodeOrSelfWithNodeName(target, 'td') as Element | null);
     if (!element) {
       return;
     }
@@ -682,29 +604,19 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
     }
   }
 
-  renderInline() {
+  renderInline(): void {
     this.element.classList.add('inline');
     this._cornerWidth = 0;
     this._inline = true;
     this.updateWidths();
   }
 
-  /**
-   * @param {!Element} element
-   * @return {!UI.InplaceEditor.Config<?>}
-   */
-  _startEditingConfig(element) {
+  _startEditingConfig(_element: Element): UI.InplaceEditor.Config<any> {
     return new UI.InplaceEditor.Config(this._editingCommitted.bind(this), this._editingCancelled.bind(this));
   }
 
-  /**
-   * @param {!Element} element
-   * @param {*} newText
-   * @param {*} oldText
-   * @param {string|undefined} context
-   * @param {string} moveDirection
-   */
-  _editingCommitted(element, newText, oldText, context, moveDirection) {
+  _editingCommitted(element: Element, newText: any, oldText: any, context: string|undefined, moveDirection: string):
+      void {
     const columnId = this.columnIdFromNode(element);
     if (!columnId) {
       this._editingCancelled(element);
@@ -715,15 +627,11 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
     if (!this._editingNode) {
       return;
     }
-    const valueBeforeEditing = /** @type {string|boolean} */ (
-        this._editingNode.data[columnId] === null ? '' : this._editingNode.data[columnId]);
+    const valueBeforeEditing =
+        (this._editingNode.data[columnId] === null ? '' : this._editingNode.data[columnId] as string | boolean);
     const currentEditingNode = this._editingNode;
 
-    /**
-     * @param {boolean} wasChange
-     * @this {DataGridImpl<!NODE_TYPE>}
-     */
-    function moveToNextIfNeeded(wasChange) {
+    function moveToNextIfNeeded(this: DataGridImpl<T>, wasChange: boolean): void {
       if (!moveDirection) {
         return;
       }
@@ -796,20 +704,12 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
     moveToNextIfNeeded.call(this, true);
   }
 
-  /**
-   * @param {!Element} element
-   */
-  _editingCancelled(element) {
+  _editingCancelled(_element: Element): void {
     this._editing = false;
     this._editingNode = null;
   }
 
-  /**
-   * @param {number} cellIndex
-   * @param {boolean=} moveBackward
-   * @return {number}
-   */
-  _nextEditableColumn(cellIndex, moveBackward) {
+  _nextEditableColumn(cellIndex: number, moveBackward?: boolean): number {
     const increment = moveBackward ? -1 : 1;
     const columns = this.visibleColumnsArray;
     for (let i = cellIndex + increment; (i >= 0) && (i < columns.length); i += increment) {
@@ -820,20 +720,14 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
     return -1;
   }
 
-  /**
-   * @return {?string}
-   */
-  sortColumnId() {
+  sortColumnId(): string|null {
     if (!this._sortColumnCell) {
       return null;
     }
     return nodeToColumnIdMap.get(this._sortColumnCell) || null;
   }
 
-  /**
-   * @return {?string}
-   */
-  sortOrder() {
+  sortOrder(): string|null {
     if (!this._sortColumnCell || this._sortColumnCell.classList.contains(Order.Ascending)) {
       return Order.Ascending;
     }
@@ -843,20 +737,11 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
     return null;
   }
 
-  /**
-   * @return {boolean}
-   */
-  isSortOrderAscending() {
+  isSortOrderAscending(): boolean {
     return !this._sortColumnCell || this._sortColumnCell.classList.contains(Order.Ascending);
   }
 
-  /**
-   * @param {!Array.<number>} widths
-   * @param {number} minPercent
-   * @param {number=} maxPercent
-   * @return {!Array.<number>}
-   */
-  _autoSizeWidths(widths, minPercent, maxPercent) {
+  _autoSizeWidths(widths: number[], minPercent: number, maxPercent?: number): number[] {
     if (minPercent) {
       minPercent = Math.min(minPercent, Math.floor(100 / widths.length));
     }
@@ -906,12 +791,9 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
 
   /**
    * The range of |minPercent| and |maxPercent| is [0, 100].
-   * @param {number} minPercent
-   * @param {number=} maxPercent
-   * @param {number=} maxDescentLevel
    */
-  autoSizeColumns(minPercent, maxPercent, maxDescentLevel) {
-    let widths = [];
+  autoSizeColumns(minPercent: number, maxPercent?: number, maxDescentLevel?: number): void {
+    let widths: number[] = [];
     for (let i = 0; i < this._columnsArray.length; ++i) {
       widths.push((this._columnsArray[i].title || '').length);
     }
@@ -940,13 +822,7 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
     this.updateWidths();
   }
 
-  /**
-   * @param {!DataGridNode<!NODE_TYPE>} rootNode
-   * @param {!Array<!DataGridNode<!NODE_TYPE>>} result
-   * @param {number} maxLevel
-   * @return {!Array<!DataGridNode<!NODE_TYPE>>}
-   */
-  _enumerateChildren(rootNode, result, maxLevel) {
+  _enumerateChildren(rootNode: DataGridNode<T>, result: DataGridNode<T>[], maxLevel: number): DataGridNode<T>[] {
     if (!rootNode._isRoot) {
       result.push(rootNode);
     }
@@ -959,7 +835,7 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
     return result;
   }
 
-  onResize() {
+  onResize(): void {
     this.updateWidths();
   }
 
@@ -973,7 +849,7 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
   //
   // If this function is not called after the DataGrid is attached to its
   // parent element, then the DataGrid's columns will not be resizable.
-  updateWidths() {
+  updateWidths(): void {
     // Do not attempt to use offsetes if we're not attached to the document tree yet.
     if (!this._columnWidthsInitialized && this.element.offsetWidth) {
       // Give all the columns initial widths now so that during a resize,
@@ -996,24 +872,17 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
     this._applyColumnWeights();
   }
 
-  /**
-   * @param {string} columnId
-   * @returns {number}
-   */
-  indexOfVisibleColumn(columnId) {
+  indexOfVisibleColumn(columnId: string): number {
     return this.visibleColumnsArray.findIndex(column => column.id === columnId);
   }
 
-  /**
-   * @param {string} name
-   */
-  setName(name) {
+  setName(name: string): void {
     this._columnWeightsSetting =
         Common.Settings.Settings.instance().createSetting('dataGrid-' + name + '-columnWeights', {});
     this._loadColumnWeights();
   }
 
-  _resetColumnWeights() {
+  _resetColumnWeights(): void {
     for (const column of this._columnsArray) {
       if (!column.defaultWeight) {
         continue;
@@ -1024,7 +893,7 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
     this._saveColumnWeights();
   }
 
-  _loadColumnWeights() {
+  _loadColumnWeights(): void {
     if (!this._columnWeightsSetting) {
       return;
     }
@@ -1039,12 +908,13 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
     this._applyColumnWeights();
   }
 
-  _saveColumnWeights() {
+  _saveColumnWeights(): void {
     if (!this._columnWeightsSetting) {
       return;
     }
-    /** @type {!Object<string,*>} */
-    const weights = {};
+    const weights: {
+      [x: string]: any,
+    } = {};
     for (let i = 0; i < this._columnsArray.length; ++i) {
       const column = this._columnsArray[i];
       weights[column.id] = column.weight;
@@ -1052,14 +922,14 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
     this._columnWeightsSetting.set(weights);
   }
 
-  wasShown() {
+  wasShown(): void {
     this._loadColumnWeights();
   }
 
-  willHide() {
+  willHide(): void {
   }
 
-  _applyColumnWeights() {
+  _applyColumnWeights(): void {
     let tableWidth = this.element.offsetWidth - this._cornerWidth;
     if (tableWidth <= 0) {
       return;
@@ -1099,10 +969,7 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
     this._positionResizers();
   }
 
-  /**
-   * @param {!Set<string>} columnsVisibility
-   */
-  setColumnsVisiblity(columnsVisibility) {
+  setColumnsVisiblity(columnsVisibility: Set<string>): void {
     this.visibleColumnsArray = [];
     for (const column of this._columnsArray) {
       if (columnsVisibility.has(column.id)) {
@@ -1117,15 +984,14 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
     }
   }
 
-  get scrollContainer() {
-    return /** @type {!HTMLElement} */ (this._scrollContainer);
+  get scrollContainer(): HTMLElement {
+    return this._scrollContainer as HTMLElement;
   }
 
-  _positionResizers() {
+  _positionResizers(): void {
     const headerTableColumns = this._headerTableColumnGroup.children;
     const numColumns = headerTableColumns.length - 1;  // Do not process corner column.
-    /** @type {!Array<number>} */
-    const left = [];
+    const left: number[] = [];
     const resizers = this._resizers;
 
     while (resizers.length > numColumns - 1) {
@@ -1144,7 +1010,7 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
 
     // Make n - 1 resizers for n columns.
     for (let i = 0; i < numColumns - 1; i++) {
-      let resizer = resizers[i];
+      let resizer: HTMLDivElement|HTMLElement = resizers[i];
       if (!resizer) {
         // This is the first call to updateWidth, so the resizers need
         // to be created.
@@ -1156,7 +1022,7 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
             resizer, this._startResizerDragging.bind(this), this._resizerDragging.bind(this),
             this._endResizerDragging.bind(this), 'col-resize');
         this.element.appendChild(resizer);
-        resizers.push(/** @type {!HTMLElement} */ (resizer));
+        resizers.push((resizer as HTMLElement));
       }
       if (elementToPositionMap.get(resizer) !== left[i]) {
         elementToPositionMap.set(resizer, left[i]);
@@ -1165,15 +1031,13 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
     }
   }
 
-  /**
-   * @param {boolean=} hasChildren
-   */
-  addCreationNode(hasChildren) {
+  addCreationNode(hasChildren?: boolean): void {
     if (this.creationNode) {
       this.creationNode.makeNormal();
     }
-    /** @type {!Object<string,*>} */
-    const emptyData = {};
+    const emptyData: {
+      [x: string]: any,
+    } = {};
     for (const column in this._columns) {
       emptyData[column] = null;
     }
@@ -1181,10 +1045,7 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
     this.rootNode().appendChild(this.creationNode);
   }
 
-  /**
-   * @param {!Event} event
-   */
-  _keyDown(event) {
+  _keyDown(event: Event): void {
     if (!(event instanceof KeyboardEvent)) {
       return;
     }
@@ -1285,12 +1146,8 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
     }
   }
 
-  /**
-   * @param {?DataGridNode<!NODE_TYPE>} root
-   * @param {boolean} onlyAffectsSubtree
-   */
-  updateSelectionBeforeRemoval(root, onlyAffectsSubtree) {
-    let ancestor = this.selectedNode;
+  updateSelectionBeforeRemoval(root: DataGridNode<T>|null, _onlyAffectsSubtree: boolean): void {
+    let ancestor: (DataGridNode<T>|null) = this.selectedNode;
     while (ancestor && ancestor !== root) {
       ancestor = ancestor.parent;
     }
@@ -1327,39 +1184,25 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
     }
   }
 
-  /**
-   * @param {!Node} target
-   * @return {?DataGridNode<!NODE_TYPE>}
-   */
-  dataGridNodeFromNode(target) {
+  dataGridNodeFromNode(target: Node): DataGridNode<T>|null {
     const rowElement = UI.UIUtils.enclosingNodeOrSelfWithNodeName(target, 'tr');
     return (rowElement && this.elementToDataGridNode.get(rowElement)) || null;
   }
 
-  /**
-   * @param {!Node} target
-   * @return {?string}
-   */
-  columnIdFromNode(target) {
+  columnIdFromNode(target: Node): string|null {
     const cellElement = UI.UIUtils.enclosingNodeOrSelfWithNodeName(target, 'td');
     return (cellElement && nodeToColumnIdMap.get(cellElement)) || null;
   }
 
-  /**
-   * @param {!Event} event
-   */
-  _clickInHeaderCell(event) {
-    const cell = UI.UIUtils.enclosingNodeOrSelfWithNodeName(/** @type {!Node} */ (event.target), 'th');
+  _clickInHeaderCell(event: Event): void {
+    const cell = UI.UIUtils.enclosingNodeOrSelfWithNodeName((event.target as Node), 'th');
     if (!cell) {
       return;
     }
-    this._sortByColumnHeaderCell(/** @type {!HTMLElement} */ (cell));
+    this._sortByColumnHeaderCell((cell as HTMLElement));
   }
 
-  /**
-   * @param {!Element} cell
-   */
-  _sortByColumnHeaderCell(cell) {
+  _sortByColumnHeaderCell(cell: Element): void {
     if (!nodeToColumnIdMap.has(cell) || !cell.classList.contains('sortable')) {
       return;
     }
@@ -1384,11 +1227,7 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
     this.dispatchEventToListeners(Events.SortingChanged);
   }
 
-  /**
-   * @param {string} columnId
-   * @param {!Order} sortOrder
-   */
-  markColumnAsSortedBy(columnId, sortOrder) {
+  markColumnAsSortedBy(columnId: string, sortOrder: Order): void {
     if (this._sortColumnCell) {
       this._sortColumnCell.classList.remove(Order.Ascending, Order.Descending);
     }
@@ -1396,22 +1235,14 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
     this._sortColumnCell.classList.add(sortOrder);
   }
 
-  /**
-   * @param {string} columnId
-   * @return {!Element}
-   */
-  headerTableHeader(columnId) {
+  headerTableHeader(columnId: string): Element {
     return this._headerTableHeaders[columnId];
   }
 
-  /**
-   * @param {!Event} event
-   */
-  _mouseDownInDataTable(event) {
-    const target = /** @type {!Node} */ (event.target);
+  _mouseDownInDataTable(event: Event): void {
+    const target = (event.target as Node);
     const gridNode = this.dataGridNodeFromNode(target);
-    if (!gridNode || !gridNode.selectable ||
-        gridNode.isEventWithinDisclosureTriangle(/** @type {!MouseEvent} */ (event))) {
+    if (!gridNode || !gridNode.selectable || gridNode.isEventWithinDisclosureTriangle((event as MouseEvent))) {
       return;
     }
 
@@ -1420,7 +1251,7 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
       return;
     }
 
-    if (/** @type {!MouseEvent} */ (event).metaKey) {
+    if (/** @type {!MouseEvent} */ (event as MouseEvent).metaKey) {
       if (gridNode.selected) {
         gridNode.deselect();
       } else {
@@ -1432,29 +1263,20 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
     }
   }
 
-  /**
-   * @param {?function(!UI.ContextMenu.SubMenu):void} callback
-   */
-  setHeaderContextMenuCallback(callback) {
+  setHeaderContextMenuCallback(callback: ((arg0: UI.ContextMenu.SubMenu) => void)|null): void {
     this._headerContextMenuCallback = callback;
   }
 
-  /**
-   * @param {?function(!UI.ContextMenu.ContextMenu, !DataGridNode<!NODE_TYPE>):void} callback
-   */
-  setRowContextMenuCallback(callback) {
+  setRowContextMenuCallback(callback: ((arg0: UI.ContextMenu.ContextMenu, arg1: DataGridNode<T>) => void)|null): void {
     this._rowContextMenuCallback = callback;
   }
 
-  /**
-   * @param {!Event} event
-   */
-  _contextMenu(event) {
+  _contextMenu(event: Event): void {
     if (!(event instanceof MouseEvent)) {
       return;
     }
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
-    const target = /** @type {!Node} */ (event.target);
+    const target = (event.target as Node);
 
     const sortableVisibleColumns = this.visibleColumnsArray.filter(column => {
       return (column.sortable && column.title);
@@ -1469,7 +1291,7 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
       for (const column of sortableColumns) {
         const headerCell = this._headerTableHeaders[column.id];
         sortMenu.defaultSection().appendItem(
-            /** @type {string} */ (column.title), this._sortByColumnHeaderCell.bind(this, headerCell));
+            (column.title as string), this._sortByColumnHeaderCell.bind(this, headerCell));
       }
     }
 
@@ -1543,24 +1365,20 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
     contextMenu.show();
   }
 
-  /**
-   * @param {!Event} event
-   */
-  _clickInDataTable(event) {
-    const gridNode = this.dataGridNodeFromNode(/** @type {!Node} */ (event.target));
-    if (!gridNode || !gridNode.hasChildren() ||
-        !gridNode.isEventWithinDisclosureTriangle(/** @type {!MouseEvent}*/ (event))) {
+  _clickInDataTable(event: Event): void {
+    const gridNode = this.dataGridNodeFromNode((event.target as Node));
+    if (!gridNode || !gridNode.hasChildren() || !gridNode.isEventWithinDisclosureTriangle((event as MouseEvent))) {
       return;
     }
 
     if (gridNode.expanded) {
-      if (/** @type {!MouseEvent}*/ (event).altKey) {
+      if (/** @type {!MouseEvent}*/ (event as MouseEvent).altKey) {
         gridNode.collapseRecursively();
       } else {
         gridNode.collapse();
       }
     } else {
-      if (/** @type {!MouseEvent}*/ (event).altKey) {
+      if (/** @type {!MouseEvent}*/ (event as MouseEvent).altKey) {
         gridNode.expandRecursively();
       } else {
         gridNode.expand();
@@ -1568,39 +1386,29 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
     }
   }
 
-  /**
-   * @param {!ResizeMethod} method
-   */
-  setResizeMethod(method) {
+  setResizeMethod(method: ResizeMethod): void {
     this._resizeMethod = method;
   }
 
-  /**
-   * @param {!Event} event
-   * @return {boolean}
-   */
-  _startResizerDragging(event) {
+  _startResizerDragging(event: Event): boolean {
     this._currentResizer = event.target;
     return true;
   }
 
-  _endResizerDragging() {
+  _endResizerDragging(): void {
     this._currentResizer = null;
     this._saveColumnWeights();
   }
 
-  /**
-   * @param {!MouseEvent} event
-   */
-  _resizerDragging(event) {
-    const resizer = /** @type{!HTMLElement}*/ (this._currentResizer);
+  _resizerDragging(event: MouseEvent): void {
+    const resizer = (this._currentResizer as HTMLElement);
     if (!resizer) {
       return;
     }
 
     // Constrain the dragpoint to be within the containing div of the
     // datagrid.
-    let dragPoint = event.clientX - this.element.totalOffsetLeft();
+    let dragPoint: number = event.clientX - this.element.totalOffsetLeft();
     const firstRowCells = this._headerTableBody.rows[0].cells;
     let leftEdgeOfPreviousColumn = 0;
     // Constrain the dragpoint to be within the space made up by the
@@ -1609,7 +1417,7 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
     if (leftCellIndex === undefined) {
       return;
     }
-    let rightCellIndex = leftCellIndex + 1;
+    let rightCellIndex: number = leftCellIndex + 1;
     for (let i = 0; i < leftCellIndex; i++) {
       leftEdgeOfPreviousColumn += firstRowCells[i].offsetWidth;
     }
@@ -1654,25 +1462,17 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
     event.preventDefault();
   }
 
-  /**
-   * @param {number} columnIndex
-   * @param {number} width
-   */
-  _setPreferredWidth(columnIndex, width) {
+  _setPreferredWidth(columnIndex: number, width: number): void {
     const pxWidth = width + 'px';
-    const headerTableChildElement = /** @type{!HTMLElement}*/ (this._headerTableColumnGroup.children[columnIndex]);
+    const headerTableChildElement = (this._headerTableColumnGroup.children[columnIndex] as HTMLElement);
     elementToPreferedWidthMap.set(headerTableChildElement, width);
     headerTableChildElement.style.width = pxWidth;
 
-    const dataTableChildElement = /** @type{!HTMLElement}*/ (this._dataTableColumnGroup.children[columnIndex]);
+    const dataTableChildElement = (this._dataTableColumnGroup.children[columnIndex] as HTMLElement);
     dataTableChildElement.style.width = pxWidth;
   }
 
-  /**
-   * @param {string} columnId
-   * @return {number}
-   */
-  columnOffset(columnId) {
+  columnOffset(columnId: string): number {
     if (!this.element.offsetWidth) {
       return 0;
     }
@@ -1686,17 +1486,14 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
     return 0;
   }
 
-  /**
-   * @return {!DataGridWidget<!NODE_TYPE>}
-   */
-  asWidget() {
+  asWidget(): DataGridWidget<T> {
     if (!this._dataGridWidget) {
       this._dataGridWidget = new DataGridWidget(this);
     }
     return this._dataGridWidget;
   }
 
-  topFillerRowElement() {
+  topFillerRowElement(): HTMLElement {
     return this._topFillerRow;
   }
 }
@@ -1704,123 +1501,118 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
 // Keep in sync with .data-grid col.corner style rule.
 export const CornerWidth = 14;
 
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum Events {
+  SelectedNode = 'SelectedNode',
+  DeselectedNode = 'DeselectedNode',
+  OpenedNode = 'OpenedNode',
+  SortingChanged = 'SortingChanged',
+  PaddingChanged = 'PaddingChanged',
+}
 
-/** @enum {symbol} */
-export const Events = {
-  SelectedNode: Symbol('SelectedNode'),
-  DeselectedNode: Symbol('DeselectedNode'),
-  OpenedNode: Symbol('OpenedNode'),
-  SortingChanged: Symbol('SortingChanged'),
-  PaddingChanged: Symbol('PaddingChanged'),
-};
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum Order {
+  Ascending = 'sort-ascending',
+  Descending = 'sort-descending',
+}
 
-/** @enum {string} */
-export const Order = {
-  Ascending: 'sort-ascending',
-  Descending: 'sort-descending'
-};
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum Align {
+  Center = 'center',
+  Right = 'right',
+}
 
-/** @enum {string} */
-export const Align = {
-  Center: 'center',
-  Right: 'right'
-};
-
-/** @enum {symbol} */
-export const DataType = {
-  String: Symbol('String'),
-  Boolean: Symbol('Boolean'),
-};
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum DataType {
+  String = 'String',
+  Boolean = 'Boolean',
+}
 
 export const ColumnResizePadding = 24;
 export const CenterResizerOverBorderAdjustment = 3;
 
-/** @enum {string} */
-export const ResizeMethod = {
-  Nearest: 'nearest',
-  First: 'first',
-  Last: 'last'
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum ResizeMethod {
+  Nearest = 'nearest',
+  First = 'first',
+  Last = 'last',
+}
+
+export type DataGridData = {
+  [key: string]: any,
 };
 
-/**
- * @template NODE_TYPE
- */
-export class DataGridNode extends Common.ObjectWrapper.ObjectWrapper {
-  /**
-   * @param {?Object.<string, *>=} data
-   * @param {boolean=} hasChildren
-   */
-  constructor(data, hasChildren) {
+export class DataGridNode<T> extends Common.ObjectWrapper.ObjectWrapper {
+  _element: Element|null;
+  _expanded: boolean;
+  _selected: boolean;
+  _dirty: boolean;
+  _inactive: boolean;
+  key!: string;
+  _depth!: number|undefined;
+  _revealed!: boolean|undefined;
+  _attached: boolean;
+  _savedPosition: {
+    parent: DataGridNode<T>,
+    index: number,
+  }|null;
+  _shouldRefreshChildren: boolean;
+  _data: DataGridData;
+  _hasChildren: boolean;
+  children: DataGridNode<T>[];
+  dataGrid: DataGridImpl<T>|null;
+  parent: DataGridNode<T>|null;
+  previousSibling: DataGridNode<T>|null;
+  nextSibling: DataGridNode<T>|null;
+  disclosureToggleWidth: number;
+  selectable: boolean;
+  _isRoot: boolean;
+  nodeAccessibleText: string;
+  cellAccessibleTextMap: Map<string, string>;
+  isCreationNode: boolean;
+
+  constructor(data?: DataGridData|null, hasChildren?: boolean) {
     super();
-    /** @type {?Element} */
     this._element = null;
-    /** @type {boolean} */
     this._expanded = false;
-    /** @type {boolean} */
     this._selected = false;
-    /** @type {boolean} */
     this._dirty = false;
-    /** @type {boolean} */
     this._inactive = false;
-    /** @type {string} */
-    this.key;
-    /** @type {number|undefined} */
-    this._depth;
-    /** @type {boolean|undefined} */
-    this._revealed;
-    /** @type {boolean} */
     this._attached = false;
-    /** @type {?{parent: !DataGridNode<!NODE_TYPE>, index: number}} */
     this._savedPosition = null;
-    /** @type {boolean} */
     this._shouldRefreshChildren = true;
-    /** @type {!Object.<string, *>} */
     this._data = data || {};
-    /** @type {boolean} */
     this._hasChildren = hasChildren || false;
-    /** @type {!Array.<!DataGridNode<!NODE_TYPE>>} */
     this.children = [];
-    /** @type {?DataGridImpl<!NODE_TYPE>} */
     this.dataGrid = null;
-    /** @type {?DataGridNode<!NODE_TYPE>} */
     this.parent = null;
-    /** @type {?DataGridNode<!NODE_TYPE>} */
     this.previousSibling = null;
-    /** @type {?DataGridNode<!NODE_TYPE>} */
     this.nextSibling = null;
-    /** @type {number} */
     this.disclosureToggleWidth = 10;
 
-    /** @type {boolean} */
     this.selectable = true;
 
-    /** @type {boolean} */
     this._isRoot = false;
 
-    /** @type {string} */
     this.nodeAccessibleText = '';
-    /** @type {!Map<string, string>}} */
     this.cellAccessibleTextMap = new Map();
-    /** @type {boolean} */
     this.isCreationNode = false;
   }
 
-  /**
-   * @return {!Element}
-   */
-  element() {
+  element(): Element {
     if (!this._element) {
       const element = this.createElement();
       this.createCells(element);
     }
-    return /** @type {!Element} */ (this._element);
+    return this._element as Element;
   }
 
-  /**
-   * @protected
-   * @return {!Element}
-   */
-  createElement() {
+  protected createElement(): Element {
     this._element = document.createElement('tr');
     this._element.classList.add('data-grid-data-grid-node');
     if (this.dataGrid) {
@@ -1851,25 +1643,15 @@ export class DataGridNode extends Common.ObjectWrapper.ObjectWrapper {
     return this._element;
   }
 
-  /**
-   * @return {?Element}
-   */
-  existingElement() {
+  existingElement(): Element|null {
     return this._element || null;
   }
 
-  /**
-   * @protected
-   */
-  resetElement() {
+  protected resetElement(): void {
     this._element = null;
   }
 
-  /**
-   * @param {!Element} element
-   * @protected
-   */
-  createCells(element) {
+  protected createCells(element: Element): void {
     element.removeChildren();
     if (!this.dataGrid || !this.parent) {
       return;
@@ -1895,30 +1677,21 @@ export class DataGridNode extends Common.ObjectWrapper.ObjectWrapper {
     element.appendChild(this.createTDWithClass('corner'));
   }
 
-  /**
-   * @return {!Object.<string, *>}
-   */
-  get data() {
+  get data(): DataGridData {
     return this._data;
   }
 
-  /**
-   * @param {!Object.<string, *>} x
-   */
-  set data(x) {
+  set data(x: DataGridData) {
     this._data = x || {};
     this.refresh();
   }
 
-  /**
-   * @return {boolean}
-   */
-  get revealed() {
+  get revealed(): boolean {
     if (this._revealed !== undefined) {
       return this._revealed;
     }
 
-    let currentAncestor = this.parent;
+    let currentAncestor: (DataGridNode<T>|null) = this.parent;
     while (currentAncestor && !currentAncestor._isRoot) {
       if (!currentAncestor.expanded) {
         this._revealed = false;
@@ -1932,10 +1705,7 @@ export class DataGridNode extends Common.ObjectWrapper.ObjectWrapper {
     return true;
   }
 
-  /**
-   * @param {boolean} x
-   */
-  set revealed(x) {
+  set revealed(x: boolean) {
     if (this._revealed === x) {
       return;
     }
@@ -1951,17 +1721,11 @@ export class DataGridNode extends Common.ObjectWrapper.ObjectWrapper {
     }
   }
 
-  /**
-   * @return {boolean}
-   */
-  isDirty() {
+  isDirty(): boolean {
     return this._dirty;
   }
 
-  /**
-   * @param {boolean} dirty
-   */
-  setDirty(dirty) {
+  setDirty(dirty: boolean): void {
     if (this._dirty === dirty) {
       return;
     }
@@ -1976,18 +1740,11 @@ export class DataGridNode extends Common.ObjectWrapper.ObjectWrapper {
     }
   }
 
-
-  /**
-   * @return {boolean}
-   */
-  isInactive() {
+  isInactive(): boolean {
     return this._inactive;
   }
 
-  /**
-   * @param {boolean} inactive
-   */
-  setInactive(inactive) {
+  setInactive(inactive: boolean): void {
     if (this._inactive === inactive) {
       return;
     }
@@ -2002,17 +1759,11 @@ export class DataGridNode extends Common.ObjectWrapper.ObjectWrapper {
     }
   }
 
-  /**
-   * @return {boolean}
-   */
-  hasChildren() {
+  hasChildren(): boolean {
     return this._hasChildren;
   }
 
-  /**
-   * @param {boolean} x
-   */
-  setHasChildren(x) {
+  setHasChildren(x: boolean): void {
     if (this._hasChildren === x) {
       return;
     }
@@ -2027,10 +1778,7 @@ export class DataGridNode extends Common.ObjectWrapper.ObjectWrapper {
     this._element.classList.toggle('expanded', this._hasChildren && this.expanded);
   }
 
-  /**
-   * @return {number}
-   */
-  get depth() {
+  get depth(): number {
     if (this._depth !== undefined) {
       return this._depth;
     }
@@ -2042,41 +1790,26 @@ export class DataGridNode extends Common.ObjectWrapper.ObjectWrapper {
     return this._depth;
   }
 
-  /**
-   * @return {number}
-   */
-  get leftPadding() {
+  get leftPadding(): number {
     return this.depth * (this.dataGrid ? this.dataGrid.indentWidth : 1);
   }
 
-  /**
-   * @return {boolean}
-   */
-  get shouldRefreshChildren() {
+  get shouldRefreshChildren(): boolean {
     return this._shouldRefreshChildren;
   }
 
-  /**
-   * @param {boolean} x
-   */
-  set shouldRefreshChildren(x) {
+  set shouldRefreshChildren(x: boolean) {
     this._shouldRefreshChildren = x;
     if (x && this.expanded) {
       this.expand();
     }
   }
 
-  /**
-   * @return {boolean}
-   */
-  get selected() {
+  get selected(): boolean {
     return this._selected;
   }
 
-  /**
-   * @param {boolean} x
-   */
-  set selected(x) {
+  set selected(x: boolean) {
     if (x) {
       this.select();
     } else {
@@ -2084,17 +1817,11 @@ export class DataGridNode extends Common.ObjectWrapper.ObjectWrapper {
     }
   }
 
-  /**
-   * @return {boolean}
-   */
-  get expanded() {
+  get expanded(): boolean {
     return this._expanded;
   }
 
-  /**
-   * @param {boolean} x
-   */
-  set expanded(x) {
+  set expanded(x: boolean) {
     if (x) {
       this.expand();
     } else {
@@ -2102,7 +1829,7 @@ export class DataGridNode extends Common.ObjectWrapper.ObjectWrapper {
     }
   }
 
-  refresh() {
+  refresh(): void {
     if (!this.dataGrid) {
       this._element = null;
     }
@@ -2112,12 +1839,8 @@ export class DataGridNode extends Common.ObjectWrapper.ObjectWrapper {
     this.createCells(this._element);
   }
 
-  /**
-   * @param {string} className
-   * @return {!HTMLElement}
-   */
-  createTDWithClass(className) {
-    const cell = /** @type {!HTMLElement} */ (document.createElement('td'));
+  createTDWithClass(className: string): HTMLElement {
+    const cell = (document.createElement('td') as HTMLElement);
     if (className) {
       cell.className = className;
     }
@@ -2128,11 +1851,7 @@ export class DataGridNode extends Common.ObjectWrapper.ObjectWrapper {
     return cell;
   }
 
-  /**
-   * @param {string} columnId
-   * @return {!HTMLElement}
-   */
-  createTD(columnId) {
+  createTD(columnId: string): HTMLElement {
     const cell = this.createTDWithClass(columnId + '-column');
     nodeToColumnIdMap.set(cell, columnId);
 
@@ -2153,28 +1872,19 @@ export class DataGridNode extends Common.ObjectWrapper.ObjectWrapper {
     return cell;
   }
 
-  /**
-   * @param {string} columnId
-   * @return {!HTMLElement}
-   */
-  createCell(columnId) {
+  createCell(columnId: string): HTMLElement {
     const cell = this.createTD(columnId);
     const data = this.data[columnId];
     if (data instanceof Node) {
       cell.appendChild(data);
     } else if (data !== null && this.dataGrid) {
-      this.dataGrid.setElementContent(cell, /** @type {string} */ (data));
+      this.dataGrid.setElementContent(cell, (data as string));
     }
 
     return cell;
   }
 
-  /**
-   * @param {string} name
-   * @param {!Element} cell
-   * @param {string} columnId
-   */
-  setCellAccessibleName(name, cell, columnId) {
+  setCellAccessibleName(name: string, cell: Element, columnId: string): void {
     this.cellAccessibleTextMap.set(columnId, name);
     // Mark all direct children of cell as hidden so cell name is properly announced
     for (let i = 0; i < cell.children.length; i++) {
@@ -2183,24 +1893,15 @@ export class DataGridNode extends Common.ObjectWrapper.ObjectWrapper {
     UI.ARIAUtils.setAccessibleName(cell, name);
   }
 
-  /**
-   * @return {number}
-   */
-  nodeSelfHeight() {
+  nodeSelfHeight(): number {
     return 20;
   }
 
-  /**
-   * @param {!DataGridNode<!NODE_TYPE>} child
-   */
-  appendChild(child) {
+  appendChild(child: DataGridNode<T>): void {
     this.insertChild(child, this.children.length);
   }
 
-  /**
-   * @param {boolean=} onlyCaches
-   */
-  resetNode(onlyCaches) {
+  resetNode(onlyCaches?: boolean): void {
     // @TODO(allada) This is a hack to make sure ViewportDataGrid can clean up these caches. Try Not To Use.
     delete this._depth;
     delete this._revealed;
@@ -2220,11 +1921,7 @@ export class DataGridNode extends Common.ObjectWrapper.ObjectWrapper {
     this._attached = false;
   }
 
-  /**
-   * @param {!DataGridNode<!NODE_TYPE>} child
-   * @param {number} index
-   */
-  insertChild(child, index) {
+  insertChild(child: DataGridNode<T>, index: number): void {
     if (!child) {
       throw 'insertChild: Node can\'t be undefined or null.';
     }
@@ -2252,8 +1949,7 @@ export class DataGridNode extends Common.ObjectWrapper.ObjectWrapper {
 
     child._shouldRefreshChildren = true;
 
-    /** @type {?DataGridNode<!NODE_TYPE>} */
-    let current = child.children[0];
+    let current: (DataGridNode<T>|null)|DataGridNode<T> = child.children[0];
     while (current) {
       current.resetNode(true);
       current.dataGrid = this.dataGrid;
@@ -2270,16 +1966,13 @@ export class DataGridNode extends Common.ObjectWrapper.ObjectWrapper {
     }
   }
 
-  remove() {
+  remove(): void {
     if (this.parent) {
       this.parent.removeChild(this);
     }
   }
 
-  /**
-   * @param {!DataGridNode<!NODE_TYPE>} child
-   */
-  removeChild(child) {
+  removeChild(child: DataGridNode<T>): void {
     if (!child) {
       throw 'removeChild: Node can\'t be undefined or null.';
     }
@@ -2300,7 +1993,7 @@ export class DataGridNode extends Common.ObjectWrapper.ObjectWrapper {
     }
   }
 
-  removeChildren() {
+  removeChildren(): void {
     if (this.dataGrid) {
       this.dataGrid.updateSelectionBeforeRemoval(this, true);
     }
@@ -2314,10 +2007,7 @@ export class DataGridNode extends Common.ObjectWrapper.ObjectWrapper {
     this.setHasChildren(false);
   }
 
-  /**
-   * @param {number} myIndex
-   */
-  recalculateSiblings(myIndex) {
+  recalculateSiblings(myIndex: number): void {
     if (!this.parent) {
       return;
     }
@@ -2335,7 +2025,7 @@ export class DataGridNode extends Common.ObjectWrapper.ObjectWrapper {
     this.nextSibling = nextChild;
   }
 
-  collapse() {
+  collapse(): void {
     if (this._isRoot) {
       return;
     }
@@ -2353,9 +2043,8 @@ export class DataGridNode extends Common.ObjectWrapper.ObjectWrapper {
     }
   }
 
-  collapseRecursively() {
-    /** @type {?DataGridNode<!NODE_TYPE>} */
-    let item = this;
+  collapseRecursively(): void {
+    let item: (DataGridNode<T>|null)|this = this;
     while (item) {
       if (item.expanded) {
         item.collapse();
@@ -2364,10 +2053,10 @@ export class DataGridNode extends Common.ObjectWrapper.ObjectWrapper {
     }
   }
 
-  populate() {
+  populate(): void {
   }
 
-  expand() {
+  expand(): void {
     if (!this._hasChildren || this.expanded) {
       return;
     }
@@ -2411,20 +2100,19 @@ export class DataGridNode extends Common.ObjectWrapper.ObjectWrapper {
     this._expanded = true;
   }
 
-  expandRecursively() {
-    /** @type {?DataGridNode<!NODE_TYPE>} */
-    let item = this;
+  expandRecursively(): void {
+    let item: (DataGridNode<T>|null)|this = this;
     while (item) {
       item.expand();
       item = item.traverseNextNode(false, this);
     }
   }
 
-  reveal() {
+  reveal(): void {
     if (this._isRoot) {
       return;
     }
-    let currentAncestor = this.parent;
+    let currentAncestor: (DataGridNode<T>|null) = this.parent;
     while (currentAncestor && !currentAncestor._isRoot) {
       if (!currentAncestor.expanded) {
         currentAncestor.expand();
@@ -2435,10 +2123,7 @@ export class DataGridNode extends Common.ObjectWrapper.ObjectWrapper {
     this.element().scrollIntoViewIfNeeded(false);
   }
 
-  /**
-   * @param {boolean=} supressSelectedEvent
-   */
-  select(supressSelectedEvent) {
+  select(supressSelectedEvent?: boolean): void {
     if (!this.dataGrid || !this.selectable || this.selected) {
       return;
     }
@@ -2461,7 +2146,7 @@ export class DataGridNode extends Common.ObjectWrapper.ObjectWrapper {
     }
   }
 
-  revealAndSelect() {
+  revealAndSelect(): void {
     if (this._isRoot) {
       return;
     }
@@ -2469,10 +2154,7 @@ export class DataGridNode extends Common.ObjectWrapper.ObjectWrapper {
     this.select();
   }
 
-  /**
-   * @param {boolean=} supressDeselectedEvent
-   */
-  deselect(supressDeselectedEvent) {
+  deselect(supressDeselectedEvent?: boolean): void {
     if (!this.dataGrid || this.dataGrid.selectedNode !== this || !this.selected) {
       return;
     }
@@ -2491,14 +2173,9 @@ export class DataGridNode extends Common.ObjectWrapper.ObjectWrapper {
     }
   }
 
-  /**
-   * @param {boolean} skipHidden
-   * @param {?DataGridNode<!NODE_TYPE>=} stayWithin
-   * @param {boolean=} dontPopulate
-   * @param {!{depthChange: number}=} info
-   * @return {?DataGridNode<!NODE_TYPE>}
-   */
-  traverseNextNode(skipHidden, stayWithin, dontPopulate, info) {
+  traverseNextNode(skipHidden: boolean, stayWithin?: DataGridNode<T>|null, dontPopulate?: boolean, info?: {
+    depthChange: number,
+  }): DataGridNode<T>|null {
     if (!dontPopulate && this._hasChildren) {
       this.populate();
     }
@@ -2507,7 +2184,7 @@ export class DataGridNode extends Common.ObjectWrapper.ObjectWrapper {
       info.depthChange = 0;
     }
 
-    let node = (!skipHidden || this.revealed) ? this.children[0] : null;
+    let node: (DataGridNode<T>|null)|this = (!skipHidden || this.revealed) ? this.children[0] : null;
     if (node && (!skipHidden || this.expanded)) {
       if (info) {
         info.depthChange = 1;
@@ -2540,13 +2217,8 @@ export class DataGridNode extends Common.ObjectWrapper.ObjectWrapper {
     return (!skipHidden || node.revealed) ? node.nextSibling : null;
   }
 
-  /**
-   * @param {boolean} skipHidden
-   * @param {boolean=} dontPopulate
-   * @return {?DataGridNode<!NODE_TYPE>}
-   */
-  traversePreviousNode(skipHidden, dontPopulate) {
-    let node = (!skipHidden || this.revealed) ? this.previousSibling : null;
+  traversePreviousNode(skipHidden: boolean, dontPopulate?: boolean): DataGridNode<T>|null {
+    let node: (DataGridNode<T>|null) = (!skipHidden || this.revealed) ? this.previousSibling : null;
     if (!dontPopulate && node && node._hasChildren) {
       node.populate();
     }
@@ -2570,15 +2242,11 @@ export class DataGridNode extends Common.ObjectWrapper.ObjectWrapper {
     return this.parent;
   }
 
-  /**
-   * @param {!MouseEvent} event
-   * @return {boolean}
-   */
-  isEventWithinDisclosureTriangle(event) {
+  isEventWithinDisclosureTriangle(event: MouseEvent): boolean {
     if (!this._hasChildren) {
       return false;
     }
-    const cell = UI.UIUtils.enclosingNodeOrSelfWithNodeName(/** @type {!Node} */ (event.target), 'td');
+    const cell = UI.UIUtils.enclosingNodeOrSelfWithNodeName((event.target as Node), 'td');
     if (!cell || !(cell instanceof HTMLElement) || !cell.classList.contains('disclosure')) {
       return false;
     }
@@ -2587,7 +2255,7 @@ export class DataGridNode extends Common.ObjectWrapper.ObjectWrapper {
     return event.pageX >= left && event.pageX <= left + this.disclosureToggleWidth;
   }
 
-  _attach() {
+  _attach(): void {
     if (!this.dataGrid || this._attached) {
       return;
     }
@@ -2605,7 +2273,7 @@ export class DataGridNode extends Common.ObjectWrapper.ObjectWrapper {
     }
   }
 
-  _detach() {
+  _detach(): void {
     if (!this._attached) {
       return;
     }
@@ -2621,7 +2289,7 @@ export class DataGridNode extends Common.ObjectWrapper.ObjectWrapper {
     }
   }
 
-  savePosition() {
+  savePosition(): void {
     if (this._savedPosition) {
       return;
     }
@@ -2632,7 +2300,7 @@ export class DataGridNode extends Common.ObjectWrapper.ObjectWrapper {
     this._savedPosition = {parent: this.parent, index: this.parent.children.indexOf(this)};
   }
 
-  restorePosition() {
+  restorePosition(): void {
     if (!this._savedPosition) {
       return;
     }
@@ -2645,102 +2313,69 @@ export class DataGridNode extends Common.ObjectWrapper.ObjectWrapper {
   }
 }
 
-/**
- * @extends {DataGridNode<!NODE_TYPE>}
- * @template NODE_TYPE
- */
-export class CreationDataGridNode extends DataGridNode {
-  /**
-   * @param {?Object.<string, *>=} data
-   * @param {boolean=} hasChildren
-   */
-  constructor(data, hasChildren) {
+export class CreationDataGridNode<T> extends DataGridNode<T> {
+  isCreationNode: boolean;
+  constructor(
+      data?: {
+        [x: string]: any,
+      }|null,
+      hasChildren?: boolean) {
     super(data, hasChildren);
-    /** @type {boolean} */
     this.isCreationNode = true;
   }
 
-  makeNormal() {
+  makeNormal(): void {
     this.isCreationNode = false;
   }
 }
 
-/**
- * @template NODE_TYPE
- */
-export class DataGridWidget extends UI.Widget.VBox {
-  /**
-   * @param {!DataGridImpl<!NODE_TYPE>} dataGrid
-   */
-  constructor(dataGrid) {
+export class DataGridWidget<T> extends UI.Widget.VBox {
+  _dataGrid: DataGridImpl<T>;
+  constructor(dataGrid: DataGridImpl<T>) {
     super();
     this._dataGrid = dataGrid;
     this.element.appendChild(dataGrid.element);
     this.setDefaultFocusedElement(dataGrid.element);
   }
 
-  /**
-   * @override
-   */
-  wasShown() {
+  wasShown(): void {
     this._dataGrid.wasShown();
   }
 
-  /**
-   * @override
-   */
-  willHide() {
+  willHide(): void {
     this._dataGrid.willHide();
   }
 
-  /**
-   * @override
-   */
-  onResize() {
+  onResize(): void {
     this._dataGrid.onResize();
   }
 
-  /**
-   * @override
-   * @return {!Array.<!Element>}
-   */
-  elementsToRestoreScrollPositionsFor() {
+  elementsToRestoreScrollPositionsFor(): Element[] {
     return [this._dataGrid._scrollContainer];
   }
-
 }
-
-/**
- * @typedef {{
- *   displayName: string,
- *   columns: !Array.<!ColumnDescriptor>,
- *   editCallback: (undefined|function(*, string, *, *):*),
- *   deleteCallback: (undefined|function(*):*),
- *   refreshCallback: (undefined|function():*)
- * }}
- */
-// @ts-ignore typedef
-export let Parameters;
-
-/**
- * @typedef {{
- *   id: string,
- *   title: (!Platform.UIString.LocalizedString|undefined),
- *   titleDOMFragment: (?DocumentFragment|undefined),
- *   sortable: boolean,
- *   sort: (?Order|undefined),
- *   align: (?Align|undefined),
- *   width: (string|undefined),
- *   fixedWidth: (boolean|undefined),
- *   editable: (boolean|undefined),
- *   nonSelectable: (boolean|undefined),
- *   longText: (boolean|undefined),
- *   disclosure: (boolean|undefined),
- *   weight: (number|undefined),
- *   allowInSortByEvenWhenHidden: (boolean|undefined),
- *   dataType: (?DataType|undefined),
- *   defaultWeight: (number|undefined)
- * }}
- */
-// @ts-ignore typedef
-export let ColumnDescriptor;
+export interface Parameters {
+  displayName: string;
+  columns: ColumnDescriptor[];
+  editCallback?: ((arg0: any, arg1: string, arg2: any, arg3: any) => any);
+  deleteCallback?: ((arg0: any) => any);
+  refreshCallback?: (() => any);
+}
+export interface ColumnDescriptor {
+  id: string;
+  title?: Common.UIString.LocalizedString;
+  titleDOMFragment?: DocumentFragment|null;
+  sortable: boolean;
+  sort?: Order|null;
+  align?: Align|null;
+  width?: string;
+  fixedWidth?: boolean;
+  editable?: boolean;
+  nonSelectable?: boolean;
+  longText?: boolean;
+  disclosure?: boolean;
+  weight?: number;
+  allowInSortByEvenWhenHidden?: boolean;
+  dataType?: DataType|null;
+  defaultWeight?: number;
+}

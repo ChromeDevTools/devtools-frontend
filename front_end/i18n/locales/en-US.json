@@ -1679,58 +1679,58 @@
   "css_overview/CSSOverviewUnusedDeclarations.js | widthAppliedToAnInlineElement": {
     "message": "Width applied to an inline element"
   },
-  "data_grid/DataGrid.js | addNew": {
+  "data_grid/DataGrid.ts | addNew": {
     "message": "Add new"
   },
-  "data_grid/DataGrid.js | checked": {
+  "data_grid/DataGrid.ts | checked": {
     "message": "checked"
   },
-  "data_grid/DataGrid.js | collapsed": {
+  "data_grid/DataGrid.ts | collapsed": {
     "message": "collapsed"
   },
-  "data_grid/DataGrid.js | delete": {
+  "data_grid/DataGrid.ts | delete": {
     "message": "Delete"
   },
-  "data_grid/DataGrid.js | editS": {
+  "data_grid/DataGrid.ts | editS": {
     "message": "Edit \"{PH1}\""
   },
-  "data_grid/DataGrid.js | expanded": {
+  "data_grid/DataGrid.ts | expanded": {
     "message": "expanded"
   },
-  "data_grid/DataGrid.js | headerOptions": {
+  "data_grid/DataGrid.ts | headerOptions": {
     "message": "Header Options"
   },
-  "data_grid/DataGrid.js | levelS": {
+  "data_grid/DataGrid.ts | levelS": {
     "message": "level {PH1}"
   },
-  "data_grid/DataGrid.js | refresh": {
+  "data_grid/DataGrid.ts | refresh": {
     "message": "Refresh"
   },
-  "data_grid/DataGrid.js | resetColumns": {
+  "data_grid/DataGrid.ts | resetColumns": {
     "message": "Reset Columns"
   },
-  "data_grid/DataGrid.js | rowsS": {
+  "data_grid/DataGrid.ts | rowsS": {
     "message": "Rows: {PH1}"
   },
-  "data_grid/DataGrid.js | sortByString": {
+  "data_grid/DataGrid.ts | sortByString": {
     "message": "Sort By"
   },
-  "data_grid/DataGrid.js | sRowS": {
+  "data_grid/DataGrid.ts | sRowS": {
     "message": "{PH1} Row {PH2}"
   },
-  "data_grid/DataGrid.js | sSUseTheUpAndDownArrowKeysTo": {
+  "data_grid/DataGrid.ts | sSUseTheUpAndDownArrowKeysTo": {
     "message": "{PH1} {PH2}, use the up and down arrow keys to navigate and interact with the rows of the table; Use browse mode to read cell by cell."
   },
-  "data_grid/ShowMoreDataGridNode.js | showAllD": {
+  "data_grid/ShowMoreDataGridNode.ts | showAllD": {
     "message": "Show all {PH1}"
   },
-  "data_grid/ShowMoreDataGridNode.js | showDAfter": {
+  "data_grid/ShowMoreDataGridNode.ts | showDAfter": {
     "message": "Show {PH1} after"
   },
-  "data_grid/ShowMoreDataGridNode.js | showDBefore": {
+  "data_grid/ShowMoreDataGridNode.ts | showDBefore": {
     "message": "Show {PH1} before"
   },
-  "data_grid/ViewportDataGrid.js | collapsed": {
+  "data_grid/ViewportDataGrid.ts | collapsed": {
     "message": "collapsed"
   },
   "developer_resources/developer_resources-meta.ts | developerResources": {

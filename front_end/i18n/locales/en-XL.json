@@ -1679,58 +1679,58 @@
   "css_overview/CSSOverviewUnusedDeclarations.js | widthAppliedToAnInlineElement": {
     "message": "Width âṕp̂ĺîéd̂ t́ô án̂ ín̂ĺîńê él̂ém̂én̂t́"
   },
-  "data_grid/DataGrid.js | addNew": {
+  "data_grid/DataGrid.ts | addNew": {
     "message": "Âd́d̂ ńêẃ"
   },
-  "data_grid/DataGrid.js | checked": {
+  "data_grid/DataGrid.ts | checked": {
     "message": "ĉh́êćk̂éd̂"
   },
-  "data_grid/DataGrid.js | collapsed": {
+  "data_grid/DataGrid.ts | collapsed": {
     "message": "ĉól̂ĺâṕŝéd̂"
   },
-  "data_grid/DataGrid.js | delete": {
+  "data_grid/DataGrid.ts | delete": {
     "message": "D̂él̂ét̂é"
   },
-  "data_grid/DataGrid.js | editS": {
+  "data_grid/DataGrid.ts | editS": {
     "message": "Êd́ît́ \"{PH1}\""
   },
-  "data_grid/DataGrid.js | expanded": {
+  "data_grid/DataGrid.ts | expanded": {
     "message": "êx́p̂án̂d́êd́"
   },
-  "data_grid/DataGrid.js | headerOptions": {
+  "data_grid/DataGrid.ts | headerOptions": {
     "message": "Ĥéâd́êŕ Ôṕt̂íôńŝ"
   },
-  "data_grid/DataGrid.js | levelS": {
+  "data_grid/DataGrid.ts | levelS": {
     "message": "l̂év̂él̂ {PH1}"
   },
-  "data_grid/DataGrid.js | refresh": {
+  "data_grid/DataGrid.ts | refresh": {
     "message": "R̂éf̂ŕêśĥ"
   },
-  "data_grid/DataGrid.js | resetColumns": {
+  "data_grid/DataGrid.ts | resetColumns": {
     "message": "R̂éŝét̂ Ćôĺûḿn̂ś"
   },
-  "data_grid/DataGrid.js | rowsS": {
+  "data_grid/DataGrid.ts | rowsS": {
     "message": "R̂óŵś: {PH1}"
   },
-  "data_grid/DataGrid.js | sortByString": {
+  "data_grid/DataGrid.ts | sortByString": {
     "message": "Ŝór̂t́ B̂ý"
   },
-  "data_grid/DataGrid.js | sRowS": {
+  "data_grid/DataGrid.ts | sRowS": {
     "message": "{PH1} R̂óŵ {PH2}"
   },
-  "data_grid/DataGrid.js | sSUseTheUpAndDownArrowKeysTo": {
+  "data_grid/DataGrid.ts | sSUseTheUpAndDownArrowKeysTo": {
     "message": "{PH1} {PH2}, ûśê t́ĥé ûṕ âńd̂ d́ôẃn̂ ár̂ŕôẃ k̂éŷś t̂ó n̂áv̂íĝát̂é âńd̂ ín̂t́êŕâćt̂ ẃît́ĥ t́ĥé r̂óŵś ôf́ t̂h́ê t́âb́l̂é; Ûśê b́r̂óŵśê ḿôd́ê t́ô ŕêád̂ ćêĺl̂ b́ŷ ćêĺl̂."
   },
-  "data_grid/ShowMoreDataGridNode.js | showAllD": {
+  "data_grid/ShowMoreDataGridNode.ts | showAllD": {
     "message": "Ŝh́ôẃ âĺl̂ {PH1}"
   },
-  "data_grid/ShowMoreDataGridNode.js | showDAfter": {
+  "data_grid/ShowMoreDataGridNode.ts | showDAfter": {
     "message": "Ŝh́ôẃ {PH1} âf́t̂ér̂"
   },
-  "data_grid/ShowMoreDataGridNode.js | showDBefore": {
+  "data_grid/ShowMoreDataGridNode.ts | showDBefore": {
     "message": "Ŝh́ôẃ {PH1} b̂éf̂ór̂é"
   },
-  "data_grid/ViewportDataGrid.js | collapsed": {
+  "data_grid/ViewportDataGrid.ts | collapsed": {
     "message": "ĉól̂ĺâṕŝéd̂"
   },
   "developer_resources/developer_resources-meta.ts | developerResources": {

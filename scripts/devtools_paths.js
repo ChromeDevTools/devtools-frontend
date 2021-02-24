@@ -148,7 +148,7 @@ function stylelintExecutablePath() {
 function downloadedChromeBinaryPath() {
   const paths = {
     'linux': path.join('chrome-linux', 'chrome'),
-    'darwin': path.join('chrome', 'chrome-mac', 'Chromium.app', 'Contents', 'MacOS', 'Chromium'),
+    'darwin': path.join('chrome-mac', 'Chromium.app', 'Contents', 'MacOS', 'Chromium'),
     'win32': path.join('chrome-win', 'chrome.exe'),
   };
   return path.join(thirdPartyPath(), 'chrome', paths[os.platform()]);

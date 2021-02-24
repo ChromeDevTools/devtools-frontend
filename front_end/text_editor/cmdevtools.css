@@ -730,7 +730,9 @@ div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
 
 .CodeMirror-scrollbar-filler,
 .CodeMirror-gutter-filler {
-  background-color: var(--color-background); /* The little square between H and V scrollbars */
+  /* The little square between H and V scrollbars */
+  background-color: white; /* stylelint-disable-line color-named */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 /* Shown when moving in bi-directional text */
 

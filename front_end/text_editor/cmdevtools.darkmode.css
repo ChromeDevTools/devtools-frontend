@@ -1,6 +1,6 @@
 /* This file was automatically generated via:
 npm run generate-dark-mode-styles front_end/text_editor/cmdevtools.css
-* Last Updated: Tue Feb 23 2021 12:16:31 GMT+0000 (Greenwich Mean Time)
+* Last Updated: Wed Feb 24 2021 12:07:36 GMT+0000 (Greenwich Mean Time)
 */
 /* stylelint-disable */
 :host-context(.-theme-with-dark-background) .CodeMirror, .-theme-with-dark-background .CodeMirror{
@@ -100,7 +100,7 @@ color:rgb(127 127 127);}
 :host-context(.-theme-with-dark-background) .CodeMirror .placeholder-text, .-theme-with-dark-background .CodeMirror .placeholder-text{
 color:rgb(127 127 127);}
 :host-context(.-theme-with-dark-background) .CodeMirror-scrollbar-filler, .-theme-with-dark-background .CodeMirror-scrollbar-filler, :host-context(.-theme-with-dark-background) .CodeMirror-gutter-filler, .-theme-with-dark-background .CodeMirror-gutter-filler{
-background-color:var(--color-background);}
+background-color:rgb(36 36 36);}
 :host-context(.-theme-with-dark-background) .CodeMirror div.CodeMirror-secondarycursor, .-theme-with-dark-background .CodeMirror div.CodeMirror-secondarycursor{
 border-left-color:rgb(67 67 67);}
 :host-context(.-theme-with-dark-background) .CodeMirror-foldmarker::before, .-theme-with-dark-background .CodeMirror-foldmarker::before{

@@ -29,12 +29,22 @@
  */
 
 import * as Common from '../common/common.js';
+import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
 import * as Root from '../root/root.js';
 
 import {CanShowSurveyResult, ContextMenuDescriptor, EnumeratedHistogram, EventDescriptors, Events, InspectorFrontendHostAPI, LoadNetworkResourceResult, ShowSurveyResult} from './InspectorFrontendHostAPI.js';  // eslint-disable-line no-unused-vars
 import {streamWrite as resourceLoaderStreamWrite} from './ResourceLoader.js';
 
+export const UIStrings = {
+  /**
+  *@description Document title in Inspector Frontend Host of the DevTools window
+  *@example {example.com} PH1
+  */
+  devtoolsS: 'DevTools - {PH1}',
+};
+const str_ = i18n.i18n.registerUIStrings('host/InspectorFrontendHost.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /**
  * @implements {InspectorFrontendHostAPI}
  */
@@ -154,7 +164,7 @@ export class InspectorFrontendHostStub {
    * @param {string} url
    */
   inspectedURLChanged(url) {
-    document.title = Common.UIString.UIString('DevTools - %s', url.replace(/^https?:\/\//, ''));
+    document.title = i18nString(UIStrings.devtoolsS, {PH1: url.replace(/^https?:\/\//, '')});
   }
 
   /**

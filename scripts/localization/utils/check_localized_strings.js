@@ -126,6 +126,7 @@ const migratedDirsSet = new Set([
   'event_listeners',
   'help',
   'heap_snapshot_worker',
+  'host',
   'inline_editor',
   'input',
   'issues',

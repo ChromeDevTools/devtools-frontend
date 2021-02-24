@@ -2156,6 +2156,48 @@
   "help/ReleaseNoteView.ts | s": {
     "message": "{PH1}"
   },
+  "host/InspectorFrontendHost.js | devtoolsS": {
+    "message": "D̂év̂T́ôól̂ś - {PH1}"
+  },
+  "host/ResourceLoader.js | cacheError": {
+    "message": "Ĉáĉh́ê ér̂ŕôŕ"
+  },
+  "host/ResourceLoader.js | certificateError": {
+    "message": "Ĉér̂t́îf́îćât́ê ér̂ŕôŕ"
+  },
+  "host/ResourceLoader.js | certificateManagerError": {
+    "message": "Ĉér̂t́îf́îćât́ê ḿâńâǵêŕ êŕr̂ór̂"
+  },
+  "host/ResourceLoader.js | connectionError": {
+    "message": "Ĉón̂ńêćt̂íôń êŕr̂ór̂"
+  },
+  "host/ResourceLoader.js | decodingDataUrlFailed": {
+    "message": "D̂éĉód̂ín̂ǵ D̂át̂á ÛŔL̂ f́âíl̂éd̂"
+  },
+  "host/ResourceLoader.js | dnsResolverError": {
+    "message": "D̂ŃŜ ŕêśôĺv̂ér̂ ér̂ŕôŕ"
+  },
+  "host/ResourceLoader.js | ftpError": {
+    "message": "F̂T́P̂ ér̂ŕôŕ"
+  },
+  "host/ResourceLoader.js | httpError": {
+    "message": "ĤT́T̂Ṕ êŕr̂ór̂"
+  },
+  "host/ResourceLoader.js | httpErrorStatusCodeSS": {
+    "message": "ĤT́T̂Ṕ êŕr̂ór̂: śt̂át̂úŝ ćôd́ê {PH1}, {PH2}"
+  },
+  "host/ResourceLoader.js | invalidUrl": {
+    "message": "Îńv̂ál̂íd̂ ÚR̂Ĺ"
+  },
+  "host/ResourceLoader.js | signedExchangeError": {
+    "message": "Ŝíĝńêd́ Êx́ĉh́âńĝé êŕr̂ór̂"
+  },
+  "host/ResourceLoader.js | systemError": {
+    "message": "Ŝýŝt́êḿ êŕr̂ór̂"
+  },
+  "host/ResourceLoader.js | unknownError": {
+    "message": "Ûńk̂ńôẃn̂ ér̂ŕôŕ"
+  },
   "inline_editor/ColorSwatch.ts | shiftclickToChangeColorFormat": {
     "message": "Ŝh́îf́t̂-ćl̂íĉḱ t̂ó ĉh́âńĝé ĉól̂ór̂ f́ôŕm̂át̂"
   },

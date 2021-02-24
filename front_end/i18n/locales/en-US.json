@@ -2156,6 +2156,48 @@
   "help/ReleaseNoteView.ts | s": {
     "message": "{PH1}"
   },
+  "host/InspectorFrontendHost.js | devtoolsS": {
+    "message": "DevTools - {PH1}"
+  },
+  "host/ResourceLoader.js | cacheError": {
+    "message": "Cache error"
+  },
+  "host/ResourceLoader.js | certificateError": {
+    "message": "Certificate error"
+  },
+  "host/ResourceLoader.js | certificateManagerError": {
+    "message": "Certificate manager error"
+  },
+  "host/ResourceLoader.js | connectionError": {
+    "message": "Connection error"
+  },
+  "host/ResourceLoader.js | decodingDataUrlFailed": {
+    "message": "Decoding Data URL failed"
+  },
+  "host/ResourceLoader.js | dnsResolverError": {
+    "message": "DNS resolver error"
+  },
+  "host/ResourceLoader.js | ftpError": {
+    "message": "FTP error"
+  },
+  "host/ResourceLoader.js | httpError": {
+    "message": "HTTP error"
+  },
+  "host/ResourceLoader.js | httpErrorStatusCodeSS": {
+    "message": "HTTP error: status code {PH1}, {PH2}"
+  },
+  "host/ResourceLoader.js | invalidUrl": {
+    "message": "Invalid URL"
+  },
+  "host/ResourceLoader.js | signedExchangeError": {
+    "message": "Signed Exchange error"
+  },
+  "host/ResourceLoader.js | systemError": {
+    "message": "System error"
+  },
+  "host/ResourceLoader.js | unknownError": {
+    "message": "Unknown error"
+  },
   "inline_editor/ColorSwatch.ts | shiftclickToChangeColorFormat": {
     "message": "Shift-click to change color format"
   },

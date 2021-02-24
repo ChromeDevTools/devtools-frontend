@@ -5244,7 +5244,7 @@
     "message": "ÂĹL̂ÓĈÁT̂ÍÔŃ T̂ÍM̂ÉL̂ÍN̂ÉŜ"
   },
   "profiler/HeapSnapshotView.js | AllocationTimelinesShowInstrumented": {
-    "message": "Âĺl̂óĉát̂íôń t̂ím̂él̂ín̂éŝ śĥóŵ ín̂śt̂ŕûḿêńt̂éd̂ J́âv́âŚĉŕîṕt̂ ḿêḿôŕŷ ál̂ĺôćât́îón̂ś ôv́êŕ t̂ím̂é."
+    "message": "Âĺl̂óĉát̂íôń t̂ím̂él̂ín̂éŝ śĥóŵ ín̂śt̂ŕûḿêńt̂éd̂ J́âv́âŚĉŕîṕt̂ ḿêḿôŕŷ ál̂ĺôćât́îón̂ś ôv́êŕ t̂ím̂é. Ôńĉé p̂ŕôf́îĺê íŝ ŕêćôŕd̂éd̂ ýôú ĉán̂ śêĺêćt̂ á t̂ím̂é îńt̂ér̂v́âĺ t̂ó ŝéê ób̂j́êćt̂ś t̂h́ât́ ŵér̂é âĺl̂óĉát̂éd̂ ẃît́ĥín̂ ít̂ án̂d́ ŝt́îĺl̂ ál̂ív̂é b̂ý t̂h́ê én̂d́ ôf́ r̂éĉór̂d́îńĝ. Úŝé t̂h́îś p̂ŕôf́îĺê t́ŷṕê t́ô íŝól̂át̂é m̂ém̂ór̂ý l̂éâḱŝ."
   },
   "profiler/HeapSnapshotView.js | baseSnapshot": {
     "message": "B̂áŝé ŝńâṕŝh́ôt́"
@@ -5293,9 +5293,6 @@
   },
   "profiler/HeapSnapshotView.js | objectsAllocatedBetweenSAndS": {
     "message": "Ôb́ĵéĉt́ŝ ál̂ĺôćât́êd́ b̂ét̂ẃêén̂ {PH1} án̂d́ {PH2}"
-  },
-  "profiler/HeapSnapshotView.js | OnceProfileIsRecorded": {
-    "message": "Ôńĉé p̂ŕôf́îĺê íŝ ŕêćôŕd̂éd̂ ýôú ĉán̂ śêĺêćt̂ á t̂ím̂é îńt̂ér̂v́âĺ t̂ó ŝéê ób̂j́êćt̂ś t̂h́ât́"
   },
   "profiler/HeapSnapshotView.js | percentagePlaceholder": {
     "message": "{PH1}%"
@@ -5356,12 +5353,6 @@
   },
   "profiler/HeapSnapshotView.js | typedArrays": {
     "message": "T̂ýp̂éd̂ ár̂ŕâýŝ"
-  },
-  "profiler/HeapSnapshotView.js | UseThisProfileTypeToIsolate": {
-    "message": "Ûśê t́ĥíŝ ṕr̂óf̂íl̂é t̂ýp̂é t̂ó îśôĺât́ê ḿêḿôŕŷ ĺêák̂ś."
-  },
-  "profiler/HeapSnapshotView.js | WereAllocatedWithinIt": {
-    "message": "ŵér̂é âĺl̂óĉát̂éd̂ ẃît́ĥín̂ ít̂ án̂d́ ŝt́îĺl̂ ál̂ív̂é b̂ý t̂h́ê én̂d́ ôf́ r̂éĉór̂d́îńĝ."
   },
   "profiler/IsolateSelector.js | changeRate": {
     "message": "{PH1}/ŝ"

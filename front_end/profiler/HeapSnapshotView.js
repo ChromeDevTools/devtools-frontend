@@ -206,22 +206,10 @@ export const UIStrings = {
   */
   allocationTimelines: 'ALLOCATION TIMELINES',
   /**
-  *@description Description(part 1) in Heap Snapshot View of a profiler tool
+  *@description Description for the 'Allocation timeline' tool in the Memory panel.
   */
   AllocationTimelinesShowInstrumented:
-      'Allocation timelines show instrumented JavaScript memory allocations over time.',
-  /**
-  *@description Description(part 2) in Heap Snapshot View of a profiler tool
-  */
-  OnceProfileIsRecorded: 'Once profile is recorded you can select a time interval to see objects that',
-  /**
-  *@description Description(part 3) in Heap Snapshot View of a profiler tool
-  */
-  WereAllocatedWithinIt: 'were allocated within it and still alive by the end of recording.',
-  /**
-  *@description Description(part 4) in Heap Snapshot View of a profiler tool
-  */
-  UseThisProfileTypeToIsolate: 'Use this profile type to isolate memory leaks.',
+      'Allocation timelines show instrumented JavaScript memory allocations over time. Once profile is recorded you can select a time interval to see objects that were allocated within it and still alive by the end of recording. Use this profile type to isolate memory leaks.',
   /**
   *@description Text when something is loading
   */
@@ -1730,11 +1718,7 @@ export class TrackingHeapSnapshotProfileType extends HeapSnapshotProfileType {
    * @return {Common.UIString.LocalizedString}
    */
   get description() {
-    const formattedDescription = [
-      '', i18nString(UIStrings.AllocationTimelinesShowInstrumented), i18nString(UIStrings.OnceProfileIsRecorded),
-      i18nString(UIStrings.WereAllocatedWithinIt), i18nString(UIStrings.UseThisProfileTypeToIsolate)
-    ];
-    return /** @type {Common.UIString.LocalizedString} */ (formattedDescription.join('\n'));
+    return i18nString(UIStrings.AllocationTimelinesShowInstrumented);
   }
 
   /**

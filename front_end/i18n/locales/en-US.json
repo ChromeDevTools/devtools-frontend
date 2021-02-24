@@ -5244,7 +5244,7 @@
     "message": "ALLOCATION TIMELINES"
   },
   "profiler/HeapSnapshotView.js | AllocationTimelinesShowInstrumented": {
-    "message": "Allocation timelines show instrumented JavaScript memory allocations over time."
+    "message": "Allocation timelines show instrumented JavaScript memory allocations over time. Once profile is recorded you can select a time interval to see objects that were allocated within it and still alive by the end of recording. Use this profile type to isolate memory leaks."
   },
   "profiler/HeapSnapshotView.js | baseSnapshot": {
     "message": "Base snapshot"
@@ -5293,9 +5293,6 @@
   },
   "profiler/HeapSnapshotView.js | objectsAllocatedBetweenSAndS": {
     "message": "Objects allocated between {PH1} and {PH2}"
-  },
-  "profiler/HeapSnapshotView.js | OnceProfileIsRecorded": {
-    "message": "Once profile is recorded you can select a time interval to see objects that"
   },
   "profiler/HeapSnapshotView.js | percentagePlaceholder": {
     "message": "{PH1}%"
@@ -5356,12 +5353,6 @@
   },
   "profiler/HeapSnapshotView.js | typedArrays": {
     "message": "Typed arrays"
-  },
-  "profiler/HeapSnapshotView.js | UseThisProfileTypeToIsolate": {
-    "message": "Use this profile type to isolate memory leaks."
-  },
-  "profiler/HeapSnapshotView.js | WereAllocatedWithinIt": {
-    "message": "were allocated within it and still alive by the end of recording."
   },
   "profiler/IsolateSelector.js | changeRate": {
     "message": "{PH1}/s"

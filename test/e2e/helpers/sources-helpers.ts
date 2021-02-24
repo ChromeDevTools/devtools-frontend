@@ -246,11 +246,8 @@ export async function retrieveTopCallFrameScriptLocation(script: string, target:
   const scriptEvaluation = target.evaluate(script);
 
   // Wait for the evaluation to be paused and shown in the UI
-  await waitFor(PAUSE_INDICATOR_SELECTOR);
-
-  // Retrieve the top level call frame script location name
-  const locationHandle = await waitFor('.call-frame-location');
-  const scriptLocation = await locationHandle.evaluate(location => location.textContent);
+  // and retrieve the top level call frame script location name
+  const scriptLocation = await retrieveTopCallFrameWithoutResuming();
 
   // Resume the evaluation
   await click(RESUME_BUTTON);

@@ -28,33 +28,29 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* eslint-disable rulesdir/no_underscored_properties */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import * as TextUtils from '../text_utils/text_utils.js';
 
-/**
- * @param {!TextUtils.TextRange.TextRange} range
- * @return {!{start: *, end: *}} // {start: !CodeMirror.Pos, end: !CodeMirror.Pos}
- */
-export function toPos(range) {
+export function toPos(range: TextUtils.TextRange.TextRange): {
+  start: any,
+  end: any,
+} {
   return {
     start: new CodeMirror.Pos(range.startLine, range.startColumn),
-    end: new CodeMirror.Pos(range.endLine, range.endColumn)
+    end: new CodeMirror.Pos(range.endLine, range.endColumn),
   };
 }
 
-/**
- * @param {*} start // !CodeMirror.Pos
- * @param {*} end // !CodeMirror.Pos
- * @return {!TextUtils.TextRange.TextRange}
- */
-export function toRange(start, end) {
+export function toRange(start: any, end: any): TextUtils.TextRange.TextRange {
   return new TextUtils.TextRange.TextRange(start.line, start.ch, end.line, end.ch);
 }
 
-/**
- * @param {*} changeObject (!CodeMirror.ChangeObject)
- * @return {{oldRange: !TextUtils.TextRange.TextRange, newRange: !TextUtils.TextRange.TextRange}}
- */
-export function changeObjectToEditOperation(changeObject) {
+export function changeObjectToEditOperation(changeObject: any): {
+  oldRange: TextUtils.TextRange.TextRange,
+  newRange: TextUtils.TextRange.TextRange,
+} {
   const oldRange = toRange(changeObject.from, changeObject.to);
   const newRange = oldRange.clone();
   const linesAdded = changeObject.text.length;
@@ -71,37 +67,26 @@ export function changeObjectToEditOperation(changeObject) {
   return {oldRange: oldRange, newRange: newRange};
 }
 
-/**
- * @param {!CodeMirror} codeMirror
- * @param {number} linesCount
- * @return {!Array.<string>}
- */
-export function pullLines(codeMirror, linesCount) {
-  /** @type {!Array.<string>} */
-  const lines = [];
+export function pullLines(codeMirror: typeof CodeMirror, linesCount: number): string[] {
+  const lines: string[] = [];
   // @ts-expect-error CodeMirror types do not specify eachLine.
   codeMirror.eachLine(0, linesCount, onLineHandle);
   return lines;
 
-  /**
-   * @param {!{text: string}} lineHandle
-   */
-  function onLineHandle(lineHandle) {
+  function onLineHandle(lineHandle: {
+    text: string,
+  }): void {
     lines.push(lineHandle.text);
   }
 }
 
-/** @type {!TokenizerFactory} */
-let tokenizerFactoryInstance;
+let tokenizerFactoryInstance: TokenizerFactory;
 
-/**
- * @implements {TextUtils.TextUtils.TokenizerFactory}
- */
-export class TokenizerFactory {
-  /**
-   * @param {{forceNew: ?boolean}} opts
-   */
-  static instance(opts = {forceNew: null}) {
+export type Tokenizer =
+    (line: string, callback: (value: string, style: string|null, start: number, end: number) => void) => void;
+
+export class TokenizerFactory extends TextUtils.TextUtils.TokenizerFactory {
+  static instance(opts: {forceNew: boolean|null} = {forceNew: null}): TokenizerFactory {
     const {forceNew} = opts;
     if (!tokenizerFactoryInstance || forceNew) {
       tokenizerFactoryInstance = new TokenizerFactory();
@@ -110,27 +95,18 @@ export class TokenizerFactory {
     return tokenizerFactoryInstance;
   }
 
-  /**
-   * @param {string} mimeType
-   */
-  getMode(mimeType) {
+  // https://crbug.com/1151919 * = CodeMirror.Mode
+  getMode(mimeType: string): any {
     return CodeMirror.getMode({indentUnit: 2}, mimeType);
   }
+
   // https://crbug.com/1151919 * = CodeMirror.Mode
-  /**
-   * @override
-   * @param {string} mimeType
-   * @param {!*=} mode
-   * @return {function(string, function(string, ?string, number, number))}
-   */
-  createTokenizer(mimeType, mode) {
+  createTokenizer(mimeType: string, mode?: any): Tokenizer {
     const cmMode = mode || CodeMirror.getMode({indentUnit: 2}, mimeType);
     const state = CodeMirror.startState(cmMode);
-    /**
-     * @param {string} line
-     * @param {function(string, (string|null), number, number):void} callback
-     */
-    function tokenize(line, callback) {
+
+    function tokenize(
+        line: string, callback: (value: string, style: string|null, start: number, end: number) => void): void {
       const stream = new CodeMirror.StringStream(line);
       while (!stream.eol()) {
         const style = cmMode.token(stream, state);

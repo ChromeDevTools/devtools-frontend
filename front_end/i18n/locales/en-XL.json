@@ -8360,7 +8360,7 @@
   "sources/WatchExpressionsSidebarPane.js | refreshWatchExpressions": {
     "message": "R̂éf̂ŕêśĥ ẃât́ĉh́ êx́p̂ŕêśŝíôńŝ"
   },
-  "text_editor/CodeMirrorTextEditor.js | codeEditor": {
+  "text_editor/CodeMirrorTextEditor.ts | codeEditor": {
     "message": "Ĉód̂é êd́ît́ôŕ"
   },
   "timeline_model/TimelineIRModel.js | twoFlingsAtTheSameTimeSVsS": {

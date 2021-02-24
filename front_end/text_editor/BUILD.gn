@@ -7,11 +7,11 @@ import("../../scripts/build/ninja/devtools_module.gni")
 
 devtools_module("text_editor") {
   sources = [
-    "CodeMirrorTextEditor.js",
-    "CodeMirrorUtils.js",
-    "SyntaxHighlighter.js",
-    "TextEditorAutocompleteController.js",
-    "cm_modes.js",
+    "CodeMirrorTextEditor.ts",
+    "CodeMirrorUtils.ts",
+    "SyntaxHighlighter.ts",
+    "TextEditorAutocompleteController.ts",
+    "cm_modes.ts",
   ]
 
   deps = [
@@ -34,7 +34,7 @@ copy_to_gen("legacy_css") {
 }
 
 devtools_entrypoint("bundle") {
-  entrypoint = "text_editor.js"
+  entrypoint = "text_editor.ts"
 
   deps = [
     ":text_editor",
@@ -43,7 +43,7 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_entrypoint("legacy") {
-  entrypoint = "text_editor-legacy.js"
+  entrypoint = "text_editor-legacy.ts"
 
   deps = [ ":bundle" ]
 }

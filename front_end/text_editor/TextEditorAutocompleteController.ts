@@ -2,6 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import * as Common from '../common/common.js';
 import * as Platform from '../platform/platform.js';
 import * as TextUtils from '../text_utils/text_utils.js';
@@ -10,17 +13,25 @@ import * as UI from '../ui/ui.js';
 import {CodeMirrorTextEditor} from './CodeMirrorTextEditor.js';  // eslint-disable-line no-unused-vars
 import {changeObjectToEditOperation} from './CodeMirrorUtils.js';
 
-/**
- * @implements {UI.SuggestBox.SuggestBoxDelegate}
- */
-export class TextEditorAutocompleteController {
+export class TextEditorAutocompleteController implements UI.SuggestBox.SuggestBoxDelegate {
+  _textEditor: CodeMirrorTextEditor;
+  _codeMirror: any;
+  _config: UI.TextEditor.AutocompleteConfig;
+  _initialized: boolean;
+  _mouseDown: () => void;
+  _lastHintText: string;
+  _suggestBox: UI.SuggestBox.SuggestBox|null;
+  _currentSuggestion: UI.SuggestBox.Suggestion|null;
+  _hintElement: HTMLSpanElement;
+  _tooltipGlassPane: UI.GlassPane.GlassPane;
+  _tooltipElement: HTMLDivElement;
+  _queryRange: TextUtils.TextRange.TextRange|null;
+  _dictionary?: Common.TextDictionary.TextDictionary;
+  _updatedLines?: any;
+  _hintMarker?: any|null;
+  _anchorBox?: AnchorBox|null;
   // https://crbug.com/1151919 * = CodeMirror.Editor
-  /**
-   * @param {!CodeMirrorTextEditor} textEditor
-   * @param {*} codeMirror
-   * @param {!UI.TextEditor.AutocompleteConfig} config
-   */
-  constructor(textEditor, codeMirror, config) {
+  constructor(textEditor: CodeMirrorTextEditor, codeMirror: any, config: UI.TextEditor.AutocompleteConfig) {
     this._textEditor = textEditor;
     this._codeMirror = codeMirror;
     this._config = config;
@@ -31,16 +42,14 @@ export class TextEditorAutocompleteController {
     this._changes = this._changes.bind(this);
     this._blur = this._blur.bind(this);
     this._beforeChange = this._beforeChange.bind(this);
-    this._mouseDown = () => {
+    this._mouseDown = (): void => {
       this.clearAutocomplete();
       this._tooltipGlassPane.hide();
     };
     // @ts-ignore CodeMirror types are wrong.
     this._codeMirror.on('changes', this._changes);
     this._lastHintText = '';
-    /** @type {?UI.SuggestBox.SuggestBox} */
     this._suggestBox = null;
-    /** @type {?UI.SuggestBox.Suggestion} */
     this._currentSuggestion = null;
     this._hintElement = document.createElement('span');
     this._hintElement.classList.add('auto-complete-text');
@@ -55,11 +64,10 @@ export class TextEditorAutocompleteController {
         {cssFile: 'text_editor/autocompleteTooltip.css', enableLegacyPatching: true, delegatesFocus: undefined});
     shadowRoot.appendChild(this._tooltipElement);
 
-    /** @type {?TextUtils.TextRange.TextRange} */
     this._queryRange = null;
   }
 
-  _initializeIfNeeded() {
+  _initializeIfNeeded(): void {
     if (this._initialized) {
       return;
     }
@@ -81,7 +89,7 @@ export class TextEditorAutocompleteController {
     }
   }
 
-  dispose() {
+  dispose(): void {
     // @ts-ignore CodeMirror types are wrong.
     this._codeMirror.off('changes', this._changes);
     if (this._initialized) {
@@ -101,11 +109,7 @@ export class TextEditorAutocompleteController {
     }
   }
 
-  /**
-   * @param {!CodeMirror} codeMirror
-   * @param {*} changeObject (!CodeMirror.BeforeChangeObject)
-   */
-  _beforeChange(codeMirror, changeObject) {
+  _beforeChange(codeMirror: typeof CodeMirror, changeObject: any): void {
     this._updatedLines = this._updatedLines || {};
     for (let i = changeObject.from.line; i <= changeObject.to.line; ++i) {
       if (this._updatedLines[i] === undefined) {
@@ -115,40 +119,25 @@ export class TextEditorAutocompleteController {
     }
   }
 
-  /**
-   * @param {string} text
-   */
-  _addWordsFromText(text) {
+  _addWordsFromText(text: string): void {
     TextUtils.TextUtils.Utils.textToWords(
-        text, /** @type {function(string):boolean} */ (this._config.isWordChar), addWord.bind(this));
+        text, this._config.isWordChar as (arg0: string) => boolean, addWord.bind(this));
 
-    /**
-     * @param {string} word
-     * @this {TextEditorAutocompleteController}
-     */
-    function addWord(word) {
+    function addWord(this: TextEditorAutocompleteController, word: string): void {
       if (this._dictionary && word.length && (word[0] < '0' || word[0] > '9')) {
         this._dictionary.addWord(word);
       }
     }
   }
 
-  /**
-   * @param {string} text
-   */
-  _removeWordsFromText(text) {
+  _removeWordsFromText(text: string): void {
     TextUtils.TextUtils.Utils.textToWords(
-        text, /** @type {function(string):boolean} */ (this._config.isWordChar),
+        text, this._config.isWordChar as (arg0: string) => boolean,
         word => this._dictionary && this._dictionary.removeWord(word));
   }
 
-  /**
-   * @param {number} lineNumber
-   * @param {number} columnNumber
-   * @return {?TextUtils.TextRange.TextRange}
-   */
-  _substituteRange(lineNumber, columnNumber) {
-    let range =
+  _substituteRange(lineNumber: number, columnNumber: number): TextUtils.TextRange.TextRange|null {
+    let range: TextUtils.TextRange.TextRange|(TextUtils.TextRange.TextRange | null) =
         this._config.substituteRangeCallback ? this._config.substituteRangeCallback(lineNumber, columnNumber) : null;
     if (!range && this._config.isWordChar) {
       range = this._textEditor.wordRangeForCursorPosition(lineNumber, columnNumber, this._config.isWordChar);
@@ -156,13 +145,9 @@ export class TextEditorAutocompleteController {
     return range;
   }
 
-  /**
-   * @param {!TextUtils.TextRange.TextRange} queryRange
-   * @param {!TextUtils.TextRange.TextRange} substituteRange
-   * @param {boolean=} force
-   * @return {!Promise.<!UI.SuggestBox.Suggestions>}
-   */
-  _wordsWithQuery(queryRange, substituteRange, force) {
+  _wordsWithQuery(
+      queryRange: TextUtils.TextRange.TextRange, substituteRange: TextUtils.TextRange.TextRange,
+      force?: boolean): Promise<UI.SuggestBox.Suggestions> {
     const external =
         this._config.suggestionsCallback ? this._config.suggestionsCallback(queryRange, substituteRange, force) : null;
     if (external) {
@@ -190,15 +175,11 @@ export class TextEditorAutocompleteController {
                                              subtitleRenderer: undefined,
                                              selectionRange: undefined,
                                              hideGhostText: undefined,
-                                             iconElement: undefined
+                                             iconElement: undefined,
                                            })));
   }
 
-  /**
-   * @param {!CodeMirror} codeMirror
-   * @param {!Array.<*>} changes (CodeMirror.ChangeObject)
-   */
-  _changes(codeMirror, changes) {
+  _changes(codeMirror: typeof CodeMirror, changes: any[]): void {
     if (!changes.length) {
       return;
     }
@@ -209,8 +190,9 @@ export class TextEditorAutocompleteController {
       }
       delete this._updatedLines;
 
-      /** @type {!Object.<string, string>} */
-      const linesToUpdate = {};
+      const linesToUpdate: {
+        [x: string]: string,
+      } = {};
       for (let changeIndex = 0; changeIndex < changes.length; ++changeIndex) {
         const changeObject = changes[changeIndex];
         const editInfo = changeObjectToEditOperation(changeObject);
@@ -262,15 +244,11 @@ export class TextEditorAutocompleteController {
     }
   }
 
-  _blur() {
+  _blur(): void {
     this.clearAutocomplete();
   }
 
-  /**
-   * @param {!TextUtils.TextRange.TextRange} mainSelection
-   * @return {boolean}
-   */
-  _validateSelectionsContexts(mainSelection) {
+  _validateSelectionsContexts(mainSelection: TextUtils.TextRange.TextRange): boolean {
     // @ts-ignore CodeMirror types are wrong.
     const selections = this._codeMirror.listSelections();
     if (selections.length <= 1) {
@@ -290,10 +268,7 @@ export class TextEditorAutocompleteController {
     return true;
   }
 
-  /**
-   * @param {boolean=} force
-   */
-  autocomplete(force) {
+  autocomplete(force?: boolean): void {
     this._initializeIfNeeded();
     // @ts-ignore CodeMirror types are wrong.
     if (this._codeMirror.somethingSelected()) {
@@ -320,10 +295,7 @@ export class TextEditorAutocompleteController {
       return wordsAcquired(wordsWithQuery);
     });
 
-    /**
-     * @param {!UI.SuggestBox.Suggestions} wordsWithQuery
-     */
-    const wordsAcquired = wordsWithQuery => {
+    const wordsAcquired = (wordsWithQuery: UI.SuggestBox.Suggestions): void => {
       if (!wordsWithQuery.length || (wordsWithQuery.length === 1 && query === wordsWithQuery[0].text) ||
           (!this._suggestBox && hadSuggestBox)) {
         this._hideSuggestBox();
@@ -353,10 +325,7 @@ export class TextEditorAutocompleteController {
     };
   }
 
-  /**
-   * @param {string} hint
-   */
-  _setHint(hint) {
+  _setHint(hint: string): void {
     if (this._queryRange === null) {
       return;
     }
@@ -379,15 +348,15 @@ export class TextEditorAutocompleteController {
 
     if (!this._hintMarker) {
       this._hintMarker = this._textEditor.addBookmark(
-          cursor.line, cursor.ch, /** @type {!HTMLElement} */ (this._hintElement),
-          TextEditorAutocompleteController.HintBookmark, true);
+          cursor.line, cursor.ch, this._hintElement as HTMLElement, TextEditorAutocompleteController.HintBookmark,
+          true);
     } else if (this._lastHintText !== hint) {
       this._hintMarker.refresh();
     }
     this._lastHintText = hint;
   }
 
-  _clearHint() {
+  _clearHint(): void {
     if (!this._hintElement.textContent) {
       return;
     }
@@ -398,21 +367,18 @@ export class TextEditorAutocompleteController {
     }
   }
 
-  /**
-   * @param {!UI.SuggestBox.Suggestions} suggestions
-   */
-  _onSuggestionsShownForTest(suggestions) {
+  _onSuggestionsShownForTest(_suggestions: UI.SuggestBox.Suggestions): void {
   }
 
-  _onSuggestionsHiddenForTest() {
+  _onSuggestionsHiddenForTest(): void {
   }
 
-  clearAutocomplete() {
+  clearAutocomplete(): void {
     this._tooltipGlassPane.hide();
     this._hideSuggestBox();
   }
 
-  _hideSuggestBox() {
+  _hideSuggestBox(): void {
     if (!this._suggestBox) {
       return;
     }
@@ -426,11 +392,7 @@ export class TextEditorAutocompleteController {
     this._onSuggestionsHiddenForTest();
   }
 
-  /**
-   * @param {!KeyboardEvent} event
-   * @return {boolean}
-   */
-  keyDown(event) {
+  keyDown(event: KeyboardEvent): boolean {
     if (this._tooltipGlassPane.isShowing() && event.keyCode === UI.KeyboardShortcut.Keys.Esc.code) {
       this._tooltipGlassPane.hide();
       return true;
@@ -463,22 +425,14 @@ export class TextEditorAutocompleteController {
     return this._suggestBox.keyPressed(event);
   }
 
-  /**
-   * @return {boolean}
-   */
-  _isCursorAtEndOfLine() {
+  _isCursorAtEndOfLine(): boolean {
     // @ts-ignore CodeMirror types are wrong.
     const cursor = this._codeMirror.getCursor('to');
     // @ts-ignore CodeMirror types are wrong.
     return cursor.ch === this._codeMirror.getLine(cursor.line).length;
   }
 
-  /**
-   * @override
-   * @param {?UI.SuggestBox.Suggestion} suggestion
-   * @param {boolean=} isIntermediateSuggestion
-   */
-  applySuggestion(suggestion, isIntermediateSuggestion) {
+  applySuggestion(suggestion: UI.SuggestBox.Suggestion|null, _isIntermediateSuggestion?: boolean): void {
     const oldSuggestion = this._currentSuggestion;
     this._currentSuggestion = suggestion;
     this._setHint(suggestion ? suggestion.text : '');
@@ -487,10 +441,7 @@ export class TextEditorAutocompleteController {
     }
   }
 
-  /**
-   * @override
-   */
-  acceptSuggestion() {
+  acceptSuggestion(): void {
     if (this._currentSuggestion === null || this._queryRange === null) {
       return;
     }
@@ -509,10 +460,7 @@ export class TextEditorAutocompleteController {
     });
   }
 
-  /**
-   * @return {string}
-   */
-  textWithCurrentSuggestion() {
+  textWithCurrentSuggestion(): string {
     if (!this._queryRange || this._currentSuggestion === null) {
       // @ts-ignore CodeMirror types are wrong.
       return this._codeMirror.getValue();
@@ -520,7 +468,13 @@ export class TextEditorAutocompleteController {
 
     // @ts-ignore CodeMirror types are wrong.
     const selections = this._codeMirror.listSelections().slice();
-    let last = {line: 0, column: 0};
+    let last: {
+      line: any,
+      column: any,
+    }|{
+      line: number,
+      column: number,
+    } = {line: 0, column: 0};
     let text = '';
     const queryLength = this._queryRange.endColumn - this._queryRange.startColumn;
     for (const selection of selections) {
@@ -535,7 +489,7 @@ export class TextEditorAutocompleteController {
     return text;
   }
 
-  _onScroll() {
+  _onScroll(): void {
     this._tooltipGlassPane.hide();
     if (!this._suggestBox) {
       return;
@@ -556,7 +510,7 @@ export class TextEditorAutocompleteController {
     }
   }
 
-  async _updateTooltip() {
+  async _updateTooltip(): Promise<void> {
     // @ts-ignore CodeMirror types are wrong.
     const cursor = this._codeMirror.getCursor();
     const tooltip = this._config.tooltipCallback ? await this._config.tooltipCallback(cursor.line, cursor.ch) : null;
@@ -583,17 +537,17 @@ export class TextEditorAutocompleteController {
     this._tooltipGlassPane.setContentAnchorBox(new AnchorBox(metrics.x, metrics.y, 0, metrics.height));
     this._tooltipElement.removeChildren();
     this._tooltipElement.appendChild(tooltip);
-    this._tooltipGlassPane.show(/** @type {!Document} */ (this._textEditor.element.ownerDocument));
+    this._tooltipGlassPane.show(this._textEditor.element.ownerDocument as Document);
   }
 
-  _onCursorActivity() {
+  _onCursorActivity(): void {
     this._updateTooltip();
     if (!this._suggestBox || this._queryRange === null) {
       return;
     }
     // @ts-ignore CodeMirror types are wrong.
     const cursor = this._codeMirror.getCursor();
-    let shouldCloseAutocomplete =
+    let shouldCloseAutocomplete: boolean =
         !(cursor.line === this._queryRange.startLine && this._queryRange.startColumn <= cursor.ch &&
           cursor.ch <= this._queryRange.endColumn);
     // Try not to hide autocomplete when user types in.
@@ -608,10 +562,10 @@ export class TextEditorAutocompleteController {
     this._onCursorActivityHandledForTest();
   }
 
-  _onCursorActivityHandledForTest() {
+  _onCursorActivityHandledForTest(): void {
   }
 
-  _updateAnchorBox() {
+  _updateAnchorBox(): void {
     if (this._queryRange === null) {
       return;
     }
@@ -620,6 +574,7 @@ export class TextEditorAutocompleteController {
     const metrics = this._textEditor.cursorPositionToCoordinates(line, column);
     this._anchorBox = metrics ? new AnchorBox(metrics.x, metrics.y, 0, metrics.height) : null;
   }
-}
 
-TextEditorAutocompleteController.HintBookmark = Symbol('hint');
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  static readonly HintBookmark = Symbol('hint');
+}

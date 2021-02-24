@@ -62,6 +62,7 @@ export class SourcesTextEditor extends TextEditor.CodeMirrorTextEditor.CodeMirro
     };
 
     this.codeMirror().addKeyMap(_BlockIndentController);
+    // @ts-ignore https://crbug.com/1151919 CodeMirror types are incorrect
     this._tokenHighlighter = new TokenHighlighter(this, /** @type {!CodeMirror.Editor} */ (this.codeMirror()));
 
     /** @type {!Array<string>} */
@@ -245,17 +246,19 @@ export class SourcesTextEditor extends TextEditor.CodeMirrorTextEditor.CodeMirro
     }
   }
 
+  // https://crbug.com/1151919 * = CodeMirror.TextMarker
   /**
-   * @param {!CodeMirror.TextMarker} highlightDescriptor
+   * @param {*} highlightDescriptor
    */
   removeHighlight(highlightDescriptor) {
     highlightDescriptor.clear();
   }
 
+  // https://crbug.com/1151919 * = CodeMirror.TextMarker<CodeMirror.MarkerRange>
   /**
    * @param {!TextUtils.TextRange.TextRange} range
    * @param {string} cssClass
-   * @return {!CodeMirror.TextMarker<!CodeMirror.MarkerRange>}
+   * @return {*}
    */
   highlightRange(range, cssClass) {
     cssClass = 'CodeMirror-persist-highlight ' + cssClass;
@@ -577,9 +580,10 @@ export class SourcesTextEditor extends TextEditor.CodeMirrorTextEditor.CodeMirro
     this.dispatchEventToListeners(Events.EditorBlurred);
   }
 
+  // https://crbug.com/1151919 * = {ranges: !Array.<{head: !CodeMirror.Pos, anchor: !CodeMirror.Pos}>}
   /**
    * @param {!CodeMirror} codeMirror
-   * @param {{ranges: !Array.<{head: !CodeMirror.Pos, anchor: !CodeMirror.Pos}>}} selection
+   * @param {*} selection
    */
   _fireBeforeSelectionChanged(codeMirror, selection) {
     if (!this._isHandlingMouseDownEvent) {
@@ -821,13 +825,16 @@ export class SourcesTextEditorDelegate {
   }
 }
 
+// https://crbug.com/1151919 * = !CodeMirror.Editor
 /**
- * @param {!CodeMirror.Editor} codeMirror
+ * @param {*} codeMirror
  */
+// @ts-ignore https://crbug.com/1151919 CodeMirror types are incorrect
 CodeMirror.commands.smartNewlineAndIndent = function(codeMirror) {
   codeMirror.operation(innerSmartNewlineAndIndent.bind(null, codeMirror));
+  // https://crbug.com/1151919 * = !CodeMirror.Editor
   /**
-   * @param {!CodeMirror.Editor} codeMirror
+   * @param {*} codeMirror
    */
   function innerSmartNewlineAndIndent(codeMirror) {
     const selections = codeMirror.listSelections();
@@ -845,22 +852,26 @@ CodeMirror.commands.smartNewlineAndIndent = function(codeMirror) {
   }
 };
 
+// https://crbug.com/1151919 * = !CodeMirror.Editor
 /**
- * @param {!CodeMirror.Editor} codeMirror
+ * @param {*} codeMirror
  * @return {!Object|undefined}
  */
+// @ts-ignore https://crbug.com/1151919 CodeMirror types are incorrect
 CodeMirror.commands.sourcesDismiss = function(codeMirror) {
   if (codeMirror.listSelections().length === 1 && SourcesTextEditor.getForCodeMirror(codeMirror)._isSearchActive()) {
     return CodeMirror.Pass;
   }
+  // @ts-ignore https://crbug.com/1151919 CodeMirror types are incorrect
   return CodeMirror.commands.dismiss(codeMirror);
 };
 
 export const _BlockIndentController = {
   name: 'blockIndentKeymap',
 
+  // https://crbug.com/1151919 * = !CodeMirror.Editor
   /**
-   * @param {!CodeMirror.Editor} codeMirror
+   * @param {*} codeMirror
    * @return {*}
    */
   Enter: function(codeMirror) {
@@ -906,8 +917,9 @@ export const _BlockIndentController = {
     SourcesTextEditor.getForCodeMirror(codeMirror)._onAutoAppendedSpaces();
   },
 
+  // https://crbug.com/1151919 * = !CodeMirror.Editor
   /**
-   * @param {!CodeMirror.Editor} codeMirror
+   * @param {*} codeMirror
    * @return {*}
    */
   '\'}\'': function(codeMirror) {
@@ -946,15 +958,17 @@ export const _BlockIndentController = {
 
 
 export class TokenHighlighter {
+  // https://crbug.com/1151919 * = !CodeMirror.Editor
   /**
    * @param {!SourcesTextEditor} textEditor
-   * @param {!CodeMirror.Editor} codeMirror
+   * @param {*} codeMirror
    */
   constructor(textEditor, codeMirror) {
     this._textEditor = textEditor;
     this._codeMirror = codeMirror;
+    // https://crbug.com/1151919 * = !CodeMirror.StringStream, ?CodeMirror.Position
     /**
-     * @type {!{overlay: {token: function(!CodeMirror.StringStream): ?string}, selectionStart: ?CodeMirror.Position}|undefined}
+     * @type {!{overlay: {token: function(*): ?string}, selectionStart: *}|undefined}
      */
     this._highlightDescriptor;
   }
@@ -983,14 +997,11 @@ export class TokenHighlighter {
     if (oldRegex && this._highlightRegex.toString() === oldRegex.toString()) {
       // Do not re-add overlay mode if regex did not change for better performance.
       if (this._highlightDescriptor) {
-        this._highlightDescriptor.selectionStart =
-            /** @type {!CodeMirror.Position} */ (/** @type {*} */ (selectionStart));
+        this._highlightDescriptor.selectionStart = selectionStart;
       }
     } else {
       this._removeHighlight();
-      this._setHighlighter(
-          this._searchHighlighter.bind(this, this._highlightRegex),
-          /** @type {!CodeMirror.Position} */ (/** @type {*} */ (selectionStart)));
+      this._setHighlighter(this._searchHighlighter.bind(this, this._highlightRegex), selectionStart);
     }
     if (this._highlightRange) {
       const pos = TextEditor.CodeMirrorUtils.toPos(this._highlightRange);
@@ -1053,9 +1064,10 @@ export class TokenHighlighter {
     }
   }
 
+  // https://crbug.com/1151919 * = !CodeMirror.StringStream
   /**
    * @param {!RegExp} regex
-   * @param {!CodeMirror.StringStream} stream
+   * @param {*} stream
    * @return {?string}
    */
   _searchHighlighter(regex, stream) {
@@ -1092,10 +1104,13 @@ export class TokenHighlighter {
     return null;
   }
 
+
+  // https://crbug.com/1151919 * = !CodeMirror.Position selectionStart
+  // https://crbug.com/1151919 * = !CodeMirror.StringStream stream
   /**
    * @param {string} token
-   * @param {!CodeMirror.Position} selectionStart
-   * @param {!CodeMirror.StringStream} stream
+   * @param {*} selectionStart
+   * @param {*} stream
    * @return {?string}
    */
   _tokenHighlighter(token, selectionStart, stream) {
@@ -1111,9 +1126,11 @@ export class TokenHighlighter {
     return null;
   }
 
+  // https://crbug.com/1151919 * = !CodeMirror.StringStream
+  // https://crbug.com/1151919 * = ?CodeMirror.Position
   /**
-   * @param {function(!CodeMirror.StringStream): ?string} highlighter
-   * @param {?CodeMirror.Position} selectionStart
+   * @param {function(*): ?string} highlighter
+   * @param {*} selectionStart
    */
   _setHighlighter(highlighter, selectionStart) {
     const overlayMode = {token: highlighter};

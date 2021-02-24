@@ -113,13 +113,16 @@ export const UIStrings = {
   */
   captureScreenshots: 'Capture screenshots',
   /**
-  *@description Tooltip text that appears when hovering over the largeicon load button in the Network Panel of the Network panel
+  * @description Tooltip text that appears when hovering over the largeicon load button in the
+  * Network Panel. This action prompts the user to select a HAR file to upload to DevTools.
   */
-  importHarFile: 'Import HAR file...',
+  importHarFile: 'Import `HAR` file...',
   /**
-  *@description Tooltip text that appears when hovering over the largeicon download button in the Network Panel of the Network panel
+  * @description Tooltip text that appears when hovering over the largeicon download button in the
+  * Network Panel. HAR is a file format (HTTP Archive) and should not be translated. This action
+  * triggers the download of a HAR file.
   */
-  exportHar: 'Export HAR...',
+  exportHar: 'Export `HAR`...',
   /**
   *@description Text for throttling the network
   */

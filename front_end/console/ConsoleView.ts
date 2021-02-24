@@ -140,8 +140,9 @@ export const UIStrings = {
   */
   eagerlyEvaluateTextInThePrompt: 'Eagerly evaluate text in the prompt',
   /**
-  *@description Text in Console View of the Console panel
-  *@example {3} PH1
+  * @description Text in Console View of the Console panel, indicating that a number of console
+  * messages have been hidden.
+  * @example {3} PH1
   */
   sHidden: '{PH1} hidden',
   /**

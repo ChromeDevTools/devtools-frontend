@@ -33,7 +33,8 @@ export const UIStrings = {
   */
   textTrack: 'Text track',
   /**
-  *@description Place holder text stating that there are no text tracks on this player.
+  * @description Placeholder text stating that there are no text tracks on this player. A text track
+  * is all of the text that accompanies a particular video.
   */
   noTextTracks: 'No text tracks',
   /**
@@ -75,7 +76,7 @@ export const UIStrings = {
   /**
   *@description Media property describing support for range http headers
   */
-  rangeHeaderSupport: 'Range header support',
+  rangeHeaderSupport: '`Range` header support',
   /**
   *@description Media property giving the media file frame rate
   */

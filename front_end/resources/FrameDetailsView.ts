@@ -162,10 +162,6 @@ export const UIStrings = {
   sharedarraybufferConstructorIsAvailable:
       'SharedArrayBuffer constructor is available but SABs cannot be transferred via postMessage',
   /**
-  *@description Entry in the API availability section of the frame details view
-  */
-  sharedArrayBuffers: 'Shared Array Buffers',
-  /**
   *@description Explanation for the SharedArrayBuffer availability status
   */
   WillRequireCrossoriginIsolated: '⚠️ will require cross-origin isolated context in the future',
@@ -642,10 +638,11 @@ export class FrameDetailsReportView extends HTMLElement {
             i18nString(UIStrings.sharedarraybufferConstructorIs) :
             (sabAvailable ? i18nString(UIStrings.sharedarraybufferConstructorIsAvailable) : '');
 
+        // SharedArrayBuffer is an API name, so we don't translate it.
         // Disabled until https://crbug.com/1079231 is fixed.
         // clang-format off
         return LitHtml.html`
-          <devtools-report-key>${i18nString(UIStrings.sharedArrayBuffers)}</devtools-report-key>
+          <devtools-report-key>SharedArrayBuffers</devtools-report-key>
           <devtools-report-value title=${tooltipText}>
             ${availabilityText}
             ${!this.frame.isCrossOriginIsolated() ?

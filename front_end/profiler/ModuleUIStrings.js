@@ -15,7 +15,8 @@ export const UIStrings = {
    */
   propagatingDomState: 'Propagating DOM state…',
   /**
-   *@description Text to indicate the status of a heap snapshot in the Performance Pane
+   * @description Text to indicate the status of a heap snapshot in the Performance Pane. Flag here
+   * refers to the programming concept for a piece of binary data (yes/no).
    */
   calculatingNodeFlags: 'Calculating node flags…',
   /**

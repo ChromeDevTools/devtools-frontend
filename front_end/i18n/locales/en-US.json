@@ -6251,9 +6251,6 @@
   "resources/FrameDetailsView.ts | sharedarraybufferConstructorIsAvailable": {
     "message": "SharedArrayBuffer constructor is available but SABs cannot be transferred via postMessage"
   },
-  "resources/FrameDetailsView.ts | sharedArrayBuffers": {
-    "message": "Shared Array Buffers"
-  },
   "resources/FrameDetailsView.ts | theFramesSchemeIsInsecure": {
     "message": "The frame's scheme is insecure"
   },

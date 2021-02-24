@@ -2367,7 +2367,7 @@
     "message": "ûńk̂ńôẃn̂"
   },
   "issues/AffectedSharedArrayBufferIssueDetailsView.ts | aSharedarraybufferWas": {
-    "message": "Â Śĥár̂éd̂Ár̂ŕâýB̂úf̂f́êŕ ŵáŝ ín̂śt̂án̂t́îát̂éd̂ ín̂ á ĉón̂t́êx́t̂ t́ĥát̂ íŝ ńôt́ ĉŕôśŝ-ór̂íĝín̂ íŝól̂át̂éd̂"
+    "message": "Â SharedArrayBuffer ẃâś îńŝt́âńt̂íât́êd́ îń â ćôńt̂éx̂t́ t̂h́ât́ îś n̂ót̂ ćr̂óŝś-ôŕîǵîń îśôĺât́êd́"
   },
   "issues/AffectedSharedArrayBufferIssueDetailsView.ts | blocked": {
     "message": "b̂ĺôćk̂éd̂"
@@ -2376,7 +2376,7 @@
     "message": "Îńŝt́âńt̂íât́îón̂"
   },
   "issues/AffectedSharedArrayBufferIssueDetailsView.ts | sharedarraybufferWasTransferedTo": {
-    "message": "Ŝh́âŕêd́Âŕr̂áŷB́ûf́f̂ér̂ ẃâś t̂ŕâńŝf́êŕêd́ t̂ó â ćôńt̂éx̂t́ t̂h́ât́ îś n̂ót̂ ćr̂óŝś-ôŕîǵîń îśôĺât́êd́"
+    "message": "SharedArrayBuffer ŵáŝ t́r̂án̂śf̂ér̂éd̂ t́ô á ĉón̂t́êx́t̂ t́ĥát̂ íŝ ńôt́ ĉŕôśŝ-ór̂íĝín̂ íŝól̂át̂éd̂"
   },
   "issues/AffectedSharedArrayBufferIssueDetailsView.ts | sourceLocation": {
     "message": "Ŝóûŕĉé L̂óĉát̂íôń"
@@ -3246,7 +3246,7 @@
     "message": "P̂ŕôṕêŕt̂íêś"
   },
   "media/PlayerPropertiesView.ts | rangeHeaderSupport": {
-    "message": "R̂án̂ǵê h́êád̂ér̂ śûṕp̂ór̂t́"
+    "message": "Range ĥéâd́êŕ ŝúp̂ṕôŕt̂"
   },
   "media/PlayerPropertiesView.ts | resolution": {
     "message": "R̂éŝól̂út̂íôń"
@@ -4110,7 +4110,7 @@
     "message": "D̂ó n̂ót̂ ćl̂éâŕ l̂óĝ ón̂ ṕâǵê ŕêĺôád̂ / ńâv́îǵât́îón̂"
   },
   "network/NetworkPanel.js | exportHar": {
-    "message": "Êx́p̂ór̂t́ ĤÁR̂..."
+    "message": "Êx́p̂ór̂t́ HAR..."
   },
   "network/NetworkPanel.js | fetchingFrames": {
     "message": "F̂ét̂ćĥín̂ǵ f̂ŕâḿêś..."
@@ -4125,7 +4125,7 @@
     "message": "Ĥít̂ {PH1} t́ô ŕêĺôád̂ án̂d́ ĉáp̂t́ûŕê f́îĺm̂śt̂ŕîṕ."
   },
   "network/NetworkPanel.js | importHarFile": {
-    "message": "Îḿp̂ór̂t́ ĤÁR̂ f́îĺê..."
+    "message": "Îḿp̂ór̂t́ HAR f̂íl̂é..."
   },
   "network/NetworkPanel.js | networkSettings": {
     "message": "N̂ét̂ẃôŕk̂ śêt́t̂ín̂ǵŝ"
@@ -6251,9 +6251,6 @@
   "resources/FrameDetailsView.ts | sharedarraybufferConstructorIsAvailable": {
     "message": "Ŝh́âŕêd́Âŕr̂áŷB́ûf́f̂ér̂ ćôńŝt́r̂úĉt́ôŕ îś âv́âíl̂áb̂ĺê b́ût́ ŜÁB̂ś ĉán̂ńôt́ b̂é t̂ŕâńŝf́êŕr̂éd̂ v́îá p̂óŝt́M̂éŝśâǵê"
   },
-  "resources/FrameDetailsView.ts | sharedArrayBuffers": {
-    "message": "Ŝh́âŕêd́ Âŕr̂áŷ B́ûf́f̂ér̂ś"
-  },
   "resources/FrameDetailsView.ts | theFramesSchemeIsInsecure": {
     "message": "T̂h́ê f́r̂ám̂é'ŝ śĉh́êḿê íŝ ín̂śêćûŕê"
   },
@@ -7017,13 +7014,13 @@
     "message": "Ŝúb̂j́êćt̂"
   },
   "security/SecurityPanel.ts | subjectAlternativeNameMissing": {
-    "message": "Ŝúb̂j́êćt̂ Ál̂t́êŕn̂át̂ív̂é N̂ám̂é m̂íŝśîńĝ"
+    "message": "Subject Alternative Name m̂íŝśîńĝ"
   },
   "security/SecurityPanel.ts | theCertificateChainForThisSite": {
     "message": "T̂h́ê ćêŕt̂íf̂íĉát̂é ĉh́âín̂ f́ôŕ t̂h́îś ŝít̂é ĉón̂t́âín̂ś â ćêŕt̂íf̂íĉát̂é ŝíĝńêd́ ûśîńĝ ŚĤÁ-1."
   },
   "security/SecurityPanel.ts | theCertificateForThisSiteDoesNot": {
-    "message": "T̂h́ê ćêŕt̂íf̂íĉát̂é f̂ór̂ t́ĥíŝ śît́ê d́ôéŝ ńôt́ ĉón̂t́âín̂ á Ŝúb̂j́êćt̂ Ál̂t́êŕn̂át̂ív̂é N̂ám̂é êx́t̂én̂śîón̂ ćôńt̂áîńîńĝ á d̂óm̂áîń n̂ám̂é ôŕ ÎṔ âd́d̂ŕêśŝ."
+    "message": "T̂h́ê ćêŕt̂íf̂íĉát̂é f̂ór̂ t́ĥíŝ śît́ê d́ôéŝ ńôt́ ĉón̂t́âín̂ á Subject Alternative Name êx́t̂én̂śîón̂ ćôńt̂áîńîńĝ á d̂óm̂áîń n̂ám̂é ôŕ ÎṔ âd́d̂ŕêśŝ."
   },
   "security/SecurityPanel.ts | theCertificateForThisSiteExpires": {
     "message": "T̂h́ê ćêŕt̂íf̂íĉát̂é f̂ór̂ t́ĥíŝ śît́ê éx̂ṕîŕêś îń l̂éŝś t̂h́âń 48 ĥóûŕŝ án̂d́ n̂éêd́ŝ t́ô b́ê ŕêńêẃêd́."

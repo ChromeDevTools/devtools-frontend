@@ -166,12 +166,12 @@ export const UIStrings = {
   /**
   *@description Summary phrase for a security problem where the site's certificate is missing a subjectAltName extension.
   */
-  subjectAlternativeNameMissing: 'Subject Alternative Name missing',
+  subjectAlternativeNameMissing: '`Subject Alternative Name` missing',
   /**
   *@description Description of a security problem where the site's certificate is missing a subjectAltName extension.
   */
   theCertificateForThisSiteDoesNot:
-      'The certificate for this site does not contain a Subject Alternative Name extension containing a domain name or IP address.',
+      'The certificate for this site does not contain a `Subject Alternative Name` extension containing a domain name or IP address.',
   /**
   *@description Summary phrase for a security problem with the site's certificate.
   */

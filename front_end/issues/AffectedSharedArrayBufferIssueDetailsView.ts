@@ -34,7 +34,7 @@ export const UIStrings = {
   /**
   *@description Tooltip for the 'Trigger' column in the SAB affected resources list
   */
-  aSharedarraybufferWas: 'A SharedArrayBuffer was instantiated in a context that is not cross-origin isolated',
+  aSharedarraybufferWas: 'A `SharedArrayBuffer` was instantiated in a context that is not cross-origin isolated',
   /**
   *@description Value for the 'Trigger' column in the SAB affected resources list
   */
@@ -42,7 +42,7 @@ export const UIStrings = {
   /**
   *@description Tooltip for the 'Trigger' column in the SAB affected resources list
   */
-  sharedarraybufferWasTransferedTo: 'SharedArrayBuffer was transfered to a context that is not cross-origin isolated',
+  sharedarraybufferWasTransferedTo: '`SharedArrayBuffer` was transfered to a context that is not cross-origin isolated',
   /**
   *@description Header for the source location column
   */

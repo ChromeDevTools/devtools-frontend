@@ -94,7 +94,7 @@ describe('FrameDetailsView', () => {
       'Cross-Origin Isolated',
       'Cross-Origin Embedder Policy',
       'Cross-Origin Opener Policy',
-      'Shared Array Buffers',
+      'SharedArrayBuffers',
       'Measure Memory',
     ]);
 

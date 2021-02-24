@@ -81,7 +81,9 @@ export const UIStrings = {
   */
   pushString: 'Push',
   /**
-  *@description Text in Service Workers View of the Application panel
+  * @description Text in Service Workers View of the Application panel. Placeholder text for where
+  * the user can type in the data they want to push to the service worker i.e. the 'push data'. Noun
+  * phrase.
   */
   pushData: 'Push data',
   /**

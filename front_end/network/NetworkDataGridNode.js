@@ -145,7 +145,8 @@ export const UIStrings = {
   */
   finished: 'Finished',
   /**
-  *@description Text in Network Data Grid Node of the Network panel
+  * @description Status text in the Network panel that indicates a network request is still loading
+  * and has not finished yet (is pending).
   */
   pendingq: '(pending)',
   /**

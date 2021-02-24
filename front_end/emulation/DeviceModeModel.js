@@ -805,14 +805,7 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
 
       // Cap the height to not hit the GPU limit.
       const contentHeight = Math.min((1 << 14) / this._appliedDeviceScaleFactor, metrics.contentHeight);
-      clip = {
-        x: 0,
-        y: 0,
-        width: Math.floor(metrics.contentWidth / this._appliedDeviceScaleFactor),
-        height: Math.floor(contentHeight / this._appliedDeviceScaleFactor),
-        // `scale` is ignored in case of having `captureBeyondViewport`.
-        scale: 1
-      };
+      clip = {x: 0, y: 0, width: Math.floor(metrics.contentWidth), height: Math.floor(contentHeight), scale: 1};
     }
     const screenshot =
         await screenCaptureModel.captureScreenshot(Protocol.Page.CaptureScreenshotRequestFormat.Png, 100, clip);

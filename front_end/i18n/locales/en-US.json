@@ -6270,7 +6270,7 @@
     "message": "This frame has been identified as the root frame of an ad"
   },
   "resources/FrameDetailsView.ts | thisFrameHasBeenIdentifiedAsTheA": {
-    "message": "This frame has been identified as the a child frame of an ad"
+    "message": "This frame has been identified as a child frame of an ad"
   },
   "resources/FrameDetailsView.ts | unavailable": {
     "message": "unavailable"

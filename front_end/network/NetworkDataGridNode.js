@@ -109,7 +109,7 @@ export const UIStrings = {
   /**
   *@description Text in Network Data Grid Node of the Network panel
   */
-  coepframeresourceneedscoepheader: 'CoepFrameResourceNeedsCoepHeader',
+  coepframeresourceneedscoepheader: '`CoepFrameResourceNeedsCoepHeader`',
   /**
   *@description Text in Network Data Grid Node of the Network panel
   */
@@ -149,7 +149,8 @@ export const UIStrings = {
   */
   pendingq: '(pending)',
   /**
-  *@description Text in Network Data Grid Node of the Network panel
+  * @description Text in Network Data Grid Node of the Network panel. Noun, short for a 'HTTP server
+  * push'.
   */
   push: 'Push / ',
   /**

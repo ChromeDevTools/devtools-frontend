@@ -41,7 +41,8 @@ export const UIStrings = {
   */
   copyUrl: 'Copy URL',
   /**
-  *@description Text for a context menu entry
+  * @description Text for a context menu entry. Command to copy a URL to the clipboard. The initiator
+  * of a request is the entity that caused this request to be sent.
   */
   copyInitiatorUrl: 'Copy initiator URL',
   /**

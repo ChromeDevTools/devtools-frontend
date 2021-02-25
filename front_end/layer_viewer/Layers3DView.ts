@@ -66,8 +66,9 @@ export const UIStrings = {
   */
   slowScrollRects: 'Slow scroll rects',
   /**
-  *@description Text for a checkbox in the toolbar of the Layers panel. It is used as a verb to display marks
-  * representing changes on the screen.
+  * @description Text for a checkbox in the toolbar of the Layers panel. This is a noun, for a
+  * setting meaning 'display paints in the layers viewer'. 'Paints' here means 'paint events' i.e.
+  * when the browser draws pixels to the screen.
   */
   paints: 'Paints',
   /**

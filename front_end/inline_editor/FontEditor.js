@@ -81,8 +81,9 @@ export const UIStrings = {
   */
   units: 'Units',
   /**
-  *@description Label for Font Editor unit input
-  *@example {font-size} PH1
+  * @description Accessible name for Font Editor unit input. The placeholder is the name of the font
+  * property that this UI input controls. e.g. font-size, line-height, line-weight.
+  * @example {font-size} PH1
   */
   sUnitInput: '{PH1} Unit Input',
   /**

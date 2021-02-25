@@ -358,9 +358,9 @@ export const UIStrings = {
   */
   subject: 'Subject',
   /**
-  *@description Text in Security Panel of the Security panel
+  *@description Text in Security Panel of the Security panel. Subject Alternative Name.
   */
-  san: 'SAN',
+  san: '`SAN`',
   /**
   *@description Text to show since when an item is valid
   */

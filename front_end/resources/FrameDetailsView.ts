@@ -81,7 +81,7 @@ export const UIStrings = {
   /**
   *@description Description for ad frame type
   */
-  thisFrameHasBeenIdentifiedAsTheA: 'This frame has been identified as the a child frame of an ad',
+  thisFrameHasBeenIdentifiedAsTheA: 'This frame has been identified as a child frame of an ad',
   /**
   *@description Value for ad frame type
   */

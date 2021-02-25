@@ -3621,7 +3621,7 @@
     "message": "(ĉán̂ćêĺêd́)"
   },
   "network/NetworkDataGridNode.js | coepframeresourceneedscoepheader": {
-    "message": "ĈóêṕF̂ŕâḿêŔêśôúr̂ćêŃêéd̂śĈóêṕĤéâd́êŕ"
+    "message": "CoepFrameResourceNeedsCoepHeader"
   },
   "network/NetworkDataGridNode.js | contenttype": {
     "message": "content-type"
@@ -6270,7 +6270,7 @@
     "message": "T̂h́îś f̂ŕâḿê h́âś b̂éêń îd́êńt̂íf̂íêd́ âś t̂h́ê ŕôót̂ f́r̂ám̂é ôf́ âń âd́"
   },
   "resources/FrameDetailsView.ts | thisFrameHasBeenIdentifiedAsTheA": {
-    "message": "T̂h́îś f̂ŕâḿê h́âś b̂éêń îd́êńt̂íf̂íêd́ âś t̂h́ê á ĉh́îĺd̂ f́r̂ám̂é ôf́ âń âd́"
+    "message": "T̂h́îś f̂ŕâḿê h́âś b̂éêń îd́êńt̂íf̂íêd́ âś â ćĥíl̂d́ f̂ŕâḿê óf̂ án̂ ád̂"
   },
   "resources/FrameDetailsView.ts | unavailable": {
     "message": "ûńâv́âíl̂áb̂ĺê"
@@ -6972,7 +6972,7 @@
     "message": "R̂ŚÂ ḱêý êx́ĉh́âńĝé îś ôb́ŝól̂ét̂é. Êńâb́l̂é âń ÊĆD̂H́Ê-b́âśêd́ ĉíp̂h́êŕ ŝúît́ê."
   },
   "security/SecurityPanel.ts | san": {
-    "message": "ŜÁN̂"
+    "message": "SAN"
   },
   "security/SecurityPanel.ts | sct": {
     "message": "ŜĆT̂"

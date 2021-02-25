@@ -56,7 +56,7 @@ export const UIStrings = {
   */
   checked: 'checked',
   /**
-  *@description Text exposed to screen readers on unchecked items.
+  *@description Accessible text exposed to screen readers when the screen reader encounters an unchecked checkbox.
   */
   unchecked: 'unchecked',
   /**

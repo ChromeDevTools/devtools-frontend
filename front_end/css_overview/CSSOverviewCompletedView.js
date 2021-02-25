@@ -163,7 +163,7 @@ export const UIStrings = {
   */
   contrastRatio: 'Contrast ratio',
   /**
-  *@description Data grid name for CSS Overview Elements Data Grids
+  *@description Accessible title of a table in the CSS Overview Elements.
   */
   cssOverviewElements: 'CSS Overview Elements',
   /**

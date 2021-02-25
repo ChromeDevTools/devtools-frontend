@@ -6893,6 +6893,729 @@
   "screencast/ScreencastView.ts | theTabIsInactive": {
     "message": "The tab is inactive"
   },
+  "sdk/CompilerSourceMappingContentProvider.js | couldNotLoadContentForSS": {
+    "message": "Could not load content for {PH1} ({PH2})"
+  },
+  "sdk/ConsoleModel.js | failedToSaveToTempVariable": {
+    "message": "Failed to save to temp variable."
+  },
+  "sdk/ConsoleModel.js | navigatedToS": {
+    "message": "Navigated to {PH1}"
+  },
+  "sdk/ConsoleModel.js | profileSFinished": {
+    "message": "Profile '{PH1}' finished."
+  },
+  "sdk/ConsoleModel.js | profileSStarted": {
+    "message": "Profile '{PH1}' started."
+  },
+  "sdk/ContentSecurityPolicyIssue.js | contentSecurityPolicyEval": {
+    "message": "Content Security Policy - Eval"
+  },
+  "sdk/ContentSecurityPolicyIssue.js | contentSecurityPolicyInlineCode": {
+    "message": "Content Security Policy - Inline Code"
+  },
+  "sdk/ContentSecurityPolicyIssue.js | contentSecurityPolicySource": {
+    "message": "Content Security Policy - Source Allowlists"
+  },
+  "sdk/ContentSecurityPolicyIssue.js | trustedTypesFixViolations": {
+    "message": "Trusted Types - Fix violations"
+  },
+  "sdk/ContentSecurityPolicyIssue.js | trustedTypesPolicyViolation": {
+    "message": "Trusted Types - Policy violation"
+  },
+  "sdk/CorsIssue.ts | corsForPrivateNetworksRfc": {
+    "message": "CORS for private networks (RFC1918)"
+  },
+  "sdk/CPUProfileDataModel.js | devtoolsCpuProfileParserIsFixing": {
+    "message": "DevTools: CPU profile parser is fixing {PH1} missing samples."
+  },
+  "sdk/CPUProfilerModel.js | profileD": {
+    "message": "Profile {PH1}"
+  },
+  "sdk/CrossOriginEmbedderPolicyIssue.js | coopAndCoep": {
+    "message": "COOP and COEP"
+  },
+  "sdk/CrossOriginEmbedderPolicyIssue.js | samesiteAndSameorigin": {
+    "message": "Same-Site and Same-Origin"
+  },
+  "sdk/CSSStyleSheetHeader.js | couldNotFindTheOriginalStyle": {
+    "message": "Could not find the original style sheet."
+  },
+  "sdk/CSSStyleSheetHeader.js | thereWasAnErrorRetrievingThe": {
+    "message": "There was an error retrieving the source styles."
+  },
+  "sdk/DebuggerModel.js | block": {
+    "message": "Block"
+  },
+  "sdk/DebuggerModel.js | catch": {
+    "message": "Catch"
+  },
+  "sdk/DebuggerModel.js | closure": {
+    "message": "Closure"
+  },
+  "sdk/DebuggerModel.js | global": {
+    "message": "Global"
+  },
+  "sdk/DebuggerModel.js | local": {
+    "message": "Local"
+  },
+  "sdk/DebuggerModel.js | module": {
+    "message": "Module"
+  },
+  "sdk/DebuggerModel.js | script": {
+    "message": "Script"
+  },
+  "sdk/DebuggerModel.js | stack": {
+    "message": "Stack"
+  },
+  "sdk/DebuggerModel.js | withBlock": {
+    "message": "With Block"
+  },
+  "sdk/DOMDebuggerModel.js | animation": {
+    "message": "Animation"
+  },
+  "sdk/DOMDebuggerModel.js | animationFrameFired": {
+    "message": "Animation Frame Fired"
+  },
+  "sdk/DOMDebuggerModel.js | cancelAnimationFrame": {
+    "message": "Cancel Animation Frame"
+  },
+  "sdk/DOMDebuggerModel.js | canvas": {
+    "message": "Canvas"
+  },
+  "sdk/DOMDebuggerModel.js | clipboard": {
+    "message": "Clipboard"
+  },
+  "sdk/DOMDebuggerModel.js | closeAudiocontext": {
+    "message": "Close AudioContext"
+  },
+  "sdk/DOMDebuggerModel.js | control": {
+    "message": "Control"
+  },
+  "sdk/DOMDebuggerModel.js | createAudiocontext": {
+    "message": "Create AudioContext"
+  },
+  "sdk/DOMDebuggerModel.js | createCanvasContext": {
+    "message": "Create canvas context"
+  },
+  "sdk/DOMDebuggerModel.js | device": {
+    "message": "Device"
+  },
+  "sdk/DOMDebuggerModel.js | domMutation": {
+    "message": "DOM Mutation"
+  },
+  "sdk/DOMDebuggerModel.js | dragDrop": {
+    "message": "Drag / drop"
+  },
+  "sdk/DOMDebuggerModel.js | geolocation": {
+    "message": "Geolocation"
+  },
+  "sdk/DOMDebuggerModel.js | keyboard": {
+    "message": "Keyboard"
+  },
+  "sdk/DOMDebuggerModel.js | load": {
+    "message": "Load"
+  },
+  "sdk/DOMDebuggerModel.js | media": {
+    "message": "Media"
+  },
+  "sdk/DOMDebuggerModel.js | mouse": {
+    "message": "Mouse"
+  },
+  "sdk/DOMDebuggerModel.js | notification": {
+    "message": "Notification"
+  },
+  "sdk/DOMDebuggerModel.js | parse": {
+    "message": "Parse"
+  },
+  "sdk/DOMDebuggerModel.js | pictureinpicture": {
+    "message": "Picture-in-Picture"
+  },
+  "sdk/DOMDebuggerModel.js | pointer": {
+    "message": "Pointer"
+  },
+  "sdk/DOMDebuggerModel.js | policyViolations": {
+    "message": "Policy Violations"
+  },
+  "sdk/DOMDebuggerModel.js | requestAnimationFrame": {
+    "message": "Request Animation Frame"
+  },
+  "sdk/DOMDebuggerModel.js | resumeAudiocontext": {
+    "message": "Resume AudioContext"
+  },
+  "sdk/DOMDebuggerModel.js | script": {
+    "message": "Script"
+  },
+  "sdk/DOMDebuggerModel.js | scriptBlockedByContentSecurity": {
+    "message": "Script Blocked by Content Security Policy"
+  },
+  "sdk/DOMDebuggerModel.js | scriptBlockedDueToContent": {
+    "message": "Script blocked due to Content Security Policy directive: {PH1}"
+  },
+  "sdk/DOMDebuggerModel.js | scriptFirstStatement": {
+    "message": "Script First Statement"
+  },
+  "sdk/DOMDebuggerModel.js | setInnerhtml": {
+    "message": "Set innerHTML"
+  },
+  "sdk/DOMDebuggerModel.js | setintervalFired": {
+    "message": "setInterval fired"
+  },
+  "sdk/DOMDebuggerModel.js | settimeoutFired": {
+    "message": "setTimeout fired"
+  },
+  "sdk/DOMDebuggerModel.js | sinkViolations": {
+    "message": "Sink Violations"
+  },
+  "sdk/DOMDebuggerModel.js | suspendAudiocontext": {
+    "message": "Suspend AudioContext"
+  },
+  "sdk/DOMDebuggerModel.js | timer": {
+    "message": "Timer"
+  },
+  "sdk/DOMDebuggerModel.js | touch": {
+    "message": "Touch"
+  },
+  "sdk/DOMDebuggerModel.js | trustedTypeViolations": {
+    "message": "Trusted Type Violations"
+  },
+  "sdk/DOMDebuggerModel.js | webaudio": {
+    "message": "WebAudio"
+  },
+  "sdk/DOMDebuggerModel.js | webglErrorFired": {
+    "message": "WebGL Error Fired"
+  },
+  "sdk/DOMDebuggerModel.js | webglErrorFiredS": {
+    "message": "WebGL Error Fired ({PH1})"
+  },
+  "sdk/DOMDebuggerModel.js | webglWarningFired": {
+    "message": "WebGL Warning Fired"
+  },
+  "sdk/DOMDebuggerModel.js | window": {
+    "message": "Window"
+  },
+  "sdk/DOMDebuggerModel.js | xhr": {
+    "message": "XHR"
+  },
+  "sdk/HeavyAdIssue.js | handlingHeavyAdInterventions": {
+    "message": "Handling Heavy Ad Interventions"
+  },
+  "sdk/LowTextContrastIssue.ts | colorAndContrastAccessibility": {
+    "message": "Color and contrast accessibility"
+  },
+  "sdk/MixedContentIssue.js | automaticallyUpgraded": {
+    "message": "automatically upgraded"
+  },
+  "sdk/MixedContentIssue.js | blocked": {
+    "message": "blocked"
+  },
+  "sdk/MixedContentIssue.js | preventingMixedContent": {
+    "message": "Preventing mixed content"
+  },
+  "sdk/MixedContentIssue.js | warned": {
+    "message": "warned"
+  },
+  "sdk/NetworkLog.js | anonymous": {
+    "message": "<anonymous>"
+  },
+  "sdk/NetworkLog.js | considerDisablingSWhileDebugging": {
+    "message": "Consider disabling {PH1} while debugging. For more info see: {PH2}"
+  },
+  "sdk/NetworkManager.js | crossoriginReadBlockingCorb": {
+    "message": "Cross-Origin Read Blocking (CORB) blocked cross-origin response {PH1} with MIME type {PH2}. See https://www.chromestatus.com/feature/5629709824032768 for more details."
+  },
+  "sdk/NetworkManager.js | requestWasBlockedByDevtoolsS": {
+    "message": "Request was blocked by DevTools: \"{PH1}\""
+  },
+  "sdk/NetworkManager.js | resourceInterpretedAsSBut": {
+    "message": "Resource interpreted as {PH1} but transferred with MIME type {PH2}: \"{PH3}\"."
+  },
+  "sdk/NetworkManager.js | setcookieHeaderIsIgnoredIn": {
+    "message": "Set-Cookie header is ignored in response from url: {PH1}. Cookie length should be less than or equal to 4096 characters."
+  },
+  "sdk/NetworkManager.js | sFailedLoadingSS": {
+    "message": "{PH1} failed loading: {PH2} \"{PH3}\"."
+  },
+  "sdk/NetworkManager.js | sFinishedLoadingSS": {
+    "message": "{PH1} finished loading: {PH2} \"{PH3}\"."
+  },
+  "sdk/NetworkRequest.js | anUnknownErrorWasEncounteredWhenTrying": {
+    "message": "An unknown error was encountered when trying to store this cookie."
+  },
+  "sdk/NetworkRequest.js | binary": {
+    "message": "(binary)"
+  },
+  "sdk/NetworkRequest.js | blockedReasonInvalidDomain": {
+    "message": "This Set-Cookie was blocked because its Domain attribute was invalid with regards to the current host url."
+  },
+  "sdk/NetworkRequest.js | blockedReasonInvalidPrefix": {
+    "message": "This Set-Cookie was blocked because it used the \"__Secure-\" or \"__Host-\" prefix in its name and broke the additional rules applied to cookies with these prefixes as defined in https://tools.ietf.org/html/draft-west-cookie-prefixes-05."
+  },
+  "sdk/NetworkRequest.js | blockedReasonOverwriteSecure": {
+    "message": "This Set-Cookie was blocked because it was not sent over a secure connection and would have overwritten a cookie with the Secure attribute."
+  },
+  "sdk/NetworkRequest.js | blockedReasonSameSiteLax": {
+    "message": "This Set-Cookie was blocked because it had the \"SameSite=Lax\" attribute but came from a cross-site response which was not the response to a top-level navigation."
+  },
+  "sdk/NetworkRequest.js | blockedReasonSameSiteNoneInsecure": {
+    "message": "This Set-Cookie was blocked because it had the \"SameSite=None\" attribute but did not have the \"Secure\" attribute, which is required in order to use \"SameSite=None\"."
+  },
+  "sdk/NetworkRequest.js | blockedReasonSameSiteStrict": {
+    "message": "This Set-Cookie was blocked because it had the \"SameSite=Strict\" attribute but came from a cross-site response which was not the response to a top-level navigation."
+  },
+  "sdk/NetworkRequest.js | blockedReasonSameSiteUnspecifiedTreatedAsLax": {
+    "message": "This Set-Cookie didn't specify a \"SameSite\" attribute and was defaulted to \"SameSite=Lax,\" and was blocked because it came from a cross-site response which was not the response to a top-level navigation. The Set-Cookie had to have been set with \"SameSite=None\" to enable cross-site usage."
+  },
+  "sdk/NetworkRequest.js | blockedReasonSecureOnly": {
+    "message": "This Set-Cookie was blocked because it had the \"Secure\" attribute but was not received over a secure connection."
+  },
+  "sdk/NetworkRequest.js | domainMismatch": {
+    "message": "This cookie was blocked because neither did the request URL's domain exactly match the cookie's domain, nor was the request URL's domain a subdomain of the cookie's Domain attribute value."
+  },
+  "sdk/NetworkRequest.js | notOnPath": {
+    "message": "This cookie was blocked because its path was not an exact match for or a superdirectory of the request url's path."
+  },
+  "sdk/NetworkRequest.js | samePartyFromCrossPartyContext": {
+    "message": "This cookie was blocked because it had the \"SameParty\" attribute but the request was cross-party. The request was considered cross-party because the domain of the resource's URL and the domains of the resource's enclosing frames/documents are neither owners nor members in the same First-Party Set."
+  },
+  "sdk/NetworkRequest.js | sameSiteLax": {
+    "message": "This cookie was blocked because it had the \"SameSite=Lax\" attribute and the request was made from a different site and was not initiated by a top-level navigation."
+  },
+  "sdk/NetworkRequest.js | sameSiteNoneInsecure": {
+    "message": "This cookie was blocked because it had the \"SameSite=None\" attribute but was not marked \"Secure\". Cookies without SameSite restrictions must be marked \"Secure\" and sent over a secure connection."
+  },
+  "sdk/NetworkRequest.js | sameSiteStrict": {
+    "message": "This cookie was blocked because it had the \"SameSite=Strict\" attribute and the request was made from a different site. This includes top-level navigation requests initiated by other sites."
+  },
+  "sdk/NetworkRequest.js | sameSiteUnspecifiedTreatedAsLax": {
+    "message": "This cookie didn't specify a \"SameSite\" attribute when it was stored and was defaulted to \"SameSite=Lax,\" and was blocked because the request was made from a different site and was not initiated by a top-level navigation. The cookie had to have been set with \"SameSite=None\" to enable cross-site usage."
+  },
+  "sdk/NetworkRequest.js | schemefulSameSiteLax": {
+    "message": "This cookie was blocked because it had the \"SameSite=Lax\" attribute but the request was cross-site and was not initiated by a top-level navigation. This request is considered cross-site because the URL has a different scheme than the current site."
+  },
+  "sdk/NetworkRequest.js | schemefulSameSiteStrict": {
+    "message": "This cookie was blocked because it had the \"SameSite=Strict\" attribute but the request was cross-site. This includes top-level navigation requests initiated by other sites. This request is considered cross-site because the URL has a different scheme than the current site."
+  },
+  "sdk/NetworkRequest.js | schemefulSameSiteUnspecifiedTreatedAsLax": {
+    "message": "This cookie didn't specify a \"SameSite\" attribute when it was stored, was defaulted to \"SameSite=Lax\", and was blocked because the request was cross-site and was not initiated by a top-level navigation. This request is considered cross-site because the URL has a different scheme than the current site."
+  },
+  "sdk/NetworkRequest.js | secureOnly": {
+    "message": "This cookie was blocked because it had the \"Secure\" attribute and the connection was not secure."
+  },
+  "sdk/NetworkRequest.js | theSchemeOfThisConnectionIsNot": {
+    "message": "The scheme of this connection is not allowed to store cookies."
+  },
+  "sdk/NetworkRequest.js | thisSetcookieDidntSpecifyASamesite": {
+    "message": "This Set-Cookie didn't specify a \"SameSite\" attribute, was defaulted to \"SameSite=Lax\", and was blocked because it came from a cross-site response which was not the response to a top-level navigation. This response is considered cross-site because the URL has a different scheme than the current site."
+  },
+  "sdk/NetworkRequest.js | thisSetcookieHadInvalidSyntax": {
+    "message": "This Set-Cookie had invalid syntax."
+  },
+  "sdk/NetworkRequest.js | thisSetcookieWasBlockedBecauseItHadTheSameparty": {
+    "message": "This Set-Cookie was blocked because it had the \"SameParty\" attribute but the request was cross-party. The request was considered cross-party because the domain of the resource's URL and the domains of the resource's enclosing frames/documents are neither owners nor members in the same First-Party Set."
+  },
+  "sdk/NetworkRequest.js | thisSetcookieWasBlockedBecauseItHadTheSamepartyAttribute": {
+    "message": "This Set-Cookie was blocked because it had the \"SameParty\" attribute but also had other conflicting attributes. Chrome requires cookies that use the \"SameParty\" attribute to also have the \"Secure\" attribute, and to not be restricted to \"SameSite=Strict\"."
+  },
+  "sdk/NetworkRequest.js | thisSetcookieWasBlockedBecauseItHadTheSamesitelax": {
+    "message": "This Set-Cookie was blocked because it had the \"SameSite=Lax\" attribute but came from a cross-site response which was not the response to a top-level navigation. This response is considered cross-site because the URL has a different scheme than the current site."
+  },
+  "sdk/NetworkRequest.js | thisSetcookieWasBlockedBecauseItHadTheSamesitestrict": {
+    "message": "This Set-Cookie was blocked because it had the \"SameSite=Strict\" attribute but came from a cross-site response which was not the response to a top-level navigation. This response is considered cross-site because the URL has a different scheme than the current site."
+  },
+  "sdk/NetworkRequest.js | thisSetcookieWasBlockedDueToUser": {
+    "message": "This Set-Cookie was blocked due to user preferences."
+  },
+  "sdk/NetworkRequest.js | unknownError": {
+    "message": "An unknown error was encountered when trying to send this cookie."
+  },
+  "sdk/NetworkRequest.js | userPreferences": {
+    "message": "This cookie was blocked due to user preferences."
+  },
+  "sdk/OverlayModel.js | pausedInDebugger": {
+    "message": "Paused in debugger"
+  },
+  "sdk/PageResourceLoader.js | loadCanceledDueToLoadTimeout": {
+    "message": "Load canceled due to load timeout"
+  },
+  "sdk/PageResourceLoader.js | loadCanceledDueToReloadOf": {
+    "message": "Load canceled due to reload of inspected page"
+  },
+  "sdk/ResourceTreeModel.js | iframe": {
+    "message": "<iframe>"
+  },
+  "sdk/ResourceTreeModel.js | top": {
+    "message": "top"
+  },
+  "sdk/SameSiteCookieIssue.js | anInsecure": {
+    "message": "an insecure"
+  },
+  "sdk/SameSiteCookieIssue.js | aSecure": {
+    "message": "a secure"
+  },
+  "sdk/SameSiteCookieIssue.js | howSchemefulSamesiteWorks": {
+    "message": "How Schemeful Same-Site Works"
+  },
+  "sdk/SameSiteCookieIssue.js | samesiteCookiesExplained": {
+    "message": "SameSite cookies explained"
+  },
+  "sdk/Script.js | scriptRemovedOrDeleted": {
+    "message": "Script removed or deleted."
+  },
+  "sdk/Script.js | unableToFetchScriptSource": {
+    "message": "Unable to fetch script source."
+  },
+  "sdk/sdk-meta.ts | achromatopsia": {
+    "message": "Achromatopsia"
+  },
+  "sdk/sdk-meta.ts | blurredVision": {
+    "message": "Blurred vision"
+  },
+  "sdk/sdk-meta.ts | captureAsyncStackTraces": {
+    "message": "Capture async stack traces"
+  },
+  "sdk/sdk-meta.ts | colorgamutP": {
+    "message": "color-gamut: p3"
+  },
+  "sdk/sdk-meta.ts | colorgamutRec": {
+    "message": "color-gamut: rec2020"
+  },
+  "sdk/sdk-meta.ts | colorgamutSrgb": {
+    "message": "color-gamut: srgb"
+  },
+  "sdk/sdk-meta.ts | deuteranopia": {
+    "message": "Deuteranopia"
+  },
+  "sdk/sdk-meta.ts | disableAsyncStackTraces": {
+    "message": "Disable async stack traces"
+  },
+  "sdk/sdk-meta.ts | disableAvifFormat": {
+    "message": "Disable AVIF format"
+  },
+  "sdk/sdk-meta.ts | disableCacheWhileDevtoolsIsOpen": {
+    "message": "Disable cache (while DevTools is open)"
+  },
+  "sdk/sdk-meta.ts | disableJavascript": {
+    "message": "Disable JavaScript"
+  },
+  "sdk/sdk-meta.ts | disableLocalFonts": {
+    "message": "Disable local fonts"
+  },
+  "sdk/sdk-meta.ts | disableNetworkRequestBlocking": {
+    "message": "Disable network request blocking"
+  },
+  "sdk/sdk-meta.ts | disableWebpFormat": {
+    "message": "Disable WebP format"
+  },
+  "sdk/sdk-meta.ts | doNotCaptureAsyncStackTraces": {
+    "message": "Do not capture async stack traces"
+  },
+  "sdk/sdk-meta.ts | doNotEmulateAFocusedPage": {
+    "message": "Do not emulate a focused page"
+  },
+  "sdk/sdk-meta.ts | doNotEmulateAnyVisionDeficiency": {
+    "message": "Do not emulate any vision deficiency"
+  },
+  "sdk/sdk-meta.ts | doNotEmulateCss": {
+    "message": "Do not emulate CSS prefers-color-scheme"
+  },
+  "sdk/sdk-meta.ts | doNotEmulateCssColorgamut": {
+    "message": "Do not emulate CSS color-gamut"
+  },
+  "sdk/sdk-meta.ts | doNotEmulateCssMediaType": {
+    "message": "Do not emulate CSS media type"
+  },
+  "sdk/sdk-meta.ts | doNotEmulateCssPrefersreduceddata": {
+    "message": "Do not emulate CSS prefers-reduced-data"
+  },
+  "sdk/sdk-meta.ts | doNotEmulateCssPrefersreducedmotion": {
+    "message": "Do not emulate CSS prefers-reduced-motion"
+  },
+  "sdk/sdk-meta.ts | doNotExtendGridLines": {
+    "message": "Do not extend grid lines"
+  },
+  "sdk/sdk-meta.ts | doNotHighlightAdFrames": {
+    "message": "Do not highlight ad frames"
+  },
+  "sdk/sdk-meta.ts | doNotPauseOnExceptions": {
+    "message": "Do not pause on exceptions"
+  },
+  "sdk/sdk-meta.ts | doNotPreserveLogUponNavigation": {
+    "message": "Do not preserve log upon navigation"
+  },
+  "sdk/sdk-meta.ts | doNotShowGridNamedAreas": {
+    "message": "Do not show grid named areas"
+  },
+  "sdk/sdk-meta.ts | doNotShowGridTrackSizes": {
+    "message": "Do not show grid track sizes"
+  },
+  "sdk/sdk-meta.ts | emulateAchromatopsia": {
+    "message": "Emulate achromatopsia"
+  },
+  "sdk/sdk-meta.ts | emulateAFocusedPage": {
+    "message": "Emulate a focused page"
+  },
+  "sdk/sdk-meta.ts | emulateBlurredVision": {
+    "message": "Emulate blurred vision"
+  },
+  "sdk/sdk-meta.ts | emulateCssColorgamutP": {
+    "message": "Emulate CSS color-gamut: p3"
+  },
+  "sdk/sdk-meta.ts | emulateCssColorgamutRec": {
+    "message": "Emulate CSS color-gamut: rec2020"
+  },
+  "sdk/sdk-meta.ts | emulateCssColorgamutSrgb": {
+    "message": "Emulate CSS color-gamut: srgb"
+  },
+  "sdk/sdk-meta.ts | emulateCssMediaFeature": {
+    "message": "Emulate CSS media feature prefers-color-scheme"
+  },
+  "sdk/sdk-meta.ts | emulateCssMediaFeatureColorgamut": {
+    "message": "Emulate CSS media feature color-gamut"
+  },
+  "sdk/sdk-meta.ts | emulateCssMediaFeaturePrefersreduceddata": {
+    "message": "Emulate CSS media feature prefers-reduced-data"
+  },
+  "sdk/sdk-meta.ts | emulateCssMediaFeaturePrefersreducedmotion": {
+    "message": "Emulate CSS media feature prefers-reduced-motion"
+  },
+  "sdk/sdk-meta.ts | emulateCssMediaType": {
+    "message": "Emulate CSS media type"
+  },
+  "sdk/sdk-meta.ts | emulateCssPreferscolorscheme": {
+    "message": "Emulate CSS prefers-color-scheme: light"
+  },
+  "sdk/sdk-meta.ts | emulateCssPreferscolorschemeDark": {
+    "message": "Emulate CSS prefers-color-scheme: dark"
+  },
+  "sdk/sdk-meta.ts | emulateCssPrefersreduceddata": {
+    "message": "Emulate CSS prefers-reduced-data: reduce"
+  },
+  "sdk/sdk-meta.ts | emulateCssPrefersreducedmotion": {
+    "message": "Emulate CSS prefers-reduced-motion: reduce"
+  },
+  "sdk/sdk-meta.ts | emulateCssPrintMediaType": {
+    "message": "Emulate CSS print media type"
+  },
+  "sdk/sdk-meta.ts | emulateCssScreenMediaType": {
+    "message": "Emulate CSS screen media type"
+  },
+  "sdk/sdk-meta.ts | emulateDeuteranopia": {
+    "message": "Emulate deuteranopia"
+  },
+  "sdk/sdk-meta.ts | emulateProtanopia": {
+    "message": "Emulate protanopia"
+  },
+  "sdk/sdk-meta.ts | emulateTritanopia": {
+    "message": "Emulate tritanopia"
+  },
+  "sdk/sdk-meta.ts | emulateVisionDeficiencies": {
+    "message": "Emulate vision deficiencies"
+  },
+  "sdk/sdk-meta.ts | enableAvifFormat": {
+    "message": "Enable AVIF format"
+  },
+  "sdk/sdk-meta.ts | enableCache": {
+    "message": "Enable cache"
+  },
+  "sdk/sdk-meta.ts | enableCustomFormatters": {
+    "message": "Enable custom formatters"
+  },
+  "sdk/sdk-meta.ts | enableJavascript": {
+    "message": "Enable JavaScript"
+  },
+  "sdk/sdk-meta.ts | enableLocalFonts": {
+    "message": "Enable local fonts"
+  },
+  "sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
+    "message": "Enable network request blocking"
+  },
+  "sdk/sdk-meta.ts | enableWebpFormat": {
+    "message": "Enable WebP format"
+  },
+  "sdk/sdk-meta.ts | extendGridLines": {
+    "message": "Extend grid lines"
+  },
+  "sdk/sdk-meta.ts | hideCoreWebVitalsOverlay": {
+    "message": "Hide Core Web Vitals overlay"
+  },
+  "sdk/sdk-meta.ts | hideFramesPerSecondFpsMeter": {
+    "message": "Hide frames per second (FPS) meter"
+  },
+  "sdk/sdk-meta.ts | hideHittestBorders": {
+    "message": "Hide hit-test borders"
+  },
+  "sdk/sdk-meta.ts | hideLayerBorders": {
+    "message": "Hide layer borders"
+  },
+  "sdk/sdk-meta.ts | hideLayoutShiftRegions": {
+    "message": "Hide layout shift regions"
+  },
+  "sdk/sdk-meta.ts | hideLineLabels": {
+    "message": "Hide line labels"
+  },
+  "sdk/sdk-meta.ts | hidePaintFlashingRectangles": {
+    "message": "Hide paint flashing rectangles"
+  },
+  "sdk/sdk-meta.ts | hideScrollPerformanceBottlenecks": {
+    "message": "Hide scroll performance bottlenecks"
+  },
+  "sdk/sdk-meta.ts | highlightAdFrames": {
+    "message": "Highlight ad frames"
+  },
+  "sdk/sdk-meta.ts | noEmulation": {
+    "message": "No emulation"
+  },
+  "sdk/sdk-meta.ts | pauseOnExceptions": {
+    "message": "Pause on exceptions"
+  },
+  "sdk/sdk-meta.ts | preferscolorschemeDark": {
+    "message": "prefers-color-scheme: dark"
+  },
+  "sdk/sdk-meta.ts | preferscolorschemeLight": {
+    "message": "prefers-color-scheme: light"
+  },
+  "sdk/sdk-meta.ts | prefersreduceddataReduce": {
+    "message": "prefers-reduced-data: reduce"
+  },
+  "sdk/sdk-meta.ts | prefersreducedmotionReduce": {
+    "message": "prefers-reduced-motion: reduce"
+  },
+  "sdk/sdk-meta.ts | preserveLogUponNavigation": {
+    "message": "Preserve log upon navigation"
+  },
+  "sdk/sdk-meta.ts | print": {
+    "message": "print"
+  },
+  "sdk/sdk-meta.ts | protanopia": {
+    "message": "Protanopia"
+  },
+  "sdk/sdk-meta.ts | query": {
+    "message": "query"
+  },
+  "sdk/sdk-meta.ts | screen": {
+    "message": "screen"
+  },
+  "sdk/sdk-meta.ts | showAreaNames": {
+    "message": "Show area names"
+  },
+  "sdk/sdk-meta.ts | showCoreWebVitalsOverlay": {
+    "message": "Show Core Web Vitals overlay"
+  },
+  "sdk/sdk-meta.ts | showFramesPerSecondFpsMeter": {
+    "message": "Show frames per second (FPS) meter"
+  },
+  "sdk/sdk-meta.ts | showGridNamedAreas": {
+    "message": "Show grid named areas"
+  },
+  "sdk/sdk-meta.ts | showGridTrackSizes": {
+    "message": "Show grid track sizes"
+  },
+  "sdk/sdk-meta.ts | showHittestBorders": {
+    "message": "Show hit-test borders"
+  },
+  "sdk/sdk-meta.ts | showLayerBorders": {
+    "message": "Show layer borders"
+  },
+  "sdk/sdk-meta.ts | showLayoutShiftRegions": {
+    "message": "Show layout shift regions"
+  },
+  "sdk/sdk-meta.ts | showLineLabels": {
+    "message": "Show line labels"
+  },
+  "sdk/sdk-meta.ts | showLineNames": {
+    "message": "Show line names"
+  },
+  "sdk/sdk-meta.ts | showLineNumbers": {
+    "message": "Show line numbers"
+  },
+  "sdk/sdk-meta.ts | showPaintFlashingRectangles": {
+    "message": "Show paint flashing rectangles"
+  },
+  "sdk/sdk-meta.ts | showRulers": {
+    "message": "Show rulers"
+  },
+  "sdk/sdk-meta.ts | showScrollPerformanceBottlenecks": {
+    "message": "Show scroll performance bottlenecks"
+  },
+  "sdk/sdk-meta.ts | showTrackSizes": {
+    "message": "Show track sizes"
+  },
+  "sdk/sdk-meta.ts | tritanopia": {
+    "message": "Tritanopia"
+  },
+  "sdk/ServerTiming.js | deprecatedSyntaxFoundPleaseUse": {
+    "message": "Deprecated syntax found. Please use: <name>;dur=<duration>;desc=<description>"
+  },
+  "sdk/ServerTiming.js | duplicateParameterSIgnored": {
+    "message": "Duplicate parameter \"{PH1}\" ignored."
+  },
+  "sdk/ServerTiming.js | extraneousTrailingCharacters": {
+    "message": "Extraneous trailing characters."
+  },
+  "sdk/ServerTiming.js | noValueFoundForParameterS": {
+    "message": "No value found for parameter \"{PH1}\"."
+  },
+  "sdk/ServerTiming.js | servertimingS": {
+    "message": "ServerTiming: {PH1}"
+  },
+  "sdk/ServerTiming.js | unableToParseSValueS": {
+    "message": "Unable to parse \"{PH1}\" value \"{PH2}\"."
+  },
+  "sdk/ServerTiming.js | unrecognizedParameterS": {
+    "message": "Unrecognized parameter \"{PH1}\"."
+  },
+  "sdk/ServiceWorkerCacheModel.js | serviceworkercacheagentError": {
+    "message": "ServiceWorkerCacheAgent error deleting cache entry {PH1} in cache: {PH2}"
+  },
+  "sdk/ServiceWorkerManager.js | activated": {
+    "message": "activated"
+  },
+  "sdk/ServiceWorkerManager.js | activating": {
+    "message": "activating"
+  },
+  "sdk/ServiceWorkerManager.js | installed": {
+    "message": "installed"
+  },
+  "sdk/ServiceWorkerManager.js | installing": {
+    "message": "installing"
+  },
+  "sdk/ServiceWorkerManager.js | new": {
+    "message": "new"
+  },
+  "sdk/ServiceWorkerManager.js | redundant": {
+    "message": "redundant"
+  },
+  "sdk/ServiceWorkerManager.js | running": {
+    "message": "running"
+  },
+  "sdk/ServiceWorkerManager.js | sSS": {
+    "message": "{PH1} #{PH2} ({PH3})"
+  },
+  "sdk/ServiceWorkerManager.js | starting": {
+    "message": "starting"
+  },
+  "sdk/ServiceWorkerManager.js | stopped": {
+    "message": "stopped"
+  },
+  "sdk/ServiceWorkerManager.js | stopping": {
+    "message": "stopping"
+  },
+  "sdk/SharedArrayBufferIssue.ts | enablingSharedArrayBuffer": {
+    "message": "Enabling Shared Array Buffer"
+  },
+  "sdk/SourceMap.js | couldNotLoadContentForSS": {
+    "message": "Could not load content for {PH1}: {PH2}"
+  },
+  "sdk/SourceMap.js | couldNotParseContentForSS": {
+    "message": "Could not parse content for {PH1}: {PH2}"
+  },
+  "sdk/SourceMapManager.js | devtoolsFailedToLoadSourcemapS": {
+    "message": "DevTools failed to load SourceMap: {PH1}"
+  },
+  "sdk/TrustedWebActivityIssue.ts | changesToQualityCriteriaForPwas": {
+    "message": "Changes to quality criteria for PWAs using Trusted Web Activity"
+  },
   "search/SearchResultsPane.js | lineS": {
     "message": "Line {PH1}"
   },

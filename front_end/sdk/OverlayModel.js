@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
+import * as i18n from '../i18n/i18n.js';
 import * as Root from '../root/root.js';
 
 import {DebuggerModel, Events as DebuggerModelEvents} from './DebuggerModel.js';
@@ -11,6 +12,14 @@ import {OverlayPersistentHighlighter} from './OverlayPersistentHighlighter.js';
 import {RemoteObject} from './RemoteObject.js';                             // eslint-disable-line no-unused-vars
 import {Capability, SDKModel, Target, TargetManager} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 
+export const UIStrings = {
+  /**
+  *@description Text in Overlay Model
+  */
+  pausedInDebugger: 'Paused in debugger',
+};
+const str_ = i18n.i18n.registerUIStrings('sdk/OverlayModel.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 /**
  * @typedef {{r: number, g: number, b: number, a: number}}
@@ -255,7 +264,7 @@ export class OverlayModel extends SDKModel {
     }
     const message = this._debuggerModel && this._debuggerModel.isPaused() &&
             !Common.Settings.Settings.instance().moduleSetting('disablePausedStateOverlay').get() ?
-        Common.UIString.UIString('Paused in debugger') :
+        i18nString(UIStrings.pausedInDebugger) :
         undefined;
     this._overlayAgent.invoke_setPausedInDebuggerMessage({message});
   }

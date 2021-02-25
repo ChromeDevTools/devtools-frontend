@@ -28,13 +28,22 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import * as Common from '../common/common.js';
+import * as i18n from '../i18n/i18n.js';
 import * as Root from '../root/root.js';
 
 import {DebuggerModel, Location} from './DebuggerModel.js';
 import {RuntimeModel} from './RuntimeModel.js';              // eslint-disable-line no-unused-vars
 import {Capability, SDKModel, Target} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 
+export const UIStrings = {
+  /**
+  *@description Name of a profile
+  *@example {2} PH1
+  */
+  profileD: 'Profile {PH1}',
+};
+const str_ = i18n.i18n.registerUIStrings('sdk/CPUProfilerModel.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /**
  * @implements {ProtocolProxyApi.ProfilerDispatcher}
  */
@@ -75,7 +84,7 @@ export class CPUProfilerModel extends SDKModel {
    */
   consoleProfileStarted({id, location, title}) {
     if (!title) {
-      title = Common.UIString.UIString('Profile %d', this._nextAnonymousConsoleProfileNumber++);
+      title = i18nString(UIStrings.profileD, {PH1: this._nextAnonymousConsoleProfileNumber++});
       this._anonymousConsoleProfileIdToTitle.set(id, title);
     }
     this._dispatchProfileEvent(Events.ConsoleProfileStarted, id, location, title);

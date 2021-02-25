@@ -29,6 +29,7 @@
  */
 
 import * as Common from '../common/common.js';
+import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
 
 import {ConsoleMessage, ConsoleModel, MessageLevel, MessageSource} from './ConsoleModel.js';
@@ -38,6 +39,20 @@ import {Events as ResourceTreeModelEvents, ResourceTreeFrame, ResourceTreeModel}
 import {RuntimeModel} from './RuntimeModel.js';
 import {SDKModelObserver, TargetManager} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 
+export const UIStrings = {
+  /**
+  *@description Text in Network Log
+  */
+  anonymous: '<anonymous>',
+  /**
+  *@description Text in Network Log
+  *@example {Chrome Data Saver} PH1
+  *@example {https://example.com} PH2
+  */
+  considerDisablingSWhileDebugging: 'Consider disabling {PH1} while debugging. For more info see: {PH2}'
+};
+const str_ = i18n.i18n.registerUIStrings('sdk/NetworkLog.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /** @type {!NetworkLog} */
 let _instance;
 
@@ -269,7 +284,7 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper {
             continue;
           }
           type = InitiatorType.Script;
-          url = topFrame.url || Common.UIString.UIString('<anonymous>');
+          url = topFrame.url || i18nString(UIStrings.anonymous);
           lineNumber = topFrame.lineNumber;
           columnNumber = topFrame.columnNumber;
           scriptId = topFrame.scriptId;
@@ -689,9 +704,9 @@ export class PageLoad {
     }
     const saveDataHeader = this.mainRequest.requestHeaderValue('Save-Data');
     if (!PageLoad._dataSaverMessageWasShown && saveDataHeader && saveDataHeader === 'on') {
-      const message = Common.UIString.UIString(
-          'Consider disabling %s while debugging. For more info see: %s', Common.UIString.UIString('Chrome Data Saver'),
-          'https://support.google.com/chrome/?p=datasaver');
+      const message = i18nString(
+          UIStrings.considerDisablingSWhileDebugging,
+          {PH1: 'Chrome Data Saver', PH2: 'https://support.google.com/chrome/?p=datasaver'});
       manager.dispatchEventToListeners(
           NetworkManagerEvents.MessageGenerated,
           {message: message, requestId: this.mainRequest.requestId(), warning: true});

@@ -29,11 +29,63 @@
  */
 
 import * as Common from '../common/common.js';
-
-import {ls} from '../platform/platform.js';
+import * as i18n from '../i18n/i18n.js';
 
 import {Events as RuntimeModelEvents, ExecutionContext, RuntimeModel} from './RuntimeModel.js';  // eslint-disable-line no-unused-vars
 import {Capability, SDKModel, Target, TargetManager, Type} from './SDKModel.js';  // eslint-disable-line no-unused-vars
+
+export const UIStrings = {
+  /**
+  *@description Service worker running status displayed in the Service Workers view in the Application panel
+  */
+  running: 'running',
+  /**
+  *@description Service worker running status displayed in the Service Workers view in the Application panel
+  */
+  starting: 'starting',
+  /**
+  *@description Service worker running status displayed in the Service Workers view in the Application panel
+  */
+  stopped: 'stopped',
+  /**
+  *@description Service worker running status displayed in the Service Workers view in the Application panel
+  */
+  stopping: 'stopping',
+  /**
+  *@description Service worker version status displayed in the Threads view of the Debugging side pane in the Sources panel
+  */
+  activated: 'activated',
+  /**
+  *@description Service worker version status displayed in the Threads view of the Debugging side pane in the Sources panel
+  */
+  activating: 'activating',
+  /**
+  *@description Service worker version status displayed in the Threads view of the Debugging side pane in the Sources panel
+  */
+  installed: 'installed',
+  /**
+  *@description Service worker version status displayed in the Threads view of the Debugging side pane in the Sources panel
+  */
+  installing: 'installing',
+  /**
+  *@description Service worker version status displayed in the Threads view of the Debugging side pane in the Sources panel
+  */
+  new: 'new',
+  /**
+  *@description Service worker version status displayed in the Threads view of the Debugging side pane in the Sources panel
+  */
+  redundant: 'redundant',
+  /**
+  *@description Service worker version status displayed in the Threads view of the Debugging side pane in the Sources panel
+  *@example {sw.js} PH1
+  *@example {117} PH2
+  *@example {activated} PH3
+  */
+  sSS: '{PH1} #{PH2} ({PH3})',
+};
+const str_ = i18n.i18n.registerUIStrings('sdk/ServiceWorkerManager.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 export class ServiceWorkerManager extends SDKModel {
   /**
@@ -515,25 +567,25 @@ export class ServiceWorkerVersion {
 }
 
 /**
- * @type {!Object<string, string>}
+ * @type {!Object<string, () => string>}
  */
 ServiceWorkerVersion.RunningStatus = {
-  [Protocol.ServiceWorker.ServiceWorkerVersionRunningStatus.Running]: ls`running`,
-  [Protocol.ServiceWorker.ServiceWorkerVersionRunningStatus.Starting]: ls`starting`,
-  [Protocol.ServiceWorker.ServiceWorkerVersionRunningStatus.Stopped]: ls`stopped`,
-  [Protocol.ServiceWorker.ServiceWorkerVersionRunningStatus.Stopping]: ls`stopping`,
+  [Protocol.ServiceWorker.ServiceWorkerVersionRunningStatus.Running]: i18nLazyString(UIStrings.running),
+  [Protocol.ServiceWorker.ServiceWorkerVersionRunningStatus.Starting]: i18nLazyString(UIStrings.starting),
+  [Protocol.ServiceWorker.ServiceWorkerVersionRunningStatus.Stopped]: i18nLazyString(UIStrings.stopped),
+  [Protocol.ServiceWorker.ServiceWorkerVersionRunningStatus.Stopping]: i18nLazyString(UIStrings.stopping),
 };
 
 /**
- * @type {!Object<string, string>}
+ * @type {!Object<string, () => string>}
  */
 ServiceWorkerVersion.Status = {
-  [Protocol.ServiceWorker.ServiceWorkerVersionStatus.Activated]: ls`activated`,
-  [Protocol.ServiceWorker.ServiceWorkerVersionStatus.Activating]: ls`activating`,
-  [Protocol.ServiceWorker.ServiceWorkerVersionStatus.Installed]: ls`installed`,
-  [Protocol.ServiceWorker.ServiceWorkerVersionStatus.Installing]: ls`installing`,
-  [Protocol.ServiceWorker.ServiceWorkerVersionStatus.New]: ls`new`,
-  [Protocol.ServiceWorker.ServiceWorkerVersionStatus.Redundant]: ls`redundant`,
+  [Protocol.ServiceWorker.ServiceWorkerVersionStatus.Activated]: i18nLazyString(UIStrings.activated),
+  [Protocol.ServiceWorker.ServiceWorkerVersionStatus.Activating]: i18nLazyString(UIStrings.activating),
+  [Protocol.ServiceWorker.ServiceWorkerVersionStatus.Installed]: i18nLazyString(UIStrings.installed),
+  [Protocol.ServiceWorker.ServiceWorkerVersionStatus.Installing]: i18nLazyString(UIStrings.installing),
+  [Protocol.ServiceWorker.ServiceWorkerVersionStatus.New]: i18nLazyString(UIStrings.new),
+  [Protocol.ServiceWorker.ServiceWorkerVersionStatus.Redundant]: i18nLazyString(UIStrings.redundant),
 };
 
 /**
@@ -726,7 +778,7 @@ class ServiceWorkerContextNamer {
     const parsedUrl = Common.ParsedURL.ParsedURL.fromString(context.origin);
     const label = parsedUrl ? parsedUrl.lastPathComponentWithFragment() : context.name;
     const localizedStatus = ServiceWorkerVersion.Status[version.status];
-    context.setLabel(ls`${label} #${version.id} (${localizedStatus})`);
+    context.setLabel(i18nString(UIStrings.sSS, {PH1: label, PH2: version.id, PH3: localizedStatus}));
   }
 }
 

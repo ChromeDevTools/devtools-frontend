@@ -29,11 +29,21 @@
  */
 
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
-import {ls} from '../platform/platform.js';
+import * as i18n from '../i18n/i18n.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 
 import {PageResourceLoader, PageResourceLoadInitiator} from './PageResourceLoader.js';  // eslint-disable-line no-unused-vars
 
+export const UIStrings = {
+  /**
+  *@description Error message when failing to fetch a resource referenced in a source map
+  *@example {https://example.com/sourcemap.map} PH1
+  *@example {An error occurred} PH2
+  */
+  couldNotLoadContentForSS: 'Could not load content for {PH1} ({PH2})',
+};
+const str_ = i18n.i18n.registerUIStrings('sdk/CompilerSourceMappingContentProvider.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /**
  * @implements {TextUtils.ContentProvider.ContentProvider}
  */
@@ -82,7 +92,7 @@ export class CompilerSourceMappingContentProvider {
       const {content} = await PageResourceLoader.instance().loadResource(this._sourceURL, this._initiator);
       return {content, isEncoded: false};
     } catch (e) {
-      const error = ls`Could not load content for ${this._sourceURL} (${e.message})`;
+      const error = i18nString(UIStrings.couldNotLoadContentForSS, {PH1: this._sourceURL, PH2: e.message});
       console.error(error);
       return {content: null, error, isEncoded: false};
     }

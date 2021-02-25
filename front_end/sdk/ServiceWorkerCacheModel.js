@@ -3,11 +3,22 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
+import * as i18n from '../i18n/i18n.js';
 
 import {NameValue} from './NetworkRequest.js';               // eslint-disable-line no-unused-vars
 import {Capability, SDKModel, Target} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 import {Events as SecurityOriginManagerEvents, SecurityOriginManager} from './SecurityOriginManager.js';
 
+export const UIStrings = {
+  /**
+  *@description Text in Service Worker Cache Model
+  *@example {https://cache} PH1
+  *@example {error message} PH2
+  */
+  serviceworkercacheagentError: '`ServiceWorkerCacheAgent` error deleting cache entry {PH1} in cache: {PH2}',
+};
+const str_ = i18n.i18n.registerUIStrings('sdk/ServiceWorkerCacheModel.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /**
  * @implements {ProtocolProxyApi.StorageDispatcher}
  */
@@ -90,8 +101,8 @@ export class ServiceWorkerCacheModel extends SDKModel {
   async deleteCacheEntry(cache, request) {
     const response = await this._cacheAgent.invoke_deleteEntry({cacheId: cache.cacheId, request});
     if (response.getError()) {
-      Common.Console.Console.instance().error(Common.UIString.UIString(
-          'ServiceWorkerCacheAgent error deleting cache entry %s in cache: %s', cache.toString(), response.getError()));
+      Common.Console.Console.instance().error(
+          i18nString(UIStrings.serviceworkercacheagentError, {PH1: cache.toString(), PH2: response.getError()}));
       return;
     }
   }

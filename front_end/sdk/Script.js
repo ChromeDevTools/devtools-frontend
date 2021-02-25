@@ -24,7 +24,7 @@
  */
 
 import * as Common from '../common/common.js';
-import {ls} from '../platform/platform.js';
+import * as i18n from '../i18n/i18n.js';
 import * as ProtocolClient from '../protocol_client/protocol_client.js';  // eslint-disable-line no-unused-vars
 import * as TextUtils from '../text_utils/text_utils.js';
 
@@ -35,6 +35,18 @@ import {ResourceTreeModel} from './ResourceTreeModel.js';
 import {ExecutionContext} from './RuntimeModel.js';  // eslint-disable-line no-unused-vars
 import {Target} from './SDKModel.js';                // eslint-disable-line no-unused-vars
 
+export const UIStrings = {
+  /**
+  *@description Error message for when a script can't be loaded which had been previously
+  */
+  scriptRemovedOrDeleted: 'Script removed or deleted.',
+  /**
+  *@description Error message when failing to load a script source text
+  */
+  unableToFetchScriptSource: 'Unable to fetch script source.',
+};
+const str_ = i18n.i18n.registerUIStrings('sdk/Script.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /**
  * @implements {TextUtils.ContentProvider.ContentProvider}
  * TODO(chromium:1011811): make `implements {FrameAssociated}` annotation work here.
@@ -233,7 +245,7 @@ export class Script {
             if (!lazyContentPromise) {
               lazyContentPromise = (async () => {
                 if (!this.scriptId) {
-                  return {content: null, error: ls`Script removed or deleted.`, isEncoded: false};
+                  return {content: null, error: i18nString(UIStrings.scriptRemovedOrDeleted), isEncoded: false};
                 }
                 try {
                   const result = await this.debuggerModel.target().debuggerAgent().invoke_getScriptSource(
@@ -253,7 +265,7 @@ export class Script {
 
                 } catch (err) {
                   // TODO(bmeurer): Propagate errors as exceptions / rejections.
-                  return {content: null, error: ls`Unable to fetch script source.`, isEncoded: false};
+                  return {content: null, error: i18nString(UIStrings.unableToFetchScriptSource), isEncoded: false};
                 }
               })();
             }

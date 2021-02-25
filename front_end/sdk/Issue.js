@@ -31,6 +31,31 @@ export function getShowThirdPartyIssuesSetting() {
 }
 
 /**
+ * @param {LazyMarkdownIssueDescription | undefined} lazyDescription
+ */
+export function resolveLazyDescription(lazyDescription) {
+  /**
+     * @param {!{link: string, linkTitle: () => string}} currentLink
+     */
+  function linksMap(currentLink) {
+    return {link: currentLink.link, linkTitle: currentLink.linkTitle()};
+  }
+
+  const substitutionMap = new Map();
+  lazyDescription?.substitutions?.forEach((value, key) => {
+    substitutionMap.set(key, value());
+  });
+
+  const description =
+      Object.assign([], lazyDescription, {links: lazyDescription?.links.map(linksMap), substitutions: substitutionMap});
+
+  if (!description) {
+    return null;
+  }
+  return description;
+}
+
+/**
  * @typedef {{
   *             file: string,
   *             substitutions: (!Map<string, string>|undefined),
@@ -40,6 +65,17 @@ export function getShowThirdPartyIssuesSetting() {
   */
 // @ts-ignore typedef
 export let MarkdownIssueDescription;  // eslint-disable-line no-unused-vars
+
+/**
+  * @typedef {{
+  *             file: string,
+  *             substitutions: (!Map<string, () => string>|undefined),
+  *             issueKind: !IssueKind,
+  *             links: !Array<!{link: string, linkTitle: () => string}>
+  *          }}
+  */
+// @ts-ignore typedef
+export let LazyMarkdownIssueDescription;  // eslint-disable-line no-unused-vars
 
 /**
  * @typedef {{

@@ -3,13 +3,22 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
+import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
-import {ls} from '../platform/platform.js';
 
 import {FrameAssociated} from './FrameAssociated.js';  // eslint-disable-line no-unused-vars
 import {Events as TargetManagerEvents, Target, TargetManager} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 import {SourceMap, TextSourceMap} from './SourceMap.js';  // eslint-disable-line no-unused-vars
 
+export const UIStrings = {
+  /**
+  *@description Error message when failing to load a source map text
+  *@example {An error occurred} PH1
+  */
+  devtoolsFailedToLoadSourcemapS: 'DevTools failed to load SourceMap: {PH1}',
+};
+const str_ = i18n.i18n.registerUIStrings('sdk/SourceMapManager.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 /**
  * @template {!FrameAssociated} T
@@ -177,7 +186,8 @@ export class SourceMapManager extends Common.ObjectWrapper.ObjectWrapper {
     if (!this._sourceMapIdToLoadingClients.has(sourceMapId)) {
       TextSourceMap.load(sourceMapURL, sourceURL, client.createPageResourceLoadInitiator())
           .catch(error => {
-            Common.Console.Console.instance().warn(ls`DevTools failed to load SourceMap: ${error.message}`);
+            Common.Console.Console.instance().warn(
+                i18nString(UIStrings.devtoolsFailedToLoadSourcemapS, {PH1: error.message}));
             return null;
           })
           .then(onSourceMap.bind(this, sourceMapId));

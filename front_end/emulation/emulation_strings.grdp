@@ -36,6 +36,9 @@
   <message name="IDS_DEVTOOLS_24b3f6c325e961ac4f102e9d5463fa2e" desc="Field in Devices pane letting customize which operating system the edited device presents via User Agent Client Hints. Example should be kept exactly.">
     Platform (e.g. Android)
   </message>
+  <message name="IDS_DEVTOOLS_29260f495ba8adcc62fd1307c758ff4e" desc="Text to show the measuring rulers on the target">
+    Show rulers
+  </message>
   <message name="IDS_DEVTOOLS_29296fcb28eb4edf5d0049b6cac7bbd1" desc="Text for a percentage value">
     <ph name="SCALE">$1.0f<ex>13.0</ex></ph>%%
   </message>
@@ -333,6 +336,9 @@
   <message name="IDS_DEVTOOLS_ce5bf551379459c1c61d2a204061c455" desc="Title for a group of cities">
     Location
   </message>
+  <message name="IDS_DEVTOOLS_e0ac20adce6ffee48c7151b070aa5737" desc="Text that refers to device such as a phone">
+    Device
+  </message>
   <message name="IDS_DEVTOOLS_e1566752956adc1106049319eae8a6f6" desc="Field in Devices pane letting customize which browser names and major versions edited device presents via User Agent Client Hints. Example should be kept exactly.">
     UA brands list (e.g. &quot;Chromium&quot;;v=&quot;87&quot;)
   </message>
@@ -440,6 +446,9 @@
   </message>
   <message name="IDS_DEVTOOLS_f01ee7fedba5e392f6f9adab7ec0c74a" desc="Error message in the Locations settings pane that declares the location name input must not be empty">
     Location name cannot be empty
+  </message>
+  <message name="IDS_DEVTOOLS_f0f31c9700c6b10d8a20dc487b2ae6a8" desc="Text for the touch type to simulate on a device">
+    Touch
   </message>
   <message name="IDS_DEVTOOLS_f2a72a44f7b7d30829c0405ed2385345" desc="Text in Device Mode View of the Device Toolbar">
     Mobile S

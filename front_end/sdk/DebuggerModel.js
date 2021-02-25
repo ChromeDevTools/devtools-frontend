@@ -30,6 +30,7 @@
 
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
+import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
 import * as ProtocolClient from '../protocol_client/protocol_client.js';  // eslint-disable-line no-unused-vars
 import * as Root from '../root/root.js';
@@ -41,6 +42,46 @@ import {Script} from './Script.js';
 import {Capability, SDKModel, Target, Type} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 import {SourceMapManager} from './SourceMapManager.js';
 
+export const UIStrings = {
+  /**
+  *@description Text in Debugger Model
+  */
+  local: 'Local',
+  /**
+  *@description Text that refers to closure as a programming term
+  */
+  closure: 'Closure',
+  /**
+  *@description Text in Debugger Model
+  */
+  catch: 'Catch',
+  /**
+  *@description Noun that represents a section or block of code in the Debugger Model. Shown in the Sources tab, while paused on a breakpoint.
+  */
+  block: 'Block',
+  /**
+  *@description Label for a group of JavaScript files
+  */
+  script: 'Script',
+  /**
+  *@description Text in Debugger Model
+  */
+  withBlock: 'With Block',
+  /**
+  *@description Text describing global shortcuts and settings that are available throughout the DevTools
+  */
+  global: 'Global',
+  /**
+  *@description Text for a module, the programming concept
+  */
+  module: 'Module',
+  /**
+  *@description Text for a stack, the programming concept
+  */
+  stack: 'Stack',
+};
+const str_ = i18n.i18n.registerUIStrings('sdk/DebuggerModel.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /**
 *  @param {!Array<!LocationRange>} locationRanges
 *  @return {!Array<!LocationRange>}
@@ -1808,23 +1849,23 @@ export class Scope {
   typeName() {
     switch (this._type) {
       case Protocol.Debugger.ScopeType.Local:
-        return Common.UIString.UIString('Local');
+        return i18nString(UIStrings.local);
       case Protocol.Debugger.ScopeType.Closure:
-        return Common.UIString.UIString('Closure');
+        return i18nString(UIStrings.closure);
       case Protocol.Debugger.ScopeType.Catch:
-        return Common.UIString.UIString('Catch');
+        return i18nString(UIStrings.catch);
       case Protocol.Debugger.ScopeType.Block:
-        return Common.UIString.UIString('Block');
+        return i18nString(UIStrings.block);
       case Protocol.Debugger.ScopeType.Script:
-        return Common.UIString.UIString('Script');
+        return i18nString(UIStrings.script);
       case Protocol.Debugger.ScopeType.With:
-        return Common.UIString.UIString('With Block');
+        return i18nString(UIStrings.withBlock);
       case Protocol.Debugger.ScopeType.Global:
-        return Common.UIString.UIString('Global');
+        return i18nString(UIStrings.global);
       case Protocol.Debugger.ScopeType.Module:
-        return Common.UIString.UIString('Module');
+        return i18nString(UIStrings.module);
       case Protocol.Debugger.ScopeType.WasmExpressionStack:
-        return Common.UIString.UIString('Stack');
+        return i18nString(UIStrings.stack);
     }
     return '';
   }

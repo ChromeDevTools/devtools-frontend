@@ -689,7 +689,7 @@ export class Section {
     if (active) {
       this._updateSourceField(active);
       const localizedRunningStatus =
-          SDK.ServiceWorkerManager.ServiceWorkerVersion.RunningStatus[active.currentState.runningStatus];
+          SDK.ServiceWorkerManager.ServiceWorkerVersion.RunningStatus[active.currentState.runningStatus]();
       const activeEntry = this._addVersion(
           versionsStack, 'service-worker-active-circle',
           i18nString(UIStrings.sActivatedAndIsS, {PH1: active.id, PH2: localizedRunningStatus}));

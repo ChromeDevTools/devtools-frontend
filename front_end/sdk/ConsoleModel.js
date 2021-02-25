@@ -30,9 +30,10 @@
 
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
+import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';  // eslint-disable-line no-unused-vars
-import {FrontendMessageSource, FrontendMessageType} from './ConsoleModelTypes.js';
 
+import {FrontendMessageSource, FrontendMessageType} from './ConsoleModelTypes.js';
 import {CPUProfilerModel, EventData, Events as CPUProfilerModelEvents} from './CPUProfilerModel.js';  // eslint-disable-line no-unused-vars
 import {Events as DebuggerModelEvents, Location} from './DebuggerModel.js';  // eslint-disable-line no-unused-vars
 import {LogModel} from './LogModel.js';
@@ -41,6 +42,29 @@ import {Events as ResourceTreeModelEvents, ResourceTreeModel} from './ResourceTr
 import {Events as RuntimeModelEvents, ExecutionContext, RuntimeModel} from './RuntimeModel.js';  // eslint-disable-line no-unused-vars
 import {Observer, Target, TargetManager} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 
+export const UIStrings = {
+  /**
+  *@description Text in Console Model
+  *@example {https://example.com} PH1
+  */
+  navigatedToS: 'Navigated to {PH1}',
+  /**
+  *@description Text in Console Model
+  *@example {title} PH1
+  */
+  profileSStarted: 'Profile \'{PH1}\' started.',
+  /**
+  *@description Text in Console Model
+  *@example {name} PH1
+  */
+  profileSFinished: 'Profile \'{PH1}\' finished.',
+  /**
+  *@description Text in Console Model
+  */
+  failedToSaveToTempVariable: 'Failed to save to temp variable.',
+};
+const str_ = i18n.i18n.registerUIStrings('sdk/ConsoleModel.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /**
  * @type {!ConsoleModel}
  */
@@ -304,7 +328,7 @@ export class ConsoleModel extends Common.ObjectWrapper.ObjectWrapper {
    */
   _mainFrameNavigated(event) {
     if (Common.Settings.Settings.instance().moduleSetting('preserveConsoleLog').get()) {
-      Common.Console.Console.instance().log(Common.UIString.UIString('Navigated to %s', event.data.url));
+      Common.Console.Console.instance().log(i18nString(UIStrings.navigatedToS, {PH1: event.data.url}));
     }
   }
 
@@ -316,7 +340,7 @@ export class ConsoleModel extends Common.ObjectWrapper.ObjectWrapper {
     const data = /** @type {!EventData} */ (event.data);
     this._addConsoleProfileMessage(
         cpuProfilerModel, MessageType.Profile, data.scriptLocation,
-        Common.UIString.UIString('Profile \'%s\' started.', data.title));
+        i18nString(UIStrings.profileSStarted, {PH1: data.title}));
   }
 
   /**
@@ -327,7 +351,7 @@ export class ConsoleModel extends Common.ObjectWrapper.ObjectWrapper {
     const data = /** @type {!EventData} */ (event.data);
     this._addConsoleProfileMessage(
         cpuProfilerModel, MessageType.ProfileEnd, data.scriptLocation,
-        Common.UIString.UIString('Profile \'%s\' finished.', data.title));
+        i18nString(UIStrings.profileSFinished, {PH1: data.title}));
   }
 
   /**
@@ -467,7 +491,7 @@ export class ConsoleModel extends Common.ObjectWrapper.ObjectWrapper {
      * @param {?RemoteObject} result
      */
     function failedToSave(result) {
-      let message = Common.UIString.UIString('Failed to save to temp variable.');
+      let message = i18nString(UIStrings.failedToSaveToTempVariable);
       if (result) {
         message = /** @type {!Platform.UIString.LocalizedString} */ (message + ' ' + result.description);
       }

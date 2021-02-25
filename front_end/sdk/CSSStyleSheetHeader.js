@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
-import {ls} from '../platform/platform.js';
+import * as i18n from '../i18n/i18n.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 
 import {CSSModel} from './CSSModel.js';  // eslint-disable-line no-unused-vars
@@ -12,6 +12,18 @@ import {FrameAssociated} from './FrameAssociated.js';               // eslint-di
 import {PageResourceLoadInitiator} from './PageResourceLoader.js';  // eslint-disable-line no-unused-vars
 import {ResourceTreeModel} from './ResourceTreeModel.js';
 
+export const UIStrings = {
+  /**
+  *@description Error message for when a CSS file can't be loaded
+  */
+  couldNotFindTheOriginalStyle: 'Could not find the original style sheet.',
+  /**
+  *@description Error message to display when a source CSS file could not be retrieved.
+  */
+  thereWasAnErrorRetrievingThe: 'There was an error retrieving the source styles.',
+};
+const str_ = i18n.i18n.registerUIStrings('sdk/CSSStyleSheetHeader.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /**
  * @implements {TextUtils.ContentProvider.ContentProvider}
  * TODO(chromium:1011811): make `implements {FrameAssociated}` annotation work here.
@@ -55,7 +67,7 @@ export class CSSStyleSheetHeader {
         const originalText = await this._cssModel.originalStyleSheetText(this);
         // originalText might be an empty string which should not trigger the error
         if (originalText === null) {
-          return {content: null, error: ls`Could not find the original style sheet.`, isEncoded: false};
+          return {content: null, error: i18nString(UIStrings.couldNotFindTheOriginalStyle), isEncoded: false};
         }
         return {content: originalText, isEncoded: false};
       });
@@ -182,7 +194,7 @@ export class CSSStyleSheetHeader {
     } catch (err) {
       return {
         content: null,
-        error: ls`There was an error retrieving the source styles.`,
+        error: i18nString(UIStrings.thereWasAnErrorRetrievingThe),
         isEncoded: false,
       };
     }

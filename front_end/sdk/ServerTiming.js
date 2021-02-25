@@ -3,11 +3,49 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
-import {ls} from '../common/common.js';  // eslint-disable-line rulesdir/es_modules_import
+import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
 
 import {NameValue} from './NetworkRequest.js';  // eslint-disable-line no-unused-vars
 
+export const UIStrings = {
+  /**
+  *@description Text in Server Timing
+  */
+  deprecatedSyntaxFoundPleaseUse: 'Deprecated syntax found. Please use: <name>;dur=<duration>;desc=<description>',
+  /**
+  *@description Text in Server Timing
+  *@example {https} PH1
+  */
+  duplicateParameterSIgnored: 'Duplicate parameter "{PH1}" ignored.',
+  /**
+  *@description Text in Server Timing
+  *@example {https} PH1
+  */
+  noValueFoundForParameterS: 'No value found for parameter "{PH1}".',
+  /**
+  *@description Text in Server Timing
+  *@example {https} PH1
+  */
+  unrecognizedParameterS: 'Unrecognized parameter "{PH1}".',
+  /**
+  *@description Text in Server Timing
+  */
+  extraneousTrailingCharacters: 'Extraneous trailing characters.',
+  /**
+  *@description Text in Server Timing
+  *@example {https} PH1
+  *@example {2.0} PH2
+  */
+  unableToParseSValueS: 'Unable to parse "{PH1}" value "{PH2}".',
+  /**
+  *@description Text in Server Timing
+  *@example {Extraneous trailing characters.} PH1
+  */
+  servertimingS: 'ServerTiming: {PH1}',
+};
+const str_ = i18n.i18n.registerUIStrings('sdk/ServerTiming.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class ServerTiming {
   /**
@@ -123,7 +161,7 @@ export class ServerTiming {
       const entry = {name};
 
       if (valueString.charAt(0) === '=') {
-        this.showWarning(ls`Deprecated syntax found. Please use: <name>;dur=<duration>;desc=<description>`);
+        this.showWarning(i18nString(UIStrings.deprecatedSyntaxFoundPleaseUse));
       }
 
       while (consumeDelimiter(';')) {
@@ -144,18 +182,18 @@ export class ServerTiming {
         if (parseParameter) {
           // paramName is valid
           if (entry.hasOwnProperty(paramName)) {
-            this.showWarning(ls`Duplicate parameter "${paramName}" ignored.`);
+            this.showWarning(i18nString(UIStrings.duplicateParameterSIgnored, {PH1: paramName}));
             continue;
           }
 
           if (paramValue === null) {
-            this.showWarning(ls`No value found for parameter "${paramName}".`);
+            this.showWarning(i18nString(UIStrings.noValueFoundForParameterS, {PH1: paramName}));
           }
 
           parseParameter.call(this, entry, paramValue);
         } else {
           // paramName is not valid
-          this.showWarning(ls`Unrecognized parameter "${paramName}".`);
+          this.showWarning(i18nString(UIStrings.unrecognizedParameterS, {PH1: paramName}));
         }
       }
 
@@ -166,7 +204,7 @@ export class ServerTiming {
     }
 
     if (valueString.length) {
-      this.showWarning(ls`Extraneous trailing characters.`);
+      this.showWarning(i18nString(UIStrings.extraneousTrailingCharacters));
     }
     return result;
   }
@@ -187,7 +225,7 @@ export class ServerTiming {
           if (paramValue !== null) {
             const duration = parseFloat(paramValue);
             if (isNaN(duration)) {
-              ServerTiming.showWarning(ls`Unable to parse "${paramName}" value "${paramValue}".`);
+              ServerTiming.showWarning(i18nString(UIStrings.unableToParseSValueS, {PH1: paramName, PH2: paramValue}));
               return;
             }
             entry.dur = duration;
@@ -217,6 +255,6 @@ export class ServerTiming {
    * @param {string} msg
    */
   static showWarning(msg) {
-    Common.Console.Console.instance().warn(Common.UIString.UIString(`ServerTiming: ${msg}`));
+    Common.Console.Console.instance().warn(i18nString(UIStrings.servertimingS, {PH1: msg}));
   }
 }

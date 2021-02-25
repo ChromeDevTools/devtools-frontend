@@ -29,6 +29,7 @@
  */
 
 import * as Common from '../common/common.js';
+import * as i18n from '../i18n/i18n.js';
 
 import {DeferredDOMNode, DOMModel, DOMNode} from './DOMModel.js';  // eslint-disable-line no-unused-vars
 import {Events as NetworkManagerEvents, NetworkManager, RequestUpdateDroppedEventData} from './NetworkManager.js';  // eslint-disable-line no-unused-vars
@@ -38,6 +39,18 @@ import {ExecutionContext, RuntimeModel} from './RuntimeModel.js';
 import {Capability, SDKModel, Target, TargetManager} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 import {SecurityOriginManager} from './SecurityOriginManager.js';
 
+export const UIStrings = {
+  /**
+  *@description Title of Javascript context
+  */
+  top: '`top`',
+  /**
+  *@description Title of Javascript context
+  */
+  iframe: '`<iframe>`',
+};
+const str_ = i18n.i18n.registerUIStrings('sdk/ResourceTreeModel.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class ResourceTreeModel extends SDKModel {
   /**
    * @param {!Target} target
@@ -944,7 +957,7 @@ export class ResourceTreeFrame {
    */
   displayName() {
     if (this.isTopFrame()) {
-      return Common.UIString.UIString('top');
+      return i18nString(UIStrings.top);
     }
     const subtitle = new Common.ParsedURL.ParsedURL(this._url).displayName;
     if (subtitle) {
@@ -953,7 +966,7 @@ export class ResourceTreeFrame {
       }
       return this._name + ' (' + subtitle + ')';
     }
-    return Common.UIString.UIString('<iframe>');
+    return i18nString(UIStrings.iframe);
   }
 
   /**

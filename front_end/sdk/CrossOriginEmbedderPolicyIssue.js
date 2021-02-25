@@ -2,11 +2,23 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {ls} from '../common/common.js';  // eslint-disable-line rulesdir/es_modules_import
+import * as i18n from '../i18n/i18n.js';
 
-import {Issue, IssueCategory, IssueKind, MarkdownIssueDescription} from './Issue.js';  // eslint-disable-line no-unused-vars
+import {Issue, IssueCategory, IssueKind, LazyMarkdownIssueDescription, MarkdownIssueDescription, resolveLazyDescription} from './Issue.js';  // eslint-disable-line no-unused-vars
 import {IssuesModel} from './IssuesModel.js';  // eslint-disable-line no-unused-vars
 
+export const UIStrings = {
+  /**
+  *@description Link text for a link to external documentation
+  */
+  coopAndCoep: 'COOP and COEP',
+  /**
+  *@description Title for an external link to more information in the issues view
+  */
+  samesiteAndSameorigin: 'Same-Site and Same-Origin',
+};
+const str_ = i18n.i18n.registerUIStrings('sdk/CrossOriginEmbedderPolicyIssue.js', UIStrings);
+const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 /**
  * @param {!Protocol.Audits.BlockedByResponseReason} reason
  * @return {boolean}
@@ -74,15 +86,11 @@ export class CrossOriginEmbedderPolicyIssue extends Issue {
    * @returns {?MarkdownIssueDescription}
    */
   getDescription() {
-    const description = issueDescriptions.get(this.code());
-    if (!description) {
-      return null;
-    }
-    return description;
+    return resolveLazyDescription(issueDescriptions.get(this.code()));
   }
 }
 
-/** @type {!Map<string, !MarkdownIssueDescription>} */
+/** @type {!Map<string, !LazyMarkdownIssueDescription>} */
 const issueDescriptions = new Map([
   [
     'CrossOriginEmbedderPolicyIssue::CorpNotSameOriginAfterDefaultedToSameOriginByCoep', {
@@ -90,8 +98,8 @@ const issueDescriptions = new Map([
       substitutions: undefined,
       issueKind: IssueKind.BreakingChange,
       links: [
-        {link: 'https://web.dev/coop-coep/', linkTitle: ls`COOP and COEP`},
-        {link: 'https://web.dev/same-site-same-origin/', linkTitle: ls`Same-Site and Same-Origin`},
+        {link: 'https://web.dev/coop-coep/', linkTitle: i18nLazyString(UIStrings.coopAndCoep)},
+        {link: 'https://web.dev/same-site-same-origin/', linkTitle: i18nLazyString(UIStrings.samesiteAndSameorigin)},
       ],
     }
   ],
@@ -101,7 +109,7 @@ const issueDescriptions = new Map([
       substitutions: undefined,
       issueKind: IssueKind.BreakingChange,
       links: [
-        {link: 'https://web.dev/coop-coep/', linkTitle: ls`COOP and COEP`},
+        {link: 'https://web.dev/coop-coep/', linkTitle: i18nLazyString(UIStrings.coopAndCoep)},
       ],
     }
   ],
@@ -111,7 +119,7 @@ const issueDescriptions = new Map([
       substitutions: undefined,
       issueKind: IssueKind.BreakingChange,
       links: [
-        {link: 'https://web.dev/coop-coep/', linkTitle: ls`COOP and COEP`},
+        {link: 'https://web.dev/coop-coep/', linkTitle: i18nLazyString(UIStrings.coopAndCoep)},
       ],
     }
   ],
@@ -121,8 +129,8 @@ const issueDescriptions = new Map([
       substitutions: undefined,
       issueKind: IssueKind.BreakingChange,
       links: [
-        {link: 'https://web.dev/coop-coep/', linkTitle: ls`COOP and COEP`},
-        {link: 'https://web.dev/same-site-same-origin/', linkTitle: ls`Same-Site and Same-Origin`},
+        {link: 'https://web.dev/coop-coep/', linkTitle: i18nLazyString(UIStrings.coopAndCoep)},
+        {link: 'https://web.dev/same-site-same-origin/', linkTitle: i18nLazyString(UIStrings.samesiteAndSameorigin)},
       ],
     }
   ],
@@ -132,8 +140,8 @@ const issueDescriptions = new Map([
       substitutions: undefined,
       issueKind: IssueKind.BreakingChange,
       links: [
-        {link: 'https://web.dev/coop-coep/', linkTitle: ls`COOP and COEP`},
-        {link: 'https://web.dev/same-site-same-origin/', linkTitle: ls`Same-Site and Same-Origin`},
+        {link: 'https://web.dev/coop-coep/', linkTitle: i18nLazyString(UIStrings.coopAndCoep)},
+        {link: 'https://web.dev/same-site-same-origin/', linkTitle: i18nLazyString(UIStrings.samesiteAndSameorigin)},
       ],
     }
   ],

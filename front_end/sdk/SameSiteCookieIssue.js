@@ -4,13 +4,33 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
-import {ls} from '../platform/platform.js';
+import * as i18n from '../i18n/i18n.js';
 
 import {FrameManager} from './FrameManager.js';
-import {Issue, IssueCategory, IssueKind, MarkdownIssueDescription} from './Issue.js';  // eslint-disable-line no-unused-vars
-import {IssuesModel} from './IssuesModel.js';                                  // eslint-disable-line no-unused-vars
-import {ResourceTreeFrame} from './ResourceTreeModel.js';                      // eslint-disable-line no-unused-vars
+import {Issue, IssueCategory, IssueKind, LazyMarkdownIssueDescription, MarkdownIssueDescription, resolveLazyDescription} from './Issue.js';  // eslint-disable-line no-unused-vars
+import {IssuesModel} from './IssuesModel.js';              // eslint-disable-line no-unused-vars
+import {ResourceTreeFrame} from './ResourceTreeModel.js';  // eslint-disable-line no-unused-vars
 
+export const UIStrings = {
+  /**
+  *@description Label for the link for SameSiteCookies Issues
+  */
+  samesiteCookiesExplained: 'SameSite cookies explained',
+  /**
+  *@description Label for the link for Schemeful Same-Site Issues
+  */
+  howSchemefulSamesiteWorks: 'How Schemeful Same-Site Works',
+  /**
+  *@description Phase used to descript the security of a context
+  */
+  aSecure: 'a secure',
+  /**
+  *@description Phase used to descript the security of a context
+  */
+  anInsecure: 'an insecure',
+};
+const str_ = i18n.i18n.registerUIStrings('sdk/SameSiteCookieIssue.js', UIStrings);
+const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 export class SameSiteCookieIssue extends Issue {
   /**
    * @param {string} code
@@ -165,11 +185,7 @@ export class SameSiteCookieIssue extends Issue {
    * @returns {?MarkdownIssueDescription}
    */
   getDescription() {
-    const description = issueDescriptions.get(this.code());
-    if (!description) {
-      return null;
-    }
-    return description;
+    return resolveLazyDescription(issueDescriptions.get(this.code()));
   }
 
   /**
@@ -249,71 +265,87 @@ const sameSiteUnspecifiedErrorRead = {
   file: 'issues/descriptions/SameSiteUnspecifiedTreatedAsLaxRead.md',
   substitutions: undefined,
   issueKind: IssueKind.BreakingChange,
-  links: [{link: 'https://web.dev/samesite-cookies-explained/', linkTitle: ls`SameSite cookies explained`}],
+  links: [
+    {link: 'https://web.dev/samesite-cookies-explained/', linkTitle: i18nLazyString(UIStrings.samesiteCookiesExplained)}
+  ],
 };
 
 const sameSiteUnspecifiedErrorSet = {
   file: 'issues/descriptions/SameSiteUnspecifiedTreatedAsLaxSet.md',
   substitutions: undefined,
   issueKind: IssueKind.BreakingChange,
-  links: [{link: 'https://web.dev/samesite-cookies-explained/', linkTitle: ls`SameSite cookies explained`}],
+  links: [
+    {link: 'https://web.dev/samesite-cookies-explained/', linkTitle: i18nLazyString(UIStrings.samesiteCookiesExplained)}
+  ],
 };
 
 const sameSiteUnspecifiedWarnRead = {
   file: 'issues/descriptions/SameSiteUnspecifiedLaxAllowUnsafeRead.md',
   substitutions: undefined,
   issueKind: IssueKind.BreakingChange,
-  links: [{link: 'https://web.dev/samesite-cookies-explained/', linkTitle: ls`SameSite cookies explained`}],
+  links: [
+    {link: 'https://web.dev/samesite-cookies-explained/', linkTitle: i18nLazyString(UIStrings.samesiteCookiesExplained)}
+  ],
 };
 
 const sameSiteUnspecifiedWarnSet = {
   file: 'issues/descriptions/SameSiteUnspecifiedLaxAllowUnsafeSet.md',
   substitutions: undefined,
   issueKind: IssueKind.BreakingChange,
-  links: [{link: 'https://web.dev/samesite-cookies-explained/', linkTitle: ls`SameSite cookies explained`}],
+  links: [
+    {link: 'https://web.dev/samesite-cookies-explained/', linkTitle: i18nLazyString(UIStrings.samesiteCookiesExplained)}
+  ],
 };
 
 const sameSiteNoneInsecureErrorRead = {
   file: 'issues/descriptions/SameSiteNoneInsecureErrorRead.md',
   substitutions: undefined,
   issueKind: IssueKind.BreakingChange,
-  links: [{link: 'https://web.dev/samesite-cookies-explained/', linkTitle: ls`SameSite cookies explained`}],
+  links: [
+    {link: 'https://web.dev/samesite-cookies-explained/', linkTitle: i18nLazyString(UIStrings.samesiteCookiesExplained)}
+  ],
 };
 
 const sameSiteNoneInsecureErrorSet = {
   file: 'issues/descriptions/SameSiteNoneInsecureErrorSet.md',
   substitutions: undefined,
   issueKind: IssueKind.BreakingChange,
-  links: [{link: 'https://web.dev/samesite-cookies-explained/', linkTitle: ls`SameSite cookies explained`}],
+  links: [
+    {link: 'https://web.dev/samesite-cookies-explained/', linkTitle: i18nLazyString(UIStrings.samesiteCookiesExplained)}
+  ],
 };
 
 const sameSiteNoneInsecureWarnRead = {
   file: 'issues/descriptions/SameSiteNoneInsecureWarnRead.md',
   substitutions: undefined,
   issueKind: IssueKind.BreakingChange,
-  links: [{link: 'https://web.dev/samesite-cookies-explained/', linkTitle: ls`SameSite cookies explained`}],
+  links: [
+    {link: 'https://web.dev/samesite-cookies-explained/', linkTitle: i18nLazyString(UIStrings.samesiteCookiesExplained)}
+  ],
 };
 
 const sameSiteNoneInsecureWarnSet = {
   file: 'issues/descriptions/SameSiteNoneInsecureWarnSet.md',
   substitutions: undefined,
   issueKind: IssueKind.BreakingChange,
-  links: [{link: 'https://web.dev/samesite-cookies-explained/', linkTitle: ls`SameSite cookies explained`}],
+  links: [
+    {link: 'https://web.dev/samesite-cookies-explained/', linkTitle: i18nLazyString(UIStrings.samesiteCookiesExplained)}
+  ],
 };
 
 /**
- * @type {!Array<!{link: string, linkTitle: string}>}
+ * @type {!Array<!{link: string, linkTitle: () => string}>}
  */
 const schemefulSameSiteArticles =
-    [{link: 'https://web.dev/schemeful-samesite/', linkTitle: ls`How Schemeful Same-Site Works`}];
+    [{link: 'https://web.dev/schemeful-samesite/', linkTitle: i18nLazyString(UIStrings.howSchemefulSamesiteWorks)}];
 
 /**
  * @param {boolean} isSecure
  */
 function sameSiteWarnStrictLaxDowngradeStrict(isSecure) {
   const substitutions = new Map([
-    ['PLACEHOLDER_destination', isSecure ? ls`a secure` : ls`an insecure`],
-    ['PLACEHOLDER_origin', !isSecure ? ls`a secure` : ls`an insecure`],
+    ['PLACEHOLDER_destination', isSecure ? i18nLazyString(UIStrings.aSecure) : i18nLazyString(UIStrings.anInsecure)],
+    ['PLACEHOLDER_origin', !isSecure ? i18nLazyString(UIStrings.aSecure) : i18nLazyString(UIStrings.anInsecure)],
   ]);
   return {
     file: 'issues/descriptions/SameSiteWarnStrictLaxDowngradeStrict.md',
@@ -328,8 +360,8 @@ function sameSiteWarnStrictLaxDowngradeStrict(isSecure) {
  */
 function sameSiteExcludeNavigationContextDowngrade(isSecure) {
   const substitutions = new Map([
-    ['PLACEHOLDER_destination', isSecure ? ls`a secure` : ls`an insecure`],
-    ['PLACEHOLDER_origin', !isSecure ? ls`a secure` : ls`an insecure`],
+    ['PLACEHOLDER_destination', isSecure ? i18nLazyString(UIStrings.aSecure) : i18nLazyString(UIStrings.anInsecure)],
+    ['PLACEHOLDER_origin', !isSecure ? i18nLazyString(UIStrings.aSecure) : i18nLazyString(UIStrings.anInsecure)],
   ]);
   return {
     file: 'issues/descriptions/SameSiteExcludeNavigationContextDowngrade.md',
@@ -344,8 +376,8 @@ function sameSiteExcludeNavigationContextDowngrade(isSecure) {
  */
 function sameSiteWarnCrossDowngradeRead(isSecure) {
   const substitutions = new Map([
-    ['PLACEHOLDER_destination', isSecure ? ls`a secure` : ls`an insecure`],
-    ['PLACEHOLDER_origin', !isSecure ? ls`a secure` : ls`an insecure`],
+    ['PLACEHOLDER_destination', isSecure ? i18nLazyString(UIStrings.aSecure) : i18nLazyString(UIStrings.anInsecure)],
+    ['PLACEHOLDER_origin', !isSecure ? i18nLazyString(UIStrings.aSecure) : i18nLazyString(UIStrings.anInsecure)],
   ]);
   return {
     file: 'issues/descriptions/SameSiteWarnCrossDowngradeRead.md',
@@ -360,8 +392,8 @@ function sameSiteWarnCrossDowngradeRead(isSecure) {
  */
 function sameSiteExcludeContextDowngradeRead(isSecure) {
   const substitutions = new Map([
-    ['PLACEHOLDER_destination', isSecure ? ls`a secure` : ls`an insecure`],
-    ['PLACEHOLDER_origin', !isSecure ? ls`a secure` : ls`an insecure`],
+    ['PLACEHOLDER_destination', isSecure ? i18nLazyString(UIStrings.aSecure) : i18nLazyString(UIStrings.anInsecure)],
+    ['PLACEHOLDER_origin', !isSecure ? i18nLazyString(UIStrings.aSecure) : i18nLazyString(UIStrings.anInsecure)],
   ]);
   return {
     file: 'issues/descriptions/SameSiteExcludeContextDowngradeRead.md',
@@ -376,8 +408,8 @@ function sameSiteExcludeContextDowngradeRead(isSecure) {
  */
 function sameSiteWarnCrossDowngradeSet(isSecure) {
   const substitutions = new Map([
-    ['PLACEHOLDER_ORIGIN', isSecure ? ls`a secure` : ls`an insecure`],
-    ['PLACEHOLDER_DESTINATION', !isSecure ? ls`a secure` : ls`an insecure`],
+    ['PLACEHOLDER_ORIGIN', isSecure ? i18nLazyString(UIStrings.aSecure) : i18nLazyString(UIStrings.anInsecure)],
+    ['PLACEHOLDER_DESTINATION', !isSecure ? i18nLazyString(UIStrings.aSecure) : i18nLazyString(UIStrings.anInsecure)],
   ]);
   return {
     file: 'issues/descriptions/SameSiteWarnCrossDowngradeSet.md',
@@ -389,12 +421,12 @@ function sameSiteWarnCrossDowngradeSet(isSecure) {
 
 /**
  * @param {boolean} isSecure
- * @return {!MarkdownIssueDescription}
+ * @return {!LazyMarkdownIssueDescription}
  */
 function sameSiteExcludeContextDowngradeSet(isSecure) {
   const substitutions = new Map([
-    ['PLACEHOLDER_destination', isSecure ? ls`a secure` : ls`an insecure`],
-    ['PLACEHOLDER_origin', !isSecure ? ls`a secure` : ls`an insecure`],
+    ['PLACEHOLDER_destination', isSecure ? i18nLazyString(UIStrings.aSecure) : i18nLazyString(UIStrings.anInsecure)],
+    ['PLACEHOLDER_origin', !isSecure ? i18nLazyString(UIStrings.aSecure) : i18nLazyString(UIStrings.anInsecure)],
   ]);
   return {
     file: 'issues/descriptions/SameSiteExcludeContextDowngradeSet.md',
@@ -404,7 +436,7 @@ function sameSiteExcludeContextDowngradeSet(isSecure) {
   };
 }
 
-/** @type {!Map<string, !MarkdownIssueDescription>} */
+/** @type {!Map<string, !LazyMarkdownIssueDescription>} */
 const issueDescriptions = new Map([
   ['SameSiteCookieIssue::ExcludeSameSiteUnspecifiedTreatedAsLax::ReadCookie', sameSiteUnspecifiedErrorRead],
   ['SameSiteCookieIssue::ExcludeSameSiteUnspecifiedTreatedAsLax::SetCookie', sameSiteUnspecifiedErrorSet],

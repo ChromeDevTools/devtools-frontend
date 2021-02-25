@@ -29,13 +29,29 @@
  */
 
 import * as Common from '../common/common.js';
+import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
-import {ls} from '../platform/platform.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 
 import {CompilerSourceMappingContentProvider} from './CompilerSourceMappingContentProvider.js';
 import {PageResourceLoader, PageResourceLoadInitiator} from './PageResourceLoader.js';  // eslint-disable-line no-unused-vars
 
+export const UIStrings = {
+  /**
+  *@description Error message when failing to load a source map text via the network
+  *@example {https://example.com/sourcemap.map} PH1
+  *@example {A certificate error occurred} PH2
+  */
+  couldNotLoadContentForSS: 'Could not load content for {PH1}: {PH2}',
+  /**
+  *@description Error message when failing to load a script source text via the network
+  *@example {https://example.com} PH1
+  *@example {Unexpected token} PH2
+  */
+  couldNotParseContentForSS: 'Could not parse content for {PH1}: {PH2}',
+};
+const str_ = i18n.i18n.registerUIStrings('sdk/SourceMap.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /**
  * @interface
  */
@@ -248,14 +264,14 @@ export class TextSourceMap {
         updatedContent = content.substring(content.indexOf('\n'));
       }
     } catch (error) {
-      throw new Error(ls`Could not load content for ${sourceMapURL}: ${error.message}`);
+      throw new Error(i18nString(UIStrings.couldNotLoadContentForSS, {PH1: sourceMapURL, PH2: error.message}));
     }
 
     try {
       const payload = /** @type {!SourceMapV3} */ (JSON.parse(updatedContent));
       return new TextSourceMap(compiledURL, sourceMapURL, payload, initiator);
     } catch (error) {
-      throw new Error(ls`Could not parse content for ${sourceMapURL}: ${error.message}`);
+      throw new Error(i18nString(UIStrings.couldNotParseContentForSS, {PH1: sourceMapURL, PH2: error.message}));
     }
   }
 
@@ -455,7 +471,7 @@ export class TextSourceMap {
       let url = Common.ParsedURL.ParsedURL.completeURL(this._baseURL, href) || href;
       const source = sourceMap.sourcesContent && sourceMap.sourcesContent[i];
       if (url === this._compiledURL && source) {
-        url += Common.UIString.UIString('? [sm]');
+        url += '? [sm]';
       }
       this._sourceInfos.set(url, new TextSourceMap.SourceInfo(source || null, null));
       sourcesList.push(url);

@@ -3,8 +3,8 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
-import {ls} from '../common/common.js';   // eslint-disable-line rulesdir/es_modules_import
 import * as Host from '../host/host.js';  // eslint-disable-line no-unused-vars
+import * as i18n from '../i18n/i18n.js';
 
 import {FrameManager} from './FrameManager.js';
 import {IOModel} from './IOModel.js';
@@ -13,6 +13,18 @@ import {NetworkManager} from './NetworkManager.js';
 import {Events as ResourceTreeModelEvents, ResourceTreeFrame, ResourceTreeModel} from './ResourceTreeModel.js';  // eslint-disable-line no-unused-vars
 import {Target, TargetManager} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 
+export const UIStrings = {
+  /**
+  *@description Error message for canceled source map loads
+  */
+  loadCanceledDueToReloadOf: 'Load canceled due to reload of inspected page',
+  /**
+  *@description Error message for canceled source map loads
+  */
+  loadCanceledDueToLoadTimeout: 'Load canceled due to load timeout',
+};
+const str_ = i18n.i18n.registerUIStrings('sdk/PageResourceLoader.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 /** @typedef {{target: null, frameId: Protocol.Page.FrameId, initiatorUrl: ?string}|{target: Target, frameId: ?Protocol.Page.FrameId, initiatorUrl: ?string}} */
 // @ts-ignore typedef
@@ -76,7 +88,7 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper {
       return;
     }
     for (const {reject} of this._queuedLoads) {
-      reject(new Error(ls`Load canceled due to reload of inspected page`));
+      reject(new Error(i18nString(UIStrings.loadCanceledDueToReloadOf)));
     }
     this._queuedLoads = [];
     this._pageResources.clear();
@@ -126,8 +138,8 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper {
    */
   static async _withTimeout(promise, timeout) {
     /** @type {!Promise<T>} */
-    const timeoutPromise =
-        new Promise((_, reject) => setTimeout(reject, timeout, new Error(ls`Load canceled due to load timeout`)));
+    const timeoutPromise = new Promise(
+        (_, reject) => setTimeout(reject, timeout, new Error(i18nString(UIStrings.loadCanceledDueToLoadTimeout))));
     return Promise.race([promise, timeoutPromise]);
   }
 

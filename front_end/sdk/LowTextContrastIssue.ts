@@ -2,11 +2,19 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {ls} from '../common/common.js';  // eslint-disable-line rulesdir/es_modules_import
+import * as i18n from '../i18n/i18n.js';
 
 import {Issue, IssueCategory, IssueKind} from './Issue.js';
 import type {MarkdownIssueDescription} from './Issue.js';
 
+export const UIStrings = {
+  /**
+  *@description Link title for the Low Text Contrast issue in the Issues panel
+  */
+  colorAndContrastAccessibility: 'Color and contrast accessibility',
+};
+const str_ = i18n.i18n.registerUIStrings('sdk/LowTextContrastIssue.ts', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class LowTextContrastIssue extends Issue {
   private issueDetails: Protocol.Audits.LowTextContrastIssueDetails;
 
@@ -35,7 +43,10 @@ export class LowTextContrastIssue extends Issue {
       substitutions: undefined,
       issueKind: IssueKind.BreakingChange,
       links: [
-        {link: 'https://web.dev/color-and-contrast-accessibility/', linkTitle: ls`Color and contrast accessibility`},
+        {
+          link: 'https://web.dev/color-and-contrast-accessibility/',
+          linkTitle: i18nString(UIStrings.colorAndContrastAccessibility),
+        },
       ],
     };
   }

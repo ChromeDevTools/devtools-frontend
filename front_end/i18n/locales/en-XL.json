@@ -6893,6 +6893,729 @@
   "screencast/ScreencastView.ts | theTabIsInactive": {
     "message": "T̂h́ê t́âb́ îś îńâćt̂ív̂é"
   },
+  "sdk/CompilerSourceMappingContentProvider.js | couldNotLoadContentForSS": {
+    "message": "Ĉóûĺd̂ ńôt́ l̂óâd́ ĉón̂t́êńt̂ f́ôŕ {PH1} ({PH2})"
+  },
+  "sdk/ConsoleModel.js | failedToSaveToTempVariable": {
+    "message": "F̂áîĺêd́ t̂ó ŝáv̂é t̂ó t̂ém̂ṕ v̂ár̂íâb́l̂é."
+  },
+  "sdk/ConsoleModel.js | navigatedToS": {
+    "message": "N̂áv̂íĝát̂éd̂ t́ô {PH1}"
+  },
+  "sdk/ConsoleModel.js | profileSFinished": {
+    "message": "P̂ŕôf́îĺê '{PH1}' f́îńîśĥéd̂."
+  },
+  "sdk/ConsoleModel.js | profileSStarted": {
+    "message": "P̂ŕôf́îĺê '{PH1}' śt̂ár̂t́êd́."
+  },
+  "sdk/ContentSecurityPolicyIssue.js | contentSecurityPolicyEval": {
+    "message": "Ĉón̂t́êńt̂ Śêćûŕît́ŷ Ṕôĺîćŷ - Év̂ál̂"
+  },
+  "sdk/ContentSecurityPolicyIssue.js | contentSecurityPolicyInlineCode": {
+    "message": "Ĉón̂t́êńt̂ Śêćûŕît́ŷ Ṕôĺîćŷ - Ín̂ĺîńê Ćôd́ê"
+  },
+  "sdk/ContentSecurityPolicyIssue.js | contentSecurityPolicySource": {
+    "message": "Ĉón̂t́êńt̂ Śêćûŕît́ŷ Ṕôĺîćŷ - Śôúr̂ćê Ál̂ĺôẃl̂íŝt́ŝ"
+  },
+  "sdk/ContentSecurityPolicyIssue.js | trustedTypesFixViolations": {
+    "message": "T̂ŕûśt̂éd̂ T́ŷṕêś - F̂íx̂ v́îól̂át̂íôńŝ"
+  },
+  "sdk/ContentSecurityPolicyIssue.js | trustedTypesPolicyViolation": {
+    "message": "T̂ŕûśt̂éd̂ T́ŷṕêś - P̂ól̂íĉý v̂íôĺât́îón̂"
+  },
+  "sdk/CorsIssue.ts | corsForPrivateNetworksRfc": {
+    "message": "ĈÓR̂Ś f̂ór̂ ṕr̂ív̂át̂é n̂ét̂ẃôŕk̂ś (R̂F́Ĉ1918)"
+  },
+  "sdk/CPUProfileDataModel.js | devtoolsCpuProfileParserIsFixing": {
+    "message": "D̂év̂T́ôól̂ś: ĈṔÛ ṕr̂óf̂íl̂é p̂ár̂śêŕ îś f̂íx̂ín̂ǵ {PH1} m̂íŝśîńĝ śâḿp̂ĺêś."
+  },
+  "sdk/CPUProfilerModel.js | profileD": {
+    "message": "P̂ŕôf́îĺê {PH1}"
+  },
+  "sdk/CrossOriginEmbedderPolicyIssue.js | coopAndCoep": {
+    "message": "ĈÓÔṔ âńd̂ ĆÔÉP̂"
+  },
+  "sdk/CrossOriginEmbedderPolicyIssue.js | samesiteAndSameorigin": {
+    "message": "Ŝám̂é-Ŝít̂é âńd̂ Śâḿê-Ór̂íĝín̂"
+  },
+  "sdk/CSSStyleSheetHeader.js | couldNotFindTheOriginalStyle": {
+    "message": "Ĉóûĺd̂ ńôt́ f̂ín̂d́ t̂h́ê ór̂íĝín̂ál̂ śt̂ýl̂é ŝh́êét̂."
+  },
+  "sdk/CSSStyleSheetHeader.js | thereWasAnErrorRetrievingThe": {
+    "message": "T̂h́êŕê ẃâś âń êŕr̂ór̂ ŕêt́r̂íêv́îńĝ t́ĥé ŝóûŕĉé ŝt́ŷĺêś."
+  },
+  "sdk/DebuggerModel.js | block": {
+    "message": "B̂ĺôćk̂"
+  },
+  "sdk/DebuggerModel.js | catch": {
+    "message": "Ĉát̂ćĥ"
+  },
+  "sdk/DebuggerModel.js | closure": {
+    "message": "Ĉĺôśûŕê"
+  },
+  "sdk/DebuggerModel.js | global": {
+    "message": "Ĝĺôb́âĺ"
+  },
+  "sdk/DebuggerModel.js | local": {
+    "message": "L̂óĉál̂"
+  },
+  "sdk/DebuggerModel.js | module": {
+    "message": "M̂ód̂úl̂é"
+  },
+  "sdk/DebuggerModel.js | script": {
+    "message": "Ŝćr̂íp̂t́"
+  },
+  "sdk/DebuggerModel.js | stack": {
+    "message": "Ŝt́âćk̂"
+  },
+  "sdk/DebuggerModel.js | withBlock": {
+    "message": "Ŵít̂h́ B̂ĺôćk̂"
+  },
+  "sdk/DOMDebuggerModel.js | animation": {
+    "message": "Âńîḿât́îón̂"
+  },
+  "sdk/DOMDebuggerModel.js | animationFrameFired": {
+    "message": "Âńîḿât́îón̂ F́r̂ám̂é F̂ír̂éd̂"
+  },
+  "sdk/DOMDebuggerModel.js | cancelAnimationFrame": {
+    "message": "Ĉán̂ćêĺ Âńîḿât́îón̂ F́r̂ám̂é"
+  },
+  "sdk/DOMDebuggerModel.js | canvas": {
+    "message": "Ĉán̂v́âś"
+  },
+  "sdk/DOMDebuggerModel.js | clipboard": {
+    "message": "Ĉĺîṕb̂óâŕd̂"
+  },
+  "sdk/DOMDebuggerModel.js | closeAudiocontext": {
+    "message": "Ĉĺôśê Áûd́îóĈón̂t́êx́t̂"
+  },
+  "sdk/DOMDebuggerModel.js | control": {
+    "message": "Ĉón̂t́r̂ól̂"
+  },
+  "sdk/DOMDebuggerModel.js | createAudiocontext": {
+    "message": "Ĉŕêát̂é Âúd̂íôĆôńt̂éx̂t́"
+  },
+  "sdk/DOMDebuggerModel.js | createCanvasContext": {
+    "message": "Ĉŕêát̂é ĉán̂v́âś ĉón̂t́êx́t̂"
+  },
+  "sdk/DOMDebuggerModel.js | device": {
+    "message": "D̂év̂íĉé"
+  },
+  "sdk/DOMDebuggerModel.js | domMutation": {
+    "message": "D̂ÓM̂ Ḿût́ât́îón̂"
+  },
+  "sdk/DOMDebuggerModel.js | dragDrop": {
+    "message": "D̂ŕâǵ / d̂ŕôṕ"
+  },
+  "sdk/DOMDebuggerModel.js | geolocation": {
+    "message": "Ĝéôĺôćât́îón̂"
+  },
+  "sdk/DOMDebuggerModel.js | keyboard": {
+    "message": "K̂éŷb́ôár̂d́"
+  },
+  "sdk/DOMDebuggerModel.js | load": {
+    "message": "L̂óâd́"
+  },
+  "sdk/DOMDebuggerModel.js | media": {
+    "message": "M̂éd̂íâ"
+  },
+  "sdk/DOMDebuggerModel.js | mouse": {
+    "message": "M̂óûśê"
+  },
+  "sdk/DOMDebuggerModel.js | notification": {
+    "message": "N̂ót̂íf̂íĉát̂íôń"
+  },
+  "sdk/DOMDebuggerModel.js | parse": {
+    "message": "P̂ár̂śê"
+  },
+  "sdk/DOMDebuggerModel.js | pictureinpicture": {
+    "message": "P̂íĉt́ûŕê-ín̂-Ṕîćt̂úr̂é"
+  },
+  "sdk/DOMDebuggerModel.js | pointer": {
+    "message": "P̂óîńt̂ér̂"
+  },
+  "sdk/DOMDebuggerModel.js | policyViolations": {
+    "message": "P̂ól̂íĉý V̂íôĺât́îón̂ś"
+  },
+  "sdk/DOMDebuggerModel.js | requestAnimationFrame": {
+    "message": "R̂éq̂úêśt̂ Án̂ím̂át̂íôń F̂ŕâḿê"
+  },
+  "sdk/DOMDebuggerModel.js | resumeAudiocontext": {
+    "message": "R̂éŝúm̂é Âúd̂íôĆôńt̂éx̂t́"
+  },
+  "sdk/DOMDebuggerModel.js | script": {
+    "message": "Ŝćr̂íp̂t́"
+  },
+  "sdk/DOMDebuggerModel.js | scriptBlockedByContentSecurity": {
+    "message": "Ŝćr̂íp̂t́ B̂ĺôćk̂éd̂ b́ŷ Ćôńt̂én̂t́ Ŝéĉúr̂ít̂ý P̂ól̂íĉý"
+  },
+  "sdk/DOMDebuggerModel.js | scriptBlockedDueToContent": {
+    "message": "Ŝćr̂íp̂t́ b̂ĺôćk̂éd̂ d́ûé t̂ó Ĉón̂t́êńt̂ Śêćûŕît́ŷ Ṕôĺîćŷ d́îŕêćt̂ív̂é: {PH1}"
+  },
+  "sdk/DOMDebuggerModel.js | scriptFirstStatement": {
+    "message": "Ŝćr̂íp̂t́ F̂ír̂śt̂ Śt̂át̂ém̂én̂t́"
+  },
+  "sdk/DOMDebuggerModel.js | setInnerhtml": {
+    "message": "Ŝét̂ ín̂ńêŕĤT́M̂Ĺ"
+  },
+  "sdk/DOMDebuggerModel.js | setintervalFired": {
+    "message": "ŝét̂Ín̂t́êŕv̂ál̂ f́îŕêd́"
+  },
+  "sdk/DOMDebuggerModel.js | settimeoutFired": {
+    "message": "ŝét̂T́îḿêóût́ f̂ír̂éd̂"
+  },
+  "sdk/DOMDebuggerModel.js | sinkViolations": {
+    "message": "Ŝín̂ḱ V̂íôĺât́îón̂ś"
+  },
+  "sdk/DOMDebuggerModel.js | suspendAudiocontext": {
+    "message": "Ŝúŝṕêńd̂ Áûd́îóĈón̂t́êx́t̂"
+  },
+  "sdk/DOMDebuggerModel.js | timer": {
+    "message": "T̂ím̂ér̂"
+  },
+  "sdk/DOMDebuggerModel.js | touch": {
+    "message": "T̂óûćĥ"
+  },
+  "sdk/DOMDebuggerModel.js | trustedTypeViolations": {
+    "message": "T̂ŕûśt̂éd̂ T́ŷṕê V́îól̂át̂íôńŝ"
+  },
+  "sdk/DOMDebuggerModel.js | webaudio": {
+    "message": "Ŵéb̂Áûd́îó"
+  },
+  "sdk/DOMDebuggerModel.js | webglErrorFired": {
+    "message": "Ŵéb̂ǴL̂ Ér̂ŕôŕ F̂ír̂éd̂"
+  },
+  "sdk/DOMDebuggerModel.js | webglErrorFiredS": {
+    "message": "Ŵéb̂ǴL̂ Ér̂ŕôŕ F̂ír̂éd̂ ({PH1})"
+  },
+  "sdk/DOMDebuggerModel.js | webglWarningFired": {
+    "message": "Ŵéb̂ǴL̂ Ẃâŕn̂ín̂ǵ F̂ír̂éd̂"
+  },
+  "sdk/DOMDebuggerModel.js | window": {
+    "message": "Ŵín̂d́ôẃ"
+  },
+  "sdk/DOMDebuggerModel.js | xhr": {
+    "message": "X̂H́R̂"
+  },
+  "sdk/HeavyAdIssue.js | handlingHeavyAdInterventions": {
+    "message": "Ĥán̂d́l̂ín̂ǵ Ĥéâv́ŷ Ád̂ Ín̂t́êŕv̂én̂t́îón̂ś"
+  },
+  "sdk/LowTextContrastIssue.ts | colorAndContrastAccessibility": {
+    "message": "Ĉól̂ór̂ án̂d́ ĉón̂t́r̂áŝt́ âćĉéŝśîb́îĺît́ŷ"
+  },
+  "sdk/MixedContentIssue.js | automaticallyUpgraded": {
+    "message": "âút̂óm̂át̂íĉál̂ĺŷ úp̂ǵr̂ád̂éd̂"
+  },
+  "sdk/MixedContentIssue.js | blocked": {
+    "message": "b̂ĺôćk̂éd̂"
+  },
+  "sdk/MixedContentIssue.js | preventingMixedContent": {
+    "message": "P̂ŕêv́êńt̂ín̂ǵ m̂íx̂éd̂ ćôńt̂én̂t́"
+  },
+  "sdk/MixedContentIssue.js | warned": {
+    "message": "ŵár̂ńêd́"
+  },
+  "sdk/NetworkLog.js | anonymous": {
+    "message": "<âńôńŷḿôúŝ>"
+  },
+  "sdk/NetworkLog.js | considerDisablingSWhileDebugging": {
+    "message": "Ĉón̂śîd́êŕ d̂íŝáb̂ĺîńĝ {PH1} ẃĥíl̂é d̂éb̂úĝǵîńĝ. F́ôŕ m̂ór̂é îńf̂ó ŝéê: {PH2}"
+  },
+  "sdk/NetworkManager.js | crossoriginReadBlockingCorb": {
+    "message": "Ĉŕôśŝ-Ór̂íĝín̂ Ŕêád̂ B́l̂óĉḱîńĝ (ĆÔŔB̂) b́l̂óĉḱêd́ ĉŕôśŝ-ór̂íĝín̂ ŕêśp̂ón̂śê {PH1} ẃît́ĥ ḾÎḾÊ t́ŷṕê {PH2}. Śêé ĥt́t̂ṕŝ://ẃŵẃ.ĉh́r̂óm̂éŝt́ât́ûś.ĉóm̂/f́êát̂úr̂é/5629709824032768 f̂ór̂ ḿôŕê d́êt́âíl̂ś."
+  },
+  "sdk/NetworkManager.js | requestWasBlockedByDevtoolsS": {
+    "message": "R̂éq̂úêśt̂ ẃâś b̂ĺôćk̂éd̂ b́ŷ D́êv́T̂óôĺŝ: \"{PH1}\""
+  },
+  "sdk/NetworkManager.js | resourceInterpretedAsSBut": {
+    "message": "R̂éŝóûŕĉé îńt̂ér̂ṕr̂ét̂éd̂ áŝ {PH1} b́ût́ t̂ŕâńŝf́êŕr̂éd̂ ẃît́ĥ ḾÎḾÊ t́ŷṕê {PH2}: \"{PH3}\"."
+  },
+  "sdk/NetworkManager.js | setcookieHeaderIsIgnoredIn": {
+    "message": "Ŝét̂-Ćôók̂íê h́êád̂ér̂ íŝ íĝńôŕêd́ îń r̂éŝṕôńŝé f̂ŕôḿ ûŕl̂: {PH1}. Ćôók̂íê ĺêńĝt́ĥ śĥóûĺd̂ b́ê ĺêśŝ t́ĥán̂ ór̂ éq̂úâĺ t̂ó 4096 ĉh́âŕâćt̂ér̂ś."
+  },
+  "sdk/NetworkManager.js | sFailedLoadingSS": {
+    "message": "{PH1} f̂áîĺêd́ l̂óâd́îńĝ: {PH2} \"{PH3}\"."
+  },
+  "sdk/NetworkManager.js | sFinishedLoadingSS": {
+    "message": "{PH1} f̂ín̂íŝh́êd́ l̂óâd́îńĝ: {PH2} \"{PH3}\"."
+  },
+  "sdk/NetworkRequest.js | anUnknownErrorWasEncounteredWhenTrying": {
+    "message": "Âń ûńk̂ńôẃn̂ ér̂ŕôŕ ŵáŝ én̂ćôún̂t́êŕêd́ ŵh́êń t̂ŕŷín̂ǵ t̂ó ŝt́ôŕê t́ĥíŝ ćôók̂íê."
+  },
+  "sdk/NetworkRequest.js | binary": {
+    "message": "(b̂ín̂ár̂ý)"
+  },
+  "sdk/NetworkRequest.js | blockedReasonInvalidDomain": {
+    "message": "T̂h́îś Ŝét̂-Ćôók̂íê ẃâś b̂ĺôćk̂éd̂ b́êćâúŝé ît́ŝ D́ôḿâín̂ át̂t́r̂íb̂út̂é ŵáŝ ín̂v́âĺîd́ ŵít̂h́ r̂éĝár̂d́ŝ t́ô t́ĥé ĉúr̂ŕêńt̂ h́ôśt̂ úr̂ĺ."
+  },
+  "sdk/NetworkRequest.js | blockedReasonInvalidPrefix": {
+    "message": "T̂h́îś Ŝét̂-Ćôók̂íê ẃâś b̂ĺôćk̂éd̂ b́êćâúŝé ît́ ûśêd́ t̂h́ê \"__Śêćûŕê-\" ór̂ \"__H́ôśt̂-\" ṕr̂éf̂íx̂ ín̂ ít̂ś n̂ám̂é âńd̂ b́r̂ók̂é t̂h́ê ád̂d́ît́îón̂ál̂ ŕûĺêś âṕp̂ĺîéd̂ t́ô ćôók̂íêś ŵít̂h́ t̂h́êśê ṕr̂éf̂íx̂éŝ áŝ d́êf́îńêd́ îń ĥt́t̂ṕŝ://t́ôól̂ś.îét̂f́.ôŕĝ/h́t̂ḿl̂/d́r̂áf̂t́-ŵéŝt́-ĉóôḱîé-p̂ŕêf́îx́êś-05."
+  },
+  "sdk/NetworkRequest.js | blockedReasonOverwriteSecure": {
+    "message": "T̂h́îś Ŝét̂-Ćôók̂íê ẃâś b̂ĺôćk̂éd̂ b́êćâúŝé ît́ ŵáŝ ńôt́ ŝén̂t́ ôv́êŕ â śêćûŕê ćôńn̂éĉt́îón̂ án̂d́ ŵóûĺd̂ h́âv́ê óv̂ér̂ẃr̂ít̂t́êń â ćôók̂íê ẃît́ĥ t́ĥé Ŝéĉúr̂é ât́t̂ŕîb́ût́ê."
+  },
+  "sdk/NetworkRequest.js | blockedReasonSameSiteLax": {
+    "message": "T̂h́îś Ŝét̂-Ćôók̂íê ẃâś b̂ĺôćk̂éd̂ b́êćâúŝé ît́ ĥád̂ t́ĥé \"Ŝám̂éŜít̂é=L̂áx̂\" át̂t́r̂íb̂út̂é b̂út̂ ćâḿê f́r̂óm̂ á ĉŕôśŝ-śît́ê ŕêśp̂ón̂śê ẃĥíĉh́ ŵáŝ ńôt́ t̂h́ê ŕêśp̂ón̂śê t́ô á t̂óp̂-ĺêv́êĺ n̂áv̂íĝát̂íôń."
+  },
+  "sdk/NetworkRequest.js | blockedReasonSameSiteNoneInsecure": {
+    "message": "T̂h́îś Ŝét̂-Ćôók̂íê ẃâś b̂ĺôćk̂éd̂ b́êćâúŝé ît́ ĥád̂ t́ĥé \"Ŝám̂éŜít̂é=N̂ón̂é\" ât́t̂ŕîb́ût́ê b́ût́ d̂íd̂ ńôt́ ĥáv̂é t̂h́ê \"Śêćûŕê\" át̂t́r̂íb̂út̂é, ŵh́îćĥ íŝ ŕêq́ûír̂éd̂ ín̂ ór̂d́êŕ t̂ó ûśê \"ŚâḿêŚît́ê=Ńôńê\"."
+  },
+  "sdk/NetworkRequest.js | blockedReasonSameSiteStrict": {
+    "message": "T̂h́îś Ŝét̂-Ćôók̂íê ẃâś b̂ĺôćk̂éd̂ b́êćâúŝé ît́ ĥád̂ t́ĥé \"Ŝám̂éŜít̂é=Ŝt́r̂íĉt́\" ât́t̂ŕîb́ût́ê b́ût́ ĉám̂é f̂ŕôḿ â ćr̂óŝś-ŝít̂é r̂éŝṕôńŝé ŵh́îćĥ ẃâś n̂ót̂ t́ĥé r̂éŝṕôńŝé t̂ó â t́ôṕ-l̂év̂él̂ ńâv́îǵât́îón̂."
+  },
+  "sdk/NetworkRequest.js | blockedReasonSameSiteUnspecifiedTreatedAsLax": {
+    "message": "T̂h́îś Ŝét̂-Ćôók̂íê d́îd́n̂'t́ ŝṕêćîf́ŷ á \"Ŝám̂éŜít̂é\" ât́t̂ŕîb́ût́ê án̂d́ ŵáŝ d́êf́âúl̂t́êd́ t̂ó \"Ŝám̂éŜít̂é=L̂áx̂,\" án̂d́ ŵáŝ b́l̂óĉḱêd́ b̂éĉáûśê ít̂ ćâḿê f́r̂óm̂ á ĉŕôśŝ-śît́ê ŕêśp̂ón̂śê ẃĥíĉh́ ŵáŝ ńôt́ t̂h́ê ŕêśp̂ón̂śê t́ô á t̂óp̂-ĺêv́êĺ n̂áv̂íĝát̂íôń. T̂h́ê Śêt́-Ĉóôḱîé ĥád̂ t́ô h́âv́ê b́êén̂ śêt́ ŵít̂h́ \"Ŝám̂éŜít̂é=N̂ón̂é\" t̂ó êńâb́l̂é ĉŕôśŝ-śît́ê úŝáĝé."
+  },
+  "sdk/NetworkRequest.js | blockedReasonSecureOnly": {
+    "message": "T̂h́îś Ŝét̂-Ćôók̂íê ẃâś b̂ĺôćk̂éd̂ b́êćâúŝé ît́ ĥád̂ t́ĥé \"Ŝéĉúr̂é\" ât́t̂ŕîb́ût́ê b́ût́ ŵáŝ ńôt́ r̂éĉéîv́êd́ ôv́êŕ â śêćûŕê ćôńn̂éĉt́îón̂."
+  },
+  "sdk/NetworkRequest.js | domainMismatch": {
+    "message": "T̂h́îś ĉóôḱîé ŵáŝ b́l̂óĉḱêd́ b̂éĉáûśê ńêít̂h́êŕ d̂íd̂ t́ĥé r̂éq̂úêśt̂ ÚR̂Ĺ'ŝ d́ôḿâín̂ éx̂áĉt́l̂ý m̂át̂ćĥ t́ĥé ĉóôḱîé'ŝ d́ôḿâín̂, ńôŕ ŵáŝ t́ĥé r̂éq̂úêśt̂ ÚR̂Ĺ'ŝ d́ôḿâín̂ á ŝúb̂d́ôḿâín̂ óf̂ t́ĥé ĉóôḱîé'ŝ D́ôḿâín̂ át̂t́r̂íb̂út̂é v̂ál̂úê."
+  },
+  "sdk/NetworkRequest.js | notOnPath": {
+    "message": "T̂h́îś ĉóôḱîé ŵáŝ b́l̂óĉḱêd́ b̂éĉáûśê ít̂ś p̂át̂h́ ŵáŝ ńôt́ âń êx́âćt̂ ḿât́ĉh́ f̂ór̂ ór̂ á ŝúp̂ér̂d́îŕêćt̂ór̂ý ôf́ t̂h́ê ŕêq́ûéŝt́ ûŕl̂'ś p̂át̂h́."
+  },
+  "sdk/NetworkRequest.js | samePartyFromCrossPartyContext": {
+    "message": "T̂h́îś ĉóôḱîé ŵáŝ b́l̂óĉḱêd́ b̂éĉáûśê ít̂ h́âd́ t̂h́ê \"ŚâḿêṔâŕt̂ý\" ât́t̂ŕîb́ût́ê b́ût́ t̂h́ê ŕêq́ûéŝt́ ŵáŝ ćr̂óŝś-p̂ár̂t́ŷ. T́ĥé r̂éq̂úêśt̂ ẃâś ĉón̂śîd́êŕêd́ ĉŕôśŝ-ṕâŕt̂ý b̂éĉáûśê t́ĥé d̂óm̂áîń ôf́ t̂h́ê ŕêśôúr̂ćê'ś ÛŔL̂ án̂d́ t̂h́ê d́ôḿâín̂ś ôf́ t̂h́ê ŕêśôúr̂ćê'ś êńĉĺôśîńĝ f́r̂ám̂éŝ/d́ôćûḿêńt̂ś âŕê ńêít̂h́êŕ ôẃn̂ér̂ś n̂ór̂ ḿêḿb̂ér̂ś îń t̂h́ê śâḿê F́îŕŝt́-P̂ár̂t́ŷ Śêt́."
+  },
+  "sdk/NetworkRequest.js | sameSiteLax": {
+    "message": "T̂h́îś ĉóôḱîé ŵáŝ b́l̂óĉḱêd́ b̂éĉáûśê ít̂ h́âd́ t̂h́ê \"ŚâḿêŚît́ê=Ĺâx́\" ât́t̂ŕîb́ût́ê án̂d́ t̂h́ê ŕêq́ûéŝt́ ŵáŝ ḿâd́ê f́r̂óm̂ á d̂íf̂f́êŕêńt̂ śît́ê án̂d́ ŵáŝ ńôt́ îńît́îát̂éd̂ b́ŷ á t̂óp̂-ĺêv́êĺ n̂áv̂íĝát̂íôń."
+  },
+  "sdk/NetworkRequest.js | sameSiteNoneInsecure": {
+    "message": "T̂h́îś ĉóôḱîé ŵáŝ b́l̂óĉḱêd́ b̂éĉáûśê ít̂ h́âd́ t̂h́ê \"ŚâḿêŚît́ê=Ńôńê\" át̂t́r̂íb̂út̂é b̂út̂ ẃâś n̂ót̂ ḿâŕk̂éd̂ \"Śêćûŕê\". Ćôók̂íêś ŵít̂h́ôút̂ ŚâḿêŚît́ê ŕêśt̂ŕîćt̂íôńŝ ḿûśt̂ b́ê ḿâŕk̂éd̂ \"Śêćûŕê\" án̂d́ ŝén̂t́ ôv́êŕ â śêćûŕê ćôńn̂éĉt́îón̂."
+  },
+  "sdk/NetworkRequest.js | sameSiteStrict": {
+    "message": "T̂h́îś ĉóôḱîé ŵáŝ b́l̂óĉḱêd́ b̂éĉáûśê ít̂ h́âd́ t̂h́ê \"ŚâḿêŚît́ê=Śt̂ŕîćt̂\" át̂t́r̂íb̂út̂é âńd̂ t́ĥé r̂éq̂úêśt̂ ẃâś m̂ád̂é f̂ŕôḿ â d́îf́f̂ér̂én̂t́ ŝít̂é. T̂h́îś îńĉĺûd́êś t̂óp̂-ĺêv́êĺ n̂áv̂íĝát̂íôń r̂éq̂úêśt̂ś îńît́îát̂éd̂ b́ŷ ót̂h́êŕ ŝít̂éŝ."
+  },
+  "sdk/NetworkRequest.js | sameSiteUnspecifiedTreatedAsLax": {
+    "message": "T̂h́îś ĉóôḱîé d̂íd̂ń't̂ śp̂éĉíf̂ý â \"ŚâḿêŚît́ê\" át̂t́r̂íb̂út̂é ŵh́êń ît́ ŵáŝ śt̂ór̂éd̂ án̂d́ ŵáŝ d́êf́âúl̂t́êd́ t̂ó \"Ŝám̂éŜít̂é=L̂áx̂,\" án̂d́ ŵáŝ b́l̂óĉḱêd́ b̂éĉáûśê t́ĥé r̂éq̂úêśt̂ ẃâś m̂ád̂é f̂ŕôḿ â d́îf́f̂ér̂én̂t́ ŝít̂é âńd̂ ẃâś n̂ót̂ ín̂ít̂íât́êd́ b̂ý â t́ôṕ-l̂év̂él̂ ńâv́îǵât́îón̂. T́ĥé ĉóôḱîé ĥád̂ t́ô h́âv́ê b́êén̂ śêt́ ŵít̂h́ \"Ŝám̂éŜít̂é=N̂ón̂é\" t̂ó êńâb́l̂é ĉŕôśŝ-śît́ê úŝáĝé."
+  },
+  "sdk/NetworkRequest.js | schemefulSameSiteLax": {
+    "message": "T̂h́îś ĉóôḱîé ŵáŝ b́l̂óĉḱêd́ b̂éĉáûśê ít̂ h́âd́ t̂h́ê \"ŚâḿêŚît́ê=Ĺâx́\" ât́t̂ŕîb́ût́ê b́ût́ t̂h́ê ŕêq́ûéŝt́ ŵáŝ ćr̂óŝś-ŝít̂é âńd̂ ẃâś n̂ót̂ ín̂ít̂íât́êd́ b̂ý â t́ôṕ-l̂év̂él̂ ńâv́îǵât́îón̂. T́ĥíŝ ŕêq́ûéŝt́ îś ĉón̂śîd́êŕêd́ ĉŕôśŝ-śît́ê b́êćâúŝé t̂h́ê ÚR̂Ĺ ĥáŝ á d̂íf̂f́êŕêńt̂ śĉh́êḿê t́ĥán̂ t́ĥé ĉúr̂ŕêńt̂ śît́ê."
+  },
+  "sdk/NetworkRequest.js | schemefulSameSiteStrict": {
+    "message": "T̂h́îś ĉóôḱîé ŵáŝ b́l̂óĉḱêd́ b̂éĉáûśê ít̂ h́âd́ t̂h́ê \"ŚâḿêŚît́ê=Śt̂ŕîćt̂\" át̂t́r̂íb̂út̂é b̂út̂ t́ĥé r̂éq̂úêśt̂ ẃâś ĉŕôśŝ-śît́ê. T́ĥíŝ ín̂ćl̂úd̂éŝ t́ôṕ-l̂év̂él̂ ńâv́îǵât́îón̂ ŕêq́ûéŝt́ŝ ín̂ít̂íât́êd́ b̂ý ôt́ĥér̂ śît́êś. T̂h́îś r̂éq̂úêśt̂ íŝ ćôńŝíd̂ér̂éd̂ ćr̂óŝś-ŝít̂é b̂éĉáûśê t́ĥé ÛŔL̂ h́âś â d́îf́f̂ér̂én̂t́ ŝćĥém̂é t̂h́âń t̂h́ê ćûŕr̂én̂t́ ŝít̂é."
+  },
+  "sdk/NetworkRequest.js | schemefulSameSiteUnspecifiedTreatedAsLax": {
+    "message": "T̂h́îś ĉóôḱîé d̂íd̂ń't̂ śp̂éĉíf̂ý â \"ŚâḿêŚît́ê\" át̂t́r̂íb̂út̂é ŵh́êń ît́ ŵáŝ śt̂ór̂éd̂, ẃâś d̂éf̂áûĺt̂éd̂ t́ô \"ŚâḿêŚît́ê=Ĺâx́\", âńd̂ ẃâś b̂ĺôćk̂éd̂ b́êćâúŝé t̂h́ê ŕêq́ûéŝt́ ŵáŝ ćr̂óŝś-ŝít̂é âńd̂ ẃâś n̂ót̂ ín̂ít̂íât́êd́ b̂ý â t́ôṕ-l̂év̂él̂ ńâv́îǵât́îón̂. T́ĥíŝ ŕêq́ûéŝt́ îś ĉón̂śîd́êŕêd́ ĉŕôśŝ-śît́ê b́êćâúŝé t̂h́ê ÚR̂Ĺ ĥáŝ á d̂íf̂f́êŕêńt̂ śĉh́êḿê t́ĥán̂ t́ĥé ĉúr̂ŕêńt̂ śît́ê."
+  },
+  "sdk/NetworkRequest.js | secureOnly": {
+    "message": "T̂h́îś ĉóôḱîé ŵáŝ b́l̂óĉḱêd́ b̂éĉáûśê ít̂ h́âd́ t̂h́ê \"Śêćûŕê\" át̂t́r̂íb̂út̂é âńd̂ t́ĥé ĉón̂ńêćt̂íôń ŵáŝ ńôt́ ŝéĉúr̂é."
+  },
+  "sdk/NetworkRequest.js | theSchemeOfThisConnectionIsNot": {
+    "message": "T̂h́ê śĉh́êḿê óf̂ t́ĥíŝ ćôńn̂éĉt́îón̂ íŝ ńôt́ âĺl̂óŵéd̂ t́ô śt̂ór̂é ĉóôḱîéŝ."
+  },
+  "sdk/NetworkRequest.js | thisSetcookieDidntSpecifyASamesite": {
+    "message": "T̂h́îś Ŝét̂-Ćôók̂íê d́îd́n̂'t́ ŝṕêćîf́ŷ á \"Ŝám̂éŜít̂é\" ât́t̂ŕîb́ût́ê, ẃâś d̂éf̂áûĺt̂éd̂ t́ô \"ŚâḿêŚît́ê=Ĺâx́\", âńd̂ ẃâś b̂ĺôćk̂éd̂ b́êćâúŝé ît́ ĉám̂é f̂ŕôḿ â ćr̂óŝś-ŝít̂é r̂éŝṕôńŝé ŵh́îćĥ ẃâś n̂ót̂ t́ĥé r̂éŝṕôńŝé t̂ó â t́ôṕ-l̂év̂él̂ ńâv́îǵât́îón̂. T́ĥíŝ ŕêśp̂ón̂śê íŝ ćôńŝíd̂ér̂éd̂ ćr̂óŝś-ŝít̂é b̂éĉáûśê t́ĥé ÛŔL̂ h́âś â d́îf́f̂ér̂én̂t́ ŝćĥém̂é t̂h́âń t̂h́ê ćûŕr̂én̂t́ ŝít̂é."
+  },
+  "sdk/NetworkRequest.js | thisSetcookieHadInvalidSyntax": {
+    "message": "T̂h́îś Ŝét̂-Ćôók̂íê h́âd́ îńv̂ál̂íd̂ śŷńt̂áx̂."
+  },
+  "sdk/NetworkRequest.js | thisSetcookieWasBlockedBecauseItHadTheSameparty": {
+    "message": "T̂h́îś Ŝét̂-Ćôók̂íê ẃâś b̂ĺôćk̂éd̂ b́êćâúŝé ît́ ĥád̂ t́ĥé \"Ŝám̂éP̂ár̂t́ŷ\" át̂t́r̂íb̂út̂é b̂út̂ t́ĥé r̂éq̂úêśt̂ ẃâś ĉŕôśŝ-ṕâŕt̂ý. T̂h́ê ŕêq́ûéŝt́ ŵáŝ ćôńŝíd̂ér̂éd̂ ćr̂óŝś-p̂ár̂t́ŷ b́êćâúŝé t̂h́ê d́ôḿâín̂ óf̂ t́ĥé r̂éŝóûŕĉé'ŝ ÚR̂Ĺ âńd̂ t́ĥé d̂óm̂áîńŝ óf̂ t́ĥé r̂éŝóûŕĉé'ŝ én̂ćl̂óŝín̂ǵ f̂ŕâḿêś/d̂óĉúm̂én̂t́ŝ ár̂é n̂éît́ĥér̂ óŵńêŕŝ ńôŕ m̂ém̂b́êŕŝ ín̂ t́ĥé ŝám̂é F̂ír̂śt̂-Ṕâŕt̂ý Ŝét̂."
+  },
+  "sdk/NetworkRequest.js | thisSetcookieWasBlockedBecauseItHadTheSamepartyAttribute": {
+    "message": "T̂h́îś Ŝét̂-Ćôók̂íê ẃâś b̂ĺôćk̂éd̂ b́êćâúŝé ît́ ĥád̂ t́ĥé \"Ŝám̂éP̂ár̂t́ŷ\" át̂t́r̂íb̂út̂é b̂út̂ ál̂śô h́âd́ ôt́ĥér̂ ćôńf̂ĺîćt̂ín̂ǵ ât́t̂ŕîb́ût́êś. Ĉh́r̂óm̂é r̂éq̂úîŕêś ĉóôḱîéŝ t́ĥát̂ úŝé t̂h́ê \"ŚâḿêṔâŕt̂ý\" ât́t̂ŕîb́ût́ê t́ô ál̂śô h́âv́ê t́ĥé \"Ŝéĉúr̂é\" ât́t̂ŕîb́ût́ê, án̂d́ t̂ó n̂ót̂ b́ê ŕêśt̂ŕîćt̂éd̂ t́ô \"ŚâḿêŚît́ê=Śt̂ŕîćt̂\"."
+  },
+  "sdk/NetworkRequest.js | thisSetcookieWasBlockedBecauseItHadTheSamesitelax": {
+    "message": "T̂h́îś Ŝét̂-Ćôók̂íê ẃâś b̂ĺôćk̂éd̂ b́êćâúŝé ît́ ĥád̂ t́ĥé \"Ŝám̂éŜít̂é=L̂áx̂\" át̂t́r̂íb̂út̂é b̂út̂ ćâḿê f́r̂óm̂ á ĉŕôśŝ-śît́ê ŕêśp̂ón̂śê ẃĥíĉh́ ŵáŝ ńôt́ t̂h́ê ŕêśp̂ón̂śê t́ô á t̂óp̂-ĺêv́êĺ n̂áv̂íĝát̂íôń. T̂h́îś r̂éŝṕôńŝé îś ĉón̂śîd́êŕêd́ ĉŕôśŝ-śît́ê b́êćâúŝé t̂h́ê ÚR̂Ĺ ĥáŝ á d̂íf̂f́êŕêńt̂ śĉh́êḿê t́ĥán̂ t́ĥé ĉúr̂ŕêńt̂ śît́ê."
+  },
+  "sdk/NetworkRequest.js | thisSetcookieWasBlockedBecauseItHadTheSamesitestrict": {
+    "message": "T̂h́îś Ŝét̂-Ćôók̂íê ẃâś b̂ĺôćk̂éd̂ b́êćâúŝé ît́ ĥád̂ t́ĥé \"Ŝám̂éŜít̂é=Ŝt́r̂íĉt́\" ât́t̂ŕîb́ût́ê b́ût́ ĉám̂é f̂ŕôḿ â ćr̂óŝś-ŝít̂é r̂éŝṕôńŝé ŵh́îćĥ ẃâś n̂ót̂ t́ĥé r̂éŝṕôńŝé t̂ó â t́ôṕ-l̂év̂él̂ ńâv́îǵât́îón̂. T́ĥíŝ ŕêśp̂ón̂śê íŝ ćôńŝíd̂ér̂éd̂ ćr̂óŝś-ŝít̂é b̂éĉáûśê t́ĥé ÛŔL̂ h́âś â d́îf́f̂ér̂én̂t́ ŝćĥém̂é t̂h́âń t̂h́ê ćûŕr̂én̂t́ ŝít̂é."
+  },
+  "sdk/NetworkRequest.js | thisSetcookieWasBlockedDueToUser": {
+    "message": "T̂h́îś Ŝét̂-Ćôók̂íê ẃâś b̂ĺôćk̂éd̂ d́ûé t̂ó ûśêŕ p̂ŕêf́êŕêńĉéŝ."
+  },
+  "sdk/NetworkRequest.js | unknownError": {
+    "message": "Âń ûńk̂ńôẃn̂ ér̂ŕôŕ ŵáŝ én̂ćôún̂t́êŕêd́ ŵh́êń t̂ŕŷín̂ǵ t̂ó ŝén̂d́ t̂h́îś ĉóôḱîé."
+  },
+  "sdk/NetworkRequest.js | userPreferences": {
+    "message": "T̂h́îś ĉóôḱîé ŵáŝ b́l̂óĉḱêd́ d̂úê t́ô úŝér̂ ṕr̂éf̂ér̂én̂ćêś."
+  },
+  "sdk/OverlayModel.js | pausedInDebugger": {
+    "message": "P̂áûśêd́ îń d̂éb̂úĝǵêŕ"
+  },
+  "sdk/PageResourceLoader.js | loadCanceledDueToLoadTimeout": {
+    "message": "L̂óâd́ ĉán̂ćêĺêd́ d̂úê t́ô ĺôád̂ t́îḿêóût́"
+  },
+  "sdk/PageResourceLoader.js | loadCanceledDueToReloadOf": {
+    "message": "L̂óâd́ ĉán̂ćêĺêd́ d̂úê t́ô ŕêĺôád̂ óf̂ ín̂śp̂éĉt́êd́ p̂áĝé"
+  },
+  "sdk/ResourceTreeModel.js | iframe": {
+    "message": "<iframe>"
+  },
+  "sdk/ResourceTreeModel.js | top": {
+    "message": "top"
+  },
+  "sdk/SameSiteCookieIssue.js | anInsecure": {
+    "message": "âń îńŝéĉúr̂é"
+  },
+  "sdk/SameSiteCookieIssue.js | aSecure": {
+    "message": "â śêćûŕê"
+  },
+  "sdk/SameSiteCookieIssue.js | howSchemefulSamesiteWorks": {
+    "message": "Ĥóŵ Śĉh́êḿêf́ûĺ Ŝám̂é-Ŝít̂é Ŵór̂ḱŝ"
+  },
+  "sdk/SameSiteCookieIssue.js | samesiteCookiesExplained": {
+    "message": "Ŝám̂éŜít̂é ĉóôḱîéŝ éx̂ṕl̂áîńêd́"
+  },
+  "sdk/Script.js | scriptRemovedOrDeleted": {
+    "message": "Ŝćr̂íp̂t́ r̂ém̂óv̂éd̂ ór̂ d́êĺêt́êd́."
+  },
+  "sdk/Script.js | unableToFetchScriptSource": {
+    "message": "Ûńâb́l̂é t̂ó f̂ét̂ćĥ śĉŕîṕt̂ śôúr̂ćê."
+  },
+  "sdk/sdk-meta.ts | achromatopsia": {
+    "message": "Âćĥŕôḿât́ôṕŝíâ"
+  },
+  "sdk/sdk-meta.ts | blurredVision": {
+    "message": "B̂ĺûŕr̂éd̂ v́îśîón̂"
+  },
+  "sdk/sdk-meta.ts | captureAsyncStackTraces": {
+    "message": "Ĉáp̂t́ûŕê áŝýn̂ć ŝt́âćk̂ t́r̂áĉéŝ"
+  },
+  "sdk/sdk-meta.ts | colorgamutP": {
+    "message": "ĉól̂ór̂-ǵâḿût́: p̂3"
+  },
+  "sdk/sdk-meta.ts | colorgamutRec": {
+    "message": "ĉól̂ór̂-ǵâḿût́: r̂éĉ2020"
+  },
+  "sdk/sdk-meta.ts | colorgamutSrgb": {
+    "message": "ĉól̂ór̂-ǵâḿût́: ŝŕĝb́"
+  },
+  "sdk/sdk-meta.ts | deuteranopia": {
+    "message": "D̂éût́êŕâńôṕîá"
+  },
+  "sdk/sdk-meta.ts | disableAsyncStackTraces": {
+    "message": "D̂íŝáb̂ĺê áŝýn̂ć ŝt́âćk̂ t́r̂áĉéŝ"
+  },
+  "sdk/sdk-meta.ts | disableAvifFormat": {
+    "message": "D̂íŝáb̂ĺê ÁV̂ÍF̂ f́ôŕm̂át̂"
+  },
+  "sdk/sdk-meta.ts | disableCacheWhileDevtoolsIsOpen": {
+    "message": "D̂íŝáb̂ĺê ćâćĥé (ŵh́îĺê D́êv́T̂óôĺŝ íŝ óp̂én̂)"
+  },
+  "sdk/sdk-meta.ts | disableJavascript": {
+    "message": "D̂íŝáb̂ĺê J́âv́âŚĉŕîṕt̂"
+  },
+  "sdk/sdk-meta.ts | disableLocalFonts": {
+    "message": "D̂íŝáb̂ĺê ĺôćâĺ f̂ón̂t́ŝ"
+  },
+  "sdk/sdk-meta.ts | disableNetworkRequestBlocking": {
+    "message": "D̂íŝáb̂ĺê ńêt́ŵór̂ḱ r̂éq̂úêśt̂ b́l̂óĉḱîńĝ"
+  },
+  "sdk/sdk-meta.ts | disableWebpFormat": {
+    "message": "D̂íŝáb̂ĺê Ẃêb́P̂ f́ôŕm̂át̂"
+  },
+  "sdk/sdk-meta.ts | doNotCaptureAsyncStackTraces": {
+    "message": "D̂ó n̂ót̂ ćâṕt̂úr̂é âśŷńĉ śt̂áĉḱ t̂ŕâćêś"
+  },
+  "sdk/sdk-meta.ts | doNotEmulateAFocusedPage": {
+    "message": "D̂ó n̂ót̂ ém̂úl̂át̂é â f́ôćûśêd́ p̂áĝé"
+  },
+  "sdk/sdk-meta.ts | doNotEmulateAnyVisionDeficiency": {
+    "message": "D̂ó n̂ót̂ ém̂úl̂át̂é âńŷ v́îśîón̂ d́êf́îćîén̂ćŷ"
+  },
+  "sdk/sdk-meta.ts | doNotEmulateCss": {
+    "message": "D̂ó n̂ót̂ ém̂úl̂át̂é ĈŚŜ ṕr̂éf̂ér̂ś-ĉól̂ór̂-śĉh́êḿê"
+  },
+  "sdk/sdk-meta.ts | doNotEmulateCssColorgamut": {
+    "message": "D̂ó n̂ót̂ ém̂úl̂át̂é ĈŚŜ ćôĺôŕ-ĝám̂út̂"
+  },
+  "sdk/sdk-meta.ts | doNotEmulateCssMediaType": {
+    "message": "D̂ó n̂ót̂ ém̂úl̂át̂é ĈŚŜ ḿêd́îá t̂ýp̂é"
+  },
+  "sdk/sdk-meta.ts | doNotEmulateCssPrefersreduceddata": {
+    "message": "D̂ó n̂ót̂ ém̂úl̂át̂é ĈŚŜ ṕr̂éf̂ér̂ś-r̂éd̂úĉéd̂-d́ât́â"
+  },
+  "sdk/sdk-meta.ts | doNotEmulateCssPrefersreducedmotion": {
+    "message": "D̂ó n̂ót̂ ém̂úl̂át̂é ĈŚŜ ṕr̂éf̂ér̂ś-r̂éd̂úĉéd̂-ḿôt́îón̂"
+  },
+  "sdk/sdk-meta.ts | doNotExtendGridLines": {
+    "message": "D̂ó n̂ót̂ éx̂t́êńd̂ ǵr̂íd̂ ĺîńêś"
+  },
+  "sdk/sdk-meta.ts | doNotHighlightAdFrames": {
+    "message": "D̂ó n̂ót̂ h́îǵĥĺîǵĥt́ âd́ f̂ŕâḿêś"
+  },
+  "sdk/sdk-meta.ts | doNotPauseOnExceptions": {
+    "message": "D̂ó n̂ót̂ ṕâúŝé ôń êx́ĉép̂t́îón̂ś"
+  },
+  "sdk/sdk-meta.ts | doNotPreserveLogUponNavigation": {
+    "message": "D̂ó n̂ót̂ ṕr̂éŝér̂v́ê ĺôǵ ûṕôń n̂áv̂íĝát̂íôń"
+  },
+  "sdk/sdk-meta.ts | doNotShowGridNamedAreas": {
+    "message": "D̂ó n̂ót̂ śĥóŵ ǵr̂íd̂ ńâḿêd́ âŕêáŝ"
+  },
+  "sdk/sdk-meta.ts | doNotShowGridTrackSizes": {
+    "message": "D̂ó n̂ót̂ śĥóŵ ǵr̂íd̂ t́r̂áĉḱ ŝíẑéŝ"
+  },
+  "sdk/sdk-meta.ts | emulateAchromatopsia": {
+    "message": "Êḿûĺât́ê áĉh́r̂óm̂át̂óp̂śîá"
+  },
+  "sdk/sdk-meta.ts | emulateAFocusedPage": {
+    "message": "Êḿûĺât́ê á f̂óĉúŝéd̂ ṕâǵê"
+  },
+  "sdk/sdk-meta.ts | emulateBlurredVision": {
+    "message": "Êḿûĺât́ê b́l̂úr̂ŕêd́ v̂íŝíôń"
+  },
+  "sdk/sdk-meta.ts | emulateCssColorgamutP": {
+    "message": "Êḿûĺât́ê ĆŜŚ ĉól̂ór̂-ǵâḿût́: p̂3"
+  },
+  "sdk/sdk-meta.ts | emulateCssColorgamutRec": {
+    "message": "Êḿûĺât́ê ĆŜŚ ĉól̂ór̂-ǵâḿût́: r̂éĉ2020"
+  },
+  "sdk/sdk-meta.ts | emulateCssColorgamutSrgb": {
+    "message": "Êḿûĺât́ê ĆŜŚ ĉól̂ór̂-ǵâḿût́: ŝŕĝb́"
+  },
+  "sdk/sdk-meta.ts | emulateCssMediaFeature": {
+    "message": "Êḿûĺât́ê ĆŜŚ m̂éd̂íâ f́êát̂úr̂é p̂ŕêf́êŕŝ-ćôĺôŕ-ŝćĥém̂é"
+  },
+  "sdk/sdk-meta.ts | emulateCssMediaFeatureColorgamut": {
+    "message": "Êḿûĺât́ê ĆŜŚ m̂éd̂íâ f́êát̂úr̂é ĉól̂ór̂-ǵâḿût́"
+  },
+  "sdk/sdk-meta.ts | emulateCssMediaFeaturePrefersreduceddata": {
+    "message": "Êḿûĺât́ê ĆŜŚ m̂éd̂íâ f́êát̂úr̂é p̂ŕêf́êŕŝ-ŕêd́ûćêd́-d̂át̂á"
+  },
+  "sdk/sdk-meta.ts | emulateCssMediaFeaturePrefersreducedmotion": {
+    "message": "Êḿûĺât́ê ĆŜŚ m̂éd̂íâ f́êát̂úr̂é p̂ŕêf́êŕŝ-ŕêd́ûćêd́-m̂ót̂íôń"
+  },
+  "sdk/sdk-meta.ts | emulateCssMediaType": {
+    "message": "Êḿûĺât́ê ĆŜŚ m̂éd̂íâ t́ŷṕê"
+  },
+  "sdk/sdk-meta.ts | emulateCssPreferscolorscheme": {
+    "message": "Êḿûĺât́ê ĆŜŚ p̂ŕêf́êŕŝ-ćôĺôŕ-ŝćĥém̂é: l̂íĝh́t̂"
+  },
+  "sdk/sdk-meta.ts | emulateCssPreferscolorschemeDark": {
+    "message": "Êḿûĺât́ê ĆŜŚ p̂ŕêf́êŕŝ-ćôĺôŕ-ŝćĥém̂é: d̂ár̂ḱ"
+  },
+  "sdk/sdk-meta.ts | emulateCssPrefersreduceddata": {
+    "message": "Êḿûĺât́ê ĆŜŚ p̂ŕêf́êŕŝ-ŕêd́ûćêd́-d̂át̂á: r̂éd̂úĉé"
+  },
+  "sdk/sdk-meta.ts | emulateCssPrefersreducedmotion": {
+    "message": "Êḿûĺât́ê ĆŜŚ p̂ŕêf́êŕŝ-ŕêd́ûćêd́-m̂ót̂íôń: r̂éd̂úĉé"
+  },
+  "sdk/sdk-meta.ts | emulateCssPrintMediaType": {
+    "message": "Êḿûĺât́ê ĆŜŚ p̂ŕîńt̂ ḿêd́îá t̂ýp̂é"
+  },
+  "sdk/sdk-meta.ts | emulateCssScreenMediaType": {
+    "message": "Êḿûĺât́ê ĆŜŚ ŝćr̂éêń m̂éd̂íâ t́ŷṕê"
+  },
+  "sdk/sdk-meta.ts | emulateDeuteranopia": {
+    "message": "Êḿûĺât́ê d́êút̂ér̂án̂óp̂íâ"
+  },
+  "sdk/sdk-meta.ts | emulateProtanopia": {
+    "message": "Êḿûĺât́ê ṕr̂ót̂án̂óp̂íâ"
+  },
+  "sdk/sdk-meta.ts | emulateTritanopia": {
+    "message": "Êḿûĺât́ê t́r̂ít̂án̂óp̂íâ"
+  },
+  "sdk/sdk-meta.ts | emulateVisionDeficiencies": {
+    "message": "Êḿûĺât́ê v́îśîón̂ d́êf́îćîén̂ćîéŝ"
+  },
+  "sdk/sdk-meta.ts | enableAvifFormat": {
+    "message": "Êńâb́l̂é ÂV́ÎF́ f̂ór̂ḿât́"
+  },
+  "sdk/sdk-meta.ts | enableCache": {
+    "message": "Êńâb́l̂é ĉáĉh́ê"
+  },
+  "sdk/sdk-meta.ts | enableCustomFormatters": {
+    "message": "Êńâb́l̂é ĉúŝt́ôḿ f̂ór̂ḿât́t̂ér̂ś"
+  },
+  "sdk/sdk-meta.ts | enableJavascript": {
+    "message": "Êńâb́l̂é Ĵáv̂áŜćr̂íp̂t́"
+  },
+  "sdk/sdk-meta.ts | enableLocalFonts": {
+    "message": "Êńâb́l̂é l̂óĉál̂ f́ôńt̂ś"
+  },
+  "sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
+    "message": "Êńâb́l̂é n̂ét̂ẃôŕk̂ ŕêq́ûéŝt́ b̂ĺôćk̂ín̂ǵ"
+  },
+  "sdk/sdk-meta.ts | enableWebpFormat": {
+    "message": "Êńâb́l̂é Ŵéb̂Ṕ f̂ór̂ḿât́"
+  },
+  "sdk/sdk-meta.ts | extendGridLines": {
+    "message": "Êx́t̂én̂d́ ĝŕîd́ l̂ín̂éŝ"
+  },
+  "sdk/sdk-meta.ts | hideCoreWebVitalsOverlay": {
+    "message": "Ĥíd̂é Ĉór̂é Ŵéb̂ V́ît́âĺŝ óv̂ér̂ĺâý"
+  },
+  "sdk/sdk-meta.ts | hideFramesPerSecondFpsMeter": {
+    "message": "Ĥíd̂é f̂ŕâḿêś p̂ér̂ śêćôńd̂ (F́P̂Ś) m̂ét̂ér̂"
+  },
+  "sdk/sdk-meta.ts | hideHittestBorders": {
+    "message": "Ĥíd̂é ĥít̂-t́êśt̂ b́ôŕd̂ér̂ś"
+  },
+  "sdk/sdk-meta.ts | hideLayerBorders": {
+    "message": "Ĥíd̂é l̂áŷér̂ b́ôŕd̂ér̂ś"
+  },
+  "sdk/sdk-meta.ts | hideLayoutShiftRegions": {
+    "message": "Ĥíd̂é l̂áŷóût́ ŝh́îf́t̂ ŕêǵîón̂ś"
+  },
+  "sdk/sdk-meta.ts | hideLineLabels": {
+    "message": "Ĥíd̂é l̂ín̂é l̂áb̂él̂ś"
+  },
+  "sdk/sdk-meta.ts | hidePaintFlashingRectangles": {
+    "message": "Ĥíd̂é p̂áîńt̂ f́l̂áŝh́îńĝ ŕêćt̂án̂ǵl̂éŝ"
+  },
+  "sdk/sdk-meta.ts | hideScrollPerformanceBottlenecks": {
+    "message": "Ĥíd̂é ŝćr̂ól̂ĺ p̂ér̂f́ôŕm̂án̂ćê b́ôt́t̂ĺêńêćk̂ś"
+  },
+  "sdk/sdk-meta.ts | highlightAdFrames": {
+    "message": "Ĥíĝh́l̂íĝh́t̂ ád̂ f́r̂ám̂éŝ"
+  },
+  "sdk/sdk-meta.ts | noEmulation": {
+    "message": "N̂ó êḿûĺât́îón̂"
+  },
+  "sdk/sdk-meta.ts | pauseOnExceptions": {
+    "message": "P̂áûśê ón̂ éx̂ćêṕt̂íôńŝ"
+  },
+  "sdk/sdk-meta.ts | preferscolorschemeDark": {
+    "message": "p̂ŕêf́êŕŝ-ćôĺôŕ-ŝćĥém̂é: d̂ár̂ḱ"
+  },
+  "sdk/sdk-meta.ts | preferscolorschemeLight": {
+    "message": "p̂ŕêf́êŕŝ-ćôĺôŕ-ŝćĥém̂é: l̂íĝh́t̂"
+  },
+  "sdk/sdk-meta.ts | prefersreduceddataReduce": {
+    "message": "p̂ŕêf́êŕŝ-ŕêd́ûćêd́-d̂át̂á: r̂éd̂úĉé"
+  },
+  "sdk/sdk-meta.ts | prefersreducedmotionReduce": {
+    "message": "p̂ŕêf́êŕŝ-ŕêd́ûćêd́-m̂ót̂íôń: r̂éd̂úĉé"
+  },
+  "sdk/sdk-meta.ts | preserveLogUponNavigation": {
+    "message": "P̂ŕêśêŕv̂é l̂óĝ úp̂ón̂ ńâv́îǵât́îón̂"
+  },
+  "sdk/sdk-meta.ts | print": {
+    "message": "p̂ŕîńt̂"
+  },
+  "sdk/sdk-meta.ts | protanopia": {
+    "message": "P̂ŕôt́âńôṕîá"
+  },
+  "sdk/sdk-meta.ts | query": {
+    "message": "q̂úêŕŷ"
+  },
+  "sdk/sdk-meta.ts | screen": {
+    "message": "ŝćr̂éêń"
+  },
+  "sdk/sdk-meta.ts | showAreaNames": {
+    "message": "Ŝh́ôẃ âŕêá n̂ám̂éŝ"
+  },
+  "sdk/sdk-meta.ts | showCoreWebVitalsOverlay": {
+    "message": "Ŝh́ôẃ Ĉór̂é Ŵéb̂ V́ît́âĺŝ óv̂ér̂ĺâý"
+  },
+  "sdk/sdk-meta.ts | showFramesPerSecondFpsMeter": {
+    "message": "Ŝh́ôẃ f̂ŕâḿêś p̂ér̂ śêćôńd̂ (F́P̂Ś) m̂ét̂ér̂"
+  },
+  "sdk/sdk-meta.ts | showGridNamedAreas": {
+    "message": "Ŝh́ôẃ ĝŕîd́ n̂ám̂éd̂ ár̂éâś"
+  },
+  "sdk/sdk-meta.ts | showGridTrackSizes": {
+    "message": "Ŝh́ôẃ ĝŕîd́ t̂ŕâćk̂ śîźêś"
+  },
+  "sdk/sdk-meta.ts | showHittestBorders": {
+    "message": "Ŝh́ôẃ ĥít̂-t́êśt̂ b́ôŕd̂ér̂ś"
+  },
+  "sdk/sdk-meta.ts | showLayerBorders": {
+    "message": "Ŝh́ôẃ l̂áŷér̂ b́ôŕd̂ér̂ś"
+  },
+  "sdk/sdk-meta.ts | showLayoutShiftRegions": {
+    "message": "Ŝh́ôẃ l̂áŷóût́ ŝh́îf́t̂ ŕêǵîón̂ś"
+  },
+  "sdk/sdk-meta.ts | showLineLabels": {
+    "message": "Ŝh́ôẃ l̂ín̂é l̂áb̂él̂ś"
+  },
+  "sdk/sdk-meta.ts | showLineNames": {
+    "message": "Ŝh́ôẃ l̂ín̂é n̂ám̂éŝ"
+  },
+  "sdk/sdk-meta.ts | showLineNumbers": {
+    "message": "Ŝh́ôẃ l̂ín̂é n̂úm̂b́êŕŝ"
+  },
+  "sdk/sdk-meta.ts | showPaintFlashingRectangles": {
+    "message": "Ŝh́ôẃ p̂áîńt̂ f́l̂áŝh́îńĝ ŕêćt̂án̂ǵl̂éŝ"
+  },
+  "sdk/sdk-meta.ts | showRulers": {
+    "message": "Ŝh́ôẃ r̂úl̂ér̂ś"
+  },
+  "sdk/sdk-meta.ts | showScrollPerformanceBottlenecks": {
+    "message": "Ŝh́ôẃ ŝćr̂ól̂ĺ p̂ér̂f́ôŕm̂án̂ćê b́ôt́t̂ĺêńêćk̂ś"
+  },
+  "sdk/sdk-meta.ts | showTrackSizes": {
+    "message": "Ŝh́ôẃ t̂ŕâćk̂ śîźêś"
+  },
+  "sdk/sdk-meta.ts | tritanopia": {
+    "message": "T̂ŕît́âńôṕîá"
+  },
+  "sdk/ServerTiming.js | deprecatedSyntaxFoundPleaseUse": {
+    "message": "D̂ép̂ŕêćât́êd́ ŝýn̂t́âx́ f̂óûńd̂. Ṕl̂éâśê úŝé: <n̂ám̂é>;d̂úr̂=<d́ûŕât́îón̂>;d́êśĉ=<d́êśĉŕîṕt̂íôń>"
+  },
+  "sdk/ServerTiming.js | duplicateParameterSIgnored": {
+    "message": "D̂úp̂ĺîćât́ê ṕâŕâḿêt́êŕ \"{PH1}\" îǵn̂ór̂éd̂."
+  },
+  "sdk/ServerTiming.js | extraneousTrailingCharacters": {
+    "message": "Êx́t̂ŕâńêóûś t̂ŕâíl̂ín̂ǵ ĉh́âŕâćt̂ér̂ś."
+  },
+  "sdk/ServerTiming.js | noValueFoundForParameterS": {
+    "message": "N̂ó v̂ál̂úê f́ôún̂d́ f̂ór̂ ṕâŕâḿêt́êŕ \"{PH1}\"."
+  },
+  "sdk/ServerTiming.js | servertimingS": {
+    "message": "Ŝér̂v́êŕT̂ím̂ín̂ǵ: {PH1}"
+  },
+  "sdk/ServerTiming.js | unableToParseSValueS": {
+    "message": "Ûńâb́l̂é t̂ó p̂ár̂śê \"{PH1}\" v́âĺûé \"{PH2}\"."
+  },
+  "sdk/ServerTiming.js | unrecognizedParameterS": {
+    "message": "Ûńr̂éĉóĝńîźêd́ p̂ár̂ám̂ét̂ér̂ \"{PH1}\"."
+  },
+  "sdk/ServiceWorkerCacheModel.js | serviceworkercacheagentError": {
+    "message": "ServiceWorkerCacheAgent êŕr̂ór̂ d́êĺêt́îńĝ ćâćĥé êńt̂ŕŷ {PH1} ín̂ ćâćĥé: {PH2}"
+  },
+  "sdk/ServiceWorkerManager.js | activated": {
+    "message": "âćt̂ív̂át̂éd̂"
+  },
+  "sdk/ServiceWorkerManager.js | activating": {
+    "message": "âćt̂ív̂át̂ín̂ǵ"
+  },
+  "sdk/ServiceWorkerManager.js | installed": {
+    "message": "îńŝt́âĺl̂éd̂"
+  },
+  "sdk/ServiceWorkerManager.js | installing": {
+    "message": "îńŝt́âĺl̂ín̂ǵ"
+  },
+  "sdk/ServiceWorkerManager.js | new": {
+    "message": "n̂éŵ"
+  },
+  "sdk/ServiceWorkerManager.js | redundant": {
+    "message": "r̂éd̂ún̂d́âńt̂"
+  },
+  "sdk/ServiceWorkerManager.js | running": {
+    "message": "r̂ún̂ńîńĝ"
+  },
+  "sdk/ServiceWorkerManager.js | sSS": {
+    "message": "{PH1} #{PH2} ({PH3})"
+  },
+  "sdk/ServiceWorkerManager.js | starting": {
+    "message": "ŝt́âŕt̂ín̂ǵ"
+  },
+  "sdk/ServiceWorkerManager.js | stopped": {
+    "message": "ŝt́ôṕp̂éd̂"
+  },
+  "sdk/ServiceWorkerManager.js | stopping": {
+    "message": "ŝt́ôṕp̂ín̂ǵ"
+  },
+  "sdk/SharedArrayBufferIssue.ts | enablingSharedArrayBuffer": {
+    "message": "Êńâb́l̂ín̂ǵ Ŝh́âŕêd́ Âŕr̂áŷ B́ûf́f̂ér̂"
+  },
+  "sdk/SourceMap.js | couldNotLoadContentForSS": {
+    "message": "Ĉóûĺd̂ ńôt́ l̂óâd́ ĉón̂t́êńt̂ f́ôŕ {PH1}: {PH2}"
+  },
+  "sdk/SourceMap.js | couldNotParseContentForSS": {
+    "message": "Ĉóûĺd̂ ńôt́ p̂ár̂śê ćôńt̂én̂t́ f̂ór̂ {PH1}: {PH2}"
+  },
+  "sdk/SourceMapManager.js | devtoolsFailedToLoadSourcemapS": {
+    "message": "D̂év̂T́ôól̂ś f̂áîĺêd́ t̂ó l̂óâd́ ŜóûŕĉéM̂áp̂: {PH1}"
+  },
+  "sdk/TrustedWebActivityIssue.ts | changesToQualityCriteriaForPwas": {
+    "message": "Ĉh́âńĝéŝ t́ô q́ûál̂ít̂ý ĉŕît́êŕîá f̂ór̂ ṔŴÁŝ úŝín̂ǵ T̂ŕûśt̂éd̂ Ẃêb́ Âćt̂ív̂ít̂ý"
+  },
   "search/SearchResultsPane.js | lineS": {
     "message": "L̂ín̂é {PH1}"
   },

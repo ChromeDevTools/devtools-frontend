@@ -3,12 +3,21 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
+import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
-import {ls} from '../platform/platform.js';
 
 import {ProfileNode, ProfileTreeModel} from './ProfileTreeModel.js';
 import {Target} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 
+export const UIStrings = {
+  /**
+  *@description Text in CPUProfile Data Model
+  *@example {2} PH1
+  */
+  devtoolsCpuProfileParserIsFixing: 'DevTools: CPU profile parser is fixing {PH1} missing samples.',
+};
+const str_ = i18n.i18n.registerUIStrings('sdk/CPUProfileDataModel.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class CPUProfileNode extends ProfileNode {
   /**
    * @param {!Protocol.Profiler.ProfileNode} node
@@ -356,7 +365,7 @@ export class CPUProfileDataModel extends ProfileTreeModel {
       nodeId = nextNodeId;
     }
     if (count) {
-      Common.Console.Console.instance().warn(ls`DevTools: CPU profile parser is fixing ${count} missing samples.`);
+      Common.Console.Console.instance().warn(i18nString(UIStrings.devtoolsCpuProfileParserIsFixing, {PH1: count}));
     }
     /**
      * @param {!ProfileNode} node

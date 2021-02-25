@@ -1,25 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Strings in this file are shared, i.e. they appear multiple times. -->
 <grit-part>
-  <message name="IDS_DEVTOOLS_29260f495ba8adcc62fd1307c758ff4e" desc="Text to show the measuring rulers on the target">
-    Show rulers
-  </message>
-  <message name="IDS_DEVTOOLS_886f598a8a9e6a4bfe0c09fcf7779611" desc="Title of a Rendering setting that can be invoked through the Command Menu">
-    Emulate a focused page
-  </message>
   <message name="IDS_DEVTOOLS_a02c83a7dbd96295beaefb72c2bee2de" desc="Text that refers to the main target">
     Main
-  </message>
-  <message name="IDS_DEVTOOLS_bec25a46972e4fa86df9413508add5c2" desc="Text that refers to disabling local fonts">
-    Disable local fonts
-  </message>
-  <message name="IDS_DEVTOOLS_e0ac20adce6ffee48c7151b070aa5737" desc="Text that refers to device such as a phone">
-    Device
-  </message>
-  <message name="IDS_DEVTOOLS_ef95393ad48336d7c3543625354a3d56" desc="Text to highlight the rendering frames for ads">
-    Highlight ad frames
-  </message>
-  <message name="IDS_DEVTOOLS_f0f31c9700c6b10d8a20dc487b2ae6a8" desc="Text for the touch type to simulate on a device">
-    Touch
   </message>
 </grit-part>

@@ -84,6 +84,9 @@
   <message name="IDS_DEVTOOLS_86f849e1a655c2df19f28cb3dfe07bc9" desc="Title of a setting under the Network category that can be invoked through the Command Menu">
     Block ads on this site
   </message>
+  <message name="IDS_DEVTOOLS_886f598a8a9e6a4bfe0c09fcf7779611" desc="Title of a Rendering setting that can be invoked through the Command Menu">
+    Emulate a focused page
+  </message>
   <message name="IDS_DEVTOOLS_8d9527c8877888035e66d174475c7af7" desc="Title of checkbox in Rendering Options">
     Core Web Vitals
   </message>
@@ -108,6 +111,9 @@
   <message name="IDS_DEVTOOLS_bea298cdd1ce1733c227ca2ff2484114" desc="Text in Rendering Options">
     Shows an overlay with Core Web Vitals.
   </message>
+  <message name="IDS_DEVTOOLS_bec25a46972e4fa86df9413508add5c2" desc="Text that refers to disabling local fonts">
+    Disable local fonts
+  </message>
   <message name="IDS_DEVTOOLS_c1940aeeb9693a02e28c52eb85ce261c" desc="Command Menu search query that points to the Rendering tool">
     paint
   </message>
@@ -125,6 +131,9 @@
   </message>
   <message name="IDS_DEVTOOLS_6ee3313644e1b7cc6200e5f5a10f4c06" desc="Title for a checkbox in the Rendering panel">
     Disable WebP image format
+  </message>
+  <message name="IDS_DEVTOOLS_ef95393ad48336d7c3543625354a3d56" desc="Text to highlight the rendering frames for ads">
+    Highlight ad frames
   </message>
   <message name="IDS_DEVTOOLS_f23c9ba06e7123f0b4c906de90fbcc9f" desc="Title of a setting under the DevTools category that can be invoked through the Command Menu">
     Auto-open <ph name="LOCKED_1">DevTools</ph> for popups

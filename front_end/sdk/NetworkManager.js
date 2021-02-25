@@ -30,12 +30,57 @@
 
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
+import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
 import * as TextUtils from '../text_utils/text_utils.js';  // eslint-disable-line no-unused-vars
 
 import {Cookie} from './Cookie.js';
 import {BlockedCookieWithReason, ContentData, Events as NetworkRequestEvents, ExtraRequestInfo, ExtraResponseInfo, MIME_TYPE, MIME_TYPE_TO_RESOURCE_TYPE, NameValue, NetworkRequest} from './NetworkRequest.js';  // eslint-disable-line no-unused-vars
 import {Capability, SDKModel, SDKModelObserver, Target, TargetManager} from './SDKModel.js';  // eslint-disable-line no-unused-vars
+
+export const UIStrings = {
+  /**
+  *@description Text in Network Manager
+  *@example {application} PH1
+  *@example {image} PH2
+  *@example {https://example.com} PH3
+  */
+  resourceInterpretedAsSBut: 'Resource interpreted as {PH1} but transferred with MIME type {PH2}: "{PH3}".',
+  /**
+  *@description Text in Network Manager
+  *@example {https://example.com} PH1
+  */
+  setcookieHeaderIsIgnoredIn:
+      'Set-Cookie header is ignored in response from url: {PH1}. Cookie length should be less than or equal to 4096 characters.',
+  /**
+  *@description Text in Network Manager
+  *@example {https://example.com} PH1
+  */
+  requestWasBlockedByDevtoolsS: 'Request was blocked by DevTools: "{PH1}"',
+  /**
+  *@description Text in Network Manager
+  *@example {https://example.com} PH1
+  *@example {application} PH2
+  */
+  crossoriginReadBlockingCorb:
+      'Cross-Origin Read Blocking (CORB) blocked cross-origin response {PH1} with MIME type {PH2}. See https://www.chromestatus.com/feature/5629709824032768 for more details.',
+  /**
+  *@description Message in Network Manager
+  *@example {XHR} PH1
+  *@example {GET} PH2
+  *@example {https://example.com} PH3
+  */
+  sFailedLoadingSS: '{PH1} failed loading: {PH2} "{PH3}".',
+  /**
+  *@description Message in Network Manager
+  *@example {XHR} PH1
+  *@example {GET} PH2
+  *@example {https://example.com} PH3
+  */
+  sFinishedLoadingSS: '{PH1} finished loading: {PH2} "{PH3}".',
+};
+const str_ = i18n.i18n.registerUIStrings('sdk/NetworkManager.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 /** @type {!WeakMap<!NetworkRequest, !NetworkManager>} */
 const requestToManagerMap = new WeakMap();
@@ -262,7 +307,7 @@ export const Events = {
 
 /** @type {!Conditions} */
 export const NoThrottlingConditions = {
-  title: Common.UIString.UIString('No throttling'),
+  title: 'No throttling',
   download: -1,
   upload: -1,
   latency: 0
@@ -270,7 +315,7 @@ export const NoThrottlingConditions = {
 
 /** @type {!Conditions} */
 export const OfflineConditions = {
-  title: Common.UIString.UIString('Offline'),
+  title: 'Offline',
   download: 0,
   upload: 0,
   latency: 0,
@@ -278,7 +323,7 @@ export const OfflineConditions = {
 
 /** @type {!Conditions} */
 export const Slow3GConditions = {
-  title: Common.UIString.UIString('Slow 3G'),
+  title: 'Slow 3G',
   download: 500 * 1000 / 8 * .8,
   upload: 500 * 1000 / 8 * .8,
   latency: 400 * 5,
@@ -286,7 +331,7 @@ export const Slow3GConditions = {
 
 /** @type {!Conditions} */
 export const Fast3GConditions = {
-  title: Common.UIString.UIString('Fast 3G'),
+  title: 'Fast 3G',
   download: 1.6 * 1000 * 1000 / 8 * .9,
   upload: 750 * 1000 / 8 * .9,
   latency: 150 * 3.75,
@@ -413,9 +458,9 @@ export class NetworkDispatcher {
     networkRequest.setSecurityState(response.securityState);
 
     if (!this._mimeTypeIsConsistentWithType(networkRequest)) {
-      const message = Common.UIString.UIString(
-          'Resource interpreted as %s but transferred with MIME type %s: "%s".', networkRequest.resourceType().title(),
-          networkRequest.mimeType, networkRequest.url());
+      const message = i18nString(
+          UIStrings.resourceInterpretedAsSBut,
+          {PH1: networkRequest.resourceType().title(), PH2: networkRequest.mimeType, PH3: networkRequest.url()});
       this._manager.dispatchEventToListeners(
           Events.MessageGenerated, {message: message, requestId: networkRequest.requestId(), warning: true});
     }
@@ -602,9 +647,7 @@ export class NetworkDispatcher {
         if (values[i].length <= 4096) {
           continue;
         }
-        const message = Common.UIString.UIString(
-            'Set-Cookie header is ignored in response from url: %s. Cookie length should be less than or equal to 4096 characters.',
-            response.url);
+        const message = i18nString(UIStrings.setcookieHeaderIsIgnoredIn, {PH1: response.url});
         this._manager.dispatchEventToListeners(
             Events.MessageGenerated, {message: message, requestId: requestId, warning: true});
       }
@@ -681,7 +724,7 @@ export class NetworkDispatcher {
     if (blockedReason) {
       networkRequest.setBlockedReason(blockedReason);
       if (blockedReason === Protocol.Network.BlockedReason.Inspector) {
-        const message = Common.UIString.UIString('Request was blocked by DevTools: "%s".', networkRequest.url());
+        const message = i18nString(UIStrings.requestWasBlockedByDevtoolsS, {PH1: networkRequest.url()});
         this._manager.dispatchEventToListeners(
             Events.MessageGenerated, {message: message, requestId: requestId, warning: true});
       }
@@ -1000,9 +1043,8 @@ export class NetworkDispatcher {
     MultitargetNetworkManager.instance()._inflightMainResourceRequests.delete(networkRequest.requestId());
 
     if (shouldReportCorbBlocking) {
-      const message = Common.UIString.UIString(
-          'Cross-Origin Read Blocking (CORB) blocked cross-origin response %s with MIME type %s. See https://www.chromestatus.com/feature/5629709824032768 for more details.',
-          networkRequest.url(), networkRequest.mimeType);
+      const message =
+          i18nString(UIStrings.crossoriginReadBlockingCorb, {PH1: networkRequest.url(), PH2: networkRequest.mimeType});
       this._manager.dispatchEventToListeners(
           Events.MessageGenerated, {message: message, requestId: networkRequest.requestId(), warning: true});
     }
@@ -1012,13 +1054,13 @@ export class NetworkDispatcher {
       let message;
       const failedToLoad = networkRequest.failed || networkRequest.hasErrorStatusCode();
       if (failedToLoad) {
-        message = Common.UIString.UIString(
-            '%s failed loading: %s "%s".', networkRequest.resourceType().title(), networkRequest.requestMethod,
-            networkRequest.url());
+        message = i18nString(
+            UIStrings.sFailedLoadingSS,
+            {PH1: networkRequest.resourceType().title(), PH2: networkRequest.requestMethod, PH3: networkRequest.url()});
       } else {
-        message = Common.UIString.UIString(
-            '%s finished loading: %s "%s".', networkRequest.resourceType().title(), networkRequest.requestMethod,
-            networkRequest.url());
+        message = i18nString(
+            UIStrings.sFinishedLoadingSS,
+            {PH1: networkRequest.resourceType().title(), PH2: networkRequest.requestMethod, PH3: networkRequest.url()});
       }
 
       this._manager.dispatchEventToListeners(

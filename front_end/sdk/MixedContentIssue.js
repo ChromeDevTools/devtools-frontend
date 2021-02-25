@@ -2,11 +2,32 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {ls} from '../common/common.js';  // eslint-disable-line rulesdir/es_modules_import
+import * as i18n from '../i18n/i18n.js';
 
 import {Issue, IssueCategory, IssueKind, MarkdownIssueDescription} from './Issue.js';  // eslint-disable-line no-unused-vars
 import {IssuesModel} from './IssuesModel.js';  // eslint-disable-line no-unused-vars
 
+export const UIStrings = {
+  /**
+  *@description Label for the link for Mixed Content Issues
+  */
+  preventingMixedContent: 'Preventing mixed content',
+  /**
+  *@description The kind of resolution for a mixed content issue
+  */
+  blocked: 'blocked',
+  /**
+  *@description The kind of resolution for a mixed content issue
+  */
+  automaticallyUpgraded: 'automatically upgraded',
+  /**
+  *@description The kind of resolution for a mixed content issue
+  */
+  warned: 'warned',
+};
+const str_ = i18n.i18n.registerUIStrings('sdk/MixedContentIssue.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 export class MixedContentIssue extends Issue {
   /**
    * @param {!Protocol.Audits.MixedContentIssueDetails} issueDetails
@@ -22,7 +43,8 @@ export class MixedContentIssue extends Issue {
    * @returns {!string}
    */
   static translateStatus(resolutionStatus) {
-    return mixedContentStatus.get(resolutionStatus) || resolutionStatus;
+    const translateStatus = mixedContentStatus.get(resolutionStatus);
+    return translateStatus ? translateStatus() : resolutionStatus;
   }
 
   /**
@@ -57,7 +79,8 @@ export class MixedContentIssue extends Issue {
       file: 'issues/descriptions/mixedContent.md',
       substitutions: undefined,
       issueKind: IssueKind.BreakingChange,
-      links: [{link: 'https://web.dev/what-is-mixed-content/', linkTitle: ls`Preventing mixed content`}],
+      links:
+          [{link: 'https://web.dev/what-is-mixed-content/', linkTitle: i18nString(UIStrings.preventingMixedContent)}],
     };
   }
 
@@ -69,9 +92,9 @@ export class MixedContentIssue extends Issue {
   }
 }
 
-/** @type {!Map<string, string>} */
+/** @type {!Map<string, () => string>} */
 const mixedContentStatus = new Map([
-  ['MixedContentBlocked', ls`blocked`],
-  ['MixedContentAutomaticallyUpgraded', ls`automatically upgraded`],
-  ['MixedContentWarning', ls`warned`],
+  ['MixedContentBlocked', i18nLazyString(UIStrings.blocked)],
+  ['MixedContentAutomaticallyUpgraded', i18nLazyString(UIStrings.automaticallyUpgraded)],
+  ['MixedContentWarning', i18nLazyString(UIStrings.warned)],
 ]);

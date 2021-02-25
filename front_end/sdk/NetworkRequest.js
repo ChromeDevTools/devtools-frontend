@@ -29,8 +29,8 @@
  */
 
 import * as Common from '../common/common.js';
+import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
-import {ls} from '../platform/platform.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 
 import {Attributes, Cookie} from './Cookie.js';  // eslint-disable-line no-unused-vars
@@ -39,6 +39,157 @@ import {NetworkManager} from './NetworkManager.js';
 import {Type} from './SDKModel.js';
 import {ServerTiming} from './ServerTiming.js';
 
+export const UIStrings = {
+  /**
+  *@description Text in Network Request
+  */
+  binary: '(binary)',
+  /**
+  *@description Tooltip to explain why a cookie was blocked
+  */
+  secureOnly: 'This cookie was blocked because it had the "Secure" attribute and the connection was not secure.',
+  /**
+  *@description Tooltip to explain why a cookie was blocked
+  */
+  notOnPath:
+      'This cookie was blocked because its path was not an exact match for or a superdirectory of the request url\'s path.',
+  /**
+  *@description Tooltip to explain why a cookie was blocked
+  */
+  domainMismatch:
+      'This cookie was blocked because neither did the request URL\'s domain exactly match the cookie\'s domain, nor was the request URL\'s domain a subdomain of the cookie\'s Domain attribute value.',
+  /**
+  *@description Tooltip to explain why a cookie was blocked
+  */
+  sameSiteStrict:
+      'This cookie was blocked because it had the "SameSite=Strict" attribute and the request was made from a different site. This includes top-level navigation requests initiated by other sites.',
+  /**
+  *@description Tooltip to explain why a cookie was blocked
+  */
+  sameSiteLax:
+      'This cookie was blocked because it had the "SameSite=Lax" attribute and the request was made from a different site and was not initiated by a top-level navigation.',
+  /**
+  *@description Tooltip to explain why a cookie was blocked
+  */
+  sameSiteUnspecifiedTreatedAsLax:
+      'This cookie didn\'t specify a "SameSite" attribute when it was stored and was defaulted to "SameSite=Lax," and was blocked because the request was made from a different site and was not initiated by a top-level navigation. The cookie had to have been set with "SameSite=None" to enable cross-site usage.',
+  /**
+  *@description Tooltip to explain why a cookie was blocked
+  */
+  sameSiteNoneInsecure:
+      'This cookie was blocked because it had the "SameSite=None" attribute but was not marked "Secure". Cookies without SameSite restrictions must be marked "Secure" and sent over a secure connection.',
+  /**
+  *@description Tooltip to explain why a cookie was blocked
+  */
+  userPreferences: 'This cookie was blocked due to user preferences.',
+  /**
+  *@description Tooltip to explain why a cookie was blocked
+  */
+  unknownError: 'An unknown error was encountered when trying to send this cookie.',
+  /**
+  *@description Tooltip to explain why a cookie was blocked due to Schemeful Same-Site
+  */
+  schemefulSameSiteStrict:
+      'This cookie was blocked because it had the "SameSite=Strict" attribute but the request was cross-site. This includes top-level navigation requests initiated by other sites. This request is considered cross-site because the URL has a different scheme than the current site.',
+  /**
+  *@description Tooltip to explain why a cookie was blocked due to Schemeful Same-Site
+  */
+  schemefulSameSiteLax:
+      'This cookie was blocked because it had the "SameSite=Lax" attribute but the request was cross-site and was not initiated by a top-level navigation. This request is considered cross-site because the URL has a different scheme than the current site.',
+  /**
+  *@description Tooltip to explain why a cookie was blocked due to Schemeful Same-Site
+  */
+  schemefulSameSiteUnspecifiedTreatedAsLax:
+      'This cookie didn\'t specify a "SameSite" attribute when it was stored, was defaulted to "SameSite=Lax", and was blocked because the request was cross-site and was not initiated by a top-level navigation. This request is considered cross-site because the URL has a different scheme than the current site.',
+  /**
+  *@description Tooltip to explain why a cookie was blocked due to SameParty
+  */
+  samePartyFromCrossPartyContext:
+      'This cookie was blocked because it had the "SameParty" attribute but the request was cross-party. The request was considered cross-party because the domain of the resource\'s URL and the domains of the resource\'s enclosing frames/documents are neither owners nor members in the same First-Party Set.',
+  /**
+  *@description Tooltip to explain why a cookie was blocked
+  */
+  thisSetcookieWasBlockedDueToUser: 'This Set-Cookie was blocked due to user preferences.',
+  /**
+  *@description Tooltip to explain why a cookie was blocked
+  */
+  thisSetcookieHadInvalidSyntax: 'This Set-Cookie had invalid syntax.',
+  /**
+  *@description Tooltip to explain why a cookie was blocked
+  */
+  theSchemeOfThisConnectionIsNot: 'The scheme of this connection is not allowed to store cookies.',
+  /**
+  *@description Tooltip to explain why a cookie was blocked
+  */
+  anUnknownErrorWasEncounteredWhenTrying: 'An unknown error was encountered when trying to store this cookie.',
+  /**
+  *@description Tooltip to explain why a cookie was blocked due to Schemeful Same-Site
+  */
+  thisSetcookieWasBlockedBecauseItHadTheSamesitestrict:
+      'This Set-Cookie was blocked because it had the "SameSite=Strict" attribute but came from a cross-site response which was not the response to a top-level navigation. This response is considered cross-site because the URL has a different scheme than the current site.',
+  /**
+  *@description Tooltip to explain why a cookie was blocked due to Schemeful Same-Site
+  */
+  thisSetcookieWasBlockedBecauseItHadTheSamesitelax:
+      'This Set-Cookie was blocked because it had the "SameSite=Lax" attribute but came from a cross-site response which was not the response to a top-level navigation. This response is considered cross-site because the URL has a different scheme than the current site.',
+  /**
+  *@description Tooltip to explain why a cookie was blocked due to Schemeful Same-Site
+  */
+  thisSetcookieDidntSpecifyASamesite:
+      'This Set-Cookie didn\'t specify a "SameSite" attribute, was defaulted to "SameSite=Lax", and was blocked because it came from a cross-site response which was not the response to a top-level navigation. This response is considered cross-site because the URL has a different scheme than the current site.',
+  /**
+  *@description Tooltip to explain why a cookie was blocked due to SameParty
+  */
+  thisSetcookieWasBlockedBecauseItHadTheSameparty:
+      'This Set-Cookie was blocked because it had the "SameParty" attribute but the request was cross-party. The request was considered cross-party because the domain of the resource\'s URL and the domains of the resource\'s enclosing frames/documents are neither owners nor members in the same First-Party Set.',
+  /**
+  *@description Tooltip to explain why a cookie was blocked due to SameParty
+  */
+  thisSetcookieWasBlockedBecauseItHadTheSamepartyAttribute:
+      'This Set-Cookie was blocked because it had the "SameParty" attribute but also had other conflicting attributes. Chrome requires cookies that use the "SameParty" attribute to also have the "Secure" attribute, and to not be restricted to "SameSite=Strict".',
+  /**
+  *@description Tooltip to explain why a cookie was blocked
+  */
+  blockedReasonSecureOnly:
+      'This Set-Cookie was blocked because it had the "Secure" attribute but was not received over a secure connection.',
+  /**
+   *@description Tooltip to explain why a cookie was blocked
+  */
+  blockedReasonSameSiteStrict:
+      'This Set-Cookie was blocked because it had the "SameSite=Strict" attribute but came from a cross-site response which was not the response to a top-level navigation.',
+  /**
+   *@description Tooltip to explain why a cookie was blocked
+  */
+  blockedReasonSameSiteLax:
+      'This Set-Cookie was blocked because it had the "SameSite=Lax" attribute but came from a cross-site response which was not the response to a top-level navigation.',
+  /**
+   *@description Tooltip to explain why a cookie was blocked
+  */
+  blockedReasonSameSiteUnspecifiedTreatedAsLax:
+      'This Set-Cookie didn\'t specify a "SameSite" attribute and was defaulted to "SameSite=Lax," and was blocked because it came from a cross-site response which was not the response to a top-level navigation. The Set-Cookie had to have been set with "SameSite=None" to enable cross-site usage.',
+  /**
+   *@description Tooltip to explain why a cookie was blocked
+  */
+  blockedReasonSameSiteNoneInsecure:
+      'This Set-Cookie was blocked because it had the "SameSite=None" attribute but did not have the "Secure" attribute, which is required in order to use "SameSite=None".',
+  /**
+   *@description Tooltip to explain why a cookie was blocked
+  */
+  blockedReasonOverwriteSecure:
+      'This Set-Cookie was blocked because it was not sent over a secure connection and would have overwritten a cookie with the Secure attribute.',
+  /**
+   *@description Tooltip to explain why a cookie was blocked
+  */
+  blockedReasonInvalidDomain:
+      'This Set-Cookie was blocked because its Domain attribute was invalid with regards to the current host url.',
+  /**
+   *@description Tooltip to explain why a cookie was blocked
+  */
+  blockedReasonInvalidPrefix:
+      'This Set-Cookie was blocked because it used the "__Secure-" or "__Host-" prefix in its name and broke the additional rules applied to cookies with these prefixes as defined in https://tools.ietf.org/html/draft-west-cookie-prefixes-05.',
+};
+const str_ = i18n.i18n.registerUIStrings('sdk/NetworkRequest.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /** @enum {string} */
 export const MIME_TYPE = {
   HTML: 'text/html',
@@ -1270,7 +1421,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper {
         return result;
       }
 
-      const processedValue = (filename || contentType) ? ls`(binary)` : value;
+      const processedValue = (filename || contentType) ? i18nString(UIStrings.binary) : value;
       result.push({name, value: processedValue});
 
       return result;
@@ -1732,37 +1883,31 @@ export const WebSocketFrameType = {
 export const cookieBlockedReasonToUiString = function(blockedReason) {
   switch (blockedReason) {
     case Protocol.Network.CookieBlockedReason.SecureOnly:
-      return ls`This cookie was blocked because it had the "Secure" attribute and the connection was not secure.`;
+      return i18nString(UIStrings.secureOnly);
     case Protocol.Network.CookieBlockedReason.NotOnPath:
-      return ls
-      `This cookie was blocked because its path was not an exact match for or a superdirectory of the request url's path.`;
+      return i18nString(UIStrings.notOnPath);
     case Protocol.Network.CookieBlockedReason.DomainMismatch:
-      return ls
-      `This cookie was blocked because neither did the request URL's domain exactly match the cookie's domain, nor was the request URL's domain a subdomain of the cookie's Domain attribute value.`;
+      return i18nString(UIStrings.domainMismatch);
     case Protocol.Network.CookieBlockedReason.SameSiteStrict:
-      return ls
-      `This cookie was blocked because it had the "SameSite=Strict" attribute and the request was made from a different site. This includes top-level navigation requests initiated by other sites.`;
+      return i18nString(UIStrings.sameSiteStrict);
     case Protocol.Network.CookieBlockedReason.SameSiteLax:
-      return ls
-      `This cookie was blocked because it had the "SameSite=Lax" attribute and the request was made from a different site and was not initiated by a top-level navigation.`;
+      return i18nString(UIStrings.sameSiteLax);
     case Protocol.Network.CookieBlockedReason.SameSiteUnspecifiedTreatedAsLax:
-      return ls
-      `This cookie didn't specify a "SameSite" attribute when it was stored and was defaulted to "SameSite=Lax," and was blocked because the request was made from a different site and was not initiated by a top-level navigation. The cookie had to have been set with "SameSite=None" to enable cross-site usage.`;
+      return i18nString(UIStrings.sameSiteUnspecifiedTreatedAsLax);
     case Protocol.Network.CookieBlockedReason.SameSiteNoneInsecure:
-      return ls
-      `This cookie was blocked because it had the "SameSite=None" attribute but was not marked "Secure". Cookies without SameSite restrictions must be marked "Secure" and sent over a secure connection.`;
+      return i18nString(UIStrings.sameSiteNoneInsecure);
     case Protocol.Network.CookieBlockedReason.UserPreferences:
-      return ls`This cookie was blocked due to user preferences.`;
+      return i18nString(UIStrings.userPreferences);
     case Protocol.Network.CookieBlockedReason.UnknownError:
-      return ls`An unknown error was encountered when trying to send this cookie.`;
+      return i18nString(UIStrings.unknownError);
     case Protocol.Network.CookieBlockedReason.SchemefulSameSiteStrict:
-      return ls`This cookie was blocked because it had the "SameSite=Strict" attribute but the request was cross-site. This includes top-level navigation requests initiated by other sites. This request is considered cross-site because the URL has a different scheme than the current site.`;
+      return i18nString(UIStrings.schemefulSameSiteStrict);
     case Protocol.Network.CookieBlockedReason.SchemefulSameSiteLax:
-      return ls`This cookie was blocked because it had the "SameSite=Lax" attribute but the request was cross-site and was not initiated by a top-level navigation. This request is considered cross-site because the URL has a different scheme than the current site.`;
+      return i18nString(UIStrings.schemefulSameSiteLax);
     case Protocol.Network.CookieBlockedReason.SchemefulSameSiteUnspecifiedTreatedAsLax:
-      return ls`This cookie didn't specify a "SameSite" attribute when it was stored, was defaulted to "SameSite=Lax", and was blocked because the request was cross-site and was not initiated by a top-level navigation. This request is considered cross-site because the URL has a different scheme than the current site.`;
+      return i18nString(UIStrings.schemefulSameSiteUnspecifiedTreatedAsLax);
     case Protocol.Network.CookieBlockedReason.SamePartyFromCrossPartyContext:
-      return ls`This cookie was blocked because it had the "SameParty" attribute but the request was cross-party. The request was considered cross-party because the domain of the resource's URL and the domains of the resource's enclosing frames/documents are neither owners nor members in the same First-Party Set.`;
+      return i18nString(UIStrings.samePartyFromCrossPartyContext);
   }
   return '';
 };
@@ -1774,47 +1919,39 @@ export const cookieBlockedReasonToUiString = function(blockedReason) {
 export const setCookieBlockedReasonToUiString = function(blockedReason) {
   switch (blockedReason) {
     case Protocol.Network.SetCookieBlockedReason.SecureOnly:
-      return ls
-      `This Set-Cookie was blocked because it had the "Secure" attribute but was not received over a secure connection.`;
+      return i18nString(UIStrings.blockedReasonSecureOnly);
     case Protocol.Network.SetCookieBlockedReason.SameSiteStrict:
-      return ls
-      `This Set-Cookie was blocked because it had the "SameSite=Strict" attribute but came from a cross-site response which was not the response to a top-level navigation.`;
+      return i18nString(UIStrings.blockedReasonSameSiteStrict);
     case Protocol.Network.SetCookieBlockedReason.SameSiteLax:
-      return ls
-      `This Set-Cookie was blocked because it had the "SameSite=Lax" attribute but came from a cross-site response which was not the response to a top-level navigation.`;
+      return i18nString(UIStrings.blockedReasonSameSiteLax);
     case Protocol.Network.SetCookieBlockedReason.SameSiteUnspecifiedTreatedAsLax:
-      return ls
-      `This Set-Cookie didn't specify a "SameSite" attribute and was defaulted to "SameSite=Lax," and was blocked because it came from a cross-site response which was not the response to a top-level navigation. The Set-Cookie had to have been set with "SameSite=None" to enable cross-site usage.`;
+      return i18nString(UIStrings.blockedReasonSameSiteUnspecifiedTreatedAsLax);
     case Protocol.Network.SetCookieBlockedReason.SameSiteNoneInsecure:
-      return ls
-      `This Set-Cookie was blocked because it had the "SameSite=None" attribute but did not have the "Secure" attribute, which is required in order to use "SameSite=None".`;
+      return i18nString(UIStrings.blockedReasonSameSiteNoneInsecure);
     case Protocol.Network.SetCookieBlockedReason.UserPreferences:
-      return ls`This Set-Cookie was blocked due to user preferences.`;
+      return i18nString(UIStrings.thisSetcookieWasBlockedDueToUser);
     case Protocol.Network.SetCookieBlockedReason.SyntaxError:
-      return ls`This Set-Cookie had invalid syntax.`;
+      return i18nString(UIStrings.thisSetcookieHadInvalidSyntax);
     case Protocol.Network.SetCookieBlockedReason.SchemeNotSupported:
-      return ls`The scheme of this connection is not allowed to store cookies.`;
+      return i18nString(UIStrings.theSchemeOfThisConnectionIsNot);
     case Protocol.Network.SetCookieBlockedReason.OverwriteSecure:
-      return ls
-      `This Set-Cookie was blocked because it was not sent over a secure connection and would have overwritten a cookie with the Secure attribute.`;
+      return i18nString(UIStrings.blockedReasonOverwriteSecure);
     case Protocol.Network.SetCookieBlockedReason.InvalidDomain:
-      return ls
-      `This Set-Cookie was blocked because its Domain attribute was invalid with regards to the current host url.`;
+      return i18nString(UIStrings.blockedReasonInvalidDomain);
     case Protocol.Network.SetCookieBlockedReason.InvalidPrefix:
-      return ls
-      `This Set-Cookie was blocked because it used the "__Secure-" or "__Host-" prefix in its name and broke the additional rules applied to cookies with these prefixes as defined in https://tools.ietf.org/html/draft-west-cookie-prefixes-05.`;
+      return i18nString(UIStrings.blockedReasonInvalidPrefix);
     case Protocol.Network.SetCookieBlockedReason.UnknownError:
-      return ls`An unknown error was encountered when trying to store this cookie.`;
+      return i18nString(UIStrings.anUnknownErrorWasEncounteredWhenTrying);
     case Protocol.Network.SetCookieBlockedReason.SchemefulSameSiteStrict:
-      return ls`This Set-Cookie was blocked because it had the "SameSite=Strict" attribute but came from a cross-site response which was not the response to a top-level navigation. This response is considered cross-site because the URL has a different scheme than the current site.`;
+      return i18nString(UIStrings.thisSetcookieWasBlockedBecauseItHadTheSamesitestrict);
     case Protocol.Network.SetCookieBlockedReason.SchemefulSameSiteLax:
-      return ls`This Set-Cookie was blocked because it had the "SameSite=Lax" attribute but came from a cross-site response which was not the response to a top-level navigation. This response is considered cross-site because the URL has a different scheme than the current site.`;
+      return i18nString(UIStrings.thisSetcookieWasBlockedBecauseItHadTheSamesitelax);
     case Protocol.Network.SetCookieBlockedReason.SchemefulSameSiteUnspecifiedTreatedAsLax:
-      return ls`This Set-Cookie didn't specify a "SameSite" attribute, was defaulted to "SameSite=Lax", and was blocked because it came from a cross-site response which was not the response to a top-level navigation. This response is considered cross-site because the URL has a different scheme than the current site.`;
+      return i18nString(UIStrings.thisSetcookieDidntSpecifyASamesite);
     case Protocol.Network.SetCookieBlockedReason.SamePartyFromCrossPartyContext:
-      return ls`This Set-Cookie was blocked because it had the "SameParty" attribute but the request was cross-party. The request was considered cross-party because the domain of the resource's URL and the domains of the resource's enclosing frames/documents are neither owners nor members in the same First-Party Set.`;
+      return i18nString(UIStrings.thisSetcookieWasBlockedBecauseItHadTheSameparty);
     case Protocol.Network.SetCookieBlockedReason.SamePartyConflictsWithOtherAttributes:
-      return ls`This Set-Cookie was blocked because it had the "SameParty" attribute but also had other conflicting attributes. Chrome requires cookies that use the "SameParty" attribute to also have the "Secure" attribute, and to not be restricted to "SameSite=Strict".`;
+      return i18nString(UIStrings.thisSetcookieWasBlockedBecauseItHadTheSamepartyAttribute);
   }
   return '';
 };

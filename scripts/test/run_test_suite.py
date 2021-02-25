@@ -43,6 +43,16 @@ def parse_options(cli_args):
         dest='jobs',
         help=
         'The number of parallel runners to use (if supported). Defaults to 1')
+    parser.add_argument('--cwd',
+                        dest='cwd',
+                        help='Path to the directory containing the out dir',
+                        default=devtools_paths.devtools_root_path())
+    parser.add_argument(
+        '--node_modules-path',
+        dest='node_modules_path',
+        help=
+        'Path to the node_modules directory for Node to use. Will use Node defaults if not set.',
+        default=None)
     return parser.parse_args(cli_args)
 
 
@@ -51,6 +61,8 @@ def run_tests(chrome_binary,
               test_suite_path,
               test_suite,
               jobs,
+              cwd=None,
+              node_modules_path=None,
               test_file=None):
     env = os.environ.copy()
     env['CHROME_BIN'] = chrome_binary
@@ -63,7 +75,12 @@ def run_tests(chrome_binary,
     if jobs:
         env['JOBS'] = jobs
 
-    cwd = devtools_paths.devtools_root_path()
+    if node_modules_path is not None:
+        env['NODE_PATH'] = node_modules_path
+
+    if not cwd:
+        cwd = devtools_paths.devtools_root_path()
+
     exec_command = [
         devtools_paths.node_path(),
         devtools_paths.mocha_path(),
@@ -121,7 +138,10 @@ def run_test():
     if test_file is not None:
         print('Testing file (%s)' % test_file)
 
-    cwd = devtools_paths.devtools_root_path()
+    cwd = OPTIONS.cwd
+    node_modules_path = OPTIONS.node_modules_path
+
+    print('Running tests from %s\n' % cwd)
     test_suite_path = os.path.join(cwd, 'out', OPTIONS.target, 'gen', 'test',
                                    test_suite)
 
@@ -132,6 +152,8 @@ def run_test():
                                  test_suite_path,
                                  test_suite,
                                  jobs,
+                                 cwd,
+                                 node_modules_path,
                                  test_file=test_file)
     except Exception as err:
         print(err)

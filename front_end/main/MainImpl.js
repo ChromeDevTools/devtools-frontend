@@ -385,13 +385,13 @@ export class MainImpl {
     if (!appProvider) {
       throw new Error('Unable to boot DevTools, as the appprovider is missing');
     }
-    this._showAppUI(await appProvider.loadAppProvider());
+    await this._showAppUI(await appProvider.loadAppProvider());
   }
 
   /**
    * @param {!Object} appProvider
    */
-  _showAppUI(appProvider) {
+  async _showAppUI(appProvider) {
     MainImpl.time('Main._showAppUI');
     const app = /** @type {!Common.AppProvider.AppProvider} */ (appProvider).createApp();
     // It is important to kick controller lifetime after apps are instantiated.
@@ -409,7 +409,7 @@ export class MainImpl {
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
         Host.InspectorFrontendHostAPI.Events.RevealSourceLine, this._revealSourceLine, this);
 
-    UI.InspectorView.InspectorView.instance().createToolbars();
+    await UI.InspectorView.InspectorView.instance().createToolbars();
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.loadCompleted();
 
     const value = Root.Runtime.Runtime.queryParam('loadTimelineFromURL');

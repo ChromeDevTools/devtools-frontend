@@ -5822,22 +5822,22 @@
   "protocol_monitor/ProtocolMonitor.ts | timestamp": {
     "message": "T̂ím̂éŝt́âḿp̂"
   },
-  "quick_open/CommandMenu.js | noCommandsFound": {
+  "quick_open/CommandMenu.ts | noCommandsFound": {
     "message": "N̂ó ĉóm̂ḿâńd̂ś f̂óûńd̂"
   },
-  "quick_open/CommandMenu.js | oneOrMoreSettingsHaveChanged": {
+  "quick_open/CommandMenu.ts | oneOrMoreSettingsHaveChanged": {
     "message": "Ôńê ór̂ ḿôŕê śêt́t̂ín̂ǵŝ h́âv́ê ćĥán̂ǵêd́ ŵh́îćĥ ŕêq́ûír̂éŝ á r̂él̂óâd́ t̂ó t̂ák̂é êf́f̂éĉt́."
   },
-  "quick_open/CommandMenu.js | runCommand": {
+  "quick_open/CommandMenu.ts | runCommand": {
     "message": "R̂ún̂ Ćôḿm̂án̂d́"
   },
-  "quick_open/FilteredListWidget.js | noResultsFound": {
+  "quick_open/FilteredListWidget.ts | noResultsFound": {
     "message": "N̂ó r̂éŝúl̂t́ŝ f́ôún̂d́"
   },
-  "quick_open/FilteredListWidget.js | quickOpen": {
+  "quick_open/FilteredListWidget.ts | quickOpen": {
     "message": "Q̂úîćk̂ óp̂én̂"
   },
-  "quick_open/FilteredListWidget.js | quickOpenPrompt": {
+  "quick_open/FilteredListWidget.ts | quickOpenPrompt": {
     "message": "Q̂úîćk̂ óp̂én̂ ṕr̂óm̂ṕt̂"
   },
   "quick_open/quick_open-meta.ts | openFile": {
@@ -5846,13 +5846,13 @@
   "quick_open/quick_open-meta.ts | runCommand": {
     "message": "R̂ún̂ ćôḿm̂án̂d́"
   },
-  "quick_open/QuickInput.js | pressEnterToConfirmOrEscapeTo": {
+  "quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
     "message": "{PH1} (P̂ŕêśŝ 'Én̂t́êŕ' t̂ó ĉón̂f́îŕm̂ ór̂ 'Éŝćâṕê' t́ô ćâńĉél̂.)"
   },
-  "quick_open/QuickOpen.js | typeQuestionMarkToSeeAvailable": {
+  "quick_open/QuickOpen.ts | typeQuestionMarkToSeeAvailable": {
     "message": "T̂ýp̂é q̂úêśt̂íôń m̂ár̂ḱ t̂ó ŝéê áv̂áîĺâb́l̂é ĉóm̂ḿâńd̂ś"
   },
-  "quick_open/QuickOpen.js | typeToSeeAvailableCommands": {
+  "quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
     "message": "T̂ýp̂é '?' t̂ó ŝéê áv̂áîĺâb́l̂é ĉóm̂ḿâńd̂ś"
   },
   "recorder/RecordingFileSystem.ts | defaultRecordingName": {

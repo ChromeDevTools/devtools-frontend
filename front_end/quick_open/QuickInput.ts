@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as i18n from '../i18n/i18n.js';
 
 import {FilteredListWidget, Provider} from './FilteredListWidget.js';
@@ -13,38 +15,24 @@ export const UIStrings = {
   */
   pressEnterToConfirmOrEscapeTo: '{PH1} (Press \'Enter\' to confirm or \'Escape\' to cancel.)',
 };
-const str_ = i18n.i18n.registerUIStrings('quick_open/QuickInput.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('quick_open/QuickInput.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-
-/**
- * @typedef {{
- *   prompt: string,
- *   placeHolder: (string|undefined),
- *   value: (string|undefined),
- *   valueSelection: (!Array<number>|undefined),
- * }}
- */
-// @ts-ignore
-export let QuickInputOptions;
+export interface QuickInputOptions {
+  prompt: string;
+  placeHolder?: string;
+  value?: string;
+  valueSelection?: number[];
+}
 
 export class QuickInput {
-  /**
-   * @private
-   */
-  constructor() {
+  private constructor() {
     throw new ReferenceError('Instance type not implemented.');
   }
 
-  /**
-   * @param {!QuickInputOptions} options
-   */
-  static show(options) {
-    /**
-     * @type {!Promise<undefined>}
-     */
-    let canceledPromise = new Promise(_r => {});  // Intentionally creates an unresolved promise
-    /** @type {!Promise<string>} */
-    const fulfilledPromise = new Promise(resolve => {
+  static show(options: QuickInputOptions): Promise<string|undefined> {
+    let canceledPromise: Promise<undefined> =
+        new Promise<undefined>(_r => {});  // Intentionally creates an unresolved promise
+    const fulfilledPromise = new Promise<string>(resolve => {
       const provider = new QuickInputProvider(options, resolve);
       const widget = new FilteredListWidget(provider);
 
@@ -54,7 +42,7 @@ export class QuickInput {
 
       widget.setPromptTitle(options.placeHolder || options.prompt);
       widget.showAsDialog(options.prompt);
-      canceledPromise = /** @type {!Promise<undefined>} */ (widget.once('hidden'));
+      canceledPromise = (widget.once('hidden') as Promise<undefined>);
 
       widget.setQuery(options.value || '');
       if (options.valueSelection) {
@@ -72,30 +60,19 @@ export class QuickInput {
 }
 
 class QuickInputProvider extends Provider {
-  /**
-   * @param {!QuickInputOptions} options
-   * @param {!Function} resolve
-   */
-  constructor(options, resolve) {
+  _options: QuickInputOptions;
+  _resolve: Function;
+  constructor(options: QuickInputOptions, resolve: Function) {
     super();
     this._options = options;
     this._resolve = resolve;
   }
 
-  /**
-   * @override
-   * @return {string}
-   */
-  notFoundText() {
+  notFoundText(): string {
     return i18nString(UIStrings.pressEnterToConfirmOrEscapeTo, {PH1: this._options.prompt});
   }
 
-  /**
-   * @override
-   * @param {?number} _itemIndex
-   * @param {string} promptValue
-   */
-  selectItem(_itemIndex, promptValue) {
+  selectItem(_itemIndex: number|null, promptValue: string): void {
     this._resolve(promptValue);
   }
 }

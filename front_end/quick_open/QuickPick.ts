@@ -2,60 +2,38 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Diff from '../diff/diff.js';
 import * as UI from '../ui/ui.js';  // eslint-disable-line no-unused-vars
 import {FilteredListWidget, Provider} from './FilteredListWidget.js';
-
-/**
- * @typedef {{
- *  label: string,
- *  description: (string|undefined),
- *  detail: (string|undefined),
- * }}
- */
-// @ts-ignore
-export let QuickPickItem;
-
-/**
- * @typedef {{
- *   placeHolder: string,
- *   matchOnDescription: (boolean|undefined),
- *   matchOnDetail: (boolean|undefined),
- * }}
- */
-// @ts-ignore
-export let QuickPickOptions;
+export interface QuickPickItem {
+  label: string;
+  description?: string;
+  detail?: string;
+}
+export interface QuickPickOptions {
+  placeHolder: string;
+  matchOnDescription?: boolean;
+  matchOnDetail?: boolean;
+}
 
 export class QuickPick {
-  /**
-   * @private
-   */
-  constructor() {
+  private constructor() {
     throw new ReferenceError('Instance type not implemented.');
   }
 
-  /**
-   *
-   * @param {!Array<!QuickPickItem>} items
-   * @param {!QuickPickOptions} options
-   * @return {!Promise<!QuickPickItem|undefined>}
-   */
-  static show(items, options) {
-    /**
-     * @type {!Promise<undefined>}
-     */
-    let canceledPromise = new Promise(_r => {});  // Intentionally creates an unresolved promise
-    /**
-     * @type {!Promise<!QuickPickItem>}
-     */
-    const fulfilledPromise = new Promise(resolve => {
+  static show(items: QuickPickItem[], options: QuickPickOptions): Promise<QuickPickItem|undefined> {
+    let canceledPromise: Promise<undefined> =
+        new Promise<undefined>(_r => {});  // Intentionally creates an unresolved promise
+    const fulfilledPromise = new Promise<QuickPickItem>(resolve => {
       const provider =
           new QuickPickProvider(items, resolve, options.matchOnDescription ? 0.5 : 0, options.matchOnDetail ? 0.25 : 0);
       const widget = new FilteredListWidget(provider);
       widget.setPlaceholder(options.placeHolder);
       widget.setPromptTitle(options.placeHolder);
       widget.showAsDialog(options.placeHolder);
-      canceledPromise = /** @type {!Promise<undefined>} */ (widget.once('hidden'));
+      canceledPromise = (widget.once('hidden') as Promise<undefined>);
       widget.setQuery('');
     });
 
@@ -69,14 +47,13 @@ export class QuickPick {
 }
 
 class QuickPickProvider extends Provider {
-  /**
-   *
-   * @param {!Array<!QuickPickItem>} items
-   * @param {!Function} resolve
-   * @param {number=} matchOnDescription
-   * @param {number=} matchOnDetail
-   */
-  constructor(items, resolve, matchOnDescription = 0.5, matchOnDetail = 0.25) {
+  _resolve: Function;
+  _items: QuickPickItem[];
+  _matchOnDescription: number;
+  _matchOnDetail: number;
+  constructor(
+      items: QuickPickItem[], resolve: Function, matchOnDescription: number|undefined = 0.5,
+      matchOnDetail: number|undefined = 0.25) {
     super();
     this._resolve = resolve;
     this._items = items;
@@ -84,19 +61,11 @@ class QuickPickProvider extends Provider {
     this._matchOnDetail = matchOnDetail;
   }
 
-  /**
-   * @override
-   */
-  itemCount() {
+  itemCount(): number {
     return this._items.length;
   }
 
-  /**
-   * @override
-   * @param {number} itemIndex
-   * @return {string}
-   */
-  itemKeyAt(itemIndex) {
+  itemKeyAt(itemIndex: number): string {
     const item = this._items[itemIndex];
     let key = item.label;
     if (this._matchOnDescription) {
@@ -108,13 +77,7 @@ class QuickPickProvider extends Provider {
     return key;
   }
 
-  /**
-   * @override
-   * @param {number} itemIndex
-   * @param {string} query
-   * @return {number}
-   */
-  itemScoreAt(itemIndex, query) {
+  itemScoreAt(itemIndex: number, query: string): number {
     const item = this._items[itemIndex];
     const test = query.toLowerCase();
     let score = Diff.Diff.DiffWrapper.characterScore(test, item.label.toLowerCase());
@@ -132,14 +95,7 @@ class QuickPickProvider extends Provider {
     return score;
   }
 
-  /**
-   * @override
-   * @param {number} itemIndex
-   * @param {string} query
-   * @param {!Element} titleElement
-   * @param {!Element} subtitleElement
-   */
-  renderItem(itemIndex, query, titleElement, subtitleElement) {
+  renderItem(itemIndex: number, query: string, titleElement: Element, subtitleElement: Element): void {
     const item = this._items[itemIndex];
     titleElement.removeChildren();
     const labelElement = titleElement.createChild('span');
@@ -160,20 +116,11 @@ class QuickPickProvider extends Provider {
     }
   }
 
-  /**
-   * @override
-   * @return {boolean}
-   */
-  renderAsTwoRows() {
+  renderAsTwoRows(): boolean {
     return this._items.some(i => Boolean(i.detail));
   }
 
-  /**
-   * @override
-   * @param {?number} itemIndex
-   * @param {string} _promptValue
-   */
-  selectItem(itemIndex, _promptValue) {
+  selectItem(itemIndex: number|null, _promptValue: string): void {
     if (typeof itemIndex === 'number') {
       this._resolve(this._items[itemIndex]);
       return;

@@ -2,6 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
+/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Diff from '../diff/diff.js';
 import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
@@ -22,34 +26,40 @@ export const UIStrings = {
   */
   noResultsFound: 'No results found',
 };
-const str_ = i18n.i18n.registerUIStrings('quick_open/FilteredListWidget.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('quick_open/FilteredListWidget.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-/**
- * @implements {UI.ListControl.ListDelegate<number>}
- */
-export class FilteredListWidget extends UI.Widget.VBox {
-  /**
-   * @param {?Provider} provider
-   * @param {!Array<string>=} promptHistory
-   * @param {function(string)=} queryChangedCallback
-   */
-  constructor(provider, promptHistory, queryChangedCallback) {
+export class FilteredListWidget extends UI.Widget.VBox implements UI.ListControl.ListDelegate<number> {
+  _promptHistory: string[];
+  _scoringTimer: number;
+  _filterTimer: number;
+  _loadTimeout: number;
+  _refreshListWithCurrentResult!: (() => void)|undefined;
+  _dialog!: UI.Dialog.Dialog|undefined;
+  _query!: string|undefined;
+  _promptElement: HTMLElement;
+  _prompt: UI.TextPrompt.TextPrompt;
+  _bottomElementsContainer: HTMLElement;
+  _progressElement: HTMLElement;
+  _progressBarElement: HTMLElement;
+  _items: UI.ListModel.ListModel<number>;
+  _list: UI.ListControl.ListControl<number>;
+  _itemElementsContainer: HTMLDivElement;
+  _notFoundElement: HTMLElement;
+  _prefix: string;
+  _provider: Provider|null;
+  _queryChangedCallback?: (arg0: string) => void;
+
+  constructor(provider: Provider|null, promptHistory?: string[], queryChangedCallback?: ((arg0: string) => void)) {
     super(true);
     this._promptHistory = promptHistory || [];
 
     this._scoringTimer = 0;
     this._filterTimer = 0;
     this._loadTimeout = 0;
-    /** @type {(function(): void)|undefined} */
-    this._refreshListWithCurrentResult;
-    /** @type {!UI.Dialog.Dialog|undefined} */
-    this._dialog;
-    /** @type {string|undefined} */
-    this._query;
 
     this.contentElement.classList.add('filtered-list-widget');
-    const listener = /** @type {function(!Event):void} */ (this._onKeyDown.bind(this));
+    const listener = (this._onKeyDown.bind(this) as (arg0: Event) => void);
     this.contentElement.addEventListener('keydown', listener, true);
     UI.ARIAUtils.markAsCombobox(this.contentElement);
     this.registerRequiredCSS('quick_open/filteredListWidget.css', {enableLegacyPatching: true});
@@ -68,9 +78,7 @@ export class FilteredListWidget extends UI.Widget.VBox {
     this._progressElement = this._bottomElementsContainer.createChild('div', 'filtered-list-widget-progress');
     this._progressBarElement = this._progressElement.createChild('div', 'filtered-list-widget-progress-bar');
 
-    /** @type {!UI.ListModel.ListModel<number>} */
     this._items = new UI.ListModel.ListModel();
-    /** @type {!UI.ListControl.ListControl<number>} */
     this._list = new UI.ListControl.ListControl(this._items, this, UI.ListControl.ListMode.EqualHeightItems);
     this._itemElementsContainer = this._list.element;
     this._itemElementsContainer.classList.add('container');
@@ -90,23 +98,12 @@ export class FilteredListWidget extends UI.Widget.VBox {
     this._queryChangedCallback = queryChangedCallback;
   }
 
-  /**
-   * @param {!Element} element
-   * @param {string} query
-   * @param {boolean=} caseInsensitive
-   * @return {boolean}
-   */
-  static highlightRanges(element, query, caseInsensitive) {
+  static highlightRanges(element: Element, query: string, caseInsensitive?: boolean): boolean {
     if (!query) {
       return false;
     }
 
-    /**
-     * @param {string} text
-     * @param {string} query
-     * @return {?Array.<!TextUtils.TextRange.SourceRange>}
-     */
-    function rangesForMatch(text, query) {
+    function rangesForMatch(text: string, query: string): TextUtils.TextRange.SourceRange[]|null {
       const opcodes = Diff.Diff.DiffWrapper.charDiff(query, text);
       let offset = 0;
       const ranges = [];
@@ -137,26 +134,18 @@ export class FilteredListWidget extends UI.Widget.VBox {
     return false;
   }
 
-  /**
-   * @param {string} placeholder
-   * @param {string=} ariaPlaceholder
-   */
-  setPlaceholder(placeholder, ariaPlaceholder) {
+  setPlaceholder(placeholder: string, ariaPlaceholder?: string): void {
     this._prompt.setPlaceholder(placeholder, ariaPlaceholder);
   }
 
   /**
    * Sets the text prompt's accessible title. By default, it is "Quick open prompt".
-   * @param {string} title
    */
-  setPromptTitle(title) {
+  setPromptTitle(title: string): void {
     UI.ARIAUtils.setAccessibleName(this._promptElement, title);
   }
 
-  /**
-   * @param {string=} dialogTitle
-   */
-  showAsDialog(dialogTitle) {
+  showAsDialog(dialogTitle?: string): void {
     if (!dialogTitle) {
       dialogTitle = i18nString(UIStrings.quickOpen);
     }
@@ -175,17 +164,11 @@ export class FilteredListWidget extends UI.Widget.VBox {
     this._dialog.show();
   }
 
-  /**
-   * @param {string} prefix
-   */
-  setPrefix(prefix) {
+  setPrefix(prefix: string): void {
     this._prefix = prefix;
   }
 
-  /**
-   * @param {?Provider} provider
-   */
-  setProvider(provider) {
+  setProvider(provider: Provider|null): void {
     if (provider === this._provider) {
       return;
     }
@@ -201,15 +184,11 @@ export class FilteredListWidget extends UI.Widget.VBox {
     }
   }
 
-  /**
-   * @param {number} startIndex
-   * @param {number} endIndex
-   */
-  setQuerySelectedRange(startIndex, endIndex) {
+  setQuerySelectedRange(startIndex: number, endIndex: number): void {
     this._prompt.setSelectedRange(startIndex, endIndex);
   }
 
-  _attachProvider() {
+  _attachProvider(): void {
     this._items.replaceAll([]);
     this._list.invalidateItemHeight();
     if (this._provider) {
@@ -219,28 +198,19 @@ export class FilteredListWidget extends UI.Widget.VBox {
     this._itemsLoaded(this._provider);
   }
 
-  /**
-   * @return {string}
-   */
-  _value() {
+  _value(): string {
     return this._prompt.text().trim();
   }
 
-  _cleanValue() {
+  _cleanValue(): string {
     return this._value().substring(this._prefix.length);
   }
 
-  /**
-   * @override
-   */
-  wasShown() {
+  wasShown(): void {
     this._attachProvider();
   }
 
-  /**
-   * @override
-   */
-  willHide() {
+  willHide(): void {
     if (this._provider) {
       this._provider.detach();
     }
@@ -248,7 +218,7 @@ export class FilteredListWidget extends UI.Widget.VBox {
     UI.ARIAUtils.setExpanded(this.contentElement, false);
   }
 
-  _clearTimers() {
+  _clearTimers(): void {
     clearTimeout(this._filterTimer);
     clearTimeout(this._scoringTimer);
     clearTimeout(this._loadTimeout);
@@ -258,10 +228,7 @@ export class FilteredListWidget extends UI.Widget.VBox {
     this._refreshListWithCurrentResult = undefined;
   }
 
-  /**
-   * @param {!Event} event
-   */
-  _onEnter(event) {
+  _onEnter(_event: Event): void {
     if (!this._provider) {
       return;
     }
@@ -273,27 +240,19 @@ export class FilteredListWidget extends UI.Widget.VBox {
     }
   }
 
-  /**
-   * @param {?Provider} provider
-   */
-  _itemsLoaded(provider) {
+  _itemsLoaded(provider: Provider|null): void {
     if (this._loadTimeout || provider !== this._provider) {
       return;
     }
     this._loadTimeout = window.setTimeout(this._updateAfterItemsLoaded.bind(this), 0);
   }
 
-  _updateAfterItemsLoaded() {
+  _updateAfterItemsLoaded(): void {
     this._loadTimeout = 0;
     this._filterItems();
   }
 
-  /**
-   * @override
-   * @param {number} item
-   * @return {!Element}
-   */
-  createElementForItem(item) {
+  createElementForItem(item: number): Element {
     const itemElement = document.createElement('div');
     const renderAsTwoRows = this._provider && this._provider.renderAsTwoRows();
     itemElement.className = 'filtered-list-widget-item ' + (renderAsTwoRows ? 'two-rows' : 'one-row');
@@ -307,33 +266,16 @@ export class FilteredListWidget extends UI.Widget.VBox {
     return itemElement;
   }
 
-  /**
-   * @override
-   * @param {number} item
-   * @return {number}
-   */
-  heightForItem(item) {
+  heightForItem(_item: number): number {
     // Let the list measure items for us.
     return 0;
   }
 
-  /**
-   * @override
-   * @param {number} item
-   * @return {boolean}
-   */
-  isItemSelectable(item) {
+  isItemSelectable(_item: number): boolean {
     return true;
   }
 
-  /**
-   * @override
-   * @param {?number} from
-   * @param {?number} to
-   * @param {?Element} fromElement
-   * @param {?Element} toElement
-   */
-  selectedItemChanged(from, to, fromElement, toElement) {
+  selectedItemChanged(_from: number|null, _to: number|null, fromElement: Element|null, toElement: Element|null): void {
     if (fromElement) {
       fromElement.classList.remove('selected');
     }
@@ -343,11 +285,8 @@ export class FilteredListWidget extends UI.Widget.VBox {
     UI.ARIAUtils.setActiveDescendant(this._promptElement, toElement);
   }
 
-  /**
-   * @param {!Event} event
-   */
-  _onClick(event) {
-    const item = this._list.itemForNode(/** @type {?Node} */ (event.target));
+  _onClick(event: Event): void {
+    const item = this._list.itemForNode((event.target as Node | null));
     if (item === null) {
       return;
     }
@@ -359,10 +298,7 @@ export class FilteredListWidget extends UI.Widget.VBox {
     }
   }
 
-  /**
-   * @param {string} query
-   */
-  setQuery(query) {
+  setQuery(query: string): void {
     this._prompt.focus();
     this._prompt.setText(query);
     this._queryChanged();
@@ -370,10 +306,7 @@ export class FilteredListWidget extends UI.Widget.VBox {
     this._scheduleFilter();
   }
 
-  /**
-   * @return {boolean}
-   */
-  _tabKeyPressed() {
+  _tabKeyPressed(): boolean {
     const userEnteredText = this._prompt.text();
     let completion;
     for (let i = this._promptHistory.length - 1; i >= 0; i--) {
@@ -392,11 +325,11 @@ export class FilteredListWidget extends UI.Widget.VBox {
     return true;
   }
 
-  _itemsFilteredForTest() {
+  _itemsFilteredForTest(): void {
     // Sniffed in tests.
   }
 
-  _filterItems() {
+  _filterItems(): void {
     this._filterTimer = 0;
     if (this._scoringTimer) {
       clearTimeout(this._scoringTimer);
@@ -423,37 +356,24 @@ export class FilteredListWidget extends UI.Widget.VBox {
 
     const filterRegex = query ? Platform.StringUtilities.filterRegex(query) : null;
 
-    /** @type {!Array<number>} */
-    const filteredItems = [];
+    const filteredItems: number[] = [];
 
-    /** @type {!Array<number>} */
-    const bestScores = [];
-    /** @type {!Array<number>} */
-    const bestItems = [];
+    const bestScores: number[] = [];
+    const bestItems: number[] = [];
     const bestItemsToCollect = 100;
     let minBestScore = 0;
-    /** @type {!Array<number>} */
-    const overflowItems = [];
+    const overflowItems: number[] = [];
     const scoreStartTime = window.performance.now();
 
     const maxWorkItems = Platform.NumberUtilities.clamp(10, 500, (this._provider.itemCount() / 10) | 0);
 
     scoreItems.call(this, 0);
 
-    /**
-     * @param {number} a
-     * @param {number} b
-     * @return {number}
-     */
-    function compareIntegers(a, b) {
+    function compareIntegers(a: number, b: number): number {
       return b - a;
     }
 
-    /**
-     * @param {number} fromIndex
-     * @this {FilteredListWidget}
-     */
-    function scoreItems(fromIndex) {
+    function scoreItems(this: FilteredListWidget, fromIndex: number): void {
       if (!this._provider) {
         return;
       }
@@ -516,12 +436,7 @@ export class FilteredListWidget extends UI.Widget.VBox {
     }
   }
 
-  /**
-   * @param {!Array<number>} bestItems
-   * @param {!Array<number>} overflowItems
-   * @param {!Array<number>} filteredItems
-   */
-  _refreshList(bestItems, overflowItems, filteredItems) {
+  _refreshList(bestItems: number[], overflowItems: number[], filteredItems: number[]): void {
     this._refreshListWithCurrentResult = undefined;
     filteredItems = [...bestItems, ...overflowItems, ...filteredItems];
     this._updateNotFoundMessage(Boolean(filteredItems.length));
@@ -536,10 +451,7 @@ export class FilteredListWidget extends UI.Widget.VBox {
     this._itemsFilteredForTest();
   }
 
-  /**
-   * @param {boolean} hasItems
-   */
-  _updateNotFoundMessage(hasItems) {
+  _updateNotFoundMessage(hasItems: boolean): void {
     this._list.element.classList.toggle('hidden', !hasItems);
     this._notFoundElement.classList.toggle('hidden', hasItems);
     if (!hasItems && this._provider) {
@@ -548,12 +460,12 @@ export class FilteredListWidget extends UI.Widget.VBox {
     }
   }
 
-  _onInput() {
+  _onInput(): void {
     this._queryChanged();
     this._scheduleFilter();
   }
 
-  _queryChanged() {
+  _queryChanged(): void {
     if (this._queryChangedCallback) {
       this._queryChangedCallback(this._value());
     }
@@ -562,20 +474,11 @@ export class FilteredListWidget extends UI.Widget.VBox {
     }
   }
 
-  /**
-   * @override
-   * @param {?Element} fromElement
-   * @param {?Element} toElement
-   * @return {boolean}
-   */
-  updateSelectedItemARIA(fromElement, toElement) {
+  updateSelectedItemARIA(_fromElement: Element|null, _toElement: Element|null): boolean {
     return false;
   }
 
-  /**
-   * @param {!KeyboardEvent} keyboardEvent
-   */
-  _onKeyDown(keyboardEvent) {
+  _onKeyDown(keyboardEvent: KeyboardEvent): void {
     let handled = false;
     switch (keyboardEvent.key) {
       case 'Enter':
@@ -602,17 +505,14 @@ export class FilteredListWidget extends UI.Widget.VBox {
     }
   }
 
-  _scheduleFilter() {
+  _scheduleFilter(): void {
     if (this._filterTimer) {
       return;
     }
     this._filterTimer = window.setTimeout(this._filterItems.bind(this), 0);
   }
 
-  /**
-   * @param {?number} itemIndex
-   */
-  _selectItem(itemIndex) {
+  _selectItem(itemIndex: number|null): void {
     this._promptHistory.push(this._value());
     if (this._promptHistory.length > 100) {
       this._promptHistory.shift();
@@ -623,124 +523,71 @@ export class FilteredListWidget extends UI.Widget.VBox {
   }
 }
 
-
 export class Provider {
+  _refreshCallback!: () => void;
   constructor() {
-    /** @type {function():void} */
-    this._refreshCallback;
   }
 
-  /**
-   * @param {function():void} refreshCallback
-   */
-  setRefreshCallback(refreshCallback) {
+  setRefreshCallback(refreshCallback: () => void): void {
     this._refreshCallback = refreshCallback;
   }
 
-  attach() {
+  attach(): void {
   }
 
-  /**
-   * @return {number}
-   */
-  itemCount() {
+  itemCount(): number {
     return 0;
   }
 
-  /**
-   * @param {number} itemIndex
-   * @return {string}
-   */
-  itemKeyAt(itemIndex) {
+  itemKeyAt(_itemIndex: number): string {
     return '';
   }
 
-  /**
-   * @param {number} itemIndex
-   * @param {string} query
-   * @return {number}
-   */
-  itemScoreAt(itemIndex, query) {
+  itemScoreAt(_itemIndex: number, _query: string): number {
     return 1;
   }
 
-  /**
-   * @param {number} itemIndex
-   * @param {string} query
-   * @param {!Element} titleElement
-   * @param {!Element} subtitleElement
-   */
-  renderItem(itemIndex, query, titleElement, subtitleElement) {
+  renderItem(_itemIndex: number, _query: string, _titleElement: Element, _subtitleElement: Element): void {
   }
 
-  /**
-   * @return {boolean}
-   */
-  renderAsTwoRows() {
+  renderAsTwoRows(): boolean {
     return false;
   }
 
-  /**
-   * @param {?number} itemIndex
-   * @param {string} promptValue
-   */
-  selectItem(itemIndex, promptValue) {
+  selectItem(_itemIndex: number|null, _promptValue: string): void {
   }
 
-  refresh() {
+  refresh(): void {
     if (this._refreshCallback) {
       this._refreshCallback();
     }
   }
 
-  /**
-   * @param {string} query
-   * @return {string}
-   */
-  rewriteQuery(query) {
+  rewriteQuery(query: string): string {
     return query;
   }
 
-  /**
-   * @param {string} query
-   */
-  queryChanged(query) {
+  queryChanged(_query: string): void {
   }
 
-  /**
-   * @param {string} query
-   * @return {string}
-   */
-  notFoundText(query) {
+  notFoundText(_query: string): string {
     return i18nString(UIStrings.noResultsFound);
   }
 
-  detach() {
+  detach(): void {
   }
 }
 
-/** @type {!Array<!ProviderRegistration>} */
-const registeredProviders = [];
+const registeredProviders: ProviderRegistration[] = [];
 
-/**
- * @param {!ProviderRegistration} registration
- */
-export function registerProvider(registration) {
+export function registerProvider(registration: ProviderRegistration): void {
   registeredProviders.push(registration);
 }
-/**
- * @return {!Array<!ProviderRegistration>}
- */
-export function getRegisteredProviders() {
+export function getRegisteredProviders(): ProviderRegistration[] {
   return registeredProviders;
 }
-
-/**
-  * @typedef {{
-  *  provider: function(): !Provider,
-  *  title: (undefined|function():string),
-  *  prefix: string,
-  * }}
-  */
-// @ts-ignore typedef
-export let ProviderRegistration;
+export interface ProviderRegistration {
+  provider: () => Provider;
+  title?: (() => string);
+  prefix: string;
+}

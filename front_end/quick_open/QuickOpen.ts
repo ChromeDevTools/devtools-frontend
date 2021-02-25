@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as i18n from '../i18n/i18n.js';
 import * as UI from '../ui/ui.js';  // eslint-disable-line no-unused-vars
 
@@ -17,32 +19,29 @@ export const UIStrings = {
   */
   typeQuestionMarkToSeeAvailable: 'Type question mark to see available commands',
 };
-const str_ = i18n.i18n.registerUIStrings('quick_open/QuickOpen.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('quick_open/QuickOpen.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-/** @type {!Array<string>} */
-export const history = [];
+export const history: string[] = [];
 
 export class QuickOpenImpl {
+  _prefix: string|null;
+  _query: string;
+  _providers: Map<string, () => Provider>;
+  _prefixes: string[];
+  _filteredListWidget: FilteredListWidget|null;
   constructor() {
-    /** @type {?string} */
     this._prefix = null;
     this._query = '';
-    /** @type {!Map<string, function():!Provider>} */
     this._providers = new Map();
-    /** @type {!Array<string>} */
     this._prefixes = [];
-    /** @type {?FilteredListWidget} */
     this._filteredListWidget = null;
 
     getRegisteredProviders().forEach(this._addProvider.bind(this));
     this._prefixes.sort((a, b) => b.length - a.length);
   }
 
-  /**
-   * @param {string} query
-   */
-  static show(query) {
+  static show(query: string): void {
     const quickOpen = new this();
     const filteredListWidget = new FilteredListWidget(null, history, quickOpen._queryChanged.bind(quickOpen));
     quickOpen._filteredListWidget = filteredListWidget;
@@ -52,10 +51,10 @@ export class QuickOpenImpl {
     filteredListWidget.setQuery(query);
   }
 
-  /**
-   * @param {!{prefix: string, provider: function(): !Provider}} extension
-   */
-  _addProvider(extension) {
+  _addProvider(extension: {
+    prefix: string,
+    provider: () => Provider,
+  }): void {
     const prefix = extension.prefix;
     if (prefix === null) {
       return;
@@ -64,10 +63,7 @@ export class QuickOpenImpl {
     this._providers.set(prefix, extension.provider);
   }
 
-  /**
-   * @param {string} query
-   */
-  _queryChanged(query) {
+  _queryChanged(query: string): void {
     const prefix = this._prefixes.find(prefix => query.startsWith(prefix));
     if (typeof prefix !== 'string' || this._prefix === prefix) {
       return;
@@ -87,28 +83,20 @@ export class QuickOpenImpl {
     if (this._prefix !== prefix || !this._filteredListWidget) {
       return;
     }
-      this._filteredListWidget.setProvider(provider);
-      this._providerLoadedForTest(provider);
+    this._filteredListWidget.setProvider(provider);
+    this._providerLoadedForTest(provider);
   }
 
-  /**
-   * @param {!Provider} provider
-   */
-  _providerLoadedForTest(provider) {
+  _providerLoadedForTest(_provider: Provider): void {
   }
 }
 
-/** @type {!ShowActionDelegate} */
-let showActionDelegateInstance;
+let showActionDelegateInstance: ShowActionDelegate;
 
-/**
- * @implements {UI.ActionRegistration.ActionDelegate}
- */
-export class ShowActionDelegate {
-  /**
-   * @param {{forceNew: ?boolean}} opts
-   */
-  static instance(opts = {forceNew: null}) {
+export class ShowActionDelegate implements UI.ActionRegistration.ActionDelegate {
+  static instance(opts: {
+    forceNew: boolean|null,
+  } = {forceNew: null}): ShowActionDelegate {
     const {forceNew} = opts;
     if (!showActionDelegateInstance || forceNew) {
       showActionDelegateInstance = new ShowActionDelegate();
@@ -117,13 +105,7 @@ export class ShowActionDelegate {
     return showActionDelegateInstance;
   }
 
-  /**
-   * @override
-   * @param {!UI.Context.Context} context
-   * @param {string} actionId
-   * @return {boolean}
-   */
-  handleAction(context, actionId) {
+  handleAction(context: UI.Context.Context, actionId: string): boolean {
     switch (actionId) {
       case 'quickOpen.show':
         QuickOpenImpl.show('');

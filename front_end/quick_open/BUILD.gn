@@ -7,12 +7,12 @@ import("../../scripts/build/ninja/devtools_module.gni")
 
 devtools_module("quick_open") {
   sources = [
-    "CommandMenu.js",
-    "FilteredListWidget.js",
-    "HelpQuickOpen.js",
-    "QuickInput.js",
-    "QuickOpen.js",
-    "QuickPick.js",
+    "CommandMenu.ts",
+    "FilteredListWidget.ts",
+    "HelpQuickOpen.ts",
+    "QuickInput.ts",
+    "QuickOpen.ts",
+    "QuickPick.ts",
   ]
 
   deps = [
@@ -33,7 +33,7 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_entrypoint("legacy") {
-  entrypoint = "quick_open-legacy.js"
+  entrypoint = "quick_open-legacy.ts"
 
   deps = [ ":bundle" ]
 }

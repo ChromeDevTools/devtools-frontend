@@ -7124,6 +7124,15 @@
   "sdk/NetworkManager.js | crossoriginReadBlockingCorb": {
     "message": "Cross-Origin Read Blocking (CORB) blocked cross-origin response {PH1} with MIME type {PH2}. See https://www.chromestatus.com/feature/5629709824032768 for more details."
   },
+  "sdk/NetworkManager.js | fastG": {
+    "message": "Fast 3G"
+  },
+  "sdk/NetworkManager.js | noThrottling": {
+    "message": "No throttling"
+  },
+  "sdk/NetworkManager.js | offline": {
+    "message": "Offline"
+  },
   "sdk/NetworkManager.js | requestWasBlockedByDevtoolsS": {
     "message": "Request was blocked by DevTools: \"{PH1}\""
   },
@@ -7138,6 +7147,9 @@
   },
   "sdk/NetworkManager.js | sFinishedLoadingSS": {
     "message": "{PH1} finished loading: {PH2} \"{PH3}\"."
+  },
+  "sdk/NetworkManager.js | slowG": {
+    "message": "Slow 3G"
   },
   "sdk/NetworkRequest.js | anUnknownErrorWasEncounteredWhenTrying": {
     "message": "An unknown error was encountered when trying to store this cookie."

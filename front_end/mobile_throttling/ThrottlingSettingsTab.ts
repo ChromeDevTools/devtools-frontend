@@ -143,7 +143,7 @@ export class ThrottlingSettingsTab extends UI.Widget.VBox implements
   }
 
   _addButtonClicked(): void {
-    this._list.addNewItem(this._customSetting.get().length, {title: '', download: -1, upload: -1, latency: 0});
+    this._list.addNewItem(this._customSetting.get().length, {title: () => '', download: -1, upload: -1, latency: 0});
   }
 
   renderItem(conditions: SDK.NetworkManager.Conditions, _editable: boolean): Element {
@@ -151,8 +151,9 @@ export class ThrottlingSettingsTab extends UI.Widget.VBox implements
     element.classList.add('conditions-list-item');
     const title = element.createChild('div', 'conditions-list-text conditions-list-title');
     const titleText = title.createChild('div', 'conditions-list-title-text');
-    titleText.textContent = conditions.title;
-    UI.Tooltip.Tooltip.install(titleText, conditions.title);
+    const castedTitle = this.retrieveOptionsTitle(conditions);
+    titleText.textContent = castedTitle;
+    UI.Tooltip.Tooltip.install(titleText, castedTitle);
     element.createChild('div', 'conditions-list-separator');
     element.createChild('div', 'conditions-list-text').textContent = throughputText(conditions.download);
     element.createChild('div', 'conditions-list-separator');
@@ -167,6 +168,12 @@ export class ThrottlingSettingsTab extends UI.Widget.VBox implements
     const list = this._customSetting.get();
     list.splice(index, 1);
     this._customSetting.set(list);
+  }
+
+  retrieveOptionsTitle(conditions: SDK.NetworkManager.Conditions): string {
+    // The title is usually an i18nLazyString except for custom values that are stored in the local storage in the form of a string.
+    const castedTitle = typeof conditions.title === 'function' ? conditions.title() : conditions.title;
+    return castedTitle;
   }
 
   commitEdit(
@@ -184,12 +191,13 @@ export class ThrottlingSettingsTab extends UI.Widget.VBox implements
     if (isNew) {
       list.push(conditions);
     }
+
     this._customSetting.set(list);
   }
 
   beginEdit(conditions: SDK.NetworkManager.Conditions): UI.ListWidget.Editor<SDK.NetworkManager.Conditions> {
     const editor = this._createEditor();
-    editor.control('title').value = conditions.title;
+    editor.control('title').value = this.retrieveOptionsTitle(conditions);
     editor.control('download').value = conditions.download <= 0 ? '' : String(conditions.download / (1000 / 8));
     editor.control('upload').value = conditions.upload <= 0 ? '' : String(conditions.upload / (1000 / 8));
     editor.control('latency').value = conditions.latency ? String(conditions.latency) : '';

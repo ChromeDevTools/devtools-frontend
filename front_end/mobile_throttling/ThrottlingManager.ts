@@ -115,7 +115,8 @@ export class ThrottlingManager extends Common.ObjectWrapper.ObjectWrapper implem
         const groupElement = selectElement.createChild('optgroup') as HTMLOptGroupElement;
         groupElement.label = group.title;
         for (const conditions of group.items) {
-          const title = conditions.title;
+          // The title is usually an i18nLazyString except for custom values that are stored in the local storage in the form of a string.
+          const title = typeof conditions.title === 'function' ? conditions.title() : conditions.title;
           const option = new Option(title, title);
           UI.ARIAUtils.setAccessibleName(option, i18nString(UIStrings.sS, {PH1: group.title, PH2: title}));
           groupElement.appendChild(option);

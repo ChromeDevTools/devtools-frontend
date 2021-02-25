@@ -7124,6 +7124,15 @@
   "sdk/NetworkManager.js | crossoriginReadBlockingCorb": {
     "message": "Ĉŕôśŝ-Ór̂íĝín̂ Ŕêád̂ B́l̂óĉḱîńĝ (ĆÔŔB̂) b́l̂óĉḱêd́ ĉŕôśŝ-ór̂íĝín̂ ŕêśp̂ón̂śê {PH1} ẃît́ĥ ḾÎḾÊ t́ŷṕê {PH2}. Śêé ĥt́t̂ṕŝ://ẃŵẃ.ĉh́r̂óm̂éŝt́ât́ûś.ĉóm̂/f́êát̂úr̂é/5629709824032768 f̂ór̂ ḿôŕê d́êt́âíl̂ś."
   },
+  "sdk/NetworkManager.js | fastG": {
+    "message": "F̂áŝt́ 3Ĝ"
+  },
+  "sdk/NetworkManager.js | noThrottling": {
+    "message": "N̂ó t̂h́r̂ót̂t́l̂ín̂ǵ"
+  },
+  "sdk/NetworkManager.js | offline": {
+    "message": "Ôf́f̂ĺîńê"
+  },
   "sdk/NetworkManager.js | requestWasBlockedByDevtoolsS": {
     "message": "R̂éq̂úêśt̂ ẃâś b̂ĺôćk̂éd̂ b́ŷ D́êv́T̂óôĺŝ: \"{PH1}\""
   },
@@ -7138,6 +7147,9 @@
   },
   "sdk/NetworkManager.js | sFinishedLoadingSS": {
     "message": "{PH1} f̂ín̂íŝh́êd́ l̂óâd́îńĝ: {PH2} \"{PH3}\"."
+  },
+  "sdk/NetworkManager.js | slowG": {
+    "message": "Ŝĺôẃ 3Ĝ"
   },
   "sdk/NetworkRequest.js | anUnknownErrorWasEncounteredWhenTrying": {
     "message": "Âń ûńk̂ńôẃn̂ ér̂ŕôŕ ŵáŝ én̂ćôún̂t́êŕêd́ ŵh́êń t̂ŕŷín̂ǵ t̂ó ŝt́ôŕê t́ĥíŝ ćôók̂íê."

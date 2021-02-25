@@ -40,6 +40,22 @@ import {Capability, SDKModel, SDKModelObserver, Target, TargetManager} from './S
 
 export const UIStrings = {
   /**
+  *@description Text to indicate that network throttling is disabled
+  */
+  noThrottling: 'No throttling',
+  /**
+  *@description Text to indicate the network connectivity is offline
+  */
+  offline: 'Offline',
+  /**
+  *@description Text in Network Manager
+  */
+  slowG: 'Slow 3G',
+  /**
+  *@description Text in Network Manager
+  */
+  fastG: 'Fast 3G',
+  /**
   *@description Text in Network Manager
   *@example {application} PH1
   *@example {image} PH2
@@ -81,6 +97,7 @@ export const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('sdk/NetworkManager.js', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 /** @type {!WeakMap<!NetworkRequest, !NetworkManager>} */
 const requestToManagerMap = new WeakMap();
@@ -215,7 +232,8 @@ export class NetworkManager extends SDKModel {
     if (!conditions.download && !conditions.upload) {
       return Protocol.Network.ConnectionType.None;
     }
-    const title = conditions.title.toLowerCase();
+    const title =
+        typeof conditions.title === 'function' ? conditions.title().toLowerCase() : conditions.title.toLowerCase();
     for (const [name, protocolType] of CONNECTION_TYPES) {
       if (title.includes(name)) {
         return protocolType;
@@ -307,7 +325,7 @@ export const Events = {
 
 /** @type {!Conditions} */
 export const NoThrottlingConditions = {
-  title: 'No throttling',
+  title: i18nLazyString(UIStrings.noThrottling),
   download: -1,
   upload: -1,
   latency: 0
@@ -315,7 +333,7 @@ export const NoThrottlingConditions = {
 
 /** @type {!Conditions} */
 export const OfflineConditions = {
-  title: 'Offline',
+  title: i18nLazyString(UIStrings.offline),
   download: 0,
   upload: 0,
   latency: 0,
@@ -323,7 +341,7 @@ export const OfflineConditions = {
 
 /** @type {!Conditions} */
 export const Slow3GConditions = {
-  title: 'Slow 3G',
+  title: i18nLazyString(UIStrings.slowG),
   download: 500 * 1000 / 8 * .8,
   upload: 500 * 1000 / 8 * .8,
   latency: 400 * 5,
@@ -331,7 +349,7 @@ export const Slow3GConditions = {
 
 /** @type {!Conditions} */
 export const Fast3GConditions = {
-  title: 'Fast 3G',
+  title: i18nLazyString(UIStrings.fastG),
   download: 1.6 * 1000 * 1000 / 8 * .9,
   upload: 750 * 1000 / 8 * .9,
   latency: 150 * 3.75,
@@ -1756,7 +1774,7 @@ SDKModel.register(NetworkManager, Capability.Network, true);
   *   download: number,
   *   upload: number,
   *   latency: number,
-  *   title: string,
+  *   title: (() => string) | string,
   * }}
   */
 // @ts-ignore typedef

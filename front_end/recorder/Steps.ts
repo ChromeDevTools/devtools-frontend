@@ -162,9 +162,10 @@ export class EmulateNetworkConditions extends Step {
   }
 
   toScript(): Script {
+    const title = typeof this.conditions.title === 'function' ? this.conditions.title() : this.conditions.title;
     // TODO(crbug.com/1161438): Update once puppeteer has better support for this
     return [
-      `// Simulated network throttling (${this.conditions.title})`,
+      `// Simulated network throttling (${title})`,
       'const client = await page.target().createCDPSession();',
       'await client.send(\'Network.enable\');',
       'await client.send(\'Network.emulateNetworkConditions\', {',

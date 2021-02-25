@@ -406,7 +406,7 @@ export const UIStrings = {
   * is part of the ARIA API and should not be translated. label (for) is just a different type of
   * label.
   */
-  fromLabelFor: 'From `label (for)`',
+  fromLabelFor: 'From `label` (`for=` attribute)',
   /**
   *@description Tooltip text that appears when hovering over the 'From label (for)' attribute name under the Computed Properties section in the Accessibility pane of the Elements pane
   */

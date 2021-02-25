@@ -1465,7 +1465,10 @@ export class StylePropertiesSection {
     if (header && header.isMutable && !header.isViaInspector()) {
       const label = header.isConstructed ? i18nString(UIStrings.constructedStylesheet) : '<style>';
       if (header.ownerNode) {
-        const link = linkifyDeferredNodeReference(header.ownerNode);
+        const link = linkifyDeferredNodeReference(header.ownerNode, {
+          preventKeyboardFocus: false,
+          tooltip: undefined,
+        });
         link.textContent = label;
         return link;
       }
@@ -1489,7 +1492,7 @@ export class StylePropertiesSection {
 
     if (header && header.ownerNode) {
       const link = linkifyDeferredNodeReference(header.ownerNode, {
-        preventKeyboardFocus: true,
+        preventKeyboardFocus: false,
         tooltip: undefined,
       });
       link.textContent = '<style>';

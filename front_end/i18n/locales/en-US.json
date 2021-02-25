@@ -5168,499 +5168,499 @@
   "persistence/WorkspaceSettingsTab.ts | workspace": {
     "message": "Workspace"
   },
-  "profiler/CPUProfileView.js | aggregatedSelfTime": {
+  "profiler/CPUProfileView.ts | aggregatedSelfTime": {
     "message": "Aggregated self time"
   },
-  "profiler/CPUProfileView.js | aggregatedTotalTime": {
+  "profiler/CPUProfileView.ts | aggregatedTotalTime": {
     "message": "Aggregated total time"
   },
-  "profiler/CPUProfileView.js | cpuProfiles": {
+  "profiler/CPUProfileView.ts | cpuProfiles": {
     "message": "CPU PROFILES"
   },
-  "profiler/CPUProfileView.js | cpuProfilesShow": {
+  "profiler/CPUProfileView.ts | cpuProfilesShow": {
     "message": "CPU profiles show where the execution time is spent in your page's JavaScript functions."
   },
-  "profiler/CPUProfileView.js | fms": {
+  "profiler/CPUProfileView.ts | fms": {
     "message": "{PH1} ms"
   },
-  "profiler/CPUProfileView.js | formatPercent": {
+  "profiler/CPUProfileView.ts | formatPercent": {
     "message": "{PH1} %"
   },
-  "profiler/CPUProfileView.js | name": {
+  "profiler/CPUProfileView.ts | name": {
     "message": "Name"
   },
-  "profiler/CPUProfileView.js | notOptimized": {
+  "profiler/CPUProfileView.ts | notOptimized": {
     "message": "Not optimized"
   },
-  "profiler/CPUProfileView.js | recording": {
+  "profiler/CPUProfileView.ts | recording": {
     "message": "Recording…"
   },
-  "profiler/CPUProfileView.js | recordJavascriptCpuProfile": {
+  "profiler/CPUProfileView.ts | recordJavascriptCpuProfile": {
     "message": "Record JavaScript CPU Profile"
   },
-  "profiler/CPUProfileView.js | selfTime": {
+  "profiler/CPUProfileView.ts | selfTime": {
     "message": "Self Time"
   },
-  "profiler/CPUProfileView.js | startCpuProfiling": {
+  "profiler/CPUProfileView.ts | startCpuProfiling": {
     "message": "Start CPU profiling"
   },
-  "profiler/CPUProfileView.js | stopCpuProfiling": {
+  "profiler/CPUProfileView.ts | stopCpuProfiling": {
     "message": "Stop CPU profiling"
   },
-  "profiler/CPUProfileView.js | totalTime": {
+  "profiler/CPUProfileView.ts | totalTime": {
     "message": "Total Time"
   },
-  "profiler/CPUProfileView.js | url": {
+  "profiler/CPUProfileView.ts | url": {
     "message": "URL"
   },
-  "profiler/HeapProfilerPanel.js | revealInSummaryView": {
+  "profiler/HeapProfilerPanel.ts | revealInSummaryView": {
     "message": "Reveal in Summary view"
   },
-  "profiler/HeapProfileView.js | allocationSampling": {
+  "profiler/HeapProfileView.ts | allocationSampling": {
     "message": "Allocation sampling"
   },
-  "profiler/HeapProfileView.js | formatPercent": {
+  "profiler/HeapProfileView.ts | formatPercent": {
     "message": "{PH1} %"
   },
-  "profiler/HeapProfileView.js | heapProfilerIsRecording": {
+  "profiler/HeapProfileView.ts | heapProfilerIsRecording": {
     "message": "Heap profiler is recording"
   },
-  "profiler/HeapProfileView.js | itProvidesGoodApproximation": {
+  "profiler/HeapProfileView.ts | itProvidesGoodApproximation": {
     "message": "It provides good approximation of allocations broken down by JavaScript execution stack."
   },
-  "profiler/HeapProfileView.js | name": {
+  "profiler/HeapProfileView.ts | name": {
     "message": "Name"
   },
-  "profiler/HeapProfileView.js | profileD": {
+  "profiler/HeapProfileView.ts | profileD": {
     "message": "Profile {PH1}"
   },
-  "profiler/HeapProfileView.js | recording": {
+  "profiler/HeapProfileView.ts | recording": {
     "message": "Recording…"
   },
-  "profiler/HeapProfileView.js | recordMemoryAllocations": {
+  "profiler/HeapProfileView.ts | recordMemoryAllocations": {
     "message": "Record memory allocations using sampling method."
   },
-  "profiler/HeapProfileView.js | samplingProfiles": {
+  "profiler/HeapProfileView.ts | samplingProfiles": {
     "message": "SAMPLING PROFILES"
   },
-  "profiler/HeapProfileView.js | sBytes": {
+  "profiler/HeapProfileView.ts | sBytes": {
     "message": "{PH1} bytes"
   },
-  "profiler/HeapProfileView.js | selectedSizeS": {
+  "profiler/HeapProfileView.ts | selectedSizeS": {
     "message": "Selected size: {PH1}"
   },
-  "profiler/HeapProfileView.js | selfSize": {
+  "profiler/HeapProfileView.ts | selfSize": {
     "message": "Self size"
   },
-  "profiler/HeapProfileView.js | selfSizeBytes": {
+  "profiler/HeapProfileView.ts | selfSizeBytes": {
     "message": "Self Size (bytes)"
   },
-  "profiler/HeapProfileView.js | skb": {
+  "profiler/HeapProfileView.ts | skb": {
     "message": "{PH1} kB"
   },
-  "profiler/HeapProfileView.js | startHeapProfiling": {
+  "profiler/HeapProfileView.ts | startHeapProfiling": {
     "message": "Start heap profiling"
   },
-  "profiler/HeapProfileView.js | stopHeapProfiling": {
+  "profiler/HeapProfileView.ts | stopHeapProfiling": {
     "message": "Stop heap profiling"
   },
-  "profiler/HeapProfileView.js | stopping": {
+  "profiler/HeapProfileView.ts | stopping": {
     "message": "Stopping…"
   },
-  "profiler/HeapProfileView.js | thisProfileTypeHasMinimal": {
+  "profiler/HeapProfileView.ts | thisProfileTypeHasMinimal": {
     "message": "This profile type has minimal performance overhead and can be used for long running operations."
   },
-  "profiler/HeapProfileView.js | totalSize": {
+  "profiler/HeapProfileView.ts | totalSize": {
     "message": "Total size"
   },
-  "profiler/HeapProfileView.js | totalSizeBytes": {
+  "profiler/HeapProfileView.ts | totalSizeBytes": {
     "message": "Total Size (bytes)"
   },
-  "profiler/HeapProfileView.js | url": {
+  "profiler/HeapProfileView.ts | url": {
     "message": "URL"
   },
-  "profiler/HeapSnapshotDataGrids.js | allocation": {
+  "profiler/HeapSnapshotDataGrids.ts | allocation": {
     "message": "Allocation"
   },
-  "profiler/HeapSnapshotDataGrids.js | allocSize": {
+  "profiler/HeapSnapshotDataGrids.ts | allocSize": {
     "message": "Alloc. Size"
   },
-  "profiler/HeapSnapshotDataGrids.js | constructorString": {
+  "profiler/HeapSnapshotDataGrids.ts | constructorString": {
     "message": "Constructor"
   },
-  "profiler/HeapSnapshotDataGrids.js | count": {
+  "profiler/HeapSnapshotDataGrids.ts | count": {
     "message": "Count"
   },
-  "profiler/HeapSnapshotDataGrids.js | Deleted": {
+  "profiler/HeapSnapshotDataGrids.ts | Deleted": {
     "message": "# Deleted"
   },
-  "profiler/HeapSnapshotDataGrids.js | Delta": {
+  "profiler/HeapSnapshotDataGrids.ts | Delta": {
     "message": "# Delta"
   },
-  "profiler/HeapSnapshotDataGrids.js | distance": {
+  "profiler/HeapSnapshotDataGrids.ts | distance": {
     "message": "Distance"
   },
-  "profiler/HeapSnapshotDataGrids.js | distanceFromWindowObject": {
+  "profiler/HeapSnapshotDataGrids.ts | distanceFromWindowObject": {
     "message": "Distance from window object"
   },
-  "profiler/HeapSnapshotDataGrids.js | freedSize": {
+  "profiler/HeapSnapshotDataGrids.ts | freedSize": {
     "message": "Freed Size"
   },
-  "profiler/HeapSnapshotDataGrids.js | function": {
+  "profiler/HeapSnapshotDataGrids.ts | function": {
     "message": "Function"
   },
-  "profiler/HeapSnapshotDataGrids.js | heapSnapshotConstructors": {
+  "profiler/HeapSnapshotDataGrids.ts | heapSnapshotConstructors": {
     "message": "Heap Snapshot Constructors"
   },
-  "profiler/HeapSnapshotDataGrids.js | heapSnapshotDiff": {
+  "profiler/HeapSnapshotDataGrids.ts | heapSnapshotDiff": {
     "message": "Heap Snapshot Diff"
   },
-  "profiler/HeapSnapshotDataGrids.js | heapSnapshotRetainment": {
+  "profiler/HeapSnapshotDataGrids.ts | heapSnapshotRetainment": {
     "message": "Heap Snapshot Retainment"
   },
-  "profiler/HeapSnapshotDataGrids.js | liveCount": {
+  "profiler/HeapSnapshotDataGrids.ts | liveCount": {
     "message": "Live Count"
   },
-  "profiler/HeapSnapshotDataGrids.js | liveSize": {
+  "profiler/HeapSnapshotDataGrids.ts | liveSize": {
     "message": "Live Size"
   },
-  "profiler/HeapSnapshotDataGrids.js | New": {
+  "profiler/HeapSnapshotDataGrids.ts | New": {
     "message": "# New"
   },
-  "profiler/HeapSnapshotDataGrids.js | object": {
+  "profiler/HeapSnapshotDataGrids.ts | object": {
     "message": "Object"
   },
-  "profiler/HeapSnapshotDataGrids.js | retainedSize": {
+  "profiler/HeapSnapshotDataGrids.ts | retainedSize": {
     "message": "Retained Size"
   },
-  "profiler/HeapSnapshotDataGrids.js | shallowSize": {
+  "profiler/HeapSnapshotDataGrids.ts | shallowSize": {
     "message": "Shallow Size"
   },
-  "profiler/HeapSnapshotDataGrids.js | size": {
+  "profiler/HeapSnapshotDataGrids.ts | size": {
     "message": "Size"
   },
-  "profiler/HeapSnapshotDataGrids.js | sizeDelta": {
+  "profiler/HeapSnapshotDataGrids.ts | sizeDelta": {
     "message": "Size Delta"
   },
-  "profiler/HeapSnapshotDataGrids.js | sizeOfTheObjectItselfInBytes": {
+  "profiler/HeapSnapshotDataGrids.ts | sizeOfTheObjectItselfInBytes": {
     "message": "Size of the object itself in bytes"
   },
-  "profiler/HeapSnapshotDataGrids.js | sizeOfTheObjectPlusTheGraphIt": {
+  "profiler/HeapSnapshotDataGrids.ts | sizeOfTheObjectPlusTheGraphIt": {
     "message": "Size of the object plus the graph it retains in bytes"
   },
-  "profiler/HeapSnapshotGridNodes.js | detachedFromDomTree": {
+  "profiler/HeapSnapshotGridNodes.ts | detachedFromDomTree": {
     "message": "Detached from DOM tree"
   },
-  "profiler/HeapSnapshotGridNodes.js | emptyPlaceholder": {
+  "profiler/HeapSnapshotGridNodes.ts | emptyPlaceholder": {
     "message": "{PH1}"
   },
-  "profiler/HeapSnapshotGridNodes.js | genericStringsTwoPlaceholders": {
+  "profiler/HeapSnapshotGridNodes.ts | genericStringsTwoPlaceholders": {
     "message": "{PH1}, {PH2}"
   },
-  "profiler/HeapSnapshotGridNodes.js | inElement": {
+  "profiler/HeapSnapshotGridNodes.ts | inElement": {
     "message": "in"
   },
-  "profiler/HeapSnapshotGridNodes.js | internalArray": {
+  "profiler/HeapSnapshotGridNodes.ts | internalArray": {
     "message": "(internal array)[]"
   },
-  "profiler/HeapSnapshotGridNodes.js | previewIsNotAvailable": {
+  "profiler/HeapSnapshotGridNodes.ts | previewIsNotAvailable": {
     "message": "Preview is not available"
   },
-  "profiler/HeapSnapshotGridNodes.js | revealInSummaryView": {
+  "profiler/HeapSnapshotGridNodes.ts | revealInSummaryView": {
     "message": "Reveal in Summary view"
   },
-  "profiler/HeapSnapshotGridNodes.js | revealObjectSWithIdSInSummary": {
+  "profiler/HeapSnapshotGridNodes.ts | revealObjectSWithIdSInSummary": {
     "message": "Reveal object '{PH1}' with id @{PH2} in Summary view"
   },
-  "profiler/HeapSnapshotGridNodes.js | storeAsGlobalVariable": {
+  "profiler/HeapSnapshotGridNodes.ts | storeAsGlobalVariable": {
     "message": "Store as global variable"
   },
-  "profiler/HeapSnapshotGridNodes.js | summary": {
+  "profiler/HeapSnapshotGridNodes.ts | summary": {
     "message": "Summary"
   },
-  "profiler/HeapSnapshotGridNodes.js | userObjectReachableFromWindow": {
+  "profiler/HeapSnapshotGridNodes.ts | userObjectReachableFromWindow": {
     "message": "User object reachable from window"
   },
-  "profiler/HeapSnapshotProxy.js | anErrorOccurredWhenACallToMethod": {
+  "profiler/HeapSnapshotProxy.ts | anErrorOccurredWhenACallToMethod": {
     "message": "An error occurred when a call to method '{PH1}' was requested"
   },
-  "profiler/HeapSnapshotView.js | allObjects": {
+  "profiler/HeapSnapshotView.ts | allObjects": {
     "message": "All objects"
   },
-  "profiler/HeapSnapshotView.js | allocation": {
+  "profiler/HeapSnapshotView.ts | allocation": {
     "message": "Allocation"
   },
-  "profiler/HeapSnapshotView.js | allocationInstrumentationOn": {
+  "profiler/HeapSnapshotView.ts | allocationInstrumentationOn": {
     "message": "Allocation instrumentation on timeline"
   },
-  "profiler/HeapSnapshotView.js | allocationStack": {
+  "profiler/HeapSnapshotView.ts | allocationStack": {
     "message": "Allocation stack"
   },
-  "profiler/HeapSnapshotView.js | allocationTimelines": {
+  "profiler/HeapSnapshotView.ts | allocationTimelines": {
     "message": "ALLOCATION TIMELINES"
   },
-  "profiler/HeapSnapshotView.js | AllocationTimelinesShowInstrumented": {
+  "profiler/HeapSnapshotView.ts | AllocationTimelinesShowInstrumented": {
     "message": "Allocation timelines show instrumented JavaScript memory allocations over time. Once profile is recorded you can select a time interval to see objects that were allocated within it and still alive by the end of recording. Use this profile type to isolate memory leaks."
   },
-  "profiler/HeapSnapshotView.js | baseSnapshot": {
+  "profiler/HeapSnapshotView.ts | baseSnapshot": {
     "message": "Base snapshot"
   },
-  "profiler/HeapSnapshotView.js | classFilter": {
+  "profiler/HeapSnapshotView.ts | classFilter": {
     "message": "Class filter"
   },
-  "profiler/HeapSnapshotView.js | code": {
+  "profiler/HeapSnapshotView.ts | code": {
     "message": "Code"
   },
-  "profiler/HeapSnapshotView.js | comparison": {
+  "profiler/HeapSnapshotView.ts | comparison": {
     "message": "Comparison"
   },
-  "profiler/HeapSnapshotView.js | containment": {
+  "profiler/HeapSnapshotView.ts | containment": {
     "message": "Containment"
   },
-  "profiler/HeapSnapshotView.js | filter": {
+  "profiler/HeapSnapshotView.ts | filter": {
     "message": "Filter"
   },
-  "profiler/HeapSnapshotView.js | find": {
+  "profiler/HeapSnapshotView.ts | find": {
     "message": "Find"
   },
-  "profiler/HeapSnapshotView.js | heapMemoryUsage": {
+  "profiler/HeapSnapshotView.ts | heapMemoryUsage": {
     "message": "Heap memory usage"
   },
-  "profiler/HeapSnapshotView.js | heapSnapshot": {
+  "profiler/HeapSnapshotView.ts | heapSnapshot": {
     "message": "Heap snapshot"
   },
-  "profiler/HeapSnapshotView.js | heapSnapshotProfilesShowMemory": {
+  "profiler/HeapSnapshotView.ts | heapSnapshotProfilesShowMemory": {
     "message": "Heap snapshot profiles show memory distribution among your page's JavaScript objects and related DOM nodes."
   },
-  "profiler/HeapSnapshotView.js | heapSnapshots": {
+  "profiler/HeapSnapshotView.ts | heapSnapshots": {
     "message": "HEAP SNAPSHOTS"
   },
-  "profiler/HeapSnapshotView.js | jsArrays": {
+  "profiler/HeapSnapshotView.ts | jsArrays": {
     "message": "JS arrays"
   },
-  "profiler/HeapSnapshotView.js | liveObjects": {
+  "profiler/HeapSnapshotView.ts | liveObjects": {
     "message": "Live objects"
   },
-  "profiler/HeapSnapshotView.js | loading": {
+  "profiler/HeapSnapshotView.ts | loading": {
     "message": "Loading…"
   },
-  "profiler/HeapSnapshotView.js | objectsAllocatedBeforeS": {
+  "profiler/HeapSnapshotView.ts | objectsAllocatedBeforeS": {
     "message": "Objects allocated before {PH1}"
   },
-  "profiler/HeapSnapshotView.js | objectsAllocatedBetweenSAndS": {
+  "profiler/HeapSnapshotView.ts | objectsAllocatedBetweenSAndS": {
     "message": "Objects allocated between {PH1} and {PH2}"
   },
-  "profiler/HeapSnapshotView.js | percentagePlaceholder": {
+  "profiler/HeapSnapshotView.ts | percentagePlaceholder": {
     "message": "{PH1}%"
   },
-  "profiler/HeapSnapshotView.js | perspective": {
+  "profiler/HeapSnapshotView.ts | perspective": {
     "message": "Perspective"
   },
-  "profiler/HeapSnapshotView.js | recordAllocationStacksExtra": {
+  "profiler/HeapSnapshotView.ts | recordAllocationStacksExtra": {
     "message": "Record allocation stacks (extra performance overhead)"
   },
-  "profiler/HeapSnapshotView.js | recording": {
+  "profiler/HeapSnapshotView.ts | recording": {
     "message": "Recording…"
   },
-  "profiler/HeapSnapshotView.js | retainers": {
+  "profiler/HeapSnapshotView.ts | retainers": {
     "message": "Retainers"
   },
-  "profiler/HeapSnapshotView.js | savingD": {
+  "profiler/HeapSnapshotView.ts | savingD": {
     "message": "Saving… {PH1}%"
   },
-  "profiler/HeapSnapshotView.js | selectedSizeS": {
+  "profiler/HeapSnapshotView.ts | selectedSizeS": {
     "message": "Selected size: {PH1}"
   },
-  "profiler/HeapSnapshotView.js | sKb": {
+  "profiler/HeapSnapshotView.ts | sKb": {
     "message": "{PH1} kB"
   },
-  "profiler/HeapSnapshotView.js | snapshotD": {
+  "profiler/HeapSnapshotView.ts | snapshotD": {
     "message": "Snapshot {PH1}"
   },
-  "profiler/HeapSnapshotView.js | snapshotting": {
+  "profiler/HeapSnapshotView.ts | snapshotting": {
     "message": "Snapshotting…"
   },
-  "profiler/HeapSnapshotView.js | stackWasNotRecordedForThisObject": {
+  "profiler/HeapSnapshotView.ts | stackWasNotRecordedForThisObject": {
     "message": "Stack was not recorded for this object because it had been allocated before this profile recording started."
   },
-  "profiler/HeapSnapshotView.js | startRecordingHeapProfile": {
+  "profiler/HeapSnapshotView.ts | startRecordingHeapProfile": {
     "message": "Start recording heap profile"
   },
-  "profiler/HeapSnapshotView.js | statistics": {
+  "profiler/HeapSnapshotView.ts | statistics": {
     "message": "Statistics"
   },
-  "profiler/HeapSnapshotView.js | stopRecordingHeapProfile": {
+  "profiler/HeapSnapshotView.ts | stopRecordingHeapProfile": {
     "message": "Stop recording heap profile"
   },
-  "profiler/HeapSnapshotView.js | strings": {
+  "profiler/HeapSnapshotView.ts | strings": {
     "message": "Strings"
   },
-  "profiler/HeapSnapshotView.js | summary": {
+  "profiler/HeapSnapshotView.ts | summary": {
     "message": "Summary"
   },
-  "profiler/HeapSnapshotView.js | systemObjects": {
+  "profiler/HeapSnapshotView.ts | systemObjects": {
     "message": "System objects"
   },
-  "profiler/HeapSnapshotView.js | takeHeapSnapshot": {
+  "profiler/HeapSnapshotView.ts | takeHeapSnapshot": {
     "message": "Take heap snapshot"
   },
-  "profiler/HeapSnapshotView.js | treatGlobalObjectsAsRoots": {
+  "profiler/HeapSnapshotView.ts | treatGlobalObjectsAsRoots": {
     "message": "Treat global objects as roots (recommended, unchecking this exposes internal nodes and introduces excessive detail, but might help debugging cycles in retaining paths)"
   },
-  "profiler/HeapSnapshotView.js | typedArrays": {
+  "profiler/HeapSnapshotView.ts | typedArrays": {
     "message": "Typed arrays"
   },
-  "profiler/IsolateSelector.js | changeRate": {
+  "profiler/IsolateSelector.ts | changeRate": {
     "message": "{PH1}/s"
   },
-  "profiler/IsolateSelector.js | decreasingBySPerSecond": {
+  "profiler/IsolateSelector.ts | decreasingBySPerSecond": {
     "message": "decreasing by {PH1} per second"
   },
-  "profiler/IsolateSelector.js | empty": {
+  "profiler/IsolateSelector.ts | empty": {
     "message": "(empty)"
   },
-  "profiler/IsolateSelector.js | heapSizeChangeTrendOverTheLastS": {
+  "profiler/IsolateSelector.ts | heapSizeChangeTrendOverTheLastS": {
     "message": "Heap size change trend over the last {PH1} minutes."
   },
-  "profiler/IsolateSelector.js | heapSizeInUseByLiveJsObjects": {
+  "profiler/IsolateSelector.ts | heapSizeInUseByLiveJsObjects": {
     "message": "Heap size in use by live JS objects."
   },
-  "profiler/IsolateSelector.js | increasingBySPerSecond": {
+  "profiler/IsolateSelector.ts | increasingBySPerSecond": {
     "message": "increasing by {PH1} per second"
   },
-  "profiler/IsolateSelector.js | javascriptVmInstances": {
+  "profiler/IsolateSelector.ts | javascriptVmInstances": {
     "message": "JavaScript VM instances"
   },
-  "profiler/IsolateSelector.js | totalJsHeapSize": {
+  "profiler/IsolateSelector.ts | totalJsHeapSize": {
     "message": "Total JS heap size"
   },
-  "profiler/IsolateSelector.js | totalPageJsHeapSizeAcrossAllVm": {
+  "profiler/IsolateSelector.ts | totalPageJsHeapSizeAcrossAllVm": {
     "message": "Total page JS heap size across all VM instances."
   },
-  "profiler/IsolateSelector.js | totalPageJsHeapSizeChangeTrend": {
+  "profiler/IsolateSelector.ts | totalPageJsHeapSizeChangeTrend": {
     "message": "Total page JS heap size change trend over the last {PH1} minutes."
   },
-  "profiler/LiveHeapProfileView.js | allocatedJsHeapSizeCurrentlyIn": {
+  "profiler/LiveHeapProfileView.ts | allocatedJsHeapSizeCurrentlyIn": {
     "message": "Allocated JS heap size currently in use"
   },
-  "profiler/LiveHeapProfileView.js | anonymousScriptS": {
+  "profiler/LiveHeapProfileView.ts | anonymousScriptS": {
     "message": "(Anonymous Script {PH1})"
   },
-  "profiler/LiveHeapProfileView.js | heapProfile": {
+  "profiler/LiveHeapProfileView.ts | heapProfile": {
     "message": "Heap Profile"
   },
-  "profiler/LiveHeapProfileView.js | jsHeap": {
+  "profiler/LiveHeapProfileView.ts | jsHeap": {
     "message": "JS Heap"
   },
-  "profiler/LiveHeapProfileView.js | kb": {
+  "profiler/LiveHeapProfileView.ts | kb": {
     "message": "kB"
   },
-  "profiler/LiveHeapProfileView.js | numberOfVmsSharingTheSameScript": {
+  "profiler/LiveHeapProfileView.ts | numberOfVmsSharingTheSameScript": {
     "message": "Number of VMs sharing the same script source"
   },
-  "profiler/LiveHeapProfileView.js | scriptUrl": {
+  "profiler/LiveHeapProfileView.ts | scriptUrl": {
     "message": "Script URL"
   },
-  "profiler/LiveHeapProfileView.js | urlOfTheScriptSource": {
+  "profiler/LiveHeapProfileView.ts | urlOfTheScriptSource": {
     "message": "URL of the script source"
   },
-  "profiler/LiveHeapProfileView.js | vms": {
+  "profiler/LiveHeapProfileView.ts | vms": {
     "message": "VMs"
   },
-  "profiler/ModuleUIStrings.js | buildingAllocationStatistics": {
+  "profiler/ModuleUIStrings.ts | buildingAllocationStatistics": {
     "message": "Building allocation statistics…"
   },
-  "profiler/ModuleUIStrings.js | buildingDominatedNodes": {
+  "profiler/ModuleUIStrings.ts | buildingDominatedNodes": {
     "message": "Building dominated nodes…"
   },
-  "profiler/ModuleUIStrings.js | buildingDominatorTree": {
+  "profiler/ModuleUIStrings.ts | buildingDominatorTree": {
     "message": "Building dominator tree…"
   },
-  "profiler/ModuleUIStrings.js | buildingEdgeIndexes": {
+  "profiler/ModuleUIStrings.ts | buildingEdgeIndexes": {
     "message": "Building edge indexes…"
   },
-  "profiler/ModuleUIStrings.js | buildingLocations": {
+  "profiler/ModuleUIStrings.ts | buildingLocations": {
     "message": "Building locations…"
   },
-  "profiler/ModuleUIStrings.js | buildingPostorderIndex": {
+  "profiler/ModuleUIStrings.ts | buildingPostorderIndex": {
     "message": "Building postorder index…"
   },
-  "profiler/ModuleUIStrings.js | buildingRetainers": {
+  "profiler/ModuleUIStrings.ts | buildingRetainers": {
     "message": "Building retainers…"
   },
-  "profiler/ModuleUIStrings.js | calculatingDistances": {
+  "profiler/ModuleUIStrings.ts | calculatingDistances": {
     "message": "Calculating distances…"
   },
-  "profiler/ModuleUIStrings.js | calculatingNodeFlags": {
+  "profiler/ModuleUIStrings.ts | calculatingNodeFlags": {
     "message": "Calculating node flags…"
   },
-  "profiler/ModuleUIStrings.js | calculatingRetainedSizes": {
+  "profiler/ModuleUIStrings.ts | calculatingRetainedSizes": {
     "message": "Calculating retained sizes…"
   },
-  "profiler/ModuleUIStrings.js | calculatingSamples": {
+  "profiler/ModuleUIStrings.ts | calculatingSamples": {
     "message": "Calculating samples…"
   },
-  "profiler/ModuleUIStrings.js | calculatingStatistics": {
+  "profiler/ModuleUIStrings.ts | calculatingStatistics": {
     "message": "Calculating statistics…"
   },
-  "profiler/ModuleUIStrings.js | done": {
+  "profiler/ModuleUIStrings.ts | done": {
     "message": "Done"
   },
-  "profiler/ModuleUIStrings.js | finishedProcessing": {
+  "profiler/ModuleUIStrings.ts | finishedProcessing": {
     "message": "Finished processing."
   },
-  "profiler/ModuleUIStrings.js | loadingAllocationTracesD": {
+  "profiler/ModuleUIStrings.ts | loadingAllocationTracesD": {
     "message": "Loading allocation traces… {PH1}%"
   },
-  "profiler/ModuleUIStrings.js | loadingEdgesD": {
+  "profiler/ModuleUIStrings.ts | loadingEdgesD": {
     "message": "Loading edges… {PH1}%"
   },
-  "profiler/ModuleUIStrings.js | loadingLocations": {
+  "profiler/ModuleUIStrings.ts | loadingLocations": {
     "message": "Loading locations…"
   },
-  "profiler/ModuleUIStrings.js | loadingNodesD": {
+  "profiler/ModuleUIStrings.ts | loadingNodesD": {
     "message": "Loading nodes… {PH1}%"
   },
-  "profiler/ModuleUIStrings.js | loadingSamples": {
+  "profiler/ModuleUIStrings.ts | loadingSamples": {
     "message": "Loading samples…"
   },
-  "profiler/ModuleUIStrings.js | loadingSnapshotInfo": {
+  "profiler/ModuleUIStrings.ts | loadingSnapshotInfo": {
     "message": "Loading snapshot info…"
   },
-  "profiler/ModuleUIStrings.js | loadingStrings": {
+  "profiler/ModuleUIStrings.ts | loadingStrings": {
     "message": "Loading strings…"
   },
-  "profiler/ModuleUIStrings.js | parsingStrings": {
+  "profiler/ModuleUIStrings.ts | parsingStrings": {
     "message": "Parsing strings…"
   },
-  "profiler/ModuleUIStrings.js | processingSnapshot": {
+  "profiler/ModuleUIStrings.ts | processingSnapshot": {
     "message": "Processing snapshot…"
   },
-  "profiler/ModuleUIStrings.js | propagatingDomState": {
+  "profiler/ModuleUIStrings.ts | propagatingDomState": {
     "message": "Propagating DOM state…"
   },
-  "profiler/ProfileDataGrid.js | genericTextTwoPlaceholders": {
+  "profiler/ProfileDataGrid.ts | genericTextTwoPlaceholders": {
     "message": "{PH1}, {PH2}"
   },
-  "profiler/ProfileDataGrid.js | notOptimizedS": {
+  "profiler/ProfileDataGrid.ts | notOptimizedS": {
     "message": "Not optimized: {PH1}"
   },
-  "profiler/ProfileLauncherView.js | load": {
+  "profiler/ProfileLauncherView.ts | load": {
     "message": "Load"
   },
-  "profiler/ProfileLauncherView.js | selectJavascriptVmInstance": {
+  "profiler/ProfileLauncherView.ts | selectJavascriptVmInstance": {
     "message": "Select JavaScript VM instance"
   },
-  "profiler/ProfileLauncherView.js | selectProfilingType": {
+  "profiler/ProfileLauncherView.ts | selectProfilingType": {
     "message": "Select profiling type"
   },
-  "profiler/ProfileLauncherView.js | start": {
+  "profiler/ProfileLauncherView.ts | start": {
     "message": "Start"
   },
-  "profiler/ProfileLauncherView.js | stop": {
+  "profiler/ProfileLauncherView.ts | stop": {
     "message": "Stop"
   },
-  "profiler/ProfileLauncherView.js | takeSnapshot": {
+  "profiler/ProfileLauncherView.ts | takeSnapshot": {
     "message": "Take snapshot"
   },
   "profiler/profiler-meta.ts | liveHeapProfile": {
@@ -5690,94 +5690,94 @@
   "profiler/profiler-meta.ts | stopRecordingHeapAllocations": {
     "message": "Stop recording heap allocations"
   },
-  "profiler/ProfileSidebarTreeElement.js | delete": {
+  "profiler/ProfileSidebarTreeElement.ts | delete": {
     "message": "Delete"
   },
-  "profiler/ProfileSidebarTreeElement.js | load": {
+  "profiler/ProfileSidebarTreeElement.ts | load": {
     "message": "Load…"
   },
-  "profiler/ProfileSidebarTreeElement.js | save": {
+  "profiler/ProfileSidebarTreeElement.ts | save": {
     "message": "Save"
   },
-  "profiler/ProfileSidebarTreeElement.js | saveWithEllipsis": {
+  "profiler/ProfileSidebarTreeElement.ts | saveWithEllipsis": {
     "message": "Save…"
   },
-  "profiler/ProfileSidebarTreeElement.js | singlePlaceholder": {
+  "profiler/ProfileSidebarTreeElement.ts | singlePlaceholder": {
     "message": "{PH1}"
   },
-  "profiler/ProfilesPanel.js | cantLoadFileSupportedFile": {
+  "profiler/ProfilesPanel.ts | cantLoadFileSupportedFile": {
     "message": "Can’t load file. Supported file extensions: '{PH1}.'"
   },
-  "profiler/ProfilesPanel.js | cantLoadProfileWhileAnother": {
+  "profiler/ProfilesPanel.ts | cantLoadProfileWhileAnother": {
     "message": "Can’t load profile while another profile is being recorded."
   },
-  "profiler/ProfilesPanel.js | clearAllProfiles": {
+  "profiler/ProfilesPanel.ts | clearAllProfiles": {
     "message": "Clear all profiles"
   },
-  "profiler/ProfilesPanel.js | load": {
+  "profiler/ProfilesPanel.ts | load": {
     "message": "Load…"
   },
-  "profiler/ProfilesPanel.js | profileLoadingFailedS": {
+  "profiler/ProfilesPanel.ts | profileLoadingFailedS": {
     "message": "Profile loading failed: {PH1}."
   },
-  "profiler/ProfilesPanel.js | profiles": {
+  "profiler/ProfilesPanel.ts | profiles": {
     "message": "Profiles"
   },
-  "profiler/ProfilesPanel.js | runD": {
+  "profiler/ProfilesPanel.ts | runD": {
     "message": "Run {PH1}"
   },
-  "profiler/ProfileView.js | chart": {
+  "profiler/ProfileView.ts | chart": {
     "message": "Chart"
   },
-  "profiler/ProfileView.js | excludeSelectedFunction": {
+  "profiler/ProfileView.ts | excludeSelectedFunction": {
     "message": "Exclude selected function"
   },
-  "profiler/ProfileView.js | failedToReadFile": {
+  "profiler/ProfileView.ts | failedToReadFile": {
     "message": "Failed to read file"
   },
-  "profiler/ProfileView.js | fileSReadErrorS": {
+  "profiler/ProfileView.ts | fileSReadErrorS": {
     "message": "File '{PH1}' read error: {PH2}"
   },
-  "profiler/ProfileView.js | findByCostMsNameOrFile": {
+  "profiler/ProfileView.ts | findByCostMsNameOrFile": {
     "message": "Find by cost (>50ms), name or file"
   },
-  "profiler/ProfileView.js | focusSelectedFunction": {
+  "profiler/ProfileView.ts | focusSelectedFunction": {
     "message": "Focus selected function"
   },
-  "profiler/ProfileView.js | function": {
+  "profiler/ProfileView.ts | function": {
     "message": "Function"
   },
-  "profiler/ProfileView.js | heavyBottomUp": {
+  "profiler/ProfileView.ts | heavyBottomUp": {
     "message": "Heavy (Bottom Up)"
   },
-  "profiler/ProfileView.js | loaded": {
+  "profiler/ProfileView.ts | loaded": {
     "message": "Loaded"
   },
-  "profiler/ProfileView.js | loading": {
+  "profiler/ProfileView.ts | loading": {
     "message": "Loading…"
   },
-  "profiler/ProfileView.js | loadingD": {
+  "profiler/ProfileView.ts | loadingD": {
     "message": "Loading… {PH1}%"
   },
-  "profiler/ProfileView.js | parsing": {
+  "profiler/ProfileView.ts | parsing": {
     "message": "Parsing…"
   },
-  "profiler/ProfileView.js | profile": {
+  "profiler/ProfileView.ts | profile": {
     "message": "Profile"
   },
-  "profiler/ProfileView.js | profileD": {
+  "profiler/ProfileView.ts | profileD": {
     "message": "Profile {PH1}"
   },
-  "profiler/ProfileView.js | profiler": {
+  "profiler/ProfileView.ts | profiler": {
     "message": "Profiler"
   },
-  "profiler/ProfileView.js | profileViewMode": {
+  "profiler/ProfileView.ts | profileViewMode": {
     "message": "Profile view mode"
   },
-  "profiler/ProfileView.js | restoreAllFunctions": {
+  "profiler/ProfileView.ts | restoreAllFunctions": {
     "message": "Restore all functions"
   },
-  "profiler/ProfileView.js | treeTopDown": {
+  "profiler/ProfileView.ts | treeTopDown": {
     "message": "Tree (Top Down)"
   },
   "protocol_monitor/protocol_monitor-meta.ts | protocolMonitor": {

@@ -28,6 +28,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Common from '../common/common.js';
 import * as i18n from '../i18n/i18n.js';
 import * as UI from '../ui/ui.js';
@@ -62,13 +64,26 @@ export const UIStrings = {
   */
   selectProfilingType: 'Select profiling type',
 };
-const str_ = i18n.i18n.registerUIStrings('profiler/ProfileLauncherView.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('profiler/ProfileLauncherView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class ProfileLauncherView extends UI.Widget.VBox {
-  /**
-   * @param {!ProfilesPanel} profilesPanel
-   */
-  constructor(profilesPanel) {
+  _panel: ProfilesPanel;
+  _contentElement: HTMLElement;
+  _selectedProfileTypeSetting: Common.Settings.Setting<string>;
+  _profileTypeHeaderElement: HTMLElement;
+  _profileTypeSelectorForm: HTMLElement;
+  _controlButton: HTMLButtonElement;
+  _loadButton: HTMLButtonElement;
+  _recordButtonEnabled: boolean;
+  _typeIdToOptionElementAndProfileType: Map<string, {
+    optionElement: HTMLInputElement,
+    profileType: ProfileType,
+  }>;
+  _isProfiling?: boolean;
+  _isInstantProfile?: boolean;
+  _isEnabled?: boolean;
+
+  constructor(profilesPanel: ProfilesPanel) {
     super();
     this.registerRequiredCSS('profiler/profileLauncherView.css', {enableLegacyPatching: true});
 
@@ -96,15 +111,14 @@ export class ProfileLauncherView extends UI.Widget.VBox {
     buttonsDiv.appendChild(this._loadButton);
     this._recordButtonEnabled = true;
 
-    /** @type {!Map<string, {optionElement: !HTMLInputElement, profileType: !ProfileType}>} */
     this._typeIdToOptionElementAndProfileType = new Map();
   }
 
-  _loadButtonClicked() {
+  _loadButtonClicked(): void {
     this._panel.showLoadFromFileDialog();
   }
 
-  _updateControls() {
+  _updateControls(): void {
     if (this._isEnabled && this._recordButtonEnabled) {
       this._controlButton.removeAttribute('disabled');
     } else {
@@ -130,31 +144,24 @@ export class ProfileLauncherView extends UI.Widget.VBox {
     }
   }
 
-  profileStarted() {
+  profileStarted(): void {
     this._isProfiling = true;
     this._updateControls();
   }
 
-  profileFinished() {
+  profileFinished(): void {
     this._isProfiling = false;
     this._updateControls();
   }
 
-  /**
-   * @param {!ProfileType} profileType
-   * @param {boolean} recordButtonEnabled
-   */
-  updateProfileType(profileType, recordButtonEnabled) {
+  updateProfileType(profileType: ProfileType, recordButtonEnabled: boolean): void {
     this._isInstantProfile = profileType.isInstantProfile();
     this._recordButtonEnabled = recordButtonEnabled;
     this._isEnabled = profileType.isEnabled();
     this._updateControls();
   }
 
-  /**
-   * @param {!ProfileType} profileType
-   */
-  addProfileType(profileType) {
+  addProfileType(profileType: ProfileType): void {
     const labelElement = UI.UIUtils.createRadioLabel('profile-type', profileType.name);
     this._profileTypeSelectorForm.appendChild(labelElement);
     const optionElement = labelElement.radioElement;
@@ -174,16 +181,17 @@ export class ProfileLauncherView extends UI.Widget.VBox {
     UI.ARIAUtils.setAccessibleName(this._profileTypeSelectorForm, headerText);
   }
 
-  restoreSelectedProfileType() {
+  restoreSelectedProfileType(): void {
     let typeId = this._selectedProfileTypeSetting.get();
     if (!this._typeIdToOptionElementAndProfileType.has(typeId)) {
       typeId = this._typeIdToOptionElementAndProfileType.keys().next().value;
       this._selectedProfileTypeSetting.set(typeId);
     }
 
-    const optionElementAndProfileType =
-        /** @type {!{optionElement: !HTMLInputElement, profileType: !ProfileType}} */ (
-            this._typeIdToOptionElementAndProfileType.get(typeId));
+    const optionElementAndProfileType = (this._typeIdToOptionElementAndProfileType.get(typeId) as {
+      optionElement: HTMLInputElement,
+      profileType: ProfileType,
+    });
     optionElementAndProfileType.optionElement.checked = true;
     const type = optionElementAndProfileType.profileType;
     for (const [id, {profileType}] of this._typeIdToOptionElementAndProfileType) {
@@ -193,18 +201,16 @@ export class ProfileLauncherView extends UI.Widget.VBox {
     this.dispatchEventToListeners(Events.ProfileTypeSelected, type);
   }
 
-  _controlButtonClicked() {
+  _controlButtonClicked(): void {
     this._panel.toggleRecord();
   }
 
-  /**
-   * @param {!ProfileType} profileType
-   */
-  _profileTypeChanged(profileType) {
+  _profileTypeChanged(profileType: ProfileType): void {
     const typeId = this._selectedProfileTypeSetting.get();
-    const type = /** @type {!{optionElement: !HTMLInputElement, profileType: !ProfileType}} */ (
-                     this._typeIdToOptionElementAndProfileType.get(typeId))
-                     .profileType;
+    const type = (this._typeIdToOptionElementAndProfileType.get(typeId) as {
+                   optionElement: HTMLInputElement,
+                   profileType: ProfileType,
+                 }).profileType;
     type.setCustomContentEnabled(false);
     profileType.setCustomContentEnabled(true);
     this.dispatchEventToListeners(Events.ProfileTypeSelected, profileType);
@@ -215,7 +221,8 @@ export class ProfileLauncherView extends UI.Widget.VBox {
   }
 }
 
-/** @enum {symbol} */
-export const Events = {
-  ProfileTypeSelected: Symbol('ProfileTypeSelected')
-};
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum Events {
+  ProfileTypeSelected = 'ProfileTypeSelected',
+}

@@ -7,28 +7,28 @@ import("../../scripts/build/ninja/devtools_module.gni")
 
 devtools_module("profiler") {
   sources = [
-    "BottomUpProfileDataGrid.js",
-    "CPUProfileFlameChart.js",
-    "CPUProfileView.js",
-    "ChildrenProvider.js",
-    "HeapProfileView.js",
-    "HeapProfilerPanel.js",
-    "HeapSnapshotDataGrids.js",
-    "HeapSnapshotGridNodes.js",
-    "HeapSnapshotProxy.js",
-    "HeapSnapshotView.js",
-    "HeapTimelineOverview.js",
-    "IsolateSelector.js",
-    "LiveHeapProfileView.js",
-    "ModuleUIStrings.js",
-    "ProfileDataGrid.js",
-    "ProfileHeader.js",
-    "ProfileLauncherView.js",
-    "ProfileSidebarTreeElement.js",
-    "ProfileTypeRegistry.js",
-    "ProfileView.js",
-    "ProfilesPanel.js",
-    "TopDownProfileDataGrid.js",
+    "BottomUpProfileDataGrid.ts",
+    "CPUProfileFlameChart.ts",
+    "CPUProfileView.ts",
+    "ChildrenProvider.ts",
+    "HeapProfileView.ts",
+    "HeapProfilerPanel.ts",
+    "HeapSnapshotDataGrids.ts",
+    "HeapSnapshotGridNodes.ts",
+    "HeapSnapshotProxy.ts",
+    "HeapSnapshotView.ts",
+    "HeapTimelineOverview.ts",
+    "IsolateSelector.ts",
+    "LiveHeapProfileView.ts",
+    "ModuleUIStrings.ts",
+    "ProfileDataGrid.ts",
+    "ProfileHeader.ts",
+    "ProfileLauncherView.ts",
+    "ProfileSidebarTreeElement.ts",
+    "ProfileTypeRegistry.ts",
+    "ProfileView.ts",
+    "ProfilesPanel.ts",
+    "TopDownProfileDataGrid.ts",
   ]
 
   deps = [
@@ -49,13 +49,13 @@ devtools_module("profiler") {
 }
 
 devtools_entrypoint("bundle") {
-  entrypoint = "profiler.js"
+  entrypoint = "profiler.ts"
 
   deps = [ ":profiler" ]
 }
 
 devtools_entrypoint("legacy") {
-  entrypoint = "profiler-legacy.js"
+  entrypoint = "profiler-legacy.ts"
 
   deps = [ ":bundle" ]
 }

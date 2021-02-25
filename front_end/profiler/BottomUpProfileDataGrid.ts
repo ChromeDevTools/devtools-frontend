@@ -1,3 +1,7 @@
+// Copyright 2020 The Chromium Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+
 /*
  * Copyright (C) 2009 280 North Inc. All Rights Reserved.
  *
@@ -28,6 +32,8 @@
 // each child still represent the root node. We have to be particularly careful of recursion with this mode
 // because a root node can represent itself AND an ancestor.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Platform from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../ui/ui.js';     // eslint-disable-line no-unused-vars
@@ -35,30 +41,21 @@ import * as UI from '../ui/ui.js';     // eslint-disable-line no-unused-vars
 import {Formatter, ProfileDataGridNode, ProfileDataGridTree} from './ProfileDataGrid.js';  // eslint-disable-line no-unused-vars
 import {TopDownProfileDataGridTree} from './TopDownProfileDataGrid.js';  // eslint-disable-line no-unused-vars
 
-/** @typedef {{
- *    ancestor: !SDK.ProfileTreeModel.ProfileNode,
- *    focusNode: !SDK.ProfileTreeModel.ProfileNode,
- *    totalAccountedFor: boolean,
- * }}
- */
-// @ts-ignore typedef
-export let NodeInfo;
+export interface NodeInfo {
+  ancestor: SDK.ProfileTreeModel.ProfileNode;
+  focusNode: SDK.ProfileTreeModel.ProfileNode;
+  totalAccountedFor: boolean;
+}
 
 export class BottomUpProfileDataGridNode extends ProfileDataGridNode {
-  /**
-   * @param {!SDK.ProfileTreeModel.ProfileNode} profileNode
-   * @param {!TopDownProfileDataGridTree} owningTree
-   */
-  constructor(profileNode, owningTree) {
+  _remainingNodeInfos: NodeInfo[]|undefined;
+
+  constructor(profileNode: SDK.ProfileTreeModel.ProfileNode, owningTree: TopDownProfileDataGridTree) {
     super(profileNode, owningTree, profileNode.parent !== null && Boolean(profileNode.parent.parent));
-    /** @type {!Array<!NodeInfo> | undefined} */
     this._remainingNodeInfos = [];
   }
 
-  /**
-   * @param {!BottomUpProfileDataGridNode | !BottomUpProfileDataGridTree} container
-   */
-  static _sharedPopulate(container) {
+  static _sharedPopulate(container: BottomUpProfileDataGridNode|BottomUpProfileDataGridTree): void {
     if (container._remainingNodeInfos === undefined) {
       return;
     }
@@ -69,7 +66,8 @@ export class BottomUpProfileDataGridNode extends ProfileDataGridNode {
       const nodeInfo = remainingNodeInfos[index];
       const ancestor = nodeInfo.ancestor;
       const focusNode = nodeInfo.focusNode;
-      let child = /** @type {?BottomUpProfileDataGridNode} */ (container.findChild(ancestor));
+      let child: BottomUpProfileDataGridNode|(BottomUpProfileDataGridNode | null) =
+          (container.findChild(ancestor) as BottomUpProfileDataGridNode | null);
 
       // If we already have this child, then merge the data together.
       if (child) {
@@ -81,9 +79,7 @@ export class BottomUpProfileDataGridNode extends ProfileDataGridNode {
           child.total += focusNode.total;
         }
       } else {
-        // If not, add it as a true ancestor.
-        // In heavy mode, we take our visual identity from ancestor node...
-        child = new BottomUpProfileDataGridNode(ancestor, /** @type {!TopDownProfileDataGridTree} */ (container.tree));
+        child = new BottomUpProfileDataGridNode(ancestor, (container.tree as TopDownProfileDataGridTree));
 
         if (ancestor !== focusNode) {
           // But the actual statistics from the "root" node (bottom of the callstack).
@@ -107,10 +103,7 @@ export class BottomUpProfileDataGridNode extends ProfileDataGridNode {
     delete container._remainingNodeInfos;
   }
 
-  /**
-   * @param {!ProfileDataGridNode} profileDataGridNode
-   */
-  _takePropertiesFromProfileDataGridNode(profileDataGridNode) {
+  _takePropertiesFromProfileDataGridNode(profileDataGridNode: ProfileDataGridNode): void {
     this.save();
     this.self = profileDataGridNode.self;
     this.total = profileDataGridNode.total;
@@ -118,19 +111,15 @@ export class BottomUpProfileDataGridNode extends ProfileDataGridNode {
 
   /**
    * When focusing, we keep just the members of the callstack.
-   * @param {!ProfileDataGridNode} child
    */
-  _keepOnlyChild(child) {
+  _keepOnlyChild(child: ProfileDataGridNode): void {
     this.save();
 
     this.removeChildren();
     this.appendChild(child);
   }
 
-  /**
-   * @param {string} aCallUID
-   */
-  _exclude(aCallUID) {
+  _exclude(aCallUID: string): void {
     if (this._remainingNodeInfos) {
       this.populate();
     }
@@ -141,7 +130,7 @@ export class BottomUpProfileDataGridNode extends ProfileDataGridNode {
     let index = this.children.length;
 
     while (index--) {
-      /** @type {!BottomUpProfileDataGridNode} */ (children[index])._exclude(aCallUID);
+      (children[index] as BottomUpProfileDataGridNode)._exclude(aCallUID);
     }
 
     const child = this.childrenByCallUID.get(aCallUID);
@@ -151,10 +140,7 @@ export class BottomUpProfileDataGridNode extends ProfileDataGridNode {
     }
   }
 
-  /**
-   * @override
-   */
-  restore() {
+  restore(): void {
     super.restore();
 
     if (!this.children.length) {
@@ -162,27 +148,16 @@ export class BottomUpProfileDataGridNode extends ProfileDataGridNode {
     }
   }
 
-  /**
-   * @override
-   * @param {!ProfileDataGridNode} child
-   * @param {boolean} shouldAbsorb
-   */
-  merge(child, shouldAbsorb) {
+  merge(child: ProfileDataGridNode, shouldAbsorb: boolean): void {
     this.self -= child.self;
     super.merge(child, shouldAbsorb);
   }
 
-  /**
-   * @override
-   */
-  populateChildren() {
+  populateChildren(): void {
     BottomUpProfileDataGridNode._sharedPopulate(this);
   }
 
-  /**
-   * @param {!SDK.ProfileTreeModel.ProfileNode} profileNode
-   */
-  _willHaveChildren(profileNode) {
+  _willHaveChildren(profileNode: SDK.ProfileTreeModel.ProfileNode): boolean {
     // In bottom up mode, our parents are our children since we display an inverted tree.
     // However, we don't want to show the very top parent since it is redundant.
     return Boolean(profileNode.parent && profileNode.parent.parent);
@@ -190,23 +165,20 @@ export class BottomUpProfileDataGridNode extends ProfileDataGridNode {
 }
 
 export class BottomUpProfileDataGridTree extends ProfileDataGridTree {
-  /**
-   * @param {!Formatter} formatter
-   * @param {!UI.SearchableView.SearchableView} searchableView
-   * @param {!SDK.ProfileTreeModel.ProfileNode} rootProfileNode
-   * @param {number} total
-   */
-  constructor(formatter, searchableView, rootProfileNode, total) {
+  deepSearch: boolean;
+  _remainingNodeInfos: NodeInfo[]|undefined;
+
+  constructor(
+      formatter: Formatter, searchableView: UI.SearchableView.SearchableView,
+      rootProfileNode: SDK.ProfileTreeModel.ProfileNode, total: number) {
     super(formatter, searchableView, total);
     this.deepSearch = false;
 
     // Iterate each node in pre-order.
     let profileNodeUIDs = 0;
     const profileNodeGroups = [[], [rootProfileNode]];
-    /** @type {!Map<string, !Set<number>>} */
-    const visitedProfileNodesForCallUID = new Map();
+    const visitedProfileNodesForCallUID = new Map<string, Set<number>>();
 
-    /** @type {!Array<!NodeInfo> | undefined} */
     this._remainingNodeInfos = [];
 
     for (let profileNodeGroupIndex = 0; profileNodeGroupIndex < profileNodeGroups.length; ++profileNodeGroupIndex) {
@@ -214,8 +186,7 @@ export class BottomUpProfileDataGridTree extends ProfileDataGridTree {
       const profileNodes = profileNodeGroups[++profileNodeGroupIndex];
       const count = profileNodes.length;
 
-      /** @type {!WeakMap<!SDK.ProfileTreeModel.ProfileNode, number>} */
-      const profileNodeUIDValues = new WeakMap();
+      const profileNodeUIDValues = new WeakMap<SDK.ProfileTreeModel.ProfileNode, number>();
 
       for (let index = 0; index < count; ++index) {
         const profileNode = profileNodes[index];
@@ -270,24 +241,22 @@ export class BottomUpProfileDataGridTree extends ProfileDataGridTree {
 
   /**
    * When focusing, we keep the entire callstack up to this ancestor.
-   * @override
-   * @param {!ProfileDataGridNode} profileDataGridNode
    */
-  focus(profileDataGridNode) {
+  focus(profileDataGridNode: ProfileDataGridNode): void {
     if (!profileDataGridNode) {
       return;
     }
 
     this.save();
 
-    let currentNode = profileDataGridNode;
-    let focusNode = profileDataGridNode;
+    let currentNode: ProfileDataGridNode = profileDataGridNode;
+    let focusNode: (ProfileDataGridNode&BottomUpProfileDataGridNode)|ProfileDataGridNode = profileDataGridNode;
 
     while (currentNode.parent && (currentNode instanceof BottomUpProfileDataGridNode)) {
       currentNode._takePropertiesFromProfileDataGridNode(profileDataGridNode);
 
       focusNode = currentNode;
-      currentNode = /** @type {!ProfileDataGridNode} */ (currentNode.parent);
+      currentNode = (currentNode.parent as ProfileDataGridNode);
 
       if (currentNode instanceof BottomUpProfileDataGridNode) {
         currentNode._keepOnlyChild(focusNode);
@@ -298,11 +267,7 @@ export class BottomUpProfileDataGridTree extends ProfileDataGridTree {
     this.total = profileDataGridNode.total;
   }
 
-  /**
-   * @override
-   * @param {!ProfileDataGridNode} profileDataGridNode
-   */
-  exclude(profileDataGridNode) {
+  exclude(profileDataGridNode: ProfileDataGridNode): void {
     if (!profileDataGridNode) {
       return;
     }
@@ -322,7 +287,7 @@ export class BottomUpProfileDataGridTree extends ProfileDataGridTree {
     const count = children.length;
 
     for (let index = 0; index < count; ++index) {
-      /** @type {!BottomUpProfileDataGridNode} */ (children[index])._exclude(excludedCallUID);
+      (children[index] as BottomUpProfileDataGridNode)._exclude(excludedCallUID);
     }
 
     if (this.lastComparator) {
@@ -330,10 +295,7 @@ export class BottomUpProfileDataGridTree extends ProfileDataGridTree {
     }
   }
 
-  /**
-   * @override
-   */
-  populateChildren() {
+  populateChildren(): void {
     BottomUpProfileDataGridNode._sharedPopulate(this);
   }
 }

@@ -28,6 +28,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Bindings from '../bindings/bindings.js';
 import * as Common from '../common/common.js';
 import * as Components from '../components/components.js';
@@ -42,7 +44,7 @@ import * as Root from '../root/root.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
-import {AllocationDataGrid, HeapSnapshotConstructorsDataGrid, HeapSnapshotContainmentDataGrid, HeapSnapshotDiffDataGrid, HeapSnapshotRetainmentDataGrid, HeapSnapshotSortableDataGrid, HeapSnapshotSortableDataGridEvents,} from './HeapSnapshotDataGrids.js';  // eslint-disable-line no-unused-vars
+import {AllocationDataGrid, HeapSnapshotConstructorsDataGrid, HeapSnapshotContainmentDataGrid, HeapSnapshotDiffDataGrid, HeapSnapshotRetainmentDataGrid, HeapSnapshotSortableDataGrid, HeapSnapshotSortableDataGridEvents} from './HeapSnapshotDataGrids.js';  // eslint-disable-line no-unused-vars
 import {AllocationGridNode, HeapSnapshotGenericObjectNode, HeapSnapshotGridNode} from './HeapSnapshotGridNodes.js';  // eslint-disable-line no-unused-vars
 import {HeapSnapshotProxy, HeapSnapshotWorkerProxy} from './HeapSnapshotProxy.js';  // eslint-disable-line no-unused-vars
 import {HeapTimelineOverview, IdsRangeChanged, Samples} from './HeapTimelineOverview.js';
@@ -234,27 +236,57 @@ export const UIStrings = {
   stackWasNotRecordedForThisObject:
       'Stack was not recorded for this object because it had been allocated before this profile recording started.',
 };
-const str_ = i18n.i18n.registerUIStrings('profiler/HeapSnapshotView.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('profiler/HeapSnapshotView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 // The way this is handled is to workaround the strings inside the heap_snapshot_worker
 // If strings are removed from inside the worker strings can be declared in this module
 // as any other.
-const moduleUIstr_ = i18n.i18n.registerUIStrings('profiler/ModuleUIStrings.js', ModuleUIStrings.UIStrings);
+// eslint-disable-next-line @typescript-eslint/naming-convention
+const moduleUIstr_ = i18n.i18n.registerUIStrings('profiler/ModuleUIStrings.ts', ModuleUIStrings.UIStrings);
 const moduleI18nString = i18n.i18n.getLocalizedString.bind(undefined, moduleUIstr_);
-/**
- * @implements {DataDisplayDelegate}
- * @implements {UI.SearchableView.Searchable}
- */
-export class HeapSnapshotView extends UI.View.SimpleView {
-  /**
-   * @param {!DataDisplayDelegate} dataDisplayDelegate
-   * @param {!HeapProfileHeader} profile
-   */
-  constructor(dataDisplayDelegate, profile) {
+export class HeapSnapshotView extends UI.View.SimpleView implements DataDisplayDelegate, UI.SearchableView.Searchable {
+  _searchResults: number[];
+  _profile: HeapProfileHeader;
+  _linkifier: Components.Linkifier.Linkifier;
+  _parentDataDisplayDelegate: DataDisplayDelegate;
+  _searchableView: UI.SearchableView.SearchableView;
+  _splitWidget: UI.SplitWidget.SplitWidget;
+  _containmentDataGrid: HeapSnapshotContainmentDataGrid;
+  _containmentWidget: DataGrid.DataGrid.DataGridWidget<HeapSnapshotGridNode>;
+  _statisticsView: HeapSnapshotStatisticsView;
+  _constructorsDataGrid: HeapSnapshotConstructorsDataGrid;
+  _constructorsWidget: DataGrid.DataGrid.DataGridWidget<HeapSnapshotGridNode>;
+  _diffDataGrid: HeapSnapshotDiffDataGrid;
+  _diffWidget: DataGrid.DataGrid.DataGridWidget<HeapSnapshotGridNode>;
+  _allocationDataGrid: AllocationDataGrid|null;
+  _allocationWidget: DataGrid.DataGrid.DataGridWidget<HeapSnapshotGridNode>|undefined;
+  _allocationStackView: HeapAllocationStackView|undefined;
+  _tabbedPane: UI.TabbedPane.TabbedPane|undefined;
+  _retainmentDataGrid: HeapSnapshotRetainmentDataGrid;
+  _retainmentWidget: DataGrid.DataGrid.DataGridWidget<HeapSnapshotGridNode>;
+  _objectDetailsView: UI.Widget.VBox;
+  _perspectives: (SummaryPerspective|ComparisonPerspective|ContainmentPerspective|AllocationPerspective|
+                  StatisticsPerspective)[];
+  _comparisonPerspective: ComparisonPerspective;
+  _perspectiveSelect: UI.Toolbar.ToolbarComboBox;
+  _baseSelect: UI.Toolbar.ToolbarComboBox;
+  _filterSelect: UI.Toolbar.ToolbarComboBox;
+  _classNameFilter: UI.Toolbar.ToolbarInput;
+  _selectedSizeText: UI.Toolbar.ToolbarText;
+  _popoverHelper: UI.PopoverHelper.PopoverHelper;
+  _currentPerspectiveIndex: number;
+  _currentPerspective: SummaryPerspective|ComparisonPerspective|ContainmentPerspective|AllocationPerspective|
+      StatisticsPerspective;
+  _dataGrid: HeapSnapshotSortableDataGrid|null;
+  _searchThrottler: Common.Throttler.Throttler;
+  _baseProfile!: HeapProfileHeader|null;
+  _trackingOverviewGrid?: HeapTimelineOverview;
+  _currentSearchResultIndex: number = -1;
+  currentQuery?: HeapSnapshotModel.HeapSnapshotModel.SearchConfig;
+  constructor(dataDisplayDelegate: DataDisplayDelegate, profile: HeapProfileHeader) {
     super(i18nString(UIStrings.heapSnapshot));
 
-    /** @type {!Array<number>} */
     this._searchResults = [];
 
     this.element.classList.add('heap-snapshot-view');
@@ -298,7 +330,6 @@ export class HeapSnapshotView extends UI.View.SimpleView {
     this._diffWidget = this._diffDataGrid.asWidget();
     this._diffWidget.setMinimumSize(50, 25);
 
-    /** @type {?AllocationDataGrid} */
     this._allocationDataGrid = null;
 
     if (isHeapTimeline) {
@@ -386,7 +417,7 @@ export class HeapSnapshotView extends UI.View.SimpleView {
     this._currentPerspectiveIndex = 0;
     this._currentPerspective = this._perspectives[0];
     this._currentPerspective.activate(this);
-    this._dataGrid = /** @type {?HeapSnapshotSortableDataGrid} */ (this._currentPerspective.masterGrid(this));
+    this._dataGrid = (this._currentPerspective.masterGrid(this) as HeapSnapshotSortableDataGrid | null);
 
     this._populate();
     this._searchThrottler = new Common.Throttler.Throttler(0);
@@ -394,12 +425,9 @@ export class HeapSnapshotView extends UI.View.SimpleView {
     for (const existingProfile of this._profiles()) {
       existingProfile.addEventListener(ProfileHeaderEvents.ProfileTitleChanged, this._updateControls, this);
     }
-
-    /** @type {?HeapProfileHeader} */
-    this._baseProfile;
   }
 
-  _createOverview() {
+  _createOverview(): void {
     const profileType = this._profile.profileType();
     this._trackingOverviewGrid = new HeapTimelineOverview();
     this._trackingOverviewGrid.addEventListener(IdsRangeChanged, this._onIdsRangeChanged.bind(this));
@@ -410,7 +438,7 @@ export class HeapSnapshotView extends UI.View.SimpleView {
     }
   }
 
-  _onStopTracking() {
+  _onStopTracking(): void {
     this._profile.profileType().removeEventListener(
         TrackingHeapSnapshotProfileType.HeapStatsUpdate, this._onHeapStatsUpdate, this);
     this._profile.profileType().removeEventListener(
@@ -420,38 +448,22 @@ export class HeapSnapshotView extends UI.View.SimpleView {
     }
   }
 
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  _onHeapStatsUpdate(event) {
+  _onHeapStatsUpdate(event: Common.EventTarget.EventTargetEvent): void {
     const samples = event.data;
     if (samples && this._trackingOverviewGrid) {
       this._trackingOverviewGrid.setSamples(event.data);
     }
   }
 
-  /**
-   * @return {!UI.SearchableView.SearchableView}
-   */
-  searchableView() {
+  searchableView(): UI.SearchableView.SearchableView {
     return this._searchableView;
   }
 
-  /**
-   * @override
-   * @param {?ProfileHeader} profile
-   * @return {?UI.Widget.Widget}
-   */
-  showProfile(profile) {
+  showProfile(profile: ProfileHeader|null): UI.Widget.Widget|null {
     return this._parentDataDisplayDelegate.showProfile(profile);
   }
 
-  /**
-   * @override
-   * @param {!Protocol.HeapProfiler.HeapSnapshotObjectId} snapshotObjectId
-   * @param {string} perspectiveName
-   */
-  showObject(snapshotObjectId, perspectiveName) {
+  showObject(snapshotObjectId: string, perspectiveName: string): void {
     if (Number(snapshotObjectId) <= this._profile.maxJSObjectId) {
       this.selectLiveObject(perspectiveName, snapshotObjectId);
     } else {
@@ -459,12 +471,7 @@ export class HeapSnapshotView extends UI.View.SimpleView {
     }
   }
 
-  /**
-   * @override
-   * @param {number} nodeIndex
-   * @return {!Promise<?Element>}
-   */
-  async linkifyObject(nodeIndex) {
+  async linkifyObject(nodeIndex: number): Promise<Element|null> {
     const heapProfilerModel = this._profile.heapProfilerModel();
     // heapProfilerModel is null if snapshot was loaded from file
     if (!heapProfilerModel) {
@@ -485,7 +492,7 @@ export class HeapSnapshotView extends UI.View.SimpleView {
     return sourceURL && this._linkifier ? this._linkifier.linkifyRawLocation(rawLocation, sourceURL) : null;
   }
 
-  async _populate() {
+  async _populate(): Promise<void> {
     const heapSnapshotProxy = await this._profile._loadPromise;
 
     this._retrieveStatistics(heapSnapshotProxy);
@@ -517,11 +524,8 @@ export class HeapSnapshotView extends UI.View.SimpleView {
     }
   }
 
-  /**
-   * @param {!HeapSnapshotProxy} heapSnapshotProxy
-   * @return {!Promise<!HeapSnapshotModel.HeapSnapshotModel.Statistics>}
-   */
-  async _retrieveStatistics(heapSnapshotProxy) {
+  async _retrieveStatistics(heapSnapshotProxy: HeapSnapshotProxy):
+      Promise<HeapSnapshotModel.HeapSnapshotModel.Statistics> {
     const statistics = await heapSnapshotProxy.getStatistics();
 
     const records = [
@@ -535,10 +539,7 @@ export class HeapSnapshotView extends UI.View.SimpleView {
     return statistics;
   }
 
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  _onIdsRangeChanged(event) {
+  _onIdsRangeChanged(event: Common.EventTarget.EventTargetEvent): void {
     const minId = event.data.minId;
     const maxId = event.data.maxId;
     this._selectedSizeText.setText(
@@ -548,13 +549,8 @@ export class HeapSnapshotView extends UI.View.SimpleView {
     }
   }
 
-  /**
-   * @override
-   * @return {!Promise<!Array<!UI.Toolbar.ToolbarItem>>}
-   */
-  async toolbarItems() {
-    /** @type {!Array<!UI.Toolbar.ToolbarItem>} */
-    const result = [this._perspectiveSelect, this._classNameFilter];
+  async toolbarItems(): Promise<UI.Toolbar.ToolbarItem[]> {
+    const result: UI.Toolbar.ToolbarItem[] = [this._perspectiveSelect, this._classNameFilter];
     if (this._profile.profileType() !== instance.trackingHeapSnapshotProfileType) {
       result.push(this._baseSelect, this._filterSelect);
     }
@@ -562,55 +558,32 @@ export class HeapSnapshotView extends UI.View.SimpleView {
     return result;
   }
 
-  /**
-   * @override
-   */
-  willHide() {
+  willHide(): void {
     this._currentSearchResultIndex = -1;
     this._popoverHelper.hidePopover();
   }
 
-  /**
-   * @override
-   * @return {boolean}
-   */
-  supportsCaseSensitiveSearch() {
+  supportsCaseSensitiveSearch(): boolean {
     return true;
   }
 
-  /**
-   * @override
-   * @return {boolean}
-   */
-  supportsRegexSearch() {
+  supportsRegexSearch(): boolean {
     return false;
   }
 
-  /**
-   * @override
-   */
-  searchCanceled() {
+  searchCanceled(): void {
     this._currentSearchResultIndex = -1;
     /** @type {!Array<number>} */
     this._searchResults = [];
   }
 
-  /**
-   * @param {?HeapSnapshotGridNode} node
-   */
-  _selectRevealedNode(node) {
+  _selectRevealedNode(node: HeapSnapshotGridNode|null): void {
     if (node) {
       node.select();
     }
   }
 
-  /**
-   * @override
-   * @param {!UI.SearchableView.SearchConfig} searchConfig
-   * @param {boolean} shouldJump
-   * @param {boolean=} jumpBackwards
-   */
-  performSearch(searchConfig, shouldJump, jumpBackwards) {
+  performSearch(searchConfig: UI.SearchableView.SearchConfig, shouldJump: boolean, jumpBackwards?: boolean): void {
     const nextQuery = new HeapSnapshotModel.HeapSnapshotModel.SearchConfig(
         searchConfig.query.trim(), searchConfig.caseSensitive, searchConfig.isRegex, shouldJump,
         jumpBackwards || false);
@@ -618,11 +591,7 @@ export class HeapSnapshotView extends UI.View.SimpleView {
     this._searchThrottler.schedule(this._performSearch.bind(this, nextQuery));
   }
 
-  /**
-   * @param {!HeapSnapshotModel.HeapSnapshotModel.SearchConfig} nextQuery
-   * @return {!Promise<void>}
-   */
-  async _performSearch(nextQuery) {
+  async _performSearch(nextQuery: HeapSnapshotModel.HeapSnapshotModel.SearchConfig): Promise<void> {
     // Call searchCanceled since it will reset everything we need before doing a new search.
     this.searchCanceled();
 
@@ -664,10 +633,7 @@ export class HeapSnapshotView extends UI.View.SimpleView {
     await this._jumpToSearchResult(this._currentSearchResultIndex);
   }
 
-  /**
-   * @override
-   */
-  jumpToNextSearchResult() {
+  jumpToNextSearchResult(): void {
     if (!this._searchResults.length) {
       return;
     }
@@ -675,10 +641,7 @@ export class HeapSnapshotView extends UI.View.SimpleView {
     this._searchThrottler.schedule(this._jumpToSearchResult.bind(this, this._currentSearchResultIndex));
   }
 
-  /**
-   * @override
-   */
-  jumpToPreviousSearchResult() {
+  jumpToPreviousSearchResult(): void {
     if (!this._searchResults.length) {
       return;
     }
@@ -687,11 +650,7 @@ export class HeapSnapshotView extends UI.View.SimpleView {
     this._searchThrottler.schedule(this._jumpToSearchResult.bind(this, this._currentSearchResultIndex));
   }
 
-  /**
-   * @param {number} searchResultIndex
-   * @return {!Promise<void>}
-   */
-  async _jumpToSearchResult(searchResultIndex) {
+  async _jumpToSearchResult(searchResultIndex: number): Promise<void> {
     this._searchableView.updateCurrentMatchIndex(searchResultIndex);
     if (searchResultIndex === -1) {
       return;
@@ -703,24 +662,23 @@ export class HeapSnapshotView extends UI.View.SimpleView {
     this._selectRevealedNode(node);
   }
 
-  refreshVisibleData() {
+  refreshVisibleData(): void {
     if (!this._dataGrid) {
       return;
     }
-    let child = /** @type {?HeapSnapshotGridNode} */ (this._dataGrid.rootNode().children[0]);
+    let child: (HeapSnapshotGridNode|null) = (this._dataGrid.rootNode().children[0] as HeapSnapshotGridNode | null);
     while (child) {
       child.refresh();
-      child = /** @type {?HeapSnapshotGridNode} */ (child.traverseNextNode(false, null, true));
+      child = (child.traverseNextNode(false, null, true) as HeapSnapshotGridNode | null);
     }
   }
 
-  _changeBase() {
+  _changeBase(): void {
     if (this._baseProfile === this._profiles()[this._baseSelect.selectedIndex()]) {
       return;
     }
-
-    this._baseProfile = /** @type {!HeapProfileHeader} */ (this._profiles()[this._baseSelect.selectedIndex()]);
-    const dataGrid = /** @type {!HeapSnapshotDiffDataGrid} */ (this._dataGrid);
+    this._baseProfile = (this._profiles()[this._baseSelect.selectedIndex()] as HeapProfileHeader);
+    const dataGrid = (this._dataGrid as HeapSnapshotDiffDataGrid);
     // Change set base data source only if main data source is already set.
     if (dataGrid.snapshot) {
       this._baseProfile._loadPromise.then(dataGrid.setBaseDataSource.bind(dataGrid));
@@ -736,13 +694,13 @@ export class HeapSnapshotView extends UI.View.SimpleView {
     this.performSearch(this.currentQuery, false);
   }
 
-  _changeFilter() {
+  _changeFilter(): void {
     const profileIndex = this._filterSelect.selectedIndex() - 1;
     if (!this._dataGrid) {
       return;
     }
-    /** @type {!HeapSnapshotConstructorsDataGrid} */ (this._dataGrid)
-        .filterSelectIndexChanged(/** @type {!Array<!HeapProfileHeader>} */ (this._profiles()), profileIndex);
+    (this._dataGrid as HeapSnapshotConstructorsDataGrid)
+        .filterSelectIndexChanged((this._profiles() as HeapProfileHeader[]), profileIndex);
 
     if (!this.currentQuery || !this._searchResults) {
       return;
@@ -754,46 +712,31 @@ export class HeapSnapshotView extends UI.View.SimpleView {
     this.performSearch(this.currentQuery, false);
   }
 
-  /**
-   * @return {!Array.<!ProfileHeader>}
-   */
-  _profiles() {
+  _profiles(): ProfileHeader[] {
     return this._profile.profileType().getProfiles();
   }
 
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  _selectionChanged(event) {
-    const selectedNode = /** @type {!HeapSnapshotGridNode} */ (event.data);
+  _selectionChanged(event: Common.EventTarget.EventTargetEvent): void {
+    const selectedNode = (event.data as HeapSnapshotGridNode);
     this._setSelectedNodeForDetailsView(selectedNode);
     this._inspectedObjectChanged(event);
   }
 
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  _onSelectAllocationNode(event) {
-    const selectedNode = /** @type {!AllocationGridNode} */ (event.data);
+  _onSelectAllocationNode(event: Common.EventTarget.EventTargetEvent): void {
+    const selectedNode = (event.data as AllocationGridNode);
     this._constructorsDataGrid.setAllocationNodeId(selectedNode.allocationNodeId());
     this._setSelectedNodeForDetailsView(null);
   }
 
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  _inspectedObjectChanged(event) {
-    const selectedNode = /** @type {!HeapSnapshotGridNode} */ (event.data);
+  _inspectedObjectChanged(event: Common.EventTarget.EventTargetEvent): void {
+    const selectedNode = (event.data as HeapSnapshotGridNode);
     const heapProfilerModel = this._profile.heapProfilerModel();
     if (heapProfilerModel && selectedNode instanceof HeapSnapshotGenericObjectNode) {
       heapProfilerModel.addInspectedHeapObject(String(selectedNode.snapshotNodeId));
     }
   }
 
-  /**
-   * @param {?HeapSnapshotGridNode} nodeItem
-   */
-  _setSelectedNodeForDetailsView(nodeItem) {
+  _setSelectedNodeForDetailsView(nodeItem: HeapSnapshotGridNode|null): void {
     const dataSource = nodeItem && nodeItem.retainersDataSource();
     if (dataSource) {
       this._retainmentDataGrid.setDataSource(dataSource.snapshot, dataSource.snapshotNodeIndex);
@@ -808,11 +751,7 @@ export class HeapSnapshotView extends UI.View.SimpleView {
     }
   }
 
-  /**
-   * @param {string} perspectiveTitle
-   * @return {!Promise<void>}
-   */
-  async _changePerspectiveAndWait(perspectiveTitle) {
+  async _changePerspectiveAndWait(perspectiveTitle: string): Promise<void> {
     const perspectiveIndex = this._perspectives.findIndex(perspective => perspective.title() === perspectiveTitle);
     if (perspectiveIndex === -1 || this._currentPerspectiveIndex === perspectiveIndex) {
       return;
@@ -826,12 +765,12 @@ export class HeapSnapshotView extends UI.View.SimpleView {
     const promise = dataGrid.once(HeapSnapshotSortableDataGridEvents.ContentShown);
 
     const option = this._perspectiveSelect.options().find(option => option.value === String(perspectiveIndex));
-    this._perspectiveSelect.select(/** @type {!Element} */ (option));
+    this._perspectiveSelect.select((option as Element));
     this._changePerspective(perspectiveIndex);
     return promise;
   }
 
-  async _updateDataSourceAndView() {
+  async _updateDataSourceAndView(): Promise<void> {
     const dataGrid = this._dataGrid;
     if (!dataGrid || dataGrid.snapshot) {
       return;
@@ -849,7 +788,7 @@ export class HeapSnapshotView extends UI.View.SimpleView {
       return;
     }
     if (!this._baseProfile) {
-      this._baseProfile = /** @type {!HeapProfileHeader} */ (this._profiles()[this._baseSelect.selectedIndex()]);
+      this._baseProfile = (this._profiles()[this._baseSelect.selectedIndex()] as HeapProfileHeader);
     }
 
     const baseSnapshotProxy = await this._baseProfile._loadPromise;
@@ -859,17 +798,11 @@ export class HeapSnapshotView extends UI.View.SimpleView {
     }
   }
 
-  /**
-   * @param {!Event} event
-   */
-  _onSelectedPerspectiveChanged(event) {
-    this._changePerspective(Number(/** @type {!HTMLSelectElement} */ (event.target).selectedOptions[0].value));
+  _onSelectedPerspectiveChanged(event: Event): void {
+    this._changePerspective(Number((event.target as HTMLSelectElement).selectedOptions[0].value));
   }
 
-  /**
-   * @param {number} selectedIndex
-   */
-  _changePerspective(selectedIndex) {
+  _changePerspective(selectedIndex: number): void {
     if (selectedIndex === this._currentPerspectiveIndex) {
       return;
     }
@@ -879,7 +812,7 @@ export class HeapSnapshotView extends UI.View.SimpleView {
     this._currentPerspective.deactivate(this);
     const perspective = this._perspectives[selectedIndex];
     this._currentPerspective = perspective;
-    this._dataGrid = /** @type {!HeapSnapshotSortableDataGrid} */ (perspective.masterGrid(this));
+    this._dataGrid = (perspective.masterGrid(this) as HeapSnapshotSortableDataGrid);
     perspective.activate(this);
 
     this.refreshVisibleData();
@@ -899,11 +832,7 @@ export class HeapSnapshotView extends UI.View.SimpleView {
     this.performSearch(this.currentQuery, false);
   }
 
-  /**
-   * @param {string} perspectiveName
-   * @param {!Protocol.HeapProfiler.HeapSnapshotObjectId} snapshotObjectId
-   */
-  async selectLiveObject(perspectiveName, snapshotObjectId) {
+  async selectLiveObject(perspectiveName: string, snapshotObjectId: string): Promise<void> {
     await this._changePerspectiveAndWait(perspectiveName);
     if (!this._dataGrid) {
       return;
@@ -916,14 +845,10 @@ export class HeapSnapshotView extends UI.View.SimpleView {
     }
   }
 
-  /**
-   * @param {!Event} event
-   * @return {?UI.PopoverHelper.PopoverRequest}
-   */
-  _getPopoverRequest(event) {
-    const span = /** @type {?HTMLElement} */ (
-        UI.UIUtils.enclosingNodeOrSelfWithNodeName(/** @type {!Node} */ (event.target), 'span'));
-    const row = UI.UIUtils.enclosingNodeOrSelfWithNodeName(/** @type {!Node} */ (event.target), 'row');
+  _getPopoverRequest(event: Event): UI.PopoverHelper.PopoverRequest|null {
+    const span =
+        /** @type {?HTMLElement} */ (UI.UIUtils.enclosingNodeOrSelfWithNodeName((event.target as Node), 'span'));
+    const row = UI.UIUtils.enclosingNodeOrSelfWithNodeName((event.target as Node), 'row');
     if (!row) {
       return null;
     }
@@ -938,16 +863,16 @@ export class HeapSnapshotView extends UI.View.SimpleView {
     if (!node || !span || !heapProfilerModel) {
       return null;
     }
-    /** @type {?ObjectUI.ObjectPopoverHelper.ObjectPopoverHelper} */
-    let objectPopoverHelper;
+    let objectPopoverHelper: ObjectUI.ObjectPopoverHelper.ObjectPopoverHelper|null;
     return {
+      // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
+      // @ts-expect-error
       box: span.boxInWindow(),
-      show: async popover => {
+      show: async(popover: UI.GlassPane.GlassPane): Promise<boolean> => {
         if (!heapProfilerModel) {
           return false;
         }
-        const remoteObject =
-            await /** @type {!HeapSnapshotGridNode} */ (node).queryObjectContent(heapProfilerModel, 'popover');
+        const remoteObject = await (node as HeapSnapshotGridNode).queryObjectContent(heapProfilerModel, 'popover');
         if (!remoteObject) {
           return false;
         }
@@ -959,16 +884,16 @@ export class HeapSnapshotView extends UI.View.SimpleView {
         }
         return true;
       },
-      hide: () => {
+      hide: (): void => {
         heapProfilerModel.runtimeModel().releaseObjectGroup('popover');
         if (objectPopoverHelper) {
           objectPopoverHelper.dispose();
         }
-      }
+      },
     };
   }
 
-  _updatePerspectiveOptions() {
+  _updatePerspectiveOptions(): void {
     const multipleSnapshots = this._profiles().length > 1;
     this._perspectiveSelect.removeOptions();
     this._perspectives.forEach((perspective, index) => {
@@ -978,7 +903,7 @@ export class HeapSnapshotView extends UI.View.SimpleView {
     });
   }
 
-  _updateBaseOptions() {
+  _updateBaseOptions(): void {
     const list = this._profiles();
     const selectedIndex = this._baseSelect.selectedIndex();
 
@@ -992,7 +917,7 @@ export class HeapSnapshotView extends UI.View.SimpleView {
     }
   }
 
-  _updateFilterOptions() {
+  _updateFilterOptions(): void {
     const list = this._profiles();
     const selectedIndex = this._filterSelect.selectedIndex();
 
@@ -1013,25 +938,19 @@ export class HeapSnapshotView extends UI.View.SimpleView {
     }
   }
 
-  _updateControls() {
+  _updateControls(): void {
     this._updatePerspectiveOptions();
     this._updateBaseOptions();
     this._updateFilterOptions();
   }
 
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  _onReceiveSnapshot(event) {
+  _onReceiveSnapshot(event: Common.EventTarget.EventTargetEvent): void {
     this._updateControls();
     const profile = event.data;
     profile.addEventListener(ProfileHeaderEvents.ProfileTitleChanged, this._updateControls, this);
   }
 
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  _onProfileHeaderRemoved(event) {
+  _onProfileHeaderRemoved(event: Common.EventTarget.EventTargetEvent): void {
     const profile = event.data;
     profile.removeEventListener(ProfileHeaderEvents.ProfileTitleChanged, this._updateControls, this);
 
@@ -1047,7 +966,7 @@ export class HeapSnapshotView extends UI.View.SimpleView {
     }
   }
 
-  dispose() {
+  dispose(): void {
     this._linkifier.dispose();
     this._popoverHelper.dispose();
     if (this._allocationStackView) {
@@ -1064,23 +983,15 @@ export class HeapSnapshotView extends UI.View.SimpleView {
 }
 
 export class Perspective {
-  /**
-   * @param {string} title
-   */
-  constructor(title) {
+  _title: string;
+  constructor(title: string) {
     this._title = title;
   }
 
-  /**
-   * @param {!HeapSnapshotView} heapSnapshotView
-   */
-  activate(heapSnapshotView) {
+  activate(_heapSnapshotView: HeapSnapshotView): void {
   }
 
-  /**
-   * @param {!HeapSnapshotView} heapSnapshotView
-   */
-  deactivate(heapSnapshotView) {
+  deactivate(heapSnapshotView: HeapSnapshotView): void {
     heapSnapshotView._baseSelect.setVisible(false);
     heapSnapshotView._filterSelect.setVisible(false);
     heapSnapshotView._classNameFilter.setVisible(false);
@@ -1098,25 +1009,15 @@ export class Perspective {
     heapSnapshotView._splitWidget.detachChildWidgets();
   }
 
-  /**
-   * @param {!HeapSnapshotView} heapSnapshotView
-   * @return {?DataGrid.DataGrid.DataGridImpl<!HeapSnapshotGridNode>}
-   */
-  masterGrid(heapSnapshotView) {
+  masterGrid(_heapSnapshotView: HeapSnapshotView): DataGrid.DataGrid.DataGridImpl<HeapSnapshotGridNode>|null {
     return null;
   }
 
-  /**
-   * @return {string}
-   */
-  title() {
+  title(): string {
     return this._title;
   }
 
-  /**
-   * @return {boolean}
-   */
-  supportsSearch() {
+  supportsSearch(): boolean {
     return false;
   }
 }
@@ -1126,11 +1027,7 @@ export class SummaryPerspective extends Perspective {
     super(i18nString(UIStrings.summary));
   }
 
-  /**
-   * @override
-   * @param {!HeapSnapshotView} heapSnapshotView
-   */
-  activate(heapSnapshotView) {
+  activate(heapSnapshotView: HeapSnapshotView): void {
     heapSnapshotView._splitWidget.setMainWidget(heapSnapshotView._constructorsWidget);
     heapSnapshotView._splitWidget.setSidebarWidget(heapSnapshotView._objectDetailsView);
     heapSnapshotView._splitWidget.show(heapSnapshotView._searchableView.element);
@@ -1145,20 +1042,11 @@ export class SummaryPerspective extends Perspective {
     heapSnapshotView._trackingOverviewGrid.updateGrid();
   }
 
-  /**
-   * @override
-   * @param {!HeapSnapshotView} heapSnapshotView
-   * @return {?DataGrid.DataGrid.DataGridImpl<!HeapSnapshotGridNode>}
-   */
-  masterGrid(heapSnapshotView) {
+  masterGrid(heapSnapshotView: HeapSnapshotView): DataGrid.DataGrid.DataGridImpl<HeapSnapshotGridNode>|null {
     return heapSnapshotView._constructorsDataGrid;
   }
 
-  /**
-   * @override
-   * @return {boolean}
-   */
-  supportsSearch() {
+  supportsSearch(): boolean {
     return true;
   }
 }
@@ -1168,11 +1056,7 @@ export class ComparisonPerspective extends Perspective {
     super(i18nString(UIStrings.comparison));
   }
 
-  /**
-   * @override
-   * @param {!HeapSnapshotView} heapSnapshotView
-   */
-  activate(heapSnapshotView) {
+  activate(heapSnapshotView: HeapSnapshotView): void {
     heapSnapshotView._splitWidget.setMainWidget(heapSnapshotView._diffWidget);
     heapSnapshotView._splitWidget.setSidebarWidget(heapSnapshotView._objectDetailsView);
     heapSnapshotView._splitWidget.show(heapSnapshotView._searchableView.element);
@@ -1180,20 +1064,11 @@ export class ComparisonPerspective extends Perspective {
     heapSnapshotView._classNameFilter.setVisible(true);
   }
 
-  /**
-   * @override
-   * @param {!HeapSnapshotView} heapSnapshotView
-   * @return {?DataGrid.DataGrid.DataGridImpl<!HeapSnapshotGridNode>}
-   */
-  masterGrid(heapSnapshotView) {
+  masterGrid(heapSnapshotView: HeapSnapshotView): DataGrid.DataGrid.DataGridImpl<HeapSnapshotGridNode>|null {
     return heapSnapshotView._diffDataGrid;
   }
 
-  /**
-   * @override
-   * @return {boolean}
-   */
-  supportsSearch() {
+  supportsSearch(): boolean {
     return true;
   }
 }
@@ -1203,27 +1078,19 @@ export class ContainmentPerspective extends Perspective {
     super(i18nString(UIStrings.containment));
   }
 
-  /**
-   * @override
-   * @param {!HeapSnapshotView} heapSnapshotView
-   */
-  activate(heapSnapshotView) {
+  activate(heapSnapshotView: HeapSnapshotView): void {
     heapSnapshotView._splitWidget.setMainWidget(heapSnapshotView._containmentWidget);
     heapSnapshotView._splitWidget.setSidebarWidget(heapSnapshotView._objectDetailsView);
     heapSnapshotView._splitWidget.show(heapSnapshotView._searchableView.element);
   }
 
-  /**
-   * @override
-   * @param {!HeapSnapshotView} heapSnapshotView
-   * @return {?DataGrid.DataGrid.DataGridImpl<!HeapSnapshotGridNode>}
-   */
-  masterGrid(heapSnapshotView) {
+  masterGrid(heapSnapshotView: HeapSnapshotView): DataGrid.DataGrid.DataGridImpl<HeapSnapshotGridNode>|null {
     return heapSnapshotView._containmentDataGrid;
   }
 }
 
 export class AllocationPerspective extends Perspective {
+  _allocationSplitWidget: UI.SplitWidget.SplitWidget;
   constructor() {
     super(i18nString(UIStrings.allocation));
     this._allocationSplitWidget =
@@ -1231,11 +1098,7 @@ export class AllocationPerspective extends Perspective {
     this._allocationSplitWidget.setSidebarWidget(new UI.Widget.VBox());
   }
 
-  /**
-   * @override
-   * @param {!HeapSnapshotView} heapSnapshotView
-   */
-  activate(heapSnapshotView) {
+  activate(heapSnapshotView: HeapSnapshotView): void {
     if (heapSnapshotView._allocationWidget) {
       this._allocationSplitWidget.setMainWidget(heapSnapshotView._allocationWidget);
     }
@@ -1257,28 +1120,19 @@ export class AllocationPerspective extends Perspective {
 
     heapSnapshotView._constructorsDataGrid.clear();
     if (heapSnapshotView._allocationDataGrid) {
-      const selectedNode = /** @type {!AllocationGridNode} */ (heapSnapshotView._allocationDataGrid.selectedNode);
+      const selectedNode = (heapSnapshotView._allocationDataGrid.selectedNode as AllocationGridNode);
       if (selectedNode) {
         heapSnapshotView._constructorsDataGrid.setAllocationNodeId(selectedNode.allocationNodeId());
       }
     }
   }
 
-  /**
-   * @override
-   * @param {!HeapSnapshotView} heapSnapshotView
-   */
-  deactivate(heapSnapshotView) {
+  deactivate(heapSnapshotView: HeapSnapshotView): void {
     this._allocationSplitWidget.detach();
     super.deactivate(heapSnapshotView);
   }
 
-  /**
-   * @override
-   * @param {!HeapSnapshotView} heapSnapshotView
-   * @return {?DataGrid.DataGrid.DataGridImpl<!HeapSnapshotGridNode>}
-   */
-  masterGrid(heapSnapshotView) {
+  masterGrid(heapSnapshotView: HeapSnapshotView): DataGrid.DataGrid.DataGridImpl<HeapSnapshotGridNode>|null {
     return heapSnapshotView._allocationDataGrid;
   }
 }
@@ -1288,33 +1142,20 @@ export class StatisticsPerspective extends Perspective {
     super(i18nString(UIStrings.statistics));
   }
 
-  /**
-   * @override
-   * @param {!HeapSnapshotView} heapSnapshotView
-   */
-  activate(heapSnapshotView) {
+  activate(heapSnapshotView: HeapSnapshotView): void {
     heapSnapshotView._statisticsView.show(heapSnapshotView._searchableView.element);
   }
 
-  /**
-   * @override
-   * @param {!HeapSnapshotView} heapSnapshotView
-   * @return {?DataGrid.DataGrid.DataGridImpl<!HeapSnapshotGridNode>}
-   */
-  masterGrid(heapSnapshotView) {
+  masterGrid(_heapSnapshotView: HeapSnapshotView): DataGrid.DataGrid.DataGridImpl<HeapSnapshotGridNode>|null {
     return null;
   }
 }
 
-/**
- * @implements {SDK.SDKModel.SDKModelObserver<!SDK.HeapProfilerModel.HeapProfilerModel>}
- */
-export class HeapSnapshotProfileType extends ProfileType {
-  /**
-   * @param {string=} id
-   * @param {string=} title
-   */
-  constructor(id, title) {
+export class HeapSnapshotProfileType extends ProfileType implements
+    SDK.SDKModel.SDKModelObserver<SDK.HeapProfilerModel.HeapProfilerModel> {
+  _treatGlobalObjectsAsRoots: Common.Settings.Setting<boolean>;
+  _customContent: UI.UIUtils.CheckboxLabel|null;
+  constructor(id?: string, title?: string) {
     super(id || HeapSnapshotProfileType.TypeId, title || i18nString(UIStrings.heapSnapshot));
     SDK.SDKModel.TargetManager.instance().observeModels(SDK.HeapProfilerModel.HeapProfilerModel, this);
     SDK.SDKModel.TargetManager.instance().addModelListener(
@@ -1327,113 +1168,66 @@ export class HeapSnapshotProfileType extends ProfileType {
         this._reportHeapSnapshotProgress, this);
     this._treatGlobalObjectsAsRoots =
         Common.Settings.Settings.instance().createSetting('treatGlobalObjectsAsRoots', true);
-    /** @type {?UI.UIUtils.CheckboxLabel} */
     this._customContent = null;
   }
 
-  /**
-   * @override
-   * @param {!SDK.HeapProfilerModel.HeapProfilerModel} heapProfilerModel
-   */
-  modelAdded(heapProfilerModel) {
+  modelAdded(heapProfilerModel: SDK.HeapProfilerModel.HeapProfilerModel): void {
     heapProfilerModel.enable();
   }
 
-  /**
-   * @override
-   * @param {!SDK.HeapProfilerModel.HeapProfilerModel} heapProfilerModel
-   */
-  modelRemoved(heapProfilerModel) {
+  modelRemoved(_heapProfilerModel: SDK.HeapProfilerModel.HeapProfilerModel): void {
   }
 
-  /**
-   * @override
-   * @return {!Array<!HeapProfileHeader>}
-   */
-  getProfiles() {
-    return /** @type {!Array<!HeapProfileHeader>} */ (super.getProfiles());
+  getProfiles(): HeapProfileHeader[] {
+    return super.getProfiles() as HeapProfileHeader[];
   }
 
-  /**
-   * @override
-   * @return {string}
-   */
-  fileExtension() {
+  fileExtension(): string {
     return '.heapsnapshot';
   }
 
-  /**
-   * @override
-   */
-  get buttonTooltip() {
+  get buttonTooltip(): Common.UIString.LocalizedString {
     return i18nString(UIStrings.takeHeapSnapshot);
   }
 
-  /**
-   * @override
-   * @return {boolean}
-   */
-  isInstantProfile() {
+  isInstantProfile(): boolean {
     return true;
   }
 
-  /**
-   * @override
-   * @return {boolean}
-   */
-  buttonClicked() {
+  buttonClicked(): boolean {
     this._takeHeapSnapshot();
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.ProfilesHeapProfileTaken);
     return false;
   }
 
-  /**
-   * @override
-   */
-  get treeItemTitle() {
+  get treeItemTitle(): Common.UIString.LocalizedString {
     return i18nString(UIStrings.heapSnapshots);
   }
 
-  /**
-   * @override
-   */
-  get description() {
+  get description(): Common.UIString.LocalizedString {
     return i18nString(UIStrings.heapSnapshotProfilesShowMemory);
   }
 
-  /**
-   * @override
-   * @return {?Element}
-   */
-  customContent() {
+  customContent(): Element|null {
     const checkboxSetting = UI.SettingsUI.createSettingCheckbox(
         i18nString(UIStrings.treatGlobalObjectsAsRoots), this._treatGlobalObjectsAsRoots, true);
-    this._customContent = /** @type {!UI.UIUtils.CheckboxLabel} */ (checkboxSetting);
+    this._customContent = (checkboxSetting as UI.UIUtils.CheckboxLabel);
     const showOptionToNotTreatGlobalObjectsAsRoots =
         Root.Runtime.experiments.isEnabled('showOptionToNotTreatGlobalObjectsAsRoots');
     return showOptionToNotTreatGlobalObjectsAsRoots ? checkboxSetting : null;
   }
 
-  /**
-   * @override
-   * @param {boolean} enable
-   */
-  setCustomContentEnabled(enable) {
+  setCustomContentEnabled(enable: boolean): void {
     if (this._customContent) {
       this._customContent.checkboxElement.disabled = !enable;
     }
   }
 
-  /**
-   * @override
-   * @param {string} title
-   * @return {!ProfileHeader}
-   */
-  createProfileLoadedFromFile(title) {
+  createProfileLoadedFromFile(title: string): ProfileHeader {
     return new HeapProfileHeader(null, this, title);
   }
 
-  async _takeHeapSnapshot() {
+  async _takeHeapSnapshot(): Promise<void> {
     if (this.profileBeingRecorded()) {
       return;
     }
@@ -1442,41 +1236,38 @@ export class HeapSnapshotProfileType extends ProfileType {
       return;
     }
 
-    let profile = new HeapProfileHeader(heapProfilerModel, this);
+    let profile: HeapProfileHeader = new HeapProfileHeader(heapProfilerModel, this);
     this.setProfileBeingRecorded(profile);
     this.addProfile(profile);
     profile.updateStatus(i18nString(UIStrings.snapshotting));
 
     await heapProfilerModel.takeHeapSnapshot(true, this._treatGlobalObjectsAsRoots.get());
-    // ------------ ASYNC ------------
-    profile = /** @type {!HeapProfileHeader} */ (this.profileBeingRecorded());
+    profile = (this.profileBeingRecorded() as HeapProfileHeader);
     profile.title = i18nString(UIStrings.snapshotD, {PH1: profile.uid});
     profile._finishLoad();
     this.setProfileBeingRecorded(null);
     this.dispatchEventToListeners(ProfileTypeEvents.ProfileComplete, profile);
   }
 
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  _addHeapSnapshotChunk(event) {
-    const profile = /** @type {?HeapProfileHeader} */ (this.profileBeingRecorded());
+  _addHeapSnapshotChunk(event: Common.EventTarget.EventTargetEvent): void {
+    const profile = (this.profileBeingRecorded() as HeapProfileHeader | null);
     if (!profile) {
       return;
     }
-    const chunk = /** @type {string} */ (event.data);
+    const chunk = (event.data as string);
     profile.transferChunk(chunk);
   }
 
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  _reportHeapSnapshotProgress(event) {
-    const profile = /** @type {?HeapProfileHeader} */ (this.profileBeingRecorded());
+  _reportHeapSnapshotProgress(event: Common.EventTarget.EventTargetEvent): void {
+    const profile = (this.profileBeingRecorded() as HeapProfileHeader | null);
     if (!profile) {
       return;
     }
-    const data = /** @type {{done: number, total: number, finished: boolean}} */ (event.data);
+    const data = (event.data as {
+      done: number,
+      total: number,
+      finished: boolean,
+    });
     profile.updateStatus(
         i18nString(UIStrings.percentagePlaceholder, {PH1: ((data.done / data.total) * 100).toFixed(0)}), true);
     if (data.finished) {
@@ -1484,11 +1275,8 @@ export class HeapSnapshotProfileType extends ProfileType {
     }
   }
 
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  _resetProfiles(event) {
-    const heapProfilerModel = /** @type {!SDK.HeapProfilerModel.HeapProfilerModel} */ (event.data);
+  _resetProfiles(event: Common.EventTarget.EventTargetEvent): void {
+    const heapProfilerModel = (event.data as SDK.HeapProfilerModel.HeapProfilerModel);
     for (const profile of this.getProfiles()) {
       if (profile.heapProfilerModel() === heapProfilerModel) {
         this.removeProfile(profile);
@@ -1496,58 +1284,51 @@ export class HeapSnapshotProfileType extends ProfileType {
     }
   }
 
-  /**
-   * @param {!ProfileHeader} profile
-   */
-  _snapshotReceived(profile) {
+  _snapshotReceived(profile: ProfileHeader): void {
     if (this.profileBeingRecorded() === profile) {
       this.setProfileBeingRecorded(null);
     }
     this.dispatchEventToListeners(HeapSnapshotProfileType.SnapshotReceived, profile);
   }
+
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  static readonly TypeId: string = 'HEAP';
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  static readonly SnapshotReceived = 'SnapshotReceived';
 }
 
-HeapSnapshotProfileType.TypeId = 'HEAP';
-HeapSnapshotProfileType.SnapshotReceived = 'SnapshotReceived';
 
 export class TrackingHeapSnapshotProfileType extends HeapSnapshotProfileType {
+  _recordAllocationStacksSetting: Common.Settings.Setting<boolean>;
+  _customContent: UI.UIUtils.CheckboxLabel|null;
+  _recording: boolean;
+  _profileSamples?: Samples|null;
+
   constructor() {
     super(TrackingHeapSnapshotProfileType.TypeId, i18nString(UIStrings.allocationInstrumentationOn));
     this._recordAllocationStacksSetting =
         Common.Settings.Settings.instance().createSetting('recordAllocationStacks', false);
-    /** @type {?UI.UIUtils.CheckboxLabel} */
     this._customContent = null;
     this._recording = false;
   }
 
-  /**
-   * @override
-   * @param {!SDK.HeapProfilerModel.HeapProfilerModel} heapProfilerModel
-   */
-  modelAdded(heapProfilerModel) {
+  modelAdded(heapProfilerModel: SDK.HeapProfilerModel.HeapProfilerModel): void {
     super.modelAdded(heapProfilerModel);
     heapProfilerModel.addEventListener(SDK.HeapProfilerModel.Events.HeapStatsUpdate, this._heapStatsUpdate, this);
     heapProfilerModel.addEventListener(SDK.HeapProfilerModel.Events.LastSeenObjectId, this._lastSeenObjectId, this);
   }
 
-  /**
-   * @override
-   * @param {!SDK.HeapProfilerModel.HeapProfilerModel} heapProfilerModel
-   */
-  modelRemoved(heapProfilerModel) {
+  modelRemoved(heapProfilerModel: SDK.HeapProfilerModel.HeapProfilerModel): void {
     super.modelRemoved(heapProfilerModel);
     heapProfilerModel.removeEventListener(SDK.HeapProfilerModel.Events.HeapStatsUpdate, this._heapStatsUpdate, this);
     heapProfilerModel.removeEventListener(SDK.HeapProfilerModel.Events.LastSeenObjectId, this._lastSeenObjectId, this);
   }
 
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  _heapStatsUpdate(event) {
+  _heapStatsUpdate(event: Common.EventTarget.EventTargetEvent): void {
     if (!this._profileSamples) {
       return;
     }
-    const samples = /** @type {!Array.<number>} */ (event.data);
+    const samples = (event.data as number[]);
     let index;
     for (let i = 0; i < samples.length; i += 3) {
       index = samples[i];
@@ -1559,15 +1340,15 @@ export class TrackingHeapSnapshotProfileType extends HeapSnapshotProfileType {
     }
   }
 
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  _lastSeenObjectId(event) {
+  _lastSeenObjectId(event: Common.EventTarget.EventTargetEvent): void {
     const profileSamples = this._profileSamples;
     if (!profileSamples) {
       return;
     }
-    const data = /** @type {{lastSeenObjectId: number, timestamp: number}} */ (event.data);
+    const data = (event.data as {
+      lastSeenObjectId: number,
+      timestamp: number,
+    });
     const currentIndex = Math.max(profileSamples.ids.length, profileSamples.max.length - 1);
     profileSamples.ids[currentIndex] = data.lastSeenObjectId;
     if (!profileSamples.max[currentIndex]) {
@@ -1585,39 +1366,24 @@ export class TrackingHeapSnapshotProfileType extends HeapSnapshotProfileType {
     }
   }
 
-  /**
-   * @override
-   * @return {boolean}
-   */
-  hasTemporaryView() {
+  hasTemporaryView(): boolean {
     return true;
   }
 
-  /**
-   * @override
-   */
-  get buttonTooltip() {
+  get buttonTooltip(): Common.UIString.LocalizedString {
     return this._recording ? i18nString(UIStrings.stopRecordingHeapProfile) :
                              i18nString(UIStrings.startRecordingHeapProfile);
   }
 
-  /**
-   * @override
-   * @return {boolean}
-   */
-  isInstantProfile() {
+  isInstantProfile(): boolean {
     return false;
   }
 
-  /**
-   * @override
-   * @return {boolean}
-   */
-  buttonClicked() {
+  buttonClicked(): boolean {
     return this._toggleRecording();
   }
 
-  _startRecordingProfile() {
+  _startRecordingProfile(): void {
     if (this.profileBeingRecorded()) {
       return;
     }
@@ -1628,55 +1394,45 @@ export class TrackingHeapSnapshotProfileType extends HeapSnapshotProfileType {
     heapProfilerModel.startTrackingHeapObjects(this._recordAllocationStacksSetting.get());
   }
 
-  /**
-   * @override
-   * @return {?Element}
-   */
-  customContent() {
+  customContent(): Element|null {
     const checkboxSetting = UI.SettingsUI.createSettingCheckbox(
         i18nString(UIStrings.recordAllocationStacksExtra), this._recordAllocationStacksSetting, true);
-    this._customContent = /** @type {!UI.UIUtils.CheckboxLabel} */ (checkboxSetting);
+    this._customContent = (checkboxSetting as UI.UIUtils.CheckboxLabel);
     return checkboxSetting;
   }
 
-  /**
-   * @override
-   * @param {boolean} enable
-   */
-  setCustomContentEnabled(enable) {
+  setCustomContentEnabled(enable: boolean): void {
     if (this._customContent) {
       this._customContent.checkboxElement.disabled = !enable;
     }
   }
 
-  /**
-   * @return {?SDK.HeapProfilerModel.HeapProfilerModel}
-   */
-  _addNewProfile() {
+  _addNewProfile(): SDK.HeapProfilerModel.HeapProfilerModel|null {
     const heapProfilerModel = UI.Context.Context.instance().flavor(SDK.HeapProfilerModel.HeapProfilerModel);
     if (!heapProfilerModel) {
       return null;
     }
     this.setProfileBeingRecorded(new HeapProfileHeader(heapProfilerModel, this, undefined));
     this._profileSamples = new Samples();
-    /** @type {*} */ (this.profileBeingRecorded())._profileSamples = this._profileSamples;
+    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (this.profileBeingRecorded() as any)._profileSamples = this._profileSamples;
     this._recording = true;
-    this.addProfile(/** @type {!ProfileHeader} */ (this.profileBeingRecorded()));
-    /** @type {!HeapProfileHeader} */ (this.profileBeingRecorded()).updateStatus(i18nString(UIStrings.recording));
+    this.addProfile((this.profileBeingRecorded() as ProfileHeader));
+    (this.profileBeingRecorded() as HeapProfileHeader).updateStatus(i18nString(UIStrings.recording));
     this.dispatchEventToListeners(TrackingHeapSnapshotProfileType.TrackingStarted);
     return heapProfilerModel;
   }
 
-  async _stopRecordingProfile() {
-    let profile = /** @type {!HeapProfileHeader} */ (this.profileBeingRecorded());
+  async _stopRecordingProfile(): Promise<void> {
+    let profile: HeapProfileHeader = (this.profileBeingRecorded() as HeapProfileHeader);
     profile.updateStatus(i18nString(UIStrings.snapshotting));
-    const stopPromise = /** @type {!SDK.HeapProfilerModel.HeapProfilerModel} */ (profile.heapProfilerModel())
-                            .stopTrackingHeapObjects(true);
+    const stopPromise =
+        (profile.heapProfilerModel() as SDK.HeapProfilerModel.HeapProfilerModel).stopTrackingHeapObjects(true);
     this._recording = false;
     this.dispatchEventToListeners(TrackingHeapSnapshotProfileType.TrackingStopped);
     await stopPromise;
-    // ------------ ASYNC ------------
-    profile = /** @type {!HeapProfileHeader} */ (this.profileBeingRecorded());
+    profile = (this.profileBeingRecorded() as HeapProfileHeader);
     if (!profile) {
       return;
     }
@@ -1686,10 +1442,7 @@ export class TrackingHeapSnapshotProfileType extends HeapSnapshotProfileType {
     this.dispatchEventToListeners(ProfileTypeEvents.ProfileComplete, profile);
   }
 
-  /**
-   * @return {boolean}
-   */
-  _toggleRecording() {
+  _toggleRecording(): boolean {
     if (this._recording) {
       this._stopRecordingProfile();
     } else {
@@ -1698,34 +1451,19 @@ export class TrackingHeapSnapshotProfileType extends HeapSnapshotProfileType {
     return this._recording;
   }
 
-  /**
-   * @override
-   * @return {string}
-   */
-  fileExtension() {
+  fileExtension(): string {
     return '.heaptimeline';
   }
 
-  /**
-   * @override
-   */
-  get treeItemTitle() {
+  get treeItemTitle(): Common.UIString.LocalizedString {
     return i18nString(UIStrings.allocationTimelines);
   }
 
-  /**
-   * @override
-   * @return {Common.UIString.LocalizedString}
-   */
-  get description() {
+  get description(): Common.UIString.LocalizedString {
     return i18nString(UIStrings.AllocationTimelinesShowInstrumented);
   }
 
-  /**
-   * @override
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  _resetProfiles(event) {
+  _resetProfiles(event: Common.EventTarget.EventTargetEvent): void {
     const wasRecording = this._recording;
     // Clear current profile to avoid stopping backend.
     this.setProfileBeingRecorded(null);
@@ -1736,91 +1474,78 @@ export class TrackingHeapSnapshotProfileType extends HeapSnapshotProfileType {
     }
   }
 
-  /**
-   * @override
-   */
-  profileBeingRecordedRemoved() {
+  profileBeingRecordedRemoved(): void {
     this._stopRecordingProfile();
     this._profileSamples = null;
   }
+
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  static readonly TypeId = 'HEAP-RECORD';
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  static readonly HeapStatsUpdate = 'HeapStatsUpdate';
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  static readonly TrackingStarted = 'TrackingStarted';
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  static readonly TrackingStopped = 'TrackingStopped';
 }
 
-/** @override */
-TrackingHeapSnapshotProfileType.TypeId = 'HEAP-RECORD';
-
-TrackingHeapSnapshotProfileType.HeapStatsUpdate = 'HeapStatsUpdate';
-TrackingHeapSnapshotProfileType.TrackingStarted = 'TrackingStarted';
-TrackingHeapSnapshotProfileType.TrackingStopped = 'TrackingStopped';
-
 export class HeapProfileHeader extends ProfileHeader {
-  /**
-   * @param {?SDK.HeapProfilerModel.HeapProfilerModel} heapProfilerModel
-   * @param {!HeapSnapshotProfileType} type
-   * @param {string=} title
-   */
-  constructor(heapProfilerModel, type, title) {
+  _heapProfilerModel: SDK.HeapProfilerModel.HeapProfilerModel|null;
+  maxJSObjectId: number;
+  _workerProxy: HeapSnapshotWorkerProxy|null;
+  _receiver: Common.StringOutputStream.OutputStream|null;
+  _snapshotProxy: HeapSnapshotProxy|null;
+  _loadPromise: Promise<HeapSnapshotProxy>;
+  _fulfillLoad?: (value: HeapSnapshotProxy|PromiseLike<HeapSnapshotProxy>) => void;
+  _totalNumberOfChunks: number;
+  _bufferedWriter: Bindings.TempFile.TempFile|null;
+  _onTempFileReady: (() => void)|null;
+  _failedToCreateTempFile?: boolean;
+  _wasDisposed?: boolean;
+  _fileName?: string;
+
+  constructor(
+      heapProfilerModel: SDK.HeapProfilerModel.HeapProfilerModel|null, type: HeapSnapshotProfileType, title?: string) {
     super(type, title || i18nString(UIStrings.snapshotD, {PH1: type.nextProfileUid()}));
     this._heapProfilerModel = heapProfilerModel;
     this.maxJSObjectId = -1;
-    /** @type {?HeapSnapshotWorkerProxy} */
     this._workerProxy = null;
-    /** @type {?Common.StringOutputStream.OutputStream} */
     this._receiver = null;
-    /** @type {?HeapSnapshotProxy} */
     this._snapshotProxy = null;
-    /** @type {!Promise<!HeapSnapshotProxy>} */
     this._loadPromise = new Promise(resolve => {
       this._fulfillLoad = resolve;
     });
     this._totalNumberOfChunks = 0;
     this._bufferedWriter = null;
-    /** @type {?function():void} */
     this._onTempFileReady = null;
   }
 
-  /**
-   * @return {?SDK.HeapProfilerModel.HeapProfilerModel}
-   */
-  heapProfilerModel() {
+  heapProfilerModel(): SDK.HeapProfilerModel.HeapProfilerModel|null {
     return this._heapProfilerModel;
   }
 
-  /**
-   * @param {number} nodeIndex
-   * @return {!Promise<?HeapSnapshotModel.HeapSnapshotModel.Location>}
-   */
-  async getLocation(nodeIndex) {
+  async getLocation(nodeIndex: number): Promise<HeapSnapshotModel.HeapSnapshotModel.Location|null> {
     if (!this._snapshotProxy) {
       return null;
     }
     return this._snapshotProxy.getLocation(nodeIndex);
   }
 
-  /**
-   * @override
-   * @param {!DataDisplayDelegate} dataDisplayDelegate
-   * @return {!ProfileSidebarTreeElement}
-   */
-  createSidebarTreeElement(dataDisplayDelegate) {
+  createSidebarTreeElement(dataDisplayDelegate: DataDisplayDelegate): ProfileSidebarTreeElement {
     return new ProfileSidebarTreeElement(dataDisplayDelegate, this, 'heap-snapshot-sidebar-tree-item');
   }
 
-  /**
-   * @override
-   * @param {!DataDisplayDelegate} dataDisplayDelegate
-   * @return {!HeapSnapshotView}
-   */
-  createView(dataDisplayDelegate) {
+  createView(dataDisplayDelegate: DataDisplayDelegate): HeapSnapshotView {
     return new HeapSnapshotView(dataDisplayDelegate, this);
   }
 
-  _prepareToLoad() {
+  _prepareToLoad(): void {
     console.assert(!this._receiver, 'Already loading');
     this._setupWorker();
     this.updateStatus(i18nString(UIStrings.loading), true);
   }
 
-  _finishLoad() {
+  _finishLoad(): void {
     if (!this._wasDisposed && this._receiver) {
       this._receiver.close();
     }
@@ -1830,10 +1555,7 @@ export class HeapProfileHeader extends ProfileHeader {
     this._didWriteToTempFile(this._bufferedWriter);
   }
 
-  /**
-   * @param {!Bindings.TempFile.TempFile} tempFile
-   */
-  _didWriteToTempFile(tempFile) {
+  _didWriteToTempFile(tempFile: Bindings.TempFile.TempFile): void {
     if (this._wasDisposed) {
       if (tempFile) {
         tempFile.remove();
@@ -1850,22 +1572,20 @@ export class HeapProfileHeader extends ProfileHeader {
     }
   }
 
-  _setupWorker() {
+  _setupWorker(): void {
     console.assert(!this._workerProxy, 'HeapSnapshotWorkerProxy already exists');
     this._workerProxy = new HeapSnapshotWorkerProxy(this._handleWorkerEvent.bind(this));
     this._workerProxy.addEventListener(HeapSnapshotWorkerProxy.Events.Wait, event => {
-      this.updateStatus(null, /** @type {boolean} */ (event.data));
+      this.updateStatus(null, (event.data as boolean));
     }, this);
     this._receiver = this._workerProxy.createLoader(this.uid, this._snapshotReceived.bind(this));
   }
 
-  /**
-   * @param {string} eventName
-   * @param {*} data
-   */
-  _handleWorkerEvent(eventName, data) {
+  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  _handleWorkerEvent(eventName: string, data: any): void {
     if (HeapSnapshotModel.HeapSnapshotModel.HeapSnapshotProgressEvent.BrokenSnapshot === eventName) {
-      const error = /** @type {string} */ (data);
+      const error = (data as string);
       Common.Console.Console.instance().error(error);
       return;
     }
@@ -1873,17 +1593,14 @@ export class HeapProfileHeader extends ProfileHeader {
     if (HeapSnapshotModel.HeapSnapshotModel.HeapSnapshotProgressEvent.Update !== eventName) {
       return;
     }
-    const serializedMessage = /** @type {string} */ (data);
+    const serializedMessage = (data as string);
     const messageObject = i18n.i18n.deserializeUIString(serializedMessage);
     // We know all strings from the worker are declared inside a single file so we can
     // use a custom function.
     this.updateStatus(moduleI18nString(messageObject.string, messageObject.values));
   }
 
-  /**
-   * @override
-   */
-  dispose() {
+  dispose(): void {
     if (this._workerProxy) {
       this._workerProxy.dispose();
     }
@@ -1891,17 +1608,14 @@ export class HeapProfileHeader extends ProfileHeader {
     this._wasDisposed = true;
   }
 
-  _didCompleteSnapshotTransfer() {
+  _didCompleteSnapshotTransfer(): void {
     if (!this._snapshotProxy) {
       return;
     }
     this.updateStatus(Platform.NumberUtilities.bytesToString(this._snapshotProxy.totalSize), false);
   }
 
-  /**
-   * @param {string} chunk
-   */
-  transferChunk(chunk) {
+  transferChunk(chunk: string): void {
     if (!this._bufferedWriter) {
       this._bufferedWriter = new Bindings.TempFile.TempFile();
     }
@@ -1913,10 +1627,7 @@ export class HeapProfileHeader extends ProfileHeader {
     }
   }
 
-  /**
-   * @param {!HeapSnapshotProxy} snapshotProxy
-   */
-  _snapshotReceived(snapshotProxy) {
+  _snapshotReceived(snapshotProxy: HeapSnapshotProxy): void {
     if (this._wasDisposed) {
       return;
     }
@@ -1930,35 +1641,25 @@ export class HeapProfileHeader extends ProfileHeader {
     this.notifySnapshotReceived();
   }
 
-  notifySnapshotReceived() {
-    if (this._snapshotProxy) {
+  notifySnapshotReceived(): void {
+    if (this._snapshotProxy && this._fulfillLoad) {
       this._fulfillLoad(this._snapshotProxy);
     }
-    /** @type {!HeapSnapshotProfileType} */ (this.profileType())._snapshotReceived(this);
+    (this.profileType() as HeapSnapshotProfileType)._snapshotReceived(this);
     if (this.canSaveToFile()) {
       this.dispatchEventToListeners(ProfileHeaderEvents.ProfileReceived);
     }
   }
 
-  /**
-   * @override
-   * @return {boolean}
-   */
-  canSaveToFile() {
+  canSaveToFile(): boolean {
     return !this.fromFile() && Boolean(this._snapshotProxy);
   }
 
-  /**
-   * @override
-   */
-  saveToFile() {
+  saveToFile(): void {
     const fileOutputStream = new Bindings.FileUtils.FileOutputStream();
     this._fileName = this._fileName ||
         'Heap-' + Platform.DateUtilities.toISO8601Compact(new Date()) + this.profileType().fileExtension();
-    /**
-     * @param {boolean} accepted
-     */
-    const onOpen = async accepted => {
+    const onOpen = async(accepted: boolean): Promise<void> => {
       if (!accepted) {
         return;
       }
@@ -1968,15 +1669,18 @@ export class HeapProfileHeader extends ProfileHeader {
         return;
       }
       if (this.tempFile) {
-        const error = /** @type {?{message: string}} */ (
-            await this.tempFile.copyToOutputStream(fileOutputStream, this._onChunkTransferred.bind(this)));
+        const error =
+            (await this.tempFile.copyToOutputStream(fileOutputStream, this._onChunkTransferred.bind(this)) as {
+              message: string,
+            } |
+             null);
         if (error) {
           Common.Console.Console.instance().error('Failed to read heap snapshot from temp file: ' + error.message);
         }
         this._didCompleteSnapshotTransfer();
         return;
       }
-      this._onTempFileReady = () => {
+      this._onTempFileReady = (): void => {
         onOpen(accepted);
       };
       this._updateSaveProgress(0, 1);
@@ -1985,34 +1689,24 @@ export class HeapProfileHeader extends ProfileHeader {
     fileOutputStream.open(this._fileName).then(onOpen.bind(this));
   }
 
-  /**
-   * @param {!Bindings.FileUtils.ChunkedReader} reader
-   */
-  _onChunkTransferred(reader) {
+  _onChunkTransferred(reader: Bindings.FileUtils.ChunkedReader): void {
     this._updateSaveProgress(reader.loadedSize(), reader.fileSize());
   }
 
-  /**
-   * @param {number} value
-   * @param {number} total
-   */
-  _updateSaveProgress(value, total) {
+  _updateSaveProgress(value: number, total: number): void {
     const percentValue = ((total && value / total) * 100).toFixed(0);
     this.updateStatus(i18nString(UIStrings.savingD, {PH1: percentValue}));
   }
 
-  /**
-   * @override
-   * @param {!File} file
-   * @return {!Promise<?DOMError>}
-   */
-  async loadFromFile(file) {
+  async loadFromFile(file: File): Promise<DOMError|null> {
     this.updateStatus(i18nString(UIStrings.loading), true);
     this._setupWorker();
     const reader = new Bindings.FileUtils.ChunkedFileReader(file, 10000000);
-    const success = await reader.read(/** @type {!Common.StringOutputStream.OutputStream} */ (this._receiver));
+    const success = await reader.read((this._receiver as Common.StringOutputStream.OutputStream));
     if (!success) {
-      const error = /** @type {?{message: string}} */ (reader.error());
+      const error = (reader.error() as {
+        message: string,
+      } | null);
       if (error) {
         this.updateStatus(error.message);
       }
@@ -2022,6 +1716,7 @@ export class HeapProfileHeader extends ProfileHeader {
 }
 
 export class HeapSnapshotStatisticsView extends UI.Widget.VBox {
+  _pieChart: PerfUI.PieChart.PieChart;
   constructor() {
     super();
     this.element.classList.add('heap-snapshot-statistics-view');
@@ -2031,47 +1726,34 @@ export class HeapSnapshotStatisticsView extends UI.Widget.VBox {
     this.element.appendChild(this._pieChart);
   }
 
-  /**
-   * @param {number} value
-   * @return {string}
-   */
-  static _valueFormatter(value) {
+  static _valueFormatter(value: number): string {
     return i18nString(UIStrings.sKb, {PH1: Number.withThousandsSeparator(Math.round(value / 1000))});
   }
 
-  /**
-   * @param {number} total
-   * @param {!Array<!PerfUI.PieChart.Slice>} records
-   */
-  setTotalAndRecords(total, records) {
+  setTotalAndRecords(total: number, records: PerfUI.PieChart.Slice[]): void {
     this._pieChart.data = {
       chartName: i18nString(UIStrings.heapMemoryUsage),
       size: 150,
       formatter: HeapSnapshotStatisticsView._valueFormatter,
       showLegend: true,
       total,
-      slices: records
+      slices: records,
     };
   }
 }
 
 export class HeapAllocationStackView extends UI.Widget.Widget {
-  /**
-   * @param {?SDK.HeapProfilerModel.HeapProfilerModel} heapProfilerModel
-   */
-  constructor(heapProfilerModel) {
+  _heapProfilerModel: SDK.HeapProfilerModel.HeapProfilerModel|null;
+  _linkifier: Components.Linkifier.Linkifier;
+  _frameElements: HTMLElement[];
+  constructor(heapProfilerModel: SDK.HeapProfilerModel.HeapProfilerModel|null) {
     super();
     this._heapProfilerModel = heapProfilerModel;
     this._linkifier = new Components.Linkifier.Linkifier();
-    /** @type {!Array<!HTMLElement>} */
     this._frameElements = [];
   }
 
-  /**
-   * @param {!Element} link
-   * @param {!Event} event
-   */
-  _onContextMenu(link, event) {
+  _onContextMenu(link: Element, event: Event): void {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
     if (!contextMenu.containsTarget(link)) {
       contextMenu.appendApplicableItems(link);
@@ -2080,11 +1762,8 @@ export class HeapAllocationStackView extends UI.Widget.Widget {
     event.consume(true);
   }
 
-  /**
-   * @param {!KeyboardEvent} event
-   */
-  _onStackViewKeydown(event) {
-    const target = /** @type {?HTMLElement} */ (event.target);
+  _onStackViewKeydown(event: KeyboardEvent): void {
+    const target = (event.target as HTMLElement | null);
     if (!target) {
       return;
     }
@@ -2104,7 +1783,7 @@ export class HeapAllocationStackView extends UI.Widget.Widget {
     }
 
     let navDown;
-    const keyboardEvent = /** @type {!KeyboardEvent} */ (event);
+    const keyboardEvent = (event as KeyboardEvent);
     if (keyboardEvent.key === 'ArrowUp') {
       navDown = false;
     } else if (keyboardEvent.key === 'ArrowDown') {
@@ -2129,11 +1808,7 @@ export class HeapAllocationStackView extends UI.Widget.Widget {
     event.consume(true);
   }
 
-  /**
-   * @param {!HeapSnapshotProxy} snapshot
-   * @param {number} snapshotNodeIndex
-   */
-  async setAllocatedObject(snapshot, snapshotNodeIndex) {
+  async setAllocatedObject(snapshot: HeapSnapshotProxy, snapshotNodeIndex: number): Promise<void> {
     this.clear();
     const frames = await snapshot.allocationStack(snapshotNodeIndex);
 
@@ -2146,7 +1821,7 @@ export class HeapAllocationStackView extends UI.Widget.Widget {
     const stackDiv = this.element.createChild('div', 'heap-allocation-stack');
     stackDiv.addEventListener('keydown', this._onStackViewKeydown.bind(this), false);
     for (const frame of frames) {
-      const frameDiv = /** @type {!HTMLElement} */ (stackDiv.createChild('div', 'stack-frame'));
+      const frameDiv = (stackDiv.createChild('div', 'stack-frame') as HTMLElement);
       this._frameElements.push(frameDiv);
       frameDiv.tabIndex = -1;
       const name = frameDiv.createChild('div');
@@ -2158,7 +1833,7 @@ export class HeapAllocationStackView extends UI.Widget.Widget {
       const options = {columnNumber: frame.column - 1};
       const urlElement = this._linkifier.linkifyScriptLocation(
           target, String(frame.scriptId), frame.scriptName, frame.line - 1,
-          /** @type {!Components.Linkifier.LinkifyOptions} */ (options));
+          (options as Components.Linkifier.LinkifyOptions));
       frameDiv.appendChild(urlElement);
       stackFrameToURLElement.set(frameDiv, urlElement);
       frameDiv.addEventListener('contextmenu', this._onContextMenu.bind(this, urlElement));
@@ -2166,12 +1841,11 @@ export class HeapAllocationStackView extends UI.Widget.Widget {
     this._frameElements[0].tabIndex = 0;
   }
 
-  clear() {
+  clear(): void {
     this.element.removeChildren();
     this._frameElements = [];
     this._linkifier.reset();
   }
 }
 
-/** @type {!WeakMap<!HTMLElement, !HTMLElement>} */
-const stackFrameToURLElement = new WeakMap();
+const stackFrameToURLElement = new WeakMap<HTMLElement, HTMLElement>();

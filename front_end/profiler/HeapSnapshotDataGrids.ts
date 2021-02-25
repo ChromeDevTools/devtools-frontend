@@ -28,6 +28,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Components from '../components/components.js';
 import * as DataGrid from '../data_grid/data_grid.js';
 import * as HeapSnapshotModel from '../heap_snapshot_model/heap_snapshot_model.js';
@@ -35,10 +37,10 @@ import * as i18n from '../i18n/i18n.js';
 import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../ui/ui.js';
 
-import {AllocationGridNode, HeapSnapshotConstructorNode, HeapSnapshotDiffNode, HeapSnapshotGenericObjectNode, HeapSnapshotGridNode, HeapSnapshotObjectNode, HeapSnapshotRetainingObjectNode,} from './HeapSnapshotGridNodes.js';  // eslint-disable-line no-unused-vars
-import {HeapSnapshotProxy} from './HeapSnapshotProxy.js';               // eslint-disable-line no-unused-vars
-import {HeapProfileHeader} from './HeapSnapshotView.js';                // eslint-disable-line no-unused-vars
-import {DataDisplayDelegate, ProfileHeader} from './ProfileHeader.js';  // eslint-disable-line no-unused-vars
+import {AllocationGridNode, HeapSnapshotConstructorNode, HeapSnapshotDiffNode, HeapSnapshotGenericObjectNode, HeapSnapshotGridNode, HeapSnapshotObjectNode, HeapSnapshotRetainingObjectNode} from './HeapSnapshotGridNodes.js';  // eslint-disable-line no-unused-vars
+import {HeapSnapshotProxy} from './HeapSnapshotProxy.js';  // eslint-disable-line no-unused-vars
+import {HeapProfileHeader} from './HeapSnapshotView.js';   // eslint-disable-line no-unused-vars
+import {DataDisplayDelegate} from './ProfileHeader.js';    // eslint-disable-line no-unused-vars
 
 export const UIStrings = {
   /**
@@ -138,33 +140,35 @@ export const UIStrings = {
   */
   allocation: 'Allocation',
 };
-const str_ = i18n.i18n.registerUIStrings('profiler/HeapSnapshotDataGrids.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('profiler/HeapSnapshotDataGrids.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-/** @type {!WeakMap<!DataGrid.DataGrid.DataGridNode<!HeapSnapshotGridNode>, !Array<!HeapSnapshotGridNode>>} */
-const adjacencyMap = new WeakMap();
+const adjacencyMap = new WeakMap<DataGrid.DataGrid.DataGridNode<HeapSnapshotGridNode>, HeapSnapshotGridNode[]>();
 
-/**
- * @extends DataGrid.DataGrid.DataGridImpl<!HeapSnapshotGridNode>
- */
-export class HeapSnapshotSortableDataGrid extends DataGrid.DataGrid.DataGridImpl {
-  /**
-   * @param {?SDK.HeapProfilerModel.HeapProfilerModel} heapProfilerModel
-   * @param {!DataDisplayDelegate} dataDisplayDelegate
-   * @param {!DataGrid.DataGrid.Parameters} dataGridParameters
-   */
-  constructor(heapProfilerModel, dataDisplayDelegate, dataGridParameters) {
+export class HeapSnapshotSortableDataGrid extends DataGrid.DataGrid.DataGridImpl<HeapSnapshotGridNode> {
+  snapshot: HeapSnapshotProxy|null;
+  selectedNode: HeapSnapshotGridNode|null;
+  _heapProfilerModel: SDK.HeapProfilerModel.HeapProfilerModel|null;
+  _dataDisplayDelegate: DataDisplayDelegate;
+  _recursiveSortingDepth: number;
+  _highlightedNode: HeapSnapshotGridNode|null;
+  _populatedAndSorted: boolean;
+  _nameFilter: UI.Toolbar.ToolbarInput|null;
+  _nodeFilter: HeapSnapshotModel.HeapSnapshotModel.NodeFilter|undefined;
+  _lastSortColumnId?: string|null;
+  _lastSortAscending?: boolean;
+  constructor(
+      heapProfilerModel: SDK.HeapProfilerModel.HeapProfilerModel|null, dataDisplayDelegate: DataDisplayDelegate,
+      dataGridParameters: DataGrid.DataGrid.Parameters) {
     // TODO(allada) This entire class needs to be converted to use the templates in DataGridNode.
     super(dataGridParameters);
-    /** @type {?HeapSnapshotProxy} */
     this.snapshot = null;
-    /** @type {?HeapSnapshotGridNode} */
     this.selectedNode = null;
     this._heapProfilerModel = heapProfilerModel;
     this._dataDisplayDelegate = dataDisplayDelegate;
     const tooltips = [
       ['distance', i18nString(UIStrings.distanceFromWindowObject)],
       ['shallowSize', i18nString(UIStrings.sizeOfTheObjectItselfInBytes)],
-      ['retainedSize', i18nString(UIStrings.sizeOfTheObjectPlusTheGraphIt)]
+      ['retainedSize', i18nString(UIStrings.sizeOfTheObjectPlusTheGraphIt)],
     ];
     for (const info of tooltips) {
       const headerCell = this.headerTableHeader(info[0]);
@@ -173,41 +177,20 @@ export class HeapSnapshotSortableDataGrid extends DataGrid.DataGrid.DataGridImpl
       }
     }
 
-    /**
-     * @type {number}
-     */
     this._recursiveSortingDepth = 0;
-    /**
-     * @type {?HeapSnapshotGridNode}
-     */
     this._highlightedNode = null;
-    /**
-     * @type {boolean}
-     */
     this._populatedAndSorted = false;
-    /**
-     * @type {?UI.Toolbar.ToolbarInput}
-     */
     this._nameFilter = null;
-    /** @type {!HeapSnapshotModel.HeapSnapshotModel.NodeFilter|undefined} */
     this._nodeFilter = new HeapSnapshotModel.HeapSnapshotModel.NodeFilter();
     this.addEventListener(HeapSnapshotSortableDataGridEvents.SortingComplete, this._sortingComplete, this);
     this.addEventListener(DataGrid.DataGrid.Events.SortingChanged, this.sortingChanged, this);
     this.setRowContextMenuCallback(this._populateContextMenu.bind(this));
   }
 
-  /**
-   * @param {!HeapSnapshotProxy} snapshot
-   * @param {number} nodeIndex
-   */
-  async setDataSource(snapshot, nodeIndex) {
+  async setDataSource(_snapshot: HeapSnapshotProxy, _nodeIndex: number): Promise<void> {
   }
 
-  /**
-   * @param {!HeapSnapshotGridNode} node
-   * @return {boolean}
-   */
-  _isFilteredOut(node) {
+  _isFilteredOut(node: HeapSnapshotGridNode): boolean {
     const nameFilterValue = this._nameFilter ? this._nameFilter.value().toLowerCase() : '';
     if (nameFilterValue && (node instanceof HeapSnapshotDiffNode || node instanceof HeapSnapshotConstructorNode) &&
         node.filteredOut(nameFilterValue)) {
@@ -216,52 +199,34 @@ export class HeapSnapshotSortableDataGrid extends DataGrid.DataGrid.DataGridImpl
     return false;
   }
 
-  /**
-   * @return {?SDK.HeapProfilerModel.HeapProfilerModel}
-   */
-  heapProfilerModel() {
+  heapProfilerModel(): SDK.HeapProfilerModel.HeapProfilerModel|null {
     return this._heapProfilerModel;
   }
 
-  /**
-   * @return {!DataDisplayDelegate}
-   */
-  dataDisplayDelegate() {
+  dataDisplayDelegate(): DataDisplayDelegate {
     return this._dataDisplayDelegate;
   }
 
-  /**
-   * @return {!HeapSnapshotModel.HeapSnapshotModel.NodeFilter|undefined}
-   */
-  nodeFilter() {
+  nodeFilter(): HeapSnapshotModel.HeapSnapshotModel.NodeFilter|undefined {
     return this._nodeFilter;
   }
 
-  /**
-   * @param {!UI.Toolbar.ToolbarInput} nameFilter
-   */
-  setNameFilter(nameFilter) {
+  setNameFilter(nameFilter: UI.Toolbar.ToolbarInput): void {
     this._nameFilter = nameFilter;
   }
 
-  /**
-   * @return {number}
-   */
-  defaultPopulateCount() {
+  defaultPopulateCount(): number {
     return 100;
   }
 
-  _disposeAllNodes() {
+  _disposeAllNodes(): void {
     const children = this.topLevelNodes();
     for (let i = 0, l = children.length; i < l; ++i) {
       children[i].dispose();
     }
   }
 
-  /**
-   * @override
-   */
-  wasShown() {
+  wasShown(): void {
     if (this._nameFilter) {
       this._nameFilter.addEventListener(UI.Toolbar.ToolbarInput.Event.TextChanged, this._onNameFilterChanged, this);
       this.updateVisibleNodes(true);
@@ -271,28 +236,22 @@ export class HeapSnapshotSortableDataGrid extends DataGrid.DataGrid.DataGridImpl
     }
   }
 
-  _sortingComplete() {
+  _sortingComplete(): void {
     this.removeEventListener(HeapSnapshotSortableDataGridEvents.SortingComplete, this._sortingComplete, this);
     this._populatedAndSorted = true;
     this.dispatchEventToListeners(HeapSnapshotSortableDataGridEvents.ContentShown, this);
   }
 
-  /**
-   * @override
-   */
-  willHide() {
+  willHide(): void {
     if (this._nameFilter) {
       this._nameFilter.removeEventListener(UI.Toolbar.ToolbarInput.Event.TextChanged, this._onNameFilterChanged, this);
     }
     this._clearCurrentHighlight();
   }
 
-  /**
-   * @param {!UI.ContextMenu.ContextMenu} contextMenu
-   * @param {!DataGrid.DataGrid.DataGridNode<!HeapSnapshotGridNode>} gridNode
-   */
-  _populateContextMenu(contextMenu, gridNode) {
-    const node = /** @type {!HeapSnapshotGridNode} */ (gridNode);
+  _populateContextMenu(
+      contextMenu: UI.ContextMenu.ContextMenu, gridNode: DataGrid.DataGrid.DataGridNode<HeapSnapshotGridNode>): void {
+    const node = (gridNode as HeapSnapshotGridNode);
     node.populateContextMenu(contextMenu, this._dataDisplayDelegate, this.heapProfilerModel());
 
     if (node instanceof HeapSnapshotGenericObjectNode && node.linkElement &&
@@ -301,36 +260,26 @@ export class HeapSnapshotSortableDataGrid extends DataGrid.DataGrid.DataGridImpl
     }
   }
 
-  resetSortingCache() {
+  resetSortingCache(): void {
     delete this._lastSortColumnId;
     delete this._lastSortAscending;
   }
 
-  /**
-   * @return {!Array<!HeapSnapshotGridNode>}
-   */
-  topLevelNodes() {
-    return /** @type {!Array<!HeapSnapshotGridNode>}*/ (this.rootNode().children);
+  topLevelNodes(): HeapSnapshotGridNode[] {
+    return this.rootNode().children as HeapSnapshotGridNode[];
   }
 
-  /**
-   * @param {!Protocol.HeapProfiler.HeapSnapshotObjectId} heapSnapshotObjectId
-   * @return {!Promise<?HeapSnapshotGridNode>}
-   */
-  revealObjectByHeapSnapshotId(heapSnapshotObjectId) {
-    return Promise.resolve(/** @type {?HeapSnapshotGridNode} */ (null));
+  revealObjectByHeapSnapshotId(_heapSnapshotObjectId: string): Promise<HeapSnapshotGridNode|null> {
+    return Promise.resolve((null as HeapSnapshotGridNode | null));
   }
 
-  /**
-   * @param {!HeapSnapshotGridNode} node
-   */
-  highlightNode(node) {
+  highlightNode(node: HeapSnapshotGridNode): void {
     this._clearCurrentHighlight();
     this._highlightedNode = node;
     UI.UIUtils.runCSSAnimationOnce(this._highlightedNode.element(), 'highlighted-row');
   }
 
-  _clearCurrentHighlight() {
+  _clearCurrentHighlight(): void {
     if (!this._highlightedNode) {
       return;
     }
@@ -338,60 +287,52 @@ export class HeapSnapshotSortableDataGrid extends DataGrid.DataGrid.DataGridImpl
     this._highlightedNode = null;
   }
 
-  resetNameFilter() {
+  resetNameFilter(): void {
     if (this._nameFilter) {
       this._nameFilter.setValue('');
     }
   }
 
-  _onNameFilterChanged() {
+  _onNameFilterChanged(): void {
     this.updateVisibleNodes(true);
     this._deselectFilteredNodes();
   }
 
-  _deselectFilteredNodes() {
-    let currentNode = this.selectedNode;
+  _deselectFilteredNodes(): void {
+    let currentNode: (HeapSnapshotGridNode|null) = this.selectedNode;
     while (currentNode) {
-      if (this.selectedNode && this._isFilteredOut(/** @type {!HeapSnapshotGridNode} */ (currentNode))) {
+      if (this.selectedNode && this._isFilteredOut((currentNode as HeapSnapshotGridNode))) {
         this.selectedNode.deselect();
         this.selectedNode = null;
         return;
       }
-      currentNode = /** @type {?HeapSnapshotGridNode} */ (currentNode.parent);
+      currentNode = (currentNode.parent as HeapSnapshotGridNode | null);
     }
   }
 
-  /**
-   * @param {string} sortColumnId
-   * @param {boolean} ascending
-   * @return {!HeapSnapshotModel.HeapSnapshotModel.ComparatorConfig}
-   */
-  _sortFields(sortColumnId, ascending) {
+  _sortFields(_sortColumnId: string, _ascending: boolean): HeapSnapshotModel.HeapSnapshotModel.ComparatorConfig {
     throw new Error('Not implemented');
   }
 
-  sortingChanged() {
+  sortingChanged(): void {
     const sortAscending = this.isSortOrderAscending();
     const sortColumnId = this.sortColumnId();
     if (this._lastSortColumnId === sortColumnId && this._lastSortAscending === sortAscending) {
       return;
     }
-    /** @type {?string} */
     this._lastSortColumnId = sortColumnId;
-    /** @type {boolean} */
     this._lastSortAscending = sortAscending;
     const sortFields = this._sortFields(sortColumnId || '', sortAscending);
 
-    /**
-     * @param {!DataGrid.DataGrid.DataGridNode<!HeapSnapshotGridNode>} nodeA
-     * @param {!DataGrid.DataGrid.DataGridNode<!HeapSnapshotGridNode>} nodeB
-     */
-    function SortByTwoFields(nodeA, nodeB) {
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    function SortByTwoFields(
+        nodeA: DataGrid.DataGrid.DataGridNode<HeapSnapshotGridNode>,
+        nodeB: DataGrid.DataGrid.DataGridNode<HeapSnapshotGridNode>): number {
       // @ts-ignore
       let field1 = nodeA[sortFields.fieldName1];
       // @ts-ignore
       let field2 = nodeB[sortFields.fieldName1];
-      let result = field1 < field2 ? -1 : (field1 > field2 ? 1 : 0);
+      let result: number|(0 | 1 | -1) = field1 < field2 ? -1 : (field1 > field2 ? 1 : 0);
       if (!sortFields.ascending1) {
         result = -result;
       }
@@ -411,16 +352,16 @@ export class HeapSnapshotSortableDataGrid extends DataGrid.DataGrid.DataGridImpl
     this._performSorting(SortByTwoFields);
   }
 
-  /**
-   * @param {function(!DataGrid.DataGrid.DataGridNode<!HeapSnapshotGridNode>, !DataGrid.DataGrid.DataGridNode<!HeapSnapshotGridNode>): number} sortFunction
-   */
-  _performSorting(sortFunction) {
+  _performSorting(
+      sortFunction:
+          (arg0: DataGrid.DataGrid.DataGridNode<HeapSnapshotGridNode>,
+           arg1: DataGrid.DataGrid.DataGridNode<HeapSnapshotGridNode>) => number): void {
     this.recursiveSortingEnter();
     const children = this.allChildren(this.rootNode());
     this.rootNode().removeChildren();
     children.sort(sortFunction);
     for (let i = 0, l = children.length; i < l; ++i) {
-      const child = /** @type {!HeapSnapshotGridNode} */ (children[i]);
+      const child = (children[i] as HeapSnapshotGridNode);
       this.appendChildAfterSorting(child);
       if (child.expanded) {
         child.sort();
@@ -429,20 +370,17 @@ export class HeapSnapshotSortableDataGrid extends DataGrid.DataGrid.DataGridImpl
     this.recursiveSortingLeave();
   }
 
-  /**
-   * @param {!HeapSnapshotGridNode} child
-   */
-  appendChildAfterSorting(child) {
+  appendChildAfterSorting(child: HeapSnapshotGridNode): void {
     const revealed = child.revealed;
     this.rootNode().appendChild(child);
     child.revealed = revealed;
   }
 
-  recursiveSortingEnter() {
+  recursiveSortingEnter(): void {
     ++this._recursiveSortingDepth;
   }
 
-  recursiveSortingLeave() {
+  recursiveSortingLeave(): void {
     if (!this._recursiveSortingDepth) {
       return;
     }
@@ -453,95 +391,65 @@ export class HeapSnapshotSortableDataGrid extends DataGrid.DataGrid.DataGridImpl
     this.dispatchEventToListeners(HeapSnapshotSortableDataGridEvents.SortingComplete);
   }
 
-  /**
-   * @param {boolean} force
-   */
-  updateVisibleNodes(force) {
+  updateVisibleNodes(_force: boolean): void {
   }
 
-  /**
-   * @param {!DataGrid.DataGrid.DataGridNode<!HeapSnapshotGridNode>} parent
-   * @return {!Array.<!DataGrid.DataGrid.DataGridNode<!HeapSnapshotGridNode>>}
-   */
-  allChildren(parent) {
+  allChildren(parent: DataGrid.DataGrid.DataGridNode<HeapSnapshotGridNode>):
+      DataGrid.DataGrid.DataGridNode<HeapSnapshotGridNode>[] {
     return parent.children;
   }
 
-  /**
-   * @param {!HeapSnapshotGridNode} parent
-   * @param {!HeapSnapshotGridNode} node
-   * @param {number} index
-   */
-  insertChild(parent, node, index) {
+  insertChild(parent: HeapSnapshotGridNode, node: HeapSnapshotGridNode, index: number): void {
     parent.insertChild(node, index);
   }
 
-  /**
-   * @param {!HeapSnapshotGridNode} parent
-   * @param {number} index
-   */
-  removeChildByIndex(parent, index) {
+  removeChildByIndex(parent: HeapSnapshotGridNode, index: number): void {
     parent.removeChild(parent.children[index]);
   }
 
-  /**
-   * @param {!HeapSnapshotGridNode} parent
-   */
-  removeAllChildren(parent) {
+  removeAllChildren(parent: HeapSnapshotGridNode): void {
     parent.removeChildren();
   }
 }
 
-/**
- * @enum {symbol}
- */
-export const HeapSnapshotSortableDataGridEvents = {
-  ContentShown: Symbol('ContentShown'),
-  SortingComplete: Symbol('SortingComplete')
-};
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum HeapSnapshotSortableDataGridEvents {
+  ContentShown = 'ContentShown',
+  SortingComplete = 'SortingComplete',
+}
 
 export class HeapSnapshotViewportDataGrid extends HeapSnapshotSortableDataGrid {
-  /**
-   * @param {?SDK.HeapProfilerModel.HeapProfilerModel} heapProfilerModel
-   * @param {!DataDisplayDelegate} dataDisplayDelegate
-   * @param {!DataGrid.DataGrid.Parameters} dataGridParameters
-   */
-  constructor(heapProfilerModel, dataDisplayDelegate, dataGridParameters) {
+  _topPaddingHeight: number;
+  _bottomPaddingHeight: number;
+  selectedNode: HeapSnapshotGridNode|null;
+  _scrollToResolveCallback?: (() => void)|null;
+
+  constructor(
+      heapProfilerModel: SDK.HeapProfilerModel.HeapProfilerModel|null, dataDisplayDelegate: DataDisplayDelegate,
+      dataGridParameters: DataGrid.DataGrid.Parameters) {
     super(heapProfilerModel, dataDisplayDelegate, dataGridParameters);
     this.scrollContainer.addEventListener('scroll', this._onScroll.bind(this), true);
     this._topPaddingHeight = 0;
     this._bottomPaddingHeight = 0;
-    /** @type {?HeapSnapshotGridNode} */
     this.selectedNode = null;
   }
 
-  /**
-   * @override
-   * @return {!Array.<!HeapSnapshotGridNode>}
-   */
-  topLevelNodes() {
+  topLevelNodes(): HeapSnapshotGridNode[] {
     return this.allChildren(this.rootNode());
   }
 
-  /**
-   * @override
-   * @param {!HeapSnapshotGridNode} child
-   */
-  appendChildAfterSorting(child) {
+  appendChildAfterSorting(_child: HeapSnapshotGridNode): void {
     // Do nothing here, it will be added in updateVisibleNodes.
   }
 
-  /**
-   * @override
-   * @param {boolean} force
-   */
-  updateVisibleNodes(force) {
+  updateVisibleNodes(force: boolean): void {
     // Guard zone is used to ensure there are always some extra items
     // above and below the viewport to support keyboard navigation.
     const guardZoneHeight = 40;
     const scrollHeight = this.scrollContainer.scrollHeight;
-    let scrollTop = this.scrollContainer.scrollTop;
-    let scrollBottom = scrollHeight - scrollTop - this.scrollContainer.offsetHeight;
+    let scrollTop: number = this.scrollContainer.scrollTop;
+    let scrollBottom: number = scrollHeight - scrollTop - this.scrollContainer.offsetHeight;
     scrollTop = Math.max(0, scrollTop - guardZoneHeight);
     scrollBottom = Math.max(0, scrollBottom - guardZoneHeight);
     let viewPortHeight = scrollHeight - scrollTop - scrollBottom;
@@ -573,18 +481,13 @@ export class HeapSnapshotViewportDataGrid extends HeapSnapshotSortableDataGrid {
     }
   }
 
-  /**
-   * @param {!DataGrid.DataGrid.DataGridNode<!HeapSnapshotGridNode>} parentNode
-   * @param {number} topBound
-   * @param {number} bottomBound
-   * @return {number}
-   */
-  _addVisibleNodes(parentNode, topBound, bottomBound) {
+  _addVisibleNodes(
+      parentNode: DataGrid.DataGrid.DataGridNode<HeapSnapshotGridNode>, topBound: number, bottomBound: number): number {
     if (!parentNode.expanded) {
       return 0;
     }
 
-    const children = this.allChildren(/** @type {!HeapSnapshotGridNode} */ (parentNode));
+    const children = this.allChildren((parentNode as HeapSnapshotGridNode));
     let topPadding = 0;
     // Iterate over invisible nodes beyond the upper bound of viewport.
     // Do not insert them into the grid, but count their total height.
@@ -631,11 +534,7 @@ export class HeapSnapshotViewportDataGrid extends HeapSnapshotSortableDataGrid {
     return position + bottomPadding;
   }
 
-  /**
-   * @param {!HeapSnapshotGridNode} node
-   * @return {number}
-   */
-  _nodeHeight(node) {
+  _nodeHeight(node: HeapSnapshotGridNode): number {
     let result = node.nodeSelfHeight();
     if (!node.expanded) {
       return result;
@@ -647,13 +546,9 @@ export class HeapSnapshotViewportDataGrid extends HeapSnapshotSortableDataGrid {
     return result;
   }
 
-  /**
-   * @param {!Array<!HeapSnapshotGridNode>} pathToReveal
-   * @return {!Promise<!HeapSnapshotGridNode>}
-   */
-  revealTreeNode(pathToReveal) {
+  revealTreeNode(pathToReveal: HeapSnapshotGridNode[]): Promise<HeapSnapshotGridNode> {
     const height = this._calculateOffset(pathToReveal);
-    const node = /** @type {!HeapSnapshotGridNode} */ (pathToReveal[pathToReveal.length - 1]);
+    const node = (pathToReveal[pathToReveal.length - 1] as HeapSnapshotGridNode);
     const scrollTop = this.scrollContainer.scrollTop;
     const scrollBottom = scrollTop + this.scrollContainer.offsetHeight;
     if (height >= scrollTop && height < scrollBottom) {
@@ -676,11 +571,7 @@ export class HeapSnapshotViewportDataGrid extends HeapSnapshotSortableDataGrid {
     });
   }
 
-  /**
-   * @param {!Array.<!HeapSnapshotGridNode>} pathToReveal
-   * @return {number}
-   */
-  _calculateOffset(pathToReveal) {
+  _calculateOffset(pathToReveal: HeapSnapshotGridNode[]): number {
     let parentNode = this.rootNode();
     let height = 0;
     if (pathToReveal.length === 0) {
@@ -699,15 +590,10 @@ export class HeapSnapshotViewportDataGrid extends HeapSnapshotSortableDataGrid {
       }
       parentNode = node;
     }
-    return height - /** @type {!HeapSnapshotGridNode} */ (pathToReveal[pathToReveal.length - 1]).nodeSelfHeight();
+    return height - (pathToReveal[pathToReveal.length - 1] as HeapSnapshotGridNode).nodeSelfHeight();
   }
 
-  /**
-   * @override
-   * @param {!DataGrid.DataGrid.DataGridNode<!HeapSnapshotGridNode>} parent
-   * @return {!Array.<!HeapSnapshotGridNode>}
-   */
-  allChildren(parent) {
+  allChildren(parent: DataGrid.DataGrid.DataGridNode<HeapSnapshotGridNode>): HeapSnapshotGridNode[] {
     const children = adjacencyMap.get(parent) || [];
     if (!adjacencyMap.has(parent)) {
       adjacencyMap.set(parent, children);
@@ -715,52 +601,29 @@ export class HeapSnapshotViewportDataGrid extends HeapSnapshotSortableDataGrid {
     return children;
   }
 
-  /**
-   * @param {!DataGrid.DataGrid.DataGridNode<!HeapSnapshotGridNode>} parent
-   * @param {!HeapSnapshotGridNode} node
-   */
-  appendNode(parent, node) {
+  appendNode(parent: DataGrid.DataGrid.DataGridNode<HeapSnapshotGridNode>, node: HeapSnapshotGridNode): void {
     this.allChildren(parent).push(node);
   }
 
-  /**
-   * @override
-   * @param {!HeapSnapshotGridNode} parent
-   * @param {!HeapSnapshotGridNode} node
-   * @param {number} index
-   */
-  insertChild(parent, node, index) {
-    this.allChildren(parent).splice(index, 0, /** @type {!HeapSnapshotGridNode} */ (node));
+  insertChild(parent: HeapSnapshotGridNode, node: HeapSnapshotGridNode, index: number): void {
+    this.allChildren(parent).splice(index, 0, (node as HeapSnapshotGridNode));
   }
 
-  /**
-   * @override
-   * @param {!HeapSnapshotGridNode} parent
-   * @param {number} index
-   */
-  removeChildByIndex(parent, index) {
+  removeChildByIndex(parent: HeapSnapshotGridNode, index: number): void {
     this.allChildren(parent).splice(index, 1);
   }
 
-  /**
-     * @override
-     * @param {!HeapSnapshotGridNode} parent
-     */
-  removeAllChildren(parent) {
+  removeAllChildren(parent: HeapSnapshotGridNode): void {
     adjacencyMap.delete(parent);
   }
 
-  removeTopLevelNodes() {
+  removeTopLevelNodes(): void {
     this._disposeAllNodes();
     this.rootNode().removeChildren();
-    this.removeAllChildren(/** @type {!HeapSnapshotGridNode} */ (this.rootNode()));
+    this.removeAllChildren((this.rootNode() as HeapSnapshotGridNode));
   }
 
-  /**
-   * @param {!HTMLElement} element
-   * @return {boolean}
-   */
-  _isScrolledIntoView(element) {
+  _isScrolledIntoView(element: HTMLElement): boolean {
     const viewportTop = this.scrollContainer.scrollTop;
     const viewportBottom = viewportTop + this.scrollContainer.clientHeight;
     const elemTop = element.offsetTop;
@@ -768,18 +631,12 @@ export class HeapSnapshotViewportDataGrid extends HeapSnapshotSortableDataGrid {
     return elemBottom <= viewportBottom && elemTop >= viewportTop;
   }
 
-  /**
-   * @override
-   */
-  onResize() {
+  onResize(): void {
     super.onResize();
     this.updateVisibleNodes(false);
   }
 
-  /**
-   * @param {!Event} event
-   */
-  _onScroll(event) {
+  _onScroll(_event: Event): void {
     this.updateVisibleNodes(false);
 
     if (this._scrollToResolveCallback) {
@@ -790,22 +647,19 @@ export class HeapSnapshotViewportDataGrid extends HeapSnapshotSortableDataGrid {
 }
 
 export class HeapSnapshotContainmentDataGrid extends HeapSnapshotSortableDataGrid {
-  /**
-   * @param {?SDK.HeapProfilerModel.HeapProfilerModel} heapProfilerModel
-   * @param {!DataDisplayDelegate} dataDisplayDelegate
-   * @param {string} displayName
-   * @param {!Array.<!DataGrid.DataGrid.ColumnDescriptor>=} columns
-   */
-  constructor(heapProfilerModel, dataDisplayDelegate, displayName, columns) {
+  constructor(
+      heapProfilerModel: SDK.HeapProfilerModel.HeapProfilerModel|null, dataDisplayDelegate: DataDisplayDelegate,
+      displayName: string, columns?: DataGrid.DataGrid.ColumnDescriptor[]) {
     columns =
-        columns || (/** @type {!Array<!DataGrid.DataGrid.ColumnDescriptor>} */ ([
+        columns || ([
           {id: 'object', title: i18nString(UIStrings.object), disclosure: true, sortable: true},
-          {id: 'distance', title: i18nString(UIStrings.distance), width: '70px', sortable: true, fixedWidth: true}, {
+          {id: 'distance', title: i18nString(UIStrings.distance), width: '70px', sortable: true, fixedWidth: true},
+          {
             id: 'shallowSize',
             title: i18nString(UIStrings.shallowSize),
             width: '110px',
             sortable: true,
-            fixedWidth: true
+            fixedWidth: true,
           },
           {
             id: 'retainedSize',
@@ -813,83 +667,60 @@ export class HeapSnapshotContainmentDataGrid extends HeapSnapshotSortableDataGri
             width: '110px',
             sortable: true,
             fixedWidth: true,
-            sort: DataGrid.DataGrid.Order.Descending
-          }
-        ]));
-    const dataGridParameters = /** @type {!DataGrid.DataGrid.Parameters} */ ({displayName, columns});
+            sort: DataGrid.DataGrid.Order.Descending,
+          },
+        ] as DataGrid.DataGrid.ColumnDescriptor[]);
+    const dataGridParameters = ({displayName, columns} as DataGrid.DataGrid.Parameters);
     super(heapProfilerModel, dataDisplayDelegate, dataGridParameters);
   }
 
-  /**
-   * @override
-   * @param {!HeapSnapshotProxy} snapshot
-   * @param {number} nodeIndex
-   */
-  async setDataSource(snapshot, nodeIndex) {
+  async setDataSource(snapshot: HeapSnapshotProxy, nodeIndex: number): Promise<void> {
     this.snapshot = snapshot;
     const node =
         new HeapSnapshotModel.HeapSnapshotModel.Node(-1, 'root', 0, nodeIndex || snapshot.rootNodeIndex, 0, 0, '');
     this.setRootNode(this._createRootNode(snapshot, node));
-    /** @type {!HeapSnapshotGridNode} */ (this.rootNode()).sort();
+    (this.rootNode() as HeapSnapshotGridNode).sort();
   }
 
-  /**
-   * @param {!HeapSnapshotProxy} snapshot
-   * @param {!HeapSnapshotModel.HeapSnapshotModel.Node} node
-   */
-  _createRootNode(snapshot, node) {
+  _createRootNode(snapshot: HeapSnapshotProxy, node: HeapSnapshotModel.HeapSnapshotModel.Node): HeapSnapshotObjectNode {
     const fakeEdge = new HeapSnapshotModel.HeapSnapshotModel.Edge('', node, '', -1);
     return new HeapSnapshotObjectNode(this, snapshot, fakeEdge, null);
   }
 
-  /**
-   * @override
-   */
-  sortingChanged() {
+  sortingChanged(): void {
     const rootNode = this.rootNode();
     if (rootNode.hasChildren()) {
-      /** @type {!HeapSnapshotGridNode} */ (rootNode).sort();
+      (rootNode as HeapSnapshotGridNode).sort();
     }
   }
 }
 
 export class HeapSnapshotRetainmentDataGrid extends HeapSnapshotContainmentDataGrid {
-  /**
-   * @param {?SDK.HeapProfilerModel.HeapProfilerModel} heapProfilerModel
-   * @param {!DataDisplayDelegate} dataDisplayDelegate
-   */
-  constructor(heapProfilerModel, dataDisplayDelegate) {
-    const columns = /** @type {!Array<!DataGrid.DataGrid.ColumnDescriptor>} */ ([
-      {id: 'object', title: i18nString(UIStrings.object), disclosure: true, sortable: true}, {
+  constructor(
+      heapProfilerModel: SDK.HeapProfilerModel.HeapProfilerModel|null, dataDisplayDelegate: DataDisplayDelegate) {
+    const columns = ([
+      {id: 'object', title: i18nString(UIStrings.object), disclosure: true, sortable: true},
+      {
         id: 'distance',
         title: i18nString(UIStrings.distance),
         width: '70px',
         sortable: true,
         fixedWidth: true,
-        sort: DataGrid.DataGrid.Order.Ascending
+        sort: DataGrid.DataGrid.Order.Ascending,
       },
       {id: 'shallowSize', title: i18nString(UIStrings.shallowSize), width: '110px', sortable: true, fixedWidth: true},
-      {id: 'retainedSize', title: i18nString(UIStrings.retainedSize), width: '110px', sortable: true, fixedWidth: true}
-    ]);
+      {id: 'retainedSize', title: i18nString(UIStrings.retainedSize), width: '110px', sortable: true, fixedWidth: true},
+    ] as DataGrid.DataGrid.ColumnDescriptor[]);
     super(heapProfilerModel, dataDisplayDelegate, i18nString(UIStrings.heapSnapshotRetainment), columns);
   }
 
-  /**
-   * @override
-   * @param {!HeapSnapshotProxy} snapshot
-   * @param {!HeapSnapshotModel.HeapSnapshotModel.Node} node
-   */
-  _createRootNode(snapshot, node) {
+  _createRootNode(snapshot: HeapSnapshotProxy, node: HeapSnapshotModel.HeapSnapshotModel.Node):
+      HeapSnapshotRetainingObjectNode {
     const fakeEdge = new HeapSnapshotModel.HeapSnapshotModel.Edge('', node, '', -1);
     return new HeapSnapshotRetainingObjectNode(this, snapshot, fakeEdge, null);
   }
 
-  /**
-   * @override
-   * @param {string} sortColumn
-   * @param {boolean} sortAscending
-   */
-  _sortFields(sortColumn, sortAscending) {
+  _sortFields(sortColumn: string, sortAscending: boolean): HeapSnapshotModel.HeapSnapshotModel.ComparatorConfig {
     switch (sortColumn) {
       case 'object':
         return new HeapSnapshotModel.HeapSnapshotModel.ComparatorConfig('_name', sortAscending, '_count', false);
@@ -906,65 +737,58 @@ export class HeapSnapshotRetainmentDataGrid extends HeapSnapshotContainmentDataG
     }
   }
 
-  reset() {
+  reset(): void {
     this.rootNode().removeChildren();
     this.resetSortingCache();
   }
 
-  /**
-   * @override
-   * @param {!HeapSnapshotProxy} snapshot
-   * @param {number} nodeIndex
-   */
-  async setDataSource(snapshot, nodeIndex) {
+  async setDataSource(snapshot: HeapSnapshotProxy, nodeIndex: number): Promise<void> {
     await super.setDataSource(snapshot, nodeIndex);
     this.rootNode().expand();
   }
 }
 
-/**
- * @enum {symbol}
- */
-export const HeapSnapshotRetainmentDataGridEvents = {
-  ExpandRetainersComplete: Symbol('ExpandRetainersComplete')
-};
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum HeapSnapshotRetainmentDataGridEvents {
+  ExpandRetainersComplete = 'ExpandRetainersComplete',
+}
+
 
 export class HeapSnapshotConstructorsDataGrid extends HeapSnapshotViewportDataGrid {
-  /**
-   * @param {?SDK.HeapProfilerModel.HeapProfilerModel} heapProfilerModel
-   * @param {!DataDisplayDelegate} dataDisplayDelegate
-   */
-  constructor(heapProfilerModel, dataDisplayDelegate) {
-    const columns = /** @type {!Array<!DataGrid.DataGrid.ColumnDescriptor>} */ ([
+  _profileIndex: number;
+  _objectIdToSelect: string|null;
+  _nextRequestedFilter: HeapSnapshotModel.HeapSnapshotModel.NodeFilter|null;
+  _lastFilter?: HeapSnapshotModel.HeapSnapshotModel.NodeFilter|null;
+  _filterInProgress?: HeapSnapshotModel.HeapSnapshotModel.NodeFilter|null;
+
+  constructor(
+      heapProfilerModel: SDK.HeapProfilerModel.HeapProfilerModel|null, dataDisplayDelegate: DataDisplayDelegate) {
+    const columns = ([
       {id: 'object', title: i18nString(UIStrings.constructorString), disclosure: true, sortable: true},
       {id: 'distance', title: i18nString(UIStrings.distance), width: '70px', sortable: true, fixedWidth: true},
-      {id: 'shallowSize', title: i18nString(UIStrings.shallowSize), width: '110px', sortable: true, fixedWidth: true}, {
+      {id: 'shallowSize', title: i18nString(UIStrings.shallowSize), width: '110px', sortable: true, fixedWidth: true},
+      {
         id: 'retainedSize',
         title: i18nString(UIStrings.retainedSize),
         width: '110px',
         sort: DataGrid.DataGrid.Order.Descending,
         sortable: true,
-        fixedWidth: true
-      }
-    ]);
-    // clang-format off
-    super(heapProfilerModel, dataDisplayDelegate, /** @type {!DataGrid.DataGrid.Parameters} */ (
-      {displayName: i18nString(UIStrings.heapSnapshotConstructors).toString(), columns}));
+        fixedWidth: true,
+      },
+    ] as DataGrid.DataGrid.ColumnDescriptor[]);
+    super(
+        heapProfilerModel, dataDisplayDelegate,
+        ({displayName: i18nString(UIStrings.heapSnapshotConstructors).toString(), columns} as
+         DataGrid.DataGrid.Parameters));
     // clang-format on
     this._profileIndex = -1;
     this._objectIdToSelect = null;
 
-    /** @type {?HeapSnapshotModel.HeapSnapshotModel.NodeFilter} */
     this._nextRequestedFilter = null;
   }
 
-  /**
-   * @override
-   * @param {string} sortColumn
-   * @param {boolean} sortAscending
-   * @return {!HeapSnapshotModel.HeapSnapshotModel.ComparatorConfig}
-   */
-  _sortFields(sortColumn, sortAscending) {
+  _sortFields(sortColumn: string, sortAscending: boolean): HeapSnapshotModel.HeapSnapshotModel.ComparatorConfig {
     switch (sortColumn) {
       case 'object':
         return new HeapSnapshotModel.HeapSnapshotModel.ComparatorConfig('_name', sortAscending, '_retainedSize', false);
@@ -980,12 +804,7 @@ export class HeapSnapshotConstructorsDataGrid extends HeapSnapshotViewportDataGr
     }
   }
 
-  /**
-   * @override
-   * @param {!Protocol.HeapProfiler.HeapSnapshotObjectId} id
-   * @return {!Promise<?HeapSnapshotGridNode>}
-   */
-  async revealObjectByHeapSnapshotId(id) {
+  async revealObjectByHeapSnapshotId(id: string): Promise<HeapSnapshotGridNode|null> {
     if (!this.snapshot) {
       this._objectIdToSelect = id;
       return null;
@@ -1001,23 +820,17 @@ export class HeapSnapshotConstructorsDataGrid extends HeapSnapshotViewportDataGr
       return null;
     }
 
-    const nodes =
-        await /** @type {!HeapSnapshotConstructorNode} */ (parent).populateNodeBySnapshotObjectId(parseInt(id, 10));
+    const nodes = await (parent as HeapSnapshotConstructorNode).populateNodeBySnapshotObjectId(parseInt(id, 10));
     return nodes.length ? this.revealTreeNode(nodes) : null;
   }
 
-  clear() {
+  clear(): void {
     this._nextRequestedFilter = null;
     this._lastFilter = null;
     this.removeTopLevelNodes();
   }
 
-  /**
-   * @override
-   * @param {!HeapSnapshotProxy} snapshot
-   * @param {number} nodeIndex
-   */
-  async setDataSource(snapshot, nodeIndex) {
+  async setDataSource(snapshot: HeapSnapshotProxy, _nodeIndex: number): Promise<void> {
     this.snapshot = snapshot;
     if (this._profileIndex === -1) {
       this._populateChildren();
@@ -1029,29 +842,20 @@ export class HeapSnapshotConstructorsDataGrid extends HeapSnapshotViewportDataGr
     }
   }
 
-  /**
-   * @param {number} minNodeId
-   * @param {number} maxNodeId
-   */
-  setSelectionRange(minNodeId, maxNodeId) {
+  setSelectionRange(minNodeId: number, maxNodeId: number): void {
     this._nodeFilter = new HeapSnapshotModel.HeapSnapshotModel.NodeFilter(minNodeId, maxNodeId);
     this._populateChildren(this._nodeFilter);
   }
 
-  /**
-   * @param {number} allocationNodeId
-   */
-  setAllocationNodeId(allocationNodeId) {
+  setAllocationNodeId(allocationNodeId: number): void {
     this._nodeFilter = new HeapSnapshotModel.HeapSnapshotModel.NodeFilter();
     this._nodeFilter.allocationNodeId = allocationNodeId;
     this._populateChildren(this._nodeFilter);
   }
 
-  /**
-   * @param {!HeapSnapshotModel.HeapSnapshotModel.NodeFilter} nodeFilter
-   * @param {!Object<string, !HeapSnapshotModel.HeapSnapshotModel.Aggregate>} aggregates
-   */
-  _aggregatesReceived(nodeFilter, aggregates) {
+  _aggregatesReceived(nodeFilter: HeapSnapshotModel.HeapSnapshotModel.NodeFilter, aggregates: {
+    [x: string]: HeapSnapshotModel.HeapSnapshotModel.Aggregate,
+  }): void {
     this._filterInProgress = null;
     if (this._nextRequestedFilter && this.snapshot) {
       this.snapshot.aggregatesWithFilter(this._nextRequestedFilter)
@@ -1063,17 +867,14 @@ export class HeapSnapshotConstructorsDataGrid extends HeapSnapshotViewportDataGr
     this.resetSortingCache();
     for (const constructor in aggregates) {
       this.appendNode(
-          /** @type {!HeapSnapshotGridNode} */ (this.rootNode()),
+          (this.rootNode() as HeapSnapshotGridNode),
           new HeapSnapshotConstructorNode(this, constructor, aggregates[constructor], nodeFilter));
     }
     this.sortingChanged();
     this._lastFilter = nodeFilter;
   }
 
-  /**
-   * @param {!HeapSnapshotModel.HeapSnapshotModel.NodeFilter=} maybeNodeFilter
-   */
-  async _populateChildren(maybeNodeFilter) {
+  async _populateChildren(maybeNodeFilter?: HeapSnapshotModel.HeapSnapshotModel.NodeFilter): Promise<void> {
     const nodeFilter = maybeNodeFilter || new HeapSnapshotModel.HeapSnapshotModel.NodeFilter();
 
     if (this._filterInProgress) {
@@ -1091,11 +892,7 @@ export class HeapSnapshotConstructorsDataGrid extends HeapSnapshotViewportDataGr
     }
   }
 
-  /**
-   * @param {!Array.<!HeapProfileHeader>} profiles
-   * @param {number} profileIndex
-   */
-  filterSelectIndexChanged(profiles, profileIndex) {
+  filterSelectIndexChanged(profiles: HeapProfileHeader[], profileIndex: number): void {
     this._profileIndex = profileIndex;
     this._nodeFilter = undefined;
     if (profileIndex !== -1) {
@@ -1109,46 +906,36 @@ export class HeapSnapshotConstructorsDataGrid extends HeapSnapshotViewportDataGr
 }
 
 export class HeapSnapshotDiffDataGrid extends HeapSnapshotViewportDataGrid {
-  /**
-   * @param {?SDK.HeapProfilerModel.HeapProfilerModel} heapProfilerModel
-   * @param {!DataDisplayDelegate} dataDisplayDelegate
-   */
-  constructor(heapProfilerModel, dataDisplayDelegate) {
-    const columns = /** @type {!Array<!DataGrid.DataGrid.ColumnDescriptor>} */ ([
+  baseSnapshot?: HeapSnapshotProxy;
+
+  constructor(
+      heapProfilerModel: SDK.HeapProfilerModel.HeapProfilerModel|null, dataDisplayDelegate: DataDisplayDelegate) {
+    const columns = ([
       {id: 'object', title: i18nString(UIStrings.constructorString), disclosure: true, sortable: true},
       {id: 'addedCount', title: i18nString(UIStrings.New), width: '75px', sortable: true, fixedWidth: true},
       {id: 'removedCount', title: i18nString(UIStrings.Deleted), width: '75px', sortable: true, fixedWidth: true},
-      {id: 'countDelta', title: i18nString(UIStrings.Delta), width: '65px', sortable: true, fixedWidth: true}, {
+      {id: 'countDelta', title: i18nString(UIStrings.Delta), width: '65px', sortable: true, fixedWidth: true},
+      {
         id: 'addedSize',
         title: i18nString(UIStrings.allocSize),
         width: '75px',
         sortable: true,
         fixedWidth: true,
-        sort: DataGrid.DataGrid.Order.Descending
+        sort: DataGrid.DataGrid.Order.Descending,
       },
       {id: 'removedSize', title: i18nString(UIStrings.freedSize), width: '75px', sortable: true, fixedWidth: true},
-      {id: 'sizeDelta', title: i18nString(UIStrings.sizeDelta), width: '75px', sortable: true, fixedWidth: true}
-    ]);
-    // clang-format off
-    super(heapProfilerModel, dataDisplayDelegate, /** @type {!DataGrid.DataGrid.Parameters} */ (
-      {displayName: i18nString(UIStrings.heapSnapshotDiff).toString(), columns}));
-    // clang-format on
+      {id: 'sizeDelta', title: i18nString(UIStrings.sizeDelta), width: '75px', sortable: true, fixedWidth: true},
+    ] as DataGrid.DataGrid.ColumnDescriptor[]);
+    super(
+        heapProfilerModel, dataDisplayDelegate,
+        ({displayName: i18nString(UIStrings.heapSnapshotDiff).toString(), columns} as DataGrid.DataGrid.Parameters));
   }
 
-  /**
-   * @override
-   * @return {number}
-   */
-  defaultPopulateCount() {
+  defaultPopulateCount(): number {
     return 50;
   }
 
-  /**
-   * @override
-   * @param {string} sortColumn
-   * @param {boolean} sortAscending
-   */
-  _sortFields(sortColumn, sortAscending) {
+  _sortFields(sortColumn: string, sortAscending: boolean): HeapSnapshotModel.HeapSnapshotModel.ComparatorConfig {
     switch (sortColumn) {
       case 'object':
         return new HeapSnapshotModel.HeapSnapshotModel.ComparatorConfig('_name', sortAscending, '_count', false);
@@ -1169,19 +956,11 @@ export class HeapSnapshotDiffDataGrid extends HeapSnapshotViewportDataGrid {
     }
   }
 
-  /**
-   * @override
-   * @param {!HeapSnapshotProxy} snapshot
-   * @param {number} nodeIndex
-   */
-  async setDataSource(snapshot, nodeIndex) {
+  async setDataSource(snapshot: HeapSnapshotProxy, _nodeIndex: number): Promise<void> {
     this.snapshot = snapshot;
   }
 
-  /**
-   * @param {!HeapSnapshotProxy} baseSnapshot
-   */
-  setBaseDataSource(baseSnapshot) {
+  setBaseDataSource(baseSnapshot: HeapSnapshotProxy): void {
     this.baseSnapshot = baseSnapshot;
     this.removeTopLevelNodes();
     this.resetSortingCache();
@@ -1192,7 +971,7 @@ export class HeapSnapshotDiffDataGrid extends HeapSnapshotViewportDataGrid {
     this._populateChildren();
   }
 
-  async _populateChildren() {
+  async _populateChildren(): Promise<void> {
     if (this.snapshot === null || this.baseSnapshot === undefined || this.baseSnapshot.uid === undefined) {
       throw new Error('Data sources have not been set correctly');
     }
@@ -1203,8 +982,7 @@ export class HeapSnapshotDiffDataGrid extends HeapSnapshotViewportDataGrid {
     const diffByClassName = await this.snapshot.calculateSnapshotDiff(this.baseSnapshot.uid, aggregatesForDiff);
 
     for (const className in diffByClassName) {
-      const diff = /** @type {!HeapSnapshotModel.HeapSnapshotModel.DiffForClass} */ (
-          /** @type {?} */ (diffByClassName[className]));
+      const diff = diffByClassName[className];
       this.appendNode(this.rootNode(), new HeapSnapshotDiffNode(this, className, diff));
     }
     this.sortingChanged();
@@ -1212,12 +990,12 @@ export class HeapSnapshotDiffDataGrid extends HeapSnapshotViewportDataGrid {
 }
 
 export class AllocationDataGrid extends HeapSnapshotViewportDataGrid {
-  /**
-   * @param {?SDK.HeapProfilerModel.HeapProfilerModel} heapProfilerModel
-   * @param {!DataDisplayDelegate} dataDisplayDelegate
-   */
-  constructor(heapProfilerModel, dataDisplayDelegate) {
-    const columns = /** @type {!Array<!DataGrid.DataGrid.ColumnDescriptor>} */ ([
+  _linkifier: Components.Linkifier.Linkifier;
+  _topNodes?: HeapSnapshotModel.HeapSnapshotModel.SerializedAllocationNode[];
+
+  constructor(
+      heapProfilerModel: SDK.HeapProfilerModel.HeapProfilerModel|null, dataDisplayDelegate: DataDisplayDelegate) {
+    const columns = ([
       {id: 'liveCount', title: i18nString(UIStrings.liveCount), width: '75px', sortable: true, fixedWidth: true},
       {id: 'count', title: i18nString(UIStrings.count), width: '65px', sortable: true, fixedWidth: true},
       {id: 'liveSize', title: i18nString(UIStrings.liveSize), width: '75px', sortable: true, fixedWidth: true},
@@ -1227,37 +1005,32 @@ export class AllocationDataGrid extends HeapSnapshotViewportDataGrid {
         width: '75px',
         sortable: true,
         fixedWidth: true,
-        sort: DataGrid.DataGrid.Order.Descending
+        sort: DataGrid.DataGrid.Order.Descending,
       },
       {id: 'name', title: i18nString(UIStrings.function), disclosure: true, sortable: true},
-    ]);
-    // clang-format off
-    super(heapProfilerModel, dataDisplayDelegate, /** @type {!DataGrid.DataGrid.Parameters} */ (
-      {displayName: i18nString(UIStrings.allocation).toString(), columns}));
+    ] as DataGrid.DataGrid.ColumnDescriptor[]);
+    super(
+        heapProfilerModel, dataDisplayDelegate,
+        ({displayName: i18nString(UIStrings.allocation).toString(), columns} as DataGrid.DataGrid.Parameters));
     // clang-format on
     this._linkifier = new Components.Linkifier.Linkifier();
   }
 
-  get linkifier() {
+  get linkifier(): Components.Linkifier.Linkifier {
     return this._linkifier;
   }
 
-  dispose() {
+  dispose(): void {
     this._linkifier.reset();
   }
 
-  /**
-   * @override
-   * @param {!HeapSnapshotProxy} snapshot
-   * @param {number} nodeIndex
-   */
-  async setDataSource(snapshot, nodeIndex) {
+  async setDataSource(snapshot: HeapSnapshotProxy, _nodeIndex: number): Promise<void> {
     this.snapshot = snapshot;
     this._topNodes = await this.snapshot.allocationTracesTops();
     this._populateChildren();
   }
 
-  _populateChildren() {
+  _populateChildren(): void {
     this.removeTopLevelNodes();
     const root = this.rootNode();
     const tops = this._topNodes || [];
@@ -1267,10 +1040,7 @@ export class AllocationDataGrid extends HeapSnapshotViewportDataGrid {
     this.updateVisibleNodes(true);
   }
 
-  /**
-   * @override
-   */
-  sortingChanged() {
+  sortingChanged(): void {
     if (this._topNodes !== undefined) {
       this._topNodes.sort(this.createComparator());
       this.rootNode().removeChildren();
@@ -1278,18 +1048,10 @@ export class AllocationDataGrid extends HeapSnapshotViewportDataGrid {
     }
   }
 
-  /**
-   * @return {function(!Object, !Object):number}
-   */
-  createComparator() {
+  createComparator(): (arg0: Object, arg1: Object) => number {
     const fieldName = this.sortColumnId();
     const compareResult = (this.sortOrder() === DataGrid.DataGrid.Order.Ascending) ? +1 : -1;
-    /**
-     * @param {!Object} a
-     * @param {!Object} b
-     * @return {number}
-     */
-    function compare(a, b) {
+    function compare(a: Object, b: Object): number {
       // @ts-ignore
       if (a[fieldName] > b[fieldName]) {
         return compareResult;

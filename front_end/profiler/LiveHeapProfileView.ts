@@ -2,14 +2,14 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Common from '../common/common.js';
 import * as DataGrid from '../data_grid/data_grid.js';
 import * as i18n from '../i18n/i18n.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 import * as Workspace from '../workspace/workspace.js';
-
-import {SamplingHeapProfileNode} from './HeapProfileView.js';  // eslint-disable-line no-unused-vars
 
 export const UIStrings = {
   /**
@@ -50,39 +50,38 @@ export const UIStrings = {
   */
   kb: 'kB',
 };
-const str_ = i18n.i18n.registerUIStrings('profiler/LiveHeapProfileView.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('profiler/LiveHeapProfileView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-/** @type {LiveHeapProfileView} */
-let liveHeapProfileViewInstance;
-/**
- * @extends {UI.Widget.VBox}
- */
+let liveHeapProfileViewInstance: LiveHeapProfileView;
 export class LiveHeapProfileView extends UI.Widget.VBox {
-  /** @private */
-  constructor() {
+  _gridNodeByUrl: Map<string, GridNode>;
+  _setting: Common.Settings.Setting<boolean>;
+  _toggleRecordAction: UI.ActionRegistration.Action;
+  _toggleRecordButton: UI.Toolbar.ToolbarToggle;
+  _startWithReloadButton: UI.Toolbar.ToolbarButton|undefined;
+  _dataGrid: DataGrid.SortableDataGrid.SortableDataGrid<GridNode>;
+  _currentPollId: number;
+
+  private constructor() {
     super(true);
-    /** @type {!Map<string, !GridNode>} */
     this._gridNodeByUrl = new Map();
     this.registerRequiredCSS('profiler/liveHeapProfile.css', {enableLegacyPatching: true});
 
     this._setting = Common.Settings.Settings.instance().moduleSetting('memoryLiveHeapProfile');
     const toolbar = new UI.Toolbar.Toolbar('live-heap-profile-toolbar', this.contentElement);
-
-    /** @type {!UI.ActionRegistration.Action }*/
     this._toggleRecordAction =
-        /** @type {!UI.ActionRegistration.Action }*/ (
-            UI.ActionRegistry.ActionRegistry.instance().action('live-heap-profile.toggle-recording'));
-    /** @type {!UI.Toolbar.ToolbarToggle} */
+        (UI.ActionRegistry.ActionRegistry.instance().action('live-heap-profile.toggle-recording') as
+         UI.ActionRegistration.Action);
     this._toggleRecordButton =
-        /** @type {!UI.Toolbar.ToolbarToggle} */ (UI.Toolbar.Toolbar.createActionButton(this._toggleRecordAction));
+        (UI.Toolbar.Toolbar.createActionButton(this._toggleRecordAction) as UI.Toolbar.ToolbarToggle);
     this._toggleRecordButton.setToggled(this._setting.get());
     toolbar.appendToolbarItem(this._toggleRecordButton);
 
     const mainTarget = SDK.SDKModel.TargetManager.instance().mainTarget();
     if (mainTarget && mainTarget.model(SDK.ResourceTreeModel.ResourceTreeModel)) {
       const startWithReloadAction =
-          /** @type {!UI.ActionRegistration.Action }*/ (
-              UI.ActionRegistry.ActionRegistry.instance().action('live-heap-profile.start-with-reload'));
+          (UI.ActionRegistry.ActionRegistry.instance().action('live-heap-profile.start-with-reload') as
+           UI.ActionRegistration.Action);
       this._startWithReloadButton = UI.Toolbar.Toolbar.createActionButton(startWithReloadAction);
       toolbar.appendToolbarItem(this._startWithReloadButton);
     }
@@ -93,21 +92,15 @@ export class LiveHeapProfileView extends UI.Widget.VBox {
     this._currentPollId = 0;
   }
 
-  static instance() {
+  static instance(): LiveHeapProfileView {
     if (!liveHeapProfileViewInstance) {
       liveHeapProfileViewInstance = new LiveHeapProfileView();
     }
     return liveHeapProfileViewInstance;
   }
 
-  /**
-   * @return {!DataGrid.SortableDataGrid.SortableDataGrid<!GridNode>}
-   */
-  _createDataGrid() {
-    /**
-     * @type {!DataGrid.DataGrid.ColumnDescriptor}
-     */
-    const defaultColumnConfig = {
+  _createDataGrid(): DataGrid.SortableDataGrid.SortableDataGrid<GridNode> {
+    const defaultColumnConfig: DataGrid.DataGrid.ColumnDescriptor = {
       id: '',
       title: Common.UIString.LocalizedEmptyString,
       width: undefined,
@@ -144,7 +137,7 @@ export class LiveHeapProfileView extends UI.Widget.VBox {
         width: '40px',
         fixedWidth: true,
         align: DataGrid.DataGrid.Align.Right,
-        tooltip: i18nString(UIStrings.numberOfVmsSharingTheSameScript)
+        tooltip: i18nString(UIStrings.numberOfVmsSharingTheSameScript),
       },
       {
         ...defaultColumnConfig,
@@ -152,7 +145,7 @@ export class LiveHeapProfileView extends UI.Widget.VBox {
         title: i18nString(UIStrings.scriptUrl),
         fixedWidth: false,
         sortable: true,
-        tooltip: i18nString(UIStrings.urlOfTheScriptSource)
+        tooltip: i18nString(UIStrings.urlOfTheScriptSource),
       },
     ];
     const dataGrid = new DataGrid.SortableDataGrid.SortableDataGrid({
@@ -160,7 +153,7 @@ export class LiveHeapProfileView extends UI.Widget.VBox {
       columns,
       editCallback: undefined,
       deleteCallback: undefined,
-      refreshCallback: undefined
+      refreshCallback: undefined,
     });
     dataGrid.setResizeMethod(DataGrid.DataGrid.ResizeMethod.Last);
     dataGrid.element.classList.add('flex-auto');
@@ -176,30 +169,21 @@ export class LiveHeapProfileView extends UI.Widget.VBox {
     return dataGrid;
   }
 
-  /**
-   * @override
-   */
-  wasShown() {
+  wasShown(): void {
     this._poll();
     this._setting.addChangeListener(this._settingChanged, this);
   }
 
-  /**
-   * @override
-   */
-  willHide() {
+  willHide(): void {
     ++this._currentPollId;
     this._setting.removeChangeListener(this._settingChanged, this);
   }
 
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} value
-   */
-  _settingChanged(value) {
-    this._toggleRecordButton.setToggled(/** @type {boolean} */ (value.data));
+  _settingChanged(value: Common.EventTarget.EventTargetEvent): void {
+    this._toggleRecordButton.setToggled((value.data as boolean));
   }
 
-  async _poll() {
+  async _poll(): Promise<void> {
     const pollId = this._currentPollId;
     do {
       const isolates = Array.from(SDK.IsolateManager.IsolateManager.instance().isolates());
@@ -219,13 +203,11 @@ export class LiveHeapProfileView extends UI.Widget.VBox {
     } while (this._currentPollId === pollId);
   }
 
-  /**
-   * @param {!Array<!SDK.IsolateManager.Isolate>} isolates
-   * @param {!Array<?Protocol.HeapProfiler.SamplingHeapProfile>} profiles
-   */
-  _update(isolates, profiles) {
-    /** @type {!Map<string, !{size: number, isolates: !Set<!SDK.IsolateManager.Isolate>}>} */
-    const dataByUrl = new Map();
+  _update(isolates: SDK.IsolateManager.Isolate[], profiles: (Protocol.HeapProfiler.SamplingHeapProfile|null)[]): void {
+    const dataByUrl = new Map<string, {
+      size: number,
+      isolates: Set<SDK.IsolateManager.Isolate>,
+    }>();
     profiles.forEach((profile, index) => {
       if (profile) {
         processNodeTree(isolates[index], '', profile.head);
@@ -233,11 +215,11 @@ export class LiveHeapProfileView extends UI.Widget.VBox {
     });
 
     const rootNode = this._dataGrid.rootNode();
-    const exisitingNodes = new Set();
+    const exisitingNodes = new Set<GridNode>();
     for (const pair of dataByUrl) {
-      const url = /** @type {string} */ (pair[0]);
-      const size = /** @type {number} */ (pair[1].size);
-      const isolateCount = /** @type {number} */ (pair[1].isolates.size);
+      const url = (pair[0] as string);
+      const size = (pair[1].size as number);
+      const isolateCount = (pair[1].isolates.size as number);
       if (!url) {
         console.info(`Node with empty URL: ${size} bytes`);  // eslint-disable-line no-console
         continue;
@@ -254,21 +236,20 @@ export class LiveHeapProfileView extends UI.Widget.VBox {
     }
 
     for (const node of rootNode.children.slice()) {
+      // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
+      // @ts-expect-error
       if (!exisitingNodes.has(node)) {
         node.remove();
       }
-      const gridNode = /** @type {!GridNode} */ (node);
+      const gridNode = (node as GridNode);
       this._gridNodeByUrl.delete(gridNode._url);
     }
 
     this._sortingChanged();
 
-    /**
-     * @param {!SDK.IsolateManager.Isolate} isolate
-     * @param {string} parentUrl
-     * @param {!Protocol.HeapProfiler.SamplingHeapProfileNode} node
-     */
-    function processNodeTree(isolate, parentUrl, node) {
+    function processNodeTree(
+        isolate: SDK.IsolateManager.Isolate, parentUrl: string,
+        node: Protocol.HeapProfiler.SamplingHeapProfileNode): void {
       const url = node.callFrame.url || parentUrl || systemNodeName(node) || anonymousScriptName(node);
       node.children.forEach(processNodeTree.bind(null, isolate, url));
       if (!node.selfSize) {
@@ -283,29 +264,18 @@ export class LiveHeapProfileView extends UI.Widget.VBox {
       data.isolates.add(isolate);
     }
 
-    /**
-     * @param {!Protocol.HeapProfiler.SamplingHeapProfileNode} node
-     * @return {string}
-     */
-    function systemNodeName(node) {
+    function systemNodeName(node: Protocol.HeapProfiler.SamplingHeapProfileNode): string {
       const name = node.callFrame.functionName;
       return name.startsWith('(') && name !== '(root)' ? name : '';
     }
 
-    /**
-     * @param {!Protocol.HeapProfiler.SamplingHeapProfileNode} node
-     * @return {string}
-     */
-    function anonymousScriptName(node) {
+    function anonymousScriptName(node: Protocol.HeapProfiler.SamplingHeapProfileNode): string {
       return Number(node.callFrame.scriptId) ? i18nString(UIStrings.anonymousScriptS, {PH1: node.callFrame.scriptId}) :
                                                '';
     }
   }
 
-  /**
-   * @param {!KeyboardEvent} event
-   */
-  _onKeyDown(event) {
+  _onKeyDown(event: KeyboardEvent): void {
     if (!(event.key === 'Enter')) {
       return;
     }
@@ -313,8 +283,8 @@ export class LiveHeapProfileView extends UI.Widget.VBox {
     this._revealSourceForSelectedNode();
   }
 
-  _revealSourceForSelectedNode() {
-    const node = /** @type {!GridNode} */ (this._dataGrid.selectedNode);
+  _revealSourceForSelectedNode(): void {
+    const node = (this._dataGrid.selectedNode as GridNode);
     if (!node || !node._url) {
       return;
     }
@@ -324,33 +294,29 @@ export class LiveHeapProfileView extends UI.Widget.VBox {
     }
   }
 
-  _sortingChanged() {
+  _sortingChanged(): void {
     const columnId = this._dataGrid.sortColumnId();
     if (!columnId) {
       return;
     }
 
-    /**
-     * @param {!DataGrid.SortableDataGrid.SortableDataGridNode<!GridNode>} a
-     * @param {!DataGrid.SortableDataGrid.SortableDataGridNode<!GridNode>} b
-     */
-    function sortByUrl(a, b) {
-      return /** @type {!GridNode} */ (b)._url.localeCompare(/** @type {!GridNode} */ (a)._url);
+    function sortByUrl(
+        a: DataGrid.SortableDataGrid.SortableDataGridNode<GridNode>,
+        b: DataGrid.SortableDataGrid.SortableDataGridNode<GridNode>): number {
+      return (b as GridNode)._url.localeCompare((a as GridNode)._url);
     }
 
-    /**
-     * @param {!DataGrid.SortableDataGrid.SortableDataGridNode<!GridNode>} a
-     * @param {!DataGrid.SortableDataGrid.SortableDataGridNode<!GridNode>} b
-     */
-    function sortBySize(a, b) {
-      return /** @type {!GridNode} */ (b)._size - /** @type {!GridNode} */ (a)._size;
+    function sortBySize(
+        a: DataGrid.SortableDataGrid.SortableDataGridNode<GridNode>,
+        b: DataGrid.SortableDataGrid.SortableDataGridNode<GridNode>): number {
+      return (b as GridNode)._size - (a as GridNode)._size;
     }
 
     const sortFunction = columnId === 'url' ? sortByUrl : sortBySize;
     this._dataGrid.sortNodes(sortFunction, this._dataGrid.isSortOrderAscending());
   }
 
-  _toggleRecording() {
+  _toggleRecording(): void {
     const enable = !this._setting.get();
     if (enable) {
       this._startRecording(false);
@@ -359,10 +325,7 @@ export class LiveHeapProfileView extends UI.Widget.VBox {
     }
   }
 
-  /**
-   * @param {boolean=} reload
-   */
-  _startRecording(reload) {
+  _startRecording(reload?: boolean): void {
     this._setting.set(true);
     if (!reload) {
       return;
@@ -371,39 +334,31 @@ export class LiveHeapProfileView extends UI.Widget.VBox {
     if (!mainTarget) {
       return;
     }
-    const resourceTreeModel = /** @type {?SDK.ResourceTreeModel.ResourceTreeModel} */ (
-        mainTarget.model(SDK.ResourceTreeModel.ResourceTreeModel));
+    const resourceTreeModel =
+        (mainTarget.model(SDK.ResourceTreeModel.ResourceTreeModel) as SDK.ResourceTreeModel.ResourceTreeModel | null);
     if (resourceTreeModel) {
       resourceTreeModel.reloadPage();
     }
   }
 
-  async _stopRecording() {
+  async _stopRecording(): Promise<void> {
     this._setting.set(false);
   }
 }
 
-/**
- * @extends {DataGrid.SortableDataGrid.SortableDataGridNode<*>}
- */
-export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode {
-  /**
-   * @param {string} url
-   * @param {number} size
-   * @param {number} isolateCount
-   */
-  constructor(url, size, isolateCount) {
+export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode<unknown> {
+  _url: string;
+  _size: number;
+  _isolateCount: number;
+
+  constructor(url: string, size: number, isolateCount: number) {
     super();
     this._url = url;
     this._size = size;
     this._isolateCount = isolateCount;
   }
 
-  /**
-   * @param {number} size
-   * @param {number} isolateCount
-   */
-  updateNode(size, isolateCount) {
+  updateNode(size: number, isolateCount: number): void {
     if (this._size === size && this._isolateCount === isolateCount) {
       return;
     }
@@ -412,12 +367,7 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode {
     this.refresh();
   }
 
-  /**
-   * @override
-   * @param {string} columnId
-   * @return {!HTMLElement}
-   */
-  createCell(columnId) {
+  createCell(columnId: string): HTMLElement {
     const cell = this.createTD(columnId);
     switch (columnId) {
       case 'url':
@@ -435,17 +385,12 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode {
   }
 }
 
-/** @type {!ActionDelegate} */
-let profilerActionDelegateInstance;
+let profilerActionDelegateInstance: ActionDelegate;
 
-/**
- * @implements {UI.ActionRegistration.ActionDelegate}
- */
-export class ActionDelegate {
-  /**
-   * @param {{forceNew: ?boolean}} opts
-   */
-  static instance(opts = {forceNew: null}) {
+export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
+  static instance(opts: {
+    forceNew: boolean|null,
+  } = {forceNew: null}): ActionDelegate {
     const {forceNew} = opts;
     if (!profilerActionDelegateInstance || forceNew) {
       profilerActionDelegateInstance = new ActionDelegate();
@@ -453,30 +398,20 @@ export class ActionDelegate {
     return profilerActionDelegateInstance;
   }
 
-  /**
-   * @override
-   * @param {!UI.Context.Context} context
-   * @param {string} actionId
-   * @return {boolean}
-   */
-  handleAction(context, actionId) {
-    (async () => {
+  handleAction(_context: UI.Context.Context, actionId: string): boolean {
+    (async(): Promise<void> => {
       const profileViewId = 'live_heap_profile';
       await UI.ViewManager.ViewManager.instance().showView(profileViewId);
       const view = UI.ViewManager.ViewManager.instance().view(profileViewId);
       if (view) {
         const widget = await view.widget();
-        this._innerHandleAction(/** @type {!LiveHeapProfileView} */ (widget), actionId);
+        this._innerHandleAction((widget as LiveHeapProfileView), actionId);
       }
     })();
     return true;
   }
 
-  /**
-   * @param {!LiveHeapProfileView} profilerView
-   * @param {string} actionId
-   */
-  _innerHandleAction(profilerView, actionId) {
+  _innerHandleAction(profilerView: LiveHeapProfileView, actionId: string): void {
     switch (actionId) {
       case 'live-heap-profile.toggle-recording':
         profilerView._toggleRecording();

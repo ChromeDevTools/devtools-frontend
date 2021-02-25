@@ -28,38 +28,33 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
 import * as PerfUI from '../perf_ui/perf_ui.js';
 import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../ui/ui.js';
 
-/** @type {!Common.Color.Generator|null} */
-let colorGeneratorInstance = null;
+let colorGeneratorInstance: Common.Color.Generator|null = null;
 
-/**
- * @implements {PerfUI.FlameChart.FlameChartDataProvider}
- */
-export class ProfileFlameChartDataProvider {
+export class ProfileFlameChartDataProvider implements PerfUI.FlameChart.FlameChartDataProvider {
+  _colorGenerator: Common.Color.Generator;
+  _maxStackDepth: number;
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  timelineData_: PerfUI.FlameChart.TimelineData|null;
+  entryNodes: SDK.ProfileTreeModel.ProfileNode[];
+  _font?: string;
+  _boldFont?: string;
+
   constructor() {
     this._colorGenerator = ProfileFlameChartDataProvider.colorGenerator();
     this._maxStackDepth = 0;
-    /**
-     * @type {?PerfUI.FlameChart.TimelineData}
-     * @protected
-     */
     this.timelineData_ = null;
-    /**
-     * @type {!Array<!SDK.ProfileTreeModel.ProfileNode>}
-     * @protected
-     */
     this.entryNodes = [];
   }
 
-  /**
-   * @return {!Common.Color.Generator}
-   */
-  static colorGenerator() {
+  static colorGenerator(): Common.Color.Generator {
     if (!colorGeneratorInstance) {
       colorGeneratorInstance = new Common.Color.Generator(
           {min: 30, max: 330, count: undefined}, {min: 50, max: 80, count: 5}, {min: 80, max: 90, count: 3});
@@ -71,174 +66,95 @@ export class ProfileFlameChartDataProvider {
     return colorGeneratorInstance;
   }
 
-  /**
-   * @override
-   * @return {number}
-   */
-  minimumBoundary() {
+  minimumBoundary(): number {
     throw 'Not implemented.';
   }
 
-  /**
-   * @override
-   * @return {number}
-   */
-  totalTime() {
+  totalTime(): number {
     throw 'Not implemented.';
   }
 
-  /**
-   * @override
-   * @param {number} value
-   * @param {number=} precision
-   * @return {string}
-   */
-  formatValue(value, precision) {
+  formatValue(value: number, precision?: number): string {
     return Number.preciseMillisToString(value, precision);
   }
 
-  /**
-   * @override
-   * @return {number}
-   */
-  maxStackDepth() {
+  maxStackDepth(): number {
     return this._maxStackDepth;
   }
 
-  /**
-   * @override
-   * @return {?PerfUI.FlameChart.TimelineData}
-   */
-  timelineData() {
+  timelineData(): PerfUI.FlameChart.TimelineData|null {
     return this.timelineData_ || this._calculateTimelineData();
   }
 
-  /**
-   * @return {!PerfUI.FlameChart.TimelineData}
-   */
-  _calculateTimelineData() {
+  _calculateTimelineData(): PerfUI.FlameChart.TimelineData {
     throw 'Not implemented.';
   }
 
-  /**
-   * @override
-   * @param {number} entryIndex
-   * @return {?Element}
-   */
-  prepareHighlightedEntryInfo(entryIndex) {
+  prepareHighlightedEntryInfo(_entryIndex: number): Element|null {
     throw 'Not implemented.';
   }
 
-  /**
-   * @override
-   * @param {number} entryIndex
-   * @return {boolean}
-   */
-  canJumpToEntry(entryIndex) {
+  canJumpToEntry(entryIndex: number): boolean {
     return this.entryNodes[entryIndex].scriptId !== '0';
   }
 
-  /**
-   * @override
-   * @param {number} entryIndex
-   * @return {string}
-   */
-  entryTitle(entryIndex) {
+  entryTitle(entryIndex: number): string {
     const node = this.entryNodes[entryIndex];
     return UI.UIUtils.beautifyFunctionName(node.functionName);
   }
 
-  /**
-   * @override
-   * @param {number} entryIndex
-   * @return {?string}
-   */
-  entryFont(entryIndex) {
+  entryFont(entryIndex: number): string|null {
     if (!this._font) {
       this._font = '11px ' + Host.Platform.fontFamily();
       this._boldFont = 'bold ' + this._font;
     }
-    return this.entryHasDeoptReason(entryIndex) ? /** @type {string} */ (this._boldFont) : this._font;
+    return this.entryHasDeoptReason(entryIndex) ? this._boldFont as string : this._font;
   }
 
-  /**
-   * @param {number} entryIndex
-   * @return {boolean}
-   */
-  entryHasDeoptReason(entryIndex) {
+  entryHasDeoptReason(_entryIndex: number): boolean {
     throw 'Not implemented.';
   }
 
-  /**
-   * @override
-   * @param {number} entryIndex
-   * @return {string}
-   */
-  entryColor(entryIndex) {
+  entryColor(entryIndex: number): string {
     const node = this.entryNodes[entryIndex];
     // For idle and program, we want different 'shades of gray', so we fallback to functionName as scriptId = 0
     // For rest of nodes e.g eval scripts, if url is empty then scriptId will be guaranteed to be non-zero
     return this._colorGenerator.colorForID(node.url || (node.scriptId !== '0' ? node.scriptId : node.functionName));
   }
 
-  /**
-   * @override
-   * @param {number} entryIndex
-   * @param {!CanvasRenderingContext2D} context
-   * @param {?string} text
-   * @param {number} barX
-   * @param {number} barY
-   * @param {number} barWidth
-   * @param {number} barHeight
-   * @return {boolean}
-   */
-  decorateEntry(entryIndex, context, text, barX, barY, barWidth, barHeight) {
+  decorateEntry(
+      _entryIndex: number, _context: CanvasRenderingContext2D, _text: string|null, _barX: number, _barY: number,
+      _barWidth: number, _barHeight: number): boolean {
     return false;
   }
 
-  /**
-   * @override
-   * @param {number} entryIndex
-   * @return {boolean}
-   */
-  forceDecoration(entryIndex) {
+  forceDecoration(_entryIndex: number): boolean {
     return false;
   }
 
-  /**
-   * @override
-   * @param {number} entryIndex
-   * @return {string}
-   */
-  textColor(entryIndex) {
+  textColor(_entryIndex: number): string {
     return '#333';
   }
 
-  /**
-   * @override
-   */
-  navStartTimes() {
+  navStartTimes(): Map<string, SDK.TracingModel.Event> {
     return new Map();
   }
 
-  /**
-   * @return {number}
-   */
-  entryNodesLength() {
+  entryNodesLength(): number {
     return this.entryNodes.length;
   }
 }
 
+export class CPUProfileFlameChart extends UI.Widget.VBox implements UI.SearchableView.Searchable {
+  _searchableView: UI.SearchableView.SearchableView;
+  _overviewPane: OverviewPane;
+  _mainPane: PerfUI.FlameChart.FlameChart;
+  _entrySelected: boolean;
+  _dataProvider: ProfileFlameChartDataProvider;
+  _searchResults: number[];
+  _searchResultIndex: number = -1;
 
-/**
- * @implements {UI.SearchableView.Searchable}
- */
-export class CPUProfileFlameChart extends UI.Widget.VBox {
-  /**
-   * @param {!UI.SearchableView.SearchableView} searchableView
-   * @param {!ProfileFlameChartDataProvider} dataProvider
-   */
-  constructor(searchableView, dataProvider) {
+  constructor(searchableView: UI.SearchableView.SearchableView, dataProvider: ProfileFlameChartDataProvider) {
     super();
     this.element.id = 'cpu-flame-chart';
 
@@ -257,38 +173,24 @@ export class CPUProfileFlameChart extends UI.Widget.VBox {
     this._mainPane.addEventListener(PerfUI.FlameChart.Events.CanvasFocused, this._onEntrySelected, this);
     this._overviewPane.addEventListener(PerfUI.OverviewGrid.Events.WindowChanged, this._onWindowChanged, this);
     this._dataProvider = dataProvider;
-    /** @type {!Array<number>} */
     this._searchResults = [];
   }
 
-  /**
-   * @override
-   */
-  focus() {
+  focus(): void {
     this._mainPane.focus();
   }
 
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  _onWindowChanged(event) {
+  _onWindowChanged(event: Common.EventTarget.EventTargetEvent): void {
     const windowLeft = event.data.windowTimeLeft;
     const windowRight = event.data.windowTimeRight;
     this._mainPane.setWindowTimes(windowLeft, windowRight, /* animate */ true);
   }
 
-  /**
-   * @param {number} timeLeft
-   * @param {number} timeRight
-   */
-  selectRange(timeLeft, timeRight) {
+  selectRange(timeLeft: number, timeRight: number): void {
     this._overviewPane._selectRange(timeLeft, timeRight);
   }
 
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  _onEntrySelected(event) {
+  _onEntrySelected(event: Common.EventTarget.EventTargetEvent): void {
     if (event.data) {
       const eventIndex = Number(event.data);
       this._mainPane.setSelectedEntry(eventIndex);
@@ -303,30 +205,21 @@ export class CPUProfileFlameChart extends UI.Widget.VBox {
     }
   }
 
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  _onEntryInvoked(event) {
+  _onEntryInvoked(event: Common.EventTarget.EventTargetEvent): void {
     this._onEntrySelected(event);
     this.dispatchEventToListeners(PerfUI.FlameChart.Events.EntryInvoked, event.data);
   }
 
-  update() {
+  update(): void {
     this._overviewPane.update();
     this._mainPane.update();
   }
 
-  /**
-   * @override
-   * @param {!UI.SearchableView.SearchConfig} searchConfig
-   * @param {boolean} shouldJump
-   * @param {boolean=} jumpBackwards
-   */
-  performSearch(searchConfig, shouldJump, jumpBackwards) {
+  performSearch(searchConfig: UI.SearchableView.SearchConfig, _shouldJump: boolean, jumpBackwards?: boolean): void {
     const matcher = createPlainTextSearchRegex(searchConfig.query, searchConfig.caseSensitive ? '' : 'i');
 
-    /** @type {number} */
-    const selectedEntryIndex = this._searchResultIndex !== -1 ? this._searchResults[this._searchResultIndex] : -1;
+    const selectedEntryIndex: number =
+        this._searchResultIndex !== -1 ? this._searchResults[this._searchResultIndex] : -1;
     this._searchResults = [];
     const entriesCount = this._dataProvider.entryNodesLength();
     for (let index = 0; index < entriesCount; ++index) {
@@ -348,190 +241,115 @@ export class CPUProfileFlameChart extends UI.Widget.VBox {
     this._searchableView.updateCurrentMatchIndex(this._searchResultIndex);
   }
 
-  /**
-   * @override
-   */
-  searchCanceled() {
+  searchCanceled(): void {
     this._mainPane.setSelectedEntry(-1);
     this._searchResults = [];
     this._searchResultIndex = -1;
   }
 
-  /**
-   * @override
-   */
-  jumpToNextSearchResult() {
+  jumpToNextSearchResult(): void {
     this._searchResultIndex = (this._searchResultIndex + 1) % this._searchResults.length;
     this._mainPane.setSelectedEntry(this._searchResults[this._searchResultIndex]);
     this._searchableView.updateCurrentMatchIndex(this._searchResultIndex);
   }
 
-  /**
-   * @override
-   */
-  jumpToPreviousSearchResult() {
+  jumpToPreviousSearchResult(): void {
     this._searchResultIndex = (this._searchResultIndex - 1 + this._searchResults.length) % this._searchResults.length;
     this._mainPane.setSelectedEntry(this._searchResults[this._searchResultIndex]);
     this._searchableView.updateCurrentMatchIndex(this._searchResultIndex);
   }
 
-  /**
-   * @override
-   * @return {boolean}
-   */
-  supportsCaseSensitiveSearch() {
+  supportsCaseSensitiveSearch(): boolean {
     return true;
   }
 
-  /**
-   * @override
-   * @return {boolean}
-   */
-  supportsRegexSearch() {
+  supportsRegexSearch(): boolean {
     return false;
   }
 }
 
-/**
- * @implements {PerfUI.TimelineGrid.Calculator}
- */
-export class OverviewCalculator {
-  /**
-   * @param {function(number, number=): string} formatter
-   */
-  constructor(formatter) {
+export class OverviewCalculator implements PerfUI.TimelineGrid.Calculator {
+  _formatter: (arg0: number, arg1?: number|undefined) => string;
+  _minimumBoundaries!: number;
+  _maximumBoundaries!: number;
+  _xScaleFactor!: number;
+  constructor(formatter: (arg0: number, arg1?: number|undefined) => string) {
     this._formatter = formatter;
-    /** @type {number} */
-    this._minimumBoundaries;
-    /** @type {number} */
-    this._maximumBoundaries;
-    /** @type {number} */
-    this._xScaleFactor;
   }
 
-  /**
-   * @param {!OverviewPane} overviewPane
-   */
-  _updateBoundaries(overviewPane) {
+  _updateBoundaries(overviewPane: OverviewPane): void {
     this._minimumBoundaries = overviewPane._dataProvider.minimumBoundary();
     const totalTime = overviewPane._dataProvider.totalTime();
     this._maximumBoundaries = this._minimumBoundaries + totalTime;
     this._xScaleFactor = overviewPane._overviewContainer.clientWidth / totalTime;
   }
 
-  /**
-   * @override
-   * @param {number} time
-   * @return {number}
-   */
-  computePosition(time) {
+  computePosition(time: number): number {
     return (time - this._minimumBoundaries) * this._xScaleFactor;
   }
 
-  /**
-   * @override
-   * @param {number} value
-   * @param {number=} precision
-   * @return {string}
-   */
-  formatValue(value, precision) {
+  formatValue(value: number, precision?: number): string {
     return this._formatter(value - this._minimumBoundaries, precision);
   }
 
-  /**
-   * @override
-   * @return {number}
-   */
-  maximumBoundary() {
+  maximumBoundary(): number {
     return this._maximumBoundaries;
   }
 
-  /**
-   * @override
-   * @return {number}
-   */
-  minimumBoundary() {
+  minimumBoundary(): number {
     return this._minimumBoundaries;
   }
 
-  /**
-   * @override
-   * @return {number}
-   */
-  zeroTime() {
+  zeroTime(): number {
     return this._minimumBoundaries;
   }
 
-  /**
-   * @override
-   * @return {number}
-   */
-  boundarySpan() {
+  boundarySpan(): number {
     return this._maximumBoundaries - this._minimumBoundaries;
   }
 }
 
-/**
- * @implements {PerfUI.FlameChart.FlameChartDelegate}
- */
-export class OverviewPane extends UI.Widget.VBox {
-  /**
-   * @param {!PerfUI.FlameChart.FlameChartDataProvider} dataProvider
-   */
-  constructor(dataProvider) {
+export class OverviewPane extends UI.Widget.VBox implements PerfUI.FlameChart.FlameChartDelegate {
+  _overviewContainer: HTMLElement;
+  _overviewCalculator: OverviewCalculator;
+  _overviewGrid: PerfUI.OverviewGrid.OverviewGrid;
+  _overviewCanvas: HTMLCanvasElement;
+  _dataProvider: PerfUI.FlameChart.FlameChartDataProvider;
+  _windowTimeLeft?: number;
+  _windowTimeRight?: number;
+  _updateTimerId?: number;
+
+  constructor(dataProvider: PerfUI.FlameChart.FlameChartDataProvider) {
     super();
     this.element.classList.add('cpu-profile-flame-chart-overview-pane');
     this._overviewContainer = this.element.createChild('div', 'cpu-profile-flame-chart-overview-container');
     this._overviewCalculator = new OverviewCalculator(dataProvider.formatValue);
     this._overviewGrid = new PerfUI.OverviewGrid.OverviewGrid('cpu-profile-flame-chart', this._overviewCalculator);
     this._overviewGrid.element.classList.add('fill');
-    /** @type {!HTMLCanvasElement} */
-    this._overviewCanvas = /** @type {!HTMLCanvasElement} */ (
-        this._overviewContainer.createChild('canvas', 'cpu-profile-flame-chart-overview-canvas'));
+    this._overviewCanvas =
+        (this._overviewContainer.createChild('canvas', 'cpu-profile-flame-chart-overview-canvas') as HTMLCanvasElement);
     this._overviewContainer.appendChild(this._overviewGrid.element);
     this._dataProvider = dataProvider;
     this._overviewGrid.addEventListener(PerfUI.OverviewGrid.Events.WindowChanged, this._onWindowChanged, this);
   }
 
-  /**
-   * @override
-   * @param {number} windowStartTime
-   * @param {number} windowEndTime
-   */
-  windowChanged(windowStartTime, windowEndTime) {
+  windowChanged(windowStartTime: number, windowEndTime: number): void {
     this._selectRange(windowStartTime, windowEndTime);
   }
 
-  /**
-   * @override
-   * @param {number} startTime
-   * @param {number} endTime
-   */
-  updateRangeSelection(startTime, endTime) {
+  updateRangeSelection(_startTime: number, _endTime: number): void {
   }
 
-  /**
-   * @override
-   * @param {!PerfUI.FlameChart.FlameChart} flameChart
-   * @param {?PerfUI.FlameChart.Group} group
-   */
-  updateSelectedGroup(flameChart, group) {
+  updateSelectedGroup(_flameChart: PerfUI.FlameChart.FlameChart, _group: PerfUI.FlameChart.Group|null): void {
   }
 
-  /**
-   * @param {number} timeLeft
-   * @param {number} timeRight
-   */
-  _selectRange(timeLeft, timeRight) {
+  _selectRange(timeLeft: number, timeRight: number): void {
     const startTime = this._dataProvider.minimumBoundary();
     const totalTime = this._dataProvider.totalTime();
     this._overviewGrid.setWindow((timeLeft - startTime) / totalTime, (timeRight - startTime) / totalTime);
   }
 
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  _onWindowChanged(event) {
+  _onWindowChanged(event: Common.EventTarget.EventTargetEvent): void {
     const windowPosition = {windowTimeLeft: event.data.rawStartValue, windowTimeRight: event.data.rawEndValue};
     this._windowTimeLeft = windowPosition.windowTimeLeft;
     this._windowTimeRight = windowPosition.windowTimeRight;
@@ -539,28 +357,22 @@ export class OverviewPane extends UI.Widget.VBox {
     this.dispatchEventToListeners(PerfUI.OverviewGrid.Events.WindowChanged, windowPosition);
   }
 
-  /**
-   * @return {?PerfUI.FlameChart.TimelineData}
-   */
-  _timelineData() {
+  _timelineData(): PerfUI.FlameChart.TimelineData|null {
     return this._dataProvider.timelineData();
   }
 
-  /**
-   * @override
-   */
-  onResize() {
+  onResize(): void {
     this._scheduleUpdate();
   }
 
-  _scheduleUpdate() {
+  _scheduleUpdate(): void {
     if (this._updateTimerId) {
       return;
     }
     this._updateTimerId = this.element.window().requestAnimationFrame(this.update.bind(this));
   }
 
-  update() {
+  update(): void {
     this._updateTimerId = 0;
     const timelineData = this._timelineData();
     if (!timelineData) {
@@ -573,7 +385,7 @@ export class OverviewPane extends UI.Widget.VBox {
     this._drawOverviewCanvas();
   }
 
-  _drawOverviewCanvas() {
+  _drawOverviewCanvas(): void {
     const canvasWidth = this._overviewCanvas.width;
     const canvasHeight = this._overviewCanvas.height;
     const drawData = this._calculateDrawData(canvasWidth);
@@ -603,13 +415,9 @@ export class OverviewPane extends UI.Widget.VBox {
     context.closePath();
   }
 
-  /**
-   * @param {number} width
-   * @return {!Uint8Array}
-   */
-  _calculateDrawData(width) {
+  _calculateDrawData(width: number): Uint8Array {
     const dataProvider = this._dataProvider;
-    const timelineData = /** @type {!PerfUI.FlameChart.TimelineData} */ (this._timelineData());
+    const timelineData = (this._timelineData() as PerfUI.FlameChart.TimelineData);
     const entryStartTimes = timelineData.entryStartTimes;
     const entryTotalTimes = timelineData.entryTotalTimes;
     const entryLevels = timelineData.entryLevels;
@@ -630,11 +438,7 @@ export class OverviewPane extends UI.Widget.VBox {
     return drawData;
   }
 
-  /**
-   * @param {number} width
-   * @param {number} height
-   */
-  _resetCanvas(width, height) {
+  _resetCanvas(width: number, height: number): void {
     const ratio = window.devicePixelRatio;
     this._overviewCanvas.width = width * ratio;
     this._overviewCanvas.height = height * ratio;

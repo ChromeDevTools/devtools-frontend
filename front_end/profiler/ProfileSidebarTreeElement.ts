@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
 import * as i18n from '../i18n/i18n.js';
 import * as UI from '../ui/ui.js';
@@ -31,34 +33,31 @@ export const UIStrings = {
   */
   delete: 'Delete',
 };
-const str_ = i18n.i18n.registerUIStrings('profiler/ProfileSidebarTreeElement.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('profiler/ProfileSidebarTreeElement.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-/**
- * @type {?HTMLInputElement}
- */
-let sharedFileSelectorElement = null;
+let sharedFileSelectorElement: HTMLInputElement|null = null;
 
-/**
- * @return {?HTMLInputElement}
- */
-function getSharedFileSelectorElement() {
+function getSharedFileSelectorElement(): HTMLInputElement|null {
   return sharedFileSelectorElement;
 }
 
-/**
- * @param {!HTMLInputElement} element
- */
-export function setSharedFileSelectorElement(element) {
+export function setSharedFileSelectorElement(element: HTMLInputElement): void {
   sharedFileSelectorElement = element;
 }
 
 export class ProfileSidebarTreeElement extends UI.TreeOutline.TreeElement {
-  /**
-   * @param {!DataDisplayDelegate} dataDisplayDelegate
-   * @param {!ProfileHeader} profile
-   * @param {string} className
-   */
-  constructor(dataDisplayDelegate, profile, className) {
+  _iconElement: HTMLDivElement;
+  _titlesElement: HTMLDivElement;
+  _titleContainer: HTMLElement;
+  titleElement: HTMLElement;
+  _subtitleElement: HTMLElement;
+  _className: string;
+  _small: boolean;
+  _dataDisplayDelegate: DataDisplayDelegate;
+  profile: ProfileHeader;
+  _saveLinkElement?: HTMLElement;
+  _editing?: UI.InplaceEditor.Controller|null;
+  constructor(dataDisplayDelegate: DataDisplayDelegate, profile: ProfileHeader, className: string) {
     super('', false);
     this._iconElement = document.createElement('div');
     this._iconElement.classList.add('icon');
@@ -82,23 +81,17 @@ export class ProfileSidebarTreeElement extends UI.TreeOutline.TreeElement {
     }
   }
 
-  _createSaveLink() {
+  _createSaveLink(): void {
     this._saveLinkElement = this._titleContainer.createChild('span', 'save-link');
     this._saveLinkElement.textContent = i18nString(UIStrings.save);
     this._saveLinkElement.addEventListener('click', this._saveProfile.bind(this), false);
   }
 
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  _onProfileReceived(event) {
+  _onProfileReceived(_event: Common.EventTarget.EventTargetEvent): void {
     this._createSaveLink();
   }
 
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  _updateStatus(event) {
+  _updateStatus(event: Common.EventTarget.EventTargetEvent): void {
     const statusUpdate = event.data;
     if (statusUpdate.subtitle !== null) {
       this._subtitleElement.textContent = statusUpdate.subtitle || '';
@@ -110,22 +103,14 @@ export class ProfileSidebarTreeElement extends UI.TreeOutline.TreeElement {
     }
   }
 
-  /**
-   * @override
-   * @param {!Event} event
-   * @return {boolean}
-   */
-  ondblclick(event) {
+  ondblclick(event: Event): boolean {
     if (!this._editing) {
-      this._startEditing(/** @type {!Element} */ (event.target));
+      this._startEditing((event.target as Element));
     }
     return false;
   }
 
-  /**
-   * @param {!Element} eventTarget
-   */
-  _startEditing(eventTarget) {
+  _startEditing(eventTarget: Element): void {
     const container = eventTarget.enclosingNodeOrSelfWithClass('title');
     if (!container) {
       return;
@@ -134,46 +119,31 @@ export class ProfileSidebarTreeElement extends UI.TreeOutline.TreeElement {
     this._editing = UI.InplaceEditor.InplaceEditor.startEditing(container, config);
   }
 
-  /**
-   * @param {!Element} container
-   * @param {string} newTitle
-   */
-  _editingCommitted(container, newTitle) {
+  _editingCommitted(container: Element, newTitle: string): void {
     delete this._editing;
     this.profile.setTitle(newTitle);
   }
 
-  _editingCancelled() {
+  _editingCancelled(): void {
     delete this._editing;
   }
 
-  dispose() {
+  dispose(): void {
     this.profile.removeEventListener(ProfileHeaderEvents.UpdateStatus, this._updateStatus, this);
     this.profile.removeEventListener(ProfileHeaderEvents.ProfileReceived, this._onProfileReceived, this);
   }
 
-  /**
-   * @override
-   * @return {boolean}
-   */
-  onselect() {
+  onselect(): boolean {
     this._dataDisplayDelegate.showProfile(this.profile);
     return true;
   }
 
-  /**
-   * @override
-   * @return {boolean}
-   */
-  ondelete() {
+  ondelete(): boolean {
     this.profile.profileType().removeProfile(this.profile);
     return true;
   }
 
-  /**
-   * @override
-   */
-  onattach() {
+  onattach(): void {
     if (this._className) {
       this.listItemElement.classList.add(this._className);
     }
@@ -187,10 +157,7 @@ export class ProfileSidebarTreeElement extends UI.TreeOutline.TreeElement {
         this.listItemElement, i18nString(UIStrings.singlePlaceholder, {PH1: this.profile.profileType().name}));
   }
 
-  /**
-   * @param {!Event} event
-   */
-  _handleContextMenuEvent(event) {
+  _handleContextMenuEvent(event: Event): void {
     const profile = this.profile;
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
     // FIXME: use context menu provider
@@ -207,27 +174,18 @@ export class ProfileSidebarTreeElement extends UI.TreeOutline.TreeElement {
     contextMenu.show();
   }
 
-  /**
-   * @param {!Event} event
-   */
-  _saveProfile(event) {
+  _saveProfile(_event: Event): void {
     this.profile.saveToFile();
   }
 
-  /**
-   * @param {boolean} small
-   */
-  setSmall(small) {
+  setSmall(small: boolean): void {
     this._small = small;
     if (this.listItemElement) {
       this.listItemElement.classList.toggle('small', this._small);
     }
   }
 
-  /**
-   * @param {string} title
-   */
-  setMainTitle(title) {
+  setMainTitle(title: string): void {
     this.titleElement.textContent = title;
   }
 }

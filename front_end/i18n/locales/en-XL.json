@@ -5168,499 +5168,499 @@
   "persistence/WorkspaceSettingsTab.ts | workspace": {
     "message": "Ŵór̂ḱŝṕâćê"
   },
-  "profiler/CPUProfileView.js | aggregatedSelfTime": {
+  "profiler/CPUProfileView.ts | aggregatedSelfTime": {
     "message": "Âǵĝŕêǵât́êd́ ŝél̂f́ t̂ím̂é"
   },
-  "profiler/CPUProfileView.js | aggregatedTotalTime": {
+  "profiler/CPUProfileView.ts | aggregatedTotalTime": {
     "message": "Âǵĝŕêǵât́êd́ t̂ót̂ál̂ t́îḿê"
   },
-  "profiler/CPUProfileView.js | cpuProfiles": {
+  "profiler/CPUProfileView.ts | cpuProfiles": {
     "message": "ĈṔÛ ṔR̂ÓF̂ÍL̂ÉŜ"
   },
-  "profiler/CPUProfileView.js | cpuProfilesShow": {
+  "profiler/CPUProfileView.ts | cpuProfilesShow": {
     "message": "ĈṔÛ ṕr̂óf̂íl̂éŝ śĥóŵ ẃĥér̂é t̂h́ê éx̂éĉút̂íôń t̂ím̂é îś ŝṕêńt̂ ín̂ ýôúr̂ ṕâǵê'ś Ĵáv̂áŜćr̂íp̂t́ f̂ún̂ćt̂íôńŝ."
   },
-  "profiler/CPUProfileView.js | fms": {
+  "profiler/CPUProfileView.ts | fms": {
     "message": "{PH1} m̂ś"
   },
-  "profiler/CPUProfileView.js | formatPercent": {
+  "profiler/CPUProfileView.ts | formatPercent": {
     "message": "{PH1} %"
   },
-  "profiler/CPUProfileView.js | name": {
+  "profiler/CPUProfileView.ts | name": {
     "message": "N̂ám̂é"
   },
-  "profiler/CPUProfileView.js | notOptimized": {
+  "profiler/CPUProfileView.ts | notOptimized": {
     "message": "N̂ót̂ óp̂t́îḿîźêd́"
   },
-  "profiler/CPUProfileView.js | recording": {
+  "profiler/CPUProfileView.ts | recording": {
     "message": "R̂éĉór̂d́îńĝ…"
   },
-  "profiler/CPUProfileView.js | recordJavascriptCpuProfile": {
+  "profiler/CPUProfileView.ts | recordJavascriptCpuProfile": {
     "message": "R̂éĉór̂d́ Ĵáv̂áŜćr̂íp̂t́ ĈṔÛ Ṕr̂óf̂íl̂é"
   },
-  "profiler/CPUProfileView.js | selfTime": {
+  "profiler/CPUProfileView.ts | selfTime": {
     "message": "Ŝél̂f́ T̂ím̂é"
   },
-  "profiler/CPUProfileView.js | startCpuProfiling": {
+  "profiler/CPUProfileView.ts | startCpuProfiling": {
     "message": "Ŝt́âŕt̂ ĆP̂Ú p̂ŕôf́îĺîńĝ"
   },
-  "profiler/CPUProfileView.js | stopCpuProfiling": {
+  "profiler/CPUProfileView.ts | stopCpuProfiling": {
     "message": "Ŝt́ôṕ ĈṔÛ ṕr̂óf̂íl̂ín̂ǵ"
   },
-  "profiler/CPUProfileView.js | totalTime": {
+  "profiler/CPUProfileView.ts | totalTime": {
     "message": "T̂ót̂ál̂ T́îḿê"
   },
-  "profiler/CPUProfileView.js | url": {
+  "profiler/CPUProfileView.ts | url": {
     "message": "ÛŔL̂"
   },
-  "profiler/HeapProfilerPanel.js | revealInSummaryView": {
+  "profiler/HeapProfilerPanel.ts | revealInSummaryView": {
     "message": "R̂év̂éâĺ îń Ŝúm̂ḿâŕŷ v́îéŵ"
   },
-  "profiler/HeapProfileView.js | allocationSampling": {
+  "profiler/HeapProfileView.ts | allocationSampling": {
     "message": "Âĺl̂óĉát̂íôń ŝám̂ṕl̂ín̂ǵ"
   },
-  "profiler/HeapProfileView.js | formatPercent": {
+  "profiler/HeapProfileView.ts | formatPercent": {
     "message": "{PH1} %"
   },
-  "profiler/HeapProfileView.js | heapProfilerIsRecording": {
+  "profiler/HeapProfileView.ts | heapProfilerIsRecording": {
     "message": "Ĥéâṕ p̂ŕôf́îĺêŕ îś r̂éĉór̂d́îńĝ"
   },
-  "profiler/HeapProfileView.js | itProvidesGoodApproximation": {
+  "profiler/HeapProfileView.ts | itProvidesGoodApproximation": {
     "message": "Ît́ p̂ŕôv́îd́êś ĝóôd́ âṕp̂ŕôx́îḿât́îón̂ óf̂ ál̂ĺôćât́îón̂ś b̂ŕôḱêń d̂óŵń b̂ý JavaScript êx́êćût́îón̂ śt̂áĉḱ."
   },
-  "profiler/HeapProfileView.js | name": {
+  "profiler/HeapProfileView.ts | name": {
     "message": "N̂ám̂é"
   },
-  "profiler/HeapProfileView.js | profileD": {
+  "profiler/HeapProfileView.ts | profileD": {
     "message": "P̂ŕôf́îĺê {PH1}"
   },
-  "profiler/HeapProfileView.js | recording": {
+  "profiler/HeapProfileView.ts | recording": {
     "message": "R̂éĉór̂d́îńĝ…"
   },
-  "profiler/HeapProfileView.js | recordMemoryAllocations": {
+  "profiler/HeapProfileView.ts | recordMemoryAllocations": {
     "message": "R̂éĉór̂d́ m̂ém̂ór̂ý âĺl̂óĉát̂íôńŝ úŝín̂ǵ ŝám̂ṕl̂ín̂ǵ m̂ét̂h́ôd́."
   },
-  "profiler/HeapProfileView.js | samplingProfiles": {
+  "profiler/HeapProfileView.ts | samplingProfiles": {
     "message": "ŜÁM̂ṔL̂ÍN̂Ǵ P̂ŔÔF́ÎĹÊŚ"
   },
-  "profiler/HeapProfileView.js | sBytes": {
+  "profiler/HeapProfileView.ts | sBytes": {
     "message": "{PH1} b̂ýt̂éŝ"
   },
-  "profiler/HeapProfileView.js | selectedSizeS": {
+  "profiler/HeapProfileView.ts | selectedSizeS": {
     "message": "Ŝél̂éĉt́êd́ ŝíẑé: {PH1}"
   },
-  "profiler/HeapProfileView.js | selfSize": {
+  "profiler/HeapProfileView.ts | selfSize": {
     "message": "Ŝél̂f́ ŝíẑé"
   },
-  "profiler/HeapProfileView.js | selfSizeBytes": {
+  "profiler/HeapProfileView.ts | selfSizeBytes": {
     "message": "Ŝél̂f́ Ŝíẑé (b̂ýt̂éŝ)"
   },
-  "profiler/HeapProfileView.js | skb": {
+  "profiler/HeapProfileView.ts | skb": {
     "message": "{PH1} k̂B́"
   },
-  "profiler/HeapProfileView.js | startHeapProfiling": {
+  "profiler/HeapProfileView.ts | startHeapProfiling": {
     "message": "Ŝt́âŕt̂ h́êáp̂ ṕr̂óf̂íl̂ín̂ǵ"
   },
-  "profiler/HeapProfileView.js | stopHeapProfiling": {
+  "profiler/HeapProfileView.ts | stopHeapProfiling": {
     "message": "Ŝt́ôṕ ĥéâṕ p̂ŕôf́îĺîńĝ"
   },
-  "profiler/HeapProfileView.js | stopping": {
+  "profiler/HeapProfileView.ts | stopping": {
     "message": "Ŝt́ôṕp̂ín̂ǵ…"
   },
-  "profiler/HeapProfileView.js | thisProfileTypeHasMinimal": {
+  "profiler/HeapProfileView.ts | thisProfileTypeHasMinimal": {
     "message": "T̂h́îś p̂ŕôf́îĺê t́ŷṕê h́âś m̂ín̂ím̂ál̂ ṕêŕf̂ór̂ḿâńĉé ôv́êŕĥéâd́ âńd̂ ćâń b̂é ûśêd́ f̂ór̂ ĺôńĝ ŕûńn̂ín̂ǵ ôṕêŕât́îón̂ś."
   },
-  "profiler/HeapProfileView.js | totalSize": {
+  "profiler/HeapProfileView.ts | totalSize": {
     "message": "T̂ót̂ál̂ śîźê"
   },
-  "profiler/HeapProfileView.js | totalSizeBytes": {
+  "profiler/HeapProfileView.ts | totalSizeBytes": {
     "message": "T̂ót̂ál̂ Śîźê (b́ŷt́êś)"
   },
-  "profiler/HeapProfileView.js | url": {
+  "profiler/HeapProfileView.ts | url": {
     "message": "ÛŔL̂"
   },
-  "profiler/HeapSnapshotDataGrids.js | allocation": {
+  "profiler/HeapSnapshotDataGrids.ts | allocation": {
     "message": "Âĺl̂óĉát̂íôń"
   },
-  "profiler/HeapSnapshotDataGrids.js | allocSize": {
+  "profiler/HeapSnapshotDataGrids.ts | allocSize": {
     "message": "Âĺl̂óĉ. Śîźê"
   },
-  "profiler/HeapSnapshotDataGrids.js | constructorString": {
+  "profiler/HeapSnapshotDataGrids.ts | constructorString": {
     "message": "Ĉón̂śt̂ŕûćt̂ór̂"
   },
-  "profiler/HeapSnapshotDataGrids.js | count": {
+  "profiler/HeapSnapshotDataGrids.ts | count": {
     "message": "Ĉóûńt̂"
   },
-  "profiler/HeapSnapshotDataGrids.js | Deleted": {
+  "profiler/HeapSnapshotDataGrids.ts | Deleted": {
     "message": "# D̂él̂ét̂éd̂"
   },
-  "profiler/HeapSnapshotDataGrids.js | Delta": {
+  "profiler/HeapSnapshotDataGrids.ts | Delta": {
     "message": "# D̂él̂t́â"
   },
-  "profiler/HeapSnapshotDataGrids.js | distance": {
+  "profiler/HeapSnapshotDataGrids.ts | distance": {
     "message": "D̂íŝt́âńĉé"
   },
-  "profiler/HeapSnapshotDataGrids.js | distanceFromWindowObject": {
+  "profiler/HeapSnapshotDataGrids.ts | distanceFromWindowObject": {
     "message": "D̂íŝt́âńĉé f̂ŕôḿ ŵín̂d́ôẃ ôb́ĵéĉt́"
   },
-  "profiler/HeapSnapshotDataGrids.js | freedSize": {
+  "profiler/HeapSnapshotDataGrids.ts | freedSize": {
     "message": "F̂ŕêéd̂ Śîźê"
   },
-  "profiler/HeapSnapshotDataGrids.js | function": {
+  "profiler/HeapSnapshotDataGrids.ts | function": {
     "message": "F̂ún̂ćt̂íôń"
   },
-  "profiler/HeapSnapshotDataGrids.js | heapSnapshotConstructors": {
+  "profiler/HeapSnapshotDataGrids.ts | heapSnapshotConstructors": {
     "message": "Ĥéâṕ Ŝńâṕŝh́ôt́ Ĉón̂śt̂ŕûćt̂ór̂ś"
   },
-  "profiler/HeapSnapshotDataGrids.js | heapSnapshotDiff": {
+  "profiler/HeapSnapshotDataGrids.ts | heapSnapshotDiff": {
     "message": "Ĥéâṕ Ŝńâṕŝh́ôt́ D̂íf̂f́"
   },
-  "profiler/HeapSnapshotDataGrids.js | heapSnapshotRetainment": {
+  "profiler/HeapSnapshotDataGrids.ts | heapSnapshotRetainment": {
     "message": "Ĥéâṕ Ŝńâṕŝh́ôt́ R̂ét̂áîńm̂én̂t́"
   },
-  "profiler/HeapSnapshotDataGrids.js | liveCount": {
+  "profiler/HeapSnapshotDataGrids.ts | liveCount": {
     "message": "L̂ív̂é Ĉóûńt̂"
   },
-  "profiler/HeapSnapshotDataGrids.js | liveSize": {
+  "profiler/HeapSnapshotDataGrids.ts | liveSize": {
     "message": "L̂ív̂é Ŝíẑé"
   },
-  "profiler/HeapSnapshotDataGrids.js | New": {
+  "profiler/HeapSnapshotDataGrids.ts | New": {
     "message": "# N̂éŵ"
   },
-  "profiler/HeapSnapshotDataGrids.js | object": {
+  "profiler/HeapSnapshotDataGrids.ts | object": {
     "message": "Ôb́ĵéĉt́"
   },
-  "profiler/HeapSnapshotDataGrids.js | retainedSize": {
+  "profiler/HeapSnapshotDataGrids.ts | retainedSize": {
     "message": "R̂ét̂áîńêd́ Ŝíẑé"
   },
-  "profiler/HeapSnapshotDataGrids.js | shallowSize": {
+  "profiler/HeapSnapshotDataGrids.ts | shallowSize": {
     "message": "Ŝh́âĺl̂óŵ Śîźê"
   },
-  "profiler/HeapSnapshotDataGrids.js | size": {
+  "profiler/HeapSnapshotDataGrids.ts | size": {
     "message": "Ŝíẑé"
   },
-  "profiler/HeapSnapshotDataGrids.js | sizeDelta": {
+  "profiler/HeapSnapshotDataGrids.ts | sizeDelta": {
     "message": "Ŝíẑé D̂él̂t́â"
   },
-  "profiler/HeapSnapshotDataGrids.js | sizeOfTheObjectItselfInBytes": {
+  "profiler/HeapSnapshotDataGrids.ts | sizeOfTheObjectItselfInBytes": {
     "message": "Ŝíẑé ôf́ t̂h́ê ób̂j́êćt̂ ít̂śêĺf̂ ín̂ b́ŷt́êś"
   },
-  "profiler/HeapSnapshotDataGrids.js | sizeOfTheObjectPlusTheGraphIt": {
+  "profiler/HeapSnapshotDataGrids.ts | sizeOfTheObjectPlusTheGraphIt": {
     "message": "Ŝíẑé ôf́ t̂h́ê ób̂j́êćt̂ ṕl̂úŝ t́ĥé ĝŕâṕĥ ít̂ ŕêt́âín̂ś îń b̂ýt̂éŝ"
   },
-  "profiler/HeapSnapshotGridNodes.js | detachedFromDomTree": {
+  "profiler/HeapSnapshotGridNodes.ts | detachedFromDomTree": {
     "message": "D̂ét̂áĉh́êd́ f̂ŕôḿ D̂ÓM̂ t́r̂éê"
   },
-  "profiler/HeapSnapshotGridNodes.js | emptyPlaceholder": {
+  "profiler/HeapSnapshotGridNodes.ts | emptyPlaceholder": {
     "message": "{PH1}"
   },
-  "profiler/HeapSnapshotGridNodes.js | genericStringsTwoPlaceholders": {
+  "profiler/HeapSnapshotGridNodes.ts | genericStringsTwoPlaceholders": {
     "message": "{PH1}, {PH2}"
   },
-  "profiler/HeapSnapshotGridNodes.js | inElement": {
+  "profiler/HeapSnapshotGridNodes.ts | inElement": {
     "message": "îń"
   },
-  "profiler/HeapSnapshotGridNodes.js | internalArray": {
+  "profiler/HeapSnapshotGridNodes.ts | internalArray": {
     "message": "(îńt̂ér̂ńâĺ âŕr̂áŷ)[]"
   },
-  "profiler/HeapSnapshotGridNodes.js | previewIsNotAvailable": {
+  "profiler/HeapSnapshotGridNodes.ts | previewIsNotAvailable": {
     "message": "P̂ŕêv́îéŵ íŝ ńôt́ âv́âíl̂áb̂ĺê"
   },
-  "profiler/HeapSnapshotGridNodes.js | revealInSummaryView": {
+  "profiler/HeapSnapshotGridNodes.ts | revealInSummaryView": {
     "message": "R̂év̂éâĺ îń Ŝúm̂ḿâŕŷ v́îéŵ"
   },
-  "profiler/HeapSnapshotGridNodes.js | revealObjectSWithIdSInSummary": {
+  "profiler/HeapSnapshotGridNodes.ts | revealObjectSWithIdSInSummary": {
     "message": "R̂év̂éâĺ ôb́ĵéĉt́ '{PH1}' ŵít̂h́ îd́ @{PH2} îń Ŝúm̂ḿâŕŷ v́îéŵ"
   },
-  "profiler/HeapSnapshotGridNodes.js | storeAsGlobalVariable": {
+  "profiler/HeapSnapshotGridNodes.ts | storeAsGlobalVariable": {
     "message": "Ŝt́ôŕê áŝ ǵl̂ób̂ál̂ v́âŕîáb̂ĺê"
   },
-  "profiler/HeapSnapshotGridNodes.js | summary": {
+  "profiler/HeapSnapshotGridNodes.ts | summary": {
     "message": "Ŝúm̂ḿâŕŷ"
   },
-  "profiler/HeapSnapshotGridNodes.js | userObjectReachableFromWindow": {
+  "profiler/HeapSnapshotGridNodes.ts | userObjectReachableFromWindow": {
     "message": "Ûśêŕ ôb́ĵéĉt́ r̂éâćĥáb̂ĺê f́r̂óm̂ ẃîńd̂óŵ"
   },
-  "profiler/HeapSnapshotProxy.js | anErrorOccurredWhenACallToMethod": {
+  "profiler/HeapSnapshotProxy.ts | anErrorOccurredWhenACallToMethod": {
     "message": "Âń êŕr̂ór̂ óĉćûŕr̂éd̂ ẃĥén̂ á ĉál̂ĺ t̂ó m̂ét̂h́ôd́ '{PH1}' ŵáŝ ŕêq́ûéŝt́êd́"
   },
-  "profiler/HeapSnapshotView.js | allObjects": {
+  "profiler/HeapSnapshotView.ts | allObjects": {
     "message": "Âĺl̂ ób̂j́êćt̂ś"
   },
-  "profiler/HeapSnapshotView.js | allocation": {
+  "profiler/HeapSnapshotView.ts | allocation": {
     "message": "Âĺl̂óĉát̂íôń"
   },
-  "profiler/HeapSnapshotView.js | allocationInstrumentationOn": {
+  "profiler/HeapSnapshotView.ts | allocationInstrumentationOn": {
     "message": "Âĺl̂óĉát̂íôń îńŝt́r̂úm̂én̂t́ât́îón̂ ón̂ t́îḿêĺîńê"
   },
-  "profiler/HeapSnapshotView.js | allocationStack": {
+  "profiler/HeapSnapshotView.ts | allocationStack": {
     "message": "Âĺl̂óĉát̂íôń ŝt́âćk̂"
   },
-  "profiler/HeapSnapshotView.js | allocationTimelines": {
+  "profiler/HeapSnapshotView.ts | allocationTimelines": {
     "message": "ÂĹL̂ÓĈÁT̂ÍÔŃ T̂ÍM̂ÉL̂ÍN̂ÉŜ"
   },
-  "profiler/HeapSnapshotView.js | AllocationTimelinesShowInstrumented": {
+  "profiler/HeapSnapshotView.ts | AllocationTimelinesShowInstrumented": {
     "message": "Âĺl̂óĉát̂íôń t̂ím̂él̂ín̂éŝ śĥóŵ ín̂śt̂ŕûḿêńt̂éd̂ J́âv́âŚĉŕîṕt̂ ḿêḿôŕŷ ál̂ĺôćât́îón̂ś ôv́êŕ t̂ím̂é. Ôńĉé p̂ŕôf́îĺê íŝ ŕêćôŕd̂éd̂ ýôú ĉán̂ śêĺêćt̂ á t̂ím̂é îńt̂ér̂v́âĺ t̂ó ŝéê ób̂j́êćt̂ś t̂h́ât́ ŵér̂é âĺl̂óĉát̂éd̂ ẃît́ĥín̂ ít̂ án̂d́ ŝt́îĺl̂ ál̂ív̂é b̂ý t̂h́ê én̂d́ ôf́ r̂éĉór̂d́îńĝ. Úŝé t̂h́îś p̂ŕôf́îĺê t́ŷṕê t́ô íŝól̂át̂é m̂ém̂ór̂ý l̂éâḱŝ."
   },
-  "profiler/HeapSnapshotView.js | baseSnapshot": {
+  "profiler/HeapSnapshotView.ts | baseSnapshot": {
     "message": "B̂áŝé ŝńâṕŝh́ôt́"
   },
-  "profiler/HeapSnapshotView.js | classFilter": {
+  "profiler/HeapSnapshotView.ts | classFilter": {
     "message": "Ĉĺâśŝ f́îĺt̂ér̂"
   },
-  "profiler/HeapSnapshotView.js | code": {
+  "profiler/HeapSnapshotView.ts | code": {
     "message": "Ĉód̂é"
   },
-  "profiler/HeapSnapshotView.js | comparison": {
+  "profiler/HeapSnapshotView.ts | comparison": {
     "message": "Ĉóm̂ṕâŕîśôń"
   },
-  "profiler/HeapSnapshotView.js | containment": {
+  "profiler/HeapSnapshotView.ts | containment": {
     "message": "Ĉón̂t́âín̂ḿêńt̂"
   },
-  "profiler/HeapSnapshotView.js | filter": {
+  "profiler/HeapSnapshotView.ts | filter": {
     "message": "F̂íl̂t́êŕ"
   },
-  "profiler/HeapSnapshotView.js | find": {
+  "profiler/HeapSnapshotView.ts | find": {
     "message": "F̂ín̂d́"
   },
-  "profiler/HeapSnapshotView.js | heapMemoryUsage": {
+  "profiler/HeapSnapshotView.ts | heapMemoryUsage": {
     "message": "Ĥéâṕ m̂ém̂ór̂ý ûśâǵê"
   },
-  "profiler/HeapSnapshotView.js | heapSnapshot": {
+  "profiler/HeapSnapshotView.ts | heapSnapshot": {
     "message": "Ĥéâṕ ŝńâṕŝh́ôt́"
   },
-  "profiler/HeapSnapshotView.js | heapSnapshotProfilesShowMemory": {
+  "profiler/HeapSnapshotView.ts | heapSnapshotProfilesShowMemory": {
     "message": "Ĥéâṕ ŝńâṕŝh́ôt́ p̂ŕôf́îĺêś ŝh́ôẃ m̂ém̂ór̂ý d̂íŝt́r̂íb̂út̂íôń âḿôńĝ ýôúr̂ ṕâǵê'ś Ĵáv̂áŜćr̂íp̂t́ ôb́ĵéĉt́ŝ án̂d́ r̂él̂át̂éd̂ D́ÔḾ n̂ód̂éŝ."
   },
-  "profiler/HeapSnapshotView.js | heapSnapshots": {
+  "profiler/HeapSnapshotView.ts | heapSnapshots": {
     "message": "ĤÉÂṔ ŜŃÂṔŜH́ÔT́Ŝ"
   },
-  "profiler/HeapSnapshotView.js | jsArrays": {
+  "profiler/HeapSnapshotView.ts | jsArrays": {
     "message": "ĴŚ âŕr̂áŷś"
   },
-  "profiler/HeapSnapshotView.js | liveObjects": {
+  "profiler/HeapSnapshotView.ts | liveObjects": {
     "message": "L̂ív̂é ôb́ĵéĉt́ŝ"
   },
-  "profiler/HeapSnapshotView.js | loading": {
+  "profiler/HeapSnapshotView.ts | loading": {
     "message": "L̂óâd́îńĝ…"
   },
-  "profiler/HeapSnapshotView.js | objectsAllocatedBeforeS": {
+  "profiler/HeapSnapshotView.ts | objectsAllocatedBeforeS": {
     "message": "Ôb́ĵéĉt́ŝ ál̂ĺôćât́êd́ b̂éf̂ór̂é {PH1}"
   },
-  "profiler/HeapSnapshotView.js | objectsAllocatedBetweenSAndS": {
+  "profiler/HeapSnapshotView.ts | objectsAllocatedBetweenSAndS": {
     "message": "Ôb́ĵéĉt́ŝ ál̂ĺôćât́êd́ b̂ét̂ẃêén̂ {PH1} án̂d́ {PH2}"
   },
-  "profiler/HeapSnapshotView.js | percentagePlaceholder": {
+  "profiler/HeapSnapshotView.ts | percentagePlaceholder": {
     "message": "{PH1}%"
   },
-  "profiler/HeapSnapshotView.js | perspective": {
+  "profiler/HeapSnapshotView.ts | perspective": {
     "message": "P̂ér̂śp̂éĉt́îv́ê"
   },
-  "profiler/HeapSnapshotView.js | recordAllocationStacksExtra": {
+  "profiler/HeapSnapshotView.ts | recordAllocationStacksExtra": {
     "message": "R̂éĉór̂d́ âĺl̂óĉát̂íôń ŝt́âćk̂ś (êx́t̂ŕâ ṕêŕf̂ór̂ḿâńĉé ôv́êŕĥéâd́)"
   },
-  "profiler/HeapSnapshotView.js | recording": {
+  "profiler/HeapSnapshotView.ts | recording": {
     "message": "R̂éĉór̂d́îńĝ…"
   },
-  "profiler/HeapSnapshotView.js | retainers": {
+  "profiler/HeapSnapshotView.ts | retainers": {
     "message": "R̂ét̂áîńêŕŝ"
   },
-  "profiler/HeapSnapshotView.js | savingD": {
+  "profiler/HeapSnapshotView.ts | savingD": {
     "message": "Ŝáv̂ín̂ǵ… {PH1}%"
   },
-  "profiler/HeapSnapshotView.js | selectedSizeS": {
+  "profiler/HeapSnapshotView.ts | selectedSizeS": {
     "message": "Ŝél̂éĉt́êd́ ŝíẑé: {PH1}"
   },
-  "profiler/HeapSnapshotView.js | sKb": {
+  "profiler/HeapSnapshotView.ts | sKb": {
     "message": "{PH1} k̂B́"
   },
-  "profiler/HeapSnapshotView.js | snapshotD": {
+  "profiler/HeapSnapshotView.ts | snapshotD": {
     "message": "Ŝńâṕŝh́ôt́ {PH1}"
   },
-  "profiler/HeapSnapshotView.js | snapshotting": {
+  "profiler/HeapSnapshotView.ts | snapshotting": {
     "message": "Ŝńâṕŝh́ôt́t̂ín̂ǵ…"
   },
-  "profiler/HeapSnapshotView.js | stackWasNotRecordedForThisObject": {
+  "profiler/HeapSnapshotView.ts | stackWasNotRecordedForThisObject": {
     "message": "Ŝt́âćk̂ ẃâś n̂ót̂ ŕêćôŕd̂éd̂ f́ôŕ t̂h́îś ôb́ĵéĉt́ b̂éĉáûśê ít̂ h́âd́ b̂éêń âĺl̂óĉát̂éd̂ b́êf́ôŕê t́ĥíŝ ṕr̂óf̂íl̂é r̂éĉór̂d́îńĝ śt̂ár̂t́êd́."
   },
-  "profiler/HeapSnapshotView.js | startRecordingHeapProfile": {
+  "profiler/HeapSnapshotView.ts | startRecordingHeapProfile": {
     "message": "Ŝt́âŕt̂ ŕêćôŕd̂ín̂ǵ ĥéâṕ p̂ŕôf́îĺê"
   },
-  "profiler/HeapSnapshotView.js | statistics": {
+  "profiler/HeapSnapshotView.ts | statistics": {
     "message": "Ŝt́ât́îśt̂íĉś"
   },
-  "profiler/HeapSnapshotView.js | stopRecordingHeapProfile": {
+  "profiler/HeapSnapshotView.ts | stopRecordingHeapProfile": {
     "message": "Ŝt́ôṕ r̂éĉór̂d́îńĝ h́êáp̂ ṕr̂óf̂íl̂é"
   },
-  "profiler/HeapSnapshotView.js | strings": {
+  "profiler/HeapSnapshotView.ts | strings": {
     "message": "Ŝt́r̂ín̂ǵŝ"
   },
-  "profiler/HeapSnapshotView.js | summary": {
+  "profiler/HeapSnapshotView.ts | summary": {
     "message": "Ŝúm̂ḿâŕŷ"
   },
-  "profiler/HeapSnapshotView.js | systemObjects": {
+  "profiler/HeapSnapshotView.ts | systemObjects": {
     "message": "Ŝýŝt́êḿ ôb́ĵéĉt́ŝ"
   },
-  "profiler/HeapSnapshotView.js | takeHeapSnapshot": {
+  "profiler/HeapSnapshotView.ts | takeHeapSnapshot": {
     "message": "T̂ák̂é ĥéâṕ ŝńâṕŝh́ôt́"
   },
-  "profiler/HeapSnapshotView.js | treatGlobalObjectsAsRoots": {
+  "profiler/HeapSnapshotView.ts | treatGlobalObjectsAsRoots": {
     "message": "T̂ŕêát̂ ǵl̂ób̂ál̂ ób̂j́êćt̂ś âś r̂óôt́ŝ (ŕêćôḿm̂én̂d́êd́, ûńĉh́êćk̂ín̂ǵ t̂h́îś êx́p̂óŝéŝ ín̂t́êŕn̂ál̂ ńôd́êś âńd̂ ín̂t́r̂ód̂úĉéŝ éx̂ćêśŝív̂é d̂ét̂áîĺ, b̂út̂ ḿîǵĥt́ ĥél̂ṕ d̂éb̂úĝǵîńĝ ćŷćl̂éŝ ín̂ ŕêt́âín̂ín̂ǵ p̂át̂h́ŝ)"
   },
-  "profiler/HeapSnapshotView.js | typedArrays": {
+  "profiler/HeapSnapshotView.ts | typedArrays": {
     "message": "T̂ýp̂éd̂ ár̂ŕâýŝ"
   },
-  "profiler/IsolateSelector.js | changeRate": {
+  "profiler/IsolateSelector.ts | changeRate": {
     "message": "{PH1}/ŝ"
   },
-  "profiler/IsolateSelector.js | decreasingBySPerSecond": {
+  "profiler/IsolateSelector.ts | decreasingBySPerSecond": {
     "message": "d̂éĉŕêáŝín̂ǵ b̂ý {PH1} p̂ér̂ śêćôńd̂"
   },
-  "profiler/IsolateSelector.js | empty": {
+  "profiler/IsolateSelector.ts | empty": {
     "message": "(êḿp̂t́ŷ)"
   },
-  "profiler/IsolateSelector.js | heapSizeChangeTrendOverTheLastS": {
+  "profiler/IsolateSelector.ts | heapSizeChangeTrendOverTheLastS": {
     "message": "Ĥéâṕ ŝíẑé ĉh́âńĝé t̂ŕêńd̂ óv̂ér̂ t́ĥé l̂áŝt́ {PH1} m̂ín̂út̂éŝ."
   },
-  "profiler/IsolateSelector.js | heapSizeInUseByLiveJsObjects": {
+  "profiler/IsolateSelector.ts | heapSizeInUseByLiveJsObjects": {
     "message": "Ĥéâṕ ŝíẑé îń ûśê b́ŷ ĺîv́ê J́Ŝ ób̂j́êćt̂ś."
   },
-  "profiler/IsolateSelector.js | increasingBySPerSecond": {
+  "profiler/IsolateSelector.ts | increasingBySPerSecond": {
     "message": "îńĉŕêáŝín̂ǵ b̂ý {PH1} p̂ér̂ śêćôńd̂"
   },
-  "profiler/IsolateSelector.js | javascriptVmInstances": {
+  "profiler/IsolateSelector.ts | javascriptVmInstances": {
     "message": "Ĵáv̂áŜćr̂íp̂t́ V̂Ḿ îńŝt́âńĉéŝ"
   },
-  "profiler/IsolateSelector.js | totalJsHeapSize": {
+  "profiler/IsolateSelector.ts | totalJsHeapSize": {
     "message": "T̂ót̂ál̂ J́Ŝ h́êáp̂ śîźê"
   },
-  "profiler/IsolateSelector.js | totalPageJsHeapSizeAcrossAllVm": {
+  "profiler/IsolateSelector.ts | totalPageJsHeapSizeAcrossAllVm": {
     "message": "T̂ót̂ál̂ ṕâǵê J́Ŝ h́êáp̂ śîźê áĉŕôśŝ ál̂ĺ V̂Ḿ îńŝt́âńĉéŝ."
   },
-  "profiler/IsolateSelector.js | totalPageJsHeapSizeChangeTrend": {
+  "profiler/IsolateSelector.ts | totalPageJsHeapSizeChangeTrend": {
     "message": "T̂ót̂ál̂ ṕâǵê J́Ŝ h́êáp̂ śîźê ćĥán̂ǵê t́r̂én̂d́ ôv́êŕ t̂h́ê ĺâśt̂ {PH1} ḿîńût́êś."
   },
-  "profiler/LiveHeapProfileView.js | allocatedJsHeapSizeCurrentlyIn": {
+  "profiler/LiveHeapProfileView.ts | allocatedJsHeapSizeCurrentlyIn": {
     "message": "Âĺl̂óĉát̂éd̂ J́Ŝ h́êáp̂ śîźê ćûŕr̂én̂t́l̂ý îń ûśê"
   },
-  "profiler/LiveHeapProfileView.js | anonymousScriptS": {
+  "profiler/LiveHeapProfileView.ts | anonymousScriptS": {
     "message": "(Âńôńŷḿôúŝ Śĉŕîṕt̂ {PH1})"
   },
-  "profiler/LiveHeapProfileView.js | heapProfile": {
+  "profiler/LiveHeapProfileView.ts | heapProfile": {
     "message": "Ĥéâṕ P̂ŕôf́îĺê"
   },
-  "profiler/LiveHeapProfileView.js | jsHeap": {
+  "profiler/LiveHeapProfileView.ts | jsHeap": {
     "message": "ĴŚ Ĥéâṕ"
   },
-  "profiler/LiveHeapProfileView.js | kb": {
+  "profiler/LiveHeapProfileView.ts | kb": {
     "message": "k̂B́"
   },
-  "profiler/LiveHeapProfileView.js | numberOfVmsSharingTheSameScript": {
+  "profiler/LiveHeapProfileView.ts | numberOfVmsSharingTheSameScript": {
     "message": "N̂úm̂b́êŕ ôf́ V̂Ḿŝ śĥár̂ín̂ǵ t̂h́ê śâḿê śĉŕîṕt̂ śôúr̂ćê"
   },
-  "profiler/LiveHeapProfileView.js | scriptUrl": {
+  "profiler/LiveHeapProfileView.ts | scriptUrl": {
     "message": "Ŝćr̂íp̂t́ ÛŔL̂"
   },
-  "profiler/LiveHeapProfileView.js | urlOfTheScriptSource": {
+  "profiler/LiveHeapProfileView.ts | urlOfTheScriptSource": {
     "message": "ÛŔL̂ óf̂ t́ĥé ŝćr̂íp̂t́ ŝóûŕĉé"
   },
-  "profiler/LiveHeapProfileView.js | vms": {
+  "profiler/LiveHeapProfileView.ts | vms": {
     "message": "V̂Ḿŝ"
   },
-  "profiler/ModuleUIStrings.js | buildingAllocationStatistics": {
+  "profiler/ModuleUIStrings.ts | buildingAllocationStatistics": {
     "message": "B̂úîĺd̂ín̂ǵ âĺl̂óĉát̂íôń ŝt́ât́îśt̂íĉś…"
   },
-  "profiler/ModuleUIStrings.js | buildingDominatedNodes": {
+  "profiler/ModuleUIStrings.ts | buildingDominatedNodes": {
     "message": "B̂úîĺd̂ín̂ǵ d̂óm̂ín̂át̂éd̂ ńôd́êś…"
   },
-  "profiler/ModuleUIStrings.js | buildingDominatorTree": {
+  "profiler/ModuleUIStrings.ts | buildingDominatorTree": {
     "message": "B̂úîĺd̂ín̂ǵ d̂óm̂ín̂át̂ór̂ t́r̂éê…"
   },
-  "profiler/ModuleUIStrings.js | buildingEdgeIndexes": {
+  "profiler/ModuleUIStrings.ts | buildingEdgeIndexes": {
     "message": "B̂úîĺd̂ín̂ǵ êd́ĝé îńd̂éx̂éŝ…"
   },
-  "profiler/ModuleUIStrings.js | buildingLocations": {
+  "profiler/ModuleUIStrings.ts | buildingLocations": {
     "message": "B̂úîĺd̂ín̂ǵ l̂óĉát̂íôńŝ…"
   },
-  "profiler/ModuleUIStrings.js | buildingPostorderIndex": {
+  "profiler/ModuleUIStrings.ts | buildingPostorderIndex": {
     "message": "B̂úîĺd̂ín̂ǵ p̂óŝt́ôŕd̂ér̂ ín̂d́êx́…"
   },
-  "profiler/ModuleUIStrings.js | buildingRetainers": {
+  "profiler/ModuleUIStrings.ts | buildingRetainers": {
     "message": "B̂úîĺd̂ín̂ǵ r̂ét̂áîńêŕŝ…"
   },
-  "profiler/ModuleUIStrings.js | calculatingDistances": {
+  "profiler/ModuleUIStrings.ts | calculatingDistances": {
     "message": "Ĉál̂ćûĺât́îńĝ d́îśt̂án̂ćêś…"
   },
-  "profiler/ModuleUIStrings.js | calculatingNodeFlags": {
+  "profiler/ModuleUIStrings.ts | calculatingNodeFlags": {
     "message": "Ĉál̂ćûĺât́îńĝ ńôd́ê f́l̂áĝś…"
   },
-  "profiler/ModuleUIStrings.js | calculatingRetainedSizes": {
+  "profiler/ModuleUIStrings.ts | calculatingRetainedSizes": {
     "message": "Ĉál̂ćûĺât́îńĝ ŕêt́âín̂éd̂ śîźêś…"
   },
-  "profiler/ModuleUIStrings.js | calculatingSamples": {
+  "profiler/ModuleUIStrings.ts | calculatingSamples": {
     "message": "Ĉál̂ćûĺât́îńĝ śâḿp̂ĺêś…"
   },
-  "profiler/ModuleUIStrings.js | calculatingStatistics": {
+  "profiler/ModuleUIStrings.ts | calculatingStatistics": {
     "message": "Ĉál̂ćûĺât́îńĝ śt̂át̂íŝt́îćŝ…"
   },
-  "profiler/ModuleUIStrings.js | done": {
+  "profiler/ModuleUIStrings.ts | done": {
     "message": "D̂ón̂é"
   },
-  "profiler/ModuleUIStrings.js | finishedProcessing": {
+  "profiler/ModuleUIStrings.ts | finishedProcessing": {
     "message": "F̂ín̂íŝh́êd́ p̂ŕôćêśŝín̂ǵ."
   },
-  "profiler/ModuleUIStrings.js | loadingAllocationTracesD": {
+  "profiler/ModuleUIStrings.ts | loadingAllocationTracesD": {
     "message": "L̂óâd́îńĝ ál̂ĺôćât́îón̂ t́r̂áĉéŝ… {PH1}%"
   },
-  "profiler/ModuleUIStrings.js | loadingEdgesD": {
+  "profiler/ModuleUIStrings.ts | loadingEdgesD": {
     "message": "L̂óâd́îńĝ éd̂ǵêś… {PH1}%"
   },
-  "profiler/ModuleUIStrings.js | loadingLocations": {
+  "profiler/ModuleUIStrings.ts | loadingLocations": {
     "message": "L̂óâd́îńĝ ĺôćât́îón̂ś…"
   },
-  "profiler/ModuleUIStrings.js | loadingNodesD": {
+  "profiler/ModuleUIStrings.ts | loadingNodesD": {
     "message": "L̂óâd́îńĝ ńôd́êś… {PH1}%"
   },
-  "profiler/ModuleUIStrings.js | loadingSamples": {
+  "profiler/ModuleUIStrings.ts | loadingSamples": {
     "message": "L̂óâd́îńĝ śâḿp̂ĺêś…"
   },
-  "profiler/ModuleUIStrings.js | loadingSnapshotInfo": {
+  "profiler/ModuleUIStrings.ts | loadingSnapshotInfo": {
     "message": "L̂óâd́îńĝ śn̂áp̂śĥót̂ ín̂f́ô…"
   },
-  "profiler/ModuleUIStrings.js | loadingStrings": {
+  "profiler/ModuleUIStrings.ts | loadingStrings": {
     "message": "L̂óâd́îńĝ śt̂ŕîńĝś…"
   },
-  "profiler/ModuleUIStrings.js | parsingStrings": {
+  "profiler/ModuleUIStrings.ts | parsingStrings": {
     "message": "P̂ár̂śîńĝ śt̂ŕîńĝś…"
   },
-  "profiler/ModuleUIStrings.js | processingSnapshot": {
+  "profiler/ModuleUIStrings.ts | processingSnapshot": {
     "message": "P̂ŕôćêśŝín̂ǵ ŝńâṕŝh́ôt́…"
   },
-  "profiler/ModuleUIStrings.js | propagatingDomState": {
+  "profiler/ModuleUIStrings.ts | propagatingDomState": {
     "message": "P̂ŕôṕâǵât́îńĝ D́ÔḾ ŝt́ât́ê…"
   },
-  "profiler/ProfileDataGrid.js | genericTextTwoPlaceholders": {
+  "profiler/ProfileDataGrid.ts | genericTextTwoPlaceholders": {
     "message": "{PH1}, {PH2}"
   },
-  "profiler/ProfileDataGrid.js | notOptimizedS": {
+  "profiler/ProfileDataGrid.ts | notOptimizedS": {
     "message": "N̂ót̂ óp̂t́îḿîźêd́: {PH1}"
   },
-  "profiler/ProfileLauncherView.js | load": {
+  "profiler/ProfileLauncherView.ts | load": {
     "message": "L̂óâd́"
   },
-  "profiler/ProfileLauncherView.js | selectJavascriptVmInstance": {
+  "profiler/ProfileLauncherView.ts | selectJavascriptVmInstance": {
     "message": "Ŝél̂éĉt́ Ĵáv̂áŜćr̂íp̂t́ V̂Ḿ îńŝt́âńĉé"
   },
-  "profiler/ProfileLauncherView.js | selectProfilingType": {
+  "profiler/ProfileLauncherView.ts | selectProfilingType": {
     "message": "Ŝél̂éĉt́ p̂ŕôf́îĺîńĝ t́ŷṕê"
   },
-  "profiler/ProfileLauncherView.js | start": {
+  "profiler/ProfileLauncherView.ts | start": {
     "message": "Ŝt́âŕt̂"
   },
-  "profiler/ProfileLauncherView.js | stop": {
+  "profiler/ProfileLauncherView.ts | stop": {
     "message": "Ŝt́ôṕ"
   },
-  "profiler/ProfileLauncherView.js | takeSnapshot": {
+  "profiler/ProfileLauncherView.ts | takeSnapshot": {
     "message": "T̂ák̂é ŝńâṕŝh́ôt́"
   },
   "profiler/profiler-meta.ts | liveHeapProfile": {
@@ -5690,94 +5690,94 @@
   "profiler/profiler-meta.ts | stopRecordingHeapAllocations": {
     "message": "Ŝt́ôṕ r̂éĉór̂d́îńĝ h́êáp̂ ál̂ĺôćât́îón̂ś"
   },
-  "profiler/ProfileSidebarTreeElement.js | delete": {
+  "profiler/ProfileSidebarTreeElement.ts | delete": {
     "message": "D̂él̂ét̂é"
   },
-  "profiler/ProfileSidebarTreeElement.js | load": {
+  "profiler/ProfileSidebarTreeElement.ts | load": {
     "message": "L̂óâd́…"
   },
-  "profiler/ProfileSidebarTreeElement.js | save": {
+  "profiler/ProfileSidebarTreeElement.ts | save": {
     "message": "Ŝáv̂é"
   },
-  "profiler/ProfileSidebarTreeElement.js | saveWithEllipsis": {
+  "profiler/ProfileSidebarTreeElement.ts | saveWithEllipsis": {
     "message": "Ŝáv̂é…"
   },
-  "profiler/ProfileSidebarTreeElement.js | singlePlaceholder": {
+  "profiler/ProfileSidebarTreeElement.ts | singlePlaceholder": {
     "message": "{PH1}"
   },
-  "profiler/ProfilesPanel.js | cantLoadFileSupportedFile": {
+  "profiler/ProfilesPanel.ts | cantLoadFileSupportedFile": {
     "message": "Ĉán̂’t́ l̂óâd́ f̂íl̂é. Ŝúp̂ṕôŕt̂éd̂ f́îĺê éx̂t́êńŝíôńŝ: '{PH1}.'"
   },
-  "profiler/ProfilesPanel.js | cantLoadProfileWhileAnother": {
+  "profiler/ProfilesPanel.ts | cantLoadProfileWhileAnother": {
     "message": "Ĉán̂’t́ l̂óâd́ p̂ŕôf́îĺê ẃĥíl̂é âńôt́ĥér̂ ṕr̂óf̂íl̂é îś b̂éîńĝ ŕêćôŕd̂éd̂."
   },
-  "profiler/ProfilesPanel.js | clearAllProfiles": {
+  "profiler/ProfilesPanel.ts | clearAllProfiles": {
     "message": "Ĉĺêár̂ ál̂ĺ p̂ŕôf́îĺêś"
   },
-  "profiler/ProfilesPanel.js | load": {
+  "profiler/ProfilesPanel.ts | load": {
     "message": "L̂óâd́…"
   },
-  "profiler/ProfilesPanel.js | profileLoadingFailedS": {
+  "profiler/ProfilesPanel.ts | profileLoadingFailedS": {
     "message": "P̂ŕôf́îĺê ĺôád̂ín̂ǵ f̂áîĺêd́: {PH1}."
   },
-  "profiler/ProfilesPanel.js | profiles": {
+  "profiler/ProfilesPanel.ts | profiles": {
     "message": "P̂ŕôf́îĺêś"
   },
-  "profiler/ProfilesPanel.js | runD": {
+  "profiler/ProfilesPanel.ts | runD": {
     "message": "R̂ún̂ {PH1}"
   },
-  "profiler/ProfileView.js | chart": {
+  "profiler/ProfileView.ts | chart": {
     "message": "Ĉh́âŕt̂"
   },
-  "profiler/ProfileView.js | excludeSelectedFunction": {
+  "profiler/ProfileView.ts | excludeSelectedFunction": {
     "message": "Êx́ĉĺûd́ê śêĺêćt̂éd̂ f́ûńĉt́îón̂"
   },
-  "profiler/ProfileView.js | failedToReadFile": {
+  "profiler/ProfileView.ts | failedToReadFile": {
     "message": "F̂áîĺêd́ t̂ó r̂éâd́ f̂íl̂é"
   },
-  "profiler/ProfileView.js | fileSReadErrorS": {
+  "profiler/ProfileView.ts | fileSReadErrorS": {
     "message": "F̂íl̂é '{PH1}' r̂éâd́ êŕr̂ór̂: {PH2}"
   },
-  "profiler/ProfileView.js | findByCostMsNameOrFile": {
+  "profiler/ProfileView.ts | findByCostMsNameOrFile": {
     "message": "F̂ín̂d́ b̂ý ĉóŝt́ (>50m̂ś), n̂ám̂é ôŕ f̂íl̂é"
   },
-  "profiler/ProfileView.js | focusSelectedFunction": {
+  "profiler/ProfileView.ts | focusSelectedFunction": {
     "message": "F̂óĉúŝ śêĺêćt̂éd̂ f́ûńĉt́îón̂"
   },
-  "profiler/ProfileView.js | function": {
+  "profiler/ProfileView.ts | function": {
     "message": "F̂ún̂ćt̂íôń"
   },
-  "profiler/ProfileView.js | heavyBottomUp": {
+  "profiler/ProfileView.ts | heavyBottomUp": {
     "message": "Ĥéâv́ŷ (B́ôt́t̂óm̂ Úp̂)"
   },
-  "profiler/ProfileView.js | loaded": {
+  "profiler/ProfileView.ts | loaded": {
     "message": "L̂óâd́êd́"
   },
-  "profiler/ProfileView.js | loading": {
+  "profiler/ProfileView.ts | loading": {
     "message": "L̂óâd́îńĝ…"
   },
-  "profiler/ProfileView.js | loadingD": {
+  "profiler/ProfileView.ts | loadingD": {
     "message": "L̂óâd́îńĝ… {PH1}%"
   },
-  "profiler/ProfileView.js | parsing": {
+  "profiler/ProfileView.ts | parsing": {
     "message": "P̂ár̂śîńĝ…"
   },
-  "profiler/ProfileView.js | profile": {
+  "profiler/ProfileView.ts | profile": {
     "message": "P̂ŕôf́îĺê"
   },
-  "profiler/ProfileView.js | profileD": {
+  "profiler/ProfileView.ts | profileD": {
     "message": "P̂ŕôf́îĺê {PH1}"
   },
-  "profiler/ProfileView.js | profiler": {
+  "profiler/ProfileView.ts | profiler": {
     "message": "P̂ŕôf́îĺêŕ"
   },
-  "profiler/ProfileView.js | profileViewMode": {
+  "profiler/ProfileView.ts | profileViewMode": {
     "message": "P̂ŕôf́îĺê v́îéŵ ḿôd́ê"
   },
-  "profiler/ProfileView.js | restoreAllFunctions": {
+  "profiler/ProfileView.ts | restoreAllFunctions": {
     "message": "R̂éŝt́ôŕê ál̂ĺ f̂ún̂ćt̂íôńŝ"
   },
-  "profiler/ProfileView.js | treeTopDown": {
+  "profiler/ProfileView.ts | treeTopDown": {
     "message": "T̂ŕêé (T̂óp̂ D́ôẃn̂)"
   },
   "protocol_monitor/protocol_monitor-meta.ts | protocolMonitor": {

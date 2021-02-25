@@ -773,6 +773,162 @@
   "color_picker/Spectrum.ts | toggleColorPicker": {
     "message": "Toggle color picker"
   },
+  "common/ResourceType.js | cspviolationreport": {
+    "message": "CSPViolationReport"
+  },
+  "common/ResourceType.js | css": {
+    "message": "CSS"
+  },
+  "common/ResourceType.js | doc": {
+    "message": "Doc"
+  },
+  "common/ResourceType.js | document": {
+    "message": "Document"
+  },
+  "common/ResourceType.js | documents": {
+    "message": "Documents"
+  },
+  "common/ResourceType.js | eventsource": {
+    "message": "EventSource"
+  },
+  "common/ResourceType.js | fetch": {
+    "message": "Fetch"
+  },
+  "common/ResourceType.js | font": {
+    "message": "Font"
+  },
+  "common/ResourceType.js | fonts": {
+    "message": "Fonts"
+  },
+  "common/ResourceType.js | image": {
+    "message": "Image"
+  },
+  "common/ResourceType.js | images": {
+    "message": "Images"
+  },
+  "common/ResourceType.js | img": {
+    "message": "Img"
+  },
+  "common/ResourceType.js | js": {
+    "message": "JS"
+  },
+  "common/ResourceType.js | manifest": {
+    "message": "Manifest"
+  },
+  "common/ResourceType.js | media": {
+    "message": "Media"
+  },
+  "common/ResourceType.js | other": {
+    "message": "Other"
+  },
+  "common/ResourceType.js | ping": {
+    "message": "Ping"
+  },
+  "common/ResourceType.js | preflight": {
+    "message": "Preflight"
+  },
+  "common/ResourceType.js | script": {
+    "message": "Script"
+  },
+  "common/ResourceType.js | scripts": {
+    "message": "Scripts"
+  },
+  "common/ResourceType.js | signedexchange": {
+    "message": "SignedExchange"
+  },
+  "common/ResourceType.js | stylesheet": {
+    "message": "Stylesheet"
+  },
+  "common/ResourceType.js | stylesheets": {
+    "message": "Stylesheets"
+  },
+  "common/ResourceType.js | texttrack": {
+    "message": "TextTrack"
+  },
+  "common/ResourceType.js | websocket": {
+    "message": "WebSocket"
+  },
+  "common/ResourceType.js | websockets": {
+    "message": "WebSockets"
+  },
+  "common/ResourceType.js | webtransport": {
+    "message": "WebTransport"
+  },
+  "common/ResourceType.js | ws": {
+    "message": "WS"
+  },
+  "common/ResourceType.js | xhr": {
+    "message": "XHR"
+  },
+  "common/ResourceType.js | xhrAndFetch": {
+    "message": "XHR and Fetch"
+  },
+  "common/Revealer.js | applicationPanel": {
+    "message": "Application panel"
+  },
+  "common/Revealer.js | changesDrawer": {
+    "message": "Changes drawer"
+  },
+  "common/Revealer.js | elementsPanel": {
+    "message": "Elements panel"
+  },
+  "common/Revealer.js | issuesView": {
+    "message": "Issues view"
+  },
+  "common/Revealer.js | networkPanel": {
+    "message": "Network panel"
+  },
+  "common/Revealer.js | sourcesPanel": {
+    "message": "Sources panel"
+  },
+  "common/Revealer.js | stylesSidebar": {
+    "message": "styles sidebar"
+  },
+  "common/SettingRegistration.ts | appearance": {
+    "message": "Appearance"
+  },
+  "common/SettingRegistration.ts | console": {
+    "message": "Console"
+  },
+  "common/SettingRegistration.ts | debugger": {
+    "message": "Debugger"
+  },
+  "common/SettingRegistration.ts | elements": {
+    "message": "Elements"
+  },
+  "common/SettingRegistration.ts | emulation": {
+    "message": "Emulation"
+  },
+  "common/SettingRegistration.ts | extension": {
+    "message": "Extension"
+  },
+  "common/SettingRegistration.ts | global": {
+    "message": "Global"
+  },
+  "common/SettingRegistration.ts | grid": {
+    "message": "Grid"
+  },
+  "common/SettingRegistration.ts | memory": {
+    "message": "Memory"
+  },
+  "common/SettingRegistration.ts | mobile": {
+    "message": "Mobile"
+  },
+  "common/SettingRegistration.ts | network": {
+    "message": "Network"
+  },
+  "common/SettingRegistration.ts | performance": {
+    "message": "Performance"
+  },
+  "common/SettingRegistration.ts | persistence": {
+    "message": "Persistence"
+  },
+  "common/SettingRegistration.ts | rendering": {
+    "message": "Rendering"
+  },
+  "common/SettingRegistration.ts | sources": {
+    "message": "Sources"
+  },
   "components/ImagePreview.js | imageFromS": {
     "message": "Image from {PH1}"
   },

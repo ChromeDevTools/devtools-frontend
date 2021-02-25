@@ -2,12 +2,76 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
-import {ls} from '../platform/platform.js';
 import * as Root from '../root/root.js';
 
 import {SettingStorageType} from './Settings.js';
 
+export const UIStrings = {
+  /**
+  *@description Title of the Elements Panel
+  */
+  elements: 'Elements',
+  /**
+  *@description Text for DevTools appearance
+  */
+  appearance: 'Appearance',
+  /**
+  *@description Name of the Sources panel
+  */
+  sources: 'Sources',
+  /**
+  *@description Title of the Network tool
+  */
+  network: 'Network',
+  /**
+  *@description Text for the performance of something
+  */
+  performance: 'Performance',
+  /**
+  *@description Title of the Console tool
+  */
+  console: 'Console',
+  /**
+  *@description A title of the 'Persistence' setting category
+  */
+  persistence: 'Persistence',
+  /**
+  *@description Text that refers to the debugger
+  */
+  debugger: 'Debugger',
+  /**
+  *@description Text describing global shortcuts and settings that are available throughout the DevTools
+  */
+  global: 'Global',
+  /**
+  *@description Title of the Rendering tool
+  */
+  rendering: 'Rendering',
+  /**
+  *@description Title of a section on CSS Grid tooling
+  */
+  grid: 'Grid',
+  /**
+  *@description Text for the mobile platform, as opposed to desktop
+  */
+  mobile: 'Mobile',
+  /**
+  *@description Name of a settings category.
+  */
+  emulation: 'Emulation',
+  /**
+  *@description Text for the memory of the page
+  */
+  memory: 'Memory',
+  /**
+  *@description Text for the extension of the page
+  */
+  extension: 'Extension',
+};
+const str_ = i18n.i18n.registerUIStrings('common/SettingRegistration.ts', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let registeredSettings: Array<SettingRegistration> = [];
 const settingNameSet = new Set<string>();
 
@@ -64,35 +128,35 @@ export const enum SettingCategory {
 export function getLocalizedSettingsCategory(category: SettingCategory): string|Platform.UIString.LocalizedString {
   switch (category) {
     case SettingCategory.ELEMENTS:
-      return ls`Elements`;
+      return i18nString(UIStrings.elements);
     case SettingCategory.APPEARANCE:
-      return ls`Appearance`;
+      return i18nString(UIStrings.appearance);
     case SettingCategory.SOURCES:
-      return ls`Sources`;
+      return i18nString(UIStrings.sources);
     case SettingCategory.NETWORK:
-      return ls`Network`;
+      return i18nString(UIStrings.network);
     case SettingCategory.PERFORMANCE:
-      return ls`Performance`;
+      return i18nString(UIStrings.performance);
     case SettingCategory.CONSOLE:
-      return ls`Console`;
+      return i18nString(UIStrings.console);
     case SettingCategory.PERSISTENCE:
-      return ls`Persistence`;
+      return i18nString(UIStrings.persistence);
     case SettingCategory.DEBUGGER:
-      return ls`Debugger`;
+      return i18nString(UIStrings.debugger);
     case SettingCategory.GLOBAL:
-      return ls`Global`;
+      return i18nString(UIStrings.global);
     case SettingCategory.RENDERING:
-      return ls`Rendering`;
+      return i18nString(UIStrings.rendering);
     case SettingCategory.GRID:
-      return ls`Grid`;
+      return i18nString(UIStrings.grid);
     case SettingCategory.MOBILE:
-      return ls`Mobile`;
+      return i18nString(UIStrings.mobile);
     case SettingCategory.EMULATION:
-      return ls`Emulation`;
+      return i18nString(UIStrings.console);
     case SettingCategory.MEMORY:
-      return ls`Memory`;
+      return i18nString(UIStrings.memory);
     case SettingCategory.EXTENSIONS:
-      return ls`Extensions`;
+      return i18nString(UIStrings.extension);
     case SettingCategory.NONE:
       return '';
   }

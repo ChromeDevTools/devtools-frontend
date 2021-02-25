@@ -6,6 +6,9 @@
   <message name="IDS_DEVTOOLS_2eb412338beb67c81288a2f3e2da91e9" desc="Label for the link for CORS private network issues">
     CORS for private networks (RFC1918)
   </message>
+  <message name="IDS_DEVTOOLS_3b563524fdb17b4a86590470d40bef74" desc="Text that appears on a button for the media resource type filter.">
+    Media
+  </message>
   <message name="IDS_DEVTOOLS_46334eeb893715e9aefe809c08ce92b9" desc="Label for the link for Trusted Web Activity issue">
     Changes to quality criteria for PWAs using Trusted Web Activity
   </message>
@@ -164,6 +167,9 @@
   </message>
   <message name="IDS_DEVTOOLS_4cbb2bdce4db02a995cdd7a237a63d69" desc="Title of a setting under the Grid category that turns CSS Grid Area highlighting on">
     Show grid named areas
+  </message>
+  <message name="IDS_DEVTOOLS_4cc6684df7b4a92b1dec6fce3264fac8" desc="Text describing global shortcuts and settings that are available throughout the DevTools">
+    Global
   </message>
   <message name="IDS_DEVTOOLS_5662edf029fe42e222f435fbc9ae73a2" desc="Title for Trusted Types policy violation issue link">
     Trusted Types - Fix violations
@@ -633,6 +639,9 @@
   <message name="IDS_DEVTOOLS_e3f19fc256ab121cc63e22eb3a891b1a" desc="Error message when failing to load a script source text via the network">
     Could not parse content for <ph name="SOURCEMAPURL"><ex>https://example.com</ex>$1s</ph>: <ph name="E_MESSAGE"><ex>Unexpected token</ex>$2s</ph>
   </message>
+  <message name="IDS_DEVTOOLS_e402c138065e7eece783dc30c6079192" desc="Text that appears on a button for the xhr resource type filter.">
+    XHR
+  </message>
   <message name="IDS_DEVTOOLS_e485c975c1d6c17d9dfd81128b83f63a" desc="Text in the Event Listener Breakpoints Panel of the JavaScript Debugger in the Sources Panel">
     Set innerHTML
   </message>
@@ -689,6 +698,9 @@
   </message>
   <message name="IDS_DEVTOOLS_b507642e29a193b6853843992eef8c10" desc="Error message when failing to load a source map text via the network">
     Could not load content for <ph name="SOURCEMAPURL">$1s<ex>https://example.com/sourcemap.map</ex></ph>: <ph name="ERRORMESSAGE">$2s<ex>A certificate error occurred</ex></ph>
+  </message>
+  <message name="IDS_DEVTOOLS_f907e651164789346ae0a1e257c462d8" desc="Label for a group of JavaScript files">
+    Script
   </message>
   <message name="IDS_DEVTOOLS_f9778c8e7464e4bb037ec2463879588f" desc="Text in DOMDebugger Model">
     DOM Mutation

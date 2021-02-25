@@ -773,6 +773,162 @@
   "color_picker/Spectrum.ts | toggleColorPicker": {
     "message": "T̂óĝǵl̂é ĉól̂ór̂ ṕîćk̂ér̂"
   },
+  "common/ResourceType.js | cspviolationreport": {
+    "message": "ĈŚP̂V́îól̂át̂íôńR̂ép̂ór̂t́"
+  },
+  "common/ResourceType.js | css": {
+    "message": "ĈŚŜ"
+  },
+  "common/ResourceType.js | doc": {
+    "message": "D̂óĉ"
+  },
+  "common/ResourceType.js | document": {
+    "message": "D̂óĉúm̂én̂t́"
+  },
+  "common/ResourceType.js | documents": {
+    "message": "D̂óĉúm̂én̂t́ŝ"
+  },
+  "common/ResourceType.js | eventsource": {
+    "message": "Êv́êńt̂Śôúr̂ćê"
+  },
+  "common/ResourceType.js | fetch": {
+    "message": "F̂ét̂ćĥ"
+  },
+  "common/ResourceType.js | font": {
+    "message": "F̂ón̂t́"
+  },
+  "common/ResourceType.js | fonts": {
+    "message": "F̂ón̂t́ŝ"
+  },
+  "common/ResourceType.js | image": {
+    "message": "Îḿâǵê"
+  },
+  "common/ResourceType.js | images": {
+    "message": "Îḿâǵêś"
+  },
+  "common/ResourceType.js | img": {
+    "message": "Îḿĝ"
+  },
+  "common/ResourceType.js | js": {
+    "message": "ĴŚ"
+  },
+  "common/ResourceType.js | manifest": {
+    "message": "M̂án̂íf̂éŝt́"
+  },
+  "common/ResourceType.js | media": {
+    "message": "M̂éd̂íâ"
+  },
+  "common/ResourceType.js | other": {
+    "message": "Ôt́ĥér̂"
+  },
+  "common/ResourceType.js | ping": {
+    "message": "P̂ín̂ǵ"
+  },
+  "common/ResourceType.js | preflight": {
+    "message": "P̂ŕêf́l̂íĝh́t̂"
+  },
+  "common/ResourceType.js | script": {
+    "message": "Ŝćr̂íp̂t́"
+  },
+  "common/ResourceType.js | scripts": {
+    "message": "Ŝćr̂íp̂t́ŝ"
+  },
+  "common/ResourceType.js | signedexchange": {
+    "message": "Ŝíĝńêd́Êx́ĉh́âńĝé"
+  },
+  "common/ResourceType.js | stylesheet": {
+    "message": "Ŝt́ŷĺêśĥéêt́"
+  },
+  "common/ResourceType.js | stylesheets": {
+    "message": "Ŝt́ŷĺêśĥéêt́ŝ"
+  },
+  "common/ResourceType.js | texttrack": {
+    "message": "T̂éx̂t́T̂ŕâćk̂"
+  },
+  "common/ResourceType.js | websocket": {
+    "message": "Ŵéb̂Śôćk̂ét̂"
+  },
+  "common/ResourceType.js | websockets": {
+    "message": "Ŵéb̂Śôćk̂ét̂ś"
+  },
+  "common/ResourceType.js | webtransport": {
+    "message": "Ŵéb̂T́r̂án̂śp̂ór̂t́"
+  },
+  "common/ResourceType.js | ws": {
+    "message": "ŴŚ"
+  },
+  "common/ResourceType.js | xhr": {
+    "message": "X̂H́R̂"
+  },
+  "common/ResourceType.js | xhrAndFetch": {
+    "message": "X̂H́R̂ án̂d́ F̂ét̂ćĥ"
+  },
+  "common/Revealer.js | applicationPanel": {
+    "message": "Âṕp̂ĺîćât́îón̂ ṕâńêĺ"
+  },
+  "common/Revealer.js | changesDrawer": {
+    "message": "Ĉh́âńĝéŝ d́r̂áŵér̂"
+  },
+  "common/Revealer.js | elementsPanel": {
+    "message": "Êĺêḿêńt̂ś p̂án̂él̂"
+  },
+  "common/Revealer.js | issuesView": {
+    "message": "Îśŝúêś v̂íêẃ"
+  },
+  "common/Revealer.js | networkPanel": {
+    "message": "N̂ét̂ẃôŕk̂ ṕâńêĺ"
+  },
+  "common/Revealer.js | sourcesPanel": {
+    "message": "Ŝóûŕĉéŝ ṕâńêĺ"
+  },
+  "common/Revealer.js | stylesSidebar": {
+    "message": "ŝt́ŷĺêś ŝíd̂éb̂ár̂"
+  },
+  "common/SettingRegistration.ts | appearance": {
+    "message": "Âṕp̂éâŕâńĉé"
+  },
+  "common/SettingRegistration.ts | console": {
+    "message": "Ĉón̂śôĺê"
+  },
+  "common/SettingRegistration.ts | debugger": {
+    "message": "D̂éb̂úĝǵêŕ"
+  },
+  "common/SettingRegistration.ts | elements": {
+    "message": "Êĺêḿêńt̂ś"
+  },
+  "common/SettingRegistration.ts | emulation": {
+    "message": "Êḿûĺât́îón̂"
+  },
+  "common/SettingRegistration.ts | extension": {
+    "message": "Êx́t̂én̂śîón̂"
+  },
+  "common/SettingRegistration.ts | global": {
+    "message": "Ĝĺôb́âĺ"
+  },
+  "common/SettingRegistration.ts | grid": {
+    "message": "Ĝŕîd́"
+  },
+  "common/SettingRegistration.ts | memory": {
+    "message": "M̂ém̂ór̂ý"
+  },
+  "common/SettingRegistration.ts | mobile": {
+    "message": "M̂ób̂íl̂é"
+  },
+  "common/SettingRegistration.ts | network": {
+    "message": "N̂ét̂ẃôŕk̂"
+  },
+  "common/SettingRegistration.ts | performance": {
+    "message": "P̂ér̂f́ôŕm̂án̂ćê"
+  },
+  "common/SettingRegistration.ts | persistence": {
+    "message": "P̂ér̂śîśt̂én̂ćê"
+  },
+  "common/SettingRegistration.ts | rendering": {
+    "message": "R̂én̂d́êŕîńĝ"
+  },
+  "common/SettingRegistration.ts | sources": {
+    "message": "Ŝóûŕĉéŝ"
+  },
   "components/ImagePreview.js | imageFromS": {
     "message": "Îḿâǵê f́r̂óm̂ {PH1}"
   },

@@ -27,14 +27,138 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import {ls} from '../platform/platform.js';
-
+import * as i18n from '../i18n/i18n.js';
+import * as Platform from '../platform/platform.js';  // eslint-disable-line no-unused-vars
 import {ParsedURL} from './ParsedURL.js';
 
+export const UIStrings = {
+  /**
+  *@description Text that appears in a tooltip the xhr and fetch resource types filter.
+  */
+  xhrAndFetch: 'XHR and Fetch',
+  /**
+  *@description Text that appears on a button for the xhr resource type filter.
+  */
+  xhr: 'XHR',
+  /**
+  *@description Text that appears in a tooltip for the JavaScript types filter.
+  */
+  scripts: 'Scripts',
+  /**
+  *@description Text that appears on a button for the JavaScript resource type filter.
+  */
+  js: 'JS',
+  /**
+  *@description Text that appears in a tooltip for the css types filter.
+  */
+  stylesheets: 'Stylesheets',
+  /**
+  *@description Text that appears on a button for the css resource type filter.
+  */
+  css: 'CSS',
+  /**
+  *@description Text that appears in a tooltip for the image types filter.
+  */
+  images: 'Images',
+  /**
+  *@description Text that appears on a button for the image resource type filter.
+  */
+  img: 'Img',
+  /**
+  *@description Text that appears on a button for the media resource type filter.
+  */
+  media: 'Media',
+  /**
+  *@description Text that appears in a tooltip for the resource types filter.
+  */
+  fonts: 'Fonts',
+  /**
+  *@description Text that appears on a button for the font resource type filter.
+  */
+  font: 'Font',
+  /**
+  *@description Text for documents, a type of resources
+  */
+  documents: 'Documents',
+  /**
+  *@description Text that appears on a button for the document resource type filter.
+  */
+  doc: 'Doc',
+  /**
+  *@description Text that appears in a tooltip for the websocket types filter.
+  */
+  websockets: 'WebSockets',
+  /**
+  *@description Text that appears on a button for the websocket resource type filter.
+  */
+  ws: 'WS',
+  /**
+  *@description Text that appears on a button for the manifest resource type filter.
+  */
+  manifest: 'Manifest',
+  /**
+  *@description Text for other types of items
+  */
+  other: 'Other',
+  /**
+  *@description Name of a network resource type
+  */
+  document: 'Document',
+  /**
+  *@description Name of a network resource type
+  */
+  stylesheet: 'Stylesheet',
+  /**
+  *@description Text in Image View of the Sources panel
+  */
+  image: 'Image',
+  /**
+  *@description Label for a group of JavaScript files
+  */
+  script: 'Script',
+  /**
+  *@description Name of a network resource type
+  */
+  texttrack: 'TextTrack',
+  /**
+  *@description Name of a network resource type
+  */
+  fetch: 'Fetch',
+  /**
+  *@description Name of a network resource type
+  */
+  eventsource: 'EventSource',
+  /**
+  *@description Name of a network resource type
+  */
+  websocket: 'WebSocket',
+  /**
+  *@description Name of a network resource type
+  */
+  webtransport: 'WebTransport',
+  /**
+  *@description Name of a network resource type
+  */
+  signedexchange: 'SignedExchange',
+  /**
+  *@description Name of a network resource type
+  */
+  ping: 'Ping',
+  /**
+  *@description Name of a network resource type
+  */
+  cspviolationreport: 'CSPViolationReport',
+  /**
+  *@description Name of a network initiator type
+  */
+  preflight: 'Preflight',
+};
+const str_ = i18n.i18n.registerUIStrings('common/ResourceType.js', UIStrings);
+const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 export class ResourceType {
   /**
    * @param {string} name
-   * @param {string} title
+   * @param {() => Platform.UIString.LocalizedString} title
    * @param {!ResourceCategory} category
    * @param {boolean} isTextType
    */
@@ -137,7 +261,7 @@ export class ResourceType {
    * @return {string}
    */
   title() {
-    return this._title;
+    return this._title();
   }
 
   /**
@@ -230,8 +354,8 @@ export class ResourceType {
 
 export class ResourceCategory {
   /**
-   * @param {string} title
-   * @param {string} shortTitle
+   * @param {() => Platform.UIString.LocalizedString} title
+   * @param {() => Platform.UIString.LocalizedString} shortTitle
    */
   constructor(title, shortTitle) {
     this.title = title;
@@ -243,16 +367,16 @@ export class ResourceCategory {
  * @enum {!ResourceCategory}
  */
 export const resourceCategories = {
-  XHR: new ResourceCategory(ls`XHR and Fetch`, ls`XHR`),
-  Script: new ResourceCategory(ls`Scripts`, ls`JS`),
-  Stylesheet: new ResourceCategory(ls`Stylesheets`, ls`CSS`),
-  Image: new ResourceCategory(ls`Images`, ls`Img`),
-  Media: new ResourceCategory(ls`Media`, ls`Media`),
-  Font: new ResourceCategory(ls`Fonts`, ls`Font`),
-  Document: new ResourceCategory(ls`Documents`, ls`Doc`),
-  WebSocket: new ResourceCategory(ls`WebSockets`, ls`WS`),
-  Manifest: new ResourceCategory(ls`Manifest`, ls`Manifest`),
-  Other: new ResourceCategory(ls`Other`, ls`Other`),
+  XHR: new ResourceCategory(i18nLazyString(UIStrings.xhrAndFetch), i18nLazyString(UIStrings.xhr)),
+  Script: new ResourceCategory(i18nLazyString(UIStrings.scripts), i18nLazyString(UIStrings.js)),
+  Stylesheet: new ResourceCategory(i18nLazyString(UIStrings.stylesheets), i18nLazyString(UIStrings.css)),
+  Image: new ResourceCategory(i18nLazyString(UIStrings.images), i18nLazyString(UIStrings.img)),
+  Media: new ResourceCategory(i18nLazyString(UIStrings.media), i18nLazyString(UIStrings.media)),
+  Font: new ResourceCategory(i18nLazyString(UIStrings.fonts), i18nLazyString(UIStrings.font)),
+  Document: new ResourceCategory(i18nLazyString(UIStrings.documents), i18nLazyString(UIStrings.doc)),
+  WebSocket: new ResourceCategory(i18nLazyString(UIStrings.websockets), i18nLazyString(UIStrings.ws)),
+  Manifest: new ResourceCategory(i18nLazyString(UIStrings.manifest), i18nLazyString(UIStrings.manifest)),
+  Other: new ResourceCategory(i18nLazyString(UIStrings.other), i18nLazyString(UIStrings.other)),
 };
 
 /**
@@ -260,27 +384,31 @@ export const resourceCategories = {
  * @enum {!ResourceType}
  */
 export const resourceTypes = {
-  Document: new ResourceType('document', ls`Document`, resourceCategories.Document, true),
-  Stylesheet: new ResourceType('stylesheet', ls`Stylesheet`, resourceCategories.Stylesheet, true),
-  Image: new ResourceType('image', ls`Image`, resourceCategories.Image, false),
-  Media: new ResourceType('media', ls`Media`, resourceCategories.Media, false),
-  Font: new ResourceType('font', ls`Font`, resourceCategories.Font, false),
-  Script: new ResourceType('script', ls`Script`, resourceCategories.Script, true),
-  TextTrack: new ResourceType('texttrack', ls`TextTrack`, resourceCategories.Other, true),
-  XHR: new ResourceType('xhr', ls`XHR`, resourceCategories.XHR, true),
-  Fetch: new ResourceType('fetch', ls`Fetch`, resourceCategories.XHR, true),
-  EventSource: new ResourceType('eventsource', ls`EventSource`, resourceCategories.XHR, true),
-  WebSocket: new ResourceType('websocket', ls`WebSocket`, resourceCategories.WebSocket, false),
+  Document: new ResourceType('document', i18nLazyString(UIStrings.document), resourceCategories.Document, true),
+  Stylesheet: new ResourceType('stylesheet', i18nLazyString(UIStrings.stylesheet), resourceCategories.Stylesheet, true),
+  Image: new ResourceType('image', i18nLazyString(UIStrings.image), resourceCategories.Image, false),
+  Media: new ResourceType('media', i18nLazyString(UIStrings.media), resourceCategories.Media, false),
+  Font: new ResourceType('font', i18nLazyString(UIStrings.font), resourceCategories.Font, false),
+  Script: new ResourceType('script', i18nLazyString(UIStrings.script), resourceCategories.Script, true),
+  TextTrack: new ResourceType('texttrack', i18nLazyString(UIStrings.texttrack), resourceCategories.Other, true),
+  XHR: new ResourceType('xhr', i18nLazyString(UIStrings.xhr), resourceCategories.XHR, true),
+  Fetch: new ResourceType('fetch', i18nLazyString(UIStrings.fetch), resourceCategories.XHR, true),
+  EventSource: new ResourceType('eventsource', i18nLazyString(UIStrings.eventsource), resourceCategories.XHR, true),
+  WebSocket: new ResourceType('websocket', i18nLazyString(UIStrings.websocket), resourceCategories.WebSocket, false),
   // TODO(yoichio): Consider creating new category WT or WS/WT with WebSocket.
-  WebTransport: new ResourceType('webtransport', ls`WebTransport`, resourceCategories.WebSocket, false),
-  Manifest: new ResourceType('manifest', ls`Manifest`, resourceCategories.Manifest, true),
-  SignedExchange: new ResourceType('signed-exchange', ls`SignedExchange`, resourceCategories.Other, false),
-  Ping: new ResourceType('ping', ls`Ping`, resourceCategories.Other, false),
-  CSPViolationReport: new ResourceType('csp-violation-report', ls`CSPViolationReport`, resourceCategories.Other, false),
-  Other: new ResourceType('other', ls`Other`, resourceCategories.Other, false),
-  Preflight: new ResourceType('preflight', ls`Preflight`, resourceCategories.Other, true),
-  SourceMapScript: new ResourceType('sm-script', ls`Script`, resourceCategories.Script, true),
-  SourceMapStyleSheet: new ResourceType('sm-stylesheet', ls`Stylesheet`, resourceCategories.Stylesheet, true),
+  WebTransport:
+      new ResourceType('webtransport', i18nLazyString(UIStrings.webtransport), resourceCategories.WebSocket, false),
+  Manifest: new ResourceType('manifest', i18nLazyString(UIStrings.manifest), resourceCategories.Manifest, true),
+  SignedExchange:
+      new ResourceType('signed-exchange', i18nLazyString(UIStrings.signedexchange), resourceCategories.Other, false),
+  Ping: new ResourceType('ping', i18nLazyString(UIStrings.ping), resourceCategories.Other, false),
+  CSPViolationReport: new ResourceType(
+      'csp-violation-report', i18nLazyString(UIStrings.cspviolationreport), resourceCategories.Other, false),
+  Other: new ResourceType('other', i18nLazyString(UIStrings.other), resourceCategories.Other, false),
+  Preflight: new ResourceType('preflight', i18nLazyString(UIStrings.preflight), resourceCategories.Other, true),
+  SourceMapScript: new ResourceType('sm-script', i18nLazyString(UIStrings.script), resourceCategories.Script, true),
+  SourceMapStyleSheet:
+      new ResourceType('sm-stylesheet', i18nLazyString(UIStrings.stylesheet), resourceCategories.Stylesheet, true),
 };
 
 

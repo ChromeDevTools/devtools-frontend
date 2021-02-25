@@ -114,6 +114,7 @@ const migratedDirsSet = new Set([
   'browser_sdk',
   'changes',
   'color_picker',
+  'common',
   'components',
   'console',
   'console_counters',

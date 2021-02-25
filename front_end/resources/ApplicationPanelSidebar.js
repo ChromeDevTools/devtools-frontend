@@ -2275,7 +2275,7 @@ export class FrameTreeElement extends ApplicationPanelTreeElement {
         resourceType === Common.ResourceType.resourceTypes.Document ? this : this._categoryElements.get(categoryName);
     if (!categoryElement) {
       categoryElement = new ExpandableApplicationPanelTreeElement(
-          this._section._panel, resource.resourceType().category().title, categoryName, categoryName === 'Frames');
+          this._section._panel, resource.resourceType().category().title(), categoryName, categoryName === 'Frames');
       this._categoryElements.set(resourceType.name(), categoryElement);
       this.appendChild(categoryElement, FrameTreeElement._presentationOrderCompare);
     }

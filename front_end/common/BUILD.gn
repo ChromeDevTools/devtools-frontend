@@ -39,6 +39,7 @@ devtools_module("common") {
   ]
 
   deps = [
+    "../i18n:bundle",
     "../platform:bundle",
     "../root:bundle",
   ]

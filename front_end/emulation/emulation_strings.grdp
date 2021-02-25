@@ -90,6 +90,9 @@
   <message name="IDS_DEVTOOLS_7f43b617cd76ddbbe953426f4f9634db" desc="Command for showing the 'Locations' tool">
     Show Locations
   </message>
+  <message name="IDS_DEVTOOLS_87d17f4624a514e81dc7c8e016a7405c" desc="Text for the mobile platform, as opposed to desktop">
+    Mobile
+  </message>
   <message name="IDS_DEVTOOLS_89999eac57e5838aa3adb04ad831f5d3" desc="Text in Sensors View of the Device Toolbar">
     Custom orientation
   </message>

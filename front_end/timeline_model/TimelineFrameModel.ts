@@ -35,7 +35,8 @@ import * as Platform from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 
 import {RecordType, TimelineData} from './TimelineModel.js';
-import {TracingLayerPayload, TracingLayerTile, TracingLayerTree} from './TracingLayerTree.js';  // eslint-disable-line no-unused-vars
+import type {TracingLayerPayload, TracingLayerTile} from './TracingLayerTree.js';
+import {TracingLayerTree} from './TracingLayerTree.js';
 
 export class TimelineFrameModel {
   _categoryMapper: (arg0: SDK.TracingModel.Event) => string;

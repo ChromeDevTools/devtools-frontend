@@ -34,7 +34,7 @@ import * as Components from '../components/components.js';
 import * as Platform from '../platform/platform.js';
 import * as UI from '../ui/ui.js';
 
-import {ConsoleViewMessage} from './ConsoleViewMessage.js';  // eslint-disable-line no-unused-vars
+import type {ConsoleViewMessage} from './ConsoleViewMessage.js';
 
 interface SelectionModel {
   item: number;

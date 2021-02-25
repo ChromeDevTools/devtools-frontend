@@ -35,7 +35,7 @@ import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
 
 import {AllocationProfile} from './AllocationProfile.js';
-import {HeapSnapshotWorkerDispatcher} from './HeapSnapshotWorkerDispatcher.js';  // eslint-disable-line no-unused-vars
+import type {HeapSnapshotWorkerDispatcher} from './HeapSnapshotWorkerDispatcher.js';
 
 /**
  * @interface

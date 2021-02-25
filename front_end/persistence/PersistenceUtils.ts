@@ -13,7 +13,8 @@ import * as Workspace from '../workspace/workspace.js';
 
 import {FileSystemWorkspaceBinding} from './FileSystemWorkspaceBinding.js';
 import {NetworkPersistenceManager} from './NetworkPersistenceManager.js';
-import {Events, PersistenceBinding, PersistenceImpl} from './PersistenceImpl.js';  // eslint-disable-line no-unused-vars
+import type {PersistenceBinding} from './PersistenceImpl.js';
+import {Events, PersistenceImpl} from './PersistenceImpl.js';
 
 export const UIStrings = {
   /**

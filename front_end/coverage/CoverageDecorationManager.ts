@@ -10,7 +10,7 @@ import * as Platform from '../platform/platform.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as Workspace from '../workspace/workspace.js';
 
-import {CoverageInfo, CoverageModel} from './CoverageModel.js';  // eslint-disable-line no-unused-vars
+import type {CoverageInfo, CoverageModel} from './CoverageModel.js';
 
 export const decoratorType = 'coverage';
 

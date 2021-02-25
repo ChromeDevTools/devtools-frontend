@@ -22,8 +22,8 @@ import {AffectedItem, AffectedResourcesView, extractShortPath} from './AffectedR
 import {AffectedSharedArrayBufferIssueDetailsView} from './AffectedSharedArrayBufferIssueDetailsView.js';
 import {AffectedTrustedWebActivityIssueDetailsView} from './AffectedTrustedWebActivityIssueDetailsView.js';
 import {CorsIssueDetailsView} from './CorsIssueDetailsView.js';
-import {AggregatedIssue} from './IssueAggregator.js';            // eslint-disable-line no-unused-vars
-import {IssueDescription} from './MarkdownIssueDescription.js';  // eslint-disable-line no-unused-vars
+import type {AggregatedIssue} from './IssueAggregator.js';
+import type {IssueDescription} from './MarkdownIssueDescription.js';
 
 export const UIStrings = {
   /**

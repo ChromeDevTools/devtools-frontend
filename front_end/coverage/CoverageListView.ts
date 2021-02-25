@@ -12,7 +12,8 @@ import * as TextUtils from '../text_utils/text_utils.js';
 import * as UI from '../ui/ui.js';
 import * as Workspace from '../workspace/workspace.js';
 
-import {CoverageType, URLCoverageInfo} from './CoverageModel.js';  // eslint-disable-line no-unused-vars
+import type {URLCoverageInfo} from './CoverageModel.js';
+import {CoverageType} from './CoverageModel.js';
 
 export const UIStrings = {
   /**

@@ -36,7 +36,8 @@ import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 
-import {Events as WorkspaceImplEvents, Project, projectTypes} from './WorkspaceImpl.js';  // eslint-disable-line no-unused-vars
+import type {Project} from './WorkspaceImpl.js';
+import {Events as WorkspaceImplEvents, projectTypes} from './WorkspaceImpl.js';
 
 export const UIStrings = {
   /**

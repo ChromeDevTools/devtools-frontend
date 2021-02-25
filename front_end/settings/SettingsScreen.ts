@@ -37,7 +37,7 @@ import * as i18n from '../i18n/i18n.js';
 import * as Root from '../root/root.js';
 import * as UI from '../ui/ui.js';
 
-import {KeybindsSettingsTab} from './KeybindsSettingsTab.js';  // eslint-disable-line no-unused-vars
+import type {KeybindsSettingsTab} from './KeybindsSettingsTab.js';
 
 export const UIStrings = {
   /**

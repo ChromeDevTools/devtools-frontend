@@ -3,7 +3,8 @@
 // found in the LICENSE file.
 
 /* eslint-disable rulesdir/no_underscored_properties */
-import {Row, RowType} from './ChangesView.js';  // eslint-disable-line no-unused-vars
+import type {Row} from './ChangesView.js';
+import {RowType} from './ChangesView.js';
 
 interface ParserConfig {
   diffRows: Array<Row>;

@@ -5,7 +5,7 @@
 import type * as Common from '../common/common.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
-import {IssuesPane} from './IssuesPane.js';  // eslint-disable-line no-unused-vars
+import {IssuesPane} from './IssuesPane.js';
 
 let issueRevealerInstance: IssueRevealer;
 

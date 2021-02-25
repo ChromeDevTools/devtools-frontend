@@ -8,7 +8,8 @@ import type * as Common from '../common/common.js';
 import * as i18n from '../i18n/i18n.js';
 import * as UI from '../ui/ui.js';
 
-import {DataDisplayDelegate, Events as ProfileHeaderEvents, ProfileHeader} from './ProfileHeader.js';  // eslint-disable-line no-unused-vars
+import type {DataDisplayDelegate} from './ProfileHeader.js';
+import {Events as ProfileHeaderEvents, ProfileHeader} from './ProfileHeader.js';
 
 export const UIStrings = {
   /**

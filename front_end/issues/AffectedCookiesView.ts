@@ -8,7 +8,7 @@ import * as Network from '../network/network.js';
 import * as UI from '../ui/ui.js';
 
 import {AffectedItem, AffectedResourcesView} from './AffectedResourcesView.js';
-import {AggregatedIssue} from './IssueAggregator.js';  // eslint-disable-line no-unused-vars
+import type {AggregatedIssue} from './IssueAggregator.js';
 import {IssueView} from './IssueView.js';
 
 export const UIStrings = {

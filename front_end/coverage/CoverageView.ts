@@ -16,7 +16,8 @@ import type * as Workspace from '../workspace/workspace.js';
 
 import {CoverageDecorationManager, decoratorType} from './CoverageDecorationManager.js';
 import {CoverageListView} from './CoverageListView.js';
-import {CoverageInfo, CoverageModel, CoverageType, Events, URLCoverageInfo} from './CoverageModel.js';  // eslint-disable-line no-unused-vars
+import type {CoverageInfo, URLCoverageInfo} from './CoverageModel.js';
+import {CoverageModel, Events, CoverageType} from './CoverageModel.js';
 
 export const UIStrings = {
   /**

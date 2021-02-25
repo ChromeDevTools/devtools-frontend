@@ -16,9 +16,12 @@ import type * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
 import {BottomUpProfileDataGridTree} from './BottomUpProfileDataGrid.js';
-import {CPUProfileFlameChart, ProfileFlameChartDataProvider} from './CPUProfileFlameChart.js';  // eslint-disable-line no-unused-vars
-import {Formatter, ProfileDataGridNode, ProfileDataGridTree} from './ProfileDataGrid.js';  // eslint-disable-line no-unused-vars
-import {DataDisplayDelegate, Events, ProfileHeader, ProfileType} from './ProfileHeader.js';  // eslint-disable-line no-unused-vars
+import type {ProfileFlameChartDataProvider} from './CPUProfileFlameChart.js';
+import {CPUProfileFlameChart} from './CPUProfileFlameChart.js';
+import type {Formatter, ProfileDataGridNode} from './ProfileDataGrid.js';
+import {ProfileDataGridTree} from './ProfileDataGrid.js';
+import type {DataDisplayDelegate} from './ProfileHeader.js';
+import {Events, ProfileHeader, ProfileType} from './ProfileHeader.js';
 import {ProfileSidebarTreeElement} from './ProfileSidebarTreeElement.js';
 import {TopDownProfileDataGridTree} from './TopDownProfileDataGrid.js';
 

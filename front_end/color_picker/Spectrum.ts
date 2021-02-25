@@ -41,7 +41,7 @@ import * as WebComponents from '../ui/components/components.js';
 import * as UI from '../ui/ui.js';
 
 import {ContrastDetails, Events as ContrastDetailsEvents} from './ContrastDetails.js';
-import {ContrastInfo} from './ContrastInfo.js';  // eslint-disable-line no-unused-vars
+import type {ContrastInfo} from './ContrastInfo.js';
 import {ContrastOverlay} from './ContrastOverlay.js';
 
 export const UIStrings = {

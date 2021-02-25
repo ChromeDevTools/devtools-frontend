@@ -8,11 +8,11 @@ import * as i18n from '../i18n/i18n.js';
 import * as UI from '../ui/ui.js';
 
 import {EditFileSystemView} from './EditFileSystemView.js';
-import {FileSystem} from './FileSystemWorkspaceBinding.js';  // eslint-disable-line no-unused-vars
+import type {FileSystem} from './FileSystemWorkspaceBinding.js';
 import {IsolatedFileSystem} from './IsolatedFileSystem.js';
 import {Events, IsolatedFileSystemManager} from './IsolatedFileSystemManager.js';
 import {NetworkPersistenceManager} from './NetworkPersistenceManager.js';
-import {PlatformFileSystem} from './PlatformFileSystem.js';  // eslint-disable-line no-unused-vars
+import type {PlatformFileSystem} from './PlatformFileSystem.js';
 
 export const UIStrings = {
   /**

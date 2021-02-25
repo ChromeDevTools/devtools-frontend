@@ -14,9 +14,10 @@ import * as SDK from '../sdk/sdk.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as UI from '../ui/ui.js';
 
-import {Events, OverviewController} from './CSSOverviewController.js';  // eslint-disable-line no-unused-vars
+import type {OverviewController} from './CSSOverviewController.js';
+import {Events} from './CSSOverviewController.js';
 import {CSSOverviewSidebarPanel, SidebarEvents} from './CSSOverviewSidebarPanel.js';
-import {UnusedDeclaration} from './CSSOverviewUnusedDeclarations.js';  // eslint-disable-line no-unused-vars
+import type {UnusedDeclaration} from './CSSOverviewUnusedDeclarations.js';
 
 export const UIStrings = {
   /**

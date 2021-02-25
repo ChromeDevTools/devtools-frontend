@@ -38,10 +38,11 @@ import * as Platform from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
-import {ChildrenProvider} from './ChildrenProvider.js';  // eslint-disable-line no-unused-vars
-import {AllocationDataGrid, HeapSnapshotConstructorsDataGrid, HeapSnapshotDiffDataGrid, HeapSnapshotRetainmentDataGridEvents, HeapSnapshotSortableDataGrid} from './HeapSnapshotDataGrids.js';  // eslint-disable-line no-unused-vars
-import {HeapSnapshotProviderProxy, HeapSnapshotProxy} from './HeapSnapshotProxy.js';  // eslint-disable-line no-unused-vars
-import {DataDisplayDelegate} from './ProfileHeader.js';  // eslint-disable-line no-unused-vars
+import type {ChildrenProvider} from './ChildrenProvider.js';
+import type {AllocationDataGrid, HeapSnapshotConstructorsDataGrid, HeapSnapshotDiffDataGrid, HeapSnapshotSortableDataGrid} from './HeapSnapshotDataGrids.js';
+import {HeapSnapshotRetainmentDataGridEvents} from './HeapSnapshotDataGrids.js';
+import type {HeapSnapshotProviderProxy, HeapSnapshotProxy} from './HeapSnapshotProxy.js';
+import type {DataDisplayDelegate} from './ProfileHeader.js';
 
 export const UIStrings = {
   /**

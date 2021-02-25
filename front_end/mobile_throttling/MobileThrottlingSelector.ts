@@ -8,7 +8,8 @@ import * as i18n from '../i18n/i18n.js';
 import * as SDK from '../sdk/sdk.js';
 
 import {Events, throttlingManager} from './ThrottlingManager.js';
-import {Conditions, ConditionsList, MobileThrottlingConditionsGroup, ThrottlingPresets} from './ThrottlingPresets.js';  // eslint-disable-line no-unused-vars
+import type {Conditions, ConditionsList, MobileThrottlingConditionsGroup} from './ThrottlingPresets.js';
+import {ThrottlingPresets} from './ThrottlingPresets.js';
 
 export const UIStrings = {
   /**

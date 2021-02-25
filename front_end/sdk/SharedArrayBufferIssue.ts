@@ -4,8 +4,9 @@
 
 import {ls} from '../common/common.js';  // eslint-disable-line rulesdir/es_modules_import
 
-import {Issue, IssueCategory, IssueKind, MarkdownIssueDescription} from './Issue.js';  // eslint-disable-line no-unused-vars
-import {IssuesModel} from './IssuesModel.js';  // eslint-disable-line no-unused-vars
+import type {MarkdownIssueDescription} from './Issue.js';
+import {Issue, IssueCategory, IssueKind} from './Issue.js';
+import type {IssuesModel} from './IssuesModel.js';
 
 export class SharedArrayBufferIssue extends Issue {
   private issueDetails: Protocol.Audits.SharedArrayBufferIssueDetails;

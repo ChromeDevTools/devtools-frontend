@@ -46,7 +46,7 @@ import * as TextUtils from '../text_utils/text_utils.js';
 import * as ThemeSupport from '../theme_support/theme_support.js';
 import * as UI from '../ui/ui.js';
 
-import {ConsoleViewportElement} from './ConsoleViewport.js';  // eslint-disable-line no-unused-vars
+import type {ConsoleViewportElement} from './ConsoleViewport.js';
 
 export const UIStrings = {
   /**

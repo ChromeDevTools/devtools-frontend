@@ -36,7 +36,8 @@ import * as Platform from '../platform/platform.js';
 import type * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
-import {LayerSelection, LayerView, LayerViewHost, ScrollRectSelection, Selection, SnapshotSelection, Type} from './LayerViewHost.js';  // eslint-disable-line no-unused-vars
+import type {LayerView, LayerViewHost} from './LayerViewHost.js';
+import {LayerSelection, Selection, SnapshotSelection, Type, ScrollRectSelection} from './LayerViewHost.js';
 import {Events as TransformControllerEvents, TransformController} from './TransformController.js';
 
 export const UIStrings = {

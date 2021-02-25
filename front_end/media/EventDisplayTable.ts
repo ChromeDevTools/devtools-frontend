@@ -9,7 +9,7 @@ import * as i18n from '../i18n/i18n.js';
 import * as SourceFrame from '../source_frame/source_frame.js';
 import * as UI from '../ui/ui.js';
 
-import {PlayerEvent} from './MediaModel.js';  // eslint-disable-line no-unused-vars
+import type {PlayerEvent} from './MediaModel.js';
 
 export const UIStrings = {
   /**

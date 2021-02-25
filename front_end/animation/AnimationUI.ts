@@ -11,8 +11,9 @@ import * as Platform from '../platform/platform.js';
 import type * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
-import {AnimationImpl, KeyframeStyle} from './AnimationModel.js';              // eslint-disable-line no-unused-vars
-import {AnimationTimeline, StepTimingFunction} from './AnimationTimeline.js';  // eslint-disable-line no-unused-vars
+import type {AnimationImpl, KeyframeStyle} from './AnimationModel.js';
+import type {AnimationTimeline} from './AnimationTimeline.js';
+import {StepTimingFunction} from './AnimationTimeline.js';
 
 export const UIStrings = {
   /**

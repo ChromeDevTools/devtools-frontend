@@ -38,8 +38,9 @@ import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
 import {ProfileFlameChartDataProvider} from './CPUProfileFlameChart.js';
-import {Formatter, ProfileDataGridNode} from './ProfileDataGrid.js';           // eslint-disable-line no-unused-vars
-import {ProfileEvents, ProfileHeader, ProfileType} from './ProfileHeader.js';  // eslint-disable-line no-unused-vars
+import type {Formatter, ProfileDataGridNode} from './ProfileDataGrid.js';
+import type {ProfileHeader} from './ProfileHeader.js';
+import {ProfileEvents, ProfileType} from './ProfileHeader.js';
 import {ProfileView, WritableProfileHeader} from './ProfileView.js';
 
 export const UIStrings = {

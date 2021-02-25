@@ -5,7 +5,7 @@
 /* eslint-disable rulesdir/no_underscored_properties */
 
 import * as UI from '../ui/ui.js';
-import {AnimationGroup} from './AnimationModel.js';  // eslint-disable-line no-unused-vars
+import type {AnimationGroup} from './AnimationModel.js';
 import {AnimationUI} from './AnimationUI.js';
 
 export class AnimationGroupPreviewUI {

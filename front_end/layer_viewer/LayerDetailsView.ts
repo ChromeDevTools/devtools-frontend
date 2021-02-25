@@ -35,7 +35,8 @@ import * as Platform from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
-import {LayerView, LayerViewHost, ScrollRectSelection, Selection, SnapshotSelection, Type} from './LayerViewHost.js';  // eslint-disable-line no-unused-vars
+import type {LayerView, LayerViewHost, Selection, SnapshotSelection} from './LayerViewHost.js';
+import {ScrollRectSelection, Type} from './LayerViewHost.js';
 
 export const UIStrings = {
   /**

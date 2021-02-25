@@ -4,7 +4,8 @@
 
 import {ls} from '../common/common.js';  // eslint-disable-line rulesdir/es_modules_import
 
-import {Issue, IssueCategory, IssueKind, MarkdownIssueDescription} from './Issue.js';  // eslint-disable-line no-unused-vars
+import type {MarkdownIssueDescription} from './Issue.js';
+import {Issue, IssueCategory, IssueKind} from './Issue.js';
 
 export class TrustedWebActivityIssue extends Issue {
   private issueDetails: Protocol.Audits.TrustedWebActivityIssueDetails;

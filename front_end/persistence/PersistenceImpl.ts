@@ -11,7 +11,8 @@ import * as Platform from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as Workspace from '../workspace/workspace.js';
 
-import {Automapping, AutomappingStatus} from './Automapping.js';  // eslint-disable-line no-unused-vars
+import type {AutomappingStatus} from './Automapping.js';
+import {Automapping} from './Automapping.js';
 import {LinkDecorator} from './PersistenceUtils.js';
 
 let persistenceInstance: PersistenceImpl;

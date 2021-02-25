@@ -7,8 +7,8 @@
 import * as i18n from '../i18n/i18n.js';
 import * as UI from '../ui/ui.js';
 
-import {MainView, TriggerDispatcher} from './MainView.js';  // eslint-disable-line no-unused-vars
-import {PlayerEvent} from './MediaModel.js';                // eslint-disable-line no-unused-vars
+import type {MainView, TriggerDispatcher} from './MainView.js';
+import type {PlayerEvent} from './MediaModel.js';
 import {PlayerPropertyKeys} from './PlayerPropertiesView.js';
 
 export const UIStrings = {

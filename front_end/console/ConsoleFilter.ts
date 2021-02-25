@@ -7,7 +7,7 @@
 import * as SDK from '../sdk/sdk.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 
-import {ConsoleViewMessage} from './ConsoleViewMessage.js';  // eslint-disable-line no-unused-vars
+import type {ConsoleViewMessage} from './ConsoleViewMessage.js';
 
 export type LevelsMask = {
   [x: string]: boolean,

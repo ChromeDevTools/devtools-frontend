@@ -14,9 +14,11 @@ import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
 import {ProfileFlameChartDataProvider} from './CPUProfileFlameChart.js';
-import {HeapTimelineOverview, IdsRangeChanged, Samples} from './HeapTimelineOverview.js';  // eslint-disable-line no-unused-vars
-import {Formatter, ProfileDataGridNode} from './ProfileDataGrid.js';           // eslint-disable-line no-unused-vars
-import {ProfileEvents, ProfileHeader, ProfileType} from './ProfileHeader.js';  // eslint-disable-line no-unused-vars
+import type {Samples} from './HeapTimelineOverview.js';
+import {HeapTimelineOverview, IdsRangeChanged} from './HeapTimelineOverview.js';
+import type {Formatter, ProfileDataGridNode} from './ProfileDataGrid.js';
+import type {ProfileHeader} from './ProfileHeader.js';
+import {ProfileType, ProfileEvents} from './ProfileHeader.js';
 import {ProfileView, WritableProfileHeader} from './ProfileView.js';
 
 export const UIStrings = {

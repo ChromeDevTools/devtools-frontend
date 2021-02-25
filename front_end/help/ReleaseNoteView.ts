@@ -8,7 +8,8 @@ import * as Host from '../host/host.js';
 import * as i18n from '../i18n/i18n.js';
 import * as UI from '../ui/ui.js';
 
-import {latestReleaseNote, ReleaseNote, releaseNoteViewId} from './HelpImpl.js';  // eslint-disable-line no-unused-vars
+import {latestReleaseNote, releaseNoteViewId} from './HelpImpl.js';
+import type {ReleaseNote} from './HelpImpl.js';
 
 export const UIStrings = {
   /**

@@ -10,7 +10,7 @@
 
 import * as Host from '../host/host.js';
 
-import {ReleaseNote} from './HelpImpl.js';  // eslint-disable-line no-unused-vars
+import type {ReleaseNote} from './HelpImpl.js';
 
 const continueToHereShortcut = Host.Platform.isMac() ? 'Command' : 'Control';
 const networkSearchShortcut = Host.Platform.isMac() ? 'Command+F' : 'Control+F';

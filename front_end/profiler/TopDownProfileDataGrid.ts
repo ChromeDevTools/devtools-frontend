@@ -32,7 +32,8 @@
 import type * as SDK from '../sdk/sdk.js';
 import type * as UI from '../ui/ui.js';
 
-import {Formatter, ProfileDataGridNode, ProfileDataGridTree} from './ProfileDataGrid.js';  // eslint-disable-line no-unused-vars
+import type {Formatter} from './ProfileDataGrid.js';
+import {ProfileDataGridNode, ProfileDataGridTree} from './ProfileDataGrid.js';
 
 export class TopDownProfileDataGridNode extends ProfileDataGridNode {
   _remainingChildren: SDK.ProfileTreeModel.ProfileNode[];

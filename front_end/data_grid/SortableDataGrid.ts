@@ -7,7 +7,8 @@
 
 import * as Platform from '../platform/platform.js';
 
-import {ColumnDescriptor, DataGridData, Events, Parameters} from './DataGrid.js';  // eslint-disable-line no-unused-vars
+import type {ColumnDescriptor, DataGridData, Parameters} from './DataGrid.js';
+import {Events} from './DataGrid.js';
 import {ViewportDataGrid, ViewportDataGridNode} from './ViewportDataGrid.js';
 
 export class SortableDataGrid<T> extends ViewportDataGrid<SortableDataGridNode<T>> {

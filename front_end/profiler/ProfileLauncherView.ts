@@ -35,8 +35,8 @@ import * as i18n from '../i18n/i18n.js';
 import * as UI from '../ui/ui.js';
 
 import {IsolateSelector} from './IsolateSelector.js';
-import {ProfileType} from './ProfileHeader.js';    // eslint-disable-line no-unused-vars
-import {ProfilesPanel} from './ProfilesPanel.js';  // eslint-disable-line no-unused-vars
+import type {ProfileType} from './ProfileHeader.js';
+import type {ProfilesPanel} from './ProfilesPanel.js';
 
 export const UIStrings = {
   /**

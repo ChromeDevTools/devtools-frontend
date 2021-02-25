@@ -4,7 +4,8 @@
 
 import {ls} from '../common/common.js';  // eslint-disable-line rulesdir/es_modules_import
 
-import {Issue, IssueCategory, IssueKind, MarkdownIssueDescription} from './Issue.js';  // eslint-disable-line no-unused-vars
+import {Issue, IssueCategory, IssueKind} from './Issue.js';
+import type {MarkdownIssueDescription} from './Issue.js';
 
 export class LowTextContrastIssue extends Issue {
   private issueDetails: Protocol.Audits.LowTextContrastIssueDetails;

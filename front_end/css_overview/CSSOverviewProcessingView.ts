@@ -7,7 +7,8 @@
 import * as i18n from '../i18n/i18n.js';
 import * as UI from '../ui/ui.js';
 
-import {Events, OverviewController} from './CSSOverviewController.js';  // eslint-disable-line no-unused-vars
+import type {OverviewController} from './CSSOverviewController.js';
+import {Events} from './CSSOverviewController.js';
 
 export const UIStrings = {
   /**

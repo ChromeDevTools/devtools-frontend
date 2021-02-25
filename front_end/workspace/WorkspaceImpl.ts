@@ -33,7 +33,8 @@
 import * as Common from '../common/common.js';
 import type * as TextUtils from '../text_utils/text_utils.js';
 
-import {UISourceCode, UISourceCodeMetadata} from './UISourceCode.js';  // eslint-disable-line no-unused-vars
+import type {UISourceCodeMetadata} from './UISourceCode.js';
+import {UISourceCode} from './UISourceCode.js';
 
 export interface ProjectSearchConfig {
   query(): string;

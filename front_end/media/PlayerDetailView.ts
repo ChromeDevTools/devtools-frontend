@@ -9,8 +9,8 @@ import * as UI from '../ui/ui.js';
 
 import {PlayerEventsView} from './EventDisplayTable.js';
 import {PlayerEventsTimeline} from './EventTimelineView.js';
-import {TriggerHandler} from './MainView.js';  // eslint-disable-line no-unused-vars
-import {PlayerEvent} from './MediaModel.js';   // eslint-disable-line no-unused-vars
+import type {TriggerHandler} from './MainView.js';
+import type {PlayerEvent} from './MediaModel.js';
 import {PlayerMessagesView} from './PlayerMessagesView.js';
 import {PlayerPropertiesView} from './PlayerPropertiesView.js';
 

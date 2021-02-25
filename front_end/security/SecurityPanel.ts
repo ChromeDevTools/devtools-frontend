@@ -11,7 +11,8 @@ import * as Network from '../network/network.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
-import {Events, PageSecurityState, PageVisibleSecurityState, SecurityModel, SecurityStyleExplanation, SummaryMessages} from './SecurityModel.js';  // eslint-disable-line no-unused-vars
+import type {PageSecurityState, PageVisibleSecurityState} from './SecurityModel.js';
+import {Events, SecurityModel, SecurityStyleExplanation, SummaryMessages} from './SecurityModel.js';
 
 export const UIStrings = {
   /**

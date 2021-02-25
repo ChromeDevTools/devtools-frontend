@@ -9,12 +9,13 @@ import * as Host from '../host/host.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
-import {ContrastIssue, CSSOverviewCompletedView} from './CSSOverviewCompletedView.js';  // eslint-disable-line no-unused-vars
+import type {ContrastIssue} from './CSSOverviewCompletedView.js';
+import {CSSOverviewCompletedView} from './CSSOverviewCompletedView.js';
 import {Events, OverviewController} from './CSSOverviewController.js';
 import {CSSOverviewModel, GlobalStyleStats} from './CSSOverviewModel.js';
 import {CSSOverviewProcessingView} from './CSSOverviewProcessingView.js';
 import {CSSOverviewStartView} from './CSSOverviewStartView.js';
-import {UnusedDeclaration} from './CSSOverviewUnusedDeclarations.js';  // eslint-disable-line no-unused-vars
+import type {UnusedDeclaration} from './CSSOverviewUnusedDeclarations.js';
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 let CSSOverviewPanelInstance: CSSOverviewPanel;

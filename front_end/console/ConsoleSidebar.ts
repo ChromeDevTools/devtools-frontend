@@ -11,7 +11,7 @@ import type * as TextUtils from '../text_utils/text_utils.js';
 import * as UI from '../ui/ui.js';
 
 import {ConsoleFilter, FilterType, LevelsMask} from './ConsoleFilter.js';
-import {ConsoleViewMessage} from './ConsoleViewMessage.js';  // eslint-disable-line no-unused-vars
+import type {ConsoleViewMessage} from './ConsoleViewMessage.js';
 
 export const UIStrings = {
   /**

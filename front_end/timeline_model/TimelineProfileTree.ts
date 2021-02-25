@@ -8,7 +8,7 @@ import type * as SDK from '../sdk/sdk.js';
 
 import {TimelineJSProfileProcessor} from './TimelineJSProfile.js';
 import {RecordType, TimelineData, TimelineModelImpl} from './TimelineModel.js';
-import {TimelineModelFilter} from './TimelineModelFilter.js';  // eslint-disable-line no-unused-vars
+import type {TimelineModelFilter} from './TimelineModelFilter.js';
 
 export class Node {
   totalTime: number;

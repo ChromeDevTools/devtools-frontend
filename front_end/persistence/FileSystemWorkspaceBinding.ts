@@ -35,9 +35,10 @@ import * as Platform from '../platform/platform.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as Workspace from '../workspace/workspace.js';
 
-import {IsolatedFileSystem} from './IsolatedFileSystem.js';                        // eslint-disable-line no-unused-vars
-import {Events, IsolatedFileSystemManager} from './IsolatedFileSystemManager.js';  // eslint-disable-line no-unused-vars
-import {PlatformFileSystem} from './PlatformFileSystem.js';                        // eslint-disable-line no-unused-vars
+import type {IsolatedFileSystem} from './IsolatedFileSystem.js';
+import type {IsolatedFileSystemManager} from './IsolatedFileSystemManager.js';
+import {Events} from './IsolatedFileSystemManager.js';
+import type {PlatformFileSystem} from './PlatformFileSystem.js';
 
 export class FileSystemWorkspaceBinding {
   _isolatedFileSystemManager: IsolatedFileSystemManager;

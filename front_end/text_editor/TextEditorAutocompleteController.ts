@@ -10,7 +10,7 @@ import * as Platform from '../platform/platform.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as UI from '../ui/ui.js';
 
-import {CodeMirrorTextEditor} from './CodeMirrorTextEditor.js';  // eslint-disable-line no-unused-vars
+import type {CodeMirrorTextEditor} from './CodeMirrorTextEditor.js';
 import {changeObjectToEditOperation} from './CodeMirrorUtils.js';
 
 export class TextEditorAutocompleteController implements UI.SuggestBox.SuggestBoxDelegate {

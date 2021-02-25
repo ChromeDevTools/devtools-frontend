@@ -12,7 +12,8 @@ import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
 import {AnimationGroupPreviewUI} from './AnimationGroupPreviewUI.js';
-import {AnimationEffect, AnimationGroup, AnimationImpl, AnimationModel, Events} from './AnimationModel.js';  // eslint-disable-line no-unused-vars
+import type {AnimationEffect, AnimationGroup, AnimationImpl} from './AnimationModel.js';
+import {AnimationModel, Events} from './AnimationModel.js';
 import {AnimationScreenshotPopover} from './AnimationScreenshotPopover.js';
 import {AnimationUI} from './AnimationUI.js';
 

@@ -9,9 +9,10 @@ import * as SDK from '../sdk/sdk.js';
 import * as WebComponents from '../ui/components/components.js';
 import * as UI from '../ui/ui.js';
 
-import {AggregatedIssue, Events as IssueAggregatorEvents, IssueAggregator} from './IssueAggregator.js';  // eslint-disable-line no-unused-vars
+import type {AggregatedIssue} from './IssueAggregator.js';
+import {Events as IssueAggregatorEvents, IssueAggregator} from './IssueAggregator.js';
 import {IssueView} from './IssueView.js';
-import {createIssueDescriptionFromMarkdown} from './MarkdownIssueDescription.js';  // eslint-disable-line no-unused-vars
+import {createIssueDescriptionFromMarkdown} from './MarkdownIssueDescription.js';
 
 export const UIStrings = {
   /**

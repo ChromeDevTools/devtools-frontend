@@ -37,10 +37,11 @@ import * as i18n from '../i18n/i18n.js';
 import type * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
-import {AllocationGridNode, HeapSnapshotConstructorNode, HeapSnapshotDiffNode, HeapSnapshotGenericObjectNode, HeapSnapshotGridNode, HeapSnapshotObjectNode, HeapSnapshotRetainingObjectNode} from './HeapSnapshotGridNodes.js';  // eslint-disable-line no-unused-vars
-import {HeapSnapshotProxy} from './HeapSnapshotProxy.js';  // eslint-disable-line no-unused-vars
-import {HeapProfileHeader} from './HeapSnapshotView.js';   // eslint-disable-line no-unused-vars
-import {DataDisplayDelegate} from './ProfileHeader.js';    // eslint-disable-line no-unused-vars
+import type {HeapSnapshotGridNode} from './HeapSnapshotGridNodes.js';
+import {AllocationGridNode, HeapSnapshotConstructorNode, HeapSnapshotGenericObjectNode, HeapSnapshotRetainingObjectNode, HeapSnapshotObjectNode, HeapSnapshotDiffNode} from './HeapSnapshotGridNodes.js';
+import type {HeapSnapshotProxy} from './HeapSnapshotProxy.js';
+import type {HeapProfileHeader} from './HeapSnapshotView.js';
+import type {DataDisplayDelegate} from './ProfileHeader.js';
 
 export const UIStrings = {
   /**

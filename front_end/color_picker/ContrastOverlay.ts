@@ -8,7 +8,8 @@ import * as Common from '../common/common.js';
 import * as Root from '../root/root.js';
 import * as UI from '../ui/ui.js';
 
-import {ContrastInfo, Events} from './ContrastInfo.js';  // eslint-disable-line no-unused-vars
+import type {ContrastInfo} from './ContrastInfo.js';
+import {Events} from './ContrastInfo.js';
 
 export class ContrastOverlay {
   _contrastInfo: ContrastInfo;

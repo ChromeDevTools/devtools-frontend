@@ -8,7 +8,8 @@ import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
 import * as UI from '../ui/ui.js';
 
-import {DataGridData, DataGridImpl, DataGridNode, Parameters} from './DataGrid.js';  // eslint-disable-line no-unused-vars
+import type {DataGridData, Parameters} from './DataGrid.js';
+import {DataGridImpl, DataGridNode} from './DataGrid.js';
 
 export const UIStrings = {
   /**

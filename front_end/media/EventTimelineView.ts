@@ -6,8 +6,9 @@
 
 import * as i18n from '../i18n/i18n.js';
 
-import {PlayerEvent} from './MediaModel.js';  // eslint-disable-line no-unused-vars
-import {ColdColorScheme, Event, EventProperties, HotColorScheme, TickingFlameChart} from './TickingFlameChart.js';  // eslint-disable-line no-unused-vars
+import type {PlayerEvent} from './MediaModel.js';
+import type {Event, EventProperties} from './TickingFlameChart.js';
+import {ColdColorScheme, HotColorScheme, TickingFlameChart} from './TickingFlameChart.js';
 
 // Has to be a double, see https://v8.dev/blog/react-cliff
 const NO_NORMALIZED_TIMESTAMP = -1.5;

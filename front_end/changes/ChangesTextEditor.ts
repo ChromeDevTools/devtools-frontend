@@ -7,7 +7,8 @@ import * as i18n from '../i18n/i18n.js';
 import * as TextEditor from '../text_editor/text_editor.js';
 import type * as UI from '../ui/ui.js';
 
-import {Row, RowType} from './ChangesView.js';  // eslint-disable-line no-unused-vars
+import type {Row} from './ChangesView.js';
+import {RowType} from './ChangesView.js';
 
 export const UIStrings = {
   /**

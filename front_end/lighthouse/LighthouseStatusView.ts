@@ -8,7 +8,8 @@ import * as Common from '../common/common.js';
 import * as i18n from '../i18n/i18n.js';
 import * as UI from '../ui/ui.js';
 
-import {Events, LighthouseController, RuntimeSettings} from './LighthouseController.js';  // eslint-disable-line no-unused-vars
+import type {LighthouseController} from './LighthouseController.js';
+import {Events, RuntimeSettings} from './LighthouseController.js';
 
 export const UIStrings = {
   /**

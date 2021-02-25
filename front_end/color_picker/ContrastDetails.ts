@@ -11,7 +11,8 @@ import * as Platform from '../platform/platform.js';
 import * as Root from '../root/root.js';
 import * as UI from '../ui/ui.js';
 
-import {ContrastInfo, Events as ContrastInfoEvents} from './ContrastInfo.js';  // eslint-disable-line no-unused-vars
+import type {ContrastInfo} from './ContrastInfo.js';
+import {Events as ContrastInfoEvents} from './ContrastInfo.js';
 
 export const UIStrings = {
   /**

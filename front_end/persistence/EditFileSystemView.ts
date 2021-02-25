@@ -35,7 +35,7 @@ import * as i18n from '../i18n/i18n.js';
 import * as UI from '../ui/ui.js';
 
 import {Events, IsolatedFileSystemManager} from './IsolatedFileSystemManager.js';
-import {PlatformFileSystem} from './PlatformFileSystem.js';  // eslint-disable-line no-unused-vars
+import type {PlatformFileSystem} from './PlatformFileSystem.js';
 
 export const UIStrings = {
   /**

@@ -4,7 +4,8 @@
 
 import {luminance} from '../front_end/common/ColorUtils.js';
 
-import {AreaBounds, Bounds, createChild, Position} from './common.js';  // eslint-disable-line no-unused-vars
+import type {AreaBounds, Bounds, Position} from './common.js';
+import {createChild} from './common.js';
 import {applyMatrixToPoint, parseHexa} from './highlight_common.js';
 
 /**

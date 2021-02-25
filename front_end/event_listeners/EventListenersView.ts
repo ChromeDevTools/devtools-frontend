@@ -11,7 +11,8 @@ import * as ObjectUI from '../object_ui/object_ui.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
-import {frameworkEventListeners, FrameworkEventListenersObject} from './EventListenersUtils.js';  // eslint-disable-line no-unused-vars
+import type {FrameworkEventListenersObject} from './EventListenersUtils.js';
+import {frameworkEventListeners} from './EventListenersUtils.js';
 
 export const UIStrings = {
   /**

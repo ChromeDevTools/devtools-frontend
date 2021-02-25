@@ -135,7 +135,7 @@ def _CheckExperimentTelemetry(input_api, output_api):
         input_api.os_path.join(input_api.PresubmitLocalPath(), 'front_end',
                                'main', 'MainImpl.js'),
         input_api.os_path.join(input_api.PresubmitLocalPath(), 'front_end',
-                               'host', 'UserMetrics.js')
+                               'host', 'UserMetrics.ts')
     ]
     affected_main_files = _getAffectedFiles(input_api,
                                             experiment_telemetry_files, [],

@@ -2,6 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+/* eslint-disable @typescript-eslint/naming-convention */
+
 import * as Common from '../common/common.js';
 import * as i18n from '../i18n/i18n.js';
 
@@ -64,83 +67,72 @@ export const UIStrings = {
   */
   decodingDataUrlFailed: 'Decoding Data URL failed',
 };
-const str_ = i18n.i18n.registerUIStrings('host/ResourceLoader.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('host/ResourceLoader.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export const ResourceLoader = {};
 
 let _lastStreamId = 0;
 
-/** @type {!Object.<number, !Common.StringOutputStream.OutputStream>} */
-const _boundStreams = {};
+const _boundStreams: {
+  [x: number]: Common.StringOutputStream.OutputStream,
+} = {};
 
-/**
- * @param {!Common.StringOutputStream.OutputStream} stream
- * @return {number}
- */
-const _bindOutputStream = function(stream) {
+const _bindOutputStream = function(stream: Common.StringOutputStream.OutputStream): number {
   _boundStreams[++_lastStreamId] = stream;
   return _lastStreamId;
 };
 
-/**
- * @param {number} id
- */
-const _discardOutputStream = function(id) {
+const _discardOutputStream = function(id: number): void {
   _boundStreams[id].close();
   delete _boundStreams[id];
 };
 
-/**
- * @param {number} id
- * @param {string} chunk
- */
-export const streamWrite = function(id, chunk) {
+export const streamWrite = function(id: number, chunk: string): void {
   _boundStreams[id].write(chunk);
 };
+export interface LoadErrorDescription {
+  statusCode: number;
+  netError?: number;
+  netErrorName?: string;
+  urlValid?: boolean;
+  message?: string;
+}
 
-/** @typedef
-{{
-    statusCode: number,
-    netError: (number|undefined),
-    netErrorName: (string|undefined),
-    urlValid: (boolean|undefined),
-    message: (string|undefined)
-}} */
-// @ts-ignore typedef.
-export let LoadErrorDescription;
-
-/**
- * @param {string} url
- * @param {?Object.<string, string>} headers
- * @param {function(boolean, !Object.<string, string>, string, !LoadErrorDescription):void} callback
- */
-export let load = function(url, headers, callback) {
+export let load = function(
+    url: string, headers: {
+      [x: string]: string,
+    }|null,
+    callback: (
+        arg0: boolean, arg1: {
+          [x: string]: string,
+        },
+        arg2: string, arg3: LoadErrorDescription) => void): void {
   const stream = new Common.StringOutputStream.StringOutputStream();
   loadAsStream(url, headers, stream, mycallback);
 
-  /**
-   * @param {boolean} success
-   * @param {!Object.<string, string>} headers
-   * @param {!LoadErrorDescription} errorDescription
-   */
-  function mycallback(success, headers, errorDescription) {
+  function mycallback(
+      success: boolean, headers: {
+        [x: string]: string,
+      },
+      errorDescription: LoadErrorDescription): void {
     callback(success, headers, stream.data(), errorDescription);
   }
 };
 
-/**
- * @param {function(string, ?Object<string, string>, function(boolean, !Object<string, string>, string, !LoadErrorDescription): void): void} newLoad
- */
-export function setLoadForTest(newLoad) {
+export function setLoadForTest(
+    newLoad: (
+        arg0: string, arg1: {
+          [x: string]: string,
+        }|null,
+        arg2: (
+            arg0: boolean, arg1: {
+              [x: string]: string,
+            },
+            arg2: string, arg3: LoadErrorDescription) => void) => void): void {
   load = newLoad;
 }
 
-/**
- * @param {number} netError
- * Keep this function in sync with `net_error_list.h` on the Chromium side.
- * @returns {string}
- */
-function getNetErrorCategory(netError) {
+function getNetErrorCategory(netError: number): string {
   if (netError > -100) {
     return i18nString(UIStrings.systemError);
   }
@@ -171,21 +163,12 @@ function getNetErrorCategory(netError) {
   return i18nString(UIStrings.unknownError);
 }
 
-/**
- * @param {number} netError
- * @returns {boolean}
- */
-function isHTTPError(netError) {
+function isHTTPError(netError: number): boolean {
   return netError <= -300 && netError > -400;
 }
 
-/**
- *
- * @param {number|undefined} netError
- * @param {number|undefined} httpStatusCode
- * @param {string|undefined} netErrorName
- */
-export function netErrorToMessage(netError, httpStatusCode, netErrorName) {
+export function netErrorToMessage(
+    netError: number|undefined, httpStatusCode: number|undefined, netErrorName: string|undefined): string|null {
   if (netError === undefined || netErrorName === undefined) {
     return null;
   }
@@ -201,11 +184,10 @@ export function netErrorToMessage(netError, httpStatusCode, netErrorName) {
   return null;
 }
 
-/**
- * @param {!LoadNetworkResourceResult} response
- * @returns {!{success:boolean, description: !LoadErrorDescription}}
- */
-function createErrorMessageFromResponse(response) {
+function createErrorMessageFromResponse(response: LoadNetworkResourceResult): {
+  success: boolean,
+  description: LoadErrorDescription,
+} {
   const {statusCode, netError, netErrorName, urlValid, messageOverride} = response;
   let message = '';
   const success = statusCode >= 200 && statusCode < 300;
@@ -229,13 +211,9 @@ function createErrorMessageFromResponse(response) {
   return {success, description: {statusCode, netError, netErrorName, urlValid, message}};
 }
 
-/**
- * @param {string} url
- * @return {!Promise<string>}
- */
-const loadXHR = url => {
+const loadXHR = (url: string): Promise<string> => {
   return new Promise((successCallback, failureCallback) => {
-    function onReadyStateChanged() {
+    function onReadyStateChanged(): void {
       if (xhr.readyState !== XMLHttpRequest.DONE) {
         return;
       }
@@ -256,13 +234,16 @@ const loadXHR = url => {
   });
 };
 
-/**
- * @param {string} url
- * @param {?Object.<string, string>} headers
- * @param {!Common.StringOutputStream.OutputStream} stream
- * @param {function(boolean, !Object.<string, string>, !LoadErrorDescription):void=} callback
- */
-export const loadAsStream = function(url, headers, stream, callback) {
+export const loadAsStream = function(
+    url: string, headers: {
+      [x: string]: string,
+    }|null,
+    stream: Common.StringOutputStream.OutputStream,
+    callback?:
+        ((arg0: boolean, arg1: {
+           [x: string]: string,
+         },
+          arg2: LoadErrorDescription) => void)): void {
   const streamId = _bindOutputStream(stream);
   const parsedURL = new Common.ParsedURL.ParsedURL(url);
   if (parsedURL.isDataURL()) {
@@ -278,10 +259,7 @@ export const loadAsStream = function(url, headers, stream, callback) {
   }
   InspectorFrontendHostInstance.loadNetworkResource(url, rawHeaders.join('\r\n'), streamId, finishedCallback);
 
-  /**
-   * @param {!LoadNetworkResourceResult} response
-   */
-  function finishedCallback(response) {
+  function finishedCallback(response: LoadNetworkResourceResult): void {
     if (callback) {
       const {success, description} = createErrorMessageFromResponse(response);
       callback(success, response.headers || {}, description);
@@ -289,21 +267,13 @@ export const loadAsStream = function(url, headers, stream, callback) {
     _discardOutputStream(streamId);
   }
 
-  /**
-   * @param {string} text
-   */
-  function dataURLDecodeSuccessful(text) {
+  function dataURLDecodeSuccessful(text: string): void {
     streamWrite(streamId, text);
-    finishedCallback(/** @type {!LoadNetworkResourceResult} */ ({statusCode: 200}));
+    finishedCallback(({statusCode: 200} as LoadNetworkResourceResult));
   }
 
-  /**
-   * @param {*} xhrStatus
-   */
-  function dataURLDecodeFailed(xhrStatus) {
-    /** @type {string} */
-    const messageOverride = i18nString(UIStrings.decodingDataUrlFailed);
-    finishedCallback(
-        /** @type {!LoadNetworkResourceResult} */ ({statusCode: 404, messageOverride}));
+  function dataURLDecodeFailed(_xhrStatus: Error): void {
+    const messageOverride: string = i18nString(UIStrings.decodingDataUrlFailed);
+    finishedCallback(({statusCode: 404, messageOverride} as LoadNetworkResourceResult));
   }
 };

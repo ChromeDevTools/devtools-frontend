@@ -28,22 +28,24 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Common from '../common/common.js';
 
 import {InspectorFrontendHostInstance} from './InspectorFrontendHost.js';
 import {EnumeratedHistogram} from './InspectorFrontendHostAPI.js';
 
 export class UserMetrics {
+  _panelChangedSinceLaunch: boolean;
+  _firedLaunchHistogram: boolean;
+  _launchPanelName: string;
   constructor() {
     this._panelChangedSinceLaunch = false;
     this._firedLaunchHistogram = false;
     this._launchPanelName = '';
   }
 
-  /**
-   * @param {string} contrastThreshold
-   */
-  colorFixed(contrastThreshold) {
+  colorFixed(contrastThreshold: string): void {
     const code = ContrastThresholds[contrastThreshold];
     if (code === undefined) {
       console.warn(`Unknown contrast threshold: ${contrastThreshold}`);
@@ -54,10 +56,7 @@ export class UserMetrics {
     Common.EventTarget.fireEvent(EnumeratedHistogram.ColorPickerFixedColor, {value: code});
   }
 
-  /**
-   * @param {string} panelName
-   */
-  panelShown(panelName) {
+  panelShown(panelName: string): void {
     const code = PanelCodes[panelName] || 0;
     const size = Object.keys(PanelCodes).length + 1;
     InspectorFrontendHostInstance.recordEnumeratedHistogram(EnumeratedHistogram.PanelShown, code, size);
@@ -68,9 +67,8 @@ export class UserMetrics {
 
   /**
    * Fired when a panel is closed (regardless if it exists in the main panel or the drawer)
-   * @param {string} panelName
    */
-  panelClosed(panelName) {
+  panelClosed(panelName: string): void {
     const code = PanelCodes[panelName] || 0;
     const size = Object.keys(PanelCodes).length + 1;
     InspectorFrontendHostInstance.recordEnumeratedHistogram(EnumeratedHistogram.PanelClosed, code, size);
@@ -79,37 +77,24 @@ export class UserMetrics {
     this._panelChangedSinceLaunch = true;
   }
 
-  /**
-   * @param {string} sidebarPaneName
-   */
-  sidebarPaneShown(sidebarPaneName) {
+  sidebarPaneShown(sidebarPaneName: string): void {
     const code = SidebarPaneCodes[sidebarPaneName] || 0;
     const size = Object.keys(SidebarPaneCodes).length + 1;
     InspectorFrontendHostInstance.recordEnumeratedHistogram(EnumeratedHistogram.SidebarPaneShown, code, size);
     Common.EventTarget.fireEvent(EnumeratedHistogram.SidebarPaneShown, {value: code});
   }
 
-  /**
-   * @param {string} settingsViewId
-   */
-  settingsPanelShown(settingsViewId) {
+  settingsPanelShown(settingsViewId: string): void {
     this.panelShown('settings-' + settingsViewId);
   }
 
-  /**
-   * @param {!Action} action
-   */
-  actionTaken(action) {
+  actionTaken(action: Action): void {
     const size = Object.keys(Action).length + 1;
     InspectorFrontendHostInstance.recordEnumeratedHistogram(EnumeratedHistogram.ActionTaken, action, size);
     Common.EventTarget.fireEvent(EnumeratedHistogram.ActionTaken, {value: action});
   }
 
-  /**
-   * @param {string} panelName
-   * @param {string} histogramName
-   */
-  panelLoaded(panelName, histogramName) {
+  panelLoaded(panelName: string, histogramName: string): void {
     if (this._firedLaunchHistogram || panelName !== this._launchPanelName) {
       return;
     }
@@ -134,49 +119,32 @@ export class UserMetrics {
     });
   }
 
-  /**
-   * @param {?string} panelName
-   */
-  setLaunchPanel(panelName) {
-    // Store the panel name that we should use for the launch histogram.
-    // Other calls to panelLoaded will be ignored if the name does not match the one set here.
-    this._launchPanelName = /** @type {string} */ (panelName);
+  setLaunchPanel(panelName: string|null): void {
+    this._launchPanelName = (panelName as string);
   }
 
-  /**
-   * @param {string} keybindSet
-   */
-  keybindSetSettingChanged(keybindSet) {
+  keybindSetSettingChanged(keybindSet: string): void {
     const size = Object.keys(KeybindSetSettings).length + 1;
     const value = KeybindSetSettings[keybindSet] || 0;
     InspectorFrontendHostInstance.recordEnumeratedHistogram(EnumeratedHistogram.KeybindSetSettingChanged, value, size);
     Common.EventTarget.fireEvent(EnumeratedHistogram.KeybindSetSettingChanged, {value});
   }
 
-  /**
-   * @param {string} actionId
-   */
-  keyboardShortcutFired(actionId) {
+  keyboardShortcutFired(actionId: string): void {
     const size = Object.keys(KeyboardShortcutAction).length + 1;
     const action = KeyboardShortcutAction[actionId] || KeyboardShortcutAction.OtherShortcut;
     InspectorFrontendHostInstance.recordEnumeratedHistogram(EnumeratedHistogram.KeyboardShortcutFired, action, size);
     Common.EventTarget.fireEvent(EnumeratedHistogram.KeyboardShortcutFired, {value: action});
   }
 
-  /**
-   * @param {!IssueOpener} issueOpener
-   */
-  issuesPanelOpenedFrom(issueOpener) {
+  issuesPanelOpenedFrom(issueOpener: IssueOpener): void {
     const size = Object.keys(IssueOpener).length + 1;
     InspectorFrontendHostInstance.recordEnumeratedHistogram(
         EnumeratedHistogram.IssuesPanelOpenedFrom, issueOpener, size);
     Common.EventTarget.fireEvent(EnumeratedHistogram.IssuesPanelOpenedFrom, {value: issueOpener});
   }
 
-  /**
-   * @param {string | undefined} issueExpandedCategory
-   */
-  issuesPanelIssueExpanded(issueExpandedCategory) {
+  issuesPanelIssueExpanded(issueExpandedCategory: string|undefined): void {
     if (issueExpandedCategory === undefined) {
       return;
     }
@@ -193,11 +161,7 @@ export class UserMetrics {
     Common.EventTarget.fireEvent(EnumeratedHistogram.IssuesPanelIssueExpanded, {value: issueExpanded});
   }
 
-  /**
-   * @param {symbol} issueCategory
-   * @param {string} type
-   */
-  issuesPanelResourceOpened(issueCategory, type) {
+  issuesPanelResourceOpened(issueCategory: symbol, type: string): void {
     const size = Object.keys(IssueResourceOpened).length + 1;
     const key = issueCategory.description + type;
     const value = IssueResourceOpened[key];
@@ -210,10 +174,7 @@ export class UserMetrics {
     Common.EventTarget.fireEvent(EnumeratedHistogram.IssuesPanelResourceOpened, {value});
   }
 
-  /**
-   * @param {string} code
-   */
-  issueCreated(code) {
+  issueCreated(code: string): void {
     const size = Object.keys(IssueCreated).length + 1;
     const issueCreated = IssueCreated[code];
     if (issueCreated === undefined) {
@@ -223,20 +184,14 @@ export class UserMetrics {
     Common.EventTarget.fireEvent(EnumeratedHistogram.IssueCreated, {value: issueCreated});
   }
 
-  /**
-   * @param {!DualScreenDeviceEmulated} emulationAction
-   */
-  dualScreenDeviceEmulated(emulationAction) {
+  dualScreenDeviceEmulated(emulationAction: DualScreenDeviceEmulated): void {
     const size = Object.keys(DualScreenDeviceEmulated).length + 1;
     InspectorFrontendHostInstance.recordEnumeratedHistogram(
         EnumeratedHistogram.DualScreenDeviceEmulated, emulationAction, size);
     Common.EventTarget.fireEvent(EnumeratedHistogram.DualScreenDeviceEmulated, {value: emulationAction});
   }
 
-  /**
-   * @param {string} editorName
-   */
-  cssEditorOpened(editorName) {
+  cssEditorOpened(editorName: string): void {
     const size = Object.keys(CssEditorOpened).length + 1;
     const key = editorName;
     const value = CssEditorOpened[key];
@@ -249,10 +204,7 @@ export class UserMetrics {
     Common.EventTarget.fireEvent(EnumeratedHistogram.CssEditorOpened, {value});
   }
 
-  /**
-   * @param {string} experimentId
-   */
-  experimentEnabledAtLaunch(experimentId) {
+  experimentEnabledAtLaunch(experimentId: string): void {
     const size = DevtoolsExperiments['__lastValidEnumPosition'] + 1;
     const experiment = DevtoolsExperiments[experimentId];
     if (experiment === undefined) {
@@ -263,11 +215,7 @@ export class UserMetrics {
     Common.EventTarget.fireEvent(EnumeratedHistogram.ExperimentEnabledAtLaunch, {value: experiment});
   }
 
-  /**
-   * @param {string} experimentId
-   * @param {boolean} isEnabled
-   */
-  experimentChanged(experimentId, isEnabled) {
+  experimentChanged(experimentId: string, isEnabled: boolean): void {
     const size = DevtoolsExperiments['__lastValidEnumPosition'] + 1;
     const experiment = DevtoolsExperiments[experimentId];
     if (experiment === undefined) {
@@ -278,10 +226,7 @@ export class UserMetrics {
     Common.EventTarget.fireEvent(actionName, {value: experiment});
   }
 
-  /**
-   * @param {!DeveloperResourceLoaded} developerResourceLoaded
-   */
-  developerResourceLoaded(developerResourceLoaded) {
+  developerResourceLoaded(developerResourceLoaded: DeveloperResourceLoaded): void {
     const size = Object.keys(DeveloperResourceLoaded).length + 1;
     if (developerResourceLoaded >= size) {
       return;
@@ -291,10 +236,7 @@ export class UserMetrics {
     Common.EventTarget.fireEvent(EnumeratedHistogram.DeveloperResourceLoaded, {value: developerResourceLoaded});
   }
 
-  /**
-   * @param {!DeveloperResourceScheme} developerResourceScheme
-   */
-  developerResourceScheme(developerResourceScheme) {
+  developerResourceScheme(developerResourceScheme: DeveloperResourceScheme): void {
     const size = Object.keys(DeveloperResourceScheme).length + 1;
     if (developerResourceScheme >= size) {
       return;
@@ -309,71 +251,75 @@ export class UserMetrics {
 // Do not change the values below, additional actions are needed on the Chromium side
 // in order to add more codes.
 
-/** @enum {number} */
-export const Action = {
-  WindowDocked: 1,
-  WindowUndocked: 2,
-  ScriptsBreakpointSet: 3,
-  TimelineStarted: 4,
-  ProfilesCPUProfileTaken: 5,
-  ProfilesHeapProfileTaken: 6,
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum Action {
+  WindowDocked = 1,
+  WindowUndocked = 2,
+  ScriptsBreakpointSet = 3,
+  TimelineStarted = 4,
+  ProfilesCPUProfileTaken = 5,
+  ProfilesHeapProfileTaken = 6,
   // Keep key around because length of object is important. See Host.UserMetrics.actionTaken.
-  'LegacyAuditsStarted-deprecated': 7,
-  ConsoleEvaluated: 8,
-  FileSavedInWorkspace: 9,
-  DeviceModeEnabled: 10,
-  AnimationsPlaybackRateChanged: 11,
-  RevisionApplied: 12,
-  FileSystemDirectoryContentReceived: 13,
-  StyleRuleEdited: 14,
-  CommandEvaluatedInConsolePanel: 15,
-  DOMPropertiesExpanded: 16,
-  ResizedViewInResponsiveMode: 17,
-  TimelinePageReloadStarted: 18,
-  ConnectToNodeJSFromFrontend: 19,
-  ConnectToNodeJSDirectly: 20,
-  CpuThrottlingEnabled: 21,
-  CpuProfileNodeFocused: 22,
-  CpuProfileNodeExcluded: 23,
-  SelectFileFromFilePicker: 24,
-  SelectCommandFromCommandMenu: 25,
-  ChangeInspectedNodeInElementsPanel: 26,
-  StyleRuleCopied: 27,
-  CoverageStarted: 28,
-  LighthouseStarted: 29,
-  LighthouseFinished: 30,
-  ShowedThirdPartyBadges: 31,
-  LighthouseViewTrace: 32,
-  FilmStripStartedRecording: 33,
-  CoverageReportFiltered: 34,
-  CoverageStartedPerBlock: 35,
-  'SettingsOpenedFromGear-deprecated': 36,
-  'SettingsOpenedFromMenu-deprecated': 37,
-  'SettingsOpenedFromCommandMenu-deprecated': 38,
-  TabMovedToDrawer: 39,
-  TabMovedToMainPanel: 40,
-  CaptureCssOverviewClicked: 41,
-  VirtualAuthenticatorEnvironmentEnabled: 42,
-  SourceOrderViewActivated: 43,
-  UserShortcutAdded: 44,
-  ShortcutRemoved: 45,
-  ShortcutModified: 46,
-  CustomPropertyLinkClicked: 47,
-  CustomPropertyEdited: 48,
-  ServiceWorkerNetworkRequestClicked: 49,
-  ServiceWorkerNetworkRequestClosedQuickly: 50,
-  NetworkPanelServiceWorkerRespondWith: 51,
-  NetworkPanelCopyValue: 52,
-};
+  'LegacyAuditsStarted-deprecated' = 7,
+  ConsoleEvaluated = 8,
+  FileSavedInWorkspace = 9,
+  DeviceModeEnabled = 10,
+  AnimationsPlaybackRateChanged = 11,
+  RevisionApplied = 12,
+  FileSystemDirectoryContentReceived = 13,
+  StyleRuleEdited = 14,
+  CommandEvaluatedInConsolePanel = 15,
+  DOMPropertiesExpanded = 16,
+  ResizedViewInResponsiveMode = 17,
+  TimelinePageReloadStarted = 18,
+  ConnectToNodeJSFromFrontend = 19,
+  ConnectToNodeJSDirectly = 20,
+  CpuThrottlingEnabled = 21,
+  CpuProfileNodeFocused = 22,
+  CpuProfileNodeExcluded = 23,
+  SelectFileFromFilePicker = 24,
+  SelectCommandFromCommandMenu = 25,
+  ChangeInspectedNodeInElementsPanel = 26,
+  StyleRuleCopied = 27,
+  CoverageStarted = 28,
+  LighthouseStarted = 29,
+  LighthouseFinished = 30,
+  ShowedThirdPartyBadges = 31,
+  LighthouseViewTrace = 32,
+  FilmStripStartedRecording = 33,
+  CoverageReportFiltered = 34,
+  CoverageStartedPerBlock = 35,
+  'SettingsOpenedFromGear-deprecated' = 36,
+  'SettingsOpenedFromMenu-deprecated' = 37,
+  'SettingsOpenedFromCommandMenu-deprecated' = 38,
+  TabMovedToDrawer = 39,
+  TabMovedToMainPanel = 40,
+  CaptureCssOverviewClicked = 41,
+  VirtualAuthenticatorEnvironmentEnabled = 42,
+  SourceOrderViewActivated = 43,
+  UserShortcutAdded = 44,
+  ShortcutRemoved = 45,
+  ShortcutModified = 46,
+  CustomPropertyLinkClicked = 47,
+  CustomPropertyEdited = 48,
+  ServiceWorkerNetworkRequestClicked = 49,
+  ServiceWorkerNetworkRequestClosedQuickly = 50,
+  NetworkPanelServiceWorkerRespondWith = 51,
+  NetworkPanelCopyValue = 52,
+}
 
-/** @type {!Object<string, number>} */
-export const ContrastThresholds = {
+
+export const ContrastThresholds: {
+  [x: string]: number,
+} = {
   aa: 0,
   aaa: 1,
 };
 
-/** @type {!Object<string, number>} */
-export const PanelCodes = {
+export const PanelCodes: {
+  [x: string]: number,
+} = {
   elements: 1,
   resources: 2,
   network: 3,
@@ -413,11 +359,12 @@ export const PanelCodes = {
   'settings-shortcuts': 36,
   'issues-pane': 37,
   'settings-keybinds': 38,
-  'cssoverview': 39
+  'cssoverview': 39,
 };
 
-/** @type {!Object<string, number>} */
-export const SidebarPaneCodes = {
+export const SidebarPaneCodes: {
+  [x: string]: number,
+} = {
   'OtherSidebarPane': 0,
   'Styles': 1,
   'Computed': 2,
@@ -428,14 +375,16 @@ export const SidebarPaneCodes = {
   'accessibility.view': 7,
 };
 
-/** @type {!Object<string, number>} */
-export const KeybindSetSettings = {
+export const KeybindSetSettings: {
+  [x: string]: number,
+} = {
   'devToolsDefault': 0,
   'vsCode': 1,
 };
 
-/** @type {!Object<string, number>} */
-export const KeyboardShortcutAction = {
+export const KeyboardShortcutAction: {
+  [x: string]: number,
+} = {
   OtherShortcut: 0,
   'commandMenu.show': 1,
   'console.clear': 2,
@@ -544,29 +493,33 @@ export const KeyboardShortcutAction = {
   'layers.right': 105,
 };
 
-/** @enum {number} */
-export const IssueOpener = {
-  ConsoleInfoBar: 0,
-  LearnMoreLinkCOEP: 1,
-  StatusBarIssuesCounter: 2,
-  HamburgerMenu: 3,
-  Adorner: 4,
-  CommandMenu: 5
-};
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum IssueOpener {
+  ConsoleInfoBar = 0,
+  LearnMoreLinkCOEP = 1,
+  StatusBarIssuesCounter = 2,
+  HamburgerMenu = 3,
+  Adorner = 4,
+  CommandMenu = 5,
+}
 
-/** @enum {number} */
-export const DualScreenDeviceEmulated = {
-  DualScreenDeviceSelected: 0,  // a dual screen or fold device is selected
-  SpanButtonClicked: 1,         // span button is clicked when emulating a dual screen/fold device
-  PlatformSupportUsed: 2        // user starts to use platform dual screen support feature.
-};
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum DualScreenDeviceEmulated {
+  DualScreenDeviceSelected = 0,
+  SpanButtonClicked = 1,
+  PlatformSupportUsed = 2,  // user starts to use platform dual screen support feature.
+}
 
-/** @type {!Object<string, number>} */
-export const CssEditorOpened = {
+
+export const CssEditorOpened: {
+  [x: string]: number,
+} = {
   'colorPicker': 0,
   'shadowEditor': 1,
   'bezierEditor': 2,
-  'fontEditor': 3
+  'fontEditor': 3,
 };
 
 /**
@@ -579,8 +532,9 @@ export const CssEditorOpened = {
  *    __lastValidEnumPosition + 1
  * When removing an experiment, simply delete the line from the enum.
  */
-/** @type {!Object<string, number>} */
-export const DevtoolsExperiments = {
+export const DevtoolsExperiments: {
+  [x: string]: number,
+} = {
   'applyCustomStylesheet': 0,
   'captureNodeCreationStacks': 1,
   'sourcesPrettyPrint': 2,
@@ -623,18 +577,20 @@ export const DevtoolsExperiments = {
   '__lastValidEnumPosition': 45,
 };
 
-/** @type {!Object<string, number>} */
-export const IssueExpanded = {
+export const IssueExpanded: {
+  [x: string]: number,
+} = {
   CrossOriginEmbedderPolicy: 0,
   MixedContent: 1,
   SameSiteCookie: 2,
   HeavyAd: 3,
   ContentSecurityPolicy: 4,
-  Other: 5
+  Other: 5,
 };
 
-/** @type {!Object<string, number>} */
-export const IssueResourceOpened = {
+export const IssueResourceOpened: {
+  [x: string]: number,
+} = {
   CrossOriginEmbedderPolicyRequest: 0,
   CrossOriginEmbedderPolicyElement: 1,
   MixedContentRequest: 2,
@@ -647,11 +603,12 @@ export const IssueResourceOpened = {
   MixedContentLearnMore: 9,
   SameSiteCookieLearnMore: 10,
   HeavyAdLearnMore: 11,
-  ContentSecurityPolicyLearnMore: 12
+  ContentSecurityPolicyLearnMore: 12,
 };
 
-/** @type {!Object<string, number>} */
-export const IssueCreated = {
+export const IssueCreated: {
+  [x: string]: number,
+} = {
   MixedContentIssue: 0,
   'ContentSecurityPolicyIssue::kInlineViolation': 1,
   'ContentSecurityPolicyIssue::kEvalViolation': 2,
@@ -694,30 +651,32 @@ export const IssueCreated = {
   'TrustedWebActivityIssue::kUnavailableOffline': 39,
   'TrustedWebActivityIssue::kDigitalAssetLinks': 40,
   LowTextContrastIssue: 41,
-  'CorsIssue::InsecurePrivateNetwork': 42
+  'CorsIssue::InsecurePrivateNetwork': 42,
 };
 
-/** @enum {number} */
-export const DeveloperResourceLoaded = {
-  LoadThroughPageViaTarget: 0,
-  LoadThroughPageViaFrame: 1,
-  LoadThroughPageFailure: 2,
-  LoadThroughPageFallback: 3,
-  FallbackAfterFailure: 4,
-  FallbackPerOverride: 5,
-  FallbackPerProtocol: 6,
-  FallbackFailure: 7,
-};
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum DeveloperResourceLoaded {
+  LoadThroughPageViaTarget = 0,
+  LoadThroughPageViaFrame = 1,
+  LoadThroughPageFailure = 2,
+  LoadThroughPageFallback = 3,
+  FallbackAfterFailure = 4,
+  FallbackPerOverride = 5,
+  FallbackPerProtocol = 6,
+  FallbackFailure = 7,
+}
 
-/** @enum {number} */
-export const DeveloperResourceScheme = {
-  SchemeOther: 0,
-  SchemeUnknown: 1,
-  SchemeHttp: 2,
-  SchemeHttps: 3,
-  SchemeHttpLocalhost: 4,
-  SchemeHttpsLocalhost: 5,
-  SchemeData: 6,
-  SchemeFile: 7,
-  SchemeBlob: 8,
-};
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum DeveloperResourceScheme {
+  SchemeOther = 0,
+  SchemeUnknown = 1,
+  SchemeHttp = 2,
+  SchemeHttps = 3,
+  SchemeHttpLocalhost = 4,
+  SchemeHttpsLocalhost = 5,
+  SchemeData = 6,
+  SchemeFile = 7,
+  SchemeBlob = 8,
+}

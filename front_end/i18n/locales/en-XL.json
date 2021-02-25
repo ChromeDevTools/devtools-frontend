@@ -2312,46 +2312,46 @@
   "help/ReleaseNoteView.ts | s": {
     "message": "{PH1}"
   },
-  "host/InspectorFrontendHost.js | devtoolsS": {
+  "host/InspectorFrontendHost.ts | devtoolsS": {
     "message": "D̂év̂T́ôól̂ś - {PH1}"
   },
-  "host/ResourceLoader.js | cacheError": {
+  "host/ResourceLoader.ts | cacheError": {
     "message": "Ĉáĉh́ê ér̂ŕôŕ"
   },
-  "host/ResourceLoader.js | certificateError": {
+  "host/ResourceLoader.ts | certificateError": {
     "message": "Ĉér̂t́îf́îćât́ê ér̂ŕôŕ"
   },
-  "host/ResourceLoader.js | certificateManagerError": {
+  "host/ResourceLoader.ts | certificateManagerError": {
     "message": "Ĉér̂t́îf́îćât́ê ḿâńâǵêŕ êŕr̂ór̂"
   },
-  "host/ResourceLoader.js | connectionError": {
+  "host/ResourceLoader.ts | connectionError": {
     "message": "Ĉón̂ńêćt̂íôń êŕr̂ór̂"
   },
-  "host/ResourceLoader.js | decodingDataUrlFailed": {
+  "host/ResourceLoader.ts | decodingDataUrlFailed": {
     "message": "D̂éĉód̂ín̂ǵ D̂át̂á ÛŔL̂ f́âíl̂éd̂"
   },
-  "host/ResourceLoader.js | dnsResolverError": {
+  "host/ResourceLoader.ts | dnsResolverError": {
     "message": "D̂ŃŜ ŕêśôĺv̂ér̂ ér̂ŕôŕ"
   },
-  "host/ResourceLoader.js | ftpError": {
+  "host/ResourceLoader.ts | ftpError": {
     "message": "F̂T́P̂ ér̂ŕôŕ"
   },
-  "host/ResourceLoader.js | httpError": {
+  "host/ResourceLoader.ts | httpError": {
     "message": "ĤT́T̂Ṕ êŕr̂ór̂"
   },
-  "host/ResourceLoader.js | httpErrorStatusCodeSS": {
+  "host/ResourceLoader.ts | httpErrorStatusCodeSS": {
     "message": "ĤT́T̂Ṕ êŕr̂ór̂: śt̂át̂úŝ ćôd́ê {PH1}, {PH2}"
   },
-  "host/ResourceLoader.js | invalidUrl": {
+  "host/ResourceLoader.ts | invalidUrl": {
     "message": "Îńv̂ál̂íd̂ ÚR̂Ĺ"
   },
-  "host/ResourceLoader.js | signedExchangeError": {
+  "host/ResourceLoader.ts | signedExchangeError": {
     "message": "Ŝíĝńêd́ Êx́ĉh́âńĝé êŕr̂ór̂"
   },
-  "host/ResourceLoader.js | systemError": {
+  "host/ResourceLoader.ts | systemError": {
     "message": "Ŝýŝt́êḿ êŕr̂ór̂"
   },
-  "host/ResourceLoader.js | unknownError": {
+  "host/ResourceLoader.ts | unknownError": {
     "message": "Ûńk̂ńôẃn̂ ér̂ŕôŕ"
   },
   "inline_editor/ColorSwatch.ts | shiftclickToChangeColorFormat": {

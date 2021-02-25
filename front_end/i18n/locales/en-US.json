@@ -2312,46 +2312,46 @@
   "help/ReleaseNoteView.ts | s": {
     "message": "{PH1}"
   },
-  "host/InspectorFrontendHost.js | devtoolsS": {
+  "host/InspectorFrontendHost.ts | devtoolsS": {
     "message": "DevTools - {PH1}"
   },
-  "host/ResourceLoader.js | cacheError": {
+  "host/ResourceLoader.ts | cacheError": {
     "message": "Cache error"
   },
-  "host/ResourceLoader.js | certificateError": {
+  "host/ResourceLoader.ts | certificateError": {
     "message": "Certificate error"
   },
-  "host/ResourceLoader.js | certificateManagerError": {
+  "host/ResourceLoader.ts | certificateManagerError": {
     "message": "Certificate manager error"
   },
-  "host/ResourceLoader.js | connectionError": {
+  "host/ResourceLoader.ts | connectionError": {
     "message": "Connection error"
   },
-  "host/ResourceLoader.js | decodingDataUrlFailed": {
+  "host/ResourceLoader.ts | decodingDataUrlFailed": {
     "message": "Decoding Data URL failed"
   },
-  "host/ResourceLoader.js | dnsResolverError": {
+  "host/ResourceLoader.ts | dnsResolverError": {
     "message": "DNS resolver error"
   },
-  "host/ResourceLoader.js | ftpError": {
+  "host/ResourceLoader.ts | ftpError": {
     "message": "FTP error"
   },
-  "host/ResourceLoader.js | httpError": {
+  "host/ResourceLoader.ts | httpError": {
     "message": "HTTP error"
   },
-  "host/ResourceLoader.js | httpErrorStatusCodeSS": {
+  "host/ResourceLoader.ts | httpErrorStatusCodeSS": {
     "message": "HTTP error: status code {PH1}, {PH2}"
   },
-  "host/ResourceLoader.js | invalidUrl": {
+  "host/ResourceLoader.ts | invalidUrl": {
     "message": "Invalid URL"
   },
-  "host/ResourceLoader.js | signedExchangeError": {
+  "host/ResourceLoader.ts | signedExchangeError": {
     "message": "Signed Exchange error"
   },
-  "host/ResourceLoader.js | systemError": {
+  "host/ResourceLoader.ts | systemError": {
     "message": "System error"
   },
-  "host/ResourceLoader.js | unknownError": {
+  "host/ResourceLoader.ts | unknownError": {
     "message": "Unknown error"
   },
   "inline_editor/ColorSwatch.ts | shiftclickToChangeColorFormat": {

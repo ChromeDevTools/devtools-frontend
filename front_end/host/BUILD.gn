@@ -7,11 +7,11 @@ import("../../scripts/build/ninja/devtools_module.gni")
 
 devtools_module("host") {
   sources = [
-    "InspectorFrontendHost.js",
-    "InspectorFrontendHostAPI.js",
-    "Platform.js",
-    "ResourceLoader.js",
-    "UserMetrics.js",
+    "InspectorFrontendHost.ts",
+    "InspectorFrontendHostAPI.ts",
+    "Platform.ts",
+    "ResourceLoader.ts",
+    "UserMetrics.ts",
   ]
 
   deps = [
@@ -22,13 +22,13 @@ devtools_module("host") {
 }
 
 devtools_entrypoint("bundle") {
-  entrypoint = "host.js"
+  entrypoint = "host.ts"
 
   deps = [ ":host" ]
 }
 
 devtools_entrypoint("legacy") {
-  entrypoint = "host-legacy.js"
+  entrypoint = "host-legacy.ts"
 
   deps = [ ":bundle" ]
 }

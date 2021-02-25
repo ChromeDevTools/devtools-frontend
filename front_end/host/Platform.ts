@@ -28,28 +28,23 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* eslint-disable rulesdir/no_underscored_properties */
+/* eslint-disable @typescript-eslint/naming-convention */
+
 import {InspectorFrontendHostInstance} from './InspectorFrontendHost.js';
 
-/** @type {string} */
-let _platform;
+let _platform: string;
 
-/**
- * @return {string}
- */
-export function platform() {
+export function platform(): string {
   if (!_platform) {
     _platform = InspectorFrontendHostInstance.platform();
   }
   return _platform;
 }
 
-/** @type {boolean} */
-let _isMac;
+let _isMac: boolean;
 
-/**
- * @return {boolean}
- */
-export function isMac() {
+export function isMac(): boolean {
   if (typeof _isMac === 'undefined') {
     _isMac = platform() === 'mac';
   }
@@ -57,13 +52,9 @@ export function isMac() {
   return _isMac;
 }
 
-/** @type {boolean} */
-let _isWin;
+let _isWin: boolean;
 
-/**
- * @return {boolean}
- */
-export function isWin() {
+export function isWin(): boolean {
   if (typeof _isWin === 'undefined') {
     _isWin = platform() === 'windows';
   }
@@ -71,26 +62,18 @@ export function isWin() {
   return _isWin;
 }
 
-/** @type {boolean} */
-let _isCustomDevtoolsFrontend;
+let _isCustomDevtoolsFrontend: boolean;
 
-/**
- * @return {boolean}
- */
-export function isCustomDevtoolsFrontend() {
+export function isCustomDevtoolsFrontend(): boolean {
   if (typeof _isCustomDevtoolsFrontend === 'undefined') {
     _isCustomDevtoolsFrontend = window.location.toString().startsWith('devtools://devtools/custom/');
   }
   return _isCustomDevtoolsFrontend;
 }
 
-/** @type {string} */
-let _fontFamily;
+let _fontFamily: string;
 
-/**
- * @return {string}
- */
-export function fontFamily() {
+export function fontFamily(): string {
   if (_fontFamily) {
     return _fontFamily;
   }

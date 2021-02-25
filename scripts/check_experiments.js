@@ -85,7 +85,7 @@ function isExperimentEnumDeclaration(node) {
 }
 
 /**
- * Gets list of experiments registered in UserMetrics.js
+ * Gets list of experiments registered in UserMetrics.ts
  */
 function getUserMetricExperimentList(userMetricsFile) {
   const userMetricsAST = espree.parse(userMetricsFile, {ecmaVersion: 11, sourceType: 'module', range: true});
@@ -129,7 +129,7 @@ function compareExperimentLists(mainImplList, userMetricsList) {
     console.log('Devtools Experiments have been added without corresponding histogram update!');
     console.log(missingTelemetry.join('\n'));
     console.log(
-        'Please ensure that the DevtoolsExperiments enum in UserMetrics.js is updated with the new experiment.');
+        'Please ensure that the DevtoolsExperiments enum in UserMetrics.ts is updated with the new experiment.');
     console.log(
         'Please ensure that a corresponding CL is openend against chromium.src/tools/metrics/histograms/enums.xml to update the DevtoolsExperiments enum');
     errorFound = true;
@@ -138,7 +138,7 @@ function compareExperimentLists(mainImplList, userMetricsList) {
     console.log('Devtools Experiments that are no longer registered are still listed in the telemetry enum!');
     console.log(staleTelemetry.join('\n'));
     console.log(
-        'Please ensure that the DevtoolsExperiments enum in UserMetrics.js is updated to remove these stale experiments.');
+        'Please ensure that the DevtoolsExperiments enum in UserMetrics.ts is updated to remove these stale experiments.');
     errorFound = true;
   }
   if (errorFound) {
@@ -151,7 +151,7 @@ function main() {
   const mainImplPath = path.resolve(__dirname, '..', 'front_end', 'main', 'MainImpl.js');
   const mainImplFile = fs.readFileSync(mainImplPath, 'utf-8');
 
-  const userMetricsPath = path.resolve(__dirname, '..', 'front_end', 'host', 'UserMetrics.js');
+  const userMetricsPath = path.resolve(__dirname, '..', 'front_end', 'host', 'UserMetrics.ts');
   const userMetricsFile = fs.readFileSync(userMetricsPath, 'utf-8');
 
   compareExperimentLists(getMainImplExperimentList(mainImplFile), getUserMetricExperimentList(userMetricsFile));

@@ -1538,145 +1538,145 @@
   "css_overview/css_overview-meta.ts | showCssOverview": {
     "message": "Show CSS Overview"
   },
-  "css_overview/CSSOverviewCompletedView.js | aa": {
+  "css_overview/CSSOverviewCompletedView.ts | aa": {
     "message": "AA"
   },
-  "css_overview/CSSOverviewCompletedView.js | aaa": {
+  "css_overview/CSSOverviewCompletedView.ts | aaa": {
     "message": "AAA"
   },
-  "css_overview/CSSOverviewCompletedView.js | apca": {
+  "css_overview/CSSOverviewCompletedView.ts | apca": {
     "message": "APCA"
   },
-  "css_overview/CSSOverviewCompletedView.js | attributeSelectors": {
+  "css_overview/CSSOverviewCompletedView.ts | attributeSelectors": {
     "message": "Attribute selectors"
   },
-  "css_overview/CSSOverviewCompletedView.js | backgroundColorsS": {
+  "css_overview/CSSOverviewCompletedView.ts | backgroundColorsS": {
     "message": "Background colors: {PH1}"
   },
-  "css_overview/CSSOverviewCompletedView.js | borderColorsS": {
+  "css_overview/CSSOverviewCompletedView.ts | borderColorsS": {
     "message": "Border colors: {PH1}"
   },
-  "css_overview/CSSOverviewCompletedView.js | classSelectors": {
+  "css_overview/CSSOverviewCompletedView.ts | classSelectors": {
     "message": "Class selectors"
   },
-  "css_overview/CSSOverviewCompletedView.js | colors": {
+  "css_overview/CSSOverviewCompletedView.ts | colors": {
     "message": "Colors"
   },
-  "css_overview/CSSOverviewCompletedView.js | contrastIssues": {
+  "css_overview/CSSOverviewCompletedView.ts | contrastIssues": {
     "message": "Contrast issues"
   },
-  "css_overview/CSSOverviewCompletedView.js | contrastIssuesS": {
+  "css_overview/CSSOverviewCompletedView.ts | contrastIssuesS": {
     "message": "Contrast issues: {PH1}"
   },
-  "css_overview/CSSOverviewCompletedView.js | contrastRatio": {
+  "css_overview/CSSOverviewCompletedView.ts | contrastRatio": {
     "message": "Contrast ratio"
   },
-  "css_overview/CSSOverviewCompletedView.js | cssOverviewElements": {
+  "css_overview/CSSOverviewCompletedView.ts | cssOverviewElements": {
     "message": "CSS Overview Elements"
   },
-  "css_overview/CSSOverviewCompletedView.js | declaration": {
+  "css_overview/CSSOverviewCompletedView.ts | declaration": {
     "message": "Declaration"
   },
-  "css_overview/CSSOverviewCompletedView.js | element": {
+  "css_overview/CSSOverviewCompletedView.ts | element": {
     "message": "Element"
   },
-  "css_overview/CSSOverviewCompletedView.js | elements": {
+  "css_overview/CSSOverviewCompletedView.ts | elements": {
     "message": "Elements"
   },
-  "css_overview/CSSOverviewCompletedView.js | externalStylesheets": {
+  "css_overview/CSSOverviewCompletedView.ts | externalStylesheets": {
     "message": "External stylesheets"
   },
-  "css_overview/CSSOverviewCompletedView.js | fillColorsS": {
+  "css_overview/CSSOverviewCompletedView.ts | fillColorsS": {
     "message": "Fill colors: {PH1}"
   },
-  "css_overview/CSSOverviewCompletedView.js | fontInfo": {
+  "css_overview/CSSOverviewCompletedView.ts | fontInfo": {
     "message": "Font info"
   },
-  "css_overview/CSSOverviewCompletedView.js | idSelectors": {
+  "css_overview/CSSOverviewCompletedView.ts | idSelectors": {
     "message": "ID selectors"
   },
-  "css_overview/CSSOverviewCompletedView.js | inlineStyleElements": {
+  "css_overview/CSSOverviewCompletedView.ts | inlineStyleElements": {
     "message": "Inline style elements"
   },
-  "css_overview/CSSOverviewCompletedView.js | mediaQueries": {
+  "css_overview/CSSOverviewCompletedView.ts | mediaQueries": {
     "message": "Media queries"
   },
-  "css_overview/CSSOverviewCompletedView.js | nOccurrences": {
+  "css_overview/CSSOverviewCompletedView.ts | nOccurrences": {
     "message": "{count} occurrences"
   },
-  "css_overview/CSSOverviewCompletedView.js | nonsimpleSelectors": {
+  "css_overview/CSSOverviewCompletedView.ts | nonsimpleSelectors": {
     "message": "Non-simple selectors"
   },
-  "css_overview/CSSOverviewCompletedView.js | oneOccurrence": {
+  "css_overview/CSSOverviewCompletedView.ts | oneOccurrence": {
     "message": "1 occurrence"
   },
-  "css_overview/CSSOverviewCompletedView.js | overviewSummary": {
+  "css_overview/CSSOverviewCompletedView.ts | overviewSummary": {
     "message": "Overview summary"
   },
-  "css_overview/CSSOverviewCompletedView.js | showElement": {
+  "css_overview/CSSOverviewCompletedView.ts | showElement": {
     "message": "Show element"
   },
-  "css_overview/CSSOverviewCompletedView.js | source": {
+  "css_overview/CSSOverviewCompletedView.ts | source": {
     "message": "Source"
   },
-  "css_overview/CSSOverviewCompletedView.js | styleRules": {
+  "css_overview/CSSOverviewCompletedView.ts | styleRules": {
     "message": "Style rules"
   },
-  "css_overview/CSSOverviewCompletedView.js | textColorSOverSBackgroundResults": {
+  "css_overview/CSSOverviewCompletedView.ts | textColorSOverSBackgroundResults": {
     "message": "Text color {PH1} over {PH2} background results in low contrast for {PH3} elements"
   },
-  "css_overview/CSSOverviewCompletedView.js | textColorsS": {
+  "css_overview/CSSOverviewCompletedView.ts | textColorsS": {
     "message": "Text colors: {PH1}"
   },
-  "css_overview/CSSOverviewCompletedView.js | thereAreNoFonts": {
+  "css_overview/CSSOverviewCompletedView.ts | thereAreNoFonts": {
     "message": "There are no fonts."
   },
-  "css_overview/CSSOverviewCompletedView.js | thereAreNoMediaQueries": {
+  "css_overview/CSSOverviewCompletedView.ts | thereAreNoMediaQueries": {
     "message": "There are no media queries."
   },
-  "css_overview/CSSOverviewCompletedView.js | thereAreNoUnusedDeclarations": {
+  "css_overview/CSSOverviewCompletedView.ts | thereAreNoUnusedDeclarations": {
     "message": "There are no unused declarations."
   },
-  "css_overview/CSSOverviewCompletedView.js | typeSelectors": {
+  "css_overview/CSSOverviewCompletedView.ts | typeSelectors": {
     "message": "Type selectors"
   },
-  "css_overview/CSSOverviewCompletedView.js | universalSelectors": {
+  "css_overview/CSSOverviewCompletedView.ts | universalSelectors": {
     "message": "Universal selectors"
   },
-  "css_overview/CSSOverviewCompletedView.js | unusedDeclarations": {
+  "css_overview/CSSOverviewCompletedView.ts | unusedDeclarations": {
     "message": "Unused declarations"
   },
-  "css_overview/CSSOverviewProcessingView.js | cancel": {
+  "css_overview/CSSOverviewProcessingView.ts | cancel": {
     "message": "Cancel"
   },
-  "css_overview/CSSOverviewSidebarPanel.js | clearOverview": {
+  "css_overview/CSSOverviewSidebarPanel.ts | clearOverview": {
     "message": "Clear overview"
   },
-  "css_overview/CSSOverviewStartView.js | captureOverview": {
+  "css_overview/CSSOverviewStartView.ts | captureOverview": {
     "message": "Capture overview"
   },
-  "css_overview/CSSOverviewStartView.js | cssOverview": {
+  "css_overview/CSSOverviewStartView.ts | cssOverview": {
     "message": "CSS Overview"
   },
-  "css_overview/CSSOverviewUnusedDeclarations.js | bottomAppliedToAStatically": {
+  "css_overview/CSSOverviewUnusedDeclarations.ts | bottomAppliedToAStatically": {
     "message": "Bottom applied to a statically positioned element"
   },
-  "css_overview/CSSOverviewUnusedDeclarations.js | heightAppliedToAnInlineElement": {
+  "css_overview/CSSOverviewUnusedDeclarations.ts | heightAppliedToAnInlineElement": {
     "message": "Height applied to an inline element"
   },
-  "css_overview/CSSOverviewUnusedDeclarations.js | leftAppliedToAStatically": {
+  "css_overview/CSSOverviewUnusedDeclarations.ts | leftAppliedToAStatically": {
     "message": "Left applied to a statically positioned element"
   },
-  "css_overview/CSSOverviewUnusedDeclarations.js | rightAppliedToAStatically": {
+  "css_overview/CSSOverviewUnusedDeclarations.ts | rightAppliedToAStatically": {
     "message": "Right applied to a statically positioned element"
   },
-  "css_overview/CSSOverviewUnusedDeclarations.js | topAppliedToAStatically": {
+  "css_overview/CSSOverviewUnusedDeclarations.ts | topAppliedToAStatically": {
     "message": "Top applied to a statically positioned element"
   },
-  "css_overview/CSSOverviewUnusedDeclarations.js | verticalAlignmentAppliedTo": {
+  "css_overview/CSSOverviewUnusedDeclarations.ts | verticalAlignmentAppliedTo": {
     "message": "Vertical alignment applied to element which is neither inline nor table-cell"
   },
-  "css_overview/CSSOverviewUnusedDeclarations.js | widthAppliedToAnInlineElement": {
+  "css_overview/CSSOverviewUnusedDeclarations.ts | widthAppliedToAnInlineElement": {
     "message": "Width applied to an inline element"
   },
   "data_grid/DataGrid.ts | addNew": {

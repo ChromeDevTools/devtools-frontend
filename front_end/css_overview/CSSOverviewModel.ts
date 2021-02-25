@@ -2,18 +2,53 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as ColorPicker from '../color_picker/color_picker.js';
 import * as Common from '../common/common.js';
 import * as Root from '../root/root.js';
 import * as SDK from '../sdk/sdk.js';
 
-import {CSSOverviewUnusedDeclarations} from './CSSOverviewUnusedDeclarations.js';
+import {ContrastIssue} from './CSSOverviewCompletedView.js';
+import {CSSOverviewUnusedDeclarations, UnusedDeclaration} from './CSSOverviewUnusedDeclarations.js';
+
+interface NodeStyleStats {
+  elementCount: number;
+  backgroundColors: Map<string, Set<number>>;
+  textColors: Map<string, Set<number>>;
+  textColorContrastIssues: Map<string, ContrastIssue[]>;
+  fillColors: Map<string, Set<number>>;
+  borderColors: Map<string, Set<number>>;
+  fontInfo: Map<string, Map<string, Map<string, number[]>>>;
+  unusedDeclarations: Map<string, UnusedDeclaration[]>;
+}
+
+export interface GlobalStyleStats {
+  styleRules: number;
+  inlineStyles: number;
+  externalSheets: number;
+  stats: {
+    // Simple.
+    type: number,
+    class: number,
+    id: number,
+    universal: number,
+    attribute: number,
+
+    // Non-simple.
+    nonSimple: number,
+  };
+}
+
 
 export class CSSOverviewModel extends SDK.SDKModel.SDKModel {
-  /**
-   * @param {!SDK.SDKModel.Target} target
-   */
-  constructor(target) {
+  _runtimeAgent: ProtocolProxyApi.RuntimeApi;
+  _cssAgent: ProtocolProxyApi.CSSApi;
+  _domAgent: ProtocolProxyApi.DOMApi;
+  _domSnapshotAgent: ProtocolProxyApi.DOMSnapshotApi;
+  _overlayAgent: ProtocolProxyApi.OverlayApi;
+
+  constructor(target: SDK.SDKModel.Target) {
     super(target);
 
     this._runtimeAgent = target.runtimeAgent();
@@ -23,10 +58,7 @@ export class CSSOverviewModel extends SDK.SDKModel.SDKModel {
     this._overlayAgent = target.overlayAgent();
   }
 
-  /**
-   * @param {number} node
-   */
-  highlightNode(node) {
+  highlightNode(node: number): void {
     const highlightConfig = {
       contentColor: Common.Color.PageHighlight.Content.toProtocolRGBA(),
       showInfo: true,
@@ -38,7 +70,7 @@ export class CSSOverviewModel extends SDK.SDKModel.SDKModel {
     this._overlayAgent.invoke_highlightNode({backendNodeId: node, highlightConfig});
   }
 
-  async getNodeStyleStats() {
+  async getNodeStyleStats(): Promise<NodeStyleStats> {
     const backgroundColors = new Map();
     const textColors = new Map();
     const textColorContrastIssues = new Map();
@@ -71,24 +103,15 @@ export class CSSOverviewModel extends SDK.SDKModel.SDKModel {
         'display',
         'width',
         'height',
-        'vertical-align'
-      ]
+        'vertical-align',
+      ],
     };
 
-    /**
-     * @param {!Common.Color.Color} color
-     */
-    const formatColor = color => {
+    const formatColor = (color: Common.Color.Color): string|null => {
       return color.hasAlpha() ? color.asString(Common.Color.Format.HEXA) : color.asString(Common.Color.Format.HEX);
     };
 
-    /**
-     * @param {number} id
-     * @param {number} nodeId
-     * @param {!Map<string, !Set<number>>} target
-     * @return {!Common.Color.Color|undefined}
-     */
-    const storeColor = (id, nodeId, target) => {
+    const storeColor = (id: number, nodeId: number, target: Map<string, Set<number>>): Common.Color.Color|undefined => {
       if (id === -1) {
         return;
       }
@@ -120,30 +143,30 @@ export class CSSOverviewModel extends SDK.SDKModel.SDKModel {
       return color;
     };
 
-    /**
-     * @param {string} nodeName
-     */
-    const isSVGNode = nodeName => {
+    const isSVGNode = (nodeName: string): boolean => {
       const validNodes = new Set([
-        'altglyph', 'circle', 'ellipse', 'path', 'polygon', 'polyline', 'rect', 'svg', 'text', 'textpath', 'tref',
-        'tspan'
+        'altglyph',
+        'circle',
+        'ellipse',
+        'path',
+        'polygon',
+        'polyline',
+        'rect',
+        'svg',
+        'text',
+        'textpath',
+        'tref',
+        'tspan',
       ]);
       return validNodes.has(nodeName.toLowerCase());
     };
 
-    /**
-     * @param {string} nodeName
-     */
-    const isReplacedContent = nodeName => {
+    const isReplacedContent = (nodeName: string): boolean => {
       const validNodes = new Set(['iframe', 'video', 'embed', 'img']);
       return validNodes.has(nodeName.toLowerCase());
     };
 
-    /**
-     * @param {string} nodeName
-     * @param {string} display
-     */
-    const isTableElementWithDefaultStyles = (nodeName, display) => {
+    const isTableElementWithDefaultStyles = (nodeName: string, display: string): boolean => {
       const validNodes = new Set(['tr', 'td', 'thead', 'tbody']);
       return validNodes.has(nodeName.toLowerCase()) && display.startsWith('table');
     };
@@ -241,7 +264,7 @@ export class CSSOverviewModel extends SDK.SDKModel.SDKModel {
 
         if (backgroundColor && textColor && strings[nodeName] === '#text') {
           const contrastInfo = new ColorPicker.ContrastInfo.ContrastInfo({
-            backgroundColors: [/** @type {string} */ (backgroundColor.asString(Common.Color.Format.HEXA))],
+            backgroundColors: [backgroundColor.asString(Common.Color.Format.HEXA) as string],
             computedFontSize: fontSizeIdx !== -1 ? strings[fontSizeIdx] : '',
             computedFontWeight: fontWeightIdx !== -1 ? strings[fontWeightIdx] : '',
           });
@@ -321,20 +344,17 @@ export class CSSOverviewModel extends SDK.SDKModel.SDKModel {
       borderColors,
       fontInfo,
       unusedDeclarations,
-      elementCount
+      elementCount,
     };
   }
 
-  /**
-   * @param {!Protocol.DOM.NodeId} nodeId
-   */
-  getComputedStyleForNode(nodeId) {
+  getComputedStyleForNode(nodeId: Protocol.DOM.NodeId): Promise<Protocol.CSS.GetComputedStyleForNodeResponse> {
     return this._cssAgent.invoke_getComputedStyleForNode({nodeId});
   }
 
-  async getMediaQueries() {
+  async getMediaQueries(): Promise<Map<string, Protocol.CSS.CSSMedia[]>> {
     const queries = await this._cssAgent.invoke_getMediaQueries();
-    const queryMap = new Map();
+    const queryMap = new Map<string, Protocol.CSS.CSSMedia[]>();
 
     if (!queries) {
       return queryMap;
@@ -346,7 +366,7 @@ export class CSSOverviewModel extends SDK.SDKModel.SDKModel {
         continue;
       }
 
-      const entries = queryMap.get(query.text) || [];
+      const entries = queryMap.get(query.text) || ([] as Protocol.CSS.CSSMedia[]);
       entries.push(query);
       queryMap.set(query.text, entries);
     }
@@ -354,7 +374,7 @@ export class CSSOverviewModel extends SDK.SDKModel.SDKModel {
     return queryMap;
   }
 
-  async getGlobalStylesheetStats() {
+  async getGlobalStylesheetStats(): Promise<GlobalStyleStats|void> {
     // There are no ways to pull CSSOM values directly today, due to its unserializable format,
     // so instead we execute some JS within the page that extracts the relevant data and send that instead.
     const expression = `(function() {

@@ -175,9 +175,7 @@ export async function generateComputedFontArray() {
   if (modelArray) {
     const cssOverviewModel = modelArray[0];
     if (cssOverviewModel) {
-      const {fontInfo} =
-          /** @type {!{fontInfo: !Map<string, string>}} */ (
-              await Promise.resolve(cssOverviewModel.getNodeStyleStats()));
+      const {fontInfo} = await cssOverviewModel.getNodeStyleStats();
       const computedFontArray = Array.from(fontInfo.keys());
       return computedFontArray;
     }

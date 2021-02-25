@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as i18n from '../i18n/i18n.js';
 import * as UI from '../ui/ui.js';
 
@@ -13,13 +15,13 @@ export const UIStrings = {
   */
   cancel: 'Cancel',
 };
-const str_ = i18n.i18n.registerUIStrings('css_overview/CSSOverviewProcessingView.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('css_overview/CSSOverviewProcessingView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class CSSOverviewProcessingView extends UI.Widget.Widget {
-  /**
-   * @param {!OverviewController} controller
-   */
-  constructor(controller) {
+  _formatter: Intl.NumberFormat;
+  _controller: OverviewController;
+  fragment?: UI.Fragment.Fragment;
+  constructor(controller: OverviewController) {
     super();
     this.registerRequiredCSS('css_overview/cssOverviewProcessingView.css', {enableLegacyPatching: false});
 
@@ -28,7 +30,7 @@ export class CSSOverviewProcessingView extends UI.Widget.Widget {
     this._render();
   }
 
-  _render() {
+  _render(): void {
     const cancelButton = UI.UIUtils.createTextButton(
         i18nString(UIStrings.cancel), () => this._controller.dispatchEventToListeners(Events.RequestOverviewCancel), '',
         true /* primary */);

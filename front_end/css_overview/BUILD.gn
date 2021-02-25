@@ -7,14 +7,14 @@ import("../../scripts/build/ninja/devtools_module.gni")
 
 devtools_module("css_overview") {
   sources = [
-    "CSSOverviewCompletedView.js",
-    "CSSOverviewController.js",
-    "CSSOverviewModel.js",
-    "CSSOverviewPanel.js",
-    "CSSOverviewProcessingView.js",
-    "CSSOverviewSidebarPanel.js",
-    "CSSOverviewStartView.js",
-    "CSSOverviewUnusedDeclarations.js",
+    "CSSOverviewCompletedView.ts",
+    "CSSOverviewController.ts",
+    "CSSOverviewModel.ts",
+    "CSSOverviewPanel.ts",
+    "CSSOverviewProcessingView.ts",
+    "CSSOverviewSidebarPanel.ts",
+    "CSSOverviewStartView.ts",
+    "CSSOverviewUnusedDeclarations.ts",
   ]
 
   deps = [

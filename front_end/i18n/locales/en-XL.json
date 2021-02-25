@@ -1538,145 +1538,145 @@
   "css_overview/css_overview-meta.ts | showCssOverview": {
     "message": "Ŝh́ôẃ ĈŚŜ Óv̂ér̂v́îéŵ"
   },
-  "css_overview/CSSOverviewCompletedView.js | aa": {
+  "css_overview/CSSOverviewCompletedView.ts | aa": {
     "message": "ÂÁ"
   },
-  "css_overview/CSSOverviewCompletedView.js | aaa": {
+  "css_overview/CSSOverviewCompletedView.ts | aaa": {
     "message": "ÂÁÂ"
   },
-  "css_overview/CSSOverviewCompletedView.js | apca": {
+  "css_overview/CSSOverviewCompletedView.ts | apca": {
     "message": "ÂṔĈÁ"
   },
-  "css_overview/CSSOverviewCompletedView.js | attributeSelectors": {
+  "css_overview/CSSOverviewCompletedView.ts | attributeSelectors": {
     "message": "Ât́t̂ŕîb́ût́ê śêĺêćt̂ór̂ś"
   },
-  "css_overview/CSSOverviewCompletedView.js | backgroundColorsS": {
+  "css_overview/CSSOverviewCompletedView.ts | backgroundColorsS": {
     "message": "B̂áĉḱĝŕôún̂d́ ĉól̂ór̂ś: {PH1}"
   },
-  "css_overview/CSSOverviewCompletedView.js | borderColorsS": {
+  "css_overview/CSSOverviewCompletedView.ts | borderColorsS": {
     "message": "B̂ór̂d́êŕ ĉól̂ór̂ś: {PH1}"
   },
-  "css_overview/CSSOverviewCompletedView.js | classSelectors": {
+  "css_overview/CSSOverviewCompletedView.ts | classSelectors": {
     "message": "Ĉĺâśŝ śêĺêćt̂ór̂ś"
   },
-  "css_overview/CSSOverviewCompletedView.js | colors": {
+  "css_overview/CSSOverviewCompletedView.ts | colors": {
     "message": "Ĉól̂ór̂ś"
   },
-  "css_overview/CSSOverviewCompletedView.js | contrastIssues": {
+  "css_overview/CSSOverviewCompletedView.ts | contrastIssues": {
     "message": "Ĉón̂t́r̂áŝt́ îśŝúêś"
   },
-  "css_overview/CSSOverviewCompletedView.js | contrastIssuesS": {
+  "css_overview/CSSOverviewCompletedView.ts | contrastIssuesS": {
     "message": "Ĉón̂t́r̂áŝt́ îśŝúêś: {PH1}"
   },
-  "css_overview/CSSOverviewCompletedView.js | contrastRatio": {
+  "css_overview/CSSOverviewCompletedView.ts | contrastRatio": {
     "message": "Ĉón̂t́r̂áŝt́ r̂át̂íô"
   },
-  "css_overview/CSSOverviewCompletedView.js | cssOverviewElements": {
+  "css_overview/CSSOverviewCompletedView.ts | cssOverviewElements": {
     "message": "ĈŚŜ Óv̂ér̂v́îéŵ Él̂ém̂én̂t́ŝ"
   },
-  "css_overview/CSSOverviewCompletedView.js | declaration": {
+  "css_overview/CSSOverviewCompletedView.ts | declaration": {
     "message": "D̂éĉĺâŕât́îón̂"
   },
-  "css_overview/CSSOverviewCompletedView.js | element": {
+  "css_overview/CSSOverviewCompletedView.ts | element": {
     "message": "Êĺêḿêńt̂"
   },
-  "css_overview/CSSOverviewCompletedView.js | elements": {
+  "css_overview/CSSOverviewCompletedView.ts | elements": {
     "message": "Êĺêḿêńt̂ś"
   },
-  "css_overview/CSSOverviewCompletedView.js | externalStylesheets": {
+  "css_overview/CSSOverviewCompletedView.ts | externalStylesheets": {
     "message": "Êx́t̂ér̂ńâĺ ŝt́ŷĺêśĥéêt́ŝ"
   },
-  "css_overview/CSSOverviewCompletedView.js | fillColorsS": {
+  "css_overview/CSSOverviewCompletedView.ts | fillColorsS": {
     "message": "F̂íl̂ĺ ĉól̂ór̂ś: {PH1}"
   },
-  "css_overview/CSSOverviewCompletedView.js | fontInfo": {
+  "css_overview/CSSOverviewCompletedView.ts | fontInfo": {
     "message": "F̂ón̂t́ îńf̂ó"
   },
-  "css_overview/CSSOverviewCompletedView.js | idSelectors": {
+  "css_overview/CSSOverviewCompletedView.ts | idSelectors": {
     "message": "ÎD́ ŝél̂éĉt́ôŕŝ"
   },
-  "css_overview/CSSOverviewCompletedView.js | inlineStyleElements": {
+  "css_overview/CSSOverviewCompletedView.ts | inlineStyleElements": {
     "message": "Îńl̂ín̂é ŝt́ŷĺê él̂ém̂én̂t́ŝ"
   },
-  "css_overview/CSSOverviewCompletedView.js | mediaQueries": {
+  "css_overview/CSSOverviewCompletedView.ts | mediaQueries": {
     "message": "M̂éd̂íâ q́ûér̂íêś"
   },
-  "css_overview/CSSOverviewCompletedView.js | nOccurrences": {
+  "css_overview/CSSOverviewCompletedView.ts | nOccurrences": {
     "message": "{count} ôćĉúr̂ŕêńĉéŝ"
   },
-  "css_overview/CSSOverviewCompletedView.js | nonsimpleSelectors": {
+  "css_overview/CSSOverviewCompletedView.ts | nonsimpleSelectors": {
     "message": "N̂ón̂-śîḿp̂ĺê śêĺêćt̂ór̂ś"
   },
-  "css_overview/CSSOverviewCompletedView.js | oneOccurrence": {
+  "css_overview/CSSOverviewCompletedView.ts | oneOccurrence": {
     "message": "1 ôćĉúr̂ŕêńĉé"
   },
-  "css_overview/CSSOverviewCompletedView.js | overviewSummary": {
+  "css_overview/CSSOverviewCompletedView.ts | overviewSummary": {
     "message": "Ôv́êŕv̂íêẃ ŝúm̂ḿâŕŷ"
   },
-  "css_overview/CSSOverviewCompletedView.js | showElement": {
+  "css_overview/CSSOverviewCompletedView.ts | showElement": {
     "message": "Ŝh́ôẃ êĺêḿêńt̂"
   },
-  "css_overview/CSSOverviewCompletedView.js | source": {
+  "css_overview/CSSOverviewCompletedView.ts | source": {
     "message": "Ŝóûŕĉé"
   },
-  "css_overview/CSSOverviewCompletedView.js | styleRules": {
+  "css_overview/CSSOverviewCompletedView.ts | styleRules": {
     "message": "Ŝt́ŷĺê ŕûĺêś"
   },
-  "css_overview/CSSOverviewCompletedView.js | textColorSOverSBackgroundResults": {
+  "css_overview/CSSOverviewCompletedView.ts | textColorSOverSBackgroundResults": {
     "message": "T̂éx̂t́ ĉól̂ór̂ {PH1} óv̂ér̂ {PH2} b́âćk̂ǵr̂óûńd̂ ŕêśûĺt̂ś îń l̂óŵ ćôńt̂ŕâśt̂ f́ôŕ {PH3} êĺêḿêńt̂ś"
   },
-  "css_overview/CSSOverviewCompletedView.js | textColorsS": {
+  "css_overview/CSSOverviewCompletedView.ts | textColorsS": {
     "message": "T̂éx̂t́ ĉól̂ór̂ś: {PH1}"
   },
-  "css_overview/CSSOverviewCompletedView.js | thereAreNoFonts": {
+  "css_overview/CSSOverviewCompletedView.ts | thereAreNoFonts": {
     "message": "T̂h́êŕê ár̂é n̂ó f̂ón̂t́ŝ."
   },
-  "css_overview/CSSOverviewCompletedView.js | thereAreNoMediaQueries": {
+  "css_overview/CSSOverviewCompletedView.ts | thereAreNoMediaQueries": {
     "message": "T̂h́êŕê ár̂é n̂ó m̂éd̂íâ q́ûér̂íêś."
   },
-  "css_overview/CSSOverviewCompletedView.js | thereAreNoUnusedDeclarations": {
+  "css_overview/CSSOverviewCompletedView.ts | thereAreNoUnusedDeclarations": {
     "message": "T̂h́êŕê ár̂é n̂ó ûńûśêd́ d̂éĉĺâŕât́îón̂ś."
   },
-  "css_overview/CSSOverviewCompletedView.js | typeSelectors": {
+  "css_overview/CSSOverviewCompletedView.ts | typeSelectors": {
     "message": "T̂ýp̂é ŝél̂éĉt́ôŕŝ"
   },
-  "css_overview/CSSOverviewCompletedView.js | universalSelectors": {
+  "css_overview/CSSOverviewCompletedView.ts | universalSelectors": {
     "message": "Ûńîv́êŕŝál̂ śêĺêćt̂ór̂ś"
   },
-  "css_overview/CSSOverviewCompletedView.js | unusedDeclarations": {
+  "css_overview/CSSOverviewCompletedView.ts | unusedDeclarations": {
     "message": "Ûńûśêd́ d̂éĉĺâŕât́îón̂ś"
   },
-  "css_overview/CSSOverviewProcessingView.js | cancel": {
+  "css_overview/CSSOverviewProcessingView.ts | cancel": {
     "message": "Ĉán̂ćêĺ"
   },
-  "css_overview/CSSOverviewSidebarPanel.js | clearOverview": {
+  "css_overview/CSSOverviewSidebarPanel.ts | clearOverview": {
     "message": "Ĉĺêár̂ óv̂ér̂v́îéŵ"
   },
-  "css_overview/CSSOverviewStartView.js | captureOverview": {
+  "css_overview/CSSOverviewStartView.ts | captureOverview": {
     "message": "Ĉáp̂t́ûŕê óv̂ér̂v́îéŵ"
   },
-  "css_overview/CSSOverviewStartView.js | cssOverview": {
+  "css_overview/CSSOverviewStartView.ts | cssOverview": {
     "message": "ĈŚŜ Óv̂ér̂v́îéŵ"
   },
-  "css_overview/CSSOverviewUnusedDeclarations.js | bottomAppliedToAStatically": {
+  "css_overview/CSSOverviewUnusedDeclarations.ts | bottomAppliedToAStatically": {
     "message": "Bottom âṕp̂ĺîéd̂ t́ô á ŝt́ât́îćâĺl̂ý p̂óŝít̂íôńêd́ êĺêḿêńt̂"
   },
-  "css_overview/CSSOverviewUnusedDeclarations.js | heightAppliedToAnInlineElement": {
+  "css_overview/CSSOverviewUnusedDeclarations.ts | heightAppliedToAnInlineElement": {
     "message": "Height âṕp̂ĺîéd̂ t́ô án̂ ín̂ĺîńê él̂ém̂én̂t́"
   },
-  "css_overview/CSSOverviewUnusedDeclarations.js | leftAppliedToAStatically": {
+  "css_overview/CSSOverviewUnusedDeclarations.ts | leftAppliedToAStatically": {
     "message": "Left âṕp̂ĺîéd̂ t́ô á ŝt́ât́îćâĺl̂ý p̂óŝít̂íôńêd́ êĺêḿêńt̂"
   },
-  "css_overview/CSSOverviewUnusedDeclarations.js | rightAppliedToAStatically": {
+  "css_overview/CSSOverviewUnusedDeclarations.ts | rightAppliedToAStatically": {
     "message": "Right âṕp̂ĺîéd̂ t́ô á ŝt́ât́îćâĺl̂ý p̂óŝít̂íôńêd́ êĺêḿêńt̂"
   },
-  "css_overview/CSSOverviewUnusedDeclarations.js | topAppliedToAStatically": {
+  "css_overview/CSSOverviewUnusedDeclarations.ts | topAppliedToAStatically": {
     "message": "Top âṕp̂ĺîéd̂ t́ô á ŝt́ât́îćâĺl̂ý p̂óŝít̂íôńêd́ êĺêḿêńt̂"
   },
-  "css_overview/CSSOverviewUnusedDeclarations.js | verticalAlignmentAppliedTo": {
+  "css_overview/CSSOverviewUnusedDeclarations.ts | verticalAlignmentAppliedTo": {
     "message": "V̂ér̂t́îćâĺ âĺîǵn̂ḿêńt̂ áp̂ṕl̂íêd́ t̂ó êĺêḿêńt̂ ẃĥíĉh́ îś n̂éît́ĥér̂ inline ńôŕ table-cell"
   },
-  "css_overview/CSSOverviewUnusedDeclarations.js | widthAppliedToAnInlineElement": {
+  "css_overview/CSSOverviewUnusedDeclarations.ts | widthAppliedToAnInlineElement": {
     "message": "Width âṕp̂ĺîéd̂ t́ô án̂ ín̂ĺîńê él̂ém̂én̂t́"
   },
   "data_grid/DataGrid.ts | addNew": {

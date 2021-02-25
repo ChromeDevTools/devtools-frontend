@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as i18n from '../i18n/i18n.js';
 import * as UI from '../ui/ui.js';
 
@@ -17,13 +19,11 @@ export const UIStrings = {
   */
   cssOverview: 'CSS Overview',
 };
-const str_ = i18n.i18n.registerUIStrings('css_overview/CSSOverviewStartView.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('css_overview/CSSOverviewStartView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class CSSOverviewStartView extends UI.Widget.Widget {
-  /**
-   * @param {!OverviewController} controller
-   */
-  constructor(controller) {
+  _controller: OverviewController;
+  constructor(controller: OverviewController) {
     super();
     this.registerRequiredCSS('css_overview/cssOverviewStartView.css', {enableLegacyPatching: false});
 
@@ -31,7 +31,7 @@ export class CSSOverviewStartView extends UI.Widget.Widget {
     this._render();
   }
 
-  _render() {
+  _render(): void {
     const startButton = UI.UIUtils.createTextButton(
         i18nString(UIStrings.captureOverview),
         () => this._controller.dispatchEventToListeners(Events.RequestOverviewStart), '', true /* primary */);
@@ -39,11 +39,11 @@ export class CSSOverviewStartView extends UI.Widget.Widget {
     this.setDefaultFocusedElement(startButton);
 
     const fragment = UI.Fragment.Fragment.build`
-      <div class="vbox overview-start-view">
-        <h1>${i18nString(UIStrings.cssOverview)}</h1>
-        <div>${startButton}</div>
-      </div>
-    `;
+  <div class="vbox overview-start-view">
+  <h1>${i18nString(UIStrings.cssOverview)}</h1>
+  <div>${startButton}</div>
+  </div>
+  `;
 
     this.contentElement.appendChild(fragment.element());
     this.contentElement.style.overflow = 'auto';

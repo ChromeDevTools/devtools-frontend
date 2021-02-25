@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as i18n from '../i18n/i18n.js';
 
 export const UIStrings = {
@@ -34,41 +36,24 @@ export const UIStrings = {
   */
   verticalAlignmentAppliedTo: 'Vertical alignment applied to element which is neither `inline` nor `table-cell`',
 };
-const str_ = i18n.i18n.registerUIStrings('css_overview/CSSOverviewUnusedDeclarations.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('css_overview/CSSOverviewUnusedDeclarations.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-/**
- * @typedef {{
- * declaration:string,
- * nodeId:number,
- * }}
- */
-// @ts-ignore typedef
-export let UnusedDeclaration;
+export interface UnusedDeclaration {
+  declaration: string;
+  nodeId: number;
+}
 
 export class CSSOverviewUnusedDeclarations {
-  /**
-   * @param {!Map<string,!Array<!UnusedDeclaration>>} target
-   * @param {string} key
-   * @param {{declaration: string, nodeId:number}} item
-   */
-  static _add(target, key, item) {
+  static _add(target: Map<string, UnusedDeclaration[]>, key: string, item: {declaration: string, nodeId: number}):
+      void {
     const values = target.get(key) || [];
     values.push(item);
     target.set(key, values);
   }
 
-  /**
-   * @param {!Map<string, !Array<!UnusedDeclaration>>} unusedDeclarations
-   * @param {number} nodeId
-   * @param {!Array<string>} strings
-   * @param {number} positionIdx
-   * @param {number} topIdx
-   * @param {number} leftIdx
-   * @param {number} rightIdx
-   * @param {number} bottomIdx
-   */
   static checkForUnusedPositionValues(
-      unusedDeclarations, nodeId, strings, positionIdx, topIdx, leftIdx, rightIdx, bottomIdx) {
+      unusedDeclarations: Map<string, UnusedDeclaration[]>, nodeId: number, strings: string[], positionIdx: number,
+      topIdx: number, leftIdx: number, rightIdx: number, bottomIdx: number): void {
     if (strings[positionIdx] !== 'static') {
       return;
     }
@@ -106,15 +91,9 @@ export class CSSOverviewUnusedDeclarations {
     }
   }
 
-  /**
-   * @param {!Map<string, !Array<!UnusedDeclaration>>} unusedDeclarations
-   * @param {number} nodeId
-   * @param {!Array<string>} strings
-   * @param {number} displayIdx
-   * @param {number} widthIdx
-   * @param {number} heightIdx
-   */
-  static checkForUnusedWidthAndHeightValues(unusedDeclarations, nodeId, strings, displayIdx, widthIdx, heightIdx) {
+  static checkForUnusedWidthAndHeightValues(
+      unusedDeclarations: Map<string, UnusedDeclaration[]>, nodeId: number, strings: string[], displayIdx: number,
+      widthIdx: number, heightIdx: number): void {
     if (strings[displayIdx] !== 'inline') {
       return;
     }
@@ -136,14 +115,9 @@ export class CSSOverviewUnusedDeclarations {
     }
   }
 
-  /**
-   * @param {!Map<string, !Array<!UnusedDeclaration>>} unusedDeclarations
-   * @param {number} nodeId
-   * @param {!Array<string>} strings
-   * @param {number} displayIdx
-   * @param {number} verticalAlignIdx
-   */
-  static checkForInvalidVerticalAlignment(unusedDeclarations, nodeId, strings, displayIdx, verticalAlignIdx) {
+  static checkForInvalidVerticalAlignment(
+      unusedDeclarations: Map<string, UnusedDeclaration[]>, nodeId: number, strings: string[], displayIdx: number,
+      verticalAlignIdx: number): void {
     if (!strings[displayIdx] || strings[displayIdx] === 'inline' || strings[displayIdx].startsWith('table')) {
       return;
     }

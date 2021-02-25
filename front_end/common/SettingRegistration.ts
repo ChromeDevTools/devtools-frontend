@@ -69,6 +69,10 @@ export const UIStrings = {
   *@description Text for the extension of the page
   */
   extension: 'Extension',
+  /**
+  *@description Text for the adorner of the page
+  */
+  adorner: 'Adorner',
 };
 const str_ = i18n.i18n.registerUIStrings('common/SettingRegistration.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -123,6 +127,7 @@ export const enum SettingCategory {
   EMULATION = 'EMULATION',
   MEMORY = 'MEMORY',
   EXTENSIONS = 'EXTENSIONS',
+  ADORNER = 'ADORNER',
 }
 
 export function getLocalizedSettingsCategory(category: SettingCategory): string|Platform.UIString.LocalizedString {
@@ -157,6 +162,8 @@ export function getLocalizedSettingsCategory(category: SettingCategory): string|
       return i18nString(UIStrings.memory);
     case SettingCategory.EXTENSIONS:
       return i18nString(UIStrings.extension);
+    case SettingCategory.ADORNER:
+      return i18nString(UIStrings.adorner);
     case SettingCategory.NONE:
       return '';
   }

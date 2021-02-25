@@ -13,17 +13,17 @@ export interface AdornerSetting {
   isEnabled: boolean;
 }
 
-type AdornerSettingsMap = Map<string, boolean>;
+export type AdornerSettingsMap = Map<string, boolean>;
 
 // This array serves as the authoritative source for all the adorners
 // that can be configured.
 export const DefaultAdornerSettings = [
   {
-    adorner: 'Grid',
+    adorner: 'grid',
     isEnabled: true,
   },
   {
-    adorner: 'Flex',
+    adorner: 'flex',
     isEnabled: true,
   },
   {

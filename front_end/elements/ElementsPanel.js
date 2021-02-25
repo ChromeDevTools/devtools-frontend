@@ -38,6 +38,9 @@ import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
 import {AccessibilityTreeView} from './AccessibilityTreeView.js';
+import {Adorner} from './Adorner.js';  // eslint-disable-line no-unused-vars
+import {AdornerManager} from './AdornerManager.js';
+import {AdornerSettingsPane, AdornerSettingUpdatedEvent} from './AdornerSettingsPane.js';  // eslint-disable-line no-unused-vars
 import {ComputedStyleWidget} from './ComputedStyleWidget.js';
 import {DOMNode, ElementsBreadcrumbs} from './ElementsBreadcrumbs.js';  // eslint-disable-line no-unused-vars
 import {ElementsTreeElement} from './ElementsTreeElement.js';           // eslint-disable-line no-unused-vars
@@ -226,6 +229,12 @@ export class ElementsPanel extends UI.Panel.Panel {
     this._currentSearchResultIndex = -1;  // -1 represents the initial invalid state
 
     this._pendingNodeReveal = false;
+
+    this._adornerManager = new AdornerManager(Common.Settings.Settings.instance().moduleSetting('adornerSettings'));
+    /** @type {?AdornerSettingsPane} */
+    this._adornerSettingsPane = null;
+    /** @type {!Map<string, !Set<!Adorner>>} */
+    this._adornersByName = new Map();
   }
 
   /**
@@ -1203,6 +1212,65 @@ export class ElementsPanel extends UI.Panel.Panel {
         treeElement.updateStyleAdorners();
       }
     }
+  }
+
+  showAdornerSettingsPane() {
+    // Delay the initialization of the pane to the first showing
+    // since usually this pane won't be used.
+    if (!this._adornerSettingsPane) {
+      this._adornerSettingsPane = new AdornerSettingsPane();
+      this._adornerSettingsPane.addEventListener('adorner-setting-updated', /** @param {!Event} event */ event => {
+        const {adornerName, isEnabledNow, newSettings} = /** @type {!AdornerSettingUpdatedEvent} */ (event).data;
+        const adornersToUpdate = this._adornersByName.get(adornerName);
+        if (adornersToUpdate) {
+          for (const adorner of adornersToUpdate) {
+            isEnabledNow ? adorner.show() : adorner.hide();
+          }
+        }
+        this._adornerManager.updateSettings(newSettings);
+      });
+      this._searchableView.element.prepend(this._adornerSettingsPane);
+    }
+
+    const adornerSettings = this._adornerManager.getSettings();
+    this._adornerSettingsPane.data = {
+      settings: adornerSettings,
+    };
+    this._adornerSettingsPane.show();
+  }
+
+  /**
+   * @param {string} adornerText
+   * @return {boolean}
+   */
+  isAdornerEnabled(adornerText) {
+    return this._adornerManager.isAdornerEnabled(adornerText);
+  }
+
+  /**
+   * @param {!Adorner} adorner
+   */
+  registerAdorner(adorner) {
+    let adornerSet = this._adornersByName.get(adorner.name);
+    if (!adornerSet) {
+      adornerSet = new Set();
+      this._adornersByName.set(adorner.name, adornerSet);
+    }
+    adornerSet.add(adorner);
+    if (!this.isAdornerEnabled(adorner.name)) {
+      adorner.hide();
+    }
+  }
+
+  /**
+   * @param {!Adorner} adorner
+   */
+  deregisterAdorner(adorner) {
+    const adornerSet = this._adornersByName.get(adorner.name);
+    if (!adornerSet) {
+      return;
+    }
+    adornerSet.delete(adorner);
   }
 }
 

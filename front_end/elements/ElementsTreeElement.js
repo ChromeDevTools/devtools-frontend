@@ -44,6 +44,7 @@ import * as UI from '../ui/ui.js';
 import {Adorner} from './Adorner.js';
 import {AdornerCategories} from './AdornerManager.js';
 import {canGetJSPath, cssPath, jsPath, xPath} from './DOMPath.js';
+import {ElementsPanel} from './ElementsPanel.js';
 import {ElementsTreeOutline, MappedCharToEntity, UpdateRecord} from './ElementsTreeOutline.js';  // eslint-disable-line no-unused-vars
 import {ImagePreviewPopover} from './ImagePreviewPopover.js';
 import {getRegisteredDecorators, MarkerDecorator, MarkerDecoratorRegistration} from './MarkerDecorator.js';  // eslint-disable-line no-unused-vars
@@ -2170,6 +2171,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     };
     const adorner = Adorner.create(adornerContent, text, options);
     this._adorners.push(adorner);
+    ElementsPanel.instance().registerAdorner(adorner);
     this._updateAdorners();
     return adorner;
   }
@@ -2179,6 +2181,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
    */
   removeAdorner(adornerToRemove) {
     const adorners = this._adorners;
+    ElementsPanel.instance().deregisterAdorner(adornerToRemove);
     adornerToRemove.remove();
     for (let i = 0; i < adorners.length; ++i) {
       if (adorners[i] === adornerToRemove) {
@@ -2191,6 +2194,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
 
   removeAllAdorners() {
     for (const adorner of this._adorners) {
+      ElementsPanel.instance().deregisterAdorner(adorner);
       adorner.remove();
     }
 

@@ -884,6 +884,9 @@
   "common/Revealer.js | stylesSidebar": {
     "message": "styles sidebar"
   },
+  "common/SettingRegistration.ts | adorner": {
+    "message": "Adorner"
+  },
   "common/SettingRegistration.ts | appearance": {
     "message": "Appearance"
   },
@@ -1805,6 +1808,12 @@
   "elements/Adorner.js | sAdorner": {
     "message": "{PH1} adorner"
   },
+  "elements/AdornerSettingsPane.ts | closeButton": {
+    "message": "Close"
+  },
+  "elements/AdornerSettingsPane.ts | settingsTitle": {
+    "message": "Show adorners"
+  },
   "elements/ClassesPaneWidget.js | addNewClass": {
     "message": "Add new class"
   },
@@ -2065,6 +2074,9 @@
   },
   "elements/ElementsTreeElement.js | valueIsTooLargeToEdit": {
     "message": "<value is too large to edit>"
+  },
+  "elements/ElementsTreeOutline.js | adornerSettings": {
+    "message": "Adorner settings…"
   },
   "elements/ElementsTreeOutline.js | pageDom": {
     "message": "Page DOM"

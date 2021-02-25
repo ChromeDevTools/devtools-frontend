@@ -67,3 +67,9 @@
   margin-right: 6px;
   flex: none;
 }
+
+devtools-adorner-settings-pane {
+  margin-bottom: 10px;
+  border-bottom: 1px solid var(--color-details-hairline);
+  overflow: auto;
+}

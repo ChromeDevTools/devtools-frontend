@@ -36,6 +36,7 @@ import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
 import {linkifyDeferredNodeReference} from './DOMLinkifier.js';
+import {ElementsPanel} from './ElementsPanel.js';
 import {ElementsTreeElement, InitialChildrenLimit} from './ElementsTreeElement.js';
 import {ImagePreviewPopover} from './ImagePreviewPopover.js';
 import {MarkerDecoratorRegistration} from './MarkerDecorator.js';  // eslint-disable-line no-unused-vars
@@ -58,6 +59,10 @@ export const UIStrings = {
   *@description Link text content in Elements Tree Outline of the Elements panel
   */
   reveal: 'reveal',
+  /**
+   * @description A context menu item to open the adorner settings pane
+   */
+  adornerSettings: 'Adorner settings\u2026',
 };
 const str_ = i18n.i18n.registerUIStrings('elements/ElementsTreeOutline.js', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -931,6 +936,10 @@ export class ElementsTreeOutline extends UI.TreeOutline.TreeOutline {
     } else if (isPseudoElement) {
       treeElement.populateScrollIntoView(contextMenu);
     }
+
+    contextMenu.viewSection().appendItem(i18nString(UIStrings.adornerSettings), () => {
+      ElementsPanel.instance().showAdornerSettingsPane();
+    });
 
     contextMenu.appendApplicableItems(treeElement.node());
     contextMenu.show();

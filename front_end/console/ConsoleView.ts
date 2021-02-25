@@ -243,62 +243,6 @@ const str_ = i18n.i18n.registerUIStrings('console/ConsoleView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let consoleViewInstance: ConsoleView;
 
-/**
- * This is a proper `ConsoleViewportElement` for the issue banner which can be inserted into the
- * `ConsoleViewport`. To make it play nicely, it is fakes being {ConsoleViewMessage} by implementing
- * `fastHeight` and `toExportString`.
- */
-class IssueMessage implements ConsoleViewportElement {
-  _cachedIssueBarHeight: number;
-  _issueBar: UI.Infobar.Infobar|null;
-
-  constructor() {
-    this._cachedIssueBarHeight = 0;
-    this._issueBar = null;
-  }
-
-  willHide(): void {
-    this._cachedIssueBarHeight = this._issueBar && this._issueBar.element.offsetHeight || 0;
-  }
-
-  wasShown(): void {
-  }
-
-  element(): HTMLElement {
-    if (!this._issueBar) {
-      const issueBarAction = ({
-        text: i18nString(UIStrings.viewIssues),
-        highlight: false,
-        delegate: (): void => {
-          Host.userMetrics.issuesPanelOpenedFrom(Host.UserMetrics.IssueOpener.ConsoleInfoBar);
-          UI.ViewManager.ViewManager.instance().showView('issues-pane');
-        },
-        dismiss: false,
-      } as UI.Infobar.InfobarAction);
-      this._issueBar = new UI.Infobar.Infobar(
-          UI.Infobar.Type.Issue, i18nString(UIStrings.someMessagesHaveBeenMovedToThe), [issueBarAction]);
-      this._issueBar.element.tabIndex = -1;
-      this._issueBar.element.classList.add('console-message-wrapper');
-    }
-    return this._issueBar.element;
-  }
-
-  focusLastChildOrSelf(): void {
-    if (!this._issueBar) {
-      return;
-    }
-    this._issueBar.element.focus();
-  }
-
-  fastHeight(): number {
-    return this._cachedIssueBarHeight || 37;
-  }
-
-  toExportString(): Common.UIString.LocalizedString {
-    return i18nString(UIStrings.someMessagesHaveBeenMovedToThe);
-  }
-}
-
 export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Searchable, ConsoleViewportProvider {
   _searchableView: UI.SearchableView.SearchableView;
   _sidebar: ConsoleSidebar;
@@ -341,7 +285,6 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
   _viewMessageSymbol: symbol;
   _consoleHistorySetting: Common.Settings.Setting<string[]>;
   _prompt: ConsolePrompt;
-  _issueMessage: IssueMessage|undefined;
   _immediatelyFilterMessagesForTest?: boolean;
   _maybeDirtyWhileMuted?: boolean;
   _scheduledRefreshPromiseForTest?: Promise<void>;
@@ -587,23 +530,9 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
         SDK.ConsoleModel.Events.CommandEvaluated, this._commandEvaluated, this);
     SDK.ConsoleModel.ConsoleModel.instance().messages().forEach(this._addConsoleMessage, this);
 
-    this._issueMessage = undefined;
     const issuesManager = BrowserSDK.IssuesManager.IssuesManager.instance();
     issuesManager.addEventListener(
         BrowserSDK.IssuesManager.Events.IssuesCountUpdated, this._updateIssuesToolbarItem, this);
-  }
-
-  _onIssuesCountChanged(): void {
-    if (BrowserSDK.IssuesManager.IssuesManager.instance().numberOfIssues() === 0) {
-      if (this._issueMessage) {
-        this._issueMessage.element().remove();
-        this._issueMessage = undefined;
-        this._scheduleViewportRefresh();
-      }
-    } else if (!this._issueMessage) {
-      this._issueMessage = new IssueMessage();
-      this._scheduleViewportRefresh();
-    }
   }
 
   static instance(): ConsoleView {
@@ -614,12 +543,6 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
   }
 
   static clearConsole(): void {
-    const consoleView = ConsoleView.instance();
-    if (consoleView._issueMessage) {
-      consoleView._issueMessage.element().remove();
-      consoleView._issueMessage = undefined;
-      consoleView._scheduleViewportRefresh();
-    }
     SDK.ConsoleModel.ConsoleModel.instance().requestClearMessages();
   }
 
@@ -655,31 +578,14 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
   }
 
   itemCount(): number {
-    if (this._issueMessage) {
-      return this._visibleViewMessages.length + 1;
-    }
     return this._visibleViewMessages.length;
   }
 
   itemElement(index: number): ConsoleViewportElement|null {
-    const issueMessage = this._issueMessage;
-    if (issueMessage) {
-      if (index === 0) {
-        return issueMessage;
-      }
-      return this._visibleViewMessages[index - 1];
-    }
     return this._visibleViewMessages[index];
   }
 
   fastHeight(index: number): number {
-    const issueMessage = this._issueMessage;
-    if (issueMessage) {
-      if (index === 0) {
-        return issueMessage.fastHeight() || 37;
-      }
-      return this._visibleViewMessages[index - 1].fastHeight();
-    }
     return this._visibleViewMessages[index].fastHeight();
   }
 
@@ -1441,8 +1347,7 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
     const message = this._visibleViewMessages[matchRange.messageIndex];
     const highlightNode = message.searchHighlightNode(matchRange.matchIndex);
     highlightNode.classList.add(UI.UIUtils.highlightedCurrentSearchResultClassName);
-    const notifyOffset = this._issueMessage ? 1 : 0;
-    this._viewport.scrollItemIntoView(matchRange.messageIndex + notifyOffset);
+    this._viewport.scrollItemIntoView(matchRange.messageIndex);
     highlightNode.scrollIntoViewIfNeeded();
   }
 

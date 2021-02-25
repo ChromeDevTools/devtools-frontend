@@ -876,7 +876,6 @@ export class NodeUI {
     this.element = document.createElement('div');
     this.element.classList.add('animation-node-row');
     this._description = this.element.createChild('div', 'animation-node-description');
-    this._description.tabIndex = 0;
     this._timelineElement = this.element.createChild('div', 'animation-node-timeline');
     UI.ARIAUtils.markAsApplication(this._timelineElement);
   }

@@ -34,6 +34,7 @@
   background-color: var(--color-background-elevation-1);
   border-bottom: 1px solid var(--color-details-hairline);
   overflow: hidden;
+  z-index: 1;
 }
 
 .scripts-debug-toolbar-drawer {

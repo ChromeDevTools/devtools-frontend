@@ -166,7 +166,6 @@ export class CallStackSidebarPane extends UI.View.SimpleView {
 
     const details = UI.Context.Context.instance().flavor(SDK.DebuggerModel.DebuggerPausedDetails);
     if (!details) {
-      this.setDefaultFocusedElement(this._notPausedMessageElement);
       this._notPausedMessageElement.classList.remove('hidden');
       this._ignoreListMessageElement.classList.add('hidden');
       this._showMoreMessageElement.classList.add('hidden');

@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Bindings from '../bindings/bindings.js';  // eslint-disable-line no-unused-vars
+import * as Bindings from '../bindings/bindings.js';
 import * as Common from '../common/common.js';
 import * as SDK from '../sdk/sdk.js';
 import * as Marked from '../third_party/marked/marked.js';

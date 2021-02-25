@@ -16,7 +16,7 @@ import * as Timeline from '../timeline/timeline.js';
 import * as UI from '../ui/ui.js';
 import * as Workspace from '../workspace/workspace.js';
 
-import * as ReportRenderer from './LighthouseReporterTypes.js';  // eslint-disable-line no-unused-vars
+import type * as ReportRenderer from './LighthouseReporterTypes.js';
 
 export const UIStrings = {
   /**

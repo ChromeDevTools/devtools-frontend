@@ -5,7 +5,7 @@
 /* eslint-disable rulesdir/no_underscored_properties */
 import * as i18n from '../i18n/i18n.js';
 import * as TextEditor from '../text_editor/text_editor.js';
-import * as UI from '../ui/ui.js';  // eslint-disable-line no-unused-vars
+import type * as UI from '../ui/ui.js';
 
 import {Row, RowType} from './ChangesView.js';  // eslint-disable-line no-unused-vars
 

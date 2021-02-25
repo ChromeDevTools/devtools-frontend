@@ -30,7 +30,7 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as HeapSnapshotModel from '../heap_snapshot_model/heap_snapshot_model.js';  // eslint-disable-line no-unused-vars
+import type * as HeapSnapshotModel from '../heap_snapshot_model/heap_snapshot_model.js';
 interface DispatcherResponse {
   callId?: number;
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)

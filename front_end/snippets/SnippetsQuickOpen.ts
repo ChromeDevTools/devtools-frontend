@@ -6,7 +6,7 @@
 
 import * as i18n from '../i18n/i18n.js';
 import * as QuickOpen from '../quick_open/quick_open.js';
-import * as Workspace from '../workspace/workspace.js';  // eslint-disable-line no-unused-vars
+import type * as Workspace from '../workspace/workspace.js';
 
 import {evaluateScriptSnippet, findSnippetsProject} from './ScriptSnippetFileSystem.js';
 

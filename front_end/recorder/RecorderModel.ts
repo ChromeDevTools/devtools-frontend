@@ -7,7 +7,7 @@
 import * as Common from '../common/common.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
-import * as Workspace from '../workspace/workspace.js';  // eslint-disable-line no-unused-vars
+import type * as Workspace from '../workspace/workspace.js';
 
 import {RecordingSession} from './RecordingSession.js';
 

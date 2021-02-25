@@ -34,7 +34,7 @@ import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
 import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
-import * as TextUtils from '../text_utils/text_utils.js';  // eslint-disable-line no-unused-vars
+import type * as TextUtils from '../text_utils/text_utils.js';
 
 import {Events, IsolatedFileSystemManager} from './IsolatedFileSystemManager.js';  // eslint-disable-line no-unused-vars
 import {PlatformFileSystem} from './PlatformFileSystem.js';

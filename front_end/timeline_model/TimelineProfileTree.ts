@@ -4,7 +4,7 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
+import type * as SDK from '../sdk/sdk.js';
 
 import {TimelineJSProfileProcessor} from './TimelineJSProfile.js';
 import {RecordType, TimelineData, TimelineModelImpl} from './TimelineModel.js';

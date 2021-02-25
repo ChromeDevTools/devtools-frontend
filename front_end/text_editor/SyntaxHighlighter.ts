@@ -4,7 +4,7 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as UI from '../ui/ui.js';  // eslint-disable-line no-unused-vars
+import * as UI from '../ui/ui.js';
 
 import {TokenizerFactory} from './CodeMirrorUtils.js';
 

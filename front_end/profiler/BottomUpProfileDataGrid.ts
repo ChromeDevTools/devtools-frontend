@@ -35,8 +35,8 @@
 /* eslint-disable rulesdir/no_underscored_properties */
 
 import * as Platform from '../platform/platform.js';
-import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
-import * as UI from '../ui/ui.js';     // eslint-disable-line no-unused-vars
+import type * as SDK from '../sdk/sdk.js';
+import type * as UI from '../ui/ui.js';
 
 import {Formatter, ProfileDataGridNode, ProfileDataGridTree} from './ProfileDataGrid.js';  // eslint-disable-line no-unused-vars
 import {TopDownProfileDataGridTree} from './TopDownProfileDataGrid.js';  // eslint-disable-line no-unused-vars

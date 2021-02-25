@@ -32,7 +32,7 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
+import type * as Common from '../common/common.js';
 import * as UI from '../ui/ui.js';
 
 import {ConsoleView} from './ConsoleView.js';

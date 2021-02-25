@@ -8,8 +8,8 @@ import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
 import * as i18n from '../i18n/i18n.js';
 import * as SDK from '../sdk/sdk.js';
-import * as TextUtils from '../text_utils/text_utils.js';  // eslint-disable-line no-unused-vars
-import * as UI from '../ui/ui.js';                         // eslint-disable-line no-unused-vars
+import type * as TextUtils from '../text_utils/text_utils.js';
+import type * as UI from '../ui/ui.js';
 import * as Workspace from '../workspace/workspace.js';
 
 import {NetworkPersistenceManager} from './NetworkPersistenceManager.js';

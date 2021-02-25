@@ -5,7 +5,7 @@
 /* eslint-disable rulesdir/no_underscored_properties */
 
 import * as Common from '../common/common.js';
-import * as Emulation from '../emulation/emulation.js';  // eslint-disable-line no-unused-vars
+import * as Emulation from '../emulation/emulation.js';
 import * as Host from '../host/host.js';
 import * as i18n from '../i18n/i18n.js';
 import * as Root from '../root/root.js';
@@ -14,7 +14,7 @@ import * as UI from '../ui/ui.js';
 
 import {Events, LighthouseController} from './LighthouseController.js';
 import {ProtocolService} from './LighthouseProtocolService.js';
-import * as ReportRenderer from './LighthouseReporterTypes.js';  // eslint-disable-line no-unused-vars
+import type * as ReportRenderer from './LighthouseReporterTypes.js';
 import {LighthouseReportRenderer, LighthouseReportUIFeatures} from './LighthouseReportRenderer.js';
 import {Item, ReportSelector} from './LighthouseReportSelector.js';
 import {StartView} from './LighthouseStartView.js';

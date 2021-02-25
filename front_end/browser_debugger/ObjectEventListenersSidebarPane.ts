@@ -4,7 +4,7 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
+import type * as Common from '../common/common.js';
 import * as EventListeners from '../event_listeners/event_listeners.js';
 import * as i18n from '../i18n/i18n.js';
 import * as SDK from '../sdk/sdk.js';

@@ -10,7 +10,7 @@ import * as LitHtml from '../third_party/lit-html/lit-html.js';
 import * as Network from '../network/network.js';
 import * as Platform from '../platform/platform.js';
 import * as Root from '../root/root.js';
-import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
+import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 import * as Workspace from '../workspace/workspace.js';
 

@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
+import * as SDK from '../sdk/sdk.js';
 import * as LitHtml from '../third_party/lit-html/lit-html.js';
 import * as UIComponents from '../ui/components/components.js';  // eslint-disable-line rulesdir/es_modules_import
 import * as UI from '../ui/ui.js';

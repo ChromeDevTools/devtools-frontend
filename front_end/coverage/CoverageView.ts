@@ -12,7 +12,7 @@ import * as Platform from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as SourceFrame from '../source_frame/source_frame.js';
 import * as UI from '../ui/ui.js';
-import * as Workspace from '../workspace/workspace.js';  // eslint-disable-line no-unused-vars
+import type * as Workspace from '../workspace/workspace.js';
 
 import {CoverageDecorationManager, decoratorType} from './CoverageDecorationManager.js';
 import {CoverageListView} from './CoverageListView.js';

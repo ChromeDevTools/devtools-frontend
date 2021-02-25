@@ -46,8 +46,9 @@ export const UIStrings = {
   userHandle: 'User Handle',
   /**
   *@description Label for signature counter field for credentials which represents the number of successful assertions.
+  * See https://w3c.github.io/webauthn/#signature-counter.
   */
-  signCount: 'Sign Count',
+  signCount: 'Signature Count',
   /**
   *@description Label for column with actions for credentials.
   */

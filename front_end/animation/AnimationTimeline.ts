@@ -54,7 +54,7 @@ export const UIStrings = {
   /**
   *@description Empty buffer hint text content in Animation Timeline of the Animation Inspector
   */
-  listeningForAnimations: 'Listening for animations...',
+  waitingForAnimations: 'Waiting for animations...',
   /**
   *@description Tooltip text that appears when hovering over largeicon replay animation button in Animation Timeline of the Animation Inspector
   */
@@ -250,7 +250,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.SDKModel.SD
     this._popoverHelper.setDisableOnClick(true);
     this._popoverHelper.setTimeout(0);
     const emptyBufferHint = this.contentElement.createChild('div', 'animation-timeline-buffer-hint');
-    emptyBufferHint.textContent = i18nString(UIStrings.listeningForAnimations);
+    emptyBufferHint.textContent = i18nString(UIStrings.waitingForAnimations);
     const container = this.contentElement.createChild('div', 'animation-timeline-header');
     const controls = container.createChild('div', 'animation-controls');
     this._currentTime = (controls.createChild('div', 'animation-timeline-current-time monospace') as HTMLElement);

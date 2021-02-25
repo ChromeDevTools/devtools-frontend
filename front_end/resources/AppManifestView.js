@@ -159,7 +159,7 @@ export const UIStrings = {
   *@example {100} PH1
   */
   noSuppliedIconIsAtLeastSpxSquare:
-      'No supplied icon is at least {PH1}px square in PNG, SVG or WebP format, with the purpose attribute unset or set to "any".',
+      'No supplied icon is at least {PH1} pixels square in `PNG`, `SVG` or `WebP` format, with the purpose attribute unset or set to `"any"`.',
   /**
   *@description Manifest installability error in the Application panel
   */

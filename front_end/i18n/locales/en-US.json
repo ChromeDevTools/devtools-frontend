@@ -425,9 +425,6 @@
   "animation/AnimationTimeline.ts | clearAll": {
     "message": "Clear all"
   },
-  "animation/AnimationTimeline.ts | listeningForAnimations": {
-    "message": "Listening for animations..."
-  },
   "animation/AnimationTimeline.ts | pause": {
     "message": "Pause"
   },
@@ -457,6 +454,9 @@
   },
   "animation/AnimationTimeline.ts | setSpeedToS": {
     "message": "Set speed to {PH1}"
+  },
+  "animation/AnimationTimeline.ts | waitingForAnimations": {
+    "message": "Waiting for animations..."
   },
   "animation/AnimationUI.ts | animationEndpointSlider": {
     "message": "Animation Endpoint slider"
@@ -5922,7 +5922,7 @@
     "message": "No Play store ID provided"
   },
   "resources/AppManifestView.js | noSuppliedIconIsAtLeastSpxSquare": {
-    "message": "No supplied icon is at least {PH1}px square in PNG, SVG or WebP format, with the purpose attribute unset or set to \"any\"."
+    "message": "No supplied icon is at least {PH1} pixels square in PNG, SVG or WebP format, with the purpose attribute unset or set to \"any\"."
   },
   "resources/AppManifestView.js | orientation": {
     "message": "Orientation"
@@ -9879,7 +9879,7 @@
     "message": "Set {PH1} as the active authenticator"
   },
   "webauthn/WebauthnPane.ts | signCount": {
-    "message": "Sign Count"
+    "message": "Signature Count"
   },
   "webauthn/WebauthnPane.ts | supportsResidentKeys": {
     "message": "Supports resident keys"

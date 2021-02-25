@@ -425,9 +425,6 @@
   "animation/AnimationTimeline.ts | clearAll": {
     "message": "Ĉĺêár̂ ál̂ĺ"
   },
-  "animation/AnimationTimeline.ts | listeningForAnimations": {
-    "message": "L̂íŝt́êńîńĝ f́ôŕ âńîḿât́îón̂ś..."
-  },
   "animation/AnimationTimeline.ts | pause": {
     "message": "P̂áûśê"
   },
@@ -457,6 +454,9 @@
   },
   "animation/AnimationTimeline.ts | setSpeedToS": {
     "message": "Ŝét̂ śp̂éêd́ t̂ó {PH1}"
+  },
+  "animation/AnimationTimeline.ts | waitingForAnimations": {
+    "message": "Ŵáît́îńĝ f́ôŕ âńîḿât́îón̂ś..."
   },
   "animation/AnimationUI.ts | animationEndpointSlider": {
     "message": "Âńîḿât́îón̂ Én̂d́p̂óîńt̂ śl̂íd̂ér̂"
@@ -5922,7 +5922,7 @@
     "message": "N̂ó P̂ĺâý ŝt́ôŕê ÍD̂ ṕr̂óv̂íd̂éd̂"
   },
   "resources/AppManifestView.js | noSuppliedIconIsAtLeastSpxSquare": {
-    "message": "N̂ó ŝúp̂ṕl̂íêd́ îćôń îś ât́ l̂éâśt̂ {PH1}ṕx̂ śq̂úâŕê ín̂ ṔN̂Ǵ, ŜV́Ĝ ór̂ Ẃêb́P̂ f́ôŕm̂át̂, ẃît́ĥ t́ĥé p̂úr̂ṕôśê át̂t́r̂íb̂út̂é ûńŝét̂ ór̂ śêt́ t̂ó \"âńŷ\"."
+    "message": "N̂ó ŝúp̂ṕl̂íêd́ îćôń îś ât́ l̂éâśt̂ {PH1} ṕîx́êĺŝ śq̂úâŕê ín̂ PNG, SVG ór̂ WebP f́ôŕm̂át̂, ẃît́ĥ t́ĥé p̂úr̂ṕôśê át̂t́r̂íb̂út̂é ûńŝét̂ ór̂ śêt́ t̂ó \"any\"."
   },
   "resources/AppManifestView.js | orientation": {
     "message": "Ôŕîén̂t́ât́îón̂"
@@ -9879,7 +9879,7 @@
     "message": "Ŝét̂ {PH1} áŝ t́ĥé âćt̂ív̂é âút̂h́êńt̂íĉát̂ór̂"
   },
   "webauthn/WebauthnPane.ts | signCount": {
-    "message": "Ŝíĝń Ĉóûńt̂"
+    "message": "Ŝíĝńât́ûŕê Ćôún̂t́"
   },
   "webauthn/WebauthnPane.ts | supportsResidentKeys": {
     "message": "Ŝúp̂ṕôŕt̂ś r̂éŝíd̂én̂t́ k̂éŷś"

@@ -76,7 +76,8 @@ def run_tests(chrome_binary,
         env['JOBS'] = jobs
 
     if node_modules_path is not None:
-        env['NODE_PATH'] = node_modules_path
+        # Node requires the path to be absolute
+        env['NODE_PATH'] = os.path.abspath(node_modules_path)
 
     if not cwd:
         cwd = devtools_paths.devtools_root_path()
@@ -142,8 +143,8 @@ def run_test():
     node_modules_path = OPTIONS.node_modules_path
 
     print('Running tests from %s\n' % cwd)
-    test_suite_path = os.path.join(cwd, 'out', OPTIONS.target, 'gen', 'test',
-                                   test_suite)
+    test_suite_path = os.path.join(os.path.abspath(cwd), 'out', OPTIONS.target,
+                                   'gen', 'test', test_suite)
 
     errors_found = False
     try:

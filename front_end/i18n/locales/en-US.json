@@ -8363,25 +8363,25 @@
   "text_editor/CodeMirrorTextEditor.ts | codeEditor": {
     "message": "Code editor"
   },
-  "timeline_model/TimelineIRModel.js | twoFlingsAtTheSameTimeSVsS": {
+  "timeline_model/TimelineIRModel.ts | twoFlingsAtTheSameTimeSVsS": {
     "message": "Two flings at the same time? {PH1} vs {PH2}"
   },
-  "timeline_model/TimelineIRModel.js | twoTouchesAtTheSameTimeSVsS": {
+  "timeline_model/TimelineIRModel.ts | twoTouchesAtTheSameTimeSVsS": {
     "message": "Two touches at the same time? {PH1} vs {PH2}"
   },
-  "timeline_model/TimelineJSProfile.js | threadS": {
+  "timeline_model/TimelineJSProfile.ts | threadS": {
     "message": "Thread {PH1}"
   },
-  "timeline_model/TimelineModel.js | dedicatedWorker": {
+  "timeline_model/TimelineModel.ts | dedicatedWorker": {
     "message": "Dedicated Worker"
   },
-  "timeline_model/TimelineModel.js | threadS": {
+  "timeline_model/TimelineModel.ts | threadS": {
     "message": "Thread {PH1}"
   },
-  "timeline_model/TimelineModel.js | workerS": {
+  "timeline_model/TimelineModel.ts | workerS": {
     "message": "Worker — {PH1}"
   },
-  "timeline_model/TimelineModel.js | workerSS": {
+  "timeline_model/TimelineModel.ts | workerSS": {
     "message": "Worker: {PH1} — {PH2}"
   },
   "timeline/CountersGraph.js | documents": {

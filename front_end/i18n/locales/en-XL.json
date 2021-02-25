@@ -8363,25 +8363,25 @@
   "text_editor/CodeMirrorTextEditor.ts | codeEditor": {
     "message": "Ĉód̂é êd́ît́ôŕ"
   },
-  "timeline_model/TimelineIRModel.js | twoFlingsAtTheSameTimeSVsS": {
+  "timeline_model/TimelineIRModel.ts | twoFlingsAtTheSameTimeSVsS": {
     "message": "T̂ẃô f́l̂ín̂ǵŝ át̂ t́ĥé ŝám̂é t̂ím̂é? {PH1} v̂ś {PH2}"
   },
-  "timeline_model/TimelineIRModel.js | twoTouchesAtTheSameTimeSVsS": {
+  "timeline_model/TimelineIRModel.ts | twoTouchesAtTheSameTimeSVsS": {
     "message": "T̂ẃô t́ôúĉh́êś ât́ t̂h́ê śâḿê t́îḿê? {PH1} v́ŝ {PH2}"
   },
-  "timeline_model/TimelineJSProfile.js | threadS": {
+  "timeline_model/TimelineJSProfile.ts | threadS": {
     "message": "T̂h́r̂éâd́ {PH1}"
   },
-  "timeline_model/TimelineModel.js | dedicatedWorker": {
+  "timeline_model/TimelineModel.ts | dedicatedWorker": {
     "message": "D̂éd̂íĉát̂éd̂ Worker"
   },
-  "timeline_model/TimelineModel.js | threadS": {
+  "timeline_model/TimelineModel.ts | threadS": {
     "message": "T̂h́r̂éâd́ {PH1}"
   },
-  "timeline_model/TimelineModel.js | workerS": {
+  "timeline_model/TimelineModel.ts | workerS": {
     "message": "Worker — {PH1}"
   },
-  "timeline_model/TimelineModel.js | workerSS": {
+  "timeline_model/TimelineModel.ts | workerSS": {
     "message": "Worker: {PH1} — {PH2}"
   },
   "timeline/CountersGraph.js | documents": {

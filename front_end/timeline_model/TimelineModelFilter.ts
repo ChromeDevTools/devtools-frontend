@@ -2,43 +2,30 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
 
 import {RecordType, TimelineModelImpl} from './TimelineModel.js';
 
 export class TimelineModelFilter {
-  /**
-   * @param {!SDK.TracingModel.Event} event
-   * @return {boolean}
-   */
-  accept(event) {
+  accept(_event: SDK.TracingModel.Event): boolean {
     return true;
   }
 }
 
 export class TimelineVisibleEventsFilter extends TimelineModelFilter {
-  /**
-   * @param {!Array<string>} visibleTypes
-   */
-  constructor(visibleTypes) {
+  _visibleTypes: Set<string>;
+  constructor(visibleTypes: string[]) {
     super();
     this._visibleTypes = new Set(visibleTypes);
   }
 
-  /**
-   * @override
-   * @param {!SDK.TracingModel.Event} event
-   * @return {boolean}
-   */
-  accept(event) {
+  accept(event: SDK.TracingModel.Event): boolean {
     return this._visibleTypes.has(TimelineVisibleEventsFilter._eventType(event));
   }
 
-  /**
-   * @param {!SDK.TracingModel.Event} event
-   * @return {!RecordType}
-   */
-  static _eventType(event) {
+  static _eventType(event: SDK.TracingModel.Event): RecordType {
     if (event.hasCategory(TimelineModelImpl.Category.Console)) {
       return RecordType.ConsoleTime;
     }
@@ -48,44 +35,30 @@ export class TimelineVisibleEventsFilter extends TimelineModelFilter {
     if (event.hasCategory(TimelineModelImpl.Category.LatencyInfo)) {
       return RecordType.LatencyInfo;
     }
-    return /** @type {!RecordType} */ (event.name);
+    return event.name as RecordType;
   }
 }
 
 export class TimelineInvisibleEventsFilter extends TimelineModelFilter {
-  /**
-   * @param {!Array<string>} invisibleTypes
-   */
-  constructor(invisibleTypes) {
+  _invisibleTypes: Set<string>;
+  constructor(invisibleTypes: string[]) {
     super();
     this._invisibleTypes = new Set(invisibleTypes);
   }
 
-  /**
-   * @override
-   * @param {!SDK.TracingModel.Event} event
-   * @return {boolean}
-   */
-  accept(event) {
+  accept(event: SDK.TracingModel.Event): boolean {
     return !this._invisibleTypes.has(TimelineVisibleEventsFilter._eventType(event));
   }
 }
 
 export class ExclusiveNameFilter extends TimelineModelFilter {
-  /**
-   * @param {!Array<string>} excludeNames
-   */
-  constructor(excludeNames) {
+  _excludeNames: Set<string>;
+  constructor(excludeNames: string[]) {
     super();
     this._excludeNames = new Set(excludeNames);
   }
 
-  /**
-   * @override
-   * @param {!SDK.TracingModel.Event} event
-   * @return {boolean}
-   */
-  accept(event) {
+  accept(event: SDK.TracingModel.Event): boolean {
     return !this._excludeNames.has(event.name);
   }
 }

@@ -18,6 +18,48 @@ const commandMenuShortcut = Host.Platform.isMac() ? 'Command+Shift+P' : 'Control
 
 export const releaseNoteText: ReleaseNote[] = [
   {
+    version: 32,
+    header: 'Highlights from the Chrome 90 update',
+    highlights: [
+      {
+        title: 'New CSS Flexbox debugging tools',
+        subtitle: 'Debug and inspect CSS Flexbox with the new CSS Flexbox debugging tools.',
+        link: 'https://developers.google.com/web/updates/2021/02/devtools#flexbox',
+      },
+      {
+        title: 'New Core Web Vitals overlay',
+        subtitle: 'Visualize page performance with the new Core Web Vitals overlay.',
+        link: 'https://developers.google.com/web/updates/2021/02/devtools#cwv',
+      },
+      {
+        title: 'Report Trusted Web Activity issues',
+        subtitle: 'Debug Trusted Web Activity issues in the Issues panel.',
+        link: 'https://developers.google.com/web/updates/2021/02/devtools#twa',
+      },
+      {
+        title: 'New Trust Token pane',
+        subtitle: 'New Trust Token pane in the Application Panel.',
+        link: 'https://developers.google.com/web/updates/2021/02/devtools#trust-token-pane',
+      },
+      {
+        title: 'Emulate the CSS color-gamut media feature',
+        subtitle: 'Emulate color-gamut to test different color standards.',
+        link: 'https://developers.google.com/web/updates/2021/02/devtools#css-gamut',
+      },
+      {
+        title: 'Format strings as (valid) JavaScript string literals in the Console',
+        subtitle: 'Display string with escaped double quotes in the Console',
+        link: 'https://developers.google.com/web/updates/2021/02/devtools#double-quotes',
+      },
+      {
+        title: 'Improved PWA tooling',
+        subtitle: 'Improved PWA installability warning message, new warnings for manifest screenshots, and more. ',
+        link: 'https://developers.google.com/web/updates/2021/02/devtools#pwa',
+      },
+    ],
+    link: 'https://developers.google.com/web/updates/2021/02/devtools',
+  },
+  {
     version: 31,
     header: 'Highlights from the Chrome 89 update',
     highlights: [

@@ -13,7 +13,7 @@ import * as Network from '../network/network.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
-import {ServiceWorkerUpdateCycleHelper} from './ServiceWorkerUpdateCycleHelper.js';
+import {ServiceWorkerUpdateCycleView} from './ServiceWorkerUpdateCycleView.js';
 
 export const UIStrings = {
   /**
@@ -496,7 +496,7 @@ export class Section {
     this._toolbar = section.createToolbar();
     this._toolbar.renderAsLinks();
 
-    this._updateCycleElement = ServiceWorkerUpdateCycleHelper.createTimingTable(registration);
+    this._updateCycleElement = ServiceWorkerUpdateCycleView.createTimingTable(registration);
     this._networkRequests = new UI.Toolbar.ToolbarButton(
         i18nString(UIStrings.networkRequests), undefined, i18nString(UIStrings.networkRequests));
     this._networkRequests.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this._networkRequestsClicked, this);
@@ -688,7 +688,7 @@ export class Section {
       }
     }
 
-    ServiceWorkerUpdateCycleHelper.refresh(this._updateCycleElement, this._registration);
+    ServiceWorkerUpdateCycleView.refresh(this._updateCycleElement, this._registration);
 
     return Promise.resolve();
   }

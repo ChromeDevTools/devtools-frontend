@@ -7571,19 +7571,19 @@
   "resources/ServiceWorkersView.ts | workerS": {
     "message": "Ŵór̂ḱêŕ: {PH1}"
   },
-  "resources/ServiceWorkerUpdateCycleHelper.ts | endTimeS": {
+  "resources/ServiceWorkerUpdateCycleView.ts | endTimeS": {
     "message": "Êńd̂ t́îḿê: {PH1}"
   },
-  "resources/ServiceWorkerUpdateCycleHelper.ts | startTimeS": {
+  "resources/ServiceWorkerUpdateCycleView.ts | startTimeS": {
     "message": "Ŝt́âŕt̂ t́îḿê: {PH1}"
   },
-  "resources/ServiceWorkerUpdateCycleHelper.ts | timeline": {
+  "resources/ServiceWorkerUpdateCycleView.ts | timeline": {
     "message": "T̂ím̂él̂ín̂é"
   },
-  "resources/ServiceWorkerUpdateCycleHelper.ts | updateActivity": {
+  "resources/ServiceWorkerUpdateCycleView.ts | updateActivity": {
     "message": "Ûṕd̂át̂é Âćt̂ív̂ít̂ý"
   },
-  "resources/ServiceWorkerUpdateCycleHelper.ts | version": {
+  "resources/ServiceWorkerUpdateCycleView.ts | version": {
     "message": "V̂ér̂śîón̂"
   },
   "resources/StorageItemsView.ts | clearAll": {

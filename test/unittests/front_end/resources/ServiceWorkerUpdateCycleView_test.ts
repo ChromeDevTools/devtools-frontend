@@ -7,7 +7,7 @@ const {assert} = chai;
 import type * as SDKModule from '../../../../front_end/sdk/sdk.js';
 import * as Resources from '../../../../front_end/resources/resources.js';
 
-import Helper = Resources.ServiceWorkerUpdateCycleHelper.ServiceWorkerUpdateCycleHelper;
+import Helper = Resources.ServiceWorkerUpdateCycleView.ServiceWorkerUpdateCycleView;
 
 describe('ServiceWorkerUpdateCycleHelper', () => {
   let versionId = 0;

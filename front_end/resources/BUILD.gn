@@ -27,7 +27,7 @@ devtools_module("resources") {
     "OpenedWindowDetailsView.ts",
     "ResourcesPanel.ts",
     "ServiceWorkerCacheViews.ts",
-    "ServiceWorkerUpdateCycleHelper.ts",
+    "ServiceWorkerUpdateCycleView.ts",
     "ServiceWorkersView.ts",
     "StorageItemsView.ts",
     "StorageView.ts",

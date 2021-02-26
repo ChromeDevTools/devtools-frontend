@@ -440,7 +440,7 @@ all_typescript_module_sources = [
   "resources/OpenedWindowDetailsView.js",
   "resources/ResourcesPanel.js",
   "resources/ServiceWorkerCacheViews.js",
-  "resources/ServiceWorkerUpdateCycleHelper.js",
+  "resources/ServiceWorkerUpdateCycleView.js",
   "resources/ServiceWorkersView.js",
   "resources/StorageItemsView.js",
   "resources/StorageView.js",

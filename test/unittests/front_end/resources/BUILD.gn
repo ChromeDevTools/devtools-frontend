@@ -8,7 +8,7 @@ ts_library("resources") {
   testonly = true
   sources = [
     "FrameDetailsView_test.ts",
-    "ServiceWorkerUpdateCycleHelper_test.ts",
+    "ServiceWorkerUpdateCycleView_test.ts",
     "TrustTokensView_test.ts",
   ]
 

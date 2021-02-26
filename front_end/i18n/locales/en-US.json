@@ -7571,19 +7571,19 @@
   "resources/ServiceWorkersView.ts | workerS": {
     "message": "Worker: {PH1}"
   },
-  "resources/ServiceWorkerUpdateCycleHelper.ts | endTimeS": {
+  "resources/ServiceWorkerUpdateCycleView.ts | endTimeS": {
     "message": "End time: {PH1}"
   },
-  "resources/ServiceWorkerUpdateCycleHelper.ts | startTimeS": {
+  "resources/ServiceWorkerUpdateCycleView.ts | startTimeS": {
     "message": "Start time: {PH1}"
   },
-  "resources/ServiceWorkerUpdateCycleHelper.ts | timeline": {
+  "resources/ServiceWorkerUpdateCycleView.ts | timeline": {
     "message": "Timeline"
   },
-  "resources/ServiceWorkerUpdateCycleHelper.ts | updateActivity": {
+  "resources/ServiceWorkerUpdateCycleView.ts | updateActivity": {
     "message": "Update Activity"
   },
-  "resources/ServiceWorkerUpdateCycleHelper.ts | version": {
+  "resources/ServiceWorkerUpdateCycleView.ts | version": {
     "message": "Version"
   },
   "resources/StorageItemsView.ts | clearAll": {

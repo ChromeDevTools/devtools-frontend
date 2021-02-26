@@ -30,9 +30,9 @@ export const UIStrings = {
   */
   endTimeS: 'End time: {PH1}',
 };
-const str_ = i18n.i18n.registerUIStrings('resources/ServiceWorkerUpdateCycleHelper.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('resources/ServiceWorkerUpdateCycleView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-export class ServiceWorkerUpdateCycleHelper {
+export class ServiceWorkerUpdateCycleView {
   static calculateServiceWorkerUpdateRanges(registration: SDK.ServiceWorkerManager.ServiceWorkerRegistration):
       Array<ServiceWorkerUpdateRange> {
     function addRange(ranges: Array<ServiceWorkerUpdateRange>, range: ServiceWorkerUpdateRange): void {

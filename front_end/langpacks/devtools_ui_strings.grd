@@ -14,7 +14,6 @@
       <part file="../emulated_devices/emulated_devices_strings.grdp" />
       <part file="../emulation/emulation_strings.grdp" />
       <part file="../inspector_main/inspector_main_strings.grdp" />
-      <part file="../main/main_strings.grdp" />
       <part file="shared_strings.grdp" />
     </messages>
   </release>

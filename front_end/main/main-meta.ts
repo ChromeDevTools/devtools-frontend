@@ -3,8 +3,6 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
-import type * as Platform from '../platform/platform.js';
-import {ls} from '../platform/platform.js';
 import * as Root from '../root/root.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
@@ -15,6 +13,199 @@ import * as Components from '../components/components.js';
 import type * as Main from './main.js';
 import type * as InspectorMain from '../inspector_main/inspector_main.js';
 
+import * as i18n from '../i18n/i18n.js';
+export const UIStrings = {
+  /**
+  *@description Text in Main
+  */
+  focusDebuggee: 'Focus debuggee',
+  /**
+  *@description Text in the Shortcuts page in settings to explain a keyboard shortcut
+  */
+  toggleDrawer: 'Toggle drawer',
+  /**
+  *@description Title of an action that navigates to the next panel
+  */
+  nextPanel: 'Next panel',
+  /**
+  *@description Title of an action that navigates to the previous panel
+  */
+  previousPanel: 'Previous panel',
+  /**
+  *@description Title of an action that reloads the DevTools
+  */
+  reloadDevtools: 'Reload DevTools',
+  /**
+  *@description Title of an action in the main tool to toggle dock
+  */
+  restoreLastDockPosition: 'Restore last dock position',
+  /**
+  *@description Text in the Shortcuts page to explain a keyboard shortcut (zoom in)
+  */
+  zoomIn: 'Zoom in',
+  /**
+  *@description Text in the Shortcuts page to explain a keyboard shortcut (zoom out)
+  */
+  zoomOut: 'Zoom out',
+  /**
+  *@description Title of an action that reset the zoom level to its default
+  */
+  resetZoomLevel: 'Reset zoom level',
+  /**
+  *@description Title of an action to search in panel
+  */
+  searchInPanel: 'Search in panel',
+  /**
+  *@description Title of an action that cancels the current search
+  */
+  cancelSearch: 'Cancel search',
+  /**
+  *@description Title of an action that finds the next search result
+  */
+  findNextResult: 'Find next result',
+  /**
+  *@description Title of an action to find the previous search result
+  */
+  findPreviousResult: 'Find previous result',
+  /**
+  *@description Title of a setting under the Appearance category in Settings
+  */
+  theme: 'Theme:',
+  /**
+  *@description Title of a setting under the Appearance category that can be invoked through the Command Menu
+  */
+  switchToSystemPreferredColor: 'Switch to system preferred color theme',
+  /**
+  *@description A drop-down menu option to switch to system preferred color theme
+  */
+  systemPreference: 'System preference',
+  /**
+  *@description Title of a setting under the Appearance category that can be invoked through the Command Menu
+  */
+  switchToLightTheme: 'Switch to light theme',
+  /**
+  *@description A drop-down menu option to switch to light theme
+  */
+  lightCapital: 'Light',
+  /**
+  *@description Title of a setting under the Appearance category that can be invoked through the Command Menu
+  */
+  switchToDarkTheme: 'Switch to dark theme',
+  /**
+  *@description A drop-down menu option to switch to dark theme
+  */
+  darkCapital: 'Dark',
+  /**
+  *@description A tag of theme preference settings that can be searched in the command menu
+  */
+  darkLower: 'dark',
+  /**
+  *@description A tag of theme preference settings that can be searched in the command menu
+  */
+  lightLower: 'light',
+  /**
+  *@description Title of a setting under the Appearance category in Settings
+  */
+  panelLayout: 'Panel layout:',
+  /**
+  *@description Title of a setting under the Appearance category that can be invoked through the Command Menu
+  */
+  useHorizontalPanelLayout: 'Use horizontal panel layout',
+  /**
+  *@description A drop-down menu option to use horizontal panel layout
+  */
+  horizontal: 'horizontal',
+  /**
+  *@description Title of a setting under the Appearance category that can be invoked through the Command Menu
+  */
+  useVerticalPanelLayout: 'Use vertical panel layout',
+  /**
+  *@description A drop-down menu option to use vertical panel layout
+  */
+  vertical: 'vertical',
+  /**
+  *@description Title of a setting under the Appearance category that can be invoked through the Command Menu
+  */
+  useAutomaticPanelLayout: 'Use automatic panel layout',
+  /**
+  *@description Text short for automatic
+  */
+  auto: 'auto',
+  /**
+  *@description Title of a setting under the Appearance category in Settings
+  */
+  colorFormat: 'Color format:',
+  /**
+  *@description Title of a setting under the Appearance category that can be invoked through the Command Menu
+  */
+  setColorFormatAsAuthored: 'Set color format as authored',
+  /**
+  *@description A drop-down menu option to set color format as authored
+  */
+  asAuthored: 'As authored',
+  /**
+  *@description Title of a setting under the Appearance category that can be invoked through the Command Menu
+  */
+  setColorFormatToHex: 'Set color format to HEX',
+  /**
+  *@description Title of a setting under the Appearance category that can be invoked through the Command Menu
+  */
+  setColorFormatToRgb: 'Set color format to RGB',
+  /**
+  *@description Title of a setting under the Appearance category that can be invoked through the Command Menu
+  */
+  setColorFormatToHsl: 'Set color format to HSL',
+  /**
+  *@description Title of a setting under the Appearance category in Settings
+  */
+  enableCtrlShortcutToSwitchPanels: 'Enable Ctrl + 1-9 shortcut to switch panels',
+  /**
+  *@description (Mac only) Title of a setting under the Appearance category in Settings
+  */
+  enableShortcutToSwitchPanels: 'Enable ⌘ + 1-9 shortcut to switch panels',
+  /**
+  *@description A drop-down menu option to dock to right
+  */
+  right: 'Right',
+  /**
+  *@description Text to dock the DevTools to the right of the browser tab
+  */
+  dockToRight: 'Dock to right',
+  /**
+  *@description A drop-down menu option to dock to bottom
+  */
+  bottom: 'Bottom',
+  /**
+  *@description Text to dock the DevTools to the bottom of the browser tab
+  */
+  dockToBottom: 'Dock to bottom',
+  /**
+  *@description A drop-down menu option to dock to left
+  */
+  left: 'Left',
+  /**
+  *@description Text to dock the DevTools to the left of the browser tab
+  */
+  dockToLeft: 'Dock to left',
+  /**
+  *@description A drop-down menu option to undock into separate window
+  */
+  undocked: 'Undocked',
+  /**
+  *@description Text to undock the DevTools
+  */
+  undockIntoSeparateWindow: 'Undock into separate window',
+  /**
+  *@description Name of the default set of DevTools keyboard shortcuts
+  */
+  devtoolsDefault: 'DevTools (Default)',
+  /**
+  *@description Name of a set of keyboard shortcuts from Visual Studio Code
+  */
+  visualStudioCode: 'Visual Studio Code',
+};
+const str_ = i18n.i18n.registerUIStrings('main/main-meta.ts', UIStrings);
+const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 let loadedMainModule: (typeof Main|undefined);
 let loadedInspectorMainModule: (typeof InspectorMain|undefined);
 
@@ -49,7 +240,7 @@ UI.ActionRegistration.registerActionExtension({
     return InspectorMain.InspectorMain.FocusDebuggeeActionDelegate.instance();
   },
   order: 100,
-  title: (): Platform.UIString.LocalizedString => ls`Focus debuggee`,
+  title: i18nLazyString(UIStrings.focusDebuggee),
 });
 
 UI.ActionRegistration.registerActionExtension({
@@ -59,7 +250,7 @@ UI.ActionRegistration.registerActionExtension({
     return UI.InspectorView.ActionDelegate.instance();
   },
   order: 101,
-  title: (): Platform.UIString.LocalizedString => ls`Toggle drawer`,
+  title: i18nLazyString(UIStrings.toggleDrawer),
   bindings: [
     {
       shortcut: 'Esc',
@@ -70,7 +261,7 @@ UI.ActionRegistration.registerActionExtension({
 UI.ActionRegistration.registerActionExtension({
   actionId: 'main.next-tab',
   category: UI.ActionRegistration.ActionCategory.GLOBAL,
-  title: (): Platform.UIString.LocalizedString => ls`Next panel`,
+  title: i18nLazyString(UIStrings.nextPanel),
   async loadActionDelegate() {
     return UI.InspectorView.ActionDelegate.instance();
   },
@@ -89,7 +280,7 @@ UI.ActionRegistration.registerActionExtension({
 UI.ActionRegistration.registerActionExtension({
   actionId: 'main.previous-tab',
   category: UI.ActionRegistration.ActionCategory.GLOBAL,
-  title: (): Platform.UIString.LocalizedString => ls`Previous panel`,
+  title: i18nLazyString(UIStrings.previousPanel),
   async loadActionDelegate() {
     return UI.InspectorView.ActionDelegate.instance();
   },
@@ -108,7 +299,7 @@ UI.ActionRegistration.registerActionExtension({
 UI.ActionRegistration.registerActionExtension({
   actionId: 'main.debug-reload',
   category: UI.ActionRegistration.ActionCategory.GLOBAL,
-  title: (): Platform.UIString.LocalizedString => ls`Reload DevTools`,
+  title: i18nLazyString(UIStrings.reloadDevtools),
   async loadActionDelegate() {
     const Main = await loadMainModule();
     return Main.MainImpl.ReloadActionDelegate.instance();
@@ -122,7 +313,7 @@ UI.ActionRegistration.registerActionExtension({
 
 UI.ActionRegistration.registerActionExtension({
   category: UI.ActionRegistration.ActionCategory.GLOBAL,
-  title: (): Platform.UIString.LocalizedString => ls`Restore last dock position`,
+  title: i18nLazyString(UIStrings.restoreLastDockPosition),
   actionId: 'main.toggle-dock',
   async loadActionDelegate() {
     return UI.DockController.ToggleDockActionDelegate.instance();
@@ -142,7 +333,7 @@ UI.ActionRegistration.registerActionExtension({
 UI.ActionRegistration.registerActionExtension({
   actionId: 'main.zoom-in',
   category: UI.ActionRegistration.ActionCategory.GLOBAL,
-  title: (): Platform.UIString.LocalizedString => ls`Zoom in`,
+  title: i18nLazyString(UIStrings.zoomIn),
   async loadActionDelegate() {
     const Main = await loadMainModule();
     return Main.MainImpl.ZoomActionDelegate.instance();
@@ -194,7 +385,7 @@ UI.ActionRegistration.registerActionExtension({
 UI.ActionRegistration.registerActionExtension({
   actionId: 'main.zoom-out',
   category: UI.ActionRegistration.ActionCategory.GLOBAL,
-  title: (): Platform.UIString.LocalizedString => ls`Zoom out`,
+  title: i18nLazyString(UIStrings.zoomOut),
   async loadActionDelegate() {
     const Main = await loadMainModule();
     return Main.MainImpl.ZoomActionDelegate.instance();
@@ -246,7 +437,7 @@ UI.ActionRegistration.registerActionExtension({
 UI.ActionRegistration.registerActionExtension({
   actionId: 'main.zoom-reset',
   category: UI.ActionRegistration.ActionCategory.GLOBAL,
-  title: (): Platform.UIString.LocalizedString => ls`Reset zoom level`,
+  title: i18nLazyString(UIStrings.resetZoomLevel),
   async loadActionDelegate() {
     const Main = await loadMainModule();
     return Main.MainImpl.ZoomActionDelegate.instance();
@@ -274,7 +465,7 @@ UI.ActionRegistration.registerActionExtension({
 UI.ActionRegistration.registerActionExtension({
   actionId: 'main.search-in-panel.find',
   category: UI.ActionRegistration.ActionCategory.GLOBAL,
-  title: (): Platform.UIString.LocalizedString => ls`Search in panel`,
+  title: i18nLazyString(UIStrings.searchInPanel),
   async loadActionDelegate() {
     const Main = await loadMainModule();
     return Main.MainImpl.SearchActionDelegate.instance();
@@ -306,7 +497,7 @@ UI.ActionRegistration.registerActionExtension({
 UI.ActionRegistration.registerActionExtension({
   actionId: 'main.search-in-panel.cancel',
   category: UI.ActionRegistration.ActionCategory.GLOBAL,
-  title: (): Platform.UIString.LocalizedString => ls`Cancel search`,
+  title: i18nLazyString(UIStrings.cancelSearch),
   async loadActionDelegate() {
     const Main = await loadMainModule();
     return Main.MainImpl.SearchActionDelegate.instance();
@@ -322,7 +513,7 @@ UI.ActionRegistration.registerActionExtension({
 UI.ActionRegistration.registerActionExtension({
   actionId: 'main.search-in-panel.find-next',
   category: UI.ActionRegistration.ActionCategory.GLOBAL,
-  title: (): Platform.UIString.LocalizedString => ls`Find next result`,
+  title: i18nLazyString(UIStrings.findNextResult),
   async loadActionDelegate() {
     const Main = await loadMainModule();
     return Main.MainImpl.SearchActionDelegate.instance();
@@ -354,7 +545,7 @@ UI.ActionRegistration.registerActionExtension({
 UI.ActionRegistration.registerActionExtension({
   actionId: 'main.search-in-panel.find-previous',
   category: UI.ActionRegistration.ActionCategory.GLOBAL,
-  title: (): Platform.UIString.LocalizedString => ls`Find previous result`,
+  title: i18nLazyString(UIStrings.findPreviousResult),
   async loadActionDelegate() {
     const Main = await loadMainModule();
     return Main.MainImpl.SearchActionDelegate.instance();
@@ -385,54 +576,54 @@ UI.ActionRegistration.registerActionExtension({
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.APPEARANCE,
-  title: (): Platform.UIString.LocalizedString => ls`Theme:`,
+  title: i18nLazyString(UIStrings.theme),
   settingName: 'uiTheme',
   settingType: Common.Settings.SettingType.ENUM,
   defaultValue: 'systemPreferred',
   reloadRequired: true,
   options: [
     {
-      title: (): Platform.UIString.LocalizedString => ls`Switch to system preferred color theme`,
-      text: (): Platform.UIString.LocalizedString => ls`System preference`,
+      title: i18nLazyString(UIStrings.switchToSystemPreferredColor),
+      text: i18nLazyString(UIStrings.systemPreference),
       value: 'systemPreferred',
     },
     {
-      title: (): Platform.UIString.LocalizedString => ls`Switch to light theme`,
-      text: (): Platform.UIString.LocalizedString => ls`Light`,
+      title: i18nLazyString(UIStrings.switchToLightTheme),
+      text: i18nLazyString(UIStrings.lightCapital),
       value: 'default',
     },
     {
-      title: (): Platform.UIString.LocalizedString => ls`Switch to dark theme`,
-      text: (): Platform.UIString.LocalizedString => ls`Dark`,
+      title: i18nLazyString(UIStrings.switchToDarkTheme),
+      text: i18nLazyString(UIStrings.darkCapital),
       value: 'dark',
     },
   ],
   tags: [
-    (): Platform.UIString.LocalizedString => ls`dark`,
-    (): Platform.UIString.LocalizedString => ls`light`,
+    i18nLazyString(UIStrings.darkLower),
+    i18nLazyString(UIStrings.lightLower),
   ],
 });
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.APPEARANCE,
-  title: (): Platform.UIString.LocalizedString => ls`Panel layout:`,
+  title: i18nLazyString(UIStrings.panelLayout),
   settingName: 'sidebarPosition',
   settingType: Common.Settings.SettingType.ENUM,
   defaultValue: 'auto',
   options: [
     {
-      title: (): Platform.UIString.LocalizedString => ls`Use horizontal panel layout`,
-      text: (): Platform.UIString.LocalizedString => ls`horizontal`,
+      title: i18nLazyString(UIStrings.useHorizontalPanelLayout),
+      text: i18nLazyString(UIStrings.horizontal),
       value: 'bottom',
     },
     {
-      title: (): Platform.UIString.LocalizedString => ls`Use vertical panel layout`,
-      text: (): Platform.UIString.LocalizedString => ls`vertical`,
+      title: i18nLazyString(UIStrings.useVerticalPanelLayout),
+      text: i18nLazyString(UIStrings.vertical),
       value: 'right',
     },
     {
-      title: (): Platform.UIString.LocalizedString => ls`Use automatic panel layout`,
-      text: (): Platform.UIString.LocalizedString => ls`auto`,
+      title: i18nLazyString(UIStrings.useAutomaticPanelLayout),
+      text: i18nLazyString(UIStrings.auto),
       value: 'auto',
     },
   ],
@@ -440,30 +631,30 @@ Common.Settings.registerSettingExtension({
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.APPEARANCE,
-  title: (): Platform.UIString.LocalizedString => ls`Color format:`,
+  title: i18nLazyString(UIStrings.colorFormat),
   settingName: 'colorFormat',
   settingType: Common.Settings.SettingType.ENUM,
   defaultValue: 'original',
   options: [
     {
-      title: (): Platform.UIString.LocalizedString => ls`Set color format as authored`,
-      text: (): Platform.UIString.LocalizedString => ls`As authored`,
+      title: i18nLazyString(UIStrings.setColorFormatAsAuthored),
+      text: i18nLazyString(UIStrings.asAuthored),
       value: 'original',
     },
     {
-      title: (): Platform.UIString.LocalizedString => ls`Set color format to HEX`,
+      title: i18nLazyString(UIStrings.setColorFormatToHex),
       text: 'HEX: #dac0de',
       value: 'hex',
       raw: true,
     },
     {
-      title: (): Platform.UIString.LocalizedString => ls`Set color format to RGB`,
+      title: i18nLazyString(UIStrings.setColorFormatToRgb),
       text: 'RGB: rgb(128 255 255)',
       value: 'rgb',
       raw: true,
     },
     {
-      title: (): Platform.UIString.LocalizedString => ls`Set color format to HSL`,
+      title: i18nLazyString(UIStrings.setColorFormatToHsl),
       text: 'HSL: hsl(300deg 80% 90%)',
       value: 'hsl',
       raw: true,
@@ -473,8 +664,8 @@ Common.Settings.registerSettingExtension({
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.APPEARANCE,
-  title: (): Platform.UIString.LocalizedString => ls`Enable Ctrl + 1-9 shortcut to switch panels`,
-  titleMac: (): Platform.UIString.LocalizedString => ls`Enable ⌘ + 1-9 shortcut to switch panels`,
+  title: i18nLazyString(UIStrings.enableCtrlShortcutToSwitchPanels),
+  titleMac: i18nLazyString(UIStrings.enableShortcutToSwitchPanels),
   settingName: 'shortcutPanelSwitch',
   settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: false,
@@ -489,23 +680,23 @@ Common.Settings.registerSettingExtension({
   options: [
     {
       value: 'right',
-      text: (): Platform.UIString.LocalizedString => ls`Right`,
-      title: (): Platform.UIString.LocalizedString => ls`Dock to right`,
+      text: i18nLazyString(UIStrings.right),
+      title: i18nLazyString(UIStrings.dockToRight),
     },
     {
       value: 'bottom',
-      text: (): Platform.UIString.LocalizedString => ls`Bottom`,
-      title: (): Platform.UIString.LocalizedString => ls`Dock to bottom`,
+      text: i18nLazyString(UIStrings.bottom),
+      title: i18nLazyString(UIStrings.dockToBottom),
     },
     {
       value: 'left',
-      text: (): Platform.UIString.LocalizedString => ls`Left`,
-      title: (): Platform.UIString.LocalizedString => ls`Dock to left`,
+      text: i18nLazyString(UIStrings.left),
+      title: i18nLazyString(UIStrings.dockToLeft),
     },
     {
       value: 'undocked',
-      text: (): Platform.UIString.LocalizedString => ls`Undocked`,
-      title: (): Platform.UIString.LocalizedString => ls`Undock into separate window`,
+      text: i18nLazyString(UIStrings.undocked),
+      title: i18nLazyString(UIStrings.undockIntoSeparateWindow),
     },
   ],
 });
@@ -517,13 +708,13 @@ Common.Settings.registerSettingExtension({
   options: [
     {
       value: 'devToolsDefault',
-      title: (): Platform.UIString.LocalizedString => ls`DevTools (Default)`,
-      text: (): Platform.UIString.LocalizedString => ls`DevTools (Default)`,
+      title: i18nLazyString(UIStrings.devtoolsDefault),
+      text: i18nLazyString(UIStrings.devtoolsDefault),
     },
     {
       value: 'vsCode',
-      title: (): Platform.UIString.LocalizedString => ls`Visual Studio Code`,
-      text: (): Platform.UIString.LocalizedString => ls`Visual Studio Code`,
+      title: i18nLazyString(UIStrings.visualStudioCode),
+      text: i18nLazyString(UIStrings.visualStudioCode),
     },
   ],
 });

@@ -36,7 +36,6 @@ import * as Host from '../host/host.js';
 import * as i18n from '../i18n/i18n.js';
 import * as Persistence from '../persistence/persistence.js';
 import * as Platform from '../platform/platform.js';
-import {ls} from '../platform/platform.js';
 import * as ProtocolClient from '../protocol_client/protocol_client.js';
 import * as Recorder from '../recorder/recorder.js';
 import * as Root from '../root/root.js';
@@ -49,6 +48,64 @@ import * as Workspace from '../workspace/workspace.js';
 
 import {ExecutionContextSelector} from './ExecutionContextSelector.js';
 
+export const UIStrings = {
+  /**
+  *@description A message to display prompting the user to reload DevTools if the OS color scheme changes.
+  */
+  theSystempreferredColorSchemeHas:
+      'The system-preferred color scheme has changed. To apply this change to DevTools, reload.',
+  /**
+  *@description Title of item in main
+  */
+  customizeAndControlDevtools: 'Customize and control DevTools',
+  /**
+  *@description Title element text content in Main
+  */
+  dockSide: 'Dock side',
+  /**
+  *@description Title element title in Main
+  *@example {Ctrl+Shift+D} PH1
+  */
+  placementOfDevtoolsRelativeToThe: 'Placement of DevTools relative to the page. ({PH1} to restore last position)',
+  /**
+  *@description Text to undock the DevTools
+  */
+  undockIntoSeparateWindow: 'Undock into separate window',
+  /**
+  *@description Text to dock the DevTools to the bottom of the browser tab
+  */
+  dockToBottom: 'Dock to bottom',
+  /**
+  *@description Text to dock the DevTools to the right of the browser tab
+  */
+  dockToRight: 'Dock to right',
+  /**
+  *@description Text to dock the DevTools to the left of the browser tab
+  */
+  dockToLeft: 'Dock to left',
+  /**
+  *@description Text in Main
+  */
+  focusDebuggee: 'Focus debuggee',
+  /**
+  *@description Text in Main
+  */
+  hideConsoleDrawer: 'Hide console drawer',
+  /**
+  *@description Text in Main
+  */
+  showConsoleDrawer: 'Show console drawer',
+  /**
+  *@description A context menu item in the Main
+  */
+  moreTools: 'More tools',
+  /**
+  *@description Text for the viewing the help options
+  */
+  help: 'Help',
+};
+const str_ = i18n.i18n.registerUIStrings('main/MainImpl.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class MainImpl {
   constructor() {
     MainImpl._instanceForTest = this;
@@ -84,7 +141,6 @@ export class MainImpl {
     console.timeStamp('Main._loaded');
     await Root.Runtime.appStarted;
     Root.Runtime.Runtime.setPlatform(Host.Platform.platform());
-    Root.Runtime.Runtime.setL10nCallback(ls);
     const prefs = await new Promise(resolve => {
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.getPreferences(resolve);
     });
@@ -267,7 +323,7 @@ export class MainImpl {
       const darkThemeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
       darkThemeMediaQuery.addEventListener('change', () => {
         UI.InspectorView.InspectorView.instance().displayReloadRequiredWarning(
-            ls`The system-preferred color scheme has changed. To apply this change to DevTools, reload.`);
+            i18nString(UIStrings.theSystempreferredColorSchemeHas));
       });
     }
 
@@ -675,7 +731,7 @@ let mainMenuItemInstance;
 export class MainMenuItem {
   constructor() {
     this._item = new UI.Toolbar.ToolbarMenuButton(this._handleContextMenu.bind(this), true);
-    this._item.setTitle(Common.UIString.UIString('Customize and control DevTools'));
+    this._item.setTitle(i18nString(UIStrings.customizeAndControlDevtools));
   }
 
   /**
@@ -708,25 +764,21 @@ export class MainMenuItem {
       dockItemElement.classList.add('flex-auto');
       dockItemElement.tabIndex = -1;
       const titleElement = dockItemElement.createChild('span', 'flex-auto');
-      titleElement.textContent = Common.UIString.UIString('Dock side');
+      titleElement.textContent = i18nString(UIStrings.dockSide);
       const toggleDockSideShorcuts =
           UI.ShortcutRegistry.ShortcutRegistry.instance().shortcutsForAction('main.toggle-dock');
       UI.Tooltip.Tooltip.install(
           titleElement,
-          Common.UIString.UIString(
-              'Placement of DevTools relative to the page. (%s to restore last position)',
-              toggleDockSideShorcuts[0].title()));
+          i18nString(UIStrings.placementOfDevtoolsRelativeToThe, {PH1: toggleDockSideShorcuts[0].title()}));
       dockItemElement.appendChild(titleElement);
       const dockItemToolbar = new UI.Toolbar.Toolbar('', dockItemElement);
       if (Host.Platform.isMac() && !ThemeSupport.ThemeSupport.instance().hasTheme()) {
         dockItemToolbar.makeBlueOnHover();
       }
-      const undock =
-          new UI.Toolbar.ToolbarToggle(Common.UIString.UIString('Undock into separate window'), 'largeicon-undock');
-      const bottom =
-          new UI.Toolbar.ToolbarToggle(Common.UIString.UIString('Dock to bottom'), 'largeicon-dock-to-bottom');
-      const right = new UI.Toolbar.ToolbarToggle(Common.UIString.UIString('Dock to right'), 'largeicon-dock-to-right');
-      const left = new UI.Toolbar.ToolbarToggle(Common.UIString.UIString('Dock to left'), 'largeicon-dock-to-left');
+      const undock = new UI.Toolbar.ToolbarToggle(i18nString(UIStrings.undockIntoSeparateWindow), 'largeicon-undock');
+      const bottom = new UI.Toolbar.ToolbarToggle(i18nString(UIStrings.dockToBottom), 'largeicon-dock-to-bottom');
+      const right = new UI.Toolbar.ToolbarToggle(i18nString(UIStrings.dockToRight), 'largeicon-dock-to-right');
+      const left = new UI.Toolbar.ToolbarToggle(i18nString(UIStrings.dockToLeft), 'largeicon-dock-to-left');
       undock.addEventListener(UI.Toolbar.ToolbarButton.Events.MouseDown, event => event.data.consume());
       bottom.addEventListener(UI.Toolbar.ToolbarButton.Events.MouseDown, event => event.data.consume());
       right.addEventListener(UI.Toolbar.ToolbarButton.Events.MouseDown, event => event.data.consume());
@@ -786,17 +838,16 @@ export class MainMenuItem {
     if (UI.DockController.DockController.instance().dockSide() === UI.DockController.State.Undocked) {
       const mainTarget = SDK.SDKModel.TargetManager.instance().mainTarget();
       if (mainTarget && mainTarget.type() === SDK.SDKModel.Type.Frame) {
-        contextMenu.defaultSection().appendAction(
-            'inspector_main.focus-debuggee', Common.UIString.UIString('Focus debuggee'));
+        contextMenu.defaultSection().appendAction('inspector_main.focus-debuggee', i18nString(UIStrings.focusDebuggee));
       }
     }
 
     contextMenu.defaultSection().appendAction(
         'main.toggle-drawer',
-        UI.InspectorView.InspectorView.instance().drawerVisible() ? Common.UIString.UIString('Hide console drawer') :
-                                                                    Common.UIString.UIString('Show console drawer'));
+        UI.InspectorView.InspectorView.instance().drawerVisible() ? i18nString(UIStrings.hideConsoleDrawer) :
+                                                                    i18nString(UIStrings.showConsoleDrawer));
     contextMenu.appendItemsAtLocation('mainMenu');
-    const moreTools = contextMenu.defaultSection().appendSubMenuItem(Common.UIString.UIString('More tools'));
+    const moreTools = contextMenu.defaultSection().appendSubMenuItem(i18nString(UIStrings.moreTools));
     const viewExtensions = UI.ViewManager.getRegisteredViewExtensions();
     viewExtensions.sort((extension1, extension2) => {
       const title1 = extension1.title();
@@ -829,7 +880,7 @@ export class MainMenuItem {
       });
     }
 
-    const helpSubMenu = contextMenu.footerSection().appendSubMenuItem(Common.UIString.UIString('Help'));
+    const helpSubMenu = contextMenu.footerSection().appendSubMenuItem(i18nString(UIStrings.help));
     helpSubMenu.appendItemsAtLocation('mainMenuHelp');
   }
 }

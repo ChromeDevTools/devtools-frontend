@@ -4,7 +4,7 @@
 
 import {getBrowserAndPages, goToResource} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {assertIssueButtonLabel, navigateToConsoleTab} from '../helpers/console-helpers.js';
+import {navigateToConsoleTab, waitForIssueButtonLabel} from '../helpers/console-helpers.js';
 
 describe('The Console Tab', async () => {
   it('shows the toolbar button for no issue correctly', async () => {
@@ -12,7 +12,7 @@ describe('The Console Tab', async () => {
     await goToResource('console/empty.html');
     await navigateToConsoleTab();
 
-    await assertIssueButtonLabel('No Issues');
+    await waitForIssueButtonLabel('No Issues');
   });
 
   it('shows the toolbar button for one issue correctly', async () => {
@@ -20,7 +20,7 @@ describe('The Console Tab', async () => {
     await goToResource('console/cookie-issue.html');
     await navigateToConsoleTab();
 
-    await assertIssueButtonLabel('1 Issue');
+    await waitForIssueButtonLabel('1 Issue');
   });
 
   it('shows the toolbar button for two issues correctly', async () => {
@@ -28,7 +28,7 @@ describe('The Console Tab', async () => {
     await goToResource('console/two-cookie-issues.html');
     await navigateToConsoleTab();
 
-    await assertIssueButtonLabel('2 Issues');
+    await waitForIssueButtonLabel('2 Issues');
   });
 
   it('updates the toolbar button correctly', async () => {
@@ -36,7 +36,7 @@ describe('The Console Tab', async () => {
     await goToResource('console/empty.html');
     await navigateToConsoleTab();
 
-    await assertIssueButtonLabel('No Issues');
+    await waitForIssueButtonLabel('No Issues');
 
     const {target} = getBrowserAndPages();
     await target.evaluate(() => {
@@ -44,6 +44,6 @@ describe('The Console Tab', async () => {
       document.cookie = 'foo=bar;samesite=None';
     });
 
-    await assertIssueButtonLabel('1 Issue');
+    await waitForIssueButtonLabel('1 Issue');
   });
 });

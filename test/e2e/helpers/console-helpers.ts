@@ -237,7 +237,7 @@ async function getIssueButtonLabel(): Promise<string|null> {
   return infobarButtonText;
 }
 
-export async function assertIssueButtonLabel(expectedLabel: string) {
+export async function waitForIssueButtonLabel(expectedLabel: string) {
   await waitForFunction(async () => {
     const label = await getIssueButtonLabel();
     return expectedLabel === label;

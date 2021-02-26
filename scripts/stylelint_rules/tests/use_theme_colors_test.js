@@ -116,7 +116,6 @@ describe('use_theme_colors', () => {
     assert.strictEqual(output, 'p { color: var(--color-primary); }');
   });
 
-
   it('errors when a variable is used that is not defined in themeColors', async () => {
     const warnings = await lint('p { color: var(--not-a-theme-color); }');
 
@@ -149,6 +148,14 @@ describe('use_theme_colors', () => {
   it('allows any color to be used when in a .-theme-with-dark-background block', async () => {
     const code = `.-theme-with-dark-background p {
       color: #fff;
+    }`;
+    const warnings = await lint(code);
+    assert.lengthOf(warnings, 0);
+  });
+
+  it('ignores any css variables prefixed with "--override-"', async () => {
+    const code = `p {
+      color: var(--override-custom-color);
     }`;
     const warnings = await lint(code);
     assert.lengthOf(warnings, 0);

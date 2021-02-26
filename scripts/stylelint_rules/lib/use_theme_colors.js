@@ -22,6 +22,8 @@ const COLOR_INDICATOR_REGEXES = new Set([
   /rgba?/,
 ]);
 
+const CUSTOM_VARIABLE_OVERRIDE_PREFIX = '--override-';
+
 const themeColorsPath = path.join(__dirname, '..', '..', '..', 'front_end', 'ui', 'themeColors.css');
 const inspectorStylesPath = path.join(__dirname, '..', '..', '..', 'front_end', 'ui', 'inspectorStyle.css');
 
@@ -121,6 +123,18 @@ module.exports = stylelint.createPlugin(RULE_NAME, function(primary, secondary, 
           if (!match) {
             throw new Error(`Could not parse CSS variable usage: ${declaration.value}`);
           }
+
+          /**
+           * The override prefix acts as an escape hatch to allow custom-defined
+           * color variables to be applied. This option should only be used when
+           * there's no alternative. Example scenarios include using CSS
+           * variables to customize internal styles of a web component from its
+           * host environment.
+           */
+          if (variableName.startsWith(CUSTOM_VARIABLE_OVERRIDE_PREFIX)) {
+            return;
+          }
+
           const variableIsValid =
               DEFINED_INSPECTOR_STYLE_VARIABLES.has(variableName) || DEFINED_THEME_COLOR_VARIABLES.has(variableName);
           if (!variableIsValid) {

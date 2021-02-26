@@ -25,7 +25,17 @@ import test_helpers
 def parse_options(cli_args):
     parser = argparse.ArgumentParser(description='Run tests')
     parser.add_argument('--chrome-binary', dest='chrome_binary', help='path to Chromium binary')
-    parser.add_argument('--test-suite', dest='test_suite', help='path to test suite')
+    parser.add_argument(
+        '--test-suite',
+        dest='test_suite',
+        help=
+        'test suite name. DEPRECATED: please use --test-suite-path instead.')
+    parser.add_argument(
+        '--test-suite-path',
+        dest='test_suite_path',
+        help=
+        'path to test suite, starting from the out/TARGET directory. Should use Linux path separators.'
+    )
     parser.add_argument('--test-file', dest='test_file', help='an absolute path for the file to test')
     parser.add_argument(
         '--target',
@@ -126,18 +136,12 @@ def run_test():
         print('Unable to run, no Chrome binary provided')
         sys.exit(1)
 
-    if (OPTIONS.test_suite is None):
-        print('Unable to run, no test suite provided')
-        sys.exit(1)
-
     if OPTIONS.jobs:
         jobs = OPTIONS.jobs
 
-    test_suite = OPTIONS.test_suite
     test_file = OPTIONS.test_file
 
     print('Using Chromium binary ({}{})\n'.format(chrome_binary, ' ' + chrome_features if chrome_features else ''))
-    print('Using Test Suite (%s)\n' % test_suite)
     print('Using target (%s)\n' % OPTIONS.target)
 
     if test_file is not None:
@@ -148,8 +152,26 @@ def run_test():
     node_modules_path = OPTIONS.node_modules_path
 
     print('Running tests from %s\n' % cwd)
+
+    test_suite_path_input = OPTIONS.test_suite_path
+    test_suite = OPTIONS.test_suite
+    test_suite_parts = None
+    if test_suite:
+        # test-suite is deprecated and will be removed, but we support it for now to not break the bots until their recipes are updated.
+        test_suite_parts = ['gen', 'test', test_suite]
+    elif test_suite_path_input:
+        # We take the input with Linux path separators, but need to split and join to make sure this works on Windows.
+        test_suite_parts = test_suite_path_input.split('/')
+    else:
+        print(
+            'Unable to run, require one of --test-suite or --test-suite-path to be provided.'
+        )
+        sys.exit(1)
+
+    print('Using Test Suite (%s)\n' % os.path.join(*test_suite_parts))
+
     test_suite_path = os.path.join(os.path.abspath(cwd), 'out', OPTIONS.target,
-                                   'gen', 'test', test_suite)
+                                   *test_suite_parts)
 
     errors_found = False
     try:

@@ -8,8 +8,7 @@
   position: absolute;
   top: 0;
   bottom: 0;
-  background-color: rgb(125 173 217 / 50%); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  background-color: var(--color-selection-highlight);
   z-index: 250;
   pointer-events: none;
 }
@@ -21,9 +20,7 @@
   width: 6px;
   margin-left: -3px;
   background-color: rgb(153 153 153); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
   border: 1px solid #fff; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
   z-index: 500;
 }
 
@@ -46,8 +43,7 @@
   top: 0;
   bottom: 0;
   width: 2px;
-  background-color: hsl(220deg 95% 50% / 70%); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  background-color: var(--color-selection-highlight-border);
   z-index: 500;
   pointer-events: none;
   visibility: hidden;
@@ -56,15 +52,13 @@
 
 .window-curtain-left,
 .window-curtain-right {
-  background-color: hsl(0deg 0% 80% / 50%); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  background-color: var(--color-background-hover-overlay);
   position: absolute;
   top: 0;
   height: 100%;
   z-index: 300;
   pointer-events: none;
-  border: 1px none hsl(0deg 0% 70% / 50%); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  border: 1px none var(--color-background-hover-overlay);
 }
 
 .window-curtain-left {

@@ -183,7 +183,7 @@ export class Window extends Common.ObjectWrapper.ObjectWrapper {
 
     this._parentElement.addEventListener('wheel', this._onMouseWheel.bind(this), true);
     this._parentElement.addEventListener('dblclick', this._resizeWindowMaximum.bind(this), true);
-    UI.Utils.appendStyle(this._parentElement, 'perf_ui/overviewGrid.css', {enableLegacyPatching: true});
+    UI.Utils.appendStyle(this._parentElement, 'perf_ui/overviewGrid.css', {enableLegacyPatching: false});
 
     /** @type {!HTMLElement} */
     this._leftResizeElement =

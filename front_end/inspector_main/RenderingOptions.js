@@ -29,9 +29,132 @@
  */
 
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
-import {ls} from '../platform/platform.js';
+import * as i18n from '../i18n/i18n.js';
 import * as UI from '../ui/ui.js';
 
+export const UIStrings = {
+  /**
+  *@description Text in Rendering Options
+  */
+  paintFlashing: 'Paint flashing',
+  /**
+  *@description Checkbox subtitle for 'Paint flashing' in the Rendering tool
+  */
+  highlightsAreasOfThePageGreen:
+      'Highlights areas of the page (green) that need to be repainted. May not be suitable for people prone to photosensitive epilepsy.',
+  /**
+  *@description Text in Rendering Options
+  */
+  layoutShiftRegions: 'Layout Shift Regions',
+  /**
+  *@description Checkbox subtitle for 'Layout Shift Regions' in the Rendering tool
+  */
+  highlightsAreasOfThePageBlueThat:
+      'Highlights areas of the page (blue) that were shifted. May not be suitable for people prone to photosensitive epilepsy.',
+  /**
+  *@description Text in Rendering Options
+  */
+  layerBorders: 'Layer borders',
+  /**
+  *@description Checkbox subtitle for 'Layer boarders' in the Rendering tool
+  */
+  showsLayerBordersOrangeoliveAnd: 'Shows layer borders (orange/olive) and tiles (cyan).',
+  /**
+  *@description Text in Rendering Options
+  */
+  frameRenderingStats: 'Frame Rendering Stats',
+  /**
+  *@description Checkbox subtitle for 'Frame Rendering Stats' in the Rendering tool
+  */
+  plotsFrameThroughputDropped: 'Plots frame throughput, dropped frames distribution, and GPU memory.',
+  /**
+  *@description Checkbox title in Rendering tool
+  */
+  scrollingPerformanceIssues: 'Scrolling performance issues',
+  /**
+  *@description Text in Rendering Options
+  */
+  highlightsElementsTealThatCan:
+      'Highlights elements (teal) that can slow down scrolling, including touch & wheel event handlers and other main-thread scrolling situations.',
+  /**
+  *@description Text to highlight the rendering frames for ads
+  */
+  highlightAdFrames: 'Highlight ad frames',
+  /**
+  *@description Text in Rendering Options
+  */
+  highlightsFramesRedDetectedToBe: 'Highlights frames (red) detected to be ads.',
+  /**
+  *@description Text in Rendering Options
+  */
+  hittestBorders: 'Hit-test borders',
+  /**
+  *@description Checkbox subtitle for 'Hit-test borders' in the Rendering tool
+  */
+  showsBordersAroundHittestRegions: 'Shows borders around hit-test regions.',
+  /**
+  *@description Title of checkbox in Rendering Options
+  */
+  coreWebVitals: 'Core Web Vitals',
+  /**
+  *@description Text in Rendering Options
+  */
+  showsAnOverlayWithCoreWebVitals: 'Shows an overlay with Core Web Vitals.',
+  /**
+  *@description Text that refers to disabling local fonts
+  */
+  disableLocalFonts: 'Disable local fonts',
+  /**
+  *@description Subtitle of the checkbox to disable local fonts in Rendering panel
+  */
+  disablesLocalSourcesInFontface: 'Disables local() sources in @font-face rules. Requires a page reload to apply.',
+  /**
+  *@description Title of a Rendering setting that can be invoked through the Command Menu
+  */
+  emulateAFocusedPage: 'Emulate a focused page',
+  /**
+  *@description Accessibility subtitle for checkbox in Rendering tool
+  */
+  emulatesAFocusedPage: 'Emulates a focused page.',
+  /**
+  *@description Accessibility subtitle for media select element in Rendering tool
+  */
+  forcesMediaTypeForTestingPrint: 'Forces media type for testing print and screen styles',
+  /**
+  *@description Subtitle for a select box under the Rendering drawer
+  */
+  forcesCssPreferscolorschemeMedia: 'Forces CSS prefers-color-scheme media feature',
+  /**
+  *@description Subtitle for a select box under the Rendering drawer
+  */
+  forcesCssPrefersreducedmotion: 'Forces CSS prefers-reduced-motion media feature',
+  /**
+  *@description Subtitle for a select box under the Rendering drawer
+  */
+  forcesCssPrefersreduceddataMedia: 'Forces CSS prefers-reduced-data media feature',
+  /**
+  *@description Accessibility subtitle for color-gamut select element in Rendering tool
+  */
+  forcesCssColorgamutMediaFeature: 'Forces CSS color-gamut media feature',
+  /**
+  *@description Accessibility subtitle for vision deficiency select element in Rendering tool
+  */
+  forcesVisionDeficiencyEmulation: 'Forces vision deficiency emulation',
+  /**
+  *@description Title for a checkbox in the Rendering panel
+  */
+  disableAvifImageFormat: 'Disable AVIF image format',
+  /**
+  *@description Subtitle for checkboxes that disable WebP and AVIF formats in the Rendering panel
+  */
+  requiresAPageReloadToApplyAnd: 'Requires a page reload to apply and disables caching for image requests.',
+  /**
+  *@description Title for a checkbox in the Rendering panel
+  */
+  disableWebpImageFormat: 'Disable WebP image format',
+};
+const str_ = i18n.i18n.registerUIStrings('inspector_main/RenderingOptions.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 // TODO(1096068): remove this feature detection and expose the UI
 // unconditionally once prefers-reduced-data ships unflagged. At that
@@ -59,71 +182,68 @@ export class RenderingOptionsView extends UI.Widget.VBox {
     this.registerRequiredCSS('inspector_main/renderingOptions.css', {enableLegacyPatching: false});
 
     this._appendCheckbox(
-        ls`Paint flashing`,
-        ls`Highlights areas of the page (green) that need to be repainted. May not be suitable for people prone to photosensitive epilepsy.`,
+        i18nString(UIStrings.paintFlashing), i18nString(UIStrings.highlightsAreasOfThePageGreen),
         Common.Settings.Settings.instance().moduleSetting('showPaintRects'));
     this._appendCheckbox(
-        ls`Layout Shift Regions`,
-        ls`Highlights areas of the page (blue) that were shifted. May not be suitable for people prone to photosensitive epilepsy.`,
+        i18nString(UIStrings.layoutShiftRegions), i18nString(UIStrings.highlightsAreasOfThePageBlueThat),
         Common.Settings.Settings.instance().moduleSetting('showLayoutShiftRegions'));
     this._appendCheckbox(
-        ls`Layer borders`, ls`Shows layer borders (orange/olive) and tiles (cyan).`,
+        i18nString(UIStrings.layerBorders), i18nString(UIStrings.showsLayerBordersOrangeoliveAnd),
         Common.Settings.Settings.instance().moduleSetting('showDebugBorders'));
     this._appendCheckbox(
-        ls`Frame Rendering Stats`, ls`Plots frame throughput, dropped frames distribution, and GPU memory.`,
+        i18nString(UIStrings.frameRenderingStats), i18nString(UIStrings.plotsFrameThroughputDropped),
         Common.Settings.Settings.instance().moduleSetting('showFPSCounter'));
     this._appendCheckbox(
-        ls`Scrolling performance issues`,
-        ls`Highlights elements (teal) that can slow down scrolling, including touch & wheel event handlers and other main-thread scrolling situations.`,
+        i18nString(UIStrings.scrollingPerformanceIssues), i18nString(UIStrings.highlightsElementsTealThatCan),
         Common.Settings.Settings.instance().moduleSetting('showScrollBottleneckRects'));
     this._appendCheckbox(
-        ls`Highlight ad frames`, ls`Highlights frames (red) detected to be ads.`,
+        i18nString(UIStrings.highlightAdFrames), i18nString(UIStrings.highlightsFramesRedDetectedToBe),
         Common.Settings.Settings.instance().moduleSetting('showAdHighlights'));
     this._appendCheckbox(
-        ls`Hit-test borders`, ls`Shows borders around hit-test regions.`,
+        i18nString(UIStrings.hittestBorders), i18nString(UIStrings.showsBordersAroundHittestRegions),
         Common.Settings.Settings.instance().moduleSetting('showHitTestBorders'));
     this._appendCheckbox(
-        ls`Core Web Vitals`, ls`Shows an overlay with Core Web Vitals.`,
+        i18nString(UIStrings.coreWebVitals), i18nString(UIStrings.showsAnOverlayWithCoreWebVitals),
         Common.Settings.Settings.instance().moduleSetting('showWebVitals'));
     this._appendCheckbox(
-        ls`Disable local fonts`, ls`Disables local() sources in @font-face rules. Requires a page reload to apply.`,
+        i18nString(UIStrings.disableLocalFonts), i18nString(UIStrings.disablesLocalSourcesInFontface),
         Common.Settings.Settings.instance().moduleSetting('localFontsDisabled'));
     this._appendCheckbox(
-        ls`Emulate a focused page`, ls`Emulates a focused page.`,
+        i18nString(UIStrings.emulateAFocusedPage), i18nString(UIStrings.emulatesAFocusedPage),
         Common.Settings.Settings.instance().moduleSetting('emulatePageFocus'));
     this.contentElement.createChild('div').classList.add('panel-section-separator');
 
     this._appendSelect(
-        ls`Forces media type for testing print and screen styles`,
+        i18nString(UIStrings.forcesMediaTypeForTestingPrint),
         Common.Settings.Settings.instance().moduleSetting('emulatedCSSMedia'));
     this._appendSelect(
-        ls`Forces CSS prefers-color-scheme media feature`,
+        i18nString(UIStrings.forcesCssPreferscolorschemeMedia),
         Common.Settings.Settings.instance().moduleSetting('emulatedCSSMediaFeaturePrefersColorScheme'));
     this._appendSelect(
-        ls`Forces CSS prefers-reduced-motion media feature`,
+        i18nString(UIStrings.forcesCssPrefersreducedmotion),
         Common.Settings.Settings.instance().moduleSetting('emulatedCSSMediaFeaturePrefersReducedMotion'));
     if (supportsPrefersReducedData()) {
       this._appendSelect(
-          ls`Forces CSS prefers-reduced-data media feature`,
+          i18nString(UIStrings.forcesCssPrefersreduceddataMedia),
           Common.Settings.Settings.instance().moduleSetting('emulatedCSSMediaFeaturePrefersReducedData'));
     }
     this._appendSelect(
-        ls`Forces CSS color-gamut media feature`,
+        i18nString(UIStrings.forcesCssColorgamutMediaFeature),
         Common.Settings.Settings.instance().moduleSetting('emulatedCSSMediaFeatureColorGamut'));
     this.contentElement.createChild('div').classList.add('panel-section-separator');
 
     this._appendSelect(
-        ls`Forces vision deficiency emulation`,
+        i18nString(UIStrings.forcesVisionDeficiencyEmulation),
         Common.Settings.Settings.instance().moduleSetting('emulatedVisionDeficiency'));
 
     this.contentElement.createChild('div').classList.add('panel-section-separator');
 
     this._appendCheckbox(
-        ls`Disable AVIF image format`, ls`Requires a page reload to apply and disables caching for image requests.`,
+        i18nString(UIStrings.disableAvifImageFormat), i18nString(UIStrings.requiresAPageReloadToApplyAnd),
         Common.Settings.Settings.instance().moduleSetting('avifFormatDisabled'));
 
     this._appendCheckbox(
-        ls`Disable WebP image format`, ls`Requires a page reload to apply and disables caching for image requests.`,
+        i18nString(UIStrings.disableWebpImageFormat), i18nString(UIStrings.requiresAPageReloadToApplyAnd),
         Common.Settings.Settings.instance().moduleSetting('webpFormatDisabled'));
 
     this.contentElement.createChild('div').classList.add('panel-section-separator');

@@ -12,7 +12,6 @@
   <release seq="1" allow_pseudo="false">
     <messages fallback_to_english="true">
       <part file="../emulated_devices/emulated_devices_strings.grdp" />
-      <part file="../inspector_main/inspector_main_strings.grdp" />
       <part file="shared_strings.grdp" />
     </messages>
   </release>

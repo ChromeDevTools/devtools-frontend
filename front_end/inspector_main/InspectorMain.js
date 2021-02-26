@@ -5,10 +5,24 @@
 import * as Common from '../common/common.js';
 import * as Components from '../components/components.js';
 import * as Host from '../host/host.js';
+import * as i18n from '../i18n/i18n.js';
 import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
 import * as Root from '../root/root.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
+
+export const UIStrings = {
+  /**
+  *@description Text that refers to the main target
+  */
+  main: 'Main',
+  /**
+  *@description Icon title in Inspector Main
+  */
+  javascriptIsDisabled: 'JavaScript is disabled',
+};
+const str_ = i18n.i18n.registerUIStrings('inspector_main/InspectorMain.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 /**
  * @implements {Common.Runnable.Runnable}
@@ -24,7 +38,7 @@ export class InspectorMainImpl extends Common.ObjectWrapper.ObjectWrapper {
       const waitForDebuggerInPage =
           type === SDK.SDKModel.Type.Frame && Root.Runtime.Runtime.queryParam('panel') === 'sources';
       const target = SDK.SDKModel.TargetManager.instance().createTarget(
-          'main', Common.UIString.UIString('Main'), type, null, undefined, waitForDebuggerInPage);
+          'main', i18nString(UIStrings.main), type, null, undefined, waitForDebuggerInPage);
 
       // Only resume target during the first connection,
       // subsequent connections are due to connection hand-over,
@@ -147,7 +161,7 @@ export class NodeIndicator {
     element.addEventListener(
         'click', () => Host.InspectorFrontendHost.InspectorFrontendHostInstance.openNodeFrontend(), false);
     this._button = new UI.Toolbar.ToolbarItem(element);
-    this._button.setTitle(Common.UIString.UIString('Open dedicated DevTools for Node.js'));
+    this._button.setTitle(i18nString('Open dedicated DevTools for Node.js'));
     SDK.SDKModel.TargetManager.instance().addEventListener(
         SDK.SDKModel.Events.AvailableTargetsChanged,
         event => this._update(/** @type {!Array<!Protocol.Target.TargetInfo>} */ (event.data)));
@@ -198,7 +212,7 @@ export class SourcesPanelIndicator {
       const javaScriptDisabled = Common.Settings.Settings.instance().moduleSetting('javaScriptDisabled').get();
       if (javaScriptDisabled) {
         icon = UI.Icon.Icon.create('smallicon-warning');
-        UI.Tooltip.Tooltip.install(icon, Common.UIString.UIString('JavaScript is disabled'));
+        UI.Tooltip.Tooltip.install(icon, i18nString(UIStrings.javascriptIsDisabled));
       }
       UI.InspectorView.InspectorView.instance().setPanelIcon('sources', icon);
     }

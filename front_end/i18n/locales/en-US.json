@@ -2975,6 +2975,150 @@
   "input/InputTimeline.ts | saveProfile": {
     "message": "Save profile…"
   },
+  "inspector_main/inspector_main-meta.ts | autoOpenDevTools": {
+    "message": "Auto-open DevTools for popups"
+  },
+  "inspector_main/inspector_main-meta.ts | blockAds": {
+    "message": "Block ads on this site"
+  },
+  "inspector_main/inspector_main-meta.ts | colorVisionDeficiency": {
+    "message": "color vision deficiency"
+  },
+  "inspector_main/inspector_main-meta.ts | cssMediaFeature": {
+    "message": "CSS media feature"
+  },
+  "inspector_main/inspector_main-meta.ts | cssMediaType": {
+    "message": "CSS media type"
+  },
+  "inspector_main/inspector_main-meta.ts | disablePaused": {
+    "message": "Disable paused state overlay"
+  },
+  "inspector_main/inspector_main-meta.ts | doNotAutoOpen": {
+    "message": "Do not auto-open DevTools for popups"
+  },
+  "inspector_main/inspector_main-meta.ts | forceAdBlocking": {
+    "message": "Force ad blocking on this site"
+  },
+  "inspector_main/inspector_main-meta.ts | fps": {
+    "message": "fps"
+  },
+  "inspector_main/inspector_main-meta.ts | hardReloadPage": {
+    "message": "Hard reload page"
+  },
+  "inspector_main/inspector_main-meta.ts | layout": {
+    "message": "layout"
+  },
+  "inspector_main/inspector_main-meta.ts | paint": {
+    "message": "paint"
+  },
+  "inspector_main/inspector_main-meta.ts | reloadPage": {
+    "message": "Reload page"
+  },
+  "inspector_main/inspector_main-meta.ts | rendering": {
+    "message": "Rendering"
+  },
+  "inspector_main/inspector_main-meta.ts | showAds": {
+    "message": "Show ads on this site, if allowed"
+  },
+  "inspector_main/inspector_main-meta.ts | showRendering": {
+    "message": "Show Rendering"
+  },
+  "inspector_main/inspector_main-meta.ts | visionDeficiency": {
+    "message": "vision deficiency"
+  },
+  "inspector_main/InspectorMain.js | javascriptIsDisabled": {
+    "message": "JavaScript is disabled"
+  },
+  "inspector_main/InspectorMain.js | main": {
+    "message": "Main"
+  },
+  "inspector_main/RenderingOptions.js | coreWebVitals": {
+    "message": "Core Web Vitals"
+  },
+  "inspector_main/RenderingOptions.js | disableAvifImageFormat": {
+    "message": "Disable AVIF image format"
+  },
+  "inspector_main/RenderingOptions.js | disableLocalFonts": {
+    "message": "Disable local fonts"
+  },
+  "inspector_main/RenderingOptions.js | disablesLocalSourcesInFontface": {
+    "message": "Disables local() sources in @font-face rules. Requires a page reload to apply."
+  },
+  "inspector_main/RenderingOptions.js | disableWebpImageFormat": {
+    "message": "Disable WebP image format"
+  },
+  "inspector_main/RenderingOptions.js | emulateAFocusedPage": {
+    "message": "Emulate a focused page"
+  },
+  "inspector_main/RenderingOptions.js | emulatesAFocusedPage": {
+    "message": "Emulates a focused page."
+  },
+  "inspector_main/RenderingOptions.js | forcesCssColorgamutMediaFeature": {
+    "message": "Forces CSS color-gamut media feature"
+  },
+  "inspector_main/RenderingOptions.js | forcesCssPreferscolorschemeMedia": {
+    "message": "Forces CSS prefers-color-scheme media feature"
+  },
+  "inspector_main/RenderingOptions.js | forcesCssPrefersreduceddataMedia": {
+    "message": "Forces CSS prefers-reduced-data media feature"
+  },
+  "inspector_main/RenderingOptions.js | forcesCssPrefersreducedmotion": {
+    "message": "Forces CSS prefers-reduced-motion media feature"
+  },
+  "inspector_main/RenderingOptions.js | forcesMediaTypeForTestingPrint": {
+    "message": "Forces media type for testing print and screen styles"
+  },
+  "inspector_main/RenderingOptions.js | forcesVisionDeficiencyEmulation": {
+    "message": "Forces vision deficiency emulation"
+  },
+  "inspector_main/RenderingOptions.js | frameRenderingStats": {
+    "message": "Frame Rendering Stats"
+  },
+  "inspector_main/RenderingOptions.js | highlightAdFrames": {
+    "message": "Highlight ad frames"
+  },
+  "inspector_main/RenderingOptions.js | highlightsAreasOfThePageBlueThat": {
+    "message": "Highlights areas of the page (blue) that were shifted. May not be suitable for people prone to photosensitive epilepsy."
+  },
+  "inspector_main/RenderingOptions.js | highlightsAreasOfThePageGreen": {
+    "message": "Highlights areas of the page (green) that need to be repainted. May not be suitable for people prone to photosensitive epilepsy."
+  },
+  "inspector_main/RenderingOptions.js | highlightsElementsTealThatCan": {
+    "message": "Highlights elements (teal) that can slow down scrolling, including touch & wheel event handlers and other main-thread scrolling situations."
+  },
+  "inspector_main/RenderingOptions.js | highlightsFramesRedDetectedToBe": {
+    "message": "Highlights frames (red) detected to be ads."
+  },
+  "inspector_main/RenderingOptions.js | hittestBorders": {
+    "message": "Hit-test borders"
+  },
+  "inspector_main/RenderingOptions.js | layerBorders": {
+    "message": "Layer borders"
+  },
+  "inspector_main/RenderingOptions.js | layoutShiftRegions": {
+    "message": "Layout Shift Regions"
+  },
+  "inspector_main/RenderingOptions.js | paintFlashing": {
+    "message": "Paint flashing"
+  },
+  "inspector_main/RenderingOptions.js | plotsFrameThroughputDropped": {
+    "message": "Plots frame throughput, dropped frames distribution, and GPU memory."
+  },
+  "inspector_main/RenderingOptions.js | requiresAPageReloadToApplyAnd": {
+    "message": "Requires a page reload to apply and disables caching for image requests."
+  },
+  "inspector_main/RenderingOptions.js | scrollingPerformanceIssues": {
+    "message": "Scrolling performance issues"
+  },
+  "inspector_main/RenderingOptions.js | showsAnOverlayWithCoreWebVitals": {
+    "message": "Shows an overlay with Core Web Vitals."
+  },
+  "inspector_main/RenderingOptions.js | showsBordersAroundHittestRegions": {
+    "message": "Shows borders around hit-test regions."
+  },
+  "inspector_main/RenderingOptions.js | showsLayerBordersOrangeoliveAnd": {
+    "message": "Shows layer borders (orange/olive) and tiles (cyan)."
+  },
   "issues/AffectedCookiesView.ts | cookie": {
     "message": "cookie"
   },

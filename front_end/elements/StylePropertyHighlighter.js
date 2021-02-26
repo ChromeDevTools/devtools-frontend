@@ -4,8 +4,8 @@
 
 import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
 
-import {StylePropertyTreeElement} from './StylePropertyTreeElement.js';  // eslint-disable-line no-unused-vars
-import {StylesSidebarPane} from './StylesSidebarPane.js';                // eslint-disable-line no-unused-vars
+import {StylePropertyTreeElement} from './StylePropertyTreeElement.js';            // eslint-disable-line no-unused-vars
+import {StylePropertiesSection, StylesSidebarPane} from './StylesSidebarPane.js';  // eslint-disable-line no-unused-vars
 
 export class StylePropertyHighlighter {
   /**
@@ -28,10 +28,13 @@ export class StylePropertyHighlighter {
       }
     }
 
-    const treeElement = this._findTreeElement(treeElement => treeElement.property === cssProperty);
+    const {treeElement, section} = this._findTreeElementAndSection(treeElement => treeElement.property === cssProperty);
     if (treeElement) {
       treeElement.parent && treeElement.parent.expand();
       this._scrollAndHighlightTreeElement(treeElement);
+      if (section) {
+        section.element.focus();
+      }
     }
   }
 
@@ -40,20 +43,25 @@ export class StylePropertyHighlighter {
    * @param {string} propertyName
    */
   findAndHighlightPropertyName(propertyName) {
-    const treeElement = this._findTreeElement(treeElement => treeElement.property.name === propertyName);
+    const {treeElement, section} =
+        this._findTreeElementAndSection(treeElement => treeElement.property.name === propertyName);
     if (treeElement) {
       this._scrollAndHighlightTreeElement(treeElement);
+      if (section) {
+        section.element.focus();
+      }
     }
   }
 
   /**
    * Traverse the styles pane tree, execute the provided callback for every tree element found, and
-   * return the first tree element for which the callback returns a truthy value.
+   * return the first tree element and corresponding section for which the callback returns a truthy value.
    * @param {function(!StylePropertyTreeElement):boolean} compareCb
-   * @return {?StylePropertyTreeElement}
+   * @return {!{treeElement: ?StylePropertyTreeElement, section: ?StylePropertiesSection}}
    */
-  _findTreeElement(compareCb) {
+  _findTreeElementAndSection(compareCb) {
     let result = null;
+    let containingSection = null;
     for (const section of this._styleSidebarPane.allSections()) {
       let treeElement = section.propertiesTreeOutline.firstChild();
       while (treeElement && !result && (treeElement instanceof StylePropertyTreeElement)) {
@@ -64,10 +72,11 @@ export class StylePropertyHighlighter {
         treeElement = treeElement.traverseNextTreeElement(false, null, true);
       }
       if (result) {
+        containingSection = section;
         break;
       }
     }
-    return result;
+    return {treeElement: result, section: containingSection};
   }
 
   /**

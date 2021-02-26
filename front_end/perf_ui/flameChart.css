@@ -48,7 +48,7 @@
   bottom: 0;
   z-index: 100;
   width: 2px;
-  background-color: var(--selection-bg-color);
+  background-color: var(--color-selection-highlight-border);
   pointer-events: none;
 }
 

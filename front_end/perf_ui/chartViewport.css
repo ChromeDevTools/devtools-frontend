@@ -30,14 +30,12 @@
 }
 
 :host-context(.platform-mac) ::-webkit-scrollbar-thumb {
-  background-color: hsl(0deg 0% 56% / 60%); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  background-color: var(--color-scrollbar-mac);
   border-radius: 50px;
 }
 
 :host-context(.platform-mac) .chart-viewport-v-scroll:hover::-webkit-scrollbar-thumb {
-  background-color: hsl(0deg 0% 25% / 60%); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  background-color: var(--color-scrollbar-mac-hover);
 }
 /* force non overlay scrollbars for Aura Overlay Scrollbar enabled */
 
@@ -46,21 +44,18 @@
 }
 
 :host-context(.overlay-scrollbar-enabled) ::-webkit-scrollbar-thumb {
-  background-color: hsl(0deg 0% 0% / 50%); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  background-color: var(--color-scrollbar-other);
 }
 
 :host-context(.overlay-scrollbar-enabled) .chart-viewport-v-scroll:hover::-webkit-scrollbar-thumb {
-  background-color: hsl(0deg 0% 0% / 70%); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  background-color: var(--color-scrollbar-other-hover);
 }
 
 .chart-viewport-selection-overlay {
   position: absolute;
   z-index: 100;
-  background-color: rgb(56 121 217 / 30%); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
-  border-color: rgb(16 81 177);
+  background-color: var(--color-selection-highlight);
+  border-color: var(--color-selection-highlight-border);
   border-width: 0 1px;
   border-style: solid;
   pointer-events: none;

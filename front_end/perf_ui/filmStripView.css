@@ -23,8 +23,7 @@
 .film-strip-view .label {
   margin: auto;
   font-size: 18px;
-  color: #999; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-text-secondary);
 }
 
 .film-strip-view .frame {
@@ -48,7 +47,7 @@
 
 .film-strip-view .frame:hover .thumbnail,
 .film-strip-view .frame:focus .thumbnail {
-  border-color: #fbca46;
+  border-color: var(--color-selection-highlight-border);
 }
 
 .film-strip-view .frame .thumbnail img {
@@ -57,8 +56,7 @@
   max-width: 80px;
   max-height: 50px;
   pointer-events: none;
-  box-shadow: 0 0 3px #bbb; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  box-shadow: 0 0 3px var(--box-shadow-outline-color);
   flex: 0 0 auto;
 }
 

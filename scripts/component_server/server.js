@@ -241,11 +241,11 @@ async function requestHandler(request, response) {
     const fileContents = await fs.promises.readFile(path.join(devtoolsRootFolder, filePath), {encoding: 'utf8'});
     const themeColoursLink = `<link rel="stylesheet" href="${
         path.join(sharedResourcesBase, 'front_end', 'ui', 'themeColors.css')}" type="text/css" />`;
-    const inspectorStyleLink = `<link rel="stylesheet" href="${
-        path.join(sharedResourcesBase, 'front_end', 'ui', 'inspectorStyle.css')}" type="text/css" />`;
+    const inspectorCommonLink = `<link rel="stylesheet" href="${
+        path.join(sharedResourcesBase, 'front_end', 'ui', 'inspectorCommon.css')}" type="text/css" />`;
     const toggleDarkModeScript = `<script type="module" src="${
         path.join(sharedResourcesBase, 'front_end', 'component_docs', 'component_docs.js')}"></script>`;
-    const newFileContents = fileContents.replace('<style>', `${themeColoursLink}\n${inspectorStyleLink}\n<style>`)
+    const newFileContents = fileContents.replace('<style>', `${themeColoursLink}\n${inspectorCommonLink}\n<style>`)
                                 .replace('<script', toggleDarkModeScript + '\n<script');
     respondWithHtml(response, newFileContents);
 

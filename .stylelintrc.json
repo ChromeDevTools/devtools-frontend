@@ -8,7 +8,7 @@
     "alpha-value-notation": "percentage",
     "color-function-notation": "modern",
     "hue-degree-notation": "angle",
-    "comment-empty-line-before": "never",
+    "comment-empty-line-before": null,
     "color-named": "never",
     "property-no-vendor-prefix": [
       true,

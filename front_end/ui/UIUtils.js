@@ -46,7 +46,6 @@ import {KeyboardShortcut} from './KeyboardShortcut.js';
 import {Toolbar, ToolbarButton} from './Toolbar.js';  // eslint-disable-line no-unused-vars
 import {Tooltip} from './Tooltip.js';
 import {TreeOutline} from './Treeoutline.js';  // eslint-disable-line no-unused-vars
-import {appendStyle} from './utils/append-style.js';
 import {createShadowRootWithCoreStyles} from './utils/create-shadow-root-with-core-styles.js';
 import {focusChanged} from './utils/focus-changed.js';
 import {injectCoreStyles} from './utils/inject-core-styles.js';
@@ -1326,9 +1325,7 @@ export function initializeUIUtils(document, themeSetting) {
   ThemeSupport.ThemeSupport.instance().applyTheme(document);
 
   const body = /** @type {!Element} */ (document.body);
-  appendStyle(body, 'ui/inspectorStyle.css', {enableLegacyPatching: true});
-  appendStyle(body, 'ui/themeColors.css', {enableLegacyPatching: false});
-  GlassPane.setContainer(/** @type {!Element} */ (document.body));
+  GlassPane.setContainer(body);
 }
 
 /**

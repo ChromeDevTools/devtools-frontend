@@ -73,13 +73,13 @@ describe('data grid', () => {
     ];
 
     let columnWidths = await getColumnPixelWidths(columns);
-    assertNumberBetween(columnWidths[0], 510, 515);
-    assertNumberBetween(columnWidths[1], 510, 515);
+    assertNumberBetween(columnWidths[0], 485, 500);
+    assertNumberBetween(columnWidths[1], 485, 500);
 
     await clickAndDragResizeHandlerHorizontally(firstResizeHandler, -50);
     columnWidths = await getColumnPixelWidths(columns);
-    assertNumberBetween(columnWidths[0], 458, 464);
-    assertNumberBetween(columnWidths[1], 558, 564);
+    assertNumberBetween(columnWidths[0], 435, 450);
+    assertNumberBetween(columnWidths[1], 530, 550);
   });
 
   it('can resize empty columns', async () => {
@@ -96,13 +96,13 @@ describe('data grid', () => {
     ];
 
     let columnWidths = await getColumnPixelWidths(columns);
-    assertNumberBetween(columnWidths[0], 510, 515);
-    assertNumberBetween(columnWidths[1], 510, 515);
+    assertNumberBetween(columnWidths[0], 485, 500);
+    assertNumberBetween(columnWidths[1], 485, 500);
 
     await clickAndDragResizeHandlerHorizontally(firstResizeHandler, -50);
     columnWidths = await getColumnPixelWidths(columns);
-    assertNumberBetween(columnWidths[0], 458, 464);
-    assertNumberBetween(columnWidths[1], 558, 564);
+    assertNumberBetween(columnWidths[0], 435, 450);
+    assertNumberBetween(columnWidths[1], 530, 550);
   });
 
   it('can resize two columns in a grid of 3 and leave the other column untouched', async () => {

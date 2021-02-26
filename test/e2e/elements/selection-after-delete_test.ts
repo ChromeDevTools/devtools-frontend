@@ -16,7 +16,7 @@ describe('The Elements tab', async () => {
     // Wait for the file to be loaded and selectors to be shown
     await waitForElementsStyleSection();
 
-    // Sanity check to make sure we have the correct node selected after opening a file
+    // Check to make sure we have the correct node selected after opening a file
     await waitForContentOfSelectedElementsNode('<body>\u200B');
     await expandSelectedNodeRecursively();
 

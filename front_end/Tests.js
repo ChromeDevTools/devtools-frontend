@@ -873,7 +873,7 @@
     ]);
   };
 
-  // Simple sanity check to make sure network throttling is wired up
+  // Simple check to make sure network throttling is wired up
   // See crbug.com/747724
   TestSuite.prototype.testOfflineNetworkConditions = async function() {
     const test = this;
@@ -1023,7 +1023,7 @@
           test.fail('Unexpected color: ' + color);
         }
       }
-      test.assertTrue(redCount && greenCount && blueCount, 'Color sanity check failed');
+      test.assertTrue(redCount && greenCount && blueCount, 'Color check failed');
       test.releaseControl();
     }
 

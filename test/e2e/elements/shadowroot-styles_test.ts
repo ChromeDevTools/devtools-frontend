@@ -17,7 +17,7 @@ describe('The Elements Tab', async () => {
     // Wait for the file to be loaded and selectors to be shown
     await waitFor('.styles-selector');
 
-    // Sanity check to make sure we have the correct node selected after opening a file
+    // Check to make sure we have the correct node selected after opening a file
     await waitForContentOfSelectedElementsNode('<body>\u200B');
 
     // FIXME(crbug/1112692): Refactor test to remove the timeout.

@@ -17,7 +17,7 @@ describe('Element breadcrumbs', async () => {
     await goToResource('elements/element-breadcrumbs.html');
     await waitForElementsStyleSection();
 
-    // Sanity check to make sure we have the correct node selected after opening a file
+    // Check to make sure we have the correct node selected after opening a file
     await waitForContentOfSelectedElementsNode('<body>\u200B');
 
     // expand the tree and then navigate down to the target node

@@ -30,7 +30,7 @@ const goToResourceAndWaitForStyleSection = async (path: string) => {
   await goToResource(path);
   await waitForElementsStyleSection();
 
-  // Sanity check to make sure we have the correct node selected after opening a file.
+  // Check to make sure we have the correct node selected after opening a file.
   await waitForContentOfSelectedElementsNode('<body>\u200B');
 
   // FIXME(crbug/1112692): Refactor test to remove the timeout.

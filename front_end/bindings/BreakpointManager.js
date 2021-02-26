@@ -730,65 +730,50 @@ export class ModelBreakpoint {
       return;
     }
 
-    const lineNumber = this._breakpoint._lineNumber;
-    const columnNumber = this._breakpoint._columnNumber;
+    const lineNumber = this._breakpoint.lineNumber();
+    const columnNumber = this._breakpoint.columnNumber();
     const condition = this._breakpoint.condition();
 
-    /** @type {SDK.DebuggerModel.Location[]} */
-    let debuggerLocations = [];
-    for (const uiSourceCode of this._breakpoint._uiSourceCodes) {
-      const {pluginManager} = DebuggerWorkspaceBinding.instance();
-      if (pluginManager) {
-        // We have a separate code path for plugins as the requirements for setting a breakpoint
-        // on every inlined/unrolled location aren't the same as the requirements for translating
-        // ui locations to raw locations in general.
-
-        const locationRanges =
-            await pluginManager.uiLocationToRawLocationRanges(uiSourceCode, lineNumber, columnNumber);
-        if (locationRanges && locationRanges.length) {
-          const script = locationRanges[0].start.script();
-          debuggerLocations = locationRanges.map(({start}) => start).filter(dl => dl.script() === script);
+    /** @type {Breakpoint.State | null} */
+    let newState = null;
+    if (!this._breakpoint._isRemoved && this._breakpoint.enabled() && !this._scriptDiverged()) {
+      /** @type {SDK.DebuggerModel.Location[]} */
+      let debuggerLocations = [];
+      for (const uiSourceCode of this._breakpoint._uiSourceCodes) {
+        const locations =
+            await DebuggerWorkspaceBinding.instance().uiLocationToRawLocations(uiSourceCode, lineNumber, columnNumber);
+        debuggerLocations = locations.filter(location => location.debuggerModel === this._debuggerModel);
+        if (debuggerLocations.length) {
           break;
         }
       }
-      // Fall back to general case.
-      const locations =
-          await DebuggerWorkspaceBinding.instance().uiLocationToRawLocations(uiSourceCode, lineNumber, columnNumber);
-      debuggerLocations = locations.filter(location => location.debuggerModel === this._debuggerModel);
-
-      if (debuggerLocations.length > 0) {
-        // Only want first location
-        debuggerLocations = [debuggerLocations[0]];
-        break;
-      }
-    }
-    /** @type {Breakpoint.State | null} */
-    let newState = null;
-    if (this._breakpoint._isRemoved || !this._breakpoint.enabled() || this._scriptDiverged()) {
-      newState = null;
-    } else if (debuggerLocations.length > 0 && debuggerLocations[0].script()) {
-      const script = debuggerLocations[0].script();
-      if (!script) {
-        return;
-      }
-      const sourcePositions =
-          debuggerLocations.map(loc => ({lineNumber: loc.lineNumber, columnNumber: loc.columnNumber}));
-      if (script.sourceURL) {
-        newState = new Breakpoint.State(script.sourceURL, null, null, sourcePositions, condition);
+      if (debuggerLocations.length && debuggerLocations.every(loc => loc.script())) {
+        const positions = debuggerLocations.map(loc => {
+          const script = /** @type {!SDK.Script.Script} */ (loc.script());
+          return {
+            url: script.sourceURL,
+            scriptId: script.scriptId,
+            scriptHash: script.hash,
+            lineNumber: loc.lineNumber,
+            columnNumber: loc.columnNumber
+          };
+        });
+        newState = new Breakpoint.State(positions, condition);
+      } else if (this._breakpoint._currentState) {
+        newState = new Breakpoint.State(this._breakpoint._currentState.positions, condition);
       } else {
-        newState = new Breakpoint.State(null, script.scriptId, script.hash, sourcePositions, condition);
+        // TODO(bmeurer): This fallback doesn't make a whole lot of sense, we should
+        // at least signal a warning to the developer that this breakpoint wasn't
+        // really resolved.
+        const position = {url: this._breakpoint.url(), scriptId: '', scriptHash: '', lineNumber, columnNumber};
+        newState = new Breakpoint.State([position], condition);
       }
-    } else if (this._breakpoint._currentState && this._breakpoint._currentState.url) {
-      const position = this._breakpoint._currentState;
-      newState = new Breakpoint.State(position.url, null, null, position.positions, condition);
-    } else if (this._breakpoint._uiSourceCodes.size > 0) {  // Uncertain if this condition is necessary
-      newState = new Breakpoint.State(this._breakpoint.url(), null, null, [{lineNumber, columnNumber}], condition);
     }
+
     if (this._breakpointIds.length && Breakpoint.State.equals(newState, this._currentState)) {
       callback();
       return;
     }
-
     this._breakpoint._currentState = newState;
 
     if (this._breakpointIds.length) {
@@ -803,33 +788,25 @@ export class ModelBreakpoint {
     }
 
     this._currentState = newState;
-    // Assigning to constant so TypeScript can be sure this isn't null.
-    const {url, scriptId, scriptHash} = newState;
-    let resultPromises;
-    if (url) {
-      resultPromises = newState.positions.map(
-          ({lineNumber, columnNumber}) =>
-              this._debuggerModel.setBreakpointByURL(url, lineNumber, columnNumber, condition));
-    } else if (scriptId && scriptHash) {
-      resultPromises = newState.positions.map(
-          ({lineNumber, columnNumber}) => this._debuggerModel.setBreakpointInAnonymousScript(
-              scriptId, scriptHash, lineNumber, columnNumber, condition));
-    }
-
-    if (resultPromises) {
-      const results = await Promise.all(resultPromises);
-      /** @type {string[]} */
-      const breakpointIds = [];
-      /** @type {SDK.DebuggerModel.Location[]} */
-      let combinedLocations = [];
-      for (const {breakpointId, locations} of results) {
-        if (breakpointId) {
-          breakpointIds.push(breakpointId);
-          combinedLocations = combinedLocations.concat(locations);
-        }
+    const results = await Promise.all(newState.positions.map(pos => {
+      if (pos.url) {
+        return this._debuggerModel.setBreakpointByURL(pos.url, pos.lineNumber, pos.columnNumber, condition);
       }
-      await this._didSetBreakpointInDebugger(callback, breakpointIds, combinedLocations);
+      return this._debuggerModel.setBreakpointInAnonymousScript(
+          /** @type {string}*/ (pos.scriptId), /** @type {string} */ (pos.scriptHash), pos.lineNumber, pos.columnNumber,
+          condition);
+    }));
+    /** @type {string[]} */
+    const breakpointIds = [];
+    /** @type {SDK.DebuggerModel.Location[]} */
+    let combinedLocations = [];
+    for (const {breakpointId, locations} of results) {
+      if (breakpointId) {
+        breakpointIds.push(breakpointId);
+        combinedLocations = combinedLocations.concat(locations);
+      }
     }
+    await this._didSetBreakpointInDebugger(callback, breakpointIds, combinedLocations);
   }
 
   async _refreshBreakpoint() {
@@ -962,16 +939,10 @@ export class ModelBreakpoint {
 
 Breakpoint.State = class {
   /**
-   * @param {?string} url
-   * @param {?string} scriptId
-   * @param {?string} scriptHash
-   * @param {Array.<{lineNumber: number, columnNumber?: number}>} positions
+   * @param {!Array<{url: string, scriptId: string, scriptHash: string, lineNumber: number, columnNumber?: number}>} positions
    * @param {string} condition
    */
-  constructor(url, scriptId, scriptHash, positions, condition) {
-    this.url = url;
-    this.scriptId = scriptId;
-    this.scriptHash = scriptHash;
+  constructor(positions, condition) {
     this.positions = positions;
     this.condition = condition;
   }
@@ -985,17 +956,32 @@ Breakpoint.State = class {
     if (!stateA || !stateB) {
       return false;
     }
-    if (stateA.url === stateB.url && stateA.scriptId === stateB.scriptId && stateA.scriptHash === stateB.scriptHash &&
-        stateA.positions.length === stateB.positions.length && stateA.condition === stateB.condition) {
-      for (let i = 0; i < stateA.positions.length; i++) {
-        if (stateA.positions[i].lineNumber !== stateB.positions[i].lineNumber ||
-            stateA.positions[i].columnNumber !== stateB.positions[i].columnNumber) {
-          return false;
-        }
-      }
-      return true;
+    if (stateA.condition !== stateB.condition) {
+      return false;
     }
-    return false;
+    if (stateA.positions.length !== stateB.positions.length) {
+      return false;
+    }
+    for (let i = 0; i < stateA.positions.length; i++) {
+      const positionA = stateA.positions[i];
+      const positionB = stateB.positions[i];
+      if (positionA.url !== positionB.url) {
+        return false;
+      }
+      if (positionA.scriptId !== positionB.scriptId) {
+        return false;
+      }
+      if (positionA.scriptHash !== positionB.scriptHash) {
+        return false;
+      }
+      if (positionA.lineNumber !== positionB.lineNumber) {
+        return false;
+      }
+      if (positionA.columnNumber !== positionB.columnNumber) {
+        return false;
+      }
+    }
+    return true;
   }
 };
 

@@ -51,11 +51,13 @@ export class ScriptOriginPlugin extends Plugin {
    * @return {!Promise<!Array<!UI.Toolbar.ToolbarItem>>}
    */
   async rightToolbarItems() {
-    const originURL = Bindings.CompilerScriptMapping.CompilerScriptMapping.uiSourceCodeOrigin(this._uiSourceCode);
-    if (originURL) {
-      const item = i18n.i18n.getFormatLocalizedString(
-          str_, UIStrings.sourceMappedFromS, {PH1: Components.Linkifier.Linkifier.linkifyURL(originURL)});
-      return [new UI.Toolbar.ToolbarItem(item)];
+    const originURLs = Bindings.CompilerScriptMapping.CompilerScriptMapping.uiSourceCodeOrigin(this._uiSourceCode);
+    if (originURLs.length) {
+      return originURLs.map(originURL => {
+        const item = i18n.i18n.getFormatLocalizedString(
+            str_, UIStrings.sourceMappedFromS, {PH1: Components.Linkifier.Linkifier.linkifyURL(originURL)});
+        return new UI.Toolbar.ToolbarItem(item);
+      });
     }
 
     const pluginManager = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().pluginManager;

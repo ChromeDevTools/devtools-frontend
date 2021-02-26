@@ -1762,9 +1762,7 @@ export class DebuggerPlugin extends Plugin {
   }
 
   _updateLinesWithoutMappingHighlight() {
-    const isSourceMapSource =
-        Boolean(Bindings.CompilerScriptMapping.CompilerScriptMapping.uiSourceCodeOrigin(this._uiSourceCode));
-    if (isSourceMapSource) {
+    if (Bindings.CompilerScriptMapping.CompilerScriptMapping.uiSourceCodeOrigin(this._uiSourceCode).length) {
       const linesCount = this._textEditor.linesCount;
       for (let i = 0; i < linesCount; ++i) {
         const lineHasMapping =

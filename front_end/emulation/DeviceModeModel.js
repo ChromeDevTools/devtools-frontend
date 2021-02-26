@@ -4,13 +4,59 @@
 
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
 import * as Host from '../host/host.js';
-import {ls} from '../platform/platform.js';
+import * as i18n from '../i18n/i18n.js';
 import * as Root from '../root/root.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
 import {EmulatedDevice, Horizontal, HorizontalSpanned, Mode, Vertical, VerticalSpanned} from './EmulatedDevices.js';  // eslint-disable-line no-unused-vars
 
+export const UIStrings = {
+  /**
+  *@description Error message in the Devices settings pane that declares that the width input must be a number
+  */
+  widthMustBeANumber: 'Width must be a number.',
+  /**
+  *@description Error message in the Devices settings pane that declares the maximum value for the width input
+  *@example {9999} PH1
+  */
+  widthMustBeLessThanOrEqualToS: 'Width must be less than or equal to {PH1}.',
+  /**
+  *@description Error message in the Devices settings pane that declares the minimum value for the width input
+  *@example {50} PH1
+  */
+  widthMustBeGreaterThanOrEqualToS: 'Width must be greater than or equal to {PH1}.',
+  /**
+  *@description Error message in the Devices settings pane that declares the value of the height input must be a number
+  */
+  heightMustBeANumber: 'Height must be a number.',
+  /**
+  *@description Error message in the Devices settings pane that declares the maximum value for the height input
+  *@example {9999} PH1
+  */
+  heightMustBeLessThanOrEqualToS: 'Height must be less than or equal to {PH1}.',
+  /**
+  *@description Error message in the Devices settings pane that declares the minimum value for the height input
+  *@example {50} PH1
+  */
+  heightMustBeGreaterThanOrEqualTo: 'Height must be greater than or equal to {PH1}.',
+  /**
+  *@description Error message in the Devices settings pane that declares that the value for the device pixel ratio must be either a number or empty
+  */
+  devicePixelRatioMustBeANumberOr: 'Device pixel ratio must be a number or blank.',
+  /**
+  *@description Error message in the Devices settings pane that declares the maximum value for the device pixel ratio input
+  *@example {10} PH1
+  */
+  devicePixelRatioMustBeLessThanOr: 'Device pixel ratio must be less than or equal to {PH1}.',
+  /**
+  *@description Error message in the Devices settings pane that declares the minimum value for the device pixel ratio input
+  *@example {0} PH1
+  */
+  devicePixelRatioMustBeGreater: 'Device pixel ratio must be greater than or equal to {PH1}.',
+};
+const str_ = i18n.i18n.registerUIStrings('emulation/DeviceModeModel.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /** @type {!DeviceModeModel} */
 let deviceModeModelInstance;
 
@@ -108,11 +154,11 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
     let errorMessage;
 
     if (!/^[\d]+$/.test(value)) {
-      errorMessage = ls`Width must be a number.`;
+      errorMessage = i18nString(UIStrings.widthMustBeANumber);
     } else if (Number(value) > MaxDeviceSize) {
-      errorMessage = ls`Width must be less than or equal to ${MaxDeviceSize}.`;
+      errorMessage = i18nString(UIStrings.widthMustBeLessThanOrEqualToS, {PH1: MaxDeviceSize});
     } else if (Number(value) < MinDeviceSize) {
-      errorMessage = ls`Width must be greater than or equal to ${MinDeviceSize}.`;
+      errorMessage = i18nString(UIStrings.widthMustBeGreaterThanOrEqualToS, {PH1: MinDeviceSize});
     } else {
       valid = true;
     }
@@ -129,11 +175,11 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
     let errorMessage;
 
     if (!/^[\d]+$/.test(value)) {
-      errorMessage = ls`Height must be a number.`;
+      errorMessage = i18nString(UIStrings.heightMustBeANumber);
     } else if (Number(value) > MaxDeviceSize) {
-      errorMessage = ls`Height must be less than or equal to ${MaxDeviceSize}.`;
+      errorMessage = i18nString(UIStrings.heightMustBeLessThanOrEqualToS, {PH1: MaxDeviceSize});
     } else if (Number(value) < MinDeviceSize) {
-      errorMessage = ls`Height must be greater than or equal to ${MinDeviceSize}.`;
+      errorMessage = i18nString(UIStrings.heightMustBeGreaterThanOrEqualTo, {PH1: MinDeviceSize});
     } else {
       valid = true;
     }
@@ -153,11 +199,11 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
     if (!value) {
       valid = true;
     } else if (Number.isNaN(parsedValue)) {
-      errorMessage = ls`Device pixel ratio must be a number or blank.`;
+      errorMessage = i18nString(UIStrings.devicePixelRatioMustBeANumberOr);
     } else if (Number(value) > MaxDeviceScaleFactor) {
-      errorMessage = ls`Device pixel ratio must be less than or equal to ${MaxDeviceScaleFactor}.`;
+      errorMessage = i18nString(UIStrings.devicePixelRatioMustBeLessThanOr, {PH1: MaxDeviceScaleFactor});
     } else if (Number(value) < MinDeviceScaleFactor) {
-      errorMessage = ls`Device pixel ratio must be greater than or equal to ${MinDeviceScaleFactor}.`;
+      errorMessage = i18nString(UIStrings.devicePixelRatioMustBeGreater, {PH1: MinDeviceScaleFactor});
     } else {
       valid = true;
     }
@@ -923,10 +969,12 @@ export const Type = {
 
 /** @enum {string} */
 export const UA = {
-  Mobile: Common.UIString.UIString('Mobile'),
-  MobileNoTouch: Common.UIString.UIString('Mobile (no touch)'),
-  Desktop: Common.UIString.UIString('Desktop'),
-  DesktopTouch: Common.UIString.UIString('Desktop (touch)')
+  // TODO(crbug.com/1136655): This enum is used for both display and code functionality.
+  // we should refactor this so localization of these strings only happens for user display.
+  Mobile: 'Mobile',
+  MobileNoTouch: 'Mobile (no touch)',
+  Desktop: 'Desktop',
+  DesktopTouch: 'Desktop (touch)'
 };
 
 export const MinDeviceSize = 50;

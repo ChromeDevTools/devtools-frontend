@@ -4,11 +4,20 @@
 
 import * as Bindings from '../bindings/bindings.js';
 import * as Common from '../common/common.js';
+import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 import * as Workspace from '../workspace/workspace.js';  // eslint-disable-line no-unused-vars
 
+export const UIStrings = {
+  /**
+  *@description A context menu item in the Media Query Inspector of the Device Toolbar
+  */
+  revealInSourceCode: 'Reveal in source code',
+};
+const str_ = i18n.i18n.registerUIStrings('emulation/MediaQueryInspector.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /**
  * @implements {SDK.SDKModel.SDKModelObserver<!SDK.CSSModel.CSSModel>}
  */
@@ -145,8 +154,7 @@ export class MediaQueryInspector extends UI.Widget.Widget {
 
     const contextMenuItems = [...uiLocations.keys()].sort();
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
-    const subMenuItem =
-        contextMenu.defaultSection().appendSubMenuItem(Common.UIString.UIString('Reveal in source code'));
+    const subMenuItem = contextMenu.defaultSection().appendSubMenuItem(i18nString(UIStrings.revealInSourceCode));
     for (let i = 0; i < contextMenuItems.length; ++i) {
       const title = contextMenuItems[i];
       subMenuItem.defaultSection().appendItem(

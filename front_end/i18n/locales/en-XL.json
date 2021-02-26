@@ -2261,6 +2261,510 @@
   "elements/StylesSidebarPane.js | viaInspector": {
     "message": "v̂íâ ín̂śp̂éĉt́ôŕ"
   },
+  "emulation/DeviceModeModel.js | devicePixelRatioMustBeANumberOr": {
+    "message": "D̂év̂íĉé p̂íx̂él̂ ŕât́îó m̂úŝt́ b̂é â ńûḿb̂ér̂ ór̂ b́l̂án̂ḱ."
+  },
+  "emulation/DeviceModeModel.js | devicePixelRatioMustBeGreater": {
+    "message": "D̂év̂íĉé p̂íx̂él̂ ŕât́îó m̂úŝt́ b̂é ĝŕêát̂ér̂ t́ĥán̂ ór̂ éq̂úâĺ t̂ó {PH1}."
+  },
+  "emulation/DeviceModeModel.js | devicePixelRatioMustBeLessThanOr": {
+    "message": "D̂év̂íĉé p̂íx̂él̂ ŕât́îó m̂úŝt́ b̂é l̂éŝś t̂h́âń ôŕ êq́ûál̂ t́ô {PH1}."
+  },
+  "emulation/DeviceModeModel.js | heightMustBeANumber": {
+    "message": "Ĥéîǵĥt́ m̂úŝt́ b̂é â ńûḿb̂ér̂."
+  },
+  "emulation/DeviceModeModel.js | heightMustBeGreaterThanOrEqualTo": {
+    "message": "Ĥéîǵĥt́ m̂úŝt́ b̂é ĝŕêát̂ér̂ t́ĥán̂ ór̂ éq̂úâĺ t̂ó {PH1}."
+  },
+  "emulation/DeviceModeModel.js | heightMustBeLessThanOrEqualToS": {
+    "message": "Ĥéîǵĥt́ m̂úŝt́ b̂é l̂éŝś t̂h́âń ôŕ êq́ûál̂ t́ô {PH1}."
+  },
+  "emulation/DeviceModeModel.js | widthMustBeANumber": {
+    "message": "Ŵíd̂t́ĥ ḿûśt̂ b́ê á n̂úm̂b́êŕ."
+  },
+  "emulation/DeviceModeModel.js | widthMustBeGreaterThanOrEqualToS": {
+    "message": "Ŵíd̂t́ĥ ḿûśt̂ b́ê ǵr̂éât́êŕ t̂h́âń ôŕ êq́ûál̂ t́ô {PH1}."
+  },
+  "emulation/DeviceModeModel.js | widthMustBeLessThanOrEqualToS": {
+    "message": "Ŵíd̂t́ĥ ḿûśt̂ b́ê ĺêśŝ t́ĥán̂ ór̂ éq̂úâĺ t̂ó {PH1}."
+  },
+  "emulation/DeviceModeToolbar.js | addDevicePixelRatio": {
+    "message": "Âd́d̂ d́êv́îćê ṕîx́êĺ r̂át̂íô"
+  },
+  "emulation/DeviceModeToolbar.js | addDeviceType": {
+    "message": "Âd́d̂ d́êv́îćê t́ŷṕê"
+  },
+  "emulation/DeviceModeToolbar.js | autoadjustZoom": {
+    "message": "Âút̂ó-âd́ĵúŝt́ ẑóôḿ"
+  },
+  "emulation/DeviceModeToolbar.js | closeDevtools": {
+    "message": "Ĉĺôśê D́êv́T̂óôĺŝ"
+  },
+  "emulation/DeviceModeToolbar.js | defaultF": {
+    "message": "D̂éf̂áûĺt̂: {PH1}"
+  },
+  "emulation/DeviceModeToolbar.js | devicePixelRatio": {
+    "message": "D̂év̂íĉé p̂íx̂él̂ ŕât́îó"
+  },
+  "emulation/DeviceModeToolbar.js | deviceType": {
+    "message": "D̂év̂íĉé t̂ýp̂é"
+  },
+  "emulation/DeviceModeToolbar.js | edit": {
+    "message": "Êd́ît́…"
+  },
+  "emulation/DeviceModeToolbar.js | experimentalWebPlatformFeature": {
+    "message": "\"Experimental Web Platform Feature\" f̂ĺâǵ îś êńâb́l̂éd̂. Ćl̂íĉḱ t̂ó d̂íŝáb̂ĺê ít̂."
+  },
+  "emulation/DeviceModeToolbar.js | experimentalWebPlatformFeatureFlag": {
+    "message": "\"Experimental Web Platform Feature\" f̂ĺâǵ îś d̂íŝáb̂ĺêd́. Ĉĺîćk̂ t́ô én̂áb̂ĺê ít̂."
+  },
+  "emulation/DeviceModeToolbar.js | fitToWindowF": {
+    "message": "F̂ít̂ t́ô ẃîńd̂óŵ ({PH1}%%)"
+  },
+  "emulation/DeviceModeToolbar.js | heightLeaveEmptyForFull": {
+    "message": "Ĥéîǵĥt́ (l̂éâv́ê ém̂ṕt̂ý f̂ór̂ f́ûĺl̂)"
+  },
+  "emulation/DeviceModeToolbar.js | hideDeviceFrame": {
+    "message": "Ĥíd̂é d̂év̂íĉé f̂ŕâḿê"
+  },
+  "emulation/DeviceModeToolbar.js | hideMediaQueries": {
+    "message": "Ĥíd̂é m̂éd̂íâ q́ûér̂íêś"
+  },
+  "emulation/DeviceModeToolbar.js | hideRulers": {
+    "message": "Ĥíd̂é r̂úl̂ér̂ś"
+  },
+  "emulation/DeviceModeToolbar.js | landscape": {
+    "message": "L̂án̂d́ŝćâṕê"
+  },
+  "emulation/DeviceModeToolbar.js | moreOptions": {
+    "message": "M̂ór̂é ôṕt̂íôńŝ"
+  },
+  "emulation/DeviceModeToolbar.js | none": {
+    "message": "N̂ón̂é"
+  },
+  "emulation/DeviceModeToolbar.js | portrait": {
+    "message": "P̂ór̂t́r̂áît́"
+  },
+  "emulation/DeviceModeToolbar.js | removeDevicePixelRatio": {
+    "message": "R̂ém̂óv̂é d̂év̂íĉé p̂íx̂él̂ ŕât́îó"
+  },
+  "emulation/DeviceModeToolbar.js | removeDeviceType": {
+    "message": "R̂ém̂óv̂é d̂év̂íĉé t̂ýp̂é"
+  },
+  "emulation/DeviceModeToolbar.js | resetToDefaults": {
+    "message": "R̂éŝét̂ t́ô d́êf́âúl̂t́ŝ"
+  },
+  "emulation/DeviceModeToolbar.js | responsive": {
+    "message": "R̂éŝṕôńŝív̂é"
+  },
+  "emulation/DeviceModeToolbar.js | rotate": {
+    "message": "R̂ót̂át̂é"
+  },
+  "emulation/DeviceModeToolbar.js | screenOrientationOptions": {
+    "message": "Ŝćr̂éêń ôŕîén̂t́ât́îón̂ óp̂t́îón̂ś"
+  },
+  "emulation/DeviceModeToolbar.js | showDeviceFrame": {
+    "message": "Ŝh́ôẃ d̂év̂íĉé f̂ŕâḿê"
+  },
+  "emulation/DeviceModeToolbar.js | showMediaQueries": {
+    "message": "Ŝh́ôẃ m̂éd̂íâ q́ûér̂íêś"
+  },
+  "emulation/DeviceModeToolbar.js | showRulers": {
+    "message": "Ŝh́ôẃ r̂úl̂ér̂ś"
+  },
+  "emulation/DeviceModeToolbar.js | toggleDualscreenMode": {
+    "message": "T̂óĝǵl̂é d̂úâĺ-ŝćr̂éêń m̂ód̂é"
+  },
+  "emulation/DeviceModeToolbar.js | width": {
+    "message": "Ŵíd̂t́ĥ"
+  },
+  "emulation/DeviceModeToolbar.js | zoom": {
+    "message": "Ẑóôḿ"
+  },
+  "emulation/DeviceModeView.js | doubleclickForFullHeight": {
+    "message": "D̂óûb́l̂é-ĉĺîćk̂ f́ôŕ f̂úl̂ĺ ĥéîǵĥt́"
+  },
+  "emulation/DeviceModeView.js | laptop": {
+    "message": "L̂áp̂t́ôṕ"
+  },
+  "emulation/DeviceModeView.js | laptopL": {
+    "message": "L̂áp̂t́ôṕ L̂"
+  },
+  "emulation/DeviceModeView.js | mobileL": {
+    "message": "M̂ób̂íl̂é L̂"
+  },
+  "emulation/DeviceModeView.js | mobileM": {
+    "message": "M̂ób̂íl̂é M̂"
+  },
+  "emulation/DeviceModeView.js | mobileS": {
+    "message": "M̂ób̂íl̂é Ŝ"
+  },
+  "emulation/DeviceModeView.js | tablet": {
+    "message": "T̂áb̂ĺêt́"
+  },
+  "emulation/DevicesSettingsTab.js | addCustomDevice": {
+    "message": "Âd́d̂ ćûśt̂óm̂ d́êv́îćê..."
+  },
+  "emulation/DevicesSettingsTab.js | architecture": {
+    "message": "Âŕĉh́ît́êćt̂úr̂é (ê.ǵ. x̂86)"
+  },
+  "emulation/DevicesSettingsTab.js | brandsList": {
+    "message": "B̂ŕâńd̂ś l̂íŝt́ îś n̂ót̂ á v̂ál̂íd̂ śt̂ŕûćt̂úr̂éd̂ f́îél̂d́ŝ ĺîśt̂."
+  },
+  "emulation/DevicesSettingsTab.js | brandsListMust": {
+    "message": "B̂ŕâńd̂ś l̂íŝt́ m̂úŝt́ ĉón̂śîśt̂ óf̂ śt̂ŕîńĝś, êáĉh́ ŵít̂h́ â v́ p̂ár̂ám̂ét̂ér̂ ẃît́ĥ á ŝt́r̂ín̂ǵ v̂ál̂úê."
+  },
+  "emulation/DevicesSettingsTab.js | device": {
+    "message": "D̂év̂íĉé"
+  },
+  "emulation/DevicesSettingsTab.js | deviceModel": {
+    "message": "D̂év̂íĉé m̂ód̂él̂"
+  },
+  "emulation/DevicesSettingsTab.js | deviceName": {
+    "message": "D̂év̂íĉé N̂ám̂é"
+  },
+  "emulation/DevicesSettingsTab.js | deviceNameCannotBeEmpty": {
+    "message": "D̂év̂íĉé n̂ám̂é ĉán̂ńôt́ b̂é êḿp̂t́ŷ."
+  },
+  "emulation/DevicesSettingsTab.js | deviceNameMustBeLessThanS": {
+    "message": "D̂év̂íĉé n̂ám̂é m̂úŝt́ b̂é l̂éŝś t̂h́âń {PH1} ĉh́âŕâćt̂ér̂ś."
+  },
+  "emulation/DevicesSettingsTab.js | devicePixelRatio": {
+    "message": "D̂év̂íĉé p̂íx̂él̂ ŕât́îó"
+  },
+  "emulation/DevicesSettingsTab.js | emulatedDevices": {
+    "message": "Êḿûĺât́êd́ D̂év̂íĉéŝ"
+  },
+  "emulation/DevicesSettingsTab.js | fullBrowserVersion": {
+    "message": "F̂úl̂ĺ b̂ŕôẃŝér̂ v́êŕŝíôń (ê.ǵ. 87.0.4280.88)"
+  },
+  "emulation/DevicesSettingsTab.js | height": {
+    "message": "Ĥéîǵĥt́"
+  },
+  "emulation/DevicesSettingsTab.js | notRepresentable": {
+    "message": "N̂ót̂ ŕêṕr̂éŝén̂t́âb́l̂é âś ŝt́r̂úĉt́ûŕêd́ ĥéâd́êŕŝ śt̂ŕîńĝ."
+  },
+  "emulation/DevicesSettingsTab.js | platform": {
+    "message": "P̂ĺât́f̂ór̂ḿ (ê.ǵ. Âńd̂ŕôíd̂)"
+  },
+  "emulation/DevicesSettingsTab.js | platformVersion": {
+    "message": "P̂ĺât́f̂ór̂ḿ v̂ér̂śîón̂"
+  },
+  "emulation/DevicesSettingsTab.js | UABrands": {
+    "message": "ÛÁ b̂ŕâńd̂ś l̂íŝt́ (ê.ǵ. \"Ĉh́r̂óm̂íûḿ\";v̂=\"87\")"
+  },
+  "emulation/DevicesSettingsTab.js | userAgentClient": {
+    "message": "Ûśêŕ âǵêńt̂ ćl̂íêńt̂ h́îńt̂ś"
+  },
+  "emulation/DevicesSettingsTab.js | userAgentClientHintsAre": {
+    "message": "Ûśêŕ âǵêńt̂ ćl̂íêńt̂ h́îńt̂ś âŕê án̂ ál̂t́êŕn̂át̂ív̂é t̂ó t̂h́ê úŝér̂ áĝén̂t́ ŝt́r̂ín̂ǵ t̂h́ât́ îd́êńt̂íf̂ý t̂h́ê b́r̂óŵśêŕ âńd̂ t́ĥé d̂év̂íĉé îń â ḿôŕê śt̂ŕûćt̂úr̂éd̂ ẃâý ŵít̂h́ b̂ét̂t́êŕ p̂ŕîv́âćŷ áĉćôún̂t́îńĝ. Ćl̂íĉḱ t̂h́ê b́ût́t̂ón̂ t́ô ĺêár̂ń m̂ór̂é."
+  },
+  "emulation/DevicesSettingsTab.js | userAgentString": {
+    "message": "Ûśêŕ âǵêńt̂ śt̂ŕîńĝ"
+  },
+  "emulation/DevicesSettingsTab.js | userAgentType": {
+    "message": "Ûśêŕ âǵêńt̂ t́ŷṕê"
+  },
+  "emulation/DevicesSettingsTab.js | width": {
+    "message": "Ŵíd̂t́ĥ"
+  },
+  "emulation/emulation-meta.ts | accelerometer": {
+    "message": "âćĉél̂ér̂óm̂ét̂ér̂"
+  },
+  "emulation/emulation-meta.ts | berlin": {
+    "message": "B̂ér̂ĺîń"
+  },
+  "emulation/emulation-meta.ts | captureFullSizeScreenshot": {
+    "message": "Ĉáp̂t́ûŕê f́ûĺl̂ śîźê śĉŕêén̂śĥót̂"
+  },
+  "emulation/emulation-meta.ts | captureNodeScreenshot": {
+    "message": "Ĉáp̂t́ûŕê ńôd́ê śĉŕêén̂śĥót̂"
+  },
+  "emulation/emulation-meta.ts | captureScreenshot": {
+    "message": "Ĉáp̂t́ûŕê śĉŕêén̂śĥót̂"
+  },
+  "emulation/emulation-meta.ts | device": {
+    "message": "d̂év̂íĉé"
+  },
+  "emulation/emulation-meta.ts | devicebased": {
+    "message": "D̂év̂íĉé-b̂áŝéd̂"
+  },
+  "emulation/emulation-meta.ts | deviceOrientation": {
+    "message": "d̂év̂íĉé ôŕîén̂t́ât́îón̂"
+  },
+  "emulation/emulation-meta.ts | devices": {
+    "message": "D̂év̂íĉéŝ"
+  },
+  "emulation/emulation-meta.ts | emulateIdleDetectorState": {
+    "message": "Êḿûĺât́ê Íd̂ĺê D́êt́êćt̂ór̂ śt̂át̂é"
+  },
+  "emulation/emulation-meta.ts | forceEnabled": {
+    "message": "F̂ór̂ćê én̂áb̂ĺêd́"
+  },
+  "emulation/emulation-meta.ts | geolocation": {
+    "message": "ĝéôĺôćât́îón̂"
+  },
+  "emulation/emulation-meta.ts | hideDeviceFrame": {
+    "message": "Ĥíd̂é d̂év̂íĉé f̂ŕâḿê"
+  },
+  "emulation/emulation-meta.ts | hideMediaQueries": {
+    "message": "Ĥíd̂é m̂éd̂íâ q́ûér̂íêś"
+  },
+  "emulation/emulation-meta.ts | hideRulers": {
+    "message": "Ĥíd̂é r̂úl̂ér̂ś"
+  },
+  "emulation/emulation-meta.ts | locale": {
+    "message": "l̂óĉál̂é"
+  },
+  "emulation/emulation-meta.ts | locales": {
+    "message": "l̂óĉál̂éŝ"
+  },
+  "emulation/emulation-meta.ts | locations": {
+    "message": "L̂óĉát̂íôńŝ"
+  },
+  "emulation/emulation-meta.ts | london": {
+    "message": "L̂ón̂d́ôń"
+  },
+  "emulation/emulation-meta.ts | mobile": {
+    "message": "M̂ób̂íl̂é"
+  },
+  "emulation/emulation-meta.ts | moscow": {
+    "message": "M̂óŝćôẃ"
+  },
+  "emulation/emulation-meta.ts | mountainView": {
+    "message": "M̂óûńt̂áîń V̂íêẃ"
+  },
+  "emulation/emulation-meta.ts | mumbai": {
+    "message": "M̂úm̂b́âí"
+  },
+  "emulation/emulation-meta.ts | noIdleEmulation": {
+    "message": "N̂ó îd́l̂é êḿûĺât́îón̂"
+  },
+  "emulation/emulation-meta.ts | sanFrancisco": {
+    "message": "Ŝán̂ F́r̂án̂ćîśĉó"
+  },
+  "emulation/emulation-meta.ts | saoPaulo": {
+    "message": "Ŝãó P̂áûĺô"
+  },
+  "emulation/emulation-meta.ts | screenshot": {
+    "message": "Ŝćr̂éêńŝh́ôt́"
+  },
+  "emulation/emulation-meta.ts | sensors": {
+    "message": "Ŝén̂śôŕŝ"
+  },
+  "emulation/emulation-meta.ts | shanghai": {
+    "message": "Ŝh́âńĝh́âí"
+  },
+  "emulation/emulation-meta.ts | showDeviceFrame": {
+    "message": "Ŝh́ôẃ d̂év̂íĉé f̂ŕâḿê"
+  },
+  "emulation/emulation-meta.ts | showDevices": {
+    "message": "Ŝh́ôẃ D̂év̂íĉéŝ"
+  },
+  "emulation/emulation-meta.ts | showLocations": {
+    "message": "Ŝh́ôẃ L̂óĉát̂íôńŝ"
+  },
+  "emulation/emulation-meta.ts | showMediaQueries": {
+    "message": "Ŝh́ôẃ m̂éd̂íâ q́ûér̂íêś"
+  },
+  "emulation/emulation-meta.ts | showRulers": {
+    "message": "Ŝh́ôẃ r̂úl̂ér̂ś"
+  },
+  "emulation/emulation-meta.ts | showSensors": {
+    "message": "Ŝh́ôẃ Ŝén̂śôŕŝ"
+  },
+  "emulation/emulation-meta.ts | timezones": {
+    "message": "t̂ím̂éẑón̂éŝ"
+  },
+  "emulation/emulation-meta.ts | toggleDeviceToolbar": {
+    "message": "T̂óĝǵl̂é d̂év̂íĉé t̂óôĺb̂ár̂"
+  },
+  "emulation/emulation-meta.ts | tokyo": {
+    "message": "T̂ók̂ýô"
+  },
+  "emulation/emulation-meta.ts | touch": {
+    "message": "T̂óûćĥ"
+  },
+  "emulation/emulation-meta.ts | userActiveScreenLocked": {
+    "message": "Ûśêŕ âćt̂ív̂é, ŝćr̂éêń l̂óĉḱêd́"
+  },
+  "emulation/emulation-meta.ts | userActiveScreenUnlocked": {
+    "message": "Ûśêŕ âćt̂ív̂é, ŝćr̂éêń ûńl̂óĉḱêd́"
+  },
+  "emulation/emulation-meta.ts | userIdleScreenLocked": {
+    "message": "Ûśêŕ îd́l̂é, ŝćr̂éêń l̂óĉḱêd́"
+  },
+  "emulation/emulation-meta.ts | userIdleScreenUnlocked": {
+    "message": "Ûśêŕ îd́l̂é, ŝćr̂éêń ûńl̂óĉḱêd́"
+  },
+  "emulation/LocationsSettingsTab.js | addLocation": {
+    "message": "Âd́d̂ ĺôćât́îón̂..."
+  },
+  "emulation/LocationsSettingsTab.js | customLocations": {
+    "message": "Ĉúŝt́ôḿ l̂óĉát̂íôńŝ"
+  },
+  "emulation/LocationsSettingsTab.js | lat": {
+    "message": "L̂át̂"
+  },
+  "emulation/LocationsSettingsTab.js | latitude": {
+    "message": "L̂át̂ít̂úd̂é"
+  },
+  "emulation/LocationsSettingsTab.js | latitudeMustBeANumber": {
+    "message": "L̂át̂ít̂úd̂é m̂úŝt́ b̂é â ńûḿb̂ér̂"
+  },
+  "emulation/LocationsSettingsTab.js | latitudeMustBeGreaterThanOrEqual": {
+    "message": "L̂át̂ít̂úd̂é m̂úŝt́ b̂é ĝŕêát̂ér̂ t́ĥán̂ ór̂ éq̂úâĺ t̂ó {PH1}"
+  },
+  "emulation/LocationsSettingsTab.js | latitudeMustBeLessThanOrEqualToS": {
+    "message": "L̂át̂ít̂úd̂é m̂úŝt́ b̂é l̂éŝś t̂h́âń ôŕ êq́ûál̂ t́ô {PH1}"
+  },
+  "emulation/LocationsSettingsTab.js | locale": {
+    "message": "L̂óĉál̂é"
+  },
+  "emulation/LocationsSettingsTab.js | localeMustContainAlphabetic": {
+    "message": "L̂óĉál̂é m̂úŝt́ ĉón̂t́âín̂ ál̂ṕĥáb̂ét̂íĉ ćĥár̂áĉt́êŕŝ"
+  },
+  "emulation/LocationsSettingsTab.js | locationName": {
+    "message": "L̂óĉát̂íôń n̂ám̂é"
+  },
+  "emulation/LocationsSettingsTab.js | locationNameCannotBeEmpty": {
+    "message": "L̂óĉát̂íôń n̂ám̂é ĉán̂ńôt́ b̂é êḿp̂t́ŷ"
+  },
+  "emulation/LocationsSettingsTab.js | locationNameMustBeLessThanS": {
+    "message": "L̂óĉát̂íôń n̂ám̂é m̂úŝt́ b̂é l̂éŝś t̂h́âń {PH1} ĉh́âŕâćt̂ér̂ś"
+  },
+  "emulation/LocationsSettingsTab.js | long": {
+    "message": "L̂ón̂ǵ"
+  },
+  "emulation/LocationsSettingsTab.js | longitude": {
+    "message": "L̂ón̂ǵît́ûd́ê"
+  },
+  "emulation/LocationsSettingsTab.js | longitudeMustBeANumber": {
+    "message": "L̂ón̂ǵît́ûd́ê ḿûśt̂ b́ê á n̂úm̂b́êŕ"
+  },
+  "emulation/LocationsSettingsTab.js | longitudeMustBeGreaterThanOr": {
+    "message": "L̂ón̂ǵît́ûd́ê ḿûśt̂ b́ê ǵr̂éât́êŕ t̂h́âń ôŕ êq́ûál̂ t́ô {PH1}"
+  },
+  "emulation/LocationsSettingsTab.js | longitudeMustBeLessThanOrEqualTo": {
+    "message": "L̂ón̂ǵît́ûd́ê ḿûśt̂ b́ê ĺêśŝ t́ĥán̂ ór̂ éq̂úâĺ t̂ó {PH1}"
+  },
+  "emulation/LocationsSettingsTab.js | timezoneId": {
+    "message": "T̂ím̂éẑón̂é ÎD́"
+  },
+  "emulation/LocationsSettingsTab.js | timezoneIdMustContainAlphabetic": {
+    "message": "T̂ím̂éẑón̂é ÎD́ m̂úŝt́ ĉón̂t́âín̂ ál̂ṕĥáb̂ét̂íĉ ćĥár̂áĉt́êŕŝ"
+  },
+  "emulation/MediaQueryInspector.js | revealInSourceCode": {
+    "message": "R̂év̂éâĺ îń ŝóûŕĉé ĉód̂é"
+  },
+  "emulation/ModuleUIStrings.js | laptopWithHiDPI": {
+    "message": "L̂áp̂t́ôṕ ŵít̂h́ ĤíD̂ṔÎ śĉŕêén̂"
+  },
+  "emulation/ModuleUIStrings.js | laptopWithMDPI": {
+    "message": "L̂áp̂t́ôṕ ŵít̂h́ M̂D́P̂Í ŝćr̂éêń"
+  },
+  "emulation/ModuleUIStrings.js | laptopWithTouch": {
+    "message": "L̂áp̂t́ôṕ ŵít̂h́ t̂óûćĥ"
+  },
+  "emulation/SensorsView.js | adjustWithMousewheelOrUpdownKeys": {
+    "message": "Âd́ĵúŝt́ ŵít̂h́ m̂óûśêẃĥéêĺ ôŕ ûṕ/d̂óŵń k̂éŷś. {PH1}: ±10, Ŝh́îf́t̂: ±1, Ál̂t́: ±0.01"
+  },
+  "emulation/SensorsView.js | alpha": {
+    "message": "α (âĺp̂h́â)"
+  },
+  "emulation/SensorsView.js | beta": {
+    "message": "β (b̂ét̂á)"
+  },
+  "emulation/SensorsView.js | customOrientation": {
+    "message": "Ĉúŝt́ôḿ ôŕîén̂t́ât́îón̂"
+  },
+  "emulation/SensorsView.js | deviceOrientationSetToAlphaSBeta": {
+    "message": "D̂év̂íĉé ôŕîén̂t́ât́îón̂ śêt́ t̂ó âĺp̂h́â: {PH1}, b́êt́â: {PH2}, ǵâḿm̂á: {PH3}"
+  },
+  "emulation/SensorsView.js | displayDown": {
+    "message": "D̂íŝṕl̂áŷ d́ôẃn̂"
+  },
+  "emulation/SensorsView.js | displayUp": {
+    "message": "D̂íŝṕl̂áŷ úp̂"
+  },
+  "emulation/SensorsView.js | enableOrientationToRotate": {
+    "message": "Êńâb́l̂é ôŕîén̂t́ât́îón̂ t́ô ŕôt́ât́ê"
+  },
+  "emulation/SensorsView.js | error": {
+    "message": "Êŕr̂ór̂"
+  },
+  "emulation/SensorsView.js | forcesSelectedIdleStateEmulation": {
+    "message": "F̂ór̂ćêś ŝél̂éĉt́êd́ îd́l̂é ŝt́ât́ê ém̂úl̂át̂íôń"
+  },
+  "emulation/SensorsView.js | forcesTouchInsteadOfClick": {
+    "message": "F̂ór̂ćêś t̂óûćĥ ín̂śt̂éâd́ ôf́ ĉĺîćk̂"
+  },
+  "emulation/SensorsView.js | gamma": {
+    "message": "γ (ĝám̂ḿâ)"
+  },
+  "emulation/SensorsView.js | landscapeLeft": {
+    "message": "L̂án̂d́ŝćâṕê ĺêf́t̂"
+  },
+  "emulation/SensorsView.js | landscapeRight": {
+    "message": "L̂án̂d́ŝćâṕê ŕîǵĥt́"
+  },
+  "emulation/SensorsView.js | latitude": {
+    "message": "L̂át̂ít̂úd̂é"
+  },
+  "emulation/SensorsView.js | locale": {
+    "message": "L̂óĉál̂é"
+  },
+  "emulation/SensorsView.js | location": {
+    "message": "L̂óĉát̂íôń"
+  },
+  "emulation/SensorsView.js | locationUnavailable": {
+    "message": "L̂óĉát̂íôń ûńâv́âíl̂áb̂ĺê"
+  },
+  "emulation/SensorsView.js | longitude": {
+    "message": "L̂ón̂ǵît́ûd́ê"
+  },
+  "emulation/SensorsView.js | manage": {
+    "message": "M̂án̂áĝé"
+  },
+  "emulation/SensorsView.js | manageTheListOfLocations": {
+    "message": "M̂án̂áĝé t̂h́ê ĺîśt̂ óf̂ ĺôćât́îón̂ś"
+  },
+  "emulation/SensorsView.js | noOverride": {
+    "message": "N̂ó ôv́êŕr̂íd̂é"
+  },
+  "emulation/SensorsView.js | off": {
+    "message": "Ôf́f̂"
+  },
+  "emulation/SensorsView.js | orientation": {
+    "message": "Ôŕîén̂t́ât́îón̂"
+  },
+  "emulation/SensorsView.js | other": {
+    "message": "Ôt́ĥér̂…"
+  },
+  "emulation/SensorsView.js | overrides": {
+    "message": "Ôv́êŕr̂íd̂éŝ"
+  },
+  "emulation/SensorsView.js | portrait": {
+    "message": "P̂ór̂t́r̂áît́"
+  },
+  "emulation/SensorsView.js | portraitUpsideDown": {
+    "message": "P̂ór̂t́r̂áît́ ûṕŝíd̂é d̂óŵń"
+  },
+  "emulation/SensorsView.js | presets": {
+    "message": "P̂ŕêśêt́ŝ"
+  },
+  "emulation/SensorsView.js | reset": {
+    "message": "R̂éŝét̂"
+  },
+  "emulation/SensorsView.js | resetDeviceOrientation": {
+    "message": "R̂éŝét̂ d́êv́îćê ór̂íêńt̂át̂íôń"
+  },
+  "emulation/SensorsView.js | shiftdragHorizontallyToRotate": {
+    "message": "Ŝh́îf́t̂+d́r̂áĝ h́ôŕîźôńt̂ál̂ĺŷ t́ô ŕôt́ât́ê ár̂óûńd̂ t́ĥé ŷ-áx̂íŝ"
+  },
+  "emulation/SensorsView.js | timezoneId": {
+    "message": "T̂ím̂éẑón̂é ÎD́"
+  },
   "event_listeners/EventListenersView.ts | deleteEventListener": {
     "message": "D̂él̂ét̂é êv́êńt̂ ĺîśt̂én̂ér̂"
   },

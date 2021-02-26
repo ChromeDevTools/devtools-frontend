@@ -3,11 +3,97 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
-import {ls} from '../platform/platform.js';
+import * as i18n from '../i18n/i18n.js';
 import * as UI from '../ui/ui.js';
 
 /** @type {!LocationsSettingsTab} */
 let locationsSettingsTabInstance;
+
+export const UIStrings = {
+  /**
+  *@description Text in Locations Settings Tab of the Device Toolbar
+  */
+  customLocations: 'Custom locations',
+  /**
+  *@description Text in Locations Settings Tab of the Device Toolbar
+  */
+  locationName: 'Location name',
+  /**
+  *@description Abbreviation of latitude in Locations Settings Tab of the Device Toolbar
+  */
+  lat: 'Lat',
+  /**
+  *@description Abbreviation of longitude in Locations Settings Tab of the Device Toolbar
+  */
+  long: 'Long',
+  /**
+  *@description Text in Sensors View of the Device Toolbar
+  */
+  timezoneId: 'Timezone ID',
+  /**
+  *@description Text in Sensors View of the Device Toolbar
+  */
+  locale: 'Locale',
+  /**
+  *@description Text in Sensors View of the Device Toolbar
+  */
+  latitude: 'Latitude',
+  /**
+  *@description Text in Sensors View of the Device Toolbar
+  */
+  longitude: 'Longitude',
+  /**
+  *@description Error message in the Locations settings pane that declares the location name input must not be empty
+  */
+  locationNameCannotBeEmpty: 'Location name cannot be empty',
+  /**
+  *@description Error message in the Locations settings pane that declares the maximum length of the location name
+  *@example {50} PH1
+  */
+  locationNameMustBeLessThanS: 'Location name must be less than {PH1} characters',
+  /**
+  *@description Error message in the Locations settings pane that declares that the value for the latitude input must be a number
+  */
+  latitudeMustBeANumber: 'Latitude must be a number',
+  /**
+  *@description Error message in the Locations settings pane that declares the minimum value for the latitude input
+  *@example {-90} PH1
+  */
+  latitudeMustBeGreaterThanOrEqual: 'Latitude must be greater than or equal to {PH1}',
+  /**
+  *@description Error message in the Locations settings pane that declares the maximum value for the latitude input
+  *@example {90} PH1
+  */
+  latitudeMustBeLessThanOrEqualToS: 'Latitude must be less than or equal to {PH1}',
+  /**
+  *@description Error message in the Locations settings pane that declares that the value for the longitude input must be a number
+  */
+  longitudeMustBeANumber: 'Longitude must be a number',
+  /**
+  *@description Error message in the Locations settings pane that declares the minimum value for the longitude input
+  *@example {-180} PH1
+  */
+  longitudeMustBeGreaterThanOr: 'Longitude must be greater than or equal to {PH1}',
+  /**
+  *@description Error message in the Locations settings pane that declares the maximum value for the longitude input
+  *@example {180} PH1
+  */
+  longitudeMustBeLessThanOrEqualTo: 'Longitude must be less than or equal to {PH1}',
+  /**
+  *@description Error message in the Locations settings pane that declares timezone ID input invalid
+  */
+  timezoneIdMustContainAlphabetic: 'Timezone ID must contain alphabetic characters',
+  /**
+  *@description Error message in the Locations settings pane that declares locale input invalid
+  */
+  localeMustContainAlphabetic: 'Locale must contain alphabetic characters',
+  /**
+  *@description Text of add locations button in Locations Settings Tab of the Device Toolbar
+  */
+  addLocation: 'Add location...',
+};
+const str_ = i18n.i18n.registerUIStrings('emulation/LocationsSettingsTab.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 /**
  * @implements {UI.ListWidget.Delegate<Item>}
@@ -18,10 +104,10 @@ export class LocationsSettingsTab extends UI.Widget.VBox {
     super(true);
     this.registerRequiredCSS('emulation/locationsSettingsTab.css', {enableLegacyPatching: true});
 
-    this.contentElement.createChild('div', 'header').textContent = Common.UIString.UIString('Custom locations');
+    this.contentElement.createChild('div', 'header').textContent = i18nString(UIStrings.customLocations);
 
     const addButton = UI.UIUtils.createTextButton(
-        Common.UIString.UIString('Add location\u2026'), this._addButtonClicked.bind(this), 'add-locations-button');
+        i18nString(UIStrings.addLocation), this._addButtonClicked.bind(this), 'add-locations-button');
     this.contentElement.appendChild(addButton);
 
     this._list = new UI.ListWidget.ListWidget(this);
@@ -183,35 +269,35 @@ export class LocationsSettingsTab extends UI.Widget.VBox {
 
     const titles = content.createChild('div', 'locations-edit-row');
     titles.createChild('div', 'locations-list-text locations-list-title').textContent =
-        Common.UIString.UIString('Location name');
+        i18nString(UIStrings.locationName);
     titles.createChild('div', 'locations-list-separator locations-list-separator-invisible');
-    titles.createChild('div', 'locations-list-text').textContent = Common.UIString.UIString('Lat');
+    titles.createChild('div', 'locations-list-text').textContent = i18nString(UIStrings.lat);
     titles.createChild('div', 'locations-list-separator locations-list-separator-invisible');
-    titles.createChild('div', 'locations-list-text').textContent = Common.UIString.UIString('Long');
+    titles.createChild('div', 'locations-list-text').textContent = i18nString(UIStrings.long);
     titles.createChild('div', 'locations-list-separator locations-list-separator-invisible');
-    titles.createChild('div', 'locations-list-text').textContent = Common.UIString.UIString('Timezone ID');
+    titles.createChild('div', 'locations-list-text').textContent = i18nString(UIStrings.timezoneId);
     titles.createChild('div', 'locations-list-separator locations-list-separator-invisible');
-    titles.createChild('div', 'locations-list-text').textContent = Common.UIString.UIString('Locale');
+    titles.createChild('div', 'locations-list-text').textContent = i18nString(UIStrings.locale);
 
     const fields = content.createChild('div', 'locations-edit-row');
     fields.createChild('div', 'locations-list-text locations-list-title locations-input-container')
-        .appendChild(editor.createInput('title', 'text', ls`Location name`, titleValidator));
+        .appendChild(editor.createInput('title', 'text', i18nString(UIStrings.locationName), titleValidator));
     fields.createChild('div', 'locations-list-separator locations-list-separator-invisible');
 
     let cell = fields.createChild('div', 'locations-list-text locations-input-container');
-    cell.appendChild(editor.createInput('lat', 'text', ls`Latitude`, latValidator));
+    cell.appendChild(editor.createInput('lat', 'text', i18nString(UIStrings.latitude), latValidator));
     fields.createChild('div', 'locations-list-separator locations-list-separator-invisible');
 
     cell = fields.createChild('div', 'locations-list-text locations-list-text-longitude locations-input-container');
-    cell.appendChild(editor.createInput('long', 'text', ls`Longitude`, longValidator));
+    cell.appendChild(editor.createInput('long', 'text', i18nString(UIStrings.longitude), longValidator));
     fields.createChild('div', 'locations-list-separator locations-list-separator-invisible');
 
     cell = fields.createChild('div', 'locations-list-text locations-input-container');
-    cell.appendChild(editor.createInput('timezoneId', 'text', ls`Timezone ID`, timezoneIdValidator));
+    cell.appendChild(editor.createInput('timezoneId', 'text', i18nString(UIStrings.timezoneId), timezoneIdValidator));
     fields.createChild('div', 'locations-list-separator locations-list-separator-invisible');
 
     cell = fields.createChild('div', 'locations-list-text locations-input-container');
-    cell.appendChild(editor.createInput('locale', 'text', ls`Locale`, localeValidator));
+    cell.appendChild(editor.createInput('locale', 'text', i18nString(UIStrings.locale), localeValidator));
 
     return editor;
 
@@ -227,9 +313,9 @@ export class LocationsSettingsTab extends UI.Widget.VBox {
 
       let errorMessage;
       if (!value.length) {
-        errorMessage = ls`Location name cannot be empty`;
+        errorMessage = i18nString(UIStrings.locationNameCannotBeEmpty);
       } else if (value.length > maxLength) {
-        errorMessage = ls`Location name must be less than ${maxLength} characters`;
+        errorMessage = i18nString(UIStrings.locationNameMustBeLessThanS, {PH1: maxLength});
       }
 
       if (errorMessage) {
@@ -256,11 +342,11 @@ export class LocationsSettingsTab extends UI.Widget.VBox {
 
       let errorMessage;
       if (Number.isNaN(parsedValue)) {
-        errorMessage = ls`Latitude must be a number`;
+        errorMessage = i18nString(UIStrings.latitudeMustBeANumber);
       } else if (parseFloat(value) < minLat) {
-        errorMessage = ls`Latitude must be greater than or equal to ${minLat}`;
+        errorMessage = i18nString(UIStrings.latitudeMustBeGreaterThanOrEqual, {PH1: minLat});
       } else if (parseFloat(value) > maxLat) {
-        errorMessage = ls`Latitude must be less than or equal to ${maxLat}`;
+        errorMessage = i18nString(UIStrings.latitudeMustBeLessThanOrEqualToS, {PH1: maxLat});
       }
 
       if (errorMessage) {
@@ -287,11 +373,11 @@ export class LocationsSettingsTab extends UI.Widget.VBox {
 
       let errorMessage;
       if (Number.isNaN(parsedValue)) {
-        errorMessage = ls`Longitude must be a number`;
+        errorMessage = i18nString(UIStrings.longitudeMustBeANumber);
       } else if (parseFloat(value) < minLong) {
-        errorMessage = ls`Longitude must be greater than or equal to ${minLong}`;
+        errorMessage = i18nString(UIStrings.longitudeMustBeGreaterThanOr, {PH1: minLong});
       } else if (parseFloat(value) > maxLong) {
-        errorMessage = ls`Longitude must be less than or equal to ${maxLong}`;
+        errorMessage = i18nString(UIStrings.longitudeMustBeLessThanOrEqualTo, {PH1: maxLong});
       }
 
       if (errorMessage) {
@@ -318,7 +404,7 @@ export class LocationsSettingsTab extends UI.Widget.VBox {
       if (value === '' || /[a-zA-Z]/.test(value)) {
         return {valid: true, errorMessage: undefined};
       }
-      const errorMessage = ls`Timezone ID must contain alphabetic characters`;
+      const errorMessage = i18nString(UIStrings.timezoneIdMustContainAlphabetic);
       return {valid: false, errorMessage};
     }
 
@@ -339,7 +425,7 @@ export class LocationsSettingsTab extends UI.Widget.VBox {
       if (value === '' || /[a-zA-Z]{2}/.test(value)) {
         return {valid: true, errorMessage: undefined};
       }
-      const errorMessage = ls`Locale must contain alphabetic characters`;
+      const errorMessage = i18nString(UIStrings.localeMustContainAlphabetic);
       return {valid: false, errorMessage};
     }
   }

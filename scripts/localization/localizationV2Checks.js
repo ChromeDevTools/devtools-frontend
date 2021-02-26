@@ -27,6 +27,10 @@ async function checkUIStrings(shouldAutoFix) {
       // not displayed but serialized and sent over to the profiler to be displayed.
       // As they are displayed on the profiler they need to be declared there.
       continue;
+    } else if (/emulation(\\|\/)ModuleUIStrings\.(js|ts)$/.test(filePath)) {
+      // emulation `ModuleUIStrings.js` contains string definitions used in the module,
+      // but are used by `emulated_devices`, which is not a localized module.
+      continue;
     } else if (/ModuleUIStrings\.(js|ts)$/.test(filePath)) {
       const newFilePath = filePath.replace(/ModuleUIStrings\.(js|ts)$/, 'module.json');
       const stringIdSet = getStringIdsFromCallSites(localizationCallsMap.get(newFilePath));

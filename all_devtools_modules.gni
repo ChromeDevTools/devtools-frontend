@@ -180,6 +180,7 @@ all_typescript_module_sources = [
   "emulation/InspectedPagePlaceholder.js",
   "emulation/LocationsSettingsTab.js",
   "emulation/MediaQueryInspector.js",
+  "emulation/ModuleUIStrings.js",
   "emulation/SensorsView.js",
   "emulation/StructuredHeaders.js",
   "emulation/UserAgentMetadata.js",

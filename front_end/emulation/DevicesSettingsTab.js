@@ -2,8 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../common/common.js';
-import {ls} from '../platform/platform.js';
+import * as i18n from '../i18n/i18n.js';
 import * as UI from '../ui/ui.js';
 
 import {DeviceModeModel, MaxDeviceNameLength, UA} from './DeviceModeModel.js';
@@ -13,6 +12,100 @@ import {parseBrandsList, serializeBrandsList, validateAsStructuredHeadersString}
 /** @type {!DevicesSettingsTab} */
 let devicesSettingsTabInstance;
 
+export const UIStrings = {
+  /**
+  *@description Text of a DOM element in Devices Settings Tab of the Device Toolbar
+  */
+  emulatedDevices: 'Emulated Devices',
+  /**
+  *@description Add custom button in Devices Settings Tab of the Device Toolbar
+  */
+  addCustomDevice: 'Add custom device...',
+  /**
+  *@description Label for
+  */
+  device: 'Device',
+  /**
+  *@description Label in the Devices settings pane for the device name input of a custom device
+  */
+  deviceName: 'Device Name',
+  /**
+  *@description Width input title in Device Mode Toolbar of the Device Toolbar
+  */
+  width: 'Width',
+  /**
+  *@description Label in the Devices settings pane for the height input of a custom device
+  */
+  height: 'Height',
+  /**
+  *@description Title of device scale item in device mode toolbar of the device toolbar
+  */
+  devicePixelRatio: 'Device pixel ratio',
+  /**
+  *@description Field in Devices pane letting customize which browser names and major versions edited device presents via User Agent Client Hints. Example should be kept exactly.
+  */
+  UABrands: 'UA brands list (e.g. "Chromium";v="87")',
+  /**
+  *@description Title of foldable group of options in Devices pane letting customize what information is sent about the browser and device via user agent client hints functionality
+  */
+  userAgentClient: 'User agent client hints',
+  /**
+  *@description Tooltip text for the foldable 'User agent client hints' section's help button
+  */
+  userAgentClientHintsAre:
+      'User agent client hints are an alternative to the user agent string that identify the browser and the device in a more structured way with better privacy accounting. Click the button to learn more.',
+  /**
+  *@description Label in the Devices settings pane for the user agent string input of a custom device
+  */
+  userAgentString: 'User agent string',
+  /**
+  *@description Label in the Devices settings pane for the user agent type input of a custom device
+  */
+  userAgentType: 'User agent type',
+  /**
+  *@description Error message in the Devices settings pane that declares the maximum length of the device name input
+  *@example {50} PH1
+  */
+  deviceNameMustBeLessThanS: 'Device name must be less than {PH1} characters.',
+  /**
+  *@description Error message in the Devices settings pane that declares that the device name input must not be empty
+  */
+  deviceNameCannotBeEmpty: 'Device name cannot be empty.',
+  /**
+  *@description Field in the Devices pane letting customize precise browser version the edited device presents via User Agent Client Hints.
+  */
+  fullBrowserVersion: 'Full browser version (e.g. 87.0.4280.88)',
+  /**
+  *@description Field in Devices pane letting customize which operating system the edited device presents via User Agent Client Hints. Example should be kept exactly.
+  */
+  platform: 'Platform (e.g. Android)',
+  /**
+  *@description Field in Devices pane letting customize which operating system version the edited device presents via User Agent Client Hints
+  */
+  platformVersion: 'Platform version',
+  /**
+  *@description Field in Devices pane letting customize which CPU architecture the edited device presents via User Agent Client Hints. Example should be kept exactly.
+  */
+  architecture: 'Architecture (e.g. x86)',
+  /**
+  *@description Field Field in the Devices pane letting customize the name the edited device presents via User Agent Client Hints
+  */
+  deviceModel: 'Device model',
+  /**
+  *@description Field Error message in the Device settings pane that shows that the entered value has characters that can't be represented in the corresponding User Agent Client Hints
+  */
+  notRepresentable: 'Not representable as structured headers string.',
+  /**
+  *@description Field Error message in the Device settings pane that shows that the entered brands list has wrong syntax
+  */
+  brandsList: 'Brands list is not a valid structured fields list.',
+  /**
+  *@description Field Error message in the Device settings pane that shows that the entered brands list includes the wrong information
+  */
+  brandsListMust: 'Brands list must consist of strings, each with a v parameter with a string value.',
+};
+const str_ = i18n.i18n.registerUIStrings('emulation/DevicesSettingsTab.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /**
  * @implements {UI.ListWidget.Delegate<!EmulatedDevice>}
  */
@@ -25,13 +118,13 @@ export class DevicesSettingsTab extends UI.Widget.VBox {
     this.registerRequiredCSS('emulation/devicesSettingsTab.css', {enableLegacyPatching: true});
 
     const header = this.element.createChild('header');
-    UI.UIUtils.createTextChild(header.createChild('h1'), ls`Emulated Devices`);
+    UI.UIUtils.createTextChild(header.createChild('h1'), i18nString(UIStrings.emulatedDevices));
     this.containerElement = this.element.createChild('div', 'settings-container-wrapper')
                                 .createChild('div', 'settings-tab settings-content settings-container');
 
     const buttonsRow = this.containerElement.createChild('div', 'devices-button-row');
     this._addCustomButton =
-        UI.UIUtils.createTextButton(Common.UIString.UIString('Add custom device...'), this._addCustomDevice.bind(this));
+        UI.UIUtils.createTextButton(i18nString(UIStrings.addCustomDevice), this._addCustomDevice.bind(this));
     this._addCustomButton.id = 'custom-device-add-button';
     buttonsRow.appendChild(this._addCustomButton);
 
@@ -242,41 +335,40 @@ export class DevicesSettingsTab extends UI.Widget.VBox {
     const content = editor.contentElement();
 
     const deviceFields = content.createChild('div', 'devices-edit-fields');
-    UI.UIUtils.createTextChild(deviceFields.createChild('b'), ls`Device`);
-    const deviceNameField = editor.createInput('title', 'text', ls`Device Name`, titleValidator);
+    UI.UIUtils.createTextChild(deviceFields.createChild('b'), i18nString(UIStrings.device));
+    const deviceNameField = editor.createInput('title', 'text', i18nString(UIStrings.deviceName), titleValidator);
     deviceFields.createChild('div', 'hbox').appendChild(deviceNameField);
     deviceNameField.id = 'custom-device-name-field';
     const screen = deviceFields.createChild('div', 'hbox');
-    screen.appendChild(editor.createInput('width', 'text', ls`Width`, widthValidator));
-    screen.appendChild(editor.createInput('height', 'text', ls`Height`, heightValidator));
-    const dpr = editor.createInput('scale', 'text', ls`Device pixel ratio`, scaleValidator);
+    screen.appendChild(editor.createInput('width', 'text', i18nString(UIStrings.width), widthValidator));
+    screen.appendChild(editor.createInput('height', 'text', i18nString(UIStrings.height), heightValidator));
+    const dpr = editor.createInput('scale', 'text', i18nString(UIStrings.devicePixelRatio), scaleValidator);
     dpr.classList.add('device-edit-fixed');
     screen.appendChild(dpr);
 
     const uaStringFields = content.createChild('div', 'devices-edit-fields');
-    UI.UIUtils.createTextChild(uaStringFields.createChild('b'), ls`User agent string`);
+    UI.UIUtils.createTextChild(uaStringFields.createChild('b'), i18nString(UIStrings.userAgentString));
 
     const ua = uaStringFields.createChild('div', 'hbox');
-    ua.appendChild(editor.createInput('user-agent', 'text', ls`User agent string`, () => {
+    ua.appendChild(editor.createInput('user-agent', 'text', i18nString(UIStrings.userAgentString), () => {
       return {valid: true, errorMessage: undefined};
     }));
     const uaTypeOptions = [UA.Mobile, UA.MobileNoTouch, UA.Desktop, UA.DesktopTouch];
     const uaType = editor.createSelect('ua-type', uaTypeOptions, () => {
       return {valid: true, errorMessage: undefined};
-    }, ls`User agent type`);
+    }, i18nString(UIStrings.userAgentType));
     uaType.classList.add('device-edit-fixed');
     ua.appendChild(uaType);
 
     const uaChFields = content.createChild('div', 'devices-edit-client-hints-heading');
-    UI.UIUtils.createTextChild(uaChFields.createChild('b'), ls`User agent client hints`);
+    UI.UIUtils.createTextChild(uaChFields.createChild('b'), i18nString(UIStrings.userAgentClient));
 
     const helpIconWrapper = document.createElement('a');
     helpIconWrapper.href = 'https://web.dev/user-agent-client-hints/';
     helpIconWrapper.target = '_blank';
     const icon = UI.Icon.Icon.create('mediumicon-info', 'help-icon');
     helpIconWrapper.appendChild(icon);
-    helpIconWrapper.title =
-        ls`User agent client hints are an alternative to the user agent string that identify the browser and the device in a more structured way with better privacy accounting. Click the button to learn more.`;
+    helpIconWrapper.title = i18nString(UIStrings.userAgentClientHintsAre);
     // Prevent the editor grabbing the enter key, letting the default behavior happen.
     helpIconWrapper.addEventListener('keydown', event => {
       if (event.key === 'Enter') {
@@ -305,24 +397,24 @@ export class DevicesSettingsTab extends UI.Widget.VBox {
       treeRoot.appendChild(treeNode);
     }
 
-    const brands =
-        editor.createInput('brands', 'text', ls`UA brands list (e.g. "Chromium";v="87")`, brandListValidator);
+    const brands = editor.createInput('brands', 'text', i18nString(UIStrings.UABrands), brandListValidator);
     addToTree(brands);
 
     const fullVersion =
-        editor.createInput('full-version', 'text', ls`Full browser version (e.g. 87.0.4280.88)`, chStringValidator);
+        editor.createInput('full-version', 'text', i18nString(UIStrings.fullBrowserVersion), chStringValidator);
     addToTree(fullVersion);
 
-    const platform = editor.createInput('platform', 'text', ls`Platform (e.g. Android)`, chStringValidator);
+    const platform = editor.createInput('platform', 'text', i18nString(UIStrings.platform), chStringValidator);
     addToTree(platform);
 
-    const platformVersion = editor.createInput('platform-version', 'text', ls`Platform version`, chStringValidator);
+    const platformVersion =
+        editor.createInput('platform-version', 'text', i18nString(UIStrings.platformVersion), chStringValidator);
     addToTree(platformVersion);
 
-    const arch = editor.createInput('arch', 'text', ls`Architecture (e.g. x86)`, chStringValidator);
+    const arch = editor.createInput('arch', 'text', i18nString(UIStrings.architecture), chStringValidator);
     addToTree(arch);
 
-    const model = editor.createInput('model', 'text', ls`Device model`, chStringValidator);
+    const model = editor.createInput('model', 'text', i18nString(UIStrings.deviceModel), chStringValidator);
     addToTree(model);
 
     return editor;
@@ -334,7 +426,7 @@ export class DevicesSettingsTab extends UI.Widget.VBox {
      * @return {!UI.ListWidget.ValidatorResult}
      */
     function chStringValidator(item, index, input) {
-      return validateAsStructuredHeadersString(input.value, ls`Not representable as structured headers string.`);
+      return validateAsStructuredHeadersString(input.value, i18nString(UIStrings.notRepresentable));
     }
 
     /**
@@ -344,8 +436,8 @@ export class DevicesSettingsTab extends UI.Widget.VBox {
      * @return {!UI.ListWidget.ValidatorResult}
      */
     function brandListValidator(item, index, input) {
-      const syntaxError = ls`Brands list is not a valid structured fields list.`;
-      const structError = ls`Brands list must consist of strings, each with a v parameter with a string value.`;
+      const syntaxError = i18nString(UIStrings.brandsList);
+      const structError = i18nString(UIStrings.brandsListMust);
       const errorOrResult = parseBrandsList(input.value, syntaxError, structError);
       if (typeof errorOrResult === 'string') {
         return {valid: false, errorMessage: errorOrResult};
@@ -365,9 +457,9 @@ export class DevicesSettingsTab extends UI.Widget.VBox {
 
       const value = input.value.trim();
       if (value.length >= MaxDeviceNameLength) {
-        errorMessage = ls`Device name must be less than ${MaxDeviceNameLength} characters.`;
+        errorMessage = i18nString(UIStrings.deviceNameMustBeLessThanS, {PH1: MaxDeviceNameLength});
       } else if (value.length === 0) {
-        errorMessage = ls`Device name cannot be empty.`;
+        errorMessage = i18nString(UIStrings.deviceNameCannotBeEmpty);
       } else {
         valid = true;
       }

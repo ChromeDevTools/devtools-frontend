@@ -37,8 +37,10 @@ let pathToOutTargetDir = __dirname;
 while (isRunningInGen && !pathToOutTargetDir.endsWith(`out${path.sep}${target}`)) {
   pathToOutTargetDir = path.resolve(pathToOutTargetDir, '..');
 }
+
+/* If we are not running in out/Default, we'll assume the script is running from the repo root, and navigate to {CWD}/out/Target */
 const pathToBuiltOutTargetDirectory =
-    isRunningInGen ? pathToOutTargetDir : path.resolve(path.join(__dirname, '..', '..', 'out', target));
+    isRunningInGen ? pathToOutTargetDir : path.resolve(path.join(process.cwd(), 'out', target));
 
 const devtoolsRootFolder = path.resolve(path.join(pathToBuiltOutTargetDirectory, 'gen'));
 

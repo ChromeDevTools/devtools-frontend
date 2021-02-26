@@ -61,6 +61,7 @@ def run_tests(chrome_binary,
               test_suite_path,
               test_suite,
               jobs,
+              target,
               cwd=None,
               node_modules_path=None,
               test_file=None):
@@ -74,6 +75,9 @@ def run_tests(chrome_binary,
 
     if jobs:
         env['JOBS'] = jobs
+
+    if target:
+        env['TARGET'] = target
 
     if node_modules_path is not None:
         # Node requires the path to be absolute
@@ -140,6 +144,7 @@ def run_test():
         print('Testing file (%s)' % test_file)
 
     cwd = OPTIONS.cwd
+    target = OPTIONS.target
     node_modules_path = OPTIONS.node_modules_path
 
     print('Running tests from %s\n' % cwd)
@@ -153,6 +158,7 @@ def run_test():
                                  test_suite_path,
                                  test_suite,
                                  jobs,
+                                 target,
                                  cwd,
                                  node_modules_path,
                                  test_file=test_file)

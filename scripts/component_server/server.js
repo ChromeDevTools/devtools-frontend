@@ -10,7 +10,14 @@ const {argv} = require('yargs');
 
 const serverPort = parseInt(process.env.PORT, 10) || 8090;
 
-const target = argv.target || 'Default';
+const target = argv.target || process.env.TARGET || 'Default';
+
+/**
+ * This configures the base of the URLs that are injected into each component
+ * doc example to load. By default it's /, so that we load /front_end/..., but
+ * this can be configured if you have a different file structure.
+ */
+const sharedResourcesBase = argv.sharedResourcesBase || '/';
 
 /**
  * When you run npm run components-server we run the script as is from scripts/,
@@ -18,10 +25,21 @@ const target = argv.target || 'Default';
  * out/Default/gen/scripts, so we have to do a bit of path mangling to figure
  * out where we are.
  */
-const isRunningInGen = __dirname.includes(path.join(path.sep, 'gen', path.sep, 'scripts'));
+const isRunningInGen = __dirname.includes(path.join('out', path.sep, target));
 
-const pathToBuiltOutTargetDirectory = isRunningInGen ? path.resolve(path.join(__dirname), '..', '..', '..') :
-                                                       path.resolve(path.join(__dirname, '..', '..', 'out', target));
+let pathToOutTargetDir = __dirname;
+/**
+ * If we are in the gen directory, we need to find the out/Default folder to use
+ * as our base to find files from. We could do this with path.join(x, '..',
+ * '..') until we get the right folder, but that's brittle. It's better to
+ * search up for out/Default to be robust to any folder structures.
+ */
+while (isRunningInGen && !pathToOutTargetDir.endsWith(`out${path.sep}${target}`)) {
+  pathToOutTargetDir = path.resolve(pathToOutTargetDir, '..');
+}
+const pathToBuiltOutTargetDirectory =
+    isRunningInGen ? pathToOutTargetDir : path.resolve(path.join(__dirname, '..', '..', 'out', target));
+
 const devtoolsRootFolder = path.resolve(path.join(pathToBuiltOutTargetDirectory, 'gen'));
 
 if (!fs.existsSync(devtoolsRootFolder)) {
@@ -213,10 +231,18 @@ async function requestHandler(request, response) {
      *  example we inject themeColors.css into the page so all CSS variables
      *  that components use are available.
      */
+
+    // server --base=.
+
+    // server --base=devtools-frontend
+
     const fileContents = await fs.promises.readFile(path.join(devtoolsRootFolder, filePath), {encoding: 'utf8'});
-    const themeColoursLink = '<link rel="stylesheet" href="/front_end/ui/themeColors.css" type="text/css" />';
-    const inspectorStyleLink = '<link rel="stylesheet" href="/front_end/ui/inspectorStyle.css" type="text/css" />';
-    const toggleDarkModeScript = '<script type="module" src="/front_end/component_docs/component_docs.js"></script>';
+    const themeColoursLink = `<link rel="stylesheet" href="${
+        path.join(sharedResourcesBase, 'front_end', 'ui', 'themeColors.css')}" type="text/css" />`;
+    const inspectorStyleLink = `<link rel="stylesheet" href="${
+        path.join(sharedResourcesBase, 'front_end', 'ui', 'inspectorStyle.css')}" type="text/css" />`;
+    const toggleDarkModeScript = `<script type="module" src="${
+        path.join(sharedResourcesBase, 'front_end', 'component_docs', 'component_docs.js')}"></script>`;
     const newFileContents = fileContents.replace('<style>', `${themeColoursLink}\n${inspectorStyleLink}\n<style>`)
                                 .replace('<script', toggleDarkModeScript + '\n<script');
     respondWithHtml(response, newFileContents);

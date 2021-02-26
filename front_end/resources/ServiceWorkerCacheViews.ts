@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Common from '../common/common.js';
 import * as DataGrid from '../data_grid/data_grid.js';
 import * as i18n from '../i18n/i18n.js';
@@ -74,14 +76,27 @@ export const UIStrings = {
   */
   preview: 'Preview',
 };
-const str_ = i18n.i18n.registerUIStrings('resources/ServiceWorkerCacheViews.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('resources/ServiceWorkerCacheViews.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class ServiceWorkerCacheView extends UI.View.SimpleView {
-  /**
-   * @param {!SDK.ServiceWorkerCacheModel.ServiceWorkerCacheModel} model
-   * @param {!SDK.ServiceWorkerCacheModel.Cache} cache
-   */
-  constructor(model, cache) {
+  _model: SDK.ServiceWorkerCacheModel.ServiceWorkerCacheModel;
+  _entriesForTest: Protocol.CacheStorage.DataEntry[]|null;
+  _splitWidget: UI.SplitWidget.SplitWidget;
+  _previewPanel: UI.Widget.VBox;
+  _preview: UI.Widget.Widget|null;
+  _cache: SDK.ServiceWorkerCacheModel.Cache;
+  _dataGrid: DataGrid.DataGrid.DataGridImpl<DataGridNode>|null;
+  _refreshThrottler: Common.Throttler.Throttler;
+  _refreshButton: UI.Toolbar.ToolbarButton;
+  _deleteSelectedButton: UI.Toolbar.ToolbarButton;
+  _entryPathFilter: string;
+  _returnCount: number|null;
+  _summaryBarElement: Element|null;
+  _loadingPromise: Promise<{
+    entries: Array<Protocol.CacheStorage.DataEntry>,
+    returnCount: number,
+  }>|null;
+  constructor(model: SDK.ServiceWorkerCacheModel.ServiceWorkerCacheModel, cache: SDK.ServiceWorkerCacheModel.Cache) {
     super(i18nString(UIStrings.cache));
     this.registerRequiredCSS('resources/serviceWorkerCacheViews.css', {enableLegacyPatching: true});
 
@@ -100,11 +115,9 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
     this._splitWidget.setMainWidget(this._previewPanel);
     this._splitWidget.installResizer(resizer);
 
-    /** @type {?UI.Widget.Widget} */
     this._preview = null;
 
     this._cache = cache;
-    /** @type {?DataGrid.DataGrid.DataGridImpl<!DataGridNode>} */
     this._dataGrid = null;
     this._refreshThrottler = new Common.Throttler.Throttler(300);
     this._refreshButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.refresh), 'largeicon-refresh');
@@ -112,7 +125,7 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
     editorToolbar.appendToolbarItem(this._refreshButton);
 
     this._deleteSelectedButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.deleteSelected), 'largeicon-delete');
-    this._deleteSelectedButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, event => {
+    this._deleteSelectedButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, _event => {
       this._deleteButtonClicked(null);
     });
     editorToolbar.appendToolbarItem(this._deleteSelectedButton);
@@ -127,16 +140,14 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
         return this._updateData(true);
       });
     });
-
-    this._returnCount = /** @type {?number} */ (null);
-    this._summaryBarElement = /** @type {?Element} */ (null);
-    /** @type {?Promise<!{entries: !Array<!Protocol.CacheStorage.DataEntry>, returnCount: number}>} */
+    this._returnCount = (null as number | null);
+    this._summaryBarElement = (null as Element | null);
     this._loadingPromise = null;
 
     this.update(cache);
   }
 
-  _resetDataGrid() {
+  _resetDataGrid(): void {
     if (this._dataGrid) {
       this._dataGrid.asWidget().detach();
     }
@@ -146,27 +157,18 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
     dataGridWidget.setMinimumSize(0, 250);
   }
 
-  /**
-   * @override
-   */
-  wasShown() {
+  wasShown(): void {
     this._model.addEventListener(
         SDK.ServiceWorkerCacheModel.Events.CacheStorageContentUpdated, this._cacheContentUpdated, this);
     this._updateData(true);
   }
 
-  /**
-   * @override
-   */
-  willHide() {
+  willHide(): void {
     this._model.removeEventListener(
         SDK.ServiceWorkerCacheModel.Events.CacheStorageContentUpdated, this._cacheContentUpdated, this);
   }
 
-  /**
-   * @param {?UI.Widget.Widget} preview
-   */
-  _showPreview(preview) {
+  _showPreview(preview: UI.Widget.Widget|null): void {
     if (preview && this._preview === preview) {
       return;
     }
@@ -180,25 +182,24 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
     this._preview.show(this._previewPanel.element);
   }
 
-  /**
-   * @return {!DataGrid.DataGrid.DataGridImpl<!DataGridNode>}
-   */
-  _createDataGrid() {
-    const columns = /** @type {!Array<!DataGrid.DataGrid.ColumnDescriptor>} */ ([
+  _createDataGrid(): DataGrid.DataGrid.DataGridImpl<DataGridNode> {
+    const columns = ([
       {id: 'number', title: '#', sortable: false, width: '3px'},
-      {id: 'name', title: i18nString(UIStrings.name), weight: 4, sortable: true}, {
+      {id: 'name', title: i18nString(UIStrings.name), weight: 4, sortable: true},
+      {
         id: 'responseType',
         title: i18nString(UIStrings.responsetype),
         weight: 1,
         align: DataGrid.DataGrid.Align.Right,
-        sortable: true
+        sortable: true,
       },
-      {id: 'contentType', title: i18nString(UIStrings.contenttype), weight: 1, sortable: true}, {
+      {id: 'contentType', title: i18nString(UIStrings.contenttype), weight: 1, sortable: true},
+      {
         id: 'contentLength',
         title: i18nString(UIStrings.contentlength),
         weight: 1,
         align: DataGrid.DataGrid.Align.Right,
-        sortable: true
+        sortable: true,
       },
       {
         id: 'responseTime',
@@ -206,9 +207,9 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
         width: '12em',
         weight: 1,
         align: DataGrid.DataGrid.Align.Right,
-        sortable: true
-      }
-    ]);
+        sortable: true,
+      },
+    ] as DataGrid.DataGrid.ColumnDescriptor[]);
     const dataGrid = new DataGrid.DataGrid.DataGridImpl({
       displayName: i18nString(UIStrings.serviceWorkerCache),
       columns,
@@ -226,7 +227,7 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
     return dataGrid;
   }
 
-  _sortingChanged() {
+  _sortingChanged(): void {
     if (!this._dataGrid) {
       return;
     }
@@ -235,53 +236,46 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
 
     const accending = dataGrid.isSortOrderAscending();
     const columnId = dataGrid.sortColumnId();
-    /** @type {function(!DataGridNode, !DataGridNode): number} */
-    let comparator;
+    let comparator: (arg0: DataGridNode, arg1: DataGridNode) => number;
     if (columnId === 'name') {
-      comparator = (a, b) => a._name.localeCompare(b._name);
+      comparator = (a: DataGridNode, b: DataGridNode): number => a._name.localeCompare(b._name);
     } else if (columnId === 'contentType') {
-      comparator = (a, b) => a.data.mimeType.localeCompare(b.data.mimeType);
+      comparator = (a: DataGridNode, b: DataGridNode): number => a.data.mimeType.localeCompare(b.data.mimeType);
     } else if (columnId === 'contentLength') {
-      comparator = (a, b) => a.data.resourceSize - b.data.resourceSize;
+      comparator = (a: DataGridNode, b: DataGridNode): number => a.data.resourceSize - b.data.resourceSize;
     } else if (columnId === 'responseTime') {
-      comparator = (a, b) => a.data.endTime - b.data.endTime;
+      comparator = (a: DataGridNode, b: DataGridNode): number => a.data.endTime - b.data.endTime;
     } else if (columnId === 'responseType') {
-      comparator = (a, b) => a._responseType.localeCompare(b._responseType);
+      comparator = (a: DataGridNode, b: DataGridNode): number => a._responseType.localeCompare(b._responseType);
     }
 
     const children = dataGrid.rootNode().children.slice();
     dataGrid.rootNode().removeChildren();
     children.sort((a, b) => {
-      const result = comparator(/** @type {!DataGridNode} */ (a), /** @type {!DataGridNode} */ (b));
+      const result = comparator((a as DataGridNode), (b as DataGridNode));
       return accending ? result : -result;
     });
     children.forEach(child => dataGrid.rootNode().appendChild(child));
   }
 
-  /**
-   * @param {?DataGrid.DataGrid.DataGridNode<!DataGridNode>} node
-   */
-  async _deleteButtonClicked(node) {
+  async _deleteButtonClicked(node: DataGrid.DataGrid.DataGridNode<DataGridNode>|null): Promise<void> {
     if (!node) {
       node = this._dataGrid && this._dataGrid.selectedNode;
       if (!node) {
         return;
       }
     }
-    await this._model.deleteCacheEntry(this._cache, /** @type {string} */ (node.data.url()));
+    await this._model.deleteCacheEntry(this._cache, (node.data.url() as string));
     node.remove();
   }
 
-  /**
-   * @param {!SDK.ServiceWorkerCacheModel.Cache} cache
-   */
-  update(cache) {
+  update(cache: SDK.ServiceWorkerCacheModel.Cache): void {
     this._cache = cache;
     this._resetDataGrid();
     this._updateData(true);
   }
 
-  _updateSummaryBar() {
+  _updateSummaryBar(): void {
     if (!this._summaryBarElement) {
       this._summaryBarElement = this.element.createChild('div', 'cache-storage-summary-bar');
     }
@@ -295,13 +289,9 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
     }
   }
 
-  /**
-   * @param {number} skipCount
-   * @param {!Array<!Protocol.CacheStorage.DataEntry>} entries
-   * @param {number} returnCount
-   * @this {ServiceWorkerCacheView}
-   */
-  _updateDataCallback(skipCount, entries, returnCount) {
+  _updateDataCallback(
+      this: ServiceWorkerCacheView, skipCount: number, entries: Protocol.CacheStorage.DataEntry[],
+      returnCount: number): void {
     if (!this._dataGrid) {
       return;
     }
@@ -311,14 +301,13 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
     this._returnCount = returnCount;
     this._updateSummaryBar();
 
-    /** @type {!Map<string, !DataGridNode>} */
-    const oldEntries = new Map();
+    const oldEntries = new Map<string, DataGridNode>();
     const rootNode = this._dataGrid.rootNode();
     for (const node of rootNode.children) {
-      oldEntries.set(node.data.url, /** @type {!DataGridNode} */ (node));
+      oldEntries.set(node.data.url, (node as DataGridNode));
     }
     rootNode.removeChildren();
-    let selectedNode = null;
+    let selectedNode: DataGridNode|null = null;
     for (let i = 0; i < entries.length; ++i) {
       const entry = entries[i];
       let node = oldEntries.get(entry.requestURL);
@@ -341,10 +330,10 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
     this._updatedForTest();
   }
 
-  /**
-   * @param {boolean} force
-   */
-  async _updateData(force) {
+  async _updateData(force: boolean): Promise<{
+    entries: Protocol.CacheStorage.DataEntry[],
+    returnCount: number,
+  }|undefined> {
     if (!force && this._loadingPromise) {
       return this._loadingPromise;
     }
@@ -366,17 +355,11 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
     return;
   }
 
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  _refreshButtonClicked(event) {
+  _refreshButtonClicked(_event: Common.EventTarget.EventTargetEvent): void {
     this._updateData(true);
   }
 
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  _cacheContentUpdated(event) {
+  _cacheContentUpdated(event: Common.EventTarget.EventTargetEvent): void {
     const nameAndOrigin = event.data;
     if (this._cache.securityOrigin !== nameAndOrigin.origin || this._cache.cacheName !== nameAndOrigin.cacheName) {
       return;
@@ -384,10 +367,7 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
     this._refreshThrottler.schedule(() => Promise.resolve(this._updateData(true)), true);
   }
 
-  /**
-   * @param {!SDK.NetworkRequest.NetworkRequest} request
-   */
-  async _previewCachedResponse(request) {
+  async _previewCachedResponse(request: SDK.NetworkRequest.NetworkRequest): Promise<void> {
     let preview = networkRequestToPreview.get(request);
     if (!preview) {
       preview = new RequestView(request);
@@ -400,11 +380,7 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
     }
   }
 
-  /**
-   * @param {!Protocol.CacheStorage.DataEntry} entry
-   * @return {!SDK.NetworkRequest.NetworkRequest}
-   */
-  _createRequest(entry) {
+  _createRequest(entry: Protocol.CacheStorage.DataEntry): SDK.NetworkRequest.NetworkRequest {
     const request =
         new SDK.NetworkRequest.NetworkRequest('cache-storage-' + entry.requestURL, entry.requestURL, '', '', '', null);
     request.requestMethod = entry.requestMethod;
@@ -418,7 +394,7 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
 
     let header = entry.responseHeaders.find(header => header.name.toLowerCase() === 'content-type');
     const contentType = header ? header.value : SDK.NetworkRequest.MIME_TYPE.PLAIN;
-    request.mimeType = /** @type {!SDK.NetworkRequest.MIME_TYPE} */ (contentType);
+    request.mimeType = (contentType as string);
 
     header = entry.responseHeaders.find(header => header.name.toLowerCase() === 'content-length');
     request.resourceSize = (header && Number(header.value)) || 0;
@@ -433,14 +409,9 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
     return request;
   }
 
-  /**
-   * @param {!SDK.NetworkRequest.NetworkRequest} request
-   * @return {!Promise<!SDK.NetworkRequest.ContentData>}
-   */
-  async _requestContent(request) {
+  async _requestContent(request: SDK.NetworkRequest.NetworkRequest): Promise<SDK.NetworkRequest.ContentData> {
     const isText = request.resourceType().isTextType();
-    /** @type {!SDK.NetworkRequest.ContentData} */
-    const contentData = {error: null, content: null, encoded: !isText};
+    const contentData: SDK.NetworkRequest.ContentData = {error: null, content: null, encoded: !isText};
     const response = await this._cache.requestCachedResponse(request.url(), request.requestHeaders());
     if (response) {
       contentData.content = isText ? window.atob(response.body) : response.body;
@@ -448,25 +419,26 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
     return contentData;
   }
 
-  _updatedForTest() {
+  _updatedForTest(): void {
   }
+
+  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  static readonly _previewSymbol = Symbol('preview');
 }
 
-/** @type {!WeakMap<!SDK.NetworkRequest.NetworkRequest, !RequestView>} */
-const networkRequestToPreview = new WeakMap();
+const networkRequestToPreview = new WeakMap<SDK.NetworkRequest.NetworkRequest, RequestView>();
 
-ServiceWorkerCacheView._previewSymbol = Symbol('preview');
 
-/**
- * @extends {DataGrid.DataGrid.DataGridNode<!DataGridNode>}
- */
-export class DataGridNode extends DataGrid.DataGrid.DataGridNode {
-  /**
-   * @param {number} number
-   * @param {!SDK.NetworkRequest.NetworkRequest} request
-   * @param {!Protocol.CacheStorage.CachedResponseType} responseType
-   */
-  constructor(number, request, responseType) {
+export class DataGridNode extends DataGrid.DataGrid.DataGridNode<DataGridNode> {
+  _number: number;
+  _name: string;
+  _request: SDK.NetworkRequest.NetworkRequest;
+  _responseType: Protocol.CacheStorage.CachedResponseType;
+
+  constructor(
+      number: number, request: SDK.NetworkRequest.NetworkRequest,
+      responseType: Protocol.CacheStorage.CachedResponseType) {
     super(request);
     this._number = number;
     const parsed = new Common.ParsedURL.ParsedURL(request.url());
@@ -479,12 +451,7 @@ export class DataGridNode extends DataGrid.DataGrid.DataGridNode {
     this._responseType = responseType;
   }
 
-  /**
-   * @override
-   * @param {string} columnId
-   * @return {!HTMLElement}
-   */
-  createCell(columnId) {
+  createCell(columnId: string): HTMLElement {
     const cell = this.createTD(columnId);
     let value;
     if (columnId === 'number') {
@@ -513,10 +480,10 @@ export class DataGridNode extends DataGrid.DataGrid.DataGridNode {
 }
 
 export class RequestView extends UI.Widget.VBox {
-  /**
-   * @param {!SDK.NetworkRequest.NetworkRequest} request
-   */
-  constructor(request) {
+  _tabbedPane: UI.TabbedPane.TabbedPane;
+  _resourceViewTabSetting: Common.Settings.Setting<string>;
+
+  constructor(request: SDK.NetworkRequest.NetworkRequest) {
     super();
 
     this._tabbedPane = new UI.TabbedPane.TabbedPane();
@@ -530,18 +497,12 @@ export class RequestView extends UI.Widget.VBox {
     this._tabbedPane.show(this.element);
   }
 
-  /**
-   * @override
-   */
-  wasShown() {
+  wasShown(): void {
     super.wasShown();
     this._selectTab();
   }
 
-  /**
-   * @param {string=} tabId
-   */
-  _selectTab(tabId) {
+  _selectTab(tabId?: string): void {
     if (!tabId) {
       tabId = this._resourceViewTabSetting.get();
     }
@@ -550,10 +511,7 @@ export class RequestView extends UI.Widget.VBox {
     }
   }
 
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  _tabSelected(event) {
+  _tabSelected(event: Common.EventTarget.EventTargetEvent): void {
     if (!event.data.isUserGesture) {
       return;
     }

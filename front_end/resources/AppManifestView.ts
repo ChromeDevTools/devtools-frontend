@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Common from '../common/common.js';
 import * as Components from '../components/components.js';
 import * as i18n from '../i18n/i18n.js';
@@ -322,12 +324,31 @@ export const UIStrings = {
   */
   sSHeightShouldBeLessThanTwiceTheWidth: '{PH1} {PH2} height should be less than twice the width',
 };
-const str_ = i18n.i18n.registerUIStrings('resources/AppManifestView.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('resources/AppManifestView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-/**
- * @implements {SDK.SDKModel.Observer}
- */
-export class AppManifestView extends UI.Widget.VBox {
+export class AppManifestView extends UI.Widget.VBox implements SDK.SDKModel.Observer {
+  _emptyView: UI.EmptyWidget.EmptyWidget;
+  _reportView: UI.ReportView.ReportView;
+  _errorsSection: UI.ReportView.Section;
+  _installabilitySection: UI.ReportView.Section;
+  _identitySection: UI.ReportView.Section;
+  _presentationSection: UI.ReportView.Section;
+  _iconsSection: UI.ReportView.Section;
+  _shortcutSections: UI.ReportView.Section[];
+  _screenshotsSections: UI.ReportView.Section[];
+  _nameField: HTMLElement;
+  _shortNameField: HTMLElement;
+  _descriptionField: Element;
+  _startURLField: HTMLElement;
+  _themeColorSwatch: InlineEditor.ColorSwatch.ColorSwatch;
+  _backgroundColorSwatch: InlineEditor.ColorSwatch.ColorSwatch;
+  _orientationField: HTMLElement;
+  _displayField: HTMLElement;
+  _throttler: Common.Throttler.Throttler;
+  _registeredListeners: Common.EventTarget.EventDescriptor[];
+  _target?: SDK.SDKModel.Target;
+  _resourceTreeModel?: SDK.ResourceTreeModel.ResourceTreeModel|null;
+  _serviceWorkerManager?: SDK.ServiceWorkerManager.ServiceWorkerManager|null;
   constructor() {
     super(true);
     this.registerRequiredCSS('resources/appManifestView.css', {enableLegacyPatching: false});
@@ -356,9 +377,7 @@ export class AppManifestView extends UI.Widget.VBox {
 
     this._presentationSection = this._reportView.appendSection(i18nString(UIStrings.presentation));
     this._iconsSection = this._reportView.appendSection(i18nString(UIStrings.icons), 'report-section-icons');
-    /** @type {!Array<!UI.ReportView.Section>} */
     this._shortcutSections = [];
-    /** @type {!Array<!UI.ReportView.Section>} */
     this._screenshotsSections = [];
 
     this._nameField = this._identitySection.appendField(i18nString(UIStrings.name));
@@ -380,15 +399,10 @@ export class AppManifestView extends UI.Widget.VBox {
 
     this._throttler = new Common.Throttler.Throttler(1000);
     SDK.SDKModel.TargetManager.instance().observeTargets(this);
-    /** @type {!Array<!Common.EventTarget.EventDescriptor>} */
     this._registeredListeners = [];
   }
 
-  /**
-   * @override
-   * @param {!SDK.SDKModel.Target} target
-   */
-  targetAdded(target) {
+  targetAdded(target: SDK.SDKModel.Target): void {
     if (this._target) {
       return;
     }
@@ -404,22 +418,18 @@ export class AppManifestView extends UI.Widget.VBox {
     this._registeredListeners = [
       this._resourceTreeModel.addEventListener(
           SDK.ResourceTreeModel.Events.DOMContentLoaded,
-          event => {
+          _event => {
             this._updateManifest(true);
           }),
       this._serviceWorkerManager.addEventListener(
           SDK.ServiceWorkerManager.Events.RegistrationUpdated,
-          event => {
+          _event => {
             this._updateManifest(false);
-          })
+          }),
     ];
   }
 
-  /**
-   * @override
-   * @param {!SDK.SDKModel.Target} target
-   */
-  targetRemoved(target) {
+  targetRemoved(target: SDK.SDKModel.Target): void {
     if (this._target !== target) {
       return;
     }
@@ -431,10 +441,7 @@ export class AppManifestView extends UI.Widget.VBox {
     Common.EventTarget.EventTarget.removeEventListeners(this._registeredListeners);
   }
 
-  /**
-   * @param {boolean} immediately
-   */
-  async _updateManifest(immediately) {
+  async _updateManifest(immediately: boolean): Promise<void> {
     if (!this._resourceTreeModel) {
       return;
     }
@@ -446,14 +453,11 @@ export class AppManifestView extends UI.Widget.VBox {
         () => this._renderManifest(url, data, errors, installabilityErrors, manifestIcons), immediately);
   }
 
-  /**
-   * @param {string} url
-   * @param {?string} data
-   * @param {!Array<!Protocol.Page.AppManifestError>} errors
-   * @param {!Array<!Protocol.Page.InstallabilityError>} installabilityErrors
-   * @param {!{primaryIcon: ?string}} manifestIcons
-   */
-  async _renderManifest(url, data, errors, installabilityErrors, manifestIcons) {
+  async _renderManifest(
+      url: string, data: string|null, errors: Protocol.Page.AppManifestError[],
+      installabilityErrors: Protocol.Page.InstallabilityError[], manifestIcons: {
+        primaryIcon: string|null,
+      }): Promise<void> {
     if (!data && !errors.length) {
       this._emptyView.showWidget();
       this._reportView.hideWidget();
@@ -495,9 +499,9 @@ export class AppManifestView extends UI.Widget.VBox {
     this._startURLField.removeChildren();
     const startURL = stringProperty('start_url');
     if (startURL) {
-      const completeURL = /** @type {string} */ (Common.ParsedURL.ParsedURL.completeURL(url, startURL));
+      const completeURL = (Common.ParsedURL.ParsedURL.completeURL(url, startURL) as string);
       const link = Components.Linkifier.Linkifier.linkifyURL(
-          completeURL, /** @type {!Components.Linkifier.LinkifyURLOptions} */ ({text: startURL}));
+          completeURL, ({text: startURL} as Components.Linkifier.LinkifyURLOptions));
       link.tabIndex = 0;
       this._startURLField.appendChild(link);
     }
@@ -578,9 +582,9 @@ export class AppManifestView extends UI.Widget.VBox {
         shortcutSection.appendFlexedField('Description', shortcut.description);
       }
       const urlField = shortcutSection.appendFlexedField('URL');
-      const shortcutUrl = /** @type {string} */ (Common.ParsedURL.ParsedURL.completeURL(url, shortcut.url));
+      const shortcutUrl = (Common.ParsedURL.ParsedURL.completeURL(url, shortcut.url) as string);
       const link = Components.Linkifier.Linkifier.linkifyURL(
-          shortcutUrl, /** @type {!Components.Linkifier.LinkifyURLOptions} */ ({text: shortcut.url}));
+          shortcutUrl, ({text: shortcut.url} as Components.Linkifier.LinkifyURLOptions));
       link.tabIndex = 0;
       urlField.appendChild(link);
 
@@ -629,11 +633,7 @@ export class AppManifestView extends UI.Widget.VBox {
       this._errorsSection.appendRow().appendChild(UI.UIUtils.createIconLabel(error, 'smallicon-warning'));
     }
 
-    /**
-     * @param {string} name
-     * @return {string}
-     */
-    function stringProperty(name) {
+    function stringProperty(name: string): string {
       const value = parsedManifest[name];
       if (typeof value !== 'string') {
         return '';
@@ -642,11 +642,7 @@ export class AppManifestView extends UI.Widget.VBox {
     }
   }
 
-  /**
-   * @param {!Array<!Protocol.Page.InstallabilityError>} installabilityErrors
-   * @return {!Array<string>}
-   */
-  getInstallabilityErrorMessages(installabilityErrors) {
+  getInstallabilityErrorMessages(installabilityErrors: Protocol.Page.InstallabilityError[]): string[] {
     const errorMessages = [];
     for (const installabilityError of installabilityErrors) {
       let errorMessage;
@@ -748,14 +744,13 @@ export class AppManifestView extends UI.Widget.VBox {
     return errorMessages;
   }
 
-  /**
-   * @param {string} url
-   * @return {!Promise<?{image: !HTMLImageElement, wrapper: !Element}>}
-   */
-  async _loadImage(url) {
+  async _loadImage(url: string): Promise<{
+    image: HTMLImageElement,
+    wrapper: Element,
+  }|null> {
     const wrapper = document.createElement('div');
     wrapper.classList.add('image-wrapper');
-    const image = /** @type {!HTMLImageElement} */ (document.createElement('img'));
+    const image = (document.createElement('img') as HTMLImageElement);
     const result = new Promise((resolve, reject) => {
       image.onload = resolve;
       image.onerror = reject;
@@ -771,14 +766,10 @@ export class AppManifestView extends UI.Widget.VBox {
     return null;
   }
 
-  /**
-   * @param {string} baseUrl
-   * @param {*} imageResource
-   * @param {!UI.ReportView.Section} section
-   * @param {boolean} isScreenshot
-   * @return {!Promise<!Array<string>>}
-   */
-  async _appendImageResourceToSection(baseUrl, imageResource, section, isScreenshot) {
+  async _appendImageResourceToSection(
+      // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      baseUrl: string, imageResource: any, section: UI.ReportView.Section, isScreenshot: boolean): Promise<string[]> {
     const imageResourceErrors = [];
     const resourceName = isScreenshot ? i18nString(UIStrings.screenshot) : i18nString(UIStrings.icon);
     if (!imageResource.src) {
@@ -805,7 +796,7 @@ export class AppManifestView extends UI.Widget.VBox {
     } else if (!/^\d+x\d+$/.test(imageResource.sizes)) {
       imageResourceErrors.push(i18nString(UIStrings.sSShouldSpecifyItsSizeAs, {PH1: resourceName, PH2: imageUrl}));
     } else {
-      const [width, height] = imageResource.sizes.split('x').map(/** @param {*} x*/ x => parseInt(x, 10));
+      const [width, height] = imageResource.sizes.split('x').map((x: string) => parseInt(x, 10));
       if (!isScreenshot && (width !== height)) {
         imageResourceErrors.push(i18nString(UIStrings.sSDimensionsShouldBeSquare, {PH1: resourceName, PH2: imageUrl}));
       } else if (image.naturalWidth !== width && image.naturalHeight !== height) {
@@ -815,7 +806,7 @@ export class AppManifestView extends UI.Widget.VBox {
           PH3: resourceName,
           PH4: imageUrl,
           PH5: width,
-          PH6: height
+          PH6: height,
         }));
       } else if (image.naturalWidth !== width) {
         imageResourceErrors.push(i18nString(

@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
 import * as SDK from '../sdk/sdk.js';
 import * as SourceFrame from '../source_frame/source_frame.js';
@@ -15,27 +17,31 @@ import {DOMStorageItemsView} from './DOMStorageItemsView.js';
 import {DOMStorage} from './DOMStorageModel.js';  // eslint-disable-line no-unused-vars
 import {StorageItemsView} from './StorageItemsView.js';
 
-/** @type {!ResourcesPanel} */
-let resourcesPanelInstance;
+let resourcesPanelInstance: ResourcesPanel;
 
 export class ResourcesPanel extends UI.Panel.PanelWithSidebar {
-  /**
-   * @private
-   */
-  constructor() {
+  _resourcesLastSelectedItemSetting: Common.Settings.Setting<string[]>;
+  visibleView: UI.Widget.Widget|null;
+  _pendingViewPromise: Promise<UI.Widget.Widget>|null;
+  _categoryView: StorageCategoryView|null;
+  storageViews: HTMLElement;
+  _storageViewToolbar: UI.Toolbar.Toolbar;
+  _domStorageView: DOMStorageItemsView|null;
+  _cookieView: CookieItemsView|null;
+  _emptyWidget: UI.EmptyWidget.EmptyWidget|null;
+  _sidebar: ApplicationPanelSidebar;
+
+  private constructor() {
     super('resources');
     this.registerRequiredCSS('resources/resourcesPanel.css', {enableLegacyPatching: false});
 
     this._resourcesLastSelectedItemSetting =
         Common.Settings.Settings.instance().createSetting('resourcesLastSelectedElementPath', []);
 
-    /** @type {?UI.Widget.Widget} */
     this.visibleView = null;
 
-    /** @type {?Promise<!UI.Widget.Widget>} */
     this._pendingViewPromise = null;
 
-    /** @type {?StorageCategoryView} */
     this._categoryView = null;
 
     const mainContainer = new UI.Widget.VBox();
@@ -43,23 +49,19 @@ export class ResourcesPanel extends UI.Panel.PanelWithSidebar {
     this._storageViewToolbar = new UI.Toolbar.Toolbar('resources-toolbar', mainContainer.element);
     this.splitWidget().setMainWidget(mainContainer);
 
-    /** @type {?DOMStorageItemsView} */
     this._domStorageView = null;
 
-    /** @type {?CookieItemsView} */
     this._cookieView = null;
 
-    /** @type {?UI.EmptyWidget.EmptyWidget} */
     this._emptyWidget = null;
 
     this._sidebar = new ApplicationPanelSidebar(this);
     this._sidebar.show(this.panelSidebarElement());
   }
 
-  /**
-   * @param {{forceNew: ?boolean}} opts
-   */
-  static instance(opts = {forceNew: null}) {
+  static instance(opts: {
+    forceNew: boolean|null,
+  } = {forceNew: null}): ResourcesPanel {
     const {forceNew} = opts;
     if (!resourcesPanelInstance || forceNew) {
       resourcesPanelInstance = new ResourcesPanel();
@@ -68,56 +70,41 @@ export class ResourcesPanel extends UI.Panel.PanelWithSidebar {
     return resourcesPanelInstance;
   }
 
-  /**
-   * @return {!ResourcesPanel}
-   */
-  static _instance() {
+  static _instance(): ResourcesPanel {
     return ResourcesPanel.instance();
   }
 
-  /**
-   * @param {!UI.Widget.Widget} view
-   * @return {boolean}
-   */
-  static _shouldCloseOnReset(view) {
+  static _shouldCloseOnReset(view: UI.Widget.Widget): boolean {
     const viewClassesToClose = [
-      SourceFrame.ResourceSourceFrame.ResourceSourceFrame, SourceFrame.ImageView.ImageView,
-      SourceFrame.FontView.FontView, StorageItemsView, DatabaseQueryView, DatabaseTableView
+      SourceFrame.ResourceSourceFrame.ResourceSourceFrame,
+      SourceFrame.ImageView.ImageView,
+      SourceFrame.FontView.FontView,
+      StorageItemsView,
+      DatabaseQueryView,
+      DatabaseTableView,
     ];
     return viewClassesToClose.some(type => view instanceof type);
   }
 
-  /**
-   * @override
-   */
-  focus() {
+  focus(): void {
     this._sidebar.focus();
   }
 
-  /**
-   * @return {!Array<string>}
-   */
-  lastSelectedItemPath() {
+  lastSelectedItemPath(): string[] {
     return this._resourcesLastSelectedItemSetting.get();
   }
 
-  /**
-   * @param {!Array<string>} path
-   */
-  setLastSelectedItemPath(path) {
+  setLastSelectedItemPath(path: string[]): void {
     this._resourcesLastSelectedItemSetting.set(path);
   }
 
-  resetView() {
+  resetView(): void {
     if (this.visibleView && ResourcesPanel._shouldCloseOnReset(this.visibleView)) {
       this.showView(null);
     }
   }
 
-  /**
-   * @param {?UI.Widget.Widget} view
-   */
-  showView(view) {
+  showView(view: UI.Widget.Widget|null): void {
     this._pendingViewPromise = null;
     if (this.visibleView === view) {
       return;
@@ -142,11 +129,7 @@ export class ResourcesPanel extends UI.Panel.PanelWithSidebar {
     }
   }
 
-  /**
-   * @param {!Promise<!UI.Widget.Widget>} viewPromise
-   * @return {!Promise<?UI.Widget.Widget>}
-   */
-  async scheduleShowView(viewPromise) {
+  async scheduleShowView(viewPromise: Promise<UI.Widget.Widget>): Promise<UI.Widget.Widget|null> {
     this._pendingViewPromise = viewPromise;
     const view = await viewPromise;
     if (this._pendingViewPromise !== viewPromise) {
@@ -156,11 +139,7 @@ export class ResourcesPanel extends UI.Panel.PanelWithSidebar {
     return view;
   }
 
-  /**
-   * @param {string} categoryName
-   * @param {string|null} categoryLink
-   */
-  showCategoryView(categoryName, categoryLink) {
+  showCategoryView(categoryName: string, categoryLink: string|null): void {
     if (!this._categoryView) {
       this._categoryView = new StorageCategoryView();
     }
@@ -169,10 +148,7 @@ export class ResourcesPanel extends UI.Panel.PanelWithSidebar {
     this.showView(this._categoryView);
   }
 
-  /**
-   * @param {!DOMStorage} domStorage
-   */
-  showDOMStorage(domStorage) {
+  showDOMStorage(domStorage: DOMStorage): void {
     if (!domStorage) {
       return;
     }
@@ -185,11 +161,7 @@ export class ResourcesPanel extends UI.Panel.PanelWithSidebar {
     this.showView(this._domStorageView);
   }
 
-  /**
-   * @param {!SDK.SDKModel.Target} cookieFrameTarget
-   * @param {string} cookieDomain
-   */
-  showCookies(cookieFrameTarget, cookieDomain) {
+  showCookies(cookieFrameTarget: SDK.SDKModel.Target, cookieDomain: string): void {
     const model = cookieFrameTarget.model(SDK.CookieModel.CookieModel);
     if (!model) {
       return;
@@ -202,12 +174,8 @@ export class ResourcesPanel extends UI.Panel.PanelWithSidebar {
     this.showView(this._cookieView);
   }
 
-  /**
-   * @param {!SDK.SDKModel.Target} target
-   * @param {string} cookieDomain
-   */
-  clearCookies(target, cookieDomain) {
-    const model = /** @type {?SDK.CookieModel.CookieModel} */ (target.model(SDK.CookieModel.CookieModel));
+  clearCookies(target: SDK.SDKModel.Target, cookieDomain: string): void {
+    const model = (target.model(SDK.CookieModel.CookieModel) as SDK.CookieModel.CookieModel | null);
     if (!model) {
       return;
     }
@@ -219,19 +187,12 @@ export class ResourcesPanel extends UI.Panel.PanelWithSidebar {
   }
 }
 
-/**
- * @type {!ResourceRevealer}
- */
-let resourceRevealerInstance;
+let resourceRevealerInstance: ResourceRevealer;
 
-/**
- * @implements {Common.Revealer.Revealer}
- */
-export class ResourceRevealer {
-  /**
-   * @param {{forceNew: ?boolean}} opts
-   */
-  static instance(opts = {forceNew: null}) {
+export class ResourceRevealer implements Common.Revealer.Revealer {
+  static instance(opts: {
+    forceNew: boolean|null,
+  } = {forceNew: null}): ResourceRevealer {
     const {forceNew} = opts;
     if (!resourceRevealerInstance || forceNew) {
       resourceRevealerInstance = new ResourceRevealer();
@@ -240,12 +201,7 @@ export class ResourceRevealer {
     return resourceRevealerInstance;
   }
 
-  /**
-   * @override
-   * @param {!Object} resource
-   * @return {!Promise<void>}
-   */
-  async reveal(resource) {
+  async reveal(resource: Object): Promise<void> {
     if (!(resource instanceof SDK.Resource.Resource)) {
       return Promise.reject(new Error('Internal error: not a resource'));
     }
@@ -254,19 +210,12 @@ export class ResourceRevealer {
     await sidebar.showResource(resource);
   }
 }
-/**
- * @type {!CookieReferenceRevealer}
- */
-let cookieReferenceRevealerInstance;
+let cookieReferenceRevealerInstance: CookieReferenceRevealer;
 
-/**
- * @implements {Common.Revealer.Revealer}
- */
-export class CookieReferenceRevealer {
-  /**
-   * @param {{forceNew: ?boolean}} opts
-   */
-  static instance(opts = {forceNew: null}) {
+export class CookieReferenceRevealer implements Common.Revealer.Revealer {
+  static instance(opts: {
+    forceNew: boolean|null,
+  } = {forceNew: null}): CookieReferenceRevealer {
     const {forceNew} = opts;
     if (!cookieReferenceRevealerInstance || forceNew) {
       cookieReferenceRevealerInstance = new CookieReferenceRevealer();
@@ -274,12 +223,7 @@ export class CookieReferenceRevealer {
 
     return cookieReferenceRevealerInstance;
   }
-  /**
-   * @override
-   * @param {!Object} cookie
-   * @return {!Promise<void>}
-   */
-  async reveal(cookie) {
+  async reveal(cookie: Object): Promise<void> {
     if (!(cookie instanceof SDK.Cookie.CookieReference)) {
       throw new Error('Internal error: not a cookie reference');
     }
@@ -297,14 +241,9 @@ export class CookieReferenceRevealer {
     this._revealByDomain(sidebar, cookie.domain());
   }
 
-  /**
-   * @param {!ApplicationPanelSidebar} sidebar
-   * @param {string} domain
-   * @returns {!Promise<boolean>}
-   */
-  async _revealByDomain(sidebar, domain) {
+  async _revealByDomain(sidebar: ApplicationPanelSidebar, domain: string): Promise<boolean> {
     const item = sidebar.cookieListTreeElement.children().find(
-        c => /** @type {!CookieTreeElement} */ (c).cookieDomain().endsWith(domain));
+        c => /** @type {!CookieTreeElement} */ (c as CookieTreeElement).cookieDomain().endsWith(domain));
     if (item) {
       await item.revealAndSelect();
       return true;

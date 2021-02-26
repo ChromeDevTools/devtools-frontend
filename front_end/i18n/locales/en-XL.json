@@ -5861,31 +5861,31 @@
   "recorder/RecordingFileSystem.ts | linkedToS": {
     "message": "L̂ín̂ḱêd́ t̂ó {PH1}"
   },
-  "resources/ApplicationCacheItemsView.js | appcache": {
+  "resources/ApplicationCacheItemsView.ts | appcache": {
     "message": "Âṕp̂Ćâćĥé"
   },
-  "resources/ApplicationCacheItemsView.js | applicationCache": {
+  "resources/ApplicationCacheItemsView.ts | applicationCache": {
     "message": "Âṕp̂ĺîćât́îón̂ Ćâćĥé"
   },
-  "resources/ApplicationCacheItemsView.js | deleteString": {
+  "resources/ApplicationCacheItemsView.ts | deleteString": {
     "message": "D̂él̂ét̂é"
   },
-  "resources/ApplicationCacheItemsView.js | noApplicationCacheInformation": {
+  "resources/ApplicationCacheItemsView.ts | noApplicationCacheInformation": {
     "message": "N̂ó Âṕp̂ĺîćât́îón̂ Ćâćĥé îńf̂ór̂ḿât́îón̂ áv̂áîĺâb́l̂é."
   },
-  "resources/ApplicationCacheItemsView.js | offline": {
+  "resources/ApplicationCacheItemsView.ts | offline": {
     "message": "Ôf́f̂ĺîńê"
   },
-  "resources/ApplicationCacheItemsView.js | online": {
+  "resources/ApplicationCacheItemsView.ts | online": {
     "message": "Ôńl̂ín̂é"
   },
-  "resources/ApplicationCacheItemsView.js | resource": {
+  "resources/ApplicationCacheItemsView.ts | resource": {
     "message": "R̂éŝóûŕĉé"
   },
-  "resources/ApplicationCacheItemsView.js | sizeString": {
+  "resources/ApplicationCacheItemsView.ts | sizeString": {
     "message": "Ŝíẑé"
   },
-  "resources/ApplicationCacheItemsView.js | typeString": {
+  "resources/ApplicationCacheItemsView.ts | typeString": {
     "message": "T̂ýp̂é"
   },
   "resources/ApplicationPanelCacheSection.ts | cacheStorage": {
@@ -5897,421 +5897,421 @@
   "resources/ApplicationPanelCacheSection.ts | refreshCaches": {
     "message": "R̂éf̂ŕêśĥ Ćâćĥéŝ"
   },
-  "resources/ApplicationPanelSidebar.js | application": {
+  "resources/ApplicationPanelSidebar.ts | application": {
     "message": "Âṕp̂ĺîćât́îón̂"
   },
-  "resources/ApplicationPanelSidebar.js | applicationCache": {
+  "resources/ApplicationPanelSidebar.ts | applicationCache": {
     "message": "Âṕp̂ĺîćât́îón̂ Ćâćĥé"
   },
-  "resources/ApplicationPanelSidebar.js | autoincrement": {
+  "resources/ApplicationPanelSidebar.ts | autoincrement": {
     "message": "âút̂óÎńĉŕêḿêńt̂"
   },
-  "resources/ApplicationPanelSidebar.js | backgroundServices": {
+  "resources/ApplicationPanelSidebar.ts | backgroundServices": {
     "message": "B̂áĉḱĝŕôún̂d́ Ŝér̂v́îćêś"
   },
-  "resources/ApplicationPanelSidebar.js | cache": {
+  "resources/ApplicationPanelSidebar.ts | cache": {
     "message": "Ĉáĉh́ê"
   },
-  "resources/ApplicationPanelSidebar.js | clear": {
+  "resources/ApplicationPanelSidebar.ts | clear": {
     "message": "Ĉĺêár̂"
   },
-  "resources/ApplicationPanelSidebar.js | cookies": {
+  "resources/ApplicationPanelSidebar.ts | cookies": {
     "message": "Ĉóôḱîéŝ"
   },
-  "resources/ApplicationPanelSidebar.js | cookiesUsedByFramesFromS": {
+  "resources/ApplicationPanelSidebar.ts | cookiesUsedByFramesFromS": {
     "message": "Ĉóôḱîéŝ úŝéd̂ b́ŷ f́r̂ám̂éŝ f́r̂óm̂ {PH1}"
   },
-  "resources/ApplicationPanelSidebar.js | documentNotAvailable": {
+  "resources/ApplicationPanelSidebar.ts | documentNotAvailable": {
     "message": "D̂óĉúm̂én̂t́ n̂ót̂ áv̂áîĺâb́l̂é"
   },
-  "resources/ApplicationPanelSidebar.js | frames": {
+  "resources/ApplicationPanelSidebar.ts | frames": {
     "message": "F̂ŕâḿêś"
   },
-  "resources/ApplicationPanelSidebar.js | indexeddb": {
+  "resources/ApplicationPanelSidebar.ts | indexeddb": {
     "message": "Îńd̂éx̂éd̂D́B̂"
   },
-  "resources/ApplicationPanelSidebar.js | keyPathS": {
+  "resources/ApplicationPanelSidebar.ts | keyPathS": {
     "message": "K̂éŷ ṕât́ĥ: {PH1}"
   },
-  "resources/ApplicationPanelSidebar.js | localFiles": {
+  "resources/ApplicationPanelSidebar.ts | localFiles": {
     "message": "L̂óĉál̂ F́îĺêś"
   },
-  "resources/ApplicationPanelSidebar.js | localStorage": {
+  "resources/ApplicationPanelSidebar.ts | localStorage": {
     "message": "L̂óĉál̂ Śt̂ór̂áĝé"
   },
-  "resources/ApplicationPanelSidebar.js | manifest": {
+  "resources/ApplicationPanelSidebar.ts | manifest": {
     "message": "M̂án̂íf̂éŝt́"
   },
-  "resources/ApplicationPanelSidebar.js | multientry": {
+  "resources/ApplicationPanelSidebar.ts | multientry": {
     "message": "multiEntry"
   },
-  "resources/ApplicationPanelSidebar.js | openedWindows": {
+  "resources/ApplicationPanelSidebar.ts | openedWindows": {
     "message": "Ôṕêńêd́ Ŵín̂d́ôẃŝ"
   },
-  "resources/ApplicationPanelSidebar.js | refreshIndexeddb": {
+  "resources/ApplicationPanelSidebar.ts | refreshIndexeddb": {
     "message": "R̂éf̂ŕêśĥ Ín̂d́êx́êd́D̂B́"
   },
-  "resources/ApplicationPanelSidebar.js | serviceWorkers": {
+  "resources/ApplicationPanelSidebar.ts | serviceWorkers": {
     "message": "Service Workers"
   },
-  "resources/ApplicationPanelSidebar.js | sessionStorage": {
+  "resources/ApplicationPanelSidebar.ts | sessionStorage": {
     "message": "Ŝéŝśîón̂ Śt̂ór̂áĝé"
   },
-  "resources/ApplicationPanelSidebar.js | storage": {
+  "resources/ApplicationPanelSidebar.ts | storage": {
     "message": "Ŝt́ôŕâǵê"
   },
-  "resources/ApplicationPanelSidebar.js | theContentOfThisDocumentHasBeen": {
+  "resources/ApplicationPanelSidebar.ts | theContentOfThisDocumentHasBeen": {
     "message": "T̂h́ê ćôńt̂én̂t́ ôf́ t̂h́îś d̂óĉúm̂én̂t́ ĥáŝ b́êén̂ ǵêńêŕât́êd́ d̂ýn̂ám̂íĉál̂ĺŷ v́îá 'd̂óĉúm̂én̂t́.ŵŕît́ê()'."
   },
-  "resources/ApplicationPanelSidebar.js | unique": {
+  "resources/ApplicationPanelSidebar.ts | unique": {
     "message": "unique"
   },
-  "resources/ApplicationPanelSidebar.js | versionS": {
+  "resources/ApplicationPanelSidebar.ts | versionS": {
     "message": "V̂ér̂śîón̂: {PH1}"
   },
-  "resources/ApplicationPanelSidebar.js | versionSEmpty": {
+  "resources/ApplicationPanelSidebar.ts | versionSEmpty": {
     "message": "V̂ér̂śîón̂: {PH1} (ém̂ṕt̂ý)"
   },
-  "resources/ApplicationPanelSidebar.js | webSql": {
+  "resources/ApplicationPanelSidebar.ts | webSql": {
     "message": "Ŵéb̂ ŚQ̂Ĺ"
   },
-  "resources/ApplicationPanelSidebar.js | webWorkers": {
+  "resources/ApplicationPanelSidebar.ts | webWorkers": {
     "message": "Ŵéb̂ Ẃôŕk̂ér̂ś"
   },
-  "resources/ApplicationPanelSidebar.js | windowWithoutTitle": {
+  "resources/ApplicationPanelSidebar.ts | windowWithoutTitle": {
     "message": "Ŵín̂d́ôẃ ŵít̂h́ôút̂ t́ît́l̂é"
   },
-  "resources/ApplicationPanelSidebar.js | worker": {
+  "resources/ApplicationPanelSidebar.ts | worker": {
     "message": "ŵór̂ḱêŕ"
   },
-  "resources/AppManifestView.js | actualHeightSpxOfSSDoesNotMatch": {
+  "resources/AppManifestView.ts | actualHeightSpxOfSSDoesNotMatch": {
     "message": "Âćt̂úâĺ ĥéîǵĥt́ ({PH1}p̂x́) ôf́ {PH2} {PH3} d̂óêś n̂ót̂ ḿât́ĉh́ ŝṕêćîf́îéd̂ h́êíĝh́t̂ ({PH4}ṕx̂)"
   },
-  "resources/AppManifestView.js | actualSizeSspxOfSSDoesNotMatch": {
+  "resources/AppManifestView.ts | actualSizeSspxOfSSDoesNotMatch": {
     "message": "Âćt̂úâĺ ŝíẑé ({PH1}×{PH2})p̂x́ ôf́ {PH3} {PH4} d̂óêś n̂ót̂ ḿât́ĉh́ ŝṕêćîf́îéd̂ śîźê ({PH5}×{PH6}ṕx̂)"
   },
-  "resources/AppManifestView.js | actualWidthSpxOfSSDoesNotMatch": {
+  "resources/AppManifestView.ts | actualWidthSpxOfSSDoesNotMatch": {
     "message": "Âćt̂úâĺ ŵíd̂t́ĥ ({PH1}ṕx̂) óf̂ {PH2} {PH3} d́ôéŝ ńôt́ m̂át̂ćĥ śp̂éĉíf̂íêd́ ŵíd̂t́ĥ ({PH4}ṕx̂)"
   },
-  "resources/AppManifestView.js | appManifest": {
+  "resources/AppManifestView.ts | appManifest": {
     "message": "Âṕp̂ Ḿâńîf́êśt̂"
   },
-  "resources/AppManifestView.js | aUrlInTheManifestContainsA": {
+  "resources/AppManifestView.ts | aUrlInTheManifestContainsA": {
     "message": "Â ÚR̂Ĺ îń t̂h́ê ḿâńîf́êśt̂ ćôńt̂áîńŝ á ûśêŕn̂ám̂é, p̂áŝśŵór̂d́, ôŕ p̂ór̂t́"
   },
-  "resources/AppManifestView.js | backgroundColor": {
+  "resources/AppManifestView.ts | backgroundColor": {
     "message": "B̂áĉḱĝŕôún̂d́ ĉól̂ór̂"
   },
-  "resources/AppManifestView.js | couldNotCheckServiceWorker": {
+  "resources/AppManifestView.ts | couldNotCheckServiceWorker": {
     "message": "Ĉóûĺd̂ ńôt́ ĉh́êćk̂ service worker ẃît́ĥóût́ â 'start_url' f́îél̂d́ îń t̂h́ê ḿâńîf́êśt̂"
   },
-  "resources/AppManifestView.js | couldNotDownloadARequiredIcon": {
+  "resources/AppManifestView.ts | couldNotDownloadARequiredIcon": {
     "message": "Ĉóûĺd̂ ńôt́ d̂óŵńl̂óâd́ â ŕêq́ûír̂éd̂ íĉón̂ f́r̂óm̂ t́ĥé m̂án̂íf̂éŝt́"
   },
-  "resources/AppManifestView.js | description": {
+  "resources/AppManifestView.ts | description": {
     "message": "D̂éŝćr̂íp̂t́îón̂"
   },
-  "resources/AppManifestView.js | descriptionMayBeTruncated": {
+  "resources/AppManifestView.ts | descriptionMayBeTruncated": {
     "message": "D̂éŝćr̂íp̂t́îón̂ ḿâý b̂é t̂ŕûńĉát̂éd̂."
   },
-  "resources/AppManifestView.js | display": {
+  "resources/AppManifestView.ts | display": {
     "message": "D̂íŝṕl̂áŷ"
   },
-  "resources/AppManifestView.js | documentationOnMaskableIcons": {
+  "resources/AppManifestView.ts | documentationOnMaskableIcons": {
     "message": "d̂óĉúm̂én̂t́ât́îón̂ ón̂ ḿâśk̂áb̂ĺê íĉón̂ś"
   },
-  "resources/AppManifestView.js | downloadedIconWasEmptyOr": {
+  "resources/AppManifestView.ts | downloadedIconWasEmptyOr": {
     "message": "D̂óŵńl̂óâd́êd́ îćôń ŵáŝ ém̂ṕt̂ý ôŕ ĉór̂ŕûṕt̂éd̂"
   },
-  "resources/AppManifestView.js | errorsAndWarnings": {
+  "resources/AppManifestView.ts | errorsAndWarnings": {
     "message": "Êŕr̂ór̂ś âńd̂ ẃâŕn̂ín̂ǵŝ"
   },
-  "resources/AppManifestView.js | icon": {
+  "resources/AppManifestView.ts | icon": {
     "message": "Îćôń"
   },
-  "resources/AppManifestView.js | icons": {
+  "resources/AppManifestView.ts | icons": {
     "message": "Îćôńŝ"
   },
-  "resources/AppManifestView.js | identity": {
+  "resources/AppManifestView.ts | identity": {
     "message": "Îd́êńt̂ít̂ý"
   },
-  "resources/AppManifestView.js | imageFromS": {
+  "resources/AppManifestView.ts | imageFromS": {
     "message": "Îḿâǵê f́r̂óm̂ {PH1}"
   },
-  "resources/AppManifestView.js | installability": {
+  "resources/AppManifestView.ts | installability": {
     "message": "Îńŝt́âĺl̂áb̂íl̂ít̂ý"
   },
-  "resources/AppManifestView.js | manifestContainsDisplayoverride": {
+  "resources/AppManifestView.ts | manifestContainsDisplayoverride": {
     "message": "M̂án̂íf̂éŝt́ ĉón̂t́âín̂ś 'display_override' f̂íêĺd̂, án̂d́ t̂h́ê f́îŕŝt́ ŝúp̂ṕôŕt̂éd̂ d́îśp̂ĺâý m̂ód̂é m̂úŝt́ b̂é ôńê óf̂ 'standalone', 'fullscreen', ór̂ 'minimal-ui'"
   },
-  "resources/AppManifestView.js | manifestCouldNotBeFetchedIsEmpty": {
+  "resources/AppManifestView.ts | manifestCouldNotBeFetchedIsEmpty": {
     "message": "M̂án̂íf̂éŝt́ ĉóûĺd̂ ńôt́ b̂é f̂ét̂ćĥéd̂, íŝ ém̂ṕt̂ý, ôŕ ĉóûĺd̂ ńôt́ b̂é p̂ár̂śêd́"
   },
-  "resources/AppManifestView.js | manifestDisplayPropertyMustBeOne": {
+  "resources/AppManifestView.ts | manifestDisplayPropertyMustBeOne": {
     "message": "M̂án̂íf̂éŝt́ 'display' p̂ŕôṕêŕt̂ý m̂úŝt́ b̂é ôńê óf̂ 'standalone', 'fullscreen', ór̂ 'minimal-ui'"
   },
-  "resources/AppManifestView.js | manifestDoesNotContainANameOr": {
+  "resources/AppManifestView.ts | manifestDoesNotContainANameOr": {
     "message": "M̂án̂íf̂éŝt́ d̂óêś n̂ót̂ ćôńt̂áîń â 'name' ór̂ 'short_name' f́îél̂d́"
   },
-  "resources/AppManifestView.js | manifestDoesNotContainASuitable": {
+  "resources/AppManifestView.ts | manifestDoesNotContainASuitable": {
     "message": "M̂án̂íf̂éŝt́ d̂óêś n̂ót̂ ćôńt̂áîń â śûít̂áb̂ĺê íĉón̂ - ṔN̂Ǵ, ŜV́Ĝ ór̂ Ẃêb́P̂ f́ôŕm̂át̂ óf̂ át̂ ĺêáŝt́ {PH1}p̂x́ îś r̂éq̂úîŕêd́, t̂h́ê sizes át̂t́r̂íb̂út̂é m̂úŝt́ b̂é ŝét̂, án̂d́ t̂h́ê purpose át̂t́r̂íb̂út̂é, îf́ ŝét̂, ḿûśt̂ ín̂ćl̂úd̂é \"any\" âńd̂ śĥóûĺd̂ ńôt́ îńĉĺûd́ê \"maskable\"."
   },
-  "resources/AppManifestView.js | manifestSpecifies": {
+  "resources/AppManifestView.ts | manifestSpecifies": {
     "message": "M̂án̂íf̂éŝt́ ŝṕêćîf́îéŝ prefer_related_applications: t́r̂úê"
   },
-  "resources/AppManifestView.js | manifestStartUrlIsNotValid": {
+  "resources/AppManifestView.ts | manifestStartUrlIsNotValid": {
     "message": "M̂án̂íf̂éŝt́ ŝt́âŕt̂ URL íŝ ńôt́ v̂ál̂íd̂"
   },
-  "resources/AppManifestView.js | name": {
+  "resources/AppManifestView.ts | name": {
     "message": "N̂ám̂é"
   },
-  "resources/AppManifestView.js | needHelpReadOurS": {
+  "resources/AppManifestView.ts | needHelpReadOurS": {
     "message": "N̂éêd́ ĥél̂ṕ? R̂éâd́ {PH1}."
   },
-  "resources/AppManifestView.js | noManifestDetected": {
+  "resources/AppManifestView.ts | noManifestDetected": {
     "message": "N̂ó m̂án̂íf̂éŝt́ d̂ét̂éĉt́êd́"
   },
-  "resources/AppManifestView.js | noMatchingServiceWorkerDetected": {
+  "resources/AppManifestView.ts | noMatchingServiceWorkerDetected": {
     "message": "N̂ó m̂át̂ćĥín̂ǵ service worker d̂ét̂éĉt́êd́. Ŷóû ḿâý n̂éêd́ t̂ó r̂él̂óâd́ t̂h́ê ṕâǵê, ór̂ ćĥéĉḱ t̂h́ât́ t̂h́ê śĉóp̂é ôf́ t̂h́ê service worker f́ôŕ t̂h́ê ćûŕr̂én̂t́ p̂áĝé êńĉĺôśêś t̂h́ê śĉóp̂é âńd̂ śt̂ár̂t́ ÛŔL̂ f́r̂óm̂ t́ĥé m̂án̂íf̂éŝt́."
   },
-  "resources/AppManifestView.js | noPlayStoreIdProvided": {
+  "resources/AppManifestView.ts | noPlayStoreIdProvided": {
     "message": "N̂ó P̂ĺâý ŝt́ôŕê ÍD̂ ṕr̂óv̂íd̂éd̂"
   },
-  "resources/AppManifestView.js | noSuppliedIconIsAtLeastSpxSquare": {
+  "resources/AppManifestView.ts | noSuppliedIconIsAtLeastSpxSquare": {
     "message": "N̂ó ŝúp̂ṕl̂íêd́ îćôń îś ât́ l̂éâśt̂ {PH1} ṕîx́êĺŝ śq̂úâŕê ín̂ PNG, SVG ór̂ WebP f́ôŕm̂át̂, ẃît́ĥ t́ĥé p̂úr̂ṕôśê át̂t́r̂íb̂út̂é ûńŝét̂ ór̂ śêt́ t̂ó \"any\"."
   },
-  "resources/AppManifestView.js | orientation": {
+  "resources/AppManifestView.ts | orientation": {
     "message": "Ôŕîén̂t́ât́îón̂"
   },
-  "resources/AppManifestView.js | pageDoesNotWorkOffline": {
+  "resources/AppManifestView.ts | pageDoesNotWorkOffline": {
     "message": "P̂áĝé d̂óêś n̂ót̂ ẃôŕk̂ óf̂f́l̂ín̂é"
   },
-  "resources/AppManifestView.js | pageDoesNotWorkOfflineThePage": {
+  "resources/AppManifestView.ts | pageDoesNotWorkOfflineThePage": {
     "message": "P̂áĝé d̂óêś n̂ót̂ ẃôŕk̂ óf̂f́l̂ín̂é. Ŝt́âŕt̂ín̂ǵ îń Ĉh́r̂óm̂é 93, t̂h́ê ín̂śt̂ál̂ĺâb́îĺît́ŷ ćr̂ít̂ér̂íâ ár̂é ĉh́âńĝín̂ǵ, âńd̂ t́ĥíŝ śît́ê ẃîĺl̂ ńôt́ b̂é îńŝt́âĺl̂áb̂ĺê. Śêé {PH1} f̂ór̂ ḿôŕê ín̂f́ôŕm̂át̂íôń."
   },
-  "resources/AppManifestView.js | pageHasNoManifestLinkUrl": {
+  "resources/AppManifestView.ts | pageHasNoManifestLinkUrl": {
     "message": "P̂áĝé ĥáŝ ńô ḿâńîf́êśt̂ <ĺîńk̂> URL"
   },
-  "resources/AppManifestView.js | pageIsLoadedInAnIncognitoWindow": {
+  "resources/AppManifestView.ts | pageIsLoadedInAnIncognitoWindow": {
     "message": "P̂áĝé îś l̂óâd́êd́ îń âń îńĉóĝńît́ô ẃîńd̂óŵ"
   },
-  "resources/AppManifestView.js | pageIsNotLoadedInTheMainFrame": {
+  "resources/AppManifestView.ts | pageIsNotLoadedInTheMainFrame": {
     "message": "P̂áĝé îś n̂ót̂ ĺôád̂éd̂ ín̂ t́ĥé m̂áîń f̂ŕâḿê"
   },
-  "resources/AppManifestView.js | pageIsNotServedFromASecureOrigin": {
+  "resources/AppManifestView.ts | pageIsNotServedFromASecureOrigin": {
     "message": "P̂áĝé îś n̂ót̂ śêŕv̂éd̂ f́r̂óm̂ á ŝéĉúr̂é ôŕîǵîń"
   },
-  "resources/AppManifestView.js | preferrelatedapplicationsIsOnly": {
+  "resources/AppManifestView.ts | preferrelatedapplicationsIsOnly": {
     "message": "prefer_related_applications îś ôńl̂ý ŝúp̂ṕôŕt̂éd̂ ón̂ Chrome B́êt́â án̂d́ Ŝt́âb́l̂é ĉh́âńn̂él̂ś ôń Android."
   },
-  "resources/AppManifestView.js | presentation": {
+  "resources/AppManifestView.ts | presentation": {
     "message": "P̂ŕêśêńt̂át̂íôń"
   },
-  "resources/AppManifestView.js | primaryIconasUsedByChrome": {
+  "resources/AppManifestView.ts | primaryIconasUsedByChrome": {
     "message": "P̂ŕîḿâŕŷ íĉón̂ áŝ úŝéd̂ b́ŷ Chrome"
   },
-  "resources/AppManifestView.js | primaryManifestIconFromS": {
+  "resources/AppManifestView.ts | primaryManifestIconFromS": {
     "message": "P̂ŕîḿâŕŷ ḿâńîf́êśt̂ íĉón̂ f́r̂óm̂ {PH1}"
   },
-  "resources/AppManifestView.js | screenshot": {
+  "resources/AppManifestView.ts | screenshot": {
     "message": "Ŝćr̂éêńŝh́ôt́"
   },
-  "resources/AppManifestView.js | screenshotS": {
+  "resources/AppManifestView.ts | screenshotS": {
     "message": "Ŝćr̂éêńŝh́ôt́ #{PH1}"
   },
-  "resources/AppManifestView.js | shortcutS": {
+  "resources/AppManifestView.ts | shortcutS": {
     "message": "Ŝh́ôŕt̂ćût́ #{PH1}"
   },
-  "resources/AppManifestView.js | shortcutSShouldIncludeAXPixel": {
+  "resources/AppManifestView.ts | shortcutSShouldIncludeAXPixel": {
     "message": "Ŝh́ôŕt̂ćût́ #{PH1} ŝh́ôúl̂d́ îńĉĺûd́ê á 96x̂96 ṕîx́êĺ îćôń"
   },
-  "resources/AppManifestView.js | shortName": {
+  "resources/AppManifestView.ts | shortName": {
     "message": "Ŝh́ôŕt̂ ńâḿê"
   },
-  "resources/AppManifestView.js | showOnlyTheMinimumSafeAreaFor": {
+  "resources/AppManifestView.ts | showOnlyTheMinimumSafeAreaFor": {
     "message": "Ŝh́ôẃ ôńl̂ý t̂h́ê ḿîńîḿûḿ ŝáf̂é âŕêá f̂ór̂ ḿâśk̂áb̂ĺê íĉón̂ś"
   },
-  "resources/AppManifestView.js | sSDimensionsShouldBeSquare": {
+  "resources/AppManifestView.ts | sSDimensionsShouldBeSquare": {
     "message": "{PH1} {PH2} d̂ím̂én̂śîón̂ś ŝh́ôúl̂d́ b̂é ŝq́ûár̂é"
   },
-  "resources/AppManifestView.js | sSDoesNotSpecifyItsSizeInThe": {
+  "resources/AppManifestView.ts | sSDoesNotSpecifyItsSizeInThe": {
     "message": "{PH1} {PH2} d̂óêś n̂ót̂ śp̂éĉíf̂ý ît́ŝ śîźê ín̂ t́ĥé m̂án̂íf̂éŝt́"
   },
-  "resources/AppManifestView.js | sSFailedToLoad": {
+  "resources/AppManifestView.ts | sSFailedToLoad": {
     "message": "{PH1} {PH2} f̂áîĺêd́ t̂ó l̂óâd́"
   },
-  "resources/AppManifestView.js | sSHeightShouldBeLessThanTwiceTheWidth": {
+  "resources/AppManifestView.ts | sSHeightShouldBeLessThanTwiceTheWidth": {
     "message": "{PH1} {PH2} ĥéîǵĥt́ ŝh́ôúl̂d́ b̂é l̂éŝś t̂h́âń t̂ẃîćê t́ĥé ŵíd̂t́ĥ"
   },
-  "resources/AppManifestView.js | sSrcIsNotSet": {
+  "resources/AppManifestView.ts | sSrcIsNotSet": {
     "message": "{PH1} src îś n̂ót̂ śêt́"
   },
-  "resources/AppManifestView.js | sSShouldSpecifyItsSizeAs": {
+  "resources/AppManifestView.ts | sSShouldSpecifyItsSizeAs": {
     "message": "{PH1} {PH2} ŝh́ôúl̂d́ ŝṕêćîf́ŷ ít̂ś ŝíẑé âś {width}x{height}"
   },
-  "resources/AppManifestView.js | sSSizeShouldBeAtLeast320": {
+  "resources/AppManifestView.ts | sSSizeShouldBeAtLeast320": {
     "message": "{PH1} {PH2} ŝíẑé ŝh́ôúl̂d́ b̂é ât́ l̂éâśt̂ 320×320"
   },
-  "resources/AppManifestView.js | sSSizeShouldBeAtMost3840": {
+  "resources/AppManifestView.ts | sSSizeShouldBeAtMost3840": {
     "message": "{PH1} {PH2} ŝíẑé ŝh́ôúl̂d́ b̂é ât́ m̂óŝt́ 3840×3840"
   },
-  "resources/AppManifestView.js | sSWidthShouldBeLessThanTwiceTheHeight": {
+  "resources/AppManifestView.ts | sSWidthShouldBeLessThanTwiceTheHeight": {
     "message": "{PH1} {PH2} ŵíd̂t́ĥ śĥóûĺd̂ b́ê ĺêśŝ t́ĥán̂ t́ŵíĉé t̂h́ê h́êíĝh́t̂"
   },
-  "resources/AppManifestView.js | startUrl": {
+  "resources/AppManifestView.ts | startUrl": {
     "message": "Ŝt́âŕt̂ ÚR̂Ĺ"
   },
-  "resources/AppManifestView.js | sUrlSFailedToParse": {
+  "resources/AppManifestView.ts | sUrlSFailedToParse": {
     "message": "{PH1} ÛŔL̂ '{PH2}' f́âíl̂éd̂ t́ô ṕâŕŝé"
   },
-  "resources/AppManifestView.js | theAppIsAlreadyInstalled": {
+  "resources/AppManifestView.ts | theAppIsAlreadyInstalled": {
     "message": "T̂h́ê áp̂ṕ îś âĺr̂éâd́ŷ ín̂śt̂ál̂ĺêd́"
   },
-  "resources/AppManifestView.js | themeColor": {
+  "resources/AppManifestView.ts | themeColor": {
     "message": "T̂h́êḿê ćôĺôŕ"
   },
-  "resources/AppManifestView.js | thePlayStoreAppUrlAndPlayStoreId": {
+  "resources/AppManifestView.ts | thePlayStoreAppUrlAndPlayStoreId": {
     "message": "T̂h́ê Ṕl̂áŷ Śt̂ór̂é âṕp̂ ÚR̂Ĺ âńd̂ Ṕl̂áŷ Śt̂ór̂é ÎD́ d̂ó n̂ót̂ ḿât́ĉh́"
   },
-  "resources/AppManifestView.js | theSpecifiedApplicationPlatform": {
+  "resources/AppManifestView.ts | theSpecifiedApplicationPlatform": {
     "message": "T̂h́ê śp̂éĉíf̂íêd́ âṕp̂ĺîćât́îón̂ ṕl̂át̂f́ôŕm̂ íŝ ńôt́ ŝúp̂ṕôŕt̂éd̂ ón̂ Android"
   },
-  "resources/BackgroundServiceView.js | backgroundFetch": {
+  "resources/BackgroundServiceView.ts | backgroundFetch": {
     "message": "B̂áĉḱĝŕôún̂d́ F̂ét̂ćĥ"
   },
-  "resources/BackgroundServiceView.js | backgroundServices": {
+  "resources/BackgroundServiceView.ts | backgroundServices": {
     "message": "B̂áĉḱĝŕôún̂d́ Ŝér̂v́îćêś"
   },
-  "resources/BackgroundServiceView.js | backgroundSync": {
+  "resources/BackgroundServiceView.ts | backgroundSync": {
     "message": "B̂áĉḱĝŕôún̂d́ Ŝýn̂ć"
   },
-  "resources/BackgroundServiceView.js | clear": {
+  "resources/BackgroundServiceView.ts | clear": {
     "message": "Ĉĺêár̂"
   },
-  "resources/BackgroundServiceView.js | clickTheRecordButtonSOrHitSTo": {
+  "resources/BackgroundServiceView.ts | clickTheRecordButtonSOrHitSTo": {
     "message": "Ĉĺîćk̂ t́ĥé r̂éĉór̂d́ b̂út̂t́ôń {PH1} ôŕ ĥít̂ {PH2} t́ô śt̂ár̂t́ r̂éĉór̂d́îńĝ."
   },
-  "resources/BackgroundServiceView.js | devtoolsWillRecordAllSActivity": {
+  "resources/BackgroundServiceView.ts | devtoolsWillRecordAllSActivity": {
     "message": "D̂év̂T́ôól̂ś ŵíl̂ĺ r̂éĉór̂d́ âĺl̂ {PH1} áĉt́îv́ît́ŷ f́ôŕ ûṕ t̂ó 3 d̂áŷś, êv́êń ŵh́êń ĉĺôśêd́."
   },
-  "resources/BackgroundServiceView.js | empty": {
+  "resources/BackgroundServiceView.ts | empty": {
     "message": "êḿp̂t́ŷ"
   },
-  "resources/BackgroundServiceView.js | event": {
+  "resources/BackgroundServiceView.ts | event": {
     "message": "Êv́êńt̂"
   },
-  "resources/BackgroundServiceView.js | instanceId": {
+  "resources/BackgroundServiceView.ts | instanceId": {
     "message": "Îńŝt́âńĉé ÎD́"
   },
-  "resources/BackgroundServiceView.js | learnMore": {
+  "resources/BackgroundServiceView.ts | learnMore": {
     "message": "L̂éâŕn̂ ḿôŕê"
   },
-  "resources/BackgroundServiceView.js | noMetadataForThisEvent": {
+  "resources/BackgroundServiceView.ts | noMetadataForThisEvent": {
     "message": "N̂ó m̂ét̂ád̂át̂á f̂ór̂ t́ĥíŝ év̂én̂t́"
   },
-  "resources/BackgroundServiceView.js | notifications": {
+  "resources/BackgroundServiceView.ts | notifications": {
     "message": "N̂ót̂íf̂íĉát̂íôńŝ"
   },
-  "resources/BackgroundServiceView.js | origin": {
+  "resources/BackgroundServiceView.ts | origin": {
     "message": "Ôŕîǵîń"
   },
-  "resources/BackgroundServiceView.js | paymentHandler": {
+  "resources/BackgroundServiceView.ts | paymentHandler": {
     "message": "P̂áŷḿêńt̂ H́âńd̂ĺêŕ"
   },
-  "resources/BackgroundServiceView.js | periodicBackgroundSync": {
+  "resources/BackgroundServiceView.ts | periodicBackgroundSync": {
     "message": "P̂ér̂íôd́îć B̂áĉḱĝŕôún̂d́ Ŝýn̂ć"
   },
-  "resources/BackgroundServiceView.js | pushMessaging": {
+  "resources/BackgroundServiceView.ts | pushMessaging": {
     "message": "P̂úŝh́ M̂éŝśâǵîńĝ"
   },
-  "resources/BackgroundServiceView.js | recordingSActivity": {
+  "resources/BackgroundServiceView.ts | recordingSActivity": {
     "message": "R̂éĉór̂d́îńĝ {PH1} áĉt́îv́ît́ŷ..."
   },
-  "resources/BackgroundServiceView.js | saveEvents": {
+  "resources/BackgroundServiceView.ts | saveEvents": {
     "message": "Ŝáv̂é êv́êńt̂ś"
   },
-  "resources/BackgroundServiceView.js | selectAnEntryToViewMetadata": {
+  "resources/BackgroundServiceView.ts | selectAnEntryToViewMetadata": {
     "message": "Ŝél̂éĉt́ âń êńt̂ŕŷ t́ô v́îéŵ ḿêt́âd́ât́â"
   },
-  "resources/BackgroundServiceView.js | showEventsFromOtherDomains": {
+  "resources/BackgroundServiceView.ts | showEventsFromOtherDomains": {
     "message": "Ŝh́ôẃ êv́êńt̂ś f̂ŕôḿ ôt́ĥér̂ d́ôḿâín̂ś"
   },
-  "resources/BackgroundServiceView.js | startRecordingEvents": {
+  "resources/BackgroundServiceView.ts | startRecordingEvents": {
     "message": "Ŝt́âŕt̂ ŕêćôŕd̂ín̂ǵ êv́êńt̂ś"
   },
-  "resources/BackgroundServiceView.js | stopRecordingEvents": {
+  "resources/BackgroundServiceView.ts | stopRecordingEvents": {
     "message": "Ŝt́ôṕ r̂éĉór̂d́îńĝ év̂én̂t́ŝ"
   },
-  "resources/BackgroundServiceView.js | swScope": {
+  "resources/BackgroundServiceView.ts | swScope": {
     "message": "Ŝér̂v́îćê Ẃôŕk̂ér̂ Śĉóp̂é"
   },
-  "resources/BackgroundServiceView.js | timestamp": {
+  "resources/BackgroundServiceView.ts | timestamp": {
     "message": "T̂ím̂éŝt́âḿp̂"
   },
-  "resources/CookieItemsView.js | clearAllCookies": {
+  "resources/CookieItemsView.ts | clearAllCookies": {
     "message": "Ĉĺêár̂ ál̂ĺ ĉóôḱîéŝ"
   },
-  "resources/CookieItemsView.js | clearFilteredCookies": {
+  "resources/CookieItemsView.ts | clearFilteredCookies": {
     "message": "Ĉĺêár̂ f́îĺt̂ér̂éd̂ ćôók̂íêś"
   },
-  "resources/CookieItemsView.js | cookies": {
+  "resources/CookieItemsView.ts | cookies": {
     "message": "Ĉóôḱîéŝ"
   },
-  "resources/CookieItemsView.js | numberOfCookiesShownInTableS": {
+  "resources/CookieItemsView.ts | numberOfCookiesShownInTableS": {
     "message": "N̂úm̂b́êŕ ôf́ ĉóôḱîéŝ śĥóŵń îń t̂áb̂ĺê: {PH1}"
   },
-  "resources/CookieItemsView.js | onlyShowCookiesWhichHaveAn": {
+  "resources/CookieItemsView.ts | onlyShowCookiesWhichHaveAn": {
     "message": "Ôńl̂ý ŝh́ôẃ ĉóôḱîéŝ ẃĥíĉh́ ĥáv̂é âń âśŝóĉíât́êd́ îśŝúê"
   },
-  "resources/CookieItemsView.js | onlyShowCookiesWithAnIssue": {
+  "resources/CookieItemsView.ts | onlyShowCookiesWithAnIssue": {
     "message": "Ôńl̂ý ŝh́ôẃ ĉóôḱîéŝ ẃît́ĥ án̂ íŝśûé"
   },
-  "resources/CookieItemsView.js | selectACookieToPreviewItsValue": {
+  "resources/CookieItemsView.ts | selectACookieToPreviewItsValue": {
     "message": "Ŝél̂éĉt́ â ćôók̂íê t́ô ṕr̂év̂íêẃ ît́ŝ v́âĺûé"
   },
-  "resources/CookieItemsView.js | showUrlDecoded": {
+  "resources/CookieItemsView.ts | showUrlDecoded": {
     "message": "Ŝh́ôẃ ÛŔL̂ d́êćôd́êd́"
   },
-  "resources/DatabaseModel.js | anUnexpectedErrorSOccurred": {
+  "resources/DatabaseModel.ts | anUnexpectedErrorSOccurred": {
     "message": "Âń ûńêx́p̂éĉt́êd́ êŕr̂ór̂ {PH1} óĉćûŕr̂éd̂."
   },
-  "resources/DatabaseModel.js | databaseNoLongerHasExpected": {
+  "resources/DatabaseModel.ts | databaseNoLongerHasExpected": {
     "message": "D̂át̂áb̂áŝé n̂ó l̂ón̂ǵêŕ ĥáŝ éx̂ṕêćt̂éd̂ v́êŕŝíôń."
   },
-  "resources/DatabaseQueryView.js | databaseQuery": {
+  "resources/DatabaseQueryView.ts | databaseQuery": {
     "message": "D̂át̂áb̂áŝé Q̂úêŕŷ"
   },
-  "resources/DatabaseQueryView.js | queryS": {
+  "resources/DatabaseQueryView.ts | queryS": {
     "message": "Q̂úêŕŷ: {PH1}"
   },
-  "resources/DatabaseTableView.js | anErrorOccurredTryingToreadTheS": {
+  "resources/DatabaseTableView.ts | anErrorOccurredTryingToreadTheS": {
     "message": "Âń êŕr̂ór̂ óĉćûŕr̂éd̂ t́r̂ýîńĝ t́ô ŕêád̂ t́ĥé \"{PH1}\" t̂áb̂ĺê."
   },
-  "resources/DatabaseTableView.js | database": {
+  "resources/DatabaseTableView.ts | database": {
     "message": "D̂át̂áb̂áŝé"
   },
-  "resources/DatabaseTableView.js | refresh": {
+  "resources/DatabaseTableView.ts | refresh": {
     "message": "R̂éf̂ŕêśĥ"
   },
-  "resources/DatabaseTableView.js | theStableIsEmpty": {
+  "resources/DatabaseTableView.ts | theStableIsEmpty": {
     "message": "T̂h́ê \"{PH1}\" t́âb́l̂é îś êḿp̂t́ŷ."
   },
-  "resources/DatabaseTableView.js | visibleColumns": {
+  "resources/DatabaseTableView.ts | visibleColumns": {
     "message": "V̂íŝíb̂ĺê ćôĺûḿn̂ś"
   },
-  "resources/DOMStorageItemsView.js | domStorage": {
+  "resources/DOMStorageItemsView.ts | domStorage": {
     "message": "D̂ÓM̂ Śt̂ór̂áĝé"
   },
-  "resources/DOMStorageItemsView.js | domStorageItems": {
+  "resources/DOMStorageItemsView.ts | domStorageItems": {
     "message": "D̂ÓM̂ Śt̂ór̂áĝé Ît́êḿŝ"
   },
-  "resources/DOMStorageItemsView.js | key": {
+  "resources/DOMStorageItemsView.ts | key": {
     "message": "K̂éŷ"
   },
-  "resources/DOMStorageItemsView.js | selectAValueToPreview": {
+  "resources/DOMStorageItemsView.ts | selectAValueToPreview": {
     "message": "Ŝél̂éĉt́ â v́âĺûé t̂ó p̂ŕêv́îéŵ"
   },
-  "resources/DOMStorageItemsView.js | value": {
+  "resources/DOMStorageItemsView.ts | value": {
     "message": "V̂ál̂úê"
   },
   "resources/FrameDetailsView.ts | additionalInformation": {
@@ -6440,136 +6440,136 @@
   "resources/FrameDetailsView.ts | yes": {
     "message": "Ŷéŝ"
   },
-  "resources/IndexedDBViews.js | clearObjectStore": {
+  "resources/IndexedDBViews.ts | clearObjectStore": {
     "message": "Ĉĺêár̂ ób̂j́êćt̂ śt̂ór̂é"
   },
-  "resources/IndexedDBViews.js | collapse": {
+  "resources/IndexedDBViews.ts | collapse": {
     "message": "Ĉól̂ĺâṕŝé"
   },
-  "resources/IndexedDBViews.js | dataMayBeStale": {
+  "resources/IndexedDBViews.ts | dataMayBeStale": {
     "message": "D̂át̂á m̂áŷ b́ê śt̂ál̂é"
   },
-  "resources/IndexedDBViews.js | deleteDatabase": {
+  "resources/IndexedDBViews.ts | deleteDatabase": {
     "message": "D̂él̂ét̂é d̂át̂áb̂áŝé"
   },
-  "resources/IndexedDBViews.js | deleteSelected": {
+  "resources/IndexedDBViews.ts | deleteSelected": {
     "message": "D̂él̂ét̂é ŝél̂éĉt́êd́"
   },
-  "resources/IndexedDBViews.js | expandRecursively": {
+  "resources/IndexedDBViews.ts | expandRecursively": {
     "message": "Êx́p̂án̂d́ R̂éĉúr̂śîv́êĺŷ"
   },
-  "resources/IndexedDBViews.js | idb": {
+  "resources/IndexedDBViews.ts | idb": {
     "message": "ÎD́B̂"
   },
-  "resources/IndexedDBViews.js | indexedDb": {
+  "resources/IndexedDBViews.ts | indexedDb": {
     "message": "Îńd̂éx̂éd̂ D́B̂"
   },
-  "resources/IndexedDBViews.js | keyGeneratorValueS": {
+  "resources/IndexedDBViews.ts | keyGeneratorValueS": {
     "message": "K̂éŷ ǵêńêŕât́ôŕ v̂ál̂úê: {PH1}"
   },
-  "resources/IndexedDBViews.js | keyPath": {
+  "resources/IndexedDBViews.ts | keyPath": {
     "message": "K̂éŷ ṕât́ĥ: "
   },
-  "resources/IndexedDBViews.js | keyString": {
+  "resources/IndexedDBViews.ts | keyString": {
     "message": "K̂éŷ"
   },
-  "resources/IndexedDBViews.js | loading": {
+  "resources/IndexedDBViews.ts | loading": {
     "message": "L̂óâd́îńĝ…"
   },
-  "resources/IndexedDBViews.js | objectStores": {
+  "resources/IndexedDBViews.ts | objectStores": {
     "message": "Ôb́ĵéĉt́ ŝt́ôŕêś"
   },
-  "resources/IndexedDBViews.js | pleaseConfirmDeleteOfSDatabase": {
+  "resources/IndexedDBViews.ts | pleaseConfirmDeleteOfSDatabase": {
     "message": "P̂ĺêáŝé ĉón̂f́îŕm̂ d́êĺêt́ê óf̂ \"{PH1}\" d́ât́âb́âśê."
   },
-  "resources/IndexedDBViews.js | primaryKey": {
+  "resources/IndexedDBViews.ts | primaryKey": {
     "message": "P̂ŕîḿâŕŷ ḱêý"
   },
-  "resources/IndexedDBViews.js | refresh": {
+  "resources/IndexedDBViews.ts | refresh": {
     "message": "R̂éf̂ŕêśĥ"
   },
-  "resources/IndexedDBViews.js | refreshDatabase": {
+  "resources/IndexedDBViews.ts | refreshDatabase": {
     "message": "R̂éf̂ŕêśĥ d́ât́âb́âśê"
   },
-  "resources/IndexedDBViews.js | securityOrigin": {
+  "resources/IndexedDBViews.ts | securityOrigin": {
     "message": "Ŝéĉúr̂ít̂ý ôŕîǵîń"
   },
-  "resources/IndexedDBViews.js | showNextPage": {
+  "resources/IndexedDBViews.ts | showNextPage": {
     "message": "Ŝh́ôẃ n̂éx̂t́ p̂áĝé"
   },
-  "resources/IndexedDBViews.js | showPreviousPage": {
+  "resources/IndexedDBViews.ts | showPreviousPage": {
     "message": "Ŝh́ôẃ p̂ŕêv́îóûś p̂áĝé"
   },
-  "resources/IndexedDBViews.js | someEntriesMayHaveBeenModified": {
+  "resources/IndexedDBViews.ts | someEntriesMayHaveBeenModified": {
     "message": "Ŝóm̂é êńt̂ŕîéŝ ḿâý ĥáv̂é b̂éêń m̂ód̂íf̂íêd́"
   },
-  "resources/IndexedDBViews.js | startFromKey": {
+  "resources/IndexedDBViews.ts | startFromKey": {
     "message": "Ŝt́âŕt̂ f́r̂óm̂ ḱêý"
   },
-  "resources/IndexedDBViews.js | totalEntriesS": {
+  "resources/IndexedDBViews.ts | totalEntriesS": {
     "message": "T̂ót̂ál̂ én̂t́r̂íêś: {PH1}"
   },
-  "resources/IndexedDBViews.js | valueString": {
+  "resources/IndexedDBViews.ts | valueString": {
     "message": "V̂ál̂úê"
   },
-  "resources/IndexedDBViews.js | version": {
+  "resources/IndexedDBViews.ts | version": {
     "message": "V̂ér̂śîón̂"
   },
-  "resources/OpenedWindowDetailsView.js | accessToOpener": {
+  "resources/OpenedWindowDetailsView.ts | accessToOpener": {
     "message": "Âćĉéŝś t̂ó ôṕêńêŕ"
   },
-  "resources/OpenedWindowDetailsView.js | clickToRevealInElementsPanel": {
+  "resources/OpenedWindowDetailsView.ts | clickToRevealInElementsPanel": {
     "message": "Ĉĺîćk̂ t́ô ŕêv́êál̂ ín̂ Él̂ém̂én̂t́ŝ ṕâńêĺ"
   },
-  "resources/OpenedWindowDetailsView.js | closed": {
+  "resources/OpenedWindowDetailsView.ts | closed": {
     "message": "ĉĺôśêd́"
   },
-  "resources/OpenedWindowDetailsView.js | crossoriginEmbedderPolicy": {
+  "resources/OpenedWindowDetailsView.ts | crossoriginEmbedderPolicy": {
     "message": "Ĉŕôśŝ-Ór̂íĝín̂ Ém̂b́êd́d̂ér̂ Ṕôĺîćŷ"
   },
-  "resources/OpenedWindowDetailsView.js | document": {
+  "resources/OpenedWindowDetailsView.ts | document": {
     "message": "D̂óĉúm̂én̂t́"
   },
-  "resources/OpenedWindowDetailsView.js | no": {
+  "resources/OpenedWindowDetailsView.ts | no": {
     "message": "N̂ó"
   },
-  "resources/OpenedWindowDetailsView.js | openerFrame": {
+  "resources/OpenedWindowDetailsView.ts | openerFrame": {
     "message": "Ôṕêńêŕ F̂ŕâḿê"
   },
-  "resources/OpenedWindowDetailsView.js | reportingTo": {
+  "resources/OpenedWindowDetailsView.ts | reportingTo": {
     "message": "r̂ép̂ór̂t́îńĝ t́ô"
   },
-  "resources/OpenedWindowDetailsView.js | security": {
+  "resources/OpenedWindowDetailsView.ts | security": {
     "message": "Ŝéĉúr̂ít̂ý"
   },
-  "resources/OpenedWindowDetailsView.js | securityIsolation": {
+  "resources/OpenedWindowDetailsView.ts | securityIsolation": {
     "message": "Ŝéĉúr̂ít̂ý & Îśôĺât́îón̂"
   },
-  "resources/OpenedWindowDetailsView.js | serviceWorker": {
+  "resources/OpenedWindowDetailsView.ts | serviceWorker": {
     "message": "Service Worker"
   },
-  "resources/OpenedWindowDetailsView.js | showsWhetherTheOpenedWindowIs": {
+  "resources/OpenedWindowDetailsView.ts | showsWhetherTheOpenedWindowIs": {
     "message": "Ŝh́ôẃŝ ẃĥét̂h́êŕ t̂h́ê óp̂én̂éd̂ ẃîńd̂óŵ íŝ áb̂ĺê t́ô áĉćêśŝ ít̂ś ôṕêńêŕ âńd̂ v́îćê v́êŕŝá"
   },
-  "resources/OpenedWindowDetailsView.js | type": {
+  "resources/OpenedWindowDetailsView.ts | type": {
     "message": "T̂ýp̂é"
   },
-  "resources/OpenedWindowDetailsView.js | unknown": {
+  "resources/OpenedWindowDetailsView.ts | unknown": {
     "message": "Ûńk̂ńôẃn̂"
   },
-  "resources/OpenedWindowDetailsView.js | url": {
+  "resources/OpenedWindowDetailsView.ts | url": {
     "message": "ÛŔL̂"
   },
-  "resources/OpenedWindowDetailsView.js | webWorker": {
+  "resources/OpenedWindowDetailsView.ts | webWorker": {
     "message": "Ŵéb̂ Ẃôŕk̂ér̂"
   },
-  "resources/OpenedWindowDetailsView.js | windowWithoutTitle": {
+  "resources/OpenedWindowDetailsView.ts | windowWithoutTitle": {
     "message": "Ŵín̂d́ôẃ ŵít̂h́ôút̂ t́ît́l̂é"
   },
-  "resources/OpenedWindowDetailsView.js | worker": {
+  "resources/OpenedWindowDetailsView.ts | worker": {
     "message": "ŵór̂ḱêŕ"
   },
-  "resources/OpenedWindowDetailsView.js | yes": {
+  "resources/OpenedWindowDetailsView.ts | yes": {
     "message": "Ŷéŝ"
   },
   "resources/resources-meta.ts | application": {
@@ -6593,154 +6593,154 @@
   "resources/resources-meta.ts | stopRecordingEvents": {
     "message": "Ŝt́ôṕ r̂éĉór̂d́îńĝ év̂én̂t́ŝ"
   },
-  "resources/ServiceWorkerCacheViews.js | cache": {
+  "resources/ServiceWorkerCacheViews.ts | cache": {
     "message": "Ĉáĉh́ê"
   },
-  "resources/ServiceWorkerCacheViews.js | contentlength": {
+  "resources/ServiceWorkerCacheViews.ts | contentlength": {
     "message": "Content-Length"
   },
-  "resources/ServiceWorkerCacheViews.js | contenttype": {
+  "resources/ServiceWorkerCacheViews.ts | contenttype": {
     "message": "Content-Type"
   },
-  "resources/ServiceWorkerCacheViews.js | deleteSelected": {
+  "resources/ServiceWorkerCacheViews.ts | deleteSelected": {
     "message": "D̂él̂ét̂é Ŝél̂éĉt́êd́"
   },
-  "resources/ServiceWorkerCacheViews.js | filterByPath": {
+  "resources/ServiceWorkerCacheViews.ts | filterByPath": {
     "message": "F̂íl̂t́êŕ b̂ý P̂át̂h́"
   },
-  "resources/ServiceWorkerCacheViews.js | headers": {
+  "resources/ServiceWorkerCacheViews.ts | headers": {
     "message": "Ĥéâd́êŕŝ"
   },
-  "resources/ServiceWorkerCacheViews.js | matchingEntriesS": {
+  "resources/ServiceWorkerCacheViews.ts | matchingEntriesS": {
     "message": "M̂át̂ćĥín̂ǵ êńt̂ŕîéŝ: {PH1}"
   },
-  "resources/ServiceWorkerCacheViews.js | name": {
+  "resources/ServiceWorkerCacheViews.ts | name": {
     "message": "N̂ám̂é"
   },
-  "resources/ServiceWorkerCacheViews.js | preview": {
+  "resources/ServiceWorkerCacheViews.ts | preview": {
     "message": "P̂ŕêv́îéŵ"
   },
-  "resources/ServiceWorkerCacheViews.js | refresh": {
+  "resources/ServiceWorkerCacheViews.ts | refresh": {
     "message": "R̂éf̂ŕêśĥ"
   },
-  "resources/ServiceWorkerCacheViews.js | responsetype": {
+  "resources/ServiceWorkerCacheViews.ts | responsetype": {
     "message": "Response-Type"
   },
-  "resources/ServiceWorkerCacheViews.js | selectACacheEntryAboveToPreview": {
+  "resources/ServiceWorkerCacheViews.ts | selectACacheEntryAboveToPreview": {
     "message": "Ŝél̂éĉt́ â ćâćĥé êńt̂ŕŷ áb̂óv̂é t̂ó p̂ŕêv́îéŵ"
   },
-  "resources/ServiceWorkerCacheViews.js | serviceWorkerCache": {
+  "resources/ServiceWorkerCacheViews.ts | serviceWorkerCache": {
     "message": "Service Worker Ĉáĉh́ê"
   },
-  "resources/ServiceWorkerCacheViews.js | timeCached": {
+  "resources/ServiceWorkerCacheViews.ts | timeCached": {
     "message": "T̂ím̂é Ĉáĉh́êd́"
   },
-  "resources/ServiceWorkerCacheViews.js | totalEntriesS": {
+  "resources/ServiceWorkerCacheViews.ts | totalEntriesS": {
     "message": "T̂ót̂ál̂ én̂t́r̂íêś: {PH1}"
   },
-  "resources/ServiceWorkersView.js | bypassForNetwork": {
+  "resources/ServiceWorkersView.ts | bypassForNetwork": {
     "message": "B̂ýp̂áŝś f̂ór̂ ńêt́ŵór̂ḱ"
   },
-  "resources/ServiceWorkersView.js | bypassTheServiceWorkerAndLoad": {
+  "resources/ServiceWorkersView.ts | bypassTheServiceWorkerAndLoad": {
     "message": "B̂ýp̂áŝś t̂h́ê service worker án̂d́ l̂óâd́ r̂éŝóûŕĉéŝ f́r̂óm̂ t́ĥé n̂ét̂ẃôŕk̂"
   },
-  "resources/ServiceWorkersView.js | clients": {
+  "resources/ServiceWorkersView.ts | clients": {
     "message": "Ĉĺîén̂t́ŝ"
   },
-  "resources/ServiceWorkersView.js | focus": {
+  "resources/ServiceWorkersView.ts | focus": {
     "message": "f̂óĉúŝ"
   },
-  "resources/ServiceWorkersView.js | inspect": {
+  "resources/ServiceWorkersView.ts | inspect": {
     "message": "îńŝṕêćt̂"
   },
-  "resources/ServiceWorkersView.js | networkRequests": {
+  "resources/ServiceWorkersView.ts | networkRequests": {
     "message": "N̂ét̂ẃôŕk̂ ŕêq́ûéŝt́ŝ"
   },
-  "resources/ServiceWorkersView.js | onPageReloadForceTheService": {
+  "resources/ServiceWorkersView.ts | onPageReloadForceTheService": {
     "message": "Ôń p̂áĝé r̂él̂óâd́, f̂ór̂ćê t́ĥé service worker t̂ó ûṕd̂át̂é, âńd̂ áĉt́îv́ât́ê ít̂"
   },
-  "resources/ServiceWorkersView.js | periodicSync": {
+  "resources/ServiceWorkersView.ts | periodicSync": {
     "message": "P̂ér̂íôd́îć Ŝýn̂ć"
   },
-  "resources/ServiceWorkersView.js | periodicSyncTag": {
+  "resources/ServiceWorkersView.ts | periodicSyncTag": {
     "message": "P̂ér̂íôd́îć Ŝýn̂ć t̂áĝ"
   },
-  "resources/ServiceWorkersView.js | pushData": {
+  "resources/ServiceWorkersView.ts | pushData": {
     "message": "P̂úŝh́ d̂át̂á"
   },
-  "resources/ServiceWorkersView.js | pushString": {
+  "resources/ServiceWorkersView.ts | pushString": {
     "message": "P̂úŝh́"
   },
-  "resources/ServiceWorkersView.js | receivedS": {
+  "resources/ServiceWorkersView.ts | receivedS": {
     "message": "R̂éĉéîv́êd́ {PH1}"
   },
-  "resources/ServiceWorkersView.js | sActivatedAndIsS": {
+  "resources/ServiceWorkersView.ts | sActivatedAndIsS": {
     "message": "#{PH1} âćt̂ív̂át̂éd̂ án̂d́ îś {PH2}"
   },
-  "resources/ServiceWorkersView.js | sDeleted": {
+  "resources/ServiceWorkersView.ts | sDeleted": {
     "message": "{PH1} - d̂él̂ét̂éd̂"
   },
-  "resources/ServiceWorkersView.js | serviceWorkerForS": {
+  "resources/ServiceWorkersView.ts | serviceWorkerForS": {
     "message": "Service worker f̂ór̂ {PH1}"
   },
-  "resources/ServiceWorkersView.js | serviceWorkers": {
+  "resources/ServiceWorkersView.ts | serviceWorkers": {
     "message": "Service Workers"
   },
-  "resources/ServiceWorkersView.js | serviceWorkersFromOtherOrigins": {
+  "resources/ServiceWorkersView.ts | serviceWorkersFromOtherOrigins": {
     "message": "Ŝér̂v́îćê ẃôŕk̂ér̂ś f̂ŕôḿ ôt́ĥér̂ ór̂íĝín̂ś"
   },
-  "resources/ServiceWorkersView.js | sIsRedundant": {
+  "resources/ServiceWorkersView.ts | sIsRedundant": {
     "message": "#{PH1} îś r̂éd̂ún̂d́âńt̂"
   },
-  "resources/ServiceWorkersView.js | skipwaiting": {
+  "resources/ServiceWorkersView.ts | skipwaiting": {
     "message": "ŝḱîṕŴáît́îńĝ"
   },
-  "resources/ServiceWorkersView.js | source": {
+  "resources/ServiceWorkersView.ts | source": {
     "message": "Ŝóûŕĉé"
   },
-  "resources/ServiceWorkersView.js | sRegistrationErrors": {
+  "resources/ServiceWorkersView.ts | sRegistrationErrors": {
     "message": "{PH1} r̂éĝíŝt́r̂át̂íôń êŕr̂ór̂ś"
   },
-  "resources/ServiceWorkersView.js | startString": {
+  "resources/ServiceWorkersView.ts | startString": {
     "message": "ŝt́âŕt̂"
   },
-  "resources/ServiceWorkersView.js | status": {
+  "resources/ServiceWorkersView.ts | status": {
     "message": "Ŝt́ât́ûś"
   },
-  "resources/ServiceWorkersView.js | stopString": {
+  "resources/ServiceWorkersView.ts | stopString": {
     "message": "ŝt́ôṕ"
   },
-  "resources/ServiceWorkersView.js | sTryingToInstall": {
+  "resources/ServiceWorkersView.ts | sTryingToInstall": {
     "message": "#{PH1} t̂ŕŷín̂ǵ t̂ó îńŝt́âĺl̂"
   },
-  "resources/ServiceWorkersView.js | sWaitingToActivate": {
+  "resources/ServiceWorkersView.ts | sWaitingToActivate": {
     "message": "#{PH1} ŵáît́îńĝ t́ô áĉt́îv́ât́ê"
   },
-  "resources/ServiceWorkersView.js | syncString": {
+  "resources/ServiceWorkersView.ts | syncString": {
     "message": "Ŝýn̂ć"
   },
-  "resources/ServiceWorkersView.js | syncTag": {
+  "resources/ServiceWorkersView.ts | syncTag": {
     "message": "Ŝýn̂ć t̂áĝ"
   },
-  "resources/ServiceWorkersView.js | testPushMessageFromDevtools": {
+  "resources/ServiceWorkersView.ts | testPushMessageFromDevtools": {
     "message": "T̂éŝt́ p̂úŝh́ m̂éŝśâǵê f́r̂óm̂ D́êv́T̂óôĺŝ."
   },
-  "resources/ServiceWorkersView.js | unregister": {
+  "resources/ServiceWorkersView.ts | unregister": {
     "message": "Ûńr̂éĝíŝt́êŕ"
   },
-  "resources/ServiceWorkersView.js | unregisterServiceWorker": {
+  "resources/ServiceWorkersView.ts | unregisterServiceWorker": {
     "message": "Ûńr̂éĝíŝt́êŕ ŝér̂v́îćê ẃôŕk̂ér̂"
   },
-  "resources/ServiceWorkersView.js | update": {
+  "resources/ServiceWorkersView.ts | update": {
     "message": "Ûṕd̂át̂é"
   },
-  "resources/ServiceWorkersView.js | updateCycle": {
+  "resources/ServiceWorkersView.ts | updateCycle": {
     "message": "Ûṕd̂át̂é Ĉýĉĺê"
   },
-  "resources/ServiceWorkersView.js | updateOnReload": {
+  "resources/ServiceWorkersView.ts | updateOnReload": {
     "message": "Ûṕd̂át̂é ôń r̂él̂óâd́"
   },
-  "resources/ServiceWorkersView.js | workerS": {
+  "resources/ServiceWorkersView.ts | workerS": {
     "message": "Ŵór̂ḱêŕ: {PH1}"
   },
   "resources/ServiceWorkerUpdateCycleHelper.ts | endTimeS": {
@@ -6758,16 +6758,16 @@
   "resources/ServiceWorkerUpdateCycleHelper.ts | version": {
     "message": "V̂ér̂śîón̂"
   },
-  "resources/StorageItemsView.js | clearAll": {
+  "resources/StorageItemsView.ts | clearAll": {
     "message": "Ĉĺêár̂ Ál̂ĺ"
   },
-  "resources/StorageItemsView.js | deleteSelected": {
+  "resources/StorageItemsView.ts | deleteSelected": {
     "message": "D̂él̂ét̂é Ŝél̂éĉt́êd́"
   },
-  "resources/StorageItemsView.js | filter": {
+  "resources/StorageItemsView.ts | filter": {
     "message": "F̂íl̂t́êŕ"
   },
-  "resources/StorageItemsView.js | refresh": {
+  "resources/StorageItemsView.ts | refresh": {
     "message": "R̂éf̂ŕêśĥ"
   },
   "resources/StorageView.ts | application": {

@@ -5861,31 +5861,31 @@
   "recorder/RecordingFileSystem.ts | linkedToS": {
     "message": "Linked to {PH1}"
   },
-  "resources/ApplicationCacheItemsView.js | appcache": {
+  "resources/ApplicationCacheItemsView.ts | appcache": {
     "message": "AppCache"
   },
-  "resources/ApplicationCacheItemsView.js | applicationCache": {
+  "resources/ApplicationCacheItemsView.ts | applicationCache": {
     "message": "Application Cache"
   },
-  "resources/ApplicationCacheItemsView.js | deleteString": {
+  "resources/ApplicationCacheItemsView.ts | deleteString": {
     "message": "Delete"
   },
-  "resources/ApplicationCacheItemsView.js | noApplicationCacheInformation": {
+  "resources/ApplicationCacheItemsView.ts | noApplicationCacheInformation": {
     "message": "No Application Cache information available."
   },
-  "resources/ApplicationCacheItemsView.js | offline": {
+  "resources/ApplicationCacheItemsView.ts | offline": {
     "message": "Offline"
   },
-  "resources/ApplicationCacheItemsView.js | online": {
+  "resources/ApplicationCacheItemsView.ts | online": {
     "message": "Online"
   },
-  "resources/ApplicationCacheItemsView.js | resource": {
+  "resources/ApplicationCacheItemsView.ts | resource": {
     "message": "Resource"
   },
-  "resources/ApplicationCacheItemsView.js | sizeString": {
+  "resources/ApplicationCacheItemsView.ts | sizeString": {
     "message": "Size"
   },
-  "resources/ApplicationCacheItemsView.js | typeString": {
+  "resources/ApplicationCacheItemsView.ts | typeString": {
     "message": "Type"
   },
   "resources/ApplicationPanelCacheSection.ts | cacheStorage": {
@@ -5897,421 +5897,421 @@
   "resources/ApplicationPanelCacheSection.ts | refreshCaches": {
     "message": "Refresh Caches"
   },
-  "resources/ApplicationPanelSidebar.js | application": {
+  "resources/ApplicationPanelSidebar.ts | application": {
     "message": "Application"
   },
-  "resources/ApplicationPanelSidebar.js | applicationCache": {
+  "resources/ApplicationPanelSidebar.ts | applicationCache": {
     "message": "Application Cache"
   },
-  "resources/ApplicationPanelSidebar.js | autoincrement": {
+  "resources/ApplicationPanelSidebar.ts | autoincrement": {
     "message": "autoIncrement"
   },
-  "resources/ApplicationPanelSidebar.js | backgroundServices": {
+  "resources/ApplicationPanelSidebar.ts | backgroundServices": {
     "message": "Background Services"
   },
-  "resources/ApplicationPanelSidebar.js | cache": {
+  "resources/ApplicationPanelSidebar.ts | cache": {
     "message": "Cache"
   },
-  "resources/ApplicationPanelSidebar.js | clear": {
+  "resources/ApplicationPanelSidebar.ts | clear": {
     "message": "Clear"
   },
-  "resources/ApplicationPanelSidebar.js | cookies": {
+  "resources/ApplicationPanelSidebar.ts | cookies": {
     "message": "Cookies"
   },
-  "resources/ApplicationPanelSidebar.js | cookiesUsedByFramesFromS": {
+  "resources/ApplicationPanelSidebar.ts | cookiesUsedByFramesFromS": {
     "message": "Cookies used by frames from {PH1}"
   },
-  "resources/ApplicationPanelSidebar.js | documentNotAvailable": {
+  "resources/ApplicationPanelSidebar.ts | documentNotAvailable": {
     "message": "Document not available"
   },
-  "resources/ApplicationPanelSidebar.js | frames": {
+  "resources/ApplicationPanelSidebar.ts | frames": {
     "message": "Frames"
   },
-  "resources/ApplicationPanelSidebar.js | indexeddb": {
+  "resources/ApplicationPanelSidebar.ts | indexeddb": {
     "message": "IndexedDB"
   },
-  "resources/ApplicationPanelSidebar.js | keyPathS": {
+  "resources/ApplicationPanelSidebar.ts | keyPathS": {
     "message": "Key path: {PH1}"
   },
-  "resources/ApplicationPanelSidebar.js | localFiles": {
+  "resources/ApplicationPanelSidebar.ts | localFiles": {
     "message": "Local Files"
   },
-  "resources/ApplicationPanelSidebar.js | localStorage": {
+  "resources/ApplicationPanelSidebar.ts | localStorage": {
     "message": "Local Storage"
   },
-  "resources/ApplicationPanelSidebar.js | manifest": {
+  "resources/ApplicationPanelSidebar.ts | manifest": {
     "message": "Manifest"
   },
-  "resources/ApplicationPanelSidebar.js | multientry": {
+  "resources/ApplicationPanelSidebar.ts | multientry": {
     "message": "multiEntry"
   },
-  "resources/ApplicationPanelSidebar.js | openedWindows": {
+  "resources/ApplicationPanelSidebar.ts | openedWindows": {
     "message": "Opened Windows"
   },
-  "resources/ApplicationPanelSidebar.js | refreshIndexeddb": {
+  "resources/ApplicationPanelSidebar.ts | refreshIndexeddb": {
     "message": "Refresh IndexedDB"
   },
-  "resources/ApplicationPanelSidebar.js | serviceWorkers": {
+  "resources/ApplicationPanelSidebar.ts | serviceWorkers": {
     "message": "Service Workers"
   },
-  "resources/ApplicationPanelSidebar.js | sessionStorage": {
+  "resources/ApplicationPanelSidebar.ts | sessionStorage": {
     "message": "Session Storage"
   },
-  "resources/ApplicationPanelSidebar.js | storage": {
+  "resources/ApplicationPanelSidebar.ts | storage": {
     "message": "Storage"
   },
-  "resources/ApplicationPanelSidebar.js | theContentOfThisDocumentHasBeen": {
+  "resources/ApplicationPanelSidebar.ts | theContentOfThisDocumentHasBeen": {
     "message": "The content of this document has been generated dynamically via 'document.write()'."
   },
-  "resources/ApplicationPanelSidebar.js | unique": {
+  "resources/ApplicationPanelSidebar.ts | unique": {
     "message": "unique"
   },
-  "resources/ApplicationPanelSidebar.js | versionS": {
+  "resources/ApplicationPanelSidebar.ts | versionS": {
     "message": "Version: {PH1}"
   },
-  "resources/ApplicationPanelSidebar.js | versionSEmpty": {
+  "resources/ApplicationPanelSidebar.ts | versionSEmpty": {
     "message": "Version: {PH1} (empty)"
   },
-  "resources/ApplicationPanelSidebar.js | webSql": {
+  "resources/ApplicationPanelSidebar.ts | webSql": {
     "message": "Web SQL"
   },
-  "resources/ApplicationPanelSidebar.js | webWorkers": {
+  "resources/ApplicationPanelSidebar.ts | webWorkers": {
     "message": "Web Workers"
   },
-  "resources/ApplicationPanelSidebar.js | windowWithoutTitle": {
+  "resources/ApplicationPanelSidebar.ts | windowWithoutTitle": {
     "message": "Window without title"
   },
-  "resources/ApplicationPanelSidebar.js | worker": {
+  "resources/ApplicationPanelSidebar.ts | worker": {
     "message": "worker"
   },
-  "resources/AppManifestView.js | actualHeightSpxOfSSDoesNotMatch": {
+  "resources/AppManifestView.ts | actualHeightSpxOfSSDoesNotMatch": {
     "message": "Actual height ({PH1}px) of {PH2} {PH3} does not match specified height ({PH4}px)"
   },
-  "resources/AppManifestView.js | actualSizeSspxOfSSDoesNotMatch": {
+  "resources/AppManifestView.ts | actualSizeSspxOfSSDoesNotMatch": {
     "message": "Actual size ({PH1}×{PH2})px of {PH3} {PH4} does not match specified size ({PH5}×{PH6}px)"
   },
-  "resources/AppManifestView.js | actualWidthSpxOfSSDoesNotMatch": {
+  "resources/AppManifestView.ts | actualWidthSpxOfSSDoesNotMatch": {
     "message": "Actual width ({PH1}px) of {PH2} {PH3} does not match specified width ({PH4}px)"
   },
-  "resources/AppManifestView.js | appManifest": {
+  "resources/AppManifestView.ts | appManifest": {
     "message": "App Manifest"
   },
-  "resources/AppManifestView.js | aUrlInTheManifestContainsA": {
+  "resources/AppManifestView.ts | aUrlInTheManifestContainsA": {
     "message": "A URL in the manifest contains a username, password, or port"
   },
-  "resources/AppManifestView.js | backgroundColor": {
+  "resources/AppManifestView.ts | backgroundColor": {
     "message": "Background color"
   },
-  "resources/AppManifestView.js | couldNotCheckServiceWorker": {
+  "resources/AppManifestView.ts | couldNotCheckServiceWorker": {
     "message": "Could not check service worker without a 'start_url' field in the manifest"
   },
-  "resources/AppManifestView.js | couldNotDownloadARequiredIcon": {
+  "resources/AppManifestView.ts | couldNotDownloadARequiredIcon": {
     "message": "Could not download a required icon from the manifest"
   },
-  "resources/AppManifestView.js | description": {
+  "resources/AppManifestView.ts | description": {
     "message": "Description"
   },
-  "resources/AppManifestView.js | descriptionMayBeTruncated": {
+  "resources/AppManifestView.ts | descriptionMayBeTruncated": {
     "message": "Description may be truncated."
   },
-  "resources/AppManifestView.js | display": {
+  "resources/AppManifestView.ts | display": {
     "message": "Display"
   },
-  "resources/AppManifestView.js | documentationOnMaskableIcons": {
+  "resources/AppManifestView.ts | documentationOnMaskableIcons": {
     "message": "documentation on maskable icons"
   },
-  "resources/AppManifestView.js | downloadedIconWasEmptyOr": {
+  "resources/AppManifestView.ts | downloadedIconWasEmptyOr": {
     "message": "Downloaded icon was empty or corrupted"
   },
-  "resources/AppManifestView.js | errorsAndWarnings": {
+  "resources/AppManifestView.ts | errorsAndWarnings": {
     "message": "Errors and warnings"
   },
-  "resources/AppManifestView.js | icon": {
+  "resources/AppManifestView.ts | icon": {
     "message": "Icon"
   },
-  "resources/AppManifestView.js | icons": {
+  "resources/AppManifestView.ts | icons": {
     "message": "Icons"
   },
-  "resources/AppManifestView.js | identity": {
+  "resources/AppManifestView.ts | identity": {
     "message": "Identity"
   },
-  "resources/AppManifestView.js | imageFromS": {
+  "resources/AppManifestView.ts | imageFromS": {
     "message": "Image from {PH1}"
   },
-  "resources/AppManifestView.js | installability": {
+  "resources/AppManifestView.ts | installability": {
     "message": "Installability"
   },
-  "resources/AppManifestView.js | manifestContainsDisplayoverride": {
+  "resources/AppManifestView.ts | manifestContainsDisplayoverride": {
     "message": "Manifest contains 'display_override' field, and the first supported display mode must be one of 'standalone', 'fullscreen', or 'minimal-ui'"
   },
-  "resources/AppManifestView.js | manifestCouldNotBeFetchedIsEmpty": {
+  "resources/AppManifestView.ts | manifestCouldNotBeFetchedIsEmpty": {
     "message": "Manifest could not be fetched, is empty, or could not be parsed"
   },
-  "resources/AppManifestView.js | manifestDisplayPropertyMustBeOne": {
+  "resources/AppManifestView.ts | manifestDisplayPropertyMustBeOne": {
     "message": "Manifest 'display' property must be one of 'standalone', 'fullscreen', or 'minimal-ui'"
   },
-  "resources/AppManifestView.js | manifestDoesNotContainANameOr": {
+  "resources/AppManifestView.ts | manifestDoesNotContainANameOr": {
     "message": "Manifest does not contain a 'name' or 'short_name' field"
   },
-  "resources/AppManifestView.js | manifestDoesNotContainASuitable": {
+  "resources/AppManifestView.ts | manifestDoesNotContainASuitable": {
     "message": "Manifest does not contain a suitable icon - PNG, SVG or WebP format of at least {PH1}px is required, the sizes attribute must be set, and the purpose attribute, if set, must include \"any\" and should not include \"maskable\"."
   },
-  "resources/AppManifestView.js | manifestSpecifies": {
+  "resources/AppManifestView.ts | manifestSpecifies": {
     "message": "Manifest specifies prefer_related_applications: true"
   },
-  "resources/AppManifestView.js | manifestStartUrlIsNotValid": {
+  "resources/AppManifestView.ts | manifestStartUrlIsNotValid": {
     "message": "Manifest start URL is not valid"
   },
-  "resources/AppManifestView.js | name": {
+  "resources/AppManifestView.ts | name": {
     "message": "Name"
   },
-  "resources/AppManifestView.js | needHelpReadOurS": {
+  "resources/AppManifestView.ts | needHelpReadOurS": {
     "message": "Need help? Read {PH1}."
   },
-  "resources/AppManifestView.js | noManifestDetected": {
+  "resources/AppManifestView.ts | noManifestDetected": {
     "message": "No manifest detected"
   },
-  "resources/AppManifestView.js | noMatchingServiceWorkerDetected": {
+  "resources/AppManifestView.ts | noMatchingServiceWorkerDetected": {
     "message": "No matching service worker detected. You may need to reload the page, or check that the scope of the service worker for the current page encloses the scope and start URL from the manifest."
   },
-  "resources/AppManifestView.js | noPlayStoreIdProvided": {
+  "resources/AppManifestView.ts | noPlayStoreIdProvided": {
     "message": "No Play store ID provided"
   },
-  "resources/AppManifestView.js | noSuppliedIconIsAtLeastSpxSquare": {
+  "resources/AppManifestView.ts | noSuppliedIconIsAtLeastSpxSquare": {
     "message": "No supplied icon is at least {PH1} pixels square in PNG, SVG or WebP format, with the purpose attribute unset or set to \"any\"."
   },
-  "resources/AppManifestView.js | orientation": {
+  "resources/AppManifestView.ts | orientation": {
     "message": "Orientation"
   },
-  "resources/AppManifestView.js | pageDoesNotWorkOffline": {
+  "resources/AppManifestView.ts | pageDoesNotWorkOffline": {
     "message": "Page does not work offline"
   },
-  "resources/AppManifestView.js | pageDoesNotWorkOfflineThePage": {
+  "resources/AppManifestView.ts | pageDoesNotWorkOfflineThePage": {
     "message": "Page does not work offline. Starting in Chrome 93, the installability criteria are changing, and this site will not be installable. See {PH1} for more information."
   },
-  "resources/AppManifestView.js | pageHasNoManifestLinkUrl": {
+  "resources/AppManifestView.ts | pageHasNoManifestLinkUrl": {
     "message": "Page has no manifest <link> URL"
   },
-  "resources/AppManifestView.js | pageIsLoadedInAnIncognitoWindow": {
+  "resources/AppManifestView.ts | pageIsLoadedInAnIncognitoWindow": {
     "message": "Page is loaded in an incognito window"
   },
-  "resources/AppManifestView.js | pageIsNotLoadedInTheMainFrame": {
+  "resources/AppManifestView.ts | pageIsNotLoadedInTheMainFrame": {
     "message": "Page is not loaded in the main frame"
   },
-  "resources/AppManifestView.js | pageIsNotServedFromASecureOrigin": {
+  "resources/AppManifestView.ts | pageIsNotServedFromASecureOrigin": {
     "message": "Page is not served from a secure origin"
   },
-  "resources/AppManifestView.js | preferrelatedapplicationsIsOnly": {
+  "resources/AppManifestView.ts | preferrelatedapplicationsIsOnly": {
     "message": "prefer_related_applications is only supported on Chrome Beta and Stable channels on Android."
   },
-  "resources/AppManifestView.js | presentation": {
+  "resources/AppManifestView.ts | presentation": {
     "message": "Presentation"
   },
-  "resources/AppManifestView.js | primaryIconasUsedByChrome": {
+  "resources/AppManifestView.ts | primaryIconasUsedByChrome": {
     "message": "Primary icon as used by Chrome"
   },
-  "resources/AppManifestView.js | primaryManifestIconFromS": {
+  "resources/AppManifestView.ts | primaryManifestIconFromS": {
     "message": "Primary manifest icon from {PH1}"
   },
-  "resources/AppManifestView.js | screenshot": {
+  "resources/AppManifestView.ts | screenshot": {
     "message": "Screenshot"
   },
-  "resources/AppManifestView.js | screenshotS": {
+  "resources/AppManifestView.ts | screenshotS": {
     "message": "Screenshot #{PH1}"
   },
-  "resources/AppManifestView.js | shortcutS": {
+  "resources/AppManifestView.ts | shortcutS": {
     "message": "Shortcut #{PH1}"
   },
-  "resources/AppManifestView.js | shortcutSShouldIncludeAXPixel": {
+  "resources/AppManifestView.ts | shortcutSShouldIncludeAXPixel": {
     "message": "Shortcut #{PH1} should include a 96x96 pixel icon"
   },
-  "resources/AppManifestView.js | shortName": {
+  "resources/AppManifestView.ts | shortName": {
     "message": "Short name"
   },
-  "resources/AppManifestView.js | showOnlyTheMinimumSafeAreaFor": {
+  "resources/AppManifestView.ts | showOnlyTheMinimumSafeAreaFor": {
     "message": "Show only the minimum safe area for maskable icons"
   },
-  "resources/AppManifestView.js | sSDimensionsShouldBeSquare": {
+  "resources/AppManifestView.ts | sSDimensionsShouldBeSquare": {
     "message": "{PH1} {PH2} dimensions should be square"
   },
-  "resources/AppManifestView.js | sSDoesNotSpecifyItsSizeInThe": {
+  "resources/AppManifestView.ts | sSDoesNotSpecifyItsSizeInThe": {
     "message": "{PH1} {PH2} does not specify its size in the manifest"
   },
-  "resources/AppManifestView.js | sSFailedToLoad": {
+  "resources/AppManifestView.ts | sSFailedToLoad": {
     "message": "{PH1} {PH2} failed to load"
   },
-  "resources/AppManifestView.js | sSHeightShouldBeLessThanTwiceTheWidth": {
+  "resources/AppManifestView.ts | sSHeightShouldBeLessThanTwiceTheWidth": {
     "message": "{PH1} {PH2} height should be less than twice the width"
   },
-  "resources/AppManifestView.js | sSrcIsNotSet": {
+  "resources/AppManifestView.ts | sSrcIsNotSet": {
     "message": "{PH1} src is not set"
   },
-  "resources/AppManifestView.js | sSShouldSpecifyItsSizeAs": {
+  "resources/AppManifestView.ts | sSShouldSpecifyItsSizeAs": {
     "message": "{PH1} {PH2} should specify its size as {width}x{height}"
   },
-  "resources/AppManifestView.js | sSSizeShouldBeAtLeast320": {
+  "resources/AppManifestView.ts | sSSizeShouldBeAtLeast320": {
     "message": "{PH1} {PH2} size should be at least 320×320"
   },
-  "resources/AppManifestView.js | sSSizeShouldBeAtMost3840": {
+  "resources/AppManifestView.ts | sSSizeShouldBeAtMost3840": {
     "message": "{PH1} {PH2} size should be at most 3840×3840"
   },
-  "resources/AppManifestView.js | sSWidthShouldBeLessThanTwiceTheHeight": {
+  "resources/AppManifestView.ts | sSWidthShouldBeLessThanTwiceTheHeight": {
     "message": "{PH1} {PH2} width should be less than twice the height"
   },
-  "resources/AppManifestView.js | startUrl": {
+  "resources/AppManifestView.ts | startUrl": {
     "message": "Start URL"
   },
-  "resources/AppManifestView.js | sUrlSFailedToParse": {
+  "resources/AppManifestView.ts | sUrlSFailedToParse": {
     "message": "{PH1} URL '{PH2}' failed to parse"
   },
-  "resources/AppManifestView.js | theAppIsAlreadyInstalled": {
+  "resources/AppManifestView.ts | theAppIsAlreadyInstalled": {
     "message": "The app is already installed"
   },
-  "resources/AppManifestView.js | themeColor": {
+  "resources/AppManifestView.ts | themeColor": {
     "message": "Theme color"
   },
-  "resources/AppManifestView.js | thePlayStoreAppUrlAndPlayStoreId": {
+  "resources/AppManifestView.ts | thePlayStoreAppUrlAndPlayStoreId": {
     "message": "The Play Store app URL and Play Store ID do not match"
   },
-  "resources/AppManifestView.js | theSpecifiedApplicationPlatform": {
+  "resources/AppManifestView.ts | theSpecifiedApplicationPlatform": {
     "message": "The specified application platform is not supported on Android"
   },
-  "resources/BackgroundServiceView.js | backgroundFetch": {
+  "resources/BackgroundServiceView.ts | backgroundFetch": {
     "message": "Background Fetch"
   },
-  "resources/BackgroundServiceView.js | backgroundServices": {
+  "resources/BackgroundServiceView.ts | backgroundServices": {
     "message": "Background Services"
   },
-  "resources/BackgroundServiceView.js | backgroundSync": {
+  "resources/BackgroundServiceView.ts | backgroundSync": {
     "message": "Background Sync"
   },
-  "resources/BackgroundServiceView.js | clear": {
+  "resources/BackgroundServiceView.ts | clear": {
     "message": "Clear"
   },
-  "resources/BackgroundServiceView.js | clickTheRecordButtonSOrHitSTo": {
+  "resources/BackgroundServiceView.ts | clickTheRecordButtonSOrHitSTo": {
     "message": "Click the record button {PH1} or hit {PH2} to start recording."
   },
-  "resources/BackgroundServiceView.js | devtoolsWillRecordAllSActivity": {
+  "resources/BackgroundServiceView.ts | devtoolsWillRecordAllSActivity": {
     "message": "DevTools will record all {PH1} activity for up to 3 days, even when closed."
   },
-  "resources/BackgroundServiceView.js | empty": {
+  "resources/BackgroundServiceView.ts | empty": {
     "message": "empty"
   },
-  "resources/BackgroundServiceView.js | event": {
+  "resources/BackgroundServiceView.ts | event": {
     "message": "Event"
   },
-  "resources/BackgroundServiceView.js | instanceId": {
+  "resources/BackgroundServiceView.ts | instanceId": {
     "message": "Instance ID"
   },
-  "resources/BackgroundServiceView.js | learnMore": {
+  "resources/BackgroundServiceView.ts | learnMore": {
     "message": "Learn more"
   },
-  "resources/BackgroundServiceView.js | noMetadataForThisEvent": {
+  "resources/BackgroundServiceView.ts | noMetadataForThisEvent": {
     "message": "No metadata for this event"
   },
-  "resources/BackgroundServiceView.js | notifications": {
+  "resources/BackgroundServiceView.ts | notifications": {
     "message": "Notifications"
   },
-  "resources/BackgroundServiceView.js | origin": {
+  "resources/BackgroundServiceView.ts | origin": {
     "message": "Origin"
   },
-  "resources/BackgroundServiceView.js | paymentHandler": {
+  "resources/BackgroundServiceView.ts | paymentHandler": {
     "message": "Payment Handler"
   },
-  "resources/BackgroundServiceView.js | periodicBackgroundSync": {
+  "resources/BackgroundServiceView.ts | periodicBackgroundSync": {
     "message": "Periodic Background Sync"
   },
-  "resources/BackgroundServiceView.js | pushMessaging": {
+  "resources/BackgroundServiceView.ts | pushMessaging": {
     "message": "Push Messaging"
   },
-  "resources/BackgroundServiceView.js | recordingSActivity": {
+  "resources/BackgroundServiceView.ts | recordingSActivity": {
     "message": "Recording {PH1} activity..."
   },
-  "resources/BackgroundServiceView.js | saveEvents": {
+  "resources/BackgroundServiceView.ts | saveEvents": {
     "message": "Save events"
   },
-  "resources/BackgroundServiceView.js | selectAnEntryToViewMetadata": {
+  "resources/BackgroundServiceView.ts | selectAnEntryToViewMetadata": {
     "message": "Select an entry to view metadata"
   },
-  "resources/BackgroundServiceView.js | showEventsFromOtherDomains": {
+  "resources/BackgroundServiceView.ts | showEventsFromOtherDomains": {
     "message": "Show events from other domains"
   },
-  "resources/BackgroundServiceView.js | startRecordingEvents": {
+  "resources/BackgroundServiceView.ts | startRecordingEvents": {
     "message": "Start recording events"
   },
-  "resources/BackgroundServiceView.js | stopRecordingEvents": {
+  "resources/BackgroundServiceView.ts | stopRecordingEvents": {
     "message": "Stop recording events"
   },
-  "resources/BackgroundServiceView.js | swScope": {
+  "resources/BackgroundServiceView.ts | swScope": {
     "message": "Service Worker Scope"
   },
-  "resources/BackgroundServiceView.js | timestamp": {
+  "resources/BackgroundServiceView.ts | timestamp": {
     "message": "Timestamp"
   },
-  "resources/CookieItemsView.js | clearAllCookies": {
+  "resources/CookieItemsView.ts | clearAllCookies": {
     "message": "Clear all cookies"
   },
-  "resources/CookieItemsView.js | clearFilteredCookies": {
+  "resources/CookieItemsView.ts | clearFilteredCookies": {
     "message": "Clear filtered cookies"
   },
-  "resources/CookieItemsView.js | cookies": {
+  "resources/CookieItemsView.ts | cookies": {
     "message": "Cookies"
   },
-  "resources/CookieItemsView.js | numberOfCookiesShownInTableS": {
+  "resources/CookieItemsView.ts | numberOfCookiesShownInTableS": {
     "message": "Number of cookies shown in table: {PH1}"
   },
-  "resources/CookieItemsView.js | onlyShowCookiesWhichHaveAn": {
+  "resources/CookieItemsView.ts | onlyShowCookiesWhichHaveAn": {
     "message": "Only show cookies which have an associated issue"
   },
-  "resources/CookieItemsView.js | onlyShowCookiesWithAnIssue": {
+  "resources/CookieItemsView.ts | onlyShowCookiesWithAnIssue": {
     "message": "Only show cookies with an issue"
   },
-  "resources/CookieItemsView.js | selectACookieToPreviewItsValue": {
+  "resources/CookieItemsView.ts | selectACookieToPreviewItsValue": {
     "message": "Select a cookie to preview its value"
   },
-  "resources/CookieItemsView.js | showUrlDecoded": {
+  "resources/CookieItemsView.ts | showUrlDecoded": {
     "message": "Show URL decoded"
   },
-  "resources/DatabaseModel.js | anUnexpectedErrorSOccurred": {
+  "resources/DatabaseModel.ts | anUnexpectedErrorSOccurred": {
     "message": "An unexpected error {PH1} occurred."
   },
-  "resources/DatabaseModel.js | databaseNoLongerHasExpected": {
+  "resources/DatabaseModel.ts | databaseNoLongerHasExpected": {
     "message": "Database no longer has expected version."
   },
-  "resources/DatabaseQueryView.js | databaseQuery": {
+  "resources/DatabaseQueryView.ts | databaseQuery": {
     "message": "Database Query"
   },
-  "resources/DatabaseQueryView.js | queryS": {
+  "resources/DatabaseQueryView.ts | queryS": {
     "message": "Query: {PH1}"
   },
-  "resources/DatabaseTableView.js | anErrorOccurredTryingToreadTheS": {
+  "resources/DatabaseTableView.ts | anErrorOccurredTryingToreadTheS": {
     "message": "An error occurred trying to read the \"{PH1}\" table."
   },
-  "resources/DatabaseTableView.js | database": {
+  "resources/DatabaseTableView.ts | database": {
     "message": "Database"
   },
-  "resources/DatabaseTableView.js | refresh": {
+  "resources/DatabaseTableView.ts | refresh": {
     "message": "Refresh"
   },
-  "resources/DatabaseTableView.js | theStableIsEmpty": {
+  "resources/DatabaseTableView.ts | theStableIsEmpty": {
     "message": "The \"{PH1}\" table is empty."
   },
-  "resources/DatabaseTableView.js | visibleColumns": {
+  "resources/DatabaseTableView.ts | visibleColumns": {
     "message": "Visible columns"
   },
-  "resources/DOMStorageItemsView.js | domStorage": {
+  "resources/DOMStorageItemsView.ts | domStorage": {
     "message": "DOM Storage"
   },
-  "resources/DOMStorageItemsView.js | domStorageItems": {
+  "resources/DOMStorageItemsView.ts | domStorageItems": {
     "message": "DOM Storage Items"
   },
-  "resources/DOMStorageItemsView.js | key": {
+  "resources/DOMStorageItemsView.ts | key": {
     "message": "Key"
   },
-  "resources/DOMStorageItemsView.js | selectAValueToPreview": {
+  "resources/DOMStorageItemsView.ts | selectAValueToPreview": {
     "message": "Select a value to preview"
   },
-  "resources/DOMStorageItemsView.js | value": {
+  "resources/DOMStorageItemsView.ts | value": {
     "message": "Value"
   },
   "resources/FrameDetailsView.ts | additionalInformation": {
@@ -6440,136 +6440,136 @@
   "resources/FrameDetailsView.ts | yes": {
     "message": "Yes"
   },
-  "resources/IndexedDBViews.js | clearObjectStore": {
+  "resources/IndexedDBViews.ts | clearObjectStore": {
     "message": "Clear object store"
   },
-  "resources/IndexedDBViews.js | collapse": {
+  "resources/IndexedDBViews.ts | collapse": {
     "message": "Collapse"
   },
-  "resources/IndexedDBViews.js | dataMayBeStale": {
+  "resources/IndexedDBViews.ts | dataMayBeStale": {
     "message": "Data may be stale"
   },
-  "resources/IndexedDBViews.js | deleteDatabase": {
+  "resources/IndexedDBViews.ts | deleteDatabase": {
     "message": "Delete database"
   },
-  "resources/IndexedDBViews.js | deleteSelected": {
+  "resources/IndexedDBViews.ts | deleteSelected": {
     "message": "Delete selected"
   },
-  "resources/IndexedDBViews.js | expandRecursively": {
+  "resources/IndexedDBViews.ts | expandRecursively": {
     "message": "Expand Recursively"
   },
-  "resources/IndexedDBViews.js | idb": {
+  "resources/IndexedDBViews.ts | idb": {
     "message": "IDB"
   },
-  "resources/IndexedDBViews.js | indexedDb": {
+  "resources/IndexedDBViews.ts | indexedDb": {
     "message": "Indexed DB"
   },
-  "resources/IndexedDBViews.js | keyGeneratorValueS": {
+  "resources/IndexedDBViews.ts | keyGeneratorValueS": {
     "message": "Key generator value: {PH1}"
   },
-  "resources/IndexedDBViews.js | keyPath": {
+  "resources/IndexedDBViews.ts | keyPath": {
     "message": "Key path: "
   },
-  "resources/IndexedDBViews.js | keyString": {
+  "resources/IndexedDBViews.ts | keyString": {
     "message": "Key"
   },
-  "resources/IndexedDBViews.js | loading": {
+  "resources/IndexedDBViews.ts | loading": {
     "message": "Loading…"
   },
-  "resources/IndexedDBViews.js | objectStores": {
+  "resources/IndexedDBViews.ts | objectStores": {
     "message": "Object stores"
   },
-  "resources/IndexedDBViews.js | pleaseConfirmDeleteOfSDatabase": {
+  "resources/IndexedDBViews.ts | pleaseConfirmDeleteOfSDatabase": {
     "message": "Please confirm delete of \"{PH1}\" database."
   },
-  "resources/IndexedDBViews.js | primaryKey": {
+  "resources/IndexedDBViews.ts | primaryKey": {
     "message": "Primary key"
   },
-  "resources/IndexedDBViews.js | refresh": {
+  "resources/IndexedDBViews.ts | refresh": {
     "message": "Refresh"
   },
-  "resources/IndexedDBViews.js | refreshDatabase": {
+  "resources/IndexedDBViews.ts | refreshDatabase": {
     "message": "Refresh database"
   },
-  "resources/IndexedDBViews.js | securityOrigin": {
+  "resources/IndexedDBViews.ts | securityOrigin": {
     "message": "Security origin"
   },
-  "resources/IndexedDBViews.js | showNextPage": {
+  "resources/IndexedDBViews.ts | showNextPage": {
     "message": "Show next page"
   },
-  "resources/IndexedDBViews.js | showPreviousPage": {
+  "resources/IndexedDBViews.ts | showPreviousPage": {
     "message": "Show previous page"
   },
-  "resources/IndexedDBViews.js | someEntriesMayHaveBeenModified": {
+  "resources/IndexedDBViews.ts | someEntriesMayHaveBeenModified": {
     "message": "Some entries may have been modified"
   },
-  "resources/IndexedDBViews.js | startFromKey": {
+  "resources/IndexedDBViews.ts | startFromKey": {
     "message": "Start from key"
   },
-  "resources/IndexedDBViews.js | totalEntriesS": {
+  "resources/IndexedDBViews.ts | totalEntriesS": {
     "message": "Total entries: {PH1}"
   },
-  "resources/IndexedDBViews.js | valueString": {
+  "resources/IndexedDBViews.ts | valueString": {
     "message": "Value"
   },
-  "resources/IndexedDBViews.js | version": {
+  "resources/IndexedDBViews.ts | version": {
     "message": "Version"
   },
-  "resources/OpenedWindowDetailsView.js | accessToOpener": {
+  "resources/OpenedWindowDetailsView.ts | accessToOpener": {
     "message": "Access to opener"
   },
-  "resources/OpenedWindowDetailsView.js | clickToRevealInElementsPanel": {
+  "resources/OpenedWindowDetailsView.ts | clickToRevealInElementsPanel": {
     "message": "Click to reveal in Elements panel"
   },
-  "resources/OpenedWindowDetailsView.js | closed": {
+  "resources/OpenedWindowDetailsView.ts | closed": {
     "message": "closed"
   },
-  "resources/OpenedWindowDetailsView.js | crossoriginEmbedderPolicy": {
+  "resources/OpenedWindowDetailsView.ts | crossoriginEmbedderPolicy": {
     "message": "Cross-Origin Embedder Policy"
   },
-  "resources/OpenedWindowDetailsView.js | document": {
+  "resources/OpenedWindowDetailsView.ts | document": {
     "message": "Document"
   },
-  "resources/OpenedWindowDetailsView.js | no": {
+  "resources/OpenedWindowDetailsView.ts | no": {
     "message": "No"
   },
-  "resources/OpenedWindowDetailsView.js | openerFrame": {
+  "resources/OpenedWindowDetailsView.ts | openerFrame": {
     "message": "Opener Frame"
   },
-  "resources/OpenedWindowDetailsView.js | reportingTo": {
+  "resources/OpenedWindowDetailsView.ts | reportingTo": {
     "message": "reporting to"
   },
-  "resources/OpenedWindowDetailsView.js | security": {
+  "resources/OpenedWindowDetailsView.ts | security": {
     "message": "Security"
   },
-  "resources/OpenedWindowDetailsView.js | securityIsolation": {
+  "resources/OpenedWindowDetailsView.ts | securityIsolation": {
     "message": "Security & Isolation"
   },
-  "resources/OpenedWindowDetailsView.js | serviceWorker": {
+  "resources/OpenedWindowDetailsView.ts | serviceWorker": {
     "message": "Service Worker"
   },
-  "resources/OpenedWindowDetailsView.js | showsWhetherTheOpenedWindowIs": {
+  "resources/OpenedWindowDetailsView.ts | showsWhetherTheOpenedWindowIs": {
     "message": "Shows whether the opened window is able to access its opener and vice versa"
   },
-  "resources/OpenedWindowDetailsView.js | type": {
+  "resources/OpenedWindowDetailsView.ts | type": {
     "message": "Type"
   },
-  "resources/OpenedWindowDetailsView.js | unknown": {
+  "resources/OpenedWindowDetailsView.ts | unknown": {
     "message": "Unknown"
   },
-  "resources/OpenedWindowDetailsView.js | url": {
+  "resources/OpenedWindowDetailsView.ts | url": {
     "message": "URL"
   },
-  "resources/OpenedWindowDetailsView.js | webWorker": {
+  "resources/OpenedWindowDetailsView.ts | webWorker": {
     "message": "Web Worker"
   },
-  "resources/OpenedWindowDetailsView.js | windowWithoutTitle": {
+  "resources/OpenedWindowDetailsView.ts | windowWithoutTitle": {
     "message": "Window without title"
   },
-  "resources/OpenedWindowDetailsView.js | worker": {
+  "resources/OpenedWindowDetailsView.ts | worker": {
     "message": "worker"
   },
-  "resources/OpenedWindowDetailsView.js | yes": {
+  "resources/OpenedWindowDetailsView.ts | yes": {
     "message": "Yes"
   },
   "resources/resources-meta.ts | application": {
@@ -6593,154 +6593,154 @@
   "resources/resources-meta.ts | stopRecordingEvents": {
     "message": "Stop recording events"
   },
-  "resources/ServiceWorkerCacheViews.js | cache": {
+  "resources/ServiceWorkerCacheViews.ts | cache": {
     "message": "Cache"
   },
-  "resources/ServiceWorkerCacheViews.js | contentlength": {
+  "resources/ServiceWorkerCacheViews.ts | contentlength": {
     "message": "Content-Length"
   },
-  "resources/ServiceWorkerCacheViews.js | contenttype": {
+  "resources/ServiceWorkerCacheViews.ts | contenttype": {
     "message": "Content-Type"
   },
-  "resources/ServiceWorkerCacheViews.js | deleteSelected": {
+  "resources/ServiceWorkerCacheViews.ts | deleteSelected": {
     "message": "Delete Selected"
   },
-  "resources/ServiceWorkerCacheViews.js | filterByPath": {
+  "resources/ServiceWorkerCacheViews.ts | filterByPath": {
     "message": "Filter by Path"
   },
-  "resources/ServiceWorkerCacheViews.js | headers": {
+  "resources/ServiceWorkerCacheViews.ts | headers": {
     "message": "Headers"
   },
-  "resources/ServiceWorkerCacheViews.js | matchingEntriesS": {
+  "resources/ServiceWorkerCacheViews.ts | matchingEntriesS": {
     "message": "Matching entries: {PH1}"
   },
-  "resources/ServiceWorkerCacheViews.js | name": {
+  "resources/ServiceWorkerCacheViews.ts | name": {
     "message": "Name"
   },
-  "resources/ServiceWorkerCacheViews.js | preview": {
+  "resources/ServiceWorkerCacheViews.ts | preview": {
     "message": "Preview"
   },
-  "resources/ServiceWorkerCacheViews.js | refresh": {
+  "resources/ServiceWorkerCacheViews.ts | refresh": {
     "message": "Refresh"
   },
-  "resources/ServiceWorkerCacheViews.js | responsetype": {
+  "resources/ServiceWorkerCacheViews.ts | responsetype": {
     "message": "Response-Type"
   },
-  "resources/ServiceWorkerCacheViews.js | selectACacheEntryAboveToPreview": {
+  "resources/ServiceWorkerCacheViews.ts | selectACacheEntryAboveToPreview": {
     "message": "Select a cache entry above to preview"
   },
-  "resources/ServiceWorkerCacheViews.js | serviceWorkerCache": {
+  "resources/ServiceWorkerCacheViews.ts | serviceWorkerCache": {
     "message": "Service Worker Cache"
   },
-  "resources/ServiceWorkerCacheViews.js | timeCached": {
+  "resources/ServiceWorkerCacheViews.ts | timeCached": {
     "message": "Time Cached"
   },
-  "resources/ServiceWorkerCacheViews.js | totalEntriesS": {
+  "resources/ServiceWorkerCacheViews.ts | totalEntriesS": {
     "message": "Total entries: {PH1}"
   },
-  "resources/ServiceWorkersView.js | bypassForNetwork": {
+  "resources/ServiceWorkersView.ts | bypassForNetwork": {
     "message": "Bypass for network"
   },
-  "resources/ServiceWorkersView.js | bypassTheServiceWorkerAndLoad": {
+  "resources/ServiceWorkersView.ts | bypassTheServiceWorkerAndLoad": {
     "message": "Bypass the service worker and load resources from the network"
   },
-  "resources/ServiceWorkersView.js | clients": {
+  "resources/ServiceWorkersView.ts | clients": {
     "message": "Clients"
   },
-  "resources/ServiceWorkersView.js | focus": {
+  "resources/ServiceWorkersView.ts | focus": {
     "message": "focus"
   },
-  "resources/ServiceWorkersView.js | inspect": {
+  "resources/ServiceWorkersView.ts | inspect": {
     "message": "inspect"
   },
-  "resources/ServiceWorkersView.js | networkRequests": {
+  "resources/ServiceWorkersView.ts | networkRequests": {
     "message": "Network requests"
   },
-  "resources/ServiceWorkersView.js | onPageReloadForceTheService": {
+  "resources/ServiceWorkersView.ts | onPageReloadForceTheService": {
     "message": "On page reload, force the service worker to update, and activate it"
   },
-  "resources/ServiceWorkersView.js | periodicSync": {
+  "resources/ServiceWorkersView.ts | periodicSync": {
     "message": "Periodic Sync"
   },
-  "resources/ServiceWorkersView.js | periodicSyncTag": {
+  "resources/ServiceWorkersView.ts | periodicSyncTag": {
     "message": "Periodic Sync tag"
   },
-  "resources/ServiceWorkersView.js | pushData": {
+  "resources/ServiceWorkersView.ts | pushData": {
     "message": "Push data"
   },
-  "resources/ServiceWorkersView.js | pushString": {
+  "resources/ServiceWorkersView.ts | pushString": {
     "message": "Push"
   },
-  "resources/ServiceWorkersView.js | receivedS": {
+  "resources/ServiceWorkersView.ts | receivedS": {
     "message": "Received {PH1}"
   },
-  "resources/ServiceWorkersView.js | sActivatedAndIsS": {
+  "resources/ServiceWorkersView.ts | sActivatedAndIsS": {
     "message": "#{PH1} activated and is {PH2}"
   },
-  "resources/ServiceWorkersView.js | sDeleted": {
+  "resources/ServiceWorkersView.ts | sDeleted": {
     "message": "{PH1} - deleted"
   },
-  "resources/ServiceWorkersView.js | serviceWorkerForS": {
+  "resources/ServiceWorkersView.ts | serviceWorkerForS": {
     "message": "Service worker for {PH1}"
   },
-  "resources/ServiceWorkersView.js | serviceWorkers": {
+  "resources/ServiceWorkersView.ts | serviceWorkers": {
     "message": "Service Workers"
   },
-  "resources/ServiceWorkersView.js | serviceWorkersFromOtherOrigins": {
+  "resources/ServiceWorkersView.ts | serviceWorkersFromOtherOrigins": {
     "message": "Service workers from other origins"
   },
-  "resources/ServiceWorkersView.js | sIsRedundant": {
+  "resources/ServiceWorkersView.ts | sIsRedundant": {
     "message": "#{PH1} is redundant"
   },
-  "resources/ServiceWorkersView.js | skipwaiting": {
+  "resources/ServiceWorkersView.ts | skipwaiting": {
     "message": "skipWaiting"
   },
-  "resources/ServiceWorkersView.js | source": {
+  "resources/ServiceWorkersView.ts | source": {
     "message": "Source"
   },
-  "resources/ServiceWorkersView.js | sRegistrationErrors": {
+  "resources/ServiceWorkersView.ts | sRegistrationErrors": {
     "message": "{PH1} registration errors"
   },
-  "resources/ServiceWorkersView.js | startString": {
+  "resources/ServiceWorkersView.ts | startString": {
     "message": "start"
   },
-  "resources/ServiceWorkersView.js | status": {
+  "resources/ServiceWorkersView.ts | status": {
     "message": "Status"
   },
-  "resources/ServiceWorkersView.js | stopString": {
+  "resources/ServiceWorkersView.ts | stopString": {
     "message": "stop"
   },
-  "resources/ServiceWorkersView.js | sTryingToInstall": {
+  "resources/ServiceWorkersView.ts | sTryingToInstall": {
     "message": "#{PH1} trying to install"
   },
-  "resources/ServiceWorkersView.js | sWaitingToActivate": {
+  "resources/ServiceWorkersView.ts | sWaitingToActivate": {
     "message": "#{PH1} waiting to activate"
   },
-  "resources/ServiceWorkersView.js | syncString": {
+  "resources/ServiceWorkersView.ts | syncString": {
     "message": "Sync"
   },
-  "resources/ServiceWorkersView.js | syncTag": {
+  "resources/ServiceWorkersView.ts | syncTag": {
     "message": "Sync tag"
   },
-  "resources/ServiceWorkersView.js | testPushMessageFromDevtools": {
+  "resources/ServiceWorkersView.ts | testPushMessageFromDevtools": {
     "message": "Test push message from DevTools."
   },
-  "resources/ServiceWorkersView.js | unregister": {
+  "resources/ServiceWorkersView.ts | unregister": {
     "message": "Unregister"
   },
-  "resources/ServiceWorkersView.js | unregisterServiceWorker": {
+  "resources/ServiceWorkersView.ts | unregisterServiceWorker": {
     "message": "Unregister service worker"
   },
-  "resources/ServiceWorkersView.js | update": {
+  "resources/ServiceWorkersView.ts | update": {
     "message": "Update"
   },
-  "resources/ServiceWorkersView.js | updateCycle": {
+  "resources/ServiceWorkersView.ts | updateCycle": {
     "message": "Update Cycle"
   },
-  "resources/ServiceWorkersView.js | updateOnReload": {
+  "resources/ServiceWorkersView.ts | updateOnReload": {
     "message": "Update on reload"
   },
-  "resources/ServiceWorkersView.js | workerS": {
+  "resources/ServiceWorkersView.ts | workerS": {
     "message": "Worker: {PH1}"
   },
   "resources/ServiceWorkerUpdateCycleHelper.ts | endTimeS": {
@@ -6758,16 +6758,16 @@
   "resources/ServiceWorkerUpdateCycleHelper.ts | version": {
     "message": "Version"
   },
-  "resources/StorageItemsView.js | clearAll": {
+  "resources/StorageItemsView.ts | clearAll": {
     "message": "Clear All"
   },
-  "resources/StorageItemsView.js | deleteSelected": {
+  "resources/StorageItemsView.ts | deleteSelected": {
     "message": "Delete Selected"
   },
-  "resources/StorageItemsView.js | filter": {
+  "resources/StorageItemsView.ts | filter": {
     "message": "Filter"
   },
-  "resources/StorageItemsView.js | refresh": {
+  "resources/StorageItemsView.ts | refresh": {
     "message": "Refresh"
   },
   "resources/StorageView.ts | application": {

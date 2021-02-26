@@ -375,7 +375,7 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper {
     this._targets = new Set();
     /** @type {!Set.<!Observer>} */
     this._observers = new Set();
-    /** @type {!Platform.MapUtilities.Multimap<symbol, !{modelClass: function(new:SDKModel, !Target), thisObject: (!Object|undefined), listener: function(!Common.EventTarget.EventTargetEvent):void}>} */
+    /** @type {!Platform.MapUtilities.Multimap<string|symbol, !{modelClass: function(new:SDKModel, !Target), thisObject: (!Object|undefined), listener: function(!Common.EventTarget.EventTargetEvent):void}>} */
     this._modelListeners = new Platform.MapUtilities.Multimap();
     /** @type {!Platform.MapUtilities.Multimap<function(new:SDKModel, !Target), !SDKModelObserver<?>>} */
     this._modelObservers = new Platform.MapUtilities.Multimap();
@@ -501,7 +501,7 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper {
 
   /**
    * @param {function(new:SDKModel,!Target)} modelClass
-   * @param {symbol} eventType
+   * @param {string|symbol} eventType
    * @param {function(!Common.EventTarget.EventTargetEvent):void} listener
    * @param {!Object=} thisObject
    */
@@ -514,7 +514,7 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper {
 
   /**
    * @param {function(new:SDKModel,!Target)} modelClass
-   * @param {symbol} eventType
+   * @param {string|symbol} eventType
    * @param {function(!Common.EventTarget.EventTargetEvent):void} listener
    * @param {!Object=} thisObject
    */

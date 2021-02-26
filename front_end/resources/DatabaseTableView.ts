@@ -1,3 +1,7 @@
+// Copyright 2021 The Chromium Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+
 /*
  * Copyright (C) 2008 Apple Inc. All Rights Reserved.
  *
@@ -23,12 +27,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Common from '../common/common.js';
 import * as DataGrid from '../data_grid/data_grid.js';
 import * as i18n from '../i18n/i18n.js';
 import * as UI from '../ui/ui.js';
 
-import {Database, DatabaseModel, Events as DatabaseModelEvents} from './DatabaseModel.js';  // eslint-disable-line no-unused-vars
+import {Database} from './DatabaseModel.js';  // eslint-disable-line no-unused-vars
 
 export const UIStrings = {
   /**
@@ -54,20 +60,29 @@ export const UIStrings = {
   */
   anErrorOccurredTryingToreadTheS: 'An error occurred trying to read the "{PH1}" table.',
 };
-const str_ = i18n.i18n.registerUIStrings('resources/DatabaseTableView.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('resources/DatabaseTableView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+
+export interface VisibleColumnsSetting {
+  [tableName: string]: string;
+}
 export class DatabaseTableView extends UI.View.SimpleView {
-  /**
-   * @param {!Database} database
-   * @param {string} tableName
-   */
-  constructor(database, tableName) {
+  database: Database;
+  tableName: string;
+  _lastVisibleColumns: string;
+  _columnsMap: Map<string, string>;
+  _visibleColumnsSetting: Common.Settings.Setting<VisibleColumnsSetting>;
+  refreshButton: UI.Toolbar.ToolbarButton;
+  _visibleColumnsInput: UI.Toolbar.ToolbarInput;
+  _dataGrid: DataGrid.SortableDataGrid.SortableDataGrid<DataGrid.SortableDataGrid.SortableDataGridNode<unknown>>|null;
+  _emptyWidget?: UI.EmptyWidget.EmptyWidget;
+
+  constructor(database: Database, tableName: string) {
     super(i18nString(UIStrings.database));
 
     this.database = database;
     this.tableName = tableName;
     this._lastVisibleColumns = '';
-    /** @type {!Map<string, string>} */
     this._columnsMap = new Map();
 
     this.element.classList.add('storage-view', 'table');
@@ -81,45 +96,30 @@ export class DatabaseTableView extends UI.View.SimpleView {
     this._visibleColumnsInput.addEventListener(
         UI.Toolbar.ToolbarInput.Event.TextChanged, this._onVisibleColumnsChanged, this);
 
-    /** @type {?DataGrid.SortableDataGrid.SortableDataGrid<!DataGrid.SortableDataGrid.SortableDataGridNode<*>>} */
     this._dataGrid = null;
   }
 
-  /**
-   * @override
-   */
-  wasShown() {
+  wasShown(): void {
     this.update();
   }
 
-  /**
-   * @override
-   * @return {!Promise<!Array<!UI.Toolbar.ToolbarItem>>}
-   */
-  async toolbarItems() {
+  async toolbarItems(): Promise<UI.Toolbar.ToolbarItem[]> {
     return [this.refreshButton, this._visibleColumnsInput];
   }
 
-  /**
-   * @param {string} tableName
-   * @return {string}
-   */
-  _escapeTableName(tableName) {
+  _escapeTableName(tableName: string): string {
     return tableName.replace(/\"/g, '""');
   }
 
-  update() {
+  update(): void {
     this.database.executeSql(
         'SELECT rowid, * FROM "' + this._escapeTableName(this.tableName) + '"', this._queryFinished.bind(this),
         this._queryError.bind(this));
   }
 
-  /**
-   *
-   * @param {!Array<string>} columnNames
-   * @param {!Array<*>} values
-   */
-  _queryFinished(columnNames, values) {
+  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  _queryFinished(columnNames: string[], values: any[]): void {
     this.detachChildWidgets();
     this.element.removeChildren();
 
@@ -145,14 +145,14 @@ export class DatabaseTableView extends UI.View.SimpleView {
     this._onVisibleColumnsChanged();
   }
 
-  _onVisibleColumnsChanged() {
+  _onVisibleColumnsChanged(): void {
     if (!this._dataGrid) {
       return;
     }
     const text = this._visibleColumnsInput.value();
     const parts = text.split(/[\s,]+/);
-    const matches = new Set();
-    const columnsVisibility = new Set();
+    const matches = new Set<string>();
+    const columnsVisibility = new Set<string>();
     columnsVisibility.add('0');
     for (const part of parts) {
       const mappedColumn = this._columnsMap.get(part);
@@ -177,7 +177,7 @@ export class DatabaseTableView extends UI.View.SimpleView {
     this._lastVisibleColumns = newVisibleColumns;
   }
 
-  _queryError() {
+  _queryError(): void {
     this.detachChildWidgets();
     this.element.removeChildren();
 
@@ -187,10 +187,7 @@ export class DatabaseTableView extends UI.View.SimpleView {
     this.element.appendChild(errorMsgElement);
   }
 
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  _refreshButtonClicked(event) {
+  _refreshButtonClicked(_event: Common.EventTarget.EventTargetEvent): void {
     this.update();
   }
 }

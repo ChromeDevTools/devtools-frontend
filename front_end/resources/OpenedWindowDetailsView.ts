@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Common from '../common/common.js';
 import * as i18n from '../i18n/i18n.js';
 import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
@@ -86,20 +88,12 @@ export const UIStrings = {
   */
   reportingTo: 'reporting to',
 };
-const str_ = i18n.i18n.registerUIStrings('resources/OpenedWindowDetailsView.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('resources/OpenedWindowDetailsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-/**
- * @param {boolean} b
- */
-const booleanToYesNo = b => b ? i18nString(UIStrings.yes) : i18nString(UIStrings.no);
+const booleanToYesNo = (b: boolean): Common.UIString.LocalizedString =>
+    b ? i18nString(UIStrings.yes) : i18nString(UIStrings.no);
 
-/**
- * @param {string} iconType
- * @param {string} title
- * @param {function():(void|!Promise<void>)} eventHandler
- * @return {!Element}
- */
-function linkifyIcon(iconType, title, eventHandler) {
+function linkifyIcon(iconType: string, title: string, eventHandler: () => (void|Promise<void>)): Element {
   const icon = UI.Icon.Icon.create(iconType, 'icon-link devtools-link');
   const span = document.createElement('span');
   UI.Tooltip.Tooltip.install(span, title);
@@ -119,13 +113,9 @@ function linkifyIcon(iconType, title, eventHandler) {
   return span;
 }
 
-/**
- * @param {!SDK.ResourceTreeModel.ResourceTreeFrame|!Protocol.Page.FrameId|undefined} opener
- * @return {!Promise<?Element>}
- */
-async function maybeCreateLinkToElementsPanel(opener) {
-  /** @type {?SDK.ResourceTreeModel.ResourceTreeFrame} */
-  let openerFrame = null;
+async function maybeCreateLinkToElementsPanel(opener: string|SDK.ResourceTreeModel.ResourceTreeFrame|
+                                              undefined): Promise<Element|null> {
+  let openerFrame: SDK.ResourceTreeModel.ResourceTreeFrame|(SDK.ResourceTreeModel.ResourceTreeFrame | null)|null = null;
   if (opener instanceof SDK.ResourceTreeModel.ResourceTreeFrame) {
     openerFrame = opener;
   } else if (opener) {
@@ -156,11 +146,18 @@ async function maybeCreateLinkToElementsPanel(opener) {
 }
 
 export class OpenedWindowDetailsView extends UI.ThrottledWidget.ThrottledWidget {
-  /**
-   * @param {!Protocol.Target.TargetInfo} targetInfo
-   * @param {boolean} isWindowClosed
-   */
-  constructor(targetInfo, isWindowClosed) {
+  _targetInfo: Protocol.Target.TargetInfo;
+  _isWindowClosed: boolean;
+  _reportView: UI.ReportView.ReportView;
+  _documentSection: UI.ReportView.Section;
+  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  _URLFieldValue: HTMLElement;
+  _securitySection: UI.ReportView.Section;
+  _openerElementField: HTMLElement;
+  _hasDOMAccessValue: HTMLElement;
+
+  constructor(targetInfo: Protocol.Target.TargetInfo, isWindowClosed: boolean) {
     super();
     this._targetInfo = targetInfo;
     this._isWindowClosed = isWindowClosed;
@@ -183,18 +180,14 @@ export class OpenedWindowDetailsView extends UI.ThrottledWidget.ThrottledWidget 
     this.update();
   }
 
-  /**
-   * @override
-   * @return {!Promise<?>}
-   */
-  async doUpdate() {
+  async doUpdate(): Promise<void> {
     this._reportView.setTitle(this.buildTitle());
     this._URLFieldValue.textContent = this._targetInfo.url;
     this._hasDOMAccessValue.textContent = booleanToYesNo(this._targetInfo.canAccessOpener);
     this.maybeDisplayOpenerFrame();
   }
 
-  async maybeDisplayOpenerFrame() {
+  async maybeDisplayOpenerFrame(): Promise<void> {
     this._openerElementField.removeChildren();
     const linkElement = await maybeCreateLinkToElementsPanel(this._targetInfo.openerFrameId);
     if (linkElement) {
@@ -205,10 +198,7 @@ export class OpenedWindowDetailsView extends UI.ThrottledWidget.ThrottledWidget 
     this._securitySection.setFieldVisible(i18nString(UIStrings.openerFrame), false);
   }
 
-  /**
-   * @return {string}
-   */
-  buildTitle() {
+  buildTitle(): string {
     let title = this._targetInfo.title || i18nString(UIStrings.windowWithoutTitle);
     if (this._isWindowClosed) {
       title += ` (${i18nString(UIStrings.closed)})`;
@@ -216,26 +206,26 @@ export class OpenedWindowDetailsView extends UI.ThrottledWidget.ThrottledWidget 
     return title;
   }
 
-  /**
-   * @param {boolean} isWindowClosed
-   */
-  setIsWindowClosed(isWindowClosed) {
+  setIsWindowClosed(isWindowClosed: boolean): void {
     this._isWindowClosed = isWindowClosed;
   }
 
-  /**
-   * @param {!Protocol.Target.TargetInfo} targetInfo
-   */
-  setTargetInfo(targetInfo) {
+  setTargetInfo(targetInfo: Protocol.Target.TargetInfo): void {
     this._targetInfo = targetInfo;
   }
 }
 
 export class WorkerDetailsView extends UI.ThrottledWidget.ThrottledWidget {
-  /**
-   * @param {!Protocol.Target.TargetInfo} targetInfo
-   */
-  constructor(targetInfo) {
+  _targetInfo: Protocol.Target.TargetInfo;
+  _reportView: UI.ReportView.ReportView;
+  _documentSection: UI.ReportView.Section;
+  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  _URLFieldValue: HTMLElement;
+  _isolationSection: UI.ReportView.Section;
+  _coepPolicy: HTMLElement;
+
+  constructor(targetInfo: Protocol.Target.TargetInfo) {
     super();
     this._targetInfo = targetInfo;
     this.registerRequiredCSS('resources/frameDetailsReportView.css', {enableLegacyPatching: false});
@@ -258,10 +248,7 @@ export class WorkerDetailsView extends UI.ThrottledWidget.ThrottledWidget {
     this.update();
   }
 
-  /**
-   * @param {string} type
-   */
-  workerTypeToString(type) {
+  workerTypeToString(type: string): Common.UIString.LocalizedString {
     if (type === 'worker') {
       return i18nString(UIStrings.webWorker);
     }
@@ -271,7 +258,7 @@ export class WorkerDetailsView extends UI.ThrottledWidget.ThrottledWidget {
     return i18nString(UIStrings.unknown);
   }
 
-  async _updateCoopCoepStatus() {
+  async _updateCoopCoepStatus(): Promise<void> {
     const target = SDK.SDKModel.TargetManager.instance().targetById(this._targetInfo.targetId);
     if (!target) {
       return;
@@ -281,20 +268,18 @@ export class WorkerDetailsView extends UI.ThrottledWidget.ThrottledWidget {
     if (!info) {
       return;
     }
-    /**
-    * @param {!Protocol.Network.CrossOriginEmbedderPolicyValue|!Protocol.Network.CrossOriginOpenerPolicyValue} value
-    */
-    const coepIsEnabled = value => value !== Protocol.Network.CrossOriginEmbedderPolicyValue.None;
+    const coepIsEnabled =
+        (value: Protocol.Network.CrossOriginEmbedderPolicyValue|Protocol.Network.CrossOriginOpenerPolicyValue):
+            boolean => value !== Protocol.Network.CrossOriginEmbedderPolicyValue.None;
     this._fillCrossOriginPolicy(this._coepPolicy, coepIsEnabled, info.coep);
   }
 
-  /**
-   *
-   * @param {!HTMLElement} field
-   * @param {function((!Protocol.Network.CrossOriginEmbedderPolicyValue|!Protocol.Network.CrossOriginOpenerPolicyValue)):boolean} isEnabled
-   * @param {?Protocol.Network.CrossOriginEmbedderPolicyStatus|?Protocol.Network.CrossOriginOpenerPolicyStatus|undefined} info
-   */
-  _fillCrossOriginPolicy(field, isEnabled, info) {
+  _fillCrossOriginPolicy(
+      field: HTMLElement,
+      isEnabled: (arg0: (Protocol.Network.CrossOriginEmbedderPolicyValue|
+                         Protocol.Network.CrossOriginOpenerPolicyValue)) => boolean,
+      info: Protocol.Network.CrossOriginEmbedderPolicyStatus|Protocol.Network.CrossOriginOpenerPolicyStatus|null|
+      undefined): void {
     if (!info) {
       field.textContent = '';
       return;
@@ -316,11 +301,7 @@ export class WorkerDetailsView extends UI.ThrottledWidget.ThrottledWidget {
     }
   }
 
-  /**
-   * @override
-   * @return {!Promise<?>}
-   */
-  async doUpdate() {
+  async doUpdate(): Promise<void> {
     await this._updateCoopCoepStatus();
   }
 }

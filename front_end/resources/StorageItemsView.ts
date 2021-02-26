@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
 import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
@@ -25,16 +27,18 @@ export const UIStrings = {
   */
   deleteSelected: 'Delete Selected',
 };
-const str_ = i18n.i18n.registerUIStrings('resources/StorageItemsView.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('resources/StorageItemsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class StorageItemsView extends UI.Widget.VBox {
-  /**
-   * @param {string} title
-   * @param {string} filterName
-   */
-  constructor(title, filterName) {
+  _filterRegex: RegExp|null;
+  _refreshButton: UI.Toolbar.ToolbarButton;
+  _mainToolbar: UI.Toolbar.Toolbar;
+  _filterItem: UI.Toolbar.ToolbarInput;
+  _deleteAllButton: UI.Toolbar.ToolbarButton;
+  _deleteSelectedButton: UI.Toolbar.ToolbarButton;
+
+  constructor(_title: string, _filterName: string) {
     super(false);
-    /** @type {?RegExp} */
     this._filterRegex = null;
 
     this._refreshButton = this._addButton(i18nString(UIStrings.refresh), 'largeicon-refresh', this.refreshItems);
@@ -57,56 +61,32 @@ export class StorageItemsView extends UI.Widget.VBox {
     }
   }
 
-  /**
-   * @param {string} title
-   */
-  setDeleteAllTitle(title) {
+  setDeleteAllTitle(title: string): void {
     this._deleteAllButton.setTitle(title);
   }
 
-  /**
-   * @param {string} glyph
-   */
-  setDeleteAllGlyph(glyph) {
+  setDeleteAllGlyph(glyph: string): void {
     this._deleteAllButton.setGlyph(glyph);
   }
 
-  /**
-   * @param {!UI.Toolbar.ToolbarItem} item
-   */
-  appendToolbarItem(item) {
+  appendToolbarItem(item: UI.Toolbar.ToolbarItem): void {
     this._mainToolbar.appendToolbarItem(item);
   }
 
-  /**
-   * @param {string} label
-   * @param {string} glyph
-   * @param {function(!Common.EventTarget.EventTargetEvent):void} callback
-   * @return {!UI.Toolbar.ToolbarButton}
-   */
-  _addButton(label, glyph, callback) {
+  _addButton(label: string, glyph: string, callback: (arg0: Common.EventTarget.EventTargetEvent) => void):
+      UI.Toolbar.ToolbarButton {
     const button = new UI.Toolbar.ToolbarButton(label, glyph);
     button.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, callback, this);
     return button;
   }
 
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  _filterChanged(event) {
-    const text = /** @type {?string} */ (event.data);
+  _filterChanged(event: Common.EventTarget.EventTargetEvent): void {
+    const text = (event.data as string | null);
     this._filterRegex = text ? new RegExp(Platform.StringUtilities.escapeForRegExp(text), 'i') : null;
     this.refreshItems();
   }
 
-  /**
-   * @template T
-   * @param {!Array<!T>} items
-   * @param {function(!T): string} keyFunction
-   * @return {!Array<!T>}
-   * @protected
-   */
-  filter(items, keyFunction) {
+  filter<T>(items: T[], keyFunction: (arg0: T) => string): T[] {
     if (this._filterRegex) {
       const regExp = this._filterRegex;
       return items.filter(item => regExp.test(keyFunction(item)));
@@ -114,58 +94,36 @@ export class StorageItemsView extends UI.Widget.VBox {
     return items;
   }
 
-  /**
-   * @return {boolean}
-   */
-  hasFilter() {
+  hasFilter(): boolean {
     return Boolean(this._filterRegex);
   }
 
-  /**
-   * @override
-   */
-  wasShown() {
+  wasShown(): void {
     this.refreshItems();
   }
 
-  /**
-   * @param {boolean} enabled
-   * @protected
-   */
-  setCanDeleteAll(enabled) {
+  setCanDeleteAll(enabled: boolean): void {
     this._deleteAllButton.setEnabled(enabled);
   }
 
-  /**
-   * @param {boolean} enabled
-   * @protected
-   */
-  setCanDeleteSelected(enabled) {
+  setCanDeleteSelected(enabled: boolean): void {
     this._deleteSelectedButton.setEnabled(enabled);
   }
 
-  /**
-   * @param {boolean} enabled
-   * @protected
-   */
-  setCanRefresh(enabled) {
+  setCanRefresh(enabled: boolean): void {
     this._refreshButton.setEnabled(enabled);
   }
 
-  /**
-   * @param {boolean} enabled
-   * @protected
-   */
-  setCanFilter(enabled) {
+  setCanFilter(enabled: boolean): void {
     this._filterItem.setEnabled(enabled);
   }
 
-  deleteAllItems() {
+  deleteAllItems(): void {
   }
 
-  deleteSelectedItem() {
+  deleteSelectedItem(): void {
   }
 
-  refreshItems() {
+  refreshItems(): void {
   }
 }

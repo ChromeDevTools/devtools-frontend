@@ -28,44 +28,46 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Common from '../common/common.js';
 import * as SDK from '../sdk/sdk.js';
 
-/**
- * @implements {ProtocolProxyApi.StorageDispatcher}
- */
-export class IndexedDBModel extends SDK.SDKModel.SDKModel {
-  /**
-   * @param {!SDK.SDKModel.Target} target
-   */
-  constructor(target) {
+export class IndexedDBModel extends SDK.SDKModel.SDKModel implements ProtocolProxyApi.StorageDispatcher {
+  _securityOriginManager: SDK.SecurityOriginManager.SecurityOriginManager|null;
+  _indexedDBAgent: ProtocolProxyApi.IndexedDBApi;
+  _storageAgent: ProtocolProxyApi.StorageApi;
+  _databases: Map<DatabaseId, Database>;
+  _databaseNamesBySecurityOrigin: {
+    [x: string]: string[],
+  };
+  _originsUpdated: Set<string>;
+  _throttler: Common.Throttler.Throttler;
+  _enabled?: boolean;
+
+  constructor(target: SDK.SDKModel.Target) {
     super(target);
     target.registerStorageDispatcher(this);
     this._securityOriginManager = target.model(SDK.SecurityOriginManager.SecurityOriginManager);
     this._indexedDBAgent = target.indexedDBAgent();
     this._storageAgent = target.storageAgent();
 
-    /** @type {!Map.<!DatabaseId, !Database>} */
     this._databases = new Map();
-    /** @type {!Object.<string, !Array.<string>>} */
     this._databaseNamesBySecurityOrigin = {};
 
     this._originsUpdated = new Set();
     this._throttler = new Common.Throttler.Throttler(1000);
   }
 
-  /**
-   * @param {*} idbKey
-   * @return {(!Protocol.IndexedDB.Key|undefined)}
-   */
-  static keyFromIDBKey(idbKey) {
+  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  static keyFromIDBKey(idbKey: any): Protocol.IndexedDB.Key|undefined {
     if (typeof (idbKey) === 'undefined' || idbKey === null) {
       return undefined;
     }
 
-    /** @type {!Protocol.IndexedDB.Key} */
-    let key;
-    switch (typeof(idbKey)) {
+    let key: Protocol.IndexedDB.Key;
+    switch (typeof (idbKey)) {
       case 'number':
         key = {
           type: Protocol.IndexedDB.KeyType.Number,
@@ -106,24 +108,16 @@ export class IndexedDBModel extends SDK.SDKModel.SDKModel {
     return key;
   }
 
-  /**
-   * @param {!IDBKeyRange} idbKeyRange
-   * @return {!Protocol.IndexedDB.KeyRange}
-   */
-  static _keyRangeFromIDBKeyRange(idbKeyRange) {
-    const keyRange = {};
-    keyRange.lower = IndexedDBModel.keyFromIDBKey(idbKeyRange.lower);
-    keyRange.upper = IndexedDBModel.keyFromIDBKey(idbKeyRange.upper);
-    keyRange.lowerOpen = Boolean(idbKeyRange.lowerOpen);
-    keyRange.upperOpen = Boolean(idbKeyRange.upperOpen);
-    return keyRange;
+  static _keyRangeFromIDBKeyRange(idbKeyRange: IDBKeyRange): Protocol.IndexedDB.KeyRange {
+    return {
+      lower: IndexedDBModel.keyFromIDBKey(idbKeyRange.lower),
+      upper: IndexedDBModel.keyFromIDBKey(idbKeyRange.upper),
+      lowerOpen: Boolean(idbKeyRange.lowerOpen),
+      upperOpen: Boolean(idbKeyRange.upperOpen),
+    };
   }
 
-  /**
-   * @param {!Protocol.IndexedDB.KeyPath} keyPath
-   * @return {?string|!Array.<string>|undefined}
-   */
-  static idbKeyPathFromKeyPath(keyPath) {
+  static idbKeyPathFromKeyPath(keyPath: Protocol.IndexedDB.KeyPath): string|string[]|null|undefined {
     let idbKeyPath;
     switch (keyPath.type) {
       case Protocol.IndexedDB.KeyPathType.Null:
@@ -139,11 +133,7 @@ export class IndexedDBModel extends SDK.SDKModel.SDKModel {
     return idbKeyPath;
   }
 
-  /**
-   * @param {?string|!Array.<string>|undefined} idbKeyPath
-   * @return {?string}
-   */
-  static keyPathStringFromIDBKeyPath(idbKeyPath) {
+  static keyPathStringFromIDBKeyPath(idbKeyPath: string|string[]|null|undefined): string|null {
     if (typeof idbKeyPath === 'string') {
       return '"' + idbKeyPath + '"';
     }
@@ -153,7 +143,7 @@ export class IndexedDBModel extends SDK.SDKModel.SDKModel {
     return null;
   }
 
-  enable() {
+  enable(): void {
     if (this._enabled) {
       return;
     }
@@ -173,10 +163,7 @@ export class IndexedDBModel extends SDK.SDKModel.SDKModel {
     this._enabled = true;
   }
 
-  /**
-   * @param {string} origin
-   */
-  clearForOrigin(origin) {
+  clearForOrigin(origin: string): void {
     if (!this._enabled || !this._databaseNamesBySecurityOrigin[origin]) {
       return;
     }
@@ -185,10 +172,7 @@ export class IndexedDBModel extends SDK.SDKModel.SDKModel {
     this._addOrigin(origin);
   }
 
-  /**
-   * @param {!DatabaseId} databaseId
-   */
-  async deleteDatabase(databaseId) {
+  async deleteDatabase(databaseId: DatabaseId): Promise<void> {
     if (!this._enabled) {
       return;
     }
@@ -197,62 +181,39 @@ export class IndexedDBModel extends SDK.SDKModel.SDKModel {
     this._loadDatabaseNames(databaseId.securityOrigin);
   }
 
-  async refreshDatabaseNames() {
+  async refreshDatabaseNames(): Promise<void> {
     for (const securityOrigin in this._databaseNamesBySecurityOrigin) {
       await this._loadDatabaseNames(securityOrigin);
     }
     this.dispatchEventToListeners(Events.DatabaseNamesRefreshed);
   }
 
-  /**
-   * @param {!DatabaseId} databaseId
-   */
-  refreshDatabase(databaseId) {
+  refreshDatabase(databaseId: DatabaseId): void {
     this._loadDatabase(databaseId, true);
   }
 
-  /**
-   * @param {!DatabaseId} databaseId
-   * @param {string} objectStoreName
-   * @return {!Promise<void>}
-   */
-  async clearObjectStore(databaseId, objectStoreName) {
+  async clearObjectStore(databaseId: DatabaseId, objectStoreName: string): Promise<void> {
     await this._indexedDBAgent.invoke_clearObjectStore(
         {securityOrigin: databaseId.securityOrigin, databaseName: databaseId.name, objectStoreName});
   }
 
-  /**
-   * @param {!DatabaseId} databaseId
-   * @param {string} objectStoreName
-   * @param {!IDBKeyRange} idbKeyRange
-   * @return {!Promise<void>}
-   */
-  async deleteEntries(databaseId, objectStoreName, idbKeyRange) {
+  async deleteEntries(databaseId: DatabaseId, objectStoreName: string, idbKeyRange: IDBKeyRange): Promise<void> {
     const keyRange = IndexedDBModel._keyRangeFromIDBKeyRange(idbKeyRange);
     await this._indexedDBAgent.invoke_deleteObjectStoreEntries(
         {securityOrigin: databaseId.securityOrigin, databaseName: databaseId.name, objectStoreName, keyRange});
   }
 
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  _securityOriginAdded(event) {
-    const securityOrigin = /** @type {string} */ (event.data);
+  _securityOriginAdded(event: Common.EventTarget.EventTargetEvent): void {
+    const securityOrigin = (event.data as string);
     this._addOrigin(securityOrigin);
   }
 
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  _securityOriginRemoved(event) {
-    const securityOrigin = /** @type {string} */ (event.data);
+  _securityOriginRemoved(event: Common.EventTarget.EventTargetEvent): void {
+    const securityOrigin = (event.data as string);
     this._removeOrigin(securityOrigin);
   }
 
-  /**
-   * @param {string} securityOrigin
-   */
-  _addOrigin(securityOrigin) {
+  _addOrigin(securityOrigin: string): void {
     console.assert(!this._databaseNamesBySecurityOrigin[securityOrigin]);
     this._databaseNamesBySecurityOrigin[securityOrigin] = [];
     this._loadDatabaseNames(securityOrigin);
@@ -261,10 +222,7 @@ export class IndexedDBModel extends SDK.SDKModel.SDKModel {
     }
   }
 
-  /**
-   * @param {string} securityOrigin
-   */
-  _removeOrigin(securityOrigin) {
+  _removeOrigin(securityOrigin: string): void {
     console.assert(Boolean(this._databaseNamesBySecurityOrigin[securityOrigin]));
     for (let i = 0; i < this._databaseNamesBySecurityOrigin[securityOrigin].length; ++i) {
       this._databaseRemoved(securityOrigin, this._databaseNamesBySecurityOrigin[securityOrigin][i]);
@@ -275,22 +233,14 @@ export class IndexedDBModel extends SDK.SDKModel.SDKModel {
     }
   }
 
-  /**
-   * @param {string} securityOrigin
-   * @return {boolean}
-   */
-  _isValidSecurityOrigin(securityOrigin) {
+  _isValidSecurityOrigin(securityOrigin: string): boolean {
     const parsedURL = Common.ParsedURL.ParsedURL.fromString(securityOrigin);
     return parsedURL !== null && parsedURL.scheme.startsWith('http');
   }
 
-  /**
-   * @param {string} securityOrigin
-   * @param {!Array.<string>} databaseNames
-   */
-  _updateOriginDatabaseNames(securityOrigin, databaseNames) {
-    const newDatabaseNames = new Set(databaseNames);
-    const oldDatabaseNames = new Set(this._databaseNamesBySecurityOrigin[securityOrigin]);
+  _updateOriginDatabaseNames(securityOrigin: string, databaseNames: string[]): void {
+    const newDatabaseNames = new Set<string>(databaseNames);
+    const oldDatabaseNames = new Set<string>(this._databaseNamesBySecurityOrigin[securityOrigin]);
 
     this._databaseNamesBySecurityOrigin[securityOrigin] = databaseNames;
 
@@ -306,10 +256,7 @@ export class IndexedDBModel extends SDK.SDKModel.SDKModel {
     }
   }
 
-  /**
-   * @return {!Array.<!DatabaseId>}
-   */
-  databases() {
+  databases(): DatabaseId[] {
     const result = [];
     for (const securityOrigin in this._databaseNamesBySecurityOrigin) {
       const databaseNames = this._databaseNamesBySecurityOrigin[securityOrigin];
@@ -320,29 +267,17 @@ export class IndexedDBModel extends SDK.SDKModel.SDKModel {
     return result;
   }
 
-  /**
-   * @param {string} securityOrigin
-   * @param {string} databaseName
-   */
-  _databaseAdded(securityOrigin, databaseName) {
+  _databaseAdded(securityOrigin: string, databaseName: string): void {
     const databaseId = new DatabaseId(securityOrigin, databaseName);
     this.dispatchEventToListeners(Events.DatabaseAdded, {model: this, databaseId: databaseId});
   }
 
-  /**
-   * @param {string} securityOrigin
-   * @param {string} databaseName
-   */
-  _databaseRemoved(securityOrigin, databaseName) {
+  _databaseRemoved(securityOrigin: string, databaseName: string): void {
     const databaseId = new DatabaseId(securityOrigin, databaseName);
     this.dispatchEventToListeners(Events.DatabaseRemoved, {model: this, databaseId: databaseId});
   }
 
-  /**
-   * @param {string} securityOrigin
-   * @return {!Promise<!Array.<string>>} databaseNames
-   */
-  async _loadDatabaseNames(securityOrigin) {
+  async _loadDatabaseNames(securityOrigin: string): Promise<string[]> {
     const {databaseNames} = await this._indexedDBAgent.invoke_requestDatabaseNames({securityOrigin});
     if (!databaseNames) {
       return [];
@@ -354,11 +289,7 @@ export class IndexedDBModel extends SDK.SDKModel.SDKModel {
     return databaseNames;
   }
 
-  /**
-   * @param {!DatabaseId} databaseId
-   * @param {boolean} entriesUpdated
-   */
-  async _loadDatabase(databaseId, entriesUpdated) {
+  async _loadDatabase(databaseId: DatabaseId, entriesUpdated: boolean): Promise<void> {
     const {databaseWithObjectStores} = await this._indexedDBAgent.invoke_requestDatabase(
         {securityOrigin: databaseId.securityOrigin, databaseName: databaseId.name});
 
@@ -387,43 +318,23 @@ export class IndexedDBModel extends SDK.SDKModel.SDKModel {
         Events.DatabaseLoaded, {model: this, database: databaseModel, entriesUpdated: entriesUpdated});
   }
 
-  /**
-   * @param {!DatabaseId} databaseId
-   * @param {string} objectStoreName
-   * @param {?IDBKeyRange} idbKeyRange
-   * @param {number} skipCount
-   * @param {number} pageSize
-   * @param {function(!Array.<!Entry>, boolean):void} callback
-   */
-  loadObjectStoreData(databaseId, objectStoreName, idbKeyRange, skipCount, pageSize, callback) {
+  loadObjectStoreData(
+      databaseId: DatabaseId, objectStoreName: string, idbKeyRange: IDBKeyRange|null, skipCount: number,
+      pageSize: number, callback: (arg0: Array<Entry>, arg1: boolean) => void): void {
     this._requestData(databaseId, databaseId.name, objectStoreName, '', idbKeyRange, skipCount, pageSize, callback);
   }
 
-  /**
-   * @param {!DatabaseId} databaseId
-   * @param {string} objectStoreName
-   * @param {string} indexName
-   * @param {?IDBKeyRange} idbKeyRange
-   * @param {number} skipCount
-   * @param {number} pageSize
-   * @param {function(!Array.<!Entry>, boolean):void} callback
-   */
-  loadIndexData(databaseId, objectStoreName, indexName, idbKeyRange, skipCount, pageSize, callback) {
+  loadIndexData(
+      databaseId: DatabaseId, objectStoreName: string, indexName: string, idbKeyRange: IDBKeyRange|null,
+      skipCount: number, pageSize: number, callback: (arg0: Array<Entry>, arg1: boolean) => void): void {
     this._requestData(
         databaseId, databaseId.name, objectStoreName, indexName, idbKeyRange, skipCount, pageSize, callback);
   }
 
-  /**
-   * @param {!DatabaseId} databaseId
-   * @param {string} databaseName
-   * @param {string} objectStoreName
-   * @param {string} indexName
-   * @param {?IDBKeyRange} idbKeyRange
-   * @param {number} skipCount
-   * @param {number} pageSize
-   * @param {function(!Array.<!Entry>, boolean):void} callback
-   */
-  async _requestData(databaseId, databaseName, objectStoreName, indexName, idbKeyRange, skipCount, pageSize, callback) {
+  async _requestData(
+      databaseId: DatabaseId, databaseName: string, objectStoreName: string, indexName: string,
+      idbKeyRange: IDBKeyRange|null, skipCount: number, pageSize: number,
+      callback: (arg0: Array<Entry>, arg1: boolean) => void): Promise<void> {
     const keyRange = idbKeyRange ? IndexedDBModel._keyRangeFromIDBKeyRange(idbKeyRange) : undefined;
 
     const response = await this._indexedDBAgent.invoke_requestData({
@@ -433,7 +344,7 @@ export class IndexedDBModel extends SDK.SDKModel.SDKModel {
       indexName,
       skipCount,
       pageSize,
-      keyRange
+      keyRange,
     });
 
     if (response.getError()) {
@@ -456,12 +367,7 @@ export class IndexedDBModel extends SDK.SDKModel.SDKModel {
     callback(entries, response.hasMore);
   }
 
-  /**
-   * @param {!DatabaseId} databaseId
-   * @param {!ObjectStore} objectStore
-   * @return {!Promise<?ObjectStoreMetadata>}
-   */
-  async getMetadata(databaseId, objectStore) {
+  async getMetadata(databaseId: DatabaseId, objectStore: ObjectStore): Promise<ObjectStoreMetadata|null> {
     const databaseOrigin = databaseId.securityOrigin;
     const databaseName = databaseId.name;
     const objectStoreName = objectStore.name;
@@ -475,21 +381,14 @@ export class IndexedDBModel extends SDK.SDKModel.SDKModel {
     return {entriesCount: response.entriesCount, keyGeneratorValue: response.keyGeneratorValue};
   }
 
-  /**
-   * @param {string} securityOrigin
-   */
-  async _refreshDatabaseList(securityOrigin) {
+  async _refreshDatabaseList(securityOrigin: string): Promise<void> {
     const databaseNames = await this._loadDatabaseNames(securityOrigin);
     for (const databaseName of databaseNames) {
       this._loadDatabase(new DatabaseId(securityOrigin, databaseName), false);
     }
   }
 
-  /**
-   * @override
-   * @param {!Protocol.Storage.IndexedDBListUpdatedEvent} event
-   */
-  indexedDBListUpdated({origin: securityOrigin}) {
+  indexedDBListUpdated({origin: securityOrigin}: Protocol.Storage.IndexedDBListUpdatedEvent): void {
     this._originsUpdated.add(securityOrigin);
 
     this._throttler.schedule(() => {
@@ -501,49 +400,41 @@ export class IndexedDBModel extends SDK.SDKModel.SDKModel {
     });
   }
 
-  /**
-   * @override
-   * @param {!Protocol.Storage.IndexedDBContentUpdatedEvent} event
-   */
-  indexedDBContentUpdated({origin: securityOrigin, databaseName, objectStoreName}) {
+  indexedDBContentUpdated({origin: securityOrigin, databaseName, objectStoreName}:
+                              Protocol.Storage.IndexedDBContentUpdatedEvent): void {
     const databaseId = new DatabaseId(securityOrigin, databaseName);
     this.dispatchEventToListeners(
         Events.IndexedDBContentUpdated, {databaseId: databaseId, objectStoreName: objectStoreName, model: this});
   }
 
-  /**
-   * @override
-   * @param {!Protocol.Storage.CacheStorageListUpdatedEvent} event
-   */
-  cacheStorageListUpdated(event) {
+  cacheStorageListUpdated(_event: Protocol.Storage.CacheStorageListUpdatedEvent): void {
   }
 
-  /**
-   * @override
-   * @param {!Protocol.Storage.CacheStorageContentUpdatedEvent} event
-   */
-  cacheStorageContentUpdated(event) {
+  cacheStorageContentUpdated(_event: Protocol.Storage.CacheStorageContentUpdatedEvent): void {
   }
 }
 
 SDK.SDKModel.SDKModel.register(IndexedDBModel, SDK.SDKModel.Capability.Storage, false);
 
-/** @enum {symbol} */
-export const Events = {
-  DatabaseAdded: Symbol('DatabaseAdded'),
-  DatabaseRemoved: Symbol('DatabaseRemoved'),
-  DatabaseLoaded: Symbol('DatabaseLoaded'),
-  DatabaseNamesRefreshed: Symbol('DatabaseNamesRefreshed'),
-  IndexedDBContentUpdated: Symbol('IndexedDBContentUpdated')
-};
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum Events {
+  DatabaseAdded = 'DatabaseAdded',
+  DatabaseRemoved = 'DatabaseRemoved',
+  DatabaseLoaded = 'DatabaseLoaded',
+  DatabaseNamesRefreshed = 'DatabaseNamesRefreshed',
+  IndexedDBContentUpdated = 'IndexedDBContentUpdated',
+}
+
 
 export class Entry {
-  /**
-   * @param {!SDK.RemoteObject.RemoteObject} key
-   * @param {!SDK.RemoteObject.RemoteObject} primaryKey
-   * @param {!SDK.RemoteObject.RemoteObject} value
-   */
-  constructor(key, primaryKey, value) {
+  key: SDK.RemoteObject.RemoteObject;
+  primaryKey: SDK.RemoteObject.RemoteObject;
+  value: SDK.RemoteObject.RemoteObject;
+
+  constructor(
+      key: SDK.RemoteObject.RemoteObject, primaryKey: SDK.RemoteObject.RemoteObject,
+      value: SDK.RemoteObject.RemoteObject) {
     this.key = key;
     this.primaryKey = primaryKey;
     this.value = value;
@@ -551,86 +442,74 @@ export class Entry {
 }
 
 export class DatabaseId {
-  /**
-   * @param {string} securityOrigin
-   * @param {string} name
-   */
-  constructor(securityOrigin, name) {
+  securityOrigin: string;
+  name: string;
+  constructor(securityOrigin: string, name: string) {
     this.securityOrigin = securityOrigin;
     this.name = name;
   }
 
-  /**
-   * @param {!DatabaseId} databaseId
-   * @return {boolean}
-   */
-  equals(databaseId) {
+  equals(databaseId: DatabaseId): boolean {
     return this.name === databaseId.name && this.securityOrigin === databaseId.securityOrigin;
   }
 }
 
 export class Database {
-  /**
-   * @param {!DatabaseId} databaseId
-   * @param {number} version
-   */
-  constructor(databaseId, version) {
+  databaseId: DatabaseId;
+  version: number;
+  objectStores: Map<string, ObjectStore>;
+  constructor(databaseId: DatabaseId, version: number) {
     this.databaseId = databaseId;
     this.version = version;
-    /** @type {!Map<string, !ObjectStore>} */
     this.objectStores = new Map();
   }
 }
 
 export class ObjectStore {
-  /**
-   * @param {string} name
-   * @param {*} keyPath
-   * @param {boolean} autoIncrement
-   */
-  constructor(name, keyPath, autoIncrement) {
+  name: string;
+  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  keyPath: any;
+  autoIncrement: boolean;
+  indexes: Map<string, Index>;
+
+  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  constructor(name: string, keyPath: any, autoIncrement: boolean) {
     this.name = name;
     this.keyPath = keyPath;
     this.autoIncrement = autoIncrement;
-    /** @type {!Map<string, !Index>} */
     this.indexes = new Map();
   }
 
-  /**
-   * @return {string}
-   */
-  get keyPathString() {
-    return /** @type {string}*/ (IndexedDBModel.keyPathStringFromIDBKeyPath(/** @type {string}*/ (this.keyPath)));
+  get keyPathString(): string {
+    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
+    // @ts-expect-error
+    return IndexedDBModel.keyPathStringFromIDBKeyPath((this.keyPath as string));
   }
 }
 
 export class Index {
-  /**
-   * @param {string} name
-   * @param {*} keyPath
-   * @param {boolean} unique
-   * @param {boolean} multiEntry
-   */
-  constructor(name, keyPath, unique, multiEntry) {
+  name: string;
+  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  keyPath: any;
+  unique: boolean;
+  multiEntry: boolean;
+  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  constructor(name: string, keyPath: any, unique: boolean, multiEntry: boolean) {
     this.name = name;
     this.keyPath = keyPath;
     this.unique = unique;
     this.multiEntry = multiEntry;
   }
 
-  /**
-   * @return {string}
-   */
-  get keyPathString() {
-    return /** @type {string}*/ (IndexedDBModel.keyPathStringFromIDBKeyPath(/** @type {string}*/ (this.keyPath)));
+  get keyPathString(): string {
+    return IndexedDBModel.keyPathStringFromIDBKeyPath((this.keyPath as string)) as string;
   }
 }
-
-/**
- * @typedef {{
- *      entriesCount: number,
- *      keyGeneratorValue: number
- * }}
- */
-// @ts-ignore typedef
-export let ObjectStoreMetadata;
+export interface ObjectStoreMetadata {
+  entriesCount: number;
+  keyGeneratorValue: number;
+}

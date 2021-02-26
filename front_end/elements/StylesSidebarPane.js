@@ -451,42 +451,39 @@ export class StylesSidebarPane extends ElementsSidebarPane {
     if (!section) {
       return;
     }
-
+    let sectionToFocus = null;
+    let willIterateForward = false;
     switch (/** @type {!KeyboardEvent} */ (event).key) {
       case 'ArrowUp':
       case 'ArrowLeft': {
-        const sectionToFocus = section.previousSibling() || section.lastSibling();
-        if (sectionToFocus) {
-          sectionToFocus.element.focus();
-          event.consume(true);
-        }
+        sectionToFocus = section.previousSibling() || section.lastSibling();
+        willIterateForward = false;
         break;
       }
       case 'ArrowDown':
       case 'ArrowRight': {
-        const sectionToFocus = section.nextSibling() || section.firstSibling();
-        if (sectionToFocus) {
-          sectionToFocus.element.focus();
-          event.consume(true);
-        }
+        sectionToFocus = section.nextSibling() || section.firstSibling();
+        willIterateForward = true;
         break;
       }
       case 'Home': {
-        const sectionToFocus = section.firstSibling();
-        if (sectionToFocus) {
-          sectionToFocus.element.focus();
-          event.consume(true);
-        }
+        sectionToFocus = section.firstSibling();
+        willIterateForward = true;
         break;
       }
       case 'End': {
-        const sectionToFocus = section.lastSibling();
-        if (sectionToFocus) {
-          sectionToFocus.element.focus();
-          event.consume(true);
-        }
+        sectionToFocus = section.lastSibling();
+        willIterateForward = false;
         break;
       }
+    }
+
+    if (sectionToFocus && this._filterRegex) {
+      sectionToFocus = sectionToFocus.findCurrentOrNextVisible(/* willIterateForward= */ willIterateForward);
+    }
+    if (sectionToFocus) {
+      sectionToFocus.element.focus();
+      event.consume(true);
     }
   }
 
@@ -497,8 +494,15 @@ export class StylesSidebarPane extends ElementsSidebarPane {
   resetFocus() {
     // When a styles section is focused, shift+tab should leave the section.
     // Leaving tabIndex = 0 on the first element would cause it to be focused instead.
+    if (!this._noMatchesElement.classList.contains('hidden')) {
+      return;
+    }
     if (this._sectionBlocks[0] && this._sectionBlocks[0].sections[0]) {
-      this._sectionBlocks[0].sections[0].element.tabIndex = this._sectionsContainer.hasFocus() ? -1 : 0;
+      const firstVisibleSection =
+          this._sectionBlocks[0].sections[0].findCurrentOrNextVisible(/* willIterateForward= */ true);
+      if (firstVisibleSection) {
+        firstVisibleSection.element.tabIndex = this._sectionsContainer.hasFocus() ? -1 : 0;
+      }
     }
   }
 
@@ -555,6 +559,7 @@ export class StylesSidebarPane extends ElementsSidebarPane {
   _onFilterChanged(regex) {
     this._filterRegex = regex;
     this._updateFilter();
+    this.resetFocus();
   }
 
   /**
@@ -1415,6 +1420,7 @@ export class StylePropertiesSection {
     /** @type {?FontEditorSectionManager} */
     this._fontPopoverIcon = null;
     this._hoverableSelectorsMode = false;
+    this._isHidden = false;
     this._markSelectorMatches();
     this.onpopulate();
   }
@@ -1706,6 +1712,35 @@ export class StylePropertiesSection {
   }
 
   /**
+   * @param {!boolean} willIterateForward
+   * @param {!StylePropertiesSection=} originalSection
+   * @return {?StylePropertiesSection}
+   */
+  findCurrentOrNextVisible(willIterateForward, originalSection) {
+    if (!this.isHidden()) {
+      return this;
+    }
+    if (this === originalSection) {
+      return null;
+    }
+    if (!originalSection) {
+      originalSection = this;
+    }
+    let visibleSibling = null;
+    const nextSibling = willIterateForward ? this.nextSibling() : this.previousSibling();
+    if (nextSibling) {
+      visibleSibling = nextSibling.findCurrentOrNextVisible(willIterateForward, originalSection);
+    } else {
+      const loopSibling = willIterateForward ? this.firstSibling() : this.lastSibling();
+      if (loopSibling) {
+        visibleSibling = loopSibling.findCurrentOrNextVisible(willIterateForward, originalSection);
+      }
+    }
+
+    return visibleSibling;
+  }
+
+  /**
    * @return {?StylePropertiesSection}
    */
   lastSibling() {
@@ -1993,11 +2028,19 @@ export class StylePropertiesSection {
 
     const regex = this._parentPane.filterRegex();
     const hideRule = !hasMatchingChild && regex !== null && !regex.test(this.element.deepTextContent());
+    this._isHidden = hideRule;
     this.element.classList.toggle('hidden', hideRule);
     if (!hideRule && this._style.parentRule) {
       this._markSelectorHighlights();
     }
     return !hideRule;
+  }
+
+  /**
+   * @returns {boolean}
+   */
+  isHidden() {
+    return this._isHidden;
   }
 
   _markSelectorMatches() {

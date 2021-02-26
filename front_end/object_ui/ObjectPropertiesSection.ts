@@ -100,7 +100,9 @@ export const UIStrings = {
   */
   copyPropertyPath: 'Copy property path',
   /**
-  *@description Text in Object Properties Section
+  * @description Text shown when displaying a JavaScript object that has a string property that is
+  * too large for DevTools to properly display a text editor. This is shown instead of the string in
+  * question. Should be translated.
   */
   stringIsTooLargeToEdit: '<string is too large to edit>',
   /**

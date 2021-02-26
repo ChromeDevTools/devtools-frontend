@@ -152,8 +152,10 @@ export const UIStrings = {
   */
   longFrame: 'Long frame',
   /**
-  *@description Text for the name of a thread of the page
-  *@example {1} PH1
+  * @description Text for the name of a thread of the page. Used when there are multiple threads but
+  * a more specific name for this thread is not available. The placeholder is a number that uniquely
+  * identifies this thread.
+  * @example {1} PH1
   */
   threadS: 'Thread {PH1}',
 };

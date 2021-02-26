@@ -100,7 +100,8 @@ export const UIStrings = {
   */
   parsing: 'Parsing…',
   /**
-  *@description Text in Profile View of a profiler tool
+  * @description Status indicator in the JS Profiler to show that a file has been successfully loaded
+  * from file, as opposed to a profile that has been captured locally.
   */
   loaded: 'Loaded',
 };

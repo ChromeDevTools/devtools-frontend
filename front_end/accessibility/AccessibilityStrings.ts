@@ -447,7 +447,7 @@ export const UIStrings = {
   /**
   *@description Tooltip text that appears when hovering over the 'From caption' attribute name under the Computed Properties section in the Accessibility pane of the Elements pane
   */
-  valueFromTableCaption: 'Value from table caption.',
+  valueFromTableCaption: 'Value from `table` `caption`.',
   /**
   * @description Accessibility attribute name that appears under the Computed Properties section in
   * the Accessibility pane of the Elements panel.

@@ -60,7 +60,7 @@ export const UIStrings = {
   */
   allocationSampling: 'Allocation sampling',
   /**
-  *@description The name of the collection of profiles that are gathered from various snapshots of the heap
+  *@description The title for the collection of profiles that are gathered from various snapshots of the heap, using a sampling (e.g. every 1/100) technique.
   */
   samplingProfiles: 'SAMPLING PROFILES',
   /**

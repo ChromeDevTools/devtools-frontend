@@ -56,8 +56,9 @@ export const UIStrings = {
   */
   deleteS: 'Delete {PH1}',
   /**
-  *@description Warning message for Font Editor invalid text input
-  *@example {font-size} PH1
+  * @description Warning message for Font Editor invalid text input. The placeholder is the name of
+  * the CSS attribute that is incorrect.
+  * @example {font-size} PH1
   */
   PleaseEnterAValidValueForSText: '* Please enter a valid value for {PH1} text input',
   /**
@@ -72,7 +73,7 @@ export const UIStrings = {
   */
   sSliderInput: '{PH1} Slider Input',
   /**
-  *@description Label for Font Editor property text input
+  *@description Accessible label for a text input for a property in the Font Editor.
   *@example {font-size} PH1
   */
   sTextInput: '{PH1} Text Input',

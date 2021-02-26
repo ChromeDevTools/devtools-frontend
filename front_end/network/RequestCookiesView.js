@@ -40,7 +40,8 @@ export const UIStrings = {
   */
   thisRequestHasNoCookies: 'This request has no cookies.',
   /**
-  *@description Text in Request Cookies View of the Network panel
+  * @description Title for a table which shows all of the cookies associated with a selected network
+  * request, in the Network panel. Noun phrase.
   */
   requestCookies: 'Request Cookies',
   /**

@@ -98,7 +98,7 @@ export const UIStrings = {
   */
   isThisPageOptimizedForAdSpeedAnd: 'Is this page optimized for ad speed and quality',
   /**
-  *@description Text of checkbox to emulate mobile device behavior when running audits in Lighthouse
+  *@description ARIA label for a radio button input to emulate mobile device behavior when running audits in Lighthouse.
   */
   applyMobileEmulation: 'Apply mobile emulation',
   /**

@@ -6,7 +6,6 @@
   "object_ui": "ObjectUI",
   "perf_ui": "PerfUI",
   "protocol_client": "ProtocolClient",
-  "har_importer": "HARImporter",
   "sdk_test_runner": "SDKTestRunner",
   "cpu_profiler_test_runner": "CPUProfilerTestRunner"
 }

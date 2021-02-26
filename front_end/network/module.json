@@ -4,7 +4,6 @@
     "components",
     "cookie_table",
     "data_grid",
-    "har_importer",
     "mobile_throttling",
     "object_ui",
     "perf_ui",

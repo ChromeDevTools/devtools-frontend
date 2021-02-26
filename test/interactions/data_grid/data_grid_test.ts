@@ -37,10 +37,10 @@ async function getColumnPixelWidths(columns: ElementHandle<Element>[]) {
   }));
 }
 
-async function getColumnPercentageWidths(dataGrid: ElementHandle<Element>) {
+async function getColumnPercentageWidthsRounded(dataGrid: ElementHandle<Element>) {
   const cols = await $$('col', dataGrid);
   return Promise.all(cols.map(col => {
-    return col.evaluate(cell => window.parseFloat((cell as HTMLElement).style.width));
+    return col.evaluate(cell => Math.round(window.parseFloat((cell as HTMLElement).style.width)));
   }));
 }
 
@@ -137,12 +137,11 @@ describe('data grid', () => {
      * therefore left column % = -16.6%
      * and right column % = + 16.6%
      */
-    const newColumnPercentageWidths = await getColumnPercentageWidths(dataGrid);
+    const newColumnPercentageWidths = await getColumnPercentageWidthsRounded(dataGrid);
     assert.deepEqual(
         [
-          16.31,  // 33 - 16.6 rounded
-          49.69,  // 33 + 16.6 rounded
-          33,     // left alone
+          16, 50,
+          33,  // left alone
         ],
         newColumnPercentageWidths);
     columnWidths = await getColumnPixelWidths(columns);
@@ -217,12 +216,12 @@ describe('data grid', () => {
      * therefore left column % = -11.1%
      * and right column % = + 11.1%
      */
-        const newColumnPercentageWidths = await getColumnPercentageWidths(dataGrid);
+        const newColumnPercentageWidths = await getColumnPercentageWidthsRounded(dataGrid);
         assert.deepEqual(
             newColumnPercentageWidths,
             [
-              55.88,  // 66.66 - 11.1 rounded
-              44.12,  // 33.33 + 11.1 rounded
+              56,  // 66.66 - 11.1 rounded
+              44,  // 33.33 + 11.1 rounded
             ]);
         columnWidths = await getColumnPixelWidths(columns);
         assertNumberBetween(columnWidths[0], 500, 504);  // 55.8% of 900 = 502
@@ -252,12 +251,12 @@ describe('data grid', () => {
     assertNumberBetween(columnPixelWidths[1], 297, 303);
 
     await clickAndDragResizeHandlerHorizontally(firstResizeHandler, 50);
-    const newColumnPercentageWidths = await getColumnPercentageWidths(dataGrid);
+    const newColumnPercentageWidths = await getColumnPercentageWidthsRounded(dataGrid);
     assert.deepEqual(
         newColumnPercentageWidths,
         [
-          58.35,  // 50 + 8.3 rounded
-          41.65,  // 50 - 8.3 rounded
+          58,  // 50 + 8.3 rounded
+          42,  // 50 - 8.3 rounded
         ]);
     columnPixelWidths = await getColumnPixelWidths(columns);
     assertNumberBetween(columnPixelWidths[0], 348, 352);  // 58.35% of 600 = ~350

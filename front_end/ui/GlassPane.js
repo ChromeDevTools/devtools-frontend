@@ -23,7 +23,7 @@ export class GlassPane extends Common.ObjectWrapper.ObjectWrapper {
       this.element.shadowRoot.appendChild(this._arrowElement);
     }
 
-    this.registerRequiredCSS('ui/glassPane.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('ui/glassPane.css', {enableLegacyPatching: false});
     this.setPointerEventsBehavior(PointerEventsBehavior.PierceGlassPane);
 
     this._onMouseDownBound = this._onMouseDown.bind(this);

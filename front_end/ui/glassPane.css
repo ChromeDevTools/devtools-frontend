@@ -16,8 +16,7 @@
 }
 
 :host-context(.dimmed-pane) {
-  background-color: rgb(255 255 255 / 50%); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  background-color: var(--color-background-opacity-50);
 }
 
 :host-context(.no-pointer-events) {

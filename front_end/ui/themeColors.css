@@ -12,6 +12,7 @@
   --color-primary: #1a73e8;
   --color-primary-variant: #4285f4;
   --color-background: #fff;
+  --color-background-opacity-50: rgb(255 255 255 / 50%);
   --color-background-elevation-1: #f1f3f4;
   --color-background-elevation-2: #dee1e6;
   --color-background-highlight: #cacdd1;
@@ -41,6 +42,7 @@
   --color-primary: #8ab4f8;
   --color-primary-variant: #669df6;
   --color-background: #202124;
+  --color-background-50pc: rgb(32 33 36 / 50%);
   --color-background-elevation-1: #292a2d;
   --color-background-elevation-2: #35363a;
   --color-background-highlight: #4b4c4f;

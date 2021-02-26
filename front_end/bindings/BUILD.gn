@@ -7,24 +7,24 @@ import("../../scripts/build/ninja/devtools_module.gni")
 
 devtools_module("bindings") {
   sources = [
-    "BreakpointManager.js",
-    "CSSWorkspaceBinding.js",
-    "CompilerScriptMapping.js",
-    "ContentProviderBasedProject.js",
-    "DebuggerLanguagePlugins.js",
-    "DebuggerWorkspaceBinding.js",
-    "DefaultScriptMapping.js",
-    "FileUtils.js",
-    "IgnoreListManager.js",
-    "LiveLocation.js",
-    "NetworkProject.js",
-    "PresentationConsoleMessageHelper.js",
-    "ResourceMapping.js",
-    "ResourceScriptMapping.js",
-    "ResourceUtils.js",
-    "SASSSourceMapping.js",
-    "StylesSourceMapping.js",
-    "TempFile.js",
+    "BreakpointManager.ts",
+    "CSSWorkspaceBinding.ts",
+    "CompilerScriptMapping.ts",
+    "ContentProviderBasedProject.ts",
+    "DebuggerLanguagePlugins.ts",
+    "DebuggerWorkspaceBinding.ts",
+    "DefaultScriptMapping.ts",
+    "FileUtils.ts",
+    "IgnoreListManager.ts",
+    "LiveLocation.ts",
+    "NetworkProject.ts",
+    "PresentationConsoleMessageHelper.ts",
+    "ResourceMapping.ts",
+    "ResourceScriptMapping.ts",
+    "ResourceUtils.ts",
+    "SASSSourceMapping.ts",
+    "StylesSourceMapping.ts",
+    "TempFile.ts",
   ]
 
   deps = [
@@ -38,13 +38,13 @@ devtools_module("bindings") {
 }
 
 devtools_entrypoint("bundle") {
-  entrypoint = "bindings.js"
+  entrypoint = "bindings.ts"
 
   deps = [ ":bindings" ]
 }
 
 devtools_entrypoint("legacy") {
-  entrypoint = "bindings-legacy.js"
+  entrypoint = "bindings-legacy.ts"
 
   deps = [ ":bundle" ]
 }

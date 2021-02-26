@@ -28,56 +28,40 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
 import * as Workspace from '../workspace/workspace.js';
 
 /**
  * @interface
  */
-export class ChunkedReader {
-  /**
-   * @return {number}
-   */
-  fileSize() {
-    throw new Error('Not implemented yet');
-  }
+export interface ChunkedReader {
+  fileSize(): number;
 
-  /**
-   * @return {number}
-   */
-  loadedSize() {
-    throw new Error('Not implemented yet');
-  }
+  loadedSize(): number;
 
-  /**
-   * @return {string}
-   */
-  fileName() {
-    throw new Error('Not implemented yet');
-  }
+  fileName(): string;
 
-  cancel() {
-  }
+  cancel(): void;
 
-  /**
-   * @return {?DOMError}
-   */
-  error() {
-    throw new Error('Not implemented yet');
-  }
+  error(): DOMError|null;
 }
 
-/**
- * @implements {ChunkedReader}
- */
-export class ChunkedFileReader {
-  /**
-   * @param {!File} blob
-   * @param {number} chunkSize
-   * @param {function(!ChunkedReader)=} chunkTransferredCallback
-   */
-  constructor(blob, chunkSize, chunkTransferredCallback) {
-    /** @type {?File} */
+export class ChunkedFileReader implements ChunkedReader {
+  _file: File|null;
+  _fileSize: number;
+  _loadedSize: number;
+  _chunkSize: number;
+  _chunkTransferredCallback: ((arg0: ChunkedReader) => void)|undefined;
+  _decoder: TextDecoder;
+  _isCanceled: boolean;
+  _error: DOMError|null;
+  _transferFinished!: (arg0: boolean) => void;
+  _output?: Common.StringOutputStream.OutputStream;
+  _reader?: FileReader|null;
+
+  constructor(blob: File, chunkSize: number, chunkTransferredCallback?: ((arg0: ChunkedReader) => void)) {
     this._file = blob;
     this._fileSize = blob.size;
     this._loadedSize = 0;
@@ -85,17 +69,10 @@ export class ChunkedFileReader {
     this._chunkTransferredCallback = chunkTransferredCallback;
     this._decoder = new TextDecoder();
     this._isCanceled = false;
-    /** @type {?DOMError} */
     this._error = null;
-    /** @type {function(boolean):void} */
-    this._transferFinished;
   }
 
-  /**
-   * @param {!Common.StringOutputStream.OutputStream} output
-   * @return {!Promise<boolean>}
-   */
-  read(output) {
+  read(output: Common.StringOutputStream.OutputStream): Promise<boolean> {
     if (this._chunkTransferredCallback) {
       this._chunkTransferredCallback(this);
     }
@@ -104,62 +81,41 @@ export class ChunkedFileReader {
     this._reader.onload = this._onChunkLoaded.bind(this);
     this._reader.onerror = this._onError.bind(this);
     this._loadChunk();
+
     return new Promise(resolve => {
       this._transferFinished = resolve;
     });
   }
 
-  /**
-   * @override
-   */
-  cancel() {
+  cancel(): void {
     this._isCanceled = true;
   }
 
-  /**
-   * @override
-   * @return {number}
-   */
-  loadedSize() {
+  loadedSize(): number {
     return this._loadedSize;
   }
 
-  /**
-   * @override
-   * @return {number}
-   */
-  fileSize() {
+  fileSize(): number {
     return this._fileSize;
   }
 
-  /**
-   * @override
-   * @return {string}
-   */
-  fileName() {
+  fileName(): string {
     if (!this._file) {
       return '';
     }
     return this._file.name;
   }
 
-  /**
-   * @override
-   * @return {?DOMError}
-   */
-  error() {
+  error(): DOMError|null {
     return this._error;
   }
 
-  /**
-   * @param {!Event} event
-   */
-  _onChunkLoaded(event) {
+  _onChunkLoaded(event: Event): void {
     if (this._isCanceled) {
       return;
     }
 
-    const eventTarget = /** @type {!FileReader} */ (event.target);
+    const eventTarget = (event.target as FileReader);
     if (eventTarget.readyState !== FileReader.DONE) {
       return;
     }
@@ -168,7 +124,7 @@ export class ChunkedFileReader {
       return;
     }
 
-    const buffer = /** @type {!ArrayBuffer} */ (this._reader.result);
+    const buffer = (this._reader.result as ArrayBuffer);
     this._loadedSize += buffer.byteLength;
     const endOfFile = this._loadedSize === this._fileSize;
     const decodedString = this._decoder.decode(buffer, {stream: !endOfFile});
@@ -191,7 +147,7 @@ export class ChunkedFileReader {
     this._loadChunk();
   }
 
-  _loadChunk() {
+  _loadChunk(): void {
     if (!this._output || !this._reader || !this._file) {
       return;
     }
@@ -201,32 +157,22 @@ export class ChunkedFileReader {
     this._reader.readAsArrayBuffer(nextPart);
   }
 
-  /**
-   * @param {!Event} event
-   */
-  _onError(event) {
-    const eventTarget = /** @type {!FileReader} */ (event.target);
-    this._error = /** @type {!DOMError} */ (eventTarget.error);
+  _onError(event: Event): void {
+    const eventTarget = (event.target as FileReader);
+    this._error = (eventTarget.error as DOMError);
     this._transferFinished(false);
   }
 }
 
-/**
- * @implements {Common.StringOutputStream.OutputStream}
- */
-export class FileOutputStream {
+export class FileOutputStream implements Common.StringOutputStream.OutputStream {
+  _writeCallbacks: (() => void)[];
+  _fileName!: string;
+  _closed?: boolean;
   constructor() {
-    /** @type {!Array<function():void>} */
     this._writeCallbacks = [];
-    /** @type {string} */
-    this._fileName;
   }
 
-  /**
-   * @param {string} fileName
-   * @return {!Promise<boolean>}
-   */
-  async open(fileName) {
+  async open(fileName: string): Promise<boolean> {
     this._closed = false;
     /** @type {!Array<function():void>} */
     this._writeCallbacks = [];
@@ -239,22 +185,14 @@ export class FileOutputStream {
     return Boolean(saveResponse);
   }
 
-  /**
-   * @override
-   * @param {string} data
-   * @return {!Promise<void>}
-   */
-  write(data) {
+  write(data: string): Promise<void> {
     return new Promise(resolve => {
       this._writeCallbacks.push(resolve);
       Workspace.FileManager.FileManager.instance().append(this._fileName, data);
     });
   }
 
-  /**
-   * @override
-   */
-  async close() {
+  async close(): Promise<void> {
     this._closed = true;
     if (this._writeCallbacks.length) {
       return;
@@ -264,10 +202,7 @@ export class FileOutputStream {
     Workspace.FileManager.FileManager.instance().close(this._fileName);
   }
 
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  _onAppendDone(event) {
+  _onAppendDone(event: Common.EventTarget.EventTargetEvent): void {
     if (event.data !== this._fileName) {
       return;
     }

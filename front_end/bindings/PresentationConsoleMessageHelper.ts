@@ -28,6 +28,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
 import * as SDK from '../sdk/sdk.js';
 import * as Workspace from '../workspace/workspace.js';
@@ -35,13 +37,11 @@ import * as Workspace from '../workspace/workspace.js';
 import {DebuggerWorkspaceBinding} from './DebuggerWorkspaceBinding.js';
 import {LiveLocation, LiveLocationPool} from './LiveLocation.js';  // eslint-disable-line no-unused-vars
 
-/** @type {!WeakMap<!SDK.DebuggerModel.DebuggerModel, !PresentationConsoleMessageHelper>} */
-const debuggerModelToMessageHelperMap = new WeakMap();
+const debuggerModelToMessageHelperMap =
+    new WeakMap<SDK.DebuggerModel.DebuggerModel, PresentationConsoleMessageHelper>();
 
-/**
- * @implements {SDK.SDKModel.SDKModelObserver<!SDK.DebuggerModel.DebuggerModel>}
- */
-export class PresentationConsoleMessageManager {
+export class PresentationConsoleMessageManager implements
+    SDK.SDKModel.SDKModelObserver<SDK.DebuggerModel.DebuggerModel> {
   constructor() {
     SDK.SDKModel.TargetManager.instance().observeModels(SDK.DebuggerModel.DebuggerModel, this);
 
@@ -49,33 +49,22 @@ export class PresentationConsoleMessageManager {
         SDK.ConsoleModel.Events.ConsoleCleared, this._consoleCleared, this);
     SDK.ConsoleModel.ConsoleModel.instance().addEventListener(
         SDK.ConsoleModel.Events.MessageAdded,
-        event => this._consoleMessageAdded(/** @type {!SDK.ConsoleModel.ConsoleMessage} */ (event.data)));
+        event => this._consoleMessageAdded((event.data as SDK.ConsoleModel.ConsoleMessage)));
     SDK.ConsoleModel.ConsoleModel.instance().messages().forEach(this._consoleMessageAdded, this);
   }
 
-  /**
-   * @override
-   * @param {!SDK.DebuggerModel.DebuggerModel} debuggerModel
-   */
-  modelAdded(debuggerModel) {
+  modelAdded(debuggerModel: SDK.DebuggerModel.DebuggerModel): void {
     debuggerModelToMessageHelperMap.set(debuggerModel, new PresentationConsoleMessageHelper(debuggerModel));
   }
 
-  /**
-   * @override
-   * @param {!SDK.DebuggerModel.DebuggerModel} debuggerModel
-   */
-  modelRemoved(debuggerModel) {
+  modelRemoved(debuggerModel: SDK.DebuggerModel.DebuggerModel): void {
     const helper = debuggerModelToMessageHelperMap.get(debuggerModel);
     if (helper) {
       helper._consoleCleared();
     }
   }
 
-  /**
-   * @param {!SDK.ConsoleModel.ConsoleMessage} message
-   */
-  _consoleMessageAdded(message) {
+  _consoleMessageAdded(message: SDK.ConsoleModel.ConsoleMessage): void {
     const runtimeModel = message.runtimeModel();
     if (!message.isErrorOrWarning() || !message.runtimeModel() ||
         message.source === SDK.ConsoleModel.MessageSource.Violation || !runtimeModel) {
@@ -87,7 +76,7 @@ export class PresentationConsoleMessageManager {
     }
   }
 
-  _consoleCleared() {
+  _consoleCleared(): void {
     for (const debuggerModel of SDK.SDKModel.TargetManager.instance().models(SDK.DebuggerModel.DebuggerModel)) {
       const helper = debuggerModelToMessageHelperMap.get(debuggerModel);
       if (helper) {
@@ -98,16 +87,16 @@ export class PresentationConsoleMessageManager {
 }
 
 export class PresentationConsoleMessageHelper {
-  /**
-   * @param {!SDK.DebuggerModel.DebuggerModel} debuggerModel
-   */
-  constructor(debuggerModel) {
+  _debuggerModel: SDK.DebuggerModel.DebuggerModel;
+  _pendingConsoleMessages: Map<string, SDK.ConsoleModel.ConsoleMessage[]>;
+  _presentationConsoleMessages: PresentationConsoleMessage[];
+  _locationPool: LiveLocationPool;
+
+  constructor(debuggerModel: SDK.DebuggerModel.DebuggerModel) {
     this._debuggerModel = debuggerModel;
 
-    /** @type {!Map<string, !Array.<!SDK.ConsoleModel.ConsoleMessage>>} */
     this._pendingConsoleMessages = new Map();
 
-    /** @type {!Array.<!PresentationConsoleMessage>} */
     this._presentationConsoleMessages = [];
 
     // TODO(dgozman): queueMicrotask because we race with DebuggerWorkspaceBinding on ParsedScriptSource event delivery.
@@ -121,10 +110,7 @@ export class PresentationConsoleMessageHelper {
     this._locationPool = new LiveLocationPool();
   }
 
-  /**
-   * @param {!SDK.ConsoleModel.ConsoleMessage} message
-   */
-  _consoleMessageAdded(message) {
+  _consoleMessageAdded(message: SDK.ConsoleModel.ConsoleMessage): void {
     const rawLocation = this._rawLocation(message);
     if (rawLocation) {
       this._addConsoleMessageToScript(message, rawLocation);
@@ -133,11 +119,7 @@ export class PresentationConsoleMessageHelper {
     }
   }
 
-  /**
-   * @param {!SDK.ConsoleModel.ConsoleMessage} message
-   * @return {?SDK.DebuggerModel.Location}
-   */
-  _rawLocation(message) {
+  _rawLocation(message: SDK.ConsoleModel.ConsoleMessage): SDK.DebuggerModel.Location|null {
     if (message.scriptId) {
       return this._debuggerModel.createRawLocationByScriptId(message.scriptId, message.line, message.column);
     }
@@ -152,18 +134,11 @@ export class PresentationConsoleMessageHelper {
     return null;
   }
 
-  /**
-   * @param {!SDK.ConsoleModel.ConsoleMessage} message
-   * @param {!SDK.DebuggerModel.Location} rawLocation
-   */
-  _addConsoleMessageToScript(message, rawLocation) {
+  _addConsoleMessageToScript(message: SDK.ConsoleModel.ConsoleMessage, rawLocation: SDK.DebuggerModel.Location): void {
     this._presentationConsoleMessages.push(new PresentationConsoleMessage(message, rawLocation, this._locationPool));
   }
 
-  /**
-   * @param {!SDK.ConsoleModel.ConsoleMessage} message
-   */
-  _addPendingConsoleMessage(message) {
+  _addPendingConsoleMessage(message: SDK.ConsoleModel.ConsoleMessage): void {
     if (!message.url) {
       return;
     }
@@ -175,11 +150,8 @@ export class PresentationConsoleMessageHelper {
     }
   }
 
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  _parsedScriptSource(event) {
-    const script = /** @type {!SDK.Script.Script} */ (event.data);
+  _parsedScriptSource(event: Common.EventTarget.EventTargetEvent): void {
+    const script = (event.data as SDK.Script.Script);
 
     const messages = this._pendingConsoleMessages.get(script.sourceURL);
     if (!messages) {
@@ -203,12 +175,12 @@ export class PresentationConsoleMessageHelper {
     }
   }
 
-  _consoleCleared() {
+  _consoleCleared(): void {
     this._pendingConsoleMessages = new Map();
     this._debuggerReset();
   }
 
-  _debuggerReset() {
+  _debuggerReset(): void {
     for (const message of this._presentationConsoleMessages) {
       message.dispose();
     }
@@ -218,22 +190,20 @@ export class PresentationConsoleMessageHelper {
 }
 
 export class PresentationConsoleMessage {
-  /**
-   * @param {!SDK.ConsoleModel.ConsoleMessage} message
-   * @param {!SDK.DebuggerModel.Location} rawLocation
-   * @param {!LiveLocationPool} locationPool
-   */
-  constructor(message, rawLocation, locationPool) {
+  _text: string;
+  _level: Workspace.UISourceCode.Message.Level;
+  _uiMessage?: Workspace.UISourceCode.Message;
+
+  constructor(
+      message: SDK.ConsoleModel.ConsoleMessage, rawLocation: SDK.DebuggerModel.Location,
+      locationPool: LiveLocationPool) {
     this._text = message.messageText;
     this._level = message.level === SDK.ConsoleModel.MessageLevel.Error ? Workspace.UISourceCode.Message.Level.Error :
                                                                           Workspace.UISourceCode.Message.Level.Warning;
     DebuggerWorkspaceBinding.instance().createLiveLocation(rawLocation, this._updateLocation.bind(this), locationPool);
   }
 
-  /**
-   * @param {!LiveLocation} liveLocation
-   */
-  async _updateLocation(liveLocation) {
+  async _updateLocation(liveLocation: LiveLocation): Promise<void> {
     if (this._uiMessage) {
       this._uiMessage.remove();
     }
@@ -245,7 +215,7 @@ export class PresentationConsoleMessage {
         uiLocation.uiSourceCode.addLineMessage(this._level, this._text, uiLocation.lineNumber, uiLocation.columnNumber);
   }
 
-  dispose() {
+  dispose(): void {
     if (this._uiMessage) {
       this._uiMessage.remove();
     }

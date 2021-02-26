@@ -28,6 +28,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Common from '../common/common.js';
 import * as SDK from '../sdk/sdk.js';
 import * as TextUtils from '../text_utils/text_utils.js';  // eslint-disable-line no-unused-vars
@@ -38,25 +40,21 @@ import {SourceMapping} from './CSSWorkspaceBinding.js';  // eslint-disable-line 
 import {NetworkProject} from './NetworkProject.js';
 import {metadataForURL} from './ResourceUtils.js';
 
-/** @type {!WeakMap<!Workspace.UISourceCode.UISourceCode, !StyleFile>} */
-const uiSourceCodeToStyleMap = new WeakMap();
+const uiSourceCodeToStyleMap = new WeakMap<Workspace.UISourceCode.UISourceCode, StyleFile>();
 
-/**
- * @implements {SourceMapping}
- */
-export class StylesSourceMapping {
-  /**
-   * @param {!SDK.CSSModel.CSSModel} cssModel
-   * @param {!Workspace.Workspace.WorkspaceImpl} workspace
-   */
-  constructor(cssModel, workspace) {
+export class StylesSourceMapping implements SourceMapping {
+  _cssModel: SDK.CSSModel.CSSModel;
+  _project: ContentProviderBasedProject;
+  _styleFiles: Map<string, StyleFile>;
+  _eventListeners: Common.EventTarget.EventDescriptor[];
+
+  constructor(cssModel: SDK.CSSModel.CSSModel, workspace: Workspace.Workspace.WorkspaceImpl) {
     this._cssModel = cssModel;
     const target = this._cssModel.target();
     this._project = new ContentProviderBasedProject(
         workspace, 'css:' + target.id(), Workspace.Workspace.projectTypes.Network, '', false /* isServiceProject */);
     NetworkProject.setTargetForProject(this._project, target);
 
-    /** @type {!Map.<string, !StyleFile>} */
     this._styleFiles = new Map();
     this._eventListeners = [
       this._cssModel.addEventListener(SDK.CSSModel.Events.StyleSheetAdded, this._styleSheetAdded, this),
@@ -65,12 +63,7 @@ export class StylesSourceMapping {
     ];
   }
 
-  /**
-   * @override
-   * @param {!SDK.CSSModel.CSSLocation} rawLocation
-   * @return {?Workspace.UISourceCode.UILocation}
-   */
-  rawLocationToUILocation(rawLocation) {
+  rawLocationToUILocation(rawLocation: SDK.CSSModel.CSSLocation): Workspace.UISourceCode.UILocation|null {
     const header = rawLocation.header();
     if (!header || !this._acceptsHeader(header)) {
       return null;
@@ -80,8 +73,7 @@ export class StylesSourceMapping {
       return null;
     }
     let lineNumber = rawLocation.lineNumber;
-    /** @type {number|undefined} */
-    let columnNumber = rawLocation.columnNumber;
+    let columnNumber: undefined|number = rawLocation.columnNumber;
     if (header.isInline && header.hasSourceURL) {
       lineNumber -= header.lineNumberInSource(0);
       const headerColumnNumber = header.columnNumberInSource(lineNumber, 0);
@@ -94,12 +86,7 @@ export class StylesSourceMapping {
     return styleFile._uiSourceCode.uiLocation(lineNumber, columnNumber);
   }
 
-  /**
-   * @override
-   * @param {!Workspace.UISourceCode.UILocation} uiLocation
-   * @return {!Array<!SDK.CSSModel.CSSLocation>}
-   */
-  uiLocationToRawLocations(uiLocation) {
+  uiLocationToRawLocations(uiLocation: Workspace.UISourceCode.UILocation): SDK.CSSModel.CSSLocation[] {
     const styleFile = uiSourceCodeToStyleMap.get(uiLocation.uiSourceCode);
     if (!styleFile) {
       return [];
@@ -107,7 +94,6 @@ export class StylesSourceMapping {
     const rawLocations = [];
     for (const header of styleFile._headers) {
       let lineNumber = uiLocation.lineNumber;
-      /** @type {number|undefined} */
       let columnNumber = uiLocation.columnNumber;
       if (header.isInline && header.hasSourceURL) {
         // TODO(crbug.com/1153123): Revisit the `columnNumber || 0` and also preserve `undefined` for source maps?
@@ -119,10 +105,7 @@ export class StylesSourceMapping {
     return rawLocations;
   }
 
-  /**
-   * @param {!SDK.CSSStyleSheetHeader.CSSStyleSheetHeader} header
-   */
-  _acceptsHeader(header) {
+  _acceptsHeader(header: SDK.CSSStyleSheetHeader.CSSStyleSheetHeader): boolean {
     if (header.isConstructed) {
       return false;
     }
@@ -135,11 +118,8 @@ export class StylesSourceMapping {
     return true;
   }
 
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  _styleSheetAdded(event) {
-    const header = /** @type {!SDK.CSSStyleSheetHeader.CSSStyleSheetHeader} */ (event.data);
+  _styleSheetAdded(event: Common.EventTarget.EventTargetEvent): void {
+    const header = (event.data as SDK.CSSStyleSheetHeader.CSSStyleSheetHeader);
     if (!this._acceptsHeader(header)) {
       return;
     }
@@ -154,11 +134,8 @@ export class StylesSourceMapping {
     }
   }
 
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  _styleSheetRemoved(event) {
-    const header = /** @type {!SDK.CSSStyleSheetHeader.CSSStyleSheetHeader} */ (event.data);
+  _styleSheetRemoved(event: Common.EventTarget.EventTargetEvent): void {
+    const header = (event.data as SDK.CSSStyleSheetHeader.CSSStyleSheetHeader);
     if (!this._acceptsHeader(header)) {
       return;
     }
@@ -174,10 +151,7 @@ export class StylesSourceMapping {
     }
   }
 
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  _styleSheetChanged(event) {
+  _styleSheetChanged(event: Common.EventTarget.EventTargetEvent): void {
     const header = this._cssModel.styleSheetHeaderForId(event.data.styleSheetId);
     if (!header || !this._acceptsHeader(header)) {
       return;
@@ -188,7 +162,7 @@ export class StylesSourceMapping {
     }
   }
 
-  dispose() {
+  dispose(): void {
     for (const styleFile of this._styleFiles.values()) {
       styleFile.dispose();
     }
@@ -198,19 +172,22 @@ export class StylesSourceMapping {
   }
 }
 
-/**
- * @implements {TextUtils.ContentProvider.ContentProvider}
- */
-export class StyleFile {
-  /**
-   * @param {!SDK.CSSModel.CSSModel} cssModel
-   * @param {!ContentProviderBasedProject} project
-   * @param {!SDK.CSSStyleSheetHeader.CSSStyleSheetHeader} header
-   */
-  constructor(cssModel, project, header) {
+export class StyleFile implements TextUtils.ContentProvider.ContentProvider {
+  _cssModel: SDK.CSSModel.CSSModel;
+  _project: ContentProviderBasedProject;
+  _headers: Set<SDK.CSSStyleSheetHeader.CSSStyleSheetHeader>;
+  _uiSourceCode: Workspace.UISourceCode.UISourceCode;
+  _eventListeners: Common.EventTarget.EventDescriptor[];
+  _throttler: Common.Throttler.Throttler;
+  _terminated: boolean;
+  _isAddingRevision?: boolean;
+  _isUpdatingHeaders?: boolean;
+
+  constructor(
+      cssModel: SDK.CSSModel.CSSModel, project: ContentProviderBasedProject,
+      header: SDK.CSSStyleSheetHeader.CSSStyleSheetHeader) {
     this._cssModel = cssModel;
     this._project = project;
-    /** @type {!Set<!SDK.CSSStyleSheetHeader.CSSStyleSheetHeader>} */
     this._headers = new Set([header]);
 
     const target = cssModel.target();
@@ -227,32 +204,23 @@ export class StyleFile {
       this._uiSourceCode.addEventListener(
           Workspace.UISourceCode.Events.WorkingCopyChanged, this._workingCopyChanged, this),
       this._uiSourceCode.addEventListener(
-          Workspace.UISourceCode.Events.WorkingCopyCommitted, this._workingCopyCommitted, this)
+          Workspace.UISourceCode.Events.WorkingCopyCommitted, this._workingCopyCommitted, this),
     ];
     this._throttler = new Common.Throttler.Throttler(StyleFile.updateTimeout);
     this._terminated = false;
   }
 
-  /**
-   * @param {!SDK.CSSStyleSheetHeader.CSSStyleSheetHeader} header
-   */
-  addHeader(header) {
+  addHeader(header: SDK.CSSStyleSheetHeader.CSSStyleSheetHeader): void {
     this._headers.add(header);
     NetworkProject.addFrameAttribution(this._uiSourceCode, header.frameId);
   }
 
-  /**
-   * @param {!SDK.CSSStyleSheetHeader.CSSStyleSheetHeader} header
-   */
-  removeHeader(header) {
+  removeHeader(header: SDK.CSSStyleSheetHeader.CSSStyleSheetHeader): void {
     this._headers.delete(header);
     NetworkProject.removeFrameAttribution(this._uiSourceCode, header.frameId);
   }
 
-  /**
-   * @param {!SDK.CSSStyleSheetHeader.CSSStyleSheetHeader} header
-   */
-  _styleSheetChanged(header) {
+  _styleSheetChanged(header: SDK.CSSStyleSheetHeader.CSSStyleSheetHeader): void {
     console.assert(this._headers.has(header));
     if (this._isUpdatingHeaders || !this._headers.has(header)) {
       return;
@@ -261,10 +229,7 @@ export class StyleFile {
     this._throttler.schedule(mirrorContentBound, false /* asSoonAsPossible */);
   }
 
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  _workingCopyCommitted(event) {
+  _workingCopyCommitted(_event: Common.EventTarget.EventTargetEvent): void {
     if (this._isAddingRevision) {
       return;
     }
@@ -272,10 +237,7 @@ export class StyleFile {
     this._throttler.schedule(mirrorContentBound, true /* asSoonAsPossible */);
   }
 
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  _workingCopyChanged(event) {
+  _workingCopyChanged(_event: Common.EventTarget.EventTargetEvent): void {
     if (this._isAddingRevision) {
       return;
     }
@@ -283,18 +245,13 @@ export class StyleFile {
     this._throttler.schedule(mirrorContentBound, false /* asSoonAsPossible */);
   }
 
-  /**
-   * @param {!TextUtils.ContentProvider.ContentProvider} fromProvider
-   * @param {boolean} majorChange
-   * @return {!Promise<void>}
-   */
-  async _mirrorContent(fromProvider, majorChange) {
+  async _mirrorContent(fromProvider: TextUtils.ContentProvider.ContentProvider, majorChange: boolean): Promise<void> {
     if (this._terminated) {
       this._styleFileSyncedForTest();
       return;
     }
 
-    let newContent = null;
+    let newContent: string|(string | null)|null = null;
     if (fromProvider === this._uiSourceCode) {
       newContent = this._uiSourceCode.workingCopy();
     } else {
@@ -327,10 +284,10 @@ export class StyleFile {
     this._styleFileSyncedForTest();
   }
 
-  _styleFileSyncedForTest() {
+  _styleFileSyncedForTest(): void {
   }
 
-  dispose() {
+  dispose(): void {
     if (this._terminated) {
       return;
     }
@@ -339,53 +296,32 @@ export class StyleFile {
     Common.EventTarget.EventTarget.removeEventListeners(this._eventListeners);
   }
 
-  /**
-   * @override
-   * @return {string}
-   */
-  contentURL() {
+  contentURL(): string {
     console.assert(this._headers.size > 0);
     return this._headers.values().next().value.originalContentProvider().contentURL();
   }
 
-  /**
-   * @override
-   * @return {!Common.ResourceType.ResourceType}
-   */
-  contentType() {
+  contentType(): Common.ResourceType.ResourceType {
     console.assert(this._headers.size > 0);
     return this._headers.values().next().value.originalContentProvider().contentType();
   }
 
-  /**
-   * @override
-   * @return {!Promise<boolean>}
-   */
-  contentEncoded() {
+  contentEncoded(): Promise<boolean> {
     console.assert(this._headers.size > 0);
     return this._headers.values().next().value.originalContentProvider().contentEncoded();
   }
 
-  /**
-   * @override
-   * @return {!Promise<!TextUtils.ContentProvider.DeferredContent>}
-   */
-  requestContent() {
+  requestContent(): Promise<TextUtils.ContentProvider.DeferredContent> {
     console.assert(this._headers.size > 0);
     return this._headers.values().next().value.originalContentProvider().requestContent();
   }
 
-  /**
-   * @override
-   * @param {string} query
-   * @param {boolean} caseSensitive
-   * @param {boolean} isRegex
-   * @return {!Promise<!Array<!TextUtils.ContentProvider.SearchMatch>>}
-   */
-  searchInContent(query, caseSensitive, isRegex) {
+  searchInContent(query: string, caseSensitive: boolean, isRegex: boolean):
+      Promise<TextUtils.ContentProvider.SearchMatch[]> {
     console.assert(this._headers.size > 0);
     return this._headers.values().next().value.originalContentProvider().searchInContent(query, caseSensitive, isRegex);
   }
+  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  static readonly updateTimeout = 200;
 }
-
-StyleFile.updateTimeout = 200;

@@ -28,6 +28,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
 
 import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
@@ -35,47 +37,33 @@ import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
 import {ChunkedFileReader, ChunkedReader} from './FileUtils.js';  // eslint-disable-line no-unused-vars
 
 export class TempFile {
+  _lastBlob: Blob|null;
   constructor() {
-    /** @type {?Blob} */
     this._lastBlob = null;
   }
 
-  /**
-   * @param {!Array<string|!Blob>} pieces
-   */
-  write(pieces) {
+  write(pieces: (string|Blob)[]): void {
     if (this._lastBlob) {
       pieces.unshift(this._lastBlob);
     }
     this._lastBlob = new Blob(pieces, {type: 'text/plain'});
   }
 
-  /**
-   * @return {!Promise<?string>}
-   */
-  read() {
+  read(): Promise<string|null> {
     return this.readRange();
   }
 
-  /**
-   * @return {number}
-   */
-  size() {
+  size(): number {
     return this._lastBlob ? this._lastBlob.size : 0;
   }
 
-  /**
-   * @param {number=} startOffset
-   * @param {number=} endOffset
-   * @return {!Promise<?string>}
-   */
-  async readRange(startOffset, endOffset) {
+  async readRange(startOffset?: number, endOffset?: number): Promise<string|null> {
     if (!this._lastBlob) {
       Common.Console.Console.instance().error('Attempt to read a temp file that was never written');
       return '';
     }
     const blob = typeof startOffset === 'number' || typeof endOffset === 'number' ?
-        this._lastBlob.slice(/** @type {number} */ (startOffset), /** @type {number} */ (endOffset)) :
+        this._lastBlob.slice((startOffset as number), (endOffset as number)) :
         this._lastBlob;
 
     const reader = new FileReader();
@@ -89,47 +77,36 @@ export class TempFile {
       Common.Console.Console.instance().error('Failed to read from temp file: ' + error.message);
     }
 
-    return /** @type {?string} */ (reader.result);
+    return reader.result as string | null;
   }
 
-  /**
-   * @param {!Common.StringOutputStream.OutputStream} outputStream
-   * @param {function(!ChunkedReader)=} progress
-   * @return {!Promise<?DOMError>}
-   */
-  async copyToOutputStream(outputStream, progress) {
+  async copyToOutputStream(
+      outputStream: Common.StringOutputStream.OutputStream,
+      progress?: ((arg0: ChunkedReader) => void)): Promise<DOMError|null> {
     if (!this._lastBlob) {
       outputStream.close();
-      return /** @type {?DOMError} */ (null);
+      return null;
     }
-    const reader = new ChunkedFileReader(/** @type {!File} */ (this._lastBlob), 10 * 1000 * 1000, progress);
+    const reader = new ChunkedFileReader((this._lastBlob as File), 10 * 1000 * 1000, progress);
     return reader.read(outputStream).then(success => success ? null : reader.error());
   }
 
-  remove() {
+  remove(): void {
     this._lastBlob = null;
   }
 }
 
-/**
- * @implements {SDK.TracingModel.BackingStorage}
- */
-export class TempFileBackingStorage {
+export class TempFileBackingStorage implements SDK.TracingModel.BackingStorage {
+  _file: TempFile|null;
+  _strings!: string[];
+  _stringsLength!: number;
+
   constructor() {
-    /** @type {?TempFile} */
     this._file = null;
-    /** @type {!Array<string>} */
-    this._strings;
-    /** @type {number} */
-    this._stringsLength;
     this.reset();
   }
 
-  /**
-   * @override
-   * @param {string} string
-   */
-  appendString(string) {
+  appendString(string: string): void {
     this._strings.push(string);
     this._stringsLength += string.length;
     const flushStringLength = 10 * 1024 * 1024;
@@ -138,15 +115,10 @@ export class TempFileBackingStorage {
     }
   }
 
-  /**
-   * @override
-   * @param {string} string
-   * @return {function():!Promise<?string>}
-   */
-  appendAccessibleString(string) {
+  appendAccessibleString(string: string): () => Promise<string|null> {
     this._flush();
     if (!this._file) {
-      return async () => null;
+      return async(): Promise<null> => null;
     }
     const startOffset = this._file.size();
     this._strings.push(string);
@@ -154,7 +126,7 @@ export class TempFileBackingStorage {
     return this._file.readRange.bind(this._file, startOffset, this._file.size());
   }
 
-  _flush() {
+  _flush(): void {
     if (!this._strings.length) {
       return;
     }
@@ -165,31 +137,20 @@ export class TempFileBackingStorage {
     this._file.write(this._strings.splice(0));
   }
 
-  /**
-   * @override
-   */
-  finishWriting() {
+  finishWriting(): void {
     this._flush();
   }
 
-  /**
-   * @override
-   */
-  reset() {
+  reset(): void {
     if (this._file) {
       this._file.remove();
     }
     this._file = null;
-    /** @type {!Array<string>} */
     this._strings = [];
     this._stringsLength = 0;
   }
 
-  /**
-   * @param {!Common.StringOutputStream.OutputStream} outputStream
-   * @return {!Promise<?DOMError>}
-   */
-  writeToStream(outputStream) {
+  writeToStream(outputStream: Common.StringOutputStream.OutputStream): Promise<DOMError|null> {
     return this._file ? this._file.copyToOutputStream(outputStream) : Promise.resolve(null);
   }
 }

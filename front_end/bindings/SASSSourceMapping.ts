@@ -28,6 +28,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Common from '../common/common.js';
 import * as SDK from '../sdk/sdk.js';
 import * as Workspace from '../workspace/workspace.js';
@@ -36,19 +38,17 @@ import {ContentProviderBasedProject} from './ContentProviderBasedProject.js';
 import {CSSWorkspaceBinding, SourceMapping} from './CSSWorkspaceBinding.js';  // eslint-disable-line no-unused-vars
 import {NetworkProject} from './NetworkProject.js';
 
-/** @type {!WeakMap<!Workspace.UISourceCode.UISourceCode, !SDK.SourceMap.TextSourceMap>} */
-const uiSourceCodeToSourceMapMap = new WeakMap();
+const uiSourceCodeToSourceMapMap = new WeakMap<Workspace.UISourceCode.UISourceCode, SDK.SourceMap.TextSourceMap>();
 
-/**
- * @implements {SourceMapping}
- */
-export class SASSSourceMapping {
-  /**
-   * @param {!SDK.SDKModel.Target} target
-   * @param {!SDK.SourceMapManager.SourceMapManager<!SDK.CSSStyleSheetHeader.CSSStyleSheetHeader>} sourceMapManager
-   * @param {!Workspace.Workspace.WorkspaceImpl} workspace
-   */
-  constructor(target, sourceMapManager, workspace) {
+export class SASSSourceMapping implements SourceMapping {
+  _sourceMapManager: SDK.SourceMapManager.SourceMapManager<SDK.CSSStyleSheetHeader.CSSStyleSheetHeader>;
+  _project: ContentProviderBasedProject;
+  _eventListeners: Common.EventTarget.EventDescriptor[];
+
+  constructor(
+      target: SDK.SDKModel.Target,
+      sourceMapManager: SDK.SourceMapManager.SourceMapManager<SDK.CSSStyleSheetHeader.CSSStyleSheetHeader>,
+      workspace: Workspace.Workspace.WorkspaceImpl) {
     this._sourceMapManager = sourceMapManager;
     this._project = new ContentProviderBasedProject(
         workspace, 'cssSourceMaps:' + target.id(), Workspace.Workspace.projectTypes.Network, '',
@@ -73,22 +73,16 @@ export class SASSSourceMapping {
           event => {
             this._sourceMapChanged(event);
           },
-          this)
+          this),
     ];
   }
 
-  /**
-   * @param {?SDK.SourceMap.SourceMap} sourceMap
-   */
-  _sourceMapAttachedForTest(sourceMap) {
+  _sourceMapAttachedForTest(_sourceMap: SDK.SourceMap.SourceMap|null): void {
   }
 
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  async _sourceMapAttached(event) {
-    const header = /** @type {!SDK.CSSStyleSheetHeader.CSSStyleSheetHeader} */ (event.data.client);
-    const sourceMap = /** @type {!SDK.SourceMap.TextSourceMap} */ (event.data.sourceMap);
+  async _sourceMapAttached(event: Common.EventTarget.EventTargetEvent): Promise<void> {
+    const header = (event.data.client as SDK.CSSStyleSheetHeader.CSSStyleSheetHeader);
+    const sourceMap = (event.data.sourceMap as SDK.SourceMap.TextSourceMap);
     for (const sassURL of sourceMap.sourceURLs()) {
       let uiSourceCode = this._project.uiSourceCodeForURL(sassURL);
       if (uiSourceCode) {
@@ -113,12 +107,9 @@ export class SASSSourceMapping {
     this._sourceMapAttachedForTest(sourceMap);
   }
 
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  async _sourceMapDetached(event) {
-    const header = /** @type {!SDK.CSSStyleSheetHeader.CSSStyleSheetHeader} */ (event.data.client);
-    const sourceMap = /** @type {!SDK.SourceMap.SourceMap} */ (event.data.sourceMap);
+  async _sourceMapDetached(event: Common.EventTarget.EventTargetEvent): Promise<void> {
+    const header = (event.data.client as SDK.CSSStyleSheetHeader.CSSStyleSheetHeader);
+    const sourceMap = (event.data.sourceMap as SDK.SourceMap.SourceMap);
     const headers = this._sourceMapManager.clientsForSourceMap(sourceMap);
     for (const sassURL of sourceMap.sourceURLs()) {
       if (headers.length) {
@@ -134,12 +125,9 @@ export class SASSSourceMapping {
     await CSSWorkspaceBinding.instance().updateLocations(header);
   }
 
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  async _sourceMapChanged(event) {
-    const sourceMap = /** @type {!SDK.SourceMap.SourceMap} */ (event.data.sourceMap);
-    const newSources = /** @type {!Map<string, string>} */ (event.data.newSources);
+  async _sourceMapChanged(event: Common.EventTarget.EventTargetEvent): Promise<void> {
+    const sourceMap = (event.data.sourceMap as SDK.SourceMap.SourceMap);
+    const newSources = (event.data.newSources as Map<string, string>);
     const headers = this._sourceMapManager.clientsForSourceMap(sourceMap);
     for (const sourceURL of newSources.keys()) {
       const uiSourceCode = this._project.uiSourceCodeForURL(sourceURL);
@@ -147,19 +135,14 @@ export class SASSSourceMapping {
         console.error('Failed to update source for ' + sourceURL);
         continue;
       }
-      const sassText = /** @type {string} */ (newSources.get(sourceURL));
+      const sassText = (newSources.get(sourceURL) as string);
       uiSourceCode.setWorkingCopy(sassText);
     }
     const updatePromises = headers.map(header => CSSWorkspaceBinding.instance().updateLocations(header));
     await Promise.all(updatePromises);
   }
 
-  /**
-   * @override
-   * @param {!SDK.CSSModel.CSSLocation} rawLocation
-   * @return {?Workspace.UISourceCode.UILocation}
-   */
-  rawLocationToUILocation(rawLocation) {
+  rawLocationToUILocation(rawLocation: SDK.CSSModel.CSSLocation): Workspace.UISourceCode.UILocation|null {
     const header = rawLocation.header();
     if (!header) {
       return null;
@@ -179,12 +162,7 @@ export class SASSSourceMapping {
     return uiSourceCode.uiLocation(entry.sourceLineNumber || 0, entry.sourceColumnNumber);
   }
 
-  /**
-   * @override
-   * @param {!Workspace.UISourceCode.UILocation} uiLocation
-   * @return {!Array<!SDK.CSSModel.CSSLocation>}
-   */
-  uiLocationToRawLocations(uiLocation) {
+  uiLocationToRawLocations(uiLocation: Workspace.UISourceCode.UILocation): SDK.CSSModel.CSSLocation[] {
     const sourceMap = uiSourceCodeToSourceMapMap.get(uiLocation.uiSourceCode);
     if (!sourceMap) {
       return [];
@@ -200,7 +178,7 @@ export class SASSSourceMapping {
     return locations;
   }
 
-  dispose() {
+  dispose(): void {
     this._project.dispose();
     Common.EventTarget.EventTarget.removeEventListeners(this._eventListeners);
   }

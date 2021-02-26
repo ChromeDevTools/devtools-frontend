@@ -28,6 +28,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Common from '../common/common.js';
 import * as SDK from '../sdk/sdk.js';
 import * as Workspace from '../workspace/workspace.js';
@@ -35,21 +37,18 @@ import * as Workspace from '../workspace/workspace.js';
 import {ContentProviderBasedProject} from './ContentProviderBasedProject.js';
 import {DebuggerSourceMapping, DebuggerWorkspaceBinding} from './DebuggerWorkspaceBinding.js';  // eslint-disable-line no-unused-vars
 
-/** @type {!WeakMap<!Workspace.UISourceCode.UISourceCode, !Set<!SDK.Script.Script>>} */
-const uiSourceCodeToScriptsMap = new WeakMap();
-/** @type {!WeakMap<!SDK.Script.Script, !Workspace.UISourceCode.UISourceCode>} */
-const scriptToUISourceCodeMap = new WeakMap();
+const uiSourceCodeToScriptsMap = new WeakMap<Workspace.UISourceCode.UISourceCode, Set<SDK.Script.Script>>();
+const scriptToUISourceCodeMap = new WeakMap<SDK.Script.Script, Workspace.UISourceCode.UISourceCode>();
 
-/**
- * @implements {DebuggerSourceMapping}
- */
-export class DefaultScriptMapping {
-  /**
-   * @param {!SDK.DebuggerModel.DebuggerModel} debuggerModel
-   * @param {!Workspace.Workspace.WorkspaceImpl} workspace
-   * @param {!DebuggerWorkspaceBinding} debuggerWorkspaceBinding
-   */
-  constructor(debuggerModel, workspace, debuggerWorkspaceBinding) {
+export class DefaultScriptMapping implements DebuggerSourceMapping {
+  _debuggerModel: SDK.DebuggerModel.DebuggerModel;
+  _debuggerWorkspaceBinding: DebuggerWorkspaceBinding;
+  _project: ContentProviderBasedProject;
+  _eventListeners: Common.EventTarget.EventDescriptor[];
+  _uiSourceCodeToScriptsMap: WeakMap<Workspace.UISourceCode.UISourceCode, SDK.Script.Script>;
+  constructor(
+      debuggerModel: SDK.DebuggerModel.DebuggerModel, workspace: Workspace.Workspace.WorkspaceImpl,
+      debuggerWorkspaceBinding: DebuggerWorkspaceBinding) {
     this._debuggerModel = debuggerModel;
     this._debuggerWorkspaceBinding = debuggerWorkspaceBinding;
     this._project = new ContentProviderBasedProject(
@@ -59,27 +58,17 @@ export class DefaultScriptMapping {
       debuggerModel.addEventListener(SDK.DebuggerModel.Events.GlobalObjectCleared, this._debuggerReset, this),
       debuggerModel.addEventListener(SDK.DebuggerModel.Events.ParsedScriptSource, this._parsedScriptSource, this),
       debuggerModel.addEventListener(
-          SDK.DebuggerModel.Events.DiscardedAnonymousScriptSource, this._discardedScriptSource, this)
+          SDK.DebuggerModel.Events.DiscardedAnonymousScriptSource, this._discardedScriptSource, this),
     ];
-    /** @type {!WeakMap<!Workspace.UISourceCode.UISourceCode, !SDK.Script.Script>} */
     this._uiSourceCodeToScriptsMap = new WeakMap();
   }
 
-  /**
-   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
-   * @return {?SDK.Script.Script}
-   */
-  static scriptForUISourceCode(uiSourceCode) {
+  static scriptForUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode): SDK.Script.Script|null {
     const scripts = uiSourceCodeToScriptsMap.get(uiSourceCode);
     return scripts ? scripts.values().next().value : null;
   }
 
-  /**
-   * @override
-   * @param {!SDK.DebuggerModel.Location} rawLocation
-   * @return {?Workspace.UISourceCode.UILocation}
-   */
-  rawLocationToUILocation(rawLocation) {
+  rawLocationToUILocation(rawLocation: SDK.DebuggerModel.Location): Workspace.UISourceCode.UILocation|null {
     const script = rawLocation.script();
     if (!script) {
       return null;
@@ -96,14 +85,8 @@ export class DefaultScriptMapping {
     return uiSourceCode.uiLocation(lineNumber, columnNumber);
   }
 
-  /**
-   * @override
-   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
-   * @param {number} lineNumber
-   * @param {number} columnNumber
-   * @return {!Array<!SDK.DebuggerModel.Location>}
-   */
-  uiLocationToRawLocations(uiSourceCode, lineNumber, columnNumber) {
+  uiLocationToRawLocations(uiSourceCode: Workspace.UISourceCode.UISourceCode, lineNumber: number, columnNumber: number):
+      SDK.DebuggerModel.Location[] {
     const script = this._uiSourceCodeToScriptsMap.get(uiSourceCode);
     if (!script) {
       return [];
@@ -115,11 +98,8 @@ export class DefaultScriptMapping {
     return [this._debuggerModel.createRawLocation(script, lineNumber, columnNumber)];
   }
 
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  _parsedScriptSource(event) {
-    const script = /** @type {!SDK.Script.Script} */ (event.data);
+  _parsedScriptSource(event: Common.EventTarget.EventTargetEvent): void {
+    const script = (event.data as SDK.Script.Script);
     const name = Common.ParsedURL.ParsedURL.extractName(script.sourceURL);
     const url = 'debugger:///VM' + script.scriptId + (name ? ' ' + name : '');
 
@@ -136,11 +116,8 @@ export class DefaultScriptMapping {
     this._debuggerWorkspaceBinding.updateLocations(script);
   }
 
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  _discardedScriptSource(event) {
-    const script = /** @type {!SDK.Script.Script} */ (event.data);
+  _discardedScriptSource(event: Common.EventTarget.EventTargetEvent): void {
+    const script = (event.data as SDK.Script.Script);
     const uiSourceCode = scriptToUISourceCodeMap.get(script);
     if (!uiSourceCode) {
       return;
@@ -157,11 +134,11 @@ export class DefaultScriptMapping {
     this._project.removeUISourceCode(uiSourceCode.url());
   }
 
-  _debuggerReset() {
+  _debuggerReset(): void {
     this._project.reset();
   }
 
-  dispose() {
+  dispose(): void {
     Common.EventTarget.EventTarget.removeEventListeners(this._eventListeners);
     this._debuggerReset();
     this._project.dispose();

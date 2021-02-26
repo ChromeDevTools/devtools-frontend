@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Common from '../common/common.js';
 import * as Platform from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
@@ -9,20 +11,14 @@ import * as Workspace from '../workspace/workspace.js';
 
 import {DebuggerWorkspaceBinding} from './DebuggerWorkspaceBinding.js';  // eslint-disable-line no-unused-vars
 
-/**
- * @type {!IgnoreListManager}
- */
-let ignoreListManagerInstance;
+let ignoreListManagerInstance: IgnoreListManager;
 
-/**
- * @implements {SDK.SDKModel.SDKModelObserver<!SDK.DebuggerModel.DebuggerModel>}
- */
-export class IgnoreListManager {
-  /**
-   * @private
-   * @param {!DebuggerWorkspaceBinding} debuggerWorkspaceBinding
-   */
-  constructor(debuggerWorkspaceBinding) {
+export class IgnoreListManager implements SDK.SDKModel.SDKModelObserver<SDK.DebuggerModel.DebuggerModel> {
+  _debuggerWorkspaceBinding: DebuggerWorkspaceBinding;
+  _listeners: Set<() => void>;
+  _isIgnoreListedURLCache: Map<string, boolean>;
+
+  private constructor(debuggerWorkspaceBinding: DebuggerWorkspaceBinding) {
     this._debuggerWorkspaceBinding = debuggerWorkspaceBinding;
 
     SDK.SDKModel.TargetManager.instance().addModelListener(
@@ -35,19 +31,17 @@ export class IgnoreListManager {
         .moduleSetting('skipContentScripts')
         .addChangeListener(this._patternChanged.bind(this));
 
-    /** @type {!Set<function():void>} */
     this._listeners = new Set();
 
-    /** @type {!Map<string, boolean>} */
     this._isIgnoreListedURLCache = new Map();
 
     SDK.SDKModel.TargetManager.instance().observeModels(SDK.DebuggerModel.DebuggerModel, this);
   }
 
-  /**
-   * @param {{forceNew: ?boolean, debuggerWorkspaceBinding: ?DebuggerWorkspaceBinding}} opts
-   */
-  static instance(opts = {forceNew: null, debuggerWorkspaceBinding: null}) {
+  static instance(opts: {
+    forceNew: boolean|null,
+    debuggerWorkspaceBinding: DebuggerWorkspaceBinding|null,
+  } = {forceNew: null, debuggerWorkspaceBinding: null}): IgnoreListManager {
     const {forceNew, debuggerWorkspaceBinding} = opts;
     if (!ignoreListManagerInstance || forceNew) {
       if (!debuggerWorkspaceBinding) {
@@ -62,60 +56,42 @@ export class IgnoreListManager {
     return ignoreListManagerInstance;
   }
 
-  /**
-   * @param {function():void} listener
-   */
-  addChangeListener(listener) {
+  addChangeListener(listener: () => void): void {
     this._listeners.add(listener);
   }
 
-  /**
-   * @param {function():void} listener
-   */
-  removeChangeListener(listener) {
+  removeChangeListener(listener: () => void): void {
     this._listeners.delete(listener);
   }
 
-  /**
-   * @override
-   * @param {!SDK.DebuggerModel.DebuggerModel} debuggerModel
-   */
-  modelAdded(debuggerModel) {
+  modelAdded(debuggerModel: SDK.DebuggerModel.DebuggerModel): void {
     this._setIgnoreListPatterns(debuggerModel);
     const sourceMapManager = debuggerModel.sourceMapManager();
     sourceMapManager.addEventListener(SDK.SourceMapManager.Events.SourceMapAttached, this._sourceMapAttached, this);
     sourceMapManager.addEventListener(SDK.SourceMapManager.Events.SourceMapDetached, this._sourceMapDetached, this);
   }
 
-  /**
-   * @override
-   * @param {!SDK.DebuggerModel.DebuggerModel} debuggerModel
-   */
-  modelRemoved(debuggerModel) {
+  modelRemoved(debuggerModel: SDK.DebuggerModel.DebuggerModel): void {
     this._clearCacheIfNeeded();
     const sourceMapManager = debuggerModel.sourceMapManager();
     sourceMapManager.removeEventListener(SDK.SourceMapManager.Events.SourceMapAttached, this._sourceMapAttached, this);
     sourceMapManager.removeEventListener(SDK.SourceMapManager.Events.SourceMapDetached, this._sourceMapDetached, this);
   }
 
-  _clearCacheIfNeeded() {
+  _clearCacheIfNeeded(): void {
     if (this._isIgnoreListedURLCache.size > 1024) {
       this._isIgnoreListedURLCache.clear();
     }
   }
 
-  _getSkipStackFramesPatternSetting() {
-    return /** @type {!Common.Settings.RegExpSetting} */ (
-        Common.Settings.Settings.instance().moduleSetting('skipStackFramesPattern'));
+  _getSkipStackFramesPatternSetting(): Common.Settings.RegExpSetting {
+    return /** @type {!Common.Settings.RegExpSetting} */ Common.Settings.Settings.instance().moduleSetting(
+               'skipStackFramesPattern') as Common.Settings.RegExpSetting;
   }
 
-  /**
-   * @param {!SDK.DebuggerModel.DebuggerModel} debuggerModel
-   * @return {!Promise<boolean>}
-   */
-  _setIgnoreListPatterns(debuggerModel) {
+  _setIgnoreListPatterns(debuggerModel: SDK.DebuggerModel.DebuggerModel): Promise<boolean> {
     const regexPatterns = this._getSkipStackFramesPatternSetting().getAsArray();
-    const patterns = /** @type {!Array<string>} */ ([]);
+    const patterns = ([] as string[]);
     for (const item of regexPatterns) {
       if (!item.disabled && item.pattern) {
         patterns.push(item.pattern);
@@ -124,11 +100,7 @@ export class IgnoreListManager {
     return debuggerModel.setBlackboxPatterns(patterns);
   }
 
-  /**
-   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
-   * @return {boolean}
-   */
-  isIgnoreListedUISourceCode(uiSourceCode) {
+  isIgnoreListedUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode): boolean {
     const projectType = uiSourceCode.project().type();
     const isContentScript = projectType === Workspace.Workspace.projectTypes.ContentScripts;
     if (isContentScript && Common.Settings.Settings.instance().moduleSetting('skipContentScripts').get()) {
@@ -138,12 +110,7 @@ export class IgnoreListManager {
     return url ? this.isIgnoreListedURL(url) : false;
   }
 
-  /**
-   * @param {string} url
-   * @param {boolean=} isContentScript
-   * @return {boolean}
-   */
-  isIgnoreListedURL(url, isContentScript) {
+  isIgnoreListedURL(url: string, isContentScript?: boolean): boolean {
     if (this._isIgnoreListedURLCache.has(url)) {
       return Boolean(this._isIgnoreListedURLCache.get(url));
     }
@@ -156,29 +123,18 @@ export class IgnoreListManager {
     return isIgnoreListed;
   }
 
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  _sourceMapAttached(event) {
-    const script = /** @type {!SDK.Script.Script} */ (event.data.client);
-    const sourceMap = /** @type {!SDK.SourceMap.SourceMap} */ (event.data.sourceMap);
+  _sourceMapAttached(event: Common.EventTarget.EventTargetEvent): void {
+    const script = (event.data.client as SDK.Script.Script);
+    const sourceMap = (event.data.sourceMap as SDK.SourceMap.SourceMap);
     this._updateScriptRanges(script, sourceMap);
   }
 
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  _sourceMapDetached(event) {
-    const script = /** @type {!SDK.Script.Script} */ (event.data.client);
+  _sourceMapDetached(event: Common.EventTarget.EventTargetEvent): void {
+    const script = (event.data.client as SDK.Script.Script);
     this._updateScriptRanges(script, null);
   }
 
-  /**
-   * @param {!SDK.Script.Script} script
-   * @param {?SDK.SourceMap.SourceMap} sourceMap
-   * @return {!Promise<void>}
-   */
-  async _updateScriptRanges(script, sourceMap) {
+  async _updateScriptRanges(script: SDK.Script.Script, sourceMap: SDK.SourceMap.SourceMap|null): Promise<void> {
     let hasIgnoreListedMappings = false;
     if (!IgnoreListManager.instance().isIgnoreListedURL(script.sourceURL, script.isContentScript())) {
       hasIgnoreListedMappings = sourceMap ? sourceMap.sourceURLs().some(url => this.isIgnoreListedURL(url)) : false;
@@ -196,8 +152,7 @@ export class IgnoreListManager {
     }
 
     const mappings = sourceMap.mappings();
-    /** @type {!Array<!SourceRange>} */
-    const newRanges = [];
+    const newRanges: SourceRange[] = [];
     if (mappings.length > 0) {
       let currentIgnoreListed = false;
       if (mappings[0].lineNumber !== 0 || mappings[0].columnNumber !== 0) {
@@ -218,12 +173,7 @@ export class IgnoreListManager {
     }
     this._debuggerWorkspaceBinding.updateLocations(script);
 
-    /**
-     * @param {!Array<!SourceRange>} rangesA
-     * @param {!Array<!SourceRange>} rangesB
-     * @return {boolean}
-     */
-    function isEqual(rangesA, rangesB) {
+    function isEqual(rangesA: SourceRange[], rangesB: SourceRange[]): boolean {
       if (rangesA.length !== rangesB.length) {
         return false;
       }
@@ -236,55 +186,38 @@ export class IgnoreListManager {
     }
   }
 
-  /**
-   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
-   * @return {?string}
-   */
-  _uiSourceCodeURL(uiSourceCode) {
+  _uiSourceCodeURL(uiSourceCode: Workspace.UISourceCode.UISourceCode): string|null {
     return uiSourceCode.project().type() === Workspace.Workspace.projectTypes.Debugger ? null : uiSourceCode.url();
   }
 
-  /**
-   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
-   * @return {boolean}
-   */
-  canIgnoreListUISourceCode(uiSourceCode) {
+  canIgnoreListUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode): boolean {
     const url = this._uiSourceCodeURL(uiSourceCode);
     return url ? Boolean(this._urlToRegExpString(url)) : false;
   }
 
-  /**
-   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
-   */
-  ignoreListUISourceCode(uiSourceCode) {
+  ignoreListUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode): void {
     const url = this._uiSourceCodeURL(uiSourceCode);
     if (url) {
       this._ignoreListURL(url);
     }
   }
 
-  /**
-   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
-   */
-  unIgnoreListUISourceCode(uiSourceCode) {
+  unIgnoreListUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode): void {
     const url = this._uiSourceCodeURL(uiSourceCode);
     if (url) {
       this._unIgnoreListURL(url);
     }
   }
 
-  ignoreListContentScripts() {
+  ignoreListContentScripts(): void {
     Common.Settings.Settings.instance().moduleSetting('skipContentScripts').set(true);
   }
 
-  unIgnoreListContentScripts() {
+  unIgnoreListContentScripts(): void {
     Common.Settings.Settings.instance().moduleSetting('skipContentScripts').set(false);
   }
 
-  /**
-   * @param {string} url
-   */
-  _ignoreListURL(url) {
+  _ignoreListURL(url: string): void {
     const regexPatterns = this._getSkipStackFramesPatternSetting().getAsArray();
     const regexValue = this._urlToRegExpString(url);
     if (!regexValue) {
@@ -305,10 +238,7 @@ export class IgnoreListManager {
     this._getSkipStackFramesPatternSetting().setAsArray(regexPatterns);
   }
 
-  /**
-   * @param {string} url
-   */
-  _unIgnoreListURL(url) {
+  _unIgnoreListURL(url: string): void {
     let regexPatterns = this._getSkipStackFramesPatternSetting().getAsArray();
     const regexValue = IgnoreListManager.instance()._urlToRegExpString(url);
     if (!regexValue) {
@@ -333,11 +263,10 @@ export class IgnoreListManager {
     this._getSkipStackFramesPatternSetting().setAsArray(regexPatterns);
   }
 
-  async _patternChanged() {
+  async _patternChanged(): Promise<void> {
     this._isIgnoreListedURLCache.clear();
 
-    /** @type {!Array<!Promise<*>>} */
-    const promises = [];
+    const promises: Promise<unknown>[] = [];
     for (const debuggerModel of SDK.SDKModel.TargetManager.instance().models(SDK.DebuggerModel.DebuggerModel)) {
       promises.push(this._setIgnoreListPatterns(debuggerModel));
       const sourceMapManager = debuggerModel.sourceMapManager();
@@ -353,15 +282,11 @@ export class IgnoreListManager {
     this._patternChangeFinishedForTests();
   }
 
-  _patternChangeFinishedForTests() {
+  _patternChangeFinishedForTests(): void {
     // This method is sniffed in tests.
   }
 
-  /**
-   * @param {string} url
-   * @return {string}
-   */
-  _urlToRegExpString(url) {
+  _urlToRegExpString(url: string): string {
     const parsedURL = new Common.ParsedURL.ParsedURL(url);
     if (parsedURL.isAboutBlank() || parsedURL.isDataURL()) {
       return '';
@@ -369,7 +294,7 @@ export class IgnoreListManager {
     if (!parsedURL.isValid) {
       return '^' + Platform.StringUtilities.escapeForRegExp(url) + '$';
     }
-    let name = parsedURL.lastPathComponent;
+    let name: string = parsedURL.lastPathComponent;
     if (name) {
       name = '/' + name;
     } else if (parsedURL.folderPathComponents) {
@@ -393,10 +318,9 @@ export class IgnoreListManager {
     return prefix + Platform.StringUtilities.escapeForRegExp(name) + (url.endsWith(name) ? '$' : '\\b');
   }
 }
+export interface SourceRange {
+  lineNumber: number;
+  columnNumber: number;
+}
 
-/** @typedef {{lineNumber: number, columnNumber: number}} */
-// @ts-ignore
-export let SourceRange;
-
-/** @type {!WeakMap<!SDK.Script.Script, !Array<!SourceRange>>} */
-const scriptToRange = new WeakMap();
+const scriptToRange = new WeakMap<SDK.Script.Script, SourceRange[]>();

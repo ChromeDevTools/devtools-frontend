@@ -17,6 +17,13 @@
   --color-background-elevation-2: #dee1e6;
   --color-background-highlight: #cacdd1;
   /**
+   * When hovering over an element and the background should be a little
+   * bit darker. For example, when hovering over a node in the flame chart
+   * tree in the performance panel. This color is intentionally opague,
+   * since the color of the underlying element should still be dominant.
+   */
+  --color-background-hover-overlay: rgb(56 121 217 / 10%);
+  /**
    * Used when selecting a range of a section, for example when
    * selecting a range in the performance panel timeline.
    */
@@ -58,6 +65,7 @@
   --color-background-elevation-1: #292a2d;
   --color-background-elevation-2: #35363a;
   --color-background-highlight: #4b4c4f;
+  --color-background-hover-overlay: rgb(56 121 217 / 10%);
   --color-selection-highlight: rgb(251 202 70 / 20%);
   --color-selection-highlight-border: rgb(251 202 70);
   --color-text-primary: #e8eaed;

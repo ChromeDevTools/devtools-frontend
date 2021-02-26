@@ -108,7 +108,7 @@ export class FlameChart extends UI.Widget.VBox {
    */
   constructor(dataProvider, flameChartDelegate, groupExpansionSetting) {
     super(true);
-    this.registerRequiredCSS('perf_ui/flameChart.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('perf_ui/flameChart.css', {enableLegacyPatching: false});
     this.contentElement.classList.add('flame-chart-main-pane');
     this._groupExpansionSetting = groupExpansionSetting;
     this._groupExpansionState = groupExpansionSetting && groupExpansionSetting.get() || {};
@@ -146,11 +146,7 @@ export class FlameChart extends UI.Widget.VBox {
     this._highlightElement = this._viewportElement.createChild('div', 'flame-chart-highlight-element');
     this._selectedElement = this._viewportElement.createChild('div', 'flame-chart-selected-element');
     this._canvas.addEventListener('focus', () => {
-      this._selectedElement.classList.remove('flame-chart-unfocused-selected-element');
       this.dispatchEventToListeners(Events.CanvasFocused);
-    }, false);
-    this._canvas.addEventListener('blur', () => {
-      this._selectedElement.classList.add('flame-chart-unfocused-selected-element');
     }, false);
 
     UI.UIUtils.installDragHandle(

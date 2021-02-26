@@ -1,3 +1,7 @@
+// Copyright 2021 The Chromium Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+
 /*
  * Copyright (C) 2007, 2008 Apple Inc.  All rights reserved.
  * Copyright (C) 2008, 2009 Anthony Ricaud <rik@webkit.org>
@@ -27,6 +31,12 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+/* eslint-disable rulesdir/no_underscored_properties */
+// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/naming-convention */
+
 
 import * as Bindings from '../bindings/bindings.js';
 import * as Common from '../common/common.js';
@@ -232,267 +242,160 @@ export const UIStrings = {
   */
   level: 'level 1',
 };
-const str_ = i18n.i18n.registerUIStrings('network/NetworkDataGridNode.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('network/NetworkDataGridNode.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-/** @enum {symbol} */
-export const Events = {
-  RequestSelected: Symbol('RequestSelected'),
-  RequestActivated: Symbol('RequestActivated')
-};
 
-/**
- * @interface
- * @extends {Common.EventTarget.EventTarget}
- */
-export class NetworkLogViewInterface {
-  /**
-   * @param {!SDK.NetworkRequest.NetworkRequest} request
-   * @return {boolean}
-   */
-  static HTTPRequestsFilter(request) {
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum Events {
+  RequestSelected = 'RequestSelected',
+  RequestActivated = 'RequestActivated',
+}
+
+export abstract class NetworkLogViewInterface {
+  static HTTPRequestsFilter(request: SDK.NetworkRequest.NetworkRequest): boolean {
     throw new Error('not implemented');
   }
 
-  /**
-   * @param {!File} file
-   */
-  async onLoadFromFile(file) {
+  async onLoadFromFile(file: File): Promise<void> {
   }
 
-  /**
-   * @param {!SDK.NetworkRequest.NetworkRequest} request
-   * @return {?NetworkRequestNode}
-   */
-  nodeForRequest(request) {
+  abstract nodeForRequest(request: SDK.NetworkRequest.NetworkRequest): NetworkRequestNode|null;
+
+  abstract headerHeight(): number;
+
+  setRecording(recording: boolean): void {
+  }
+
+  setWindow(start: number, end: number): void {
+  }
+
+  resetFocus(): void {
+  }
+
+  columnExtensionResolved(): void {
+  }
+
+  hoveredNode(): NetworkNode|null {
     throw new Error('not implemented');
   }
 
-  /**
-   * @return {number}
-   */
-  headerHeight() {
+  scheduleRefresh(): void {
+  }
+
+  addFilmStripFrames(times: number[]): void {
+  }
+
+  selectFilmStripFrame(time: number): void {
+  }
+
+  clearFilmStripFrame(): void {
+  }
+  timeCalculator(): NetworkTimeCalculator {
     throw new Error('not implemented');
   }
 
-  /**
-   * @param {boolean} recording
-   */
-  setRecording(recording) {
-  }
-
-  /**
-   * @param {number} start
-   * @param {number} end
-   */
-  setWindow(start, end) {
-  }
-
-  resetFocus() {
-  }
-
-  columnExtensionResolved() {
-  }
-
-  /**
-   * @return {?NetworkNode}
-   */
-  hoveredNode() {
+  calculator(): NetworkTimeCalculator {
     throw new Error('not implemented');
   }
 
-  scheduleRefresh() {
+  setCalculator(x: NetworkTimeCalculator): void {
   }
 
-  /**
-   * @param {!Array<number>} times
-   */
-  addFilmStripFrames(times) {
-  }
-
-  /**
-   * @param {number} time
-   */
-  selectFilmStripFrame(time) {
-  }
-
-  clearFilmStripFrame() {
-  }
-
-  /**
-   * @return {!NetworkTimeCalculator}
-   */
-  timeCalculator() {
+  flatNodesList(): NetworkNode[] {
     throw new Error('not implemented');
   }
 
-  /**
-   * @return {!NetworkTimeCalculator}
-   */
-  calculator() {
+  updateNodeBackground(): void {
+  }
+
+  updateNodeSelectedClass(isSelected: boolean): void {
+  }
+
+  stylesChanged(): void {
+  }
+
+  setTextFilterValue(filterString: string): void {
+  }
+
+  rowHeight(): number {
     throw new Error('not implemented');
   }
 
-  /**
-   * @param {!NetworkTimeCalculator} x
-   */
-  setCalculator(x) {
+  switchViewMode(gridMode: boolean): void {
   }
 
-  /**
-   * @return {!Array<!NetworkNode>}
-   */
-  flatNodesList() {
+  handleContextMenuForRequest(contextMenu: UI.ContextMenu.ContextMenu, request: SDK.NetworkRequest.NetworkRequest):
+      void {
+  }
+
+  async exportAll(): Promise<void> {
+  }
+
+  revealAndHighlightRequest(request: SDK.NetworkRequest.NetworkRequest): void {
+  }
+
+  selectRequest(request: SDK.NetworkRequest.NetworkRequest): void {
+  }
+
+  removeAllNodeHighlights(): void {
+  }
+
+  static getDCLEventColor(): string {
     throw new Error('not implemented');
   }
 
-  updateNodeBackground() {
-  }
-
-  /**
-   * @param {boolean} isSelected
-   */
-  updateNodeSelectedClass(isSelected) {
-  }
-
-  stylesChanged() {
-  }
-
-  /**
-   * @param {string} filterString
-   */
-  setTextFilterValue(filterString) {
-  }
-
-  /**
-   * @return {number}
-   */
-  rowHeight() {
+  static getLoadEventColor(): string {
     throw new Error('not implemented');
   }
 
-  /**
-   * @param {boolean} gridMode
-   */
-  switchViewMode(gridMode) {
+  modelAdded(model: SDK.NetworkManager.NetworkManager): void {
   }
 
-  /**
-   * @param {!UI.ContextMenu.ContextMenu} contextMenu
-   * @param {!SDK.NetworkRequest.NetworkRequest} request
-   */
-  handleContextMenuForRequest(contextMenu, request) {
+  modelRemoved(model: SDK.NetworkManager.NetworkManager): void {
   }
 
-  async exportAll() {
-  }
-
-  /**
-   * @param {!SDK.NetworkRequest.NetworkRequest} request
-   */
-  revealAndHighlightRequest(request) {
-  }
-
-  /**
-   * @param {!SDK.NetworkRequest.NetworkRequest} request
-   */
-  selectRequest(request) {
-  }
-
-  removeAllNodeHighlights() {
-  }
-
-  /**
-   * @return {string}
-   */
-  static getDCLEventColor() {
-    throw new Error('not implemented');
-  }
-
-  /**
-   * @return {string}
-   */
-  static getLoadEventColor() {
-    throw new Error('not implemented');
-  }
-
-  /**
-   * @param {!SDK.NetworkManager.NetworkManager} model
-   */
-  modelAdded(model) {
-  }
-
-  /**
-   * @param {!SDK.NetworkManager.NetworkManager} model
-   */
-  modelRemoved(model) {
-  }
-
-  /** @return {!Components.Linkifier.Linkifier} */
-  linkifier() {
+  linkifier(): Components.Linkifier.Linkifier {
     throw new Error('not implemented');
   }
 }
 
-/**
- * @extends {DataGrid.SortableDataGrid.SortableDataGridNode<NetworkNode>}
- */
-export class NetworkNode extends DataGrid.SortableDataGrid.SortableDataGridNode {
-  /**
-   * @param {!NetworkLogViewInterface} parentView
-   */
-  constructor(parentView) {
+export class NetworkNode extends DataGrid.SortableDataGrid.SortableDataGridNode<NetworkNode> {
+  _parentView: NetworkLogViewInterface;
+  _isHovered: boolean;
+  _showingInitiatorChain: boolean;
+  _requestOrFirstKnownChildRequest: SDK.NetworkRequest.NetworkRequest|null;
+
+  constructor(parentView: NetworkLogViewInterface) {
     super({});
     this._parentView = parentView;
     this._isHovered = false;
     this._showingInitiatorChain = false;
-    /** @type {?SDK.NetworkRequest.NetworkRequest} */
     this._requestOrFirstKnownChildRequest = null;
   }
 
-  /**
-   * @return {string}
-   */
-  displayName() {
+  displayName(): string {
     return '';
   }
 
-  /**
-   * @return {string}
-   */
-  displayType() {
+  displayType(): string {
     return '';
   }
 
-  /**
-   * @override
-   * @param {string} columnId
-   * @return {!HTMLElement}
-   */
-  createCell(columnId) {
+  createCell(columnId: string): HTMLElement {
     const cell = this.createTD(columnId);
     this.renderCell(cell, columnId);
     return cell;
   }
 
-  /**
-   * @protected
-   * @param {!Element} cell
-   * @param {string} columnId
-   */
-  renderCell(cell, columnId) {
+  renderCell(cell: Element, columnId: string): void {
   }
 
-  /**
-   * @return {boolean}
-   */
-  _isFailed() {
+  _isFailed(): boolean {
     return false;
   }
 
-  /**
-   * @return {string}
-   */
-  backgroundColor() {
+  backgroundColor(): string {
     const bgColors = _backgroundColors;
     const hasFocus = document.hasFocus();
     const isSelected = this.dataGrid && this.dataGrid.element === document.activeElement;
@@ -522,8 +425,8 @@ export class NetworkNode extends DataGrid.SortableDataGrid.SortableDataGridNode 
     return bgColors.Default;
   }
 
-  updateBackgroundColor() {
-    const element = /** @type {?HTMLElement} */ (this.existingElement());
+  updateBackgroundColor(): void {
+    const element = (this.existingElement() as HTMLElement | null);
     if (!element) {
       return;
     }
@@ -531,69 +434,40 @@ export class NetworkNode extends DataGrid.SortableDataGrid.SortableDataGridNode 
     this._parentView.stylesChanged();
   }
 
-  /**
-   * @override
-   * @param {boolean} isStriped
-   */
-  setStriped(isStriped) {
+  setStriped(isStriped: boolean): void {
     super.setStriped(isStriped);
     this.updateBackgroundColor();
   }
 
-  /**
-   * @override
-   * @param {boolean=} supressSelectedEvent
-   */
-  select(supressSelectedEvent) {
+  select(supressSelectedEvent?: boolean): void {
     super.select(supressSelectedEvent);
     this.updateBackgroundColor();
     this._parentView.updateNodeSelectedClass(/* isSelected */ true);
   }
 
-  /**
-   * @override
-   * @param {boolean=} supressSelectedEvent
-   */
-  deselect(supressSelectedEvent) {
+  deselect(supressSelectedEvent?: boolean): void {
     super.deselect(supressSelectedEvent);
     this.updateBackgroundColor();
     this._parentView.updateNodeSelectedClass(/* isSelected */ false);
   }
 
-  /**
-   * @return {!NetworkLogViewInterface}
-   */
-  parentView() {
+  parentView(): NetworkLogViewInterface {
     return this._parentView;
   }
 
-  /**
-   * @return {boolean}
-   */
-  hovered() {
+  hovered(): boolean {
     return this._isHovered;
   }
 
-  /**
-   * @return {boolean}
-   */
-  showingInitiatorChain() {
+  showingInitiatorChain(): boolean {
     return this._showingInitiatorChain;
   }
 
-  /**
-   * @override
-   * @return {number}
-   */
-  nodeSelfHeight() {
+  nodeSelfHeight(): number {
     return this._parentView.rowHeight();
   }
 
-  /**
-   * @param {boolean} hovered
-   * @param {boolean} showInitiatorChain
-   */
-  setHovered(hovered, showInitiatorChain) {
+  setHovered(hovered: boolean, showInitiatorChain: boolean): void {
     if (this._isHovered === hovered && this._showingInitiatorChain === showInitiatorChain) {
       return;
     }
@@ -611,52 +485,31 @@ export class NetworkNode extends DataGrid.SortableDataGrid.SortableDataGridNode 
     this.updateBackgroundColor();
   }
 
-  /**
-   * @protected
-   */
-  showingInitiatorChainChanged() {
+  showingInitiatorChainChanged(): void {
   }
 
-  /**
-   * @return {boolean}
-   */
-  isOnInitiatorPath() {
+  isOnInitiatorPath(): boolean {
     return false;
   }
 
-  /**
-   * @return {boolean}
-   */
-  isOnInitiatedPath() {
+  isOnInitiatedPath(): boolean {
     return false;
   }
 
-  /**
-   * @return {?SDK.NetworkRequest.NetworkRequest}
-   */
-  request() {
+  request(): SDK.NetworkRequest.NetworkRequest|null {
     return null;
   }
 
-  /**
-   * @return {boolean}
-   */
-  isNavigationRequest() {
+  isNavigationRequest(): boolean {
     return false;
   }
 
-  /**
-   * @override
-   */
-  clearFlatNodes() {
+  clearFlatNodes(): void {
     super.clearFlatNodes();
     this._requestOrFirstKnownChildRequest = null;
   }
 
-  /**
-   * @return {?SDK.NetworkRequest.NetworkRequest}
-   */
-  requestOrFirstKnownChildRequest() {
+  requestOrFirstKnownChildRequest(): SDK.NetworkRequest.NetworkRequest|null {
     if (this._requestOrFirstKnownChildRequest) {
       return this._requestOrFirstKnownChildRequest;
     }
@@ -666,8 +519,8 @@ export class NetworkNode extends DataGrid.SortableDataGrid.SortableDataGridNode 
       return this._requestOrFirstKnownChildRequest;
     }
 
-    let firstChildRequest = null;
-    const flatChildren = /** @type {!Array<!NetworkNode>} */ (this.flatChildren());
+    let firstChildRequest: (SDK.NetworkRequest.NetworkRequest|null)|null = null;
+    const flatChildren = (this.flatChildren() as NetworkNode[]);
     for (let i = 0; i < flatChildren.length; i++) {
       request = flatChildren[i].request();
       if (!firstChildRequest || (request && request.issueTime() < firstChildRequest.issueTime())) {
@@ -679,8 +532,9 @@ export class NetworkNode extends DataGrid.SortableDataGrid.SortableDataGridNode 
   }
 }
 
-/** @type {!Object<string, string>} */
-export const _backgroundColors = {
+export const _backgroundColors: {
+  [x: string]: string,
+} = {
   Default: '--network-grid-default-color',
   Stripe: '--network-grid-stripe-color',
   Navigation: '--network-grid-navigation-color',
@@ -694,15 +548,17 @@ export const _backgroundColors = {
 };
 
 export class NetworkRequestNode extends NetworkNode {
-  /**
-   * @param {!NetworkLogViewInterface} parentView
-   * @param {!SDK.NetworkRequest.NetworkRequest} request
-   */
-  constructor(parentView, request) {
+  _nameCell: Element|null;
+  _initiatorCell: Element|null;
+  _request: SDK.NetworkRequest.NetworkRequest;
+  _isNavigationRequest: boolean;
+  selectable: boolean;
+  _isOnInitiatorPath: boolean;
+  _isOnInitiatedPath: boolean;
+  _linkifiedInitiatorAnchor?: HTMLElement;
+  constructor(parentView: NetworkLogViewInterface, request: SDK.NetworkRequest.NetworkRequest) {
     super(parentView);
-    /** @type {?Element} */
     this._nameCell = null;
-    /** @type {?Element} */
     this._initiatorCell = null;
     this._request = request;
     this._isNavigationRequest = false;
@@ -711,13 +567,7 @@ export class NetworkRequestNode extends NetworkNode {
     this._isOnInitiatedPath = false;
   }
 
-
-  /**
-   * @param {!NetworkNode} a
-   * @param {!NetworkNode} b
-   * @return {number}
-   */
-  static NameComparator(a, b) {
+  static NameComparator(a: NetworkNode, b: NetworkNode): number {
     const aName = a.displayName().toLowerCase();
     const bName = b.displayName().toLowerCase();
     if (aName === bName) {
@@ -731,12 +581,7 @@ export class NetworkRequestNode extends NetworkNode {
     return aName < bName ? -1 : 1;
   }
 
-  /**
-   * @param {!NetworkNode} a
-   * @param {!NetworkNode} b
-   * @return {number}
-   */
-  static RemoteAddressComparator(a, b) {
+  static RemoteAddressComparator(a: NetworkNode, b: NetworkNode): number {
     // TODO(allada) Handle this properly for group nodes.
     const aRequest = a.requestOrFirstKnownChildRequest();
     const bRequest = b.requestOrFirstKnownChildRequest();
@@ -754,12 +599,7 @@ export class NetworkRequestNode extends NetworkNode {
     return aRequest.identityCompare(bRequest);
   }
 
-  /**
-   * @param {!NetworkNode} a
-   * @param {!NetworkNode} b
-   * @return {number}
-   */
-  static SizeComparator(a, b) {
+  static SizeComparator(a: NetworkNode, b: NetworkNode): number {
     // TODO(allada) Handle this properly for group nodes.
     const aRequest = a.requestOrFirstKnownChildRequest();
     const bRequest = b.requestOrFirstKnownChildRequest();
@@ -776,12 +616,7 @@ export class NetworkRequestNode extends NetworkNode {
         aRequest.identityCompare(bRequest);
   }
 
-  /**
-   * @param {!NetworkNode} a
-   * @param {!NetworkNode} b
-   * @return {number}
-   */
-  static TypeComparator(a, b) {
+  static TypeComparator(a: NetworkNode, b: NetworkNode): number {
     // TODO(allada) Handle this properly for group nodes.
     const aRequest = a.requestOrFirstKnownChildRequest();
     const bRequest = b.requestOrFirstKnownChildRequest();
@@ -800,12 +635,7 @@ export class NetworkRequestNode extends NetworkNode {
     return aRequest.identityCompare(bRequest);
   }
 
-  /**
-   * @param {!NetworkNode} a
-   * @param {!NetworkNode} b
-   * @return {number}
-   */
-  static InitiatorComparator(a, b) {
+  static InitiatorComparator(a: NetworkNode, b: NetworkNode): number {
     // TODO(allada) Handle this properly for group nodes.
     const aRequest = a.requestOrFirstKnownChildRequest();
     const bRequest = b.requestOrFirstKnownChildRequest();
@@ -818,24 +648,19 @@ export class NetworkRequestNode extends NetworkNode {
       return !aHasInitiatorCell ? -1 : 1;
     }
     // `a` and `b` are guaranteed NetworkRequestNodes with present initiatorCell elements.
-    const networkRequestNodeA = /** @type {!NetworkRequestNode} */ (a);
-    const networkRequestNodeB = /** @type {!NetworkRequestNode} */ (b);
+    const networkRequestNodeA = (a as NetworkRequestNode);
+    const networkRequestNodeB = (b as NetworkRequestNode);
 
     const aText = networkRequestNodeA._linkifiedInitiatorAnchor ?
         networkRequestNodeA._linkifiedInitiatorAnchor.textContent || '' :
-        /** @type {!HTMLElement} */ (networkRequestNodeA._initiatorCell).title;
+        (networkRequestNodeA._initiatorCell as HTMLElement).title;
     const bText = networkRequestNodeB._linkifiedInitiatorAnchor ?
         networkRequestNodeB._linkifiedInitiatorAnchor.textContent || '' :
-        /** @type {!HTMLElement} */ (networkRequestNodeB._initiatorCell).title;
+        (networkRequestNodeB._initiatorCell as HTMLElement).title;
     return aText.localeCompare(bText);
   }
 
-  /**
-   * @param {!NetworkNode} a
-   * @param {!NetworkNode} b
-   * @return {number}
-   */
-  static InitiatorAddressSpaceComparator(a, b) {
+  static InitiatorAddressSpaceComparator(a: NetworkNode, b: NetworkNode): number {
     const aRequest = a.requestOrFirstKnownChildRequest();
     const bRequest = b.requestOrFirstKnownChildRequest();
     if (!aRequest || !bRequest) {
@@ -849,12 +674,7 @@ export class NetworkRequestNode extends NetworkNode {
     return aClientSecurityState.initiatorIPAddressSpace.localeCompare(bClientSecurityState.initiatorIPAddressSpace);
   }
 
-  /**
-   * @param {!NetworkNode} a
-   * @param {!NetworkNode} b
-   * @return {number}
-   */
-  static RemoteAddressSpaceComparator(a, b) {
+  static RemoteAddressSpaceComparator(a: NetworkNode, b: NetworkNode): number {
     const aRequest = a.requestOrFirstKnownChildRequest();
     const bRequest = b.requestOrFirstKnownChildRequest();
     if (!aRequest || !bRequest) {
@@ -863,12 +683,7 @@ export class NetworkRequestNode extends NetworkNode {
     return aRequest.remoteAddressSpace().localeCompare(bRequest.remoteAddressSpace());
   }
 
-  /**
-   * @param {!NetworkNode} a
-   * @param {!NetworkNode} b
-   * @return {number}
-   */
-  static RequestCookiesCountComparator(a, b) {
+  static RequestCookiesCountComparator(a: NetworkNode, b: NetworkNode): number {
     // TODO(allada) Handle this properly for group nodes.
     const aRequest = a.requestOrFirstKnownChildRequest();
     const bRequest = b.requestOrFirstKnownChildRequest();
@@ -881,12 +696,7 @@ export class NetworkRequestNode extends NetworkNode {
   }
 
   // TODO(allada) This function deserves to be in a network-common of some sort.
-  /**
-   * @param {!NetworkNode} a
-   * @param {!NetworkNode} b
-   * @return {number}
-   */
-  static ResponseCookiesCountComparator(a, b) {
+  static ResponseCookiesCountComparator(a: NetworkNode, b: NetworkNode): number {
     // TODO(allada) Handle this properly for group nodes.
     const aRequest = a.requestOrFirstKnownChildRequest();
     const bRequest = b.requestOrFirstKnownChildRequest();
@@ -898,12 +708,7 @@ export class NetworkRequestNode extends NetworkNode {
     return (aScore - bScore) || aRequest.identityCompare(bRequest);
   }
 
-  /**
-   * @param {!NetworkNode} a
-   * @param {!NetworkNode} b
-   * @return {number}
-   */
-  static PriorityComparator(a, b) {
+  static PriorityComparator(a: NetworkNode, b: NetworkNode): number {
     // TODO(allada) Handle this properly for group nodes.
     const aRequest = a.requestOrFirstKnownChildRequest();
     const bRequest = b.requestOrFirstKnownChildRequest();
@@ -911,24 +716,22 @@ export class NetworkRequestNode extends NetworkNode {
       return !aRequest ? -1 : 1;
     }
     const aPriority = aRequest.priority();
-    let aScore = aPriority ? PerfUI.NetworkPriorities.networkPriorityWeight(aPriority) : 0;
+    let aScore: number = aPriority ? PerfUI.NetworkPriorities.networkPriorityWeight(aPriority) : 0;
     aScore = aScore || 0;
     const bPriority = bRequest.priority();
-    let bScore = bPriority ? PerfUI.NetworkPriorities.networkPriorityWeight(bPriority) : 0;
+    let bScore: number = bPriority ? PerfUI.NetworkPriorities.networkPriorityWeight(bPriority) : 0;
     bScore = bScore || 0;
 
     return aScore - bScore || aRequest.identityCompare(bRequest);
   }
 
-  /**
-   * @param {string} propertyName
-   * @param {!NetworkNode} a
-   * @param {!NetworkNode} b
-   * @return {number}
-   */
-  static RequestPropertyComparator(propertyName, a, b) {
-    const aRequest = /** @type {*} */ (a.requestOrFirstKnownChildRequest());
-    const bRequest = /** @type {*} */ (b.requestOrFirstKnownChildRequest());
+  static RequestPropertyComparator(propertyName: string, a: NetworkNode, b: NetworkNode): number {
+    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const aRequest = (a.requestOrFirstKnownChildRequest() as any);
+    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const bRequest = (b.requestOrFirstKnownChildRequest() as any);
     if (!aRequest || !bRequest) {
       return !aRequest ? -1 : 1;
     }
@@ -940,12 +743,7 @@ export class NetworkRequestNode extends NetworkNode {
     return aValue > bValue ? 1 : -1;
   }
 
-  /**
-   * @param {!NetworkNode} a
-   * @param {!NetworkNode} b
-   * @return {number}
-   */
-  static RequestURLComparator(a, b) {
+  static RequestURLComparator(a: NetworkNode, b: NetworkNode): number {
     const aRequest = a.requestOrFirstKnownChildRequest();
     const bRequest = b.requestOrFirstKnownChildRequest();
     if (!aRequest || !bRequest) {
@@ -959,13 +757,7 @@ export class NetworkRequestNode extends NetworkNode {
     return aURL > bURL ? 1 : -1;
   }
 
-  /**
-   * @param {string} propertyName
-   * @param {!NetworkNode} a
-   * @param {!NetworkNode} b
-   * @return {number}
-   */
-  static ResponseHeaderStringComparator(propertyName, a, b) {
+  static ResponseHeaderStringComparator(propertyName: string, a: NetworkNode, b: NetworkNode): number {
     // TODO(allada) Handle this properly for group nodes.
     const aRequest = a.requestOrFirstKnownChildRequest();
     const bRequest = b.requestOrFirstKnownChildRequest();
@@ -977,13 +769,7 @@ export class NetworkRequestNode extends NetworkNode {
     return aValue.localeCompare(bValue) || aRequest.identityCompare(bRequest);
   }
 
-  /**
-   * @param {string} propertyName
-   * @param {!NetworkNode} a
-   * @param {!NetworkNode} b
-   * @return {number}
-   */
-  static ResponseHeaderNumberComparator(propertyName, a, b) {
+  static ResponseHeaderNumberComparator(propertyName: string, a: NetworkNode, b: NetworkNode): number {
     // TODO(allada) Handle this properly for group nodes.
     const aRequest = a.requestOrFirstKnownChildRequest();
     const bRequest = b.requestOrFirstKnownChildRequest();
@@ -1000,13 +786,7 @@ export class NetworkRequestNode extends NetworkNode {
     return aValue > bValue ? 1 : -1;
   }
 
-  /**
-   * @param {string} propertyName
-   * @param {!NetworkNode} a
-   * @param {!NetworkNode} b
-   * @return {number}
-   */
-  static ResponseHeaderDateComparator(propertyName, a, b) {
+  static ResponseHeaderDateComparator(propertyName: string, a: NetworkNode, b: NetworkNode): number {
     // TODO(allada) Handle this properly for group nodes.
     const aRequest = a.requestOrFirstKnownChildRequest();
     const bRequest = b.requestOrFirstKnownChildRequest();
@@ -1023,10 +803,7 @@ export class NetworkRequestNode extends NetworkNode {
     return aValue > bValue ? 1 : -1;
   }
 
-  /**
-   * @override
-   */
-  showingInitiatorChainChanged() {
+  showingInitiatorChainChanged(): void {
     const showInitiatorChain = this.showingInitiatorChain();
 
     const initiatorGraph = SDK.NetworkLog.NetworkLog.instance().initiatorGraphForRequest(this._request);
@@ -1052,10 +829,7 @@ export class NetworkRequestNode extends NetworkNode {
     }
   }
 
-  /**
-   * @param {boolean} isOnInitiatorPath
-   */
-  _setIsOnInitiatorPath(isOnInitiatorPath) {
+  _setIsOnInitiatorPath(isOnInitiatorPath: boolean): void {
     if (this._isOnInitiatorPath === isOnInitiatorPath || !this.attached()) {
       return;
     }
@@ -1063,18 +837,11 @@ export class NetworkRequestNode extends NetworkNode {
     this.updateBackgroundColor();
   }
 
-  /**
-   * @override
-   * @return {boolean}
-   */
-  isOnInitiatorPath() {
+  isOnInitiatorPath(): boolean {
     return this._isOnInitiatorPath;
   }
 
-  /**
-   * @param {boolean} isOnInitiatedPath
-   */
-  _setIsOnInitiatedPath(isOnInitiatedPath) {
+  _setIsOnInitiatedPath(isOnInitiatedPath: boolean): void {
     if (this._isOnInitiatedPath === isOnInitiatedPath || !this.attached()) {
       return;
     }
@@ -1082,19 +849,11 @@ export class NetworkRequestNode extends NetworkNode {
     this.updateBackgroundColor();
   }
 
-  /**
-   * @override
-   * @return {boolean}
-   */
-  isOnInitiatedPath() {
+  isOnInitiatedPath(): boolean {
     return this._isOnInitiatedPath;
   }
 
-  /**
-   * @override
-   * @return {string}
-   */
-  displayType() {
+  displayType(): string {
     const mimeType = this._request.mimeType || this._request.requestContentType() || '';
     const resourceType = this._request.resourceType();
     let simpleType = resourceType.name();
@@ -1111,44 +870,24 @@ export class NetworkRequestNode extends NetworkNode {
     return simpleType;
   }
 
-  /**
-   * @override
-   * @return {string}
-   */
-  displayName() {
+  displayName(): string {
     return this._request.name();
   }
 
-  /**
-   * @override
-   * @return {!SDK.NetworkRequest.NetworkRequest}
-   */
-  request() {
+  request(): SDK.NetworkRequest.NetworkRequest {
     return this._request;
   }
 
-  /**
-   * @override
-   * @return {boolean}
-   */
-  isNavigationRequest() {
+  isNavigationRequest(): boolean {
     const pageLoad = SDK.NetworkLog.PageLoad.forRequest(this._request);
     return pageLoad ? pageLoad.mainRequest === this._request : false;
   }
 
-  /**
-   * @override
-   * @return {number}
-   */
-  nodeSelfHeight() {
+  nodeSelfHeight(): number {
     return this.parentView().rowHeight();
   }
 
-  /**
-   * @override
-   * @param {!Element} element
-   */
-  createCells(element) {
+  createCells(element: Element): void {
     this._nameCell = null;
     this._initiatorCell = null;
 
@@ -1158,23 +897,12 @@ export class NetworkRequestNode extends NetworkNode {
     this.updateBackgroundColor();
   }
 
-  /**
-   * @param {!HTMLElement} element
-   * @param {string} text
-   * @param {string=} title
-   */
-  _setTextAndTitle(element, text, title) {
+  _setTextAndTitle(element: HTMLElement, text: string, title?: string): void {
     UI.UIUtils.createTextChild(element, text);
     UI.Tooltip.Tooltip.install(element, title || text);
   }
 
-  /**
-   * @param {!HTMLElement} element
-   * @param {string} cellText
-   * @param {string} linkText
-   * @param {function():void} handler
-   */
-  _setTextAndTitleAndLink(element, cellText, linkText, handler) {
+  _setTextAndTitleAndLink(element: HTMLElement, cellText: string, linkText: string, handler: () => void): void {
     UI.UIUtils.createTextChild(element, cellText);
     element.createChild('span', 'separator-in-cell');
     const link = document.createElement('span');
@@ -1185,13 +913,8 @@ export class NetworkRequestNode extends NetworkNode {
     UI.Tooltip.Tooltip.install(element, cellText);
   }
 
-  /**
-   * @override
-   * @param {!Element} c
-   * @param {string} columnId
-   */
-  renderCell(c, columnId) {
-    const cell = /** @type {!HTMLElement} */ (c);
+  renderCell(c: Element, columnId: string): void {
+    const cell = (c as HTMLElement);
     switch (columnId) {
       case 'name': {
         this._renderPrimaryCell(cell, columnId);
@@ -1209,10 +932,8 @@ export class NetworkRequestNode extends NetworkNode {
         const preflightRequest = this._request.preflightRequest();
         if (preflightRequest) {
           this._setTextAndTitle(
-              cell,
-              `${this._request.requestMethod} + `,
-              i18nString(UIStrings.sPreflight, {PH1: this._request.requestMethod}),
-          );
+              cell, `${this._request.requestMethod} + `,
+              i18nString(UIStrings.sPreflight, {PH1: this._request.requestMethod}));
           cell.appendChild(Components.Linkifier.Linkifier.linkifyRevealable(
               preflightRequest, i18nString(UIStrings.preflight), undefined,
               i18nString(UIStrings.selectPreflightRequest)));
@@ -1297,36 +1018,24 @@ export class NetworkRequestNode extends NetworkNode {
     }
   }
 
-  /**
-   * @param {?Array<?>} array
-   * @return {string}
-   */
-  _arrayLength(array) {
+  _arrayLength(array: Array<unknown>|null): string {
     return array ? String(array.length) : '';
   }
 
-  /**
-   * @override
-   * @param {boolean=} supressSelectedEvent
-   */
-  select(supressSelectedEvent) {
+  select(supressSelectedEvent?: boolean): void {
     super.select(supressSelectedEvent);
-    /** @type {!Common.EventTarget.EventTarget} */ (/** @type {*} */ (this.parentView()))
-        .dispatchEventToListeners(Events.RequestSelected, this._request);
+    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (this.parentView() as any).dispatchEventToListeners(Events.RequestSelected, this._request);
   }
 
-  /**
-   * @param {?RegExp} regexp
-   * @return {!Array.<!Object>}
-   */
-  highlightMatchedSubstring(regexp) {
+  highlightMatchedSubstring(regexp: RegExp|null): Object[] {
     if (!regexp || !this._nameCell || this._nameCell.textContent === null) {
       return [];
     }
     // Ensure element is created.
     this.element();
-    /** @type {!Array<!Object>} */
-    const domChanges = [];
+    const domChanges: Object[] = [];
     const matchInfo = this._nameCell.textContent.match(regexp);
     if (matchInfo) {
       UI.UIUtils.highlightSearchResult(this._nameCell, matchInfo.index || 0, matchInfo[0].length, domChanges);
@@ -1334,28 +1043,18 @@ export class NetworkRequestNode extends NetworkNode {
     return domChanges;
   }
 
-  _openInNewTab() {
+  _openInNewTab(): void {
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(this._request.url());
   }
 
-  /**
-   * @override
-   * @return {boolean}
-   */
-  _isFailed() {
+  _isFailed(): boolean {
     const signedExchangeInfo = this._request.signedExchangeInfo();
     return (this._request.failed && !this._request.statusCode) || (this._request.statusCode >= 400) ||
         (signedExchangeInfo !== null && Boolean(signedExchangeInfo.errors));
   }
 
-  /**
-   * @param {!HTMLElement} cell
-   * @param {string} columnId
-   * @param {string=} text
-   */
-  _renderPrimaryCell(cell, columnId, text) {
-    const columnIndex =
-        /** @type {!DataGrid.DataGrid.DataGridImpl<?>} */ (this.dataGrid).indexOfVisibleColumn(columnId);
+  _renderPrimaryCell(cell: HTMLElement, columnId: string, text?: string): void {
+    const columnIndex = (this.dataGrid as DataGrid.DataGrid.DataGridImpl<unknown>).indexOfVisibleColumn(columnId);
     const isFirstCell = (columnIndex === 0);
     if (isFirstCell) {
       const leftPadding = this.leftPadding ? this.leftPadding + 'px' : '';
@@ -1363,15 +1062,16 @@ export class NetworkRequestNode extends NetworkNode {
       this._nameCell = cell;
       cell.addEventListener('dblclick', this._openInNewTab.bind(this), false);
       cell.addEventListener('click', () => {
-        /** @type {!Common.EventTarget.EventTarget} */ (/** @type {*} */ (this.parentView()))
-            .dispatchEventToListeners(Events.RequestActivated, {showPanel: true});
+        // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (this.parentView() as any).dispatchEventToListeners(Events.RequestActivated, {showPanel: true});
       });
       let iconElement;
       if (this._request.resourceType() === Common.ResourceType.resourceTypes.Image) {
         const previewImage = document.createElement('img');
         previewImage.classList.add('image-network-icon-preview');
         previewImage.alt = this._request.resourceType().title();
-        this._request.populateImageSource(/** @type {!HTMLImageElement} */ (previewImage));
+        this._request.populateImageSource((previewImage as HTMLImageElement));
 
         iconElement = document.createElement('div');
         iconElement.classList.add('icon');
@@ -1398,10 +1098,7 @@ export class NetworkRequestNode extends NetworkNode {
     }
   }
 
-  /**
-   * @param {!HTMLElement} cell
-   */
-  _renderStatusCell(cell) {
+  _renderStatusCell(cell: HTMLElement): void {
     cell.classList.toggle(
         'network-dim-cell', !this._isFailed() && (this._request.cached() || !this._request.statusCode));
 
@@ -1474,7 +1171,9 @@ export class NetworkRequestNode extends NetworkNode {
       }
       if (displayShowHeadersLink) {
         this._setTextAndTitleAndLink(cell, i18nString(UIStrings.blockeds, {PH1: reason}), 'View Headers', () => {
-          /** @type {!Common.EventTarget.EventTarget} */ (/** @type {*} */ (this.parentView()))
+          // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          (this.parentView() as any)
               .dispatchEventToListeners(Events.RequestActivated, {showPanel: true, tab: NetworkItemViewTabs.Headers});
         });
       } else {
@@ -1491,10 +1190,7 @@ export class NetworkRequestNode extends NetworkNode {
     }
   }
 
-  /**
-   * @param {!HTMLElement} cell
-   */
-  _renderInitiatorCell(cell) {
+  _renderInitiatorCell(cell: HTMLElement): void {
     this._initiatorCell = cell;
     const request = this._request;
     const initiator = SDK.NetworkLog.NetworkLog.instance().initiatorInfoForRequest(request);
@@ -1507,19 +1203,19 @@ export class NetworkRequestNode extends NetworkNode {
       case SDK.NetworkRequest.InitiatorType.Parser: {
         UI.Tooltip.Tooltip.install(cell, initiator.url + ':' + (initiator.lineNumber + 1));
         const uiSourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(initiator.url);
-        cell.appendChild(Components.Linkifier.Linkifier.linkifyURL(
-            initiator.url, /** @type {!Components.Linkifier.LinkifyURLOptions} */ ({
-              text: uiSourceCode ? uiSourceCode.displayName() : undefined,
-              lineNumber: initiator.lineNumber,
-              columnNumber: initiator.columnNumber
-            })));
+        cell.appendChild(
+            Components.Linkifier.Linkifier.linkifyURL(initiator.url, ({
+                                                        text: uiSourceCode ? uiSourceCode.displayName() : undefined,
+                                                        lineNumber: initiator.lineNumber,
+                                                        columnNumber: initiator.columnNumber,
+                                                      } as Components.Linkifier.LinkifyURLOptions)));
         this._appendSubtitle(cell, i18nString(UIStrings.parser));
         break;
       }
 
       case SDK.NetworkRequest.InitiatorType.Redirect: {
         UI.Tooltip.Tooltip.install(cell, initiator.url);
-        const redirectSource = /** @type {!SDK.NetworkRequest.NetworkRequest} */ (request.redirectSource());
+        const redirectSource = (request.redirectSource() as SDK.NetworkRequest.NetworkRequest);
         console.assert(redirectSource !== null);
         if (this.parentView().nodeForRequest(redirectSource)) {
           cell.appendChild(Components.Linkifier.Linkifier.linkifyRevealable(
@@ -1546,7 +1242,7 @@ export class NetworkRequestNode extends NetworkNode {
               networkManager.target(), initiator.scriptId, initiator.url, initiator.lineNumber,
               {columnNumber: initiator.columnNumber, className: undefined, tabStop: undefined});
         }
-        /** @type {!HTMLElement} */ UI.Tooltip.Tooltip.install((this._linkifiedInitiatorAnchor), '');
+        UI.Tooltip.Tooltip.install((this._linkifiedInitiatorAnchor), '');
         cell.appendChild(this._linkifiedInitiatorAnchor);
         this._appendSubtitle(cell, i18nString(UIStrings.script));
         cell.classList.add('network-script-initiated');
@@ -1585,20 +1281,13 @@ export class NetworkRequestNode extends NetworkNode {
     }
   }
 
-  /**
-   * @param {!HTMLElement} cell
-   * @param {Protocol.Network.IPAddressSpace} ipAddressSpace
-   */
-  _renderAddressSpaceCell(cell, ipAddressSpace) {
+  _renderAddressSpaceCell(cell: HTMLElement, ipAddressSpace: Protocol.Network.IPAddressSpace): void {
     if (ipAddressSpace !== Protocol.Network.IPAddressSpace.Unknown) {
       UI.UIUtils.createTextChild(cell, ipAddressSpace);
     }
   }
 
-  /**
-   * @param {!HTMLElement} cell
-   */
-  _renderSizeCell(cell) {
+  _renderSizeCell(cell: HTMLElement): void {
     const resourceSize = Platform.NumberUtilities.bytesToString(this._request.resourceSize);
 
     if (this._request.cachedInMemory()) {
@@ -1629,10 +1318,7 @@ export class NetworkRequestNode extends NetworkNode {
     this._appendSubtitle(cell, resourceSize);
   }
 
-  /**
-   * @param {!HTMLElement} cell
-   */
-  _renderTimeCell(cell) {
+  _renderTimeCell(cell: HTMLElement): void {
     if (this._request.duration > 0) {
       this._setTextAndTitle(cell, Number.secondsToString(this._request.duration));
       this._appendSubtitle(cell, Number.secondsToString(this._request.latency));
@@ -1642,12 +1328,7 @@ export class NetworkRequestNode extends NetworkNode {
     }
   }
 
-  /**
-   * @param {!Element} cellElement
-   * @param {string} subtitleText
-   * @param {boolean=} showInlineWhenSelected
-   */
-  _appendSubtitle(cellElement, subtitleText, showInlineWhenSelected = false) {
+  _appendSubtitle(cellElement: Element, subtitleText: string, showInlineWhenSelected: boolean|undefined = false): void {
     const subtitleElement = document.createElement('div');
     subtitleElement.classList.add('network-cell-subtitle');
     if (showInlineWhenSelected) {
@@ -1659,30 +1340,19 @@ export class NetworkRequestNode extends NetworkNode {
 }
 
 export class NetworkGroupNode extends NetworkNode {
-  /**
-   * @override
-   * @param {!Element} element
-   * @protected
-   */
-  createCells(element) {
+  createCells(element: Element): void {
     super.createCells(element);
-    const primaryColumn = /** @type {!DataGrid.DataGrid.DataGridImpl<?>} */ (this.dataGrid).visibleColumnsArray[0];
+    const primaryColumn = (this.dataGrid as DataGrid.DataGrid.DataGridImpl<unknown>).visibleColumnsArray[0];
     const localizedTitle = `${primaryColumn.title}`;
     const localizedLevel = i18nString(UIStrings.level);
     this.nodeAccessibleText =
         `${localizedLevel} ${localizedTitle}: ${this.cellAccessibleTextMap.get(primaryColumn.id)}`;
   }
 
-  /**
-   * @override
-   * @param {!Element} c
-   * @param {string} columnId
-   */
-  renderCell(c, columnId) {
-    const columnIndex =
-        /** @type {!DataGrid.DataGrid.DataGridImpl<?>} */ (this.dataGrid).indexOfVisibleColumn(columnId);
+  renderCell(c: Element, columnId: string): void {
+    const columnIndex = (this.dataGrid as DataGrid.DataGrid.DataGridImpl<unknown>).indexOfVisibleColumn(columnId);
     if (columnIndex === 0) {
-      const cell = /** @type {!HTMLElement} */ (c);
+      const cell = (c as HTMLElement);
       const leftPadding = this.leftPadding ? this.leftPadding + 'px' : '';
       cell.style.setProperty('padding-left', leftPadding);
       cell.classList.add('disclosure');
@@ -1690,16 +1360,13 @@ export class NetworkGroupNode extends NetworkNode {
     }
   }
 
-  /**
-   * @override
-   * @param {boolean=} supressSelectedEvent
-   */
-  select(supressSelectedEvent) {
+  select(supressSelectedEvent?: boolean): void {
     super.select(supressSelectedEvent);
-    const firstChildNode = /** @type {!NetworkNode} */ (this.traverseNextNode(false, undefined, true));
+    const firstChildNode = (this.traverseNextNode(false, undefined, true) as NetworkNode);
     if (firstChildNode && firstChildNode.request()) {
-      /** @type {!Common.EventTarget.EventTarget} */ (/** @type {*} */ (this.parentView()))
-          .dispatchEventToListeners(Events.RequestSelected, firstChildNode.request());
+      // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (this.parentView() as any).dispatchEventToListeners(Events.RequestSelected, firstChildNode.request());
     }
   }
 }

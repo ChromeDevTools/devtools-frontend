@@ -28,6 +28,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Common from '../common/common.js';
 import * as CookieTable from '../cookie_table/cookie_table.js';  // eslint-disable-line no-unused-vars
 import * as i18n from '../i18n/i18n.js';
@@ -76,18 +78,26 @@ export const UIStrings = {
   cookiesThatWereReceivedFromTheServer:
       'Cookies that were received from the server in the \'`set-cookie`\' header of the response but were malformed',
 };
-const str_ = i18n.i18n.registerUIStrings('network/RequestCookiesView.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('network/RequestCookiesView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+
 export class RequestCookiesView extends UI.Widget.Widget {
-  /**
-   * @param {!SDK.NetworkRequest.NetworkRequest} request
-   */
-  constructor(request) {
+  _request: SDK.NetworkRequest.NetworkRequest;
+  _showFilteredOutCookiesSetting: Common.Settings.Setting<boolean>;
+  _emptyWidget: UI.EmptyWidget.EmptyWidget;
+  _requestCookiesTitle: HTMLElement;
+  _requestCookiesEmpty: HTMLElement;
+  _requestCookiesTable: CookieTable.CookiesTable.CookiesTable;
+  _responseCookiesTitle: HTMLElement;
+  _responseCookiesTable: CookieTable.CookiesTable.CookiesTable;
+  _malformedResponseCookiesTitle: HTMLElement;
+  _malformedResponseCookiesList: HTMLElement;
+
+  constructor(request: SDK.NetworkRequest.NetworkRequest) {
     super();
     this.registerRequiredCSS('network/requestCookiesView.css', {enableLegacyPatching: false});
     this.element.classList.add('request-cookies-view');
 
-    /** @type {!SDK.NetworkRequest.NetworkRequest} */
     this._request = request;
     this._showFilteredOutCookiesSetting = Common.Settings.Settings.instance().createSetting(
         'show-filtered-out-request-cookies', /* defaultValue */ false);
@@ -100,9 +110,10 @@ export class RequestCookiesView extends UI.Widget.Widget {
     titleText.textContent = i18nString(UIStrings.requestCookies);
     UI.Tooltip.Tooltip.install(titleText, i18nString(UIStrings.cookiesThatWereSentToTheServerIn));
 
-    const requestCookiesCheckbox = /** @type {!UI.UIUtils.CheckboxLabel} */ (UI.SettingsUI.createSettingCheckbox(
-        i18nString(UIStrings.showFilteredOutRequestCookies), this._showFilteredOutCookiesSetting,
-        /* omitParagraphElement */ true));
+    const requestCookiesCheckbox =
+        (UI.SettingsUI.createSettingCheckbox(
+             i18nString(UIStrings.showFilteredOutRequestCookies), this._showFilteredOutCookiesSetting, true) as
+         UI.UIUtils.CheckboxLabel);
     requestCookiesCheckbox.checkboxElement.addEventListener('change', () => {
       this._refreshRequestCookiesView();
     });
@@ -131,12 +142,14 @@ export class RequestCookiesView extends UI.Widget.Widget {
     this._malformedResponseCookiesList = this.element.createChild('div');
   }
 
-  /**
-   * @return {!{requestCookies: !Array<!SDK.Cookie.Cookie>, requestCookieToBlockedReasons: !Map<!SDK.Cookie.Cookie, !Array<!SDK.CookieModel.BlockedReason>>}}
-   */
-  _getRequestCookies() {
-    /** @type {!Map<!SDK.Cookie.Cookie, !Array<!SDK.CookieModel.BlockedReason>>} */
-    const requestCookieToBlockedReasons = new Map();
+  _getRequestCookies(): {
+    requestCookies: Array<SDK.Cookie.Cookie>,
+    requestCookieToBlockedReasons: Map<SDK.Cookie.Cookie, Array<SDK.CookieModel.BlockedReason>>,
+  } {
+    const requestCookieToBlockedReasons = new Map<SDK.Cookie.Cookie, {
+      attribute: string | null,
+      uiString: string,
+    }[]>();
     const requestCookies = this._request.includedRequestCookies().slice();
 
     if (this._showFilteredOutCookiesSetting.get()) {
@@ -144,7 +157,7 @@ export class RequestCookiesView extends UI.Widget.Widget {
         requestCookieToBlockedReasons.set(blockedCookie.cookie, blockedCookie.blockedReasons.map(blockedReason => {
           return {
             attribute: SDK.NetworkRequest.cookieBlockedReasonToAttribute(blockedReason),
-            uiString: SDK.NetworkRequest.cookieBlockedReasonToUiString(blockedReason)
+            uiString: SDK.NetworkRequest.cookieBlockedReasonToUiString(blockedReason),
           };
         }));
         requestCookies.push(blockedCookie.cookie);
@@ -154,20 +167,21 @@ export class RequestCookiesView extends UI.Widget.Widget {
     return {requestCookies, requestCookieToBlockedReasons};
   }
 
-  /**
-   * @return {!{responseCookies: !Array<!SDK.Cookie.Cookie>, responseCookieToBlockedReasons: !Map<!SDK.Cookie.Cookie, !Array<!SDK.CookieModel.BlockedReason>>, malformedResponseCookies: !Array<!SDK.NetworkRequest.BlockedSetCookieWithReason>}}
-   */
-  _getResponseCookies() {
-    /** @type {!Array<!SDK.Cookie.Cookie>} */
-    let responseCookies = [];
-    /** @type {!Map<!SDK.Cookie.Cookie, !Array<!SDK.CookieModel.BlockedReason>>} */
-    const responseCookieToBlockedReasons = new Map();
-    /** @type {!Array<!SDK.NetworkRequest.BlockedSetCookieWithReason>} */
-    const malformedResponseCookies = [];
+  _getResponseCookies(): {
+    responseCookies: Array<SDK.Cookie.Cookie>,
+    responseCookieToBlockedReasons: Map<SDK.Cookie.Cookie, Array<SDK.CookieModel.BlockedReason>>,
+    malformedResponseCookies: Array<SDK.NetworkRequest.BlockedSetCookieWithReason>,
+  } {
+    let responseCookies: SDK.Cookie.Cookie[] = [];
+    const responseCookieToBlockedReasons = new Map<SDK.Cookie.Cookie, {
+      attribute: string | null,
+      uiString: string,
+    }[]>();
+    const malformedResponseCookies: SDK.NetworkRequest.BlockedSetCookieWithReason[] = [];
 
     if (this._request.responseCookies.length) {
-      /** @type {!Array<?string>} */
-      const blockedCookieLines = this._request.blockedResponseCookies().map(blockedCookie => blockedCookie.cookieLine);
+      const blockedCookieLines: (string|null)[] =
+          this._request.blockedResponseCookies().map(blockedCookie => blockedCookie.cookieLine);
       responseCookies = this._request.responseCookies.filter(cookie => {
         // remove the regular cookies that would overlap with blocked cookies
         const index = blockedCookieLines.indexOf(cookie.getCookieLine());
@@ -186,7 +200,7 @@ export class RequestCookiesView extends UI.Widget.Widget {
           continue;
         }
 
-        let cookie = blockedCookie.cookie;
+        let cookie: SDK.Cookie.Cookie|(SDK.Cookie.Cookie | null) = blockedCookie.cookie;
         if (!cookie && parsedCookies) {
           cookie = parsedCookies[0];
         }
@@ -194,7 +208,7 @@ export class RequestCookiesView extends UI.Widget.Widget {
           responseCookieToBlockedReasons.set(cookie, blockedCookie.blockedReasons.map(blockedReason => {
             return {
               attribute: SDK.NetworkRequest.setCookieBlockedReasonToAttribute(blockedReason),
-              uiString: SDK.NetworkRequest.setCookieBlockedReasonToUiString(blockedReason)
+              uiString: SDK.NetworkRequest.setCookieBlockedReasonToUiString(blockedReason),
             };
           }));
           responseCookies.push(cookie);
@@ -205,7 +219,7 @@ export class RequestCookiesView extends UI.Widget.Widget {
     return {responseCookies, responseCookieToBlockedReasons, malformedResponseCookies};
   }
 
-  _refreshRequestCookiesView() {
+  _refreshRequestCookiesView(): void {
     if (!this.isShowing()) {
       return;
     }
@@ -265,10 +279,7 @@ export class RequestCookiesView extends UI.Widget.Widget {
     }
   }
 
-  /**
-   * @override
-   */
-  wasShown() {
+  wasShown(): void {
     this._request.addEventListener(
         SDK.NetworkRequest.Events.RequestHeadersChanged, this._refreshRequestCookiesView, this);
     this._request.addEventListener(
@@ -277,10 +288,7 @@ export class RequestCookiesView extends UI.Widget.Widget {
     this._refreshRequestCookiesView();
   }
 
-  /**
-   * @override
-   */
-  willHide() {
+  willHide(): void {
     this._request.removeEventListener(
         SDK.NetworkRequest.Events.RequestHeadersChanged, this._refreshRequestCookiesView, this);
     this._request.removeEventListener(

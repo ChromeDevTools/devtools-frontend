@@ -3581,88 +3581,88 @@
   "mobile_throttling/ThrottlingSettingsTab.ts | upload": {
     "message": "Ûṕl̂óâd́"
   },
-  "network/BinaryResourceView.js | base": {
+  "network/BinaryResourceView.ts | base": {
     "message": "Base64"
   },
-  "network/BinaryResourceView.js | binaryViewType": {
+  "network/BinaryResourceView.ts | binaryViewType": {
     "message": "B̂ín̂ár̂ý v̂íêẃ t̂ýp̂é"
   },
-  "network/BinaryResourceView.js | copiedAsBase": {
+  "network/BinaryResourceView.ts | copiedAsBase": {
     "message": "Ĉóp̂íêd́ âś Base64"
   },
-  "network/BinaryResourceView.js | copiedAsHex": {
+  "network/BinaryResourceView.ts | copiedAsHex": {
     "message": "Ĉóp̂íêd́ âś Hex"
   },
-  "network/BinaryResourceView.js | copiedAsUtf": {
+  "network/BinaryResourceView.ts | copiedAsUtf": {
     "message": "Ĉóp̂íêd́ âś UTF-8"
   },
-  "network/BinaryResourceView.js | copyAsBase": {
+  "network/BinaryResourceView.ts | copyAsBase": {
     "message": "Ĉóp̂ý âś Base64"
   },
-  "network/BinaryResourceView.js | copyAsHex": {
+  "network/BinaryResourceView.ts | copyAsHex": {
     "message": "Ĉóp̂ý âś Hex"
   },
-  "network/BinaryResourceView.js | copyAsUtf": {
+  "network/BinaryResourceView.ts | copyAsUtf": {
     "message": "Ĉóp̂ý âś UTF-8"
   },
-  "network/BinaryResourceView.js | copyToClipboard": {
+  "network/BinaryResourceView.ts | copyToClipboard": {
     "message": "Ĉóp̂ý t̂ó ĉĺîṕb̂óâŕd̂"
   },
-  "network/BinaryResourceView.js | hexViewer": {
+  "network/BinaryResourceView.ts | hexViewer": {
     "message": "Hex V̂íêẃêŕ"
   },
-  "network/BinaryResourceView.js | utf": {
+  "network/BinaryResourceView.ts | utf": {
     "message": "UTF-8"
   },
-  "network/BlockedURLsPane.js | addNetworkRequestBlockingPattern": {
+  "network/BlockedURLsPane.ts | addNetworkRequestBlockingPattern": {
     "message": "Âd́d̂ ńêt́ŵór̂ḱ r̂éq̂úêśt̂ b́l̂óĉḱîńĝ ṕât́t̂ér̂ń"
   },
-  "network/BlockedURLsPane.js | addPattern": {
+  "network/BlockedURLsPane.ts | addPattern": {
     "message": "Âd́d̂ ṕât́t̂ér̂ń"
   },
-  "network/BlockedURLsPane.js | dBlocked": {
+  "network/BlockedURLsPane.ts | dBlocked": {
     "message": "{PH1} b̂ĺôćk̂éd̂"
   },
-  "network/BlockedURLsPane.js | enableNetworkRequestBlocking": {
+  "network/BlockedURLsPane.ts | enableNetworkRequestBlocking": {
     "message": "Êńâb́l̂é n̂ét̂ẃôŕk̂ ŕêq́ûéŝt́ b̂ĺôćk̂ín̂ǵ"
   },
-  "network/BlockedURLsPane.js | networkRequestsAreNotBlockedS": {
+  "network/BlockedURLsPane.ts | networkRequestsAreNotBlockedS": {
     "message": "N̂ét̂ẃôŕk̂ ŕêq́ûéŝt́ŝ ár̂é n̂ót̂ b́l̂óĉḱêd́. {PH1}"
   },
-  "network/BlockedURLsPane.js | patternAlreadyExists": {
+  "network/BlockedURLsPane.ts | patternAlreadyExists": {
     "message": "P̂át̂t́êŕn̂ ál̂ŕêád̂ý êx́îśt̂ś."
   },
-  "network/BlockedURLsPane.js | patternInputCannotBeEmpty": {
+  "network/BlockedURLsPane.ts | patternInputCannotBeEmpty": {
     "message": "P̂át̂t́êŕn̂ ín̂ṕût́ ĉán̂ńôt́ b̂é êḿp̂t́ŷ."
   },
-  "network/BlockedURLsPane.js | removeAllPatterns": {
+  "network/BlockedURLsPane.ts | removeAllPatterns": {
     "message": "R̂ém̂óv̂é âĺl̂ ṕât́t̂ér̂ńŝ"
   },
-  "network/BlockedURLsPane.js | textPatternToBlockMatching": {
+  "network/BlockedURLsPane.ts | textPatternToBlockMatching": {
     "message": "T̂éx̂t́ p̂át̂t́êŕn̂ t́ô b́l̂óĉḱ m̂át̂ćĥín̂ǵ r̂éq̂úêśt̂ś; ûśê * f́ôŕ ŵíl̂d́ĉár̂d́"
   },
-  "network/EventSourceMessagesView.js | copyMessage": {
+  "network/EventSourceMessagesView.ts | copyMessage": {
     "message": "Ĉóp̂ý m̂éŝśâǵê"
   },
-  "network/EventSourceMessagesView.js | data": {
+  "network/EventSourceMessagesView.ts | data": {
     "message": "D̂át̂á"
   },
-  "network/EventSourceMessagesView.js | eventSource": {
+  "network/EventSourceMessagesView.ts | eventSource": {
     "message": "Êv́êńt̂ Śôúr̂ćê"
   },
-  "network/EventSourceMessagesView.js | id": {
+  "network/EventSourceMessagesView.ts | id": {
     "message": "Îd́"
   },
-  "network/EventSourceMessagesView.js | time": {
+  "network/EventSourceMessagesView.ts | time": {
     "message": "T̂ím̂é"
   },
-  "network/EventSourceMessagesView.js | type": {
+  "network/EventSourceMessagesView.ts | type": {
     "message": "T̂ýp̂é"
   },
-  "network/HARWriter.js | collectingContent": {
+  "network/HARWriter.ts | collectingContent": {
     "message": "Ĉól̂ĺêćt̂ín̂ǵ ĉón̂t́êńt̂…"
   },
-  "network/HARWriter.js | writingFile": {
+  "network/HARWriter.ts | writingFile": {
     "message": "Ŵŕît́îńĝ f́îĺê…"
   },
   "network/network-meta.ts | colorCode": {
@@ -3746,892 +3746,892 @@
   "network/network-meta.ts | userdagent": {
     "message": "user-agent"
   },
-  "network/NetworkConfigView.js | caching": {
+  "network/NetworkConfigView.ts | caching": {
     "message": "Ĉáĉh́îńĝ"
   },
-  "network/NetworkConfigView.js | custom": {
+  "network/NetworkConfigView.ts | custom": {
     "message": "Ĉúŝt́ôḿ..."
   },
-  "network/NetworkConfigView.js | customUserAgentFieldIsRequired": {
+  "network/NetworkConfigView.ts | customUserAgentFieldIsRequired": {
     "message": "Ĉúŝt́ôḿ ûśêŕ âǵêńt̂ f́îél̂d́ îś r̂éq̂úîŕêd́"
   },
-  "network/NetworkConfigView.js | disableCache": {
+  "network/NetworkConfigView.ts | disableCache": {
     "message": "D̂íŝáb̂ĺê ćâćĥé"
   },
-  "network/NetworkConfigView.js | enterACustomUserAgent": {
+  "network/NetworkConfigView.ts | enterACustomUserAgent": {
     "message": "Êńt̂ér̂ á ĉúŝt́ôḿ ûśêŕ âǵêńt̂"
   },
-  "network/NetworkConfigView.js | networkThrottling": {
+  "network/NetworkConfigView.ts | networkThrottling": {
     "message": "N̂ét̂ẃôŕk̂ t́ĥŕôt́t̂ĺîńĝ"
   },
-  "network/NetworkConfigView.js | selectAutomatically": {
+  "network/NetworkConfigView.ts | selectAutomatically": {
     "message": "Ŝél̂éĉt́ âút̂óm̂át̂íĉál̂ĺŷ"
   },
-  "network/NetworkConfigView.js | userAgent": {
+  "network/NetworkConfigView.ts | userAgent": {
     "message": "Ûśêŕ âǵêńt̂"
   },
-  "network/NetworkDataGridNode.js | blockeds": {
+  "network/NetworkDataGridNode.ts | blockeds": {
     "message": "(b̂ĺôćk̂éd̂:{PH1})"
   },
-  "network/NetworkDataGridNode.js | canceled": {
+  "network/NetworkDataGridNode.ts | canceled": {
     "message": "(ĉán̂ćêĺêd́)"
   },
-  "network/NetworkDataGridNode.js | coepframeresourceneedscoepheader": {
+  "network/NetworkDataGridNode.ts | coepframeresourceneedscoepheader": {
     "message": "CoepFrameResourceNeedsCoepHeader"
   },
-  "network/NetworkDataGridNode.js | contenttype": {
+  "network/NetworkDataGridNode.ts | contenttype": {
     "message": "content-type"
   },
-  "network/NetworkDataGridNode.js | CoopSandboxedIframeCannot": {
+  "network/NetworkDataGridNode.ts | CoopSandboxedIframeCannot": {
     "message": "CoopSandboxedIframeCannotNavigateToCoopPage"
   },
-  "network/NetworkDataGridNode.js | corsError": {
+  "network/NetworkDataGridNode.ts | corsError": {
     "message": "ĈÓR̂Ś êŕr̂ór̂"
   },
-  "network/NetworkDataGridNode.js | crossoriginResourceSharingErrorS": {
+  "network/NetworkDataGridNode.ts | crossoriginResourceSharingErrorS": {
     "message": "Ĉŕôśŝ-Ór̂íĝín̂ Ŕêśôúr̂ćê Śĥár̂ín̂ǵ êŕr̂ór̂: {PH1}"
   },
-  "network/NetworkDataGridNode.js | csp": {
+  "network/NetworkDataGridNode.ts | csp": {
     "message": "ĉśp̂"
   },
-  "network/NetworkDataGridNode.js | data": {
+  "network/NetworkDataGridNode.ts | data": {
     "message": "(d̂át̂á)"
   },
-  "network/NetworkDataGridNode.js | devtools": {
+  "network/NetworkDataGridNode.ts | devtools": {
     "message": "d̂év̂t́ôól̂ś"
   },
-  "network/NetworkDataGridNode.js | diskCache": {
+  "network/NetworkDataGridNode.ts | diskCache": {
     "message": "(d̂íŝḱ ĉáĉh́ê)"
   },
-  "network/NetworkDataGridNode.js | extension": {
+  "network/NetworkDataGridNode.ts | extension": {
     "message": "êx́t̂én̂śîón̂"
   },
-  "network/NetworkDataGridNode.js | failed": {
+  "network/NetworkDataGridNode.ts | failed": {
     "message": "(f̂áîĺêd́)"
   },
-  "network/NetworkDataGridNode.js | finished": {
+  "network/NetworkDataGridNode.ts | finished": {
     "message": "F̂ín̂íŝh́êd́"
   },
-  "network/NetworkDataGridNode.js | level": {
+  "network/NetworkDataGridNode.ts | level": {
     "message": "l̂év̂él̂ 1"
   },
-  "network/NetworkDataGridNode.js | memoryCache": {
+  "network/NetworkDataGridNode.ts | memoryCache": {
     "message": "(m̂ém̂ór̂ý ĉáĉh́ê)"
   },
-  "network/NetworkDataGridNode.js | mixedcontent": {
+  "network/NetworkDataGridNode.ts | mixedcontent": {
     "message": "mixed-content"
   },
-  "network/NetworkDataGridNode.js | notsameorigin": {
+  "network/NetworkDataGridNode.ts | notsameorigin": {
     "message": "N̂ót̂ŚâḿêÓr̂íĝín̂"
   },
-  "network/NetworkDataGridNode.js | notsameoriginafterdefaultedtosameoriginbycoep": {
+  "network/NetworkDataGridNode.ts | notsameoriginafterdefaultedtosameoriginbycoep": {
     "message": "N̂ót̂ŚâḿêÓr̂íĝín̂Áf̂t́êŕD̂éf̂áûĺt̂éd̂T́ôŚâḿêÓr̂íĝín̂B́ŷĆôép̂"
   },
-  "network/NetworkDataGridNode.js | notsamesite": {
+  "network/NetworkDataGridNode.ts | notsamesite": {
     "message": "N̂ót̂ŚâḿêŚît́ê"
   },
-  "network/NetworkDataGridNode.js | origin": {
+  "network/NetworkDataGridNode.ts | origin": {
     "message": "ôŕîǵîń"
   },
-  "network/NetworkDataGridNode.js | other": {
+  "network/NetworkDataGridNode.ts | other": {
     "message": "ôt́ĥér̂"
   },
-  "network/NetworkDataGridNode.js | otherC": {
+  "network/NetworkDataGridNode.ts | otherC": {
     "message": "Ôt́ĥér̂"
   },
-  "network/NetworkDataGridNode.js | parser": {
+  "network/NetworkDataGridNode.ts | parser": {
     "message": "P̂ár̂śêŕ"
   },
-  "network/NetworkDataGridNode.js | pending": {
+  "network/NetworkDataGridNode.ts | pending": {
     "message": "P̂én̂d́îńĝ"
   },
-  "network/NetworkDataGridNode.js | pendingq": {
+  "network/NetworkDataGridNode.ts | pendingq": {
     "message": "(p̂én̂d́îńĝ)"
   },
-  "network/NetworkDataGridNode.js | prefetchCache": {
+  "network/NetworkDataGridNode.ts | prefetchCache": {
     "message": "(p̂ŕêf́êt́ĉh́ ĉáĉh́ê)"
   },
-  "network/NetworkDataGridNode.js | preflight": {
+  "network/NetworkDataGridNode.ts | preflight": {
     "message": "P̂ŕêf́l̂íĝh́t̂"
   },
-  "network/NetworkDataGridNode.js | preload": {
+  "network/NetworkDataGridNode.ts | preload": {
     "message": "P̂ŕêĺôád̂"
   },
-  "network/NetworkDataGridNode.js | push": {
+  "network/NetworkDataGridNode.ts | push": {
     "message": "P̂úŝh́ / "
   },
-  "network/NetworkDataGridNode.js | redirect": {
+  "network/NetworkDataGridNode.ts | redirect": {
     "message": "R̂éd̂ír̂éĉt́"
   },
-  "network/NetworkDataGridNode.js | script": {
+  "network/NetworkDataGridNode.ts | script": {
     "message": "Ŝćr̂íp̂t́"
   },
-  "network/NetworkDataGridNode.js | selectPreflightRequest": {
+  "network/NetworkDataGridNode.ts | selectPreflightRequest": {
     "message": "Ŝél̂éĉt́ p̂ŕêf́l̂íĝh́t̂ ŕêq́ûéŝt́"
   },
-  "network/NetworkDataGridNode.js | selectTheRequestThatTriggered": {
+  "network/NetworkDataGridNode.ts | selectTheRequestThatTriggered": {
     "message": "Ŝél̂éĉt́ t̂h́ê ŕêq́ûéŝt́ t̂h́ât́ t̂ŕîǵĝér̂éd̂ t́ĥíŝ ṕr̂éf̂ĺîǵĥt́"
   },
-  "network/NetworkDataGridNode.js | servedFromDiskCacheResourceSizeS": {
+  "network/NetworkDataGridNode.ts | servedFromDiskCacheResourceSizeS": {
     "message": "Ŝér̂v́êd́ f̂ŕôḿ d̂íŝḱ ĉáĉh́ê, ŕêśôúr̂ćê śîźê: {PH1}"
   },
-  "network/NetworkDataGridNode.js | servedFromMemoryCacheResource": {
+  "network/NetworkDataGridNode.ts | servedFromMemoryCacheResource": {
     "message": "Ŝér̂v́êd́ f̂ŕôḿ m̂ém̂ór̂ý ĉáĉh́ê, ŕêśôúr̂ćê śîźê: {PH1}"
   },
-  "network/NetworkDataGridNode.js | servedFromPrefetchCacheResource": {
+  "network/NetworkDataGridNode.ts | servedFromPrefetchCacheResource": {
     "message": "Ŝér̂v́êd́ f̂ŕôḿ p̂ŕêf́êt́ĉh́ ĉáĉh́ê, ŕêśôúr̂ćê śîźê: {PH1}"
   },
-  "network/NetworkDataGridNode.js | servedFromServiceworkerResource": {
+  "network/NetworkDataGridNode.ts | servedFromServiceworkerResource": {
     "message": "Ŝér̂v́êd́ f̂ŕôḿ ServiceWorker, r̂éŝóûŕĉé ŝíẑé: {PH1}"
   },
-  "network/NetworkDataGridNode.js | servedFromSignedHttpExchange": {
+  "network/NetworkDataGridNode.ts | servedFromSignedHttpExchange": {
     "message": "Ŝér̂v́êd́ f̂ŕôḿ Ŝíĝńêd́ ĤT́T̂Ṕ Êx́ĉh́âńĝé, r̂éŝóûŕĉé ŝíẑé: {PH1}"
   },
-  "network/NetworkDataGridNode.js | serviceworker": {
+  "network/NetworkDataGridNode.ts | serviceworker": {
     "message": "(ServiceWorker)"
   },
-  "network/NetworkDataGridNode.js | signedexchange": {
+  "network/NetworkDataGridNode.ts | signedexchange": {
     "message": "ŝíĝńêd́-êx́ĉh́âńĝé"
   },
-  "network/NetworkDataGridNode.js | signedexchangeq": {
+  "network/NetworkDataGridNode.ts | signedexchangeq": {
     "message": "(signed-exchange)"
   },
-  "network/NetworkDataGridNode.js | sPreflight": {
+  "network/NetworkDataGridNode.ts | sPreflight": {
     "message": "{PH1} + P̂ŕêf́l̂íĝh́t̂"
   },
-  "network/NetworkDataGridNode.js | subresourcefilter": {
+  "network/NetworkDataGridNode.ts | subresourcefilter": {
     "message": "subresource-filter"
   },
-  "network/NetworkItemView.js | cookies": {
+  "network/NetworkItemView.ts | cookies": {
     "message": "Ĉóôḱîéŝ"
   },
-  "network/NetworkItemView.js | eventstream": {
+  "network/NetworkItemView.ts | eventstream": {
     "message": "Êv́êńt̂Śt̂ŕêám̂"
   },
-  "network/NetworkItemView.js | headers": {
+  "network/NetworkItemView.ts | headers": {
     "message": "Ĥéâd́êŕŝ"
   },
-  "network/NetworkItemView.js | headersAndRequestBody": {
+  "network/NetworkItemView.ts | headersAndRequestBody": {
     "message": "Ĥéâd́êŕŝ án̂d́ r̂éq̂úêśt̂ b́ôd́ŷ"
   },
-  "network/NetworkItemView.js | initiator": {
+  "network/NetworkItemView.ts | initiator": {
     "message": "Îńît́îát̂ór̂"
   },
-  "network/NetworkItemView.js | messages": {
+  "network/NetworkItemView.ts | messages": {
     "message": "M̂éŝśâǵêś"
   },
-  "network/NetworkItemView.js | preview": {
+  "network/NetworkItemView.ts | preview": {
     "message": "P̂ŕêv́îéŵ"
   },
-  "network/NetworkItemView.js | rawResponseData": {
+  "network/NetworkItemView.ts | rawResponseData": {
     "message": "R̂áŵ ŕêśp̂ón̂śê d́ât́â"
   },
-  "network/NetworkItemView.js | requestAndResponseCookies": {
+  "network/NetworkItemView.ts | requestAndResponseCookies": {
     "message": "R̂éq̂úêśt̂ án̂d́ r̂éŝṕôńŝé ĉóôḱîéŝ"
   },
-  "network/NetworkItemView.js | requestAndResponseTimeline": {
+  "network/NetworkItemView.ts | requestAndResponseTimeline": {
     "message": "R̂éq̂úêśt̂ án̂d́ r̂éŝṕôńŝé t̂ím̂él̂ín̂é"
   },
-  "network/NetworkItemView.js | requestInitiatorCallStack": {
+  "network/NetworkItemView.ts | requestInitiatorCallStack": {
     "message": "R̂éq̂úêśt̂ ín̂ít̂íât́ôŕ ĉál̂ĺ ŝt́âćk̂"
   },
-  "network/NetworkItemView.js | response": {
+  "network/NetworkItemView.ts | response": {
     "message": "R̂éŝṕôńŝé"
   },
-  "network/NetworkItemView.js | responsePreview": {
+  "network/NetworkItemView.ts | responsePreview": {
     "message": "R̂éŝṕôńŝé p̂ŕêv́îéŵ"
   },
-  "network/NetworkItemView.js | signedexchangeError": {
+  "network/NetworkItemView.ts | signedexchangeError": {
     "message": "Ŝíĝńêd́Êx́ĉh́âńĝé êŕr̂ór̂"
   },
-  "network/NetworkItemView.js | timing": {
+  "network/NetworkItemView.ts | timing": {
     "message": "T̂ím̂ín̂ǵ"
   },
-  "network/NetworkItemView.js | trustTokenOperationDetails": {
+  "network/NetworkItemView.ts | trustTokenOperationDetails": {
     "message": "T̂ŕûśt̂ T́ôḱêń ôṕêŕât́îón̂ d́êt́âíl̂ś"
   },
-  "network/NetworkItemView.js | trustTokens": {
+  "network/NetworkItemView.ts | trustTokens": {
     "message": "T̂ŕûśt̂ T́ôḱêńŝ"
   },
-  "network/NetworkItemView.js | websocketMessages": {
+  "network/NetworkItemView.ts | websocketMessages": {
     "message": "Ŵéb̂Śôćk̂ét̂ ḿêśŝáĝéŝ"
   },
-  "network/NetworkLogView.js | areYouSureYouWantToClearBrowser": {
+  "network/NetworkLogView.ts | areYouSureYouWantToClearBrowser": {
     "message": "Âŕê ýôú ŝúr̂é ŷóû ẃâńt̂ t́ô ćl̂éâŕ b̂ŕôẃŝér̂ ćâćĥé?"
   },
-  "network/NetworkLogView.js | areYouSureYouWantToClearBrowserCookies": {
+  "network/NetworkLogView.ts | areYouSureYouWantToClearBrowserCookies": {
     "message": "Âŕê ýôú ŝúr̂é ŷóû ẃâńt̂ t́ô ćl̂éâŕ b̂ŕôẃŝér̂ ćôók̂íêś?"
   },
-  "network/NetworkLogView.js | blockedRequests": {
+  "network/NetworkLogView.ts | blockedRequests": {
     "message": "B̂ĺôćk̂éd̂ Ŕêq́ûéŝt́ŝ"
   },
-  "network/NetworkLogView.js | blockRequestDomain": {
+  "network/NetworkLogView.ts | blockRequestDomain": {
     "message": "B̂ĺôćk̂ ŕêq́ûéŝt́ d̂óm̂áîń"
   },
-  "network/NetworkLogView.js | blockRequestUrl": {
+  "network/NetworkLogView.ts | blockRequestUrl": {
     "message": "B̂ĺôćk̂ ŕêq́ûéŝt́ ÛŔL̂"
   },
-  "network/NetworkLogView.js | clearBrowserCache": {
+  "network/NetworkLogView.ts | clearBrowserCache": {
     "message": "Ĉĺêár̂ b́r̂óŵśêŕ ĉáĉh́ê"
   },
-  "network/NetworkLogView.js | clearBrowserCookies": {
+  "network/NetworkLogView.ts | clearBrowserCookies": {
     "message": "Ĉĺêár̂ b́r̂óŵśêŕ ĉóôḱîéŝ"
   },
-  "network/NetworkLogView.js | copy": {
+  "network/NetworkLogView.ts | copy": {
     "message": "Ĉóp̂ý"
   },
-  "network/NetworkLogView.js | copyAllAsCurl": {
+  "network/NetworkLogView.ts | copyAllAsCurl": {
     "message": "Ĉóp̂ý âĺl̂ áŝ cURL"
   },
-  "network/NetworkLogView.js | copyAllAsCurlBash": {
+  "network/NetworkLogView.ts | copyAllAsCurlBash": {
     "message": "Ĉóp̂ý âĺl̂ áŝ cURL (bash)"
   },
-  "network/NetworkLogView.js | copyAllAsCurlCmd": {
+  "network/NetworkLogView.ts | copyAllAsCurlCmd": {
     "message": "Ĉóp̂ý âĺl̂ áŝ cURL (cmd)"
   },
-  "network/NetworkLogView.js | copyAllAsFetch": {
+  "network/NetworkLogView.ts | copyAllAsFetch": {
     "message": "Ĉóp̂ý âĺl̂ áŝ fetch"
   },
-  "network/NetworkLogView.js | copyAllAsHar": {
+  "network/NetworkLogView.ts | copyAllAsHar": {
     "message": "Ĉóp̂ý âĺl̂ áŝ HAR"
   },
-  "network/NetworkLogView.js | copyAllAsNodejsFetch": {
+  "network/NetworkLogView.ts | copyAllAsNodejsFetch": {
     "message": "Ĉóp̂ý âĺl̂ áŝ Node.js fetch"
   },
-  "network/NetworkLogView.js | copyAllAsPowershell": {
+  "network/NetworkLogView.ts | copyAllAsPowershell": {
     "message": "Ĉóp̂ý âĺl̂ áŝ PowerShell"
   },
-  "network/NetworkLogView.js | copyAsCurl": {
+  "network/NetworkLogView.ts | copyAsCurl": {
     "message": "Ĉóp̂ý âś cURL"
   },
-  "network/NetworkLogView.js | copyAsCurlBash": {
+  "network/NetworkLogView.ts | copyAsCurlBash": {
     "message": "Ĉóp̂ý âś cURL (bash)"
   },
-  "network/NetworkLogView.js | copyAsCurlCmd": {
+  "network/NetworkLogView.ts | copyAsCurlCmd": {
     "message": "Ĉóp̂ý âś cURL (cmd)"
   },
-  "network/NetworkLogView.js | copyAsFetch": {
+  "network/NetworkLogView.ts | copyAsFetch": {
     "message": "Ĉóp̂ý âś fetch"
   },
-  "network/NetworkLogView.js | copyAsNodejsFetch": {
+  "network/NetworkLogView.ts | copyAsNodejsFetch": {
     "message": "Ĉóp̂ý âś Node.js fetch"
   },
-  "network/NetworkLogView.js | copyAsPowershell": {
+  "network/NetworkLogView.ts | copyAsPowershell": {
     "message": "Ĉóp̂ý âś PowerShell"
   },
-  "network/NetworkLogView.js | copyRequestHeaders": {
+  "network/NetworkLogView.ts | copyRequestHeaders": {
     "message": "Ĉóp̂ý r̂éq̂úêśt̂ h́êád̂ér̂ś"
   },
-  "network/NetworkLogView.js | copyResponse": {
+  "network/NetworkLogView.ts | copyResponse": {
     "message": "Ĉóp̂ý r̂éŝṕôńŝé"
   },
-  "network/NetworkLogView.js | copyResponseHeaders": {
+  "network/NetworkLogView.ts | copyResponseHeaders": {
     "message": "Ĉóp̂ý r̂éŝṕôńŝé ĥéâd́êŕŝ"
   },
-  "network/NetworkLogView.js | copyStacktrace": {
+  "network/NetworkLogView.ts | copyStacktrace": {
     "message": "Ĉóp̂ý ŝt́âćk̂t́r̂áĉé"
   },
-  "network/NetworkLogView.js | domcontentloadedS": {
+  "network/NetworkLogView.ts | domcontentloadedS": {
     "message": "D̂ÓM̂Ćôńt̂én̂t́L̂óâd́êd́: {PH1}"
   },
-  "network/NetworkLogView.js | dropHarFilesHere": {
+  "network/NetworkLogView.ts | dropHarFilesHere": {
     "message": "D̂ŕôṕ ĤÁR̂ f́îĺêś ĥér̂é"
   },
-  "network/NetworkLogView.js | finishS": {
+  "network/NetworkLogView.ts | finishS": {
     "message": "F̂ín̂íŝh́: {PH1}"
   },
-  "network/NetworkLogView.js | hasBlockedCookies": {
+  "network/NetworkLogView.ts | hasBlockedCookies": {
     "message": "Ĥáŝ b́l̂óĉḱêd́ ĉóôḱîéŝ"
   },
-  "network/NetworkLogView.js | hideDataUrls": {
+  "network/NetworkLogView.ts | hideDataUrls": {
     "message": "Ĥíd̂é d̂át̂á ÛŔL̂ś"
   },
-  "network/NetworkLogView.js | hidesDataAndBlobUrls": {
+  "network/NetworkLogView.ts | hidesDataAndBlobUrls": {
     "message": "Ĥíd̂éŝ d́ât́â: án̂d́ b̂ĺôb́: ÛŔL̂ś"
   },
-  "network/NetworkLogView.js | learnMore": {
+  "network/NetworkLogView.ts | learnMore": {
     "message": "L̂éâŕn̂ ḿôŕê"
   },
-  "network/NetworkLogView.js | loadS": {
+  "network/NetworkLogView.ts | loadS": {
     "message": "L̂óâd́: {PH1}"
   },
-  "network/NetworkLogView.js | networkDataAvailable": {
+  "network/NetworkLogView.ts | networkDataAvailable": {
     "message": "N̂ét̂ẃôŕk̂ D́ât́â Áv̂áîĺâb́l̂é"
   },
-  "network/NetworkLogView.js | onlyShowBlockedRequests": {
+  "network/NetworkLogView.ts | onlyShowBlockedRequests": {
     "message": "Ôńl̂ý ŝh́ôẃ b̂ĺôćk̂éd̂ ŕêq́ûéŝt́ŝ"
   },
-  "network/NetworkLogView.js | onlyShowRequestsWithBlocked": {
+  "network/NetworkLogView.ts | onlyShowRequestsWithBlocked": {
     "message": "Ôńl̂ý ŝh́ôẃ r̂éq̂úêśt̂ś ŵít̂h́ b̂ĺôćk̂éd̂ ŕêśp̂ón̂śê ćôók̂íêś"
   },
-  "network/NetworkLogView.js | performARequestOrHitSToRecordThe": {
+  "network/NetworkLogView.ts | performARequestOrHitSToRecordThe": {
     "message": "P̂ér̂f́ôŕm̂ á r̂éq̂úêśt̂ ór̂ h́ît́ {PH1} t̂ó r̂éĉór̂d́ t̂h́ê ŕêĺôád̂."
   },
-  "network/NetworkLogView.js | recordingNetworkActivity": {
+  "network/NetworkLogView.ts | recordingNetworkActivity": {
     "message": "R̂éĉór̂d́îńĝ ńêt́ŵór̂ḱ âćt̂ív̂ít̂ý…"
   },
-  "network/NetworkLogView.js | recordSToDisplayNetworkActivity": {
+  "network/NetworkLogView.ts | recordSToDisplayNetworkActivity": {
     "message": "R̂éĉór̂d́ ({PH1}) t̂ó d̂íŝṕl̂áŷ ńêt́ŵór̂ḱ âćt̂ív̂ít̂ý."
   },
-  "network/NetworkLogView.js | replayXhr": {
+  "network/NetworkLogView.ts | replayXhr": {
     "message": "R̂ép̂ĺâý X̂H́R̂"
   },
-  "network/NetworkLogView.js | resourceTypesToInclude": {
+  "network/NetworkLogView.ts | resourceTypesToInclude": {
     "message": "R̂éŝóûŕĉé t̂ýp̂éŝ t́ô ín̂ćl̂úd̂é"
   },
-  "network/NetworkLogView.js | saveAllAsHarWithContent": {
+  "network/NetworkLogView.ts | saveAllAsHarWithContent": {
     "message": "Ŝáv̂é âĺl̂ áŝ HAR ẃît́ĥ ćôńt̂én̂t́"
   },
-  "network/NetworkLogView.js | sBResourcesLoadedByThePage": {
+  "network/NetworkLogView.ts | sBResourcesLoadedByThePage": {
     "message": "{PH1} B̂ ŕêśôúr̂ćêś l̂óâd́êd́ b̂ý t̂h́ê ṕâǵê"
   },
-  "network/NetworkLogView.js | sBSBResourcesLoadedByThePage": {
+  "network/NetworkLogView.ts | sBSBResourcesLoadedByThePage": {
     "message": "{PH1} B̂ / {PH2} B́ r̂éŝóûŕĉéŝ ĺôád̂éd̂ b́ŷ t́ĥé p̂áĝé"
   },
-  "network/NetworkLogView.js | sBSBTransferredOverNetwork": {
+  "network/NetworkLogView.ts | sBSBTransferredOverNetwork": {
     "message": "{PH1} B̂ / {PH2} B́ t̂ŕâńŝf́êŕr̂éd̂ óv̂ér̂ ńêt́ŵór̂ḱ"
   },
-  "network/NetworkLogView.js | sBTransferredOverNetwork": {
+  "network/NetworkLogView.ts | sBTransferredOverNetwork": {
     "message": "{PH1} B̂ t́r̂án̂śf̂ér̂ŕêd́ ôv́êŕ n̂ét̂ẃôŕk̂"
   },
-  "network/NetworkLogView.js | sRequests": {
+  "network/NetworkLogView.ts | sRequests": {
     "message": "{PH1} r̂éq̂úêśt̂ś"
   },
-  "network/NetworkLogView.js | sResources": {
+  "network/NetworkLogView.ts | sResources": {
     "message": "{PH1} r̂éŝóûŕĉéŝ"
   },
-  "network/NetworkLogView.js | sSRequests": {
+  "network/NetworkLogView.ts | sSRequests": {
     "message": "{PH1} / {PH2} r̂éq̂úêśt̂ś"
   },
-  "network/NetworkLogView.js | sSResources": {
+  "network/NetworkLogView.ts | sSResources": {
     "message": "{PH1} / {PH2} r̂éŝóûŕĉéŝ"
   },
-  "network/NetworkLogView.js | sSTransferred": {
+  "network/NetworkLogView.ts | sSTransferred": {
     "message": "{PH1} / {PH2} t̂ŕâńŝf́êŕr̂éd̂"
   },
-  "network/NetworkLogView.js | sTransferred": {
+  "network/NetworkLogView.ts | sTransferred": {
     "message": "{PH1} t̂ŕâńŝf́êŕr̂éd̂"
   },
-  "network/NetworkLogView.js | unblockS": {
+  "network/NetworkLogView.ts | unblockS": {
     "message": "Ûńb̂ĺôćk̂ {PH1}"
   },
-  "network/NetworkLogViewColumns.js | cachecontrol": {
+  "network/NetworkLogViewColumns.ts | cachecontrol": {
     "message": "Cache-Control"
   },
-  "network/NetworkLogViewColumns.js | connectionId": {
+  "network/NetworkLogViewColumns.ts | connectionId": {
     "message": "Ĉón̂ńêćt̂íôń ÎD́"
   },
-  "network/NetworkLogViewColumns.js | content": {
+  "network/NetworkLogViewColumns.ts | content": {
     "message": "Ĉón̂t́êńt̂"
   },
-  "network/NetworkLogViewColumns.js | contentencoding": {
+  "network/NetworkLogViewColumns.ts | contentencoding": {
     "message": "Content-Encoding"
   },
-  "network/NetworkLogViewColumns.js | contentlength": {
+  "network/NetworkLogViewColumns.ts | contentlength": {
     "message": "Content-Length"
   },
-  "network/NetworkLogViewColumns.js | cookies": {
+  "network/NetworkLogViewColumns.ts | cookies": {
     "message": "Ĉóôḱîéŝ"
   },
-  "network/NetworkLogViewColumns.js | domain": {
+  "network/NetworkLogViewColumns.ts | domain": {
     "message": "D̂óm̂áîń"
   },
-  "network/NetworkLogViewColumns.js | endTime": {
+  "network/NetworkLogViewColumns.ts | endTime": {
     "message": "Êńd̂ T́îḿê"
   },
-  "network/NetworkLogViewColumns.js | etag": {
+  "network/NetworkLogViewColumns.ts | etag": {
     "message": "ETag"
   },
-  "network/NetworkLogViewColumns.js | initiator": {
+  "network/NetworkLogViewColumns.ts | initiator": {
     "message": "Îńît́îát̂ór̂"
   },
-  "network/NetworkLogViewColumns.js | initiatorAddressSpace": {
+  "network/NetworkLogViewColumns.ts | initiatorAddressSpace": {
     "message": "Îńît́îát̂ór̂ Ád̂d́r̂éŝś Ŝṕâćê"
   },
-  "network/NetworkLogViewColumns.js | keepalive": {
+  "network/NetworkLogViewColumns.ts | keepalive": {
     "message": "Keep-Alive"
   },
-  "network/NetworkLogViewColumns.js | lastmodified": {
+  "network/NetworkLogViewColumns.ts | lastmodified": {
     "message": "Last-Modified"
   },
-  "network/NetworkLogViewColumns.js | latency": {
+  "network/NetworkLogViewColumns.ts | latency": {
     "message": "L̂át̂én̂ćŷ"
   },
-  "network/NetworkLogViewColumns.js | manageHeaderColumns": {
+  "network/NetworkLogViewColumns.ts | manageHeaderColumns": {
     "message": "M̂án̂áĝé Ĥéâd́êŕ Ĉól̂úm̂ńŝ…"
   },
-  "network/NetworkLogViewColumns.js | method": {
+  "network/NetworkLogViewColumns.ts | method": {
     "message": "M̂ét̂h́ôd́"
   },
-  "network/NetworkLogViewColumns.js | name": {
+  "network/NetworkLogViewColumns.ts | name": {
     "message": "N̂ám̂é"
   },
-  "network/NetworkLogViewColumns.js | networkLog": {
+  "network/NetworkLogViewColumns.ts | networkLog": {
     "message": "N̂ét̂ẃôŕk̂ Ĺôǵ"
   },
-  "network/NetworkLogViewColumns.js | path": {
+  "network/NetworkLogViewColumns.ts | path": {
     "message": "P̂át̂h́"
   },
-  "network/NetworkLogViewColumns.js | priority": {
+  "network/NetworkLogViewColumns.ts | priority": {
     "message": "P̂ŕîór̂ít̂ý"
   },
-  "network/NetworkLogViewColumns.js | protocol": {
+  "network/NetworkLogViewColumns.ts | protocol": {
     "message": "P̂ŕôt́ôćôĺ"
   },
-  "network/NetworkLogViewColumns.js | remoteAddress": {
+  "network/NetworkLogViewColumns.ts | remoteAddress": {
     "message": "R̂ém̂ót̂é Âd́d̂ŕêśŝ"
   },
-  "network/NetworkLogViewColumns.js | remoteAddressSpace": {
+  "network/NetworkLogViewColumns.ts | remoteAddressSpace": {
     "message": "R̂ém̂ót̂é Âd́d̂ŕêśŝ Śp̂áĉé"
   },
-  "network/NetworkLogViewColumns.js | responseHeaders": {
+  "network/NetworkLogViewColumns.ts | responseHeaders": {
     "message": "R̂éŝṕôńŝé Ĥéâd́êŕŝ"
   },
-  "network/NetworkLogViewColumns.js | responseTime": {
+  "network/NetworkLogViewColumns.ts | responseTime": {
     "message": "R̂éŝṕôńŝé T̂ím̂é"
   },
-  "network/NetworkLogViewColumns.js | s": {
+  "network/NetworkLogViewColumns.ts | s": {
     "message": "{PH1}"
   },
-  "network/NetworkLogViewColumns.js | scheme": {
+  "network/NetworkLogViewColumns.ts | scheme": {
     "message": "Ŝćĥém̂é"
   },
-  "network/NetworkLogViewColumns.js | server": {
+  "network/NetworkLogViewColumns.ts | server": {
     "message": "Server"
   },
-  "network/NetworkLogViewColumns.js | setCookies": {
+  "network/NetworkLogViewColumns.ts | setCookies": {
     "message": "Ŝét̂ Ćôók̂íêś"
   },
-  "network/NetworkLogViewColumns.js | size": {
+  "network/NetworkLogViewColumns.ts | size": {
     "message": "Ŝíẑé"
   },
-  "network/NetworkLogViewColumns.js | startTime": {
+  "network/NetworkLogViewColumns.ts | startTime": {
     "message": "Ŝt́âŕt̂ T́îḿê"
   },
-  "network/NetworkLogViewColumns.js | status": {
+  "network/NetworkLogViewColumns.ts | status": {
     "message": "Ŝt́ât́ûś"
   },
-  "network/NetworkLogViewColumns.js | text": {
+  "network/NetworkLogViewColumns.ts | text": {
     "message": "T̂éx̂t́"
   },
-  "network/NetworkLogViewColumns.js | time": {
+  "network/NetworkLogViewColumns.ts | time": {
     "message": "T̂ím̂é"
   },
-  "network/NetworkLogViewColumns.js | totalDuration": {
+  "network/NetworkLogViewColumns.ts | totalDuration": {
     "message": "T̂ót̂ál̂ D́ûŕât́îón̂"
   },
-  "network/NetworkLogViewColumns.js | type": {
+  "network/NetworkLogViewColumns.ts | type": {
     "message": "T̂ýp̂é"
   },
-  "network/NetworkLogViewColumns.js | url": {
+  "network/NetworkLogViewColumns.ts | url": {
     "message": "Ûŕl̂"
   },
-  "network/NetworkLogViewColumns.js | vary": {
+  "network/NetworkLogViewColumns.ts | vary": {
     "message": "Vary"
   },
-  "network/NetworkLogViewColumns.js | waterfall": {
+  "network/NetworkLogViewColumns.ts | waterfall": {
     "message": "Ŵát̂ér̂f́âĺl̂"
   },
-  "network/NetworkManageCustomHeadersView.js | addCustomHeader": {
+  "network/NetworkManageCustomHeadersView.ts | addCustomHeader": {
     "message": "Âd́d̂ ćûśt̂óm̂ h́êád̂ér̂…"
   },
-  "network/NetworkManageCustomHeadersView.js | headerName": {
+  "network/NetworkManageCustomHeadersView.ts | headerName": {
     "message": "Ĥéâd́êŕ N̂ám̂é"
   },
-  "network/NetworkManageCustomHeadersView.js | manageHeaderColumns": {
+  "network/NetworkManageCustomHeadersView.ts | manageHeaderColumns": {
     "message": "M̂án̂áĝé Ĥéâd́êŕ Ĉól̂úm̂ńŝ"
   },
-  "network/NetworkManageCustomHeadersView.js | noCustomHeaders": {
+  "network/NetworkManageCustomHeadersView.ts | noCustomHeaders": {
     "message": "N̂ó ĉúŝt́ôḿ ĥéâd́êŕŝ"
   },
-  "network/NetworkPanel.js | captureScreenshots": {
+  "network/NetworkPanel.ts | captureScreenshots": {
     "message": "Ĉáp̂t́ûŕê śĉŕêén̂śĥót̂ś"
   },
-  "network/NetworkPanel.js | captureScreenshotsWhenLoadingA": {
+  "network/NetworkPanel.ts | captureScreenshotsWhenLoadingA": {
     "message": "Ĉáp̂t́ûŕê śĉŕêén̂śĥót̂ś ŵh́êń l̂óâd́îńĝ á p̂áĝé"
   },
-  "network/NetworkPanel.js | clear": {
+  "network/NetworkPanel.ts | clear": {
     "message": "Ĉĺêár̂"
   },
-  "network/NetworkPanel.js | close": {
+  "network/NetworkPanel.ts | close": {
     "message": "Ĉĺôśê"
   },
-  "network/NetworkPanel.js | disableCache": {
+  "network/NetworkPanel.ts | disableCache": {
     "message": "D̂íŝáb̂ĺê ćâćĥé"
   },
-  "network/NetworkPanel.js | disableCacheWhileDevtoolsIsOpen": {
+  "network/NetworkPanel.ts | disableCacheWhileDevtoolsIsOpen": {
     "message": "D̂íŝáb̂ĺê ćâćĥé (ŵh́îĺê D́êv́T̂óôĺŝ íŝ óp̂én̂)"
   },
-  "network/NetworkPanel.js | doNotClearLogOnPageReload": {
+  "network/NetworkPanel.ts | doNotClearLogOnPageReload": {
     "message": "D̂ó n̂ót̂ ćl̂éâŕ l̂óĝ ón̂ ṕâǵê ŕêĺôád̂ / ńâv́îǵât́îón̂"
   },
-  "network/NetworkPanel.js | exportHar": {
+  "network/NetworkPanel.ts | exportHar": {
     "message": "Êx́p̂ór̂t́ HAR..."
   },
-  "network/NetworkPanel.js | fetchingFrames": {
+  "network/NetworkPanel.ts | fetchingFrames": {
     "message": "F̂ét̂ćĥín̂ǵ f̂ŕâḿêś..."
   },
-  "network/NetworkPanel.js | groupByFrame": {
+  "network/NetworkPanel.ts | groupByFrame": {
     "message": "Ĝŕôúp̂ b́ŷ f́r̂ám̂é"
   },
-  "network/NetworkPanel.js | groupRequestsByTopLevelRequest": {
+  "network/NetworkPanel.ts | groupRequestsByTopLevelRequest": {
     "message": "Ĝŕôúp̂ ŕêq́ûéŝt́ŝ b́ŷ t́ôṕ l̂év̂él̂ ŕêq́ûéŝt́ f̂ŕâḿê"
   },
-  "network/NetworkPanel.js | hitSToReloadAndCaptureFilmstrip": {
+  "network/NetworkPanel.ts | hitSToReloadAndCaptureFilmstrip": {
     "message": "Ĥít̂ {PH1} t́ô ŕêĺôád̂ án̂d́ ĉáp̂t́ûŕê f́îĺm̂śt̂ŕîṕ."
   },
-  "network/NetworkPanel.js | importHarFile": {
+  "network/NetworkPanel.ts | importHarFile": {
     "message": "Îḿp̂ór̂t́ HAR f̂íl̂é..."
   },
-  "network/NetworkPanel.js | networkSettings": {
+  "network/NetworkPanel.ts | networkSettings": {
     "message": "N̂ét̂ẃôŕk̂ śêt́t̂ín̂ǵŝ"
   },
-  "network/NetworkPanel.js | preserveLog": {
+  "network/NetworkPanel.ts | preserveLog": {
     "message": "P̂ŕêśêŕv̂é l̂óĝ"
   },
-  "network/NetworkPanel.js | recordingFrames": {
+  "network/NetworkPanel.ts | recordingFrames": {
     "message": "R̂éĉór̂d́îńĝ f́r̂ám̂éŝ..."
   },
-  "network/NetworkPanel.js | revealInNetworkPanel": {
+  "network/NetworkPanel.ts | revealInNetworkPanel": {
     "message": "R̂év̂éâĺ îń N̂ét̂ẃôŕk̂ ṕâńêĺ"
   },
-  "network/NetworkPanel.js | search": {
+  "network/NetworkPanel.ts | search": {
     "message": "Ŝéâŕĉh́"
   },
-  "network/NetworkPanel.js | showMoreInformationInRequestRows": {
+  "network/NetworkPanel.ts | showMoreInformationInRequestRows": {
     "message": "Ŝh́ôẃ m̂ór̂é îńf̂ór̂ḿât́îón̂ ín̂ ŕêq́ûéŝt́ r̂óŵś"
   },
-  "network/NetworkPanel.js | showOverview": {
+  "network/NetworkPanel.ts | showOverview": {
     "message": "Ŝh́ôẃ ôv́êŕv̂íêẃ"
   },
-  "network/NetworkPanel.js | showOverviewOfNetworkRequests": {
+  "network/NetworkPanel.ts | showOverviewOfNetworkRequests": {
     "message": "Ŝh́ôẃ ôv́êŕv̂íêẃ ôf́ n̂ét̂ẃôŕk̂ ŕêq́ûéŝt́ŝ"
   },
-  "network/NetworkPanel.js | throttling": {
+  "network/NetworkPanel.ts | throttling": {
     "message": "T̂h́r̂ót̂t́l̂ín̂ǵ"
   },
-  "network/NetworkPanel.js | useLargeRequestRows": {
+  "network/NetworkPanel.ts | useLargeRequestRows": {
     "message": "Ûśê ĺâŕĝé r̂éq̂úêśt̂ ŕôẃŝ"
   },
-  "network/NetworkSearchScope.js | url": {
+  "network/NetworkSearchScope.ts | url": {
     "message": "ÛŔL̂"
   },
-  "network/NetworkTimeCalculator.js | sDownload": {
+  "network/NetworkTimeCalculator.ts | sDownload": {
     "message": "{PH1} d̂óŵńl̂óâd́"
   },
-  "network/NetworkTimeCalculator.js | sFromCache": {
+  "network/NetworkTimeCalculator.ts | sFromCache": {
     "message": "{PH1} (f̂ŕôḿ ĉáĉh́ê)"
   },
-  "network/NetworkTimeCalculator.js | sFromServiceworker": {
+  "network/NetworkTimeCalculator.ts | sFromServiceworker": {
     "message": "{PH1} (f̂ŕôḿ ServiceWorker)"
   },
-  "network/NetworkTimeCalculator.js | sLatency": {
+  "network/NetworkTimeCalculator.ts | sLatency": {
     "message": "{PH1} l̂át̂én̂ćŷ"
   },
-  "network/NetworkTimeCalculator.js | sLatencySDownloadSTotal": {
+  "network/NetworkTimeCalculator.ts | sLatencySDownloadSTotal": {
     "message": "{PH1} l̂át̂én̂ćŷ, {PH2} d́ôẃn̂ĺôád̂ ({PH3} t́ôt́âĺ)"
   },
-  "network/RequestCookiesView.js | cookiesThatWereReceivedFromThe": {
+  "network/RequestCookiesView.ts | cookiesThatWereReceivedFromThe": {
     "message": "Ĉóôḱîéŝ t́ĥát̂ ẃêŕê ŕêćêív̂éd̂ f́r̂óm̂ t́ĥé ŝér̂v́êŕ îń t̂h́ê 'set-cookie' h́êád̂ér̂ óf̂ t́ĥé r̂éŝṕôńŝé"
   },
-  "network/RequestCookiesView.js | cookiesThatWereReceivedFromTheServer": {
+  "network/RequestCookiesView.ts | cookiesThatWereReceivedFromTheServer": {
     "message": "Ĉóôḱîéŝ t́ĥát̂ ẃêŕê ŕêćêív̂éd̂ f́r̂óm̂ t́ĥé ŝér̂v́êŕ îń t̂h́ê 'set-cookie' h́êád̂ér̂ óf̂ t́ĥé r̂éŝṕôńŝé b̂út̂ ẃêŕê ḿâĺf̂ór̂ḿêd́"
   },
-  "network/RequestCookiesView.js | cookiesThatWereSentToTheServerIn": {
+  "network/RequestCookiesView.ts | cookiesThatWereSentToTheServerIn": {
     "message": "Ĉóôḱîéŝ t́ĥát̂ ẃêŕê śêńt̂ t́ô t́ĥé ŝér̂v́êŕ îń t̂h́ê 'ćôók̂íê' h́êád̂ér̂ óf̂ t́ĥé r̂éq̂úêśt̂"
   },
-  "network/RequestCookiesView.js | malformedResponseCookies": {
+  "network/RequestCookiesView.ts | malformedResponseCookies": {
     "message": "M̂ál̂f́ôŕm̂éd̂ Ŕêśp̂ón̂śê Ćôók̂íêś"
   },
-  "network/RequestCookiesView.js | noRequestCookiesWereSent": {
+  "network/RequestCookiesView.ts | noRequestCookiesWereSent": {
     "message": "N̂ó r̂éq̂úêśt̂ ćôók̂íêś ŵér̂é ŝén̂t́."
   },
-  "network/RequestCookiesView.js | requestCookies": {
+  "network/RequestCookiesView.ts | requestCookies": {
     "message": "R̂éq̂úêśt̂ Ćôók̂íêś"
   },
-  "network/RequestCookiesView.js | responseCookies": {
+  "network/RequestCookiesView.ts | responseCookies": {
     "message": "R̂éŝṕôńŝé Ĉóôḱîéŝ"
   },
-  "network/RequestCookiesView.js | showFilteredOutRequestCookies": {
+  "network/RequestCookiesView.ts | showFilteredOutRequestCookies": {
     "message": "ŝh́ôẃ f̂íl̂t́êŕêd́ ôút̂ ŕêq́ûéŝt́ ĉóôḱîéŝ"
   },
-  "network/RequestCookiesView.js | thisRequestHasNoCookies": {
+  "network/RequestCookiesView.ts | thisRequestHasNoCookies": {
     "message": "T̂h́îś r̂éq̂úêśt̂ h́âś n̂ó ĉóôḱîéŝ."
   },
-  "network/RequestHeadersView.js | activeClientExperimentVariation": {
+  "network/RequestHeadersView.ts | activeClientExperimentVariation": {
     "message": "Âćt̂ív̂é client experiment variation IDs."
   },
-  "network/RequestHeadersView.js | activeClientExperimentVariationIds": {
+  "network/RequestHeadersView.ts | activeClientExperimentVariationIds": {
     "message": "Âćt̂ív̂é client experiment variation IDs t̂h́ât́ t̂ŕîǵĝér̂ śêŕv̂ér̂-śîd́ê b́êh́âv́îór̂."
   },
-  "network/RequestHeadersView.js | chooseThisOptionIfTheResourceAnd": {
+  "network/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
     "message": "Ĉh́ôóŝé t̂h́îś ôṕt̂íôń îf́ t̂h́ê ŕêśôúr̂ćê án̂d́ t̂h́ê d́ôćûḿêńt̂ ár̂é ŝér̂v́êd́ f̂ŕôḿ t̂h́ê śâḿê śît́ê."
   },
-  "network/RequestHeadersView.js | copyValue": {
+  "network/RequestHeadersView.ts | copyValue": {
     "message": "Ĉóp̂ý v̂ál̂úê"
   },
-  "network/RequestHeadersView.js | decoded": {
+  "network/RequestHeadersView.ts | decoded": {
     "message": "D̂éĉód̂éd̂:"
   },
-  "network/RequestHeadersView.js | empty": {
+  "network/RequestHeadersView.ts | empty": {
     "message": "(êḿp̂t́ŷ)"
   },
-  "network/RequestHeadersView.js | formData": {
+  "network/RequestHeadersView.ts | formData": {
     "message": "F̂ór̂ḿ D̂át̂á"
   },
-  "network/RequestHeadersView.js | fromDiskCache": {
+  "network/RequestHeadersView.ts | fromDiskCache": {
     "message": "(f̂ŕôḿ d̂íŝḱ ĉáĉh́ê)"
   },
-  "network/RequestHeadersView.js | fromMemoryCache": {
+  "network/RequestHeadersView.ts | fromMemoryCache": {
     "message": "(f̂ŕôḿ m̂ém̂ór̂ý ĉáĉh́ê)"
   },
-  "network/RequestHeadersView.js | fromPrefetchCache": {
+  "network/RequestHeadersView.ts | fromPrefetchCache": {
     "message": "(f̂ŕôḿ p̂ŕêf́êt́ĉh́ ĉáĉh́ê)"
   },
-  "network/RequestHeadersView.js | fromServiceWorker": {
+  "network/RequestHeadersView.ts | fromServiceWorker": {
     "message": "(f̂ŕôḿ service worker)"
   },
-  "network/RequestHeadersView.js | fromSignedexchange": {
+  "network/RequestHeadersView.ts | fromSignedexchange": {
     "message": "(f̂ŕôḿ ŝíĝńêd́-êx́ĉh́âńĝé)"
   },
-  "network/RequestHeadersView.js | general": {
+  "network/RequestHeadersView.ts | general": {
     "message": "Ĝén̂ér̂ál̂"
   },
-  "network/RequestHeadersView.js | learnMore": {
+  "network/RequestHeadersView.ts | learnMore": {
     "message": "L̂éâŕn̂ ḿôŕê"
   },
-  "network/RequestHeadersView.js | learnMoreInTheIssuesTab": {
+  "network/RequestHeadersView.ts | learnMoreInTheIssuesTab": {
     "message": "L̂éâŕn̂ ḿôŕê ín̂ t́ĥé îśŝúêś t̂áb̂"
   },
-  "network/RequestHeadersView.js | onlyChooseThisOptionIfAn": {
+  "network/RequestHeadersView.ts | onlyChooseThisOptionIfAn": {
     "message": "Ôńl̂ý ĉh́ôóŝé t̂h́îś ôṕt̂íôń îf́ âń âŕb̂ít̂ŕâŕŷ ẃêb́ŝít̂é îńĉĺûd́îńĝ t́ĥíŝ ŕêśôúr̂ćê d́ôéŝ ńôt́ îḿp̂óŝé â śêćûŕît́ŷ ŕîśk̂."
   },
-  "network/RequestHeadersView.js | onlyProvisionalHeadersAre": {
+  "network/RequestHeadersView.ts | onlyProvisionalHeadersAre": {
     "message": "Ôńl̂ý p̂ŕôv́îśîón̂ál̂ h́êád̂ér̂ś âŕê áv̂áîĺâb́l̂é b̂éĉáûśê t́ĥíŝ ŕêq́ûéŝt́ ŵáŝ ńôt́ ŝén̂t́ ôv́êŕ t̂h́ê ńêt́ŵór̂ḱ âńd̂ ín̂śt̂éâd́ ŵáŝ śêŕv̂éd̂ f́r̂óm̂ á l̂óĉál̂ ćâćĥé, ŵh́îćĥ d́ôéŝń’t̂ śt̂ór̂é t̂h́ê ór̂íĝín̂ál̂ ŕêq́ûéŝt́ ĥéâd́êŕŝ. D́îśâb́l̂é ĉáĉh́ê t́ô śêé f̂úl̂ĺ r̂éq̂úêśt̂ h́êád̂ér̂ś."
   },
-  "network/RequestHeadersView.js | provisionalHeadersAreShown": {
+  "network/RequestHeadersView.ts | provisionalHeadersAreShown": {
     "message": "P̂ŕôv́îśîón̂ál̂ h́êád̂ér̂ś âŕê śĥóŵń"
   },
-  "network/RequestHeadersView.js | provisionalHeadersAreShownS": {
+  "network/RequestHeadersView.ts | provisionalHeadersAreShownS": {
     "message": "P̂ŕôv́îśîón̂ál̂ h́êád̂ér̂ś âŕê śĥóŵń. D̂íŝáb̂ĺê ćâćĥé t̂ó ŝéê f́ûĺl̂ h́êád̂ér̂ś."
   },
-  "network/RequestHeadersView.js | queryStringParameters": {
+  "network/RequestHeadersView.ts | queryStringParameters": {
     "message": "Q̂úêŕŷ Śt̂ŕîńĝ Ṕâŕâḿêt́êŕŝ"
   },
-  "network/RequestHeadersView.js | referrerPolicy": {
+  "network/RequestHeadersView.ts | referrerPolicy": {
     "message": "R̂éf̂ér̂ŕêŕ P̂ól̂íĉý"
   },
-  "network/RequestHeadersView.js | remoteAddress": {
+  "network/RequestHeadersView.ts | remoteAddress": {
     "message": "R̂ém̂ót̂é Âd́d̂ŕêśŝ"
   },
-  "network/RequestHeadersView.js | requestHeaders": {
+  "network/RequestHeadersView.ts | requestHeaders": {
     "message": "R̂éq̂úêśt̂ H́êád̂ér̂ś"
   },
-  "network/RequestHeadersView.js | requestMethod": {
+  "network/RequestHeadersView.ts | requestMethod": {
     "message": "R̂éq̂úêśt̂ Ḿêt́ĥód̂"
   },
-  "network/RequestHeadersView.js | requestPayload": {
+  "network/RequestHeadersView.ts | requestPayload": {
     "message": "R̂éq̂úêśt̂ Ṕâýl̂óâd́"
   },
-  "network/RequestHeadersView.js | requestUrl": {
+  "network/RequestHeadersView.ts | requestUrl": {
     "message": "R̂éq̂úêśt̂ ÚR̂Ĺ"
   },
-  "network/RequestHeadersView.js | responseHeaders": {
+  "network/RequestHeadersView.ts | responseHeaders": {
     "message": "R̂éŝṕôńŝé Ĥéâd́êŕŝ"
   },
-  "network/RequestHeadersView.js | showMore": {
+  "network/RequestHeadersView.ts | showMore": {
     "message": "Ŝh́ôẃ m̂ór̂é"
   },
-  "network/RequestHeadersView.js | statusCode": {
+  "network/RequestHeadersView.ts | statusCode": {
     "message": "Ŝt́ât́ûś Ĉód̂é"
   },
-  "network/RequestHeadersView.js | thisDocumentWasBlockedFrom": {
+  "network/RequestHeadersView.ts | thisDocumentWasBlockedFrom": {
     "message": "T̂h́îś d̂óĉúm̂én̂t́ ŵáŝ b́l̂óĉḱêd́ f̂ŕôḿ l̂óâd́îńĝ ín̂ án̂ iframe ẃît́ĥ á sandbox ât́t̂ŕîb́ût́ê b́êćâúŝé t̂h́îś d̂óĉúm̂én̂t́ ŝṕêćîf́îéd̂ á ĉŕôśŝ-ór̂íĝín̂ óp̂én̂ér̂ ṕôĺîćŷ."
   },
-  "network/RequestHeadersView.js | toEmbedThisFrameInYourDocument": {
+  "network/RequestHeadersView.ts | toEmbedThisFrameInYourDocument": {
     "message": "T̂ó êḿb̂éd̂ t́ĥíŝ f́r̂ám̂é îń ŷóûŕ d̂óĉúm̂én̂t́, t̂h́ê ŕêśp̂ón̂śê ńêéd̂ś t̂ó êńâb́l̂é t̂h́ê ćr̂óŝś-ôŕîǵîń êḿb̂éd̂d́êŕ p̂ól̂íĉý b̂ý ŝṕêćîf́ŷín̂ǵ t̂h́ê f́ôĺl̂óŵín̂ǵ r̂éŝṕôńŝé ĥéâd́êŕ:"
   },
-  "network/RequestHeadersView.js | toUseThisResourceFromADifferent": {
+  "network/RequestHeadersView.ts | toUseThisResourceFromADifferent": {
     "message": "T̂ó ûśê t́ĥíŝ ŕêśôúr̂ćê f́r̂óm̂ á d̂íf̂f́êŕêńt̂ ór̂íĝín̂, t́ĥé ŝér̂v́êŕ n̂éêd́ŝ t́ô śp̂éĉíf̂ý â ćr̂óŝś-ôŕîǵîń r̂éŝóûŕĉé p̂ól̂íĉý îń t̂h́ê ŕêśp̂ón̂śê h́êád̂ér̂ś:"
   },
-  "network/RequestHeadersView.js | toUseThisResourceFromADifferentOrigin": {
+  "network/RequestHeadersView.ts | toUseThisResourceFromADifferentOrigin": {
     "message": "T̂ó ûśê t́ĥíŝ ŕêśôúr̂ćê f́r̂óm̂ á d̂íf̂f́êŕêńt̂ ór̂íĝín̂, t́ĥé ŝér̂v́êŕ m̂áŷ ŕêĺâx́ t̂h́ê ćr̂óŝś-ôŕîǵîń r̂éŝóûŕĉé p̂ól̂íĉý r̂éŝṕôńŝé ĥéâd́êŕ:"
   },
-  "network/RequestHeadersView.js | toUseThisResourceFromADifferentSite": {
+  "network/RequestHeadersView.ts | toUseThisResourceFromADifferentSite": {
     "message": "T̂ó ûśê t́ĥíŝ ŕêśôúr̂ćê f́r̂óm̂ á d̂íf̂f́êŕêńt̂ śît́ê, t́ĥé ŝér̂v́êŕ m̂áŷ ŕêĺâx́ t̂h́ê ćr̂óŝś-ôŕîǵîń r̂éŝóûŕĉé p̂ól̂íĉý r̂éŝṕôńŝé ĥéâd́êŕ:"
   },
-  "network/RequestHeadersView.js | unableToDecodeValue": {
+  "network/RequestHeadersView.ts | unableToDecodeValue": {
     "message": "(ûńâb́l̂é t̂ó d̂éĉód̂é v̂ál̂úê)"
   },
-  "network/RequestHeadersView.js | viewDecoded": {
+  "network/RequestHeadersView.ts | viewDecoded": {
     "message": "V̂íêẃ d̂éĉód̂éd̂"
   },
-  "network/RequestHeadersView.js | viewDecodedL": {
+  "network/RequestHeadersView.ts | viewDecodedL": {
     "message": "v̂íêẃ d̂éĉód̂éd̂"
   },
-  "network/RequestHeadersView.js | viewParsed": {
+  "network/RequestHeadersView.ts | viewParsed": {
     "message": "V̂íêẃ p̂ár̂śêd́"
   },
-  "network/RequestHeadersView.js | viewParsedL": {
+  "network/RequestHeadersView.ts | viewParsedL": {
     "message": "v̂íêẃ p̂ár̂śêd́"
   },
-  "network/RequestHeadersView.js | viewSource": {
+  "network/RequestHeadersView.ts | viewSource": {
     "message": "V̂íêẃ ŝóûŕĉé"
   },
-  "network/RequestHeadersView.js | viewSourceL": {
+  "network/RequestHeadersView.ts | viewSourceL": {
     "message": "v̂íêẃ ŝóûŕĉé"
   },
-  "network/RequestHeadersView.js | viewUrlEncoded": {
+  "network/RequestHeadersView.ts | viewUrlEncoded": {
     "message": "V̂íêẃ ÛŔL̂-én̂ćôd́êd́"
   },
-  "network/RequestHeadersView.js | viewUrlEncodedL": {
+  "network/RequestHeadersView.ts | viewUrlEncodedL": {
     "message": "v̂íêẃ ÛŔL̂-én̂ćôd́êd́"
   },
-  "network/RequestInitiatorView.js | requestCallStack": {
+  "network/RequestInitiatorView.ts | requestCallStack": {
     "message": "R̂éq̂úêśt̂ ćâĺl̂ śt̂áĉḱ"
   },
-  "network/RequestInitiatorView.js | requestInitiatorChain": {
+  "network/RequestInitiatorView.ts | requestInitiatorChain": {
     "message": "R̂éq̂úêśt̂ ín̂ít̂íât́ôŕ ĉh́âín̂"
   },
-  "network/RequestInitiatorView.js | thisRequestHasNoInitiatorData": {
+  "network/RequestInitiatorView.ts | thisRequestHasNoInitiatorData": {
     "message": "T̂h́îś r̂éq̂úêśt̂ h́âś n̂ó îńît́îát̂ór̂ d́ât́â."
   },
-  "network/RequestPreviewView.js | failedToLoadResponseData": {
+  "network/RequestPreviewView.ts | failedToLoadResponseData": {
     "message": "F̂áîĺêd́ t̂ó l̂óâd́ r̂éŝṕôńŝé d̂át̂á"
   },
-  "network/RequestPreviewView.js | previewNotAvailable": {
+  "network/RequestPreviewView.ts | previewNotAvailable": {
     "message": "P̂ŕêv́îéŵ ńôt́ âv́âíl̂áb̂ĺê"
   },
-  "network/RequestResponseView.js | failedToLoadResponseData": {
+  "network/RequestResponseView.ts | failedToLoadResponseData": {
     "message": "F̂áîĺêd́ t̂ó l̂óâd́ r̂éŝṕôńŝé d̂át̂á"
   },
-  "network/RequestResponseView.js | thisRequestHasNoResponseData": {
+  "network/RequestResponseView.ts | thisRequestHasNoResponseData": {
     "message": "T̂h́îś r̂éq̂úêśt̂ h́âś n̂ó r̂éŝṕôńŝé d̂át̂á âv́âíl̂áb̂ĺê."
   },
-  "network/RequestTimingView.js | cacheStorageCacheNameS": {
+  "network/RequestTimingView.ts | cacheStorageCacheNameS": {
     "message": "Ĉáĉh́ê śt̂ór̂áĝé ĉáĉh́ê ńâḿê: {PH1}"
   },
-  "network/RequestTimingView.js | cacheStorageCacheNameUnknown": {
+  "network/RequestTimingView.ts | cacheStorageCacheNameUnknown": {
     "message": "Ĉáĉh́ê śt̂ór̂áĝé ĉáĉh́ê ńâḿê: Ún̂ḱn̂óŵń"
   },
-  "network/RequestTimingView.js | cautionRequestIsNotFinishedYet": {
+  "network/RequestTimingView.ts | cautionRequestIsNotFinishedYet": {
     "message": "ĈÁÛT́ÎÓN̂: ŕêq́ûéŝt́ îś n̂ót̂ f́îńîśĥéd̂ ýêt́!"
   },
-  "network/RequestTimingView.js | connectionStart": {
+  "network/RequestTimingView.ts | connectionStart": {
     "message": "Ĉón̂ńêćt̂íôń Ŝt́âŕt̂"
   },
-  "network/RequestTimingView.js | contentDownload": {
+  "network/RequestTimingView.ts | contentDownload": {
     "message": "Ĉón̂t́êńt̂ D́ôẃn̂ĺôád̂"
   },
-  "network/RequestTimingView.js | dnsLookup": {
+  "network/RequestTimingView.ts | dnsLookup": {
     "message": "D̂ŃŜ Ĺôók̂úp̂"
   },
-  "network/RequestTimingView.js | duration": {
+  "network/RequestTimingView.ts | duration": {
     "message": "D̂úr̂át̂íôń"
   },
-  "network/RequestTimingView.js | durationC": {
+  "network/RequestTimingView.ts | durationC": {
     "message": "D̂ÚR̂ÁT̂ÍÔŃ"
   },
-  "network/RequestTimingView.js | duringDevelopmentYouCanUseSToAdd": {
+  "network/RequestTimingView.ts | duringDevelopmentYouCanUseSToAdd": {
     "message": "D̂úr̂ín̂ǵ d̂év̂él̂óp̂ḿêńt̂, ýôú ĉán̂ úŝé {PH1} t̂ó âd́d̂ ín̂śîǵĥt́ŝ ín̂t́ô t́ĥé ŝér̂v́êŕ-ŝíd̂é t̂ím̂ín̂ǵ ôf́ t̂h́îś r̂éq̂úêśt̂."
   },
-  "network/RequestTimingView.js | explanation": {
+  "network/RequestTimingView.ts | explanation": {
     "message": "Êx́p̂ĺâńât́îón̂"
   },
-  "network/RequestTimingView.js | fallbackCode": {
+  "network/RequestTimingView.ts | fallbackCode": {
     "message": "F̂ál̂ĺb̂áĉḱ ĉód̂é"
   },
-  "network/RequestTimingView.js | fromHttpCache": {
+  "network/RequestTimingView.ts | fromHttpCache": {
     "message": "F̂ŕôḿ ĤT́T̂Ṕ ĉáĉh́ê"
   },
-  "network/RequestTimingView.js | initialConnection": {
+  "network/RequestTimingView.ts | initialConnection": {
     "message": "Îńît́îál̂ ćôńn̂éĉt́îón̂"
   },
-  "network/RequestTimingView.js | label": {
+  "network/RequestTimingView.ts | label": {
     "message": "L̂áb̂él̂"
   },
-  "network/RequestTimingView.js | networkFetch": {
+  "network/RequestTimingView.ts | networkFetch": {
     "message": "N̂ét̂ẃôŕk̂ f́êt́ĉh́"
   },
-  "network/RequestTimingView.js | originalRequest": {
+  "network/RequestTimingView.ts | originalRequest": {
     "message": "Ôŕîǵîńâĺ R̂éq̂úêśt̂"
   },
-  "network/RequestTimingView.js | proxyNegotiation": {
+  "network/RequestTimingView.ts | proxyNegotiation": {
     "message": "P̂ŕôx́ŷ ńêǵôt́îát̂íôń"
   },
-  "network/RequestTimingView.js | queuedAtS": {
+  "network/RequestTimingView.ts | queuedAtS": {
     "message": "Q̂úêúêd́ ât́ {PH1}"
   },
-  "network/RequestTimingView.js | queueing": {
+  "network/RequestTimingView.ts | queueing": {
     "message": "Q̂úêúêín̂ǵ"
   },
-  "network/RequestTimingView.js | readingPush": {
+  "network/RequestTimingView.ts | readingPush": {
     "message": "R̂éâd́îńĝ Push"
   },
-  "network/RequestTimingView.js | receivingPush": {
+  "network/RequestTimingView.ts | receivingPush": {
     "message": "R̂éĉéîv́îńĝ Push"
   },
-  "network/RequestTimingView.js | requestresponse": {
+  "network/RequestTimingView.ts | requestresponse": {
     "message": "R̂éq̂úêśt̂/Ŕêśp̂ón̂śê"
   },
-  "network/RequestTimingView.js | requestSent": {
+  "network/RequestTimingView.ts | requestSent": {
     "message": "R̂éq̂úêśt̂ śêńt̂"
   },
-  "network/RequestTimingView.js | requestToServiceworker": {
+  "network/RequestTimingView.ts | requestToServiceworker": {
     "message": "R̂éq̂úêśt̂ t́ô ServiceWorker"
   },
-  "network/RequestTimingView.js | resourceScheduling": {
+  "network/RequestTimingView.ts | resourceScheduling": {
     "message": "R̂éŝóûŕĉé Ŝćĥéd̂úl̂ín̂ǵ"
   },
-  "network/RequestTimingView.js | respondwith": {
+  "network/RequestTimingView.ts | respondwith": {
     "message": "r̂éŝṕôńd̂Ẃît́ĥ"
   },
-  "network/RequestTimingView.js | responseReceived": {
+  "network/RequestTimingView.ts | responseReceived": {
     "message": "R̂éŝṕôńŝé R̂éĉéîv́êd́"
   },
-  "network/RequestTimingView.js | retrievalTimeS": {
+  "network/RequestTimingView.ts | retrievalTimeS": {
     "message": "R̂ét̂ŕîév̂ál̂ T́îḿê: {PH1}"
   },
-  "network/RequestTimingView.js | serverPush": {
+  "network/RequestTimingView.ts | serverPush": {
     "message": "Ŝér̂v́êŕ P̂úŝh́"
   },
-  "network/RequestTimingView.js | serverTiming": {
+  "network/RequestTimingView.ts | serverTiming": {
     "message": "Ŝér̂v́êŕ T̂ím̂ín̂ǵ"
   },
-  "network/RequestTimingView.js | serviceworkerCacheStorage": {
+  "network/RequestTimingView.ts | serviceworkerCacheStorage": {
     "message": "ServiceWorker ĉáĉh́ê śt̂ór̂áĝé"
   },
-  "network/RequestTimingView.js | sourceOfResponseS": {
+  "network/RequestTimingView.ts | sourceOfResponseS": {
     "message": "Ŝóûŕĉé ôf́ r̂éŝṕôńŝé: {PH1}"
   },
-  "network/RequestTimingView.js | ssl": {
+  "network/RequestTimingView.ts | ssl": {
     "message": "ŜŚL̂"
   },
-  "network/RequestTimingView.js | stalled": {
+  "network/RequestTimingView.ts | stalled": {
     "message": "Ŝt́âĺl̂éd̂"
   },
-  "network/RequestTimingView.js | startedAtS": {
+  "network/RequestTimingView.ts | startedAtS": {
     "message": "Ŝt́âŕt̂éd̂ át̂ {PH1}"
   },
-  "network/RequestTimingView.js | startup": {
+  "network/RequestTimingView.ts | startup": {
     "message": "Ŝt́âŕt̂úp̂"
   },
-  "network/RequestTimingView.js | theServerTimingApi": {
+  "network/RequestTimingView.ts | theServerTimingApi": {
     "message": "t̂h́ê Śêŕv̂ér̂ T́îḿîńĝ ÁP̂Í"
   },
-  "network/RequestTimingView.js | time": {
+  "network/RequestTimingView.ts | time": {
     "message": "T̂ÍM̂É"
   },
-  "network/RequestTimingView.js | total": {
+  "network/RequestTimingView.ts | total": {
     "message": "T̂ót̂ál̂"
   },
-  "network/RequestTimingView.js | unknown": {
+  "network/RequestTimingView.ts | unknown": {
     "message": "Ûńk̂ńôẃn̂"
   },
-  "network/RequestTimingView.js | waitingTtfb": {
+  "network/RequestTimingView.ts | waitingTtfb": {
     "message": "Ŵáît́îńĝ (T́T̂F́B̂)"
   },
-  "network/RequestTimingView.js | waterfall": {
+  "network/RequestTimingView.ts | waterfall": {
     "message": "Ŵát̂ér̂f́âĺl̂"
   },
   "network/RequestTrustTokensView.ts | aClientprovidedArgumentWas": {
@@ -4685,136 +4685,136 @@
   "network/RequestTrustTokensView.ts | type": {
     "message": "T̂ýp̂é"
   },
-  "network/ResourceWebSocketFrameView.js | all": {
+  "network/ResourceWebSocketFrameView.ts | all": {
     "message": "Âĺl̂"
   },
-  "network/ResourceWebSocketFrameView.js | binaryMessage": {
+  "network/ResourceWebSocketFrameView.ts | binaryMessage": {
     "message": "B̂ín̂ár̂ý M̂éŝśâǵê"
   },
-  "network/ResourceWebSocketFrameView.js | clearAll": {
+  "network/ResourceWebSocketFrameView.ts | clearAll": {
     "message": "Ĉĺêár̂ Ál̂ĺ"
   },
-  "network/ResourceWebSocketFrameView.js | clearAllL": {
+  "network/ResourceWebSocketFrameView.ts | clearAllL": {
     "message": "Ĉĺêár̂ ál̂ĺ"
   },
-  "network/ResourceWebSocketFrameView.js | connectionCloseMessage": {
+  "network/ResourceWebSocketFrameView.ts | connectionCloseMessage": {
     "message": "Ĉón̂ńêćt̂íôń Ĉĺôśê Ḿêśŝáĝé"
   },
-  "network/ResourceWebSocketFrameView.js | continuationFrame": {
+  "network/ResourceWebSocketFrameView.ts | continuationFrame": {
     "message": "Ĉón̂t́îńûát̂íôń F̂ŕâḿê"
   },
-  "network/ResourceWebSocketFrameView.js | copyMessage": {
+  "network/ResourceWebSocketFrameView.ts | copyMessage": {
     "message": "Ĉóp̂ý m̂éŝśâǵê"
   },
-  "network/ResourceWebSocketFrameView.js | copyMessageD": {
+  "network/ResourceWebSocketFrameView.ts | copyMessageD": {
     "message": "Ĉóp̂ý m̂éŝśâǵê..."
   },
-  "network/ResourceWebSocketFrameView.js | data": {
+  "network/ResourceWebSocketFrameView.ts | data": {
     "message": "D̂át̂á"
   },
-  "network/ResourceWebSocketFrameView.js | enterRegex": {
+  "network/ResourceWebSocketFrameView.ts | enterRegex": {
     "message": "Êńt̂ér̂ ŕêǵêx́, f̂ór̂ éx̂ám̂ṕl̂é: (ŵéb̂)?śôćk̂ét̂"
   },
-  "network/ResourceWebSocketFrameView.js | filter": {
+  "network/ResourceWebSocketFrameView.ts | filter": {
     "message": "F̂íl̂t́êŕ"
   },
-  "network/ResourceWebSocketFrameView.js | length": {
+  "network/ResourceWebSocketFrameView.ts | length": {
     "message": "L̂én̂ǵt̂h́"
   },
-  "network/ResourceWebSocketFrameView.js | na": {
+  "network/ResourceWebSocketFrameView.ts | na": {
     "message": "N̂/Á"
   },
-  "network/ResourceWebSocketFrameView.js | pingMessage": {
+  "network/ResourceWebSocketFrameView.ts | pingMessage": {
     "message": "P̂ín̂ǵ M̂éŝśâǵê"
   },
-  "network/ResourceWebSocketFrameView.js | pongMessage": {
+  "network/ResourceWebSocketFrameView.ts | pongMessage": {
     "message": "P̂ón̂ǵ M̂éŝśâǵê"
   },
-  "network/ResourceWebSocketFrameView.js | receive": {
+  "network/ResourceWebSocketFrameView.ts | receive": {
     "message": "R̂éĉéîv́ê"
   },
-  "network/ResourceWebSocketFrameView.js | selectMessageToBrowseItsContent": {
+  "network/ResourceWebSocketFrameView.ts | selectMessageToBrowseItsContent": {
     "message": "Ŝél̂éĉt́ m̂éŝśâǵê t́ô b́r̂óŵśê ít̂ś ĉón̂t́êńt̂."
   },
-  "network/ResourceWebSocketFrameView.js | send": {
+  "network/ResourceWebSocketFrameView.ts | send": {
     "message": "Ŝén̂d́"
   },
-  "network/ResourceWebSocketFrameView.js | sOpcodeS": {
+  "network/ResourceWebSocketFrameView.ts | sOpcodeS": {
     "message": "{PH1} (Ôṕĉód̂é {PH2})"
   },
-  "network/ResourceWebSocketFrameView.js | sOpcodeSMask": {
+  "network/ResourceWebSocketFrameView.ts | sOpcodeSMask": {
     "message": "{PH1} (Ôṕĉód̂é {PH2}, m̂áŝḱ)"
   },
-  "network/ResourceWebSocketFrameView.js | textMessage": {
+  "network/ResourceWebSocketFrameView.ts | textMessage": {
     "message": "T̂éx̂t́ M̂éŝśâǵê"
   },
-  "network/ResourceWebSocketFrameView.js | time": {
+  "network/ResourceWebSocketFrameView.ts | time": {
     "message": "T̂ím̂é"
   },
-  "network/ResourceWebSocketFrameView.js | webSocketFrame": {
+  "network/ResourceWebSocketFrameView.ts | webSocketFrame": {
     "message": "Ŵéb̂ Śôćk̂ét̂ F́r̂ám̂é"
   },
-  "network/SignedExchangeInfoView.js | certificate": {
+  "network/SignedExchangeInfoView.ts | certificate": {
     "message": "Ĉér̂t́îf́îćât́ê"
   },
-  "network/SignedExchangeInfoView.js | certificateSha": {
+  "network/SignedExchangeInfoView.ts | certificateSha": {
     "message": "Ĉér̂t́îf́îćât́ê ŚĤÁ256"
   },
-  "network/SignedExchangeInfoView.js | certificateUrl": {
+  "network/SignedExchangeInfoView.ts | certificateUrl": {
     "message": "Ĉér̂t́îf́îćât́ê ÚR̂Ĺ"
   },
-  "network/SignedExchangeInfoView.js | date": {
+  "network/SignedExchangeInfoView.ts | date": {
     "message": "D̂át̂é"
   },
-  "network/SignedExchangeInfoView.js | errors": {
+  "network/SignedExchangeInfoView.ts | errors": {
     "message": "Êŕr̂ór̂ś"
   },
-  "network/SignedExchangeInfoView.js | expires": {
+  "network/SignedExchangeInfoView.ts | expires": {
     "message": "Êx́p̂ír̂éŝ"
   },
-  "network/SignedExchangeInfoView.js | headerIntegrityHash": {
+  "network/SignedExchangeInfoView.ts | headerIntegrityHash": {
     "message": "Ĥéâd́êŕ îńt̂éĝŕît́ŷ h́âśĥ"
   },
-  "network/SignedExchangeInfoView.js | integrity": {
+  "network/SignedExchangeInfoView.ts | integrity": {
     "message": "Îńt̂éĝŕît́ŷ"
   },
-  "network/SignedExchangeInfoView.js | issuer": {
+  "network/SignedExchangeInfoView.ts | issuer": {
     "message": "Îśŝúêŕ"
   },
-  "network/SignedExchangeInfoView.js | label": {
+  "network/SignedExchangeInfoView.ts | label": {
     "message": "L̂áb̂él̂"
   },
-  "network/SignedExchangeInfoView.js | learnmore": {
+  "network/SignedExchangeInfoView.ts | learnmore": {
     "message": "L̂éâŕn̂ ḿôŕê"
   },
-  "network/SignedExchangeInfoView.js | requestUrl": {
+  "network/SignedExchangeInfoView.ts | requestUrl": {
     "message": "R̂éq̂úêśt̂ ÚR̂Ĺ"
   },
-  "network/SignedExchangeInfoView.js | responseCode": {
+  "network/SignedExchangeInfoView.ts | responseCode": {
     "message": "R̂éŝṕôńŝé ĉód̂é"
   },
-  "network/SignedExchangeInfoView.js | responseHeaders": {
+  "network/SignedExchangeInfoView.ts | responseHeaders": {
     "message": "R̂éŝṕôńŝé ĥéâd́êŕŝ"
   },
-  "network/SignedExchangeInfoView.js | signature": {
+  "network/SignedExchangeInfoView.ts | signature": {
     "message": "Ŝíĝńât́ûŕê"
   },
-  "network/SignedExchangeInfoView.js | signedHttpExchange": {
+  "network/SignedExchangeInfoView.ts | signedHttpExchange": {
     "message": "Ŝíĝńêd́ ĤT́T̂Ṕ êx́ĉh́âńĝé"
   },
-  "network/SignedExchangeInfoView.js | subject": {
+  "network/SignedExchangeInfoView.ts | subject": {
     "message": "Ŝúb̂j́êćt̂"
   },
-  "network/SignedExchangeInfoView.js | validFrom": {
+  "network/SignedExchangeInfoView.ts | validFrom": {
     "message": "V̂ál̂íd̂ f́r̂óm̂"
   },
-  "network/SignedExchangeInfoView.js | validityUrl": {
+  "network/SignedExchangeInfoView.ts | validityUrl": {
     "message": "V̂ál̂íd̂ít̂ý ÛŔL̂"
   },
-  "network/SignedExchangeInfoView.js | validUntil": {
+  "network/SignedExchangeInfoView.ts | validUntil": {
     "message": "V̂ál̂íd̂ ún̂t́îĺ"
   },
-  "network/SignedExchangeInfoView.js | viewCertificate": {
+  "network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "V̂íêẃ ĉér̂t́îf́îćât́ê"
   },
   "node_debugger/node_debugger-meta.ts | node": {

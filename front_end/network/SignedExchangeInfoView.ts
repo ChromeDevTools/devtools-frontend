@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Components from '../components/components.js';
 import * as Host from '../host/host.js';
 import * as i18n from '../i18n/i18n.js';
@@ -94,17 +96,15 @@ export const UIStrings = {
   */
   issuer: 'Issuer',
 };
-const str_ = i18n.i18n.registerUIStrings('network/SignedExchangeInfoView.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('network/SignedExchangeInfoView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class SignedExchangeInfoView extends UI.Widget.VBox {
-  /**
-   * @param {!SDK.NetworkRequest.NetworkRequest} request
-   */
-  constructor(request) {
+  _responseHeadersItem?: UI.TreeOutline.TreeElement;
+
+  constructor(request: SDK.NetworkRequest.NetworkRequest) {
     super();
     console.assert(request.signedExchangeInfo() !== null);
-    /** @type {!Protocol.Network.SignedExchangeInfo} */
-    const signedExchangeInfo = /** @type {!Protocol.Network.SignedExchangeInfo} */ (request.signedExchangeInfo());
+    const signedExchangeInfo = (request.signedExchangeInfo() as Protocol.Network.SignedExchangeInfo);
 
     this.registerRequiredCSS('network/signedExchangeInfoView.css', {enableLegacyPatching: false});
     this.element.classList.add('signed-exchange-info-view');
@@ -117,8 +117,7 @@ export class SignedExchangeInfoView extends UI.Widget.VBox {
     root.expandTreeElementsWhenArrowing = true;
     this.element.appendChild(root.element);
 
-    /** @type {!Map<number|undefined, !Set<string>>} */
-    const errorFieldSetMap = new Map();
+    const errorFieldSetMap = new Map<number|undefined, Set<string>>();
 
     if (signedExchangeInfo.errors && signedExchangeInfo.errors.length) {
       const errorMessagesCategory = new Category(root, i18nString(UIStrings.errors));
@@ -222,13 +221,7 @@ export class SignedExchangeInfoView extends UI.Widget.VBox {
     }
   }
 
-  /**
-   * @param {string} name
-   * @param {string} value
-   * @param {boolean=} highlighted
-   * @return {!DocumentFragment}
-   */
-  _formatHeader(name, value, highlighted) {
+  _formatHeader(name: string, value: string, highlighted?: boolean): DocumentFragment {
     const fragment = document.createDocumentFragment();
     const nameElement = fragment.createChild('div', 'header-name');
     nameElement.textContent = name + ': ';
@@ -242,13 +235,7 @@ export class SignedExchangeInfoView extends UI.Widget.VBox {
     return fragment;
   }
 
-  /**
-   * @param {string} name
-   * @param {string} value
-   * @param {boolean=} highlighted
-   * @return {!DocumentFragment}
-   */
-  _formatHeaderForHexData(name, value, highlighted) {
+  _formatHeaderForHexData(name: string, value: string, highlighted?: boolean): DocumentFragment {
     const fragment = document.createDocumentFragment();
     const nameElement = fragment.createChild('div', 'header-name');
     nameElement.textContent = name + ': ';
@@ -264,11 +251,10 @@ export class SignedExchangeInfoView extends UI.Widget.VBox {
 }
 
 export class Category extends UI.TreeOutline.TreeElement {
-  /**
-   * @param {!UI.TreeOutline.TreeOutline} root
-   * @param {(string|!Node)=} title
-   */
-  constructor(root, title) {
+  toggleOnClick: boolean;
+  expanded: boolean;
+
+  constructor(root: UI.TreeOutline.TreeOutline, title?: string|Node) {
     super(title, true);
     this.selectable = false;
     this.toggleOnClick = true;
@@ -276,10 +262,7 @@ export class Category extends UI.TreeOutline.TreeElement {
     root.appendChild(this);
   }
 
-  /**
-   * @param {(string|!Node)=} title
-   */
-  createLeaf(title) {
+  createLeaf(title?: string|Node): UI.TreeOutline.TreeElement {
     const leaf = new UI.TreeOutline.TreeElement(title);
     leaf.selectable = false;
     this.appendChild(leaf);

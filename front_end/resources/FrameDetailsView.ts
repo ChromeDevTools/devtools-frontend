@@ -427,6 +427,8 @@ export class FrameDetailsReportView extends HTMLElement {
                 void => {
                   Network.NetworkPanel.NetworkPanel.revealAndFilter([
                     {
+                      // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
+                      // @ts-expect-error
                       filterType: 'domain',
                       filterValue: unreachableUrl.domain(),
                     },

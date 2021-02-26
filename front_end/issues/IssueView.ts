@@ -399,7 +399,7 @@ class AffectedSourcesView extends AffectedResourcesView {
   }
 }
 
-const issueTypeToNetworkHeaderMap = new Map<symbol, string>([
+const issueTypeToNetworkHeaderMap = new Map<symbol, Network.NetworkItemView.Tabs>([
   [SDK.Issue.IssueCategory.SameSiteCookie, Network.NetworkItemView.Tabs.Cookies],
   [SDK.Issue.IssueCategory.CrossOriginEmbedderPolicy, Network.NetworkItemView.Tabs.Headers],
   [SDK.Issue.IssueCategory.MixedContent, Network.NetworkItemView.Tabs.Headers],

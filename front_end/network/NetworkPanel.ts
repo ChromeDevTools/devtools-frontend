@@ -1,3 +1,7 @@
+// Copyright 2021 The Chromium Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+
 /*
  * Copyright (C) 2007, 2008 Apple Inc.  All rights reserved.
  * Copyright (C) 2008, 2009 Anthony Ricaud <rik@webkit.org>
@@ -27,6 +31,8 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+/* eslint-disable rulesdir/no_underscored_properties */
 
 import * as Bindings from '../bindings/bindings.js';
 import * as Common from '../common/common.js';
@@ -145,16 +151,41 @@ export const UIStrings = {
   */
   fetchingFrames: 'Fetching frames...',
 };
-const str_ = i18n.i18n.registerUIStrings('network/NetworkPanel.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('network/NetworkPanel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-/** @type {!NetworkPanel} */
-let networkPanelInstance;
+let networkPanelInstance: NetworkPanel;
 
-/**
- * @implements {UI.ContextMenu.Provider}
- * @implements {UI.View.ViewLocationResolver}
- */
-export class NetworkPanel extends UI.Panel.Panel {
+export class NetworkPanel extends UI.Panel.Panel implements UI.ContextMenu.Provider, UI.View.ViewLocationResolver {
+  _networkLogShowOverviewSetting: Common.Settings.Setting<boolean>;
+  _networkLogLargeRowsSetting: Common.Settings.Setting<boolean>;
+  _networkRecordFilmStripSetting: Common.Settings.Setting<boolean>;
+  _toggleRecordAction: UI.ActionRegistration.Action;
+  _pendingStopTimer!: number|undefined;
+  _networkItemView: NetworkItemView|null;
+  _filmStripView: PerfUI.FilmStripView.FilmStripView|null;
+  _filmStripRecorder: FilmStripRecorder|null;
+  _currentRequest: SDK.NetworkRequest.NetworkRequest|null;
+  _panelToolbar: UI.Toolbar.Toolbar;
+  _rightToolbar: UI.Toolbar.Toolbar;
+  _filterBar: UI.FilterBar.FilterBar;
+  _settingsPane: UI.Widget.HBox;
+  _showSettingsPaneSetting: Common.Settings.Setting<boolean>;
+  _filmStripPlaceholderElement: HTMLElement;
+  _overviewPane: PerfUI.TimelineOverviewPane.TimelineOverviewPane;
+  _networkOverview: NetworkOverview;
+  _overviewPlaceholderElement: HTMLElement;
+  _calculator: NetworkTransferTimeCalculator;
+  _splitWidget: UI.SplitWidget.SplitWidget;
+  _sidebarLocation: UI.View.TabbedViewLocation;
+  _progressBarContainer: HTMLDivElement;
+  _networkLogView: NetworkLogView;
+  _fileSelectorElement: HTMLElement;
+  _detailsWidget: UI.Widget.VBox;
+  _closeButtonElement: HTMLDivElement;
+  _preserveLogSetting: Common.Settings.Setting<boolean>;
+  _recordLogSetting: Common.Settings.Setting<boolean>;
+  _throttlingSelect: UI.Toolbar.ToolbarComboBox;
+
   constructor() {
     super('network');
     this.registerRequiredCSS('network/networkPanel.css', {enableLegacyPatching: true});
@@ -164,18 +195,12 @@ export class NetworkPanel extends UI.Panel.Panel {
     this._networkLogLargeRowsSetting = Common.Settings.Settings.instance().createSetting('networkLogLargeRows', false);
     this._networkRecordFilmStripSetting =
         Common.Settings.Settings.instance().createSetting('networkRecordFilmStripSetting', false);
-    /** @type {!UI.ActionRegistration.Action }*/
-    this._toggleRecordAction = (UI.ActionRegistry.ActionRegistry.instance().action('network.toggle-recording'));
-
-    /** @type {number|undefined} */
-    this._pendingStopTimer;
-    /** @type {?NetworkItemView} */
+    this._toggleRecordAction =
+        (UI.ActionRegistry.ActionRegistry.instance().action('network.toggle-recording') as
+         UI.ActionRegistration.Action);
     this._networkItemView = null;
-    /** @type {?PerfUI.FilmStripView.FilmStripView} */
     this._filmStripView = null;
-    /** @type {?FilmStripRecorder} */
     this._filmStripRecorder = null;
-    /** @type {?SDK.NetworkRequest.NetworkRequest} */
     this._currentRequest = null;
 
     const panel = new UI.Widget.VBox();
@@ -244,14 +269,12 @@ export class NetworkPanel extends UI.Panel.Panel {
 
     this._progressBarContainer = document.createElement('div');
 
-    /** @type {!NetworkLogView} */
     this._networkLogView =
         new NetworkLogView(this._filterBar, this._progressBarContainer, this._networkLogLargeRowsSetting);
     this._splitWidget.setSidebarWidget(this._networkLogView);
-
-    /** @type {!HTMLElement} */
-    this._fileSelectorElement = /** @type {!HTMLElement} */ (
-        UI.UIUtils.createFileSelectorElement(this._networkLogView.onLoadFromFile.bind(this._networkLogView)));
+    this._fileSelectorElement =
+        (UI.UIUtils.createFileSelectorElement(this._networkLogView.onLoadFromFile.bind(this._networkLogView)) as
+         HTMLElement);
     panel.element.appendChild(this._fileSelectorElement);
 
     this._detailsWidget = new UI.Widget.VBox();
@@ -298,10 +321,9 @@ export class NetworkPanel extends UI.Panel.Panel {
     SDK.NetworkLog.NetworkLog.instance().addEventListener(SDK.NetworkLog.Events.Reset, this._onNetworkLogReset, this);
   }
 
-  /**
-   * @param {{forceNew: ?boolean}} opts
-   */
-  static instance(opts = {forceNew: null}) {
+  static instance(opts: {
+    forceNew: boolean|null,
+  } = {forceNew: null}): NetworkPanel {
     const {forceNew} = opts;
     if (!networkPanelInstance || forceNew) {
       networkPanelInstance = new NetworkPanel();
@@ -310,10 +332,10 @@ export class NetworkPanel extends UI.Panel.Panel {
     return networkPanelInstance;
   }
 
-  /**
-   * @param {!Array<{filterType: ?FilterType, filterValue: string}>} filters
-   */
-  static revealAndFilter(filters) {
+  static revealAndFilter(filters: {
+    filterType: FilterType|null,
+    filterValue: string,
+  }[]): void {
     const panel = NetworkPanel._instance();
     let filterString = '';
     for (const filter of filters) {
@@ -327,59 +349,40 @@ export class NetworkPanel extends UI.Panel.Panel {
     UI.ViewManager.ViewManager.instance().showView('network');
   }
 
-  /**
-   * @param {!SDK.NetworkRequest.NetworkRequest} request
-   * @param {!NetworkItemViewTabs} tab
-   * @param {!FilterOptions=} options - Optional parameters to change filter behavior
-   */
-  static async selectAndShowRequest(request, tab, options) {
+  static async selectAndShowRequest(
+      request: SDK.NetworkRequest.NetworkRequest, tab: NetworkItemViewTabs, options?: FilterOptions): Promise<void> {
     const panel = NetworkPanel._instance();
     await panel.selectAndActivateRequest(request, tab, options);
   }
 
-  /**
-   * @return {!NetworkPanel}
-   */
-  static _instance() {
+  static _instance(): NetworkPanel {
     return NetworkPanel.instance();
   }
 
-  /**
-   * @return {!UI.Toolbar.ToolbarComboBox}
-   */
-  throttlingSelectForTest() {
+  throttlingSelectForTest(): UI.Toolbar.ToolbarComboBox {
     return this._throttlingSelect;
   }
 
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  _onWindowChanged(event) {
+  _onWindowChanged(event: Common.EventTarget.EventTargetEvent): void {
     const startTime = Math.max(this._calculator.minimumBoundary(), event.data.startTime / 1000);
     const endTime = Math.min(this._calculator.maximumBoundary(), event.data.endTime / 1000);
     this._networkLogView.setWindow(startTime, endTime);
   }
 
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  async _searchToggleClick(event) {
+  async _searchToggleClick(_event: Common.EventTarget.EventTargetEvent): Promise<void> {
     const action = UI.ActionRegistry.ActionRegistry.instance().action('network.search');
     if (action) {
       await action.execute();
     }
   }
 
-  /**
-   * @param {!UI.SplitWidget.SplitWidget} splitWidget
-   */
-  _setupToolbarButtons(splitWidget) {
+  _setupToolbarButtons(splitWidget: UI.SplitWidget.SplitWidget): void {
     const searchToggle = new UI.Toolbar.ToolbarToggle(i18nString(UIStrings.search), 'largeicon-search');
-    function updateSidebarToggle() {
+    function updateSidebarToggle(): void {
       const isSidebarShowing = splitWidget.showMode() !== UI.SplitWidget.ShowMode.OnlyMain;
       searchToggle.setToggled(isSidebarShowing);
       if (!isSidebarShowing) {
-        /** @type {!HTMLElement} */ (searchToggle.element).focus();
+        (searchToggle.element as HTMLElement).focus();
       }
     }
     this._panelToolbar.appendToolbarItem(UI.Toolbar.Toolbar.createActionButton(this._toggleRecordAction));
@@ -438,20 +441,17 @@ export class NetworkPanel extends UI.Panel.Panel {
         UI.Toolbar.ToolbarButton.Events.Click, () => this._fileSelectorElement.click(), this);
     this._panelToolbar.appendToolbarItem(importHarButton);
     const exportHarButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.exportHar), 'largeicon-download');
-    exportHarButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, event => {
+    exportHarButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, _event => {
       this._networkLogView.exportAll();
     }, this);
     this._panelToolbar.appendToolbarItem(exportHarButton);
   }
 
-  _updateSettingsPaneVisibility() {
+  _updateSettingsPaneVisibility(): void {
     this._settingsPane.element.classList.toggle('hidden', !this._showSettingsPaneSetting.get());
   }
 
-  /**
-   * @return {!UI.Toolbar.ToolbarComboBox}
-   */
-  _createThrottlingConditionsSelect() {
+  _createThrottlingConditionsSelect(): UI.Toolbar.ToolbarComboBox {
     const toolbarItem = new UI.Toolbar.ToolbarComboBox(null, i18nString(UIStrings.throttling));
     toolbarItem.setMaxWidth(160);
     MobileThrottling.ThrottlingManager.throttlingManager().decorateSelectWithNetworkThrottling(
@@ -459,10 +459,7 @@ export class NetworkPanel extends UI.Panel.Panel {
     return toolbarItem;
   }
 
-  /**
-   * @param {boolean} toggled
-   */
-  _toggleRecord(toggled) {
+  _toggleRecord(toggled: boolean): void {
     this._toggleRecordAction.setToggled(toggled);
     if (this._recordLogSetting.get() !== toggled) {
       this._recordLogSetting.set(toggled);
@@ -474,10 +471,7 @@ export class NetworkPanel extends UI.Panel.Panel {
     }
   }
 
-  /**
-   * @param {?SDK.FilmStripModel.FilmStripModel} filmStripModel
-   */
-  _filmStripAvailable(filmStripModel) {
+  _filmStripAvailable(filmStripModel: SDK.FilmStripModel.FilmStripModel|null): void {
     if (!filmStripModel) {
       return;
     }
@@ -489,21 +483,14 @@ export class NetworkPanel extends UI.Panel.Panel {
     this._networkOverview.setFilmStripModel(filmStripModel);
     const timestamps = filmStripModel.frames().map(mapTimestamp);
 
-    /**
-     * @param {!SDK.FilmStripModel.Frame} frame
-     * @return {number}
-     */
-    function mapTimestamp(frame) {
+    function mapTimestamp(frame: SDK.FilmStripModel.Frame): number {
       return frame.timestamp / 1000;
     }
 
     this._networkLogView.addFilmStripFrames(timestamps);
   }
 
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  _onNetworkLogReset(event) {
+  _onNetworkLogReset(event: Common.EventTarget.EventTargetEvent): void {
     const {clearIfPreserved} = event.data;
     BlockedURLsPane.reset();
     if (!this._preserveLogSetting.get() || clearIfPreserved) {
@@ -515,10 +502,7 @@ export class NetworkPanel extends UI.Panel.Panel {
     }
   }
 
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  _willReloadPage(event) {
+  _willReloadPage(_event: Common.EventTarget.EventTargetEvent): void {
     if (this._pendingStopTimer) {
       clearTimeout(this._pendingStopTimer);
       delete this._pendingStopTimer;
@@ -528,27 +512,24 @@ export class NetworkPanel extends UI.Panel.Panel {
     }
   }
 
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  _load(event) {
+  _load(_event: Common.EventTarget.EventTargetEvent): void {
     if (this._filmStripRecorder && this._filmStripRecorder.isRecording()) {
       this._pendingStopTimer = window.setTimeout(this._stopFilmStripRecording.bind(this), displayScreenshotDelay);
     }
   }
 
-  _stopFilmStripRecording() {
+  _stopFilmStripRecording(): void {
     if (this._filmStripRecorder) {
       this._filmStripRecorder.stopRecording(this._filmStripAvailable.bind(this));
     }
     delete this._pendingStopTimer;
   }
 
-  _toggleLargerRequests() {
+  _toggleLargerRequests(): void {
     this._updateUI();
   }
 
-  _toggleShowOverview() {
+  _toggleShowOverview(): void {
     const toggled = this._networkLogShowOverviewSetting.get();
     if (toggled) {
       this._overviewPane.show(this._overviewPlaceholderElement);
@@ -558,7 +539,7 @@ export class NetworkPanel extends UI.Panel.Panel {
     this.doResize();
   }
 
-  _toggleRecordFilmStrip() {
+  _toggleRecordFilmStrip(): void {
     const toggled = this._networkRecordFilmStripSetting.get();
     if (toggled && !this._filmStripRecorder) {
       this._filmStripView = new PerfUI.FilmStripView.FilmStripView();
@@ -581,7 +562,7 @@ export class NetworkPanel extends UI.Panel.Panel {
     }
   }
 
-  _resetFilmStripView() {
+  _resetFilmStripView(): void {
     const reloadShortcut =
         UI.ShortcutRegistry.ShortcutRegistry.instance().shortcutsForAction('inspector_main.reload')[0];
 
@@ -594,84 +575,62 @@ export class NetworkPanel extends UI.Panel.Panel {
     }
   }
 
-  /**
-   * @override
-   * @return {!Array.<!Element>}
-   */
-  elementsToRestoreScrollPositionsFor() {
+  elementsToRestoreScrollPositionsFor(): Element[] {
     return this._networkLogView.elementsToRestoreScrollPositionsFor();
   }
 
-  /**
-   * @override
-   */
-  wasShown() {
+  wasShown(): void {
     UI.Context.Context.instance().setFlavor(NetworkPanel, this);
 
     // Record the network tool load time after the panel has loaded.
     Host.userMetrics.panelLoaded('network', 'DevTools.Launch.Network');
   }
 
-  /**
-   * @override
-   */
-  willHide() {
+  willHide(): void {
     UI.Context.Context.instance().setFlavor(NetworkPanel, null);
   }
 
-  /**
-   * @param {!SDK.NetworkRequest.NetworkRequest} request
-   */
-  revealAndHighlightRequest(request) {
+  revealAndHighlightRequest(request: SDK.NetworkRequest.NetworkRequest): void {
     this._hideRequestPanel();
     if (request) {
       this._networkLogView.revealAndHighlightRequest(request);
     }
   }
 
-  /**
-   * @param {!SDK.NetworkRequest.NetworkRequest} request
-   * @param {!NetworkItemViewTabs=} shownTab
-   * @param {!FilterOptions=} options - Optional parameters to change filter behavior
-   * @return {!Promise<?NetworkItemView>}
-   */
-  async selectAndActivateRequest(request, shownTab, options) {
+  async selectAndActivateRequest(
+      request: SDK.NetworkRequest.NetworkRequest, shownTab?: NetworkItemViewTabs,
+      options?: FilterOptions): Promise<NetworkItemView|null> {
     await UI.ViewManager.ViewManager.instance().showView('network');
     this._networkLogView.selectRequest(request, options);
     this._showRequestPanel(shownTab);
     return this._networkItemView;
   }
 
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  _handleFilterChanged(event) {
+  _handleFilterChanged(_event: Common.EventTarget.EventTargetEvent): void {
     this._hideRequestPanel();
   }
 
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  _onRowSizeChanged(event) {
+  _onRowSizeChanged(_event: Common.EventTarget.EventTargetEvent): void {
     this._updateUI();
   }
 
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  _onRequestSelected(event) {
-    const request = /** @type {?SDK.NetworkRequest.NetworkRequest} */ (event.data);
+  _onRequestSelected(event: Common.EventTarget.EventTargetEvent): void {
+    const request = (event.data as SDK.NetworkRequest.NetworkRequest | null);
     this._currentRequest = request;
     this._networkOverview.setHighlightedRequest(request);
     this._updateNetworkItemView();
   }
 
-  /**
-   * @param {!{data: *}} event
-   */
-  _onRequestActivated(event) {
-    const eventData =
-        /** @type {!{showPanel: boolean, tab: !NetworkItemViewTabs, takeFocus: (boolean|undefined)}} */ (event.data);
+  _onRequestActivated(event: {
+    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    data: any,
+  }): void {
+    const eventData = (event.data as {
+      showPanel: boolean,
+      tab: NetworkItemViewTabs,
+      takeFocus: (boolean | undefined),
+    });
     if (eventData.showPanel) {
       this._showRequestPanel(eventData.tab, /* takeFocus */ eventData.takeFocus);
     } else {
@@ -679,11 +638,7 @@ export class NetworkPanel extends UI.Panel.Panel {
     }
   }
 
-  /**
-   * @param {!NetworkItemViewTabs=} shownTab
-   * @param {boolean=} takeFocus
-   */
-  _showRequestPanel(shownTab, takeFocus) {
+  _showRequestPanel(shownTab?: NetworkItemViewTabs, takeFocus?: boolean): void {
     this._clearNetworkItemView();
     if (this._currentRequest) {
       const networkItemView = this._createNetworkItemView(shownTab);
@@ -694,13 +649,13 @@ export class NetworkPanel extends UI.Panel.Panel {
     this._updateUI();
   }
 
-  _hideRequestPanel() {
+  _hideRequestPanel(): void {
     this._clearNetworkItemView();
     this._splitWidget.hideMain();
     this._updateUI();
   }
 
-  _updateNetworkItemView() {
+  _updateNetworkItemView(): void {
     if (this._splitWidget.showMode() === UI.SplitWidget.ShowMode.Both) {
       this._clearNetworkItemView();
       this._createNetworkItemView();
@@ -708,17 +663,13 @@ export class NetworkPanel extends UI.Panel.Panel {
     }
   }
 
-  _clearNetworkItemView() {
+  _clearNetworkItemView(): void {
     if (this._networkItemView) {
       this._networkItemView.detach();
       this._networkItemView = null;
     }
   }
-  /**
-   * @param {!NetworkItemViewTabs=} initialTab
-   * @returns {(!NetworkItemView|undefined)}
-   */
-  _createNetworkItemView(initialTab) {
+  _createNetworkItemView(initialTab?: NetworkItemViewTabs): NetworkItemView|undefined {
     if (!this._currentRequest) {
       return;
     }
@@ -730,7 +681,7 @@ export class NetworkPanel extends UI.Panel.Panel {
     return this._networkItemView;
   }
 
-  _updateUI() {
+  _updateUI(): void {
     if (this._detailsWidget) {
       this._detailsWidget.element.classList.toggle(
           'network-details-view-tall-header', this._networkLogLargeRowsSetting.get());
@@ -740,46 +691,31 @@ export class NetworkPanel extends UI.Panel.Panel {
     }
   }
 
-  /**
-   * @override
-   * @param {!Event} event
-   * @param {!UI.ContextMenu.ContextMenu} contextMenu
-   * @param {!Object} target
-   * @this {NetworkPanel}
-   */
-  appendApplicableItems(event, contextMenu, target) {
-    /**
-     * @this {NetworkPanel}
-     * @param {!SDK.NetworkRequest.NetworkRequest} request
-     */
-    function reveal(request) {
+  appendApplicableItems(this: NetworkPanel, event: Event, contextMenu: UI.ContextMenu.ContextMenu, target: Object):
+      void {
+    function reveal(this: NetworkPanel, request: SDK.NetworkRequest.NetworkRequest): void {
       UI.ViewManager.ViewManager.instance()
           .showView('network')
           .then(this._networkLogView.resetFilter.bind(this._networkLogView))
           .then(this.revealAndHighlightRequest.bind(this, request));
     }
 
-    /**
-     * @this {NetworkPanel}
-     * @param {!SDK.NetworkRequest.NetworkRequest} request
-     */
-    function appendRevealItem(request) {
+    function appendRevealItem(this: NetworkPanel, request: SDK.NetworkRequest.NetworkRequest): void {
       contextMenu.revealSection().appendItem(i18nString(UIStrings.revealInNetworkPanel), reveal.bind(this, request));
     }
-
-    if (/** @type {!Node} */ (event.target).isSelfOrDescendant(this.element)) {
+    if ((event.target as Node).isSelfOrDescendant(this.element)) {
       return;
     }
 
     if (target instanceof SDK.Resource.Resource) {
-      const resource = /** @type {!SDK.Resource.Resource} */ (target);
+      const resource = (target as SDK.Resource.Resource);
       if (resource.request) {
         appendRevealItem.call(this, resource.request);
       }
       return;
     }
     if (target instanceof Workspace.UISourceCode.UISourceCode) {
-      const uiSourceCode = /** @type {!Workspace.UISourceCode.UISourceCode} */ (target);
+      const uiSourceCode = (target as Workspace.UISourceCode.UISourceCode);
       const resource = Bindings.ResourceUtils.resourceForURL(uiSourceCode.url());
       if (resource && resource.request) {
         appendRevealItem.call(this, resource.request);
@@ -790,7 +726,7 @@ export class NetworkPanel extends UI.Panel.Panel {
     if (!(target instanceof SDK.NetworkRequest.NetworkRequest)) {
       return;
     }
-    const request = /** @type {!SDK.NetworkRequest.NetworkRequest} */ (target);
+    const request = (target as SDK.NetworkRequest.NetworkRequest);
     if (this._networkItemView && this._networkItemView.isShowing() && this._networkItemView.request() === request) {
       return;
     }
@@ -798,36 +734,24 @@ export class NetworkPanel extends UI.Panel.Panel {
     appendRevealItem.call(this, request);
   }
 
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  _onFilmFrameSelected(event) {
-    const timestamp = /** @type {number} */ (event.data);
+  _onFilmFrameSelected(event: Common.EventTarget.EventTargetEvent): void {
+    const timestamp = (event.data as number);
     this._overviewPane.setWindowTimes(0, timestamp);
   }
 
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  _onFilmFrameEnter(event) {
-    const timestamp = /** @type {number} */ (event.data);
+  _onFilmFrameEnter(event: Common.EventTarget.EventTargetEvent): void {
+    const timestamp = (event.data as number);
     this._networkOverview.selectFilmStripFrame(timestamp);
     this._networkLogView.selectFilmStripFrame(timestamp / 1000);
   }
 
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  _onFilmFrameExit(event) {
+  _onFilmFrameExit(_event: Common.EventTarget.EventTargetEvent): void {
     this._networkOverview.clearFilmStripFrame();
     this._networkLogView.clearFilmStripFrame();
   }
 
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  _onUpdateRequest(event) {
-    const request = /** @type {!SDK.NetworkRequest.NetworkRequest} */ (event.data);
+  _onUpdateRequest(event: Common.EventTarget.EventTargetEvent): void {
+    const request = (event.data as SDK.NetworkRequest.NetworkRequest);
     this._calculator.updateBoundaries(request);
     // FIXME: Unify all time units across the frontend!
     this._overviewPane.setBounds(this._calculator.minimumBoundary() * 1000, this._calculator.maximumBoundary() * 1000);
@@ -835,12 +759,7 @@ export class NetworkPanel extends UI.Panel.Panel {
     this._overviewPane.scheduleUpdate();
   }
 
-  /**
-   * @override
-   * @param {string} locationName
-   * @return {?UI.View.ViewLocation}
-   */
-  resolveLocation(locationName) {
+  resolveLocation(locationName: string): UI.View.ViewLocation|null {
     if (locationName === 'network-sidebar') {
       return this._sidebarLocation;
     }
@@ -850,19 +769,12 @@ export class NetworkPanel extends UI.Panel.Panel {
 
 export const displayScreenshotDelay = 1000;
 
-/**
- * @type {ContextMenuProvider}
- */
-let contextMenuProviderInstance;
+let contextMenuProviderInstance: ContextMenuProvider;
 
-/**
- * @implements {UI.ContextMenu.Provider}
- */
-export class ContextMenuProvider {
-  /**
-   * @param {{forceNew: ?boolean}} opts
-   */
-  static instance(opts = {forceNew: null}) {
+export class ContextMenuProvider implements UI.ContextMenu.Provider {
+  static instance(opts: {
+    forceNew: boolean|null,
+  } = {forceNew: null}): ContextMenuProvider {
     const {forceNew} = opts;
     if (!contextMenuProviderInstance || forceNew) {
       contextMenuProviderInstance = new ContextMenuProvider();
@@ -870,26 +782,15 @@ export class ContextMenuProvider {
 
     return contextMenuProviderInstance;
   }
-  /**
-   * @override
-   * @param {!Event} event
-   * @param {!UI.ContextMenu.ContextMenu} contextMenu
-   * @param {!Object} target
-   */
-  appendApplicableItems(event, contextMenu, target) {
+  appendApplicableItems(event: Event, contextMenu: UI.ContextMenu.ContextMenu, target: Object): void {
     NetworkPanel._instance().appendApplicableItems(event, contextMenu, target);
   }
 }
-/** @type {!RequestRevealer} */
-let requestRevealerInstance;
-/**
- * @implements {Common.Revealer.Revealer}
- */
-export class RequestRevealer {
-  /**
-   * @param {{forceNew: ?boolean}} opts
-   */
-  static instance(opts = {forceNew: null}) {
+let requestRevealerInstance: RequestRevealer;
+export class RequestRevealer implements Common.Revealer.Revealer {
+  static instance(opts: {
+    forceNew: boolean|null,
+  } = {forceNew: null}): RequestRevealer {
     const {forceNew} = opts;
     if (!requestRevealerInstance || forceNew) {
       requestRevealerInstance = new RequestRevealer();
@@ -898,12 +799,7 @@ export class RequestRevealer {
     return requestRevealerInstance;
   }
 
-  /**
-   * @override
-   * @param {!Object} request
-   * @return {!Promise<void>}
-   */
-  reveal(request) {
+  reveal(request: Object): Promise<void> {
     if (!(request instanceof SDK.NetworkRequest.NetworkRequest)) {
       return Promise.reject(new Error('Internal error: not a network request'));
     }
@@ -913,41 +809,30 @@ export class RequestRevealer {
   }
 }
 
-/**
- * @implements {SDK.TracingManager.TracingManagerClient}
- */
-export class FilmStripRecorder {
-  /**
-   * @param {!NetworkTimeCalculator} timeCalculator
-   * @param {!PerfUI.FilmStripView.FilmStripView} filmStripView
-   */
-  constructor(timeCalculator, filmStripView) {
-    /** @type {?SDK.TracingManager.TracingManager} */
+export class FilmStripRecorder implements SDK.TracingManager.TracingManagerClient {
+  _tracingManager: SDK.TracingManager.TracingManager|null;
+  _resourceTreeModel: SDK.ResourceTreeModel.ResourceTreeModel|null;
+  _timeCalculator: NetworkTimeCalculator;
+  _filmStripView: PerfUI.FilmStripView.FilmStripView;
+  _tracingModel: SDK.TracingModel.TracingModel|null;
+  _callback: ((arg0: SDK.FilmStripModel.FilmStripModel|null) => void)|null;
+
+  constructor(timeCalculator: NetworkTimeCalculator, filmStripView: PerfUI.FilmStripView.FilmStripView) {
     this._tracingManager = null;
-    /** @type {?SDK.ResourceTreeModel.ResourceTreeModel} */
     this._resourceTreeModel = null;
     this._timeCalculator = timeCalculator;
     this._filmStripView = filmStripView;
-    /** @type {?SDK.TracingModel.TracingModel} */
     this._tracingModel = null;
-    /** @type {?function(?SDK.FilmStripModel.FilmStripModel):void} */
     this._callback = null;
   }
 
-  /**
-   * @override
-   * @param {!Array.<!SDK.TracingManager.EventPayload>} events
-   */
-  traceEventsCollected(events) {
+  traceEventsCollected(events: SDK.TracingManager.EventPayload[]): void {
     if (this._tracingModel) {
       this._tracingModel.addEvents(events);
     }
   }
 
-  /**
-   * @override
-   */
-  tracingComplete() {
+  tracingComplete(): void {
     if (!this._tracingModel || !this._tracingManager) {
       return;
     }
@@ -964,20 +849,13 @@ export class FilmStripRecorder {
     this._resourceTreeModel = null;
   }
 
-  /**
-   * @override
-   */
-  tracingBufferUsage() {
+  tracingBufferUsage(): void {
   }
 
-  /**
-   * @override
-   * @param {number} progress
-   */
-  eventsRetrievalProgress(progress) {
+  eventsRetrievalProgress(_progress: number): void {
   }
 
-  startRecording() {
+  startRecording(): void {
     this._filmStripView.reset();
     this._filmStripView.setStatusText(i18nString(UIStrings.recordingFrames));
     const tracingManagers = SDK.SDKModel.TargetManager.instance().models(SDK.TracingManager.TracingManager);
@@ -999,17 +877,11 @@ export class FilmStripRecorder {
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.FilmStripStartedRecording);
   }
 
-  /**
-   * @return {boolean}
-   */
-  isRecording() {
+  isRecording(): boolean {
     return Boolean(this._tracingManager);
   }
 
-  /**
-   * @param {function(?SDK.FilmStripModel.FilmStripModel):void} callback
-   */
-  stopRecording(callback) {
+  stopRecording(callback: (arg0: SDK.FilmStripModel.FilmStripModel|null) => void): void {
     if (!this._tracingManager) {
       return;
     }
@@ -1023,18 +895,12 @@ export class FilmStripRecorder {
   }
 }
 
-/** @type {!ActionDelegate} */
-let networkActionDelegateInstance;
+let networkActionDelegateInstance: ActionDelegate;
 
-/**
- * @implements {UI.ActionRegistration.ActionDelegate}
- */
-export class ActionDelegate {
-  /**
-   * @param {{forceNew: ?boolean}=} opts
-   * @return {ActionDelegate}
-   */
-  static instance(opts = {forceNew: null}) {
+export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
+  static instance(opts: {
+    forceNew: boolean|null,
+  }|undefined = {forceNew: null}): ActionDelegate {
     const {forceNew} = opts;
     if (!networkActionDelegateInstance || forceNew) {
       networkActionDelegateInstance = new ActionDelegate();
@@ -1042,13 +908,7 @@ export class ActionDelegate {
     return networkActionDelegateInstance;
   }
 
-  /**
-   * @override
-   * @param {!UI.Context.Context} context
-   * @param {string} actionId
-   * @return {boolean}
-   */
-  handleAction(context, actionId) {
+  handleAction(context: UI.Context.Context, actionId: string): boolean {
     const panel = UI.Context.Context.instance().flavor(NetworkPanel);
     console.assert(Boolean(panel && panel instanceof NetworkPanel));
     if (!panel) {
@@ -1083,18 +943,12 @@ export class ActionDelegate {
   }
 }
 
-/** @type {!RequestLocationRevealer} */
-let requestLocationRevealerInstance;
+let requestLocationRevealerInstance: RequestLocationRevealer;
 
-/**
- * @implements {Common.Revealer.Revealer}
- */
-export class RequestLocationRevealer {
-  /**
-   * @param {{forceNew: ?boolean}=} opts
-   * @return {RequestLocationRevealer}
-   */
-  static instance(opts = {forceNew: null}) {
+export class RequestLocationRevealer implements Common.Revealer.Revealer {
+  static instance(opts: {
+    forceNew: boolean|null,
+  }|undefined = {forceNew: null}): RequestLocationRevealer {
     const {forceNew} = opts;
     if (!requestLocationRevealerInstance || forceNew) {
       requestLocationRevealerInstance = new RequestLocationRevealer();
@@ -1102,13 +956,8 @@ export class RequestLocationRevealer {
     return requestLocationRevealerInstance;
   }
 
-  /**
-   * @override
-   * @param {!Object} match
-   * @return {!Promise<void>}
-   */
-  async reveal(match) {
-    const location = /** @type {!UIRequestLocation} */ (match);
+  async reveal(match: Object): Promise<void> {
+    const location = (match as UIRequestLocation);
     const view = await NetworkPanel._instance().selectAndActivateRequest(location.request);
     if (!view) {
       return;
@@ -1125,21 +974,16 @@ export class RequestLocationRevealer {
   }
 }
 
-/** @type {!SearchNetworkView} */
-let searchNetworkViewInstance;
+let searchNetworkViewInstance: SearchNetworkView;
 
 export class SearchNetworkView extends Search.SearchView.SearchView {
-  /**
-   * @private
-   */
-  constructor() {
+  private constructor() {
     super('network');
   }
 
-  /**
-   * @param {{forceNew: ?boolean}} opts
-   */
-  static instance(opts = {forceNew: null}) {
+  static instance(opts: {
+    forceNew: boolean|null,
+  } = {forceNew: null}): SearchNetworkView {
     const {forceNew} = opts;
     if (!searchNetworkViewInstance || forceNew) {
       searchNetworkViewInstance = new SearchNetworkView();
@@ -1148,31 +992,17 @@ export class SearchNetworkView extends Search.SearchView.SearchView {
     return searchNetworkViewInstance;
   }
 
-  /**
-   * @param {string} query
-   * @param {boolean=} searchImmediately
-   * @return {!Promise<!Search.SearchView.SearchView>}
-   */
-  static async openSearch(query, searchImmediately) {
+  static async openSearch(query: string, searchImmediately?: boolean): Promise<Search.SearchView.SearchView> {
     await UI.ViewManager.ViewManager.instance().showView('network.search-network-tab');
     const searchView = SearchNetworkView.instance();
     searchView.toggle(query, Boolean(searchImmediately));
     return searchView;
   }
 
-  /**
-   * @override
-   * @return {!Search.SearchConfig.SearchScope}
-   */
-  createScope() {
+  createScope(): Search.SearchConfig.SearchScope {
     return new NetworkSearchScope();
   }
 }
-
-/**
- * @typedef {{
- *    clearFilter: boolean,
- * }}
- */
-// @ts-ignore typedef
-export let FilterOptions;
+export interface FilterOptions {
+  clearFilter: boolean;
+}

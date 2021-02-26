@@ -1,3 +1,7 @@
+// Copyright 2021 The Chromium Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+
 /*
  * Copyright (C) 2007, 2008 Apple Inc.  All rights reserved.
  * Copyright (C) 2008, 2009 Anthony Ricaud <rik@webkit.org>
@@ -28,6 +32,8 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Common from '../common/common.js';
 import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
@@ -43,16 +49,12 @@ export const UIStrings = {
   */
   writingFile: 'Writing file…',
 };
-const str_ = i18n.i18n.registerUIStrings('network/HARWriter.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('network/HARWriter.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class HARWriter {
-  /**
-   * @param {!Common.StringOutputStream.OutputStream} stream
-   * @param {!Array.<!SDK.NetworkRequest.NetworkRequest>} requests
-   * @param {!Common.Progress.Progress} progress
-   * @return {!Promise<void>}
-   */
-  static async write(stream, requests, progress) {
+  static async write(
+      stream: Common.StringOutputStream.OutputStream, requests: SDK.NetworkRequest.NetworkRequest[],
+      progress: Common.Progress.Progress): Promise<void> {
     const compositeProgress = new Common.Progress.CompositeProgress(progress);
 
     const content = await HARWriter._harStringForRequests(requests, compositeProgress);
@@ -62,12 +64,9 @@ export class HARWriter {
     await HARWriter._writeToStream(stream, compositeProgress, content);
   }
 
-  /**
-   * @param {!Array<!SDK.NetworkRequest.NetworkRequest>} requests
-   * @param {!Common.Progress.CompositeProgress} compositeProgress
-   * @return {!Promise<string>}
-   */
-  static async _harStringForRequests(requests, compositeProgress) {
+  static async _harStringForRequests(
+      requests: SDK.NetworkRequest.NetworkRequest[],
+      compositeProgress: Common.Progress.CompositeProgress): Promise<string> {
     const progress = compositeProgress.createSubProgress();
     progress.setTitle(i18nString(UIStrings.collectingContent));
     progress.setTotalWork(requests.length);
@@ -89,16 +88,14 @@ export class HARWriter {
     }
     return JSON.stringify({log: harLog}, null, _jsonIndent);
 
-    /** @param {number} codePoint */
-    function isValidCharacter(codePoint) {
+    function isValidCharacter(codePoint: number): boolean {
       // Excludes non-characters (U+FDD0..U+FDEF, and all codepoints ending in
       // 0xFFFE or 0xFFFF) from the set of valid code points.
       return codePoint < 0xD800 || (codePoint >= 0xE000 && codePoint < 0xFDD0) ||
           (codePoint > 0xFDEF && codePoint <= 0x10FFFF && (codePoint & 0xFFFE) !== 0xFFFE);
     }
 
-    /** @param {string} content */
-    function needsEncoding(content) {
+    function needsEncoding(content: string): boolean {
       for (let i = 0; i < content.length; i++) {
         if (!isValidCharacter(content.charCodeAt(i))) {
           return true;
@@ -107,15 +104,11 @@ export class HARWriter {
       return false;
     }
 
-    /**
-     * @param {!SDK.HARLog.EntryDTO} entry
-     * @param {!SDK.NetworkRequest.ContentData} contentData
-     */
-    function contentLoaded(entry, contentData) {
+    function contentLoaded(entry: SDK.HARLog.EntryDTO, contentData: SDK.NetworkRequest.ContentData): void {
       progress.worked();
-      let encoded = contentData.encoded;
+      let encoded: true|boolean = contentData.encoded;
       if (contentData.content !== null) {
-        let content = contentData.content;
+        let content: string = contentData.content;
         if (content && !encoded && needsEncoding(content)) {
           content = Platform.StringUtilities.toBase64(content);
           encoded = true;
@@ -128,13 +121,9 @@ export class HARWriter {
     }
   }
 
-  /**
-   * @param {!Common.StringOutputStream.OutputStream} stream
-   * @param {!Common.Progress.CompositeProgress} compositeProgress
-   * @param {string} fileContent
-   * @return {!Promise<void>}
-   */
-  static async _writeToStream(stream, compositeProgress, fileContent) {
+  static async _writeToStream(
+      stream: Common.StringOutputStream.OutputStream, compositeProgress: Common.Progress.CompositeProgress,
+      fileContent: string): Promise<void> {
     const progress = compositeProgress.createSubProgress();
     progress.setTitle(i18nString(UIStrings.writingFile));
     progress.setTotalWork(fileContent.length);
@@ -147,8 +136,10 @@ export class HARWriter {
   }
 }
 
-/** @const */
+// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export const _jsonIndent = 2;
 
-/** @const */
+// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export const _chunkSize = 100000;

@@ -1,3 +1,7 @@
+// Copyright 2021 The Chromium Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+
 /*
  * Copyright (C) 2007, 2008 Apple Inc.  All rights reserved.
  * Copyright (C) IBM Corp. 2009  All rights reserved.
@@ -27,6 +31,8 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+/* eslint-disable rulesdir/no_underscored_properties */
 
 import * as BrowserSDK from '../browser_sdk/browser_sdk.js';
 import * as Common from '../common/common.js';
@@ -225,14 +231,28 @@ export const UIStrings = {
   toUseThisResourceFromADifferentOrigin:
       'To use this resource from a different origin, the server may relax the cross-origin resource policy response header:',
 };
-const str_ = i18n.i18n.registerUIStrings('network/RequestHeadersView.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('network/RequestHeadersView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 export class RequestHeadersView extends UI.Widget.VBox {
-  /**
-   * @param {!SDK.NetworkRequest.NetworkRequest} request
-   */
-  constructor(request) {
+  _request: SDK.NetworkRequest.NetworkRequest;
+  _decodeRequestParameters: boolean;
+  _showRequestHeadersText: boolean;
+  _showResponseHeadersText: boolean;
+  _highlightedElement: UI.TreeOutline.TreeElement|null;
+  _root: Category;
+  _urlItem: UI.TreeOutline.TreeElement;
+  _requestMethodItem: UI.TreeOutline.TreeElement;
+  _statusCodeItem: UI.TreeOutline.TreeElement;
+  _remoteAddressItem: UI.TreeOutline.TreeElement;
+  _referrerPolicyItem: UI.TreeOutline.TreeElement;
+  _responseHeadersCategory: Category;
+  _requestHeadersCategory: Category;
+  _queryStringCategory: Category;
+  _formDataCategory: Category;
+  _requestPayloadCategory: Category;
+
+  constructor(request: SDK.NetworkRequest.NetworkRequest) {
     super();
     this.registerRequiredCSS('network/requestHeadersView.css', {enableLegacyPatching: true});
     this.element.classList.add('request-headers-view');
@@ -247,7 +267,6 @@ export class RequestHeadersView extends UI.Widget.VBox {
       this._decodeRequestParameters = Boolean(contentType.match(/^application\/x-www-form-urlencoded\s*(;.*)?$/i));
     }
 
-    /** @type {?UI.TreeOutline.TreeElement} */
     this._highlightedElement = null;
 
     const root = new UI.TreeOutline.TreeOutlineInShadow();
@@ -277,10 +296,7 @@ export class RequestHeadersView extends UI.Widget.VBox {
     this._requestPayloadCategory = new Category(root, 'requestPayload', i18nString(UIStrings.requestPayload));
   }
 
-  /**
-   * @override
-   */
-  wasShown() {
+  wasShown(): void {
     this._clearHighlight();
     this._request.addEventListener(SDK.NetworkRequest.Events.RemoteAddressChanged, this._refreshRemoteAddress, this);
     this._request.addEventListener(SDK.NetworkRequest.Events.RequestHeadersChanged, this._refreshRequestHeaders, this);
@@ -298,10 +314,7 @@ export class RequestHeadersView extends UI.Widget.VBox {
     this._root.select(/* omitFocus */ true, /* selectedByUser */ false);
   }
 
-  /**
-   * @override
-   */
-  willHide() {
+  willHide(): void {
     this._request.removeEventListener(SDK.NetworkRequest.Events.RemoteAddressChanged, this._refreshRemoteAddress, this);
     this._request.removeEventListener(
         SDK.NetworkRequest.Events.RequestHeadersChanged, this._refreshRequestHeaders, this);
@@ -310,16 +323,12 @@ export class RequestHeadersView extends UI.Widget.VBox {
     this._request.removeEventListener(SDK.NetworkRequest.Events.FinishedLoading, this._refreshHTTPInformation, this);
   }
 
-  /**
-   * @param {!UI.TreeOutline.TreeElement} treeElement
-   * @param {string} value
-   */
-  _addEntryContextMenuHandler(treeElement, value) {
+  _addEntryContextMenuHandler(treeElement: UI.TreeOutline.TreeElement, value: string): void {
     treeElement.listItemElement.addEventListener('contextmenu', event => {
       event.consume(true);
       const contextMenu = new UI.ContextMenu.ContextMenu(event);
       const decodedValue = decodeURIComponent(value);
-      const copyDecodedValueHandler = () => {
+      const copyDecodedValueHandler = (): void => {
         Host.userMetrics.actionTaken(Host.UserMetrics.Action.NetworkPanelCopyValue);
         Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(decodedValue);
       };
@@ -328,12 +337,7 @@ export class RequestHeadersView extends UI.Widget.VBox {
     });
   }
 
-  /**
-   * @param {string} name
-   * @param {string} value
-   * @return {!DocumentFragment}
-   */
-  _formatHeader(name, value) {
+  _formatHeader(name: string, value: string): DocumentFragment {
     const fragment = document.createDocumentFragment();
     fragment.createChild('div', 'header-name').textContent = name + ': ';
     fragment.createChild('span', 'header-separator');
@@ -342,11 +346,7 @@ export class RequestHeadersView extends UI.Widget.VBox {
     return fragment;
   }
 
-  /**
-   * @param {!BlockedReasonDetailDescriptor} header
-   * @return {!DocumentFragment}
-   */
-  _formatHeaderObject(header) {
+  _formatHeaderObject(header: BlockedReasonDetailDescriptor): DocumentFragment {
     const fragment = document.createDocumentFragment();
     if (header.headerNotSet) {
       fragment.createChild('div', 'header-badge header-badge-text').textContent = 'not-set';
@@ -378,7 +378,7 @@ export class RequestHeadersView extends UI.Widget.VBox {
               this._request, SDK.Issue.IssueCategory.CrossOriginEmbedderPolicy)) {
         const link = document.createElement('div');
         link.classList.add('devtools-link');
-        link.onclick = () => {
+        link.onclick = (): void => {
           Host.userMetrics.issuesPanelOpenedFrom(Host.UserMetrics.IssueOpener.LearnMoreLinkCOEP);
           BrowserSDK.RelatedIssue.reveal(this._request, SDK.Issue.IssueCategory.CrossOriginEmbedderPolicy);
         };
@@ -397,13 +397,7 @@ export class RequestHeadersView extends UI.Widget.VBox {
     return fragment;
   }
 
-  /**
-   * @param {string} value
-   * @param {string} className
-   * @param {boolean} decodeParameters
-   * @return {!Element}
-   */
-  _formatParameter(value, className, decodeParameters) {
+  _formatParameter(value: string, className: string, decodeParameters: boolean): Element {
     let errorDecoding = false;
 
     if (decodeParameters) {
@@ -431,11 +425,11 @@ export class RequestHeadersView extends UI.Widget.VBox {
     return div;
   }
 
-  _refreshURL() {
+  _refreshURL(): void {
     this._urlItem.title = this._formatHeader(i18nString(UIStrings.requestUrl), this._request.url());
   }
 
-  _refreshQueryString() {
+  _refreshQueryString(): void {
     const queryString = this._request.queryString();
     const queryParameters = this._request.queryParameters;
     this._queryStringCategory.hidden = !queryParameters;
@@ -445,7 +439,7 @@ export class RequestHeadersView extends UI.Widget.VBox {
     }
   }
 
-  async _refreshFormData() {
+  async _refreshFormData(): Promise<void> {
     const formData = await this._request.requestFormData();
     if (!formData) {
       this._formDataCategory.hidden = true;
@@ -470,11 +464,9 @@ export class RequestHeadersView extends UI.Widget.VBox {
     }
   }
 
-  /**
-   * @param {!UI.TreeOutline.TreeElement} treeElement
-   * @param {?string} sourceText
-   */
-  _populateTreeElementWithSourceText(treeElement, sourceText) {
+  _populateTreeElementWithSourceText(treeElement: UI.TreeOutline.TreeElement, sourceText: string|null): void {
+    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     const max_len = 3000;
     const text = (sourceText || '').trim();
     const trim = text.length > max_len;
@@ -495,17 +487,14 @@ export class RequestHeadersView extends UI.Widget.VBox {
     showMoreButton.classList.add('request-headers-show-more-button');
     showMoreButton.textContent = i18nString(UIStrings.showMore);
 
-    function showMore() {
+    function showMore(): void {
       showMoreButton.remove();
       sourceTextElement.textContent = text;
       sourceTreeElement.listItemElement.removeEventListener('contextmenu', onContextMenuShowMore);
     }
     showMoreButton.addEventListener('click', showMore);
 
-    /**
-     * @param {!Event} event
-     */
-    function onContextMenuShowMore(event) {
+    function onContextMenuShowMore(event: Event): void {
       const contextMenu = new UI.ContextMenu.ContextMenu(event);
       const section = contextMenu.newSection();
       section.appendItem(i18nString(UIStrings.showMore), showMore);
@@ -515,13 +504,9 @@ export class RequestHeadersView extends UI.Widget.VBox {
     sourceTextElement.appendChild(showMoreButton);
   }
 
-  /**
-   * @param {string} title
-   * @param {?Array.<!SDK.NetworkRequest.NameValue>} params
-   * @param {?string} sourceText
-   * @param {!UI.TreeOutline.TreeElement} paramsTreeElement
-   */
-  _refreshParams(title, params, sourceText, paramsTreeElement) {
+  _refreshParams(
+      title: string, params: SDK.NetworkRequest.NameValue[]|null, sourceText: string|null,
+      paramsTreeElement: UI.TreeOutline.TreeElement): void {
     paramsTreeElement.removeChildren();
 
     paramsTreeElement.listItemElement.removeChildren();
@@ -542,22 +527,14 @@ export class RequestHeadersView extends UI.Widget.VBox {
     }
   }
 
-  /**
-   * @param {string} title
-   * @param {?Array.<!SDK.NetworkRequest.NameValue>} params
-   * @param {?string} sourceText
-   * @param {!UI.TreeOutline.TreeElement} paramsTreeElement
-   */
-  _appendParamsSource(title, params, sourceText, paramsTreeElement) {
+  _appendParamsSource(
+      title: string, params: SDK.NetworkRequest.NameValue[]|null, sourceText: string|null,
+      paramsTreeElement: UI.TreeOutline.TreeElement): void {
     this._populateTreeElementWithSourceText(paramsTreeElement, sourceText);
 
     const listItemElement = paramsTreeElement.listItemElement;
 
-    /**
-     * @param {!Event} event
-     * @this {RequestHeadersView}
-     */
-    const viewParsed = function(event) {
+    const viewParsed = function(this: RequestHeadersView, event: Event): void {
       listItemElement.removeEventListener('contextmenu', viewParsedContextMenu);
 
       viewSourceForItems.delete(paramsTreeElement);
@@ -565,10 +542,7 @@ export class RequestHeadersView extends UI.Widget.VBox {
       event.consume();
     };
 
-    /**
-     * @param {!Event} event
-     */
-    const viewParsedContextMenu = event => {
+    const viewParsedContextMenu = (event: Event): void => {
       if (!paramsTreeElement.expanded) {
         return;
       }
@@ -583,13 +557,9 @@ export class RequestHeadersView extends UI.Widget.VBox {
     listItemElement.addEventListener('contextmenu', viewParsedContextMenu);
   }
 
-  /**
-   * @param {string} title
-   * @param {?Array.<!SDK.NetworkRequest.NameValue>} params
-   * @param {?string} sourceText
-   * @param {!UI.TreeOutline.TreeElement} paramsTreeElement
-   */
-  _appendParamsParsed(title, params, sourceText, paramsTreeElement) {
+  _appendParamsParsed(
+      title: string, params: SDK.NetworkRequest.NameValue[]|null, sourceText: string|null,
+      paramsTreeElement: UI.TreeOutline.TreeElement): void {
     for (const param of params || []) {
       const paramNameValue = document.createDocumentFragment();
       if (param.name !== '') {
@@ -610,11 +580,7 @@ export class RequestHeadersView extends UI.Widget.VBox {
 
     const listItemElement = paramsTreeElement.listItemElement;
 
-    /**
-     * @param {!Event} event
-     * @this {RequestHeadersView}
-     */
-    const viewSource = function(event) {
+    const viewSource = function(this: RequestHeadersView, event: Event): void {
       listItemElement.removeEventListener('contextmenu', viewSourceContextMenu);
 
       viewSourceForItems.add(paramsTreeElement);
@@ -622,19 +588,12 @@ export class RequestHeadersView extends UI.Widget.VBox {
       event.consume();
     };
 
-    /**
-     * @param {!Event} event
-     * @this {RequestHeadersView}
-     */
-    const toggleURLDecoding = function(event) {
+    const toggleURLDecoding = function(this: RequestHeadersView, event: Event): void {
       listItemElement.removeEventListener('contextmenu', viewSourceContextMenu);
       this._toggleURLDecoding(event);
     };
 
-    /**
-     * @param {!Event} event
-     */
-    const viewSourceContextMenu = event => {
+    const viewSourceContextMenu = (event: Event): void => {
       if (!paramsTreeElement.expanded) {
         return;
       }
@@ -659,11 +618,9 @@ export class RequestHeadersView extends UI.Widget.VBox {
     listItemElement.addEventListener('contextmenu', viewSourceContextMenu);
   }
 
-  /**
-   * @param {*} parsedObject
-   * @param {string} sourceText
-   */
-  _refreshRequestJSONPayload(parsedObject, sourceText) {
+  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  _refreshRequestJSONPayload(parsedObject: any, sourceText: string): void {
     const rootListItem = this._requestPayloadCategory;
     rootListItem.removeChildren();
 
@@ -679,20 +636,13 @@ export class RequestHeadersView extends UI.Widget.VBox {
     }
   }
 
-  /**
-   * @param {!Category} rootListItem
-   * @param {*} parsedObject
-   * @param {string} sourceText
-   */
-  _appendJSONPayloadSource(rootListItem, parsedObject, sourceText) {
+  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  _appendJSONPayloadSource(rootListItem: Category, parsedObject: any, sourceText: string): void {
     const rootListItemElement = rootListItem.listItemElement;
     this._populateTreeElementWithSourceText(rootListItem, sourceText);
 
-    /**
-     * @param {!Event} event
-     * @this {RequestHeadersView}
-     */
-    const viewParsed = function(event) {
+    const viewParsed = function(this: RequestHeadersView, event: Event): void {
       rootListItemElement.removeEventListener('contextmenu', viewParsedContextMenu);
       viewSourceForItems.delete(rootListItem);
       this._refreshRequestJSONPayload(parsedObject, sourceText);
@@ -702,10 +652,7 @@ export class RequestHeadersView extends UI.Widget.VBox {
     const viewParsedButton = this._createViewSourceToggle(/* viewSource */ true, viewParsed.bind(this));
     rootListItemElement.appendChild(viewParsedButton);
 
-    /**
-     * @param {!Event} event
-     */
-    const viewParsedContextMenu = event => {
+    const viewParsedContextMenu = (event: Event): void => {
       if (!rootListItem.expanded) {
         return;
       }
@@ -717,16 +664,12 @@ export class RequestHeadersView extends UI.Widget.VBox {
     rootListItemElement.addEventListener('contextmenu', viewParsedContextMenu);
   }
 
-  /**
-   * @param {!Category} rootListItem
-   * @param {*} parsedObject
-   * @param {string} sourceText
-   */
-  _appendJSONPayloadParsed(rootListItem, parsedObject, sourceText) {
-    const object =
-        /** @type {!SDK.RemoteObject.LocalJSONObject} */ (SDK.RemoteObject.RemoteObject.fromLocalObject(parsedObject));
+  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  _appendJSONPayloadParsed(rootListItem: Category, parsedObject: any, sourceText: string): void {
+    const object = (SDK.RemoteObject.RemoteObject.fromLocalObject(parsedObject) as SDK.RemoteObject.LocalJSONObject);
     const section = new ObjectUI.ObjectPropertiesSection.RootElement(object);
-    section.title = /** @type {string} */ (object.description);
+    section.title = (object.description as string);
     section.expand();
     // `editable` is not a valid property for `ObjectUI.ObjectPropertiesSection.RootElement`. Only for
     // `ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection`. We do not know if this assignment is
@@ -738,11 +681,7 @@ export class RequestHeadersView extends UI.Widget.VBox {
     rootListItem.appendChild(section);
     const rootListItemElement = rootListItem.listItemElement;
 
-    /**
-     * @param {!Event} event
-     * @this {RequestHeadersView}
-     */
-    const viewSource = function(event) {
+    const viewSource = function(this: RequestHeadersView, event: Event): void {
       rootListItemElement.removeEventListener('contextmenu', viewSourceContextMenu);
 
       viewSourceForItems.add(rootListItem);
@@ -750,10 +689,7 @@ export class RequestHeadersView extends UI.Widget.VBox {
       event.consume();
     };
 
-    /**
-     * @param {!Event} event
-     */
-    const viewSourceContextMenu = event => {
+    const viewSourceContextMenu = (event: Event): void => {
       if (!rootListItem.expanded) {
         return;
       }
@@ -768,29 +704,21 @@ export class RequestHeadersView extends UI.Widget.VBox {
     rootListItemElement.addEventListener('contextmenu', viewSourceContextMenu);
   }
 
-  /**
-   * @param {boolean} viewSource
-   * @param {function(!Event):void} handler
-   * @return {!Element}
-   */
-  _createViewSourceToggle(viewSource, handler) {
+  _createViewSourceToggle(viewSource: boolean, handler: (arg0: Event) => void): Element {
     const viewSourceToggleTitle = viewSource ? i18nString(UIStrings.viewParsedL) : i18nString(UIStrings.viewSourceL);
     const viewSourceToggleButton = this._createToggleButton(viewSourceToggleTitle);
     viewSourceToggleButton.addEventListener('click', handler, false);
     return viewSourceToggleButton;
   }
 
-  /**
-   * @param {!Event} event
-   */
-  _toggleURLDecoding(event) {
+  _toggleURLDecoding(event: Event): void {
     this._decodeRequestParameters = !this._decodeRequestParameters;
     this._refreshQueryString();
     this._refreshFormData();
     event.consume();
   }
 
-  _refreshRequestHeaders() {
+  _refreshRequestHeaders(): void {
     const treeElement = this._requestHeadersCategory;
     const headers = this._request.requestHeaders().slice();
     headers.sort(function(a, b) {
@@ -813,7 +741,7 @@ export class RequestHeadersView extends UI.Widget.VBox {
     this._refreshFormData();
   }
 
-  _refreshResponseHeaders() {
+  _refreshResponseHeaders(): void {
     const treeElement = this._responseHeadersCategory;
     const headers = this._request.sortedResponseHeaders.slice();
     const headersText = this._request.responseHeadersText;
@@ -824,7 +752,7 @@ export class RequestHeadersView extends UI.Widget.VBox {
       const headersWithIssues = [];
       if (this._request.wasBlocked()) {
         const headerWithIssues =
-            BlockedReasonDetails.get(/** @type {!Protocol.Network.BlockedReason} */ (this._request.blockedReason()));
+            BlockedReasonDetails.get((this._request.blockedReason() as Protocol.Network.BlockedReason));
         if (headerWithIssues) {
           headersWithIssues.push(headerWithIssues);
         }
@@ -840,12 +768,9 @@ export class RequestHeadersView extends UI.Widget.VBox {
       treeElement.listItemElement.appendChild(toggleButton);
     }
 
-    /**
-     *
-     * @param {!Array<*>} headers
-     * @param {!Array<*>} headersWithIssues
-     */
-    function mergeHeadersWithIssues(headers, headersWithIssues) {
+    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    function mergeHeadersWithIssues(headers: any[], headersWithIssues: any[]): any[] {
       let i = 0, j = 0;
       const result = [];
       while (i < headers.length || j < headersWithIssues.length) {
@@ -863,7 +788,7 @@ export class RequestHeadersView extends UI.Widget.VBox {
     }
   }
 
-  _refreshHTTPInformation() {
+  _refreshHTTPInformation(): void {
     const requestMethodElement = this._requestMethodItem;
     requestMethodElement.hidden = !this._request.statusCode;
     const statusCodeElement = this._statusCodeItem;
@@ -874,8 +799,9 @@ export class RequestHeadersView extends UI.Widget.VBox {
       statusCodeFragment.createChild('div', 'header-name').textContent = i18nString(UIStrings.statusCode) + ': ';
       statusCodeFragment.createChild('span', 'header-separator');
 
-      const statusCodeImage = /** @type {!UI.UIUtils.DevToolsIconLabel} */ (
-          statusCodeFragment.createChild('span', 'resource-status-image', 'dt-icon-label'));
+      const statusCodeImage =
+          (statusCodeFragment.createChild('span', 'resource-status-image', 'dt-icon-label') as
+           UI.UIUtils.DevToolsIconLabel);
       UI.Tooltip.Tooltip.install(statusCodeImage, this._request.statusCode + ' ' + this._request.statusText);
 
       if (this._request.statusCode < 300 || this._request.statusCode === 304) {
@@ -912,12 +838,7 @@ export class RequestHeadersView extends UI.Widget.VBox {
     }
   }
 
-  /**
-   * @param {string} title
-   * @param {!UI.TreeOutline.TreeElement} headersTreeElement
-   * @param {number} headersLength
-   */
-  _refreshHeadersTitle(title, headersTreeElement, headersLength) {
+  _refreshHeadersTitle(title: string, headersTreeElement: UI.TreeOutline.TreeElement, headersLength: number): void {
     headersTreeElement.listItemElement.removeChildren();
     headersTreeElement.listItemElement.createChild('div', 'selection fill');
     UI.UIUtils.createTextChild(headersTreeElement.listItemElement, title);
@@ -926,14 +847,9 @@ export class RequestHeadersView extends UI.Widget.VBox {
     headersTreeElement.listItemElement.createChild('span', 'header-count').textContent = headerCount;
   }
 
-  /**
-   * @param {string} title
-   * @param {!Array.<!SDK.NetworkRequest.NameValue>} headers
-   * @param {!UI.TreeOutline.TreeElement} headersTreeElement
-   * @param {boolean=} provisionalHeaders
-   * @param {!Array<!SDK.NetworkRequest.BlockedSetCookieWithReason>=} blockedResponseCookies
-   */
-  _refreshHeaders(title, headers, headersTreeElement, provisionalHeaders, blockedResponseCookies) {
+  _refreshHeaders(
+      title: string, headers: SDK.NetworkRequest.NameValue[], headersTreeElement: UI.TreeOutline.TreeElement,
+      provisionalHeaders?: boolean, blockedResponseCookies?: SDK.NetworkRequest.BlockedSetCookieWithReason[]): void {
     headersTreeElement.removeChildren();
 
     const length = headers.length;
@@ -950,15 +866,14 @@ export class RequestHeadersView extends UI.Widget.VBox {
       }
       const cautionElement = document.createElement('div');
       UI.Tooltip.Tooltip.install(cautionElement, cautionTitle);
-      /** @type {!UI.UIUtils.DevToolsIconLabel} */ (cautionElement.createChild('span', '', 'dt-icon-label')).type =
+      (cautionElement.createChild('span', '', 'dt-icon-label') as UI.UIUtils.DevToolsIconLabel).type =
           'smallicon-warning';
       cautionElement.createChild('div', 'caution').textContent = cautionText;
       const cautionTreeElement = new UI.TreeOutline.TreeElement(cautionElement);
       headersTreeElement.appendChild(cautionTreeElement);
     }
 
-    /** @type {!Map<string, !Array<!Protocol.Network.SetCookieBlockedReason>>} */
-    const blockedCookieLineToReasons = new Map();
+    const blockedCookieLineToReasons = new Map<string, Protocol.Network.SetCookieBlockedReason[]>();
     if (blockedResponseCookies) {
       blockedResponseCookies.forEach(blockedCookie => {
         blockedCookieLineToReasons.set(blockedCookie.cookieLine, blockedCookie.blockedReasons);
@@ -967,8 +882,9 @@ export class RequestHeadersView extends UI.Widget.VBox {
 
     headersTreeElement.hidden = !length && !provisionalHeaders;
     for (const header of headers) {
-      const headerTreeElement = new UI.TreeOutline.TreeElement(
-          this._formatHeaderObject(/** @type {!BlockedReasonDetailDescriptor} */ (/** @type {*} */ (header))));
+      // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const headerTreeElement = new UI.TreeOutline.TreeElement(this._formatHeaderObject((header as any)));
       headerNames.set(headerTreeElement, header.name);
 
       const headerId = header.name.toLowerCase();
@@ -1009,18 +925,13 @@ export class RequestHeadersView extends UI.Widget.VBox {
     }
   }
 
-  /**
-   * @param {string} title
-   * @param {number} count
-   * @param {string} headersText
-   * @param {!UI.TreeOutline.TreeElement} headersTreeElement
-   */
-  _refreshHeadersText(title, count, headersText, headersTreeElement) {
+  _refreshHeadersText(
+      title: string, count: number, headersText: string, headersTreeElement: UI.TreeOutline.TreeElement): void {
     this._populateTreeElementWithSourceText(headersTreeElement, headersText);
     this._refreshHeadersTitle(title, headersTreeElement, count);
   }
 
-  _refreshRemoteAddress() {
+  _refreshRemoteAddress(): void {
     const remoteAddress = this._request.remoteAddress();
     const treeElement = this._remoteAddressItem;
     treeElement.hidden = !remoteAddress;
@@ -1029,7 +940,7 @@ export class RequestHeadersView extends UI.Widget.VBox {
     }
   }
 
-  _refreshReferrerPolicy() {
+  _refreshReferrerPolicy(): void {
     const referrerPolicy = this._request.referrerPolicy();
     const treeElement = this._referrerPolicyItem;
     treeElement.hidden = !referrerPolicy;
@@ -1038,57 +949,38 @@ export class RequestHeadersView extends UI.Widget.VBox {
     }
   }
 
-  /**
-   * @param {!Event} event
-   */
-  _toggleRequestHeadersText(event) {
+  _toggleRequestHeadersText(event: Event): void {
     this._showRequestHeadersText = !this._showRequestHeadersText;
     this._refreshRequestHeaders();
     event.consume();
   }
 
-  /**
-   * @param {!Event} event
-   */
-  _toggleResponseHeadersText(event) {
+  _toggleResponseHeadersText(event: Event): void {
     this._showResponseHeadersText = !this._showResponseHeadersText;
     this._refreshResponseHeaders();
     event.consume();
   }
 
-  /**
-   * @param {string} title
-   * @return {!Element}
-   */
-  _createToggleButton(title) {
+  _createToggleButton(title: string): Element {
     const button = document.createElement('span');
     button.classList.add('header-toggle');
     button.textContent = title;
     return button;
   }
 
-  /**
-   * @param {boolean} isHeadersTextShown
-   * @return {!Element}
-   */
-  _createHeadersToggleButton(isHeadersTextShown) {
+  _createHeadersToggleButton(isHeadersTextShown: boolean): Element {
     const toggleTitle = isHeadersTextShown ? i18nString(UIStrings.viewParsed) : i18nString(UIStrings.viewSource);
     return this._createToggleButton(toggleTitle);
   }
 
-  _clearHighlight() {
+  _clearHighlight(): void {
     if (this._highlightedElement) {
       this._highlightedElement.listItemElement.classList.remove('header-highlight');
     }
     this._highlightedElement = null;
   }
 
-
-  /**
-   * @param {?UI.TreeOutline.TreeElement} category
-   * @param {string} name
-   */
-  _revealAndHighlight(category, name) {
+  _revealAndHighlight(category: UI.TreeOutline.TreeElement|null, name: string): void {
     this._clearHighlight();
     if (!category) {
       return;
@@ -1104,34 +996,25 @@ export class RequestHeadersView extends UI.Widget.VBox {
     }
   }
 
-  /**
-   * @param {string} header
-   */
-  revealRequestHeader(header) {
+  revealRequestHeader(header: string): void {
     this._revealAndHighlight(this._requestHeadersCategory, header);
   }
 
-  /**
-   * @param {string} header
-   */
-  revealResponseHeader(header) {
+  revealResponseHeader(header: string): void {
     this._revealAndHighlight(this._responseHeadersCategory, header);
   }
 }
 
-/** @type {!WeakSet<(!Category|!UI.TreeOutline.TreeElement)>} */
-const viewSourceForItems = new WeakSet();
+const viewSourceForItems = new WeakSet<Category|UI.TreeOutline.TreeElement>();
 
-/** @type {!WeakMap<!UI.TreeOutline.TreeElement, string>} */
-const headerNames = new WeakMap();
+const headerNames = new WeakMap<UI.TreeOutline.TreeElement, string>();
 
 export class Category extends UI.TreeOutline.TreeElement {
-  /**
-   * @param {!UI.TreeOutline.TreeOutline} root
-   * @param {string} name
-   * @param {string=} title
-   */
-  constructor(root, name, title) {
+  toggleOnClick: boolean;
+  _expandedSetting: Common.Settings.Setting<boolean>;
+  expanded: boolean;
+
+  constructor(root: UI.TreeOutline.TreeOutline, name: string, title?: string) {
     super(title || '', true);
     this.toggleOnClick = true;
     this.hidden = true;
@@ -1141,62 +1024,55 @@ export class Category extends UI.TreeOutline.TreeElement {
     root.appendChild(this);
   }
 
-  /**
-   * @return {!UI.TreeOutline.TreeElement}
-   */
-  createLeaf() {
+  createLeaf(): UI.TreeOutline.TreeElement {
     const leaf = new UI.TreeOutline.TreeElement();
     this.appendChild(leaf);
     return leaf;
   }
 
-  /**
-   * @override
-   */
-  onexpand() {
+  onexpand(): void {
     this._expandedSetting.set(true);
   }
 
-  /**
-   * @override
-   */
-  oncollapse() {
+  oncollapse(): void {
     this._expandedSetting.set(false);
   }
 }
+interface BlockedReasonDetailDescriptor {
+  name: string;
+  value: Object|null;
+  headerValueIncorrect: boolean|null;
+  details: {
+    explanation: () => string,
+    examples: Array<{
+      codeSnippet: string,
+      comment?: (() => string),
+    }>,
+    link: {
+      url: string,
+    }|null,
+  };
+  headerNotSet: boolean|null;
+}
 
-/**
- * @typedef {{
- *   name: string,
- *   value: ?Object,
- *   headerValueIncorrect: ?boolean,
- *   details: !{
- *     explanation: function():string,
- *     examples: !Array<!{codeSnippet: string, comment:(undefined|function():string)}>,
- *     link: ?{url:string},
- *   },
- *   headerNotSet: ?boolean,
- * }}
- */
-let BlockedReasonDetailDescriptor;  // eslint-disable-line no-unused-vars
-
-/** @type {!Map<!Protocol.Network.BlockedReason, !BlockedReasonDetailDescriptor>} */
-const BlockedReasonDetails = new Map([
+const BlockedReasonDetails = new Map<Protocol.Network.BlockedReason, BlockedReasonDetailDescriptor>([
   [
-    Protocol.Network.BlockedReason.CoepFrameResourceNeedsCoepHeader, {
+    Protocol.Network.BlockedReason.CoepFrameResourceNeedsCoepHeader,
+    {
       name: 'cross-origin-embedder-policy',
       value: null,
       headerValueIncorrect: null,
       details: {
         explanation: i18nLazyString(UIStrings.toEmbedThisFrameInYourDocument),
         examples: [{codeSnippet: 'Cross-Origin-Embedder-Policy: require-corp', comment: undefined}],
-        link: {url: 'https://web.dev/coop-coep/'}
+        link: {url: 'https://web.dev/coop-coep/'},
       },
       headerNotSet: null,
-    }
+    },
   ],
   [
-    Protocol.Network.BlockedReason.CorpNotSameOriginAfterDefaultedToSameOriginByCoep, {
+    Protocol.Network.BlockedReason.CorpNotSameOriginAfterDefaultedToSameOriginByCoep,
+    {
       name: 'cross-origin-resource-policy',
       value: null,
       headerValueIncorrect: null,
@@ -1205,33 +1081,35 @@ const BlockedReasonDetails = new Map([
         examples: [
           {
             codeSnippet: 'Cross-Origin-Resource-Policy: same-site',
-            comment: i18nLazyString(UIStrings.chooseThisOptionIfTheResourceAnd)
+            comment: i18nLazyString(UIStrings.chooseThisOptionIfTheResourceAnd),
           },
           {
             codeSnippet: 'Cross-Origin-Resource-Policy: cross-origin',
-            comment: i18nLazyString(UIStrings.onlyChooseThisOptionIfAn)
+            comment: i18nLazyString(UIStrings.onlyChooseThisOptionIfAn),
           },
         ],
         link: {url: 'https://web.dev/coop-coep/'},
       },
       headerNotSet: null,
-    }
+    },
   ],
   [
-    Protocol.Network.BlockedReason.CoopSandboxedIframeCannotNavigateToCoopPage, {
+    Protocol.Network.BlockedReason.CoopSandboxedIframeCannotNavigateToCoopPage,
+    {
       name: 'cross-origin-opener-policy',
       value: null,
       headerValueIncorrect: false,
       details: {
         explanation: i18nLazyString(UIStrings.thisDocumentWasBlockedFrom),
         examples: [],
-        link: {url: 'https://web.dev/coop-coep/'}
+        link: {url: 'https://web.dev/coop-coep/'},
       },
       headerNotSet: null,
-    }
+    },
   ],
   [
-    Protocol.Network.BlockedReason.CorpNotSameSite, {
+    Protocol.Network.BlockedReason.CorpNotSameSite,
+    {
       name: 'cross-origin-resource-policy',
       value: null,
       headerValueIncorrect: true,
@@ -1240,16 +1118,17 @@ const BlockedReasonDetails = new Map([
         examples: [
           {
             codeSnippet: 'Cross-Origin-Resource-Policy: cross-origin',
-            comment: i18nLazyString(UIStrings.onlyChooseThisOptionIfAn)
+            comment: i18nLazyString(UIStrings.onlyChooseThisOptionIfAn),
           },
         ],
         link: null,
       },
       headerNotSet: null,
-    }
+    },
   ],
   [
-    Protocol.Network.BlockedReason.CorpNotSameOrigin, {
+    Protocol.Network.BlockedReason.CorpNotSameOrigin,
+    {
       name: 'cross-origin-resource-policy',
       value: null,
       headerValueIncorrect: true,
@@ -1258,16 +1137,16 @@ const BlockedReasonDetails = new Map([
         examples: [
           {
             codeSnippet: 'Cross-Origin-Resource-Policy: same-site',
-            comment: i18nLazyString(UIStrings.chooseThisOptionIfTheResourceAnd)
+            comment: i18nLazyString(UIStrings.chooseThisOptionIfTheResourceAnd),
           },
           {
             codeSnippet: 'Cross-Origin-Resource-Policy: cross-origin',
-            comment: i18nLazyString(UIStrings.onlyChooseThisOptionIfAn)
+            comment: i18nLazyString(UIStrings.onlyChooseThisOptionIfAn),
           },
         ],
         link: null,
       },
       headerNotSet: null,
-    }
+    },
   ],
 ]);

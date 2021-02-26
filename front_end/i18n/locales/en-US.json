@@ -3581,88 +3581,88 @@
   "mobile_throttling/ThrottlingSettingsTab.ts | upload": {
     "message": "Upload"
   },
-  "network/BinaryResourceView.js | base": {
+  "network/BinaryResourceView.ts | base": {
     "message": "Base64"
   },
-  "network/BinaryResourceView.js | binaryViewType": {
+  "network/BinaryResourceView.ts | binaryViewType": {
     "message": "Binary view type"
   },
-  "network/BinaryResourceView.js | copiedAsBase": {
+  "network/BinaryResourceView.ts | copiedAsBase": {
     "message": "Copied as Base64"
   },
-  "network/BinaryResourceView.js | copiedAsHex": {
+  "network/BinaryResourceView.ts | copiedAsHex": {
     "message": "Copied as Hex"
   },
-  "network/BinaryResourceView.js | copiedAsUtf": {
+  "network/BinaryResourceView.ts | copiedAsUtf": {
     "message": "Copied as UTF-8"
   },
-  "network/BinaryResourceView.js | copyAsBase": {
+  "network/BinaryResourceView.ts | copyAsBase": {
     "message": "Copy as Base64"
   },
-  "network/BinaryResourceView.js | copyAsHex": {
+  "network/BinaryResourceView.ts | copyAsHex": {
     "message": "Copy as Hex"
   },
-  "network/BinaryResourceView.js | copyAsUtf": {
+  "network/BinaryResourceView.ts | copyAsUtf": {
     "message": "Copy as UTF-8"
   },
-  "network/BinaryResourceView.js | copyToClipboard": {
+  "network/BinaryResourceView.ts | copyToClipboard": {
     "message": "Copy to clipboard"
   },
-  "network/BinaryResourceView.js | hexViewer": {
+  "network/BinaryResourceView.ts | hexViewer": {
     "message": "Hex Viewer"
   },
-  "network/BinaryResourceView.js | utf": {
+  "network/BinaryResourceView.ts | utf": {
     "message": "UTF-8"
   },
-  "network/BlockedURLsPane.js | addNetworkRequestBlockingPattern": {
+  "network/BlockedURLsPane.ts | addNetworkRequestBlockingPattern": {
     "message": "Add network request blocking pattern"
   },
-  "network/BlockedURLsPane.js | addPattern": {
+  "network/BlockedURLsPane.ts | addPattern": {
     "message": "Add pattern"
   },
-  "network/BlockedURLsPane.js | dBlocked": {
+  "network/BlockedURLsPane.ts | dBlocked": {
     "message": "{PH1} blocked"
   },
-  "network/BlockedURLsPane.js | enableNetworkRequestBlocking": {
+  "network/BlockedURLsPane.ts | enableNetworkRequestBlocking": {
     "message": "Enable network request blocking"
   },
-  "network/BlockedURLsPane.js | networkRequestsAreNotBlockedS": {
+  "network/BlockedURLsPane.ts | networkRequestsAreNotBlockedS": {
     "message": "Network requests are not blocked. {PH1}"
   },
-  "network/BlockedURLsPane.js | patternAlreadyExists": {
+  "network/BlockedURLsPane.ts | patternAlreadyExists": {
     "message": "Pattern already exists."
   },
-  "network/BlockedURLsPane.js | patternInputCannotBeEmpty": {
+  "network/BlockedURLsPane.ts | patternInputCannotBeEmpty": {
     "message": "Pattern input cannot be empty."
   },
-  "network/BlockedURLsPane.js | removeAllPatterns": {
+  "network/BlockedURLsPane.ts | removeAllPatterns": {
     "message": "Remove all patterns"
   },
-  "network/BlockedURLsPane.js | textPatternToBlockMatching": {
+  "network/BlockedURLsPane.ts | textPatternToBlockMatching": {
     "message": "Text pattern to block matching requests; use * for wildcard"
   },
-  "network/EventSourceMessagesView.js | copyMessage": {
+  "network/EventSourceMessagesView.ts | copyMessage": {
     "message": "Copy message"
   },
-  "network/EventSourceMessagesView.js | data": {
+  "network/EventSourceMessagesView.ts | data": {
     "message": "Data"
   },
-  "network/EventSourceMessagesView.js | eventSource": {
+  "network/EventSourceMessagesView.ts | eventSource": {
     "message": "Event Source"
   },
-  "network/EventSourceMessagesView.js | id": {
+  "network/EventSourceMessagesView.ts | id": {
     "message": "Id"
   },
-  "network/EventSourceMessagesView.js | time": {
+  "network/EventSourceMessagesView.ts | time": {
     "message": "Time"
   },
-  "network/EventSourceMessagesView.js | type": {
+  "network/EventSourceMessagesView.ts | type": {
     "message": "Type"
   },
-  "network/HARWriter.js | collectingContent": {
+  "network/HARWriter.ts | collectingContent": {
     "message": "Collecting content…"
   },
-  "network/HARWriter.js | writingFile": {
+  "network/HARWriter.ts | writingFile": {
     "message": "Writing file…"
   },
   "network/network-meta.ts | colorCode": {
@@ -3746,892 +3746,892 @@
   "network/network-meta.ts | userdagent": {
     "message": "user-agent"
   },
-  "network/NetworkConfigView.js | caching": {
+  "network/NetworkConfigView.ts | caching": {
     "message": "Caching"
   },
-  "network/NetworkConfigView.js | custom": {
+  "network/NetworkConfigView.ts | custom": {
     "message": "Custom..."
   },
-  "network/NetworkConfigView.js | customUserAgentFieldIsRequired": {
+  "network/NetworkConfigView.ts | customUserAgentFieldIsRequired": {
     "message": "Custom user agent field is required"
   },
-  "network/NetworkConfigView.js | disableCache": {
+  "network/NetworkConfigView.ts | disableCache": {
     "message": "Disable cache"
   },
-  "network/NetworkConfigView.js | enterACustomUserAgent": {
+  "network/NetworkConfigView.ts | enterACustomUserAgent": {
     "message": "Enter a custom user agent"
   },
-  "network/NetworkConfigView.js | networkThrottling": {
+  "network/NetworkConfigView.ts | networkThrottling": {
     "message": "Network throttling"
   },
-  "network/NetworkConfigView.js | selectAutomatically": {
+  "network/NetworkConfigView.ts | selectAutomatically": {
     "message": "Select automatically"
   },
-  "network/NetworkConfigView.js | userAgent": {
+  "network/NetworkConfigView.ts | userAgent": {
     "message": "User agent"
   },
-  "network/NetworkDataGridNode.js | blockeds": {
+  "network/NetworkDataGridNode.ts | blockeds": {
     "message": "(blocked:{PH1})"
   },
-  "network/NetworkDataGridNode.js | canceled": {
+  "network/NetworkDataGridNode.ts | canceled": {
     "message": "(canceled)"
   },
-  "network/NetworkDataGridNode.js | coepframeresourceneedscoepheader": {
+  "network/NetworkDataGridNode.ts | coepframeresourceneedscoepheader": {
     "message": "CoepFrameResourceNeedsCoepHeader"
   },
-  "network/NetworkDataGridNode.js | contenttype": {
+  "network/NetworkDataGridNode.ts | contenttype": {
     "message": "content-type"
   },
-  "network/NetworkDataGridNode.js | CoopSandboxedIframeCannot": {
+  "network/NetworkDataGridNode.ts | CoopSandboxedIframeCannot": {
     "message": "CoopSandboxedIframeCannotNavigateToCoopPage"
   },
-  "network/NetworkDataGridNode.js | corsError": {
+  "network/NetworkDataGridNode.ts | corsError": {
     "message": "CORS error"
   },
-  "network/NetworkDataGridNode.js | crossoriginResourceSharingErrorS": {
+  "network/NetworkDataGridNode.ts | crossoriginResourceSharingErrorS": {
     "message": "Cross-Origin Resource Sharing error: {PH1}"
   },
-  "network/NetworkDataGridNode.js | csp": {
+  "network/NetworkDataGridNode.ts | csp": {
     "message": "csp"
   },
-  "network/NetworkDataGridNode.js | data": {
+  "network/NetworkDataGridNode.ts | data": {
     "message": "(data)"
   },
-  "network/NetworkDataGridNode.js | devtools": {
+  "network/NetworkDataGridNode.ts | devtools": {
     "message": "devtools"
   },
-  "network/NetworkDataGridNode.js | diskCache": {
+  "network/NetworkDataGridNode.ts | diskCache": {
     "message": "(disk cache)"
   },
-  "network/NetworkDataGridNode.js | extension": {
+  "network/NetworkDataGridNode.ts | extension": {
     "message": "extension"
   },
-  "network/NetworkDataGridNode.js | failed": {
+  "network/NetworkDataGridNode.ts | failed": {
     "message": "(failed)"
   },
-  "network/NetworkDataGridNode.js | finished": {
+  "network/NetworkDataGridNode.ts | finished": {
     "message": "Finished"
   },
-  "network/NetworkDataGridNode.js | level": {
+  "network/NetworkDataGridNode.ts | level": {
     "message": "level 1"
   },
-  "network/NetworkDataGridNode.js | memoryCache": {
+  "network/NetworkDataGridNode.ts | memoryCache": {
     "message": "(memory cache)"
   },
-  "network/NetworkDataGridNode.js | mixedcontent": {
+  "network/NetworkDataGridNode.ts | mixedcontent": {
     "message": "mixed-content"
   },
-  "network/NetworkDataGridNode.js | notsameorigin": {
+  "network/NetworkDataGridNode.ts | notsameorigin": {
     "message": "NotSameOrigin"
   },
-  "network/NetworkDataGridNode.js | notsameoriginafterdefaultedtosameoriginbycoep": {
+  "network/NetworkDataGridNode.ts | notsameoriginafterdefaultedtosameoriginbycoep": {
     "message": "NotSameOriginAfterDefaultedToSameOriginByCoep"
   },
-  "network/NetworkDataGridNode.js | notsamesite": {
+  "network/NetworkDataGridNode.ts | notsamesite": {
     "message": "NotSameSite"
   },
-  "network/NetworkDataGridNode.js | origin": {
+  "network/NetworkDataGridNode.ts | origin": {
     "message": "origin"
   },
-  "network/NetworkDataGridNode.js | other": {
+  "network/NetworkDataGridNode.ts | other": {
     "message": "other"
   },
-  "network/NetworkDataGridNode.js | otherC": {
+  "network/NetworkDataGridNode.ts | otherC": {
     "message": "Other"
   },
-  "network/NetworkDataGridNode.js | parser": {
+  "network/NetworkDataGridNode.ts | parser": {
     "message": "Parser"
   },
-  "network/NetworkDataGridNode.js | pending": {
+  "network/NetworkDataGridNode.ts | pending": {
     "message": "Pending"
   },
-  "network/NetworkDataGridNode.js | pendingq": {
+  "network/NetworkDataGridNode.ts | pendingq": {
     "message": "(pending)"
   },
-  "network/NetworkDataGridNode.js | prefetchCache": {
+  "network/NetworkDataGridNode.ts | prefetchCache": {
     "message": "(prefetch cache)"
   },
-  "network/NetworkDataGridNode.js | preflight": {
+  "network/NetworkDataGridNode.ts | preflight": {
     "message": "Preflight"
   },
-  "network/NetworkDataGridNode.js | preload": {
+  "network/NetworkDataGridNode.ts | preload": {
     "message": "Preload"
   },
-  "network/NetworkDataGridNode.js | push": {
+  "network/NetworkDataGridNode.ts | push": {
     "message": "Push / "
   },
-  "network/NetworkDataGridNode.js | redirect": {
+  "network/NetworkDataGridNode.ts | redirect": {
     "message": "Redirect"
   },
-  "network/NetworkDataGridNode.js | script": {
+  "network/NetworkDataGridNode.ts | script": {
     "message": "Script"
   },
-  "network/NetworkDataGridNode.js | selectPreflightRequest": {
+  "network/NetworkDataGridNode.ts | selectPreflightRequest": {
     "message": "Select preflight request"
   },
-  "network/NetworkDataGridNode.js | selectTheRequestThatTriggered": {
+  "network/NetworkDataGridNode.ts | selectTheRequestThatTriggered": {
     "message": "Select the request that triggered this preflight"
   },
-  "network/NetworkDataGridNode.js | servedFromDiskCacheResourceSizeS": {
+  "network/NetworkDataGridNode.ts | servedFromDiskCacheResourceSizeS": {
     "message": "Served from disk cache, resource size: {PH1}"
   },
-  "network/NetworkDataGridNode.js | servedFromMemoryCacheResource": {
+  "network/NetworkDataGridNode.ts | servedFromMemoryCacheResource": {
     "message": "Served from memory cache, resource size: {PH1}"
   },
-  "network/NetworkDataGridNode.js | servedFromPrefetchCacheResource": {
+  "network/NetworkDataGridNode.ts | servedFromPrefetchCacheResource": {
     "message": "Served from prefetch cache, resource size: {PH1}"
   },
-  "network/NetworkDataGridNode.js | servedFromServiceworkerResource": {
+  "network/NetworkDataGridNode.ts | servedFromServiceworkerResource": {
     "message": "Served from ServiceWorker, resource size: {PH1}"
   },
-  "network/NetworkDataGridNode.js | servedFromSignedHttpExchange": {
+  "network/NetworkDataGridNode.ts | servedFromSignedHttpExchange": {
     "message": "Served from Signed HTTP Exchange, resource size: {PH1}"
   },
-  "network/NetworkDataGridNode.js | serviceworker": {
+  "network/NetworkDataGridNode.ts | serviceworker": {
     "message": "(ServiceWorker)"
   },
-  "network/NetworkDataGridNode.js | signedexchange": {
+  "network/NetworkDataGridNode.ts | signedexchange": {
     "message": "signed-exchange"
   },
-  "network/NetworkDataGridNode.js | signedexchangeq": {
+  "network/NetworkDataGridNode.ts | signedexchangeq": {
     "message": "(signed-exchange)"
   },
-  "network/NetworkDataGridNode.js | sPreflight": {
+  "network/NetworkDataGridNode.ts | sPreflight": {
     "message": "{PH1} + Preflight"
   },
-  "network/NetworkDataGridNode.js | subresourcefilter": {
+  "network/NetworkDataGridNode.ts | subresourcefilter": {
     "message": "subresource-filter"
   },
-  "network/NetworkItemView.js | cookies": {
+  "network/NetworkItemView.ts | cookies": {
     "message": "Cookies"
   },
-  "network/NetworkItemView.js | eventstream": {
+  "network/NetworkItemView.ts | eventstream": {
     "message": "EventStream"
   },
-  "network/NetworkItemView.js | headers": {
+  "network/NetworkItemView.ts | headers": {
     "message": "Headers"
   },
-  "network/NetworkItemView.js | headersAndRequestBody": {
+  "network/NetworkItemView.ts | headersAndRequestBody": {
     "message": "Headers and request body"
   },
-  "network/NetworkItemView.js | initiator": {
+  "network/NetworkItemView.ts | initiator": {
     "message": "Initiator"
   },
-  "network/NetworkItemView.js | messages": {
+  "network/NetworkItemView.ts | messages": {
     "message": "Messages"
   },
-  "network/NetworkItemView.js | preview": {
+  "network/NetworkItemView.ts | preview": {
     "message": "Preview"
   },
-  "network/NetworkItemView.js | rawResponseData": {
+  "network/NetworkItemView.ts | rawResponseData": {
     "message": "Raw response data"
   },
-  "network/NetworkItemView.js | requestAndResponseCookies": {
+  "network/NetworkItemView.ts | requestAndResponseCookies": {
     "message": "Request and response cookies"
   },
-  "network/NetworkItemView.js | requestAndResponseTimeline": {
+  "network/NetworkItemView.ts | requestAndResponseTimeline": {
     "message": "Request and response timeline"
   },
-  "network/NetworkItemView.js | requestInitiatorCallStack": {
+  "network/NetworkItemView.ts | requestInitiatorCallStack": {
     "message": "Request initiator call stack"
   },
-  "network/NetworkItemView.js | response": {
+  "network/NetworkItemView.ts | response": {
     "message": "Response"
   },
-  "network/NetworkItemView.js | responsePreview": {
+  "network/NetworkItemView.ts | responsePreview": {
     "message": "Response preview"
   },
-  "network/NetworkItemView.js | signedexchangeError": {
+  "network/NetworkItemView.ts | signedexchangeError": {
     "message": "SignedExchange error"
   },
-  "network/NetworkItemView.js | timing": {
+  "network/NetworkItemView.ts | timing": {
     "message": "Timing"
   },
-  "network/NetworkItemView.js | trustTokenOperationDetails": {
+  "network/NetworkItemView.ts | trustTokenOperationDetails": {
     "message": "Trust Token operation details"
   },
-  "network/NetworkItemView.js | trustTokens": {
+  "network/NetworkItemView.ts | trustTokens": {
     "message": "Trust Tokens"
   },
-  "network/NetworkItemView.js | websocketMessages": {
+  "network/NetworkItemView.ts | websocketMessages": {
     "message": "WebSocket messages"
   },
-  "network/NetworkLogView.js | areYouSureYouWantToClearBrowser": {
+  "network/NetworkLogView.ts | areYouSureYouWantToClearBrowser": {
     "message": "Are you sure you want to clear browser cache?"
   },
-  "network/NetworkLogView.js | areYouSureYouWantToClearBrowserCookies": {
+  "network/NetworkLogView.ts | areYouSureYouWantToClearBrowserCookies": {
     "message": "Are you sure you want to clear browser cookies?"
   },
-  "network/NetworkLogView.js | blockedRequests": {
+  "network/NetworkLogView.ts | blockedRequests": {
     "message": "Blocked Requests"
   },
-  "network/NetworkLogView.js | blockRequestDomain": {
+  "network/NetworkLogView.ts | blockRequestDomain": {
     "message": "Block request domain"
   },
-  "network/NetworkLogView.js | blockRequestUrl": {
+  "network/NetworkLogView.ts | blockRequestUrl": {
     "message": "Block request URL"
   },
-  "network/NetworkLogView.js | clearBrowserCache": {
+  "network/NetworkLogView.ts | clearBrowserCache": {
     "message": "Clear browser cache"
   },
-  "network/NetworkLogView.js | clearBrowserCookies": {
+  "network/NetworkLogView.ts | clearBrowserCookies": {
     "message": "Clear browser cookies"
   },
-  "network/NetworkLogView.js | copy": {
+  "network/NetworkLogView.ts | copy": {
     "message": "Copy"
   },
-  "network/NetworkLogView.js | copyAllAsCurl": {
+  "network/NetworkLogView.ts | copyAllAsCurl": {
     "message": "Copy all as cURL"
   },
-  "network/NetworkLogView.js | copyAllAsCurlBash": {
+  "network/NetworkLogView.ts | copyAllAsCurlBash": {
     "message": "Copy all as cURL (bash)"
   },
-  "network/NetworkLogView.js | copyAllAsCurlCmd": {
+  "network/NetworkLogView.ts | copyAllAsCurlCmd": {
     "message": "Copy all as cURL (cmd)"
   },
-  "network/NetworkLogView.js | copyAllAsFetch": {
+  "network/NetworkLogView.ts | copyAllAsFetch": {
     "message": "Copy all as fetch"
   },
-  "network/NetworkLogView.js | copyAllAsHar": {
+  "network/NetworkLogView.ts | copyAllAsHar": {
     "message": "Copy all as HAR"
   },
-  "network/NetworkLogView.js | copyAllAsNodejsFetch": {
+  "network/NetworkLogView.ts | copyAllAsNodejsFetch": {
     "message": "Copy all as Node.js fetch"
   },
-  "network/NetworkLogView.js | copyAllAsPowershell": {
+  "network/NetworkLogView.ts | copyAllAsPowershell": {
     "message": "Copy all as PowerShell"
   },
-  "network/NetworkLogView.js | copyAsCurl": {
+  "network/NetworkLogView.ts | copyAsCurl": {
     "message": "Copy as cURL"
   },
-  "network/NetworkLogView.js | copyAsCurlBash": {
+  "network/NetworkLogView.ts | copyAsCurlBash": {
     "message": "Copy as cURL (bash)"
   },
-  "network/NetworkLogView.js | copyAsCurlCmd": {
+  "network/NetworkLogView.ts | copyAsCurlCmd": {
     "message": "Copy as cURL (cmd)"
   },
-  "network/NetworkLogView.js | copyAsFetch": {
+  "network/NetworkLogView.ts | copyAsFetch": {
     "message": "Copy as fetch"
   },
-  "network/NetworkLogView.js | copyAsNodejsFetch": {
+  "network/NetworkLogView.ts | copyAsNodejsFetch": {
     "message": "Copy as Node.js fetch"
   },
-  "network/NetworkLogView.js | copyAsPowershell": {
+  "network/NetworkLogView.ts | copyAsPowershell": {
     "message": "Copy as PowerShell"
   },
-  "network/NetworkLogView.js | copyRequestHeaders": {
+  "network/NetworkLogView.ts | copyRequestHeaders": {
     "message": "Copy request headers"
   },
-  "network/NetworkLogView.js | copyResponse": {
+  "network/NetworkLogView.ts | copyResponse": {
     "message": "Copy response"
   },
-  "network/NetworkLogView.js | copyResponseHeaders": {
+  "network/NetworkLogView.ts | copyResponseHeaders": {
     "message": "Copy response headers"
   },
-  "network/NetworkLogView.js | copyStacktrace": {
+  "network/NetworkLogView.ts | copyStacktrace": {
     "message": "Copy stacktrace"
   },
-  "network/NetworkLogView.js | domcontentloadedS": {
+  "network/NetworkLogView.ts | domcontentloadedS": {
     "message": "DOMContentLoaded: {PH1}"
   },
-  "network/NetworkLogView.js | dropHarFilesHere": {
+  "network/NetworkLogView.ts | dropHarFilesHere": {
     "message": "Drop HAR files here"
   },
-  "network/NetworkLogView.js | finishS": {
+  "network/NetworkLogView.ts | finishS": {
     "message": "Finish: {PH1}"
   },
-  "network/NetworkLogView.js | hasBlockedCookies": {
+  "network/NetworkLogView.ts | hasBlockedCookies": {
     "message": "Has blocked cookies"
   },
-  "network/NetworkLogView.js | hideDataUrls": {
+  "network/NetworkLogView.ts | hideDataUrls": {
     "message": "Hide data URLs"
   },
-  "network/NetworkLogView.js | hidesDataAndBlobUrls": {
+  "network/NetworkLogView.ts | hidesDataAndBlobUrls": {
     "message": "Hides data: and blob: URLs"
   },
-  "network/NetworkLogView.js | learnMore": {
+  "network/NetworkLogView.ts | learnMore": {
     "message": "Learn more"
   },
-  "network/NetworkLogView.js | loadS": {
+  "network/NetworkLogView.ts | loadS": {
     "message": "Load: {PH1}"
   },
-  "network/NetworkLogView.js | networkDataAvailable": {
+  "network/NetworkLogView.ts | networkDataAvailable": {
     "message": "Network Data Available"
   },
-  "network/NetworkLogView.js | onlyShowBlockedRequests": {
+  "network/NetworkLogView.ts | onlyShowBlockedRequests": {
     "message": "Only show blocked requests"
   },
-  "network/NetworkLogView.js | onlyShowRequestsWithBlocked": {
+  "network/NetworkLogView.ts | onlyShowRequestsWithBlocked": {
     "message": "Only show requests with blocked response cookies"
   },
-  "network/NetworkLogView.js | performARequestOrHitSToRecordThe": {
+  "network/NetworkLogView.ts | performARequestOrHitSToRecordThe": {
     "message": "Perform a request or hit {PH1} to record the reload."
   },
-  "network/NetworkLogView.js | recordingNetworkActivity": {
+  "network/NetworkLogView.ts | recordingNetworkActivity": {
     "message": "Recording network activity…"
   },
-  "network/NetworkLogView.js | recordSToDisplayNetworkActivity": {
+  "network/NetworkLogView.ts | recordSToDisplayNetworkActivity": {
     "message": "Record ({PH1}) to display network activity."
   },
-  "network/NetworkLogView.js | replayXhr": {
+  "network/NetworkLogView.ts | replayXhr": {
     "message": "Replay XHR"
   },
-  "network/NetworkLogView.js | resourceTypesToInclude": {
+  "network/NetworkLogView.ts | resourceTypesToInclude": {
     "message": "Resource types to include"
   },
-  "network/NetworkLogView.js | saveAllAsHarWithContent": {
+  "network/NetworkLogView.ts | saveAllAsHarWithContent": {
     "message": "Save all as HAR with content"
   },
-  "network/NetworkLogView.js | sBResourcesLoadedByThePage": {
+  "network/NetworkLogView.ts | sBResourcesLoadedByThePage": {
     "message": "{PH1} B resources loaded by the page"
   },
-  "network/NetworkLogView.js | sBSBResourcesLoadedByThePage": {
+  "network/NetworkLogView.ts | sBSBResourcesLoadedByThePage": {
     "message": "{PH1} B / {PH2} B resources loaded by the page"
   },
-  "network/NetworkLogView.js | sBSBTransferredOverNetwork": {
+  "network/NetworkLogView.ts | sBSBTransferredOverNetwork": {
     "message": "{PH1} B / {PH2} B transferred over network"
   },
-  "network/NetworkLogView.js | sBTransferredOverNetwork": {
+  "network/NetworkLogView.ts | sBTransferredOverNetwork": {
     "message": "{PH1} B transferred over network"
   },
-  "network/NetworkLogView.js | sRequests": {
+  "network/NetworkLogView.ts | sRequests": {
     "message": "{PH1} requests"
   },
-  "network/NetworkLogView.js | sResources": {
+  "network/NetworkLogView.ts | sResources": {
     "message": "{PH1} resources"
   },
-  "network/NetworkLogView.js | sSRequests": {
+  "network/NetworkLogView.ts | sSRequests": {
     "message": "{PH1} / {PH2} requests"
   },
-  "network/NetworkLogView.js | sSResources": {
+  "network/NetworkLogView.ts | sSResources": {
     "message": "{PH1} / {PH2} resources"
   },
-  "network/NetworkLogView.js | sSTransferred": {
+  "network/NetworkLogView.ts | sSTransferred": {
     "message": "{PH1} / {PH2} transferred"
   },
-  "network/NetworkLogView.js | sTransferred": {
+  "network/NetworkLogView.ts | sTransferred": {
     "message": "{PH1} transferred"
   },
-  "network/NetworkLogView.js | unblockS": {
+  "network/NetworkLogView.ts | unblockS": {
     "message": "Unblock {PH1}"
   },
-  "network/NetworkLogViewColumns.js | cachecontrol": {
+  "network/NetworkLogViewColumns.ts | cachecontrol": {
     "message": "Cache-Control"
   },
-  "network/NetworkLogViewColumns.js | connectionId": {
+  "network/NetworkLogViewColumns.ts | connectionId": {
     "message": "Connection ID"
   },
-  "network/NetworkLogViewColumns.js | content": {
+  "network/NetworkLogViewColumns.ts | content": {
     "message": "Content"
   },
-  "network/NetworkLogViewColumns.js | contentencoding": {
+  "network/NetworkLogViewColumns.ts | contentencoding": {
     "message": "Content-Encoding"
   },
-  "network/NetworkLogViewColumns.js | contentlength": {
+  "network/NetworkLogViewColumns.ts | contentlength": {
     "message": "Content-Length"
   },
-  "network/NetworkLogViewColumns.js | cookies": {
+  "network/NetworkLogViewColumns.ts | cookies": {
     "message": "Cookies"
   },
-  "network/NetworkLogViewColumns.js | domain": {
+  "network/NetworkLogViewColumns.ts | domain": {
     "message": "Domain"
   },
-  "network/NetworkLogViewColumns.js | endTime": {
+  "network/NetworkLogViewColumns.ts | endTime": {
     "message": "End Time"
   },
-  "network/NetworkLogViewColumns.js | etag": {
+  "network/NetworkLogViewColumns.ts | etag": {
     "message": "ETag"
   },
-  "network/NetworkLogViewColumns.js | initiator": {
+  "network/NetworkLogViewColumns.ts | initiator": {
     "message": "Initiator"
   },
-  "network/NetworkLogViewColumns.js | initiatorAddressSpace": {
+  "network/NetworkLogViewColumns.ts | initiatorAddressSpace": {
     "message": "Initiator Address Space"
   },
-  "network/NetworkLogViewColumns.js | keepalive": {
+  "network/NetworkLogViewColumns.ts | keepalive": {
     "message": "Keep-Alive"
   },
-  "network/NetworkLogViewColumns.js | lastmodified": {
+  "network/NetworkLogViewColumns.ts | lastmodified": {
     "message": "Last-Modified"
   },
-  "network/NetworkLogViewColumns.js | latency": {
+  "network/NetworkLogViewColumns.ts | latency": {
     "message": "Latency"
   },
-  "network/NetworkLogViewColumns.js | manageHeaderColumns": {
+  "network/NetworkLogViewColumns.ts | manageHeaderColumns": {
     "message": "Manage Header Columns…"
   },
-  "network/NetworkLogViewColumns.js | method": {
+  "network/NetworkLogViewColumns.ts | method": {
     "message": "Method"
   },
-  "network/NetworkLogViewColumns.js | name": {
+  "network/NetworkLogViewColumns.ts | name": {
     "message": "Name"
   },
-  "network/NetworkLogViewColumns.js | networkLog": {
+  "network/NetworkLogViewColumns.ts | networkLog": {
     "message": "Network Log"
   },
-  "network/NetworkLogViewColumns.js | path": {
+  "network/NetworkLogViewColumns.ts | path": {
     "message": "Path"
   },
-  "network/NetworkLogViewColumns.js | priority": {
+  "network/NetworkLogViewColumns.ts | priority": {
     "message": "Priority"
   },
-  "network/NetworkLogViewColumns.js | protocol": {
+  "network/NetworkLogViewColumns.ts | protocol": {
     "message": "Protocol"
   },
-  "network/NetworkLogViewColumns.js | remoteAddress": {
+  "network/NetworkLogViewColumns.ts | remoteAddress": {
     "message": "Remote Address"
   },
-  "network/NetworkLogViewColumns.js | remoteAddressSpace": {
+  "network/NetworkLogViewColumns.ts | remoteAddressSpace": {
     "message": "Remote Address Space"
   },
-  "network/NetworkLogViewColumns.js | responseHeaders": {
+  "network/NetworkLogViewColumns.ts | responseHeaders": {
     "message": "Response Headers"
   },
-  "network/NetworkLogViewColumns.js | responseTime": {
+  "network/NetworkLogViewColumns.ts | responseTime": {
     "message": "Response Time"
   },
-  "network/NetworkLogViewColumns.js | s": {
+  "network/NetworkLogViewColumns.ts | s": {
     "message": "{PH1}"
   },
-  "network/NetworkLogViewColumns.js | scheme": {
+  "network/NetworkLogViewColumns.ts | scheme": {
     "message": "Scheme"
   },
-  "network/NetworkLogViewColumns.js | server": {
+  "network/NetworkLogViewColumns.ts | server": {
     "message": "Server"
   },
-  "network/NetworkLogViewColumns.js | setCookies": {
+  "network/NetworkLogViewColumns.ts | setCookies": {
     "message": "Set Cookies"
   },
-  "network/NetworkLogViewColumns.js | size": {
+  "network/NetworkLogViewColumns.ts | size": {
     "message": "Size"
   },
-  "network/NetworkLogViewColumns.js | startTime": {
+  "network/NetworkLogViewColumns.ts | startTime": {
     "message": "Start Time"
   },
-  "network/NetworkLogViewColumns.js | status": {
+  "network/NetworkLogViewColumns.ts | status": {
     "message": "Status"
   },
-  "network/NetworkLogViewColumns.js | text": {
+  "network/NetworkLogViewColumns.ts | text": {
     "message": "Text"
   },
-  "network/NetworkLogViewColumns.js | time": {
+  "network/NetworkLogViewColumns.ts | time": {
     "message": "Time"
   },
-  "network/NetworkLogViewColumns.js | totalDuration": {
+  "network/NetworkLogViewColumns.ts | totalDuration": {
     "message": "Total Duration"
   },
-  "network/NetworkLogViewColumns.js | type": {
+  "network/NetworkLogViewColumns.ts | type": {
     "message": "Type"
   },
-  "network/NetworkLogViewColumns.js | url": {
+  "network/NetworkLogViewColumns.ts | url": {
     "message": "Url"
   },
-  "network/NetworkLogViewColumns.js | vary": {
+  "network/NetworkLogViewColumns.ts | vary": {
     "message": "Vary"
   },
-  "network/NetworkLogViewColumns.js | waterfall": {
+  "network/NetworkLogViewColumns.ts | waterfall": {
     "message": "Waterfall"
   },
-  "network/NetworkManageCustomHeadersView.js | addCustomHeader": {
+  "network/NetworkManageCustomHeadersView.ts | addCustomHeader": {
     "message": "Add custom header…"
   },
-  "network/NetworkManageCustomHeadersView.js | headerName": {
+  "network/NetworkManageCustomHeadersView.ts | headerName": {
     "message": "Header Name"
   },
-  "network/NetworkManageCustomHeadersView.js | manageHeaderColumns": {
+  "network/NetworkManageCustomHeadersView.ts | manageHeaderColumns": {
     "message": "Manage Header Columns"
   },
-  "network/NetworkManageCustomHeadersView.js | noCustomHeaders": {
+  "network/NetworkManageCustomHeadersView.ts | noCustomHeaders": {
     "message": "No custom headers"
   },
-  "network/NetworkPanel.js | captureScreenshots": {
+  "network/NetworkPanel.ts | captureScreenshots": {
     "message": "Capture screenshots"
   },
-  "network/NetworkPanel.js | captureScreenshotsWhenLoadingA": {
+  "network/NetworkPanel.ts | captureScreenshotsWhenLoadingA": {
     "message": "Capture screenshots when loading a page"
   },
-  "network/NetworkPanel.js | clear": {
+  "network/NetworkPanel.ts | clear": {
     "message": "Clear"
   },
-  "network/NetworkPanel.js | close": {
+  "network/NetworkPanel.ts | close": {
     "message": "Close"
   },
-  "network/NetworkPanel.js | disableCache": {
+  "network/NetworkPanel.ts | disableCache": {
     "message": "Disable cache"
   },
-  "network/NetworkPanel.js | disableCacheWhileDevtoolsIsOpen": {
+  "network/NetworkPanel.ts | disableCacheWhileDevtoolsIsOpen": {
     "message": "Disable cache (while DevTools is open)"
   },
-  "network/NetworkPanel.js | doNotClearLogOnPageReload": {
+  "network/NetworkPanel.ts | doNotClearLogOnPageReload": {
     "message": "Do not clear log on page reload / navigation"
   },
-  "network/NetworkPanel.js | exportHar": {
+  "network/NetworkPanel.ts | exportHar": {
     "message": "Export HAR..."
   },
-  "network/NetworkPanel.js | fetchingFrames": {
+  "network/NetworkPanel.ts | fetchingFrames": {
     "message": "Fetching frames..."
   },
-  "network/NetworkPanel.js | groupByFrame": {
+  "network/NetworkPanel.ts | groupByFrame": {
     "message": "Group by frame"
   },
-  "network/NetworkPanel.js | groupRequestsByTopLevelRequest": {
+  "network/NetworkPanel.ts | groupRequestsByTopLevelRequest": {
     "message": "Group requests by top level request frame"
   },
-  "network/NetworkPanel.js | hitSToReloadAndCaptureFilmstrip": {
+  "network/NetworkPanel.ts | hitSToReloadAndCaptureFilmstrip": {
     "message": "Hit {PH1} to reload and capture filmstrip."
   },
-  "network/NetworkPanel.js | importHarFile": {
+  "network/NetworkPanel.ts | importHarFile": {
     "message": "Import HAR file..."
   },
-  "network/NetworkPanel.js | networkSettings": {
+  "network/NetworkPanel.ts | networkSettings": {
     "message": "Network settings"
   },
-  "network/NetworkPanel.js | preserveLog": {
+  "network/NetworkPanel.ts | preserveLog": {
     "message": "Preserve log"
   },
-  "network/NetworkPanel.js | recordingFrames": {
+  "network/NetworkPanel.ts | recordingFrames": {
     "message": "Recording frames..."
   },
-  "network/NetworkPanel.js | revealInNetworkPanel": {
+  "network/NetworkPanel.ts | revealInNetworkPanel": {
     "message": "Reveal in Network panel"
   },
-  "network/NetworkPanel.js | search": {
+  "network/NetworkPanel.ts | search": {
     "message": "Search"
   },
-  "network/NetworkPanel.js | showMoreInformationInRequestRows": {
+  "network/NetworkPanel.ts | showMoreInformationInRequestRows": {
     "message": "Show more information in request rows"
   },
-  "network/NetworkPanel.js | showOverview": {
+  "network/NetworkPanel.ts | showOverview": {
     "message": "Show overview"
   },
-  "network/NetworkPanel.js | showOverviewOfNetworkRequests": {
+  "network/NetworkPanel.ts | showOverviewOfNetworkRequests": {
     "message": "Show overview of network requests"
   },
-  "network/NetworkPanel.js | throttling": {
+  "network/NetworkPanel.ts | throttling": {
     "message": "Throttling"
   },
-  "network/NetworkPanel.js | useLargeRequestRows": {
+  "network/NetworkPanel.ts | useLargeRequestRows": {
     "message": "Use large request rows"
   },
-  "network/NetworkSearchScope.js | url": {
+  "network/NetworkSearchScope.ts | url": {
     "message": "URL"
   },
-  "network/NetworkTimeCalculator.js | sDownload": {
+  "network/NetworkTimeCalculator.ts | sDownload": {
     "message": "{PH1} download"
   },
-  "network/NetworkTimeCalculator.js | sFromCache": {
+  "network/NetworkTimeCalculator.ts | sFromCache": {
     "message": "{PH1} (from cache)"
   },
-  "network/NetworkTimeCalculator.js | sFromServiceworker": {
+  "network/NetworkTimeCalculator.ts | sFromServiceworker": {
     "message": "{PH1} (from ServiceWorker)"
   },
-  "network/NetworkTimeCalculator.js | sLatency": {
+  "network/NetworkTimeCalculator.ts | sLatency": {
     "message": "{PH1} latency"
   },
-  "network/NetworkTimeCalculator.js | sLatencySDownloadSTotal": {
+  "network/NetworkTimeCalculator.ts | sLatencySDownloadSTotal": {
     "message": "{PH1} latency, {PH2} download ({PH3} total)"
   },
-  "network/RequestCookiesView.js | cookiesThatWereReceivedFromThe": {
+  "network/RequestCookiesView.ts | cookiesThatWereReceivedFromThe": {
     "message": "Cookies that were received from the server in the 'set-cookie' header of the response"
   },
-  "network/RequestCookiesView.js | cookiesThatWereReceivedFromTheServer": {
+  "network/RequestCookiesView.ts | cookiesThatWereReceivedFromTheServer": {
     "message": "Cookies that were received from the server in the 'set-cookie' header of the response but were malformed"
   },
-  "network/RequestCookiesView.js | cookiesThatWereSentToTheServerIn": {
+  "network/RequestCookiesView.ts | cookiesThatWereSentToTheServerIn": {
     "message": "Cookies that were sent to the server in the 'cookie' header of the request"
   },
-  "network/RequestCookiesView.js | malformedResponseCookies": {
+  "network/RequestCookiesView.ts | malformedResponseCookies": {
     "message": "Malformed Response Cookies"
   },
-  "network/RequestCookiesView.js | noRequestCookiesWereSent": {
+  "network/RequestCookiesView.ts | noRequestCookiesWereSent": {
     "message": "No request cookies were sent."
   },
-  "network/RequestCookiesView.js | requestCookies": {
+  "network/RequestCookiesView.ts | requestCookies": {
     "message": "Request Cookies"
   },
-  "network/RequestCookiesView.js | responseCookies": {
+  "network/RequestCookiesView.ts | responseCookies": {
     "message": "Response Cookies"
   },
-  "network/RequestCookiesView.js | showFilteredOutRequestCookies": {
+  "network/RequestCookiesView.ts | showFilteredOutRequestCookies": {
     "message": "show filtered out request cookies"
   },
-  "network/RequestCookiesView.js | thisRequestHasNoCookies": {
+  "network/RequestCookiesView.ts | thisRequestHasNoCookies": {
     "message": "This request has no cookies."
   },
-  "network/RequestHeadersView.js | activeClientExperimentVariation": {
+  "network/RequestHeadersView.ts | activeClientExperimentVariation": {
     "message": "Active client experiment variation IDs."
   },
-  "network/RequestHeadersView.js | activeClientExperimentVariationIds": {
+  "network/RequestHeadersView.ts | activeClientExperimentVariationIds": {
     "message": "Active client experiment variation IDs that trigger server-side behavior."
   },
-  "network/RequestHeadersView.js | chooseThisOptionIfTheResourceAnd": {
+  "network/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
     "message": "Choose this option if the resource and the document are served from the same site."
   },
-  "network/RequestHeadersView.js | copyValue": {
+  "network/RequestHeadersView.ts | copyValue": {
     "message": "Copy value"
   },
-  "network/RequestHeadersView.js | decoded": {
+  "network/RequestHeadersView.ts | decoded": {
     "message": "Decoded:"
   },
-  "network/RequestHeadersView.js | empty": {
+  "network/RequestHeadersView.ts | empty": {
     "message": "(empty)"
   },
-  "network/RequestHeadersView.js | formData": {
+  "network/RequestHeadersView.ts | formData": {
     "message": "Form Data"
   },
-  "network/RequestHeadersView.js | fromDiskCache": {
+  "network/RequestHeadersView.ts | fromDiskCache": {
     "message": "(from disk cache)"
   },
-  "network/RequestHeadersView.js | fromMemoryCache": {
+  "network/RequestHeadersView.ts | fromMemoryCache": {
     "message": "(from memory cache)"
   },
-  "network/RequestHeadersView.js | fromPrefetchCache": {
+  "network/RequestHeadersView.ts | fromPrefetchCache": {
     "message": "(from prefetch cache)"
   },
-  "network/RequestHeadersView.js | fromServiceWorker": {
+  "network/RequestHeadersView.ts | fromServiceWorker": {
     "message": "(from service worker)"
   },
-  "network/RequestHeadersView.js | fromSignedexchange": {
+  "network/RequestHeadersView.ts | fromSignedexchange": {
     "message": "(from signed-exchange)"
   },
-  "network/RequestHeadersView.js | general": {
+  "network/RequestHeadersView.ts | general": {
     "message": "General"
   },
-  "network/RequestHeadersView.js | learnMore": {
+  "network/RequestHeadersView.ts | learnMore": {
     "message": "Learn more"
   },
-  "network/RequestHeadersView.js | learnMoreInTheIssuesTab": {
+  "network/RequestHeadersView.ts | learnMoreInTheIssuesTab": {
     "message": "Learn more in the issues tab"
   },
-  "network/RequestHeadersView.js | onlyChooseThisOptionIfAn": {
+  "network/RequestHeadersView.ts | onlyChooseThisOptionIfAn": {
     "message": "Only choose this option if an arbitrary website including this resource does not impose a security risk."
   },
-  "network/RequestHeadersView.js | onlyProvisionalHeadersAre": {
+  "network/RequestHeadersView.ts | onlyProvisionalHeadersAre": {
     "message": "Only provisional headers are available because this request was not sent over the network and instead was served from a local cache, which doesn’t store the original request headers. Disable cache to see full request headers."
   },
-  "network/RequestHeadersView.js | provisionalHeadersAreShown": {
+  "network/RequestHeadersView.ts | provisionalHeadersAreShown": {
     "message": "Provisional headers are shown"
   },
-  "network/RequestHeadersView.js | provisionalHeadersAreShownS": {
+  "network/RequestHeadersView.ts | provisionalHeadersAreShownS": {
     "message": "Provisional headers are shown. Disable cache to see full headers."
   },
-  "network/RequestHeadersView.js | queryStringParameters": {
+  "network/RequestHeadersView.ts | queryStringParameters": {
     "message": "Query String Parameters"
   },
-  "network/RequestHeadersView.js | referrerPolicy": {
+  "network/RequestHeadersView.ts | referrerPolicy": {
     "message": "Referrer Policy"
   },
-  "network/RequestHeadersView.js | remoteAddress": {
+  "network/RequestHeadersView.ts | remoteAddress": {
     "message": "Remote Address"
   },
-  "network/RequestHeadersView.js | requestHeaders": {
+  "network/RequestHeadersView.ts | requestHeaders": {
     "message": "Request Headers"
   },
-  "network/RequestHeadersView.js | requestMethod": {
+  "network/RequestHeadersView.ts | requestMethod": {
     "message": "Request Method"
   },
-  "network/RequestHeadersView.js | requestPayload": {
+  "network/RequestHeadersView.ts | requestPayload": {
     "message": "Request Payload"
   },
-  "network/RequestHeadersView.js | requestUrl": {
+  "network/RequestHeadersView.ts | requestUrl": {
     "message": "Request URL"
   },
-  "network/RequestHeadersView.js | responseHeaders": {
+  "network/RequestHeadersView.ts | responseHeaders": {
     "message": "Response Headers"
   },
-  "network/RequestHeadersView.js | showMore": {
+  "network/RequestHeadersView.ts | showMore": {
     "message": "Show more"
   },
-  "network/RequestHeadersView.js | statusCode": {
+  "network/RequestHeadersView.ts | statusCode": {
     "message": "Status Code"
   },
-  "network/RequestHeadersView.js | thisDocumentWasBlockedFrom": {
+  "network/RequestHeadersView.ts | thisDocumentWasBlockedFrom": {
     "message": "This document was blocked from loading in an iframe with a sandbox attribute because this document specified a cross-origin opener policy."
   },
-  "network/RequestHeadersView.js | toEmbedThisFrameInYourDocument": {
+  "network/RequestHeadersView.ts | toEmbedThisFrameInYourDocument": {
     "message": "To embed this frame in your document, the response needs to enable the cross-origin embedder policy by specifying the following response header:"
   },
-  "network/RequestHeadersView.js | toUseThisResourceFromADifferent": {
+  "network/RequestHeadersView.ts | toUseThisResourceFromADifferent": {
     "message": "To use this resource from a different origin, the server needs to specify a cross-origin resource policy in the response headers:"
   },
-  "network/RequestHeadersView.js | toUseThisResourceFromADifferentOrigin": {
+  "network/RequestHeadersView.ts | toUseThisResourceFromADifferentOrigin": {
     "message": "To use this resource from a different origin, the server may relax the cross-origin resource policy response header:"
   },
-  "network/RequestHeadersView.js | toUseThisResourceFromADifferentSite": {
+  "network/RequestHeadersView.ts | toUseThisResourceFromADifferentSite": {
     "message": "To use this resource from a different site, the server may relax the cross-origin resource policy response header:"
   },
-  "network/RequestHeadersView.js | unableToDecodeValue": {
+  "network/RequestHeadersView.ts | unableToDecodeValue": {
     "message": "(unable to decode value)"
   },
-  "network/RequestHeadersView.js | viewDecoded": {
+  "network/RequestHeadersView.ts | viewDecoded": {
     "message": "View decoded"
   },
-  "network/RequestHeadersView.js | viewDecodedL": {
+  "network/RequestHeadersView.ts | viewDecodedL": {
     "message": "view decoded"
   },
-  "network/RequestHeadersView.js | viewParsed": {
+  "network/RequestHeadersView.ts | viewParsed": {
     "message": "View parsed"
   },
-  "network/RequestHeadersView.js | viewParsedL": {
+  "network/RequestHeadersView.ts | viewParsedL": {
     "message": "view parsed"
   },
-  "network/RequestHeadersView.js | viewSource": {
+  "network/RequestHeadersView.ts | viewSource": {
     "message": "View source"
   },
-  "network/RequestHeadersView.js | viewSourceL": {
+  "network/RequestHeadersView.ts | viewSourceL": {
     "message": "view source"
   },
-  "network/RequestHeadersView.js | viewUrlEncoded": {
+  "network/RequestHeadersView.ts | viewUrlEncoded": {
     "message": "View URL-encoded"
   },
-  "network/RequestHeadersView.js | viewUrlEncodedL": {
+  "network/RequestHeadersView.ts | viewUrlEncodedL": {
     "message": "view URL-encoded"
   },
-  "network/RequestInitiatorView.js | requestCallStack": {
+  "network/RequestInitiatorView.ts | requestCallStack": {
     "message": "Request call stack"
   },
-  "network/RequestInitiatorView.js | requestInitiatorChain": {
+  "network/RequestInitiatorView.ts | requestInitiatorChain": {
     "message": "Request initiator chain"
   },
-  "network/RequestInitiatorView.js | thisRequestHasNoInitiatorData": {
+  "network/RequestInitiatorView.ts | thisRequestHasNoInitiatorData": {
     "message": "This request has no initiator data."
   },
-  "network/RequestPreviewView.js | failedToLoadResponseData": {
+  "network/RequestPreviewView.ts | failedToLoadResponseData": {
     "message": "Failed to load response data"
   },
-  "network/RequestPreviewView.js | previewNotAvailable": {
+  "network/RequestPreviewView.ts | previewNotAvailable": {
     "message": "Preview not available"
   },
-  "network/RequestResponseView.js | failedToLoadResponseData": {
+  "network/RequestResponseView.ts | failedToLoadResponseData": {
     "message": "Failed to load response data"
   },
-  "network/RequestResponseView.js | thisRequestHasNoResponseData": {
+  "network/RequestResponseView.ts | thisRequestHasNoResponseData": {
     "message": "This request has no response data available."
   },
-  "network/RequestTimingView.js | cacheStorageCacheNameS": {
+  "network/RequestTimingView.ts | cacheStorageCacheNameS": {
     "message": "Cache storage cache name: {PH1}"
   },
-  "network/RequestTimingView.js | cacheStorageCacheNameUnknown": {
+  "network/RequestTimingView.ts | cacheStorageCacheNameUnknown": {
     "message": "Cache storage cache name: Unknown"
   },
-  "network/RequestTimingView.js | cautionRequestIsNotFinishedYet": {
+  "network/RequestTimingView.ts | cautionRequestIsNotFinishedYet": {
     "message": "CAUTION: request is not finished yet!"
   },
-  "network/RequestTimingView.js | connectionStart": {
+  "network/RequestTimingView.ts | connectionStart": {
     "message": "Connection Start"
   },
-  "network/RequestTimingView.js | contentDownload": {
+  "network/RequestTimingView.ts | contentDownload": {
     "message": "Content Download"
   },
-  "network/RequestTimingView.js | dnsLookup": {
+  "network/RequestTimingView.ts | dnsLookup": {
     "message": "DNS Lookup"
   },
-  "network/RequestTimingView.js | duration": {
+  "network/RequestTimingView.ts | duration": {
     "message": "Duration"
   },
-  "network/RequestTimingView.js | durationC": {
+  "network/RequestTimingView.ts | durationC": {
     "message": "DURATION"
   },
-  "network/RequestTimingView.js | duringDevelopmentYouCanUseSToAdd": {
+  "network/RequestTimingView.ts | duringDevelopmentYouCanUseSToAdd": {
     "message": "During development, you can use {PH1} to add insights into the server-side timing of this request."
   },
-  "network/RequestTimingView.js | explanation": {
+  "network/RequestTimingView.ts | explanation": {
     "message": "Explanation"
   },
-  "network/RequestTimingView.js | fallbackCode": {
+  "network/RequestTimingView.ts | fallbackCode": {
     "message": "Fallback code"
   },
-  "network/RequestTimingView.js | fromHttpCache": {
+  "network/RequestTimingView.ts | fromHttpCache": {
     "message": "From HTTP cache"
   },
-  "network/RequestTimingView.js | initialConnection": {
+  "network/RequestTimingView.ts | initialConnection": {
     "message": "Initial connection"
   },
-  "network/RequestTimingView.js | label": {
+  "network/RequestTimingView.ts | label": {
     "message": "Label"
   },
-  "network/RequestTimingView.js | networkFetch": {
+  "network/RequestTimingView.ts | networkFetch": {
     "message": "Network fetch"
   },
-  "network/RequestTimingView.js | originalRequest": {
+  "network/RequestTimingView.ts | originalRequest": {
     "message": "Original Request"
   },
-  "network/RequestTimingView.js | proxyNegotiation": {
+  "network/RequestTimingView.ts | proxyNegotiation": {
     "message": "Proxy negotiation"
   },
-  "network/RequestTimingView.js | queuedAtS": {
+  "network/RequestTimingView.ts | queuedAtS": {
     "message": "Queued at {PH1}"
   },
-  "network/RequestTimingView.js | queueing": {
+  "network/RequestTimingView.ts | queueing": {
     "message": "Queueing"
   },
-  "network/RequestTimingView.js | readingPush": {
+  "network/RequestTimingView.ts | readingPush": {
     "message": "Reading Push"
   },
-  "network/RequestTimingView.js | receivingPush": {
+  "network/RequestTimingView.ts | receivingPush": {
     "message": "Receiving Push"
   },
-  "network/RequestTimingView.js | requestresponse": {
+  "network/RequestTimingView.ts | requestresponse": {
     "message": "Request/Response"
   },
-  "network/RequestTimingView.js | requestSent": {
+  "network/RequestTimingView.ts | requestSent": {
     "message": "Request sent"
   },
-  "network/RequestTimingView.js | requestToServiceworker": {
+  "network/RequestTimingView.ts | requestToServiceworker": {
     "message": "Request to ServiceWorker"
   },
-  "network/RequestTimingView.js | resourceScheduling": {
+  "network/RequestTimingView.ts | resourceScheduling": {
     "message": "Resource Scheduling"
   },
-  "network/RequestTimingView.js | respondwith": {
+  "network/RequestTimingView.ts | respondwith": {
     "message": "respondWith"
   },
-  "network/RequestTimingView.js | responseReceived": {
+  "network/RequestTimingView.ts | responseReceived": {
     "message": "Response Received"
   },
-  "network/RequestTimingView.js | retrievalTimeS": {
+  "network/RequestTimingView.ts | retrievalTimeS": {
     "message": "Retrieval Time: {PH1}"
   },
-  "network/RequestTimingView.js | serverPush": {
+  "network/RequestTimingView.ts | serverPush": {
     "message": "Server Push"
   },
-  "network/RequestTimingView.js | serverTiming": {
+  "network/RequestTimingView.ts | serverTiming": {
     "message": "Server Timing"
   },
-  "network/RequestTimingView.js | serviceworkerCacheStorage": {
+  "network/RequestTimingView.ts | serviceworkerCacheStorage": {
     "message": "ServiceWorker cache storage"
   },
-  "network/RequestTimingView.js | sourceOfResponseS": {
+  "network/RequestTimingView.ts | sourceOfResponseS": {
     "message": "Source of response: {PH1}"
   },
-  "network/RequestTimingView.js | ssl": {
+  "network/RequestTimingView.ts | ssl": {
     "message": "SSL"
   },
-  "network/RequestTimingView.js | stalled": {
+  "network/RequestTimingView.ts | stalled": {
     "message": "Stalled"
   },
-  "network/RequestTimingView.js | startedAtS": {
+  "network/RequestTimingView.ts | startedAtS": {
     "message": "Started at {PH1}"
   },
-  "network/RequestTimingView.js | startup": {
+  "network/RequestTimingView.ts | startup": {
     "message": "Startup"
   },
-  "network/RequestTimingView.js | theServerTimingApi": {
+  "network/RequestTimingView.ts | theServerTimingApi": {
     "message": "the Server Timing API"
   },
-  "network/RequestTimingView.js | time": {
+  "network/RequestTimingView.ts | time": {
     "message": "TIME"
   },
-  "network/RequestTimingView.js | total": {
+  "network/RequestTimingView.ts | total": {
     "message": "Total"
   },
-  "network/RequestTimingView.js | unknown": {
+  "network/RequestTimingView.ts | unknown": {
     "message": "Unknown"
   },
-  "network/RequestTimingView.js | waitingTtfb": {
+  "network/RequestTimingView.ts | waitingTtfb": {
     "message": "Waiting (TTFB)"
   },
-  "network/RequestTimingView.js | waterfall": {
+  "network/RequestTimingView.ts | waterfall": {
     "message": "Waterfall"
   },
   "network/RequestTrustTokensView.ts | aClientprovidedArgumentWas": {
@@ -4685,136 +4685,136 @@
   "network/RequestTrustTokensView.ts | type": {
     "message": "Type"
   },
-  "network/ResourceWebSocketFrameView.js | all": {
+  "network/ResourceWebSocketFrameView.ts | all": {
     "message": "All"
   },
-  "network/ResourceWebSocketFrameView.js | binaryMessage": {
+  "network/ResourceWebSocketFrameView.ts | binaryMessage": {
     "message": "Binary Message"
   },
-  "network/ResourceWebSocketFrameView.js | clearAll": {
+  "network/ResourceWebSocketFrameView.ts | clearAll": {
     "message": "Clear All"
   },
-  "network/ResourceWebSocketFrameView.js | clearAllL": {
+  "network/ResourceWebSocketFrameView.ts | clearAllL": {
     "message": "Clear all"
   },
-  "network/ResourceWebSocketFrameView.js | connectionCloseMessage": {
+  "network/ResourceWebSocketFrameView.ts | connectionCloseMessage": {
     "message": "Connection Close Message"
   },
-  "network/ResourceWebSocketFrameView.js | continuationFrame": {
+  "network/ResourceWebSocketFrameView.ts | continuationFrame": {
     "message": "Continuation Frame"
   },
-  "network/ResourceWebSocketFrameView.js | copyMessage": {
+  "network/ResourceWebSocketFrameView.ts | copyMessage": {
     "message": "Copy message"
   },
-  "network/ResourceWebSocketFrameView.js | copyMessageD": {
+  "network/ResourceWebSocketFrameView.ts | copyMessageD": {
     "message": "Copy message..."
   },
-  "network/ResourceWebSocketFrameView.js | data": {
+  "network/ResourceWebSocketFrameView.ts | data": {
     "message": "Data"
   },
-  "network/ResourceWebSocketFrameView.js | enterRegex": {
+  "network/ResourceWebSocketFrameView.ts | enterRegex": {
     "message": "Enter regex, for example: (web)?socket"
   },
-  "network/ResourceWebSocketFrameView.js | filter": {
+  "network/ResourceWebSocketFrameView.ts | filter": {
     "message": "Filter"
   },
-  "network/ResourceWebSocketFrameView.js | length": {
+  "network/ResourceWebSocketFrameView.ts | length": {
     "message": "Length"
   },
-  "network/ResourceWebSocketFrameView.js | na": {
+  "network/ResourceWebSocketFrameView.ts | na": {
     "message": "N/A"
   },
-  "network/ResourceWebSocketFrameView.js | pingMessage": {
+  "network/ResourceWebSocketFrameView.ts | pingMessage": {
     "message": "Ping Message"
   },
-  "network/ResourceWebSocketFrameView.js | pongMessage": {
+  "network/ResourceWebSocketFrameView.ts | pongMessage": {
     "message": "Pong Message"
   },
-  "network/ResourceWebSocketFrameView.js | receive": {
+  "network/ResourceWebSocketFrameView.ts | receive": {
     "message": "Receive"
   },
-  "network/ResourceWebSocketFrameView.js | selectMessageToBrowseItsContent": {
+  "network/ResourceWebSocketFrameView.ts | selectMessageToBrowseItsContent": {
     "message": "Select message to browse its content."
   },
-  "network/ResourceWebSocketFrameView.js | send": {
+  "network/ResourceWebSocketFrameView.ts | send": {
     "message": "Send"
   },
-  "network/ResourceWebSocketFrameView.js | sOpcodeS": {
+  "network/ResourceWebSocketFrameView.ts | sOpcodeS": {
     "message": "{PH1} (Opcode {PH2})"
   },
-  "network/ResourceWebSocketFrameView.js | sOpcodeSMask": {
+  "network/ResourceWebSocketFrameView.ts | sOpcodeSMask": {
     "message": "{PH1} (Opcode {PH2}, mask)"
   },
-  "network/ResourceWebSocketFrameView.js | textMessage": {
+  "network/ResourceWebSocketFrameView.ts | textMessage": {
     "message": "Text Message"
   },
-  "network/ResourceWebSocketFrameView.js | time": {
+  "network/ResourceWebSocketFrameView.ts | time": {
     "message": "Time"
   },
-  "network/ResourceWebSocketFrameView.js | webSocketFrame": {
+  "network/ResourceWebSocketFrameView.ts | webSocketFrame": {
     "message": "Web Socket Frame"
   },
-  "network/SignedExchangeInfoView.js | certificate": {
+  "network/SignedExchangeInfoView.ts | certificate": {
     "message": "Certificate"
   },
-  "network/SignedExchangeInfoView.js | certificateSha": {
+  "network/SignedExchangeInfoView.ts | certificateSha": {
     "message": "Certificate SHA256"
   },
-  "network/SignedExchangeInfoView.js | certificateUrl": {
+  "network/SignedExchangeInfoView.ts | certificateUrl": {
     "message": "Certificate URL"
   },
-  "network/SignedExchangeInfoView.js | date": {
+  "network/SignedExchangeInfoView.ts | date": {
     "message": "Date"
   },
-  "network/SignedExchangeInfoView.js | errors": {
+  "network/SignedExchangeInfoView.ts | errors": {
     "message": "Errors"
   },
-  "network/SignedExchangeInfoView.js | expires": {
+  "network/SignedExchangeInfoView.ts | expires": {
     "message": "Expires"
   },
-  "network/SignedExchangeInfoView.js | headerIntegrityHash": {
+  "network/SignedExchangeInfoView.ts | headerIntegrityHash": {
     "message": "Header integrity hash"
   },
-  "network/SignedExchangeInfoView.js | integrity": {
+  "network/SignedExchangeInfoView.ts | integrity": {
     "message": "Integrity"
   },
-  "network/SignedExchangeInfoView.js | issuer": {
+  "network/SignedExchangeInfoView.ts | issuer": {
     "message": "Issuer"
   },
-  "network/SignedExchangeInfoView.js | label": {
+  "network/SignedExchangeInfoView.ts | label": {
     "message": "Label"
   },
-  "network/SignedExchangeInfoView.js | learnmore": {
+  "network/SignedExchangeInfoView.ts | learnmore": {
     "message": "Learn more"
   },
-  "network/SignedExchangeInfoView.js | requestUrl": {
+  "network/SignedExchangeInfoView.ts | requestUrl": {
     "message": "Request URL"
   },
-  "network/SignedExchangeInfoView.js | responseCode": {
+  "network/SignedExchangeInfoView.ts | responseCode": {
     "message": "Response code"
   },
-  "network/SignedExchangeInfoView.js | responseHeaders": {
+  "network/SignedExchangeInfoView.ts | responseHeaders": {
     "message": "Response headers"
   },
-  "network/SignedExchangeInfoView.js | signature": {
+  "network/SignedExchangeInfoView.ts | signature": {
     "message": "Signature"
   },
-  "network/SignedExchangeInfoView.js | signedHttpExchange": {
+  "network/SignedExchangeInfoView.ts | signedHttpExchange": {
     "message": "Signed HTTP exchange"
   },
-  "network/SignedExchangeInfoView.js | subject": {
+  "network/SignedExchangeInfoView.ts | subject": {
     "message": "Subject"
   },
-  "network/SignedExchangeInfoView.js | validFrom": {
+  "network/SignedExchangeInfoView.ts | validFrom": {
     "message": "Valid from"
   },
-  "network/SignedExchangeInfoView.js | validityUrl": {
+  "network/SignedExchangeInfoView.ts | validityUrl": {
     "message": "Validity URL"
   },
-  "network/SignedExchangeInfoView.js | validUntil": {
+  "network/SignedExchangeInfoView.ts | validUntil": {
     "message": "Valid until"
   },
-  "network/SignedExchangeInfoView.js | viewCertificate": {
+  "network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "View certificate"
   },
   "node_debugger/node_debugger-meta.ts | node": {

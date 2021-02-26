@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as i18n from '../i18n/i18n.js';
 import * as UI from '../ui/ui.js';
 
@@ -23,26 +25,38 @@ export const UIStrings = {
   */
   headerName: 'Header Name',
 };
-const str_ = i18n.i18n.registerUIStrings('network/NetworkManageCustomHeadersView.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('network/NetworkManageCustomHeadersView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-/**
- * @implements {UI.ListWidget.Delegate<!{header: string}>}
- */
-export class NetworkManageCustomHeadersView extends UI.Widget.VBox {
-  /**
-   * @param {!Array.<!{title: string, editable: boolean}>} columnData
-   * @param {function(string) : boolean} addHeaderColumnCallback
-   * @param {function(string, string) : boolean} changeHeaderColumnCallback
-   * @param {function(string) : boolean} removeHeaderColumnCallback
-   */
-  constructor(columnData, addHeaderColumnCallback, changeHeaderColumnCallback, removeHeaderColumnCallback) {
+
+interface CustomHeader {
+  header: string;
+}
+
+export class NetworkManageCustomHeadersView extends UI.Widget.VBox implements UI.ListWidget.Delegate<CustomHeader> {
+  _list: UI.ListWidget.ListWidget<CustomHeader>;
+  _columnConfigs: Map<string, {
+    title: string,
+    editable: boolean,
+  }>;
+  _addHeaderColumnCallback: (arg0: string) => boolean;
+  _changeHeaderColumnCallback: (arg0: string, arg1: string) => boolean;
+  _removeHeaderColumnCallback: (arg0: string) => boolean;
+  _editor?: UI.ListWidget.Editor<CustomHeader>;
+
+  constructor(
+      columnData: {
+        title: string,
+        editable: boolean,
+      }[],
+      addHeaderColumnCallback: (arg0: string) => boolean,
+      changeHeaderColumnCallback: (arg0: string, arg1: string) => boolean,
+      removeHeaderColumnCallback: (arg0: string) => boolean) {
     super(true);
     this.registerRequiredCSS('network/networkManageCustomHeadersView.css', {enableLegacyPatching: false});
 
     this.contentElement.classList.add('custom-headers-wrapper');
     this.contentElement.createChild('div', 'header').textContent = i18nString(UIStrings.manageHeaderColumns);
 
-    /** @type {!UI.ListWidget.ListWidget<!{header: string}>} */
     this._list = new UI.ListWidget.ListWidget(this);
     this._list.element.classList.add('custom-headers-list');
     this._list.registerRequiredCSS('network/networkManageCustomHeadersView.css', {enableLegacyPatching: false});
@@ -55,7 +69,6 @@ export class NetworkManageCustomHeadersView extends UI.Widget.VBox {
     this.contentElement.appendChild(UI.UIUtils.createTextButton(
         i18nString(UIStrings.addCustomHeader), this._addButtonClicked.bind(this), 'add-button'));
 
-    /** @type {!Map.<string, !{title: string, editable: boolean}>} */
     this._columnConfigs = new Map();
     columnData.forEach(columnData => this._columnConfigs.set(columnData.title.toLowerCase(), columnData));
 
@@ -66,29 +79,20 @@ export class NetworkManageCustomHeadersView extends UI.Widget.VBox {
     this.contentElement.tabIndex = 0;
   }
 
-  /**
-   * @override
-   */
-  wasShown() {
+  wasShown(): void {
     this._headersUpdated();
   }
 
-  _headersUpdated() {
+  _headersUpdated(): void {
     this._list.clear();
     this._columnConfigs.forEach(headerData => this._list.appendItem({header: headerData.title}, headerData.editable));
   }
 
-  _addButtonClicked() {
+  _addButtonClicked(): void {
     this._list.addNewItem(this._columnConfigs.size, {header: ''});
   }
 
-  /**
-   * @override
-   * @param {!{header:string}} item
-   * @param {boolean} editable
-   * @return {!Element}
-   */
-  renderItem(item, editable) {
+  renderItem(item: CustomHeader, _editable: boolean): Element {
     const element = document.createElement('div');
     element.classList.add('custom-headers-list-item');
     const header = element.createChild('div', 'custom-header-name');
@@ -97,24 +101,13 @@ export class NetworkManageCustomHeadersView extends UI.Widget.VBox {
     return element;
   }
 
-  /**
-   * @override
-   * @param {!{header:string}} item
-   * @param {number} index
-   */
-  removeItemRequested(item, index) {
+  removeItemRequested(item: CustomHeader, _index: number): void {
     this._removeHeaderColumnCallback(item.header);
     this._columnConfigs.delete(item.header.toLowerCase());
     this._headersUpdated();
   }
 
-  /**
-   * @override
-   * @param {!{header:string}} item
-   * @param {!UI.ListWidget.Editor<?>} editor
-   * @param {boolean} isNew
-   */
-  commitEdit(item, editor, isNew) {
+  commitEdit(item: CustomHeader, editor: UI.ListWidget.Editor<CustomHeader>, isNew: boolean): void {
     const headerId = editor.control('header').value.trim();
     let success;
     if (isNew) {
@@ -133,26 +126,18 @@ export class NetworkManageCustomHeadersView extends UI.Widget.VBox {
     this._headersUpdated();
   }
 
-  /**
-   * @override
-   * @param {!{header:string}} item
-   * @return {!UI.ListWidget.Editor<?>}
-   */
-  beginEdit(item) {
+  beginEdit(item: CustomHeader): UI.ListWidget.Editor<CustomHeader> {
     const editor = this._createEditor();
     editor.control('header').value = item.header;
     return editor;
   }
 
-  /**
-   * @return {!UI.ListWidget.Editor<?>}
-   */
-  _createEditor() {
+  _createEditor(): UI.ListWidget.Editor<CustomHeader> {
     if (this._editor) {
       return this._editor;
     }
 
-    const editor = new UI.ListWidget.Editor();
+    const editor = new UI.ListWidget.Editor<CustomHeader>();
     this._editor = editor;
     const content = editor.contentElement();
 
@@ -165,14 +150,9 @@ export class NetworkManageCustomHeadersView extends UI.Widget.VBox {
 
     return editor;
 
-    /**
-     * @param {!{header:string}} item
-     * @param {number} index
-     * @param {!HTMLInputElement|!HTMLSelectElement} input
-     * @this {NetworkManageCustomHeadersView}
-     * @return {!UI.ListWidget.ValidatorResult}
-     */
-    function validateHeader(item, index, input) {
+    function validateHeader(
+        this: NetworkManageCustomHeadersView, item: CustomHeader, _index: number,
+        _input: HTMLInputElement|HTMLSelectElement): UI.ListWidget.ValidatorResult {
       let valid = true;
       const headerId = editor.control('header').value.trim().toLowerCase();
       if (this._columnConfigs.has(headerId) && item.header !== headerId) {

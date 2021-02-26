@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
 import * as i18n from '../i18n/i18n.js';
 import * as SDK from '../sdk/sdk.js';                      // eslint-disable-line no-unused-vars
@@ -14,31 +16,19 @@ export const UIStrings = {
   */
   url: 'URL',
 };
-const str_ = i18n.i18n.registerUIStrings('network/NetworkSearchScope.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('network/NetworkSearchScope.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-/**
- * @implements {Search.SearchConfig.SearchScope}
- */
-export class NetworkSearchScope {
-  /**
-   * @override
-   * @param {!Common.Progress.Progress} progress
-   */
-  performIndexing(progress) {
+export class NetworkSearchScope implements Search.SearchConfig.SearchScope {
+  performIndexing(progress: Common.Progress.Progress): void {
     queueMicrotask(() => {
       progress.done();
     });
   }
 
-  /**
-   * @override
-   * @param {!Search.SearchConfig.SearchConfig} searchConfig
-   * @param {!Common.Progress.Progress} progress
-   * @param {function(!Search.SearchConfig.SearchResult):void} searchResultCallback
-   * @param {function(boolean):void} searchFinishedCallback
-   * @return {!Promise<void>}
-   */
-  async performSearch(searchConfig, progress, searchResultCallback, searchFinishedCallback) {
+  async performSearch(
+      searchConfig: Search.SearchConfig.SearchConfig, progress: Common.Progress.Progress,
+      searchResultCallback: (arg0: Search.SearchConfig.SearchResult) => void,
+      searchFinishedCallback: (arg0: boolean) => void): Promise<void> {
     const promises = [];
     const requests = SDK.NetworkLog.NetworkLog.instance().requests().filter(
         request => searchConfig.filePathMatchesFileQuery(request.url()));
@@ -48,7 +38,7 @@ export class NetworkSearchScope {
       promises.push(promise);
     }
     const resultsWithNull = await Promise.all(promises);
-    const results = /** @type {!Array<!NetworkSearchResult>} */ (resultsWithNull.filter(result => result !== null));
+    const results = (resultsWithNull.filter(result => result !== null) as NetworkSearchResult[]);
     if (progress.isCanceled()) {
       searchFinishedCallback(false);
       return;
@@ -62,15 +52,10 @@ export class NetworkSearchScope {
     searchFinishedCallback(true);
   }
 
-  /**
-   * @param {!Search.SearchConfig.SearchConfig} searchConfig
-   * @param {!SDK.NetworkRequest.NetworkRequest} request
-   * @param {!Common.Progress.Progress} progress
-   * @return {!Promise<?NetworkSearchResult>}
-   */
-  async _searchRequest(searchConfig, request, progress) {
-    /** @type {!Array<!TextUtils.ContentProvider.SearchMatch>} */
-    let bodyMatches = [];
+  async _searchRequest(
+      searchConfig: Search.SearchConfig.SearchConfig, request: SDK.NetworkRequest.NetworkRequest,
+      progress: Common.Progress.Progress): Promise<NetworkSearchResult|null> {
+    let bodyMatches: TextUtils.ContentProvider.SearchMatch[] = [];
     if (request.contentType().isTextType()) {
       bodyMatches =
           await request.searchInContent(searchConfig.query(), !searchConfig.ignoreCase(), searchConfig.isRegex());
@@ -98,19 +83,11 @@ export class NetworkSearchScope {
     progress.worked();
     return new NetworkSearchResult(request, locations);
 
-    /**
-     * @param {!SDK.NetworkRequest.NameValue} header
-     * @return {boolean}
-     */
-    function headerMatchesQuery(header) {
+    function headerMatchesQuery(header: SDK.NetworkRequest.NameValue): boolean {
       return stringMatchesQuery(`${header.name}: ${header.value}`);
     }
 
-    /**
-     * @param {string} string
-     * @return {boolean}
-     */
-    function stringMatchesQuery(string) {
+    function stringMatchesQuery(string: string): boolean {
       const flags = searchConfig.ignoreCase() ? 'i' : '';
       const regExps = searchConfig.queries().map(query => new RegExp(query, flags));
       let pos = 0;
@@ -125,22 +102,21 @@ export class NetworkSearchScope {
     }
   }
 
-  /**
-   * @override
-   */
-  stopSearch() {
+  stopSearch(): void {
   }
 }
 
 export class UIRequestLocation {
-  /**
-   * @param {!SDK.NetworkRequest.NetworkRequest} request
-   * @param {?SDK.NetworkRequest.NameValue} requestHeader
-   * @param {?SDK.NetworkRequest.NameValue} responseHeader
-   * @param {?TextUtils.ContentProvider.SearchMatch} searchMatch
-   * @param {boolean} urlMatch
-   */
-  constructor(request, requestHeader, responseHeader, searchMatch, urlMatch) {
+  request: SDK.NetworkRequest.NetworkRequest;
+  requestHeader: SDK.NetworkRequest.NameValue|null;
+  responseHeader: SDK.NetworkRequest.NameValue|null;
+  searchMatch: TextUtils.ContentProvider.SearchMatch|null;
+  isUrlMatch: boolean;
+
+  constructor(
+      request: SDK.NetworkRequest.NetworkRequest, requestHeader: SDK.NetworkRequest.NameValue|null,
+      responseHeader: SDK.NetworkRequest.NameValue|null, searchMatch: TextUtils.ContentProvider.SearchMatch|null,
+      urlMatch: boolean) {
     this.request = request;
     this.requestHeader = requestHeader;
     this.responseHeader = responseHeader;
@@ -148,72 +124,44 @@ export class UIRequestLocation {
     this.isUrlMatch = urlMatch;
   }
 
-  /**
-   * @param {!SDK.NetworkRequest.NetworkRequest} request
-   * @param {?SDK.NetworkRequest.NameValue} header
-   */
-  static requestHeaderMatch(request, header) {
+  static requestHeaderMatch(request: SDK.NetworkRequest.NetworkRequest, header: SDK.NetworkRequest.NameValue|null):
+      UIRequestLocation {
     return new UIRequestLocation(request, header, null, null, false);
   }
 
-  /**
-   * @param {!SDK.NetworkRequest.NetworkRequest} request
-   * @param {?SDK.NetworkRequest.NameValue} header
-   */
-  static responseHeaderMatch(request, header) {
+  static responseHeaderMatch(request: SDK.NetworkRequest.NetworkRequest, header: SDK.NetworkRequest.NameValue|null):
+      UIRequestLocation {
     return new UIRequestLocation(request, null, header, null, false);
   }
 
-  /**
-   * @param {!SDK.NetworkRequest.NetworkRequest} request
-   * @param {?TextUtils.ContentProvider.SearchMatch} searchMatch
-   */
-  static bodyMatch(request, searchMatch) {
+  static bodyMatch(request: SDK.NetworkRequest.NetworkRequest, searchMatch: TextUtils.ContentProvider.SearchMatch|null):
+      UIRequestLocation {
     return new UIRequestLocation(request, null, null, searchMatch, false);
   }
 
-  /**
-   * @param {!SDK.NetworkRequest.NetworkRequest} request
-   */
-  static urlMatch(request) {
+  static urlMatch(request: SDK.NetworkRequest.NetworkRequest): UIRequestLocation {
     return new UIRequestLocation(request, null, null, null, true);
   }
 }
 
-/**
- * @implements Search.SearchConfig.SearchResult
- */
-export class NetworkSearchResult {
-  /**
-   * @param {!SDK.NetworkRequest.NetworkRequest} request
-   * @param {!Array<!UIRequestLocation>} locations
-   */
-  constructor(request, locations) {
+export class NetworkSearchResult implements Search.SearchConfig.SearchResult {
+  _request: SDK.NetworkRequest.NetworkRequest;
+  _locations: UIRequestLocation[];
+
+  constructor(request: SDK.NetworkRequest.NetworkRequest, locations: UIRequestLocation[]) {
     this._request = request;
     this._locations = locations;
   }
 
-  /**
-   * @override
-   * @return {number}
-   */
-  matchesCount() {
+  matchesCount(): number {
     return this._locations.length;
   }
 
-  /**
-   * @override
-   * @return {string}
-   */
-  label() {
+  label(): string {
     return this._request.displayName;
   }
 
-  /**
-   * @override
-   * @return {string}
-   */
-  description() {
+  description(): string {
     const parsedUrl = this._request.parsedURL;
     if (!parsedUrl) {
       return this._request.url();
@@ -221,12 +169,7 @@ export class NetworkSearchResult {
     return parsedUrl.urlWithoutScheme();
   }
 
-  /**
-   * @override
-   * @param {number} index
-   * @return {string}
-   */
-  matchLineContent(index) {
+  matchLineContent(index: number): string {
     const location = this._locations[index];
     if (location.isUrlMatch) {
       return this._request.url();
@@ -235,24 +178,14 @@ export class NetworkSearchResult {
     if (header) {
       return header.value;
     }
-    return /** @type {!TextUtils.ContentProvider.SearchMatch} */ (location.searchMatch).lineContent;
+    return (location.searchMatch as TextUtils.ContentProvider.SearchMatch).lineContent;
   }
 
-  /**
-   * @override
-   * @param {number} index
-   * @return {!Object}
-   */
-  matchRevealable(index) {
+  matchRevealable(index: number): Object {
     return this._locations[index];
   }
 
-  /**
-   * @override
-   * @param {number} index
-   * @return {?}
-   */
-  matchLabel(index) {
+  matchLabel(index: number): string {
     const location = this._locations[index];
     if (location.isUrlMatch) {
       return i18nString(UIStrings.url);
@@ -261,6 +194,9 @@ export class NetworkSearchResult {
     if (header) {
       return `${header.name}:`;
     }
-    return /** @type {!TextUtils.ContentProvider.SearchMatch} */ (location.searchMatch).lineNumber + 1;
+
+    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
+    // @ts-expect-error
+    return (location.searchMatch as TextUtils.ContentProvider.SearchMatch).lineNumber + 1;
   }
 }

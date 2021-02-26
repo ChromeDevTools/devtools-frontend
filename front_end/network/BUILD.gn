@@ -7,32 +7,32 @@ import("../../scripts/build/ninja/devtools_module.gni")
 
 devtools_module("network") {
   sources = [
-    "BinaryResourceView.js",
-    "BlockedURLsPane.js",
-    "EventSourceMessagesView.js",
-    "HARWriter.js",
-    "NetworkConfigView.js",
-    "NetworkDataGridNode.js",
-    "NetworkFrameGrouper.js",
-    "NetworkItemView.js",
-    "NetworkLogView.js",
-    "NetworkLogViewColumns.js",
-    "NetworkManageCustomHeadersView.js",
-    "NetworkOverview.js",
-    "NetworkPanel.js",
-    "NetworkSearchScope.js",
-    "NetworkTimeCalculator.js",
-    "NetworkWaterfallColumn.js",
-    "RequestCookiesView.js",
-    "RequestHTMLView.js",
-    "RequestHeadersView.js",
-    "RequestInitiatorView.js",
-    "RequestPreviewView.js",
-    "RequestResponseView.js",
-    "RequestTimingView.js",
+    "BinaryResourceView.ts",
+    "BlockedURLsPane.ts",
+    "EventSourceMessagesView.ts",
+    "HARWriter.ts",
+    "NetworkConfigView.ts",
+    "NetworkDataGridNode.ts",
+    "NetworkFrameGrouper.ts",
+    "NetworkItemView.ts",
+    "NetworkLogView.ts",
+    "NetworkLogViewColumns.ts",
+    "NetworkManageCustomHeadersView.ts",
+    "NetworkOverview.ts",
+    "NetworkPanel.ts",
+    "NetworkSearchScope.ts",
+    "NetworkTimeCalculator.ts",
+    "NetworkWaterfallColumn.ts",
+    "RequestCookiesView.ts",
+    "RequestHTMLView.ts",
+    "RequestHeadersView.ts",
+    "RequestInitiatorView.ts",
+    "RequestPreviewView.ts",
+    "RequestResponseView.ts",
+    "RequestTimingView.ts",
     "RequestTrustTokensView.ts",
-    "ResourceWebSocketFrameView.js",
-    "SignedExchangeInfoView.js",
+    "ResourceWebSocketFrameView.ts",
+    "SignedExchangeInfoView.ts",
   ]
 
   deps = [
@@ -70,7 +70,7 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_entrypoint("legacy") {
-  entrypoint = "network-legacy.js"
+  entrypoint = "network-legacy.ts"
 
   deps = [ ":bundle" ]
 }

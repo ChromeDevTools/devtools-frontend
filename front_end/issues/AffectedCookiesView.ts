@@ -70,14 +70,20 @@ export class AffectedCookiesView extends AffectedResourcesView {
         Host.userMetrics.issuesPanelResourceOpened(this.issue.getCategory(), AffectedItem.Cookie);
         Network.NetworkPanel.NetworkPanel.revealAndFilter([
           {
+            // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
+            // @ts-expect-error
             filterType: 'cookie-domain',
             filterValue: cookie.domain,
           },
           {
+            // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
+            // @ts-expect-error
             filterType: 'cookie-name',
             filterValue: cookie.name,
           },
           {
+            // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
+            // @ts-expect-error
             filterType: 'cookie-path',
             filterValue: cookie.path,
           },

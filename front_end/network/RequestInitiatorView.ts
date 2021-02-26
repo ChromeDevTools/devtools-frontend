@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Components from '../components/components.js';
 import * as i18n from '../i18n/i18n.js';
 import * as SDK from '../sdk/sdk.js';
@@ -21,17 +23,18 @@ export const UIStrings = {
   */
   requestInitiatorChain: 'Request initiator chain',
 };
-const str_ = i18n.i18n.registerUIStrings('network/RequestInitiatorView.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('network/RequestInitiatorView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class RequestInitiatorView extends UI.Widget.VBox {
-  /**
-   * @param {!SDK.NetworkRequest.NetworkRequest} request
-   */
-  constructor(request) {
+  _linkifier: Components.Linkifier.Linkifier;
+  _request: SDK.NetworkRequest.NetworkRequest;
+  _emptyWidget: UI.EmptyWidget.EmptyWidget;
+  _hasShown: boolean;
+
+  constructor(request: SDK.NetworkRequest.NetworkRequest) {
     super();
     this.registerRequiredCSS('network/requestInitiatorView.css', {enableLegacyPatching: false});
     this.element.classList.add('request-initiator-view');
-    /** @type {!Components.Linkifier.Linkifier} */
     this._linkifier = new Components.Linkifier.Linkifier();
     this._request = request;
     this._emptyWidget = new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.thisRequestHasNoInitiatorData));
@@ -39,14 +42,12 @@ export class RequestInitiatorView extends UI.Widget.VBox {
     this._hasShown = false;
   }
 
-  /**
-   * @param {!SDK.NetworkRequest.NetworkRequest} request
-   * @param {!Components.Linkifier.Linkifier} linkifier
-   * @param {boolean=} focusableLink
-   * @param {function()=} callback
-   * @return {?{element: !Element, links: !Array<!Element>}}
-   */
-  static createStackTracePreview(request, linkifier, focusableLink, callback) {
+  static createStackTracePreview(
+      request: SDK.NetworkRequest.NetworkRequest, linkifier: Components.Linkifier.Linkifier, focusableLink?: boolean,
+      callback?: (() => void)): {
+    element: Element,
+    links: Array<Element>,
+  }|null {
     const initiator = request.initiator();
     if (!initiator || !initiator.stack) {
       return null;
@@ -58,10 +59,7 @@ export class RequestInitiatorView extends UI.Widget.VBox {
     return stackTrace;
   }
 
-  /**
-   * @return {!UI.TreeOutline.TreeOutlineInShadow}
-   */
-  _createTree() {
+  _createTree(): UI.TreeOutline.TreeOutlineInShadow {
     const treeOutline = new UI.TreeOutline.TreeOutlineInShadow();
     treeOutline.registerRequiredCSS('network/requestInitiatorViewTree.css', {enableLegacyPatching: false});
     treeOutline.contentElement.classList.add('request-initiator-view-tree');
@@ -69,12 +67,9 @@ export class RequestInitiatorView extends UI.Widget.VBox {
     return treeOutline;
   }
 
-  /**
-   * @param {!SDK.NetworkLog.InitiatorGraph} initiatorGraph
-   * @param {string} title
-   * @param {!UI.TreeOutline.TreeOutlineInShadow} tree
-   */
-  _buildRequestChainTree(initiatorGraph, title, tree) {
+  _buildRequestChainTree(
+      initiatorGraph: SDK.NetworkLog.InitiatorGraph, title: string,
+      tree: UI.TreeOutline.TreeOutlineInShadow): UI.TreeOutline.TreeElement {
     const root = new UI.TreeOutline.TreeElement(title);
 
     tree.appendChild(root);
@@ -84,8 +79,7 @@ export class RequestInitiatorView extends UI.Widget.VBox {
     }
 
     const initiators = initiatorGraph.initiators;
-    /** @type {!UI.TreeOutline.TreeElement} */
-    let parent = root;
+    let parent: UI.TreeOutline.TreeElement = root;
     for (const request of Array.from(initiators).reverse()) {
       const treeElement = new UI.TreeOutline.TreeElement(request.url());
       parent.appendChild(treeElement);
@@ -101,17 +95,14 @@ export class RequestInitiatorView extends UI.Widget.VBox {
     }
 
     const initiated = initiatorGraph.initiated;
-    this._depthFirstSearchTreeBuilder(initiated, /** @type {!UI.TreeOutline.TreeElement} */ (parent), this._request);
+    this._depthFirstSearchTreeBuilder(initiated, (parent as UI.TreeOutline.TreeElement), this._request);
     return root;
   }
 
-  /**
-   * @param {!Map<!SDK.NetworkRequest.NetworkRequest, !SDK.NetworkRequest.NetworkRequest>} initiated
-   * @param {!UI.TreeOutline.TreeElement} parentElement
-   * @param {!SDK.NetworkRequest.NetworkRequest} parentRequest
-   */
-  _depthFirstSearchTreeBuilder(initiated, parentElement, parentRequest) {
-    const visited = new Set();
+  _depthFirstSearchTreeBuilder(
+      initiated: Map<SDK.NetworkRequest.NetworkRequest, SDK.NetworkRequest.NetworkRequest>,
+      parentElement: UI.TreeOutline.TreeElement, parentRequest: SDK.NetworkRequest.NetworkRequest): void {
+    const visited = new Set<SDK.NetworkRequest.NetworkRequest>();
     // this._request should be already in the tree when build initiator part
     visited.add(this._request);
     for (const request of initiated.keys()) {
@@ -128,12 +119,7 @@ export class RequestInitiatorView extends UI.Widget.VBox {
     }
   }
 
-  /**
-   * @param {!Element} content
-   * @param {string} title
-   * @param {!UI.TreeOutline.TreeOutlineInShadow} tree
-   */
-  _buildStackTraceSection(content, title, tree) {
+  _buildStackTraceSection(content: Element, title: string, tree: UI.TreeOutline.TreeOutlineInShadow): void {
     const root = new UI.TreeOutline.TreeElement(title);
     tree.appendChild(root);
 
@@ -144,15 +130,11 @@ export class RequestInitiatorView extends UI.Widget.VBox {
     const contentElement = new UI.TreeOutline.TreeElement(content, false);
     contentElement.selectable = false;
 
-
     root.appendChild(contentElement);
     root.expand();
   }
 
-  /**
-   * @override
-   */
-  wasShown() {
+  wasShown(): void {
     if (this._hasShown) {
       return;
     }

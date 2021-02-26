@@ -89,11 +89,11 @@ export {
  * This function exists to break a circular dependency from Cookie Table. In order to reveal
  * requests from the Cookie Table in the Network Panel, the Cookie Table dispatches an event
  * which is picked up here and used to load the Network Panel instance.
- * @param {!CustomEvent<!Array<{filterType: !NetworkLogView.FilterType, filterValue: string}>>} evt
  */
-// @ts-ignore
-const onRevealAndFilter = (evt): void => {
+const onRevealAndFilter = (evt: CustomEvent<{filterType: NetworkLogView.FilterType, filterValue: string}[]>): void => {
   NetworkPanel.NetworkPanel.revealAndFilter(evt.detail);
 };
 
-document.body.addEventListener('networkrevealandfilter', /** @type {!EventListener} */ (onRevealAndFilter));
+// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
+// @ts-expect-error
+document.body.addEventListener('networkrevealandfilter', onRevealAndFilter);

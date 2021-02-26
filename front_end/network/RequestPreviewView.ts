@@ -28,6 +28,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as i18n from '../i18n/i18n.js';
 import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
 import * as SourceFrame from '../source_frame/source_frame.js';
@@ -48,22 +50,14 @@ export const UIStrings = {
   */
   previewNotAvailable: 'Preview not available',
 };
-const str_ = i18n.i18n.registerUIStrings('network/RequestPreviewView.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('network/RequestPreviewView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class RequestPreviewView extends RequestResponseView {
-  /**
-   * @param {!SDK.NetworkRequest.NetworkRequest} request
-   */
-  constructor(request) {
+  constructor(request: SDK.NetworkRequest.NetworkRequest) {
     super(request);
   }
 
-  /**
-   * @override
-   * @protected
-   * @return {!Promise<!UI.Widget.Widget>}
-   */
-  async showPreview() {
+  async showPreview(): Promise<UI.Widget.Widget> {
     const view = await super.showPreview();
     if (!(view instanceof UI.View.SimpleView)) {
       return view;
@@ -75,22 +69,18 @@ export class RequestPreviewView extends RequestResponseView {
     return view;
   }
 
-  /**
-   * @return {!Promise<?UI.Widget.Widget>}
-   */
-  async _htmlPreview() {
+  async _htmlPreview(): Promise<UI.Widget.Widget|null> {
     const contentData = await this.request.contentData();
     if (contentData.error) {
       return new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.failedToLoadResponseData));
     }
 
-    const allowlist = new Set(['text/html', 'text/plain', 'application/xhtml+xml']);
+    const allowlist = new Set<string>(['text/html', 'text/plain', 'application/xhtml+xml']);
     if (!allowlist.has(this.request.mimeType)) {
       return null;
     }
 
-    const content = contentData.encoded ? window.atob(/** @type {string} */ (contentData.content)) :
-                                          /** @type {string} */ (contentData.content);
+    const content = contentData.encoded ? window.atob((contentData.content as string)) : contentData.content as string;
 
     // http://crbug.com/767393 - DevTools should recognize JSON regardless of the content type
     const jsonView = await SourceFrame.JSONView.JSONView.createView(content);
@@ -103,12 +93,7 @@ export class RequestPreviewView extends RequestResponseView {
     return dataURL ? new RequestHTMLView(dataURL) : null;
   }
 
-  /**
-   * @override
-   * @protected
-   * @return {!Promise<!UI.Widget.Widget>}
-   */
-  async createPreview() {
+  async createPreview(): Promise<UI.Widget.Widget> {
     if (this.request.signedExchangeInfo()) {
       return new SignedExchangeInfoView(this.request);
     }

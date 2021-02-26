@@ -1,3 +1,7 @@
+// Copyright 2021 The Chromium Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+
 /*
  * Copyright (C) 2012 Research In Motion Limited. All rights reserved.
  *
@@ -15,6 +19,8 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
+
+/* eslint-disable rulesdir/no_underscored_properties */
 
 import * as Common from '../common/common.js';
 import * as DataGrid from '../data_grid/data_grid.js';
@@ -129,16 +135,29 @@ export const UIStrings = {
   /**
   *@description Example for placeholder text
   */
-  enterRegex: 'Enter regex, for example: (web)?socket'
+  enterRegex: 'Enter regex, for example: (web)?socket',
 };
-const str_ = i18n.i18n.registerUIStrings('network/ResourceWebSocketFrameView.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('network/ResourceWebSocketFrameView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 export class ResourceWebSocketFrameView extends UI.Widget.VBox {
-  /**
-   * @param {!SDK.NetworkRequest.NetworkRequest} request
-   */
-  constructor(request) {
+  _request: SDK.NetworkRequest.NetworkRequest;
+  _splitWidget: UI.SplitWidget.SplitWidget;
+  _dataGrid: DataGrid.SortableDataGrid.SortableDataGrid<unknown>;
+  _timeComparator:
+      (arg0: DataGrid.SortableDataGrid.SortableDataGridNode<ResourceWebSocketFrameNode>,
+       arg1: DataGrid.SortableDataGrid.SortableDataGridNode<ResourceWebSocketFrameNode>) => number;
+  _mainToolbar: UI.Toolbar.Toolbar;
+  _clearAllButton: UI.Toolbar.ToolbarButton;
+  _filterTypeCombobox: UI.Toolbar.ToolbarComboBox;
+  _filterType: string|null;
+  _filterTextInput: UI.Toolbar.ToolbarInput;
+  _filterRegex: RegExp|null;
+  _frameEmptyWidget: UI.EmptyWidget.EmptyWidget;
+  _selectedNode: ResourceWebSocketFrameNode|null;
+  _currentSelectedNode?: ResourceWebSocketFrameNode|null;
+
+  constructor(request: SDK.NetworkRequest.NetworkRequest) {
     super();
     this.registerRequiredCSS('network/webSocketFrameView.css', {enableLegacyPatching: true});
     this.element.classList.add('websocket-frame-view');
@@ -147,30 +166,32 @@ export class ResourceWebSocketFrameView extends UI.Widget.VBox {
     this._splitWidget = new UI.SplitWidget.SplitWidget(false, true, 'resourceWebSocketFrameSplitViewState');
     this._splitWidget.show(this.element);
 
-    const columns = /** @type {!Array<!DataGrid.DataGrid.ColumnDescriptor>} */ ([
-      {id: 'data', title: i18nString(UIStrings.data), sortable: false, weight: 88}, {
+    const columns = ([
+      {id: 'data', title: i18nString(UIStrings.data), sortable: false, weight: 88},
+      {
         id: 'length',
         title: i18nString(UIStrings.length),
         sortable: false,
         align: DataGrid.DataGrid.Align.Right,
-        weight: 5
+        weight: 5,
       },
-      {id: 'time', title: i18nString(UIStrings.time), sortable: true, weight: 7}
-    ]);
+      {id: 'time', title: i18nString(UIStrings.time), sortable: true, weight: 7},
+    ] as DataGrid.DataGrid.ColumnDescriptor[]);
 
     this._dataGrid = new DataGrid.SortableDataGrid.SortableDataGrid({
       displayName: i18nString(UIStrings.webSocketFrame),
       columns,
       editCallback: undefined,
       deleteCallback: undefined,
-      refreshCallback: undefined
+      refreshCallback: undefined,
     });
     this._dataGrid.setRowContextMenuCallback(onRowContextMenu.bind(this));
     this._dataGrid.setStickToBottom(true);
     this._dataGrid.setCellClass('websocket-frame-view-td');
     this._timeComparator =
-        /** @type {function(!DataGrid.SortableDataGrid.SortableDataGridNode<!ResourceWebSocketFrameNode>, !DataGrid.SortableDataGrid.SortableDataGridNode<!ResourceWebSocketFrameNode>):number} */
-        (ResourceWebSocketFrameNodeTimeComparator);
+        (ResourceWebSocketFrameNodeTimeComparator as
+             (arg0: DataGrid.SortableDataGrid.SortableDataGridNode<ResourceWebSocketFrameNode>,
+              arg1: DataGrid.SortableDataGrid.SortableDataGridNode<ResourceWebSocketFrameNode>) => number);
     this._dataGrid.sortNodes(this._timeComparator, false);
     this._dataGrid.markColumnAsSortedBy('time', DataGrid.DataGrid.Order.Ascending);
     this._dataGrid.addEventListener(DataGrid.DataGrid.Events.SortingChanged, this._sortItems, this);
@@ -211,16 +232,12 @@ export class ResourceWebSocketFrameView extends UI.Widget.VBox {
     this._frameEmptyWidget = new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.selectMessageToBrowseItsContent));
     this._splitWidget.setSidebarWidget(this._frameEmptyWidget);
 
-    /** @type {?ResourceWebSocketFrameNode} */
     this._selectedNode = null;
 
-    /**
-     * @param {!UI.ContextMenu.ContextMenu} contextMenu
-     * @param {!DataGrid.DataGrid.DataGridNode<?>} genericNode
-     * @this {ResourceWebSocketFrameView}
-     */
-    function onRowContextMenu(contextMenu, genericNode) {
-      const node = /** @type {!ResourceWebSocketFrameNode} */ (genericNode);
+    function onRowContextMenu(
+        this: ResourceWebSocketFrameView, contextMenu: UI.ContextMenu.ContextMenu,
+        genericNode: DataGrid.DataGrid.DataGridNode<unknown>): void {
+      const node = (genericNode as ResourceWebSocketFrameNode);
       const binaryView = node.binaryView();
       if (binaryView) {
         binaryView.addCopyToContextMenu(contextMenu, i18nString(UIStrings.copyMessageD));
@@ -234,12 +251,7 @@ export class ResourceWebSocketFrameView extends UI.Widget.VBox {
     }
   }
 
-  /**
-   * @param {number} opCode
-   * @param {boolean} mask
-   * @return {string}
-   */
-  static opCodeDescription(opCode, mask) {
+  static opCodeDescription(opCode: number, mask: boolean): string {
     const localizedDescription = opCodeDescriptions[opCode] || '';
     if (mask) {
       return i18nString(UIStrings.sOpcodeSMask, {PH1: localizedDescription, PH2: opCode});
@@ -247,62 +259,46 @@ export class ResourceWebSocketFrameView extends UI.Widget.VBox {
     return i18nString(UIStrings.sOpcodeS, {PH1: localizedDescription, PH2: opCode});
   }
 
-  /**
-   * @override
-   */
-  wasShown() {
+  wasShown(): void {
     this.refresh();
     this._request.addEventListener(SDK.NetworkRequest.Events.WebsocketFrameAdded, this._frameAdded, this);
   }
 
-  /**
-   * @override
-   */
-  willHide() {
+  willHide(): void {
     this._request.removeEventListener(SDK.NetworkRequest.Events.WebsocketFrameAdded, this._frameAdded, this);
   }
 
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  _frameAdded(event) {
-    const frame = /** @type {!SDK.NetworkRequest.WebSocketFrame} */ (event.data);
+  _frameAdded(event: Common.EventTarget.EventTargetEvent): void {
+    const frame = (event.data as SDK.NetworkRequest.WebSocketFrame);
     if (!this._frameFilter(frame)) {
       return;
     }
     this._dataGrid.insertChild(new ResourceWebSocketFrameNode(this._request.url(), frame));
   }
 
-  /**
-   * @param {!SDK.NetworkRequest.WebSocketFrame} frame
-   * @return {boolean}
-   */
-  _frameFilter(frame) {
+  _frameFilter(frame: SDK.NetworkRequest.WebSocketFrame): boolean {
     if (this._filterType && frame.type !== this._filterType) {
       return false;
     }
     return !this._filterRegex || this._filterRegex.test(frame.text);
   }
 
-  _clearFrames() {
+  _clearFrames(): void {
     // TODO(allada): actially remove frames from request.
     _clearFrameOffsets.set(this._request, this._request.frames().length);
     this.refresh();
   }
 
-  _updateFilterSetting() {
+  _updateFilterSetting(): void {
     const text = this._filterTextInput.value();
-    const type = /** @type {!HTMLOptionElement} */ (this._filterTypeCombobox.selectedOption()).value;
+    const type = (this._filterTypeCombobox.selectedOption() as HTMLOptionElement).value;
     this._filterRegex = text ? new RegExp(text, 'i') : null;
     this._filterType = type === 'all' ? null : type;
     this.refresh();
   }
 
-  /**
-  * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  async _onFrameSelected(event) {
-    this._currentSelectedNode = /** @type {!ResourceWebSocketFrameNode} */ (event.data);
+  async _onFrameSelected(event: Common.EventTarget.EventTargetEvent): Promise<void> {
+    this._currentSelectedNode = (event.data as ResourceWebSocketFrameNode);
     const content = this._currentSelectedNode.dataText();
 
     const binaryView = this._currentSelectedNode.binaryView();
@@ -322,15 +318,12 @@ export class ResourceWebSocketFrameView extends UI.Widget.VBox {
             this._request.url(), Common.ResourceType.resourceTypes.WebSocket, content)));
   }
 
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  _onFrameDeselected(event) {
+  _onFrameDeselected(_event: Common.EventTarget.EventTargetEvent): void {
     this._currentSelectedNode = null;
     this._splitWidget.setSidebarWidget(this._frameEmptyWidget);
   }
 
-  refresh() {
+  refresh(): void {
     this._dataGrid.rootNode().removeChildren();
 
     const url = this._request.url();
@@ -341,23 +334,23 @@ export class ResourceWebSocketFrameView extends UI.Widget.VBox {
     frames.forEach(frame => this._dataGrid.insertChild(new ResourceWebSocketFrameNode(url, frame)));
   }
 
-  _sortItems() {
+  _sortItems(): void {
     this._dataGrid.sortNodes(this._timeComparator, !this._dataGrid.isSortOrderAscending());
   }
 }
 
-/** @enum {number} */
-export const OpCodes = {
-  ContinuationFrame: 0,
-  TextFrame: 1,
-  BinaryFrame: 2,
-  ConnectionCloseFrame: 8,
-  PingFrame: 9,
-  PongFrame: 10
-};
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum OpCodes {
+  ContinuationFrame = 0,
+  TextFrame = 1,
+  BinaryFrame = 2,
+  ConnectionCloseFrame = 8,
+  PingFrame = 9,
+  PongFrame = 10,
+}
 
-/** @type {!Array.<function():string> } */
-export const opCodeDescriptions = (function() {
+export const opCodeDescriptions: (() => string)[] = (function(): (() => Common.UIString.LocalizedString)[] {
   const opCodes = OpCodes;
   const map = [];
   map[opCodes.ContinuationFrame] = i18nLazyString(UIStrings.continuationFrame);
@@ -369,22 +362,22 @@ export const opCodeDescriptions = (function() {
   return map;
 })();
 
-/** @type {!Array<!UI.FilterBar.Item>} */
-export const _filterTypes = [
+// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
+// eslint-disable-next-line @typescript-eslint/naming-convention
+export const _filterTypes: UI.FilterBar.Item[] = [
   {name: 'all', label: i18nLazyString(UIStrings.all), title: undefined},
   {name: 'send', label: i18nLazyString(UIStrings.send), title: undefined},
   {name: 'receive', label: i18nLazyString(UIStrings.receive), title: undefined},
 ];
 
-/**
- * @extends {DataGrid.SortableDataGrid.SortableDataGridNode<?>}
- */
-export class ResourceWebSocketFrameNode extends DataGrid.SortableDataGrid.SortableDataGridNode {
-  /**
-   * @param {string} url
-   * @param {!SDK.NetworkRequest.WebSocketFrame} frame
-   */
-  constructor(url, frame) {
+export class ResourceWebSocketFrameNode extends DataGrid.SortableDataGrid.SortableDataGridNode<unknown> {
+  _url: string;
+  _frame: SDK.NetworkRequest.WebSocketFrame;
+  _isTextFrame: boolean;
+  _dataText: string;
+  _binaryView: BinaryResourceView|null;
+
+  constructor(url: string, frame: SDK.NetworkRequest.WebSocketFrame) {
     let length = String(frame.text.length);
     const time = new Date(frame.time * 1000);
     const timeText = ('0' + time.getHours()).substr(-2) + ':' + ('0' + time.getMinutes()).substr(-2) + ':' +
@@ -393,7 +386,7 @@ export class ResourceWebSocketFrameNode extends DataGrid.SortableDataGrid.Sortab
     UI.UIUtils.createTextChild(timeNode, timeText);
     UI.Tooltip.Tooltip.install(timeNode, time.toLocaleString());
 
-    let dataText = frame.text;
+    let dataText: string = frame.text;
     let description = ResourceWebSocketFrameView.opCodeDescription(frame.opCode, frame.mask);
     const isTextFrame = frame.opCode === OpCodes.TextFrame;
 
@@ -419,15 +412,10 @@ export class ResourceWebSocketFrameNode extends DataGrid.SortableDataGrid.Sortab
     this._isTextFrame = isTextFrame;
     this._dataText = dataText;
 
-    /** @type {?BinaryResourceView} */
     this._binaryView = null;
   }
 
-  /**
-   * @override
-   * @param {!Element} element
-   */
-  createCells(element) {
+  createCells(element: Element): void {
     element.classList.toggle(
         'websocket-frame-view-row-error', this._frame.type === SDK.NetworkRequest.WebSocketFrameType.Error);
     element.classList.toggle(
@@ -437,32 +425,19 @@ export class ResourceWebSocketFrameNode extends DataGrid.SortableDataGrid.Sortab
     super.createCells(element);
   }
 
-  /**
-   * @override
-   * @return {number}
-   */
-  nodeSelfHeight() {
+  nodeSelfHeight(): number {
     return 21;
   }
 
-  /**
-   * @return {string}
-   */
-  dataText() {
+  dataText(): string {
     return this._dataText;
   }
 
-  /**
-   * @return {!OpCodes}
-   */
-  opCode() {
-    return /** @type {!OpCodes} */ (this._frame.opCode);
+  opCode(): OpCodes {
+    return this._frame.opCode as OpCodes;
   }
 
-  /**
-   * @return {?BinaryResourceView}
-   */
-  binaryView() {
+  binaryView(): BinaryResourceView|null {
     if (this._isTextFrame || this._frame.type === SDK.NetworkRequest.WebSocketFrameType.Error) {
       return null;
     }
@@ -477,14 +452,13 @@ export class ResourceWebSocketFrameNode extends DataGrid.SortableDataGrid.Sortab
   }
 }
 
-/**
- * @param {!ResourceWebSocketFrameNode} a
- * @param {!ResourceWebSocketFrameNode} b
- * @return {number}
- */
-export function ResourceWebSocketFrameNodeTimeComparator(a, b) {
+// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
+// eslint-disable-next-line @typescript-eslint/naming-convention
+export function ResourceWebSocketFrameNodeTimeComparator(
+    a: ResourceWebSocketFrameNode, b: ResourceWebSocketFrameNode): number {
   return a._frame.time - b._frame.time;
 }
 
-/** @type {!WeakMap<!SDK.NetworkRequest.NetworkRequest, number>} */
-const _clearFrameOffsets = new WeakMap();
+// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
+// eslint-disable-next-line @typescript-eslint/naming-convention
+const _clearFrameOffsets = new WeakMap<SDK.NetworkRequest.NetworkRequest, number>();

@@ -1,3 +1,7 @@
+// Copyright 2021 The Chromium Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+
 /*
  * Copyright (C) 2007, 2008 Apple Inc.  All rights reserved.
  * Copyright (C) 2008, 2009 Anthony Ricaud <rik@webkit.org>
@@ -27,6 +31,8 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+/* eslint-disable rulesdir/no_underscored_properties */
 
 import * as Common from '../common/common.js';
 import * as i18n from '../i18n/i18n.js';
@@ -62,138 +68,103 @@ export const UIStrings = {
   */
   sFromCache: '{PH1} (from cache)',
 };
-const str_ = i18n.i18n.registerUIStrings('network/NetworkTimeCalculator.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('network/NetworkTimeCalculator.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+
+export interface Label {
+  left: string;
+  right: string;
+  tooltip?: string;
+}
+
 export class NetworkTimeBoundary {
-  /**
-   * @param {number} minimum
-   * @param {number} maximum
-   */
-  constructor(minimum, maximum) {
+  minimum: number;
+  maximum: number;
+  constructor(minimum: number, maximum: number) {
     this.minimum = minimum;
     this.maximum = maximum;
   }
 
-  /**
-   * @param {!NetworkTimeBoundary} other
-   * @return {boolean}
-   */
-  equals(other) {
+  equals(other: NetworkTimeBoundary): boolean {
     return (this.minimum === other.minimum) && (this.maximum === other.maximum);
   }
 }
 
-/**
- * @implements {PerfUI.TimelineGrid.Calculator}
- */
-export class NetworkTimeCalculator extends Common.ObjectWrapper.ObjectWrapper {
-  /** @param {boolean} startAtZero */
-  constructor(startAtZero) {
+export class NetworkTimeCalculator extends Common.ObjectWrapper.ObjectWrapper implements
+    PerfUI.TimelineGrid.Calculator {
+  startAtZero: boolean;
+  _minimumBoundary: number;
+  _maximumBoundary: number;
+  _boundryChangedEventThrottler: Common.Throttler.Throttler;
+  _window: NetworkTimeBoundary|null;
+  _workingArea?: number;
+
+  constructor(startAtZero: boolean) {
     super();
     this.startAtZero = startAtZero;
     this._minimumBoundary = -1;
     this._maximumBoundary = -1;
     this._boundryChangedEventThrottler = new Common.Throttler.Throttler(0);
-    /** @type {?NetworkTimeBoundary} */
     this._window = null;
   }
 
-  /**
-   * @param {?NetworkTimeBoundary} window
-   */
-  setWindow(window) {
+  setWindow(window: NetworkTimeBoundary|null): void {
     this._window = window;
     this._boundaryChanged();
   }
 
-  setInitialUserFriendlyBoundaries() {
+  setInitialUserFriendlyBoundaries(): void {
     this._minimumBoundary = 0;
     this._maximumBoundary = 1;
   }
 
-  /**
-   * @override
-   * @param {number} time
-   * @return {number}
-   */
-  computePosition(time) {
+  computePosition(time: number): number {
     return (time - this.minimumBoundary()) / this.boundarySpan() * (this._workingArea || 0);
   }
 
-  /**
-   * @override
-   * @param {number} value
-   * @param {number=} precision
-   * @return {string}
-   */
-  formatValue(value, precision) {
+  formatValue(value: number, precision?: number): string {
     return Number.secondsToString(value, Boolean(precision));
   }
 
-  /**
-   * @override
-   * @return {number}
-   */
-  minimumBoundary() {
+  minimumBoundary(): number {
     return this._window ? this._window.minimum : this._minimumBoundary;
   }
 
-  /**
-   * @override
-   * @return {number}
-   */
-  zeroTime() {
+  zeroTime(): number {
     return this._minimumBoundary;
   }
 
-  /**
-   * @override
-   * @return {number}
-   */
-  maximumBoundary() {
+  maximumBoundary(): number {
     return this._window ? this._window.maximum : this._maximumBoundary;
   }
 
-  /**
-   * @return {!NetworkTimeBoundary}
-   */
-  boundary() {
+  boundary(): NetworkTimeBoundary {
     return new NetworkTimeBoundary(this.minimumBoundary(), this.maximumBoundary());
   }
 
-  /**
-   * @override
-   * @return {number}
-   */
-  boundarySpan() {
+  boundarySpan(): number {
     return this.maximumBoundary() - this.minimumBoundary();
   }
 
-  reset() {
+  reset(): void {
     this._minimumBoundary = -1;
     this._maximumBoundary = -1;
     this._boundaryChanged();
   }
 
-  /**
-   * @return {number}
-   */
-  _value() {
+  _value(): number {
     return 0;
   }
 
-  /**
-   * @param {number} clientWidth
-   */
-  setDisplayWidth(clientWidth) {
+  setDisplayWidth(clientWidth: number): void {
     this._workingArea = clientWidth;
   }
 
-  /**
-   * @param {!SDK.NetworkRequest.NetworkRequest} request
-   * @return {!{start: number, middle: number, end: number}}
-   */
-  computeBarGraphPercentages(request) {
+  computeBarGraphPercentages(request: SDK.NetworkRequest.NetworkRequest): {
+    start: number,
+    middle: number,
+    end: number,
+  } {
     let start;
     let middle;
     let end;
@@ -224,11 +195,7 @@ export class NetworkTimeCalculator extends Common.ObjectWrapper.ObjectWrapper {
     return {start: start, middle: middle, end: end};
   }
 
-  /**
-   * @param {number} eventTime
-   * @return {number}
-   */
-  computePercentageFromEventTime(eventTime) {
+  computePercentageFromEventTime(eventTime: number): number {
     // This function computes a percentage in terms of the total loading time
     // of a specific event. If startAtZero is set, then this is useless, and we
     // want to return 0.
@@ -239,24 +206,17 @@ export class NetworkTimeCalculator extends Common.ObjectWrapper.ObjectWrapper {
     return 0;
   }
 
-  /**
-   * @param {number} percentage
-   * @return {number}
-   */
-  percentageToTime(percentage) {
+  percentageToTime(percentage: number): number {
     return percentage * this.boundarySpan() / 100 + this.minimumBoundary();
   }
 
-  _boundaryChanged() {
+  _boundaryChanged(): void {
     this._boundryChangedEventThrottler.schedule(async () => {
       this.dispatchEventToListeners(Events.BoundariesChanged);
     });
   }
 
-  /**
-   * @param {number} eventTime
-   */
-  updateBoundariesForEventTime(eventTime) {
+  updateBoundariesForEventTime(eventTime: number): void {
     if (eventTime === -1 || this.startAtZero) {
       return;
     }
@@ -267,11 +227,7 @@ export class NetworkTimeCalculator extends Common.ObjectWrapper.ObjectWrapper {
     }
   }
 
-  /**
-   * @param {!SDK.NetworkRequest.NetworkRequest} request
-   * @return {!{left: string, right: string, tooltip: (string|undefined)}}
-   */
-  computeBarGraphLabels(request) {
+  computeBarGraphLabels(request: SDK.NetworkRequest.NetworkRequest): Label {
     let rightLabel = '';
     if (request.responseReceivedTime !== -1 && request.endTime !== -1) {
       rightLabel = Number.secondsToString(request.endTime - request.responseReceivedTime);
@@ -302,10 +258,7 @@ export class NetworkTimeCalculator extends Common.ObjectWrapper.ObjectWrapper {
     return {left: leftLabel, right: rightLabel, tooltip: tooltip};
   }
 
-  /**
-   * @param {!SDK.NetworkRequest.NetworkRequest} request
-   */
-  updateBoundaries(request) {
+  updateBoundaries(request: SDK.NetworkRequest.NetworkRequest): void {
     const lowerBound = this._lowerBound(request);
     const upperBound = this._upperBound(request);
     let changed = false;
@@ -320,11 +273,7 @@ export class NetworkTimeCalculator extends Common.ObjectWrapper.ObjectWrapper {
     }
   }
 
-  /**
-   * @param {number} timestamp
-   * @return {boolean}
-   */
-  _extendBoundariesToIncludeTimestamp(timestamp) {
+  _extendBoundariesToIncludeTimestamp(timestamp: number): boolean {
     const previousMinimumBoundary = this._minimumBoundary;
     const previousMaximumBoundary = this._maximumBoundary;
     const minOffset = _minimumSpread;
@@ -338,60 +287,39 @@ export class NetworkTimeCalculator extends Common.ObjectWrapper.ObjectWrapper {
     return previousMinimumBoundary !== this._minimumBoundary || previousMaximumBoundary !== this._maximumBoundary;
   }
 
-  /**
-   * @param {!SDK.NetworkRequest.NetworkRequest} request
-   * @return {number}
-   */
-  _lowerBound(request) {
+  _lowerBound(_request: SDK.NetworkRequest.NetworkRequest): number {
     return 0;
   }
 
-  /**
-   * @param {!SDK.NetworkRequest.NetworkRequest} request
-   * @return {number}
-   */
-  _upperBound(request) {
+  _upperBound(_request: SDK.NetworkRequest.NetworkRequest): number {
     return 0;
   }
 }
 
+// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export const _minimumSpread = 0.1;
 
-/** @enum {symbol} */
-export const Events = {
-  BoundariesChanged: Symbol('BoundariesChanged')
-};
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum Events {
+  BoundariesChanged = 'BoundariesChanged',
+}
 
 export class NetworkTransferTimeCalculator extends NetworkTimeCalculator {
   constructor() {
     super(false);
   }
 
-  /**
-   * @override
-   * @param {number} value
-   * @param {number=} precision
-   * @return {string}
-   */
-  formatValue(value, precision) {
+  formatValue(value: number, precision?: number): string {
     return Number.secondsToString(value - this.zeroTime(), Boolean(precision));
   }
 
-  /**
-   * @override
-   * @param {!SDK.NetworkRequest.NetworkRequest} request
-   * @return {number}
-   */
-  _lowerBound(request) {
+  _lowerBound(request: SDK.NetworkRequest.NetworkRequest): number {
     return request.issueTime();
   }
 
-  /**
-   * @override
-   * @param {!SDK.NetworkRequest.NetworkRequest} request
-   * @return {number}
-   */
-  _upperBound(request) {
+  _upperBound(request: SDK.NetworkRequest.NetworkRequest): number {
     return request.endTime;
   }
 }
@@ -401,22 +329,11 @@ export class NetworkTransferDurationCalculator extends NetworkTimeCalculator {
     super(true);
   }
 
-  /**
-   * @override
-   * @param {number} value
-   * @param {number=} precision
-   * @return {string}
-   */
-  formatValue(value, precision) {
+  formatValue(value: number, precision?: number): string {
     return Number.secondsToString(value, Boolean(precision));
   }
 
-  /**
-   * @override
-   * @param {!SDK.NetworkRequest.NetworkRequest} request
-   * @return {number}
-   */
-  _upperBound(request) {
+  _upperBound(request: SDK.NetworkRequest.NetworkRequest): number {
     return request.duration;
   }
 }

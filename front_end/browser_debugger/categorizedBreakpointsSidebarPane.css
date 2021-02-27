@@ -43,12 +43,16 @@
   /* See: crbug.com/1152736 for color variable migration. */
   border-right: 3px solid rgb(107 97 48); /* stylelint-disable-line plugin/use_theme_colors */
   /* See: crbug.com/1152736 for color variable migration. */
-  height: 18px;
+  height: 100%;
   left: 0;
   margin-left: -30px;
   position: absolute;
   right: -4px;
   z-index: -1;
+}
+
+.source-code[is="dt-checkbox"] {
+  max-width: 100%;
 }
 
 :host-context(.-theme-with-dark-background) .breakpoint-hit .breakpoint-hit-marker {

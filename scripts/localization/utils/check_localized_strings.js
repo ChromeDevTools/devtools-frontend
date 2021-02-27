@@ -125,6 +125,7 @@ const migratedDirsSet = new Set([
   'developer_resources',
   'devices',
   'emulation',
+  'emulated_devices',
   'event_listeners',
   'help',
   'heap_snapshot_worker',

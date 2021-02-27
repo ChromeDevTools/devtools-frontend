@@ -7,16 +7,16 @@ import("../../scripts/build/ninja/devtools_module.gni")
 
 devtools_module("source_frame") {
   sources = [
-    "BinaryResourceViewFactory.js",
-    "FontView.js",
-    "ImageView.js",
-    "JSONView.js",
-    "PreviewFactory.js",
-    "ResourceSourceFrame.js",
-    "SourceCodeDiff.js",
-    "SourceFrame.js",
-    "SourcesTextEditor.js",
-    "XMLView.js",
+    "BinaryResourceViewFactory.ts",
+    "FontView.ts",
+    "ImageView.ts",
+    "JSONView.ts",
+    "PreviewFactory.ts",
+    "ResourceSourceFrame.ts",
+    "SourceCodeDiff.ts",
+    "SourceFrame.ts",
+    "SourcesTextEditor.ts",
+    "XMLView.ts",
   ]
 
   deps = [
@@ -36,13 +36,13 @@ devtools_module("source_frame") {
 }
 
 devtools_entrypoint("bundle") {
-  entrypoint = "source_frame.js"
+  entrypoint = "source_frame.ts"
 
   deps = [ ":source_frame" ]
 }
 
 devtools_entrypoint("legacy") {
-  entrypoint = "source_frame-legacy.js"
+  entrypoint = "source_frame-legacy.ts"
 
   deps = [ ":bundle" ]
 }

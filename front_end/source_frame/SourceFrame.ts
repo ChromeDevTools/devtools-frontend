@@ -28,11 +28,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Common from '../common/common.js';
 import * as Formatter from '../formatter/formatter.js';
 import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
-import * as TextEditor from '../text_editor/text_editor.js';  // eslint-disable-line no-unused-vars
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as UI from '../ui/ui.js';
 import * as Workspace from '../workspace/workspace.js';  // eslint-disable-line no-unused-vars
@@ -82,30 +83,57 @@ export const UIStrings = {
   */
   dLinesDCharactersSelected: '{PH1} lines, {PH2} characters selected',
 };
-const str_ = i18n.i18n.registerUIStrings('source_frame/SourceFrame.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('source_frame/SourceFrame.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-/**
- * @implements {UI.SearchableView.Searchable}
- * @implements {UI.SearchableView.Replaceable}
- * @implements {SourcesTextEditorDelegate}
- * @implements {Transformer}
- */
-export class SourceFrameImpl extends UI.View.SimpleView {
-  /**
-   * @param {function(): !Promise<!TextUtils.ContentProvider.DeferredContent>} lazyContent
-   * @param {!UI.TextEditor.Options=} codeMirrorOptions
-   */
-  constructor(lazyContent, codeMirrorOptions) {
+
+export class SourceFrameImpl extends UI.View.SimpleView implements UI.SearchableView.Searchable,
+                                                                   UI.SearchableView.Replaceable,
+                                                                   SourcesTextEditorDelegate, Transformer {
+  _lazyContent: () => Promise<TextUtils.ContentProvider.DeferredContent>;
+  _pretty: boolean;
+  _rawContent: string|null;
+  _formattedContentPromise: Promise<{
+    content: string,
+    map: Formatter.ScriptFormatter.FormatterSourceMapping,
+  }>|null;
+  _formattedMap: Formatter.ScriptFormatter.FormatterSourceMapping|null;
+  _prettyToggle: UI.Toolbar.ToolbarToggle;
+  _shouldAutoPrettyPrint: boolean;
+  _progressToolbarItem: UI.Toolbar.ToolbarItem;
+  _textEditor: SourcesTextEditor;
+  _prettyCleanGeneration: number|null;
+  _cleanGeneration: number;
+  _searchConfig: UI.SearchableView.SearchConfig|null;
+  _delayedFindSearchMatches: (() => void)|null;
+  _currentSearchResultIndex: number;
+  _searchResults: TextUtils.TextRange.TextRange[];
+  _searchRegex: RegExp|null;
+  _loadError: boolean;
+  _muteChangeEventsForSetContent: boolean;
+  _sourcePosition: UI.Toolbar.ToolbarText;
+  _searchableView: UI.SearchableView.SearchableView|null;
+  _editable: boolean;
+  _positionToReveal: {
+    line: number,
+    column: (number|undefined),
+    shouldHighlight: (boolean|undefined),
+  }|null;
+  _lineToScrollTo: number|null;
+  _selectionToSet: TextUtils.TextRange.TextRange|null;
+  _loaded: boolean;
+  _contentRequested: boolean;
+  _highlighterType: string;
+  _wasmDisassembly: Common.WasmDisassembly.WasmDisassembly|null;
+  constructor(
+      lazyContent: () => Promise<TextUtils.ContentProvider.DeferredContent>,
+      codeMirrorOptions?: UI.TextEditor.Options) {
     super(i18nString(UIStrings.source));
 
     this._lazyContent = lazyContent;
 
     this._pretty = false;
-    /** @type {?string} */
     this._rawContent = null;
-    /** @type {?Promise<{content: string, map: !Formatter.ScriptFormatter.FormatterSourceMapping}>} */
     this._formattedContentPromise = null;
-    /** @type {?Formatter.ScriptFormatter.FormatterSourceMapping} */
     this._formattedMap = null;
     this._prettyToggle = new UI.Toolbar.ToolbarToggle(i18nString(UIStrings.prettyPrint), 'largeicon-pretty-print');
     this._prettyToggle.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => {
@@ -119,14 +147,12 @@ export class SourceFrameImpl extends UI.View.SimpleView {
     this._textEditor = new SourcesTextEditor(this, codeMirrorOptions);
     this._textEditor.show(this.element);
 
-    /** @type {?number} */
     this._prettyCleanGeneration = null;
     this._cleanGeneration = 0;
 
     this._searchConfig = null;
     this._delayedFindSearchMatches = null;
     this._currentSearchResultIndex = -1;
-    /** @type {!Array<!TextUtils.TextRange.TextRange>} */
     this._searchResults = [];
     this._searchRegex = null;
     this._loadError = false;
@@ -138,19 +164,14 @@ export class SourceFrameImpl extends UI.View.SimpleView {
         this.onTextChanged(event.data.oldRange, event.data.newRange);
       }
     });
-    /** @type {boolean} */
     this._muteChangeEventsForSetContent = false;
 
     this._sourcePosition = new UI.Toolbar.ToolbarText();
 
-    /**
-     * @type {?UI.SearchableView.SearchableView}
-     */
     this._searchableView = null;
     this._editable = false;
     this._textEditor.setReadOnly(true);
 
-    /** @type {?{line: number, column: (number|undefined), shouldHighlight: (boolean|undefined)}} */
     this._positionToReveal = null;
     this._lineToScrollTo = null;
     this._selectionToSet = null;
@@ -158,21 +179,17 @@ export class SourceFrameImpl extends UI.View.SimpleView {
     this._contentRequested = false;
     this._highlighterType = '';
 
-    /** @type {?Common.WasmDisassembly.WasmDisassembly} */
     this._wasmDisassembly = null;
   }
 
-  get wasmDisassembly() {
+  get wasmDisassembly(): Common.WasmDisassembly.WasmDisassembly|null {
     return this._wasmDisassembly;
   }
 
-  /**
-   * @override
-   * @param {number} lineNumber
-   * @param {number=} columnNumber
-   * @return {{lineNumber: number, columnNumber?: number}}
-   */
-  editorLocationToUILocation(lineNumber, columnNumber) {
+  editorLocationToUILocation(lineNumber: number, columnNumber?: number): {
+    lineNumber: number,
+    columnNumber?: number|undefined,
+  } {
     if (this._wasmDisassembly) {
       columnNumber = this._wasmDisassembly.lineNumberToBytecodeOffset(lineNumber);
       lineNumber = 0;
@@ -182,13 +199,10 @@ export class SourceFrameImpl extends UI.View.SimpleView {
     return {lineNumber, columnNumber};
   }
 
-  /**
-   * @override
-   * @param {number} lineNumber
-   * @param {number=} columnNumber
-   * @return {{lineNumber: number, columnNumber: number}}
-   */
-  uiLocationToEditorLocation(lineNumber, columnNumber = 0) {
+  uiLocationToEditorLocation(lineNumber: number, columnNumber: number|undefined = 0): {
+    lineNumber: number,
+    columnNumber: number,
+  } {
     if (this._wasmDisassembly) {
       lineNumber = this._wasmDisassembly.bytecodeOffsetToLineNumber(columnNumber);
       columnNumber = 0;
@@ -198,20 +212,12 @@ export class SourceFrameImpl extends UI.View.SimpleView {
     return {lineNumber, columnNumber};
   }
 
-  /**
-   * @param {boolean} canPrettyPrint
-   * @param {boolean=} autoPrettyPrint
-   */
-  setCanPrettyPrint(canPrettyPrint, autoPrettyPrint) {
+  setCanPrettyPrint(canPrettyPrint: boolean, autoPrettyPrint?: boolean): void {
     this._shouldAutoPrettyPrint = canPrettyPrint && Boolean(autoPrettyPrint);
     this._prettyToggle.setVisible(canPrettyPrint);
   }
 
-  /**
-   * @param {boolean} value
-   * @return {!Promise<void>}
-   */
-  async _setPretty(value) {
+  async _setPretty(value: boolean): Promise<void> {
     this._pretty = value;
     this._prettyToggle.setEnabled(false);
 
@@ -241,7 +247,7 @@ export class SourceFrameImpl extends UI.View.SimpleView {
     this._updatePrettyPrintState();
   }
 
-  _updateLineNumberFormatter() {
+  _updateLineNumberFormatter(): void {
     if (this._wasmDisassembly) {
       const disassembly = this._wasmDisassembly;
       const lastBytecodeOffset = disassembly.lineNumberToBytecodeOffset(disassembly.lineNumbers - 1);
@@ -268,95 +274,65 @@ export class SourceFrameImpl extends UI.View.SimpleView {
     }
   }
 
-  _updatePrettyPrintState() {
+  _updatePrettyPrintState(): void {
     this._prettyToggle.setToggled(this._pretty);
     this._textEditor.element.classList.toggle('pretty-printed', this._pretty);
     this._updateLineNumberFormatter();
   }
 
-  /**
-   * @param {number} line
-   * @param {number=} column
-   * @return {!Array<number>}
-   */
-  _prettyToRawLocation(line, column = 0) {
+  _prettyToRawLocation(line: number, column: number|undefined = 0): number[] {
     if (!this._formattedMap) {
       return [line, column];
     }
     return this._formattedMap.formattedToOriginal(line, column);
   }
 
-  /**
-   * @param {number} line
-   * @param {number} column
-   * @return {!Array<number>}
-   */
-  _rawToPrettyLocation(line, column) {
+  _rawToPrettyLocation(line: number, column: number): number[] {
     if (!this._formattedMap) {
       return [line, column];
     }
     return this._formattedMap.originalToFormatted(line, column);
   }
 
-  /**
-   * @param {boolean} editable
-   * @protected
-   */
-  setEditable(editable) {
+  setEditable(editable: boolean): void {
     this._editable = editable;
     if (this._loaded) {
       this._textEditor.setReadOnly(!editable);
     }
   }
 
-  /**
-   * @return {boolean}
-   */
-  hasLoadError() {
+  hasLoadError(): boolean {
     return this._loadError;
   }
 
-  /**
-   * @override
-   */
-  wasShown() {
+  wasShown(): void {
     this._ensureContentLoaded();
     this._wasShownOrLoaded();
   }
 
-  /**
-   * @override
-   */
-  willHide() {
+  willHide(): void {
     super.willHide();
 
     this._clearPositionToReveal();
   }
 
-  /**
-   * @override
-   * @return {!Promise<!Array<!UI.Toolbar.ToolbarItem>>}
-   */
-  async toolbarItems() {
+  async toolbarItems(): Promise<UI.Toolbar.ToolbarItem[]> {
     return [this._prettyToggle, this._sourcePosition, this._progressToolbarItem];
   }
 
-  get loaded() {
+  get loaded(): boolean {
     return this._loaded;
   }
 
-  get textEditor() {
+  get textEditor(): SourcesTextEditor {
     return this._textEditor;
   }
 
-  /**
-   * @protected
-   */
-  get pretty() {
+  get pretty(): boolean {
     return this._pretty;
   }
 
-  async _ensureContentLoaded() {
+  async _ensureContentLoaded(): Promise<void> {
     if (!this._contentRequested) {
       this._contentRequested = true;
 
@@ -380,27 +356,37 @@ export class SourceFrameImpl extends UI.View.SimpleView {
       if (!error && this._highlighterType === 'application/wasm') {
         const worker = Common.Worker.WorkerWrapper.fromURL(
             new URL('../wasmparser_worker/wasmparser_worker-entrypoint.js', import.meta.url));
-        /** @type {!Promise<!{source: string, offsets: !Array<number>, functionBodyOffsets: !Array<{start: number, end: number}>}>} */
-        const promise = new Promise((resolve, reject) => {
-          worker.onmessage = ({/** @type {{event:string, params:{percentage:number}}} */ data}) => {
-            if ('event' in data) {
-              switch (data.event) {
-                case 'progress':
-                  progressIndicator.setWorked(data.params.percentage);
-                  break;
-              }
-            } else if ('method' in data) {
-              switch (data.method) {
-                case 'disassemble':
-                  if ('error' in data) {
-                    reject(data.error);
-                  } else if ('result' in data) {
-                    resolve(data.result);
+        const promise = new Promise<{
+          source: string,
+          offsets: number[],
+          functionBodyOffsets: {
+            start: number,
+            end: number,
+          }[],
+        }>((resolve, reject) => {
+          worker.onmessage =
+              /** @type {{event:string, params:{percentage:number}}} */
+              // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              ({data}: MessageEvent<any>): void => {
+                if ('event' in data) {
+                  switch (data.event) {
+                    case 'progress':
+                      progressIndicator.setWorked(data.params.percentage);
+                      break;
                   }
-                  break;
-              }
-            }
-          };
+                } else if ('method' in data) {
+                  switch (data.method) {
+                    case 'disassemble':
+                      if ('error' in data) {
+                        reject(data.error);
+                      } else if ('result' in data) {
+                        resolve(data.result);
+                      }
+                      break;
+                  }
+                }
+              };
           worker.onerror = reject;
         });
         worker.postMessage({method: 'disassemble', params: {content}});
@@ -446,15 +432,17 @@ export class SourceFrameImpl extends UI.View.SimpleView {
     }
   }
 
-  /**
-   * @return {!Promise<{content: string, map: !Formatter.ScriptFormatter.FormatterSourceMapping}>}
-   */
-  _requestFormattedContent() {
+  _requestFormattedContent(): Promise<{
+    content: string,
+    map: Formatter.ScriptFormatter.FormatterSourceMapping,
+  }> {
     if (this._formattedContentPromise) {
       return this._formattedContentPromise;
     }
-    /** @type {function({content: string, map: !Formatter.ScriptFormatter.FormatterSourceMapping}): void} */
-    let fulfill;
+    let fulfill: (arg0: {
+      content: string,
+      map: Formatter.ScriptFormatter.FormatterSourceMapping,
+    }) => void;
     this._formattedContentPromise = new Promise(x => {
       fulfill = x;
     });
@@ -465,19 +453,14 @@ export class SourceFrameImpl extends UI.View.SimpleView {
     return this._formattedContentPromise;
   }
 
-  /**
-   * @param {number} line 0-based
-   * @param {number=} column
-   * @param {boolean=} shouldHighlight
-   */
-  revealPosition(line, column, shouldHighlight) {
+  revealPosition(line: number, column?: number, shouldHighlight?: boolean): void {
     this._lineToScrollTo = null;
     this._selectionToSet = null;
     this._positionToReveal = {line: line, column: column, shouldHighlight: shouldHighlight};
     this._innerRevealPositionIfNeeded();
   }
 
-  _innerRevealPositionIfNeeded() {
+  _innerRevealPositionIfNeeded(): void {
     if (!this._positionToReveal) {
       return;
     }
@@ -493,21 +476,18 @@ export class SourceFrameImpl extends UI.View.SimpleView {
     this._positionToReveal = null;
   }
 
-  _clearPositionToReveal() {
+  _clearPositionToReveal(): void {
     this._textEditor.clearPositionHighlight();
     this._positionToReveal = null;
   }
 
-  /**
-   * @param {number} line
-   */
-  scrollToLine(line) {
+  scrollToLine(line: number): void {
     this._clearPositionToReveal();
     this._lineToScrollTo = line;
     this._innerScrollToLineIfNeeded();
   }
 
-  _innerScrollToLineIfNeeded() {
+  _innerScrollToLineIfNeeded(): void {
     if (this._lineToScrollTo !== null) {
       if (this.loaded && this.isShowing()) {
         this._textEditor.scrollToLine(this._lineToScrollTo);
@@ -516,39 +496,29 @@ export class SourceFrameImpl extends UI.View.SimpleView {
     }
   }
 
-  /**
-   * @return {!TextUtils.TextRange.TextRange}
-   */
-  selection() {
+  selection(): TextUtils.TextRange.TextRange {
     return this.textEditor.selection();
   }
 
-  /**
-   * @param {!TextUtils.TextRange.TextRange} textRange
-   */
-  setSelection(textRange) {
+  setSelection(textRange: TextUtils.TextRange.TextRange): void {
     this._selectionToSet = textRange;
     this._innerSetSelectionIfNeeded();
   }
 
-  _innerSetSelectionIfNeeded() {
+  _innerSetSelectionIfNeeded(): void {
     if (this._selectionToSet && this.loaded && this.isShowing()) {
       this._textEditor.setSelection(this._selectionToSet, true);
       this._selectionToSet = null;
     }
   }
 
-  _wasShownOrLoaded() {
+  _wasShownOrLoaded(): void {
     this._innerRevealPositionIfNeeded();
     this._innerSetSelectionIfNeeded();
     this._innerScrollToLineIfNeeded();
   }
 
-  /**
-   * @param {!TextUtils.TextRange.TextRange} oldRange
-   * @param {!TextUtils.TextRange.TextRange} newRange
-   */
-  onTextChanged(oldRange, newRange) {
+  onTextChanged(_oldRange: TextUtils.TextRange.TextRange, _newRange: TextUtils.TextRange.TextRange): void {
     const wasPretty = this.pretty;
     this._pretty = this._prettyCleanGeneration !== null && this.textEditor.isClean(this._prettyCleanGeneration);
     if (this._pretty !== wasPretty) {
@@ -561,15 +531,12 @@ export class SourceFrameImpl extends UI.View.SimpleView {
     }
   }
 
-  /**
-   * @return {boolean}
-   */
-  isClean() {
+  isClean(): boolean {
     return this.textEditor.isClean(this._cleanGeneration) ||
         (this._prettyCleanGeneration !== null && this.textEditor.isClean(this._prettyCleanGeneration));
   }
 
-  contentCommitted() {
+  contentCommitted(): void {
     this._cleanGeneration = this._textEditor.markClean();
     this._prettyCleanGeneration = null;
     this._rawContent = this.textEditor.text();
@@ -582,12 +549,7 @@ export class SourceFrameImpl extends UI.View.SimpleView {
     this._prettyToggle.setEnabled(true);
   }
 
-  /**
-   * @param {string} content
-   * @param {string} mimeType
-   * @return {string}
-   */
-  _simplifyMimeType(content, mimeType) {
+  _simplifyMimeType(content: string, mimeType: string): string {
     if (!mimeType) {
       return '';
     }
@@ -613,34 +575,20 @@ export class SourceFrameImpl extends UI.View.SimpleView {
     return mimeType;
   }
 
-  /**
-   * @param {string} highlighterType
-   */
-  setHighlighterType(highlighterType) {
+  setHighlighterType(highlighterType: string): void {
     this._highlighterType = highlighterType;
     this._updateHighlighterType('');
   }
 
-  /**
-   * @protected
-   * @return {string}
-   */
-  highlighterType() {
+  highlighterType(): string {
     return this._highlighterType;
   }
 
-  /**
-   * @param {string} content
-   */
-  _updateHighlighterType(content) {
+  _updateHighlighterType(content: string): void {
     this._textEditor.setMimeType(this._simplifyMimeType(content, this._highlighterType));
   }
 
-  /**
-   * @param {?string} content
-   * @param {?string} loadError
-   */
-  setContent(content, loadError) {
+  setContent(content: string|null, loadError: string|null): void {
     this._muteChangeEventsForSetContent = true;
     if (!this._loaded) {
       this._loaded = true;
@@ -682,19 +630,12 @@ export class SourceFrameImpl extends UI.View.SimpleView {
     this._muteChangeEventsForSetContent = false;
   }
 
-  /**
-   * @param {?UI.SearchableView.SearchableView} view
-   */
-  setSearchableView(view) {
+  setSearchableView(view: UI.SearchableView.SearchableView|null): void {
     this._searchableView = view;
   }
 
-  /**
-   * @param {!UI.SearchableView.SearchConfig} searchConfig
-   * @param {boolean} shouldJump
-   * @param {boolean} jumpBackwards
-   */
-  _doFindSearchMatches(searchConfig, shouldJump, jumpBackwards) {
+  _doFindSearchMatches(searchConfig: UI.SearchableView.SearchConfig, shouldJump: boolean, jumpBackwards: boolean):
+      void {
     this._currentSearchResultIndex = -1;
     this._searchResults = [];
 
@@ -717,13 +658,7 @@ export class SourceFrameImpl extends UI.View.SimpleView {
     }
   }
 
-  /**
-   * @override
-   * @param {!UI.SearchableView.SearchConfig} searchConfig
-   * @param {boolean} shouldJump
-   * @param {boolean=} jumpBackwards
-   */
-  performSearch(searchConfig, shouldJump, jumpBackwards) {
+  performSearch(searchConfig: UI.SearchableView.SearchConfig, shouldJump: boolean, jumpBackwards?: boolean): void {
     if (this._searchableView) {
       this._searchableView.updateSearchMatchesCount(0);
     }
@@ -740,7 +675,7 @@ export class SourceFrameImpl extends UI.View.SimpleView {
     this._ensureContentLoaded();
   }
 
-  _resetCurrentSearchResultIndex() {
+  _resetCurrentSearchResultIndex(): void {
     if (!this._searchResults.length) {
       return;
     }
@@ -748,10 +683,10 @@ export class SourceFrameImpl extends UI.View.SimpleView {
     if (this._searchableView) {
       this._searchableView.updateCurrentMatchIndex(this._currentSearchResultIndex);
     }
-    this._textEditor.highlightSearchResults(/** @type {!RegExp} */ (this._searchRegex), null);
+    this._textEditor.highlightSearchResults((this._searchRegex as RegExp), null);
   }
 
-  _resetSearch() {
+  _resetSearch(): void {
     this._searchConfig = null;
     this._delayedFindSearchMatches = null;
     this._currentSearchResultIndex = -1;
@@ -759,10 +694,7 @@ export class SourceFrameImpl extends UI.View.SimpleView {
     this._searchRegex = null;
   }
 
-  /**
-   * @override
-   */
-  searchCanceled() {
+  searchCanceled(): void {
     const range = this._currentSearchResultIndex !== -1 ? this._searchResults[this._currentSearchResultIndex] : null;
     this._resetSearch();
     if (!this.loaded) {
@@ -774,55 +706,35 @@ export class SourceFrameImpl extends UI.View.SimpleView {
     }
   }
 
-  jumpToLastSearchResult() {
+  jumpToLastSearchResult(): void {
     this.jumpToSearchResult(this._searchResults.length - 1);
   }
 
-  /**
-   * @return {number}
-   */
-  _searchResultIndexForCurrentSelection() {
+  _searchResultIndexForCurrentSelection(): number {
     return Platform.ArrayUtilities.lowerBound(
         this._searchResults, this._textEditor.selection().collapseToEnd(), TextUtils.TextRange.TextRange.comparator);
   }
 
-  /**
-   * @override
-   */
-  jumpToNextSearchResult() {
+  jumpToNextSearchResult(): void {
     const currentIndex = this._searchResultIndexForCurrentSelection();
     const nextIndex = this._currentSearchResultIndex === -1 ? currentIndex : currentIndex + 1;
     this.jumpToSearchResult(nextIndex);
   }
 
-  /**
-   * @override
-   */
-  jumpToPreviousSearchResult() {
+  jumpToPreviousSearchResult(): void {
     const currentIndex = this._searchResultIndexForCurrentSelection();
     this.jumpToSearchResult(currentIndex - 1);
   }
 
-  /**
-   * @override
-   * @return {boolean}
-   */
-  supportsCaseSensitiveSearch() {
+  supportsCaseSensitiveSearch(): boolean {
     return true;
   }
 
-  /**
-   * @override
-   * @return {boolean}
-   */
-  supportsRegexSearch() {
+  supportsRegexSearch(): boolean {
     return true;
   }
 
-  /**
-   * @param {number} index
-   */
-  jumpToSearchResult(index) {
+  jumpToSearchResult(index: number): void {
     if (!this.loaded || !this._searchResults.length) {
       return;
     }
@@ -831,20 +743,15 @@ export class SourceFrameImpl extends UI.View.SimpleView {
       this._searchableView.updateCurrentMatchIndex(this._currentSearchResultIndex);
     }
     this._textEditor.highlightSearchResults(
-        /** @type {!RegExp} */ (this._searchRegex), this._searchResults[this._currentSearchResultIndex]);
+        (this._searchRegex as RegExp), this._searchResults[this._currentSearchResultIndex]);
   }
 
-  /**
-   * @override
-   * @param {!UI.SearchableView.SearchConfig} searchConfig
-   * @param {string} replacement
-   */
-  replaceSelectionWith(searchConfig, replacement) {
+  replaceSelectionWith(searchConfig: UI.SearchableView.SearchConfig, replacement: string): void {
     const range = this._searchResults[this._currentSearchResultIndex];
     if (!range) {
       return;
     }
-    this._textEditor.highlightSearchResults(/** @type {!RegExp} */ (this._searchRegex), null);
+    this._textEditor.highlightSearchResults((this._searchRegex as RegExp), null);
 
     const oldText = this._textEditor.text(range);
     const regex = searchConfig.toSearchRegex();
@@ -861,12 +768,7 @@ export class SourceFrameImpl extends UI.View.SimpleView {
     this._textEditor.setSelection(newRange.collapseToEnd());
   }
 
-  /**
-   * @override
-   * @param {!UI.SearchableView.SearchConfig} searchConfig
-   * @param {string} replacement
-   */
-  replaceAllWith(searchConfig, replacement) {
+  replaceAllWith(searchConfig: UI.SearchableView.SearchConfig, replacement: string): void {
     this._resetCurrentSearchResultIndex();
 
     let text = this._textEditor.text();
@@ -894,7 +796,7 @@ export class SourceFrameImpl extends UI.View.SimpleView {
     const replacementLineEndings = Platform.StringUtilities.findLineEndingIndexes(replacement);
     const replacementLineCount = replacementLineEndings.length;
     const lastLineNumber = lastRange.startLine + replacementLineEndings.length - 1;
-    let lastColumnNumber = lastRange.startColumn;
+    let lastColumnNumber: number = lastRange.startColumn;
     if (replacementLineEndings.length > 1) {
       lastColumnNumber =
           replacementLineEndings[replacementLineCount - 1] - replacementLineEndings[replacementLineCount - 2] - 1;
@@ -905,10 +807,7 @@ export class SourceFrameImpl extends UI.View.SimpleView {
     this._textEditor.setSelection(TextUtils.TextRange.TextRange.createFromLocation(lastLineNumber, lastColumnNumber));
   }
 
-  /**
-   * @param {!RegExp} regexObject
-   */
-  _collectRegexMatches(regexObject) {
+  _collectRegexMatches(regexObject: RegExp): TextUtils.TextRange.TextRange[] {
     const ranges = [];
     for (let i = 0; i < this._textEditor.linesCount; ++i) {
       let line = this._textEditor.line(i);
@@ -929,35 +828,20 @@ export class SourceFrameImpl extends UI.View.SimpleView {
     return ranges;
   }
 
-  /**
-   * @override
-   * @param {!UI.ContextMenu.ContextMenu} contextMenu
-   * @param {number} editorLineNumber
-   * @return {!Promise<void>}
-   */
-  populateLineGutterContextMenu(contextMenu, editorLineNumber) {
+  populateLineGutterContextMenu(_contextMenu: UI.ContextMenu.ContextMenu, _editorLineNumber: number): Promise<void> {
     return Promise.resolve();
   }
 
-  /**
-   * @override
-   * @param {!UI.ContextMenu.ContextMenu} contextMenu
-   * @param {number} editorLineNumber
-   * @param {number} editorColumnNumber
-   * @return {!Promise<void>}
-   */
-  populateTextAreaContextMenu(contextMenu, editorLineNumber, editorColumnNumber) {
+  populateTextAreaContextMenu(
+      _contextMenu: UI.ContextMenu.ContextMenu, _editorLineNumber: number, _editorColumnNumber: number): Promise<void> {
     return Promise.resolve();
   }
 
-  /**
-   * @return {boolean}
-   */
-  canEditSource() {
+  canEditSource(): boolean {
     return this._editable;
   }
 
-  _updateSourcePosition() {
+  _updateSourcePosition(): void {
     const selections = this._textEditor.selections();
     if (!selections.length) {
       return;
@@ -966,7 +850,7 @@ export class SourceFrameImpl extends UI.View.SimpleView {
       this._sourcePosition.setText(i18nString(UIStrings.dSelectionRegions, {PH1: selections.length}));
       return;
     }
-    let textRange = selections[0];
+    let textRange: TextUtils.TextRange.TextRange = selections[0];
     if (textRange.isEmpty()) {
       const location = this._prettyToRawLocation(textRange.endLine, textRange.endColumn);
       if (this._wasmDisassembly) {
@@ -996,71 +880,41 @@ export class SourceFrameImpl extends UI.View.SimpleView {
   }
 }
 
-/**
- * @interface
- */
-export class LineDecorator {
-  /**
-   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
-   * @param {!SourcesTextEditor} textEditor
-   * @param {string} type
-   */
-  decorate(uiSourceCode, textEditor, type) {
-  }
+export interface LineDecorator {
+  decorate(uiSourceCode: Workspace.UISourceCode.UISourceCode, textEditor: SourcesTextEditor, type: string): void;
 }
 
-/**
- * @interface
- */
-export class Transformer {
-  /**
-   * @param {number} lineNumber
-   * @param {number=} columnNumber
-   * @return {{lineNumber: number, columnNumber?: number}}
-   */
-  editorLocationToUILocation(lineNumber, columnNumber) {
-    throw new Error('Not implemented');
-  }
+export interface Transformer {
+  editorLocationToUILocation(lineNumber: number, columnNumber?: number): {
+    lineNumber: number,
+    columnNumber?: number|undefined,
+  };
 
-  /**
-   * @param {number} lineNumber
-   * @param {number=} columnNumber
-   * @return {{lineNumber: number, columnNumber: number}}
-   */
-  uiLocationToEditorLocation(lineNumber, columnNumber) {
-    throw new Error('Not implemented');
-  }
+  uiLocationToEditorLocation(lineNumber: number, columnNumber?: number): {
+    lineNumber: number,
+    columnNumber: number,
+  };
 }
 
-/** @type {!Array<!LineDecoratorRegistration>} */
-const registeredLineDecorators = [];
+const registeredLineDecorators: LineDecoratorRegistration[] = [];
 
-/**
- * @param {!LineDecoratorRegistration} registration
- */
-export function registerLineDecorator(registration) {
+export function registerLineDecorator(registration: LineDecoratorRegistration): void {
   registeredLineDecorators.push(registration);
 }
 
-/**
- * @return {!Array<!LineDecoratorRegistration>}
- */
-export function getRegisteredLineDecorators() {
+export function getRegisteredLineDecorators(): LineDecoratorRegistration[] {
   return registeredLineDecorators;
 }
 
-/** @enum {string} */
-export const DecoratorType = {
-  PERFORMANCE: 'performance',
-  MEMORY: 'memory',
-  COVERAGE: 'coverage',
-};
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum DecoratorType {
+  PERFORMANCE = 'performance',
+  MEMORY = 'memory',
+  COVERAGE = 'coverage',
+}
 
-/**
-  * @typedef {{
-  *  lineDecorator: function(): !LineDecorator,
-  *  decoratorType: DecoratorType,
-  * }}
-  */
-// @ts-ignore typedef
-export let LineDecoratorRegistration;
+export interface LineDecoratorRegistration {
+  lineDecorator: () => LineDecorator;
+  decoratorType: DecoratorType;
+}

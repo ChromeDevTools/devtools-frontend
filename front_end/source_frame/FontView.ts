@@ -1,3 +1,7 @@
+// Copyright 2021 The Chromium Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+
 /*
  * Copyright (C) 2007, 2008 Apple Inc.  All rights reserved.
  *
@@ -26,6 +30,8 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
 import * as TextUtils from '../text_utils/text_utils.js';
@@ -42,14 +48,18 @@ export const UIStrings = {
   */
   previewOfFontFromS: 'Preview of font from {PH1}',
 };
-const str_ = i18n.i18n.registerUIStrings('source_frame/FontView.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('source_frame/FontView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class FontView extends UI.View.SimpleView {
-  /**
-   * @param {string} mimeType
-   * @param {!TextUtils.ContentProvider.ContentProvider} contentProvider
-   */
-  constructor(mimeType, contentProvider) {
+  _url: string;
+  _mimeType: string;
+  _contentProvider: TextUtils.ContentProvider.ContentProvider;
+  _mimeTypeLabel: UI.Toolbar.ToolbarText;
+  fontPreviewElement!: HTMLElement|null;
+  _dummyElement!: HTMLElement|null;
+  fontStyleElement!: HTMLStyleElement|null;
+  _inResize!: boolean|null;
+  constructor(mimeType: string, contentProvider: TextUtils.ContentProvider.ContentProvider) {
     super(i18nString(UIStrings.font));
     this.registerRequiredCSS('source_frame/fontView.css', {enableLegacyPatching: false});
     this.element.classList.add('font-view');
@@ -58,29 +68,13 @@ export class FontView extends UI.View.SimpleView {
     this._mimeType = mimeType;
     this._contentProvider = contentProvider;
     this._mimeTypeLabel = new UI.Toolbar.ToolbarText(mimeType);
-    /** @type {?HTMLElement} */
-    this.fontPreviewElement;
-    /** @type {?HTMLElement} */
-    this._dummyElement;
-    /** @type {?HTMLStyleElement} */
-    this.fontStyleElement;
-    /** @type {?boolean} */
-    this._inResize;
   }
 
-  /**
-   * @override
-   * @return {!Promise<!Array<!UI.Toolbar.ToolbarItem>>}
-   */
-  async toolbarItems() {
+  async toolbarItems(): Promise<UI.Toolbar.ToolbarItem[]> {
     return [this._mimeTypeLabel];
   }
 
-  /**
-   * @param {string} uniqueFontName
-   * @param {!TextUtils.ContentProvider.DeferredContent} deferredContent
-   */
-  _onFontContentLoaded(uniqueFontName, deferredContent) {
+  _onFontContentLoaded(uniqueFontName: string, deferredContent: TextUtils.ContentProvider.DeferredContent): void {
     const {content} = deferredContent;
     const url = content ? TextUtils.ContentProvider.contentAsDataURL(content, this._mimeType, true) : this._url;
     if (!this.fontStyleElement) {
@@ -91,28 +85,26 @@ export class FontView extends UI.View.SimpleView {
     this.updateFontPreviewSize();
   }
 
-  _createContentIfNeeded() {
+  _createContentIfNeeded(): void {
     if (this.fontPreviewElement) {
       return;
     }
 
     const uniqueFontName = 'WebInspectorFontPreview' + (++_fontId);
-
-    this.fontStyleElement = /** @type {!HTMLStyleElement} */ (document.createElement('style'));
+    this.fontStyleElement = (document.createElement('style') as HTMLStyleElement);
     this._contentProvider.requestContent().then(deferredContent => {
       this._onFontContentLoaded(uniqueFontName, deferredContent);
     });
     this.element.appendChild(this.fontStyleElement);
 
-    const fontPreview = /** @type {!HTMLDivElement} */ (document.createElement('div'));
+    const fontPreview = (document.createElement('div') as HTMLDivElement);
     for (let i = 0; i < _fontPreviewLines.length; ++i) {
       if (i > 0) {
         fontPreview.createChild('br');
       }
       UI.UIUtils.createTextChild(fontPreview, _fontPreviewLines[i]);
     }
-
-    this.fontPreviewElement = /** @type {!HTMLDivElement} */ (fontPreview.cloneNode(true));
+    this.fontPreviewElement = (fontPreview.cloneNode(true) as HTMLDivElement);
     if (!this.fontPreviewElement) {
       return;
     }
@@ -132,19 +124,13 @@ export class FontView extends UI.View.SimpleView {
     this.element.appendChild(this.fontPreviewElement);
   }
 
-  /**
-   * @override
-   */
-  wasShown() {
+  wasShown(): void {
     this._createContentIfNeeded();
 
     this.updateFontPreviewSize();
   }
 
-  /**
-   * @override
-   */
-  onResize() {
+  onResize(): void {
     if (this._inResize) {
       return;
     }
@@ -157,7 +143,10 @@ export class FontView extends UI.View.SimpleView {
     }
   }
 
-  _measureElement() {
+  _measureElement(): {
+    width: number,
+    height: number,
+  } {
     if (!this._dummyElement) {
       throw new Error('No font preview loaded');
     }
@@ -168,7 +157,7 @@ export class FontView extends UI.View.SimpleView {
     return result;
   }
 
-  updateFontPreviewSize() {
+  updateFontPreviewSize(): void {
     if (!this.fontPreviewElement || !this.isShowing()) {
       return;
     }
@@ -196,7 +185,14 @@ export class FontView extends UI.View.SimpleView {
   }
 }
 
+// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
+// eslint-disable-next-line @typescript-eslint/naming-convention
 let _fontId = 0;
 
+// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
+// eslint-disable-next-line @typescript-eslint/naming-convention
 const _fontPreviewLines = ['ABCDEFGHIJKLM', 'NOPQRSTUVWXYZ', 'abcdefghijklm', 'nopqrstuvwxyz', '1234567890'];
+
+// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
+// eslint-disable-next-line @typescript-eslint/naming-convention
 const _measureFontSize = 50;

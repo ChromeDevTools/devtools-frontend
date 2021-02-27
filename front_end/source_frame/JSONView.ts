@@ -28,6 +28,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as i18n from '../i18n/i18n.js';
 import * as ObjectUI from '../object_ui/object_ui.js';
 import * as Platform from '../platform/platform.js';
@@ -40,41 +42,30 @@ export const UIStrings = {
   */
   find: 'Find',
 };
-const str_ = i18n.i18n.registerUIStrings('source_frame/JSONView.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('source_frame/JSONView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-/**
- * @implements {UI.SearchableView.Searchable}
- */
-export class JSONView extends UI.Widget.VBox {
-  /**
-   * @param {!ParsedJSON} parsedJSON
-   * @param {boolean=} startCollapsed
-   */
-  constructor(parsedJSON, startCollapsed) {
+export class JSONView extends UI.Widget.VBox implements UI.SearchableView.Searchable {
+  _initialized: boolean;
+  _parsedJSON: ParsedJSON;
+  _startCollapsed: boolean;
+  _searchableView!: UI.SearchableView.SearchableView|null;
+  _treeOutline!: ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection;
+  _currentSearchFocusIndex: number;
+  _currentSearchTreeElements: ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement[];
+  _searchRegex: RegExp|null;
+  constructor(parsedJSON: ParsedJSON, startCollapsed?: boolean) {
     super();
     this._initialized = false;
     this.registerRequiredCSS('source_frame/jsonView.css', {enableLegacyPatching: false});
     this._parsedJSON = parsedJSON;
     this._startCollapsed = Boolean(startCollapsed);
     this.element.classList.add('json-view');
-
-    /** @type {?UI.SearchableView.SearchableView} */
-    this._searchableView;
-    /** @type {!ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection} */
-    this._treeOutline;
-    /** @type {number} */
     this._currentSearchFocusIndex = 0;
-    /** @type {!Array.<!ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement>} */
     this._currentSearchTreeElements = [];
-    /** @type {?RegExp} */
     this._searchRegex = null;
   }
 
-  /**
-   * @param {string} content
-   * @return {!Promise<?UI.SearchableView.SearchableView>}
-   */
-  static async createView(content) {
+  static async createView(content: string): Promise<UI.SearchableView.SearchableView|null> {
     // We support non-strict JSON parsing by parsing an AST tree which is why we offload it to a worker.
     const parsedJSON = await JSONView._parseJSON(content);
     if (!parsedJSON || typeof parsedJSON.data !== 'object') {
@@ -89,11 +80,7 @@ export class JSONView extends UI.Widget.VBox {
     return searchableView;
   }
 
-  /**
-   * @param {?Object} obj
-   * @return {!UI.SearchableView.SearchableView}
-   */
-  static createViewSync(obj) {
+  static createViewSync(obj: Object|null): UI.SearchableView.SearchableView {
     const jsonView = new JSONView(new ParsedJSON(obj, '', ''));
     const searchableView = new UI.SearchableView.SearchableView(jsonView, null);
     searchableView.setPlaceholder(i18nString(UIStrings.find));
@@ -103,14 +90,10 @@ export class JSONView extends UI.Widget.VBox {
     return searchableView;
   }
 
-  /**
-   * @param {?string} text
-   * @return {!Promise<?ParsedJSON>}
-   */
-  static _parseJSON(text) {
-    let returnObj = null;
+  static _parseJSON(text: string|null): Promise<ParsedJSON|null> {
+    let returnObj: (ParsedJSON|null)|null = null;
     if (text) {
-      returnObj = JSONView._extractJSON(/** @type {string} */ (text));
+      returnObj = JSONView._extractJSON((text as string));
     }
     if (!returnObj) {
       return Promise.resolve(null);
@@ -128,11 +111,7 @@ export class JSONView extends UI.Widget.VBox {
     return Promise.resolve(returnObj);
   }
 
-  /**
-   * @param {string} text
-   * @return {?ParsedJSON}
-   */
-  static _extractJSON(text) {
+  static _extractJSON(text: string): ParsedJSON|null {
     // Do not treat HTML as JSON.
     if (text.startsWith('<')) {
       return null;
@@ -158,30 +137,25 @@ export class JSONView extends UI.Widget.VBox {
     return new ParsedJSON(text, prefix, suffix);
   }
 
-  /**
-   * @param {string} text
-   * @param {string} open
-   * @param {string} close
-   * @return {{start: number, end: number, length: number}}
-   */
-  static _findBrackets(text, open, close) {
+  static _findBrackets(text: string, open: string, close: string): {
+    start: number,
+    end: number,
+    length: number,
+  } {
     const start = text.indexOf(open);
     const end = text.lastIndexOf(close);
-    let length = end - start - 1;
+    let length: -1|number = end - start - 1;
     if (start === -1 || end === -1 || end < start) {
       length = -1;
     }
     return {start: start, end: end, length: length};
   }
 
-  /**
-   * @override
-   */
-  wasShown() {
+  wasShown(): void {
     this._initialize();
   }
 
-  _initialize() {
+  _initialize(): void {
     if (this._initialized) {
       return;
     }
@@ -203,10 +177,7 @@ export class JSONView extends UI.Widget.VBox {
     }
   }
 
-  /**
-   * @param {number} index
-   */
-  _jumpToMatch(index) {
+  _jumpToMatch(index: number): void {
     if (!this._searchRegex) {
       return;
     }
@@ -225,20 +196,14 @@ export class JSONView extends UI.Widget.VBox {
     }
   }
 
-  /**
-   * @param {number} count
-   */
-  _updateSearchCount(count) {
+  _updateSearchCount(count: number): void {
     if (!this._searchableView) {
       return;
     }
     this._searchableView.updateSearchMatchesCount(count);
   }
 
-  /**
-   * @param {number} index
-   */
-  _updateSearchIndex(index) {
+  _updateSearchIndex(index: number): void {
     this._currentSearchFocusIndex = index;
     if (!this._searchableView) {
       return;
@@ -246,17 +211,11 @@ export class JSONView extends UI.Widget.VBox {
     this._searchableView.updateCurrentMatchIndex(index);
   }
 
-  /**
-   * @override
-   */
-  searchCanceled() {
+  searchCanceled(): void {
     this._searchRegex = null;
     this._currentSearchTreeElements = [];
 
-    /**
-     * @type {?UI.TreeOutline.TreeElement}
-     */
-    let element;
+    let element: UI.TreeOutline.TreeElement|null;
     for (element = this._treeOutline.rootElement(); element; element = element.traverseNextTreeElement(false)) {
       if (!(element instanceof ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement)) {
         continue;
@@ -267,22 +226,13 @@ export class JSONView extends UI.Widget.VBox {
     this._updateSearchIndex(0);
   }
 
-  /**
-   * @override
-   * @param {!UI.SearchableView.SearchConfig} searchConfig
-   * @param {boolean} shouldJump
-   * @param {boolean=} jumpBackwards
-   */
-  performSearch(searchConfig, shouldJump, jumpBackwards) {
-    let newIndex = this._currentSearchFocusIndex;
+  performSearch(searchConfig: UI.SearchableView.SearchConfig, shouldJump: boolean, jumpBackwards?: boolean): void {
+    let newIndex: number = this._currentSearchFocusIndex;
     const previousSearchFocusElement = this._currentSearchTreeElements[newIndex];
     this.searchCanceled();
     this._searchRegex = searchConfig.toSearchRegex(true);
 
-    /**
-     * @type {?UI.TreeOutline.TreeElement}
-     */
-    let element;
+    let element: UI.TreeOutline.TreeElement|null;
     for (element = this._treeOutline.rootElement(); element; element = element.traverseNextTreeElement(false)) {
       if (!(element instanceof ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement)) {
         continue;
@@ -311,10 +261,7 @@ export class JSONView extends UI.Widget.VBox {
     this._jumpToMatch(newIndex);
   }
 
-  /**
-   * @override
-   */
-  jumpToNextSearchResult() {
+  jumpToNextSearchResult(): void {
     if (!this._currentSearchTreeElements.length) {
       return;
     }
@@ -323,10 +270,7 @@ export class JSONView extends UI.Widget.VBox {
     this._jumpToMatch(newIndex);
   }
 
-  /**
-   * @override
-   */
-  jumpToPreviousSearchResult() {
+  jumpToPreviousSearchResult(): void {
     if (!this._currentSearchTreeElements.length) {
       return;
     }
@@ -335,31 +279,25 @@ export class JSONView extends UI.Widget.VBox {
     this._jumpToMatch(newIndex);
   }
 
-  /**
-   * @override
-   * @return {boolean}
-   */
-  supportsCaseSensitiveSearch() {
+  supportsCaseSensitiveSearch(): boolean {
     return true;
   }
 
-  /**
-   * @override
-   * @return {boolean}
-   */
-  supportsRegexSearch() {
+  supportsRegexSearch(): boolean {
     return true;
   }
 }
 
-
 export class ParsedJSON {
-  /**
-   * @param {*} data
-   * @param {string} prefix
-   * @param {string} suffix
-   */
-  constructor(data, prefix, suffix) {
+  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  data: any;
+  prefix: string;
+  suffix: string;
+
+  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  constructor(data: any, prefix: string, suffix: string) {
     this.data = data;
     this.prefix = prefix;
     this.suffix = suffix;

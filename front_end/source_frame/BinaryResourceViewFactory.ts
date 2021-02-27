@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
 
 import * as Common from '../common/common.js';             // eslint-disable-line no-unused-vars
 import * as TextUtils from '../text_utils/text_utils.js';  // eslint-disable-line no-unused-vars
@@ -10,24 +11,22 @@ import * as UI from '../ui/ui.js';                         // eslint-disable-lin
 import {ResourceSourceFrame} from './ResourceSourceFrame.js';
 
 export class BinaryResourceViewFactory {
-  /**
-   * @param {string} base64content
-   * @param {string} contentUrl
-   * @param {!Common.ResourceType.ResourceType} resourceType
-   */
-  constructor(base64content, contentUrl, resourceType) {
+  _base64content: string;
+  _contentUrl: string;
+  _resourceType: Common.ResourceType.ResourceType;
+  _arrayPromise: Promise<Uint8Array>|null;
+  _hexPromise: Promise<TextUtils.ContentProvider.DeferredContent>|null;
+  _utf8Promise: Promise<TextUtils.ContentProvider.DeferredContent>|null;
+  constructor(base64content: string, contentUrl: string, resourceType: Common.ResourceType.ResourceType) {
     this._base64content = base64content;
     this._contentUrl = contentUrl;
     this._resourceType = resourceType;
-    /** @type {?Promise<!Uint8Array>} */
     this._arrayPromise = null;
-    /** @type {?Promise<!TextUtils.ContentProvider.DeferredContent>} */
     this._hexPromise = null;
-    /** @type {?Promise<!TextUtils.ContentProvider.DeferredContent>} */
     this._utf8Promise = null;
   }
 
-  async _fetchContentAsArray() {
+  async _fetchContentAsArray(): Promise<Uint8Array> {
     if (!this._arrayPromise) {
       this._arrayPromise = new Promise(async resolve => {
         const fetchResponse = await fetch('data:;base64,' + this._base64content);
@@ -37,30 +36,21 @@ export class BinaryResourceViewFactory {
     return await this._arrayPromise;
   }
 
-  /**
-   * @return {!Promise<!TextUtils.ContentProvider.DeferredContent>}
-   */
-  async hex() {
+  async hex(): Promise<TextUtils.ContentProvider.DeferredContent> {
     if (!this._hexPromise) {
-        const content = await this._fetchContentAsArray();
-        const hexString = BinaryResourceViewFactory.uint8ArrayToHexString(content);
-        return {content: hexString, isEncoded: false};
+      const content = await this._fetchContentAsArray();
+      const hexString = BinaryResourceViewFactory.uint8ArrayToHexString(content);
+      return {content: hexString, isEncoded: false};
     }
 
     return this._hexPromise;
   }
 
-  /**
-   * @return {!Promise<!TextUtils.ContentProvider.DeferredContent>}
-   */
-  async base64() {
+  async base64(): Promise<TextUtils.ContentProvider.DeferredContent> {
     return {content: this._base64content, isEncoded: true};
   }
 
-  /**
-   * @return {!Promise<!TextUtils.ContentProvider.DeferredContent>}
-   */
-  async utf8() {
+  async utf8(): Promise<TextUtils.ContentProvider.DeferredContent> {
     if (!this._utf8Promise) {
       this._utf8Promise = new Promise(async resolve => {
         const content = await this._fetchContentAsArray();
@@ -72,20 +62,14 @@ export class BinaryResourceViewFactory {
     return this._utf8Promise;
   }
 
-  /**
-   * @return {!ResourceSourceFrame}
-   */
-  createBase64View() {
+  createBase64View(): ResourceSourceFrame {
     return new ResourceSourceFrame(
         TextUtils.StaticContentProvider.StaticContentProvider.fromString(
             this._contentUrl, this._resourceType, this._base64content),
-        /* autoPrettyPrint */ false, /** @type {!UI.TextEditor.Options} */ ({lineNumbers: false, lineWrapping: true}));
+        /* autoPrettyPrint */ false, ({lineNumbers: false, lineWrapping: true} as UI.TextEditor.Options));
   }
 
-  /**
-   * @return {!ResourceSourceFrame}
-   */
-  createHexView() {
+  createHexView(): ResourceSourceFrame {
     const hexViewerContentProvider =
         new TextUtils.StaticContentProvider.StaticContentProvider(this._contentUrl, this._resourceType, async () => {
           const contentAsArray = await this._fetchContentAsArray();
@@ -94,26 +78,19 @@ export class BinaryResourceViewFactory {
         });
     return new ResourceSourceFrame(
         hexViewerContentProvider,
-        /* autoPrettyPrint */ false, /** @type {!UI.TextEditor.Options} */ ({lineNumbers: false, lineWrapping: false}));
+        /* autoPrettyPrint */ false, ({lineNumbers: false, lineWrapping: false} as UI.TextEditor.Options));
   }
 
-  /**
-   * @return {!ResourceSourceFrame}
-   */
-  createUtf8View() {
+  createUtf8View(): ResourceSourceFrame {
     const utf8fn = this.utf8.bind(this);
     const utf8ContentProvider =
         new TextUtils.StaticContentProvider.StaticContentProvider(this._contentUrl, this._resourceType, utf8fn);
     return new ResourceSourceFrame(
         utf8ContentProvider,
-        /* autoPrettyPrint */ false, /** @type {!UI.TextEditor.Options} */ ({lineNumbers: true, lineWrapping: true}));
+        /* autoPrettyPrint */ false, ({lineNumbers: true, lineWrapping: true} as UI.TextEditor.Options));
   }
 
-  /**
-   * @param {!Uint8Array} uint8Array
-   * @return {string}
-   */
-  static uint8ArrayToHexString(uint8Array) {
+  static uint8ArrayToHexString(uint8Array: Uint8Array): string {
     let output = '';
     for (let i = 0; i < uint8Array.length; i++) {
       output += BinaryResourceViewFactory.numberToHex(uint8Array[i], 2);
@@ -121,12 +98,7 @@ export class BinaryResourceViewFactory {
     return output;
   }
 
-  /**
-   * @param {number} number
-   * @param {number} padding
-   * @return {string}
-   */
-  static numberToHex(number, padding) {
+  static numberToHex(number: number, padding: number): string {
     let hex = number.toString(16);
     while (hex.length < padding) {
       hex = '0' + hex;
@@ -134,11 +106,7 @@ export class BinaryResourceViewFactory {
     return hex;
   }
 
-  /**
-   * @param {!Uint8Array} array
-   * @return {string}
-   */
-  static uint8ArrayToHexViewer(array) {
+  static uint8ArrayToHexViewer(array: Uint8Array): string {
     let output = '';
     let line = 0;
 

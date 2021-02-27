@@ -1,3 +1,7 @@
+// Copyright 2021 The Chromium Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+
 /*
  * Copyright (C) 2007, 2008 Apple Inc.  All rights reserved.
  *
@@ -25,6 +29,8 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+/* eslint-disable rulesdir/no_underscored_properties */
 
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
@@ -75,14 +81,21 @@ export const UIStrings = {
   */
   download: 'download',
 };
-const str_ = i18n.i18n.registerUIStrings('source_frame/ImageView.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('source_frame/ImageView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class ImageView extends UI.View.SimpleView {
-  /**
-   * @param {string} mimeType
-   * @param {!TextUtils.ContentProvider.ContentProvider} contentProvider
-   */
-  constructor(mimeType, contentProvider) {
+  _url: string;
+  _parsedURL: Common.ParsedURL.ParsedURL;
+  _mimeType: string;
+  _contentProvider: TextUtils.ContentProvider.ContentProvider;
+  _uiSourceCode: Workspace.UISourceCode.UISourceCode|null;
+  _sizeLabel: UI.Toolbar.ToolbarText;
+  _dimensionsLabel: UI.Toolbar.ToolbarText;
+  _mimeTypeLabel: UI.Toolbar.ToolbarText;
+  _container: HTMLElement;
+  _imagePreviewElement: HTMLImageElement;
+  _cachedContent?: string|null;
+  constructor(mimeType: string, contentProvider: TextUtils.ContentProvider.ContentProvider) {
     super(i18nString(UIStrings.image));
     this.registerRequiredCSS('source_frame/imageView.css', {enableLegacyPatching: false});
     this.element.tabIndex = -1;
@@ -92,7 +105,7 @@ export class ImageView extends UI.View.SimpleView {
     this._mimeType = mimeType;
     this._contentProvider = contentProvider;
     this._uiSourceCode = contentProvider instanceof Workspace.UISourceCode.UISourceCode ?
-        /** @type {!Workspace.UISourceCode.UISourceCode} */ (contentProvider) :
+        contentProvider as Workspace.UISourceCode.UISourceCode :
         null;
     if (this._uiSourceCode) {
       this._uiSourceCode.addEventListener(
@@ -105,53 +118,43 @@ export class ImageView extends UI.View.SimpleView {
     this._dimensionsLabel = new UI.Toolbar.ToolbarText();
     this._mimeTypeLabel = new UI.Toolbar.ToolbarText(mimeType);
     this._container = this.element.createChild('div', 'image');
-    /** @type {!HTMLImageElement} */
-    this._imagePreviewElement =
-        /** @type {!HTMLImageElement} */ (this._container.createChild('img', 'resource-image-view'));
+    this._imagePreviewElement = (this._container.createChild('img', 'resource-image-view') as HTMLImageElement);
     this._imagePreviewElement.addEventListener('contextmenu', this._contextMenu.bind(this), true);
   }
 
-  /**
-   * @override
-   * @return {!Promise<!Array<!UI.Toolbar.ToolbarItem>>}
-   */
-  async toolbarItems() {
+  async toolbarItems(): Promise<UI.Toolbar.ToolbarItem[]> {
     await this._updateContentIfNeeded();
     return [
-      this._sizeLabel, new UI.Toolbar.ToolbarSeparator(), this._dimensionsLabel, new UI.Toolbar.ToolbarSeparator(),
-      this._mimeTypeLabel
+      this._sizeLabel,
+      new UI.Toolbar.ToolbarSeparator(),
+      this._dimensionsLabel,
+      new UI.Toolbar.ToolbarSeparator(),
+      this._mimeTypeLabel,
     ];
   }
 
-  /**
-   * @override
-   */
-  wasShown() {
+  wasShown(): void {
     this._updateContentIfNeeded();
   }
 
-  /**
-   * @override
-   */
-  disposeView() {
+  disposeView(): void {
     if (this._uiSourceCode) {
       this._uiSourceCode.removeEventListener(
           Workspace.UISourceCode.Events.WorkingCopyCommitted, this._workingCopyCommitted, this);
     }
   }
 
-  _workingCopyCommitted() {
+  _workingCopyCommitted(): void {
     this._updateContentIfNeeded();
   }
 
-  async _updateContentIfNeeded() {
+  async _updateContentIfNeeded(): Promise<void> {
     const {content} = await this._contentProvider.requestContent();
     if (this._cachedContent === content) {
       return;
     }
 
     const contentEncoded = await this._contentProvider.contentEncoded();
-    /** @type {?string} */
     this._cachedContent = content;
     const imageSrc = TextUtils.ContentProvider.contentAsDataURL(content, this._mimeType, contentEncoded) || this._url;
     const loadPromise = new Promise(x => {
@@ -166,10 +169,7 @@ export class ImageView extends UI.View.SimpleView {
         UIStrings.dD, {PH1: this._imagePreviewElement.naturalWidth, PH2: this._imagePreviewElement.naturalHeight}));
   }
 
-  /**
-   * @param {!Event} event
-   */
-  _contextMenu(event) {
+  _contextMenu(event: Event): void {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
     const parsedSrc = new Common.ParsedURL.ParsedURL(this._imagePreviewElement.src);
     if (!this._parsedURL.isDataURL()) {
@@ -188,15 +188,15 @@ export class ImageView extends UI.View.SimpleView {
     contextMenu.show();
   }
 
-  _copyImageAsDataURL() {
+  _copyImageAsDataURL(): void {
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(this._imagePreviewElement.src);
   }
 
-  _copyImageURL() {
+  _copyImageURL(): void {
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(this._url);
   }
 
-  async _saveImage() {
+  async _saveImage(): Promise<void> {
     const contentEncoded = await this._contentProvider.contentEncoded();
     if (!this._cachedContent) {
       return;
@@ -222,14 +222,11 @@ export class ImageView extends UI.View.SimpleView {
     link.remove();
   }
 
-  _openInNewTab() {
+  _openInNewTab(): void {
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(this._url);
   }
 
-  /**
-   * @param {!DataTransfer} dataTransfer
-   */
-  async _handleDrop(dataTransfer) {
+  async _handleDrop(dataTransfer: DataTransfer): Promise<void> {
     const items = dataTransfer.items;
     if (!items.length || items[0].kind !== 'file') {
       return;
@@ -237,15 +234,12 @@ export class ImageView extends UI.View.SimpleView {
 
     const entry = items[0].webkitGetAsEntry();
     const encoded = !entry.name.endsWith('.svg');
-    /**
-     * @param {!Blob} file
-     */
-    const fileCallback = file => {
+    const fileCallback = (file: Blob): void => {
       const reader = new FileReader();
-      reader.onloadend = () => {
+      reader.onloadend = (): void => {
         let result;
         try {
-          result = /** @type {?string} */ (reader.result);
+          result = (reader.result as string | null);
         } catch (e) {
           result = null;
           console.error('Can\'t read file: ' + e);

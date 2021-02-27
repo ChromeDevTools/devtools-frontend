@@ -9014,46 +9014,46 @@
   "snippets/SnippetsQuickOpen.ts | runSnippet": {
     "message": "Run snippet"
   },
-  "source_frame/FontView.js | font": {
+  "source_frame/FontView.ts | font": {
     "message": "Font"
   },
-  "source_frame/FontView.js | previewOfFontFromS": {
+  "source_frame/FontView.ts | previewOfFontFromS": {
     "message": "Preview of font from {PH1}"
   },
-  "source_frame/ImageView.js | copyImageAsDataUri": {
+  "source_frame/ImageView.ts | copyImageAsDataUri": {
     "message": "Copy image as data URI"
   },
-  "source_frame/ImageView.js | copyImageUrl": {
+  "source_frame/ImageView.ts | copyImageUrl": {
     "message": "Copy image URL"
   },
-  "source_frame/ImageView.js | dD": {
+  "source_frame/ImageView.ts | dD": {
     "message": "{PH1} × {PH2}"
   },
-  "source_frame/ImageView.js | download": {
+  "source_frame/ImageView.ts | download": {
     "message": "download"
   },
-  "source_frame/ImageView.js | dropImageFileHere": {
+  "source_frame/ImageView.ts | dropImageFileHere": {
     "message": "Drop image file here"
   },
-  "source_frame/ImageView.js | image": {
+  "source_frame/ImageView.ts | image": {
     "message": "Image"
   },
-  "source_frame/ImageView.js | imageFromS": {
+  "source_frame/ImageView.ts | imageFromS": {
     "message": "Image from {PH1}"
   },
-  "source_frame/ImageView.js | openImageInNewTab": {
+  "source_frame/ImageView.ts | openImageInNewTab": {
     "message": "Open image in new tab"
   },
-  "source_frame/ImageView.js | saveImageAs": {
+  "source_frame/ImageView.ts | saveImageAs": {
     "message": "Save image as..."
   },
-  "source_frame/JSONView.js | find": {
+  "source_frame/JSONView.ts | find": {
     "message": "Find"
   },
-  "source_frame/PreviewFactory.js | nothingToPreview": {
+  "source_frame/PreviewFactory.ts | nothingToPreview": {
     "message": "Nothing to preview"
   },
-  "source_frame/ResourceSourceFrame.js | find": {
+  "source_frame/ResourceSourceFrame.ts | find": {
     "message": "Find"
   },
   "source_frame/source_frame-meta.ts | defaultIndentation": {
@@ -9083,31 +9083,31 @@
   "source_frame/source_frame-meta.ts | tabCharacter": {
     "message": "Tab character"
   },
-  "source_frame/SourceFrame.js | bytecodePositionXs": {
+  "source_frame/SourceFrame.ts | bytecodePositionXs": {
     "message": "Bytecode position 0x{PH1}"
   },
-  "source_frame/SourceFrame.js | dCharactersSelected": {
+  "source_frame/SourceFrame.ts | dCharactersSelected": {
     "message": "{PH1} characters selected"
   },
-  "source_frame/SourceFrame.js | dLinesDCharactersSelected": {
+  "source_frame/SourceFrame.ts | dLinesDCharactersSelected": {
     "message": "{PH1} lines, {PH2} characters selected"
   },
-  "source_frame/SourceFrame.js | dSelectionRegions": {
+  "source_frame/SourceFrame.ts | dSelectionRegions": {
     "message": "{PH1} selection regions"
   },
-  "source_frame/SourceFrame.js | lineSColumnS": {
+  "source_frame/SourceFrame.ts | lineSColumnS": {
     "message": "Line {PH1}, Column {PH2}"
   },
-  "source_frame/SourceFrame.js | loading": {
+  "source_frame/SourceFrame.ts | loading": {
     "message": "Loading…"
   },
-  "source_frame/SourceFrame.js | prettyPrint": {
+  "source_frame/SourceFrame.ts | prettyPrint": {
     "message": "Pretty print"
   },
-  "source_frame/SourceFrame.js | source": {
+  "source_frame/SourceFrame.ts | source": {
     "message": "Source"
   },
-  "source_frame/XMLView.js | find": {
+  "source_frame/XMLView.ts | find": {
     "message": "Find"
   },
   "sources/AddSourceMapURLDialog.js | add": {

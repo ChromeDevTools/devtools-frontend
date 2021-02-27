@@ -9014,46 +9014,46 @@
   "snippets/SnippetsQuickOpen.ts | runSnippet": {
     "message": "R̂ún̂ śn̂íp̂ṕêt́"
   },
-  "source_frame/FontView.js | font": {
+  "source_frame/FontView.ts | font": {
     "message": "F̂ón̂t́"
   },
-  "source_frame/FontView.js | previewOfFontFromS": {
+  "source_frame/FontView.ts | previewOfFontFromS": {
     "message": "P̂ŕêv́îéŵ óf̂ f́ôńt̂ f́r̂óm̂ {PH1}"
   },
-  "source_frame/ImageView.js | copyImageAsDataUri": {
+  "source_frame/ImageView.ts | copyImageAsDataUri": {
     "message": "Ĉóp̂ý îḿâǵê áŝ d́ât́â ÚR̂Í"
   },
-  "source_frame/ImageView.js | copyImageUrl": {
+  "source_frame/ImageView.ts | copyImageUrl": {
     "message": "Ĉóp̂ý îḿâǵê ÚR̂Ĺ"
   },
-  "source_frame/ImageView.js | dD": {
+  "source_frame/ImageView.ts | dD": {
     "message": "{PH1} × {PH2}"
   },
-  "source_frame/ImageView.js | download": {
+  "source_frame/ImageView.ts | download": {
     "message": "d̂óŵńl̂óâd́"
   },
-  "source_frame/ImageView.js | dropImageFileHere": {
+  "source_frame/ImageView.ts | dropImageFileHere": {
     "message": "D̂ŕôṕ îḿâǵê f́îĺê h́êŕê"
   },
-  "source_frame/ImageView.js | image": {
+  "source_frame/ImageView.ts | image": {
     "message": "Îḿâǵê"
   },
-  "source_frame/ImageView.js | imageFromS": {
+  "source_frame/ImageView.ts | imageFromS": {
     "message": "Îḿâǵê f́r̂óm̂ {PH1}"
   },
-  "source_frame/ImageView.js | openImageInNewTab": {
+  "source_frame/ImageView.ts | openImageInNewTab": {
     "message": "Ôṕêń îḿâǵê ín̂ ńêẃ t̂áb̂"
   },
-  "source_frame/ImageView.js | saveImageAs": {
+  "source_frame/ImageView.ts | saveImageAs": {
     "message": "Ŝáv̂é îḿâǵê áŝ..."
   },
-  "source_frame/JSONView.js | find": {
+  "source_frame/JSONView.ts | find": {
     "message": "F̂ín̂d́"
   },
-  "source_frame/PreviewFactory.js | nothingToPreview": {
+  "source_frame/PreviewFactory.ts | nothingToPreview": {
     "message": "N̂ót̂h́îńĝ t́ô ṕr̂év̂íêẃ"
   },
-  "source_frame/ResourceSourceFrame.js | find": {
+  "source_frame/ResourceSourceFrame.ts | find": {
     "message": "F̂ín̂d́"
   },
   "source_frame/source_frame-meta.ts | defaultIndentation": {
@@ -9083,31 +9083,31 @@
   "source_frame/source_frame-meta.ts | tabCharacter": {
     "message": "T̂áb̂ ćĥár̂áĉt́êŕ"
   },
-  "source_frame/SourceFrame.js | bytecodePositionXs": {
+  "source_frame/SourceFrame.ts | bytecodePositionXs": {
     "message": "B̂ýt̂éĉód̂é p̂óŝít̂íôń 0x{PH1}"
   },
-  "source_frame/SourceFrame.js | dCharactersSelected": {
+  "source_frame/SourceFrame.ts | dCharactersSelected": {
     "message": "{PH1} ĉh́âŕâćt̂ér̂ś ŝél̂éĉt́êd́"
   },
-  "source_frame/SourceFrame.js | dLinesDCharactersSelected": {
+  "source_frame/SourceFrame.ts | dLinesDCharactersSelected": {
     "message": "{PH1} l̂ín̂éŝ, {PH2} ćĥár̂áĉt́êŕŝ śêĺêćt̂éd̂"
   },
-  "source_frame/SourceFrame.js | dSelectionRegions": {
+  "source_frame/SourceFrame.ts | dSelectionRegions": {
     "message": "{PH1} ŝél̂éĉt́îón̂ ŕêǵîón̂ś"
   },
-  "source_frame/SourceFrame.js | lineSColumnS": {
+  "source_frame/SourceFrame.ts | lineSColumnS": {
     "message": "L̂ín̂é {PH1}, Ĉól̂úm̂ń {PH2}"
   },
-  "source_frame/SourceFrame.js | loading": {
+  "source_frame/SourceFrame.ts | loading": {
     "message": "L̂óâd́îńĝ…"
   },
-  "source_frame/SourceFrame.js | prettyPrint": {
+  "source_frame/SourceFrame.ts | prettyPrint": {
     "message": "P̂ŕêt́t̂ý p̂ŕîńt̂"
   },
-  "source_frame/SourceFrame.js | source": {
+  "source_frame/SourceFrame.ts | source": {
     "message": "Ŝóûŕĉé"
   },
-  "source_frame/XMLView.js | find": {
+  "source_frame/XMLView.ts | find": {
     "message": "F̂ín̂d́"
   },
   "sources/AddSourceMapURLDialog.js | add": {

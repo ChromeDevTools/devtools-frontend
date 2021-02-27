@@ -2,27 +2,23 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Diff from '../diff/diff.js';
 import * as TextEditor from '../text_editor/text_editor.js';  // eslint-disable-line no-unused-vars
 import {SourcesTextEditor} from './SourcesTextEditor.js';     // eslint-disable-line no-unused-vars
 
 export class SourceCodeDiff {
-  /**
-   * @param {!SourcesTextEditor} textEditor
-   */
-  constructor(textEditor) {
+  _textEditor: SourcesTextEditor;
+  _animatedLines: TextEditor.CodeMirrorTextEditor.TextEditorPositionHandle[];
+  _animationTimeout: number|null;
+  constructor(textEditor: SourcesTextEditor) {
     this._textEditor = textEditor;
-    /** @type {!Array<!TextEditor.CodeMirrorTextEditor.TextEditorPositionHandle>}*/
     this._animatedLines = [];
-    /** @type {?number} */
     this._animationTimeout = null;
   }
 
-  /**
-   * @param {?string} oldContent
-   * @param {?string} newContent
-   */
-  highlightModifiedLines(oldContent, newContent) {
+  highlightModifiedLines(oldContent: string|null, newContent: string|null): void {
     if (typeof oldContent !== 'string' || typeof newContent !== 'string') {
       return;
     }
@@ -47,30 +43,20 @@ export class SourceCodeDiff {
         this._updateHighlightedLines.bind(this, []), 400);  // // Keep this timeout in sync with sourcesView.css.
   }
 
-  /**
-   * @param {!Array<!TextEditor.CodeMirrorTextEditor.TextEditorPositionHandle>} newLines
-   */
-  _updateHighlightedLines(newLines) {
+  _updateHighlightedLines(newLines: TextEditor.CodeMirrorTextEditor.TextEditorPositionHandle[]): void {
     if (this._animationTimeout) {
       clearTimeout(this._animationTimeout);
     }
     this._animationTimeout = null;
     this._textEditor.operation(operation.bind(this));
 
-    /**
-     * @this {SourceCodeDiff}
-     */
-    function operation() {
+    function operation(this: SourceCodeDiff): void {
       toggleLines.call(this, false);
       this._animatedLines = newLines;
       toggleLines.call(this, true);
     }
 
-    /**
-     * @param {boolean} value
-     * @this {SourceCodeDiff}
-     */
-    function toggleLines(value) {
+    function toggleLines(this: SourceCodeDiff, value: boolean): void {
       for (let i = 0; i < this._animatedLines.length; ++i) {
         const location = this._animatedLines[i].resolve();
         if (location) {
@@ -80,13 +66,16 @@ export class SourceCodeDiff {
     }
   }
 
-  /**
-   * @param {!Diff.Diff.DiffArray} diff
-   * @return {!Array<!{type: !EditType, from: number, to: number}>}
-   */
-  static computeDiff(diff) {
-    /** @type {!Array<!{type: !EditType, from: number, to: number}>} */
-    const result = [];
+  static computeDiff(diff: Diff.Diff.DiffArray): {
+    type: EditType,
+    from: number,
+    to: number,
+  }[] {
+    const result: {
+      type: EditType,
+      from: number,
+      to: number,
+    }[] = [];
     let hasAdded = false;
     let hasRemoved = false;
     let blockStartLineNumber = 0;
@@ -123,10 +112,10 @@ export class SourceCodeDiff {
     }
     return result;
 
-    function flush() {
+    function flush(): void {
       let type = EditType.Insert;
       let from = blockStartLineNumber;
-      let to = currentLineNumber;
+      let to: 1|number = currentLineNumber;
       if (hasAdded && hasRemoved) {
         type = EditType.Modify;
       } else if (!hasAdded && hasRemoved && from === 0 && to === 0) {
@@ -144,9 +133,10 @@ export class SourceCodeDiff {
   }
 }
 
-/** @enum {symbol} */
-export const EditType = {
-  Insert: Symbol('Insert'),
-  Delete: Symbol('Delete'),
-  Modify: Symbol('Modify'),
-};
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum EditType {
+  Insert = 'Insert',
+  Delete = 'Delete',
+  Modify = 'Modify',
+}

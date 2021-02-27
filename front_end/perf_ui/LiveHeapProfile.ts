@@ -2,22 +2,25 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
 import * as Host from '../host/host.js';
 import * as SDK from '../sdk/sdk.js';
 
 import {Memory} from './LineLevelProfile.js';
 
-/**
- * @implements {Common.Runnable.Runnable}
- * @implements {SDK.SDKModel.SDKModelObserver<!SDK.HeapProfilerModel.HeapProfilerModel>}
- */
-export class LiveHeapProfile {
+export class LiveHeapProfile implements Common.Runnable.Runnable,
+                                        SDK.SDKModel.SDKModelObserver<SDK.HeapProfilerModel.HeapProfilerModel> {
+  _running: boolean;
+  _sessionId: number;
+  _loadEventCallback: (arg0?: Function|null) => void;
+  _setting: Common.Settings.Setting<boolean>;
+
   constructor() {
     this._running = false;
     this._sessionId = 0;
-    /** @type {function(?Function=):void} */
-    this._loadEventCallback = () => {};
+    this._loadEventCallback = (): void => {};
     this._setting = Common.Settings.Settings.instance().moduleSetting('memoryLiveHeapProfile');
     this._setting.addChangeListener(event => event.data ? this._startProfiling() : this._stopProfiling());
     if (this._setting.get()) {
@@ -25,30 +28,19 @@ export class LiveHeapProfile {
     }
   }
 
-  /**
-   * @override
-   */
-  run() {
+  run(): Promise<void> {
     return Promise.resolve();
   }
 
-  /**
-   * @override
-   * @param {!SDK.HeapProfilerModel.HeapProfilerModel} model
-   */
-  modelAdded(model) {
+  modelAdded(model: SDK.HeapProfilerModel.HeapProfilerModel): void {
     model.startSampling(1e4);
   }
 
-  /**
-   * @override
-   * @param {!SDK.HeapProfilerModel.HeapProfilerModel} model
-   */
-  modelRemoved(model) {
+  modelRemoved(_model: SDK.HeapProfilerModel.HeapProfilerModel): void {
     // Cannot do much when the model has already been removed.
   }
 
-  async _startProfiling() {
+  async _startProfiling(): Promise<void> {
     if (this._running) {
       return;
     }
@@ -74,9 +66,10 @@ export class LiveHeapProfile {
         Memory.instance().appendHeapProfile(profile, models[i].target());
       }
       await Promise.race([
-        new Promise(r => setTimeout(r, Host.InspectorFrontendHost.isUnderTest() ? 10 : 5000)), new Promise(r => {
+        new Promise(r => setTimeout(r, Host.InspectorFrontendHost.isUnderTest() ? 10 : 5000)),
+        new Promise(r => {
           this._loadEventCallback = r;
-        })
+        }),
       ]);
     } while (sessionId === this._sessionId);
 
@@ -89,7 +82,7 @@ export class LiveHeapProfile {
     Memory.instance().reset();
   }
 
-  _stopProfiling() {
+  _stopProfiling(): void {
     if (!this._running) {
       return;
     }
@@ -97,7 +90,7 @@ export class LiveHeapProfile {
     this._sessionId++;
   }
 
-  _loadEventFired() {
+  _loadEventFired(): void {
     this._loadEventCallback();
   }
 }

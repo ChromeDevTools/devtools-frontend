@@ -7,17 +7,17 @@ import("../../scripts/build/ninja/devtools_module.gni")
 
 devtools_module("perf_ui") {
   sources = [
-    "ChartViewport.js",
-    "FilmStripView.js",
-    "FlameChart.js",
-    "GCActionDelegate.js",
-    "LineLevelProfile.js",
-    "LiveHeapProfile.js",
-    "NetworkPriorities.js",
-    "OverviewGrid.js",
+    "ChartViewport.ts",
+    "FilmStripView.ts",
+    "FlameChart.ts",
+    "GCActionDelegate.ts",
+    "LineLevelProfile.ts",
+    "LiveHeapProfile.ts",
+    "NetworkPriorities.ts",
+    "OverviewGrid.ts",
     "PieChart.ts",
-    "TimelineGrid.js",
-    "TimelineOverviewPane.js",
+    "TimelineGrid.ts",
+    "TimelineOverviewPane.ts",
   ]
 
   deps = [
@@ -43,13 +43,13 @@ devtools_module("perf_ui") {
 }
 
 devtools_entrypoint("bundle") {
-  entrypoint = "perf_ui.js"
+  entrypoint = "perf_ui.ts"
 
   deps = [ ":perf_ui" ]
 }
 
 devtools_entrypoint("legacy") {
-  entrypoint = "perf_ui-legacy.js"
+  entrypoint = "perf_ui-legacy.ts"
 
   deps = [ ":bundle" ]
 }

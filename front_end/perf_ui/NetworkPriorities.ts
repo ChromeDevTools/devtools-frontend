@@ -2,8 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
 
 import * as i18n from '../i18n/i18n.js';
+import * as Platform from '../platform/platform.js';
+
 export const UIStrings = {
   /**
   *@description Text in Network Priorities of the Performance panel
@@ -26,43 +29,31 @@ export const UIStrings = {
   */
   highest: 'Highest',
 };
-const str_ = i18n.i18n.registerUIStrings('perf_ui/NetworkPriorities.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('perf_ui/NetworkPriorities.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-/**
- * @param {!Protocol.Network.ResourcePriority} priority
- * @return {string}
- */
-export function uiLabelForNetworkPriority(priority) {
+export function uiLabelForNetworkPriority(priority: Protocol.Network.ResourcePriority): string {
   return priorityUILabelMap().get(priority) || '';
 }
 
-/** @type {!Map<string, !Protocol.Network.ResourcePriority>} */
-const uiLabelToPriorityMapInstance = new Map();
+const uiLabelToPriorityMapInstance = new Map<string, Protocol.Network.ResourcePriority>();
 
-/**
- * @param {string} priorityLabel
- * @return {string}
- */
-export function uiLabelToNetworkPriority(priorityLabel) {
+export function uiLabelToNetworkPriority(priorityLabel: string): string {
   if (uiLabelToPriorityMapInstance.size === 0) {
     priorityUILabelMap().forEach((value, key) => uiLabelToPriorityMapInstance.set(value, key));
   }
   return uiLabelToPriorityMapInstance.get(priorityLabel) || '';
 }
 
-/** @type {!Map<!Protocol.Network.ResourcePriority, string>} */
-let _priorityUILabelMapInstance;
+// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
+// eslint-disable-next-line @typescript-eslint/naming-convention
+let _priorityUILabelMapInstance: Map<Protocol.Network.ResourcePriority, string>;
 
-/**
- * @return {!Map<!Protocol.Network.ResourcePriority, string>}
- */
-export function priorityUILabelMap() {
+export function priorityUILabelMap(): Map<Protocol.Network.ResourcePriority, string> {
   if (_priorityUILabelMapInstance) {
     return _priorityUILabelMapInstance;
   }
 
-  /** @type {!Map<!Protocol.Network.ResourcePriority, string>} */
-  const map = new Map();
+  const map = new Map<Protocol.Network.ResourcePriority, Platform.UIString.LocalizedString>();
   map.set(Protocol.Network.ResourcePriority.VeryLow, i18nString(UIStrings.lowest));
   map.set(Protocol.Network.ResourcePriority.Low, i18nString(UIStrings.low));
   map.set(Protocol.Network.ResourcePriority.Medium, i18nString(UIStrings.medium));
@@ -72,14 +63,9 @@ export function priorityUILabelMap() {
   return map;
 }
 
-/** @type {!Map<!Protocol.Network.ResourcePriority, number>} */
-const networkPriorityWeights = new Map();
+const networkPriorityWeights = new Map<Protocol.Network.ResourcePriority, number>();
 
-/**
- * @param {!Protocol.Network.ResourcePriority} priority
- * @return {number}
- */
-export function networkPriorityWeight(priority) {
+export function networkPriorityWeight(priority: Protocol.Network.ResourcePriority): number {
   if (networkPriorityWeights.size === 0) {
     networkPriorityWeights.set(Protocol.Network.ResourcePriority.VeryLow, 1);
     networkPriorityWeights.set(Protocol.Network.ResourcePriority.Low, 2);

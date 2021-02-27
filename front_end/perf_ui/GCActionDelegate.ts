@@ -2,21 +2,17 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';  // eslint-disable-line no-unused-vars
 
-/** @type {!GCActionDelegate} */
-let gCActionDelegateInstance;
+let gCActionDelegateInstance: GCActionDelegate;
 
-
-/**
- * @implements {UI.ActionRegistration.ActionDelegate}
- */
-export class GCActionDelegate {
-  /**
-   * @param {{forceNew: ?boolean}} opts
-   */
-  static instance(opts = {forceNew: null}) {
+export class GCActionDelegate implements UI.ActionRegistration.ActionDelegate {
+  static instance(opts: {
+    forceNew: boolean|null,
+  } = {forceNew: null}): GCActionDelegate {
     const {forceNew} = opts;
     if (!gCActionDelegateInstance || forceNew) {
       gCActionDelegateInstance = new GCActionDelegate();
@@ -25,13 +21,7 @@ export class GCActionDelegate {
     return gCActionDelegateInstance;
   }
 
-  /**
-   * @override
-   * @param {!UI.Context.Context} context
-   * @param {string} actionId
-   * @return {boolean}
-   */
-  handleAction(context, actionId) {
+  handleAction(_context: UI.Context.Context, _actionId: string): boolean {
     for (const heapProfilerModel of SDK.SDKModel.TargetManager.instance().models(
              SDK.HeapProfilerModel.HeapProfilerModel)) {
       heapProfilerModel.collectGarbage();

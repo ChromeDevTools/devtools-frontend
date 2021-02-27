@@ -2,12 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Bindings from '../bindings/bindings.js';
 import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as SourceFrame from '../source_frame/source_frame.js';  // eslint-disable-line no-unused-vars
-import * as TextEditor from '../text_editor/text_editor.js';     // eslint-disable-line no-unused-vars
 import * as Workspace from '../workspace/workspace.js';          // eslint-disable-line no-unused-vars
 
 export const UIStrings = {
@@ -24,23 +25,20 @@ export const UIStrings = {
   */
   kb: 'kB',
 };
-const str_ = i18n.i18n.registerUIStrings('perf_ui/LineLevelProfile.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('perf_ui/LineLevelProfile.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-/** @type {!Performance} */
-let performanceInstance;
+let performanceInstance: Performance;
 
 export class Performance {
-  /**
-   * @private
-   */
-  constructor() {
+  _helper: Helper;
+
+  private constructor() {
     this._helper = new Helper('performance');
   }
 
-  /**
-   * @param {{forceNew: ?boolean}} opts
-   */
-  static instance(opts = {forceNew: null}) {
+  static instance(opts: {
+    forceNew: boolean|null,
+  } = {forceNew: null}): Performance {
     const {forceNew} = opts;
     if (!performanceInstance || forceNew) {
       performanceInstance = new Performance();
@@ -49,23 +47,20 @@ export class Performance {
     return performanceInstance;
   }
 
-  reset() {
+  reset(): void {
     this._helper.reset();
   }
 
-  /**
-   * @param {!SDK.CPUProfileDataModel.CPUProfileDataModel} profile
-   */
-  _appendLegacyCPUProfile(profile) {
+  _appendLegacyCPUProfile(profile: SDK.CPUProfileDataModel.CPUProfileDataModel): void {
     const target = profile.target();
 
-    /** @type {!Array.<!SDK.CPUProfileDataModel.CPUProfileNode>} */
-    const nodesToGo = [profile.profileHead];
+    const nodesToGo: SDK.CPUProfileDataModel.CPUProfileNode[] = [profile.profileHead];
     const sampleDuration = (profile.profileEndTime - profile.profileStartTime) / profile.totalHitCount;
     while (nodesToGo.length) {
-      /** @type {!Array.<!SDK.CPUProfileDataModel.CPUProfileNode>} */
-      const nodes =
-          /** @type {*} */ (nodesToGo.pop()).children;  // Cast to any because runtime checks assert the props.
+      const nodes: SDK.CPUProfileDataModel.CPUProfileNode[] =
+          // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          (nodesToGo.pop() as any).children;  // Cast to any because runtime checks assert the props.
       for (let i = 0; i < nodes.length; ++i) {
         const node = nodes[i];
         nodesToGo.push(node);
@@ -82,10 +77,7 @@ export class Performance {
     }
   }
 
-  /**
-   * @param {!SDK.CPUProfileDataModel.CPUProfileDataModel} profile
-   */
-  appendCPUProfile(profile) {
+  appendCPUProfile(profile: SDK.CPUProfileDataModel.CPUProfileDataModel): void {
     if (!profile.lines) {
       this._appendLegacyCPUProfile(profile);
       this._helper.scheduleUpdate();
@@ -116,21 +108,17 @@ export class Performance {
   }
 }
 
-/** @type {!Memory} */
-let memoryInstance;
+let memoryInstance: Memory;
 
 export class Memory {
-  /**
-   * @private
-   */
-  constructor() {
+  _helper: Helper;
+  private constructor() {
     this._helper = new Helper('memory');
   }
 
-  /**
-   * @param {{forceNew: ?boolean}} opts
-   */
-  static instance(opts = {forceNew: null}) {
+  static instance(opts: {
+    forceNew: boolean|null,
+  } = {forceNew: null}): Memory {
     const {forceNew} = opts;
     if (!memoryInstance || forceNew) {
       memoryInstance = new Memory();
@@ -139,23 +127,16 @@ export class Memory {
     return memoryInstance;
   }
 
-  reset() {
+  reset(): void {
     this._helper.reset();
   }
 
-  /**
-   * @param {!Protocol.HeapProfiler.SamplingHeapProfile} profile
-   * @param {?SDK.SDKModel.Target} target
-   */
-  appendHeapProfile(profile, target) {
+  appendHeapProfile(profile: Protocol.HeapProfiler.SamplingHeapProfile, target: SDK.SDKModel.Target|null): void {
     const helper = this._helper;
     processNode(profile.head);
     helper.scheduleUpdate();
 
-    /**
-     * @param {!Protocol.HeapProfiler.SamplingHeapProfileNode} node
-     */
-    function processNode(node) {
+    function processNode(node: Protocol.HeapProfiler.SamplingHeapProfileNode): void {
       node.children.forEach(processNode);
       if (!node.selfSize) {
         return;
@@ -171,33 +152,25 @@ export class Memory {
 }
 
 export class Helper {
-  /**
-   * @param {string} type
-   */
-  constructor(type) {
+  _type: string;
+  _locationPool: Bindings.LiveLocation.LiveLocationPool;
+  _updateTimer: number|null;
+  _lineData!: Map<SDK.SDKModel.Target|null, Map<string|number, Map<number, number>>>;
+
+  constructor(type: string) {
     this._type = type;
     this._locationPool = new Bindings.LiveLocation.LiveLocationPool();
     this._updateTimer = null;
     this.reset();
-
-    /** @type {!Map<?SDK.SDKModel.Target, !Map<string|number, !Map<number, number>>>} */
-    this._lineData;
   }
 
-  reset() {
+  reset(): void {
     // The second map uses string keys for script URLs and numbers for scriptId.
-    /** @type {!Map<?SDK.SDKModel.Target, !Map<string|number, !Map<number, number>>>} */
     this._lineData = new Map();
     this.scheduleUpdate();
   }
 
-  /**
-   * @param {?SDK.SDKModel.Target} target
-   * @param {string|number} scriptIdOrUrl
-   * @param {number} line
-   * @param {number} data
-   */
-  addLineData(target, scriptIdOrUrl, line, data) {
+  addLineData(target: SDK.SDKModel.Target|null, scriptIdOrUrl: string|number, line: number, data: number): void {
     let targetData = this._lineData.get(target);
     if (!targetData) {
       targetData = new Map();
@@ -211,27 +184,27 @@ export class Helper {
     scriptData.set(line, (scriptData.get(line) || 0) + data);
   }
 
-  scheduleUpdate() {
+  scheduleUpdate(): void {
     if (this._updateTimer) {
       return;
     }
-    this._updateTimer = setTimeout(() => {
+    this._updateTimer = window.setTimeout(() => {
       this._updateTimer = null;
       this._doUpdate();
     }, 0);
   }
 
-  _doUpdate() {
+  _doUpdate(): void {
     this._locationPool.disposeAll();
     Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodes().forEach(
         uiSourceCode => uiSourceCode.removeDecorationsForType(this._type));
     for (const targetToScript of this._lineData) {
-      const target = /** @type {?SDK.SDKModel.Target} */ (targetToScript[0]);
+      const target = (targetToScript[0] as SDK.SDKModel.Target | null);
       const debuggerModel = target ? target.model(SDK.DebuggerModel.DebuggerModel) : null;
-      const scriptToLineMap = /** @type {!Map<string|number, !Map<number, number>>} */ (targetToScript[1]);
+      const scriptToLineMap = (targetToScript[1] as Map<string|number, Map<number, number>>);
       for (const scriptToLine of scriptToLineMap) {
-        const scriptIdOrUrl = /** @type {string|number} */ (scriptToLine[0]);
-        const lineToDataMap = /** @type {!Map<number, number>} */ (scriptToLine[1]);
+        const scriptIdOrUrl = (scriptToLine[0] as string | number);
+        const lineToDataMap = (scriptToLine[1] as Map<number, number>);
         // debuggerModel is null when the profile is loaded from file.
         // Try to get UISourceCode by the URL in this case.
         const uiSourceCode = !debuggerModel && typeof scriptIdOrUrl === 'string' ?
@@ -241,8 +214,8 @@ export class Helper {
           continue;
         }
         for (const lineToData of lineToDataMap) {
-          const line = /** @type {number} */ (lineToData[0]) - 1;
-          const data = /** @type {number} */ (lineToData[1]);
+          const line = (lineToData[0] as number) - 1;
+          const data = (lineToData[1] as number);
           if (uiSourceCode) {
             uiSourceCode.addLineDecoration(line, this._type, data);
             continue;
@@ -262,13 +235,13 @@ export class Helper {
 }
 
 export class Presentation {
-  /**
-   * @param {!SDK.DebuggerModel.Location} rawLocation
-   * @param {string} type
-   * @param {number} time
-   * @param {!Bindings.LiveLocation.LiveLocationPool} locationPool
-   */
-  constructor(rawLocation, type, time, locationPool) {
+  _type: string;
+  _time: number;
+  _uiLocation: Workspace.UISourceCode.UILocation|null;
+
+  constructor(
+      rawLocation: SDK.DebuggerModel.Location, type: string, time: number,
+      locationPool: Bindings.LiveLocation.LiveLocationPool) {
     this._type = type;
     this._time = time;
     this._uiLocation = null;
@@ -276,10 +249,7 @@ export class Presentation {
         rawLocation, this.updateLocation.bind(this), locationPool);
   }
 
-  /**
-   * @param {!Bindings.LiveLocation.LiveLocation} liveLocation
-   */
-  async updateLocation(liveLocation) {
+  async updateLocation(liveLocation: Bindings.LiveLocation.LiveLocation): Promise<void> {
     if (this._uiLocation) {
       this._uiLocation.uiSourceCode.removeDecorationsForType(this._type);
     }
@@ -290,17 +260,12 @@ export class Presentation {
   }
 }
 
-/** @type {!LineDecorator} */
-let lineDecoratorInstance;
+let lineDecoratorInstance: LineDecorator;
 
-/**
- * @implements {SourceFrame.SourceFrame.LineDecorator}
- */
-export class LineDecorator {
-  /**
-   * @param {{forceNew: ?boolean}} opts
-   */
-  static instance(opts = {forceNew: null}) {
+export class LineDecorator implements SourceFrame.SourceFrame.LineDecorator {
+  static instance(opts: {
+    forceNew: boolean|null,
+  } = {forceNew: null}): LineDecorator {
     const {forceNew} = opts;
     if (!lineDecoratorInstance || forceNew) {
       lineDecoratorInstance = new LineDecorator();
@@ -308,13 +273,9 @@ export class LineDecorator {
 
     return lineDecoratorInstance;
   }
-  /**
-   * @override
-   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
-   * @param {!SourceFrame.SourcesTextEditor.SourcesTextEditor} textEditor
-   * @param {string} type
-   */
-  decorate(uiSourceCode, textEditor, type) {
+  decorate(
+      uiSourceCode: Workspace.UISourceCode.UISourceCode, textEditor: SourceFrame.SourcesTextEditor.SourcesTextEditor,
+      type: string): void {
     const gutterType = `CodeMirror-gutter-${type}`;
     const decorations = uiSourceCode.decorationsForType(type);
     textEditor.uninstallGutter(gutterType);
@@ -323,18 +284,13 @@ export class LineDecorator {
     }
     textEditor.installGutter(gutterType, false);
     for (const decoration of decorations) {
-      const value = /** @type {number} */ (decoration.data());
+      const value = (decoration.data() as number);
       const element = this._createElement(type, value);
       textEditor.setGutterDecoration(decoration.range().startLine, gutterType, element);
     }
   }
 
-  /**
-   * @param {string} type
-   * @param {number} value
-   * @return {!Element}
-   */
-  _createElement(type, value) {
+  _createElement(type: string, value: number): Element {
     const element = document.createElement('div');
     element.classList.add('text-editor-line-marker-text');
     if (type === 'performance') {

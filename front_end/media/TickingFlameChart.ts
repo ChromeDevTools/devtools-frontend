@@ -224,6 +224,8 @@ export class TickingFlameChart extends UI.Widget.VBox {
 
     // Create the chart.
     this._chart =
+        // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+        // @ts-expect-error
         new PerfUI.FlameChart.FlameChart(this._dataProvider, this._delegate, this._chartGroupExpansionSetting);
 
     // TODO: needs to have support in the delegate for supporting this.

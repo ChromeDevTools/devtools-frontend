@@ -28,6 +28,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Common from '../common/common.js';
 import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
@@ -49,14 +51,13 @@ export const UIStrings = {
   */
   rightResizer: 'Right Resizer',
 };
-const str_ = i18n.i18n.registerUIStrings('perf_ui/OverviewGrid.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('perf_ui/OverviewGrid.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class OverviewGrid {
-  /**
-   * @param {string} prefix
-   * @param {!Calculator=} calculator
-   */
-  constructor(prefix, calculator) {
+  element: HTMLDivElement;
+  _grid: TimelineGrid;
+  _window: Window;
+  constructor(prefix: string, calculator?: Calculator) {
     this.element = document.createElement('div');
     this.element.id = prefix + '-overview-container';
 
@@ -69,86 +70,53 @@ export class OverviewGrid {
     this._window = new Window(this.element, this._grid.dividersLabelBarElement, calculator);
   }
 
-  /**
-   * @return {number}
-   */
-  clientWidth() {
+  clientWidth(): number {
     return this.element.clientWidth;
   }
 
-  /**
-   * @param {!Calculator} calculator
-   */
-  updateDividers(calculator) {
+  updateDividers(calculator: Calculator): void {
     this._grid.updateDividers(calculator);
   }
 
-  /**
-   * @param {!Array.<!Element>} dividers
-   */
-  addEventDividers(dividers) {
+  addEventDividers(dividers: Element[]): void {
     this._grid.addEventDividers(dividers);
   }
 
-  removeEventDividers() {
+  removeEventDividers(): void {
     this._grid.removeEventDividers();
   }
 
-  reset() {
+  reset(): void {
     this._window.reset();
   }
 
-  /**
-   * @return {number}
-   */
-  windowLeft() {
+  windowLeft(): number {
     return this._window.windowLeft || 0;
   }
 
-  /**
-   * @return {number}
-   */
-  windowRight() {
+  windowRight(): number {
     return this._window.windowRight || 0;
   }
 
-  /**
-   * @param {number} left
-   * @param {number} right
-   */
-  setWindow(left, right) {
+  setWindow(left: number, right: number): void {
     this._window._setWindow(left, right);
   }
 
-  /**
-   * @param {symbol} eventType
-   * @param {function(!Common.EventTarget.EventTargetEvent):void} listener
-   * @param {!Object=} thisObject
-   * @return {!Common.EventTarget.EventDescriptor}
-   */
-  addEventListener(eventType, listener, thisObject) {
+  addEventListener(
+      eventType: string|symbol, listener: (arg0: Common.EventTarget.EventTargetEvent) => void,
+      thisObject?: Object): Common.EventTarget.EventDescriptor {
     return this._window.addEventListener(eventType, listener, thisObject);
   }
 
-  /**
-   * @param {?function(!Event):boolean} clickHandler
-   */
-  setClickHandler(clickHandler) {
+  setClickHandler(clickHandler: ((arg0: Event) => boolean)|null): void {
     this._window.setClickHandler(clickHandler);
   }
 
-  /**
-   * @param {number} zoomFactor
-   * @param {number} referencePoint
-   */
-  zoom(zoomFactor, referencePoint) {
+  zoom(zoomFactor: number, referencePoint: number): void {
     this._window._zoom(zoomFactor, referencePoint);
   }
 
-  /**
-   * @param {boolean} enabled
-   */
-  setResizeEnabled(enabled) {
+  setResizeEnabled(enabled: boolean): void {
     this._window.setEnabled(enabled);
   }
 }
@@ -159,12 +127,23 @@ export const ResizerOffset = 3.5;  // half pixel because offset values are not r
 export const OffsetFromWindowEnds = 10;
 
 export class Window extends Common.ObjectWrapper.ObjectWrapper {
-  /**
-   * @param {!Element} parentElement
-   * @param {!Element=} dividersLabelBarElement
-   * @param {!Calculator=} calculator
-   */
-  constructor(parentElement, dividersLabelBarElement, calculator) {
+  _parentElement: Element;
+  _calculator: Calculator|undefined;
+  _leftResizeElement: HTMLElement;
+  _rightResizeElement: HTMLElement;
+  _leftCurtainElement: HTMLElement;
+  _rightCurtainElement: HTMLElement;
+  _overviewWindowSelector!: WindowSelector|undefined;
+  _offsetLeft!: number;
+  _dragStartPoint!: number;
+  _dragStartLeft!: number;
+  _dragStartRight!: number;
+  windowLeft?: number;
+  windowRight?: number;
+  _enabled?: boolean;
+  _clickHandler?: ((arg0: Event) => boolean)|null;
+  _resizerParentOffsetLeft?: number;
+  constructor(parentElement: Element, dividersLabelBarElement?: Element, calculator?: Calculator) {
     super();
     this._parentElement = parentElement;
     UI.ARIAUtils.markAsGroup(this._parentElement);
@@ -185,95 +164,56 @@ export class Window extends Common.ObjectWrapper.ObjectWrapper {
     this._parentElement.addEventListener('dblclick', this._resizeWindowMaximum.bind(this), true);
     UI.Utils.appendStyle(this._parentElement, 'perf_ui/overviewGrid.css', {enableLegacyPatching: false});
 
-    /** @type {!HTMLElement} */
-    this._leftResizeElement =
-        /** @type {!HTMLElement} */ (parentElement.createChild('div', 'overview-grid-window-resizer'));
+    this._leftResizeElement = parentElement.createChild('div', 'overview-grid-window-resizer') as HTMLElement;
     UI.UIUtils.installDragHandle(
         this._leftResizeElement, this._resizerElementStartDragging.bind(this),
         this._leftResizeElementDragging.bind(this), null, 'ew-resize');
-
-    /** @type {!HTMLElement} */
-    this._rightResizeElement =
-        /** @type {!HTMLElement} */ (parentElement.createChild('div', 'overview-grid-window-resizer'));
+    this._rightResizeElement = (parentElement.createChild('div', 'overview-grid-window-resizer') as HTMLElement);
     UI.UIUtils.installDragHandle(
         this._rightResizeElement, this._resizerElementStartDragging.bind(this),
         this._rightResizeElementDragging.bind(this), null, 'ew-resize');
 
     UI.ARIAUtils.setAccessibleName(this._leftResizeElement, i18nString(UIStrings.leftResizer));
     UI.ARIAUtils.markAsSlider(this._leftResizeElement);
-    /**
-     * @param {!Event} event
-     */
-    const leftKeyDown = event => this._handleKeyboardResizing(event, false);
+    const leftKeyDown = (event: Event): void => this._handleKeyboardResizing(event, false);
     this._leftResizeElement.addEventListener('keydown', leftKeyDown);
 
     UI.ARIAUtils.setAccessibleName(this._rightResizeElement, i18nString(UIStrings.rightResizer));
     UI.ARIAUtils.markAsSlider(this._rightResizeElement);
 
-    /**
-     * @param {!Event} event
-     */
-    const rightKeyDown = event => this._handleKeyboardResizing(event, true);
+    const rightKeyDown = (event: Event): void => this._handleKeyboardResizing(event, true);
     this._rightResizeElement.addEventListener('keydown', rightKeyDown);
     this._rightResizeElement.addEventListener('focus', this._onRightResizeElementFocused.bind(this));
-
-    /** @type {!HTMLElement} */
-    this._leftCurtainElement = /** @type {!HTMLElement} */ (parentElement.createChild('div', 'window-curtain-left'));
-
-    /** @type {!HTMLElement} */
-    this._rightCurtainElement = /** @type {!HTMLElement} */ (parentElement.createChild('div', 'window-curtain-right'));
+    this._leftCurtainElement = (parentElement.createChild('div', 'window-curtain-left') as HTMLElement);
+    this._rightCurtainElement = (parentElement.createChild('div', 'window-curtain-right') as HTMLElement);
     this.reset();
-
-    /** @type {!WindowSelector|undefined} */
-    this._overviewWindowSelector;
-
-    /** @type {number} */
-    this._offsetLeft;
-
-    /** @type {number} */
-    this._dragStartPoint;
-
-    /** @type {number} */
-    this._dragStartLeft;
-
-    /** @type {number} */
-    this._dragStartRight;
   }
 
-  _onRightResizeElementFocused() {
+  _onRightResizeElementFocused(): void {
     // To prevent browser focus from scrolling the element into view and shifting the contents of the strip
     this._parentElement.scrollLeft = 0;
   }
 
-  reset() {
+  reset(): void {
     this.windowLeft = 0.0;
     this.windowRight = 1.0;
     this.setEnabled(true);
     this._updateCurtains();
   }
 
-  /**
-   * @param {boolean} enabled
-   */
-  setEnabled(enabled) {
+  setEnabled(enabled: boolean): void {
     this._enabled = enabled;
     this._rightResizeElement.tabIndex = enabled ? 0 : -1;
     this._leftResizeElement.tabIndex = enabled ? 0 : -1;
   }
 
-  /**
-   * @param {?function(!Event):boolean} clickHandler
-   */
-  setClickHandler(clickHandler) {
+  setClickHandler(clickHandler: ((arg0: Event) => boolean)|null): void {
     this._clickHandler = clickHandler;
   }
 
-  /**
-   * @param {!Event} event
-   */
-  _resizerElementStartDragging(event) {
-    const mouseEvent = /** @type {!MouseEvent} */ (event);
-    const target = /** @type {!HTMLElement} */ (event.target);
+  _resizerElementStartDragging(event: Event): boolean {
+    const mouseEvent = (event as MouseEvent);
+    const target = (event.target as HTMLElement);
     if (!this._enabled) {
       return false;
     }
@@ -282,31 +222,21 @@ export class Window extends Common.ObjectWrapper.ObjectWrapper {
     return true;
   }
 
-  /**
-   * @param {!Event} event
-   */
-  _leftResizeElementDragging(event) {
-    const mouseEvent = /** @type {!MouseEvent} */ (event);
+  _leftResizeElementDragging(event: Event): void {
+    const mouseEvent = (event as MouseEvent);
     this._resizeWindowLeft(mouseEvent.pageX - (this._resizerParentOffsetLeft || 0));
     event.preventDefault();
   }
 
-  /**
-   * @param {!Event} event
-   */
-  _rightResizeElementDragging(event) {
-    const mouseEvent = /** @type {!MouseEvent} */ (event);
+  _rightResizeElementDragging(event: Event): void {
+    const mouseEvent = (event as MouseEvent);
     this._resizeWindowRight(mouseEvent.pageX - (this._resizerParentOffsetLeft || 0));
     event.preventDefault();
   }
 
-  /**
-   * @param {!Event} event
-   * @param {boolean=} moveRightResizer
-   */
-  _handleKeyboardResizing(event, moveRightResizer) {
-    const keyboardEvent = /** @type {!KeyboardEvent} */ (event);
-    const target = /** @type {!HTMLElement} */ (event.target);
+  _handleKeyboardResizing(event: Event, moveRightResizer?: boolean): void {
+    const keyboardEvent = (event as KeyboardEvent);
+    const target = (event.target as HTMLElement);
     let increment = false;
     if (keyboardEvent.key === 'ArrowLeft' || keyboardEvent.key === 'ArrowRight') {
       if (keyboardEvent.key === 'ArrowRight') {
@@ -322,16 +252,10 @@ export class Window extends Common.ObjectWrapper.ObjectWrapper {
     }
   }
 
-  /**
-   * @param {number} offset
-   * @param {boolean=} increment
-   * @param {boolean=} ctrlPressed
-   * @return {number}
-   */
-  _getNewResizerPosition(offset, increment, ctrlPressed) {
+  _getNewResizerPosition(offset: number, increment?: boolean, ctrlPressed?: boolean): number {
     let newPos;
     // We shift by 10px if the ctrlKey is pressed and 2 otherwise.  1px shifts result in noOp due to rounding in _updateCurtains
-    let pixelsToShift = ctrlPressed ? 10 : 2;
+    let pixelsToShift: number|(2 | 10) = ctrlPressed ? 10 : 2;
     pixelsToShift = increment ? pixelsToShift : -Math.abs(pixelsToShift);
     const offsetLeft = offset + ResizerOffset;
     newPos = offsetLeft + pixelsToShift;
@@ -346,41 +270,31 @@ export class Window extends Common.ObjectWrapper.ObjectWrapper {
     return newPos;
   }
 
-  /**
-   * @param {!Event} event
-   * @return {boolean}
-   */
-  _startWindowSelectorDragging(event) {
+  _startWindowSelectorDragging(event: Event): boolean {
     if (!this._enabled) {
       return false;
     }
-    const mouseEvent = /** @type {!MouseEvent} */ (event);
+    const mouseEvent = (event as MouseEvent);
     this._offsetLeft = this._parentElement.totalOffsetLeft();
     const position = mouseEvent.x - this._offsetLeft;
     this._overviewWindowSelector = new WindowSelector(this._parentElement, position);
     return true;
   }
 
-  /**
-   * @param {!Event} event
-   */
-  _windowSelectorDragging(event) {
+  _windowSelectorDragging(event: Event): void {
     if (!this._overviewWindowSelector) {
       return;
     }
-    const mouseEvent = /** @type {!MouseEvent} */ (event);
+    const mouseEvent = (event as MouseEvent);
     this._overviewWindowSelector._updatePosition(mouseEvent.x - this._offsetLeft);
     event.preventDefault();
   }
 
-  /**
-   * @param {!Event} event
-   */
-  _endWindowSelectorDragging(event) {
+  _endWindowSelectorDragging(event: Event): void {
     if (!this._overviewWindowSelector) {
       return;
     }
-    const mouseEvent = /** @type {!MouseEvent} */ (event);
+    const mouseEvent = (event as MouseEvent);
     const window = this._overviewWindowSelector._close(mouseEvent.x - this._offsetLeft);
     delete this._overviewWindowSelector;
     const clickThreshold = 3;
@@ -401,12 +315,8 @@ export class Window extends Common.ObjectWrapper.ObjectWrapper {
     this._setWindowPosition(window.start, window.end);
   }
 
-  /**
-   * @param {!Event} event
-   * @return {boolean}
-   */
-  _startWindowDragging(event) {
-    const mouseEvent = /** @type {!MouseEvent} */ (event);
+  _startWindowDragging(event: Event): boolean {
+    const mouseEvent = (event as MouseEvent);
     this._dragStartPoint = mouseEvent.pageX;
     this._dragStartLeft = this.windowLeft || 0;
     this._dragStartRight = this.windowRight || 0;
@@ -414,13 +324,10 @@ export class Window extends Common.ObjectWrapper.ObjectWrapper {
     return true;
   }
 
-  /**
-   * @param {!Event} event
-   */
-  _windowDragging(event) {
-    const mouseEvent = /** @type {!MouseEvent} */ (event);
+  _windowDragging(event: Event): void {
+    const mouseEvent = (event as MouseEvent);
     mouseEvent.preventDefault();
-    let delta = (mouseEvent.pageX - this._dragStartPoint) / this._parentElement.clientWidth;
+    let delta: number = (mouseEvent.pageX - this._dragStartPoint) / this._parentElement.clientWidth;
     if (this._dragStartLeft + delta < 0) {
       delta = -this._dragStartLeft;
     }
@@ -432,10 +339,7 @@ export class Window extends Common.ObjectWrapper.ObjectWrapper {
     this._setWindow(this._dragStartLeft + delta, this._dragStartRight + delta);
   }
 
-  /**
-   * @param {number} start
-   */
-  _resizeWindowLeft(start) {
+  _resizeWindowLeft(start: number): void {
     // Glue to edge.
     if (start < OffsetFromWindowEnds) {
       start = 0;
@@ -445,10 +349,7 @@ export class Window extends Common.ObjectWrapper.ObjectWrapper {
     this._setWindowPosition(start, null);
   }
 
-  /**
-   * @param {number} end
-   */
-  _resizeWindowRight(end) {
+  _resizeWindowRight(end: number): void {
     // Glue to edge.
     if (end > this._parentElement.clientWidth - OffsetFromWindowEnds) {
       end = this._parentElement.clientWidth;
@@ -458,16 +359,11 @@ export class Window extends Common.ObjectWrapper.ObjectWrapper {
     this._setWindowPosition(null, end);
   }
 
-  _resizeWindowMaximum() {
+  _resizeWindowMaximum(): void {
     this._setWindowPosition(0, this._parentElement.clientWidth);
   }
 
-
-  /**
-   * @param {boolean=} leftSlider
-   * @return {number}
-   */
-  _getRawSliderValue(leftSlider) {
+  _getRawSliderValue(leftSlider?: boolean): number {
     if (!this._calculator) {
       throw new Error('No calculator to calculate boundaries');
     }
@@ -480,11 +376,7 @@ export class Window extends Common.ObjectWrapper.ObjectWrapper {
     return minimumValue + valueSpan * (this.windowRight || 0);
   }
 
-  /**
-   * @param {number} leftValue
-   * @param {number} rightValue
-   */
-  _updateResizeElementPositionValue(leftValue, rightValue) {
+  _updateResizeElementPositionValue(leftValue: number, rightValue: number): void {
     const roundedLeftValue = leftValue.toFixed(2);
     const roundedRightValue = rightValue.toFixed(2);
     UI.ARIAUtils.setAriaValueNow(this._leftResizeElement, roundedLeftValue);
@@ -497,7 +389,7 @@ export class Window extends Common.ObjectWrapper.ObjectWrapper {
     UI.ARIAUtils.setAriaValueMinMax(this._rightResizeElement, rightResizeFloor.toString(), '100');
   }
 
-  _updateResizeElementPositionLabels() {
+  _updateResizeElementPositionLabels(): void {
     if (!this._calculator) {
       return;
     }
@@ -507,30 +399,22 @@ export class Window extends Common.ObjectWrapper.ObjectWrapper {
     UI.ARIAUtils.setAriaValueText(this._rightResizeElement, String(endValue));
   }
 
-  /**
-   * @param {string} leftValue
-   * @param {string} rightValue
-   */
-  _updateResizeElementPercentageLabels(leftValue, rightValue) {
+  _updateResizeElementPercentageLabels(leftValue: string, rightValue: string): void {
     UI.ARIAUtils.setAriaValueText(this._leftResizeElement, leftValue);
     UI.ARIAUtils.setAriaValueText(this._rightResizeElement, rightValue);
   }
 
-  /**
-   * @return {{rawStartValue: number, rawEndValue: number}}
-   */
-  _calculateWindowPosition() {
+  _calculateWindowPosition(): {
+    rawStartValue: number,
+    rawEndValue: number,
+  } {
     return {
       rawStartValue: Number(this._getRawSliderValue(/* leftSlider */ true)),
-      rawEndValue: Number(this._getRawSliderValue(/* leftSlider */ false))
+      rawEndValue: Number(this._getRawSliderValue(/* leftSlider */ false)),
     };
   }
 
-  /**
-   * @param {number} windowLeft
-   * @param {number} windowRight
-   */
-  _setWindow(windowLeft, windowRight) {
+  _setWindow(windowLeft: number, windowRight: number): void {
     this.windowLeft = windowLeft;
     this.windowRight = windowRight;
     this._updateCurtains();
@@ -541,7 +425,7 @@ export class Window extends Common.ObjectWrapper.ObjectWrapper {
     this.dispatchEventToListeners(Events.WindowChanged, windowPosition);
   }
 
-  _updateCurtains() {
+  _updateCurtains(): void {
     const windowLeft = this.windowLeft || 0;
     const windowRight = this.windowRight || 0;
     let left = windowLeft;
@@ -580,22 +464,15 @@ export class Window extends Common.ObjectWrapper.ObjectWrapper {
     }
   }
 
-  /**
-   * @param {?number} start
-   * @param {?number} end
-   */
-  _setWindowPosition(start, end) {
+  _setWindowPosition(start: number|null, end: number|null): void {
     const clientWidth = this._parentElement.clientWidth;
     const windowLeft = typeof start === 'number' ? start / clientWidth : this.windowLeft;
     const windowRight = typeof end === 'number' ? end / clientWidth : this.windowRight;
     this._setWindow(windowLeft || 0, windowRight || 0);
   }
 
-  /**
-   * @param {!Event} event
-   */
-  _onMouseWheel(event) {
-    const wheelEvent = /** @type {!WheelEvent} */ (event);
+  _onMouseWheel(event: Event): void {
+    const wheelEvent = (event as WheelEvent);
     if (!this._enabled) {
       return;
     }
@@ -625,15 +502,11 @@ export class Window extends Common.ObjectWrapper.ObjectWrapper {
     }
   }
 
-  /**
-   * @param {number} factor
-   * @param {number} reference
-   */
-  _zoom(factor, reference) {
-    let left = this.windowLeft || 0;
-    let right = this.windowRight || 0;
+  _zoom(factor: number, reference: number): void {
+    let left: number = this.windowLeft || 0;
+    let right: number = this.windowRight || 0;
     const windowSize = right - left;
-    let newWindowSize = factor * windowSize;
+    let newWindowSize: 1|number = factor * windowSize;
     if (newWindowSize > 1) {
       newWindowSize = 1;
       factor = newWindowSize / windowSize;
@@ -647,19 +520,20 @@ export class Window extends Common.ObjectWrapper.ObjectWrapper {
   }
 }
 
-/** @enum {symbol} */
-export const Events = {
-  WindowChanged: Symbol('WindowChanged')
-};
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum Events {
+  WindowChanged = 'WindowChanged',
+}
 
 export class WindowSelector {
-  /**
-   * @param {!Element} parent
-   * @param {number} position
-   */
-  constructor(parent, position) {
+  _startPosition: number;
+  _width: number;
+  _windowSelector: HTMLDivElement;
+
+  constructor(parent: Element, position: number) {
     this._startPosition = position;
-    this._width = /** @type {!HTMLElement} */ (parent).offsetWidth;
+    this._width = (parent as HTMLElement).offsetWidth;
     this._windowSelector = document.createElement('div');
     this._windowSelector.className = 'overview-grid-window-selector';
     this._windowSelector.style.left = this._startPosition + 'px';
@@ -667,20 +541,17 @@ export class WindowSelector {
     parent.appendChild(this._windowSelector);
   }
 
-  /**
-   * @param {number} position
-   */
-  _close(position) {
+  _close(position: number): {
+    start: number,
+    end: number,
+  } {
     position = Math.max(0, Math.min(position, this._width));
     this._windowSelector.remove();
     return this._startPosition < position ? {start: this._startPosition, end: position} :
                                             {start: position, end: this._startPosition};
   }
 
-  /**
-   * @param {number} position
-   */
-  _updatePosition(position) {
+  _updatePosition(position: number): void {
     position = Math.max(0, Math.min(position, this._width));
     if (position < this._startPosition) {
       this._windowSelector.style.left = position + 'px';

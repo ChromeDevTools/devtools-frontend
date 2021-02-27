@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Host from '../host/host.js';
 import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
@@ -31,9 +33,15 @@ export const UIStrings = {
   */
   nextFrame: 'Next frame',
 };
-const str_ = i18n.i18n.registerUIStrings('perf_ui/FilmStripView.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('perf_ui/FilmStripView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class FilmStripView extends UI.Widget.HBox {
+  _statusLabel: HTMLElement;
+  _zeroTime!: number;
+  _spanTime!: number;
+  _model!: SDK.FilmStripModel.FilmStripModel;
+  _mode?: string;
+
   constructor() {
     super(true);
     this.registerRequiredCSS('perf_ui/filmStripView.css', {enableLegacyPatching: false});
@@ -41,42 +49,21 @@ export class FilmStripView extends UI.Widget.HBox {
     this._statusLabel = this.contentElement.createChild('div', 'label');
     this.reset();
     this.setMode(Modes.TimeBased);
-
-    /** @type {number} */
-    this._zeroTime;
-
-    /** @type {number} */
-    this._spanTime;
-
-    /** @type {!SDK.FilmStripModel.FilmStripModel} */
-    this._model;
   }
 
-  /**
-   * @param {!HTMLImageElement} imageElement
-   * @param {?string} data
-   */
-  static _setImageData(imageElement, data) {
+  static _setImageData(imageElement: HTMLImageElement, data: string|null): void {
     if (data) {
       imageElement.src = 'data:image/jpg;base64,' + data;
     }
   }
 
-  /**
-   * @param {string} mode
-   */
-  setMode(mode) {
+  setMode(mode: string): void {
     this._mode = mode;
     this.contentElement.classList.toggle('time-based', mode === Modes.TimeBased);
     this.update();
   }
 
-  /**
-   * @param {!SDK.FilmStripModel.FilmStripModel} filmStripModel
-   * @param {number} zeroTime
-   * @param {number} spanTime
-   */
-  setModel(filmStripModel, zeroTime, spanTime) {
+  setModel(filmStripModel: SDK.FilmStripModel.FilmStripModel, zeroTime: number, spanTime: number): void {
     this._model = filmStripModel;
     this._zeroTime = zeroTime;
     this._spanTime = spanTime;
@@ -88,11 +75,7 @@ export class FilmStripView extends UI.Widget.HBox {
     this.update();
   }
 
-  /**
-   * @param {!SDK.FilmStripModel.Frame} frame
-   * @return {!Promise<!Element>}
-   */
-  createFrameElement(frame) {
+  createFrameElement(frame: SDK.FilmStripModel.Frame): Promise<Element> {
     const time = frame.timestamp;
     const frameTime = Number.millisToString(time - this._zeroTime);
     const element = document.createElement('div');
@@ -102,7 +85,7 @@ export class FilmStripView extends UI.Widget.HBox {
     element.tabIndex = 0;
     element.setAttribute('aria-label', i18nString(UIStrings.screenshotForSSelectToView, {PH1: frameTime}));
     UI.ARIAUtils.markAsButton(element);
-    const imageElement = /** @type {!HTMLImageElement} */ (element.createChild('div', 'thumbnail').createChild('img'));
+    const imageElement = (element.createChild('div', 'thumbnail').createChild('img') as HTMLImageElement);
     imageElement.alt = i18nString(UIStrings.screenshot);
     element.addEventListener('mousedown', this._onMouseEvent.bind(this, Events.FrameSelected, time), false);
     element.addEventListener('mouseenter', this._onMouseEvent.bind(this, Events.FrameEnter, time), false);
@@ -117,25 +100,13 @@ export class FilmStripView extends UI.Widget.HBox {
     });
 
     return frame.imageDataPromise().then(FilmStripView._setImageData.bind(null, imageElement)).then(returnElement);
-    /**
-     * @return {!Element}
-     */
-    function returnElement() {
+    function returnElement(): Element {
       return element;
     }
   }
 
-  /**
-   * @param {number} time
-   * @return {!SDK.FilmStripModel.Frame}
-   */
-  frameByTime(time) {
-    /**
-     * @param {number} time
-     * @param {!SDK.FilmStripModel.Frame} frame
-     * @return {number}
-     */
-    function comparator(time, frame) {
+  frameByTime(time: number): SDK.FilmStripModel.Frame {
+    function comparator(time: number, frame: SDK.FilmStripModel.Frame): number {
       return time - frame.timestamp;
     }
     // Using the first frame to fill the interval between recording start
@@ -145,7 +116,7 @@ export class FilmStripView extends UI.Widget.HBox {
     return frames[index];
   }
 
-  update() {
+  update(): void {
     if (!this._model) {
       return;
     }
@@ -164,11 +135,7 @@ export class FilmStripView extends UI.Widget.HBox {
     this.createFrameElement(frames[0]).then(
         continueWhenFrameImageLoaded.bind(this));  // Calculate frame width basing on the first frame.
 
-    /**
-     * @this {FilmStripView}
-     * @param {!Element} element0
-     */
-    function continueWhenFrameImageLoaded(element0) {
+    function continueWhenFrameImageLoaded(this: FilmStripView, element0: Element): void {
       const frameWidth = Math.ceil(UI.UIUtils.measurePreferredSize(element0, this.contentElement).width);
       if (!frameWidth) {
         return;
@@ -180,21 +147,13 @@ export class FilmStripView extends UI.Widget.HBox {
         promises.push(this.createFrameElement(this.frameByTime(time)).then(fixWidth));
       }
       Promise.all(promises).then(appendElements.bind(this));
-      /**
-       * @param {!Element} element
-       * @return {!Element}
-       */
-      function fixWidth(element) {
-        /** @type {!HTMLElement} */ (element).style.width = frameWidth + 'px';
+      function fixWidth(element: Element): Element {
+        (element as HTMLElement).style.width = frameWidth + 'px';
         return element;
       }
     }
 
-    /**
-     * @param {!Array.<!Element>} elements
-     * @this {FilmStripView}
-     */
-    function appendElements(elements) {
+    function appendElements(this: FilmStripView, elements: Element[]): void {
       this.contentElement.removeChildren();
       for (let i = 0; i < elements.length; ++i) {
         this.contentElement.appendChild(elements[i]);
@@ -202,63 +161,55 @@ export class FilmStripView extends UI.Widget.HBox {
     }
   }
 
-  /**
-   * @override
-   */
-  onResize() {
+  onResize(): void {
     if (this._mode === Modes.FrameBased) {
       return;
     }
     this.update();
   }
 
-  /**
-   * @param {string|symbol} eventName
-   * @param {number} timestamp
-   */
-  _onMouseEvent(eventName, timestamp) {
+  _onMouseEvent(eventName: string|symbol, timestamp: number): void {
     this.dispatchEventToListeners(eventName, timestamp);
   }
 
-  /**
-   * @param {!SDK.FilmStripModel.Frame} filmStripFrame
-   */
-  _onDoubleClick(filmStripFrame) {
+  _onDoubleClick(filmStripFrame: SDK.FilmStripModel.Frame): void {
     new Dialog(filmStripFrame, this._zeroTime);
   }
 
-  reset() {
+  reset(): void {
     this._zeroTime = 0;
     this.contentElement.removeChildren();
     this.contentElement.appendChild(this._statusLabel);
   }
 
-  /**
-   * @param {string} text
-   */
-  setStatusText(text) {
+  setStatusText(text: string): void {
     this._statusLabel.textContent = text;
   }
 }
 
-/** @enum {symbol} */
-export const Events = {
-  FrameSelected: Symbol('FrameSelected'),
-  FrameEnter: Symbol('FrameEnter'),
-  FrameExit: Symbol('FrameExit'),
-};
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum Events {
+  FrameSelected = 'FrameSelected',
+  FrameEnter = 'FrameEnter',
+  FrameExit = 'FrameExit',
+}
+
 
 export const Modes = {
   TimeBased: 'TimeBased',
-  FrameBased: 'FrameBased'
+  FrameBased: 'FrameBased',
 };
 
 export class Dialog {
-  /**
-   * @param {!SDK.FilmStripModel.Frame} filmStripFrame
-   * @param {number=} zeroTime
-   */
-  constructor(filmStripFrame, zeroTime) {
+  _fragment: UI.Fragment.Fragment;
+  _widget: UI.XWidget.XWidget;
+  _frames: SDK.FilmStripModel.Frame[];
+  _index: number;
+  _zeroTime: number;
+  _dialog: UI.Dialog.Dialog|null;
+
+  constructor(filmStripFrame: SDK.FilmStripModel.Frame, zeroTime?: number) {
     const prevButton = UI.UIUtils.createTextButton('\u25C0', this._onPrevFrame.bind(this));
     UI.Tooltip.Tooltip.install(prevButton, i18nString(UIStrings.previousFrame));
     const nextButton = UI.UIUtils.createTextButton('\u25B6', this._onNextFrame.bind(this));
@@ -267,7 +218,7 @@ export class Dialog {
     this._fragment = UI.Fragment.Fragment.build`
       <x-widget flex=none margin=12px>
         <x-hbox overflow=auto border='1px solid #ddd'>
-          <img $='image' style="max-height: 80vh; max-width: 80vw"></img>
+          <img $='image' style="max-height: 80vh; max-width: 80vw;"></img>
         </x-hbox>
         <x-hbox x-center justify-content=center margin-top=10px>
           ${prevButton}
@@ -277,19 +228,18 @@ export class Dialog {
       </x-widget>
     `;
 
-    this._widget = /** @type {!UI.XWidget.XWidget} */ (this._fragment.element());
-    /** @type {!HTMLElement} */ (this._widget).tabIndex = 0;
+    this._widget = (this._fragment.element() as UI.XWidget.XWidget);
+    (this._widget as HTMLElement).tabIndex = 0;
     this._widget.addEventListener('keydown', this._keyDown.bind(this), false);
 
     this._frames = filmStripFrame.model().frames();
     this._index = filmStripFrame.index;
     this._zeroTime = zeroTime || filmStripFrame.model().zeroTime();
-    /** @type {?UI.Dialog.Dialog} */
     this._dialog = null;
     this._render();
   }
 
-  _resize() {
+  _resize(): void {
     if (!this._dialog) {
       this._dialog = new UI.Dialog.Dialog();
       this._dialog.contentElement.appendChild(this._widget);
@@ -303,11 +253,8 @@ export class Dialog {
     this._dialog.setSizeBehavior(UI.GlassPane.SizeBehavior.MeasureContent);
   }
 
-  /**
-   * @param {!Event} event
-   */
-  _keyDown(event) {
-    const keyboardEvent = /** @type {!KeyboardEvent} */ (event);
+  _keyDown(event: Event): void {
+    const keyboardEvent = (event as KeyboardEvent);
     switch (keyboardEvent.key) {
       case 'ArrowLeft':
         if (Host.Platform.isMac() && keyboardEvent.metaKey) {
@@ -335,39 +282,36 @@ export class Dialog {
     }
   }
 
-  _onPrevFrame() {
+  _onPrevFrame(): void {
     if (this._index > 0) {
       --this._index;
     }
     this._render();
   }
 
-  _onNextFrame() {
+  _onNextFrame(): void {
     if (this._index < this._frames.length - 1) {
       ++this._index;
     }
     this._render();
   }
 
-  _onFirstFrame() {
+  _onFirstFrame(): void {
     this._index = 0;
     this._render();
   }
 
-  _onLastFrame() {
+  _onLastFrame(): void {
     this._index = this._frames.length - 1;
     this._render();
   }
 
-  /**
-   * @return {!Promise<void>}
-   */
-  _render() {
+  _render(): Promise<void> {
     const frame = this._frames[this._index];
     this._fragment.$('time').textContent = Number.millisToString(frame.timestamp - this._zeroTime);
     return frame.imageDataPromise()
         .then(imageData => {
-          const image = /** @type {!HTMLImageElement} */ (this._fragment.$('image'));
+          const image = (this._fragment.$('image') as HTMLImageElement);
           return FilmStripView._setImageData(image, imageData);
         })
         .then(this._resize.bind(this));

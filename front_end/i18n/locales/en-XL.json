@@ -5750,67 +5750,67 @@
   "object_ui/RemoteObjectPreviewFormatter.ts | thePropertyIsComputedWithAGetter": {
     "message": "T̂h́ê ṕr̂óp̂ér̂t́ŷ íŝ ćôḿp̂út̂éd̂ ẃît́ĥ á ĝét̂t́êŕ"
   },
-  "perf_ui/FilmStripView.js | doubleclickToZoomImageClickTo": {
+  "perf_ui/FilmStripView.ts | doubleclickToZoomImageClickTo": {
     "message": "D̂óûb́l̂éĉĺîćk̂ t́ô źôóm̂ ím̂áĝé. Ĉĺîćk̂ t́ô v́îéŵ ṕr̂éĉéd̂ín̂ǵ r̂éq̂úêśt̂ś."
   },
-  "perf_ui/FilmStripView.js | nextFrame": {
+  "perf_ui/FilmStripView.ts | nextFrame": {
     "message": "N̂éx̂t́ f̂ŕâḿê"
   },
-  "perf_ui/FilmStripView.js | previousFrame": {
+  "perf_ui/FilmStripView.ts | previousFrame": {
     "message": "P̂ŕêv́îóûś f̂ŕâḿê"
   },
-  "perf_ui/FilmStripView.js | screenshot": {
+  "perf_ui/FilmStripView.ts | screenshot": {
     "message": "Ŝćr̂éêńŝh́ôt́"
   },
-  "perf_ui/FilmStripView.js | screenshotForSSelectToView": {
+  "perf_ui/FilmStripView.ts | screenshotForSSelectToView": {
     "message": "Ŝćr̂éêńŝh́ôt́ f̂ór̂ {PH1} - śêĺêćt̂ t́ô v́îéŵ ṕr̂éĉéd̂ín̂ǵ r̂éq̂úêśt̂ś."
   },
-  "perf_ui/FlameChart.js | flameChart": {
+  "perf_ui/FlameChart.ts | flameChart": {
     "message": "F̂ĺâḿê Ćĥár̂t́"
   },
-  "perf_ui/FlameChart.js | sCollapsed": {
+  "perf_ui/FlameChart.ts | sCollapsed": {
     "message": "{PH1} ĉól̂ĺâṕŝéd̂"
   },
-  "perf_ui/FlameChart.js | sExpanded": {
+  "perf_ui/FlameChart.ts | sExpanded": {
     "message": "{PH1} êx́p̂án̂d́êd́"
   },
-  "perf_ui/FlameChart.js | sHovered": {
+  "perf_ui/FlameChart.ts | sHovered": {
     "message": "{PH1} ĥóv̂ér̂éd̂"
   },
-  "perf_ui/FlameChart.js | sSelected": {
+  "perf_ui/FlameChart.ts | sSelected": {
     "message": "{PH1} ŝél̂éĉt́êd́"
   },
-  "perf_ui/LineLevelProfile.js | kb": {
+  "perf_ui/LineLevelProfile.ts | kb": {
     "message": "k̂B́"
   },
-  "perf_ui/LineLevelProfile.js | mb": {
+  "perf_ui/LineLevelProfile.ts | mb": {
     "message": "M̂B́"
   },
-  "perf_ui/LineLevelProfile.js | ms": {
+  "perf_ui/LineLevelProfile.ts | ms": {
     "message": "m̂ś"
   },
-  "perf_ui/NetworkPriorities.js | high": {
+  "perf_ui/NetworkPriorities.ts | high": {
     "message": "Ĥíĝh́"
   },
-  "perf_ui/NetworkPriorities.js | highest": {
+  "perf_ui/NetworkPriorities.ts | highest": {
     "message": "Ĥíĝh́êśt̂"
   },
-  "perf_ui/NetworkPriorities.js | low": {
+  "perf_ui/NetworkPriorities.ts | low": {
     "message": "L̂óŵ"
   },
-  "perf_ui/NetworkPriorities.js | lowest": {
+  "perf_ui/NetworkPriorities.ts | lowest": {
     "message": "L̂óŵéŝt́"
   },
-  "perf_ui/NetworkPriorities.js | medium": {
+  "perf_ui/NetworkPriorities.ts | medium": {
     "message": "M̂éd̂íûḿ"
   },
-  "perf_ui/OverviewGrid.js | leftResizer": {
+  "perf_ui/OverviewGrid.ts | leftResizer": {
     "message": "L̂éf̂t́ R̂éŝíẑér̂"
   },
-  "perf_ui/OverviewGrid.js | overviewGridWindow": {
+  "perf_ui/OverviewGrid.ts | overviewGridWindow": {
     "message": "Ôv́êŕv̂íêẃ ĝŕîd́ ŵín̂d́ôẃ"
   },
-  "perf_ui/OverviewGrid.js | rightResizer": {
+  "perf_ui/OverviewGrid.ts | rightResizer": {
     "message": "R̂íĝh́t̂ Ŕêśîźêŕ"
   },
   "perf_ui/perf_ui-meta.ts | collectGarbage": {

@@ -1,3 +1,7 @@
+// Copyright 2021 The Chromium Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+
 /*
  * Copyright (C) 2007, 2008 Apple Inc.  All rights reserved.
  * Copyright (C) 2008, 2009 Anthony Ricaud <rik@webkit.org>
@@ -28,14 +32,21 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Host from '../host/host.js';
 import * as ThemeSupport from '../theme_support/theme_support.js';
 import * as UI from '../ui/ui.js';
 
-/** @type {!Map<!Element, !Element>} */
-const labelMap = new Map();
+const labelMap = new Map<HTMLDivElement|HTMLElement, HTMLDivElement>();
 
 export class TimelineGrid {
+  element: HTMLDivElement;
+  _dividersElement: HTMLElement;
+  _gridHeaderElement: HTMLDivElement;
+  _eventDividersElement: HTMLElement;
+  _dividersLabelBarElement: HTMLElement;
+
   constructor() {
     this.element = document.createElement('div');
     UI.Utils.appendStyle(this.element, 'perf_ui/timelineGrid.css', {enableLegacyPatching: true});
@@ -49,17 +60,12 @@ export class TimelineGrid {
     this.element.appendChild(this._gridHeaderElement);
   }
 
-  /**
-   * @param {!Calculator} calculator
-   * @param {number=} freeZoneAtLeft
-   * @return {!DividersData}
-   */
-  static calculateGridOffsets(calculator, freeZoneAtLeft) {
+  static calculateGridOffsets(calculator: Calculator, freeZoneAtLeft?: number): DividersData {
     /** @const */ const minGridSlicePx = 64;  // minimal distance between grid lines.
 
     const clientWidth = calculator.computePosition(calculator.maximumBoundary());
-    let dividersCount = clientWidth / minGridSlicePx;
-    let gridSliceTime = calculator.boundarySpan() / dividersCount;
+    let dividersCount: number|0 = clientWidth / minGridSlicePx;
+    let gridSliceTime: number = calculator.boundarySpan() / dividersCount;
     const pixelsPerTime = clientWidth / calculator.boundarySpan();
 
     // Align gridSliceTime to a nearest round value.
@@ -101,11 +107,7 @@ export class TimelineGrid {
     return {offsets: offsets, precision: Math.max(0, -Math.floor(Math.log(gridSliceTime * 1.01) / Math.LN10))};
   }
 
-  /**
-   * @param {!CanvasRenderingContext2D} context
-   * @param {!DividersData} dividersData
-   */
-  static drawCanvasGrid(context, dividersData) {
+  static drawCanvasGrid(context: CanvasRenderingContext2D, dividersData: DividersData): void {
     context.save();
     context.scale(window.devicePixelRatio, window.devicePixelRatio);
     const height = Math.floor(context.canvas.height / window.devicePixelRatio);
@@ -123,15 +125,9 @@ export class TimelineGrid {
     context.restore();
   }
 
-  /**
-   * @param {!CanvasRenderingContext2D} context
-   * @param {!DividersData} dividersData
-   * @param {function(number):string} formatTimeFunction
-   * @param {number} paddingTop
-   * @param {number} headerHeight
-   * @param {number=} freeZoneAtLeft
-   */
-  static drawCanvasHeaders(context, dividersData, formatTimeFunction, paddingTop, headerHeight, freeZoneAtLeft) {
+  static drawCanvasHeaders(
+      context: CanvasRenderingContext2D, dividersData: DividersData, formatTimeFunction: (arg0: number) => string,
+      paddingTop: number, headerHeight: number, freeZoneAtLeft?: number): void {
     context.save();
     context.scale(window.devicePixelRatio, window.devicePixelRatio);
     const width = Math.ceil(context.canvas.width / window.devicePixelRatio);
@@ -158,25 +154,20 @@ export class TimelineGrid {
     context.restore();
   }
 
-  get dividersElement() {
+  get dividersElement(): HTMLElement {
     return this._dividersElement;
   }
 
-  get dividersLabelBarElement() {
+  get dividersLabelBarElement(): HTMLElement {
     return this._dividersLabelBarElement;
   }
 
-  removeDividers() {
+  removeDividers(): void {
     this._dividersElement.removeChildren();
     this._dividersLabelBarElement.removeChildren();
   }
 
-  /**
-   * @param {!Calculator} calculator
-   * @param {number=} freeZoneAtLeft
-   * @return {boolean}
-   */
-  updateDividers(calculator, freeZoneAtLeft) {
+  updateDividers(calculator: Calculator, freeZoneAtLeft?: number): boolean {
     const dividersData = TimelineGrid.calculateGridOffsets(calculator, freeZoneAtLeft);
     const dividerOffsets = dividersData.offsets;
     const precision = dividersData.precision;
@@ -184,8 +175,8 @@ export class TimelineGrid {
     const dividersElementClientWidth = this._dividersElement.clientWidth;
 
     // Reuse divider elements and labels.
-    let divider = /** @type {?HTMLElement} */ (this._dividersElement.firstChild);
-    let dividerLabelBar = /** @type {?HTMLElement} */ (this._dividersLabelBarElement.firstChild);
+    let divider = (this._dividersElement.firstChild as HTMLElement | null);
+    let dividerLabelBar = (this._dividersLabelBarElement.firstChild as HTMLElement | null);
 
     for (let i = 0; i < dividerOffsets.length; ++i) {
       if (!divider) {
@@ -216,10 +207,9 @@ export class TimelineGrid {
       if (dividerLabelBar) {
         dividerLabelBar.style.left = percentLeft + '%';
       }
-
-      divider = /** @type {?HTMLElement} */ (divider.nextSibling);
+      divider = (divider.nextSibling as HTMLElement | null);
       if (dividerLabelBar) {
-        dividerLabelBar = /** @type {?HTMLElement} */ (dividerLabelBar.nextSibling);
+        dividerLabelBar = (dividerLabelBar.nextSibling as HTMLElement | null);
       }
     }
 
@@ -228,7 +218,7 @@ export class TimelineGrid {
       const nextDivider = divider.nextSibling;
       this._dividersElement.removeChild(divider);
       if (nextDivider) {
-        divider = /** @type {!HTMLElement} */ (nextDivider);
+        divider = (nextDivider as HTMLElement);
       } else {
         break;
       }
@@ -237,7 +227,7 @@ export class TimelineGrid {
       const nextDivider = dividerLabelBar.nextSibling;
       this._dividersLabelBarElement.removeChild(dividerLabelBar);
       if (nextDivider) {
-        dividerLabelBar = /** @type {!HTMLElement} */ (nextDivider);
+        dividerLabelBar = (nextDivider as HTMLElement);
       } else {
         break;
       }
@@ -245,17 +235,11 @@ export class TimelineGrid {
     return true;
   }
 
-  /**
-   * @param {!Element} divider
-   */
-  addEventDivider(divider) {
+  addEventDivider(divider: Element): void {
     this._eventDividersElement.appendChild(divider);
   }
 
-  /**
-   * @param {!Array.<!Element>} dividers
-   */
-  addEventDividers(dividers) {
+  addEventDividers(dividers: Element[]): void {
     this._gridHeaderElement.removeChild(this._eventDividersElement);
     for (const divider of dividers) {
       this._eventDividersElement.appendChild(divider);
@@ -263,77 +247,45 @@ export class TimelineGrid {
     this._gridHeaderElement.appendChild(this._eventDividersElement);
   }
 
-  removeEventDividers() {
+  removeEventDividers(): void {
     this._eventDividersElement.removeChildren();
   }
 
-  hideEventDividers() {
+  hideEventDividers(): void {
     this._eventDividersElement.classList.add('hidden');
   }
 
-  showEventDividers() {
+  showEventDividers(): void {
     this._eventDividersElement.classList.remove('hidden');
   }
 
-  hideDividers() {
+  hideDividers(): void {
     this._dividersElement.classList.add('hidden');
   }
 
-  showDividers() {
+  showDividers(): void {
     this._dividersElement.classList.remove('hidden');
   }
 
-  /**
-   * @param {number} scrollTop
-   */
-  setScrollTop(scrollTop) {
+  setScrollTop(scrollTop: number): void {
     this._dividersLabelBarElement.style.top = scrollTop + 'px';
     this._eventDividersElement.style.top = scrollTop + 'px';
   }
 }
 
-/**
- * @interface
- */
-export class Calculator {
-  /**
-   * @param {number} time
-   * @return {number}
-   */
-  computePosition(time) {
-    throw new Error('Not implemented');
-  }
-
-  /**
-   * @param {number} time
-   * @param {number=} precision
-   * @return {string}
-   */
-  formatValue(time, precision) {
-    throw new Error('Not implemented');
-  }
-
-  /** @return {number} */
-  minimumBoundary() {
-    throw new Error('Not implemented');
-  }
-
-  /** @return {number} */
-  zeroTime() {
-    throw new Error('Not implemented');
-  }
-
-  /** @return {number} */
-  maximumBoundary() {
-    throw new Error('Not implemented');
-  }
-
-  /** @return {number} */
-  boundarySpan() {
-    throw new Error('Not implemented');
-  }
+export interface Calculator {
+  computePosition(time: number): number;
+  formatValue(time: number, precision?: number): string;
+  minimumBoundary(): number;
+  zeroTime(): number;
+  maximumBoundary(): number;
+  boundarySpan(): number;
 }
 
-/** @typedef {!{offsets: !Array<!{position: number, time: number}>, precision: number}} */
-// @ts-ignore Typedef.
-export let DividersData;
+export interface DividersData {
+  offsets: {
+    position: number,
+    time: number,
+  }[];
+  precision: number;
+}

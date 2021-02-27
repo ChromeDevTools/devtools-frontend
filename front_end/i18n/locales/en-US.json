@@ -5750,67 +5750,67 @@
   "object_ui/RemoteObjectPreviewFormatter.ts | thePropertyIsComputedWithAGetter": {
     "message": "The property is computed with a getter"
   },
-  "perf_ui/FilmStripView.js | doubleclickToZoomImageClickTo": {
+  "perf_ui/FilmStripView.ts | doubleclickToZoomImageClickTo": {
     "message": "Doubleclick to zoom image. Click to view preceding requests."
   },
-  "perf_ui/FilmStripView.js | nextFrame": {
+  "perf_ui/FilmStripView.ts | nextFrame": {
     "message": "Next frame"
   },
-  "perf_ui/FilmStripView.js | previousFrame": {
+  "perf_ui/FilmStripView.ts | previousFrame": {
     "message": "Previous frame"
   },
-  "perf_ui/FilmStripView.js | screenshot": {
+  "perf_ui/FilmStripView.ts | screenshot": {
     "message": "Screenshot"
   },
-  "perf_ui/FilmStripView.js | screenshotForSSelectToView": {
+  "perf_ui/FilmStripView.ts | screenshotForSSelectToView": {
     "message": "Screenshot for {PH1} - select to view preceding requests."
   },
-  "perf_ui/FlameChart.js | flameChart": {
+  "perf_ui/FlameChart.ts | flameChart": {
     "message": "Flame Chart"
   },
-  "perf_ui/FlameChart.js | sCollapsed": {
+  "perf_ui/FlameChart.ts | sCollapsed": {
     "message": "{PH1} collapsed"
   },
-  "perf_ui/FlameChart.js | sExpanded": {
+  "perf_ui/FlameChart.ts | sExpanded": {
     "message": "{PH1} expanded"
   },
-  "perf_ui/FlameChart.js | sHovered": {
+  "perf_ui/FlameChart.ts | sHovered": {
     "message": "{PH1} hovered"
   },
-  "perf_ui/FlameChart.js | sSelected": {
+  "perf_ui/FlameChart.ts | sSelected": {
     "message": "{PH1} selected"
   },
-  "perf_ui/LineLevelProfile.js | kb": {
+  "perf_ui/LineLevelProfile.ts | kb": {
     "message": "kB"
   },
-  "perf_ui/LineLevelProfile.js | mb": {
+  "perf_ui/LineLevelProfile.ts | mb": {
     "message": "MB"
   },
-  "perf_ui/LineLevelProfile.js | ms": {
+  "perf_ui/LineLevelProfile.ts | ms": {
     "message": "ms"
   },
-  "perf_ui/NetworkPriorities.js | high": {
+  "perf_ui/NetworkPriorities.ts | high": {
     "message": "High"
   },
-  "perf_ui/NetworkPriorities.js | highest": {
+  "perf_ui/NetworkPriorities.ts | highest": {
     "message": "Highest"
   },
-  "perf_ui/NetworkPriorities.js | low": {
+  "perf_ui/NetworkPriorities.ts | low": {
     "message": "Low"
   },
-  "perf_ui/NetworkPriorities.js | lowest": {
+  "perf_ui/NetworkPriorities.ts | lowest": {
     "message": "Lowest"
   },
-  "perf_ui/NetworkPriorities.js | medium": {
+  "perf_ui/NetworkPriorities.ts | medium": {
     "message": "Medium"
   },
-  "perf_ui/OverviewGrid.js | leftResizer": {
+  "perf_ui/OverviewGrid.ts | leftResizer": {
     "message": "Left Resizer"
   },
-  "perf_ui/OverviewGrid.js | overviewGridWindow": {
+  "perf_ui/OverviewGrid.ts | overviewGridWindow": {
     "message": "Overview grid window"
   },
-  "perf_ui/OverviewGrid.js | rightResizer": {
+  "perf_ui/OverviewGrid.ts | rightResizer": {
     "message": "Right Resizer"
   },
   "perf_ui/perf_ui-meta.ts | collectGarbage": {

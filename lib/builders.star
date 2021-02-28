@@ -48,12 +48,14 @@ dimensions = struct(
 def recipe(
         name,
         cipd_package = defaults.cipd_package,
-        cipd_version = defaults.cipd_version):
+        cipd_version = defaults.cipd_version,
+    ):
     """Create recipe declaration with dtf defaults"""
     return luci.recipe(
         name = name,
         cipd_package = cipd_package,
         cipd_version = cipd_version,
+        use_bbagent = True,
     )
 
 def builder(

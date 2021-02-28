@@ -1,12 +1,4 @@
 {
-  "extensions": [
-    {
-      "type": "late-initialization",
-      "className": "PerfUI.LiveHeapProfile",
-      "experiment": "liveHeapProfile",
-      "setting": "memoryLiveHeapProfile"
-    }
-  ],
   "dependencies": [
     "ui",
     "source_frame",

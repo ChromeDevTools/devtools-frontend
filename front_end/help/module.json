@@ -1,10 +1,4 @@
 {
-  "extensions": [
-    {
-      "type": "late-initialization",
-      "className": "Help.HelpLateInitialization"
-    }
-  ],
   "dependencies": [
     "ui"
   ],

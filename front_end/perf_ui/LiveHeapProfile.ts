@@ -10,6 +10,7 @@ import * as SDK from '../sdk/sdk.js';
 
 import {Memory} from './LineLevelProfile.js';
 
+let liveHeapProfileInstance: LiveHeapProfile;
 export class LiveHeapProfile implements Common.Runnable.Runnable,
                                         SDK.SDKModel.SDKModelObserver<SDK.HeapProfilerModel.HeapProfilerModel> {
   _running: boolean;
@@ -17,7 +18,7 @@ export class LiveHeapProfile implements Common.Runnable.Runnable,
   _loadEventCallback: (arg0?: Function|null) => void;
   _setting: Common.Settings.Setting<boolean>;
 
-  constructor() {
+  private constructor() {
     this._running = false;
     this._sessionId = 0;
     this._loadEventCallback = (): void => {};
@@ -26,6 +27,15 @@ export class LiveHeapProfile implements Common.Runnable.Runnable,
     if (this._setting.get()) {
       this._startProfiling();
     }
+  }
+
+  static instance(opts: {forceNew: boolean|null} = {forceNew: null}): LiveHeapProfile {
+    const {forceNew} = opts;
+    if (!liveHeapProfileInstance || forceNew) {
+      liveHeapProfileInstance = new LiveHeapProfile();
+    }
+
+    return liveHeapProfileInstance;
   }
 
   run(): Promise<void> {

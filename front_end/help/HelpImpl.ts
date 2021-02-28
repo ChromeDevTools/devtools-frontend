@@ -6,7 +6,8 @@
 
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
-import * as UI from '../ui/ui.js';
+import * as Root from '../root/root.js';
+import * as UI from '../ui/ui.js';  // eslint-disable-line no-unused-vars
 
 import {releaseNoteText} from './ReleaseNoteText.js';
 
@@ -51,13 +52,24 @@ export function innerShowReleaseNoteIfNeeded(
   UI.ViewManager.ViewManager.instance().showView(releaseNoteViewId, true);
 }
 
+let helpLateInitializationInstance: HelpLateInitialization;
 export class HelpLateInitialization implements Common.Runnable.Runnable {
+  static instance(opts: {forceNew: boolean|null} = {forceNew: null}): HelpLateInitialization {
+    const {forceNew} = opts;
+    if (!helpLateInitializationInstance || forceNew) {
+      helpLateInitializationInstance = new HelpLateInitialization();
+    }
+    return helpLateInitializationInstance;
+  }
+
   async run(): Promise<void> {
     if (!Host.InspectorFrontendHost.isUnderTest()) {
+      await Root.Runtime.Runtime.instance().loadModulePromise('help');
       showReleaseNoteIfNeeded();
     }
   }
 }
+Common.Runnable.registerLateInitializationRunnable(HelpLateInitialization.instance);
 
 let releaseNotesActionDelegateInstance: ReleaseNotesActionDelegate;
 export class ReleaseNotesActionDelegate implements UI.ActionRegistration.ActionDelegate {

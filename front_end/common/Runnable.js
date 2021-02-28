@@ -13,3 +13,20 @@ export class Runnable {
     throw new Error('not implemented');
   }
 }
+
+/** @type {!Array<function(): !Runnable>} */
+const registeredLateInitializationRunnables = [];
+
+/**
+ * @param {function(): !Runnable} runnable
+ */
+export function registerLateInitializationRunnable(runnable) {
+  registeredLateInitializationRunnables.push(runnable);
+}
+
+/**
+ * @return {!Array<function(): !Runnable>}
+ */
+export function lateInitializationRunnables() {
+  return registeredLateInitializationRunnables;
+}

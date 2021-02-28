@@ -73,6 +73,13 @@ generate_ci_configs(
             dims = dimensions.mac,
             excluded_from = ["chromium", "beta", "stable"],
         ),
+        builder_descriptor(
+            name = "Linux Official",
+            recipe_name = "devtools/devtools-frontend",
+            excluded_from = ["chromium"],
+            properties = {"is_official_build": True},
+            notification_muted = True,
+        ),
     ],
 )
 

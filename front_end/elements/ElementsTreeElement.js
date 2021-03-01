@@ -1117,53 +1117,40 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     // Append editor.
     this.listItemElement.appendChild(this._htmlEditElement);
 
-    const textEditorExtension = Root.Runtime.Runtime.instance().extension(UI.TextEditor.TextEditorFactory);
-    if (textEditorExtension) {
-      textEditorExtension.instance().then(factory => {
-        gotFactory.call(this, /** @type {!UI.TextEditor.TextEditorFactory} */ (factory));
-      });
-    }
+    const factory = TextEditor.CodeMirrorTextEditor.CodeMirrorTextEditorFactory.instance();
+    const editor = factory.createEditor({
+      lineNumbers: false,
+      lineWrapping: Common.Settings.Settings.instance().moduleSetting('domWordWrap').get(),
+      mimeType: 'text/html',
+      autoHeight: false,
+      padBottom: false,
+      bracketMatchingSetting: undefined,
+      devtoolsAccessibleName: undefined,
+      maxHighlightLength: undefined,
+      placeholder: undefined,
+      lineWiseCopyCut: undefined,
+      inputStyle: undefined,
+    });
+    this._editing = {commit: commit.bind(this), cancel: dispose.bind(this), editor, resize: resize.bind(this)};
+    resize.call(this);
 
+    editor.widget().show(
+        /** @type {!HTMLElement} */ (this._htmlEditElement));
+    editor.setText(initialValue);
+    editor.widget().focus();
+    editor.widget().element.addEventListener('focusout', event => {
+      // The relatedTarget is null when no element gains focus, e.g. switching windows.
+      const relatedTarget = /** @type {?Node} */ (event.relatedTarget);
+      if (relatedTarget && !relatedTarget.isSelfOrDescendant(editor.widget().element)) {
+        this._editing && this._editing.commit();
+      }
+    }, false);
+    editor.widget().element.addEventListener('keydown', keydown.bind(this), true);
 
-    /**
-     * @param {!UI.TextEditor.TextEditorFactory} factory
-     * @this {ElementsTreeElement}
-     */
-    function gotFactory(factory) {
-      const editor = factory.createEditor({
-        lineNumbers: false,
-        lineWrapping: Common.Settings.Settings.instance().moduleSetting('domWordWrap').get(),
-        mimeType: 'text/html',
-        autoHeight: false,
-        padBottom: false,
-        bracketMatchingSetting: undefined,
-        devtoolsAccessibleName: undefined,
-        maxHighlightLength: undefined,
-        placeholder: undefined,
-        lineWiseCopyCut: undefined,
-        inputStyle: undefined,
-      });
-      this._editing = {commit: commit.bind(this), cancel: dispose.bind(this), editor, resize: resize.bind(this)};
-      resize.call(this);
-
-      editor.widget().show(
-          /** @type {!HTMLElement} */ (this._htmlEditElement));
-      editor.setText(initialValue);
-      editor.widget().focus();
-      editor.widget().element.addEventListener('focusout', event => {
-        // The relatedTarget is null when no element gains focus, e.g. switching windows.
-        const relatedTarget = /** @type {?Node} */ (event.relatedTarget);
-        if (relatedTarget && !relatedTarget.isSelfOrDescendant(editor.widget().element)) {
-          this._editing && this._editing.commit();
-        }
-      }, false);
-      editor.widget().element.addEventListener('keydown', keydown.bind(this), true);
-
-      this.treeOutline &&
-          this.treeOutline.setMultilineEditing(
-              /** @type {!{commit: function():void, cancel: function():void, editor: !UI.TextEditor.TextEditor, resize: function():*}} */
-              (this._editing));
-    }
+    this.treeOutline &&
+        this.treeOutline.setMultilineEditing(
+            /** @type {!{commit: function():void, cancel: function():void, editor: !UI.TextEditor.TextEditor, resize: function():*}} */
+            (this._editing));
 
     /**
      * @this {ElementsTreeElement}

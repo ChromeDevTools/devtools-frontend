@@ -1,10 +1,4 @@
 {
-  "extensions": [
-    {
-      "type": "@UI.TextEditorFactory",
-      "className": "TextEditor.CodeMirrorTextEditorFactory"
-    }
-  ],
   "dependencies": [
     "cm",
     "ui"

@@ -1541,8 +1541,17 @@ export class TextEditorBookMark {
     return pos ? TextUtils.TextRange.TextRange.createFromLocation(pos.line, pos.ch) : null;
   }
 }
+let codeMirrorTextEditorFactoryInstance: CodeMirrorTextEditorFactory;
 
 export class CodeMirrorTextEditorFactory implements UI.TextEditor.TextEditorFactory {
+  static instance(opts: {forceNew: boolean|null} = {forceNew: null}): CodeMirrorTextEditorFactory {
+    const {forceNew} = opts;
+    if (!codeMirrorTextEditorFactoryInstance || forceNew) {
+      codeMirrorTextEditorFactoryInstance = new CodeMirrorTextEditorFactory();
+    }
+
+    return codeMirrorTextEditorFactoryInstance;
+  }
   createEditor(options: UI.TextEditor.Options): CodeMirrorTextEditor {
     return new CodeMirrorTextEditor(options);
   }

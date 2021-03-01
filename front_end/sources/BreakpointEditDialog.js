@@ -4,7 +4,7 @@
 
 import * as i18n from '../i18n/i18n.js';
 import * as ObjectUI from '../object_ui/object_ui.js';
-import * as Root from '../root/root.js';
+import * as TextEditor from '../text_editor/text_editor.js';
 import * as UI from '../ui/ui.js';
 
 const UIStrings = {
@@ -80,30 +80,28 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
     this._typeSelector.select(this._isLogpoint ? logpointOption : conditionalOption);
     toolbar.appendToolbarItem(this._typeSelector);
 
-    const extension = Root.Runtime.Runtime.instance().extension(UI.TextEditor.TextEditorFactory);
-    if (extension) {
-      extension.instance().then(factory => {
-        const editorOptions = {
-          lineNumbers: false,
-          lineWrapping: true,
-          mimeType: 'javascript',
-          autoHeight: true,
-          bracketMatchingSetting: undefined,
-          devtoolsAccessibleName: undefined,
-          padBottom: undefined,
-          maxHighlightLength: undefined,
-          placeholder: undefined,
-          lineWiseCopyCut: undefined,
-          inputStyle: undefined,
-        };
-        this._editor = /** @type {!UI.TextEditor.TextEditorFactory} */ (factory).createEditor(editorOptions);
-        this._updatePlaceholder();
-        this._editor.widget().element.classList.add('condition-editor');
-        this._editor.configureAutocomplete(
-            ObjectUI.JavaScriptAutocomplete.JavaScriptAutocompleteConfig.createConfigForEditor(this._editor));
-        if (oldCondition) {
-          this._editor.setText(oldCondition);
-        }
+    const factory = TextEditor.CodeMirrorTextEditor.CodeMirrorTextEditorFactory.instance();
+    const editorOptions = {
+      lineNumbers: false,
+      lineWrapping: true,
+      mimeType: 'javascript',
+      autoHeight: true,
+      bracketMatchingSetting: undefined,
+      devtoolsAccessibleName: undefined,
+      padBottom: undefined,
+      maxHighlightLength: undefined,
+      placeholder: undefined,
+      lineWiseCopyCut: undefined,
+      inputStyle: undefined,
+    };
+    this._editor = /** @type {!UI.TextEditor.TextEditorFactory} */ (factory).createEditor(editorOptions);
+    this._updatePlaceholder();
+    this._editor.widget().element.classList.add('condition-editor');
+    this._editor.configureAutocomplete(
+        ObjectUI.JavaScriptAutocomplete.JavaScriptAutocompleteConfig.createConfigForEditor(this._editor));
+    if (oldCondition) {
+      this._editor.setText(oldCondition);
+    }
         this._editor.widget().markAsExternallyManaged();
         this._editor.widget().show(this.contentElement);
         this._editor.setSelection(this._editor.fullRange());
@@ -114,8 +112,6 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
             this._finishEditing(true);
           }
         }, true);
-      });
-    }
   }
 
   /**

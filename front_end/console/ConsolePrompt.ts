@@ -8,8 +8,8 @@ import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
 import * as i18n from '../i18n/i18n.js';
 import * as ObjectUI from '../object_ui/object_ui.js';
-import * as Root from '../root/root.js';
 import * as SDK from '../sdk/sdk.js';
+import * as TextEditor from '../text_editor/text_editor.js';  // eslint-disable-line no-unused-vars
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as UI from '../ui/ui.js';
 
@@ -74,39 +74,34 @@ export class ConsolePrompt extends UI.Widget.Widget {
 
     this._highlightingNode = false;
 
-    const extension =
-        (Root.Runtime.Runtime.instance().extension(UI.TextEditor.TextEditorFactory) as Root.Runtime.Extension);
-    extension.instance().then(factory => {
-      gotFactory.call(this, (factory as UI.TextEditor.TextEditorFactory));
-    });
+    const factory = TextEditor.CodeMirrorTextEditor.CodeMirrorTextEditorFactory.instance();
 
-    function gotFactory(this: ConsolePrompt, factory: UI.TextEditor.TextEditorFactory): void {
-      const options = {
-        devtoolsAccessibleName: (i18nString(UIStrings.consolePrompt) as string),
-        lineNumbers: false,
-        lineWrapping: true,
-        mimeType: 'javascript',
-        autoHeight: true,
-      };
-      this._editor = factory.createEditor((options as UI.TextEditor.Options));
+    const options = {
+      devtoolsAccessibleName: (i18nString(UIStrings.consolePrompt) as string),
+      lineNumbers: false,
+      lineWrapping: true,
+      mimeType: 'javascript',
+      autoHeight: true,
+    };
+    this._editor = factory.createEditor((options as UI.TextEditor.Options));
 
-      this._defaultAutocompleteConfig =
-          ObjectUI.JavaScriptAutocomplete.JavaScriptAutocompleteConfig.createConfigForEditor(this._editor);
-      this._editor.configureAutocomplete(Object.assign({}, this._defaultAutocompleteConfig, {
-        suggestionsCallback: this._wordsWithQuery.bind(this),
-        anchorBehavior: UI.GlassPane.AnchorBehavior.PreferTop,
-      }));
-      this._editor.widget().element.addEventListener('keydown', this._editorKeyDown.bind(this), true);
-      this._editor.widget().show(editorContainerElement);
-      this._editor.addEventListener(UI.TextEditor.Events.CursorChanged, this._updatePromptIcon, this);
-      this._editor.addEventListener(UI.TextEditor.Events.TextChanged, this._onTextChanged, this);
-      this._editor.addEventListener(UI.TextEditor.Events.SuggestionChanged, this._onTextChanged, this);
+    this._defaultAutocompleteConfig =
+        ObjectUI.JavaScriptAutocomplete.JavaScriptAutocompleteConfig.createConfigForEditor(this._editor);
+    this._editor.configureAutocomplete(Object.assign({}, this._defaultAutocompleteConfig, {
+      suggestionsCallback: this._wordsWithQuery.bind(this),
+      anchorBehavior: UI.GlassPane.AnchorBehavior.PreferTop,
+    }));
+    this._editor.widget().element.addEventListener('keydown', this._editorKeyDown.bind(this), true);
+    this._editor.widget().show(editorContainerElement);
+    this._editor.addEventListener(UI.TextEditor.Events.CursorChanged, this._updatePromptIcon, this);
+    this._editor.addEventListener(UI.TextEditor.Events.TextChanged, this._onTextChanged, this);
+    this._editor.addEventListener(UI.TextEditor.Events.SuggestionChanged, this._onTextChanged, this);
 
-      this.setText(this._initialText);
-      this._initialText = '';
-      if (this.hasFocus()) {
-        this.focus();
-      }
+    this.setText(this._initialText);
+    this._initialText = '';
+    if (this.hasFocus()) {
+      this.focus();
+    }
       this.element.removeAttribute('tabindex');
       this._editor.widget().element.tabIndex = -1;
 
@@ -114,7 +109,6 @@ export class ConsolePrompt extends UI.Widget.Widget {
 
       // Record the console tool load time after the console prompt constructor is complete.
       Host.userMetrics.panelLoaded('console', 'DevTools.Launch.Console');
-    }
   }
 
   _eagerSettingChanged(): void {

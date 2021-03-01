@@ -4,7 +4,8 @@
     "extensions",
     "inline_editor",
     "color_picker",
-    "event_listeners"
+    "event_listeners",
+    "text_editor"
   ],
   "modules": [
     "elements-legacy.js"

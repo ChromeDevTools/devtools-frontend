@@ -3,7 +3,8 @@
     "components",
     "data_grid",
     "object_ui",
-    "browser_sdk"
+    "browser_sdk",
+    "text_editor"
   ],
   "modules": [
     "console-legacy.js"

@@ -46,7 +46,7 @@ import {RequestTimingView} from './RequestTimingView.js';
 import {RequestTrustTokensView, statusConsideredSuccess} from './RequestTrustTokensView.js';
 import {ResourceWebSocketFrameView} from './ResourceWebSocketFrameView.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text for network request headers
   */

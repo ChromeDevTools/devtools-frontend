@@ -9,7 +9,7 @@ import * as Host from '../host/host.js';
 import * as i18n from '../i18n/i18n.js';
 import * as UI from '../ui/ui.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text in Node Connections Panel of the Sources panel when debugging a Node.js app
   */

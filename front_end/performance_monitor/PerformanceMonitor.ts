@@ -12,7 +12,7 @@ import * as SDK from '../sdk/sdk.js';
 import * as ThemeSupport from '../theme_support/theme_support.js';
 import * as UI from '../ui/ui.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Aria accessible name in Performance Monitor of the Performance monitor tab
   */

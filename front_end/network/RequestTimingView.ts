@@ -39,7 +39,7 @@ import * as UI from '../ui/ui.js';
 
 import {Events, NetworkTimeCalculator} from './NetworkTimeCalculator.js';  // eslint-disable-line no-unused-vars
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text used to label the time taken to receive an HTTP/2 Push message.
   */

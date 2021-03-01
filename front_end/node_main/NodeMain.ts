@@ -11,7 +11,7 @@ import * as i18n from '../i18n/i18n.js';
 import type * as ProtocolClient from '../protocol_client/protocol_client.js';
 import * as SDK from '../sdk/sdk.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text that refers to the main target
   */

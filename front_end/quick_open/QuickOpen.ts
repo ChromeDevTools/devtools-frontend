@@ -9,7 +9,7 @@ import * as UI from '../ui/ui.js';  // eslint-disable-line no-unused-vars
 
 import {FilteredListWidget, getRegisteredProviders, Provider} from './FilteredListWidget.js';  // eslint-disable-line no-unused-vars
 
-export const UIStrings = {
+const UIStrings = {
   /**
   * @description Text in Quick Open of the Command Menu
   */

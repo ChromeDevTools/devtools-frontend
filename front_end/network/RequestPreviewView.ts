@@ -40,7 +40,7 @@ import {RequestHTMLView} from './RequestHTMLView.js';
 import {RequestResponseView} from './RequestResponseView.js';
 import {SignedExchangeInfoView} from './SignedExchangeInfoView.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text in Request Preview View of the Network panel
   */

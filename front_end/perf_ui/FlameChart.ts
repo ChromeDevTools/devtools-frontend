@@ -43,7 +43,7 @@ import * as UI from '../ui/ui.js';
 import {ChartViewport, ChartViewportDelegate} from './ChartViewport.js';  // eslint-disable-line no-unused-vars
 import {Calculator, TimelineGrid} from './TimelineGrid.js';               // eslint-disable-line no-unused-vars
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Aria accessible name in Flame Chart of the Performance panel
   */

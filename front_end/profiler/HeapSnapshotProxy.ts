@@ -35,7 +35,7 @@ import type * as HeapSnapshotModel from '../heap_snapshot_model/heap_snapshot_mo
 import * as i18n from '../i18n/i18n.js';
 import type {ChildrenProvider} from './ChildrenProvider.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text in Heap Snapshot Proxy of a profiler tool
   *@example {functionName} PH1

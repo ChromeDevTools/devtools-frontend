@@ -13,7 +13,7 @@ import type * as Profiler from './profiler.js';
 
 let loadedProfilerModule: (typeof Profiler|undefined);
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Title for the profiler tab
   */

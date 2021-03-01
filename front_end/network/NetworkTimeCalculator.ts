@@ -39,7 +39,7 @@ import * as i18n from '../i18n/i18n.js';
 import * as PerfUI from '../perf_ui/perf_ui.js';  // eslint-disable-line no-unused-vars
 import * as SDK from '../sdk/sdk.js';             // eslint-disable-line no-unused-vars
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Latency download total format in Network Time Calculator of the Network panel
   *@example {20ms} PH1

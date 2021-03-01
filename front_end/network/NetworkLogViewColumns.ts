@@ -18,7 +18,7 @@ import {NetworkTimeCalculator, NetworkTransferDurationCalculator, NetworkTransfe
 import {NetworkWaterfallColumn} from './NetworkWaterfallColumn.js';
 import {RequestInitiatorView} from './RequestInitiatorView.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Data grid name for Network Log data grids
   */

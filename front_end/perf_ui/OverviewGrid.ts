@@ -37,7 +37,7 @@ import * as UI from '../ui/ui.js';
 
 import {Calculator, TimelineGrid} from './TimelineGrid.js';  // eslint-disable-line no-unused-vars
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Label for the window for Overview grids
   */

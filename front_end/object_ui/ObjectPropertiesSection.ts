@@ -46,7 +46,7 @@ import {JavaScriptAutocomplete} from './JavaScriptAutocomplete.js';
 import {JavaScriptREPL} from './JavaScriptREPL.js';
 import {createSpansForNodeTitle, RemoteObjectPreviewFormatter} from './RemoteObjectPreviewFormatter.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text in Object Properties Section
   *@example {function alert()  [native code] } PH1

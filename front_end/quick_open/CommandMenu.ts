@@ -14,7 +14,7 @@ import * as UI from '../ui/ui.js';
 import {FilteredListWidget, Provider, registerProvider} from './FilteredListWidget.js';
 import {QuickOpenImpl} from './QuickOpen.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   * @description Message to display if a setting change requires a reload of DevTools
   */

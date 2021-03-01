@@ -38,7 +38,7 @@ import {IsolateSelector} from './IsolateSelector.js';
 import type {ProfileType} from './ProfileHeader.js';
 import type {ProfilesPanel} from './ProfilesPanel.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text in Profile Launcher View of a profiler tool
   */

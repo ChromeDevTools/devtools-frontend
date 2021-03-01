@@ -7,7 +7,7 @@ import * as LitHtml from '../third_party/lit-html/lit-html.js';
 const {render, html, svg} = LitHtml;
 
 import * as i18n from '../i18n/i18n.js';
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text for sum
   */

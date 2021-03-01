@@ -11,7 +11,7 @@ import * as UI from '../ui/ui.js';
 
 import {ObjectPropertiesSection} from './ObjectPropertiesSection.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description A context menu item in the Custom Preview Component
   */

@@ -8,7 +8,7 @@ import * as i18n from '../i18n/i18n.js';
 
 import {FilteredListWidget, Provider} from './FilteredListWidget.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   * @description Prompt for free-form input in the QuickInput dialog; Enter and Escape here are keyboard buttons and should be localized as appropriate.
   * @example {Provide some information.} PH1

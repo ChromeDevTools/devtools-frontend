@@ -7,7 +7,7 @@
 import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text in Network Priorities of the Performance panel
   */

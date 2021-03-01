@@ -16,7 +16,7 @@ import {NetworkPersistenceManager} from './NetworkPersistenceManager.js';
 import type {PersistenceBinding} from './PersistenceImpl.js';
 import {Events, PersistenceImpl} from './PersistenceImpl.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text in Persistence Utils of the Workspace settings in Settings
   *@example {example.url} PH1

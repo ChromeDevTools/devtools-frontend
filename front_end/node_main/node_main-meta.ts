@@ -9,7 +9,7 @@ import * as UI from '../ui/ui.js';
 // eslint-disable-next-line rulesdir/es_modules_import
 import type * as NodeMain from './node_main.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text that refers to the network connection
   */

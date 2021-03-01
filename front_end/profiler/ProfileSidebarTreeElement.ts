@@ -11,7 +11,7 @@ import * as UI from '../ui/ui.js';
 import type {DataDisplayDelegate} from './ProfileHeader.js';
 import {Events as ProfileHeaderEvents, ProfileHeader} from './ProfileHeader.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text to save something
   */

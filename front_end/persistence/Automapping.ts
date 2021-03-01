@@ -15,7 +15,7 @@ import type {FileSystem} from './FileSystemWorkspaceBinding.js';
 import {FileSystemWorkspaceBinding} from './FileSystemWorkspaceBinding.js';
 import {PathEncoder, PersistenceImpl} from './PersistenceImpl.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Error message when attempting to create a binding from a malformed URI.
   *@example {file://%E0%A4%A} PH1

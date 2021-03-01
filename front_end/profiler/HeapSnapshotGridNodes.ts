@@ -44,7 +44,7 @@ import {HeapSnapshotRetainmentDataGridEvents} from './HeapSnapshotDataGrids.js';
 import type {HeapSnapshotProviderProxy, HeapSnapshotProxy} from './HeapSnapshotProxy.js';
 import type {DataDisplayDelegate} from './ProfileHeader.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text in Heap Snapshot Grid Nodes of a profiler tool
   *@example {2} PH1

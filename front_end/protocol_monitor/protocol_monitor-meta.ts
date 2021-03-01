@@ -9,7 +9,7 @@ import * as UI from '../ui/ui.js';
 // eslint-disable-next-line rulesdir/es_modules_import
 import type * as ProtocolMonitor from './protocol_monitor.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Title of the 'Protocol monitor' tool in the bottom drawer
   */

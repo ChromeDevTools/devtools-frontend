@@ -43,7 +43,7 @@ import type {HeapSnapshotProxy} from './HeapSnapshotProxy.js';
 import type {HeapProfileHeader} from './HeapSnapshotView.js';
 import type {DataDisplayDelegate} from './ProfileHeader.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text in Heap Snapshot Data Grids of a profiler tool
   */

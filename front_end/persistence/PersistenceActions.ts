@@ -15,7 +15,7 @@ import * as Workspace from '../workspace/workspace.js';
 import {NetworkPersistenceManager} from './NetworkPersistenceManager.js';
 import {PersistenceImpl} from './PersistenceImpl.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text to save content as a specific file type
   */

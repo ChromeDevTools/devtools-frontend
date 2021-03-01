@@ -40,7 +40,7 @@ import type {IsolatedFileSystemManager} from './IsolatedFileSystemManager.js';
 import {Events} from './IsolatedFileSystemManager.js';
 import {PlatformFileSystem} from './PlatformFileSystem.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text in Isolated File System of the Workspace settings in Settings
   *@example {folder does not exist} PH1

@@ -34,7 +34,7 @@ import * as i18n from '../i18n/i18n.js';
 import type * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   * @description This message is presented as a tooltip when developers investigate the performance
   * of a page. The tooltip alerts developers that some parts of code in execution were not optimized

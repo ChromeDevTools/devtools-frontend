@@ -12,7 +12,7 @@ import * as Workspace from '../workspace/workspace.js';
 // eslint-disable-next-line rulesdir/es_modules_import
 import type * as Persistence from './persistence.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text of a DOM element in Workspace Settings Tab of the Workspace settings in Settings
   */

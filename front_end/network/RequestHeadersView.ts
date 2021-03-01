@@ -44,7 +44,7 @@ import * as SDK from '../sdk/sdk.js';
 import * as ClientVariations from '../third_party/chromium/client-variations/client-variations.js';
 import * as UI from '../ui/ui.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text in Request Headers View of the Network panel
   */

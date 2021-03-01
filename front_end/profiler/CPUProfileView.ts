@@ -43,7 +43,7 @@ import type {ProfileHeader} from './ProfileHeader.js';
 import {ProfileEvents, ProfileType} from './ProfileHeader.js';
 import {ProfileView, WritableProfileHeader} from './ProfileView.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Time of a single activity, as opposed to the total time
   */

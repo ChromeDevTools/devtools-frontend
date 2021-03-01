@@ -21,7 +21,7 @@ import type {ProfileHeader} from './ProfileHeader.js';
 import {ProfileType, ProfileEvents} from './ProfileHeader.js';
 import {ProfileView, WritableProfileHeader} from './ProfileView.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description The reported total size used in the selected time frame of the allocation sampling profile
   *@example {3 MB} PH1

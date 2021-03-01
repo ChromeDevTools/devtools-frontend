@@ -10,7 +10,7 @@ import * as UI from '../ui/ui.js';
 // eslint-disable-next-line rulesdir/es_modules_import
 import type * as PerfUI from './perf_ui.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
      *@description Title of a setting under the Performance category in Settings
     */

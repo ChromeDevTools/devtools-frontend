@@ -11,7 +11,7 @@ import * as Platform from '../platform/platform.js';
 import type * as TextUtils from '../text_utils/text_utils.js';
 import * as Workspace from '../workspace/workspace.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   * @description Default name of a new recording
   * @example {1} nextId

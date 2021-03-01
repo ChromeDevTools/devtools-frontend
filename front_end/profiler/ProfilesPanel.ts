@@ -40,7 +40,7 @@ import {Events as ProfileLauncherEvents, ProfileLauncherView} from './ProfileLau
 import {ProfileSidebarTreeElement, setSharedFileSelectorElement} from './ProfileSidebarTreeElement.js';
 import {instance} from './ProfileTypeRegistry.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Tooltip text that appears when hovering over the largeicon clear button in the Profiles Panel of a profiler tool
   */

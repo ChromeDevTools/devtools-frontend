@@ -53,7 +53,7 @@ import * as Workspace from '../workspace/workspace.js';
 import {Tabs as NetworkItemViewTabs} from './NetworkItemView.js';
 import {NetworkTimeCalculator} from './NetworkTimeCalculator.js';  // eslint-disable-line no-unused-vars
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text in Network Data Grid Node of the Network panel
   */

@@ -34,7 +34,7 @@ import * as UI from '../ui/ui.js';
 
 import {BinaryResourceView} from './BinaryResourceView.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text in Event Source Messages View of the Network panel
   */

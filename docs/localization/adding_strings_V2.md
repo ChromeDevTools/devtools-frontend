@@ -104,6 +104,24 @@ Code example:
 4. The following commands would add the new strings to `en-US.json`:
   - `git cl presubmit --upload`, or
   - `node third_party/i18n/collect-strings.js` under the DevTools src folder
+5. Strings containing possible plurals have a special format in ICU. This is because plurals work quite differently in other languages, e.g. special forms for two or three items.
+
+    ❌
+    ```javascript
+    if (count === 1) {
+      str = '1 breakpoint';
+    } else {
+      str = '{n} breakpoints', {n: count};
+    }
+    ```
+
+    ✔️
+    ```javascript
+    '{n, plural, =1 {# breakpoint} other {# breakpoints}}', {n: count};
+    ```
+    - '#' is replaced with the value of `n`
+    - 'n' is a naming convention, but any name can be used
+    - Nesting placeholders inside of plurals is allowed
 
 ## Modifying a string
 1. Update the string you want to modify in `UIStrings`

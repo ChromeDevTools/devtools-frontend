@@ -31,24 +31,15 @@ const UIStrings = {
   */
   binaryData: 'Binary data',
   /**
-  *@description Text in Changes View of the Changes tab when one code insertion has occurred.
+  * @description Text in the Changes tab that indicates how many lines of code have changed in the selected file.
+  * An insertion refers to an added line of code. The (+) is a visual cue to indicate lines were added.
   */
-  sInsertion: '1 insertion `(+)`,',
+  sInsertions: '{n, plural, =1 {# insertion} other {# insertions}} `(+)`',
   /**
-  * @description Text in Changes View of the Changes tab when multiple code insertions have
-  * occurred.
-  * @example {2} PH1
+  * @description Text in the Changes tab that indicates how many lines of code have changed in the selected file.
+  * A deletion refers to a removed line of code. The (-) is a visual cue to indicate lines were removed.
   */
-  sInsertions: '{PH1} insertions `(+)`,',
-  /**
-  *@description Text in Changes View of the Changes tab when one code deletion has occurred.
-  */
-  sDeletion: '1 deletion `(-)`',
-  /**
-  * @description Text in Changes View of the Changes tab when multiple code deletions have occurred.
-  * @example {2} PH1
-  */
-  sDeletions: '{PH1} deletions `(-)`',
+  sDeletions: '{n, plural, =1 {# deletion} other {# deletions}} `(-)`',
   /**
   *@description Text in Changes View of the Changes tab
   *@example {2} PH1
@@ -260,21 +251,10 @@ export class ChangesView extends UI.Widget.VBox {
 
     this._maxLineDigits = Math.ceil(Math.log10(Math.max(currentLineNumber, baselineLineNumber)));
 
-    let insertionText: Common.UIString.LocalizedString|'' = '';
-    if (insertions === 1) {
-      insertionText = i18nString(UIStrings.sInsertion);
-    } else {
-      insertionText = i18nString(UIStrings.sInsertions, {PH1: insertions});
-    }
+    const insertionText = i18nString(UIStrings.sInsertions, {n: insertions});
+    const deletionText = i18nString(UIStrings.sDeletions, {n: deletions});
 
-    let deletionText: Common.UIString.LocalizedString|'' = '';
-    if (deletions === 1) {
-      deletionText = i18nString(UIStrings.sDeletion);
-    } else {
-      deletionText = i18nString(UIStrings.sDeletions, {PH1: deletions});
-    }
-
-    this._diffStats.setText(`${insertionText} ${deletionText}`);
+    this._diffStats.setText(`${insertionText}, ${deletionText}`);
     this._toolbar.setEnabled(true);
     this._emptyWidget.hideWidget();
 

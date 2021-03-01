@@ -674,17 +674,11 @@
   "changes/ChangesView.ts | revertAllChangesToCurrentFile": {
     "message": "R̂év̂ér̂t́ âĺl̂ ćĥán̂ǵêś t̂ó ĉúr̂ŕêńt̂ f́îĺê"
   },
-  "changes/ChangesView.ts | sDeletion": {
-    "message": "1 d̂él̂ét̂íôń (-)"
-  },
   "changes/ChangesView.ts | sDeletions": {
-    "message": "{PH1} d̂él̂ét̂íôńŝ (-)"
-  },
-  "changes/ChangesView.ts | sInsertion": {
-    "message": "1 îńŝér̂t́îón̂ (+),"
+    "message": "{n, plural, =1 {# d̂él̂ét̂íôń} other {# d̂él̂ét̂íôńŝ}} (-)"
   },
   "changes/ChangesView.ts | sInsertions": {
-    "message": "{PH1} îńŝér̂t́îón̂ś (+),"
+    "message": "{n, plural, =1 {# îńŝér̂t́îón̂} other {# ín̂śêŕt̂íôńŝ}} (+)"
   },
   "changes/ChangesView.ts | SkippingDMatchingLines": {
     "message": "( … Ŝḱîṕp̂ín̂ǵ {PH1} m̂át̂ćĥín̂ǵ l̂ín̂éŝ … )"

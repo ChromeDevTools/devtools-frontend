@@ -674,17 +674,11 @@
   "changes/ChangesView.ts | revertAllChangesToCurrentFile": {
     "message": "Revert all changes to current file"
   },
-  "changes/ChangesView.ts | sDeletion": {
-    "message": "1 deletion (-)"
-  },
   "changes/ChangesView.ts | sDeletions": {
-    "message": "{PH1} deletions (-)"
-  },
-  "changes/ChangesView.ts | sInsertion": {
-    "message": "1 insertion (+),"
+    "message": "{n, plural, =1 {# deletion} other {# deletions}} (-)"
   },
   "changes/ChangesView.ts | sInsertions": {
-    "message": "{PH1} insertions (+),"
+    "message": "{n, plural, =1 {# insertion} other {# insertions}} (+)"
   },
   "changes/ChangesView.ts | SkippingDMatchingLines": {
     "message": "( … Skipping {PH1} matching lines … )"

@@ -482,10 +482,12 @@ export class MainImpl {
 
   async _initializeTarget() {
     MainImpl.time('Main._initializeTarget');
-    const instances = await Promise.all(
-        Root.Runtime.Runtime.instance().extensions('early-initialization').map(extension => extension.instance()));
-    for (const instance of instances) {
-      await /** @type {!Common.Runnable.Runnable} */ (instance).run();
+
+    // We rely on having the early initialization runnables registered in Common when an app loads its
+    // modules, so that we don't have to exhaustively check the app DevTools is running as to
+    // start the applicable runnables.
+    for (const runnableInstanceFunction of Common.Runnable.earlyInitializationRunnables()) {
+      await runnableInstanceFunction().run();
     }
     // Used for browser tests.
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.readyForTest();

@@ -1,10 +1,4 @@
 {
-  "extensions": [
-    {
-      "type": "early-initialization",
-      "className": "NodeMain.NodeMain"
-    }
-  ],
   "dependencies": [
     "ui",
     "components"

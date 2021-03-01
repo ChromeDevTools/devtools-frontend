@@ -8,10 +8,25 @@ import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
 import {ls} from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 
+/** @type {!WorkerMainImpl} */
+let workerMainImplInstance;
+
 /**
  * @implements {Common.Runnable.Runnable}
  */
 export class WorkerMainImpl extends Common.ObjectWrapper.ObjectWrapper {
+  /**
+   * @param {{forceNew: ?boolean}} opts
+   */
+  static instance(opts = {forceNew: null}) {
+    const {forceNew} = opts;
+    if (!workerMainImplInstance || forceNew) {
+      workerMainImplInstance = new WorkerMainImpl();
+    }
+
+    return workerMainImplInstance;
+  }
+
   /**
    * @override
    */
@@ -22,6 +37,8 @@ export class WorkerMainImpl extends Common.ObjectWrapper.ObjectWrapper {
     new MobileThrottling.NetworkPanelIndicator.NetworkPanelIndicator();
   }
 }
+
+Common.Runnable.registerEarlyInitializationRunnable(WorkerMainImpl.instance);
 
 SDK.ChildTargetManager.ChildTargetManager.install(async ({target, waitingForDebugger}) => {
   // Only pause the new worker if debugging SW - we are going through the pause on start checkbox.

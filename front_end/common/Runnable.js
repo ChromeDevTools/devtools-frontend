@@ -16,7 +16,6 @@ export class Runnable {
 
 /** @type {!Array<function(): !Runnable>} */
 const registeredLateInitializationRunnables = [];
-
 /**
  * @param {function(): !Runnable} runnable
  */
@@ -29,4 +28,21 @@ export function registerLateInitializationRunnable(runnable) {
  */
 export function lateInitializationRunnables() {
   return registeredLateInitializationRunnables;
+}
+
+/** @type {!Array<function(): !Runnable>} */
+const registeredEarlyInitializationRunnables = [];
+
+/**
+ * @param {function(): !Runnable} runnable
+ */
+export function registerEarlyInitializationRunnable(runnable) {
+  registeredEarlyInitializationRunnables.push(runnable);
+}
+
+/**
+ * @return {!Array<function(): !Runnable>}
+ */
+export function earlyInitializationRunnables() {
+  return registeredEarlyInitializationRunnables;
 }

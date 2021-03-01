@@ -1,10 +1,4 @@
 {
-  "extensions": [
-    {
-      "type": "early-initialization",
-      "className": "InspectorMain.InspectorMain"
-    }
-  ],
   "dependencies": [
     "components",
     "mobile_throttling"

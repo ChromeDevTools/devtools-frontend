@@ -24,7 +24,16 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('node_main/NodeMain.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+let nodeMainImplInstance: NodeMainImpl;
+
 export class NodeMainImpl extends Common.ObjectWrapper.ObjectWrapper implements Common.Runnable.Runnable {
+  static instance(opts: {forceNew: boolean|null} = {forceNew: null}): NodeMainImpl {
+    const {forceNew} = opts;
+    if (!nodeMainImplInstance || forceNew) {
+      nodeMainImplInstance = new NodeMainImpl();
+    }
+    return nodeMainImplInstance;
+  }
   async run(): Promise<void> {
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.ConnectToNodeJSFromFrontend);
     SDK.Connections.initMainConnection(async () => {
@@ -34,6 +43,8 @@ export class NodeMainImpl extends Common.ObjectWrapper.ObjectWrapper implements 
     }, Components.TargetDetachedDialog.TargetDetachedDialog.webSocketConnectionLost);
   }
 }
+
+Common.Runnable.registerEarlyInitializationRunnable(NodeMainImpl.instance);
 
 export class NodeChildTargetManager extends SDK.SDKModel.SDKModel implements ProtocolProxyApi.TargetDispatcher {
   _targetManager: SDK.SDKModel.TargetManager;

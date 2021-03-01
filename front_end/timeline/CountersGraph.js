@@ -38,7 +38,7 @@ import * as UI from '../ui/ui.js';
 import {Events, PerformanceModel, Window} from './PerformanceModel.js';  // eslint-disable-line no-unused-vars
 import {TimelineModeViewDelegate} from './TimelinePanel.js';             // eslint-disable-line no-unused-vars
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text for a heap profile type
   */

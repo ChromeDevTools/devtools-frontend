@@ -33,7 +33,7 @@ import * as Root from '../root/root.js';
 
 import {TimelineCategory, TimelineRecordStyle} from './TimelineUIUtils.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text in Timeline UIUtils of the Performance panel
   */

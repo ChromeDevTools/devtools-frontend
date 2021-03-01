@@ -14,7 +14,7 @@ import * as UI from '../ui/ui.js';
 
 import {BackgroundServiceModel, Events} from './BackgroundServiceModel.js';  // eslint-disable-line no-unused-vars
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text in Background Service View of the Application panel
   */

@@ -12,7 +12,7 @@ import * as Workspace from '../workspace/workspace.js';  // eslint-disable-line 
 
 import {Plugin} from './Plugin.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text in Script Origin Plugin of the Sources panel
   *@example {example.com} PH1

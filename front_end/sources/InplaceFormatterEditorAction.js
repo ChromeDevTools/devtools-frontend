@@ -12,7 +12,7 @@ import * as Workspace from '../workspace/workspace.js';  // eslint-disable-line 
 
 import {EditorAction, Events, registerEditorAction, SourcesView} from './SourcesView.js';  // eslint-disable-line no-unused-vars
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Title of the format button in the Sources panel
   *@example {file name} PH1

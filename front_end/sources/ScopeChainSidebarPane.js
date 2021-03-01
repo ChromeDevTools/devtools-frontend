@@ -35,7 +35,7 @@ import * as UI from '../ui/ui.js';
 
 import {resolveScopeChain, resolveScopeInObject, resolveThisObject} from './SourceMapNamesResolver.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Loading indicator in Scope Sidebar Pane of the Sources panel
   */

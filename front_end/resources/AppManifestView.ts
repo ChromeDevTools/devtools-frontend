@@ -11,7 +11,7 @@ import * as InlineEditor from '../inline_editor/inline_editor.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text in App Manifest View of the Application panel
   */

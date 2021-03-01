@@ -14,7 +14,7 @@ import {DatabaseModel} from './DatabaseModel.js';
 import {DOMStorageModel} from './DOMStorageModel.js';
 import {IndexedDBModel} from './IndexedDBModel.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
    * @description Text in the Storage View that expresses the amout of used and available storage quota
    * @example {1.5 MB} PH1

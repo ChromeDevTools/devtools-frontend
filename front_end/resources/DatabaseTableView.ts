@@ -36,7 +36,7 @@ import * as UI from '../ui/ui.js';
 
 import {Database} from './DatabaseModel.js';  // eslint-disable-line no-unused-vars
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text in Database Table View of the Application panel
   */

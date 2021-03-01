@@ -12,7 +12,7 @@ import type * as Timeline from './timeline.js';
 import type * as Profiler from '../profiler/profiler.js';
 
 import * as i18n from '../i18n/i18n.js';
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text for the performance of something
   */

@@ -11,7 +11,7 @@ import * as Workspace from '../workspace/workspace.js';
 
 import {FilePathScoreFunction} from './FilePathScoreFunction.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text in Filtered UISource Code List Provider of the Sources panel
   */

@@ -11,7 +11,7 @@ import * as UI from '../ui/ui.js';
 import type * as Resources from './resources.js';
 
 import * as i18n from '../i18n/i18n.js';
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text in Application Panel Sidebar of the Application panel
   */

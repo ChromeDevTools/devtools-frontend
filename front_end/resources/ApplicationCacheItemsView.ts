@@ -37,7 +37,7 @@ import * as UI from '../ui/ui.js';
 
 import {ApplicationCacheModel, CHECKING, DOWNLOADING, IDLE, OBSOLETE, UNCACHED, UPDATEREADY} from './ApplicationCacheModel.js';  // eslint-disable-line no-unused-vars
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text in Application Cache Items View of the Application panel
   */

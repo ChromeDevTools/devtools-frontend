@@ -17,7 +17,7 @@ import {TimelineModeViewDelegate, TimelineSelection} from './TimelinePanel.js'; 
 import {BottomUpTimelineTreeView, CallTreeTimelineTreeView, TimelineTreeView} from './TimelineTreeView.js';  // eslint-disable-line no-unused-vars
 import {TimelineDetailsContentHelper, TimelineUIUtils} from './TimelineUIUtils.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text for the summary view
   */

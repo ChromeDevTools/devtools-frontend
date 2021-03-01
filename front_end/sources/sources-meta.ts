@@ -14,7 +14,7 @@ import * as Workspace from '../workspace/workspace.js';
 import type * as Sources from './sources.js';
 
 import * as i18n from '../i18n/i18n.js';
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Command for showing the 'Sources' tool
   */

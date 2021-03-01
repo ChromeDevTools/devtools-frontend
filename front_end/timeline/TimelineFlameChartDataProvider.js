@@ -45,7 +45,7 @@ import {FlameChartStyle, Selection, TimelineFlameChartMarker} from './TimelineFl
 import {TimelineSelection} from './TimelinePanel.js';
 import {TimelineCategory, TimelineUIUtils} from './TimelineUIUtils.js';  // eslint-disable-line no-unused-vars
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text in Timeline Flame Chart Data Provider of the Performance panel
   */

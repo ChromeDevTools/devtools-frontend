@@ -40,7 +40,7 @@ import * as UI from '../ui/ui.js';
 import {DOMStorage} from './DOMStorageModel.js';
 import {StorageItemsView} from './StorageItemsView.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text in DOMStorage Items View of the Application panel
   */

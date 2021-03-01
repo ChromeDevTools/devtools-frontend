@@ -42,7 +42,7 @@ import * as Workspace from '../workspace/workspace.js';  // eslint-disable-line 
 
 import {Plugin} from './Plugin.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Swatch icon element title in CSSPlugin of the Sources panel
   */

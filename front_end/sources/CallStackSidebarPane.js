@@ -33,7 +33,7 @@ import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 import * as Workspace from '../workspace/workspace.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text in Call Stack Sidebar Pane of the Sources panel
   */

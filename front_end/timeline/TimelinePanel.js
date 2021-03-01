@@ -54,7 +54,7 @@ import {TimelineUIUtils} from './TimelineUIUtils.js';
 import {UIDevtoolsController} from './UIDevtoolsController.js';
 import {UIDevtoolsUtils} from './UIDevtoolsUtils.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text that appears when user drag and drop something (for example, a file) in Timeline Panel of the Performance panel
   */

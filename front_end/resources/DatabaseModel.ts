@@ -35,7 +35,7 @@
 import * as i18n from '../i18n/i18n.js';
 import * as SDK from '../sdk/sdk.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Message in Database Model of the Application panel
   */

@@ -42,7 +42,7 @@ import * as UI from '../ui/ui.js';
 import {CLSRect} from './CLSLinkifier.js';
 import {TimelinePanel, TimelineSelection} from './TimelinePanel.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text in Timeline UIUtils of the Performance panel
   *@example {node1} PH1

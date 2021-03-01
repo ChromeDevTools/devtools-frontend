@@ -10,7 +10,7 @@ import * as UI from '../ui/ui.js';
 import {PerformanceModel} from './PerformanceModel.js';  // eslint-disable-line no-unused-vars
 import {TimelineEventOverviewCPUActivity, TimelineEventOverviewFrames, TimelineEventOverviewNetwork, TimelineEventOverviewResponsiveness,} from './TimelineEventOverview.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Screen reader label for the Timeline History dropdown button
   *@example {example.com #3} PH1

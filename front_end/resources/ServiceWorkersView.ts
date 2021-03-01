@@ -15,7 +15,7 @@ import * as UI from '../ui/ui.js';
 
 import {ServiceWorkerUpdateCycleView} from './ServiceWorkerUpdateCycleView.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text in Application Panel Sidebar of the Application panel
   */

@@ -23,7 +23,7 @@ import {AggregatedTimelineTreeView} from './TimelineTreeView.js';
 import {TimelineMarkerStyle, TimelineUIUtils} from './TimelineUIUtils.js';  // eslint-disable-line no-unused-vars
 import {WebVitalsIntegrator} from './WebVitalsTimelineUtils.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text in Timeline Flame Chart View of the Performance panel
   *@example {Frame} PH1

@@ -41,7 +41,7 @@ import * as Workspace from '../workspace/workspace.js';
 
 import {SearchSourcesView} from './SearchSourcesView.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text in Navigator View of the Sources panel
   */

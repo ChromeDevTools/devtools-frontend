@@ -10,7 +10,7 @@ import * as SDK from '../sdk/sdk.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as TimelineModel from '../timeline_model/timeline_model.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text in Timeline Loader of the Performance panel
   */

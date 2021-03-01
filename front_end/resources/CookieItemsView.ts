@@ -42,7 +42,7 @@ import * as UI from '../ui/ui.js';
 
 import {StorageItemsView} from './StorageItemsView.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Label for checkbox to show url decoded cookie values
   */

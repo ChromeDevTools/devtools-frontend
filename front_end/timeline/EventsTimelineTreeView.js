@@ -14,7 +14,7 @@ import {TimelineModeViewDelegate, TimelineSelection} from './TimelinePanel.js'; 
 import {TimelineTreeView} from './TimelineTreeView.js';
 import {TimelineUIUtils} from './TimelineUIUtils.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Aria-label for filter bar in Event Log view
   */

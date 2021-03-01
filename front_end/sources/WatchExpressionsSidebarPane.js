@@ -39,7 +39,7 @@ import * as UI from '../ui/ui.js';
 
 import {UISourceCodeFrame} from './UISourceCodeFrame.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description A context menu item in the Watch Expressions Sidebar Pane of the Sources panel
   */

@@ -40,7 +40,7 @@ import * as Workspace from '../workspace/workspace.js';
 
 import {NavigatorUISourceCodeTreeNode, NavigatorView} from './NavigatorView.js';  // eslint-disable-line no-unused-vars
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text in Sources Navigator of the Sources panel
   */

@@ -39,7 +39,7 @@ import * as UI from '../ui/ui.js';
 import {PerformanceModel} from './PerformanceModel.js';  // eslint-disable-line no-unused-vars
 import {EventDispatchTypeDescriptor, TimelineCategory, TimelineRecordStyle, TimelineUIUtils} from './TimelineUIUtils.js';  // eslint-disable-line no-unused-vars
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text in Timeline Event Overview of the Performance panel
   */

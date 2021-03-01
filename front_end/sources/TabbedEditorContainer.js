@@ -41,7 +41,7 @@ import * as Workspace from '../workspace/workspace.js';
 
 import {UISourceCodeFrame} from './UISourceCodeFrame.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text in Tabbed Editor Container of the Sources panel
   *@example {example.file} PH1

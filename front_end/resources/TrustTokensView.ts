@@ -12,7 +12,7 @@ import type {ResourcesPanel} from './ResourcesPanel.js';
 
 import {ApplicationPanelTreeElement} from './ApplicationPanelTreeElement.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Hover text for an info icon in the Trust Token panel
   */

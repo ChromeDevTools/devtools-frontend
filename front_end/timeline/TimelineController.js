@@ -16,7 +16,7 @@ import {ExtensionTracingSession} from './ExtensionTracingSession.js';
 import {PerformanceModel} from './PerformanceModel.js';
 import {Client as TimelineLoaderClient} from './TimelineLoader.js';  // eslint-disable-line no-unused-vars
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text in Timeline Controller of the Performance panel
   */

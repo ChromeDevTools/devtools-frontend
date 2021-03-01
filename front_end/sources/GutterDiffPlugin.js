@@ -14,7 +14,7 @@ import * as WorkspaceDiff from '../workspace_diff/workspace_diff.js';
 
 import {Plugin} from './Plugin.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description A context menu item in the Gutter Diff Plugin of the Sources panel
   */

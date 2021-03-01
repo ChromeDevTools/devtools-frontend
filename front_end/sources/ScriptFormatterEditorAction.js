@@ -12,7 +12,7 @@ import * as Workspace from '../workspace/workspace.js';
 
 import {EditorAction, Events, registerEditorAction, SourcesView} from './SourcesView.js';  // eslint-disable-line no-unused-vars
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Title of the pretty print button in the Sources panel
   *@example {file name} PH1

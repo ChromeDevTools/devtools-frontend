@@ -7,7 +7,7 @@ import * as ObjectUI from '../object_ui/object_ui.js';
 import * as Root from '../root/root.js';
 import * as UI from '../ui/ui.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Screen reader label for a select box that chooses the breakpoint type in the Sources panel when editing a breakpoint
   */

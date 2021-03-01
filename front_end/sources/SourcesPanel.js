@@ -45,7 +45,7 @@ import {Events, SourcesView} from './SourcesView.js';
 import {ThreadsSidebarPane} from './ThreadsSidebarPane.js';
 import {UISourceCodeFrame} from './UISourceCodeFrame.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text that appears when user drag and drop something (for example, a file) in Sources Panel of the Sources panel
   */

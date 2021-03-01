@@ -12,7 +12,7 @@ import * as Workspace from '../workspace/workspace.js';  // eslint-disable-line 
 
 import {Plugin} from './Plugin.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text for Coverage Status Bar Item in Sources Panel
   */

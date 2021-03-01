@@ -42,7 +42,7 @@ import * as UI from '../ui/ui.js';
 import {changeObjectToEditOperation, toPos, toRange} from './CodeMirrorUtils.js';
 import {TextEditorAutocompleteController} from './TextEditorAutocompleteController.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text in Code Mirror Text Editor of the CodeMirror text editor
   */

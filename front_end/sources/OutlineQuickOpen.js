@@ -11,7 +11,7 @@ import * as Workspace from '../workspace/workspace.js';  // eslint-disable-line 
 
 import {SourcesView} from './SourcesView.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text in Go To Line Quick Open of the Sources panel
   */

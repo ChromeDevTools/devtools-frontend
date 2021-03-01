@@ -16,7 +16,7 @@ import {EditingLocationHistoryManager} from './EditingLocationHistoryManager.js'
 import {Events as TabbedEditorContainerEvents, TabbedEditorContainer, TabbedEditorContainerDelegate} from './TabbedEditorContainer.js';  // eslint-disable-line no-unused-vars
 import {Events as UISourceCodeFrameEvents, UISourceCodeFrame} from './UISourceCodeFrame.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text to open a file
   */

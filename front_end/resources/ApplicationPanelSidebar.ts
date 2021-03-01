@@ -63,7 +63,7 @@ import {ServiceWorkersView} from './ServiceWorkersView.js';
 import {StorageView} from './StorageView.js';
 import {TrustTokensTreeElement} from './TrustTokensView.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text in Application Panel Sidebar of the Application panel
   */

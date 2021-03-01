@@ -11,7 +11,7 @@ import * as Workspace from '../workspace/workspace.js';  // eslint-disable-line 
 import {FilteredUISourceCodeListProvider} from './FilteredUISourceCodeListProvider.js';
 import {SourcesView} from './SourcesView.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text to open a file
   */

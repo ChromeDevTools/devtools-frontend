@@ -16,7 +16,7 @@ import * as Workspace from '../workspace/workspace.js';
 
 import * as i18n from '../i18n/i18n.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Section header in the Frame Details view
   */

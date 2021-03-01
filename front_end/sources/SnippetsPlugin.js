@@ -11,7 +11,7 @@ import * as Workspace from '../workspace/workspace.js';  // eslint-disable-line 
 
 import {Plugin} from './Plugin.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text in Snippets Plugin of the Sources panel
   */

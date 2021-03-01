@@ -12,7 +12,7 @@ import {ApplicationPanelTreeElement, ExpandableApplicationPanelTreeElement} from
 import {ResourcesPanel} from './ResourcesPanel.js';
 import {ServiceWorkerCacheView} from './ServiceWorkerCacheViews.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text in Application Panel Sidebar of the Application panel
   */

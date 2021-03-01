@@ -49,7 +49,7 @@ import {resolveExpression, resolveScopeInObject} from './SourceMapNamesResolver.
 import {SourcesPanel} from './SourcesPanel.js';
 import {getRegisteredEditorActions} from './SourcesView.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text in Debugger Plugin of the Sources panel
   */

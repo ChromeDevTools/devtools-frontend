@@ -16,7 +16,7 @@ import {FlameChartStyle, Selection} from './TimelineFlameChartView.js';
 import {TimelineSelection} from './TimelinePanel.js';
 import {TimelineUIUtils} from './TimelineUIUtils.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Title of the Network tool
   */

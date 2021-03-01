@@ -16,7 +16,7 @@ import {TimelineRegExp} from './TimelineFilters.js';
 import {TimelineSelection} from './TimelinePanel.js';  // eslint-disable-line no-unused-vars
 import {TimelineUIUtils} from './TimelineUIUtils.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text for the performance of something
   */

@@ -13,7 +13,7 @@ import type * as Changes from './changes.js';
 
 let loadedChangesModule: (typeof Changes|undefined);
 
-export const UIStrings = {
+const UIStrings = {
   /**
    * @description Title of the 'Changes' tool in the bottom drawer
    */

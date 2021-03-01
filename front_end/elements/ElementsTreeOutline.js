@@ -41,7 +41,7 @@ import {ElementsTreeElement, InitialChildrenLimit} from './ElementsTreeElement.j
 import {ImagePreviewPopover} from './ImagePreviewPopover.js';
 import {MarkerDecoratorRegistration} from './MarkerDecorator.js';  // eslint-disable-line no-unused-vars
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description ARIA accessible name in Elements Tree Outline of the Elements panel
   */

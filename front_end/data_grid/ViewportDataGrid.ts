@@ -11,7 +11,7 @@ import * as UI from '../ui/ui.js';
 import type {DataGridData, Parameters} from './DataGrid.js';
 import {DataGridImpl, DataGridNode} from './DataGrid.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description accessible name for expandible nodes in datagrids
   */

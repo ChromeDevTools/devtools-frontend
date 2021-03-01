@@ -8,7 +8,7 @@ import * as SDK from '../sdk/sdk.js';                 // eslint-disable-line no-
 
 import {PseudoStateMarkerDecorator} from './ElementsPanel.js';  // eslint-disable-line no-unused-vars
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Title of the Marker Decorator of Elements
   */

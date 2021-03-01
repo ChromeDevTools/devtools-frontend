@@ -5,7 +5,7 @@
 import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';  // eslint-disable-line no-unused-vars
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description The UI destination when right clicking an item that can be revealed
   */

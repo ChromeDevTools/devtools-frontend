@@ -19,7 +19,7 @@ import {CoverageListView} from './CoverageListView.js';
 import type {CoverageInfo, URLCoverageInfo} from './CoverageModel.js';
 import {CoverageModel, Events, CoverageType} from './CoverageModel.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Tooltip in Coverage List View of the Coverage tab for selecting JavaScript coverage mode
   */

@@ -43,7 +43,7 @@ import {PlatformFontsWidget} from './PlatformFontsWidget.js';
 import {categorizePropertyName, Category, DefaultCategoryOrder} from './PropertyNameCategories.js';  // eslint-disable-line no-unused-vars
 import {IdleCallbackManager, StylePropertiesSection, StylesSidebarPane, StylesSidebarPropertyRenderer} from './StylesSidebarPane.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   * @description Placeholder text for a text input used to filter which CSS properties show up in
   * the list of computed properties. In the Computed Style Widget of the Elements panel.

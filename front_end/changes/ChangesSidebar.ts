@@ -11,7 +11,7 @@ import * as UI from '../ui/ui.js';
 import * as Workspace from '../workspace/workspace.js';
 import * as WorkspaceDiff from '../workspace_diff/workspace_diff.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Name of an item from source map
   *@example {compile.html} PH1

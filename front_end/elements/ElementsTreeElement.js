@@ -49,7 +49,7 @@ import {ElementsTreeOutline, MappedCharToEntity, UpdateRecord} from './ElementsT
 import {ImagePreviewPopover} from './ImagePreviewPopover.js';
 import {getRegisteredDecorators, MarkerDecorator, MarkerDecoratorRegistration} from './MarkerDecorator.js';  // eslint-disable-line no-unused-vars
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Title for Ad adorner
   */

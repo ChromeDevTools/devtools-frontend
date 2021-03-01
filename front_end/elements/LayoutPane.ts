@@ -15,7 +15,7 @@ import {BooleanSetting, EnumSetting, LayoutElement, Setting} from './LayoutPaneU
 import type {NodeTextData} from './NodeText.js';
 
 import * as i18n from '../i18n/i18n.js';
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Title of the show element button in the Layout pane of the Elements panel
   */

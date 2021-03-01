@@ -11,7 +11,7 @@ import type * as BrowserDebugger from './browser_debugger.js';
 import type * as Sources from '../sources/sources.js';
 
 import * as i18n from '../i18n/i18n.js';
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Command for showing the 'Event Listener Breakpoints' tool
   */

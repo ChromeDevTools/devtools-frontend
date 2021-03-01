@@ -6,7 +6,7 @@
 
 import * as i18n from '../i18n/i18n.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Label to explain why top values are ignored
   */

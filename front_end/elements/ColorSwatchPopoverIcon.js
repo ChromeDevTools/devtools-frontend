@@ -14,7 +14,7 @@ import * as UI from '../ui/ui.js';
 import {StylePropertyTreeElement} from './StylePropertyTreeElement.js';            // eslint-disable-line no-unused-vars
 import {StylePropertiesSection, StylesSidebarPane} from './StylesSidebarPane.js';  // eslint-disable-line no-unused-vars
 
-export const UIStrings = {
+const UIStrings = {
   /**
   * @description Tooltip text for an icon that opens the cubic bezier editor, which is a tool that
   * allows the user to edit cubic-bezier CSS properties directly.

@@ -8,7 +8,7 @@ import * as Root from '../root/root.js';
 
 import {SettingStorageType} from './Settings.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Title of the Elements Panel
   */

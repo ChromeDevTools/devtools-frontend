@@ -8,7 +8,7 @@ import * as UI from '../ui/ui.js';
 
 import {AdornerCategories} from './AdornerManager.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   * @description Accessible label for Elements panel adorners. Adorners are small badges/tags
   * displayed next to DOM Elements in the Elements tree. They provide extra information relating to

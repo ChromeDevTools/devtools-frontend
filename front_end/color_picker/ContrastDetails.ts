@@ -14,7 +14,7 @@ import * as UI from '../ui/ui.js';
 import type {ContrastInfo} from './ContrastInfo.js';
 import {Events as ContrastInfoEvents} from './ContrastInfo.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Label for when no contrast information is available in the color picker
   */

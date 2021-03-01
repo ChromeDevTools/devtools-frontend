@@ -11,7 +11,7 @@ import type * as Accessibility from './accessibility.js';
 
 let loadedAccessibilityModule: (typeof Accessibility|undefined);
 
-export const UIStrings = {
+const UIStrings = {
   /**
    * @description Text for accessibility of the web page
    */

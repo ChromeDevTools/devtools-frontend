@@ -18,7 +18,7 @@ import {BezierPopoverIcon, ColorSwatchPopoverIcon, ShadowSwatchPopoverHelper} fr
 import {FlexboxEditorWidget} from './FlexboxEditorWidget.js';
 import {CSSPropertyPrompt, StylePropertiesSection, StylesSidebarPane, StylesSidebarPropertyRenderer,} from './StylesSidebarPane.js';  // eslint-disable-line no-unused-vars
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text in Color Swatch Popover Icon of the Elements panel
   */

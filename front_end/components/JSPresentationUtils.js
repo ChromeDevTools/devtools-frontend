@@ -36,7 +36,7 @@ import * as UI from '../ui/ui.js';
 
 import {Linkifier} from './Linkifier.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text to stop preventing the debugger from stepping into library code
   */

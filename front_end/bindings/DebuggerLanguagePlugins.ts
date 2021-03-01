@@ -13,7 +13,7 @@ import {ContentProviderBasedProject} from './ContentProviderBasedProject.js';
 import {DebuggerWorkspaceBinding} from './DebuggerWorkspaceBinding.js';  // eslint-disable-line no-unused-vars
 import {NetworkProject} from './NetworkProject.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Error message that is displayed in the Console when language plugins report errors
   *@example {File not found} PH1

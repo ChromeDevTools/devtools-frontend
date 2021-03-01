@@ -8,7 +8,7 @@ import * as i18n from '../i18n/i18n.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Title of the 'XHR/fetch Breakpoints' tool in the bottom sidebar of the Sources tool
   */

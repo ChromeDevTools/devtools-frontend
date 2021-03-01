@@ -10,7 +10,7 @@ import * as UI from '../ui/ui.js';
 import type {OverviewController} from './CSSOverviewController.js';
 import {Events} from './CSSOverviewController.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Label for the capture button in the CSS Overview Panel
   */

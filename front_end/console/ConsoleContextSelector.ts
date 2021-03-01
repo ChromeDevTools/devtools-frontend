@@ -10,7 +10,7 @@ import * as Platform from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Title of toolbar item in console context selector of the console panel
   */

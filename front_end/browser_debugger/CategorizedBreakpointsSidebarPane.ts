@@ -8,7 +8,7 @@ import * as i18n from '../i18n/i18n.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Screen reader description of a hit breakpoint in the Sources panel
   */

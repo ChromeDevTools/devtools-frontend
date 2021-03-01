@@ -9,7 +9,7 @@ import * as UI from '../ui/ui.js';
 // eslint-disable-next-line rulesdir/es_modules_import
 import type * as DeveloperResources from './developer_resources.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
    * @description Title for developer resources panel
    */

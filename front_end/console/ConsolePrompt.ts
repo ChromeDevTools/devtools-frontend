@@ -15,7 +15,7 @@ import * as UI from '../ui/ui.js';
 
 import {ConsolePanel} from './ConsolePanel.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text in Console Prompt of the Console panel
   */

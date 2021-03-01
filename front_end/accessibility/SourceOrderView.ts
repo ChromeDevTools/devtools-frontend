@@ -11,7 +11,7 @@ import * as UI from '../ui/ui.js';
 
 import {AccessibilitySubPane} from './AccessibilitySubPane.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text in Source Order Viewer of the Accessibility panel
   */

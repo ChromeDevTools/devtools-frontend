@@ -7,7 +7,7 @@
 import * as i18n from '../i18n/i18n.js';
 import * as UI from '../ui/ui.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Label for the 'Clear overview' button in the CSS Overview report
   */

@@ -12,7 +12,7 @@ import * as UI from '../ui/ui.js';
 import {AXAttributes, AXNativeSourceTypes, AXSourceTypes} from './AccessibilityStrings.js';
 import {AccessibilitySubPane} from './AccessibilitySubPane.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text in Accessibility Node View of the Accessibility panel
   */

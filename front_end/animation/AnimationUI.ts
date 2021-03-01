@@ -15,7 +15,7 @@ import type {AnimationImpl, KeyframeStyle} from './AnimationModel.js';
 import type {AnimationTimeline} from './AnimationTimeline.js';
 import {StepTimingFunction} from './AnimationTimeline.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Title of the first and last points of an animation
   */

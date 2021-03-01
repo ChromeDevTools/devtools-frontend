@@ -11,7 +11,7 @@ import * as UI from '../ui/ui.js';
 import type * as Elements from './elements.js';
 
 import * as i18n from '../i18n/i18n.js';
-export const UIStrings = {
+const UIStrings = {
   /**
   * @description Command for showing the 'Elements' panel. Elements refers to HTML elements.
   */

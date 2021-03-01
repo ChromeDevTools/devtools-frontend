@@ -55,7 +55,7 @@ import {ConsoleCommand, ConsoleCommandResult, ConsoleGroupViewMessage, ConsoleTa
 import type {ConsoleViewportElement, ConsoleViewportProvider} from './ConsoleViewport.js';
 import {ConsoleViewport} from './ConsoleViewport.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Label for link to issues tab
   */

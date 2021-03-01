@@ -13,7 +13,7 @@ import * as WorkspaceDiff from '../workspace_diff/workspace_diff.js';
 import {ChangesSidebar, Events} from './ChangesSidebar.js';
 import {ChangesTextEditor} from './ChangesTextEditor.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Screen-reader accessible name for the code editor in the Changes tool showing the user's changes.
   */

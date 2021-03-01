@@ -13,7 +13,7 @@ import * as UI from '../ui/ui.js';
 import {ConsoleFilter, FilterType, LevelsMask} from './ConsoleFilter.js';
 import type {ConsoleViewMessage} from './ConsoleViewMessage.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   * @description Filter name in Console Sidebar of the Console panel. This is shown when we fail to
   * parse a URL when trying to display console messages from each URL separately. This might be

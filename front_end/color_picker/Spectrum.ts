@@ -44,7 +44,7 @@ import {ContrastDetails, Events as ContrastDetailsEvents} from './ContrastDetail
 import type {ContrastInfo} from './ContrastInfo.js';
 import {ContrastOverlay} from './ContrastOverlay.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Tooltip text that appears when hovering over largeicon eyedropper button in Spectrum of the Color Picker
   */

@@ -10,7 +10,7 @@ import type * as UI from '../ui/ui.js';
 import type {Row} from './ChangesView.js';
 import {RowType} from './ChangesView.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text prepended to a removed line in a diff in the Changes tool, viewable only by screen reader.
   *@example {function log () } PH1

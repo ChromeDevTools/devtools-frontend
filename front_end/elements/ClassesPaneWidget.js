@@ -10,7 +10,7 @@ import * as UI from '../ui/ui.js';
 
 import {ElementsPanel} from './ElementsPanel.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   * @description Prompt text for a text field in the Classes Pane Widget of the Elements panel.
   * Class refers to a CSS class.

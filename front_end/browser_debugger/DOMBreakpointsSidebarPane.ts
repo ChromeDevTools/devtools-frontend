@@ -36,7 +36,7 @@ import * as SDK from '../sdk/sdk.js';
 import * as Sources from '../sources/sources.js';
 import * as UI from '../ui/ui.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text to indicate there are no breakpoints
   */

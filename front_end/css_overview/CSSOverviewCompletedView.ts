@@ -19,7 +19,7 @@ import {Events} from './CSSOverviewController.js';
 import {CSSOverviewSidebarPanel, SidebarEvents} from './CSSOverviewSidebarPanel.js';
 import type {UnusedDeclaration} from './CSSOverviewUnusedDeclarations.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Label for the summary in the CSS Overview report
   */

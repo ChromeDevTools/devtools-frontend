@@ -9,7 +9,7 @@ import * as LitHtml from '../third_party/lit-html/lit-html.js';
 import {AccessibilityTree} from './AccessibilityTree.js';
 import {AXNode} from './AccessibilityTreeUtils.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Ignored node element text content in AXBreadcrumbs Pane of the Accessibility panel
   */

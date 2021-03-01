@@ -35,7 +35,7 @@ import * as i18n from '../i18n/i18n.js';
 import * as TextUtils from '../text_utils/text_utils.js';  // eslint-disable-line no-unused-vars
 import * as Workspace from '../workspace/workspace.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   * @description Error message that is displayed in the Sources panel when can't be loaded.
   */

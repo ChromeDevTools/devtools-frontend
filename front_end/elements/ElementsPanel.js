@@ -50,7 +50,7 @@ import {MarkerDecorator} from './MarkerDecorator.js';  // eslint-disable-line no
 import {MetricsSidebarPane} from './MetricsSidebarPane.js';
 import {Events as StylesSidebarPaneEvents, StylesSidebarPane} from './StylesSidebarPane.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   * @description Placeholder text for the search box the Elements Panel. Selector refers to CSS
   * selectors.

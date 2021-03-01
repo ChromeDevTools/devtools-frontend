@@ -13,7 +13,7 @@ import * as SDK from '../sdk/sdk.js';
 import * as Components from '../ui/components/components.js';
 import * as UI from '../ui/ui.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Error count title in Warning Error Counter of the Console panel
   *@example {1} PH1

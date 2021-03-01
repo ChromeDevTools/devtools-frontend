@@ -15,7 +15,7 @@ import * as Workspace from '../workspace/workspace.js';
 import type {URLCoverageInfo} from './CoverageModel.js';
 import {CoverageType} from './CoverageModel.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text that appears on a button for the css resource type filter.
   */

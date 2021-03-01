@@ -8,7 +8,7 @@ import * as UI from '../ui/ui.js';
 
 import {ElementsPanel} from './ElementsPanel.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   * @description Title of a section in the Element State Pane Widget of the Elements panel. The
   * controls in this section allow users to force a particular state on the selected element, e.g. a

@@ -34,7 +34,7 @@ import * as i18n from '../i18n/i18n.js';
 
 import {DataGridNode} from './DataGrid.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description In a data grid, for a list of items with omitted items, display the first N omitted items
   *@example {5} PH1

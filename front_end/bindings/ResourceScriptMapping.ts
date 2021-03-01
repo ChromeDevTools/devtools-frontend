@@ -41,7 +41,7 @@ import {DebuggerSourceMapping, DebuggerWorkspaceBinding} from './DebuggerWorkspa
 import {NetworkProject} from './NetworkProject.js';
 import {metadataForURL} from './ResourceUtils.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text in Resource Script Mapping
   *@example {warning} PH1

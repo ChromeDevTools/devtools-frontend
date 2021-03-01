@@ -11,7 +11,7 @@ import * as UI from '../ui/ui.js';
 
 import {DeveloperResourcesListView} from './DeveloperResourcesListView.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Placeholder for a search field in a toolbar
   */

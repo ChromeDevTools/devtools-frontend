@@ -11,7 +11,7 @@ import type * as Animation from './animation.js';
 
 let loadedAnimationModule: (typeof Animation|undefined);
 
-export const UIStrings = {
+const UIStrings = {
   /**
    * @description Title for the 'Animations' tool in the bottom drawer
    */

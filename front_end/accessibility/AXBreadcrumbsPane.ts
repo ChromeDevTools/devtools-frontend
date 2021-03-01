@@ -12,7 +12,7 @@ import * as UI from '../ui/ui.js';
 import type {AccessibilitySidebarView} from './AccessibilitySidebarView.js';
 import {AccessibilitySubPane} from './AccessibilitySubPane.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text in AXBreadcrumbs Pane of the Accessibility panel
   */

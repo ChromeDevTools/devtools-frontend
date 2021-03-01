@@ -10,7 +10,7 @@ import * as UI from '../ui/ui.js';
 import type {OverviewController} from './CSSOverviewController.js';
 import {Events} from './CSSOverviewController.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text to cancel something
   */

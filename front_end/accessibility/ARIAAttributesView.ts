@@ -11,7 +11,7 @@ import * as UI from '../ui/ui.js';
 import {AccessibilitySubPane} from './AccessibilitySubPane.js';
 import {ariaMetadata} from './ARIAMetadata.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text in ARIAAttributes View of the Accessibility panel
   */

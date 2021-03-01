@@ -34,7 +34,7 @@ import * as UI from '../ui/ui.js';
 
 import {ComputedStyleModel, Events} from './ComputedStyleModel.js';  // eslint-disable-line no-unused-vars
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Section title text content in Platform Fonts Widget of the Elements panel
   */

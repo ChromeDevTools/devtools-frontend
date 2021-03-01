@@ -2459,6 +2459,15 @@
   "emulation/DevicesSettingsTab.js | width": {
     "message": "Ŵíd̂t́ĥ"
   },
+  "emulation/EmulatedDevices.js | laptopWithHiDPIScreen": {
+    "message": "L̂áp̂t́ôṕ ŵít̂h́ ĤíD̂ṔÎ śĉŕêén̂"
+  },
+  "emulation/EmulatedDevices.js | laptopWithMDPIScreen": {
+    "message": "L̂áp̂t́ôṕ ŵít̂h́ M̂D́P̂Í ŝćr̂éêń"
+  },
+  "emulation/EmulatedDevices.js | laptopWithTouch": {
+    "message": "L̂áp̂t́ôṕ ŵít̂h́ t̂óûćĥ"
+  },
   "emulation/emulation-meta.ts | accelerometer": {
     "message": "âćĉél̂ér̂óm̂ét̂ér̂"
   },

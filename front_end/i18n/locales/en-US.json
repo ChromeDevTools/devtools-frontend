@@ -2459,6 +2459,15 @@
   "emulation/DevicesSettingsTab.js | width": {
     "message": "Width"
   },
+  "emulation/EmulatedDevices.js | laptopWithHiDPIScreen": {
+    "message": "Laptop with HiDPI screen"
+  },
+  "emulation/EmulatedDevices.js | laptopWithMDPIScreen": {
+    "message": "Laptop with MDPI screen"
+  },
+  "emulation/EmulatedDevices.js | laptopWithTouch": {
+    "message": "Laptop with touch"
+  },
   "emulation/emulation-meta.ts | accelerometer": {
     "message": "accelerometer"
   },

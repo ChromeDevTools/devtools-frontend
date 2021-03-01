@@ -122,13 +122,16 @@ const UIStrings = {
   */
   sSRequests: '{PH1} / {PH2} requests',
   /**
-  *@description Text in Network Log View of the Network panel
-  *@example {5} PH1
-  *@example {10} PH2
+  *@description Message in the summary toolbar at the bottom of the Network log that shows the compressed size of the
+  * resources transferred during a selected time frame over the compressed size of all resources transferred during
+  * the whole network log.
+  *@example {5 B} PH1
+  *@example {10 B} PH2
   */
   sSTransferred: '{PH1} / {PH2} transferred',
   /**
-  *@description Text in Network Log View of the Network panel
+  *@description Message in a tooltip that shows the compressed size of the resources transferred during a selected
+  * time frame over the compressed size of all resources transferred during the whole network log.
   *@example {10} PH1
   *@example {15} PH2
   */

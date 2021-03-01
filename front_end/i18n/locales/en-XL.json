@@ -71,9 +71,6 @@
   "accessibility/AccessibilityNodeView.ts | placeholderIsPlaceholderOnAncestor": {
     "message": "{PH1} îś {PH2} ôń âńĉéŝt́ôŕ: "
   },
-  "accessibility/AccessibilityNodeView.ts | staticTextNodeIsUsed": {
-    "message": "Ŝt́ât́îć t̂éx̂t́ n̂ód̂é îś ûśêd́ âś n̂ám̂é f̂ór̂ "
-  },
   "accessibility/AccessibilityStrings.ts | activeDescendant": {
     "message": "Âćt̂ív̂é d̂éŝćêńd̂án̂t́"
   },

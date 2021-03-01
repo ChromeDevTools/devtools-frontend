@@ -71,9 +71,6 @@
   "accessibility/AccessibilityNodeView.ts | placeholderIsPlaceholderOnAncestor": {
     "message": "{PH1} is {PH2} on ancestor: "
   },
-  "accessibility/AccessibilityNodeView.ts | staticTextNodeIsUsed": {
-    "message": "Static text node is used as name for "
-  },
   "accessibility/AccessibilityStrings.ts | activeDescendant": {
     "message": "Active descendant"
   },

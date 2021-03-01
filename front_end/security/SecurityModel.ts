@@ -39,6 +39,7 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('security/SecurityModel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 export class SecurityModel extends SDK.SDKModel.SDKModel {
   _dispatcher: SecurityDispatcher;
@@ -102,12 +103,12 @@ export enum Events {
   VisibleSecurityStateChanged = 'VisibleSecurityStateChanged',
 }
 
-export const SummaryMessages: {[x: string]: string} = {
-  [Protocol.Security.SecurityState.Unknown]: i18nString(UIStrings.theSecurityOfThisPageIsUnknown),
-  [Protocol.Security.SecurityState.Insecure]: i18nString(UIStrings.thisPageIsNotSecure),
-  [Protocol.Security.SecurityState.Neutral]: i18nString(UIStrings.thisPageIsNotSecure),
-  [Protocol.Security.SecurityState.Secure]: i18nString(UIStrings.thisPageIsSecureValidHttps),
-  [Protocol.Security.SecurityState.InsecureBroken]: i18nString(UIStrings.thisPageIsNotSecureBrokenHttps),
+export const SummaryMessages: {[x: string]: () => string} = {
+  [Protocol.Security.SecurityState.Unknown]: i18nLazyString(UIStrings.theSecurityOfThisPageIsUnknown),
+  [Protocol.Security.SecurityState.Insecure]: i18nLazyString(UIStrings.thisPageIsNotSecure),
+  [Protocol.Security.SecurityState.Neutral]: i18nLazyString(UIStrings.thisPageIsNotSecure),
+  [Protocol.Security.SecurityState.Secure]: i18nLazyString(UIStrings.thisPageIsSecureValidHttps),
+  [Protocol.Security.SecurityState.InsecureBroken]: i18nLazyString(UIStrings.thisPageIsNotSecureBrokenHttps),
 };
 
 export class PageSecurityState {

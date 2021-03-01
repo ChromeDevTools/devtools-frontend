@@ -1146,7 +1146,7 @@ export class SecurityMainView extends UI.Widget.VBox {
 
     const {summary, explanations} = this._getSecuritySummaryAndExplanations(visibleSecurityState);
     // Use override summary if present, otherwise use base explanation
-    this._summaryText.textContent = summary || SummaryMessages[this._securityState];
+    this._summaryText.textContent = summary || SummaryMessages[this._securityState]();
 
     this._explanations = this._orderExplanations(explanations);
 

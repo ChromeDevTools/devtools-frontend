@@ -31,23 +31,13 @@ describeWithEnvironment('Adorner', async () => {
     assertIsAdorner(adorner);
   });
 
-  it('can be created by Adorner.create', () => {
-    const content = document.createElement('span');
-    content.textContent = ADORNER_NAME;
-    const adorner = Elements.Adorner.Adorner.create(content, ADORNER_NAME);
-    assertIsAdorner(adorner);
-
-    const options = {
-      category: Elements.AdornerManager.AdornerCategories.Layout,
-    };
-    const adornerWithOptions = Elements.Adorner.Adorner.create(content, ADORNER_NAME, options);
-    assertIsAdorner(adornerWithOptions);
-    assert.strictEqual(adornerWithOptions.category, Elements.AdornerManager.AdornerCategories.Layout);
-  });
-
   it('can interacts as a toggle button with proper ARIA setup', () => {
     const content = document.createElement('span');
-    const adorner = Elements.Adorner.Adorner.create(content, ADORNER_NAME);
+    const adorner = new Elements.Adorner.Adorner();
+    adorner.data = {
+      name: ADORNER_NAME,
+      content,
+    };
     assert.isNull(adorner.getAttribute('role'), 'non-interactive adorner had wrong aria role value');
 
     let clickCounter = 0;
@@ -100,7 +90,11 @@ describeWithEnvironment('Adorner', async () => {
 
   it('can be toggled programmatically', () => {
     const content = document.createElement('span');
-    const adorner = Elements.Adorner.Adorner.create(content, ADORNER_NAME);
+    const adorner = new Elements.Adorner.Adorner();
+    adorner.data = {
+      name: ADORNER_NAME,
+      content,
+    };
     adorner.addInteraction(() => {}, {
       isToggle: true,
       shouldPropagateOnKeydown: false,

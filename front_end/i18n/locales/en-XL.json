@@ -1781,15 +1781,6 @@
   "elements/AccessibilityNode.ts | ignored": {
     "message": "Îǵn̂ór̂éd̂"
   },
-  "elements/Adorner.js | adorner": {
-    "message": "âd́ôŕn̂ér̂"
-  },
-  "elements/Adorner.js | adornerActive": {
-    "message": "âd́ôŕn̂ér̂ áĉt́îv́ê"
-  },
-  "elements/Adorner.js | sAdorner": {
-    "message": "{PH1} âd́ôŕn̂ér̂"
-  },
   "elements/AdornerSettingsPane.ts | closeButton": {
     "message": "Ĉĺôśê"
   },

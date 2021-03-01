@@ -1781,15 +1781,6 @@
   "elements/AccessibilityNode.ts | ignored": {
     "message": "Ignored"
   },
-  "elements/Adorner.js | adorner": {
-    "message": "adorner"
-  },
-  "elements/Adorner.js | adornerActive": {
-    "message": "adorner active"
-  },
-  "elements/Adorner.js | sAdorner": {
-    "message": "{PH1} adorner"
-  },
   "elements/AdornerSettingsPane.ts | closeButton": {
     "message": "Close"
   },

@@ -2166,10 +2166,12 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
   adornText(text, category) {
     const adornerContent = /** @type {!HTMLElement} */ (document.createElement('span'));
     adornerContent.textContent = text;
-    const options = {
+    const adorner = new Adorner();
+    adorner.data = {
+      name: text,
+      content: adornerContent,
       category,
     };
-    const adorner = Adorner.create(adornerContent, text, options);
     this._adorners.push(adorner);
     ElementsPanel.instance().registerAdorner(adorner);
     this._updateAdorners();

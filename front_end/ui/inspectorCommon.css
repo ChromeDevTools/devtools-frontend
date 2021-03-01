@@ -692,12 +692,10 @@ input.custom-search-input::-webkit-search-cancel-button {
 }
 
 :host-context(.-theme-with-dark-background) devtools-adorner {
-  --adorner-text-color: #ffffffde;
-  --adorner-background-color: #5db0d726;
-  --adorner-border: 1px solid #5db0d780;
-  --adorner-border-focus: 1px solid #5db0d7;
-  --adorner-text-color-active: #242424;
-  --adorner-background-color-active: #5db0d7;
+  --override-adorner-background-color: rgb(var(--color-syntax-2-rgb) 0.15);
+  --override-adorner-border-color: rgb(var(--color-syntax-2-rgb) 0.5);
+  --override-adorner-focus-border-color: var(--color-syntax-2);
+  --override-adorner-active-background-color: var(--color-syntax-8);
 }
 
 /* General panel styles */

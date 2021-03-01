@@ -22,17 +22,16 @@ let testFiles = glob.sync(path.join(ROOT_DIRECTORY, '**/*_test.ts')).map(fileNam
   return generatedFile;
 });
 
-// Respect the test file if defined.
-// This way you can test one single file instead of running all e2e tests every time.
-if (process.env['TEST_FILE']) {
-  let testFile = process.env['TEST_FILE'];
+function normalizeTestFileName(testFile) {
   // Accept .ts, .js and no extension.
   testFile = testFile.replace(/\.ts$/, '.js');
   if (!testFile.endsWith('.js')) {
     testFile += '.js';
   }
-  const absoluteTestFile = path.join(__dirname, testFile);
+  return path.join(__dirname, testFile);
+}
 
+function validateTestFile(absoluteTestFile) {
   // We also need to filter the test against the .ts list above because there can be
   // leftover .js files from previous builds.
   if (!testFiles.includes(absoluteTestFile)) {
@@ -41,6 +40,27 @@ if (process.env['TEST_FILE']) {
         `\nNo test found matching --test-file=${process.env['TEST_FILE']}.` +
         ' Use a relative path from test/e2e/.');
   }
+}
+
+if (process.env['TEST_FILES'] && process.env['TEST_FILE']) {
+  throw new Error('Both TEST_FILE and TEST_FILES variables are defined. Please use only one of them.');
+}
+
+// TEST_FILES is a list of test file names, semicolon separated.
+if (process.env['TEST_FILES']) {
+  let envTestFiles = process.env['TEST_FILES'].split(';');
+  testFiles = envTestFiles.map(envTestFile => {
+    const absoluteTestFile = normalizeTestFileName(envTestFile);
+    validateTestFile(absoluteTestFile);
+    return absoluteTestFile;
+  });
+}
+
+// Respect the test file if defined.
+// This way you can test one single file instead of running all e2e tests every time.
+if (process.env['TEST_FILE']) {
+  const absoluteTestFile = normalizeTestFileName(process.env['TEST_FILE']);
+  validateTestFile(absoluteTestFile);
   testFiles = absoluteTestFile;
 }
 

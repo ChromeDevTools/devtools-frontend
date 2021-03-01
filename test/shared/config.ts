@@ -10,6 +10,7 @@ interface SupportedEnvVars {
   THROTTLE: number;         // CPU throttle multiplier.
   TEST_LIST: string;        // Absolute path to the test list.
   TEST_FILE: string;        // Absolute path to the test file from the test list to run in isolation.
+  TEST_FILES: string;       // Semicolon separated list of test files to run.
   DEBUG: boolean;           // Debug mode. When enabled, has longer timeouts and runs Chrome in head mode.
   ITERATIONS: number;       // Number of test iterations.
   JOBS: number;             // Number of workers to use.

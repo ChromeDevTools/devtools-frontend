@@ -103,6 +103,8 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('browser_debugger/DOMBreakpointsSidebarPane.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
+
 let domBreakpointsSidebarPaneInstance: DOMBreakpointsSidebarPane;
 
 export class DOMBreakpointsSidebarPane extends UI.Widget.VBox implements
@@ -183,8 +185,8 @@ export class DOMBreakpointsSidebarPane extends UI.Widget.VBox implements
     element.appendChild(labelElement);
     const description = document.createElement('div');
     const breakpointTypeLabel = BreakpointTypeLabels.get(item.type);
-    description.textContent = breakpointTypeLabel || null;
-    UI.ARIAUtils.setAccessibleName(checkboxElement, breakpointTypeLabel || '');
+    description.textContent = breakpointTypeLabel ? breakpointTypeLabel() : null;
+    UI.ARIAUtils.setAccessibleName(checkboxElement, breakpointTypeLabel ? breakpointTypeLabel() : '');
     const linkifiedNode = document.createElement('monospace');
     linkifiedNode.style.display = 'block';
     labelElement.appendChild(linkifiedNode);
@@ -349,10 +351,10 @@ export class DOMBreakpointsSidebarPane extends UI.Widget.VBox implements
   }
 }
 
-export const BreakpointTypeLabels = new Map([
-  [Protocol.DOMDebugger.DOMBreakpointType.SubtreeModified, i18nString(UIStrings.subtreeModified)],
-  [Protocol.DOMDebugger.DOMBreakpointType.AttributeModified, i18nString(UIStrings.attributeModified)],
-  [Protocol.DOMDebugger.DOMBreakpointType.NodeRemoved, i18nString(UIStrings.nodeRemoved)],
+const BreakpointTypeLabels = new Map([
+  [Protocol.DOMDebugger.DOMBreakpointType.SubtreeModified, i18nLazyString(UIStrings.subtreeModified)],
+  [Protocol.DOMDebugger.DOMBreakpointType.AttributeModified, i18nLazyString(UIStrings.attributeModified)],
+  [Protocol.DOMDebugger.DOMBreakpointType.NodeRemoved, i18nLazyString(UIStrings.nodeRemoved)],
 ]);
 
 let contextMenuProviderInstance: ContextMenuProvider;

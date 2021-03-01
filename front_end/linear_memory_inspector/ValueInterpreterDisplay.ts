@@ -8,7 +8,7 @@ import * as LitHtml from '../third_party/lit-html/lit-html.js';
 
 import {DEFAULT_MODE_MAPPING, Endianness, format, isNumber, isValidMode, VALUE_TYPE_MODE_LIST, ValueType, ValueTypeMode, valueTypeModeToLocalizedString, valueTypeToLocalizedString} from './ValueInterpreterDisplayUtils.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Tooltip text that appears when hovering over an unsigned interpretation of the memory under the Value Interpreter
   */

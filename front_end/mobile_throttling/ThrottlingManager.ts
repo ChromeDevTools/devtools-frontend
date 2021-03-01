@@ -15,7 +15,7 @@ import {NetworkThrottlingSelector} from './NetworkThrottlingSelector.js';
 import type {Conditions, ConditionsList, MobileThrottlingConditionsGroup, NetworkThrottlingConditionsGroup} from './ThrottlingPresets.js';
 import {CPUThrottlingRates, ThrottlingPresets} from './ThrottlingPresets.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text with two placeholders separated by a colon
   *@example {Node removed} PH1

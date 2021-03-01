@@ -9,7 +9,7 @@ import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
 import * as UI from '../ui/ui.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Tooltip text that appears when hovering over largeicon pan button in Transform Controller of the Layers panel
   */

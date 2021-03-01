@@ -7,7 +7,7 @@ import * as ComponentHelpers from '../component_helpers/component_helpers.js';
 import * as i18n from '../i18n/i18n.js';
 import * as LitHtml from '../third_party/lit-html/lit-html.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Icon element title in Color Swatch of the inline editor in the Styles tab
   */

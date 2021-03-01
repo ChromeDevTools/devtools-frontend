@@ -18,7 +18,7 @@ import * as Workspace from '../workspace/workspace.js';
 
 import type * as ReportRenderer from './LighthouseReporterTypes.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Label for view trace button when simulated throttling is enabled
   */

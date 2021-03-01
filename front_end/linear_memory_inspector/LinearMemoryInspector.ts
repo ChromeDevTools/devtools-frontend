@@ -19,7 +19,7 @@ import {formatAddress, parseAddress} from './LinearMemoryInspectorUtils.js';
 import type {ValueTypeModeChangedEvent} from './ValueInterpreterDisplay.js';
 
 import * as i18n from '../i18n/i18n.js';
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Tooltip text that appears when hovering over an invalid address in the address line in the Linear Memory Inspector
   *@example {0x00000000} PH1

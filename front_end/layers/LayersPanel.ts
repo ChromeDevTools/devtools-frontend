@@ -39,7 +39,7 @@ import * as UI from '../ui/ui.js';
 import {LayerPaintProfilerView} from './LayerPaintProfilerView.js';
 import {Events, LayerTreeModel} from './LayerTreeModel.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text for the details of something
   */

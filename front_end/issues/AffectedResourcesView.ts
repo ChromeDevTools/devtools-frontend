@@ -13,7 +13,7 @@ import * as UI from '../ui/ui.js';
 
 import {IssueView} from './IssueView.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text in Object Properties Section
   */

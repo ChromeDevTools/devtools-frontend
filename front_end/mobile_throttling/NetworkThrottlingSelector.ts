@@ -11,7 +11,7 @@ import * as SDK from '../sdk/sdk.js';
 import type {NetworkThrottlingConditionsGroup} from './ThrottlingPresets.js';
 import {ThrottlingPresets} from './ThrottlingPresets.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text to indicate something is not enabled
   */

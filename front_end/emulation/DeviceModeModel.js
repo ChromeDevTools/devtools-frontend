@@ -11,7 +11,7 @@ import * as UI from '../ui/ui.js';
 
 import {EmulatedDevice, Horizontal, HorizontalSpanned, Mode, Vertical, VerticalSpanned} from './EmulatedDevices.js';  // eslint-disable-line no-unused-vars
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Error message in the Devices settings pane that declares that the width input must be a number
   */

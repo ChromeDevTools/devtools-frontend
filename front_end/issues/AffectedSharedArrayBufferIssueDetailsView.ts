@@ -10,7 +10,7 @@ import {AffectedResourcesView} from './AffectedResourcesView.js';
 import {AggregatedIssue} from './IssueAggregator.js';
 import {IssueView} from './IssueView.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Label for number of affected resources indication in issue view
   */

@@ -11,7 +11,7 @@ import * as UI from '../ui/ui.js';
 import {Events, LighthouseController, Presets, RuntimeSettings} from './LighthouseController.js';
 import {RadioSetting} from './RadioSetting.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text that is usually a hyperlink to more documentation
   */

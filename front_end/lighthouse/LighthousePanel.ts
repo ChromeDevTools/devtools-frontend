@@ -20,7 +20,7 @@ import {Item, ReportSelector} from './LighthouseReportSelector.js';
 import {StartView} from './LighthouseStartView.js';
 import {StatusView} from './LighthouseStatusView.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text that appears when user drag and drop something (for example, a file) in Lighthouse Panel
   */

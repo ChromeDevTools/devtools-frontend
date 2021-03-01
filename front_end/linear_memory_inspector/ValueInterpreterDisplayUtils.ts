@@ -5,7 +5,7 @@
 import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text that describes the representation of a value in the Linear Memory Inspector, short for decimal
   */

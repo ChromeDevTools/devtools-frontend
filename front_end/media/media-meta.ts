@@ -9,7 +9,7 @@ import * as UI from '../ui/ui.js';
 // eslint-disable-next-line rulesdir/es_modules_import
 import type * as Media from './media.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
     *@description Text that appears on a button for the media resource type filter.
     */

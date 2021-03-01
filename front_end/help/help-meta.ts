@@ -10,7 +10,7 @@ import * as UI from '../ui/ui.js';
 // eslint-disable-next-line rulesdir/es_modules_import
 import type * as Help from './help.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Title of the 'What's New' tool in the bottom drawer
   */

@@ -10,7 +10,7 @@ import * as UI from '../ui/ui.js';
 import * as FontEditorUnitConverter from './FontEditorUnitConverter.js';
 import * as FontEditorUtils from './FontEditorUtils.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Font editor label for font family selector
   */

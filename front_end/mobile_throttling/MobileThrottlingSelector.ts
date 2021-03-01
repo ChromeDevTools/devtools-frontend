@@ -11,7 +11,7 @@ import {Events, throttlingManager} from './ThrottlingManager.js';
 import type {Conditions, ConditionsList, MobileThrottlingConditionsGroup} from './ThrottlingPresets.js';
 import {ThrottlingPresets} from './ThrottlingPresets.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Mobile throttling is disabled. The user can select this option to run mobile
   *emulation at a normal speed instead of throttled.

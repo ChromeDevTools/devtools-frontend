@@ -12,7 +12,7 @@ import {parseBrandsList, serializeBrandsList, validateAsStructuredHeadersString}
 /** @type {!DevicesSettingsTab} */
 let devicesSettingsTabInstance;
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text of a DOM element in Devices Settings Tab of the Device Toolbar
   */

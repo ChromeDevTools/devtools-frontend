@@ -5,7 +5,7 @@
 import * as i18n from '../i18n/i18n.js';
 import * as LitHtml from '../third_party/lit-html/lit-html.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text displayed in a tooltip shown when hovering over a var() CSS function in the Styles pane when the custom property in this function does not exist. The parameter is the name of the property.
   *@example {--my-custom-property-name} PH1

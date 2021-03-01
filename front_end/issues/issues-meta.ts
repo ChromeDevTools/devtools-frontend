@@ -11,7 +11,7 @@ import * as UI from '../ui/ui.js';
 import type * as Issues from './issues.js';
 
 import * as i18n from '../i18n/i18n.js';
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Label for the issues pane
   */

@@ -38,7 +38,7 @@ import * as UI from '../ui/ui.js';
 import type {LayerView, LayerViewHost, Selection, SnapshotSelection} from './LayerViewHost.js';
 import {LayerSelection} from './LayerViewHost.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Label for layers sidepanel tree
   */

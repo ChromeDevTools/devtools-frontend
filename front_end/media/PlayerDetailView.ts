@@ -14,7 +14,7 @@ import type {PlayerEvent} from './MediaModel.js';
 import {PlayerMessagesView} from './PlayerMessagesView.js';
 import {PlayerPropertiesView} from './PlayerPropertiesView.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Title of the 'Properties' tool in the sidebar of the elements tool
   */

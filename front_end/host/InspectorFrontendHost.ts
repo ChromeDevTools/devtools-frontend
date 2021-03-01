@@ -40,7 +40,7 @@ import * as Root from '../root/root.js';
 import {CanShowSurveyResult, ContextMenuDescriptor, EnumeratedHistogram, EventDescriptors, Events, InspectorFrontendHostAPI, LoadNetworkResourceResult, ShowSurveyResult} from './InspectorFrontendHostAPI.js';  // eslint-disable-line no-unused-vars
 import {streamWrite as resourceLoaderStreamWrite} from './ResourceLoader.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Document title in Inspector Frontend Host of the DevTools window
   *@example {example.com} PH1

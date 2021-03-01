@@ -11,7 +11,7 @@ import * as UI from '../ui/ui.js';
 import {ComboBoxOfCheckBoxes} from './ComboBoxOfCheckBoxes.js';
 import {CSPViolationsListView} from './CSPViolationsListView.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text to filter result items
   */

@@ -10,7 +10,7 @@ import * as SDK from '../sdk/sdk.js';
 import {AffectedItem, AffectedResourcesView} from './AffectedResourcesView.js';
 import {IssueView} from './IssueView.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Singular label for number of affected element resource indication in issue view
   */

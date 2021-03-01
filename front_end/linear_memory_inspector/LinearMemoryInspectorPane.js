@@ -9,7 +9,7 @@ import * as UI from '../ui/ui.js';
 import {LinearMemoryInspector} from './LinearMemoryInspector.js';
 import {LazyUint8Array, LinearMemoryInspectorController} from './LinearMemoryInspectorController.js';  // eslint-disable-line no-unused-vars
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Label in the Linear Memory Inspector tool that serves as a placeholder if no inspections are open
   */

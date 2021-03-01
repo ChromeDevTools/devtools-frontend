@@ -12,7 +12,7 @@ import {DeviceModeModel, Events, MaxDeviceSize, MinDeviceSize, Type} from './Dev
 import {DeviceModeToolbar} from './DeviceModeToolbar.js';
 import {MediaQueryInspector} from './MediaQueryInspector.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Bottom resizer element title in Device Mode View of the Device Toolbar
   */

@@ -14,7 +14,7 @@ import type * as Main from './main.js';
 import type * as InspectorMain from '../inspector_main/inspector_main.js';
 
 import * as i18n from '../i18n/i18n.js';
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text in Main
   */

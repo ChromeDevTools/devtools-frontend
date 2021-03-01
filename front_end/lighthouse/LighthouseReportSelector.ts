@@ -10,7 +10,7 @@ import * as UI from '../ui/ui.js';
 
 import type * as ReportRenderer from './LighthouseReporterTypes.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Title of combo box in audits report selector
   */

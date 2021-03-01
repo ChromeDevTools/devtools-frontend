@@ -11,7 +11,7 @@ import * as UI from '../ui/ui.js';
 import type {LighthouseController} from './LighthouseController.js';
 import {Events, RuntimeSettings} from './LighthouseController.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text to cancel something
   */

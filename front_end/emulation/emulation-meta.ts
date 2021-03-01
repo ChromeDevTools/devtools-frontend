@@ -10,7 +10,7 @@ import * as UI from '../ui/ui.js';
 import type * as Emulation from './emulation.js';
 
 import * as i18n from '../i18n/i18n.js';
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text for the mobile platform, as opposed to desktop
   */

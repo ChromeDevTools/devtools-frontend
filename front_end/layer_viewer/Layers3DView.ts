@@ -40,7 +40,7 @@ import type {LayerView, LayerViewHost} from './LayerViewHost.js';
 import {LayerSelection, Selection, SnapshotSelection, Type, ScrollRectSelection} from './LayerViewHost.js';
 import {Events as TransformControllerEvents, TransformController} from './TransformController.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text of a DOM element in DView of the Layers panel
   */

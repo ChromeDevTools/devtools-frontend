@@ -10,7 +10,7 @@ import * as SDK from '../sdk/sdk.js';
 
 import type {ProtocolService} from './LighthouseProtocolService.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Explanation for user that Ligthhouse can only audit HTTP/HTTPS pages
   */

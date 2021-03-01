@@ -13,7 +13,7 @@ import {ColdColorScheme, HotColorScheme, TickingFlameChart} from './TickingFlame
 // Has to be a double, see https://v8.dev/blog/react-cliff
 const NO_NORMALIZED_TIMESTAMP = -1.5;
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Title of the 'Playback Status' button
   */

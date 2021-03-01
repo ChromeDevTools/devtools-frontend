@@ -14,7 +14,7 @@ import {Endianness, endiannessToLocalizedString, ValueType, ValueTypeMode} from 
 import type {TypeToggleEvent, ValueInterpreterSettingsData} from './ValueInterpreterSettings.js';
 
 import * as i18n from '../i18n/i18n.js';
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Tooltip text that appears when hovering over the gear button to open and close settings in the Linear Memory Inspector
   */

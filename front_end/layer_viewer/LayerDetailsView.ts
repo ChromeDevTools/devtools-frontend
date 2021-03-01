@@ -38,7 +38,7 @@ import * as UI from '../ui/ui.js';
 import type {LayerView, LayerViewHost, Selection, SnapshotSelection} from './LayerViewHost.js';
 import {ScrollRectSelection, Type} from './LayerViewHost.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text in Layer Details View of the Layers panel
   */

@@ -9,7 +9,7 @@ import * as UI from '../ui/ui.js';
 import type * as LinearMemoryInspector from './linear_memory_inspector.js';
 
 import * as i18n from '../i18n/i18n.js';
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Title of the Linear Memory Inspector tool
   */

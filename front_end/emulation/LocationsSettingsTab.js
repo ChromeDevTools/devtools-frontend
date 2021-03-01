@@ -9,7 +9,7 @@ import * as UI from '../ui/ui.js';
 /** @type {!LocationsSettingsTab} */
 let locationsSettingsTabInstance;
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text in Locations Settings Tab of the Device Toolbar
   */

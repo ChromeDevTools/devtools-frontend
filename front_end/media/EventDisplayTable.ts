@@ -11,7 +11,7 @@ import * as UI from '../ui/ui.js';
 
 import type {PlayerEvent} from './MediaModel.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text for timestamps of items
   */

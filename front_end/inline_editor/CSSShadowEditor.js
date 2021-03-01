@@ -8,7 +8,7 @@ import * as UI from '../ui/ui.js';
 
 import {CSSLength, CSSShadowModel} from './CSSShadowModel.js';  // eslint-disable-line no-unused-vars
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text that refers to some types
   */

@@ -10,7 +10,7 @@ import * as UI from '../ui/ui.js';
 // eslint-disable-next-line rulesdir/es_modules_import
 import type * as MobileThrottling from './mobile_throttling.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text for throttling the network
   */

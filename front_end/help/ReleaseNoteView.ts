@@ -11,7 +11,7 @@ import * as UI from '../ui/ui.js';
 import {latestReleaseNote, releaseNoteViewId} from './HelpImpl.js';
 import type {ReleaseNote} from './HelpImpl.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text that only contain a placeholder
   *@example {100ms (at 200ms)} PH1

@@ -67,7 +67,7 @@ export class AffectedElementsWithLowContrastView extends AffectedElementsView {
   }
 }
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Column title for the element column in the low contrast issue view
   */

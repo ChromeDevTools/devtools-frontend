@@ -25,7 +25,7 @@ import {CorsIssueDetailsView} from './CorsIssueDetailsView.js';
 import type {AggregatedIssue} from './IssueAggregator.js';
 import type {IssueDescription} from './MarkdownIssueDescription.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Noun, singular. Label for a column or field containing the name of an entity.
   */

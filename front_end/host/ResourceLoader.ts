@@ -11,7 +11,7 @@ import * as i18n from '../i18n/i18n.js';
 import {InspectorFrontendHostInstance} from './InspectorFrontendHost.js';
 import {LoadNetworkResourceResult} from './InspectorFrontendHostAPI.js';  // eslint-disable-line no-unused-vars
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Name of an error category used in error messages
   */

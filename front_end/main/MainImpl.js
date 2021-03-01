@@ -48,7 +48,7 @@ import * as Workspace from '../workspace/workspace.js';
 
 import {ExecutionContextSelector} from './ExecutionContextSelector.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description A message to display prompting the user to reload DevTools if the OS color scheme changes.
   */

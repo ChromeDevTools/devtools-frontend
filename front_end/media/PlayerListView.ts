@@ -11,7 +11,7 @@ import type {MainView, TriggerDispatcher} from './MainView.js';
 import type {PlayerEvent} from './MediaModel.js';
 import {PlayerPropertyKeys} from './PlayerPropertiesView.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description A right-click context menu entry which when clicked causes the menu entry for that player to be removed.
   */

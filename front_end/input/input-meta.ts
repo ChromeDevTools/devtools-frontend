@@ -9,7 +9,7 @@ import * as UI from '../ui/ui.js';
 // eslint-disable-next-line rulesdir/es_modules_import
 import type * as Input from './input.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
     *@description Title of the inputs tool, which records user input.
     */

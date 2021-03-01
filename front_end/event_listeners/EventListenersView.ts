@@ -14,7 +14,7 @@ import * as UI from '../ui/ui.js';
 import type {FrameworkEventListenersObject} from './EventListenersUtils.js';
 import {frameworkEventListeners} from './EventListenersUtils.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Empty holder text content in Event Listeners View of the Event Listener Debugging pane in the Sources panel
   */

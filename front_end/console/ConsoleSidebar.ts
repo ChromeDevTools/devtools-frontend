@@ -102,6 +102,8 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('console/ConsoleSidebar.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
+
 export class ConsoleSidebar extends UI.Widget.VBox {
   _tree: UI.TreeOutline.TreeOutlineInShadow;
   _selectedTreeElement: UI.TreeOutline.TreeElement|null;
@@ -248,9 +250,11 @@ export class FilterTreeElement extends ConsoleSidebarTreeElement {
 
   _updateCounter(): void {
     if (!this._messageCount) {
-      this.title = groupNoMessageTitleMap.get(this._filter.name) || '';
+      const maybeTitle = groupNoMessageTitleMap.get(this._filter.name);
+      this.title = maybeTitle ? maybeTitle() : '';
     } else if (this._messageCount === 1) {
-      this.title = groupSingularTitleMap.get(this._filter.name) || '';
+      const maybeTitle = groupSingularTitleMap.get(this._filter.name);
+      this.title = maybeTitle ? maybeTitle() : '';
     } else {
       this.title = this._updatePluralTitle(this._filter.name, this._messageCount);
     }
@@ -316,20 +320,20 @@ const enum GroupName {
   Verbose = 'verbose',
 }
 
-const groupSingularTitleMap = new Map<string, string>([
-  [GroupName.ConsoleAPI, i18nString(UIStrings.UserMessage)],
-  [GroupName.All, i18nString(UIStrings.Message)],
-  [GroupName.Error, i18nString(UIStrings.Error)],
-  [GroupName.Warning, i18nString(UIStrings.Warning)],
-  [GroupName.Info, i18nString(UIStrings.Info)],
-  [GroupName.Verbose, i18nString(UIStrings.Verbose)],
+const groupSingularTitleMap = new Map<string, () => Common.UIString.LocalizedString>([
+  [GroupName.ConsoleAPI, i18nLazyString(UIStrings.UserMessage)],
+  [GroupName.All, i18nLazyString(UIStrings.Message)],
+  [GroupName.Error, i18nLazyString(UIStrings.Error)],
+  [GroupName.Warning, i18nLazyString(UIStrings.Warning)],
+  [GroupName.Info, i18nLazyString(UIStrings.Info)],
+  [GroupName.Verbose, i18nLazyString(UIStrings.Verbose)],
 ]);
 
-const groupNoMessageTitleMap = new Map<string, string>([
-  [GroupName.ConsoleAPI, i18nString(UIStrings.noUserMessages)],
-  [GroupName.All, i18nString(UIStrings.noMessages)],
-  [GroupName.Error, i18nString(UIStrings.noErrors)],
-  [GroupName.Warning, i18nString(UIStrings.noWarnings)],
-  [GroupName.Info, i18nString(UIStrings.noInfo)],
-  [GroupName.Verbose, i18nString(UIStrings.noVerbose)],
+const groupNoMessageTitleMap = new Map<string, () => Common.UIString.LocalizedString>([
+  [GroupName.ConsoleAPI, i18nLazyString(UIStrings.noUserMessages)],
+  [GroupName.All, i18nLazyString(UIStrings.noMessages)],
+  [GroupName.Error, i18nLazyString(UIStrings.noErrors)],
+  [GroupName.Warning, i18nLazyString(UIStrings.noWarnings)],
+  [GroupName.Info, i18nLazyString(UIStrings.noInfo)],
+  [GroupName.Verbose, i18nLazyString(UIStrings.noVerbose)],
 ]);

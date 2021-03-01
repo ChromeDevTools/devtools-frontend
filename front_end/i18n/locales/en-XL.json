@@ -249,13 +249,13 @@
     "message": "M̂úl̂t́î-śêĺêćt̂áb̂ĺê"
   },
   "accessibility/AccessibilityStrings.ts | nameString": {
-    "message": "N̂ám̂é"
+    "message": "Name"
   },
   "accessibility/AccessibilityStrings.ts | orientation": {
     "message": "Ôŕîén̂t́ât́îón̂"
   },
   "accessibility/AccessibilityStrings.ts | ownsText": {
-    "message": "Ôẃn̂ś"
+    "message": "Owns"
   },
   "accessibility/AccessibilityStrings.ts | pressed": {
     "message": "P̂ŕêśŝéd̂"
@@ -309,7 +309,7 @@
     "message": "V̂ál̂úê f́r̂óm̂ él̂ém̂én̂t́ ĉón̂t́êńt̂ś."
   },
   "accessibility/AccessibilityStrings.ts | valueFromFigcaptionElement": {
-    "message": "V̂ál̂úê f́r̂óm̂ f́îǵĉáp̂t́îón̂ él̂ém̂én̂t́."
+    "message": "V̂ál̂úê f́r̂óm̂ figcaption él̂ém̂én̂t́."
   },
   "accessibility/AccessibilityStrings.ts | valueFromLabelElement": {
     "message": "V̂ál̂úê f́r̂óm̂ label él̂ém̂én̂t́."
@@ -1770,7 +1770,7 @@
     "message": "Êńt̂ér̂ t́êx́t̂ t́ô śêár̂ćĥ t́ĥé ÛŔL̂ án̂d́ Êŕr̂ór̂ ćôĺûḿn̂ś"
   },
   "developer_resources/DeveloperResourcesView.ts | loadHttpsDeveloperResources": {
-    "message": "L̂óâd́ ĤT́T̂Ṕ(Ŝ) d́êv́êĺôṕêŕ r̂éŝóûŕĉéŝ t́ĥŕôúĝh́ t̂h́ê ín̂śp̂éĉt́êd́ t̂ár̂ǵêt́"
+    "message": "L̂óâd́ HTTP(S) d̂év̂él̂óp̂ér̂ ŕêśôúr̂ćêś t̂h́r̂óûǵĥ t́ĥé îńŝṕêćt̂éd̂ t́âŕĝét̂"
   },
   "developer_resources/DeveloperResourcesView.ts | resources": {
     "message": "{PH1} r̂éŝóûŕĉéŝ"
@@ -3648,7 +3648,7 @@
     "message": "P̂úb̂ĺîśĥér̂ Ád̂ś"
   },
   "lighthouse/LighthouseController.ts | resetStorageLocalstorage": {
-    "message": "R̂éŝét̂ śt̂ór̂áĝé (l̂óĉál̂Śt̂ór̂áĝé, Îńd̂éx̂éd̂D́B̂, ét̂ć) b̂éf̂ór̂é âúd̂ít̂ín̂ǵ. (Ĝóôd́ f̂ór̂ ṕêŕf̂ór̂ḿâńĉé & P̂ẂÂ t́êśt̂ín̂ǵ)"
+    "message": "R̂éŝét̂ śt̂ór̂áĝé (localStorage, IndexedDB, êt́ĉ) b́êf́ôŕê áûd́ît́îńĝ. (Ǵôód̂ f́ôŕ p̂ér̂f́ôŕm̂án̂ćê & PWA t́êśt̂ín̂ǵ)"
   },
   "lighthouse/LighthouseController.ts | seo": {
     "message": "ŜÉÔ"
@@ -4248,10 +4248,10 @@
     "message": "d̂év̂íĉé"
   },
   "mobile_throttling/mobile_throttling-meta.ts | enableFastGThrottling": {
-    "message": "Êńâb́l̂é f̂áŝt́ 3Ĝ t́ĥŕôt́t̂ĺîńĝ"
+    "message": "Êńâb́l̂é f̂áŝt́ 3G t̂h́r̂ót̂t́l̂ín̂ǵ"
   },
   "mobile_throttling/mobile_throttling-meta.ts | enableSlowGThrottling": {
-    "message": "Êńâb́l̂é ŝĺôẃ 3Ĝ t́ĥŕôt́t̂ĺîńĝ"
+    "message": "Êńâb́l̂é ŝĺôẃ 3G t̂h́r̂ót̂t́l̂ín̂ǵ"
   },
   "mobile_throttling/mobile_throttling-meta.ts | goOffline": {
     "message": "Ĝó ôf́f̂ĺîńê"

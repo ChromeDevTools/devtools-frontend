@@ -17,9 +17,10 @@ const UIStrings = {
   */
   enterTextToSearchTheUrlAndError: 'Enter text to search the URL and Error columns',
   /**
-  *@description Title for a checkbox in the toolbar of the developer resources view
+  * @description Tooltip for a checkbox in the toolbar of the developer resources view. The
+  * inspected target is the webpage that DevTools is debugging/inspecting/attached to.
   */
-  loadHttpsDeveloperResources: 'Load HTTP(S) developer resources through the inspected target',
+  loadHttpsDeveloperResources: 'Load `HTTP(S)` developer resources through the inspected target',
   /**
   *@description Text for a checkbox in the toolbar of the developer resources view
   */

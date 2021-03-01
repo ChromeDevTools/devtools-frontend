@@ -81,11 +81,13 @@ const UIStrings = {
   */
   containingBlocRectangleDimensions: 'Containing Block {PH1} × {PH2} (at {PH3}, {PH4})',
   /**
-  *@description Text in Layer Details View of the Layers panel
+  * @description Text in Layer Details View of the Layers panel. This also means "The nearest sticky
+  * box that causes a layer shift".
   */
   nearestLayerShiftingStickyBox: 'Nearest Layer Shifting Sticky Box',
   /**
-  *@description Text in Layer Details View of the Layers panel
+  * @description Text in Layer Details View of the Layers panel. This also means "The nearest block
+  * that causes a layer shift".
   */
   nearestLayerShiftingContaining: 'Nearest Layer Shifting Containing Block',
   /**

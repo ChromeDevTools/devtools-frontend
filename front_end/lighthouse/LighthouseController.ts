@@ -127,10 +127,11 @@ const UIStrings = {
   */
   clearStorage: 'Clear storage',
   /**
-  *@description Tooltip text of checkbox to reset storage features prior to running audits in Lighthouse
+  * @description Tooltip text of checkbox to reset storage features prior to running audits in
+  * Lighthouse. Resetting the storage clears/empties it to a neutral state.
   */
   resetStorageLocalstorage:
-      'Reset storage (localStorage, IndexedDB, etc) before auditing. (Good for performance & PWA testing)',
+      'Reset storage (`localStorage`, `IndexedDB`, etc) before auditing. (Good for performance & `PWA` testing)',
 };
 const str_ = i18n.i18n.registerUIStrings('lighthouse/LighthouseController.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

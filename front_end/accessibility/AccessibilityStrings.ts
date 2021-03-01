@@ -279,7 +279,7 @@ const UIStrings = {
   /**
   *@description Accessibility attribute name that appears under the Computed Properties section in the Accessibility pane of the Elements pane
   */
-  ownsText: 'Owns',
+  ownsText: '`Owns`',
   /**
   *@description Tooltip text that appears when hovering over the 'Owns' attribute name under the Computed Properties section in the Accessibility pane of the Elements pane
   */
@@ -288,7 +288,7 @@ const UIStrings = {
   /**
   *@description Text for the name of something
   */
-  nameString: 'Name',
+  nameString: '`Name`',
   /**
   *@description Tooltip text that appears when hovering over the 'Name' attribute name under the Computed Properties section in the Accessibility pane of the Elements pane
   */
@@ -387,7 +387,7 @@ const UIStrings = {
   /**
   *@description Tooltip text that appears when hovering over the 'From caption' attribute name under the Computed Properties section in the Accessibility pane of the Elements pane
   */
-  valueFromFigcaptionElement: 'Value from figcaption element.',
+  valueFromFigcaptionElement: 'Value from `figcaption` element.',
   /**
   * @description Accessibility attribute name that appears under the Computed Properties section in
   * the Accessibility pane of the Elements pane. Indicates that this element got assigned this

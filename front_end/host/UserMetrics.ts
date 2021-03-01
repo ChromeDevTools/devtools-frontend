@@ -161,9 +161,9 @@ export class UserMetrics {
     Common.EventTarget.fireEvent(EnumeratedHistogram.IssuesPanelIssueExpanded, {value: issueExpanded});
   }
 
-  issuesPanelResourceOpened(issueCategory: symbol, type: string): void {
+  issuesPanelResourceOpened(issueCategory: string, type: string): void {
     const size = Object.keys(IssueResourceOpened).length + 1;
-    const key = issueCategory.description + type;
+    const key = issueCategory + type;
     const value = IssueResourceOpened[key];
 
     if (value === undefined) {

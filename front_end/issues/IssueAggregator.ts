@@ -102,7 +102,7 @@ export class AggregatedIssue extends SDK.Issue.Issue {
     return null;
   }
 
-  getCategory(): symbol {
+  getCategory(): SDK.Issue.IssueCategory {
     if (this.representative) {
       return this.representative.getCategory();
     }

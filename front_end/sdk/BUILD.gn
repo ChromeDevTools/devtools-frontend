@@ -43,7 +43,7 @@ devtools_module("sdk") {
     "HeavyAdIssue.js",
     "IOModel.js",
     "IsolateManager.js",
-    "Issue.js",
+    "Issue.ts",
     "IssuesModel.js",
     "LayerTreeBase.js",
     "LogModel.js",

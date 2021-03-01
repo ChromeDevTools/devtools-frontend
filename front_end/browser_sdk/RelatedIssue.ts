@@ -52,12 +52,12 @@ export function hasIssues(obj: IssuesAssociatable): boolean {
   return issuesAssociatedWith(issues, obj).length > 0;
 }
 
-export function hasIssueOfCategory(obj: IssuesAssociatable, category: symbol): boolean {
+export function hasIssueOfCategory(obj: IssuesAssociatable, category: SDK.Issue.IssueCategory): boolean {
   const issues = Array.from(IssuesManager.instance().issues());
   return issuesAssociatedWith(issues, obj).some(issue => issue.getCategory() === category);
 }
 
-export async function reveal(obj: IssuesAssociatable, category?: symbol): Promise<void|undefined> {
+export async function reveal(obj: IssuesAssociatable, category?: SDK.Issue.IssueCategory): Promise<void|undefined> {
   const issues = Array.from(IssuesManager.instance().issues());
   const candidates = issuesAssociatedWith(issues, obj).filter(issue => !category || issue.getCategory() === category);
   if (candidates.length > 0) {

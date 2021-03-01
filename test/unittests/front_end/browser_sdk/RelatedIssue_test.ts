@@ -21,7 +21,7 @@ describeWithEnvironment('issuesAssociatedWith', () => {
   });
 
   it('should return no issues if issues dont affect any resources', () => {
-    const issue = new SDK.Issue.Issue('code');
+    const issue = new StubIssue('code', [], []);
     const request = new SDK.NetworkRequest.NetworkRequest('', '', '', '', '', null);
 
     assert.strictEqual(BrowserSDK.RelatedIssue.issuesAssociatedWith([issue], request).length, 0);

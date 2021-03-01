@@ -366,7 +366,7 @@ class AffectedSourcesView extends AffectedResourcesView {
     this._issue = issue;
   }
 
-  _appendAffectedSources(affectedSources: Iterable<SDK.Issue.AffectedSource>): void {
+  _appendAffectedSources(affectedSources: Iterable<Protocol.Audits.SourceCodeLocation>): void {
     let count = 0;
     for (const source of affectedSources) {
       this._appendAffectedSource(source);
@@ -375,7 +375,7 @@ class AffectedSourcesView extends AffectedResourcesView {
     this.updateAffectedResourceCount(count);
   }
 
-  _appendAffectedSource({url, lineNumber, columnNumber}: SDK.Issue.AffectedSource): void {
+  _appendAffectedSource({url, lineNumber, columnNumber}: Protocol.Audits.SourceCodeLocation): void {
     const cellElement = document.createElement('td');
     // TODO(chromium:1072331): Check feasibility of plumping through scriptId for `linkifyScriptLocation`
     //                         to support source maps and formatted scripts.
@@ -399,7 +399,7 @@ class AffectedSourcesView extends AffectedResourcesView {
   }
 }
 
-const issueTypeToNetworkHeaderMap = new Map<symbol, Network.NetworkItemView.Tabs>([
+const issueTypeToNetworkHeaderMap = new Map<SDK.Issue.IssueCategory, Network.NetworkItemView.Tabs>([
   [SDK.Issue.IssueCategory.SameSiteCookie, Network.NetworkItemView.Tabs.Cookies],
   [SDK.Issue.IssueCategory.CrossOriginEmbedderPolicy, Network.NetworkItemView.Tabs.Headers],
   [SDK.Issue.IssueCategory.MixedContent, Network.NetworkItemView.Tabs.Headers],
@@ -597,7 +597,7 @@ class AffectedBlockedByResponseView extends AffectedResourcesView {
 }
 
 // These come from chrome/browser/ui/hats/hats_service.cc.
-const issueSurveyTriggers = new Map<symbol, string|null>([
+const issueSurveyTriggers = new Map<SDK.Issue.IssueCategory, string|null>([
   [SDK.Issue.IssueCategory.CrossOriginEmbedderPolicy, 'devtools-issues-coep'],
   [SDK.Issue.IssueCategory.MixedContent, 'devtools-issues-mixed-content'],
   [SDK.Issue.IssueCategory.SameSiteCookie, 'devtools-issues-cookies-samesite'],
@@ -692,9 +692,7 @@ export class IssueView extends UI.TreeOutline.TreeElement {
   }
 
   onexpand(): void {
-    const issueCategory = this._issue.getCategory().description;
-
-    Host.userMetrics.issuesPanelIssueExpanded(issueCategory);
+    Host.userMetrics.issuesPanelIssueExpanded(this._issue.getCategory());
 
     if (!this._hasBeenExpandedBefore) {
       this._hasBeenExpandedBefore = true;

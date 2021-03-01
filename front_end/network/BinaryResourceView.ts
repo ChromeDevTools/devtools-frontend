@@ -50,15 +50,19 @@ const UIStrings = {
   */
   copyToClipboard: 'Copy to clipboard',
   /**
-  *@description Text in Binary Resource View of the Network panel
+  * @description A context menu command in the Binary Resource View of the Network panel, for
+  * copying to the clipboard. Base64 is
+  * a format for encoding data.
   */
   copyAsBase: 'Copy as `Base64`',
   /**
-  *@description Text in Binary Resource View of the Network panel
+  *@description A context menu command in the Binary Resource View of the Network panel, for copying
+  * to the clipboard. Hex is short for hexadecimal, and is a format for encoding data.
   */
   copyAsHex: 'Copy as `Hex`',
   /**
-  *@description Text in Binary Resource View of the Network panel
+  *@description A context menu command in the Binary Resource View of the Network panel, for copying
+  *to the clipboard. UTF-8 is a format for encoding data.
   */
   copyAsUtf: 'Copy as `UTF-8`',
 };

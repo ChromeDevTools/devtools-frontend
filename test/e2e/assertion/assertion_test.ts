@@ -9,7 +9,8 @@ import {getBrowserAndPages, goToResource, step} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 
 describe('Assertions', async function() {
-  it('console.assert', async () => {
+  // Test flaky on Mac
+  it.skipOnPlatforms(['mac'], '[crbug.com/1183321]: console.assert', async () => {
     const {frontend} = getBrowserAndPages();
     await step('Check the evaluation results from console', async () => {
       frontend.evaluate(() => {

@@ -3,26 +3,13 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
+import * as Host from '../host/host.js';
 import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
 const UIStrings = {
-  /**
-  *@description Description in Image Preview
-  *@example {500} PH1
-  *@example {300} PH2
-  *@example {200} PH3
-  *@example {100} PH4
-  */
-  sSPxIntrinsicSSPx: '{PH1} × {PH2} px (intrinsic: {PH3} × {PH4} px)',
-  /**
-  *@description Description in Image Preview
-  *@example {500} PH1
-  *@example {500} PH2
-  */
-  sSPx: '{PH1} × {PH2} px',
   /**
   *@description Alt text description of an image's source
   */
@@ -32,6 +19,23 @@ const UIStrings = {
   *@example {example.com} PH1
   */
   imageFromS: 'Image from {PH1}',
+  /**
+   * @description Title of the row that shows the file size of an image.
+   */
+  fileSize: 'File size:',
+  /**
+   * @description Title of the row that shows the intrinsic size of an image in pixels.
+   */
+  intrinsicSize: 'Intrinsic size:',
+  /**
+   * @description Title of the row that shows the rendered size of an image in pixels.
+   */
+  renderedSize: 'Rendered size:',
+  /**
+   * @description The img element's current request's current URL.
+   * https://html.spec.whatwg.org/multipage/embedded-content.html#dom-img-currentsrc.
+   */
+  currentSource: 'Current source:',
 };
 const str_ = i18n.i18n.registerUIStrings('components/ImagePreview.js', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -69,6 +73,14 @@ export class ImagePreview {
       return /** @type {?Element} */ (null);
     }
 
+    const displayName = resource.displayName;
+
+    // When opening DevTools for the first time, base64 resource has no content.
+    const content = resource.content ? resource.content : resource.url.split('base64,')[1];
+    const contentSize = resource.contentSize();
+    const resourceSize = contentSize ? contentSize : base64ToSize(content);
+    const resourceSizeText = resourceSize > 0 ? Platform.NumberUtilities.bytesToString(resourceSize) : '';
+
     /** @type {function(*):void} */
     let fulfill;
     const promise = new Promise(x => {
@@ -95,28 +107,56 @@ export class ImagePreview {
       const container = document.createElement('table');
       UI.Utils.appendStyle(container, 'components/imagePreview.css', {enableLegacyPatching: false});
       container.className = 'image-preview-container';
+
+      const imageRow =
+          /** @type {!HTMLTableDataCellElement} */ (container.createChild('tr').createChild('td', 'image-container'));
+      imageRow.colSpan = 2;
+
+      const link = /** @type {!HTMLLinkElement} */ (imageRow.createChild('div'));
+      link.title = displayName;
+      link.appendChild(imageElement);
+
+      // Open image in new tab.
+      link.addEventListener('click', () => {
+        Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(imageURL);
+      });
+
       const intrinsicWidth = imageElement.naturalWidth;
       const intrinsicHeight = imageElement.naturalHeight;
       const renderedWidth = precomputedFeatures ? precomputedFeatures.renderedWidth : intrinsicWidth;
       const renderedHeight = precomputedFeatures ? precomputedFeatures.renderedHeight : intrinsicHeight;
-      let description;
       if (showDimensions) {
+        const renderedRow = container.createChild('tr', 'row');
         if (renderedHeight !== intrinsicHeight || renderedWidth !== intrinsicWidth) {
-          description = i18nString(
-              UIStrings.sSPxIntrinsicSSPx,
-              {PH1: renderedWidth, PH2: renderedHeight, PH3: intrinsicWidth, PH4: intrinsicHeight});
+          renderedRow.createChild('td', 'title').textContent = i18nString(UIStrings.renderedSize);
+          renderedRow.createChild('td', 'description').textContent = `${renderedWidth} × ${renderedHeight} px`;
+
+          const intrinsicRow = container.createChild('tr', 'row');
+          intrinsicRow.createChild('td', 'title').textContent = i18nString(UIStrings.intrinsicSize);
+          intrinsicRow.createChild('td', 'description').textContent = `${intrinsicWidth} × ${intrinsicHeight} px`;
         } else {
-          description = i18nString(UIStrings.sSPx, {PH1: renderedWidth, PH2: renderedHeight});
+          renderedRow.createChild('td', 'title').textContent = i18nString(UIStrings.renderedSize);
+          renderedRow.createChild('td', 'description').textContent = `${renderedWidth} × ${renderedHeight} px`;
         }
       }
 
-      container.createChild('tr').createChild('td', 'image-container').appendChild(imageElement);
-      if (description) {
-        container.createChild('tr').createChild('td').createChild('span', 'description').textContent = description;
-      }
+      // File size
+      const fileRow = container.createChild('tr', 'row');
+      fileRow.createChild('td', 'title').textContent = i18nString(UIStrings.fileSize);
+      fileRow.createChild('td', 'description').textContent = resourceSizeText;
+
+      // Current source
       if (imageURL !== originalImageURL) {
-        container.createChild('tr').createChild('td').createChild('span', 'description').textContent =
-            Platform.StringUtilities.sprintf('currentSrc: %s', Platform.StringUtilities.trimMiddle(imageURL, 100));
+        const originalRow = container.createChild('tr', 'row');
+        originalRow.createChild('td', 'title').textContent = i18nString(UIStrings.currentSource);
+
+        const sourceText = Platform.StringUtilities.trimMiddle(imageURL, 100);
+        const link = /** @type {!HTMLLinkElement} */ (
+            originalRow.createChild('td', 'description description-link').createChild('span', 'source-link'));
+        link.textContent = sourceText;
+        link.addEventListener('click', () => {
+          Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(imageURL);
+        });
       }
       fulfill(container);
     }

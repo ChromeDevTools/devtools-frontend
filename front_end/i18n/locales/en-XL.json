@@ -932,14 +932,20 @@
   "common/SettingRegistration.ts | sources": {
     "message": "Ŝóûŕĉéŝ"
   },
+  "components/ImagePreview.js | currentSource": {
+    "message": "Ĉúr̂ŕêńt̂ śôúr̂ćê:"
+  },
+  "components/ImagePreview.js | fileSize": {
+    "message": "F̂íl̂é ŝíẑé:"
+  },
   "components/ImagePreview.js | imageFromS": {
     "message": "Îḿâǵê f́r̂óm̂ {PH1}"
   },
-  "components/ImagePreview.js | sSPx": {
-    "message": "{PH1} × {PH2} p̂x́"
+  "components/ImagePreview.js | intrinsicSize": {
+    "message": "Îńt̂ŕîńŝíĉ śîźê:"
   },
-  "components/ImagePreview.js | sSPxIntrinsicSSPx": {
-    "message": "{PH1} × {PH2} p̂x́ (îńt̂ŕîńŝíĉ: {PH3} × {PH4} ṕx̂)"
+  "components/ImagePreview.js | renderedSize": {
+    "message": "R̂én̂d́êŕêd́ ŝíẑé:"
   },
   "components/ImagePreview.js | unknownSource": {
     "message": "ûńk̂ńôẃn̂ śôúr̂ćê"

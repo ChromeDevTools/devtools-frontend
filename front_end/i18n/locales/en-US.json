@@ -932,14 +932,20 @@
   "common/SettingRegistration.ts | sources": {
     "message": "Sources"
   },
+  "components/ImagePreview.js | currentSource": {
+    "message": "Current source:"
+  },
+  "components/ImagePreview.js | fileSize": {
+    "message": "File size:"
+  },
   "components/ImagePreview.js | imageFromS": {
     "message": "Image from {PH1}"
   },
-  "components/ImagePreview.js | sSPx": {
-    "message": "{PH1} × {PH2} px"
+  "components/ImagePreview.js | intrinsicSize": {
+    "message": "Intrinsic size:"
   },
-  "components/ImagePreview.js | sSPxIntrinsicSSPx": {
-    "message": "{PH1} × {PH2} px (intrinsic: {PH3} × {PH4} px)"
+  "components/ImagePreview.js | renderedSize": {
+    "message": "Rendered size:"
   },
   "components/ImagePreview.js | unknownSource": {
     "message": "unknown source"

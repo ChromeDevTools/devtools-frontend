@@ -58,6 +58,22 @@ describe('use_theme_colors', () => {
         [{column: 5, line: 1, rule: 'plugin/use_theme_colors', severity: 'error', text: EXPECTED_ERROR_MESSAGE}]);
   });
 
+  it('errors on border-color', async () => {
+    const warnings = await lint('p { border-color: #fff; }');
+
+    assert.deepEqual(
+        warnings,
+        [{column: 5, line: 1, rule: 'plugin/use_theme_colors', severity: 'error', text: EXPECTED_ERROR_MESSAGE}]);
+  });
+
+  it('errors on outline', async () => {
+    const warnings = await lint('p { outline: 4px solid #ff0000; }');
+
+    assert.deepEqual(
+        warnings,
+        [{column: 5, line: 1, rule: 'plugin/use_theme_colors', severity: 'error', text: EXPECTED_ERROR_MESSAGE}]);
+  });
+
   it('disables all the violations of the rule', async () => {
     const code = `p {
     background: #fff;

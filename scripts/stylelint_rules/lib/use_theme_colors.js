@@ -10,9 +10,27 @@ const fs = require('fs');
 const RULE_NAME = 'plugin/use_theme_colors';
 
 const CSS_PROPS_TO_CHECK_FOR_COLOR_USAGE = new Set([
-  'color', 'box-shadow', 'text-shadow', 'outline-color', 'background-image', 'background-color', 'border-left-color',
-  'border-right-color', 'border-top-color', 'border-bottom-color', '-webkit-border-image', 'fill', 'stroke',
-  'border-left', 'border-right', 'border-top', 'border-bottom', 'background', 'border'
+  'color',
+  'box-shadow',
+  'text-shadow',
+  'outline-color',
+  'background-image',
+  'background-color',
+  'border-left-color',
+  'border-right-color',
+  'border-top-color',
+  'border-bottom-color',
+  '-webkit-border-image',
+  'fill',
+  'stroke',
+  'border-left',
+  'border-right',
+  'border-top',
+  'border-bottom',
+  'background',
+  'border',
+  'border-color',
+  'outline'
 ]);
 
 const COLOR_INDICATOR_REGEXES = new Set([
@@ -106,11 +124,13 @@ module.exports = stylelint.createPlugin(RULE_NAME, function(primary, secondary, 
          * - else every run would add more comments.
          */
         const declIndex = declaration.parent.nodes.indexOf(declaration);
-        const nextIndex = declIndex + 1;
-        const nextNode = declaration.parent.nodes[nextIndex];
-        const alreadyFixed =
-            (nextNode && nextNode.type === 'comment' &&
-             nextNode.text.startsWith('stylelint-disable-line plugin/use_theme_colors'));
+        const nextNode = declaration.parent.nodes[declIndex + 1];
+        const previousNode = declaration.parent.nodes[declIndex - 1];
+        const nextNodeIsDisableComment = nextNode && nextNode.type === 'comment' &&
+            nextNode.text.startsWith('stylelint-disable-line plugin/use_theme_colors');
+        const previousNodeIsDisableComment = previousNode && previousNode.type === 'comment' &&
+            previousNode.text.startsWith('stylelint-disable-next-line plugin/use_theme_colors');
+        const alreadyFixed = nextNodeIsDisableComment || previousNodeIsDisableComment;
 
         for (const indicator of COLOR_INDICATOR_REGEXES) {
           if (indicator.test(declaration.value)) {

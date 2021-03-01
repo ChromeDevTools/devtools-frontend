@@ -144,7 +144,8 @@ export class CSSAngleEditor extends HTMLElement {
           height: 0;
           border-style: solid;
           border-width: 0 0.9em 0.9em 0.9em;
-          border-color: transparent transparent var(--border-color) transparent;
+          border-color: transparent transparent var(--border-color) transparent; /* stylelint-disable-line plugin/use_theme_colors */
+          /* See: crbug.com/1152736 for color variable migration. */
         }
 
         .center,

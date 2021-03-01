@@ -26,7 +26,8 @@
   padding: 0 5px;
   border-top: 1px solid;
   border-bottom: 1px solid;
-  border-color: #ddd;
+  border-color: #ddd; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;

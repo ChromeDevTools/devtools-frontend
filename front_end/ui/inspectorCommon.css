@@ -257,7 +257,8 @@ iframe.widget {
   border-radius: 1px;
   background-color: rgb(255 255 0 / 80%); /* stylelint-disable-line plugin/use_theme_colors */
   /* See: crbug.com/1152736 for color variable migration. */
-  outline: 1px solid rgb(255 255 0 / 80%);
+  outline: 1px solid rgb(255 255 0 / 80%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .-theme-with-dark-background .highlighted-search-result,

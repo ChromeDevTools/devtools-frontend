@@ -82,7 +82,8 @@
   border-style: solid;
   border-width: 1px 1px 0 0;
   background: var(--color-background);
-  border-color: rgb(217 217 217);
+  border-color: rgb(217 217 217); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .security-summary-secure .triangle-pointer-wrapper {
@@ -107,7 +108,8 @@
   border-width: 1px 0;
   font-size: 15px;
   background: var(--color-background);
-  border-color: rgb(217 217 217);
+  border-color: rgb(217 217 217); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .security-summary-secure .triangle-pointer,

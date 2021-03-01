@@ -56,7 +56,8 @@
 }
 
 .tree-outline:not(.hide-selection-when-blurred) li.in-clipboard .highlight {
-  outline: 1px dotted #a9a9a9;
+  outline: 1px dotted #a9a9a9; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 ol.tree-outline:not(.hide-selection-when-blurred) li.selected:focus .selection {

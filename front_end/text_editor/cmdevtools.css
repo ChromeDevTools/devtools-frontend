@@ -106,7 +106,8 @@
 .source-frame-async-step-in-hovered .source-frame-async-step-in {
   background-color: hsl(96deg 53% 65%); /* stylelint-disable-line plugin/use_theme_colors */
   /* See: crbug.com/1152736 for color variable migration. */
-  border-color: rgb(100 154 100);
+  border-color: rgb(100 154 100); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .source-frame-async-step-in-hovered .source-frame-async-step-in-start {
@@ -452,7 +453,8 @@ div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
 }
 
 .cm-execution-line-outline {
-  outline: 1px solid rgb(64 115 244);
+  outline: 1px solid rgb(64 115 244); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .cm-execution-line-tail {

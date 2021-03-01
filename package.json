@@ -51,7 +51,7 @@
     "server": "third_party/node/node.py --output scripts/hosted_mode/server.js",
     "setup-dtrun": "cd scripts/devtools_run && npm link",
     "start": "node -e 'console.log(`This script has been removed in favor of --custom-devtools-frontend. For more information, see https://docs.google.com/document/d/1COgCBWWuTh2o-Zbp6h_z0h0LtlJaimaEDsION4RZPxc/edit?usp=sharing`);'",
-    "stylelint-test": "third_party/node/node.py ./node_modules/.bin/mocha \"./scripts/stylelint_rules/tests/*_test.js\"",
+    "stylelint-test": "third_party/node/node.py --output ./node_modules/.bin/mocha \"./scripts/stylelint_rules/tests/*_test.js\"",
     "test": "third_party/node/node.py --output scripts/npm_test.js",
     "test-local": "third_party/node/node.py --output scripts/npm_test.js --layout-tests-directory=test/webtests/",
     "ts_library-test": "./third_party/typescript/tests/verify_ts_libary.sh",

@@ -67,7 +67,8 @@
 }
 
 .screencast-navigation button:active {
-  border-color: #aaa;
+  border-color: #aaa; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .screencast-navigation button[disabled] {

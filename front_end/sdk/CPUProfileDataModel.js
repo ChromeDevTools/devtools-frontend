@@ -9,7 +9,7 @@ import * as Platform from '../platform/platform.js';
 import {ProfileNode, ProfileTreeModel} from './ProfileTreeModel.js';
 import {Target} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text in CPUProfile Data Model
   *@example {2} PH1

@@ -42,7 +42,7 @@ import {Events as ResourceTreeModelEvents, ResourceTreeModel} from './ResourceTr
 import {Events as RuntimeModelEvents, ExecutionContext, RuntimeModel} from './RuntimeModel.js';  // eslint-disable-line no-unused-vars
 import {Observer, Target, TargetManager} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text in Console Model
   *@example {https://example.com} PH1

@@ -12,7 +12,7 @@ import {FrameAssociated} from './FrameAssociated.js';               // eslint-di
 import {PageResourceLoadInitiator} from './PageResourceLoader.js';  // eslint-disable-line no-unused-vars
 import {ResourceTreeModel} from './ResourceTreeModel.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Error message for when a CSS file can't be loaded
   */

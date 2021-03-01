@@ -39,7 +39,7 @@ import {NetworkManager} from './NetworkManager.js';
 import {Type} from './SDKModel.js';
 import {ServerTiming} from './ServerTiming.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text in Network Request
   */

@@ -9,7 +9,7 @@ import {NameValue} from './NetworkRequest.js';               // eslint-disable-l
 import {Capability, SDKModel, Target} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 import {Events as SecurityOriginManagerEvents, SecurityOriginManager} from './SecurityOriginManager.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text in Service Worker Cache Model
   *@example {https://cache} PH1

@@ -39,7 +39,7 @@ import {Events as ResourceTreeModelEvents, ResourceTreeFrame, ResourceTreeModel}
 import {RuntimeModel} from './RuntimeModel.js';
 import {SDKModelObserver, TargetManager} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text in Network Log
   */

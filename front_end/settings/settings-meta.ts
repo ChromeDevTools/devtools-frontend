@@ -10,7 +10,7 @@ import * as UI from '../ui/ui.js';
 // eslint-disable-next-line rulesdir/es_modules_import
 import type * as Settings from './settings.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
    *@description Text for keyboard shortcuts
    */

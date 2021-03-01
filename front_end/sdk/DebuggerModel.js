@@ -42,7 +42,7 @@ import {Script} from './Script.js';
 import {Capability, SDKModel, Target, Type} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 import {SourceMapManager} from './SourceMapManager.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text in Debugger Model
   */

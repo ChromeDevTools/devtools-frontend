@@ -35,7 +35,7 @@ import {DebuggerModel, Location} from './DebuggerModel.js';
 import {RuntimeModel} from './RuntimeModel.js';              // eslint-disable-line no-unused-vars
 import {Capability, SDKModel, Target} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Name of a profile
   *@example {2} PH1

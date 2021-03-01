@@ -14,7 +14,7 @@ import * as UI from '../ui/ui.js';
 import type {PageSecurityState, PageVisibleSecurityState} from './SecurityModel.js';
 import {Events, SecurityModel, SecurityStyleExplanation, SummaryMessages} from './SecurityModel.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Title text content in Security Panel of the Security panel
   */

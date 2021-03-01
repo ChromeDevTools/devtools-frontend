@@ -15,7 +15,7 @@ import {JSONView} from './JSONView.js';
 import {ResourceSourceFrame} from './ResourceSourceFrame.js';
 import {XMLView} from './XMLView.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text in Preview Factory of the Sources panel
   */

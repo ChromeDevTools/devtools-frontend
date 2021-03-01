@@ -39,7 +39,7 @@ import * as UI from '../ui/ui.js';
 
 import type {KeybindsSettingsTab} from './KeybindsSettingsTab.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Name of the Settings view
   */

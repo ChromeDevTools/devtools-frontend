@@ -13,7 +13,7 @@ import type * as TextUtils from '../text_utils/text_utils.js';
 import * as UI from '../ui/ui.js';
 import * as Workspace from '../workspace/workspace.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Default snippet name when a new snippet is created in the Sources panel
   *@example {1} PH1

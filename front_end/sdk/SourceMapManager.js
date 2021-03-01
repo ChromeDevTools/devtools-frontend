@@ -10,7 +10,7 @@ import {FrameAssociated} from './FrameAssociated.js';  // eslint-disable-line no
 import {Events as TargetManagerEvents, Target, TargetManager} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 import {SourceMap, TextSourceMap} from './SourceMap.js';  // eslint-disable-line no-unused-vars
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Error message when failing to load a source map text
   *@example {An error occurred} PH1

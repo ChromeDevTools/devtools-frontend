@@ -8,7 +8,7 @@ import type {MarkdownIssueDescription} from './Issue.js';
 import {Issue, IssueCategory, IssueKind} from './Issue.js';
 import type {IssuesModel} from './IssuesModel.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Label for the link for Shared Array Buffer Issues
   */

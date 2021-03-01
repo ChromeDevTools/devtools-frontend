@@ -11,7 +11,7 @@ import {Issue, IssueCategory, IssueKind, LazyMarkdownIssueDescription, MarkdownI
 import {IssuesModel} from './IssuesModel.js';              // eslint-disable-line no-unused-vars
 import {ResourceTreeFrame} from './ResourceTreeModel.js';  // eslint-disable-line no-unused-vars
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Label for the link for SameSiteCookies Issues
   */

@@ -8,7 +8,7 @@ import * as Platform from '../platform/platform.js';
 
 import {NameValue} from './NetworkRequest.js';  // eslint-disable-line no-unused-vars
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text in Server Timing
   */

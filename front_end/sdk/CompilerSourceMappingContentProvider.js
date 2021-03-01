@@ -34,7 +34,7 @@ import * as TextUtils from '../text_utils/text_utils.js';
 
 import {PageResourceLoader, PageResourceLoadInitiator} from './PageResourceLoader.js';  // eslint-disable-line no-unused-vars
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Error message when failing to fetch a resource referenced in a source map
   *@example {https://example.com/sourcemap.map} PH1

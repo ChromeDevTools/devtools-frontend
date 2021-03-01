@@ -11,7 +11,7 @@ import * as UI from '../ui/ui.js';
 
 import {SearchConfig, SearchResult} from './SearchConfig.js';  // eslint-disable-line no-unused-vars
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Accessibility label for number of matches in each file in search results pane
   *@example {2} PH1

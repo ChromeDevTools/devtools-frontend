@@ -7,7 +7,7 @@ import * as i18n from '../i18n/i18n.js';
 import {Issue, IssueCategory, IssueKind} from './Issue.js';
 import type {MarkdownIssueDescription} from './Issue.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Link title for the Low Text Contrast issue in the Issues panel
   */

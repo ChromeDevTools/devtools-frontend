@@ -10,7 +10,7 @@ import type * as Workspace from '../workspace/workspace.js';
 
 import {evaluateScriptSnippet, findSnippetsProject} from './ScriptSnippetFileSystem.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text in Snippets Quick Open of the Sources panel when opening snippets
   */

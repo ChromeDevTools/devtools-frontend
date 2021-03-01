@@ -9,7 +9,7 @@ import * as UI from '../ui/ui.js';
 import {SearchConfig, SearchResult, SearchScope} from './SearchConfig.js';  // eslint-disable-line no-unused-vars
 import {SearchResultsPane} from './SearchResultsPane.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Title of a search bar or tool
   */

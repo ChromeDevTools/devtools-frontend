@@ -12,7 +12,7 @@ import {OverlayPersistentHighlighter} from './OverlayPersistentHighlighter.js';
 import {RemoteObject} from './RemoteObject.js';                             // eslint-disable-line no-unused-vars
 import {Capability, SDKModel, Target, TargetManager} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text in Overlay Model
   */

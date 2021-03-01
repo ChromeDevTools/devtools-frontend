@@ -35,7 +35,7 @@ import {ResourceTreeModel} from './ResourceTreeModel.js';
 import {ExecutionContext} from './RuntimeModel.js';  // eslint-disable-line no-unused-vars
 import {Target} from './SDKModel.js';                // eslint-disable-line no-unused-vars
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Error message for when a script can't be loaded which had been previously
   */

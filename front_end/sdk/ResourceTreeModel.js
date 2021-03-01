@@ -39,7 +39,7 @@ import {ExecutionContext, RuntimeModel} from './RuntimeModel.js';
 import {Capability, SDKModel, Target, TargetManager} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 import {SecurityOriginManager} from './SecurityOriginManager.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Title of Javascript context
   */

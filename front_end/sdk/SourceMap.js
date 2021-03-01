@@ -36,7 +36,7 @@ import * as TextUtils from '../text_utils/text_utils.js';
 import {CompilerSourceMappingContentProvider} from './CompilerSourceMappingContentProvider.js';
 import {PageResourceLoader, PageResourceLoadInitiator} from './PageResourceLoader.js';  // eslint-disable-line no-unused-vars
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Error message when failing to load a source map text via the network
   *@example {https://example.com/sourcemap.map} PH1

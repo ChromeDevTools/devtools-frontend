@@ -38,7 +38,7 @@ import * as UI from '../ui/ui.js';
 
 import {InputModel} from './InputModel.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Accessible alt text for the screencast canvas rendering of the debug target webpage
   */

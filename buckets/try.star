@@ -106,6 +106,15 @@ builder_coverage(
     properties = {"is_official_build": True},
 )
 
+builder_coverage(
+    covered_oss = ["linux", "win64", "mac"],
+    builder_factory = try_builder,
+    builder_name_pattern = "e2e_stressor_%s",
+    recipe_name = "devtools/devtools-frontend",
+    execution_timeout = 2 * time.hour,
+    properties = {"builder_config": "Debug"},
+)
+
 luci.list_view(
     name = "tryserver",
     title = "Tryserver",

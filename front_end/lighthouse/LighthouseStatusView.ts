@@ -147,6 +147,8 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('lighthouse/LighthouseStatusView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
+
 export class StatusView {
   _controller: LighthouseController;
   _statusView: Element|null;
@@ -158,7 +160,7 @@ export class StatusView {
   _inspectedURL: string;
   _textChangedAt: number;
   _fastFactsQueued: Common.UIString.LocalizedString[];
-  _currentPhase: {id: string, message: string, progressBarClass: string, statusMessagePrefix: string}|null;
+  _currentPhase: StatusPhase|null;
   _scheduledTextChangeTimeout: number|null;
   _scheduledFastFactTimeout: number|null;
   _dialog: UI.Dialog.Dialog;
@@ -175,7 +177,7 @@ export class StatusView {
 
     this._inspectedURL = '';
     this._textChangedAt = 0;
-    this._fastFactsQueued = FastFacts.slice();
+    this._fastFactsQueued = FastFacts.map(lazyString => lazyString());
     this._currentPhase = null;
     this._scheduledTextChangeTimeout = null;
     this._scheduledFastFactTimeout = null;
@@ -229,7 +231,7 @@ export class StatusView {
     clearTimeout(this._scheduledFastFactTimeout as number);
 
     this._textChangedAt = 0;
-    this._fastFactsQueued = FastFacts.slice();
+    this._fastFactsQueued = FastFacts.map(lazyString => lazyString());
     this._currentPhase = null;
     this._scheduledTextChangeTimeout = null;
     this._scheduledFastFactTimeout = null;
@@ -304,8 +306,8 @@ export class StatusView {
   }
 
   _getMessageForPhase(phase: StatusPhase): string {
-    if (phase.message) {
-      return phase.message;
+    if (phase.message()) {
+      return phase.message();
     }
 
     const deviceTypeSetting = RuntimeSettings.find(item => item.setting.name === 'lighthouse.device_type');
@@ -316,7 +318,7 @@ export class StatusView {
       return item.deviceType === deviceType && item.throttling === throttling;
     });
 
-    return match ? match.message : i18nString(UIStrings.lighthouseIsLoadingYourPage);
+    return match ? match.message() : i18nString(UIStrings.lighthouseIsLoadingYourPage);
   }
 
   _getPhaseForMessage(message: string): StatusPhase|null {
@@ -455,7 +457,7 @@ const KnownBugPatterns: RegExp[] = [
 export interface StatusPhase {
   id: string;
   progressBarClass: string;
-  message: string;
+  message: () => Common.UIString.LocalizedString;
   statusMessagePrefix: string;
 }
 
@@ -463,19 +465,19 @@ export const StatusPhases: StatusPhase[] = [
   {
     id: 'loading',
     progressBarClass: 'loading',
-    message: i18nString(UIStrings.lighthouseIsLoadingThePage),
+    message: i18nLazyString(UIStrings.lighthouseIsLoadingThePage),
     statusMessagePrefix: 'Loading page',
   },
   {
     id: 'gathering',
     progressBarClass: 'gathering',
-    message: i18nString(UIStrings.lighthouseIsGatheringInformation),
+    message: i18nLazyString(UIStrings.lighthouseIsGatheringInformation),
     statusMessagePrefix: 'Gathering',
   },
   {
     id: 'auditing',
     progressBarClass: 'auditing',
-    message: i18nString(UIStrings.almostThereLighthouseIsNow),
+    message: i18nLazyString(UIStrings.almostThereLighthouseIsNow),
     statusMessagePrefix: 'Auditing',
   },
 ];
@@ -485,37 +487,37 @@ const LoadingMessages = [
   {
     deviceType: 'mobile',
     throttling: 'on',
-    message: i18nString(UIStrings.lighthouseIsLoadingYourPageWith),
+    message: i18nLazyString(UIStrings.lighthouseIsLoadingYourPageWith),
   },
   {
     deviceType: 'desktop',
     throttling: 'on',
-    message: i18nString(UIStrings.lighthouseIsLoadingYourPageWithThrottling),
+    message: i18nLazyString(UIStrings.lighthouseIsLoadingYourPageWithThrottling),
   },
   {
     deviceType: 'mobile',
     throttling: 'off',
-    message: i18nString(UIStrings.lighthouseIsLoadingYourPageWithMobile),
+    message: i18nLazyString(UIStrings.lighthouseIsLoadingYourPageWithMobile),
   },
   {
     deviceType: 'desktop',
     throttling: 'off',
-    message: i18nString(UIStrings.lighthouseIsLoadingThePage),
+    message: i18nLazyString(UIStrings.lighthouseIsLoadingThePage),
   },
 ];
 
 const FastFacts = [
-  i18nString(UIStrings.mbTakesAMinimumOfSecondsTo),
-  i18nString(UIStrings.rebuildingPinterestPagesFor),
-  i18nString(UIStrings.byReducingTheResponseSizeOfJson),
-  i18nString(UIStrings.walmartSawAIncreaseInRevenueFor),
-  i18nString(UIStrings.ifASiteTakesSecondToBecome),
-  i18nString(UIStrings.OfGlobalMobileUsersInWereOnGOrG),
-  i18nString(UIStrings.theAverageUserDeviceCostsLess),
-  i18nString(UIStrings.SecondsIsTheAverageTimeAMobile),
-  i18nString(UIStrings.OfMobilePagesTakeNearlySeconds),
-  i18nString(UIStrings.asPageLoadTimeIncreasesFromOne),
-  i18nString(UIStrings.asTheNumberOfElementsOnAPage),
-  i18nString(UIStrings.OfMobilePagesTakeNearlySeconds),
-  i18nString(UIStrings.lighthouseOnlySimulatesMobile),
+  i18nLazyString(UIStrings.mbTakesAMinimumOfSecondsTo),
+  i18nLazyString(UIStrings.rebuildingPinterestPagesFor),
+  i18nLazyString(UIStrings.byReducingTheResponseSizeOfJson),
+  i18nLazyString(UIStrings.walmartSawAIncreaseInRevenueFor),
+  i18nLazyString(UIStrings.ifASiteTakesSecondToBecome),
+  i18nLazyString(UIStrings.OfGlobalMobileUsersInWereOnGOrG),
+  i18nLazyString(UIStrings.theAverageUserDeviceCostsLess),
+  i18nLazyString(UIStrings.SecondsIsTheAverageTimeAMobile),
+  i18nLazyString(UIStrings.OfMobilePagesTakeNearlySeconds),
+  i18nLazyString(UIStrings.asPageLoadTimeIncreasesFromOne),
+  i18nLazyString(UIStrings.asTheNumberOfElementsOnAPage),
+  i18nLazyString(UIStrings.OfMobilePagesTakeNearlySeconds),
+  i18nLazyString(UIStrings.lighthouseOnlySimulatesMobile),
 ];

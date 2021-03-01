@@ -27,6 +27,18 @@ To use the flags, first append `--` to the `npm` command, e.g.
 
 If you only want to run a single test or testsuite, use respectively `it.only` or `describe.only`.
 
+## Skipping tests
+
+You can disable a test for all platforms using `it.skip`. If you are disabling a flaky test, consider
+disabling it only on the affected platforms. For example,
+
+```js
+it.skipOnPlatforms(['mac', 'win32'], '[crbug.com/xxx] ...', () => {...});
+it.skipOnPlatforms(['linux'], '[crbug.com/xxx] ...', () => {...});
+```
+
+To use `skipOnPlatforms`, you need to import `it` from `test/shared/mocha-extensions.ts`.
+
 ## Debugging tests
 To see what the test script does, run `npm run debug-e2etest`. This will bring up the chrome window and stop just
 before your test script is about to execute. The test will then run to completion and exit. You can add an infinite

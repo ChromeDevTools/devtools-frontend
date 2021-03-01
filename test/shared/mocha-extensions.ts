@@ -49,7 +49,7 @@ export function wrapDescribe<ReturnT>(
       if (index < 0) {
         return parsedPath.name;
       }
-      return Path.join(...directories.slice(index + 1), parsedPath.name);
+      return Path.join(...directories.slice(index + 1), `${parsedPath.name}.ts`);
     };
     const err = new Error();
 

@@ -675,10 +675,10 @@
     "message": "Revert all changes to current file"
   },
   "changes/ChangesView.ts | sDeletions": {
-    "message": "{n, plural, =1 {# deletion} other {# deletions}} (-)"
+    "message": "{n, plural, =1 {# deletion (-)} other {# deletions (-)}}"
   },
   "changes/ChangesView.ts | sInsertions": {
-    "message": "{n, plural, =1 {# insertion} other {# insertions}} (+)"
+    "message": "{n, plural, =1 {# insertion (+)} other {# insertions (+)}}"
   },
   "changes/ChangesView.ts | SkippingDMatchingLines": {
     "message": "( … Skipping {PH1} matching lines … )"
@@ -984,16 +984,16 @@
     "message": "Open Console to view {PH1}"
   },
   "console_counters/WarningErrorCounter.ts | openIssuesToView": {
-    "message": "{n, plural, one {Open Issues to view # issue} other {Open Issues to view # issues}}"
+    "message": "{n, plural, =1 {Open Issues to view # issue} other {Open Issues to view # issues}}"
   },
   "console_counters/WarningErrorCounter.ts | openLighthouseToView": {
-    "message": "{n, plural, one {Open Lighthouse to view # violation} other {Open Lighthouse to view # violations}}"
+    "message": "{n, plural, =1 {Open Lighthouse to view # violation} other {Open Lighthouse to view # violations}}"
   },
   "console_counters/WarningErrorCounter.ts | sErrors": {
-    "message": "{n, plural, one {# error} other {# errors}}"
+    "message": "{n, plural, =1 {# error} other {# errors}}"
   },
   "console_counters/WarningErrorCounter.ts | sWarnings": {
-    "message": "{n, plural, one {# warning} other {# warnings}}"
+    "message": "{n, plural, =1 {# warning} other {# warnings}}"
   },
   "console/console-meta.ts | autocompleteFromHistory": {
     "message": "Autocomplete from history"

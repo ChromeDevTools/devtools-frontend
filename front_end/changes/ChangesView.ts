@@ -31,15 +31,17 @@ const UIStrings = {
   */
   binaryData: 'Binary data',
   /**
-  * @description Text in the Changes tab that indicates how many lines of code have changed in the selected file.
-  * An insertion refers to an added line of code. The (+) is a visual cue to indicate lines were added.
+  * @description Text in the Changes tab that indicates how many lines of code have changed in the
+  * selected file. An insertion refers to an added line of code. The (+) is a visual cue to indicate
+  * lines were added (not translatable).
   */
-  sInsertions: '{n, plural, =1 {# insertion} other {# insertions}} `(+)`',
+  sInsertions: '{n, plural, =1 {# insertion (+)} other {# insertions (+)}}',
   /**
-  * @description Text in the Changes tab that indicates how many lines of code have changed in the selected file.
-  * A deletion refers to a removed line of code. The (-) is a visual cue to indicate lines were removed.
+  * @description Text in the Changes tab that indicates how many lines of code have changed in the
+  * selected file. A deletion refers to a removed line of code. The (-) is a visual cue to indicate
+  * lines were removed (not translatable).
   */
-  sDeletions: '{n, plural, =1 {# deletion} other {# deletions}} `(-)`',
+  sDeletions: '{n, plural, =1 {# deletion (-)} other {# deletions (-)}}',
   /**
   *@description Text in Changes View of the Changes tab
   *@example {2} PH1

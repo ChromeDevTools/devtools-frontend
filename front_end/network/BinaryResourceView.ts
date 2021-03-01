@@ -51,8 +51,7 @@ const UIStrings = {
   copyToClipboard: 'Copy to clipboard',
   /**
   * @description A context menu command in the Binary Resource View of the Network panel, for
-  * copying to the clipboard. Base64 is
-  * a format for encoding data.
+  * copying to the clipboard. Base64 is a format for encoding data.
   */
   copyAsBase: 'Copy as `Base64`',
   /**

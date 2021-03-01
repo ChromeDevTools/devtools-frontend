@@ -213,15 +213,17 @@ const UIStrings = {
   */
   copyStacktrace: 'Copy stacktrace',
   /**
-  *@description Text in Network Log View of the Network panel
+  * @description A context menu command in the Network panel, for copying to the clipboard.
+  * PowerShell refers to the format the data will be copied as.
   */
   copyAsPowershell: 'Copy as `PowerShell`',
   /**
-  *@description Text in Network Log View of the Network panel
+  *@description A context menu command in the Network panel, for copying to the clipboard. 'fetch'
+  * refers to the format the data will be copied as, which is compatible with the fetch web API.
   */
   copyAsFetch: 'Copy as `fetch`',
   /**
-  *@description Text in Network Log View of the Network panel. An action that copies a command to
+  * @description Text in Network Log View of the Network panel. An action that copies a command to
   * the developer's clipboard. The command allows the developer to replay this specific network
   * request in Node.js, a desktop application/framework. 'Node.js fetch' is a noun phrase for the
   * type of request that will be copied.

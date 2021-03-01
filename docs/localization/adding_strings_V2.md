@@ -122,6 +122,8 @@ Code example:
     - '#' is replaced with the value of `n`
     - 'n' is a naming convention, but any name can be used
     - Nesting placeholders inside of plurals is allowed
+    - Put the entire string within the plural switch, e.g. `{# breakpoints were found}`, not `{# breakpoints} were found`
+    - Always provide the `=1` and the `other` case, even if they are the same for English.
 
 ## Modifying a string
 1. Update the string you want to modify in `UIStrings`

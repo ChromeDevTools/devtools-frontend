@@ -17,11 +17,11 @@ const UIStrings = {
   /**
   *@description The console error count in the Warning Error Counter shown in the main toolbar (top-left in DevTools). The error count refers to the number of errors currently present in the JavaScript console.
   */
-  sErrors: '{n, plural, one {# error} other {# errors}}',
+  sErrors: '{n, plural, =1 {# error} other {# errors}}',
   /**
   *@description The console warning count in the Warning Error Counter shown in the main toolbar (top-left in DevTools). The warning count refers to the number of warnings currently present in the JavaScript console.
   */
-  sWarnings: '{n, plural, one {# warning} other {# warnings}}',
+  sWarnings: '{n, plural, =1 {# warning} other {# warnings}}',
   /**
   *@description Tooltip shown for a main toolbar button that opens the Console panel
   *@example {2 errors, 1 warning} PH1
@@ -31,11 +31,11 @@ const UIStrings = {
   *@description Title for the Lighthouse violations count in the Warning Error Counter shown in the main toolbar (top-left in DevTools). The violations count refers to the number of violations that were detected by Lighthouse.
   */
   openLighthouseToView:
-      '{n, plural, one {Open Lighthouse to view # violation} other {Open Lighthouse to view # violations}}',
+      '{n, plural, =1 {Open Lighthouse to view # violation} other {Open Lighthouse to view # violations}}',
   /**
   *@description Title for the issues count in the Issues Error Counter shown in the main toolbar (top-left in DevTools). The issues count refers to the number of issues in the issues tab.
   */
-  openIssuesToView: '{n, plural, one {Open Issues to view # issue} other {Open Issues to view # issues}}',
+  openIssuesToView: '{n, plural, =1 {Open Issues to view # issue} other {Open Issues to view # issues}}',
 };
 const str_ = i18n.i18n.registerUIStrings('console_counters/WarningErrorCounter.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

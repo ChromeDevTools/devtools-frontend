@@ -123,6 +123,7 @@ const UIStrings = {
 
 const str_ = i18n.i18n.registerUIStrings('media/PlayerPropertiesView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 type TabData = {
   [x: string]: string,
@@ -338,8 +339,8 @@ export class AudioTrackManager extends TrackManager {
 }
 
 const TrackTypeLocalized = {
-  Video: i18nString(UIStrings.video),
-  Audio: i18nString(UIStrings.audio),
+  Video: i18nLazyString(UIStrings.video),
+  Audio: i18nLazyString(UIStrings.audio),
 };
 
 class GenericTrackMenu extends UI.TabbedPane.TabbedPane {
@@ -423,9 +424,9 @@ export class PlayerPropertiesView extends UI.Widget.VBox {
     this._audioDecoderProperties = new AttributesView(this._audioDecoderElements);
 
     this._videoProperties.show(this.contentElement);
-    this._videoDecoderTabs = new DecoderTrackMenu(TrackTypeLocalized.Video, this._videoDecoderProperties);
+    this._videoDecoderTabs = new DecoderTrackMenu(TrackTypeLocalized.Video(), this._videoDecoderProperties);
     this._videoDecoderTabs.show(this.contentElement);
-    this._audioDecoderTabs = new DecoderTrackMenu(TrackTypeLocalized.Audio, this._audioDecoderProperties);
+    this._audioDecoderTabs = new DecoderTrackMenu(TrackTypeLocalized.Audio(), this._audioDecoderProperties);
     this._audioDecoderTabs.show(this.contentElement);
 
     this._textTrackTabs = null;

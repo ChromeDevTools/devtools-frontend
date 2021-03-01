@@ -260,7 +260,8 @@ export class MainImpl {
         'Enable new Advanced Perceptual Contrast Algorithm (APCA) replacing previous contrast ratio and AA/AAA guidelines');
 
     // Full Accessibility Tree
-    Root.Runtime.experiments.register('fullAccessibilityTree', 'Enable full accessibility tree view in Elements pane');
+    Root.Runtime.experiments.register(
+        'fullAccessibilityTree', 'Enable full accessibility tree view in the Elements panel');
 
     // Font Editor
     Root.Runtime.experiments.register('fontEditor', 'Enable new Font Editor tool within the Styles Pane.');

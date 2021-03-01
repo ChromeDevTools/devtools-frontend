@@ -41,7 +41,7 @@ export const UIStrings = {
 };
 
 const str_ = i18n.i18n.registerUIStrings('performance_monitor/performance_monitor-meta.ts', UIStrings);
-const i18nString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
+const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 let loadedPerformanceMonitorModule: (typeof PerformanceMonitor|undefined);
 
@@ -57,8 +57,8 @@ async function loadPerformanceMonitorModule(): Promise<typeof PerformanceMonitor
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.DRAWER_VIEW,
   id: 'performance.monitor',
-  title: i18nString(UIStrings.performanceMonitor),
-  commandPrompt: i18nString(UIStrings.showPerformanceMonitor),
+  title: i18nLazyString(UIStrings.performanceMonitor),
+  commandPrompt: i18nLazyString(UIStrings.showPerformanceMonitor),
   persistence: UI.ViewManager.ViewPersistence.CLOSEABLE,
   order: 100,
   async loadView() {
@@ -66,10 +66,10 @@ UI.ViewManager.registerViewExtension({
     return PerformanceMonitor.PerformanceMonitor.PerformanceMonitorImpl.instance();
   },
   tags: [
-    i18nString(UIStrings.performance),
-    i18nString(UIStrings.systemMonitor),
-    i18nString(UIStrings.monitor),
-    i18nString(UIStrings.activity),
-    i18nString(UIStrings.metrics),
+    i18nLazyString(UIStrings.performance),
+    i18nLazyString(UIStrings.systemMonitor),
+    i18nLazyString(UIStrings.monitor),
+    i18nLazyString(UIStrings.activity),
+    i18nLazyString(UIStrings.metrics),
   ],
 });

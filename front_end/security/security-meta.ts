@@ -20,7 +20,7 @@ export const UIStrings = {
   showSecurity: 'Show Security',
 };
 const str_ = i18n.i18n.registerUIStrings('security/security-meta.ts', UIStrings);
-const i18nString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
+const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 let loadedSecurityModule: (typeof Security|undefined);
 
@@ -36,8 +36,8 @@ async function loadSecurityModule(): Promise<typeof Security> {
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.PANEL,
   id: 'security',
-  title: i18nString(UIStrings.security),
-  commandPrompt: i18nString(UIStrings.showSecurity),
+  title: i18nLazyString(UIStrings.security),
+  commandPrompt: i18nLazyString(UIStrings.showSecurity),
   order: 80,
   persistence: UI.ViewManager.ViewPersistence.CLOSEABLE,
   async loadView() {

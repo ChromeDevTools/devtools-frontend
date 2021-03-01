@@ -56,7 +56,7 @@ export const UIStrings = {
   disableOverrideNetworkRequests: 'Disable override network requests',
 };
 const str_ = i18n.i18n.registerUIStrings('persistence/persistence-meta.ts', UIStrings);
-const i18nString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
+const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 let loadedPersistenceModule: (typeof Persistence|undefined);
 
@@ -72,8 +72,8 @@ async function loadPersistenceModule(): Promise<typeof Persistence> {
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.SETTINGS_VIEW,
   id: 'workspace',
-  title: i18nString(UIStrings.workspace),
-  commandPrompt: i18nString(UIStrings.showWorkspace),
+  title: i18nLazyString(UIStrings.workspace),
+  commandPrompt: i18nLazyString(UIStrings.showWorkspace),
   order: 1,
   async loadView() {
     const Persistence = await loadPersistenceModule();
@@ -83,25 +83,25 @@ UI.ViewManager.registerViewExtension({
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.PERSISTENCE,
-  title: i18nString(UIStrings.enableLocalOverrides),
+  title: i18nLazyString(UIStrings.enableLocalOverrides),
   settingName: 'persistenceNetworkOverridesEnabled',
   settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: false,
   tags: [
-    i18nString(UIStrings.interception),
-    i18nString(UIStrings.override),
-    i18nString(UIStrings.network),
-    i18nString(UIStrings.rewrite),
-    i18nString(UIStrings.request),
+    i18nLazyString(UIStrings.interception),
+    i18nLazyString(UIStrings.override),
+    i18nLazyString(UIStrings.network),
+    i18nLazyString(UIStrings.rewrite),
+    i18nLazyString(UIStrings.request),
   ],
   options: [
     {
       value: true,
-      title: i18nString(UIStrings.enableOverrideNetworkRequests),
+      title: i18nLazyString(UIStrings.enableOverrideNetworkRequests),
     },
     {
       value: false,
-      title: i18nString(UIStrings.disableOverrideNetworkRequests),
+      title: i18nLazyString(UIStrings.disableOverrideNetworkRequests),
     },
   ],
 });

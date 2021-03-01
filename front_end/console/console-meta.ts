@@ -105,7 +105,7 @@ const UIStrings = {
   doNotTreatEvaluationAsUser: 'Do not treat evaluation as user activation',
 };
 const str_ = i18n.i18n.registerUIStrings('console/console-meta.ts', UIStrings);
-const i18nString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
+const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 let loadedConsoleModule: (typeof Console|undefined);
 
 async function loadConsoleModule(): Promise<typeof Console> {
@@ -127,8 +127,8 @@ function maybeRetrieveContextTypes<T = unknown>(getClassCallBack: (consoleModule
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.PANEL,
   id: 'console',
-  title: i18nString(UIStrings.console),
-  commandPrompt: i18nString(UIStrings.showConsole),
+  title: i18nLazyString(UIStrings.console),
+  commandPrompt: i18nLazyString(UIStrings.showConsole),
   order: 20,
   async loadView() {
     const Console = await loadConsoleModule();
@@ -139,8 +139,8 @@ UI.ViewManager.registerViewExtension({
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.DRAWER_VIEW,
   id: 'console-view',
-  title: i18nString(UIStrings.console),
-  commandPrompt: i18nString(UIStrings.showConsole),
+  title: i18nLazyString(UIStrings.console),
+  commandPrompt: i18nLazyString(UIStrings.showConsole),
   persistence: UI.ViewManager.ViewPersistence.PERMANENT,
   order: 0,
   async loadView() {
@@ -152,7 +152,7 @@ UI.ViewManager.registerViewExtension({
 UI.ActionRegistration.registerActionExtension({
   actionId: 'console.show',
   category: UI.ActionRegistration.ActionCategory.CONSOLE,
-  title: i18nString(UIStrings.showConsole),
+  title: i18nLazyString(UIStrings.showConsole),
   async loadActionDelegate() {
     const Console = await loadConsoleModule();
     return Console.ConsoleView.ActionDelegate.instance();
@@ -171,7 +171,7 @@ UI.ActionRegistration.registerActionExtension({
 UI.ActionRegistration.registerActionExtension({
   actionId: 'console.clear',
   category: UI.ActionRegistration.ActionCategory.CONSOLE,
-  title: i18nString(UIStrings.clearConsole),
+  title: i18nLazyString(UIStrings.clearConsole),
   iconClass: UI.ActionRegistration.IconClass.LARGEICON_CLEAR,
   async loadActionDelegate() {
     const Console = await loadConsoleModule();
@@ -194,7 +194,7 @@ UI.ActionRegistration.registerActionExtension({
 UI.ActionRegistration.registerActionExtension({
   actionId: 'console.clear.history',
   category: UI.ActionRegistration.ActionCategory.CONSOLE,
-  title: i18nString(UIStrings.clearConsoleHistory),
+  title: i18nLazyString(UIStrings.clearConsoleHistory),
   async loadActionDelegate() {
     const Console = await loadConsoleModule();
     return Console.ConsoleView.ActionDelegate.instance();
@@ -204,7 +204,7 @@ UI.ActionRegistration.registerActionExtension({
 UI.ActionRegistration.registerActionExtension({
   actionId: 'console.create-pin',
   category: UI.ActionRegistration.ActionCategory.CONSOLE,
-  title: i18nString(UIStrings.createLiveExpression),
+  title: i18nLazyString(UIStrings.createLiveExpression),
   iconClass: UI.ActionRegistration.IconClass.LARGEICON_VISIBILITY,
   async loadActionDelegate() {
     const Console = await loadConsoleModule();
@@ -214,43 +214,43 @@ UI.ActionRegistration.registerActionExtension({
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.CONSOLE,
-  title: i18nString(UIStrings.hideNetworkMessages),
+  title: i18nLazyString(UIStrings.hideNetworkMessages),
   settingName: 'hideNetworkMessages',
   settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: false,
   options: [
     {
       value: true,
-      title: i18nString(UIStrings.hideNetworkMessages),
+      title: i18nLazyString(UIStrings.hideNetworkMessages),
     },
     {
       value: false,
-      title: i18nString(UIStrings.showNetworkMessages),
+      title: i18nLazyString(UIStrings.showNetworkMessages),
     },
   ],
 });
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.CONSOLE,
-  title: i18nString(UIStrings.selectedContextOnly),
+  title: i18nLazyString(UIStrings.selectedContextOnly),
   settingName: 'selectedContextFilterEnabled',
   settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: false,
   options: [
     {
       value: true,
-      title: i18nString(UIStrings.onlyShowMessagesFromTheCurrent),
+      title: i18nLazyString(UIStrings.onlyShowMessagesFromTheCurrent),
     },
     {
       value: false,
-      title: i18nString(UIStrings.showMessagesFromAllContexts),
+      title: i18nLazyString(UIStrings.showMessagesFromAllContexts),
     },
   ],
 });
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.CONSOLE,
-  title: i18nString(UIStrings.logXmlhttprequests),
+  title: i18nLazyString(UIStrings.logXmlhttprequests),
   settingName: 'monitoringXHREnabled',
   settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: false,
@@ -258,90 +258,90 @@ Common.Settings.registerSettingExtension({
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.CONSOLE,
-  title: i18nString(UIStrings.showTimestamps),
+  title: i18nLazyString(UIStrings.showTimestamps),
   settingName: 'consoleTimestampsEnabled',
   settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: false,
   options: [
     {
       value: true,
-      title: i18nString(UIStrings.showTimestamps),
+      title: i18nLazyString(UIStrings.showTimestamps),
     },
     {
       value: false,
-      title: i18nString(UIStrings.hideTimestamps),
+      title: i18nLazyString(UIStrings.hideTimestamps),
     },
   ],
 });
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.CONSOLE,
-  title: i18nString(UIStrings.autocompleteFromHistory),
+  title: i18nLazyString(UIStrings.autocompleteFromHistory),
   settingName: 'consoleHistoryAutocomplete',
   settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: true,
   options: [
     {
       value: true,
-      title: i18nString(UIStrings.autocompleteFromHistory),
+      title: i18nLazyString(UIStrings.autocompleteFromHistory),
     },
     {
       value: false,
-      title: i18nString(UIStrings.doNotAutocompleteFromHistory),
+      title: i18nLazyString(UIStrings.doNotAutocompleteFromHistory),
     },
   ],
 });
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.CONSOLE,
-  title: i18nString(UIStrings.groupSimilarMessagesInConsole),
+  title: i18nLazyString(UIStrings.groupSimilarMessagesInConsole),
   settingName: 'consoleGroupSimilar',
   settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: true,
   options: [
     {
       value: true,
-      title: i18nString(UIStrings.groupSimilarMessagesInConsole),
+      title: i18nLazyString(UIStrings.groupSimilarMessagesInConsole),
     },
     {
       value: false,
-      title: i18nString(UIStrings.doNotGroupSimilarMessagesIn),
+      title: i18nLazyString(UIStrings.doNotGroupSimilarMessagesIn),
     },
   ],
 });
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.CONSOLE,
-  title: i18nString(UIStrings.eagerEvaluation),
+  title: i18nLazyString(UIStrings.eagerEvaluation),
   settingName: 'consoleEagerEval',
   settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: true,
   options: [
     {
       value: true,
-      title: i18nString(UIStrings.eagerlyEvaluateConsolePromptText),
+      title: i18nLazyString(UIStrings.eagerlyEvaluateConsolePromptText),
     },
     {
       value: false,
-      title: i18nString(UIStrings.doNotEagerlyEvaluateConsole),
+      title: i18nLazyString(UIStrings.doNotEagerlyEvaluateConsole),
     },
   ],
 });
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.CONSOLE,
-  title: i18nString(UIStrings.evaluateTriggersUserActivation),
+  title: i18nLazyString(UIStrings.evaluateTriggersUserActivation),
   settingName: 'consoleUserActivationEval',
   settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: true,
   options: [
     {
       value: true,
-      title: i18nString(UIStrings.treatEvaluationAsUserActivation),
+      title: i18nLazyString(UIStrings.treatEvaluationAsUserActivation),
     },
     {
       value: false,
-      title: i18nString(UIStrings.doNotTreatEvaluationAsUser),
+      title: i18nLazyString(UIStrings.doNotTreatEvaluationAsUser),
     },
   ],
 });

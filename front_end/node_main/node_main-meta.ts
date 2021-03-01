@@ -25,7 +25,7 @@ export const UIStrings = {
 };
 
 const str_ = i18n.i18n.registerUIStrings('node_main/node_main-meta.ts', UIStrings);
-const i18nString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
+const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 let loadedNodeMainModule: (typeof NodeMain|undefined);
 
@@ -41,12 +41,12 @@ async function loadNodeMainModule(): Promise<typeof NodeMain> {
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.PANEL,
   id: 'node-connection',
-  title: i18nString(UIStrings.connection),
-  commandPrompt: i18nString(UIStrings.showConnection),
+  title: i18nLazyString(UIStrings.connection),
+  commandPrompt: i18nLazyString(UIStrings.showConnection),
   order: 0,
   async loadView() {
     const NodeMain = await loadNodeMainModule();
     return NodeMain.NodeConnectionsPanel.NodeConnectionsPanel.instance();
   },
-  tags: [i18nString(UIStrings.node)],
+  tags: [i18nLazyString(UIStrings.node)],
 });

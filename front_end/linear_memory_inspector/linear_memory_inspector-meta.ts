@@ -20,7 +20,7 @@ const UIStrings = {
   showMemoryInspector: 'Show Memory Inspector',
 };
 const str_ = i18n.i18n.registerUIStrings('linear_memory_inspector/linear_memory_inspector-meta.ts', UIStrings);
-const i18nString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
+const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 let loadedLinearMemoryInspectorModule: (typeof LinearMemoryInspector|undefined);
 
@@ -34,8 +34,8 @@ async function loadLinearMemoryInspectorModule(): Promise<typeof LinearMemoryIns
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.DRAWER_VIEW,
   id: 'linear-memory-inspector',
-  title: i18nString(UIStrings.memoryInspector),
-  commandPrompt: i18nString(UIStrings.showMemoryInspector),
+  title: i18nLazyString(UIStrings.memoryInspector),
+  commandPrompt: i18nLazyString(UIStrings.showMemoryInspector),
   order: 100,
   persistence: UI.ViewManager.ViewPersistence.CLOSEABLE,
   async loadView() {

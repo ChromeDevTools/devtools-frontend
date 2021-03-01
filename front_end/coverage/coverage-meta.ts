@@ -32,7 +32,7 @@ const UIStrings = {
   startInstrumentingCoverageAnd: 'Start instrumenting coverage and reload page',
 };
 const str_ = i18n.i18n.registerUIStrings('coverage/coverage-meta.ts', UIStrings);
-const i18nString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
+const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 let loadedCoverageModule: (typeof Coverage|undefined);
 
@@ -48,8 +48,8 @@ async function loadCoverageModule(): Promise<typeof Coverage> {
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.DRAWER_VIEW,
   id: 'coverage',
-  title: i18nString(UIStrings.coverage),
-  commandPrompt: i18nString(UIStrings.showCoverage),
+  title: i18nLazyString(UIStrings.coverage),
+  commandPrompt: i18nLazyString(UIStrings.showCoverage),
   persistence: UI.ViewManager.ViewPersistence.CLOSEABLE,
   order: 100,
   async loadView() {
@@ -72,11 +72,11 @@ UI.ActionRegistration.registerActionExtension({
   options: [
     {
       value: true,
-      title: i18nString(UIStrings.instrumentCoverage),
+      title: i18nLazyString(UIStrings.instrumentCoverage),
     },
     {
       value: false,
-      title: i18nString(UIStrings.stopInstrumentingCoverageAndShow),
+      title: i18nLazyString(UIStrings.stopInstrumentingCoverageAndShow),
     },
   ],
 });
@@ -89,5 +89,5 @@ UI.ActionRegistration.registerActionExtension({
     return Coverage.CoverageView.ActionDelegate.instance();
   },
   category: UI.ActionRegistration.ActionCategory.PERFORMANCE,
-  title: i18nString(UIStrings.startInstrumentingCoverageAnd),
+  title: i18nLazyString(UIStrings.startInstrumentingCoverageAnd),
 });

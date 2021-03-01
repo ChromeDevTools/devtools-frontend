@@ -467,210 +467,227 @@ const UIStrings = {
   valueFromNativeHtmlUnknownSource: 'Value from native HTML (unknown source).',
 };
 const str_ = i18n.i18n.registerUIStrings('accessibility/AccessibilityStrings.ts', UIStrings);
-const i18nString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
+const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 export const AXAttributes = {
   'disabled': {
-    name: i18nString(UIStrings.disabled),
-    description: i18nString(UIStrings.ifTrueThisElementCurrentlyCannot),
+    name: i18nLazyString(UIStrings.disabled),
+    description: i18nLazyString(UIStrings.ifTrueThisElementCurrentlyCannot),
     group: 'AXGlobalStates',
   },
   'invalid': {
-    name: i18nString(UIStrings.invalidUserEntry),
-    description: i18nString(UIStrings.ifTrueThisElementsUserentered),
+    name: i18nLazyString(UIStrings.invalidUserEntry),
+    description: i18nLazyString(UIStrings.ifTrueThisElementsUserentered),
     group: 'AXGlobalStates',
   },
-  'editable': {name: i18nString(UIStrings.editable), description: i18nString(UIStrings.ifAndHowThisElementCanBeEdited)},
-  'focusable':
-      {name: i18nString(UIStrings.focusable), description: i18nString(UIStrings.ifTrueThisElementCanReceiveFocus)},
-  'focused': {name: i18nString(UIStrings.focused), description: i18nString(UIStrings.ifTrueThisElementCurrentlyHas)},
-  'settable':
-      {name: i18nString(UIStrings.canSetValue), description: i18nString(UIStrings.whetherTheValueOfThisElementCan)},
+  'editable':
+      {name: i18nLazyString(UIStrings.editable), description: i18nLazyString(UIStrings.ifAndHowThisElementCanBeEdited)},
+  'focusable': {
+    name: i18nLazyString(UIStrings.focusable),
+    description: i18nLazyString(UIStrings.ifTrueThisElementCanReceiveFocus),
+  },
+  'focused':
+      {name: i18nLazyString(UIStrings.focused), description: i18nLazyString(UIStrings.ifTrueThisElementCurrentlyHas)},
+  'settable': {
+    name: i18nLazyString(UIStrings.canSetValue),
+    description: i18nLazyString(UIStrings.whetherTheValueOfThisElementCan),
+  },
   'live': {
-    name: i18nString(UIStrings.liveRegion),
-    description: i18nString(UIStrings.whetherAndWhatPriorityOfLive),
+    name: i18nLazyString(UIStrings.liveRegion),
+    description: i18nLazyString(UIStrings.whetherAndWhatPriorityOfLive),
     group: 'AXLiveRegionAttributes',
   },
   'atomic': {
-    name: i18nString(UIStrings.atomicLiveRegions),
-    description: i18nString(UIStrings.ifThisElementMayReceiveLive),
+    name: i18nLazyString(UIStrings.atomicLiveRegions),
+    description: i18nLazyString(UIStrings.ifThisElementMayReceiveLive),
     group: 'AXLiveRegionAttributes',
   },
   'relevant': {
-    name: i18nString(UIStrings.relevantLiveRegions),
-    description: i18nString(UIStrings.ifThisElementMayReceiveLiveUpdates),
+    name: i18nLazyString(UIStrings.relevantLiveRegions),
+    description: i18nLazyString(UIStrings.ifThisElementMayReceiveLiveUpdates),
     group: 'AXLiveRegionAttributes',
   },
   'busy': {
-    name: i18nString(UIStrings.busyLiveRegions),
-    description: i18nString(UIStrings.whetherThisElementOrItsSubtree),
+    name: i18nLazyString(UIStrings.busyLiveRegions),
+    description: i18nLazyString(UIStrings.whetherThisElementOrItsSubtree),
     group: 'AXLiveRegionAttributes',
   },
   'root': {
-    name: i18nString(UIStrings.liveRegionRoot),
-    description: i18nString(UIStrings.ifThisElementMayReceiveLiveUpdatesThe),
+    name: i18nLazyString(UIStrings.liveRegionRoot),
+    description: i18nLazyString(UIStrings.ifThisElementMayReceiveLiveUpdatesThe),
     group: 'AXLiveRegionAttributes',
   },
   'autocomplete': {
-    name: i18nString(UIStrings.hasAutocomplete),
-    description: i18nString(UIStrings.whetherAndWhatTypeOfAutocomplete),
+    name: i18nLazyString(UIStrings.hasAutocomplete),
+    description: i18nLazyString(UIStrings.whetherAndWhatTypeOfAutocomplete),
     group: 'AXWidgetAttributes',
   },
   'haspopup': {
-    name: i18nString(UIStrings.hasPopup),
-    description: i18nString(UIStrings.whetherThisElementHasCausedSome),
+    name: i18nLazyString(UIStrings.hasPopup),
+    description: i18nLazyString(UIStrings.whetherThisElementHasCausedSome),
     group: 'AXWidgetAttributes',
   },
   'level': {
-    name: i18nString(UIStrings.level),
-    description: i18nString(UIStrings.theHierarchicalLevelOfThis),
+    name: i18nLazyString(UIStrings.level),
+    description: i18nLazyString(UIStrings.theHierarchicalLevelOfThis),
     group: 'AXWidgetAttributes',
   },
   'multiselectable': {
-    name: i18nString(UIStrings.multiselectable),
-    description: i18nString(UIStrings.whetherAUserMaySelectMoreThanOne),
+    name: i18nLazyString(UIStrings.multiselectable),
+    description: i18nLazyString(UIStrings.whetherAUserMaySelectMoreThanOne),
     group: 'AXWidgetAttributes',
   },
   'orientation': {
-    name: i18nString(UIStrings.orientation),
-    description: i18nString(UIStrings.whetherThisLinearElements),
+    name: i18nLazyString(UIStrings.orientation),
+    description: i18nLazyString(UIStrings.whetherThisLinearElements),
     group: 'AXWidgetAttributes',
   },
   'multiline': {
-    name: i18nString(UIStrings.multiline),
-    description: i18nString(UIStrings.whetherThisTextBoxMayHaveMore),
+    name: i18nLazyString(UIStrings.multiline),
+    description: i18nLazyString(UIStrings.whetherThisTextBoxMayHaveMore),
     group: 'AXWidgetAttributes',
   },
   'readonly': {
-    name: i18nString(UIStrings.readonlyString),
-    description: i18nString(UIStrings.ifTrueThisElementMayBeInteracted),
+    name: i18nLazyString(UIStrings.readonlyString),
+    description: i18nLazyString(UIStrings.ifTrueThisElementMayBeInteracted),
     group: 'AXWidgetAttributes',
   },
   'required': {
-    name: i18nString(UIStrings.requiredString),
-    description: i18nString(UIStrings.whetherThisElementIsARequired),
+    name: i18nLazyString(UIStrings.requiredString),
+    description: i18nLazyString(UIStrings.whetherThisElementIsARequired),
     group: 'AXWidgetAttributes',
   },
   'valuemin': {
-    name: i18nString(UIStrings.minimumValue),
-    description: i18nString(UIStrings.forARangeWidgetTheMinimumAllowed),
+    name: i18nLazyString(UIStrings.minimumValue),
+    description: i18nLazyString(UIStrings.forARangeWidgetTheMinimumAllowed),
     group: 'AXWidgetAttributes',
   },
   'valuemax': {
-    name: i18nString(UIStrings.maximumValue),
-    description: i18nString(UIStrings.forARangeWidgetTheMaximumAllowed),
+    name: i18nLazyString(UIStrings.maximumValue),
+    description: i18nLazyString(UIStrings.forARangeWidgetTheMaximumAllowed),
     group: 'AXWidgetAttributes',
   },
   'valuetext': {
-    name: i18nString(UIStrings.valueDescription),
-    description: i18nString(UIStrings.aHumanreadableVersionOfTheValue),
+    name: i18nLazyString(UIStrings.valueDescription),
+    description: i18nLazyString(UIStrings.aHumanreadableVersionOfTheValue),
     group: 'AXWidgetAttributes',
   },
   'checked': {
-    name: i18nString(UIStrings.checked),
-    description: i18nString(UIStrings.whetherThisCheckboxRadioButtonOr),
+    name: i18nLazyString(UIStrings.checked),
+    description: i18nLazyString(UIStrings.whetherThisCheckboxRadioButtonOr),
     group: 'AXWidgetStates',
   },
   'expanded': {
-    name: i18nString(UIStrings.expanded),
-    description: i18nString(UIStrings.whetherThisElementOrAnother),
+    name: i18nLazyString(UIStrings.expanded),
+    description: i18nLazyString(UIStrings.whetherThisElementOrAnother),
     group: 'AXWidgetStates',
   },
   'pressed': {
-    name: i18nString(UIStrings.pressed),
-    description: i18nString(UIStrings.whetherThisToggleButtonIs),
+    name: i18nLazyString(UIStrings.pressed),
+    description: i18nLazyString(UIStrings.whetherThisToggleButtonIs),
     group: 'AXWidgetStates',
   },
   'selected': {
-    name: i18nString(UIStrings.selectedString),
-    description: i18nString(UIStrings.whetherTheOptionRepresentedBy),
+    name: i18nLazyString(UIStrings.selectedString),
+    description: i18nLazyString(UIStrings.whetherTheOptionRepresentedBy),
     group: 'AXWidgetStates',
   },
   'activedescendant': {
-    name: i18nString(UIStrings.activeDescendant),
-    description: i18nString(UIStrings.theDescendantOfThisElementWhich),
+    name: i18nLazyString(UIStrings.activeDescendant),
+    description: i18nLazyString(UIStrings.theDescendantOfThisElementWhich),
     group: 'AXRelationshipAttributes',
   },
   'flowto': {
-    name: i18nString(UIStrings.flowsTo),
-    description: i18nString(UIStrings.elementToWhichTheUserMayChooseTo),
+    name: i18nLazyString(UIStrings.flowsTo),
+    description: i18nLazyString(UIStrings.elementToWhichTheUserMayChooseTo),
     group: 'AXRelationshipAttributes',
   },
   'controls': {
-    name: i18nString(UIStrings.controls),
-    description: i18nString(UIStrings.elementOrElementsWhoseContentOr),
+    name: i18nLazyString(UIStrings.controls),
+    description: i18nLazyString(UIStrings.elementOrElementsWhoseContentOr),
     group: 'AXRelationshipAttributes',
   },
   'describedby': {
-    name: i18nString(UIStrings.describedBy),
-    description: i18nString(UIStrings.elementOrElementsWhichFormThe),
+    name: i18nLazyString(UIStrings.describedBy),
+    description: i18nLazyString(UIStrings.elementOrElementsWhichFormThe),
     group: 'AXRelationshipAttributes',
   },
   'labelledby': {
-    name: i18nString(UIStrings.labeledBy),
-    description: i18nString(UIStrings.elementOrElementsWhichMayFormThe),
+    name: i18nLazyString(UIStrings.labeledBy),
+    description: i18nLazyString(UIStrings.elementOrElementsWhichMayFormThe),
     group: 'AXRelationshipAttributes',
   },
   'owns': {
-    name: i18nString(UIStrings.ownsText),
-    description: i18nString(UIStrings.elementOrElementsWhichShouldBe),
+    name: i18nLazyString(UIStrings.ownsText),
+    description: i18nLazyString(UIStrings.elementOrElementsWhichShouldBe),
     group: 'AXRelationshipAttributes',
   },
   'name': {
-    name: i18nString(UIStrings.nameString),
-    description: i18nString(UIStrings.theComputedNameOfThisElement),
+    name: i18nLazyString(UIStrings.nameString),
+    description: i18nLazyString(UIStrings.theComputedNameOfThisElement),
     group: 'Default',
   },
   'role': {
-    name: i18nString(UIStrings.role),
-    description: i18nString(UIStrings.indicatesThePurposeOfThisElement),
+    name: i18nLazyString(UIStrings.role),
+    description: i18nLazyString(UIStrings.indicatesThePurposeOfThisElement),
     group: 'Default',
   },
   'value': {
-    name: i18nString(UIStrings.value),
-    description: i18nString(UIStrings.theValueOfThisElementThisMayBe),
+    name: i18nLazyString(UIStrings.value),
+    description: i18nLazyString(UIStrings.theValueOfThisElementThisMayBe),
     group: 'Default',
   },
   'help': {
-    name: i18nString(UIStrings.help),
-    description: i18nString(UIStrings.theComputedHelpTextForThis),
+    name: i18nLazyString(UIStrings.help),
+    description: i18nLazyString(UIStrings.theComputedHelpTextForThis),
     group: 'Default',
   },
   'description': {
-    name: i18nString(UIStrings.description),
-    description: i18nString(UIStrings.theAccessibleDescriptionForThis),
+    name: i18nLazyString(UIStrings.description),
+    description: i18nLazyString(UIStrings.theAccessibleDescriptionForThis),
     group: 'Default',
   },
 };
 
 export const AXSourceTypes = {
-  'attribute': {name: i18nString(UIStrings.fromAttribute), description: i18nString(UIStrings.valueFromAttribute)},
+  'attribute':
+      {name: i18nLazyString(UIStrings.fromAttribute), description: i18nLazyString(UIStrings.valueFromAttribute)},
   'implicit': {
-    name: i18nString(UIStrings.implicit),
-    description: i18nString(UIStrings.implicitValue),
+    name: i18nLazyString(UIStrings.implicit),
+    description: i18nLazyString(UIStrings.implicitValue),
   },
-  'style': {name: i18nString(UIStrings.fromStyle), description: i18nString(UIStrings.valueFromStyle)},
-  'contents': {name: i18nString(UIStrings.contents), description: i18nString(UIStrings.valueFromElementContents)},
+  'style': {name: i18nLazyString(UIStrings.fromStyle), description: i18nLazyString(UIStrings.valueFromStyle)},
+  'contents':
+      {name: i18nLazyString(UIStrings.contents), description: i18nLazyString(UIStrings.valueFromElementContents)},
   'placeholder': {
-    name: i18nString(UIStrings.fromPlaceholderAttribute),
-    description: i18nString(UIStrings.valueFromPlaceholderAttribute),
+    name: i18nLazyString(UIStrings.fromPlaceholderAttribute),
+    description: i18nLazyString(UIStrings.valueFromPlaceholderAttribute),
   },
   'relatedElement':
-      {name: i18nString(UIStrings.relatedElement), description: i18nString(UIStrings.valueFromRelatedElement)},
+      {name: i18nLazyString(UIStrings.relatedElement), description: i18nLazyString(UIStrings.valueFromRelatedElement)},
 };
 
 export const AXNativeSourceTypes = {
   'figcaption':
-      {name: i18nString(UIStrings.fromCaption), description: i18nString(UIStrings.valueFromFigcaptionElement)},
-  'label': {name: i18nString(UIStrings.fromLabel), description: i18nString(UIStrings.valueFromLabelElement)},
-  'labelfor':
-      {name: i18nString(UIStrings.fromLabelFor), description: i18nString(UIStrings.valueFromLabelElementWithFor)},
-  'labelwrapped':
-      {name: i18nString(UIStrings.fromLabelWrapped), description: i18nString(UIStrings.valueFromLabelElementWrapped)},
-  'legend': {name: i18nString(UIStrings.fromLegend), description: i18nString(UIStrings.valueFromLegendElement)},
-  'rubyannotation':
-      {name: i18nString(UIStrings.fromRubyAnnotation), description: i18nString(UIStrings.valueFromNativeHtmlRuby)},
-  'tablecaption': {name: i18nString(UIStrings.fromCaption), description: i18nString(UIStrings.valueFromTableCaption)},
-  'title': {name: i18nString(UIStrings.fromTitle), description: i18nString(UIStrings.valueFromTitleAttribute)},
-  'other':
-      {name: i18nString(UIStrings.fromNativeHtml), description: i18nString(UIStrings.valueFromNativeHtmlUnknownSource)},
+      {name: i18nLazyString(UIStrings.fromCaption), description: i18nLazyString(UIStrings.valueFromFigcaptionElement)},
+  'label': {name: i18nLazyString(UIStrings.fromLabel), description: i18nLazyString(UIStrings.valueFromLabelElement)},
+  'labelfor': {
+    name: i18nLazyString(UIStrings.fromLabelFor),
+    description: i18nLazyString(UIStrings.valueFromLabelElementWithFor),
+  },
+  'labelwrapped': {
+    name: i18nLazyString(UIStrings.fromLabelWrapped),
+    description: i18nLazyString(UIStrings.valueFromLabelElementWrapped),
+  },
+  'legend': {name: i18nLazyString(UIStrings.fromLegend), description: i18nLazyString(UIStrings.valueFromLegendElement)},
+  'rubyannotation': {
+    name: i18nLazyString(UIStrings.fromRubyAnnotation),
+    description: i18nLazyString(UIStrings.valueFromNativeHtmlRuby),
+  },
+  'tablecaption':
+      {name: i18nLazyString(UIStrings.fromCaption), description: i18nLazyString(UIStrings.valueFromTableCaption)},
+  'title': {name: i18nLazyString(UIStrings.fromTitle), description: i18nLazyString(UIStrings.valueFromTitleAttribute)},
+  'other': {
+    name: i18nLazyString(UIStrings.fromNativeHtml),
+    description: i18nLazyString(UIStrings.valueFromNativeHtmlUnknownSource),
+  },
 };

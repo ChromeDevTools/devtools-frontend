@@ -78,7 +78,7 @@ const UIStrings = {
   showContentScripts: 'Show Content scripts',
 };
 const str_ = i18n.i18n.registerUIStrings('browser_debugger/browser_debugger-meta.ts', UIStrings);
-const i18nString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
+const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 let loadedBrowserDebuggerModule: (typeof BrowserDebugger|undefined);
 
 async function loadBrowserDebuggerModule(): Promise<typeof BrowserDebugger> {
@@ -113,8 +113,8 @@ UI.ViewManager.registerViewExtension({
   },
   id: 'sources.eventListenerBreakpoints',
   location: UI.ViewManager.ViewLocationValues.SOURCES_SIDEBAR_BOTTOM,
-  commandPrompt: i18nString(UIStrings.showEventListenerBreakpoints),
-  title: i18nString(UIStrings.eventListenerBreakpoints),
+  commandPrompt: i18nLazyString(UIStrings.showEventListenerBreakpoints),
+  title: i18nLazyString(UIStrings.eventListenerBreakpoints),
   order: 9,
   persistence: UI.ViewManager.ViewPersistence.PERMANENT,
 });
@@ -126,8 +126,8 @@ UI.ViewManager.registerViewExtension({
   },
   id: 'sources.cspViolationBreakpoints',
   location: UI.ViewManager.ViewLocationValues.SOURCES_SIDEBAR_BOTTOM,
-  commandPrompt: i18nString(UIStrings.showCspViolationBreakpoints),
-  title: i18nString(UIStrings.cspViolationBreakpoints),
+  commandPrompt: i18nLazyString(UIStrings.showCspViolationBreakpoints),
+  title: i18nLazyString(UIStrings.cspViolationBreakpoints),
   order: 10,
   persistence: UI.ViewManager.ViewPersistence.PERMANENT,
 });
@@ -139,8 +139,8 @@ UI.ViewManager.registerViewExtension({
   },
   id: 'sources.xhrBreakpoints',
   location: UI.ViewManager.ViewLocationValues.SOURCES_SIDEBAR_BOTTOM,
-  commandPrompt: i18nString(UIStrings.showXhrfetchBreakpoints),
-  title: i18nString(UIStrings.xhrfetchBreakpoints),
+  commandPrompt: i18nLazyString(UIStrings.showXhrfetchBreakpoints),
+  title: i18nLazyString(UIStrings.xhrfetchBreakpoints),
   order: 5,
   persistence: UI.ViewManager.ViewPersistence.PERMANENT,
   hasToolbar: true,
@@ -153,8 +153,8 @@ UI.ViewManager.registerViewExtension({
   },
   id: 'sources.domBreakpoints',
   location: UI.ViewManager.ViewLocationValues.SOURCES_SIDEBAR_BOTTOM,
-  commandPrompt: i18nString(UIStrings.showDomBreakpoints),
-  title: i18nString(UIStrings.domBreakpoints),
+  commandPrompt: i18nLazyString(UIStrings.showDomBreakpoints),
+  title: i18nLazyString(UIStrings.domBreakpoints),
   order: 7,
   persistence: UI.ViewManager.ViewPersistence.PERMANENT,
 });
@@ -166,8 +166,8 @@ UI.ViewManager.registerViewExtension({
   },
   id: 'sources.globalListeners',
   location: UI.ViewManager.ViewLocationValues.SOURCES_SIDEBAR_BOTTOM,
-  commandPrompt: i18nString(UIStrings.showGlobalListeners),
-  title: i18nString(UIStrings.globalListeners),
+  commandPrompt: i18nLazyString(UIStrings.showGlobalListeners),
+  title: i18nLazyString(UIStrings.globalListeners),
   order: 8,
   persistence: UI.ViewManager.ViewPersistence.PERMANENT,
   hasToolbar: true,
@@ -180,8 +180,8 @@ UI.ViewManager.registerViewExtension({
   },
   id: 'elements.domBreakpoints',
   location: UI.ViewManager.ViewLocationValues.ELEMENTS_SIDEBAR,
-  commandPrompt: i18nString(UIStrings.showDomBreakpoints),
-  title: i18nString(UIStrings.domBreakpoints),
+  commandPrompt: i18nLazyString(UIStrings.showDomBreakpoints),
+  title: i18nLazyString(UIStrings.domBreakpoints),
   order: 6,
   persistence: UI.ViewManager.ViewPersistence.PERMANENT,
 });
@@ -190,8 +190,8 @@ UI.ViewManager.registerViewExtension({
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.NAVIGATOR_VIEW,
   id: 'navigator-network',
-  title: i18nString(UIStrings.page),
-  commandPrompt: i18nString(UIStrings.showPage),
+  title: i18nLazyString(UIStrings.page),
+  commandPrompt: i18nLazyString(UIStrings.showPage),
   order: 2,
   persistence: UI.ViewManager.ViewPersistence.PERMANENT,
   async loadView() {
@@ -203,8 +203,8 @@ UI.ViewManager.registerViewExtension({
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.NAVIGATOR_VIEW,
   id: 'navigator-overrides',
-  title: i18nString(UIStrings.overrides),
-  commandPrompt: i18nString(UIStrings.showOverrides),
+  title: i18nLazyString(UIStrings.overrides),
+  commandPrompt: i18nLazyString(UIStrings.showOverrides),
   order: 4,
   persistence: UI.ViewManager.ViewPersistence.PERMANENT,
   async loadView() {
@@ -216,8 +216,8 @@ UI.ViewManager.registerViewExtension({
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.NAVIGATOR_VIEW,
   id: 'navigator-contentScripts',
-  title: i18nString(UIStrings.contentScripts),
-  commandPrompt: i18nString(UIStrings.showContentScripts),
+  title: i18nLazyString(UIStrings.contentScripts),
+  commandPrompt: i18nLazyString(UIStrings.showContentScripts),
   order: 5,
   persistence: UI.ViewManager.ViewPersistence.PERMANENT,
   async loadView() {

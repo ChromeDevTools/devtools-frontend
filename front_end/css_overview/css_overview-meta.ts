@@ -21,7 +21,7 @@ const UIStrings = {
 };
 
 const str_ = i18n.i18n.registerUIStrings('css_overview/css_overview-meta.ts', UIStrings);
-const i18nString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
+const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 let loadedCSSOverviewModule: (typeof CSSOverview|undefined);
 
@@ -37,8 +37,8 @@ async function loadCSSOverviewModule(): Promise<typeof CSSOverview> {
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.PANEL,
   id: 'cssoverview',
-  commandPrompt: i18nString(UIStrings.showCssOverview),
-  title: i18nString(UIStrings.cssOverview),
+  commandPrompt: i18nLazyString(UIStrings.showCssOverview),
+  title: i18nLazyString(UIStrings.cssOverview),
   order: 95,
   async loadView() {
     const CSSOverview = await loadCSSOverviewModule();

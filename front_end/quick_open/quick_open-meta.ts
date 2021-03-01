@@ -17,7 +17,7 @@ export const UIStrings = {
   runCommand: 'Run command',
 };
 const str_ = i18n.i18n.registerUIStrings('quick_open/quick_open-meta.ts', UIStrings);
-const i18nString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
+const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 // eslint-disable-next-line rulesdir/es_modules_import
 import type * as QuickOpen from './quick_open.js';
@@ -36,7 +36,7 @@ async function loadQuickOpenModule(): Promise<typeof QuickOpen> {
 UI.ActionRegistration.registerActionExtension({
   actionId: 'commandMenu.show',
   category: UI.ActionRegistration.ActionCategory.GLOBAL,
-  title: i18nString(UIStrings.runCommand),
+  title: i18nLazyString(UIStrings.runCommand),
   async loadActionDelegate() {
     const QuickOpen = await loadQuickOpenModule();
     return QuickOpen.CommandMenu.ShowActionDelegate.instance();
@@ -70,7 +70,7 @@ UI.ActionRegistration.registerActionExtension({
 UI.ActionRegistration.registerActionExtension({
   actionId: 'quickOpen.show',
   category: UI.ActionRegistration.ActionCategory.GLOBAL,
-  title: i18nString(UIStrings.openFile),
+  title: i18nLazyString(UIStrings.openFile),
   async loadActionDelegate() {
     const QuickOpen = await loadQuickOpenModule();
     return QuickOpen.QuickOpen.ShowActionDelegate.instance();

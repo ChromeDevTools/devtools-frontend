@@ -44,13 +44,13 @@ const UIStrings = {
   panOrRotateRight: 'Pan or rotate right',
 };
 const str_ = i18n.i18n.registerUIStrings('layer_viewer/layer_viewer-meta.ts', UIStrings);
-const i18nString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
+const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 
 UI.ActionRegistration.registerActionExtension({
   actionId: 'layers.reset-view',
   category: UI.ActionRegistration.ActionCategory.LAYERS,
-  title: i18nString(UIStrings.resetView),
+  title: i18nLazyString(UIStrings.resetView),
   bindings: [
     {
       shortcut: '0',
@@ -61,7 +61,7 @@ UI.ActionRegistration.registerActionExtension({
 UI.ActionRegistration.registerActionExtension({
   actionId: 'layers.pan-mode',
   category: UI.ActionRegistration.ActionCategory.LAYERS,
-  title: i18nString(UIStrings.switchToPanMode),
+  title: i18nLazyString(UIStrings.switchToPanMode),
   bindings: [
     {
       shortcut: 'x',
@@ -72,7 +72,7 @@ UI.ActionRegistration.registerActionExtension({
 UI.ActionRegistration.registerActionExtension({
   actionId: 'layers.rotate-mode',
   category: UI.ActionRegistration.ActionCategory.LAYERS,
-  title: i18nString(UIStrings.switchToRotateMode),
+  title: i18nLazyString(UIStrings.switchToRotateMode),
   bindings: [
     {
       shortcut: 'v',
@@ -83,7 +83,7 @@ UI.ActionRegistration.registerActionExtension({
 UI.ActionRegistration.registerActionExtension({
   actionId: 'layers.zoom-in',
   category: UI.ActionRegistration.ActionCategory.LAYERS,
-  title: i18nString(UIStrings.zoomIn),
+  title: i18nLazyString(UIStrings.zoomIn),
   bindings: [
     {
       shortcut: 'Shift+Plus',
@@ -97,7 +97,7 @@ UI.ActionRegistration.registerActionExtension({
 UI.ActionRegistration.registerActionExtension({
   actionId: 'layers.zoom-out',
   category: UI.ActionRegistration.ActionCategory.LAYERS,
-  title: i18nString(UIStrings.zoomOut),
+  title: i18nLazyString(UIStrings.zoomOut),
   bindings: [
     {
       shortcut: 'Shift+Minus',
@@ -111,7 +111,7 @@ UI.ActionRegistration.registerActionExtension({
 UI.ActionRegistration.registerActionExtension({
   actionId: 'layers.up',
   category: UI.ActionRegistration.ActionCategory.LAYERS,
-  title: i18nString(UIStrings.panOrRotateUp),
+  title: i18nLazyString(UIStrings.panOrRotateUp),
   bindings: [
     {
       shortcut: 'Up',
@@ -125,7 +125,7 @@ UI.ActionRegistration.registerActionExtension({
 UI.ActionRegistration.registerActionExtension({
   actionId: 'layers.down',
   category: UI.ActionRegistration.ActionCategory.LAYERS,
-  title: i18nString(UIStrings.panOrRotateDown),
+  title: i18nLazyString(UIStrings.panOrRotateDown),
   bindings: [
     {
       shortcut: 'Down',
@@ -139,7 +139,7 @@ UI.ActionRegistration.registerActionExtension({
 UI.ActionRegistration.registerActionExtension({
   actionId: 'layers.left',
   category: UI.ActionRegistration.ActionCategory.LAYERS,
-  title: i18nString(UIStrings.panOrRotateLeft),
+  title: i18nLazyString(UIStrings.panOrRotateLeft),
   bindings: [
     {
       shortcut: 'Left',
@@ -153,7 +153,7 @@ UI.ActionRegistration.registerActionExtension({
 UI.ActionRegistration.registerActionExtension({
   actionId: 'layers.right',
   category: UI.ActionRegistration.ActionCategory.LAYERS,
-  title: i18nString(UIStrings.panOrRotateRight),
+  title: i18nLazyString(UIStrings.panOrRotateRight),
   bindings: [
     {
       shortcut: 'Right',

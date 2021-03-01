@@ -24,7 +24,7 @@ const UIStrings = {
   showMedia: 'Show Media',
 };
 const str_ = i18n.i18n.registerUIStrings('media/media-meta.ts', UIStrings);
-const i18nString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
+const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 let loadedMediaModule: (typeof Media|undefined);
 
@@ -40,8 +40,8 @@ async function loadMediaModule(): Promise<typeof Media> {
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.PANEL,
   id: 'medias',
-  title: i18nString(UIStrings.media),
-  commandPrompt: i18nString(UIStrings.showMedia),
+  title: i18nLazyString(UIStrings.media),
+  commandPrompt: i18nLazyString(UIStrings.showMedia),
   persistence: UI.ViewManager.ViewPersistence.CLOSEABLE,
   order: 100,
   async loadView() {
@@ -49,7 +49,7 @@ UI.ViewManager.registerViewExtension({
     return Media.MainView.MainView.instance();
   },
   tags: [
-    i18nString(UIStrings.media),
-    i18nString(UIStrings.video),
+    i18nLazyString(UIStrings.media),
+    i18nLazyString(UIStrings.video),
   ],
 });

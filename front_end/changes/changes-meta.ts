@@ -24,7 +24,7 @@ const UIStrings = {
   showChanges: 'Show Changes',
 };
 const str_ = i18n.i18n.registerUIStrings('changes/changes-meta.ts', UIStrings);
-const i18nString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
+const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 async function loadChangesModule(): Promise<typeof Changes> {
   if (!loadedChangesModule) {
@@ -38,8 +38,8 @@ async function loadChangesModule(): Promise<typeof Changes> {
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.DRAWER_VIEW,
   id: 'changes.changes',
-  title: i18nString(UIStrings.changes),
-  commandPrompt: i18nString(UIStrings.showChanges),
+  title: i18nLazyString(UIStrings.changes),
+  commandPrompt: i18nLazyString(UIStrings.showChanges),
   persistence: UI.ViewManager.ViewPersistence.CLOSEABLE,
   async loadView() {
     const Changes = await loadChangesModule();

@@ -22,7 +22,7 @@ const UIStrings = {
   shoAccessibility: 'Show Accessibility',
 };
 const str_ = i18n.i18n.registerUIStrings('accessibility/accessibility-meta.ts', UIStrings);
-const i18nString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
+const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 async function loadAccessibilityModule(): Promise<typeof Accessibility> {
   if (!loadedAccessibilityModule) {
@@ -36,8 +36,8 @@ async function loadAccessibilityModule(): Promise<typeof Accessibility> {
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.ELEMENTS_SIDEBAR,
   id: 'accessibility.view',
-  title: i18nString(UIStrings.accessibility),
-  commandPrompt: i18nString(UIStrings.shoAccessibility),
+  title: i18nLazyString(UIStrings.accessibility),
+  commandPrompt: i18nLazyString(UIStrings.shoAccessibility),
   order: 10,
   persistence: UI.ViewManager.ViewPersistence.PERMANENT,
   async loadView() {

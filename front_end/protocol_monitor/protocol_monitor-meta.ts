@@ -20,7 +20,7 @@ export const UIStrings = {
   showProtocolMonitor: 'Show Protocol monitor',
 };
 const str_ = i18n.i18n.registerUIStrings('protocol_monitor/protocol_monitor-meta.ts', UIStrings);
-const i18nString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
+const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 let loadedProtocolMonitorModule: (typeof ProtocolMonitor|undefined);
 
@@ -36,8 +36,8 @@ async function loadProtocolMonitorModule(): Promise<typeof ProtocolMonitor> {
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.DRAWER_VIEW,
   id: 'protocol-monitor',
-  title: i18nString(UIStrings.protocolMonitor),
-  commandPrompt: i18nString(UIStrings.showProtocolMonitor),
+  title: i18nLazyString(UIStrings.protocolMonitor),
+  commandPrompt: i18nLazyString(UIStrings.showProtocolMonitor),
   order: 100,
   persistence: UI.ViewManager.ViewPersistence.CLOSEABLE,
   async loadView() {

@@ -21,7 +21,7 @@ export const UIStrings = {
 };
 
 const str_ = i18n.i18n.registerUIStrings('node_debugger/node_debugger-meta.ts', UIStrings);
-const i18nString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
+const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 let loadedSourcesModule: (typeof Sources|undefined);
 
@@ -37,8 +37,8 @@ async function loadHelpModule(): Promise<typeof Sources> {
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.NAVIGATOR_VIEW,
   id: 'navigator-network',
-  title: i18nString(UIStrings.node),
-  commandPrompt: i18nString(UIStrings.showNode),
+  title: i18nLazyString(UIStrings.node),
+  commandPrompt: i18nLazyString(UIStrings.showNode),
   order: 2,
   persistence: UI.ViewManager.ViewPersistence.PERMANENT,
   async loadView() {

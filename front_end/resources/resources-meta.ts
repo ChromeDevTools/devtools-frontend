@@ -42,7 +42,7 @@ export const UIStrings = {
   stopRecordingEvents: 'Stop recording events',
 };
 const str_ = i18n.i18n.registerUIStrings('resources/resources-meta.ts', UIStrings);
-const i18nString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
+const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 let loadedResourcesModule: (typeof Resources|undefined);
 
 async function loadResourcesModule(): Promise<typeof Resources> {
@@ -64,20 +64,20 @@ function maybeRetrieveContextTypes<T = unknown>(getClassCallBack: (elementsModul
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.PANEL,
   id: 'resources',
-  title: i18nString(UIStrings.application),
-  commandPrompt: i18nString(UIStrings.showApplication),
+  title: i18nLazyString(UIStrings.application),
+  commandPrompt: i18nLazyString(UIStrings.showApplication),
   order: 70,
   async loadView() {
     const Resources = await loadResourcesModule();
     return Resources.ResourcesPanel.ResourcesPanel.instance();
   },
-  tags: [i18nString(UIStrings.pwa)],
+  tags: [i18nLazyString(UIStrings.pwa)],
 });
 
 UI.ActionRegistration.registerActionExtension({
   category: UI.ActionRegistration.ActionCategory.RESOURCES,
   actionId: 'resources.clear',
-  title: i18nString(UIStrings.clearSiteData),
+  title: i18nLazyString(UIStrings.clearSiteData),
   async loadActionDelegate() {
     const Resources = await loadResourcesModule();
     return Resources.StorageView.ActionDelegate.instance();
@@ -87,7 +87,7 @@ UI.ActionRegistration.registerActionExtension({
 UI.ActionRegistration.registerActionExtension({
   category: UI.ActionRegistration.ActionCategory.RESOURCES,
   actionId: 'resources.clear-incl-third-party-cookies',
-  title: i18nString(UIStrings.clearSiteDataIncludingThirdparty),
+  title: i18nLazyString(UIStrings.clearSiteDataIncludingThirdparty),
   async loadActionDelegate() {
     const Resources = await loadResourcesModule();
     return Resources.StorageView.ActionDelegate.instance();
@@ -112,11 +112,11 @@ UI.ActionRegistration.registerActionExtension({
   options: [
     {
       value: true,
-      title: i18nString(UIStrings.startRecordingEvents),
+      title: i18nLazyString(UIStrings.startRecordingEvents),
     },
     {
       value: false,
-      title: i18nString(UIStrings.stopRecordingEvents),
+      title: i18nLazyString(UIStrings.stopRecordingEvents),
     },
   ],
   bindings: [

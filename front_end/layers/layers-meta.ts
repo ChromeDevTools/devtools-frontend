@@ -20,7 +20,7 @@ const UIStrings = {
   showLayers: 'Show Layers',
 };
 const str_ = i18n.i18n.registerUIStrings('layers/layers-meta.ts', UIStrings);
-const i18nString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
+const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 let loadedLayersModule: (typeof Layers|undefined);
 
@@ -36,8 +36,8 @@ async function loadLayersModule(): Promise<typeof Layers> {
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.PANEL,
   id: 'layers',
-  title: i18nString(UIStrings.layers),
-  commandPrompt: i18nString(UIStrings.showLayers),
+  title: i18nLazyString(UIStrings.layers),
+  commandPrompt: i18nLazyString(UIStrings.showLayers),
   order: 100,
   persistence: UI.ViewManager.ViewPersistence.CLOSEABLE,
   async loadView() {

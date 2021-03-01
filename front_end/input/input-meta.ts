@@ -40,7 +40,7 @@ const UIStrings = {
   stopRecording: 'Stop recording',
 };
 const str_ = i18n.i18n.registerUIStrings('input/input-meta.ts', UIStrings);
-const i18nString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
+const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 let loadedInputModule: (typeof Input|undefined);
 
@@ -56,8 +56,8 @@ async function loadInputModule(): Promise<typeof Input> {
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.DRAWER_VIEW,
   id: 'Inputs',
-  title: i18nString(UIStrings.inputs),
-  commandPrompt: i18nString(UIStrings.showInputs),
+  title: i18nLazyString(UIStrings.inputs),
+  commandPrompt: i18nLazyString(UIStrings.showInputs),
   persistence: UI.ViewManager.ViewPersistence.CLOSEABLE,
   order: 7,
   async loadView() {
@@ -82,11 +82,11 @@ UI.ActionRegistration.registerActionExtension({
   options: [
     {
       value: true,
-      title: i18nString(UIStrings.startRecording),
+      title: i18nLazyString(UIStrings.startRecording),
     },
     {
       value: false,
-      title: i18nString(UIStrings.stopRecording),
+      title: i18nLazyString(UIStrings.stopRecording),
     },
   ],
 });
@@ -104,7 +104,7 @@ UI.ActionRegistration.registerActionExtension({
   options: [
     {
       value: true,
-      title: i18nString(UIStrings.startReplaying),
+      title: i18nLazyString(UIStrings.startReplaying),
     },
   ],
 });
@@ -123,11 +123,11 @@ UI.ActionRegistration.registerActionExtension({
   options: [
     {
       value: true,
-      title: i18nString(UIStrings.pause),
+      title: i18nLazyString(UIStrings.pause),
     },
     {
       value: false,
-      title: i18nString(UIStrings.resume),
+      title: i18nLazyString(UIStrings.resume),
     },
   ],
 });

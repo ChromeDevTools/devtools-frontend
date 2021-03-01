@@ -20,7 +20,7 @@ export const UIStrings = {
   showWebauthn: 'Show WebAuthn',
 };
 const str_ = i18n.i18n.registerUIStrings('webauthn/webauthn-meta.ts', UIStrings);
-const i18nString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
+const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 let loadedWebauthnModule: (typeof Webauthn|undefined);
 
@@ -36,8 +36,8 @@ async function loadWebauthnModule(): Promise<typeof Webauthn> {
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.DRAWER_VIEW,
   id: 'webauthn-pane',
-  title: i18nString(UIStrings.webauthn),
-  commandPrompt: i18nString(UIStrings.showWebauthn),
+  title: i18nLazyString(UIStrings.webauthn),
+  commandPrompt: i18nLazyString(UIStrings.showWebauthn),
   order: 100,
   persistence: UI.ViewManager.ViewPersistence.CLOSEABLE,
   async loadView() {

@@ -20,7 +20,7 @@ const UIStrings = {
   showProfiler: 'Show Profiler',
 };
 const str_ = i18n.i18n.registerUIStrings('js_profiler/js_profiler-meta.ts', UIStrings);
-const i18nString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
+const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 let loadedProfilerModule: (typeof Profiler|undefined);
 
@@ -36,8 +36,8 @@ async function loadProfilerModule(): Promise<typeof Profiler> {
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.PANEL,
   id: 'js_profiler',
-  title: i18nString(UIStrings.profiler),
-  commandPrompt: i18nString(UIStrings.showProfiler),
+  title: i18nLazyString(UIStrings.profiler),
+  commandPrompt: i18nLazyString(UIStrings.showProfiler),
   order: 65,
   async loadView() {
     const Profiler = await loadProfilerModule();

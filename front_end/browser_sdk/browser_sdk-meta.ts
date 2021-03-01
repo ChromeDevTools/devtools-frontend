@@ -47,34 +47,34 @@ const UIStrings = {
   recordNetworkLog: 'Record network log',
 };
 const str_ = i18n.i18n.registerUIStrings('browser_sdk/browser_sdk-meta.ts', UIStrings);
-const i18nString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
+const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.NETWORK,
-  title: i18nString(UIStrings.preserveLog),
+  title: i18nLazyString(UIStrings.preserveLog),
   settingName: 'network_log.preserve-log',
   settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: false,
   tags: [
-    i18nString(UIStrings.preserve),
-    i18nString(UIStrings.clear),
-    i18nString(UIStrings.reset),
+    i18nLazyString(UIStrings.preserve),
+    i18nLazyString(UIStrings.clear),
+    i18nLazyString(UIStrings.reset),
   ],
   options: [
     {
       value: true,
-      title: i18nString(UIStrings.preserveLogOnPageReload),
+      title: i18nLazyString(UIStrings.preserveLogOnPageReload),
     },
     {
       value: false,
-      title: i18nString(UIStrings.doNotPreserveLogOnPageReload),
+      title: i18nLazyString(UIStrings.doNotPreserveLogOnPageReload),
     },
   ],
 });
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.NETWORK,
-  title: i18nString(UIStrings.recordNetworkLog),
+  title: i18nLazyString(UIStrings.recordNetworkLog),
   settingName: 'network_log.record-log',
   settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: true,

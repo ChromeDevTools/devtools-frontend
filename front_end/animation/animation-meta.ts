@@ -22,7 +22,7 @@ const UIStrings = {
   showAnimations: 'Show Animations',
 };
 const str_ = i18n.i18n.registerUIStrings('animation/animation-meta.ts', UIStrings);
-const i18nString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
+const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 async function loadAnimationModule(): Promise<typeof Animation> {
   if (!loadedAnimationModule) {
@@ -36,8 +36,8 @@ async function loadAnimationModule(): Promise<typeof Animation> {
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.DRAWER_VIEW,
   id: 'animations',
-  title: i18nString(UIStrings.animations),
-  commandPrompt: i18nString(UIStrings.showAnimations),
+  title: i18nLazyString(UIStrings.animations),
+  commandPrompt: i18nLazyString(UIStrings.showAnimations),
   persistence: UI.ViewManager.ViewPersistence.CLOSEABLE,
   order: 0,
   async loadView() {

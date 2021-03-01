@@ -45,7 +45,7 @@ const UIStrings = {
   goOnline: 'Go online',
 };
 const str_ = i18n.i18n.registerUIStrings('mobile_throttling/mobile_throttling-meta.ts', UIStrings);
-const i18nString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
+const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 let loadedMobileThrottlingModule: (typeof MobileThrottling|undefined);
 
@@ -61,8 +61,8 @@ async function loadMobileThrottlingModule(): Promise<typeof MobileThrottling> {
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.SETTINGS_VIEW,
   id: 'throttling-conditions',
-  title: i18nString(UIStrings.throttling),
-  commandPrompt: i18nString(UIStrings.showThrottling),
+  title: i18nLazyString(UIStrings.throttling),
+  commandPrompt: i18nLazyString(UIStrings.showThrottling),
   order: 35,
   async loadView() {
     const MobileThrottling = await loadMobileThrottlingModule();
@@ -76,56 +76,56 @@ UI.ViewManager.registerViewExtension({
 UI.ActionRegistration.registerActionExtension({
   actionId: 'network-conditions.network-offline',
   category: UI.ActionRegistration.ActionCategory.NETWORK,
-  title: i18nString(UIStrings.goOffline),
+  title: i18nLazyString(UIStrings.goOffline),
   async loadActionDelegate() {
     const MobileThrottling = await loadMobileThrottlingModule();
     return MobileThrottling.ThrottlingManager.ActionDelegate.instance();
   },
   tags: [
-    i18nString(UIStrings.device),
-    i18nString(UIStrings.throttlingTag),
+    i18nLazyString(UIStrings.device),
+    i18nLazyString(UIStrings.throttlingTag),
   ],
 });
 
 UI.ActionRegistration.registerActionExtension({
   actionId: 'network-conditions.network-low-end-mobile',
   category: UI.ActionRegistration.ActionCategory.NETWORK,
-  title: i18nString(UIStrings.enableSlowGThrottling),
+  title: i18nLazyString(UIStrings.enableSlowGThrottling),
   async loadActionDelegate() {
     const MobileThrottling = await loadMobileThrottlingModule();
     return MobileThrottling.ThrottlingManager.ActionDelegate.instance();
   },
   tags: [
-    i18nString(UIStrings.device),
-    i18nString(UIStrings.throttlingTag),
+    i18nLazyString(UIStrings.device),
+    i18nLazyString(UIStrings.throttlingTag),
   ],
 });
 
 UI.ActionRegistration.registerActionExtension({
   actionId: 'network-conditions.network-mid-tier-mobile',
   category: UI.ActionRegistration.ActionCategory.NETWORK,
-  title: i18nString(UIStrings.enableFastGThrottling),
+  title: i18nLazyString(UIStrings.enableFastGThrottling),
   async loadActionDelegate() {
     const MobileThrottling = await loadMobileThrottlingModule();
     return MobileThrottling.ThrottlingManager.ActionDelegate.instance();
   },
   tags: [
-    i18nString(UIStrings.device),
-    i18nString(UIStrings.throttlingTag),
+    i18nLazyString(UIStrings.device),
+    i18nLazyString(UIStrings.throttlingTag),
   ],
 });
 
 UI.ActionRegistration.registerActionExtension({
   actionId: 'network-conditions.network-online',
   category: UI.ActionRegistration.ActionCategory.NETWORK,
-  title: i18nString(UIStrings.goOnline),
+  title: i18nLazyString(UIStrings.goOnline),
   async loadActionDelegate() {
     const MobileThrottling = await loadMobileThrottlingModule();
     return MobileThrottling.ThrottlingManager.ActionDelegate.instance();
   },
   tags: [
-    i18nString(UIStrings.device),
-    i18nString(UIStrings.throttlingTag),
+    i18nLazyString(UIStrings.device),
+    i18nLazyString(UIStrings.throttlingTag),
   ],
 });
 

@@ -53,7 +53,7 @@ export const UIStrings = {
 
 };
 const str_ = i18n.i18n.registerUIStrings('profiler/profiler-meta.ts', UIStrings);
-const i18nString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
+const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 async function loadProfilerModule(): Promise<typeof Profiler> {
   if (!loadedProfilerModule) {
@@ -74,8 +74,8 @@ function maybeRetrieveContextTypes<T = unknown>(getClassCallBack: (profilerModul
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.PANEL,
   id: 'heap_profiler',
-  commandPrompt: i18nString(UIStrings.showMemory),
-  title: i18nString(UIStrings.memory),
+  commandPrompt: i18nLazyString(UIStrings.showMemory),
+  title: i18nLazyString(UIStrings.memory),
   order: 60,
   async loadView() {
     const Profiler = await loadProfilerModule();
@@ -86,8 +86,8 @@ UI.ViewManager.registerViewExtension({
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.DRAWER_VIEW,
   id: 'live_heap_profile',
-  commandPrompt: i18nString(UIStrings.showLiveHeapProfile),
-  title: i18nString(UIStrings.liveHeapProfile),
+  commandPrompt: i18nLazyString(UIStrings.showLiveHeapProfile),
+  title: i18nLazyString(UIStrings.liveHeapProfile),
   persistence: UI.ViewManager.ViewPersistence.CLOSEABLE,
   order: 100,
   async loadView() {
@@ -112,11 +112,11 @@ UI.ActionRegistration.registerActionExtension({
   options: [
     {
       value: true,
-      title: i18nString(UIStrings.startRecordingHeapAllocations),
+      title: i18nLazyString(UIStrings.startRecordingHeapAllocations),
     },
     {
       value: false,
-      title: i18nString(UIStrings.stopRecordingHeapAllocations),
+      title: i18nLazyString(UIStrings.stopRecordingHeapAllocations),
     },
   ],
 });
@@ -130,14 +130,14 @@ UI.ActionRegistration.registerActionExtension({
   },
   category: UI.ActionRegistration.ActionCategory.MEMORY,
   experiment: Root.Runtime.ExperimentName.LIVE_HEAP_PROFILE,
-  title: i18nString(UIStrings.startRecordingHeapAllocationsAndReload),
+  title: i18nLazyString(UIStrings.startRecordingHeapAllocationsAndReload),
 });
 
 UI.ActionRegistration.registerActionExtension({
   actionId: 'profiler.heap-toggle-recording',
   category: UI.ActionRegistration.ActionCategory.MEMORY,
   iconClass: UI.ActionRegistration.IconClass.LARGEICON_START_RECORDING,
-  title: i18nString(UIStrings.startStopRecording),
+  title: i18nLazyString(UIStrings.startStopRecording),
   toggleable: true,
   toggledIconClass: UI.ActionRegistration.IconClass.LARGEICON_STOP_RECORDING,
   toggleWithRedColor: true,
@@ -163,7 +163,7 @@ UI.ActionRegistration.registerActionExtension({
 UI.ActionRegistration.registerActionExtension({
   actionId: 'profiler.js-toggle-recording',
   category: UI.ActionRegistration.ActionCategory.JAVASCRIPT_PROFILER,
-  title: i18nString(UIStrings.startStopRecording),
+  title: i18nLazyString(UIStrings.startStopRecording),
   iconClass: UI.ActionRegistration.IconClass.LARGEICON_START_RECORDING,
   toggleable: true,
   toggledIconClass: UI.ActionRegistration.IconClass.LARGEICON_STOP_RECORDING,
@@ -189,7 +189,7 @@ UI.ActionRegistration.registerActionExtension({
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.PERFORMANCE,
-  title: i18nString(UIStrings.showNativeFunctions),
+  title: i18nLazyString(UIStrings.showNativeFunctions),
   settingName: 'showNativeFunctionsInJSProfile',
   settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: true,

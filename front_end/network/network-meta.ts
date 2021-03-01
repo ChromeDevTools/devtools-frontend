@@ -123,7 +123,7 @@ export const UIStrings = {
   dontGroupNetworkLogItemsByFrame: 'Don\'t group network log items by frame',
 };
 const str_ = i18n.i18n.registerUIStrings('network/network-meta.ts', UIStrings);
-const i18nString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
+const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 let loadedNetworkModule: (typeof Network|undefined);
 
 async function loadNetworkModule(): Promise<typeof Network> {
@@ -145,8 +145,8 @@ function maybeRetrieveContextTypes<T = unknown>(getClassCallBack: (loadedNetwork
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.PANEL,
   id: 'network',
-  commandPrompt: i18nString(UIStrings.showNetwork),
-  title: i18nString(UIStrings.network),
+  commandPrompt: i18nLazyString(UIStrings.showNetwork),
+  title: i18nLazyString(UIStrings.network),
   order: 40,
   async loadView() {
     const Network = await loadNetworkModule();
@@ -157,8 +157,8 @@ UI.ViewManager.registerViewExtension({
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.DRAWER_VIEW,
   id: 'network.blocked-urls',
-  commandPrompt: i18nString(UIStrings.showNetworkRequestBlocking),
-  title: i18nString(UIStrings.networkRequestBlocking),
+  commandPrompt: i18nLazyString(UIStrings.showNetworkRequestBlocking),
+  title: i18nLazyString(UIStrings.networkRequestBlocking),
   persistence: UI.ViewManager.ViewPersistence.CLOSEABLE,
   order: 60,
   async loadView() {
@@ -170,16 +170,16 @@ UI.ViewManager.registerViewExtension({
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.DRAWER_VIEW,
   id: 'network.config',
-  commandPrompt: i18nString(UIStrings.showNetworkConditions),
-  title: i18nString(UIStrings.networkConditions),
+  commandPrompt: i18nLazyString(UIStrings.showNetworkConditions),
+  title: i18nLazyString(UIStrings.networkConditions),
   persistence: UI.ViewManager.ViewPersistence.CLOSEABLE,
   order: 40,
   tags: [
-    i18nString(UIStrings.diskCache),
-    i18nString(UIStrings.networkThrottling),
-    i18nString(UIStrings.userdagent),
-    i18nString(UIStrings.userAgent),
-    i18nString(UIStrings.userdagent),
+    i18nLazyString(UIStrings.diskCache),
+    i18nLazyString(UIStrings.networkThrottling),
+    i18nLazyString(UIStrings.userdagent),
+    i18nLazyString(UIStrings.userAgent),
+    i18nLazyString(UIStrings.userdagent),
   ],
   async loadView() {
     const Network = await loadNetworkModule();
@@ -190,8 +190,8 @@ UI.ViewManager.registerViewExtension({
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.NETWORK_SIDEBAR,
   id: 'network.search-network-tab',
-  commandPrompt: i18nString(UIStrings.showSearch),
-  title: i18nString(UIStrings.search),
+  commandPrompt: i18nLazyString(UIStrings.showSearch),
+  title: i18nLazyString(UIStrings.search),
   persistence: UI.ViewManager.ViewPersistence.PERMANENT,
   async loadView() {
     const Network = await loadNetworkModule();
@@ -216,11 +216,11 @@ UI.ActionRegistration.registerActionExtension({
   options: [
     {
       value: true,
-      title: i18nString(UIStrings.recordNetworkLog),
+      title: i18nLazyString(UIStrings.recordNetworkLog),
     },
     {
       value: false,
-      title: i18nString(UIStrings.stopRecordingNetworkLog),
+      title: i18nLazyString(UIStrings.stopRecordingNetworkLog),
     },
   ],
   bindings: [
@@ -238,7 +238,7 @@ UI.ActionRegistration.registerActionExtension({
 UI.ActionRegistration.registerActionExtension({
   actionId: 'network.hide-request-details',
   category: UI.ActionRegistration.ActionCategory.NETWORK,
-  title: i18nString(UIStrings.hideRequestDetails),
+  title: i18nLazyString(UIStrings.hideRequestDetails),
   contextTypes() {
     return maybeRetrieveContextTypes(Network => [Network.NetworkPanel.NetworkPanel]);
   },
@@ -256,7 +256,7 @@ UI.ActionRegistration.registerActionExtension({
 UI.ActionRegistration.registerActionExtension({
   actionId: 'network.search',
   category: UI.ActionRegistration.ActionCategory.NETWORK,
-  title: i18nString(UIStrings.search),
+  title: i18nLazyString(UIStrings.search),
   contextTypes() {
     return maybeRetrieveContextTypes(Network => [Network.NetworkPanel.NetworkPanel]);
   },
@@ -286,45 +286,45 @@ UI.ActionRegistration.registerActionExtension({
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.NETWORK,
-  title: i18nString(UIStrings.colorcodeResourceTypes),
+  title: i18nLazyString(UIStrings.colorcodeResourceTypes),
   settingName: 'networkColorCodeResourceTypes',
   settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: false,
   tags: [
-    i18nString(UIStrings.colorCode),
-    i18nString(UIStrings.resourceType),
+    i18nLazyString(UIStrings.colorCode),
+    i18nLazyString(UIStrings.resourceType),
   ],
   options: [
     {
       value: true,
-      title: i18nString(UIStrings.colorCodeByResourceType),
+      title: i18nLazyString(UIStrings.colorCodeByResourceType),
     },
     {
       value: false,
-      title: i18nString(UIStrings.useDefaultColors),
+      title: i18nLazyString(UIStrings.useDefaultColors),
     },
   ],
 });
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.NETWORK,
-  title: i18nString(UIStrings.groupNetworkLogByFrame),
+  title: i18nLazyString(UIStrings.groupNetworkLogByFrame),
   settingName: 'network.group-by-frame',
   settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: false,
   tags: [
-    i18nString(UIStrings.netWork),
-    i18nString(UIStrings.frame),
-    i18nString(UIStrings.group),
+    i18nLazyString(UIStrings.netWork),
+    i18nLazyString(UIStrings.frame),
+    i18nLazyString(UIStrings.group),
   ],
   options: [
     {
       value: true,
-      title: i18nString(UIStrings.groupNetworkLogItemsByFrame),
+      title: i18nLazyString(UIStrings.groupNetworkLogItemsByFrame),
     },
     {
       value: false,
-      title: i18nString(UIStrings.dontGroupNetworkLogItemsByFrame),
+      title: i18nLazyString(UIStrings.dontGroupNetworkLogItemsByFrame),
     },
   ],
 });

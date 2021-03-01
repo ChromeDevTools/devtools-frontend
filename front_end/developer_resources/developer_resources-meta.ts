@@ -20,7 +20,7 @@ const UIStrings = {
   showDeveloperResources: 'Show Developer Resources',
 };
 const str_ = i18n.i18n.registerUIStrings('developer_resources/developer_resources-meta.ts', UIStrings);
-const i18nString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
+const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 let loadedDeveloperResourcesModule: (typeof DeveloperResources|undefined);
 
@@ -36,8 +36,8 @@ async function loadDeveloperResourcesModule(): Promise<typeof DeveloperResources
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.DRAWER_VIEW,
   id: 'resource-loading-pane',
-  title: i18nString(UIStrings.developerResources),
-  commandPrompt: i18nString(UIStrings.showDeveloperResources),
+  title: i18nLazyString(UIStrings.developerResources),
+  commandPrompt: i18nLazyString(UIStrings.showDeveloperResources),
   order: 100,
   persistence: UI.ViewManager.ViewPersistence.CLOSEABLE,
   experiment: Root.Runtime.ExperimentName.DEVELOPER_RESOURCES_VIEW,

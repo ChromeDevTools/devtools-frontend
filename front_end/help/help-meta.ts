@@ -41,7 +41,7 @@ const UIStrings = {
   doNotShowWhatsNewAfterEachUpdate: 'Do not show What\'s New after each update',
 };
 const str_ = i18n.i18n.registerUIStrings('help/help-meta.ts', UIStrings);
-const i18nString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
+const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 let loadedHelpModule: (typeof Help|undefined);
 
@@ -57,8 +57,8 @@ async function loadHelpModule(): Promise<typeof Help> {
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.DRAWER_VIEW,
   id: 'release-note',
-  title: i18nString(UIStrings.whatsNew),
-  commandPrompt: i18nString(UIStrings.showWhatsNew),
+  title: i18nLazyString(UIStrings.whatsNew),
+  commandPrompt: i18nLazyString(UIStrings.showWhatsNew),
   persistence: UI.ViewManager.ViewPersistence.CLOSEABLE,
   order: 1,
   async loadView() {
@@ -70,7 +70,7 @@ UI.ViewManager.registerViewExtension({
 UI.ActionRegistration.registerActionExtension({
   category: UI.ActionRegistration.ActionCategory.HELP,
   actionId: 'help.release-notes',
-  title: i18nString(UIStrings.releaseNotes),
+  title: i18nLazyString(UIStrings.releaseNotes),
   async loadActionDelegate() {
     const Help = await loadHelpModule();
     return Help.Help.ReleaseNotesActionDelegate.instance();
@@ -80,28 +80,28 @@ UI.ActionRegistration.registerActionExtension({
 UI.ActionRegistration.registerActionExtension({
   category: UI.ActionRegistration.ActionCategory.HELP,
   actionId: 'help.report-issue',
-  title: i18nString(UIStrings.reportADevtoolsIssue),
+  title: i18nLazyString(UIStrings.reportADevtoolsIssue),
   async loadActionDelegate() {
     const Help = await loadHelpModule();
     return Help.Help.ReportIssueActionDelegate.instance();
   },
-  tags: [i18nString(UIStrings.bug)],
+  tags: [i18nLazyString(UIStrings.bug)],
 });
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.APPEARANCE,
-  title: i18nString(UIStrings.showWhatsNewAfterEachUpdate),
+  title: i18nLazyString(UIStrings.showWhatsNewAfterEachUpdate),
   settingName: 'help.show-release-note',
   settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: true,
   options: [
     {
       value: true,
-      title: i18nString(UIStrings.showWhatsNewAfterEachUpdate),
+      title: i18nLazyString(UIStrings.showWhatsNewAfterEachUpdate),
     },
     {
       value: false,
-      title: i18nString(UIStrings.doNotShowWhatsNewAfterEachUpdate),
+      title: i18nLazyString(UIStrings.doNotShowWhatsNewAfterEachUpdate),
     },
   ],
 });

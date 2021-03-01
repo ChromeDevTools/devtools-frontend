@@ -29,7 +29,7 @@ const UIStrings = {
 };
 
 const str_ = i18n.i18n.registerUIStrings('lighthouse/lighthouse-meta.ts', UIStrings);
-const i18nString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
+const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 let loadedLighthouseModule: (typeof Lighthouse|undefined);
 
@@ -45,15 +45,15 @@ async function loadLighthouseModule(): Promise<typeof Lighthouse> {
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.PANEL,
   id: 'lighthouse',
-  title: i18nString(UIStrings.lighthouse),
-  commandPrompt: i18nString(UIStrings.showLighthouse),
+  title: i18nLazyString(UIStrings.lighthouse),
+  commandPrompt: i18nLazyString(UIStrings.showLighthouse),
   order: 90,
   async loadView() {
     const Lighthouse = await loadLighthouseModule();
     return Lighthouse.LighthousePanel.LighthousePanel.instance();
   },
   tags: [
-    i18nString(UIStrings.lighthouseTag),
-    i18nString(UIStrings.pwa),
+    i18nLazyString(UIStrings.lighthouseTag),
+    i18nLazyString(UIStrings.pwa),
   ],
 });

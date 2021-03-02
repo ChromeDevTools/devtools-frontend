@@ -3338,6 +3338,9 @@
   "issues/IssueView.ts | affectedResources": {
     "message": "Affected Resources"
   },
+  "issues/IssueView.ts | automaticallyUpgraded": {
+    "message": "automatically upgraded"
+  },
   "issues/IssueView.ts | blocked": {
     "message": "blocked"
   },
@@ -7943,17 +7946,8 @@
   "sdk/LowTextContrastIssue.ts | colorAndContrastAccessibility": {
     "message": "Color and contrast accessibility"
   },
-  "sdk/MixedContentIssue.js | automaticallyUpgraded": {
-    "message": "automatically upgraded"
-  },
-  "sdk/MixedContentIssue.js | blocked": {
-    "message": "blocked"
-  },
-  "sdk/MixedContentIssue.js | preventingMixedContent": {
+  "sdk/MixedContentIssue.ts | preventingMixedContent": {
     "message": "Preventing mixed content"
-  },
-  "sdk/MixedContentIssue.js | warned": {
-    "message": "warned"
   },
   "sdk/NetworkLog.js | anonymous": {
     "message": "<anonymous>"

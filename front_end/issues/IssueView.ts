@@ -149,6 +149,10 @@ const UIStrings = {
   *@description Link text for opening a survey in the expended view of an Issue in the issue view
   */
   isThisIssueMessageHelpfulToYou: 'Is this issue message helpful to you?',
+  /**
+ *@description The kind of resolution for a mixed content issue
+ */
+  automaticallyUpgraded: 'automatically upgraded',
 };
 const str_ = i18n.i18n.registerUIStrings('issues/IssueView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -449,10 +453,22 @@ class AffectedMixedContentView extends AffectedResourcesView {
 
     const status = document.createElement('td');
     status.classList.add('affected-resource-mixed-content-info');
-    status.textContent = SDK.MixedContentIssue.MixedContentIssue.translateStatus(mixedContent.resolutionStatus);
+    status.textContent = AffectedMixedContentView.translateStatus(mixedContent.resolutionStatus);
     element.appendChild(status);
 
     this.affectedResources.appendChild(element);
+  }
+
+  private static translateStatus(resolutionStatus: Protocol.Audits.MixedContentResolutionStatus):
+      Platform.UIString.LocalizedString {
+    switch (resolutionStatus) {
+      case Protocol.Audits.MixedContentResolutionStatus.MixedContentBlocked:
+        return i18nString(UIStrings.blocked);
+      case Protocol.Audits.MixedContentResolutionStatus.MixedContentAutomaticallyUpgraded:
+        return i18nString(UIStrings.automaticallyUpgraded);
+      case Protocol.Audits.MixedContentResolutionStatus.MixedContentWarning:
+        return i18nString(UIStrings.warned);
+    }
   }
 
   update(): void {

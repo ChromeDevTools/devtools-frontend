@@ -3338,6 +3338,9 @@
   "issues/IssueView.ts | affectedResources": {
     "message": "Âf́f̂éĉt́êd́ R̂éŝóûŕĉéŝ"
   },
+  "issues/IssueView.ts | automaticallyUpgraded": {
+    "message": "âút̂óm̂át̂íĉál̂ĺŷ úp̂ǵr̂ád̂éd̂"
+  },
   "issues/IssueView.ts | blocked": {
     "message": "b̂ĺôćk̂éd̂"
   },
@@ -7943,17 +7946,8 @@
   "sdk/LowTextContrastIssue.ts | colorAndContrastAccessibility": {
     "message": "Ĉól̂ór̂ án̂d́ ĉón̂t́r̂áŝt́ âćĉéŝśîb́îĺît́ŷ"
   },
-  "sdk/MixedContentIssue.js | automaticallyUpgraded": {
-    "message": "âút̂óm̂át̂íĉál̂ĺŷ úp̂ǵr̂ád̂éd̂"
-  },
-  "sdk/MixedContentIssue.js | blocked": {
-    "message": "b̂ĺôćk̂éd̂"
-  },
-  "sdk/MixedContentIssue.js | preventingMixedContent": {
+  "sdk/MixedContentIssue.ts | preventingMixedContent": {
     "message": "P̂ŕêv́êńt̂ín̂ǵ m̂íx̂éd̂ ćôńt̂én̂t́"
-  },
-  "sdk/MixedContentIssue.js | warned": {
-    "message": "ŵár̂ńêd́"
   },
   "sdk/NetworkLog.js | anonymous": {
     "message": "<âńôńŷḿôúŝ>"

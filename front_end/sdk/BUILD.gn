@@ -48,7 +48,7 @@ devtools_module("sdk") {
     "LayerTreeBase.js",
     "LogModel.js",
     "LowTextContrastIssue.ts",
-    "MixedContentIssue.js",
+    "MixedContentIssue.ts",
     "NetworkLog.js",
     "NetworkManager.js",
     "NetworkRequest.js",

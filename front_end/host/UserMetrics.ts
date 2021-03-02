@@ -245,6 +245,27 @@ export class UserMetrics {
         EnumeratedHistogram.DeveloperResourceScheme, developerResourceScheme, size);
     Common.EventTarget.fireEvent(EnumeratedHistogram.DeveloperResourceScheme, {value: developerResourceScheme});
   }
+
+  linearMemoryInspectorRevealedFrom(linearMemoryInspectorRevealedFrom: LinearMemoryInspectorRevealedFrom): void {
+    const size = Object.keys(LinearMemoryInspectorRevealedFrom).length + 1;
+    if (linearMemoryInspectorRevealedFrom >= size) {
+      return;
+    }
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(
+        EnumeratedHistogram.LinearMemoryInspectorRevealedFrom, linearMemoryInspectorRevealedFrom, size);
+    Common.EventTarget.fireEvent(
+        EnumeratedHistogram.LinearMemoryInspectorRevealedFrom, {value: linearMemoryInspectorRevealedFrom});
+  }
+
+  linearMemoryInspectorTarget(linearMemoryInspectorTarget: LinearMemoryInspectorTarget): void {
+    const size = Object.keys(LinearMemoryInspectorTarget).length + 1;
+    if (linearMemoryInspectorTarget >= size) {
+      return;
+    }
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(
+        EnumeratedHistogram.LinearMemoryInspectorTarget, linearMemoryInspectorTarget, size);
+    Common.EventTarget.fireEvent(EnumeratedHistogram.LinearMemoryInspectorTarget, {value: linearMemoryInspectorTarget});
+  }
 }
 
 // Codes below are used to collect UMA histograms in the Chromium port.
@@ -679,4 +700,21 @@ export enum DeveloperResourceScheme {
   SchemeData = 6,
   SchemeFile = 7,
   SchemeBlob = 8,
+}
+
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum LinearMemoryInspectorRevealedFrom {
+  ContextMenu = 0,
+  MemoryIcon = 1,
+}
+
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum LinearMemoryInspectorTarget {
+  DWARFInspectableAddress = 0,
+  ArrayBuffer = 1,
+  DataView = 2,
+  TypedArray = 3,
+  WebAssemblyMemory = 4,
 }

@@ -78,7 +78,7 @@ export class LinearMemoryInspectorPaneImpl extends UI.Widget.VBox {
    * @param {string} tabId
    * @param {string} title
    * @param {!LazyUint8Array} arrayWrapper
-   * @param {number} address
+   * @param {number=} address
    */
   create(tabId, title, arrayWrapper, address) {
     const inspectorView = new LinearMemoryInspectorView(arrayWrapper, address);
@@ -136,9 +136,9 @@ class LinearMemoryInspectorView extends UI.Widget.VBox {
   /**
    *
    * @param {!LazyUint8Array} memoryWrapper
-   * @param {number} address
+   * @param {number=} address
    */
-  constructor(memoryWrapper, address) {
+  constructor(memoryWrapper, address = 0) {
     super(false);
 
     if (address < 0 || address >= memoryWrapper.length()) {

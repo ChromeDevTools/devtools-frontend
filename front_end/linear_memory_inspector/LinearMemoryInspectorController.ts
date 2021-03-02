@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
+import * as Host from '../host/host.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
@@ -107,7 +108,20 @@ export class LinearMemoryInspectorController extends SDK.SDKModel.SDKModelObserv
     return await memoryWrapper.getRange(start, chunkEnd);
   }
 
-  async openInspectorView(obj: SDK.RemoteObject.RemoteObject, address: number): Promise<void> {
+  async openInspectorView(obj: SDK.RemoteObject.RemoteObject, address?: number): Promise<void> {
+    if (address !== undefined) {
+      Host.userMetrics.linearMemoryInspectorTarget(
+          Host.UserMetrics.LinearMemoryInspectorTarget.DWARFInspectableAddress);
+    } else if (obj.subtype === Protocol.Runtime.RemoteObjectSubtype.Arraybuffer) {
+      Host.userMetrics.linearMemoryInspectorTarget(Host.UserMetrics.LinearMemoryInspectorTarget.ArrayBuffer);
+    } else if (obj.subtype === Protocol.Runtime.RemoteObjectSubtype.Dataview) {
+      Host.userMetrics.linearMemoryInspectorTarget(Host.UserMetrics.LinearMemoryInspectorTarget.DataView);
+    } else if (obj.subtype === Protocol.Runtime.RemoteObjectSubtype.Typedarray) {
+      Host.userMetrics.linearMemoryInspectorTarget(Host.UserMetrics.LinearMemoryInspectorTarget.TypedArray);
+    } else {
+      console.assert(obj.subtype === Protocol.Runtime.RemoteObjectSubtype.Webassemblymemory);
+      Host.userMetrics.linearMemoryInspectorTarget(Host.UserMetrics.LinearMemoryInspectorTarget.WebAssemblyMemory);
+    }
     const buffer = await getBufferFromObject(obj);
     const {internalProperties} = await buffer.object().getOwnProperties(false);
     const idProperty = internalProperties?.find(({name}) => name === '[[ArrayBufferData]]');

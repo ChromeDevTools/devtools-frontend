@@ -27,6 +27,7 @@
 import * as Bindings from '../bindings/bindings.js';
 import * as Common from '../common/common.js';
 import * as Components from '../components/components.js';
+import * as Host from '../host/host.js';
 import * as i18n from '../i18n/i18n.js';
 import * as LinearMemoryInspector from '../linear_memory_inspector/linear_memory_inspector.js';
 import * as ObjectUI from '../object_ui/object_ui.js';
@@ -347,6 +348,7 @@ export class OpenLinearMemoryInspector extends UI.Widget.VBox {
       const runtimeModel = obj.debuggerModel().runtimeModel();
       memoryObj = runtimeModel.createRemoteObject(response.result);
     }
+    Host.userMetrics.linearMemoryInspectorRevealedFrom(Host.UserMetrics.LinearMemoryInspectorRevealedFrom.ContextMenu);
     controller.openInspectorView(memoryObj, address);
   }
 }

@@ -248,4 +248,6 @@ export enum EnumeratedHistogram {
   CssEditorOpened = 'DevTools.CssEditorOpened',
   DeveloperResourceLoaded = 'DevTools.DeveloperResourceLoaded',
   DeveloperResourceScheme = 'DevTools.DeveloperResourceScheme',
+  LinearMemoryInspectorRevealedFrom = 'DevTools.LinearMemoryInspector.RevealedFrom',
+  LinearMemoryInspectorTarget = 'DevTools.LinearMemoryInspector.Target',
 }

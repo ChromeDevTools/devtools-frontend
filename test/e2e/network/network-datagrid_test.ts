@@ -6,7 +6,7 @@ import {assert} from 'chai';
 
 import {click, getBrowserAndPages, step, waitFor, waitForAria, waitForFunction} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {navigateToNetworkTab, setCacheState, waitForSomeRequestsToAppear} from '../helpers/network-helpers.js';
+import {navigateToNetworkTab, setCacheDisabled, waitForSomeRequestsToAppear} from '../helpers/network-helpers.js';
 
 describe('The Network Tab', async function() {
   if (this.timeout() !== 0.0) {
@@ -16,7 +16,7 @@ describe('The Network Tab', async function() {
 
   beforeEach(async () => {
     await navigateToNetworkTab('empty.html');
-    setCacheState(true);
+    await setCacheDisabled(true);
   });
 
   it('can click on checkbox label to toggle checkbox', async () => {
@@ -95,14 +95,13 @@ describe('The Network Tab', async function() {
         '1<html><body>The following word is written using cyrillic letters and should look like "SUCCESS": SU\u0421\u0421\u0415SS.</body></html>');
   });
 
-  // Flaky test
-  it.skip('[crbug.com/1179656]: the correct MIME type when resources came from HTTP cache', async () => {
+  it('the correct MIME type when resources came from HTTP cache', async () => {
     const {target, frontend} = getBrowserAndPages();
 
     await navigateToNetworkTab('resources-from-cache.html');
 
     // Reload the page without a cache, to force a fresh load of the network resources
-    setCacheState(false);
+    await setCacheDisabled(true);
     await target.reload({waitUntil: 'networkidle0'});
 
     // Wait for the column to show up and populate its values
@@ -129,7 +128,7 @@ describe('The Network Tab', async function() {
     ]);
 
     // Allow resources from the cache again and reload the page to load from cache
-    setCacheState(true);
+    await setCacheDisabled(false);
     await target.reload({waitUntil: 'networkidle0'});
     // Wait for the column to show up and populate its values
     await waitForSomeRequestsToAppear(2);

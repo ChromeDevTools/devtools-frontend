@@ -245,6 +245,7 @@ all_typescript_module_sources = [
   "input/InputTimeline.js",
   "inspector_main/InspectorMain.js",
   "inspector_main/RenderingOptions.js",
+  "issues/AffectedBlockedByResponseView.js",
   "issues/AffectedCookiesView.js",
   "issues/AffectedElementsView.js",
   "issues/AffectedElementsWithLowContrastView.js",

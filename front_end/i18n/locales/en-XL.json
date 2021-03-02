@@ -935,8 +935,14 @@
   "components/ImagePreview.js | imageFromS": {
     "message": "Îḿâǵê f́r̂óm̂ {PH1}"
   },
+  "components/ImagePreview.js | intrinsicAspectRatio": {
+    "message": "Îńt̂ŕîńŝíĉ áŝṕêćt̂ ŕât́îó:"
+  },
   "components/ImagePreview.js | intrinsicSize": {
     "message": "Îńt̂ŕîńŝíĉ śîźê:"
+  },
+  "components/ImagePreview.js | renderedAspectRatio": {
+    "message": "R̂én̂d́êŕêd́ âśp̂éĉt́ r̂át̂íô:"
   },
   "components/ImagePreview.js | renderedSize": {
     "message": "R̂én̂d́êŕêd́ ŝíẑé:"

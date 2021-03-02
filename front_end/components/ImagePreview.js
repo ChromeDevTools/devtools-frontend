@@ -32,10 +32,18 @@ const UIStrings = {
    */
   renderedSize: 'Rendered size:',
   /**
-   * @description The img element's current request's current URL.
+   * @description Title of the row that shows the current URL of an image.
    * https://html.spec.whatwg.org/multipage/embedded-content.html#dom-img-currentsrc.
    */
   currentSource: 'Current source:',
+  /**
+   * @description The rendered aspect ratio of an image.
+   */
+  renderedAspectRatio: 'Rendered aspect ratio:',
+  /**
+   * @description The intrinsic aspect ratio of an image.
+   */
+  intrinsicAspectRatio: 'Intrinsic aspect ratio:',
 };
 const str_ = i18n.i18n.registerUIStrings('components/ImagePreview.js', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -127,16 +135,24 @@ export class ImagePreview {
       const renderedHeight = precomputedFeatures ? precomputedFeatures.renderedHeight : intrinsicHeight;
       if (showDimensions) {
         const renderedRow = container.createChild('tr', 'row');
-        if (renderedHeight !== intrinsicHeight || renderedWidth !== intrinsicWidth) {
-          renderedRow.createChild('td', 'title').textContent = i18nString(UIStrings.renderedSize);
-          renderedRow.createChild('td', 'description').textContent = `${renderedWidth} × ${renderedHeight} px`;
 
+        renderedRow.createChild('td', 'title').textContent = i18nString(UIStrings.renderedSize);
+        renderedRow.createChild('td', 'description').textContent = `${renderedWidth} × ${renderedHeight} px`;
+
+        const aspectRatioRow = container.createChild('tr', 'row');
+        aspectRatioRow.createChild('td', 'title').textContent = i18nString(UIStrings.renderedAspectRatio);
+        aspectRatioRow.createChild('td', 'description').textContent =
+            Platform.NumberUtilities.aspectRatio(renderedWidth, renderedHeight);
+
+        if (renderedHeight !== intrinsicHeight || renderedWidth !== intrinsicWidth) {
           const intrinsicRow = container.createChild('tr', 'row');
           intrinsicRow.createChild('td', 'title').textContent = i18nString(UIStrings.intrinsicSize);
           intrinsicRow.createChild('td', 'description').textContent = `${intrinsicWidth} × ${intrinsicHeight} px`;
-        } else {
-          renderedRow.createChild('td', 'title').textContent = i18nString(UIStrings.renderedSize);
-          renderedRow.createChild('td', 'description').textContent = `${renderedWidth} × ${renderedHeight} px`;
+
+          const intrinsicAspectRatioRow = container.createChild('tr', 'row');
+          intrinsicAspectRatioRow.createChild('td', 'title').textContent = i18nString(UIStrings.intrinsicAspectRatio);
+          intrinsicAspectRatioRow.createChild('td', 'description').textContent =
+              Platform.NumberUtilities.aspectRatio(intrinsicWidth, intrinsicHeight);
         }
       }
 

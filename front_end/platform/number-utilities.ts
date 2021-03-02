@@ -54,3 +54,32 @@ export const floor = (value: number, precision: number = 0): number => {
   const mult = Math.pow(10, precision);
   return Math.floor(value * mult) / mult;
 };
+
+/**
+ * Computes the great common divisor for two numbers.
+ * If the numbers are floats, they will be rounded to an integer.
+ */
+export const greatestCommonDivisor = (a: number, b: number): number => {
+  a = Math.round(a);
+  b = Math.round(b);
+  while (b !== 0) {
+    const t = b;
+    b = a % b;
+    a = t;
+  }
+  return a;
+};
+
+const commonRatios = new Map([
+  ['8∶5', '16∶10'],
+]);
+
+export const aspectRatio = (width: number, height: number): string => {
+  const divisor = greatestCommonDivisor(width, height);
+  if (divisor !== 0) {
+    width /= divisor;
+    height /= divisor;
+  }
+  const result = `${width}∶${height}`;
+  return commonRatios.get(result) || result;
+};

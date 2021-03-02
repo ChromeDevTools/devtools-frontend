@@ -87,4 +87,30 @@ describe('NumberUtilities', () => {
       assert.strictEqual(1.99, Platform.NumberUtilities.floor(1.9999, 2));
     });
   });
+
+  describe('greatestCommonDivisor', () => {
+    it('it works', () => {
+      assert.strictEqual(0, Platform.NumberUtilities.greatestCommonDivisor(0, 0));
+      assert.strictEqual(1, Platform.NumberUtilities.greatestCommonDivisor(1, 0));
+      assert.strictEqual(1, Platform.NumberUtilities.greatestCommonDivisor(0, 1));
+      assert.strictEqual(200, Platform.NumberUtilities.greatestCommonDivisor(600, 800));
+      assert.strictEqual(200, Platform.NumberUtilities.greatestCommonDivisor(800, 600));
+      assert.strictEqual(-200, Platform.NumberUtilities.greatestCommonDivisor(-800, -600));
+      assert.strictEqual(1, Platform.NumberUtilities.greatestCommonDivisor(0.5, 0.5));
+    });
+  });
+
+  describe('aspectRatio', () => {
+    it('it works', () => {
+      assert.strictEqual('0∶0', Platform.NumberUtilities.aspectRatio(0, 0));
+      assert.strictEqual('0∶1', Platform.NumberUtilities.aspectRatio(0, 1));
+      assert.strictEqual('1∶0', Platform.NumberUtilities.aspectRatio(1, 0));
+      assert.strictEqual('1∶1', Platform.NumberUtilities.aspectRatio(1, 1));
+      assert.strictEqual('4∶3', Platform.NumberUtilities.aspectRatio(800, 600));
+      assert.strictEqual('3∶4', Platform.NumberUtilities.aspectRatio(600, 800));
+      assert.strictEqual('4∶3', Platform.NumberUtilities.aspectRatio(-800, -600));
+      assert.strictEqual('16∶9', Platform.NumberUtilities.aspectRatio(5120, 2880));
+      assert.strictEqual('16∶10', Platform.NumberUtilities.aspectRatio(2560, 1600));
+    });
+  });
 });

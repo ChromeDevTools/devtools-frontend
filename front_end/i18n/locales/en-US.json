@@ -935,8 +935,14 @@
   "components/ImagePreview.js | imageFromS": {
     "message": "Image from {PH1}"
   },
+  "components/ImagePreview.js | intrinsicAspectRatio": {
+    "message": "Intrinsic aspect ratio:"
+  },
   "components/ImagePreview.js | intrinsicSize": {
     "message": "Intrinsic size:"
+  },
+  "components/ImagePreview.js | renderedAspectRatio": {
+    "message": "Rendered aspect ratio:"
   },
   "components/ImagePreview.js | renderedSize": {
     "message": "Rendered size:"

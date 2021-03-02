@@ -194,7 +194,6 @@ test_modules = [
   "elements_test_runner/elements_test_runner_module.js",
   "extensions_test_runner/extensions_test_runner_module.js",
   "heap_profiler_test_runner/heap_profiler_test_runner_module.js",
-  "heap_snapshot_worker/heap_snapshot_worker_module.js",
   "integration_test_runner.js",
   "layers_test_runner/layers_test_runner_module.js",
   "network_test_runner/network_test_runner_module.js",

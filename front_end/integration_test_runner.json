@@ -2,8 +2,6 @@
   "modules" : [
     { "name": "test_runner", "type": "autostart" },
 
-    { "name": "heap_snapshot_worker" },
-
     { "name": "accessibility_test_runner" },
     { "name": "application_test_runner" },
     { "name": "lighthouse_test_runner" },

@@ -135,7 +135,6 @@ all_devtools_files = [
   "front_end/extensions/module.json",
   "front_end/heap_profiler_test_runner/heap_profiler_test_runner.js",
   "front_end/heap_profiler_test_runner/module.json",
-  "front_end/heap_snapshot_worker/module.json",
   "front_end/help/module.json",
   "front_end/help/releaseNote.css",
   "front_end/inline_editor/bezierEditor.css",

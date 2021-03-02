@@ -200,6 +200,35 @@ describe('TreeOutline', () => {
     ]);
   });
 
+  it('does not expand nodes when clicking outside of the arrow by default', async () => {
+    const {shadowRoot} = await renderTreeOutline({
+      tree: basicTreeData,
+    });
+    const rootNode = getVisibleTreeNodeByText(shadowRoot, 'Offices');
+    dispatchClickEvent(rootNode);
+    await coordinator.done();
+    const visibleTree = visibleNodesToTree(shadowRoot);
+    assert.deepEqual(visibleTree, [
+      {renderedKey: 'Offices'},
+      {renderedKey: 'Products'},
+    ]);
+  });
+
+  it('can be configured to expand nodes when any part of the node is clicked', async () => {
+    const {component, shadowRoot} = await renderTreeOutline({
+      tree: basicTreeData,
+    });
+    component.setAttribute('clickabletitle', 'true');
+    const rootNode = getVisibleTreeNodeByText(shadowRoot, 'Offices');
+    dispatchClickEvent(rootNode);
+    await coordinator.done();
+    const visibleTree = visibleNodesToTree(shadowRoot);
+    assert.deepEqual(visibleTree, [
+      {renderedKey: 'Offices', children: [{renderedKey: 'Europe'}]},
+      {renderedKey: 'Products'},
+    ]);
+  });
+
   it('can take nodes with a custom key type', async () => {
     interface CustomTreeKeyType {
       property: string;

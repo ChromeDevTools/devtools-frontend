@@ -95,7 +95,8 @@ describe('The Network Tab', async function() {
         '1<html><body>The following word is written using cyrillic letters and should look like "SUCCESS": SU\u0421\u0421\u0415SS.</body></html>');
   });
 
-  it('the correct MIME type when resources came from HTTP cache', async () => {
+  // Flaky test
+  it.skip('[crbug.com/1179656]: the correct MIME type when resources came from HTTP cache', async () => {
     const {target, frontend} = getBrowserAndPages();
 
     await navigateToNetworkTab('resources-from-cache.html');

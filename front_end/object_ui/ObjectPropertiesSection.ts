@@ -36,6 +36,7 @@ import * as Host from '../host/host.js';
 import * as i18n from '../i18n/i18n.js';
 import * as LinearMemoryInspector from '../linear_memory_inspector/linear_memory_inspector.js';
 import * as Platform from '../platform/platform.js';
+import * as Root from '../root/root.js';
 import * as SDK from '../sdk/sdk.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as WebComponents from '../ui/components/components.js';
@@ -349,6 +350,13 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
   }
 
   static appendMemoryIcon(element: Element, obj: SDK.RemoteObject.RemoteObject): void {
+    // The linear memory inspector is currently gated behind the
+    // WebAssembly DWARF experiment, so don't show the icon unless
+    // that experiment is enabled.
+    if (!Root.Runtime.experiments.isEnabled('wasmDWARFDebugging')) {
+      return;
+    }
+
     // We show the memory icon only on ArrayBuffer and WebAssembly.Memory instances.
     // TypedArrays DataViews are also supported, but showing the icon next to their
     // previews is quite a significant visual overhead, and users can easily get to

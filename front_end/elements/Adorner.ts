@@ -70,27 +70,22 @@ export class Adorner extends HTMLElement {
    * and simulating ARIA-capable toggle button behavior.
    */
   addInteraction(action: EventListener, options: {
+    ariaLabelDefault: Platform.UIString.LocalizedString,
+    ariaLabelActive: Platform.UIString.LocalizedString,
     isToggle?: boolean,
     shouldPropagateOnKeydown?: boolean,
-    ariaLabelDefault?: Platform.UIString.LocalizedString,
-    ariaLabelActive?: Platform.UIString.LocalizedString,
-  } = {}): void {
+  }): void {
     const {isToggle = false, shouldPropagateOnKeydown = false, ariaLabelDefault, ariaLabelActive} = options;
 
     this.isToggle = isToggle;
-
-    if (ariaLabelDefault) {
-      this.ariaLabelDefault = ariaLabelDefault;
-      UI.ARIAUtils.setAccessibleName(this, ariaLabelDefault);
-    }
+    this.ariaLabelDefault = ariaLabelDefault;
+    this.ariaLabelActive = ariaLabelActive;
+    UI.ARIAUtils.setAccessibleName(this, ariaLabelDefault);
 
     if (isToggle) {
       this.addEventListener('click', () => {
         this.toggle();
       });
-      if (ariaLabelActive) {
-        this.ariaLabelActive = ariaLabelActive;
-      }
       this.toggle(false /* initialize inactive state */);
     }
 
@@ -134,19 +129,19 @@ export class Adorner extends HTMLElement {
           line-height: 13px;
           padding: 0 6px;
           font-size: 8.5px;
-          color: var(--override-adorner-text-color, --color-text-primary);
-          background-color: var(--override-adorner-background-color, --color-background-elevation-1);
-          border: 1px solid var(--override-adorner-border-color, --color-details-hairline);
+          color: var(--override-adorner-text-color, var(--color-text-primary));
+          background-color: var(--override-adorner-background-color, var(--color-background-elevation-1));
+          border: 1px solid var(--override-adorner-border-color, var(--color-details-hairline));
           border-radius: 10px;
         }
 
         :host(:focus) slot {
-          border-color: var(--override-adorner-focus-border-color, --color-primary);
+          border-color: var(--override-adorner-focus-border-color, var(--color-primary));
         }
 
         :host([aria-pressed=true]) slot {
-          color: var(--override-adorner-active-text-color, --color-background);
-          background-color: var(--override-adorner-active-background-color, --color-primary);
+          color: var(--override-adorner-active-text-color, var(--color-background));
+          background-color: var(--override-adorner-active-background-color, var(--color-primary));
         }
 
         ::slotted(*) {

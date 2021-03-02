@@ -693,8 +693,8 @@ input.custom-search-input::-webkit-search-cancel-button {
 }
 
 :host-context(.-theme-with-dark-background) devtools-adorner {
-  --override-adorner-background-color: rgb(var(--color-syntax-2-rgb) 0.15);
-  --override-adorner-border-color: rgb(var(--color-syntax-2-rgb) 0.5);
+  --override-adorner-background-color: rgb(var(--color-syntax-2-rgb) / 15%);
+  --override-adorner-border-color: rgb(var(--color-syntax-2-rgb) / 50%);
   --override-adorner-focus-border-color: var(--color-syntax-2);
   --override-adorner-active-background-color: var(--color-syntax-8);
 }

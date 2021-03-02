@@ -44,6 +44,17 @@ const UIStrings = {
    */
   other: 'Other',
   /**
+   * @description Category title for the different 'low text contrast' issues. Low text contrast refers
+   *              to the difference between the color of a text and the background color where that text
+   *              appears.
+   */
+  lowTextContrast: 'Low Text Contrast',
+  /**
+   * @description Category title for the different 'Cross-Origin Resource Sharing' (CORS) issues. CORS
+   *              refers to one origin (e.g 'a.com') loading resources from another origin (e.g. 'b.com').
+   */
+  cors: 'Cross Origin Resource Sharing',
+  /**
    * @description Title for a checkbox which toggles grouping by category in the issues tab
    */
   groupDisplayedIssuesUnder: 'Group displayed issues under associated categories',
@@ -81,17 +92,6 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('issues/IssuesPane.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-/* * @type {!Map<!SDK.Issue.IssueCategory, string>}  */
-export const IssueCategoryNames = new Map([
-  [SDK.Issue.IssueCategory.CrossOriginEmbedderPolicy, i18nString(UIStrings.crossOriginEmbedderPolicy)],
-  [SDK.Issue.IssueCategory.MixedContent, i18nString(UIStrings.mixedContent)],
-  [SDK.Issue.IssueCategory.SameSiteCookie, i18nString(UIStrings.samesiteCookie)],
-  [SDK.Issue.IssueCategory.HeavyAd, i18nString(UIStrings.heavyAds)],
-  [SDK.Issue.IssueCategory.ContentSecurityPolicy, i18nString(UIStrings.contentSecurityPolicy)],
-  [SDK.Issue.IssueCategory.TrustedWebActivity, i18nString(UIStrings.trustedWebActivity)],
-  [SDK.Issue.IssueCategory.Other, i18nString(UIStrings.other)],
-]);
-
 class IssueCategoryView extends UI.TreeOutline.TreeElement {
   private category: SDK.Issue.IssueCategory;
   private issues: AggregatedIssue[];
@@ -106,7 +106,26 @@ class IssueCategoryView extends UI.TreeOutline.TreeElement {
   }
 
   getCategoryName(): string {
-    return IssueCategoryNames.get(this.category) || i18nString(UIStrings.other);
+    switch (this.category) {
+      case SDK.Issue.IssueCategory.CrossOriginEmbedderPolicy:
+        return i18nString(UIStrings.crossOriginEmbedderPolicy);
+      case SDK.Issue.IssueCategory.MixedContent:
+        return i18nString(UIStrings.mixedContent);
+      case SDK.Issue.IssueCategory.SameSiteCookie:
+        return i18nString(UIStrings.samesiteCookie);
+      case SDK.Issue.IssueCategory.HeavyAd:
+        return i18nString(UIStrings.heavyAds);
+      case SDK.Issue.IssueCategory.ContentSecurityPolicy:
+        return i18nString(UIStrings.contentSecurityPolicy);
+      case SDK.Issue.IssueCategory.TrustedWebActivity:
+        return i18nString(UIStrings.trustedWebActivity);
+      case SDK.Issue.IssueCategory.LowTextContrast:
+        return i18nString(UIStrings.lowTextContrast);
+      case SDK.Issue.IssueCategory.Cors:
+        return i18nString(UIStrings.cors);
+      case SDK.Issue.IssueCategory.Other:
+        return i18nString(UIStrings.other);
+    }
   }
 
   onattach(): void {

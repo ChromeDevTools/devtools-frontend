@@ -3287,6 +3287,9 @@
   "issues/IssuesPane.ts | contentSecurityPolicy": {
     "message": "Content Security Policy"
   },
+  "issues/IssuesPane.ts | cors": {
+    "message": "Cross Origin Resource Sharing"
+  },
   "issues/IssuesPane.ts | crossOriginEmbedderPolicy": {
     "message": "Cross Origin Embedder Policy"
   },
@@ -3310,6 +3313,9 @@
   },
   "issues/IssuesPane.ts | issuesPertainingToSOperations": {
     "message": "Issues pertaining to {PH1} operations detected."
+  },
+  "issues/IssuesPane.ts | lowTextContrast": {
+    "message": "Low Text Contrast"
   },
   "issues/IssuesPane.ts | mixedContent": {
     "message": "Mixed Content"

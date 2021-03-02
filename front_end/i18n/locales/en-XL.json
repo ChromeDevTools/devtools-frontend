@@ -3287,6 +3287,9 @@
   "issues/IssuesPane.ts | contentSecurityPolicy": {
     "message": "Ĉón̂t́êńt̂ Śêćûŕît́ŷ Ṕôĺîćŷ"
   },
+  "issues/IssuesPane.ts | cors": {
+    "message": "Ĉŕôśŝ Ór̂íĝín̂ Ŕêśôúr̂ćê Śĥár̂ín̂ǵ"
+  },
   "issues/IssuesPane.ts | crossOriginEmbedderPolicy": {
     "message": "Ĉŕôśŝ Ór̂íĝín̂ Ém̂b́êd́d̂ér̂ Ṕôĺîćŷ"
   },
@@ -3310,6 +3313,9 @@
   },
   "issues/IssuesPane.ts | issuesPertainingToSOperations": {
     "message": "Îśŝúêś p̂ér̂t́âín̂ín̂ǵ t̂ó {PH1} ôṕêŕât́îón̂ś d̂ét̂éĉt́êd́."
+  },
+  "issues/IssuesPane.ts | lowTextContrast": {
+    "message": "L̂óŵ T́êx́t̂ Ćôńt̂ŕâśt̂"
   },
   "issues/IssuesPane.ts | mixedContent": {
     "message": "M̂íx̂éd̂ Ćôńt̂én̂t́"

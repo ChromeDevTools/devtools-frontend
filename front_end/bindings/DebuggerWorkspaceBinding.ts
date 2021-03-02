@@ -239,22 +239,17 @@ export class DebuggerWorkspaceBinding implements SDK.SDKModel.SDKModelObserver<S
         return locations;
       }
     }
-    // TODO(bmeurer): This is more complicated than it needs to be, because
-    // only the pluginManager part below needs to be asynchronous and any
-    // given uiSourceCode cannot be provided by both a plugin and another
-    // mean of source mapping. Yet, there's currently a subtle timing issue
-    // with http/tests/devtools/sources/debugger-ui/click-gutter-breakpoint.js
-    // and so for now we leave the promises in here.
-    const locationPromises = [];
-    if (this.pluginManager) {
-      locationPromises.push(this.pluginManager.uiLocationToRawLocations(uiSourceCode, lineNumber, columnNumber)
-                                .then(locations => locations || []));
+    const locations = await this.pluginManager?.uiLocationToRawLocations(uiSourceCode, lineNumber, columnNumber);
+    if (locations) {
+      return locations;
     }
     for (const modelData of this._debuggerModelToData.values()) {
-      locationPromises.push(
-          Promise.resolve(modelData._uiLocationToRawLocations(uiSourceCode, lineNumber, columnNumber)));
+      const locations = modelData._uiLocationToRawLocations(uiSourceCode, lineNumber, columnNumber);
+      if (locations.length) {
+        return locations;
+      }
     }
-    return (await Promise.all(locationPromises)).flat();
+    return [];
   }
 
   uiLocationToRawLocationsForUnformattedJavaScript(

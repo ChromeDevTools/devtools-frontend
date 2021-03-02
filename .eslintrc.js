@@ -137,6 +137,9 @@ module.exports = {
     // Closure does not properly typecheck default exports
     'import/no-default-export': 2,
 
+    // Try to spot '// console.log()' left over from debugging
+    'rulesdir/commented_out_console': 2,
+
     // DevTools specific rules
     'rulesdir/es_modules_import': 2,
     'rulesdir/check_license_header': 2,

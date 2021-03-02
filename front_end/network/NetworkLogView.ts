@@ -211,7 +211,7 @@ const UIStrings = {
   /**
   *@description Text in Network Log View of the Network panel
   */
-  copyStacktrace: 'Copy stacktrace',
+  copyStacktrace: 'Copy stack trace',
   /**
   * @description A context menu command in the Network panel, for copying to the clipboard.
   * PowerShell refers to the format the data will be copied as.

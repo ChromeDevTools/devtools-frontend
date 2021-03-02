@@ -73,7 +73,8 @@ const UIStrings = {
   */
   stickyBoxRectangleDimensions: 'Sticky Box {PH1} × {PH2} (at {PH3}, {PH4})',
   /**
-  *@description Containing block rect element text content in Layer Details View of the Layers panel
+  * @description Containing block rect element text content in Layer Details View of the Layers panel.
+  * The placeholder are width, height, x position, and y position respectively.
   *@example {10} PH1
   *@example {10} PH2
   *@example {10} PH3
@@ -97,7 +98,7 @@ const UIStrings = {
   *@example {10} PH3
   *@example {10} PH4
   */
-  updateRectangleDimensions: '{PH1} × {PH2} (at {PH3},{PH4})',
+  updateRectangleDimensions: '{PH1} × {PH2} (at {PH3}, {PH4})',
   /**
   *@description Text for the size of something
   */
@@ -139,7 +140,9 @@ const UIStrings = {
   */
   wheelEventHandler: 'Wheel event handler',
   /**
-  *@description Text in Layer Details View of the Layers panel
+  * @description Text in Layer Details View of the Layers panel. Means that this rectangle needs to
+  * be repainted when the webpage is scrolled. 'repaints' means that the browser engine needs to
+  * draw the pixels for this rectangle to the user's monitor again.
   */
   repaintsOnScroll: 'Repaints on scroll',
   /**

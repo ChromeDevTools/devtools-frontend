@@ -1263,7 +1263,7 @@
     "message": "Selected context only"
   },
   "console/ConsoleView.ts | sHidden": {
-    "message": "{PH1} hidden"
+    "message": "{n, plural, =1 {# hidden} other {# hidden}}"
   },
   "console/ConsoleView.ts | showConsoleSidebar": {
     "message": "Show console sidebar"
@@ -3492,7 +3492,7 @@
     "message": "<unnamed>"
   },
   "layer_viewer/LayerDetailsView.ts | updateRectangleDimensions": {
-    "message": "{PH1} × {PH2} (at {PH3},{PH4})"
+    "message": "{PH1} × {PH2} (at {PH3}, {PH4})"
   },
   "layer_viewer/LayerDetailsView.ts | wheelEventHandler": {
     "message": "Wheel event handler"
@@ -4848,7 +4848,7 @@
     "message": "Copy response headers"
   },
   "network/NetworkLogView.ts | copyStacktrace": {
-    "message": "Copy stacktrace"
+    "message": "Copy stack trace"
   },
   "network/NetworkLogView.ts | domcontentloadedS": {
     "message": "DOMContentLoaded: {PH1}"

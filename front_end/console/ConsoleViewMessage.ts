@@ -97,7 +97,8 @@ const UIStrings = {
   */
   functionWasResolvedFromBound: 'Function was resolved from bound function.',
   /**
-  *@description Element text content in Console View Message of the Console panel
+  * @description Shown in the Console panel when an exception is thrown when trying to access a
+  * property on an object. Should be translated.
   */
   exception: '<exception>',
   /**

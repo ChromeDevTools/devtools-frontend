@@ -91,9 +91,12 @@ const UIStrings = {
   ifThisElementMayReceiveLiveUpdates:
       'If this element may receive live updates, what type of updates should trigger a notification.',
   /**
-  *@description Accessibility attribute name that appears under the Computed Properties section in the Accessibility pane of the Elements pane
+  * @description Accessibility attribute name that appears under the Computed Properties section in
+  * the Accessibility pane of the Elements pane. Indicates that the aria-busy attribute is set for
+  * the element, which means the element is being modified and assistive technologies like screen
+  * readers may want to wait until the area is no longer live/busy before exposing it to the user.
   */
-  busyLiveRegions: 'Busy (live regions)',
+  busyLiveRegions: '`Busy` (live regions)',
   /**
   *@description Tooltip text that appears when hovering over the 'Busy (live regions)' attribute name under the Computed Properties section in the Accessibility pane of the Elements pane
   */

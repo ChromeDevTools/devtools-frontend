@@ -73,7 +73,9 @@ const UIStrings = {
   */
   retainedSize: 'Retained Size',
   /**
-  *@description Data grid name for Heap Snapshot Retainment data grids
+  * @description Title for a section in the Heap Snapshot view. This title is for a table which
+  * shows retaining relationships between JavaScript objects. One object retains another if it holds
+  * a reference to it, keeping it alive.
   */
   heapSnapshotRetainment: 'Heap Snapshot Retainment',
   /**

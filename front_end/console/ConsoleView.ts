@@ -144,9 +144,8 @@ const UIStrings = {
   /**
   * @description Text in Console View of the Console panel, indicating that a number of console
   * messages have been hidden.
-  * @example {3} PH1
   */
-  sHidden: '{PH1} hidden',
+  sHidden: '{n, plural, =1 {# hidden} other {# hidden}}',
   /**
   *@description Alert message for screen readers when the console is cleared
   */
@@ -743,7 +742,7 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
     if (this._hiddenByFilterCount === this._lastShownHiddenByFilterCount) {
       return;
     }
-    this._filterStatusText.setText(i18nString(UIStrings.sHidden, {PH1: this._hiddenByFilterCount}));
+    this._filterStatusText.setText(i18nString(UIStrings.sHidden, {n: this._hiddenByFilterCount}));
     this._filterStatusText.setVisible(Boolean(this._hiddenByFilterCount));
     this._lastShownHiddenByFilterCount = this._hiddenByFilterCount;
   }

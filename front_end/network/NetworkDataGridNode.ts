@@ -127,11 +127,11 @@ const UIStrings = {
   /**
   *@description Text in Network Data Grid Node of the Network panel
   */
-  notsameorigin: 'NotSameOrigin',
+  notsameorigin: '`NotSameOrigin`',
   /**
   *@description Text in Network Data Grid Node of the Network panel
   */
-  notsamesite: 'NotSameSite',
+  notsamesite: '`NotSameSite`',
   /**
   *@description Text in Network Data Grid Node of the Network panel
   */

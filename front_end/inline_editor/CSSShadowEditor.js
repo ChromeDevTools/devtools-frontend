@@ -14,13 +14,15 @@ const UIStrings = {
   */
   type: 'Type',
   /**
-  *@description Outset button text content in CSSShadow Editor of the inline editor in the Styles tab
+  * @description Button text for selecting the 'outset' (default) mode for a box-shadow in the Styles
+  * tab.
   */
-  outset: 'Outset',
+  outset: '`Outset`',
   /**
-  *@description Inset button text content in CSSShadow Editor of the inline editor in the Styles tab
+  * @description Button text for selecting the 'inset' mode for a box-shadow in the Styles tab. Not
+  * translated as it appears in CSS directly as a property value.
   */
-  inset: 'Inset',
+  inset: '`Inset`',
   /**
   *@description Text in CSSShadow Editor of the inline editor in the Styles tab
   */
@@ -30,7 +32,8 @@ const UIStrings = {
   */
   yOffset: 'Y offset',
   /**
-  *@description Text in CSSShadow Editor of the inline editor in the Styles tab
+  * @description Text in CSSShadow Editor of the inline editor in the Styles tab. Noun which is a
+  * label for an input that allows the user to specify how blurred the box-shadow should be.
   */
   blur: 'Blur',
   /**

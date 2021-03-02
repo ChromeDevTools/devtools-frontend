@@ -84,7 +84,7 @@
     "message": "Ât́ôḿîć (l̂ív̂é r̂éĝíôńŝ)"
   },
   "accessibility/AccessibilityStrings.ts | busyLiveRegions": {
-    "message": "B̂úŝý (l̂ív̂é r̂éĝíôńŝ)"
+    "message": "Busy (l̂ív̂é r̂éĝíôńŝ)"
   },
   "accessibility/AccessibilityStrings.ts | canSetValue": {
     "message": "Ĉán̂ śêt́ v̂ál̂úê"
@@ -1263,7 +1263,7 @@
     "message": "Ŝél̂éĉt́êd́ ĉón̂t́êx́t̂ ón̂ĺŷ"
   },
   "console/ConsoleView.ts | sHidden": {
-    "message": "{PH1} ĥíd̂d́êń"
+    "message": "{n, plural, =1 {# ĥíd̂d́êń} other {# ĥíd̂d́êń}}"
   },
   "console/ConsoleView.ts | showConsoleSidebar": {
     "message": "Ŝh́ôẃ ĉón̂śôĺê śîd́êb́âŕ"
@@ -2850,10 +2850,10 @@
     "message": "B̂ĺûŕ"
   },
   "inline_editor/CSSShadowEditor.js | inset": {
-    "message": "Îńŝét̂"
+    "message": "Inset"
   },
   "inline_editor/CSSShadowEditor.js | outset": {
-    "message": "Ôút̂śêt́"
+    "message": "Outset"
   },
   "inline_editor/CSSShadowEditor.js | spread": {
     "message": "Ŝṕr̂éâd́"
@@ -3492,7 +3492,7 @@
     "message": "<ûńn̂ám̂éd̂>"
   },
   "layer_viewer/LayerDetailsView.ts | updateRectangleDimensions": {
-    "message": "{PH1} × {PH2} (ât́ {PH3},{PH4})"
+    "message": "{PH1} × {PH2} (ât́ {PH3}, {PH4})"
   },
   "layer_viewer/LayerDetailsView.ts | wheelEventHandler": {
     "message": "Ŵh́êél̂ év̂én̂t́ ĥán̂d́l̂ér̂"
@@ -4641,13 +4641,13 @@
     "message": "mixed-content"
   },
   "network/NetworkDataGridNode.ts | notsameorigin": {
-    "message": "N̂ót̂ŚâḿêÓr̂íĝín̂"
+    "message": "NotSameOrigin"
   },
   "network/NetworkDataGridNode.ts | notsameoriginafterdefaultedtosameoriginbycoep": {
     "message": "N̂ót̂ŚâḿêÓr̂íĝín̂Áf̂t́êŕD̂éf̂áûĺt̂éd̂T́ôŚâḿêÓr̂íĝín̂B́ŷĆôép̂"
   },
   "network/NetworkDataGridNode.ts | notsamesite": {
-    "message": "N̂ót̂ŚâḿêŚît́ê"
+    "message": "NotSameSite"
   },
   "network/NetworkDataGridNode.ts | origin": {
     "message": "ôŕîǵîń"
@@ -4848,7 +4848,7 @@
     "message": "Ĉóp̂ý r̂éŝṕôńŝé ĥéâd́êŕŝ"
   },
   "network/NetworkLogView.ts | copyStacktrace": {
-    "message": "Ĉóp̂ý ŝt́âćk̂t́r̂áĉé"
+    "message": "Ĉóp̂ý ŝt́âćk̂ t́r̂áĉé"
   },
   "network/NetworkLogView.ts | domcontentloadedS": {
     "message": "D̂ÓM̂Ćôńt̂én̂t́L̂óâd́êd́: {PH1}"

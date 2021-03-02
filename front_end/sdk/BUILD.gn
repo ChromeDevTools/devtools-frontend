@@ -40,7 +40,7 @@ devtools_module("sdk") {
     "FrameManager.js",
     "HARLog.js",
     "HeapProfilerModel.js",
-    "HeavyAdIssue.js",
+    "HeavyAdIssue.ts",
     "IOModel.js",
     "IsolateManager.js",
     "Issue.ts",

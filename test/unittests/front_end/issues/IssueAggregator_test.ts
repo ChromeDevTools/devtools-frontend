@@ -148,7 +148,7 @@ describeWithEnvironment('IssueAggregator', async () => {
 
     const issues = Array.from(aggregator.aggregatedIssues());
     assert.strictEqual(issues.length, 1);
-    const resolutions = [...issues[0].heavyAds()].map(r => r.resolution).sort();
+    const resolutions = [...issues[0].getHeavyAdIssues()].map(r => r.details().resolution).sort();
     assert.deepStrictEqual(resolutions, [
       Protocol.Audits.HeavyAdResolutionStatus.HeavyAdBlocked,
       Protocol.Audits.HeavyAdResolutionStatus.HeavyAdWarning,

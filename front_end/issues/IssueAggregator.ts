@@ -17,7 +17,7 @@ export class AggregatedIssue extends SDK.Issue.Issue {
     hasRequest: boolean,
   }>;
   private affectedRequests: Map<string, Protocol.Audits.AffectedRequest>;
-  private heavyAdIssueDetails: Map<string, Protocol.Audits.HeavyAdIssueDetails>;
+  private heavyAdIssues: Set<SDK.HeavyAdIssue.HeavyAdIssue>;
   private blockedByResponseDetails: Map<string, Protocol.Audits.BlockedByResponseIssueDetails>;
   private corsIssues: Set<SDK.CorsIssue.CorsIssue>;
   private cspIssues: Set<SDK.ContentSecurityPolicyIssue.ContentSecurityPolicyIssue>;
@@ -32,7 +32,7 @@ export class AggregatedIssue extends SDK.Issue.Issue {
     super(code);
     this.affectedCookies = new Map();
     this.affectedRequests = new Map();
-    this.heavyAdIssueDetails = new Map();
+    this.heavyAdIssues = new Set();
     this.blockedByResponseDetails = new Map();
     this.corsIssues = new Set();
     this.cspIssues = new Set();
@@ -63,12 +63,12 @@ export class AggregatedIssue extends SDK.Issue.Issue {
     return this.affectedCookies.values();
   }
 
-  heavyAds(): Iterable<Protocol.Audits.HeavyAdIssueDetails> {
-    return this.heavyAdIssueDetails.values();
+  getHeavyAdIssues(): Iterable<SDK.HeavyAdIssue.HeavyAdIssue> {
+    return this.heavyAdIssues;
   }
 
   getMixedContentIssues(): Iterable<SDK.MixedContentIssue.MixedContentIssue> {
-    return this.mixedContentIssues.values();
+    return this.mixedContentIssues;
   }
 
   getTrustedWebActivityIssues(): Iterable<SDK.TrustedWebActivityIssue.TrustedWebActivityIssue> {
@@ -143,9 +143,8 @@ export class AggregatedIssue extends SDK.Issue.Issue {
     if (issue instanceof SDK.MixedContentIssue.MixedContentIssue) {
       this.mixedContentIssues.add(issue);
     }
-    for (const heavyAds of issue.heavyAds()) {
-      const key = JSON.stringify(heavyAds);
-      this.heavyAdIssueDetails.set(key, heavyAds);
+    if (issue instanceof SDK.HeavyAdIssue.HeavyAdIssue) {
+      this.heavyAdIssues.add(issue);
     }
     for (const details of issue.getBlockedByResponseDetails()) {
       const key = JSON.stringify(details, ['parentFrame', 'blockedFrame', 'requestId', 'frameId', 'reason', 'request']);

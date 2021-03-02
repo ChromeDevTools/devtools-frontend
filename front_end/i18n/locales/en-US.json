@@ -7922,7 +7922,7 @@
   "sdk/DOMDebuggerModel.js | xhr": {
     "message": "XHR"
   },
-  "sdk/HeavyAdIssue.js | handlingHeavyAdInterventions": {
+  "sdk/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "Handling Heavy Ad Interventions"
   },
   "sdk/LowTextContrastIssue.ts | colorAndContrastAccessibility": {

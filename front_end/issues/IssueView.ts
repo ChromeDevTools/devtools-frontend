@@ -462,13 +462,13 @@ class AffectedMixedContentView extends AffectedResourcesView {
 }
 
 class AffectedHeavyAdView extends AffectedResourcesView {
-  _issue: SDK.Issue.Issue;
-  constructor(parent: IssueView, issue: SDK.Issue.Issue) {
+  _issue: AggregatedIssue;
+  constructor(parent: IssueView, issue: AggregatedIssue) {
     super(parent, {singular: i18nString(UIStrings.resource), plural: i18nString(UIStrings.resources)});
     this._issue = issue;
   }
 
-  _appendAffectedHeavyAds(heavyAds: Iterable<Protocol.Audits.HeavyAdIssueDetails>): void {
+  _appendAffectedHeavyAds(heavyAds: Iterable<SDK.HeavyAdIssue.HeavyAdIssue>): void {
     const header = document.createElement('tr');
     this.appendColumnTitle(header, i18nString(UIStrings.limitExceeded));
     this.appendColumnTitle(header, i18nString(UIStrings.resolutionStatus));
@@ -478,7 +478,7 @@ class AffectedHeavyAdView extends AffectedResourcesView {
 
     let count = 0;
     for (const heavyAd of heavyAds) {
-      this._appendAffectedHeavyAd(heavyAd);
+      this._appendAffectedHeavyAd(heavyAd.details());
       count++;
     }
     this.updateAffectedResourceCount(count);
@@ -529,7 +529,7 @@ class AffectedHeavyAdView extends AffectedResourcesView {
 
   update(): void {
     this.clear();
-    this._appendAffectedHeavyAds(this._issue.heavyAds());
+    this._appendAffectedHeavyAds(this._issue.getHeavyAdIssues());
   }
 }
 

@@ -64,7 +64,7 @@ devtools_module("sdk") {
     "ResourceTreeModel.js",
     "RuntimeModel.js",
     "SDKModel.js",
-    "SameSiteCookieIssue.js",
+    "SameSiteCookieIssue.ts",
     "ScreenCaptureModel.js",
     "Script.js",
     "SecurityOriginManager.js",

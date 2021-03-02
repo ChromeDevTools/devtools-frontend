@@ -8093,16 +8093,16 @@
   "sdk/ResourceTreeModel.js | top": {
     "message": "top"
   },
-  "sdk/SameSiteCookieIssue.js | anInsecure": {
+  "sdk/SameSiteCookieIssue.ts | anInsecure": {
     "message": "an insecure"
   },
-  "sdk/SameSiteCookieIssue.js | aSecure": {
+  "sdk/SameSiteCookieIssue.ts | aSecure": {
     "message": "a secure"
   },
-  "sdk/SameSiteCookieIssue.js | howSchemefulSamesiteWorks": {
+  "sdk/SameSiteCookieIssue.ts | howSchemefulSamesiteWorks": {
     "message": "How Schemeful Same-Site Works"
   },
-  "sdk/SameSiteCookieIssue.js | samesiteCookiesExplained": {
+  "sdk/SameSiteCookieIssue.ts | samesiteCookiesExplained": {
     "message": "SameSite cookies explained"
   },
   "sdk/Script.js | scriptRemovedOrDeleted": {

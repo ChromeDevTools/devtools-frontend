@@ -135,6 +135,8 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('lighthouse/LighthouseController.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
+
 export class LighthouseController extends Common.ObjectWrapper.ObjectWrapper implements
     SDK.SDKModel.SDKModelObserver<SDK.ServiceWorkerManager.ServiceWorkerManager> {
   _manager?: SDK.ServiceWorkerManager.ServiceWorkerManager|null;
@@ -245,6 +247,7 @@ export class LighthouseController extends Common.ObjectWrapper.ObjectWrapper imp
     const usageData = await mainTarget.storageAgent().invoke_getUsageAndQuota({origin: mainTarget.inspectedURL()});
     const locations = usageData.usageBreakdown.filter(usage => usage.usage)
                           .map(usage => STORAGE_TYPE_NAMES.get(usage.storageType))
+                          .map(i18nStringFn => i18nStringFn ? i18nStringFn() : undefined)
                           .filter(Boolean);
     if (locations.length === 1) {
       return i18nString(UIStrings.thereMayBeStoredDataAffectingSingular, {PH1: locations[0]});
@@ -351,9 +354,9 @@ export class LighthouseController extends Common.ObjectWrapper.ObjectWrapper imp
 }
 
 const STORAGE_TYPE_NAMES = new Map([
-  [Protocol.Storage.StorageType.Local_storage, i18nString(UIStrings.localStorage)],
-  [Protocol.Storage.StorageType.Indexeddb, i18nString(UIStrings.indexeddb)],
-  [Protocol.Storage.StorageType.Websql, i18nString(UIStrings.webSql)],
+  [Protocol.Storage.StorageType.Local_storage, i18nLazyString(UIStrings.localStorage)],
+  [Protocol.Storage.StorageType.Indexeddb, i18nLazyString(UIStrings.indexeddb)],
+  [Protocol.Storage.StorageType.Websql, i18nLazyString(UIStrings.webSql)],
 ]);
 
 export const Presets: Preset[] = [
@@ -361,44 +364,44 @@ export const Presets: Preset[] = [
   {
     setting: Common.Settings.Settings.instance().createSetting('lighthouse.cat_perf', true),
     configID: 'performance',
-    title: i18nString(UIStrings.performance),
-    description: i18nString(UIStrings.howLongDoesThisAppTakeToShow),
+    title: i18nLazyString(UIStrings.performance),
+    description: i18nLazyString(UIStrings.howLongDoesThisAppTakeToShow),
     plugin: false,
   },
   {
     setting: Common.Settings.Settings.instance().createSetting('lighthouse.cat_pwa', true),
     configID: 'pwa',
-    title: i18nString(UIStrings.progressiveWebApp),
-    description: i18nString(UIStrings.doesThisPageMeetTheStandardOfA),
+    title: i18nLazyString(UIStrings.progressiveWebApp),
+    description: i18nLazyString(UIStrings.doesThisPageMeetTheStandardOfA),
     plugin: false,
   },
   {
     setting: Common.Settings.Settings.instance().createSetting('lighthouse.cat_best_practices', true),
     configID: 'best-practices',
-    title: i18nString(UIStrings.bestPractices),
-    description: i18nString(UIStrings.doesThisPageFollowBestPractices),
+    title: i18nLazyString(UIStrings.bestPractices),
+    description: i18nLazyString(UIStrings.doesThisPageFollowBestPractices),
     plugin: false,
   },
   {
     setting: Common.Settings.Settings.instance().createSetting('lighthouse.cat_a11y', true),
     configID: 'accessibility',
-    title: i18nString(UIStrings.accessibility),
-    description: i18nString(UIStrings.isThisPageUsableByPeopleWith),
+    title: i18nLazyString(UIStrings.accessibility),
+    description: i18nLazyString(UIStrings.isThisPageUsableByPeopleWith),
     plugin: false,
   },
   {
     setting: Common.Settings.Settings.instance().createSetting('lighthouse.cat_seo', true),
     configID: 'seo',
-    title: i18nString(UIStrings.seo),
-    description: i18nString(UIStrings.isThisPageOptimizedForSearch),
+    title: i18nLazyString(UIStrings.seo),
+    description: i18nLazyString(UIStrings.isThisPageOptimizedForSearch),
     plugin: false,
   },
   {
     setting: Common.Settings.Settings.instance().createSetting('lighthouse.cat_pubads', false),
     plugin: true,
     configID: 'lighthouse-plugin-publisher-ads',
-    title: i18nString(UIStrings.publisherAds),
-    description: i18nString(UIStrings.isThisPageOptimizedForAdSpeedAnd),
+    title: i18nLazyString(UIStrings.publisherAds),
+    description: i18nLazyString(UIStrings.isThisPageOptimizedForAdSpeedAnd),
   },
 ];
 
@@ -409,26 +412,26 @@ export type Flags = {
 export const RuntimeSettings: RuntimeSetting[] = [
   {
     setting: Common.Settings.Settings.instance().createSetting('lighthouse.device_type', 'mobile'),
-    title: i18nString(UIStrings.applyMobileEmulation),
-    description: i18nString(UIStrings.applyMobileEmulationDuring),
+    title: i18nLazyString(UIStrings.applyMobileEmulation),
+    description: i18nLazyString(UIStrings.applyMobileEmulationDuring),
     setFlags: (flags: Flags, value: string|boolean): void => {
       // See Audits.AuditsPanel._setupEmulationAndProtocolConnection()
       flags.emulatedFormFactor = value;
     },
     options: [
-      {label: i18nString(UIStrings.mobile), value: 'mobile'},
-      {label: i18nString(UIStrings.desktop), value: 'desktop'},
+      {label: i18nLazyString(UIStrings.mobile), value: 'mobile'},
+      {label: i18nLazyString(UIStrings.desktop), value: 'desktop'},
     ],
     learnMore: undefined,
   },
   {
     // This setting is disabled, but we keep it around to show in the UI.
     setting: Common.Settings.Settings.instance().createSetting('lighthouse.throttling', true),
-    title: i18nString(UIStrings.simulatedThrottling),
+    title: i18nLazyString(UIStrings.simulatedThrottling),
     // We will disable this when we have a Lantern trace viewer within DevTools.
     learnMore:
         'https://github.com/GoogleChrome/lighthouse/blob/master/docs/throttling.md#devtools-lighthouse-panel-throttling',
-    description: i18nString(UIStrings.simulateASlowerPageLoadBasedOn),
+    description: i18nLazyString(UIStrings.simulateASlowerPageLoadBasedOn),
     setFlags: (flags: Flags, value: string|boolean): void => {
       flags.throttlingMethod = value ? 'simulate' : 'devtools';
     },
@@ -436,8 +439,8 @@ export const RuntimeSettings: RuntimeSetting[] = [
   },
   {
     setting: Common.Settings.Settings.instance().createSetting('lighthouse.clear_storage', true),
-    title: i18nString(UIStrings.clearStorage),
-    description: i18nString(UIStrings.resetStorageLocalstorage),
+    title: i18nLazyString(UIStrings.clearStorage),
+    description: i18nLazyString(UIStrings.resetStorageLocalstorage),
     setFlags: (flags: Flags, value: string|boolean): void => {
       flags.disableStorageReset = !value;
     },
@@ -456,15 +459,15 @@ export const Events = {
 export interface Preset {
   setting: Common.Settings.Setting<boolean>;
   configID: string;
-  title: string;
-  description: string;
+  title: () => Common.UIString.LocalizedString;
+  description: () => Common.UIString.LocalizedString;
   plugin: boolean;
 }
 export interface RuntimeSetting {
   setting: Common.Settings.Setting<string|boolean>;
-  description: string;
+  description: () => Common.UIString.LocalizedString;
   setFlags: (flags: Flags, value: string|boolean) => void;
-  options?: {label: string, value: string}[];
-  title?: string;
+  options?: {label: () => Common.UIString.LocalizedString, value: string}[];
+  title?: () => Common.UIString.LocalizedString;
   learnMore?: string;
 }

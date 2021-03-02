@@ -67,7 +67,8 @@ export class StartView extends UI.Widget.Widget {
     }
 
     const control = new RadioSetting(
-        runtimeSetting.options, runtimeSetting.setting as Common.Settings.Setting<string>, runtimeSetting.description);
+        runtimeSetting.options, runtimeSetting.setting as Common.Settings.Setting<string>,
+        runtimeSetting.description());
     parentElement.appendChild(control.element);
     UI.ARIAUtils.setAccessibleName(control.element, label);
   }
@@ -78,9 +79,9 @@ export class StartView extends UI.Widget.Widget {
       throw new Error(`${settingName} is not a setting with a title`);
     }
 
-    runtimeSetting.setting.setTitle(runtimeSetting.title);
+    runtimeSetting.setting.setTitle(runtimeSetting.title());
     const control = new UI.Toolbar.ToolbarSettingCheckbox(
-        runtimeSetting.setting as Common.Settings.Setting<boolean>, runtimeSetting.description);
+        runtimeSetting.setting as Common.Settings.Setting<boolean>, runtimeSetting.description());
     toolbar.appendToolbarItem(control);
     if (runtimeSetting.learnMore) {
       const link =
@@ -100,8 +101,8 @@ export class StartView extends UI.Widget.Widget {
     const pluginFormElements = fragment.$('plugins-form-elements');
     for (const preset of Presets) {
       const formElements = preset.plugin ? pluginFormElements : categoryFormElements;
-      preset.setting.setTitle(preset.title);
-      const checkbox = new UI.Toolbar.ToolbarSettingCheckbox(preset.setting, preset.description);
+      preset.setting.setTitle(preset.title());
+      const checkbox = new UI.Toolbar.ToolbarSettingCheckbox(preset.setting, preset.description());
       const row = formElements.createChild('div', 'vbox lighthouse-launcher-row');
       row.appendChild(checkbox.element);
     }

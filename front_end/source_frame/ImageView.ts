@@ -91,6 +91,7 @@ export class ImageView extends UI.View.SimpleView {
   _uiSourceCode: Workspace.UISourceCode.UISourceCode|null;
   _sizeLabel: UI.Toolbar.ToolbarText;
   _dimensionsLabel: UI.Toolbar.ToolbarText;
+  _aspectRatioLabel: UI.Toolbar.ToolbarText;
   _mimeTypeLabel: UI.Toolbar.ToolbarText;
   _container: HTMLElement;
   _imagePreviewElement: HTMLImageElement;
@@ -116,6 +117,7 @@ export class ImageView extends UI.View.SimpleView {
     }
     this._sizeLabel = new UI.Toolbar.ToolbarText();
     this._dimensionsLabel = new UI.Toolbar.ToolbarText();
+    this._aspectRatioLabel = new UI.Toolbar.ToolbarText();
     this._mimeTypeLabel = new UI.Toolbar.ToolbarText(mimeType);
     this._container = this.element.createChild('div', 'image');
     this._imagePreviewElement = (this._container.createChild('img', 'resource-image-view') as HTMLImageElement);
@@ -128,6 +130,8 @@ export class ImageView extends UI.View.SimpleView {
       this._sizeLabel,
       new UI.Toolbar.ToolbarSeparator(),
       this._dimensionsLabel,
+      new UI.Toolbar.ToolbarSeparator(),
+      this._aspectRatioLabel,
       new UI.Toolbar.ToolbarSeparator(),
       this._mimeTypeLabel,
     ];
@@ -167,6 +171,8 @@ export class ImageView extends UI.View.SimpleView {
     await loadPromise;
     this._dimensionsLabel.setText(i18nString(
         UIStrings.dD, {PH1: this._imagePreviewElement.naturalWidth, PH2: this._imagePreviewElement.naturalHeight}));
+    this._aspectRatioLabel.setText(Platform.NumberUtilities.aspectRatio(
+        this._imagePreviewElement.naturalWidth, this._imagePreviewElement.naturalHeight));
   }
 
   _contextMenu(event: Event): void {

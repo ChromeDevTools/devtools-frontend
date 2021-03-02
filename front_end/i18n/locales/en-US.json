@@ -7751,19 +7751,19 @@
   "sdk/ConsoleModel.js | profileSStarted": {
     "message": "Profile '{PH1}' started."
   },
-  "sdk/ContentSecurityPolicyIssue.js | contentSecurityPolicyEval": {
+  "sdk/ContentSecurityPolicyIssue.ts | contentSecurityPolicyEval": {
     "message": "Content Security Policy - Eval"
   },
-  "sdk/ContentSecurityPolicyIssue.js | contentSecurityPolicyInlineCode": {
+  "sdk/ContentSecurityPolicyIssue.ts | contentSecurityPolicyInlineCode": {
     "message": "Content Security Policy - Inline Code"
   },
-  "sdk/ContentSecurityPolicyIssue.js | contentSecurityPolicySource": {
+  "sdk/ContentSecurityPolicyIssue.ts | contentSecurityPolicySource": {
     "message": "Content Security Policy - Source Allowlists"
   },
-  "sdk/ContentSecurityPolicyIssue.js | trustedTypesFixViolations": {
+  "sdk/ContentSecurityPolicyIssue.ts | trustedTypesFixViolations": {
     "message": "Trusted Types - Fix violations"
   },
-  "sdk/ContentSecurityPolicyIssue.js | trustedTypesPolicyViolation": {
+  "sdk/ContentSecurityPolicyIssue.ts | trustedTypesPolicyViolation": {
     "message": "Trusted Types - Policy violation"
   },
   "sdk/CorsIssue.ts | corsForPrivateNetworksRfc": {

@@ -4,7 +4,7 @@
 
 import * as i18n from '../i18n/i18n.js';
 
-import {Issue, IssueCategory, IssueKind, LazyMarkdownIssueDescription, MarkdownIssueDescription, resolveLazyDescription,} from './Issue.js';  // eslint-disable-line no-unused-vars
+import {Issue, IssueCategory, LazyMarkdownIssueDescription, MarkdownIssueDescription, resolveLazyDescription} from './Issue.js';  // eslint-disable-line no-unused-vars
 import {IssuesModel} from './IssuesModel.js';  // eslint-disable-line no-unused-vars
 
 const UIStrings = {
@@ -29,54 +29,45 @@ const UIStrings = {
   */
   trustedTypesPolicyViolation: 'Trusted Types - Policy violation',
 };
-const str_ = i18n.i18n.registerUIStrings('sdk/ContentSecurityPolicyIssue.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('sdk/ContentSecurityPolicyIssue.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 export class ContentSecurityPolicyIssue extends Issue {
-  /**
-   * @param {!Protocol.Audits.ContentSecurityPolicyIssueDetails} issueDetails
-   * @param {!IssuesModel} issuesModel
-   */
-  constructor(issueDetails, issuesModel) {
+  private issueDetails: Protocol.Audits.ContentSecurityPolicyIssueDetails;
+
+  constructor(issueDetails: Protocol.Audits.ContentSecurityPolicyIssueDetails, issuesModel: IssuesModel) {
     const issueCode = [
-      Protocol.Audits.InspectorIssueCode.ContentSecurityPolicyIssue, issueDetails.contentSecurityPolicyViolationType
+      Protocol.Audits.InspectorIssueCode.ContentSecurityPolicyIssue,
+      issueDetails.contentSecurityPolicyViolationType,
     ].join('::');
     super(issueCode, issuesModel);
-    this._issueDetails = issueDetails;
+    this.issueDetails = issueDetails;
   }
 
-  /**
-   * @override
-   * @return {!IssueCategory}
-   */
-  getCategory() {
+  getCategory(): IssueCategory {
     return IssueCategory.ContentSecurityPolicy;
   }
 
-  /**
-   * @override
-   * @return {string}
-   */
-  primaryKey() {
-    return JSON.stringify(this._issueDetails, [
-      'blockedURL', 'contentSecurityPolicyViolationType', 'violatedDirective', 'isReportOnly', 'sourceCodeLocation',
-      'url', 'lineNumber', 'columnNumber', 'violatingNodeId'
+  primaryKey(): string {
+    return JSON.stringify(this.issueDetails, [
+      'blockedURL',
+      'contentSecurityPolicyViolationType',
+      'violatedDirective',
+      'isReportOnly',
+      'sourceCodeLocation',
+      'url',
+      'lineNumber',
+      'columnNumber',
+      'violatingNodeId',
     ]);
   }
 
-  /**
-   * @override
-   * @returns {?MarkdownIssueDescription}
-   */
-  getDescription() {
-    return resolveLazyDescription(issueDescriptions.get(this._issueDetails.contentSecurityPolicyViolationType));
+  getDescription(): MarkdownIssueDescription|null {
+    return resolveLazyDescription(issueDescriptions.get(this.issueDetails.contentSecurityPolicyViolationType));
   }
 
-  /**
-   * @returns {!Protocol.Audits.ContentSecurityPolicyIssueDetails}
-   */
-  details() {
-    return this._issueDetails;
+  details(): Protocol.Audits.ContentSecurityPolicyIssueDetails {
+    return this.issueDetails;
   }
 }
 
@@ -85,7 +76,7 @@ const cspURLViolation = {
   substitutions: undefined,
   links: [{
     link: 'https://developers.google.com/web/fundamentals/security/csp#source_allowlists',
-    linkTitle: i18nLazyString(UIStrings.contentSecurityPolicySource)
+    linkTitle: i18nLazyString(UIStrings.contentSecurityPolicySource),
   }],
 };
 
@@ -94,7 +85,7 @@ const cspInlineViolation = {
   substitutions: undefined,
   links: [{
     link: 'https://developers.google.com/web/fundamentals/security/csp#inline_code_is_considered_harmful',
-    linkTitle: i18nLazyString(UIStrings.contentSecurityPolicyInlineCode)
+    linkTitle: i18nLazyString(UIStrings.contentSecurityPolicyInlineCode),
   }],
 };
 
@@ -103,7 +94,7 @@ const cspEvalViolation = {
   substitutions: undefined,
   links: [{
     link: 'https://developers.google.com/web/fundamentals/security/csp#eval_too',
-    linkTitle: i18nLazyString(UIStrings.contentSecurityPolicyEval)
+    linkTitle: i18nLazyString(UIStrings.contentSecurityPolicyEval),
   }],
 };
 
@@ -112,7 +103,7 @@ const cspTrustedTypesSinkViolation = {
   substitutions: undefined,
   links: [{
     link: 'https://web.dev/trusted-types/#fix-the-violations',
-    linkTitle: i18nLazyString(UIStrings.trustedTypesFixViolations)
+    linkTitle: i18nLazyString(UIStrings.trustedTypesFixViolations),
   }],
 };
 
@@ -122,42 +113,36 @@ const cspTrustedTypesPolicyViolation = {
   links: [{link: 'https://web.dev/trusted-types/', linkTitle: i18nLazyString(UIStrings.trustedTypesPolicyViolation)}],
 };
 
-/** @type {string} */
 export const urlViolationCode = [
   Protocol.Audits.InspectorIssueCode.ContentSecurityPolicyIssue,
-  Protocol.Audits.ContentSecurityPolicyViolationType.KURLViolation
+  Protocol.Audits.ContentSecurityPolicyViolationType.KURLViolation,
 ].join('::');
 
-/** @type {string} */
 export const inlineViolationCode = [
   Protocol.Audits.InspectorIssueCode.ContentSecurityPolicyIssue,
-  Protocol.Audits.ContentSecurityPolicyViolationType.KInlineViolation
+  Protocol.Audits.ContentSecurityPolicyViolationType.KInlineViolation,
 ].join('::');
 
-/** @type {string} */
 export const evalViolationCode = [
   Protocol.Audits.InspectorIssueCode.ContentSecurityPolicyIssue,
-  Protocol.Audits.ContentSecurityPolicyViolationType.KEvalViolation
+  Protocol.Audits.ContentSecurityPolicyViolationType.KEvalViolation,
 ].join('::');
 
-/** @type {string} */
 export const trustedTypesSinkViolationCode = [
   Protocol.Audits.InspectorIssueCode.ContentSecurityPolicyIssue,
-  Protocol.Audits.ContentSecurityPolicyViolationType.KTrustedTypesSinkViolation
+  Protocol.Audits.ContentSecurityPolicyViolationType.KTrustedTypesSinkViolation,
 ].join('::');
 
-/** @type {string} */
 export const trustedTypesPolicyViolationCode = [
   Protocol.Audits.InspectorIssueCode.ContentSecurityPolicyIssue,
-  Protocol.Audits.ContentSecurityPolicyViolationType.KTrustedTypesPolicyViolation
+  Protocol.Audits.ContentSecurityPolicyViolationType.KTrustedTypesPolicyViolation,
 ].join('::');
 
-// TODO(crbug.com/1082628): Add handling of other CSP violation types later as they'll need more work.
-/** @type {!Map<!Protocol.Audits.ContentSecurityPolicyViolationType, !LazyMarkdownIssueDescription>} */
-const issueDescriptions = new Map([
-  [Protocol.Audits.ContentSecurityPolicyViolationType.KURLViolation, cspURLViolation],
-  [Protocol.Audits.ContentSecurityPolicyViolationType.KInlineViolation, cspInlineViolation],
-  [Protocol.Audits.ContentSecurityPolicyViolationType.KEvalViolation, cspEvalViolation],
-  [Protocol.Audits.ContentSecurityPolicyViolationType.KTrustedTypesSinkViolation, cspTrustedTypesSinkViolation],
-  [Protocol.Audits.ContentSecurityPolicyViolationType.KTrustedTypesPolicyViolation, cspTrustedTypesPolicyViolation],
-]);
+const issueDescriptions: Map<Protocol.Audits.ContentSecurityPolicyViolationType, LazyMarkdownIssueDescription> =
+    new Map([
+      [Protocol.Audits.ContentSecurityPolicyViolationType.KURLViolation, cspURLViolation],
+      [Protocol.Audits.ContentSecurityPolicyViolationType.KInlineViolation, cspInlineViolation],
+      [Protocol.Audits.ContentSecurityPolicyViolationType.KEvalViolation, cspEvalViolation],
+      [Protocol.Audits.ContentSecurityPolicyViolationType.KTrustedTypesSinkViolation, cspTrustedTypesSinkViolation],
+      [Protocol.Audits.ContentSecurityPolicyViolationType.KTrustedTypesPolicyViolation, cspTrustedTypesPolicyViolation],
+    ]);

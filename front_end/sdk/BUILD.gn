@@ -25,7 +25,7 @@ devtools_module("sdk") {
     "Connections.js",
     "ConsoleModel.js",
     "ConsoleModelTypes.ts",
-    "ContentSecurityPolicyIssue.js",
+    "ContentSecurityPolicyIssue.ts",
     "Cookie.js",
     "CookieModel.js",
     "CookieParser.js",

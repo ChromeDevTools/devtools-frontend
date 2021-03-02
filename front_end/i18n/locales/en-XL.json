@@ -7751,19 +7751,19 @@
   "sdk/ConsoleModel.js | profileSStarted": {
     "message": "P̂ŕôf́îĺê '{PH1}' śt̂ár̂t́êd́."
   },
-  "sdk/ContentSecurityPolicyIssue.js | contentSecurityPolicyEval": {
+  "sdk/ContentSecurityPolicyIssue.ts | contentSecurityPolicyEval": {
     "message": "Ĉón̂t́êńt̂ Śêćûŕît́ŷ Ṕôĺîćŷ - Év̂ál̂"
   },
-  "sdk/ContentSecurityPolicyIssue.js | contentSecurityPolicyInlineCode": {
+  "sdk/ContentSecurityPolicyIssue.ts | contentSecurityPolicyInlineCode": {
     "message": "Ĉón̂t́êńt̂ Śêćûŕît́ŷ Ṕôĺîćŷ - Ín̂ĺîńê Ćôd́ê"
   },
-  "sdk/ContentSecurityPolicyIssue.js | contentSecurityPolicySource": {
+  "sdk/ContentSecurityPolicyIssue.ts | contentSecurityPolicySource": {
     "message": "Ĉón̂t́êńt̂ Śêćûŕît́ŷ Ṕôĺîćŷ - Śôúr̂ćê Ál̂ĺôẃl̂íŝt́ŝ"
   },
-  "sdk/ContentSecurityPolicyIssue.js | trustedTypesFixViolations": {
+  "sdk/ContentSecurityPolicyIssue.ts | trustedTypesFixViolations": {
     "message": "T̂ŕûśt̂éd̂ T́ŷṕêś - F̂íx̂ v́îól̂át̂íôńŝ"
   },
-  "sdk/ContentSecurityPolicyIssue.js | trustedTypesPolicyViolation": {
+  "sdk/ContentSecurityPolicyIssue.ts | trustedTypesPolicyViolation": {
     "message": "T̂ŕûśt̂éd̂ T́ŷṕêś - P̂ól̂íĉý v̂íôĺât́îón̂"
   },
   "sdk/CorsIssue.ts | corsForPrivateNetworksRfc": {

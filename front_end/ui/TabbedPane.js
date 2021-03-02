@@ -42,7 +42,7 @@ import {installDragHandle, invokeOnceAfterBatchUpdate} from './UIUtils.js';
 import {VBox, Widget} from './Widget.js';  // eslint-disable-line no-unused-vars
 import {Events as ZoomManagerEvents, ZoomManager} from './ZoomManager.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description The aria label for the button to open more tabs at the right tabbed pane in Elements tools
   */

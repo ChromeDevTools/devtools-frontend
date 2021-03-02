@@ -38,7 +38,7 @@ import {ToolbarButton} from './Toolbar.js';
 import {Widget} from './Widget.js';
 import {Events as ZoomManagerEvents, ZoomManager} from './ZoomManager.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text to show a tool or panel
   *@example {Audits} PH1

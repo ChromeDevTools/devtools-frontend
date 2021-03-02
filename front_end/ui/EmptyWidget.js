@@ -33,7 +33,7 @@ import * as i18n from '../i18n/i18n.js';
 import {VBox} from './Widget.js';
 import {XLink} from './XLink.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text that is usually a hyperlink to more documentation
   */

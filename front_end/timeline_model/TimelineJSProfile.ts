@@ -10,7 +10,7 @@ import * as SDK from '../sdk/sdk.js';
 
 import {RecordType, TimelineModelImpl} from './TimelineModel.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text for the name of a thread of the page
   *@example {1} PH1

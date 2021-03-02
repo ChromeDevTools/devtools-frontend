@@ -16,7 +16,7 @@ import {addColumnVisibilityCheckboxes, addSortableColumnItems} from './DataGridC
 import {calculateColumnWidthPercentageFromWeighting, calculateFirstFocusableCell, Cell, CellPosition, Column, ContextMenuHeaderResetClickEvent, getRowEntryForColumnId, handleArrowKeyNavigation, renderCellValue, Row, SortDirection, SortState} from './DataGridUtils.js';
 
 import * as i18n from '../../i18n/i18n.js';
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description A context menu item in the Data Grid of a data grid
   */

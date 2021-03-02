@@ -11,7 +11,7 @@ import {Tooltip} from './Tooltip.js';
 import {createInput, createTextButton, ElementFocusRestorer} from './UIUtils.js';
 import {VBox} from './Widget.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text on a button to start editing text
   */

@@ -42,7 +42,7 @@ import {measurePreferredSize} from './UIUtils.js';
 import {createShadowRootWithCoreStyles} from './utils/create-shadow-root-with-core-styles.js';
 import {measuredScrollbarWidth} from './utils/measured-scrollbar-width.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Aria alert to read the suggestion for the suggestion box when typing in text editor
   *@example {name} PH1

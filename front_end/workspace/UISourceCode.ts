@@ -39,7 +39,7 @@ import * as TextUtils from '../text_utils/text_utils.js';
 import type {Project} from './WorkspaceImpl.js';
 import {Events as WorkspaceImplEvents, projectTypes} from './WorkspaceImpl.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text for the index of something
   */

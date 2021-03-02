@@ -15,7 +15,7 @@ import {Events as ListModelEvents, ListModel} from './ListModel.js';   // eslint
 import {appendStyle} from './utils/append-style.js';
 import {createShadowRootWithCoreStyles} from './utils/create-shadow-root-with-core-styles.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Placeholder text in Soft Drop Down
   */

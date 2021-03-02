@@ -6,7 +6,7 @@ import * as i18n from '../i18n/i18n.js';
 
 import {VBox} from './Widget.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text in dialog box when the target page crashed
   */

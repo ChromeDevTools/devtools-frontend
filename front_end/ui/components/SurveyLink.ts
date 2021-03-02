@@ -9,7 +9,7 @@ import * as LitHtml from '../../third_party/lit-html/lit-html.js';
 import type {IconData} from './Icon.js';
 
 import * as i18n from '../../i18n/i18n.js';
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text shown when the link to open a survey is clicked but the survey has not yet appeared
   */

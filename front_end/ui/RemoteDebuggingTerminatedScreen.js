@@ -8,7 +8,7 @@ import {SizeBehavior} from './GlassPane.js';
 import {createTextButton, formatLocalized} from './UIUtils.js';
 import {VBox} from './Widget.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text in a dialog box showing how to reconnect to DevTools when remote debugging has been terminated
   */

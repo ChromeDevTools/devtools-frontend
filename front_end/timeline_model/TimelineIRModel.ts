@@ -8,7 +8,7 @@ import * as Common from '../common/common.js';
 import * as i18n from '../i18n/i18n.js';
 import type * as SDK from '../sdk/sdk.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   * @description Error text in Timeline IRModel of the Performance panel. Indicates that two fling
   * gestures were detected at the same time, which should not be possible.

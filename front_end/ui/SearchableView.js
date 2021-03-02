@@ -40,7 +40,7 @@ import {Tooltip} from './Tooltip.js';
 import {createTextButton} from './UIUtils.js';
 import {VBox} from './Widget.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text on a button to replace one instance with input text for the ctrl+F search bar
   */

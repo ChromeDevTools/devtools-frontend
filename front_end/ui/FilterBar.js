@@ -43,7 +43,7 @@ import {Tooltip} from './Tooltip.js';
 import {CheckboxLabel, createTextChild} from './UIUtils.js';
 import {HBox} from './Widget.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text to filter result items
   */

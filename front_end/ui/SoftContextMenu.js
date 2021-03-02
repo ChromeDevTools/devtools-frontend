@@ -37,7 +37,7 @@ import {AnchorBehavior, GlassPane, MarginBehavior, PointerEventsBehavior, SizeBe
 import {Icon} from './Icon.js';
 import {createTextChild, ElementFocusRestorer} from './UIUtils.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text exposed to screen readers on checked items.
   */

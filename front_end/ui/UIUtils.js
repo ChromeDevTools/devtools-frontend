@@ -52,7 +52,7 @@ import {injectCoreStyles} from './utils/inject-core-styles.js';
 import {measuredScrollbarWidth} from './utils/measured-scrollbar-width.js';
 import {registerCustomElement} from './utils/register-custom-element.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Micros format in UIUtils
   *@example {2} PH1

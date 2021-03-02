@@ -37,7 +37,7 @@ import {InspectorView} from './InspectorView.js';
 import {Tooltip} from './Tooltip.js';
 import {CheckboxLabel} from './UIUtils.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Note when a setting change will require the user to reload DevTools
   *@example {*} PH1

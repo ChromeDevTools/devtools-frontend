@@ -36,7 +36,7 @@ import {ActionDelegate} from './ActionRegistration.js';             // eslint-di
 import {Context} from './Context.js';                               // eslint-disable-line no-unused-vars
 import {Provider, ToolbarButton, ToolbarItem} from './Toolbar.js';  // eslint-disable-line no-unused-vars
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text to close something
   */

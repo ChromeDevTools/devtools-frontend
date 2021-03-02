@@ -51,7 +51,7 @@ import {View, ViewLocation, ViewLocationResolver} from './View.js';  // eslint-d
 import {ViewManager} from './ViewManager.js';
 import {VBox, WidgetFocusRestorer} from './Widget.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Title of more tabs button in inspector view
   */

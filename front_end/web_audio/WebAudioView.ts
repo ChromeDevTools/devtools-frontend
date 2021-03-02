@@ -13,7 +13,7 @@ import {AudioContextSelector, Events as SelectorEvents} from './AudioContextSele
 import {GraphManager} from './graph_visualizer/GraphManager.js';
 import {Events as ModelEvents, WebAudioModel} from './WebAudioModel.js';
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Text in Web Audio View
   */

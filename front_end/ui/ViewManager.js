@@ -16,7 +16,7 @@ import {ProvidedView, TabbedViewLocation, View, ViewLocation, ViewLocationResolv
 import {getRegisteredLocationResolvers, getRegisteredViewExtensions, registerLocationResolver, registerViewExtension, ViewLocationCategoryValues, ViewLocationValues, ViewPersistence, ViewRegistration} from './ViewRegistration.js';
 import {VBox, Widget} from './Widget.js';  // eslint-disable-line no-unused-vars
 
-export const UIStrings = {
+const UIStrings = {
   /**
   *@description Aria label for the tab panel view container
   *@example {Sensors} PH1

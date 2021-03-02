@@ -224,5 +224,6 @@ devtools_module_entrypoint_sources = [
 generated_module_entrypoint_sources = []
 
 foreach(entrypoint, devtools_module_entrypoint_sources) {
-  generated_module_entrypoint_sources += [ "$resources_out_dir/$entrypoint" ]
+  generated_module_entrypoint_sources +=
+      [ "$root_gen_dir/" + devtools_location + "front_end/$entrypoint" ]
 }

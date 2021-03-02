@@ -23,6 +23,8 @@ export enum IssueCategory {
 // eslint-disable-next-line rulesdir/const_enum
 export enum IssueKind {
   BreakingChange = 'BreakingChange',
+  PageError = 'PageError',
+  Improvement = 'Improvement',
 }
 
 export function getShowThirdPartyIssuesSetting(): Common.Settings.Setting<boolean> {
@@ -52,14 +54,12 @@ export function resolveLazyDescription(lazyDescription: LazyMarkdownIssueDescrip
 export interface MarkdownIssueDescription {
   file: string;
   substitutions: Map<string, string>|undefined;
-  issueKind: IssueKind;
   links: {link: string, linkTitle: string}[];
 }
 
 export interface LazyMarkdownIssueDescription {
   file: string;
   substitutions: Map<string, () => string>|undefined;
-  issueKind: IssueKind;
   links: {link: string, linkTitle: () => string}[];
 }
 

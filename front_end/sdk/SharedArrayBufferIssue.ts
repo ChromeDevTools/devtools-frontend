@@ -5,7 +5,7 @@
 import * as i18n from '../i18n/i18n.js';
 
 import type {MarkdownIssueDescription} from './Issue.js';
-import {Issue, IssueCategory, IssueKind} from './Issue.js';
+import {Issue, IssueCategory} from './Issue.js';
 import type {IssuesModel} from './IssuesModel.js';
 
 const UIStrings = {
@@ -37,7 +37,6 @@ export class SharedArrayBufferIssue extends Issue {
     return {
       file: 'issues/descriptions/sharedArrayBuffer.md',
       substitutions: undefined,
-      issueKind: IssueKind.BreakingChange,
       links: [{
         link: 'https://developer.chrome.com/blog/enabling-shared-array-buffer/',
         linkTitle: i18nString(UIStrings.enablingSharedArrayBuffer),

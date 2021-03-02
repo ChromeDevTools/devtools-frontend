@@ -96,7 +96,6 @@ const issueDescriptions = new Map([
     'CrossOriginEmbedderPolicyIssue::CorpNotSameOriginAfterDefaultedToSameOriginByCoep', {
       file: 'issues/descriptions/CoepCorpNotSameOriginAfterDefaultedToSameOriginByCoep.md',
       substitutions: undefined,
-      issueKind: IssueKind.BreakingChange,
       links: [
         {link: 'https://web.dev/coop-coep/', linkTitle: i18nLazyString(UIStrings.coopAndCoep)},
         {link: 'https://web.dev/same-site-same-origin/', linkTitle: i18nLazyString(UIStrings.samesiteAndSameorigin)},
@@ -107,7 +106,6 @@ const issueDescriptions = new Map([
     'CrossOriginEmbedderPolicyIssue::CoepFrameResourceNeedsCoepHeader', {
       file: 'issues/descriptions/CoepFrameResourceNeedsCoepHeader.md',
       substitutions: undefined,
-      issueKind: IssueKind.BreakingChange,
       links: [
         {link: 'https://web.dev/coop-coep/', linkTitle: i18nLazyString(UIStrings.coopAndCoep)},
       ],
@@ -117,7 +115,6 @@ const issueDescriptions = new Map([
     'CrossOriginEmbedderPolicyIssue::CoopSandboxedIframeCannotNavigateToCoopPage', {
       file: 'issues/descriptions/CoepCoopSandboxedIframeCannotNavigateToCoopPage.md',
       substitutions: undefined,
-      issueKind: IssueKind.BreakingChange,
       links: [
         {link: 'https://web.dev/coop-coep/', linkTitle: i18nLazyString(UIStrings.coopAndCoep)},
       ],
@@ -127,7 +124,6 @@ const issueDescriptions = new Map([
     'CrossOriginEmbedderPolicyIssue::CorpNotSameSite', {
       file: 'issues/descriptions/CoepCorpNotSameSite.md',
       substitutions: undefined,
-      issueKind: IssueKind.BreakingChange,
       links: [
         {link: 'https://web.dev/coop-coep/', linkTitle: i18nLazyString(UIStrings.coopAndCoep)},
         {link: 'https://web.dev/same-site-same-origin/', linkTitle: i18nLazyString(UIStrings.samesiteAndSameorigin)},
@@ -138,7 +134,6 @@ const issueDescriptions = new Map([
     'CrossOriginEmbedderPolicyIssue::CorpNotSameOrigin', {
       file: 'issues/descriptions/CoepCorpNotSameOrigin.md',
       substitutions: undefined,
-      issueKind: IssueKind.BreakingChange,
       links: [
         {link: 'https://web.dev/coop-coep/', linkTitle: i18nLazyString(UIStrings.coopAndCoep)},
         {link: 'https://web.dev/same-site-same-origin/', linkTitle: i18nLazyString(UIStrings.samesiteAndSameorigin)},

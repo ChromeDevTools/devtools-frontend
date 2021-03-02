@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as Root from '../root/root.js';
-import * as SDK from '../sdk/sdk.js';
+import type * as SDK from '../sdk/sdk.js';
 import * as Marked from '../third_party/marked/marked.js';
 
 import {MarkdownView} from './MarkdownView.js';
@@ -11,7 +11,6 @@ import {MarkdownView} from './MarkdownView.js';
 export interface IssueDescription {
   title: string;
   view: MarkdownView;
-  issueKind: SDK.Issue.IssueKind;
   links: {link: string, linkTitle: string}[];
 }
 
@@ -88,7 +87,6 @@ export function createIssueDescriptionFromRawMarkdown(
   return {
     title,
     view: markdownComponent,
-    issueKind: SDK.Issue.IssueKind.BreakingChange,
     links: description.links,
   };
 }

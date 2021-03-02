@@ -4,7 +4,7 @@
 
 import * as i18n from '../i18n/i18n.js';
 
-import {Issue, IssueCategory, IssueKind} from './Issue.js';
+import {Issue, IssueCategory} from './Issue.js';
 import type {MarkdownIssueDescription} from './Issue.js';
 import type {IssuesModel} from './IssuesModel.js';
 
@@ -37,7 +37,6 @@ export class CorsIssue extends Issue {
     return {
       file: 'issues/descriptions/corsInsecurePrivateNetwork.md',
       substitutions: undefined,
-      issueKind: IssueKind.BreakingChange,
       links: [{
         link: 'https://web.dev/cors-rfc1918-guide',
         linkTitle: i18nString(UIStrings.corsForPrivateNetworksRfc),

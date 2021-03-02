@@ -50,7 +50,6 @@ export class HeavyAdIssue extends Issue {
     return {
       file: 'issues/descriptions/heavyAd.md',
       substitutions: undefined,
-      issueKind: IssueKind.BreakingChange,
       links: [
         {
           link: 'https://developers.google.com/web/updates/2020/05/heavy-ad-interventions',

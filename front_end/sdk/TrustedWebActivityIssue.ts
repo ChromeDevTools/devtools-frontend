@@ -4,7 +4,8 @@
 
 import * as i18n from '../i18n/i18n.js';
 
-import {Issue, IssueCategory, IssueKind, LazyMarkdownIssueDescription, MarkdownIssueDescription, resolveLazyDescription} from './Issue.js';  // eslint-disable-line no-unused-vars
+import {Issue, IssueCategory, LazyMarkdownIssueDescription, MarkdownIssueDescription, resolveLazyDescription} from './Issue.js';
+
 const UIStrings = {
   /**
   *@description Label for the link for Trusted Web Activity issue
@@ -13,6 +14,7 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('sdk/TrustedWebActivityIssue.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
+
 export class TrustedWebActivityIssue extends Issue {
   private issueDetails: Protocol.Audits.TrustedWebActivityIssueDetails;
 
@@ -47,7 +49,6 @@ export class TrustedWebActivityIssue extends Issue {
 const twaDigitalAssetLinksFailed = {
   file: 'issues/descriptions/TwaDigitalAssetLinksFailed.md',
   substitutions: undefined,
-  issueKind: IssueKind.BreakingChange,
   links: [{
     link: 'https://blog.chromium.org/2020/06/changes-to-quality-criteria-for-pwas.html',
     linkTitle: i18nLazyString(UIStrings.changesToQualityCriteriaForPwas),
@@ -57,7 +58,6 @@ const twaDigitalAssetLinksFailed = {
 const twaHttpError = {
   file: 'issues/descriptions/TwaHttpError.md',
   substitutions: undefined,
-  issueKind: IssueKind.BreakingChange,
   links: [{
     link: 'https://blog.chromium.org/2020/06/changes-to-quality-criteria-for-pwas.html',
     linkTitle: i18nLazyString(UIStrings.changesToQualityCriteriaForPwas),
@@ -67,7 +67,6 @@ const twaHttpError = {
 const twaPageUnavailableOffline = {
   file: 'issues/descriptions/TwaPageUnavailableOffline.md',
   substitutions: undefined,
-  issueKind: IssueKind.BreakingChange,
   links: [{
     link: 'https://blog.chromium.org/2020/06/changes-to-quality-criteria-for-pwas.html',
     linkTitle: i18nLazyString(UIStrings.changesToQualityCriteriaForPwas),

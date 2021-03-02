@@ -264,7 +264,6 @@ function IsSubdomainOf(subdomain, superdomain) {
 const sameSiteUnspecifiedErrorRead = {
   file: 'issues/descriptions/SameSiteUnspecifiedTreatedAsLaxRead.md',
   substitutions: undefined,
-  issueKind: IssueKind.BreakingChange,
   links: [
     {link: 'https://web.dev/samesite-cookies-explained/', linkTitle: i18nLazyString(UIStrings.samesiteCookiesExplained)}
   ],
@@ -273,7 +272,6 @@ const sameSiteUnspecifiedErrorRead = {
 const sameSiteUnspecifiedErrorSet = {
   file: 'issues/descriptions/SameSiteUnspecifiedTreatedAsLaxSet.md',
   substitutions: undefined,
-  issueKind: IssueKind.BreakingChange,
   links: [
     {link: 'https://web.dev/samesite-cookies-explained/', linkTitle: i18nLazyString(UIStrings.samesiteCookiesExplained)}
   ],
@@ -282,7 +280,6 @@ const sameSiteUnspecifiedErrorSet = {
 const sameSiteUnspecifiedWarnRead = {
   file: 'issues/descriptions/SameSiteUnspecifiedLaxAllowUnsafeRead.md',
   substitutions: undefined,
-  issueKind: IssueKind.BreakingChange,
   links: [
     {link: 'https://web.dev/samesite-cookies-explained/', linkTitle: i18nLazyString(UIStrings.samesiteCookiesExplained)}
   ],
@@ -291,7 +288,6 @@ const sameSiteUnspecifiedWarnRead = {
 const sameSiteUnspecifiedWarnSet = {
   file: 'issues/descriptions/SameSiteUnspecifiedLaxAllowUnsafeSet.md',
   substitutions: undefined,
-  issueKind: IssueKind.BreakingChange,
   links: [
     {link: 'https://web.dev/samesite-cookies-explained/', linkTitle: i18nLazyString(UIStrings.samesiteCookiesExplained)}
   ],
@@ -300,7 +296,6 @@ const sameSiteUnspecifiedWarnSet = {
 const sameSiteNoneInsecureErrorRead = {
   file: 'issues/descriptions/SameSiteNoneInsecureErrorRead.md',
   substitutions: undefined,
-  issueKind: IssueKind.BreakingChange,
   links: [
     {link: 'https://web.dev/samesite-cookies-explained/', linkTitle: i18nLazyString(UIStrings.samesiteCookiesExplained)}
   ],
@@ -309,7 +304,6 @@ const sameSiteNoneInsecureErrorRead = {
 const sameSiteNoneInsecureErrorSet = {
   file: 'issues/descriptions/SameSiteNoneInsecureErrorSet.md',
   substitutions: undefined,
-  issueKind: IssueKind.BreakingChange,
   links: [
     {link: 'https://web.dev/samesite-cookies-explained/', linkTitle: i18nLazyString(UIStrings.samesiteCookiesExplained)}
   ],
@@ -318,7 +312,6 @@ const sameSiteNoneInsecureErrorSet = {
 const sameSiteNoneInsecureWarnRead = {
   file: 'issues/descriptions/SameSiteNoneInsecureWarnRead.md',
   substitutions: undefined,
-  issueKind: IssueKind.BreakingChange,
   links: [
     {link: 'https://web.dev/samesite-cookies-explained/', linkTitle: i18nLazyString(UIStrings.samesiteCookiesExplained)}
   ],
@@ -327,7 +320,6 @@ const sameSiteNoneInsecureWarnRead = {
 const sameSiteNoneInsecureWarnSet = {
   file: 'issues/descriptions/SameSiteNoneInsecureWarnSet.md',
   substitutions: undefined,
-  issueKind: IssueKind.BreakingChange,
   links: [
     {link: 'https://web.dev/samesite-cookies-explained/', linkTitle: i18nLazyString(UIStrings.samesiteCookiesExplained)}
   ],
@@ -350,7 +342,6 @@ function sameSiteWarnStrictLaxDowngradeStrict(isSecure) {
   return {
     file: 'issues/descriptions/SameSiteWarnStrictLaxDowngradeStrict.md',
     substitutions,
-    issueKind: IssueKind.BreakingChange,
     links: schemefulSameSiteArticles,
   };
 }
@@ -366,7 +357,6 @@ function sameSiteExcludeNavigationContextDowngrade(isSecure) {
   return {
     file: 'issues/descriptions/SameSiteExcludeNavigationContextDowngrade.md',
     substitutions,
-    issueKind: IssueKind.BreakingChange,
     links: schemefulSameSiteArticles,
   };
 }
@@ -382,7 +372,6 @@ function sameSiteWarnCrossDowngradeRead(isSecure) {
   return {
     file: 'issues/descriptions/SameSiteWarnCrossDowngradeRead.md',
     substitutions,
-    issueKind: IssueKind.BreakingChange,
     links: schemefulSameSiteArticles,
   };
 }
@@ -398,7 +387,6 @@ function sameSiteExcludeContextDowngradeRead(isSecure) {
   return {
     file: 'issues/descriptions/SameSiteExcludeContextDowngradeRead.md',
     substitutions,
-    issueKind: IssueKind.BreakingChange,
     links: schemefulSameSiteArticles,
   };
 }
@@ -414,7 +402,6 @@ function sameSiteWarnCrossDowngradeSet(isSecure) {
   return {
     file: 'issues/descriptions/SameSiteWarnCrossDowngradeSet.md',
     substitutions,
-    issueKind: IssueKind.BreakingChange,
     links: schemefulSameSiteArticles,
   };
 }
@@ -431,7 +418,6 @@ function sameSiteExcludeContextDowngradeSet(isSecure) {
   return {
     file: 'issues/descriptions/SameSiteExcludeContextDowngradeSet.md',
     substitutions,
-    issueKind: IssueKind.BreakingChange,
     links: schemefulSameSiteArticles,
   };
 }

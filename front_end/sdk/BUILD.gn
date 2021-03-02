@@ -30,7 +30,7 @@ devtools_module("sdk") {
     "CookieModel.js",
     "CookieParser.js",
     "CorsIssue.ts",
-    "CrossOriginEmbedderPolicyIssue.js",
+    "CrossOriginEmbedderPolicyIssue.ts",
     "DOMDebuggerModel.js",
     "DOMModel.js",
     "DebuggerModel.js",

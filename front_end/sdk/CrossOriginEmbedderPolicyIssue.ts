@@ -4,7 +4,7 @@
 
 import * as i18n from '../i18n/i18n.js';
 
-import {Issue, IssueCategory, IssueKind, LazyMarkdownIssueDescription, MarkdownIssueDescription, resolveLazyDescription} from './Issue.js';  // eslint-disable-line no-unused-vars
+import {Issue, IssueCategory, LazyMarkdownIssueDescription, MarkdownIssueDescription, resolveLazyDescription} from './Issue.js';  // eslint-disable-line no-unused-vars
 import {IssuesModel} from './IssuesModel.js';  // eslint-disable-line no-unused-vars
 
 const UIStrings = {
@@ -17,13 +17,10 @@ const UIStrings = {
   */
   samesiteAndSameorigin: 'Same-Site and Same-Origin',
 };
-const str_ = i18n.i18n.registerUIStrings('sdk/CrossOriginEmbedderPolicyIssue.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('sdk/CrossOriginEmbedderPolicyIssue.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
-/**
- * @param {!Protocol.Audits.BlockedByResponseReason} reason
- * @return {boolean}
- */
-export function isCrossOriginEmbedderPolicyIssue(reason) {
+
+export function isCrossOriginEmbedderPolicyIssue(reason: Protocol.Audits.BlockedByResponseReason): boolean {
   switch (reason) {
     case Protocol.Audits.BlockedByResponseReason.CoepFrameResourceNeedsCoepHeader:
       return true;
@@ -40,104 +37,86 @@ export function isCrossOriginEmbedderPolicyIssue(reason) {
 }
 
 export class CrossOriginEmbedderPolicyIssue extends Issue {
-  /**
-   * @param {!Protocol.Audits.BlockedByResponseIssueDetails} issueDetails
-   * @param {!IssuesModel} issuesModel
-   */
-  constructor(issueDetails, issuesModel) {
+  private issueDetails: Protocol.Audits.BlockedByResponseIssueDetails;
+
+  constructor(issueDetails: Protocol.Audits.BlockedByResponseIssueDetails, issuesModel: IssuesModel) {
     super(`CrossOriginEmbedderPolicyIssue::${issueDetails.reason}`, issuesModel);
-    /** @type {!Protocol.Audits.BlockedByResponseIssueDetails} */
-    this._details = issueDetails;
+    this.issueDetails = issueDetails;
   }
 
-  /**
-   * @override
-   */
-  primaryKey() {
-    return `${this.code()}-(${this._details.request.requestId})`;
+  primaryKey(): string {
+    return `${this.code()}-(${this.issueDetails.request.requestId})`;
   }
 
-  /**
-   * @override
-   * @returns {!Iterable<Protocol.Audits.BlockedByResponseIssueDetails>}
-   */
-  getBlockedByResponseDetails() {
-    return [this._details];
+  getBlockedByResponseDetails(): Iterable<Protocol.Audits.BlockedByResponseIssueDetails> {
+    return [this.issueDetails];
   }
 
-  /**
-   * @override
-   * @returns {!Iterable<Protocol.Audits.AffectedRequest>}
-   */
-  requests() {
-    return [this._details.request];
+  requests(): Iterable<Protocol.Audits.AffectedRequest> {
+    return [this.issueDetails.request];
   }
 
-  /**
-   * @override
-   * @return {!IssueCategory}
-   */
-  getCategory() {
+  getCategory(): IssueCategory {
     return IssueCategory.CrossOriginEmbedderPolicy;
   }
 
-  /**
-   * @override
-   * @returns {?MarkdownIssueDescription}
-   */
-  getDescription() {
+  getDescription(): MarkdownIssueDescription|null {
     return resolveLazyDescription(issueDescriptions.get(this.code()));
   }
 }
 
-/** @type {!Map<string, !LazyMarkdownIssueDescription>} */
-const issueDescriptions = new Map([
+const issueDescriptions: Map<string, LazyMarkdownIssueDescription> = new Map([
   [
-    'CrossOriginEmbedderPolicyIssue::CorpNotSameOriginAfterDefaultedToSameOriginByCoep', {
+    'CrossOriginEmbedderPolicyIssue::CorpNotSameOriginAfterDefaultedToSameOriginByCoep',
+    {
       file: 'issues/descriptions/CoepCorpNotSameOriginAfterDefaultedToSameOriginByCoep.md',
       substitutions: undefined,
       links: [
         {link: 'https://web.dev/coop-coep/', linkTitle: i18nLazyString(UIStrings.coopAndCoep)},
         {link: 'https://web.dev/same-site-same-origin/', linkTitle: i18nLazyString(UIStrings.samesiteAndSameorigin)},
       ],
-    }
+    },
   ],
   [
-    'CrossOriginEmbedderPolicyIssue::CoepFrameResourceNeedsCoepHeader', {
+    'CrossOriginEmbedderPolicyIssue::CoepFrameResourceNeedsCoepHeader',
+    {
       file: 'issues/descriptions/CoepFrameResourceNeedsCoepHeader.md',
       substitutions: undefined,
       links: [
         {link: 'https://web.dev/coop-coep/', linkTitle: i18nLazyString(UIStrings.coopAndCoep)},
       ],
-    }
+    },
   ],
   [
-    'CrossOriginEmbedderPolicyIssue::CoopSandboxedIframeCannotNavigateToCoopPage', {
+    'CrossOriginEmbedderPolicyIssue::CoopSandboxedIframeCannotNavigateToCoopPage',
+    {
       file: 'issues/descriptions/CoepCoopSandboxedIframeCannotNavigateToCoopPage.md',
       substitutions: undefined,
       links: [
         {link: 'https://web.dev/coop-coep/', linkTitle: i18nLazyString(UIStrings.coopAndCoep)},
       ],
-    }
+    },
   ],
   [
-    'CrossOriginEmbedderPolicyIssue::CorpNotSameSite', {
+    'CrossOriginEmbedderPolicyIssue::CorpNotSameSite',
+    {
       file: 'issues/descriptions/CoepCorpNotSameSite.md',
       substitutions: undefined,
       links: [
         {link: 'https://web.dev/coop-coep/', linkTitle: i18nLazyString(UIStrings.coopAndCoep)},
         {link: 'https://web.dev/same-site-same-origin/', linkTitle: i18nLazyString(UIStrings.samesiteAndSameorigin)},
       ],
-    }
+    },
   ],
   [
-    'CrossOriginEmbedderPolicyIssue::CorpNotSameOrigin', {
+    'CrossOriginEmbedderPolicyIssue::CorpNotSameOrigin',
+    {
       file: 'issues/descriptions/CoepCorpNotSameOrigin.md',
       substitutions: undefined,
       links: [
         {link: 'https://web.dev/coop-coep/', linkTitle: i18nLazyString(UIStrings.coopAndCoep)},
         {link: 'https://web.dev/same-site-same-origin/', linkTitle: i18nLazyString(UIStrings.samesiteAndSameorigin)},
       ],
-    }
+    },
   ],
 ]);

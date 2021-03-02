@@ -7775,10 +7775,10 @@
   "sdk/CPUProfilerModel.js | profileD": {
     "message": "Profile {PH1}"
   },
-  "sdk/CrossOriginEmbedderPolicyIssue.js | coopAndCoep": {
+  "sdk/CrossOriginEmbedderPolicyIssue.ts | coopAndCoep": {
     "message": "COOP and COEP"
   },
-  "sdk/CrossOriginEmbedderPolicyIssue.js | samesiteAndSameorigin": {
+  "sdk/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "Same-Site and Same-Origin"
   },
   "sdk/CSSStyleSheetHeader.js | couldNotFindTheOriginalStyle": {

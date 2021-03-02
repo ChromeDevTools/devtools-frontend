@@ -7775,10 +7775,10 @@
   "sdk/CPUProfilerModel.js | profileD": {
     "message": "P̂ŕôf́îĺê {PH1}"
   },
-  "sdk/CrossOriginEmbedderPolicyIssue.js | coopAndCoep": {
+  "sdk/CrossOriginEmbedderPolicyIssue.ts | coopAndCoep": {
     "message": "ĈÓÔṔ âńd̂ ĆÔÉP̂"
   },
-  "sdk/CrossOriginEmbedderPolicyIssue.js | samesiteAndSameorigin": {
+  "sdk/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "Ŝám̂é-Ŝít̂é âńd̂ Śâḿê-Ór̂íĝín̂"
   },
   "sdk/CSSStyleSheetHeader.js | couldNotFindTheOriginalStyle": {

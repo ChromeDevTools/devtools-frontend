@@ -20,6 +20,8 @@ group("lighthouse") {
     ":lighthouse-gen",
     ":lighthouse-resources",
   ]
+
+  data_deps = [ ":lighthouse-gen" ]
 }
 
 copy_sources_to_resources("lighthouse-resources") {

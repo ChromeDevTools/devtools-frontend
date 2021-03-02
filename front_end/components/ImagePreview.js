@@ -162,18 +162,16 @@ export class ImagePreview {
       fileRow.createChild('td', 'description').textContent = resourceSizeText;
 
       // Current source
-      if (imageURL !== originalImageURL) {
-        const originalRow = container.createChild('tr', 'row');
-        originalRow.createChild('td', 'title').textContent = i18nString(UIStrings.currentSource);
+      const originalRow = container.createChild('tr', 'row');
+      originalRow.createChild('td', 'title').textContent = i18nString(UIStrings.currentSource);
 
-        const sourceText = Platform.StringUtilities.trimMiddle(imageURL, 100);
-        const link = /** @type {!HTMLLinkElement} */ (
-            originalRow.createChild('td', 'description description-link').createChild('span', 'source-link'));
-        link.textContent = sourceText;
-        link.addEventListener('click', () => {
-          Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(imageURL);
-        });
-      }
+      const sourceText = Platform.StringUtilities.trimMiddle(imageURL, 100);
+      const sourceLink = /** @type {!HTMLLinkElement} */ (
+          originalRow.createChild('td', 'description description-link').createChild('span', 'source-link'));
+      sourceLink.textContent = sourceText;
+      sourceLink.addEventListener('click', () => {
+        Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(imageURL);
+      });
       fulfill(container);
     }
   }

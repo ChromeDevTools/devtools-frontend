@@ -8,10 +8,6 @@ import * as UI from '../ui/ui.js';
 
 const UIStrings = {
   /**
-  *@description Text in Audio Context Content Builder
-  */
-  audiocontext: '`AudioContext`',
-  /**
   *@description The current state of an item
   */
   state: 'State',
@@ -56,7 +52,7 @@ export class ContextDetailBuilder {
   }
 
   _build(context: Protocol.WebAudio.BaseAudioContext): void {
-    const title = context.contextType === 'realtime' ? i18nString(UIStrings.audiocontext) :
+    const title = context.contextType === 'realtime' ? i18n.i18n.lockedString('AudioContext') :
                                                        i18n.i18n.lockedString('OfflineAudioContext');
     this._addTitle(title, context.contextId);
     this._addEntry(i18nString(UIStrings.state), context.contextState);

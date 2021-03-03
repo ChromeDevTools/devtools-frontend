@@ -147,11 +147,6 @@ const UIStrings = {
   */
   sWaitingToActivate: '#{PH1} waiting to activate',
   /**
-  * @description Text in Service Workers View of the Application panel. skipWaiting is part of the
-  * Service Worker API and should not be translated.
-  */
-  skipwaiting: '`skipWaiting`',
-  /**
   *@description Text in Service Workers View of the Application panel
   *@example {2} PH1
   */
@@ -664,7 +659,7 @@ export class Section {
     if (waiting) {
       const waitingEntry = this._addVersion(
           versionsStack, 'service-worker-waiting-circle', i18nString(UIStrings.sWaitingToActivate, {PH1: waiting.id}));
-      this._createLink(waitingEntry, i18nString(UIStrings.skipwaiting), this._skipButtonClicked.bind(this));
+      this._createLink(waitingEntry, i18n.i18n.lockedString('skipWaiting'), this._skipButtonClicked.bind(this));
       if (waiting.scriptResponseTime !== undefined) {
         waitingEntry.createChild('div', 'service-worker-subtitle').textContent =
             i18nString(UIStrings.receivedS, {PH1: new Date(waiting.scriptResponseTime * 1000).toLocaleString()});

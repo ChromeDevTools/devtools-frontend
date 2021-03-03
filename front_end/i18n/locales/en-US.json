@@ -6644,9 +6644,6 @@
   "resources/ApplicationPanelSidebar.ts | applicationCache": {
     "message": "Application Cache"
   },
-  "resources/ApplicationPanelSidebar.ts | autoincrement": {
-    "message": "autoIncrement"
-  },
   "resources/ApplicationPanelSidebar.ts | backgroundServices": {
     "message": "Background Services"
   },
@@ -7408,9 +7405,6 @@
   },
   "resources/ServiceWorkersView.ts | sIsRedundant": {
     "message": "#{PH1} is redundant"
-  },
-  "resources/ServiceWorkersView.ts | skipwaiting": {
-    "message": "skipWaiting"
   },
   "resources/ServiceWorkersView.ts | source": {
     "message": "Source"
@@ -11329,9 +11323,6 @@
   },
   "ui/ViewManager.js | sPanel": {
     "message": "{PH1} panel"
-  },
-  "web_audio/AudioContextContentBuilder.ts | audiocontext": {
-    "message": "AudioContext"
   },
   "web_audio/AudioContextContentBuilder.ts | callbackBufferSize": {
     "message": "Callback Buffer Size"

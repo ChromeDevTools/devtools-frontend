@@ -138,10 +138,6 @@ const UIStrings = {
   /**
   *@description Text in Application Panel Sidebar of the Application panel
   */
-  autoincrement: '`autoIncrement`',
-  /**
-  *@description Text in Application Panel Sidebar of the Application panel
-  */
   localFiles: 'Local Files',
   /**
   *@description Tooltip in Application Panel Sidebar of the Application panel
@@ -1367,7 +1363,7 @@ export class IDBObjectStoreTreeElement extends ApplicationPanelTreeElement {
     const keyPathString = this._objectStore.keyPathString;
     let tooltipString = keyPathString !== null ? i18nString(UIStrings.keyPathS, {PH1: keyPathString}) : '';
     if (this._objectStore.autoIncrement) {
-      tooltipString += '\n' + i18nString(UIStrings.autoincrement);
+      tooltipString += '\n' + i18n.i18n.lockedString('autoIncrement');
     }
     this.tooltip = tooltipString;
   }

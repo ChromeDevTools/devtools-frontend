@@ -1826,6 +1826,9 @@
   "elements/elements-meta.ts | captureAreaScreenshot": {
     "message": "Capture area screenshot"
   },
+  "elements/elements-meta.ts | copyStyles": {
+    "message": "Copy styles"
+  },
   "elements/elements-meta.ts | disableDomWordWrap": {
     "message": "Disable DOM word wrap"
   },

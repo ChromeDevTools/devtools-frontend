@@ -1514,6 +1514,9 @@ export class ElementsActionDelegate {
       case 'elements.duplicate-element':
         treeOutline.duplicateNode(node);
         return true;
+      case 'elements.copy-styles':
+        treeOutline.findTreeElement(node)?._copyStyles();
+        return true;
       case 'elements.undo':
         SDK.DOMModel.DOMModelUndoStack.instance().undo();
         ElementsPanel.instance()._stylesWidget.forceUpdate();

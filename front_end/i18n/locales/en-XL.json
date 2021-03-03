@@ -1826,6 +1826,9 @@
   "elements/elements-meta.ts | captureAreaScreenshot": {
     "message": "Ĉáp̂t́ûŕê ár̂éâ śĉŕêén̂śĥót̂"
   },
+  "elements/elements-meta.ts | copyStyles": {
+    "message": "Ĉóp̂ý ŝt́ŷĺêś"
+  },
   "elements/elements-meta.ts | disableDomWordWrap": {
     "message": "D̂íŝáb̂ĺê DOM ẃôŕd̂ ẃr̂áp̂"
   },

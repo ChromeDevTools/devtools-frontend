@@ -128,6 +128,11 @@ const UIStrings = {
   * detail.
   */
   showDetailedInspectTooltip: 'Show detailed inspect tooltip',
+  /**
+  *@description A context menu item (command) in the Elements panel that copy the styles of
+  * the HTML element.
+  */
+  copyStyles: 'Copy styles',
 };
 const str_ = i18n.i18n.registerUIStrings('elements/elements-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
@@ -266,6 +271,29 @@ UI.ActionRegistration.registerActionExtension({
   bindings: [
     {
       shortcut: 'Shift+Alt+Down',
+    },
+  ],
+});
+
+UI.ActionRegistration.registerActionExtension({
+  actionId: 'elements.copy-styles',
+  category: UI.ActionRegistration.ActionCategory.ELEMENTS,
+  title: i18nLazyString(UIStrings.copyStyles),
+  async loadActionDelegate() {
+    const Elements = await loadElementsModule();
+    return Elements.ElementsPanel.ElementsActionDelegate.instance();
+  },
+  contextTypes() {
+    return maybeRetrieveContextTypes(Elements => [Elements.ElementsPanel.ElementsPanel]);
+  },
+  bindings: [
+    {
+      shortcut: 'Ctrl+Alt+C',
+      platform: UI.ActionRegistration.Platforms.WindowsLinux,
+    },
+    {
+      shortcut: 'Meta+Alt+C',
+      platform: UI.ActionRegistration.Platforms.Mac,
     },
   ],
 });

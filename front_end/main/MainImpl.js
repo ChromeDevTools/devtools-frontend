@@ -703,8 +703,9 @@ export class SearchActionDelegate {
   handleAction(context, actionId) {
     let searchableView = UI.SearchableView.SearchableView.fromElement(document.deepActiveElement());
     if (!searchableView) {
-      const currentPanel = UI.InspectorView.InspectorView.instance().currentPanelDeprecated();
-      if (currentPanel) {
+      const currentPanel =
+          /** @type {!UI.Panel.Panel} */ (UI.InspectorView.InspectorView.instance().currentPanelDeprecated());
+      if (currentPanel && currentPanel.searchableView) {
         searchableView = currentPanel.searchableView();
       }
       if (!searchableView) {

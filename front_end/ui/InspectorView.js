@@ -49,7 +49,7 @@ import {TabbedPane, TabbedPaneTabDelegate} from './TabbedPane.js';  // eslint-di
 import {ToolbarButton} from './Toolbar.js';
 import {View, ViewLocation, ViewLocationResolver} from './View.js';  // eslint-disable-line no-unused-vars
 import {ViewManager} from './ViewManager.js';
-import {VBox, WidgetFocusRestorer} from './Widget.js';
+import {VBox, Widget, WidgetFocusRestorer} from './Widget.js';  // eslint-disable-line no-unused-vars
 
 const UIStrings = {
   /**
@@ -298,11 +298,11 @@ export class InspectorView extends VBox {
   }
 
   /**
-   * @return {?Panel}
+   * @return {?Widget}
    */
   currentPanelDeprecated() {
     return (
-        /** @type {?Panel} */ (ViewManager.instance().materializedWidget(this._tabbedPane.selectedTabId || '')));
+        /** @type {?Widget} */ (ViewManager.instance().materializedWidget(this._tabbedPane.selectedTabId || '')));
   }
 
   /**

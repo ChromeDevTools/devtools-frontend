@@ -713,6 +713,21 @@ export class OverlayModel extends SDKModel {
       };
     }
 
+    if (mode === 'flexibility' && this._flexFeaturesExperimentEnabled) {
+      highlightConfig.flexItemHighlightConfig = {
+        baseSizeBox: {
+          hatchColor: Common.Color.PageHighlight.GapHatch.toProtocolRGBA(),
+        },
+        baseSizeBorder: {
+          color: Common.Color.PageHighlight.LayoutLine.toProtocolRGBA(),
+          pattern: Protocol.Overlay.LineStylePattern.Dotted,
+        },
+        flexibilityArrow: {
+          color: Common.Color.PageHighlight.LayoutLine.toProtocolRGBA(),
+        }
+      };
+    }
+
     // the backend does not support the 'original' format because
     // it currently cannot retrieve the original format using computed styles
     const supportedColorFormats = new Set(['rgb', 'hsl', 'hex']);

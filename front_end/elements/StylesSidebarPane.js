@@ -167,6 +167,7 @@ const HIGHLIGHTABLE_PROPERTIES = [
   {mode: 'justify-content', properties: ['justify-content']},
   {mode: 'align-content', properties: ['align-content']},
   {mode: 'align-items', properties: ['align-items']},
+  {mode: 'flexibility', properties: ['flex', 'flex-basis', 'flex-grow', 'flex-shrink']},
 ];
 
 /** @type {!StylesSidebarPane} */

@@ -183,9 +183,13 @@ export class HighlightOverlay extends Overlay {
       }
     }
 
-    // Draw the highlight for flex item only if the element isn't also a flex container.
-    const isFlexContainer = highlight.flexInfo?.length;
-    if (highlight.flexItemInfo && contentPath && !isFlexContainer) {
+    // Draw the highlight for flex item only if the element isn't also a flex container that already has some highlight
+    // config.
+    const isVisibleFlexContainer = highlight.flexInfo?.length && highlight.flexInfo.some(config => {
+      return Object.keys(config.flexContainerHighlightConfig).length > 0;
+    });
+
+    if (highlight.flexItemInfo && contentPath && !isVisibleFlexContainer) {
       for (const flexItem of highlight.flexItemInfo) {
         // TODO: both flex-basis and width/height determine the base size of the content-box by default, but if
         // box-sizing is set to border-box, then they determine the base size of the border-box. So we should use the

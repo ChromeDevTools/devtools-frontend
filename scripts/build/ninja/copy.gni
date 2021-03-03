@@ -31,37 +31,3 @@ template("copy_to_gen") {
     }
   }
 }
-
-template("copy_gen_to_resources") {
-  _copy_action_name = "$target_name-copy"
-  copy(_copy_action_name) {
-    forward_variables_from(invoker,
-                           [
-                             "sources",
-                             "deps",
-                             "public_deps",
-                             "testonly",
-                             "data",
-                           ])
-
-    # Figure out what the relative path is to the front_end folder.
-    # We have to get the full path to the target_gen_dir
-    # and compare that to the full location of the front_end
-    # folder in the gen_dir, to make sure nested packages
-    # resolve to the correct location.
-    _front_end_module_name =
-        string_replace(get_path_info(target_gen_dir, "abspath"),
-                       root_gen_dir + "/" + devtools_location + "front_end",
-                       "")
-
-    outputs =
-        [ "$resources_out_dir/$_front_end_module_name/{{source_file_part}}" ]
-  }
-
-  group(target_name) {
-    public_deps = [ ":$_copy_action_name" ]
-    data_deps = [ ":$_copy_action_name" ]
-
-    forward_variables_from(invoker, [ "visibility" ])
-  }
-}

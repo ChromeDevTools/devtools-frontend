@@ -143,7 +143,7 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
   private onNodeClick(event: Event): void {
     // Avoid it bubbling up to parent tree elements, else clicking a node deep in the tree will toggle it + all its ancestor's visibility.
     event.stopPropagation();
-    const nodeClickExpandsOrContracts = this.getAttribute('clickabletitle') === 'true';
+    const nodeClickExpandsOrContracts = this.getAttribute('clickabletitle') !== null;
     const domNode = event.currentTarget as HTMLLIElement;
     const node = this.domNodeToTreeNodeMap.get(domNode);
     if (nodeClickExpandsOrContracts && node && isExpandableNode(node)) {

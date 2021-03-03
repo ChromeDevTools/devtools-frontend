@@ -218,7 +218,7 @@ describe('TreeOutline', () => {
     const {component, shadowRoot} = await renderTreeOutline({
       tree: basicTreeData,
     });
-    component.setAttribute('clickabletitle', 'true');
+    component.setAttribute('clickabletitle', '');
     const rootNode = getVisibleTreeNodeByText(shadowRoot, 'Offices');
     dispatchClickEvent(rootNode);
     await coordinator.done();

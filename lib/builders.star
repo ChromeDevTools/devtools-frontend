@@ -13,6 +13,7 @@ goma_rbe_prod_default = {
     "$build/goma": {
         "server_host": "goma.chromium.org",
         "rpc_extra_params": "?prod",
+        "use_luci_auth": True,
     },
 }
 

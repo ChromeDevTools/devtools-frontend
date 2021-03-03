@@ -110,20 +110,20 @@ const UIStrings = {
   */
   error: 'Error',
   /**
-  *@description Tooltip text for how often this particular console message was reported
-  *@example {3} PH1
+  * @description Announced by the screen reader to indicate how many times a particular message in
+  * the console was repeated.
   */
-  repeatS: 'Repeat {PH1}',
+  repeatS: '{n, plural, =1 {Repeated # time} other {Repeated # times}}',
   /**
-  *@description Accessible name in Console View Message of the Console panel
-  *@example {Repeat 4} PH1
+  * @description Announced by the screen reader to indicate how many times a particular warning
+  * message in the console was repeated.
   */
-  warningS: 'Warning {PH1}',
+  warningS: '{n, plural, =1 {Warning, Repeated # time} other {Warning, Repeated # times}}',
   /**
-  *@description Accessible name in Console View Message of the Console panel
-  *@example {Repeat 4} PH1
+  * @description Announced by the screen reader to indicate how many times a particular error
+  * message in the console was repeated.
   */
-  errorS: 'Error {PH1}',
+  errorS: '{n, plural, =1 {Error, Repeated # time} other {Error, Repeated # times}}',
   /**
   *@description Text appended to grouped console messages that are related to URL requests
   */
@@ -1359,12 +1359,14 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
       this.contentElement().classList.add('repeated-message');
     }
     this._repeatCountElement.textContent = `${this._repeatCount}`;
-    // TODO(l10n): Don't concatenate localized strings here.
-    let accessibleName = i18nString(UIStrings.repeatS, {PH1: this._repeatCount});
+
+    let accessibleName;
     if (this._message.level === SDK.ConsoleModel.MessageLevel.Warning) {
-      accessibleName = i18nString(UIStrings.warningS, {PH1: accessibleName});
+      accessibleName = i18nString(UIStrings.warningS, {n: this._repeatCount});
     } else if (this._message.level === SDK.ConsoleModel.MessageLevel.Error) {
-      accessibleName = i18nString(UIStrings.errorS, {PH1: accessibleName});
+      accessibleName = i18nString(UIStrings.errorS, {n: this._repeatCount});
+    } else {
+      accessibleName = i18nString(UIStrings.repeatS, {n: this._repeatCount});
     }
     UI.ARIAUtils.setAccessibleName(this._repeatCountElement, accessibleName);
   }

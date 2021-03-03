@@ -20,7 +20,9 @@ const UIStrings = {
   */
   method: 'Method',
   /**
-  *@description Text in Protocol Monitor of the Protocol Monitor tab
+  * @description Text in Protocol Monitor. Title for a table column which shows in which direction
+  * the particular protocol message was travelling. Values in this column will either be 'sent' or
+  * 'received'.
   */
   direction: 'Direction',
   /**

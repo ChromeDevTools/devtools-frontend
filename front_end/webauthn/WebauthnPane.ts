@@ -41,7 +41,7 @@ const UIStrings = {
   */
   rpId: 'RP ID',
   /**
-  *@description Label for credential field that represents the user a credential is mapped to
+  *@description Label for a column in a table. A field/unique ID that represents the user a credential is mapped to.
   */
   userHandle: 'User Handle',
   /**

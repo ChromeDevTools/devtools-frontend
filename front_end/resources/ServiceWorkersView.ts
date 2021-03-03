@@ -139,8 +139,10 @@ const UIStrings = {
   */
   startString: 'start',
   /**
-  *@description Text in Service Workers View of the Application panel
-  *@example {2} PH1
+  * @description Text in Service Workers View of the Application panel. Service workers have
+  * different versions, which are labelled with numbers e.g. version #2. This text indicates that a
+  * particular version is now redundant (it was replaced by a newer version). # means 'number' here.
+  * @example {2} PH1
   */
   sIsRedundant: '#{PH1} is redundant',
   /**
@@ -149,9 +151,10 @@ const UIStrings = {
   */
   sWaitingToActivate: '#{PH1} waiting to activate',
   /**
-  *@description Text in Service Workers View of the Application panel
+  * @description Text in Service Workers View of the Application panel. skipWaiting is part of the
+  * Service Worker API and should not be translated.
   */
-  skipwaiting: 'skipWaiting',
+  skipwaiting: '`skipWaiting`',
   /**
   *@description Text in Service Workers View of the Application panel
   *@example {2} PH1
@@ -640,6 +643,7 @@ export class Section {
       this._updateSourceField(active);
       const localizedRunningStatus =
           SDK.ServiceWorkerManager.ServiceWorkerVersion.RunningStatus[active.currentState.runningStatus]();
+      // TODO(l10n): Don't concatenate strings here.
       const activeEntry = this._addVersion(
           versionsStack, 'service-worker-active-circle',
           i18nString(UIStrings.sActivatedAndIsS, {PH1: active.id, PH2: localizedRunningStatus}));

@@ -103,7 +103,7 @@ const UIStrings = {
   */
   aggregatedTotalTime: 'Aggregated total time',
   /**
-  *@description Text that indicates something is not optimized
+  *@description Text that indicates a JavaScript function in a CPU profile is not optimized.
   */
   notOptimized: 'Not optimized',
 };

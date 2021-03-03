@@ -36,13 +36,17 @@ import {DataGridNode} from './DataGrid.js';
 
 const UIStrings = {
   /**
-  *@description In a data grid, for a list of items with omitted items, display the first N omitted items
-  *@example {5} PH1
+  * @description Shown in a table when there are too many results to show directly. The user can
+  * click this button to show more results. This will result in the UI showing X more results before
+  * the current position.
+  * @example {5} PH1
   */
   showDBefore: 'Show {PH1} before',
   /**
-  *@description In a data grid, for a list of items with omitted items, display the last N omitted items
-  *@example {5} PH1
+  * @description Shown in a table when there are too many results to show directly. The user can
+  * click this button to show more results. This will result in the UI showing X more results after
+  * the current position.
+  * @example {5} PH1
   */
   showDAfter: 'Show {PH1} after',
   /**

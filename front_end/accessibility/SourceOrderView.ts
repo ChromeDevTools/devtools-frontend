@@ -13,7 +13,9 @@ import {AccessibilitySubPane} from './AccessibilitySubPane.js';
 
 const UIStrings = {
   /**
-  *@description Text in Source Order Viewer of the Accessibility panel
+  * @description Name of a tool which allows the developer to view the contents of the page in the
+  * 'source order' (the order in which the HTML elements show up in the source code). In the
+  * Accessibility panel.
   */
   sourceOrderViewer: 'Source Order Viewer',
   /**
@@ -25,7 +27,8 @@ const UIStrings = {
   */
   thereMayBeADelayInDisplaying: 'There may be a delay in displaying source order for elements with many children',
   /**
-  *@description Checkbox label in Source Order Viewer of the Accessibility panel
+  * @description Checkbox label in Source Order Viewer of the Accessibility panel. Source order
+  * means the order in which the HTML elements show up in the source code.
   */
   showSourceOrder: 'Show source order',
 };

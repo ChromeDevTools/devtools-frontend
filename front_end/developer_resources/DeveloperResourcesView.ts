@@ -35,10 +35,10 @@ const UIStrings = {
    */
   resourcesCurrentlyLoading: '{PH1} resources, {PH2} currently loading',
   /**
-   *@description Text for resources load status
-   *@example {1} PH1
+   * @description Status text that appears to tell the developer how many resources were loaded in
+   * total. Resources are files related to the webpage.
    */
-  resources: '{PH1} resources',
+  resources: '{n, plural, =1 {# resource} other {# resources}}',
 };
 const str_ = i18n.i18n.registerUIStrings('developer_resources/DeveloperResourcesView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

@@ -315,17 +315,12 @@ const UIStrings = {
   */
   reloadThePageToRecordRequestsFor: 'Reload the page to record requests for HTTP resources.',
   /**
-  *@description Link text in the Security Panel. Clicking the link navigates the user to the Network panel. Request refers to a
-                network request. A piece of data transmitted from the current user's browser to a remote server.
+  * @description Link text in the Security Panel. Clicking the link navigates the user to the
+  * Network panel. Requests refers to network requests. Each request is a piece of data transmitted
+  * from the current user's browser to a remote server.
   */
-  viewDRequestInNetworkPanel: 'View 1 request in Network Panel',
-  /**
-  *@description Link text in the Security Panel. Clicking the link navigates the user to the Network panel. Requests refers to
-                network requests. Each request is a piece of data transmitted from the current user's browser to a remote server.
-                The place holder is a number, declaring how many requests will be shown to the user.
-  *@example {2} PH1
-  */
-  viewDRequestsInNetworkPanel: 'View {PH1} requests in Network Panel',
+  viewDRequestsInNetworkPanel:
+      '{n, plural, =1 {View # request in Network Panel} other {View # requests in Network Panel}}',
   /**
   *@description Text for the origin of something
   */
@@ -1461,11 +1456,7 @@ export class SecurityMainView extends UI.Widget.VBox {
     const requestsAnchor = element.createChild('div', 'security-mixed-content devtools-link') as HTMLElement;
     UI.ARIAUtils.markAsLink(requestsAnchor);
     requestsAnchor.tabIndex = 0;
-    if (filterRequestCount === 1) {
-      requestsAnchor.textContent = i18nString(UIStrings.viewDRequestInNetworkPanel);
-    } else {
-      requestsAnchor.textContent = i18nString(UIStrings.viewDRequestsInNetworkPanel, {PH1: filterRequestCount});
-    }
+    requestsAnchor.textContent = i18nString(UIStrings.viewDRequestsInNetworkPanel, {n: filterRequestCount});
 
     requestsAnchor.addEventListener('click', this.showNetworkFilter.bind(this, filterKey));
     requestsAnchor.addEventListener('keydown', event => {

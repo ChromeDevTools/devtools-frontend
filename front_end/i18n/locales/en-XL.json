@@ -1317,7 +1317,7 @@
     "message": "Êŕr̂ór̂"
   },
   "console/ConsoleViewMessage.ts | errorS": {
-    "message": "Êŕr̂ór̂ {PH1}"
+    "message": "{n, plural, =1 {Êŕr̂ór̂, Ŕêṕêát̂éd̂ # t́îḿê} other {Ér̂ŕôŕ, R̂ép̂éât́êd́ # t̂ím̂éŝ}}"
   },
   "console/ConsoleViewMessage.ts | exception": {
     "message": "<êx́ĉép̂t́îón̂>"
@@ -1335,7 +1335,7 @@
     "message": " M̂<X́X̂>"
   },
   "console/ConsoleViewMessage.ts | repeatS": {
-    "message": "R̂ép̂éât́ {PH1}"
+    "message": "{n, plural, =1 {R̂ép̂éât́êd́ # t̂ím̂é} other {R̂ép̂éât́êd́ # t̂ím̂éŝ}}"
   },
   "console/ConsoleViewMessage.ts | someEvent": {
     "message": "<ŝóm̂é> êv́êńt̂"
@@ -1362,7 +1362,7 @@
     "message": "Ŵár̂ńîńĝ"
   },
   "console/ConsoleViewMessage.ts | warningS": {
-    "message": "Ŵár̂ńîńĝ {PH1}"
+    "message": "{n, plural, =1 {Ŵár̂ńîńĝ, Ŕêṕêát̂éd̂ # t́îḿê} other {Ẃâŕn̂ín̂ǵ, R̂ép̂éât́êd́ # t̂ím̂éŝ}}"
   },
   "cookie_table/CookiesTable.ts | cookies": {
     "message": "Ĉóôḱîéŝ"
@@ -1779,7 +1779,7 @@
     "message": "L̂óâd́ HTTP(S) d̂év̂él̂óp̂ér̂ ŕêśôúr̂ćêś t̂h́r̂óûǵĥ t́ĥé îńŝṕêćt̂éd̂ t́âŕĝét̂"
   },
   "developer_resources/DeveloperResourcesView.ts | resources": {
-    "message": "{PH1} r̂éŝóûŕĉéŝ"
+    "message": "{n, plural, =1 {# r̂éŝóûŕĉé} other {# r̂éŝóûŕĉéŝ}}"
   },
   "developer_resources/DeveloperResourcesView.ts | resourcesCurrentlyLoading": {
     "message": "{PH1} r̂éŝóûŕĉéŝ, {PH2} ćûŕr̂én̂t́l̂ý l̂óâd́îńĝ"
@@ -5994,7 +5994,7 @@
     "message": "L̂ín̂ḱêd́ t̂ó ŝóûŕĉé m̂áp̂: {PH1}"
   },
   "persistence/PlatformFileSystem.ts | unableToReadFilesWithThis": {
-    "message": "Ûńâb́l̂é t̂ó r̂éâd́ f̂íl̂éŝ ẃît́ĥ t́ĥíŝ ím̂ṕl̂ém̂én̂t́ât́îón̂."
+    "message": "PlatformFileSystem ĉán̂ńôt́ r̂éâd́ f̂íl̂éŝ."
   },
   "persistence/WorkspaceSettingsTab.ts | addFolder": {
     "message": "Âd́d̂ f́ôĺd̂ér̂…"
@@ -6747,7 +6747,7 @@
     "message": "Âṕp̂ĺîćât́îón̂ Ćâćĥé"
   },
   "resources/ApplicationPanelSidebar.ts | autoincrement": {
-    "message": "âút̂óÎńĉŕêḿêńt̂"
+    "message": "autoIncrement"
   },
   "resources/ApplicationPanelSidebar.ts | backgroundServices": {
     "message": "B̂áĉḱĝŕôún̂d́ Ŝér̂v́îćêś"
@@ -7536,7 +7536,7 @@
     "message": "#{PH1} îś r̂éd̂ún̂d́âńt̂"
   },
   "resources/ServiceWorkersView.ts | skipwaiting": {
-    "message": "ŝḱîṕŴáît́îńĝ"
+    "message": "skipWaiting"
   },
   "resources/ServiceWorkersView.ts | source": {
     "message": "Ŝóûŕĉé"
@@ -8840,11 +8840,8 @@
   "security/SecurityPanel.ts | viewCertificate": {
     "message": "V̂íêẃ ĉér̂t́îf́îćât́ê"
   },
-  "security/SecurityPanel.ts | viewDRequestInNetworkPanel": {
-    "message": "V̂íêẃ 1 r̂éq̂úêśt̂ ín̂ Ńêt́ŵór̂ḱ P̂án̂él̂"
-  },
   "security/SecurityPanel.ts | viewDRequestsInNetworkPanel": {
-    "message": "V̂íêẃ {PH1} r̂éq̂úêśt̂ś îń N̂ét̂ẃôŕk̂ Ṕâńêĺ"
+    "message": "{n, plural, =1 {V̂íêẃ # r̂éq̂úêśt̂ ín̂ Ńêt́ŵór̂ḱ P̂án̂él̂} other {V́îéŵ # ŕêq́ûéŝt́ŝ ín̂ Ńêt́ŵór̂ḱ P̂án̂él̂}}"
   },
   "security/SecurityPanel.ts | viewRequestsInNetworkPanel": {
     "message": "V̂íêẃ r̂éq̂úêśt̂ś îń N̂ét̂ẃôŕk̂ Ṕâńêĺ"

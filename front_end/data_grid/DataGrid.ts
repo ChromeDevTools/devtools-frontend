@@ -324,6 +324,7 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper {
     // 1) If an item is selected - Read the content of the row
     let accessibleText;
     if (this.selectedNode && this.selectedNode.existingElement()) {
+      // TODO(l10n): Don't concatenate strings.
       let expandText = '';
       if (this.selectedNode.hasChildren()) {
         expandText = this.selectedNode.expanded ? i18nString(UIStrings.expanded) : i18nString(UIStrings.collapsed);

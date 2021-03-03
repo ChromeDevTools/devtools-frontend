@@ -6,16 +6,13 @@ import {assert} from 'chai';
 
 import {$, click, getBrowserAndPages, waitFor} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {addBreakpointForLine, checkBreakpointIsActive, openSourceCodeEditorForFile, RESUME_BUTTON, retrieveTopCallFrameWithoutResuming, waitForSourceCodeLines} from '../helpers/sources-helpers.js';
+import {addBreakpointForLine, openSourceCodeEditorForFile, RESUME_BUTTON, retrieveTopCallFrameWithoutResuming} from '../helpers/sources-helpers.js';
 
 describe('The Sources Tab', async () => {
   it('sets and hits breakpoints in JavaScript', async () => {
     const {target, frontend} = getBrowserAndPages();
-    const numberOfLines = 11;
     await openSourceCodeEditorForFile('click-breakpoint.js', 'click-breakpoint.html');
-    await waitForSourceCodeLines(numberOfLines);
     await addBreakpointForLine(frontend, 4);
-    await checkBreakpointIsActive(4);
 
     const scriptEvaluation = target.evaluate('f2();');
 

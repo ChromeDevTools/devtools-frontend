@@ -4,15 +4,15 @@
 
 import {assert} from 'chai';
 
-import {click, getBrowserAndPages, step, timeout, waitFor, waitForFunction} from '../../shared/helper.js';
+import {click, getBrowserAndPages, step, waitFor, waitForFunction} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {addBreakpointForLine, getScopeNames, getValuesForScope, openSourceCodeEditorForFile, PAUSE_INDICATOR_SELECTOR, RESUME_BUTTON, waitForSourceCodeLines} from '../helpers/sources-helpers.js';
+import {addBreakpointForLine, getScopeNames, getValuesForScope, openSourceCodeEditorForFile, PAUSE_INDICATOR_SELECTOR, reloadPageAndWaitForSourceFile, RESUME_BUTTON} from '../helpers/sources-helpers.js';
 
 describe('Source Tab', async () => {
   it('shows and updates the module, local, and stack scope while pausing', async () => {
     const {frontend, target} = getBrowserAndPages();
-    const breakpointLine = 12;
-    const numberOfLines = 16;
+    const breakpointLine = '0x05f';
+    const fileName = 'scopes.wasm';
     let moduleScopeValues: string[];
     let localScopeValues: string[];
 
@@ -25,13 +25,7 @@ describe('Source Tab', async () => {
     });
 
     await step('reload the page', async () => {
-      await target.reload();
-      // FIXME(crbug/1112692): Refactor test to remove the timeout.
-      await timeout(100);
-    });
-
-    await step('wait for all the source code to appear', async () => {
-      await waitForSourceCodeLines(numberOfLines);
+      await reloadPageAndWaitForSourceFile(frontend, target, fileName);
     });
 
     await step('check that the module, local, and stack scope appear', async () => {

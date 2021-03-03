@@ -5,7 +5,7 @@
 import {assert} from 'chai';
 import {$$, step} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {openSourceCodeEditorForFile, waitForSourceCodeLines} from '../helpers/sources-helpers.js';
+import {openSourceCodeEditorForFile} from '../helpers/sources-helpers.js';
 
 describe('Sources Tab', async function() {
   it('is highlighting the syntax correctly', async () => {
@@ -13,12 +13,6 @@ describe('Sources Tab', async function() {
 
     await step('navigate to a page and open the Sources tab', async () => {
       await openSourceCodeEditorForFile('syntax-highlighting.wasm', 'wasm/syntax-highlighting.html');
-    });
-
-    const numberOfLines = 7;
-
-    await step('wait for all the source code to appear', async () => {
-      await waitForSourceCodeLines(numberOfLines);
     });
 
     await step('check that variables have the correct class and has a different format', async () => {

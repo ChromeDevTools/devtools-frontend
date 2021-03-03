@@ -38,6 +38,7 @@ import * as SourceFrame from '../source_frame/source_frame.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as UI from '../ui/ui.js';
 import * as Workspace from '../workspace/workspace.js';
+import {SourcesView} from './SourcesView.js';
 
 import {UISourceCodeFrame} from './UISourceCodeFrame.js';
 
@@ -212,7 +213,19 @@ export class TabbedEditorContainer extends Common.ObjectWrapper.ObjectWrapper {
    * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    */
   showFile(uiSourceCode) {
-    this._innerShowFile(this._canonicalUISourceCode(uiSourceCode), true);
+    const binding = Persistence.Persistence.PersistenceImpl.instance().binding(uiSourceCode);
+    uiSourceCode = binding ? binding.fileSystem : uiSourceCode;
+
+    const frame = UI.Context.Context.instance().flavor(SourcesView);
+    // If the content has already been set and the current frame is showing
+    // the incoming uiSourceCode, then fire the event that the file has been loaded.
+    // Otherwise, this event will fire as soon as the content has been set.
+    if (frame?.currentSourceFrame()?.contentSet && this._currentFile === uiSourceCode &&
+        frame?.currentUISourceCode() === uiSourceCode) {
+      Common.EventTarget.fireEvent('source-file-loaded', uiSourceCode.displayName(true));
+    } else {
+      this._innerShowFile(this._canonicalUISourceCode(uiSourceCode), true);
+    }
   }
 
   /**

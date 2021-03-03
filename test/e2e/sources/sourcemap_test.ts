@@ -6,16 +6,13 @@ import {assert} from 'chai';
 
 import {getBrowserAndPages, waitFor, waitForElementWithTextContent} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {addBreakpointForLine, checkBreakpointIsActive, openSourceCodeEditorForFile, retrieveTopCallFrameScriptLocation, waitForSourceCodeLines} from '../helpers/sources-helpers.js';
+import {addBreakpointForLine, openSourceCodeEditorForFile, retrieveTopCallFrameScriptLocation} from '../helpers/sources-helpers.js';
 
 describe('The Sources Tab', async () => {
   it('[crbug.com/1142705] sets multiple breakpoints in case of code-splitting', async () => {
     const {target, frontend} = getBrowserAndPages();
-    const numberOfLines = 4;
     await openSourceCodeEditorForFile('sourcemap-codesplit.ts', 'sourcemap-codesplit.html');
-    await waitForSourceCodeLines(numberOfLines);
     await addBreakpointForLine(frontend, 3);
-    await checkBreakpointIsActive(3);
 
     const scriptLocation0 = await retrieveTopCallFrameScriptLocation('functions[0]();', target);
     assert.deepEqual(scriptLocation0, 'sourcemap-codesplit.ts:3');

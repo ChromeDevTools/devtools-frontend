@@ -7,7 +7,7 @@ import * as puppeteer from 'puppeteer';
 
 import {$$, click, getBrowserAndPages, waitFor, waitForFunction} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {addBreakpointForLine, openSourceCodeEditorForFile, retrieveTopCallFrameScriptLocation} from '../helpers/sources-helpers.js';
+import {addBreakpointForLine, getSelectedSource, listenForSourceFilesLoaded, openSourceCodeEditorForFile, retrieveTopCallFrameScriptLocation, waitForSourceLoadedEvent} from '../helpers/sources-helpers.js';
 
 const PRETTY_PRINT_BUTTON = '[aria-label="Pretty print minified-sourcecode.js"]';
 
@@ -20,8 +20,10 @@ function retrieveCodeMirrorEditorContent() {
 }
 
 async function prettyPrintMinifiedFile(frontend: puppeteer.Page) {
+  await listenForSourceFilesLoaded(frontend);
   const previousTextContent = await frontend.evaluate(retrieveCodeMirrorEditorContent);
 
+  await waitFor(PRETTY_PRINT_BUTTON);
   await click(PRETTY_PRINT_BUTTON);
 
   // A separate editor is opened which shows the formatted file
@@ -32,6 +34,9 @@ async function prettyPrintMinifiedFile(frontend: puppeteer.Page) {
     }
     return (code.textContent || '') !== previousTextContent;
   }, {}, previousTextContent);
+
+  const source = await getSelectedSource();
+  await waitForSourceLoadedEvent(frontend, source);
 }
 
 

@@ -124,6 +124,7 @@ export class SourceFrameImpl extends UI.View.SimpleView implements UI.Searchable
   _contentRequested: boolean;
   _highlighterType: string;
   _wasmDisassembly: Common.WasmDisassembly.WasmDisassembly|null;
+  contentSet: boolean;
   constructor(
       lazyContent: () => Promise<TextUtils.ContentProvider.DeferredContent>,
       codeMirrorOptions?: UI.TextEditor.Options) {
@@ -180,6 +181,7 @@ export class SourceFrameImpl extends UI.View.SimpleView implements UI.Searchable
     this._highlighterType = '';
 
     this._wasmDisassembly = null;
+    this.contentSet = false;
   }
 
   get wasmDisassembly(): Common.WasmDisassembly.WasmDisassembly|null {
@@ -429,6 +431,7 @@ export class SourceFrameImpl extends UI.View.SimpleView implements UI.Searchable
           this.setContent(this._rawContent, null);
         }
       }
+      this.contentSet = true;
     }
   }
 

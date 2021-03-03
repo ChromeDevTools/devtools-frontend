@@ -161,6 +161,38 @@ describe('use_theme_colors', () => {
     assert.lengthOf(warnings, 0);
   });
 
+  it('does not lint against background-image properties when they are defined as just a variable', async () => {
+    const code = `.spectrum-sat {
+      background-image: var(--my-lovely-image);
+    }`;
+    const warnings = await lint(code);
+    assert.lengthOf(warnings, 0);
+  });
+
+  it('does lint against background-image properties when they are a gradient with a colour in', async () => {
+    const code = `.spectrum-sat {
+      background-image: linear-gradient(to right, #fff, rgb(204 154 129 / 0%));
+    }`;
+    const warnings = await lint(code);
+    // Two warnings: one for each colour (#fff and rgb(...))
+    assert.deepEqual(warnings, [
+      {
+        line: 2,
+        column: 7,
+        rule: 'plugin/use_theme_colors',
+        severity: 'error',
+        text: 'All CSS color declarations should use a variable defined in ui/themeColors.css'
+      },
+      {
+        line: 2,
+        column: 7,
+        rule: 'plugin/use_theme_colors',
+        severity: 'error',
+        text: 'All CSS color declarations should use a variable defined in ui/themeColors.css'
+      }
+    ]);
+  });
+
   it('allows any color to be used when in a .-theme-with-dark-background block', async () => {
     const code = `.-theme-with-dark-background p {
       color: #fff;

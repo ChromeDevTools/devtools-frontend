@@ -138,7 +138,12 @@ module.exports = stylelint.createPlugin(RULE_NAME, function(primary, secondary, 
           }
         }
 
-        if (declaration.value.includes('var(')) {
+        /**
+         * We exempt background-image from var() checks otherwise it will think that:
+         * background-image: var(--my-lovely-image)
+         * is bad when it's not.
+         */
+        if (declaration.value.includes('var(') && declaration.prop !== 'background-image') {
           const [match, variableName] = /var\((--[\w-]+)/.exec(declaration.value);
           if (!match) {
             throw new Error(`Could not parse CSS variable usage: ${declaration.value}`);

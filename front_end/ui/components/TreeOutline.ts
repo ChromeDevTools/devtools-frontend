@@ -346,6 +346,7 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
 
         .arrow-and-key-wrapper {
           border: 2px solid transparent;
+          display: block;
         }
 
         [role="treeitem"]:focus {

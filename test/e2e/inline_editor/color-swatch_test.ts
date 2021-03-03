@@ -48,14 +48,16 @@ describe('The color swatch', async () => {
     await assertColorSwatch(property, 'red');
   });
 
-  it('is displayed for color properties in the Computed pane', async () => {
-    await goToTestPageAndSelectTestElement();
-    await navigateToSidePane('Computed');
-    await waitForElementsComputedSection();
+  // Test flaky on Mac
+  it.skipOnPlatforms(
+      ['mac'], '[crbug.com/1184160]: is displayed for color properties in the Computed pane', async () => {
+        await goToTestPageAndSelectTestElement();
+        await navigateToSidePane('Computed');
+        await waitForElementsComputedSection();
 
-    const property = await getPropertyFromComputedPane('color');
-    await assertColorSwatch(property, 'rgb(255, 0, 0)');
-  });
+        const property = await getPropertyFromComputedPane('color');
+        await assertColorSwatch(property, 'rgb(255, 0, 0)');
+      });
 
   it('is not displayed for non-color properties in the Styles pane', async () => {
     await goToTestPageAndSelectTestElement();
@@ -66,23 +68,31 @@ describe('The color swatch', async () => {
     await assertNoColorSwatch(property);
   });
 
-  it('is not displayed for non-color properties that have color-looking values in the Styles pane', async () => {
-    await goToTestPageAndSelectTestElement();
+  // Test flaky on Mac
+  it.skipOnPlatforms(
+      ['mac'],
+      '[crbug.com/1184160]: is not displayed for non-color properties that have color-looking values in the Styles pane',
+      async () => {
+        await goToTestPageAndSelectTestElement();
 
-    await waitForCSSPropertyValue('#inspected', 'animation-name', 'black');
-    const property = await getCSSPropertyInRule('#inspected', 'animation-name');
+        await waitForCSSPropertyValue('#inspected', 'animation-name', 'black');
+        const property = await getCSSPropertyInRule('#inspected', 'animation-name');
 
-    await assertNoColorSwatch(property);
-  });
+        await assertNoColorSwatch(property);
+      });
 
-  it('is not displayed for color properties that have color-looking values in the Styles pane', async () => {
-    await goToTestPageAndSelectTestElement();
+  // Test flaky on Mac
+  it.skipOnPlatforms(
+      ['mac'],
+      '[crbug.com/1184160]: is not displayed for color properties that have color-looking values in the Styles pane',
+      async () => {
+        await goToTestPageAndSelectTestElement();
 
-    await waitForCSSPropertyValue('#inspected', 'background', 'url(red green blue.jpg)');
-    const property = await getCSSPropertyInRule('#inspected', 'background');
+        await waitForCSSPropertyValue('#inspected', 'background', 'url(red green blue.jpg)');
+        const property = await getCSSPropertyInRule('#inspected', 'background');
 
-    await assertNoColorSwatch(property);
-  });
+        await assertNoColorSwatch(property);
+      });
 
   it('is displayed for var() functions that compute to colors in the Styles pane', async () => {
     await goToTestPageAndSelectTestElement();
@@ -122,19 +132,21 @@ describe('The color swatch', async () => {
     await waitForCSSPropertyValue('#inspected', 'color', 'rgb(255 0 0)');
   });
 
-  it('supports shift-clicking for color properties in the Computed pane', async () => {
-    await goToTestPageAndSelectTestElement();
-    await navigateToSidePane('Computed');
-    await waitForElementsComputedSection();
+  // Test flaky on Mac
+  it.skipOnPlatforms(
+      ['mac'], '[crbug.com/1184160]: supports shift-clicking for color properties in the Computed pane', async () => {
+        await goToTestPageAndSelectTestElement();
+        await navigateToSidePane('Computed');
+        await waitForElementsComputedSection();
 
-    const property = await getPropertyFromComputedPane('color');
-    if (!property) {
-      assert.fail('Property not found');
-    }
-    await shiftClickColorSwatch(property, 0);
+        const property = await getPropertyFromComputedPane('color');
+        if (!property) {
+          assert.fail('Property not found');
+        }
+        await shiftClickColorSwatch(property, 0);
 
-    await waitForPropertyValueInComputedPane('color', 'rgb(255, 0, 0)');
-  });
+        await waitForPropertyValueInComputedPane('color', 'rgb(255, 0, 0)');
+      });
 
   it('supports shift-clicking for colors next to var() functions', async () => {
     await goToTestPageAndSelectTestElement();

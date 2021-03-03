@@ -107,7 +107,9 @@ describe('Display error information next to affected lines', async () => {
     const icons = await getIconComponents('text-editor-line-decoration-icon-issue');
     assert.strictEqual(icons.length, 1);
   });
-  it('Issues icon should reveal Issues Tab', async () => {
+
+  // Flaky on Mac
+  it.skipOnPlatforms(['mac'], '[crbug.com/1184162]: Issues icon should reveal Issues Tab', async () => {
     await openFileInSourceTab('trusted-type-violations-report-only.rawresponse');
     const bucketIssueIconComponents = await getIconComponents('text-editor-line-decoration-icon-issue');
     assert.strictEqual(bucketIssueIconComponents.length, 1);

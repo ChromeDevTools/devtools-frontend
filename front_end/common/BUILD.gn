@@ -5,6 +5,10 @@
 import("../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../scripts/build/ninja/devtools_module.gni")
 
+ts_library("ColorUtils") {
+  sources = [ "ColorUtils.js" ]
+}
+
 devtools_module("common") {
   sources = [
     "App.js",
@@ -12,7 +16,6 @@ devtools_module("common") {
     "Base64.js",
     "CharacterIdMap.js",
     "Color.js",
-    "ColorUtils.js",
     "Console.js",
     "Debouncer.js",
     "EventTarget.js",
@@ -39,10 +42,18 @@ devtools_module("common") {
   ]
 
   deps = [
+    ":ColorUtils",
     "../i18n:bundle",
     "../platform:bundle",
     "../root:bundle",
   ]
+
+  # Add files built by ColorUtils ts_library so that they are included in layout tests.
+  data = filter_include(get_target_outputs(":ColorUtils"),
+                        [
+                          "*.js",
+                          "*.map",
+                        ])
 }
 
 devtools_entrypoint("bundle") {

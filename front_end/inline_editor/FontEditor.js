@@ -93,8 +93,12 @@ const UIStrings = {
   */
   sKeyValueSelector: '{PH1} Key Value Selector',
   /**
-  *@description Label for Font Editor toggle input type button
-  *@example {font-size} PH1
+  * @description Label for Font Editor toggle input type button. The placeholder is the name of the
+  * font property that this UI input controls. e.g. font-size, line-height, line-weight. Tooltip for
+  * a button next to the text input which allows the user to change the input type. When they click
+  * this button, the UI changes to allow the user to choose from a list of pre-selected font
+  * categories.
+  * @example {font-size} PH1
   */
   sToggleInputType: '{PH1} toggle input type',
   /**

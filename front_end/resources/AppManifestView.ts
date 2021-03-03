@@ -798,6 +798,7 @@ export class AppManifestView extends UI.Widget.VBox implements SDK.SDKModel.Obse
     } else {
       const [width, height] = imageResource.sizes.split('x').map((x: string) => parseInt(x, 10));
       if (!isScreenshot && (width !== height)) {
+        // TODO(l10n): Don't concatenate strings here.
         imageResourceErrors.push(i18nString(UIStrings.sSDimensionsShouldBeSquare, {PH1: resourceName, PH2: imageUrl}));
       } else if (image.naturalWidth !== width && image.naturalHeight !== height) {
         imageResourceErrors.push(i18nString(UIStrings.actualSizeSspxOfSSDoesNotMatch, {

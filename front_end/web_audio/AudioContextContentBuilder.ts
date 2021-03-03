@@ -10,7 +10,7 @@ const UIStrings = {
   /**
   *@description Text in Audio Context Content Builder
   */
-  audiocontext: 'AudioContext',
+  audiocontext: '`AudioContext`',
   /**
   *@description Text in Audio Context Content Builder
   */

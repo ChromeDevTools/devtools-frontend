@@ -82,7 +82,9 @@ const UIStrings = {
   */
   frameRate: 'Frame rate',
   /**
-  *@description Media property giving the distance of the playback quality from the ideal playback.
+  * @description Media property giving the distance of the playback quality from the ideal playback.
+  * Roughness is the opposite to smoothness, i.e. whether each frame of the video was played at the
+  * right time so that the video looks smooth when it plays.
   */
   videoPlaybackRoughness: 'Video playback roughness',
   /**

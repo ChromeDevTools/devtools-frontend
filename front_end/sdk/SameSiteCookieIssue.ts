@@ -7,9 +7,9 @@ import * as Common from '../common/common.js';
 import * as i18n from '../i18n/i18n.js';
 
 import {FrameManager} from './FrameManager.js';
-import {Issue, IssueCategory, LazyMarkdownIssueDescription, MarkdownIssueDescription, resolveLazyDescription} from './Issue.js';  // eslint-disable-line no-unused-vars
-import {IssuesModel} from './IssuesModel.js';              // eslint-disable-line no-unused-vars
-import {ResourceTreeFrame} from './ResourceTreeModel.js';  // eslint-disable-line no-unused-vars
+import {Issue, IssueCategory, LazyMarkdownIssueDescription, MarkdownIssueDescription, resolveLazyDescription} from './Issue.js';
+import type {IssuesModel} from './IssuesModel.js';
+import {ResourceTreeFrame} from './ResourceTreeModel.js';
 
 const UIStrings = {
   /**

@@ -83,9 +83,9 @@ export abstract class Issue extends Common.ObjectWrapper.ObjectWrapper {
     return this.issueCode;
   }
 
-  primaryKey(): string {
-    throw new Error('Not implemented');
-  }
+  abstract primaryKey(): string;
+  abstract getDescription(): MarkdownIssueDescription|null;
+  abstract getCategory(): IssueCategory;
 
   getBlockedByResponseDetails(): Iterable<Protocol.Audits.BlockedByResponseIssueDetails> {
     return [];
@@ -121,14 +121,6 @@ export abstract class Issue extends Common.ObjectWrapper.ObjectWrapper {
    */
   model(): IssuesModel|null {
     return this.issuesModel;
-  }
-
-  getDescription(): MarkdownIssueDescription|null {
-    throw new Error('Not implemented');
-  }
-
-  getCategory(): IssueCategory {
-    throw new Error('Not implemented');
   }
 
   isCausedByThirdParty(): boolean {

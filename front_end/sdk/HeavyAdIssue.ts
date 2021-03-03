@@ -4,7 +4,7 @@
 
 import * as i18n from '../i18n/i18n.js';
 
-import {Issue, IssueCategory, MarkdownIssueDescription} from './Issue.js';  // eslint-disable-line no-unused-vars
+import {Issue, IssueCategory, MarkdownIssueDescription} from './Issue.js';
 import type {IssuesModel} from './IssuesModel.js';
 
 const UIStrings = {

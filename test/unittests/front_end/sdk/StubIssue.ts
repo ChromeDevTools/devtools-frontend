@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {Issue} from '../../../../front_end/sdk/Issue.js';  // eslint-disable-line rulesdir/es_modules_import
+import {Issue, IssueCategory} from '../../../../front_end/sdk/Issue.js';  // eslint-disable-line rulesdir/es_modules_import
 
 export class StubIssue extends Issue {
   private requestIds: string[];
@@ -27,6 +27,10 @@ export class StubIssue extends Issue {
     return this.requestIds.map(id => {
       return {requestId: id, url: ''};
     });
+  }
+
+  getCategory() {
+    return IssueCategory.Other;
   }
 
   cookies() {

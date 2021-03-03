@@ -16,6 +16,7 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('sdk/SharedArrayBufferIssue.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+
 export class SharedArrayBufferIssue extends Issue {
   private issueDetails: Protocol.Audits.SharedArrayBufferIssueDetails;
 

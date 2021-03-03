@@ -1094,11 +1094,12 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     if (maybeInitialValue === null) {
       return;
     }
+    let initialValue = maybeInitialValue;  // To suppress a compiler warning.
     if (this._editing) {
       return;
     }
 
-    const initialValue = this._convertWhitespaceToEntities(maybeInitialValue).text;
+    initialValue = this._convertWhitespaceToEntities(initialValue).text;
 
     this._htmlEditElement = /** @type {!HTMLElement} */ (document.createElement('div'));
     this._htmlEditElement.className = 'source-code elements-tree-editor';
@@ -1906,7 +1907,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
             throw new Error('ElementsTreeElement._nodeTitleInfo expects node.firstChild to be defined.');
           }
           const result = this._convertWhitespaceToEntities(firstChild.nodeValue());
-          textNodeElement.textContent = Platform.StringUtilities.collapseWhitespace(result.text);
+          textNodeElement.textContent = result.text;
           UI.UIUtils.highlightRangesWithStyleClass(textNodeElement, result.entityRanges, 'webkit-html-entity-value');
           UI.UIUtils.createTextChild(titleDOM, '\u200B');
           this._buildTagDOM(titleDOM, tagName, true, false, updateRecord);
@@ -1945,7 +1946,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
           UI.UIUtils.createTextChild(titleDOM, '"');
           const textNodeElement = titleDOM.createChild('span', 'webkit-html-text-node');
           const result = this._convertWhitespaceToEntities(node.nodeValue());
-          textNodeElement.textContent = Platform.StringUtilities.collapseWhitespace(result.text);
+          textNodeElement.textContent = result.text;
           UI.UIUtils.highlightRangesWithStyleClass(textNodeElement, result.entityRanges, 'webkit-html-entity-value');
           UI.UIUtils.createTextChild(titleDOM, '"');
           if (updateRecord && updateRecord.isCharDataModified()) {

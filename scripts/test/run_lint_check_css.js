@@ -13,6 +13,15 @@ const {
 const yargsObject = require('yargs')
                         .option('files', {type: 'array', desc: 'One or more files to lint.'})
                         .option('glob', {default: '**/*.css', desc: 'A glob to choose which files to lint.'})
+                        .option('cwd', {default: devtoolsRootPath(), desc: 'Working directory to glob from'})
+                        .parserConfiguration({
+                          // So that if we pass --foo-bar, Yargs only populates
+                          // argv with '--foo-bar', not '--foo-bar' and
+                          // 'fooBar'. This is important because if we have both
+                          // versions and pass them to stylelint, it errors
+                          // saying that we've passed the same argument twice.
+                          'camel-case-expansion': false
+                        })
                         .argv;
 
 // Note: stylelint requires POSIX-formatted paths/globs, even on Windows.
@@ -33,21 +42,18 @@ function getCSSFilesOrGlobList() {
 
 function run() {
   // eslint-disable-next-line no-unused-vars
-  const {glob, files, _, $0, ...flagsForStylelint} = yargsObject;
+  const {glob, files, cwd, _, $0, ...flagsForStylelint} = yargsObject;
 
   /*
    * This reduce is a flatten, because our Node version
    * doesn't have flatMap :(
    */
-  const extraFlagsForStylelint =
-      Object.keys(flagsForStylelint).map(key => [`--${key}`, flagsForStylelint[key]]).reduce((a, b) => a.concat(b), []);
+  const extraFlagsForStylelint = Object.keys(flagsForStylelint).flatMap(key => [`--${key}`, flagsForStylelint[key]]);
 
   const args = [
     stylelintExecutablePath(), ...getCSSFilesOrGlobList(), '--fix', '--allow-empty-input', ...extraFlagsForStylelint
   ];
-
-  const result =
-      childProcess.spawnSync(nodePath(), args, {encoding: 'utf-8', cwd: devtoolsRootPath(), stdio: 'inherit'});
+  const result = childProcess.spawnSync(nodePath(), args, {encoding: 'utf-8', cwd, stdio: 'inherit'});
   process.exit(result.status);
 }
 

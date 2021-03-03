@@ -7,7 +7,7 @@
 ::slotted(input.dt-radio-button) {
   --gradient-start: #fcfcfc;
   --gradient-end: #dfdfdf;
-  --radio-dot: url(Images/radioDot.png);
+  --radio-dot: var(--image-file-radioDot);
 
   height: 17px;
   width: 17px;
@@ -35,7 +35,7 @@
 :host-context(.-theme-with-dark-background) ::slotted(input.dt-radio-button) {
   --gradient-start: #030303;
   --gradient-end: #202020;
-  --radio-dot: url(Images/radioDot-dark-theme.png);
+  --radio-dot: var(--image-file-radioDot-dark-theme);
 }
 
 ::slotted(input.dt-radio-button:checked:active),

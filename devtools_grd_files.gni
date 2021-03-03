@@ -10,6 +10,7 @@
 # are missed from the GRD.
 
 grd_files_release_sources = [
+  "front_end/Images/Images.js",
   "front_end/Images/accelerometer-back.svg",
   "front_end/Images/accelerometer-bottom.png",
   "front_end/Images/accelerometer-front.svg",

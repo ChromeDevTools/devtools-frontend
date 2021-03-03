@@ -4,7 +4,24 @@
 
 import("../../devtools_image_files.gni")
 import("../../scripts/build/ninja/devtools_pre_built.gni")
+import("../../scripts/build/ninja/node.gni")
 
 devtools_pre_built("Images") {
   sources = devtools_image_files
+}
+
+node_action("generate_css_vars") {
+  script = "front_end/Images/generate-css-vars.js"
+
+  args = [
+           rebase_path(target_gen_dir, root_build_dir),
+           target_name,
+         ] + devtools_image_files
+
+  outputs = [
+    "$target_gen_dir/Images.js",
+    "$target_gen_dir/$target_name-tsconfig.json",
+  ]
+
+  data = [ "$target_gen_dir/Images.js" ]
 }

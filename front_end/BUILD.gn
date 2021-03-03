@@ -189,6 +189,7 @@ ts_library("shell") {
   sources = [ "shell.js" ]
 
   deps = [
+    "Images:generate_css_vars",
     "bindings:legacy",
     "browser_sdk:meta",
     "changes:meta",

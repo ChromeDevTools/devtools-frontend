@@ -5,15 +5,8 @@ import("../../../scripts/build/ninja/copy.gni")
 import("./optimized_images.gni")
 
 group("optimized_emulated_devices") {
-  public_deps = [
-    ":optimized_emulated_devices-gen",
-    ":optimized_emulated_devices-resources",
-  ]
+  public_deps = [ ":optimized_emulated_devices-gen" ]
   data_deps = public_deps
-}
-
-copy_sources_to_resources("optimized_emulated_devices-resources") {
-  sources = devtools_emulated_devices_images
 }
 
 copy_to_gen("optimized_emulated_devices-gen") {

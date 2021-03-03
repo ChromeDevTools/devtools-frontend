@@ -5,23 +5,11 @@
 import("../../scripts/build/ninja/copy.gni")
 
 group("bundle") {
-  public_deps = [
-    ":gen",
-    ":resources",
-  ]
+  public_deps = [ ":gen" ]
   data_deps = public_deps
 }
 
 copy_to_gen("gen") {
-  sources = [
-    "LighthouseService.js",
-    "lighthouse_worker.js",
-  ]
-
-  deps = [ "../third_party/lighthouse" ]
-}
-
-copy_sources_to_resources("resources") {
   sources = [
     "LighthouseService.js",
     "lighthouse_worker.js",

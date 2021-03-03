@@ -330,15 +330,8 @@ ts_library("worker_app") {
 }
 
 group("integration_test_runner") {
-  public_deps = [
-    ":integration_test_runner-gen",
-    ":integration_test_runner-resources",
-  ]
+  public_deps = [ ":integration_test_runner-gen" ]
   data_deps = public_deps
-}
-
-copy_sources_to_resources("integration_test_runner-resources") {
-  sources = [ "integration_test_runner.html" ]
 }
 
 copy_to_gen("integration_test_runner-gen") {
@@ -385,21 +378,7 @@ copy("html_entrypoints") {
   data_deps = [ ":html_entrypoints-generation" ]
 }
 
-group("embedder-scripts") {
-  public_deps = [
-    ":gen-embedder-scripts",
-    ":resources-embedder-scripts",
-  ]
-}
-
-copy_sources_to_resources("resources-embedder-scripts") {
-  sources = [
-    "Tests.js",
-    "devtools_compatibility.js",
-  ]
-}
-
-copy_to_gen("gen-embedder-scripts") {
+copy_to_gen("embedder-scripts") {
   sources = [
     "Tests.js",
     "devtools_compatibility.js",

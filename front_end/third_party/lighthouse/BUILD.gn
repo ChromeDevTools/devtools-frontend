@@ -16,16 +16,9 @@ lighthouse_sources = lighthouse_locale_files + [
                      ]
 
 group("lighthouse") {
-  public_deps = [
-    ":lighthouse-gen",
-    ":lighthouse-resources",
-  ]
+  public_deps = [ ":lighthouse-gen" ]
 
   data_deps = [ ":lighthouse-gen" ]
-}
-
-copy_sources_to_resources("lighthouse-resources") {
-  sources = lighthouse_sources
 }
 
 copy_to_gen("lighthouse-gen") {

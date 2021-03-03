@@ -5,23 +5,12 @@
 import("../../scripts/build/ninja/copy.gni")
 
 group("bundle") {
-  public_deps = [
-    ":gen",
-    ":resources",
-  ]
+  public_deps = [ ":gen" ]
 
   data_deps = [ ":gen" ]
 }
 
 copy_to_gen("gen") {
-  sources = [
-    "ExtensionsNetworkTestRunner.js",
-    "ExtensionsTestRunner.js",
-    "extensions_test_runner.js",
-  ]
-}
-
-copy_sources_to_resources("resources") {
   sources = [
     "ExtensionsNetworkTestRunner.js",
     "ExtensionsTestRunner.js",

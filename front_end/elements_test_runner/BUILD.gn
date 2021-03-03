@@ -5,26 +5,12 @@
 import("../../scripts/build/ninja/copy.gni")
 
 group("bundle") {
-  public_deps = [
-    ":gen",
-    ":resources",
-  ]
+  public_deps = [ ":gen" ]
 
   data_deps = [ ":gen" ]
 }
 
 copy_to_gen("gen") {
-  sources = [
-    "EditDOMTestRunner.js",
-    "ElementsPanelShadowSelectionOnRefreshTestRunner.js",
-    "ElementsTestRunner.js",
-    "SetOuterHTMLTestRunner.js",
-    "StylesUpdateLinksTestRunner.js",
-    "elements_test_runner.js",
-  ]
-}
-
-copy_sources_to_resources("resources") {
   sources = [
     "EditDOMTestRunner.js",
     "ElementsPanelShadowSelectionOnRefreshTestRunner.js",

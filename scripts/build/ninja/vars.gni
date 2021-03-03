@@ -15,5 +15,3 @@ if (!defined(devtools_location)) {
 # doesn't know what is part of a variable and what
 # is an actual string, without the `/` separator.
 devtools_location_prepend = "//$devtools_location"
-
-resources_out_dir = "$root_out_dir/resources/inspector"

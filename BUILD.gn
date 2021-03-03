@@ -114,11 +114,9 @@ applications_js = [
   "worker_app.js",
 ]
 
-resources_generated_applications_js = []
 gen_generated_applications_js = []
 
 foreach(application, applications_js) {
-  resources_generated_applications_js += [ "$resources_out_dir/$application" ]
   gen_generated_applications_js += [ "$target_gen_dir/front_end/$application" ]
 }
 
@@ -170,12 +168,9 @@ non_autostart_non_remote_modules = [
   "emulated_devices/emulated_devices_module.js",
 ]
 
-resources_non_autostart_non_remote_modules = []
 gen_non_autostart_non_remote_modules = []
 
 foreach(module_file, non_autostart_non_remote_modules) {
-  resources_non_autostart_non_remote_modules +=
-      [ "$resources_out_dir/$module_file" ]
   gen_non_autostart_non_remote_modules +=
       [ "$target_gen_dir/front_end/$module_file" ]
 }
@@ -203,11 +198,9 @@ test_modules = [
   "sources_test_runner/sources_test_runner_module.js",
 ]
 
-resources_test_modules = []
 gen_test_modules = []
 
 foreach(module_file, test_modules) {
-  resources_test_modules += [ "$resources_out_dir/$module_file" ]
   gen_test_modules += [ "$target_gen_dir/front_end/$module_file" ]
 }
 
@@ -351,19 +344,12 @@ python2_action("build_release_devtools") {
 
   inputs = helper_scripts + all_devtools_files + devtools_test_files +
            application_templates
-  outputs =
-      resources_generated_applications_js + gen_generated_applications_js +
-      resources_non_autostart_non_remote_modules +
-      gen_non_autostart_non_remote_modules + resources_test_modules +
-      gen_test_modules
+  outputs = gen_generated_applications_js +
+            gen_non_autostart_non_remote_modules + gen_test_modules
 
   args = devtools_applications + [
            "--input_path",
            rebase_path("front_end", root_build_dir),
-
-           # TODO(crbug.com/1174013): Remove output to resources_out_dir
-           "--output_path",
-           rebase_path(resources_out_dir, root_build_dir),
            "--output_path_gen",
            rebase_path("$target_gen_dir/front_end", root_build_dir),
          ] + build_release_devtools_args

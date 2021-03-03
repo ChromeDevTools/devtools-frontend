@@ -338,7 +338,7 @@ copy_to_gen("integration_test_runner-gen") {
   sources = [ "integration_test_runner.html" ]
 }
 
-node_action("html_entrypoints-generation") {
+node_action("html_entrypoints") {
   inputs = [ "entrypoint_template.html" ]
 
   script = "scripts/build/generate_html_entrypoint.js"
@@ -359,23 +359,6 @@ node_action("html_entrypoints-generation") {
     "$target_gen_dir/toolbox.html",
     "$target_gen_dir/worker_app.html",
   ]
-}
-
-copy("html_entrypoints") {
-  sources = [
-    "$target_gen_dir/devtools_app.html",
-    "$target_gen_dir/inspector.html",
-    "$target_gen_dir/js_app.html",
-    "$target_gen_dir/ndb_app.html",
-    "$target_gen_dir/node_app.html",
-    "$target_gen_dir/toolbox.html",
-    "$target_gen_dir/worker_app.html",
-  ]
-
-  outputs = [ "$resources_out_dir/{{source_file_part}}" ]
-
-  public_deps = [ ":html_entrypoints-generation" ]
-  data_deps = [ ":html_entrypoints-generation" ]
 }
 
 copy_to_gen("embedder-scripts") {

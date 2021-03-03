@@ -22,6 +22,11 @@ The string will rendered with robots.txt not translated and without the backtick
   'Requesting for robots.txt ...'
 ```
 
+### Phrases that are fully locked
+Any text that is fully locked should not go into the UIStrings object. To make your intention clear
+or to make TypeScript happy, there are two methods `i18n.i18n.lockedString` and `i18n.i18n.lockedLazyString`
+that can be used instead of having fully locked phrases via `i18nString`.
+
 ## What should not be localized?
 In general, branding related terms and code snippets are the ones to look for, and Sometimes some technical terms. Some examples:
 

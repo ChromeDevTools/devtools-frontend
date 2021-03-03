@@ -165,3 +165,18 @@ export function deserializeUIString(serializedMessage: string): i18nTypes.Serial
 
   return JSON.parse(serializedMessage) as i18nTypes.SerializedMessage;
 }
+
+/**
+ * Use this function in places where a `LocalizedString` is expected but the
+ * term/phrase you want to use does not require translation.
+ */
+export function lockedString(str: string): Platform.UIString.LocalizedString {
+  return str as Platform.UIString.LocalizedString;
+}
+
+/**
+ * Same as `lockedString` but for places where `i18nLazyString` would be used otherwise.
+ */
+export function lockedLazyString(str: string): () => Platform.UIString.LocalizedString {
+  return (): Platform.UIString.LocalizedString => str as Platform.UIString.LocalizedString;
+}

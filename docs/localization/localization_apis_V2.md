@@ -37,3 +37,12 @@ const reloadButton = UI.createInlineButton(UI.Toolbar.createActionButtonForId('c
 const recordButton = UI.createInlineButton(UI.Toolbar.createActionButton(this._toggleRecordAction));
 message = i18n.i18n.getFormatLocalizedString(str_, UIStrings.clickTheReloadButtonSToReloadAnd, {PH1: reloadButton, PH2:recordButton });
 ```
+
+## i18n.i18n.lockedString
+This call is a named cast. Use it in places where a localized string is expected but the
+term you want to use does not require translation. Instead of locking the whole phrase or using
+a placeholder only phrase, use `lockedString`.
+
+```javascript
+someFunctionRequiringALocalizedString(i18n.i18n.lockedString('HTTP'));
+```

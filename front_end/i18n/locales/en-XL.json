@@ -7769,9 +7769,6 @@
   "sdk/NetworkManager.js | requestWasBlockedByDevtoolsS": {
     "message": "R̂éq̂úêśt̂ ẃâś b̂ĺôćk̂éd̂ b́ŷ D́êv́T̂óôĺŝ: \"{PH1}\""
   },
-  "sdk/NetworkManager.js | resourceInterpretedAsSBut": {
-    "message": "R̂éŝóûŕĉé îńt̂ér̂ṕr̂ét̂éd̂ áŝ {PH1} b́ût́ t̂ŕâńŝf́êŕr̂éd̂ ẃît́ĥ ḾÎḾÊ t́ŷṕê {PH2}: \"{PH3}\"."
-  },
   "sdk/NetworkManager.js | setcookieHeaderIsIgnoredIn": {
     "message": "Ŝét̂-Ćôók̂íê h́êád̂ér̂ íŝ íĝńôŕêd́ îń r̂éŝṕôńŝé f̂ŕôḿ ûŕl̂: {PH1}. Ćôók̂íê ĺêńĝt́ĥ śĥóûĺd̂ b́ê ĺêśŝ t́ĥán̂ ór̂ éq̂úâĺ t̂ó 4096 ĉh́âŕâćt̂ér̂ś."
   },

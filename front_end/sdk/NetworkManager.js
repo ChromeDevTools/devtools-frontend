@@ -35,7 +35,7 @@ import * as Platform from '../platform/platform.js';
 import * as TextUtils from '../text_utils/text_utils.js';  // eslint-disable-line no-unused-vars
 
 import {Cookie} from './Cookie.js';
-import {BlockedCookieWithReason, ContentData, Events as NetworkRequestEvents, ExtraRequestInfo, ExtraResponseInfo, MIME_TYPE, MIME_TYPE_TO_RESOURCE_TYPE, NameValue, NetworkRequest} from './NetworkRequest.js';  // eslint-disable-line no-unused-vars
+import {BlockedCookieWithReason, ContentData, Events as NetworkRequestEvents, ExtraRequestInfo, ExtraResponseInfo, MIME_TYPE, NameValue, NetworkRequest} from './NetworkRequest.js';  // eslint-disable-line no-unused-vars
 import {Capability, SDKModel, SDKModelObserver, Target, TargetManager} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 
 const UIStrings = {
@@ -55,13 +55,6 @@ const UIStrings = {
   *@description Text in Network Manager
   */
   fastG: 'Fast 3G',
-  /**
-  *@description Text in Network Manager
-  *@example {application} PH1
-  *@example {image} PH2
-  *@example {https://example.com} PH3
-  */
-  resourceInterpretedAsSBut: 'Resource interpreted as {PH1} but transferred with MIME type {PH2}: "{PH3}".',
   /**
   *@description Text in Network Manager
   *@example {https://example.com} PH1
@@ -475,51 +468,9 @@ export class NetworkDispatcher {
 
     networkRequest.setSecurityState(response.securityState);
 
-    if (!this._mimeTypeIsConsistentWithType(networkRequest)) {
-      const message = i18nString(
-          UIStrings.resourceInterpretedAsSBut,
-          {PH1: networkRequest.resourceType().title(), PH2: networkRequest.mimeType, PH3: networkRequest.url()});
-      this._manager.dispatchEventToListeners(
-          Events.MessageGenerated, {message: message, requestId: networkRequest.requestId(), warning: true});
-    }
-
     if (response.securityDetails) {
       networkRequest.setSecurityDetails(response.securityDetails);
     }
-  }
-
-  /**
-   * @param {!NetworkRequest} networkRequest
-   * @return {boolean}
-   */
-  _mimeTypeIsConsistentWithType(networkRequest) {
-    // If status is an error, content is likely to be of an inconsistent type,
-    // as it's going to be an error message. We do not want to emit a warning
-    // for this, though, as this will already be reported as resource loading failure.
-    // Also, if a URL like http://localhost/wiki/load.php?debug=true&lang=en produces text/css and gets reloaded,
-    // it is 304 Not Modified and its guessed mime-type is text/php, which is wrong.
-    // Don't check for mime-types in 304-resources.
-    if (networkRequest.hasErrorStatusCode() || networkRequest.statusCode === 304 || networkRequest.statusCode === 204) {
-      return true;
-    }
-
-    const resourceType = networkRequest.resourceType();
-    if (resourceType !== Common.ResourceType.resourceTypes.Stylesheet &&
-        resourceType !== Common.ResourceType.resourceTypes.Document &&
-        resourceType !== Common.ResourceType.resourceTypes.TextTrack) {
-      return true;
-    }
-
-
-    if (!networkRequest.mimeType) {
-      return true;
-    }  // Might be not known for cached resources with null responses.
-
-    if (MIME_TYPE_TO_RESOURCE_TYPE.has(networkRequest.mimeType)) {
-      return resourceType.name() in MIME_TYPE_TO_RESOURCE_TYPE.get(networkRequest.mimeType);
-    }
-
-    return false;
   }
 
   /**

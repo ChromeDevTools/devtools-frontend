@@ -203,19 +203,6 @@ export const MIME_TYPE = {
   PDF: 'application/pdf',
 };
 
-/** @type {!Map<!MIME_TYPE, *>} */
-export const MIME_TYPE_TO_RESOURCE_TYPE = new Map([
-  [MIME_TYPE.HTML, {'document': true}],
-  [MIME_TYPE.XML, {'document': true}],
-  [MIME_TYPE.PLAIN, {'document': true}],
-  [MIME_TYPE.XHTML, {'document': true}],
-  [MIME_TYPE.SVG, {'document': true}],
-  [MIME_TYPE.CSS, {'stylesheet': true}],
-  [MIME_TYPE.XSL, {'stylesheet': true}],
-  [MIME_TYPE.VTT, {'texttrack': true}],
-  [MIME_TYPE.PDF, {'document': true}],
-]);
-
 /**
  * @implements {TextUtils.ContentProvider.ContentProvider}
  */

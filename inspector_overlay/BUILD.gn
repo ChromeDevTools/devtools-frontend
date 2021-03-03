@@ -87,5 +87,5 @@ ts_library("inspector_overlay") {
     "tool_viewport_size.ts",
   ]
 
-  deps = [ "../front_end/common:bundle" ]
+  deps = [ "../front_end/common:ColorUtils" ]
 }

@@ -6300,7 +6300,7 @@
     "message": "Perspective"
   },
   "profiler/HeapSnapshotView.ts | recordAllocationStacksExtra": {
-    "message": "Record allocation stacks (extra performance overhead)"
+    "message": "Record stack traces of allocations (extra performance overhead)"
   },
   "profiler/HeapSnapshotView.ts | recording": {
     "message": "Recording…"

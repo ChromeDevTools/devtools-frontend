@@ -200,9 +200,12 @@ const UIStrings = {
   */
   startRecordingHeapProfile: 'Start recording heap profile',
   /**
-  *@description Text in Heap Snapshot View of a profiler tool
+  *@description Text in Heap Snapshot View of a profiler tool.
+  * A stack trace is a list of functions that were called.
+  * This option turns on recording of a stack trace at each allocation.
+  * The recording itself is a somewhat expensive operation, so turning this option on, the website's performance may be affected negatively (e.g. everything becomes slower).
   */
-  recordAllocationStacksExtra: 'Record allocation stacks (extra performance overhead)',
+  recordAllocationStacksExtra: 'Record stack traces of allocations (extra performance overhead)',
   /**
   *@description Text in CPUProfile View of a profiler tool
   */

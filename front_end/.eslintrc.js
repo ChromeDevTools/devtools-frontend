@@ -10,6 +10,7 @@ module.exports = {
   'rules': {
     // L10n rules are only relevant in 'front_end'.
     'rulesdir/l10n_filename_matches': 2,
+    'rulesdir/l10n_no_i18nString_calls_module_instantiation': 2,
     'rulesdir/l10n_no_uistrings_export': 2,
   },
   'overrides': [

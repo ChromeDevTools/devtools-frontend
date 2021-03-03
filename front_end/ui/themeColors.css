@@ -55,6 +55,10 @@
   /** These colors are used on all non-Mac platforms for scrollbars */
   --color-scrollbar-other: hsl(0deg 0% 0% / 50%);
   --color-scrollbar-other-hover: hsl(0deg 0% 0% / 50%);
+  /** These colors have the same value in dark mode */
+  --lighthouse-red: #ff4e43;
+  --lighthouse-orange: #ffa400;
+  --lighthouse-green: #0cce6a;
 }
 
 .-theme-with-dark-background {

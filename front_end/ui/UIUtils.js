@@ -225,6 +225,7 @@ class DragHandler {
       DragHandler._glassPane = null;
     }
     DragHandler._documentForMouseOut = null;
+    DragHandler._rootForMouseOut = null;
   }
 
   /**
@@ -256,6 +257,7 @@ class DragHandler {
     console.assert(
         (DragHandler._documentForMouseOut || targetDocument) === targetDocument, 'Dragging on multiple documents.');
     DragHandler._documentForMouseOut = targetDocument;
+    DragHandler._rootForMouseOut = event.target instanceof Node && event.target.getRootNode() || null;
     this._dragEventsTargetDocument = targetDocument;
     try {
       if (targetDocument.defaultView) {
@@ -267,7 +269,8 @@ class DragHandler {
 
     targetDocument.addEventListener('mousemove', e => this._elementDragMove(/** @type {!MouseEvent} */ (e)), true);
     targetDocument.addEventListener('mouseup', this._elementDragEnd, true);
-    targetDocument.addEventListener('mouseout', this._mouseOutWhileDragging, true);
+    DragHandler._rootForMouseOut &&
+        DragHandler._rootForMouseOut.addEventListener('mouseout', this._mouseOutWhileDragging, {capture: true});
     if (this._dragEventsTargetDocumentTop && targetDocument !== this._dragEventsTargetDocumentTop) {
       this._dragEventsTargetDocumentTop.addEventListener('mouseup', this._elementDragEnd, true);
     }
@@ -296,10 +299,10 @@ class DragHandler {
   }
 
   _unregisterMouseOutWhileDragging() {
-    if (!DragHandler._documentForMouseOut) {
+    if (!DragHandler._rootForMouseOut) {
       return;
     }
-    DragHandler._documentForMouseOut.removeEventListener('mouseout', this._mouseOutWhileDragging, true);
+    DragHandler._rootForMouseOut.removeEventListener('mouseout', this._mouseOutWhileDragging, {capture: true});
   }
 
   _unregisterDragEvents() {
@@ -365,6 +368,8 @@ DragHandler._glassPane = null;
 
 /** @type {?Document} */
 DragHandler._documentForMouseOut = null;
+/** @type {?Node} */
+DragHandler._rootForMouseOut = null;
 
 /**
  * @param {?Node=} node

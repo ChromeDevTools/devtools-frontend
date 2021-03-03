@@ -3,9 +3,9 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {describe, it} from 'mocha';
 
 import {getBrowserAndPages, goToResourceWithCustomHost} from '../../shared/helper.js';
+import {describe, it} from '../../shared/mocha-extensions.js';
 
 describe('The Host browser', () => {
   it('resolves .test domains to localhost and OOPIFs work as intended', async () => {

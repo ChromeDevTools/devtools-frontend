@@ -32,11 +32,14 @@ export function registerAppProvider(registration) {
  * @return {!Array<!AppProviderRegistration>}
  */
 export function getRegisteredAppProviders() {
-  return registeredAppProvider.sort((firstProvider, secondProvider) => {
-    const order1 = firstProvider.order || 0;
-    const order2 = secondProvider.order || 0;
-    return order1 - order2;
-  });
+  return registeredAppProvider
+      .filter(
+          provider => Root.Runtime.Runtime.isDescriptorEnabled({experiment: undefined, condition: provider.condition}))
+      .sort((firstProvider, secondProvider) => {
+        const order1 = firstProvider.order || 0;
+        const order2 = secondProvider.order || 0;
+        return order1 - order2;
+      });
 }
 
 /**

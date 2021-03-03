@@ -7,22 +7,6 @@ import * as Platform from '../platform/platform.js';
 
 const UIStrings = {
   /**
-  *@description Text that describes the representation of a value in the Linear Memory Inspector, short for decimal
-  */
-  dec: '`dec`',
-  /**
-  *@description Text that describes the representation of a value in the Linear Memory Inspector, short for hexadecimal
-  */
-  hex: '`hex`',
-  /**
-  *@description Text that describes the representation of a value in the Linear Memory Inspector, short for octal
-  */
-  oct: '`oct`',
-  /**
-  *@description Text that describes the representation of a value in the Linear Memory Inspector, short for scientific
-  */
-  sci: '`sci`',
-  /**
   *@description Text that describes the Endianness setting that can be selected in the select item in the Linear Memory Inspector
   */
   littleEndian: 'Little Endian',
@@ -104,13 +88,13 @@ export const VALUE_TYPE_MODE_LIST = [
 export function valueTypeModeToLocalizedString(mode: ValueTypeMode): string {
   switch (mode) {
     case ValueTypeMode.Decimal:
-      return i18nString(UIStrings.dec);
+      return i18n.i18n.lockedString('dec');
     case ValueTypeMode.Hexadecimal:
-      return i18nString(UIStrings.hex);
+      return i18n.i18n.lockedString('hex');
     case ValueTypeMode.Octal:
-      return i18nString(UIStrings.oct);
+      return i18n.i18n.lockedString('oct');
     case ValueTypeMode.Scientific:
-      return i18nString(UIStrings.sci);
+      return i18n.i18n.lockedString('sci');
     default:
       return Platform.assertNever(mode, `Unknown mode: ${mode}`);
   }

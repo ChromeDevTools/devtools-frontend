@@ -13,10 +13,6 @@ import * as UI from '../ui/ui.js';
 
 const UIStrings = {
   /**
-  *@description Text in Binary Resource View of the Network panel
-  */
-  base: '`Base64`',
-  /**
   * @description Text in Binary Resource View of the Network panel. Shown to the user as a status
   * message after the current text has been copied to the clipboard. Base64 is a format for encoding
   * data.
@@ -32,10 +28,6 @@ const UIStrings = {
   * and is a format for encoding data.
   */
   copiedAsHex: 'Copied as `Hex`',
-  /**
-  *@description Text in Binary Resource View of the Network panel
-  */
-  utf: '`UTF-8`',
   /**
   *@description Text in Binary Resource View of the Network panel. Shown to the user as a status
   * message after the current text has been copied to the clipboard. UTF-8 is a format for encoding data.
@@ -88,7 +80,7 @@ export class BinaryResourceView extends UI.Widget.VBox {
 
     this._binaryViewObjects = [
       new BinaryViewObject(
-          'base64', i18nString(UIStrings.base), i18nString(UIStrings.copiedAsBase),
+          'base64', i18n.i18n.lockedString('Base64'), i18nString(UIStrings.copiedAsBase),
           this._binaryResourceViewFactory.createBase64View.bind(this._binaryResourceViewFactory),
           this._binaryResourceViewFactory.base64.bind(this._binaryResourceViewFactory)),
       new BinaryViewObject(
@@ -96,7 +88,7 @@ export class BinaryResourceView extends UI.Widget.VBox {
           this._binaryResourceViewFactory.createHexView.bind(this._binaryResourceViewFactory),
           this._binaryResourceViewFactory.hex.bind(this._binaryResourceViewFactory)),
       new BinaryViewObject(
-          'utf8', i18nString(UIStrings.utf), i18nString(UIStrings.copiedAsUtf),
+          'utf8', i18n.i18n.lockedString('UTF-8'), i18nString(UIStrings.copiedAsUtf),
           this._binaryResourceViewFactory.createUtf8View.bind(this._binaryResourceViewFactory),
           this._binaryResourceViewFactory.utf8.bind(this._binaryResourceViewFactory)),
     ];

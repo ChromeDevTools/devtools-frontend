@@ -93,10 +93,6 @@ const UIStrings = {
   */
   csp: 'csp',
   /**
-  *@description Reason in Network Data Grid Node of the Network panel. Locked term. Don't translate.
-  */
-  mixedcontent: '`mixed-content`',
-  /**
   *@description Reason in Network Data Grid Node of the Network panel
   */
   origin: 'origin',
@@ -107,31 +103,7 @@ const UIStrings = {
   /**
   *@description Reason in Network Data Grid Node of the Network panel
   */
-  subresourcefilter: '`subresource-filter`',
-  /**
-  *@description Reason in Network Data Grid Node of the Network panel. Locked term. Don't translate.
-  */
-  contenttype: '`content-type`',
-  /**
-  *@description Reason in Network Data Grid Node of the Network panel
-  */
   extension: 'extension',
-  /**
-  *@description Text in Network Data Grid Node of the Network panel
-  */
-  coepframeresourceneedscoepheader: '`CoepFrameResourceNeedsCoepHeader`',
-  /**
-  *@description Text in Network Data Grid Node of the Network panel
-  */
-  CoopSandboxedIframeCannot: '`CoopSandboxedIframeCannotNavigateToCoopPage`',
-  /**
-  *@description Text in Network Data Grid Node of the Network panel
-  */
-  notsameorigin: '`NotSameOrigin`',
-  /**
-  *@description Text in Network Data Grid Node of the Network panel
-  */
-  notsamesite: '`NotSameSite`',
   /**
   *@description Text in Network Data Grid Node of the Network panel
   */
@@ -206,10 +178,6 @@ const UIStrings = {
   *@example {4 B} PH1
   */
   servedFromServiceworkerResource: 'Served from `ServiceWorker`, resource size: {PH1}',
-  /**
-  *@description Text of a DOM element in Network Data Grid Node of the Network panel
-  */
-  signedexchangeq: '`(signed-exchange)`',
   /**
   *@description Cell title in Network Data Grid Node of the Network panel
   *@example {4 B} PH1
@@ -1131,7 +1099,7 @@ export class NetworkRequestNode extends NetworkNode {
           reason = i18nString(UIStrings.csp);
           break;
         case Protocol.Network.BlockedReason.MixedContent:
-          reason = i18nString(UIStrings.mixedcontent);
+          reason = i18n.i18n.lockedString('mixed-content');
           break;
         case Protocol.Network.BlockedReason.Origin:
           reason = i18nString(UIStrings.origin);
@@ -1140,29 +1108,29 @@ export class NetworkRequestNode extends NetworkNode {
           reason = i18nString(UIStrings.devtools);
           break;
         case Protocol.Network.BlockedReason.SubresourceFilter:
-          reason = i18nString(UIStrings.subresourcefilter);
+          reason = i18n.i18n.lockedString('subresource-filter');
           break;
         case Protocol.Network.BlockedReason.ContentType:
-          reason = i18nString(UIStrings.contenttype);
+          reason = i18n.i18n.lockedString('content-type');
           break;
         case Protocol.Network.BlockedReason.CollapsedByClient:
           reason = i18nString(UIStrings.extension);
           break;
         case Protocol.Network.BlockedReason.CoepFrameResourceNeedsCoepHeader:
           displayShowHeadersLink = true;
-          reason = i18nString(UIStrings.coepframeresourceneedscoepheader);
+          reason = i18n.i18n.lockedString('CoepFrameResourceNeedsCoepHeader');
           break;
         case Protocol.Network.BlockedReason.CoopSandboxedIframeCannotNavigateToCoopPage:
           displayShowHeadersLink = true;
-          reason = i18nString(UIStrings.CoopSandboxedIframeCannot);
+          reason = i18n.i18n.lockedString('CoopSandboxedIframeCannotNavigateToCoopPage');
           break;
         case Protocol.Network.BlockedReason.CorpNotSameOrigin:
           displayShowHeadersLink = true;
-          reason = i18nString(UIStrings.notsameorigin);
+          reason = i18n.i18n.lockedString('NotSameOrigin');
           break;
         case Protocol.Network.BlockedReason.CorpNotSameSite:
           displayShowHeadersLink = true;
-          reason = i18nString(UIStrings.notsamesite);
+          reason = i18n.i18n.lockedString('NotSameSite');
           break;
         case Protocol.Network.BlockedReason.CorpNotSameOriginAfterDefaultedToSameOriginByCoep:
           displayShowHeadersLink = true;
@@ -1299,7 +1267,7 @@ export class NetworkRequestNode extends NetworkNode {
       UI.Tooltip.Tooltip.install(cell, i18nString(UIStrings.servedFromServiceworkerResource, {PH1: resourceSize}));
       cell.classList.add('network-dim-cell');
     } else if (this._request.redirectSourceSignedExchangeInfoHasNoErrors()) {
-      UI.UIUtils.createTextChild(cell, i18nString(UIStrings.signedexchangeq));
+      UI.UIUtils.createTextChild(cell, i18n.i18n.lockedString('(signed-exchange)'));
       UI.Tooltip.Tooltip.install(cell, i18nString(UIStrings.servedFromSignedHttpExchange, {PH1: resourceSize}));
       cell.classList.add('network-dim-cell');
     } else if (this._request.fromPrefetchCache()) {

@@ -128,9 +128,6 @@
   "accessibility/AccessibilityStrings.ts | expanded": {
     "message": "Expanded"
   },
-  "accessibility/AccessibilityStrings.ts | flowsTo": {
-    "message": "Flows to"
-  },
   "accessibility/AccessibilityStrings.ts | focusable": {
     "message": "Focusable"
   },
@@ -248,14 +245,8 @@
   "accessibility/AccessibilityStrings.ts | multiselectable": {
     "message": "Multi-selectable"
   },
-  "accessibility/AccessibilityStrings.ts | nameString": {
-    "message": "Name"
-  },
   "accessibility/AccessibilityStrings.ts | orientation": {
     "message": "Orientation"
-  },
-  "accessibility/AccessibilityStrings.ts | ownsText": {
-    "message": "Owns"
   },
   "accessibility/AccessibilityStrings.ts | pressed": {
     "message": "Pressed"
@@ -1955,9 +1946,6 @@
   "elements/ElementStatePaneWidget.js | forceElementState": {
     "message": "Force element state"
   },
-  "elements/ElementStatePaneWidget.js | hov": {
-    "message": ":hov"
-  },
   "elements/ElementStatePaneWidget.js | toggleElementState": {
     "message": "Toggle Element State"
   },
@@ -2864,12 +2852,6 @@
   "inline_editor/CSSShadowEditor.js | blur": {
     "message": "Blur"
   },
-  "inline_editor/CSSShadowEditor.js | inset": {
-    "message": "Inset"
-  },
-  "inline_editor/CSSShadowEditor.js | outset": {
-    "message": "Outset"
-  },
   "inline_editor/CSSShadowEditor.js | spread": {
     "message": "Spread"
   },
@@ -3602,15 +3584,6 @@
   "layers/LayersPanel.ts | profiler": {
     "message": "Profiler"
   },
-  "lighthouse/lighthouse-meta.ts | lighthouse": {
-    "message": "Lighthouse"
-  },
-  "lighthouse/lighthouse-meta.ts | lighthouseTag": {
-    "message": "lighthouse"
-  },
-  "lighthouse/lighthouse-meta.ts | pwa": {
-    "message": "pwa"
-  },
   "lighthouse/lighthouse-meta.ts | showLighthouse": {
     "message": "Show Lighthouse"
   },
@@ -3887,17 +3860,11 @@
   "linear_memory_inspector/ValueInterpreterDisplayUtils.ts | bigEndian": {
     "message": "Big Endian"
   },
-  "linear_memory_inspector/ValueInterpreterDisplayUtils.ts | dec": {
-    "message": "dec"
-  },
   "linear_memory_inspector/ValueInterpreterDisplayUtils.ts | float64Bit": {
     "message": "Float 64-bit"
   },
   "linear_memory_inspector/ValueInterpreterDisplayUtils.ts | floatBit": {
     "message": "Float 32-bit"
-  },
-  "linear_memory_inspector/ValueInterpreterDisplayUtils.ts | hex": {
-    "message": "hex"
   },
   "linear_memory_inspector/ValueInterpreterDisplayUtils.ts | integer16Bit": {
     "message": "Integer 16-bit"
@@ -3913,12 +3880,6 @@
   },
   "linear_memory_inspector/ValueInterpreterDisplayUtils.ts | littleEndian": {
     "message": "Little Endian"
-  },
-  "linear_memory_inspector/ValueInterpreterDisplayUtils.ts | oct": {
-    "message": "oct"
-  },
-  "linear_memory_inspector/ValueInterpreterDisplayUtils.ts | sci": {
-    "message": "sci"
   },
   "linear_memory_inspector/ValueInterpreterDisplayUtils.ts | string": {
     "message": "String"
@@ -4424,9 +4385,6 @@
   "mobile_throttling/ThrottlingSettingsTab.ts | upload": {
     "message": "Upload"
   },
-  "network/BinaryResourceView.ts | base": {
-    "message": "Base64"
-  },
   "network/BinaryResourceView.ts | binaryViewType": {
     "message": "Binary view type"
   },
@@ -4453,9 +4411,6 @@
   },
   "network/BinaryResourceView.ts | hexViewer": {
     "message": "Hex Viewer"
-  },
-  "network/BinaryResourceView.ts | utf": {
-    "message": "UTF-8"
   },
   "network/BlockedURLsPane.ts | addNetworkRequestBlockingPattern": {
     "message": "Add network request blocking pattern"
@@ -4619,15 +4574,6 @@
   "network/NetworkDataGridNode.ts | canceled": {
     "message": "(canceled)"
   },
-  "network/NetworkDataGridNode.ts | coepframeresourceneedscoepheader": {
-    "message": "CoepFrameResourceNeedsCoepHeader"
-  },
-  "network/NetworkDataGridNode.ts | contenttype": {
-    "message": "content-type"
-  },
-  "network/NetworkDataGridNode.ts | CoopSandboxedIframeCannot": {
-    "message": "CoopSandboxedIframeCannotNavigateToCoopPage"
-  },
   "network/NetworkDataGridNode.ts | corsError": {
     "message": "CORS error"
   },
@@ -4661,17 +4607,8 @@
   "network/NetworkDataGridNode.ts | memoryCache": {
     "message": "(memory cache)"
   },
-  "network/NetworkDataGridNode.ts | mixedcontent": {
-    "message": "mixed-content"
-  },
-  "network/NetworkDataGridNode.ts | notsameorigin": {
-    "message": "NotSameOrigin"
-  },
   "network/NetworkDataGridNode.ts | notsameoriginafterdefaultedtosameoriginbycoep": {
     "message": "NotSameOriginAfterDefaultedToSameOriginByCoep"
-  },
-  "network/NetworkDataGridNode.ts | notsamesite": {
-    "message": "NotSameSite"
   },
   "network/NetworkDataGridNode.ts | origin": {
     "message": "origin"
@@ -4736,14 +4673,8 @@
   "network/NetworkDataGridNode.ts | signedexchange": {
     "message": "signed-exchange"
   },
-  "network/NetworkDataGridNode.ts | signedexchangeq": {
-    "message": "(signed-exchange)"
-  },
   "network/NetworkDataGridNode.ts | sPreflight": {
     "message": "{PH1} + Preflight"
-  },
-  "network/NetworkDataGridNode.ts | subresourcefilter": {
-    "message": "subresource-filter"
   },
   "network/NetworkItemView.ts | cookies": {
     "message": "Cookies"

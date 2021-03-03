@@ -14,16 +14,6 @@ const UIStrings = {
   */
   type: 'Type',
   /**
-  * @description Button text for selecting the 'outset' (default) mode for a box-shadow in the Styles
-  * tab.
-  */
-  outset: '`Outset`',
-  /**
-  * @description Button text for selecting the 'inset' mode for a box-shadow in the Styles tab. Not
-  * translated as it appears in CSS directly as a property value.
-  */
-  inset: '`Inset`',
-  /**
   *@description Text in CSSShadow Editor of the inline editor in the Styles tab
   */
   xOffset: 'X offset',
@@ -63,10 +53,10 @@ export class CSSShadowEditor extends UI.Widget.VBox {
     this._typeField = this.contentElement.createChild('div', 'shadow-editor-field shadow-editor-flex-field');
     this._typeField.createChild('label', 'shadow-editor-label').textContent = i18nString(UIStrings.type);
     this._outsetButton = this._typeField.createChild('button', 'shadow-editor-button-left');
-    this._outsetButton.textContent = i18nString(UIStrings.outset);
+    this._outsetButton.textContent = i18n.i18n.lockedString('Outset');
     this._outsetButton.addEventListener('click', this._onButtonClick.bind(this), false);
     this._insetButton = this._typeField.createChild('button', 'shadow-editor-button-right');
-    this._insetButton.textContent = i18nString(UIStrings.inset);
+    this._insetButton.textContent = i18n.i18n.lockedString('Inset');
     this._insetButton.addEventListener('click', this._onButtonClick.bind(this), false);
 
     const xField = this.contentElement.createChild('div', 'shadow-editor-field');

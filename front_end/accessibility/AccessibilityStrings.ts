@@ -247,10 +247,6 @@ const UIStrings = {
   theDescendantOfThisElementWhich:
       'The descendant of this element which is active; i.e. the element to which focus should be delegated.',
   /**
-  *@description Accessibility attribute name that appears under the Computed Properties section in the Accessibility pane of the Elements pane
-  */
-  flowsTo: '`Flows to`',
-  /**
   *@description Tooltip text that appears when hovering over the 'Flows to' attribute name under the Computed Properties section in the Accessibility pane of the Elements pane
   */
   elementToWhichTheUserMayChooseTo:
@@ -280,18 +276,10 @@ const UIStrings = {
   */
   elementOrElementsWhichMayFormThe: 'Element or elements which may form the name of this element.',
   /**
-  *@description Accessibility attribute name that appears under the Computed Properties section in the Accessibility pane of the Elements pane
-  */
-  ownsText: '`Owns`',
-  /**
   *@description Tooltip text that appears when hovering over the 'Owns' attribute name under the Computed Properties section in the Accessibility pane of the Elements pane
   */
   elementOrElementsWhichShouldBe:
       'Element or elements which should be considered descendants of this element, despite not being descendants in the DOM.',
-  /**
-  *@description Text for the name of something
-  */
-  nameString: '`Name`',
   /**
   *@description Tooltip text that appears when hovering over the 'Name' attribute name under the Computed Properties section in the Accessibility pane of the Elements pane
   */
@@ -600,7 +588,7 @@ export const AXAttributes = {
     group: 'AXRelationshipAttributes',
   },
   'flowto': {
-    name: i18nLazyString(UIStrings.flowsTo),
+    name: i18n.i18n.lockedLazyString('Flows to'),
     description: i18nLazyString(UIStrings.elementToWhichTheUserMayChooseTo),
     group: 'AXRelationshipAttributes',
   },
@@ -620,12 +608,12 @@ export const AXAttributes = {
     group: 'AXRelationshipAttributes',
   },
   'owns': {
-    name: i18nLazyString(UIStrings.ownsText),
+    name: i18n.i18n.lockedLazyString('Owns'),
     description: i18nLazyString(UIStrings.elementOrElementsWhichShouldBe),
     group: 'AXRelationshipAttributes',
   },
   'name': {
-    name: i18nLazyString(UIStrings.nameString),
+    name: i18n.i18n.lockedLazyString('Name'),
     description: i18nLazyString(UIStrings.theComputedNameOfThisElement),
     group: 'Default',
   },

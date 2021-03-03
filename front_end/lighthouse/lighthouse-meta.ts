@@ -11,18 +11,6 @@ import type * as Lighthouse from './lighthouse.js';
 
 const UIStrings = {
   /**
-  *@description Title of the 'Lighthouse' tool
-  */
-  lighthouse: '`Lighthouse`',
-  /**
-  *@description A tag of Application Panel that can be searched in the command menu
-  */
-  pwa: '`pwa`',
-  /**
-   *@description A tag of Lighthouse tool that can be searched in the command menu.
-   */
-  lighthouseTag: '`lighthouse`',
-  /**
   *@description Command for showing the 'Lighthouse' tool
   */
   showLighthouse: 'Show `Lighthouse`',
@@ -45,7 +33,7 @@ async function loadLighthouseModule(): Promise<typeof Lighthouse> {
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.PANEL,
   id: 'lighthouse',
-  title: i18nLazyString(UIStrings.lighthouse),
+  title: i18n.i18n.lockedLazyString('Lighthouse'),
   commandPrompt: i18nLazyString(UIStrings.showLighthouse),
   order: 90,
   async loadView() {
@@ -53,7 +41,7 @@ UI.ViewManager.registerViewExtension({
     return Lighthouse.LighthousePanel.LighthousePanel.instance();
   },
   tags: [
-    i18nLazyString(UIStrings.lighthouseTag),
-    i18nLazyString(UIStrings.pwa),
+    i18n.i18n.lockedLazyString('lighthouse'),
+    i18n.i18n.lockedLazyString('pwa'),
   ],
 });

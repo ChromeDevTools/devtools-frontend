@@ -20,10 +20,6 @@ const UIStrings = {
   * opens a tool that toggles the various states of the selected element on/off.
   */
   toggleElementState: 'Toggle Element State',
-  /**
-  * @description Text in Element State Pane Widget of the Elements panel. Activates the :hov state.
-  */
-  hov: '`:hov`',
 };
 const str_ = i18n.i18n.registerUIStrings('elements/ElementStatePaneWidget.js', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -154,7 +150,7 @@ export class ButtonProvider {
   /** @private */
   constructor() {
     this._button = new UI.Toolbar.ToolbarToggle(i18nString(UIStrings.toggleElementState), '');
-    this._button.setText(i18nString(UIStrings.hov));
+    this._button.setText(i18n.i18n.lockedString(':hov'));
     this._button.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this._clicked, this);
     this._button.element.classList.add('monospace');
     this._view = new ElementStatePaneWidget();

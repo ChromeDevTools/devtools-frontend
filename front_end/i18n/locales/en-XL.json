@@ -128,9 +128,6 @@
   "accessibility/AccessibilityStrings.ts | expanded": {
     "message": "Êx́p̂án̂d́êd́"
   },
-  "accessibility/AccessibilityStrings.ts | flowsTo": {
-    "message": "Flows to"
-  },
   "accessibility/AccessibilityStrings.ts | focusable": {
     "message": "F̂óĉúŝáb̂ĺê"
   },
@@ -248,14 +245,8 @@
   "accessibility/AccessibilityStrings.ts | multiselectable": {
     "message": "M̂úl̂t́î-śêĺêćt̂áb̂ĺê"
   },
-  "accessibility/AccessibilityStrings.ts | nameString": {
-    "message": "Name"
-  },
   "accessibility/AccessibilityStrings.ts | orientation": {
     "message": "Ôŕîén̂t́ât́îón̂"
-  },
-  "accessibility/AccessibilityStrings.ts | ownsText": {
-    "message": "Owns"
   },
   "accessibility/AccessibilityStrings.ts | pressed": {
     "message": "P̂ŕêśŝéd̂"
@@ -1955,9 +1946,6 @@
   "elements/ElementStatePaneWidget.js | forceElementState": {
     "message": "F̂ór̂ćê él̂ém̂én̂t́ ŝt́ât́ê"
   },
-  "elements/ElementStatePaneWidget.js | hov": {
-    "message": ":hov"
-  },
   "elements/ElementStatePaneWidget.js | toggleElementState": {
     "message": "T̂óĝǵl̂é Êĺêḿêńt̂ Śt̂át̂é"
   },
@@ -2864,12 +2852,6 @@
   "inline_editor/CSSShadowEditor.js | blur": {
     "message": "B̂ĺûŕ"
   },
-  "inline_editor/CSSShadowEditor.js | inset": {
-    "message": "Inset"
-  },
-  "inline_editor/CSSShadowEditor.js | outset": {
-    "message": "Outset"
-  },
   "inline_editor/CSSShadowEditor.js | spread": {
     "message": "Ŝṕr̂éâd́"
   },
@@ -3602,15 +3584,6 @@
   "layers/LayersPanel.ts | profiler": {
     "message": "P̂ŕôf́îĺêŕ"
   },
-  "lighthouse/lighthouse-meta.ts | lighthouse": {
-    "message": "Lighthouse"
-  },
-  "lighthouse/lighthouse-meta.ts | lighthouseTag": {
-    "message": "lighthouse"
-  },
-  "lighthouse/lighthouse-meta.ts | pwa": {
-    "message": "pwa"
-  },
   "lighthouse/lighthouse-meta.ts | showLighthouse": {
     "message": "Ŝh́ôẃ Lighthouse"
   },
@@ -3887,17 +3860,11 @@
   "linear_memory_inspector/ValueInterpreterDisplayUtils.ts | bigEndian": {
     "message": "B̂íĝ Én̂d́îán̂"
   },
-  "linear_memory_inspector/ValueInterpreterDisplayUtils.ts | dec": {
-    "message": "dec"
-  },
   "linear_memory_inspector/ValueInterpreterDisplayUtils.ts | float64Bit": {
     "message": "F̂ĺôát̂ 64-b́ît́"
   },
   "linear_memory_inspector/ValueInterpreterDisplayUtils.ts | floatBit": {
     "message": "F̂ĺôát̂ 32-b́ît́"
-  },
-  "linear_memory_inspector/ValueInterpreterDisplayUtils.ts | hex": {
-    "message": "hex"
   },
   "linear_memory_inspector/ValueInterpreterDisplayUtils.ts | integer16Bit": {
     "message": "Îńt̂éĝér̂ 16-b́ît́"
@@ -3913,12 +3880,6 @@
   },
   "linear_memory_inspector/ValueInterpreterDisplayUtils.ts | littleEndian": {
     "message": "L̂ít̂t́l̂é Êńd̂íâń"
-  },
-  "linear_memory_inspector/ValueInterpreterDisplayUtils.ts | oct": {
-    "message": "oct"
-  },
-  "linear_memory_inspector/ValueInterpreterDisplayUtils.ts | sci": {
-    "message": "sci"
   },
   "linear_memory_inspector/ValueInterpreterDisplayUtils.ts | string": {
     "message": "Ŝt́r̂ín̂ǵ"
@@ -4424,9 +4385,6 @@
   "mobile_throttling/ThrottlingSettingsTab.ts | upload": {
     "message": "Ûṕl̂óâd́"
   },
-  "network/BinaryResourceView.ts | base": {
-    "message": "Base64"
-  },
   "network/BinaryResourceView.ts | binaryViewType": {
     "message": "B̂ín̂ár̂ý v̂íêẃ t̂ýp̂é"
   },
@@ -4453,9 +4411,6 @@
   },
   "network/BinaryResourceView.ts | hexViewer": {
     "message": "Hex V̂íêẃêŕ"
-  },
-  "network/BinaryResourceView.ts | utf": {
-    "message": "UTF-8"
   },
   "network/BlockedURLsPane.ts | addNetworkRequestBlockingPattern": {
     "message": "Âd́d̂ ńêt́ŵór̂ḱ r̂éq̂úêśt̂ b́l̂óĉḱîńĝ ṕât́t̂ér̂ń"
@@ -4619,15 +4574,6 @@
   "network/NetworkDataGridNode.ts | canceled": {
     "message": "(ĉán̂ćêĺêd́)"
   },
-  "network/NetworkDataGridNode.ts | coepframeresourceneedscoepheader": {
-    "message": "CoepFrameResourceNeedsCoepHeader"
-  },
-  "network/NetworkDataGridNode.ts | contenttype": {
-    "message": "content-type"
-  },
-  "network/NetworkDataGridNode.ts | CoopSandboxedIframeCannot": {
-    "message": "CoopSandboxedIframeCannotNavigateToCoopPage"
-  },
   "network/NetworkDataGridNode.ts | corsError": {
     "message": "ĈÓR̂Ś êŕr̂ór̂"
   },
@@ -4661,17 +4607,8 @@
   "network/NetworkDataGridNode.ts | memoryCache": {
     "message": "(m̂ém̂ór̂ý ĉáĉh́ê)"
   },
-  "network/NetworkDataGridNode.ts | mixedcontent": {
-    "message": "mixed-content"
-  },
-  "network/NetworkDataGridNode.ts | notsameorigin": {
-    "message": "NotSameOrigin"
-  },
   "network/NetworkDataGridNode.ts | notsameoriginafterdefaultedtosameoriginbycoep": {
     "message": "N̂ót̂ŚâḿêÓr̂íĝín̂Áf̂t́êŕD̂éf̂áûĺt̂éd̂T́ôŚâḿêÓr̂íĝín̂B́ŷĆôép̂"
-  },
-  "network/NetworkDataGridNode.ts | notsamesite": {
-    "message": "NotSameSite"
   },
   "network/NetworkDataGridNode.ts | origin": {
     "message": "ôŕîǵîń"
@@ -4736,14 +4673,8 @@
   "network/NetworkDataGridNode.ts | signedexchange": {
     "message": "ŝíĝńêd́-êx́ĉh́âńĝé"
   },
-  "network/NetworkDataGridNode.ts | signedexchangeq": {
-    "message": "(signed-exchange)"
-  },
   "network/NetworkDataGridNode.ts | sPreflight": {
     "message": "{PH1} + P̂ŕêf́l̂íĝh́t̂"
-  },
-  "network/NetworkDataGridNode.ts | subresourcefilter": {
-    "message": "subresource-filter"
   },
   "network/NetworkItemView.ts | cookies": {
     "message": "Ĉóôḱîéŝ"

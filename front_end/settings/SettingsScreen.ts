@@ -488,7 +488,6 @@ export class Revealer implements Common.Revealer.Revealer {
         success = true;
       }
     }
-    Root.Runtime.Runtime.instance().extensions(UI.SettingsUI.SettingUI).forEach(revealSettingUI);
 
     // Reveal settings views
     for (const view of UI.ViewManager.getRegisteredViewExtensions()) {
@@ -506,15 +505,6 @@ export class Revealer implements Common.Revealer.Revealer {
     }
 
     return success ? Promise.resolve() : Promise.reject();
-
-    function revealSettingUI(extension: Root.Runtime.Extension): void {
-      const settings = extension.descriptor()['settings'];
-      if (settings && settings.indexOf(setting.name) !== -1) {
-        Host.InspectorFrontendHost.InspectorFrontendHostInstance.bringToFront();
-        SettingsScreen._showSettingsScreen();
-        success = true;
-      }
-    }
   }
 }
 export interface ShowSettingsScreenOptions {

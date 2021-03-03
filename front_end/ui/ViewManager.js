@@ -12,7 +12,7 @@ import {Icon} from './Icon.js';
 import {Events as TabbedPaneEvents, TabbedPane} from './TabbedPane.js';
 import {ItemsProvider, Toolbar, ToolbarItem, ToolbarMenuButton} from './Toolbar.js';  // eslint-disable-line no-unused-vars
 import {createTextChild} from './UIUtils.js';
-import {ProvidedView, TabbedViewLocation, View, ViewLocation, ViewLocationResolver} from './View.js';  // eslint-disable-line no-unused-vars
+import {TabbedViewLocation, View, ViewLocation, ViewLocationResolver} from './View.js';  // eslint-disable-line no-unused-vars
 import {getRegisteredLocationResolvers, getRegisteredViewExtensions, registerLocationResolver, registerViewExtension, ViewLocationCategoryValues, ViewLocationValues, ViewPersistence, ViewRegistration} from './ViewRegistration.js';
 import {VBox, Widget} from './Widget.js';  // eslint-disable-line no-unused-vars
 
@@ -1041,12 +1041,6 @@ class _StackLocation extends _Location {
     }
   }
 }
-
-/**
- * @typedef {{viewId: string, view: (!ProvidedView|!PreRegisteredView), location: (string|null)}}
- */
-// @ts-ignore typedef
-export let ViewRegistry;
 
 export {
   ViewRegistration,

@@ -3,8 +3,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Platform from '../platform/platform.js';  // eslint-disable-line no-unused-vars
-
 const originalConsole = console;
 const originalAssert = console.assert;
 
@@ -16,9 +14,6 @@ const queryParamsObject = new URLSearchParams(location.search);
 let importScriptPathPrefix;
 
 let runtimePlatform = '';
-
-/** @type {function(string):!Platform.UIString.LocalizedString} */
-let l10nCallback;
 
 /** @type {!Runtime|undefined} */
 let runtimeInstance;
@@ -51,8 +46,6 @@ export class Runtime {
     this._modules = [];
     /** @type {!Object<string, !Module>} */
     this._modulesMap = {};
-    /** @type {!Array<!Extension>} */
-    this._extensions = [];
     /** @type {!Object<string, function(new:Object):void>} */
     this._cachedTypeClasses = {};
     /** @type {!Object<string, !ModuleDescriptor>} */
@@ -203,13 +196,6 @@ export class Runtime {
   }
 
   /**
-   * @param {function(string):!Platform.UIString.LocalizedString} localizationFunction
-   */
-  static setL10nCallback(localizationFunction) {
-    l10nCallback = localizationFunction;
-  }
-
-  /**
    * @param {string} moduleName
    * @return {!Module}
    */
@@ -244,138 +230,6 @@ export class Runtime {
       promises.push(this.loadModulePromise(moduleName));
     }
     return Promise.all(promises);
-  }
-
-  /**
-   * @param {!Extension} extension
-   * @param {?function(function(new:Object)):boolean} predicate
-   * @return {boolean}
-   */
-  _checkExtensionApplicability(extension, predicate) {
-    if (!predicate) {
-      return false;
-    }
-    const contextTypes = extension.descriptor().contextTypes;
-    if (!contextTypes) {
-      return true;
-    }
-    for (let i = 0; i < contextTypes.length; ++i) {
-      const contextType = this._resolve(contextTypes[i]);
-      const isMatching = contextType && predicate(contextType);
-      if (isMatching) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  /**
-   * @param {!Extension} extension
-   * @param {?Object} context
-   * @return {boolean}
-   */
-  isExtensionApplicableToContext(extension, context) {
-    if (!context) {
-      return true;
-    }
-    return this._checkExtensionApplicability(extension, isInstanceOf);
-
-    /**
-     * @param {!Function} targetType
-     * @return {boolean}
-     */
-    function isInstanceOf(targetType) {
-      return context instanceof targetType;
-    }
-  }
-
-  /**
-   * @param {!Extension} extension
-   * @param {!Set.<function(new:Object, ...?):void>} currentContextTypes
-   * @return {boolean}
-   */
-  isExtensionApplicableToContextTypes(extension, currentContextTypes) {
-    if (!extension.descriptor().contextTypes) {
-      return true;
-    }
-
-    let callback = null;
-
-    if (currentContextTypes) {
-      /**
-       * @param {function(new:Object, ...?):void} targetType
-       * @return {boolean}
-       */
-      callback = targetType => {
-        return currentContextTypes.has(targetType);
-      };
-    }
-
-    return this._checkExtensionApplicability(extension, callback);
-  }
-
-  /**
-   * @param {*} type
-   * @param {?Object=} context
-   * @param {boolean=} sortByTitle
-   * @return {!Array.<!Extension>}
-   */
-  extensions(type, context, sortByTitle) {
-    return this._extensions.filter(filter).sort(sortByTitle ? titleComparator : orderComparator);
-
-    /**
-     * @param {!Extension} extension
-     * @return {boolean}
-     */
-    function filter(extension) {
-      if (extension._type !== type && extension._typeClass() !== type) {
-        return false;
-      }
-      if (!extension.enabled()) {
-        return false;
-      }
-      return !context || extension.isApplicable(context);
-    }
-
-    /**
-     * @param {!Extension} extension1
-     * @param {!Extension} extension2
-     * @return {number}
-     */
-    function orderComparator(extension1, extension2) {
-      const order1 = extension1.descriptor()['order'] || 0;
-      const order2 = extension2.descriptor()['order'] || 0;
-      return order1 - order2;
-    }
-
-    /**
-     * @param {!Extension} extension1
-     * @param {!Extension} extension2
-     * @return {number}
-     */
-    function titleComparator(extension1, extension2) {
-      const title1 = extension1.title() || '';
-      const title2 = extension2.title() || '';
-      return title1.localeCompare(title2);
-    }
-  }
-
-  /**
-   * @param {*} type
-   * @param {?Object=} context
-   * @return {?Extension}
-   */
-  extension(type, context) {
-    return this.extensions(type, context)[0] || null;
-  }
-
-  /**
-   * @param {*} type
-   * @param {?Object=} context
-   * @return {!Promise.<!Array.<!Object>>}
-   */
-  allInstances(type, context) {
-    return Promise.all(this.extensions(type, context).map(extension => extension.instance()));
   }
 
   /**
@@ -561,17 +415,6 @@ export class Module {
     this._manager = manager;
     this._descriptor = descriptor;
     this._name = descriptor.name;
-    /** @type {!Array<!Extension>} */
-    this._extensions = [];
-
-    /** @type {!Map<string, !Array<!Extension>>} */
-    this._extensionsByClassName = new Map();
-    const extensions = /** @type {?Array.<!RuntimeExtensionDescriptor>} */ (descriptor.extensions);
-    for (let i = 0; extensions && i < extensions.length; ++i) {
-      const extension = new Extension(this, extensions[i]);
-      this._manager._extensions.push(extension);
-      this._extensions.push(extension);
-    }
     this._loadedForTest = false;
   }
 
@@ -678,126 +521,6 @@ export class Module {
     function convertURL(match, url) {
       return importScriptPathPrefix + this._modularizeURL(url);
     }
-  }
-}
-
-export class Extension {
-  /**
-  * @param {!Module} moduleParam
-  * @param {!RuntimeExtensionDescriptor} descriptor
-  */
-  constructor(moduleParam, descriptor) {
-    this._module = moduleParam;
-    this._descriptor = descriptor;
-
-    this._type = descriptor.type;
-    this._hasTypeClass = this._type.charAt(0) === '@';
-
-    /**
-    * @type {?string}
-    */
-    this._className = descriptor.className || null;
-    this._factoryName = descriptor.factoryName || null;
-  }
-
-  /**
-  * @return {!RuntimeExtensionDescriptor}
-  */
-  descriptor() {
-    return this._descriptor;
-  }
-
-  /**
-  * @return {!Module}
-  */
-  module() {
-    return this._module;
-  }
-
-  /**
-  * @return {boolean}
-  */
-  enabled() {
-    return this._module.enabled() && Runtime.isDescriptorEnabled(this.descriptor());
-  }
-
-  /**
-  * @return {?function(new:Object)}
-  */
-  _typeClass() {
-    if (!this._hasTypeClass) {
-      return null;
-    }
-    return this._module._manager._resolve(this._type.substring(1));
-  }
-
-  /**
-  * @param {?Object} context
-  * @return {boolean}
-  */
-  isApplicable(context) {
-    return this._module._manager.isExtensionApplicableToContext(this, context);
-  }
-
-  /**
-  * @return {!Promise.<!Object>}
-  */
-  instance() {
-    return this._module._loadPromise().then(this._createInstance.bind(this));
-  }
-
-  /**
-  * @return {boolean}
-  */
-  canInstantiate() {
-    return Boolean(this._className || this._factoryName);
-  }
-
-  /**
-  * @return {!Object}
-  */
-  _createInstance() {
-    const className = this._className || this._factoryName;
-    if (!className) {
-      throw new Error('Could not instantiate extension with no class');
-    }
-    const constructorFunction = self.eval(/** @type {string} */ (className));
-    if (!(constructorFunction instanceof Function)) {
-      throw new Error('Could not instantiate: ' + className);
-    }
-    if (this._className) {
-      return this._module._manager.sharedInstance(constructorFunction);
-    }
-    return new constructorFunction(this);
-  }
-
-  /**
-  * @return {!Platform.UIString.LocalizedString}
-  */
-  title() {
-    // @ts-ignore Magic lookup for objects
-    const title = this._descriptor['title-' + runtimePlatform] || this._descriptor['title'];
-    if (title && l10nCallback) {
-      return l10nCallback(title);
-    }
-    return title;
-  }
-
-  /**
-  * @param {function(new:Object, ...?):void} contextType
-  * @return {boolean}
-  */
-  hasContextType(contextType) {
-    const contextTypes = this.descriptor().contextTypes;
-    if (!contextTypes) {
-      return false;
-    }
-    for (let i = 0; i < contextTypes.length; ++i) {
-      if (contextType === this._module._manager._resolve(contextTypes[i])) {
-        return true;
-      }
-    }
-    return false;
   }
 }
 

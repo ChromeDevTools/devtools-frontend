@@ -130,24 +130,6 @@ export async function initializeGlobalVars({reset = true} = {}) {
     createSettingValue(Common.Settings.SettingCategory.NONE, 'userShortcuts', [], Common.Settings.SettingType.ARRAY),
   ];
 
-  // We instantiate a Runtime with an empty module as the settings needed to boot up are
-  // provided via the Common.Settings.registerSettingExtension system. Nevertheless,
-  // several unit test rely on a singleton instace so we stil need this call.
-  // TODO(crbug.com/1134103): Remove this call once all extensions have been migrated.
-  Root.Runtime.Runtime.instance({
-    forceNew: reset,
-    moduleDescriptors: [{
-      name: 'Test',
-      extensions: [],
-      dependencies: [],
-      modules: [],
-      scripts: [],
-      resources: [],
-      condition: '',
-      experiment: '',
-    }],
-  });
-
   Common.Settings.registerSettingExtengionsForTest(extensions, reset);
 
   // Instantiate the storage.

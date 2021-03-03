@@ -2,13 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {ls} from '../platform/platform.js';
 import * as Root from '../root/root.js';
 
 import {TabbedPane} from './TabbedPane.js';  // eslint-disable-line no-unused-vars
-import {ItemsProvider, Toolbar, ToolbarItem, ToolbarMenuButton} from './Toolbar.js';  // eslint-disable-line no-unused-vars
+import {ToolbarItem, ToolbarMenuButton} from './Toolbar.js';  // eslint-disable-line no-unused-vars
 import {ViewManager} from './ViewManager.js';
-import {VBox, Widget} from './Widget.js';
+import {VBox, Widget} from './Widget.js';  // eslint-disable-line no-unused-vars
 
 /**
  * @interface
@@ -154,102 +153,6 @@ class ProvidedViewExtensionDescriptor  // eslint-disable-line no-unused-vars
 
     /** @type {?boolean} */
     this.hasToolbar;
-  }
-}
-
-/**
- * @implements {View}
- */
-export class ProvidedView {
-  /**
-   * @param {!Root.Runtime.Extension} extension
-   */
-  constructor(extension) {
-    this._extension = extension;
-  }
-
-  /**
-   * @override
-   * @return {string}
-   */
-  viewId() {
-    return this._descriptor().id;
-  }
-
-  /**
-   * @override
-   * @return {string}
-   */
-  title() {
-    return ls(this._extension.title());
-  }
-
-  order() {
-    return this._descriptor().order;
-  }
-
-  /**
-   * @override
-   * @return {boolean}
-   */
-  isCloseable() {
-    return this._descriptor().persistence === 'closeable';
-  }
-
-  /**
-   * @override
-   * @return {boolean}
-   */
-  isTransient() {
-    return this._descriptor().persistence === 'transient';
-  }
-
-  /**
-   * @override
-   * @return {!Promise<!Array<!ToolbarItem>>}
-   */
-  toolbarItems() {
-    const actionIds = this._descriptor().actionIds;
-    if (actionIds) {
-      const result = actionIds.split(',').map(id => Toolbar.createActionButtonForId(id.trim()));
-      return Promise.resolve(result);
-    }
-
-    if (this._descriptor().hasToolbar) {
-      return this.widget().then(widget => /** @type {!ItemsProvider} */ (/** @type {*} */ (widget)).toolbarItems());
-    }
-    return Promise.resolve([]);
-  }
-
-  /**
-   * @override
-   * @return {!Promise<!Widget>}
-   */
-  async widget() {
-    this._widgetRequested = true;
-    const widget = await this._extension.instance();
-    if (!(widget instanceof Widget)) {
-      throw new Error('view className should point to a UI.Widget');
-    }
-    return /** @type {!Widget} */ (widget);
-  }
-
-  /**
-   * @override
-   */
-  async disposeView() {
-    if (!this._widgetRequested) {
-      return;
-    }
-    const widget = await this.widget();
-    await widget.ownerViewDisposed();
-  }
-
-  /**
-   * @return {!ProvidedViewExtensionDescriptor}
-   */
-  _descriptor() {
-    return /** @type {!ProvidedViewExtensionDescriptor} */ (this._extension.descriptor());
   }
 }
 

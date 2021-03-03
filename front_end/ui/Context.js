@@ -118,23 +118,6 @@ export class Context {
   flavors() {
     return new Set(this._flavors.keys());
   }
-
-  /**
-   * @param {!Array.<!Root.Runtime.Extension>} extensions
-   * @return {!Set.<!Root.Runtime.Extension>}
-   */
-  applicableExtensions(extensions) {
-    const targetExtensionSet = new Set();
-
-    const availableFlavors = this.flavors();
-    for (const extension of extensions) {
-      if (Root.Runtime.Runtime.instance().isExtensionApplicableToContextTypes(extension, availableFlavors)) {
-        targetExtensionSet.add(extension);
-      }
-    }
-
-    return targetExtensionSet;
-  }
 }
 
 /** @enum {symbol} */

@@ -4535,15 +4535,6 @@
   "network/network-meta.ts | useDefaultColors": {
     "message": "Use default colors"
   },
-  "network/network-meta.ts | useragent": {
-    "message": "useragent"
-  },
-  "network/network-meta.ts | userAgent": {
-    "message": "user agent"
-  },
-  "network/network-meta.ts | userdagent": {
-    "message": "user-agent"
-  },
   "network/NetworkConfigView.ts | caching": {
     "message": "Caching"
   },
@@ -4889,20 +4880,11 @@
   "network/NetworkLogView.ts | unblockS": {
     "message": "Unblock {PH1}"
   },
-  "network/NetworkLogViewColumns.ts | cachecontrol": {
-    "message": "Cache-Control"
-  },
   "network/NetworkLogViewColumns.ts | connectionId": {
     "message": "Connection ID"
   },
   "network/NetworkLogViewColumns.ts | content": {
     "message": "Content"
-  },
-  "network/NetworkLogViewColumns.ts | contentencoding": {
-    "message": "Content-Encoding"
-  },
-  "network/NetworkLogViewColumns.ts | contentlength": {
-    "message": "Content-Length"
   },
   "network/NetworkLogViewColumns.ts | cookies": {
     "message": "Cookies"
@@ -4913,20 +4895,11 @@
   "network/NetworkLogViewColumns.ts | endTime": {
     "message": "End Time"
   },
-  "network/NetworkLogViewColumns.ts | etag": {
-    "message": "ETag"
-  },
   "network/NetworkLogViewColumns.ts | initiator": {
     "message": "Initiator"
   },
   "network/NetworkLogViewColumns.ts | initiatorAddressSpace": {
     "message": "Initiator Address Space"
-  },
-  "network/NetworkLogViewColumns.ts | keepalive": {
-    "message": "Keep-Alive"
-  },
-  "network/NetworkLogViewColumns.ts | lastmodified": {
-    "message": "Last-Modified"
   },
   "network/NetworkLogViewColumns.ts | latency": {
     "message": "Latency"
@@ -4970,9 +4943,6 @@
   "network/NetworkLogViewColumns.ts | scheme": {
     "message": "Scheme"
   },
-  "network/NetworkLogViewColumns.ts | server": {
-    "message": "Server"
-  },
   "network/NetworkLogViewColumns.ts | setCookies": {
     "message": "Set Cookies"
   },
@@ -4999,9 +4969,6 @@
   },
   "network/NetworkLogViewColumns.ts | url": {
     "message": "Url"
-  },
-  "network/NetworkLogViewColumns.ts | vary": {
-    "message": "Vary"
   },
   "network/NetworkLogViewColumns.ts | waterfall": {
     "message": "Waterfall"
@@ -6716,17 +6683,11 @@
   "resources/ApplicationPanelSidebar.ts | manifest": {
     "message": "Manifest"
   },
-  "resources/ApplicationPanelSidebar.ts | multientry": {
-    "message": "multiEntry"
-  },
   "resources/ApplicationPanelSidebar.ts | openedWindows": {
     "message": "Opened Windows"
   },
   "resources/ApplicationPanelSidebar.ts | refreshIndexeddb": {
     "message": "Refresh IndexedDB"
-  },
-  "resources/ApplicationPanelSidebar.ts | serviceWorkers": {
-    "message": "Service Workers"
   },
   "resources/ApplicationPanelSidebar.ts | sessionStorage": {
     "message": "Session Storage"
@@ -6736,9 +6697,6 @@
   },
   "resources/ApplicationPanelSidebar.ts | theContentOfThisDocumentHasBeen": {
     "message": "The content of this document has been generated dynamically via 'document.write()'."
-  },
-  "resources/ApplicationPanelSidebar.ts | unique": {
-    "message": "unique"
   },
   "resources/ApplicationPanelSidebar.ts | versionS": {
     "message": "Version: {PH1}"
@@ -7319,9 +7277,6 @@
   "resources/OpenedWindowDetailsView.ts | securityIsolation": {
     "message": "Security & Isolation"
   },
-  "resources/OpenedWindowDetailsView.ts | serviceWorker": {
-    "message": "Service Worker"
-  },
   "resources/OpenedWindowDetailsView.ts | showsWhetherTheOpenedWindowIs": {
     "message": "Shows whether the opened window is able to access its opener and vice versa"
   },
@@ -7370,12 +7325,6 @@
   "resources/ServiceWorkerCacheViews.ts | cache": {
     "message": "Cache"
   },
-  "resources/ServiceWorkerCacheViews.ts | contentlength": {
-    "message": "Content-Length"
-  },
-  "resources/ServiceWorkerCacheViews.ts | contenttype": {
-    "message": "Content-Type"
-  },
   "resources/ServiceWorkerCacheViews.ts | deleteSelected": {
     "message": "Delete Selected"
   },
@@ -7396,9 +7345,6 @@
   },
   "resources/ServiceWorkerCacheViews.ts | refresh": {
     "message": "Refresh"
-  },
-  "resources/ServiceWorkerCacheViews.ts | responsetype": {
-    "message": "Response-Type"
   },
   "resources/ServiceWorkerCacheViews.ts | selectACacheEntryAboveToPreview": {
     "message": "Select a cache entry above to preview"
@@ -7456,9 +7402,6 @@
   },
   "resources/ServiceWorkersView.ts | serviceWorkerForS": {
     "message": "Service worker for {PH1}"
-  },
-  "resources/ServiceWorkersView.ts | serviceWorkers": {
-    "message": "Service Workers"
   },
   "resources/ServiceWorkersView.ts | serviceWorkersFromOtherOrigins": {
     "message": "Service workers from other origins"
@@ -8017,12 +7960,6 @@
   },
   "sdk/PageResourceLoader.js | loadCanceledDueToReloadOf": {
     "message": "Load canceled due to reload of inspected page"
-  },
-  "sdk/ResourceTreeModel.js | iframe": {
-    "message": "<iframe>"
-  },
-  "sdk/ResourceTreeModel.js | top": {
-    "message": "top"
   },
   "sdk/SameSiteCookieIssue.ts | anInsecure": {
     "message": "an insecure"
@@ -8623,9 +8560,6 @@
   },
   "security/SecurityPanel.ts | rsaKeyExchangeIsObsoleteEnableAn": {
     "message": "RSA key exchange is obsolete. Enable an ECDHE-based cipher suite."
-  },
-  "security/SecurityPanel.ts | san": {
-    "message": "SAN"
   },
   "security/SecurityPanel.ts | sct": {
     "message": "SCT"
@@ -10448,9 +10382,6 @@
   "timeline/TimelineUIUtils.js | cumulativeScore": {
     "message": "Cumulative Score"
   },
-  "timeline/TimelineUIUtils.js | dcl": {
-    "message": "DCL"
-  },
   "timeline/TimelineUIUtils.js | decodedBody": {
     "message": "Decoded Body"
   },
@@ -10526,9 +10457,6 @@
   "timeline/TimelineUIUtils.js | failedToLoadScriptFromCache": {
     "message": "failed to load script from cache"
   },
-  "timeline/TimelineUIUtils.js | fcp": {
-    "message": "FCP"
-  },
   "timeline/TimelineUIUtils.js | finishLoading": {
     "message": "Finish Loading"
   },
@@ -10558,9 +10486,6 @@
   },
   "timeline/TimelineUIUtils.js | forcedReflow": {
     "message": "Forced reflow"
-  },
-  "timeline/TimelineUIUtils.js | fp": {
-    "message": "FP"
   },
   "timeline/TimelineUIUtils.js | fps": {
     "message": "FPS"
@@ -10685,14 +10610,8 @@
   "timeline/TimelineUIUtils.js | layoutShift": {
     "message": "Layout Shift"
   },
-  "timeline/TimelineUIUtils.js | lcp": {
-    "message": "LCP"
-  },
   "timeline/TimelineUIUtils.js | learnMore": {
     "message": "Learn more"
-  },
-  "timeline/TimelineUIUtils.js | load": {
-    "message": "L"
   },
   "timeline/TimelineUIUtils.js | loadFromCache": {
     "message": "load from cache"
@@ -11111,9 +11030,6 @@
   "timeline/TimelineUIUtils.js | url": {
     "message": "Url"
   },
-  "timeline/TimelineUIUtils.js | urlCaps": {
-    "message": "URL"
-  },
   "timeline/TimelineUIUtils.js | userTiming": {
     "message": "User Timing"
   },
@@ -11428,9 +11344,6 @@
   },
   "web_audio/AudioContextContentBuilder.ts | maxOutputChannels": {
     "message": "Max Output Channels"
-  },
-  "web_audio/AudioContextContentBuilder.ts | offlineaudiocontext": {
-    "message": "OfflineAudioContext"
   },
   "web_audio/AudioContextContentBuilder.ts | renderCapacity": {
     "message": "Render Capacity"

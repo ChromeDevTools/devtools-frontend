@@ -12,10 +12,6 @@ const UIStrings = {
   */
   audiocontext: '`AudioContext`',
   /**
-  *@description Text in Audio Context Content Builder
-  */
-  offlineaudiocontext: '`OfflineAudioContext`',
-  /**
   *@description The current state of an item
   */
   state: 'State',
@@ -61,7 +57,7 @@ export class ContextDetailBuilder {
 
   _build(context: Protocol.WebAudio.BaseAudioContext): void {
     const title = context.contextType === 'realtime' ? i18nString(UIStrings.audiocontext) :
-                                                       i18nString(UIStrings.offlineaudiocontext);
+                                                       i18n.i18n.lockedString('OfflineAudioContext');
     this._addTitle(title, context.contextId);
     this._addEntry(i18nString(UIStrings.state), context.contextState);
     this._addEntry(i18nString(UIStrings.sampleRate), context.sampleRate, 'Hz');

@@ -105,10 +105,6 @@ const UIStrings = {
   */
   frames: 'Frames',
   /**
-  *@description Text in Application Panel Sidebar of the Application panel
-  */
-  serviceWorkers: '`Service Workers`',
-  /**
   *@description Text that appears on a button for the manifest resource type filter.
   */
   manifest: 'Manifest',
@@ -143,18 +139,6 @@ const UIStrings = {
   *@description Text in Application Panel Sidebar of the Application panel
   */
   autoincrement: '`autoIncrement`',
-  /**
-  * @description Shown in a tooltip for the Application Panel Sidebar of the Application panel.
-  * Indicates that an IndexedDB Index is multiEntry. Not to be translated as it is a property name
-  * used in code.
-  */
-  unique: '`unique`',
-  /**
-  * @description Shown in a tooltip for the Application Panel Sidebar of the Application panel.
-  * Indicates that an IndexedDB Index is unique. Not to be translated as it is a property name
-  * used in code.
-  */
-  multientry: '`multiEntry`',
   /**
   *@description Text in Application Panel Sidebar of the Application panel
   */
@@ -989,7 +973,7 @@ export class ServiceWorkersTreeElement extends ApplicationPanelTreeElement {
   _view?: ServiceWorkersView;
 
   constructor(storagePanel: ResourcesPanel) {
-    super(storagePanel, i18nString(UIStrings.serviceWorkers), false);
+    super(storagePanel, i18n.i18n.lockedString('Service Workers'), false);
     const icon = UI.Icon.Icon.create('mediumicon-service-worker', 'resource-tree-item');
     this.setLeadingIcons([icon]);
   }
@@ -1470,10 +1454,10 @@ export class IDBIndexTreeElement extends ApplicationPanelTreeElement {
     const keyPathString = this._index.keyPathString;
     tooltipLines.push(i18nString(UIStrings.keyPathS, {PH1: keyPathString}));
     if (this._index.unique) {
-      tooltipLines.push(i18nString(UIStrings.unique));
+      tooltipLines.push(i18n.i18n.lockedString('unique'));
     }
     if (this._index.multiEntry) {
-      tooltipLines.push(i18nString(UIStrings.multientry));
+      tooltipLines.push(i18n.i18n.lockedString('multiEntry'));
     }
     this.tooltip = tooltipLines.join('\n');
   }
@@ -1953,8 +1937,8 @@ export class FrameTreeElement extends ApplicationPanelTreeElement {
 
   workerCreated(targetInfo: Protocol.Target.TargetInfo): void {
     const categoryKey = targetInfo.type === 'service_worker' ? 'Service Workers' : 'Web Workers';
-    const categoryName =
-        targetInfo.type === 'service_worker' ? i18nString(UIStrings.serviceWorkers) : i18nString(UIStrings.webWorkers);
+    const categoryName = targetInfo.type === 'service_worker' ? i18n.i18n.lockedString('Service Workers') :
+                                                                i18nString(UIStrings.webWorkers);
     let categoryElement = this._categoryElements.get(categoryKey);
     if (!categoryElement) {
       categoryElement = new ExpandableApplicationPanelTreeElement(this._section._panel, categoryName, categoryKey);

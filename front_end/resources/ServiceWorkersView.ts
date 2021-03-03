@@ -17,10 +17,6 @@ import {ServiceWorkerUpdateCycleView} from './ServiceWorkerUpdateCycleView.js';
 
 const UIStrings = {
   /**
-  *@description Text in Application Panel Sidebar of the Application panel
-  */
-  serviceWorkers: '`Service Workers`',
-  /**
   *@description Text for linking to other Service Worker registrations
   */
   serviceWorkersFromOtherOrigins: 'Service workers from other origins',
@@ -197,7 +193,7 @@ export class ServiceWorkersView extends UI.Widget.VBox implements
     this.registerRequiredCSS('resources/serviceWorkersView.css', {enableLegacyPatching: false});
 
     // TODO(crbug.com/1156978): Replace UI.ReportView.ReportView with ReportView.ts web component.
-    this._currentWorkersView = new UI.ReportView.ReportView(i18nString(UIStrings.serviceWorkers));
+    this._currentWorkersView = new UI.ReportView.ReportView(i18n.i18n.lockedString('Service Workers'));
     this._currentWorkersView.setBodyScrollable(false);
     this.contentElement.classList.add('service-worker-list');
     this._currentWorkersView.show(this.contentElement);

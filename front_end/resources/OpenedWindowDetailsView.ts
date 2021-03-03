@@ -75,10 +75,6 @@ const UIStrings = {
   */
   webWorker: 'Web Worker',
   /**
-  *@description Text in Request Timing View of the Network panel
-  */
-  serviceWorker: '`Service Worker`',
-  /**
   *@description Text for an unspecified service worker response source
   */
   unknown: 'Unknown',
@@ -253,7 +249,7 @@ export class WorkerDetailsView extends UI.ThrottledWidget.ThrottledWidget {
       return i18nString(UIStrings.webWorker);
     }
     if (type === 'service_worker') {
-      return i18nString(UIStrings.serviceWorker);
+      return i18n.i18n.lockedString('Service Worker');
     }
     return i18nString(UIStrings.unknown);
   }

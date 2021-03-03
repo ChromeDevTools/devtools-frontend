@@ -40,18 +40,6 @@ const UIStrings = {
   /**
   *@description Text in Service Worker Cache Views of the Application panel
   */
-  responsetype: '`Response-Type`',
-  /**
-  *@description Text in Service Worker Cache Views of the Application panel
-  */
-  contenttype: '`Content-Type`',
-  /**
-  *@description Text for the network request Content-Length header
-  */
-  contentlength: '`Content-Length`',
-  /**
-  *@description Text in Service Worker Cache Views of the Application panel
-  */
   timeCached: 'Time Cached',
   /**
   *@description Text used to show that data was retrieved from ServiceWorker Cache
@@ -188,15 +176,15 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
       {id: 'name', title: i18nString(UIStrings.name), weight: 4, sortable: true},
       {
         id: 'responseType',
-        title: i18nString(UIStrings.responsetype),
+        title: i18n.i18n.lockedString('Response-Type'),
         weight: 1,
         align: DataGrid.DataGrid.Align.Right,
         sortable: true,
       },
-      {id: 'contentType', title: i18nString(UIStrings.contenttype), weight: 1, sortable: true},
+      {id: 'contentType', title: i18n.i18n.lockedString('Content-Type'), weight: 1, sortable: true},
       {
         id: 'contentLength',
-        title: i18nString(UIStrings.contentlength),
+        title: i18n.i18n.lockedString('Content-Length'),
         weight: 1,
         align: DataGrid.DataGrid.Align.Right,
         sortable: true,

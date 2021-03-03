@@ -665,10 +665,6 @@ const UIStrings = {
   */
   url: 'Url',
   /**
-  * @description Text in Timeline UIUtils of the Performance panel
-  */
-  urlCaps: '`URL`',
-  /**
   *@description Text in Timeline UIUtils of the Performance panel
   */
   producedCacheSize: 'Produced Cache Size',
@@ -1031,26 +1027,6 @@ const UIStrings = {
   *@example {jank} PH2
   */
   sLongFrameTimesAreAnIndicationOf: '{PH1}. Long frame times are an indication of {PH2}',
-  /**
-  *@description Text in Timeline UIUtils of the Performance panel (document content loaded)
-  */
-  dcl: '`DCL`',
-  /**
-  *@description Text in Timeline UIUtils of the Performance panel (load)
-  */
-  load: '`L`',
-  /**
-  *@description Text in Timeline UIUtils of the Performance panel (first paint)
-  */
-  fp: '`FP`',
-  /**
-  *@description Text in Timeline UIUtils of the Performance panel (first contentful paint)
-  */
-  fcp: '`FCP`',
-  /**
-  *@description Text in Timeline UIUtils of the Performance panel (last contentful paint)
-  */
-  lcp: '`LCP`',
   /**
   *@description Text in Timeline UIUtils of the Performance panel
   */
@@ -2332,7 +2308,7 @@ export class TimelineUIUtils {
       case recordTypes.WebSocketDestroy: {
         const initiatorData = initiator ? initiator.args['data'] : eventData;
         if (typeof initiatorData['webSocketURL'] !== 'undefined') {
-          contentHelper.appendTextRow(i18nString(UIStrings.urlCaps), initiatorData['webSocketURL']);
+          contentHelper.appendTextRow(i18n.i18n.lockedString('URL'), initiatorData['webSocketURL']);
         }
         if (typeof initiatorData['webSocketProtocol'] !== 'undefined') {
           contentHelper.appendTextRow(i18nString(UIStrings.websocketProtocol), initiatorData['webSocketProtocol']);
@@ -2661,7 +2637,7 @@ export class TimelineUIUtils {
         bypassURLTrimming: undefined
       };
       contentHelper.appendElementRow(
-          i18nString(UIStrings.urlCaps), Components.Linkifier.Linkifier.linkifyURL(request.url, options));
+          i18n.i18n.lockedString('URL'), Components.Linkifier.Linkifier.linkifyURL(request.url, options));
     }
 
     // The time from queueing the request until resource processing is finished.
@@ -3326,15 +3302,15 @@ export class TimelineUIUtils {
     const recordTypes = TimelineModel.TimelineModel.RecordType;
     switch (event.name) {
       case recordTypes.MarkDOMContent:
-        return i18nString(UIStrings.dcl);
+        return i18n.i18n.lockedString('DCL');
       case recordTypes.MarkLoad:
-        return i18nString(UIStrings.load);
+        return i18n.i18n.lockedString('L');
       case recordTypes.MarkFirstPaint:
-        return i18nString(UIStrings.fp);
+        return i18n.i18n.lockedString('FP');
       case recordTypes.MarkFCP:
-        return i18nString(UIStrings.fcp);
+        return i18n.i18n.lockedString('FCP');
       case recordTypes.MarkLCPCandidate:
-        return i18nString(UIStrings.lcp);
+        return i18n.i18n.lockedString('LCP');
     }
     return null;
   }

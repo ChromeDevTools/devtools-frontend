@@ -136,42 +136,10 @@ const UIStrings = {
   */
   connectionId: 'Connection ID',
   /**
-  *@description Text in Network Log View Columns of the Network panel
-  */
-  cachecontrol: '`Cache-Control`',
-  /**
   *@description Text that only contain a placeholder
   *@example {100ms (at 200ms)} PH1
   */
   s: '{PH1}',
-  /**
-  *@description Text in Network Log View Columns of the Network panel
-  */
-  contentencoding: '`Content-Encoding`',
-  /**
-  *@description Text for the network request Content-Length header
-  */
-  contentlength: '`Content-Length`',
-  /**
-  *@description Text in Network Log View Columns of the Network panel
-  */
-  etag: '`ETag`',
-  /**
-  *@description Text in Network Log View Columns of the Network panel
-  */
-  keepalive: '`Keep-Alive`',
-  /**
-  *@description Text in Network Log View Columns of the Network panel
-  */
-  lastmodified: '`Last-Modified`',
-  /**
-  *@description Text in Network Log View Columns of the Network panel
-  */
-  server: '`Server`',
-  /**
-  *@description Text in Network Log View Columns of the Network panel
-  */
-  vary: '`Vary`',
   /**
   *@description Text in Network Log View Columns of the Network panel
   */
@@ -1037,7 +1005,7 @@ const _temporaryDefaultColumns = [
   {
     id: 'cache-control',
     isResponseHeader: true,
-    title: i18nLazyString(UIStrings.cachecontrol),
+    title: i18n.i18n.lockedLazyString('Cache-Control'),
     sortingFunction: NetworkRequestNode.ResponseHeaderStringComparator.bind(null, 'cache-control'),
   },
   {
@@ -1051,44 +1019,44 @@ const _temporaryDefaultColumns = [
   {
     id: 'content-encoding',
     isResponseHeader: true,
-    title: i18nLazyString(UIStrings.contentencoding),
+    title: i18n.i18n.lockedLazyString('Content-Encoding'),
     sortingFunction: NetworkRequestNode.ResponseHeaderStringComparator.bind(null, 'content-encoding'),
   },
   {
     id: 'content-length',
     isResponseHeader: true,
-    title: i18nLazyString(UIStrings.contentlength),
+    title: i18n.i18n.lockedLazyString('Content-Length'),
     align: DataGrid.DataGrid.Align.Right,
     sortingFunction: NetworkRequestNode.ResponseHeaderNumberComparator.bind(null, 'content-length'),
   },
   {
     id: 'etag',
     isResponseHeader: true,
-    title: i18nLazyString(UIStrings.etag),
+    title: i18n.i18n.lockedLazyString('ETag'),
     sortingFunction: NetworkRequestNode.ResponseHeaderStringComparator.bind(null, 'etag'),
   },
   {
     id: 'keep-alive',
     isResponseHeader: true,
-    title: i18nLazyString(UIStrings.keepalive),
+    title: i18n.i18n.lockedLazyString('Keep-Alive'),
     sortingFunction: NetworkRequestNode.ResponseHeaderStringComparator.bind(null, 'keep-alive'),
   },
   {
     id: 'last-modified',
     isResponseHeader: true,
-    title: i18nLazyString(UIStrings.lastmodified),
+    title: i18n.i18n.lockedLazyString('Last-Modified'),
     sortingFunction: NetworkRequestNode.ResponseHeaderDateComparator.bind(null, 'last-modified'),
   },
   {
     id: 'server',
     isResponseHeader: true,
-    title: i18nLazyString(UIStrings.server),
+    title: i18n.i18n.lockedLazyString('Server'),
     sortingFunction: NetworkRequestNode.ResponseHeaderStringComparator.bind(null, 'server'),
   },
   {
     id: 'vary',
     isResponseHeader: true,
-    title: i18nLazyString(UIStrings.vary),
+    title: i18n.i18n.lockedLazyString('Vary'),
     sortingFunction: NetworkRequestNode.ResponseHeaderStringComparator.bind(null, 'vary'),
   },
   // This header is a placeholder to let datagrid know that it can be sorted by this column, but never shown.

@@ -46,18 +46,6 @@ const UIStrings = {
   */
   networkThrottling: 'network throttling',
   /**
-  *@description A tag of Network Conditions tool that can be searched in the command menu
-  */
-  useragent: '`useragent`',
-  /**
-  *@description A tag of Network Conditions tool that can be searched in the command menu
-  */
-  userAgent: '`user agent`',
-  /**
-  *@description A tag of Network Conditions tool that can be searched in the command menu
-  */
-  userdagent: '`user-agent`',
-  /**
   *@description Command for showing the 'Search' tool
   */
   showSearch: 'Show Search',
@@ -177,9 +165,9 @@ UI.ViewManager.registerViewExtension({
   tags: [
     i18nLazyString(UIStrings.diskCache),
     i18nLazyString(UIStrings.networkThrottling),
-    i18nLazyString(UIStrings.userdagent),
-    i18nLazyString(UIStrings.userAgent),
-    i18nLazyString(UIStrings.userdagent),
+    i18n.i18n.lockedLazyString('useragent'),
+    i18n.i18n.lockedLazyString('user agent'),
+    i18n.i18n.lockedLazyString('user-agent'),
   ],
   async loadView() {
     const Network = await loadNetworkModule();

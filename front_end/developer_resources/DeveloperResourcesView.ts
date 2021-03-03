@@ -109,7 +109,7 @@ export class DeveloperResourcesView extends UI.Widget.VBox {
       this._statusMessageElement.textContent =
           i18nString(UIStrings.resourcesCurrentlyLoading, {PH1: resources, PH2: loading});
     } else {
-      this._statusMessageElement.textContent = i18nString(UIStrings.resources, {PH1: resources});
+      this._statusMessageElement.textContent = i18nString(UIStrings.resources, {n: resources});
     }
   }
 

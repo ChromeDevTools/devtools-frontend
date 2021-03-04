@@ -938,16 +938,16 @@
   "components/ImagePreview.js | unknownSource": {
     "message": "unknown source"
   },
-  "components/JSPresentationUtils.js | addToIgnore": {
+  "components/JSPresentationUtils.ts | addToIgnore": {
     "message": "Add script to ignore list"
   },
-  "components/JSPresentationUtils.js | removeFromIgnore": {
+  "components/JSPresentationUtils.ts | removeFromIgnore": {
     "message": "Remove from ignore list"
   },
-  "components/JSPresentationUtils.js | showSMoreFrames": {
+  "components/JSPresentationUtils.ts | showSMoreFrames": {
     "message": "{n, plural, =1 {Show # more frame} other {Show # more frames}}"
   },
-  "components/JSPresentationUtils.js | unknownSource": {
+  "components/JSPresentationUtils.ts | unknownSource": {
     "message": "unknown"
   },
   "components/Linkifier.js | auto": {

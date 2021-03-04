@@ -1,3 +1,7 @@
+// Copyright 2021 The Chromium Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+
 /*
  * Copyright (C) 2011 Google Inc.  All rights reserved.
  * Copyright (C) 2007, 2008 Apple Inc.  All rights reserved.
@@ -54,21 +58,17 @@ const UIStrings = {
    */
   unknownSource: 'unknown',
 };
-const str_ = i18n.i18n.registerUIStrings('components/JSPresentationUtils.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('components/JSPresentationUtils.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-/**
- * @param {?SDK.SDKModel.Target} target
- * @param {!Linkifier} linkifier
- * @param {!Options=} options
- * @return {{element: !HTMLElement, links: !Array<!HTMLElement>}}
- */
-export function buildStackTracePreviewContents(target, linkifier, options = {
-  stackTrace: undefined,
-  contentUpdated: undefined,
-  tabStops: undefined
-}) {
+
+export function buildStackTracePreviewContents(
+    target: SDK.SDKModel.Target|null, linkifier: Linkifier, options: Options = {
+      stackTrace: undefined,
+      contentUpdated: undefined,
+      tabStops: undefined,
+    }): {element: HTMLElement, links: HTMLElement[]} {
   const {stackTrace, contentUpdated, tabStops} = options;
-  const element = /** @type {!HTMLElement} */ (document.createElement('span'));
+  const element = document.createElement('span');
   element.classList.add('monospace');
   element.style.display = 'inline-block';
   const shadowRoot = UI.Utils.createShadowRootWithCoreStyles(
@@ -76,14 +76,9 @@ export function buildStackTracePreviewContents(target, linkifier, options = {
   const contentElement = shadowRoot.createChild('table', 'stack-preview-container');
   let totalHiddenCallFramesCount = 0;
   let totalCallFramesCount = 0;
-  /** @type {!Array<!HTMLElement>} */
-  const links = [];
+  const links: HTMLElement[] = [];
 
-  /**
-   * @param {!Protocol.Runtime.StackTrace} stackTrace
-   * @return {boolean}
-   */
-  function appendStackTrace(stackTrace) {
+  function appendStackTrace(stackTrace: Protocol.Runtime.StackTrace): boolean {
     let hiddenCallFrames = 0;
     for (const stackFrame of stackTrace.callFrames) {
       totalCallFramesCount++;
@@ -120,11 +115,7 @@ export function buildStackTracePreviewContents(target, linkifier, options = {
     return stackTrace.callFrames.length === hiddenCallFrames;
   }
 
-  /**
-   * @param {!Element} link
-   * @param {!Event} event
-   */
-  function populateContextMenu(link, event) {
+  function populateContextMenu(link: Element, event: Event): void {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
     event.consume(true);
     const uiLocation = Linkifier.uiLocation(link);
@@ -173,7 +164,7 @@ export function buildStackTracePreviewContents(target, linkifier, options = {
   if (totalHiddenCallFramesCount) {
     const row = contentElement.createChild('tr', 'show-ignore-listed-link');
     row.createChild('td').textContent = '\n';
-    const cell = /** @type {!HTMLTableCellElement} */ (row.createChild('td'));
+    const cell = row.createChild('td') as HTMLTableCellElement;
     cell.colSpan = 4;
     const showAllLink = cell.createChild('span', 'link');
     showAllLink.textContent = i18nString(UIStrings.showSMoreFrames, {n: totalHiddenCallFramesCount});
@@ -188,12 +179,8 @@ export function buildStackTracePreviewContents(target, linkifier, options = {
   return {element, links};
 }
 
-/**
- * @typedef {{
- *   stackTrace: (!Protocol.Runtime.StackTrace|undefined),
- *   contentUpdated: ((function(): *) | undefined),
- *   tabStops: (boolean|undefined)
- * }}
- */
-// @ts-ignore typedef
-export let Options;
+export interface Options {
+  stackTrace: Protocol.Runtime.StackTrace|undefined;
+  contentUpdated: (() => void)|undefined;
+  tabStops: boolean|undefined;
+}

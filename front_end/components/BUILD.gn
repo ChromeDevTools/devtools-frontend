@@ -8,7 +8,7 @@ import("../../scripts/build/ninja/devtools_module.gni")
 devtools_module("components") {
   sources = [
     "ImagePreview.js",
-    "JSPresentationUtils.js",
+    "JSPresentationUtils.ts",
     "Linkifier.js",
     "Reload.js",
     "TargetDetachedDialog.js",

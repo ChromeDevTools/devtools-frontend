@@ -43,14 +43,16 @@ describe('The font editor', async function() {
     await openFontEditor(0);
   });
 
-  it('is properly applying font family changes to the style section', async () => {
-    const {frontend} = getBrowserAndPages();
-    await openFontEditor(0);
-    const fontFamilySelector = await waitFor('[aria-label="Font Family"]');
-    await fontFamilySelector.focus();
-    await frontend.keyboard.press('a');
-    await waitForCSSPropertyValue('element.style', 'font-family', 'Arial');
-  });
+  // Flaky on Linux
+  it.skipOnPlatforms(
+      ['linux'], '[crbug.com/1184658]: is properly applying font family changes to the style section', async () => {
+        const {frontend} = getBrowserAndPages();
+        await openFontEditor(0);
+        const fontFamilySelector = await waitFor('[aria-label="Font Family"]');
+        await fontFamilySelector.focus();
+        await frontend.keyboard.press('a');
+        await waitForCSSPropertyValue('element.style', 'font-family', 'Arial');
+      });
 
   it('is properly applying slider input changes to the style section', async () => {
     const {frontend} = getBrowserAndPages();

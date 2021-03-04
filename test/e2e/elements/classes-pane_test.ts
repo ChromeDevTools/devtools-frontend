@@ -14,12 +14,14 @@ describe('The Classes pane', async () => {
     await toggleClassesPane();
   });
 
-  it('can add a class to the element', async () => {
+  // Flaky on Linux
+  it.skipOnPlatforms(['linux'], '[crbug.com/1184627]: can add a class to the element', async () => {
     await typeInClassesPaneInput('foo');
     await assertSelectedNodeClasses(['foo']);
   });
 
-  it('can add multiple classes at once', async () => {
+  // Flaky on Linux
+  it.skipOnPlatforms(['linux'], '[crbug.com/1184627]: can add multiple classes at once', async () => {
     await typeInClassesPaneInput('foo bar baz');
     await assertSelectedNodeClasses(['foo', 'bar', 'baz']);
   });
@@ -36,7 +38,8 @@ describe('The Classes pane', async () => {
     await assertSelectedNodeClasses(['off']);
   });
 
-  it('removes the previewed classes on ESC', async () => {
+  // Flaky on Linux
+  it.skipOnPlatforms(['linux'], '[crbug.com/1184627]: removes the previewed classes on ESC', async () => {
     // Allow win64 bot to settle.
     await timeout(500);
     await typeInClassesPaneInput('foo');

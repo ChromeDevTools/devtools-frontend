@@ -33,7 +33,8 @@ describe('Flexbox Editor', async function() {
     button.click();
   }
 
-  it('can be opened and flexbox styles can be edited', async () => {
+  // Flaky on Mac
+  it.skipOnPlatforms(['mac'], '[crbug.com/1184664]: can be opened and flexbox styles can be edited', async () => {
     await clickFlexboxEditorButton();
 
     // Clicking once sets the value.

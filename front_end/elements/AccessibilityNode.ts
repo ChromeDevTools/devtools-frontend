@@ -382,7 +382,7 @@ export class AccessibilityNode extends HTMLElement {
           :host(.parent)::before {
             box-sizing: border-box;
             user-select: none;
-            -webkit-mask-image: url(Images/treeoutlineTriangles.svg);
+            -webkit-mask-image: var(--image-file-treeoutlineTriangles);
             -webkit-mask-size: 32px 24px;
             content: '\A0';
             color: transparent;

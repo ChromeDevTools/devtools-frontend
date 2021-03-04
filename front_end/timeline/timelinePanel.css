@@ -223,7 +223,7 @@
 
 #memory-graphs-container .timeline-memory-header::after {
   content: "";
-  background-image: url(Images/toolbarResizerVertical.png);
+  background-image: var(--image-file-toolbarResizerVertical);
   background-repeat: no-repeat;
   background-position: right center, center;
   flex: 20px 0 0;

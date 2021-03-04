@@ -121,5 +121,5 @@
 }
 
 .show-mask .image-wrapper {
-  background: url(Images/checker.png);
+  background: var(--image-file-checker);
 }

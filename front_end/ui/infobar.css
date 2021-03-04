@@ -80,19 +80,19 @@
 }
 
 .info-icon {
-  -webkit-mask-image: url(Images/ic_info_black_18dp.svg);
+  -webkit-mask-image: var(--image-file-ic_info_black_18dp);
   background-color: hsl(214deg 92% 50%); /* stylelint-disable-line plugin/use_theme_colors */
   /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .warning-icon {
-  -webkit-mask-image: url(Images/ic_warning_black_18dp.svg);
+  -webkit-mask-image: var(--image-file-ic_warning_black_18dp);
   background-color: hsl(44deg 92% 50%); /* stylelint-disable-line plugin/use_theme_colors */
   /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .issue-icon {
-  -webkit-mask-image: url(Images/issue-text-icon.svg);
+  -webkit-mask-image: var(--image-file-issue-text-icon);
   background-color: #1a73e8; /* stylelint-disable-line plugin/use_theme_colors */
   /* See: crbug.com/1152736 for color variable migration. */
 }

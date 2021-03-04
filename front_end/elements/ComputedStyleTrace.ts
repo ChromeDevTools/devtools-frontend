@@ -55,7 +55,7 @@ export class ComputedStyleTrace extends HTMLElement {
           width: var(--size);
           height: var(--size);
           margin: -1px 0 0 calc(-1 * var(--size));
-          -webkit-mask-image: url(Images/mediumIcons.svg);
+          -webkit-mask-image: var(--image-file-mediumIcons);
           -webkit-mask-position: -32px 48px;
           background-color: var(--active-control-bg-color);
         }

@@ -40,7 +40,7 @@
 }
 
 .ax-breadcrumbs .ax-node::before {
-  -webkit-mask-image: url(Images/chevrons.svg);
+  -webkit-mask-image: var(--image-file-chevrons);
   -webkit-mask-position: 0 0;
   -webkit-mask-size: 30px 10px;
   -webkit-mask-repeat: no-repeat;

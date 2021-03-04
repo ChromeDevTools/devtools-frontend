@@ -14,7 +14,7 @@
   margin: 6px 0;
   max-width: 100px;
   max-height: 100px;
-  background-image: url(Images/checker.png);
+  background-image: var(--image-file-checker);
   user-select: text;
   vertical-align: top;
   -webkit-user-drag: auto;

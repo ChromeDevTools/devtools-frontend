@@ -79,7 +79,7 @@
 }
 
 .heap-snapshot-view .heap-snapshot-view-resizer {
-  background-image: url(Images/toolbarResizerVertical.png);
+  background-image: var(--image-file-toolbarResizerVertical);
   background-color: #eee; /* stylelint-disable-line plugin/use_theme_colors */
   /* See: crbug.com/1152736 for color variable migration. */
   border-bottom: 1px solid rgb(179 179 179); /* stylelint-disable-line plugin/use_theme_colors */

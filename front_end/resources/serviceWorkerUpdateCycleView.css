@@ -52,7 +52,7 @@
 
 .service-worker-update-timing-bar-clickable::before {
   user-select: none;
-  -webkit-mask-image: url(Images/treeoutlineTriangles.svg);
+  -webkit-mask-image: var(--image-file-treeoutlineTriangles);
   -webkit-mask-position: 0 0;
   -webkit-mask-size: 32px 24px;
   float: left;

@@ -214,19 +214,19 @@
 }
 
 .device-mode-right-resizer > div {
-  content: url(Images/resizeHorizontal.svg);
+  content: var(--image-file-resizeHorizontal);
   width: 6px;
   height: 26px;
 }
 
 .device-mode-left-resizer > div {
-  content: url(Images/resizeHorizontal.svg);
+  content: var(--image-file-resizeHorizontal);
   width: 6px;
   height: 26px;
 }
 
 .device-mode-bottom-resizer > div {
-  content: url(Images/resizeVertical.svg);
+  content: var(--image-file-resizeVertical);
   margin-bottom: -2px;
   width: 26px;
   height: 6px;
@@ -238,7 +238,7 @@
   right: 3px;
   width: 13px;
   height: 13px;
-  content: url(Images/resizeDiagonal.svg);
+  content: var(--image-file-resizeDiagonal);
 }
 
 .device-mode-bottom-left-resizer > div {
@@ -247,7 +247,7 @@
   left: 3px;
   width: 13px;
   height: 13px;
-  content: url(Images/resizeDiagonal.svg);
+  content: var(--image-file-resizeDiagonal);
   transform: rotate(90deg);
 }
 

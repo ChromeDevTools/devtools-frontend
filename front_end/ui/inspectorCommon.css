@@ -376,7 +376,7 @@ input::placeholder {
   outline: none;
   padding-right: 20px;
   padding-left: 6px;
-  background-image: url(Images/chromeSelect.svg);
+  background-image: var(--image-file-chromeSelect);
   background-color: hsl(0deg 0% 98%); /* stylelint-disable-line plugin/use_theme_colors */
   /* See: crbug.com/1152736 for color variable migration. */
   background-position: right center;
@@ -391,7 +391,7 @@ input::placeholder {
 }
 
 :host-context(.-theme-with-dark-background) .chrome-select {
-  background-image: url(Images/chromeSelectDark.svg);
+  background-image: var(--image-file-chromeSelectDark);
 }
 
 .chrome-select:enabled:active,
@@ -490,38 +490,38 @@ span[is=dt-icon-label] {
 }
 
 .spritesheet-smallicons:not(.icon-mask) {
-  background-image: url(Images/smallIcons.svg);
+  background-image: var(--image-file-smallIcons);
 }
 
 .spritesheet-smallicons.icon-mask {
-  -webkit-mask-image: url(Images/smallIcons.svg);
+  -webkit-mask-image: var(--image-file-smallIcons);
 }
 
 .spritesheet-largeicons:not(.icon-mask) {
-  background-image: url(Images/largeIcons.svg);
+  background-image: var(--image-file-largeIcons);
 }
 
 .spritesheet-largeicons.icon-mask {
-  -webkit-mask-image: url(Images/largeIcons.svg);
+  -webkit-mask-image: var(--image-file-largeIcons);
 }
 
 .spritesheet-mediumicons:not(.icon-mask) {
-  background-image: url(Images/mediumIcons.svg);
+  background-image: var(--image-file-mediumIcons);
 }
 
 .spritesheet-mediumicons.icon-mask {
-  -webkit-mask-image: url(Images/mediumIcons.svg);
+  -webkit-mask-image: var(--image-file-mediumIcons);
 }
 
 .spritesheet-arrowicons {
-  background-image: url(Images/popoverArrows.png);
+  background-image: var(--image-file-popoverArrows);
 }
 
 .force-white-icons [is=ui-icon].spritesheet-smallicons,
 :host-context(.force-white-icons) [is=ui-icon].spritesheet-smallicons,
 [is=ui-icon].force-white-icons.spritesheet-smallicons,
 .-theme-preserve {
-  -webkit-mask-image: url(Images/smallIcons.svg);
+  -webkit-mask-image: var(--image-file-smallIcons);
   -webkit-mask-position: var(--spritesheet-position);
   background: #fafafa !important; /* stylelint-disable-line plugin/use_theme_colors */
   /* See: crbug.com/1152736 for color variable migration. */
@@ -531,7 +531,7 @@ span[is=dt-icon-label] {
 :host-context(.force-white-icons) [is=ui-icon].spritesheet-largeicons,
 [is=ui-icon].force-white-icons.spritesheet-largeicons,
 .-theme-preserve {
-  -webkit-mask-image: url(Images/largeIcons.svg);
+  -webkit-mask-image: var(--image-file-largeIcons);
   -webkit-mask-position: var(--spritesheet-position);
   background: #fafafa !important; /* stylelint-disable-line plugin/use_theme_colors */
   /* See: crbug.com/1152736 for color variable migration. */
@@ -541,7 +541,7 @@ span[is=dt-icon-label] {
 :host-context(.force-white-icons) [is=ui-icon].spritesheet-mediumicons,
 [is=ui-icon].force-white-icons.spritesheet-mediumicons,
 .-theme-preserve {
-  -webkit-mask-image: url(Images/mediumIcons.svg);
+  -webkit-mask-image: var(--image-file-mediumIcons);
   -webkit-mask-position: var(--spritesheet-position);
   background: #fafafa !important; /* stylelint-disable-line plugin/use_theme_colors */
   /* See: crbug.com/1152736 for color variable migration. */
@@ -657,7 +657,8 @@ input.custom-search-input::-webkit-search-cancel-button {
   width: 16px;
   height: 15px;
   margin-right: 0;
-  background: -32px 32px url(Images/mediumIcons.svg);
+  background-size: -32px 32px;
+  background-image: var(--image-file-mediumIcons);
 }
 /* loading spinner */
 .spinner::before {

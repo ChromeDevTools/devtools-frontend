@@ -142,12 +142,12 @@
 }
 
 .orientation-front {
-  background-image: url(Images/accelerometer-front.svg);
+  background-image: var(--image-file-accelerometer-front);
 }
 
 .orientation-back {
   transform: rotateY(180deg) translateZ(8px);
-  background-image: url(Images/accelerometer-back.svg);
+  background-image: var(--image-file-accelerometer-back);
 }
 
 .orientation-left,
@@ -162,14 +162,14 @@
   left: -8px;
   transform-origin: right center;
   transform: rotateY(-90deg);
-  background-image: url(Images/accelerometer-left.png);
+  background-image: var(--image-file-accelerometer-left);
 }
 
 .orientation-right {
   right: -8px;
   transform-origin: left center;
   transform: rotateY(90deg);
-  background-image: url(Images/accelerometer-right.png);
+  background-image: var(--image-file-accelerometer-right);
 }
 
 .orientation-left::before,
@@ -183,12 +183,12 @@
 
 .orientation-left::before,
 .orientation-left::after {
-  background-image: url(Images/accelerometer-left.png);
+  background-image: var(--image-file-accelerometer-left);
 }
 
 .orientation-right::before,
 .orientation-right::after {
-  background-image: url(Images/accelerometer-right.png);
+  background-image: var(--image-file-accelerometer-right);
 }
 
 .orientation-left::before,
@@ -219,14 +219,14 @@
   top: -8px;
   transform-origin: center bottom;
   transform: rotateX(90deg);
-  background-image: url(Images/accelerometer-top.png);
+  background-image: var(--image-file-accelerometer-top);
 }
 
 .orientation-bottom {
   bottom: -8px;
   transform-origin: center top;
   transform: rotateX(-90deg);
-  background-image: url(Images/accelerometer-bottom.png);
+  background-image: var(--image-file-accelerometer-bottom);
 }
 
 .orientation-top::before,
@@ -240,12 +240,12 @@
 
 .orientation-top::before,
 .orientation-top::after {
-  background-image: url(Images/accelerometer-top.png);
+  background-image: var(--image-file-accelerometer-top);
 }
 
 .orientation-bottom::before,
 .orientation-bottom::after {
-  background-image: url(Images/accelerometer-bottom.png);
+  background-image: var(--image-file-accelerometer-bottom);
 }
 
 .orientation-top::before,

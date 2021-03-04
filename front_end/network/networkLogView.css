@@ -223,62 +223,62 @@
 /* stylelint-disable no-descending-specificity, no-duplicate-selectors */
 
 .network-log-grid.data-grid .icon {
-  content: url(Images/resourcePlainIcon.png);
+  content: var(--image-file-resourcePlainIcon);
 }
 
 .network-log-grid.data-grid.small .icon {
-  content: url(Images/resourcePlainIconSmall.png);
+  content: var(--image-file-resourcePlainIconSmall);
 }
 
 .network-log-grid.data-grid .icon.script {
-  content: url(Images/resourceJSIcon.png);
+  content: var(--image-file-resourceJSIcon);
 }
 
 .network-log-grid.data-grid.small .icon.script {
-  content: url(Images/resourceDocumentIconSmall.png);
+  content: var(--image-file-resourceDocumentIconSmall);
 }
 
 .network-log-grid.data-grid .icon.document {
-  content: url(Images/resourceDocumentIcon.png);
+  content: var(--image-file-resourceDocumentIcon);
 }
 
 .network-log-grid.data-grid.small .icon.document {
-  content: url(Images/resourceDocumentIconSmall.png);
+  content: var(--image-file-resourceDocumentIconSmall);
 }
 
 .network-log-grid.data-grid .icon.stylesheet {
-  content: url(Images/resourceCSSIcon.png);
+  content: var(--image-file-resourceCSSIcon);
 }
 
 .network-log-grid.data-grid.small .icon.stylesheet {
-  content: url(Images/resourceDocumentIconSmall.png);
+  content: var(--image-file-resourceDocumentIconSmall);
 }
 
 .network-log-grid.data-grid .icon.media {
-  content: url(Images/resourcePlainIcon.png); /* FIXME: media icon */
+  content: var(--image-file-resourcePlainIcon); /* FIXME: media icon */
 }
 
 .network-log-grid.data-grid.small .icon.media {
-  content: url(Images/resourcePlainIconSmall.png); /* FIXME: media icon */
+  content: var(--image-file-resourcePlainIconSmall); /* FIXME: media icon */
 }
 
 .network-log-grid.data-grid .icon.texttrack {
-  content: url(Images/resourcePlainIcon.png); /* FIXME: vtt icon */
+  content: var(--image-file-resourcePlainIcon); /* FIXME: vtt icon */
 }
 
 .network-log-grid.data-grid.small .icon.texttrack {
-  content: url(Images/resourcePlainIconSmall.png); /* FIXME: vtt icon */
+  content: var(--image-file-resourcePlainIconSmall); /* FIXME: vtt icon */
 }
 
 .network-log-grid.data-grid .icon.image {
   position: relative;
-  background-image: url(Images/resourcePlainIcon.png);
+  background-image: var(--image-file-resourcePlainIcon);
   background-repeat: no-repeat;
   content: "";
 }
 
 .network-log-grid.data-grid.small .icon.image {
-  background-image: url(Images/resourcePlainIconSmall.png);
+  background-image: var(--image-file-resourcePlainIconSmall);
   content: "";
 }
 

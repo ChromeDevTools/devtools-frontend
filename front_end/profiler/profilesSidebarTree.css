@@ -147,15 +147,15 @@ li.small .subtitle {
 /* Heap profiles and CPU profiles */
 
 .heap-snapshot-sidebar-tree-item .icon {
-  content: url(Images/profileIcon.png);
+  content: var(--image-file-profileIcon);
 }
 
 .profile-sidebar-tree-item .icon {
-  content: url(Images/profileIcon.png);
+  content: var(--image-file-profileIcon);
 }
 
 .profile-group-sidebar-tree-item .icon {
-  content: url(Images/profileGroupIcon.png);
+  content: var(--image-file-profileGroupIcon);
 }
 
 li.small .icon {
@@ -168,11 +168,11 @@ li.wait .icon {
 }
 
 .heap-snapshot-sidebar-tree-item.small .icon {
-  content: url(Images/profileSmallIcon.png);
+  content: var(--image-file-profileSmallIcon);
 }
 
 .profile-sidebar-tree-item.small .icon {
-  content: url(Images/profileSmallIcon.png);
+  content: var(--image-file-profileSmallIcon);
 }
 
 @media (forced-colors: active) {

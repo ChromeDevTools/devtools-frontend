@@ -110,7 +110,7 @@
   padding: 0;
   background: none;
   border: none;
-  -webkit-mask-image: url(Images/ic_show_node_16x16.svg);
+  -webkit-mask-image: var(--image-file-ic_show_node_16x16);
   background-color: #333; /* stylelint-disable-line plugin/use_theme_colors */
   /* See: crbug.com/1152736 for color variable migration. */
   width: 16px;

@@ -76,7 +76,7 @@
 
 .spectrum-alpha {
   top: 35px;
-  background-image: url(Images/checker.png);
+  background-image: var(--image-file-checker);
   background-size: 12px 11px;
 }
 
@@ -198,7 +198,7 @@
   content: " ";
   width: 13px;
   height: 13px;
-  background-image: url(Images/ic_suggest_color.svg);
+  background-image: var(--image-file-ic_suggest_color);
   background-size: contain;
   position: absolute;
   left: 5.5px;
@@ -312,7 +312,7 @@
   position: absolute;
   top: 15px;
   left: 44px;
-  background-image: url(Images/checker.png);
+  background-image: var(--image-file-checker);
   border-radius: 16px;
 }
 
@@ -654,7 +654,7 @@ div.palette-preview {
   top: 0;
   right: 0;
   left: auto;
-  background-image: url(Images/checker.png);
+  background-image: var(--image-file-checker);
   border-radius: 15px;
   display: flex;
   align-items: center;

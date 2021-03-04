@@ -518,7 +518,7 @@ export class Spectrum extends UI.Widget.VBox {
     const element = document.createElement('div') as HTMLElement;
     element.classList.add('spectrum-palette-color');
     element.style.background =
-        Platform.StringUtilities.sprintf('linear-gradient(%s, %s), url(Images/checker.png)', colorText, colorText);
+        Platform.StringUtilities.sprintf('linear-gradient(%s, %s), var(--image-file-checker)', colorText, colorText);
     if (animationDelay) {
       element.animate([{opacity: 0}, {opacity: 1}], {duration: 100, delay: animationDelay, fill: 'backwards'});
     }

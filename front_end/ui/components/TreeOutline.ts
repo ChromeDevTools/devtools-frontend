@@ -315,7 +315,7 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
         .arrow-icon {
           display: inline-block;
           user-select: none;
-          -webkit-mask-image: url(Images/treeoutlineTriangles.svg);
+          -webkit-mask-image: var(--image-file-treeoutlineTriangles);
           -webkit-mask-size: 32px 24px;
           -webkit-mask-position: 0 0;
           background-color: var(--color-text-primary);

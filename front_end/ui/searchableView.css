@@ -103,7 +103,7 @@
 }
 
 .toolbar-search-navigation.toolbar-search-navigation-prev {
-  background-image: url(Images/searchPrev.png);
+  background-image: var(--image-file-searchPrev);
   border-left: 1px solid rgb(163 163 163); /* stylelint-disable-line plugin/use_theme_colors */
   /* See: crbug.com/1152736 for color variable migration. */
 }
@@ -113,18 +113,18 @@
 }
 
 .toolbar-search-navigation.toolbar-search-navigation-prev.enabled:active {
-  background-image: url(Images/searchPrev.png), #f2f2f2; /* stylelint-disable-line plugin/use_theme_colors */
+  background-image: var(--image-file-searchPrev), #f2f2f2; /* stylelint-disable-line plugin/use_theme_colors */
   /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .toolbar-search-navigation.toolbar-search-navigation-next {
-  background-image: url(Images/searchNext.png);
+  background-image: var(--image-file-searchNext);
   border-left: 1px solid rgb(230 230 230); /* stylelint-disable-line plugin/use_theme_colors */
   /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .toolbar-search-navigation.toolbar-search-navigation-next.enabled:active {
-  background-image: url(Images/searchNext.png), #f2f2f2; /* stylelint-disable-line plugin/use_theme_colors */
+  background-image: var(--image-file-searchNext), #f2f2f2; /* stylelint-disable-line plugin/use_theme_colors */
   /* See: crbug.com/1152736 for color variable migration. */
 }
 

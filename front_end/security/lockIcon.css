@@ -7,7 +7,7 @@
 .security-property {
   height: 16px;
   width: 16px;
-  -webkit-mask-image: url(Images/securityIcons.svg);
+  -webkit-mask-image: var(--image-file-securityIcons);
   -webkit-mask-size: 80px 32px;
   background-color: #888; /* stylelint-disable-line plugin/use_theme_colors */
   /* See: crbug.com/1152736 for color variable migration. */

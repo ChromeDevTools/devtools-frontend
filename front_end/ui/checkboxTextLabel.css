@@ -45,7 +45,7 @@ input.dt-checkbox-themed::after {
   width: 12px;
   height: 12px;
   background: none;
-  -webkit-mask-image: url(Images/checkboxCheckmark.svg);
+  -webkit-mask-image: var(--image-file-checkboxCheckmark);
   -webkit-mask-size: 11px 11px;
   -webkit-mask-position: 0 0;
 }

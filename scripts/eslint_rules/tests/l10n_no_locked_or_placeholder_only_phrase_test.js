@@ -4,13 +4,13 @@
 
 'use strict';
 
-const rule = require('../lib/l10n_no_locked_only_phrase.js');
+const rule = require('../lib/l10n_no_locked_or_placeholder_only_phrase.js');
 const ruleTester = new (require('eslint').RuleTester)({
   parserOptions: {ecmaVersion: 9, sourceType: 'module'},
   parser: require.resolve('@typescript-eslint/parser'),
 });
 
-ruleTester.run('l10n_no_locked_only_phrase', rule, {
+ruleTester.run('l10n_no_locked_or_placeholder_only_phrase', rule, {
   valid: [
     {
       code: 'const UIStrings = { foo: \'No locked part\' };',

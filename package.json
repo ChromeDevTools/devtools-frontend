@@ -48,7 +48,6 @@
     "optimize-svg-images": "scripts/optimize_svg_images.py",
     "perf": "scripts/test/run_test_suite.py --test-suite-path=gen/test/perf",
     "screenshottest": "scripts/test/run_test_suite.py --test-suite-path=gen/test/screenshots",
-    "server": "third_party/node/node.py --output scripts/hosted_mode/server.js",
     "setup-dtrun": "cd scripts/devtools_run && npm link",
     "start": "node -e 'console.log(`This script has been removed in favor of --custom-devtools-frontend. For more information, see https://docs.google.com/document/d/1COgCBWWuTh2o-Zbp6h_z0h0LtlJaimaEDsION4RZPxc/edit?usp=sharing`);'",
     "stylelint-test": "third_party/node/node.py --output ./node_modules/.bin/mocha \"./scripts/stylelint_rules/tests/*_test.js\"",

@@ -9,7 +9,27 @@ const parseURL = require('url').parse;
 const remoteDebuggingPort = parseInt(process.env.REMOTE_DEBUGGING_PORT, 10) || 9222;
 const port = parseInt(process.env.PORT, 10);
 const requestedPort = port || port === 0 ? port : 8090;
-const devtoolsFolder = path.resolve(path.join(__dirname, '..', '..'));
+
+const target = process.env.TARGET || 'Default';
+
+let pathToOutTargetDir = __dirname;
+/**
+ * If we are in the gen directory, we need to find the out/Default folder to use
+ * as our base to find files from. We could do this with path.join(x, '..',
+ * '..') until we get the right folder, but that's brittle. It's better to
+ * search up for out/Default to be robust to any folder structures.
+ */
+const fileSystemRootDirectory = path.parse(process.cwd()).root;
+while (!pathToOutTargetDir.endsWith(`out${path.sep}${target}`)) {
+  pathToOutTargetDir = path.resolve(pathToOutTargetDir, '..');
+  if (pathToOutTargetDir === fileSystemRootDirectory) {
+    console.error(`Could not find out/${target} directory. You must run the hosted server from within out/${
+        target} for it to work. The hosted mode server only works on the built output from DevTools, not from the source input.`);
+    process.exit(1);
+  }
+}
+// We care about everything in the gen/ directory.
+const devtoolsFolder = path.resolve(path.join(pathToOutTargetDir, 'gen'));
 
 // The certificate is taken from
 // https://source.chromium.org/chromium/chromium/src/+/master:third_party/blink/tools/apache_config/webkit-httpd.pem
@@ -46,9 +66,7 @@ function requestHandler(request, response) {
     return;
   }
 
-  const replacedName = filePath.replace('front_end', '../gen/front_end');
-
-  const absoluteFilePath = path.join(devtoolsFolder, replacedName);
+  const absoluteFilePath = path.join(devtoolsFolder, filePath);
   if (!path.resolve(absoluteFilePath).startsWith(path.join(devtoolsFolder, '..'))) {
     console.log(`File requested (${absoluteFilePath}) is outside of devtools folder: ${devtoolsFolder}`);
     sendResponse(403, `403 - Access denied. File requested is outside of devtools folder: ${devtoolsFolder}`);
@@ -59,7 +77,7 @@ function requestHandler(request, response) {
 
   function fsExistsCallback(fileExists) {
     if (!fileExists) {
-      console.log(`Cannot find file ${absoluteFilePath}`);
+      console.log(`Cannot find file ${absoluteFilePath}. Requested URL: ${filePath}`);
       sendResponse(404, '404 - File not found');
       return;
     }

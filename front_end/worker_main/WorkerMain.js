@@ -4,9 +4,19 @@
 
 import * as Common from '../common/common.js';
 import * as Components from '../components/components.js';
+import * as i18n from '../i18n/i18n.js';
 import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
-import {ls} from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
+
+const UIStrings = {
+  /**
+  *@description Text that refers to the main target.
+  */
+  main: 'Main',
+};
+
+const str_ = i18n.i18n.registerUIStrings('worker_main/WorkerMain.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 /** @type {!WorkerMainImpl} */
 let workerMainImplInstance;
@@ -32,7 +42,8 @@ export class WorkerMainImpl extends Common.ObjectWrapper.ObjectWrapper {
    */
   async run() {
     SDK.Connections.initMainConnection(async () => {
-      SDK.SDKModel.TargetManager.instance().createTarget('main', ls`Main`, SDK.SDKModel.Type.ServiceWorker, null);
+      SDK.SDKModel.TargetManager.instance().createTarget(
+          'main', i18nString(UIStrings.main), SDK.SDKModel.Type.ServiceWorker, null);
     }, Components.TargetDetachedDialog.TargetDetachedDialog.webSocketConnectionLost);
     new MobileThrottling.NetworkPanelIndicator.NetworkPanelIndicator();
   }

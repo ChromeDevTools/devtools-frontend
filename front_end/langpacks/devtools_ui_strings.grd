@@ -9,9 +9,4 @@
   </outputs>
   <translations>
   </translations>
-  <release seq="1" allow_pseudo="false">
-    <messages fallback_to_english="true">
-      <part file="shared_strings.grdp" />
-    </messages>
-  </release>
 </grit>

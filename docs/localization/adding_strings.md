@@ -2,143 +2,132 @@ When you introduce a new UI string or modify an existing one that will be displa
 
 **Table of Contents**
 - [Adding a string](#adding-a-string)
-  - [Frontend source code](#frontend-source-code)
-  - [Frontend GRDP file](#frontend-grdp-file)
 - [Modifying a string](#modifying-a-string)
 - [Removing a string](#removing-a-string)
-- [Adding a new GRD file](#adding-a-new-grd-file)
 
 ## Adding a string
-Before proceeding, make sure you know the different [localization APIs](localization_apis.md) and know which one you should use.
+Before proceeding, make sure you know the different [localization APIs](localization_apis_V2.md) and know which one you should use.
 
-### Frontend source code
+Code example:
+  ```javascript
+  import * as i18n from '../i18n/i18n.js';
 
-1. Wrap your string with the appropriate localization API for your use case, for example, `` ls`Add breakpoint` ``.
+  // at the top of example.js file, after import statements
+  const UIStrings = {
+    /**
+      * @description A string that is already added
+      */
+    alreadyAddedString: 'Someone already created a "UIStrings = {}" and added this string',
+    /**
+      * @description This is an example description for my new string
+      */
+    addThisString: 'The new string I want to add',
+    /**
+      * @description This is an example description for my new string with placeholder
+      * @example {example for placeholder} PH1
+      */
+    addAnotherString: 'Another new string I want to add, with {PH1}',
+  };
+  const str_ = i18n.i18n.registerUIStrings('example.js', UIStrings);
+  const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+  ```
 
-2. If your string contains variables, consider the following cases:
-   1. Directly substitute variables, as how you would normally inject variables into a template literal with `${}`, **only if** your variable satisfies one of the following
+  ```javascript
+  // in example.js file, where you want to call the string
 
-      1. If the variable is a number, e.g. `` ls`${renderedWidth} × ${renderedHeight} pixels` ``
-      2. or if your variable is a string that likely doesn't need to be localized (for example, DOM, or a url),
+  const message1 = i18nString(UIStrings.addThisString);
+  console.log(message1); // The new string I want to add
 
-      3. or if it's a string that is already localized somewhere (for example, Console and other tool titles)
+  const message2 = i18nString(UIStrings.addAnotherString, {PH1: 'a placeholder'});
+  console.log(message2); // Another new string I want to add, with a placeholder
+  ```
+1. If there is already `UIStrings = {}` declared in the file, add your string to it.
+  If there isn't `UIStrings = {}` in the file, create one and add your string, also register the new UIStrings into the `en-US.json` by adding:
+    1. `const str_ = i18n.i18n.registerUIStrings({the current fileName.js, relative to front_end}, UIStrings);`
+    1. `const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);`
 
-   2. Localize your variable with `ls`, then do variable substitution in your template literal, for example
 
-      ```javascript
-      const title = ls`New Tool`
-      const message = ls`Click ${title} for more details`
-      ```
+2. Add description and examples for placeholder(if any):
+    1. To specify the description, use `@description …`
+    `@description This is an example description for my new string`
+    2. To specify an example for placeholder, use `@example {…} …`
+    `@example {example for placeholder} PH1`
 
 3. Make sure your string is localizable:
 
    1. Do not assume word order by using concatenation. Use the whole string.
-
       ❌
       ```javascript
-      ls`Add`  + ls`breakpoint`
-      ```
-
-      ✔️
-      ```javascript
-      ls`Add breakpoint`
-      ```
-   2. Variable substitution over concatenation. This is so that the translators can adjust variable order based on what works in another language. For example:
-
-      ❌
-      ```javascript
-      ls`Check ` + title + ls` for more information.`
-      ```
-
-      ✔️
-      ```javascript
-      ls`Check ${title} for more information.`
-      ```
-   3. Only inject variables when necessary, i.e., do not extract common substrings from similar messages.
-      - Example: <https://developer.mozilla.org/en-US/docs/Mozilla/Localization/Localization_content_best_practices#Idiom>
-   4. Prefer simple strings whenever possible. Try to move conditionals out of the string. For example:
-
-      ❌
-      ```javascript
-      ls`Reveal${destination ? ls` in ${destination}` : ``}`
+      'Add' + 'breakpoint'
       ```
       ✔️
       ```javascript
-      destination ? ls`Reveal in ${destination}` : ls`Reveal`
+      'Add breakpoint'
       ```
-   5. When your string contains plurals, make sure you pluralize by pulling conditionals outside of the string. This is because in other languages, plurals can be different from English ones. For example:
-
+      or
       ❌
       ```javascript
-      ls`${count} insertion${count !== 1 ? `s` : ``}`
-      ```
-
-      ✔️
-      ```javascript
-      if (count === 0)
-        ls`No insertion`
-      else if (count === 1)
-        ls`1 insertion`
-      else
-        ls`${count} insertions`
-      ```
-   6. In general, a complete sentence is preferred. This usually increases the localizability of a string, as the translators have the context of the string. For example:
-
-      ❌
-      ```javascript
-      let description = ls`first part`
+      let description = 'first part'
       if (condition)
-        description += ls` second part`
+        description += ' second part'
       ```
-
       ✔️
       ```javascript
       let description
       if (condition)
-        description = ls`first part second part`
+        description = 'first part second part'
       else
-        description = ls`first part`
+        description = 'first part'
       ```
-   7. If your string contains leading or trailing white space, it's usually an indication that it's half of a sentence. This decreases localizability as it's essentially concatenating. Modify it so that it doesn't contain leading or trailing white space anymore if you can.
-   8. Do not use nested template literals. This is due to a limitation of the release minifier. For more info see https://crbug.com/973285.
-
+   2. Use placeholder over concatenation. This is so that the translators can adjust variable order based on what works in another language. For example:
       ❌
       ```javascript
-      UI.Fragment.build`<a>${ls`Learn more`}</a>`
+      'Check ' + title + ' for more information.'
       ```
-
       ✔️
       ```javascript
-      const link = ls`Learn more`
-      UI.Fragment.build`<a>${link}</a>`
+      'Check {PH1} for more information.', {PH1: title}
       ```
-   9. What kinds of terms should be localized?
+   3. If your string contains <b>leading or trailing white space</b>, it's usually an indication that it's half of a sentence. This decreases localizability as it's essentially concatenating. Modify it so that it doesn't contain leading or trailing white space anymore if you can.
+   4. <b>Backticks</b> are only used for the text that should not be localized. They cannot be escaped as part of the string. Check if there are something should not be localized (see [locked_terms](locked_terms_V2.md) for more details).
 
-      ❌
+      ❌ Not localized
 
       - Numbers: 1, 1.23, 1.2e3, etc.
       - Application data: error codes, enums, database names, rgba, urls, etc.
 
-      ✔️
+      ✔️ Can be localized
 
       - Words and sentences
       - Punctuation
       - Units of measurement: kb/s, mph, etc.
-
-### Frontend GRDP file
-1. Run any of the following commands to have new strings automatically added to the corresponding grdp file:
+4. The following commands would add the new strings to `en-US.json`:
   - `git cl presubmit --upload`, or
-  - `node scripts/localization/check_localizable_resources.js --autofix` from devtools-frontend/src folder
-2. Manually add information to the new grdp message. See [Adding Descriptive Information to GRDP Messages](grdp_files.md)
+  - `node third_party/i18n/collect-strings.js` under the DevTools src folder
+5. Strings containing possible plurals have a special format in ICU. This is because plurals work quite differently in other languages, e.g. special forms for two or three items.
+
+    ❌
+    ```javascript
+    if (count === 1) {
+      str = '1 breakpoint';
+    } else {
+      str = '{n} breakpoints', {n: count};
+    }
+    ```
+
+    ✔️
+    ```javascript
+    '{n, plural, =1 {# breakpoint} other {# breakpoints}}', {n: count};
+    ```
+    - '#' is replaced with the value of `n`
+    - 'n' is a naming convention, but any name can be used
+    - Nesting placeholders inside of plurals is allowed
+    - Put the entire string within the plural switch, e.g. `{# breakpoints were found}`, not `{# breakpoints} were found`
+    - Always provide the `=1` and the `other` case, even if they are the same for English.
 
 ## Modifying a string
-Follow the above steps.
+1. Update the string you want to modify in `UIStrings`
+2. Update the description and placeholders of the string if necessary
 
 ## Removing a string
-Just remove the string from the frontend and it will be automatically removed by the presubmit script.
-
-## Adding a new GRD file
-This is a rare case, but if a new GRD file is introduced, please read the guidance here:
-* https://www.chromium.org/developers/tools-we-use-in-chromium/grit/grit-users-guide
-* https://cs.chromium.org/chromium/src/tools/gritsettings/README.md.
-  * Note that you need to add the grd file to translation_expecations.pyl. If you don't an error will occur when Google's translation pipeline runs.
+1. Remove your string and the metadata from `UIStrings`

@@ -12,6 +12,7 @@ devtools_module("js_main") {
     "../common:bundle",
     "../components:bundle",
     "../host:bundle",
+    "../i18n:bundle",
     "../sdk:bundle",
   ]
 }

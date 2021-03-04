@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Strings in this file are shared, i.e. they appear multiple times. -->
-<grit-part>
-  <message name="IDS_DEVTOOLS_a02c83a7dbd96295beaefb72c2bee2de" desc="Text that refers to the main target">
-    Main
-  </message>
-</grit-part>

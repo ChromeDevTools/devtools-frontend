@@ -3344,6 +3344,9 @@
   "issues/IssueView.ts | warned": {
     "message": "Ŵár̂ńêd́"
   },
+  "js_main/JsMain.js | main": {
+    "message": "M̂áîń"
+  },
   "js_profiler/js_profiler-meta.ts | profiler": {
     "message": "P̂ŕôf́îĺêŕ"
   },
@@ -11383,6 +11386,9 @@
   },
   "webauthn/WebauthnPane.ts | yes": {
     "message": "Ŷéŝ"
+  },
+  "worker_main/WorkerMain.js | main": {
+    "message": "M̂áîń"
   },
   "workspace/UISourceCode.ts | index": {
     "message": "(îńd̂éx̂)"

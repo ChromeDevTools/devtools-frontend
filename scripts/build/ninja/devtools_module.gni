@@ -44,8 +44,7 @@ template("devtools_module") {
 
     visibility = invoker.visibility + [ ":*" ]
 
-    data = invoker.data +
-           filter_include(get_target_outputs(_typescript_target_dep),
+    data = filter_include(get_target_outputs(_typescript_target_dep),
                           [
                             "*.js",
                             "*.map",
@@ -55,5 +54,4 @@ template("devtools_module") {
 
 set_defaults("devtools_module") {
   visibility = []
-  data = []
 }

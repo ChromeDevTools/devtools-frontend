@@ -13,11 +13,6 @@ import type {ReleaseNote} from './HelpImpl.js';
 
 const UIStrings = {
   /**
-  *@description Text that only contain a placeholder
-  *@example {100ms (at 200ms)} PH1
-  */
-  s: '{PH1}',
-  /**
   *@description Text that is usually a hyperlink to more documentation
   */
   learnMore: 'Learn more',
@@ -37,7 +32,7 @@ export class ReleaseNoteView extends UI.Widget.VBox {
     this.registerRequiredCSS('help/releaseNote.css', {enableLegacyPatching: true});
     this._releaseNoteElement = this._createReleaseNoteElement(latestReleaseNote());
     const topSection = this.contentElement.createChild('div', 'release-note-top-section');
-    topSection.textContent = i18nString(UIStrings.s, {PH1: latestReleaseNote().header});
+    topSection.textContent = latestReleaseNote().header;
     this.contentElement.appendChild(this._releaseNoteElement);
   }
 
@@ -58,7 +53,7 @@ export class ReleaseNoteView extends UI.Widget.VBox {
     hbox.classList.add('hbox');
     const container = hbox.createChild('div', 'release-note-container');
     const contentContainer = container.createChild('ul');
-    UI.ARIAUtils.setAccessibleName(contentContainer, i18nString(UIStrings.s, {PH1: latestReleaseNote().header}));
+    UI.ARIAUtils.setAccessibleName(contentContainer, latestReleaseNote().header);
 
     let linkNumber = 1;
     for (const highlight of releaseNote.highlights) {
@@ -94,7 +89,7 @@ export class ReleaseNoteView extends UI.Widget.VBox {
 
     const imageLink = UI.XLink.XLink.create(releaseNote.link, ' ') as HTMLElement;
     imageLink.classList.add('release-note-image');
-    UI.Tooltip.Tooltip.install(imageLink, i18nString(UIStrings.s, {PH1: latestReleaseNote().header}));
+    UI.Tooltip.Tooltip.install(imageLink, latestReleaseNote().header);
 
     hbox.appendChild(imageLink);
     const image = imageLink.createChild('img') as HTMLImageElement;

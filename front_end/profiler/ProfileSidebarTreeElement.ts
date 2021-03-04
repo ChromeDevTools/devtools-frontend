@@ -21,11 +21,6 @@ const UIStrings = {
   */
   saveWithEllipsis: 'Save…',
   /**
-  *@description Text that only contain a placeholder
-  *@example {100ms (at 200ms)} PH1
-  */
-  singlePlaceholder: '{PH1}',
-  /**
   *@description A context menu item in the Profiles Panel of a profiler tool
   */
   load: 'Load…',
@@ -154,8 +149,7 @@ export class ProfileSidebarTreeElement extends UI.TreeOutline.TreeElement {
     this.listItemElement.append(this._iconElement, this._titlesElement);
     this.listItemElement.addEventListener('contextmenu', this._handleContextMenuEvent.bind(this), true);
 
-    UI.ARIAUtils.setDescription(
-        this.listItemElement, i18nString(UIStrings.singlePlaceholder, {PH1: this.profile.profileType().name}));
+    UI.ARIAUtils.setDescription(this.listItemElement, this.profile.profileType().name);
   }
 
   _handleContextMenuEvent(event: Event): void {

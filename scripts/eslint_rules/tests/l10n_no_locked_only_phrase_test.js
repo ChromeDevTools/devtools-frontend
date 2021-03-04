@@ -18,11 +18,21 @@ ruleTester.run('l10n_no_locked_only_phrase', rule, {
     {
       code: 'const UIStrings = { foo: \'Some `locked` part\' };',
     },
+    {
+      code: 'const UIStrings = { foo: \'One {PH} placeholder\' };',
+    },
+    {
+      code: 'const UIStrings = { foo: \'{PH} two {PH} placeholders\' };',
+    },
   ],
   invalid: [
     {
       code: 'const UIStrings = { foo: \'`whole phrase is locked`\'};',
       errors: [{message: 'Locking whole phrases is not allowed. Use i18n.i18n.lockedString instead.'}],
+    },
+    {
+      code: 'const UIStrings = { foo: \'{PH}\'};',
+      errors: [{message: 'Single placeholder-only phrases are not allowed. Use i18n.i18n.lockedString instead.'}],
     },
   ],
 });

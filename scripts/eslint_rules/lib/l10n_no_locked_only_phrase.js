@@ -9,12 +9,14 @@ function isModuleScope(context) {
 }
 
 const FULLY_LOCKED_PHRASE_REGEX = /^`[^`]*`$/;
+const SINGLE_PLACEHOLDER_REGEX = /^\{\w+\}$/;  // Matches the PH regex in `collect-strings.js`.
 
 module.exports = {
   meta: {
     type: 'problem',
     docs: {
-      description: 'UIStrings object literals are not allowed to have phrases that are fully locked.',
+      description:
+          'UIStrings object literals are not allowed to have phrases that are fully locked, or consist only of a single placeholder.',
       category: 'Possible Errors',
     },
     schema: []  // no options
@@ -43,6 +45,11 @@ module.exports = {
             context.report({
               node: property.value,
               message: 'Locking whole phrases is not allowed. Use i18n.i18n.lockedString instead.',
+            });
+          } else if (SINGLE_PLACEHOLDER_REGEX.test(property.value.value)) {
+            context.report({
+              node: property.value,
+              message: 'Single placeholder-only phrases are not allowed. Use i18n.i18n.lockedString instead.',
             });
           }
         }

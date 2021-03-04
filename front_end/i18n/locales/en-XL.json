@@ -2801,9 +2801,6 @@
   "help/ReleaseNoteView.ts | learnMore": {
     "message": "L̂éâŕn̂ ḿôŕê"
   },
-  "help/ReleaseNoteView.ts | s": {
-    "message": "{PH1}"
-  },
   "host/InspectorFrontendHost.ts | devtoolsS": {
     "message": "D̂év̂T́ôól̂ś - {PH1}"
   },
@@ -4937,9 +4934,6 @@
   "network/NetworkLogViewColumns.ts | responseTime": {
     "message": "R̂éŝṕôńŝé T̂ím̂é"
   },
-  "network/NetworkLogViewColumns.ts | s": {
-    "message": "{PH1}"
-  },
   "network/NetworkLogViewColumns.ts | scheme": {
     "message": "Ŝćĥém̂é"
   },
@@ -6092,9 +6086,6 @@
   "profiler/HeapSnapshotGridNodes.ts | detachedFromDomTree": {
     "message": "D̂ét̂áĉh́êd́ f̂ŕôḿ D̂ÓM̂ t́r̂éê"
   },
-  "profiler/HeapSnapshotGridNodes.ts | emptyPlaceholder": {
-    "message": "{PH1}"
-  },
   "profiler/HeapSnapshotGridNodes.ts | genericStringsTwoPlaceholders": {
     "message": "{PH1}, {PH2}"
   },
@@ -6442,9 +6433,6 @@
   },
   "profiler/ProfileSidebarTreeElement.ts | saveWithEllipsis": {
     "message": "Ŝáv̂é…"
-  },
-  "profiler/ProfileSidebarTreeElement.ts | singlePlaceholder": {
-    "message": "{PH1}"
   },
   "profiler/ProfilesPanel.ts | cantLoadFileSupportedFile": {
     "message": "Ĉán̂’t́ l̂óâd́ f̂íl̂é. Ŝúp̂ṕôŕt̂éd̂ f́îĺê éx̂t́êńŝíôńŝ: '{PH1}.'"

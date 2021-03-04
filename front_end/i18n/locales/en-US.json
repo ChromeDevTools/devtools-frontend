@@ -2801,9 +2801,6 @@
   "help/ReleaseNoteView.ts | learnMore": {
     "message": "Learn more"
   },
-  "help/ReleaseNoteView.ts | s": {
-    "message": "{PH1}"
-  },
   "host/InspectorFrontendHost.ts | devtoolsS": {
     "message": "DevTools - {PH1}"
   },
@@ -4937,9 +4934,6 @@
   "network/NetworkLogViewColumns.ts | responseTime": {
     "message": "Response Time"
   },
-  "network/NetworkLogViewColumns.ts | s": {
-    "message": "{PH1}"
-  },
   "network/NetworkLogViewColumns.ts | scheme": {
     "message": "Scheme"
   },
@@ -6092,9 +6086,6 @@
   "profiler/HeapSnapshotGridNodes.ts | detachedFromDomTree": {
     "message": "Detached from DOM tree"
   },
-  "profiler/HeapSnapshotGridNodes.ts | emptyPlaceholder": {
-    "message": "{PH1}"
-  },
   "profiler/HeapSnapshotGridNodes.ts | genericStringsTwoPlaceholders": {
     "message": "{PH1}, {PH2}"
   },
@@ -6442,9 +6433,6 @@
   },
   "profiler/ProfileSidebarTreeElement.ts | saveWithEllipsis": {
     "message": "Save…"
-  },
-  "profiler/ProfileSidebarTreeElement.ts | singlePlaceholder": {
-    "message": "{PH1}"
   },
   "profiler/ProfilesPanel.ts | cantLoadFileSupportedFile": {
     "message": "Can’t load file. Supported file extensions: '{PH1}.'"

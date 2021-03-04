@@ -46,11 +46,6 @@ import type {DataDisplayDelegate} from './ProfileHeader.js';
 
 const UIStrings = {
   /**
-  *@description Text in Heap Snapshot Grid Nodes of a profiler tool
-  *@example {2} PH1
-  */
-  emptyPlaceholder: '{PH1}',
-  /**
   *@description Generic text with two placeholders separated by a comma
   *@example {1 613 680} PH1
   *@example {44 %} PH2
@@ -211,8 +206,7 @@ export class HeapSnapshotGridNode extends DataGrid.DataGrid.DataGridNode<HeapSna
 
   _toUIDistance(distance: number): string {
     const baseSystemDistance = HeapSnapshotModel.HeapSnapshotModel.baseSystemDistance;
-    return distance >= 0 && distance < baseSystemDistance ? i18nString(UIStrings.emptyPlaceholder, {PH1: distance}) :
-                                                            '\u2212';
+    return distance >= 0 && distance < baseSystemDistance ? distance.toString() : '\u2212';
   }
 
   allChildren(): HeapSnapshotGridNode[] {

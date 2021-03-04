@@ -1016,7 +1016,7 @@ const UIStrings = {
   *@description Text that only contain a placeholder
   *@example {100ms (at 200ms)} PH1
   */
-  emptyPlaceholder: '{PH1}',
+  emptyPlaceholder: '{PH1}',  // eslint-disable-line rulesdir/l10n_no_locked_only_phrase
   /**
   *@description Text in Timeline UIUtils of the Performance panel
   */

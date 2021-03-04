@@ -6,7 +6,7 @@ import {assert} from 'chai';
 
 import {$$, enableExperiment, getBrowserAndPages, goToResource, waitFor} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {getCSSPropertyInRule, waitForContentOfSelectedElementsNode, waitForCSSPropertyValue} from '../helpers/elements-helpers.js';
+import {focusOnSelectedElementsNode, getCSSPropertyInRule, waitForContentOfSelectedElementsNode, waitForCSSPropertyValue} from '../helpers/elements-helpers.js';
 
 describe('Flexbox Editor', async function() {
   beforeEach(async function() {
@@ -14,7 +14,8 @@ describe('Flexbox Editor', async function() {
     await enableExperiment('cssFlexboxFeatures');
     await goToResource('elements/flexbox-editor.html');
     await waitForContentOfSelectedElementsNode('<body>\u200B');
-    await frontend.keyboard.press('ArrowDown');
+    await focusOnSelectedElementsNode();
+    await frontend.keyboard.press('ArrowRight');
     await waitForCSSPropertyValue('#target', 'display', 'flex');
   });
 
@@ -33,8 +34,7 @@ describe('Flexbox Editor', async function() {
     button.click();
   }
 
-  // Flaky on Mac
-  it.skipOnPlatforms(['mac'], '[crbug.com/1184664]: can be opened and flexbox styles can be edited', async () => {
+  it('can be opened and flexbox styles can be edited', async () => {
     await clickFlexboxEditorButton();
 
     // Clicking once sets the value.

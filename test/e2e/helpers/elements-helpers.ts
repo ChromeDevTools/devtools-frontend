@@ -104,6 +104,11 @@ export const waitForContentOfSelectedElementsNode = async (expectedTextContent: 
   });
 };
 
+export const focusOnSelectedElementsNode = async () => {
+  const selectedNode = await waitFor(SELECTED_TREE_ELEMENT_SELECTOR);
+  selectedNode.focus();
+};
+
 export const waitForContentOfExpandedSelectedElementsNode = async (expectedTextContent: string) => {
   await waitForFunction(async () => {
     const selectedNode = await waitFor(EXPANDED_SELECTED_TREE_ELEMENT_SELECTOR);

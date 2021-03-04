@@ -1524,7 +1524,7 @@
     "message": "M̂éd̂íâ q́ûér̂íêś"
   },
   "css_overview/CSSOverviewCompletedView.ts | nOccurrences": {
-    "message": "{n, plural, =1 {# ôćĉúr̂ŕêńĉé} other {# ôćĉúr̂ŕêńĉéŝ}} "
+    "message": "{n, plural, =1 {# ôćĉúr̂ŕêńĉé} other {# ôćĉúr̂ŕêńĉéŝ}}"
   },
   "css_overview/CSSOverviewCompletedView.ts | nonsimpleSelectors": {
     "message": "N̂ón̂-śîḿp̂ĺê śêĺêćt̂ór̂ś"

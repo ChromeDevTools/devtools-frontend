@@ -1524,7 +1524,7 @@
     "message": "Media queries"
   },
   "css_overview/CSSOverviewCompletedView.ts | nOccurrences": {
-    "message": "{n, plural, =1 {# occurrence} other {# occurrences}} "
+    "message": "{n, plural, =1 {# occurrence} other {# occurrences}}"
   },
   "css_overview/CSSOverviewCompletedView.ts | nonsimpleSelectors": {
     "message": "Non-simple selectors"

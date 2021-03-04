@@ -119,7 +119,7 @@ const UIStrings = {
   /**
   * @description Text to indicate how many times this CSS rule showed up.
   */
-  nOccurrences: '{n, plural, =1 {# occurrence} other {# occurrences}} ',
+  nOccurrences: '{n, plural, =1 {# occurrence} other {# occurrences}}',
   /**
   *@description Section header for contrast issues in the CSS Overview Panel
   *@example {1} PH1

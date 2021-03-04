@@ -24,6 +24,9 @@ ruleTester.run('l10n_no_locked_or_placeholder_only_phrase', rule, {
     {
       code: 'const UIStrings = { foo: \'{PH} two {PH} placeholders\' };',
     },
+    {
+      code: 'const variableNotNamedUIStrings = { foo: \'`whole phrase is locked`\' };',
+    },
   ],
   invalid: [
     {

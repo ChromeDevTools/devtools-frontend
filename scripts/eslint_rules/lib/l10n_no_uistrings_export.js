@@ -4,6 +4,8 @@
 
 'use strict';
 
+const l10nHelper = require('./l10n_helper.js');
+
 const MODULE_UI_STRINGS_FILENAME_REGEX = /ModuleUIStrings\.(js|ts)$/;
 
 module.exports = {
@@ -41,8 +43,7 @@ module.exports = {
           return;
         }
 
-        const identifier = declaration.declarations[0].id;
-        if (identifier.type === 'Identifier' && identifier.name === 'UIStrings') {
+        if (l10nHelper.isUIStringsIdentifier(declaration.declarations[0].id)) {
           context.report({
             node: declaration.declarations[0],
             message: 'Exporting the UIStrings object is only allowed in ModuleUIStrings.(js|ts)',

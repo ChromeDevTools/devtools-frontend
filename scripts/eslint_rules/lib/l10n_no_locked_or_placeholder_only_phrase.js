@@ -4,6 +4,8 @@
 
 'use strict';
 
+const l10nHelper = require('./l10n_helper.js');
+
 function isModuleScope(context) {
   return context.getScope().type === 'module';
 }
@@ -28,7 +30,7 @@ module.exports = {
           return;
         }
 
-        if (variableDeclarator.id.type !== 'Identifier' && variableDeclarator.name !== 'UIStrings') {
+        if (!l10nHelper.isUIStringsIdentifier(variableDeclarator.id)) {
           return;
         }
 

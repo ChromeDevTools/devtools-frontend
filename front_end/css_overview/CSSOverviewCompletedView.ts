@@ -117,14 +117,9 @@ const UIStrings = {
   */
   contrastIssues: 'Contrast issues',
   /**
-  *@description Text that indicates that this CSS rule showed up one time.
+  * @description Text to indicate how many times this CSS rule showed up.
   */
-  oneOccurrence: '1 occurrence',
-  /**
-  * @description Text that indicates that this CSS rule showed multiple times.
-  * @example {12} count
-  */
-  nOccurrences: '{count} occurrences',
+  nOccurrences: '{n, plural, =1 {# occurrence} other {# occurrences}} ',
   /**
   *@description Section header for contrast issues in the CSS Overview Panel
   *@example {1} PH1
@@ -701,9 +696,7 @@ export class CSSOverviewCompletedView extends UI.Panel.PanelWithSidebar {
     return UI.Fragment.Fragment.build`<ul>
     ${values.map(([title, nodes]) => {
       const width = 100 * nodes.length / total;
-      // TODO(l10n): Plurals
-      const itemLabel = nodes.length === 1 ? i18nString(UIStrings.oneOccurrence) :
-                                             i18nString(UIStrings.nOccurrences, {count: nodes.length});
+      const itemLabel = i18nString(UIStrings.nOccurrences, {n: nodes.length});
 
       return UI.Fragment.Fragment.build`<li>
         <div class="title">${title}</div>

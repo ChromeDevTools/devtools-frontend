@@ -219,7 +219,7 @@ export class RemoteObjectPreviewFormatter {
     function appendUndefined(index: number): void {
       const span = parentElement.createChild('span', 'object-value-undefined');
       const count = index - lastNonEmptyArrayIndex - 1;
-      // TODO(l10n): Plurals
+      // TODO(l10n): Plurals. Tricky because of a bug in the presubmit check for plurals.
       span.textContent = count !== 1 ? i18nString(UIStrings.emptyD, {PH1: count}) : i18nString(UIStrings.empty);
       elementsAdded = true;
     }

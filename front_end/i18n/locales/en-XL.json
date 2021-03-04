@@ -944,11 +944,8 @@
   "components/JSPresentationUtils.js | removeFromIgnore": {
     "message": "R̂ém̂óv̂é f̂ŕôḿ îǵn̂ór̂é l̂íŝt́"
   },
-  "components/JSPresentationUtils.js | showMoreFrame": {
-    "message": "Ŝh́ôẃ 1 m̂ór̂é f̂ŕâḿê"
-  },
   "components/JSPresentationUtils.js | showSMoreFrames": {
-    "message": "Ŝh́ôẃ {PH1} m̂ór̂é f̂ŕâḿêś"
+    "message": "{n, plural, =1 {Ŝh́ôẃ # m̂ór̂é f̂ŕâḿê} other {Śĥóŵ # ḿôŕê f́r̂ám̂éŝ}}"
   },
   "components/JSPresentationUtils.js | unknownSource": {
     "message": "ûńk̂ńôẃn̂"
@@ -1095,61 +1092,25 @@
     "message": "Ĉón̂śôĺê ṕr̂óm̂ṕt̂"
   },
   "console/ConsoleSidebar.ts | dErrors": {
-    "message": "{PH1} êŕr̂ór̂ś"
+    "message": "{n, plural, =0 {N̂ó êŕr̂ór̂ś} =1 {# êŕr̂ór̂} other {# ér̂ŕôŕŝ}}"
   },
   "console/ConsoleSidebar.ts | dInfo": {
-    "message": "{PH1} îńf̂ó"
+    "message": "{n, plural, =0 {N̂ó îńf̂ó} =1 {# îńf̂ó} other {# îńf̂ó}}"
   },
   "console/ConsoleSidebar.ts | dMessages": {
-    "message": "{PH1} m̂éŝśâǵêś"
+    "message": "{n, plural, =0 {N̂ó m̂éŝśâǵêś} =1 {# m̂éŝśâǵê} other {# ḿêśŝáĝéŝ}}"
   },
   "console/ConsoleSidebar.ts | dUserMessages": {
-    "message": "{PH1} ûśêŕ m̂éŝśâǵêś"
+    "message": "{n, plural, =0 {N̂ó ûśêŕ m̂éŝśâǵêś} =1 {# ûśêŕ m̂éŝśâǵê} other {# úŝér̂ ḿêśŝáĝéŝ}}"
   },
   "console/ConsoleSidebar.ts | dVerbose": {
-    "message": "{PH1} v̂ér̂b́ôśê"
+    "message": "{n, plural, =0 {N̂ó v̂ér̂b́ôśê} =1 {# v́êŕb̂óŝé} other {# v̂ér̂b́ôśê}}"
   },
   "console/ConsoleSidebar.ts | dWarnings": {
-    "message": "{PH1} ŵár̂ńîńĝś"
-  },
-  "console/ConsoleSidebar.ts | Error": {
-    "message": "1 êŕr̂ór̂"
-  },
-  "console/ConsoleSidebar.ts | Info": {
-    "message": "1 îńf̂ó"
-  },
-  "console/ConsoleSidebar.ts | Message": {
-    "message": "1 m̂éŝśâǵê"
-  },
-  "console/ConsoleSidebar.ts | noErrors": {
-    "message": "N̂ó êŕr̂ór̂ś"
-  },
-  "console/ConsoleSidebar.ts | noInfo": {
-    "message": "N̂ó îńf̂ó"
-  },
-  "console/ConsoleSidebar.ts | noMessages": {
-    "message": "N̂ó m̂éŝśâǵêś"
-  },
-  "console/ConsoleSidebar.ts | noUserMessages": {
-    "message": "N̂ó ûśêŕ m̂éŝśâǵêś"
-  },
-  "console/ConsoleSidebar.ts | noVerbose": {
-    "message": "N̂ó v̂ér̂b́ôśê"
-  },
-  "console/ConsoleSidebar.ts | noWarnings": {
-    "message": "N̂ó ŵár̂ńîńĝś"
+    "message": "{n, plural, =0 {N̂ó ŵár̂ńîńĝś} =1 {# ŵár̂ńîńĝ} other {# ẃâŕn̂ín̂ǵŝ}}"
   },
   "console/ConsoleSidebar.ts | other": {
     "message": "<ôt́ĥér̂>"
-  },
-  "console/ConsoleSidebar.ts | UserMessage": {
-    "message": "1 ûśêŕ m̂éŝśâǵê"
-  },
-  "console/ConsoleSidebar.ts | Verbose": {
-    "message": "1 v̂ér̂b́ôśê"
-  },
-  "console/ConsoleSidebar.ts | Warning": {
-    "message": "1 ŵár̂ńîńĝ"
   },
   "console/ConsoleView.ts | allLevels": {
     "message": "Âĺl̂ ĺêv́êĺŝ"
@@ -1212,13 +1173,7 @@
     "message": "Ŝóm̂é p̂ŕôb́l̂ém̂ś n̂ó l̂ón̂ǵêŕ ĝén̂ér̂át̂é ĉón̂śôĺê ḿêśŝáĝéŝ, b́ût́ âŕê śûŕf̂áĉéd̂ ín̂ t́ĥé îśŝúêś t̂áb̂."
   },
   "console/ConsoleView.ts | issueToolbarTooltipHaveMultipleIssues": {
-    "message": "Ĉĺîćk̂ t́ô v́îéŵ {issueCount} íŝśûéŝ"
-  },
-  "console/ConsoleView.ts | issueToolbarTooltipHaveNoIssues": {
-    "message": "Ĉĺîćk̂ t́ô ǵô t́ô t́ĥé îśŝúêś t̂áb̂."
-  },
-  "console/ConsoleView.ts | issueToolbarTooltipHaveOneIssues": {
-    "message": "Ĉĺîćk̂ t́ô v́îéŵ 1 íŝśûé"
+    "message": "{issueCount, plural, =0 {Ĉĺîćk̂ t́ô ǵô t́ô t́ĥé îśŝúêś t̂áb̂} =1 {Ćl̂íĉḱ t̂ó v̂íêẃ # îśŝúê} other {Ćl̂íĉḱ t̂ó v̂íêẃ # îśŝúêś}}"
   },
   "console/ConsoleView.ts | logLevels": {
     "message": "L̂óĝ ĺêv́êĺŝ"
@@ -1227,13 +1182,7 @@
     "message": "L̂óĝ ĺêv́êĺ: {PH1}"
   },
   "console/ConsoleView.ts | multipleIssues": {
-    "message": "{issueCount} Îśŝúêś"
-  },
-  "console/ConsoleView.ts | noIssue": {
-    "message": "N̂ó Îśŝúêś"
-  },
-  "console/ConsoleView.ts | oneIssue": {
-    "message": "1 Îśŝúê"
+    "message": "{issueCount, plural, =0 {N̂ó Îśŝúêś} =1 {# Îśŝúê} other {# Íŝśûéŝ}}"
   },
   "console/ConsoleView.ts | onlyShowMessagesFromTheCurrentContext": {
     "message": "Ôńl̂ý ŝh́ôẃ m̂éŝśâǵêś f̂ŕôḿ t̂h́ê ćûŕr̂én̂t́ ĉón̂t́êx́t̂ (top, iframe, worker, éx̂t́êńŝíôń)"
@@ -1400,12 +1349,6 @@
   "coverage/coverage-meta.ts | stopInstrumentingCoverageAndShow": {
     "message": "Ŝt́ôṕ îńŝt́r̂úm̂én̂t́îńĝ ćôv́êŕâǵê án̂d́ ŝh́ôẃ r̂éŝúl̂t́ŝ"
   },
-  "coverage/CoverageListView.ts | Byte": {
-    "message": "1 b̂ýt̂é"
-  },
-  "coverage/CoverageListView.ts | ByteS": {
-    "message": "1 b̂ýt̂é, {PH1}"
-  },
   "coverage/CoverageListView.ts | codeCoverage": {
     "message": "Ĉód̂é Ĉóv̂ér̂áĝé"
   },
@@ -1425,10 +1368,10 @@
     "message": "ĴŚ (p̂ér̂ f́ûńĉt́îón̂)"
   },
   "coverage/CoverageListView.ts | sBytes": {
-    "message": "{PH1} b̂ýt̂éŝ"
+    "message": "{n, plural, =1 {# b̂ýt̂é} other {# b̂ýt̂éŝ}}"
   },
   "coverage/CoverageListView.ts | sBytesS": {
-    "message": "{PH1} b̂ýt̂éŝ, {PH2}"
+    "message": "{n, plural, =1 {# b̂ýt̂é, {percentage}} other {# b̂ýt̂éŝ, {percentage}}}"
   },
   "coverage/CoverageListView.ts | sBytesSBelongToBlocksOf": {
     "message": "{PH1} b̂ýt̂éŝ ({PH2} %) b́êĺôńĝ t́ô b́l̂óĉḱŝ óf̂ J́âv́âŚĉŕîṕt̂ t́ĥát̂ h́âv́ê ńôt́ (ŷét̂) b́êén̂ éx̂éĉút̂éd̂."
@@ -1581,13 +1524,10 @@
     "message": "M̂éd̂íâ q́ûér̂íêś"
   },
   "css_overview/CSSOverviewCompletedView.ts | nOccurrences": {
-    "message": "{count} ôćĉúr̂ŕêńĉéŝ"
+    "message": "{n, plural, =1 {# ôćĉúr̂ŕêńĉé} other {# ôćĉúr̂ŕêńĉéŝ}} "
   },
   "css_overview/CSSOverviewCompletedView.ts | nonsimpleSelectors": {
     "message": "N̂ón̂-śîḿp̂ĺê śêĺêćt̂ór̂ś"
-  },
-  "css_overview/CSSOverviewCompletedView.ts | oneOccurrence": {
-    "message": "1 ôćĉúr̂ŕêńĉé"
   },
   "css_overview/CSSOverviewCompletedView.ts | overviewSummary": {
     "message": "Ôv́êŕv̂íêẃ ŝúm̂ḿâŕŷ"

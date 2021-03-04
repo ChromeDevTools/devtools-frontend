@@ -944,11 +944,8 @@
   "components/JSPresentationUtils.js | removeFromIgnore": {
     "message": "Remove from ignore list"
   },
-  "components/JSPresentationUtils.js | showMoreFrame": {
-    "message": "Show 1 more frame"
-  },
   "components/JSPresentationUtils.js | showSMoreFrames": {
-    "message": "Show {PH1} more frames"
+    "message": "{n, plural, =1 {Show # more frame} other {Show # more frames}}"
   },
   "components/JSPresentationUtils.js | unknownSource": {
     "message": "unknown"
@@ -1095,61 +1092,25 @@
     "message": "Console prompt"
   },
   "console/ConsoleSidebar.ts | dErrors": {
-    "message": "{PH1} errors"
+    "message": "{n, plural, =0 {No errors} =1 {# error} other {# errors}}"
   },
   "console/ConsoleSidebar.ts | dInfo": {
-    "message": "{PH1} info"
+    "message": "{n, plural, =0 {No info} =1 {# info} other {# info}}"
   },
   "console/ConsoleSidebar.ts | dMessages": {
-    "message": "{PH1} messages"
+    "message": "{n, plural, =0 {No messages} =1 {# message} other {# messages}}"
   },
   "console/ConsoleSidebar.ts | dUserMessages": {
-    "message": "{PH1} user messages"
+    "message": "{n, plural, =0 {No user messages} =1 {# user message} other {# user messages}}"
   },
   "console/ConsoleSidebar.ts | dVerbose": {
-    "message": "{PH1} verbose"
+    "message": "{n, plural, =0 {No verbose} =1 {# verbose} other {# verbose}}"
   },
   "console/ConsoleSidebar.ts | dWarnings": {
-    "message": "{PH1} warnings"
-  },
-  "console/ConsoleSidebar.ts | Error": {
-    "message": "1 error"
-  },
-  "console/ConsoleSidebar.ts | Info": {
-    "message": "1 info"
-  },
-  "console/ConsoleSidebar.ts | Message": {
-    "message": "1 message"
-  },
-  "console/ConsoleSidebar.ts | noErrors": {
-    "message": "No errors"
-  },
-  "console/ConsoleSidebar.ts | noInfo": {
-    "message": "No info"
-  },
-  "console/ConsoleSidebar.ts | noMessages": {
-    "message": "No messages"
-  },
-  "console/ConsoleSidebar.ts | noUserMessages": {
-    "message": "No user messages"
-  },
-  "console/ConsoleSidebar.ts | noVerbose": {
-    "message": "No verbose"
-  },
-  "console/ConsoleSidebar.ts | noWarnings": {
-    "message": "No warnings"
+    "message": "{n, plural, =0 {No warnings} =1 {# warning} other {# warnings}}"
   },
   "console/ConsoleSidebar.ts | other": {
     "message": "<other>"
-  },
-  "console/ConsoleSidebar.ts | UserMessage": {
-    "message": "1 user message"
-  },
-  "console/ConsoleSidebar.ts | Verbose": {
-    "message": "1 verbose"
-  },
-  "console/ConsoleSidebar.ts | Warning": {
-    "message": "1 warning"
   },
   "console/ConsoleView.ts | allLevels": {
     "message": "All levels"
@@ -1212,13 +1173,7 @@
     "message": "Some problems no longer generate console messages, but are surfaced in the issues tab."
   },
   "console/ConsoleView.ts | issueToolbarTooltipHaveMultipleIssues": {
-    "message": "Click to view {issueCount} issues"
-  },
-  "console/ConsoleView.ts | issueToolbarTooltipHaveNoIssues": {
-    "message": "Click to go to the issues tab."
-  },
-  "console/ConsoleView.ts | issueToolbarTooltipHaveOneIssues": {
-    "message": "Click to view 1 issue"
+    "message": "{issueCount, plural, =0 {Click to go to the issues tab} =1 {Click to view # issue} other {Click to view # issues}}"
   },
   "console/ConsoleView.ts | logLevels": {
     "message": "Log levels"
@@ -1227,13 +1182,7 @@
     "message": "Log level: {PH1}"
   },
   "console/ConsoleView.ts | multipleIssues": {
-    "message": "{issueCount} Issues"
-  },
-  "console/ConsoleView.ts | noIssue": {
-    "message": "No Issues"
-  },
-  "console/ConsoleView.ts | oneIssue": {
-    "message": "1 Issue"
+    "message": "{issueCount, plural, =0 {No Issues} =1 {# Issue} other {# Issues}}"
   },
   "console/ConsoleView.ts | onlyShowMessagesFromTheCurrentContext": {
     "message": "Only show messages from the current context (top, iframe, worker, extension)"
@@ -1400,12 +1349,6 @@
   "coverage/coverage-meta.ts | stopInstrumentingCoverageAndShow": {
     "message": "Stop instrumenting coverage and show results"
   },
-  "coverage/CoverageListView.ts | Byte": {
-    "message": "1 byte"
-  },
-  "coverage/CoverageListView.ts | ByteS": {
-    "message": "1 byte, {PH1}"
-  },
   "coverage/CoverageListView.ts | codeCoverage": {
     "message": "Code Coverage"
   },
@@ -1425,10 +1368,10 @@
     "message": "JS (per function)"
   },
   "coverage/CoverageListView.ts | sBytes": {
-    "message": "{PH1} bytes"
+    "message": "{n, plural, =1 {# byte} other {# bytes}}"
   },
   "coverage/CoverageListView.ts | sBytesS": {
-    "message": "{PH1} bytes, {PH2}"
+    "message": "{n, plural, =1 {# byte, {percentage}} other {# bytes, {percentage}}}"
   },
   "coverage/CoverageListView.ts | sBytesSBelongToBlocksOf": {
     "message": "{PH1} bytes ({PH2} %) belong to blocks of JavaScript that have not (yet) been executed."
@@ -1581,13 +1524,10 @@
     "message": "Media queries"
   },
   "css_overview/CSSOverviewCompletedView.ts | nOccurrences": {
-    "message": "{count} occurrences"
+    "message": "{n, plural, =1 {# occurrence} other {# occurrences}} "
   },
   "css_overview/CSSOverviewCompletedView.ts | nonsimpleSelectors": {
     "message": "Non-simple selectors"
-  },
-  "css_overview/CSSOverviewCompletedView.ts | oneOccurrence": {
-    "message": "1 occurrence"
   },
   "css_overview/CSSOverviewCompletedView.ts | overviewSummary": {
     "message": "Overview summary"

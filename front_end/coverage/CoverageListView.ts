@@ -68,30 +68,19 @@ const UIStrings = {
   jsCoverageWithPerBlock:
       'JS coverage with per block granularity: Once a block of JavaScript was executed, that block is marked as covered.',
   /**
-  *@description Accessible text for a file size of 1 byte
-  */
-  Byte: '1 byte',
-  /**
   *@description Accessible text for the value in bytes in memory allocation or coverage view.
-  *@example {12345} PH1
   */
-  sBytes: '{PH1} bytes',
+  sBytes: '{n, plural, =1 {# byte} other {# bytes}}',
   /**
   *@description Message in Coverage View of the Coverage tab
   *@example {12.34} PH1
   */
   sPercent: '{PH1} %',
   /**
-  *@description Accessible text for the amount of unused code in a file
-  *@example {20 %} PH1
-  */
-  ByteS: '1 byte, {PH1}',
-  /**
   *@description Accessible text for the unused bytes column in the coverage tool that describes the total unused bytes and percentage of the file unused.
-  *@example {100000} PH1
-  *@example {88%} PH2
+  *@example {88%} percentage
   */
-  sBytesS: '{PH1} bytes, {PH2}',
+  sBytesS: '{n, plural, =1 {# byte, {percentage}} other {# bytes, {percentage}}}',
   /**
   *@description Tooltip text for the bar in the coverage list view of the coverage tool that illustrates the relation between used and unused bytes.
   *@example {1000} PH1
@@ -364,9 +353,7 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode<Gri
       case 'size': {
         const sizeSpan = cell.createChild('span');
         sizeSpan.textContent = Number.withThousandsSeparator(this._coverageInfo.size() || 0);
-        const sizeAccessibleName = (this._coverageInfo.size() === 1) ?
-            i18nString(UIStrings.Byte) :
-            i18nString(UIStrings.sBytes, {PH1: this._coverageInfo.size() || 0});
+        const sizeAccessibleName = i18nString(UIStrings.sBytes, {n: this._coverageInfo.size() || 0});
         this.setCellAccessibleName(sizeAccessibleName, cell, columnId);
         break;
       }
@@ -375,12 +362,11 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode<Gri
         const unusedSizeSpan = cell.createChild('span');
         const unusedPercentsSpan = cell.createChild('span', 'percent-value');
         unusedSizeSpan.textContent = Number.withThousandsSeparator(unusedSize);
+        // TODO(l10n): Don't concatenate the % string here. Do we need to use Intl number formatter instead?
         const unusedPercentFormatted =
             i18nString(UIStrings.sPercent, {PH1: this._percentageString(this._coverageInfo.unusedPercentage())});
         unusedPercentsSpan.textContent = unusedPercentFormatted;
-        const unusedAccessibleName = (unusedSize === 1) ?
-            i18nString(UIStrings.ByteS, {PH1: unusedPercentFormatted}) :
-            i18nString(UIStrings.sBytesS, {PH1: unusedSize, PH2: unusedPercentFormatted});
+        const unusedAccessibleName = i18nString(UIStrings.sBytesS, {n: unusedSize, percentage: unusedPercentFormatted});
         this.setCellAccessibleName(unusedAccessibleName, cell, columnId);
         break;
       }

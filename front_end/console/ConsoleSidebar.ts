@@ -22,87 +22,32 @@ const UIStrings = {
   */
   other: '<other>',
   /**
-  *@description Text in Console Sidebar of the Console panel to show that there is 1 user message
+  *@description Text in Console Sidebar of the Console panel to show how many user messages exist.
   */
-  UserMessage: '1 user message',
+  dUserMessages: '{n, plural, =0 {No user messages} =1 {# user message} other {# user messages}}',
   /**
-  *@description Text in Console Sidebar of the Console panel to show that there is 1 message
+  *@description Text in Console Sidebar of the Console panel to show how many messages exist.
   */
-  Message: '1 message',
+  dMessages: '{n, plural, =0 {No messages} =1 {# message} other {# messages}}',
   /**
-  *@description Text in Console Sidebar of the Console panel to show that there is 1 error
+  *@description Text in Console Sidebar of the Console panel to show how many errors exist.
   */
-  Error: '1 error',
+  dErrors: '{n, plural, =0 {No errors} =1 {# error} other {# errors}}',
   /**
-  *@description Text in Console Sidebar of the Console panel to show that there is 1 warning
+  *@description Text in Console Sidebar of the Console panel to show how many warnings exist.
   */
-  Warning: '1 warning',
+  dWarnings: '{n, plural, =0 {No warnings} =1 {# warning} other {# warnings}}',
   /**
-  *@description Text in Console Sidebar of the Console panel to show that there is 1 info
+  *@description Text in Console Sidebar of the Console panel to show how many info messages exist.
   */
-  Info: '1 info',
+  dInfo: '{n, plural, =0 {No info} =1 {# info} other {# info}}',
   /**
-  *@description Text in Console Sidebar of the Console panel to show that there is 1 verbose message
+  *@description Text in Console Sidebar of the Console panel to show how many verbose messages exist.
   */
-  Verbose: '1 verbose',
-  /**
-  *@description Text in Console Sidebar of the Console panel to show that there are more than 1 user messages
-  *@example {2} PH1
-  */
-  dUserMessages: '{PH1} user messages',
-  /**
-  *@description Text in Console Sidebar of the Console panel to show that there are more than 1 messages
-  *@example {2} PH1
-  */
-  dMessages: '{PH1} messages',
-  /**
-  *@description Text in Console Sidebar of the Console panel to show that there are more than 1 errors
-  *@example {2} PH1
-  */
-  dErrors: '{PH1} errors',
-  /**
-  *@description Text in Console Sidebar of the Console panel to show that there are more than 1 warnings
-  *@example {2} PH1
-  */
-  dWarnings: '{PH1} warnings',
-  /**
-  *@description Text in Console Sidebar of the Console panel to show that there are more than 1 info
-  *@example {2} PH1
-  */
-  dInfo: '{PH1} info',
-  /**
-  *@description Text in Console Sidebar of the Console panel to show that there are more than 1 verbose messages
-  *@example {2} PH1
-  */
-  dVerbose: '{PH1} verbose',
-  /**
-  *@description Text in Console Sidebar of the Console panel to show that there are no user messages
-  */
-  noUserMessages: 'No user messages',
-  /**
-  *@description Text in Console Sidebar of the Console panel to show that there are no messages
-  */
-  noMessages: 'No messages',
-  /**
-  *@description Text in Console Sidebar of the Console panel to show that there are no errors
-  */
-  noErrors: 'No errors',
-  /**
-  *@description Text in Console Sidebar of the Console panel to show that there are no warnings
-  */
-  noWarnings: 'No warnings',
-  /**
-  *@description Text in Console Sidebar of the Console panel to show that there is no info
-  */
-  noInfo: 'No info',
-  /**
-  *@description Text in Console Sidebar of the Console panel to show that there is no verbose messages
-  */
-  noVerbose: 'No verbose',
+  dVerbose: '{n, plural, =0 {No verbose} =1 {# verbose} other {# verbose}}',
 };
 const str_ = i18n.i18n.registerUIStrings('console/ConsoleSidebar.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 export class ConsoleSidebar extends UI.Widget.VBox {
   _tree: UI.TreeOutline.TreeOutlineInShadow;
@@ -249,29 +194,20 @@ export class FilterTreeElement extends ConsoleSidebarTreeElement {
   }
 
   _updateCounter(): void {
-    if (!this._messageCount) {
-      const maybeTitle = groupNoMessageTitleMap.get(this._filter.name);
-      this.title = maybeTitle ? maybeTitle() : '';
-    } else if (this._messageCount === 1) {
-      const maybeTitle = groupSingularTitleMap.get(this._filter.name);
-      this.title = maybeTitle ? maybeTitle() : '';
-    } else {
-      this.title = this._updatePluralTitle(this._filter.name, this._messageCount);
-    }
-
+    this.title = this._updateGroupTitle(this._filter.name, this._messageCount);
     this.setExpandable(Boolean(this.childCount()));
   }
 
-  _updatePluralTitle(filterName: string, messageCount: number): string {
-    const groupPluralTitleMap = new Map([
-      [GroupName.ConsoleAPI, i18nString(UIStrings.dUserMessages, {PH1: messageCount})],
-      [GroupName.All, i18nString(UIStrings.dMessages, {PH1: messageCount})],
-      [GroupName.Error, i18nString(UIStrings.dErrors, {PH1: messageCount})],
-      [GroupName.Warning, i18nString(UIStrings.dWarnings, {PH1: messageCount})],
-      [GroupName.Info, i18nString(UIStrings.dInfo, {PH1: messageCount})],
-      [GroupName.Verbose, i18nString(UIStrings.dVerbose, {PH1: messageCount})],
+  _updateGroupTitle(filterName: string, messageCount: number): string {
+    const groupTitleMap = new Map([
+      [GroupName.ConsoleAPI, i18nString(UIStrings.dUserMessages, {n: messageCount})],
+      [GroupName.All, i18nString(UIStrings.dMessages, {n: messageCount})],
+      [GroupName.Error, i18nString(UIStrings.dErrors, {n: messageCount})],
+      [GroupName.Warning, i18nString(UIStrings.dWarnings, {n: messageCount})],
+      [GroupName.Info, i18nString(UIStrings.dInfo, {n: messageCount})],
+      [GroupName.Verbose, i18nString(UIStrings.dVerbose, {n: messageCount})],
     ]);
-    return groupPluralTitleMap.get(filterName as GroupName) || '';
+    return groupTitleMap.get(filterName as GroupName) || '';
   }
   onMessageAdded(viewMessage: ConsoleViewMessage): void {
     const message = viewMessage.consoleMessage();
@@ -319,21 +255,3 @@ const enum GroupName {
   Info = 'info',
   Verbose = 'verbose',
 }
-
-const groupSingularTitleMap = new Map<string, () => Common.UIString.LocalizedString>([
-  [GroupName.ConsoleAPI, i18nLazyString(UIStrings.UserMessage)],
-  [GroupName.All, i18nLazyString(UIStrings.Message)],
-  [GroupName.Error, i18nLazyString(UIStrings.Error)],
-  [GroupName.Warning, i18nLazyString(UIStrings.Warning)],
-  [GroupName.Info, i18nLazyString(UIStrings.Info)],
-  [GroupName.Verbose, i18nLazyString(UIStrings.Verbose)],
-]);
-
-const groupNoMessageTitleMap = new Map<string, () => Common.UIString.LocalizedString>([
-  [GroupName.ConsoleAPI, i18nLazyString(UIStrings.noUserMessages)],
-  [GroupName.All, i18nLazyString(UIStrings.noMessages)],
-  [GroupName.Error, i18nLazyString(UIStrings.noErrors)],
-  [GroupName.Warning, i18nLazyString(UIStrings.noWarnings)],
-  [GroupName.Info, i18nLazyString(UIStrings.noInfo)],
-  [GroupName.Verbose, i18nLazyString(UIStrings.noVerbose)],
-]);

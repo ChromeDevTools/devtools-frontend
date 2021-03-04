@@ -61,35 +61,20 @@ const UIStrings = {
   */
   viewIssues: 'View issues',
   /**
-  *@description Label for link to issues tab
+  *@description Label for link to Issues tab, specifying how many issues there are.
   */
-  noIssue: 'No Issues',
-  /**
-  *@description Label for link to issues tab
-  */
-  oneIssue: '1 Issue',
-  /**
-  *@description Label for link to issues tab
-  *@example {13} issueCount
-  */
-  multipleIssues: '{issueCount} Issues',
+  multipleIssues: '{issueCount, plural, =0 {No Issues} =1 {# Issue} other {# Issues}}',
   /**
   *@description Text for the tooltip of the issue counter toolbar item
   */
   issueToolbarTooltipGeneral: 'Some problems no longer generate console messages, but are surfaced in the issues tab.',
   /**
-   *@description Text for the tooltip of the issue counter toolbar item
-   */
-  issueToolbarTooltipHaveNoIssues: 'Click to go to the issues tab.',
-  /**
-  *@description Text for the tooltip of the issue counter toolbar item
+  * @description Text for the tooltip of the issue counter toolbar item. Indicates how many issues
+  * there are in the Issues tab. For the =0 case, we don't specify the number of issues but just
+  * provide a general call-to-action for the Issues tab.
   */
-  issueToolbarTooltipHaveOneIssues: 'Click to view 1 issue',
-  /**
-  *@description Text for the tooltip of the issue counter toolbar item
-  *@example {12} issueCount
-  */
-  issueToolbarTooltipHaveMultipleIssues: 'Click to view {issueCount} issues',
+  issueToolbarTooltipHaveMultipleIssues:
+      '{issueCount, plural, =0 {Click to go to the issues tab} =1 {Click to view # issue} other {Click to view # issues}}',
   /**
   *@description Infobar text about messages being on the issues tab
   */
@@ -698,18 +683,8 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
 
   _updateIssuesToolbarItem(): void {
     const issueCount = BrowserSDK.IssuesManager.IssuesManager.instance().numberOfIssues();
-    let issuesSummary = '';
-    let issuesTitleGotoIssues = '';
-    if (issueCount === 0) {
-      issuesSummary = i18nString(UIStrings.noIssue);
-      issuesTitleGotoIssues = i18nString(UIStrings.issueToolbarTooltipHaveNoIssues);
-    } else if (issueCount === 1) {
-      issuesSummary = i18nString(UIStrings.oneIssue);
-      issuesTitleGotoIssues = i18nString(UIStrings.issueToolbarTooltipHaveOneIssues);
-    } else {
-      issuesSummary = i18nString(UIStrings.multipleIssues, {issueCount});
-      issuesTitleGotoIssues = i18nString(UIStrings.issueToolbarTooltipHaveMultipleIssues, {issueCount});
-    }
+    const issuesSummary = i18nString(UIStrings.multipleIssues, {issueCount});
+    const issuesTitleGotoIssues = i18nString(UIStrings.issueToolbarTooltipHaveMultipleIssues, {issueCount});
     this._issuesCounter.setTexts([issuesSummary]);
     const issuesTitleGeneral = i18nString(UIStrings.issueToolbarTooltipGeneral);
     const issuesTitle = `${issuesTitleGeneral} ${issuesTitleGotoIssues}`;

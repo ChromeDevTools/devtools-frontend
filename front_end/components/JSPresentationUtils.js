@@ -46,14 +46,9 @@ const UIStrings = {
   */
   addToIgnore: 'Add script to ignore list',
   /**
-  *@description Show all link text content in JSPresentation Utils
+  * @description A context menu item to show more frames when they are available. Never 0.
   */
-  showMoreFrame: 'Show 1 more frame',
-  /**
-  *@description Show all link text content in JSPresentation Utils
-  *@example {2} PH1
-  */
-  showSMoreFrames: 'Show {PH1} more frames',
+  showSMoreFrames: '{n, plural, =1 {Show # more frame} other {Show # more frames}}',
   /**
    *@description Text indicating that source url of a link is currently unknown
    */
@@ -181,11 +176,7 @@ export function buildStackTracePreviewContents(target, linkifier, options = {
     const cell = /** @type {!HTMLTableCellElement} */ (row.createChild('td'));
     cell.colSpan = 4;
     const showAllLink = cell.createChild('span', 'link');
-    if (totalHiddenCallFramesCount === 1) {
-      showAllLink.textContent = i18nString(UIStrings.showMoreFrame);
-    } else {
-      showAllLink.textContent = i18nString(UIStrings.showSMoreFrames, {PH1: totalHiddenCallFramesCount});
-    }
+    showAllLink.textContent = i18nString(UIStrings.showSMoreFrames, {n: totalHiddenCallFramesCount});
     showAllLink.addEventListener('click', () => {
       contentElement.classList.add('show-ignore-listed');
       if (contentUpdated) {

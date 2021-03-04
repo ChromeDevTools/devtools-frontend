@@ -30,7 +30,6 @@
 
 import * as Common from '../common/common.js';
 import * as i18n from '../i18n/i18n.js';
-import * as Root from '../root/root.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
 import {InspectorView} from './InspectorView.js';
@@ -170,25 +169,6 @@ export const createCustomSetting = function(name, element) {
   return p;
 };
 
-class SettingsRuntimeExtensionDescriptor extends  // eslint-disable-line no-unused-vars
-    Root.Runtime.RuntimeExtensionDescriptor {
-  constructor() {
-    super();
-
-    /**
-     * @type {!Array<{
-      *   text: string,
-      *   value: *,
-      *   raw: (boolean|undefined),
-      *   title: string,
-      * }>|undefined}
-      */
-    this.options;
-
-    /** @type {boolean|undefined} */
-    this.reloadRequired;
-  }
-}
 
 /**
  * @param {!Common.Settings.Setting<*>} setting

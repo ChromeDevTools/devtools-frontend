@@ -95,8 +95,7 @@ export function getRegisteredSettings(): Array<SettingRegistration> {
           Root.Runtime.Runtime.isDescriptorEnabled({experiment: setting.experiment, condition: setting.condition}));
 }
 
-export function registerSettingExtengionsForTest(
-    settings: Array<SettingRegistration>, forceReset: boolean = false): void {
+export function registerSettingsForTest(settings: Array<SettingRegistration>, forceReset: boolean = false): void {
   if (registeredSettings.length === 0 || forceReset) {
     registeredSettings = settings;
     settingNameSet.clear();

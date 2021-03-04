@@ -282,11 +282,6 @@ export class ModuleDescriptor {
     this.name;
 
     /**
-     * @type {!Array.<!RuntimeExtensionDescriptor>}
-     */
-    this.extensions;
-
-    /**
      * @type {!Array.<string>|undefined}
      */
     this.dependencies;
@@ -313,85 +308,6 @@ export class ModuleDescriptor {
 
     /** @type {string|null} */
     this.experiment;
-  }
-}
-
-// This class is named like this, because we already have an "ExtensionDescriptor" in the externs
-// These two do not share the same structure
-export class RuntimeExtensionDescriptor {
-  constructor() {
-    /** @type {string} */
-    this.type;
-
-    /**
-     * @type {string|undefined}
-     */
-    this.className;
-
-    /**
-     * @type {string|undefined}
-     */
-    this.factoryName;
-
-    /**
-     * @type {!Array.<string>|undefined}
-     */
-    this.contextTypes;
-
-    /** @type {number} */
-    this.order;
-
-    /** @type {string|null} */
-    this.actionId;
-
-    /** @type {string|null} */
-    this.experiment;
-
-    /** @type {string|null} */
-    this.condition;
-
-    /** @type {string|null} */
-    this.startPage;
-
-    /** @type {string|null} */
-    this.name;
-
-    /** @type {string|null} */
-    this.destination;
-
-    /** @type {string|null} */
-    this.color;
-
-    /** @type {string|null} */
-    this.prefix;
-
-    /** @type {string|null} */
-    this.decoratorType;
-
-    /** @type {string|null} */
-    this.category;
-
-    /** @type {boolean|null|undefined} */
-    this.reloadRequired;
-
-    /** @type {string|null} */
-    this.location;
-
-    /** @type {!Array<string>|undefined} */
-    this.settings;
-
-    // This is an EmulatedDevice, but typing it as such introduces a
-    // circular dep between emulation and root.
-    /** @type {?} */
-    this.device;
-
-    /** @type {string|null} */
-    this.viewId;
-
-    /** @type {?string} */
-    this.persistence;
-    /** @type {?string} */
-    this.setting;
   }
 }
 

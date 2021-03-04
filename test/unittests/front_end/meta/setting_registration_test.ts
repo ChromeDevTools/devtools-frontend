@@ -19,7 +19,7 @@ describe('Setting registration', () => {
   const settingCategory = Common.Settings.SettingCategory.CONSOLE;
 
   before(async () => {
-    Common.Settings.registerSettingExtengionsForTest(
+    Common.Settings.registerSettingsForTest(
         [{
           category: settingCategory,
           title: (): Platform.UIString.LocalizedString => settingTitle as Platform.UIString.LocalizedString,

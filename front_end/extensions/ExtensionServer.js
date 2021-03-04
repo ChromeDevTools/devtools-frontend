@@ -771,7 +771,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   /**
-   * @param {!Root.Runtime.RuntimeExtensionDescriptor} extensionInfo
+   * @param {!Host.InspectorFrontendHostAPI.ExtensionDescriptor} extensionInfo
    */
   _addExtension(extensionInfo) {
     const startPage = extensionInfo.startPage;

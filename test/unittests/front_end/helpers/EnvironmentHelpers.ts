@@ -76,7 +76,7 @@ export async function initializeGlobalVars({reset = true} = {}) {
   exposeLSIfNecessary();
 
   // Create the appropriate settings needed to boot.
-  const extensions = [
+  const settings = [
     createSettingValue(Common.Settings.SettingCategory.APPEARANCE, 'disablePausedStateOverlay', false),
     createSettingValue(Common.Settings.SettingCategory.CONSOLE, 'customFormatters', false),
     createSettingValue(Common.Settings.SettingCategory.DEBUGGER, 'pauseOnCaughtException', false),
@@ -130,7 +130,7 @@ export async function initializeGlobalVars({reset = true} = {}) {
     createSettingValue(Common.Settings.SettingCategory.NONE, 'userShortcuts', [], Common.Settings.SettingType.ARRAY),
   ];
 
-  Common.Settings.registerSettingExtengionsForTest(extensions, reset);
+  Common.Settings.registerSettingsForTest(settings, reset);
 
   // Instantiate the storage.
   const storageVals = new Map<string, string>();

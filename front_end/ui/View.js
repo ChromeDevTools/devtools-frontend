@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Root from '../root/root.js';
-
 import {TabbedPane} from './TabbedPane.js';  // eslint-disable-line no-unused-vars
 import {ToolbarItem, ToolbarMenuButton} from './Toolbar.js';  // eslint-disable-line no-unused-vars
 import {ViewManager} from './ViewManager.js';
@@ -134,25 +132,6 @@ export class SimpleView extends VBox {
    * @override
    */
   disposeView() {
-  }
-}
-
-class ProvidedViewExtensionDescriptor  // eslint-disable-line no-unused-vars
-    extends Root.Runtime.RuntimeExtensionDescriptor {
-  constructor() {
-    super();
-
-    /** @type {string} */
-    this.id;
-
-    /** @type {?string} */
-    this.persistence;
-
-    /** @type {?string} */
-    this.actionIds;
-
-    /** @type {?boolean} */
-    this.hasToolbar;
   }
 }
 

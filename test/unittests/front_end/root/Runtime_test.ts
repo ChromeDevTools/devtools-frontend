@@ -15,7 +15,6 @@ describe('Runtime', () => {
     before(() => {
       module = new Root.Runtime.Module(Root.Runtime.Runtime.instance({forceNew: true, moduleDescriptors: []}), {
         name: BASE_MODULE_NAME,
-        extensions: [],
         dependencies: [],
         scripts: [],
         modules: [],

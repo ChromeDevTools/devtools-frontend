@@ -37,7 +37,7 @@ import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
 import * as Root from '../root/root.js';
 
-import {CanShowSurveyResult, ContextMenuDescriptor, EnumeratedHistogram, EventDescriptors, Events, InspectorFrontendHostAPI, LoadNetworkResourceResult, ShowSurveyResult} from './InspectorFrontendHostAPI.js';  // eslint-disable-line no-unused-vars
+import {CanShowSurveyResult, ContextMenuDescriptor, EnumeratedHistogram, EventDescriptors, Events, ExtensionDescriptor, InspectorFrontendHostAPI, LoadNetworkResourceResult, ShowSurveyResult} from './InspectorFrontendHostAPI.js';  // eslint-disable-line no-unused-vars
 import {streamWrite as resourceLoaderStreamWrite} from './ResourceLoader.js';
 
 const UIStrings = {
@@ -326,7 +326,7 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
     return true;
   }
 
-  setAddExtensionCallback(callback: (arg0: Root.Runtime.RuntimeExtensionDescriptor) => void): void {
+  setAddExtensionCallback(callback: (arg0: ExtensionDescriptor) => void): void {
     // Extensions are not supported in hosted mode.
   }
 }

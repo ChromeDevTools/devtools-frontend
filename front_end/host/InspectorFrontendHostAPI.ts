@@ -4,8 +4,6 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Root from '../root/root.js';  // eslint-disable-line no-unused-vars
-
 // TODO(crbug.com/1167717): Make this a const enum again
 // eslint-disable-next-line rulesdir/const_enum
 export enum Events {
@@ -188,7 +186,7 @@ export interface InspectorFrontendHostAPI {
 
   isHostedMode(): boolean;
 
-  setAddExtensionCallback(callback: (arg0: Root.Runtime.RuntimeExtensionDescriptor) => void): void;
+  setAddExtensionCallback(callback: (arg0: ExtensionDescriptor) => void): void;
 }
 export interface ContextMenuDescriptor {
   type: string;

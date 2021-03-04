@@ -139,11 +139,19 @@ module.exports = stylelint.createPlugin(RULE_NAME, function(primary, secondary, 
         }
 
         /**
-         * We exempt background-image from var() checks otherwise it will think that:
-         * background-image: var(--my-lovely-image)
-         * is bad when it's not.
+         * We exempt background-image from var() checks otherwise it will think
+         * that: background-image: var(--my-lovely-image) is bad when it's not.
+         *
+         * Additionally we load images via variables which always start with
+         * --image-file, so those variables are allowed regardless of where they
+         * are used.
          */
-        if (declaration.value.includes('var(') && declaration.prop !== 'background-image') {
+        const shouldAllowAnyVars =
+            declaration.prop === 'background-image' || declaration.value.startsWith('var(--image-file');
+        if (shouldAllowAnyVars) {
+          return;
+        }
+        if (declaration.value.includes('var(')) {
           const [match, variableName] = /var\((--[\w-]+)/.exec(declaration.value);
           if (!match) {
             throw new Error(`Could not parse CSS variable usage: ${declaration.value}`);

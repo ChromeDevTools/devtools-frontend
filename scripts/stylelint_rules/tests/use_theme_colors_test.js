@@ -153,6 +153,11 @@ describe('use_theme_colors', () => {
     assert.lengthOf(warnings, 0);
   });
 
+  it('allows any var(--image-file-*)', async () => {
+    const warnings = await lint('p { background: var(--image-file-fof); }');
+    assert.lengthOf(warnings, 0);
+  });
+
   it('allows any color to be used when in a :host-context dark theme block', async () => {
     const code = `:host-context(.-theme-with-dark-background) p {
       color: #fff;

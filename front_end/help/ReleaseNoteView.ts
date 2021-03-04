@@ -93,7 +93,7 @@ export class ReleaseNoteView extends UI.Widget.VBox {
 
     hbox.appendChild(imageLink);
     const image = imageLink.createChild('img') as HTMLImageElement;
-    image.src = 'Images/whatsnew.avif';
+    image.src = new URL('../Images/whatsnew.avif', import.meta.url).toString();
     UI.Tooltip.Tooltip.install(image, UI.Tooltip.Tooltip.getContent(imageLink));
     image.alt = UI.Tooltip.Tooltip.getContent(image);
 

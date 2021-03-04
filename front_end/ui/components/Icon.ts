@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Coordinator from '../../render_coordinator/render_coordinator.js';
 import * as LitHtml from '../../third_party/lit-html/lit-html.js';
 
 export interface IconWithPath {
@@ -21,6 +22,7 @@ export interface IconWithName {
 export type IconData = IconWithPath|IconWithName;
 
 const isString = (value: string|undefined): value is string => value !== undefined;
+const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 export class Icon extends HTMLElement {
   private readonly shadow = this.attachShadow({mode: 'open'});
@@ -36,8 +38,10 @@ export class Icon extends HTMLElement {
     this.color = data.color;
     this.width = isString(width) ? width : (isString(height) ? height : this.width);
     this.height = isString(height) ? height : (isString(width) ? width : this.height);
-    this.iconPath = 'iconPath' in data ? data.iconPath : `Images/${data.iconName}.svg`;
-    if ('iconName' in data) {
+    if ('iconPath' in data) {
+      this.iconPath = data.iconPath;
+    } else {
+      this.iconPath = new URL(`../../Images/${data.iconName}.svg`, import.meta.url).toString();
       this.iconName = data.iconName;
     }
     this.render();
@@ -90,17 +94,19 @@ export class Icon extends HTMLElement {
   }
 
   private render(): void {
-    // clang-format off
-    LitHtml.render(LitHtml.html`
-      <style>
-        :host {
-          display: inline-block;
-          white-space: nowrap;
-        }
-      </style>
-      <div class="icon-basic" style=${LitHtml.Directives.styleMap(this.getStyles())}></div>
-    `, this.shadow);
-    // clang-format on
+    coordinator.write(() => {
+      // clang-format off
+      LitHtml.render(LitHtml.html`
+        <style>
+          :host {
+            display: inline-block;
+            white-space: nowrap;
+          }
+        </style>
+        <div class="icon-basic" style=${LitHtml.Directives.styleMap(this.getStyles())}></div>
+      `, this.shadow);
+      // clang-format on
+    });
   }
 }
 

@@ -23,7 +23,7 @@ export class Tooltip {
     doc.addEventListener('mousemove', this._mouseMove.bind(this), true);
     doc.addEventListener('mousedown', this._hide.bind(this, true), true);
     doc.addEventListener('mouseleave', this._hide.bind(this, false), true);
-    doc.addEventListener('keydown', this._hide.bind(this, true), true);
+    doc.addEventListener('keydown', this._keyDown.bind(this), true);
     // @ts-ignore crbug.com/1150762: HTMLElement#title magic override.
     doc[_symbol] = this;
     ZoomManager.instance().addEventListener(ZoomManagerEvents.ZoomChanged, this._reset, this);
@@ -123,6 +123,21 @@ export class Tooltip {
         this._show(element, mouseEvent);
         return;
       }
+    }
+  }
+
+  /**
+   * @param {!Event} event
+   */
+  _keyDown(event) {
+    if (!this._anchorElement) {
+      return;
+    }
+
+    this._hide(true);
+    const keyboardEvent = /** @type {!KeyboardEvent} */ (event);
+    if (keyboardEvent.key === 'Escape') {
+      keyboardEvent.consume(true);
     }
   }
 
@@ -240,11 +255,10 @@ export class Tooltip {
   _hide(removeInstant) {
     delete this._anchorElement;
     this._tooltipElement.classList.remove('shown');
-    if (this._tooltipLastOpened && Date.now() > this._tooltipLastOpened) {
-      this._tooltipLastClosed = Date.now();
-    }
     if (removeInstant) {
       delete this._tooltipLastClosed;
+    } else if (this._tooltipLastOpened && Date.now() > this._tooltipLastOpened) {
+      this._tooltipLastClosed = Date.now();
     }
   }
 

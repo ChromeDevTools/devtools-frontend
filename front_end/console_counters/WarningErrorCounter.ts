@@ -80,7 +80,7 @@ export class WarningErrorCounter implements UI.Toolbar.Provider {
         Host.userMetrics.issuesPanelOpenedFrom(Host.UserMetrics.IssueOpener.StatusBarIssuesCounter);
         UI.ViewManager.ViewManager.instance().showView('issues-pane');
       },
-      groups: [{iconName: 'issue-text-icon', iconColor: '#1a73e8'}],
+      groups: [{iconName: 'issue-text-icon', iconColor: 'var(--issue-color-blue)'}],
     };
 
     this._throttler = new Common.Throttler.Throttler(100);

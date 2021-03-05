@@ -34,11 +34,11 @@ icon.onclick = (): void => {
 
 const row2 = document.createElement('tr');
 const iconName2 = document.createElement('td');
-iconName2.textContent = 'breaking_change_icon';
+iconName2.textContent = 'issue-exclamation-icon';
 row2.appendChild(iconName2);
 
 const otherIcon = new UIComponents.Icon.Icon();
-const otherPath = 'http://localhost:8090/Images/breaking_change_icon.svg';
+const otherPath = '/Images/issue-exclamation-icon.svg';
 otherIcon.data = {
   iconPath: otherPath,
   width: '24px',
@@ -53,7 +53,7 @@ iconTable?.appendChild(row2);
 
 const row3 = document.createElement('tr');
 const iconName3 = document.createElement('td');
-iconName3.textContent = 'breaking_change_icon';
+iconName3.textContent = 'node_search_icon';
 row3.appendChild(iconName3);
 
 const otherIcon2 = new UIComponents.Icon.Icon();
@@ -114,7 +114,7 @@ iconTable?.appendChild(row3);
 
 const iconInFlex = document.getElementById('icon-in-flex') as UIComponents.Icon.Icon;
 iconInFlex.data = {
-  iconName: 'breaking_change_icon',
+  iconName: 'error_icon',
   width: '16px',
   height: '16px',
   color: '',

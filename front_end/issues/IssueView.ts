@@ -623,8 +623,9 @@ export class IssueView extends UI.TreeOutline.TreeElement {
     const header = document.createElement('div');
     header.classList.add('header');
     const icon = new WebComponents.Icon.Icon();
-    icon.data = {iconName: 'breaking_change_icon', color: '', width: '16px', height: '16px'};
-    icon.classList.add('breaking-change');
+    icon.data = {iconName: 'issue-exclamation-icon', color: 'var(--issue-color-yellow)', width: '16px', height: '16px'};
+    this.childrenListElement.classList.add('issue-breaking-change');
+    icon.classList.add('leading-issue-icon');
     this._aggregatedIssuesCount = (document.createElement('span') as HTMLElement);
     const countAdorner = new Elements.Adorner.Adorner();
     countAdorner.data = {

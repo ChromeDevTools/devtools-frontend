@@ -381,7 +381,7 @@ input[is=history-input]:not(:placeholder-shown) {
   /* See: crbug.com/1152736 for color variable migration. */
 }
 
-devtools-icon.breaking-change {
+devtools-icon.leading-issue-icon {
   margin: 0 7px;
 }
 

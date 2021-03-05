@@ -233,8 +233,9 @@ export class IssuesPane extends UI.Widget.VBox {
     const toolbarWarnings = document.createElement('div');
     toolbarWarnings.classList.add('toolbar-warnings');
     const breakingChangeIcon = new WebComponents.Icon.Icon();
-    breakingChangeIcon.data = {iconName: 'breaking_change_icon', color: '', width: '16px', height: '16px'};
-    breakingChangeIcon.classList.add('breaking-change');
+    breakingChangeIcon
+        .data = {iconName: 'issue-exclamation-icon', color: 'var(--issue-color-yellow)', width: '16px', height: '16px'};
+    breakingChangeIcon.classList.add('leading-issue-icon');
     toolbarWarnings.appendChild(breakingChangeIcon);
     const toolbarIssuesCount = toolbarWarnings.createChild('span', 'warnings-count-label');
     const toolbarIssuesItem = new UI.Toolbar.ToolbarItem(toolbarWarnings);

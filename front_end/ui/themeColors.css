@@ -59,6 +59,10 @@
   --lighthouse-red: #ff4e43;
   --lighthouse-orange: #ffa400;
   --lighthouse-green: #0cce6a;
+  /** The colors are for issue icons and related highlights */
+  --issue-color-red: #eb3941;
+  --issue-color-yellow: #f29900;
+  --issue-color-blue: #1a73e8;
 }
 
 .-theme-with-dark-background {

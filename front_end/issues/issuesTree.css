@@ -13,7 +13,6 @@
 }
 
 .issues {
-  --breaking-change-color: #f29900;
   --issue-warning: #f2aa00;
   --issue-gray: #5f6368;
   --issue-link: #1967d2;
@@ -131,19 +130,18 @@ p {
 }
 /* Show a colored border on the left side of opened issues. */
 
-.body::before {
+.issue-breaking-change.body::before {
   content: '';
   display: block;
   position: absolute;
   left: calc(var(--issue-indent) + 23px);
   top: 0;
   bottom: 20px;
-  border-left: 2px solid var(--breaking-change-color); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  border-left: 2px solid var(--issue-color-yellow);
   width: 2px;
 }
 
-devtools-icon.breaking-change {
+devtools-icon.leading-issue-icon {
   margin: 0 7px;
 }
 

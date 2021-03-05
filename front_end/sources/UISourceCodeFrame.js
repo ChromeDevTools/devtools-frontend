@@ -654,7 +654,7 @@ export class UISourceCodeFrame extends SourceFrame.SourceFrame.SourceFrameImpl {
  * @param {!Workspace.UISourceCode.Message.Level} level
  * @return {WebComponents.Icon.IconData}
  */
-function getIconClassPerLevel(level) {
+function getIconDataForLevel(level) {
   if (level === Workspace.UISourceCode.Message.Level.Error) {
     return {color: '', width: '11px', height: '11px', iconName: 'error_icon'};
   }
@@ -662,7 +662,7 @@ function getIconClassPerLevel(level) {
     return {color: '', width: '11px', height: '11px', iconName: 'warning_icon'};
   }
   if (level === Workspace.UISourceCode.Message.Level.Issue) {
-    return {color: '', width: '11px', height: '11px', iconName: 'breaking_change_icon'};
+    return {color: 'var(--issue-color-yellow)', width: '11px', height: '11px', iconName: 'issue-exclamation-icon'};
   }
   return {color: '', width: '11px', height: '11px', iconName: 'error_icon'};
 }
@@ -689,7 +689,7 @@ export class RowMessage {
     this.element = document.createElement('div');
     this.element.classList.add('text-editor-row-message');
     this._icon = new WebComponents.Icon.Icon();
-    this._icon.data = getIconClassPerLevel(message.level());
+    this._icon.data = getIconDataForLevel(message.level());
     this._icon.classList.add('text-editor-row-message-icon');
     this._icon.addEventListener('click', () => this.callClickHandler());
 
@@ -766,10 +766,10 @@ export class RowMessageBucket {
     this._wave = this._decoration.createChild('div', 'text-editor-line-decoration-wave');
 
     this._errorIcon = new WebComponents.Icon.Icon();
-    this._errorIcon.data = getIconClassPerLevel(Workspace.UISourceCode.Message.Level.Warning);
+    this._errorIcon.data = getIconDataForLevel(Workspace.UISourceCode.Message.Level.Warning);
     this._errorIcon.classList.add('text-editor-line-decoration-icon-error', 'hidden');
     this._issueIcon = new WebComponents.Icon.Icon();
-    this._issueIcon.data = getIconClassPerLevel(Workspace.UISourceCode.Message.Level.Issue);
+    this._issueIcon.data = getIconDataForLevel(Workspace.UISourceCode.Message.Level.Issue);
     this._issueIcon.classList.add('text-editor-line-decoration-icon-issue', 'hidden');
     this._issueIcon.addEventListener('click', () => this._issueClickHandler());
 
@@ -935,7 +935,7 @@ export class RowMessageBucket {
     }
     this.textEditor.toggleLineClass(editorLineNumber, /** @type {string} */ (lineClassPerLevel.get(this._level)), true);
     if (showErrors) {
-      this._errorIcon.data = getIconClassPerLevel(this._level);
+      this._errorIcon.data = getIconDataForLevel(this._level);
       this._errorIcon.classList.remove('hidden');
     }
     if (showIssues) {

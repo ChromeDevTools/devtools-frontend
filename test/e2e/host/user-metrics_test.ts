@@ -765,9 +765,9 @@ describe('User Metrics for Issue Panel', () => {
     await waitFor('.issue');
     await click('.issue');
 
-    await waitFor('.link-list a');
-    await scrollElementIntoView('.link-list a');
-    await click('.link-list a');
+    await waitFor('.link-list x-link');
+    await scrollElementIntoView('.link-list x-link');
+    await click('.link-list x-link');
 
     await assertCapturedEvents([
       {

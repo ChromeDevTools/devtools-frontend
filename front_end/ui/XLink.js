@@ -12,6 +12,7 @@ import {Tooltip} from './Tooltip.js';
 import {addReferrerToURLIfNecessary, copyLinkAddressLabel, MaxLengthForDisplayedURLs, openLinkExternallyLabel} from './UIUtils.js';
 import {XElement} from './XElement.js';
 
+
 /**
  * @extends {XElement}
  */
@@ -54,6 +55,7 @@ export class XLink extends XElement {
     this._onClick = event => {
       event.consume(true);
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(/** @type {string} */ (this._href));
+      this.dispatchEvent(new Event('x-link-invoke'));
     };
     /** @type {function(!Event):void} */
     this._onKeyDown = event => {
@@ -61,6 +63,7 @@ export class XLink extends XElement {
         event.consume(true);
         Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(/** @type {string} */ (this._href));
       }
+      this.dispatchEvent(new Event('x-link-invoke'));
     };
   }
 

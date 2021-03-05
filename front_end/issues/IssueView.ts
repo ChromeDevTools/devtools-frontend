@@ -694,19 +694,14 @@ export class IssueView extends UI.TreeOutline.TreeElement {
 
     const linkList = linkWrapper.listItemElement.createChild('ul', 'link-list');
     for (const description of this._description.links) {
-      const link = UI.Fragment.html`<a class="link devtools-link" role="link" tabindex="0" href=${description.link}>${
-          i18nString(UIStrings.learnMoreS, {PH1: description.linkTitle})}</a>`;
+      const link = UI.Fragment.html`<x-link class="link devtools-link" tabindex="0" href=${description.link}>${
+                       i18nString(UIStrings.learnMoreS, {PH1: description.linkTitle})}</x-link>` as UI.XLink.XLink;
       const linkIcon = new WebComponents.Icon.Icon();
       linkIcon.data = {iconName: 'link_icon', color: 'var(--issue-link)', width: '16px', height: '16px'};
       linkIcon.classList.add('link-icon');
       link.prepend(linkIcon);
-      self.onInvokeElement(link, event => {
+      link.addEventListener('x-link-invoke', () => {
         Host.userMetrics.issuesPanelResourceOpened(this._issue.getCategory(), AffectedItem.LearnMore);
-        const mainTarget = SDK.SDKModel.TargetManager.instance().mainTarget();
-        if (mainTarget) {
-          mainTarget.targetAgent().invoke_createTarget({url: description.link});
-        }
-        event.consume(true);
       });
 
       const linkListItem = linkList.createChild('li');

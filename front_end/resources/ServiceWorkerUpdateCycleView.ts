@@ -33,8 +33,19 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('resources/ServiceWorkerUpdateCycleView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class ServiceWorkerUpdateCycleView {
-  static calculateServiceWorkerUpdateRanges(registration: SDK.ServiceWorkerManager.ServiceWorkerRegistration):
-      Array<ServiceWorkerUpdateRange> {
+  private registration: SDK.ServiceWorkerManager.ServiceWorkerRegistration;
+  private rows: Array<HTMLTableRowElement>;
+  private selectedRowIndex: number;
+  tableElement: HTMLElement;
+  constructor(registration: SDK.ServiceWorkerManager.ServiceWorkerRegistration) {
+    this.registration = registration;
+    this.rows = [];
+    this.selectedRowIndex = -1;
+    this.tableElement = document.createElement('table');
+    this.createTimingTable();
+  }
+
+  calculateServiceWorkerUpdateRanges(): Array<ServiceWorkerUpdateRange> {
     function addRange(ranges: Array<ServiceWorkerUpdateRange>, range: ServiceWorkerUpdateRange): void {
       if (range.start < Number.MAX_VALUE && range.start <= range.end) {
         ranges.push(range);
@@ -100,7 +111,7 @@ export class ServiceWorkerUpdateCycleView {
       return ranges;
     }
 
-    const versions = registration.versionsByMode();
+    const versions = this.registration.versionsByMode();
     const modes = [
       SDK.ServiceWorkerManager.ServiceWorkerVersion.Modes.Active,
       SDK.ServiceWorkerManager.ServiceWorkerVersion.Modes.Waiting,
@@ -119,34 +130,34 @@ export class ServiceWorkerUpdateCycleView {
     return [];
   }
 
-  static createTimingTable(registration: SDK.ServiceWorkerManager.ServiceWorkerRegistration): Element {
-    const tableElement = document.createElement('table');
-    tableElement.classList.add('service-worker-update-timing-table');
-    UI.Utils.appendStyle(tableElement, 'resources/serviceWorkerUpdateCycleView.css');
-    const timeRanges = this.calculateServiceWorkerUpdateRanges(registration);
-    this.updateTimingTable(tableElement, timeRanges);
-    return tableElement;
+  private createTimingTable(): void {
+    this.tableElement.classList.add('service-worker-update-timing-table');
+    UI.Utils.appendStyle(this.tableElement, 'resources/serviceWorkerUpdateCycleView.css');
+    const timeRanges = this.calculateServiceWorkerUpdateRanges();
+    this.updateTimingTable(timeRanges);
   }
 
-  private static createTimingTableHead(tableElement: Element): void {
-    const serverHeader = tableElement.createChild('tr', 'service-worker-update-timing-table-header');
+  private createTimingTableHead(): void {
+    const serverHeader = this.tableElement.createChild('tr', 'service-worker-update-timing-table-header');
     UI.UIUtils.createTextChild(serverHeader.createChild('td'), i18nString(UIStrings.version));
     UI.UIUtils.createTextChild(serverHeader.createChild('td'), i18nString(UIStrings.updateActivity));
     UI.UIUtils.createTextChild(serverHeader.createChild('td'), i18nString(UIStrings.timeline));
   }
 
-  private static removeRows(tableElement: Element): void {
-    const rows = tableElement.getElementsByTagName('tr');
+  private removeRows(): void {
+    const rows = this.tableElement.getElementsByTagName('tr');
     while (rows[0]) {
       if (rows[0].parentNode) {
         rows[0].parentNode.removeChild(rows[0]);
       }
     }
+    this.rows = [];
   }
 
-  private static updateTimingTable(tableElement: Element, timeRanges: Array<ServiceWorkerUpdateRange>): void {
-    this.removeRows(tableElement);
-    this.createTimingTableHead(tableElement);
+  private updateTimingTable(timeRanges: Array<ServiceWorkerUpdateRange>): void {
+    this.selectedRowIndex = -1;
+    this.removeRows();
+    this.createTimingTableHead();
     /** @type {!Array<ServiceWorkerUpdateRange>} */
     const timeRangeArray = timeRanges;
     if (timeRangeArray.length === 0) {
@@ -165,70 +176,184 @@ export class ServiceWorkerUpdateCycleView {
       const left = (scale * (range.start - startTime));
       const right = (scale * (endTime - range.end));
 
-      const tr = tableElement.createChild('tr');
+      const tr = this.tableElement.createChild('tr', 'service-worker-update-timeline');
+      this.rows.push(tr as HTMLTableRowElement);
       const timingBarVersionElement = tr.createChild('td');
       UI.UIUtils.createTextChild(timingBarVersionElement, '#' + range.id);
       timingBarVersionElement.classList.add('service-worker-update-timing-bar-clickable');
       timingBarVersionElement.setAttribute('tabindex', '0');
       timingBarVersionElement.setAttribute('role', 'switch');
+      timingBarVersionElement.addEventListener('focus', (event: Event) => {
+        this.onFocus(event);
+      });
       UI.ARIAUtils.setChecked(timingBarVersionElement, false);
       const timingBarTitleElement = tr.createChild('td');
       UI.UIUtils.createTextChild(timingBarTitleElement, phaseName);
-      this.constructUpdateDetails(tableElement, tr, range);
       const barContainer = tr.createChild('td').createChild('div', 'service-worker-update-timing-row');
-      const bar = <HTMLElement>(
-          barContainer.createChild('span', 'service-worker-update-timing-bar ' + phaseName.toLowerCase()));
+
+      const bar = barContainer.createChild('span', 'service-worker-update-timing-bar ' + phaseName.toLowerCase());
 
       bar.style.left = left + '%';
       bar.style.right = right + '%';
       bar.textContent = '\u200B';  // Important for 0-time items to have 0 width.
+
+      this.constructUpdateDetails(tr, range);
     }
   }
 
   /**
    * Detailed information about an update phase. Currently starting and ending time.
    */
-  private static constructUpdateDetails(tableElement: Element, tr: Element, range: ServiceWorkerUpdateRange): void {
-    const detailsElement = tableElement.createChild('tr', 'service-worker-update-timing-bar-details');
-    detailsElement.classList.add('service-worker-update-timing-bar-details-collapsed');
-
-    self.onInvokeElement(tr, event => this.onToggleUpdateDetails(detailsElement, event));
-
-    const detailsView = new UI.TreeOutline.TreeOutlineInShadow();
-    detailsElement.appendChild(detailsView.element);
-
-    const startTimeItem = document.createElementWithClass('div', 'service-worker-update-details-treeitem');
+  private constructUpdateDetails(tr: HTMLElement, range: ServiceWorkerUpdateRange): void {
+    const startRow = this.tableElement.createChild('tr', 'service-worker-update-timing-bar-details');
+    startRow.classList.add('service-worker-update-timing-bar-details-collapsed');
+    const startTimeItem = startRow.createChild('td') as HTMLTableCellElement;
+    startTimeItem.colSpan = 3;
     const startTime = (new Date(range.start)).toISOString();
-    startTimeItem.textContent = i18nString(UIStrings.startTimeS, {PH1: startTime});
+    UI.UIUtils.createTextChild(startTimeItem.createChild('span'), i18nString(UIStrings.startTimeS, {PH1: startTime}));
+    startRow.tabIndex = 0;
 
-    const startTimeTreeElement = new UI.TreeOutline.TreeElement(startTimeItem);
-    detailsView.appendChild(startTimeTreeElement);
-
-    const endTimeItem = document.createElementWithClass('div', 'service-worker-update-details-treeitem');
+    const endRow = this.tableElement.createChild('tr', 'service-worker-update-timing-bar-details');
+    endRow.classList.add('service-worker-update-timing-bar-details-collapsed');
+    const endTimeItem = endRow.createChild('td') as HTMLTableCellElement;
+    endTimeItem.colSpan = 3;
     const endTime = (new Date(range.end)).toISOString();
-    endTimeItem.textContent = i18nString(UIStrings.endTimeS, {PH1: endTime});
+    UI.UIUtils.createTextChild(endTimeItem.createChild('span'), i18nString(UIStrings.endTimeS, {PH1: endTime}));
+    endRow.tabIndex = 0;
 
-    const endTimeTreeElement = new UI.TreeOutline.TreeElement(endTimeItem);
-    detailsView.appendChild(endTimeTreeElement);
+    tr.addEventListener('keydown', (event: Event) => {
+      this.onKeydown(event, startRow, endRow);
+    });
+
+    tr.addEventListener('click', (event: Event) => {
+      this.onClick(event, startRow, endRow);
+    });
   }
 
-  private static onToggleUpdateDetails(detailsRow: Element, event: Event): void {
-    if (!event.target) {
-      return;
-    }
-    const target: Element = <Element>(event.target);
+  private toggle(startRow: Element, endRow: Element, target: Element, expanded: boolean): void {
     if (target.classList.contains('service-worker-update-timing-bar-clickable')) {
-      detailsRow.classList.toggle('service-worker-update-timing-bar-details-collapsed');
-      detailsRow.classList.toggle('service-worker-update-timing-bar-details-expanded');
-
-      const expanded = target.getAttribute('aria-checked') === 'true';
+      startRow.classList.toggle('service-worker-update-timing-bar-details-collapsed');
+      startRow.classList.toggle('service-worker-update-timing-bar-details-expanded');
+      endRow.classList.toggle('service-worker-update-timing-bar-details-collapsed');
+      endRow.classList.toggle('service-worker-update-timing-bar-details-expanded');
       UI.ARIAUtils.setChecked(target, !expanded);
     }
   }
 
-  static refresh(tableElement: Element, registration: SDK.ServiceWorkerManager.ServiceWorkerRegistration): void {
-    const timeRanges = this.calculateServiceWorkerUpdateRanges(registration);
-    this.updateTimingTable(tableElement, timeRanges);
+  private onFocus(event: Event): void {
+    const target = event.target as HTMLElement | null;
+    if (!target) {
+      return;
+    }
+    const tr = target.parentElement as HTMLTableRowElement | null;
+    if (!tr) {
+      return;
+    }
+
+    this.selectedRowIndex = this.rows.indexOf(tr);
+  }
+
+  private onKeydown(event: Event, startRow: HTMLElement, endRow: HTMLElement): void {
+    if (!event.target) {
+      return;
+    }
+    const target: HTMLElement = event.target as HTMLElement;
+    const keyboardEvent = event as KeyboardEvent;
+    const expanded = target.getAttribute('aria-checked') === 'true';
+
+    if (keyboardEvent.key === 'Enter' || keyboardEvent.key === ' ') {
+      this.toggle(startRow, endRow, target, expanded);
+      event.preventDefault();
+      return;
+    }
+    if ((!expanded && keyboardEvent.key === 'ArrowRight') || (expanded && keyboardEvent.key === 'ArrowLeft')) {
+      this.toggle(startRow, endRow, target, expanded);
+      event.preventDefault();
+      return;
+    }
+    if (keyboardEvent.key === 'ArrowDown') {
+      if (this.selectedRowIndex >= 0) {
+        this.selectNextRow();
+      } else {
+        this.selectFirstRow();
+      }
+      event.preventDefault();
+    }
+    if (keyboardEvent.key === 'ArrowUp') {
+      if (this.selectedRowIndex >= 0) {
+        this.selectPreviousRow();
+      } else {
+        this.selectLastRow();
+      }
+      event.preventDefault();
+    }
+  }
+
+  private focusRow(row: HTMLTableRowElement): void {
+    row.cells[0].focus();
+  }
+
+  private blurRow(row: HTMLTableRowElement): void {
+    row.cells[0].blur();
+  }
+
+  private selectFirstRow(): void {
+    if (this.rows.length === 0) {
+      return;
+    }
+    this.selectedRowIndex = 0;
+    this.focusRow(this.rows[0]);
+  }
+
+  private selectLastRow(): void {
+    if (this.rows.length === 0) {
+      return;
+    }
+    this.selectedRowIndex = this.rows.length - 1;
+    this.focusRow(this.rows[this.selectedRowIndex]);
+  }
+
+  private selectNextRow(): void {
+    if (this.rows.length === 0) {
+      return;
+    }
+    const previousRowIndex = this.selectedRowIndex;
+    this.selectedRowIndex++;
+    if (this.selectedRowIndex >= this.rows.length) {
+      this.selectedRowIndex = 0;
+    }
+    this.blurRow(this.rows[previousRowIndex]);
+    this.focusRow(this.rows[this.selectedRowIndex]);
+  }
+
+  private selectPreviousRow(): void {
+    if (this.rows.length === 0) {
+      return;
+    }
+    const previousRowIndex = this.selectedRowIndex;
+    this.selectedRowIndex--;
+    if (this.selectedRowIndex < 0) {
+      this.selectedRowIndex = this.rows.length - 1;
+    }
+    this.blurRow(this.rows[previousRowIndex]);
+    this.focusRow(this.rows[this.selectedRowIndex]);
+  }
+
+
+  private onClick(event: Event, startRow: Element, endRow: Element): void {
+    const tr = event.target as Element;
+    if (!tr) {
+      return;
+    }
+
+    const expanded = tr.getAttribute('aria-checked') === 'true';
+    this.toggle(startRow, endRow, tr, expanded);
+    event.preventDefault();
+  }
+
+  refresh(): void {
+    const timeRanges = this.calculateServiceWorkerUpdateRanges();
+    this.updateTimingTable(timeRanges);
   }
 }
 

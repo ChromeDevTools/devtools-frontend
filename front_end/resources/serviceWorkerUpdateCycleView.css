@@ -12,28 +12,20 @@
 }
 
 .service-worker-update-timing-table {
-  width: 380px;
+  border: 1px solid var(--color-details-hairline);
   border-spacing: 0;
   padding-left: 10px;
   padding-right: 10px;
   line-height: initial;
-  table-layout: fixed;
-}
-
-.service-worker-update-timing-start {
-  border-top: 5px solid transparent;
-}
-
-.service-worker-update-timing-start th span.service-worker-update-timing-hidden-header {
-  height: 1px;
-  width: 1px;
-  position: absolute;
+  table-layout: auto;
   overflow: hidden;
 }
 
 .service-worker-update-timing-row {
   position: relative;
   height: 20px;
+  overflow: hidden;
+  min-width: 80px;
 }
 
 .service-worker-update-timing-bar {
@@ -41,13 +33,6 @@
   min-width: 1px;
   top: 0;
   bottom: 0;
-}
-
-.service-worker-update-timing-bar-title {
-  color: #222; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
-  white-space: nowrap;
-  text-align: right;
 }
 
 .service-worker-update-timing-bar-clickable::before {
@@ -84,12 +69,11 @@
 }
 
 .service-worker-update-timing-bar-details-expanded {
-  display: block;
+  display: table-row;
 }
 
-.service-worker-update-timing-bar-details {
-  padding-left: 11px;
-  width: fit-content;
+.service-worker-update-timing-bar-details:focus-visible {
+  background-color: var(--selection-bg-color);
 }
 
 .service-worker-update-timing-bar.activate {
@@ -113,20 +97,21 @@
   /* See: crbug.com/1152736 for color variable migration. */
 }
 
-.service-worker-update-details-treeitem {
-  width: max-content;
+.service-worker-update-timing-table > tr > td {
+  padding: 4px 0;
+  padding-right: 10px;
 }
 
-.service-worker-update-timing-table-header td {
+table.service-worker-update-timing-table > tr.service-worker-update-timing-table-header > td {
   border-top: 5px solid transparent;
   color: #737373; /* stylelint-disable-line plugin/use_theme_colors */
   /* See: crbug.com/1152736 for color variable migration. */
 }
 
-.service-worker-update-timing-table td {
-  padding: 4px 0;
+table.service-worker-update-timing-table > tr.service-worker-update-timing-bar-details > td:first-child {
+  padding-left: 12px;
 }
 
-table.service-worker-update-timing-table > tr:not(.service-worker-update-timing-table-header) > td:first-child {
+table.service-worker-update-timing-table > tr.service-worker-update-timeline > td:first-child {
   padding-left: 12px;
 }

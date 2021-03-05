@@ -3044,6 +3044,36 @@
   "issues/AffectedElementsWithLowContrastView.ts | textWeight": {
     "message": "Text weight"
   },
+  "issues/AffectedHeavyAdView.ts | cpuPeakLimit": {
+    "message": "CPU peak limit"
+  },
+  "issues/AffectedHeavyAdView.ts | cpuTotalLimit": {
+    "message": "CPU total limit"
+  },
+  "issues/AffectedHeavyAdView.ts | frameUrl": {
+    "message": "Frame URL"
+  },
+  "issues/AffectedHeavyAdView.ts | limitExceeded": {
+    "message": "Limit exceeded"
+  },
+  "issues/AffectedHeavyAdView.ts | networkLimit": {
+    "message": "Network limit"
+  },
+  "issues/AffectedHeavyAdView.ts | removed": {
+    "message": "Removed"
+  },
+  "issues/AffectedHeavyAdView.ts | resolutionStatus": {
+    "message": "Resolution Status"
+  },
+  "issues/AffectedHeavyAdView.ts | resource": {
+    "message": "resource"
+  },
+  "issues/AffectedHeavyAdView.ts | resources": {
+    "message": "resources"
+  },
+  "issues/AffectedHeavyAdView.ts | warned": {
+    "message": "Warned"
+  },
   "issues/AffectedResourcesView.ts | clickToRevealTheFramesDomNodeIn": {
     "message": "Click to reveal the frame's DOM node in the Elements panel"
   },
@@ -3218,12 +3248,6 @@
   "issues/IssueView.ts | clickToRevealTheViolatingDomNode": {
     "message": "Click to reveal the violating DOM node in the Elements panel"
   },
-  "issues/IssueView.ts | cpuPeakLimit": {
-    "message": "CPU peak limit"
-  },
-  "issues/IssueView.ts | cpuTotalLimit": {
-    "message": "CPU total limit"
-  },
   "issues/IssueView.ts | directive": {
     "message": "directive"
   },
@@ -3236,26 +3260,14 @@
   "issues/IssueView.ts | element": {
     "message": "Element"
   },
-  "issues/IssueView.ts | frameUrl": {
-    "message": "Frame URL"
-  },
   "issues/IssueView.ts | isThisIssueMessageHelpfulToYou": {
     "message": "Is this issue message helpful to you?"
   },
   "issues/IssueView.ts | learnMoreS": {
     "message": "Learn more: {PH1}"
   },
-  "issues/IssueView.ts | limitExceeded": {
-    "message": "Limit exceeded"
-  },
   "issues/IssueView.ts | name": {
     "message": "Name"
-  },
-  "issues/IssueView.ts | networkLimit": {
-    "message": "Network limit"
-  },
-  "issues/IssueView.ts | removed": {
-    "message": "Removed"
   },
   "issues/IssueView.ts | reportonly": {
     "message": "report-only"
@@ -3265,9 +3277,6 @@
   },
   "issues/IssueView.ts | requests": {
     "message": "requests"
-  },
-  "issues/IssueView.ts | resolutionStatus": {
-    "message": "Resolution Status"
   },
   "issues/IssueView.ts | resource": {
     "message": "resource"

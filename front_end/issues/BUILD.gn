@@ -11,6 +11,7 @@ devtools_module("issues") {
     "AffectedCookiesView.ts",
     "AffectedElementsView.ts",
     "AffectedElementsWithLowContrastView.ts",
+    "AffectedHeavyAdView.ts",
     "AffectedResourcesView.ts",
     "AffectedSharedArrayBufferIssueDetailsView.ts",
     "AffectedTrustedWebActivityIssueDetailsView.ts",

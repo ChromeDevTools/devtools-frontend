@@ -249,6 +249,7 @@ all_typescript_module_sources = [
   "issues/AffectedCookiesView.js",
   "issues/AffectedElementsView.js",
   "issues/AffectedElementsWithLowContrastView.js",
+  "issues/AffectedHeavyAdView.js",
   "issues/AffectedResourcesView.js",
   "issues/AffectedSharedArrayBufferIssueDetailsView.js",
   "issues/AffectedTrustedWebActivityIssueDetailsView.js",

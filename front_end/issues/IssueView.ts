@@ -19,6 +19,7 @@ import {AffectedBlockedByResponseView} from './AffectedBlockedByResponseView.js'
 import {AffectedCookiesView} from './AffectedCookiesView.js';
 import {AffectedElementsView} from './AffectedElementsView.js';
 import {AffectedElementsWithLowContrastView} from './AffectedElementsWithLowContrastView.js';
+import {AffectedHeavyAdView} from './AffectedHeavyAdView.js';
 import {AffectedItem, AffectedResourcesView, extractShortPath} from './AffectedResourcesView.js';
 import {AffectedSharedArrayBufferIssueDetailsView} from './AffectedSharedArrayBufferIssueDetailsView.js';
 import {AffectedTrustedWebActivityIssueDetailsView} from './AffectedTrustedWebActivityIssueDetailsView.js';
@@ -101,41 +102,10 @@ const UIStrings = {
   */
   restrictionStatus: 'Restriction Status',
   /**
-  *@description Title for a column in an Heavy Ads issue view
-  */
-  limitExceeded: 'Limit exceeded',
-  /**
-  *@description Title for a column in an Heavy Ads issue view
-  */
-  resolutionStatus: 'Resolution Status',
-  /**
-  *@description Title for a column in an Heavy Ads issue view
-  */
-  frameUrl: 'Frame URL',
-  /**
-  * @description When there is a Heavy Ad, the browser can choose to deal with it in different ways.
-  * This string indicates that the ad was bad enough that it was removed.
-  */
-  removed: 'Removed',
-  /**
   * @description When there is a Heavy Ad, the browser can choose to deal with it in different ways.
   * This string indicates that the ad was only warned, and not removed.
   */
   warned: 'Warned',
-  /**
-  *@description Reason for a Heavy Ad being flagged in issue view. The Ad has been flagged as a
-  *Heavy Ad because it exceeded the set limit for peak CPU usage, e.g. it blocked the main thread
-  *for more than 15 seconds in any 30-second window.
-  */
-  cpuPeakLimit: 'CPU peak limit',
-  /**
-  *@description Reason for a Heavy Ad being flagged in issue view
-  */
-  cpuTotalLimit: 'CPU total limit',
-  /**
-  *@description Reason for a Heavy Ad being flagged in issue view
-  */
-  networkLimit: 'Network limit',
   /**
   *@description Header for the section listing affected resources
   */
@@ -474,78 +444,6 @@ class AffectedMixedContentView extends AffectedResourcesView {
   update(): void {
     this.clear();
     this._appendAffectedMixedContentDetails(this._issue.getMixedContentIssues());
-  }
-}
-
-class AffectedHeavyAdView extends AffectedResourcesView {
-  _issue: AggregatedIssue;
-  constructor(parent: IssueView, issue: AggregatedIssue) {
-    super(parent, {singular: i18nString(UIStrings.resource), plural: i18nString(UIStrings.resources)});
-    this._issue = issue;
-  }
-
-  _appendAffectedHeavyAds(heavyAds: Iterable<SDK.HeavyAdIssue.HeavyAdIssue>): void {
-    const header = document.createElement('tr');
-    this.appendColumnTitle(header, i18nString(UIStrings.limitExceeded));
-    this.appendColumnTitle(header, i18nString(UIStrings.resolutionStatus));
-    this.appendColumnTitle(header, i18nString(UIStrings.frameUrl));
-
-    this.affectedResources.appendChild(header);
-
-    let count = 0;
-    for (const heavyAd of heavyAds) {
-      this._appendAffectedHeavyAd(heavyAd.details());
-      count++;
-    }
-    this.updateAffectedResourceCount(count);
-  }
-
-  _statusToString(status: Protocol.Audits.HeavyAdResolutionStatus): string {
-    switch (status) {
-      case Protocol.Audits.HeavyAdResolutionStatus.HeavyAdBlocked:
-        return i18nString(UIStrings.removed);
-      case Protocol.Audits.HeavyAdResolutionStatus.HeavyAdWarning:
-        return i18nString(UIStrings.warned);
-    }
-    return '';
-  }
-
-  _limitToString(status: Protocol.Audits.HeavyAdReason): string {
-    switch (status) {
-      case Protocol.Audits.HeavyAdReason.CpuPeakLimit:
-        return i18nString(UIStrings.cpuPeakLimit);
-      case Protocol.Audits.HeavyAdReason.CpuTotalLimit:
-        return i18nString(UIStrings.cpuTotalLimit);
-      case Protocol.Audits.HeavyAdReason.NetworkTotalLimit:
-        return i18nString(UIStrings.networkLimit);
-    }
-    return '';
-  }
-
-  _appendAffectedHeavyAd(heavyAd: Protocol.Audits.HeavyAdIssueDetails): void {
-    const element = document.createElement('tr');
-    element.classList.add('affected-resource-heavy-ad');
-
-    const reason = document.createElement('td');
-    reason.classList.add('affected-resource-heavy-ad-info');
-    reason.textContent = this._limitToString(heavyAd.reason);
-    element.appendChild(reason);
-
-    const status = document.createElement('td');
-    status.classList.add('affected-resource-heavy-ad-info');
-    status.textContent = this._statusToString(heavyAd.resolution);
-    element.appendChild(status);
-
-    const frameId = heavyAd.frame.frameId;
-    const frameUrl = this.createFrameCell(frameId, this._issue);
-    element.appendChild(frameUrl);
-
-    this.affectedResources.appendChild(element);
-  }
-
-  update(): void {
-    this.clear();
-    this._appendAffectedHeavyAds(this._issue.getHeavyAdIssues());
   }
 }
 

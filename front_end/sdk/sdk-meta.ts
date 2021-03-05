@@ -371,10 +371,6 @@ const UIStrings = {
   */
   disableNetworkRequestBlocking: 'Disable network request blocking',
   /**
-  *@description Text to disable cache while DevTools is open
-  */
-  disableCacheWhileDevtoolsIsOpen: 'Disable cache (while DevTools is open)',
-  /**
   *@description Title of a setting under the Network category that can be invoked through the Command Menu
   */
   enableCache: 'Enable cache',

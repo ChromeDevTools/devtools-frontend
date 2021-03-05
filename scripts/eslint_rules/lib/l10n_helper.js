@@ -8,4 +8,21 @@ function isUIStringsIdentifier(node) {
   return node.type === 'Identifier' && node.name === 'UIStrings';
 }
 
+function isModuleScope(context) {
+  return context.getScope().type === 'module';
+}
+
+function isUIStringsVariableDeclarator(context, variableDeclarator) {
+  if (!isModuleScope(context)) {
+    return false;
+  }
+
+  if (!isUIStringsIdentifier(variableDeclarator.id)) {
+    return false;
+  }
+
+  return variableDeclarator.init?.type === 'ObjectExpression';
+}
+
 exports.isUIStringsIdentifier = isUIStringsIdentifier;
+exports.isUIStringsVariableDeclarator = isUIStringsVariableDeclarator;

@@ -58,10 +58,6 @@ const UIStrings = {
   */
   mobile: 'Mobile',
   /**
-  *@description Name of a settings category.
-  */
-  emulation: 'Emulation',
-  /**
   *@description Text for the memory of the page
   */
   memory: 'Memory',

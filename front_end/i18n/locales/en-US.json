@@ -617,9 +617,6 @@
   "browser_sdk/browser_sdk-meta.ts | doNotPreserveLogOnPageReload": {
     "message": "Do not preserve log on page reload / navigation"
   },
-  "browser_sdk/browser_sdk-meta.ts | network": {
-    "message": "Network"
-  },
   "browser_sdk/browser_sdk-meta.ts | preserve": {
     "message": "preserve"
   },
@@ -880,9 +877,6 @@
   },
   "common/SettingRegistration.ts | elements": {
     "message": "Elements"
-  },
-  "common/SettingRegistration.ts | emulation": {
-    "message": "Emulation"
   },
   "common/SettingRegistration.ts | extension": {
     "message": "Extension"
@@ -1211,17 +1205,11 @@
   "console/ConsoleView.ts | showConsoleSidebar": {
     "message": "Show console sidebar"
   },
-  "console/ConsoleView.ts | someMessagesHaveBeenMovedToThe": {
-    "message": "Some messages have been moved to the Issues panel."
-  },
   "console/ConsoleView.ts | sOnly": {
     "message": "{PH1} only"
   },
   "console/ConsoleView.ts | verbose": {
     "message": "Verbose"
-  },
-  "console/ConsoleView.ts | viewIssues": {
-    "message": "View issues"
   },
   "console/ConsoleView.ts | warnings": {
     "message": "Warnings"
@@ -1829,9 +1817,6 @@
   "elements/elements-meta.ts | showStackTrace": {
     "message": "Show Stack Trace"
   },
-  "elements/elements-meta.ts | showUserAgentShadowDom": {
-    "message": "Show user agent shadow DOM"
-  },
   "elements/elements-meta.ts | stackTrace": {
     "message": "Stack Trace"
   },
@@ -2399,9 +2384,6 @@
   "emulation/emulation-meta.ts | accelerometer": {
     "message": "accelerometer"
   },
-  "emulation/emulation-meta.ts | berlin": {
-    "message": "Berlin"
-  },
   "emulation/emulation-meta.ts | captureFullSizeScreenshot": {
     "message": "Capture full size screenshot"
   },
@@ -2450,38 +2432,11 @@
   "emulation/emulation-meta.ts | locations": {
     "message": "Locations"
   },
-  "emulation/emulation-meta.ts | london": {
-    "message": "London"
-  },
-  "emulation/emulation-meta.ts | mobile": {
-    "message": "Mobile"
-  },
-  "emulation/emulation-meta.ts | moscow": {
-    "message": "Moscow"
-  },
-  "emulation/emulation-meta.ts | mountainView": {
-    "message": "Mountain View"
-  },
-  "emulation/emulation-meta.ts | mumbai": {
-    "message": "Mumbai"
-  },
   "emulation/emulation-meta.ts | noIdleEmulation": {
     "message": "No idle emulation"
   },
-  "emulation/emulation-meta.ts | sanFrancisco": {
-    "message": "San Francisco"
-  },
-  "emulation/emulation-meta.ts | saoPaulo": {
-    "message": "São Paulo"
-  },
-  "emulation/emulation-meta.ts | screenshot": {
-    "message": "Screenshot"
-  },
   "emulation/emulation-meta.ts | sensors": {
     "message": "Sensors"
-  },
-  "emulation/emulation-meta.ts | shanghai": {
-    "message": "Shanghai"
   },
   "emulation/emulation-meta.ts | showDeviceFrame": {
     "message": "Show device frame"
@@ -2506,9 +2461,6 @@
   },
   "emulation/emulation-meta.ts | toggleDeviceToolbar": {
     "message": "Toggle device toolbar"
-  },
-  "emulation/emulation-meta.ts | tokyo": {
-    "message": "Tokyo"
   },
   "emulation/emulation-meta.ts | touch": {
     "message": "Touch"
@@ -3820,9 +3772,6 @@
   },
   "linear_memory_inspector/ValueInterpreterDisplayUtils.ts | littleEndian": {
     "message": "Little Endian"
-  },
-  "linear_memory_inspector/ValueInterpreterDisplayUtils.ts | string": {
-    "message": "String"
   },
   "main/main-meta.ts | asAuthored": {
     "message": "As authored"
@@ -7928,9 +7877,6 @@
   "sdk/sdk-meta.ts | disableAvifFormat": {
     "message": "Disable AVIF format"
   },
-  "sdk/sdk-meta.ts | disableCacheWhileDevtoolsIsOpen": {
-    "message": "Disable cache (while DevTools is open)"
-  },
   "sdk/sdk-meta.ts | disableJavascript": {
     "message": "Disable JavaScript"
   },
@@ -9344,9 +9290,6 @@
   "sources/sources-meta.ts | deactivateBreakpoints": {
     "message": "Deactivate breakpoints"
   },
-  "sources/sources-meta.ts | decrementCssUnitBy": {
-    "message": "Decrement CSS unit by 1"
-  },
   "sources/sources-meta.ts | decrementCssUnitByTen": {
     "message": "Decrement CSS unit by 10"
   },
@@ -9421,9 +9364,6 @@
   },
   "sources/sources-meta.ts | goToLine": {
     "message": "Go to line"
-  },
-  "sources/sources-meta.ts | incrementCssUnitBy": {
-    "message": "Increment CSS unit by 1"
   },
   "sources/sources-meta.ts | incrementCssUnitByTen": {
     "message": "Increment CSS unit by 10"

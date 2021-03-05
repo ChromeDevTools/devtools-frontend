@@ -6,10 +6,6 @@
 
 const l10nHelper = require('./l10n_helper.js');
 
-function isModuleScope(context) {
-  return context.getScope().type === 'module';
-}
-
 const FULLY_LOCKED_PHRASE_REGEX = /^`[^`]*`$/;
 const SINGLE_PLACEHOLDER_REGEX = /^\{\w+\}$/;  // Matches the PH regex in `collect-strings.js`.
 
@@ -26,15 +22,7 @@ module.exports = {
   create: function(context) {
     return {
       VariableDeclarator(variableDeclarator) {
-        if (!isModuleScope(context)) {
-          return;
-        }
-
-        if (!l10nHelper.isUIStringsIdentifier(variableDeclarator.id)) {
-          return;
-        }
-
-        if (variableDeclarator.init?.type !== 'ObjectExpression') {
+        if (!l10nHelper.isUIStringsVariableDeclarator(context, variableDeclarator)) {
           return;
         }
 

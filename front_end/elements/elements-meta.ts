@@ -89,11 +89,6 @@ const UIStrings = {
   */
   selectAnElementInThePageTo: 'Select an element in the page to inspect it',
   /**
-  * @description Title of a setting under the Elements category in Settings. Toggles whether the
-  * user agent shadow DOM will be shown to the user or not.
-  */
-  showUserAgentShadowDom: 'Show `user agent shadow DOM`',
-  /**
   * @description Title of a setting under the Elements category in Settings. Whether words should be
   * wrapped around at the end of lines or not.
   */

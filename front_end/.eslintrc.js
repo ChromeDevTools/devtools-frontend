@@ -13,6 +13,7 @@ module.exports = {
     'rulesdir/l10n_no_i18nString_calls_module_instantiation': 2,
     'rulesdir/l10n_no_locked_or_placeholder_only_phrase': 2,
     'rulesdir/l10n_no_uistrings_export': 2,
+    'rulesdir/l10n_no_unused_message': 2,
   },
   'overrides': [
     {

@@ -617,9 +617,6 @@
   "browser_sdk/browser_sdk-meta.ts | doNotPreserveLogOnPageReload": {
     "message": "D̂ó n̂ót̂ ṕr̂éŝér̂v́ê ĺôǵ ôń p̂áĝé r̂él̂óâd́ / n̂áv̂íĝát̂íôń"
   },
-  "browser_sdk/browser_sdk-meta.ts | network": {
-    "message": "N̂ét̂ẃôŕk̂"
-  },
   "browser_sdk/browser_sdk-meta.ts | preserve": {
     "message": "p̂ŕêśêŕv̂é"
   },
@@ -880,9 +877,6 @@
   },
   "common/SettingRegistration.ts | elements": {
     "message": "Êĺêḿêńt̂ś"
-  },
-  "common/SettingRegistration.ts | emulation": {
-    "message": "Êḿûĺât́îón̂"
   },
   "common/SettingRegistration.ts | extension": {
     "message": "Êx́t̂én̂śîón̂"
@@ -1211,17 +1205,11 @@
   "console/ConsoleView.ts | showConsoleSidebar": {
     "message": "Ŝh́ôẃ ĉón̂śôĺê śîd́êb́âŕ"
   },
-  "console/ConsoleView.ts | someMessagesHaveBeenMovedToThe": {
-    "message": "Ŝóm̂é m̂éŝśâǵêś ĥáv̂é b̂éêń m̂óv̂éd̂ t́ô t́ĥé Îśŝúêś p̂án̂él̂."
-  },
   "console/ConsoleView.ts | sOnly": {
     "message": "{PH1} ôńl̂ý"
   },
   "console/ConsoleView.ts | verbose": {
     "message": "V̂ér̂b́ôśê"
-  },
-  "console/ConsoleView.ts | viewIssues": {
-    "message": "V̂íêẃ îśŝúêś"
   },
   "console/ConsoleView.ts | warnings": {
     "message": "Ŵár̂ńîńĝś"
@@ -1829,9 +1817,6 @@
   "elements/elements-meta.ts | showStackTrace": {
     "message": "Ŝh́ôẃ Ŝt́âćk̂ T́r̂áĉé"
   },
-  "elements/elements-meta.ts | showUserAgentShadowDom": {
-    "message": "Ŝh́ôẃ user agent shadow DOM"
-  },
   "elements/elements-meta.ts | stackTrace": {
     "message": "Ŝt́âćk̂ T́r̂áĉé"
   },
@@ -2399,9 +2384,6 @@
   "emulation/emulation-meta.ts | accelerometer": {
     "message": "âćĉél̂ér̂óm̂ét̂ér̂"
   },
-  "emulation/emulation-meta.ts | berlin": {
-    "message": "B̂ér̂ĺîń"
-  },
   "emulation/emulation-meta.ts | captureFullSizeScreenshot": {
     "message": "Ĉáp̂t́ûŕê f́ûĺl̂ śîźê śĉŕêén̂śĥót̂"
   },
@@ -2450,38 +2432,11 @@
   "emulation/emulation-meta.ts | locations": {
     "message": "L̂óĉát̂íôńŝ"
   },
-  "emulation/emulation-meta.ts | london": {
-    "message": "L̂ón̂d́ôń"
-  },
-  "emulation/emulation-meta.ts | mobile": {
-    "message": "M̂ób̂íl̂é"
-  },
-  "emulation/emulation-meta.ts | moscow": {
-    "message": "M̂óŝćôẃ"
-  },
-  "emulation/emulation-meta.ts | mountainView": {
-    "message": "M̂óûńt̂áîń V̂íêẃ"
-  },
-  "emulation/emulation-meta.ts | mumbai": {
-    "message": "M̂úm̂b́âí"
-  },
   "emulation/emulation-meta.ts | noIdleEmulation": {
     "message": "N̂ó îd́l̂é êḿûĺât́îón̂"
   },
-  "emulation/emulation-meta.ts | sanFrancisco": {
-    "message": "Ŝán̂ F́r̂án̂ćîśĉó"
-  },
-  "emulation/emulation-meta.ts | saoPaulo": {
-    "message": "Ŝãó P̂áûĺô"
-  },
-  "emulation/emulation-meta.ts | screenshot": {
-    "message": "Ŝćr̂éêńŝh́ôt́"
-  },
   "emulation/emulation-meta.ts | sensors": {
     "message": "Ŝén̂śôŕŝ"
-  },
-  "emulation/emulation-meta.ts | shanghai": {
-    "message": "Ŝh́âńĝh́âí"
   },
   "emulation/emulation-meta.ts | showDeviceFrame": {
     "message": "Ŝh́ôẃ d̂év̂íĉé f̂ŕâḿê"
@@ -2506,9 +2461,6 @@
   },
   "emulation/emulation-meta.ts | toggleDeviceToolbar": {
     "message": "T̂óĝǵl̂é d̂év̂íĉé t̂óôĺb̂ár̂"
-  },
-  "emulation/emulation-meta.ts | tokyo": {
-    "message": "T̂ók̂ýô"
   },
   "emulation/emulation-meta.ts | touch": {
     "message": "T̂óûćĥ"
@@ -3820,9 +3772,6 @@
   },
   "linear_memory_inspector/ValueInterpreterDisplayUtils.ts | littleEndian": {
     "message": "L̂ít̂t́l̂é Êńd̂íâń"
-  },
-  "linear_memory_inspector/ValueInterpreterDisplayUtils.ts | string": {
-    "message": "Ŝt́r̂ín̂ǵ"
   },
   "main/main-meta.ts | asAuthored": {
     "message": "Âś âút̂h́ôŕêd́"
@@ -7928,9 +7877,6 @@
   "sdk/sdk-meta.ts | disableAvifFormat": {
     "message": "D̂íŝáb̂ĺê ÁV̂ÍF̂ f́ôŕm̂át̂"
   },
-  "sdk/sdk-meta.ts | disableCacheWhileDevtoolsIsOpen": {
-    "message": "D̂íŝáb̂ĺê ćâćĥé (ŵh́îĺê D́êv́T̂óôĺŝ íŝ óp̂én̂)"
-  },
   "sdk/sdk-meta.ts | disableJavascript": {
     "message": "D̂íŝáb̂ĺê J́âv́âŚĉŕîṕt̂"
   },
@@ -9344,9 +9290,6 @@
   "sources/sources-meta.ts | deactivateBreakpoints": {
     "message": "D̂éâćt̂ív̂át̂é b̂ŕêák̂ṕôín̂t́ŝ"
   },
-  "sources/sources-meta.ts | decrementCssUnitBy": {
-    "message": "D̂éĉŕêḿêńt̂ ĆŜŚ ûńît́ b̂ý 1"
-  },
   "sources/sources-meta.ts | decrementCssUnitByTen": {
     "message": "D̂éĉŕêḿêńt̂ ĆŜŚ ûńît́ b̂ý 10"
   },
@@ -9421,9 +9364,6 @@
   },
   "sources/sources-meta.ts | goToLine": {
     "message": "Ĝó t̂ó l̂ín̂é"
-  },
-  "sources/sources-meta.ts | incrementCssUnitBy": {
-    "message": "Îńĉŕêḿêńt̂ ĆŜŚ ûńît́ b̂ý 1"
   },
   "sources/sources-meta.ts | incrementCssUnitByTen": {
     "message": "Îńĉŕêḿêńt̂ ĆŜŚ ûńît́ b̂ý 10"

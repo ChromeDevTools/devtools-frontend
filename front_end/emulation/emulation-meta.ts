@@ -12,17 +12,9 @@ import type * as Emulation from './emulation.js';
 import * as i18n from '../i18n/i18n.js';
 const UIStrings = {
   /**
-  *@description Text for the mobile platform, as opposed to desktop
-  */
-  mobile: 'Mobile',
-  /**
   *@description Title of an action in the emulation tool to toggle device mode
   */
   toggleDeviceToolbar: 'Toggle device toolbar',
-  /**
-  *@description Text for one or a group of screenshots
-  */
-  screenshot: 'Screenshot',
   /**
   *@description Title of an action in the emulation tool to capture screenshot
   */
@@ -95,42 +87,6 @@ const UIStrings = {
   *@description A tag of Sensors tool that can be searched in the command menu
   */
   deviceOrientation: 'device orientation',
-  /**
-  *@description City name in Locations Settings
-  */
-  berlin: 'Berlin',
-  /**
-  *@description City name in Locations Settings
-  */
-  london: 'London',
-  /**
-  *@description City name in Locations Settings
-  */
-  moscow: 'Moscow',
-  /**
-  *@description City name in Locations Settings
-  */
-  mountainView: 'Mountain View',
-  /**
-  *@description City name in Locations Settings
-  */
-  mumbai: 'Mumbai',
-  /**
-  *@description City name in Locations Settings
-  */
-  sanFrancisco: 'San Francisco',
-  /**
-  *@description City name in Locations Settings
-  */
-  shanghai: 'Shanghai',
-  /**
-  *@description City name in Locations Settings
-  */
-  saoPaulo: 'São Paulo',
-  /**
-  *@description City name in Locations Settings
-  */
-  tokyo: 'Tokyo',
   /**
   *@description Title of Locations settings
   */

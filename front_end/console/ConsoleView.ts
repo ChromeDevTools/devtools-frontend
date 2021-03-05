@@ -57,10 +57,6 @@ import {ConsoleViewport} from './ConsoleViewport.js';
 
 const UIStrings = {
   /**
-  *@description Label for link to issues tab
-  */
-  viewIssues: 'View issues',
-  /**
   *@description Label for link to Issues tab, specifying how many issues there are.
   */
   multipleIssues: '{issueCount, plural, =0 {No Issues} =1 {# Issue} other {# Issues}}',
@@ -75,10 +71,6 @@ const UIStrings = {
   */
   issueToolbarTooltipHaveMultipleIssues:
       '{issueCount, plural, =0 {Click to go to the issues tab} =1 {Click to view # issue} other {Click to view # issues}}',
-  /**
-  *@description Infobar text about messages being on the issues tab
-  */
-  someMessagesHaveBeenMovedToThe: 'Some messages have been moved to the Issues panel.',
   /**
   *@description Text in Console View of the Console panel
   */

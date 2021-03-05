@@ -38,10 +38,6 @@ const UIStrings = {
   *@description Text that describes the type of a value in the Linear Memory Inspector
   */
   float64Bit: 'Float 64-bit',
-  /**
-  *@description Text that describes the type of a value in the Linear Memory Inspector
-  */
-  string: 'String',
 };
 const str_ = i18n.i18n.registerUIStrings('linear_memory_inspector/ValueInterpreterDisplayUtils.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

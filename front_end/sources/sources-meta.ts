@@ -220,17 +220,9 @@ const UIStrings = {
   */
   nextCallFrame: 'Next call frame',
   /**
-  *@description Text in the Shortcuts page to explain a keyboard shortcut (increment CSS unit by 1 in Styles pane)
-  */
-  incrementCssUnitBy: 'Increment CSS unit by 1',
-  /**
   *@description Text in the Shortcuts page to explain a keyboard shortcut (increment CSS unit by 10 in Styles pane)
   */
   incrementCssUnitByTen: 'Increment CSS unit by 10',
-  /**
-  *@description Text in the Shortcuts page to explain a keyboard shortcut (decrement CSS unit by 1 in Styles pane)
-  */
-  decrementCssUnitBy: 'Decrement CSS unit by 1',
   /**
   *@description Text in the Shortcuts page to explain a keyboard shortcut (decrement CSS unit by 10 in Styles pane)
   */

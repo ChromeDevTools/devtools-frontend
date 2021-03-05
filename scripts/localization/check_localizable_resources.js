@@ -67,9 +67,8 @@ function getV1Errors() {
 }
 
 async function getV2Errors() {
-  const checkUIStringsError = await localizationV2Checks.checkUIStrings();
   const checkMigratedDirectoryError = localizationV2Checks.checkNoV1CallsInMigratedDir();
-  const v2ErrorMessage = `${checkUIStringsError || ''}${checkMigratedDirectoryError || ''}`;
+  const v2ErrorMessage = `${checkMigratedDirectoryError || ''}`;
   return v2ErrorMessage;
 }
 
@@ -125,13 +124,9 @@ async function autofixV1(existingError) {
 }
 
 async function autofixV2() {
-  const checkAndFixUIStringsError = await localizationV2Checks.checkUIStrings(true);
   const checkMigratedDirectoryError = localizationV2Checks.checkNoV1CallsInMigratedDir();
 
   let message = '';
-  if (checkAndFixUIStringsError) {
-    message += `\n${checkAndFixUIStringsError}`;
-  }
   if (checkMigratedDirectoryError) {
     message += `\n${checkMigratedDirectoryError}`;
   }

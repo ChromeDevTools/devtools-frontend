@@ -198,7 +198,7 @@ describe('ValueInterpreterDisplay', () => {
     const oldMode = LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueTypeMode.Decimal;
     const newMode = LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueTypeMode.Scientific;
 
-    const mapping = LinearMemoryInspector.ValueInterpreterDisplayUtils.DEFAULT_MODE_MAPPING;
+    const mapping = LinearMemoryInspector.ValueInterpreterDisplayUtils.getDefaultValueTypeMapping();
     mapping.set(LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType.Float32, oldMode);
 
     component.data = {

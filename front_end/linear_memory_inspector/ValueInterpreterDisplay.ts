@@ -6,7 +6,7 @@ import * as ComponentHelpers from '../component_helpers/component_helpers.js';
 import * as i18n from '../i18n/i18n.js';
 import * as LitHtml from '../third_party/lit-html/lit-html.js';
 
-import {DEFAULT_MODE_MAPPING, Endianness, format, isNumber, isValidMode, VALUE_TYPE_MODE_LIST, ValueType, ValueTypeMode, valueTypeModeToLocalizedString, valueTypeToLocalizedString} from './ValueInterpreterDisplayUtils.js';
+import {Endianness, format, getDefaultValueTypeMapping, isNumber, isValidMode, VALUE_TYPE_MODE_LIST, ValueType, ValueTypeMode, valueTypeModeToLocalizedString, valueTypeToLocalizedString} from './ValueInterpreterDisplayUtils.js';
 
 const UIStrings = {
   /**
@@ -27,7 +27,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const {render, html} = LitHtml;
 const getStyleSheets = ComponentHelpers.GetStylesheet.getStyleSheets;
 
-const SORTED_VALUE_TYPES = Array.from(DEFAULT_MODE_MAPPING.keys());
+const SORTED_VALUE_TYPES = Array.from(getDefaultValueTypeMapping().keys());
 
 export interface ValueDisplayData {
   buffer: ArrayBuffer;
@@ -51,7 +51,7 @@ export class ValueInterpreterDisplay extends HTMLElement {
   private endianness = Endianness.Little;
   private buffer = new ArrayBuffer(0);
   private valueTypes: Set<ValueType> = new Set();
-  private valueTypeModeConfig: Map<ValueType, ValueTypeMode> = DEFAULT_MODE_MAPPING;
+  private valueTypeModeConfig: Map<ValueType, ValueTypeMode> = getDefaultValueTypeMapping();
 
   constructor() {
     super();
@@ -64,7 +64,6 @@ export class ValueInterpreterDisplay extends HTMLElement {
     this.buffer = data.buffer;
     this.endianness = data.endianness;
     this.valueTypes = data.valueTypes;
-    this.valueTypeModeConfig = DEFAULT_MODE_MAPPING;
 
     if (data.valueTypeModes) {
       data.valueTypeModes.forEach((mode, valueType) => {

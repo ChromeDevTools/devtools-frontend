@@ -6,7 +6,7 @@ import * as Common from '../common/common.js';  // eslint-disable-line no-unused
 import * as i18n from '../i18n/i18n.js';
 import * as UI from '../ui/ui.js';
 
-import {LinearMemoryInspector} from './LinearMemoryInspector.js';
+import {LinearMemoryInspector, Settings} from './LinearMemoryInspector.js';  // eslint-disable-line no-unused-vars
 import {LazyUint8Array, LinearMemoryInspectorController} from './LinearMemoryInspectorController.js';  // eslint-disable-line no-unused-vars
 
 const UIStrings = {
@@ -154,7 +154,11 @@ class LinearMemoryInspectorView extends UI.Widget.VBox {
     this._inspector.addEventListener('address-changed', /** @param {?} event */ event => {
       this.updateAddress(event.data);
     });
+    this._inspector.addEventListener('settings-changed', /** @param {?} event */ event => {
+      this.saveSettings(event.data);
+    });
     this.contentElement.appendChild(this._inspector);
+    this.firstTimeOpen = true;
   }
 
   /**
@@ -162,6 +166,13 @@ class LinearMemoryInspectorView extends UI.Widget.VBox {
    */
   wasShown() {
     this.refreshData();
+  }
+
+  /**
+   * @param {Settings} settings
+   */
+  saveSettings(settings) {
+    LinearMemoryInspectorController.instance().saveSettings(settings);
   }
 
   /**
@@ -176,11 +187,24 @@ class LinearMemoryInspectorView extends UI.Widget.VBox {
 
   refreshData() {
     LinearMemoryInspectorController.getMemoryForAddress(this._memoryWrapper, this._address).then(({memory, offset}) => {
+      let valueTypes;
+      let valueTypeModes;
+      let endianness;
+      if (this.firstTimeOpen) {
+        const settings = LinearMemoryInspectorController.instance().loadSettings();
+        valueTypes = settings.valueTypes;
+        valueTypeModes = settings.modes;
+        endianness = settings.endianness;
+        this.firstTimeOpen = false;
+      }
       this._inspector.data = {
-        memory: memory,
+        memory,
         address: this._address,
         memoryOffset: offset,
         outerMemoryLength: this._memoryWrapper.length(),
+        valueTypes,
+        valueTypeModes,
+        endianness
       };
     });
   }

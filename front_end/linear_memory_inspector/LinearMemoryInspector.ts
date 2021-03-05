@@ -14,7 +14,7 @@ const {render, html} = LitHtml;
 import {Mode, AddressInputChangedEvent, HistoryNavigationEvent, LinearMemoryNavigatorData, Navigation, PageNavigationEvent} from './LinearMemoryNavigator.js';
 import type {EndiannessChangedEvent, LinearMemoryValueInterpreterData, ValueTypeToggledEvent} from './LinearMemoryValueInterpreter.js';
 import type {ByteSelectedEvent, LinearMemoryViewerData, ResizeEvent} from './LinearMemoryViewer.js';
-import {VALUE_INTEPRETER_MAX_NUM_BYTES, Endianness, DEFAULT_MODE_MAPPING} from './ValueInterpreterDisplayUtils.js';
+import {VALUE_INTEPRETER_MAX_NUM_BYTES, Endianness, ValueType, ValueTypeMode, getDefaultValueTypeMapping} from './ValueInterpreterDisplayUtils.js';
 import {formatAddress, parseAddress} from './LinearMemoryInspectorUtils.js';
 import type {ValueTypeModeChangedEvent} from './ValueInterpreterDisplay.js';
 
@@ -38,6 +38,42 @@ export interface LinearMemoryInspectorData {
   address: number;
   memoryOffset: number;
   outerMemoryLength: number;
+  valueTypes?: Set<ValueType>;
+  valueTypeModes?: Map<ValueType, ValueTypeMode>;
+  endianness?: Endianness;
+}
+
+export type Settings = {
+  valueTypes: Set<ValueType>,
+  modes: Map<ValueType, ValueTypeMode>,
+  endianness: Endianness,
+};
+
+export class MemoryRequestEvent extends Event {
+  data: {start: number, end: number, address: number};
+
+  constructor(start: number, end: number, address: number) {
+    super('memory-request');
+    this.data = {start, end, address};
+  }
+}
+
+export class AddressChangedEvent extends Event {
+  data: number;
+
+  constructor(address: number) {
+    super('address-changed');
+    this.data = address;
+  }
+}
+
+export class SettingsChangedEvent extends Event {
+  data: Settings;
+
+  constructor(settings: Settings) {
+    super('settings-changed');
+    this.data = settings;
+  }
 }
 
 class AddressHistoryEntry implements Common.SimpleHistoryManager.HistoryEntry {
@@ -61,24 +97,6 @@ class AddressHistoryEntry implements Common.SimpleHistoryManager.HistoryEntry {
   }
 }
 
-export class MemoryRequestEvent extends Event {
-  data: {start: number, end: number, address: number};
-
-  constructor(start: number, end: number, address: number) {
-    super('memory-request');
-    this.data = {start, end, address};
-  }
-}
-
-export class AddressChangedEvent extends Event {
-  data: number;
-
-  constructor(address: number) {
-    super('address-changed');
-    this.data = address;
-  }
-}
-
 export class LinearMemoryInspector extends HTMLElement {
   private readonly shadow = this.attachShadow({mode: 'open'});
   private readonly history = new Common.SimpleHistoryManager.SimpleHistoryManager(10);
@@ -94,8 +112,8 @@ export class LinearMemoryInspector extends HTMLElement {
 
   private numBytesPerPage = 4;
 
-  private valueTypes = new Set(DEFAULT_MODE_MAPPING.keys());
-  private valueTypeModes = DEFAULT_MODE_MAPPING;
+  private valueTypeModes = getDefaultValueTypeMapping();
+  private valueTypes = new Set(this.valueTypeModes.keys());
   private endianness = Endianness.Little;
 
   set data(data: LinearMemoryInspectorData) {
@@ -110,6 +128,9 @@ export class LinearMemoryInspector extends HTMLElement {
     this.memory = data.memory;
     this.memoryOffset = data.memoryOffset;
     this.outerMemoryLength = data.outerMemoryLength;
+    this.valueTypeModes = data.valueTypeModes || this.valueTypeModes;
+    this.valueTypes = data.valueTypes || this.valueTypes;
+    this.endianness = data.endianness || this.endianness;
     this.setAddress(data.address);
     this.render();
   }
@@ -194,8 +215,13 @@ export class LinearMemoryInspector extends HTMLElement {
     this.jumpToAddress(addressInRange);
   }
 
+  private createSettings(): Settings {
+    return {valueTypes: this.valueTypes, modes: this.valueTypeModes, endianness: this.endianness};
+  }
+
   private onEndiannessChanged(e: EndiannessChangedEvent): void {
     this.endianness = e.data;
+    this.dispatchEvent(new SettingsChangedEvent(this.createSettings()));
     this.render();
   }
 
@@ -232,6 +258,7 @@ export class LinearMemoryInspector extends HTMLElement {
     } else {
       this.valueTypes.delete(type);
     }
+    this.dispatchEvent(new SettingsChangedEvent(this.createSettings()));
     this.render();
   }
 
@@ -239,6 +266,7 @@ export class LinearMemoryInspector extends HTMLElement {
     e.stopImmediatePropagation();
     const {type, mode} = e.data;
     this.valueTypeModes.set(type, mode);
+    this.dispatchEvent(new SettingsChangedEvent(this.createSettings()));
     this.render();
   }
 

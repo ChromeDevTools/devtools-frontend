@@ -6,8 +6,10 @@ import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
+import {Settings} from './LinearMemoryInspector.js';
 
 import {LinearMemoryInspectorPaneImpl} from './LinearMemoryInspectorPane.js';
+import {Endianness, getDefaultValueTypeMapping, ValueType, ValueTypeMode} from './ValueInterpreterDisplayUtils.js';
 
 const LINEAR_MEMORY_INSPECTOR_OBJECT_GROUP = 'linear-memory-inspector';
 const MEMORY_TRANSFER_MIN_CHUNK_SIZE = 1000;
@@ -62,9 +64,16 @@ async function getBufferFromObject(obj: SDK.RemoteObject.RemoteObject): Promise<
   return new SDK.RemoteObject.RemoteArrayBuffer(obj);
 }
 
+type SerializableSettings = {
+  valueTypes: ValueType[],
+  valueTypeModes: [ValueType, ValueTypeMode][],
+  endianness: Endianness,
+};
+
 export class LinearMemoryInspectorController extends SDK.SDKModel.SDKModelObserver<SDK.RuntimeModel.RuntimeModel> {
   private paneInstance = LinearMemoryInspectorPaneImpl.instance();
   private bufferIdToRemoteObject: Map<string, SDK.RemoteObject.RemoteObject> = new Map();
+  private settings: Common.Settings.Setting<SerializableSettings>;
 
   private constructor() {
     super();
@@ -75,6 +84,14 @@ export class LinearMemoryInspectorController extends SDK.SDKModel.SDKModelObserv
 
     SDK.SDKModel.TargetManager.instance().addModelListener(
         SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.DebuggerPaused, this.onDebuggerPause, this);
+
+    const defaultValueTypeModes = getDefaultValueTypeMapping();
+    const defaultSettings: SerializableSettings = {
+      valueTypes: Array.from(defaultValueTypeModes.keys()),
+      valueTypeModes: Array.from(defaultValueTypeModes),
+      endianness: Endianness.Little,
+    };
+    this.settings = Common.Settings.Settings.instance().createSetting('lmiInterpreterSettings', defaultSettings);
   }
 
   static instance(): LinearMemoryInspectorController {
@@ -106,6 +123,21 @@ export class LinearMemoryInspectorController extends SDK.SDKModel.SDKModelObserv
     }
     const chunkEnd = Math.max(end, start + MEMORY_TRANSFER_MIN_CHUNK_SIZE);
     return await memoryWrapper.getRange(start, chunkEnd);
+  }
+
+  saveSettings(data: Settings): void {
+    const valueTypes = Array.from(data.valueTypes);
+    const modes = [...data.modes];
+    this.settings.set({valueTypes, valueTypeModes: modes, endianness: data.endianness});
+  }
+
+  loadSettings(): Settings {
+    const settings = this.settings.get();
+    return {
+      valueTypes: new Set(settings.valueTypes),
+      modes: new Map(settings.valueTypeModes),
+      endianness: settings.endianness,
+    };
   }
 
   async openInspectorView(obj: SDK.RemoteObject.RemoteObject, address?: number): Promise<void> {

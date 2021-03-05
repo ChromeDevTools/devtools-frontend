@@ -4,9 +4,10 @@
 
 import * as LinearMemoryInspector from '../../../../front_end/linear_memory_inspector/linear_memory_inspector.js';
 import * as SDK from '../../../../front_end/sdk/sdk.js';
+import {describeWithEnvironment} from '../helpers/EnvironmentHelpers.js';
 
 const {assert} = chai;
-const {LinearMemoryInspectorController} = LinearMemoryInspector;
+const {LinearMemoryInspectorController, ValueInterpreterDisplayUtils} = LinearMemoryInspector;
 
 class MockRemoteObject extends SDK.RemoteObject.LocalJSONObject {
   private objSubtype?: string;
@@ -26,7 +27,7 @@ function createWrapper(array: Uint8Array) {
   return new LinearMemoryInspectorController.RemoteArrayBufferWrapper(mockRemoteArrayBuffer);
 }
 
-describe('LinearMemoryInspectorController', () => {
+describeWithEnvironment('LinearMemoryInspectorController', () => {
   it('throws an error on an invalid (out-of-bounds) memory range request', async () => {
     const array = new Uint8Array([2, 4, 6, 2, 4]);
     const wrapper = createWrapper(array);
@@ -76,6 +77,27 @@ describe('LinearMemoryInspectorController', () => {
         assert.strictEqual(valuesAfter[i], valuesBefore[i]);
       }
     }
+  });
+
+  it('triggers saving and loading of settings on settings changed event', () => {
+    const instance = LinearMemoryInspectorController.LinearMemoryInspectorController.instance();
+
+    const valueTypes =
+        new Set([ValueInterpreterDisplayUtils.ValueType.Int16, ValueInterpreterDisplayUtils.ValueType.Float32]);
+    const valueTypeModes = new Map(
+        [[ValueInterpreterDisplayUtils.ValueType.Int16, ValueInterpreterDisplayUtils.ValueTypeMode.Hexadecimal]]);
+    const settings = {
+      valueTypes,
+      modes: valueTypeModes,
+      endianness: ValueInterpreterDisplayUtils.Endianness.Little,
+    };
+    const defaultSettings = instance.loadSettings();
+    instance.saveSettings(settings);
+
+    assert.notDeepEqual(defaultSettings, settings);
+
+    const actualSettings = instance.loadSettings();
+    assert.deepEqual(actualSettings, settings);
   });
 });
 

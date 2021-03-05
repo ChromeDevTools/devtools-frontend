@@ -69,7 +69,11 @@ export const enum ValueTypeMode {
   Scientific = 'sci',
 }
 
-export const DEFAULT_MODE_MAPPING = new Map([
+export function getDefaultValueTypeMapping(): Map<ValueType, ValueTypeMode> {
+  return new Map(DEFAULT_MODE_MAPPING);
+}
+
+const DEFAULT_MODE_MAPPING = new Map([
   [ValueType.Int8, ValueTypeMode.Decimal],
   [ValueType.Int16, ValueTypeMode.Decimal],
   [ValueType.Int32, ValueTypeMode.Decimal],

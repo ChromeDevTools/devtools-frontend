@@ -34,124 +34,144 @@ import * as UI from '../ui/ui.js';
 
 const UIStrings = {
   /**
-  *@description Text in Rendering Options
+  * @description The name of a checkbox setting in the Rendering tool. This setting highlights areas
+  * of the webpage that need to be repainted (re-drawn by the browser).
   */
   paintFlashing: 'Paint flashing',
   /**
-  *@description Checkbox subtitle for 'Paint flashing' in the Rendering tool
+  * @description Explanation text for the 'Paint flashing' setting in the Rendering tool.
   */
   highlightsAreasOfThePageGreen:
       'Highlights areas of the page (green) that need to be repainted. May not be suitable for people prone to photosensitive epilepsy.',
   /**
-  *@description Text in Rendering Options
+  * @description The name of a checkbox setting in the Rendering tool. This setting highlights areas
+  * (regions) of the page that were shifted (where a 'layout shift' occurred). A layout shift is
+  * where elements on the webpage move around and cause other nearby elements to move as well.
   */
   layoutShiftRegions: 'Layout Shift Regions',
   /**
-  *@description Checkbox subtitle for 'Layout Shift Regions' in the Rendering tool
+  * @description Explanation text for the 'Layout Shift Regions' setting in the Rendering tool.
   */
   highlightsAreasOfThePageBlueThat:
       'Highlights areas of the page (blue) that were shifted. May not be suitable for people prone to photosensitive epilepsy.',
   /**
-  *@description Text in Rendering Options
+  * @description The name of a checkbox setting in the Rendering tool. This setting shows the
+  * borders of layers on the page. Layer is a noun.
   */
   layerBorders: 'Layer borders',
   /**
-  *@description Checkbox subtitle for 'Layer boarders' in the Rendering tool
+  * @description Explanation text for the 'Layer borders' setting in the Rendering tool.
   */
   showsLayerBordersOrangeoliveAnd: 'Shows layer borders (orange/olive) and tiles (cyan).',
   /**
-  *@description Text in Rendering Options
+  * @description The name of a checkbox setting in the Rendering tool. This setting shows the
+  * rendering statistics for frames e.g. frames per second. Frame is a noun.
   */
   frameRenderingStats: 'Frame Rendering Stats',
   /**
-  *@description Checkbox subtitle for 'Frame Rendering Stats' in the Rendering tool
+  * @description Explanation text for the 'Frame Rendering Stats' setting in the Rendering tool.
+  * Plots is a verb. GPU = Graphics Processing Unit.
   */
   plotsFrameThroughputDropped: 'Plots frame throughput, dropped frames distribution, and GPU memory.',
   /**
-  *@description Checkbox title in Rendering tool
+  * @description The name of a checkbox setting in the Rendering tool. This setting highlights
+  * elements that can slow down scrolling on the page.
   */
   scrollingPerformanceIssues: 'Scrolling performance issues',
   /**
-  *@description Text in Rendering Options
+  * @description Explanation text for the 'Scrolling performance issues' setting in the Rendering tool.
   */
   highlightsElementsTealThatCan:
       'Highlights elements (teal) that can slow down scrolling, including touch & wheel event handlers and other main-thread scrolling situations.',
   /**
-  *@description Text to highlight the rendering frames for ads
+  * @description The name of a checkbox setting in the Rendering tool. This setting highlights the
+  * rendering frames for ads that are found on the page.
   */
   highlightAdFrames: 'Highlight ad frames',
   /**
-  *@description Text in Rendering Options
+  * @description Explanation text for the 'Highlight ad frames' setting in the Rendering tool.
   */
   highlightsFramesRedDetectedToBe: 'Highlights frames (red) detected to be ads.',
   /**
-  *@description Text in Rendering Options
+  * @description The name of a checkbox setting in the Rendering tool. This setting shows borders
+  * around hit-test regions. 'hit-test regions' are areas on the page where the browser is listening
+  * for mouse clicks.
   */
   hittestBorders: 'Hit-test borders',
   /**
-  *@description Checkbox subtitle for 'Hit-test borders' in the Rendering tool
+  * @description Explanation text for the 'Hit-test borders' setting in the Rendering tool.
   */
   showsBordersAroundHittestRegions: 'Shows borders around hit-test regions.',
   /**
-  *@description Title of checkbox in Rendering Options
+  * @description The name of a checkbox setting in the Rendering tool. This setting shows an overlay
+  * with Core Web Vitals. Core Web Vitals: https://support.google.com/webmasters/answer/9205520?hl=en
   */
   coreWebVitals: 'Core Web Vitals',
   /**
-  *@description Text in Rendering Options
+  * @description Explanation text for the 'Core Web Vitals' setting in the Rendering tool.
   */
   showsAnOverlayWithCoreWebVitals: 'Shows an overlay with Core Web Vitals.',
   /**
-  *@description Text that refers to disabling local fonts
+  * @description The name of a checkbox setting in the Rendering tool. This setting prevents the
+  * webpage from loading 'local' fonts. Local fonts are fonts that are installed on the user's
+  * computer, and not loaded over the network.
   */
   disableLocalFonts: 'Disable local fonts',
   /**
-  *@description Subtitle of the checkbox to disable local fonts in Rendering panel
+  * @description Explanation text for the 'Disable local fonts' setting in the Rendering tool.
   */
-  disablesLocalSourcesInFontface: 'Disables local() sources in @font-face rules. Requires a page reload to apply.',
+  disablesLocalSourcesInFontface: 'Disables `local()` sources in `@font-face` rules. Requires a page reload to apply.',
   /**
-  *@description Title of a Rendering setting that can be invoked through the Command Menu
+  * @description The name of a checkbox setting in the Rendering tool. This setting
+  * emulates/pretends that the webpage is focused i.e. that the user interacted with it most
+  * recently.
   */
   emulateAFocusedPage: 'Emulate a focused page',
   /**
-  *@description Accessibility subtitle for checkbox in Rendering tool
+  * @description Explanation text for the 'Emulate a focused page' setting in the Rendering tool.
   */
   emulatesAFocusedPage: 'Emulates a focused page.',
   /**
-  *@description Accessibility subtitle for media select element in Rendering tool
+  * @description Explanation text for the 'Emulate CSS media type' setting in the Rendering tool.
+  * This setting overrides the CSS media type on the page:
+  * https://developer.mozilla.org/en-US/docs/Web/CSS/@media#media_types
   */
   forcesMediaTypeForTestingPrint: 'Forces media type for testing print and screen styles',
   /**
-  *@description Subtitle for a select box under the Rendering drawer
+  * @description Explanation text for the 'Forces CSS prefers-color-scheme media' setting in the Rendering tool.
   */
-  forcesCssPreferscolorschemeMedia: 'Forces CSS prefers-color-scheme media feature',
+  forcesCssPreferscolorschemeMedia: 'Forces CSS `prefers-color-scheme` media feature',
   /**
-  *@description Subtitle for a select box under the Rendering drawer
+  * @description Explanation text for the 'Forces CSS prefers-reduced-motion media' setting in the Rendering tool.
   */
-  forcesCssPrefersreducedmotion: 'Forces CSS prefers-reduced-motion media feature',
+  forcesCssPrefersreducedmotion: 'Forces CSS `prefers-reduced-motion` media feature',
   /**
-  *@description Subtitle for a select box under the Rendering drawer
+  * @description Explanation text for the 'Forces CSS prefers-reduced-data media' setting in the Rendering tool.
   */
-  forcesCssPrefersreduceddataMedia: 'Forces CSS prefers-reduced-data media feature',
+  forcesCssPrefersreduceddataMedia: 'Forces CSS `prefers-reduced-data` media feature',
   /**
-  *@description Accessibility subtitle for color-gamut select element in Rendering tool
+  * @description Explanation text for the 'Forces CSS color-gamut media' setting in the Rendering tool.
   */
-  forcesCssColorgamutMediaFeature: 'Forces CSS color-gamut media feature',
+  forcesCssColorgamutMediaFeature: 'Forces CSS `color-gamut` media feature',
   /**
-  *@description Accessibility subtitle for vision deficiency select element in Rendering tool
+  * @description Explanation text for the 'Emulate vision deficiencies' setting in the Rendering tool.
   */
   forcesVisionDeficiencyEmulation: 'Forces vision deficiency emulation',
   /**
-  *@description Title for a checkbox in the Rendering panel
+  * @description The name of a checkbox setting in the Rendering tool. This setting disables the
+  * page from loading images with the AVIF format.
   */
-  disableAvifImageFormat: 'Disable AVIF image format',
+  disableAvifImageFormat: 'Disable `AVIF` image format',
   /**
-  *@description Subtitle for checkboxes that disable WebP and AVIF formats in the Rendering panel
+  * @description Explanation text for both the 'Disable AVIF image format' and 'Disable WebP image
+  * format' settings in the Rendering tool.
   */
   requiresAPageReloadToApplyAnd: 'Requires a page reload to apply and disables caching for image requests.',
   /**
-  *@description Title for a checkbox in the Rendering panel
+  * @description The name of a checkbox setting in the Rendering tool. This setting disables the
+  * page from loading images with the WebP format.
   */
-  disableWebpImageFormat: 'Disable WebP image format',
+  disableWebpImageFormat: 'Disable `WebP` image format',
 };
 const str_ = i18n.i18n.registerUIStrings('inspector_main/RenderingOptions.js', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

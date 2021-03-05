@@ -13,11 +13,15 @@ import * as UI from '../ui/ui.js';
 
 const UIStrings = {
   /**
-  *@description Text that refers to the main target
+  * @description Text that refers to the main target. The main target is the primary webpage that
+  * DevTools is connected to. This text is used in various places in the UI as a label/name to inform
+  * the user which target/webpage they are currently connected to, as DevTools may connect to multiple
+  * targets at the same time in some scenarios.
   */
   main: 'Main',
   /**
-  *@description Icon title in Inspector Main
+  * @description A warning shown to the user when JavaScript is disabled on the webpage that
+  * DevTools is connected to.
   */
   javascriptIsDisabled: 'JavaScript is disabled',
 };

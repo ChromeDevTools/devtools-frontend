@@ -2907,16 +2907,16 @@
     "message": "Ĉór̂é Ŵéb̂ V́ît́âĺŝ"
   },
   "inspector_main/RenderingOptions.js | disableAvifImageFormat": {
-    "message": "D̂íŝáb̂ĺê ÁV̂ÍF̂ ím̂áĝé f̂ór̂ḿât́"
+    "message": "D̂íŝáb̂ĺê AVIF ím̂áĝé f̂ór̂ḿât́"
   },
   "inspector_main/RenderingOptions.js | disableLocalFonts": {
     "message": "D̂íŝáb̂ĺê ĺôćâĺ f̂ón̂t́ŝ"
   },
   "inspector_main/RenderingOptions.js | disablesLocalSourcesInFontface": {
-    "message": "D̂íŝáb̂ĺêś l̂óĉál̂() śôúr̂ćêś îń @f̂ón̂t́-f̂áĉé r̂úl̂éŝ. Ŕêq́ûír̂éŝ á p̂áĝé r̂él̂óâd́ t̂ó âṕp̂ĺŷ."
+    "message": "D̂íŝáb̂ĺêś local() ŝóûŕĉéŝ ín̂ @font-face ŕûĺêś. R̂éq̂úîŕêś â ṕâǵê ŕêĺôád̂ t́ô áp̂ṕl̂ý."
   },
   "inspector_main/RenderingOptions.js | disableWebpImageFormat": {
-    "message": "D̂íŝáb̂ĺê Ẃêb́P̂ ím̂áĝé f̂ór̂ḿât́"
+    "message": "D̂íŝáb̂ĺê WebP ím̂áĝé f̂ór̂ḿât́"
   },
   "inspector_main/RenderingOptions.js | emulateAFocusedPage": {
     "message": "Êḿûĺât́ê á f̂óĉúŝéd̂ ṕâǵê"
@@ -2925,16 +2925,16 @@
     "message": "Êḿûĺât́êś â f́ôćûśêd́ p̂áĝé."
   },
   "inspector_main/RenderingOptions.js | forcesCssColorgamutMediaFeature": {
-    "message": "F̂ór̂ćêś ĈŚŜ ćôĺôŕ-ĝám̂út̂ ḿêd́îá f̂éât́ûŕê"
+    "message": "F̂ór̂ćêś ĈŚŜ color-gamut ḿêd́îá f̂éât́ûŕê"
   },
   "inspector_main/RenderingOptions.js | forcesCssPreferscolorschemeMedia": {
-    "message": "F̂ór̂ćêś ĈŚŜ ṕr̂éf̂ér̂ś-ĉól̂ór̂-śĉh́êḿê ḿêd́îá f̂éât́ûŕê"
+    "message": "F̂ór̂ćêś ĈŚŜ prefers-color-scheme ḿêd́îá f̂éât́ûŕê"
   },
   "inspector_main/RenderingOptions.js | forcesCssPrefersreduceddataMedia": {
-    "message": "F̂ór̂ćêś ĈŚŜ ṕr̂éf̂ér̂ś-r̂éd̂úĉéd̂-d́ât́â ḿêd́îá f̂éât́ûŕê"
+    "message": "F̂ór̂ćêś ĈŚŜ prefers-reduced-data ḿêd́îá f̂éât́ûŕê"
   },
   "inspector_main/RenderingOptions.js | forcesCssPrefersreducedmotion": {
-    "message": "F̂ór̂ćêś ĈŚŜ ṕr̂éf̂ér̂ś-r̂éd̂úĉéd̂-ḿôt́îón̂ ḿêd́îá f̂éât́ûŕê"
+    "message": "F̂ór̂ćêś ĈŚŜ prefers-reduced-motion ḿêd́îá f̂éât́ûŕê"
   },
   "inspector_main/RenderingOptions.js | forcesMediaTypeForTestingPrint": {
     "message": "F̂ór̂ćêś m̂éd̂íâ t́ŷṕê f́ôŕ t̂éŝt́îńĝ ṕr̂ín̂t́ âńd̂ śĉŕêén̂ śt̂ýl̂éŝ"

@@ -14,129 +14,158 @@ import {EmulatedDevice, EmulatedDevicesList, Events, Horizontal, HorizontalSpann
 
 const UIStrings = {
   /**
-  *@description Width input title in Device Mode Toolbar of the Device Toolbar
+  * @description Title of the width input textbox in the Device Mode Toolbar, for the width of the
+  * webpage in pixels.
   */
   width: 'Width',
   /**
-  *@description Height input title in Device Mode Toolbar of the Device Toolbar
+  * @description Title of the height input textbox in the Device Mode Toolbar, for the height of the
+  * webpage in pixels. 'leave empty for full' is an instruction to the user - the webpage will be
+  * full-height if this textbox is left empty.
   */
   heightLeaveEmptyForFull: 'Height (leave empty for full)',
   /**
-  *@description Text for zooming in
+  * @description Tooltip text for a drop-down menu where the user can select the zoom percentage of
+  * the webpage preview.
   */
   zoom: 'Zoom',
   /**
-  *@description Title of device scale item in device mode toolbar of the device toolbar
+  * @description Tooltip tip for a drop-down menu where the user can select the device pixel ratio
+  * (the ratio between the physical pixels on a screen and CSS logical pixels) of the webpage
+  * preview.
   */
   devicePixelRatio: 'Device pixel ratio',
   /**
-  *@description Title of ua item in device mode toolbar of the device toolbar
+  * @description Tooltip tip for a drop-down menu where the user can select the device type e.g.
+  * Mobile, Desktop.
   */
   deviceType: 'Device type',
   /**
-  *@description Text for experimental api button when the api is enabled
+  * @description Tooltip text for a button to disable Experimental Web Platform Features when they are enabled.
   */
   experimentalWebPlatformFeature: '"`Experimental Web Platform Feature`" flag is enabled. Click to disable it.',
   /**
-  *@description Text for experimental api button when the api is disabled
+  * @description Tooltip text for a button to enable Experimental Web Platform Features when they are disabled.
   */
   experimentalWebPlatformFeatureFlag: '"`Experimental Web Platform Feature`" flag is disabled. Click to enable it.',
   /**
-  *@description Text to show more options
+  * @description Tooltip text for a 'three dots' style menu button which shows an expanded set of options.
   */
   moreOptions: 'More options',
   /**
-  *@description A context menu item in the Device Mode Toolbar of the Device Toolbar
-  *@example {30.0} PH1
+  * @description A context menu item in the Device Mode Toolbar. This is a command to resize the
+  * webpage preview to fit the current window. The placholder is the percentage of full-size that
+  * will be displayed after fitting.
+  * @example {30.0} PH1
   */
   fitToWindowF: 'Fit to window ({PH1}%%)',
   /**
-  *@description Text in Device Mode Toolbar of the Device Toolbar
+  * @description A checkbox setting that appears in the context menu for the zoom level, in the
+  * Device Mode Toolbar.
   */
   autoadjustZoom: 'Auto-adjust zoom',
   /**
-  *@description Text in Device Mode Toolbar of the Device Toolbar
-  *@example {4.3} PH1
+  * @description A menu item in the drop-down box that allows the user to select the device pixel
+  * ratio. Labels the default value which varies between device types, represented by the
+  * placeholder, which is a number. In the Device Mode Toolbar.
+  * @example {4.3} PH1
   */
   defaultF: 'Default: {PH1}',
   /**
-  *@description Text in Device Mode Toolbar of the Device Toolbar
+  * @description Command to hide the frame (like a picture frame) around the mobile device screen.
   */
   hideDeviceFrame: 'Hide device frame',
   /**
-  *@description Text in Device Mode Toolbar of the Device Toolbar
+  * @description Command to show the frame (like a picture frame) around the mobile device screen.
   */
   showDeviceFrame: 'Show device frame',
   /**
-  *@description Text in Device Mode Toolbar of the Device Toolbar
+  * @description Command to hide a display in the Device Mode Toolbar that shows the different media
+  * queries for the device, above the device screen.
+  * https://developer.mozilla.org/en-US/docs/Web/CSS/Media_Queries/Using_media_queries
   */
   hideMediaQueries: 'Hide media queries',
   /**
-  *@description Text in Device Mode Toolbar of the Device Toolbar
+  * @description Command to show a display in the Device Mode Toolbar that shows the different media
+  * queries for the device, above the device screen.
+  * https://developer.mozilla.org/en-US/docs/Web/CSS/Media_Queries/Using_media_queries
   */
   showMediaQueries: 'Show media queries',
   /**
-  *@description Text in Device Mode Toolbar of the Device Toolbar
+  * @description Command in the Device Mode Toolbar to hide a virtual ruler (for measuring),
+  * displayed above and next to the device screen.
   */
   hideRulers: 'Hide rulers',
   /**
-  *@description Text to show the measuring rulers on the target
+  * @description Command in the Device Mode Toolbar to show a virtual ruler (for measuring),
+  * displayed above and next to the device screen.
   */
   showRulers: 'Show rulers',
   /**
-  *@description Text in Device Mode Toolbar of the Device Toolbar
+  * @description Command in the Device Mode Toolbar to remove the drop-down menu from the toolbar
+  * that lets the user override the device pixel ratio of the emulated device.
   */
   removeDevicePixelRatio: 'Remove device pixel ratio',
   /**
-  *@description Text in Device Mode Toolbar of the Device Toolbar
+  * @description Command in the Device Mode Toolbar to add the drop-down menu to the toolbar
+  * that lets the user override the device pixel ratio of the emulated device.
   */
   addDevicePixelRatio: 'Add device pixel ratio',
   /**
-  *@description Text in Device Mode Toolbar of the Device Toolbar
+  * @description Command in the Device Mode Toolbar to add the drop-down menu to the toolbar
+  * that lets the user set the device type (e.g. Desktop or Mobile).
   */
   removeDeviceType: 'Remove device type',
   /**
-  *@description Text in Device Mode Toolbar of the Device Toolbar
+  * @description Command in the Device Mode Toolbar to add the drop-down menu to the toolbar
+  * that lets the user add the device type (e.g. Desktop or Mobile).
   */
   addDeviceType: 'Add device type',
   /**
-  *@description A context menu item in the Device Mode Toolbar of the Device Toolbar
+  * @description A context menu item in the Device Mode Toolbar that resets all settings back to
+  * their default values.
   */
   resetToDefaults: 'Reset to defaults',
   /**
-  *@description A context menu item in the Device Mode Toolbar of the Device Toolbar
+  * @description A menu command in the Device Mode Toolbar that closes DevTools.
   */
   closeDevtools: 'Close DevTools',
   /**
-  *@description Device item title in Device Mode Toolbar of the Device Toolbar
+  * @description Title of the device selected in the Device Mode Toolbar. The 'response' device is
+  * not a specific phone/tablet model but a virtual device that can change its height and width
+  * dynamically by clicking and dragging the sides. 'Response' refers to response design:
+  * https://developer.mozilla.org/en-US/docs/Learn/CSS/CSS_layout/Responsive_Design
   */
   responsive: 'Responsive',
   /**
-  *@description A context menu item in the Device Mode Toolbar of the Device Toolbar
+  * @description A context menu item in the Device Mode Toolbar that takes the user to a new screen
+  * where they can add/edit/remove custom devices.
   */
   edit: 'Edit…',
   /**
-  *@description Text in Device Mode Toolbar of the Device Toolbar
+  * @description Text describing the current orientation of the phone/device (vs. landscape).
   */
   portrait: 'Portrait',
   /**
-  *@description Text in Device Mode Toolbar of the Device Toolbar
+  * @description Text describing the current orientation of the phone/device (vs. portrait).
   */
   landscape: 'Landscape',
   /**
-  *@description Title of mode button in device mode toolbar of the device toolbar
+  * @description Title of button in the Device Mode Toolbar which rotates the device 90 degrees.
   */
   rotate: 'Rotate',
   /**
-  *@description Text to show there is nothing
+  * @description Fallback/default text used for the name of a custom device when no name has been
+  * provided by the user.
   */
   none: 'None',
   /**
-  *@description Title of the rotate/screen orientation button
+  * @description Tooltip of the rotate/screen orientation button.
   */
   screenOrientationOptions: 'Screen orientation options',
   /**
-  *@description Title of the span/un-span button
+  * @description Tooltip for a button which turns on/off dual-screen mode, which emulates devices
+  * like tablets which have two screens.
   */
   toggleDualscreenMode: 'Toggle dual-screen mode',
 };

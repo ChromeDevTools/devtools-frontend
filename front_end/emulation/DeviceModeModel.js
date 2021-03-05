@@ -13,50 +13,60 @@ import {EmulatedDevice, Horizontal, HorizontalSpanned, Mode, Vertical, VerticalS
 
 const UIStrings = {
   /**
-  *@description Error message in the Devices settings pane that declares that the width input must be a number
+  * @description Error message shown in the Devices settings pane when the user enters an invalid
+  * width for a custom device.
   */
   widthMustBeANumber: 'Width must be a number.',
   /**
-  *@description Error message in the Devices settings pane that declares the maximum value for the width input
-  *@example {9999} PH1
+  * @description Error message shown in the Devices settings pane when the user has entered a width
+  * for a custom device that is too large.
+  * @example {9999} PH1
   */
   widthMustBeLessThanOrEqualToS: 'Width must be less than or equal to {PH1}.',
   /**
-  *@description Error message in the Devices settings pane that declares the minimum value for the width input
-  *@example {50} PH1
+  * @description Error message shown in the Devices settings pane when the user has entered a width
+  * for a custom device that is too small.
+  * @example {50} PH1
   */
   widthMustBeGreaterThanOrEqualToS: 'Width must be greater than or equal to {PH1}.',
   /**
-  *@description Error message in the Devices settings pane that declares the value of the height input must be a number
+  * @description Error message shown in the Devices settings pane when the user enters an invalid
+  * height for a custom device.
   */
   heightMustBeANumber: 'Height must be a number.',
   /**
-  *@description Error message in the Devices settings pane that declares the maximum value for the height input
-  *@example {9999} PH1
+  * @description Error message shown in the Devices settings pane when the user has entered a height
+  * for a custom device that is too large.
+  * @example {9999} PH1
   */
   heightMustBeLessThanOrEqualToS: 'Height must be less than or equal to {PH1}.',
   /**
-  *@description Error message in the Devices settings pane that declares the minimum value for the height input
-  *@example {50} PH1
+  * @description Error message shown in the Devices settings pane when the user has entered a height
+  * for a custom device that is too small.
+  * @example {50} PH1
   */
   heightMustBeGreaterThanOrEqualTo: 'Height must be greater than or equal to {PH1}.',
   /**
-  *@description Error message in the Devices settings pane that declares that the value for the device pixel ratio must be either a number or empty
+  * @description Error message shown in the Devices settings pane when the user enters an invalid
+  * device pixel ratio for a custom device.
   */
   devicePixelRatioMustBeANumberOr: 'Device pixel ratio must be a number or blank.',
   /**
-  *@description Error message in the Devices settings pane that declares the maximum value for the device pixel ratio input
-  *@example {10} PH1
+  * @description Error message shown in the Devices settings pane when the user enters a device
+  * pixel ratio for a custom device that is too large.
+  * @example {10} PH1
   */
   devicePixelRatioMustBeLessThanOr: 'Device pixel ratio must be less than or equal to {PH1}.',
   /**
-  *@description Error message in the Devices settings pane that declares the minimum value for the device pixel ratio input
-  *@example {0} PH1
+  * @description Error message shown in the Devices settings pane when the user enters a device
+  * pixel ratio for a custom device that is too small.
+  * @example {0} PH1
   */
   devicePixelRatioMustBeGreater: 'Device pixel ratio must be greater than or equal to {PH1}.',
 };
 const str_ = i18n.i18n.registerUIStrings('emulation/DeviceModeModel.js', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+
 /** @type {!DeviceModeModel} */
 let deviceModeModelInstance;
 

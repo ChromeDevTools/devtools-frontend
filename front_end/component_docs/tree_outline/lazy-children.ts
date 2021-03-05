@@ -71,6 +71,7 @@ const data: Components.TreeOutline.TreeOutlineData<string> = {
 
 };
 const component = new Components.TreeOutline.TreeOutline<string>();
+component.setAttribute('toplevelbordercolor', 'var(--color-syntax-1)');
 component.data = data;
 
 document.getElementById('container')?.appendChild(component);

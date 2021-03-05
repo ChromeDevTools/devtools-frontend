@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as ComponentHelpers from '../../component_helpers/component_helpers.js';
 import * as Platform from '../../platform/platform.js';
 import * as Coordinator from '../../render_coordinator/render_coordinator.js';
 import * as LitHtml from '../../third_party/lit-html/lit-html.js';
@@ -46,6 +47,13 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
    * enqueuedRender = render() was called mid-way through an existing render.
    */
   private enqueuedRender = false;
+
+  connectedCallback(): void {
+    const topLevelBorderColor = this.getAttribute('toplevelbordercolor');
+    if (topLevelBorderColor) {
+      ComponentHelpers.SetCSSProperty.set(this, '--override-top-node-border-color', topLevelBorderColor);
+    }
+  }
 
   get data(): TreeOutlineData<TreeNodeDataType> {
     return {
@@ -258,6 +266,7 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
     const listItemClasses = LitHtml.Directives.classMap({
       expanded: isExpandableNode(node) && nodeIsExpanded,
       parent: isExpandableNode(node),
+      'has-border': depth === 0 && this.getAttribute('toplevelbordercolor') !== null,
     });
     const ariaExpandedAttribute = LitHtml.Directives.ifDefined(isExpandableNode(node) ? String(nodeIsExpanded) : undefined);
 
@@ -267,6 +276,7 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
     } else {
       renderedNodeKey = this.defaultRenderer(node, {isExpanded: nodeIsExpanded});
     }
+
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     return LitHtml.html`
@@ -344,6 +354,14 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
           -webkit-mask-position: -16px 0;
         }
 
+        li.has-border {
+          border-top: 1px solid var(--override-top-node-border-color);
+        }
+
+        li.has-border:last-child {
+          border-bottom: 1px solid var(--override-top-node-border-color);
+        }
+
         .arrow-and-key-wrapper {
           border: 2px solid transparent;
           display: block;
@@ -353,7 +371,7 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
           outline: 0;
         }
 
-        [role="treeitem"]:focus > .arrow-and-key-wrapper {
+        [role="treeitem"]:focus-visible > .arrow-and-key-wrapper {
           /* stylelint-disable-next-line color-named */
           border-color: black;
         }

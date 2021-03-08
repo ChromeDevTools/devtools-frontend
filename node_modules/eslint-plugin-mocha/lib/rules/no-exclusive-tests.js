@@ -12,11 +12,13 @@ module.exports = {
     create(context) {
         const astUtils = createAstUtils(context.settings);
 
+        const options = { modifiers: [ 'only' ], modifiersOnly: true };
+        const isDescribe = astUtils.buildIsDescribeAnswerer(options);
+        const isTestCase = astUtils.buildIsTestCaseAnswerer(options);
+
         return {
             CallExpression(node) {
-                const options = { modifiers: [ 'only' ], modifiersOnly: true };
-
-                if (astUtils.isDescribe(node, options) || astUtils.isTestCase(node, options)) {
+                if (isDescribe(node) || isTestCase(node)) {
                     const callee = node.callee;
 
                     context.report({

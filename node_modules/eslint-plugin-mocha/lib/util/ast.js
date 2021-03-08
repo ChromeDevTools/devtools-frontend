@@ -63,21 +63,30 @@ function isFunctionCallWithName(node, names) {
     return isCallExpression(node) && names.includes(getNodeName(node.callee));
 }
 
+// eslint-disable-next-line max-statements
 function createAstUtils(settings) {
     const additionalCustomNames = getAddtionalNames(settings);
 
-    function isDescribe(node, options = {}) {
+    function buildIsDescribeAnswerer(options) {
         const { modifiers = [ 'skip', 'only' ], modifiersOnly = false } = options;
         const describeAliases = getSuiteNames({ modifiersOnly, modifiers, additionalCustomNames });
 
-        return isFunctionCallWithName(node, describeAliases);
+        return (node) => isFunctionCallWithName(node, describeAliases);
     }
 
-    function isTestCase(node, options = {}) {
+    function isDescribe(node, options = {}) {
+        return buildIsDescribeAnswerer(options)(node);
+    }
+
+    function buildIsTestCaseAnswerer(options = {}) {
         const { modifiers = [ 'skip', 'only' ], modifiersOnly = false } = options;
         const testCaseNames = getTestCaseNames({ modifiersOnly, modifiers, additionalCustomNames });
 
-        return isFunctionCallWithName(node, testCaseNames);
+        return (node) => isFunctionCallWithName(node, testCaseNames);
+    }
+
+    function isTestCase(node, options = {}) {
+        return buildIsTestCaseAnswerer(options)(node);
     }
 
     function isSuiteConfigExpression(node) {
@@ -132,7 +141,9 @@ function createAstUtils(settings) {
         isSuiteConfigCall,
         hasParentMochaFunctionCall,
         findReturnStatement,
-        isReturnOfUndefined
+        isReturnOfUndefined,
+        buildIsDescribeAnswerer,
+        buildIsTestCaseAnswerer
     };
 }
 

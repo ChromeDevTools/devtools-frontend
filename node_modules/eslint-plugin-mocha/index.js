@@ -27,6 +27,7 @@ module.exports = {
     },
     configs: {
         recommended: {
+            env: { mocha: true },
             plugins: [ 'mocha' ],
             rules: {
                 'mocha/handle-done-callback': 'error',

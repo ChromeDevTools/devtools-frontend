@@ -28,6 +28,17 @@ function isFunctionName(variable) {
 }
 
 /**
+ * Checks whether or not a given MetaProperty node equals to a given value.
+ * @param {ASTNode} node - A MetaProperty node to check.
+ * @param {string} metaName - The name of `MetaProperty.meta`.
+ * @param {string} propertyName - The name of `MetaProperty.property`.
+ * @returns {boolean} `true` if the node is the specific value.
+ */
+function checkMetaProperty(node, metaName, propertyName) {
+    return node.meta.name === metaName && node.property.name === propertyName;
+}
+
+/**
  * Gets the variable object of `arguments` which is defined implicitly.
  * @param {eslint-scope.Scope} scope - A scope to get.
  * @returns {eslint-scope.Variable} The found variable object.
@@ -228,10 +239,12 @@ module.exports = {
                 }
             },
 
-            MetaProperty() {
+            MetaProperty(node) {
                 const info = stack[stack.length - 1];
 
-                info.meta = true;
+                if (info && checkMetaProperty(node, 'new', 'target')) {
+                    info.meta = true;
+                }
             },
 
             // To skip nested scopes.

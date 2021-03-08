@@ -1,3 +1,24 @@
+## 8.1.0 (March 5, 2021)
+
+### Bug Fixes
+
+* Fix prefer-arrow-callback to not fail when using import.meta ([#266](https://github.com/lo1tuma/eslint-plugin-mocha/pull/266))
+
+### Enhancements
+
+* Speed up no-exclusive-tests and no-pending-tests ([#276](https://github.com/lo1tuma/eslint-plugin-mocha/pull/276))
+* set env.mocha on recommended config ([#273](https://github.com/lo1tuma/eslint-plugin-mocha/pull/273))
+* Add benchmarks for runtime with many files ([#269](https://github.com/lo1tuma/eslint-plugin-mocha/pull/269))
+
+### Documentation
+
+* Remove stray linebreak at top of file ([#272](https://github.com/lo1tuma/eslint-plugin-mocha/pull/272))
+* Add recommended tick to `no-exports` ([#271](https://github.com/lo1tuma/eslint-plugin-mocha/pull/271))
+
+### Build-Related
+
+* Improve benchmark test reliability ([#277](https://github.com/lo1tuma/eslint-plugin-mocha/pull/277))
+
 ## 8.0.0 (August 6, 2020)
 
 ### Breaking Changes

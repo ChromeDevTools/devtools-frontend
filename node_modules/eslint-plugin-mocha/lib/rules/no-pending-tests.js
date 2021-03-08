@@ -11,9 +11,10 @@ module.exports = {
     },
     create(context) {
         const astUtils = createAstUtils(context.settings);
+        const isTestCase = astUtils.buildIsTestCaseAnswerer();
 
         function isPendingMochaTest(node) {
-            return astUtils.isTestCase(node) &&
+            return isTestCase(node) &&
                 node.arguments.length === 1 &&
                 node.arguments[0].type === 'Literal';
         }

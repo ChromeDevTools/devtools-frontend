@@ -57,15 +57,14 @@ async function getExpandedIssuesTitle(): Promise<Set<string>> {
 
 describe('The row\'s icon bucket', async () => {
   it('should display error messages', async () => {
-    await openFileInSourceTab('trusted-type-violations-report-only.rawresponse');
+    await openFileInSourceTab('trusted-type-policy-violation-report-only.rawresponse');
     const iconComponents = await getIconComponents('text-editor-line-decoration-icon-error');
     const messages: string[] = [];
     const expectedMessages = [
       '[Report Only] Refused to create a TrustedTypePolicy named \'policy2\' because it violates the following Content Security Policy directive: "trusted-types policy1".',
-      '[Report Only] This document requires \'TrustedHTML\' assignment.',
     ];
     for (const iconComponent of iconComponents) {
-      await click(iconComponent);
+      await iconComponent.hover();
       const vbox = await waitFor('div.vbox.flex-auto.no-pointer-events');
       const rowMessages = await getRowsText(vbox);
       messages.push(...rowMessages);
@@ -77,7 +76,7 @@ describe('The row\'s icon bucket', async () => {
     await openFileInSourceTab('trusted-type-violations-report-only.rawresponse');
     const bucketIconComponents = await getIconComponents('text-editor-line-decoration-icon-error');
     for (const bucketIconComponent of bucketIconComponents) {
-      await click(bucketIconComponent);
+      await bucketIconComponent.hover();
       const vbox = await waitFor('div.vbox.flex-auto.no-pointer-events');
       const iconComponents = await getIconComponents('text-editor-row-message-icon', vbox);
       for (const iconComponent of iconComponents) {
@@ -97,7 +96,7 @@ describe('The row\'s icon bucket', async () => {
       'Trusted Type expected, but String received',
     ];
     for (const issueIconComponent of issueIconComponents) {
-      await click(issueIconComponent);
+      await issueIconComponent.hover();
       const vbox = await waitFor('div.vbox.flex-auto.no-pointer-events');
       const rowMessages = await getRowsText(vbox);
       issueMessages.push(...rowMessages);

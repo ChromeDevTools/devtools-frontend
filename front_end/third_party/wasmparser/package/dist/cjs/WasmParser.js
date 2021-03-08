@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.bytesToString = exports.isTypeIndex = exports.BinaryReader = exports.Int64 = exports.ElementMode = exports.DataMode = exports.BinaryReaderState = exports.NameType = exports.LinkingType = exports.RelocType = exports.Type = exports.ExternalKind = exports.OperatorCodeNames = exports.OperatorCode = exports.SectionCode = void 0;
+exports.bytesToString = exports.BinaryReader = exports.Int64 = exports.ElementMode = exports.DataMode = exports.BinaryReaderState = exports.NameType = exports.LinkingType = exports.RelocType = exports.Type = exports.TypeKind = exports.ExternalKind = exports.OperatorCodeNames = exports.OperatorCode = exports.SectionCode = void 0;
 // See https://github.com/WebAssembly/design/blob/master/BinaryEncoding.md
 var WASM_MAGIC_NUMBER = 0x6d736100;
 var WASM_SUPPORTED_EXPERIMENTAL_VERSION = 0xd;
@@ -52,6 +52,9 @@ var OperatorCode;
     OperatorCode[OperatorCode["call_indirect"] = 17] = "call_indirect";
     OperatorCode[OperatorCode["return_call"] = 18] = "return_call";
     OperatorCode[OperatorCode["return_call_indirect"] = 19] = "return_call_indirect";
+    OperatorCode[OperatorCode["call_ref"] = 20] = "call_ref";
+    OperatorCode[OperatorCode["return_call_ref"] = 21] = "return_call_ref";
+    OperatorCode[OperatorCode["let"] = 23] = "let";
     OperatorCode[OperatorCode["drop"] = 26] = "drop";
     OperatorCode[OperatorCode["select"] = 27] = "select";
     OperatorCode[OperatorCode["local_get"] = 32] = "local_get";
@@ -216,6 +219,7 @@ var OperatorCode;
     OperatorCode[OperatorCode["i64_extend8_s"] = 194] = "i64_extend8_s";
     OperatorCode[OperatorCode["i64_extend16_s"] = 195] = "i64_extend16_s";
     OperatorCode[OperatorCode["i64_extend32_s"] = 196] = "i64_extend32_s";
+    OperatorCode[OperatorCode["prefix_0xfb"] = 251] = "prefix_0xfb";
     OperatorCode[OperatorCode["prefix_0xfc"] = 252] = "prefix_0xfc";
     OperatorCode[OperatorCode["prefix_0xfd"] = 253] = "prefix_0xfd";
     OperatorCode[OperatorCode["prefix_0xfe"] = 254] = "prefix_0xfe";
@@ -242,6 +246,9 @@ var OperatorCode;
     OperatorCode[OperatorCode["ref_null"] = 208] = "ref_null";
     OperatorCode[OperatorCode["ref_is_null"] = 209] = "ref_is_null";
     OperatorCode[OperatorCode["ref_func"] = 210] = "ref_func";
+    OperatorCode[OperatorCode["ref_as_non_null"] = 211] = "ref_as_non_null";
+    OperatorCode[OperatorCode["br_on_null"] = 212] = "br_on_null";
+    OperatorCode[OperatorCode["ref_eq"] = 213] = "ref_eq";
     OperatorCode[OperatorCode["atomic_notify"] = 65024] = "atomic_notify";
     OperatorCode[OperatorCode["i32_atomic_wait"] = 65025] = "i32_atomic_wait";
     OperatorCode[OperatorCode["i64_atomic_wait"] = 65026] = "i64_atomic_wait";
@@ -321,8 +328,6 @@ var OperatorCode;
     OperatorCode[OperatorCode["v32x4_load_splat"] = 64777] = "v32x4_load_splat";
     OperatorCode[OperatorCode["v64x2_load_splat"] = 64778] = "v64x2_load_splat";
     OperatorCode[OperatorCode["v128_store"] = 64779] = "v128_store";
-    OperatorCode[OperatorCode["v128_load32_zero"] = 65020] = "v128_load32_zero";
-    OperatorCode[OperatorCode["v128_load64_zero"] = 65021] = "v128_load64_zero";
     OperatorCode[OperatorCode["v128_const"] = 64780] = "v128_const";
     OperatorCode[OperatorCode["i8x16_shuffle"] = 64781] = "i8x16_shuffle";
     OperatorCode[OperatorCode["i8x16_swizzle"] = 64782] = "i8x16_swizzle";
@@ -394,13 +399,30 @@ var OperatorCode;
     OperatorCode[OperatorCode["v128_or"] = 64848] = "v128_or";
     OperatorCode[OperatorCode["v128_xor"] = 64849] = "v128_xor";
     OperatorCode[OperatorCode["v128_bitselect"] = 64850] = "v128_bitselect";
+    OperatorCode[OperatorCode["v128_any_true"] = 64851] = "v128_any_true";
+    OperatorCode[OperatorCode["v128_load8_lane"] = 64852] = "v128_load8_lane";
+    OperatorCode[OperatorCode["v128_load16_lane"] = 64853] = "v128_load16_lane";
+    OperatorCode[OperatorCode["v128_load32_lane"] = 64854] = "v128_load32_lane";
+    OperatorCode[OperatorCode["v128_load64_lane"] = 64855] = "v128_load64_lane";
+    OperatorCode[OperatorCode["v128_store8_lane"] = 64856] = "v128_store8_lane";
+    OperatorCode[OperatorCode["v128_store16_lane"] = 64857] = "v128_store16_lane";
+    OperatorCode[OperatorCode["v128_store32_lane"] = 64858] = "v128_store32_lane";
+    OperatorCode[OperatorCode["v128_store64_lane"] = 64859] = "v128_store64_lane";
+    OperatorCode[OperatorCode["v128_load32_zero"] = 64860] = "v128_load32_zero";
+    OperatorCode[OperatorCode["v128_load64_zero"] = 64861] = "v128_load64_zero";
+    OperatorCode[OperatorCode["f32x4_demote_f64x2_zero"] = 64862] = "f32x4_demote_f64x2_zero";
+    OperatorCode[OperatorCode["f64x2_promote_low_f32x4"] = 64863] = "f64x2_promote_low_f32x4";
     OperatorCode[OperatorCode["i8x16_abs"] = 64864] = "i8x16_abs";
     OperatorCode[OperatorCode["i8x16_neg"] = 64865] = "i8x16_neg";
-    OperatorCode[OperatorCode["i8x16_any_true"] = 64866] = "i8x16_any_true";
+    OperatorCode[OperatorCode["i8x16_popcnt"] = 64866] = "i8x16_popcnt";
     OperatorCode[OperatorCode["i8x16_all_true"] = 64867] = "i8x16_all_true";
     OperatorCode[OperatorCode["i8x16_bitmask"] = 64868] = "i8x16_bitmask";
     OperatorCode[OperatorCode["i8x16_narrow_i16x8_s"] = 64869] = "i8x16_narrow_i16x8_s";
     OperatorCode[OperatorCode["i8x16_narrow_i16x8_u"] = 64870] = "i8x16_narrow_i16x8_u";
+    OperatorCode[OperatorCode["f32x4_ceil"] = 103] = "f32x4_ceil";
+    OperatorCode[OperatorCode["f32x4_floor"] = 104] = "f32x4_floor";
+    OperatorCode[OperatorCode["f32x4_trunc"] = 105] = "f32x4_trunc";
+    OperatorCode[OperatorCode["f32x4_nearest"] = 106] = "f32x4_nearest";
     OperatorCode[OperatorCode["i8x16_shl"] = 64875] = "i8x16_shl";
     OperatorCode[OperatorCode["i8x16_shr_s"] = 64876] = "i8x16_shr_s";
     OperatorCode[OperatorCode["i8x16_shr_u"] = 64877] = "i8x16_shr_u";
@@ -410,22 +432,29 @@ var OperatorCode;
     OperatorCode[OperatorCode["i8x16_sub"] = 64881] = "i8x16_sub";
     OperatorCode[OperatorCode["i8x16_sub_sat_s"] = 64882] = "i8x16_sub_sat_s";
     OperatorCode[OperatorCode["i8x16_sub_sat_u"] = 64883] = "i8x16_sub_sat_u";
+    OperatorCode[OperatorCode["f64x2_ceil"] = 64884] = "f64x2_ceil";
+    OperatorCode[OperatorCode["f64x2_floor"] = 64885] = "f64x2_floor";
     OperatorCode[OperatorCode["i8x16_min_s"] = 64886] = "i8x16_min_s";
     OperatorCode[OperatorCode["i8x16_min_u"] = 64887] = "i8x16_min_u";
     OperatorCode[OperatorCode["i8x16_max_s"] = 64888] = "i8x16_max_s";
     OperatorCode[OperatorCode["i8x16_max_u"] = 64889] = "i8x16_max_u";
+    OperatorCode[OperatorCode["f64x2_trunc"] = 64890] = "f64x2_trunc";
     OperatorCode[OperatorCode["i8x16_avgr_u"] = 64891] = "i8x16_avgr_u";
+    OperatorCode[OperatorCode["i16x8_extadd_pairwise_i8x16_s"] = 64892] = "i16x8_extadd_pairwise_i8x16_s";
+    OperatorCode[OperatorCode["i16x8_extadd_pairwise_i8x16_u"] = 64893] = "i16x8_extadd_pairwise_i8x16_u";
+    OperatorCode[OperatorCode["i32x4_extadd_pairwise_i16x8_s"] = 64894] = "i32x4_extadd_pairwise_i16x8_s";
+    OperatorCode[OperatorCode["i32x4_extadd_pairwise_i16x8_u"] = 64895] = "i32x4_extadd_pairwise_i16x8_u";
     OperatorCode[OperatorCode["i16x8_abs"] = 64896] = "i16x8_abs";
     OperatorCode[OperatorCode["i16x8_neg"] = 64897] = "i16x8_neg";
-    OperatorCode[OperatorCode["i16x8_any_true"] = 64898] = "i16x8_any_true";
+    OperatorCode[OperatorCode["i16x8_q15mulr_sat_s"] = 64898] = "i16x8_q15mulr_sat_s";
     OperatorCode[OperatorCode["i16x8_all_true"] = 64899] = "i16x8_all_true";
     OperatorCode[OperatorCode["i16x8_bitmask"] = 64900] = "i16x8_bitmask";
     OperatorCode[OperatorCode["i16x8_narrow_i32x4_s"] = 64901] = "i16x8_narrow_i32x4_s";
     OperatorCode[OperatorCode["i16x8_narrow_i32x4_u"] = 64902] = "i16x8_narrow_i32x4_u";
-    OperatorCode[OperatorCode["i16x8_widen_low_i8x16_s"] = 64903] = "i16x8_widen_low_i8x16_s";
-    OperatorCode[OperatorCode["i16x8_widen_high_i8x16_s"] = 64904] = "i16x8_widen_high_i8x16_s";
-    OperatorCode[OperatorCode["i16x8_widen_low_i8x16_u"] = 64905] = "i16x8_widen_low_i8x16_u";
-    OperatorCode[OperatorCode["i16x8_widen_high_i8x16_u"] = 64906] = "i16x8_widen_high_i8x16_u";
+    OperatorCode[OperatorCode["i16x8_extend_low_i8x16_s"] = 64903] = "i16x8_extend_low_i8x16_s";
+    OperatorCode[OperatorCode["i16x8_extend_high_i8x16_s"] = 64904] = "i16x8_extend_high_i8x16_s";
+    OperatorCode[OperatorCode["i16x8_extend_low_i8x16_u"] = 64905] = "i16x8_extend_low_i8x16_u";
+    OperatorCode[OperatorCode["i16x8_extend_high_i8x16_u"] = 64906] = "i16x8_extend_high_i8x16_u";
     OperatorCode[OperatorCode["i16x8_shl"] = 64907] = "i16x8_shl";
     OperatorCode[OperatorCode["i16x8_shr_s"] = 64908] = "i16x8_shr_s";
     OperatorCode[OperatorCode["i16x8_shr_u"] = 64909] = "i16x8_shr_u";
@@ -435,21 +464,25 @@ var OperatorCode;
     OperatorCode[OperatorCode["i16x8_sub"] = 64913] = "i16x8_sub";
     OperatorCode[OperatorCode["i16x8_sub_sat_s"] = 64914] = "i16x8_sub_sat_s";
     OperatorCode[OperatorCode["i16x8_sub_sat_u"] = 64915] = "i16x8_sub_sat_u";
+    OperatorCode[OperatorCode["f64x2_nearest"] = 64916] = "f64x2_nearest";
     OperatorCode[OperatorCode["i16x8_mul"] = 64917] = "i16x8_mul";
     OperatorCode[OperatorCode["i16x8_min_s"] = 64918] = "i16x8_min_s";
     OperatorCode[OperatorCode["i16x8_min_u"] = 64919] = "i16x8_min_u";
     OperatorCode[OperatorCode["i16x8_max_s"] = 64920] = "i16x8_max_s";
     OperatorCode[OperatorCode["i16x8_max_u"] = 64921] = "i16x8_max_u";
     OperatorCode[OperatorCode["i16x8_avgr_u"] = 64923] = "i16x8_avgr_u";
+    OperatorCode[OperatorCode["i16x8_extmul_low_i8x16_s"] = 64924] = "i16x8_extmul_low_i8x16_s";
+    OperatorCode[OperatorCode["i16x8_extmul_high_i8x16_s"] = 64925] = "i16x8_extmul_high_i8x16_s";
+    OperatorCode[OperatorCode["i16x8_extmul_low_i8x16_u"] = 64926] = "i16x8_extmul_low_i8x16_u";
+    OperatorCode[OperatorCode["i16x8_extmul_high_i8x16_u"] = 64927] = "i16x8_extmul_high_i8x16_u";
     OperatorCode[OperatorCode["i32x4_abs"] = 64928] = "i32x4_abs";
     OperatorCode[OperatorCode["i32x4_neg"] = 64929] = "i32x4_neg";
-    OperatorCode[OperatorCode["i32x4_any_true"] = 64930] = "i32x4_any_true";
     OperatorCode[OperatorCode["i32x4_all_true"] = 64931] = "i32x4_all_true";
     OperatorCode[OperatorCode["i32x4_bitmask"] = 64932] = "i32x4_bitmask";
-    OperatorCode[OperatorCode["i32x4_widen_low_i16x8_s"] = 64935] = "i32x4_widen_low_i16x8_s";
-    OperatorCode[OperatorCode["i32x4_widen_high_i16x8_s"] = 64936] = "i32x4_widen_high_i16x8_s";
-    OperatorCode[OperatorCode["i32x4_widen_low_i16x8_u"] = 64937] = "i32x4_widen_low_i16x8_u";
-    OperatorCode[OperatorCode["i32x4_widen_high_i16x8_u"] = 64938] = "i32x4_widen_high_i16x8_u";
+    OperatorCode[OperatorCode["i32x4_extend_low_i16x8_s"] = 64935] = "i32x4_extend_low_i16x8_s";
+    OperatorCode[OperatorCode["i32x4_extend_high_i16x8_s"] = 64936] = "i32x4_extend_high_i16x8_s";
+    OperatorCode[OperatorCode["i32x4_extend_low_i16x8_u"] = 64937] = "i32x4_extend_low_i16x8_u";
+    OperatorCode[OperatorCode["i32x4_extend_high_i16x8_u"] = 64938] = "i32x4_extend_high_i16x8_u";
     OperatorCode[OperatorCode["i32x4_shl"] = 64939] = "i32x4_shl";
     OperatorCode[OperatorCode["i32x4_shr_s"] = 64940] = "i32x4_shr_s";
     OperatorCode[OperatorCode["i32x4_shr_u"] = 64941] = "i32x4_shr_u";
@@ -461,13 +494,34 @@ var OperatorCode;
     OperatorCode[OperatorCode["i32x4_max_s"] = 64952] = "i32x4_max_s";
     OperatorCode[OperatorCode["i32x4_max_u"] = 64953] = "i32x4_max_u";
     OperatorCode[OperatorCode["i32x4_dot_i16x8_s"] = 64954] = "i32x4_dot_i16x8_s";
+    OperatorCode[OperatorCode["i32x4_extmul_low_i16x8_s"] = 64956] = "i32x4_extmul_low_i16x8_s";
+    OperatorCode[OperatorCode["i32x4_extmul_high_i16x8_s"] = 64957] = "i32x4_extmul_high_i16x8_s";
+    OperatorCode[OperatorCode["i32x4_extmul_low_i16x8_u"] = 64958] = "i32x4_extmul_low_i16x8_u";
+    OperatorCode[OperatorCode["i32x4_extmul_high_i16x8_u"] = 64959] = "i32x4_extmul_high_i16x8_u";
+    OperatorCode[OperatorCode["i64x2_abs"] = 64960] = "i64x2_abs";
     OperatorCode[OperatorCode["i64x2_neg"] = 64961] = "i64x2_neg";
+    OperatorCode[OperatorCode["i64x2_all_true"] = 64963] = "i64x2_all_true";
+    OperatorCode[OperatorCode["i64x2_bitmask"] = 64964] = "i64x2_bitmask";
+    OperatorCode[OperatorCode["i64x2_extend_low_i32x4_s"] = 64967] = "i64x2_extend_low_i32x4_s";
+    OperatorCode[OperatorCode["i64x2_extend_high_i32x4_s"] = 64968] = "i64x2_extend_high_i32x4_s";
+    OperatorCode[OperatorCode["i64x2_extend_low_i32x4_u"] = 64969] = "i64x2_extend_low_i32x4_u";
+    OperatorCode[OperatorCode["i64x2_extend_high_i32x4_u"] = 64970] = "i64x2_extend_high_i32x4_u";
     OperatorCode[OperatorCode["i64x2_shl"] = 64971] = "i64x2_shl";
     OperatorCode[OperatorCode["i64x2_shr_s"] = 64972] = "i64x2_shr_s";
     OperatorCode[OperatorCode["i64x2_shr_u"] = 64973] = "i64x2_shr_u";
     OperatorCode[OperatorCode["i64x2_add"] = 64974] = "i64x2_add";
     OperatorCode[OperatorCode["i64x2_sub"] = 64977] = "i64x2_sub";
     OperatorCode[OperatorCode["i64x2_mul"] = 64981] = "i64x2_mul";
+    OperatorCode[OperatorCode["i64x2_eq"] = 64982] = "i64x2_eq";
+    OperatorCode[OperatorCode["i64x2_ne"] = 64983] = "i64x2_ne";
+    OperatorCode[OperatorCode["i64x2_lt_s"] = 64984] = "i64x2_lt_s";
+    OperatorCode[OperatorCode["i64x2_gt_s"] = 64985] = "i64x2_gt_s";
+    OperatorCode[OperatorCode["i64x2_le_s"] = 64986] = "i64x2_le_s";
+    OperatorCode[OperatorCode["i64x2_ge_s"] = 64987] = "i64x2_ge_s";
+    OperatorCode[OperatorCode["i64x2_extmul_low_i32x4_s"] = 64988] = "i64x2_extmul_low_i32x4_s";
+    OperatorCode[OperatorCode["i64x2_extmul_high_i32x4_s"] = 64989] = "i64x2_extmul_high_i32x4_s";
+    OperatorCode[OperatorCode["i64x2_extmul_low_i32x4_u"] = 64990] = "i64x2_extmul_low_i32x4_u";
+    OperatorCode[OperatorCode["i64x2_extmul_high_i32x4_u"] = 64991] = "i64x2_extmul_high_i32x4_u";
     OperatorCode[OperatorCode["f32x4_abs"] = 64992] = "f32x4_abs";
     OperatorCode[OperatorCode["f32x4_neg"] = 64993] = "f32x4_neg";
     OperatorCode[OperatorCode["f32x4_sqrt"] = 64995] = "f32x4_sqrt";
@@ -494,6 +548,41 @@ var OperatorCode;
     OperatorCode[OperatorCode["i32x4_trunc_sat_f32x4_u"] = 65017] = "i32x4_trunc_sat_f32x4_u";
     OperatorCode[OperatorCode["f32x4_convert_i32x4_s"] = 65018] = "f32x4_convert_i32x4_s";
     OperatorCode[OperatorCode["f32x4_convert_i32x4_u"] = 65019] = "f32x4_convert_i32x4_u";
+    OperatorCode[OperatorCode["i32x4_trunc_sat_f64x2_s_zero"] = 65020] = "i32x4_trunc_sat_f64x2_s_zero";
+    OperatorCode[OperatorCode["i32x4_trunc_sat_f64x2_u_zero"] = 65021] = "i32x4_trunc_sat_f64x2_u_zero";
+    OperatorCode[OperatorCode["f64x2_convert_low_i32x4_s"] = 65022] = "f64x2_convert_low_i32x4_s";
+    OperatorCode[OperatorCode["f64x2_convert_low_i32x4_u"] = 65023] = "f64x2_convert_low_i32x4_u";
+    // GC proposal.
+    OperatorCode[OperatorCode["struct_new_with_rtt"] = 64257] = "struct_new_with_rtt";
+    OperatorCode[OperatorCode["struct_new_default_with_rtt"] = 64258] = "struct_new_default_with_rtt";
+    OperatorCode[OperatorCode["struct_get"] = 64259] = "struct_get";
+    OperatorCode[OperatorCode["struct_get_s"] = 64260] = "struct_get_s";
+    OperatorCode[OperatorCode["struct_get_u"] = 64261] = "struct_get_u";
+    OperatorCode[OperatorCode["struct_set"] = 64262] = "struct_set";
+    OperatorCode[OperatorCode["array_new_with_rtt"] = 64273] = "array_new_with_rtt";
+    OperatorCode[OperatorCode["array_new_default_with_rtt"] = 64274] = "array_new_default_with_rtt";
+    OperatorCode[OperatorCode["array_get"] = 64275] = "array_get";
+    OperatorCode[OperatorCode["array_get_s"] = 64276] = "array_get_s";
+    OperatorCode[OperatorCode["array_get_u"] = 64277] = "array_get_u";
+    OperatorCode[OperatorCode["array_set"] = 64278] = "array_set";
+    OperatorCode[OperatorCode["array_len"] = 64279] = "array_len";
+    OperatorCode[OperatorCode["i31_new"] = 64288] = "i31_new";
+    OperatorCode[OperatorCode["i31_get_s"] = 64289] = "i31_get_s";
+    OperatorCode[OperatorCode["i31_get_u"] = 64290] = "i31_get_u";
+    OperatorCode[OperatorCode["rtt_canon"] = 64304] = "rtt_canon";
+    OperatorCode[OperatorCode["rtt_sub"] = 64305] = "rtt_sub";
+    OperatorCode[OperatorCode["ref_test"] = 64320] = "ref_test";
+    OperatorCode[OperatorCode["ref_cast"] = 64321] = "ref_cast";
+    OperatorCode[OperatorCode["br_on_cast"] = 64322] = "br_on_cast";
+    OperatorCode[OperatorCode["ref_is_func"] = 64336] = "ref_is_func";
+    OperatorCode[OperatorCode["ref_is_data"] = 64337] = "ref_is_data";
+    OperatorCode[OperatorCode["ref_is_i31"] = 64338] = "ref_is_i31";
+    OperatorCode[OperatorCode["ref_as_func"] = 64344] = "ref_as_func";
+    OperatorCode[OperatorCode["ref_as_data"] = 64345] = "ref_as_data";
+    OperatorCode[OperatorCode["ref_as_i31"] = 64346] = "ref_as_i31";
+    OperatorCode[OperatorCode["br_on_func"] = 64352] = "br_on_func";
+    OperatorCode[OperatorCode["br_on_data"] = 64353] = "br_on_data";
+    OperatorCode[OperatorCode["br_on_i31"] = 64354] = "br_on_i31";
 })(OperatorCode = exports.OperatorCode || (exports.OperatorCode = {}));
 exports.OperatorCodeNames = [
     "unreachable",
@@ -516,10 +605,10 @@ exports.OperatorCodeNames = [
     "call_indirect",
     "return_call",
     "return_call_indirect",
+    "call_ref",
+    "return_call_ref",
     undefined,
-    undefined,
-    undefined,
-    undefined,
+    "let",
     undefined,
     undefined,
     "drop",
@@ -707,9 +796,9 @@ exports.OperatorCodeNames = [
     "ref.null",
     "ref.is_null",
     "ref.func",
-    undefined,
-    undefined,
-    undefined,
+    "ref.as_non_null",
+    "br_on_null",
+    "ref.eq",
     undefined,
     undefined,
     undefined,
@@ -859,30 +948,30 @@ exports.OperatorCodeNames = [
     "v128.or",
     "v128.xor",
     "v128.bitselect",
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
+    "v128.any_true",
+    "v128.load8_lane",
+    "v128.load16_lane",
+    "v128.load32_lane",
+    "v128.load64_lane",
+    "v128.store8_lane",
+    "v128.store16_lane",
+    "v128.store32_lane",
+    "v128.store64_lane",
+    "v128.load32_zero",
+    "v128.load64_zero",
+    "f32x4.demote_f64x2_zero",
+    "f64x2.promote_low_f32x4",
     "i8x16.abs",
     "i8x16.neg",
-    "i8x16.any_true",
+    "i8x16_popcnt",
     "i8x16.all_true",
     "i8x16.bitmask",
     "i8x16.narrow_i16x8_s",
     "i8x16.narrow_i16x8_u",
-    undefined,
-    undefined,
-    undefined,
-    undefined,
+    "f32x4.ceil",
+    "f32x4.floor",
+    "f32x4.trunc",
+    "f32x4.nearest",
     "i8x16.shl",
     "i8x16.shr_s",
     "i8x16.shr_u",
@@ -892,29 +981,29 @@ exports.OperatorCodeNames = [
     "i8x16.sub",
     "i8x16.sub_sat_s",
     "i8x16.sub_sat_u",
-    undefined,
-    undefined,
+    "f64x2.ceil",
+    "f64x2.floor",
     "i8x16.min_s",
     "i8x16.min_u",
     "i8x16.max_s",
     "i8x16.max_u",
-    undefined,
+    "f64x2.trunc",
     "i8x16.avgr_u",
-    undefined,
-    undefined,
-    undefined,
-    undefined,
+    "i16x8.extadd_pairwise_i8x16_s",
+    "i16x8.extadd_pairwise_i8x16_u",
+    "i32x4.extadd_pairwise_i16x8_s",
+    "i32x4.extadd_pairwise_i16x8_u",
     "i16x8.abs",
     "i16x8.neg",
-    "i16x8.any_true",
+    "i16x8.q15mulr_sat_s",
     "i16x8.all_true",
     "i16x8.bitmask",
     "i16x8.narrow_i32x4_s",
     "i16x8.narrow_i32x4_u",
-    "i16x8.widen_low_i8x16_s",
-    "i16x8.widen_high_i8x16_s",
-    "i16x8.widen_low_i8x16_u",
-    "i16x8.widen_high_i8x16_u",
+    "i16x8.extend_low_i8x16_s",
+    "i16x8.extend_high_i8x16_s",
+    "i16x8.extend_low_i8x16_u",
+    "i16x8.extend_high_i8x16_u",
     "i16x8.shl",
     "i16x8.shr_s",
     "i16x8.shr_u",
@@ -924,7 +1013,7 @@ exports.OperatorCodeNames = [
     "i16x8.sub",
     "i16x8.sub_sat_s",
     "i16x8.sub_sat_u",
-    undefined,
+    "f64x2.nearest",
     "i16x8.mul",
     "i16x8.min_s",
     "i16x8.min_u",
@@ -932,21 +1021,21 @@ exports.OperatorCodeNames = [
     "i16x8.max_u",
     undefined,
     "i16x8.avgr_u",
-    undefined,
-    undefined,
-    undefined,
-    undefined,
+    "i16x8.extmul_low_i8x16_s",
+    "i16x8.extmul_high_i8x16_s",
+    "i16x8.extmul_low_i8x16_u",
+    "i16x8.extmul_high_i8x16_u",
     "i32x4.abs",
     "i32x4.neg",
-    "i32x4.any_true",
+    undefined,
     "i32x4.all_true",
     "i32x4.bitmask",
     undefined,
     undefined,
-    "i32x4.widen_low_i16x8_s",
-    "i32x4.widen_high_i16x8_s",
-    "i32x4.widen_low_i16x8_u",
-    "i32x4.widen_high_i16x8_u",
+    "i32x4.extend_low_i16x8_s",
+    "i32x4.extend_high_i16x8_s",
+    "i32x4.extend_low_i16x8_u",
+    "i32x4.extend_high_i16x8_u",
     "i32x4.shl",
     "i32x4.shr_s",
     "i32x4.shr_u",
@@ -964,21 +1053,21 @@ exports.OperatorCodeNames = [
     "i32x4.max_u",
     "i32x4.dot_i16x8_s",
     undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
+    "i32x4.extmul_low_i16x8_s",
+    "i32x4.extmul_high_i16x8_s",
+    "i32x4.extmul_low_i16x8_u",
+    "i32x4.extmul_high_i16x8_u",
+    "i64x2.abs",
     "i64x2.neg",
     undefined,
+    "i64x2.all_true",
+    "i64x2.bitmask",
     undefined,
     undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
+    "i64x2.extend_low_i32x4_s",
+    "i64x2.extend_high_i32x4_s",
+    "i64x2.extend_low_i32x4_u",
+    "i64x2.extend_high_i32x4_u",
     "i64x2.shl",
     "i64x2.shr_s",
     "i64x2.shr_u",
@@ -990,16 +1079,16 @@ exports.OperatorCodeNames = [
     undefined,
     undefined,
     "i64x2.mul",
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
+    "i64x2.eq",
+    "i64x2.ne",
+    "i64x2.lt_s",
+    "i64x2.gt_s",
+    "i64x2.le_s",
+    "i64x2.ge_s",
+    "i64x2.extmul_low_i32x4_s",
+    "i64x2.extmul_high_i32x4_s",
+    "i64x2.extmul_low_i32x4_u",
+    "i64x2.extmul_high_i32x4_u",
     "f32x4.abs",
     "f32x4.neg",
     undefined,
@@ -1028,8 +1117,10 @@ exports.OperatorCodeNames = [
     "i32x4.trunc_sat_f32x4_u",
     "f32x4.convert_i32x4_s",
     "f32x4.convert_i32x4_u",
-    "v128.load32_zero",
-    "v128.load64_zero",
+    "i32x4.trunc_sat_f64x2_s_zero",
+    "i32x4.trunc_sat_f64x2_u_zero",
+    "f64x2.convert_low_i32x4_s",
+    "f64x2.convert_low_i32x4_u",
 ].forEach(function (s, i) {
     exports.OperatorCodeNames[0xfd00 | i] = s;
 });
@@ -1116,6 +1207,36 @@ exports.OperatorCodeNames = [
 ].forEach(function (s, i) {
     exports.OperatorCodeNames[0xfe00 | i] = s;
 });
+exports.OperatorCodeNames[0xfb01] = "struct.new_with_rtt";
+exports.OperatorCodeNames[0xfb02] = "struct.new_default_with_rtt";
+exports.OperatorCodeNames[0xfb03] = "struct.get";
+exports.OperatorCodeNames[0xfb04] = "struct.get_s";
+exports.OperatorCodeNames[0xfb05] = "struct.get_u";
+exports.OperatorCodeNames[0xfb06] = "struct.set";
+exports.OperatorCodeNames[0xfb11] = "array.new_with_rtt";
+exports.OperatorCodeNames[0xfb12] = "array.new_default_with_rtt";
+exports.OperatorCodeNames[0xfb13] = "array.get";
+exports.OperatorCodeNames[0xfb14] = "array.get_s";
+exports.OperatorCodeNames[0xfb15] = "array.get_u";
+exports.OperatorCodeNames[0xfb16] = "array.set";
+exports.OperatorCodeNames[0xfb17] = "array.len";
+exports.OperatorCodeNames[0xfb20] = "i31.new";
+exports.OperatorCodeNames[0xfb21] = "i31.get_s";
+exports.OperatorCodeNames[0xfb22] = "i31.get_u";
+exports.OperatorCodeNames[0xfb30] = "rtt.canon";
+exports.OperatorCodeNames[0xfb31] = "rtt.sub";
+exports.OperatorCodeNames[0xfb40] = "ref.test";
+exports.OperatorCodeNames[0xfb41] = "ref.cast";
+exports.OperatorCodeNames[0xfb42] = "br_on_cast";
+exports.OperatorCodeNames[0xfb50] = "ref.is_func";
+exports.OperatorCodeNames[0xfb51] = "ref.is_data";
+exports.OperatorCodeNames[0xfb52] = "ref.is_i31";
+exports.OperatorCodeNames[0xfb58] = "ref.as_func";
+exports.OperatorCodeNames[0xfb59] = "ref.as_data";
+exports.OperatorCodeNames[0xfb5a] = "ref.as_i31";
+exports.OperatorCodeNames[0xfb60] = "br_on_func";
+exports.OperatorCodeNames[0xfb61] = "br_on_data";
+exports.OperatorCodeNames[0xfb62] = "br_on_i31";
 var ExternalKind;
 (function (ExternalKind) {
     ExternalKind[ExternalKind["Function"] = 0] = "Function";
@@ -1123,19 +1244,61 @@ var ExternalKind;
     ExternalKind[ExternalKind["Memory"] = 2] = "Memory";
     ExternalKind[ExternalKind["Global"] = 3] = "Global";
 })(ExternalKind = exports.ExternalKind || (exports.ExternalKind = {}));
-var Type;
-(function (Type) {
-    Type[Type["unspecified"] = 0] = "unspecified";
-    Type[Type["i32"] = -1] = "i32";
-    Type[Type["i64"] = -2] = "i64";
-    Type[Type["f32"] = -3] = "f32";
-    Type[Type["f64"] = -4] = "f64";
-    Type[Type["v128"] = -5] = "v128";
-    Type[Type["funcref"] = -16] = "funcref";
-    Type[Type["externref"] = -17] = "externref";
-    Type[Type["func"] = -32] = "func";
-    Type[Type["empty_block_type"] = -64] = "empty_block_type";
-})(Type = exports.Type || (exports.Type = {}));
+var TypeKind;
+(function (TypeKind) {
+    TypeKind[TypeKind["unspecified"] = 0] = "unspecified";
+    TypeKind[TypeKind["i32"] = -1] = "i32";
+    TypeKind[TypeKind["i64"] = -2] = "i64";
+    TypeKind[TypeKind["f32"] = -3] = "f32";
+    TypeKind[TypeKind["f64"] = -4] = "f64";
+    TypeKind[TypeKind["v128"] = -5] = "v128";
+    TypeKind[TypeKind["i8"] = -6] = "i8";
+    TypeKind[TypeKind["i16"] = -7] = "i16";
+    TypeKind[TypeKind["funcref"] = -16] = "funcref";
+    TypeKind[TypeKind["externref"] = -17] = "externref";
+    TypeKind[TypeKind["anyref"] = -18] = "anyref";
+    TypeKind[TypeKind["eqref"] = -19] = "eqref";
+    TypeKind[TypeKind["optref"] = -20] = "optref";
+    TypeKind[TypeKind["ref"] = -21] = "ref";
+    TypeKind[TypeKind["i31ref"] = -22] = "i31ref";
+    TypeKind[TypeKind["rtt_d"] = -23] = "rtt_d";
+    TypeKind[TypeKind["rtt"] = -24] = "rtt";
+    TypeKind[TypeKind["dataref"] = -25] = "dataref";
+    TypeKind[TypeKind["func"] = -32] = "func";
+    TypeKind[TypeKind["struct"] = -33] = "struct";
+    TypeKind[TypeKind["array"] = -34] = "array";
+    TypeKind[TypeKind["empty_block_type"] = -64] = "empty_block_type";
+})(TypeKind = exports.TypeKind || (exports.TypeKind = {}));
+var Type = /** @class */ (function () {
+    function Type(kind, index, depth) {
+        if (index === void 0) { index = -1; }
+        if (depth === void 0) { depth = -1; }
+        if (kind < 0 || (kind === 0 && index >= 0)) {
+            // all good
+        }
+        else {
+            throw new Error("invalid type: " + kind + "/" + index + "/" + depth);
+        }
+        this.kind = kind;
+        this.index = index;
+        this.depth = depth;
+        // Canonicalize (ref any) to (anyref) etc.
+        if ((index === -16 /* funcref */ && kind === -20 /* optref */) ||
+            (index === -17 /* externref */ && kind === -20 /* optref */) ||
+            (index === -18 /* anyref */ && kind === -20 /* optref */) ||
+            (index === -19 /* eqref */ && kind === -20 /* optref */) ||
+            (index === -22 /* i31ref */ && kind === -21 /* ref */) ||
+            (index === -25 /* dataref */ && kind === -21 /* ref */)) {
+            this.kind = index;
+            this.index = -1;
+        }
+    }
+    // Convenience singletons.
+    Type.funcref = new Type(-16 /* funcref */);
+    Type.externref = new Type(-17 /* externref */);
+    return Type;
+}());
+exports.Type = Type;
 var RelocType;
 (function (RelocType) {
     RelocType[RelocType["FunctionIndex_LEB"] = 0] = "FunctionIndex_LEB";
@@ -1160,6 +1323,7 @@ var NameType;
     NameType[NameType["Table"] = 5] = "Table";
     NameType[NameType["Memory"] = 6] = "Memory";
     NameType[NameType["Global"] = 7] = "Global";
+    NameType[NameType["Field"] = 10] = "Field";
 })(NameType = exports.NameType || (exports.NameType = {}));
 var BinaryReaderState;
 (function (BinaryReaderState) {
@@ -1493,6 +1657,52 @@ var BinaryReader = /** @class */ (function () {
         }
         return new Int64(result);
     };
+    // Reads any "s33" (signed 33-bit integer) value correctly; no guarantees
+    // outside that range.
+    BinaryReader.prototype.readHeapType = function () {
+        var result = 0;
+        var shift = 0;
+        var byte;
+        while (true) {
+            byte = this.readUint8();
+            if (shift === 28) {
+                var signed = (byte << 25) >> 25;
+                return signed * Math.pow(2, 28) + result;
+            }
+            result |= (byte & 0x7f) << shift;
+            shift += 7;
+            if ((byte & 0x80) === 0)
+                break;
+        }
+        shift = 32 - shift;
+        return (result << shift) >> shift;
+    };
+    BinaryReader.prototype.readTypeInternal = function (kind) {
+        if (kind === -21 /* ref */ ||
+            kind === -20 /* optref */ ||
+            kind === -24 /* rtt */) {
+            var index = this.readHeapType();
+            return new Type(kind, index);
+        }
+        if (kind === -23 /* rtt_d */) {
+            var index = this.readHeapType();
+            var depth = this.readVarUint32();
+            return new Type(kind, index, depth);
+        }
+        return new Type(kind);
+    };
+    BinaryReader.prototype.readType = function () {
+        var kind = this.readVarInt7();
+        return this.readTypeInternal(kind);
+    };
+    BinaryReader.prototype.readBlockType = function () {
+        var block_type = this.readHeapType();
+        if (block_type < 0) {
+            return this.readTypeInternal(block_type);
+        }
+        var func_index = block_type;
+        return new Type(0 /* unspecified */, func_index);
+    };
     BinaryReader.prototype.readStringBytes = function () {
         var length = this.readVarUint32() >>> 0;
         return this.readBytes(length);
@@ -1518,19 +1728,41 @@ var BinaryReader = /** @class */ (function () {
         return this.hasBytes(this._sectionRange.end - this._pos);
     };
     BinaryReader.prototype.readFuncType = function () {
-        var form = this.readVarInt7();
         var paramCount = this.readVarUint32() >>> 0;
-        var paramTypes = new Int8Array(paramCount);
+        var paramTypes = new Array(paramCount);
         for (var i = 0; i < paramCount; i++)
-            paramTypes[i] = this.readVarInt7();
+            paramTypes[i] = this.readType();
         var returnCount = this.readVarUint1();
-        var returnTypes = new Int8Array(returnCount);
+        var returnTypes = new Array(returnCount);
         for (var i = 0; i < returnCount; i++)
-            returnTypes[i] = this.readVarInt7();
+            returnTypes[i] = this.readType();
         return {
-            form: form,
+            form: -32 /* func */,
             params: paramTypes,
             returns: returnTypes,
+        };
+    };
+    BinaryReader.prototype.readStructType = function () {
+        var fieldCount = this.readVarUint32() >>> 0;
+        var fieldTypes = new Array(fieldCount);
+        var fieldMutabilities = new Array(fieldCount);
+        for (var i = 0; i < fieldCount; i++) {
+            fieldTypes[i] = this.readType();
+            fieldMutabilities[i] = !!this.readVarUint1();
+        }
+        return {
+            form: -33 /* struct */,
+            fields: fieldTypes,
+            mutabilities: fieldMutabilities,
+        };
+    };
+    BinaryReader.prototype.readArrayType = function () {
+        var elementType = this.readType();
+        var mutability = !!this.readVarUint1();
+        return {
+            form: -34 /* array */,
+            elementType: elementType,
+            mutability: mutability,
         };
     };
     BinaryReader.prototype.readResizableLimits = function (maxPresent) {
@@ -1542,7 +1774,7 @@ var BinaryReader = /** @class */ (function () {
         return { initial: initial, maximum: maximum };
     };
     BinaryReader.prototype.readTableType = function () {
-        var elementType = this.readVarInt7();
+        var elementType = this.readType();
         var flags = this.readVarUint32() >>> 0;
         var limits = this.readResizableLimits(!!(flags & 0x01));
         return { elementType: elementType, limits: limits };
@@ -1560,7 +1792,7 @@ var BinaryReader = /** @class */ (function () {
             return null;
         }
         var pos = this._pos;
-        var contentType = this.readVarInt7();
+        var contentType = this.readType();
         if (!this.hasVarIntBytes()) {
             this._pos = pos;
             return null;
@@ -1574,7 +1806,20 @@ var BinaryReader = /** @class */ (function () {
             return this.read();
         }
         this.state = 11 /* TYPE_SECTION_ENTRY */;
-        this.result = this.readFuncType();
+        var form = this.readVarInt7();
+        switch (form) {
+            case -32 /* func */:
+                this.result = this.readFuncType();
+                break;
+            case -33 /* struct */:
+                this.result = this.readStructType();
+                break;
+            case -34 /* array */:
+                this.result = this.readArrayType();
+                break;
+            default:
+                throw new Error("Unknown type kind: " + form);
+        }
         this._sectionEntriesLeft--;
         return true;
     };
@@ -1720,7 +1965,7 @@ var BinaryReader = /** @class */ (function () {
         return true;
     };
     BinaryReader.prototype.readElementEntryBody = function () {
-        var elementType = -16 /* funcref */;
+        var elementType = Type.funcref;
         switch (this._segmentType) {
             case 1 /* PassiveExternval */:
             case 2 /* ActiveExternval */:
@@ -1736,7 +1981,7 @@ var BinaryReader = /** @class */ (function () {
             case 7 /* DeclaredElemexpr */:
                 if (!this.hasMoreBytes())
                     return false;
-                elementType = this.readVarInt7();
+                elementType = this.readType();
                 break;
             case 0 /* LegacyActiveFuncrefExternval */:
             case 4 /* LegacyActiveFuncrefElemexpr */:
@@ -1873,6 +2118,21 @@ var BinaryReader = /** @class */ (function () {
                     funcs: funcs,
                 };
                 break;
+            case 10 /* Field */:
+                var typesLength = this.readVarUint32();
+                var types = [];
+                for (var i = 0; i < typesLength; i++) {
+                    var fieldIndex = this.readVarUint32();
+                    types.push({
+                        index: fieldIndex,
+                        fields: this.readNameMap(),
+                    });
+                }
+                result = {
+                    type: type,
+                    types: types,
+                };
+                break;
             default:
                 // Skip this unknown name subsection (as per specification,
                 // custom section errors shouldn't cause Wasm parsing to fail).
@@ -1992,6 +2252,80 @@ var BinaryReader = /** @class */ (function () {
         this._sectionEntriesLeft--;
         return true;
     };
+    BinaryReader.prototype.readCodeOperator_0xfb = function () {
+        // The longest instructions have: 2 bytes opcode, 5 bytes type index,
+        // 5 bytes field index.
+        var MAX_CODE_OPERATOR_0XFB_SIZE = 12;
+        if (!this._eof && !this.hasBytes(MAX_CODE_OPERATOR_0XFB_SIZE)) {
+            return false;
+        }
+        var code, brDepth, refType, fieldIndex;
+        code = this._data[this._pos++] | 0xfb00;
+        switch (code) {
+            case 64322 /* br_on_cast */:
+            case 64352 /* br_on_func */:
+            case 64353 /* br_on_data */:
+            case 64354 /* br_on_i31 */:
+                brDepth = this.readVarUint32() >>> 0;
+                break;
+            case 64275 /* array_get */:
+            case 64276 /* array_get_s */:
+            case 64277 /* array_get_u */:
+            case 64279 /* array_len */:
+            case 64278 /* array_set */:
+            case 64273 /* array_new_with_rtt */:
+            case 64274 /* array_new_default_with_rtt */:
+            case 64257 /* struct_new_with_rtt */:
+            case 64258 /* struct_new_default_with_rtt */:
+            case 64304 /* rtt_canon */:
+            case 64305 /* rtt_sub */:
+                refType = this.readHeapType();
+                break;
+            case 64259 /* struct_get */:
+            case 64260 /* struct_get_s */:
+            case 64261 /* struct_get_u */:
+            case 64262 /* struct_set */:
+                refType = this.readHeapType();
+                fieldIndex = this.readVarUint32();
+                break;
+            case 64336 /* ref_is_func */:
+            case 64337 /* ref_is_data */:
+            case 64338 /* ref_is_i31 */:
+            case 64344 /* ref_as_func */:
+            case 64345 /* ref_as_data */:
+            case 64346 /* ref_as_i31 */:
+            case 64320 /* ref_test */:
+            case 64321 /* ref_cast */:
+            case 64288 /* i31_new */:
+            case 64289 /* i31_get_s */:
+            case 64290 /* i31_get_u */:
+                break;
+            default:
+                this.error = new Error("Unknown operator: 0x" + code.toString(16).padStart(4, "0"));
+                this.state = -1 /* ERROR */;
+                return true;
+        }
+        this.result = {
+            code: code,
+            blockType: undefined,
+            refType: refType,
+            brDepth: brDepth,
+            brTable: undefined,
+            tableIndex: undefined,
+            funcIndex: undefined,
+            typeIndex: undefined,
+            localIndex: undefined,
+            globalIndex: undefined,
+            fieldIndex: fieldIndex,
+            memoryAddress: undefined,
+            literal: undefined,
+            segmentIndex: undefined,
+            destinationIndex: undefined,
+            lines: undefined,
+            lineIndex: undefined,
+        };
+        return true;
+    };
     BinaryReader.prototype.readCodeOperator_0xfc = function () {
         if (!this.hasVarIntBytes()) {
             return false;
@@ -2045,6 +2379,7 @@ var BinaryReader = /** @class */ (function () {
         this.result = {
             code: code,
             blockType: undefined,
+            refType: undefined,
             brDepth: undefined,
             brTable: undefined,
             funcIndex: undefined,
@@ -2052,6 +2387,7 @@ var BinaryReader = /** @class */ (function () {
             tableIndex: tableIndex,
             localIndex: undefined,
             globalIndex: undefined,
+            fieldIndex: undefined,
             memoryAddress: undefined,
             literal: undefined,
             segmentIndex: segmentIndex,
@@ -2088,8 +2424,8 @@ var BinaryReader = /** @class */ (function () {
             case 64777 /* v32x4_load_splat */:
             case 64778 /* v64x2_load_splat */:
             case 64779 /* v128_store */:
-            case 65020 /* v128_load32_zero */:
-            case 65021 /* v128_load64_zero */:
+            case 64860 /* v128_load32_zero */:
+            case 64861 /* v128_load64_zero */:
                 memoryAddress = this.readMemoryImmediate();
                 break;
             case 64780 /* v128_const */:
@@ -2172,13 +2508,20 @@ var BinaryReader = /** @class */ (function () {
             case 64848 /* v128_or */:
             case 64849 /* v128_xor */:
             case 64850 /* v128_bitselect */:
+            case 64851 /* v128_any_true */:
+            case 64862 /* f32x4_demote_f64x2_zero */:
+            case 64863 /* f64x2_promote_low_f32x4 */:
             case 64864 /* i8x16_abs */:
             case 64865 /* i8x16_neg */:
-            case 64866 /* i8x16_any_true */:
+            case 64866 /* i8x16_popcnt */:
             case 64867 /* i8x16_all_true */:
             case 64868 /* i8x16_bitmask */:
             case 64869 /* i8x16_narrow_i16x8_s */:
             case 64870 /* i8x16_narrow_i16x8_u */:
+            case 103 /* f32x4_ceil */:
+            case 104 /* f32x4_floor */:
+            case 105 /* f32x4_trunc */:
+            case 106 /* f32x4_nearest */:
             case 64875 /* i8x16_shl */:
             case 64876 /* i8x16_shr_s */:
             case 64877 /* i8x16_shr_u */:
@@ -2188,22 +2531,29 @@ var BinaryReader = /** @class */ (function () {
             case 64881 /* i8x16_sub */:
             case 64882 /* i8x16_sub_sat_s */:
             case 64883 /* i8x16_sub_sat_u */:
+            case 64884 /* f64x2_ceil */:
+            case 64885 /* f64x2_floor */:
             case 64886 /* i8x16_min_s */:
             case 64887 /* i8x16_min_u */:
             case 64888 /* i8x16_max_s */:
             case 64889 /* i8x16_max_u */:
+            case 64890 /* f64x2_trunc */:
             case 64891 /* i8x16_avgr_u */:
+            case 64892 /* i16x8_extadd_pairwise_i8x16_s */:
+            case 64893 /* i16x8_extadd_pairwise_i8x16_u */:
+            case 64894 /* i32x4_extadd_pairwise_i16x8_s */:
+            case 64895 /* i32x4_extadd_pairwise_i16x8_u */:
             case 64896 /* i16x8_abs */:
             case 64897 /* i16x8_neg */:
-            case 64898 /* i16x8_any_true */:
+            case 64898 /* i16x8_q15mulr_sat_s */:
             case 64899 /* i16x8_all_true */:
             case 64900 /* i16x8_bitmask */:
             case 64901 /* i16x8_narrow_i32x4_s */:
             case 64902 /* i16x8_narrow_i32x4_u */:
-            case 64903 /* i16x8_widen_low_i8x16_s */:
-            case 64904 /* i16x8_widen_high_i8x16_s */:
-            case 64905 /* i16x8_widen_low_i8x16_u */:
-            case 64906 /* i16x8_widen_high_i8x16_u */:
+            case 64903 /* i16x8_extend_low_i8x16_s */:
+            case 64904 /* i16x8_extend_high_i8x16_s */:
+            case 64905 /* i16x8_extend_low_i8x16_u */:
+            case 64906 /* i16x8_extend_high_i8x16_u */:
             case 64907 /* i16x8_shl */:
             case 64908 /* i16x8_shr_s */:
             case 64909 /* i16x8_shr_u */:
@@ -2213,21 +2563,25 @@ var BinaryReader = /** @class */ (function () {
             case 64913 /* i16x8_sub */:
             case 64914 /* i16x8_sub_sat_s */:
             case 64915 /* i16x8_sub_sat_u */:
+            case 64916 /* f64x2_nearest */:
             case 64917 /* i16x8_mul */:
             case 64918 /* i16x8_min_s */:
             case 64919 /* i16x8_min_u */:
             case 64920 /* i16x8_max_s */:
             case 64921 /* i16x8_max_u */:
             case 64923 /* i16x8_avgr_u */:
+            case 64924 /* i16x8_extmul_low_i8x16_s */:
+            case 64925 /* i16x8_extmul_high_i8x16_s */:
+            case 64926 /* i16x8_extmul_low_i8x16_u */:
+            case 64927 /* i16x8_extmul_high_i8x16_u */:
             case 64928 /* i32x4_abs */:
             case 64929 /* i32x4_neg */:
-            case 64930 /* i32x4_any_true */:
             case 64931 /* i32x4_all_true */:
             case 64932 /* i32x4_bitmask */:
-            case 64935 /* i32x4_widen_low_i16x8_s */:
-            case 64936 /* i32x4_widen_high_i16x8_s */:
-            case 64937 /* i32x4_widen_low_i16x8_u */:
-            case 64938 /* i32x4_widen_high_i16x8_u */:
+            case 64935 /* i32x4_extend_low_i16x8_s */:
+            case 64936 /* i32x4_extend_high_i16x8_s */:
+            case 64937 /* i32x4_extend_low_i16x8_u */:
+            case 64938 /* i32x4_extend_high_i16x8_u */:
             case 64939 /* i32x4_shl */:
             case 64940 /* i32x4_shr_s */:
             case 64941 /* i32x4_shr_u */:
@@ -2239,13 +2593,34 @@ var BinaryReader = /** @class */ (function () {
             case 64952 /* i32x4_max_s */:
             case 64953 /* i32x4_max_u */:
             case 64954 /* i32x4_dot_i16x8_s */:
+            case 64956 /* i32x4_extmul_low_i16x8_s */:
+            case 64957 /* i32x4_extmul_high_i16x8_s */:
+            case 64958 /* i32x4_extmul_low_i16x8_u */:
+            case 64959 /* i32x4_extmul_high_i16x8_u */:
+            case 64960 /* i64x2_abs */:
             case 64961 /* i64x2_neg */:
+            case 64963 /* i64x2_all_true */:
+            case 64964 /* i64x2_bitmask */:
+            case 64967 /* i64x2_extend_low_i32x4_s */:
+            case 64968 /* i64x2_extend_high_i32x4_s */:
+            case 64969 /* i64x2_extend_low_i32x4_u */:
+            case 64970 /* i64x2_extend_high_i32x4_u */:
             case 64971 /* i64x2_shl */:
             case 64972 /* i64x2_shr_s */:
             case 64973 /* i64x2_shr_u */:
             case 64974 /* i64x2_add */:
             case 64977 /* i64x2_sub */:
             case 64981 /* i64x2_mul */:
+            case 64982 /* i64x2_eq */:
+            case 64983 /* i64x2_ne */:
+            case 64984 /* i64x2_lt_s */:
+            case 64985 /* i64x2_gt_s */:
+            case 64986 /* i64x2_le_s */:
+            case 64987 /* i64x2_ge_s */:
+            case 64988 /* i64x2_extmul_low_i32x4_s */:
+            case 64989 /* i64x2_extmul_high_i32x4_s */:
+            case 64988 /* i64x2_extmul_low_i32x4_s */:
+            case 64989 /* i64x2_extmul_high_i32x4_s */:
             case 64992 /* f32x4_abs */:
             case 64992 /* f32x4_abs */:
             case 64993 /* f32x4_neg */:
@@ -2273,6 +2648,10 @@ var BinaryReader = /** @class */ (function () {
             case 65017 /* i32x4_trunc_sat_f32x4_u */:
             case 65018 /* f32x4_convert_i32x4_s */:
             case 65019 /* f32x4_convert_i32x4_u */:
+            case 65020 /* i32x4_trunc_sat_f64x2_s_zero */:
+            case 65021 /* i32x4_trunc_sat_f64x2_u_zero */:
+            case 65022 /* f64x2_convert_low_i32x4_s */:
+            case 65023 /* f64x2_convert_low_i32x4_u */:
                 break;
             default:
                 this.error = new Error("Unknown operator: 0x" + code.toString(16).padStart(4, "0"));
@@ -2282,12 +2661,14 @@ var BinaryReader = /** @class */ (function () {
         this.result = {
             code: code,
             blockType: undefined,
+            refType: undefined,
             brDepth: undefined,
             brTable: undefined,
             funcIndex: undefined,
             typeIndex: undefined,
             localIndex: undefined,
             globalIndex: undefined,
+            fieldIndex: undefined,
             memoryAddress: memoryAddress,
             literal: literal,
             segmentIndex: undefined,
@@ -2394,12 +2775,14 @@ var BinaryReader = /** @class */ (function () {
         this.result = {
             code: code,
             blockType: undefined,
+            refType: undefined,
             brDepth: undefined,
             brTable: undefined,
             funcIndex: undefined,
             typeIndex: undefined,
             localIndex: undefined,
             globalIndex: undefined,
+            fieldIndex: undefined,
             memoryAddress: memoryAddress,
             literal: undefined,
             segmentIndex: undefined,
@@ -2462,10 +2845,11 @@ var BinaryReader = /** @class */ (function () {
                 case 2 /* block */:
                 case 3 /* loop */:
                 case 4 /* if */:
-                    blockType = this.readVarInt7();
+                    blockType = this.readBlockType();
                     break;
                 case 12 /* br */:
                 case 13 /* br_if */:
+                case 212 /* br_on_null */:
                     brDepth = this.readVarUint32() >>> 0;
                     break;
                 case 14 /* br_table */:
@@ -2486,7 +2870,7 @@ var BinaryReader = /** @class */ (function () {
                     }
                     break;
                 case 208 /* ref_null */:
-                    refType = this.readVarInt7();
+                    refType = this.readHeapType();
                     break;
                 case 16 /* call */:
                 case 18 /* return_call */:
@@ -2554,6 +2938,12 @@ var BinaryReader = /** @class */ (function () {
                     literal = new DataView(this._data.buffer, this._data.byteOffset).getFloat64(this._pos, true);
                     this._pos += 8;
                     break;
+                case 251 /* prefix_0xfb */:
+                    if (this.readCodeOperator_0xfb()) {
+                        return true;
+                    }
+                    this._pos = pos;
+                    return false;
                 case 252 /* prefix_0xfc */:
                     if (this.readCodeOperator_0xfc()) {
                         return true;
@@ -2707,8 +3097,11 @@ var BinaryReader = /** @class */ (function () {
                 case 194 /* i64_extend8_s */:
                 case 195 /* i64_extend16_s */:
                 case 196 /* i64_extend32_s */:
+                case 20 /* call_ref */:
+                case 21 /* return_call_ref */:
                 case 209 /* ref_is_null */:
-                case 208 /* ref_null */:
+                case 211 /* ref_as_non_null */:
+                case 213 /* ref_eq */:
                     break;
                 default:
                     this.error = new Error("Unknown operator: " + code);
@@ -2727,6 +3120,7 @@ var BinaryReader = /** @class */ (function () {
             typeIndex: typeIndex,
             localIndex: localIndex,
             globalIndex: globalIndex,
+            fieldIndex: undefined,
             memoryAddress: memoryAddress,
             literal: literal,
             segmentIndex: undefined,
@@ -2762,7 +3156,7 @@ var BinaryReader = /** @class */ (function () {
                 this._pos = pos;
                 return false;
             }
-            var type = this.readVarInt7();
+            var type = this.readType();
             locals.push({ count: count, type: type });
         }
         var bodyStart = this._pos;
@@ -3119,10 +3513,6 @@ var BinaryReader = /** @class */ (function () {
     return BinaryReader;
 }());
 exports.BinaryReader = BinaryReader;
-function isTypeIndex(type) {
-    return type >= 0;
-}
-exports.isTypeIndex = isTypeIndex;
 if (typeof TextDecoder !== "undefined") {
     try {
         exports.bytesToString = (function () {

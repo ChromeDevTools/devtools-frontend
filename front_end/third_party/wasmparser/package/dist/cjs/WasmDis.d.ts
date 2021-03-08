@@ -13,6 +13,7 @@ export interface INameResolver {
     getElementName(index: number, isRef: boolean): string;
     getFunctionName(index: number, isImport: boolean, isRef: boolean): string;
     getVariableName(funcIndex: number, index: number, isRef: boolean): string;
+    getFieldName(typeIndex: number, index: number, isRef: boolean): string;
     getLabel(index: number): string;
 }
 export declare class DefaultNameResolver implements INameResolver {
@@ -23,6 +24,7 @@ export declare class DefaultNameResolver implements INameResolver {
     getElementName(index: number, isRef: boolean): string;
     getFunctionName(index: number, isImport: boolean, isRef: boolean): string;
     getVariableName(funcIndex: number, index: number, isRef: boolean): string;
+    getFieldName(typeIndex: number, index: number, isRef: boolean): string;
     getLabel(index: number): string;
 }
 export declare class NumericNameResolver implements INameResolver {
@@ -33,6 +35,7 @@ export declare class NumericNameResolver implements INameResolver {
     getElementName(index: number, isRef: boolean): string;
     getFunctionName(index: number, isImport: boolean, isRef: boolean): string;
     getVariableName(funcIndex: number, index: number, isRef: boolean): string;
+    getFieldName(typeIndex: number, index: number, isRef: boolean): string;
     getLabel(index: number): string;
 }
 export declare enum LabelMode {
@@ -94,7 +97,13 @@ export declare class WasmDisassembler {
     private newLine;
     private logStartOfFunctionBodyOffset;
     private logEndOfFunctionBodyOffset;
+    private typeIndexToString;
+    private typeToString;
+    private maybeMut;
+    private globalTypeToString;
     private printFuncType;
+    private printStructType;
+    private printArrayType;
     private printBlockType;
     private printString;
     private printExpression;
@@ -114,13 +123,15 @@ declare class NameSectionNameResolver extends DefaultNameResolver {
     protected readonly _tableNames: string[];
     protected readonly _memoryNames: string[];
     protected readonly _globalNames: string[];
-    constructor(functionNames: string[], localNames: string[][], typeNames: string[], tableNames: string[], memoryNames: string[], globalNames: string[]);
+    protected readonly _fieldNames: string[][];
+    constructor(functionNames: string[], localNames: string[][], typeNames: string[], tableNames: string[], memoryNames: string[], globalNames: string[], fieldNames: string[][]);
     getTypeName(index: number, isRef: boolean): string;
     getTableName(index: number, isRef: boolean): string;
     getMemoryName(index: number, isRef: boolean): string;
     getGlobalName(index: number, isRef: boolean): string;
     getFunctionName(index: number, isImport: boolean, isRef: boolean): string;
     getVariableName(funcIndex: number, index: number, isRef: boolean): string;
+    getFieldName(typeIndex: number, index: number, isRef: boolean): string;
 }
 export declare class NameSectionReader {
     private _done;
@@ -132,13 +143,14 @@ export declare class NameSectionReader {
     private _tableNames;
     private _memoryNames;
     private _globalNames;
+    private _fieldNames;
     private _hasNames;
     read(reader: BinaryReader): boolean;
     hasValidNames(): boolean;
     getNameResolver(): INameResolver;
 }
 export declare class DevToolsNameResolver extends NameSectionNameResolver {
-    constructor(functionNames: string[], localNames: string[][], typeNames: string[], tableNames: string[], memoryNames: string[], globalNames: string[]);
+    constructor(functionNames: string[], localNames: string[][], typeNames: string[], tableNames: string[], memoryNames: string[], globalNames: string[], fieldNames: string[][]);
     getFunctionName(index: number, isImport: boolean, isRef: boolean): string;
 }
 export declare class DevToolsNameGenerator {
@@ -153,6 +165,7 @@ export declare class DevToolsNameGenerator {
     private _typeNames;
     private _tableNames;
     private _globalNames;
+    private _fieldNames;
     private _functionExportNames;
     private _globalExportNames;
     private _memoryExportNames;

@@ -22,10 +22,10 @@ import {
   IElementSegment,
   IElementSegmentBody,
   IExportEntry,
+  IFieldNameEntry,
   IFunctionEntry,
   IFunctionInformation,
   IFunctionNameEntry,
-  IFunctionType,
   IGlobalNameEntry,
   IGlobalType,
   IGlobalVariable,
@@ -40,15 +40,16 @@ import {
   IResizableLimits,
   ISectionInformation,
   IStartEntry,
-  isTypeIndex,
   ITableNameEntry,
   ITableType,
+  ITypeEntry,
   ITypeNameEntry,
   NameType,
   OperatorCode,
   OperatorCodeNames,
   SectionCode,
   Type,
+  TypeKind,
 } from "./WasmParser.js";
 
 const NAME_SECTION_NAME = "name";
@@ -58,26 +59,6 @@ const INVALID_NAME_SYMBOLS_REGEX_GLOBAL = new RegExp(
   "g"
 );
 
-function typeToString(type: number): string {
-  switch (type) {
-    case Type.i32:
-      return "i32";
-    case Type.i64:
-      return "i64";
-    case Type.f32:
-      return "f32";
-    case Type.f64:
-      return "f64";
-    case Type.v128:
-      return "v128";
-    case Type.funcref:
-      return "funcref";
-    case Type.externref:
-      return "externref";
-    default:
-      throw new Error(`Unexpected type ${type}`);
-  }
-}
 function formatFloat32(n: number): string {
   if (n === 0) return 1 / n < 0 ? "-0.0" : "0.0";
   if (isFinite(n)) return n.toString();
@@ -252,10 +233,6 @@ function memoryAddressToString(
     return `align=${1 << address.flags}`;
   return `offset=${address.offset | 0} align=${1 << address.flags}`;
 }
-function globalTypeToString(type: IGlobalType): string {
-  const typeStr = typeToString(type.contentType);
-  return type.mutability ? `(mut ${typeStr})` : typeStr;
-}
 function limitsToString(limits: IResizableLimits): string {
   return (
     limits.initial + (limits.maximum !== undefined ? " " + limits.maximum : "")
@@ -291,6 +268,7 @@ export interface INameResolver {
   getElementName(index: number, isRef: boolean): string;
   getFunctionName(index: number, isImport: boolean, isRef: boolean): string;
   getVariableName(funcIndex: number, index: number, isRef: boolean): string;
+  getFieldName(typeIndex: number, index: number, isRef: boolean): string;
   getLabel(index: number): string;
 }
 export class DefaultNameResolver implements INameResolver {
@@ -322,6 +300,13 @@ export class DefaultNameResolver implements INameResolver {
     isRef: boolean
   ): string {
     return "$var" + index;
+  }
+  public getFieldName(
+    typeIndex: number,
+    index: number,
+    isRef: boolean
+  ): string {
+    return "$field" + index;
   }
   public getLabel(index: number): string {
     return "$label" + index;
@@ -395,6 +380,13 @@ export class NumericNameResolver implements INameResolver {
   ): string {
     return isRef ? "" + index : `(;${index};)`;
   }
+  public getFieldName(
+    typeIndex: number,
+    index: number,
+    isRef: boolean
+  ): string {
+    return isRef ? "" : index + `(;${index};)`;
+  }
   public getLabel(index: number): string {
     return null;
   }
@@ -423,7 +415,7 @@ export class WasmDisassembler {
   private _lines: Array<string>;
   private _offsets: Array<number>;
   private _buffer: string;
-  private _types: Array<IFunctionType>;
+  private _types: Array<ITypeEntry>;
   private _funcIndex: number;
   private _funcTypes: Array<number>;
   private _importCount: number;
@@ -544,14 +536,77 @@ export class WasmDisassembler {
       });
     }
   }
+  private typeIndexToString(typeIndex: number): string {
+    if (typeIndex >= 0) return this._nameResolver.getTypeName(typeIndex, true);
+    switch (typeIndex) {
+      case TypeKind.funcref:
+        return "func";
+      case TypeKind.externref:
+        return "extern";
+      case TypeKind.anyref:
+        return "any";
+      case TypeKind.eqref:
+        return "eq";
+      case TypeKind.i31ref:
+        return "i31";
+      case TypeKind.dataref:
+        return "data";
+    }
+  }
+  private typeToString(type: Type): string {
+    switch (type.kind) {
+      case TypeKind.i32:
+        return "i32";
+      case TypeKind.i64:
+        return "i64";
+      case TypeKind.f32:
+        return "f32";
+      case TypeKind.f64:
+        return "f64";
+      case TypeKind.v128:
+        return "v128";
+      case TypeKind.i8:
+        return "i8";
+      case TypeKind.i16:
+        return "i16";
+      case TypeKind.funcref:
+        return "funcref";
+      case TypeKind.externref:
+        return "externref";
+      case TypeKind.anyref:
+        return "anyref";
+      case TypeKind.eqref:
+        return "eqref";
+      case TypeKind.i31ref:
+        return "i31ref";
+      case TypeKind.dataref:
+        return "dataref";
+      case TypeKind.ref:
+        return `(ref ${this.typeIndexToString(type.index)})`;
+      case TypeKind.optref:
+        return `(ref null ${this.typeIndexToString(type.index)})`;
+      case TypeKind.rtt:
+        return `(rtt ${this.typeIndexToString(type.index)})`;
+      case TypeKind.rtt_d:
+        return `(rtt ${type.depth} ${this.typeIndexToString(type.index)})`;
+      default:
+        throw new Error(`Unexpected type ${JSON.stringify(type)}`);
+    }
+  }
+  private maybeMut(type: string, mutability: boolean): string {
+    return mutability ? `(mut ${type})` : type;
+  }
+  private globalTypeToString(type: IGlobalType): string {
+    const typeStr = this.typeToString(type.contentType);
+    return this.maybeMut(typeStr, !!type.mutability);
+  }
   private printFuncType(typeIndex: number): void {
     var type = this._types[typeIndex];
-    if (type.form !== Type.func) throw new Error("NYI other function form");
     if (type.params.length > 0) {
       this.appendBuffer(" (param");
       for (var i = 0; i < type.params.length; i++) {
         this.appendBuffer(" ");
-        this.appendBuffer(typeToString(type.params[i]));
+        this.appendBuffer(this.typeToString(type.params[i]));
       }
       this.appendBuffer(")");
     }
@@ -559,20 +614,39 @@ export class WasmDisassembler {
       this.appendBuffer(" (result");
       for (var i = 0; i < type.returns.length; i++) {
         this.appendBuffer(" ");
-        this.appendBuffer(typeToString(type.returns[i]));
+        this.appendBuffer(this.typeToString(type.returns[i]));
       }
       this.appendBuffer(")");
     }
   }
-  private printBlockType(type: number): void {
-    if (type === Type.empty_block_type) {
+  private printStructType(typeIndex: number): void {
+    var type = this._types[typeIndex];
+    if (type.fields.length === 0) return;
+    for (var i = 0; i < type.fields.length; i++) {
+      const fieldType = this.maybeMut(
+        this.typeToString(type.fields[i]),
+        type.mutabilities[i]
+      );
+      const fieldName = this._nameResolver.getFieldName(typeIndex, i, false);
+      this.appendBuffer(` (field ${fieldName} ${fieldType})`);
+    }
+  }
+  private printArrayType(typeIndex: number): void {
+    var type = this._types[typeIndex];
+    this.appendBuffer(" (field ");
+    this.appendBuffer(
+      this.maybeMut(this.typeToString(type.elementType), type.mutability)
+    );
+  }
+  private printBlockType(type: Type): void {
+    if (type.kind === TypeKind.empty_block_type) {
       return;
     }
-    if (isTypeIndex(type)) {
-      return this.printFuncType(type);
+    if (type.kind === TypeKind.unspecified) {
+      return this.printFuncType(type.index);
     }
     this.appendBuffer(" (result ");
-    this.appendBuffer(typeToString(type));
+    this.appendBuffer(this.typeToString(type));
     this.appendBuffer(")");
   }
   private printString(b: Uint8Array): void {
@@ -663,6 +737,11 @@ export class WasmDisassembler {
         break;
       case OperatorCode.br:
       case OperatorCode.br_if:
+      case OperatorCode.br_on_null:
+      case OperatorCode.br_on_cast:
+      case OperatorCode.br_on_func:
+      case OperatorCode.br_on_data:
+      case OperatorCode.br_on_i31:
         this.appendBuffer(" ");
         this.appendBuffer(this.useLabel(operator.brDepth));
         break;
@@ -673,16 +752,8 @@ export class WasmDisassembler {
         }
         break;
       case OperatorCode.ref_null:
-        switch (operator.refType) {
-          case Type.funcref:
-            this.appendBuffer(" func");
-            break;
-          case Type.externref:
-            this.appendBuffer(" extern");
-            break;
-          default:
-            throw new Error(`Unknown refedtype ${operator.refType}`);
-        }
+        this.appendBuffer(" ");
+        this.appendBuffer(this.typeIndexToString(operator.refType));
         break;
       case OperatorCode.call:
       case OperatorCode.return_call:
@@ -917,6 +988,34 @@ export class WasmDisassembler {
         this.appendBuffer(` ${elementName}`);
         break;
       }
+      case OperatorCode.struct_get:
+      case OperatorCode.struct_get_s:
+      case OperatorCode.struct_get_u:
+      case OperatorCode.struct_set: {
+        const refType = this._nameResolver.getTypeName(operator.refType, true);
+        const fieldName = this._nameResolver.getFieldName(
+          operator.refType,
+          operator.fieldIndex,
+          true
+        );
+        this.appendBuffer(` ${refType} ${fieldName}`);
+        break;
+      }
+      case OperatorCode.rtt_canon:
+      case OperatorCode.rtt_sub:
+      case OperatorCode.struct_new_default_with_rtt:
+      case OperatorCode.struct_new_with_rtt:
+      case OperatorCode.array_new_default_with_rtt:
+      case OperatorCode.array_new_with_rtt:
+      case OperatorCode.array_get:
+      case OperatorCode.array_get_s:
+      case OperatorCode.array_get_u:
+      case OperatorCode.array_set:
+      case OperatorCode.array_len: {
+        const refType = this._nameResolver.getTypeName(operator.refType, true);
+        this.appendBuffer(` ${refType}`);
+        break;
+      }
     }
   }
   private printImportSource(info: IImportEntry): void {
@@ -1079,7 +1178,7 @@ export class WasmDisassembler {
             }
           }
           this.appendBuffer(
-            ` ${limitsToString(tableInfo.limits)} ${typeToString(
+            ` ${limitsToString(tableInfo.limits)} ${this.typeToString(
               tableInfo.elementType
             )})`
           );
@@ -1172,7 +1271,9 @@ export class WasmDisassembler {
               }
               this.appendBuffer(` (import `);
               this.printImportSource(importInfo);
-              this.appendBuffer(`) ${globalTypeToString(globalImportInfo)})`);
+              this.appendBuffer(
+                `) ${this.globalTypeToString(globalImportInfo)})`
+              );
               break;
             case ExternalKind.Memory:
               var memoryImportInfo = <IMemoryType>importInfo.type;
@@ -1215,9 +1316,9 @@ export class WasmDisassembler {
               this.appendBuffer(` (import `);
               this.printImportSource(importInfo);
               this.appendBuffer(
-                `) ${limitsToString(tableImportInfo.limits)} ${typeToString(
-                  tableImportInfo.elementType
-                )})`
+                `) ${limitsToString(
+                  tableImportInfo.limits
+                )} ${this.typeToString(tableImportInfo.elementType)})`
               );
               break;
             default:
@@ -1256,7 +1357,9 @@ export class WasmDisassembler {
           break;
         case BinaryReaderState.ELEMENT_SECTION_ENTRY_BODY:
           const elementSegmentBody = <IElementSegmentBody>reader.result;
-          this.appendBuffer(` ${typeToString(elementSegmentBody.elementType)}`);
+          this.appendBuffer(
+            ` ${this.typeToString(elementSegmentBody.elementType)}`
+          );
           break;
         case BinaryReaderState.BEGIN_GLOBAL_SECTION_ENTRY:
           var globalInfo = <IGlobalVariable>reader.result;
@@ -1270,21 +1373,33 @@ export class WasmDisassembler {
               this.appendBuffer(` (export "${exportName}")`);
             }
           }
-          this.appendBuffer(` ${globalTypeToString(globalInfo.type)}`);
+          this.appendBuffer(` ${this.globalTypeToString(globalInfo.type)}`);
           break;
         case BinaryReaderState.END_GLOBAL_SECTION_ENTRY:
           this.appendBuffer(")");
           this.newLine();
           break;
         case BinaryReaderState.TYPE_SECTION_ENTRY:
-          var funcType = <IFunctionType>reader.result;
+          var typeEntry = <ITypeEntry>reader.result;
           var typeIndex = this._types.length;
-          this._types.push(funcType);
+          this._types.push(typeEntry);
           if (!this._skipTypes) {
             var typeName = this._nameResolver.getTypeName(typeIndex, false);
-            this.appendBuffer(`  (type ${typeName} (func`);
-            this.printFuncType(typeIndex);
-            this.appendBuffer("))");
+            if (typeEntry.form === TypeKind.func) {
+              this.appendBuffer(`  (type ${typeName} (func`);
+              this.printFuncType(typeIndex);
+              this.appendBuffer("))");
+            } else if (typeEntry.form === TypeKind.struct) {
+              this.appendBuffer(`  (type ${typeName} (struct`);
+              this.printStructType(typeIndex);
+              this.appendBuffer("))");
+            } else if (typeEntry.form === TypeKind.array) {
+              this.appendBuffer(`  (type ${typeName} (array`);
+              this.printArrayType(typeIndex);
+              this.appendBuffer("))");
+            } else {
+              throw new Error(`Unknown type form: ${typeEntry.form}`);
+            }
             this.newLine();
           }
           break;
@@ -1372,11 +1487,13 @@ export class WasmDisassembler {
               false
             );
             this.appendBuffer(
-              ` (param ${paramName} ${typeToString(type.params[i])})`
+              ` (param ${paramName} ${this.typeToString(type.params[i])})`
             );
           }
           for (var i = 0; i < type.returns.length; i++) {
-            this.appendBuffer(` (result ${typeToString(type.returns[i])})`);
+            this.appendBuffer(
+              ` (result ${this.typeToString(type.returns[i])})`
+            );
           }
           this.newLine();
           var localIndex = type.params.length;
@@ -1390,7 +1507,7 @@ export class WasmDisassembler {
                   false
                 );
                 this.appendBuffer(
-                  ` (local ${paramName} ${typeToString(l.type)})`
+                  ` (local ${paramName} ${this.typeToString(l.type)})`
                 );
               }
             }
@@ -1454,6 +1571,7 @@ class NameSectionNameResolver extends DefaultNameResolver {
   protected readonly _tableNames: string[];
   protected readonly _memoryNames: string[];
   protected readonly _globalNames: string[];
+  protected readonly _fieldNames: string[][];
 
   constructor(
     functionNames: string[],
@@ -1461,7 +1579,8 @@ class NameSectionNameResolver extends DefaultNameResolver {
     typeNames: string[],
     tableNames: string[],
     memoryNames: string[],
-    globalNames: string[]
+    globalNames: string[],
+    fieldNames: string[][]
   ) {
     super();
     this._functionNames = functionNames;
@@ -1470,6 +1589,7 @@ class NameSectionNameResolver extends DefaultNameResolver {
     this._tableNames = tableNames;
     this._memoryNames = memoryNames;
     this._globalNames = globalNames;
+    this._fieldNames = fieldNames;
   }
 
   public getTypeName(index: number, isRef: boolean): string {
@@ -1516,6 +1636,17 @@ class NameSectionNameResolver extends DefaultNameResolver {
     if (!name) return super.getVariableName(funcIndex, index, isRef);
     return isRef ? `$${name}` : `$${name} (;${index};)`;
   }
+
+  public getFieldName(
+    typeIndex: number,
+    index: number,
+    isRef: boolean
+  ): string {
+    const name =
+      this._fieldNames[typeIndex] && this._fieldNames[typeIndex][index];
+    if (!name) return super.getFieldName(typeIndex, index, isRef);
+    return isRef ? `$${name}` : `$${name} (;${index};)`;
+  }
 }
 
 export class NameSectionReader {
@@ -1528,6 +1659,7 @@ export class NameSectionReader {
   private _tableNames: string[] = null;
   private _memoryNames: string[] = null;
   private _globalNames: string[] = null;
+  private _fieldNames: string[][] = null;
   private _hasNames = false;
 
   public read(reader: BinaryReader): boolean {
@@ -1555,6 +1687,7 @@ export class NameSectionReader {
           this._tableNames = [];
           this._memoryNames = [];
           this._globalNames = [];
+          this._fieldNames = [];
           this._hasNames = false;
           break;
         case BinaryReaderState.END_SECTION:
@@ -1624,6 +1757,14 @@ export class NameSectionReader {
               this._globalNames[index] = bytesToString(name);
             });
             this._hasNames = true;
+          } else if (nameInfo.type === NameType.Field) {
+            const { types } = <IFieldNameEntry>nameInfo;
+            types.forEach(({ index, fields }) => {
+              const fieldNames = (this._fieldNames[index] = []);
+              fields.forEach(({ index, name }) => {
+                fieldNames[index] = bytesToString(name);
+              });
+            });
           }
           break;
         default:
@@ -1669,7 +1810,8 @@ export class NameSectionReader {
       this._typeNames,
       this._tableNames,
       this._memoryNames,
-      this._globalNames
+      this._globalNames,
+      this._fieldNames
     );
   }
 }
@@ -1681,7 +1823,8 @@ export class DevToolsNameResolver extends NameSectionNameResolver {
     typeNames: string[],
     tableNames: string[],
     memoryNames: string[],
-    globalNames: string[]
+    globalNames: string[],
+    fieldNames: string[][]
   ) {
     super(
       functionNames,
@@ -1689,7 +1832,8 @@ export class DevToolsNameResolver extends NameSectionNameResolver {
       typeNames,
       tableNames,
       memoryNames,
-      globalNames
+      globalNames,
+      fieldNames
     );
   }
 
@@ -1717,6 +1861,7 @@ export class DevToolsNameGenerator {
   private _typeNames: string[] = null;
   private _tableNames: string[] = null;
   private _globalNames: string[] = null;
+  private _fieldNames: string[][] = null;
 
   private _functionExportNames: string[][] = null;
   private _globalExportNames: string[][] = null;
@@ -1775,6 +1920,7 @@ export class DevToolsNameGenerator {
           this._typeNames = [];
           this._tableNames = [];
           this._globalNames = [];
+          this._fieldNames = [];
           this._functionExportNames = [];
           this._globalExportNames = [];
           this._memoryExportNames = [];
@@ -1892,6 +2038,14 @@ export class DevToolsNameGenerator {
                 true
               );
             });
+          } else if (nameInfo.type === NameType.Field) {
+            const { types } = <IFieldNameEntry>nameInfo;
+            types.forEach(({ index, fields }) => {
+              const fieldNames = (this._fieldNames[index] = []);
+              fields.forEach(({ index, name }) => {
+                fieldNames[index] = bytesToString(name);
+              });
+            });
           }
           break;
         case BinaryReaderState.EXPORT_SECTION_ENTRY:
@@ -1976,7 +2130,8 @@ export class DevToolsNameGenerator {
       this._typeNames,
       this._tableNames,
       this._memoryNames,
-      this._globalNames
+      this._globalNames,
+      this._fieldNames
     );
   }
 }

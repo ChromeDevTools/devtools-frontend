@@ -20,11 +20,6 @@
       "items": {
         "type": "string"
       }
-    },
-    "experiment": {
-      "type": "string"
     }
-  },
-  "definitions": {
   }
 }

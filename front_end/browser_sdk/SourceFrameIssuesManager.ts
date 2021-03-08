@@ -65,10 +65,10 @@ export class SourceFrameIssuesManager {
 
   private addIssueMessageToScript(issue: SDK.Issue.Issue, rawLocation: SDK.DebuggerModel.Location): void {
     const description = issue.getDescription();
-    if (description && 'file' in description) {
+    if (description) {
       const title = this.createIssueDescriptionFromMarkdown(description);
       if (title) {
-        const clickHandler: () => void = () => {
+        const clickHandler = (): void => {
           Common.Revealer.reveal(issue);
         };
         this.issueMessages.push(new IssueMessage(title, rawLocation, this.locationPool, clickHandler));

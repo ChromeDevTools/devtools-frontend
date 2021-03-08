@@ -55,8 +55,8 @@ async function getExpandedIssuesTitle(): Promise<Set<string>> {
   return expandedIssues;
 }
 
-describe('Display error information next to affected lines', async () => {
-  it('Error messages should be displayed', async () => {
+describe('The row\'s icon bucket', async () => {
+  it('should display error messages', async () => {
     await openFileInSourceTab('trusted-type-violations-report-only.rawresponse');
     const iconComponents = await getIconComponents('text-editor-line-decoration-icon-error');
     const messages: string[] = [];
@@ -72,7 +72,8 @@ describe('Display error information next to affected lines', async () => {
     }
     assert.deepEqual(messages, expectedMessages);
   });
-  it('Error icons should be correct', async () => {
+
+  it('should use the correct error icon', async () => {
     await openFileInSourceTab('trusted-type-violations-report-only.rawresponse');
     const bucketIconComponents = await getIconComponents('text-editor-line-decoration-icon-error');
     for (const bucketIconComponent of bucketIconComponents) {
@@ -85,7 +86,8 @@ describe('Display error information next to affected lines', async () => {
       assert.strictEqual(await getIconFile(bucketIconComponent), 'error_icon.svg');
     }
   });
-  it('Issue messages should be displayed', async () => {
+
+  it('should display issue messages', async () => {
     await openFileInSourceTab('trusted-type-violations-report-only.rawresponse');
     const issueIconComponents = await getIconComponents('text-editor-line-decoration-icon-issue');
 
@@ -102,14 +104,14 @@ describe('Display error information next to affected lines', async () => {
     }
     assert.deepEqual(issueMessages, expectedIssueMessages);
   });
-  it('Issues should also appear inside HTML', async () => {
+
+  it('should also mark issues in inline event handlers in HTML documents', async () => {
     await openFileInSourceTab('trusted-type-violations-report-only-in-html.rawresponse');
     const icons = await getIconComponents('text-editor-line-decoration-icon-issue');
     assert.strictEqual(icons.length, 1);
   });
 
-  // Flaky on Mac
-  it.skipOnPlatforms(['mac'], '[crbug.com/1184162]: Issues icon should reveal Issues Tab', async () => {
+  it('should reveal Issues tab when the icon is clicked', async () => {
     await openFileInSourceTab('trusted-type-violations-report-only.rawresponse');
     const bucketIssueIconComponents = await getIconComponents('text-editor-line-decoration-icon-issue');
     assert.strictEqual(bucketIssueIconComponents.length, 1);
@@ -119,7 +121,8 @@ describe('Display error information next to affected lines', async () => {
     const expandedIssues = await getExpandedIssuesTitle();
     assert.isTrue(expandedIssues.has('Trusted Type policy creation blocked by Content Security Policy'));
   });
-  it('Issues icon in popover should reveal Issues Tab', async () => {
+
+  it('should reveal the Issues tab if the icon in the popover is clicked', async () => {
     await openFileInSourceTab('trusted-type-violations-report-only.rawresponse');
     const bucketIssueIconComponents = await getIconComponents('text-editor-line-decoration-icon-issue');
     assert.strictEqual(bucketIssueIconComponents.length, 1);

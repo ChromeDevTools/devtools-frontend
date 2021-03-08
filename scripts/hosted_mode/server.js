@@ -10,21 +10,19 @@ const remoteDebuggingPort = parseInt(process.env.REMOTE_DEBUGGING_PORT, 10) || 9
 const port = parseInt(process.env.PORT, 10);
 const requestedPort = port || port === 0 ? port : 8090;
 
-const target = process.env.TARGET || 'Default';
-
 let pathToOutTargetDir = __dirname;
 /**
  * If we are in the gen directory, we need to find the out/Default folder to use
  * as our base to find files from. We could do this with path.join(x, '..',
  * '..') until we get the right folder, but that's brittle. It's better to
- * search up for out/Default to be robust to any folder structures.
+ * search up for the directory containing args.gn to be robust to any folder structures.
  */
 const fileSystemRootDirectory = path.parse(process.cwd()).root;
-while (!pathToOutTargetDir.endsWith(`out${path.sep}${target}`)) {
+while (!fs.existsSync(path.join(pathToOutTargetDir, 'args.gn'))) {
   pathToOutTargetDir = path.resolve(pathToOutTargetDir, '..');
   if (pathToOutTargetDir === fileSystemRootDirectory) {
-    console.error(`Could not find out/${target} directory. You must run the hosted server from within out/${
-        target} for it to work. The hosted mode server only works on the built output from DevTools, not from the source input.`);
+    console.error(
+        'Could not find the build root directory. You must run the hosted server from within the build root directory containing the args.gn file for it to work. The hosted mode server only works on the built output from DevTools, not from the source input.');
     process.exit(1);
   }
 }

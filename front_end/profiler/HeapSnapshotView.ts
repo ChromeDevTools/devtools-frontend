@@ -875,6 +875,8 @@ export class HeapSnapshotView extends UI.View.SimpleView implements DataDisplayD
       // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
       // @ts-expect-error
       box: span.boxInWindow(),
+      // TODO: Remove next line once crbug.com/1177242 is solved.
+      // eslint-disable-next-line @typescript-eslint/space-before-function-paren
       show: async(popover: UI.GlassPane.GlassPane): Promise<boolean> => {
         if (!heapProfilerModel) {
           return false;
@@ -1666,6 +1668,8 @@ export class HeapProfileHeader extends ProfileHeader {
     const fileOutputStream = new Bindings.FileUtils.FileOutputStream();
     this._fileName = this._fileName ||
         'Heap-' + Platform.DateUtilities.toISO8601Compact(new Date()) + this.profileType().fileExtension();
+    // TODO: Remove next line once crbug.com/1177242 is solved.
+    // eslint-disable-next-line @typescript-eslint/space-before-function-paren
     const onOpen = async(accepted: boolean): Promise<void> => {
       if (!accepted) {
         return;

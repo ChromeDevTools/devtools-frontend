@@ -118,6 +118,8 @@ export class TempFileBackingStorage implements SDK.TracingModel.BackingStorage {
   appendAccessibleString(string: string): () => Promise<string|null> {
     this._flush();
     if (!this._file) {
+      // TODO: Remove next line once crbug.com/1177242 is solved.
+      // eslint-disable-next-line @typescript-eslint/space-before-function-paren
       return async(): Promise<null> => null;
     }
     const startOffset = this._file.size();

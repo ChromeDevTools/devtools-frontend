@@ -399,6 +399,8 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
   }
 
   handleAction(_context: UI.Context.Context, actionId: string): boolean {
+    // TODO: Remove next line once crbug.com/1177242 is solved.
+    // eslint-disable-next-line @typescript-eslint/space-before-function-paren
     (async(): Promise<void> => {
       const profileViewId = 'live_heap_profile';
       await UI.ViewManager.ViewManager.instance().showView(profileViewId);

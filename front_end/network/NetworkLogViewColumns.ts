@@ -794,6 +794,8 @@ export class NetworkLogViewColumns {
     }
     return {
       box: anchor.boxInWindow(),
+      // TODO: Remove next line once crbug.com/1177242 is solved.
+      // eslint-disable-next-line @typescript-eslint/space-before-function-paren
       show: async(popover: UI.GlassPane.GlassPane): Promise<boolean> => {
         this._popupLinkifier.setLiveLocationUpdateCallback(() => {
           popover.setSizeBehavior(UI.GlassPane.SizeBehavior.MeasureContent);

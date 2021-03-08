@@ -1033,6 +1033,8 @@ export class DebuggerLanguagePluginManager implements SDK.SDKModel.SDKModelObser
       const rawModuleId = rawModuleIdForScript(script);
       let rawModuleHandle = this._rawModuleHandles.get(rawModuleId);
       if (!rawModuleHandle) {
+        // TODO: Remove next line once crbug.com/1177242 is solved.
+        // eslint-disable-next-line @typescript-eslint/space-before-function-paren
         const sourceFileURLsPromise = (async(): Promise<string[]> => {
           const console = Common.Console.Console.instance();
           const url = script.sourceURL;

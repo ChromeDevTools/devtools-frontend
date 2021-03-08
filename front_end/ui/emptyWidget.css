@@ -14,9 +14,7 @@
 .empty-view {
   color: var(--color-text-secondary);
   padding: 30px;
-  display: flex;
-  align-items: center;
-  flex-direction: column;
+  text-align: center;
   min-width: 70px;
 }
 

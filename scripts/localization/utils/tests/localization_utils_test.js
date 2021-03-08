@@ -11,7 +11,6 @@ const {
   isLocalizationV2Call,
   getFilesFromDirectory
 } = require('../localization_utils');
-const {removeUnusedEntries} = require('../../localizationV2Checks');
 const {findUIStringsNode} = require('../check_localized_strings');
 const {assert} = require('chai');
 const path = require('path');
@@ -134,33 +133,6 @@ describe('getLocalizationCaseAndVersion', () => {
     const ast = parseCode('const UIStrings = {fakeID: "Hello World"}');
     assert.deepStrictEqual(
         getLocalizationCaseAndVersion(ast.body[0].declarations[0]), {locCase: 'UIStrings', locVersion: 2});
-  });
-});
-
-describe('removeUnusedEntries', () => {
-  it('returns UIStrings object without unused entries', () => {
-    const fakeFilename = 'fakeFile.js';
-    const fakeContent = `const UIStrings = {
-      /**
-      *@description Entry is being used in content
-      */
-      isBeingUsed: 'is being used',
-      /**
-      *@description Entry is not being used in content
-      */
-      isNotBeingUsed: 'Not being used',
-      };`;
-    const fakeListOfEntriesToRemove = [{
-      stringId: 'isNotBeingUsed',
-      stringValue: 'Not being used',
-    }];
-    const expectedContent = `const UIStrings = {
-      /**
-      *@description Entry is being used in content
-      */
-      isBeingUsed: 'is being used',
-      };`;
-    assert.strictEqual(removeUnusedEntries(fakeFilename, fakeContent, fakeListOfEntriesToRemove), expectedContent);
   });
 });
 

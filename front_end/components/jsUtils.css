@@ -13,7 +13,7 @@
   font-style: italic;
 }
 
-.stack-preview-container .webkit-html-ignore-list-link {
+.stack-preview-container .ignore-list-link {
   opacity: 60%;
 }
 
@@ -32,14 +32,14 @@
   max-width: 80em;
 }
 
-.stack-preview-container:not(.show-ignore-listed) > tr.ignore-listed {
+.stack-preview-container:not(.show-hidden-rows) > tr.hidden-row {
   display: none;
 }
 
-.stack-preview-container > tr.show-ignore-listed-link {
+.stack-preview-container > tr.show-all-link {
   font-style: italic;
 }
 
-.stack-preview-container.show-ignore-listed > tr.show-ignore-listed-link {
+.stack-preview-container.show-hidden-rows > tr.show-all-link {
   display: none;
 }

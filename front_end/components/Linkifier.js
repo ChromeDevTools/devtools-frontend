@@ -301,12 +301,13 @@ export class Linkifier {
     if (!pool) {
       return fallbackAnchor;
     }
+    const currentOnLiveLocationUpdate = this._onLiveLocationUpdate;
     Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
         .createLiveLocation(rawLocation, this._updateAnchor.bind(this, anchor), pool)
         .then(liveLocation => {
           if (liveLocation) {
             info.liveLocation = liveLocation;
-            this._onLiveLocationUpdate();
+            currentOnLiveLocationUpdate();
           }
         });
 
@@ -415,11 +416,12 @@ export class Linkifier {
     if (!pool) {
       return fallbackAnchor;
     }
+    const currentOnLiveLocationUpdate = this._onLiveLocationUpdate;
     Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
         .createStackTraceTopFrameLiveLocation(rawLocations, this._updateAnchor.bind(this, anchor), pool)
         .then(liveLocation => {
           info.liveLocation = liveLocation;
-          this._onLiveLocationUpdate();
+          currentOnLiveLocationUpdate();
         });
 
     const anchors = /** @type {!Array<!Element>} */ (this._anchorsByTarget.get(target));
@@ -455,11 +457,12 @@ export class Linkifier {
     if (!pool) {
       return anchor;
     }
+    const currentOnLiveLocationUpdate = this._onLiveLocationUpdate;
     Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.instance()
         .createLiveLocation(rawLocation, this._updateAnchor.bind(this, anchor), pool)
         .then(liveLocation => {
           info.liveLocation = liveLocation;
-          this._onLiveLocationUpdate();
+          currentOnLiveLocationUpdate();
         });
 
     const anchors = /** @type {!Array<!Element>} */ (this._anchorsByTarget.get(rawLocation.cssModel().target()));
@@ -520,7 +523,7 @@ export class Linkifier {
       titleText += ':' + (uiLocation.lineNumber + 1);
     }
     UI.Tooltip.Tooltip.install(anchor, titleText);
-    anchor.classList.toggle('webkit-html-ignore-list-link', await liveLocation.isIgnoreListed());
+    anchor.classList.toggle('ignore-list-link', await liveLocation.isIgnoreListed());
     Linkifier._updateLinkDecorations(anchor);
   }
 

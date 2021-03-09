@@ -8,22 +8,30 @@ import {IconData} from './Icon.js';
 export interface IconWithTextData {
   iconName: string;
   iconColor?: string;
+  iconWidth?: string;
+  iconHeight?: string;
   text?: string;
 }
 
 export interface IconButtonData {
   clickHandler: () => void;
   groups: IconWithTextData[];
+  withBorder?: boolean;
+  trailingText?: string;
 }
 
 export class IconButton extends HTMLElement {
   private readonly shadow = this.attachShadow({mode: 'open'});
   private clickHandler: () => void = () => {};
   private groups: IconWithTextData[] = [];
+  private withBorder: boolean = true;
+  private trailingText: string = '';
 
   set data(data: IconButtonData) {
-    this.groups = data.groups;
+    this.groups = data.groups.map(group => ({...group}));  // Ensure we make a deep copy.
     this.clickHandler = data.clickHandler;
+    this.withBorder = data.withBorder ?? true;
+    this.trailingText = data.trailingText ?? '';
     this.render();
   }
 
@@ -43,25 +51,34 @@ export class IconButton extends HTMLElement {
   }
 
   private render(): void {
+    const buttonClasses = LitHtml.Directives.classMap({
+      'icon-button': true,
+      'with-border': this.withBorder,
+    });
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     return LitHtml.render(LitHtml.html`
       <style>
         :host {
           white-space: normal;
+          display: inline-block;
         }
 
         .icon-button {
           cursor: pointer;
-          background-color: var(--toolbar-bg-color);
-          border: 1px solid var(--divider-color);
-          border-radius: 2px;
+          border: none;
           margin-right: 2px;
           display: inline-flex;
           align-items: center;
           color: inherit;
           font-size: inherit;
           font-family: inherit;
+        }
+
+        .icon-button.with-border {
+          background-color: var(--toolbar-bg-color);
+          border: 1px solid var(--divider-color);
+          border-radius: 2px;
         }
 
         .icon-button:hover,
@@ -93,14 +110,15 @@ export class IconButton extends HTMLElement {
           }
         }
       </style>
-      <button class="icon-button" @click=${this.onClickHandler}>
+      <button class="${buttonClasses}" @click=${this.onClickHandler}>
       ${this.groups.filter(counter => counter.text !== undefined).map(counter =>
       LitHtml.html`
       <devtools-icon class="status-icon"
-      .data=${{iconName: counter.iconName, color: counter.iconColor || '', width: '1.5ex', height: '1.5ex'} as IconData}>
+      .data=${{iconName: counter.iconName, color: counter.iconColor || '', width: counter.iconWidth || '1.5ex', height: counter.iconHeight || '1.5ex'} as IconData}>
       </devtools-icon>
       <span class="icon-button-title">${counter.text}</span>
       </button>`)}
+      ${this.trailingText ? LitHtml.html`<span class="icon-button-title">${this.trailingText}</span>` : LitHtml.nothing}
     `, this.shadow, { eventContext: this});
     // clang-format on
   }

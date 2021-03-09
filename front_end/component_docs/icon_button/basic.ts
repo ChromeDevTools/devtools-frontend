@@ -9,23 +9,61 @@ import * as Components from '../../ui/components/components.js';
 await ComponentHelpers.ComponentServerSetup.setup();
 await FrontendHelpers.initializeGlobalVars();
 
-const component = new Components.IconButton.IconButton();
+function appendComponent(data: Components.IconButton.IconButtonData) {
+  const component = new Components.IconButton.IconButton();
+  component.data = data;
+  document.getElementById('container')?.appendChild(component);
+}
 
-component.data = {
+appendComponent({
   clickHandler: (): void => {},
   groups: [{iconName: 'feedback_thin_16x16_icon', iconColor: 'black', text: '1 item'}],
-};
+});
 
-document.getElementById('container')?.appendChild(component);
+appendComponent({
+  clickHandler: (): void => {},
+  groups: [{iconName: 'feedback_thin_16x16_icon', iconColor: 'black', text: '1 item'}],
+});
 
-const component2 = new Components.IconButton.IconButton();
-
-component2.data = {
+appendComponent({
   clickHandler: (): void => {},
   groups: [
     {iconName: 'feedback_thin_16x16_icon', iconColor: 'blue', text: 'Test'},
     {iconName: 'warning_icon', iconColor: '', text: '1'},
   ],
-};
+});
 
-document.getElementById('container')?.appendChild(component2);
+appendComponent({
+  clickHandler: (): void => {},
+  groups: [
+    {iconName: 'issue-exclamation-icon', iconColor: 'yellow', text: '23', iconHeight: '2ex', iconWidth: '2ex'},
+    {iconName: 'issue-text-icon', iconColor: 'blue', text: '1'},
+  ],
+});
+
+appendComponent({
+  clickHandler: (): void => {},
+  groups: [
+    {iconName: 'issue-exclamation-icon', iconColor: 'yellow', text: '23'},
+    {iconName: 'issue-text-icon', iconColor: 'blue', text: '1'},
+  ],
+  withBorder: false,
+});
+
+appendComponent({
+  clickHandler: (): void => {},
+  groups: [
+    {iconName: 'issue-exclamation-icon', iconColor: 'yellow', text: '23'},
+    {iconName: 'issue-text-icon', iconColor: 'blue', text: '1'},
+  ],
+  withBorder: true,
+});
+
+appendComponent({
+  clickHandler: (): void => {},
+  groups: [
+    {iconName: 'issue-exclamation-icon', iconColor: 'yellow', text: '23'},
+    {iconName: 'issue-text-icon', iconColor: 'blue', text: '1'},
+  ],
+  trailingText: 'Issues',
+});

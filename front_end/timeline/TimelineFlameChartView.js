@@ -390,11 +390,13 @@ export class TimelineFlameChartView extends UI.Widget.VBox {
       return;
     }
     const timelineData = TimelineModel.TimelineModel.TimelineData.forEvent(event);
-    const backendNodeId = timelineData.backendNodeId;
-    if (!backendNodeId) {
+    const backendNodeIds = timelineData.backendNodeIds;
+    if (!backendNodeIds) {
       return;
     }
-    new SDK.DOMModel.DeferredDOMNode(target, backendNodeId).highlight();
+    for (let i = 0; i < backendNodeIds.length; ++i) {
+      new SDK.DOMModel.DeferredDOMNode(target, backendNodeIds[i]).highlight();
+    }
   }
 
   /**

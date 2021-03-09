@@ -2035,8 +2035,10 @@ export class TimelineUIUtils {
       /** @type {!Set<number>} */
       const nodeIdsToResolve = new Set();
       const timelineData = TimelineModel.TimelineModel.TimelineData.forEvent(event);
-      if (timelineData.backendNodeId) {
-        nodeIdsToResolve.add(timelineData.backendNodeId);
+      if (timelineData.backendNodeIds) {
+        for (let i = 0; i < timelineData.backendNodeIds.length; ++i) {
+          nodeIdsToResolve.add(timelineData.backendNodeIds[i]);
+        }
       }
       const invalidationTrackingEvents = TimelineModel.TimelineModel.InvalidationTracker.invalidationEventsFor(event);
       if (invalidationTrackingEvents) {
@@ -2432,10 +2434,12 @@ export class TimelineUIUtils {
           Number.millisToString(timelineData.timeWaitingForMainThread, true));
     }
 
-    const relatedNode = relatedNodesMap && relatedNodesMap.get(timelineData.backendNodeId);
-    if (relatedNode) {
-      const nodeSpan = await Common.Linkifier.Linkifier.linkify(relatedNode);
-      contentHelper.appendElementRow(relatedNodeLabel || i18nString(UIStrings.relatedNode), nodeSpan);
+    for (let i = 0; i < timelineData.backendNodeIds.length; ++i) {
+      const relatedNode = relatedNodesMap && relatedNodesMap.get(timelineData.backendNodeIds[i]);
+      if (relatedNode) {
+        const nodeSpan = await Common.Linkifier.Linkifier.linkify(relatedNode);
+        contentHelper.appendElementRow(relatedNodeLabel || i18nString(UIStrings.relatedNode), nodeSpan);
+      }
     }
 
     // @ts-ignore TODO(crbug.com/1011811): Remove symbol usage.

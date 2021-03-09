@@ -552,9 +552,11 @@ export class TimelineModelImpl {
       if (trackEvent.name === RecordType.LayoutShift) {
         const eventData = trackEvent.args['data'] || trackEvent.args['beginData'] || {};
         const timelineData = TimelineData.forEvent(trackEvent);
-        timelineData.backendNodeId = eventData['impacted_nodes'] && eventData['impacted_nodes'].length > 0 ?
-            eventData['impacted_nodes'][0]['node_id'] :
-            0;
+        if (eventData['impacted_nodes']) {
+          for (let i = 0; i < eventData['impacted_nodes'].length; ++i) {
+            timelineData.backendNodeIds.push(eventData['impacted_nodes'][i]['node_id']);
+          }
+        }
       }
     }
   }
@@ -978,7 +980,13 @@ export class TimelineModelImpl {
         timelineData.setInitiator(this._layoutInvalidate[frameId]);
         // In case we have no closing Layout event, endData is not available.
         if (event.args['endData']) {
-          timelineData.backendNodeId = event.args['endData']['rootNode'];
+          if (event.args['endData']['layoutRoots']) {
+            for (let i = 0; i < event.args['endData']['layoutRoots'].length; ++i) {
+              timelineData.backendNodeIds.push(event.args['endData']['layoutRoots'][i]['nodeId']);
+            }
+          } else {
+            timelineData.backendNodeIds.push(event.args['endData']['rootNode']);
+          }
         }
         this._layoutInvalidate[frameId] = null;
         if (this._currentScriptEvent) {
@@ -1058,7 +1066,7 @@ export class TimelineModelImpl {
 
       case RecordType.Paint: {
         this._invalidationTracker.didPaint(event);
-        timelineData.backendNodeId = eventData['nodeId'];
+        timelineData.backendNodeIds.push(eventData['nodeId']);
         // Only keep layer paint events, skip paints for subframes that get painted to the same layer as parent.
         if (!eventData['layerId']) {
           break;
@@ -1082,12 +1090,12 @@ export class TimelineModelImpl {
       }
 
       case RecordType.ScrollLayer: {
-        timelineData.backendNodeId = eventData['nodeId'];
+        timelineData.backendNodeIds.push(eventData['nodeId']);
         break;
       }
 
       case RecordType.PaintImage: {
-        timelineData.backendNodeId = eventData['nodeId'];
+        timelineData.backendNodeIds.push(eventData['nodeId']);
         timelineData.url = eventData['url'];
         break;
       }
@@ -1104,7 +1112,7 @@ export class TimelineModelImpl {
           break;
         }
         const paintImageData = TimelineData.forEvent(paintImageEvent);
-        timelineData.backendNodeId = paintImageData.backendNodeId;
+        timelineData.backendNodeIds.push(paintImageData.backendNodeIds[0]);
         timelineData.url = paintImageData.url;
         break;
       }
@@ -1116,7 +1124,7 @@ export class TimelineModelImpl {
         }
         this._paintImageEventByPixelRefId[event.args['LazyPixelRef']] = paintImageEvent;
         const paintImageData = TimelineData.forEvent(paintImageEvent);
-        timelineData.backendNodeId = paintImageData.backendNodeId;
+        timelineData.backendNodeIds.push(paintImageData.backendNodeIds[0]);
         timelineData.url = paintImageData.url;
         break;
       }
@@ -1129,7 +1137,7 @@ export class TimelineModelImpl {
       }
 
       case RecordType.MarkLCPCandidate: {
-        timelineData.backendNodeId = eventData['nodeId'];
+        timelineData.backendNodeIds.push(eventData['nodeId']);
         break;
       }
 
@@ -2283,7 +2291,7 @@ export class TimelineData {
   warning: string|null;
   previewElement: Element|null;
   url: string|null;
-  backendNodeId: number;
+  backendNodeIds: number[];
   stackTrace: Protocol.Runtime.CallFrame[]|null;
   picture: SDK.TracingModel.ObjectSnapshot|null;
   _initiator: SDK.TracingModel.Event|null;
@@ -2294,7 +2302,7 @@ export class TimelineData {
     this.warning = null;
     this.previewElement = null;
     this.url = null;
-    this.backendNodeId = 0;
+    this.backendNodeIds = [];
     this.stackTrace = null;
     this.picture = null;
     this._initiator = null;

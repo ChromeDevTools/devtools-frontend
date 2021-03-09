@@ -64,6 +64,10 @@ devtools_entrypoint("bundle") {
   deps = [ ":resources" ]
 }
 
+copy_to_gen("legacy_css") {
+  sources = [ "serviceWorkerUpdateCycleView.css" ]
+}
+
 devtools_entrypoint("legacy") {
   entrypoint = "resources-legacy.ts"
 

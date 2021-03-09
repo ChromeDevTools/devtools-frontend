@@ -106,6 +106,7 @@ group("legacy_css") {
     "mobile_throttling:legacy_css",
     "object_ui:legacy_css",
     "persistence:legacy_css",
+    "resources:legacy_css",
     "text_editor:legacy_css",
     "ui:legacy_css",
   ]

@@ -67,6 +67,7 @@ export class CSSAngle extends HTMLElement {
   private swatchElement: HTMLElement|null = null;
   private popoverOpen = false;
   private popoverStyleTop = '';
+  private popoverStyleLeft = '';
   private onMinifyingAction = this.minify.bind(this);
   private onAngleUpdate = this.updateAngle.bind(this);
 
@@ -109,13 +110,17 @@ export class CSSAngle extends HTMLElement {
     this.bindMinifyingAction();
 
     const miniIconBottom = this.swatchElement.getBoundingClientRect().bottom;
-    if (miniIconBottom) {
-      // We offset mini icon's Y position with the containing styles pane's Y position
-      // because DevTools' root SplitWidget's insertion-point-sidebar slot,
-      // where most of the DevTools content lives, has an offset of Y position,
-      // which makes all of its children's DOMRect Y positions to have this offset.
-      const topElementOffset = this.containingPane.getBoundingClientRect().top;
-      this.popoverStyleTop = `${miniIconBottom - topElementOffset}px`;
+    const miniIconLeft = this.swatchElement.getBoundingClientRect().left;
+    if (miniIconBottom && miniIconLeft) {
+      // We offset mini icon's X and Y positions with the containing styles
+      // pane's positions because DevTools' root SplitWidget's
+      // insertion-point-sidebar slot, where most of the DevTools content lives,
+      // has an offset of positions, which makes all of its children's DOMRect
+      // positions to have this offset.
+      const offsetTop = this.containingPane.getBoundingClientRect().top;
+      const offsetLeft = this.containingPane.getBoundingClientRect().left;
+      this.popoverStyleTop = `${miniIconBottom - offsetTop}px`;
+      this.popoverStyleLeft = `${miniIconLeft - offsetLeft}px`;
     }
 
     this.popoverOpen = true;
@@ -261,7 +266,7 @@ export class CSSAngle extends HTMLElement {
     return html`
     <devtools-css-angle-editor
       class="popover popover-css-angle"
-      style=${styleMap({top: this.popoverStyleTop})}
+      style=${styleMap({top: this.popoverStyleTop, left: this.popoverStyleLeft})}
       .data=${{
         angle: this.angle,
         onAngleUpdate: this.onAngleUpdate,

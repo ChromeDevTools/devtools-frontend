@@ -30,6 +30,7 @@ export class CSSAngleEditor extends HTMLElement {
   private clockRadius = 77 / 2;  // By default the clock is 77 * 77.
   private dialTemplates?: LitHtml.TemplateResult[];
   private mousemoveThrottler = new Common.Throttler.Throttler(16.67 /* 60fps */);
+  private mousemoveListener = this.onMousemove.bind(this);
 
   connectedCallback(): void {
     ComponentHelpers.SetCSSProperty.set(this, '--clock-dial-length', `${CLOCK_DIAL_LENGTH}px`);
@@ -67,13 +68,25 @@ export class CSSAngleEditor extends HTMLElement {
   private onEditorMousedown(event: MouseEvent): void {
     event.stopPropagation();
     this.updateAngleFromMousePosition(event.pageX, event.pageY, event.shiftKey);
+    const targetDocument = event.target instanceof Node && event.target.ownerDocument;
+    const editor = this.shadow.querySelector<HTMLElement>('.editor');
+    if (targetDocument && editor) {
+      targetDocument.addEventListener('mousemove', this.mousemoveListener, {capture: true});
+      editor.classList.add('interacting');
+      targetDocument.addEventListener('mouseup', () => {
+        targetDocument.removeEventListener('mousemove', this.mousemoveListener, {capture: true});
+        editor.classList.remove('interacting');
+      }, {once: true});
+    }
   }
 
-  private onEditorMousemove(event: MouseEvent): void {
+  private onMousemove(event: MouseEvent): void {
     const isPressed = event.buttons === 1;
     if (!isPressed) {
       return;
     }
+
+    event.preventDefault();
 
     this.mousemoveThrottler.schedule(() => {
       this.updateAngleFromMousePosition(event.pageX, event.pageY, event.shiftKey);
@@ -108,6 +121,12 @@ export class CSSAngleEditor extends HTMLElement {
     // clang-format off
     render(html`
       <style>
+        .editor.interacting::before {
+          content: '';
+          position: fixed;
+          inset: 0;
+        }
+
         .clock,
         .pointer,
         .center,
@@ -217,7 +236,6 @@ export class CSSAngleEditor extends HTMLElement {
           class="clock"
           style=${styleMap(clockStyles)}
           @mousedown=${this.onEditorMousedown}
-          @mousemove=${this.onEditorMousemove}
           @wheel=${this.onEditorWheel}>
           ${this.renderDials()}
           <div class="hand" style=${styleMap(handStyles)}></div>

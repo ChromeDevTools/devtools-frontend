@@ -56,13 +56,13 @@ it.repeat(20, 'find element', async () => {...});
 To see if certain tests are flaky you can use E2E stressor bot. Open a CL with your test changes and run the following command specifying your test file:
 
 ```
-git cl try -B devtools-frontend/try -b e2e_stressor_linux -b e2e_stressor_win64 -b e2e_stressor_mac -p e2e_env='{"TEST_FILE":"network/network-datagrid_test.ts","ITERATIONS":20}'
+git cl try -B devtools-frontend/try -b e2e_stressor_linux -b e2e_stressor_win64 -b e2e_stressor_mac -p e2e_env='{"TEST_PATTERNS":"network/network-datagrid_test.ts","ITERATIONS":20}'
 ```
 
 or multiple test files:
 
 ```
-git cl try -B devtools-frontend/try -b e2e_stressor_linux -b e2e_stressor_win64 -b e2e_stressor_mac -p e2e_env='{"TEST_FILE":"{network/network-datagrid_test.ts,network/network_test.ts}","ITERATIONS":20}'
+git cl try -B devtools-frontend/try -b e2e_stressor_linux -b e2e_stressor_win64 -b e2e_stressor_mac -p e2e_env='{"TEST_PATTERNS":"{network/network-datagrid_test.ts,network/network_test.ts}","ITERATIONS":20}'
 ```
 
 It will run the specified tests on dedicated bots with the specified number of iterations. Note that in order for iterations to work the test should be using `it` from `mocha_extensions.ts`.

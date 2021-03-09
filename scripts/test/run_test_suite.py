@@ -63,6 +63,7 @@ def parse_options(cli_args):
         help=
         'Path to the node_modules directory for Node to use. Will use Node defaults if not set.',
         default=None)
+    parser.add_argument('test_patterns', nargs='*')
     return parser.parse_args(cli_args)
 
 
@@ -74,14 +75,14 @@ def run_tests(chrome_binary,
               target,
               cwd=None,
               node_modules_path=None,
-              test_file=None):
+              test_patterns=None):
     env = os.environ.copy()
     env['CHROME_BIN'] = chrome_binary
     if chrome_features:
         env['CHROME_FEATURES'] = chrome_features
 
-    if test_file is not None:
-        env['TEST_FILE'] = test_file
+    if test_patterns is not None:
+        env['TEST_PATTERNS'] = ';'.join(test_patterns)
 
     if jobs:
         env['JOBS'] = jobs
@@ -140,12 +141,20 @@ def run_test():
         jobs = OPTIONS.jobs
 
     test_file = OPTIONS.test_file
+    test_patterns = OPTIONS.test_patterns
+    if test_file:
+        test_patterns.append(test_file)
 
-    print('Using Chromium binary ({}{})\n'.format(chrome_binary, ' ' + chrome_features if chrome_features else ''))
+    print('Using Chromium binary ({}{})\n'.format(
+        chrome_binary, ' ' + chrome_features if chrome_features else ''))
     print('Using target (%s)\n' % OPTIONS.target)
 
     if test_file is not None:
-        print('Testing file (%s)' % test_file)
+        print(
+            'The test_file argument is obsolete, just pass the filename as positional argument'
+        )
+    if test_patterns is not None:
+        print('Testing file(s) (%s)' % ', '.join(test_patterns))
 
     cwd = OPTIONS.cwd
     target = OPTIONS.target
@@ -183,7 +192,7 @@ def run_test():
                                  target,
                                  cwd,
                                  node_modules_path,
-                                 test_file=test_file)
+                                 test_patterns=test_patterns)
     except Exception as err:
         print(err)
 

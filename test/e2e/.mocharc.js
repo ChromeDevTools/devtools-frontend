@@ -13,14 +13,18 @@ const fs = require('fs');
 const ROOT_DIRECTORY = path.join(__dirname, '..', '..', '..', '..', '..', 'test', 'e2e');
 
 const allTestFiles = glob.sync(path.join(ROOT_DIRECTORY, '**/*_test.ts'));
-const customPattern = process.env['TEST_FILE'];
+const customPattern = process.env['TEST_PATTERNS'];
 
-const testFiles = !customPattern ?
-    allTestFiles :
-    glob.sync(path.join(ROOT_DIRECTORY, customPattern)).filter(filename => allTestFiles.includes(filename));
+const testFiles = !customPattern ? allTestFiles :
+                                   customPattern.split(';')
+                                       .map(pattern => glob.sync(pattern, {absolute: true, cwd: ROOT_DIRECTORY}))
+                                       .flat()
+                                       .filter(filename => allTestFiles.includes(filename));
+
+
 if (customPattern && testFiles.length === 0) {
   throw new Error(
-      `\nNo test found matching --test-file=${process.env['TEST_FILE']}.` +
+      `\nNo test found matching --test-file=${process.env['TEST_PATTERNS']}.` +
       ' Use a relative path from test/e2e/.');
 }
 

@@ -11,7 +11,23 @@ const fs = require('fs');
 // aren't incorrectly included, we glob for the TypeScript files instead and use that
 // to instruct Mocha to run the output JavaScript file.
 const ROOT_DIRECTORY = path.join(__dirname, '..', '..', '..', '..', '..', 'test', 'interactions');
-let testFiles = glob.sync(path.join(ROOT_DIRECTORY, '**/*_test.ts')).map(fileName => {
+const allTestFiles = glob.sync(path.join(ROOT_DIRECTORY, '**/*_test.ts'));
+const customPattern = process.env['TEST_PATTERNS'];
+
+const testFiles = !customPattern ? allTestFiles :
+                                   customPattern.split(';')
+                                       .map(pattern => glob.sync(pattern, {absolute: true, cwd: ROOT_DIRECTORY}))
+                                       .flat()
+                                       .filter(filename => allTestFiles.includes(filename));
+
+
+if (customPattern && testFiles.length === 0) {
+  throw new Error(
+      `\nNo test found matching --test-file=${process.env['TEST_PATTERNS']}.` +
+      ' Use a relative path from test/e2e/.');
+}
+
+const spec = testFiles.map(fileName => {
   const renamedFile = fileName.replace(/\.ts$/, '.js');
   const generatedFile = path.join(__dirname, path.relative(ROOT_DIRECTORY, renamedFile));
 
@@ -22,10 +38,6 @@ let testFiles = glob.sync(path.join(ROOT_DIRECTORY, '**/*_test.ts')).map(fileNam
   return generatedFile;
 });
 
-// Respect the test file if defined.
-// This way you can test one single file instead of running all e2e tests every time.
-testFiles = process.env['TEST_FILE'] || testFiles;
-
 // When we are debugging, we don't want to timeout any test. This allows to inspect the state
 // of the application at the moment of the timeout. Here, 0 denotes "indefinite timeout".
 const timeout = process.env['DEBUG'] ? 0 : 5 * 1000;
@@ -33,7 +45,7 @@ const timeout = process.env['DEBUG'] ? 0 : 5 * 1000;
 process.env.TEST_SERVER_TYPE = 'component-docs';
 module.exports = {
   require: path.join(__dirname, '..', 'conductor', 'mocha_hooks.js'),
-  spec: testFiles,
+  spec,
   timeout,
   reporter: path.join(__dirname, '..', 'shared', 'mocha-resultsdb-reporter'),
   suiteName: 'interactions',

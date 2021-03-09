@@ -13,7 +13,7 @@ const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 export interface TreeOutlineData<TreeNodeDataType> {
   defaultRenderer: (node: TreeNode<TreeNodeDataType>, state: {isExpanded: boolean}) => LitHtml.TemplateResult;
-  tree: TreeNode<TreeNodeDataType>[];
+  tree: readonly TreeNode<TreeNodeDataType>[];
 }
 
 export function defaultRenderer(node: TreeNode<string>): LitHtml.TemplateResult {

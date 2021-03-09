@@ -90,8 +90,10 @@ required):
 
 - **allowImportExportEverywhere**: By default, `import` and `export`
   declarations can only appear at a program's top level. Setting this
-  option to `true` allows them anywhere where a statement is allowed.
-  
+  option to `true` allows them anywhere where a statement is allowed,
+  and also allows `import.meta` expressions to appear in scripts
+  (when `sourceType` is not `"module"`).
+
 - **allowAwaitOutsideFunction**: By default, `await` expressions can
   only appear inside `async` functions. Setting this option to
   `true` allows to have top-level `await` expressions. They are
@@ -249,6 +251,9 @@ options:
 
 - `--allow-hash-bang`: If the code starts with the characters #! (as
   in a shellscript), the first line will be treated as a comment.
+
+- `--allow-await-outside-function`: Allows top-level `await` expressions.
+  See the `allowAwaitOutsideFunction` option for more information.
 
 - `--compact`: No whitespace is used in the AST output.
 

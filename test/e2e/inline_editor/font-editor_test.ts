@@ -28,9 +28,6 @@ async function openFontEditor(index: number) {
 
 describe('The font editor', async function() {
   beforeEach(async function() {
-    if (this.timeout() !== 0) {
-      this.timeout(10000);
-    }
     await enableExperiment('fontEditor');
     await goToTestPageAndSelectTestElement();
     await waitForCSSPropertyValue('#inspected', 'color', 'red');

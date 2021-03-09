@@ -687,4 +687,12 @@ function formatted2() {
 }
 `);
   });
+
+  it('formats functions using `import.meta.url` correctly', () => {
+    const formattedCode = formatJavaScript('function foo(){console.log(import.meta.url);}');
+    assert.strictEqual(formattedCode, `function foo() {
+  console.log(import.meta.url);
+}
+`);
+  });
 });

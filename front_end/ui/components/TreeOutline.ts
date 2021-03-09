@@ -323,7 +323,7 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
         }
 
         .arrow-icon {
-          display: inline-block;
+          display: block;
           user-select: none;
           -webkit-mask-image: var(--image-file-treeoutlineTriangles);
           -webkit-mask-size: 32px 24px;
@@ -331,7 +331,6 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
           background-color: var(--color-text-primary);
           content: "";
           text-shadow: none;
-          margin-right: -2px;
           height: 12px;
           width: 13px;
           overflow: hidden;
@@ -364,7 +363,8 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
 
         .arrow-and-key-wrapper {
           border: 2px solid transparent;
-          display: block;
+          display: flex;
+          align-content: center;
         }
 
         [role="treeitem"]:focus {

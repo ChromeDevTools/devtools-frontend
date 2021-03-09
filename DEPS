@@ -9,16 +9,16 @@ vars = {
   'checkout_reclient': False,
 
   'build_url': 'https://chromium.googlesource.com/chromium/src/build.git',
-  'build_revision': 'a8d3fb0835e967c34b1a16fe23e962a8a829aa18',
+  'build_revision': '077f859f06f31289c2d51f1fc68727353cd61ad1',
 
   'buildtools_url': 'https://chromium.googlesource.com/chromium/src/buildtools.git',
-  'buildtools_revision': '27d20f0e2f7b592cb4b3f1242ca4d37bc41488e4',
+  'buildtools_revision': 'a5cc8439a4e3050cf760cc8ad2603c7fd88f601c',
 
   'depot_tools_url': 'https://chromium.googlesource.com/chromium/tools/depot_tools.git',
-  'depot_tools_revision': '4ec3fd3659ccd4fc7e1f977ee9361caf38635e91',
+  'depot_tools_revision': '75c9832409cf3cc46fc1ed6783f9c294f77d2bb4',
 
   'inspector_protocol_url': 'https://chromium.googlesource.com/deps/inspector_protocol',
-  'inspector_protocol_revision': 'c149e90e9ff5bf768816224a8b6c39063ae1a04c',
+  'inspector_protocol_revision': '35e8d2d89cb017d72cf905362672de77c978e1e6',
 
   'clang_format_url': 'https://chromium.googlesource.com/external/github.com/llvm/llvm-project/clang/tools/clang-format.git',
   'clang_format_revision': '99803d74e35962f63a775f29477882afd4d57d94',

@@ -606,7 +606,6 @@ export class DebuggerPlugin extends Plugin {
     const mouseLine = textPosition.startLine;
     const mouseColumn = textPosition.startColumn;
     const textSelection = this._textEditor.selection().normalize();
-    let anchorBox;
     let editorLineNumber = -1;
     let startHighlight = -1;
     let endHighlight = -1;
@@ -617,23 +616,11 @@ export class DebuggerPlugin extends Plugin {
       return null;
     }
 
-
     if (textSelection && !textSelection.isEmpty()) {
       if (textSelection.startLine !== textSelection.endLine || textSelection.startLine !== mouseLine ||
           mouseColumn < textSelection.startColumn || mouseColumn > textSelection.endColumn) {
         return null;
       }
-
-      const leftCorner =
-          this._textEditor.cursorPositionToCoordinates(textSelection.startLine, textSelection.startColumn);
-      const rightCorner = this._textEditor.cursorPositionToCoordinates(textSelection.endLine, textSelection.endColumn);
-      if (!leftCorner) {
-        throw new Error('Expected leftCorner to not be null.');
-      }
-      if (!rightCorner) {
-        throw new Error('Expected rightCorner to not be null.');
-      }
-      anchorBox = new AnchorBox(leftCorner.x, leftCorner.y, rightCorner.x - leftCorner.x, leftCorner.height);
       editorLineNumber = textSelection.startLine;
       startHighlight = textSelection.startColumn;
       endHighlight = textSelection.endColumn - 1;
@@ -642,45 +629,64 @@ export class DebuggerPlugin extends Plugin {
       if (!token || token.type !== 'variable-2') {
         return null;
       }
-      const leftCorner = this._textEditor.cursorPositionToCoordinates(textPosition.startLine, token.startColumn);
-      const rightCorner = this._textEditor.cursorPositionToCoordinates(textPosition.startLine, token.endColumn - 1);
-      if (!leftCorner) {
-        throw new Error('Expected leftCorner to not be null.');
-      }
-      if (!rightCorner) {
-        throw new Error('Expected rightCorner to not be null.');
-      }
-      anchorBox = new AnchorBox(leftCorner.x, leftCorner.y, rightCorner.x - leftCorner.x, leftCorner.height);
       editorLineNumber = textPosition.startLine;
       startHighlight = token.startColumn;
       endHighlight = token.endColumn - 1;
     } else {
-      const token = this._textEditor.tokenAtTextPosition(textPosition.startLine, textPosition.startColumn);
-      if (!token || !token.type) {
+      let token = this._textEditor.tokenAtTextPosition(textPosition.startLine, textPosition.startColumn);
+      if (!token) {
         return null;
       }
       editorLineNumber = textPosition.startLine;
       const line = this._textEditor.line(editorLineNumber);
-      const tokenContent = line.substring(token.startColumn, token.endColumn);
+      let tokenContent = line.substring(token.startColumn, token.endColumn);
 
+      // When the user hovers an opening bracket, we look for the closing bracket
+      // and kick off the matching from that below.
+      if (tokenContent === '[') {
+        const closingColumn = line.indexOf(']', token.startColumn);
+        if (closingColumn < 0) {
+          return null;
+        }
+        token = this._textEditor.tokenAtTextPosition(editorLineNumber, closingColumn);
+        if (!token) {
+          return null;
+        }
+        tokenContent = line.substring(token.startColumn, token.endColumn);
+      }
+      startHighlight = token.startColumn;
+      endHighlight = token.endColumn - 1;
+
+      // Consume multiple `[index][0]...[f(1)]` at the end of the expression.
+      while (tokenContent === ']') {
+        startHighlight = line.lastIndexOf('[', startHighlight) - 1;
+        if (startHighlight < 0) {
+          return null;
+        }
+        token = this._textEditor.tokenAtTextPosition(editorLineNumber, startHighlight);
+        if (!token) {
+          return null;
+        }
+        tokenContent = line.substring(token.startColumn, token.endColumn);
+        startHighlight = token.startColumn;
+      }
+
+      if (!token.type) {
+        return null;
+      }
       const isIdentifier = this._isIdentifier(token.type);
       if (!isIdentifier && (token.type !== 'js-keyword' || tokenContent !== 'this')) {
         return null;
       }
 
-      const leftCorner = this._textEditor.cursorPositionToCoordinates(editorLineNumber, token.startColumn);
-      const rightCorner = this._textEditor.cursorPositionToCoordinates(editorLineNumber, token.endColumn - 1);
-      if (!leftCorner) {
-        throw new Error('Expected leftCorner to not be null.');
-      }
-      if (!rightCorner) {
-        throw new Error('Expected rightCorner to not be null.');
-      }
-      anchorBox = new AnchorBox(leftCorner.x, leftCorner.y, rightCorner.x - leftCorner.x, leftCorner.height);
-
-      startHighlight = token.startColumn;
-      endHighlight = token.endColumn - 1;
       while (startHighlight > 1 && line.charAt(startHighlight - 1) === '.') {
+        // Consume multiple `[index][0]...[f(1)]` preceeding a dot.
+        while (line.charAt(startHighlight - 2) === ']') {
+          startHighlight = line.lastIndexOf('[', startHighlight - 2) - 1;
+          if (startHighlight < 0) {
+            return null;
+          }
+        }
         const tokenBefore = this._textEditor.tokenAtTextPosition(editorLineNumber, startHighlight - 2);
         if (!tokenBefore || !tokenBefore.type) {
           return null;
@@ -706,6 +712,12 @@ export class DebuggerPlugin extends Plugin {
         startHighlight = tokenBefore.startColumn;
       }
     }
+
+    const leftCorner = /** @type {!TextEditor.CodeMirrorTextEditor.Coordinates} */ (
+        this._textEditor.cursorPositionToCoordinates(editorLineNumber, startHighlight));
+    const rightCorner = /** @type {!TextEditor.CodeMirrorTextEditor.Coordinates} */ (
+        this._textEditor.cursorPositionToCoordinates(editorLineNumber, endHighlight));
+    const box = new AnchorBox(leftCorner.x, leftCorner.y, rightCorner.x - leftCorner.x, leftCorner.height);
 
     /** @type {?ObjectUI.ObjectPopoverHelper.ObjectPopoverHelper} */
     let objectPopoverHelper;
@@ -736,7 +748,7 @@ export class DebuggerPlugin extends Plugin {
     }
 
     return {
-      box: anchorBox,
+      box,
       show: async popover => {
         const evaluationText = this._textEditor.line(editorLineNumber).substring(startHighlight, endHighlight + 1);
         const result = await evaluate(this._uiSourceCode, evaluationText);

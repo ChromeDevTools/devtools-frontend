@@ -25,6 +25,8 @@ copy_to_gen("sources") {
     "multi-workers.min.js",
     "multi-workers.min.js.map",
     "navigation/index.html",
+    "popover.html",
+    "popover.js",
     "script-with-sourcemap-without-mappings.html",
     "script-with-sourcemap-without-mappings.js",
     "sourcemap-codesplit.html",

@@ -6,7 +6,7 @@ import {assert} from 'chai';
 
 import {enableExperiment, getBrowserAndPages, goToResource, waitFor} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {getFontEditorButtons, getHiddenFontEditorButtons, waitForContentOfSelectedElementsNode, waitForCSSPropertyValue} from '../helpers/elements-helpers.js';
+import {focusOnSelectedElementsNode, getFontEditorButtons, getHiddenFontEditorButtons, waitForContentOfSelectedElementsNode, waitForCSSPropertyValue} from '../helpers/elements-helpers.js';
 
 
 async function goToTestPageAndSelectTestElement(path: string = 'inline_editor/fontEditor.html') {
@@ -14,7 +14,8 @@ async function goToTestPageAndSelectTestElement(path: string = 'inline_editor/fo
 
   await goToResource(path);
   await waitForContentOfSelectedElementsNode('<body>\u200B');
-  await frontend.keyboard.press('ArrowDown');
+  await focusOnSelectedElementsNode();
+  await frontend.keyboard.press('ArrowRight');
 }
 
 async function openFontEditor(index: number) {
@@ -46,16 +47,14 @@ describe('The font editor', async function() {
     await openFontEditor(0);
   });
 
-  // Flaky on Linux
-  it.skipOnPlatforms(
-      ['linux'], '[crbug.com/1184658]: is properly applying font family changes to the style section', async () => {
-        const {frontend} = getBrowserAndPages();
-        await openFontEditor(0);
-        const fontFamilySelector = await waitFor('[aria-label="Font Family"]');
-        await fontFamilySelector.focus();
-        await frontend.keyboard.press('a');
-        await waitForCSSPropertyValue('element.style', 'font-family', 'Arial');
-      });
+  it('is properly applying font family changes to the style section', async () => {
+    const {frontend} = getBrowserAndPages();
+    await openFontEditor(0);
+    const fontFamilySelector = await waitFor('[aria-label="Font Family"]');
+    await fontFamilySelector.focus();
+    await frontend.keyboard.press('a');
+    await waitForCSSPropertyValue('element.style', 'font-family', 'Arial');
+  });
 
   it('is properly applying slider input changes to the style section', async () => {
     const {frontend} = getBrowserAndPages();

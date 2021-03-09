@@ -543,7 +543,7 @@
     // Labels in scope.
     this.labels = [];
     // Thus-far undefined exports.
-    this.undefinedExports = {};
+    this.undefinedExports = Object.create(null);
 
     // If enabled, skip leading hashbang line.
     if (this.pos === 0 && options.allowHashBang && this.input.slice(0, 2) === "#!")
@@ -757,7 +757,7 @@
   // to its body instead of creating a new node.
 
   pp$1.parseTopLevel = function(node) {
-    var exports = {};
+    var exports = Object.create(null);
     if (!node.body) { node.body = []; }
     while (this.type !== types.eof) {
       var stmt = this.parseStatement(null, true, exports);
@@ -2883,7 +2883,7 @@
   // or "arguments" and duplicate parameters.
 
   pp$3.checkParams = function(node, allowDuplicates) {
-    var nameHash = {};
+    var nameHash = Object.create(null);
     for (var i = 0, list = node.params; i < list.length; i += 1)
       {
       var param = list[i];
@@ -5213,7 +5213,7 @@
 
   // Acorn is a tiny, fast JavaScript parser written in JavaScript.
 
-  var version = "8.0.4";
+  var version = "8.0.5";
 
   Parser.acorn = {
     Parser: Parser,

@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Common from '../common/common.js';
 import * as SDK from '../sdk/sdk.js';
 import {SourceFrameIssuesManager} from './SourceFrameIssuesManager.js';
@@ -23,28 +21,28 @@ let issuesManagerInstance: IssuesManager|null = null;
  */
 export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper implements
     SDK.SDKModel.SDKModelObserver<SDK.IssuesModel.IssuesModel> {
-  _eventListeners: WeakMap<SDK.IssuesModel.IssuesModel, Common.EventTarget.EventDescriptor>;
-  _issues: Map<string, SDK.Issue.Issue>;
-  _filteredIssues: Map<string, SDK.Issue.Issue>;
-  _hasSeenTopFrameNavigated: boolean;
-  _showThirdPartySettingsChangeListener: Common.EventTarget.EventDescriptor|null;
-  _sourceFrameIssuesManager: SourceFrameIssuesManager;
+  private eventListeners: WeakMap<SDK.IssuesModel.IssuesModel, Common.EventTarget.EventDescriptor>;
+  private allIssues: Map<string, SDK.Issue.Issue>;
+  private filteredIssues: Map<string, SDK.Issue.Issue>;
+  private hasSeenTopFrameNavigated: boolean;
+  private showThirdPartySettingsChangeListener: Common.EventTarget.EventDescriptor|null;
+  private sourceFrameIssuesManager: SourceFrameIssuesManager;
 
   constructor() {
     super();
-    this._eventListeners = new WeakMap();
+    this.eventListeners = new WeakMap();
     SDK.SDKModel.TargetManager.instance().observeModels(SDK.IssuesModel.IssuesModel, this);
-    this._issues = new Map();
-    this._filteredIssues = new Map();
-    this._hasSeenTopFrameNavigated = false;
+    this.allIssues = new Map();
+    this.filteredIssues = new Map();
+    this.hasSeenTopFrameNavigated = false;
     SDK.FrameManager.FrameManager.instance().addEventListener(
-        SDK.FrameManager.Events.TopFrameNavigated, this._onTopFrameNavigated, this);
+        SDK.FrameManager.Events.TopFrameNavigated, this.onTopFrameNavigated, this);
     SDK.FrameManager.FrameManager.instance().addEventListener(
-        SDK.FrameManager.Events.FrameAddedToTarget, this._onFrameAddedToTarget, this);
+        SDK.FrameManager.Events.FrameAddedToTarget, this.onFrameAddedToTarget, this);
 
-    this._showThirdPartySettingsChangeListener = null;
+    this.showThirdPartySettingsChangeListener = null;
 
-    this._sourceFrameIssuesManager = new SourceFrameIssuesManager(this);
+    this.sourceFrameIssuesManager = new SourceFrameIssuesManager(this);
   }
 
   static instance({forceNew}: {forceNew: boolean} = {forceNew: false}): IssuesManager {
@@ -62,25 +60,25 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper implements
    * during navigation.
    */
   reloadForAccurateInformationRequired(): boolean {
-    return !this._hasSeenTopFrameNavigated;
+    return !this.hasSeenTopFrameNavigated;
   }
 
-  _onTopFrameNavigated(event: Common.EventTarget.EventTargetEvent): void {
+  private onTopFrameNavigated(event: Common.EventTarget.EventTargetEvent): void {
     const {frame} = event.data as {
       frame: SDK.ResourceTreeModel.ResourceTreeFrame,
     };
     const keptIssues = new Map<string, SDK.Issue.Issue>();
-    for (const [key, issue] of this._issues.entries()) {
+    for (const [key, issue] of this.allIssues.entries()) {
       if (issue.isAssociatedWithRequestId(frame.loaderId)) {
         keptIssues.set(key, issue);
       }
     }
-    this._issues = keptIssues;
-    this._hasSeenTopFrameNavigated = true;
-    this._updateFilteredIssues();
+    this.allIssues = keptIssues;
+    this.hasSeenTopFrameNavigated = true;
+    this.updateFilteredIssues();
   }
 
-  _onFrameAddedToTarget(event: Common.EventTarget.EventTargetEvent): void {
+  private onFrameAddedToTarget(event: Common.EventTarget.EventTargetEvent): void {
     const {frame} = event.data as {
       frame: SDK.ResourceTreeModel.ResourceTreeFrame,
     };
@@ -89,23 +87,23 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper implements
     // before the top frame is available. Thus, we trigger a recalcuation of third-party-ness
     // when we attach to the top frame.
     if (frame.isTopFrame()) {
-      this._updateFilteredIssues();
+      this.updateFilteredIssues();
     }
   }
 
   modelAdded(issuesModel: SDK.IssuesModel.IssuesModel): void {
-    const listener = issuesModel.addEventListener(SDK.IssuesModel.Events.IssueAdded, this._issueAdded, this);
-    this._eventListeners.set(issuesModel, listener);
+    const listener = issuesModel.addEventListener(SDK.IssuesModel.Events.IssueAdded, this.onIssueAdded, this);
+    this.eventListeners.set(issuesModel, listener);
   }
 
   modelRemoved(issuesModel: SDK.IssuesModel.IssuesModel): void {
-    const listener = this._eventListeners.get(issuesModel);
+    const listener = this.eventListeners.get(issuesModel);
     if (listener) {
       Common.EventTarget.EventTarget.removeEventListeners([listener]);
     }
   }
 
-  _issueAdded(event: Common.EventTarget.EventTargetEvent): void {
+  private onIssueAdded(event: Common.EventTarget.EventTargetEvent): void {
     const {issuesModel, issue} = event.data as {
       issuesModel: SDK.IssuesModel.IssuesModel,
       issue: SDK.Issue.Issue,
@@ -115,13 +113,13 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper implements
       return;
     }
     const primaryKey = issue.primaryKey();
-    if (this._issues.has(primaryKey)) {
+    if (this.allIssues.has(primaryKey)) {
       return;
     }
-    this._issues.set(primaryKey, issue);
+    this.allIssues.set(primaryKey, issue);
 
-    if (this._issueFilter(issue)) {
-      this._filteredIssues.set(primaryKey, issue);
+    if (this.issueFilter(issue)) {
+      this.filteredIssues.set(primaryKey, issue);
       this.dispatchEventToListeners(Events.IssueAdded, {issuesModel, issue});
     }
     // Always fire the "count" event even if the issue was filtered out.
@@ -130,27 +128,27 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper implements
   }
 
   issues(): Iterable<SDK.Issue.Issue> {
-    return this._filteredIssues.values();
+    return this.filteredIssues.values();
   }
 
   numberOfIssues(): number {
-    return this._filteredIssues.size;
+    return this.filteredIssues.size;
   }
 
   numberOfAllStoredIssues(): number {
-    return this._issues.size;
+    return this.allIssues.size;
   }
 
-  _issueFilter(issue: SDK.Issue.Issue): boolean {
-    if (!this._showThirdPartySettingsChangeListener) {
-      // _issueFilter uses the 'showThirdPartyIssues' setting. Clients of IssuesManager need
+  private issueFilter(issue: SDK.Issue.Issue): boolean {
+    if (!this.showThirdPartySettingsChangeListener) {
+      // issueFilter uses the 'showThirdPartyIssues' setting. Clients of IssuesManager need
       // a full update when the setting changes to get an up-to-date issues list.
       //
       // The settings change listener can't be set up in IssuesManager's constructor. At that
       // time, the settings storage is not initialized yet, so the setting can't be created.
       const showThirdPartyIssuesSetting = SDK.Issue.getShowThirdPartyIssuesSetting();
-      this._showThirdPartySettingsChangeListener = showThirdPartyIssuesSetting.addChangeListener(() => {
-        this._updateFilteredIssues();
+      this.showThirdPartySettingsChangeListener = showThirdPartyIssuesSetting.addChangeListener(() => {
+        this.updateFilteredIssues();
       });
     }
 
@@ -158,11 +156,11 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper implements
     return showThirdPartyIssuesSetting.get() || !issue.isCausedByThirdParty();
   }
 
-  _updateFilteredIssues(): void {
-    this._filteredIssues.clear();
-    for (const [key, issue] of this._issues) {
-      if (this._issueFilter(issue)) {
-        this._filteredIssues.set(key, issue);
+  private updateFilteredIssues(): void {
+    this.filteredIssues.clear();
+    for (const [key, issue] of this.allIssues) {
+      if (this.issueFilter(issue)) {
+        this.filteredIssues.set(key, issue);
       }
     }
 

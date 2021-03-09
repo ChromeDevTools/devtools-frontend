@@ -43,8 +43,7 @@ export class RequestInitiatorView extends UI.Widget.VBox {
   }
 
   static createStackTracePreview(
-      request: SDK.NetworkRequest.NetworkRequest, linkifier: Components.Linkifier.Linkifier, focusableLink?: boolean,
-      callback?: (() => void)): {
+      request: SDK.NetworkRequest.NetworkRequest, linkifier: Components.Linkifier.Linkifier, focusableLink?: boolean): {
     element: Element,
     links: Array<Element>,
   }|null {
@@ -55,7 +54,7 @@ export class RequestInitiatorView extends UI.Widget.VBox {
     const networkManager = SDK.NetworkManager.NetworkManager.forRequest(request);
     const target = networkManager ? networkManager.target() : null;
     const stackTrace = Components.JSPresentationUtils.buildStackTracePreviewContents(
-        target, linkifier, {stackTrace: initiator.stack, contentUpdated: callback, tabStops: focusableLink});
+        target, linkifier, {stackTrace: initiator.stack, tabStops: focusableLink});
     return stackTrace;
   }
 

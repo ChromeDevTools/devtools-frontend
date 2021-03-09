@@ -444,8 +444,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     clickableElement.appendChild(messageElement);
     const stackTraceElement = contentElement.createChild('div');
     const stackTracePreview = Components.JSPresentationUtils.buildStackTracePreviewContents(
-        runtimeModel.target(), this._linkifier,
-        {stackTrace: this._message.stackTrace, contentUpdated: undefined, tabStops: undefined});
+        runtimeModel.target(), this._linkifier, {stackTrace: this._message.stackTrace, tabStops: undefined});
     stackTraceElement.appendChild(stackTracePreview.element);
     for (const linkElement of stackTracePreview.links) {
       this._selectableChildren.push({element: linkElement, forceSelect: (): void => linkElement.focus()});

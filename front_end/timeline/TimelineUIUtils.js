@@ -3979,7 +3979,7 @@ export class TimelineDetailsContentHelper {
     const stackTraceElement =
         parentElement.createChild('div', 'timeline-details-view-row-value timeline-details-view-row-stack-trace');
     const callFrameContents = Components.JSPresentationUtils.buildStackTracePreviewContents(
-        this._target, this._linkifier, {stackTrace, tabStops: true, contentUpdated: undefined});
+        this._target, this._linkifier, {stackTrace, tabStops: true});
     stackTraceElement.appendChild(callFrameContents.element);
   }
 

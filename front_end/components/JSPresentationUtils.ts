@@ -149,10 +149,9 @@ function buildStackTraceRows(
 export function buildStackTracePreviewContents(
     target: SDK.SDKModel.Target|null, linkifier: Linkifier, options: Options = {
       stackTrace: undefined,
-      contentUpdated: undefined,
       tabStops: undefined,
     }): {element: HTMLElement, links: HTMLElement[]} {
-  const {stackTrace, contentUpdated, tabStops} = options;
+  const {stackTrace, tabStops} = options;
   const element = document.createElement('span');
   element.classList.add('monospace');
   element.style.display = 'inline-block';
@@ -201,9 +200,6 @@ export function buildStackTracePreviewContents(
     showAllLink.textContent = i18nString(UIStrings.showSMoreFrames, {n: hiddenCallFramesCount});
     showAllLink.addEventListener('click', () => {
       contentElement.classList.add('show-ignore-listed');
-      if (contentUpdated) {
-        contentUpdated();
-      }
     }, false);
   }
 
@@ -212,7 +208,6 @@ export function buildStackTracePreviewContents(
 
 export interface Options {
   stackTrace: Protocol.Runtime.StackTrace|undefined;
-  contentUpdated: (() => void)|undefined;
   tabStops: boolean|undefined;
 }
 

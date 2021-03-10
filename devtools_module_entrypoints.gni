@@ -23,7 +23,6 @@ devtools_module_entrypoint_sources = [
   "changes/changes-meta.js",
   "changes/changes.js",
   "cm/cm.js",
-  "cm_headless/cm_headless.js",
   "color_picker/color_picker-legacy.js",
   "color_picker/color_picker.js",
   "common/common-legacy.js",

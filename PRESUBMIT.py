@@ -181,40 +181,6 @@ def _CheckFormat(input_api, output_api):
 
     return _ExecuteSubProcess(input_api, output_api, ['git', 'cl', 'format', '--js'], [], results)
 
-
-def _CheckDevtoolsLocalization(input_api, output_api, check_all_files=False):  # pylint: disable=invalid-name
-    devtools_root = input_api.PresubmitLocalPath()
-    script_path = input_api.os_path.join(devtools_root, 'scripts', 'test',
-                                         'run_localization_check.py')
-    if check_all_files == True:
-        # Scan all files and fix any errors
-        args = ['--autofix', '--all']
-    else:
-        devtools_front_end = input_api.os_path.join(devtools_root, 'front_end')
-        affected_front_end_files = _getAffectedFiles(
-            input_api, [devtools_front_end], [],
-            ['.ts', '.js', '.grdp', '.grd', 'module.json'])
-
-        if len(affected_front_end_files) == 0:
-            return [
-                output_api.PresubmitNotifyResult(
-                    'No affected files for localization check')
-            ]
-
-        with input_api.CreateTemporaryFile() as file_list:
-            for affected_file in affected_front_end_files:
-                file_list.write(affected_file + '\n')
-        file_list.close()
-
-        # Scan only added or modified files with specific extensions.
-        args = ['--autofix', '--file-list', file_list.name]
-
-    results = [
-        output_api.PresubmitNotifyResult('Running Localization Checks:')
-    ]
-    return _ExecuteSubProcess(input_api, output_api, script_path, args, results)
-
-
 def _CheckDevToolsStyleJS(input_api, output_api):
     results = [output_api.PresubmitNotifyResult('JS style check:')]
     lint_path = input_api.os_path.join(input_api.PresubmitLocalPath(),
@@ -546,8 +512,6 @@ def _SideEffectChecks(input_api, output_api):
 def CheckChangeOnUpload(input_api, output_api):
     results = []
     results.extend(_CommonChecks(input_api, output_api))
-    results.extend(_CheckDevtoolsLocalization(input_api, output_api))
-    # Run collectStrings after localization check that cleans up unused strings
     results.extend(_CollectStrings(input_api, output_api))
     # Run checks that rely on output from other DevTool checks
     results.extend(_SideEffectChecks(input_api, output_api))
@@ -558,8 +522,6 @@ def CheckChangeOnUpload(input_api, output_api):
 def CheckChangeOnCommit(input_api, output_api):
     results = []
     results.extend(_CommonChecks(input_api, output_api))
-    results.extend(_CheckDevtoolsLocalization(input_api, output_api, True))
-    # Run collectStrings after localization check that cleans up unused strings
     results.extend(_CollectStrings(input_api, output_api))
     # Run checks that rely on output from other DevTool checks
     results.extend(_SideEffectChecks(input_api, output_api))

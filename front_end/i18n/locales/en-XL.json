@@ -7556,6 +7556,9 @@
   "sdk/DebuggerModel.js | closure": {
     "message": "Ĉĺôśûŕê"
   },
+  "sdk/DebuggerModel.js | expression": {
+    "message": "Êx́p̂ŕêśŝíôń"
+  },
   "sdk/DebuggerModel.js | global": {
     "message": "Ĝĺôb́âĺ"
   },
@@ -7567,9 +7570,6 @@
   },
   "sdk/DebuggerModel.js | script": {
     "message": "Ŝćr̂íp̂t́"
-  },
-  "sdk/DebuggerModel.js | stack": {
-    "message": "Ŝt́âćk̂"
   },
   "sdk/DebuggerModel.js | withBlock": {
     "message": "Ŵít̂h́ B̂ĺôćk̂"

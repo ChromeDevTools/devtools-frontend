@@ -33,7 +33,7 @@ describe('Source Tab', async () => {
         const names = await getScopeNames();
         return names.length === 3 ? names : undefined;
       });
-      assert.deepEqual(scopeNames, ['Stack', 'Local', 'Module']);
+      assert.deepEqual(scopeNames, ['Expression', 'Local', 'Module']);
     });
 
     await step('expand the module scope', async () => {
@@ -41,7 +41,7 @@ describe('Source Tab', async () => {
     });
 
     await step('check that the stack scope content is as expected', async () => {
-      const stackScopeValues = await getValuesForScope('Stack', 0, 0);
+      const stackScopeValues = await getValuesForScope('Expression', 0, 0);
       assert.deepEqual(stackScopeValues, []);
     });
 
@@ -86,7 +86,7 @@ describe('Source Tab', async () => {
     });
 
     await step('check that the stack scope content is updated to reflect the change', async () => {
-      const stackScopeValues = await getValuesForScope('Stack', 0, 1);
+      const stackScopeValues = await getValuesForScope('Expression', 0, 1);
       assert.deepEqual(stackScopeValues, ['0: i32 {value: 24}']);
     });
 

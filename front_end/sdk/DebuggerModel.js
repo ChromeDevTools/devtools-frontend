@@ -76,9 +76,9 @@ const UIStrings = {
   */
   module: 'Module',
   /**
-  *@description Text for a stack, the programming concept
+  *@description Text describing the expression scope in WebAssembly
   */
-  stack: 'Stack',
+  expression: 'Expression',
 };
 const str_ = i18n.i18n.registerUIStrings('sdk/DebuggerModel.js', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -1865,7 +1865,7 @@ export class Scope {
       case Protocol.Debugger.ScopeType.Module:
         return i18nString(UIStrings.module);
       case Protocol.Debugger.ScopeType.WasmExpressionStack:
-        return i18nString(UIStrings.stack);
+        return i18nString(UIStrings.expression);
     }
     return '';
   }

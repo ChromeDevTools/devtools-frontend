@@ -66,11 +66,11 @@ export class ScreenCaptureModel extends SDKModel {
       return null;
     }
     return {
-      viewportX: response.visualViewport.pageX,
-      viewportY: response.visualViewport.pageY,
-      viewportScale: response.visualViewport.scale,
-      contentWidth: response.contentSize.width,
-      contentHeight: response.contentSize.height
+      viewportX: response.cssVisualViewport.pageX,
+      viewportY: response.cssVisualViewport.pageY,
+      viewportScale: response.cssVisualViewport.scale,
+      contentWidth: response.cssContentSize.width,
+      contentHeight: response.cssContentSize.height
     };
   }
 

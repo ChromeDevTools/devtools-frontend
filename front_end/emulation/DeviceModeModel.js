@@ -850,7 +850,7 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
       }
 
       // Cap the height to not hit the GPU limit.
-      const contentHeight = Math.min((1 << 14) / this._appliedDeviceScaleFactor, metrics.contentHeight);
+      const contentHeight = Math.min((1 << 14), metrics.contentHeight);
       clip = {x: 0, y: 0, width: Math.floor(metrics.contentWidth), height: Math.floor(contentHeight), scale: 1};
     }
     const screenshot =

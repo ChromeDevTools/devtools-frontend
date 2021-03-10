@@ -72,4 +72,23 @@ describeWithEnvironment('IssuesManager', () => {
     issueCodes = Array.from(issuesManager.issues()).map(i => i.code());
     assert.deepStrictEqual(issueCodes, ['AllowedStubIssue1', 'StubIssue2', 'AllowedStubIssue3', 'StubIssue4']);
   });
+
+  it('reports issue counts by kind', () => {
+    const issue1 = new StubIssue('StubIssue1', ['id1'], [], SDK.Issue.IssueKind.Improvement);
+    const issue2 = new StubIssue('StubIssue1', ['id2'], [], SDK.Issue.IssueKind.Improvement);
+    const issue3 = new StubIssue('StubIssue1', ['id3'], [], SDK.Issue.IssueKind.BreakingChange);
+
+    const mockModel = new MockIssuesModel([issue1]) as unknown as SDK.IssuesModel.IssuesModel;
+    const issuesManager = new BrowserSDK.IssuesManager.IssuesManager();
+    issuesManager.modelAdded(mockModel);
+
+    mockModel.dispatchEventToListeners(SDK.IssuesModel.Events.IssueAdded, {issuesModel: mockModel, issue: issue1});
+    mockModel.dispatchEventToListeners(SDK.IssuesModel.Events.IssueAdded, {issuesModel: mockModel, issue: issue2});
+    mockModel.dispatchEventToListeners(SDK.IssuesModel.Events.IssueAdded, {issuesModel: mockModel, issue: issue3});
+
+    assert.deepStrictEqual(issuesManager.numberOfIssues(), 3);
+    assert.deepStrictEqual(issuesManager.numberOfIssues(SDK.Issue.IssueKind.Improvement), 2);
+    assert.deepStrictEqual(issuesManager.numberOfIssues(SDK.Issue.IssueKind.BreakingChange), 1);
+    assert.deepStrictEqual(issuesManager.numberOfIssues(SDK.Issue.IssueKind.PageError), 0);
+  });
 });

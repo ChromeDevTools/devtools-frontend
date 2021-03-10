@@ -4,7 +4,7 @@
 
 import * as i18n from '../i18n/i18n.js';
 
-import {Issue, IssueCategory} from './Issue.js';
+import {Issue, IssueCategory, IssueKind} from './Issue.js';
 import type {MarkdownIssueDescription} from './Issue.js';
 
 const UIStrings = {
@@ -49,5 +49,9 @@ export class LowTextContrastIssue extends Issue {
         },
       ],
     };
+  }
+
+  getKind(): IssueKind {
+    return IssueKind.Improvement;
   }
 }

@@ -7,7 +7,7 @@ import * as Common from '../common/common.js';
 import * as i18n from '../i18n/i18n.js';
 
 import {FrameManager} from './FrameManager.js';
-import {Issue, IssueCategory, LazyMarkdownIssueDescription, MarkdownIssueDescription, resolveLazyDescription} from './Issue.js';
+import {Issue, IssueCategory, IssueKind, LazyMarkdownIssueDescription, MarkdownIssueDescription, resolveLazyDescription} from './Issue.js';
 import type {IssuesModel} from './IssuesModel.js';
 import {ResourceTreeFrame} from './ResourceTreeModel.js';
 
@@ -169,6 +169,13 @@ export class SameSiteCookieIssue extends Issue {
   isCausedByThirdParty(): boolean {
     const topFrame = FrameManager.instance().getTopFrame();
     return isCausedByThirdParty(topFrame, this.issueDetails.cookieUrl);
+  }
+
+  getKind(): IssueKind {
+    if (this.issueDetails.cookieExclusionReasons?.length > 0) {
+      return IssueKind.PageError;
+    }
+    return IssueKind.BreakingChange;
   }
 }
 

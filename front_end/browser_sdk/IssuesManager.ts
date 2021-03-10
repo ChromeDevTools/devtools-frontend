@@ -24,6 +24,7 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper implements
   private eventListeners: WeakMap<SDK.IssuesModel.IssuesModel, Common.EventTarget.EventDescriptor>;
   private allIssues: Map<string, SDK.Issue.Issue>;
   private filteredIssues: Map<string, SDK.Issue.Issue>;
+  private issueCounts: Map<SDK.Issue.IssueKind, number>;
   private hasSeenTopFrameNavigated: boolean;
   private showThirdPartySettingsChangeListener: Common.EventTarget.EventDescriptor|null;
   private sourceFrameIssuesManager: SourceFrameIssuesManager;
@@ -34,6 +35,7 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper implements
     SDK.SDKModel.TargetManager.instance().observeModels(SDK.IssuesModel.IssuesModel, this);
     this.allIssues = new Map();
     this.filteredIssues = new Map();
+    this.issueCounts = new Map();
     this.hasSeenTopFrameNavigated = false;
     SDK.FrameManager.FrameManager.instance().addEventListener(
         SDK.FrameManager.Events.TopFrameNavigated, this.onTopFrameNavigated, this);
@@ -120,6 +122,7 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper implements
 
     if (this.issueFilter(issue)) {
       this.filteredIssues.set(primaryKey, issue);
+      this.issueCounts.set(issue.getKind(), 1 + (this.issueCounts.get(issue.getKind()) || 0));
       this.dispatchEventToListeners(Events.IssueAdded, {issuesModel, issue});
     }
     // Always fire the "count" event even if the issue was filtered out.
@@ -131,7 +134,10 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper implements
     return this.filteredIssues.values();
   }
 
-  numberOfIssues(): number {
+  numberOfIssues(kind?: SDK.Issue.IssueKind): number {
+    if (kind) {
+      return this.issueCounts.get(kind) ?? 0;
+    }
     return this.filteredIssues.size;
   }
 
@@ -158,9 +164,11 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper implements
 
   private updateFilteredIssues(): void {
     this.filteredIssues.clear();
+    this.issueCounts.clear();
     for (const [key, issue] of this.allIssues) {
       if (this.issueFilter(issue)) {
         this.filteredIssues.set(key, issue);
+        this.issueCounts.set(issue.getKind(), 1 + (this.issueCounts.get(issue.getKind()) ?? 0));
       }
     }
 

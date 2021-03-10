@@ -4,7 +4,7 @@
 
 import * as i18n from '../i18n/i18n.js';
 
-import {Issue, IssueCategory, LazyMarkdownIssueDescription, MarkdownIssueDescription, resolveLazyDescription} from './Issue.js';
+import {Issue, IssueCategory, IssueKind, LazyMarkdownIssueDescription, MarkdownIssueDescription, resolveLazyDescription} from './Issue.js';
 import type {IssuesModel} from './IssuesModel.js';
 
 const UIStrings = {
@@ -62,6 +62,10 @@ export class CrossOriginEmbedderPolicyIssue extends Issue {
 
   getDescription(): MarkdownIssueDescription|null {
     return resolveLazyDescription(issueDescriptions.get(this.code()));
+  }
+
+  getKind(): IssueKind {
+    return IssueKind.PageError;
   }
 }
 

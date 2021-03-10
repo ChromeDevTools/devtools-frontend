@@ -4,7 +4,7 @@
 
 import * as i18n from '../i18n/i18n.js';
 
-import {Issue, IssueCategory, LazyMarkdownIssueDescription, MarkdownIssueDescription, resolveLazyDescription} from './Issue.js';
+import {Issue, IssueCategory, IssueKind, LazyMarkdownIssueDescription, MarkdownIssueDescription, resolveLazyDescription} from './Issue.js';
 
 const UIStrings = {
   /**
@@ -43,6 +43,10 @@ export class TrustedWebActivityIssue extends Issue {
 
   primaryKey(): string {
     return `${Protocol.Audits.InspectorIssueCode.TrustedWebActivityIssue}-${JSON.stringify(this.issueDetails)}`;
+  }
+
+  getKind(): IssueKind {
+    return IssueKind.PageError;
   }
 }
 

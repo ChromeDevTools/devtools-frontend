@@ -4,7 +4,7 @@
 
 import * as i18n from '../i18n/i18n.js';
 
-import {Issue, IssueCategory, MarkdownIssueDescription} from './Issue.js';
+import {Issue, IssueCategory, IssueKind, MarkdownIssueDescription} from './Issue.js';
 import type {IssuesModel} from './IssuesModel.js';
 
 const UIStrings = {
@@ -48,5 +48,14 @@ export class HeavyAdIssue extends Issue {
 
   getCategory(): IssueCategory {
     return IssueCategory.HeavyAd;
+  }
+
+  getKind(): IssueKind {
+    switch (this.issueDetails.resolution) {
+      case Protocol.Audits.HeavyAdResolutionStatus.HeavyAdBlocked:
+        return IssueKind.PageError;
+      case Protocol.Audits.HeavyAdResolutionStatus.HeavyAdWarning:
+        return IssueKind.BreakingChange;
+    }
   }
 }

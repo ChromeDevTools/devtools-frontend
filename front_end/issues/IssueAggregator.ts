@@ -21,6 +21,7 @@ export class AggregatedIssue extends SDK.Issue.Issue {
   private blockedByResponseDetails: Map<string, Protocol.Audits.BlockedByResponseIssueDetails>;
   private corsIssues: Set<SDK.CorsIssue.CorsIssue>;
   private cspIssues: Set<SDK.ContentSecurityPolicyIssue.ContentSecurityPolicyIssue>;
+  private issueKind: SDK.Issue.IssueKind;
   private lowContrastIssues: Set<SDK.LowTextContrastIssue.LowTextContrastIssue>;
   private mixedContentIssues: Set<SDK.MixedContentIssue.MixedContentIssue>;
   private sharedArrayBufferIssues: Set<SDK.SharedArrayBufferIssue.SharedArrayBufferIssue>;
@@ -36,6 +37,7 @@ export class AggregatedIssue extends SDK.Issue.Issue {
     this.blockedByResponseDetails = new Map();
     this.corsIssues = new Set();
     this.cspIssues = new Set();
+    this.issueKind = SDK.Issue.IssueKind.Improvement;
     this.lowContrastIssues = new Set();
     this.mixedContentIssues = new Set();
     this.sharedArrayBufferIssues = new Set();
@@ -127,6 +129,7 @@ export class AggregatedIssue extends SDK.Issue.Issue {
     if (!this.representative) {
       this.representative = issue;
     }
+    this.issueKind = SDK.Issue.unionIssueKind(this.issueKind, issue.getKind());
     let hasRequest = false;
     for (const request of issue.requests()) {
       hasRequest = true;
@@ -165,6 +168,10 @@ export class AggregatedIssue extends SDK.Issue.Issue {
     if (issue instanceof SDK.CorsIssue.CorsIssue) {
       this.corsIssues.add(issue);
     }
+  }
+
+  getKind(): SDK.Issue.IssueKind {
+    return this.issueKind;
   }
 }
 

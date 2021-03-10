@@ -48,9 +48,11 @@ describeWithEnvironment('AggregatedIssue', async () => {
 describeWithEnvironment('IssueAggregator', async () => {
   let BrowserSDK: typeof BrowserSDKModule;
   let Issues: typeof IssuesModule;
+  let SDK: typeof SDKModule;
   before(async () => {
     Issues = await import('../../../../front_end/issues/issues.js');
     BrowserSDK = await import('../../../../front_end/browser_sdk/browser_sdk.js');
+    SDK = await import('../../../../front_end/sdk/sdk.js');
   });
 
   it('deduplicates issues with the same code', () => {
@@ -111,6 +113,46 @@ describeWithEnvironment('IssueAggregator', async () => {
     assert.strictEqual(issues.length, 3);
     const issueCodes = issues.map(r => r.code()).sort((a, b) => a.localeCompare(b));
     assert.deepStrictEqual(issueCodes, ['codeA', 'codeB', 'codeC']);
+  });
+
+  describe('aggregates issue kind', () => {
+    it('for a single issue', () => {
+      const issues = StubIssue.createFromIssueKinds([SDK.Issue.IssueKind.Improvement]);
+
+      const mockManager = new MockIssuesManager(issues) as unknown as BrowserSDKModule.IssuesManager.IssuesManager;
+      const aggregator = new Issues.IssueAggregator.IssueAggregator(mockManager);
+
+      const aggregatedIssues = Array.from(aggregator.aggregatedIssues());
+      assert.strictEqual(aggregatedIssues.length, 1);
+      const aggregatedIssue = aggregatedIssues[0];
+      assert.strictEqual(aggregatedIssue.getKind(), SDK.Issue.IssueKind.Improvement);
+    });
+
+    it('for issues of two different kinds', () => {
+      const issues = StubIssue.createFromIssueKinds(
+          [SDK.Issue.IssueKind.Improvement, SDK.Issue.IssueKind.BreakingChange, SDK.Issue.IssueKind.Improvement]);
+
+      const mockManager = new MockIssuesManager(issues) as unknown as BrowserSDKModule.IssuesManager.IssuesManager;
+      const aggregator = new Issues.IssueAggregator.IssueAggregator(mockManager);
+
+      const aggregatedIssues = Array.from(aggregator.aggregatedIssues());
+      assert.strictEqual(aggregatedIssues.length, 1);
+      const aggregatedIssue = aggregatedIssues[0];
+      assert.strictEqual(aggregatedIssue.getKind(), SDK.Issue.IssueKind.BreakingChange);
+    });
+
+    it('for issues of three different kinds', () => {
+      const issues = StubIssue.createFromIssueKinds(
+          [SDK.Issue.IssueKind.BreakingChange, SDK.Issue.IssueKind.PageError, SDK.Issue.IssueKind.Improvement]);
+
+      const mockManager = new MockIssuesManager(issues) as unknown as BrowserSDKModule.IssuesManager.IssuesManager;
+      const aggregator = new Issues.IssueAggregator.IssueAggregator(mockManager);
+
+      const aggregatedIssues = Array.from(aggregator.aggregatedIssues());
+      assert.strictEqual(aggregatedIssues.length, 1);
+      const aggregatedIssue = aggregatedIssues[0];
+      assert.strictEqual(aggregatedIssue.getKind(), SDK.Issue.IssueKind.PageError);
+    });
   });
 });
 

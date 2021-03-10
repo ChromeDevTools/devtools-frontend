@@ -5,7 +5,7 @@
 import * as i18n from '../i18n/i18n.js';
 
 import type {MarkdownIssueDescription} from './Issue.js';
-import {Issue, IssueCategory} from './Issue.js';
+import {Issue, IssueKind, IssueCategory} from './Issue.js';
 import type {IssuesModel} from './IssuesModel.js';
 
 const UIStrings = {
@@ -47,5 +47,12 @@ export class SharedArrayBufferIssue extends Issue {
 
   primaryKey(): string {
     return JSON.stringify(this.issueDetails);
+  }
+
+  getKind(): IssueKind {
+    if (this.issueDetails.isWarning) {
+      return IssueKind.BreakingChange;
+    }
+    return IssueKind.PageError;
   }
 }

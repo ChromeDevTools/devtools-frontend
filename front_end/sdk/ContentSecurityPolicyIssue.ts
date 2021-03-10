@@ -4,7 +4,7 @@
 
 import * as i18n from '../i18n/i18n.js';
 
-import {Issue, IssueCategory, LazyMarkdownIssueDescription, MarkdownIssueDescription, resolveLazyDescription} from './Issue.js';
+import {Issue, IssueCategory, IssueKind, LazyMarkdownIssueDescription, MarkdownIssueDescription, resolveLazyDescription} from './Issue.js';
 import type {IssuesModel} from './IssuesModel.js';
 
 const UIStrings = {
@@ -68,6 +68,13 @@ export class ContentSecurityPolicyIssue extends Issue {
 
   details(): Protocol.Audits.ContentSecurityPolicyIssueDetails {
     return this.issueDetails;
+  }
+
+  getKind(): IssueKind {
+    if (this.issueDetails.isReportOnly) {
+      return IssueKind.Improvement;
+    }
+    return IssueKind.PageError;
   }
 }
 

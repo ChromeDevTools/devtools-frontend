@@ -27,6 +27,20 @@ export enum IssueKind {
   Improvement = 'Improvement',
 }
 
+/**
+ * Union two issue kinds for issue aggregation. The idea is to show the most
+ * important kind on aggregated issues that union issues of different kinds.
+ */
+export function unionIssueKind(a: IssueKind, b: IssueKind): IssueKind {
+  if (a === IssueKind.PageError || b === IssueKind.PageError) {
+    return IssueKind.PageError;
+  }
+  if (a === IssueKind.BreakingChange || b === IssueKind.BreakingChange) {
+    return IssueKind.BreakingChange;
+  }
+  return IssueKind.Improvement;
+}
+
 export function getShowThirdPartyIssuesSetting(): Common.Settings.Setting<boolean> {
   return Common.Settings.Settings.instance().createSetting('showThirdPartyIssues', false);
 }
@@ -86,6 +100,7 @@ export abstract class Issue extends Common.ObjectWrapper.ObjectWrapper {
   abstract primaryKey(): string;
   abstract getDescription(): MarkdownIssueDescription|null;
   abstract getCategory(): IssueCategory;
+  abstract getKind(): IssueKind;
 
   getBlockedByResponseDetails(): Iterable<Protocol.Audits.BlockedByResponseIssueDetails> {
     return [];

@@ -4,7 +4,7 @@
 
 import * as i18n from '../i18n/i18n.js';
 
-import {Issue, IssueCategory, MarkdownIssueDescription} from './Issue.js';
+import {Issue, IssueCategory, IssueKind, MarkdownIssueDescription} from './Issue.js';
 import type {IssuesModel} from './IssuesModel.js';
 
 const UIStrings = {
@@ -50,5 +50,16 @@ export class MixedContentIssue extends Issue {
 
   primaryKey(): string {
     return JSON.stringify(this.issueDetails);
+  }
+
+  getKind(): IssueKind {
+    switch (this.issueDetails.resolutionStatus) {
+      case Protocol.Audits.MixedContentResolutionStatus.MixedContentAutomaticallyUpgraded:
+        return IssueKind.Improvement;
+      case Protocol.Audits.MixedContentResolutionStatus.MixedContentBlocked:
+        return IssueKind.PageError;
+      case Protocol.Audits.MixedContentResolutionStatus.MixedContentWarning:
+        return IssueKind.Improvement;
+    }
   }
 }

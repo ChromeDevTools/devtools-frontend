@@ -79,7 +79,8 @@ export const config = {
     {'type': 'decimal', 'name': 'aria-valuemax'},
     {'type': 'decimal', 'name': 'aria-valuemin'},
     {'type': 'decimal', 'name': 'aria-valuenow'},
-    {'type': 'string', 'name': 'aria-valuetext'}
+    {'type': 'string', 'name': 'aria-valuetext'},
+    {'type': 'string', 'name': 'aria-virtualcontent'}
   ],
   'roles': [
     {

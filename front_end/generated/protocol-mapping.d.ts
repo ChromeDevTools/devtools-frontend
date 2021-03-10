@@ -763,7 +763,7 @@ export namespace ProtocolMapping {
      * Runs the contrast check for the target page. Found issues are reported
      * using Audits.issueAdded event.
      */
-    'Audits.checkContrast': {paramsType: []; returnType: void;};
+    'Audits.checkContrast': {paramsType: [Protocol.Audits.CheckContrastRequest?]; returnType: void;};
     /**
      * Enables event updates for the service.
      */
@@ -798,6 +798,10 @@ export namespace ProtocolMapping {
      * Set the behavior when downloading a file.
      */
     'Browser.setDownloadBehavior': {paramsType: [Protocol.Browser.SetDownloadBehaviorRequest]; returnType: void;};
+    /**
+     * Cancel a download if in progress
+     */
+    'Browser.cancelDownload': {paramsType: [Protocol.Browser.CancelDownloadRequest]; returnType: void;};
     /**
      * Close browser gracefully.
      */
@@ -2206,9 +2210,22 @@ export namespace ProtocolMapping {
     'Page.stopScreencast': {paramsType: []; returnType: void;};
     /**
      * Forces compilation cache to be generated for every subresource script.
+     * See also: `Page.produceCompilationCache`.
      */
     'Page.setProduceCompilationCache':
         {paramsType: [Protocol.Page.SetProduceCompilationCacheRequest]; returnType: void;};
+    /**
+     * Requests backend to produce compilation cache for the specified scripts.
+     * Unlike setProduceCompilationCache, this allows client to only produce cache
+     * for specific scripts. `scripts` are appeneded to the list of scripts
+     * for which the cache for would produced. Disabling compilation cache with
+     * `setProduceCompilationCache` would reset all pending cache requests.
+     * The list may also be reset during page navigation.
+     * When script with a matching URL is encountered, the cache is optionally
+     * produced upon backend discretion, based on internal heuristics.
+     * See also: `Page.compilationCacheProduced`.
+     */
+    'Page.produceCompilationCache': {paramsType: [Protocol.Page.ProduceCompilationCacheRequest]; returnType: void;};
     /**
      * Seeds compilation cache for given url. Compilation cache does not survive
      * cross-process navigation.
@@ -2350,6 +2367,13 @@ export namespace ProtocolMapping {
      * current browsing context.
      */
     'Storage.getTrustTokens': {paramsType: []; returnType: Protocol.Storage.GetTrustTokensResponse;};
+    /**
+     * Removes all Trust Tokens issued by the provided issuerOrigin.
+     * Leaves other stored data, including the issuer's Redemption Records, intact.
+     */
+    'Storage.clearTrustTokens': {
+      paramsType: [Protocol.Storage.ClearTrustTokensRequest]; returnType: Protocol.Storage.ClearTrustTokensResponse;
+    };
     /**
      * Returns information about the system.
      */

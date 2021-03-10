@@ -1623,7 +1623,15 @@
                 },
                 {
                     "name": "checkContrast",
-                    "description": "Runs the contrast check for the target page. Found issues are reported\nusing Audits.issueAdded event."
+                    "description": "Runs the contrast check for the target page. Found issues are reported\nusing Audits.issueAdded event.",
+                    "parameters": [
+                        {
+                            "name": "reportAAA",
+                            "description": "Whether to report WCAG AAA level issues. Default is false.",
+                            "optional": true,
+                            "type": "boolean"
+                        }
+                    ]
                 }
             ],
             "events": [
@@ -2091,6 +2099,24 @@
                             "description": "The default path to save downloaded files to. This is requred if behavior is set to 'allow'\nor 'allowAndName'.",
                             "optional": true,
                             "type": "string"
+                        }
+                    ]
+                },
+                {
+                    "name": "cancelDownload",
+                    "description": "Cancel a download if in progress",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "guid",
+                            "description": "Global unique identifier of the download.",
+                            "type": "string"
+                        },
+                        {
+                            "name": "browserContextId",
+                            "description": "BrowserContext to perform the action in. When omitted, default browser context is used.",
+                            "optional": true,
+                            "$ref": "BrowserContextID"
                         }
                     ]
                 },
@@ -11064,6 +11090,7 @@
                     "type": "string",
                     "enum": [
                         "None",
+                        "CorsOrCredentialless",
                         "RequireCorp"
                     ]
                 },
@@ -14203,6 +14230,25 @@
                         "strictOriginWhenCrossOrigin",
                         "unsafeUrl"
                     ]
+                },
+                {
+                    "id": "CompilationCacheParams",
+                    "description": "Per-script compilation cache parameters for `Page.produceCompilationCache`",
+                    "experimental": true,
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "url",
+                            "description": "The URL of the script to produce a compilation cache entry for.",
+                            "type": "string"
+                        },
+                        {
+                            "name": "eager",
+                            "description": "A hint to the backend whether eager compilation is recommended.\n(the actual compilation mode used is upon backend discretion).",
+                            "optional": true,
+                            "type": "boolean"
+                        }
+                    ]
                 }
             ],
             "commands": [
@@ -14490,17 +14536,35 @@
                     "returns": [
                         {
                             "name": "layoutViewport",
-                            "description": "Metrics relating to the layout viewport.",
+                            "description": "Deprecated metrics relating to the layout viewport. Can be in DP or in CSS pixels depending on the `enable-use-zoom-for-dsf` flag. Use `normalisedLayoutViewport` instead.",
+                            "deprecated": true,
                             "$ref": "LayoutViewport"
                         },
                         {
                             "name": "visualViewport",
-                            "description": "Metrics relating to the visual viewport.",
+                            "description": "Deprecated metrics relating to the visual viewport. Can be in DP or in CSS pixels depending on the `enable-use-zoom-for-dsf` flag. Use `normalisedVisualViewport` instead.",
+                            "deprecated": true,
                             "$ref": "VisualViewport"
                         },
                         {
                             "name": "contentSize",
-                            "description": "Size of scrollable area.",
+                            "description": "Deprecated size of scrollable area. Can be in DP or in CSS pixels depending on the `enable-use-zoom-for-dsf` flag. Use `normalisedContentSize` instead.",
+                            "deprecated": true,
+                            "$ref": "DOM.Rect"
+                        },
+                        {
+                            "name": "cssLayoutViewport",
+                            "description": "Metrics relating to the layout viewport in CSS pixels.",
+                            "$ref": "LayoutViewport"
+                        },
+                        {
+                            "name": "cssVisualViewport",
+                            "description": "Metrics relating to the visual viewport in CSS pixels.",
+                            "$ref": "VisualViewport"
+                        },
+                        {
+                            "name": "cssContentSize",
+                            "description": "Size of scrollable area in CSS pixels.",
                             "$ref": "DOM.Rect"
                         }
                     ]
@@ -15218,12 +15282,26 @@
                 },
                 {
                     "name": "setProduceCompilationCache",
-                    "description": "Forces compilation cache to be generated for every subresource script.",
+                    "description": "Forces compilation cache to be generated for every subresource script.\nSee also: `Page.produceCompilationCache`.",
                     "experimental": true,
                     "parameters": [
                         {
                             "name": "enabled",
                             "type": "boolean"
+                        }
+                    ]
+                },
+                {
+                    "name": "produceCompilationCache",
+                    "description": "Requests backend to produce compilation cache for the specified scripts.\nUnlike setProduceCompilationCache, this allows client to only produce cache\nfor specific scripts. `scripts` are appeneded to the list of scripts\nfor which the cache for would produced. Disabling compilation cache with\n`setProduceCompilationCache` would reset all pending cache requests.\nThe list may also be reset during page navigation.\nWhen script with a matching URL is encountered, the cache is optionally\nproduced upon backend discretion, based on internal heuristics.\nSee also: `Page.compilationCacheProduced`.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "scripts",
+                            "type": "array",
+                            "items": {
+                                "$ref": "CompilationCacheParams"
+                            }
                         }
                     ]
                 },
@@ -16949,6 +17027,24 @@
                             "items": {
                                 "$ref": "TrustTokens"
                             }
+                        }
+                    ]
+                },
+                {
+                    "name": "clearTrustTokens",
+                    "description": "Removes all Trust Tokens issued by the provided issuerOrigin.\nLeaves other stored data, including the issuer's Redemption Records, intact.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "issuerOrigin",
+                            "type": "string"
+                        }
+                    ],
+                    "returns": [
+                        {
+                            "name": "didDeleteTokens",
+                            "description": "True if any tokens were deleted, false otherwise.",
+                            "type": "boolean"
                         }
                     ]
                 }

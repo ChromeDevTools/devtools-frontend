@@ -51,7 +51,7 @@ export class ContrastCheckTrigger extends Common.ObjectWrapper.ObjectWrapper {
     if (!Root.Runtime.experiments.isEnabled('contrastIssues')) {
       return;
     }
-    resourceTreeModel.target().auditsAgent().invoke_checkContrast();
+    resourceTreeModel.target().auditsAgent().invoke_checkContrast({});
   }
 
   private pageLoaded(event: Common.EventTarget.EventTargetEvent): void {

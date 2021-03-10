@@ -277,7 +277,8 @@ export function registerCommands(inspectorBackend) {
       ['body', 'originalSize', 'encodedSize']);
   inspectorBackend.registerCommand('Audits.disable', [], []);
   inspectorBackend.registerCommand('Audits.enable', [], []);
-  inspectorBackend.registerCommand('Audits.checkContrast', [], []);
+  inspectorBackend.registerCommand(
+      'Audits.checkContrast', [{'name': 'reportAAA', 'type': 'boolean', 'optional': true}], []);
 
   // BackgroundService.
   inspectorBackend.registerEnum('BackgroundService.ServiceName', {
@@ -364,6 +365,13 @@ export function registerCommands(inspectorBackend) {
         {'name': 'behavior', 'type': 'string', 'optional': false},
         {'name': 'browserContextId', 'type': 'string', 'optional': true},
         {'name': 'downloadPath', 'type': 'string', 'optional': true}
+      ],
+      []);
+  inspectorBackend.registerCommand(
+      'Browser.cancelDownload',
+      [
+        {'name': 'guid', 'type': 'string', 'optional': false},
+        {'name': 'browserContextId', 'type': 'string', 'optional': true}
       ],
       []);
   inspectorBackend.registerCommand('Browser.close', [], []);
@@ -1527,7 +1535,9 @@ export function registerCommands(inspectorBackend) {
     UnsafeNone: 'UnsafeNone',
     SameOriginPlusCoep: 'SameOriginPlusCoep'
   });
-  inspectorBackend.registerEnum('Network.CrossOriginEmbedderPolicyValue', {None: 'None', RequireCorp: 'RequireCorp'});
+  inspectorBackend.registerEnum(
+      'Network.CrossOriginEmbedderPolicyValue',
+      {None: 'None', CorsOrCredentialless: 'CorsOrCredentialless', RequireCorp: 'RequireCorp'});
   inspectorBackend.registerEvent('Network.dataReceived', ['requestId', 'timestamp', 'dataLength', 'encodedDataLength']);
   inspectorBackend.registerEvent(
       'Network.eventSourceMessageReceived', ['requestId', 'timestamp', 'eventName', 'eventId', 'data']);
@@ -2010,7 +2020,9 @@ export function registerCommands(inspectorBackend) {
   inspectorBackend.registerCommand('Page.getManifestIcons', [], ['primaryIcon']);
   inspectorBackend.registerCommand('Page.getCookies', [], ['cookies']);
   inspectorBackend.registerCommand('Page.getFrameTree', [], ['frameTree']);
-  inspectorBackend.registerCommand('Page.getLayoutMetrics', [], ['layoutViewport', 'visualViewport', 'contentSize']);
+  inspectorBackend.registerCommand(
+      'Page.getLayoutMetrics', [],
+      ['layoutViewport', 'visualViewport', 'contentSize', 'cssLayoutViewport', 'cssVisualViewport', 'cssContentSize']);
   inspectorBackend.registerCommand('Page.getNavigationHistory', [], ['currentIndex', 'entries']);
   inspectorBackend.registerCommand('Page.resetNavigationHistory', [], []);
   inspectorBackend.registerCommand(
@@ -2164,6 +2176,8 @@ export function registerCommands(inspectorBackend) {
   inspectorBackend.registerCommand('Page.stopScreencast', [], []);
   inspectorBackend.registerCommand(
       'Page.setProduceCompilationCache', [{'name': 'enabled', 'type': 'boolean', 'optional': false}], []);
+  inspectorBackend.registerCommand(
+      'Page.produceCompilationCache', [{'name': 'scripts', 'type': 'object', 'optional': false}], []);
   inspectorBackend.registerCommand(
       'Page.addCompilationCache',
       [{'name': 'url', 'type': 'string', 'optional': false}, {'name': 'data', 'type': 'string', 'optional': false}],
@@ -2341,6 +2355,8 @@ export function registerCommands(inspectorBackend) {
   inspectorBackend.registerCommand(
       'Storage.untrackIndexedDBForOrigin', [{'name': 'origin', 'type': 'string', 'optional': false}], []);
   inspectorBackend.registerCommand('Storage.getTrustTokens', [], ['tokens']);
+  inspectorBackend.registerCommand(
+      'Storage.clearTrustTokens', [{'name': 'issuerOrigin', 'type': 'string', 'optional': false}], ['didDeleteTokens']);
 
   // SystemInfo.
   inspectorBackend.registerEnum('SystemInfo.SubsamplingFormat', {Yuv420: 'yuv420', Yuv422: 'yuv422', Yuv444: 'yuv444'});

@@ -274,7 +274,7 @@ declare namespace ProtocolProxyApi {
      * Runs the contrast check for the target page. Found issues are reported
      * using Audits.issueAdded event.
      */
-    invoke_checkContrast(): Promise<Protocol.ProtocolResponseWithError>;
+    invoke_checkContrast(params: Protocol.Audits.CheckContrastRequest): Promise<Protocol.ProtocolResponseWithError>;
   }
   export interface AuditsDispatcher {
     issueAdded(params: Protocol.Audits.IssueAddedEvent): void;
@@ -341,6 +341,11 @@ declare namespace ProtocolProxyApi {
      */
     invoke_setDownloadBehavior(params: Protocol.Browser.SetDownloadBehaviorRequest):
         Promise<Protocol.ProtocolResponseWithError>;
+
+    /**
+     * Cancel a download if in progress
+     */
+    invoke_cancelDownload(params: Protocol.Browser.CancelDownloadRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Close browser gracefully.
@@ -2396,8 +2401,23 @@ declare namespace ProtocolProxyApi {
 
     /**
      * Forces compilation cache to be generated for every subresource script.
+     * See also: `Page.produceCompilationCache`.
      */
     invoke_setProduceCompilationCache(params: Protocol.Page.SetProduceCompilationCacheRequest):
+        Promise<Protocol.ProtocolResponseWithError>;
+
+    /**
+     * Requests backend to produce compilation cache for the specified scripts.
+     * Unlike setProduceCompilationCache, this allows client to only produce cache
+     * for specific scripts. `scripts` are appeneded to the list of scripts
+     * for which the cache for would produced. Disabling compilation cache with
+     * `setProduceCompilationCache` would reset all pending cache requests.
+     * The list may also be reset during page navigation.
+     * When script with a matching URL is encountered, the cache is optionally
+     * produced upon backend discretion, based on internal heuristics.
+     * See also: `Page.compilationCacheProduced`.
+     */
+    invoke_produceCompilationCache(params: Protocol.Page.ProduceCompilationCacheRequest):
         Promise<Protocol.ProtocolResponseWithError>;
 
     /**
@@ -2753,6 +2773,13 @@ declare namespace ProtocolProxyApi {
      * current browsing context.
      */
     invoke_getTrustTokens(): Promise<Protocol.Storage.GetTrustTokensResponse>;
+
+    /**
+     * Removes all Trust Tokens issued by the provided issuerOrigin.
+     * Leaves other stored data, including the issuer's Redemption Records, intact.
+     */
+    invoke_clearTrustTokens(params: Protocol.Storage.ClearTrustTokensRequest):
+        Promise<Protocol.Storage.ClearTrustTokensResponse>;
   }
   export interface StorageDispatcher {
     /**

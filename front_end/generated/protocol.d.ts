@@ -1071,6 +1071,13 @@ declare namespace Protocol {
       encodedSize: integer;
     }
 
+    export interface CheckContrastRequest {
+      /**
+       * Whether to report WCAG AAA level issues. Default is false.
+       */
+      reportAAA?: boolean;
+    }
+
     export interface IssueAddedEvent {
       issue: InspectorIssue;
     }
@@ -1383,6 +1390,17 @@ declare namespace Protocol {
        * or 'allowAndName'.
        */
       downloadPath?: string;
+    }
+
+    export interface CancelDownloadRequest {
+      /**
+       * Global unique identifier of the download.
+       */
+      guid: string;
+      /**
+       * BrowserContext to perform the action in. When omitted, default browser context is used.
+       */
+      browserContextId?: BrowserContextID;
     }
 
     export interface GetVersionResponse extends ProtocolResponseWithError {
@@ -7493,6 +7511,7 @@ declare namespace Protocol {
 
     export enum CrossOriginEmbedderPolicyValue {
       None = 'None',
+      CorsOrCredentialless = 'CorsOrCredentialless',
       RequireCorp = 'RequireCorp',
     }
 
@@ -9714,6 +9733,21 @@ declare namespace Protocol {
       UnsafeUrl = 'unsafeUrl',
     }
 
+    /**
+     * Per-script compilation cache parameters for `Page.produceCompilationCache`
+     */
+    export interface CompilationCacheParams {
+      /**
+       * The URL of the script to produce a compilation cache entry for.
+       */
+      url: string;
+      /**
+       * A hint to the backend whether eager compilation is recommended.
+       * (the actual compilation mode used is upon backend discretion).
+       */
+      eager?: boolean;
+    }
+
     export interface AddScriptToEvaluateOnLoadRequest {
       scriptSource: string;
     }
@@ -9869,17 +9903,29 @@ declare namespace Protocol {
 
     export interface GetLayoutMetricsResponse extends ProtocolResponseWithError {
       /**
-       * Metrics relating to the layout viewport.
+       * Deprecated metrics relating to the layout viewport. Can be in DP or in CSS pixels depending on the `enable-use-zoom-for-dsf` flag. Use `normalisedLayoutViewport` instead.
        */
       layoutViewport: LayoutViewport;
       /**
-       * Metrics relating to the visual viewport.
+       * Deprecated metrics relating to the visual viewport. Can be in DP or in CSS pixels depending on the `enable-use-zoom-for-dsf` flag. Use `normalisedVisualViewport` instead.
        */
       visualViewport: VisualViewport;
       /**
-       * Size of scrollable area.
+       * Deprecated size of scrollable area. Can be in DP or in CSS pixels depending on the `enable-use-zoom-for-dsf` flag. Use `normalisedContentSize` instead.
        */
       contentSize: DOM.Rect;
+      /**
+       * Metrics relating to the layout viewport in CSS pixels.
+       */
+      cssLayoutViewport: LayoutViewport;
+      /**
+       * Metrics relating to the visual viewport in CSS pixels.
+       */
+      cssVisualViewport: VisualViewport;
+      /**
+       * Size of scrollable area in CSS pixels.
+       */
+      cssContentSize: DOM.Rect;
     }
 
     export interface GetNavigationHistoryResponse extends ProtocolResponseWithError {
@@ -10342,6 +10388,10 @@ declare namespace Protocol {
 
     export interface SetProduceCompilationCacheRequest {
       enabled: boolean;
+    }
+
+    export interface ProduceCompilationCacheRequest {
+      scripts: CompilationCacheParams[];
     }
 
     export interface AddCompilationCacheRequest {
@@ -11459,6 +11509,17 @@ declare namespace Protocol {
 
     export interface GetTrustTokensResponse extends ProtocolResponseWithError {
       tokens: TrustTokens[];
+    }
+
+    export interface ClearTrustTokensRequest {
+      issuerOrigin: string;
+    }
+
+    export interface ClearTrustTokensResponse extends ProtocolResponseWithError {
+      /**
+       * True if any tokens were deleted, false otherwise.
+       */
+      didDeleteTokens: boolean;
     }
 
     /**

@@ -42,6 +42,7 @@ import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
 import * as PerfUI from '../perf_ui/perf_ui.js';
 import * as SDK from '../sdk/sdk.js';
 import * as Search from '../search/search.js';
+import * as Components from '../ui/components/components.js';
 import * as UI from '../ui/ui.js';
 import * as Workspace from '../workspace/workspace.js';
 
@@ -150,6 +151,10 @@ const UIStrings = {
   *@description Text in Network Panel of the Network panel
   */
   fetchingFrames: 'Fetching frames...',
+  /**
+   * @description Text of a button in the Network panel's toolbar that open Network Conditions panel in the drawer.
+   */
+  moreNetworkConditions: 'More network conditions…',
 };
 const str_ = i18n.i18n.registerUIStrings('network/NetworkPanel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -404,13 +409,27 @@ export class NetworkPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
     this._panelToolbar.appendToolbarItem(new UI.Toolbar.ToolbarSettingCheckbox(
         this._preserveLogSetting, i18nString(UIStrings.doNotClearLogOnPageReload), i18nString(UIStrings.preserveLog)));
 
+    this._panelToolbar.appendSeparator();
     const disableCacheCheckbox = new UI.Toolbar.ToolbarSettingCheckbox(
         Common.Settings.Settings.instance().moduleSetting('cacheDisabled'),
         i18nString(UIStrings.disableCacheWhileDevtoolsIsOpen), i18nString(UIStrings.disableCache));
     this._panelToolbar.appendToolbarItem(disableCacheCheckbox);
 
-    this._panelToolbar.appendSeparator();
     this._panelToolbar.appendToolbarItem(this._throttlingSelect);
+
+    const networkConditionsIcon = new Components.Icon.Icon();
+    networkConditionsIcon.data = {
+      iconName: 'network_conditions_icon',
+      color: 'rgb(110 110 110)',
+      width: '18px',
+      height: '18px',
+    };
+    const networkConditionsButton =
+        new UI.Toolbar.ToolbarButton(i18nString(UIStrings.moreNetworkConditions), networkConditionsIcon);
+    networkConditionsButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => {
+      UI.ViewManager.ViewManager.instance().showView('network.config');
+    }, this);
+    this._panelToolbar.appendToolbarItem(networkConditionsButton);
 
     this._rightToolbar.appendToolbarItem(new UI.Toolbar.ToolbarItem(this._progressBarContainer));
     this._rightToolbar.appendSeparator();

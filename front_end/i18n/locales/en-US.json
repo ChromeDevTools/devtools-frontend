@@ -4919,6 +4919,9 @@
   "network/NetworkPanel.ts | importHarFile": {
     "message": "Import HAR file..."
   },
+  "network/NetworkPanel.ts | moreNetworkConditions": {
+    "message": "More network conditions…"
+  },
   "network/NetworkPanel.ts | networkSettings": {
     "message": "Network settings"
   },

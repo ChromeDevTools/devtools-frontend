@@ -4919,6 +4919,9 @@
   "network/NetworkPanel.ts | importHarFile": {
     "message": "Îḿp̂ór̂t́ HAR f̂íl̂é..."
   },
+  "network/NetworkPanel.ts | moreNetworkConditions": {
+    "message": "M̂ór̂é n̂ét̂ẃôŕk̂ ćôńd̂ít̂íôńŝ…"
+  },
   "network/NetworkPanel.ts | networkSettings": {
     "message": "N̂ét̂ẃôŕk̂ śêt́t̂ín̂ǵŝ"
   },

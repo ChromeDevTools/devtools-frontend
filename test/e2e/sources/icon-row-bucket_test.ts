@@ -110,7 +110,8 @@ describe('The row\'s icon bucket', async () => {
     assert.strictEqual(icons.length, 1);
   });
 
-  it('should reveal Issues tab when the icon is clicked', async () => {
+  // Flaky test.
+  it.skipOnPlatforms(['mac'], '[crbug.com/1184162]: should reveal Issues tab when the icon is clicked', async () => {
     await openFileInSourceTab('trusted-type-violations-report-only.rawresponse');
     const bucketIssueIconComponents = await getIconComponents('text-editor-line-decoration-icon-issue');
     assert.strictEqual(bucketIssueIconComponents.length, 1);

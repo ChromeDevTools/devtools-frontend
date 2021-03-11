@@ -53,4 +53,6 @@ module.exports = {
   timeout,
   parallel,
   jobs,
+  reporter: path.join(__dirname, '..', 'shared', 'mocha-resultsdb-reporter'),
+  suiteName: 'e2e',
 }

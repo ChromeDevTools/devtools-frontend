@@ -35,4 +35,6 @@ module.exports = {
   require: path.join(__dirname, '..', 'conductor', 'mocha_hooks.js'),
   spec: testFiles,
   timeout,
+  reporter: path.join(__dirname, '..', 'shared', 'mocha-resultsdb-reporter'),
+  suiteName: 'interactions',
 }

@@ -1,4 +1,4 @@
-#!/usr/bin/env vpython
+#!/usr/bin/env vpython3
 # Copyright (c) 2014 Google Inc. All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -60,7 +60,7 @@ def check_installed(app_name):
     proc = subprocess.Popen("which %s" % app_name, stdout=subprocess.PIPE, shell=True)
     proc.communicate()
     if proc.returncode != 0:
-        print "This script needs \"%s\" to be installed." % app_name
+        print("This script needs \"%s\" to be installed." % app_name)
         sys.exit(1)
 
 
@@ -75,9 +75,9 @@ def optimize_svg(svg_input_path):
 
 
 if len(SVG_FILE_NAMES):
-    print "%d unoptimized svg files found." % len(SVG_FILE_NAMES)
+    print("%d unoptimized svg files found." % len(SVG_FILE_NAMES))
 else:
-    print "All svg files are already optimized."
+    print("All svg files are already optimized.")
     sys.exit()
 
 processes = {}
@@ -87,6 +87,7 @@ for svg_file_path in SVG_FILE_PATHS_TO_OPTIMIZE:
 
 for file_name, proc in processes.items():
     (optimize_out, _) = proc.communicate()
-    print("Optimization of %s finished: %s" % (file_name, optimize_out))
+    print("Optimization of %s finished: %s" %
+          (file_name, optimize_out.decode()))
 
 devtools_file_hashes.update_file_hashes(HASHES_FILE_PATH, svg_file_paths)

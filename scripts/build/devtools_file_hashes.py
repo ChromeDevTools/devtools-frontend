@@ -1,4 +1,3 @@
-#!/usr/bin/env vpython
 # Copyright (c) 2014 Google Inc. All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -41,7 +40,7 @@ def save_hashes(hashes_file_path, hashes):
         with open(hashes_file_path, "wt") as hashes_file:
             json.dump(hashes, hashes_file, indent=4, separators=(",", ": "))
     except:
-        print "ERROR: Failed to write %s" % hashes_file_path
+        print("ERROR: Failed to write %s" % hashes_file_path)
         raise
 
 
@@ -55,7 +54,7 @@ def load_hashes(hashes_file_path):
 
 
 def calculate_file_hash(file_path):
-    with open(file_path) as file:
+    with open(file_path, "rb") as file:
         data = file.read()
         md5_hash = hashlib.md5(data).hexdigest()
     return md5_hash

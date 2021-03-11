@@ -11144,12 +11144,6 @@
   "ui/SoftDropDown.js | noItemSelected": {
     "message": "(n̂ó ît́êḿ ŝél̂éĉt́êd́)"
   },
-  "ui/SplitWidget.js | hideS": {
-    "message": "Ĥíd̂é {PH1}"
-  },
-  "ui/SplitWidget.js | showS": {
-    "message": "Ŝh́ôẃ {PH1}"
-  },
   "ui/SuggestBox.js | sSuggestionSOfS": {
     "message": "{PH1}, ŝúĝǵêśt̂íôń {PH2} ôf́ {PH3}"
   },

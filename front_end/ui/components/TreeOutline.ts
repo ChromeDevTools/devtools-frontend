@@ -48,11 +48,26 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
    */
   private enqueuedRender = false;
 
-  connectedCallback(): void {
-    const topLevelBorderColor = this.getAttribute('toplevelbordercolor');
-    if (topLevelBorderColor) {
-      ComponentHelpers.SetCSSProperty.set(this, '--override-top-node-border-color', topLevelBorderColor);
+  static get observedAttributes(): string[] {
+    return ['nowrap', 'toplevelbordercolor'];
+  }
+
+  attributeChangedCallback(name: 'nowrap'|'toplevelbordercolor', oldValue: string|null, newValue: string|null): void {
+    switch (name) {
+      case 'nowrap': {
+        this.setNodeKeyNoWrapCSSVariable(newValue);
+        break;
+      }
+      case 'toplevelbordercolor': {
+        this.setTopLevelNodeBorderColorCSSVariable(newValue);
+        break;
+      }
     }
+  }
+
+  connectedCallback(): void {
+    this.setTopLevelNodeBorderColorCSSVariable(this.getAttribute('toplevelbordercolor'));
+    this.setNodeKeyNoWrapCSSVariable(this.getAttribute('nowrap'));
   }
 
   get data(): TreeOutlineData<TreeNodeDataType> {
@@ -88,6 +103,16 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
     }
     await this.recursivelyCollapseTreeNodeChildren(treeNode);
     this.render();
+  }
+
+  private setNodeKeyNoWrapCSSVariable(attributeValue: string|null): void {
+    ComponentHelpers.SetCSSProperty.set(
+        this, '--override-key-whitespace-wrapping', attributeValue !== null ? 'nowrap' : 'initial');
+  }
+
+  private setTopLevelNodeBorderColorCSSVariable(attributeValue: string|null): void {
+    ComponentHelpers.SetCSSProperty.set(
+        this, '--override-top-node-border', attributeValue ? `1px solid ${attributeValue}` : '');
   }
 
   private async recursivelyCollapseTreeNodeChildren(treeNode: TreeNode<TreeNodeDataType>): Promise<void> {
@@ -266,9 +291,10 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
     const listItemClasses = LitHtml.Directives.classMap({
       expanded: isExpandableNode(node) && nodeIsExpanded,
       parent: isExpandableNode(node),
-      'has-border': depth === 0 && this.getAttribute('toplevelbordercolor') !== null,
+      'has-border-if-attribute-set': depth === 0,
     });
-    const ariaExpandedAttribute = LitHtml.Directives.ifDefined(isExpandableNode(node) ? String(nodeIsExpanded) : undefined);
+    const ariaExpandedAttribute =
+        LitHtml.Directives.ifDefined(isExpandableNode(node) ? String(nodeIsExpanded) : undefined);
 
     let renderedNodeKey: LitHtml.TemplateResult;
     if (node.renderer) {
@@ -318,8 +344,11 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
         li {
           list-style: none;
           text-overflow: ellipsis;
-          white-space: nowrap;
           min-height: 12px;
+        }
+
+        .tree-node-key {
+          white-space: var(--override-key-whitespace-wrapping);
         }
 
         .arrow-icon {
@@ -353,12 +382,12 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
           -webkit-mask-position: -16px 0;
         }
 
-        li.has-border {
-          border-top: 1px solid var(--override-top-node-border-color);
+        li.has-border-if-attribute-set {
+          border-top: var(--override-top-node-border);
         }
 
-        li.has-border:last-child {
-          border-bottom: 1px solid var(--override-top-node-border-color);
+        li.has-border-if-attribute-set:last-child {
+          border-bottom: var(--override-top-node-border);
         }
 
         .arrow-and-key-wrapper {

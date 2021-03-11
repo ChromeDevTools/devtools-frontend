@@ -229,6 +229,57 @@ describe('TreeOutline', () => {
     ]);
   });
 
+  describe('nowrap attribute', () => {
+    it('sets the white-space to initial by default', async () => {
+      const {shadowRoot} = await renderTreeOutline({
+        tree: basicTreeData,
+      });
+      await coordinator.done();
+      const rootNode = getVisibleTreeNodeByText(shadowRoot, 'Offices');
+      const key = rootNode.querySelector('[data-node-key]');
+      assertElement(key, HTMLElement);
+      const whiteSpaceValue = window.getComputedStyle(key).getPropertyValue('white-space');
+      assert.strictEqual(whiteSpaceValue, 'normal');
+    });
+
+    it('will set white-space: nowrap if the attribute is set', async () => {
+      const {component, shadowRoot} = await renderTreeOutline({
+        tree: basicTreeData,
+      });
+      component.setAttribute('nowrap', '');
+      await coordinator.done();
+      const rootNode = getVisibleTreeNodeByText(shadowRoot, 'Offices');
+      const key = rootNode.querySelector('[data-node-key]');
+      assertElement(key, HTMLElement);
+      const whiteSpaceValue = window.getComputedStyle(key).getPropertyValue('white-space');
+      assert.strictEqual(whiteSpaceValue, 'nowrap');
+    });
+  });
+
+  describe('toplevelbordercolor attribute', () => {
+    it('by default the nodes are not given a border', async () => {
+      const {shadowRoot} = await renderTreeOutline({
+        tree: basicTreeData,
+      });
+      await coordinator.done();
+      const rootNode = getVisibleTreeNodeByText(shadowRoot, 'Offices');
+      const borderTopValue = window.getComputedStyle(rootNode).getPropertyValue('border-top');
+      // Odd assertion: this is the default borderTop the browser "applies" if none is set.
+      assert.strictEqual(borderTopValue, '0px none rgb(0, 0, 0)');
+    });
+
+    it('gives the nodes a border if the attribute is set', async () => {
+      const {component, shadowRoot} = await renderTreeOutline({
+        tree: basicTreeData,
+      });
+      component.setAttribute('toplevelbordercolor', 'rgb(255, 0, 0)');
+      await coordinator.done();
+      const rootNode = getVisibleTreeNodeByText(shadowRoot, 'Offices');
+      const borderTopValue = window.getComputedStyle(rootNode).getPropertyValue('border-top');
+      assert.strictEqual(borderTopValue, '1px solid rgb(255, 0, 0)');
+    });
+  });
+
   it('can take nodes with a custom key type', async () => {
     interface CustomTreeKeyType {
       property: string;

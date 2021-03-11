@@ -38,7 +38,11 @@ except ImportError:
 def save_hashes(hashes_file_path, hashes):
     try:
         with open(hashes_file_path, "wt") as hashes_file:
-            json.dump(hashes, hashes_file, indent=4, separators=(",", ": "))
+            json.dump(hashes,
+                      hashes_file,
+                      indent=4,
+                      separators=(",", ": "),
+                      sort_keys=True)
     except:
         print("ERROR: Failed to write %s" % hashes_file_path)
         raise

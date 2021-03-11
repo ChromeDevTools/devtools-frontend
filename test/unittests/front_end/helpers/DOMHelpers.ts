@@ -178,7 +178,7 @@ export function getEventPromise<T extends Event>(element: HTMLElement, eventName
   return new Promise<T>(resolve => {
     element.addEventListener(eventName, (event: Event) => {
       resolve(event as T);
-    });
+    }, {once: true});
   });
 }
 

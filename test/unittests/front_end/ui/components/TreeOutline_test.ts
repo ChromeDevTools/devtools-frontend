@@ -5,7 +5,7 @@
 import * as Coordinator from '../../../../../front_end/render_coordinator/render_coordinator.js';
 import * as LitHtml from '../../../../../front_end/third_party/lit-html/lit-html.js';
 import * as UIComponents from '../../../../../front_end/ui/components/components.js';
-import {assertElement, assertShadowRoot, dispatchClickEvent, dispatchKeyDownEvent, renderElementIntoDOM, stripLitHtmlCommentNodes} from '../../helpers/DOMHelpers.js';
+import {assertElement, assertShadowRoot, dispatchClickEvent, dispatchKeyDownEvent, getEventPromise, renderElementIntoDOM, stripLitHtmlCommentNodes} from '../../helpers/DOMHelpers.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 const {assert} = chai;
@@ -1017,6 +1017,39 @@ describe('TreeOutline', () => {
       await coordinator.done();
       const leafNodeCSGOffice = getVisibleTreeNodeByText(shadowRoot, 'CSG');
       assert.strictEqual(leafNodeCSGOffice.getAttribute('aria-expanded'), null);
+    });
+  });
+
+  describe('emitting events', () => {
+    describe('itemselected event', () => {
+      it('emits an event when the user clicks on the node', async () => {
+        const {component, shadowRoot} = await renderTreeOutline({
+          tree: basicTreeData,
+        });
+        await coordinator.done();
+        const officeNode = getVisibleTreeNodeByText(shadowRoot, 'Offices');
+        const treeItemSelectedEvent =
+            getEventPromise<UIComponents.TreeOutline.ItemSelectedEvent<string>>(component, 'itemselected');
+        dispatchClickEvent(officeNode);
+        const event = await treeItemSelectedEvent;
+        assert.deepEqual(event.data, {node: basicTreeData[0]});
+      });
+
+      it('emits an event when the user navigates to the node with their keyboard', async () => {
+        const {component, shadowRoot} = await renderTreeOutline({
+          tree: basicTreeData,
+        });
+        await coordinator.done();
+        const officeNode = getVisibleTreeNodeByText(shadowRoot, 'Offices');
+        dispatchClickEvent(officeNode);
+        await coordinator.done();
+        dispatchKeyDownEvent(officeNode, {key: 'ArrowDown', bubbles: true});
+        const treeItemSelectedEvent =
+            getEventPromise<UIComponents.TreeOutline.ItemSelectedEvent<string>>(component, 'itemselected');
+        await coordinator.done();
+        const event = await treeItemSelectedEvent;
+        assert.deepEqual(event.data, {node: basicTreeData[1]});
+      });
     });
   });
 });

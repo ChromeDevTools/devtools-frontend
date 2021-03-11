@@ -20,6 +20,17 @@ export function defaultRenderer(node: TreeNode<string>): LitHtml.TemplateResult 
   return LitHtml.html`${node.treeNodeData}`;
 }
 
+export class ItemSelectedEvent<TreeNodeDataType> extends Event {
+  data: {
+    node: TreeNode<TreeNodeDataType>,
+  };
+
+  constructor(node: TreeNode<TreeNodeDataType>) {
+    super('itemselected', {bubbles: true, composed: true});
+    this.data = {node};
+  }
+}
+
 export class TreeOutline<TreeNodeDataType> extends HTMLElement {
   private readonly shadow = this.attachShadow({mode: 'open'});
   private treeData: readonly TreeNode<TreeNodeDataType>[] = [];
@@ -192,6 +203,7 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
     }
     this.focusableTreeNode = treeNode;
     await this.render();
+    this.dispatchEvent(new ItemSelectedEvent(treeNode));
     coordinator.write(() => {
       domNode.focus();
     });

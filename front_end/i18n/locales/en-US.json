@@ -10964,6 +10964,36 @@
   "timeline/UIDevtoolsUtils.js | system": {
     "message": "System"
   },
+  "timeline/WebVitalsTimeline.ts | fcp": {
+    "message": "FCP"
+  },
+  "timeline/WebVitalsTimeline.ts | firstContentfulPaint": {
+    "message": "First Contentful Paint"
+  },
+  "timeline/WebVitalsTimeline.ts | good": {
+    "message": "Good"
+  },
+  "timeline/WebVitalsTimeline.ts | largestContentfulPaint": {
+    "message": "Largest Contentful Paint"
+  },
+  "timeline/WebVitalsTimeline.ts | lcp": {
+    "message": "LCP"
+  },
+  "timeline/WebVitalsTimeline.ts | longTask": {
+    "message": "Long Task"
+  },
+  "timeline/WebVitalsTimeline.ts | longTasks": {
+    "message": "Long Tasks"
+  },
+  "timeline/WebVitalsTimeline.ts | ls": {
+    "message": "LS"
+  },
+  "timeline/WebVitalsTimeline.ts | needsImprovement": {
+    "message": "Needs improvement"
+  },
+  "timeline/WebVitalsTimeline.ts | poor": {
+    "message": "Poor"
+  },
   "ui/components/DataGrid.ts | headerOptions": {
     "message": "Header Options"
   },

@@ -1155,6 +1155,7 @@ grd_files_debug_sources = [
   "front_end/timeline/WebVitalsLane.js",
   "front_end/timeline/WebVitalsTimeline.js",
   "front_end/timeline/WebVitalsTimelineUtils.js",
+  "front_end/timeline/WebVitalsTooltip.js",
   "front_end/timeline_model/TimelineFrameModel.js",
   "front_end/timeline_model/TimelineIRModel.js",
   "front_end/timeline_model/TimelineJSProfile.js",

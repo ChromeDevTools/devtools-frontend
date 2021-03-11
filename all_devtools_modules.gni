@@ -731,6 +731,7 @@ all_typescript_module_sources = [
   "timeline/WebVitalsLane.js",
   "timeline/WebVitalsTimeline.js",
   "timeline/WebVitalsTimelineUtils.js",
+  "timeline/WebVitalsTooltip.js",
   "timeline_model/TimelineFrameModel.js",
   "timeline_model/TimelineIRModel.js",
   "timeline_model/TimelineJSProfile.js",

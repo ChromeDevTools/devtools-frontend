@@ -24,6 +24,7 @@ import * as TimelineUIUtils from './TimelineUIUtils.js';
 import * as UIDevtoolsController from './UIDevtoolsController.js';
 import * as UIDevtoolsUtils from './UIDevtoolsUtils.js';
 import * as WebVitalsTimeline from './WebVitalsTimeline.js';
+import * as WebVitalsTooltip from './WebVitalsTooltip.js';
 
 export {
   CLSLinkifier,
@@ -48,4 +49,5 @@ export {
   UIDevtoolsController,
   UIDevtoolsUtils,
   WebVitalsTimeline,
+  WebVitalsTooltip,
 };

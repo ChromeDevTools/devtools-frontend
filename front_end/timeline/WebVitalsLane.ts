@@ -3,19 +3,35 @@
 // found in the LICENSE file.
 
 import * as Host from '../host/host.js';
+import * as LitHtml from '../third_party/lit-html/lit-html.js';
 
-import {assertInstanceOf, Colors, Event, Marker, MarkerType, Timebox, WebVitalsTimeline} from './WebVitalsTimeline.js';
+import {assertInstanceOf, Event, LONG_TASK_THRESHOLD, Marker, MarkerType, Timebox, WebVitalsTimeline} from './WebVitalsTimeline.js';
 
 type GetMarkerTypeCallback = (event: Event) => MarkerType;
-const LONG_TASK_DURATION = 50;
+type GetMarkerOverlayCallback = (marker: Marker) => LitHtml.TemplateResult;
+type GetTimeboxOverlayCallback = (marker: Timebox) => LitHtml.TemplateResult;
 
 abstract class WebVitalsLane {
   protected context: CanvasRenderingContext2D;
   protected timeline: WebVitalsTimeline;
+  protected theme: {[key: string]: string};
 
   constructor(timeline: WebVitalsTimeline) {
     this.timeline = timeline;
     this.context = timeline.getContext();
+
+    const styles = getComputedStyle(document.documentElement);
+    this.theme = {
+      good: styles.getPropertyValue('--lighthouse-green'),
+      medium: styles.getPropertyValue('--lighthouse-orange'),
+      bad: styles.getPropertyValue('--lighthouse-red'),
+      frame: styles.getPropertyValue('--color-primary'),
+      textPrimary: styles.getPropertyValue('--color-text-primary'),
+      textSecondary: styles.getPropertyValue('--color-text-secondary'),
+      background: styles.getPropertyValue('--color-background'),
+      background50: styles.getPropertyValue('--color-background-opacity-50'),
+      timeboxColor: styles.getPropertyValue('--color-primary-variant'),
+    };
   }
 
   abstract handlePointerMove(x: number|null): void;
@@ -36,9 +52,9 @@ abstract class WebVitalsLane {
     this.context.font = '9px ' + Host.Platform.fontFamily();
     const text = this.context.measureText(upperCaseLabel);
     const height = text.actualBoundingBoxAscent - text.actualBoundingBoxDescent;
-    this.context.fillStyle = 'rgba(255, 255, 255, 0.8)';
+    this.context.fillStyle = this.theme.background50;
     this.context.fillRect(0, 1, text.width + 12, height + 6);
-    this.context.fillStyle = '#80868b';
+    this.context.fillStyle = this.theme.textSecondary;
     this.context.fillText(upperCaseLabel, 6, height + 4);
     this.context.restore();
   }
@@ -54,16 +70,21 @@ export class WebVitalsEventLane extends WebVitalsLane {
   private labelMetrics: TextMetrics;
   private label: string;
   private getMarkerType: GetMarkerTypeCallback;
+  private getMarkerOverlay?: GetMarkerOverlayCallback;
 
-  constructor(timeline: WebVitalsTimeline, label: string, getMarkerType: GetMarkerTypeCallback) {
+  constructor(
+      timeline: WebVitalsTimeline, label: string, getMarkerType: GetMarkerTypeCallback,
+      getMarkerOverlay?: GetMarkerOverlayCallback) {
     super(timeline);
     this.context = timeline.getContext();
     this.label = label;
     this.getMarkerType = getMarkerType;
+    this.getMarkerOverlay = getMarkerOverlay;
     this.labelMetrics = this.measureLabel(this.label);
   }
 
   handlePointerMove(x: number|null): void {
+    const prevHoverMarker = this.hoverMarker;
     if (x === null) {
       this.hoverMarker = null;
     } else {
@@ -72,6 +93,14 @@ export class WebVitalsEventLane extends WebVitalsLane {
         return tX - 5 <= x && x <= tX + m.widthIncludingLabel;
       }) ||
           null;
+    }
+
+    if (prevHoverMarker !== this.hoverMarker) {
+      if (this.hoverMarker && this.getMarkerOverlay) {
+        this.timeline.showOverlay(this.getMarkerOverlay(this.hoverMarker));
+      } else {
+        this.timeline.hideOverlay();
+      }
     }
   }
 
@@ -123,7 +152,7 @@ export class WebVitalsEventLane extends WebVitalsLane {
     this.context.save();
     this.context.font = '11px ' + Host.Platform.fontFamily();
     const height = textMetrics.actualBoundingBoxAscent - textMetrics.actualBoundingBoxDescent;
-    this.context.fillStyle = '#202124';
+    this.context.fillStyle = this.theme.textPrimary;
     this.context.fillText(
         label, this.tX(position) + this.timeline.getLineHeight() * 0.5,
         0.5 * this.timeline.getLineHeight() + height * .5);
@@ -134,7 +163,7 @@ export class WebVitalsEventLane extends WebVitalsLane {
     this.context.save();
     this.context.font = '11px ' + Host.Platform.fontFamily();
     const height = textMetrics.actualBoundingBoxAscent - textMetrics.actualBoundingBoxDescent;
-    this.context.fillStyle = 'rgba(0, 0, 0, 0.5)';
+    this.context.fillStyle = this.theme.textSecondary;
     this.context.fillText(
         timestamp, this.tX(position) + this.timeline.getLineHeight() * 0.5 + textWidth + 5,
         0.5 * this.timeline.getLineHeight() + height * .5);
@@ -146,7 +175,7 @@ export class WebVitalsEventLane extends WebVitalsLane {
 
     this.context.save();
     this.context.beginPath();
-    this.context.strokeStyle = Colors.Good;
+    this.context.strokeStyle = this.theme.good;
     this.context.moveTo(this.tX(timestamp), 2);
     this.context.lineTo(this.tX(timestamp), 5);
     this.context.moveTo(this.tX(timestamp), 19);
@@ -154,7 +183,7 @@ export class WebVitalsEventLane extends WebVitalsLane {
     this.context.stroke();
 
     this.context.beginPath();
-    this.context.fillStyle = Colors.Good;
+    this.context.fillStyle = this.theme.good;
     this.context.arc(this.tX(timestamp), 0.5 * this.timeline.getLineHeight(), radius, 0, Math.PI * 2);
     this.context.fill();
     this.context.restore();
@@ -163,7 +192,7 @@ export class WebVitalsEventLane extends WebVitalsLane {
   private renderMediumMarkerSymbol(timestamp: number): void {
     this.context.save();
     this.context.beginPath();
-    this.context.strokeStyle = Colors.Medium;
+    this.context.strokeStyle = this.theme.medium;
     this.context.moveTo(this.tX(timestamp), 2);
     this.context.lineTo(this.tX(timestamp), 5);
     this.context.moveTo(this.tX(timestamp), 19);
@@ -171,7 +200,7 @@ export class WebVitalsEventLane extends WebVitalsLane {
     this.context.stroke();
 
     this.context.beginPath();
-    this.context.fillStyle = Colors.Medium;
+    this.context.fillStyle = this.theme.medium;
     this.context.rect(this.tX(timestamp) - 5, 0.5 * this.timeline.getLineHeight() - 5, 10, 10);
     this.context.fill();
     this.context.restore();
@@ -180,7 +209,7 @@ export class WebVitalsEventLane extends WebVitalsLane {
   private renderBadMarkerSymbol(timestamp: number): void {
     this.context.save();
     this.context.beginPath();
-    this.context.strokeStyle = Colors.Bad;
+    this.context.strokeStyle = this.theme.bad;
     this.context.moveTo(this.tX(timestamp), 2);
     this.context.lineTo(this.tX(timestamp), 5);
     this.context.moveTo(this.tX(timestamp), 19);
@@ -188,7 +217,7 @@ export class WebVitalsEventLane extends WebVitalsLane {
     this.context.stroke();
 
     this.context.beginPath();
-    this.context.fillStyle = Colors.Bad;
+    this.context.fillStyle = this.theme.bad;
     this.context.translate(this.tX(timestamp), 0.5 * this.timeline.getLineHeight());
     this.context.rotate(45 * Math.PI / 180);
     this.context.rect(-4, -4, 8, 8);
@@ -219,11 +248,11 @@ export class WebVitalsEventLane extends WebVitalsLane {
       const tHeight = this.timeline.getLineHeight() - 2;
 
 
-      this.context.fillStyle = 'rgba(255, 255, 255, 0.8)';
+      this.context.fillStyle = this.theme.background;
       this.context.fillRect(tX, tY, tWidth, tHeight);
 
       if (showFrame) {
-        this.context.strokeStyle = '#1b73e7';
+        this.context.strokeStyle = this.theme.frame;
         this.context.lineWidth = 2;
         this.context.strokeRect(tX, tY, tWidth, tHeight);
         this.context.lineWidth = 1;
@@ -276,8 +305,9 @@ export class WebVitalsTimeboxLane extends WebVitalsLane {
   private label: string;
   private hoverBox: number = -1;
   private selectedBox: number = -1;
+  private getTimeboxOverlay?: GetTimeboxOverlayCallback;
 
-  constructor(timeline: WebVitalsTimeline, label: string) {
+  constructor(timeline: WebVitalsTimeline, label: string, getTimeboxOverlay?: GetTimeboxOverlayCallback) {
     super(timeline);
 
     this.label = label;
@@ -302,9 +332,11 @@ export class WebVitalsTimeboxLane extends WebVitalsLane {
     const canvasPattern = this.context.createPattern(patternCanvas, 'repeat');
     assertInstanceOf(canvasPattern, CanvasPattern);
     this.longTaskPattern = canvasPattern;
+    this.getTimeboxOverlay = getTimeboxOverlay;
   }
 
   handlePointerMove(x: number|null): void {
+    const prevHoverBox = this.hoverBox;
     if (x === null) {
       this.hoverBox = -1;
     } else {
@@ -313,6 +345,14 @@ export class WebVitalsTimeboxLane extends WebVitalsLane {
         const end = this.tX(box.start + box.duration);
         return start <= x && x <= end;
       });
+    }
+
+    if (prevHoverBox !== this.hoverBox) {
+      if (this.hoverBox !== -1 && this.getTimeboxOverlay) {
+        this.timeline.showOverlay(this.getTimeboxOverlay(this.boxes[this.hoverBox]));
+      } else {
+        this.timeline.hideOverlay();
+      }
     }
   }
 
@@ -331,7 +371,7 @@ export class WebVitalsTimeboxLane extends WebVitalsLane {
 
     this.context.save();
     this.context.beginPath();
-    this.context.fillStyle = '#669df6';
+    this.context.fillStyle = this.theme.timeboxColor;
     // Draw a box with rounded corners.
     this.context.moveTo(this.tX(box.start) + r, 2);
     this.context.lineTo(this.tX(box.start + box.duration) - r, 2);
@@ -368,7 +408,7 @@ export class WebVitalsTimeboxLane extends WebVitalsLane {
     // Fill the box with a striped pattern for everything over 50ms.
     this.context.beginPath();
     this.context.fillStyle = this.longTaskPattern;
-    this.context.moveTo(this.tX(box.start + LONG_TASK_DURATION) + r, 2);
+    this.context.moveTo(this.tX(box.start + LONG_TASK_THRESHOLD) + r, 2);
     this.context.lineTo(this.tX(box.start + box.duration) - r, 2);
     this.context.quadraticCurveTo(
         this.tX(box.start + box.duration),
@@ -390,7 +430,7 @@ export class WebVitalsTimeboxLane extends WebVitalsLane {
 
     if (hover) {
       this.context.beginPath();
-      this.context.strokeStyle = Colors.Bad;
+      this.context.strokeStyle = this.theme.frame;
       this.context.rect(this.tX(box.start) - 2, 0, this.tD(box.duration) + 4, 24);
       this.context.lineWidth = 2;
       this.context.stroke();

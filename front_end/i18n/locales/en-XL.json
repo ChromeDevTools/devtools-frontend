@@ -10964,6 +10964,36 @@
   "timeline/UIDevtoolsUtils.js | system": {
     "message": "Ŝýŝt́êḿ"
   },
+  "timeline/WebVitalsTimeline.ts | fcp": {
+    "message": "F̂ĆP̂"
+  },
+  "timeline/WebVitalsTimeline.ts | firstContentfulPaint": {
+    "message": "F̂ír̂śt̂ Ćôńt̂én̂t́f̂úl̂ Ṕâín̂t́"
+  },
+  "timeline/WebVitalsTimeline.ts | good": {
+    "message": "Ĝóôd́"
+  },
+  "timeline/WebVitalsTimeline.ts | largestContentfulPaint": {
+    "message": "L̂ár̂ǵêśt̂ Ćôńt̂én̂t́f̂úl̂ Ṕâín̂t́"
+  },
+  "timeline/WebVitalsTimeline.ts | lcp": {
+    "message": "L̂ĆP̂"
+  },
+  "timeline/WebVitalsTimeline.ts | longTask": {
+    "message": "L̂ón̂ǵ T̂áŝḱ"
+  },
+  "timeline/WebVitalsTimeline.ts | longTasks": {
+    "message": "L̂ón̂ǵ T̂áŝḱŝ"
+  },
+  "timeline/WebVitalsTimeline.ts | ls": {
+    "message": "L̂Ś"
+  },
+  "timeline/WebVitalsTimeline.ts | needsImprovement": {
+    "message": "N̂éêd́ŝ ím̂ṕr̂óv̂ém̂én̂t́"
+  },
+  "timeline/WebVitalsTimeline.ts | poor": {
+    "message": "P̂óôŕ"
+  },
   "ui/components/DataGrid.ts | headerOptions": {
     "message": "Ĥéâd́êŕ Ôṕt̂íôńŝ"
   },

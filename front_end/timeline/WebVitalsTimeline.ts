@@ -3,8 +3,59 @@
 // found in the LICENSE file.
 
 import * as Host from '../host/host.js';
+import * as i18n from '../i18n/i18n.js';
+import * as Coordinator from '../render_coordinator/render_coordinator.js';
+import * as LitHtml from '../third_party/lit-html/lit-html.js';
+
+const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 import {WebVitalsEventLane, WebVitalsTimeboxLane} from './WebVitalsLane.js';
+import {WebVitalsTooltip} from './WebVitalsTooltip';
+
+const UIStrings = {
+  /**
+  *@description Label for the First Contentful Paint lane
+  */
+  fcp: 'FCP',
+  /**
+  *@description Label for the Largest Contentful Paint lane
+  */
+  lcp: 'LCP',
+  /**
+  *@description Label for the Layout Shifts lane
+  */
+  ls: 'LS',
+  /**
+  *@description Label for the Long Tasks lane
+  */
+  longTasks: 'Long Tasks',
+  /**
+  *@description Label for the Long Tasks overlay
+  */
+  longTask: 'Long Task',
+  /**
+  *@description Label for the First Contentful Paint overlay
+  */
+  firstContentfulPaint: 'First Contentful Paint',
+  /**
+  *@description Label for the Largest Contentful Paint overlay
+  */
+  largestContentfulPaint: 'Largest Contentful Paint',
+  /**
+  *@description Label to describe the range in which the rating for the value is considered good
+  */
+  good: 'Good',
+  /**
+  *@description Label to describe the range in which the rating for the value is considered to need improvement
+  */
+  needsImprovement: 'Needs improvement',
+  /**
+  *@description Label to describe the range in which the rating for the value is considered poor
+  */
+  poor: 'Poor',
+};
+const str_ = i18n.i18n.registerUIStrings('timeline/WebVitalsTimeline.ts', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -71,12 +122,7 @@ const FCP_GOOD_TIMING = 2000;
 const FCP_MEDIUM_TIMING = 4000;
 const LCP_GOOD_TIMING = 2500;
 const LCP_MEDIUM_TIMING = 4000;
-
-export const enum Colors {
-  Good = '#0cce6b',
-  Medium = '#ffa400',
-  Bad = '#ff4e42',
-}
+export const LONG_TASK_THRESHOLD = 50;
 
 type Constructor<T> = {
   new (...args: unknown[]): T,
@@ -108,6 +154,8 @@ export class WebVitalsTimeline extends HTMLElement {
   private context: CanvasRenderingContext2D;
   private animationFrame: number|null = null;
 
+  private overlay: WebVitalsTooltip;
+
   constructor() {
     super();
 
@@ -125,10 +173,18 @@ export class WebVitalsTimeline extends HTMLElement {
 
     this.context = context;
 
-    this.fcpLane = new WebVitalsEventLane(this, 'FCP', e => this.getMarkerTypeForFCPEvent(e));
-    this.lcpLane = new WebVitalsEventLane(this, 'LCP', e => this.getMarkerTypeForLCPEvent(e));
-    this.layoutShiftsLane = new WebVitalsEventLane(this, 'LS', _ => MarkerType.Bad);
-    this.longTasksLane = new WebVitalsTimeboxLane(this, 'Long Tasks');
+    this.fcpLane = new WebVitalsEventLane(
+        this, i18nString(UIStrings.fcp), e => this.getMarkerTypeForFCPEvent(e), this.getFCPMarkerOverlay);
+    this.lcpLane = new WebVitalsEventLane(
+        this, i18nString(UIStrings.lcp), e => this.getMarkerTypeForLCPEvent(e), this.getLCPMarkerOverlay);
+    this.layoutShiftsLane = new WebVitalsEventLane(this, i18nString(UIStrings.ls), _ => MarkerType.Bad);
+    this.longTasksLane = new WebVitalsTimeboxLane(this, i18nString(UIStrings.longTasks), this.getLongTaskOverlay);
+
+    this.overlay = document.createElement('devtools-timeline-webvitals-tooltip');
+    this.overlay.style.position = 'absolute';
+    this.overlay.style.visibility = 'hidden';
+
+    this.ownerDocument.body.appendChild(this.overlay);
   }
 
   set data(data: WebVitalsTimelineData) {
@@ -164,7 +220,18 @@ export class WebVitalsTimeline extends HTMLElement {
     return LINE_HEIGHT;
   }
 
+  hideOverlay(): void {
+    this.overlay.style.visibility = 'hidden';
+  }
+
+  showOverlay(content: LitHtml.TemplateResult): void {
+    this.overlay.data = {content};
+    this.overlay.style.visibility = 'visible';
+  }
+
   private handlePointerMove(e: MouseEvent): void {
+    this.updateOverlayPosition(e.clientX, e.clientY);
+
     const x = e.offsetX, y = e.offsetY;
     const lane = Math.floor(y / LINE_HEIGHT);
 
@@ -174,7 +241,22 @@ export class WebVitalsTimeline extends HTMLElement {
     this.layoutShiftsLane.handlePointerMove(this.hoverLane === 3 ? x : null);
     this.longTasksLane.handlePointerMove(this.hoverLane === 4 ? x : null);
 
+
     this.scheduleRender();
+  }
+
+  private updateOverlayPosition(clientX: number, clientY: number): void {
+    coordinator.read(() => {
+      const bb1 = this.getBoundingClientRect();
+      const bb2 = this.overlay.getBoundingClientRect();
+
+      const x = clientX + 10 + bb2.width > bb1.x + bb1.width ? clientX - bb2.width - 10 : clientX + 10;
+
+      coordinator.write(() => {
+        this.overlay.style.top = `${clientY + 10}px`;
+        this.overlay.style.left = `${x}px`;
+      });
+    });
   }
 
   private handlePointerOut(_: MouseEvent): void {
@@ -241,6 +323,10 @@ export class WebVitalsTimeline extends HTMLElement {
     this.render();
   }
 
+  disconnectedCallback(): void {
+    this.overlay.remove();
+  }
+
   private getMarkerTypeForFCPEvent(event: WebVitalsFCPEvent): MarkerType {
     const t = this.getTimeSinceLastMainFrameNavigation(event.timestamp);
     if (t <= FCP_GOOD_TIMING) {
@@ -261,6 +347,85 @@ export class WebVitalsTimeline extends HTMLElement {
       return MarkerType.Medium;
     }
     return MarkerType.Bad;
+  }
+
+  private getFCPMarkerOverlay(): LitHtml.TemplateResult {
+    return LitHtml.html`
+      <table class="table">
+        <thead>
+          <td colspan="3" class="title">${i18nString(UIStrings.firstContentfulPaint)}</td>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="good"></span></td>
+            <td>${i18nString(UIStrings.good)}</td>
+            <td>
+              < ${Number.millisToString(FCP_GOOD_TIMING)}</td> </tr> <tr>
+            <td><span class="medium"></span></td>
+            <td>${i18nString(UIStrings.needsImprovement)}</td>
+            <td>${Number.millisToString(FCP_GOOD_TIMING)} - ${Number.millisToString(FCP_MEDIUM_TIMING)}</td>
+          </tr>
+          <tr>
+            <td><span class="bad"></span></td>
+            <td>${i18nString(UIStrings.poor)}</td>
+            <td>> ${Number.millisToString(FCP_MEDIUM_TIMING)}</td>
+          </tr>
+        </tbody>
+      </table>
+    `;
+  }
+
+  private getLCPMarkerOverlay(): LitHtml.TemplateResult {
+    return LitHtml.html`
+      <table class="table">
+        <thead>
+          <td colspan="3" class="title">${i18nString(UIStrings.largestContentfulPaint)}</td>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="good"></span></td>
+            <td>${i18nString(UIStrings.good)}</td>
+            <td>
+              < ${Number.millisToString(LCP_GOOD_TIMING)}</td> </tr> <tr>
+            <td><span class="medium"></span></td>
+            <td>${i18nString(UIStrings.needsImprovement)}</td>
+            <td>${Number.millisToString(LCP_GOOD_TIMING)} - ${Number.millisToString(LCP_MEDIUM_TIMING)}</td>
+          </tr>
+          <tr>
+            <td><span class="bad"></span></td>
+            <td>${i18nString(UIStrings.poor)}</td>
+            <td>> ${Number.millisToString(LCP_MEDIUM_TIMING)}</td>
+          </tr>
+        </tbody>
+      </table>
+    `;
+  }
+
+  private getLongTaskOverlay(timebox: Timebox): LitHtml.TemplateResult {
+    return LitHtml.html`
+        <table class="table">
+          <thead>
+            <td colspan="3" class="title">
+              ${i18nString(UIStrings.longTask)}
+              <span class="small">
+                ${Number.millisToString(timebox.duration)}
+              </span>
+            </td>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="good"></span></td>
+              <td>${i18nString(UIStrings.good)}</td>
+              <td>0 - ${Number.millisToString(LONG_TASK_THRESHOLD)}</td>
+            </tr>
+            <tr>
+              <td><span class="bad"></span></td>
+              <td>${i18nString(UIStrings.poor)}</td>
+              <td>> ${Number.millisToString(LONG_TASK_THRESHOLD)}</td>
+            </tr>
+          </tbody>
+        </table>
+    `;
   }
 
   private renderMainFrameNavigations(markers: readonly number[]): void {

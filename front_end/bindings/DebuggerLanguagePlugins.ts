@@ -402,7 +402,7 @@ class FormattedValueNode extends ValueNode {
       return null;
     }
     const value = await resolveRemoteObject(this.callFrame, payload);
-    const {typeId} = await rootType.findProperties('typeId', 'rootType');
+    const {typeId} = await rootType.findProperties('typeId');
     if (typeof value === 'undefined' || typeof typeId === 'undefined') {
       return null;
     }

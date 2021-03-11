@@ -7256,6 +7256,12 @@
   "resources/ServiceWorkerCacheViews.ts | totalEntriesS": {
     "message": "T̂ót̂ál̂ én̂t́r̂íêś: {PH1}"
   },
+  "resources/ServiceWorkerCacheViews.ts | varyHeader": {
+    "message": "V̂ár̂ý Ĥéâd́êŕ"
+  },
+  "resources/ServiceWorkerCacheViews.ts | varyHeaderWarning": {
+    "message": "⚠️ Ŝét̂ íĝńôŕêV́âŕŷ t́ô t́r̂úê ẃĥén̂ ḿât́ĉh́îńĝ t́ĥíŝ én̂t́r̂ý"
+  },
   "resources/ServiceWorkersView.ts | bypassForNetwork": {
     "message": "B̂ýp̂áŝś f̂ór̂ ńêt́ŵór̂ḱ"
   },

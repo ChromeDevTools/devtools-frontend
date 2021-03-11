@@ -7256,6 +7256,12 @@
   "resources/ServiceWorkerCacheViews.ts | totalEntriesS": {
     "message": "Total entries: {PH1}"
   },
+  "resources/ServiceWorkerCacheViews.ts | varyHeader": {
+    "message": "Vary Header"
+  },
+  "resources/ServiceWorkerCacheViews.ts | varyHeaderWarning": {
+    "message": "⚠️ Set ignoreVary to true when matching this entry"
+  },
   "resources/ServiceWorkersView.ts | bypassForNetwork": {
     "message": "Bypass for network"
   },

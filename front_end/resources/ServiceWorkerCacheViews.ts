@@ -42,6 +42,14 @@ const UIStrings = {
   */
   timeCached: 'Time Cached',
   /**
+  *@description Text in Service Worker Cache Views of the Application panel
+  */
+  varyHeader: 'Vary Header',
+  /**
+  * @description Tooltip text that appears when hovering over the vary header column in the Service Worker Cache Views of the Application panel
+  */
+  varyHeaderWarning: '⚠️ Set ignoreVary to true when matching this entry',
+  /**
   *@description Text used to show that data was retrieved from ServiceWorker Cache
   */
   serviceWorkerCache: '`Service Worker` Cache',
@@ -197,6 +205,7 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
         align: DataGrid.DataGrid.Align.Right,
         sortable: true,
       },
+      {id: 'varyHeader', title: i18nString(UIStrings.varyHeader), weight: 1, sortable: true},
     ] as DataGrid.DataGrid.ColumnDescriptor[]);
     const dataGrid = new DataGrid.DataGrid.DataGridImpl({
       displayName: i18nString(UIStrings.serviceWorkerCache),
@@ -235,6 +244,8 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
       comparator = (a: DataGridNode, b: DataGridNode): number => a.data.endTime - b.data.endTime;
     } else if (columnId === 'responseType') {
       comparator = (a: DataGridNode, b: DataGridNode): number => a._responseType.localeCompare(b._responseType);
+    } else if (columnId === 'varyHeader') {
+      comparator = (a: DataGridNode, b: DataGridNode): number => a._varyHeader.localeCompare(b._varyHeader);
     }
 
     const children = dataGrid.rootNode().children.slice();
@@ -423,6 +434,7 @@ export class DataGridNode extends DataGrid.DataGrid.DataGridNode<DataGridNode> {
   _name: string;
   _request: SDK.NetworkRequest.NetworkRequest;
   _responseType: Protocol.CacheStorage.CachedResponseType;
+  _varyHeader: string;
 
   constructor(
       number: number, request: SDK.NetworkRequest.NetworkRequest,
@@ -437,11 +449,13 @@ export class DataGridNode extends DataGrid.DataGrid.DataGridNode<DataGridNode> {
     }
     this._request = request;
     this._responseType = responseType;
+    this._varyHeader = request.responseHeaders.find(header => header.name.toLowerCase() === 'vary')?.value || '';
   }
 
   createCell(columnId: string): HTMLElement {
     const cell = this.createTD(columnId);
     let value;
+    let tooltip = this._request.url();
     if (columnId === 'number') {
       value = String(this._number);
     } else if (columnId === 'name') {
@@ -460,9 +474,14 @@ export class DataGridNode extends DataGrid.DataGrid.DataGridNode<DataGridNode> {
       value = (this._request.resourceSize | 0).toLocaleString('en-US');
     } else if (columnId === 'responseTime') {
       value = new Date(this._request.endTime * 1000).toLocaleString();
+    } else if (columnId === 'varyHeader') {
+      value = this._varyHeader;
+      if (this._varyHeader) {
+        tooltip = i18nString(UIStrings.varyHeaderWarning);
+      }
     }
     DataGrid.DataGrid.DataGridImpl.setElementText(cell, value || '', true);
-    UI.Tooltip.Tooltip.install(cell, this._request.url());
+    UI.Tooltip.Tooltip.install(cell, tooltip);
     return cell;
   }
 }

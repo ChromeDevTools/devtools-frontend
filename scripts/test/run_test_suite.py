@@ -81,7 +81,7 @@ def run_tests(chrome_binary,
     if chrome_features:
         env['CHROME_FEATURES'] = chrome_features
 
-    if test_patterns is not None:
+    if test_patterns:
         env['TEST_PATTERNS'] = ';'.join(test_patterns)
 
     if jobs:
@@ -153,7 +153,7 @@ def run_test():
         print(
             'The test_file argument is obsolete, just pass the filename as positional argument'
         )
-    if test_patterns is not None:
+    if test_patterns:
         print('Testing file(s) (%s)' % ', '.join(test_patterns))
 
     cwd = OPTIONS.cwd

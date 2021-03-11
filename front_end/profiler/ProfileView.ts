@@ -565,6 +565,7 @@ export class WritableProfileHeader extends ProfileHeader implements Common.Strin
 
   _onChunkTransferred(_reader: Bindings.FileUtils.ChunkedReader): void {
     if (this._jsonifiedProfile) {
+      // TODO(l10n): Is the '%' at the end of this string correct? 4MB% looks wrong
       this.updateStatus(
           i18nString(UIStrings.loadingD, {PH1: Platform.NumberUtilities.bytesToString(this._jsonifiedProfile.length)}));
     }

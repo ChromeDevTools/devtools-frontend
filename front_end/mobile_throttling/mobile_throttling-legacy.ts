@@ -48,5 +48,3 @@ MobileThrottling.cpuThrottlingPresets = MobileThrottlingModule.ThrottlingPresets
 
 /** @constructor */
 MobileThrottling.ThrottlingSettingsTab = MobileThrottlingModule.ThrottlingSettingsTab.ThrottlingSettingsTab;
-
-MobileThrottling.throughputText = MobileThrottlingModule.ThrottlingSettingsTab.throughputText;

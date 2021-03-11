@@ -72,17 +72,17 @@ const UIStrings = {
   */
   latencyMustBeAnIntegerBetweenSms: 'Latency must be an integer between {PH1}ms to {PH2}ms inclusive',
   /**
-  *@description Text in Throttling Settings Tab of the Network panel
-  *@example {25} PH1
-  *@example { } PH2
+  * @description Text in Throttling Settings Tab of the Network panel, indicating the download or
+  * upload speed that will be applied in kilobytes per second.
+  * @example {25} PH1
   */
-  dskbs: '{PH1}{PH2}kB/s',
+  dskbs: '{PH1} kB/s',
   /**
-  *@description Text in Throttling Settings Tab of the Network panel
-  *@example {25.4} PH1
-  *@example { } PH2
+  * @description Text in Throttling Settings Tab of the Network panel, indicating the download or
+  * upload speed that will be applied in megabytes per second.
+  * @example {25.4} PH1
   */
-  fsmbs: '{PH1}{PH2}MB/s',
+  fsmbs: '{PH1} MB/s',
 };
 const str_ = i18n.i18n.registerUIStrings('mobile_throttling/ThrottlingSettingsTab.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -312,20 +312,19 @@ export class ThrottlingSettingsTab extends UI.Widget.VBox implements
   }
 }
 
-export function throughputText(throughput: number, plainText?: boolean): string {
+function throughputText(throughput: number): string {
   if (throughput < 0) {
     return '';
   }
   const throughputInKbps = throughput / (1000 / 8);
-  const delimiter = plainText ? '' : ' ';
   if (throughputInKbps < 1000) {
-    return i18nString(UIStrings.dskbs, {PH1: throughputInKbps, PH2: delimiter});
+    return i18nString(UIStrings.dskbs, {PH1: throughputInKbps});
   }
   if (throughputInKbps < 1000 * 10) {
     const formattedResult = (throughputInKbps / 1000).toFixed(1);
-    return i18nString(UIStrings.fsmbs, {PH1: formattedResult, PH2: delimiter});
+    return i18nString(UIStrings.fsmbs, {PH1: formattedResult});
   }
   // TODO(petermarshall): Figure out if there is a difference we need to tell i18n about
   // for these two versions: one with decimal places and one without.
-  return i18nString(UIStrings.fsmbs, {PH1: (throughputInKbps / 1000) | 0, PH2: delimiter});
+  return i18nString(UIStrings.fsmbs, {PH1: (throughputInKbps / 1000) | 0});
 }

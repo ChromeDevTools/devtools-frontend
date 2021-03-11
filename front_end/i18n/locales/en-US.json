@@ -4248,10 +4248,10 @@
     "message": "Download"
   },
   "mobile_throttling/ThrottlingSettingsTab.ts | dskbs": {
-    "message": "{PH1}{PH2}kB/s"
+    "message": "{PH1} kB/s"
   },
   "mobile_throttling/ThrottlingSettingsTab.ts | fsmbs": {
-    "message": "{PH1}{PH2}MB/s"
+    "message": "{PH1} MB/s"
   },
   "mobile_throttling/ThrottlingSettingsTab.ts | kbs": {
     "message": "kb/s"

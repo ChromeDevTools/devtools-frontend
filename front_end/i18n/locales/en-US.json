@@ -10562,12 +10562,6 @@
   "ui/SoftDropDown.js | noItemSelected": {
     "message": "(no item selected)"
   },
-  "ui/SplitWidget.js | hideS": {
-    "message": "Hide {PH1}"
-  },
-  "ui/SplitWidget.js | showS": {
-    "message": "Show {PH1}"
-  },
   "ui/SuggestBox.js | sSuggestionSOfS": {
     "message": "{PH1}, suggestion {PH2} of {PH3}"
   },

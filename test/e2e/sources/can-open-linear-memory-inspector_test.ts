@@ -55,7 +55,7 @@ describe('Scope View', async () => {
 
     await step('check that opened linear memory inspector has correct title', async () => {
       const lmiTabbedPane = await waitFor(LINEAR_MEMORY_INSPECTOR_TABBED_PANE_SELECTOR);
-      const titleElement = await $(LINEAR_MEMORY_INSPECTOR_TAB_TITLE_SELECTOR, lmiTabbedPane);
+      const titleElement = await waitFor(LINEAR_MEMORY_INSPECTOR_TAB_TITLE_SELECTOR, lmiTabbedPane);
       assert.isNotNull(titleElement);
       const title = await frontend.evaluate(x => x.innerText, titleElement);
 
@@ -88,7 +88,7 @@ describe('Scope View', async () => {
 
     const lmiTabbedPane = await waitFor(LINEAR_MEMORY_INSPECTOR_TABBED_PANE_SELECTOR);
     await step('check that opened linear memory inspector has correct title', async () => {
-      const titleElement = await $(LINEAR_MEMORY_INSPECTOR_TAB_TITLE_SELECTOR, lmiTabbedPane);
+      const titleElement = await waitFor(LINEAR_MEMORY_INSPECTOR_TAB_TITLE_SELECTOR, lmiTabbedPane);
       assert.isNotNull(titleElement);
       const title = await frontend.evaluate(x => x.innerText, titleElement);
 

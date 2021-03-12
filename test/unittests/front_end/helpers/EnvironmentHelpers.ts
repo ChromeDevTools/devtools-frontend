@@ -15,17 +15,6 @@ import type * as UIModule from '../../../../front_end/ui/ui.js';
 // initialization phase.
 let UI: typeof UIModule;
 
-function exposeLSIfNecessary() {
-  // SDK.ResourceTree model has to exist to avoid a circular dependency, thus it
-  // needs to be placed on the global if it is not already there.
-  const globalObject = (globalThis as unknown as {ls: Function});
-  globalObject.ls = globalObject.ls || Common.ls;
-}
-
-// Initially expose the ls function so that imports that assume its existence
-// don't fail. This side-effect will be undone as part of the deinitialize.
-exposeLSIfNecessary();
-
 // Expose the locale.
 i18n.i18n.registerLocale('en-US');
 
@@ -73,7 +62,6 @@ function createSettingValue(
 }
 
 export async function initializeGlobalVars({reset = true} = {}) {
-  exposeLSIfNecessary();
 
   // Create the appropriate settings needed to boot.
   const settings = [

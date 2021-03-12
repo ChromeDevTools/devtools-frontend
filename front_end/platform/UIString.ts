@@ -29,8 +29,6 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import * as StringUtilities from './string-utilities.js';
-
 class LocalizedStringTag {
   private localizationTag: (string|undefined);
 }
@@ -38,44 +36,3 @@ export type LocalizedString = string&LocalizedStringTag;
 
 export const LocalizedEmptyString = '' as LocalizedString;
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
-export function UIString(string: string, ..._vararg: unknown[]): LocalizedString {
-  return StringUtilities.vsprintf(localize(string), Array.prototype.slice.call(arguments, 1)) as LocalizedString;
-}
-
-export function localize(string: string): string {
-  return string;
-}
-
-export class UIStringFormat {
-  private localizedFormat: string;
-  private tokenizedFormat: StringUtilities.FormatterToken[];
-
-  constructor(format: string) {
-    this.localizedFormat = localize(format);
-    this.tokenizedFormat =
-        StringUtilities.tokenizeFormatString(this.localizedFormat, StringUtilities.standardFormatters);
-  }
-
-  format(..._vararg: unknown[]): string {
-    return StringUtilities
-        .format(
-            this.localizedFormat, arguments, StringUtilities.standardFormatters, '', (a, b) => a + b,
-            this.tokenizedFormat)
-        .formattedResult;
-  }
-}
-
-const SUBSTITUTION_STRINGS = new WeakMap();
-
-export function ls(strings: TemplateStringsArray|string, ...vararg: unknown[]): LocalizedString {
-  if (typeof strings === 'string') {
-    return strings as LocalizedString;
-  }
-  let substitutionString = SUBSTITUTION_STRINGS.get(strings);
-  if (!substitutionString) {
-    substitutionString = strings.join('%s');
-    SUBSTITUTION_STRINGS.set(strings, substitutionString);
-  }
-  return UIString(substitutionString, ...vararg);
-}

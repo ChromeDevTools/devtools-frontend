@@ -122,17 +122,7 @@ Common.Throttler = CommonModule.Throttler.Throttler;
 
 Common.Trie = CommonModule.Trie.Trie;
 
-Common.UIString = CommonModule.UIString.UIString;
-Common.localize = CommonModule.UIString.localize;
-
 /**
  * @type {!Common.Settings}
  */
 Common.settings;
-
-/**
- * @param {!TemplateStringsArray|string} strings
- * @param {...*} vararg
- * @return {string}
- */
-self.ls = CommonModule.UIString.ls;

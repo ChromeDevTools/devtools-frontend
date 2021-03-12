@@ -10,7 +10,7 @@
   await UI.viewManager.showView('resources');
 
   const parent = UI.panels.resources._sidebar._applicationTreeElement;
-  const storageElement = parent.children().find(child => child.title === ls`Storage`);
+  const storageElement = parent.children().find(child => child.title === 'Storage');
   storageElement.select();
   const storageView = UI.panels.resources.visibleView;
   TestRunner.addResult('Storage view is visible: ' + ApplicationTestRunner.isStorageView(storageView));

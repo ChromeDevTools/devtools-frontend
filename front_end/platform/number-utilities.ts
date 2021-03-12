@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import * as StringUtilities from './string-utilities.js';
-import {localize} from './UIString.js';
 
 export const clamp = (num: number, min: number, max: number): number => {
   let clampedNumber = num;
@@ -21,22 +20,22 @@ export const mod = (m: number, n: number): number => {
 
 export const bytesToString = (bytes: number): string => {
   if (bytes < 1000) {
-    return StringUtilities.vsprintf(localize('%.0f\xA0B'), [bytes]);
+    return StringUtilities.vsprintf('%.0f\xA0B', [bytes]);
   }
 
   const kilobytes = bytes / 1000;
   if (kilobytes < 100) {
-    return StringUtilities.vsprintf(localize('%.1f\xA0kB'), [kilobytes]);
+    return StringUtilities.vsprintf('%.1f\xA0kB', [kilobytes]);
   }
   if (kilobytes < 1000) {
-    return StringUtilities.vsprintf(localize('%.0f\xA0kB'), [kilobytes]);
+    return StringUtilities.vsprintf('%.0f\xA0kB', [kilobytes]);
   }
 
   const megabytes = kilobytes / 1000;
   if (megabytes < 100) {
-    return StringUtilities.vsprintf(localize('%.1f\xA0MB'), [megabytes]);
+    return StringUtilities.vsprintf('%.1f\xA0MB', [megabytes]);
   }
-  return StringUtilities.vsprintf(localize('%.0f\xA0MB'), [megabytes]);
+  return StringUtilities.vsprintf('%.0f\xA0MB', [megabytes]);
 };
 
 export const toFixedIfFloating = (value: string): string => {

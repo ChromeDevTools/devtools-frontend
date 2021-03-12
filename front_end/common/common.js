@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Platform from '../platform/platform.js';
-
 import * as App from './App.js';
 import * as AppProvider from './AppProvider.js';
 import * as Base64 from './Base64.js';
@@ -38,8 +36,6 @@ import * as Worker from './Worker.js';
  * update all references to `Common.UIString` to `Platform.UIString`.
  */
 export {UIString} from '../platform/platform.js';
-
-export const ls = Platform.UIString.ls;
 
 
 /**

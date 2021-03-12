@@ -3245,6 +3245,9 @@
   "issues/IssueView.ts | blocked": {
     "message": "b̂ĺôćk̂éd̂"
   },
+  "issues/IssueView.ts | breakingChangeIssue": {
+    "message": "Â b́r̂éâḱîńĝ ćĥán̂ǵê íŝśûé: t̂h́ê ṕâǵê ḿâý ŝt́ôṕ ŵór̂ḱîńĝ ín̂ án̂ úp̂ćôḿîńĝ v́êŕŝíôń ôf́ Ĉh́r̂óm̂é"
+  },
   "issues/IssueView.ts | clickToRevealTheViolatingDomNode": {
     "message": "Ĉĺîćk̂ t́ô ŕêv́êál̂ t́ĥé v̂íôĺât́îńĝ D́ÔḾ n̂ód̂é îń t̂h́ê Él̂ém̂én̂t́ŝ ṕâńêĺ"
   },
@@ -3260,6 +3263,9 @@
   "issues/IssueView.ts | element": {
     "message": "Êĺêḿêńt̂"
   },
+  "issues/IssueView.ts | improvementIssue": {
+    "message": "Âń îḿp̂ŕôv́êḿêńt̂ íŝśûé: t̂h́êŕê íŝ án̂ óp̂ṕôŕt̂ún̂ít̂ý t̂ó îḿp̂ŕôv́ê t́ĥé p̂áĝé"
+  },
   "issues/IssueView.ts | isThisIssueMessageHelpfulToYou": {
     "message": "Îś t̂h́îś îśŝúê ḿêśŝáĝé ĥél̂ṕf̂úl̂ t́ô ýôú?"
   },
@@ -3268,6 +3274,9 @@
   },
   "issues/IssueView.ts | name": {
     "message": "N̂ám̂é"
+  },
+  "issues/IssueView.ts | pageErrorIssue": {
+    "message": "Â ṕâǵê ér̂ŕôŕ îśŝúê: t́ĥé p̂áĝé îś n̂ót̂ ẃôŕk̂ín̂ǵ ĉór̂ŕêćt̂ĺŷ"
   },
   "issues/IssueView.ts | reportonly": {
     "message": "r̂ép̂ór̂t́-ôńl̂ý"

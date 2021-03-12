@@ -11,6 +11,7 @@ import * as Host from '../host/host.js';
 import * as i18n from '../i18n/i18n.js';
 import * as Network from '../network/network.js';
 import * as Platform from '../platform/platform.js';
+import * as Root from '../root/root.js';
 import * as SDK from '../sdk/sdk.js';
 import * as WebComponents from '../ui/components/components.js';
 import * as UI from '../ui/ui.js';
@@ -123,6 +124,18 @@ const UIStrings = {
  *@description The kind of resolution for a mixed content issue
  */
   automaticallyUpgraded: 'automatically upgraded',
+  /**
+ *@description A description for a kind of issue we display in the issues tab.
+ */
+  pageErrorIssue: 'A page error issue: the page is not working correctly',
+  /**
+ *@description A description for a kind of issue we display in the issues tab.
+ */
+  breakingChangeIssue: 'A breaking change issue: the page may stop working in an upcoming version of Chrome',
+  /**
+ *@description A description for a kind of issue we display in the issues tab.
+ */
+  improvementIssue: 'An improvement issue: there is an opportunity to improve the page',
 };
 const str_ = i18n.i18n.registerUIStrings('issues/IssueView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -457,6 +470,28 @@ const issueSurveyTriggers = new Map<SDK.Issue.IssueCategory, string|null>([
   [SDK.Issue.IssueCategory.Other, null],
 ]);
 
+function getIssueIconData(issueKind: SDK.Issue.IssueKind): WebComponents.Icon.IconWithName {
+  switch (issueKind) {
+    case SDK.Issue.IssueKind.PageError:
+      return {iconName: 'issue-cross-icon', color: 'var(--issue-color-red)', width: '16px', height: '16px'};
+    case SDK.Issue.IssueKind.BreakingChange:
+      return {iconName: 'issue-exclamation-icon', color: 'var(--issue-color-yellow)', width: '16px', height: '16px'};
+    case SDK.Issue.IssueKind.Improvement:
+      return {iconName: 'issue-text-icon', color: 'var(--issue-color-blue)', width: '16px', height: '16px'};
+  }
+}
+
+function getIssueKindDescription(issueKind: SDK.Issue.IssueKind): Common.UIString.LocalizedString {
+  switch (issueKind) {
+    case SDK.Issue.IssueKind.PageError:
+      return i18nString(UIStrings.pageErrorIssue);
+    case SDK.Issue.IssueKind.BreakingChange:
+      return i18nString(UIStrings.breakingChangeIssue);
+    case SDK.Issue.IssueKind.Improvement:
+      return i18nString(UIStrings.improvementIssue);
+  }
+}
+
 export class IssueView extends UI.TreeOutline.TreeElement {
   _parent: UI.Widget.VBox;
   _issue: AggregatedIssue;
@@ -475,6 +510,9 @@ export class IssueView extends UI.TreeOutline.TreeElement {
     this.toggleOnClick = true;
     this.listItemElement.classList.add('issue');
     this.childrenListElement.classList.add('body');
+    const issueKindsVisuals = Root.Runtime.experiments.isEnabled('issueKindsVisuals');
+    const kind = issueKindsVisuals ? this._issue.getKind() : SDK.Issue.IssueKind.BreakingChange;
+    this.childrenListElement.classList.add(IssueView.getBodyCSSClass(kind));
 
     this.affectedResources = this._createAffectedResources();
     this._affectedResourceViews = [
@@ -494,6 +532,17 @@ export class IssueView extends UI.TreeOutline.TreeElement {
 
     this._aggregatedIssuesCount = null;
     this._hasBeenExpandedBefore = false;
+  }
+
+  private static getBodyCSSClass(issueKind: SDK.Issue.IssueKind): string {
+    switch (issueKind) {
+      case SDK.Issue.IssueKind.BreakingChange:
+        return 'issue-kind-breaking-change';
+      case SDK.Issue.IssueKind.PageError:
+        return 'issue-kind-page-error';
+      case SDK.Issue.IssueKind.Improvement:
+        return 'issue-kind-improvement';
+    }
   }
 
   getIssueTitle(): string {
@@ -521,8 +570,9 @@ export class IssueView extends UI.TreeOutline.TreeElement {
     const header = document.createElement('div');
     header.classList.add('header');
     const icon = new WebComponents.Icon.Icon();
-    icon.data = {iconName: 'issue-exclamation-icon', color: 'var(--issue-color-yellow)', width: '16px', height: '16px'};
-    this.childrenListElement.classList.add('issue-breaking-change');
+    const issueKindsVisuals = Root.Runtime.experiments.isEnabled('issueKindsVisuals');
+    const kind = issueKindsVisuals ? this._issue.getKind() : SDK.Issue.IssueKind.BreakingChange;
+    icon.data = getIssueIconData(kind);
     icon.classList.add('leading-issue-icon');
     this._aggregatedIssuesCount = (document.createElement('span') as HTMLElement);
     const countAdorner = new Elements.Adorner.Adorner();
@@ -533,6 +583,9 @@ export class IssueView extends UI.TreeOutline.TreeElement {
     countAdorner.classList.add('aggregated-issues-count');
     this._aggregatedIssuesCount.textContent = `${this._issue.getAggregatedIssuesCount()}`;
     header.appendChild(icon);
+    if (issueKindsVisuals) {
+      UI.Tooltip.Tooltip.install(icon, getIssueKindDescription(kind));
+    }
     header.appendChild(countAdorner);
 
     const title = document.createElement('div');

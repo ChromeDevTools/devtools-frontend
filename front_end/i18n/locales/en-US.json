@@ -3245,6 +3245,9 @@
   "issues/IssueView.ts | blocked": {
     "message": "blocked"
   },
+  "issues/IssueView.ts | breakingChangeIssue": {
+    "message": "A breaking change issue: the page may stop working in an upcoming version of Chrome"
+  },
   "issues/IssueView.ts | clickToRevealTheViolatingDomNode": {
     "message": "Click to reveal the violating DOM node in the Elements panel"
   },
@@ -3260,6 +3263,9 @@
   "issues/IssueView.ts | element": {
     "message": "Element"
   },
+  "issues/IssueView.ts | improvementIssue": {
+    "message": "An improvement issue: there is an opportunity to improve the page"
+  },
   "issues/IssueView.ts | isThisIssueMessageHelpfulToYou": {
     "message": "Is this issue message helpful to you?"
   },
@@ -3268,6 +3274,9 @@
   },
   "issues/IssueView.ts | name": {
     "message": "Name"
+  },
+  "issues/IssueView.ts | pageErrorIssue": {
+    "message": "A page error issue: the page is not working correctly"
   },
   "issues/IssueView.ts | reportonly": {
     "message": "report-only"

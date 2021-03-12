@@ -128,17 +128,28 @@ p {
 
   padding-left: 0;
 }
-/* Show a colored border on the left side of opened issues. */
 
-.issue-breaking-change.body::before {
+/* Show a colored border on the left side of opened issues. */
+.body::before {
   content: '';
   display: block;
   position: absolute;
   left: calc(var(--issue-indent) + 23px);
   top: 0;
   bottom: 20px;
-  border-left: 2px solid var(--issue-color-yellow);
   width: 2px;
+}
+
+.issue-kind-breaking-change.body::before {
+  border-left: 2px solid var(--issue-color-yellow);
+}
+
+.issue-kind-page-error.body::before {
+  border-left: 2px solid var(--issue-color-red);
+}
+
+.issue-kind-improvement.body::before {
+  border-left: 2px solid var(--issue-color-blue);
 }
 
 devtools-icon.leading-issue-icon {

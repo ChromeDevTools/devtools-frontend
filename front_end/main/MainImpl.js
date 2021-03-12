@@ -237,6 +237,7 @@ export class MainImpl {
     Root.Runtime.experiments.register('webauthnPane', 'WebAuthn Pane');
     Root.Runtime.experiments.register('keyboardShortcutEditor', 'Enable keyboard shortcut editor', true);
     Root.Runtime.experiments.register('recorder', 'Recorder');
+    Root.Runtime.experiments.register('issueKindsVisuals', 'Distinguish issue kinds visually');
 
     // Timeline
     Root.Runtime.experiments.register('timelineEventInitiators', 'Timeline: event initiators');

@@ -105,9 +105,10 @@
     this.controlTaken_ = true;
     // Set up guard timer.
     const self = this;
+    const timeoutInSec = 20 * slownessFactor;
     this.timerId_ = setTimeout(function() {
-      self.reportFailure_('Timeout exceeded: 20 sec');
-    }, 20000 * slownessFactor);
+      self.reportFailure_(`Timeout exceeded: ${timeoutInSec} sec`);
+    }, timeoutInSec * 1000);
   };
 
   /**
@@ -890,7 +891,7 @@
     this.addSniffer(SDK.NetworkDispatcher.prototype, '_finishNetworkRequest', finishRequest);
 
     // Allow more time for this test as it needs to reload the inspected page.
-    test.takeControl({slownessFactor: 2});
+    test.takeControl({slownessFactor: 10});
     test.evaluateInConsole_('window.location.reload(true);', function(resultText) {});
   };
 

@@ -239,7 +239,7 @@ export class SourcesTextEditor extends TextEditor.CodeMirrorTextEditor.CodeMirro
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   highlightRange(range: TextUtils.TextRange.TextRange, cssClass: string): any {
     cssClass = 'CodeMirror-persist-highlight ' + cssClass;
-    const pos = TextEditor.CodeMirrorUtils.toPos(range);
+    const pos = TextUtils.CodeMirrorUtils.toPos(range);
     ++pos.end.ch;
     return this.codeMirror().markText(
         pos.start, pos.end, {className: cssClass, startStyle: cssClass + '-start', endStyle: cssClass + '-end'});
@@ -411,7 +411,7 @@ export class SourcesTextEditor extends TextEditor.CodeMirrorTextEditor.CodeMirro
 
   _onUpdateEditorIndentation(): void {
     this._setEditorIndentation(
-        TextEditor.CodeMirrorUtils.pullLines(this.codeMirror(), LinesToScanForIndentationGuessing));
+        TextUtils.CodeMirrorUtils.pullLines(this.codeMirror(), LinesToScanForIndentationGuessing));
   }
 
   _setEditorIndentation(lines: string[]): void {
@@ -484,7 +484,7 @@ export class SourcesTextEditor extends TextEditor.CodeMirrorTextEditor.CodeMirro
 
     const start = this.codeMirror().getCursor('anchor');
     const end = this.codeMirror().getCursor('head');
-    this.dispatchEventToListeners(Events.SelectionChanged, TextEditor.CodeMirrorUtils.toRange(start, end));
+    this.dispatchEventToListeners(Events.SelectionChanged, TextUtils.CodeMirrorUtils.toRange(start, end));
   }
 
   _reportJump(from: TextUtils.TextRange.TextRange|null, to: TextUtils.TextRange.TextRange|null): void {
@@ -520,7 +520,7 @@ export class SourcesTextEditor extends TextEditor.CodeMirrorTextEditor.CodeMirro
 
     const primarySelection = selection.ranges[0];
     this._reportJump(
-        this.selection(), TextEditor.CodeMirrorUtils.toRange(primarySelection.anchor, primarySelection.head));
+        this.selection(), TextUtils.CodeMirrorUtils.toRange(primarySelection.anchor, primarySelection.head));
   }
 
   dispose(): void {
@@ -894,7 +894,7 @@ export class TokenHighlighter {
       this._setHighlighter(this._searchHighlighter.bind(this, this._highlightRegex), selectionStart);
     }
     if (this._highlightRange) {
-      const pos = TextEditor.CodeMirrorUtils.toPos(this._highlightRange);
+      const pos = TextUtils.CodeMirrorUtils.toPos(this._highlightRange);
       this._searchResultMarker = this._codeMirror.markText(pos.start, pos.end, {className: 'cm-column-with-selection'});
     }
   }

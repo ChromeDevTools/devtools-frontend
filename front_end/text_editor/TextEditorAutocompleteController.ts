@@ -11,7 +11,6 @@ import * as TextUtils from '../text_utils/text_utils.js';
 import * as UI from '../ui/ui.js';
 
 import type {CodeMirrorTextEditor} from './CodeMirrorTextEditor.js';
-import {changeObjectToEditOperation} from './CodeMirrorUtils.js';
 
 export class TextEditorAutocompleteController implements UI.SuggestBox.SuggestBoxDelegate {
   _textEditor: CodeMirrorTextEditor;
@@ -195,7 +194,7 @@ export class TextEditorAutocompleteController implements UI.SuggestBox.SuggestBo
       } = {};
       for (let changeIndex = 0; changeIndex < changes.length; ++changeIndex) {
         const changeObject = changes[changeIndex];
-        const editInfo = changeObjectToEditOperation(changeObject);
+        const editInfo = TextUtils.CodeMirrorUtils.changeObjectToEditOperation(changeObject);
         for (let i = editInfo.newRange.startLine; i <= editInfo.newRange.endLine; ++i) {
           // @ts-ignore CodeMirror types are wrong.
           linesToUpdate[String(i)] = this._codeMirror.getLine(i);

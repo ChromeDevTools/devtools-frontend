@@ -12,7 +12,6 @@
     "../third_party/codemirror/package/mode/htmlmixed/htmlmixed.js",
     "../third_party/codemirror/package/mode/htmlembedded/htmlembedded.js",
     "../third_party/codemirror/package/mode/wast/wast.js",
-    "CodeMirrorUtils.js",
     "TextEditorAutocompleteController.js",
     "CodeMirrorTextEditor.js"
   ],

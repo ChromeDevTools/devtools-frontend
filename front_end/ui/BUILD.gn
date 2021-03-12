@@ -72,6 +72,7 @@ devtools_module("ui") {
     "../host:bundle",
     "../i18n:bundle",
     "../platform:bundle",
+    "../sdk:bundle",
     "../text_utils:bundle",
     "../theme_support:bundle",
     "utils:bundle",

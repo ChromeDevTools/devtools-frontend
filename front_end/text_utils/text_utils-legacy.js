@@ -49,3 +49,13 @@ TextUtils.BalancedJSONTokenizer = TextUtilsModule.TextUtils.BalancedJSONTokenize
 TextUtils.TokenizerFactory = TextUtilsModule.TextUtils.TokenizerFactory;
 
 TextUtils.isMinified = TextUtilsModule.TextUtils.isMinified;
+
+TextUtils.CodeMirrorUtils = {};
+
+TextUtils.CodeMirrorUtils.toPos = TextUtilsModule.CodeMirrorUtils.toPos;
+TextUtils.CodeMirrorUtils.toRange = TextUtilsModule.CodeMirrorUtils.toRange;
+TextUtils.CodeMirrorUtils.changeObjectToEditOperation = TextUtilsModule.CodeMirrorUtils.changeObjectToEditOperation;
+TextUtils.CodeMirrorUtils.pullLines = TextUtilsModule.CodeMirrorUtils.pullLines;
+
+/** @constructor */
+TextUtils.CodeMirrorUtils.TokenizerFactory = TextUtilsModule.CodeMirrorUtils.TokenizerFactory;

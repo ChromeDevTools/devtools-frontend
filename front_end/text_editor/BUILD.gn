@@ -8,7 +8,6 @@ import("../../scripts/build/ninja/devtools_module.gni")
 devtools_module("text_editor") {
   sources = [
     "CodeMirrorTextEditor.ts",
-    "CodeMirrorUtils.ts",
     "SyntaxHighlighter.ts",
     "TextEditorAutocompleteController.ts",
     "cm_modes.ts",

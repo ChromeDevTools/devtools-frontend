@@ -5,11 +5,11 @@
 const {assert} = chai;
 
 import * as SDK from '../../../../front_end/sdk/sdk.js';
-import * as TextEditor from '../../../../front_end/text_editor/text_editor.js';
+import * as TextUtils from '../../../../front_end/text_utils/text_utils.js';
 
 describe('CSSProperty', () => {
   describe('formatStyle', () => {
-    const tokenizerFactory = TextEditor.CodeMirrorUtils.TokenizerFactory.instance();
+    const tokenizerFactory = TextUtils.CodeMirrorUtils.TokenizerFactory.instance();
     const mode = tokenizerFactory.getMode('text/css');
     const formatStyle = (styleText: string) =>
         SDK.CSSProperty.CSSProperty._formatStyle(styleText, ' ', '', tokenizerFactory, mode);

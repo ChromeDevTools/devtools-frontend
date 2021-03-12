@@ -1243,7 +1243,7 @@ export class DebuggerPlugin extends Plugin {
     /** @type {!Map.<number, !Set<string>>} */
     const namesPerLine = new Map();
     let skipObjectProperty = false;
-    const tokenizer = TextEditor.CodeMirrorUtils.TokenizerFactory.instance().createTokenizer('text/javascript');
+    const tokenizer = TextUtils.CodeMirrorUtils.TokenizerFactory.instance().createTokenizer('text/javascript');
     tokenizer(this._textEditor.line(fromLine).substring(fromColumn), processToken.bind(this, fromLine));
     for (let i = fromLine + 1; i < toLine; ++i) {
       tokenizer(this._textEditor.line(i), processToken.bind(this, i));

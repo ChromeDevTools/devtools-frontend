@@ -28,16 +28,6 @@ TextEditor.TextEditorBookMark = TextEditorModule.CodeMirrorTextEditor.TextEditor
 /** @constructor */
 TextEditor.CodeMirrorTextEditorFactory = TextEditorModule.CodeMirrorTextEditor.CodeMirrorTextEditorFactory;
 
-TextEditor.CodeMirrorUtils = {};
-
-TextEditor.CodeMirrorUtils.toPos = TextEditorModule.CodeMirrorUtils.toPos;
-TextEditor.CodeMirrorUtils.toRange = TextEditorModule.CodeMirrorUtils.toRange;
-TextEditor.CodeMirrorUtils.changeObjectToEditOperation = TextEditorModule.CodeMirrorUtils.changeObjectToEditOperation;
-TextEditor.CodeMirrorUtils.pullLines = TextEditorModule.CodeMirrorUtils.pullLines;
-
-/** @constructor */
-TextEditor.CodeMirrorUtils.TokenizerFactory = TextEditorModule.CodeMirrorUtils.TokenizerFactory;
-
 
 /** @constructor */
 TextEditor.SyntaxHighlighter = TextEditorModule.SyntaxHighlighter.SyntaxHighlighter;

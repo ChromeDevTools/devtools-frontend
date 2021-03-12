@@ -39,7 +39,6 @@ import * as Platform from '../platform/platform.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as UI from '../ui/ui.js';
 
-import {changeObjectToEditOperation, toPos, toRange} from './CodeMirrorUtils.js';
 import {TextEditorAutocompleteController} from './TextEditorAutocompleteController.js';
 
 const UIStrings = {
@@ -622,7 +621,7 @@ export class CodeMirrorTextEditor extends UI.Widget.VBox implements UI.TextEdito
       return null;
     }
     const coords = this._codeMirror.coordsChar({left: x, top: y});
-    return toRange(coords, coords);
+    return TextUtils.CodeMirrorUtils.toRange(coords, coords);
   }
 
   visualCoordinates(lineNumber: number, columnNumber: number): {
@@ -748,7 +747,7 @@ export class CodeMirrorTextEditor extends UI.Widget.VBox implements UI.TextEdito
   }
 
   bookmarks(range: TextUtils.TextRange.TextRange, type?: symbol): TextEditorBookMark[] {
-    const pos = toPos(range);
+    const pos = TextUtils.CodeMirrorUtils.toPos(range);
     let markers = this._codeMirror.findMarksAt(pos.start);
     if (!range.isEmpty()) {
       const middleMarkers = this._codeMirror.findMarks(pos.start, pos.end);
@@ -952,10 +951,10 @@ export class CodeMirrorTextEditor extends UI.Widget.VBox implements UI.TextEdito
   }
 
   editRange(range: TextUtils.TextRange.TextRange, text: string, origin?: string): TextUtils.TextRange.TextRange {
-    const pos = toPos(range);
+    const pos = TextUtils.CodeMirrorUtils.toPos(range);
     this._codeMirror.replaceRange(text, pos.start, pos.end, origin);
-    const newRange =
-        toRange(pos.start, this._codeMirror.posFromIndex(this._codeMirror.indexFromPos(pos.start) + text.length));
+    const newRange = TextUtils.CodeMirrorUtils.toRange(
+        pos.start, this._codeMirror.posFromIndex(this._codeMirror.indexFromPos(pos.start) + text.length));
     this.dispatchEventToListeners(UI.TextEditor.Events.TextChanged, {oldRange: range, newRange: newRange});
     return newRange;
   }
@@ -1006,7 +1005,7 @@ export class CodeMirrorTextEditor extends UI.Widget.VBox implements UI.TextEdito
 
     for (let changeIndex = 0; changeIndex < changes.length; ++changeIndex) {
       const changeObject = changes[changeIndex];
-      const edit = changeObjectToEditOperation(changeObject);
+      const edit = TextUtils.CodeMirrorUtils.changeObjectToEditOperation(changeObject);
       if (currentEdit && edit.oldRange.equal(currentEdit.newRange)) {
         currentEdit.newRange = edit.newRange;
       } else {
@@ -1058,7 +1057,7 @@ export class CodeMirrorTextEditor extends UI.Widget.VBox implements UI.TextEdito
     const start = this._codeMirror.getCursor('anchor');
     const end = this._codeMirror.getCursor('head');
 
-    return toRange(start, end);
+    return TextUtils.CodeMirrorUtils.toRange(start, end);
   }
 
   selections(): TextUtils.TextRange.TextRange[] {
@@ -1066,7 +1065,7 @@ export class CodeMirrorTextEditor extends UI.Widget.VBox implements UI.TextEdito
     const result = [];
     for (let i = 0; i < selectionList.length; ++i) {
       const selection = selectionList[i];
-      result.push(toRange(selection.anchor, selection.head));
+      result.push(TextUtils.CodeMirrorUtils.toRange(selection.anchor, selection.head));
     }
     return result;
   }
@@ -1081,7 +1080,7 @@ export class CodeMirrorTextEditor extends UI.Widget.VBox implements UI.TextEdito
       this._selectionSetScheduled = true;
       return;
     }
-    const pos = toPos(textRange);
+    const pos = TextUtils.CodeMirrorUtils.toPos(textRange);
     // https://crbug.com/1151919 both * = CodeMirror.Position
     const startAsPosition = (pos.start as any);
     const endAsPosition = (pos.end as any);
@@ -1092,7 +1091,7 @@ export class CodeMirrorTextEditor extends UI.Widget.VBox implements UI.TextEdito
   setSelections(ranges: TextUtils.TextRange.TextRange[], primarySelectionIndex?: number): void {
     const selections = [];
     for (let i = 0; i < ranges.length; ++i) {
-      const selection = toPos(ranges[i]);
+      const selection = TextUtils.CodeMirrorUtils.toPos(ranges[i]);
       selections.push({anchor: selection.start, head: selection.end});
     }
     primarySelectionIndex = primarySelectionIndex || 0;
@@ -1130,7 +1129,7 @@ export class CodeMirrorTextEditor extends UI.Widget.VBox implements UI.TextEdito
     if (!textRange) {
       return this._codeMirror.getValue(this._lineSeparator);
     }
-    const pos = toPos(textRange.normalize());
+    const pos = TextUtils.CodeMirrorUtils.toPos(textRange.normalize());
     return this._codeMirror.getRange(pos.start, pos.end, this._lineSeparator);
   }
 
@@ -1144,7 +1143,8 @@ export class CodeMirrorTextEditor extends UI.Widget.VBox implements UI.TextEdito
   fullRange(): TextUtils.TextRange.TextRange {
     const lineCount = this.linesCount;
     const lastLine = this._codeMirror.getLine(lineCount - 1);
-    return toRange(new CodeMirror.Pos(0, 0), new CodeMirror.Pos(lineCount - 1, lastLine.length));
+    return TextUtils.CodeMirrorUtils.toRange(
+        new CodeMirror.Pos(0, 0), new CodeMirror.Pos(lineCount - 1, lastLine.length));
   }
 
   currentLineNumber(): number {
@@ -1227,7 +1227,7 @@ CodeMirror.commands.UserIndent = function(codeMirror: any): void {
 CodeMirror.commands.indentLessOrPass = function(codeMirror: any): Object|undefined {
   const selections = codeMirror.listSelections();
   if (selections.length === 1) {
-    const range = toRange(selections[0].anchor, selections[0].head);
+    const range = TextUtils.CodeMirrorUtils.toRange(selections[0].anchor, selections[0].head);
     if (range.isEmpty() && !/^\s/.test(codeMirror.getLine(range.startLine))) {
       return CodeMirror.Pass;
     }
@@ -1288,7 +1288,7 @@ CodeMirror.commands.dismiss = function(codemirror: any): Object|undefined {
   const selections = codemirror.listSelections();
   const selection = selections[0];
   if (selections.length === 1) {
-    if (toRange(selection.anchor, selection.head).isEmpty()) {
+    if (TextUtils.CodeMirrorUtils.toRange(selection.anchor, selection.head).isEmpty()) {
       return CodeMirror.Pass;
     }
     codemirror.setSelection(selection.anchor, selection.anchor, {scroll: false});

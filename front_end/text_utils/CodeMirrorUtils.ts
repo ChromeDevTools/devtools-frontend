@@ -31,9 +31,10 @@
 /* eslint-disable rulesdir/no_underscored_properties */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import * as TextUtils from '../text_utils/text_utils.js';
+import * as TextRange from './TextRange.js';
+import * as TextUtils from './TextUtils.js';
 
-export function toPos(range: TextUtils.TextRange.TextRange): {
+export function toPos(range: TextRange.TextRange): {
   start: any,
   end: any,
 } {
@@ -43,13 +44,13 @@ export function toPos(range: TextUtils.TextRange.TextRange): {
   };
 }
 
-export function toRange(start: any, end: any): TextUtils.TextRange.TextRange {
-  return new TextUtils.TextRange.TextRange(start.line, start.ch, end.line, end.ch);
+export function toRange(start: any, end: any): TextRange.TextRange {
+  return new TextRange.TextRange(start.line, start.ch, end.line, end.ch);
 }
 
 export function changeObjectToEditOperation(changeObject: any): {
-  oldRange: TextUtils.TextRange.TextRange,
-  newRange: TextUtils.TextRange.TextRange,
+  oldRange: TextRange.TextRange,
+  newRange: TextRange.TextRange,
 } {
   const oldRange = toRange(changeObject.from, changeObject.to);
   const newRange = oldRange.clone();
@@ -85,7 +86,7 @@ let tokenizerFactoryInstance: TokenizerFactory;
 export type Tokenizer =
     (line: string, callback: (value: string, style: string|null, start: number, end: number) => void) => void;
 
-export class TokenizerFactory extends TextUtils.TextUtils.TokenizerFactory {
+export class TokenizerFactory extends TextUtils.TokenizerFactory {
   static instance(opts: {forceNew: boolean|null} = {forceNew: null}): TokenizerFactory {
     const {forceNew} = opts;
     if (!tokenizerFactoryInstance || forceNew) {

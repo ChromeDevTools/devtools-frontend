@@ -4,7 +4,7 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as ARIAProperties from '../generated/ARIAProperties.js';
+import * as ARIAProperties from '../../generated/ARIAProperties.js';
 export interface AttributeConfig {
   name: string;
   type: string;

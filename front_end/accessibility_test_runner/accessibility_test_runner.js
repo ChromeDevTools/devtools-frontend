@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import '../test_runner/test_runner.js';
-import '../accessibility/accessibility-legacy.js';
+import '../panels/accessibility/accessibility-legacy.js';
 import '../elements_test_runner/elements_test_runner.js';
 import '../i18n/i18n.js';
 

@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import './devtools_app.js';
-import './accessibility/accessibility-legacy.js';
+import './panels/accessibility/accessibility-legacy.js';
 import './animation/animation-legacy.js';
 import './bindings/bindings-legacy.js';
 import './color_picker/color_picker-legacy.js';

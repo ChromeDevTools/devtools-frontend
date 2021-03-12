@@ -322,6 +322,17 @@ export class ModuleDescriptor {
 // @ts-ignore typedef
 export let Option;
 
+/**
+ * @param {string} name
+ * @return {string}
+ */
+function computeContainingFolderName(name) {
+  if (name.includes('/')) {
+    return name.substring(name.lastIndexOf('/') + 1, name.length);
+  }
+  return name;
+}
+
 export class Module {
   /**
    * @param {!Runtime} manager
@@ -390,9 +401,11 @@ export class Module {
   }
 
   async _loadModules() {
-    const legacyFileName = `${this._name}-legacy.js`;
-    const moduleFileName = `${this._name}_module.js`;
-    const entrypointFileName = `${this._name}.js`;
+    const containingFolderName = computeContainingFolderName(this._name);
+
+    const legacyFileName = `${containingFolderName}-legacy.js`;
+    const moduleFileName = `${containingFolderName}_module.js`;
+    const entrypointFileName = `${containingFolderName}.js`;
 
     // If a module has resources, they are part of the `_module.js` files that are generated
     // by `build_release_applications`. These need to be loaded before any other code is

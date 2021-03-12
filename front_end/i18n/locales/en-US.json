@@ -1,403 +1,4 @@
 {
-  "accessibility/accessibility-meta.ts | accessibility": {
-    "message": "Accessibility"
-  },
-  "accessibility/accessibility-meta.ts | shoAccessibility": {
-    "message": "Show Accessibility"
-  },
-  "accessibility/AccessibilityNodeView.ts | accessibilityNodeNotExposed": {
-    "message": "Accessibility node not exposed"
-  },
-  "accessibility/AccessibilityNodeView.ts | ancestorChildrenAreAll": {
-    "message": "Ancestor's children are all presentational: "
-  },
-  "accessibility/AccessibilityNodeView.ts | computedProperties": {
-    "message": "Computed Properties"
-  },
-  "accessibility/AccessibilityNodeView.ts | elementHasEmptyAltText": {
-    "message": "Element has empty alt text."
-  },
-  "accessibility/AccessibilityNodeView.ts | elementHasPlaceholder": {
-    "message": "Element has {PH1}."
-  },
-  "accessibility/AccessibilityNodeView.ts | elementIsHiddenBy": {
-    "message": "Element is hidden by active modal dialog: "
-  },
-  "accessibility/AccessibilityNodeView.ts | elementIsInAnInertSubTree": {
-    "message": "Element is in an inert subtree from "
-  },
-  "accessibility/AccessibilityNodeView.ts | elementIsInert": {
-    "message": "Element is inert."
-  },
-  "accessibility/AccessibilityNodeView.ts | elementIsNotRendered": {
-    "message": "Element is not rendered."
-  },
-  "accessibility/AccessibilityNodeView.ts | elementIsNotVisible": {
-    "message": "Element is not visible."
-  },
-  "accessibility/AccessibilityNodeView.ts | elementIsPlaceholder": {
-    "message": "Element is {PH1}."
-  },
-  "accessibility/AccessibilityNodeView.ts | elementIsPresentational": {
-    "message": "Element is presentational."
-  },
-  "accessibility/AccessibilityNodeView.ts | elementNotInteresting": {
-    "message": "Element not interesting for accessibility."
-  },
-  "accessibility/AccessibilityNodeView.ts | elementsInheritsPresentational": {
-    "message": "Element inherits presentational role from "
-  },
-  "accessibility/AccessibilityNodeView.ts | invalidSource": {
-    "message": "Invalid source."
-  },
-  "accessibility/AccessibilityNodeView.ts | labelFor": {
-    "message": "Label for "
-  },
-  "accessibility/AccessibilityNodeView.ts | noAccessibilityNode": {
-    "message": "No accessibility node"
-  },
-  "accessibility/AccessibilityNodeView.ts | noNodeWithThisId": {
-    "message": "No node with this ID."
-  },
-  "accessibility/AccessibilityNodeView.ts | noTextContent": {
-    "message": "No text content."
-  },
-  "accessibility/AccessibilityNodeView.ts | notSpecified": {
-    "message": "Not specified"
-  },
-  "accessibility/AccessibilityNodeView.ts | partOfLabelElement": {
-    "message": "Part of label element: "
-  },
-  "accessibility/AccessibilityNodeView.ts | placeholderIsPlaceholderOnAncestor": {
-    "message": "{PH1} is {PH2} on ancestor: "
-  },
-  "accessibility/AccessibilityStrings.ts | activeDescendant": {
-    "message": "Active descendant"
-  },
-  "accessibility/AccessibilityStrings.ts | aHumanreadableVersionOfTheValue": {
-    "message": "A human-readable version of the value of a range widget (where necessary)."
-  },
-  "accessibility/AccessibilityStrings.ts | atomicLiveRegions": {
-    "message": "Atomic (live regions)"
-  },
-  "accessibility/AccessibilityStrings.ts | busyLiveRegions": {
-    "message": "Busy (live regions)"
-  },
-  "accessibility/AccessibilityStrings.ts | canSetValue": {
-    "message": "Can set value"
-  },
-  "accessibility/AccessibilityStrings.ts | checked": {
-    "message": "Checked"
-  },
-  "accessibility/AccessibilityStrings.ts | contents": {
-    "message": "Contents"
-  },
-  "accessibility/AccessibilityStrings.ts | controls": {
-    "message": "Controls"
-  },
-  "accessibility/AccessibilityStrings.ts | describedBy": {
-    "message": "Described by"
-  },
-  "accessibility/AccessibilityStrings.ts | description": {
-    "message": "Description"
-  },
-  "accessibility/AccessibilityStrings.ts | disabled": {
-    "message": "Disabled"
-  },
-  "accessibility/AccessibilityStrings.ts | editable": {
-    "message": "Editable"
-  },
-  "accessibility/AccessibilityStrings.ts | elementOrElementsWhichFormThe": {
-    "message": "Element or elements which form the description of this element."
-  },
-  "accessibility/AccessibilityStrings.ts | elementOrElementsWhichMayFormThe": {
-    "message": "Element or elements which may form the name of this element."
-  },
-  "accessibility/AccessibilityStrings.ts | elementOrElementsWhichShouldBe": {
-    "message": "Element or elements which should be considered descendants of this element, despite not being descendants in the DOM."
-  },
-  "accessibility/AccessibilityStrings.ts | elementOrElementsWhoseContentOr": {
-    "message": "Element or elements whose content or presence is/are controlled by this widget."
-  },
-  "accessibility/AccessibilityStrings.ts | elementToWhichTheUserMayChooseTo": {
-    "message": "Element to which the user may choose to navigate after this one, instead of the next element in the DOM order."
-  },
-  "accessibility/AccessibilityStrings.ts | expanded": {
-    "message": "Expanded"
-  },
-  "accessibility/AccessibilityStrings.ts | focusable": {
-    "message": "Focusable"
-  },
-  "accessibility/AccessibilityStrings.ts | focused": {
-    "message": "Focused"
-  },
-  "accessibility/AccessibilityStrings.ts | forARangeWidgetTheMaximumAllowed": {
-    "message": "For a range widget, the maximum allowed value."
-  },
-  "accessibility/AccessibilityStrings.ts | forARangeWidgetTheMinimumAllowed": {
-    "message": "For a range widget, the minimum allowed value."
-  },
-  "accessibility/AccessibilityStrings.ts | fromAttribute": {
-    "message": "From attribute"
-  },
-  "accessibility/AccessibilityStrings.ts | fromCaption": {
-    "message": "From caption"
-  },
-  "accessibility/AccessibilityStrings.ts | fromLabel": {
-    "message": "From label"
-  },
-  "accessibility/AccessibilityStrings.ts | fromLabelFor": {
-    "message": "From label (for= attribute)"
-  },
-  "accessibility/AccessibilityStrings.ts | fromLabelWrapped": {
-    "message": "From label (wrapped)"
-  },
-  "accessibility/AccessibilityStrings.ts | fromLegend": {
-    "message": "From legend"
-  },
-  "accessibility/AccessibilityStrings.ts | fromNativeHtml": {
-    "message": "From native HTML"
-  },
-  "accessibility/AccessibilityStrings.ts | fromPlaceholderAttribute": {
-    "message": "From placeholder attribute"
-  },
-  "accessibility/AccessibilityStrings.ts | fromRubyAnnotation": {
-    "message": "From ruby annotation"
-  },
-  "accessibility/AccessibilityStrings.ts | fromStyle": {
-    "message": "From style"
-  },
-  "accessibility/AccessibilityStrings.ts | fromTitle": {
-    "message": "From title"
-  },
-  "accessibility/AccessibilityStrings.ts | hasAutocomplete": {
-    "message": "Has autocomplete"
-  },
-  "accessibility/AccessibilityStrings.ts | hasPopup": {
-    "message": "Has popup"
-  },
-  "accessibility/AccessibilityStrings.ts | help": {
-    "message": "Help"
-  },
-  "accessibility/AccessibilityStrings.ts | ifAndHowThisElementCanBeEdited": {
-    "message": "If and how this element can be edited."
-  },
-  "accessibility/AccessibilityStrings.ts | ifThisElementMayReceiveLive": {
-    "message": "If this element may receive live updates, whether the entire live region should be presented to the user on changes, or only changed nodes."
-  },
-  "accessibility/AccessibilityStrings.ts | ifThisElementMayReceiveLiveUpdates": {
-    "message": "If this element may receive live updates, what type of updates should trigger a notification."
-  },
-  "accessibility/AccessibilityStrings.ts | ifThisElementMayReceiveLiveUpdatesThe": {
-    "message": "If this element may receive live updates, the root element of the containing live region."
-  },
-  "accessibility/AccessibilityStrings.ts | ifTrueThisElementCanReceiveFocus": {
-    "message": "If true, this element can receive focus."
-  },
-  "accessibility/AccessibilityStrings.ts | ifTrueThisElementCurrentlyCannot": {
-    "message": "If true, this element currently cannot be interacted with."
-  },
-  "accessibility/AccessibilityStrings.ts | ifTrueThisElementCurrentlyHas": {
-    "message": "If true, this element currently has focus."
-  },
-  "accessibility/AccessibilityStrings.ts | ifTrueThisElementMayBeInteracted": {
-    "message": "If true, this element may be interacted with, but its value cannot be changed."
-  },
-  "accessibility/AccessibilityStrings.ts | ifTrueThisElementsUserentered": {
-    "message": "If true, this element's user-entered value does not conform to validation requirement."
-  },
-  "accessibility/AccessibilityStrings.ts | implicit": {
-    "message": "Implicit"
-  },
-  "accessibility/AccessibilityStrings.ts | implicitValue": {
-    "message": "Implicit value."
-  },
-  "accessibility/AccessibilityStrings.ts | indicatesThePurposeOfThisElement": {
-    "message": "Indicates the purpose of this element, such as a user interface idiom for a widget, or structural role within a document."
-  },
-  "accessibility/AccessibilityStrings.ts | invalidUserEntry": {
-    "message": "Invalid user entry"
-  },
-  "accessibility/AccessibilityStrings.ts | labeledBy": {
-    "message": "Labeled by"
-  },
-  "accessibility/AccessibilityStrings.ts | level": {
-    "message": "Level"
-  },
-  "accessibility/AccessibilityStrings.ts | liveRegion": {
-    "message": "Live region"
-  },
-  "accessibility/AccessibilityStrings.ts | liveRegionRoot": {
-    "message": "Live region root"
-  },
-  "accessibility/AccessibilityStrings.ts | maximumValue": {
-    "message": "Maximum value"
-  },
-  "accessibility/AccessibilityStrings.ts | minimumValue": {
-    "message": "Minimum value"
-  },
-  "accessibility/AccessibilityStrings.ts | multiline": {
-    "message": "Multi-line"
-  },
-  "accessibility/AccessibilityStrings.ts | multiselectable": {
-    "message": "Multi-selectable"
-  },
-  "accessibility/AccessibilityStrings.ts | orientation": {
-    "message": "Orientation"
-  },
-  "accessibility/AccessibilityStrings.ts | pressed": {
-    "message": "Pressed"
-  },
-  "accessibility/AccessibilityStrings.ts | readonlyString": {
-    "message": "Read-only"
-  },
-  "accessibility/AccessibilityStrings.ts | relatedElement": {
-    "message": "Related element"
-  },
-  "accessibility/AccessibilityStrings.ts | relevantLiveRegions": {
-    "message": "Relevant (live regions)"
-  },
-  "accessibility/AccessibilityStrings.ts | requiredString": {
-    "message": "Required"
-  },
-  "accessibility/AccessibilityStrings.ts | role": {
-    "message": "Role"
-  },
-  "accessibility/AccessibilityStrings.ts | selectedString": {
-    "message": "Selected"
-  },
-  "accessibility/AccessibilityStrings.ts | theAccessibleDescriptionForThis": {
-    "message": "The accessible description for this element."
-  },
-  "accessibility/AccessibilityStrings.ts | theComputedHelpTextForThis": {
-    "message": "The computed help text for this element."
-  },
-  "accessibility/AccessibilityStrings.ts | theComputedNameOfThisElement": {
-    "message": "The computed name of this element."
-  },
-  "accessibility/AccessibilityStrings.ts | theDescendantOfThisElementWhich": {
-    "message": "The descendant of this element which is active; i.e. the element to which focus should be delegated."
-  },
-  "accessibility/AccessibilityStrings.ts | theHierarchicalLevelOfThis": {
-    "message": "The hierarchical level of this element."
-  },
-  "accessibility/AccessibilityStrings.ts | theValueOfThisElementThisMayBe": {
-    "message": "The value of this element; this may be user-provided or developer-provided, depending on the element."
-  },
-  "accessibility/AccessibilityStrings.ts | value": {
-    "message": "Value"
-  },
-  "accessibility/AccessibilityStrings.ts | valueDescription": {
-    "message": "Value description"
-  },
-  "accessibility/AccessibilityStrings.ts | valueFromAttribute": {
-    "message": "Value from attribute."
-  },
-  "accessibility/AccessibilityStrings.ts | valueFromElementContents": {
-    "message": "Value from element contents."
-  },
-  "accessibility/AccessibilityStrings.ts | valueFromFigcaptionElement": {
-    "message": "Value from figcaption element."
-  },
-  "accessibility/AccessibilityStrings.ts | valueFromLabelElement": {
-    "message": "Value from label element."
-  },
-  "accessibility/AccessibilityStrings.ts | valueFromLabelElementWithFor": {
-    "message": "Value from label element with for= attribute."
-  },
-  "accessibility/AccessibilityStrings.ts | valueFromLabelElementWrapped": {
-    "message": "Value from a wrapping label element."
-  },
-  "accessibility/AccessibilityStrings.ts | valueFromLegendElement": {
-    "message": "Value from legend element."
-  },
-  "accessibility/AccessibilityStrings.ts | valueFromNativeHtmlRuby": {
-    "message": "Value from plain HTML ruby annotation."
-  },
-  "accessibility/AccessibilityStrings.ts | valueFromNativeHtmlUnknownSource": {
-    "message": "Value from native HTML (unknown source)."
-  },
-  "accessibility/AccessibilityStrings.ts | valueFromPlaceholderAttribute": {
-    "message": "Value from placeholder attribute."
-  },
-  "accessibility/AccessibilityStrings.ts | valueFromRelatedElement": {
-    "message": "Value from related element."
-  },
-  "accessibility/AccessibilityStrings.ts | valueFromStyle": {
-    "message": "Value from style."
-  },
-  "accessibility/AccessibilityStrings.ts | valueFromTableCaption": {
-    "message": "Value from table caption."
-  },
-  "accessibility/AccessibilityStrings.ts | valueFromTitleAttribute": {
-    "message": "Value from title attribute."
-  },
-  "accessibility/AccessibilityStrings.ts | whetherAndWhatPriorityOfLive": {
-    "message": "Whether and what priority of live updates may be expected for this element."
-  },
-  "accessibility/AccessibilityStrings.ts | whetherAndWhatTypeOfAutocomplete": {
-    "message": "Whether and what type of autocomplete suggestions are currently provided by this element."
-  },
-  "accessibility/AccessibilityStrings.ts | whetherAUserMaySelectMoreThanOne": {
-    "message": "Whether a user may select more than one option from this widget."
-  },
-  "accessibility/AccessibilityStrings.ts | whetherTheOptionRepresentedBy": {
-    "message": "Whether the option represented by this element is currently selected."
-  },
-  "accessibility/AccessibilityStrings.ts | whetherTheValueOfThisElementCan": {
-    "message": "Whether the value of this element can be set."
-  },
-  "accessibility/AccessibilityStrings.ts | whetherThisCheckboxRadioButtonOr": {
-    "message": "Whether this checkbox, radio button or tree item is checked, unchecked, or mixed (e.g. has both checked and un-checked children)."
-  },
-  "accessibility/AccessibilityStrings.ts | whetherThisElementHasCausedSome": {
-    "message": "Whether this element has caused some kind of pop-up (such as a menu) to appear."
-  },
-  "accessibility/AccessibilityStrings.ts | whetherThisElementIsARequired": {
-    "message": "Whether this element is a required field in a form."
-  },
-  "accessibility/AccessibilityStrings.ts | whetherThisElementOrAnother": {
-    "message": "Whether this element, or another grouping element it controls, is expanded."
-  },
-  "accessibility/AccessibilityStrings.ts | whetherThisElementOrItsSubtree": {
-    "message": "Whether this element or its subtree are currently being updated (and thus may be in an inconsistent state)."
-  },
-  "accessibility/AccessibilityStrings.ts | whetherThisLinearElements": {
-    "message": "Whether this linear element's orientation is horizontal or vertical."
-  },
-  "accessibility/AccessibilityStrings.ts | whetherThisTextBoxMayHaveMore": {
-    "message": "Whether this text box may have more than one line."
-  },
-  "accessibility/AccessibilityStrings.ts | whetherThisToggleButtonIs": {
-    "message": "Whether this toggle button is currently in a pressed state."
-  },
-  "accessibility/ARIAAttributesView.ts | ariaAttributes": {
-    "message": "ARIA Attributes"
-  },
-  "accessibility/ARIAAttributesView.ts | noAriaAttributes": {
-    "message": "No ARIA attributes"
-  },
-  "accessibility/AXBreadcrumbsPane.ts | accessibilityTree": {
-    "message": "Accessibility Tree"
-  },
-  "accessibility/AXBreadcrumbsPane.ts | ignored": {
-    "message": "Ignored"
-  },
-  "accessibility/AXBreadcrumbsPane.ts | scrollIntoView": {
-    "message": "Scroll into view"
-  },
-  "accessibility/SourceOrderView.ts | noSourceOrderInformation": {
-    "message": "No source order information available"
-  },
-  "accessibility/SourceOrderView.ts | showSourceOrder": {
-    "message": "Show source order"
-  },
-  "accessibility/SourceOrderView.ts | sourceOrderViewer": {
-    "message": "Source Order Viewer"
-  },
-  "accessibility/SourceOrderView.ts | thereMayBeADelayInDisplaying": {
-    "message": "There may be a delay in displaying source order for elements with many children"
-  },
   "animation/animation-meta.ts | animations": {
     "message": "Animations"
   },
@@ -5587,6 +5188,405 @@
   },
   "object_ui/RemoteObjectPreviewFormatter.ts | thePropertyIsComputedWithAGetter": {
     "message": "The property is computed with a getter"
+  },
+  "panels/accessibility/accessibility-meta.ts | accessibility": {
+    "message": "Accessibility"
+  },
+  "panels/accessibility/accessibility-meta.ts | shoAccessibility": {
+    "message": "Show Accessibility"
+  },
+  "panels/accessibility/AccessibilityNodeView.ts | accessibilityNodeNotExposed": {
+    "message": "Accessibility node not exposed"
+  },
+  "panels/accessibility/AccessibilityNodeView.ts | ancestorChildrenAreAll": {
+    "message": "Ancestor's children are all presentational: "
+  },
+  "panels/accessibility/AccessibilityNodeView.ts | computedProperties": {
+    "message": "Computed Properties"
+  },
+  "panels/accessibility/AccessibilityNodeView.ts | elementHasEmptyAltText": {
+    "message": "Element has empty alt text."
+  },
+  "panels/accessibility/AccessibilityNodeView.ts | elementHasPlaceholder": {
+    "message": "Element has {PH1}."
+  },
+  "panels/accessibility/AccessibilityNodeView.ts | elementIsHiddenBy": {
+    "message": "Element is hidden by active modal dialog: "
+  },
+  "panels/accessibility/AccessibilityNodeView.ts | elementIsInAnInertSubTree": {
+    "message": "Element is in an inert subtree from "
+  },
+  "panels/accessibility/AccessibilityNodeView.ts | elementIsInert": {
+    "message": "Element is inert."
+  },
+  "panels/accessibility/AccessibilityNodeView.ts | elementIsNotRendered": {
+    "message": "Element is not rendered."
+  },
+  "panels/accessibility/AccessibilityNodeView.ts | elementIsNotVisible": {
+    "message": "Element is not visible."
+  },
+  "panels/accessibility/AccessibilityNodeView.ts | elementIsPlaceholder": {
+    "message": "Element is {PH1}."
+  },
+  "panels/accessibility/AccessibilityNodeView.ts | elementIsPresentational": {
+    "message": "Element is presentational."
+  },
+  "panels/accessibility/AccessibilityNodeView.ts | elementNotInteresting": {
+    "message": "Element not interesting for accessibility."
+  },
+  "panels/accessibility/AccessibilityNodeView.ts | elementsInheritsPresentational": {
+    "message": "Element inherits presentational role from "
+  },
+  "panels/accessibility/AccessibilityNodeView.ts | invalidSource": {
+    "message": "Invalid source."
+  },
+  "panels/accessibility/AccessibilityNodeView.ts | labelFor": {
+    "message": "Label for "
+  },
+  "panels/accessibility/AccessibilityNodeView.ts | noAccessibilityNode": {
+    "message": "No accessibility node"
+  },
+  "panels/accessibility/AccessibilityNodeView.ts | noNodeWithThisId": {
+    "message": "No node with this ID."
+  },
+  "panels/accessibility/AccessibilityNodeView.ts | noTextContent": {
+    "message": "No text content."
+  },
+  "panels/accessibility/AccessibilityNodeView.ts | notSpecified": {
+    "message": "Not specified"
+  },
+  "panels/accessibility/AccessibilityNodeView.ts | partOfLabelElement": {
+    "message": "Part of label element: "
+  },
+  "panels/accessibility/AccessibilityNodeView.ts | placeholderIsPlaceholderOnAncestor": {
+    "message": "{PH1} is {PH2} on ancestor: "
+  },
+  "panels/accessibility/AccessibilityStrings.ts | activeDescendant": {
+    "message": "Active descendant"
+  },
+  "panels/accessibility/AccessibilityStrings.ts | aHumanreadableVersionOfTheValue": {
+    "message": "A human-readable version of the value of a range widget (where necessary)."
+  },
+  "panels/accessibility/AccessibilityStrings.ts | atomicLiveRegions": {
+    "message": "Atomic (live regions)"
+  },
+  "panels/accessibility/AccessibilityStrings.ts | busyLiveRegions": {
+    "message": "Busy (live regions)"
+  },
+  "panels/accessibility/AccessibilityStrings.ts | canSetValue": {
+    "message": "Can set value"
+  },
+  "panels/accessibility/AccessibilityStrings.ts | checked": {
+    "message": "Checked"
+  },
+  "panels/accessibility/AccessibilityStrings.ts | contents": {
+    "message": "Contents"
+  },
+  "panels/accessibility/AccessibilityStrings.ts | controls": {
+    "message": "Controls"
+  },
+  "panels/accessibility/AccessibilityStrings.ts | describedBy": {
+    "message": "Described by"
+  },
+  "panels/accessibility/AccessibilityStrings.ts | description": {
+    "message": "Description"
+  },
+  "panels/accessibility/AccessibilityStrings.ts | disabled": {
+    "message": "Disabled"
+  },
+  "panels/accessibility/AccessibilityStrings.ts | editable": {
+    "message": "Editable"
+  },
+  "panels/accessibility/AccessibilityStrings.ts | elementOrElementsWhichFormThe": {
+    "message": "Element or elements which form the description of this element."
+  },
+  "panels/accessibility/AccessibilityStrings.ts | elementOrElementsWhichMayFormThe": {
+    "message": "Element or elements which may form the name of this element."
+  },
+  "panels/accessibility/AccessibilityStrings.ts | elementOrElementsWhichShouldBe": {
+    "message": "Element or elements which should be considered descendants of this element, despite not being descendants in the DOM."
+  },
+  "panels/accessibility/AccessibilityStrings.ts | elementOrElementsWhoseContentOr": {
+    "message": "Element or elements whose content or presence is/are controlled by this widget."
+  },
+  "panels/accessibility/AccessibilityStrings.ts | elementToWhichTheUserMayChooseTo": {
+    "message": "Element to which the user may choose to navigate after this one, instead of the next element in the DOM order."
+  },
+  "panels/accessibility/AccessibilityStrings.ts | expanded": {
+    "message": "Expanded"
+  },
+  "panels/accessibility/AccessibilityStrings.ts | focusable": {
+    "message": "Focusable"
+  },
+  "panels/accessibility/AccessibilityStrings.ts | focused": {
+    "message": "Focused"
+  },
+  "panels/accessibility/AccessibilityStrings.ts | forARangeWidgetTheMaximumAllowed": {
+    "message": "For a range widget, the maximum allowed value."
+  },
+  "panels/accessibility/AccessibilityStrings.ts | forARangeWidgetTheMinimumAllowed": {
+    "message": "For a range widget, the minimum allowed value."
+  },
+  "panels/accessibility/AccessibilityStrings.ts | fromAttribute": {
+    "message": "From attribute"
+  },
+  "panels/accessibility/AccessibilityStrings.ts | fromCaption": {
+    "message": "From caption"
+  },
+  "panels/accessibility/AccessibilityStrings.ts | fromLabel": {
+    "message": "From label"
+  },
+  "panels/accessibility/AccessibilityStrings.ts | fromLabelFor": {
+    "message": "From label (for= attribute)"
+  },
+  "panels/accessibility/AccessibilityStrings.ts | fromLabelWrapped": {
+    "message": "From label (wrapped)"
+  },
+  "panels/accessibility/AccessibilityStrings.ts | fromLegend": {
+    "message": "From legend"
+  },
+  "panels/accessibility/AccessibilityStrings.ts | fromNativeHtml": {
+    "message": "From native HTML"
+  },
+  "panels/accessibility/AccessibilityStrings.ts | fromPlaceholderAttribute": {
+    "message": "From placeholder attribute"
+  },
+  "panels/accessibility/AccessibilityStrings.ts | fromRubyAnnotation": {
+    "message": "From ruby annotation"
+  },
+  "panels/accessibility/AccessibilityStrings.ts | fromStyle": {
+    "message": "From style"
+  },
+  "panels/accessibility/AccessibilityStrings.ts | fromTitle": {
+    "message": "From title"
+  },
+  "panels/accessibility/AccessibilityStrings.ts | hasAutocomplete": {
+    "message": "Has autocomplete"
+  },
+  "panels/accessibility/AccessibilityStrings.ts | hasPopup": {
+    "message": "Has popup"
+  },
+  "panels/accessibility/AccessibilityStrings.ts | help": {
+    "message": "Help"
+  },
+  "panels/accessibility/AccessibilityStrings.ts | ifAndHowThisElementCanBeEdited": {
+    "message": "If and how this element can be edited."
+  },
+  "panels/accessibility/AccessibilityStrings.ts | ifThisElementMayReceiveLive": {
+    "message": "If this element may receive live updates, whether the entire live region should be presented to the user on changes, or only changed nodes."
+  },
+  "panels/accessibility/AccessibilityStrings.ts | ifThisElementMayReceiveLiveUpdates": {
+    "message": "If this element may receive live updates, what type of updates should trigger a notification."
+  },
+  "panels/accessibility/AccessibilityStrings.ts | ifThisElementMayReceiveLiveUpdatesThe": {
+    "message": "If this element may receive live updates, the root element of the containing live region."
+  },
+  "panels/accessibility/AccessibilityStrings.ts | ifTrueThisElementCanReceiveFocus": {
+    "message": "If true, this element can receive focus."
+  },
+  "panels/accessibility/AccessibilityStrings.ts | ifTrueThisElementCurrentlyCannot": {
+    "message": "If true, this element currently cannot be interacted with."
+  },
+  "panels/accessibility/AccessibilityStrings.ts | ifTrueThisElementCurrentlyHas": {
+    "message": "If true, this element currently has focus."
+  },
+  "panels/accessibility/AccessibilityStrings.ts | ifTrueThisElementMayBeInteracted": {
+    "message": "If true, this element may be interacted with, but its value cannot be changed."
+  },
+  "panels/accessibility/AccessibilityStrings.ts | ifTrueThisElementsUserentered": {
+    "message": "If true, this element's user-entered value does not conform to validation requirement."
+  },
+  "panels/accessibility/AccessibilityStrings.ts | implicit": {
+    "message": "Implicit"
+  },
+  "panels/accessibility/AccessibilityStrings.ts | implicitValue": {
+    "message": "Implicit value."
+  },
+  "panels/accessibility/AccessibilityStrings.ts | indicatesThePurposeOfThisElement": {
+    "message": "Indicates the purpose of this element, such as a user interface idiom for a widget, or structural role within a document."
+  },
+  "panels/accessibility/AccessibilityStrings.ts | invalidUserEntry": {
+    "message": "Invalid user entry"
+  },
+  "panels/accessibility/AccessibilityStrings.ts | labeledBy": {
+    "message": "Labeled by"
+  },
+  "panels/accessibility/AccessibilityStrings.ts | level": {
+    "message": "Level"
+  },
+  "panels/accessibility/AccessibilityStrings.ts | liveRegion": {
+    "message": "Live region"
+  },
+  "panels/accessibility/AccessibilityStrings.ts | liveRegionRoot": {
+    "message": "Live region root"
+  },
+  "panels/accessibility/AccessibilityStrings.ts | maximumValue": {
+    "message": "Maximum value"
+  },
+  "panels/accessibility/AccessibilityStrings.ts | minimumValue": {
+    "message": "Minimum value"
+  },
+  "panels/accessibility/AccessibilityStrings.ts | multiline": {
+    "message": "Multi-line"
+  },
+  "panels/accessibility/AccessibilityStrings.ts | multiselectable": {
+    "message": "Multi-selectable"
+  },
+  "panels/accessibility/AccessibilityStrings.ts | orientation": {
+    "message": "Orientation"
+  },
+  "panels/accessibility/AccessibilityStrings.ts | pressed": {
+    "message": "Pressed"
+  },
+  "panels/accessibility/AccessibilityStrings.ts | readonlyString": {
+    "message": "Read-only"
+  },
+  "panels/accessibility/AccessibilityStrings.ts | relatedElement": {
+    "message": "Related element"
+  },
+  "panels/accessibility/AccessibilityStrings.ts | relevantLiveRegions": {
+    "message": "Relevant (live regions)"
+  },
+  "panels/accessibility/AccessibilityStrings.ts | requiredString": {
+    "message": "Required"
+  },
+  "panels/accessibility/AccessibilityStrings.ts | role": {
+    "message": "Role"
+  },
+  "panels/accessibility/AccessibilityStrings.ts | selectedString": {
+    "message": "Selected"
+  },
+  "panels/accessibility/AccessibilityStrings.ts | theAccessibleDescriptionForThis": {
+    "message": "The accessible description for this element."
+  },
+  "panels/accessibility/AccessibilityStrings.ts | theComputedHelpTextForThis": {
+    "message": "The computed help text for this element."
+  },
+  "panels/accessibility/AccessibilityStrings.ts | theComputedNameOfThisElement": {
+    "message": "The computed name of this element."
+  },
+  "panels/accessibility/AccessibilityStrings.ts | theDescendantOfThisElementWhich": {
+    "message": "The descendant of this element which is active; i.e. the element to which focus should be delegated."
+  },
+  "panels/accessibility/AccessibilityStrings.ts | theHierarchicalLevelOfThis": {
+    "message": "The hierarchical level of this element."
+  },
+  "panels/accessibility/AccessibilityStrings.ts | theValueOfThisElementThisMayBe": {
+    "message": "The value of this element; this may be user-provided or developer-provided, depending on the element."
+  },
+  "panels/accessibility/AccessibilityStrings.ts | value": {
+    "message": "Value"
+  },
+  "panels/accessibility/AccessibilityStrings.ts | valueDescription": {
+    "message": "Value description"
+  },
+  "panels/accessibility/AccessibilityStrings.ts | valueFromAttribute": {
+    "message": "Value from attribute."
+  },
+  "panels/accessibility/AccessibilityStrings.ts | valueFromElementContents": {
+    "message": "Value from element contents."
+  },
+  "panels/accessibility/AccessibilityStrings.ts | valueFromFigcaptionElement": {
+    "message": "Value from figcaption element."
+  },
+  "panels/accessibility/AccessibilityStrings.ts | valueFromLabelElement": {
+    "message": "Value from label element."
+  },
+  "panels/accessibility/AccessibilityStrings.ts | valueFromLabelElementWithFor": {
+    "message": "Value from label element with for= attribute."
+  },
+  "panels/accessibility/AccessibilityStrings.ts | valueFromLabelElementWrapped": {
+    "message": "Value from a wrapping label element."
+  },
+  "panels/accessibility/AccessibilityStrings.ts | valueFromLegendElement": {
+    "message": "Value from legend element."
+  },
+  "panels/accessibility/AccessibilityStrings.ts | valueFromNativeHtmlRuby": {
+    "message": "Value from plain HTML ruby annotation."
+  },
+  "panels/accessibility/AccessibilityStrings.ts | valueFromNativeHtmlUnknownSource": {
+    "message": "Value from native HTML (unknown source)."
+  },
+  "panels/accessibility/AccessibilityStrings.ts | valueFromPlaceholderAttribute": {
+    "message": "Value from placeholder attribute."
+  },
+  "panels/accessibility/AccessibilityStrings.ts | valueFromRelatedElement": {
+    "message": "Value from related element."
+  },
+  "panels/accessibility/AccessibilityStrings.ts | valueFromStyle": {
+    "message": "Value from style."
+  },
+  "panels/accessibility/AccessibilityStrings.ts | valueFromTableCaption": {
+    "message": "Value from table caption."
+  },
+  "panels/accessibility/AccessibilityStrings.ts | valueFromTitleAttribute": {
+    "message": "Value from title attribute."
+  },
+  "panels/accessibility/AccessibilityStrings.ts | whetherAndWhatPriorityOfLive": {
+    "message": "Whether and what priority of live updates may be expected for this element."
+  },
+  "panels/accessibility/AccessibilityStrings.ts | whetherAndWhatTypeOfAutocomplete": {
+    "message": "Whether and what type of autocomplete suggestions are currently provided by this element."
+  },
+  "panels/accessibility/AccessibilityStrings.ts | whetherAUserMaySelectMoreThanOne": {
+    "message": "Whether a user may select more than one option from this widget."
+  },
+  "panels/accessibility/AccessibilityStrings.ts | whetherTheOptionRepresentedBy": {
+    "message": "Whether the option represented by this element is currently selected."
+  },
+  "panels/accessibility/AccessibilityStrings.ts | whetherTheValueOfThisElementCan": {
+    "message": "Whether the value of this element can be set."
+  },
+  "panels/accessibility/AccessibilityStrings.ts | whetherThisCheckboxRadioButtonOr": {
+    "message": "Whether this checkbox, radio button or tree item is checked, unchecked, or mixed (e.g. has both checked and un-checked children)."
+  },
+  "panels/accessibility/AccessibilityStrings.ts | whetherThisElementHasCausedSome": {
+    "message": "Whether this element has caused some kind of pop-up (such as a menu) to appear."
+  },
+  "panels/accessibility/AccessibilityStrings.ts | whetherThisElementIsARequired": {
+    "message": "Whether this element is a required field in a form."
+  },
+  "panels/accessibility/AccessibilityStrings.ts | whetherThisElementOrAnother": {
+    "message": "Whether this element, or another grouping element it controls, is expanded."
+  },
+  "panels/accessibility/AccessibilityStrings.ts | whetherThisElementOrItsSubtree": {
+    "message": "Whether this element or its subtree are currently being updated (and thus may be in an inconsistent state)."
+  },
+  "panels/accessibility/AccessibilityStrings.ts | whetherThisLinearElements": {
+    "message": "Whether this linear element's orientation is horizontal or vertical."
+  },
+  "panels/accessibility/AccessibilityStrings.ts | whetherThisTextBoxMayHaveMore": {
+    "message": "Whether this text box may have more than one line."
+  },
+  "panels/accessibility/AccessibilityStrings.ts | whetherThisToggleButtonIs": {
+    "message": "Whether this toggle button is currently in a pressed state."
+  },
+  "panels/accessibility/ARIAAttributesView.ts | ariaAttributes": {
+    "message": "ARIA Attributes"
+  },
+  "panels/accessibility/ARIAAttributesView.ts | noAriaAttributes": {
+    "message": "No ARIA attributes"
+  },
+  "panels/accessibility/AXBreadcrumbsPane.ts | accessibilityTree": {
+    "message": "Accessibility Tree"
+  },
+  "panels/accessibility/AXBreadcrumbsPane.ts | ignored": {
+    "message": "Ignored"
+  },
+  "panels/accessibility/AXBreadcrumbsPane.ts | scrollIntoView": {
+    "message": "Scroll into view"
+  },
+  "panels/accessibility/SourceOrderView.ts | noSourceOrderInformation": {
+    "message": "No source order information available"
+  },
+  "panels/accessibility/SourceOrderView.ts | showSourceOrder": {
+    "message": "Show source order"
+  },
+  "panels/accessibility/SourceOrderView.ts | sourceOrderViewer": {
+    "message": "Source Order Viewer"
+  },
+  "panels/accessibility/SourceOrderView.ts | thereMayBeADelayInDisplaying": {
+    "message": "There may be a delay in displaying source order for elements with many children"
   },
   "perf_ui/FilmStripView.ts | doubleclickToZoomImageClickTo": {
     "message": "Doubleclick to zoom image. Click to view preceding requests."

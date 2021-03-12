@@ -6,9 +6,6 @@ import("./scripts/build/ninja/vars.gni")
 
 devtools_module_entrypoint_sources = [
   "Images/Images.js",
-  "accessibility/accessibility-legacy.js",
-  "accessibility/accessibility-meta.js",
-  "accessibility/accessibility.js",
   "animation/animation-legacy.js",
   "animation/animation-meta.js",
   "animation/animation.js",
@@ -126,6 +123,9 @@ devtools_module_entrypoint_sources = [
   "object_ui/object_ui-legacy.js",
   "object_ui/object_ui-meta.js",
   "object_ui/object_ui.js",
+  "panels/accessibility/accessibility-legacy.js",
+  "panels/accessibility/accessibility-meta.js",
+  "panels/accessibility/accessibility.js",
   "perf_ui/perf_ui-legacy.js",
   "perf_ui/perf_ui-meta.js",
   "perf_ui/perf_ui.js",

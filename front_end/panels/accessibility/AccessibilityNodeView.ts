@@ -4,10 +4,10 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../common/common.js';
-import * as i18n from '../i18n/i18n.js';
-import * as SDK from '../sdk/sdk.js';
-import * as UI from '../ui/ui.js';
+import * as Common from '../../common/common.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as SDK from '../../sdk/sdk.js';
+import * as UI from '../../ui/ui.js';
 
 import {AXAttributes, AXNativeSourceTypes, AXSourceTypes} from './AccessibilityStrings.js';
 import {AccessibilitySubPane} from './AccessibilitySubPane.js';
@@ -110,7 +110,7 @@ const UIStrings = {
   */
   elementNotInteresting: 'Element not interesting for accessibility.',
 };
-const str_ = i18n.i18n.registerUIStrings('accessibility/AccessibilityNodeView.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/accessibility/AccessibilityNodeView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class AXNodeSubPane extends AccessibilitySubPane {
   _axNode: SDK.AccessibilityModel.AccessibilityNode|null;
@@ -132,7 +132,7 @@ export class AXNodeSubPane extends AccessibilitySubPane {
     this._ignoredReasonsTree = this.createTreeOutline();
 
     this.element.classList.add('accessibility-computed');
-    this.registerRequiredCSS('accessibility/accessibilityNode.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('panels/accessibility/accessibilityNode.css', {enableLegacyPatching: false});
     this._treeOutline.setFocusable(true);
   }
 

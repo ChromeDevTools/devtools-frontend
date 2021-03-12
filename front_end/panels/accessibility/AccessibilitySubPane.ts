@@ -4,8 +4,8 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import type * as SDK from '../sdk/sdk.js';
-import * as UI from '../ui/ui.js';
+import type * as SDK from '../../sdk/sdk.js';
+import * as UI from '../../ui/ui.js';
 
 export class AccessibilitySubPane extends UI.View.SimpleView {
   _axNode: SDK.AccessibilityModel.AccessibilityNode|null;
@@ -14,7 +14,7 @@ export class AccessibilitySubPane extends UI.View.SimpleView {
     super(name);
 
     this._axNode = null;
-    this.registerRequiredCSS('accessibility/accessibilityProperties.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('panels/accessibility/accessibilityProperties.css', {enableLegacyPatching: false});
   }
 
   setAXNode(_axNode: SDK.AccessibilityModel.AccessibilityNode|null): void {
@@ -37,8 +37,8 @@ export class AccessibilitySubPane extends UI.View.SimpleView {
 
   createTreeOutline(): UI.TreeOutline.TreeOutline {
     const treeOutline = new UI.TreeOutline.TreeOutlineInShadow();
-    treeOutline.registerRequiredCSS('accessibility/accessibilityNode.css', {enableLegacyPatching: false});
-    treeOutline.registerRequiredCSS('accessibility/accessibilityProperties.css', {enableLegacyPatching: false});
+    treeOutline.registerRequiredCSS('panels/accessibility/accessibilityNode.css', {enableLegacyPatching: false});
+    treeOutline.registerRequiredCSS('panels/accessibility/accessibilityProperties.css', {enableLegacyPatching: false});
     treeOutline.registerRequiredCSS('object_ui/objectValue.css', {enableLegacyPatching: true});
 
     treeOutline.element.classList.add('hidden');

@@ -69,7 +69,8 @@ def minify_js(javascript):
 
 
 def concatenated_module_filename(module_name, output_dir):
-    return join(output_dir, module_name + '/' + module_name + '_module.js')
+    return join(output_dir,
+                module_name + '/' + path.basename(module_name) + '_module.js')
 
 
 # Outputs:
@@ -139,7 +140,7 @@ class ReleaseBuilder(object):
                     if legacyFileName in declared_module_files:
                         module_files_to_load += [legacyFileName]
                     # Non-autostart modules are vulcanized.
-                    module['modules'] = [name + '_module.js'
+                    module['modules'] = [path.basename(name) + '_module.js'
                                          ] + module_files_to_load
             result.append(module)
         return json.dumps(result)
@@ -196,7 +197,11 @@ class ReleaseBuilder(object):
         module_dir = join(self.application_dir, module_name)
         output = StringIO()
         if resources:
-            output.write("import * as RootModule from '../root/root.js';")
+            relative_file_name = '../root/root.js'
+            if "/" in module_name:
+                relative_file_name = '../' + relative_file_name
+            output.write("import * as RootModule from '%s';" %
+                         relative_file_name)
             self._write_module_resources(resources, output)
         minified_content = minify_js(output.getvalue())
         write_file(

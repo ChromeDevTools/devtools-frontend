@@ -4,10 +4,10 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Host from '../host/host.js';
-import * as i18n from '../i18n/i18n.js';
-import type * as SDK from '../sdk/sdk.js';
-import * as UI from '../ui/ui.js';
+import * as Host from '../../host/host.js';
+import * as i18n from '../../i18n/i18n.js';
+import type * as SDK from '../../sdk/sdk.js';
+import * as UI from '../../ui/ui.js';
 
 import {AccessibilitySubPane} from './AccessibilitySubPane.js';
 
@@ -32,7 +32,7 @@ const UIStrings = {
   */
   showSourceOrder: 'Show source order',
 };
-const str_ = i18n.i18n.registerUIStrings('accessibility/SourceOrderView.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/accessibility/SourceOrderView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const MAX_CHILD_ELEMENTS_THRESHOLD = 300;
 

@@ -4,9 +4,9 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as i18n from '../i18n/i18n.js';
-import type * as SDK from '../sdk/sdk.js';
-import * as UI from '../ui/ui.js';
+import * as i18n from '../../i18n/i18n.js';
+import type * as SDK from '../../sdk/sdk.js';
+import * as UI from '../../ui/ui.js';
 
 import {AccessibilitySubPane} from './AccessibilitySubPane.js';
 import {ariaMetadata} from './ARIAMetadata.js';
@@ -21,7 +21,7 @@ const UIStrings = {
   */
   noAriaAttributes: 'No ARIA attributes',
 };
-const str_ = i18n.i18n.registerUIStrings('accessibility/ARIAAttributesView.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/accessibility/ARIAAttributesView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class ARIAAttributesPane extends AccessibilitySubPane {
   _noPropertiesInfo: Element;

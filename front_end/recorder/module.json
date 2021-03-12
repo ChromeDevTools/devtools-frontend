@@ -2,7 +2,7 @@
   "dependencies": [
     "ui",
     "persistence",
-    "accessibility",
+    "panels/accessibility",
     "elements"
   ],
   "modules": [],

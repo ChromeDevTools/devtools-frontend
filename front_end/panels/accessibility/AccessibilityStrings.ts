@@ -4,7 +4,7 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as i18n from '../i18n/i18n.js';
+import * as i18n from '../../i18n/i18n.js';
 const UIStrings = {
   /**
   *@description Text to indicate something is not enabled
@@ -457,7 +457,7 @@ const UIStrings = {
   */
   valueFromNativeHtmlUnknownSource: 'Value from native HTML (unknown source).',
 };
-const str_ = i18n.i18n.registerUIStrings('accessibility/AccessibilityStrings.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/accessibility/AccessibilityStrings.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 export const AXAttributes = {
   'disabled': {

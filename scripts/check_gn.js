@@ -36,13 +36,13 @@ function checkNonAutostartNonRemoteModules() {
   const text = lines.join('\n');
   const modules = manifestModules.filter(m => m.type !== 'autostart').map(m => m.name);
 
-  const missingModules = modules.filter(m => !text.includes(`${m}/${m}_module.js`));
+  const missingModules = modules.filter(m => !text.includes(`${m}/${path.basename(m)}_module.js`));
   if (missingModules.length) {
     errors.push(`Check that you've included [${missingModules.join(', ')}] modules in: ` + gnVariable);
   }
 
   // e.g. "lighthouse/lighthouse_module.js" => "lighthouse"
-  const mapLineToModuleName = line => line.split('/')[1].split('_module')[0];
+  const mapLineToModuleName = line => path.dirname(line.substring(1));
 
   const extraneousModules = lines.map(mapLineToModuleName).filter(module => !modules.includes(module));
   if (extraneousModules.length) {

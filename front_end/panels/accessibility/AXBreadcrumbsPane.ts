@@ -4,10 +4,10 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../common/common.js';
-import * as i18n from '../i18n/i18n.js';
-import * as SDK from '../sdk/sdk.js';
-import * as UI from '../ui/ui.js';
+import * as Common from '../../common/common.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as SDK from '../../sdk/sdk.js';
+import * as UI from '../../ui/ui.js';
 
 import type {AccessibilitySidebarView} from './AccessibilitySidebarView.js';
 import {AccessibilitySubPane} from './AccessibilitySubPane.js';
@@ -26,7 +26,7 @@ const UIStrings = {
   */
   ignored: 'Ignored',
 };
-const str_ = i18n.i18n.registerUIStrings('accessibility/AXBreadcrumbsPane.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/accessibility/AXBreadcrumbsPane.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class AXBreadcrumbsPane extends AccessibilitySubPane {
   _axSidebarView: AccessibilitySidebarView;
@@ -59,7 +59,7 @@ export class AXBreadcrumbsPane extends AccessibilitySubPane {
     this._rootElement.addEventListener('click', this._onClick.bind(this), false);
     this._rootElement.addEventListener('contextmenu', this._contextMenuEventFired.bind(this), false);
     this._rootElement.addEventListener('focusout', this._onFocusOut.bind(this), false);
-    this.registerRequiredCSS('accessibility/axBreadcrumbs.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('panels/accessibility/axBreadcrumbs.css', {enableLegacyPatching: false});
   }
 
   focus(): void {

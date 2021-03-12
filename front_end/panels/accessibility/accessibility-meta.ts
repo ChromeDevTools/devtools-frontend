@@ -2,9 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as i18n from '../i18n/i18n.js';
-import * as Root from '../root/root.js';
-import * as UI from '../ui/ui.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as Root from '../../root/root.js';
+import * as UI from '../../ui/ui.js';
 
 // eslint-disable-next-line rulesdir/es_modules_import
 import type * as Accessibility from './accessibility.js';
@@ -21,13 +21,13 @@ const UIStrings = {
    */
   shoAccessibility: 'Show Accessibility',
 };
-const str_ = i18n.i18n.registerUIStrings('accessibility/accessibility-meta.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/accessibility/accessibility-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 async function loadAccessibilityModule(): Promise<typeof Accessibility> {
   if (!loadedAccessibilityModule) {
     // Side-effect import resources in module.json
-    await Root.Runtime.Runtime.instance().loadModulePromise('accessibility');
+    await Root.Runtime.Runtime.instance().loadModulePromise('panels/accessibility');
     loadedAccessibilityModule = await import('./accessibility.js');
   }
   return loadedAccessibilityModule;

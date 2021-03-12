@@ -4,7 +4,7 @@
     { "name": "inspector_main", "type": "autostart" },
     { "name": "mobile_throttling", "type": "autostart" },
 
-    { "name": "accessibility" },
+    { "name": "panels/accessibility" },
     { "name": "animation" },
     { "name": "lighthouse" },
     { "name": "browser_debugger" },

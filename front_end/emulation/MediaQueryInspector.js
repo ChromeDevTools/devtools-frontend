@@ -12,7 +12,8 @@ import * as Workspace from '../workspace/workspace.js';  // eslint-disable-line 
 
 const UIStrings = {
   /**
-  *@description A context menu item in the Media Query Inspector of the Device Toolbar
+  * @description A context menu item/command in the Media Query Inspector of the Device Toolbar.
+  * Takes the user to the source code where this media query actually came from.
   */
   revealInSourceCode: 'Reveal in source code',
 };

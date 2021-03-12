@@ -14,15 +14,16 @@ const UIStrings = {
   */
   location: 'Location',
   /**
-  *@description Text in Sensors View of the Device Toolbar
+  *@description An option that appears in a drop-down to prevent the GPS location of the user from being overridden.
   */
   noOverride: 'No override',
   /**
-  *@description Title as part of a tool to override existing configurations
+  *@description Title of a section that contains overrides for the user's GPS location.
   */
   overrides: 'Overrides',
   /**
-  *@description Text of button in Sensors View of the Device Toolbar
+  *@description Text of button in Sensors View, takes the user to the custom location setting screen
+  *where they can enter/edit custom locations.
   */
   manage: 'Manage',
   /**
@@ -30,60 +31,68 @@ const UIStrings = {
   */
   manageTheListOfLocations: 'Manage the list of locations',
   /**
-  *@description Text in Sensors View of the Device Toolbar
+  *@description Option in a drop-down input for selecting the GPS location of the user. As an
+  *alternative to selecting a location from the list, the user can select this option and they are
+  *prompted to enter the details for a new custom location.
   */
   other: 'Other…',
   /**
-  *@description Text for errors
+  *@description Title of a section in a drop-down input that contains error locations, e.g. to select
+  *a location override that says 'the location is not available'. A noun.
   */
   error: 'Error',
   /**
-  *@description Text in Sensors View of the Device Toolbar
+  *@description A type of override where the geographic location of the user is not available.
   */
   locationUnavailable: 'Location unavailable',
   /**
-  *@description Text in Sensors View of the Device Toolbar
+  *@description Tooltip text telling the user how to change the value of a latitude/longitude input
+  *text box. several shortcuts are provided for convenience. The placeholder can be different
+  *keyboard keys, depending on the user's settings.
   *@example {Ctrl} PH1
   */
   adjustWithMousewheelOrUpdownKeys: 'Adjust with mousewheel or up/down keys. {PH1}: ±10, Shift: ±1, Alt: ±0.01',
   /**
-  *@description Text in Sensors View of the Device Toolbar
+  *@description Label for latitude of a GPS location.
   */
   latitude: 'Latitude',
   /**
-  *@description Text in Sensors View of the Device Toolbar
+  *@description Label for Longitude of a GPS location.
   */
   longitude: 'Longitude',
   /**
-  *@description Text in Sensors View of the Device Toolbar
+  *@description Label for the ID of a timezone for a particular location.
   */
   timezoneId: 'Timezone ID',
   /**
-  *@description Text in Sensors View of the Device Toolbar
+  *@description Label for the locale relevant to a custom location.
   */
   locale: 'Locale',
   /**
-  *@description Text for the orientation of something
+  *@description Label the orientation of a user's device e.g. tilt in 3D-space.
   */
   orientation: 'Orientation',
   /**
-  *@description Text in Sensors View of the Device Toolbar
+  *@description Option that when chosen, turns off device orientation override.
   */
   off: 'Off',
   /**
-  *@description Text in Sensors View of the Device Toolbar
+  *@description Option that when chosen, allows the user to enter a custom orientation for the device e.g. tilt in 3D-space.
   */
   customOrientation: 'Custom orientation',
   /**
-  *@description Stage element title in Sensors View of the Device Toolbar
+  *@description Warning to the user they should enable the device orientation override, in order to
+  *enable this input which allows them to interactively select orientation by dragging a 3D phone
+  *model.
   */
   enableOrientationToRotate: 'Enable orientation to rotate',
   /**
-  *@description Stage element title in Sensors View of the Device Toolbar
+  *@description Text telling the user how to use an input which allows them to interactively select
+  *orientation by dragging a 3D phone model.
   */
   shiftdragHorizontallyToRotate: 'Shift+drag horizontally to rotate around the y-axis',
   /**
-  *@description Message in the Sensors tool that is alerted (for screen readers) when  the device orientation setting is changed
+  *@description Message in the Sensors tool that is alerted (for screen readers) when the device orientation setting is changed
   *@example {180} PH1
   *@example {-90} PH2
   *@example {0} PH3
@@ -94,7 +103,7 @@ const UIStrings = {
   */
   reset: 'Reset',
   /**
-  *@description Aria-label for orientation reset button in Sensors View
+  *@description Aria-label for orientation reset button in Sensors View. Command.
   */
   resetDeviceOrientation: 'Reset device orientation',
   /**
@@ -106,43 +115,45 @@ const UIStrings = {
   */
   forcesSelectedIdleStateEmulation: 'Forces selected idle state emulation',
   /**
-  *@description Title for a group of configuration options
+  *@description Title for a group of configuration options in a drop-down input.
   */
   presets: 'Presets',
   /**
-  *@description Text in Device Mode Toolbar of the Device Toolbar
+  *@description Drop-down input option for the orientation of a device in 3D space.
   */
   portrait: 'Portrait',
   /**
-  *@description Text in Sensors View of the Device Toolbar
+  *@description Drop-down input option for the orientation of a device in 3D space.
   */
   portraitUpsideDown: 'Portrait upside down',
   /**
-  *@description Text in Sensors View of the Device Toolbar
+  *@description Drop-down input option for the orientation of a device in 3D space.
   */
   landscapeLeft: 'Landscape left',
   /**
-  *@description Text in Sensors View of the Device Toolbar
+  *@description Drop-down input option for the orientation of a device in 3D space.
   */
   landscapeRight: 'Landscape right',
   /**
-  *@description Text in Sensors View of the Device Toolbar
+  *@description Drop-down input option for the orientation of a device in 3D space. Noun indicating
+  *the display of the device is pointing up.
   */
   displayUp: 'Display up',
   /**
-  *@description Text in Sensors View of the Device Toolbar
+  *@description Drop-down input option for the orientation of a device in 3D space. Noun indicating
+  *the display of the device is pointing down.
   */
   displayDown: 'Display down',
   /**
-   *@description Text in Sensors View of the Device Toolbar
+   *@description Label for one dimension of device orientation that the user can override.
    */
   alpha: '\u03B1 (alpha)',
   /**
-   *@description Text in Sensors View of the Device Toolbar
+   *@description Label for one dimension of device orientation that the user can override.
    */
   beta: '\u03B2 (beta)',
   /**
-   *@description Text in Sensors View of the Device Toolbar
+   *@description Label for one dimension of device orientation that the user can override.
    */
   gamma: '\u03B3 (gamma)',
 };

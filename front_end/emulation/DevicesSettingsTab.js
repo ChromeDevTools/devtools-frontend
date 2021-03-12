@@ -14,39 +14,42 @@ let devicesSettingsTabInstance;
 
 const UIStrings = {
   /**
-  *@description Text of a DOM element in Devices Settings Tab of the Device Toolbar
+  *@description Title for a section of the UI that shows all of the devices the user can emulate, in the Device Toolbar.
   */
   emulatedDevices: 'Emulated Devices',
   /**
-  *@description Add custom button in Devices Settings Tab of the Device Toolbar
+  *@description Button to add a custom device (e.g. phone, tablet) the Device Toolbar.
   */
   addCustomDevice: 'Add custom device...',
   /**
-  *@description Label for
+  *@description Label/title for UI to add a new custom device type. Device means mobile/tablet etc.
   */
   device: 'Device',
   /**
-  *@description Label in the Devices settings pane for the device name input of a custom device
+  *@description Placeholder for text input for the name of a custom device.
   */
   deviceName: 'Device Name',
   /**
-  *@description Width input title in Device Mode Toolbar of the Device Toolbar
+  *@description Placeholder text for text input for the width of a custom device in pixels.
   */
   width: 'Width',
   /**
-  *@description Label in the Devices settings pane for the height input of a custom device
+  *@description Placeholder text for text input for the height of a custom device in pixels.
   */
   height: 'Height',
   /**
-  *@description Title of device scale item in device mode toolbar of the device toolbar
+  *@description Placeholder text for text input for the height/width ratio of a custom device in pixels.
   */
   devicePixelRatio: 'Device pixel ratio',
   /**
-  *@description Field in Devices pane letting customize which browser names and major versions edited device presents via User Agent Client Hints. Example should be kept exactly.
+  * @description Field in Devices pane letting users customize which browser names and major versions
+  * edited device presents via User Agent Client Hints. Placeholder is locked text.
   */
-  UABrands: 'UA brands list (e.g. "Chromium";v="87")',
+  UABrands: 'UA brands list (e.g. `"Chromium";v="87"`)',
   /**
-  *@description Title of foldable group of options in Devices pane letting customize what information is sent about the browser and device via user agent client hints functionality
+  *@description Title of foldable group of options in Devices pane letting users customize what
+  *information is sent about the browser and device via user agent client hints functionality. 'user
+  *agent' refers to the browser/unique ID the user is using. 'hints' is a noun.
   */
   userAgentClient: 'User agent client hints',
   /**
@@ -59,7 +62,8 @@ const UIStrings = {
   */
   userAgentString: 'User agent string',
   /**
-  *@description Label in the Devices settings pane for the user agent type input of a custom device
+  *@description Tooltip text for a drop-down in the Devices settings pane, for the 'user agent type' input of a custom device.
+  * 'Type' refers to different options e.g. mobile or desktop.
   */
   userAgentType: 'User agent type',
   /**

@@ -20,47 +20,53 @@ const UIStrings = {
   */
   captureScreenshot: 'Capture screenshot',
   /**
-  *@description Title of an action in the emulation tool to capture full height screenshot
+  * @description Title of an action in the emulation tool to capture full height screenshot. This
+  * action captures a screenshot of the entire website, not just the visible portion.
   */
   captureFullSizeScreenshot: 'Capture full size screenshot',
   /**
-  *@description Title of an action in the emulation tool to capture node screenshot
+  * @description Title of an action in the emulation tool to capture a screenshot of just this node.
+  * Node refers to a HTML element/node.
   */
   captureNodeScreenshot: 'Capture node screenshot',
   /**
-  *@description Text in Device Mode Toolbar of the Device Toolbar
+  * @description Command in the Device Mode Toolbar, to show media query boundaries in the UI.
+  * https://developer.mozilla.org/en-US/docs/Web/CSS/Media_Queries/Using_media_queries
   */
   showMediaQueries: 'Show media queries',
   /**
-  *@description Text in Device Mode Toolbar of the Device Toolbar
+  *@description Command in the Device Mode Toolbar, to hide media query boundaries in the UI.
+  * https://developer.mozilla.org/en-US/docs/Web/CSS/Media_Queries/Using_media_queries
   */
   hideMediaQueries: 'Hide media queries',
   /**
-  *@description A tag of Mobile related settings that can be searched in the command menu
+  * @description A tag of Mobile related settings that can be searched in the command menu if the
+  * user doesn't know the exact name of the tool. Device refers to e.g. phone/tablet.
   */
   device: 'device',
   /**
-  *@description Text to show the measuring rulers on the target
+  *@description Command that shows measuring rulers next to the emulated device.
   */
   showRulers: 'Show rulers',
   /**
-  *@description Text in Device Mode Toolbar of the Device Toolbar
+  *@description Command that hides measuring rulers next to the emulated device.
   */
   hideRulers: 'Hide rulers',
   /**
-  *@description Text in Device Mode Toolbar of the Device Toolbar
+  *@description Command that shows a frame (like a picture frame) around the emulated device.
   */
   showDeviceFrame: 'Show device frame',
   /**
-  *@description Text in Device Mode Toolbar of the Device Toolbar
+  *@description Command that hides a frame (like a picture frame) around the emulated device.
   */
   hideDeviceFrame: 'Hide device frame',
   /**
-  *@description Title of the Devices tab
+  *@description Title of the Devices tab/tool. Devices refers to e.g. phones/tablets.
   */
   devices: 'Devices',
   /**
-  *@description Title of an action in the emulation tool to show sensors
+  * @description Title of the Sensors tool. The sensors tool contains GPS, orientation sensors, touch
+  * settings, etc.
   */
   sensors: 'Sensors',
   /**
@@ -84,59 +90,66 @@ const UIStrings = {
   */
   accelerometer: 'accelerometer',
   /**
-  *@description A tag of Sensors tool that can be searched in the command menu
+  * @description A tag of Sensors tool that can be searched in the command menu. Refers to the
+  * orientation of a device (e.g. phone) in 3D space, e.g. tilted right/left.
   */
   deviceOrientation: 'device orientation',
   /**
-  *@description Title of Locations settings
+  *@description Title of Locations settings. Refers to geographic locations for GPS.
   */
   locations: 'Locations',
   /**
-  *@description Text for the touch type to simulate on a device
+  * @description Text for the touch type to simulate on a device. Refers to touch input as opposed to
+  * mouse input.
   */
   touch: 'Touch',
   /**
-  *@description Text in Sensors View of the Device Toolbar
+  *@description Text in Sensors View of the Device Toolbar. Refers to device-based touch input,
+  *which means the input type will be 'touch' only if the device normally has touch input e.g. a
+  *phone or tablet.
   */
   devicebased: 'Device-based',
   /**
-  *@description Text in Sensors View of the Device Toolbar
+  *@description Text in Sensors View of the Device Toolbar. Means that touch input will be forced
+  *on, even if the device type e.g. desktop computer does not normally have touch input.
   */
   forceEnabled: 'Force enabled',
   /**
-  *@description Title of a section option in Sensors tab for idle emulation
+  *@description Title of a section option in Sensors tab for idle emulation. This is a command, to
+  *emulate the state of the 'Idle Detector'.
   */
   emulateIdleDetectorState: 'Emulate Idle Detector state',
   /**
-  *@description Title of an option in Sensors tab idle emulation select
+  *@description Title of an option in Sensors tab idle emulation drop-down. Turns off emulation of idle state.
   */
   noIdleEmulation: 'No idle emulation',
   /**
-  *@description Title of an option in Sensors tab idle emulation select
+  *@description Title of an option in Sensors tab idle emulation drop-down.
   */
   userActiveScreenUnlocked: 'User active, screen unlocked',
   /**
-  *@description Title of an option in Sensors tab idle emulation select
+  *@description Title of an option in Sensors tab idle emulation drop-down.
   */
   userActiveScreenLocked: 'User active, screen locked',
   /**
-  *@description Title of an option in Sensors tab idle emulation select
+  *@description Title of an option in Sensors tab idle emulation drop-down.
   */
   userIdleScreenUnlocked: 'User idle, screen unlocked',
   /**
-  *@description Title of an option in Sensors tab idle emulation select
+  *@description Title of an option in Sensors tab idle emulation drop-down.
   */
   userIdleScreenLocked: 'User idle, screen locked',
   /**
-  *@description Title of an action that shows emulation.
+  *@description Command that opens the device emulation view.
   */
   showDevices: 'Show Devices',
   /**
-  *@description Title of an action that shows sensors.
+  * @description Command that opens the Sensors view/tool. The sensors tool contains GPS,
+  * orientation sensors, touch settings, etc.
   */
   showSensors: 'Show Sensors',
   /**
-  *@description Title of an action that shows geographic locations.
+  *@description Command that shows geographic locations.
   */
   showLocations: 'Show Locations',
 };

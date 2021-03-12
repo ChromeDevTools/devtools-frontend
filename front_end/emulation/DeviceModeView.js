@@ -18,27 +18,27 @@ const UIStrings = {
   */
   doubleclickForFullHeight: 'Double-click for full height',
   /**
-  *@description Text in Device Mode View of the Device Toolbar
+  *@description Name of a device that the user can select to emulate. Small mobile device.
   */
   mobileS: 'Mobile S',
   /**
-  *@description Text in Device Mode View of the Device Toolbar
+  *@description Name of a device that the user can select to emulate. Medium mobile device.
   */
   mobileM: 'Mobile M',
   /**
-  *@description Text in Device Mode View of the Device Toolbar
+  *@description Name of a device that the user can select to emulate. Large mobile device.
   */
   mobileL: 'Mobile L',
   /**
-  *@description Text in Device Mode View of the Device Toolbar
+  *@description Name of a device that the user can select to emulate. Tablet device.
   */
   tablet: 'Tablet',
   /**
-  *@description Text in Device Mode View of the Device Toolbar
+  *@description Name of a device that the user can select to emulate. Laptop device.
   */
   laptop: 'Laptop',
   /**
-  *@description Text in Device Mode View of the Device Toolbar
+  *@description Name of a device that the user can select to emulate. Large laptop device.
   */
   laptopL: 'Laptop L',
 };

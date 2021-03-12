@@ -11,11 +11,12 @@ let locationsSettingsTabInstance;
 
 const UIStrings = {
   /**
-  *@description Text in Locations Settings Tab of the Device Toolbar
+  *@description Title in the Locations Settings Tab, where custom geographic locations that the user
+  *has entered are stored.
   */
   customLocations: 'Custom locations',
   /**
-  *@description Text in Locations Settings Tab of the Device Toolbar
+  *@description Label for the name of a geographic location that the user has entered.
   */
   locationName: 'Location name',
   /**
@@ -31,15 +32,15 @@ const UIStrings = {
   */
   timezoneId: 'Timezone ID',
   /**
-  *@description Text in Sensors View of the Device Toolbar
+  *@description Label for text input for the locale of a particular location.
   */
   locale: 'Locale',
   /**
-  *@description Text in Sensors View of the Device Toolbar
+  *@description Label for text input for the latitude of a GPS position.
   */
   latitude: 'Latitude',
   /**
-  *@description Text in Sensors View of the Device Toolbar
+  *@description Label for text input for the longitude of a GPS position.
   */
   longitude: 'Longitude',
   /**

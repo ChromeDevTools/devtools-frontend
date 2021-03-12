@@ -159,25 +159,32 @@ describe('IconButton', () => {
   });
 
   describe('border', () => {
-    it('is rendered by default', async () => {
+    it('is rendered when there is a click handler', async () => {
       const {shadowRoot} = renderIconButton({clickHandler: () => {}, groups: [defaultIcon]});
       const button = shadowRoot.querySelector('.icon-button');
       assertElement(button, HTMLButtonElement);
-      assert.isTrue(button.classList.contains('with-border'));
-    });
-
-    it('is rendered when requested', async () => {
-      const {shadowRoot} = renderIconButton({clickHandler: () => {}, groups: [defaultIcon], withBorder: true});
-      const button = shadowRoot.querySelector('.icon-button');
-      assertElement(button, HTMLButtonElement);
-      assert.isTrue(button.classList.contains('with-border'));
+      assert.isTrue(button.classList.contains('with-click-handler'));
     });
 
     it('is omitted when requested', async () => {
-      const {shadowRoot} = renderIconButton({clickHandler: () => {}, groups: [defaultIcon], withBorder: false});
+      const {shadowRoot} = renderIconButton({groups: [defaultIcon]});
       const button = shadowRoot.querySelector('.icon-button');
       assertElement(button, HTMLButtonElement);
-      assert.isFalse(button.classList.contains('with-border'));
+      assert.isFalse(button.classList.contains('with-click-handler'));
+    });
+  });
+
+  describe('leading text', () => {
+    it('is rendered if provided', async () => {
+      const {shadowRoot} = renderIconButton({clickHandler: () => {}, groups: [defaultIcon], leadingText: 'LEAD'});
+      const texts = Array.from(shadowRoot.querySelectorAll('.icon-button-title'));
+      assert.deepEqual(texts.map(x => x.textContent), ['LEAD', '1']);
+    });
+
+    it('is omitted if not provided', async () => {
+      const {shadowRoot} = renderIconButton({clickHandler: () => {}, groups: [defaultIcon]});
+      const texts = Array.from(shadowRoot.querySelectorAll('.icon-button-title'));
+      assert.deepEqual(texts.map(x => x.textContent), ['1']);
     });
   });
 

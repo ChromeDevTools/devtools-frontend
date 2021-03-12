@@ -42,21 +42,10 @@ appendComponent({
 });
 
 appendComponent({
-  clickHandler: (): void => {},
   groups: [
     {iconName: 'issue-exclamation-icon', iconColor: 'yellow', text: '23'},
     {iconName: 'issue-text-icon', iconColor: 'blue', text: '1'},
   ],
-  withBorder: false,
-});
-
-appendComponent({
-  clickHandler: (): void => {},
-  groups: [
-    {iconName: 'issue-exclamation-icon', iconColor: 'yellow', text: '23'},
-    {iconName: 'issue-text-icon', iconColor: 'blue', text: '1'},
-  ],
-  withBorder: true,
 });
 
 appendComponent({
@@ -66,4 +55,13 @@ appendComponent({
     {iconName: 'issue-text-icon', iconColor: 'blue', text: '1'},
   ],
   trailingText: 'Issues',
+});
+
+appendComponent({
+  clickHandler: (): void => {},
+  groups: [
+    {iconName: 'issue-exclamation-icon', iconColor: 'yellow', text: '23'},
+    {iconName: 'issue-text-icon', iconColor: 'blue', text: '1'},
+  ],
+  leadingText: 'Issues:',
 });

@@ -14,24 +14,24 @@ export interface IconWithTextData {
 }
 
 export interface IconButtonData {
-  clickHandler: () => void;
+  clickHandler?: () => void;
   groups: IconWithTextData[];
-  withBorder?: boolean;
+  leadingText?: string;
   trailingText?: string;
 }
 
 export class IconButton extends HTMLElement {
   private readonly shadow = this.attachShadow({mode: 'open'});
-  private clickHandler: () => void = () => {};
+  private clickHandler: undefined|(() => void) = undefined;
   private groups: IconWithTextData[] = [];
-  private withBorder: boolean = true;
+  private leadingText: string = '';
   private trailingText: string = '';
 
   set data(data: IconButtonData) {
     this.groups = data.groups.map(group => ({...group}));  // Ensure we make a deep copy.
     this.clickHandler = data.clickHandler;
-    this.withBorder = data.withBorder ?? true;
     this.trailingText = data.trailingText ?? '';
+    this.leadingText = data.leadingText ?? '';
     this.render();
   }
 
@@ -46,14 +46,16 @@ export class IconButton extends HTMLElement {
   }
 
   private onClickHandler(event: Event): void {
-    event.preventDefault();
-    this.clickHandler();
+    if (this.clickHandler) {
+      event.preventDefault();
+      this.clickHandler();
+    }
   }
 
   private render(): void {
     const buttonClasses = LitHtml.Directives.classMap({
       'icon-button': true,
-      'with-border': this.withBorder,
+      'with-click-handler': Boolean(this.clickHandler),
     });
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
@@ -65,7 +67,6 @@ export class IconButton extends HTMLElement {
         }
 
         .icon-button {
-          cursor: pointer;
           border: none;
           margin-right: 2px;
           display: inline-flex;
@@ -75,15 +76,20 @@ export class IconButton extends HTMLElement {
           font-family: inherit;
         }
 
-        .icon-button.with-border {
+        .icon-button.with-click-handler {
+          cursor: pointer;
           background-color: var(--toolbar-bg-color);
           border: 1px solid var(--divider-color);
           border-radius: 2px;
         }
 
-        .icon-button:hover,
+        .icon-button.with-click-handler:hover {
+          background-color: var(--toolbar-hover-bg-color);
+        }
+
         .icon-button:focus-visible {
           background-color: var(--toolbar-hover-bg-color);
+          border: 1px solid var(--divider-color);
         }
 
         .icon-button-title {
@@ -104,13 +110,14 @@ export class IconButton extends HTMLElement {
             background-color: ButtonFace;
           }
 
-          .icon-button:hover {
+          .icon-button.with-click-handler:hover {
             background-color: Highlight;
             color: HighlightText;
           }
         }
       </style>
       <button class="${buttonClasses}" @click=${this.onClickHandler}>
+      ${this.leadingText ? LitHtml.html`<span class="icon-button-title">${this.leadingText}</span>` : LitHtml.nothing}
       ${this.groups.filter(counter => counter.text !== undefined).map(counter =>
       LitHtml.html`
       <devtools-icon class="status-icon"

@@ -22,12 +22,15 @@ $ npm install eslint-plugin-rulesdir --save-dev
 
 ## Usage
 
-To use this plugin, you must load it manually first and set its `RULES_DIR` property to a path. The path is resolved from the current working directory, and indicates where you would like the plugin to load your rules from. This is easiest if you use a JavaScript config file (`.eslintrc.js`), and use a local installation of ESLint.
+To use this plugin, you must load it manually first and set its `RULES_DIR` property to a path, or an array of paths. The paths are resolved from the current working directory, and indicates where you would like the plugin to load your rules from. This is easiest if you use a JavaScript config file (`.eslintrc.js`), and use a local installation of ESLint.
 
 ```js
 // .eslintrc.js
 const rulesDirPlugin = require('eslint-plugin-rulesdir');
 rulesDirPlugin.RULES_DIR = 'tools/eslint-rules'; // (an example folder where your rules might be stored)
+
+// You can also provide an array if you have multiple folders with rules in:
+rulesDirPlugin.RULES_DIR = ['tools/eslint-rules', 'tools/other-eslint-rules'];
 ```
 
 Then you should add `rulesdir` to the plugins section of your `.eslintrc.js` file.

@@ -56,7 +56,7 @@ DEPS = {
     "eslint-plugin-import": "2.22.1",
     "eslint-plugin-lit-a11y": "1.0.1",
     "eslint-plugin-mocha": "8.1.0",
-    "eslint-plugin-rulesdir": "0.1.0",
+    "eslint-plugin-rulesdir": "0.2.0",
     "karma": "6.1.0",
     "karma-chai": "0.1.0",
     "karma-chrome-launcher": "3.1.0",

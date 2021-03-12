@@ -20,15 +20,27 @@ const cache = {};
 module.exports = {
   get rules() {
     const RULES_DIR = module.exports.RULES_DIR;
-    if (typeof module.exports.RULES_DIR !== 'string') {
-      throw new Error('To use eslint-plugin-rulesdir, you must load it beforehand and set the `RULES_DIR` property on the module to a string.');
+    if (typeof module.exports.RULES_DIR !== 'string' && !Array.isArray(RULES_DIR)) {
+      throw new Error('To use eslint-plugin-rulesdir, you must load it beforehand and set the `RULES_DIR` property on the module to a string or an array of strings.');
     }
-    if (!cache[RULES_DIR]) {
-      cache[RULES_DIR] = fs.readdirSync(RULES_DIR)
-        .filter(filename => filename.endsWith('.js'))
-        .map(filename => path.resolve(RULES_DIR, filename))
-        .reduce((rules, absolutePath) => Object.assign(rules, { [path.basename(absolutePath, '.js')]: require(absolutePath) }), {});
+    const cacheKey = JSON.stringify(RULES_DIR);
+    if (!cache[cacheKey]) {
+      const rules = Array.isArray(RULES_DIR) ? RULES_DIR : [RULES_DIR];
+      const rulesObject = {};
+      rules.forEach((rulesDir) => {
+        fs.readdirSync(rulesDir)
+          .filter(filename => filename.endsWith('.js'))
+          .map(filename => path.resolve(rulesDir, filename))
+          .forEach((absolutePath) => {
+            const ruleName = path.basename(absolutePath, '.js');
+            if (rulesObject[ruleName]) {
+              throw new Error(`eslint-plugin-rulesdir found two rules with the same name: ${ruleName}`);
+            }
+            rulesObject[ruleName] = require(absolutePath);
+          });
+      });
+      cache[cacheKey] = rulesObject;
     }
-    return cache[RULES_DIR];
+    return cache[cacheKey];
   },
 };

@@ -31,9 +31,9 @@ const mapObject = (object, mapper, options, isSeen = new WeakMap()) => {
 	}
 
 	for (const [key, value] of Object.entries(object)) {
-		let [newKey, newValue] = mapper(key, value, object);
+		let [newKey, newValue, {shouldRecurse = true} = {}] = mapper(key, value, object);
 
-		if (options.deep && isObjectCustom(newValue)) {
+		if (options.deep && shouldRecurse && isObjectCustom(newValue)) {
 			newValue = Array.isArray(newValue) ?
 				mapArray(newValue) :
 				mapObject(newValue, mapper, options, isSeen);

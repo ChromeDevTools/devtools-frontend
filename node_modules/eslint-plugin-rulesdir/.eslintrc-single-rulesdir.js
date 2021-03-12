@@ -13,7 +13,7 @@ if (!fs.existsSync(SYMLINK_LOCATION)) {
   fs.symlinkSync(__dirname, SYMLINK_LOCATION);
 }
 
-require('.').RULES_DIR = path.resolve('tests');
+require('.').RULES_DIR = path.resolve('fake-rule-dir-one');
 
 module.exports = {
   extends: 'airbnb-base',

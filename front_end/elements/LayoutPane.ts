@@ -55,12 +55,10 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('elements/LayoutPane.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 export {LayoutElement};
 
 const {render, html} = LitHtml;
 const getStyleSheets = ComponentHelpers.GetStylesheet.getStyleSheets;
-const showElementButtonTitle = i18nLazyString(UIStrings.showElementInTheElementsPanel);
 
 export class SettingChangedEvent extends Event {
   data: {setting: string, value: string|boolean};
@@ -278,7 +276,7 @@ export class LayoutPane extends HTMLElement {
       <label @keyup=${onColorLabelKeyUp} @keydown=${onColorLabelKeyDown} tabindex="0" class="color-picker-label" style="background: ${element.color};">
         <input @change=${onColorChange} @input=${onColorChange} class="color-picker" type="color" value=${element.color} />
       </label>
-      <button tabindex="0" @click=${onElementClick} title=${showElementButtonTitle} class="show-element"></button>
+      <button tabindex="0" @click=${onElementClick} title=${i18nString(UIStrings.showElementInTheElementsPanel)} class="show-element"></button>
     </div>`;
     // clang-format on
   }

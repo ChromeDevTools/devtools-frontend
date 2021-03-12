@@ -102,6 +102,7 @@ devtools_image_files = [
   "toolbarResizerVertical.png",
   "touchCursor_2x.png",
   "touchCursor.png",
+  "trash_bin_icon.svg",
   "treeoutlineTriangles.svg",
   "warning_icon.svg",
   "whatsnew.avif",

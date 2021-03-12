@@ -6,17 +6,18 @@ import * as Coordinator from '../../../../front_end/render_coordinator/render_co
 import * as Resources from '../../../../front_end/resources/resources.js';
 import * as Components from '../../../../front_end/ui/components/components.js';
 import {assertElement, assertShadowRoot, getElementWithinComponent, renderElementIntoDOM} from '../helpers/DOMHelpers.js';
-import {getValuesOfAllBodyRows} from '../ui/components/DataGridHelpers.js';
+import {getCellByIndexes, getValuesOfAllBodyRows} from '../ui/components/DataGridHelpers.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 const {assert} = chai;
 
-async function renderTrustTokensView(tokens: Protocol.Storage.TrustTokens[]):
-    Promise<Resources.TrustTokensView.TrustTokensView> {
+async function renderTrustTokensView(
+    tokens: Protocol.Storage.TrustTokens[],
+    deleteClickHandler: (issuer: string) => void = () => {}): Promise<Resources.TrustTokensView.TrustTokensView> {
   const component = new Resources.TrustTokensView.TrustTokensView();
   renderElementIntoDOM(component);
-  component.data = {tokens};
+  component.data = {tokens, deleteClickHandler};
 
   // The data-grid's renderer is scheduled, so we need to wait until the coordinator
   // is done before we can test against it.
@@ -43,8 +44,8 @@ describe('TrustTokensView', () => {
     const dataGridShadowRoot = getInternalDataGridShadowRoot(component);
     const rowValues = getValuesOfAllBodyRows(dataGridShadowRoot);
     assert.deepEqual(rowValues, [
-      ['bar.org', '7'],
-      ['foo.com', '42'],
+      ['bar.org', '7', ''],
+      ['foo.com', '42', ''],
     ]);
   });
 
@@ -56,7 +57,7 @@ describe('TrustTokensView', () => {
 
     const dataGridShadowRoot = getInternalDataGridShadowRoot(component);
     const rowValues = getValuesOfAllBodyRows(dataGridShadowRoot);
-    assert.deepEqual(rowValues, [['foo.com', '42']]);
+    assert.deepEqual(rowValues, [['foo.com', '42', '']]);
   });
 
   it('removes trailing slashes from issuer origins', async () => {
@@ -68,8 +69,8 @@ describe('TrustTokensView', () => {
     const dataGridShadowRoot = getInternalDataGridShadowRoot(component);
     const rowValues = getValuesOfAllBodyRows(dataGridShadowRoot);
     assert.deepEqual(rowValues, [
-      ['example.com', '20'],
-      ['sub.domain.org', '14'],
+      ['example.com', '20', ''],
+      ['sub.domain.org', '14', ''],
     ]);
   });
 
@@ -82,5 +83,31 @@ describe('TrustTokensView', () => {
 
     const noTrustTokensElement = component.shadowRoot.querySelector('div.no-tt-message');
     assertElement(noTrustTokensElement, HTMLDivElement);
+  });
+
+  it('calls the delete handler with the right issuer when the delete button is clicked in a row', async () => {
+    // Create a Promise that resolves with the issuer for which the delete button was clicked.
+    let resolveDeleteButtonPromise: (issuer: string) => void;
+    const deleteButtonClicked: Promise<string> = new Promise(resolve => {
+      resolveDeleteButtonPromise = resolve;
+    });
+
+    const component = await renderTrustTokensView(
+        [
+          {issuerOrigin: 'bar.org', count: 42},
+          {issuerOrigin: 'foo.com', count: 7},
+        ],
+        (issuer: string) => {
+          resolveDeleteButtonPromise(issuer);
+        });
+
+    const dataGridShadowRoot = getInternalDataGridShadowRoot(component);
+    const deleteCell = getCellByIndexes(dataGridShadowRoot, {column: 2, row: 1});
+    const button = deleteCell.querySelector('button');
+    assertElement(button, HTMLButtonElement);
+    button.click();
+
+    const actualIssuer = await deleteButtonClicked;
+    assert.strictEqual(actualIssuer, 'bar.org');
   });
 });

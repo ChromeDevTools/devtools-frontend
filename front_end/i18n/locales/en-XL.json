@@ -7469,6 +7469,9 @@
   "resources/TrustTokensView.ts | allStoredTrustTokensAvailableIn": {
     "message": "Âĺl̂ śt̂ór̂éd̂ T́r̂úŝt́ T̂ók̂én̂ś âv́âíl̂áb̂ĺê ín̂ t́ĥíŝ b́r̂óŵśêŕ îńŝt́âńĉé."
   },
+  "resources/TrustTokensView.ts | deleteTrustTokens": {
+    "message": "D̂él̂ét̂é âĺl̂ śt̂ór̂éd̂ T́r̂úŝt́ T̂ók̂én̂ś îśŝúêd́ b̂ý {PH1}."
+  },
   "resources/TrustTokensView.ts | issuer": {
     "message": "Îśŝúêŕ"
   },

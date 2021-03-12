@@ -33,6 +33,13 @@ const UIStrings = {
    * @description Text shown instead of a table when the table would be empty.
    */
   noTrustTokensStored: 'No Trust Tokens are currently stored.',
+  /**
+   * @description Each row in the Trust Token table has a delete button. This is the text shown
+   * when hovering over this button. The placeholder is a normal URL, indicating the site which
+   * provided the Trust Tokens that will be deleted when the button is clicked.
+   * @example {https://google.com} PH1
+   */
+  deleteTrustTokens: 'Delete all stored Trust Tokens issued by {PH1}.',
 };
 const str_ = i18n.i18n.registerUIStrings('resources/TrustTokensView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -78,7 +85,12 @@ class TrustTokensViewWidgetWrapper extends UI.ThrottledWidget.ThrottledWidget {
       return;
     }
     const {tokens} = await mainTarget.storageAgent().invoke_getTrustTokens();
-    this.trustTokensView.data = {tokens};
+    this.trustTokensView.data = {
+      tokens,
+      deleteClickHandler: (issuer: string): void => {
+        mainTarget.storageAgent().invoke_clearTrustTokens({issuerOrigin: issuer});
+      },
+    };
 
     this.update();
   }
@@ -86,11 +98,13 @@ class TrustTokensViewWidgetWrapper extends UI.ThrottledWidget.ThrottledWidget {
 
 export interface TrustTokensViewData {
   tokens: Protocol.Storage.TrustTokens[];
+  deleteClickHandler: (issuerOrigin: string) => void;
 }
 
 export class TrustTokensView extends HTMLElement {
   private readonly shadow = this.attachShadow({mode: 'open'});
   private tokens: Protocol.Storage.TrustTokens[] = [];
+  private deleteClickHandler: (issuerOrigin: string) => void = () => {};
 
   connectedCallback(): void {
     this.render();
@@ -98,6 +112,7 @@ export class TrustTokensView extends HTMLElement {
 
   set data(data: TrustTokensViewData) {
     this.tokens = data.tokens;
+    this.deleteClickHandler = data.deleteClickHandler;
     this.render();
   }
 
@@ -150,7 +165,7 @@ export class TrustTokensView extends HTMLElement {
         {
           id: 'issuer',
           title: i18nString(UIStrings.issuer),
-          widthWeighting: 2,
+          widthWeighting: 10,
           hideable: false,
           visible: true,
           sortable: true,
@@ -158,10 +173,18 @@ export class TrustTokensView extends HTMLElement {
         {
           id: 'count',
           title: i18nString(UIStrings.storedTokenCount),
-          widthWeighting: 1,
+          widthWeighting: 5,
           hideable: false,
           visible: true,
           sortable: true,
+        },
+        {
+          id: 'delete-button',
+          title: '',
+          widthWeighting: 1,
+          hideable: false,
+          visible: true,
+          sortable: false,
         },
       ],
       rows: this.buildRowsFromTokens(),
@@ -181,10 +204,57 @@ export class TrustTokensView extends HTMLElement {
     const tokens = this.tokens.filter(token => token.count > 0);
     return tokens.map(token => ({
                         cells: [
+                          {
+                            columnId: 'delete-button',
+                            value: removeTrailingSlash(token.issuerOrigin),
+                            renderer: this.deleteButtonRenderer.bind(this),
+                          },
                           {columnId: 'issuer', value: removeTrailingSlash(token.issuerOrigin)},
                           {columnId: 'count', value: token.count},
                         ],
                       }));
+  }
+
+  private deleteButtonRenderer(issuer: Components.DataGridUtils.CellValue): LitHtml.TemplateResult {
+    // clang-format off
+    return LitHtml.html`
+      <style>
+        .delete-button {
+          width: 16px;
+          height: 16px;
+          background: transparent;
+          overflow: hidden;
+          border: none;
+          padding: 0;
+          outline: none;
+          cursor: pointer;
+        }
+
+        .delete-button:hover devtools-icon {
+          --icon-color: var(--color-text-primary);
+        }
+
+        .delete-button:focus devtools-icon {
+          --icon-color: var(--color-text-secondary);
+        }
+
+        .button-container {
+          display: block;
+          text-align: center;
+        }
+      </style>
+      <!-- Wrap the button in a container, otherwise we can't center it inside the column. -->
+      <span class="button-container">
+        <button class="delete-button"
+          title=${i18nString(UIStrings.deleteTrustTokens, {PH1: issuer as string})}
+          @click=${(): void => this.deleteClickHandler(issuer as string)}>
+          <devtools-icon .data=${
+        {iconName: 'trash_bin_icon', color: 'var(--color-text-secondary)', width: '9px', height: '14px'} as
+        Components.Icon.IconWithName}>
+          </devtools-icon>
+        </button>
+      </span>`;
+    // clang-format on
   }
 }
 

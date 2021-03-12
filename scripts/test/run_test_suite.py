@@ -97,8 +97,12 @@ def run_tests(chrome_binary,
     if not cwd:
         cwd = devtools_paths.devtools_root_path()
 
-    exec_command = [
-        devtools_paths.node_path(),
+    exec_command = [devtools_paths.node_path()]
+
+    if 'DEBUG' in env:
+        exec_command.append('--inspect')
+
+    exec_command = exec_command + [
         devtools_paths.mocha_path(),
         '--config',
         os.path.join(test_suite_path, '.mocharc.js'),

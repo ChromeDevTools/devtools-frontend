@@ -52,6 +52,17 @@ it.repeat(20, 'find element', async () => {...});
 
 `it.repeat` behaves like `it.only` in that it will cause just that single test to be run.
 
+### Debug tests with DevTools
+Running `npm run debug-e2etest` also allows debugging a test with DevTools. Please note that there are two different
+targets that can be inspected, and the way they are inspected differs slightly:
+
+* You can debug the "DevTools under test" with DevTools-on-DevTools. Use the standard DevTools key combination to
+open another DevTools instance while you look at the "DevTools under test". You can set breakpoints and inspect the status of
+the "DevTools under test" this way.
+* You can debug the puppeteer side by inspecting the Node.js process that runs the e2e suite. Either open `chrome://inspect` or
+click the Node.js icon in any open DevTools window to connect to the puppeteer process. You can step through the puppeteer test
+code this way.
+
 ## Debugging flaky tests
 To see if certain tests are flaky you can use E2E stressor bot. Open a CL with your test changes and run the following command specifying your test file:
 

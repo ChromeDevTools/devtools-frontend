@@ -4,6 +4,7 @@
 
 import '../test_runner/test_runner.js';
 import '../layers/layers-legacy.js';
+import '../layer_viewer/layer_viewer-legacy.js';
 import '../elements/elements-legacy.js';
 import '../components/components-legacy.js';
 

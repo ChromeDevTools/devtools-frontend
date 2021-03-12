@@ -54,12 +54,6 @@ devtools_entrypoint("bundle") {
   deps = [ ":issues" ]
 }
 
-devtools_entrypoint("legacy") {
-  entrypoint = "issues-legacy.ts"
-
-  deps = [ ":bundle" ]
-}
-
 devtools_entrypoint("meta") {
   entrypoint = "issues-meta.ts"
 

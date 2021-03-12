@@ -35,12 +35,6 @@ devtools_entrypoint("bundle") {
   deps = [ ":inspector_main" ]
 }
 
-devtools_entrypoint("legacy") {
-  entrypoint = "inspector_main-legacy.js"
-
-  deps = [ ":bundle" ]
-}
-
 devtools_entrypoint("meta") {
   entrypoint = "inspector_main-meta.ts"
 

@@ -2,9 +2,7 @@
   "dependencies": [
     "ui"
   ],
-  "modules": [
-    "input-legacy.js"
-  ],
+  "modules": [],
   "resources": [
     "inputTimeline.css"
   ]

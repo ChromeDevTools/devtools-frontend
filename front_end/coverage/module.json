@@ -4,9 +4,7 @@
     "source_frame",
     "ui"
   ],
-  "modules": [
-    "coverage-legacy.js"
-  ],
+  "modules": [],
   "resources": [
     "coverageListView.css",
     "coverageView.css"

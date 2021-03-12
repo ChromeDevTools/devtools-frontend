@@ -5,9 +5,7 @@
     "network",
     "ui"
   ],
-  "modules": [
-    "issues-legacy.js"
-  ],
+  "modules": [],
   "resources": [
     "descriptions/CoepCoopSandboxedIframeCannotNavigateToCoopPage.md",
     "descriptions/CoepCorpNotSameSite.md",

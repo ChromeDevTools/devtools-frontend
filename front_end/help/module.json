@@ -2,9 +2,7 @@
   "dependencies": [
     "ui"
   ],
-  "modules": [
-    "help-legacy.js"
-  ],
+  "modules": [],
   "resources": [
     "releaseNote.css"
   ]

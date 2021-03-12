@@ -2,15 +2,7 @@
   "dependencies": [
     "ui"
   ],
-  "modules": [
-    "components.js",
-    "components-legacy.js",
-    "JSPresentationUtils.js",
-    "ImagePreview.js",
-    "Linkifier.js",
-    "Reload.js",
-    "TargetDetachedDialog.js"
-  ],
+  "modules": [],
   "resources": [
     "imagePreview.css",
     "jsUtils.css"

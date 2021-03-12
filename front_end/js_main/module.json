@@ -2,7 +2,5 @@
   "dependencies": [
     "components"
   ],
-  "modules": [
-    "js_main-legacy.js"
-  ]
+  "modules": []
 }

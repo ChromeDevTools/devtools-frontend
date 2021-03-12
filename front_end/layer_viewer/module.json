@@ -5,9 +5,7 @@
     "ui",
     "perf_ui"
   ],
-  "modules": [
-    "layer_viewer-legacy.js"
-  ],
+  "modules": [],
   "resources": [
     "layers3DView.css",
     "paintProfiler.css",

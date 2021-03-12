@@ -3,9 +3,7 @@
     "components",
     "mobile_throttling"
   ],
-  "modules": [
-    "inspector_main-legacy.js"
-  ],
+  "modules": [],
   "resources": [
     "nodeIcon.css",
     "renderingOptions.css"

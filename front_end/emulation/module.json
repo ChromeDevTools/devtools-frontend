@@ -4,9 +4,7 @@
     "ui",
     "mobile_throttling"
   ],
-  "modules": [
-    "emulation-legacy.js"
-  ],
+  "modules": [],
   "resources": [
     "deviceModeToolbar.css",
     "deviceModeView.css",

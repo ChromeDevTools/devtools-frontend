@@ -7568,9 +7568,6 @@
   "sdk/DebuggerModel.js | block": {
     "message": "Block"
   },
-  "sdk/DebuggerModel.js | catch": {
-    "message": "Catch"
-  },
   "sdk/DebuggerModel.js | closure": {
     "message": "Closure"
   },

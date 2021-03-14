@@ -37,7 +37,7 @@ import {Capability, SDKModel, Target} from './SDKModel.js';  // eslint-disable-l
 
 const UIStrings = {
   /**
-  *@description Name of a profile
+  *@description Name of a profile. Placeholder is either a user-supplied name or a number automatically assigned to the profile.
   *@example {2} PH1
   */
   profileD: 'Profile {PH1}',

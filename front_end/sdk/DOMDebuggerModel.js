@@ -151,29 +151,29 @@ const UIStrings = {
   /**
   *@description Text in the Event Listener Breakpoints Panel of the JavaScript Debugger in the Sources Panel
   */
-  setInnerhtml: 'Set innerHTML',
+  setInnerhtml: 'Set `innerHTML`',
   /**
-  *@description Text in the Event Listener Breakpoints Panel of the JavaScript Debugger in the Sources Panel
+  *@description Name of a breakpoint type in the Sources Panel.
   */
   createCanvasContext: 'Create canvas context',
   /**
-  *@description Text in the Event Listener Breakpoints Panel of the JavaScript Debugger in the Sources Panel
+  *@description Name of a breakpoint type in the Sources Panel.
   */
-  createAudiocontext: 'Create AudioContext',
+  createAudiocontext: 'Create `AudioContext`',
   /**
-  *@description Text in the Event Listener Breakpoints Panel of the JavaScript Debugger in the Sources Panel
+  *@description Name of a breakpoint type in the Sources Panel. Close is a verb.
   */
-  closeAudiocontext: 'Close AudioContext',
+  closeAudiocontext: 'Close `AudioContext`',
   /**
-  *@description Text in the Event Listener Breakpoints Panel of the JavaScript Debugger in the Sources Panel
+  *@description Name of a breakpoint type in the Sources Panel. Resume is a verb.
   */
-  resumeAudiocontext: 'Resume AudioContext',
+  resumeAudiocontext: 'Resume `AudioContext`',
   /**
-  *@description Text in the Event Listener Breakpoints Panel of the JavaScript Debugger in the Sources Panel
+  *@description Name of a breakpoint type in the Sources Panel.
   */
-  suspendAudiocontext: 'Suspend AudioContext',
+  suspendAudiocontext: 'Suspend `AudioContext`',
   /**
-  *@description Text in DOMDebugger Model
+  *@description Error message text
   *@example {Snag Error} PH1
   */
   webglErrorFiredS: 'WebGL Error Fired ({PH1})',

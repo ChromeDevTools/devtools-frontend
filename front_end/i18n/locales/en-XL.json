@@ -477,10 +477,10 @@
     "message": "[{PH1}] L̂óâd́îńĝ d́êb́ûǵ ŝým̂b́ôĺŝ f́ôŕ {PH2} (v̂íâ {PH3})..."
   },
   "bindings/ResourceScriptMapping.ts | liveEditCompileFailed": {
-    "message": "L̂ív̂éÊd́ît́ ĉóm̂ṕîĺê f́âíl̂éd̂: {PH1}"
+    "message": "LiveEdit ĉóm̂ṕîĺê f́âíl̂éd̂: {PH1}"
   },
   "bindings/ResourceScriptMapping.ts | liveEditFailed": {
-    "message": "L̂ív̂éÊd́ît́ f̂áîĺêd́: {PH1}"
+    "message": "LiveEdit f̂áîĺêd́: {PH1}"
   },
   "browser_debugger/browser_debugger-meta.ts | contentScripts": {
     "message": "Ĉón̂t́êńt̂ śĉŕîṕt̂ś"
@@ -7568,9 +7568,6 @@
   "sdk/DebuggerModel.js | block": {
     "message": "B̂ĺôćk̂"
   },
-  "sdk/DebuggerModel.js | catch": {
-    "message": "Ĉát̂ćĥ"
-  },
   "sdk/DebuggerModel.js | closure": {
     "message": "Ĉĺôśûŕê"
   },
@@ -7590,7 +7587,7 @@
     "message": "Ŝćr̂íp̂t́"
   },
   "sdk/DebuggerModel.js | withBlock": {
-    "message": "Ŵít̂h́ B̂ĺôćk̂"
+    "message": "With B̂ĺôćk̂"
   },
   "sdk/DOMDebuggerModel.js | animation": {
     "message": "Âńîḿât́îón̂"
@@ -7608,13 +7605,13 @@
     "message": "Ĉĺîṕb̂óâŕd̂"
   },
   "sdk/DOMDebuggerModel.js | closeAudiocontext": {
-    "message": "Ĉĺôśê Áûd́îóĈón̂t́êx́t̂"
+    "message": "Ĉĺôśê AudioContext"
   },
   "sdk/DOMDebuggerModel.js | control": {
     "message": "Ĉón̂t́r̂ól̂"
   },
   "sdk/DOMDebuggerModel.js | createAudiocontext": {
-    "message": "Ĉŕêát̂é Âúd̂íôĆôńt̂éx̂t́"
+    "message": "Ĉŕêát̂é AudioContext"
   },
   "sdk/DOMDebuggerModel.js | createCanvasContext": {
     "message": "Ĉŕêát̂é ĉán̂v́âś ĉón̂t́êx́t̂"
@@ -7662,7 +7659,7 @@
     "message": "R̂éq̂úêśt̂ Án̂ím̂át̂íôń F̂ŕâḿê"
   },
   "sdk/DOMDebuggerModel.js | resumeAudiocontext": {
-    "message": "R̂éŝúm̂é Âúd̂íôĆôńt̂éx̂t́"
+    "message": "R̂éŝúm̂é AudioContext"
   },
   "sdk/DOMDebuggerModel.js | script": {
     "message": "Ŝćr̂íp̂t́"
@@ -7677,7 +7674,7 @@
     "message": "Ŝćr̂íp̂t́ F̂ír̂śt̂ Śt̂át̂ém̂én̂t́"
   },
   "sdk/DOMDebuggerModel.js | setInnerhtml": {
-    "message": "Ŝét̂ ín̂ńêŕĤT́M̂Ĺ"
+    "message": "Ŝét̂ innerHTML"
   },
   "sdk/DOMDebuggerModel.js | setintervalFired": {
     "message": "ŝét̂Ín̂t́êŕv̂ál̂ f́îŕêd́"
@@ -7689,7 +7686,7 @@
     "message": "Ŝín̂ḱ V̂íôĺât́îón̂ś"
   },
   "sdk/DOMDebuggerModel.js | suspendAudiocontext": {
-    "message": "Ŝúŝṕêńd̂ Áûd́îóĈón̂t́êx́t̂"
+    "message": "Ŝúŝṕêńd̂ AudioContext"
   },
   "sdk/DOMDebuggerModel.js | timer": {
     "message": "T̂ím̂ér̂"

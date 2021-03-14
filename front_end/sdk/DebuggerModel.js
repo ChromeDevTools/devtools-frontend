@@ -44,17 +44,13 @@ import {SourceMapManager} from './SourceMapManager.js';
 
 const UIStrings = {
   /**
-  *@description Text in Debugger Model
+  *@description Title of a section in the debugger showing local JavaScript variables.
   */
   local: 'Local',
   /**
   *@description Text that refers to closure as a programming term
   */
   closure: 'Closure',
-  /**
-  *@description Text in Debugger Model
-  */
-  catch: 'Catch',
   /**
   *@description Noun that represents a section or block of code in the Debugger Model. Shown in the Sources tab, while paused on a breakpoint.
   */
@@ -64,15 +60,16 @@ const UIStrings = {
   */
   script: 'Script',
   /**
-  *@description Text in Debugger Model
+  *@description Title of a section in the debugger showing JavaScript variables from the a 'with'
+  *block. Block here means section of code, 'with' refers to a JavaScript programming concept.
   */
-  withBlock: 'With Block',
+  withBlock: '`With` Block',
   /**
-  *@description Text describing global shortcuts and settings that are available throughout the DevTools
+  *@description Title of a section in the debugger showing JavaScript variables from the global scope.
   */
   global: 'Global',
   /**
-  *@description Text for a module, the programming concept
+  *@description Text for a JavaScript module, the programming concept
   */
   module: 'Module',
   /**
@@ -1853,7 +1850,7 @@ export class Scope {
       case Protocol.Debugger.ScopeType.Closure:
         return i18nString(UIStrings.closure);
       case Protocol.Debugger.ScopeType.Catch:
-        return i18nString(UIStrings.catch);
+        return i18n.i18n.lockedString('Catch');
       case Protocol.Debugger.ScopeType.Block:
         return i18nString(UIStrings.block);
       case Protocol.Debugger.ScopeType.Script:

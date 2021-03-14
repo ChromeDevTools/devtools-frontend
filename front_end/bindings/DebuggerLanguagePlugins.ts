@@ -20,7 +20,8 @@ const UIStrings = {
   */
   errorInDebuggerLanguagePlugin: 'Error in debugger language plugin: {PH1}',
   /**
-  *@description Status message that is shown in the Console when debugging information is being loaded
+  *@description Status message that is shown in the Console when debugging information is being
+  *loaded. The 2nd and 3rd placeholders are URLs.
   *@example {C/C++ DevTools Support (DWARF)} PH1
   *@example {http://web.dev/file.wasm} PH2
   *@example {http://web.dev/file.wasm.debug.wasm} PH3

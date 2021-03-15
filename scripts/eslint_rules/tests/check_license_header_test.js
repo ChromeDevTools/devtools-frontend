@@ -97,6 +97,18 @@ import * as Common from '../common/common.js';
 `,
       filename: 'front_end/sdk/DOMModel.js',
     },
+    {
+      filename: 'scripts/test_runner.js',
+      code: `#!/usr/bin/env node
+
+// Copyright 2020 The Chromium Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+
+function main() {}
+main()
+`
+    }
   ],
 
   invalid: [
@@ -235,6 +247,48 @@ interface String {
   trimEndWithMaxLength(maxLength: number): string;
 }
 `,
+    },
+    {
+      filename: 'scripts/test_runner.js',
+      code: `#!/usr/bin/env node
+
+function main() {}
+main()
+`,
+      errors: [{message: 'Missing license header'}],
+      output: `#!/usr/bin/env node
+
+// Copyright 2021 The Chromium Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+
+function main() {}
+main()
+`
+    },
+    {
+      filename: 'scripts/test_runner.js',
+      code: `#!/usr/bin/env node
+
+// Copyright 2021 The WRONG Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+function main() {}
+main()
+`,
+      errors: [{message: 'Incorrect line license header'}],
+      output: `#!/usr/bin/env node
+
+// Copyright 2021 The Chromium Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+
+// Copyright 2021 The WRONG Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+function main() {}
+main()
+`
     }
   ]
 });

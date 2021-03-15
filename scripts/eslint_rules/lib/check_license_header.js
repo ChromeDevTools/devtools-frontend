@@ -155,7 +155,7 @@ module.exports = {
 
         const comments = context.getSourceCode().getCommentsBefore(node.body[0]);
 
-        if (!comments || comments.length === 0) {
+        if (!comments || comments.length === 0 || comments.length === 1 && comments[0].type === 'Shebang') {
           context.report({
             node,
             message: 'Missing license header',
@@ -163,23 +163,35 @@ module.exports = {
               return fixer.insertTextBefore(node, LICENSE_HEADER_ADDITION);
             },
           });
-        } else if (comments[0].type === 'Line') {
-          if (isMissingLineCommentLicense(comments)) {
+          return;
+        }
+
+        // If a file has a Shebang comment, it has to be the very first line, so we need to check the license exists _after_ that comment;
+        let commentsToCheck = comments;
+        let firstCommentToCheck = comments[0];
+
+        if (comments[0].type === 'Shebang') {
+          commentsToCheck = comments.slice(1);
+          firstCommentToCheck = commentsToCheck[0];
+        }
+
+        if (firstCommentToCheck.type === 'Line') {
+          if (isMissingLineCommentLicense(commentsToCheck)) {
             context.report({
               node,
               message: 'Incorrect line license header',
               fix(fixer) {
-                return fixer.insertTextBefore(comments[0], LICENSE_HEADER_ADDITION);
+                return fixer.insertTextBefore(firstCommentToCheck, LICENSE_HEADER_ADDITION);
               }
             });
           }
         } else {
-          if (isMissingBlockLineCommentLicense(comments[0].value)) {
+          if (isMissingBlockLineCommentLicense(firstCommentToCheck.value)) {
             context.report({
               node,
               message: 'Incorrect block license header',
               fix(fixer) {
-                return fixer.insertTextBefore(comments[0], LICENSE_HEADER_ADDITION);
+                return fixer.insertTextBefore(firstCommentToCheck, LICENSE_HEADER_ADDITION);
               }
             });
           }

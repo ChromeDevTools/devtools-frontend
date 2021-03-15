@@ -8762,6 +8762,12 @@
   "settings/SettingsScreen.ts | experiments": {
     "message": "Êx́p̂ér̂ím̂én̂t́ŝ"
   },
+  "settings/SettingsScreen.ts | filterExperimentsLabel": {
+    "message": "F̂íl̂t́êŕ"
+  },
+  "settings/SettingsScreen.ts | noResults": {
+    "message": "N̂ó êx́p̂ér̂ím̂én̂t́ŝ ḿât́ĉh́ t̂h́ê f́îĺt̂ér̂"
+  },
   "settings/SettingsScreen.ts | oneOrMoreSettingsHaveChanged": {
     "message": "Ôńê ór̂ ḿôŕê śêt́t̂ín̂ǵŝ h́âv́ê ćĥán̂ǵêd́ ŵh́îćĥ ŕêq́ûír̂éŝ á r̂él̂óâd́ t̂ó t̂ák̂é êf́f̂éĉt́."
   },

@@ -8762,6 +8762,12 @@
   "settings/SettingsScreen.ts | experiments": {
     "message": "Experiments"
   },
+  "settings/SettingsScreen.ts | filterExperimentsLabel": {
+    "message": "Filter"
+  },
+  "settings/SettingsScreen.ts | noResults": {
+    "message": "No experiments match the filter"
+  },
   "settings/SettingsScreen.ts | oneOrMoreSettingsHaveChanged": {
     "message": "One or more settings have changed which requires a reload to take effect."
   },

@@ -294,7 +294,19 @@ export class TimelineFrameModel {
     if (event.name === RecordType.BeginFrame) {
       this.handleBeginFrame(timestamp);
     } else if (event.name === RecordType.DrawFrame) {
-      this.handleDrawFrame(timestamp);
+      if (event.phase === 'I') {
+        // Legacy behavior: If DrawFrame is an instant event, then it is not
+        // supposed to contain frame presentation info; use the event time of
+        // DrawFrame in this case.
+        // TODO(mjzhang): Remove this legacy support when the migration to
+        // using presentation time as frame boundary is stablized.
+        this.handleDrawFrame(timestamp);
+      } else if (event.args['presentationTimestamp']) {
+        // Current behavior: Use the presentation timestamp. If the non-instant
+        // DrawFrame event contains no such timestamp, then the presentation did
+        // not happen and therefore the event will not be processed.
+        this.handleDrawFrame(event.args['presentationTimestamp'] / 1000);
+      }
     } else if (event.name === RecordType.ActivateLayerTree) {
       this.handleActivateLayerTree();
     } else if (event.name === RecordType.RequestMainThreadFrame) {

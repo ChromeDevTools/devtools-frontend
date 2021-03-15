@@ -8,7 +8,8 @@ import {click, getBrowserAndPages, getTestServerPort, goToResource, waitFor, wai
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {clearStorageItems, clearStorageItemsFilter, doubleClickSourceTreeItem, filterStorageItems, getStorageItemsData, navigateToApplicationTab, selectCookieByName} from '../helpers/application-helpers.js';
 
-const COOKIES_SELECTOR = '[aria-label="Cookies"]';
+// The parent suffix makes sure we wait for the Cookies item to have children before trying to click it.
+const COOKIES_SELECTOR = '[aria-label="Cookies"].parent';
 let DOMAIN_SELECTOR: string;
 
 describe('The Application Tab', async () => {
@@ -49,27 +50,24 @@ describe('The Application Tab', async () => {
     ]);
   });
 
-  // Flaky on windows
-  it.skipOnPlatforms(
-      ['win32'], '[crbug.com/1186150][crbug.com/462370] shows a preview of the cookie value', async () => {
-        const {target} = getBrowserAndPages();
-        // This sets a new cookie foo=bar
-        await navigateToApplicationTab(target, 'cookies');
+  it('[crbug.com/462370] shows a preview of the cookie value', async () => {
+    const {target} = getBrowserAndPages();
+    // This sets a new cookie foo=bar
+    await navigateToApplicationTab(target, 'cookies');
 
-        await doubleClickSourceTreeItem(COOKIES_SELECTOR);
-        await doubleClickSourceTreeItem(DOMAIN_SELECTOR);
+    await doubleClickSourceTreeItem(COOKIES_SELECTOR);
+    await doubleClickSourceTreeItem(DOMAIN_SELECTOR);
 
-        await selectCookieByName('foo');
+    await selectCookieByName('foo');
 
-        await waitForFunction(async () => {
-          const previewValueNode = await waitFor('.cookie-preview-widget-cookie-value');
-          const previewValue = await previewValueNode.evaluate(e => e.textContent);
-          return previewValue === 'bar';
-        });
-      });
+    await waitForFunction(async () => {
+      const previewValueNode = await waitFor('.cookie-preview-widget-cookie-value');
+      const previewValue = await previewValueNode.evaluate(e => e.textContent);
+      return previewValue === 'bar';
+    });
+  });
 
-  // Flaky on windows
-  it.skipOnPlatforms(['win32'], '[crbug.com/1186150][crbug.com/997625] can als show the urldecoded value', async () => {
+  it('[crbug.com/997625] can als show the urldecoded value', async () => {
     const {target} = getBrowserAndPages();
     // This sets a new cookie foo=bar
     await navigateToApplicationTab(target, 'cookies');
@@ -97,72 +95,68 @@ describe('The Application Tab', async () => {
     });
   });
 
-  // Flaky on windows
-  it.skipOnPlatforms(
-      ['win32'], '[crbug.com/1186150][crbug.com/1086462] clears the preview value when clearing cookies', async () => {
-        const {target} = getBrowserAndPages();
-        // This sets a new cookie foo=bar
-        await navigateToApplicationTab(target, 'cookies');
+  it('[crbug.com/1086462] clears the preview value when clearing cookies', async () => {
+    const {target} = getBrowserAndPages();
+    // This sets a new cookie foo=bar
+    await navigateToApplicationTab(target, 'cookies');
 
-        await doubleClickSourceTreeItem(COOKIES_SELECTOR);
-        await doubleClickSourceTreeItem(DOMAIN_SELECTOR);
+    await doubleClickSourceTreeItem(COOKIES_SELECTOR);
+    await doubleClickSourceTreeItem(DOMAIN_SELECTOR);
 
-        await selectCookieByName('foo');
+    await selectCookieByName('foo');
 
-        // Select a cookie first
-        await waitForFunction(async () => {
-          const previewValueNode1 = await waitFor('.cookie-preview-widget-cookie-value');
-          const previewValue1 = await previewValueNode1.evaluate(e => e.textContent);
-          return previewValue1 === 'bar';
-        });
+    // Select a cookie first
+    await waitForFunction(async () => {
+      const previewValueNode1 = await waitFor('.cookie-preview-widget-cookie-value');
+      const previewValue1 = await previewValueNode1.evaluate(e => e.textContent);
+      return previewValue1 === 'bar';
+    });
 
-        await clearStorageItems();
+    await clearStorageItems();
 
-        // Make sure that the preview resets
-        await waitForFunction(async () => {
-          const previewValueNode2 = await waitFor('.empty-view');
-          const previewValue2 = await previewValueNode2.evaluate(e => e.textContent as string);
+    // Make sure that the preview resets
+    await waitForFunction(async () => {
+      const previewValueNode2 = await waitFor('.empty-view');
+      const previewValue2 = await previewValueNode2.evaluate(e => e.textContent as string);
 
-          return previewValue2.match(/Select a cookie to preview its value/);
-        });
-      });
+      return previewValue2.match(/Select a cookie to preview its value/);
+    });
+  });
 
-  // Flaky on windows
-  it.skipOnPlatforms(
-      ['win32'], '[crbug.com/1186150][crbug.com/978059] only clear currently visible cookies', async () => {
-        const {target} = getBrowserAndPages();
-        // This sets a new cookie foo=bar
-        await navigateToApplicationTab(target, 'cookies');
+  it('[crbug.com/978059] only clear currently visible cookies', async () => {
+    const {target} = getBrowserAndPages();
+    // This sets a new cookie foo=bar
+    await navigateToApplicationTab(target, 'cookies');
 
-        await doubleClickSourceTreeItem(COOKIES_SELECTOR);
-        await doubleClickSourceTreeItem(DOMAIN_SELECTOR);
+    await doubleClickSourceTreeItem(COOKIES_SELECTOR);
+    await doubleClickSourceTreeItem(DOMAIN_SELECTOR);
 
-        const dataGridRowValues1 = await getStorageItemsData(['name']);
-        assert.deepEqual(dataGridRowValues1, [
-          {
-            name: 'urlencoded',
-          },
-          {
-            name: 'foo2',
-          },
-          {
-            name: 'foo',
-          },
-        ]);
+    const dataGridRowValues1 = await getStorageItemsData(['name']);
+    assert.deepEqual(dataGridRowValues1, [
+      {
+        name: 'urlencoded',
+      },
+      {
+        name: 'foo2',
+      },
+      {
+        name: 'foo',
+      },
+    ]);
 
 
-        await filterStorageItems('foo2');
-        await clearStorageItems();
-        await clearStorageItemsFilter();
+    await filterStorageItems('foo2');
+    await clearStorageItems();
+    await clearStorageItemsFilter();
 
-        const dataGridRowValues2 = await getStorageItemsData(['name']);
-        assert.deepEqual(dataGridRowValues2, [
-          {
-            name: 'urlencoded',
-          },
-          {
-            name: 'foo',
-          },
-        ]);
-      });
+    const dataGridRowValues2 = await getStorageItemsData(['name']);
+    assert.deepEqual(dataGridRowValues2, [
+      {
+        name: 'urlencoded',
+      },
+      {
+        name: 'foo',
+      },
+    ]);
+  });
 });

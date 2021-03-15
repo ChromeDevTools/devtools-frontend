@@ -37,20 +37,22 @@ describe('The Console Tab', async () => {
     const appearPromise2 = waitFor('.suggest-box');
     await typeText(textAfterObject);
     await appearPromise2;
+
+    // The first auto-suggest result is evaluated and generates a preview, which
+    // we wait for so that we don't end the test/navigate with an open
+    // Runtime.evaluate CDP request, which causes an error. crbug.com/1134579.
+    await waitFor('.console-eager-inner-preview');
   }
 
-  // Flaky test
-  it.skip('[crbug.com/1134579] triggers autocompletion for `object.`', async () => {
+  it('triggers autocompletion for `object.`', async () => {
     await objectAutocompleteTest('.');
   });
 
-  // Flaky test
-  it.skip('[crbug.com/1134579] triggers autocompletion for `object?.`', async () => {
+  it('triggers autocompletion for `object?.`', async () => {
     await objectAutocompleteTest('?.');
   });
 
-  // Flaky test
-  it.skip('[crbug.com/1134579] triggers autocompletion for `object[`', async () => {
+  it('triggers autocompletion for `object[`', async () => {
     await objectAutocompleteTest('[');
   });
 });

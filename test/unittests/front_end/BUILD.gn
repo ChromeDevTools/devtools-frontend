@@ -13,6 +13,7 @@ group("front_end") {
     "common",
     "component_helpers",
     "components",
+    "console_counters",
     "coverage",
     "dom_extension",
     "elements",

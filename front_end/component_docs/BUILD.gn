@@ -18,6 +18,7 @@ group("component_docs") {
     "./flexbox_editor",
     "./icon_button",
     "./icon_component",
+    "./issue_counter",
     "./layout_pane",
     "./linear_memory_inspector",
     "./linkifier",

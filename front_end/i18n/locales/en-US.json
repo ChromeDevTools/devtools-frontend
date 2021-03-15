@@ -965,6 +965,24 @@
   "components/TargetDetachedDialog.js | websocketDisconnected": {
     "message": "WebSocket disconnected"
   },
+  "console_counters/IssueCounter.ts | breakingChangeIssue": {
+    "message": "A breaking change issue: the page may stop working in an upcoming version of Chrome"
+  },
+  "console_counters/IssueCounter.ts | breakingChanges": {
+    "message": "{issueCount, plural, =1 {# breaking change} other {# breaking changes}}"
+  },
+  "console_counters/IssueCounter.ts | improvementIssue": {
+    "message": "An improvement issue: there is an opportunity to improve the page"
+  },
+  "console_counters/IssueCounter.ts | pageErrorIssue": {
+    "message": "A page error issue: the page is not working correctly"
+  },
+  "console_counters/IssueCounter.ts | pageErrors": {
+    "message": "{issueCount, plural, =1 {# page error} other {# page errors}}"
+  },
+  "console_counters/IssueCounter.ts | possibleImprovements": {
+    "message": "{issueCount, plural, =1 {# possible improvement} other {# possible improvements}}"
+  },
   "console_counters/WarningErrorCounter.ts | openConsoleToViewS": {
     "message": "Open Console to view {PH1}"
   },

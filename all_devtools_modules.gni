@@ -105,6 +105,7 @@ all_typescript_module_sources = [
   "console/ConsoleView.js",
   "console/ConsoleViewMessage.js",
   "console/ConsoleViewport.js",
+  "console_counters/IssueCounter.js",
   "console_counters/WarningErrorCounter.js",
   "cookie_table/CookiesTable.js",
   "coverage/CoverageDecorationManager.js",

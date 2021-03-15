@@ -526,6 +526,7 @@ grd_files_debug_sources = [
   "front_end/console/ConsoleView.js",
   "front_end/console/ConsoleViewMessage.js",
   "front_end/console/ConsoleViewport.js",
+  "front_end/console_counters/IssueCounter.js",
   "front_end/console_counters/WarningErrorCounter.js",
   "front_end/cookie_table/CookiesTable.js",
   "front_end/coverage/CoverageDecorationManager.js",

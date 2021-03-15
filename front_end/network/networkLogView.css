@@ -156,11 +156,17 @@
 .network-badge {
   margin-right: 4px;
 }
-/* We are using a multitude of different selector specificity rules here, which
-   is incompatible with what stylelint requires as ordering of the rules. */
-/* stylelint-disable no-descending-specificity */
+
+.initiator-column .devtools-link {
+  color: inherit;
+}
+
 .network-error-row,
-.network-error-row .network-cell-subtitle,
+.network-error-row .network-cell-subtitle {
+  color: #e60000 !important; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
+}
+
 .network-log-grid.data-grid tr.selected.network-error-row,
 .network-log-grid.data-grid tr.selected.network-error-row .network-cell-subtitle,
 .network-log-grid.data-grid tr.selected.network-error-row .network-dim-cell,
@@ -168,13 +174,13 @@
 .network-log-grid.data-grid:focus tr.selected.network-error-row,
 .network-log-grid.data-grid:focus tr.selected.network-error-row .network-cell-subtitle,
 .network-log-grid.data-grid:focus tr.selected.network-error-row .network-dim-cell {
-  color: rgb(230 0 0) !important; /* stylelint-disable-line plugin/use_theme_colors */
+  color: #9f0000 !important; /* stylelint-disable-line plugin/use_theme_colors */
   /* See: crbug.com/1152736 for color variable migration. */
 }
 
-.initiator-column .devtools-link {
-  color: inherit;
-}
+/* We are using a multitude of different selector specificity rules here, which
+   is incompatible with what stylelint requires as ordering of the rules. */
+/* stylelint-disable no-descending-specificity */
 
 .network-log-grid.data-grid tr.selected,
 .network-log-grid.data-grid tr.selected .network-cell-subtitle,

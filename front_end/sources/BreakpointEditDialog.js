@@ -55,7 +55,7 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
     this.registerRequiredCSS('sources/breakpointEditDialog.css', {enableLegacyPatching: true});
     this._onFinish = onFinish;
     this._finished = false;
-    /** @type {?UI.TextEditor.TextEditor} */
+    /** @type {?TextEditor.CodeMirrorTextEditor.CodeMirrorTextEditor} */
     this._editor = null;
     this.element.tabIndex = -1;
 
@@ -94,7 +94,7 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
       lineWiseCopyCut: undefined,
       inputStyle: undefined,
     };
-    this._editor = /** @type {!UI.TextEditor.TextEditorFactory} */ (factory).createEditor(editorOptions);
+    this._editor = factory.createEditor(editorOptions);
     this._updatePlaceholder();
     this._editor.widget().element.classList.add('condition-editor');
     this._editor.configureAutocomplete(
@@ -102,18 +102,22 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
     if (oldCondition) {
       this._editor.setText(oldCondition);
     }
-        this._editor.widget().markAsExternallyManaged();
-        this._editor.widget().show(this.contentElement);
-        this._editor.setSelection(this._editor.fullRange());
-        this._editor.widget().focus();
-        this._editor.widget().element.addEventListener('keydown', this._onKeyDown.bind(this), true);
-        this.element.addEventListener('blur', event => {
-          if (event.relatedTarget && !/** @type {!Node} */ (event.relatedTarget).isSelfOrDescendant(this.element)) {
-            this._finishEditing(true);
-          }
-        }, true);
+    this._editor.widget().markAsExternallyManaged();
+    this._editor.widget().show(this.contentElement);
+    this._editor.setSelection(this._editor.fullRange());
+    this._editor.widget().element.addEventListener('keydown', this._onKeyDown.bind(this), true);
+    this.element.addEventListener('blur', event => {
+      if (event.relatedTarget && !/** @type {!Node} */ (event.relatedTarget).isSelfOrDescendant(this.element)) {
+        this._finishEditing(true);
+      }
+    }, true);
   }
 
+  focusEditor() {
+    if (this._editor) {
+      this._editor.widget().focus();
+    }
+  }
   /**
    * @param {string} condition
    * @return {string}

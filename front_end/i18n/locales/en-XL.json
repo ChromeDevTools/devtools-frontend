@@ -6779,9 +6779,6 @@
   "resources/AppManifestView.ts | showOnlyTheMinimumSafeAreaFor": {
     "message": "Ŝh́ôẃ ôńl̂ý t̂h́ê ḿîńîḿûḿ ŝáf̂é âŕêá f̂ór̂ ḿâśk̂áb̂ĺê íĉón̂ś"
   },
-  "resources/AppManifestView.ts | sSDimensionsShouldBeSquare": {
-    "message": "{PH1} {PH2} d̂ím̂én̂śîón̂ś ŝh́ôúl̂d́ b̂é ŝq́ûár̂é"
-  },
   "resources/AppManifestView.ts | sSDoesNotSpecifyItsSizeInThe": {
     "message": "{PH1} {PH2} d̂óêś n̂ót̂ śp̂éĉíf̂ý ît́ŝ śîźê ín̂ t́ĥé m̂án̂íf̂éŝt́"
   },
@@ -6793,6 +6790,9 @@
   },
   "resources/AppManifestView.ts | sSrcIsNotSet": {
     "message": "{PH1} src îś n̂ót̂ śêt́"
+  },
+  "resources/AppManifestView.ts | sSShouldHaveSquareIcon": {
+    "message": "M̂óŝt́ ôṕêŕât́îńĝ śŷśt̂ém̂ś r̂éq̂úîŕê śq̂úâŕê íĉón̂ś. P̂ĺêáŝé îńĉĺûd́ê át̂ ĺêáŝt́ ôńê śq̂úâŕê íĉón̂ ín̂ t́ĥé âŕr̂áŷ."
   },
   "resources/AppManifestView.ts | sSShouldSpecifyItsSizeAs": {
     "message": "{PH1} {PH2} ŝh́ôúl̂d́ ŝṕêćîf́ŷ ít̂ś ŝíẑé âś {width}x{height}"

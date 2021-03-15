@@ -268,10 +268,9 @@ const UIStrings = {
   sSShouldSpecifyItsSizeAs: '{PH1} {PH2} should specify its size as `{width}x{height}`',
   /**
   *@description Warning message for image resources from the manifest
-  *@example {Image} PH1
-  *@example {https://example.com/image.png} PH2
   */
-  sSDimensionsShouldBeSquare: '{PH1} {PH2} dimensions should be square',
+  sSShouldHaveSquareIcon:
+      'Most operating systems require square icons. Please include at least one square icon in the array.',
   /**
   *@description Warning message for image resources from the manifest
   *@example {100} PH1
@@ -563,10 +562,19 @@ export class AppManifestView extends UI.Widget.VBox implements SDK.SDKModel.Obse
       field.appendChild(wrapper);
     }
 
+    let hasSquareIcon = false;
     for (const icon of icons) {
       const iconErrors =
           await this._appendImageResourceToSection(url, icon, this._iconsSection, /** isScreenshot= */ false);
       imageErrors.push(...iconErrors);
+
+      if (!hasSquareIcon) {
+        const [width, height] = icon.sizes.split('x').map((x: string) => parseInt(x, 10));
+        hasSquareIcon = width === height;
+      }
+    }
+    if (!hasSquareIcon) {
+      imageErrors.push(i18nString(UIStrings.sSShouldHaveSquareIcon));
     }
 
     let shortcutIndex = 1;
@@ -797,10 +805,7 @@ export class AppManifestView extends UI.Widget.VBox implements SDK.SDKModel.Obse
       imageResourceErrors.push(i18nString(UIStrings.sSShouldSpecifyItsSizeAs, {PH1: resourceName, PH2: imageUrl}));
     } else {
       const [width, height] = imageResource.sizes.split('x').map((x: string) => parseInt(x, 10));
-      if (!isScreenshot && (width !== height)) {
-        // TODO(l10n): Don't concatenate strings here.
-        imageResourceErrors.push(i18nString(UIStrings.sSDimensionsShouldBeSquare, {PH1: resourceName, PH2: imageUrl}));
-      } else if (image.naturalWidth !== width && image.naturalHeight !== height) {
+      if (image.naturalWidth !== width && image.naturalHeight !== height) {
         imageResourceErrors.push(i18nString(UIStrings.actualSizeSspxOfSSDoesNotMatch, {
           PH1: image.naturalWidth,
           PH2: image.naturalHeight,

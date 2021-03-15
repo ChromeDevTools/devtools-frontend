@@ -6779,9 +6779,6 @@
   "resources/AppManifestView.ts | showOnlyTheMinimumSafeAreaFor": {
     "message": "Show only the minimum safe area for maskable icons"
   },
-  "resources/AppManifestView.ts | sSDimensionsShouldBeSquare": {
-    "message": "{PH1} {PH2} dimensions should be square"
-  },
   "resources/AppManifestView.ts | sSDoesNotSpecifyItsSizeInThe": {
     "message": "{PH1} {PH2} does not specify its size in the manifest"
   },
@@ -6793,6 +6790,9 @@
   },
   "resources/AppManifestView.ts | sSrcIsNotSet": {
     "message": "{PH1} src is not set"
+  },
+  "resources/AppManifestView.ts | sSShouldHaveSquareIcon": {
+    "message": "Most operating systems require square icons. Please include at least one square icon in the array."
   },
   "resources/AppManifestView.ts | sSShouldSpecifyItsSizeAs": {
     "message": "{PH1} {PH2} should specify its size as {width}x{height}"

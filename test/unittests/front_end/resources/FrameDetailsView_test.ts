@@ -31,6 +31,9 @@ const makeFrame = (): SDK.ResourceTreeModel.ResourceTreeFrame => {
     }),
     resourceTreeModel: () => ({
       target: () => ({
+        // set to true so that Linkifier.maybeLinkifyScriptLocation() exits
+        // early and does not run into other problems with this mock
+        isDisposed: () => true,
         model: () => ({
           getSecurityIsolationStatus: () => ({
             coep: {
@@ -45,6 +48,15 @@ const makeFrame = (): SDK.ResourceTreeModel.ResourceTreeFrame => {
         }),
       }),
     }),
+    _creationStackTrace: {
+      callFrames: [{
+        functionName: 'function1',
+        url: 'http://www.example.com/script.js',
+        lineNumber: 15,
+        columnNumber: 10,
+        scriptId: 'someScriptId',
+      }],
+    },
   } as unknown as SDK.ResourceTreeModel.ResourceTreeFrame;
   return newFrame;
 };
@@ -90,6 +102,7 @@ describe('FrameDetailsView', () => {
       'URL',
       'Origin',
       'Owner Element',
+      'Frame Creation Stack Trace',
       'Secure Context',
       'Cross-Origin Isolated',
       'Cross-Origin Embedder Policy',
@@ -103,6 +116,7 @@ describe('FrameDetailsView', () => {
       'https://www.example.com/path/page.html',
       'https://www.example.com',
       '<iframe>',
+      '',
       'Yes Localhost is always a secure context',
       'Yes',
       'None',
@@ -110,5 +124,14 @@ describe('FrameDetailsView', () => {
       'available, transferable',
       'available Learn more',
     ]);
+
+    const stackTrace =
+        getElementWithinComponent(component, 'devtools-resources-stack-trace', Resources.StackTrace.StackTrace);
+    assertShadowRoot(stackTrace.shadowRoot);
+    const expandableList =
+        getElementWithinComponent(stackTrace, 'devtools-expandable-list', Components.ExpandableList.ExpandableList);
+    assertShadowRoot(expandableList.shadowRoot);
+    const expandableListText = extractTextFromReportView(expandableList.shadowRoot, '.stack-trace-row');
+    assert.deepEqual(expandableListText, ['function1 @ www.example.com/script.js:16']);
   });
 });

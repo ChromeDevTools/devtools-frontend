@@ -22,6 +22,7 @@ import * as ResourcesPanel from './ResourcesPanel.js';
 import * as ServiceWorkerCacheViews from './ServiceWorkerCacheViews.js';
 import * as ServiceWorkersView from './ServiceWorkersView.js';
 import * as ServiceWorkerUpdateCycleView from './ServiceWorkerUpdateCycleView.js';
+import * as StackTrace from './StackTrace.js';
 import * as StorageItemsView from './StorageItemsView.js';
 import * as StorageView from './StorageView.js';
 import * as TrustTokensView from './TrustTokensView.js';
@@ -47,6 +48,7 @@ export {
   ServiceWorkerCacheViews,
   ServiceWorkersView,
   ServiceWorkerUpdateCycleView,
+  StackTrace,
   StorageItemsView,
   StorageView,
   TrustTokensView,

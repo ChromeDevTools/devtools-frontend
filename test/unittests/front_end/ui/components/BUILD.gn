@@ -6,6 +6,7 @@ ts_library("components") {
     "DataGridController_test.ts",
     "DataGridHelpers.ts",
     "DataGrid_test.ts",
+    "ExpandableList_test.ts",
     "IconButton_test.ts",
     "Linkifier_test.ts",
     "ReportView_test.ts",

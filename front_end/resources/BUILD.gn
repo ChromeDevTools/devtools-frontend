@@ -29,6 +29,7 @@ devtools_module("resources") {
     "ServiceWorkerCacheViews.ts",
     "ServiceWorkerUpdateCycleView.ts",
     "ServiceWorkersView.ts",
+    "StackTrace.ts",
     "StorageItemsView.ts",
     "StorageView.ts",
     "TrustTokensView.ts",

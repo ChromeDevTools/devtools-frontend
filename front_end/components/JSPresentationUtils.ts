@@ -84,18 +84,21 @@ function populateContextMenu(link: Element, event: Event): void {
   contextMenu.show();
 }
 
-function buildStackTraceRows(
+export function buildStackTraceRows(
     stackTrace: Protocol.Runtime.StackTrace,
     target: SDK.SDKModel.Target|null,
     linkifier: Linkifier,
     tabStops: boolean|undefined,
-    updateCallback: (arg0: (StackTraceRegularRow|StackTraceAsyncRow)[]) => void,
+    updateCallback?: (arg0: (StackTraceRegularRow|StackTraceAsyncRow)[]) => void,
     ): (StackTraceRegularRow|StackTraceAsyncRow)[] {
   const stackTraceRows: (StackTraceRegularRow|StackTraceAsyncRow)[] = [];
   let regularRowCount = 0;
 
-  const throttler = new Common.Throttler.Throttler(100);
-  linkifier.setLiveLocationUpdateCallback(() => throttler.schedule(async () => updateCallback(stackTraceRows)));
+  if (updateCallback) {
+    const throttler = new Common.Throttler.Throttler(100);
+    linkifier.setLiveLocationUpdateCallback(
+        () => throttler.schedule(async () => updateHiddenRows(updateCallback, stackTraceRows)));
+  }
 
   function buildStackTraceRowsHelper(stackTrace: Protocol.Runtime.StackTrace, asyncFlag: boolean): void {
     let asyncRow: StackTraceAsyncRow|null = null;
@@ -203,7 +206,7 @@ export function buildStackTracePreviewContents(
     return {element, links: []};
   }
 
-  const updateCallback = updateHiddenRows.bind(null, renderStackTraceTable.bind(null, contentElement));
+  const updateCallback = renderStackTraceTable.bind(null, contentElement);
   const stackTraceRows = buildStackTraceRows(stackTrace, target, linkifier, tabStops, updateCallback);
   const links = renderStackTraceTable(contentElement, stackTraceRows);
   return {element, links};

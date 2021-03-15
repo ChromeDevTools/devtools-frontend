@@ -2,19 +2,18 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Components from '../ui/components/components.js';
-
+import type {StackTraceData} from './StackTrace.js';
 import * as Bindings from '../bindings/bindings.js';
 import * as Common from '../common/common.js';
-import * as LitHtml from '../third_party/lit-html/lit-html.js';
+import * as i18n from '../i18n/i18n.js';
 import * as Network from '../network/network.js';
 import * as Platform from '../platform/platform.js';
 import * as Root from '../root/root.js';
-import * as SDK from '../sdk/sdk.js';
+import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
+import * as LitHtml from '../third_party/lit-html/lit-html.js';
+import * as WebComponents from '../ui/components/components.js';
 import * as UI from '../ui/ui.js';
 import * as Workspace from '../workspace/workspace.js';
-
-import * as i18n from '../i18n/i18n.js';
 
 const UIStrings = {
   /**
@@ -189,6 +188,15 @@ const UIStrings = {
   *@description Text that is usually a hyperlink to more documentation
   */
   learnMore: 'Learn more',
+  /**
+  *@description Entry in the document section of the frame details view
+  */
+  creationStackTrace: 'Frame Creation Stack Trace',
+  /**
+  *@description Tooltip for 'Frame Creation Stack Trace' explaining that the stack
+  *trace shows where in the code the frame has been created programmatically
+  */
+  creationStackTraceExplanation: 'This frame was created programmatically. The stack trace shows where this happened.',
 };
 const str_ = i18n.i18n.registerUIStrings('resources/FrameDetailsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -246,7 +254,8 @@ export class FrameDetailsReportView extends HTMLElement {
           padding-left: 2px;
         }
 
-        .link {
+        .link,
+        .devtools-link {
           color: var(--color-link);
           text-decoration: underline;
           cursor: pointer;
@@ -288,7 +297,7 @@ export class FrameDetailsReportView extends HTMLElement {
           display: flex;
         }
       </style>
-      <devtools-report .data=${{reportTitle: this.frame.displayName()} as Components.ReportView.ReportData}>
+      <devtools-report .data=${{reportTitle: this.frame.displayName()} as WebComponents.ReportView.ReportData}>
         ${this.renderDocumentSection()}
         ${this.renderIsolationSection()}
         ${this.renderApiAvailabilitySection()}
@@ -336,6 +345,7 @@ export class FrameDetailsReportView extends HTMLElement {
       ${this.maybeRenderUnreachableURL()}
       ${this.maybeRenderOrigin()}
       ${LitHtml.Directives.until(this.renderOwnerElement(), LitHtml.nothing)}
+      ${this.maybeRenderCreationStacktrace()}
       ${this.maybeRenderAdStatus()}
       <devtools-report-divider></devtools-report-divider>
     `;
@@ -381,7 +391,7 @@ export class FrameDetailsReportView extends HTMLElement {
           color: 'var(--color-primary)',
           width: '16px',
           height: '16px',
-        } as Components.Icon.IconData}>
+        } as WebComponents.Icon.IconData}>
       </button>
     `;
     // clang-format on
@@ -484,13 +494,27 @@ export class FrameDetailsReportView extends HTMLElement {
                 color: 'var(--color-primary)',
                 width: '16px',
                 height: '16px',
-              } as Components.Icon.IconData}></devtools-icon>
+              } as WebComponents.Icon.IconData}></devtools-icon>
               <${linkTargetDOMNode.nodeName().toLocaleLowerCase()}>
             </button>
           </devtools-report-value>
         `;
         // clang-format on
       }
+    }
+    return LitHtml.nothing;
+  }
+
+  private maybeRenderCreationStacktrace(): LitHtml.TemplateResult|{} {
+    if (this.frame && this.frame._creationStackTrace) {
+      return LitHtml.html`
+        <devtools-report-key title=${i18nString(UIStrings.creationStackTraceExplanation)}>${
+          i18nString(UIStrings.creationStackTrace)}</devtools-report-key>
+        <devtools-report-value>
+          <devtools-resources-stack-trace .data=${{frame: this.frame} as StackTraceData}>
+          </devtools-resources-stack-trace>
+        </devtools-report-value>
+      `;
     }
     return LitHtml.nothing;
   }

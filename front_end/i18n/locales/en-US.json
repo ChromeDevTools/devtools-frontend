@@ -7001,6 +7001,12 @@
   "resources/FrameDetailsView.ts | clickToRevealInSourcesPanel": {
     "message": "Click to reveal in Sources panel"
   },
+  "resources/FrameDetailsView.ts | creationStackTrace": {
+    "message": "Frame Creation Stack Trace"
+  },
+  "resources/FrameDetailsView.ts | creationStackTraceExplanation": {
+    "message": "This frame was created programmatically. The stack trace shows where this happened."
+  },
   "resources/FrameDetailsView.ts | crossoriginEmbedderPolicy": {
     "message": "Cross-Origin Embedder Policy"
   },
@@ -7393,6 +7399,9 @@
   },
   "resources/ServiceWorkerUpdateCycleView.ts | version": {
     "message": "Version"
+  },
+  "resources/StackTrace.ts | cannotRenderStackTrace": {
+    "message": "Cannot not render stack trace"
   },
   "resources/StorageItemsView.ts | clearAll": {
     "message": "Clear All"

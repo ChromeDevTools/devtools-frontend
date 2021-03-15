@@ -44,6 +44,10 @@ export class Report extends HTMLElement {
     // clang-format off
     LitHtml.render(LitHtml.html`
       <style>
+        :host {
+          display: block;
+        }
+
         .content {
           background-color: var(--color-background);
           display: grid;

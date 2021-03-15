@@ -7,6 +7,7 @@ import * as DataGridController from './DataGridController.js';
 import * as DataGridControllerIntegrator from './DataGridControllerIntegrator.js';
 import * as DataGridRenderers from './DataGridRenderers.js';
 import * as DataGridUtils from './DataGridUtils.js';
+import * as ExpandableList from './ExpandableList.js';
 import * as Icon from './Icon.js';
 import * as IconButton from './IconButton.js';
 import * as Linkifier from './Linkifier.js';
@@ -21,6 +22,7 @@ export {
   DataGridControllerIntegrator,
   DataGridRenderers,
   DataGridUtils,
+  ExpandableList,
   Icon,
   IconButton,
   Linkifier,

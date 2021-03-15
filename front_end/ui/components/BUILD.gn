@@ -13,6 +13,7 @@ devtools_module("components") {
     "DataGridControllerIntegrator.ts",
     "DataGridRenderers.ts",
     "DataGridUtils.ts",
+    "ExpandableList.ts",
     "Icon.ts",
     "IconButton.ts",
     "Linkifier.ts",

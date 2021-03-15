@@ -7001,6 +7001,12 @@
   "resources/FrameDetailsView.ts | clickToRevealInSourcesPanel": {
     "message": "Ĉĺîćk̂ t́ô ŕêv́êál̂ ín̂ Śôúr̂ćêś p̂án̂él̂"
   },
+  "resources/FrameDetailsView.ts | creationStackTrace": {
+    "message": "F̂ŕâḿê Ćr̂éât́îón̂ Śt̂áĉḱ T̂ŕâćê"
+  },
+  "resources/FrameDetailsView.ts | creationStackTraceExplanation": {
+    "message": "T̂h́îś f̂ŕâḿê ẃâś ĉŕêát̂éd̂ ṕr̂óĝŕâḿm̂át̂íĉál̂ĺŷ. T́ĥé ŝt́âćk̂ t́r̂áĉé ŝh́ôẃŝ ẃĥér̂é t̂h́îś ĥáp̂ṕêńêd́."
+  },
   "resources/FrameDetailsView.ts | crossoriginEmbedderPolicy": {
     "message": "Ĉŕôśŝ-Ór̂íĝín̂ Ém̂b́êd́d̂ér̂ Ṕôĺîćŷ"
   },
@@ -7393,6 +7399,9 @@
   },
   "resources/ServiceWorkerUpdateCycleView.ts | version": {
     "message": "V̂ér̂śîón̂"
+  },
+  "resources/StackTrace.ts | cannotRenderStackTrace": {
+    "message": "Ĉán̂ńôt́ n̂ót̂ ŕêńd̂ér̂ śt̂áĉḱ t̂ŕâćê"
   },
   "resources/StorageItemsView.ts | clearAll": {
     "message": "Ĉĺêár̂ Ál̂ĺ"

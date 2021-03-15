@@ -94,7 +94,7 @@ export async function selectCookieByName(name: string) {
 
     return tmp.asElement() || undefined;
   });
-  cell.click();
+  await cell.click();
 }
 
 export async function waitForQuotaUsage(p: (quota: number) => boolean) {

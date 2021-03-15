@@ -494,6 +494,7 @@ const _bezierAwareProperties = new Set([
 const _fontAwareProperties = new Set(['font-size', 'line-height', 'font-weight', 'font-family', 'letter-spacing']);
 
 const _colorAwareProperties = new Set([
+  'accent-color',
   'background',
   'background-color',
   'background-image',

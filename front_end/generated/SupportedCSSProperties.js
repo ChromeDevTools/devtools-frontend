@@ -94,6 +94,7 @@ export const generatedProperties = [
     'keywords': ['read-only', 'read-write', 'read-write-plaintext-only']
   },
   {'name': '-webkit-writing-mode', 'inherited': true},
+  {'name': 'accent-color', 'inherited': true, 'keywords': ['auto', 'currentcolor']},
   {'name': 'additive-symbols'},
   {'name': 'advance-override'},
   {'name': 'align-content'},
@@ -896,6 +897,7 @@ export const generatedPropertyValues = {
   '-webkit-text-security': {'values': ['none', 'disc', 'circle', 'square']},
   '-webkit-user-drag': {'values': ['auto', 'none', 'element']},
   '-webkit-user-modify': {'values': ['read-only', 'read-write', 'read-write-plaintext-only']},
+  'accent-color': {'values': ['auto', 'currentcolor']},
   'alignment-baseline': {
     'values': [
       'auto', 'baseline', 'alphabetic', 'ideographic', 'middle', 'central', 'mathematical', 'before-edge',

@@ -2813,9 +2813,6 @@
   "issues/IssueView.ts | element": {
     "message": "Element"
   },
-  "issues/IssueView.ts | isThisIssueMessageHelpfulToYou": {
-    "message": "Is this issue message helpful to you?"
-  },
   "issues/IssueView.ts | learnMoreS": {
     "message": "Learn more: {PH1}"
   },

@@ -117,10 +117,6 @@ const UIStrings = {
   */
   learnMoreS: 'Learn more: {PH1}',
   /**
-  *@description Link text for opening a survey in the expended view of an Issue in the issue view
-  */
-  isThisIssueMessageHelpfulToYou: 'Is this issue message helpful to you?',
-  /**
  *@description The kind of resolution for a mixed content issue
  */
   automaticallyUpgraded: 'automatically upgraded',
@@ -448,16 +444,6 @@ class AffectedMixedContentView extends AffectedResourcesView {
   }
 }
 
-// These come from chrome/browser/ui/hats/hats_service.cc.
-const issueSurveyTriggers = new Map<SDK.Issue.IssueCategory, string|null>([
-  [SDK.Issue.IssueCategory.CrossOriginEmbedderPolicy, 'devtools-issues-coep'],
-  [SDK.Issue.IssueCategory.MixedContent, 'devtools-issues-mixed-content'],
-  [SDK.Issue.IssueCategory.SameSiteCookie, 'devtools-issues-cookies-samesite'],
-  [SDK.Issue.IssueCategory.HeavyAd, 'devtools-issues-heavy-ad'],
-  [SDK.Issue.IssueCategory.ContentSecurityPolicy, 'devtools-issues-csp'],
-  [SDK.Issue.IssueCategory.Other, null],
-]);
-
 export class IssueView extends UI.TreeOutline.TreeElement {
   _parent: UI.Widget.VBox;
   _issue: AggregatedIssue;
@@ -620,19 +606,6 @@ export class IssueView extends UI.TreeOutline.TreeElement {
       linkListItem.appendChild(link);
     }
     this.appendChild(linkWrapper);
-
-    const surveyTrigger = issueSurveyTriggers.get(this._issue.getCategory());
-    if (surveyTrigger) {
-      // This part of the UI is async so be careful relying on it being available.
-      const surveyLink = new WebComponents.SurveyLink.SurveyLink();
-      surveyLink.data = {
-        trigger: surveyTrigger,
-        promptText: i18nString(UIStrings.isThisIssueMessageHelpfulToYou),
-        canShowSurvey: Host.InspectorFrontendHost.InspectorFrontendHostInstance.canShowSurvey,
-        showSurvey: Host.InspectorFrontendHost.InspectorFrontendHostInstance.showSurvey,
-      };
-      linkList.createChild('li').appendChild(surveyLink);
-    }
   }
 
   update(): void {

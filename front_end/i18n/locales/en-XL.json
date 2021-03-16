@@ -2813,9 +2813,6 @@
   "issues/IssueView.ts | element": {
     "message": "Êĺêḿêńt̂"
   },
-  "issues/IssueView.ts | isThisIssueMessageHelpfulToYou": {
-    "message": "Îś t̂h́îś îśŝúê ḿêśŝáĝé ĥél̂ṕf̂úl̂ t́ô ýôú?"
-  },
   "issues/IssueView.ts | learnMoreS": {
     "message": "L̂éâŕn̂ ḿôŕê: {PH1}"
   },

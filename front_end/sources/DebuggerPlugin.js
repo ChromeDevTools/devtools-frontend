@@ -83,33 +83,25 @@ const UIStrings = {
   */
   neverPauseHere: 'Never pause here',
   /**
-  *@description Text to remove a breakpoint
+  *@description Context menu command to delete/remove a breakpoint that the user
+  *has set. One line of code can have multiple breakpoints. Always >= 1 breakpoint.
   */
-  removeBreakpoint: 'Remove breakpoint',
-  /**
-  *@description Text in Debugger Plugin of the Sources panel
-  */
-  removeAllBreakpointsInLine: 'Remove all breakpoints in line',
+  removeBreakpoint: '{n, plural, =1 {Remove breakpoint} other {Remove all breakpoints in line}}',
   /**
   *@description A context menu item in the Debugger Plugin of the Sources panel
   */
   editBreakpoint: 'Edit breakpoint…',
   /**
-  *@description Text in Debugger Plugin of the Sources panel
+  *@description Context menu command to disable (but not delete) a breakpoint
+  *that the user has set. One line of code can have multiple breakpoints. Always
+  *>= 1 breakpoint.
   */
-  disableBreakpoint: 'Disable breakpoint',
+  disableBreakpoint: '{n, plural, =1 {Disable breakpoint} other {Disable all breakpoints in line}}',
   /**
-  *@description Text in Debugger Plugin of the Sources panel
+  *@description Context menu command to enable a breakpoint that the user has
+  *set. One line of code can have multiple breakpoints. Always >= 1 breakpoint.
   */
-  disableAllBreakpointsInLine: 'Disable all breakpoints in line',
-  /**
-  *@description Text in Debugger Plugin of the Sources panel
-  */
-  enableBreakpoint: 'Enable breakpoint',
-  /**
-  *@description Text in Debugger Plugin of the Sources panel
-  */
-  enableAllBreakpointsInLine: 'Enable all breakpoints in line',
+  enableBreakpoint: '{n, plural, =1 {Enable breakpoint} other {Enable all breakpoints in line}}',
   /**
   *@description Text in Debugger Plugin of the Sources panel
   */
@@ -428,11 +420,9 @@ export class DebuggerPlugin extends Plugin {
         }
       }
     } else {
-      const hasOneBreakpoint = breakpoints.length === 1;
-      const removeTitle =
-          hasOneBreakpoint ? i18nString(UIStrings.removeBreakpoint) : i18nString(UIStrings.removeAllBreakpointsInLine);
+      const removeTitle = i18nString(UIStrings.removeBreakpoint, {n: breakpoints.length});
       contextMenu.debugSection().appendItem(removeTitle, () => breakpoints.map(breakpoint => breakpoint.remove(false)));
-      if (hasOneBreakpoint && supportsConditionalBreakpoints) {
+      if (breakpoints.length === 1 && supportsConditionalBreakpoints) {
         // Editing breakpoints only make sense for conditional breakpoints
         // and logpoints and both are currently only available for JavaScript
         // debugging.
@@ -443,14 +433,12 @@ export class DebuggerPlugin extends Plugin {
       }
       const hasEnabled = breakpoints.some(breakpoint => breakpoint.enabled());
       if (hasEnabled) {
-        const title = hasOneBreakpoint ? i18nString(UIStrings.disableBreakpoint) :
-                                         i18nString(UIStrings.disableAllBreakpointsInLine);
+        const title = i18nString(UIStrings.disableBreakpoint, {n: breakpoints.length});
         contextMenu.debugSection().appendItem(title, () => breakpoints.map(breakpoint => breakpoint.setEnabled(false)));
       }
       const hasDisabled = breakpoints.some(breakpoint => !breakpoint.enabled());
       if (hasDisabled) {
-        const title = hasOneBreakpoint ? i18nString(UIStrings.enableBreakpoint) :
-                                         i18nString(UIStrings.enableAllBreakpointsInLine);
+        const title = i18nString(UIStrings.enableBreakpoint, {n: breakpoints.length});
         contextMenu.debugSection().appendItem(title, () => breakpoints.map(breakpoint => breakpoint.setEnabled(true)));
       }
     }

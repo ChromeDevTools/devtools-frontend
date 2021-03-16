@@ -9050,20 +9050,14 @@
   "sources/DebuggerPlugin.js | configure": {
     "message": "Configure"
   },
-  "sources/DebuggerPlugin.js | disableAllBreakpointsInLine": {
-    "message": "Disable all breakpoints in line"
-  },
   "sources/DebuggerPlugin.js | disableBreakpoint": {
-    "message": "Disable breakpoint"
+    "message": "{n, plural, =1 {Disable breakpoint} other {Disable all breakpoints in line}}"
   },
   "sources/DebuggerPlugin.js | editBreakpoint": {
     "message": "Edit breakpoint…"
   },
-  "sources/DebuggerPlugin.js | enableAllBreakpointsInLine": {
-    "message": "Enable all breakpoints in line"
-  },
   "sources/DebuggerPlugin.js | enableBreakpoint": {
-    "message": "Enable breakpoint"
+    "message": "{n, plural, =1 {Enable breakpoint} other {Enable all breakpoints in line}}"
   },
   "sources/DebuggerPlugin.js | neverPauseHere": {
     "message": "Never pause here"
@@ -9077,11 +9071,8 @@
   "sources/DebuggerPlugin.js | prettyprintThisMinifiedFile": {
     "message": "Pretty-print this minified file?"
   },
-  "sources/DebuggerPlugin.js | removeAllBreakpointsInLine": {
-    "message": "Remove all breakpoints in line"
-  },
   "sources/DebuggerPlugin.js | removeBreakpoint": {
-    "message": "Remove breakpoint"
+    "message": "{n, plural, =1 {Remove breakpoint} other {Remove all breakpoints in line}}"
   },
   "sources/DebuggerPlugin.js | removeFromIgnoreList": {
     "message": "Remove from ignore list"

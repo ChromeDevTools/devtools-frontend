@@ -9050,20 +9050,14 @@
   "sources/DebuggerPlugin.js | configure": {
     "message": "Ĉón̂f́îǵûŕê"
   },
-  "sources/DebuggerPlugin.js | disableAllBreakpointsInLine": {
-    "message": "D̂íŝáb̂ĺê ál̂ĺ b̂ŕêák̂ṕôín̂t́ŝ ín̂ ĺîńê"
-  },
   "sources/DebuggerPlugin.js | disableBreakpoint": {
-    "message": "D̂íŝáb̂ĺê b́r̂éâḱp̂óîńt̂"
+    "message": "{n, plural, =1 {D̂íŝáb̂ĺê b́r̂éâḱp̂óîńt̂} other {D́îśâb́l̂é âĺl̂ b́r̂éâḱp̂óîńt̂ś îń l̂ín̂é}}"
   },
   "sources/DebuggerPlugin.js | editBreakpoint": {
     "message": "Êd́ît́ b̂ŕêák̂ṕôín̂t́…"
   },
-  "sources/DebuggerPlugin.js | enableAllBreakpointsInLine": {
-    "message": "Êńâb́l̂é âĺl̂ b́r̂éâḱp̂óîńt̂ś îń l̂ín̂é"
-  },
   "sources/DebuggerPlugin.js | enableBreakpoint": {
-    "message": "Êńâb́l̂é b̂ŕêák̂ṕôín̂t́"
+    "message": "{n, plural, =1 {Êńâb́l̂é b̂ŕêák̂ṕôín̂t́} other {Êńâb́l̂é âĺl̂ b́r̂éâḱp̂óîńt̂ś îń l̂ín̂é}}"
   },
   "sources/DebuggerPlugin.js | neverPauseHere": {
     "message": "N̂év̂ér̂ ṕâúŝé ĥér̂é"
@@ -9077,11 +9071,8 @@
   "sources/DebuggerPlugin.js | prettyprintThisMinifiedFile": {
     "message": "P̂ŕêt́t̂ý-p̂ŕîńt̂ t́ĥíŝ ḿîńîf́îéd̂ f́îĺê?"
   },
-  "sources/DebuggerPlugin.js | removeAllBreakpointsInLine": {
-    "message": "R̂ém̂óv̂é âĺl̂ b́r̂éâḱp̂óîńt̂ś îń l̂ín̂é"
-  },
   "sources/DebuggerPlugin.js | removeBreakpoint": {
-    "message": "R̂ém̂óv̂é b̂ŕêák̂ṕôín̂t́"
+    "message": "{n, plural, =1 {R̂ém̂óv̂é b̂ŕêák̂ṕôín̂t́} other {R̂ém̂óv̂é âĺl̂ b́r̂éâḱp̂óîńt̂ś îń l̂ín̂é}}"
   },
   "sources/DebuggerPlugin.js | removeFromIgnoreList": {
     "message": "R̂ém̂óv̂é f̂ŕôḿ îǵn̂ór̂é l̂íŝt́"

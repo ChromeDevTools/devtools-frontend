@@ -268,22 +268,6 @@ export async function retrieveTopCallFrameScriptLocation(script: string, target:
   return scriptLocation;
 }
 
-export const trimMiddle = (str: string, maxLength: number): string => {
-  if (str.length <= maxLength) {
-    return String(str);
-  }
-  let leftHalf = maxLength >> 1;
-  let rightHalf = maxLength - leftHalf - 1;
-  if ((str.codePointAt(str.length - rightHalf - 1) as number) >= 0x10000) {
-    --rightHalf;
-    ++leftHalf;
-  }
-  if (leftHalf > 0 && (str.codePointAt(leftHalf - 1) as number) >= 0x10000) {
-    --leftHalf;
-  }
-  return str.substr(0, leftHalf) + '…' + str.substr(str.length - rightHalf, rightHalf);
-};
-
 export async function retrieveTopCallFrameWithoutResuming() {
   // Wait for the evaluation to be paused and shown in the UI
   await waitFor(PAUSE_INDICATOR_SELECTOR);

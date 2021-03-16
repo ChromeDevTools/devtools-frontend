@@ -93,8 +93,9 @@ export class CodeMirrorTextEditor extends UI.Widget.VBox implements UI.TextEdito
     this._options = options;
 
     this.registerRequiredCSS('cm/codemirror.css', {enableLegacyPatching: true});
-    this.registerRequiredCSS('text_editor/cmdevtools.css', {enableLegacyPatching: false});
-    this.registerRequiredCSS('text_editor/cmdevtools.darkmode.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('text_editor/cmdevtools.css', {enableLegacyPatching: true});
+    // TODO(jacktfranklin) re-enable. Temporarily disabled due to CSS generation bug. See crbug.com/1188524 for details.
+    // this.registerRequiredCSS('text_editor/cmdevtools.darkmode.css', {enableLegacyPatching: false});
 
     const {indentWithTabs, indentUnit} = CodeMirrorTextEditor._getIndentation(
         Common.Settings.Settings.instance().moduleSetting('textEditorIndent').get());

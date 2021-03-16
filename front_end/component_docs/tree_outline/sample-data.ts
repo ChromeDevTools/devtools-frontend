@@ -3,6 +3,9 @@
 // found in the LICENSE file.
 
 import * as Components from '../../ui/components/components.js';
+export const belgraveHouse = {
+  treeNodeData: 'BEL',
+};
 export const officesAndProductsData: Components.TreeOutlineUtils.TreeNode<string>[] = [
   {
     treeNodeData: 'Offices',
@@ -15,7 +18,7 @@ export const officesAndProductsData: Components.TreeOutlineUtils.TreeNode<string
             children: () => Promise.resolve([
               {
                 treeNodeData: 'LON',
-                children: () => Promise.resolve([{treeNodeData: '6PS'}, {treeNodeData: 'CSG'}, {treeNodeData: 'BEL'}]),
+                children: () => Promise.resolve([{treeNodeData: '6PS'}, {treeNodeData: 'CSG'}, belgraveHouse]),
               },
             ]),
           },

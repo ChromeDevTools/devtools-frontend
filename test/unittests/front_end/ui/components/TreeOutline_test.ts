@@ -8,6 +8,7 @@ import * as UIComponents from '../../../../../front_end/ui/components/components
 import {assertElement, assertShadowRoot, dispatchClickEvent, dispatchKeyDownEvent, getEventPromise, renderElementIntoDOM, stripLitHtmlCommentNodes} from '../../helpers/DOMHelpers.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
+
 const {assert} = chai;
 
 async function renderTreeOutline<TreeNodeDataType>({
@@ -37,6 +38,25 @@ async function renderTreeOutline<TreeNodeDataType>({
   };
 }
 
+/**
+ * Wait for a certain number of children are rendered. We need this as the
+ * component uses LitHtml's until directive, which is async and not within the
+ * render coordinator's control.
+ */
+async function waitForRenderedTreeNodeCount(shadowRoot: ShadowRoot, expectedNodeCount: number): Promise<void> {
+  const actualNodeCount = shadowRoot.querySelectorAll('li[role="treeitem"]').length;
+  if (actualNodeCount === expectedNodeCount) {
+    return;
+  }
+
+  await new Promise<void>(resolve => {
+    requestAnimationFrame(async () => {
+      await waitForRenderedTreeNodeCount(shadowRoot, expectedNodeCount);
+      resolve();
+    });
+  });
+}
+
 function getFocusableTreeNode(shadowRoot: ShadowRoot): HTMLLIElement {
   const focusableNode = shadowRoot.querySelector<HTMLLIElement>('li[role="treeitem"][tabindex="0"]');
   if (!focusableNode) {
@@ -64,34 +84,45 @@ The structure represented by basicTreeData is:
   - Drive
   - Calendar
 */
+
+// These node is pulled out as we test expandAndSelectTreeNode and getPathToTreeNode with them.
+const nodeBelgraveHouse = {
+  treeNodeData: 'BEL',
+};
+
+const nodeLondon = {
+  treeNodeData: 'LON',
+  children: (): Promise<UIComponents.TreeOutlineUtils.TreeNode<string>[]> =>
+      Promise.resolve([{treeNodeData: '6PS'}, {treeNodeData: 'CSG'}, nodeBelgraveHouse]),
+};
+
+const nodeUK = {
+  treeNodeData: 'UK',
+  children: (): Promise<UIComponents.TreeOutlineUtils.TreeNode<string>[]> => Promise.resolve([nodeLondon]),
+};
+
+const nodeEurope = {
+  treeNodeData: 'Europe',
+  children: (): Promise<UIComponents.TreeOutlineUtils.TreeNode<string>[]> => Promise.resolve([
+    nodeUK,
+    {
+      treeNodeData: 'Germany',
+      children: (): Promise<UIComponents.TreeOutlineUtils.TreeNode<string>[]> => Promise.resolve([
+        {treeNodeData: 'MUC'},
+        {treeNodeData: 'BER'},
+      ]),
+    },
+  ]),
+};
+
+const nodeOffices = {
+  treeNodeData: 'Offices',
+  children: (): Promise<UIComponents.TreeOutlineUtils.TreeNode<string>[]> => Promise.resolve([nodeEurope]),
+
+};
+
 const basicTreeData: UIComponents.TreeOutlineUtils.TreeNode<string>[] = [
-  {
-    treeNodeData: 'Offices',
-    children: (): Promise<UIComponents.TreeOutlineUtils.TreeNode<string>[]> => Promise.resolve([
-      {
-        treeNodeData: 'Europe',
-        children: (): Promise<UIComponents.TreeOutlineUtils.TreeNode<string>[]> => Promise.resolve([
-          {
-            treeNodeData: 'UK',
-            children: (): Promise<UIComponents.TreeOutlineUtils.TreeNode<string>[]> => Promise.resolve([
-              {
-                treeNodeData: 'LON',
-                children: (): Promise<UIComponents.TreeOutlineUtils.TreeNode<string>[]> =>
-                    Promise.resolve([{treeNodeData: '6PS'}, {treeNodeData: 'CSG'}, {treeNodeData: 'BEL'}]),
-              },
-            ]),
-          },
-          {
-            treeNodeData: 'Germany',
-            children: (): Promise<UIComponents.TreeOutlineUtils.TreeNode<string>[]> => Promise.resolve([
-              {treeNodeData: 'MUC'},
-              {treeNodeData: 'BER'},
-            ]),
-          },
-        ]),
-      },
-    ]),
-  },
+  nodeOffices,
   {
     treeNodeData: 'Products',
     children: (): Promise<UIComponents.TreeOutlineUtils.TreeNode<string>[]> => Promise.resolve([
@@ -110,6 +141,9 @@ const basicTreeData: UIComponents.TreeOutlineUtils.TreeNode<string>[] = [
     ]),
   },
 ];
+
+const NODE_COUNT_BASIC_DATA_FULLY_EXPANDED = 15;
+const NODE_COUNT_BASIC_DATA_DEFAULT_EXPANDED = 12;
 
 interface VisibleTreeNodeFromDOM {
   renderedKey: string;
@@ -192,7 +226,7 @@ describe('TreeOutline', () => {
     const arrowIcon = rootNode.querySelector<HTMLSpanElement>('.arrow-icon');
     assertElement(arrowIcon, HTMLSpanElement);
     dispatchClickEvent(arrowIcon);
-    await coordinator.done();
+    await waitForRenderedTreeNodeCount(shadowRoot, 3);
     const visibleTree = visibleNodesToTree(shadowRoot);
     assert.deepEqual(visibleTree, [
       {renderedKey: 'Offices', children: [{renderedKey: 'Europe'}]},
@@ -206,7 +240,7 @@ describe('TreeOutline', () => {
     });
     const rootNode = getVisibleTreeNodeByText(shadowRoot, 'Offices');
     dispatchClickEvent(rootNode);
-    await coordinator.done();
+    await waitForRenderedTreeNodeCount(shadowRoot, 2);
     const visibleTree = visibleNodesToTree(shadowRoot);
     assert.deepEqual(visibleTree, [
       {renderedKey: 'Offices'},
@@ -221,7 +255,7 @@ describe('TreeOutline', () => {
     component.setAttribute('clickabletitle', '');
     const rootNode = getVisibleTreeNodeByText(shadowRoot, 'Offices');
     dispatchClickEvent(rootNode);
-    await coordinator.done();
+    await waitForRenderedTreeNodeCount(shadowRoot, 3);
     const visibleTree = visibleNodesToTree(shadowRoot);
     assert.deepEqual(visibleTree, [
       {renderedKey: 'Offices', children: [{renderedKey: 'Europe'}]},
@@ -234,7 +268,6 @@ describe('TreeOutline', () => {
       const {shadowRoot} = await renderTreeOutline({
         tree: basicTreeData,
       });
-      await coordinator.done();
       const rootNode = getVisibleTreeNodeByText(shadowRoot, 'Offices');
       const key = rootNode.querySelector('[data-node-key]');
       assertElement(key, HTMLElement);
@@ -247,7 +280,6 @@ describe('TreeOutline', () => {
         tree: basicTreeData,
       });
       component.setAttribute('nowrap', '');
-      await coordinator.done();
       const rootNode = getVisibleTreeNodeByText(shadowRoot, 'Offices');
       const key = rootNode.querySelector('[data-node-key]');
       assertElement(key, HTMLElement);
@@ -261,7 +293,6 @@ describe('TreeOutline', () => {
       const {shadowRoot} = await renderTreeOutline({
         tree: basicTreeData,
       });
-      await coordinator.done();
       const rootNode = getVisibleTreeNodeByText(shadowRoot, 'Offices');
       const borderTopValue = window.getComputedStyle(rootNode).getPropertyValue('border-top');
       // Odd assertion: this is the default borderTop the browser "applies" if none is set.
@@ -273,7 +304,6 @@ describe('TreeOutline', () => {
         tree: basicTreeData,
       });
       component.setAttribute('toplevelbordercolor', 'rgb(255, 0, 0)');
-      await coordinator.done();
       const rootNode = getVisibleTreeNodeByText(shadowRoot, 'Offices');
       const borderTopValue = window.getComputedStyle(rootNode).getPropertyValue('border-top');
       assert.strictEqual(borderTopValue, '1px solid rgb(255, 0, 0)');
@@ -311,7 +341,7 @@ describe('TreeOutline', () => {
     });
 
     await component.expandRecursively();
-    await coordinator.done();
+    await waitForRenderedTreeNodeCount(shadowRoot, 4);
     const visibleTree = visibleNodesToTree(shadowRoot);
     assert.deepEqual(visibleTree, [
       {
@@ -336,7 +366,7 @@ describe('TreeOutline', () => {
       tree: basicTreeData,
     });
     await component.expandRecursively();
-    await coordinator.done();
+    await waitForRenderedTreeNodeCount(shadowRoot, 12);
     const visibleTree = visibleNodesToTree(shadowRoot);
     assert.deepEqual(visibleTree, [
       {
@@ -369,15 +399,63 @@ describe('TreeOutline', () => {
     ]);
   });
 
+  describe('expandToAndSelectTreeNode', () => {
+    it('expands the relevant part of the tree to reveal the given node', async () => {
+      const {component, shadowRoot} = await renderTreeOutline({
+        tree: basicTreeData,
+      });
+      await component.expandToAndSelectTreeNode(nodeBelgraveHouse);
+      await waitForRenderedTreeNodeCount(shadowRoot, 9);
+      const visibleTree = visibleNodesToTree(shadowRoot);
+      // The tree is expanded down to include "BEL" but the rest of the tree is still collapsed.
+      assert.deepEqual(visibleTree, [
+        {
+          renderedKey: 'Offices',
+          children: [{
+            renderedKey: 'Europe',
+            children: [
+              {
+                renderedKey: 'UK',
+                children: [
+                  {renderedKey: 'LON', children: [{renderedKey: '6PS'}, {renderedKey: 'CSG'}, {renderedKey: 'BEL'}]},
+                ],
+              },
+              {renderedKey: 'Germany'},
+            ],
+          }],
+        },
+        {
+          renderedKey: 'Products',
+        },
+      ]);
+    });
+
+    it('selects the given node once the tree has been expanded', async () => {
+      const {component, shadowRoot} = await renderTreeOutline({
+        tree: basicTreeData,
+      });
+      await component.expandToAndSelectTreeNode(nodeBelgraveHouse);
+      // Wait for the tree to be expanded
+      await waitForRenderedTreeNodeCount(shadowRoot, 9);
+      // Wait for the coordinator to have called focus() on the right node
+      await coordinator.done();
+
+      assert.strictEqual(
+          getFocusableTreeNode(shadowRoot),
+          getVisibleTreeNodeByText(shadowRoot, 'BEL'),
+      );
+    });
+  });
+
   it('can recursively collapse all children of a node', async () => {
     const {component, shadowRoot} = await renderTreeOutline({
       tree: basicTreeData,
     });
     await component.expandRecursively(Number.POSITIVE_INFINITY);
-    await coordinator.done();
+    await waitForRenderedTreeNodeCount(shadowRoot, NODE_COUNT_BASIC_DATA_FULLY_EXPANDED);
     const europeNode = getVisibleTreeNodeByText(shadowRoot, 'Europe');
     await component.collapseChildrenOfNode(europeNode);
-    await coordinator.done();
+    await waitForRenderedTreeNodeCount(shadowRoot, 7);
     const visibleTree = visibleNodesToTree(shadowRoot);
     assert.deepEqual(visibleTree, [
       {
@@ -433,13 +511,13 @@ describe('TreeOutline', () => {
 
     // Expand it, then collapse it, then expand it again
     await component.expandRecursively(Number.POSITIVE_INFINITY);
-    await coordinator.done();
+    await waitForRenderedTreeNodeCount(shadowRoot, 4);
     assert.strictEqual(fetchChildrenSpy.callCount, 1);
     const officesNode = getVisibleTreeNodeByText(shadowRoot, 'Offices');
     await component.collapseChildrenOfNode(officesNode);
-    await coordinator.done();
+    await waitForRenderedTreeNodeCount(shadowRoot, 1);
     await component.expandRecursively(Number.POSITIVE_INFINITY);
-    await coordinator.done();
+    await waitForRenderedTreeNodeCount(shadowRoot, 4);
     // Make sure that we only fetched the children once despite expanding the
     // Tree twice.
     assert.strictEqual(fetchChildrenSpy.callCount, 1);
@@ -480,7 +558,7 @@ describe('TreeOutline', () => {
     });
 
     await component.expandRecursively(Number.POSITIVE_INFINITY);
-    await coordinator.done();
+    await waitForRenderedTreeNodeCount(shadowRoot, 4);
     const officeNode = getVisibleTreeNodeByText(shadowRoot, 'Offices');
     const key = officeNode.querySelector('[data-node-key]');
     assertElement(key, HTMLElement);
@@ -517,7 +595,7 @@ describe('TreeOutline', () => {
     let renderedKey = stripLitHtmlCommentNodes(key.innerHTML);
     assert.strictEqual(renderedKey, '<h2 class="top-node">OFFICES. Expanded: false</h2>');
     await component.expandRecursively(Number.POSITIVE_INFINITY);
-    await coordinator.done();
+    await waitForRenderedTreeNodeCount(shadowRoot, 4);
     renderedKey = stripLitHtmlCommentNodes(key.innerHTML);
     assert.strictEqual(renderedKey, '<h2 class="top-node">OFFICES. Expanded: true</h2>');
   });
@@ -542,7 +620,7 @@ describe('TreeOutline', () => {
         dispatchClickEvent(officeNode);
         await coordinator.done();
         dispatchKeyDownEvent(officeNode, {key: 'Enter', bubbles: true});
-        await coordinator.done();
+        await waitForRenderedTreeNodeCount(shadowRoot, 3);
         assert.strictEqual(officeNode.getAttribute('aria-expanded'), 'true');
       });
 
@@ -551,12 +629,12 @@ describe('TreeOutline', () => {
           tree: basicTreeData,
         });
         component.expandRecursively();
-        await coordinator.done();
+        await waitForRenderedTreeNodeCount(shadowRoot, NODE_COUNT_BASIC_DATA_DEFAULT_EXPANDED);
         const officeNode = getVisibleTreeNodeByText(shadowRoot, 'Offices');
         dispatchClickEvent(officeNode);
         await coordinator.done();
         dispatchKeyDownEvent(officeNode, {key: 'Enter', bubbles: true});
-        await coordinator.done();
+        await waitForRenderedTreeNodeCount(shadowRoot, 6);
         assert.strictEqual(officeNode.getAttribute('aria-expanded'), 'false');
       });
     });
@@ -570,7 +648,7 @@ describe('TreeOutline', () => {
         dispatchClickEvent(officeNode);
         await coordinator.done();
         dispatchKeyDownEvent(officeNode, {key: ' ', bubbles: true});
-        await coordinator.done();
+        await waitForRenderedTreeNodeCount(shadowRoot, 3);
         assert.strictEqual(officeNode.getAttribute('aria-expanded'), 'true');
       });
 
@@ -579,11 +657,12 @@ describe('TreeOutline', () => {
           tree: basicTreeData,
         });
         await component.expandRecursively();
+        await waitForRenderedTreeNodeCount(shadowRoot, 12);
         const officeNode = getVisibleTreeNodeByText(shadowRoot, 'Offices');
         dispatchClickEvent(officeNode);
         await coordinator.done();
         dispatchKeyDownEvent(officeNode, {key: ' ', bubbles: true});
-        await coordinator.done();
+        await waitForRenderedTreeNodeCount(shadowRoot, 6);
         assert.strictEqual(officeNode.getAttribute('aria-expanded'), 'false');
       });
     });
@@ -594,7 +673,7 @@ describe('TreeOutline', () => {
           tree: basicTreeData,
         });
         await component.expandRecursively(Number.POSITIVE_INFINITY);
-        await coordinator.done();
+        await waitForRenderedTreeNodeCount(shadowRoot, NODE_COUNT_BASIC_DATA_FULLY_EXPANDED);
         const berlinNode = getVisibleTreeNodeByText(shadowRoot, 'BER');
         dispatchClickEvent(berlinNode);
         await coordinator.done();
@@ -634,7 +713,7 @@ describe('TreeOutline', () => {
         const arrowIcon = officeNode.querySelector<HTMLSpanElement>('.arrow-icon');
         assertElement(arrowIcon, HTMLSpanElement);
         dispatchClickEvent(arrowIcon);
-        await coordinator.done();
+        await waitForRenderedTreeNodeCount(shadowRoot, 3);
 
         // Focus the "Europe" node.
         const europeNode = getVisibleTreeNodeByText(shadowRoot, 'Europe');
@@ -670,7 +749,7 @@ describe('TreeOutline', () => {
           tree: basicTreeData,
         });
         await component.expandRecursively();
-        await coordinator.done();
+        await waitForRenderedTreeNodeCount(shadowRoot, 12);
         const berlinNode = getVisibleTreeNodeByText(shadowRoot, 'BER');
         dispatchClickEvent(berlinNode);
         dispatchKeyDownEvent(berlinNode, {key: 'ArrowUp', bubbles: true});
@@ -686,7 +765,7 @@ describe('TreeOutline', () => {
           tree: basicTreeData,
         });
         await component.expandRecursively();
-        await coordinator.done();
+        await waitForRenderedTreeNodeCount(shadowRoot, NODE_COUNT_BASIC_DATA_DEFAULT_EXPANDED);
         const ukNode = getVisibleTreeNodeByText(shadowRoot, 'UK');
         dispatchClickEvent(ukNode);
         dispatchKeyDownEvent(ukNode, {key: 'ArrowUp', bubbles: true});
@@ -703,7 +782,7 @@ describe('TreeOutline', () => {
              tree: basicTreeData,
            });
            await component.expandRecursively();
-           await coordinator.done();
+           await waitForRenderedTreeNodeCount(shadowRoot, NODE_COUNT_BASIC_DATA_DEFAULT_EXPANDED);
            const germanyNode = getVisibleTreeNodeByText(shadowRoot, 'Germany');
            dispatchClickEvent(germanyNode);
            dispatchKeyDownEvent(germanyNode, {key: 'ArrowUp', bubbles: true});
@@ -720,6 +799,7 @@ describe('TreeOutline', () => {
              tree: basicTreeData,
            });
            await component.expandRecursively(Number.POSITIVE_INFINITY);
+           await waitForRenderedTreeNodeCount(shadowRoot, NODE_COUNT_BASIC_DATA_FULLY_EXPANDED);
            await coordinator.done();
            const germanyNode = getVisibleTreeNodeByText(shadowRoot, 'Germany');
            dispatchClickEvent(germanyNode);
@@ -831,6 +911,7 @@ describe('TreeOutline', () => {
           tree: basicTreeData,
         });
         await component.expandRecursively(Number.POSITIVE_INFINITY);
+        await waitForRenderedTreeNodeCount(shadowRoot, NODE_COUNT_BASIC_DATA_FULLY_EXPANDED);
         await coordinator.done();
         const berlinNode = getVisibleTreeNodeByText(shadowRoot, 'BER');
         dispatchClickEvent(berlinNode);
@@ -905,7 +986,7 @@ describe('TreeOutline', () => {
           tree: basicTreeData,
         });
         await component.expandRecursively();
-        await coordinator.done();
+        await waitForRenderedTreeNodeCount(shadowRoot, NODE_COUNT_BASIC_DATA_DEFAULT_EXPANDED);
         const lonNode = getVisibleTreeNodeByText(shadowRoot, 'LON');
         dispatchClickEvent(lonNode);
         dispatchKeyDownEvent(lonNode, {key: 'ArrowDown', bubbles: true});
@@ -921,7 +1002,7 @@ describe('TreeOutline', () => {
           tree: basicTreeData,
         });
         await component.expandRecursively(Number.POSITIVE_INFINITY);
-        await coordinator.done();
+        await waitForRenderedTreeNodeCount(shadowRoot, NODE_COUNT_BASIC_DATA_FULLY_EXPANDED);
         const berNode = getVisibleTreeNodeByText(shadowRoot, 'BER');
         dispatchClickEvent(berNode);
         dispatchKeyDownEvent(berNode, {key: 'ArrowDown', bubbles: true});
@@ -940,7 +1021,8 @@ describe('TreeOutline', () => {
       const {component, shadowRoot} = await renderTreeOutline({
         tree: basicTreeData,
       });
-      await component.expandRecursively(Infinity);
+      await component.expandRecursively(Number.POSITIVE_INFINITY);
+      await waitForRenderedTreeNodeCount(shadowRoot, NODE_COUNT_BASIC_DATA_FULLY_EXPANDED);
       await coordinator.done();
       const rootNode = getVisibleTreeNodeByText(shadowRoot, 'Offices');
       assert.strictEqual(rootNode.getAttribute('aria-level'), '1');
@@ -967,8 +1049,8 @@ describe('TreeOutline', () => {
       const {component, shadowRoot} = await renderTreeOutline({
         tree: basicTreeData,
       });
-      await component.expandRecursively(Infinity);
-      await coordinator.done();
+      await component.expandRecursively(Number.POSITIVE_INFINITY);
+      await waitForRenderedTreeNodeCount(shadowRoot, NODE_COUNT_BASIC_DATA_FULLY_EXPANDED);
       const europeKey = getVisibleTreeNodeByText(shadowRoot, 'Europe');
       assert.strictEqual(europeKey.getAttribute('aria-setsize'), '1');
       const germanyKey = getVisibleTreeNodeByText(shadowRoot, 'Germany');
@@ -980,8 +1062,8 @@ describe('TreeOutline', () => {
       const {component, shadowRoot} = await renderTreeOutline({
         tree: basicTreeData,
       });
-      await component.expandRecursively(Infinity);
-      await coordinator.done();
+      await component.expandRecursively(Number.POSITIVE_INFINITY);
+      await waitForRenderedTreeNodeCount(shadowRoot, NODE_COUNT_BASIC_DATA_FULLY_EXPANDED);
       const europeKey = getVisibleTreeNodeByText(shadowRoot, 'Europe');
       assert.strictEqual(europeKey.getAttribute('aria-posinset'), '1');
       const csgOfficeKey = getVisibleTreeNodeByText(shadowRoot, 'CSG');
@@ -1013,8 +1095,8 @@ describe('TreeOutline', () => {
       const {component, shadowRoot} = await renderTreeOutline({
         tree: basicTreeData,
       });
-      await component.expandRecursively(Infinity);
-      await coordinator.done();
+      await component.expandRecursively(Number.POSITIVE_INFINITY);
+      await waitForRenderedTreeNodeCount(shadowRoot, NODE_COUNT_BASIC_DATA_FULLY_EXPANDED);
       const leafNodeCSGOffice = getVisibleTreeNodeByText(shadowRoot, 'CSG');
       assert.strictEqual(leafNodeCSGOffice.getAttribute('aria-expanded'), null);
     });
@@ -1050,6 +1132,21 @@ describe('TreeOutline', () => {
         const event = await treeItemSelectedEvent;
         assert.deepEqual(event.data, {node: basicTreeData[1]});
       });
+    });
+  });
+});
+
+describe('TreeOutlineUtils', () => {
+  describe('getPathToTreeNode', () => {
+    it('can find the path to the given node', async () => {
+      const path = await UIComponents.TreeOutlineUtils.getPathToTreeNode(basicTreeData, nodeBelgraveHouse);
+      assert.deepEqual(path, [nodeOffices, nodeEurope, nodeUK, nodeLondon, nodeBelgraveHouse]);
+    });
+
+    it('returns null if no path is found', async () => {
+      const path =
+          await UIComponents.TreeOutlineUtils.getPathToTreeNode(basicTreeData, {treeNodeData: 'does-not-exist'});
+      assert.strictEqual(path, null);
     });
   });
 });

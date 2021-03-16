@@ -3,11 +3,13 @@
 // found in the LICENSE file.
 
 import * as ComponentServerSetup from './component-server-setup.js';
+import * as Directives from './directives.js';
 import * as GetStylesheet from './get-stylesheet.js';
 import * as SetCSSProperty from './set-css-property.js';
 
 export {
   ComponentServerSetup,
+  Directives,
   GetStylesheet,
   SetCSSProperty,
 };

@@ -140,6 +140,75 @@ const getParentListItemForDOMNode = (currentDOMNode: HTMLLIElement): HTMLLIEleme
   return parentNode as HTMLLIElement;
 };
 
+/**
+ * We cache a tree node's children; they are lazily evaluated and if two code
+ * paths get the children, we need to make sure they get the same objects.
+ *
+ * We're OK to use <unknown> here as the weakmap doesn't care and a TreeOutline that
+ * adds nodes of type X to the map will always then get children of that type
+ * back as that's enforced by the TreeOutline types elsewhere. We can't make
+ * this WeakMap easily generic as it's a top level variable.
+ */
+const treeNodeChildrenWeakMap = new WeakMap<TreeNode<unknown>, TreeNode<unknown>[]>();
+export const getNodeChildren =
+    async<TreeNodeDataType>(node: TreeNode<TreeNodeDataType>): Promise<TreeNode<TreeNodeDataType>[]> => {
+  if (!node.children) {
+    throw new Error('Asked for children of node that does not have any children.');
+  }
+
+  const cachedChildren = treeNodeChildrenWeakMap.get(node as TreeNode<unknown>);
+  if (cachedChildren) {
+    return cachedChildren as unknown as TreeNode<TreeNodeDataType>[];
+  }
+
+  const children = await node.children();
+  treeNodeChildrenWeakMap.set(node as TreeNode<unknown>, children as TreeNode<unknown>[]);
+  return children;
+};
+
+
+/**
+ * Searches the tree and returns a path to the given node.
+ * e.g. if the tree is:
+ * A
+ * - B
+ *   - C
+ * - D
+ *   - E
+ *   - F
+ *
+ * And you look for F, you'll get back [A, D, F]
+ */
+export const getPathToTreeNode =
+    async<TreeNodeDataType>(tree: readonly TreeNode<TreeNodeDataType>[], nodeToFind: TreeNode<TreeNodeDataType>):
+        Promise<TreeNode<TreeNodeDataType>[]|null> => {
+          for (const rootNode of tree) {
+            const foundPathOrNull = await getPathToTreeNodeRecursively(rootNode, nodeToFind, [rootNode]);
+            if (foundPathOrNull !== null) {
+              return foundPathOrNull;
+            }
+          }
+          return null;
+        };
+
+const getPathToTreeNodeRecursively = async<TreeNodeDataType>(
+    currentNode: TreeNode<TreeNodeDataType>, nodeToFind: TreeNode<TreeNodeDataType>,
+    pathToNode: TreeNode<TreeNodeDataType>[]): Promise<TreeNode<TreeNodeDataType>[]|null> => {
+  if (currentNode === nodeToFind) {
+    return pathToNode;
+  }
+  if (currentNode.children) {
+    const children = await getNodeChildren(currentNode);
+    for (const child of children) {
+      const foundPathOrNull = await getPathToTreeNodeRecursively(child, nodeToFind, [...pathToNode, child]);
+      if (foundPathOrNull !== null) {
+        return foundPathOrNull;
+      }
+    }
+  }
+  return null;
+};
+
 interface KeyboardNavigationOptions<TreeNodeDataType> {
   currentDOMNode: HTMLLIElement;
   currentTreeNode: TreeNode<TreeNodeDataType>;

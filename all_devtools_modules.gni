@@ -81,6 +81,7 @@ all_typescript_module_sources = [
   "common/WasmDisassembly.js",
   "common/Worker.js",
   "component_helpers/component-server-setup.js",
+  "component_helpers/directives.js",
   "component_helpers/get-stylesheet.js",
   "component_helpers/set-css-property.js",
   "components/ImagePreview.js",

@@ -7,12 +7,18 @@ import * as Platform from '../../platform/platform.js';
 import * as Coordinator from '../../render_coordinator/render_coordinator.js';
 import * as LitHtml from '../../third_party/lit-html/lit-html.js';
 
-import {findNextNodeForTreeOutlineKeyboardNavigation, isExpandableNode, trackDOMNodeToTreeNode, TreeNode, TreeNodeWithChildren} from './TreeOutlineUtils.js';
+import {findNextNodeForTreeOutlineKeyboardNavigation, getNodeChildren, getPathToTreeNode, isExpandableNode, trackDOMNodeToTreeNode, TreeNode, TreeNodeWithChildren} from './TreeOutlineUtils.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 export interface TreeOutlineData<TreeNodeDataType> {
   defaultRenderer: (node: TreeNode<TreeNodeDataType>, state: {isExpanded: boolean}) => LitHtml.TemplateResult;
+  /**
+   * Note: it is important that all the TreeNode objects are unique. They are
+   * used internally to the TreeOutline as keys to track state (such as if a
+   * node is expanded or not), and providing the same object multiple times will
+   * cause issues in the TreeOutline.
+   */
   tree: readonly TreeNode<TreeNodeDataType>[];
 }
 
@@ -35,9 +41,15 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
   private readonly shadow = this.attachShadow({mode: 'open'});
   private treeData: readonly TreeNode<TreeNodeDataType>[] = [];
   private nodeExpandedMap: WeakMap<TreeNode<TreeNodeDataType>, boolean> = new WeakMap();
-  private nodeChildrenCacheMap: WeakMap<TreeNode<TreeNodeDataType>, TreeNode<TreeNodeDataType>[]> = new WeakMap();
   private domNodeToTreeNodeMap: WeakMap<HTMLLIElement, TreeNode<TreeNodeDataType>> = new WeakMap();
   private hasRenderedAtLeastOnce = false;
+  /**
+   * If we have expanded to a certain node, we want to focus it once we've
+   * rendered. But we render lazily and wrapped in LitHtml.until, so we can't
+   * know for sure when that node will be rendered. This variable tracks the
+   * node that we want focused but may not yet have been rendered.
+   */
+  private nodePendingFocus: TreeNode<TreeNodeDataType>|null = null;
   private focusableTreeNode: TreeNode<TreeNodeDataType>|null = null;
   private defaultRenderer =
       (node: TreeNode<TreeNodeDataType>, _state: {isExpanded: boolean}): LitHtml.TemplateResult => {
@@ -104,7 +116,28 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
    */
   async expandRecursively(maxDepth = 2): Promise<void> {
     await Promise.all(this.treeData.map(rootNode => this.expandAndRecurse(rootNode, 0, maxDepth)));
-    this.render();
+    await this.render();
+  }
+
+  /**
+   * Takes a TreeNode, expands the outline to reveal it, and focuses it.
+   */
+  async expandToAndSelectTreeNode(targetTreeNode: TreeNode<TreeNodeDataType>): Promise<void> {
+    const pathToTreeNode = await getPathToTreeNode(this.treeData, targetTreeNode);
+
+    if (pathToTreeNode === null) {
+      throw new Error(`Could not find node ${JSON.stringify(targetTreeNode)} in the tree.`);
+    }
+    pathToTreeNode.forEach((node, index) => {
+      // We don't expand the very last node, which was the target node.
+      if (index < pathToTreeNode.length - 1) {
+        this.setNodeExpandedState(node, true);
+      }
+    });
+
+    await this.render();
+    // Mark the node as pending focus so when it is rendered into the DOM we can focus it
+    this.nodePendingFocus = targetTreeNode;
   }
 
   async collapseChildrenOfNode(domNode: HTMLLIElement): Promise<void> {
@@ -113,7 +146,7 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
       return;
     }
     await this.recursivelyCollapseTreeNodeChildren(treeNode);
-    this.render();
+    await this.render();
   }
 
   private setNodeKeyNoWrapCSSVariable(attributeValue: string|null): void {
@@ -144,13 +177,7 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
   }
 
   private async fetchNodeChildren(node: TreeNodeWithChildren<TreeNodeDataType>): Promise<TreeNode<TreeNodeDataType>[]> {
-    const cached = this.nodeChildrenCacheMap.get(node);
-    if (cached) {
-      return cached;
-    }
-    const children = await node.children();
-    this.nodeChildrenCacheMap.set(node, children);
-    return children;
+    return getNodeChildren(node);
   }
 
   private setNodeExpandedState(node: TreeNode<TreeNodeDataType>, newExpandedState: boolean): void {
@@ -204,7 +231,7 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
     this.focusableTreeNode = treeNode;
     await this.render();
     this.dispatchEvent(new ItemSelectedEvent(treeNode));
-    coordinator.write(() => {
+    coordinator.write('DOMNode focus', () => {
       domNode.focus();
     });
   }
@@ -278,20 +305,26 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
     }
   }
 
-  private async renderNode(node: TreeNode<TreeNodeDataType>, {depth, setSize, positionInSet}: {
+  private focusPendingNode(domNode: HTMLLIElement): void {
+    this.nodePendingFocus = null;
+    this.focusTreeNode(domNode);
+  }
+
+  private renderNode(node: TreeNode<TreeNodeDataType>, {depth, setSize, positionInSet}: {
     depth: number,
     setSize: number,
     positionInSet: number,
-  }): Promise<LitHtml.TemplateResult> {
+  }): LitHtml.TemplateResult {
     let childrenToRender;
     const nodeIsExpanded = this.nodeIsExpanded(node);
     if (!isExpandableNode(node) || !nodeIsExpanded) {
       childrenToRender = LitHtml.nothing;
     } else {
-      const children = await this.fetchNodeChildren(node);
-      const childNodes = Promise.all(children.map((childNode, index) => {
-        return this.renderNode(childNode, {depth: depth + 1, setSize: children.length, positionInSet: index});
-      }));
+      const childNodes = this.fetchNodeChildren(node).then(children => {
+        return children.map((childNode, index) => {
+          return this.renderNode(childNode, {depth: depth + 1, setSize: children.length, positionInSet: index});
+        });
+      });
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off
       childrenToRender = LitHtml.html`<ul role="group">${LitHtml.Directives.until(childNodes)}</ul>`;
@@ -327,6 +360,21 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
         class=${listItemClasses}
         @click=${this.onNodeClick}
         track-dom-node-to-tree-node=${trackDOMNodeToTreeNode(this.domNodeToTreeNodeMap, node)}
+        on-render=${ComponentHelpers.Directives.nodeRenderedCallback(domNode => {
+         /**
+           * Because TreeNodes are lazily rendered, you can call
+           * `outline.expandToAndSelect(NodeX)`, but `NodeX` will be rendered at some
+           * later point, once it's been fully resolved, within a LitHtml.until
+           * directive. That means we don't have a direct hook into when it's
+           * rendered, which we need because we want to focus the element, so we use this directive to receive a callback when the node is rendered.
+           */
+          if (!(domNode instanceof HTMLLIElement)) {
+            return;
+          }
+          if (node === this.nodePendingFocus) {
+            this.focusPendingNode(domNode);
+          }
+        })}
       >
         <span class="arrow-and-key-wrapper">
           <span class="arrow-icon" @click=${this.onArrowClick(node)}>
@@ -348,7 +396,7 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
 
     this.scheduledRender = true;
 
-    await coordinator.write(() => {
+    await coordinator.write('TreeOutline render', () => {
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off
       LitHtml.render(LitHtml.html`
@@ -420,11 +468,11 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
       <div class="wrapping-container">
       <ul role="tree" @keydown=${this.onTreeKeyDown}>
         ${this.treeData.map((topLevelNode, index) => {
-          return LitHtml.Directives.until(this.renderNode(topLevelNode, {
+          return this.renderNode(topLevelNode, {
             depth: 0,
             setSize: this.treeData.length,
             positionInSet: index,
-          }));
+          });
         })}
       </ul>
       </div>
@@ -440,7 +488,7 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
     // to ensure we're not rendering any stale UI.
     if (this.enqueuedRender) {
       this.enqueuedRender = false;
-      this.render();
+      return this.render();
     }
   }
 }

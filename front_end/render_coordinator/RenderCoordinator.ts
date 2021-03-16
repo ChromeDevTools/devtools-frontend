@@ -82,6 +82,7 @@ export class RenderCoordinator extends EventTarget {
 
   done(): Promise<void> {
     if (this.pendingWorkFrames.length === 0) {
+      this.logIfEnabled('[Queue empty]');
       return Promise.resolve();
     }
     return new Promise(resolve => this.addEventListener('queueempty', () => resolve(), {once: true}));

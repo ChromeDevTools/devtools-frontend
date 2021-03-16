@@ -74,11 +74,11 @@ export class IconButton extends HTMLElement {
           color: inherit;
           font-size: inherit;
           font-family: inherit;
+          background-color: var(--toolbar-bg-color);
         }
 
         .icon-button.with-click-handler {
           cursor: pointer;
-          background-color: var(--toolbar-bg-color);
           border: 1px solid var(--divider-color);
           border-radius: 2px;
         }

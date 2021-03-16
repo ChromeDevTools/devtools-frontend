@@ -23,7 +23,7 @@ describe('The Application Tab', async () => {
     await target.deleteCookie(...cookies);
   });
 
-  it('[crbug.com/1047348] shows cookies even when navigating to an unreachable page', async () => {
+  it('shows cookies even when navigating to an unreachable page (crbug.com/1047348)', async () => {
     const {target} = getBrowserAndPages();
     // This sets a new cookie foo=bar
     await navigateToApplicationTab(target, 'cookies');
@@ -50,7 +50,7 @@ describe('The Application Tab', async () => {
     ]);
   });
 
-  it('[crbug.com/462370] shows a preview of the cookie value', async () => {
+  it('shows a preview of the cookie value (crbug.com/462370)', async () => {
     const {target} = getBrowserAndPages();
     // This sets a new cookie foo=bar
     await navigateToApplicationTab(target, 'cookies');
@@ -67,7 +67,7 @@ describe('The Application Tab', async () => {
     });
   });
 
-  it('[crbug.com/997625] can als show the urldecoded value', async () => {
+  it('can als show the urldecoded value (crbug.com/997625)', async () => {
     const {target} = getBrowserAndPages();
     // This sets a new cookie foo=bar
     await navigateToApplicationTab(target, 'cookies');
@@ -95,7 +95,7 @@ describe('The Application Tab', async () => {
     });
   });
 
-  it('[crbug.com/1086462] clears the preview value when clearing cookies', async () => {
+  it('clears the preview value when clearing cookies (crbug.com/1086462)', async () => {
     const {target} = getBrowserAndPages();
     // This sets a new cookie foo=bar
     await navigateToApplicationTab(target, 'cookies');
@@ -123,7 +123,7 @@ describe('The Application Tab', async () => {
     });
   });
 
-  it('[crbug.com/978059] only clear currently visible cookies', async () => {
+  it('only clear currently visible cookies (crbug.com/978059)', async () => {
     const {target} = getBrowserAndPages();
     // This sets a new cookie foo=bar
     await navigateToApplicationTab(target, 'cookies');

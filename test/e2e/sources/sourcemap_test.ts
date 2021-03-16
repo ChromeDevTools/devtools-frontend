@@ -9,7 +9,7 @@ import {describe, it} from '../../shared/mocha-extensions.js';
 import {addBreakpointForLine, openSourceCodeEditorForFile, retrieveTopCallFrameScriptLocation} from '../helpers/sources-helpers.js';
 
 describe('The Sources Tab', async () => {
-  it('[crbug.com/1142705] sets multiple breakpoints in case of code-splitting', async () => {
+  it('sets multiple breakpoints in case of code-splitting (crbug.com/1142705)', async () => {
     const {target, frontend} = getBrowserAndPages();
     await openSourceCodeEditorForFile('sourcemap-codesplit.ts', 'sourcemap-codesplit.html');
     await addBreakpointForLine(frontend, 3);

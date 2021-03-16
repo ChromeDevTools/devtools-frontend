@@ -51,7 +51,17 @@ ruleTester.run('check_e2e_tests', rule, {
       };
       `,
       filename: 'test/e2e/folder/file.ts',
-    }
+    },
+    {
+      code: `import {describe, it} from '../../shared/mocha-extensions.js';
+
+      describe('e2e-test', async () => {
+        it(\`normal test \${withVariable} (crbug.com/1234)\`, async () => {
+        });
+      });
+      `,
+      filename: 'test/e2e/folder/file.ts',
+    },
   ],
 
   invalid: [
@@ -65,7 +75,7 @@ ruleTester.run('check_e2e_tests', rule, {
       });
       `,
       filename: 'test/e2e/folder/file.ts',
-      errors: [{message: rule.meta.messages.description}],
+      errors: [{message: rule.meta.messages.missingBugId}],
     },
     {
       code: `import {describe, it} from '../../shared/mocha-extensions.js';
@@ -88,7 +98,18 @@ ruleTester.run('check_e2e_tests', rule, {
       });
       `,
       filename: 'test/e2e/folder/file.ts',
-      errors: [{message: rule.meta.messages.description}],
+      errors: [{message: rule.meta.messages.missingBugId}],
+    },
+    {
+      code: `import {describe, it} from '../../shared/mocha-extensions.js';
+
+      describe('e2e-test', async () => {
+        it(\`[crbug.com/1234] normal test \${withVariable}\`, async () => {
+        });
+      });
+      `,
+      filename: 'test/e2e/folder/file.ts',
+      errors: [{message: rule.meta.messages.extraBugId}],
     },
   ]
 });

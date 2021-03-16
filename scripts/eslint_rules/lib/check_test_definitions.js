@@ -14,6 +14,18 @@ const TEST_NAME_REGEX = /^\[crbug.com\/\d+\]/;
 // Rule Definition
 // ------------------------------------------------------------------------------
 
+function getTextValue(node) {
+  if (node.type === 'Literal') {
+    return node.value;
+  }
+  if (node.type === 'TemplateLiteral') {
+    if (node.quasis.length === 0) {
+      return undefined;
+    }
+    return node.quasis[0].value.cooked;
+  }
+}
+
 module.exports = {
   meta: {
     type: 'problem',
@@ -23,8 +35,10 @@ module.exports = {
       category: 'Possible Errors',
     },
     messages: {
-      description:
+      missingBugId:
           'Skipped tests must have a CRBug included in the description: `it.skip(\'[crbug.com/BUGID]: testname\', async() => {})',
+      extraBugId:
+          'Non-skipped tests cannot include a CRBug tag at the beginning of the description: `it.skip(\'testname (crbug.com/BUGID)\', async() => {})',
       comment: 'A skipped test must have an attached comment with an explanation'
     },
     fixable: 'code',
@@ -37,27 +51,12 @@ module.exports = {
             node.parent.type === 'CallExpression') {
           const testNameNode = node.property.name === 'skip' ? node.parent.arguments[0] : node.parent.arguments[1];
 
-          let textValue;
-
-          if (testNameNode.type === 'Literal') {
-            textValue = testNameNode.value;
-          } else if (testNameNode.type === 'TemplateLiteral') {
-            if (testNameNode.quasis.length === 0) {
-              context.report({
-                node,
-                messageId: 'description',
-              });
-
-              return;
-            }
-
-            textValue = testNameNode.quasis[0].value.cooked;
-          }
+          const textValue = getTextValue(testNameNode);
 
           if (!textValue || !TEST_NAME_REGEX.test(textValue)) {
             context.report({
               node,
-              messageId: 'description',
+              messageId: 'missingBugId',
             });
           }
 
@@ -65,6 +64,19 @@ module.exports = {
 
           if (attachedComments.length === 0) {
             context.report({node, messageId: 'comment'});
+          }
+        }
+      },
+
+      CallExpression(node) {
+        if (node.callee.name === 'it') {
+          const textValue = getTextValue(node.arguments[0]);
+
+          if (textValue && TEST_NAME_REGEX.test(textValue)) {
+            context.report({
+              node,
+              messageId: 'extraBugId',
+            });
           }
         }
       }

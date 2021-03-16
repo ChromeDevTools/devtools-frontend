@@ -35,6 +35,18 @@ const yargsObject =
           type: 'string',
           desc: 'A comma separated glob (or just a file path) to select specific test files to execute.'
         })
+        .option('component-server-base-path', {
+          type: 'string',
+          desc:
+              'The component serve assumes examples live in out/TARGET/gen/front_end/component_docs, but you can set this option to add a prefix. Passing `foo` will redirect the server to look in out/TARGET/gen/foo/front_end/component_docs.',
+          default: '',
+        })
+        .option('component-server-shared-resources-path', {
+          type: 'string',
+          desc:
+              'Configures the base of the URLs that are injected into each component example. By default it is "/", so we load from "/front_end", but you can provide a different prefix if the shared resources are based elsewhere in the directory structure.',
+          default: '/',
+        })
         .option(
             'chrome-binary-path',
             {type: 'string', desc: 'Path to the Chromium binary.', default: downloadedChromeBinaryPath()})

@@ -8,8 +8,20 @@ const path = require('path');
 const parseURL = require('url').parse;
 const {argv} = require('yargs');
 
-const serverPort = parseInt(process.env.PORT, 10) || 8090;
+function getTestRunnerConfig() {
+  try {
+    return JSON.parse(process.env.TEST_RUNNER_JSON_CONFIG);
+  } catch {
+    // Return an empty object so any lookups return undefined
+    return {};
+  }
+}
+function getTestRunnerConfigSetting(settingKey, fallbackValue) {
+  const config = getTestRunnerConfig();
+  return config[settingKey] === undefined ? fallbackValue : config[settingKey];
+}
 
+const serverPort = parseInt(process.env.PORT, 10) || 8090;
 const target = argv.target || process.env.TARGET || 'Default';
 
 /**
@@ -17,15 +29,17 @@ const target = argv.target || process.env.TARGET || 'Default';
  * doc example to load. By default it's /, so that we load /front_end/..., but
  * this can be configured if you have a different file structure.
  */
-const sharedResourcesBase = argv.sharedResourcesBase || '/';
+const sharedResourcesBase =
+    argv.sharedResourcesBase || getTestRunnerConfigSetting('component-server-shared-resources-path', '/');
 
 /**
  * The server assumes that examples live in
- * devtoolsRoot/out/Target/front_end/component_docs, but if you need to add a
+ * devtoolsRoot/out/Target/gen/front_end/component_docs, but if you need to add a
  * prefix you can pass this argument. Passing `foo` will redirect the server to
- * look in devtoolsRoot/out/Target/foo/front_end/component_docs.
+ * look in devtoolsRoot/out/Target/gen/foo/front_end/component_docs.
  */
-const componentDocsBaseArg = argv.componentDocsBase || process.env.COMPONENT_DOCS_BASE || '';
+const componentDocsBaseArg = argv.componentDocsBase || process.env.COMPONENT_DOCS_BASE ||
+    getTestRunnerConfigSetting('component-server-base-path', '');
 
 /**
  * When you run npm run components-server we run the script as is from scripts/,

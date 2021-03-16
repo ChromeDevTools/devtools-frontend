@@ -1694,6 +1694,9 @@
   "issues/AffectedCookiesView.ts | name": {
     "message": "Name"
   },
+  "issues/AffectedCookiesView.ts | nCookies": {
+    "message": "{n, plural, =1 { cookie} other { cookies}}"
+  },
   "issues/AffectedCookiesView.ts | path": {
     "message": "Path"
   },

@@ -605,7 +605,8 @@ export class DeviceModeToolbar {
   _wrapToolbarItem(element) {
     const container = document.createElement('div');
     const shadowRoot = UI.Utils.createShadowRootWithCoreStyles(
-        container, {cssFile: 'emulation/deviceModeToolbar.css', enableLegacyPatching: true, delegatesFocus: undefined});
+        container,
+        {cssFile: 'emulation/deviceModeToolbar.css', enableLegacyPatching: false, delegatesFocus: undefined});
     shadowRoot.appendChild(element);
     return new UI.Toolbar.ToolbarItem(container);
   }

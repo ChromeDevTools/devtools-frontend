@@ -58,7 +58,7 @@ export class SoftDropDown {
     this._width = 315;
     createShadowRootWithCoreStyles(this._glassPane.contentElement, {
       cssFile: 'ui/softDropDown.css',
-      enableLegacyPatching: true,
+      enableLegacyPatching: false,
       delegatesFocus: undefined
     }).appendChild(this._list.element);
     ARIAUtils.markAsMenu(this._list.element);

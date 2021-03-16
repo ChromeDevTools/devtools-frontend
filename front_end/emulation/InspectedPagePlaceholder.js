@@ -12,7 +12,7 @@ let inspectedPagePlaceholderInstance;
 export class InspectedPagePlaceholder extends UI.Widget.Widget {
   constructor() {
     super(true);
-    this.registerRequiredCSS('emulation/inspectedPagePlaceholder.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('emulation/inspectedPagePlaceholder.css', {enableLegacyPatching: false});
     UI.ZoomManager.ZoomManager.instance().addEventListener(UI.ZoomManager.Events.ZoomChanged, this.onResize, this);
     this.restoreMinimumSize();
   }

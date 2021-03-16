@@ -207,7 +207,7 @@ export class ConsoleContextSelector implements SDK.SDKModel.SDKModelObserver<SDK
     const element = document.createElement('div');
     const shadowRoot = UI.Utils.createShadowRootWithCoreStyles(
         element,
-        {cssFile: 'console/consoleContextSelector.css', enableLegacyPatching: true, delegatesFocus: undefined});
+        {cssFile: 'console/consoleContextSelector.css', enableLegacyPatching: false, delegatesFocus: undefined});
     const title = shadowRoot.createChild('div', 'title');
     UI.UIUtils.createTextChild(title, Platform.StringUtilities.trimEndWithMaxLength(this.titleFor(item), 100));
     const subTitle = shadowRoot.createChild('div', 'subtitle');

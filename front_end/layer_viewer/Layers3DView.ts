@@ -128,7 +128,7 @@ export class Layers3DView extends UI.Widget.VBox implements LayerView {
   constructor(layerViewHost: LayerViewHost) {
     super(true);
 
-    this.registerRequiredCSS('layer_viewer/layers3DView.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('layer_viewer/layers3DView.css', {enableLegacyPatching: false});
     this.contentElement.classList.add('layers-3d-view');
     this._failBanner = new UI.Widget.VBox();
     this._failBanner.element.classList.add('full-widget-dimmed-banner');

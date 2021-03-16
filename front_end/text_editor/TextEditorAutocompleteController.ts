@@ -60,7 +60,7 @@ export class TextEditorAutocompleteController implements UI.SuggestBox.SuggestBo
     this._tooltipElement.classList.add('autocomplete-tooltip');
     const shadowRoot = UI.Utils.createShadowRootWithCoreStyles(
         this._tooltipGlassPane.contentElement,
-        {cssFile: 'text_editor/autocompleteTooltip.css', enableLegacyPatching: true, delegatesFocus: undefined});
+        {cssFile: 'text_editor/autocompleteTooltip.css', enableLegacyPatching: false, delegatesFocus: undefined});
     shadowRoot.appendChild(this._tooltipElement);
 
     this._queryRange = null;

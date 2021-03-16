@@ -37,6 +37,28 @@ export class ItemSelectedEvent<TreeNodeDataType> extends Event {
   }
 }
 
+export class TreeNodeMouseOverEvent<TreeNodeDataType> extends Event {
+  data: {
+    node: TreeNode<TreeNodeDataType>,
+  };
+
+  constructor(node: TreeNode<TreeNodeDataType>) {
+    super('treenodemouseover', {bubbles: true, composed: true});
+    this.data = {node};
+  }
+}
+
+export class TreeNodeMouseOutEvent<TreeNodeDataType> extends Event {
+  data: {
+    node: TreeNode<TreeNodeDataType>,
+  };
+
+  constructor(node: TreeNode<TreeNodeDataType>) {
+    super('treenodemouseout', {bubbles: true, composed: true});
+    this.data = {node};
+  }
+}
+
 export class TreeOutline<TreeNodeDataType> extends HTMLElement {
   private readonly shadow = this.attachShadow({mode: 'open'});
   private treeData: readonly TreeNode<TreeNodeDataType>[] = [];
@@ -359,6 +381,12 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
         aria-posinset=${positionInSet + 1}
         class=${listItemClasses}
         @click=${this.onNodeClick}
+        @mouseover=${(): void => {
+          this.dispatchEvent(new TreeNodeMouseOverEvent(node));
+        }}
+        @mouseout=${(): void => {
+          this.dispatchEvent(new TreeNodeMouseOutEvent(node));
+        }}
         track-dom-node-to-tree-node=${trackDOMNodeToTreeNode(this.domNodeToTreeNodeMap, node)}
         on-render=${ComponentHelpers.Directives.nodeRenderedCallback(domNode => {
          /**

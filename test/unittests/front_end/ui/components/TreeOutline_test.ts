@@ -5,7 +5,7 @@
 import * as Coordinator from '../../../../../front_end/render_coordinator/render_coordinator.js';
 import * as LitHtml from '../../../../../front_end/third_party/lit-html/lit-html.js';
 import * as UIComponents from '../../../../../front_end/ui/components/components.js';
-import {assertElement, assertShadowRoot, dispatchClickEvent, dispatchKeyDownEvent, getEventPromise, renderElementIntoDOM, stripLitHtmlCommentNodes} from '../../helpers/DOMHelpers.js';
+import {assertElement, assertShadowRoot, dispatchClickEvent, dispatchKeyDownEvent, dispatchMouseOutEvent, dispatchMouseOverEvent, getEventPromise, renderElementIntoDOM, stripLitHtmlCommentNodes} from '../../helpers/DOMHelpers.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
@@ -1131,6 +1131,37 @@ describe('TreeOutline', () => {
         await coordinator.done();
         const event = await treeItemSelectedEvent;
         assert.deepEqual(event.data, {node: basicTreeData[1]});
+      });
+    });
+
+    describe('treenodemouseover', () => {
+      it('emits an event when the user mouses over the element', async () => {
+        const {component, shadowRoot} = await renderTreeOutline({
+          tree: basicTreeData,
+        });
+        await coordinator.done();
+        const officeNode = getVisibleTreeNodeByText(shadowRoot, 'Offices');
+        const treeNodeMouseOverEvent =
+            getEventPromise<UIComponents.TreeOutline.TreeNodeMouseOverEvent<string>>(component, 'treenodemouseover');
+        dispatchMouseOverEvent(officeNode);
+        const event = await treeNodeMouseOverEvent;
+        assert.deepEqual(event.data, {node: basicTreeData[0]});
+      });
+    });
+
+    describe('treenodemouseout', () => {
+      it('emits an event when the user mouses out of the element', async () => {
+        const {component, shadowRoot} = await renderTreeOutline({
+          tree: basicTreeData,
+        });
+        await coordinator.done();
+        const officeNode = getVisibleTreeNodeByText(shadowRoot, 'Offices');
+        dispatchMouseOverEvent(officeNode);
+        const treeNodeMouseOutEvent =
+            getEventPromise<UIComponents.TreeOutline.TreeNodeMouseOutEvent<string>>(component, 'treenodemouseout');
+        dispatchMouseOutEvent(officeNode);
+        const event = await treeNodeMouseOutEvent;
+        assert.deepEqual(event.data, {node: basicTreeData[0]});
       });
     });
   });

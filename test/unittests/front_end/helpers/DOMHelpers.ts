@@ -153,6 +153,13 @@ export function dispatchMouseOverEvent<T extends Element>(element: T, options: M
   const moveEvent = new MouseEvent('mouseover', options);
   element.dispatchEvent(moveEvent);
 }
+/**
+ * Dispatches a mouse out event.
+ */
+export function dispatchMouseOutEvent<T extends Element>(element: T, options: MouseEventInit = {}) {
+  const moveEvent = new MouseEvent('mouseout', options);
+  element.dispatchEvent(moveEvent);
+}
 
 /**
  * Dispatches a mouse move event.

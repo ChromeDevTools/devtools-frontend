@@ -17,6 +17,17 @@ component.data = {
   tree: officesAndProductsData,
 };
 
+component.addEventListener('treenodemouseover', (event: Event) => {
+  const evt = event as Components.TreeOutline.TreeNodeMouseOverEvent<string>;
+  // eslint-disable-next-line no-console
+  console.log('Node', evt.data.node, 'mouseover');
+});
+component.addEventListener('treenodemouseout', (event: Event) => {
+  const evt = event as Components.TreeOutline.TreeNodeMouseOutEvent<string>;
+  // eslint-disable-next-line no-console
+  console.log('Node', evt.data.node, 'mouseout');
+});
+
 document.getElementById('container')?.appendChild(component);
 document.getElementById('recursively-expand')?.addEventListener('click', () => {
   component.expandRecursively();

@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {$$, click, getBrowserAndPages, goToResource, step, waitForElementsWithTextContent, waitForElementWithTextContent, waitForFunction} from '../../shared/helper.js';
+import {$$, assertNotNull, click, getBrowserAndPages, goToResource, step, waitFor, waitForElementsWithTextContent, waitForElementWithTextContent, waitForFunction} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {changeViewViaDropdown, findSearchResult, getDataGridRows, navigateToMemoryTab, setSearchFilter, takeHeapSnapshot, waitForNonEmptyHeapSnapshotData, waitForRetainerChain, waitForSearchResultNumber, waitUntilRetainerChainSatisfies} from '../helpers/memory-helpers.js';
 
@@ -11,7 +11,9 @@ describe('The Memory Panel', async function() {
   // These tests render large chunks of data into DevTools and filter/search
   // through it. On bots with less CPU power, these can fail because the
   // rendering takes a long time, so we allow a larger timeout.
-  this.timeout(35000);
+  if (this.timeout() !== 0) {
+    this.timeout(35000);
+  }
 
   it('Loads content', async () => {
     await goToResource('memory/default.html');
@@ -205,5 +207,23 @@ describe('The Memory Panel', async function() {
     await waitForSearchResultNumber(8);
     await waitUntilRetainerChainSatisfies(
         retainerChain => retainerChain.some(({retainerClassName}) => retainerClassName === 'Detached Window'));
+  });
+
+  it('Shows the a tooltip', async () => {
+    await goToResource('memory/detached-dom-tree.html');
+    await navigateToMemoryTab();
+    await takeHeapSnapshot();
+    await waitForNonEmptyHeapSnapshotData();
+    await setSearchFilter('Detached HTMLDivElement');
+    await waitForSearchResultNumber(3);
+    await waitUntilRetainerChainSatisfies(retainerChain => {
+      return retainerChain.length > 0 && retainerChain[0].propertyName === 'retaining_wrapper';
+    });
+    const rows = await getDataGridRows('.retaining-paths-view table.data');
+    const propertyNameElement = await rows[0].$('span.property-name');
+    assertNotNull(propertyNameElement);
+    propertyNameElement.hover();
+    const el = await waitFor('div.vbox.flex-auto.no-pointer-events');
+    await waitFor('.source-code', el);
   });
 });

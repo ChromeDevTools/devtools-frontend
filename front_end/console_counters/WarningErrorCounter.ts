@@ -12,6 +12,7 @@ import * as Root from '../root/root.js';
 import * as SDK from '../sdk/sdk.js';
 import * as Components from '../ui/components/components.js';
 import * as UI from '../ui/ui.js';
+import {getIssueCountsEnumeration} from './IssueCounter.js';
 
 const UIStrings = {
   /**
@@ -35,7 +36,7 @@ const UIStrings = {
   /**
   *@description Title for the issues count in the Issues Error Counter shown in the main toolbar (top-left in DevTools). The issues count refers to the number of issues in the issues tab.
   */
-  openIssuesToView: '{n, plural, =1 {Open Issues to view # issue} other {Open Issues to view # issues}}',
+  openIssuesToView: '{n, plural, =1 {Open Issues to view # issue:} other {Open Issues to view # issues:}}',
 };
 const str_ = i18n.i18n.registerUIStrings('console_counters/WarningErrorCounter.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -123,7 +124,8 @@ export class WarningErrorCounter implements UI.Toolbar.Provider {
     const errors = SDK.ConsoleModel.ConsoleModel.instance().errors();
     const warnings = SDK.ConsoleModel.ConsoleModel.instance().warnings();
     const violations = this._violationCounter ? SDK.ConsoleModel.ConsoleModel.instance().violations() : 0;
-    const issues = BrowserSDK.IssuesManager.IssuesManager.instance().numberOfIssues();
+    const issuesManager = BrowserSDK.IssuesManager.IssuesManager.instance();
+    const issues = issuesManager.numberOfIssues();
 
     const countToText = (c: number): string|undefined => c === 0 ? undefined : `${c}`;
 
@@ -157,7 +159,9 @@ export class WarningErrorCounter implements UI.Toolbar.Provider {
 
     /* Update issuesCounter items. */
     this._issuesCounter.setTexts([countToText(issues)]);
-    const issuesTitle = i18nString(UIStrings.openIssuesToView, {n: issues});
+    const issueEnumeration = getIssueCountsEnumeration(issuesManager);
+    const issuesTitleLead = i18nString(UIStrings.openIssuesToView, {n: issues});
+    const issuesTitle = `${issuesTitleLead} ${issueEnumeration}`;
     // TODO(chromium:1167711): Let the component handle the title and ARIA label.
     UI.Tooltip.Tooltip.install(this._issuesCounter, issuesTitle);
     UI.ARIAUtils.setAccessibleName(this._issuesCounter, issuesTitle);

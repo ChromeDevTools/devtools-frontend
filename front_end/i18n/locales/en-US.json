@@ -588,7 +588,7 @@
     "message": "Open Console to view {PH1}"
   },
   "console_counters/WarningErrorCounter.ts | openIssuesToView": {
-    "message": "{n, plural, =1 {Open Issues to view # issue} other {Open Issues to view # issues}}"
+    "message": "{n, plural, =1 {Open Issues to view # issue:} other {Open Issues to view # issues:}}"
   },
   "console_counters/WarningErrorCounter.ts | openLighthouseToView": {
     "message": "{n, plural, =1 {Open Lighthouse to view # violation} other {Open Lighthouse to view # violations}}"
@@ -782,20 +782,23 @@
   "console/ConsoleView.ts | info": {
     "message": "Info"
   },
+  "console/ConsoleView.ts | issuesWithColon": {
+    "message": "{n, plural, =0 {No Issues} =1 {# Issue:} other {# Issues:}}"
+  },
+  "console/ConsoleView.ts | issueToolbarClickToGoToTheIssuesTab": {
+    "message": "Click to go to the issues tab"
+  },
+  "console/ConsoleView.ts | issueToolbarClickToView": {
+    "message": "Click to view {issueEnumeration}"
+  },
   "console/ConsoleView.ts | issueToolbarTooltipGeneral": {
     "message": "Some problems no longer generate console messages, but are surfaced in the issues tab."
-  },
-  "console/ConsoleView.ts | issueToolbarTooltipHaveMultipleIssues": {
-    "message": "{issueCount, plural, =0 {Click to go to the issues tab} =1 {Click to view # issue} other {Click to view # issues}}"
   },
   "console/ConsoleView.ts | logLevels": {
     "message": "Log levels"
   },
   "console/ConsoleView.ts | logLevelS": {
     "message": "Log level: {PH1}"
-  },
-  "console/ConsoleView.ts | multipleIssues": {
-    "message": "{issueCount, plural, =0 {No Issues} =1 {# Issue} other {# Issues}}"
   },
   "console/ConsoleView.ts | onlyShowMessagesFromTheCurrentContext": {
     "message": "Only show messages from the current context (top, iframe, worker, extension)"
@@ -2822,12 +2825,6 @@
   "issues/IssuesPane.ts | includeThirdpartyCookieIssues": {
     "message": "Include third-party cookie issues"
   },
-  "issues/IssuesPane.ts | issuesPertainingToSOperation": {
-    "message": "Issues pertaining to {PH1} operation detected."
-  },
-  "issues/IssuesPane.ts | issuesPertainingToSOperations": {
-    "message": "Issues pertaining to {PH1} operations detected."
-  },
   "issues/IssuesPane.ts | lowTextContrast": {
     "message": "Low Text Contrast"
   },
@@ -2858,9 +2855,6 @@
   "issues/IssueView.ts | blocked": {
     "message": "blocked"
   },
-  "issues/IssueView.ts | breakingChangeIssue": {
-    "message": "A breaking change issue: the page may stop working in an upcoming version of Chrome"
-  },
   "issues/IssueView.ts | clickToRevealTheViolatingDomNode": {
     "message": "Click to reveal the violating DOM node in the Elements panel"
   },
@@ -2876,9 +2870,6 @@
   "issues/IssueView.ts | element": {
     "message": "Element"
   },
-  "issues/IssueView.ts | improvementIssue": {
-    "message": "An improvement issue: there is an opportunity to improve the page"
-  },
   "issues/IssueView.ts | isThisIssueMessageHelpfulToYou": {
     "message": "Is this issue message helpful to you?"
   },
@@ -2887,9 +2878,6 @@
   },
   "issues/IssueView.ts | name": {
     "message": "Name"
-  },
-  "issues/IssueView.ts | pageErrorIssue": {
-    "message": "A page error issue: the page is not working correctly"
   },
   "issues/IssueView.ts | reportonly": {
     "message": "report-only"

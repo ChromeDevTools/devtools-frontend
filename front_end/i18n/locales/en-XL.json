@@ -588,7 +588,7 @@
     "message": "Ôṕêń Ĉón̂śôĺê t́ô v́îéŵ {PH1}"
   },
   "console_counters/WarningErrorCounter.ts | openIssuesToView": {
-    "message": "{n, plural, =1 {Ôṕêń Îśŝúêś t̂ó v̂íêẃ # îśŝúê} other {Óp̂én̂ Íŝśûéŝ t́ô v́îéŵ # íŝśûéŝ}}"
+    "message": "{n, plural, =1 {Ôṕêń Îśŝúêś t̂ó v̂íêẃ # îśŝúê:} other {Óp̂én̂ Íŝśûéŝ t́ô v́îéŵ # íŝśûéŝ:}}"
   },
   "console_counters/WarningErrorCounter.ts | openLighthouseToView": {
     "message": "{n, plural, =1 {Ôṕêń L̂íĝh́t̂h́ôúŝé t̂ó v̂íêẃ # v̂íôĺât́îón̂} other {Óp̂én̂ Ĺîǵĥt́ĥóûśê t́ô v́îéŵ # v́îól̂át̂íôńŝ}}"
@@ -782,20 +782,23 @@
   "console/ConsoleView.ts | info": {
     "message": "Îńf̂ó"
   },
+  "console/ConsoleView.ts | issuesWithColon": {
+    "message": "{n, plural, =0 {N̂ó Îśŝúêś} =1 {# Îśŝúê:} other {# Íŝśûéŝ:}}"
+  },
+  "console/ConsoleView.ts | issueToolbarClickToGoToTheIssuesTab": {
+    "message": "Ĉĺîćk̂ t́ô ǵô t́ô t́ĥé îśŝúêś t̂áb̂"
+  },
+  "console/ConsoleView.ts | issueToolbarClickToView": {
+    "message": "Ĉĺîćk̂ t́ô v́îéŵ {issueEnumeration}"
+  },
   "console/ConsoleView.ts | issueToolbarTooltipGeneral": {
     "message": "Ŝóm̂é p̂ŕôb́l̂ém̂ś n̂ó l̂ón̂ǵêŕ ĝén̂ér̂át̂é ĉón̂śôĺê ḿêśŝáĝéŝ, b́ût́ âŕê śûŕf̂áĉéd̂ ín̂ t́ĥé îśŝúêś t̂áb̂."
-  },
-  "console/ConsoleView.ts | issueToolbarTooltipHaveMultipleIssues": {
-    "message": "{issueCount, plural, =0 {Ĉĺîćk̂ t́ô ǵô t́ô t́ĥé îśŝúêś t̂áb̂} =1 {Ćl̂íĉḱ t̂ó v̂íêẃ # îśŝúê} other {Ćl̂íĉḱ t̂ó v̂íêẃ # îśŝúêś}}"
   },
   "console/ConsoleView.ts | logLevels": {
     "message": "L̂óĝ ĺêv́êĺŝ"
   },
   "console/ConsoleView.ts | logLevelS": {
     "message": "L̂óĝ ĺêv́êĺ: {PH1}"
-  },
-  "console/ConsoleView.ts | multipleIssues": {
-    "message": "{issueCount, plural, =0 {N̂ó Îśŝúêś} =1 {# Îśŝúê} other {# Íŝśûéŝ}}"
   },
   "console/ConsoleView.ts | onlyShowMessagesFromTheCurrentContext": {
     "message": "Ôńl̂ý ŝh́ôẃ m̂éŝśâǵêś f̂ŕôḿ t̂h́ê ćûŕr̂én̂t́ ĉón̂t́êx́t̂ (top, iframe, worker, éx̂t́êńŝíôń)"
@@ -2822,12 +2825,6 @@
   "issues/IssuesPane.ts | includeThirdpartyCookieIssues": {
     "message": "Îńĉĺûd́ê t́ĥír̂d́-p̂ár̂t́ŷ ćôók̂íê íŝśûéŝ"
   },
-  "issues/IssuesPane.ts | issuesPertainingToSOperation": {
-    "message": "Îśŝúêś p̂ér̂t́âín̂ín̂ǵ t̂ó {PH1} ôṕêŕât́îón̂ d́êt́êćt̂éd̂."
-  },
-  "issues/IssuesPane.ts | issuesPertainingToSOperations": {
-    "message": "Îśŝúêś p̂ér̂t́âín̂ín̂ǵ t̂ó {PH1} ôṕêŕât́îón̂ś d̂ét̂éĉt́êd́."
-  },
   "issues/IssuesPane.ts | lowTextContrast": {
     "message": "L̂óŵ T́êx́t̂ Ćôńt̂ŕâśt̂"
   },
@@ -2858,9 +2855,6 @@
   "issues/IssueView.ts | blocked": {
     "message": "b̂ĺôćk̂éd̂"
   },
-  "issues/IssueView.ts | breakingChangeIssue": {
-    "message": "Â b́r̂éâḱîńĝ ćĥán̂ǵê íŝśûé: t̂h́ê ṕâǵê ḿâý ŝt́ôṕ ŵór̂ḱîńĝ ín̂ án̂ úp̂ćôḿîńĝ v́êŕŝíôń ôf́ Ĉh́r̂óm̂é"
-  },
   "issues/IssueView.ts | clickToRevealTheViolatingDomNode": {
     "message": "Ĉĺîćk̂ t́ô ŕêv́êál̂ t́ĥé v̂íôĺât́îńĝ D́ÔḾ n̂ód̂é îń t̂h́ê Él̂ém̂én̂t́ŝ ṕâńêĺ"
   },
@@ -2876,9 +2870,6 @@
   "issues/IssueView.ts | element": {
     "message": "Êĺêḿêńt̂"
   },
-  "issues/IssueView.ts | improvementIssue": {
-    "message": "Âń îḿp̂ŕôv́êḿêńt̂ íŝśûé: t̂h́êŕê íŝ án̂ óp̂ṕôŕt̂ún̂ít̂ý t̂ó îḿp̂ŕôv́ê t́ĥé p̂áĝé"
-  },
   "issues/IssueView.ts | isThisIssueMessageHelpfulToYou": {
     "message": "Îś t̂h́îś îśŝúê ḿêśŝáĝé ĥél̂ṕf̂úl̂ t́ô ýôú?"
   },
@@ -2887,9 +2878,6 @@
   },
   "issues/IssueView.ts | name": {
     "message": "N̂ám̂é"
-  },
-  "issues/IssueView.ts | pageErrorIssue": {
-    "message": "Â ṕâǵê ér̂ŕôŕ îśŝúê: t́ĥé p̂áĝé îś n̂ót̂ ẃôŕk̂ín̂ǵ ĉór̂ŕêćt̂ĺŷ"
   },
   "issues/IssueView.ts | reportonly": {
     "message": "r̂ép̂ór̂t́-ôńl̂ý"

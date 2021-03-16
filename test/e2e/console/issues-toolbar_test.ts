@@ -20,7 +20,7 @@ describe('The Console Tab', async () => {
     await goToResource('console/cookie-issue.html');
     await navigateToConsoleTab();
 
-    await waitForIssueButtonLabel('1 Issue');
+    await waitForIssueButtonLabel('1 Issue:');
   });
 
   it('shows the toolbar button for two issues correctly', async () => {
@@ -28,7 +28,7 @@ describe('The Console Tab', async () => {
     await goToResource('console/two-cookie-issues.html');
     await navigateToConsoleTab();
 
-    await waitForIssueButtonLabel('2 Issues');
+    await waitForIssueButtonLabel('2 Issues:');
   });
 
   it('updates the toolbar button correctly', async () => {
@@ -44,6 +44,6 @@ describe('The Console Tab', async () => {
       document.cookie = 'foo=bar;samesite=None';
     });
 
-    await waitForIssueButtonLabel('1 Issue');
+    await waitForIssueButtonLabel('1 Issue:');
   });
 });

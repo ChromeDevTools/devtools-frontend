@@ -35,6 +35,7 @@ devtools_module("issues") {
     "../browser_sdk:bundle",
     "../common:bundle",
     "../components:bundle",
+    "../console_counters:bundle",
     "../elements:bundle",
     "../i18n:bundle",
     "../network:bundle",

@@ -37,12 +37,12 @@ import * as Bindings from '../bindings/bindings.js';
 import * as BrowserSDK from '../browser_sdk/browser_sdk.js';
 import * as Common from '../common/common.js';
 import * as Components from '../components/components.js';
+import * as ConsoleCounters from '../console_counters/console_counters.js';
 import * as Host from '../host/host.js';
 import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as TextUtils from '../text_utils/text_utils.js';
-import * as UIComponents from '../ui/components/components.js';
 import * as UI from '../ui/ui.js';
 
 import {ConsoleContextSelector} from './ConsoleContextSelector.js';
@@ -57,20 +57,24 @@ import {ConsoleViewport} from './ConsoleViewport.js';
 
 const UIStrings = {
   /**
-  *@description Label for link to Issues tab, specifying how many issues there are.
+  *@description Label for button which links to Issues tab, specifying how many issues there are.
   */
-  multipleIssues: '{issueCount, plural, =0 {No Issues} =1 {# Issue} other {# Issues}}',
+  issuesWithColon: '{n, plural, =0 {No Issues} =1 {# Issue:} other {# Issues:}}',
   /**
   *@description Text for the tooltip of the issue counter toolbar item
   */
   issueToolbarTooltipGeneral: 'Some problems no longer generate console messages, but are surfaced in the issues tab.',
   /**
-  * @description Text for the tooltip of the issue counter toolbar item. Indicates how many issues
-  * there are in the Issues tab. For the =0 case, we don't specify the number of issues but just
-  * provide a general call-to-action for the Issues tab.
+  * @description Text for the tooltip of the issue counter toolbar item. The placeholder indicates how many issues
+  * there are in the Issues tab broken down by kind.
+  * @example {1 page error, 2 breaking changes} issueEnumeration
   */
-  issueToolbarTooltipHaveMultipleIssues:
-      '{issueCount, plural, =0 {Click to go to the issues tab} =1 {Click to view # issue} other {Click to view # issues}}',
+  issueToolbarClickToView: 'Click to view {issueEnumeration}',
+  /**
+  * @description Text for the tooltip of the issue counter toolbar item. The placeholder indicates how many issues
+  * there are in the Issues tab broken down by kind.
+  */
+  issueToolbarClickToGoToTheIssuesTab: 'Click to go to the issues tab',
   /**
   *@description Text in Console View of the Console panel
   */
@@ -271,7 +275,7 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
   _innerSearchTimeoutId?: number;
   _muteViewportUpdates?: boolean;
   _waitForScrollTimeout?: number;
-  _issuesCounter: UIComponents.IconButton.IconButton;
+  _issueCounter: ConsoleCounters.IssueCounter.IssueCounter;
 
   constructor() {
     super();
@@ -347,15 +351,16 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
     toolbar.appendToolbarItem(this._filter._levelMenuButton);
     toolbar.appendToolbarItem(this._progressToolbarItem);
     toolbar.appendSeparator();
-    this._issuesCounter = new UIComponents.IconButton.IconButton();
-    this._issuesCounter.id = 'console-issues-counter';
-    const issuesToolbarItem = new UI.Toolbar.ToolbarItem(this._issuesCounter);
-    this._issuesCounter.data = {
+    this._issueCounter = new ConsoleCounters.IssueCounter.IssueCounter();
+    this._issueCounter.id = 'console-issues-counter';
+    const issuesToolbarItem = new UI.Toolbar.ToolbarItem(this._issueCounter);
+    this._issueCounter.data = {
       clickHandler: (): void => {
         Host.userMetrics.issuesPanelOpenedFrom(Host.UserMetrics.IssueOpener.StatusBarIssuesCounter);
         UI.ViewManager.ViewManager.instance().showView('issues-pane');
       },
-      groups: [{iconName: 'issue-text-icon', iconColor: '#1a73e8'}],
+      issuesManager: BrowserSDK.IssuesManager.IssuesManager.instance(),
+      accessibleName: i18nString(UIStrings.issueToolbarTooltipGeneral),
     };
     toolbar.appendToolbarItem(issuesToolbarItem);
     rightToolbar.appendSeparator();
@@ -674,14 +679,19 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
   }
 
   _updateIssuesToolbarItem(): void {
-    const issueCount = BrowserSDK.IssuesManager.IssuesManager.instance().numberOfIssues();
-    const issuesSummary = i18nString(UIStrings.multipleIssues, {issueCount});
-    const issuesTitleGotoIssues = i18nString(UIStrings.issueToolbarTooltipHaveMultipleIssues, {issueCount});
-    this._issuesCounter.setTexts([issuesSummary]);
+    const manager = BrowserSDK.IssuesManager.IssuesManager.instance();
+    const issueEnumeration = ConsoleCounters.IssueCounter.getIssueCountsEnumeration(manager);
+    const issuesTitleGotoIssues = manager.numberOfIssues() === 0 ?
+        i18nString(UIStrings.issueToolbarClickToGoToTheIssuesTab) :
+        i18nString(UIStrings.issueToolbarClickToView, {issueEnumeration});
     const issuesTitleGeneral = i18nString(UIStrings.issueToolbarTooltipGeneral);
     const issuesTitle = `${issuesTitleGeneral} ${issuesTitleGotoIssues}`;
-    UI.Tooltip.Tooltip.install(this._issuesCounter, issuesTitle);
-    UI.ARIAUtils.setAccessibleName(this._issuesCounter, issuesTitle);
+    UI.Tooltip.Tooltip.install(this._issueCounter, issuesTitle);
+    this._issueCounter.data = {
+      ...this._issueCounter.data,
+      leadingText: i18nString(UIStrings.issuesWithColon, {n: manager.numberOfIssues()}),
+      accessibleName: issuesTitle,
+    };
   }
 
   _scheduleViewportRefresh(): void {

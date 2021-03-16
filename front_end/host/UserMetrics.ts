@@ -595,8 +595,7 @@ export const DevtoolsExperiments: {
   'ignoreListJSFramesOnTimeline': 43,
   'contrastIssues': 44,
   'experimentalCookieFeatures': 45,
-  'issueKindsVisuals': 46,
-  '__lastValidEnumPosition': 46,
+  '__lastValidEnumPosition': 45,
 };
 
 export const IssueExpanded: {

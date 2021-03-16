@@ -49,10 +49,10 @@ export function getIssueKindIconData(issueKind: SDK.Issue.IssueKind): UIComponen
   }
 }
 
-function toIconGroup({iconName, color, width, height}: UIComponents.Icon.IconWithName, defaultIconSize: boolean):
+function toIconGroup({iconName, color, width, height}: UIComponents.Icon.IconWithName, sizeOverride?: string):
     UIComponents.IconButton.IconWithTextData {
-  if (defaultIconSize) {
-    return {iconName, iconColor: color};
+  if (sizeOverride) {
+    return {iconName, iconColor: color, iconWidth: sizeOverride, iconHeight: sizeOverride};
   }
   return {iconName, iconColor: color, iconWidth: width, iconHeight: height};
 }
@@ -75,6 +75,7 @@ export interface IssueCounterData {
   omitEmpty?: boolean;
   issuesManager: BrowserSDK.IssuesManager.IssuesManager;
   throttlerTimeout?: number;
+  accessibleName?: string;
 }
 
 // @ts-ignore Remove this comment once Intl.ListFormat is in type defs.
@@ -104,6 +105,8 @@ export class IssueCounter extends HTMLElement {
   private counts: [number, number, number] = [0, 0, 0];
   private omitEmpty: boolean = true;
   private issuesManager: BrowserSDK.IssuesManager.IssuesManager|undefined = undefined;
+  private accessibleName: string|undefined = undefined;
+  private throttlerTimeout: number|undefined;
 
   scheduleUpdate(): void {
     if (this.throttler) {
@@ -118,6 +121,8 @@ export class IssueCounter extends HTMLElement {
     this.leadingText = data.leadingText ?? '';
     this.tooltipCallback = data.tooltipCallback;
     this.omitEmpty = data.omitEmpty ?? true;
+    this.accessibleName = data.accessibleName;
+    this.throttlerTimeout = data.throttlerTimeout;
     if (this.issuesManager !== data.issuesManager) {
       this.issuesManager?.removeEventListener(
           BrowserSDK.IssuesManager.Events.IssuesCountUpdated, this.scheduleUpdate, this);
@@ -127,13 +132,22 @@ export class IssueCounter extends HTMLElement {
     }
     if (data.throttlerTimeout !== 0) {
       this.throttler = new Common.Throttler.Throttler(data.throttlerTimeout ?? 100);
+    } else {
+      this.throttler = undefined;
     }
-    this.render();
+    this.scheduleUpdate();
   }
 
-  setLeadingText(leadingText: Common.UIString.LocalizedString): void {
-    this.leadingText = leadingText;
-    this.scheduleUpdate();
+  get data(): IssueCounterData {
+    return {
+      clickHandler: this.clickHandler,
+      tooltipCallback: this.tooltipCallback,
+      leadingText: this.leadingText,
+      omitEmpty: this.omitEmpty,
+      issuesManager: this.issuesManager as BrowserSDK.IssuesManager.IssuesManager,
+      accessibleName: this.accessibleName,
+      throttlerTimeout: this.throttlerTimeout,
+    };
   }
 
   private render(): void {
@@ -145,20 +159,20 @@ export class IssueCounter extends HTMLElement {
       this.issuesManager.numberOfIssues(SDK.Issue.IssueKind.BreakingChange),
       this.issuesManager.numberOfIssues(SDK.Issue.IssueKind.Improvement),
     ];
-    const defaultIconSize = Boolean(this.clickHandler);
     const countToString = (count: number): string|undefined => (count > 0 || !this.omitEmpty) ? `${count}` : undefined;
+    const iconSize = '2px';
     const data: UIComponents.IconButton.IconButtonData = {
       groups: [
         {
-          ...toIconGroup(getIssueKindIconData(SDK.Issue.IssueKind.PageError), defaultIconSize),
+          ...toIconGroup(getIssueKindIconData(SDK.Issue.IssueKind.PageError), iconSize),
           text: countToString(this.counts[0]),
         },
         {
-          ...toIconGroup(getIssueKindIconData(SDK.Issue.IssueKind.BreakingChange), defaultIconSize),
+          ...toIconGroup(getIssueKindIconData(SDK.Issue.IssueKind.BreakingChange), iconSize),
           text: countToString(this.counts[1]),
         },
         {
-          ...toIconGroup(getIssueKindIconData(SDK.Issue.IssueKind.Improvement), defaultIconSize),
+          ...toIconGroup(getIssueKindIconData(SDK.Issue.IssueKind.Improvement), iconSize),
           text: countToString(this.counts[2]),
         },
       ],
@@ -172,7 +186,8 @@ export class IssueCounter extends HTMLElement {
               display: inline-block;
             }
         </style>
-        <icon-button .data=${data as UIComponents.IconButton.IconButtonData}></icon-button>
+        <icon-button .data=${data as UIComponents.IconButton.IconButtonData}
+          aria-label="${LitHtml.Directives.ifDefined(this.accessibleName)}"></icon-button>
         `,
         this.shadow);
     this.tooltipCallback?.();

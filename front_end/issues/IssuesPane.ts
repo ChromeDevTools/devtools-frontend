@@ -4,9 +4,9 @@
 
 import * as BrowserSDK from '../browser_sdk/browser_sdk.js';
 import * as Common from '../common/common.js';
+import * as ConsoleCounters from '../console_counters/console_counters.js';
 import * as i18n from '../i18n/i18n.js';
 import * as SDK from '../sdk/sdk.js';
-import * as WebComponents from '../ui/components/components.js';
 import * as UI from '../ui/ui.js';
 
 import type {AggregatedIssue} from './IssueAggregator.js';
@@ -70,16 +70,6 @@ const UIStrings = {
    * @description Label for a checkbox. Whether the issues tab should include third-party issues or not.
    */
   includeThirdpartyCookieIssues: 'Include third-party cookie issues',
-  /**
-   * @description Tooltip shown for the issues count in several places of the UI
-   * @example {1} PH1
-   */
-  issuesPertainingToSOperation: 'Issues pertaining to {PH1} operation detected.',
-  /**
-   * @description Tooltip shown for the issues count in several places of the UI
-   * @example {13} PH1
-   */
-  issuesPertainingToSOperations: 'Issues pertaining to {PH1} operations detected.',
   /**
    * @description Label on the issues tab
    */
@@ -155,7 +145,6 @@ export class IssuesPane extends UI.Widget.VBox {
   private categoryViews: Map<SDK.Issue.IssueCategory, IssueCategoryView>;
   private issueViews: Map<string, IssueView>;
   private showThirdPartyCheckbox: UI.Toolbar.ToolbarSettingCheckbox|null;
-  private updateToolbarIssuesCount: (count: number) => void;
   private issuesTree: UI.TreeOutline.TreeOutlineInShadow;
   private noIssuesMessageDiv: HTMLDivElement;
   private issuesManager: BrowserSDK.IssuesManager.IssuesManager;
@@ -170,8 +159,7 @@ export class IssuesPane extends UI.Widget.VBox {
     this.issueViews = new Map();
     this.showThirdPartyCheckbox = null;
 
-    const {updateToolbarIssuesCount} = this.createToolbars();
-    this.updateToolbarIssuesCount = updateToolbarIssuesCount;
+    this.createToolbars();
 
     this.issuesTree = new UI.TreeOutline.TreeOutlineInShadow();
     this.issuesTree.registerRequiredCSS('issues/issuesTree.css', {enableLegacyPatching: true});
@@ -207,7 +195,7 @@ export class IssuesPane extends UI.Widget.VBox {
     return [this.issuesTree.element];
   }
 
-  private createToolbars(): {toolbarContainer: Element, updateToolbarIssuesCount: (issueCount: number) => void} {
+  private createToolbars(): {toolbarContainer: Element} {
     const toolbarContainer = this.contentElement.createChild('div', 'issues-toolbar-container');
     new UI.Toolbar.Toolbar('issues-toolbar-left', toolbarContainer);
     const rightToolbar = new UI.Toolbar.Toolbar('issues-toolbar-right', toolbarContainer);
@@ -230,25 +218,21 @@ export class IssuesPane extends UI.Widget.VBox {
     this.setDefaultFocusedElement(this.showThirdPartyCheckbox.inputElement);
 
     rightToolbar.appendSeparator();
-    const toolbarWarnings = document.createElement('div');
-    toolbarWarnings.classList.add('toolbar-warnings');
-    const breakingChangeIcon = new WebComponents.Icon.Icon();
-    breakingChangeIcon
-        .data = {iconName: 'issue-exclamation-icon', color: 'var(--issue-color-yellow)', width: '16px', height: '16px'};
-    breakingChangeIcon.classList.add('leading-issue-icon');
-    toolbarWarnings.appendChild(breakingChangeIcon);
-    const toolbarIssuesCount = toolbarWarnings.createChild('span', 'warnings-count-label');
-    const toolbarIssuesItem = new UI.Toolbar.ToolbarItem(toolbarWarnings);
-    rightToolbar.appendToolbarItem(toolbarIssuesItem);
-    const updateToolbarIssuesCount = (count: number): void => {
-      toolbarIssuesCount.textContent = `${count}`;
-      if (count === 1) {
-        toolbarIssuesItem.setTitle(i18nString(UIStrings.issuesPertainingToSOperation, {PH1: count}));
-      } else {
-        toolbarIssuesItem.setTitle(i18nString(UIStrings.issuesPertainingToSOperations, {PH1: count}));
-      }
+    const issueCounter = new ConsoleCounters.IssueCounter.IssueCounter();
+    issueCounter.data = {
+      tooltipCallback: (): void => {
+        const issueEnumeration = ConsoleCounters.IssueCounter.getIssueCountsEnumeration(
+            BrowserSDK.IssuesManager.IssuesManager.instance(), false);
+        UI.Tooltip.Tooltip.install(issueCounter, issueEnumeration);
+      },
+      omitEmpty: false,
+      issuesManager: BrowserSDK.IssuesManager.IssuesManager.instance(),
     };
-    return {toolbarContainer, updateToolbarIssuesCount};
+    issueCounter.id = 'console-issues-counter';
+    const issuesToolbarItem = new UI.Toolbar.ToolbarItem(issueCounter);
+    rightToolbar.appendToolbarItem(issuesToolbarItem);
+
+    return {toolbarContainer};
   }
 
   private issueUpdated(event: Common.EventTarget.EventTargetEvent): void {
@@ -321,9 +305,7 @@ export class IssuesPane extends UI.Widget.VBox {
   }
 
   private updateCounts(): void {
-    const count = this.issuesManager.numberOfIssues();
-    this.updateToolbarIssuesCount(count);
-    this.showIssuesTreeOrNoIssuesDetectedMessage(count);
+    this.showIssuesTreeOrNoIssuesDetectedMessage(this.issuesManager.numberOfIssues());
   }
 
   private showIssuesTreeOrNoIssuesDetectedMessage(issuesCount: number): void {

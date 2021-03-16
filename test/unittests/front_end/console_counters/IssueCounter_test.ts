@@ -42,8 +42,10 @@ describe('IssueCounter', () => {
   describe('with omitting zero-count issue kinds', () => {
     it('renders correctly', () => {
       const issuesManager = new MockIssuesManager([]);
-      const {shadowRoot} =
-          renderIssueCounter({issuesManager: issuesManager as unknown as BrowserSDK.IssuesManager.IssuesManager});
+      const {shadowRoot} = renderIssueCounter({
+        issuesManager: issuesManager as unknown as BrowserSDK.IssuesManager.IssuesManager,
+        throttlerTimeout: 0,
+      });
 
       const icons = extractIconGroups(shadowRoot);
       assert.strictEqual(icons.length, 2);
@@ -54,8 +56,10 @@ describe('IssueCounter', () => {
 
     it('updates correctly', () => {
       const issuesManager = new MockIssuesManager([]);
-      const {shadowRoot} = renderIssueCounter(
-          {issuesManager: issuesManager as unknown as BrowserSDK.IssuesManager.IssuesManager, throttlerTimeout: 0});
+      const {shadowRoot} = renderIssueCounter({
+        issuesManager: issuesManager as unknown as BrowserSDK.IssuesManager.IssuesManager,
+        throttlerTimeout: 0,
+      });
 
       {
         const icons = extractIconGroups(shadowRoot);
@@ -83,6 +87,7 @@ describe('IssueCounter', () => {
       const {shadowRoot} = renderIssueCounter({
         issuesManager: issuesManager as unknown as BrowserSDK.IssuesManager.IssuesManager,
         omitEmpty: false,
+        throttlerTimeout: 0,
       });
 
       const icons = extractIconGroups(shadowRoot);
@@ -96,8 +101,8 @@ describe('IssueCounter', () => {
       const issuesManager = new MockIssuesManager([]);
       const {shadowRoot} = renderIssueCounter({
         issuesManager: issuesManager as unknown as BrowserSDK.IssuesManager.IssuesManager,
-        throttlerTimeout: 0,
         omitEmpty: false,
+        throttlerTimeout: 0,
       });
 
       {

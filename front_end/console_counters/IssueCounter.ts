@@ -160,7 +160,7 @@ export class IssueCounter extends HTMLElement {
       this.issuesManager.numberOfIssues(SDK.Issue.IssueKind.Improvement),
     ];
     const countToString = (count: number): string|undefined => (count > 0 || !this.omitEmpty) ? `${count}` : undefined;
-    const iconSize = '2px';
+    const iconSize = '2ex';
     const data: UIComponents.IconButton.IconButtonData = {
       groups: [
         {

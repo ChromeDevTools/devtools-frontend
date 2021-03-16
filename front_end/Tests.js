@@ -346,7 +346,7 @@
     });
 
     // Wait until all scripts are added to the debugger.
-    this.takeControl();
+    this.takeControl({slownessFactor: 10});
   };
 
   // Tests that debugger works correctly if pause event occurs when DevTools
@@ -407,7 +407,7 @@
     // Reload inspected page to sniff network events
     test.evaluateInConsole_('window.location.reload(true);', function(resultText) {});
 
-    this.takeControl();
+    this.takeControl({slownessFactor: 10});
   };
 
   /**
@@ -427,7 +427,7 @@
     test.evaluateInConsole_(
         'let xhr = new XMLHttpRequest(); xhr.open("GET", "chunked", false); xhr.send(null);', function() {});
 
-    this.takeControl();
+    this.takeControl({slownessFactor: 10});
   };
 
   /**
@@ -451,7 +451,7 @@
     // Reload inspected page to sniff network events
     test.evaluateInConsole_('window.location.reload(true);', function(resultText) {});
 
-    this.takeControl();
+    this.takeControl({slownessFactor: 10});
   };
 
   /**
@@ -486,7 +486,7 @@
     // Reload inspected page to sniff network events
     test.evaluateInConsole_('window.location.reload(true);', function(resultText) {});
 
-    this.takeControl();
+    this.takeControl({slownessFactor: 10});
   };
 
   TestSuite.prototype.testPushTimes = function(url) {

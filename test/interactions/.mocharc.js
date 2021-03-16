@@ -15,7 +15,7 @@ const allTestFiles = glob.sync(path.join(ROOT_DIRECTORY, '**/*_test.ts'));
 const customPattern = process.env['TEST_PATTERNS'];
 
 const testFiles = !customPattern ? allTestFiles :
-                                   customPattern.split(';')
+                                   customPattern.split(',')
                                        .map(pattern => glob.sync(pattern, {absolute: true, cwd: ROOT_DIRECTORY}))
                                        .flat()
                                        .filter(filename => allTestFiles.includes(filename));

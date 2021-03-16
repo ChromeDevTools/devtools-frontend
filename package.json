@@ -22,7 +22,7 @@
     "auto-debug-e2etest": "autoninja -C out/Default && npm run debug-e2etest --",
     "auto-debug-unittest": "DEBUG=1 npm run auto-unittest --",
     "auto-e2etest": "autoninja -C out/Default && npm run e2etest --",
-    "auto-interactionstest": "autoninja -C out/Default && scripts/test/run_test_suite.py --test-suite-path=gen/test/interactions",
+    "auto-interactionstest": "autoninja -C out/Default && third_party/node/node.py --output scripts/test/run_test_suite.js --config=test/interactions/test-runner-config.json",
     "auto-unittest": "scripts/test/run_auto_unittests.py --no-text-coverage",
     "check": "npm run check-json && npm run check-gn && npm run check-lint && npm run check-loc",
     "check-external-links": "third_party/node/node.py --output scripts/check_external_links.js",

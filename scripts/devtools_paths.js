@@ -145,6 +145,10 @@ function stylelintExecutablePath() {
   return path.join(nodeModulesPath(), 'stylelint', 'bin', 'stylelint.js');
 }
 
+function mochaExecutablePath() {
+  return path.join(nodeModulesPath(), 'mocha', 'bin', 'mocha');
+}
+
 function downloadedChromeBinaryPath() {
   const paths = {
     'linux': path.join('chrome-linux', 'chrome'),
@@ -159,6 +163,7 @@ module.exports = {
   nodePath,
   devtoolsRootPath,
   nodeModulesPath,
+  mochaExecutablePath,
   stylelintExecutablePath,
   downloadedChromeBinaryPath
 };

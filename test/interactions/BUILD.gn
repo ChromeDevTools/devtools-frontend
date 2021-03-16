@@ -25,5 +25,8 @@ ts_library("tests") {
 }
 
 copy_to_gen("config") {
-  sources = [ ".mocharc.js" ]
+  sources = [
+    ".mocharc.js",
+    "test-runner-config.json",
+  ]
 }

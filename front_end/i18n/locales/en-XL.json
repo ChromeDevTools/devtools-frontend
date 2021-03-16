@@ -1265,9 +1265,6 @@
   "developer_resources/developer_resources-meta.ts | showDeveloperResources": {
     "message": "Ŝh́ôẃ D̂év̂él̂óp̂ér̂ Ŕêśôúr̂ćêś"
   },
-  "developer_resources/DeveloperResourcesListView.ts | Byte": {
-    "message": "1 b̂ýt̂é"
-  },
   "developer_resources/DeveloperResourcesListView.ts | copyInitiatorUrl": {
     "message": "Ĉóp̂ý îńît́îát̂ór̂ ÚR̂Ĺ"
   },
@@ -1290,7 +1287,7 @@
     "message": "p̂én̂d́îńĝ"
   },
   "developer_resources/DeveloperResourcesListView.ts | sBytes": {
-    "message": "{PH1} b̂ýt̂éŝ"
+    "message": "{n, plural, =1 {# b̂ýt̂é} other {# b̂ýt̂éŝ}}"
   },
   "developer_resources/DeveloperResourcesListView.ts | status": {
     "message": "Ŝt́ât́ûś"
@@ -1673,11 +1670,8 @@
   "elements/NodeStackTraceWidget.js | noStackTraceAvailable": {
     "message": "N̂ó ŝt́âćk̂ t́r̂áĉé âv́âíl̂áb̂ĺê"
   },
-  "elements/PlatformFontsWidget.js | dGlyph": {
-    "message": "(1 ĝĺŷṕĥ)"
-  },
   "elements/PlatformFontsWidget.js | dGlyphs": {
-    "message": "({PH1} ĝĺŷṕĥś)"
+    "message": "{n, plural, =1 {(# ĝĺŷṕĥ)} other {(# ǵl̂ýp̂h́ŝ)}}"
   },
   "elements/PlatformFontsWidget.js | localFile": {
     "message": "L̂óĉál̂ f́îĺê"
@@ -10722,7 +10716,7 @@
     "message": "{PH1} (ât́ {PH2})"
   },
   "timeline/TimelineUIUtils.js | sBytes": {
-    "message": "{PH1} B̂ýt̂éŝ"
+    "message": "{n, plural, =1 {# B̂ýt̂é} other {# B̂ýt̂éŝ}}"
   },
   "timeline/TimelineUIUtils.js | sCanResultInPoorUserExperiences": {
     "message": "{PH1} ĉán̂ ŕêśûĺt̂ ín̂ ṕôór̂ úŝér̂ éx̂ṕêŕîén̂ćêś."

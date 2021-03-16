@@ -641,9 +641,8 @@ const UIStrings = {
   encodedData: 'Encoded Data',
   /**
   *@description Text in Timeline UIUtils of the Performance panel
-  *@example {2} PH1
   */
-  sBytes: '{PH1} Bytes',
+  sBytes: '{n, plural, =1 {# Byte} other {# Bytes}}',
   /**
   *@description Text in Timeline UIUtils of the Performance panel
   */
@@ -2165,11 +2164,11 @@ export class TimelineUIUtils {
         }
         if (eventData['encodedDataLength']) {
           contentHelper.appendTextRow(
-              i18nString(UIStrings.encodedData), i18nString(UIStrings.sBytes, {PH1: eventData['encodedDataLength']}));
+              i18nString(UIStrings.encodedData), i18nString(UIStrings.sBytes, {n: eventData['encodedDataLength']}));
         }
         if (eventData['decodedBodyLength']) {
           contentHelper.appendTextRow(
-              i18nString(UIStrings.decodedBody), i18nString(UIStrings.sBytes, {PH1: eventData['decodedBodyLength']}));
+              i18nString(UIStrings.decodedBody), i18nString(UIStrings.sBytes, {n: eventData['decodedBodyLength']}));
         }
         break;
       }

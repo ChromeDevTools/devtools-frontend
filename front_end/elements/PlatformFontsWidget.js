@@ -48,14 +48,9 @@ const UIStrings = {
   */
   localFile: 'Local file',
   /**
-  *@description Text in Platform Fonts Widget of the Elements panel
+  *@description Text in Platform Fonts Widget of the Elements panel. Indicates a number of glyphs (characters) .
   */
-  dGlyph: '(1 glyph)',
-  /**
-  *@description Text in Platform Fonts Widget of the Elements panel
-  *@example {4} PH1
-  */
-  dGlyphs: '({PH1} glyphs)',
+  dGlyphs: '{n, plural, =1 {(# glyph)} other {(# glyphs)}}',
 };
 const str_ = i18n.i18n.registerUIStrings('elements/PlatformFontsWidget.js', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -128,8 +123,7 @@ export class PlatformFontsWidget extends UI.ThrottledWidget.ThrottledWidget {
 
       const fontUsageElement = fontStatElement.createChild('span', 'font-usage');
       const usage = platformFonts[i].glyphCount;
-      fontUsageElement.textContent =
-          usage === 1 ? i18nString(UIStrings.dGlyph) : i18nString(UIStrings.dGlyphs, {PH1: usage});
+      fontUsageElement.textContent = i18nString(UIStrings.dGlyphs, {n: usage});
     }
   }
 }

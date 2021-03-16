@@ -58,14 +58,9 @@ const UIStrings = {
   */
   failure: 'failure',
   /**
-  *@description Accessible text for a file size of 1 byte
+  *@description Accessible text for the value in bytes in memory allocation.
   */
-  Byte: '1 byte',
-  /**
-  *@description Accessible text for the value in bytes in memory allocation or coverage view.
-  *@example {12345} PH1
-  */
-  sBytes: '{PH1} bytes',
+  sBytes: '{n, plural, =1 {# byte} other {# bytes}}',
 };
 const str_ = i18n.i18n.registerUIStrings('developer_resources/DeveloperResourcesListView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -269,8 +264,7 @@ class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode<GridNode> 
         if (size !== null) {
           const sizeSpan = cell.createChild('span');
           sizeSpan.textContent = Number.withThousandsSeparator(size);
-          const sizeAccessibleName =
-              (size === 1) ? i18nString(UIStrings.Byte) : i18nString(UIStrings.sBytes, {PH1: size});
+          const sizeAccessibleName = i18nString(UIStrings.sBytes, {n: size});
           this.setCellAccessibleName(sizeAccessibleName, cell, columnId);
         }
         break;

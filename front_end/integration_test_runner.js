@@ -4,7 +4,7 @@
 
 import './devtools_app.js';
 import './panels/accessibility/accessibility-legacy.js';
-import './animation/animation-legacy.js';
+import './panels/animation/animation-legacy.js';
 import './bindings/bindings-legacy.js';
 import './color_picker/color_picker-legacy.js';
 import './common/common-legacy.js';

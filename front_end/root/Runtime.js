@@ -36,6 +36,11 @@ export function getRemoteBase(location = self.location.toString()) {
 /** @type {!WeakMap<function(new:?), ?>} */
 const constructedInstances = new WeakMap();
 
+/** @type {!Map<string, string>} */
+const mappingForLayoutTests = new Map([
+  ['panels/animation', 'animation'],
+]);
+
 export class Runtime {
   /**
    * @private
@@ -210,6 +215,10 @@ export class Runtime {
     const module = new Module(this, descriptor);
     this._modules.push(module);
     this._modulesMap[descriptor['name']] = module;
+    const mappedName = mappingForLayoutTests.get(descriptor['name']);
+    if (mappedName !== undefined) {
+      this._modulesMap[mappedName] = module;
+    }
   }
 
   /**

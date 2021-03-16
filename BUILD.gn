@@ -122,7 +122,7 @@ foreach(application, applications_js) {
 
 non_autostart_non_remote_modules = [
   "panels/accessibility/accessibility_module.js",
-  "animation/animation_module.js",
+  "panels/animation/animation_module.js",
   "browser_debugger/browser_debugger_module.js",
   "changes/changes_module.js",
   "cm/cm_module.js",

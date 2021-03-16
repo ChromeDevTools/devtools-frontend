@@ -4,12 +4,12 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../common/common.js';
-import * as Host from '../host/host.js';
-import * as i18n from '../i18n/i18n.js';
-import * as Platform from '../platform/platform.js';
-import * as SDK from '../sdk/sdk.js';
-import * as UI from '../ui/ui.js';
+import * as Common from '../../common/common.js';
+import * as Host from '../../host/host.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as Platform from '../../platform/platform.js';
+import * as SDK from '../../sdk/sdk.js';
+import * as UI from '../../ui/ui.js';
 
 import {AnimationGroupPreviewUI} from './AnimationGroupPreviewUI.js';
 import type {AnimationEffect, AnimationGroup, AnimationImpl} from './AnimationModel.js';
@@ -78,7 +78,7 @@ const UIStrings = {
   */
   animationPreviewS: 'Animation Preview {PH1}',
 };
-const str_ = i18n.i18n.registerUIStrings('animation/AnimationTimeline.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/animation/AnimationTimeline.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const nodeUIsByNode = new WeakMap<SDK.DOMModel.DOMNode, NodeUI>();
 
@@ -123,7 +123,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.SDKModel.SD
 
   private constructor() {
     super(true);
-    this.registerRequiredCSS('animation/animationTimeline.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('panels/animation/animationTimeline.css', {enableLegacyPatching: false});
     this.element.classList.add('animations-timeline');
 
     this._gridWrapper = this.contentElement.createChild('div', 'grid-overflow-wrapper');

@@ -114,7 +114,6 @@ group("legacy_css") {
 
 group("legacy_entrypoints") {
   public_deps = [
-    "animation:legacy",
     "bindings:legacy",
     "browser_debugger:legacy",
     "changes:legacy",
@@ -151,6 +150,7 @@ group("legacy_entrypoints") {
     "node_main:legacy",
     "object_ui:legacy",
     "panels/accessibility:legacy",
+    "panels/animation:legacy",
     "perf_ui:legacy",
     "performance_monitor:legacy",
     "persistence:legacy",
@@ -226,7 +226,6 @@ ts_library("devtools_app") {
 
   deps = [
     ":shell",
-    "animation:meta",
     "browser_debugger:meta",
     "css_overview:meta",
     "developer_resources:meta",
@@ -242,6 +241,7 @@ ts_library("devtools_app") {
     "mobile_throttling:meta",
     "network:meta",
     "panels/accessibility:meta",
+    "panels/animation:meta",
     "performance_monitor:meta",
     "resources:meta",
     "security:meta",

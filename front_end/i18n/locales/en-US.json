@@ -1,61 +1,4 @@
 {
-  "animation/animation-meta.ts | animations": {
-    "message": "Animations"
-  },
-  "animation/animation-meta.ts | showAnimations": {
-    "message": "Show Animations"
-  },
-  "animation/AnimationTimeline.ts | animationPreviews": {
-    "message": "Animation previews"
-  },
-  "animation/AnimationTimeline.ts | animationPreviewS": {
-    "message": "Animation Preview {PH1}"
-  },
-  "animation/AnimationTimeline.ts | clearAll": {
-    "message": "Clear all"
-  },
-  "animation/AnimationTimeline.ts | pause": {
-    "message": "Pause"
-  },
-  "animation/AnimationTimeline.ts | pauseAll": {
-    "message": "Pause all"
-  },
-  "animation/AnimationTimeline.ts | pauseTimeline": {
-    "message": "Pause timeline"
-  },
-  "animation/AnimationTimeline.ts | playbackRatePlaceholder": {
-    "message": "{PH1}%"
-  },
-  "animation/AnimationTimeline.ts | playbackRates": {
-    "message": "Playback rates"
-  },
-  "animation/AnimationTimeline.ts | playTimeline": {
-    "message": "Play timeline"
-  },
-  "animation/AnimationTimeline.ts | replayTimeline": {
-    "message": "Replay timeline"
-  },
-  "animation/AnimationTimeline.ts | resumeAll": {
-    "message": "Resume all"
-  },
-  "animation/AnimationTimeline.ts | selectAnEffectAboveToInspectAnd": {
-    "message": "Select an effect above to inspect and modify."
-  },
-  "animation/AnimationTimeline.ts | setSpeedToS": {
-    "message": "Set speed to {PH1}"
-  },
-  "animation/AnimationTimeline.ts | waitingForAnimations": {
-    "message": "Waiting for animations..."
-  },
-  "animation/AnimationUI.ts | animationEndpointSlider": {
-    "message": "Animation Endpoint slider"
-  },
-  "animation/AnimationUI.ts | animationKeyframeSlider": {
-    "message": "Animation Keyframe slider"
-  },
-  "animation/AnimationUI.ts | sSlider": {
-    "message": "{PH1} slider"
-  },
   "bindings/ContentProviderBasedProject.ts | unknownErrorLoadingFile": {
     "message": "Unknown error loading file"
   },
@@ -5569,6 +5512,63 @@
   },
   "panels/accessibility/SourceOrderView.ts | thereMayBeADelayInDisplaying": {
     "message": "There may be a delay in displaying source order for elements with many children"
+  },
+  "panels/animation/animation-meta.ts | animations": {
+    "message": "Animations"
+  },
+  "panels/animation/animation-meta.ts | showAnimations": {
+    "message": "Show Animations"
+  },
+  "panels/animation/AnimationTimeline.ts | animationPreviews": {
+    "message": "Animation previews"
+  },
+  "panels/animation/AnimationTimeline.ts | animationPreviewS": {
+    "message": "Animation Preview {PH1}"
+  },
+  "panels/animation/AnimationTimeline.ts | clearAll": {
+    "message": "Clear all"
+  },
+  "panels/animation/AnimationTimeline.ts | pause": {
+    "message": "Pause"
+  },
+  "panels/animation/AnimationTimeline.ts | pauseAll": {
+    "message": "Pause all"
+  },
+  "panels/animation/AnimationTimeline.ts | pauseTimeline": {
+    "message": "Pause timeline"
+  },
+  "panels/animation/AnimationTimeline.ts | playbackRatePlaceholder": {
+    "message": "{PH1}%"
+  },
+  "panels/animation/AnimationTimeline.ts | playbackRates": {
+    "message": "Playback rates"
+  },
+  "panels/animation/AnimationTimeline.ts | playTimeline": {
+    "message": "Play timeline"
+  },
+  "panels/animation/AnimationTimeline.ts | replayTimeline": {
+    "message": "Replay timeline"
+  },
+  "panels/animation/AnimationTimeline.ts | resumeAll": {
+    "message": "Resume all"
+  },
+  "panels/animation/AnimationTimeline.ts | selectAnEffectAboveToInspectAnd": {
+    "message": "Select an effect above to inspect and modify."
+  },
+  "panels/animation/AnimationTimeline.ts | setSpeedToS": {
+    "message": "Set speed to {PH1}"
+  },
+  "panels/animation/AnimationTimeline.ts | waitingForAnimations": {
+    "message": "Waiting for animations..."
+  },
+  "panels/animation/AnimationUI.ts | animationEndpointSlider": {
+    "message": "Animation Endpoint slider"
+  },
+  "panels/animation/AnimationUI.ts | animationKeyframeSlider": {
+    "message": "Animation Keyframe slider"
+  },
+  "panels/animation/AnimationUI.ts | sSlider": {
+    "message": "{PH1} slider"
   },
   "perf_ui/FilmStripView.ts | doubleclickToZoomImageClickTo": {
     "message": "Doubleclick to zoom image. Click to view preceding requests."

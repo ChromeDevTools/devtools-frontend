@@ -9,7 +9,7 @@ import './network/network-meta.js';
 import './security/security-meta.js';
 import './emulation/emulation-meta.js';
 import './panels/accessibility/accessibility-meta.js';
-import './animation/animation-meta.js';
+import './panels/animation/animation-meta.js';
 import './developer_resources/developer_resources-meta.js';
 import './inspector_main/inspector_main-meta.js';
 import './resources/resources-meta.js';

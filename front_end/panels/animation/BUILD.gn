@@ -2,8 +2,8 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-import("../../scripts/build/ninja/devtools_entrypoint.gni")
-import("../../scripts/build/ninja/devtools_module.gni")
+import("../../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../../../scripts/build/ninja/devtools_module.gni")
 
 devtools_module("animation") {
   sources = [
@@ -15,13 +15,13 @@ devtools_module("animation") {
   ]
 
   deps = [
-    "../common:bundle",
-    "../host:bundle",
-    "../i18n:bundle",
-    "../inline_editor:bundle",
-    "../platform:bundle",
-    "../sdk:bundle",
-    "../ui:bundle",
+    "../../common:bundle",
+    "../../host:bundle",
+    "../../i18n:bundle",
+    "../../inline_editor:bundle",
+    "../../platform:bundle",
+    "../../sdk:bundle",
+    "../../ui:bundle",
   ]
 }
 

@@ -4,7 +4,7 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as UI from '../ui/ui.js';
+import * as UI from '../../ui/ui.js';
 import type {AnimationGroup} from './AnimationModel.js';
 import {AnimationUI} from './AnimationUI.js';
 

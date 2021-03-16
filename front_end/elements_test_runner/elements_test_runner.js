@@ -5,7 +5,7 @@
 import '../test_runner/test_runner.js';
 import '../elements/elements-legacy.js';
 import '../event_listeners/event_listeners-legacy.js';
-import '../animation/animation-legacy.js';
+import '../panels/animation/animation-legacy.js';
 
 import './ElementsTestRunner.js';
 import './EditDOMTestRunner.js';

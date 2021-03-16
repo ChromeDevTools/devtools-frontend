@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Animation from '../../../../front_end/animation/animation.js';
+import * as Animation from '../../../../front_end/panels/animation/animation.js';
 import {createTarget} from '../helpers/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../helpers/MockConnection.js';
 

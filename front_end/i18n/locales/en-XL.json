@@ -1,61 +1,4 @@
 {
-  "animation/animation-meta.ts | animations": {
-    "message": "Âńîḿât́îón̂ś"
-  },
-  "animation/animation-meta.ts | showAnimations": {
-    "message": "Ŝh́ôẃ Âńîḿât́îón̂ś"
-  },
-  "animation/AnimationTimeline.ts | animationPreviews": {
-    "message": "Âńîḿât́îón̂ ṕr̂év̂íêẃŝ"
-  },
-  "animation/AnimationTimeline.ts | animationPreviewS": {
-    "message": "Âńîḿât́îón̂ Ṕr̂év̂íêẃ {PH1}"
-  },
-  "animation/AnimationTimeline.ts | clearAll": {
-    "message": "Ĉĺêár̂ ál̂ĺ"
-  },
-  "animation/AnimationTimeline.ts | pause": {
-    "message": "P̂áûśê"
-  },
-  "animation/AnimationTimeline.ts | pauseAll": {
-    "message": "P̂áûśê ál̂ĺ"
-  },
-  "animation/AnimationTimeline.ts | pauseTimeline": {
-    "message": "P̂áûśê t́îḿêĺîńê"
-  },
-  "animation/AnimationTimeline.ts | playbackRatePlaceholder": {
-    "message": "{PH1}%"
-  },
-  "animation/AnimationTimeline.ts | playbackRates": {
-    "message": "P̂ĺâýb̂áĉḱ r̂át̂éŝ"
-  },
-  "animation/AnimationTimeline.ts | playTimeline": {
-    "message": "P̂ĺâý t̂ím̂él̂ín̂é"
-  },
-  "animation/AnimationTimeline.ts | replayTimeline": {
-    "message": "R̂ép̂ĺâý t̂ím̂él̂ín̂é"
-  },
-  "animation/AnimationTimeline.ts | resumeAll": {
-    "message": "R̂éŝúm̂é âĺl̂"
-  },
-  "animation/AnimationTimeline.ts | selectAnEffectAboveToInspectAnd": {
-    "message": "Ŝél̂éĉt́ âń êf́f̂éĉt́ âb́ôv́ê t́ô ín̂śp̂éĉt́ âńd̂ ḿôd́îf́ŷ."
-  },
-  "animation/AnimationTimeline.ts | setSpeedToS": {
-    "message": "Ŝét̂ śp̂éêd́ t̂ó {PH1}"
-  },
-  "animation/AnimationTimeline.ts | waitingForAnimations": {
-    "message": "Ŵáît́îńĝ f́ôŕ âńîḿât́îón̂ś..."
-  },
-  "animation/AnimationUI.ts | animationEndpointSlider": {
-    "message": "Âńîḿât́îón̂ Én̂d́p̂óîńt̂ śl̂íd̂ér̂"
-  },
-  "animation/AnimationUI.ts | animationKeyframeSlider": {
-    "message": "Âńîḿât́îón̂ Ḱêýf̂ŕâḿê śl̂íd̂ér̂"
-  },
-  "animation/AnimationUI.ts | sSlider": {
-    "message": "{PH1} ŝĺîd́êŕ"
-  },
   "bindings/ContentProviderBasedProject.ts | unknownErrorLoadingFile": {
     "message": "Ûńk̂ńôẃn̂ ér̂ŕôŕ l̂óâd́îńĝ f́îĺê"
   },
@@ -5569,6 +5512,63 @@
   },
   "panels/accessibility/SourceOrderView.ts | thereMayBeADelayInDisplaying": {
     "message": "T̂h́êŕê ḿâý b̂é â d́êĺâý îń d̂íŝṕl̂áŷín̂ǵ ŝóûŕĉé ôŕd̂ér̂ f́ôŕ êĺêḿêńt̂ś ŵít̂h́ m̂án̂ý ĉh́îĺd̂ŕêń"
+  },
+  "panels/animation/animation-meta.ts | animations": {
+    "message": "Âńîḿât́îón̂ś"
+  },
+  "panels/animation/animation-meta.ts | showAnimations": {
+    "message": "Ŝh́ôẃ Âńîḿât́îón̂ś"
+  },
+  "panels/animation/AnimationTimeline.ts | animationPreviews": {
+    "message": "Âńîḿât́îón̂ ṕr̂év̂íêẃŝ"
+  },
+  "panels/animation/AnimationTimeline.ts | animationPreviewS": {
+    "message": "Âńîḿât́îón̂ Ṕr̂év̂íêẃ {PH1}"
+  },
+  "panels/animation/AnimationTimeline.ts | clearAll": {
+    "message": "Ĉĺêár̂ ál̂ĺ"
+  },
+  "panels/animation/AnimationTimeline.ts | pause": {
+    "message": "P̂áûśê"
+  },
+  "panels/animation/AnimationTimeline.ts | pauseAll": {
+    "message": "P̂áûśê ál̂ĺ"
+  },
+  "panels/animation/AnimationTimeline.ts | pauseTimeline": {
+    "message": "P̂áûśê t́îḿêĺîńê"
+  },
+  "panels/animation/AnimationTimeline.ts | playbackRatePlaceholder": {
+    "message": "{PH1}%"
+  },
+  "panels/animation/AnimationTimeline.ts | playbackRates": {
+    "message": "P̂ĺâýb̂áĉḱ r̂át̂éŝ"
+  },
+  "panels/animation/AnimationTimeline.ts | playTimeline": {
+    "message": "P̂ĺâý t̂ím̂él̂ín̂é"
+  },
+  "panels/animation/AnimationTimeline.ts | replayTimeline": {
+    "message": "R̂ép̂ĺâý t̂ím̂él̂ín̂é"
+  },
+  "panels/animation/AnimationTimeline.ts | resumeAll": {
+    "message": "R̂éŝúm̂é âĺl̂"
+  },
+  "panels/animation/AnimationTimeline.ts | selectAnEffectAboveToInspectAnd": {
+    "message": "Ŝél̂éĉt́ âń êf́f̂éĉt́ âb́ôv́ê t́ô ín̂śp̂éĉt́ âńd̂ ḿôd́îf́ŷ."
+  },
+  "panels/animation/AnimationTimeline.ts | setSpeedToS": {
+    "message": "Ŝét̂ śp̂éêd́ t̂ó {PH1}"
+  },
+  "panels/animation/AnimationTimeline.ts | waitingForAnimations": {
+    "message": "Ŵáît́îńĝ f́ôŕ âńîḿât́îón̂ś..."
+  },
+  "panels/animation/AnimationUI.ts | animationEndpointSlider": {
+    "message": "Âńîḿât́îón̂ Én̂d́p̂óîńt̂ śl̂íd̂ér̂"
+  },
+  "panels/animation/AnimationUI.ts | animationKeyframeSlider": {
+    "message": "Âńîḿât́îón̂ Ḱêýf̂ŕâḿê śl̂íd̂ér̂"
+  },
+  "panels/animation/AnimationUI.ts | sSlider": {
+    "message": "{PH1} ŝĺîd́êŕ"
   },
   "perf_ui/FilmStripView.ts | doubleclickToZoomImageClickTo": {
     "message": "D̂óûb́l̂éĉĺîćk̂ t́ô źôóm̂ ím̂áĝé. Ĉĺîćk̂ t́ô v́îéŵ ṕr̂éĉéd̂ín̂ǵ r̂éq̂úêśt̂ś."

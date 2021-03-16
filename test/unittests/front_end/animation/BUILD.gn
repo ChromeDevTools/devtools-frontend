@@ -5,7 +5,7 @@ ts_library("animation") {
   sources = [ "AnimationModel_test.ts" ]
 
   deps = [
-    "../../../../front_end/animation:bundle",
+    "../../../../front_end/panels/animation:bundle",
     "../helpers",
   ]
 }

@@ -7,11 +7,6 @@ import("./scripts/build/ninja/vars.gni")
 generated_typescript_modules = []
 
 all_typescript_module_sources = [
-  "animation/AnimationGroupPreviewUI.js",
-  "animation/AnimationModel.js",
-  "animation/AnimationScreenshotPopover.js",
-  "animation/AnimationTimeline.js",
-  "animation/AnimationUI.js",
   "bindings/BreakpointManager.js",
   "bindings/CSSWorkspaceBinding.js",
   "bindings/CompilerScriptMapping.js",
@@ -353,6 +348,11 @@ all_typescript_module_sources = [
   "panels/accessibility/AccessibilityStrings.js",
   "panels/accessibility/AccessibilitySubPane.js",
   "panels/accessibility/SourceOrderView.js",
+  "panels/animation/AnimationGroupPreviewUI.js",
+  "panels/animation/AnimationModel.js",
+  "panels/animation/AnimationScreenshotPopover.js",
+  "panels/animation/AnimationTimeline.js",
+  "panels/animation/AnimationUI.js",
   "perf_ui/ChartViewport.js",
   "perf_ui/FilmStripView.js",
   "perf_ui/FlameChart.js",

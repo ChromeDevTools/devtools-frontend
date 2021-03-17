@@ -18,12 +18,12 @@ component.data = {
 };
 
 component.addEventListener('treenodemouseover', (event: Event) => {
-  const evt = event as Components.TreeOutline.TreeNodeMouseOverEvent<string>;
+  const evt = event as Components.TreeOutline.ItemMouseOverEvent<string>;
   // eslint-disable-next-line no-console
   console.log('Node', evt.data.node, 'mouseover');
 });
 component.addEventListener('treenodemouseout', (event: Event) => {
-  const evt = event as Components.TreeOutline.TreeNodeMouseOutEvent<string>;
+  const evt = event as Components.TreeOutline.ItemMouseOutEvent<string>;
   // eslint-disable-next-line no-console
   console.log('Node', evt.data.node, 'mouseout');
 });

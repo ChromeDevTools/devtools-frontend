@@ -1134,22 +1134,22 @@ describe('TreeOutline', () => {
       });
     });
 
-    describe('treenodemouseover', () => {
+    describe('itemmouseover', () => {
       it('emits an event when the user mouses over the element', async () => {
         const {component, shadowRoot} = await renderTreeOutline({
           tree: basicTreeData,
         });
         await coordinator.done();
         const officeNode = getVisibleTreeNodeByText(shadowRoot, 'Offices');
-        const treeNodeMouseOverEvent =
-            getEventPromise<UIComponents.TreeOutline.TreeNodeMouseOverEvent<string>>(component, 'treenodemouseover');
+        const itemMouseOverEvent =
+            getEventPromise<UIComponents.TreeOutline.ItemMouseOverEvent<string>>(component, 'itemmouseover');
         dispatchMouseOverEvent(officeNode);
-        const event = await treeNodeMouseOverEvent;
+        const event = await itemMouseOverEvent;
         assert.deepEqual(event.data, {node: basicTreeData[0]});
       });
     });
 
-    describe('treenodemouseout', () => {
+    describe('itemmouseout', () => {
       it('emits an event when the user mouses out of the element', async () => {
         const {component, shadowRoot} = await renderTreeOutline({
           tree: basicTreeData,
@@ -1157,10 +1157,10 @@ describe('TreeOutline', () => {
         await coordinator.done();
         const officeNode = getVisibleTreeNodeByText(shadowRoot, 'Offices');
         dispatchMouseOverEvent(officeNode);
-        const treeNodeMouseOutEvent =
-            getEventPromise<UIComponents.TreeOutline.TreeNodeMouseOutEvent<string>>(component, 'treenodemouseout');
+        const itemMouseOutEvent =
+            getEventPromise<UIComponents.TreeOutline.ItemMouseOutEvent<string>>(component, 'itemmouseout');
         dispatchMouseOutEvent(officeNode);
-        const event = await treeNodeMouseOutEvent;
+        const event = await itemMouseOutEvent;
         assert.deepEqual(event.data, {node: basicTreeData[0]});
       });
     });

@@ -1099,12 +1099,14 @@ export class ElementNode extends DataGrid.SortableDataGrid.SortableDataGridNode<
       const showAPCA = Root.Runtime.experiments.isEnabled('APCA');
       const contrastRatio = Platform.NumberUtilities.floor(this.data.contrastRatio, 2);
       const contrastRatioString = showAPCA ? contrastRatio + '%' : contrastRatio;
-      const border = getBorderString(this.data.backgroundcolor);
+      const border = getBorderString(this.data.backgroundColor);
+      const color = this.data.textColor.asString();
+      const backgroundColor = this.data.backgroundColor.asString();
       const contrastFragment = UI.Fragment.Fragment.build`
         <div class="contrast-container-in-grid" $="container">
           <span class="contrast-preview" style="border: ${border};
-          color: ${this.data.textcolor.asstring()};
-          background-color: ${this.data.backgroundcolor.asstring()};">Aa</span>
+          color: ${color};
+          background-color: ${backgroundColor};">Aa</span>
           <span>${contrastRatioString}</span>
         </div>
       `;

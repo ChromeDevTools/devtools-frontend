@@ -964,10 +964,7 @@ export class DebuggerModel extends SDKModel {
    * @return {?Location}
    */
   createRawLocationByURL(sourceURL, lineNumber, columnNumber) {
-    const scripts = this._scriptsBySourceURL.get(sourceURL) || [];
-    const matchingScripts = [];
-    for (let i = 0, l = scripts.length; i < l; ++i) {
-      const script = scripts[i];
+    for (const script of this._scriptsBySourceURL.get(sourceURL) || []) {
       if (script.lineOffset > lineNumber ||
           (script.lineOffset === lineNumber && columnNumber !== undefined && script.columnOffset > columnNumber)) {
         continue;
@@ -976,20 +973,9 @@ export class DebuggerModel extends SDKModel {
           (script.endLine === lineNumber && columnNumber !== undefined && script.endColumn <= columnNumber)) {
         continue;
       }
-      matchingScripts.push(script);
-      break;
+      return new Location(this, script.scriptId, lineNumber, columnNumber);
     }
-    if (!matchingScripts.length) {
-      // TODO(chromium:1189134): If the source location is outside all scripts with the same URL, the legacy behavior
-      // was to just pick any script with that URL, which we preserve here. Check if this is still needed.
-      if (scripts.length > 0) {
-        return new Location(this, scripts[0].scriptId, lineNumber, columnNumber);
-      }
-      return null;
-    }
-    const closestScript =
-        matchingScripts.sort((a, b) => a.lineOffset - b.lineOffset || a.columnOffset - b.columnOffset)[0];
-    return new Location(this, closestScript.scriptId, lineNumber, columnNumber);
+    return null;
   }
 
   /**

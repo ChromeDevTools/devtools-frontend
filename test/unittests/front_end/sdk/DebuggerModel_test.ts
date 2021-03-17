@@ -2,10 +2,58 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as SDKModule from '../../../../front_end/sdk/sdk.js';
+
+import {createTarget, describeWithEnvironment} from '../helpers/EnvironmentHelpers.js';
+import {describeWithMockConnection, dispatchEvent} from '../helpers/MockConnection.js';
+
 const {assert} = chai;
 
-import type * as SDKModule from '../../../../front_end/sdk/sdk.js';
-import {describeWithEnvironment} from '../helpers/EnvironmentHelpers.js';
+describeWithMockConnection('DebuggerModel', () => {
+  let SDK: typeof SDKModule;
+  before(async () => {
+    SDK = await import('../../../../front_end/sdk/sdk.js');
+  });
+
+  describe('createRawLocationFromURL', () => {
+    it('yields correct location in the presence of multiple scripts with the same URL', async () => {
+      const target = createTarget();
+      const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
+      const url = 'http://localhost/index.html';
+      dispatchEvent(target, 'Debugger.scriptParsed', {
+        scriptId: '1',
+        url,
+        startLine: 0,
+        startColumn: 0,
+        endLine: 1,
+        endColumn: 10,
+        executionContextId: 1,
+        hash: '',
+        isLiveEdit: false,
+        sourceMapURL: undefined,
+        hasSourceURL: false,
+        length: 10,
+      });
+      dispatchEvent(target, 'Debugger.scriptParsed', {
+        scriptId: '2',
+        url,
+        startLine: 20,
+        startColumn: 0,
+        endLine: 21,
+        endColumn: 10,
+        executionContextId: 1,
+        hash: '',
+        isLiveEdit: false,
+        sourceMapURL: undefined,
+        hasSourceURL: false,
+        length: 10,
+      });
+      assert.strictEqual(debuggerModel?.createRawLocationByURL(url, 0)?.scriptId, '1');
+      assert.strictEqual(debuggerModel?.createRawLocationByURL(url, 20, 1)?.scriptId, '2');
+      assert.strictEqual(debuggerModel?.createRawLocationByURL(url, 5, 5), null);
+    });
+  });
+});
 
 describeWithEnvironment('LocationRanges', () => {
   let SDK: typeof SDKModule;

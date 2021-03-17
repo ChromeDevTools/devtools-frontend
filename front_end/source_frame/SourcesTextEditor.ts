@@ -63,7 +63,7 @@ export class SourcesTextEditor extends TextEditor.CodeMirrorTextEditor.CodeMirro
     this.codeMirror().on('blur', this._blur.bind(this));
     this.codeMirror().on('beforeSelectionChange', this._fireBeforeSelectionChanged.bind(this));
     this.codeMirror().on('gutterContextMenu', this._gutterContextMenu.bind(this));
-    this.codeMirror().on('contextmenu', this._textAreaContextMenu.bind(this));
+    this.element.addEventListener('contextmenu', this._textAreaContextMenu.bind(this), false);
     this._gutterMouseMove = (event: Event): void => {
       const mouseEvent = (event as MouseEvent);
       this.element.classList.toggle(
@@ -372,10 +372,7 @@ export class SourcesTextEditor extends TextEditor.CodeMirrorTextEditor.CodeMirro
     this.dispatchEventToListeners(Events.GutterClick, {gutterType, lineNumber, event});
   }
 
-  /**
-   * |instance| is actually a CodeMirror.Editor
-   */
-  _textAreaContextMenu(_instance: Object, event: MouseEvent): void {
+  _textAreaContextMenu(event: MouseEvent): void {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
     event.consume(true);  // Consume event now to prevent document from handling the async menu
 

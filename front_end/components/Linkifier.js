@@ -1116,13 +1116,15 @@ export class ContentProviderContextMenuProvider {
    */
   appendApplicableItems(event, contextMenu, target) {
     const contentProvider = /** @type {!Workspace.UISourceCode.UISourceCode} */ (target);
-    if (!contentProvider.contentURL()) {
+    const contentUrl = contentProvider.contentURL();
+    if (!contentUrl) {
       return;
     }
 
     contextMenu.revealSection().appendItem(
         UI.UIUtils.openLinkExternallyLabel(),
-        () => Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(contentProvider.contentURL()));
+        () => Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(
+            contentUrl.endsWith(':formatted') ? contentUrl.slice(0, contentUrl.lastIndexOf(':')) : contentUrl));
     for (const title of linkHandlers.keys()) {
       const handler = linkHandlers.get(title);
       if (!handler) {
@@ -1137,7 +1139,7 @@ export class ContentProviderContextMenuProvider {
 
     contextMenu.clipboardSection().appendItem(
         UI.UIUtils.copyLinkAddressLabel(),
-        () => Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(contentProvider.contentURL()));
+        () => Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(contentUrl));
 
     contextMenu.clipboardSection().appendItem(
         UI.UIUtils.copyFileNameLabel(),

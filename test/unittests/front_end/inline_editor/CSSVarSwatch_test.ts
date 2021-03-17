@@ -46,7 +46,7 @@ describe('CSSVarSwatch', () => {
       text: 'var(--test)',
       computedValue: '2px',
       fromFallback: false,
-      onLinkClick: () => {},
+      onLinkActivate: () => {},
     };
 
     assertSwatch(component, {
@@ -64,7 +64,7 @@ describe('CSSVarSwatch', () => {
       text: 'var(--undefined)',
       computedValue: null,
       fromFallback: false,
-      onLinkClick: () => {},
+      onLinkActivate: () => {},
     };
 
     assertSwatch(component, {
@@ -82,7 +82,7 @@ describe('CSSVarSwatch', () => {
       text: 'var(--undefined, 3px)',
       computedValue: '3px',
       fromFallback: true,
-      onLinkClick: () => {},
+      onLinkActivate: () => {},
     };
 
     assertSwatch(component, {
@@ -100,7 +100,7 @@ describe('CSSVarSwatch', () => {
       text: 'var(--undefined-color, green)',
       computedValue: 'green',
       fromFallback: true,
-      onLinkClick: () => {},
+      onLinkActivate: () => {},
     };
 
     assertSwatch(component, {
@@ -118,7 +118,7 @@ describe('CSSVarSwatch', () => {
       text: 'var(--undefined-color,    green   )',
       computedValue: 'green',
       fromFallback: true,
-      onLinkClick: () => {},
+      onLinkActivate: () => {},
     };
 
     assertSwatch(component, {
@@ -136,7 +136,7 @@ describe('CSSVarSwatch', () => {
       text: 'var(--test, green)',
       computedValue: 'red',
       fromFallback: false,
-      onLinkClick: () => {},
+      onLinkActivate: () => {},
     };
 
     assertSwatch(component, {
@@ -154,7 +154,7 @@ describe('CSSVarSwatch', () => {
       text: 'var( --test     )',
       computedValue: 'red',
       fromFallback: false,
-      onLinkClick: () => {},
+      onLinkActivate: () => {},
     };
 
     assertSwatch(component, {

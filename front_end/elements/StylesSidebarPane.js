@@ -1569,6 +1569,66 @@ export class StylePropertiesSection {
   }
 
   /**
+   * @returns {HTMLElement|null}
+   */
+  _getFocused() {
+    return /** @type {HTMLElement} */ (this.propertiesTreeOutline._shadowRoot.activeElement) || null;
+  }
+
+  /**
+   * @param {HTMLElement} element
+   */
+  _focusNext(element) {
+    // Clear remembered focused item (if any).
+    const focused = this._getFocused();
+    if (focused) {
+      focused.tabIndex = -1;
+    }
+
+    // Focus the next item and remember it (if in our subtree).
+    element.focus();
+    if (this.propertiesTreeOutline._shadowRoot.contains(element)) {
+      element.tabIndex = 0;
+    }
+  }
+
+  /**
+   * @param {KeyboardEvent} keyboardEvent
+   */
+  _ruleNavigation(keyboardEvent) {
+    if (keyboardEvent.altKey || keyboardEvent.ctrlKey || keyboardEvent.metaKey || keyboardEvent.shiftKey) {
+      return;
+    }
+
+    const focused = this._getFocused();
+
+    /** @type {?HTMLElement} */
+    let focusNext = null;
+    const focusable = Array.from(
+        /** @type {NodeListOf<HTMLElement>} */ (this.propertiesTreeOutline._shadowRoot.querySelectorAll('[tabindex]')));
+
+    if (focusable.length === 0) {
+      return;
+    }
+
+    const focusedIndex = focused ? focusable.indexOf(focused) : -1;
+
+    if (keyboardEvent.key === 'ArrowLeft') {
+      focusNext = focusable[focusedIndex - 1] || this.element;
+    } else if (keyboardEvent.key === 'ArrowRight') {
+      focusNext = focusable[focusedIndex + 1] || this.element;
+    } else if (keyboardEvent.key === 'ArrowUp' || keyboardEvent.key === 'ArrowDown') {
+      this._focusNext(this.element);
+      return;
+    }
+
+    if (focusNext) {
+      this._focusNext(focusNext);
+      keyboardEvent.consume(true);
+    }
+  }
+
+  /**
    * @param {!Event} event
    */
   _onKeyDown(event) {
@@ -1582,6 +1642,12 @@ export class StylePropertiesSection {
       case ' ':
         this._startEditingAtFirstPosition();
         keyboardEvent.consume(true);
+        break;
+      case 'ArrowLeft':
+      case 'ArrowRight':
+      case 'ArrowUp':
+      case 'ArrowDown':
+        this._ruleNavigation(keyboardEvent);
         break;
       default:
         // Filter out non-printable key strokes.
@@ -3382,7 +3448,7 @@ export class StylesSidebarPropertyRenderer {
     const link = ImagePreviewPopover.setImageUrl(
         Components.Linkifier.Linkifier.linkifyURL(hrefUrl || url, {
           text: url,
-          preventClick: true,
+          preventClick: false,
           // crbug.com/1027168
           // We rely on CSS text-overflow: ellipsis to hide long URLs in the Style panel,
           // so that we don't have to keep two versions (original vs. trimmed) of URL

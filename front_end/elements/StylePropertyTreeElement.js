@@ -245,7 +245,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
 
     const varSwatch = new InlineEditor.CSSVarSwatch.CSSVarSwatch();
     UI.UIUtils.createTextChild(varSwatch, text);
-    varSwatch.data = {text, computedValue, fromFallback, onLinkClick: this._handleVarDefinitionClick.bind(this)};
+    varSwatch.data = {text, computedValue, fromFallback, onLinkActivate: this._handleVarDefinitionActivate.bind(this)};
 
     if (!computedValue || !Common.Color.Color.parse(computedValue)) {
       return varSwatch;
@@ -256,16 +256,10 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
 
   /**
    * @param {string} variableName
-   * @param {!MouseEvent} event
    */
-  _handleVarDefinitionClick(variableName, event) {
-    if (event.button !== 0) {
-      return;
-    }
-
+  _handleVarDefinitionActivate(variableName) {
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.CustomPropertyLinkClicked);
     this._parentPane.jumpToProperty(variableName);
-    event.consume(true);
   }
 
   /**

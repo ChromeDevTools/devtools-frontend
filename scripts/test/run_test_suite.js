@@ -17,7 +17,7 @@ const {
 function log(...msg) {
   console.log('[run_test_suite.js]', ...msg);
 }
-function err(msg) {
+function err(...msg) {
   console.error('[run_test_suite.js]', ...msg);
 }
 
@@ -30,6 +30,11 @@ const yargsObject =
           type: 'string',
           desc:
               'Path to the node_modules directory for Node to use, relative to the current working directory. Defaults to local node_modules folder.'
+        })
+        .option('test-server-type', {
+          'choices': ['hosted-mode', 'component-docs'],
+          'describe':
+              'The type of test-server to run for the tests. Will be set automatically if your test-suite-path ends with e2e or interactions, but you need to set it otherwise',
         })
         .option('test-file-pattern', {
           type: 'string',
@@ -169,6 +174,17 @@ function main() {
   const target = yargsObject['target'];
   // eslint-disable-next-line no-unused-vars
   const {$0, _, ...namedConfigFlags} = yargsObject;
+
+  if (!yargsObject['test-server-type']) {
+    if (yargsObject['test-suite-path'].match(/e2e\/?/)) {
+      yargsObject['test-server-type'] = 'hosted-mode';
+    } else if (yargsObject['test-suite-path'].match(/interactions\/?/)) {
+      yargsObject['test-server-type'] = 'component-docs';
+    } else {
+      err('test-server-type could not be intelligently set based on your test-suite-path, you must manually set --test-server-type.');
+      process.exit(1);
+    }
+  }
 
   /**
    * Expose the configuration to any downstream test runners (Mocha, Conductor,

@@ -369,13 +369,21 @@ export class TreeOutline extends Common.ObjectWrapper.ObjectWrapper {
       if (!this._treeElementToScrollIntoView) {
         return;
       }
-      // This function no longer uses scrollIntoViewIfNeeded because users were bothered
-      // by the fact that it always scrolls in both direction even if only one is necessary
-      // to bring the item into view.
 
+      // This function doesn't use scrollIntoViewIfNeeded because it always
+      // scrolls in both directions even if only one is necessary to bring the
+      // item into view.
       const itemRect = this._treeElementToScrollIntoView.listItemElement.getBoundingClientRect();
       const treeRect = this.contentElement.getBoundingClientRect();
-      const viewRect = this.element.getBoundingClientRect();
+
+      // Usually, this.element is the tree container that scrolls. But sometimes
+      // (i.e. in the Elements panel), its parent is.
+      let scrollParentElement = this.element;
+      while (getComputedStyle(scrollParentElement).overflow === 'visible' && scrollParentElement.parentElement) {
+        scrollParentElement = scrollParentElement.parentElement;
+      }
+
+      const viewRect = scrollParentElement.getBoundingClientRect();
 
       const currentScrollX = viewRect.left - treeRect.left;
       const currentScrollY = viewRect.top - treeRect.top;
@@ -395,7 +403,7 @@ export class TreeOutline extends Common.ObjectWrapper.ObjectWrapper {
       } else if (this._centerUponScrollIntoView) {
         deltaTop = deltaTop - viewRect.height / 2;
       }
-      this.element.scrollTo(deltaLeft, deltaTop);
+      scrollParentElement.scrollTo(deltaLeft, deltaTop);
       this._treeElementToScrollIntoView = null;
     };
 

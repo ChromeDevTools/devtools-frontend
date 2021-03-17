@@ -256,13 +256,8 @@ export class WatchExpressionsSidebarPane extends UI.ThrottledWidget.ThrottledWid
     this.update();
   }
 
-  _focusAndAddExpressionToWatch(expression: string): void {
-    UI.ViewManager.ViewManager.instance().showView('sources.watch');
-    this.doUpdate();
-    this._addExpressionToWatch(expression);
-  }
-
-  _addExpressionToWatch(expression: string): void {
+  async _focusAndAddExpressionToWatch(expression: string): Promise<void> {
+    await UI.ViewManager.ViewManager.instance().showView('sources.watch');
     this._createWatchExpression(expression);
     this._saveExpressions();
     this.update();
@@ -278,14 +273,10 @@ export class WatchExpressionsSidebarPane extends UI.ThrottledWidget.ThrottledWid
     return true;
   }
 
-  _addPropertyPathToWatch(target: ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement): void {
-    this._addExpressionToWatch(target.path());
-  }
-
   appendApplicableItems(event: Event, contextMenu: UI.ContextMenu.ContextMenu, target: Object): void {
     if (target instanceof ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement && !target.property.synthetic) {
       contextMenu.debugSection().appendItem(
-          i18nString(UIStrings.addPropertyPathToWatch), this._addPropertyPathToWatch.bind(this, target));
+          i18nString(UIStrings.addPropertyPathToWatch), () => this._focusAndAddExpressionToWatch(target.path()));
     }
 
     const frame = UI.Context.Context.instance().flavor(UISourceCodeFrame);

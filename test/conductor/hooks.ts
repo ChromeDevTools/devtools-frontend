@@ -31,6 +31,11 @@ const headless = !process.env['DEBUG'];
 const envSlowMo = process.env['STRESS'] ? 50 : undefined;
 const envThrottleRate = process.env['STRESS'] ? 3 : 1;
 
+// When loading DevTools with target.goto, we wait for it to be fully loaded using these events.
+const DEVTOOLS_WAITUNTIL_EVENTS: puppeteer.PuppeteerLifeCycleEvent[] = ['networkidle2', 'domcontentloaded'];
+// When loading an empty page (including within the devtools window), we wait for it to be loaded using these events.
+const EMPTY_PAGE_WAITUNTIL_EVENTS: puppeteer.PuppeteerLifeCycleEvent[] = ['domcontentloaded'];
+
 const TEST_SERVER_TYPE = process.env.TEST_SERVER_TYPE;
 if (!TEST_SERVER_TYPE) {
   throw new Error('Failed to run tests: process.env.TEST_SERVER_TYPE was not defined.');
@@ -167,7 +172,7 @@ async function loadTargetPageAndFrontend(testServerPort: number) {
     }
     frontendUrl =
         `https://localhost:${testServerPort}/${devToolsAppURL}?ws=localhost:${chromeDebugPort}/devtools/page/${id}`;
-    await frontend.goto(frontendUrl, {waitUntil: ['networkidle2', 'domcontentloaded']});
+    await frontend.goto(frontendUrl, {waitUntil: DEVTOOLS_WAITUNTIL_EVENTS});
   }
 
 
@@ -238,7 +243,7 @@ function formatStackFrame(stackFrame: puppeteer.ConsoleMessageLocation): string 
 export async function resetPages() {
   const {target, frontend} = getBrowserAndPages();
   // Reload the target page.
-  await target.goto(EMPTY_PAGE, {waitUntil: ['domcontentloaded']});
+  await loadEmptyPageAndWaitForContent(target);
 
   if (TEST_SERVER_TYPE === 'hosted-mode') {
     const {frontend} = getBrowserAndPages();
@@ -248,7 +253,7 @@ export async function resetPages() {
     await reloadDevTools();
   } else {
     // Reset the frontend back to an empty page for the component docs server.
-    await frontend.goto(EMPTY_PAGE, {waitUntil: ['domcontentloaded']});
+    await loadEmptyPageAndWaitForContent(frontend);
   }
 }
 
@@ -271,7 +276,7 @@ export async function reloadDevTools(options: ReloadDevToolsOptions = {}) {
   }
 
   // Reload the DevTools frontend and await the elements panel.
-  await frontend.goto(EMPTY_PAGE, {waitUntil: ['domcontentloaded']});
+  await loadEmptyPageAndWaitForContent(frontend);
   // omit "can_dock=" when it's false because appending "can_dock=false"
   // will make getElementPosition in shared helpers unhappy
   let url = canDock ? `${frontendUrl}&can_dock=true` : frontendUrl;
@@ -280,7 +285,7 @@ export async function reloadDevTools(options: ReloadDevToolsOptions = {}) {
     url += `&panel=${queryParams.panel}`;
   }
 
-  await frontend.goto(url, {waitUntil: ['domcontentloaded']});
+  await frontend.goto(url, {waitUntil: DEVTOOLS_WAITUNTIL_EVENTS});
 
   if (!queryParams.panel && selectedPanel.selector) {
     await frontend.waitForSelector(selectedPanel.selector);
@@ -293,6 +298,10 @@ export async function reloadDevTools(options: ReloadDevToolsOptions = {}) {
     const client = await frontend.target().createCDPSession();
     await client.send('Emulation.setCPUThrottlingRate', {rate: envThrottleRate});
   }
+}
+
+async function loadEmptyPageAndWaitForContent(target: puppeteer.Page) {
+  await target.goto(EMPTY_PAGE, {waitUntil: EMPTY_PAGE_WAITUNTIL_EVENTS});
 }
 
 // Can be run multiple times in the same process.

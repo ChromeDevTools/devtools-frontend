@@ -47,6 +47,11 @@ const yargsObject =
               'Configures the base of the URLs that are injected into each component example. By default it is "/", so we load from "/front_end", but you can provide a different prefix if the shared resources are based elsewhere in the directory structure.',
           default: '/',
         })
+        .option('hosted-server-devtools-url', {
+          type: 'string',
+          desc: 'Configures the page that will be loaded by conductor when using the hosted-server for tests.',
+          default: 'front_end/devtools_app.html'
+        })
         .option(
             'chrome-binary-path',
             {type: 'string', desc: 'Path to the Chromium binary.', default: downloadedChromeBinaryPath()})

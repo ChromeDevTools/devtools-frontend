@@ -18,6 +18,7 @@ node_ts_library("implementation") {
     "hooks.ts",
     "mocha_hooks.ts",
     "puppeteer-state.ts",
+    "test_runner_config.ts",
     "test_server.ts",
   ]
 }

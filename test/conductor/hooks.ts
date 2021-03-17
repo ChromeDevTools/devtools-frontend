@@ -7,6 +7,7 @@
 import * as puppeteer from 'puppeteer';
 
 import {clearPuppeteerState, getBrowserAndPages, registerHandlers, setBrowserAndPages, setTestServerPort} from './puppeteer-state.js';
+import {getTestRunnerConfigSetting} from './test_runner_config.js';
 
 // Workaround for mismatching versions of puppeteer types and puppeteer library.
 declare module 'puppeteer' {
@@ -158,8 +159,14 @@ async function loadTargetPageAndFrontend(testServerPort: number) {
     /**
      * In hosted mode the frontend points to DevTools, so let's load it up.
      */
-    frontendUrl = `https://localhost:${testServerPort}/front_end/devtools_app.html?ws=localhost:${
-        chromeDebugPort}/devtools/page/${id}`;
+
+    const devToolsAppURL =
+        getTestRunnerConfigSetting<string>('hosted-server-devtools-url', 'front_end/devtools_app.html');
+    if (!devToolsAppURL) {
+      throw new Error('Could not load DevTools. hosted-server-devtools-url config not found.');
+    }
+    frontendUrl =
+        `https://localhost:${testServerPort}/${devToolsAppURL}?ws=localhost:${chromeDebugPort}/devtools/page/${id}`;
     await frontend.goto(frontendUrl, {waitUntil: ['networkidle2', 'domcontentloaded']});
   }
 

@@ -1428,8 +1428,16 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
 
     const runtimeModel = this._message.runtimeModel();
     // TODO: Consider removing these in favor of a simpler regex.
-    const errorPrefixes =
-        ['EvalError', 'ReferenceError', 'SyntaxError', 'TypeError', 'RangeError', 'Error', 'URIError'];
+    const errorPrefixes = [
+      'AggregateError',
+      'Error',
+      'EvalError',
+      'RangeError',
+      'ReferenceError',
+      'SyntaxError',
+      'TypeError',
+      'URIError',
+    ];
     if (!runtimeModel || !errorPrefixes.some(startsWith) && !/^[\w.]+Error\b/.test(string)) {
       return null;
     }

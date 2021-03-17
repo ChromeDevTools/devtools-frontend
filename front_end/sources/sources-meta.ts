@@ -783,7 +783,12 @@ UI.ActionRegistration.registerActionExtension({
   },
   bindings: [
     {
+      platform: UI.ActionRegistration.Platforms.WindowsLinux,
       shortcut: 'Ctrl+Shift+A',
+    },
+    {
+      platform: UI.ActionRegistration.Platforms.Mac,
+      shortcut: 'Meta+Shift+A',
     },
   ],
 });
@@ -801,7 +806,12 @@ UI.ActionRegistration.registerActionExtension({
   },
   bindings: [
     {
+      platform: UI.ActionRegistration.Platforms.WindowsLinux,
       shortcut: 'Ctrl+Shift+E',
+    },
+    {
+      platform: UI.ActionRegistration.Platforms.Mac,
+      shortcut: 'Meta+Shift+E',
     },
   ],
 });

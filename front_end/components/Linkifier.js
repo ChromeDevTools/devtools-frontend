@@ -248,7 +248,7 @@ export class Linkifier {
       preventClick: undefined,
       bypassURLTrimming: undefined
     };
-    const {columnNumber = 0, className = ''} = linkifyURLOptions;
+    const {columnNumber, className = ''} = linkifyURLOptions;
     if (sourceURL) {
       fallbackAnchor = Linkifier.linkifyURL(sourceURL, linkifyURLOptions);
     }

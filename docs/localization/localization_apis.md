@@ -1,4 +1,4 @@
-Localizable strings in the DevTools frontend need to be wrapped in localization calls. There are two different calls.
+Access localized strings in the DevTools frontend using the following localization calls.
 
 ## i18nString
 The basic API to make a string (with or without placeholder) localizable.
@@ -18,6 +18,38 @@ const UIStrings = {
 };
 
 message = i18nString(UIStrings.addAnotherString, {PH1: 'a placeholder', PH2: 'another placeholder'});
+```
+
+## i18nLazyString
+The `i18nString` function returns the translated string, with placeholders resolved. To do this, it needs access to the translated strings for the user's locale, which are not available until after DevTools has finished starting up.
+
+Calls to `i18nString` in the module scope will therefore fail when the module is imported.
+```javascript
+// Fails because i18nString runs at module-import time.
+Common.Settings.registerSettingExtension({
+  category: Common.Settings.SettingCategory.CONSOLE,
+  title: i18nString(UIStrings.groupSimilarMessagesInConsole),
+...
+
+function notTopLevel() {
+  console.log(extension.title);
+}
+```
+
+`i18nLazyString` fixes this problem by providing the same API, but returning a closure that returns a `LocalizedString`.
+It can be used in top-level calls; just make sure use-sites know it's a function now.
+
+```javascript
+// Works because i18nLazyString defers the loading of the translated string until later.
+Common.Settings.registerSettingExtension({
+  category: Common.Settings.SettingCategory.CONSOLE,
+  title: i18nLazyString(UIStrings.groupSimilarMessagesInConsole),
+...
+
+// Note we need to call title() now.
+function notTopLevel() {
+  console.log(extension.title());
+}
 ```
 
 ## i18n.i18n.getFormatLocalizedString
@@ -41,7 +73,7 @@ message = i18n.i18n.getFormatLocalizedString(str_, UIStrings.clickTheReloadButto
 ## i18n.i18n.lockedString
 This call is a named cast. Use it in places where a localized string is expected but the
 term you want to use does not require translation. Instead of locking the whole phrase or using
-a placeholder only phrase, use `lockedString`.
+a placeholder-only phrase, use `lockedString`.
 
 ```javascript
 someFunctionRequiringALocalizedString(i18n.i18n.lockedString('HTTP'));

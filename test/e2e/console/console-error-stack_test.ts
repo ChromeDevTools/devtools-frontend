@@ -8,7 +8,7 @@ import {getStructuredConsoleMessages, navigateToConsoleTab, showVerboseMessages}
 
 /* eslint-disable no-console */
 
-describe('The Console\'s error stack formatting', async () => {
+describe('The Console\'s error stack formatting', () => {
   it('picks up custom exception names ending with \'Error\' and symbolizes stack traces according to source maps',
      async () => {
        await goToResource('sources/error-with-sourcemap.html');
@@ -20,8 +20,23 @@ describe('The Console\'s error stack formatting', async () => {
            return false;
          }
          const [{message}] = messages;
-         console.log(message);
          return /^MyError.*error-with-sourcemap.ts:6/.test(message.replace('\n', ''));
        });
      });
+
+  it('correctly symbolizes stack traces with async frames for anonymous functions', async () => {
+    await goToResource('console/error-with-async-frame.html');
+    await navigateToConsoleTab();
+    await showVerboseMessages();
+    await waitForFunction(async () => {
+      const messages = await getStructuredConsoleMessages();
+      if (messages.length !== 1) {
+        return false;
+      }
+      const [{message}] = messages;
+      return message === `Error
+    at foo (async.js:2)
+    at async async.js:3`;
+    });
+  });
 });

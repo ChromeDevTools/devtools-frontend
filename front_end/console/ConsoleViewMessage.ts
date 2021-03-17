@@ -1469,7 +1469,10 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
         closeBracketIndex = lastMatch.index + lastMatch[0].length - 1;
       }
       const hasOpenBracket = openBracketIndex !== -1;
-      const left = hasOpenBracket ? openBracketIndex + 1 : lines[i].indexOf('at') + 3;
+      let left = hasOpenBracket ? openBracketIndex + 1 : lines[i].indexOf('at') + 3;
+      if (!hasOpenBracket && lines[i].indexOf('async ') === left) {
+        left += 6;
+      }
       const right = hasOpenBracket ? closeBracketIndex : lines[i].length;
       const linkCandidate = lines[i].substring(left, right);
       const splitResult = Common.ParsedURL.ParsedURL.splitLineAndColumn(linkCandidate);

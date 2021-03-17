@@ -8885,397 +8885,397 @@
   "source_frame/XMLView.ts | find": {
     "message": "Find"
   },
-  "sources/AddSourceMapURLDialog.js | add": {
+  "sources/AddSourceMapURLDialog.ts | add": {
     "message": "Add"
   },
-  "sources/AddSourceMapURLDialog.js | sourceMapUrl": {
+  "sources/AddSourceMapURLDialog.ts | sourceMapUrl": {
     "message": "Source map URL: "
   },
-  "sources/BreakpointEditDialog.js | breakpoint": {
+  "sources/BreakpointEditDialog.ts | breakpoint": {
     "message": "Breakpoint"
   },
-  "sources/BreakpointEditDialog.js | breakpointType": {
+  "sources/BreakpointEditDialog.ts | breakpointType": {
     "message": "Breakpoint type"
   },
-  "sources/BreakpointEditDialog.js | conditionalBreakpoint": {
+  "sources/BreakpointEditDialog.ts | conditionalBreakpoint": {
     "message": "Conditional breakpoint"
   },
-  "sources/BreakpointEditDialog.js | expressionToCheckBeforePausingEg": {
+  "sources/BreakpointEditDialog.ts | expressionToCheckBeforePausingEg": {
     "message": "Expression to check before pausing, e.g. x > 5"
   },
-  "sources/BreakpointEditDialog.js | logAMessageToConsoleDoNotBreak": {
+  "sources/BreakpointEditDialog.ts | logAMessageToConsoleDoNotBreak": {
     "message": "Log a message to Console, do not break"
   },
-  "sources/BreakpointEditDialog.js | logMessageEgXIsX": {
+  "sources/BreakpointEditDialog.ts | logMessageEgXIsX": {
     "message": "Log message, e.g. 'x is', x"
   },
-  "sources/BreakpointEditDialog.js | logpoint": {
+  "sources/BreakpointEditDialog.ts | logpoint": {
     "message": "Logpoint"
   },
-  "sources/BreakpointEditDialog.js | pauseOnlyWhenTheConditionIsTrue": {
+  "sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "Pause only when the condition is true"
   },
-  "sources/CallStackSidebarPane.js | addAllContentScriptsToIgnoreList": {
+  "sources/CallStackSidebarPane.ts | addAllContentScriptsToIgnoreList": {
     "message": "Add all content scripts to ignore list"
   },
-  "sources/CallStackSidebarPane.js | addScriptToIgnoreList": {
+  "sources/CallStackSidebarPane.ts | addScriptToIgnoreList": {
     "message": "Add script to ignore list"
   },
-  "sources/CallStackSidebarPane.js | callStack": {
+  "sources/CallStackSidebarPane.ts | callStack": {
     "message": "Call Stack"
   },
-  "sources/CallStackSidebarPane.js | copyStackTrace": {
+  "sources/CallStackSidebarPane.ts | copyStackTrace": {
     "message": "Copy stack trace"
   },
-  "sources/CallStackSidebarPane.js | notPaused": {
+  "sources/CallStackSidebarPane.ts | notPaused": {
     "message": "Not paused"
   },
-  "sources/CallStackSidebarPane.js | onIgnoreList": {
+  "sources/CallStackSidebarPane.ts | onIgnoreList": {
     "message": "on ignore list"
   },
-  "sources/CallStackSidebarPane.js | removeAllContentScriptsFrom": {
+  "sources/CallStackSidebarPane.ts | removeAllContentScriptsFrom": {
     "message": "Remove all content scripts from ignore list"
   },
-  "sources/CallStackSidebarPane.js | removeFromIgnoreList": {
+  "sources/CallStackSidebarPane.ts | removeFromIgnoreList": {
     "message": "Remove from ignore list"
   },
-  "sources/CallStackSidebarPane.js | restartFrame": {
+  "sources/CallStackSidebarPane.ts | restartFrame": {
     "message": "Restart frame"
   },
-  "sources/CallStackSidebarPane.js | showIgnorelistedFrames": {
+  "sources/CallStackSidebarPane.ts | showIgnorelistedFrames": {
     "message": "Show ignore-listed frames"
   },
-  "sources/CallStackSidebarPane.js | showMore": {
+  "sources/CallStackSidebarPane.ts | showMore": {
     "message": "Show more"
   },
-  "sources/CoveragePlugin.js | clickToShowCoveragePanel": {
+  "sources/CoveragePlugin.ts | clickToShowCoveragePanel": {
     "message": "Click to show Coverage Panel"
   },
-  "sources/CoveragePlugin.js | coverageNa": {
+  "sources/CoveragePlugin.ts | coverageNa": {
     "message": "Coverage: n/a"
   },
-  "sources/CoveragePlugin.js | coverageS": {
+  "sources/CoveragePlugin.ts | coverageS": {
     "message": "Coverage: {PH1} %"
   },
-  "sources/CoveragePlugin.js | showDetails": {
+  "sources/CoveragePlugin.ts | showDetails": {
     "message": "Show Details"
   },
-  "sources/CSSPlugin.js | openColorPicker": {
+  "sources/CSSPlugin.ts | openColorPicker": {
     "message": "Open color picker."
   },
-  "sources/CSSPlugin.js | openCubicBezierEditor": {
+  "sources/CSSPlugin.ts | openCubicBezierEditor": {
     "message": "Open cubic bezier editor."
   },
-  "sources/DebuggerPausedMessage.js | attributeModifications": {
+  "sources/DebuggerPausedMessage.ts | attributeModifications": {
     "message": "attribute modifications"
   },
-  "sources/DebuggerPausedMessage.js | childSAdded": {
+  "sources/DebuggerPausedMessage.ts | childSAdded": {
     "message": "Child {PH1} added"
   },
-  "sources/DebuggerPausedMessage.js | debuggerPaused": {
+  "sources/DebuggerPausedMessage.ts | debuggerPaused": {
     "message": "Debugger paused"
   },
-  "sources/DebuggerPausedMessage.js | descendantSAdded": {
+  "sources/DebuggerPausedMessage.ts | descendantSAdded": {
     "message": "Descendant {PH1} added"
   },
-  "sources/DebuggerPausedMessage.js | descendantSRemoved": {
+  "sources/DebuggerPausedMessage.ts | descendantSRemoved": {
     "message": "Descendant {PH1} removed"
   },
-  "sources/DebuggerPausedMessage.js | nodeRemoval": {
+  "sources/DebuggerPausedMessage.ts | nodeRemoval": {
     "message": "node removal"
   },
-  "sources/DebuggerPausedMessage.js | pausedBeforePotentialOutofmemory": {
+  "sources/DebuggerPausedMessage.ts | pausedBeforePotentialOutofmemory": {
     "message": "Paused before potential out-of-memory crash"
   },
-  "sources/DebuggerPausedMessage.js | pausedOnAssertion": {
+  "sources/DebuggerPausedMessage.ts | pausedOnAssertion": {
     "message": "Paused on assertion"
   },
-  "sources/DebuggerPausedMessage.js | pausedOnBreakpoint": {
+  "sources/DebuggerPausedMessage.ts | pausedOnBreakpoint": {
     "message": "Paused on breakpoint"
   },
-  "sources/DebuggerPausedMessage.js | pausedOnCspViolation": {
+  "sources/DebuggerPausedMessage.ts | pausedOnCspViolation": {
     "message": "Paused on CSP violation"
   },
-  "sources/DebuggerPausedMessage.js | pausedOnDebuggedFunction": {
+  "sources/DebuggerPausedMessage.ts | pausedOnDebuggedFunction": {
     "message": "Paused on debugged function"
   },
-  "sources/DebuggerPausedMessage.js | pausedOnEventListener": {
+  "sources/DebuggerPausedMessage.ts | pausedOnEventListener": {
     "message": "Paused on event listener"
   },
-  "sources/DebuggerPausedMessage.js | pausedOnException": {
+  "sources/DebuggerPausedMessage.ts | pausedOnException": {
     "message": "Paused on exception"
   },
-  "sources/DebuggerPausedMessage.js | pausedOnPromiseRejection": {
+  "sources/DebuggerPausedMessage.ts | pausedOnPromiseRejection": {
     "message": "Paused on promise rejection"
   },
-  "sources/DebuggerPausedMessage.js | pausedOnS": {
+  "sources/DebuggerPausedMessage.ts | pausedOnS": {
     "message": "Paused on {PH1}"
   },
-  "sources/DebuggerPausedMessage.js | pausedOnXhrOrFetch": {
+  "sources/DebuggerPausedMessage.ts | pausedOnXhrOrFetch": {
     "message": "Paused on XHR or fetch"
   },
-  "sources/DebuggerPausedMessage.js | subtreeModifications": {
+  "sources/DebuggerPausedMessage.ts | subtreeModifications": {
     "message": "subtree modifications"
   },
-  "sources/DebuggerPausedMessage.js | trustedTypePolicyViolation": {
+  "sources/DebuggerPausedMessage.ts | trustedTypePolicyViolation": {
     "message": "Trusted Type Policy Violation"
   },
-  "sources/DebuggerPausedMessage.js | trustedTypeSinkViolation": {
+  "sources/DebuggerPausedMessage.ts | trustedTypeSinkViolation": {
     "message": "Trusted Type Sink Violation"
   },
-  "sources/DebuggerPlugin.js | addBreakpoint": {
+  "sources/DebuggerPlugin.ts | addBreakpoint": {
     "message": "Add breakpoint"
   },
-  "sources/DebuggerPlugin.js | addConditionalBreakpoint": {
+  "sources/DebuggerPlugin.ts | addConditionalBreakpoint": {
     "message": "Add conditional breakpoint…"
   },
-  "sources/DebuggerPlugin.js | addLogpoint": {
+  "sources/DebuggerPlugin.ts | addLogpoint": {
     "message": "Add logpoint…"
   },
-  "sources/DebuggerPlugin.js | addSourceMap": {
+  "sources/DebuggerPlugin.ts | addSourceMap": {
     "message": "Add source map…"
   },
-  "sources/DebuggerPlugin.js | associatedFilesAreAvailable": {
+  "sources/DebuggerPlugin.ts | associatedFilesAreAvailable": {
     "message": "Associated files are available via file tree or {PH1}."
   },
-  "sources/DebuggerPlugin.js | associatedFilesShouldBeAdded": {
+  "sources/DebuggerPlugin.ts | associatedFilesShouldBeAdded": {
     "message": "Associated files should be added to the file tree. You can debug these resolved source files as regular JavaScript files."
   },
-  "sources/DebuggerPlugin.js | configure": {
+  "sources/DebuggerPlugin.ts | configure": {
     "message": "Configure"
   },
-  "sources/DebuggerPlugin.js | disableBreakpoint": {
+  "sources/DebuggerPlugin.ts | disableBreakpoint": {
     "message": "{n, plural, =1 {Disable breakpoint} other {Disable all breakpoints in line}}"
   },
-  "sources/DebuggerPlugin.js | editBreakpoint": {
+  "sources/DebuggerPlugin.ts | editBreakpoint": {
     "message": "Edit breakpoint…"
   },
-  "sources/DebuggerPlugin.js | enableBreakpoint": {
+  "sources/DebuggerPlugin.ts | enableBreakpoint": {
     "message": "{n, plural, =1 {Enable breakpoint} other {Enable all breakpoints in line}}"
   },
-  "sources/DebuggerPlugin.js | neverPauseHere": {
+  "sources/DebuggerPlugin.ts | neverPauseHere": {
     "message": "Never pause here"
   },
-  "sources/DebuggerPlugin.js | prettyprint": {
+  "sources/DebuggerPlugin.ts | prettyprint": {
     "message": "Pretty-print"
   },
-  "sources/DebuggerPlugin.js | prettyprintingWillFormatThisFile": {
+  "sources/DebuggerPlugin.ts | prettyprintingWillFormatThisFile": {
     "message": "Pretty-printing will format this file in a new tab where you can continue debugging. You can also pretty-print this file by clicking the {PH1} button on the bottom status bar."
   },
-  "sources/DebuggerPlugin.js | prettyprintThisMinifiedFile": {
+  "sources/DebuggerPlugin.ts | prettyprintThisMinifiedFile": {
     "message": "Pretty-print this minified file?"
   },
-  "sources/DebuggerPlugin.js | removeBreakpoint": {
+  "sources/DebuggerPlugin.ts | removeBreakpoint": {
     "message": "{n, plural, =1 {Remove breakpoint} other {Remove all breakpoints in line}}"
   },
-  "sources/DebuggerPlugin.js | removeFromIgnoreList": {
+  "sources/DebuggerPlugin.ts | removeFromIgnoreList": {
     "message": "Remove from ignore list"
   },
-  "sources/DebuggerPlugin.js | sourceMapDetected": {
+  "sources/DebuggerPlugin.ts | sourceMapDetected": {
     "message": "Source Map detected."
   },
-  "sources/DebuggerPlugin.js | sourceMapFoundButIgnoredForFile": {
+  "sources/DebuggerPlugin.ts | sourceMapFoundButIgnoredForFile": {
     "message": "Source map found, but ignored for file on ignore list."
   },
-  "sources/DebuggerPlugin.js | theDebuggerWillSkipStepping": {
+  "sources/DebuggerPlugin.ts | theDebuggerWillSkipStepping": {
     "message": "The debugger will skip stepping through this script, and will not stop on exceptions."
   },
-  "sources/DebuggerPlugin.js | thisScriptIsOnTheDebuggersIgnore": {
+  "sources/DebuggerPlugin.ts | thisScriptIsOnTheDebuggersIgnore": {
     "message": "This script is on the debugger's ignore list"
   },
-  "sources/FilteredUISourceCodeListProvider.js | noFilesFound": {
+  "sources/FilteredUISourceCodeListProvider.ts | noFilesFound": {
     "message": "No files found"
   },
-  "sources/GoToLineQuickOpen.js | currentLineSTypeALineNumber": {
+  "sources/GoToLineQuickOpen.ts | currentLineSTypeALineNumber": {
     "message": "Current line: {PH1}. Type a line number between 1 and {PH2} to navigate to."
   },
-  "sources/GoToLineQuickOpen.js | currentPositionXsTypeAnOffset": {
+  "sources/GoToLineQuickOpen.ts | currentPositionXsTypeAnOffset": {
     "message": "Current position: 0x{PH1}. Type an offset between 0x{PH2} and 0x{PH3} to navigate to."
   },
-  "sources/GoToLineQuickOpen.js | goToLine": {
+  "sources/GoToLineQuickOpen.ts | goToLine": {
     "message": "Go to line"
   },
-  "sources/GoToLineQuickOpen.js | goToLineS": {
+  "sources/GoToLineQuickOpen.ts | goToLineS": {
     "message": "Go to line {PH1}."
   },
-  "sources/GoToLineQuickOpen.js | goToLineSAndColumnS": {
+  "sources/GoToLineQuickOpen.ts | goToLineSAndColumnS": {
     "message": "Go to line {PH1} and column {PH2}."
   },
-  "sources/GoToLineQuickOpen.js | goToOffsetXs": {
+  "sources/GoToLineQuickOpen.ts | goToOffsetXs": {
     "message": "Go to offset 0x{PH1}."
   },
-  "sources/GoToLineQuickOpen.js | noFileSelected": {
+  "sources/GoToLineQuickOpen.ts | noFileSelected": {
     "message": "No file selected."
   },
-  "sources/GoToLineQuickOpen.js | typeANumberToGoToThatLine": {
+  "sources/GoToLineQuickOpen.ts | typeANumberToGoToThatLine": {
     "message": "Type a number to go to that line."
   },
-  "sources/GutterDiffPlugin.js | localModifications": {
+  "sources/GutterDiffPlugin.ts | localModifications": {
     "message": "Local Modifications..."
   },
-  "sources/InplaceFormatterEditorAction.js | format": {
+  "sources/InplaceFormatterEditorAction.ts | format": {
     "message": "Format"
   },
-  "sources/InplaceFormatterEditorAction.js | formatS": {
+  "sources/InplaceFormatterEditorAction.ts | formatS": {
     "message": "Format {PH1}"
   },
-  "sources/JavaScriptBreakpointsSidebarPane.js | activateBreakpoints": {
+  "sources/JavaScriptBreakpointsSidebarPane.ts | activateBreakpoints": {
     "message": "Activate breakpoints"
   },
-  "sources/JavaScriptBreakpointsSidebarPane.js | checked": {
+  "sources/JavaScriptBreakpointsSidebarPane.ts | checked": {
     "message": "checked"
   },
-  "sources/JavaScriptBreakpointsSidebarPane.js | deactivateBreakpoints": {
+  "sources/JavaScriptBreakpointsSidebarPane.ts | deactivateBreakpoints": {
     "message": "Deactivate breakpoints"
   },
-  "sources/JavaScriptBreakpointsSidebarPane.js | disableAllBreakpoints": {
+  "sources/JavaScriptBreakpointsSidebarPane.ts | disableAllBreakpoints": {
     "message": "Disable all breakpoints"
   },
-  "sources/JavaScriptBreakpointsSidebarPane.js | disableBreakpointsInFile": {
+  "sources/JavaScriptBreakpointsSidebarPane.ts | disableBreakpointsInFile": {
     "message": "Disable breakpoints in file"
   },
-  "sources/JavaScriptBreakpointsSidebarPane.js | enableAllBreakpoints": {
+  "sources/JavaScriptBreakpointsSidebarPane.ts | enableAllBreakpoints": {
     "message": "Enable all breakpoints"
   },
-  "sources/JavaScriptBreakpointsSidebarPane.js | enableBreakpointsInFile": {
+  "sources/JavaScriptBreakpointsSidebarPane.ts | enableBreakpointsInFile": {
     "message": "Enable breakpoints in file"
   },
-  "sources/JavaScriptBreakpointsSidebarPane.js | mixed": {
+  "sources/JavaScriptBreakpointsSidebarPane.ts | mixed": {
     "message": "mixed"
   },
-  "sources/JavaScriptBreakpointsSidebarPane.js | noBreakpoints": {
+  "sources/JavaScriptBreakpointsSidebarPane.ts | noBreakpoints": {
     "message": "No breakpoints"
   },
-  "sources/JavaScriptBreakpointsSidebarPane.js | removeAllBreakpoints": {
+  "sources/JavaScriptBreakpointsSidebarPane.ts | removeAllBreakpoints": {
     "message": "Remove all breakpoints"
   },
-  "sources/JavaScriptBreakpointsSidebarPane.js | removeAllBreakpointsInLine": {
+  "sources/JavaScriptBreakpointsSidebarPane.ts | removeAllBreakpointsInLine": {
     "message": "Remove all breakpoints in line"
   },
-  "sources/JavaScriptBreakpointsSidebarPane.js | removeBreakpoint": {
+  "sources/JavaScriptBreakpointsSidebarPane.ts | removeBreakpoint": {
     "message": "Remove breakpoint"
   },
-  "sources/JavaScriptBreakpointsSidebarPane.js | removeOtherBreakpoints": {
+  "sources/JavaScriptBreakpointsSidebarPane.ts | removeOtherBreakpoints": {
     "message": "Remove other breakpoints"
   },
-  "sources/JavaScriptBreakpointsSidebarPane.js | revealLocation": {
+  "sources/JavaScriptBreakpointsSidebarPane.ts | revealLocation": {
     "message": "Reveal location"
   },
-  "sources/JavaScriptBreakpointsSidebarPane.js | sBreakpointHit": {
+  "sources/JavaScriptBreakpointsSidebarPane.ts | sBreakpointHit": {
     "message": "{PH1} breakpoint hit"
   },
-  "sources/JavaScriptBreakpointsSidebarPane.js | unchecked": {
+  "sources/JavaScriptBreakpointsSidebarPane.ts | unchecked": {
     "message": "unchecked"
   },
-  "sources/NavigatorView.js | areYouSureYouWantToDeleteAll": {
+  "sources/NavigatorView.ts | areYouSureYouWantToDeleteAll": {
     "message": "Are you sure you want to delete all overrides contained in this folder?"
   },
-  "sources/NavigatorView.js | areYouSureYouWantToDeleteThis": {
+  "sources/NavigatorView.ts | areYouSureYouWantToDeleteThis": {
     "message": "Are you sure you want to delete this file?"
   },
-  "sources/NavigatorView.js | areYouSureYouWantToExcludeThis": {
+  "sources/NavigatorView.ts | areYouSureYouWantToExcludeThis": {
     "message": "Are you sure you want to exclude this folder?"
   },
-  "sources/NavigatorView.js | areYouSureYouWantToRemoveThis": {
+  "sources/NavigatorView.ts | areYouSureYouWantToRemoveThis": {
     "message": "Are you sure you want to remove this folder?"
   },
-  "sources/NavigatorView.js | delete": {
+  "sources/NavigatorView.ts | delete": {
     "message": "Delete"
   },
-  "sources/NavigatorView.js | deleteAllOverrides": {
+  "sources/NavigatorView.ts | deleteAllOverrides": {
     "message": "Delete all overrides"
   },
-  "sources/NavigatorView.js | excludeFolder": {
+  "sources/NavigatorView.ts | excludeFolder": {
     "message": "Exclude folder"
   },
-  "sources/NavigatorView.js | makeACopy": {
+  "sources/NavigatorView.ts | makeACopy": {
     "message": "Make a copy…"
   },
-  "sources/NavigatorView.js | newFile": {
+  "sources/NavigatorView.ts | newFile": {
     "message": "New file"
   },
-  "sources/NavigatorView.js | noDomain": {
+  "sources/NavigatorView.ts | noDomain": {
     "message": "(no domain)"
   },
-  "sources/NavigatorView.js | openFolder": {
+  "sources/NavigatorView.ts | openFolder": {
     "message": "Open folder"
   },
-  "sources/NavigatorView.js | removeFolderFromWorkspace": {
+  "sources/NavigatorView.ts | removeFolderFromWorkspace": {
     "message": "Remove folder from workspace"
   },
-  "sources/NavigatorView.js | rename": {
+  "sources/NavigatorView.ts | rename": {
     "message": "Rename…"
   },
-  "sources/NavigatorView.js | searchInAllFiles": {
+  "sources/NavigatorView.ts | searchInAllFiles": {
     "message": "Search in all files"
   },
-  "sources/NavigatorView.js | searchInFolder": {
+  "sources/NavigatorView.ts | searchInFolder": {
     "message": "Search in folder"
   },
-  "sources/NavigatorView.js | sFromSourceMap": {
+  "sources/NavigatorView.ts | sFromSourceMap": {
     "message": "{PH1} (from source map)"
   },
-  "sources/OpenFileQuickOpen.js | openFile": {
+  "sources/OpenFileQuickOpen.ts | openFile": {
     "message": "Open file"
   },
-  "sources/OutlineQuickOpen.js | goToSymbol": {
+  "sources/OutlineQuickOpen.ts | goToSymbol": {
     "message": "Go to symbol"
   },
-  "sources/OutlineQuickOpen.js | noFileSelected": {
+  "sources/OutlineQuickOpen.ts | noFileSelected": {
     "message": "No file selected."
   },
-  "sources/OutlineQuickOpen.js | noResultsFound": {
+  "sources/OutlineQuickOpen.ts | noResultsFound": {
     "message": "No results found"
   },
-  "sources/OutlineQuickOpen.js | openAJavascriptOrCssFileToSee": {
+  "sources/OutlineQuickOpen.ts | openAJavascriptOrCssFileToSee": {
     "message": "Open a JavaScript or CSS file to see symbols"
   },
-  "sources/RecorderPlugin.js | record": {
+  "sources/RecorderPlugin.ts | record": {
     "message": "Record"
   },
-  "sources/ScopeChainSidebarPane.js | closure": {
+  "sources/ScopeChainSidebarPane.ts | closure": {
     "message": "Closure"
   },
-  "sources/ScopeChainSidebarPane.js | closureS": {
+  "sources/ScopeChainSidebarPane.ts | closureS": {
     "message": "Closure ({PH1})"
   },
-  "sources/ScopeChainSidebarPane.js | couldNotOpenLinearMemory": {
+  "sources/ScopeChainSidebarPane.ts | couldNotOpenLinearMemory": {
     "message": "Could not open linear memory inspector: failed locating buffer."
   },
-  "sources/ScopeChainSidebarPane.js | exception": {
+  "sources/ScopeChainSidebarPane.ts | exception": {
     "message": "Exception"
   },
-  "sources/ScopeChainSidebarPane.js | loading": {
+  "sources/ScopeChainSidebarPane.ts | loading": {
     "message": "Loading..."
   },
-  "sources/ScopeChainSidebarPane.js | notPaused": {
+  "sources/ScopeChainSidebarPane.ts | notPaused": {
     "message": "Not paused"
   },
-  "sources/ScopeChainSidebarPane.js | noVariables": {
+  "sources/ScopeChainSidebarPane.ts | noVariables": {
     "message": "No variables"
   },
-  "sources/ScopeChainSidebarPane.js | returnValue": {
+  "sources/ScopeChainSidebarPane.ts | returnValue": {
     "message": "Return value"
   },
-  "sources/ScopeChainSidebarPane.js | revealInMemoryInspectorPanel": {
+  "sources/ScopeChainSidebarPane.ts | revealInMemoryInspectorPanel": {
     "message": "Reveal in Memory Inspector panel"
   },
-  "sources/ScriptFormatterEditorAction.js | prettyPrint": {
+  "sources/ScriptFormatterEditorAction.ts | prettyPrint": {
     "message": "Pretty print"
   },
-  "sources/ScriptFormatterEditorAction.js | prettyPrintS": {
+  "sources/ScriptFormatterEditorAction.ts | prettyPrintS": {
     "message": "Pretty print {PH1}"
   },
-  "sources/ScriptOriginPlugin.js | providedViaDebugInfoByS": {
+  "sources/ScriptOriginPlugin.ts | providedViaDebugInfoByS": {
     "message": "(provided via debug info by {PH1})"
   },
-  "sources/ScriptOriginPlugin.js | sourceMappedFromS": {
+  "sources/ScriptOriginPlugin.ts | sourceMappedFromS": {
     "message": "(source mapped from {PH1})"
   },
-  "sources/SnippetsPlugin.js | ctrlenter": {
+  "sources/SnippetsPlugin.ts | ctrlenter": {
     "message": "Ctrl+Enter"
   },
-  "sources/SnippetsPlugin.js | enter": {
+  "sources/SnippetsPlugin.ts | enter": {
     "message": "⌘+Enter"
   },
   "sources/sources-meta.ts | activateBreakpoints": {
@@ -9533,154 +9533,154 @@
   "sources/sources-meta.ts | watch": {
     "message": "Watch"
   },
-  "sources/SourcesNavigator.js | addRecording": {
+  "sources/SourcesNavigator.ts | addRecording": {
     "message": "Add recording"
   },
-  "sources/SourcesNavigator.js | clearConfiguration": {
+  "sources/SourcesNavigator.ts | clearConfiguration": {
     "message": "Clear configuration"
   },
-  "sources/SourcesNavigator.js | contentScriptsServedByExtensions": {
+  "sources/SourcesNavigator.ts | contentScriptsServedByExtensions": {
     "message": "Content scripts served by extensions appear here"
   },
-  "sources/SourcesNavigator.js | createAndSaveCodeSnippetsFor": {
+  "sources/SourcesNavigator.ts | createAndSaveCodeSnippetsFor": {
     "message": "Create and save code snippets for later reuse"
   },
-  "sources/SourcesNavigator.js | createNewSnippet": {
+  "sources/SourcesNavigator.ts | createNewSnippet": {
     "message": "Create new snippet"
   },
-  "sources/SourcesNavigator.js | learnMore": {
+  "sources/SourcesNavigator.ts | learnMore": {
     "message": "Learn more"
   },
-  "sources/SourcesNavigator.js | learnMoreAboutWorkspaces": {
+  "sources/SourcesNavigator.ts | learnMoreAboutWorkspaces": {
     "message": "Learn more about Workspaces"
   },
-  "sources/SourcesNavigator.js | newSnippet": {
+  "sources/SourcesNavigator.ts | newSnippet": {
     "message": "New snippet"
   },
-  "sources/SourcesNavigator.js | overridePageAssetsWithFilesFromA": {
+  "sources/SourcesNavigator.ts | overridePageAssetsWithFilesFromA": {
     "message": "Override page assets with files from a local folder"
   },
-  "sources/SourcesNavigator.js | recordAndReplayBrowser": {
+  "sources/SourcesNavigator.ts | recordAndReplayBrowser": {
     "message": "Record and replay browser interactions"
   },
-  "sources/SourcesNavigator.js | remove": {
+  "sources/SourcesNavigator.ts | remove": {
     "message": "Remove"
   },
-  "sources/SourcesNavigator.js | rename": {
+  "sources/SourcesNavigator.ts | rename": {
     "message": "Rename…"
   },
-  "sources/SourcesNavigator.js | run": {
+  "sources/SourcesNavigator.ts | run": {
     "message": "Run"
   },
-  "sources/SourcesNavigator.js | saveAs": {
+  "sources/SourcesNavigator.ts | saveAs": {
     "message": "Save as..."
   },
-  "sources/SourcesNavigator.js | selectFolderForOverrides": {
+  "sources/SourcesNavigator.ts | selectFolderForOverrides": {
     "message": "Select folder for overrides"
   },
-  "sources/SourcesNavigator.js | syncChangesInDevtoolsWithThe": {
+  "sources/SourcesNavigator.ts | syncChangesInDevtoolsWithThe": {
     "message": "Sync changes in DevTools with the local filesystem"
   },
-  "sources/SourcesPanel.js | continueToHere": {
+  "sources/SourcesPanel.ts | continueToHere": {
     "message": "Continue to here"
   },
-  "sources/SourcesPanel.js | copyS": {
+  "sources/SourcesPanel.ts | copyS": {
     "message": "Copy {PH1}"
   },
-  "sources/SourcesPanel.js | dontPauseOnExceptions": {
+  "sources/SourcesPanel.ts | dontPauseOnExceptions": {
     "message": "Don't pause on exceptions"
   },
-  "sources/SourcesPanel.js | dropWorkspaceFolderHere": {
+  "sources/SourcesPanel.ts | dropWorkspaceFolderHere": {
     "message": "Drop workspace folder here"
   },
-  "sources/SourcesPanel.js | groupByFolder": {
+  "sources/SourcesPanel.ts | groupByFolder": {
     "message": "Group by folder"
   },
-  "sources/SourcesPanel.js | hideDebugger": {
+  "sources/SourcesPanel.ts | hideDebugger": {
     "message": "Hide debugger"
   },
-  "sources/SourcesPanel.js | hideNavigator": {
+  "sources/SourcesPanel.ts | hideNavigator": {
     "message": "Hide navigator"
   },
-  "sources/SourcesPanel.js | moreOptions": {
+  "sources/SourcesPanel.ts | moreOptions": {
     "message": "More options"
   },
-  "sources/SourcesPanel.js | openInSourcesPanel": {
+  "sources/SourcesPanel.ts | openInSourcesPanel": {
     "message": "Open in Sources panel"
   },
-  "sources/SourcesPanel.js | pauseOnCaughtExceptions": {
+  "sources/SourcesPanel.ts | pauseOnCaughtExceptions": {
     "message": "Pause on caught exceptions"
   },
-  "sources/SourcesPanel.js | pauseOnExceptions": {
+  "sources/SourcesPanel.ts | pauseOnExceptions": {
     "message": "Pause on exceptions"
   },
-  "sources/SourcesPanel.js | resumeWithAllPausesBlockedForMs": {
+  "sources/SourcesPanel.ts | resumeWithAllPausesBlockedForMs": {
     "message": "Resume with all pauses blocked for 500 ms"
   },
-  "sources/SourcesPanel.js | revealInSidebar": {
+  "sources/SourcesPanel.ts | revealInSidebar": {
     "message": "Reveal in sidebar"
   },
-  "sources/SourcesPanel.js | showDebugger": {
+  "sources/SourcesPanel.ts | showDebugger": {
     "message": "Show debugger"
   },
-  "sources/SourcesPanel.js | showFunctionDefinition": {
+  "sources/SourcesPanel.ts | showFunctionDefinition": {
     "message": "Show function definition"
   },
-  "sources/SourcesPanel.js | showNavigator": {
+  "sources/SourcesPanel.ts | showNavigator": {
     "message": "Show navigator"
   },
-  "sources/SourcesPanel.js | storeSAsGlobalVariable": {
+  "sources/SourcesPanel.ts | storeSAsGlobalVariable": {
     "message": "Store {PH1} as global variable"
   },
-  "sources/SourcesPanel.js | terminateCurrentJavascriptCall": {
+  "sources/SourcesPanel.ts | terminateCurrentJavascriptCall": {
     "message": "Terminate current JavaScript call"
   },
-  "sources/SourcesView.js | dropInAFolderToAddToWorkspace": {
+  "sources/SourcesView.ts | dropInAFolderToAddToWorkspace": {
     "message": "Drop in a folder to add to workspace"
   },
-  "sources/SourcesView.js | openFile": {
+  "sources/SourcesView.ts | openFile": {
     "message": "Open file"
   },
-  "sources/SourcesView.js | runCommand": {
+  "sources/SourcesView.ts | runCommand": {
     "message": "Run command"
   },
-  "sources/SourcesView.js | sourceViewActions": {
+  "sources/SourcesView.ts | sourceViewActions": {
     "message": "Source View Actions"
   },
-  "sources/TabbedEditorContainer.js | areYouSureYouWantToCloseUnsaved": {
+  "sources/TabbedEditorContainer.ts | areYouSureYouWantToCloseUnsaved": {
     "message": "Are you sure you want to close unsaved file: {PH1}?"
   },
-  "sources/TabbedEditorContainer.js | changesToThisFileWereNotSavedTo": {
+  "sources/TabbedEditorContainer.ts | changesToThisFileWereNotSavedTo": {
     "message": "Changes to this file were not saved to file system."
   },
-  "sources/TabbedEditorContainer.js | unableToLoadThisContent": {
+  "sources/TabbedEditorContainer.ts | unableToLoadThisContent": {
     "message": "Unable to load this content."
   },
-  "sources/ThreadsSidebarPane.js | paused": {
+  "sources/ThreadsSidebarPane.ts | paused": {
     "message": "paused"
   },
-  "sources/WatchExpressionsSidebarPane.js | addPropertyPathToWatch": {
+  "sources/WatchExpressionsSidebarPane.ts | addPropertyPathToWatch": {
     "message": "Add property path to watch"
   },
-  "sources/WatchExpressionsSidebarPane.js | addWatchExpression": {
+  "sources/WatchExpressionsSidebarPane.ts | addWatchExpression": {
     "message": "Add watch expression"
   },
-  "sources/WatchExpressionsSidebarPane.js | copyValue": {
+  "sources/WatchExpressionsSidebarPane.ts | copyValue": {
     "message": "Copy value"
   },
-  "sources/WatchExpressionsSidebarPane.js | deleteAllWatchExpressions": {
+  "sources/WatchExpressionsSidebarPane.ts | deleteAllWatchExpressions": {
     "message": "Delete all watch expressions"
   },
-  "sources/WatchExpressionsSidebarPane.js | deleteWatchExpression": {
+  "sources/WatchExpressionsSidebarPane.ts | deleteWatchExpression": {
     "message": "Delete watch expression"
   },
-  "sources/WatchExpressionsSidebarPane.js | notAvailable": {
+  "sources/WatchExpressionsSidebarPane.ts | notAvailable": {
     "message": "<not available>"
   },
-  "sources/WatchExpressionsSidebarPane.js | noWatchExpressions": {
+  "sources/WatchExpressionsSidebarPane.ts | noWatchExpressions": {
     "message": "No watch expressions"
   },
-  "sources/WatchExpressionsSidebarPane.js | refreshWatchExpressions": {
+  "sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "Refresh watch expressions"
   },
   "text_editor/CodeMirrorTextEditor.ts | codeEditor": {

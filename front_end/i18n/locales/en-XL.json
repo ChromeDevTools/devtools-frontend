@@ -8885,397 +8885,397 @@
   "source_frame/XMLView.ts | find": {
     "message": "F̂ín̂d́"
   },
-  "sources/AddSourceMapURLDialog.js | add": {
+  "sources/AddSourceMapURLDialog.ts | add": {
     "message": "Âd́d̂"
   },
-  "sources/AddSourceMapURLDialog.js | sourceMapUrl": {
+  "sources/AddSourceMapURLDialog.ts | sourceMapUrl": {
     "message": "Ŝóûŕĉé m̂áp̂ ÚR̂Ĺ: "
   },
-  "sources/BreakpointEditDialog.js | breakpoint": {
+  "sources/BreakpointEditDialog.ts | breakpoint": {
     "message": "B̂ŕêák̂ṕôín̂t́"
   },
-  "sources/BreakpointEditDialog.js | breakpointType": {
+  "sources/BreakpointEditDialog.ts | breakpointType": {
     "message": "B̂ŕêák̂ṕôín̂t́ t̂ýp̂é"
   },
-  "sources/BreakpointEditDialog.js | conditionalBreakpoint": {
+  "sources/BreakpointEditDialog.ts | conditionalBreakpoint": {
     "message": "Ĉón̂d́ît́îón̂ál̂ b́r̂éâḱp̂óîńt̂"
   },
-  "sources/BreakpointEditDialog.js | expressionToCheckBeforePausingEg": {
+  "sources/BreakpointEditDialog.ts | expressionToCheckBeforePausingEg": {
     "message": "Êx́p̂ŕêśŝíôń t̂ó ĉh́êćk̂ b́êf́ôŕê ṕâúŝín̂ǵ, ê.ǵ. x̂ > 5"
   },
-  "sources/BreakpointEditDialog.js | logAMessageToConsoleDoNotBreak": {
+  "sources/BreakpointEditDialog.ts | logAMessageToConsoleDoNotBreak": {
     "message": "L̂óĝ á m̂éŝśâǵê t́ô Ćôńŝól̂é, d̂ó n̂ót̂ b́r̂éâḱ"
   },
-  "sources/BreakpointEditDialog.js | logMessageEgXIsX": {
+  "sources/BreakpointEditDialog.ts | logMessageEgXIsX": {
     "message": "L̂óĝ ḿêśŝáĝé, ê.ǵ. 'x̂ íŝ', x́"
   },
-  "sources/BreakpointEditDialog.js | logpoint": {
+  "sources/BreakpointEditDialog.ts | logpoint": {
     "message": "L̂óĝṕôín̂t́"
   },
-  "sources/BreakpointEditDialog.js | pauseOnlyWhenTheConditionIsTrue": {
+  "sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "P̂áûśê ón̂ĺŷ ẃĥén̂ t́ĥé ĉón̂d́ît́îón̂ íŝ t́r̂úê"
   },
-  "sources/CallStackSidebarPane.js | addAllContentScriptsToIgnoreList": {
+  "sources/CallStackSidebarPane.ts | addAllContentScriptsToIgnoreList": {
     "message": "Âd́d̂ ál̂ĺ ĉón̂t́êńt̂ śĉŕîṕt̂ś t̂ó îǵn̂ór̂é l̂íŝt́"
   },
-  "sources/CallStackSidebarPane.js | addScriptToIgnoreList": {
+  "sources/CallStackSidebarPane.ts | addScriptToIgnoreList": {
     "message": "Âd́d̂ śĉŕîṕt̂ t́ô íĝńôŕê ĺîśt̂"
   },
-  "sources/CallStackSidebarPane.js | callStack": {
+  "sources/CallStackSidebarPane.ts | callStack": {
     "message": "Ĉál̂ĺ Ŝt́âćk̂"
   },
-  "sources/CallStackSidebarPane.js | copyStackTrace": {
+  "sources/CallStackSidebarPane.ts | copyStackTrace": {
     "message": "Ĉóp̂ý ŝt́âćk̂ t́r̂áĉé"
   },
-  "sources/CallStackSidebarPane.js | notPaused": {
+  "sources/CallStackSidebarPane.ts | notPaused": {
     "message": "N̂ót̂ ṕâúŝéd̂"
   },
-  "sources/CallStackSidebarPane.js | onIgnoreList": {
+  "sources/CallStackSidebarPane.ts | onIgnoreList": {
     "message": "ôń îǵn̂ór̂é l̂íŝt́"
   },
-  "sources/CallStackSidebarPane.js | removeAllContentScriptsFrom": {
+  "sources/CallStackSidebarPane.ts | removeAllContentScriptsFrom": {
     "message": "R̂ém̂óv̂é âĺl̂ ćôńt̂én̂t́ ŝćr̂íp̂t́ŝ f́r̂óm̂ íĝńôŕê ĺîśt̂"
   },
-  "sources/CallStackSidebarPane.js | removeFromIgnoreList": {
+  "sources/CallStackSidebarPane.ts | removeFromIgnoreList": {
     "message": "R̂ém̂óv̂é f̂ŕôḿ îǵn̂ór̂é l̂íŝt́"
   },
-  "sources/CallStackSidebarPane.js | restartFrame": {
+  "sources/CallStackSidebarPane.ts | restartFrame": {
     "message": "R̂éŝt́âŕt̂ f́r̂ám̂é"
   },
-  "sources/CallStackSidebarPane.js | showIgnorelistedFrames": {
+  "sources/CallStackSidebarPane.ts | showIgnorelistedFrames": {
     "message": "Ŝh́ôẃ îǵn̂ór̂é-l̂íŝt́êd́ f̂ŕâḿêś"
   },
-  "sources/CallStackSidebarPane.js | showMore": {
+  "sources/CallStackSidebarPane.ts | showMore": {
     "message": "Ŝh́ôẃ m̂ór̂é"
   },
-  "sources/CoveragePlugin.js | clickToShowCoveragePanel": {
+  "sources/CoveragePlugin.ts | clickToShowCoveragePanel": {
     "message": "Ĉĺîćk̂ t́ô śĥóŵ Ćôv́êŕâǵê Ṕâńêĺ"
   },
-  "sources/CoveragePlugin.js | coverageNa": {
+  "sources/CoveragePlugin.ts | coverageNa": {
     "message": "Ĉóv̂ér̂áĝé: n̂/á"
   },
-  "sources/CoveragePlugin.js | coverageS": {
+  "sources/CoveragePlugin.ts | coverageS": {
     "message": "Ĉóv̂ér̂áĝé: {PH1} %"
   },
-  "sources/CoveragePlugin.js | showDetails": {
+  "sources/CoveragePlugin.ts | showDetails": {
     "message": "Ŝh́ôẃ D̂ét̂áîĺŝ"
   },
-  "sources/CSSPlugin.js | openColorPicker": {
+  "sources/CSSPlugin.ts | openColorPicker": {
     "message": "Ôṕêń ĉól̂ór̂ ṕîćk̂ér̂."
   },
-  "sources/CSSPlugin.js | openCubicBezierEditor": {
+  "sources/CSSPlugin.ts | openCubicBezierEditor": {
     "message": "Ôṕêń ĉúb̂íĉ b́êźîér̂ éd̂ít̂ór̂."
   },
-  "sources/DebuggerPausedMessage.js | attributeModifications": {
+  "sources/DebuggerPausedMessage.ts | attributeModifications": {
     "message": "ât́t̂ŕîb́ût́ê ḿôd́îf́îćât́îón̂ś"
   },
-  "sources/DebuggerPausedMessage.js | childSAdded": {
+  "sources/DebuggerPausedMessage.ts | childSAdded": {
     "message": "Ĉh́îĺd̂ {PH1} ád̂d́êd́"
   },
-  "sources/DebuggerPausedMessage.js | debuggerPaused": {
+  "sources/DebuggerPausedMessage.ts | debuggerPaused": {
     "message": "D̂éb̂úĝǵêŕ p̂áûśêd́"
   },
-  "sources/DebuggerPausedMessage.js | descendantSAdded": {
+  "sources/DebuggerPausedMessage.ts | descendantSAdded": {
     "message": "D̂éŝćêńd̂án̂t́ {PH1} âd́d̂éd̂"
   },
-  "sources/DebuggerPausedMessage.js | descendantSRemoved": {
+  "sources/DebuggerPausedMessage.ts | descendantSRemoved": {
     "message": "D̂éŝćêńd̂án̂t́ {PH1} r̂ém̂óv̂éd̂"
   },
-  "sources/DebuggerPausedMessage.js | nodeRemoval": {
+  "sources/DebuggerPausedMessage.ts | nodeRemoval": {
     "message": "n̂ód̂é r̂ém̂óv̂ál̂"
   },
-  "sources/DebuggerPausedMessage.js | pausedBeforePotentialOutofmemory": {
+  "sources/DebuggerPausedMessage.ts | pausedBeforePotentialOutofmemory": {
     "message": "P̂áûśêd́ b̂éf̂ór̂é p̂ót̂én̂t́îál̂ óût́-ôf́-m̂ém̂ór̂ý ĉŕâśĥ"
   },
-  "sources/DebuggerPausedMessage.js | pausedOnAssertion": {
+  "sources/DebuggerPausedMessage.ts | pausedOnAssertion": {
     "message": "P̂áûśêd́ ôń âśŝér̂t́îón̂"
   },
-  "sources/DebuggerPausedMessage.js | pausedOnBreakpoint": {
+  "sources/DebuggerPausedMessage.ts | pausedOnBreakpoint": {
     "message": "P̂áûśêd́ ôń b̂ŕêák̂ṕôín̂t́"
   },
-  "sources/DebuggerPausedMessage.js | pausedOnCspViolation": {
+  "sources/DebuggerPausedMessage.ts | pausedOnCspViolation": {
     "message": "P̂áûśêd́ ôń ĈŚP̂ v́îól̂át̂íôń"
   },
-  "sources/DebuggerPausedMessage.js | pausedOnDebuggedFunction": {
+  "sources/DebuggerPausedMessage.ts | pausedOnDebuggedFunction": {
     "message": "P̂áûśêd́ ôń d̂éb̂úĝǵêd́ f̂ún̂ćt̂íôń"
   },
-  "sources/DebuggerPausedMessage.js | pausedOnEventListener": {
+  "sources/DebuggerPausedMessage.ts | pausedOnEventListener": {
     "message": "P̂áûśêd́ ôń êv́êńt̂ ĺîśt̂én̂ér̂"
   },
-  "sources/DebuggerPausedMessage.js | pausedOnException": {
+  "sources/DebuggerPausedMessage.ts | pausedOnException": {
     "message": "P̂áûśêd́ ôń êx́ĉép̂t́îón̂"
   },
-  "sources/DebuggerPausedMessage.js | pausedOnPromiseRejection": {
+  "sources/DebuggerPausedMessage.ts | pausedOnPromiseRejection": {
     "message": "P̂áûśêd́ ôń p̂ŕôḿîśê ŕêj́êćt̂íôń"
   },
-  "sources/DebuggerPausedMessage.js | pausedOnS": {
+  "sources/DebuggerPausedMessage.ts | pausedOnS": {
     "message": "P̂áûśêd́ ôń {PH1}"
   },
-  "sources/DebuggerPausedMessage.js | pausedOnXhrOrFetch": {
+  "sources/DebuggerPausedMessage.ts | pausedOnXhrOrFetch": {
     "message": "P̂áûśêd́ ôń X̂H́R̂ ór̂ f́êt́ĉh́"
   },
-  "sources/DebuggerPausedMessage.js | subtreeModifications": {
+  "sources/DebuggerPausedMessage.ts | subtreeModifications": {
     "message": "ŝúb̂t́r̂éê ḿôd́îf́îćât́îón̂ś"
   },
-  "sources/DebuggerPausedMessage.js | trustedTypePolicyViolation": {
+  "sources/DebuggerPausedMessage.ts | trustedTypePolicyViolation": {
     "message": "Trusted Type P̂ól̂íĉý V̂íôĺât́îón̂"
   },
-  "sources/DebuggerPausedMessage.js | trustedTypeSinkViolation": {
+  "sources/DebuggerPausedMessage.ts | trustedTypeSinkViolation": {
     "message": "Trusted Type Ŝín̂ḱ V̂íôĺât́îón̂"
   },
-  "sources/DebuggerPlugin.js | addBreakpoint": {
+  "sources/DebuggerPlugin.ts | addBreakpoint": {
     "message": "Âd́d̂ b́r̂éâḱp̂óîńt̂"
   },
-  "sources/DebuggerPlugin.js | addConditionalBreakpoint": {
+  "sources/DebuggerPlugin.ts | addConditionalBreakpoint": {
     "message": "Âd́d̂ ćôńd̂ít̂íôńâĺ b̂ŕêák̂ṕôín̂t́…"
   },
-  "sources/DebuggerPlugin.js | addLogpoint": {
+  "sources/DebuggerPlugin.ts | addLogpoint": {
     "message": "Âd́d̂ ĺôǵp̂óîńt̂…"
   },
-  "sources/DebuggerPlugin.js | addSourceMap": {
+  "sources/DebuggerPlugin.ts | addSourceMap": {
     "message": "Âd́d̂ śôúr̂ćê ḿâṕ…"
   },
-  "sources/DebuggerPlugin.js | associatedFilesAreAvailable": {
+  "sources/DebuggerPlugin.ts | associatedFilesAreAvailable": {
     "message": "Âśŝóĉíât́êd́ f̂íl̂éŝ ár̂é âv́âíl̂áb̂ĺê v́îá f̂íl̂é t̂ŕêé ôŕ {PH1}."
   },
-  "sources/DebuggerPlugin.js | associatedFilesShouldBeAdded": {
+  "sources/DebuggerPlugin.ts | associatedFilesShouldBeAdded": {
     "message": "Âśŝóĉíât́êd́ f̂íl̂éŝ śĥóûĺd̂ b́ê ád̂d́êd́ t̂ó t̂h́ê f́îĺê t́r̂éê. Ýôú ĉán̂ d́êb́ûǵ t̂h́êśê ŕêśôĺv̂éd̂ śôúr̂ćê f́îĺêś âś r̂éĝúl̂ár̂ J́âv́âŚĉŕîṕt̂ f́îĺêś."
   },
-  "sources/DebuggerPlugin.js | configure": {
+  "sources/DebuggerPlugin.ts | configure": {
     "message": "Ĉón̂f́îǵûŕê"
   },
-  "sources/DebuggerPlugin.js | disableBreakpoint": {
+  "sources/DebuggerPlugin.ts | disableBreakpoint": {
     "message": "{n, plural, =1 {D̂íŝáb̂ĺê b́r̂éâḱp̂óîńt̂} other {D́îśâb́l̂é âĺl̂ b́r̂éâḱp̂óîńt̂ś îń l̂ín̂é}}"
   },
-  "sources/DebuggerPlugin.js | editBreakpoint": {
+  "sources/DebuggerPlugin.ts | editBreakpoint": {
     "message": "Êd́ît́ b̂ŕêák̂ṕôín̂t́…"
   },
-  "sources/DebuggerPlugin.js | enableBreakpoint": {
+  "sources/DebuggerPlugin.ts | enableBreakpoint": {
     "message": "{n, plural, =1 {Êńâb́l̂é b̂ŕêák̂ṕôín̂t́} other {Êńâb́l̂é âĺl̂ b́r̂éâḱp̂óîńt̂ś îń l̂ín̂é}}"
   },
-  "sources/DebuggerPlugin.js | neverPauseHere": {
+  "sources/DebuggerPlugin.ts | neverPauseHere": {
     "message": "N̂év̂ér̂ ṕâúŝé ĥér̂é"
   },
-  "sources/DebuggerPlugin.js | prettyprint": {
+  "sources/DebuggerPlugin.ts | prettyprint": {
     "message": "P̂ŕêt́t̂ý-p̂ŕîńt̂"
   },
-  "sources/DebuggerPlugin.js | prettyprintingWillFormatThisFile": {
+  "sources/DebuggerPlugin.ts | prettyprintingWillFormatThisFile": {
     "message": "P̂ŕêt́t̂ý-p̂ŕîńt̂ín̂ǵ ŵíl̂ĺ f̂ór̂ḿât́ t̂h́îś f̂íl̂é îń â ńêẃ t̂áb̂ ẃĥér̂é ŷóû ćâń ĉón̂t́îńûé d̂éb̂úĝǵîńĝ. Ýôú ĉán̂ ál̂śô ṕr̂ét̂t́ŷ-ṕr̂ín̂t́ t̂h́îś f̂íl̂é b̂ý ĉĺîćk̂ín̂ǵ t̂h́ê {PH1} b́ût́t̂ón̂ ón̂ t́ĥé b̂ót̂t́ôḿ ŝt́ât́ûś b̂ár̂."
   },
-  "sources/DebuggerPlugin.js | prettyprintThisMinifiedFile": {
+  "sources/DebuggerPlugin.ts | prettyprintThisMinifiedFile": {
     "message": "P̂ŕêt́t̂ý-p̂ŕîńt̂ t́ĥíŝ ḿîńîf́îéd̂ f́îĺê?"
   },
-  "sources/DebuggerPlugin.js | removeBreakpoint": {
+  "sources/DebuggerPlugin.ts | removeBreakpoint": {
     "message": "{n, plural, =1 {R̂ém̂óv̂é b̂ŕêák̂ṕôín̂t́} other {R̂ém̂óv̂é âĺl̂ b́r̂éâḱp̂óîńt̂ś îń l̂ín̂é}}"
   },
-  "sources/DebuggerPlugin.js | removeFromIgnoreList": {
+  "sources/DebuggerPlugin.ts | removeFromIgnoreList": {
     "message": "R̂ém̂óv̂é f̂ŕôḿ îǵn̂ór̂é l̂íŝt́"
   },
-  "sources/DebuggerPlugin.js | sourceMapDetected": {
+  "sources/DebuggerPlugin.ts | sourceMapDetected": {
     "message": "Ŝóûŕĉé M̂áp̂ d́êt́êćt̂éd̂."
   },
-  "sources/DebuggerPlugin.js | sourceMapFoundButIgnoredForFile": {
+  "sources/DebuggerPlugin.ts | sourceMapFoundButIgnoredForFile": {
     "message": "Ŝóûŕĉé m̂áp̂ f́ôún̂d́, b̂út̂ íĝńôŕêd́ f̂ór̂ f́îĺê ón̂ íĝńôŕê ĺîśt̂."
   },
-  "sources/DebuggerPlugin.js | theDebuggerWillSkipStepping": {
+  "sources/DebuggerPlugin.ts | theDebuggerWillSkipStepping": {
     "message": "T̂h́ê d́êb́ûǵĝér̂ ẃîĺl̂ śk̂íp̂ śt̂ép̂ṕîńĝ t́ĥŕôúĝh́ t̂h́îś ŝćr̂íp̂t́, âńd̂ ẃîĺl̂ ńôt́ ŝt́ôṕ ôń êx́ĉép̂t́îón̂ś."
   },
-  "sources/DebuggerPlugin.js | thisScriptIsOnTheDebuggersIgnore": {
+  "sources/DebuggerPlugin.ts | thisScriptIsOnTheDebuggersIgnore": {
     "message": "T̂h́îś ŝćr̂íp̂t́ îś ôń t̂h́ê d́êb́ûǵĝér̂'ś îǵn̂ór̂é l̂íŝt́"
   },
-  "sources/FilteredUISourceCodeListProvider.js | noFilesFound": {
+  "sources/FilteredUISourceCodeListProvider.ts | noFilesFound": {
     "message": "N̂ó f̂íl̂éŝ f́ôún̂d́"
   },
-  "sources/GoToLineQuickOpen.js | currentLineSTypeALineNumber": {
+  "sources/GoToLineQuickOpen.ts | currentLineSTypeALineNumber": {
     "message": "Ĉúr̂ŕêńt̂ ĺîńê: {PH1}. T́ŷṕê á l̂ín̂é n̂úm̂b́êŕ b̂ét̂ẃêén̂ 1 án̂d́ {PH2} t̂ó n̂áv̂íĝát̂é t̂ó."
   },
-  "sources/GoToLineQuickOpen.js | currentPositionXsTypeAnOffset": {
+  "sources/GoToLineQuickOpen.ts | currentPositionXsTypeAnOffset": {
     "message": "Ĉúr̂ŕêńt̂ ṕôśît́îón̂: 0x́{PH1}. T̂ýp̂é âń ôf́f̂śêt́ b̂ét̂ẃêén̂ 0x́{PH2} âńd̂ 0x́{PH3} t̂ó n̂áv̂íĝát̂é t̂ó."
   },
-  "sources/GoToLineQuickOpen.js | goToLine": {
+  "sources/GoToLineQuickOpen.ts | goToLine": {
     "message": "Ĝó t̂ó l̂ín̂é"
   },
-  "sources/GoToLineQuickOpen.js | goToLineS": {
+  "sources/GoToLineQuickOpen.ts | goToLineS": {
     "message": "Ĝó t̂ó l̂ín̂é {PH1}."
   },
-  "sources/GoToLineQuickOpen.js | goToLineSAndColumnS": {
+  "sources/GoToLineQuickOpen.ts | goToLineSAndColumnS": {
     "message": "Ĝó t̂ó l̂ín̂é {PH1} âńd̂ ćôĺûḿn̂ {PH2}."
   },
-  "sources/GoToLineQuickOpen.js | goToOffsetXs": {
+  "sources/GoToLineQuickOpen.ts | goToOffsetXs": {
     "message": "Ĝó t̂ó ôf́f̂śêt́ 0x̂{PH1}."
   },
-  "sources/GoToLineQuickOpen.js | noFileSelected": {
+  "sources/GoToLineQuickOpen.ts | noFileSelected": {
     "message": "N̂ó f̂íl̂é ŝél̂éĉt́êd́."
   },
-  "sources/GoToLineQuickOpen.js | typeANumberToGoToThatLine": {
+  "sources/GoToLineQuickOpen.ts | typeANumberToGoToThatLine": {
     "message": "T̂ýp̂é â ńûḿb̂ér̂ t́ô ǵô t́ô t́ĥát̂ ĺîńê."
   },
-  "sources/GutterDiffPlugin.js | localModifications": {
+  "sources/GutterDiffPlugin.ts | localModifications": {
     "message": "L̂óĉál̂ Ḿôd́îf́îćât́îón̂ś..."
   },
-  "sources/InplaceFormatterEditorAction.js | format": {
+  "sources/InplaceFormatterEditorAction.ts | format": {
     "message": "F̂ór̂ḿât́"
   },
-  "sources/InplaceFormatterEditorAction.js | formatS": {
+  "sources/InplaceFormatterEditorAction.ts | formatS": {
     "message": "F̂ór̂ḿât́ {PH1}"
   },
-  "sources/JavaScriptBreakpointsSidebarPane.js | activateBreakpoints": {
+  "sources/JavaScriptBreakpointsSidebarPane.ts | activateBreakpoints": {
     "message": "Âćt̂ív̂át̂é b̂ŕêák̂ṕôín̂t́ŝ"
   },
-  "sources/JavaScriptBreakpointsSidebarPane.js | checked": {
+  "sources/JavaScriptBreakpointsSidebarPane.ts | checked": {
     "message": "ĉh́êćk̂éd̂"
   },
-  "sources/JavaScriptBreakpointsSidebarPane.js | deactivateBreakpoints": {
+  "sources/JavaScriptBreakpointsSidebarPane.ts | deactivateBreakpoints": {
     "message": "D̂éâćt̂ív̂át̂é b̂ŕêák̂ṕôín̂t́ŝ"
   },
-  "sources/JavaScriptBreakpointsSidebarPane.js | disableAllBreakpoints": {
+  "sources/JavaScriptBreakpointsSidebarPane.ts | disableAllBreakpoints": {
     "message": "D̂íŝáb̂ĺê ál̂ĺ b̂ŕêák̂ṕôín̂t́ŝ"
   },
-  "sources/JavaScriptBreakpointsSidebarPane.js | disableBreakpointsInFile": {
+  "sources/JavaScriptBreakpointsSidebarPane.ts | disableBreakpointsInFile": {
     "message": "D̂íŝáb̂ĺê b́r̂éâḱp̂óîńt̂ś îń f̂íl̂é"
   },
-  "sources/JavaScriptBreakpointsSidebarPane.js | enableAllBreakpoints": {
+  "sources/JavaScriptBreakpointsSidebarPane.ts | enableAllBreakpoints": {
     "message": "Êńâb́l̂é âĺl̂ b́r̂éâḱp̂óîńt̂ś"
   },
-  "sources/JavaScriptBreakpointsSidebarPane.js | enableBreakpointsInFile": {
+  "sources/JavaScriptBreakpointsSidebarPane.ts | enableBreakpointsInFile": {
     "message": "Êńâb́l̂é b̂ŕêák̂ṕôín̂t́ŝ ín̂ f́îĺê"
   },
-  "sources/JavaScriptBreakpointsSidebarPane.js | mixed": {
+  "sources/JavaScriptBreakpointsSidebarPane.ts | mixed": {
     "message": "m̂íx̂éd̂"
   },
-  "sources/JavaScriptBreakpointsSidebarPane.js | noBreakpoints": {
+  "sources/JavaScriptBreakpointsSidebarPane.ts | noBreakpoints": {
     "message": "N̂ó b̂ŕêák̂ṕôín̂t́ŝ"
   },
-  "sources/JavaScriptBreakpointsSidebarPane.js | removeAllBreakpoints": {
+  "sources/JavaScriptBreakpointsSidebarPane.ts | removeAllBreakpoints": {
     "message": "R̂ém̂óv̂é âĺl̂ b́r̂éâḱp̂óîńt̂ś"
   },
-  "sources/JavaScriptBreakpointsSidebarPane.js | removeAllBreakpointsInLine": {
+  "sources/JavaScriptBreakpointsSidebarPane.ts | removeAllBreakpointsInLine": {
     "message": "R̂ém̂óv̂é âĺl̂ b́r̂éâḱp̂óîńt̂ś îń l̂ín̂é"
   },
-  "sources/JavaScriptBreakpointsSidebarPane.js | removeBreakpoint": {
+  "sources/JavaScriptBreakpointsSidebarPane.ts | removeBreakpoint": {
     "message": "R̂ém̂óv̂é b̂ŕêák̂ṕôín̂t́"
   },
-  "sources/JavaScriptBreakpointsSidebarPane.js | removeOtherBreakpoints": {
+  "sources/JavaScriptBreakpointsSidebarPane.ts | removeOtherBreakpoints": {
     "message": "R̂ém̂óv̂é ôt́ĥér̂ b́r̂éâḱp̂óîńt̂ś"
   },
-  "sources/JavaScriptBreakpointsSidebarPane.js | revealLocation": {
+  "sources/JavaScriptBreakpointsSidebarPane.ts | revealLocation": {
     "message": "R̂év̂éâĺ l̂óĉát̂íôń"
   },
-  "sources/JavaScriptBreakpointsSidebarPane.js | sBreakpointHit": {
+  "sources/JavaScriptBreakpointsSidebarPane.ts | sBreakpointHit": {
     "message": "{PH1} b̂ŕêák̂ṕôín̂t́ ĥít̂"
   },
-  "sources/JavaScriptBreakpointsSidebarPane.js | unchecked": {
+  "sources/JavaScriptBreakpointsSidebarPane.ts | unchecked": {
     "message": "ûńĉh́êćk̂éd̂"
   },
-  "sources/NavigatorView.js | areYouSureYouWantToDeleteAll": {
+  "sources/NavigatorView.ts | areYouSureYouWantToDeleteAll": {
     "message": "Âŕê ýôú ŝúr̂é ŷóû ẃâńt̂ t́ô d́êĺêt́ê ál̂ĺ ôv́êŕr̂íd̂éŝ ćôńt̂áîńêd́ îń t̂h́îś f̂ól̂d́êŕ?"
   },
-  "sources/NavigatorView.js | areYouSureYouWantToDeleteThis": {
+  "sources/NavigatorView.ts | areYouSureYouWantToDeleteThis": {
     "message": "Âŕê ýôú ŝúr̂é ŷóû ẃâńt̂ t́ô d́êĺêt́ê t́ĥíŝ f́îĺê?"
   },
-  "sources/NavigatorView.js | areYouSureYouWantToExcludeThis": {
+  "sources/NavigatorView.ts | areYouSureYouWantToExcludeThis": {
     "message": "Âŕê ýôú ŝúr̂é ŷóû ẃâńt̂ t́ô éx̂ćl̂úd̂é t̂h́îś f̂ól̂d́êŕ?"
   },
-  "sources/NavigatorView.js | areYouSureYouWantToRemoveThis": {
+  "sources/NavigatorView.ts | areYouSureYouWantToRemoveThis": {
     "message": "Âŕê ýôú ŝúr̂é ŷóû ẃâńt̂ t́ô ŕêḿôv́ê t́ĥíŝ f́ôĺd̂ér̂?"
   },
-  "sources/NavigatorView.js | delete": {
+  "sources/NavigatorView.ts | delete": {
     "message": "D̂él̂ét̂é"
   },
-  "sources/NavigatorView.js | deleteAllOverrides": {
+  "sources/NavigatorView.ts | deleteAllOverrides": {
     "message": "D̂él̂ét̂é âĺl̂ óv̂ér̂ŕîd́êś"
   },
-  "sources/NavigatorView.js | excludeFolder": {
+  "sources/NavigatorView.ts | excludeFolder": {
     "message": "Êx́ĉĺûd́ê f́ôĺd̂ér̂"
   },
-  "sources/NavigatorView.js | makeACopy": {
+  "sources/NavigatorView.ts | makeACopy": {
     "message": "M̂ák̂é â ćôṕŷ…"
   },
-  "sources/NavigatorView.js | newFile": {
+  "sources/NavigatorView.ts | newFile": {
     "message": "N̂éŵ f́îĺê"
   },
-  "sources/NavigatorView.js | noDomain": {
+  "sources/NavigatorView.ts | noDomain": {
     "message": "(n̂ó d̂óm̂áîń)"
   },
-  "sources/NavigatorView.js | openFolder": {
+  "sources/NavigatorView.ts | openFolder": {
     "message": "Ôṕêń f̂ól̂d́êŕ"
   },
-  "sources/NavigatorView.js | removeFolderFromWorkspace": {
+  "sources/NavigatorView.ts | removeFolderFromWorkspace": {
     "message": "R̂ém̂óv̂é f̂ól̂d́êŕ f̂ŕôḿ ŵór̂ḱŝṕâćê"
   },
-  "sources/NavigatorView.js | rename": {
+  "sources/NavigatorView.ts | rename": {
     "message": "R̂én̂ám̂é…"
   },
-  "sources/NavigatorView.js | searchInAllFiles": {
+  "sources/NavigatorView.ts | searchInAllFiles": {
     "message": "Ŝéâŕĉh́ îń âĺl̂ f́îĺêś"
   },
-  "sources/NavigatorView.js | searchInFolder": {
+  "sources/NavigatorView.ts | searchInFolder": {
     "message": "Ŝéâŕĉh́ îń f̂ól̂d́êŕ"
   },
-  "sources/NavigatorView.js | sFromSourceMap": {
+  "sources/NavigatorView.ts | sFromSourceMap": {
     "message": "{PH1} (f̂ŕôḿ ŝóûŕĉé m̂áp̂)"
   },
-  "sources/OpenFileQuickOpen.js | openFile": {
+  "sources/OpenFileQuickOpen.ts | openFile": {
     "message": "Ôṕêń f̂íl̂é"
   },
-  "sources/OutlineQuickOpen.js | goToSymbol": {
+  "sources/OutlineQuickOpen.ts | goToSymbol": {
     "message": "Ĝó t̂ó ŝým̂b́ôĺ"
   },
-  "sources/OutlineQuickOpen.js | noFileSelected": {
+  "sources/OutlineQuickOpen.ts | noFileSelected": {
     "message": "N̂ó f̂íl̂é ŝél̂éĉt́êd́."
   },
-  "sources/OutlineQuickOpen.js | noResultsFound": {
+  "sources/OutlineQuickOpen.ts | noResultsFound": {
     "message": "N̂ó r̂éŝúl̂t́ŝ f́ôún̂d́"
   },
-  "sources/OutlineQuickOpen.js | openAJavascriptOrCssFileToSee": {
+  "sources/OutlineQuickOpen.ts | openAJavascriptOrCssFileToSee": {
     "message": "Ôṕêń â J́âv́âŚĉŕîṕt̂ ór̂ ĆŜŚ f̂íl̂é t̂ó ŝéê śŷḿb̂ól̂ś"
   },
-  "sources/RecorderPlugin.js | record": {
+  "sources/RecorderPlugin.ts | record": {
     "message": "R̂éĉór̂d́"
   },
-  "sources/ScopeChainSidebarPane.js | closure": {
+  "sources/ScopeChainSidebarPane.ts | closure": {
     "message": "Ĉĺôśûŕê"
   },
-  "sources/ScopeChainSidebarPane.js | closureS": {
+  "sources/ScopeChainSidebarPane.ts | closureS": {
     "message": "Ĉĺôśûŕê ({PH1})"
   },
-  "sources/ScopeChainSidebarPane.js | couldNotOpenLinearMemory": {
+  "sources/ScopeChainSidebarPane.ts | couldNotOpenLinearMemory": {
     "message": "Ĉóûĺd̂ ńôt́ ôṕêń l̂ín̂éâŕ m̂ém̂ór̂ý îńŝṕêćt̂ór̂: f́âíl̂éd̂ ĺôćât́îńĝ b́ûf́f̂ér̂."
   },
-  "sources/ScopeChainSidebarPane.js | exception": {
+  "sources/ScopeChainSidebarPane.ts | exception": {
     "message": "Êx́ĉép̂t́îón̂"
   },
-  "sources/ScopeChainSidebarPane.js | loading": {
+  "sources/ScopeChainSidebarPane.ts | loading": {
     "message": "L̂óâd́îńĝ..."
   },
-  "sources/ScopeChainSidebarPane.js | notPaused": {
+  "sources/ScopeChainSidebarPane.ts | notPaused": {
     "message": "N̂ót̂ ṕâúŝéd̂"
   },
-  "sources/ScopeChainSidebarPane.js | noVariables": {
+  "sources/ScopeChainSidebarPane.ts | noVariables": {
     "message": "N̂ó v̂ár̂íâb́l̂éŝ"
   },
-  "sources/ScopeChainSidebarPane.js | returnValue": {
+  "sources/ScopeChainSidebarPane.ts | returnValue": {
     "message": "R̂ét̂úr̂ń v̂ál̂úê"
   },
-  "sources/ScopeChainSidebarPane.js | revealInMemoryInspectorPanel": {
+  "sources/ScopeChainSidebarPane.ts | revealInMemoryInspectorPanel": {
     "message": "R̂év̂éâĺ îń M̂ém̂ór̂ý Îńŝṕêćt̂ór̂ ṕâńêĺ"
   },
-  "sources/ScriptFormatterEditorAction.js | prettyPrint": {
+  "sources/ScriptFormatterEditorAction.ts | prettyPrint": {
     "message": "P̂ŕêt́t̂ý p̂ŕîńt̂"
   },
-  "sources/ScriptFormatterEditorAction.js | prettyPrintS": {
+  "sources/ScriptFormatterEditorAction.ts | prettyPrintS": {
     "message": "P̂ŕêt́t̂ý p̂ŕîńt̂ {PH1}"
   },
-  "sources/ScriptOriginPlugin.js | providedViaDebugInfoByS": {
+  "sources/ScriptOriginPlugin.ts | providedViaDebugInfoByS": {
     "message": "(p̂ŕôv́îd́êd́ v̂íâ d́êb́ûǵ îńf̂ó b̂ý {PH1})"
   },
-  "sources/ScriptOriginPlugin.js | sourceMappedFromS": {
+  "sources/ScriptOriginPlugin.ts | sourceMappedFromS": {
     "message": "(ŝóûŕĉé m̂áp̂ṕêd́ f̂ŕôḿ {PH1})"
   },
-  "sources/SnippetsPlugin.js | ctrlenter": {
+  "sources/SnippetsPlugin.ts | ctrlenter": {
     "message": "Ĉt́r̂ĺ+Êńt̂ér̂"
   },
-  "sources/SnippetsPlugin.js | enter": {
+  "sources/SnippetsPlugin.ts | enter": {
     "message": "⌘+Êńt̂ér̂"
   },
   "sources/sources-meta.ts | activateBreakpoints": {
@@ -9533,154 +9533,154 @@
   "sources/sources-meta.ts | watch": {
     "message": "Ŵát̂ćĥ"
   },
-  "sources/SourcesNavigator.js | addRecording": {
+  "sources/SourcesNavigator.ts | addRecording": {
     "message": "Âd́d̂ ŕêćôŕd̂ín̂ǵ"
   },
-  "sources/SourcesNavigator.js | clearConfiguration": {
+  "sources/SourcesNavigator.ts | clearConfiguration": {
     "message": "Ĉĺêár̂ ćôńf̂íĝúr̂át̂íôń"
   },
-  "sources/SourcesNavigator.js | contentScriptsServedByExtensions": {
+  "sources/SourcesNavigator.ts | contentScriptsServedByExtensions": {
     "message": "Ĉón̂t́êńt̂ śĉŕîṕt̂ś ŝér̂v́êd́ b̂ý êx́t̂én̂śîón̂ś âṕp̂éâŕ ĥér̂é"
   },
-  "sources/SourcesNavigator.js | createAndSaveCodeSnippetsFor": {
+  "sources/SourcesNavigator.ts | createAndSaveCodeSnippetsFor": {
     "message": "Ĉŕêát̂é âńd̂ śâv́ê ćôd́ê śn̂íp̂ṕêt́ŝ f́ôŕ l̂át̂ér̂ ŕêúŝé"
   },
-  "sources/SourcesNavigator.js | createNewSnippet": {
+  "sources/SourcesNavigator.ts | createNewSnippet": {
     "message": "Ĉŕêát̂é n̂éŵ śn̂íp̂ṕêt́"
   },
-  "sources/SourcesNavigator.js | learnMore": {
+  "sources/SourcesNavigator.ts | learnMore": {
     "message": "L̂éâŕn̂ ḿôŕê"
   },
-  "sources/SourcesNavigator.js | learnMoreAboutWorkspaces": {
+  "sources/SourcesNavigator.ts | learnMoreAboutWorkspaces": {
     "message": "L̂éâŕn̂ ḿôŕê áb̂óût́ Ŵór̂ḱŝṕâćêś"
   },
-  "sources/SourcesNavigator.js | newSnippet": {
+  "sources/SourcesNavigator.ts | newSnippet": {
     "message": "N̂éŵ śn̂íp̂ṕêt́"
   },
-  "sources/SourcesNavigator.js | overridePageAssetsWithFilesFromA": {
+  "sources/SourcesNavigator.ts | overridePageAssetsWithFilesFromA": {
     "message": "Ôv́êŕr̂íd̂é p̂áĝé âśŝét̂ś ŵít̂h́ f̂íl̂éŝ f́r̂óm̂ á l̂óĉál̂ f́ôĺd̂ér̂"
   },
-  "sources/SourcesNavigator.js | recordAndReplayBrowser": {
+  "sources/SourcesNavigator.ts | recordAndReplayBrowser": {
     "message": "R̂éĉór̂d́ âńd̂ ŕêṕl̂áŷ b́r̂óŵśêŕ îńt̂ér̂áĉt́îón̂ś"
   },
-  "sources/SourcesNavigator.js | remove": {
+  "sources/SourcesNavigator.ts | remove": {
     "message": "R̂ém̂óv̂é"
   },
-  "sources/SourcesNavigator.js | rename": {
+  "sources/SourcesNavigator.ts | rename": {
     "message": "R̂én̂ám̂é…"
   },
-  "sources/SourcesNavigator.js | run": {
+  "sources/SourcesNavigator.ts | run": {
     "message": "R̂ún̂"
   },
-  "sources/SourcesNavigator.js | saveAs": {
+  "sources/SourcesNavigator.ts | saveAs": {
     "message": "Ŝáv̂é âś..."
   },
-  "sources/SourcesNavigator.js | selectFolderForOverrides": {
+  "sources/SourcesNavigator.ts | selectFolderForOverrides": {
     "message": "Ŝél̂éĉt́ f̂ól̂d́êŕ f̂ór̂ óv̂ér̂ŕîd́êś"
   },
-  "sources/SourcesNavigator.js | syncChangesInDevtoolsWithThe": {
+  "sources/SourcesNavigator.ts | syncChangesInDevtoolsWithThe": {
     "message": "Ŝýn̂ć ĉh́âńĝéŝ ín̂ D́êv́T̂óôĺŝ ẃît́ĥ t́ĥé l̂óĉál̂ f́îĺêśŷśt̂ém̂"
   },
-  "sources/SourcesPanel.js | continueToHere": {
+  "sources/SourcesPanel.ts | continueToHere": {
     "message": "Ĉón̂t́îńûé t̂ó ĥér̂é"
   },
-  "sources/SourcesPanel.js | copyS": {
+  "sources/SourcesPanel.ts | copyS": {
     "message": "Ĉóp̂ý {PH1}"
   },
-  "sources/SourcesPanel.js | dontPauseOnExceptions": {
+  "sources/SourcesPanel.ts | dontPauseOnExceptions": {
     "message": "D̂ón̂'t́ p̂áûśê ón̂ éx̂ćêṕt̂íôńŝ"
   },
-  "sources/SourcesPanel.js | dropWorkspaceFolderHere": {
+  "sources/SourcesPanel.ts | dropWorkspaceFolderHere": {
     "message": "D̂ŕôṕ ŵór̂ḱŝṕâćê f́ôĺd̂ér̂ h́êŕê"
   },
-  "sources/SourcesPanel.js | groupByFolder": {
+  "sources/SourcesPanel.ts | groupByFolder": {
     "message": "Ĝŕôúp̂ b́ŷ f́ôĺd̂ér̂"
   },
-  "sources/SourcesPanel.js | hideDebugger": {
+  "sources/SourcesPanel.ts | hideDebugger": {
     "message": "Ĥíd̂é d̂éb̂úĝǵêŕ"
   },
-  "sources/SourcesPanel.js | hideNavigator": {
+  "sources/SourcesPanel.ts | hideNavigator": {
     "message": "Ĥíd̂é n̂áv̂íĝát̂ór̂"
   },
-  "sources/SourcesPanel.js | moreOptions": {
+  "sources/SourcesPanel.ts | moreOptions": {
     "message": "M̂ór̂é ôṕt̂íôńŝ"
   },
-  "sources/SourcesPanel.js | openInSourcesPanel": {
+  "sources/SourcesPanel.ts | openInSourcesPanel": {
     "message": "Ôṕêń îń Ŝóûŕĉéŝ ṕâńêĺ"
   },
-  "sources/SourcesPanel.js | pauseOnCaughtExceptions": {
+  "sources/SourcesPanel.ts | pauseOnCaughtExceptions": {
     "message": "P̂áûśê ón̂ ćâúĝh́t̂ éx̂ćêṕt̂íôńŝ"
   },
-  "sources/SourcesPanel.js | pauseOnExceptions": {
+  "sources/SourcesPanel.ts | pauseOnExceptions": {
     "message": "P̂áûśê ón̂ éx̂ćêṕt̂íôńŝ"
   },
-  "sources/SourcesPanel.js | resumeWithAllPausesBlockedForMs": {
+  "sources/SourcesPanel.ts | resumeWithAllPausesBlockedForMs": {
     "message": "R̂éŝúm̂é ŵít̂h́ âĺl̂ ṕâúŝéŝ b́l̂óĉḱêd́ f̂ór̂ 500 ḿŝ"
   },
-  "sources/SourcesPanel.js | revealInSidebar": {
+  "sources/SourcesPanel.ts | revealInSidebar": {
     "message": "R̂év̂éâĺ îń ŝíd̂éb̂ár̂"
   },
-  "sources/SourcesPanel.js | showDebugger": {
+  "sources/SourcesPanel.ts | showDebugger": {
     "message": "Ŝh́ôẃ d̂éb̂úĝǵêŕ"
   },
-  "sources/SourcesPanel.js | showFunctionDefinition": {
+  "sources/SourcesPanel.ts | showFunctionDefinition": {
     "message": "Ŝh́ôẃ f̂ún̂ćt̂íôń d̂éf̂ín̂ít̂íôń"
   },
-  "sources/SourcesPanel.js | showNavigator": {
+  "sources/SourcesPanel.ts | showNavigator": {
     "message": "Ŝh́ôẃ n̂áv̂íĝát̂ór̂"
   },
-  "sources/SourcesPanel.js | storeSAsGlobalVariable": {
+  "sources/SourcesPanel.ts | storeSAsGlobalVariable": {
     "message": "Ŝt́ôŕê {PH1} áŝ ǵl̂ób̂ál̂ v́âŕîáb̂ĺê"
   },
-  "sources/SourcesPanel.js | terminateCurrentJavascriptCall": {
+  "sources/SourcesPanel.ts | terminateCurrentJavascriptCall": {
     "message": "T̂ér̂ḿîńât́ê ćûŕr̂én̂t́ Ĵáv̂áŜćr̂íp̂t́ ĉál̂ĺ"
   },
-  "sources/SourcesView.js | dropInAFolderToAddToWorkspace": {
+  "sources/SourcesView.ts | dropInAFolderToAddToWorkspace": {
     "message": "D̂ŕôṕ îń â f́ôĺd̂ér̂ t́ô ád̂d́ t̂ó ŵór̂ḱŝṕâćê"
   },
-  "sources/SourcesView.js | openFile": {
+  "sources/SourcesView.ts | openFile": {
     "message": "Ôṕêń f̂íl̂é"
   },
-  "sources/SourcesView.js | runCommand": {
+  "sources/SourcesView.ts | runCommand": {
     "message": "R̂ún̂ ćôḿm̂án̂d́"
   },
-  "sources/SourcesView.js | sourceViewActions": {
+  "sources/SourcesView.ts | sourceViewActions": {
     "message": "Ŝóûŕĉé V̂íêẃ Âćt̂íôńŝ"
   },
-  "sources/TabbedEditorContainer.js | areYouSureYouWantToCloseUnsaved": {
+  "sources/TabbedEditorContainer.ts | areYouSureYouWantToCloseUnsaved": {
     "message": "Âŕê ýôú ŝúr̂é ŷóû ẃâńt̂ t́ô ćl̂óŝé ûńŝáv̂éd̂ f́îĺê: {PH1}?"
   },
-  "sources/TabbedEditorContainer.js | changesToThisFileWereNotSavedTo": {
+  "sources/TabbedEditorContainer.ts | changesToThisFileWereNotSavedTo": {
     "message": "Ĉh́âńĝéŝ t́ô t́ĥíŝ f́îĺê ẃêŕê ńôt́ ŝáv̂éd̂ t́ô f́îĺê śŷśt̂ém̂."
   },
-  "sources/TabbedEditorContainer.js | unableToLoadThisContent": {
+  "sources/TabbedEditorContainer.ts | unableToLoadThisContent": {
     "message": "Ûńâb́l̂é t̂ó l̂óâd́ t̂h́îś ĉón̂t́êńt̂."
   },
-  "sources/ThreadsSidebarPane.js | paused": {
+  "sources/ThreadsSidebarPane.ts | paused": {
     "message": "p̂áûśêd́"
   },
-  "sources/WatchExpressionsSidebarPane.js | addPropertyPathToWatch": {
+  "sources/WatchExpressionsSidebarPane.ts | addPropertyPathToWatch": {
     "message": "Âd́d̂ ṕr̂óp̂ér̂t́ŷ ṕât́ĥ t́ô ẃât́ĉh́"
   },
-  "sources/WatchExpressionsSidebarPane.js | addWatchExpression": {
+  "sources/WatchExpressionsSidebarPane.ts | addWatchExpression": {
     "message": "Âd́d̂ ẃât́ĉh́ êx́p̂ŕêśŝíôń"
   },
-  "sources/WatchExpressionsSidebarPane.js | copyValue": {
+  "sources/WatchExpressionsSidebarPane.ts | copyValue": {
     "message": "Ĉóp̂ý v̂ál̂úê"
   },
-  "sources/WatchExpressionsSidebarPane.js | deleteAllWatchExpressions": {
+  "sources/WatchExpressionsSidebarPane.ts | deleteAllWatchExpressions": {
     "message": "D̂él̂ét̂é âĺl̂ ẃât́ĉh́ êx́p̂ŕêśŝíôńŝ"
   },
-  "sources/WatchExpressionsSidebarPane.js | deleteWatchExpression": {
+  "sources/WatchExpressionsSidebarPane.ts | deleteWatchExpression": {
     "message": "D̂él̂ét̂é ŵát̂ćĥ éx̂ṕr̂éŝśîón̂"
   },
-  "sources/WatchExpressionsSidebarPane.js | notAvailable": {
+  "sources/WatchExpressionsSidebarPane.ts | notAvailable": {
     "message": "<n̂ót̂ áv̂áîĺâb́l̂é>"
   },
-  "sources/WatchExpressionsSidebarPane.js | noWatchExpressions": {
+  "sources/WatchExpressionsSidebarPane.ts | noWatchExpressions": {
     "message": "N̂ó ŵát̂ćĥ éx̂ṕr̂éŝśîón̂ś"
   },
-  "sources/WatchExpressionsSidebarPane.js | refreshWatchExpressions": {
+  "sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "R̂éf̂ŕêśĥ ẃât́ĉh́ êx́p̂ŕêśŝíôńŝ"
   },
   "text_editor/CodeMirrorTextEditor.ts | codeEditor": {

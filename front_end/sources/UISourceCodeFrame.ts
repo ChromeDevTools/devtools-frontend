@@ -1,0 +1,895 @@
+/*
+ * Copyright (C) 2012 Google Inc. All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ *     * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above
+ * copyright notice, this list of conditions and the following disclaimer
+ * in the documentation and/or other materials provided with the
+ * distribution.
+ *     * Neither the name of Google Inc. nor the names of its
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+/* eslint-disable rulesdir/no_underscored_properties */
+
+import * as Common from '../common/common.js';
+import * as Persistence from '../persistence/persistence.js';  // eslint-disable-line no-unused-vars
+import * as Platform from '../platform/platform.js';
+import * as Root from '../root/root.js';
+import * as SourceFrame from '../source_frame/source_frame.js';
+import * as TextEditor from '../text_editor/text_editor.js';  // eslint-disable-line no-unused-vars
+import * as TextUtils from '../text_utils/text_utils.js';
+import * as WebComponents from '../ui/components/components.js';
+import * as UI from '../ui/ui.js';
+import * as Workspace from '../workspace/workspace.js';
+
+import {CoveragePlugin} from './CoveragePlugin.js';
+import {CSSPlugin} from './CSSPlugin.js';
+import {DebuggerPlugin} from './DebuggerPlugin.js';
+import {GutterDiffPlugin} from './GutterDiffPlugin.js';
+import {JavaScriptCompilerPlugin} from './JavaScriptCompilerPlugin.js';
+import {Plugin} from './Plugin.js';  // eslint-disable-line no-unused-vars
+import {RecorderPlugin} from './RecorderPlugin.js';
+import {ScriptOriginPlugin} from './ScriptOriginPlugin.js';
+import {SnippetsPlugin} from './SnippetsPlugin.js';
+import {SourcesPanel} from './SourcesPanel.js';
+
+export class UISourceCodeFrame extends SourceFrame.SourceFrame.SourceFrameImpl {
+  _uiSourceCode: Workspace.UISourceCode.UISourceCode;
+  _diff: SourceFrame.SourceCodeDiff.SourceCodeDiff|undefined;
+  _muteSourceCodeEvents: boolean;
+  _isSettingContent: boolean;
+  _persistenceBinding: Persistence.Persistence.PersistenceBinding|null;
+  _rowMessageBuckets: Map<number, RowMessageBucket>;
+  _typeDecorationsPending: Set<string>;
+  _uiSourceCodeEventListeners: Common.EventTarget.EventDescriptor[];
+  _messageAndDecorationListeners: Common.EventTarget.EventDescriptor[];
+  _boundOnBindingChanged: () => void;
+  _errorPopoverHelper: UI.PopoverHelper.PopoverHelper;
+  _plugins: Plugin[];
+
+  constructor(uiSourceCode: Workspace.UISourceCode.UISourceCode) {
+    super(workingCopy);
+    this._uiSourceCode = uiSourceCode;
+
+    if (Root.Runtime.experiments.isEnabled('sourceDiff')) {
+      this._diff = new SourceFrame.SourceCodeDiff.SourceCodeDiff(this.textEditor);
+    }
+
+    this._muteSourceCodeEvents = false;
+    this._isSettingContent = false;
+
+    this._persistenceBinding = Persistence.Persistence.PersistenceImpl.instance().binding(uiSourceCode);
+
+    this._rowMessageBuckets = new Map();
+    this._typeDecorationsPending = new Set();
+
+    this._uiSourceCodeEventListeners = [];
+    this._messageAndDecorationListeners = [];
+
+    this._boundOnBindingChanged = this._onBindingChanged.bind(this);
+
+    this.textEditor.addEventListener(
+        SourceFrame.SourcesTextEditor.Events.EditorBlurred,
+        () => UI.Context.Context.instance().setFlavor(UISourceCodeFrame, null));
+    this.textEditor.addEventListener(
+        SourceFrame.SourcesTextEditor.Events.EditorFocused,
+        () => UI.Context.Context.instance().setFlavor(UISourceCodeFrame, this));
+    Common.Settings.Settings.instance()
+        .moduleSetting('persistenceNetworkOverridesEnabled')
+        .addChangeListener(this._onNetworkPersistenceChanged, this);
+
+    this._errorPopoverHelper =
+        new UI.PopoverHelper.PopoverHelper(this.element, this._getErrorPopoverContent.bind(this));
+    this._errorPopoverHelper.setHasPadding(true);
+
+    this._errorPopoverHelper.setTimeout(100, 100);
+
+    this._plugins = [];
+
+    this._initializeUISourceCode();
+
+    function workingCopy(): Promise<TextUtils.ContentProvider.DeferredContent> {
+      if (uiSourceCode.isDirty()) {
+        return Promise.resolve({content: uiSourceCode.workingCopy(), isEncoded: false});
+      }
+      return uiSourceCode.requestContent();
+    }
+  }
+
+  _installMessageAndDecorationListeners(): void {
+    if (this._persistenceBinding) {
+      const networkSourceCode = this._persistenceBinding.network;
+      const fileSystemSourceCode = this._persistenceBinding.fileSystem;
+      this._messageAndDecorationListeners = [
+        networkSourceCode.addEventListener(Workspace.UISourceCode.Events.MessageAdded, this._onMessageAdded, this),
+        networkSourceCode.addEventListener(Workspace.UISourceCode.Events.MessageRemoved, this._onMessageRemoved, this),
+        networkSourceCode.addEventListener(
+            Workspace.UISourceCode.Events.LineDecorationAdded, this._onLineDecorationAdded, this),
+        networkSourceCode.addEventListener(
+            Workspace.UISourceCode.Events.LineDecorationRemoved, this._onLineDecorationRemoved, this),
+
+        fileSystemSourceCode.addEventListener(Workspace.UISourceCode.Events.MessageAdded, this._onMessageAdded, this),
+        fileSystemSourceCode.addEventListener(
+            Workspace.UISourceCode.Events.MessageRemoved, this._onMessageRemoved, this),
+      ];
+    } else {
+      this._messageAndDecorationListeners = [
+        this._uiSourceCode.addEventListener(Workspace.UISourceCode.Events.MessageAdded, this._onMessageAdded, this),
+        this._uiSourceCode.addEventListener(Workspace.UISourceCode.Events.MessageRemoved, this._onMessageRemoved, this),
+        this._uiSourceCode.addEventListener(
+            Workspace.UISourceCode.Events.LineDecorationAdded, this._onLineDecorationAdded, this),
+        this._uiSourceCode.addEventListener(
+            Workspace.UISourceCode.Events.LineDecorationRemoved, this._onLineDecorationRemoved, this),
+      ];
+    }
+  }
+
+  uiSourceCode(): Workspace.UISourceCode.UISourceCode {
+    return this._uiSourceCode;
+  }
+
+  setUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode): void {
+    this._unloadUISourceCode();
+    this._uiSourceCode = uiSourceCode;
+    if (uiSourceCode.contentLoaded()) {
+      if (uiSourceCode.workingCopy() !== this.textEditor.text()) {
+        this._innerSetContent(uiSourceCode.workingCopy());
+      }
+    } else {
+      uiSourceCode.requestContent().then(() => {
+        if (this._uiSourceCode !== uiSourceCode) {
+          return;
+        }
+        if (uiSourceCode.workingCopy() !== this.textEditor.text()) {
+          this._innerSetContent(uiSourceCode.workingCopy());
+        }
+      });
+    }
+    this._initializeUISourceCode();
+  }
+
+  _unloadUISourceCode(): void {
+    this._disposePlugins();
+    for (const message of this._allMessages()) {
+      this._removeMessageFromSource(message);
+    }
+    Common.EventTarget.EventTarget.removeEventListeners(this._messageAndDecorationListeners);
+    Common.EventTarget.EventTarget.removeEventListeners(this._uiSourceCodeEventListeners);
+    this._uiSourceCode.removeWorkingCopyGetter();
+    Persistence.Persistence.PersistenceImpl.instance().unsubscribeFromBindingEvent(
+        this._uiSourceCode, this._boundOnBindingChanged);
+  }
+
+  _initializeUISourceCode(): void {
+    this._uiSourceCodeEventListeners = [
+      this._uiSourceCode.addEventListener(
+          Workspace.UISourceCode.Events.WorkingCopyChanged, this._onWorkingCopyChanged, this),
+      this._uiSourceCode.addEventListener(
+          Workspace.UISourceCode.Events.WorkingCopyCommitted, this._onWorkingCopyCommitted, this),
+      this._uiSourceCode.addEventListener(
+          Workspace.UISourceCode.Events.TitleChanged, this._refreshHighlighterType, this),
+    ];
+
+    Persistence.Persistence.PersistenceImpl.instance().subscribeForBindingEvent(
+        this._uiSourceCode, this._boundOnBindingChanged);
+    for (const message of this._allMessages()) {
+      this._addMessageToSource(message);
+    }
+    this._installMessageAndDecorationListeners();
+    this._updateStyle();
+    this._decorateAllTypes();
+    this._refreshHighlighterType();
+    if (Root.Runtime.experiments.isEnabled('sourcesPrettyPrint')) {
+      const supportedPrettyTypes = new Set<string>(['text/html', 'text/css', 'text/javascript']);
+      this.setCanPrettyPrint(supportedPrettyTypes.has(this.highlighterType()), true);
+    }
+    this._ensurePluginsLoaded();
+  }
+
+  wasShown(): void {
+    super.wasShown();
+    // We need CodeMirrorTextEditor to be initialized prior to this call as it calls |cursorPositionToCoordinates| internally. @see crbug.com/506566
+    window.setTimeout(() => this._updateBucketDecorations(), 0);
+    this.setEditable(this._canEditSource());
+    for (const plugin of this._plugins) {
+      plugin.wasShown();
+    }
+  }
+
+  willHide(): void {
+    for (const plugin of this._plugins) {
+      plugin.willHide();
+    }
+    super.willHide();
+    UI.Context.Context.instance().setFlavor(UISourceCodeFrame, null);
+    this._uiSourceCode.removeWorkingCopyGetter();
+  }
+
+  _refreshHighlighterType(): void {
+    const binding = Persistence.Persistence.PersistenceImpl.instance().binding(this._uiSourceCode);
+    const highlighterType = binding ? binding.network.mimeType() : this._uiSourceCode.mimeType();
+    if (this.highlighterType() === highlighterType) {
+      return;
+    }
+    this._disposePlugins();
+    this.setHighlighterType(highlighterType);
+    this._ensurePluginsLoaded();
+  }
+
+  _canEditSource(): boolean {
+    if (this.hasLoadError()) {
+      return false;
+    }
+    if (this._uiSourceCode.editDisabled()) {
+      return false;
+    }
+    if (this._uiSourceCode.mimeType() === 'application/wasm') {
+      return false;
+    }
+    if (Persistence.Persistence.PersistenceImpl.instance().binding(this._uiSourceCode)) {
+      return true;
+    }
+    if (this._uiSourceCode.project().canSetFileContent()) {
+      return true;
+    }
+    if (this._uiSourceCode.project().isServiceProject()) {
+      return false;
+    }
+    if (this._uiSourceCode.project().type() === Workspace.Workspace.projectTypes.Network &&
+        Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().active()) {
+      return true;
+    }
+    // Because live edit fails on large whitespace changes, pretty printed scripts are not editable.
+    if (this.pretty && this._uiSourceCode.contentType().hasScripts()) {
+      return false;
+    }
+    return this._uiSourceCode.contentType() !== Common.ResourceType.resourceTypes.Document;
+  }
+
+  _onNetworkPersistenceChanged(): void {
+    this.setEditable(this._canEditSource());
+  }
+
+  commitEditing(): void {
+    if (!this._uiSourceCode.isDirty()) {
+      return;
+    }
+
+    this._muteSourceCodeEvents = true;
+    this._uiSourceCode.commitWorkingCopy();
+    this._muteSourceCodeEvents = false;
+  }
+
+  setContent(content: string|null, loadError: string|null): void {
+    this._disposePlugins();
+    this._rowMessageBuckets.clear();
+    super.setContent(content, loadError);
+    for (const message of this._allMessages()) {
+      this._addMessageToSource(message);
+    }
+    this._decorateAllTypes();
+    this._ensurePluginsLoaded();
+    Common.EventTarget.fireEvent('source-file-loaded', this._uiSourceCode.displayName(true));
+  }
+
+  _allMessages(): Set<Workspace.UISourceCode.Message> {
+    if (this._persistenceBinding) {
+      const combinedSet = this._persistenceBinding.network.messages();
+      Platform.SetUtilities.addAll(combinedSet, this._persistenceBinding.fileSystem.messages());
+      return combinedSet;
+    }
+    return this._uiSourceCode.messages();
+  }
+
+  onTextChanged(oldRange: TextUtils.TextRange.TextRange, newRange: TextUtils.TextRange.TextRange): void {
+    const wasPretty = this.pretty;
+    super.onTextChanged(oldRange, newRange);
+    this._errorPopoverHelper.hidePopover();
+    if (this._isSettingContent) {
+      return;
+    }
+    SourcesPanel.instance().updateLastModificationTime();
+    this._muteSourceCodeEvents = true;
+    if (this.isClean()) {
+      this._uiSourceCode.resetWorkingCopy();
+    } else {
+      this._uiSourceCode.setWorkingCopyGetter(this.textEditor.text.bind(this.textEditor));
+    }
+    this._muteSourceCodeEvents = false;
+    if (wasPretty !== this.pretty) {
+      this._updateStyle();
+      this._disposePlugins();
+      this._ensurePluginsLoaded();
+    }
+  }
+
+  _onWorkingCopyChanged(_event: Common.EventTarget.EventTargetEvent): void {
+    if (this._muteSourceCodeEvents) {
+      return;
+    }
+    this._innerSetContent(this._uiSourceCode.workingCopy());
+  }
+
+  _onWorkingCopyCommitted(_event: Common.EventTarget.EventTargetEvent): void {
+    if (!this._muteSourceCodeEvents) {
+      this._innerSetContent(this._uiSourceCode.workingCopy());
+    }
+    this.contentCommitted();
+    this._updateStyle();
+  }
+
+  _ensurePluginsLoaded(): void {
+    if (!this.loaded || this._plugins.length) {
+      return;
+    }
+
+    const binding = Persistence.Persistence.PersistenceImpl.instance().binding(this._uiSourceCode);
+    const pluginUISourceCode = binding ? binding.network : this._uiSourceCode;
+
+    // The order of these plugins matters for toolbar items
+    if (DebuggerPlugin.accepts(pluginUISourceCode)) {
+      this._plugins.push(new DebuggerPlugin(this.textEditor, pluginUISourceCode, this));
+    }
+    if (CSSPlugin.accepts(pluginUISourceCode)) {
+      this._plugins.push(new CSSPlugin(this.textEditor));
+    }
+    if (!this.pretty && JavaScriptCompilerPlugin.accepts(pluginUISourceCode)) {
+      this._plugins.push(new JavaScriptCompilerPlugin(this.textEditor, pluginUISourceCode));
+    }
+    if (SnippetsPlugin.accepts(pluginUISourceCode)) {
+      this._plugins.push(new SnippetsPlugin(this.textEditor, pluginUISourceCode));
+    }
+    if (Root.Runtime.experiments.isEnabled('recorder') && RecorderPlugin.accepts(pluginUISourceCode)) {
+      this._plugins.push(new RecorderPlugin(this.textEditor, pluginUISourceCode));
+    }
+    if (ScriptOriginPlugin.accepts(pluginUISourceCode)) {
+      this._plugins.push(new ScriptOriginPlugin(this.textEditor, pluginUISourceCode));
+    }
+    if (!this.pretty && Root.Runtime.experiments.isEnabled('sourceDiff') &&
+        GutterDiffPlugin.accepts(pluginUISourceCode)) {
+      this._plugins.push(new GutterDiffPlugin(this.textEditor, pluginUISourceCode));
+    }
+    if (CoveragePlugin.accepts(pluginUISourceCode)) {
+      this._plugins.push(new CoveragePlugin(this.textEditor, pluginUISourceCode));
+    }
+
+    this.dispatchEventToListeners(Events.ToolbarItemsChanged);
+    for (const plugin of this._plugins) {
+      plugin.wasShown();
+    }
+  }
+
+  _disposePlugins(): void {
+    this.textEditor.operation(() => {
+      for (const plugin of this._plugins) {
+        plugin.dispose();
+      }
+    });
+    this._plugins = [];
+  }
+
+  _onBindingChanged(): void {
+    const binding = Persistence.Persistence.PersistenceImpl.instance().binding(this._uiSourceCode);
+    if (binding === this._persistenceBinding) {
+      return;
+    }
+    this._unloadUISourceCode();
+    this._persistenceBinding = binding;
+    this._initializeUISourceCode();
+  }
+
+  _updateStyle(): void {
+    this.setEditable(this._canEditSource());
+  }
+
+  _innerSetContent(content: string): void {
+    this._isSettingContent = true;
+    const oldContent = this.textEditor.text();
+    if (this._diff) {
+      this._diff.highlightModifiedLines(oldContent, content);
+    }
+    if (oldContent !== content) {
+      this.setContent(content, null);
+    }
+    this._isSettingContent = false;
+  }
+
+  async populateTextAreaContextMenu(
+      contextMenu: UI.ContextMenu.ContextMenu, editorLineNumber: number, editorColumnNumber: number): Promise<void> {
+    await super.populateTextAreaContextMenu(contextMenu, editorLineNumber, editorColumnNumber);
+    contextMenu.appendApplicableItems(this._uiSourceCode);
+    const location = this.editorLocationToUILocation(editorLineNumber, editorColumnNumber);
+    contextMenu.appendApplicableItems(
+        new Workspace.UISourceCode.UILocation(this._uiSourceCode, location.lineNumber, location.columnNumber));
+    contextMenu.appendApplicableItems(this);
+    for (const plugin of this._plugins) {
+      await plugin.populateTextAreaContextMenu(contextMenu, editorLineNumber, editorColumnNumber);
+    }
+  }
+
+  dispose(): void {
+    this._errorPopoverHelper.dispose();
+    this._unloadUISourceCode();
+    this.textEditor.dispose();
+    this.detach();
+    Common.Settings.Settings.instance()
+        .moduleSetting('persistenceNetworkOverridesEnabled')
+        .removeChangeListener(this._onNetworkPersistenceChanged, this);
+  }
+
+  _onMessageAdded(event: Common.EventTarget.EventTargetEvent): void {
+    const message = (event.data as Workspace.UISourceCode.Message);
+    this._addMessageToSource(message);
+  }
+
+  _getClampedEditorLineNumberForMessage(message: Workspace.UISourceCode.Message): number {
+    let {lineNumber} = this.uiLocationToEditorLocation(message.lineNumber(), message.columnNumber());
+    if (lineNumber >= this.textEditor.linesCount) {
+      lineNumber = this.textEditor.linesCount - 1;
+    }
+    if (lineNumber < 0) {
+      lineNumber = 0;
+    }
+    return lineNumber;
+  }
+
+  _addMessageToSource(message: Workspace.UISourceCode.Message): void {
+    if (!this.loaded) {
+      return;
+    }
+
+    const editorLineNumber = this._getClampedEditorLineNumberForMessage(message);
+    let messageBucket = this._rowMessageBuckets.get(editorLineNumber);
+    if (!messageBucket) {
+      messageBucket = new RowMessageBucket(this, this.textEditor, editorLineNumber);
+      this._rowMessageBuckets.set(editorLineNumber, messageBucket);
+    }
+    messageBucket.addMessage(message);
+  }
+
+  _onMessageRemoved(event: Common.EventTarget.EventTargetEvent): void {
+    const message = (event.data as Workspace.UISourceCode.Message);
+    this._removeMessageFromSource(message);
+  }
+
+  _removeMessageFromSource(message: Workspace.UISourceCode.Message): void {
+    if (!this.loaded) {
+      return;
+    }
+
+    const editorLineNumber = this._getClampedEditorLineNumberForMessage(message);
+    const messageBucket = this._rowMessageBuckets.get(editorLineNumber);
+    if (!messageBucket) {
+      return;
+    }
+    messageBucket.removeMessage(message);
+    if (!messageBucket.uniqueMessagesCount()) {
+      messageBucket.detachFromEditor();
+      this._rowMessageBuckets.delete(editorLineNumber);
+    }
+  }
+
+  _getErrorPopoverContent(event: Event): UI.PopoverHelper.PopoverRequest|null {
+    const mouseEvent = (event as MouseEvent);
+    const eventTarget = (mouseEvent.target as HTMLElement);
+
+    const messageBucket = elementToMessageBucket.get(
+        (eventTarget.enclosingNodeOrSelfWithClass('text-editor-line-decoration') as Element));
+    if (!messageBucket) {
+      return null;
+    }
+    return messageBucket.getPopover(eventTarget, mouseEvent);
+  }
+
+  _updateBucketDecorations(): void {
+    for (const bucket of this._rowMessageBuckets.values()) {
+      bucket._updateDecoration();
+    }
+  }
+
+  _onLineDecorationAdded(event: Common.EventTarget.EventTargetEvent): void {
+    const marker = (event.data as Workspace.UISourceCode.LineMarker);
+    this._decorateTypeThrottled(marker.type());
+  }
+
+  _onLineDecorationRemoved(event: Common.EventTarget.EventTargetEvent): void {
+    const marker = (event.data as Workspace.UISourceCode.LineMarker);
+    this._decorateTypeThrottled(marker.type());
+  }
+
+  _decorateTypeThrottled(type: string): void {
+    if (this._typeDecorationsPending.has(type)) {
+      return;
+    }
+    this._typeDecorationsPending.add(type);
+    const extension =
+        SourceFrame.SourceFrame.getRegisteredLineDecorators().find(extension => extension.decoratorType === type);
+    const decorator = extension && extension.lineDecorator();
+    if (!decorator) {
+      return;
+    }
+    this._typeDecorationsPending.delete(type);
+    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (this.textEditor.codeMirror() as any).operation(() => {
+      decorator.decorate(
+          this._persistenceBinding ? this._persistenceBinding.network : this.uiSourceCode(), this.textEditor, type);
+    });
+  }
+
+  _decorateAllTypes(): void {
+    if (!this.loaded) {
+      return;
+    }
+    for (const extension of SourceFrame.SourceFrame.getRegisteredLineDecorators()) {
+      const type = extension.decoratorType;
+      if (type !== null && this._uiSourceCode.decorationsForType(type)) {
+        this._decorateTypeThrottled(type);
+      }
+    }
+  }
+
+  async toolbarItems(): Promise<UI.Toolbar.ToolbarItem[]> {
+    const leftToolbarItems = await super.toolbarItems();
+    const rightToolbarItems = [];
+    for (const plugin of this._plugins) {
+      leftToolbarItems.push(...plugin.leftToolbarItems());
+      rightToolbarItems.push(...await plugin.rightToolbarItems());
+    }
+
+    if (!rightToolbarItems.length) {
+      return leftToolbarItems;
+    }
+
+    return [...leftToolbarItems, new UI.Toolbar.ToolbarSeparator(true), ...rightToolbarItems];
+  }
+
+  async populateLineGutterContextMenu(contextMenu: UI.ContextMenu.ContextMenu, lineNumber: number): Promise<void> {
+    await super.populateLineGutterContextMenu(contextMenu, lineNumber);
+    for (const plugin of this._plugins) {
+      await plugin.populateLineGutterContextMenu(contextMenu, lineNumber);
+    }
+  }
+}
+
+function getIconDataForLevel(level: Workspace.UISourceCode.Message.Level): WebComponents.Icon.IconData {
+  if (level === Workspace.UISourceCode.Message.Level.Error) {
+    return {color: '', width: '11px', height: '11px', iconName: 'error_icon'};
+  }
+  if (level === Workspace.UISourceCode.Message.Level.Warning) {
+    return {color: '', width: '11px', height: '11px', iconName: 'warning_icon'};
+  }
+  if (level === Workspace.UISourceCode.Message.Level.Issue) {
+    return {color: 'var(--issue-color-yellow)', width: '11px', height: '11px', iconName: 'issue-exclamation-icon'};
+  }
+  return {color: '', width: '11px', height: '11px', iconName: 'error_icon'};
+}
+
+const bubbleTypePerLevel = new Map<Workspace.UISourceCode.Message.Level, string>();
+bubbleTypePerLevel.set(Workspace.UISourceCode.Message.Level.Error, 'error');
+bubbleTypePerLevel.set(Workspace.UISourceCode.Message.Level.Warning, 'warning');
+bubbleTypePerLevel.set(Workspace.UISourceCode.Message.Level.Issue, 'warning');
+
+const lineClassPerLevel = new Map<Workspace.UISourceCode.Message.Level, string>();
+lineClassPerLevel.set(Workspace.UISourceCode.Message.Level.Error, 'text-editor-line-with-error');
+lineClassPerLevel.set(Workspace.UISourceCode.Message.Level.Warning, 'text-editor-line-with-warning');
+lineClassPerLevel.set(Workspace.UISourceCode.Message.Level.Issue, 'text-editor-line-with-warning');
+
+export class RowMessage {
+  _message: Workspace.UISourceCode.Message;
+  _repeatCount: number;
+  element: HTMLDivElement;
+  _icon: WebComponents.Icon.Icon;
+  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  _repeatCountElement: any;
+
+  constructor(message: Workspace.UISourceCode.Message) {
+    this._message = message;
+    this._repeatCount = 1;
+    this.element = document.createElement('div');
+    this.element.classList.add('text-editor-row-message');
+    this._icon = new WebComponents.Icon.Icon();
+    this._icon.data = getIconDataForLevel(message.level());
+    this._icon.classList.add('text-editor-row-message-icon');
+    this._icon.addEventListener('click', () => this.callClickHandler());
+
+    this.element.append(this._icon);
+    this._repeatCountElement =
+        // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (this.element.createChild('span', 'text-editor-row-message-repeat-count hidden', 'dt-small-bubble') as any);
+    this._repeatCountElement.type = (bubbleTypePerLevel.get(message.level()) as string);
+    const linesContainer = this.element.createChild('div');
+    const lines = this._message.text().split('\n');
+    for (let i = 0; i < lines.length; ++i) {
+      const messageLine = linesContainer.createChild('div');
+      messageLine.textContent = lines[i];
+    }
+  }
+
+  message(): Workspace.UISourceCode.Message {
+    return this._message;
+  }
+
+  callClickHandler(): void {
+    const handler = this._message.clickHandler();
+    if (handler) {
+      handler();
+    }
+  }
+
+  repeatCount(): number {
+    return this._repeatCount;
+  }
+
+  setRepeatCount(repeatCount: number): void {
+    if (this._repeatCount === repeatCount) {
+      return;
+    }
+    this._repeatCount = repeatCount;
+    this._updateMessageRepeatCount();
+  }
+
+  _updateMessageRepeatCount(): void {
+    this._repeatCountElement.textContent = String(this._repeatCount);
+    const showRepeatCount = this._repeatCount > 1;
+    this._repeatCountElement.classList.toggle('hidden', !showRepeatCount);
+    this._icon.classList.toggle('hidden', showRepeatCount);
+  }
+}
+
+const elementToMessageBucket = new WeakMap<Element, RowMessageBucket>();
+
+export class RowMessageBucket {
+  _sourceFrame: UISourceCodeFrame;
+  textEditor: SourceFrame.SourcesTextEditor.SourcesTextEditor;
+  _lineHandle: TextEditor.CodeMirrorTextEditor.TextEditorPositionHandle;
+  _decoration: HTMLDivElement;
+  _wave: HTMLElement;
+  _errorIcon: WebComponents.Icon.Icon;
+  _issueIcon: WebComponents.Icon.Icon;
+  _decorationStartColumn: number|null;
+  _messagesDescriptionElement: HTMLDivElement;
+  _messages: RowMessage[];
+  _level: Workspace.UISourceCode.Message.Level|null;
+
+  constructor(
+      sourceFrame: UISourceCodeFrame, textEditor: SourceFrame.SourcesTextEditor.SourcesTextEditor,
+      editorLineNumber: number) {
+    this._sourceFrame = sourceFrame;
+    this.textEditor = textEditor;
+    this._lineHandle = textEditor.textEditorPositionHandle(editorLineNumber, 0);
+    this._decoration = document.createElement('div');
+    this._decoration.classList.add('text-editor-line-decoration');
+    elementToMessageBucket.set(this._decoration, this);
+    this._wave = this._decoration.createChild('div', 'text-editor-line-decoration-wave');
+
+    this._errorIcon = new WebComponents.Icon.Icon();
+    this._errorIcon.data = getIconDataForLevel(Workspace.UISourceCode.Message.Level.Warning);
+    this._errorIcon.classList.add('text-editor-line-decoration-icon-error', 'hidden');
+    this._issueIcon = new WebComponents.Icon.Icon();
+    this._issueIcon.data = getIconDataForLevel(Workspace.UISourceCode.Message.Level.Issue);
+    this._issueIcon.classList.add('text-editor-line-decoration-icon-issue', 'hidden');
+    this._issueIcon.addEventListener('click', () => this._issueClickHandler());
+
+    const iconsElement = this._wave.createChild('span');
+    iconsElement.append(this._errorIcon);
+    iconsElement.append(this._issueIcon);
+    iconsElement.classList.add('text-editor-line-decoration-icon');
+
+    this._wave.append(iconsElement);
+
+    this._decorationStartColumn = null;
+
+    this._messagesDescriptionElement = document.createElement('div');
+    this._messagesDescriptionElement.classList.add('text-editor-messages-description-container');
+    this._messages = [];
+
+    this._level = null;
+  }
+
+  _updateWavePosition(editorLineNumber: number, columnNumber: number): void {
+    editorLineNumber = Math.min(editorLineNumber, this.textEditor.linesCount - 1);
+    const lineText = this.textEditor.line(editorLineNumber);
+    columnNumber = Math.min(columnNumber, lineText.length);
+    const lineIndent = TextUtils.TextUtils.Utils.lineIndent(lineText).length;
+    const startColumn = Math.max(columnNumber - 1, lineIndent);
+    if (this._decorationStartColumn === startColumn) {
+      return;
+    }
+    if (this._decorationStartColumn !== null) {
+      this.textEditor.removeDecoration(this._decoration, editorLineNumber);
+    }
+    this.textEditor.addDecoration(this._decoration, editorLineNumber, startColumn);
+    this._decorationStartColumn = startColumn;
+  }
+
+  _messageDescription(levels: Set<Workspace.UISourceCode.Message.Level>): Element {
+    this._messagesDescriptionElement.removeChildren();
+    UI.Utils.appendStyle(
+        this._messagesDescriptionElement, 'source_frame/messagesPopover.css', {enableLegacyPatching: false});
+    for (const message of this._messages.filter(m => levels.has(m.message().level()))) {
+      this._messagesDescriptionElement.append(message.element);
+    }
+    return this._messagesDescriptionElement;
+  }
+
+  detachFromEditor(): void {
+    const position = this._lineHandle.resolve();
+    if (!position) {
+      return;
+    }
+    const editorLineNumber = position.lineNumber;
+    if (this._level) {
+      this.textEditor.toggleLineClass(editorLineNumber, (lineClassPerLevel.get(this._level) as string), false);
+    }
+    if (this._decorationStartColumn !== null) {
+      this.textEditor.removeDecoration(this._decoration, editorLineNumber);
+      this._decorationStartColumn = null;
+    }
+  }
+
+  uniqueMessagesCount(): number {
+    return this._messages.length;
+  }
+
+  _issueClickHandler(): void {
+    const firstIssue = this._messages.find(m => m.message().level() === Workspace.UISourceCode.Message.Level.Issue);
+    if (firstIssue) {
+      firstIssue.callClickHandler();
+    }
+  }
+
+  addMessage(message: Workspace.UISourceCode.Message): void {
+    for (let i = 0; i < this._messages.length; ++i) {
+      const rowMessage = this._messages[i];
+      if (rowMessage.message().isEqual(message)) {
+        rowMessage.setRepeatCount(rowMessage.repeatCount() + 1);
+        return;
+      }
+    }
+
+    const rowMessage = new RowMessage(message);
+    this._messages.push(rowMessage);
+    this._updateDecoration();
+  }
+
+  removeMessage(message: Workspace.UISourceCode.Message): void {
+    for (let i = 0; i < this._messages.length; ++i) {
+      const rowMessage = this._messages[i];
+      if (!rowMessage.message().isEqual(message)) {
+        continue;
+      }
+      rowMessage.setRepeatCount(rowMessage.repeatCount() - 1);
+      if (!rowMessage.repeatCount()) {
+        this._messages.splice(i, 1);
+      }
+      this._updateDecoration();
+      return;
+    }
+  }
+
+  _updateDecoration(): void {
+    if (!this._sourceFrame.isShowing()) {
+      return;
+    }
+    if (!this._messages.length) {
+      return;
+    }
+    const position = this._lineHandle.resolve();
+    if (!position) {
+      return;
+    }
+
+    const editorLineNumber = position.lineNumber;
+    let columnNumber: number = Number.MAX_VALUE;
+    let maxMessage: Workspace.UISourceCode.Message|null = null;
+    let showIssues = false;
+    let showErrors = false;
+    for (let i = 0; i < this._messages.length; ++i) {
+      const message = this._messages[i].message();
+      const {columnNumber: editorColumnNumber} =
+          this._sourceFrame.uiLocationToEditorLocation(editorLineNumber, message.columnNumber());
+      columnNumber = Math.min(columnNumber, editorColumnNumber);
+      if (!maxMessage || messageLevelComparator(maxMessage, message) < 0) {
+        maxMessage = message;
+      }
+      showIssues = showIssues || message.level() === Workspace.UISourceCode.Message.Level.Issue;
+      showErrors = showErrors || message.level() !== Workspace.UISourceCode.Message.Level.Issue;
+    }
+    this._updateWavePosition(editorLineNumber, columnNumber);
+
+    if (!maxMessage) {
+      return;
+    }
+    if (this._level) {
+      this.textEditor.toggleLineClass(editorLineNumber, (lineClassPerLevel.get(this._level) as string), false);
+      this._errorIcon.classList.add('hidden');
+      this._issueIcon.classList.add('hidden');
+    }
+    this._level = maxMessage.level();
+    if (!this._level) {
+      return;
+    }
+    this.textEditor.toggleLineClass(editorLineNumber, (lineClassPerLevel.get(this._level) as string), true);
+    if (showErrors) {
+      this._errorIcon.data = getIconDataForLevel(this._level);
+      this._errorIcon.classList.remove('hidden');
+    }
+    if (showIssues) {
+      this._issueIcon.classList.remove('hidden');
+    }
+  }
+
+  _getPopoverMessages(eventTarget: HTMLElement): Element|null {
+    let messagesOutline: Element|null = null;
+    if (eventTarget.classList.contains('text-editor-line-decoration-icon-error')) {
+      messagesOutline = this._messageDescription(
+          new Set([Workspace.UISourceCode.Message.Level.Error, Workspace.UISourceCode.Message.Level.Warning]));
+    } else if (eventTarget.classList.contains('text-editor-line-decoration-icon-issue')) {
+      messagesOutline = this._messageDescription(new Set([Workspace.UISourceCode.Message.Level.Issue]));
+    } else if (
+        eventTarget.classList.contains('text-editor-line-decoration-wave') &&
+        !eventTarget.classList.contains('text-editor-line-decoration-icon')) {
+      messagesOutline = this._messageDescription(
+          new Set([Workspace.UISourceCode.Message.Level.Error, Workspace.UISourceCode.Message.Level.Warning]));
+    }
+    return messagesOutline;
+  }
+  getPopover(eventTarget: HTMLElement, mouseEvent: MouseEvent): UI.PopoverHelper.PopoverRequest|null {
+    const anchorElement = eventTarget.enclosingNodeOrSelfWithClass('text-editor-line-decoration-icon-error') ||
+        eventTarget.enclosingNodeOrSelfWithClass('text-editor-line-decoration-icon-issue');
+    const anchor =
+        anchorElement ? anchorElement.boxInWindow() : new AnchorBox(mouseEvent.clientX, mouseEvent.clientY, 1, 1);
+    const messagesOutline = this._getPopoverMessages(eventTarget);
+    if (!messagesOutline) {
+      return null;
+    }
+    return {
+      box: anchor,
+      hide(): void{},
+      show: (popover: UI.GlassPane.GlassPane): Promise<true> => {
+        popover.contentElement.append(messagesOutline);
+        return Promise.resolve(true);
+      },
+    };
+  }
+}
+
+const MessageLevelPriority: {
+  [x: string]: number,
+} = {
+  'Issue': 2,
+  'Warning': 3,
+  'Error': 4,
+};
+
+function messageLevelComparator(a: Workspace.UISourceCode.Message, b: Workspace.UISourceCode.Message): number {
+  return MessageLevelPriority[a.level()] - MessageLevelPriority[b.level()];
+}
+
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum Events {
+  ToolbarItemsChanged = 'ToolbarItemsChanged',
+}

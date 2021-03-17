@@ -10,17 +10,15 @@ import * as LitHtml from '../third_party/lit-html/lit-html.js';
  *
  * ```
  * <p on-render=${nodeRenderedCallback(node => ...)}>
+ * ```
  */
-export const nodeRenderedCallback = LitHtml.directive(
-    (
-        callback: (domNode: Element) => void,
-        ) => {
-      return (part: LitHtml.Part): void => {
-        if (!(part instanceof LitHtml.AttributePart)) {
-          throw new Error('Directive must be used as an attribute.');
-        }
+export const nodeRenderedCallback = LitHtml.directive((callback: (domNode: Element) => void) => {
+  return (part: LitHtml.Part): void => {
+    if (!(part instanceof LitHtml.AttributePart)) {
+      throw new Error('Directive must be used as an attribute.');
+    }
 
-        const elem = part.committer.element;
-        callback(elem);
-      };
-    });
+    const elem = part.committer.element;
+    callback(elem);
+  };
+});

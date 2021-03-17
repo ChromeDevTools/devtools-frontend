@@ -4,6 +4,7 @@
 
 import * as ComponentHelpers from '../../../../front_end/component_helpers/component_helpers.js';
 import * as ThemeSupport from '../../../../front_end/theme_support/theme_support.js';
+import * as LitHtml from '../../../../front_end/third_party/lit-html/lit-html.js';
 
 const {assert} = chai;
 
@@ -62,6 +63,45 @@ describe('ComponentHelpers', () => {
 
       const instance = new TestComponent();
       assert.strictEqual(instance.style.getPropertyValue('--test-var'), 'blue');
+    });
+  });
+
+  describe('Directives', () => {
+    describe('nodeRenderedCallback', () => {
+      it('runs when any node is rendered', () => {
+        const targetDiv = document.createElement('div');
+        const callback = sinon.spy();
+        function fakeComponentRender() {
+          // clang-format off
+          const html = LitHtml.html`
+          <span on-render=${ComponentHelpers.Directives.nodeRenderedCallback(callback)}>
+           hello world
+          </span>`;
+          // clang-format on
+          LitHtml.render(html, targetDiv);
+        }
+        fakeComponentRender();
+        assert.isNotEmpty(targetDiv.innerHTML);
+        assert.strictEqual(callback.callCount, 1);
+      });
+
+      it('runs again when Lit re-renders', () => {
+        const targetDiv = document.createElement('div');
+        const callback = sinon.spy();
+        function fakeComponentRender(output: string) {
+          // clang-format off
+          const html = LitHtml.html`
+          <span on-render=${ComponentHelpers.Directives.nodeRenderedCallback(callback)}>
+           ${output}
+          </span>`;
+          // clang-format on
+          LitHtml.render(html, targetDiv);
+        }
+        fakeComponentRender('render one');
+        assert.strictEqual(callback.callCount, 1);
+        fakeComponentRender('render two');
+        assert.strictEqual(callback.callCount, 2);
+      });
     });
   });
 });

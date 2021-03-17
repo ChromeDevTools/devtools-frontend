@@ -260,7 +260,9 @@ export class AffectedResourcesView extends UI.TreeOutline.TreeElement {
   }
 
   protected appendSourceLocation(
-      element: HTMLElement, sourceLocation: Protocol.Audits.SourceCodeLocation|undefined,
+      element: HTMLElement,
+      sourceLocation: {url: string, scriptId: string|undefined, lineNumber: number, columnNumber: number|undefined}|
+      undefined,
       target: SDK.SDKModel.Target|null|undefined): void {
     const sourceCodeLocation = document.createElement('td');
     sourceCodeLocation.classList.add('affected-source-location');
@@ -269,7 +271,8 @@ export class AffectedResourcesView extends UI.TreeOutline.TreeElement {
       // TODO(crbug.com/1108503): Add some mechanism to be able to add telemetry to this element.
       const linkifier = new Components.Linkifier.Linkifier(maxLengthForDisplayedURLs);
       const sourceAnchor = linkifier.linkifyScriptLocation(
-          target || null, sourceLocation.scriptId || null, sourceLocation.url, sourceLocation.lineNumber);
+          target || null, sourceLocation.scriptId || null, sourceLocation.url, sourceLocation.lineNumber,
+          {columnNumber: sourceLocation.columnNumber, className: undefined, tabStop: undefined});
       sourceCodeLocation.appendChild(sourceAnchor);
     }
     element.appendChild(sourceCodeLocation);

@@ -142,3 +142,16 @@ export abstract class Issue extends Common.ObjectWrapper.ObjectWrapper {
     return false;
   }
 }
+
+export function toZeroBasedLocation(location: Protocol.Audits.SourceCodeLocation|undefined):
+    {url: string, scriptId: string|undefined, lineNumber: number, columnNumber: number|undefined}|undefined {
+  if (!location) {
+    return undefined;
+  }
+  return {
+    url: location.url,
+    scriptId: location.scriptId,
+    lineNumber: location.lineNumber,
+    columnNumber: location.columnNumber === 0 ? undefined : location.columnNumber - 1,
+  };
+}

@@ -39,7 +39,7 @@ export class SourceFrameIssuesManager {
       return;
     }
     const debuggerModel = issuesModel.target().model(SDK.DebuggerModel.DebuggerModel);
-    const srcLocation = issue.details().sourceCodeLocation;
+    const srcLocation = SDK.Issue.toZeroBasedLocation(issue.details().sourceCodeLocation);
     if (srcLocation && debuggerModel) {
       const rawLocation =
           debuggerModel.createRawLocationByURL(srcLocation.url, srcLocation.lineNumber, srcLocation.columnNumber);

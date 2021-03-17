@@ -713,7 +713,7 @@ export class RowMessageBucket {
     const lineText = this.textEditor.line(editorLineNumber);
     columnNumber = Math.min(columnNumber, lineText.length);
     const lineIndent = TextUtils.TextUtils.Utils.lineIndent(lineText).length;
-    const startColumn = Math.max(columnNumber - 1, lineIndent);
+    const startColumn = Math.max(columnNumber, lineIndent);
     if (this._decorationStartColumn === startColumn) {
       return;
     }

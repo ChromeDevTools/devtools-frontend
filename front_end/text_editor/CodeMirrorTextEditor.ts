@@ -861,7 +861,6 @@ export class CodeMirrorTextEditor extends UI.Widget.VBox implements UI.TextEdito
     this.scrollLineIntoView(lineNumber);
     if (shouldHighlight) {
       this._codeMirror.addLineClass(
-          // @ts-ignore the `null` argument should be a string?
           this._highlightedLine, null, this._readOnly ? 'cm-readonly-highlight' : 'cm-highlight');
       if (!this._readOnly) {
         this._clearHighlightTimeout = window.setTimeout(this.clearPositionHighlight.bind(this), 2000);

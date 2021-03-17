@@ -151,11 +151,13 @@ class LinearMemoryInspectorView extends UI.Widget.VBox {
     this._inspector.addEventListener('memory-request', /** @param {!Event} event */ event => {
       this._memoryRequested(/** @type {?} */ (event));
     });
-    this._inspector.addEventListener('address-changed', /** @param {?} event */ event => {
-      this.updateAddress(event.data);
+    this._inspector.addEventListener('address-changed', /** @param {!Event} event */ event => {
+      this.updateAddress(/** @type {?} */ (event).data);
     });
-    this._inspector.addEventListener('settings-changed', /** @param {?} event */ event => {
-      this.saveSettings(event.data);
+    this._inspector.addEventListener('settings-changed', /** @param {!Event} event */ event => {
+      // Stop event from bubbling up, since no element further up needs the event.
+      event.stopPropagation();
+      this.saveSettings(/** @type {?} */ (event).data);
     });
     this.contentElement.appendChild(this._inspector);
     this.firstTimeOpen = true;

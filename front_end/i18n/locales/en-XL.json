@@ -3302,6 +3302,9 @@
   "linear_memory_inspector/ValueInterpreterDisplay.ts | changeValueTypeMode": {
     "message": "Ĉh́âńĝé m̂ód̂é"
   },
+  "linear_memory_inspector/ValueInterpreterDisplay.ts | jumpToPointer": {
+    "message": "Ĵúm̂ṕ t̂ó âd́d̂ŕêśŝ"
+  },
   "linear_memory_inspector/ValueInterpreterDisplay.ts | signedValue": {
     "message": "Ŝíĝńêd́ v̂ál̂úê"
   },
@@ -3331,6 +3334,15 @@
   },
   "linear_memory_inspector/ValueInterpreterDisplayUtils.ts | littleEndian": {
     "message": "L̂ít̂t́l̂é Êńd̂íâń"
+  },
+  "linear_memory_inspector/ValueInterpreterDisplayUtils.ts | pointer32Bit": {
+    "message": "P̂óîńt̂ér̂ 32-b́ît́"
+  },
+  "linear_memory_inspector/ValueInterpreterDisplayUtils.ts | pointer64Bit": {
+    "message": "P̂óîńt̂ér̂ 64-b́ît́"
+  },
+  "linear_memory_inspector/ValueInterpreterSettings.ts | otherGroup": {
+    "message": "Ôt́ĥér̂"
   },
   "main/main-meta.ts | asAuthored": {
     "message": "Âś âút̂h́ôŕêd́"

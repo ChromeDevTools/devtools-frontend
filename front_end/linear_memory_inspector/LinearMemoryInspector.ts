@@ -16,7 +16,7 @@ import type {EndiannessChangedEvent, LinearMemoryValueInterpreterData, ValueType
 import type {ByteSelectedEvent, LinearMemoryViewerData, ResizeEvent} from './LinearMemoryViewer.js';
 import {VALUE_INTEPRETER_MAX_NUM_BYTES, Endianness, ValueType, ValueTypeMode, getDefaultValueTypeMapping} from './ValueInterpreterDisplayUtils.js';
 import {formatAddress, parseAddress} from './LinearMemoryInspectorUtils.js';
-import type {ValueTypeModeChangedEvent} from './ValueInterpreterDisplay.js';
+import type {JumpToPointerAddressEvent, ValueTypeModeChangedEvent} from './ValueInterpreterDisplay.js';
 
 import * as i18n from '../i18n/i18n.js';
 const UIStrings = {
@@ -195,13 +195,23 @@ export class LinearMemoryInspector extends HTMLElement {
             endianness: this.endianness } as LinearMemoryValueInterpreterData}
           @value-type-toggled=${this.onValueTypeToggled}
           @value-type-mode-changed=${this.onValueTypeModeChanged}
-          @endianness-changed=${this.onEndiannessChanged}>
+          @endianness-changed=${this.onEndiannessChanged}
+          @jump-to-pointer-address=${this.onJumpToPointerAddress}
+          >
         </devtools-linear-memory-inspector-interpreter/>
       </div>
       `, this.shadow, {
       eventContext: this,
     });
     // clang-format on
+  }
+
+  private onJumpToPointerAddress(e: JumpToPointerAddressEvent): void {
+    // Stop event from bubbling up, since no element further up needs the event.
+    e.stopPropagation();
+    this.currentNavigatorMode = Mode.Submitted;
+    const addressInRange = Math.max(0, Math.min(e.data, this.outerMemoryLength - 1));
+    this.jumpToAddress(addressInRange);
   }
 
   private onRefreshRequest(): void {

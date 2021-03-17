@@ -5,8 +5,9 @@
 import * as ComponentHelpers from '../component_helpers/component_helpers.js';
 import * as i18n from '../i18n/i18n.js';
 import * as LitHtml from '../third_party/lit-html/lit-html.js';
+import * as Components from '../ui/components/components.js';
 
-import {Endianness, format, getDefaultValueTypeMapping, isNumber, isValidMode, VALUE_TYPE_MODE_LIST, ValueType, ValueTypeMode, valueTypeModeToLocalizedString, valueTypeToLocalizedString} from './ValueInterpreterDisplayUtils.js';
+import {Endianness, format, getDefaultValueTypeMapping, getPointerAddress, isNumber, isPointer, isValidMode, VALUE_TYPE_MODE_LIST, ValueType, ValueTypeMode, valueTypeModeToLocalizedString, valueTypeToLocalizedString} from './ValueInterpreterDisplayUtils.js';
 
 const UIStrings = {
   /**
@@ -21,6 +22,10 @@ const UIStrings = {
   *@description Tooltip text that appears when hovering over a signed interpretation of the memory under the Value Interpreter
   */
   signedValue: 'Signed value',
+  /**
+  *@description Tooltip text that appears when hovering over a 'jump-to-address' button that is next to a pointer (32-bit or 64-bit) under the Value Interpreter
+  */
+  jumpToPointer: 'Jump to address',
 };
 const str_ = i18n.i18n.registerUIStrings('linear_memory_inspector/ValueInterpreterDisplay.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -46,6 +51,18 @@ export class ValueTypeModeChangedEvent extends Event {
     this.data = {type, mode};
   }
 }
+
+export class JumpToPointerAddressEvent extends Event {
+  data: number;
+
+  constructor(address: number) {
+    super('jump-to-pointer-address', {
+      composed: true,
+    });
+    this.data = address;
+  }
+}
+
 export class ValueInterpreterDisplay extends HTMLElement {
   private readonly shadow = this.attachShadow({mode: 'open'});
   private endianness = Endianness.Little;
@@ -97,6 +114,7 @@ export class ValueInterpreterDisplay extends HTMLElement {
           grid-template-columns: auto auto 1fr;
           grid-column-gap: 24px;
           grid-row-gap: 4px;
+          grid-auto-rows: 1fr;
           overflow: hidden;
           padding: 2px 12px;
         }
@@ -117,6 +135,17 @@ export class ValueInterpreterDisplay extends HTMLElement {
           grid-column: 1 / 3;
         }
 
+        .jump-to-button {
+          display: flex;
+          width: 20px;
+          height: 20px;
+          border: none;
+          padding: 0;
+          outline: none;
+          justify-content: center;
+          align-items: center;
+          cursor: pointer;
+        }
       </style>
       <div class="value-types">
         ${SORTED_VALUE_TYPES.map(type => this.valueTypes.has(type) ? this.showValue(type) : '')}
@@ -127,10 +156,44 @@ export class ValueInterpreterDisplay extends HTMLElement {
   }
 
   private showValue(type: ValueType): LitHtml.TemplateResult {
-    const mode = this.valueTypeModeConfig.get(type);
-    if (!mode) {
-      throw new Error(`No mode found for type ${type}`);
+    if (isNumber(type)) {
+      return this.renderNumberValues(type);
     }
+    if (isPointer(type)) {
+      return this.renderPointerValue(type);
+    }
+    throw new Error(`No known way to format ${type}`);
+  }
+
+  private renderPointerValue(type: ValueType): LitHtml.TemplateResult {
+    const unsignedValue = this.parse({type, signed: false});
+    const localizedType = valueTypeToLocalizedString(type);
+    const address = getPointerAddress(type, this.buffer, this.endianness);
+    // Disabled until https://crbug.com/1079231 is fixed.
+    // clang-format off
+    return html`
+      <span class="value-type-cell-no-mode value-type-cell">${localizedType}</span>
+      <div class="value-type-cell" data-value="true">
+        ${unsignedValue}
+        ${
+        // TODO(crbug.com/1184436) support go-to-pointer-address links for big ints (Pointer64)
+        type === ValueType.Pointer32 && !Number.isNaN(address) ?
+            html`
+            <button class="jump-to-button" data-jump="true" title=${i18nString(UIStrings.jumpToPointer)}
+              @click=${this.onJumpToAddressClicked.bind(this, address as number)}>
+              <devtools-icon .data=${
+                {iconName: 'link_icon', color: 'var(--color-primary)', width: '14px'} as Components.Icon.IconWithName}>
+              </devtools-icon>
+            </button>` : ''}
+      </div>
+    `;
+    // clang-format on
+  }
+  private onJumpToAddressClicked(address: number): void {
+    this.dispatchEvent(new JumpToPointerAddressEvent(address));
+  }
+
+  private renderNumberValues(type: ValueType): LitHtml.TemplateResult {
     const localizedType = valueTypeToLocalizedString(type);
     const unsignedValue = this.parse({type, signed: false});
     const signedValue = this.parse({type, signed: true});
@@ -138,28 +201,25 @@ export class ValueInterpreterDisplay extends HTMLElement {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     return html`
-      ${isNumber(type) ?
-        html`
-          <span class="value-type-cell">${localizedType}</span>
-            <select title=${i18nString(UIStrings.changeValueTypeMode)} data-mode-settings="true"  class="chrome-select" @change=${this.onValueTypeModeChange.bind(this, type)}>
-              ${VALUE_TYPE_MODE_LIST.filter(x => isValidMode(type, x)).map(mode => {
-                return html`<option value=${mode} .selected=${this.valueTypeModeConfig.get(type) === mode}>${
-                valueTypeModeToLocalizedString(mode)}</option>`;
+      <span class="value-type-cell">${localizedType}</span>
+        <select title=${i18nString(UIStrings.changeValueTypeMode)}
+          data-mode-settings="true"
+          class="chrome-select"
+          @change=${this.onValueTypeModeChange.bind(this, type)}>
+            ${VALUE_TYPE_MODE_LIST.filter(x => isValidMode(type, x)).map(mode => {
+              return html`
+                <option value=${mode} .selected=${this.valueTypeModeConfig.get(type) === mode}>${
+                  valueTypeModeToLocalizedString(mode)}
+                </option>`;
             })}
-            </select>` :
-        html`
-          <span class="value-type-cell-no-mode value-type-cell">${localizedType}</span>`}
+        </select>
 
-        ${showSignedAndUnsigned ?
-        html`
+      ${showSignedAndUnsigned ? html`
           <div class="value-type-cell-multiple-values value-type-cell">
             <span data-value="true" title=${i18nString(UIStrings.unsignedValue)}>${unsignedValue}</span>
             <span>/<span>
             <span data-value="true" title=${i18nString(UIStrings.signedValue)}>${signedValue}</span>
-          </div>` :
-        html`
-          <span class="value-type-cell" data-value="true">${unsignedValue}</span>`}
-    `;
+          </div>` : html`<span class="value-type-cell" data-value="true">${unsignedValue}</span>`}`;
     // clang-format on
   }
 

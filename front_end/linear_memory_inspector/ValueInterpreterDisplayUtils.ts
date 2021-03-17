@@ -38,6 +38,14 @@ const UIStrings = {
   *@description Text that describes the type of a value in the Linear Memory Inspector
   */
   float64Bit: 'Float 64-bit',
+  /**
+  *@description Text that describes the type of a value in the Linear Memory Inspector
+  */
+  pointer32Bit: 'Pointer 32-bit',
+  /**
+  *@description Text that describes the type of a value in the Linear Memory Inspector
+  */
+  pointer64Bit: 'Pointer 64-bit',
 };
 const str_ = i18n.i18n.registerUIStrings('linear_memory_inspector/ValueInterpreterDisplayUtils.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -51,6 +59,8 @@ export const enum ValueType {
   Int64 = 'Integer 64-bit',
   Float32 = 'Float 32-bit',
   Float64 = 'Float 64-bit',
+  Pointer32 = 'Pointer 32-bit',
+  Pointer64 = 'Pointer 64-bit',
 }
 
 export const enum Endianness {
@@ -76,6 +86,8 @@ const DEFAULT_MODE_MAPPING = new Map([
   [ValueType.Int64, ValueTypeMode.Decimal],
   [ValueType.Float32, ValueTypeMode.Decimal],
   [ValueType.Float64, ValueTypeMode.Decimal],
+  [ValueType.Pointer32, ValueTypeMode.Hexadecimal],
+  [ValueType.Pointer64, ValueTypeMode.Hexadecimal],
 ]);
 
 export const VALUE_TYPE_MODE_LIST = [
@@ -125,6 +137,10 @@ export function valueTypeToLocalizedString(valueType: ValueType): string {
       return i18nString(UIStrings.floatBit);
     case ValueType.Float64:
       return i18nString(UIStrings.float64Bit);
+    case ValueType.Pointer32:
+      return i18nString(UIStrings.pointer32Bit);
+    case ValueType.Pointer64:
+      return i18nString(UIStrings.pointer64Bit);
     default:
       return Platform.assertNever(valueType, `Unknown value type: ${valueType}`);
   }
@@ -140,6 +156,9 @@ export function isValidMode(type: ValueType, mode: ValueTypeMode): boolean {
     case ValueType.Float32:
     case ValueType.Float64:
       return mode === ValueTypeMode.Scientific || mode === ValueTypeMode.Decimal;
+    case ValueType.Pointer32:  // fallthrough
+    case ValueType.Pointer64:
+      return mode === ValueTypeMode.Hexadecimal;
     default:
       return Platform.assertNever(type, `Unknown value type: ${type}`);
   }
@@ -159,6 +178,24 @@ export function isNumber(type: ValueType): boolean {
   }
 }
 
+export function getPointerAddress(type: ValueType, buffer: ArrayBuffer, endianness: Endianness): number|BigInt {
+  if (!isPointer(type)) {
+    console.error(`Requesting address of a non-pointer type: ${type}.\n`);
+    return NaN;
+  }
+  try {
+    const dataView = new DataView(buffer);
+    const isLittleEndian = endianness === Endianness.Little;
+    return type === ValueType.Pointer32 ? dataView.getUint32(0, isLittleEndian) :
+                                          dataView.getBigUint64(0, isLittleEndian);
+  } catch (e) {
+    return NaN;
+  }
+}
+
+export function isPointer(type: ValueType): boolean {
+  return type === ValueType.Pointer32 || type === ValueType.Pointer64;
+}
 export interface FormatData {
   buffer: ArrayBuffer;
   type: ValueType;
@@ -193,6 +230,12 @@ export function format(formatData: FormatData): string {
       case ValueType.Float64:
         value = valueView.getFloat64(0, isLittleEndian);
         return formatFloat(value, formatData.mode);
+      case ValueType.Pointer32:
+        value = valueView.getUint32(0, isLittleEndian);
+        return formatInteger(value, ValueTypeMode.Hexadecimal);
+      case ValueType.Pointer64:
+        value = valueView.getBigUint64(0, isLittleEndian);
+        return formatInteger(value, ValueTypeMode.Hexadecimal);
       default:
         return Platform.assertNever(formatData.type, `Unknown value type: ${formatData.type}`);
     }

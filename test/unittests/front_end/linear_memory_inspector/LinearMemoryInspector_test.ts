@@ -8,6 +8,7 @@ import {getElementsWithinComponent, getElementWithinComponent, getEventPromise, 
 import {NAVIGATOR_ADDRESS_SELECTOR, NAVIGATOR_HISTORY_BUTTON_SELECTOR, NAVIGATOR_PAGE_BUTTON_SELECTOR} from './LinearMemoryNavigator_test.js';
 import {ENDIANNESS_SELECTOR} from './LinearMemoryValueInterpreter_test.js';
 import {VIEWER_BYTE_CELL_SELECTOR} from './LinearMemoryViewer_test.js';
+import {DISPLAY_JUMP_TO_POINTER_BUTTON_SELECTOR} from './ValueInterpreterDisplay_test.js';
 
 const {assert} = chai;
 
@@ -52,6 +53,9 @@ describe('LinearMemoryInspector', () => {
       address: 20,
       memoryOffset: 0,
       outerMemoryLength: memory.length,
+      endianness: LinearMemoryInspectorModule.ValueInterpreterDisplayUtils.Endianness.Little,
+      valueTypes: new Set<LinearMemoryInspectorModule.ValueInterpreterDisplayUtils.ValueType>(
+          LinearMemoryInspectorModule.ValueInterpreterDisplayUtils.getDefaultValueTypeMapping().keys()),
     };
     component.data = data;
 
@@ -178,6 +182,30 @@ describe('LinearMemoryInspector', () => {
     interpreter.dispatchEvent(event);
 
     assert.deepEqual(select.value, event.data);
+  });
+
+  it('updates current address if user triggers a jump-to-pointer-address event', () => {
+    const {component, data} = setUpComponent();
+    data.valueTypes = new Set([LinearMemoryInspectorModule.ValueInterpreterDisplayUtils.ValueType.Pointer32]);
+    data.memory = new Uint8Array([2, 0, 0, 0]);
+    data.outerMemoryLength = data.memory.length;
+    data.address = 0;
+    data.endianness = LinearMemoryInspectorModule.ValueInterpreterDisplayUtils.Endianness.Little;
+    component.data = data;
+
+    const interpreter = getValueInterpreter(component);
+    const display = getElementWithinComponent(
+        interpreter, 'devtools-linear-memory-inspector-interpreter-display',
+        LinearMemoryInspectorModule.ValueInterpreterDisplay.ValueInterpreterDisplay);
+    const button = getElementWithinComponent(display, DISPLAY_JUMP_TO_POINTER_BUTTON_SELECTOR, HTMLButtonElement);
+    button.click();
+
+    const navigator = getNavigator(component);
+    const selectedByte = getElementWithinComponent(navigator, NAVIGATOR_ADDRESS_SELECTOR, HTMLInputElement);
+
+    const actualSelectedByte = parseInt(selectedByte.value, 16);
+    const expectedSelectedByte = new DataView(data.memory.buffer).getUint32(0, true);
+    assert.strictEqual(actualSelectedByte, expectedSelectedByte);
   });
 
   it('leaves the navigator address as inputted by user on edit event', () => {

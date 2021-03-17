@@ -18,6 +18,7 @@ describe('ValueInterpreterSettings', () => {
       valueTypes: new Set([
         LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType.Int8,
         LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType.Float64,
+        LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType.Pointer32,
       ]),
     };
     component.data = data;
@@ -36,6 +37,8 @@ describe('ValueInterpreterSettings', () => {
       LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType.Int64,
       LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType.Float32,
       LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType.Float64,
+      LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType.Pointer32,
+      LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType.Pointer64,
     ]);
   });
 
@@ -84,6 +87,8 @@ describe('ValueInterpreterSettings', () => {
       LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType.Int64,
       LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType.Float32,
       LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType.Float64,
+      LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType.Pointer32,
+      LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType.Pointer64,
     ];
     const expectedUncheckedTitles = new Set(allTypesTitle.filter(title => !expectedTitles.has(title)));
     assert.deepEqual(uncheckedTitles, expectedUncheckedTitles);

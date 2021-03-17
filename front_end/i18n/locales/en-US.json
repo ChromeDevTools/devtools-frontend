@@ -3302,6 +3302,9 @@
   "linear_memory_inspector/ValueInterpreterDisplay.ts | changeValueTypeMode": {
     "message": "Change mode"
   },
+  "linear_memory_inspector/ValueInterpreterDisplay.ts | jumpToPointer": {
+    "message": "Jump to address"
+  },
   "linear_memory_inspector/ValueInterpreterDisplay.ts | signedValue": {
     "message": "Signed value"
   },
@@ -3331,6 +3334,15 @@
   },
   "linear_memory_inspector/ValueInterpreterDisplayUtils.ts | littleEndian": {
     "message": "Little Endian"
+  },
+  "linear_memory_inspector/ValueInterpreterDisplayUtils.ts | pointer32Bit": {
+    "message": "Pointer 32-bit"
+  },
+  "linear_memory_inspector/ValueInterpreterDisplayUtils.ts | pointer64Bit": {
+    "message": "Pointer 64-bit"
+  },
+  "linear_memory_inspector/ValueInterpreterSettings.ts | otherGroup": {
+    "message": "Other"
   },
   "main/main-meta.ts | asAuthored": {
     "message": "As authored"

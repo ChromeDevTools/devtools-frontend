@@ -99,7 +99,7 @@ function setNodeModulesPath(nodeModulesPath) {
     if (path.isAbsolute(nodeModulesPath)) {
       setEnvValueIfValuePresent('NODE_PATH', nodeModulesPath);
     } else {
-      setEnvValueIfValuePresent('NODE_PATH', path.join(yargsObject['cwd'], nodeModulesPath));
+      setEnvValueIfValuePresent('NODE_PATH', path.resolve(path.join(yargsObject['cwd'], nodeModulesPath)));
     }
   }
 }

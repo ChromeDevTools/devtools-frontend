@@ -7,5 +7,6 @@ ts_library("component_helpers") {
   deps = [
     "../../../../front_end/component_helpers:bundle",
     "../../../../front_end/theme_support:bundle",
+    "../../../../front_end/third_party/lit-html:bundle",
   ]
 }

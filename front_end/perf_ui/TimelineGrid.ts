@@ -49,7 +49,7 @@ export class TimelineGrid {
 
   constructor() {
     this.element = document.createElement('div');
-    UI.Utils.appendStyle(this.element, 'perf_ui/timelineGrid.css', {enableLegacyPatching: true});
+    UI.Utils.appendStyle(this.element, 'perf_ui/timelineGrid.css', {enableLegacyPatching: false});
 
     this._dividersElement = this.element.createChild('div', 'resources-dividers');
 
@@ -111,8 +111,7 @@ export class TimelineGrid {
     context.save();
     context.scale(window.devicePixelRatio, window.devicePixelRatio);
     const height = Math.floor(context.canvas.height / window.devicePixelRatio);
-    context.strokeStyle = ThemeSupport.ThemeSupport.instance().patchColorText(
-        'rgba(0, 0, 0, 0.1)', ThemeSupport.ThemeSupport.ColorUsage.Foreground);
+    context.strokeStyle = getComputedStyle(document.body).getPropertyValue('--divider-line');
     context.lineWidth = 1;
 
     context.translate(0.5, 0.5);

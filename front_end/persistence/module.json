@@ -2,21 +2,7 @@
   "dependencies": [
     "components"
   ],
-  "modules": [
-    "persistence.js",
-    "persistence-legacy.js",
-    "PlatformFileSystem.js",
-    "IsolatedFileSystem.js",
-    "IsolatedFileSystemManager.js",
-    "FileSystemWorkspaceBinding.js",
-    "Automapping.js",
-    "NetworkPersistenceManager.js",
-    "PersistenceImpl.js",
-    "PersistenceActions.js",
-    "PersistenceUtils.js",
-    "EditFileSystemView.js",
-    "WorkspaceSettingsTab.js"
-  ],
+  "modules": [],
   "resources": [
     "editFileSystemView.css",
     "workspaceSettingsTab.css"

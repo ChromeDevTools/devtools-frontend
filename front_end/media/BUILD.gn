@@ -37,12 +37,6 @@ devtools_entrypoint("bundle") {
   deps = [ ":media" ]
 }
 
-devtools_entrypoint("legacy") {
-  entrypoint = "media-legacy.ts"
-
-  deps = [ ":bundle" ]
-}
-
 devtools_entrypoint("meta") {
   entrypoint = "media-meta.ts"
 

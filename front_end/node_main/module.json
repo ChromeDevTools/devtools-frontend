@@ -3,9 +3,7 @@
     "ui",
     "components"
   ],
-  "modules": [
-    "node_main-legacy.js"
-  ],
+  "modules": [],
   "resources": [
     "nodeConnectionsPanel.css"
   ]

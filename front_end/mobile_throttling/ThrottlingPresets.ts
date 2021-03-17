@@ -130,6 +130,11 @@ export class ThrottlingPresets {
   ];
 }
 
+// @ts-ignore exported for Tests.js
+globalThis.MobileThrottling = globalThis.MobileThrottling || {};
+// @ts-ignore exported for Tests.js
+globalThis.MobileThrottling.networkPresets = ThrottlingPresets.networkPresets;
+
 export interface Conditions {
   title: string;
   description: string;

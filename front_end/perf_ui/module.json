@@ -4,20 +4,7 @@
     "source_frame",
     "text_editor"
   ],
-  "modules": [
-    "perf_ui.js",
-    "perf_ui-legacy.js",
-    "ChartViewport.js",
-    "FilmStripView.js",
-    "FlameChart.js",
-    "GCActionDelegate.js",
-    "LineLevelProfile.js",
-    "LiveHeapProfile.js",
-    "NetworkPriorities.js",
-    "OverviewGrid.js",
-    "TimelineGrid.js",
-    "TimelineOverviewPane.js"
-  ],
+  "modules": [],
   "resources": [
     "chartViewport.css",
     "filmStripView.css",

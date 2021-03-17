@@ -12,9 +12,7 @@
     "source_frame",
     "ui"
   ],
-  "modules": [
-    "network-legacy.js"
-  ],
+  "modules": [],
   "resources": [
     "binaryResourceView.css",
     "blockedURLsPane.css",

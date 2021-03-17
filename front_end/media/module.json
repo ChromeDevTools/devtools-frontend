@@ -6,9 +6,7 @@
     "source_frame",
     "perf_ui"
   ],
-  "modules": [
-    "media-legacy.js"
-  ],
+  "modules": [],
   "resources": [
     "eventDisplayTable.css",
     "playerListView.css",

@@ -7,6 +7,7 @@ import '../sources/sources-legacy.js';
 import '../workspace/workspace-legacy.js';
 import '../source_frame/source_frame-legacy.js';
 import '../text_utils/text_utils-legacy.js';
+import '../object_ui/object_ui-legacy.js';
 import '../text_editor/text_editor-legacy.js';
 import '../browser_debugger/browser_debugger-legacy.js';
 

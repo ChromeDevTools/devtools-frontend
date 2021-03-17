@@ -28,12 +28,6 @@ devtools_entrypoint("bundle") {
   deps = [ ":node_main" ]
 }
 
-devtools_entrypoint("legacy") {
-  entrypoint = "node_main-legacy.ts"
-
-  deps = [ ":bundle" ]
-}
-
 devtools_entrypoint("meta") {
   entrypoint = "node_main-meta.ts"
 

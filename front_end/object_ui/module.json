@@ -3,16 +3,7 @@
     "ui",
     "components"
   ],
-  "modules": [
-    "object_ui.js",
-    "object_ui-legacy.js",
-    "CustomPreviewComponent.js",
-    "ObjectPopoverHelper.js",
-    "ObjectPropertiesSection.js",
-    "JavaScriptAutocomplete.js",
-    "JavaScriptREPL.js",
-    "RemoteObjectPreviewFormatter.js"
-  ],
+  "modules": [],
   "resources": [
     "customPreviewComponent.css",
     "objectPopover.css",

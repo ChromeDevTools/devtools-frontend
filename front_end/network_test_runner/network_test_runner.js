@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import '../network/network-legacy.js';
 import '../test_runner/test_runner.js';
 import '../console_test_runner/console_test_runner.js';
 

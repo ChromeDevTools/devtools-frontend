@@ -2,9 +2,7 @@
   "dependencies": [
     "ui"
   ],
-  "modules": [
-    "performance_monitor-legacy.js"
-  ],
+  "modules": [],
   "resources": [
     "performanceMonitor.css"
   ]

@@ -23,7 +23,10 @@ ObjectUI.javaScriptAutocomplete = ObjectUIModule.javaScriptAutocomplete;
 /** @constructor */
 ObjectUI.JavaScriptREPL = ObjectUIModule.JavaScriptREPL.JavaScriptREPL;
 
-ObjectUI.JavaScriptREPL._MaxLengthForEvaluation = ObjectUIModule.JavaScriptREPL.MaxLengthForEvaluation;
+Object.defineProperty(ObjectUI.JavaScriptREPL, '_MaxLengthForEvaluation', {
+  set: ObjectUIModule.JavaScriptREPL.setMaxLengthForEvaluation,
+  get: ObjectUIModule.JavaScriptREPL.getMaxLengthForEvaluation,
+});
 
 /** @constructor */
 ObjectUI.ObjectPopoverHelper = ObjectUIModule.ObjectPopoverHelper.ObjectPopoverHelper;
@@ -36,8 +39,10 @@ ObjectUI.ExpandableTextPropertyValue = ObjectUIModule.ObjectPropertiesSection.Ex
 /** @constructor */
 ObjectUI.ObjectPropertiesSection = ObjectUIModule.ObjectPropertiesSection.ObjectPropertiesSection;
 
-ObjectUI.ObjectPropertiesSection._maxRenderableStringLength =
-    ObjectUIModule.ObjectPropertiesSection.maxRenderableStringLength;
+Object.defineProperty(ObjectUI.ObjectPropertiesSection, '_maxRenderableStringLength', {
+  set: ObjectUIModule.ObjectPropertiesSection.setMaxRenderableStringLength,
+  get: ObjectUIModule.ObjectPropertiesSection.getMaxRenderableStringLength,
+});
 
 ObjectUI.ObjectPropertiesSection.getObjectPropertiesSectionFrom =
     ObjectUIModule.ObjectPropertiesSection.getObjectPropertiesSectionFrom;

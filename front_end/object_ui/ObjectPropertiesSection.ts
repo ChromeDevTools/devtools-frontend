@@ -412,11 +412,7 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
         previewFormatter.appendObjectPreview(valueElement, value.preview, false /* isEntry */);
         propertyValue = new ObjectPropertyValue(valueElement);
         UI.Tooltip.Tooltip.install(propertyValue.element, description || '');
-      } else if (
-          description.length >
-          // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          ((self as any).ObjectUI.ObjectPropertiesSection._maxRenderableStringLength || maxRenderableStringLength)) {
+      } else if (description.length > maxRenderableStringLength) {
         propertyValue = new ExpandableTextPropertyValue(valueElement, description, EXPANDABLE_MAX_LENGTH);
       } else {
         propertyValue = new ObjectPropertyValue(valueElement);
@@ -449,10 +445,7 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
       valueElement.classList.add('object-value-string');
       const text = JSON.stringify(description);
       let propertyValue;
-      if (description.length >
-          // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          ((self as any).ObjectUI.ObjectPropertiesSection._maxRenderableStringLength || maxRenderableStringLength)) {
+      if (description.length > maxRenderableStringLength) {
         propertyValue = new ExpandableTextPropertyValue(valueElement, text, EXPANDABLE_MAX_LENGTH);
       } else {
         UI.UIUtils.createTextChild(valueElement, text);
@@ -467,10 +460,7 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
       valueElement.classList.add('object-value-trustedtype');
       const text = `${className} "${description}"`;
       let propertyValue;
-      if (text.length >
-          // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          ((self as any).ObjectUI.ObjectPropertiesSection._maxRenderableStringLength || maxRenderableStringLength)) {
+      if (text.length > maxRenderableStringLength) {
         propertyValue = new ExpandableTextPropertyValue(valueElement, text, EXPANDABLE_MAX_LENGTH);
       } else {
         const contentString = createStringElement();
@@ -575,8 +565,14 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
 /** @const */
 const ARRAY_LOAD_THRESHOLD = 100;
 
-/** @const */
-export const maxRenderableStringLength = 10000;
+let maxRenderableStringLength = 10000;
+
+export function setMaxRenderableStringLength(value: number): void {
+  maxRenderableStringLength = value;
+}
+export function getMaxRenderableStringLength(): number {
+  return maxRenderableStringLength;
+}
 
 export class ObjectPropertiesSectionsTreeOutline extends UI.TreeOutline.TreeOutlineInShadow {
   _editable: boolean;

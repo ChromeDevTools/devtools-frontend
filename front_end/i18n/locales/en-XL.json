@@ -26,135 +26,6 @@
   "bindings/ResourceScriptMapping.ts | liveEditFailed": {
     "message": "LiveEdit f̂áîĺêd́: {PH1}"
   },
-  "browser_debugger/browser_debugger-meta.ts | contentScripts": {
-    "message": "Ĉón̂t́êńt̂ śĉŕîṕt̂ś"
-  },
-  "browser_debugger/browser_debugger-meta.ts | cspViolationBreakpoints": {
-    "message": "ĈŚP̂ V́îól̂át̂íôń B̂ŕêák̂ṕôín̂t́ŝ"
-  },
-  "browser_debugger/browser_debugger-meta.ts | domBreakpoints": {
-    "message": "D̂ÓM̂ B́r̂éâḱp̂óîńt̂ś"
-  },
-  "browser_debugger/browser_debugger-meta.ts | eventListenerBreakpoints": {
-    "message": "Êv́êńt̂ Ĺîśt̂én̂ér̂ B́r̂éâḱp̂óîńt̂ś"
-  },
-  "browser_debugger/browser_debugger-meta.ts | globalListeners": {
-    "message": "Ĝĺôb́âĺ L̂íŝt́êńêŕŝ"
-  },
-  "browser_debugger/browser_debugger-meta.ts | overrides": {
-    "message": "Ôv́êŕr̂íd̂éŝ"
-  },
-  "browser_debugger/browser_debugger-meta.ts | page": {
-    "message": "P̂áĝé"
-  },
-  "browser_debugger/browser_debugger-meta.ts | showContentScripts": {
-    "message": "Ŝh́ôẃ Ĉón̂t́êńt̂ śĉŕîṕt̂ś"
-  },
-  "browser_debugger/browser_debugger-meta.ts | showCspViolationBreakpoints": {
-    "message": "Ŝh́ôẃ ĈŚP̂ V́îól̂át̂íôń B̂ŕêák̂ṕôín̂t́ŝ"
-  },
-  "browser_debugger/browser_debugger-meta.ts | showDomBreakpoints": {
-    "message": "Ŝh́ôẃ D̂ÓM̂ B́r̂éâḱp̂óîńt̂ś"
-  },
-  "browser_debugger/browser_debugger-meta.ts | showEventListenerBreakpoints": {
-    "message": "Ŝh́ôẃ Êv́êńt̂ Ĺîśt̂én̂ér̂ B́r̂éâḱp̂óîńt̂ś"
-  },
-  "browser_debugger/browser_debugger-meta.ts | showGlobalListeners": {
-    "message": "Ŝh́ôẃ Ĝĺôb́âĺ L̂íŝt́êńêŕŝ"
-  },
-  "browser_debugger/browser_debugger-meta.ts | showOverrides": {
-    "message": "Ŝh́ôẃ Ôv́êŕr̂íd̂éŝ"
-  },
-  "browser_debugger/browser_debugger-meta.ts | showPage": {
-    "message": "Ŝh́ôẃ P̂áĝé"
-  },
-  "browser_debugger/browser_debugger-meta.ts | showXhrfetchBreakpoints": {
-    "message": "Ŝh́ôẃ X̂H́R̂/f́êt́ĉh́ B̂ŕêák̂ṕôín̂t́ŝ"
-  },
-  "browser_debugger/browser_debugger-meta.ts | xhrfetchBreakpoints": {
-    "message": "X̂H́R̂/f́êt́ĉh́ B̂ŕêák̂ṕôín̂t́ŝ"
-  },
-  "browser_debugger/CategorizedBreakpointsSidebarPane.ts | breakpointHit": {
-    "message": "b̂ŕêák̂ṕôín̂t́ ĥít̂"
-  },
-  "browser_debugger/DOMBreakpointsSidebarPane.ts | attributeModified": {
-    "message": "Ât́t̂ŕîb́ût́ê ḿôd́îf́îéd̂"
-  },
-  "browser_debugger/DOMBreakpointsSidebarPane.ts | breakOn": {
-    "message": "B̂ŕêák̂ ón̂"
-  },
-  "browser_debugger/DOMBreakpointsSidebarPane.ts | breakpointHit": {
-    "message": "b̂ŕêák̂ṕôín̂t́ ĥít̂"
-  },
-  "browser_debugger/DOMBreakpointsSidebarPane.ts | checked": {
-    "message": "ĉh́êćk̂éd̂"
-  },
-  "browser_debugger/DOMBreakpointsSidebarPane.ts | domBreakpointsList": {
-    "message": "D̂ÓM̂ B́r̂éâḱp̂óîńt̂ś l̂íŝt́"
-  },
-  "browser_debugger/DOMBreakpointsSidebarPane.ts | noBreakpoints": {
-    "message": "N̂ó b̂ŕêák̂ṕôín̂t́ŝ"
-  },
-  "browser_debugger/DOMBreakpointsSidebarPane.ts | nodeRemoved": {
-    "message": "N̂ód̂é r̂ém̂óv̂éd̂"
-  },
-  "browser_debugger/DOMBreakpointsSidebarPane.ts | removeAllDomBreakpoints": {
-    "message": "R̂ém̂óv̂é âĺl̂ D́ÔḾ b̂ŕêák̂ṕôín̂t́ŝ"
-  },
-  "browser_debugger/DOMBreakpointsSidebarPane.ts | removeBreakpoint": {
-    "message": "R̂ém̂óv̂é b̂ŕêák̂ṕôín̂t́"
-  },
-  "browser_debugger/DOMBreakpointsSidebarPane.ts | revealDomNodeInElementsPanel": {
-    "message": "R̂év̂éâĺ D̂ÓM̂ ńôd́ê ín̂ Él̂ém̂én̂t́ŝ ṕâńêĺ"
-  },
-  "browser_debugger/DOMBreakpointsSidebarPane.ts | sBreakpointHit": {
-    "message": "{PH1} b̂ŕêák̂ṕôín̂t́ ĥít̂"
-  },
-  "browser_debugger/DOMBreakpointsSidebarPane.ts | sS": {
-    "message": "{PH1}: {PH2}"
-  },
-  "browser_debugger/DOMBreakpointsSidebarPane.ts | subtreeModified": {
-    "message": "Ŝúb̂t́r̂éê ḿôd́îf́îéd̂"
-  },
-  "browser_debugger/DOMBreakpointsSidebarPane.ts | unchecked": {
-    "message": "ûńĉh́êćk̂éd̂"
-  },
-  "browser_debugger/ObjectEventListenersSidebarPane.ts | refreshGlobalListeners": {
-    "message": "R̂éf̂ŕêśĥ ǵl̂ób̂ál̂ ĺîśt̂én̂ér̂ś"
-  },
-  "browser_debugger/XHRBreakpointsSidebarPane.ts | addBreakpoint": {
-    "message": "Âd́d̂ b́r̂éâḱp̂óîńt̂"
-  },
-  "browser_debugger/XHRBreakpointsSidebarPane.ts | addXhrfetchBreakpoint": {
-    "message": "Âd́d̂ X́ĤŔ/f̂ét̂ćĥ b́r̂éâḱp̂óîńt̂"
-  },
-  "browser_debugger/XHRBreakpointsSidebarPane.ts | anyXhrOrFetch": {
-    "message": "Âńŷ X́ĤŔ ôŕ f̂ét̂ćĥ"
-  },
-  "browser_debugger/XHRBreakpointsSidebarPane.ts | breakpointHit": {
-    "message": "b̂ŕêák̂ṕôín̂t́ ĥít̂"
-  },
-  "browser_debugger/XHRBreakpointsSidebarPane.ts | breakWhenUrlContains": {
-    "message": "B̂ŕêák̂ ẃĥén̂ ÚR̂Ĺ ĉón̂t́âín̂ś:"
-  },
-  "browser_debugger/XHRBreakpointsSidebarPane.ts | noBreakpoints": {
-    "message": "N̂ó b̂ŕêák̂ṕôín̂t́ŝ"
-  },
-  "browser_debugger/XHRBreakpointsSidebarPane.ts | removeAllBreakpoints": {
-    "message": "R̂ém̂óv̂é âĺl̂ b́r̂éâḱp̂óîńt̂ś"
-  },
-  "browser_debugger/XHRBreakpointsSidebarPane.ts | removeBreakpoint": {
-    "message": "R̂ém̂óv̂é b̂ŕêák̂ṕôín̂t́"
-  },
-  "browser_debugger/XHRBreakpointsSidebarPane.ts | urlBreakpoint": {
-    "message": "ÛŔL̂ B́r̂éâḱp̂óîńt̂"
-  },
-  "browser_debugger/XHRBreakpointsSidebarPane.ts | urlContainsS": {
-    "message": "ÛŔL̂ ćôńt̂áîńŝ \"{PH1}\""
-  },
-  "browser_debugger/XHRBreakpointsSidebarPane.ts | xhrfetchBreakpoints": {
-    "message": "X̂H́R̂/f́êt́ĉh́ B̂ŕêák̂ṕôín̂t́ŝ"
-  },
   "browser_sdk/browser_sdk-meta.ts | clear": {
     "message": "ĉĺêár̂"
   },
@@ -5578,6 +5449,135 @@
   },
   "panels/animation/AnimationUI.ts | sSlider": {
     "message": "{PH1} ŝĺîd́êŕ"
+  },
+  "panels/browser_debugger/browser_debugger-meta.ts | contentScripts": {
+    "message": "Ĉón̂t́êńt̂ śĉŕîṕt̂ś"
+  },
+  "panels/browser_debugger/browser_debugger-meta.ts | cspViolationBreakpoints": {
+    "message": "ĈŚP̂ V́îól̂át̂íôń B̂ŕêák̂ṕôín̂t́ŝ"
+  },
+  "panels/browser_debugger/browser_debugger-meta.ts | domBreakpoints": {
+    "message": "D̂ÓM̂ B́r̂éâḱp̂óîńt̂ś"
+  },
+  "panels/browser_debugger/browser_debugger-meta.ts | eventListenerBreakpoints": {
+    "message": "Êv́êńt̂ Ĺîśt̂én̂ér̂ B́r̂éâḱp̂óîńt̂ś"
+  },
+  "panels/browser_debugger/browser_debugger-meta.ts | globalListeners": {
+    "message": "Ĝĺôb́âĺ L̂íŝt́êńêŕŝ"
+  },
+  "panels/browser_debugger/browser_debugger-meta.ts | overrides": {
+    "message": "Ôv́êŕr̂íd̂éŝ"
+  },
+  "panels/browser_debugger/browser_debugger-meta.ts | page": {
+    "message": "P̂áĝé"
+  },
+  "panels/browser_debugger/browser_debugger-meta.ts | showContentScripts": {
+    "message": "Ŝh́ôẃ Ĉón̂t́êńt̂ śĉŕîṕt̂ś"
+  },
+  "panels/browser_debugger/browser_debugger-meta.ts | showCspViolationBreakpoints": {
+    "message": "Ŝh́ôẃ ĈŚP̂ V́îól̂át̂íôń B̂ŕêák̂ṕôín̂t́ŝ"
+  },
+  "panels/browser_debugger/browser_debugger-meta.ts | showDomBreakpoints": {
+    "message": "Ŝh́ôẃ D̂ÓM̂ B́r̂éâḱp̂óîńt̂ś"
+  },
+  "panels/browser_debugger/browser_debugger-meta.ts | showEventListenerBreakpoints": {
+    "message": "Ŝh́ôẃ Êv́êńt̂ Ĺîśt̂én̂ér̂ B́r̂éâḱp̂óîńt̂ś"
+  },
+  "panels/browser_debugger/browser_debugger-meta.ts | showGlobalListeners": {
+    "message": "Ŝh́ôẃ Ĝĺôb́âĺ L̂íŝt́êńêŕŝ"
+  },
+  "panels/browser_debugger/browser_debugger-meta.ts | showOverrides": {
+    "message": "Ŝh́ôẃ Ôv́êŕr̂íd̂éŝ"
+  },
+  "panels/browser_debugger/browser_debugger-meta.ts | showPage": {
+    "message": "Ŝh́ôẃ P̂áĝé"
+  },
+  "panels/browser_debugger/browser_debugger-meta.ts | showXhrfetchBreakpoints": {
+    "message": "Ŝh́ôẃ X̂H́R̂/f́êt́ĉh́ B̂ŕêák̂ṕôín̂t́ŝ"
+  },
+  "panels/browser_debugger/browser_debugger-meta.ts | xhrfetchBreakpoints": {
+    "message": "X̂H́R̂/f́êt́ĉh́ B̂ŕêák̂ṕôín̂t́ŝ"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | breakpointHit": {
+    "message": "b̂ŕêák̂ṕôín̂t́ ĥít̂"
+  },
+  "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | attributeModified": {
+    "message": "Ât́t̂ŕîb́ût́ê ḿôd́îf́îéd̂"
+  },
+  "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | breakOn": {
+    "message": "B̂ŕêák̂ ón̂"
+  },
+  "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | breakpointHit": {
+    "message": "b̂ŕêák̂ṕôín̂t́ ĥít̂"
+  },
+  "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | checked": {
+    "message": "ĉh́êćk̂éd̂"
+  },
+  "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | domBreakpointsList": {
+    "message": "D̂ÓM̂ B́r̂éâḱp̂óîńt̂ś l̂íŝt́"
+  },
+  "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | noBreakpoints": {
+    "message": "N̂ó b̂ŕêák̂ṕôín̂t́ŝ"
+  },
+  "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | nodeRemoved": {
+    "message": "N̂ód̂é r̂ém̂óv̂éd̂"
+  },
+  "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | removeAllDomBreakpoints": {
+    "message": "R̂ém̂óv̂é âĺl̂ D́ÔḾ b̂ŕêák̂ṕôín̂t́ŝ"
+  },
+  "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | removeBreakpoint": {
+    "message": "R̂ém̂óv̂é b̂ŕêák̂ṕôín̂t́"
+  },
+  "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | revealDomNodeInElementsPanel": {
+    "message": "R̂év̂éâĺ D̂ÓM̂ ńôd́ê ín̂ Él̂ém̂én̂t́ŝ ṕâńêĺ"
+  },
+  "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | sBreakpointHit": {
+    "message": "{PH1} b̂ŕêák̂ṕôín̂t́ ĥít̂"
+  },
+  "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | sS": {
+    "message": "{PH1}: {PH2}"
+  },
+  "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | subtreeModified": {
+    "message": "Ŝúb̂t́r̂éê ḿôd́îf́îéd̂"
+  },
+  "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | unchecked": {
+    "message": "ûńĉh́êćk̂éd̂"
+  },
+  "panels/browser_debugger/ObjectEventListenersSidebarPane.ts | refreshGlobalListeners": {
+    "message": "R̂éf̂ŕêśĥ ǵl̂ób̂ál̂ ĺîśt̂én̂ér̂ś"
+  },
+  "panels/browser_debugger/XHRBreakpointsSidebarPane.ts | addBreakpoint": {
+    "message": "Âd́d̂ b́r̂éâḱp̂óîńt̂"
+  },
+  "panels/browser_debugger/XHRBreakpointsSidebarPane.ts | addXhrfetchBreakpoint": {
+    "message": "Âd́d̂ X́ĤŔ/f̂ét̂ćĥ b́r̂éâḱp̂óîńt̂"
+  },
+  "panels/browser_debugger/XHRBreakpointsSidebarPane.ts | anyXhrOrFetch": {
+    "message": "Âńŷ X́ĤŔ ôŕ f̂ét̂ćĥ"
+  },
+  "panels/browser_debugger/XHRBreakpointsSidebarPane.ts | breakpointHit": {
+    "message": "b̂ŕêák̂ṕôín̂t́ ĥít̂"
+  },
+  "panels/browser_debugger/XHRBreakpointsSidebarPane.ts | breakWhenUrlContains": {
+    "message": "B̂ŕêák̂ ẃĥén̂ ÚR̂Ĺ ĉón̂t́âín̂ś:"
+  },
+  "panels/browser_debugger/XHRBreakpointsSidebarPane.ts | noBreakpoints": {
+    "message": "N̂ó b̂ŕêák̂ṕôín̂t́ŝ"
+  },
+  "panels/browser_debugger/XHRBreakpointsSidebarPane.ts | removeAllBreakpoints": {
+    "message": "R̂ém̂óv̂é âĺl̂ b́r̂éâḱp̂óîńt̂ś"
+  },
+  "panels/browser_debugger/XHRBreakpointsSidebarPane.ts | removeBreakpoint": {
+    "message": "R̂ém̂óv̂é b̂ŕêák̂ṕôín̂t́"
+  },
+  "panels/browser_debugger/XHRBreakpointsSidebarPane.ts | urlBreakpoint": {
+    "message": "ÛŔL̂ B́r̂éâḱp̂óîńt̂"
+  },
+  "panels/browser_debugger/XHRBreakpointsSidebarPane.ts | urlContainsS": {
+    "message": "ÛŔL̂ ćôńt̂áîńŝ \"{PH1}\""
+  },
+  "panels/browser_debugger/XHRBreakpointsSidebarPane.ts | xhrfetchBreakpoints": {
+    "message": "X̂H́R̂/f́êt́ĉh́ B̂ŕêák̂ṕôín̂t́ŝ"
   },
   "perf_ui/FilmStripView.ts | doubleclickToZoomImageClickTo": {
     "message": "D̂óûb́l̂éĉĺîćk̂ t́ô źôóm̂ ím̂áĝé. Ĉĺîćk̂ t́ô v́îéŵ ṕr̂éĉéd̂ín̂ǵ r̂éq̂úêśt̂ś."

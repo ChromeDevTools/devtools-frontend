@@ -37,8 +37,9 @@ export function getRemoteBase(location = self.location.toString()) {
 const constructedInstances = new WeakMap();
 
 /** @type {!Map<string, string>} */
-const mappingForLayoutTests = new Map([
+export const mappingForLayoutTests = new Map([
   ['panels/animation', 'animation'],
+  ['panels/browser_debugger', 'browser_debugger'],
 ]);
 
 export class Runtime {

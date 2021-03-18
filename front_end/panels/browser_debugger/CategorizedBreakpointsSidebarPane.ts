@@ -4,9 +4,9 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as i18n from '../i18n/i18n.js';
-import * as SDK from '../sdk/sdk.js';
-import * as UI from '../ui/ui.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as SDK from '../../sdk/sdk.js';
+import * as UI from '../../ui/ui.js';
 
 const UIStrings = {
   /**
@@ -14,7 +14,7 @@ const UIStrings = {
   */
   breakpointHit: 'breakpoint hit',
 };
-const str_ = i18n.i18n.registerUIStrings('browser_debugger/CategorizedBreakpointsSidebarPane.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /**
  * @abstract
@@ -32,7 +32,7 @@ export class CategorizedBreakpointsSidebarPane extends UI.Widget.VBox {
     super(true);
     this._categoriesTreeOutline = new UI.TreeOutline.TreeOutlineInShadow();
     this._categoriesTreeOutline.registerRequiredCSS(
-        'browser_debugger/categorizedBreakpointsSidebarPane.css', {enableLegacyPatching: true});
+        'panels/browser_debugger/categorizedBreakpointsSidebarPane.css', {enableLegacyPatching: true});
     this._categoriesTreeOutline.setShowSelectionOnKeyboardFocus(/* show */ true);
     this.contentElement.appendChild(this._categoriesTreeOutline.element);
     this._viewId = viewId;

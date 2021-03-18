@@ -5,7 +5,6 @@ ts_library("missing_entrypoints") {
   sources = [ "missing_entrypoints_test.ts" ]
 
   deps = [
-    "../../../../front_end/browser_debugger:bundle",
     "../../../../front_end/changes:bundle",
     "../../../../front_end/cm",
     "../../../../front_end/console:bundle",
@@ -24,6 +23,7 @@ ts_library("missing_entrypoints") {
     "../../../../front_end/lighthouse:bundle",
     "../../../../front_end/main:bundle",
     "../../../../front_end/node_main:bundle",
+    "../../../../front_end/panels/browser_debugger:bundle",
     "../../../../front_end/performance_monitor:bundle",
     "../../../../front_end/profiler:bundle",
     "../../../../front_end/protocol_monitor:bundle",

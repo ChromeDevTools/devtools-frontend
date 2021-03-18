@@ -8,6 +8,7 @@ import * as Bindings from '../bindings/bindings.js';
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
 import * as Platform from '../platform/platform.js';
 import * as ProtocolClientModule from '../protocol_client/protocol_client.js';
+import * as Root from '../root/root.js';
 import * as TextEditor from '../text_editor/text_editor.js';
 import * as UI from '../ui/ui.js';
 import * as Workspace from '../workspace/workspace.js';
@@ -27,7 +28,7 @@ self.Platform.ArrayUtilities = Platform.ArrayUtilities;
  * @return {boolean}
  */
 export function isDebugTest() {
-  return !self.testRunner || Boolean(Root.Runtime.queryParam('debugFrontend'));
+  return !self.testRunner || Boolean(Root.Runtime.Runtime.queryParam('debugFrontend'));
 }
 
 /**
@@ -251,7 +252,13 @@ export async function loadModule(module) {
  * @return {!Promise<void>}
  */
 export async function loadLegacyModule(module) {
-  await import(`../${module}/${module}-legacy.js`);
+  let containingFolder = module;
+  for (const [remappedFolder, originalFolder] of Root.Runtime.mappingForLayoutTests.entries()) {
+    if (originalFolder === module) {
+      containingFolder = remappedFolder;
+    }
+  }
+  await import(`../${containingFolder}/${module}-legacy.js`);
 }
 
 /**
@@ -426,7 +433,7 @@ export async function _evaluateInPage(code) {
   const lines = new Error().stack.split('at ');
 
   // Handles cases where the function is safe wrapped
-  const testScriptURL = /** @type {string} */ (Root.Runtime.queryParam('test'));
+  const testScriptURL = /** @type {string} */ (Root.Runtime.Runtime.queryParam('test'));
   const functionLine = lines.reduce((acc, line) => line.includes(testScriptURL) ? line : acc, lines[lines.length - 2]);
 
   const components = functionLine.trim().split('/');
@@ -1350,7 +1357,7 @@ export function waitForUISourceCodeRemoved(callback) {
  * @return {string}
  */
 export function url(url = '') {
-  const testScriptURL = /** @type {string} */ (Root.Runtime.queryParam('test'));
+  const testScriptURL = /** @type {string} */ (Root.Runtime.Runtime.queryParam('test'));
 
   // This handles relative (e.g. "../file"), root (e.g. "/resource"),
   // absolute (e.g. "http://", "data:") and empty (e.g. "") paths

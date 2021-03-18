@@ -26,135 +26,6 @@
   "bindings/ResourceScriptMapping.ts | liveEditFailed": {
     "message": "LiveEdit failed: {PH1}"
   },
-  "browser_debugger/browser_debugger-meta.ts | contentScripts": {
-    "message": "Content scripts"
-  },
-  "browser_debugger/browser_debugger-meta.ts | cspViolationBreakpoints": {
-    "message": "CSP Violation Breakpoints"
-  },
-  "browser_debugger/browser_debugger-meta.ts | domBreakpoints": {
-    "message": "DOM Breakpoints"
-  },
-  "browser_debugger/browser_debugger-meta.ts | eventListenerBreakpoints": {
-    "message": "Event Listener Breakpoints"
-  },
-  "browser_debugger/browser_debugger-meta.ts | globalListeners": {
-    "message": "Global Listeners"
-  },
-  "browser_debugger/browser_debugger-meta.ts | overrides": {
-    "message": "Overrides"
-  },
-  "browser_debugger/browser_debugger-meta.ts | page": {
-    "message": "Page"
-  },
-  "browser_debugger/browser_debugger-meta.ts | showContentScripts": {
-    "message": "Show Content scripts"
-  },
-  "browser_debugger/browser_debugger-meta.ts | showCspViolationBreakpoints": {
-    "message": "Show CSP Violation Breakpoints"
-  },
-  "browser_debugger/browser_debugger-meta.ts | showDomBreakpoints": {
-    "message": "Show DOM Breakpoints"
-  },
-  "browser_debugger/browser_debugger-meta.ts | showEventListenerBreakpoints": {
-    "message": "Show Event Listener Breakpoints"
-  },
-  "browser_debugger/browser_debugger-meta.ts | showGlobalListeners": {
-    "message": "Show Global Listeners"
-  },
-  "browser_debugger/browser_debugger-meta.ts | showOverrides": {
-    "message": "Show Overrides"
-  },
-  "browser_debugger/browser_debugger-meta.ts | showPage": {
-    "message": "Show Page"
-  },
-  "browser_debugger/browser_debugger-meta.ts | showXhrfetchBreakpoints": {
-    "message": "Show XHR/fetch Breakpoints"
-  },
-  "browser_debugger/browser_debugger-meta.ts | xhrfetchBreakpoints": {
-    "message": "XHR/fetch Breakpoints"
-  },
-  "browser_debugger/CategorizedBreakpointsSidebarPane.ts | breakpointHit": {
-    "message": "breakpoint hit"
-  },
-  "browser_debugger/DOMBreakpointsSidebarPane.ts | attributeModified": {
-    "message": "Attribute modified"
-  },
-  "browser_debugger/DOMBreakpointsSidebarPane.ts | breakOn": {
-    "message": "Break on"
-  },
-  "browser_debugger/DOMBreakpointsSidebarPane.ts | breakpointHit": {
-    "message": "breakpoint hit"
-  },
-  "browser_debugger/DOMBreakpointsSidebarPane.ts | checked": {
-    "message": "checked"
-  },
-  "browser_debugger/DOMBreakpointsSidebarPane.ts | domBreakpointsList": {
-    "message": "DOM Breakpoints list"
-  },
-  "browser_debugger/DOMBreakpointsSidebarPane.ts | noBreakpoints": {
-    "message": "No breakpoints"
-  },
-  "browser_debugger/DOMBreakpointsSidebarPane.ts | nodeRemoved": {
-    "message": "Node removed"
-  },
-  "browser_debugger/DOMBreakpointsSidebarPane.ts | removeAllDomBreakpoints": {
-    "message": "Remove all DOM breakpoints"
-  },
-  "browser_debugger/DOMBreakpointsSidebarPane.ts | removeBreakpoint": {
-    "message": "Remove breakpoint"
-  },
-  "browser_debugger/DOMBreakpointsSidebarPane.ts | revealDomNodeInElementsPanel": {
-    "message": "Reveal DOM node in Elements panel"
-  },
-  "browser_debugger/DOMBreakpointsSidebarPane.ts | sBreakpointHit": {
-    "message": "{PH1} breakpoint hit"
-  },
-  "browser_debugger/DOMBreakpointsSidebarPane.ts | sS": {
-    "message": "{PH1}: {PH2}"
-  },
-  "browser_debugger/DOMBreakpointsSidebarPane.ts | subtreeModified": {
-    "message": "Subtree modified"
-  },
-  "browser_debugger/DOMBreakpointsSidebarPane.ts | unchecked": {
-    "message": "unchecked"
-  },
-  "browser_debugger/ObjectEventListenersSidebarPane.ts | refreshGlobalListeners": {
-    "message": "Refresh global listeners"
-  },
-  "browser_debugger/XHRBreakpointsSidebarPane.ts | addBreakpoint": {
-    "message": "Add breakpoint"
-  },
-  "browser_debugger/XHRBreakpointsSidebarPane.ts | addXhrfetchBreakpoint": {
-    "message": "Add XHR/fetch breakpoint"
-  },
-  "browser_debugger/XHRBreakpointsSidebarPane.ts | anyXhrOrFetch": {
-    "message": "Any XHR or fetch"
-  },
-  "browser_debugger/XHRBreakpointsSidebarPane.ts | breakpointHit": {
-    "message": "breakpoint hit"
-  },
-  "browser_debugger/XHRBreakpointsSidebarPane.ts | breakWhenUrlContains": {
-    "message": "Break when URL contains:"
-  },
-  "browser_debugger/XHRBreakpointsSidebarPane.ts | noBreakpoints": {
-    "message": "No breakpoints"
-  },
-  "browser_debugger/XHRBreakpointsSidebarPane.ts | removeAllBreakpoints": {
-    "message": "Remove all breakpoints"
-  },
-  "browser_debugger/XHRBreakpointsSidebarPane.ts | removeBreakpoint": {
-    "message": "Remove breakpoint"
-  },
-  "browser_debugger/XHRBreakpointsSidebarPane.ts | urlBreakpoint": {
-    "message": "URL Breakpoint"
-  },
-  "browser_debugger/XHRBreakpointsSidebarPane.ts | urlContainsS": {
-    "message": "URL contains \"{PH1}\""
-  },
-  "browser_debugger/XHRBreakpointsSidebarPane.ts | xhrfetchBreakpoints": {
-    "message": "XHR/fetch Breakpoints"
-  },
   "browser_sdk/browser_sdk-meta.ts | clear": {
     "message": "clear"
   },
@@ -5578,6 +5449,135 @@
   },
   "panels/animation/AnimationUI.ts | sSlider": {
     "message": "{PH1} slider"
+  },
+  "panels/browser_debugger/browser_debugger-meta.ts | contentScripts": {
+    "message": "Content scripts"
+  },
+  "panels/browser_debugger/browser_debugger-meta.ts | cspViolationBreakpoints": {
+    "message": "CSP Violation Breakpoints"
+  },
+  "panels/browser_debugger/browser_debugger-meta.ts | domBreakpoints": {
+    "message": "DOM Breakpoints"
+  },
+  "panels/browser_debugger/browser_debugger-meta.ts | eventListenerBreakpoints": {
+    "message": "Event Listener Breakpoints"
+  },
+  "panels/browser_debugger/browser_debugger-meta.ts | globalListeners": {
+    "message": "Global Listeners"
+  },
+  "panels/browser_debugger/browser_debugger-meta.ts | overrides": {
+    "message": "Overrides"
+  },
+  "panels/browser_debugger/browser_debugger-meta.ts | page": {
+    "message": "Page"
+  },
+  "panels/browser_debugger/browser_debugger-meta.ts | showContentScripts": {
+    "message": "Show Content scripts"
+  },
+  "panels/browser_debugger/browser_debugger-meta.ts | showCspViolationBreakpoints": {
+    "message": "Show CSP Violation Breakpoints"
+  },
+  "panels/browser_debugger/browser_debugger-meta.ts | showDomBreakpoints": {
+    "message": "Show DOM Breakpoints"
+  },
+  "panels/browser_debugger/browser_debugger-meta.ts | showEventListenerBreakpoints": {
+    "message": "Show Event Listener Breakpoints"
+  },
+  "panels/browser_debugger/browser_debugger-meta.ts | showGlobalListeners": {
+    "message": "Show Global Listeners"
+  },
+  "panels/browser_debugger/browser_debugger-meta.ts | showOverrides": {
+    "message": "Show Overrides"
+  },
+  "panels/browser_debugger/browser_debugger-meta.ts | showPage": {
+    "message": "Show Page"
+  },
+  "panels/browser_debugger/browser_debugger-meta.ts | showXhrfetchBreakpoints": {
+    "message": "Show XHR/fetch Breakpoints"
+  },
+  "panels/browser_debugger/browser_debugger-meta.ts | xhrfetchBreakpoints": {
+    "message": "XHR/fetch Breakpoints"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | breakpointHit": {
+    "message": "breakpoint hit"
+  },
+  "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | attributeModified": {
+    "message": "Attribute modified"
+  },
+  "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | breakOn": {
+    "message": "Break on"
+  },
+  "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | breakpointHit": {
+    "message": "breakpoint hit"
+  },
+  "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | checked": {
+    "message": "checked"
+  },
+  "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | domBreakpointsList": {
+    "message": "DOM Breakpoints list"
+  },
+  "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | noBreakpoints": {
+    "message": "No breakpoints"
+  },
+  "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | nodeRemoved": {
+    "message": "Node removed"
+  },
+  "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | removeAllDomBreakpoints": {
+    "message": "Remove all DOM breakpoints"
+  },
+  "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | removeBreakpoint": {
+    "message": "Remove breakpoint"
+  },
+  "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | revealDomNodeInElementsPanel": {
+    "message": "Reveal DOM node in Elements panel"
+  },
+  "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | sBreakpointHit": {
+    "message": "{PH1} breakpoint hit"
+  },
+  "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | sS": {
+    "message": "{PH1}: {PH2}"
+  },
+  "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | subtreeModified": {
+    "message": "Subtree modified"
+  },
+  "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | unchecked": {
+    "message": "unchecked"
+  },
+  "panels/browser_debugger/ObjectEventListenersSidebarPane.ts | refreshGlobalListeners": {
+    "message": "Refresh global listeners"
+  },
+  "panels/browser_debugger/XHRBreakpointsSidebarPane.ts | addBreakpoint": {
+    "message": "Add breakpoint"
+  },
+  "panels/browser_debugger/XHRBreakpointsSidebarPane.ts | addXhrfetchBreakpoint": {
+    "message": "Add XHR/fetch breakpoint"
+  },
+  "panels/browser_debugger/XHRBreakpointsSidebarPane.ts | anyXhrOrFetch": {
+    "message": "Any XHR or fetch"
+  },
+  "panels/browser_debugger/XHRBreakpointsSidebarPane.ts | breakpointHit": {
+    "message": "breakpoint hit"
+  },
+  "panels/browser_debugger/XHRBreakpointsSidebarPane.ts | breakWhenUrlContains": {
+    "message": "Break when URL contains:"
+  },
+  "panels/browser_debugger/XHRBreakpointsSidebarPane.ts | noBreakpoints": {
+    "message": "No breakpoints"
+  },
+  "panels/browser_debugger/XHRBreakpointsSidebarPane.ts | removeAllBreakpoints": {
+    "message": "Remove all breakpoints"
+  },
+  "panels/browser_debugger/XHRBreakpointsSidebarPane.ts | removeBreakpoint": {
+    "message": "Remove breakpoint"
+  },
+  "panels/browser_debugger/XHRBreakpointsSidebarPane.ts | urlBreakpoint": {
+    "message": "URL Breakpoint"
+  },
+  "panels/browser_debugger/XHRBreakpointsSidebarPane.ts | urlContainsS": {
+    "message": "URL contains \"{PH1}\""
+  },
+  "panels/browser_debugger/XHRBreakpointsSidebarPane.ts | xhrfetchBreakpoints": {
+    "message": "XHR/fetch Breakpoints"
   },
   "perf_ui/FilmStripView.ts | doubleclickToZoomImageClickTo": {
     "message": "Doubleclick to zoom image. Click to view preceding requests."

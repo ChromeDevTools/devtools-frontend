@@ -4,9 +4,9 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as i18n from '../i18n/i18n.js';
-import * as SDK from '../sdk/sdk.js';
-import * as UI from '../ui/ui.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as SDK from '../../sdk/sdk.js';
+import * as UI from '../../ui/ui.js';
 
 const UIStrings = {
   /**
@@ -55,7 +55,7 @@ const UIStrings = {
   */
   removeBreakpoint: 'Remove breakpoint',
 };
-const str_ = i18n.i18n.registerUIStrings('browser_debugger/XHRBreakpointsSidebarPane.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/browser_debugger/XHRBreakpointsSidebarPane.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const containerToBreakpointEntry = new WeakMap<Element, HTMLElement>();
 
@@ -77,7 +77,7 @@ export class XHRBreakpointsSidebarPane extends UI.Widget.VBox implements UI.Cont
 
   private constructor() {
     super(true);
-    this.registerRequiredCSS('browser_debugger/xhrBreakpointsSidebarPane.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('panels/browser_debugger/xhrBreakpointsSidebarPane.css', {enableLegacyPatching: true});
 
     this._breakpoints = new UI.ListModel.ListModel();
     this._list = new UI.ListControl.ListControl(this._breakpoints, this, UI.ListControl.ListMode.NonViewport);

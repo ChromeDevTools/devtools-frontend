@@ -2,8 +2,8 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-import("../../scripts/build/ninja/devtools_entrypoint.gni")
-import("../../scripts/build/ninja/devtools_module.gni")
+import("../../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../../../scripts/build/ninja/devtools_module.gni")
 
 devtools_module("browser_debugger") {
   sources = [
@@ -17,12 +17,12 @@ devtools_module("browser_debugger") {
   ]
 
   deps = [
-    "../common:bundle",
-    "../event_listeners:bundle",
-    "../i18n:bundle",
-    "../sdk:bundle",
-    "../sources:bundle",
-    "../ui:bundle",
+    "../../common:bundle",
+    "../../event_listeners:bundle",
+    "../../i18n:bundle",
+    "../../sdk:bundle",
+    "../../sources:bundle",
+    "../../ui:bundle",
   ]
 }
 
@@ -43,8 +43,8 @@ devtools_entrypoint("meta") {
 
   deps = [
     ":bundle",
-    "../platform:bundle",
-    "../root:bundle",
-    "../ui:bundle",
+    "../../platform:bundle",
+    "../../root:bundle",
+    "../../ui:bundle",
   ]
 }

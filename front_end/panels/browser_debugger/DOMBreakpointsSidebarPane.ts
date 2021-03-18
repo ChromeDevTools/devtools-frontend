@@ -30,11 +30,11 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../common/common.js';
-import * as i18n from '../i18n/i18n.js';
-import * as SDK from '../sdk/sdk.js';
-import * as Sources from '../sources/sources.js';
-import * as UI from '../ui/ui.js';
+import * as Common from '../../common/common.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as SDK from '../../sdk/sdk.js';
+import * as Sources from '../../sources/sources.js';
+import * as UI from '../../ui/ui.js';
 
 const UIStrings = {
   /**
@@ -101,7 +101,7 @@ const UIStrings = {
   */
   breakOn: 'Break on',
 };
-const str_ = i18n.i18n.registerUIStrings('browser_debugger/DOMBreakpointsSidebarPane.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/browser_debugger/DOMBreakpointsSidebarPane.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
@@ -117,7 +117,7 @@ export class DOMBreakpointsSidebarPane extends UI.Widget.VBox implements
 
   private constructor() {
     super(true);
-    this.registerRequiredCSS('browser_debugger/domBreakpointsSidebarPane.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('panels/browser_debugger/domBreakpointsSidebarPane.css', {enableLegacyPatching: false});
 
     this.elementToCheckboxes = new WeakMap();
 

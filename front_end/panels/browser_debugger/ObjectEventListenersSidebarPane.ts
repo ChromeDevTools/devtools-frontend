@@ -4,11 +4,11 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import type * as Common from '../common/common.js';
-import * as EventListeners from '../event_listeners/event_listeners.js';
-import * as i18n from '../i18n/i18n.js';
-import * as SDK from '../sdk/sdk.js';
-import * as UI from '../ui/ui.js';
+import type * as Common from '../../common/common.js';
+import * as EventListeners from '../../event_listeners/event_listeners.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as SDK from '../../sdk/sdk.js';
+import * as UI from '../../ui/ui.js';
 
 const UIStrings = {
   /**
@@ -16,7 +16,7 @@ const UIStrings = {
   */
   refreshGlobalListeners: 'Refresh global listeners',
 };
-const str_ = i18n.i18n.registerUIStrings('browser_debugger/ObjectEventListenersSidebarPane.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/browser_debugger/ObjectEventListenersSidebarPane.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let objectEventListenersSidebarPaneInstance: ObjectEventListenersSidebarPane;
 

@@ -115,7 +115,6 @@ group("legacy_css") {
 group("legacy_entrypoints") {
   public_deps = [
     "bindings:legacy",
-    "browser_debugger:legacy",
     "changes:legacy",
     "color_picker:legacy",
     "common:legacy",
@@ -149,6 +148,7 @@ group("legacy_entrypoints") {
     "object_ui:legacy",
     "panels/accessibility:legacy",
     "panels/animation:legacy",
+    "panels/browser_debugger:legacy",
     "perf_ui:legacy",
     "persistence:legacy",
     "profiler:legacy",
@@ -223,7 +223,6 @@ ts_library("devtools_app") {
 
   deps = [
     ":shell",
-    "browser_debugger:meta",
     "css_overview:meta",
     "developer_resources:meta",
     "elements:meta",
@@ -239,6 +238,7 @@ ts_library("devtools_app") {
     "network:meta",
     "panels/accessibility:meta",
     "panels/animation:meta",
+    "panels/browser_debugger:meta",
     "performance_monitor:meta",
     "resources:meta",
     "security:meta",
@@ -309,7 +309,6 @@ ts_library("worker_app") {
 
   deps = [
     ":shell",
-    "browser_debugger:meta",
     "developer_resources:meta",
     "elements:meta",
     "help:meta",
@@ -317,6 +316,7 @@ ts_library("worker_app") {
     "layer_viewer:meta",
     "mobile_throttling:meta",
     "network:meta",
+    "panels/browser_debugger:meta",
     "resources:meta",
     "startup:bundle",
     "timeline:meta",

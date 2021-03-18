@@ -7,7 +7,7 @@
     { "name": "panels/accessibility" },
     { "name": "panels/animation" },
     { "name": "lighthouse" },
-    { "name": "browser_debugger" },
+    { "name": "panels/browser_debugger" },
     { "name": "css_overview" },
     { "name": "cookie_table" },
     { "name": "elements" },

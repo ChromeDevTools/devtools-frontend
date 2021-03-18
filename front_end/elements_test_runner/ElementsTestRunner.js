@@ -1294,3 +1294,10 @@ ElementsTestRunner.dumpAnimationTimeline = function(timeline) {
     TestRunner.addResult(ui._svg.innerHTML);
   }
 };
+
+// Saves time by ignoring sidebar updates, use in tests that don't interact
+// with these sidebars.
+ElementsTestRunner.ignoreSidebarUpdates = function() {
+  Elements.StylesSidebarPane.prototype.update = function() {};
+  Elements.MetricsSidebarPane.prototype.update = function() {};
+};

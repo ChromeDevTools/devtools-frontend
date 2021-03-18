@@ -1,5 +1,8 @@
 {
   "modules": [],
+  "dependencies": [
+    "data_grid"
+  ],
   "resources": [
     "cssOverview.css",
     "cssOverviewStartView.css",

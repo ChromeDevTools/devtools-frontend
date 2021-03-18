@@ -1026,7 +1026,7 @@ export class ElementDetailsView extends UI.Widget.Widget {
         item.node = frontendNode;
       }
 
-      const node = new ElementNode(this._elementGrid, item, this._linkifier, this._cssModel);
+      const node = new ElementNode(item, this._linkifier, this._cssModel);
       node.selectable = false;
       this._elementGrid.insertChild(node);
     }
@@ -1042,14 +1042,13 @@ export class ElementNode extends DataGrid.SortableDataGrid.SortableDataGridNode<
   _cssModel: SDK.CSSModel.CSSModel;
 
   constructor(
-      dataGrid: DataGrid.SortableDataGrid.SortableDataGrid<ElementNode>, data: {
+      data: {
         hasChildren: boolean,
         [x: string]: unknown,
       },
       linkifier: Components.Linkifier.Linkifier, cssModel: SDK.CSSModel.CSSModel) {
-    super(dataGrid, data.hasChildren);
+    super(data, data.hasChildren);
 
-    this.data = data;
     this._linkifier = linkifier;
     this._cssModel = cssModel;
   }

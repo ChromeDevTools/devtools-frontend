@@ -358,7 +358,7 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
     const listItemClasses = LitHtml.Directives.classMap({
       expanded: isExpandableNode(node) && nodeIsExpanded,
       parent: isExpandableNode(node),
-      'has-border-if-attribute-set': depth === 0,
+      'is-top-level': depth === 0,
     });
     const ariaExpandedAttribute =
         LitHtml.Directives.ifDefined(isExpandableNode(node) ? String(nodeIsExpanded) : undefined);
@@ -470,12 +470,31 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
           -webkit-mask-position: -16px 0;
         }
 
-        li.has-border-if-attribute-set {
+        li.is-top-level {
           border-top: var(--override-top-node-border);
         }
 
-        li.has-border-if-attribute-set:last-child {
+        li.is-top-level:last-child {
           border-bottom: var(--override-top-node-border);
+        }
+
+        :host([animated]) li:not(.is-top-level) {
+          animation-name: slideIn;
+          animation-duration: 150ms;
+          animation-timing-function: cubic-bezier(0, 0, 0.3, 1);
+          animation-fill-mode: forwards;
+        }
+
+        @keyframes slideIn {
+          from {
+            transform: translateY(-5px);
+            opacity: 0%;
+          }
+
+          to {
+            transform: none;
+            opacity: 100%;
+          }
         }
 
         .arrow-and-key-wrapper {

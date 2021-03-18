@@ -16,6 +16,7 @@ component.data = {
   defaultRenderer: Components.TreeOutline.defaultRenderer,
   tree: officesAndProductsData,
 };
+component.setAttribute('animated', 'animated');
 
 component.addEventListener('treenodemouseover', (event: Event) => {
   const evt = event as Components.TreeOutline.ItemMouseOverEvent<string>;

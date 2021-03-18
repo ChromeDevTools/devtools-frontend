@@ -578,6 +578,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
       case 'proxy':
       case 'set':
       case 'typedarray':
+      case 'wasmvalue':
       case 'weakmap':
       case 'weakset':
       case 'webassemblymemory':

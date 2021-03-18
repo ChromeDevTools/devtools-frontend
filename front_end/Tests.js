@@ -1177,7 +1177,7 @@
     }
 
     self.SDK.consoleModel.addEventListener(SDK.ConsoleModel.Events.MessageAdded, onConsoleMessage, this);
-    this.takeControl();
+    this.takeControl({slownessFactor: 10});
   };
 
   TestSuite.prototype.waitForTestResultsAsMessage = function() {

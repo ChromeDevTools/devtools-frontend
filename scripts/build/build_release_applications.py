@@ -136,7 +136,7 @@ class ReleaseBuilder(object):
                     # contains check and will load that instead.
                     module_files_to_load = []
                     declared_module_files = module.get('modules', [])
-                    legacyFileName = name + '-legacy.js'
+                    legacyFileName = path.basename(name) + '-legacy.js'
                     if legacyFileName in declared_module_files:
                         module_files_to_load += [legacyFileName]
                     # Non-autostart modules are vulcanized.

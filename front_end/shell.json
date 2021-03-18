@@ -11,7 +11,7 @@
     { "name": "panels/changes" },
     { "name": "cm" },
     { "name": "color_picker" },
-    { "name": "console" },
+    { "name": "panels/console" },
     { "name": "coverage" },
     { "name": "data_grid" },
     { "name": "event_listeners" },

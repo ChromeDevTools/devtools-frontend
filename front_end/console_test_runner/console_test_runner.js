@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import '../test_runner/test_runner.js';
-import '../console/console-legacy.js';
+import '../panels/console/console-legacy.js';
 import '../object_ui/object_ui-legacy.js';
 import '../console_counters/console_counters-legacy.js';
 

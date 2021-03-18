@@ -33,17 +33,17 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Bindings from '../bindings/bindings.js';
-import * as BrowserSDK from '../browser_sdk/browser_sdk.js';
-import * as Common from '../common/common.js';
-import * as Components from '../components/components.js';
-import * as ConsoleCounters from '../console_counters/console_counters.js';
-import * as Host from '../host/host.js';
-import * as i18n from '../i18n/i18n.js';
-import * as Platform from '../platform/platform.js';
-import * as SDK from '../sdk/sdk.js';
-import * as TextUtils from '../text_utils/text_utils.js';
-import * as UI from '../ui/ui.js';
+import * as Bindings from '../../bindings/bindings.js';
+import * as BrowserSDK from '../../browser_sdk/browser_sdk.js';
+import * as Common from '../../common/common.js';
+import * as Components from '../../components/components.js';
+import * as ConsoleCounters from '../../console_counters/console_counters.js';
+import * as Host from '../../host/host.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as Platform from '../../platform/platform.js';
+import * as SDK from '../../sdk/sdk.js';
+import * as TextUtils from '../../text_utils/text_utils.js';
+import * as UI from '../../ui/ui.js';
 
 import {ConsoleContextSelector} from './ConsoleContextSelector.js';
 import {ConsoleFilter, FilterType, LevelsMask} from './ConsoleFilter.js';
@@ -219,7 +219,7 @@ const UIStrings = {
   */
   default: 'Default',
 };
-const str_ = i18n.i18n.registerUIStrings('console/ConsoleView.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/console/ConsoleView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let consoleViewInstance: ConsoleView;
 
@@ -280,7 +280,7 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
   constructor() {
     super();
     this.setMinimumSize(0, 35);
-    this.registerRequiredCSS('console/consoleView.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('panels/console/consoleView.css', {enableLegacyPatching: true});
     this.registerRequiredCSS('object_ui/objectValue.css', {enableLegacyPatching: true});
 
     this._searchableView = new UI.SearchableView.SearchableView(this, null);

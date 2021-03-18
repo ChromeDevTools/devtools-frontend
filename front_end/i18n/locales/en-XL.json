@@ -377,318 +377,6 @@
   "console_counters/WarningErrorCounter.ts | sWarnings": {
     "message": "{n, plural, =1 {# ŵár̂ńîńĝ} other {# ẃâŕn̂ín̂ǵŝ}}"
   },
-  "console/console-meta.ts | autocompleteFromHistory": {
-    "message": "Âút̂óĉóm̂ṕl̂ét̂é f̂ŕôḿ ĥíŝt́ôŕŷ"
-  },
-  "console/console-meta.ts | clearConsole": {
-    "message": "Ĉĺêár̂ ćôńŝól̂é"
-  },
-  "console/console-meta.ts | clearConsoleHistory": {
-    "message": "Ĉĺêár̂ ćôńŝól̂é ĥíŝt́ôŕŷ"
-  },
-  "console/console-meta.ts | console": {
-    "message": "Ĉón̂śôĺê"
-  },
-  "console/console-meta.ts | createLiveExpression": {
-    "message": "Ĉŕêát̂é l̂ív̂é êx́p̂ŕêśŝíôń"
-  },
-  "console/console-meta.ts | doNotAutocompleteFromHistory": {
-    "message": "D̂ó n̂ót̂ áût́ôćôḿp̂ĺêt́ê f́r̂óm̂ h́îśt̂ór̂ý"
-  },
-  "console/console-meta.ts | doNotEagerlyEvaluateConsole": {
-    "message": "D̂ó n̂ót̂ éâǵêŕl̂ý êv́âĺûát̂é ĉón̂śôĺê ṕr̂óm̂ṕt̂ t́êx́t̂"
-  },
-  "console/console-meta.ts | doNotGroupSimilarMessagesIn": {
-    "message": "D̂ó n̂ót̂ ǵr̂óûṕ ŝím̂íl̂ár̂ ḿêśŝáĝéŝ ín̂ ćôńŝól̂é"
-  },
-  "console/console-meta.ts | doNotTreatEvaluationAsUser": {
-    "message": "D̂ó n̂ót̂ t́r̂éât́ êv́âĺûát̂íôń âś ûśêŕ âćt̂ív̂át̂íôń"
-  },
-  "console/console-meta.ts | eagerEvaluation": {
-    "message": "Êáĝér̂ év̂ál̂úât́îón̂"
-  },
-  "console/console-meta.ts | eagerlyEvaluateConsolePromptText": {
-    "message": "Êáĝér̂ĺŷ év̂ál̂úât́ê ćôńŝól̂é p̂ŕôḿp̂t́ t̂éx̂t́"
-  },
-  "console/console-meta.ts | evaluateTriggersUserActivation": {
-    "message": "Êv́âĺûát̂é t̂ŕîǵĝér̂ś ûśêŕ âćt̂ív̂át̂íôń"
-  },
-  "console/console-meta.ts | groupSimilarMessagesInConsole": {
-    "message": "Ĝŕôúp̂ śîḿîĺâŕ m̂éŝśâǵêś îń ĉón̂śôĺê"
-  },
-  "console/console-meta.ts | hideNetworkMessages": {
-    "message": "Ĥíd̂é n̂ét̂ẃôŕk̂ ḿêśŝáĝéŝ"
-  },
-  "console/console-meta.ts | hideTimestamps": {
-    "message": "Ĥíd̂é t̂ím̂éŝt́âḿp̂ś"
-  },
-  "console/console-meta.ts | logXmlhttprequests": {
-    "message": "L̂óĝ X́M̂ĹĤt́t̂ṕR̂éq̂úêśt̂ś"
-  },
-  "console/console-meta.ts | onlyShowMessagesFromTheCurrent": {
-    "message": "Ôńl̂ý ŝh́ôẃ m̂éŝśâǵêś f̂ŕôḿ t̂h́ê ćûŕr̂én̂t́ ĉón̂t́êx́t̂ (top, iframe, worker, éx̂t́êńŝíôń)"
-  },
-  "console/console-meta.ts | selectedContextOnly": {
-    "message": "Ŝél̂éĉt́êd́ ĉón̂t́êx́t̂ ón̂ĺŷ"
-  },
-  "console/console-meta.ts | showConsole": {
-    "message": "Ŝh́ôẃ Ĉón̂śôĺê"
-  },
-  "console/console-meta.ts | showMessagesFromAllContexts": {
-    "message": "Ŝh́ôẃ m̂éŝśâǵêś f̂ŕôḿ âĺl̂ ćôńt̂éx̂t́ŝ"
-  },
-  "console/console-meta.ts | showNetworkMessages": {
-    "message": "Ŝh́ôẃ n̂ét̂ẃôŕk̂ ḿêśŝáĝéŝ"
-  },
-  "console/console-meta.ts | showTimestamps": {
-    "message": "Ŝh́ôẃ t̂ím̂éŝt́âḿp̂ś"
-  },
-  "console/console-meta.ts | treatEvaluationAsUserActivation": {
-    "message": "T̂ŕêát̂ év̂ál̂úât́îón̂ áŝ úŝér̂ áĉt́îv́ât́îón̂"
-  },
-  "console/ConsoleContextSelector.ts | extension": {
-    "message": "Êx́t̂én̂śîón̂"
-  },
-  "console/ConsoleContextSelector.ts | javascriptContextNotSelected": {
-    "message": "Ĵáv̂áŜćr̂íp̂t́ ĉón̂t́êx́t̂: Ńôt́ ŝél̂éĉt́êd́"
-  },
-  "console/ConsoleContextSelector.ts | javascriptContextS": {
-    "message": "Ĵáv̂áŜćr̂íp̂t́ ĉón̂t́êx́t̂: {PH1}"
-  },
-  "console/ConsolePinPane.ts | evaluateAllowingSideEffects": {
-    "message": "Êv́âĺûát̂é, âĺl̂óŵín̂ǵ ŝíd̂é êf́f̂éĉt́ŝ"
-  },
-  "console/ConsolePinPane.ts | expression": {
-    "message": "Êx́p̂ŕêśŝíôń"
-  },
-  "console/ConsolePinPane.ts | liveExpressionEditor": {
-    "message": "L̂ív̂é êx́p̂ŕêśŝíôń êd́ît́ôŕ"
-  },
-  "console/ConsolePinPane.ts | notAvailable": {
-    "message": "n̂ót̂ áv̂áîĺâb́l̂é"
-  },
-  "console/ConsolePinPane.ts | removeAllExpressions": {
-    "message": "R̂ém̂óv̂é âĺl̂ éx̂ṕr̂éŝśîón̂ś"
-  },
-  "console/ConsolePinPane.ts | removeBlankExpression": {
-    "message": "R̂ém̂óv̂é b̂ĺâńk̂ éx̂ṕr̂éŝśîón̂"
-  },
-  "console/ConsolePinPane.ts | removeExpression": {
-    "message": "R̂ém̂óv̂é êx́p̂ŕêśŝíôń"
-  },
-  "console/ConsolePinPane.ts | removeExpressionS": {
-    "message": "R̂ém̂óv̂é êx́p̂ŕêśŝíôń: {PH1}"
-  },
-  "console/ConsolePrompt.ts | consolePrompt": {
-    "message": "Ĉón̂śôĺê ṕr̂óm̂ṕt̂"
-  },
-  "console/ConsoleSidebar.ts | dErrors": {
-    "message": "{n, plural, =0 {N̂ó êŕr̂ór̂ś} =1 {# êŕr̂ór̂} other {# ér̂ŕôŕŝ}}"
-  },
-  "console/ConsoleSidebar.ts | dInfo": {
-    "message": "{n, plural, =0 {N̂ó îńf̂ó} =1 {# îńf̂ó} other {# îńf̂ó}}"
-  },
-  "console/ConsoleSidebar.ts | dMessages": {
-    "message": "{n, plural, =0 {N̂ó m̂éŝśâǵêś} =1 {# m̂éŝśâǵê} other {# ḿêśŝáĝéŝ}}"
-  },
-  "console/ConsoleSidebar.ts | dUserMessages": {
-    "message": "{n, plural, =0 {N̂ó ûśêŕ m̂éŝśâǵêś} =1 {# ûśêŕ m̂éŝśâǵê} other {# úŝér̂ ḿêśŝáĝéŝ}}"
-  },
-  "console/ConsoleSidebar.ts | dVerbose": {
-    "message": "{n, plural, =0 {N̂ó v̂ér̂b́ôśê} =1 {# v́êŕb̂óŝé} other {# v̂ér̂b́ôśê}}"
-  },
-  "console/ConsoleSidebar.ts | dWarnings": {
-    "message": "{n, plural, =0 {N̂ó ŵár̂ńîńĝś} =1 {# ŵár̂ńîńĝ} other {# ẃâŕn̂ín̂ǵŝ}}"
-  },
-  "console/ConsoleSidebar.ts | other": {
-    "message": "<ôt́ĥér̂>"
-  },
-  "console/ConsoleView.ts | allLevels": {
-    "message": "Âĺl̂ ĺêv́êĺŝ"
-  },
-  "console/ConsoleView.ts | consoleCleared": {
-    "message": "Ĉón̂śôĺê ćl̂éâŕêd́"
-  },
-  "console/ConsoleView.ts | consoleSettings": {
-    "message": "Ĉón̂śôĺê śêt́t̂ín̂ǵŝ"
-  },
-  "console/ConsoleView.ts | copyVisibleStyledSelection": {
-    "message": "Ĉóp̂ý v̂íŝíb̂ĺê śt̂ýl̂éd̂ śêĺêćt̂íôń"
-  },
-  "console/ConsoleView.ts | customLevels": {
-    "message": "Ĉúŝt́ôḿ l̂év̂él̂ś"
-  },
-  "console/ConsoleView.ts | default": {
-    "message": "D̂éf̂áûĺt̂"
-  },
-  "console/ConsoleView.ts | defaultLevels": {
-    "message": "D̂éf̂áûĺt̂ ĺêv́êĺŝ"
-  },
-  "console/ConsoleView.ts | doNotClearLogOnPageReload": {
-    "message": "D̂ó n̂ót̂ ćl̂éâŕ l̂óĝ ón̂ ṕâǵê ŕêĺôád̂ / ńâv́îǵât́îón̂"
-  },
-  "console/ConsoleView.ts | eagerlyEvaluateTextInThePrompt": {
-    "message": "Êáĝér̂ĺŷ év̂ál̂úât́ê t́êx́t̂ ín̂ t́ĥé p̂ŕôḿp̂t́"
-  },
-  "console/ConsoleView.ts | egEventdCdnUrlacom": {
-    "message": "ê.ǵ. /eventd/ -cdn url:a.com"
-  },
-  "console/ConsoleView.ts | errors": {
-    "message": "Êŕr̂ór̂ś"
-  },
-  "console/ConsoleView.ts | filter": {
-    "message": "F̂íl̂t́êŕ"
-  },
-  "console/ConsoleView.ts | findStringInLogs": {
-    "message": "F̂ín̂d́ ŝt́r̂ín̂ǵ îń l̂óĝś"
-  },
-  "console/ConsoleView.ts | groupSimilarMessagesInConsole": {
-    "message": "Ĝŕôúp̂ śîḿîĺâŕ m̂éŝśâǵêś îń ĉón̂śôĺê"
-  },
-  "console/ConsoleView.ts | hideAll": {
-    "message": "Ĥíd̂é âĺl̂"
-  },
-  "console/ConsoleView.ts | hideConsoleSidebar": {
-    "message": "Ĥíd̂é ĉón̂śôĺê śîd́êb́âŕ"
-  },
-  "console/ConsoleView.ts | hideMessagesFromS": {
-    "message": "Ĥíd̂é m̂éŝśâǵêś f̂ŕôḿ {PH1}"
-  },
-  "console/ConsoleView.ts | hideNetwork": {
-    "message": "Ĥíd̂é n̂ét̂ẃôŕk̂"
-  },
-  "console/ConsoleView.ts | info": {
-    "message": "Îńf̂ó"
-  },
-  "console/ConsoleView.ts | issuesWithColon": {
-    "message": "{n, plural, =0 {N̂ó Îśŝúêś} =1 {# Îśŝúê:} other {# Íŝśûéŝ:}}"
-  },
-  "console/ConsoleView.ts | issueToolbarClickToGoToTheIssuesTab": {
-    "message": "Ĉĺîćk̂ t́ô ǵô t́ô t́ĥé îśŝúêś t̂áb̂"
-  },
-  "console/ConsoleView.ts | issueToolbarClickToView": {
-    "message": "Ĉĺîćk̂ t́ô v́îéŵ {issueEnumeration}"
-  },
-  "console/ConsoleView.ts | issueToolbarTooltipGeneral": {
-    "message": "Ŝóm̂é p̂ŕôb́l̂ém̂ś n̂ó l̂ón̂ǵêŕ ĝén̂ér̂át̂é ĉón̂śôĺê ḿêśŝáĝéŝ, b́ût́ âŕê śûŕf̂áĉéd̂ ín̂ t́ĥé îśŝúêś t̂áb̂."
-  },
-  "console/ConsoleView.ts | logLevels": {
-    "message": "L̂óĝ ĺêv́êĺŝ"
-  },
-  "console/ConsoleView.ts | logLevelS": {
-    "message": "L̂óĝ ĺêv́êĺ: {PH1}"
-  },
-  "console/ConsoleView.ts | onlyShowMessagesFromTheCurrentContext": {
-    "message": "Ôńl̂ý ŝh́ôẃ m̂éŝśâǵêś f̂ŕôḿ t̂h́ê ćûŕr̂én̂t́ ĉón̂t́êx́t̂ (top, iframe, worker, éx̂t́êńŝíôń)"
-  },
-  "console/ConsoleView.ts | overriddenByFilterSidebar": {
-    "message": "Ôv́êŕr̂íd̂d́êń b̂ý f̂íl̂t́êŕ ŝíd̂éb̂ár̂"
-  },
-  "console/ConsoleView.ts | preserveLog": {
-    "message": "P̂ŕêśêŕv̂é l̂óĝ"
-  },
-  "console/ConsoleView.ts | replayXhr": {
-    "message": "R̂ép̂ĺâý X̂H́R̂"
-  },
-  "console/ConsoleView.ts | saveAs": {
-    "message": "Ŝáv̂é âś..."
-  },
-  "console/ConsoleView.ts | searching": {
-    "message": "Ŝéâŕĉh́îńĝ…"
-  },
-  "console/ConsoleView.ts | selectedContextOnly": {
-    "message": "Ŝél̂éĉt́êd́ ĉón̂t́êx́t̂ ón̂ĺŷ"
-  },
-  "console/ConsoleView.ts | sHidden": {
-    "message": "{n, plural, =1 {# ĥíd̂d́êń} other {# ĥíd̂d́êń}}"
-  },
-  "console/ConsoleView.ts | showConsoleSidebar": {
-    "message": "Ŝh́ôẃ ĉón̂śôĺê śîd́êb́âŕ"
-  },
-  "console/ConsoleView.ts | sOnly": {
-    "message": "{PH1} ôńl̂ý"
-  },
-  "console/ConsoleView.ts | verbose": {
-    "message": "V̂ér̂b́ôśê"
-  },
-  "console/ConsoleView.ts | warnings": {
-    "message": "Ŵár̂ńîńĝś"
-  },
-  "console/ConsoleView.ts | writingFile": {
-    "message": "Ŵŕît́îńĝ f́îĺê…"
-  },
-  "console/ConsoleViewMessage.ts | assertionFailed": {
-    "message": "Âśŝér̂t́îón̂ f́âíl̂éd̂: "
-  },
-  "console/ConsoleViewMessage.ts | attribute": {
-    "message": "<ât́t̂ŕîb́ût́ê>"
-  },
-  "console/ConsoleViewMessage.ts | clearAllMessagesWithS": {
-    "message": "Ĉĺêár̂ ál̂ĺ m̂éŝśâǵêś ŵít̂h́ {PH1}"
-  },
-  "console/ConsoleViewMessage.ts | console": {
-    "message": "Ĉón̂śôĺê"
-  },
-  "console/ConsoleViewMessage.ts | consoleclearWasPreventedDueTo": {
-    "message": "console.clear() ŵáŝ ṕr̂év̂én̂t́êd́ d̂úê t́ô 'Ṕr̂éŝér̂v́ê ĺôǵ'"
-  },
-  "console/ConsoleViewMessage.ts | consoleWasCleared": {
-    "message": "Ĉón̂śôĺê ẃâś ĉĺêár̂éd̂"
-  },
-  "console/ConsoleViewMessage.ts | deprecationS": {
-    "message": "[Deprecation] {PH1}"
-  },
-  "console/ConsoleViewMessage.ts | error": {
-    "message": "Êŕr̂ór̂"
-  },
-  "console/ConsoleViewMessage.ts | errorS": {
-    "message": "{n, plural, =1 {Êŕr̂ór̂, Ŕêṕêát̂éd̂ # t́îḿê} other {Ér̂ŕôŕ, R̂ép̂éât́êd́ # t̂ím̂éŝ}}"
-  },
-  "console/ConsoleViewMessage.ts | exception": {
-    "message": "<êx́ĉép̂t́îón̂>"
-  },
-  "console/ConsoleViewMessage.ts | functionWasResolvedFromBound": {
-    "message": "F̂ún̂ćt̂íôń ŵáŝ ŕêśôĺv̂éd̂ f́r̂óm̂ b́ôún̂d́ f̂ún̂ćt̂íôń."
-  },
-  "console/ConsoleViewMessage.ts | index": {
-    "message": "(îńd̂éx̂)"
-  },
-  "console/ConsoleViewMessage.ts | interventionS": {
-    "message": "[Intervention] {PH1}"
-  },
-  "console/ConsoleViewMessage.ts | Mxx": {
-    "message": " M̂<X́X̂>"
-  },
-  "console/ConsoleViewMessage.ts | repeatS": {
-    "message": "{n, plural, =1 {R̂ép̂éât́êd́ # t̂ím̂é} other {R̂ép̂éât́êd́ # t̂ím̂éŝ}}"
-  },
-  "console/ConsoleViewMessage.ts | someEvent": {
-    "message": "<ŝóm̂é> êv́êńt̂"
-  },
-  "console/ConsoleViewMessage.ts | thisValueWasEvaluatedUponFirst": {
-    "message": "T̂h́îś v̂ál̂úê ẃâś êv́âĺûát̂éd̂ úp̂ón̂ f́îŕŝt́ êx́p̂án̂d́îńĝ. Ít̂ ḿâý ĥáv̂é ĉh́âńĝéd̂ śîńĉé t̂h́êń."
-  },
-  "console/ConsoleViewMessage.ts | thisValueWillNotBeCollectedUntil": {
-    "message": "T̂h́îś v̂ál̂úê ẃîĺl̂ ńôt́ b̂é ĉól̂ĺêćt̂éd̂ ún̂t́îĺ ĉón̂śôĺê íŝ ćl̂éâŕêd́."
-  },
-  "console/ConsoleViewMessage.ts | tookNms": {
-    "message": "t̂óôḱ <N̂>ḿŝ"
-  },
-  "console/ConsoleViewMessage.ts | url": {
-    "message": "<ÛŔL̂>"
-  },
-  "console/ConsoleViewMessage.ts | value": {
-    "message": "V̂ál̂úê"
-  },
-  "console/ConsoleViewMessage.ts | violationS": {
-    "message": "[Violation] {PH1}"
-  },
-  "console/ConsoleViewMessage.ts | warning": {
-    "message": "Ŵár̂ńîńĝ"
-  },
-  "console/ConsoleViewMessage.ts | warningS": {
-    "message": "{n, plural, =1 {Ŵár̂ńîńĝ, Ŕêṕêát̂éd̂ # t́îḿê} other {Ẃâŕn̂ín̂ǵ, R̂ép̂éât́êd́ # t̂ím̂éŝ}}"
-  },
   "cookie_table/CookiesTable.ts | cookies": {
     "message": "Ĉóôḱîéŝ"
   },
@@ -5578,6 +5266,318 @@
   },
   "panels/changes/ChangesView.ts | SkippingDMatchingLines": {
     "message": "( … Ŝḱîṕp̂ín̂ǵ {PH1} m̂át̂ćĥín̂ǵ l̂ín̂éŝ … )"
+  },
+  "panels/console/console-meta.ts | autocompleteFromHistory": {
+    "message": "Âút̂óĉóm̂ṕl̂ét̂é f̂ŕôḿ ĥíŝt́ôŕŷ"
+  },
+  "panels/console/console-meta.ts | clearConsole": {
+    "message": "Ĉĺêár̂ ćôńŝól̂é"
+  },
+  "panels/console/console-meta.ts | clearConsoleHistory": {
+    "message": "Ĉĺêár̂ ćôńŝól̂é ĥíŝt́ôŕŷ"
+  },
+  "panels/console/console-meta.ts | console": {
+    "message": "Ĉón̂śôĺê"
+  },
+  "panels/console/console-meta.ts | createLiveExpression": {
+    "message": "Ĉŕêát̂é l̂ív̂é êx́p̂ŕêśŝíôń"
+  },
+  "panels/console/console-meta.ts | doNotAutocompleteFromHistory": {
+    "message": "D̂ó n̂ót̂ áût́ôćôḿp̂ĺêt́ê f́r̂óm̂ h́îśt̂ór̂ý"
+  },
+  "panels/console/console-meta.ts | doNotEagerlyEvaluateConsole": {
+    "message": "D̂ó n̂ót̂ éâǵêŕl̂ý êv́âĺûát̂é ĉón̂śôĺê ṕr̂óm̂ṕt̂ t́êx́t̂"
+  },
+  "panels/console/console-meta.ts | doNotGroupSimilarMessagesIn": {
+    "message": "D̂ó n̂ót̂ ǵr̂óûṕ ŝím̂íl̂ár̂ ḿêśŝáĝéŝ ín̂ ćôńŝól̂é"
+  },
+  "panels/console/console-meta.ts | doNotTreatEvaluationAsUser": {
+    "message": "D̂ó n̂ót̂ t́r̂éât́ êv́âĺûát̂íôń âś ûśêŕ âćt̂ív̂át̂íôń"
+  },
+  "panels/console/console-meta.ts | eagerEvaluation": {
+    "message": "Êáĝér̂ év̂ál̂úât́îón̂"
+  },
+  "panels/console/console-meta.ts | eagerlyEvaluateConsolePromptText": {
+    "message": "Êáĝér̂ĺŷ év̂ál̂úât́ê ćôńŝól̂é p̂ŕôḿp̂t́ t̂éx̂t́"
+  },
+  "panels/console/console-meta.ts | evaluateTriggersUserActivation": {
+    "message": "Êv́âĺûát̂é t̂ŕîǵĝér̂ś ûśêŕ âćt̂ív̂át̂íôń"
+  },
+  "panels/console/console-meta.ts | groupSimilarMessagesInConsole": {
+    "message": "Ĝŕôúp̂ śîḿîĺâŕ m̂éŝśâǵêś îń ĉón̂śôĺê"
+  },
+  "panels/console/console-meta.ts | hideNetworkMessages": {
+    "message": "Ĥíd̂é n̂ét̂ẃôŕk̂ ḿêśŝáĝéŝ"
+  },
+  "panels/console/console-meta.ts | hideTimestamps": {
+    "message": "Ĥíd̂é t̂ím̂éŝt́âḿp̂ś"
+  },
+  "panels/console/console-meta.ts | logXmlhttprequests": {
+    "message": "L̂óĝ X́M̂ĹĤt́t̂ṕR̂éq̂úêśt̂ś"
+  },
+  "panels/console/console-meta.ts | onlyShowMessagesFromTheCurrent": {
+    "message": "Ôńl̂ý ŝh́ôẃ m̂éŝśâǵêś f̂ŕôḿ t̂h́ê ćûŕr̂én̂t́ ĉón̂t́êx́t̂ (top, iframe, worker, éx̂t́êńŝíôń)"
+  },
+  "panels/console/console-meta.ts | selectedContextOnly": {
+    "message": "Ŝél̂éĉt́êd́ ĉón̂t́êx́t̂ ón̂ĺŷ"
+  },
+  "panels/console/console-meta.ts | showConsole": {
+    "message": "Ŝh́ôẃ Ĉón̂śôĺê"
+  },
+  "panels/console/console-meta.ts | showMessagesFromAllContexts": {
+    "message": "Ŝh́ôẃ m̂éŝśâǵêś f̂ŕôḿ âĺl̂ ćôńt̂éx̂t́ŝ"
+  },
+  "panels/console/console-meta.ts | showNetworkMessages": {
+    "message": "Ŝh́ôẃ n̂ét̂ẃôŕk̂ ḿêśŝáĝéŝ"
+  },
+  "panels/console/console-meta.ts | showTimestamps": {
+    "message": "Ŝh́ôẃ t̂ím̂éŝt́âḿp̂ś"
+  },
+  "panels/console/console-meta.ts | treatEvaluationAsUserActivation": {
+    "message": "T̂ŕêát̂ év̂ál̂úât́îón̂ áŝ úŝér̂ áĉt́îv́ât́îón̂"
+  },
+  "panels/console/ConsoleContextSelector.ts | extension": {
+    "message": "Êx́t̂én̂śîón̂"
+  },
+  "panels/console/ConsoleContextSelector.ts | javascriptContextNotSelected": {
+    "message": "Ĵáv̂áŜćr̂íp̂t́ ĉón̂t́êx́t̂: Ńôt́ ŝél̂éĉt́êd́"
+  },
+  "panels/console/ConsoleContextSelector.ts | javascriptContextS": {
+    "message": "Ĵáv̂áŜćr̂íp̂t́ ĉón̂t́êx́t̂: {PH1}"
+  },
+  "panels/console/ConsolePinPane.ts | evaluateAllowingSideEffects": {
+    "message": "Êv́âĺûát̂é, âĺl̂óŵín̂ǵ ŝíd̂é êf́f̂éĉt́ŝ"
+  },
+  "panels/console/ConsolePinPane.ts | expression": {
+    "message": "Êx́p̂ŕêśŝíôń"
+  },
+  "panels/console/ConsolePinPane.ts | liveExpressionEditor": {
+    "message": "L̂ív̂é êx́p̂ŕêśŝíôń êd́ît́ôŕ"
+  },
+  "panels/console/ConsolePinPane.ts | notAvailable": {
+    "message": "n̂ót̂ áv̂áîĺâb́l̂é"
+  },
+  "panels/console/ConsolePinPane.ts | removeAllExpressions": {
+    "message": "R̂ém̂óv̂é âĺl̂ éx̂ṕr̂éŝśîón̂ś"
+  },
+  "panels/console/ConsolePinPane.ts | removeBlankExpression": {
+    "message": "R̂ém̂óv̂é b̂ĺâńk̂ éx̂ṕr̂éŝśîón̂"
+  },
+  "panels/console/ConsolePinPane.ts | removeExpression": {
+    "message": "R̂ém̂óv̂é êx́p̂ŕêśŝíôń"
+  },
+  "panels/console/ConsolePinPane.ts | removeExpressionS": {
+    "message": "R̂ém̂óv̂é êx́p̂ŕêśŝíôń: {PH1}"
+  },
+  "panels/console/ConsolePrompt.ts | consolePrompt": {
+    "message": "Ĉón̂śôĺê ṕr̂óm̂ṕt̂"
+  },
+  "panels/console/ConsoleSidebar.ts | dErrors": {
+    "message": "{n, plural, =0 {N̂ó êŕr̂ór̂ś} =1 {# êŕr̂ór̂} other {# ér̂ŕôŕŝ}}"
+  },
+  "panels/console/ConsoleSidebar.ts | dInfo": {
+    "message": "{n, plural, =0 {N̂ó îńf̂ó} =1 {# îńf̂ó} other {# îńf̂ó}}"
+  },
+  "panels/console/ConsoleSidebar.ts | dMessages": {
+    "message": "{n, plural, =0 {N̂ó m̂éŝśâǵêś} =1 {# m̂éŝśâǵê} other {# ḿêśŝáĝéŝ}}"
+  },
+  "panels/console/ConsoleSidebar.ts | dUserMessages": {
+    "message": "{n, plural, =0 {N̂ó ûśêŕ m̂éŝśâǵêś} =1 {# ûśêŕ m̂éŝśâǵê} other {# úŝér̂ ḿêśŝáĝéŝ}}"
+  },
+  "panels/console/ConsoleSidebar.ts | dVerbose": {
+    "message": "{n, plural, =0 {N̂ó v̂ér̂b́ôśê} =1 {# v́êŕb̂óŝé} other {# v̂ér̂b́ôśê}}"
+  },
+  "panels/console/ConsoleSidebar.ts | dWarnings": {
+    "message": "{n, plural, =0 {N̂ó ŵár̂ńîńĝś} =1 {# ŵár̂ńîńĝ} other {# ẃâŕn̂ín̂ǵŝ}}"
+  },
+  "panels/console/ConsoleSidebar.ts | other": {
+    "message": "<ôt́ĥér̂>"
+  },
+  "panels/console/ConsoleView.ts | allLevels": {
+    "message": "Âĺl̂ ĺêv́êĺŝ"
+  },
+  "panels/console/ConsoleView.ts | consoleCleared": {
+    "message": "Ĉón̂śôĺê ćl̂éâŕêd́"
+  },
+  "panels/console/ConsoleView.ts | consoleSettings": {
+    "message": "Ĉón̂śôĺê śêt́t̂ín̂ǵŝ"
+  },
+  "panels/console/ConsoleView.ts | copyVisibleStyledSelection": {
+    "message": "Ĉóp̂ý v̂íŝíb̂ĺê śt̂ýl̂éd̂ śêĺêćt̂íôń"
+  },
+  "panels/console/ConsoleView.ts | customLevels": {
+    "message": "Ĉúŝt́ôḿ l̂év̂él̂ś"
+  },
+  "panels/console/ConsoleView.ts | default": {
+    "message": "D̂éf̂áûĺt̂"
+  },
+  "panels/console/ConsoleView.ts | defaultLevels": {
+    "message": "D̂éf̂áûĺt̂ ĺêv́êĺŝ"
+  },
+  "panels/console/ConsoleView.ts | doNotClearLogOnPageReload": {
+    "message": "D̂ó n̂ót̂ ćl̂éâŕ l̂óĝ ón̂ ṕâǵê ŕêĺôád̂ / ńâv́îǵât́îón̂"
+  },
+  "panels/console/ConsoleView.ts | eagerlyEvaluateTextInThePrompt": {
+    "message": "Êáĝér̂ĺŷ év̂ál̂úât́ê t́êx́t̂ ín̂ t́ĥé p̂ŕôḿp̂t́"
+  },
+  "panels/console/ConsoleView.ts | egEventdCdnUrlacom": {
+    "message": "ê.ǵ. /eventd/ -cdn url:a.com"
+  },
+  "panels/console/ConsoleView.ts | errors": {
+    "message": "Êŕr̂ór̂ś"
+  },
+  "panels/console/ConsoleView.ts | filter": {
+    "message": "F̂íl̂t́êŕ"
+  },
+  "panels/console/ConsoleView.ts | findStringInLogs": {
+    "message": "F̂ín̂d́ ŝt́r̂ín̂ǵ îń l̂óĝś"
+  },
+  "panels/console/ConsoleView.ts | groupSimilarMessagesInConsole": {
+    "message": "Ĝŕôúp̂ śîḿîĺâŕ m̂éŝśâǵêś îń ĉón̂śôĺê"
+  },
+  "panels/console/ConsoleView.ts | hideAll": {
+    "message": "Ĥíd̂é âĺl̂"
+  },
+  "panels/console/ConsoleView.ts | hideConsoleSidebar": {
+    "message": "Ĥíd̂é ĉón̂śôĺê śîd́êb́âŕ"
+  },
+  "panels/console/ConsoleView.ts | hideMessagesFromS": {
+    "message": "Ĥíd̂é m̂éŝśâǵêś f̂ŕôḿ {PH1}"
+  },
+  "panels/console/ConsoleView.ts | hideNetwork": {
+    "message": "Ĥíd̂é n̂ét̂ẃôŕk̂"
+  },
+  "panels/console/ConsoleView.ts | info": {
+    "message": "Îńf̂ó"
+  },
+  "panels/console/ConsoleView.ts | issuesWithColon": {
+    "message": "{n, plural, =0 {N̂ó Îśŝúêś} =1 {# Îśŝúê:} other {# Íŝśûéŝ:}}"
+  },
+  "panels/console/ConsoleView.ts | issueToolbarClickToGoToTheIssuesTab": {
+    "message": "Ĉĺîćk̂ t́ô ǵô t́ô t́ĥé îśŝúêś t̂áb̂"
+  },
+  "panels/console/ConsoleView.ts | issueToolbarClickToView": {
+    "message": "Ĉĺîćk̂ t́ô v́îéŵ {issueEnumeration}"
+  },
+  "panels/console/ConsoleView.ts | issueToolbarTooltipGeneral": {
+    "message": "Ŝóm̂é p̂ŕôb́l̂ém̂ś n̂ó l̂ón̂ǵêŕ ĝén̂ér̂át̂é ĉón̂śôĺê ḿêśŝáĝéŝ, b́ût́ âŕê śûŕf̂áĉéd̂ ín̂ t́ĥé îśŝúêś t̂áb̂."
+  },
+  "panels/console/ConsoleView.ts | logLevels": {
+    "message": "L̂óĝ ĺêv́êĺŝ"
+  },
+  "panels/console/ConsoleView.ts | logLevelS": {
+    "message": "L̂óĝ ĺêv́êĺ: {PH1}"
+  },
+  "panels/console/ConsoleView.ts | onlyShowMessagesFromTheCurrentContext": {
+    "message": "Ôńl̂ý ŝh́ôẃ m̂éŝśâǵêś f̂ŕôḿ t̂h́ê ćûŕr̂én̂t́ ĉón̂t́êx́t̂ (top, iframe, worker, éx̂t́êńŝíôń)"
+  },
+  "panels/console/ConsoleView.ts | overriddenByFilterSidebar": {
+    "message": "Ôv́êŕr̂íd̂d́êń b̂ý f̂íl̂t́êŕ ŝíd̂éb̂ár̂"
+  },
+  "panels/console/ConsoleView.ts | preserveLog": {
+    "message": "P̂ŕêśêŕv̂é l̂óĝ"
+  },
+  "panels/console/ConsoleView.ts | replayXhr": {
+    "message": "R̂ép̂ĺâý X̂H́R̂"
+  },
+  "panels/console/ConsoleView.ts | saveAs": {
+    "message": "Ŝáv̂é âś..."
+  },
+  "panels/console/ConsoleView.ts | searching": {
+    "message": "Ŝéâŕĉh́îńĝ…"
+  },
+  "panels/console/ConsoleView.ts | selectedContextOnly": {
+    "message": "Ŝél̂éĉt́êd́ ĉón̂t́êx́t̂ ón̂ĺŷ"
+  },
+  "panels/console/ConsoleView.ts | sHidden": {
+    "message": "{n, plural, =1 {# ĥíd̂d́êń} other {# ĥíd̂d́êń}}"
+  },
+  "panels/console/ConsoleView.ts | showConsoleSidebar": {
+    "message": "Ŝh́ôẃ ĉón̂śôĺê śîd́êb́âŕ"
+  },
+  "panels/console/ConsoleView.ts | sOnly": {
+    "message": "{PH1} ôńl̂ý"
+  },
+  "panels/console/ConsoleView.ts | verbose": {
+    "message": "V̂ér̂b́ôśê"
+  },
+  "panels/console/ConsoleView.ts | warnings": {
+    "message": "Ŵár̂ńîńĝś"
+  },
+  "panels/console/ConsoleView.ts | writingFile": {
+    "message": "Ŵŕît́îńĝ f́îĺê…"
+  },
+  "panels/console/ConsoleViewMessage.ts | assertionFailed": {
+    "message": "Âśŝér̂t́îón̂ f́âíl̂éd̂: "
+  },
+  "panels/console/ConsoleViewMessage.ts | attribute": {
+    "message": "<ât́t̂ŕîb́ût́ê>"
+  },
+  "panels/console/ConsoleViewMessage.ts | clearAllMessagesWithS": {
+    "message": "Ĉĺêár̂ ál̂ĺ m̂éŝśâǵêś ŵít̂h́ {PH1}"
+  },
+  "panels/console/ConsoleViewMessage.ts | console": {
+    "message": "Ĉón̂śôĺê"
+  },
+  "panels/console/ConsoleViewMessage.ts | consoleclearWasPreventedDueTo": {
+    "message": "console.clear() ŵáŝ ṕr̂év̂én̂t́êd́ d̂úê t́ô 'Ṕr̂éŝér̂v́ê ĺôǵ'"
+  },
+  "panels/console/ConsoleViewMessage.ts | consoleWasCleared": {
+    "message": "Ĉón̂śôĺê ẃâś ĉĺêár̂éd̂"
+  },
+  "panels/console/ConsoleViewMessage.ts | deprecationS": {
+    "message": "[Deprecation] {PH1}"
+  },
+  "panels/console/ConsoleViewMessage.ts | error": {
+    "message": "Êŕr̂ór̂"
+  },
+  "panels/console/ConsoleViewMessage.ts | errorS": {
+    "message": "{n, plural, =1 {Êŕr̂ór̂, Ŕêṕêát̂éd̂ # t́îḿê} other {Ér̂ŕôŕ, R̂ép̂éât́êd́ # t̂ím̂éŝ}}"
+  },
+  "panels/console/ConsoleViewMessage.ts | exception": {
+    "message": "<êx́ĉép̂t́îón̂>"
+  },
+  "panels/console/ConsoleViewMessage.ts | functionWasResolvedFromBound": {
+    "message": "F̂ún̂ćt̂íôń ŵáŝ ŕêśôĺv̂éd̂ f́r̂óm̂ b́ôún̂d́ f̂ún̂ćt̂íôń."
+  },
+  "panels/console/ConsoleViewMessage.ts | index": {
+    "message": "(îńd̂éx̂)"
+  },
+  "panels/console/ConsoleViewMessage.ts | interventionS": {
+    "message": "[Intervention] {PH1}"
+  },
+  "panels/console/ConsoleViewMessage.ts | Mxx": {
+    "message": " M̂<X́X̂>"
+  },
+  "panels/console/ConsoleViewMessage.ts | repeatS": {
+    "message": "{n, plural, =1 {R̂ép̂éât́êd́ # t̂ím̂é} other {R̂ép̂éât́êd́ # t̂ím̂éŝ}}"
+  },
+  "panels/console/ConsoleViewMessage.ts | someEvent": {
+    "message": "<ŝóm̂é> êv́êńt̂"
+  },
+  "panels/console/ConsoleViewMessage.ts | thisValueWasEvaluatedUponFirst": {
+    "message": "T̂h́îś v̂ál̂úê ẃâś êv́âĺûát̂éd̂ úp̂ón̂ f́îŕŝt́ êx́p̂án̂d́îńĝ. Ít̂ ḿâý ĥáv̂é ĉh́âńĝéd̂ śîńĉé t̂h́êń."
+  },
+  "panels/console/ConsoleViewMessage.ts | thisValueWillNotBeCollectedUntil": {
+    "message": "T̂h́îś v̂ál̂úê ẃîĺl̂ ńôt́ b̂é ĉól̂ĺêćt̂éd̂ ún̂t́îĺ ĉón̂śôĺê íŝ ćl̂éâŕêd́."
+  },
+  "panels/console/ConsoleViewMessage.ts | tookNms": {
+    "message": "t̂óôḱ <N̂>ḿŝ"
+  },
+  "panels/console/ConsoleViewMessage.ts | url": {
+    "message": "<ÛŔL̂>"
+  },
+  "panels/console/ConsoleViewMessage.ts | value": {
+    "message": "V̂ál̂úê"
+  },
+  "panels/console/ConsoleViewMessage.ts | violationS": {
+    "message": "[Violation] {PH1}"
+  },
+  "panels/console/ConsoleViewMessage.ts | warning": {
+    "message": "Ŵár̂ńîńĝ"
+  },
+  "panels/console/ConsoleViewMessage.ts | warningS": {
+    "message": "{n, plural, =1 {Ŵár̂ńîńĝ, Ŕêṕêát̂éd̂ # t́îḿê} other {Ẃâŕn̂ín̂ǵ, R̂ép̂éât́êd́ # t̂ím̂éŝ}}"
   },
   "perf_ui/FilmStripView.ts | doubleclickToZoomImageClickTo": {
     "message": "D̂óûb́l̂éĉĺîćk̂ t́ô źôóm̂ ím̂áĝé. Ĉĺîćk̂ t́ô v́îéŵ ṕr̂éĉéd̂ín̂ǵ r̂éq̂úêśt̂ś."

@@ -18,7 +18,7 @@ import './extensions/extensions-legacy.js';
 import './console_counters/console_counters-legacy.js';
 import './sources/sources-meta.js';
 import './profiler/profiler-meta.js';
-import './console/console-meta.js';
+import './panels/console/console-meta.js';
 import './coverage/coverage-meta.js';
 import './panels/changes/changes-meta.js';
 import './input/input-meta.js';

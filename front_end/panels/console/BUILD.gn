@@ -2,8 +2,8 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-import("../../scripts/build/ninja/devtools_entrypoint.gni")
-import("../../scripts/build/ninja/devtools_module.gni")
+import("../../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../../../scripts/build/ninja/devtools_module.gni")
 
 devtools_module("console") {
   sources = [
@@ -19,22 +19,22 @@ devtools_module("console") {
   ]
 
   deps = [
-    "../bindings:bundle",
-    "../browser_sdk:bundle",
-    "../common:bundle",
-    "../components:bundle",
-    "../console_counters:bundle",
-    "../data_grid:bundle",
-    "../host:bundle",
-    "../i18n:bundle",
-    "../object_ui:bundle",
-    "../platform:bundle",
-    "../sdk:bundle",
-    "../text_editor:bundle",
-    "../text_utils:bundle",
-    "../theme_support:bundle",
-    "../ui:bundle",
-    "../ui/components:bundle",
+    "../../bindings:bundle",
+    "../../browser_sdk:bundle",
+    "../../common:bundle",
+    "../../components:bundle",
+    "../../console_counters:bundle",
+    "../../data_grid:bundle",
+    "../../host:bundle",
+    "../../i18n:bundle",
+    "../../object_ui:bundle",
+    "../../platform:bundle",
+    "../../sdk:bundle",
+    "../../text_editor:bundle",
+    "../../text_utils:bundle",
+    "../../theme_support:bundle",
+    "../../ui:bundle",
+    "../../ui/components:bundle",
   ]
 }
 

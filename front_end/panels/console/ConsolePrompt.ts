@@ -4,14 +4,14 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../common/common.js';
-import * as Host from '../host/host.js';
-import * as i18n from '../i18n/i18n.js';
-import * as ObjectUI from '../object_ui/object_ui.js';
-import * as SDK from '../sdk/sdk.js';
-import * as TextEditor from '../text_editor/text_editor.js';  // eslint-disable-line no-unused-vars
-import * as TextUtils from '../text_utils/text_utils.js';
-import * as UI from '../ui/ui.js';
+import * as Common from '../../common/common.js';
+import * as Host from '../../host/host.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as ObjectUI from '../../object_ui/object_ui.js';
+import * as SDK from '../../sdk/sdk.js';
+import * as TextEditor from '../../text_editor/text_editor.js';  // eslint-disable-line no-unused-vars
+import * as TextUtils from '../../text_utils/text_utils.js';
+import * as UI from '../../ui/ui.js';
 
 import {ConsolePanel} from './ConsolePanel.js';
 
@@ -21,7 +21,7 @@ const UIStrings = {
   */
   consolePrompt: 'Console prompt',
 };
-const str_ = i18n.i18n.registerUIStrings('console/ConsolePrompt.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/console/ConsolePrompt.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class ConsolePrompt extends UI.Widget.Widget {
   _addCompletionsFromHistory: boolean;
@@ -42,7 +42,7 @@ export class ConsolePrompt extends UI.Widget.Widget {
 
   constructor() {
     super();
-    this.registerRequiredCSS('console/consolePrompt.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('panels/console/consolePrompt.css', {enableLegacyPatching: false});
     this._addCompletionsFromHistory = true;
     this._history = new ConsoleHistoryManager();
 
@@ -102,13 +102,13 @@ export class ConsolePrompt extends UI.Widget.Widget {
     if (this.hasFocus()) {
       this.focus();
     }
-      this.element.removeAttribute('tabindex');
-      this._editor.widget().element.tabIndex = -1;
+    this.element.removeAttribute('tabindex');
+    this._editor.widget().element.tabIndex = -1;
 
-      this._editorSetForTest();
+    this._editorSetForTest();
 
-      // Record the console tool load time after the console prompt constructor is complete.
-      Host.userMetrics.panelLoaded('console', 'DevTools.Launch.Console');
+    // Record the console tool load time after the console prompt constructor is complete.
+    Host.userMetrics.panelLoaded('console', 'DevTools.Launch.Console');
   }
 
   _eagerSettingChanged(): void {

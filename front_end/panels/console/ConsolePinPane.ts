@@ -4,13 +4,13 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../common/common.js';
-import * as i18n from '../i18n/i18n.js';
-import * as ObjectUI from '../object_ui/object_ui.js';
-import * as SDK from '../sdk/sdk.js';
-import * as TextEditor from '../text_editor/text_editor.js';  // eslint-disable-line no-unused-vars
-import * as TextUtils from '../text_utils/text_utils.js';
-import * as UI from '../ui/ui.js';
+import * as Common from '../../common/common.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as ObjectUI from '../../object_ui/object_ui.js';
+import * as SDK from '../../sdk/sdk.js';
+import * as TextEditor from '../../text_editor/text_editor.js';  // eslint-disable-line no-unused-vars
+import * as TextUtils from '../../text_utils/text_utils.js';
+import * as UI from '../../ui/ui.js';
 
 const UIStrings = {
   /**
@@ -47,7 +47,7 @@ const UIStrings = {
   */
   notAvailable: 'not available',
 };
-const str_ = i18n.i18n.registerUIStrings('console/ConsolePinPane.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/console/ConsolePinPane.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 const elementToConsolePin = new WeakMap<Element, ConsolePin>();
@@ -59,7 +59,7 @@ export class ConsolePinPane extends UI.ThrottledWidget.ThrottledWidget {
   constructor(liveExpressionButton: UI.Toolbar.ToolbarButton) {
     super(true, 250);
     this._liveExpressionButton = liveExpressionButton;
-    this.registerRequiredCSS('console/consolePinPane.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('panels/console/consolePinPane.css', {enableLegacyPatching: true});
     this.registerRequiredCSS('object_ui/objectValue.css', {enableLegacyPatching: true});
     this.contentElement.classList.add('console-pins', 'monospace');
     this.contentElement.addEventListener('contextmenu', this._contextMenuEventFired.bind(this), false);

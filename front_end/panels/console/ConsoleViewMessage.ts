@@ -34,17 +34,17 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../common/common.js';
-import * as Components from '../components/components.js';
-import * as DataGrid from '../data_grid/data_grid.js';
-import * as i18n from '../i18n/i18n.js';
-import * as ObjectUI from '../object_ui/object_ui.js';
-import * as Platform from '../platform/platform.js';
-import * as SDK from '../sdk/sdk.js';
-import * as TextEditor from '../text_editor/text_editor.js';
-import * as TextUtils from '../text_utils/text_utils.js';
-import * as ThemeSupport from '../theme_support/theme_support.js';
-import * as UI from '../ui/ui.js';
+import * as Common from '../../common/common.js';
+import * as Components from '../../components/components.js';
+import * as DataGrid from '../../data_grid/data_grid.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as ObjectUI from '../../object_ui/object_ui.js';
+import * as Platform from '../../platform/platform.js';
+import * as SDK from '../../sdk/sdk.js';
+import * as TextEditor from '../../text_editor/text_editor.js';
+import * as TextUtils from '../../text_utils/text_utils.js';
+import * as ThemeSupport from '../../theme_support/theme_support.js';
+import * as UI from '../../ui/ui.js';
 
 import type {ConsoleViewportElement} from './ConsoleViewport.js';
 
@@ -157,7 +157,7 @@ const UIStrings = {
   */
   console: 'Console',
 };
-const str_ = i18n.i18n.registerUIStrings('console/ConsoleViewMessage.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/console/ConsoleViewMessage.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const elementToMessage = new WeakMap<Element, ConsoleViewMessage>();
 

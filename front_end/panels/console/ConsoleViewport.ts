@@ -30,9 +30,9 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Components from '../components/components.js';
-import * as Platform from '../platform/platform.js';
-import * as UI from '../ui/ui.js';
+import * as Components from '../../components/components.js';
+import * as Platform from '../../platform/platform.js';
+import * as UI from '../../ui/ui.js';
 
 import type {ConsoleViewMessage} from './ConsoleViewMessage.js';
 

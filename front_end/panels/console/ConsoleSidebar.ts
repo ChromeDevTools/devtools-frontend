@@ -4,11 +4,11 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../common/common.js';
-import * as i18n from '../i18n/i18n.js';
-import * as SDK from '../sdk/sdk.js';
-import type * as TextUtils from '../text_utils/text_utils.js';
-import * as UI from '../ui/ui.js';
+import * as Common from '../../common/common.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as SDK from '../../sdk/sdk.js';
+import type * as TextUtils from '../../text_utils/text_utils.js';
+import * as UI from '../../ui/ui.js';
 
 import {ConsoleFilter, FilterType, LevelsMask} from './ConsoleFilter.js';
 import type {ConsoleViewMessage} from './ConsoleViewMessage.js';
@@ -46,7 +46,7 @@ const UIStrings = {
   */
   dVerbose: '{n, plural, =0 {No verbose} =1 {# verbose} other {# verbose}}',
 };
-const str_ = i18n.i18n.registerUIStrings('console/ConsoleSidebar.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/console/ConsoleSidebar.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class ConsoleSidebar extends UI.Widget.VBox {
@@ -59,7 +59,7 @@ export class ConsoleSidebar extends UI.Widget.VBox {
     this.setMinimumSize(125, 0);
 
     this._tree = new UI.TreeOutline.TreeOutlineInShadow();
-    this._tree.registerRequiredCSS('console/consoleSidebar.css', {enableLegacyPatching: true});
+    this._tree.registerRequiredCSS('panels/console/consoleSidebar.css', {enableLegacyPatching: true});
     this._tree.addEventListener(UI.TreeOutline.Events.ElementSelected, this._selectionChanged.bind(this));
     this.contentElement.appendChild(this._tree.element);
     this._selectedTreeElement = null;

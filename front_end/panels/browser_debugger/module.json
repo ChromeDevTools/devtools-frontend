@@ -2,7 +2,7 @@
   "dependencies": [
     "elements",
     "sources",
-    "console"
+    "panels/console"
   ],
   "modules": [
     "browser_debugger-legacy.js"

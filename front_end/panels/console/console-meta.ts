@@ -2,14 +2,14 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../common/common.js';
-import * as Root from '../root/root.js';
-import * as UI from '../ui/ui.js';
+import * as Common from '../../common/common.js';
+import * as Root from '../../root/root.js';
+import * as UI from '../../ui/ui.js';
 
 // eslint-disable-next-line rulesdir/es_modules_import
 import type * as Console from './console.js';
 
-import * as i18n from '../i18n/i18n.js';
+import * as i18n from '../../i18n/i18n.js';
 const UIStrings = {
   /**
   *@description Title of the Console tool
@@ -104,14 +104,14 @@ const UIStrings = {
   */
   doNotTreatEvaluationAsUser: 'Do not treat evaluation as user activation',
 };
-const str_ = i18n.i18n.registerUIStrings('console/console-meta.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/console/console-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 let loadedConsoleModule: (typeof Console|undefined);
 
 async function loadConsoleModule(): Promise<typeof Console> {
   if (!loadedConsoleModule) {
     // Side-effect import resources in module.json
-    await Root.Runtime.Runtime.instance().loadModulePromise('console');
+    await Root.Runtime.Runtime.instance().loadModulePromise('panels/console');
     loadedConsoleModule = await import('./console.js');
   }
   return loadedConsoleModule;

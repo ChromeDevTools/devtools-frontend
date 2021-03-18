@@ -221,7 +221,7 @@ export class LinearMemoryViewer extends HTMLElement {
           width: 1px;
           height: inherit;
           background-color: var(--divider-color);
-          margin: 0 4px 0 4px;
+          margin: 0 4px;
         }
       </style>
       <div class="view" tabindex="0" @keydown=${this.onKeyDown}>

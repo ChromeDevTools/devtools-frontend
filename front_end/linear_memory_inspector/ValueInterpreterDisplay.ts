@@ -114,19 +114,23 @@ export class ValueInterpreterDisplay extends HTMLElement {
           grid-template-columns: auto auto 1fr;
           grid-column-gap: 24px;
           grid-row-gap: 4px;
-          grid-auto-rows: 1fr;
+          min-height: 24px;
           overflow: hidden;
           padding: 2px 12px;
-        }
-
-        .value-type-cell-multiple-values {
-          gap: 5px;
+          align-items: baseline;
+          justify-content: start;
         }
 
         .value-type-cell {
           text-overflow: ellipsis;
           white-space: nowrap;
           overflow: hidden;
+          display: flex;
+          flex-direction: column;
+          min-height: 24px;
+        }
+
+        .value-type-value-with-link {
           display: flex;
           align-items: center;
         }
@@ -145,6 +149,13 @@ export class ValueInterpreterDisplay extends HTMLElement {
           justify-content: center;
           align-items: center;
           cursor: pointer;
+        }
+
+        .signed-divider {
+          width: 1px;
+          height: 15px;
+          background-color: var(--divider-color);
+          margin: 0 4px;
         }
       </style>
       <div class="value-types">
@@ -173,18 +184,20 @@ export class ValueInterpreterDisplay extends HTMLElement {
     // clang-format off
     return html`
       <span class="value-type-cell-no-mode value-type-cell">${localizedType}</span>
-      <div class="value-type-cell" data-value="true">
-        ${unsignedValue}
-        ${
-        // TODO(crbug.com/1184436) support go-to-pointer-address links for big ints (Pointer64)
-        type === ValueType.Pointer32 && !Number.isNaN(address) ?
-            html`
-            <button class="jump-to-button" data-jump="true" title=${i18nString(UIStrings.jumpToPointer)}
-              @click=${this.onJumpToAddressClicked.bind(this, address as number)}>
-              <devtools-icon .data=${
-                {iconName: 'link_icon', color: 'var(--color-primary)', width: '14px'} as Components.Icon.IconWithName}>
-              </devtools-icon>
-            </button>` : ''}
+      <div class="value-type-cell">
+        <div class="value-type-value-with-link" data-value="true">
+        <span>${unsignedValue}</span>
+          ${
+          // TODO(crbug.com/1184436) support go-to-pointer-address links for big ints (Pointer64)
+          type === ValueType.Pointer32 && !Number.isNaN(address) ?
+              html`
+              <button class="jump-to-button" data-jump="true" title=${i18nString(UIStrings.jumpToPointer)}
+                @click=${this.onJumpToAddressClicked.bind(this, address as number)}>
+                <devtools-icon .data=${
+                  {iconName: 'link_icon', color: 'var(--color-primary)', width: '14px'} as Components.Icon.IconWithName}>
+                </devtools-icon>
+              </button>` : ''}
+        </div>
       </div>
     `;
     // clang-format on
@@ -195,16 +208,15 @@ export class ValueInterpreterDisplay extends HTMLElement {
 
   private renderNumberValues(type: ValueType): LitHtml.TemplateResult {
     const localizedType = valueTypeToLocalizedString(type);
-    const unsignedValue = this.parse({type, signed: false});
-    const signedValue = this.parse({type, signed: true});
-    const showSignedAndUnsigned = signedValue !== unsignedValue;
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     return html`
       <span class="value-type-cell">${localizedType}</span>
+      <div>
         <select title=${i18nString(UIStrings.changeValueTypeMode)}
           data-mode-settings="true"
           class="chrome-select"
+          style="border: none; background-color: transparent; cursor: pointer; color: var(--color-text-secondary);"
           @change=${this.onValueTypeModeChange.bind(this, type)}>
             ${VALUE_TYPE_MODE_LIST.filter(x => isValidMode(type, x)).map(mode => {
               return html`
@@ -213,14 +225,44 @@ export class ValueInterpreterDisplay extends HTMLElement {
                 </option>`;
             })}
         </select>
-
-      ${showSignedAndUnsigned ? html`
-          <div class="value-type-cell-multiple-values value-type-cell">
-            <span data-value="true" title=${i18nString(UIStrings.unsignedValue)}>${unsignedValue}</span>
-            <span>/<span>
-            <span data-value="true" title=${i18nString(UIStrings.signedValue)}>${signedValue}</span>
-          </div>` : html`<span class="value-type-cell" data-value="true">${unsignedValue}</span>`}`;
+      </div>
+      ${this.renderSignedAndUnsigned(type)}
+    `;
     // clang-format on
+  }
+
+  private renderSignedAndUnsigned(type: ValueType): LitHtml.TemplateResult {
+    const unsignedValue = this.parse({type, signed: false});
+    const signedValue = this.parse({type, signed: true});
+    const showSignedAndUnsigned = signedValue !== unsignedValue;
+
+    const unsignedRendered = html`<span class="value-type-cell"  title=${
+        i18nString(UIStrings.unsignedValue)} data-value="true">${unsignedValue}</span>`;
+    if (!showSignedAndUnsigned) {
+      return unsignedRendered;
+    }
+
+    // Some values are too long to show in one line, we're putting them into the next line.
+    const showInMultipleLines = type === ValueType.Int32 || type === ValueType.Int64;
+    const signedRendered =
+        html`<span data-value="true" title=${i18nString(UIStrings.signedValue)}>${signedValue}</span>`;
+
+    if (showInMultipleLines) {
+      return html`
+        <div class="value-type-cell">
+          ${unsignedRendered}
+          ${signedRendered}
+        </div>
+        `;
+    }
+
+    return html`
+      <div class="value-type-cell" style="flex-direction: row;">
+        ${unsignedRendered}
+        <span class="signed-divider"></span>
+        ${signedRendered}
+      </div>
+    `;
   }
 
   private onValueTypeModeChange(type: ValueType, event: Event): void {

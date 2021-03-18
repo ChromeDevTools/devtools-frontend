@@ -182,16 +182,21 @@ export class LinearMemoryValueInterpreter extends HTMLElement {
 
   private renderEndiannessSetting(): LitHtml.TemplateResult {
     const onEnumSettingChange = this.onEndiannessChange.bind(this);
+    // Disabled until https://crbug.com/1079231 is fixed.
+    // clang-format off
     return html`
     <label data-endianness-setting="true" title=${i18nString(UIStrings.changeEndianness)}>
-      <select class="chrome-select" data-endianness="true" @change=${onEnumSettingChange}>
+      <select class="chrome-select"
+        style="border: none; background-color: transparent;"
+        data-endianness="true" @change=${onEnumSettingChange}>
         ${[Endianness.Little, Endianness.Big].map(endianness => {
-      return html`<option value=${endianness} .selected=${this.endianness === endianness}>${
-          endiannessToLocalizedString(endianness)}</option>`;
-    })}
+            return html`<option value=${endianness} .selected=${this.endianness === endianness}>${
+                endiannessToLocalizedString(endianness)}</option>`;
+        })}
       </select>
     </label>
     `;
+    // clang-format on
   }
 
   private onSettingsToggle(): void {

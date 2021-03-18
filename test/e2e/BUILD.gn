@@ -22,6 +22,7 @@ node_ts_library("tests") {
     "console",
     "coverage",
     "cross_tool_integration",
+    "css_overview",
     "elements",
     "emulation",
     "host",

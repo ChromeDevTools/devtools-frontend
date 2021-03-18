@@ -107,7 +107,7 @@ export class DataGrid extends HTMLElement {
   private columns: readonly Column[] = [];
   private rows: readonly Row[] = [];
   private sortState: Readonly<SortState>|null = null;
-  private scheduledRender = false;
+  private isRendering = false;
   private contextMenus?: DataGridContextMenusConfiguration = undefined;
   private currentResize: {
     rightCellCol: HTMLTableColElement,
@@ -153,7 +153,7 @@ export class DataGrid extends HTMLElement {
   private hasRenderedAtLeastOnce = false;
   private userHasFocusInDataGrid = false;
   private userHasScrolled = false;
-  private enqueuedRender = false;
+  private scheduleRender = false;
 
   constructor() {
     super();
@@ -666,284 +666,282 @@ export class DataGrid extends HTMLElement {
    * render only the rows required to fill that table (plus a bit extra for
    * padding).
    */
-  private render(): void {
-    if (this.scheduledRender) {
+  private async render(): Promise<void> {
+    if (this.isRendering) {
       // If we receive a request to render during a previous render call, we block
       // the newly requested render (since we could receive a lot of them in quick
       // succession), but we do ensure that at the end of the current render we
       // go again with the latest data.
-      this.enqueuedRender = true;
+      this.scheduleRender = true;
       return;
     }
-    this.scheduledRender = true;
+    this.isRendering = true;
 
-    coordinator.read(async () => {
-      const {topVisibleRow, bottomVisibleRow} = await this.calculateTopAndBottomRowIndexes();
-      const renderableRows =
-          this.rows.filter(row => !row.hidden).filter((_, idx) => idx >= topVisibleRow && idx <= bottomVisibleRow);
-      const indexOfFirstVisibleColumn = this.columns.findIndex(col => col.visible);
-      const anyColumnsSortable = this.columns.some(col => col.sortable === true);
+    const {topVisibleRow, bottomVisibleRow} = await this.calculateTopAndBottomRowIndexes();
+    const renderableRows =
+        this.rows.filter(row => !row.hidden).filter((_, idx) => idx >= topVisibleRow && idx <= bottomVisibleRow);
+    const indexOfFirstVisibleColumn = this.columns.findIndex(col => col.visible);
+    const anyColumnsSortable = this.columns.some(col => col.sortable === true);
 
-      await coordinator.write(() => {
-        // Disabled until https://crbug.com/1079231 is fixed.
-        // clang-format off
-        LitHtml.render(LitHtml.html`
-        <style>
-          :host {
-            height: 100%;
-            display: block;
-            position: relative;
-          }
-          /* Ensure that vertically we don't overflow */
-          .wrapping-container {
-            overflow-y: scroll;
-            /* Use max-height instead of height to ensure that the
-              table does not use more space than necessary. */
-            height: 100%;
-          }
+    await coordinator.write(() => {
+      // Disabled until https://crbug.com/1079231 is fixed.
+      // clang-format off
+      LitHtml.render(LitHtml.html`
+      <style>
+        :host {
+          height: 100%;
+          display: block;
+          position: relative;
+        }
+        /* Ensure that vertically we don't overflow */
+        .wrapping-container {
+          overflow-y: scroll;
+          /* Use max-height instead of height to ensure that the
+            table does not use more space than necessary. */
+          height: 100%;
+        }
 
-          table {
-            border-spacing: 0;
-            width: 100%;
-            height: 100%;
-            /* To make sure that we properly hide overflowing text
-              when horizontal space is too narrow. */
-            table-layout: fixed;
-          }
+        table {
+          border-spacing: 0;
+          width: 100%;
+          height: 100%;
+          /* To make sure that we properly hide overflowing text
+            when horizontal space is too narrow. */
+          table-layout: fixed;
+        }
 
-          tr {
-            outline: none;
-          }
+        tr {
+          outline: none;
+        }
 
-          tbody tr {
-            background-color: var(--color-background);
-          }
+        tbody tr {
+          background-color: var(--color-background);
+        }
 
-          tbody tr.selected {
-            background-color: var(--color-background-elevation-1);
-          }
+        tbody tr.selected {
+          background-color: var(--color-background-elevation-1);
+        }
 
-          td,
-          th {
-            padding: 1px 4px;
-            /* Divider between each cell, except the first one (see below) */
-            border-left: 1px solid var(--color-details-hairline);
-            color: var(--color-text-primary);
-            line-height: var(--table-row-height);
-            height: var(--table-row-height);
-            user-select: text;
-            /* Ensure that text properly cuts off if horizontal space is too narrow */
-            white-space: nowrap;
-            text-overflow: ellipsis;
-            overflow: hidden;
-          }
+        td,
+        th {
+          padding: 1px 4px;
+          /* Divider between each cell, except the first one (see below) */
+          border-left: 1px solid var(--color-details-hairline);
+          color: var(--color-text-primary);
+          line-height: var(--table-row-height);
+          height: var(--table-row-height);
+          user-select: text;
+          /* Ensure that text properly cuts off if horizontal space is too narrow */
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          overflow: hidden;
+        }
 
-          th {
-            font-weight: normal;
-            text-align: left;
-            border-bottom: 1px solid var(--color-details-hairline);
-            position: sticky;
-            top: 0;
-            z-index: 2;
-            background-color: var(--color-background-elevation-1);
-          }
+        th {
+          font-weight: normal;
+          text-align: left;
+          border-bottom: 1px solid var(--color-details-hairline);
+          position: sticky;
+          top: 0;
+          z-index: 2;
+          background-color: var(--color-background-elevation-1);
+        }
 
-          td:focus,
-          th:focus {
-            outline: var(--color-primary) auto 1px;
-          }
+        td:focus,
+        th:focus {
+          outline: var(--color-primary) auto 1px;
+        }
 
-          .cell-resize-handle {
-            top: 0;
-            height: 100%;
-            z-index: 3;
-            width: 20px;
-            cursor: col-resize;
-            position: absolute;
-          }
-          /* There is no divider before the first cell */
-          td.firstVisibleColumn,
-          th.firstVisibleColumn {
-            border-left: none;
-          }
+        .cell-resize-handle {
+          top: 0;
+          height: 100%;
+          z-index: 3;
+          width: 20px;
+          cursor: col-resize;
+          position: absolute;
+        }
+        /* There is no divider before the first cell */
+        td.firstVisibleColumn,
+        th.firstVisibleColumn {
+          border-left: none;
+        }
 
-          .hidden {
-            display: none;
-          }
+        .hidden {
+          display: none;
+        }
 
-          .filler-row td {
-            /* By making the filler row cells 100% they take up any extra height,
-            * leaving the cells with content to be the regular height, and the
-            * final filler row to be as high as it needs to be to fill the empty
-            * space.
-            */
-            height: 100%;
-            pointer-events: none;
-          }
-
-          [aria-sort]:hover {
-            cursor: pointer;
-          }
-
-          [aria-sort="descending"]::after {
-            content: " ";
-            border-left: 0.3em solid transparent;
-            border-right: 0.3em solid transparent;
-            border-top: 0.3em solid var(--color-text-primary);
-            position: absolute;
-            right: 0.5em;
-            top: 0.6em;
-          }
-
-          [aria-sort="ascending"]::after {
-            content: " ";
-            border-bottom: 0.3em solid var(--color-text-primary);
-            border-left: 0.3em solid transparent;
-            border-right: 0.3em solid transparent;
-            position: absolute;
-            right: 0.5em;
-            top: 0.6em;
-          }
-        </style>
-        ${this.columns.map((col, columnIndex) => {
-          /**
-          * We render the resizers outside of the table. One is rendered for each
-          * column, and they are positioned absolutely at the right position. They
-          * have 100% height so they sit over the entire table and can be grabbed
-          * by the user.
+        .filler-row td {
+          /* By making the filler row cells 100% they take up any extra height,
+          * leaving the cells with content to be the regular height, and the
+          * final filler row to be as high as it needs to be to fill the empty
+          * space.
           */
-          return this.renderResizeForCell(col, [columnIndex, 0]);
-        })}
-        <div class="wrapping-container" @scroll=${this.onScroll} @wheel=${this.onWheel} @focusout=${this.onFocusOut}>
-          <table
-            aria-rowcount=${this.rows.length}
-            aria-colcount=${this.columns.length}
-            @keydown=${this.onTableKeyDown}
-          >
-            <colgroup>
-              ${this.columns.map((col, colIndex) => {
-                const width = calculateColumnWidthPercentageFromWeighting(this.columns, col.id);
-                const style = `width: ${width}%`;
-                if (!col.visible) {
-                  return LitHtml.nothing;
-                }
+          height: 100%;
+          pointer-events: none;
+        }
 
-                return LitHtml.html`<col style=${style} data-col-column-index=${colIndex}>`;
+        [aria-sort]:hover {
+          cursor: pointer;
+        }
+
+        [aria-sort="descending"]::after {
+          content: " ";
+          border-left: 0.3em solid transparent;
+          border-right: 0.3em solid transparent;
+          border-top: 0.3em solid var(--color-text-primary);
+          position: absolute;
+          right: 0.5em;
+          top: 0.6em;
+        }
+
+        [aria-sort="ascending"]::after {
+          content: " ";
+          border-bottom: 0.3em solid var(--color-text-primary);
+          border-left: 0.3em solid transparent;
+          border-right: 0.3em solid transparent;
+          position: absolute;
+          right: 0.5em;
+          top: 0.6em;
+        }
+      </style>
+      ${this.columns.map((col, columnIndex) => {
+        /**
+        * We render the resizers outside of the table. One is rendered for each
+        * column, and they are positioned absolutely at the right position. They
+        * have 100% height so they sit over the entire table and can be grabbed
+        * by the user.
+        */
+        return this.renderResizeForCell(col, [columnIndex, 0]);
+      })}
+      <div class="wrapping-container" @scroll=${this.onScroll} @wheel=${this.onWheel} @focusout=${this.onFocusOut}>
+        <table
+          aria-rowcount=${this.rows.length}
+          aria-colcount=${this.columns.length}
+          @keydown=${this.onTableKeyDown}
+        >
+          <colgroup>
+            ${this.columns.map((col, colIndex) => {
+              const width = calculateColumnWidthPercentageFromWeighting(this.columns, col.id);
+              const style = `width: ${width}%`;
+              if (!col.visible) {
+                return LitHtml.nothing;
+              }
+
+              return LitHtml.html`<col style=${style} data-col-column-index=${colIndex}>`;
+            })}
+          </colgroup>
+          <thead>
+            <tr @contextmenu=${this.onHeaderContextMenu}>
+              ${this.columns.map((col, columnIndex) => {
+                const thClasses = LitHtml.Directives.classMap({
+                  hidden: !col.visible,
+                  firstVisibleColumn: columnIndex === indexOfFirstVisibleColumn,
+                });
+                const cellIsFocusableCell = anyColumnsSortable && columnIndex === this.focusableCell[0] && this.focusableCell[1] === 0;
+
+                return LitHtml.html`<th class=${thClasses}
+                  data-grid-header-cell=${col.id}
+                  @click=${(): void => {
+                    this.focusCell([columnIndex, 0]);
+                    this.onColumnHeaderClick(col, columnIndex);
+                  }}
+                  title=${col.title}
+                  aria-sort=${LitHtml.Directives.ifDefined(this.ariaSortForHeader(col))}
+                  aria-colindex=${columnIndex + 1}
+                  data-row-index='0'
+                  data-col-index=${columnIndex}
+                  tabindex=${LitHtml.Directives.ifDefined(anyColumnsSortable ? (cellIsFocusableCell ? '0' : '-1') : undefined)}
+                >${col.title}</th>`;
               })}
-            </colgroup>
-            <thead>
-              <tr @contextmenu=${this.onHeaderContextMenu}>
-                ${this.columns.map((col, columnIndex) => {
-                  const thClasses = LitHtml.Directives.classMap({
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="filler-row-top padding-row" style=${LitHtml.Directives.styleMap({
+              height: `${topVisibleRow * ROW_HEIGHT_PIXELS}px`,
+            })}></tr>
+            ${LitHtml.Directives.repeat(renderableRows, row => this.rowIndexMap.get(row), (row): LitHtml.TemplateResult => {
+              const rowIndex = this.rowIndexMap.get(row);
+              if (rowIndex === undefined) {
+                throw new Error('Trying to render a row that has no index in the rowIndexMap');
+              }
+              const focusableCell = this.getCurrentlyFocusableCell();
+              const [,focusableCellRowIndex] = this.focusableCell;
+              // Remember that row 0 is considered the header row, so the first tbody row is row 1.
+              const tableRowIndex = rowIndex + 1;
+
+              // Have to check for focusableCell existing as this runs on the
+              // first render before it's ever been created.
+              const rowIsSelected = focusableCell ? focusableCell === this.shadow.activeElement && tableRowIndex === focusableCellRowIndex : false;
+
+              const rowClasses = LitHtml.Directives.classMap({
+                selected: rowIsSelected,
+                hidden: row.hidden === true,
+              });
+              return LitHtml.html`
+                <tr
+                  aria-rowindex=${rowIndex + 1}
+                  class=${rowClasses}
+                  @contextmenu=${this.onBodyRowContextMenu}
+                >${this.columns.map((col, columnIndex) => {
+                  const cell = getRowEntryForColumnId(row, col.id);
+                  const cellClasses = LitHtml.Directives.classMap({
                     hidden: !col.visible,
                     firstVisibleColumn: columnIndex === indexOfFirstVisibleColumn,
                   });
-                  const cellIsFocusableCell = anyColumnsSortable && columnIndex === this.focusableCell[0] && this.focusableCell[1] === 0;
-
-                  return LitHtml.html`<th class=${thClasses}
-                    data-grid-header-cell=${col.id}
-                    @click=${(): void => {
-                      this.focusCell([columnIndex, 0]);
-                      this.onColumnHeaderClick(col, columnIndex);
-                    }}
-                    title=${col.title}
-                    aria-sort=${LitHtml.Directives.ifDefined(this.ariaSortForHeader(col))}
+                  const cellIsFocusableCell = columnIndex === this.focusableCell[0] && tableRowIndex === this.focusableCell[1];
+                  const cellOutput = col.visible ? renderCellValue(cell) : null;
+                  return LitHtml.html`<td
+                    class=${cellClasses}
+                    tabindex=${cellIsFocusableCell ? '0' : '-1'}
                     aria-colindex=${columnIndex + 1}
-                    data-row-index='0'
+                    title=${cell.title || String(cell.value).substr(0, 20)}
+                    data-row-index=${tableRowIndex}
                     data-col-index=${columnIndex}
-                    tabindex=${LitHtml.Directives.ifDefined(anyColumnsSortable ? (cellIsFocusableCell ? '0' : '-1') : undefined)}
-                  >${col.title}</th>`;
+                    data-grid-value-cell-for-column=${col.id}
+                    @focus=${(): void => {
+                      this.dispatchEvent(new BodyCellFocusedEvent(cell, row));
+                    }}
+                    @click=${(): void => {
+                      this.focusCell([columnIndex, tableRowIndex]);
+                    }}
+                  >${cellOutput}</td>`;
                 })}
-              </tr>
-            </thead>
-            <tbody>
-              <tr class="filler-row-top padding-row" style=${LitHtml.Directives.styleMap({
-                height: `${topVisibleRow * ROW_HEIGHT_PIXELS}px`,
-              })}></tr>
-              ${LitHtml.Directives.repeat(renderableRows, row => this.rowIndexMap.get(row), (row): LitHtml.TemplateResult => {
-                const rowIndex = this.rowIndexMap.get(row);
-                if (rowIndex === undefined) {
-                  throw new Error('Trying to render a row that has no index in the rowIndexMap');
-                }
-                const focusableCell = this.getCurrentlyFocusableCell();
-                const [,focusableCellRowIndex] = this.focusableCell;
-                // Remember that row 0 is considered the header row, so the first tbody row is row 1.
-                const tableRowIndex = rowIndex + 1;
-
-                // Have to check for focusableCell existing as this runs on the
-                // first render before it's ever been created.
-                const rowIsSelected = focusableCell ? focusableCell === this.shadow.activeElement && tableRowIndex === focusableCellRowIndex : false;
-
-                const rowClasses = LitHtml.Directives.classMap({
-                  selected: rowIsSelected,
-                  hidden: row.hidden === true,
-                });
-                return LitHtml.html`
-                  <tr
-                    aria-rowindex=${rowIndex + 1}
-                    class=${rowClasses}
-                    @contextmenu=${this.onBodyRowContextMenu}
-                  >${this.columns.map((col, columnIndex) => {
-                    const cell = getRowEntryForColumnId(row, col.id);
-                    const cellClasses = LitHtml.Directives.classMap({
-                      hidden: !col.visible,
-                      firstVisibleColumn: columnIndex === indexOfFirstVisibleColumn,
-                    });
-                    const cellIsFocusableCell = columnIndex === this.focusableCell[0] && tableRowIndex === this.focusableCell[1];
-                    const cellOutput = col.visible ? renderCellValue(cell) : null;
-                    return LitHtml.html`<td
-                      class=${cellClasses}
-                      tabindex=${cellIsFocusableCell ? '0' : '-1'}
-                      aria-colindex=${columnIndex + 1}
-                      title=${cell.title || String(cell.value).substr(0, 20)}
-                      data-row-index=${tableRowIndex}
-                      data-col-index=${columnIndex}
-                      data-grid-value-cell-for-column=${col.id}
-                      @focus=${(): void => {
-                        this.dispatchEvent(new BodyCellFocusedEvent(cell, row));
-                      }}
-                      @click=${(): void => {
-                        this.focusCell([columnIndex, tableRowIndex]);
-                      }}
-                    >${cellOutput}</td>`;
-                  })}
-                `;
-              })}
-              ${this.renderEmptyFillerRow()}
-              <tr class="filler-row-bottom padding-row" style=${LitHtml.Directives.styleMap({
-                height: `${Math.max(0, renderableRows.length - bottomVisibleRow) * ROW_HEIGHT_PIXELS}px`,
-              })}></tr>
-            </tbody>
-          </table>
-        </div>
-        `, this.shadow, {
-          eventContext: this,
-        });
+              `;
+            })}
+            ${this.renderEmptyFillerRow()}
+            <tr class="filler-row-bottom padding-row" style=${LitHtml.Directives.styleMap({
+              height: `${Math.max(0, renderableRows.length - bottomVisibleRow) * ROW_HEIGHT_PIXELS}px`,
+            })}></tr>
+          </tbody>
+        </table>
+      </div>
+      `, this.shadow, {
+        eventContext: this,
       });
-      // clang-format on
-
-
-      // This ensures if the user has a cell focused, but then scrolls so that
-      // the focused cell is now not rendered, that when it then gets scrolled
-      // back in, that it becomes rendered.
-      // However, if the cell is a column header, we don't do this, as that
-      // can never be not-rendered.
-      const currentlyFocusedRowIndex = this.focusableCell[1];
-      if (this.userHasFocusInDataGrid && currentlyFocusedRowIndex > 0) {
-        this.focusCell(this.focusableCell);
-      }
-      this.scrollToBottomIfRequired();
-      this.engageResizeObserver();
-      this.scheduledRender = false;
-      this.hasRenderedAtLeastOnce = true;
-
-      // If we've received more data mid-render we will do one extra render at
-      // the end with the most recent data.
-      if (this.enqueuedRender) {
-        this.enqueuedRender = false;
-        this.render();
-      }
     });
+    // clang-format on
+
+
+    // This ensures if the user has a cell focused, but then scrolls so that
+    // the focused cell is now not rendered, that when it then gets scrolled
+    // back in, that it becomes rendered.
+    // However, if the cell is a column header, we don't do this, as that
+    // can never be not-rendered.
+    const currentlyFocusedRowIndex = this.focusableCell[1];
+    if (this.userHasFocusInDataGrid && currentlyFocusedRowIndex > 0) {
+      this.focusCell(this.focusableCell);
+    }
+    this.scrollToBottomIfRequired();
+    this.engageResizeObserver();
+    this.isRendering = false;
+    this.hasRenderedAtLeastOnce = true;
+
+    // If we've received more data mid-render we will do one extra render at
+    // the end with the most recent data.
+    if (this.scheduleRender) {
+      this.scheduleRender = false;
+      this.render();
+    }
   }
 }
 

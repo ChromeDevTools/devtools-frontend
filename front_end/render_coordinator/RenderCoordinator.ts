@@ -178,8 +178,8 @@ export class RenderCoordinator extends EventTarget {
     return resolverPromise as Promise<T>;
   }
 
-  private handleWork(handler: CoordinatorCallback): void {
-    const data = handler.call(undefined);
+  private async handleWork(handler: CoordinatorCallback): Promise<void> {
+    const data = await handler.call(undefined);
     const resolver = this.resolvers.get(handler);
     if (!resolver) {
       throw new Error('Unable to locate resolver');
@@ -195,7 +195,7 @@ export class RenderCoordinator extends EventTarget {
       return;
     }
 
-    this.scheduledWorkId = requestAnimationFrame(() => {
+    this.scheduledWorkId = requestAnimationFrame(async () => {
       const hasPendingFrames = this.pendingWorkFrames.length > 0;
       if (!hasPendingFrames) {
         // No pending frames means all pending work has completed.
@@ -214,15 +214,26 @@ export class RenderCoordinator extends EventTarget {
         return;
       }
 
+      // Start with all the readers and allow them
+      // to proceed together.
+      const readers: Promise<unknown>[] = [];
       for (const reader of frame.readers) {
         this.logIfEnabled(this.labels.get(reader));
-        this.handleWork(reader);
+        readers.push(this.handleWork(reader));
       }
 
+      // Wait for them all to be done.
+      await Promise.all(readers);
+
+      // Next do all the writers as a block.
+      const writers: Promise<unknown>[] = [];
       for (const writer of frame.writers) {
         this.logIfEnabled(this.labels.get(writer));
-        this.handleWork(writer);
+        writers.push(this.handleWork(writer));
       }
+
+      // And wait for them to be done, too.
+      await Promise.all(writers);
 
       // Since there may have been more work requested in
       // the callback of a reader / writer, we attempt to schedule

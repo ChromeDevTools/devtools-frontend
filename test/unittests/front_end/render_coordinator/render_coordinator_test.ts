@@ -98,6 +98,22 @@ describe('Render Coordinator', () => {
     assert.strictEqual(height, 800);
   });
 
+  it('awaits async callbacks', async () => {
+    const expected = 100;
+    let targetValue = 0;
+    const delayedSet = (value: number, timeout: number): Promise<void> => {
+      return new Promise(resolve => setTimeout(() => {
+                           targetValue = value;
+                           resolve();
+                         }, timeout));
+    };
+
+    coordinator.write(async () => delayedSet(expected, 100));
+    await coordinator.done();
+
+    assert.strictEqual(targetValue, expected);
+  });
+
   describe('Logger', () => {
     it('only logs by default when provided with names', async () => {
       const expected = [

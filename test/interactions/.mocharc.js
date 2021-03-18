@@ -6,11 +6,28 @@
 const path = require('path');
 const glob = require('glob');
 const fs = require('fs');
+const {getTestRunnerConfigSetting} = require('../../scripts/test/test_config_helpers.js');
 
 // To make sure that any leftover JavaScript files (e.g. that were outputs from now-removed tests)
 // aren't incorrectly included, we glob for the TypeScript files instead and use that
 // to instruct Mocha to run the output JavaScript file.
-const ROOT_DIRECTORY = path.join(__dirname, '..', '..', '..', '..', '..', 'test', 'interactions');
+
+const testRunnerCWDConfig = getTestRunnerConfigSetting('cwd');
+const testRunnerTestSourceDirConfig = getTestRunnerConfigSetting('test-suite-source-dir');
+
+/**
+ * Set the ROOT_DIRECTORY based on the assumed folder structure, but if we have
+ * config from the new test runner, use that instead.
+ *
+ * Once we are fully migrated to the new test runner, this initial
+ * ROOT_DIRECTORY setting can go as we'll always have configuration provided.
+ *
+ * TODO(jacktfranklin): tidy up as part of crbug.com/1186163
+ */
+let ROOT_DIRECTORY = path.join(__dirname, '..', '..', '..', '..', '..', 'test', 'interactions');
+if (testRunnerCWDConfig && testRunnerTestSourceDirConfig) {
+  ROOT_DIRECTORY = path.join(testRunnerCWDConfig, testRunnerTestSourceDirConfig);
+}
 const allTestFiles = glob.sync(path.join(ROOT_DIRECTORY, '**/*_test.ts'));
 const customPattern = process.env['TEST_PATTERNS'];
 

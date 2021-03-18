@@ -7,19 +7,8 @@ const http = require('http');
 const path = require('path');
 const parseURL = require('url').parse;
 const {argv} = require('yargs');
+const {getTestRunnerConfigSetting} = require('../test/test_config_helpers.js');
 
-function getTestRunnerConfig() {
-  try {
-    return JSON.parse(process.env.TEST_RUNNER_JSON_CONFIG);
-  } catch {
-    // Return an empty object so any lookups return undefined
-    return {};
-  }
-}
-function getTestRunnerConfigSetting(settingKey, fallbackValue) {
-  const config = getTestRunnerConfig();
-  return config[settingKey] === undefined ? fallbackValue : config[settingKey];
-}
 
 const serverPort = parseInt(process.env.PORT, 10) || 8090;
 const target = argv.target || process.env.TARGET || 'Default';

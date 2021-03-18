@@ -6,4 +6,6 @@ import("../build/ninja/copy.gni")
 
 copy_to_gen("component_server") {
   sources = [ "server.js" ]
+
+  deps = [ "../test" ]
 }

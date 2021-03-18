@@ -24,7 +24,13 @@ function err(...msg) {
 const yargsObject =
     require('yargs')
         .option(
-            'test-suite-path', {type: 'string', desc: 'Path to the test suite, starting from out/Target directory.'})
+            'test-suite-path',
+            {type: 'string', desc: 'Path to the test suite, starting from out/Target directory.', demandOption: true})
+        .option('test-suite-source-dir', {
+          type: 'string',
+          desc: 'Path to the source folder containing the tests, relative to the current working directory.',
+          demandOption: true
+        })
         .option('target', {type: 'string', default: 'Default', desc: 'Name of the Ninja output directory.'})
         .option('node-modules-path', {
           type: 'string',
@@ -79,7 +85,6 @@ const yargsObject =
           // argv with '--foo-bar', not '--foo-bar' and 'fooBar'.
           'camel-case-expansion': false
         })
-        .demandOption(['test-suite-path'])
         // Take options via --config config.json
         .config()
         // Fail on any unknown arguments

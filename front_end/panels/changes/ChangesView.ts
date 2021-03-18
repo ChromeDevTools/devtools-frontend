@@ -3,12 +3,12 @@
 // found in the LICENSE file.
 
 /* eslint-disable rulesdir/no_underscored_properties */
-import * as Common from '../common/common.js';
-import * as Diff from '../diff/diff.js';
-import * as i18n from '../i18n/i18n.js';
-import * as UI from '../ui/ui.js';
-import type * as Workspace from '../workspace/workspace.js';
-import * as WorkspaceDiff from '../workspace_diff/workspace_diff.js';
+import * as Common from '../../common/common.js';
+import * as Diff from '../../diff/diff.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as UI from '../../ui/ui.js';
+import type * as Workspace from '../../workspace/workspace.js';
+import * as WorkspaceDiff from '../../workspace_diff/workspace_diff.js';
 
 import {ChangesSidebar, Events} from './ChangesSidebar.js';
 import {ChangesTextEditor} from './ChangesTextEditor.js';
@@ -48,7 +48,7 @@ const UIStrings = {
   */
   SkippingDMatchingLines: '( … Skipping {PH1} matching lines … )',
 };
-const str_ = i18n.i18n.registerUIStrings('changes/ChangesView.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/changes/ChangesView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 let changesViewInstance: ChangesView;
@@ -66,7 +66,7 @@ export class ChangesView extends UI.Widget.VBox {
 
   private constructor() {
     super(true);
-    this.registerRequiredCSS('changes/changesView.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('panels/changes/changesView.css', {enableLegacyPatching: true});
     const splitWidget = new UI.SplitWidget.SplitWidget(true /* vertical */, false /* sidebar on left */);
     const mainWidget = new UI.Widget.Widget();
     splitWidget.setMainWidget(mainWidget);

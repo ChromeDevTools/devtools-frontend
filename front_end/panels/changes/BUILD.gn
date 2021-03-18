@@ -2,8 +2,8 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-import("../../scripts/build/ninja/devtools_entrypoint.gni")
-import("../../scripts/build/ninja/devtools_module.gni")
+import("../../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../../../scripts/build/ninja/devtools_module.gni")
 
 devtools_module("changes") {
   sources = [
@@ -14,14 +14,14 @@ devtools_module("changes") {
   ]
 
   deps = [
-    "../common:bundle",
-    "../diff:bundle",
-    "../i18n:bundle",
-    "../snippets:bundle",
-    "../text_editor:bundle",
-    "../ui:bundle",
-    "../workspace:bundle",
-    "../workspace_diff:bundle",
+    "../../common:bundle",
+    "../../diff:bundle",
+    "../../i18n:bundle",
+    "../../snippets:bundle",
+    "../../text_editor:bundle",
+    "../../ui:bundle",
+    "../../workspace:bundle",
+    "../../workspace_diff:bundle",
   ]
 }
 

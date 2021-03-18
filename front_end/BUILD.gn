@@ -115,7 +115,6 @@ group("legacy_css") {
 group("legacy_entrypoints") {
   public_deps = [
     "bindings:legacy",
-    "changes:legacy",
     "color_picker:legacy",
     "common:legacy",
     "components:legacy",
@@ -149,6 +148,7 @@ group("legacy_entrypoints") {
     "panels/accessibility:legacy",
     "panels/animation:legacy",
     "panels/browser_debugger:legacy",
+    "panels/changes:legacy",
     "perf_ui:legacy",
     "persistence:legacy",
     "profiler:legacy",
@@ -186,7 +186,6 @@ ts_library("shell") {
     "Images:generate_css_vars",
     "bindings:legacy",
     "browser_sdk:meta",
-    "changes:meta",
     "components:legacy",
     "console:meta",
     "console_counters:legacy",
@@ -199,6 +198,7 @@ ts_library("shell") {
     "linear_memory_inspector:meta",
     "main:meta",
     "object_ui:meta",
+    "panels/changes:meta",
     "perf_ui:meta",
     "persistence:legacy",
     "persistence:meta",

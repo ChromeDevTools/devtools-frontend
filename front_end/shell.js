@@ -20,7 +20,7 @@ import './sources/sources-meta.js';
 import './profiler/profiler-meta.js';
 import './console/console-meta.js';
 import './coverage/coverage-meta.js';
-import './changes/changes-meta.js';
+import './panels/changes/changes-meta.js';
 import './input/input-meta.js';
 import './linear_memory_inspector/linear_memory_inspector-meta.js';
 import './settings/settings-meta.js';

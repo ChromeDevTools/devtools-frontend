@@ -8,7 +8,7 @@
     { "name": "persistence", "type": "autostart" },
     { "name": "ui", "type": "autostart" },
 
-    { "name": "changes" },
+    { "name": "panels/changes" },
     { "name": "cm" },
     { "name": "color_picker" },
     { "name": "console" },

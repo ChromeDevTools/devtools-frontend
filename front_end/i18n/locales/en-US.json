@@ -47,42 +47,6 @@
   "browser_sdk/browser_sdk-meta.ts | reset": {
     "message": "reset"
   },
-  "changes/changes-meta.ts | changes": {
-    "message": "Changes"
-  },
-  "changes/changes-meta.ts | showChanges": {
-    "message": "Show Changes"
-  },
-  "changes/ChangesSidebar.ts | sFromSourceMap": {
-    "message": "{PH1} (from source map)"
-  },
-  "changes/ChangesTextEditor.ts | additions": {
-    "message": "Addition:{PH1}"
-  },
-  "changes/ChangesTextEditor.ts | deletions": {
-    "message": "Deletion:{PH1}"
-  },
-  "changes/ChangesView.ts | binaryData": {
-    "message": "Binary data"
-  },
-  "changes/ChangesView.ts | changesDiffViewer": {
-    "message": "Changes diff viewer"
-  },
-  "changes/ChangesView.ts | noChanges": {
-    "message": "No changes"
-  },
-  "changes/ChangesView.ts | revertAllChangesToCurrentFile": {
-    "message": "Revert all changes to current file"
-  },
-  "changes/ChangesView.ts | sDeletions": {
-    "message": "{n, plural, =1 {# deletion (-)} other {# deletions (-)}}"
-  },
-  "changes/ChangesView.ts | sInsertions": {
-    "message": "{n, plural, =1 {# insertion (+)} other {# insertions (+)}}"
-  },
-  "changes/ChangesView.ts | SkippingDMatchingLines": {
-    "message": "( … Skipping {PH1} matching lines … )"
-  },
   "color_picker/ContrastDetails.ts | aa": {
     "message": "AA"
   },
@@ -5578,6 +5542,42 @@
   },
   "panels/browser_debugger/XHRBreakpointsSidebarPane.ts | xhrfetchBreakpoints": {
     "message": "XHR/fetch Breakpoints"
+  },
+  "panels/changes/changes-meta.ts | changes": {
+    "message": "Changes"
+  },
+  "panels/changes/changes-meta.ts | showChanges": {
+    "message": "Show Changes"
+  },
+  "panels/changes/ChangesSidebar.ts | sFromSourceMap": {
+    "message": "{PH1} (from source map)"
+  },
+  "panels/changes/ChangesTextEditor.ts | additions": {
+    "message": "Addition:{PH1}"
+  },
+  "panels/changes/ChangesTextEditor.ts | deletions": {
+    "message": "Deletion:{PH1}"
+  },
+  "panels/changes/ChangesView.ts | binaryData": {
+    "message": "Binary data"
+  },
+  "panels/changes/ChangesView.ts | changesDiffViewer": {
+    "message": "Changes diff viewer"
+  },
+  "panels/changes/ChangesView.ts | noChanges": {
+    "message": "No changes"
+  },
+  "panels/changes/ChangesView.ts | revertAllChangesToCurrentFile": {
+    "message": "Revert all changes to current file"
+  },
+  "panels/changes/ChangesView.ts | sDeletions": {
+    "message": "{n, plural, =1 {# deletion (-)} other {# deletions (-)}}"
+  },
+  "panels/changes/ChangesView.ts | sInsertions": {
+    "message": "{n, plural, =1 {# insertion (+)} other {# insertions (+)}}"
+  },
+  "panels/changes/ChangesView.ts | SkippingDMatchingLines": {
+    "message": "( … Skipping {PH1} matching lines … )"
   },
   "perf_ui/FilmStripView.ts | doubleclickToZoomImageClickTo": {
     "message": "Doubleclick to zoom image. Click to view preceding requests."

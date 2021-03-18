@@ -47,42 +47,6 @@
   "browser_sdk/browser_sdk-meta.ts | reset": {
     "message": "r̂éŝét̂"
   },
-  "changes/changes-meta.ts | changes": {
-    "message": "Ĉh́âńĝéŝ"
-  },
-  "changes/changes-meta.ts | showChanges": {
-    "message": "Ŝh́ôẃ Ĉh́âńĝéŝ"
-  },
-  "changes/ChangesSidebar.ts | sFromSourceMap": {
-    "message": "{PH1} (f̂ŕôḿ ŝóûŕĉé m̂áp̂)"
-  },
-  "changes/ChangesTextEditor.ts | additions": {
-    "message": "Âd́d̂ít̂íôń:{PH1}"
-  },
-  "changes/ChangesTextEditor.ts | deletions": {
-    "message": "D̂él̂ét̂íôń:{PH1}"
-  },
-  "changes/ChangesView.ts | binaryData": {
-    "message": "B̂ín̂ár̂ý d̂át̂á"
-  },
-  "changes/ChangesView.ts | changesDiffViewer": {
-    "message": "Ĉh́âńĝéŝ d́îf́f̂ v́îéŵér̂"
-  },
-  "changes/ChangesView.ts | noChanges": {
-    "message": "N̂ó ĉh́âńĝéŝ"
-  },
-  "changes/ChangesView.ts | revertAllChangesToCurrentFile": {
-    "message": "R̂év̂ér̂t́ âĺl̂ ćĥán̂ǵêś t̂ó ĉúr̂ŕêńt̂ f́îĺê"
-  },
-  "changes/ChangesView.ts | sDeletions": {
-    "message": "{n, plural, =1 {# d̂él̂ét̂íôń (-)} other {# d̂él̂ét̂íôńŝ (-)}}"
-  },
-  "changes/ChangesView.ts | sInsertions": {
-    "message": "{n, plural, =1 {# îńŝér̂t́îón̂ (+)} other {# ín̂śêŕt̂íôńŝ (+)}}"
-  },
-  "changes/ChangesView.ts | SkippingDMatchingLines": {
-    "message": "( … Ŝḱîṕp̂ín̂ǵ {PH1} m̂át̂ćĥín̂ǵ l̂ín̂éŝ … )"
-  },
   "color_picker/ContrastDetails.ts | aa": {
     "message": "ÂÁ"
   },
@@ -5578,6 +5542,42 @@
   },
   "panels/browser_debugger/XHRBreakpointsSidebarPane.ts | xhrfetchBreakpoints": {
     "message": "X̂H́R̂/f́êt́ĉh́ B̂ŕêák̂ṕôín̂t́ŝ"
+  },
+  "panels/changes/changes-meta.ts | changes": {
+    "message": "Ĉh́âńĝéŝ"
+  },
+  "panels/changes/changes-meta.ts | showChanges": {
+    "message": "Ŝh́ôẃ Ĉh́âńĝéŝ"
+  },
+  "panels/changes/ChangesSidebar.ts | sFromSourceMap": {
+    "message": "{PH1} (f̂ŕôḿ ŝóûŕĉé m̂áp̂)"
+  },
+  "panels/changes/ChangesTextEditor.ts | additions": {
+    "message": "Âd́d̂ít̂íôń:{PH1}"
+  },
+  "panels/changes/ChangesTextEditor.ts | deletions": {
+    "message": "D̂él̂ét̂íôń:{PH1}"
+  },
+  "panels/changes/ChangesView.ts | binaryData": {
+    "message": "B̂ín̂ár̂ý d̂át̂á"
+  },
+  "panels/changes/ChangesView.ts | changesDiffViewer": {
+    "message": "Ĉh́âńĝéŝ d́îf́f̂ v́îéŵér̂"
+  },
+  "panels/changes/ChangesView.ts | noChanges": {
+    "message": "N̂ó ĉh́âńĝéŝ"
+  },
+  "panels/changes/ChangesView.ts | revertAllChangesToCurrentFile": {
+    "message": "R̂év̂ér̂t́ âĺl̂ ćĥán̂ǵêś t̂ó ĉúr̂ŕêńt̂ f́îĺê"
+  },
+  "panels/changes/ChangesView.ts | sDeletions": {
+    "message": "{n, plural, =1 {# d̂él̂ét̂íôń (-)} other {# d̂él̂ét̂íôńŝ (-)}}"
+  },
+  "panels/changes/ChangesView.ts | sInsertions": {
+    "message": "{n, plural, =1 {# îńŝér̂t́îón̂ (+)} other {# ín̂śêŕt̂íôńŝ (+)}}"
+  },
+  "panels/changes/ChangesView.ts | SkippingDMatchingLines": {
+    "message": "( … Ŝḱîṕp̂ín̂ǵ {PH1} m̂át̂ćĥín̂ǵ l̂ín̂éŝ … )"
   },
   "perf_ui/FilmStripView.ts | doubleclickToZoomImageClickTo": {
     "message": "D̂óûb́l̂éĉĺîćk̂ t́ô źôóm̂ ím̂áĝé. Ĉĺîćk̂ t́ô v́îéŵ ṕr̂éĉéd̂ín̂ǵ r̂éq̂úêśt̂ś."

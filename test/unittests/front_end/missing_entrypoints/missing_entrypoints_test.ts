@@ -11,7 +11,7 @@ import {describeWithEnvironment} from '../helpers/EnvironmentHelpers.js';
 describeWithEnvironment('Imports entrypoints that are yet to be tested', () => {
   before(async () => {
     await import('../../../../front_end/panels/browser_debugger/browser_debugger.js');
-    await import('../../../../front_end/changes/changes.js');
+    await import('../../../../front_end/panels/changes/changes.js');
     await import('../../../../front_end/cm/cm.js');
     await import('../../../../front_end/console/console.js');
     await import('../../../../front_end/console_counters/console_counters.js');

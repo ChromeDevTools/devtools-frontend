@@ -2,11 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../common/common.js';
-import * as i18n from '../i18n/i18n.js';
-import * as Root from '../root/root.js';
-import * as UI from '../ui/ui.js';
-import * as WorkspaceDiff from '../workspace_diff/workspace_diff.js';
+import * as Common from '../../common/common.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as Root from '../../root/root.js';
+import * as UI from '../../ui/ui.js';
+import * as WorkspaceDiff from '../../workspace_diff/workspace_diff.js';
 
 // eslint-disable-next-line rulesdir/es_modules_import
 import type * as Changes from './changes.js';
@@ -23,13 +23,13 @@ const UIStrings = {
    */
   showChanges: 'Show Changes',
 };
-const str_ = i18n.i18n.registerUIStrings('changes/changes-meta.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/changes/changes-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 async function loadChangesModule(): Promise<typeof Changes> {
   if (!loadedChangesModule) {
     // Side-effect import resources in module.json
-    await Root.Runtime.Runtime.instance().loadModulePromise('changes');
+    await Root.Runtime.Runtime.instance().loadModulePromise('panels/changes');
     loadedChangesModule = await import('./changes.js');
   }
   return loadedChangesModule;

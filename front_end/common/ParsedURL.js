@@ -310,24 +310,31 @@ export class ParsedURL {
     let columnNumber;
     console.assert(Boolean(lineColumnMatch));
     if (!lineColumnMatch) {
-      return { url: string, lineNumber: 0, columnNumber: 0 };
+      return {url: string, lineNumber: 0, columnNumber: 0};
     }
 
-    if (typeof(lineColumnMatch[1]) === 'string') {
+    if (typeof (lineColumnMatch[1]) === 'string') {
       lineNumber = parseInt(lineColumnMatch[1], 10);
       // Immediately convert line and column to 0-based numbers.
       lineNumber = isNaN(lineNumber) ? undefined : lineNumber - 1;
     }
-    if (typeof(lineColumnMatch[2]) === 'string') {
+    if (typeof (lineColumnMatch[2]) === 'string') {
       columnNumber = parseInt(lineColumnMatch[2], 10);
       columnNumber = isNaN(columnNumber) ? undefined : columnNumber - 1;
     }
 
-    return {
-      url: beforePath + pathAndAfter.substring(0, pathAndAfter.length - lineColumnMatch[0].length),
-      lineNumber: lineNumber,
-      columnNumber: columnNumber
-    };
+    let url = beforePath + pathAndAfter.substring(0, pathAndAfter.length - lineColumnMatch[0].length);
+    if (lineColumnMatch[1] === undefined && lineColumnMatch[2] === undefined) {
+      const wasmCodeOffsetRegex = /wasm-function\[\d+\]:0x([a-z0-9]+)$/g;
+      const wasmCodeOffsetMatch = wasmCodeOffsetRegex.exec(pathAndAfter);
+      if (wasmCodeOffsetMatch && typeof (wasmCodeOffsetMatch[1]) === 'string') {
+        url = ParsedURL.removeWasmFunctionInfoFromURL(url);
+        columnNumber = parseInt(wasmCodeOffsetMatch[1], 16);
+        columnNumber = isNaN(columnNumber) ? undefined : columnNumber;
+      }
+    }
+
+    return {url, lineNumber, columnNumber};
   }
 
   /**

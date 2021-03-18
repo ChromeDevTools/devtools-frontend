@@ -6,7 +6,7 @@ import {assert} from 'chai';
 
 import {$, click, enableExperiment, getBrowserAndPages, getResourcesPath, goToResource, pasteText, waitFor, waitForFunction, waitForMany, waitForNone} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {CONSOLE_TAB_SELECTOR, focusConsolePrompt, getCurrentConsoleMessages} from '../helpers/console-helpers.js';
+import {CONSOLE_TAB_SELECTOR, focusConsolePrompt, getCurrentConsoleMessages, getStructuredConsoleMessages} from '../helpers/console-helpers.js';
 import {addBreakpointForLine, getCallFrameLocations, getCallFrameNames, getValuesForScope, isBreakpointSet, listenForSourceFilesAdded, openFileInEditor, openFileInSourcesPanel, openSourceCodeEditorForFile, openSourcesPanel, PAUSE_ON_EXCEPTION_BUTTON, RESUME_BUTTON, retrieveSourceFilesAdded, retrieveTopCallFrameScriptLocation, switchToCallFrame, waitForAdditionalSourceFiles} from '../helpers/sources-helpers.js';
 
 
@@ -229,6 +229,14 @@ describe('The Debugger Language Plugins', async () => {
     const callFrameLoc = await waitFor('.call-frame-location');
     const scriptLocation = await callFrameLoc.evaluate(location => location.textContent);
     assert.deepEqual(scriptLocation, 'unreachable.ll:6');
+
+    await click(RESUME_BUTTON);
+    const error = await waitForFunction(async () => {
+      const messages = await getStructuredConsoleMessages();
+      return messages.find(message => message.message.startsWith('Uncaught (in promise) RuntimeError: unreachable'));
+    });
+    const callframes = error.message.split('\n').slice(1);
+    assert.deepEqual(callframes, ['    at Main (unreachable.ll:6)', '    at go (unreachable.html:27)']);
   });
 
   // Resolve the location for a breakpoint.

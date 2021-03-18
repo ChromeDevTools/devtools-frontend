@@ -5,6 +5,6 @@
 import './startup/startup.js';
 import './lighthouse_worker/lighthouse_worker.js';
 
-import * as Startup from './startup/startup.js';
+import * as Startup from './startup/startup.js';  // eslint-disable-line rulesdir/es_modules_import
 
 Startup.RuntimeInstantiator.startWorker('lighthouse_worker');

@@ -4,7 +4,7 @@
 
 import './dom_extension/dom_extension.js';
 
-import * as Platform from './platform/platform.js';
+import * as Platform from './platform/platform.js';  // eslint-disable-line rulesdir/es_modules_import
 
 function toolboxLoaded(): void {
   if (!window.opener) {

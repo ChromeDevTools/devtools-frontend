@@ -51,6 +51,18 @@ function computeTopLevelFolder(fileName) {
   return namespaceName.substring(0, namespaceName.indexOf(path.sep));
 }
 
+function pathsContainedInSameFolder(importingFileName, exportingFileName) {
+  const importingPrefix = importingFileName.split(path.sep);
+  const exportingPrefix = exportingFileName.split(path.sep);
+
+  while (importingPrefix.length > 0 && exportingPrefix.length > 0 && importingPrefix[0] === exportingPrefix[0]) {
+    importingPrefix.shift();
+    exportingPrefix.shift();
+  }
+
+  return importingPrefix.length === 1 || exportingPrefix.length === 1;
+}
+
 function checkImportExtension(importPath, context, node) {
   // import * as fs from 'fs';
   if (!importPath.startsWith('.')) {
@@ -93,7 +105,7 @@ function checkStarImport(context, node, importPath, importingFileName, exporting
     return;
   }
 
-  const isSameFolder = computeTopLevelFolder(importingFileName) === computeTopLevelFolder(exportingFileName);
+  const isSameFolder = pathsContainedInSameFolder(importingFileName, exportingFileName);
 
   const invalidSameFolderUsage = isSameFolder && isModuleEntrypoint(exportingFileName);
   const invalidCrossFolderUsage = !isSameFolder && !isModuleEntrypoint(exportingFileName);

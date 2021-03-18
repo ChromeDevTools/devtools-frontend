@@ -108,6 +108,10 @@ ruleTester.run('es_modules_import', rule, {
       code: 'import * as Marked from \'../third_party/marked/marked.js\';',
       filename: 'front_end/common/common.js',
     },
+    {
+      code: 'import * as ConsoleCounters from \'../console_counters/console_counters.js\';',
+      filename: 'front_end/panels/console/ConsoleView.ts',
+    },
     // Tests are allowed to import from front_end
     {
       code: 'import * as UI from \'../../../front_end/ui/ui.js\';',

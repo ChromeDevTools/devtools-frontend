@@ -19,7 +19,7 @@ import './host/host-legacy.js';
 import './inline_editor/inline_editor-legacy.js';
 import './root/root-legacy.js';
 import './sdk/sdk-legacy.js';
-import * as Startup from './startup/startup.js';
+import * as Startup from './startup/startup.js';  // eslint-disable-line rulesdir/es_modules_import
 
 if (self.testRunner) {
   testRunner.dumpAsText();

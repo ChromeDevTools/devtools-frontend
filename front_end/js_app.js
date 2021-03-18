@@ -3,6 +3,6 @@
 // found in the LICENSE file.
 import './shell.js';
 import './js_profiler/js_profiler-meta.js';
-import * as Startup from './startup/startup.js';
+import * as Startup from './startup/startup.js';  // eslint-disable-line rulesdir/es_modules_import
 
 Startup.RuntimeInstantiator.startApplication('js_app');

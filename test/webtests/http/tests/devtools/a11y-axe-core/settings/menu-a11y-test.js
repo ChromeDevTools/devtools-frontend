@@ -11,8 +11,7 @@
 
   await UI.actionRegistry.action('settings.show').execute();
 
-  const tabbedPane = runtime.sharedInstance(Settings.SettingsScreen)
-                         ._tabbedLocation.tabbedPane();
+  const tabbedPane = Settings.SettingsScreen.instance()._tabbedLocation.tabbedPane();
 
   // force tabs to update
   tabbedPane._innerUpdateTabElements();

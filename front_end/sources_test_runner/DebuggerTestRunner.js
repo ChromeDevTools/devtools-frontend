@@ -526,7 +526,7 @@ SourcesTestRunner.waitBreakpointSidebarPane = function(waitUntilResolved) {
 };
 
 SourcesTestRunner.breakpointsSidebarPaneContent = function() {
-  const pane = self.runtime.sharedInstance(Sources.JavaScriptBreakpointsSidebarPane);
+  const pane = Sources.JavaScriptBreakpointsSidebarPane.instance();
   const empty = pane._emptyElement;
 
   if (!empty.classList.contains('hidden')) {
@@ -568,7 +568,7 @@ SourcesTestRunner.dumpSectionsWithIndent = function(treeElements, depth) {
 };
 
 SourcesTestRunner.scopeChainSections = function() {
-  return self.runtime.sharedInstance(Sources.ScopeChainSidebarPane)._treeOutline.rootElement().children();
+  return Sources.ScopeChainSidebarPane.instance()._treeOutline.rootElement().children();
 };
 
 SourcesTestRunner.expandScopeVariablesSidebarPane = function(callback) {
@@ -864,7 +864,7 @@ SourcesTestRunner.waitUntilDebuggerPluginLoaded = async function(sourceFrame) {
 };
 
 SourcesTestRunner.setEventListenerBreakpoint = function(id, enabled, targetName) {
-  const pane = self.runtime.sharedInstance(BrowserDebugger.EventListenerBreakpointsSidebarPane);
+  const pane = BrowserDebugger.EventListenerBreakpointsSidebarPane.instance();
 
   const auxData = {'eventName': id};
 

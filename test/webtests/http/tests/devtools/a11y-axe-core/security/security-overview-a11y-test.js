@@ -16,7 +16,7 @@
   request.setBlockedReason(Protocol.Network.BlockedReason.MixedContent);
   request.mixedContentType = 'blockable';
   SecurityTestRunner.dispatchRequestFinished(request);
-  const securityPanel = runtime.sharedInstance(Security.SecurityPanel);
+  const securityPanel = Security.SecurityPanel.instance();
   await AxeCoreTestRunner.runValidation(securityPanel._mainView.contentElement);
 
   TestRunner.completeTest();

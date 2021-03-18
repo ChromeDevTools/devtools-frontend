@@ -17,7 +17,7 @@ self.CoverageTestRunner = self.CoverageTestRunner || {};
  */
 CoverageTestRunner.startCoverage = async function(jsCoveragePerBlock) {
   self.UI.viewManager.showView('coverage');
-  const coverageView = self.runtime.sharedInstance(Coverage.CoverageView);
+  const coverageView = Coverage.CoverageView.instance();
   await coverageView._startRecording({reload: false, jsCoveragePerBlock});
 };
 
@@ -25,7 +25,7 @@ CoverageTestRunner.startCoverage = async function(jsCoveragePerBlock) {
  * @return {!Promise}
  */
 CoverageTestRunner.stopCoverage = function() {
-  const coverageView = self.runtime.sharedInstance(Coverage.CoverageView);
+  const coverageView = Coverage.CoverageView.instance();
   return coverageView.stopRecording();
 };
 
@@ -33,7 +33,7 @@ CoverageTestRunner.stopCoverage = function() {
  * @return {!Promise}
  */
 CoverageTestRunner.suspendCoverageModel = async function() {
-  const coverageView = self.runtime.sharedInstance(Coverage.CoverageView);
+  const coverageView = Coverage.CoverageView.instance();
   await coverageView._model.preSuspendModel();
   await coverageView._model.suspendModel();
 };
@@ -42,7 +42,7 @@ CoverageTestRunner.suspendCoverageModel = async function() {
  * @return {!Promise}
  */
 CoverageTestRunner.resumeCoverageModel = async function() {
-  const coverageView = self.runtime.sharedInstance(Coverage.CoverageView);
+  const coverageView = Coverage.CoverageView.instance();
   await coverageView._model.resumeModel();
   await coverageView._model.postResumeModel();
 };
@@ -51,7 +51,7 @@ CoverageTestRunner.resumeCoverageModel = async function() {
  * @return {!Promise}
  */
 CoverageTestRunner.pollCoverage = async function() {
-  const coverageView = self.runtime.sharedInstance(Coverage.CoverageView);
+  const coverageView = Coverage.CoverageView.instance();
   // Make sure not to have two instances of _pollAndCallback running at the same time.
   await coverageView._model._currentPollPromise;
   return coverageView._model._pollAndCallback();
@@ -61,7 +61,7 @@ CoverageTestRunner.pollCoverage = async function() {
  * @return {!Promise<Coverage.CoverageModel>}
  */
 CoverageTestRunner.getCoverageModel = function() {
-  const coverageView = self.runtime.sharedInstance(Coverage.CoverageView);
+  const coverageView = Coverage.CoverageView.instance();
   return coverageView._model;
 };
 
@@ -69,7 +69,7 @@ CoverageTestRunner.getCoverageModel = function() {
  * @return {!Promise<string>}
  */
 CoverageTestRunner.exportReport = async function() {
-  const coverageView = self.runtime.sharedInstance(Coverage.CoverageView);
+  const coverageView = Coverage.CoverageView.instance();
   let data;
   await coverageView._model.exportReport({
     write: d => {
@@ -100,7 +100,7 @@ CoverageTestRunner.dumpDecorations = async function(source) {
  * @return {?DataGrid.DataGridNode}
  */
 CoverageTestRunner.findCoverageNodeForURL = function(url) {
-  const coverageListView = self.runtime.sharedInstance(Coverage.CoverageView)._listView;
+  const coverageListView = Coverage.CoverageView.instance()._listView;
   const rootNode = coverageListView._dataGrid.rootNode();
 
   for (const child of rootNode.children) {
@@ -137,7 +137,7 @@ CoverageTestRunner.dumpDecorationsInSourceFrame = function(sourceFrame) {
 };
 
 CoverageTestRunner.dumpCoverageListView = function() {
-  const coverageListView = self.runtime.sharedInstance(Coverage.CoverageView)._listView;
+  const coverageListView = Coverage.CoverageView.instance()._listView;
   const dataGrid = coverageListView._dataGrid;
   dataGrid.updateInstantly();
 

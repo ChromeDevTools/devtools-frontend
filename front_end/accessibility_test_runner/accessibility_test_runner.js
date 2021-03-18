@@ -14,13 +14,13 @@ import '../i18n/i18n.js';
 self.AccessibilityTestRunner = self.AccessibilityTestRunner || {};
 
 AccessibilityTestRunner.accessibilitySidebarPane = function() {
-  return self.runtime.sharedInstance(Accessibility.AccessibilitySidebarView);
+  return Accessibility.AccessibilitySidebarView.instance();
 };
 
 AccessibilityTestRunner.selectNodeAndWaitForAccessibility = function(idValue) {
   return new Promise(resolve => {
     ElementsTestRunner.selectNodeWithId(idValue, function() {
-      self.runtime.sharedInstance(Accessibility.AccessibilitySidebarView).doUpdate().then(resolve);
+      Accessibility.AccessibilitySidebarView.instance().doUpdate().then(resolve);
     });
   });
 };

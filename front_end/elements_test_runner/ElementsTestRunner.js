@@ -575,7 +575,7 @@ ElementsTestRunner.toggleMatchedStyleProperty = function(propertyName, checked) 
 
 ElementsTestRunner.eventListenersWidget = function() {
   self.UI.viewManager.showView('elements.eventListeners');
-  return self.runtime.sharedInstance(Elements.EventListenersWidget);
+  return Elements.EventListenersWidget.instance();
 };
 
 ElementsTestRunner.showEventListenersWidget = function() {

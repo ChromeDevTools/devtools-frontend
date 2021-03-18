@@ -11,7 +11,7 @@
 
   await UI.viewManager.showView('sources.watch');
   TestRunner.addResult('Adding watch expression.');
-  const watchPane = self.runtime.sharedInstance(Sources.WatchExpressionsSidebarPane);
+  const watchPane = Sources.WatchExpressionsSidebarPane.instance();
   watchPane.doUpdate();
   TestRunner.addResult('Running the axe-core linter on the empty watch pane.');
   await AxeCoreTestRunner.runValidation(watchPane.contentElement);

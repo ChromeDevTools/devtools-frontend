@@ -13,7 +13,7 @@
     // Open Shortcuts pane using context menu action
     await UI.actionRegistry.action('settings.shortcuts').execute();
 
-    const settingsPaneElement = runtime.sharedInstance(Settings.SettingsScreen)._tabbedLocation._tabbedPane._contentElement;
+    const settingsPaneElement = Settings.SettingsScreen.instance()._tabbedLocation._tabbedPane._contentElement;
     await AxeCoreTestRunner.runValidation(settingsPaneElement);
   }
 

@@ -26,8 +26,7 @@
       TestRunner.domDebuggerModel.setDOMBreakpoint(hostElement, Protocol.DOMDebugger.DOMBreakpointType.NodeRemoved);
   TestRunner.domDebuggerModel.toggleDOMBreakpoint(breakpoint, false);
 
-  const domBreakpointsPane =
-    self.runtime.sharedInstance(BrowserDebugger.DOMBreakpointsSidebarPane);
+  const domBreakpointsPane = BrowserDebugger.DOMBreakpointsSidebarPane.instance();
 
   TestRunner.addResult(`DOM breakpoints container text content: ${domBreakpointContainer.contentElement.deepTextContent()}`);
   TestRunner.addResult(`DOM breakpoints pane text content: ${domBreakpointsPane.contentElement.deepTextContent()}`);

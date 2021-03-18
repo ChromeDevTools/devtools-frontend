@@ -27,7 +27,7 @@
 
   request1.setSecurityDetails(securityDetails);
   SecurityTestRunner.dispatchRequestFinished(request1);
-  const securityPanel = runtime.sharedInstance(Security.SecurityPanel);
+  const securityPanel = Security.SecurityPanel.instance();
 
   securityPanel.showOrigin('https://foo.test');
   await AxeCoreTestRunner.runValidation(securityPanel.contentElement);

@@ -11,7 +11,7 @@
 
   await UI.viewManager.showView('sources.xhrBreakpoints');
   TestRunner.addResult('Adding XHR breakpoint.');
-  const xhrBreakpointsPane = runtime.sharedInstance(BrowserDebugger.XHRBreakpointsSidebarPane);
+  const xhrBreakpointsPane = BrowserDebugger.XHRBreakpointsSidebarPane.instance();
   xhrBreakpointsPane._setBreakpoint('test xhr breakpoint', true);
   TestRunner.addResult('Running axe on the XHR breakpoints pane.');
 

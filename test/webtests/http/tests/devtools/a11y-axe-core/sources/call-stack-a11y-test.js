@@ -28,7 +28,7 @@
   await TestRunner.addSnifferPromise(
       Sources.CallStackSidebarPane.prototype, '_updatedForTest');
 
-  const callStackPane = runtime.sharedInstance(Sources.CallStackSidebarPane);
+  const callStackPane = Sources.CallStackSidebarPane.instance();
   const callStackElement = callStackPane.contentElement;
   TestRunner.addResult(`Call stack pane content: ${TestRunner.clearSpecificInfoFromStackFrames(callStackElement.deepTextContent())}`);
   TestRunner.addResult('Running the axe-core linter on the call stack sidebar pane.');

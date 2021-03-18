@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import {postFileTeardown, preFileSetup, resetPages} from './hooks.js';
+import {getTestRunnerConfigSetting} from './test_runner_config.js';
 import {startServer, stopServer} from './test_server.js';
 
 /* eslint-disable no-console */
@@ -24,14 +25,17 @@ process.on('SIGINT', postFileTeardown);
 // https://mochajs.org/#global-setup-fixtures. These let us start one hosted
 // mode server and share it between all the parallel test runners.
 export async function mochaGlobalSetup(this: Mocha.Suite) {
-  if (process.env.TEST_SERVER_TYPE !== 'hosted-mode' && process.env.TEST_SERVER_TYPE !== 'component-docs') {
-    throw new Error(`Invalid test server type: ${process.env.TEST_SERVER_TYPE}`);
+  // TODO (jacktfranklin): remove fallback to process.env once test runner config migration is done: crbug.com/1186163
+  const TEST_SERVER_TYPE = getTestRunnerConfigSetting('test-server-type', process.env.TEST_SERVER_TYPE);
+
+  if (TEST_SERVER_TYPE !== 'hosted-mode' && TEST_SERVER_TYPE !== 'component-docs') {
+    throw new Error(`Invalid test server type: ${TEST_SERVER_TYPE}`);
   }
   // Start the test server in the 'main' process. In parallel mode, we
   // share one server between all parallel runners. The parallel runners are all
   // in different processes, so we pass the port number as an environment var.
-  process.env.testServerPort = String(await startServer(process.env.TEST_SERVER_TYPE));
-  console.log(`Started ${process.env.TEST_SERVER_TYPE} server on port ${process.env.testServerPort}`);
+  process.env.testServerPort = String(await startServer(TEST_SERVER_TYPE));
+  console.log(`Started ${TEST_SERVER_TYPE} server on port ${process.env.testServerPort}`);
 }
 
 export function mochaGlobalTeardown() {

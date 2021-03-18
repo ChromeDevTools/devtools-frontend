@@ -59,7 +59,11 @@ const spec = testFiles.map(fileName => {
 // of the application at the moment of the timeout. Here, 0 denotes "indefinite timeout".
 const timeout = process.env['DEBUG'] ? 0 : 5 * 1000;
 
-process.env.TEST_SERVER_TYPE = 'component-docs';
+const testServerConfig = getTestRunnerConfigSetting('test-server-type');
+if (!testServerConfig) {
+  // TODO (jacktfranklin): remove this once all scripts locally and all CQ bots use the new test runner and set --test-server-type=. crbug.com/1186163
+  process.env.TEST_SERVER_TYPE = 'component-docs';
+}
 module.exports = {
   require: path.join(__dirname, '..', 'conductor', 'mocha_hooks.js'),
   spec,

@@ -36,9 +36,10 @@ const DEVTOOLS_WAITUNTIL_EVENTS: puppeteer.PuppeteerLifeCycleEvent[] = ['network
 // When loading an empty page (including within the devtools window), we wait for it to be loaded using these events.
 const EMPTY_PAGE_WAITUNTIL_EVENTS: puppeteer.PuppeteerLifeCycleEvent[] = ['domcontentloaded'];
 
-const TEST_SERVER_TYPE = process.env.TEST_SERVER_TYPE;
+// TODO (jacktfranklin): remove fallback to process.env once test runner config migration is done: crbug.com/1186163
+const TEST_SERVER_TYPE = getTestRunnerConfigSetting('test-server-type', process.env.TEST_SERVER_TYPE);
 if (!TEST_SERVER_TYPE) {
-  throw new Error('Failed to run tests: process.env.TEST_SERVER_TYPE was not defined.');
+  throw new Error('Failed to run tests: test-server-type was not defined.');
 }
 
 // TODO: move this into a file

@@ -344,39 +344,6 @@
   "components/TargetDetachedDialog.js | websocketDisconnected": {
     "message": "Ŵéb̂Śôćk̂ét̂ d́îśĉón̂ńêćt̂éd̂"
   },
-  "console_counters/IssueCounter.ts | breakingChangeIssue": {
-    "message": "Â b́r̂éâḱîńĝ ćĥán̂ǵê íŝśûé: t̂h́ê ṕâǵê ḿâý ŝt́ôṕ ŵór̂ḱîńĝ ín̂ án̂ úp̂ćôḿîńĝ v́êŕŝíôń ôf́ Ĉh́r̂óm̂é"
-  },
-  "console_counters/IssueCounter.ts | breakingChanges": {
-    "message": "{issueCount, plural, =1 {# b̂ŕêák̂ín̂ǵ ĉh́âńĝé} other {# b̂ŕêák̂ín̂ǵ ĉh́âńĝéŝ}}"
-  },
-  "console_counters/IssueCounter.ts | improvementIssue": {
-    "message": "Âń îḿp̂ŕôv́êḿêńt̂ íŝśûé: t̂h́êŕê íŝ án̂ óp̂ṕôŕt̂ún̂ít̂ý t̂ó îḿp̂ŕôv́ê t́ĥé p̂áĝé"
-  },
-  "console_counters/IssueCounter.ts | pageErrorIssue": {
-    "message": "Â ṕâǵê ér̂ŕôŕ îśŝúê: t́ĥé p̂áĝé îś n̂ót̂ ẃôŕk̂ín̂ǵ ĉór̂ŕêćt̂ĺŷ"
-  },
-  "console_counters/IssueCounter.ts | pageErrors": {
-    "message": "{issueCount, plural, =1 {# p̂áĝé êŕr̂ór̂} other {# ṕâǵê ér̂ŕôŕŝ}}"
-  },
-  "console_counters/IssueCounter.ts | possibleImprovements": {
-    "message": "{issueCount, plural, =1 {# p̂óŝśîb́l̂é îḿp̂ŕôv́êḿêńt̂} other {# ṕôśŝíb̂ĺê ím̂ṕr̂óv̂ém̂én̂t́ŝ}}"
-  },
-  "console_counters/WarningErrorCounter.ts | openConsoleToViewS": {
-    "message": "Ôṕêń Ĉón̂śôĺê t́ô v́îéŵ {PH1}"
-  },
-  "console_counters/WarningErrorCounter.ts | openIssuesToView": {
-    "message": "{n, plural, =1 {Ôṕêń Îśŝúêś t̂ó v̂íêẃ # îśŝúê:} other {Óp̂én̂ Íŝśûéŝ t́ô v́îéŵ # íŝśûéŝ:}}"
-  },
-  "console_counters/WarningErrorCounter.ts | openLighthouseToView": {
-    "message": "{n, plural, =1 {Ôṕêń L̂íĝh́t̂h́ôúŝé t̂ó v̂íêẃ # v̂íôĺât́îón̂} other {Óp̂én̂ Ĺîǵĥt́ĥóûśê t́ô v́îéŵ # v́îól̂át̂íôńŝ}}"
-  },
-  "console_counters/WarningErrorCounter.ts | sErrors": {
-    "message": "{n, plural, =1 {# êŕr̂ór̂} other {# ér̂ŕôŕŝ}}"
-  },
-  "console_counters/WarningErrorCounter.ts | sWarnings": {
-    "message": "{n, plural, =1 {# ŵár̂ńîńĝ} other {# ẃâŕn̂ín̂ǵŝ}}"
-  },
   "cookie_table/CookiesTable.ts | cookies": {
     "message": "Ĉóôḱîéŝ"
   },
@@ -5266,6 +5233,39 @@
   },
   "panels/changes/ChangesView.ts | SkippingDMatchingLines": {
     "message": "( … Ŝḱîṕp̂ín̂ǵ {PH1} m̂át̂ćĥín̂ǵ l̂ín̂éŝ … )"
+  },
+  "panels/console_counters/IssueCounter.ts | breakingChangeIssue": {
+    "message": "Â b́r̂éâḱîńĝ ćĥán̂ǵê íŝśûé: t̂h́ê ṕâǵê ḿâý ŝt́ôṕ ŵór̂ḱîńĝ ín̂ án̂ úp̂ćôḿîńĝ v́êŕŝíôń ôf́ Ĉh́r̂óm̂é"
+  },
+  "panels/console_counters/IssueCounter.ts | breakingChanges": {
+    "message": "{issueCount, plural, =1 {# b̂ŕêák̂ín̂ǵ ĉh́âńĝé} other {# b̂ŕêák̂ín̂ǵ ĉh́âńĝéŝ}}"
+  },
+  "panels/console_counters/IssueCounter.ts | improvementIssue": {
+    "message": "Âń îḿp̂ŕôv́êḿêńt̂ íŝśûé: t̂h́êŕê íŝ án̂ óp̂ṕôŕt̂ún̂ít̂ý t̂ó îḿp̂ŕôv́ê t́ĥé p̂áĝé"
+  },
+  "panels/console_counters/IssueCounter.ts | pageErrorIssue": {
+    "message": "Â ṕâǵê ér̂ŕôŕ îśŝúê: t́ĥé p̂áĝé îś n̂ót̂ ẃôŕk̂ín̂ǵ ĉór̂ŕêćt̂ĺŷ"
+  },
+  "panels/console_counters/IssueCounter.ts | pageErrors": {
+    "message": "{issueCount, plural, =1 {# p̂áĝé êŕr̂ór̂} other {# ṕâǵê ér̂ŕôŕŝ}}"
+  },
+  "panels/console_counters/IssueCounter.ts | possibleImprovements": {
+    "message": "{issueCount, plural, =1 {# p̂óŝśîb́l̂é îḿp̂ŕôv́êḿêńt̂} other {# ṕôśŝíb̂ĺê ím̂ṕr̂óv̂ém̂én̂t́ŝ}}"
+  },
+  "panels/console_counters/WarningErrorCounter.ts | openConsoleToViewS": {
+    "message": "Ôṕêń Ĉón̂śôĺê t́ô v́îéŵ {PH1}"
+  },
+  "panels/console_counters/WarningErrorCounter.ts | openIssuesToView": {
+    "message": "{n, plural, =1 {Ôṕêń Îśŝúêś t̂ó v̂íêẃ # îśŝúê:} other {Óp̂én̂ Íŝśûéŝ t́ô v́îéŵ # íŝśûéŝ:}}"
+  },
+  "panels/console_counters/WarningErrorCounter.ts | openLighthouseToView": {
+    "message": "{n, plural, =1 {Ôṕêń L̂íĝh́t̂h́ôúŝé t̂ó v̂íêẃ # v̂íôĺât́îón̂} other {Óp̂én̂ Ĺîǵĥt́ĥóûśê t́ô v́îéŵ # v́îól̂át̂íôńŝ}}"
+  },
+  "panels/console_counters/WarningErrorCounter.ts | sErrors": {
+    "message": "{n, plural, =1 {# êŕr̂ór̂} other {# ér̂ŕôŕŝ}}"
+  },
+  "panels/console_counters/WarningErrorCounter.ts | sWarnings": {
+    "message": "{n, plural, =1 {# ŵár̂ńîńĝ} other {# ẃâŕn̂ín̂ǵŝ}}"
   },
   "panels/console/console-meta.ts | autocompleteFromHistory": {
     "message": "Âút̂óĉóm̂ṕl̂ét̂é f̂ŕôḿ ĥíŝt́ôŕŷ"

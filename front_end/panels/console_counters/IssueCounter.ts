@@ -2,12 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as BrowserSDK from '../browser_sdk/browser_sdk.js';
-import * as Common from '../common/common.js';
-import * as i18n from '../i18n/i18n.js';
-import * as SDK from '../sdk/sdk.js';
-import * as LitHtml from '../third_party/lit-html/lit-html.js';
-import * as UIComponents from '../ui/components/components.js';
+import * as BrowserSDK from '../../browser_sdk/browser_sdk.js';
+import * as Common from '../../common/common.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as SDK from '../../sdk/sdk.js';
+import * as LitHtml from '../../third_party/lit-html/lit-html.js';
+import * as UIComponents from '../../ui/components/components.js';
 
 const UIStrings = {
   /**
@@ -35,7 +35,7 @@ const UIStrings = {
  */
   possibleImprovements: '{issueCount, plural, =1 {# possible improvement} other {# possible improvements}}',
 };
-const str_ = i18n.i18n.registerUIStrings('console_counters/IssueCounter.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/console_counters/IssueCounter.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export function getIssueKindIconData(issueKind: SDK.Issue.IssueKind): UIComponents.Icon.IconWithName {

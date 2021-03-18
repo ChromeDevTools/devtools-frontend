@@ -2,7 +2,7 @@
   "modules" : [
     { "name": "browser_sdk", "type": "autostart" },
     { "name": "components", "type": "autostart"},
-    { "name": "console_counters", "type": "autostart" },
+    { "name": "panels/console_counters", "type": "autostart" },
     { "name": "extensions", "type": "autostart" },
     { "name": "main", "type": "autostart" },
     { "name": "persistence", "type": "autostart" },

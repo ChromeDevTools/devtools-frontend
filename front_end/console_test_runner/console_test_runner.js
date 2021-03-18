@@ -5,7 +5,7 @@
 import '../test_runner/test_runner.js';
 import '../panels/console/console-legacy.js';
 import '../object_ui/object_ui-legacy.js';
-import '../console_counters/console_counters-legacy.js';
+import '../panels/console_counters/console_counters-legacy.js';
 
 /**
  * @fileoverview using private properties isn't a Closure violation in tests.

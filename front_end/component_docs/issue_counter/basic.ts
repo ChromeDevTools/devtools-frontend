@@ -4,13 +4,13 @@
 
 import * as FrontendHelpers from '../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
 import * as ComponentHelpers from '../../component_helpers/component_helpers.js';
-import type * as ConsoleCountersModule from '../../console_counters/console_counters.js';
+import type * as ConsoleCountersModule from '../../panels/console_counters/console_counters.js';
 import type * as BrowserSDKModule from '../../browser_sdk/browser_sdk.js';
 
 await ComponentHelpers.ComponentServerSetup.setup();
 await FrontendHelpers.initializeGlobalVars();
 
-const ConsoleCounters: typeof ConsoleCountersModule = await import('../../console_counters/console_counters.js');
+const ConsoleCounters: typeof ConsoleCountersModule = await import('../../panels/console_counters/console_counters.js');
 
 function appendComponent(data: ConsoleCountersModule.IssueCounter.IssueCounterData) {
   const component = new ConsoleCounters.IssueCounter.IssueCounter();

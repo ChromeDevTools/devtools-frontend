@@ -4,8 +4,8 @@
 
 import * as BrowserSDK from '../browser_sdk/browser_sdk.js';
 import * as Common from '../common/common.js';
-import * as ConsoleCounters from '../console_counters/console_counters.js';
 import * as i18n from '../i18n/i18n.js';
+import * as ConsoleCounters from '../panels/console_counters/console_counters.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 

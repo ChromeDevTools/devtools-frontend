@@ -3,7 +3,7 @@
     "test_runner",
     "panels/console",
     "object_ui",
-    "console_counters"
+    "panels/console_counters"
   ],
   "modules": [
     "console_test_runner.js"

@@ -4,14 +4,14 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as BrowserSDK from '../browser_sdk/browser_sdk.js';
-import * as Common from '../common/common.js';
-import * as Host from '../host/host.js';
-import * as i18n from '../i18n/i18n.js';
-import * as Root from '../root/root.js';
-import * as SDK from '../sdk/sdk.js';
-import * as Components from '../ui/components/components.js';
-import * as UI from '../ui/ui.js';
+import * as BrowserSDK from '../../browser_sdk/browser_sdk.js';
+import * as Common from '../../common/common.js';
+import * as Host from '../../host/host.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as Root from '../../root/root.js';
+import * as SDK from '../../sdk/sdk.js';
+import * as Components from '../../ui/components/components.js';
+import * as UI from '../../ui/ui.js';
 import {getIssueCountsEnumeration} from './IssueCounter.js';
 
 const UIStrings = {
@@ -38,7 +38,7 @@ const UIStrings = {
   */
   openIssuesToView: '{n, plural, =1 {Open Issues to view # issue:} other {Open Issues to view # issues:}}',
 };
-const str_ = i18n.i18n.registerUIStrings('console_counters/WarningErrorCounter.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/console_counters/WarningErrorCounter.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 let warningErrorCounterInstance: WarningErrorCounter;

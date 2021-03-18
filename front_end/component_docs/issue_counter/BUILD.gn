@@ -13,7 +13,7 @@ ts_library("ts") {
     "../../../test/unittests/front_end/helpers",
     "../../browser_sdk:bundle",
     "../../component_helpers:bundle",
-    "../../console_counters:bundle",
+    "../../panels/console_counters:bundle",
     "../../ui/components:bundle",
   ]
 }

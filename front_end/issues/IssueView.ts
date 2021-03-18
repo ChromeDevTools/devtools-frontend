@@ -6,11 +6,11 @@
 
 import * as Common from '../common/common.js';
 import * as Components from '../components/components.js';
-import * as ConsoleCounters from '../console_counters/console_counters.js';
 import * as Elements from '../elements/elements.js';
 import * as Host from '../host/host.js';
 import * as i18n from '../i18n/i18n.js';
 import * as Network from '../network/network.js';
+import * as ConsoleCounters from '../panels/console_counters/console_counters.js';
 import * as Platform from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as WebComponents from '../ui/components/components.js';

@@ -15,7 +15,7 @@ import './components/components-legacy.js';
 import './persistence/persistence-legacy.js';
 import './browser_sdk/browser_sdk.js';
 import './extensions/extensions-legacy.js';
-import './console_counters/console_counters-legacy.js';
+import './panels/console_counters/console_counters-legacy.js';
 import './sources/sources-meta.js';
 import './profiler/profiler-meta.js';
 import './panels/console/console-meta.js';
@@ -32,6 +32,6 @@ import './perf_ui/perf_ui-meta.js';
 import './quick_open/quick_open-meta.js';
 import './sdk/sdk-meta.js';
 import './source_frame/source_frame-meta.js';
-import './console_counters/console_counters-meta.js';
+import './panels/console_counters/console_counters-meta.js';
 import './object_ui/object_ui-meta.js';
 // We generate the descriptors in this file, which depend on the runtime.

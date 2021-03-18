@@ -344,39 +344,6 @@
   "components/TargetDetachedDialog.js | websocketDisconnected": {
     "message": "WebSocket disconnected"
   },
-  "console_counters/IssueCounter.ts | breakingChangeIssue": {
-    "message": "A breaking change issue: the page may stop working in an upcoming version of Chrome"
-  },
-  "console_counters/IssueCounter.ts | breakingChanges": {
-    "message": "{issueCount, plural, =1 {# breaking change} other {# breaking changes}}"
-  },
-  "console_counters/IssueCounter.ts | improvementIssue": {
-    "message": "An improvement issue: there is an opportunity to improve the page"
-  },
-  "console_counters/IssueCounter.ts | pageErrorIssue": {
-    "message": "A page error issue: the page is not working correctly"
-  },
-  "console_counters/IssueCounter.ts | pageErrors": {
-    "message": "{issueCount, plural, =1 {# page error} other {# page errors}}"
-  },
-  "console_counters/IssueCounter.ts | possibleImprovements": {
-    "message": "{issueCount, plural, =1 {# possible improvement} other {# possible improvements}}"
-  },
-  "console_counters/WarningErrorCounter.ts | openConsoleToViewS": {
-    "message": "Open Console to view {PH1}"
-  },
-  "console_counters/WarningErrorCounter.ts | openIssuesToView": {
-    "message": "{n, plural, =1 {Open Issues to view # issue:} other {Open Issues to view # issues:}}"
-  },
-  "console_counters/WarningErrorCounter.ts | openLighthouseToView": {
-    "message": "{n, plural, =1 {Open Lighthouse to view # violation} other {Open Lighthouse to view # violations}}"
-  },
-  "console_counters/WarningErrorCounter.ts | sErrors": {
-    "message": "{n, plural, =1 {# error} other {# errors}}"
-  },
-  "console_counters/WarningErrorCounter.ts | sWarnings": {
-    "message": "{n, plural, =1 {# warning} other {# warnings}}"
-  },
   "cookie_table/CookiesTable.ts | cookies": {
     "message": "Cookies"
   },
@@ -5266,6 +5233,39 @@
   },
   "panels/changes/ChangesView.ts | SkippingDMatchingLines": {
     "message": "( … Skipping {PH1} matching lines … )"
+  },
+  "panels/console_counters/IssueCounter.ts | breakingChangeIssue": {
+    "message": "A breaking change issue: the page may stop working in an upcoming version of Chrome"
+  },
+  "panels/console_counters/IssueCounter.ts | breakingChanges": {
+    "message": "{issueCount, plural, =1 {# breaking change} other {# breaking changes}}"
+  },
+  "panels/console_counters/IssueCounter.ts | improvementIssue": {
+    "message": "An improvement issue: there is an opportunity to improve the page"
+  },
+  "panels/console_counters/IssueCounter.ts | pageErrorIssue": {
+    "message": "A page error issue: the page is not working correctly"
+  },
+  "panels/console_counters/IssueCounter.ts | pageErrors": {
+    "message": "{issueCount, plural, =1 {# page error} other {# page errors}}"
+  },
+  "panels/console_counters/IssueCounter.ts | possibleImprovements": {
+    "message": "{issueCount, plural, =1 {# possible improvement} other {# possible improvements}}"
+  },
+  "panels/console_counters/WarningErrorCounter.ts | openConsoleToViewS": {
+    "message": "Open Console to view {PH1}"
+  },
+  "panels/console_counters/WarningErrorCounter.ts | openIssuesToView": {
+    "message": "{n, plural, =1 {Open Issues to view # issue:} other {Open Issues to view # issues:}}"
+  },
+  "panels/console_counters/WarningErrorCounter.ts | openLighthouseToView": {
+    "message": "{n, plural, =1 {Open Lighthouse to view # violation} other {Open Lighthouse to view # violations}}"
+  },
+  "panels/console_counters/WarningErrorCounter.ts | sErrors": {
+    "message": "{n, plural, =1 {# error} other {# errors}}"
+  },
+  "panels/console_counters/WarningErrorCounter.ts | sWarnings": {
+    "message": "{n, plural, =1 {# warning} other {# warnings}}"
   },
   "panels/console/console-meta.ts | autocompleteFromHistory": {
     "message": "Autocomplete from history"

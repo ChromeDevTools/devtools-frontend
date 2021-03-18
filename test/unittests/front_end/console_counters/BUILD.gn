@@ -11,7 +11,7 @@ ts_library("console_counters") {
   deps = [
     "../../../../front_end/browser_sdk:bundle",
     "../../../../front_end/common:bundle",
-    "../../../../front_end/console_counters:bundle",
+    "../../../../front_end/panels/console_counters:bundle",
     "../../../../front_end/ui:bundle",
     "../browser_sdk",
     "../helpers",

@@ -6,7 +6,6 @@ ts_library("missing_entrypoints") {
 
   deps = [
     "../../../../front_end/cm",
-    "../../../../front_end/console_counters:bundle",
     "../../../../front_end/css_overview:bundle",
     "../../../../front_end/developer_resources:bundle",
     "../../../../front_end/heap_snapshot_model:bundle",
@@ -24,6 +23,7 @@ ts_library("missing_entrypoints") {
     "../../../../front_end/panels/browser_debugger:bundle",
     "../../../../front_end/panels/changes:bundle",
     "../../../../front_end/panels/console:bundle",
+    "../../../../front_end/panels/console_counters:bundle",
     "../../../../front_end/performance_monitor:bundle",
     "../../../../front_end/profiler:bundle",
     "../../../../front_end/protocol_monitor:bundle",

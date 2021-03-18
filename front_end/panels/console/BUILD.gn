@@ -23,7 +23,6 @@ devtools_module("console") {
     "../../browser_sdk:bundle",
     "../../common:bundle",
     "../../components:bundle",
-    "../../console_counters:bundle",
     "../../data_grid:bundle",
     "../../host:bundle",
     "../../i18n:bundle",
@@ -35,6 +34,7 @@ devtools_module("console") {
     "../../theme_support:bundle",
     "../../ui:bundle",
     "../../ui/components:bundle",
+    "../console_counters:bundle",
   ]
 }
 

@@ -190,7 +190,7 @@ const propertySorter = (propA, propB) => {
 export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
   constructor() {
     super(true);
-    this.registerRequiredCSS('elements/computedStyleSidebarPane.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('elements/computedStyleSidebarPane.css', {enableLegacyPatching: false});
 
     this._computedStyleModel = new ComputedStyleModel();
     this._computedStyleModel.addEventListener(Events.ComputedStyleChanged, this.update, this);

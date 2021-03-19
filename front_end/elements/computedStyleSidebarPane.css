@@ -10,8 +10,7 @@
 }
 
 .styles-sidebar-pane-toolbar {
-  border-bottom: 1px solid #eee; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  border-bottom: 1px solid var(--color-details-hairline-light);
   flex-shrink: 0;
 }
 
@@ -35,8 +34,7 @@
 }
 
 .styles-sidebar-pane-filter-box > input::placeholder {
-  color: rgb(0 0 0 / 54%); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-text-disabled);
 }
 
 @media (forced-colors: active) {

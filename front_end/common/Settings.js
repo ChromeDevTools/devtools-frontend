@@ -35,7 +35,7 @@ import {Color, Format} from './Color.js';  // eslint-disable-line no-unused-vars
 import {Console} from './Console.js';
 import {EventDescriptor, EventTargetEvent} from './EventTarget.js';  // eslint-disable-line no-unused-vars
 import {ObjectWrapper} from './Object.js';
-import {getLocalizedSettingsCategory, getRegisteredSettings, RegExpSettingItem, registerSettingExtension, registerSettingsForTest, SettingCategory, SettingExtensionOption, SettingRegistration, SettingType} from './SettingRegistration.js';  // eslint-disable-line no-unused-vars
+import {getLocalizedSettingsCategory, getRegisteredSettings, RegExpSettingItem, registerSettingExtension, registerSettingsForTest, resetSettings, SettingCategory, SettingExtensionOption, SettingRegistration, SettingType} from './SettingRegistration.js';  // eslint-disable-line no-unused-vars
 
 /**
  * @type {!Settings|undefined}
@@ -1186,6 +1186,7 @@ export {
   SettingRegistration,
   SettingType,
   registerSettingsForTest,
+  resetSettings,
 };
 
 /**

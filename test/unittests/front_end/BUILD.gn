@@ -20,6 +20,7 @@ group("front_end") {
     "emulation",
     "formatter_worker",
     "har_importer",
+    "help",
     "i18n",
     "inline_editor",
     "issues",

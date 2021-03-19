@@ -2,11 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
-import * as Root from '../root/root.js';
 import * as UI from '../ui/ui.js';  // eslint-disable-line no-unused-vars
 
 import {releaseNoteText} from './ReleaseNoteText.js';
@@ -17,12 +14,14 @@ export const releaseNoteViewId: string = 'release-note';
 
 let latestReleaseNoteInstance: ReleaseNote;
 
+let releaseNotesForTest: ReleaseNote[];
+
+let releaseNoteVersionSetting: Common.Settings.Setting<number>;
+
 export function latestReleaseNote(): ReleaseNote {
-  // @ts-ignore Included only for layout tests.
-  const globalReleaseNotes: ReleaseNote[] = self.Help.releaseNoteText;
   if (!latestReleaseNoteInstance) {
     latestReleaseNoteInstance =
-        (globalReleaseNotes || releaseNoteText).reduce((acc, note) => note.version > acc.version ? note : acc);
+        (releaseNotesForTest || releaseNoteText).reduce((acc, note) => note.version > acc.version ? note : acc);
   }
   return latestReleaseNoteInstance;
 }
@@ -35,21 +34,33 @@ export function showReleaseNoteIfNeeded(): void {
       Common.Settings.Settings.instance().moduleSetting('help.show-release-note').get());
 }
 
+export function setReleaseNotesForTest(releaseNote: ReleaseNote[]): void {
+  releaseNotesForTest = releaseNote;
+}
+
+export function getReleaseNoteVersionSetting(): Common.Settings.Setting<number> {
+  if (!releaseNoteVersionSetting) {
+    releaseNoteVersionSetting = Common.Settings.Settings.instance().createSetting(releaseVersionSeen, 0);
+  }
+  return releaseNoteVersionSetting;
+}
+
 export function innerShowReleaseNoteIfNeeded(
-    lastSeenVersion: number, latestVersion: number, showReleaseNote: boolean): void {
+    lastSeenVersion: number, latestVersion: number, showReleaseNote: boolean): boolean {
   const releaseNoteVersionSetting = Common.Settings.Settings.instance().createSetting(releaseVersionSeen, 0);
   if (!lastSeenVersion) {
     releaseNoteVersionSetting.set(latestVersion);
-    return;
+    return false;
   }
   if (!showReleaseNote) {
-    return;
+    return false;
   }
   if (lastSeenVersion >= latestVersion) {
-    return;
+    return false;
   }
   releaseNoteVersionSetting.set(latestVersion);
   UI.ViewManager.ViewManager.instance().showView(releaseNoteViewId, true);
+  return true;
 }
 
 let helpLateInitializationInstance: HelpLateInitialization;
@@ -64,7 +75,6 @@ export class HelpLateInitialization implements Common.Runnable.Runnable {
 
   async run(): Promise<void> {
     if (!Host.InspectorFrontendHost.isUnderTest()) {
-      await Root.Runtime.Runtime.instance().loadModulePromise('help');
       showReleaseNoteIfNeeded();
     }
   }

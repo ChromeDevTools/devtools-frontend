@@ -116,6 +116,9 @@ export async function initializeGlobalVars({reset = true} = {}) {
     createSettingValue(Common.Settings.SettingCategory.GRID, 'showGridTrackSizes', true),
     createSettingValue(Common.Settings.SettingCategory.NONE, 'activeKeybindSet', '', Common.Settings.SettingType.ENUM),
     createSettingValue(Common.Settings.SettingCategory.NONE, 'userShortcuts', [], Common.Settings.SettingType.ARRAY),
+    createSettingValue(
+        Common.Settings.SettingCategory.APPEARANCE, 'help.show-release-note', true,
+        Common.Settings.SettingType.BOOLEAN),
   ];
 
   Common.Settings.registerSettingsForTest(settings, reset);
@@ -148,10 +151,12 @@ export async function deinitializeGlobalVars() {
   SDK.SDKModel.TargetManager.removeInstance();
   Root.Runtime.Runtime.removeInstance();
   Common.Settings.Settings.removeInstance();
+  Common.Settings.resetSettings();
 
   // Protect against the dynamic import not having happened.
   if (UI) {
     UI.ZoomManager.ZoomManager.removeInstance();
+    UI.ViewManager.ViewManager.removeInstance();
   }
 }
 

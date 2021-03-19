@@ -133,7 +133,7 @@ export class PreRegisteredView {
 }
 
 /**
- * @type {!ViewManager}
+ * @type {!ViewManager|undefined}
  */
 let viewManagerInstance;
 
@@ -200,6 +200,10 @@ export class ViewManager {
     }
 
     return viewManagerInstance;
+  }
+
+  static removeInstance() {
+    viewManagerInstance = undefined;
   }
 
   /**

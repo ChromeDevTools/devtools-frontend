@@ -105,6 +105,10 @@ export function registerSettingsForTest(settings: Array<SettingRegistration>, fo
   }
 }
 
+export function resetSettings(): void {
+  registeredSettings = [];
+}
+
 export const enum SettingCategory {
   NONE = '',  // `NONE` must be a falsy value. Legacy code uses if-checks for the category.
   ELEMENTS = 'ELEMENTS',

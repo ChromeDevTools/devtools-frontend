@@ -20,7 +20,7 @@ const THEME_VARIABLES_LIGHT = new Map([
   ['--color-details-hairline', '#cacdd1'],
   ['--color-link', '#1a73e8'],
   ['--color-accent-red', '#d93025'],
-  ['--color-accent-green', '#d93025'],
+  ['--color-accent-green', '#188038'],
   ['--color-syntax-1', '#c80000'],
   ['--color-syntax-2', '#881280'],
   ['--color-syntax-3', '#1a1aa6'],

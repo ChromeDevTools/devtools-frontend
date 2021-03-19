@@ -22,7 +22,7 @@
    * Chat to jacktfranklin@ or petermueller@ if you have questions.
    * https://crbug.com/1122511
    */
-  --accent-color: #1a73e8;
+  --accent-color: var(--color-primary);
   --accent-fg-color: #1a73e8;
   --accent-color-hover: #3b86e8;
   --accent-fg-color-hover: #1567d3;
@@ -38,7 +38,7 @@
   --selection-inactive-bg-color: #dadada;
   --tab-selected-fg-color: #333;
   --tab-selected-bg-color: var(--toolbar-bg-color);
-  --divider-color: #d0d0d0;
+  --divider-color: var(--color-details-hairline);
   --divider-border: 1px solid var(--divider-color);
   --focus-ring-inactive-shadow: 0 0 0 1px var(--focus-ring-inactive-shadow-color);
   --focus-ring-active-shadow: 0 0 0 1px var(--accent-color);

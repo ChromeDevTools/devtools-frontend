@@ -86,7 +86,7 @@ export class FrameworkIgnoreListSettingsTab extends UI.Widget.VBox implements
 
   constructor() {
     super(true);
-    this.registerRequiredCSS('settings/frameworkIgnoreListSettingsTab.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('settings/frameworkIgnoreListSettingsTab.css', {enableLegacyPatching: false});
 
     const header = this.contentElement.createChild('div', 'header');
     header.textContent = i18nString(UIStrings.frameworkIgnoreList);
@@ -104,7 +104,7 @@ export class FrameworkIgnoreListSettingsTab extends UI.Widget.VBox implements
 
     this._list = new UI.ListWidget.ListWidget(this);
     this._list.element.classList.add('ignore-list');
-    this._list.registerRequiredCSS('settings/frameworkIgnoreListSettingsTab.css', {enableLegacyPatching: true});
+    this._list.registerRequiredCSS('settings/frameworkIgnoreListSettingsTab.css', {enableLegacyPatching: false});
 
     const placeholder = document.createElement('div');
     placeholder.classList.add('ignore-list-empty');

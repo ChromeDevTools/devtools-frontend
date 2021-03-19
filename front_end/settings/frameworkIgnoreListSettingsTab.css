@@ -10,8 +10,7 @@
 
 .header {
   padding: 0 0 6px;
-  border-bottom: 1px solid #eee; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  border-bottom: var(--divider-border);
   font-size: 18px;
   font-weight: normal;
   flex: none;
@@ -65,8 +64,7 @@
   white-space: nowrap;
   text-overflow: ellipsis;
   user-select: none;
-  color: #222; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-text-primary);
   overflow: hidden;
 }
 
@@ -85,8 +83,7 @@
 
 .ignore-list-separator {
   flex: 0 0 1px;
-  background-color: rgb(231 231 231); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  background-color: var(--divider-color);
   height: 30px;
   margin: 0 4px;
 }

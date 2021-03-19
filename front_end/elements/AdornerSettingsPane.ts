@@ -127,7 +127,7 @@ export class AdornerSettingsPane extends HTMLElement {
           width: 1.5em;
           height: 1.5em;
           border: none;
-          border-radius: 1em;
+          border-radius: 50%;
           background-color: var(--color-background-elevation-1);
           cursor: pointer;
         }

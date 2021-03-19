@@ -205,7 +205,7 @@ export class CSSAngleEditor extends HTMLElement {
           left: -0.35em;
           width: 1em;
           height: 1em;
-          border-radius: 1em;
+          border-radius: 50%;
           cursor: pointer;
           box-shadow: 0 0 5px hsl(0deg 0% 0% / 30%); /* stylelint-disable-line plugin/use_theme_colors */
           /* See: crbug.com/1152736 for color variable migration. */

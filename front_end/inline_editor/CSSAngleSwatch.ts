@@ -44,7 +44,7 @@ export class CSSAngleSwatch extends HTMLElement {
           width: 1em;
           height: 1em;
           border: 1px solid var(--selection-inactive-fg-color);
-          border-radius: 1em;
+          border-radius: 50%;
           overflow: hidden;
           cursor: pointer;
           background-color: var(--toolbar-bg-color);

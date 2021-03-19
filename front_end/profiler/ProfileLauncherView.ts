@@ -85,7 +85,7 @@ export class ProfileLauncherView extends UI.Widget.VBox {
 
   constructor(profilesPanel: ProfilesPanel) {
     super();
-    this.registerRequiredCSS('profiler/profileLauncherView.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('profiler/profileLauncherView.css', {enableLegacyPatching: false});
 
     this._panel = profilesPanel;
     this.element.classList.add('profile-launcher-view');

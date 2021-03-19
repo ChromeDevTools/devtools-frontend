@@ -24,8 +24,7 @@
 }
 
 .profile-launcher-view-content p {
-  color: hsl(0deg 0% 45%); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-text-secondary);
   margin-top: 1px;
   margin-left: 22px;
 }
@@ -35,22 +34,7 @@
 }
 
 .profile-launcher-view-content button.running {
-  color: hsl(0deg 100% 58%); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
-}
-
-.profile-launcher-view-content button.running:hover {
-  color: hsl(0deg 100% 42%); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
-}
-
-.profile-launcher-view-content button:not(:disabled):hover.running {
-  color: HighlightText;
-}
-
-body.inactive .profile-launcher-view-content button.running:not(.toolbar-item) {
-  color: rgb(220 130 130); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-accent-red);
 }
 
 .profile-launcher-view-content > div {
@@ -67,8 +51,7 @@ body.inactive .profile-launcher-view-content button.running:not(.toolbar-item) {
 
 .profile-launcher-target-list {
   margin-bottom: 6px;
-  border: 1px solid #ddd; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  border: 1px solid var(--color-details-hairline);
   flex: 150px 1 0;
 }
 
@@ -110,13 +93,11 @@ body.inactive .profile-launcher-view-content button.running:not(.toolbar-item) {
 
 .profile-memory-usage-item-trend {
   min-width: 5em;
-  color: #008000; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-accent-green);
 }
 
 .profile-memory-usage-item-trend.increasing {
-  color: #f00; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-accent-red);
 }
 
 .profile-launcher-buttons {

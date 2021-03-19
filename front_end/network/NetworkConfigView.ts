@@ -52,7 +52,7 @@ let networkConfigViewInstance: NetworkConfigView;
 export class NetworkConfigView extends UI.Widget.VBox {
   constructor() {
     super(true);
-    this.registerRequiredCSS('network/networkConfigView.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('network/networkConfigView.css', {enableLegacyPatching: false});
     this.contentElement.classList.add('network-config');
 
     this._createCacheSection();

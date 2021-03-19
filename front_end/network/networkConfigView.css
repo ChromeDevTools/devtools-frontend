@@ -29,8 +29,7 @@
 .panel-section-separator {
   height: 1px;
   margin-bottom: 10px;
-  background: #f0f0f0; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  background: var(--color-details-hairline);
 }
 /* Disable cache */
 
@@ -71,11 +70,6 @@
 .network-config-ua input {
   display: block;
   width: calc(100% - 20px);
-}
-
-.network-config-ua input[readonly] {
-  background-color: rgb(235 235 228); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .network-config-ua input[type=text],

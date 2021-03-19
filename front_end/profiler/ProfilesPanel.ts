@@ -100,7 +100,7 @@ export class ProfilesPanel extends UI.Panel.PanelWithSidebar implements DataDisp
   constructor(name: string, profileTypes: ProfileType[], recordingActionId: string) {
     super(name);
     this._profileTypes = profileTypes;
-    this.registerRequiredCSS('profiler/heapProfiler.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('profiler/heapProfiler.css', {enableLegacyPatching: false});
     this.registerRequiredCSS('profiler/profilesPanel.css', {enableLegacyPatching: true});
     this.registerRequiredCSS('object_ui/objectValue.css', {enableLegacyPatching: true});
 

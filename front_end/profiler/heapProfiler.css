@@ -60,13 +60,11 @@
 .heap-snapshot-view td.object-column .objects-count {
   margin-left: 10px;
   font-size: 11px;
-  color: #808080; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-text-secondary);
 }
 
 .heap-snapshot-view tr:not(.selected) .object-value-id {
-  color: #808080; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-text-secondary);
 }
 
 .profile-view .heap-tracking-overview {
@@ -80,10 +78,8 @@
 
 .heap-snapshot-view .heap-snapshot-view-resizer {
   background-image: var(--image-file-toolbarResizerVertical);
-  background-color: #eee; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
-  border-bottom: 1px solid rgb(179 179 179); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  background-color: var(--color-background-elevation-1);
+  border-bottom: 1px solid var(--color-details-hairline);
   background-repeat: no-repeat;
   background-position: right center, center;
   flex: 0 0 21px;
@@ -137,13 +133,11 @@
 }
 
 .heap-snapshot-view tr:not(.selected) td.object-column span.heap-object-tag {
-  color: #888; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-text-secondary);
 }
 
 .heap-snapshot-view td.object-column span.grayed {
-  color: #808080; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-text-secondary);
 }
 
 .cycled-ancessor-node {
@@ -166,12 +160,6 @@
   pointer-events: auto;
 }
 
-#heap-recording-overview-container {
-  border-bottom: 1px solid rgb(0 0 0 / 30%); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
-  overflow: hidden;
-}
-
 .heap-recording-overview-canvas {
   position: absolute;
   top: 20px;
@@ -192,8 +180,7 @@
 .heap-allocation-stack .stack-frame {
   display: flex;
   justify-content: space-between;
-  border-bottom: 1px solid rgb(240 240 240); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  border-bottom: 1px solid var(--color-details-hairline);
   padding: 2px;
 }
 
@@ -207,13 +194,11 @@
 }
 
 .heap-allocation-stack .stack-frame:hover:not(:focus) {
-  background-color: rgb(0 0 0 / 10%); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  background-color: var(--color-background-hover-overlay);
 }
 
 .heap-allocation-stack .stack-frame .devtools-link {
-  color: rgb(33% 33% 33%); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-text-secondary);
 }
 
 .heap-allocation-stack .stack-frame:focus .devtools-link {

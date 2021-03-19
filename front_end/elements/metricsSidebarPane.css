@@ -46,8 +46,7 @@
 }
 
 .metrics .position {
-  border: 1px rgb(66% 66% 66%) dotted; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  border: 1px var(--color-text-secondary) dotted;
   background-color: var(--color-background);
   display: inline-block;
   text-align: center;
@@ -57,8 +56,7 @@
 }
 
 .metrics .margin {
-  border: 1px dashed rgb(48 57 66); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  border: 1px dashed var(--color-syntax-7);
   background-color: var(--color-background);
   display: inline-block;
   text-align: center;
@@ -69,8 +67,7 @@
 }
 
 .metrics .border {
-  border: 1px #000 solid; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  border: 1px var(--color-text-primary) solid;
   background-color: var(--color-background);
   display: inline-block;
   text-align: center;
@@ -81,8 +78,7 @@
 }
 
 .metrics .padding {
-  border: 1px #808080 dashed; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  border: 1px var(--color-text-disabled) dashed;
   background-color: var(--color-background);
   display: inline-block;
   text-align: center;
@@ -95,8 +91,7 @@
 
 .metrics .content {
   position: static;
-  border: 1px #808080 solid; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  border: 1px var(--color-text-disabled)  solid;
   background-color: var(--color-background);
   display: inline-block;
   text-align: center;

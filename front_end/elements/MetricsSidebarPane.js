@@ -36,7 +36,7 @@ import {ElementsSidebarPane} from './ElementsSidebarPane.js';
 export class MetricsSidebarPane extends ElementsSidebarPane {
   constructor() {
     super();
-    this.registerRequiredCSS('elements/metricsSidebarPane.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('elements/metricsSidebarPane.css', {enableLegacyPatching: false});
 
     /** @type {?SDK.CSSProperty.CSSProperty} */
     this.originalPropertyData = null;

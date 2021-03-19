@@ -1617,7 +1617,7 @@ export class DevToolsRadioButton extends HTMLSpanElement {
     this.radioElement.type = 'radio';
     this.labelElement.htmlFor = id;
     const root = createShadowRootWithCoreStyles(
-        this, {cssFile: 'ui/radioButton.css', enableLegacyPatching: true, delegatesFocus: undefined});
+        this, {cssFile: 'ui/radioButton.css', enableLegacyPatching: false, delegatesFocus: undefined});
     root.createChild('slot');
     this.addEventListener('click', this.radioClickHandler.bind(this), false);
   }

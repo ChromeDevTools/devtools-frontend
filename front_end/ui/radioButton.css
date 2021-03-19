@@ -5,17 +5,13 @@
  */
 
 ::slotted(input.dt-radio-button) {
-  --gradient-start: #fcfcfc;
-  --gradient-end: #dfdfdf;
-  --radio-dot: var(--image-file-radioDot);
+  --override-radio-dot: var(--image-file-radioDot);
 
   height: 17px;
   width: 17px;
   min-width: 17px;
-  border: 1px solid #a5a5a5; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
-  background-image: linear-gradient(to bottom, var(--gradient-start), var(--gradient-end)); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  border: 1px solid var(--color-details-hairline);
+  background-image: linear-gradient(to bottom, var(--color-background-elevation-0), var(--color-background-elevation-1));
   border-radius: 8px;
   appearance: none;
   vertical-align: middle;
@@ -23,9 +19,7 @@
 }
 
 ::slotted(input.dt-radio-button:checked) {
-  /* See: crbug.com/1152736 for color variable migration. */
-  /* stylelint-disable-next-line plugin/use_theme_colors */
-  background: var(--radio-dot) center no-repeat, linear-gradient(to bottom, var(--gradient-start), var(--gradient-end));
+  background: var(--override-radio-dot) center no-repeat, linear-gradient(to bottom, var(--color-background-elevation-0), var(--color-background-elevation-1));
 }
 
 ::slotted(input.dt-radio-button:focus) {
@@ -33,21 +27,7 @@
 }
 
 :host-context(.-theme-with-dark-background) ::slotted(input.dt-radio-button) {
-  --gradient-start: #030303;
-  --gradient-end: #202020;
-  --radio-dot: var(--image-file-radioDot-dark-theme);
-}
-
-::slotted(input.dt-radio-button:checked:active),
-::slotted(input.dt-radio-button:active:not(:disabled)) {
-  --gradient-start: #c2c2c2;
-  --gradient-end: #efefef;
-}
-
-:host-context(.-theme-with-dark-background) ::slotted(input.dt-radio-button:checked:active),
-:host-context(.-theme-with-dark-background) ::slotted(input.dt-radio-button:active:not(:disabled)) {
-  --gradient-start: #3d3d3d;
-  --gradient-end: #101010;
+  --override-radio-dot: var(--image-file-radioDot-dark-theme);
 }
 
 @media (forced-colors: active) {

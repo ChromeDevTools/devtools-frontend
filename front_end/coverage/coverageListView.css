@@ -28,42 +28,34 @@
 }
 
 .data-grid .selected td .bar {
-  border-top: 1px #fff solid; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
-  border-bottom: 1px #fff solid; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  border-top: 1px var(--color-background) solid;
+  border-bottom: 1px var(--color-background) solid;
 }
 
 .data-grid .selected td .bar:last-child {
-  border-right: 1px #fff solid; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  border-right: 1px var(--color-background) solid;
 }
 
 .data-grid .selected td .bar:first-child {
-  border-left: 1px #fff solid; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  border-left: 1px var(--color-background) solid;
 }
 
 .data-grid td .bar-unused-size {
-  background-color: #ee442f; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  background-color: var(--color-red);
 }
 
 .data-grid td .bar-used-size {
-  background-color: #63acbe; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  background-color: var(--color-green);
 }
 
 .data-grid td .percent-value {
-  color: #888; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-text-secondary);
   width: 45px;
   display: inline-block;
 }
 
 .data-grid:focus tr.selected span.percent-value {
-  color: #eee; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-text-secondary-selected);
 }
 
 @media (forced-colors: active) {

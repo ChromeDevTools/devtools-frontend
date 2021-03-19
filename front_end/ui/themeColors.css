@@ -32,11 +32,14 @@
   --color-selection-highlight-border: rgb(16 81 177);
   --color-text-primary: #202124;
   --color-text-secondary: #5f6368;
+  --color-text-secondary-selected: #bcb9b6;
   --color-text-disabled: #80868b;
   --color-details-hairline: #cacdd1;
   --color-details-hairline-light: #dfe1e3;
   --color-accent-red: #d93025;
+  --color-red: #ee442f;
   --color-accent-green: #188038;
+  --color-green: #63acbe;
   --color-link: var(--color-primary);
   --color-syntax-1: #c80000;
   --color-syntax-2: #881280;
@@ -81,6 +84,7 @@
   --color-selection-highlight-border: rgb(251 202 70);
   --color-text-primary: #e8eaed;
   --color-text-secondary: #9aa0a6;
+  --color-text-secondary-selected: #bcb9b6;
   --color-text-disabled: #80868b;
   --color-details-hairline: #494c50;
   --color-details-hairline-light: #36393b;

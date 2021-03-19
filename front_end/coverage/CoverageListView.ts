@@ -141,7 +141,7 @@ export class CoverageListView extends UI.Widget.VBox {
     this._nodeForCoverageInfo = new Map();
     this._isVisibleFilter = isVisibleFilter;
     this._highlightRegExp = null;
-    this.registerRequiredCSS('coverage/coverageListView.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('coverage/coverageListView.css', {enableLegacyPatching: false});
     const columns: DataGrid.DataGrid.ColumnDescriptor[] = [
       {id: 'url', title: i18nString(UIStrings.url), width: '250px', fixedWidth: false, sortable: true},
       {id: 'type', title: i18nString(UIStrings.type), width: '45px', fixedWidth: true, sortable: true},

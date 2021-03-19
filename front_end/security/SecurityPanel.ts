@@ -801,7 +801,7 @@ export class SecurityPanelSidebarTree extends UI.TreeOutline.TreeOutlineInShadow
   constructor(mainViewElement: SecurityPanelSidebarTreeElement, showOriginInPanel: (arg0: Origin) => void) {
     super();
     this.registerRequiredCSS('security/sidebar.css', {enableLegacyPatching: true});
-    this.registerRequiredCSS('security/lockIcon.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('security/lockIcon.css', {enableLegacyPatching: false});
     this.appendChild(mainViewElement);
 
     this._showOriginInPanel = showOriginInPanel;
@@ -984,7 +984,7 @@ export class SecurityMainView extends UI.Widget.VBox {
   constructor(panel: SecurityPanel) {
     super(true);
     this.registerRequiredCSS('security/mainView.css', {enableLegacyPatching: false});
-    this.registerRequiredCSS('security/lockIcon.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('security/lockIcon.css', {enableLegacyPatching: false});
     this.setMinimumSize(200, 100);
 
     this.contentElement.classList.add('security-main-view');
@@ -1479,7 +1479,7 @@ export class SecurityOriginView extends UI.Widget.VBox {
 
     this.element.classList.add('security-origin-view');
     this.registerRequiredCSS('security/originView.css', {enableLegacyPatching: true});
-    this.registerRequiredCSS('security/lockIcon.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('security/lockIcon.css', {enableLegacyPatching: false});
 
     const titleSection = this.element.createChild('div', 'title-section');
     const titleDiv = titleSection.createChild('div', 'title-section-header');

@@ -162,7 +162,7 @@ export class IssuesPane extends UI.Widget.VBox {
     this.createToolbars();
 
     this.issuesTree = new UI.TreeOutline.TreeOutlineInShadow();
-    this.issuesTree.registerRequiredCSS('issues/issuesTree.css', {enableLegacyPatching: true});
+    this.issuesTree.registerRequiredCSS('issues/issuesTree.css', {enableLegacyPatching: false});
     this.issuesTree.setShowSelectionOnKeyboardFocus(true);
     this.issuesTree.contentElement.classList.add('issues');
     this.contentElement.appendChild(this.issuesTree.element);

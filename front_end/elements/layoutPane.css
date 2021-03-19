@@ -210,7 +210,6 @@ that uses the dimensions to draw an outline around the element. */
 
 devtools-survey-link {
   --icon-color: var(--color-primary);
-  --issue-link: var(--color-primary);
   --issue-link-text-decoration: none;
   --issue-link-font-size: 12px;
   --issue-link-padding: 0;

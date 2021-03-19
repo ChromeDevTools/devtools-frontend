@@ -201,7 +201,7 @@ export class AffectedResourcesView extends UI.TreeOutline.TreeElement {
     frameCell.classList.add('affected-resource-cell');
     if (frame) {
       const icon = new WebComponents.Icon.Icon();
-      icon.data = {iconName: 'elements_panel_icon', color: 'var(--issue-link)', width: '16px', height: '16px'};
+      icon.data = {iconName: 'elements_panel_icon', color: 'var(--color-link)', width: '16px', height: '16px'};
       icon.classList.add('link', 'elements-panel');
       icon.onclick = async (): Promise<void> => {
         Host.userMetrics.issuesPanelResourceOpened(issue.getCategory(), AffectedItem.Element);
@@ -233,7 +233,7 @@ export class AffectedResourcesView extends UI.TreeOutline.TreeElement {
     const requestCell = document.createElement('td');
     requestCell.classList.add('affected-resource-cell');
     const icon = new WebComponents.Icon.Icon();
-    icon.data = {iconName: 'network_panel_icon', color: 'var(--issue-link)', width: '16px', height: '16px'};
+    icon.data = {iconName: 'network_panel_icon', color: 'var(--color-link)', width: '16px', height: '16px'};
     icon.classList.add('network-panel');
     requestCell.appendChild(icon);
 

@@ -13,21 +13,7 @@
 }
 
 .issues {
-  --issue-warning: #f2aa00;
-  --issue-gray: #5f6368;
-  --issue-link: #1967d2;
-  --issue-black: #202124;
-  --issue-code: #f0f0f0;
   --issue-indent: 8px;
-  --affected-resource-background: #f8f9fa;
-}
-
-:host-context(.-theme-with-dark-background) .issues {
-  --issue-gray: #ababab;
-  --issue-link: #8ab4f8;
-  --issue-black: #bdc6cf;
-  --issue-code: #0f0f0f;
-  --affected-resource-background: #3a3a3a;
 }
 /* Override whitespace behavior for tree items to allow wrapping */
 
@@ -58,10 +44,7 @@
   overflow: hidden;
   flex: none;
   transition: background-color 200ms;
-  background: #f3f3f3; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
-  border: 1px solid #e5e5e5; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  border: 1px solid var(--color-details-hairline-light);
   border-width: 0 0 1px;
 }
 
@@ -103,8 +86,7 @@ p {
 .title {
   flex: 1;
   font-size: 14px;
-  color: var(--issue-black); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-text-primary);
   font-weight: normal;
   user-select: text;
 }
@@ -114,8 +96,7 @@ p {
 }
 
 .body.children {
-  border-bottom: 1px solid #e5e5e5; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  border-bottom: 1px solid var(--color-details-hairline-light);
   padding: 6px 0;
   position: relative;
   padding-left: calc(var(--issue-indent) + 43px);
@@ -159,8 +140,7 @@ devtools-icon.leading-issue-icon {
 .message {
   line-height: 20px;
   font-size: 14px;
-  color: var(--issue-gray); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-text-secondary);
   margin-bottom: 4px;
   user-select: text;
 }
@@ -174,13 +154,11 @@ devtools-icon.leading-issue-icon {
 }
 
 .message code {
-  color: var(--issue-black); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-text-primary);
   font-size: 12px;
   user-select: text;
   cursor: text;
-  background: var(--issue-code); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  background: var(--color-background-elevation-1);
 }
 
 .separator::before {
@@ -191,8 +169,7 @@ devtools-icon.leading-issue-icon {
 
 .link {
   font-size: 14px;
-  color: var(--issue-link); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-link);
 }
 
 .link-wrapper {
@@ -207,8 +184,7 @@ devtools-icon.leading-issue-icon {
   font-weight: 500;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--issue-black); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-text-primary);
   display: inline-block;
 }
 
@@ -263,8 +239,7 @@ ul > li.plain-enum::before {
 .affected-resource-label {
   font-size: 14px;
   line-height: 20px;
-  color: var(--issue-black); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-text-primary);
   position: relative;
   cursor: pointer;
 }
@@ -279,8 +254,7 @@ ul > li.plain-enum::before {
 .affected-resource-element {
   font-size: 14px;
   line-height: 20px;
-  color: var(--issue-link); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-link);
   border: 0;
   border-collapse: collapse;
 }
@@ -317,8 +291,7 @@ ul > li.plain-enum::before {
 .affected-resource-source {
   font-size: 14px;
   line-height: 20px;
-  color: var(--issue-link); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-link);
   border: 0;
   border-collapse: collapse;
 }
@@ -330,24 +303,20 @@ ul > li.plain-enum::before {
 
 .affected-resource-header {
   font-size: 12px;
-  color: var(--issue-black); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-text-primary);
   padding-left: 2px;
 }
 
 .affected-resource-blocked-status {
-  color: #f00; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--issue-color-red);
 }
 
 .affected-resource-report-only-status {
-  color: var(--issue-warning); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--issue-color-yellow);
 }
 
 .affected-resource-cookie-info {
-  color: var(--issue-gray); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-text-secondary);
   padding: 2px;
   text-align: right;
 }
@@ -357,34 +326,29 @@ ul > li.plain-enum::before {
 }
 
 .affected-resource-mixed-content-info {
-  color: var(--issue-gray); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-text-secondary);
   padding: 2px;
 }
 
 .affected-resource-heavy-ad-info {
-  color: var(--issue-gray); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-text-secondary);
   padding: 2px;
 }
 
 .affected-resource-heavy-ad-info-frame {
   display: flex;
   align-items: center;
-  color: var(--issue-gray); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-text-secondary);
   padding: 2px;
 }
 
 .affected-resource-cell {
-  color: var(--issue-gray); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-text-secondary);
   padding: 2px;
 }
 
 .affected-resource-cell.link {
-  color: var(--issue-link); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-link);
 }
 
 .affected-resource-cell span.icon {
@@ -393,18 +357,15 @@ ul > li.plain-enum::before {
 }
 
 .affected-resource-cell [is=ui-icon].icon-mask.link {
-  background-color: var(--issue-link); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  background-color: var(--color-link);
 }
 
 .link [is=ui-icon].icon-mask.link {
-  background-color: var(--issue-link); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  background-color: var(--color-link);
 }
 
 .affected-resource-cell [is=ui-icon].icon-mask.unavailable {
-  background-color: var(--issue-warning); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  background-color: var(--issue-color-yellow);
 }
 
 .affected-resources > .parent {
@@ -413,13 +374,11 @@ ul > li.plain-enum::before {
 }
 
 .affected-resources > .parent.expanded {
-  background: var(--affected-resource-background); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  background: var(--color-background-elevation-0);
 }
 
 .affected-resources > .children.expanded {
-  background: var(--affected-resource-background); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  background: var(--color-background-elevation-0);
   padding: 6px 0 9px 5px;
   margin-bottom: 10px;
 }
@@ -440,8 +399,7 @@ ul > li.plain-enum::before {
 }
 
 .affected-resource-directive-info {
-  color: var(--issue-gray); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-text-secondary);
   padding: 2px;
   text-align: left;
 }

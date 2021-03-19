@@ -126,8 +126,7 @@ export class SurveyLink extends HTMLElement {
           text-decoration: var(--issue-link-text-decoration, underline);
           cursor: pointer;
           font-size: var(--issue-link-font-size, 14px);
-          color: var(--issue-link); /* stylelint-disable-line plugin/use_theme_colors */
-          /* See: crbug.com/1152736 for color variable migration. */
+          color: var(--color-link);
           border: none;
           background: none;
           font-family: inherit;
@@ -151,7 +150,7 @@ export class SurveyLink extends HTMLElement {
         }
       </style>
       <button class="link ${linkState}" tabindex=${ariaDisabled ? '-1' : '0'} .disabled=${ariaDisabled} aria-disabled=${ariaDisabled} @click=${this.sendSurvey}>
-        <devtools-icon class="link-icon" .data=${{iconName: 'feedback_thin_16x16_icon', color: 'var(--issue-link)', width: 'var(--issue-link-icon-size, 16px)', height: 'var(--issue-link-icon-size, 16px)'} as IconData}></devtools-icon><!--
+        <devtools-icon class="link-icon" .data=${{iconName: 'feedback_thin_16x16_icon', color: 'var(--color-link)', width: 'var(--issue-link-icon-size, 16px)', height: 'var(--issue-link-icon-size, 16px)'} as IconData}></devtools-icon><!--
       -->${linkText}
       </button>
     `;

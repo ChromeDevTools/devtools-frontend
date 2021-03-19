@@ -7,9 +7,7 @@
     "event_listeners",
     "text_editor"
   ],
-  "modules": [
-    "elements-legacy.js"
-  ],
+  "modules": [],
   "resources": [
     "classesPaneWidget.css",
     "computedStyleSidebarPane.css",

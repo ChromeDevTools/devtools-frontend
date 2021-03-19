@@ -6,9 +6,7 @@
     "browser_sdk",
     "text_editor"
   ],
-  "modules": [
-    "console-legacy.js"
-  ],
+  "modules": [],
   "resources": [
     "consoleContextSelector.css",
     "consolePinPane.css",

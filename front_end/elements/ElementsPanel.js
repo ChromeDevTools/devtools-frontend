@@ -1277,6 +1277,11 @@ export class ElementsPanel extends UI.Panel.Panel {
 ElementsPanel._firstInspectElementCompletedForTest = function() {};
 ElementsPanel._firstInspectElementNodeNameForTest = '';
 
+// @ts-ignore exported for Tests.js
+globalThis.Elements = globalThis.Elements || {};
+// @ts-ignore exported for Tests.js
+globalThis.Elements.ElementsPanel = ElementsPanel;
+
 /** @enum {symbol} */
 export const _splitMode = {
   Vertical: Symbol('Vertical'),

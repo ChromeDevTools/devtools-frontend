@@ -4,9 +4,7 @@
     "sources",
     "panels/console"
   ],
-  "modules": [
-    "browser_debugger-legacy.js"
-  ],
+  "modules": [],
   "resources": [
     "domBreakpointsSidebarPane.css",
     "categorizedBreakpointsSidebarPane.css",

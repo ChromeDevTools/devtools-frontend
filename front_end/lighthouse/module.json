@@ -6,9 +6,7 @@
     "inspector_main",
     "ui"
   ],
-  "modules": [
-    "lighthouse-legacy.js"
-  ],
+  "modules": [],
   "resources": [
     "../third_party/lighthouse/report-assets/template.html",
     "../third_party/lighthouse/report-assets/templates.html",

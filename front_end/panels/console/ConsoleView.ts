@@ -1390,6 +1390,11 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
   }
 }
 
+// @ts-ignore exported for Tests.js
+globalThis.Console = globalThis.Console || {};
+// @ts-ignore exported for Tests.js
+globalThis.Console.ConsoleView = ConsoleView;
+
 const persistedHistorySize = 300;
 
 export class ConsoleViewFilter {

@@ -57,6 +57,21 @@
     0 0 0 1px rgb(0 0 0 / 5%),
     0 2px 4px rgb(0 0 0 / 20%),
     0 2px 6px rgb(0 0 0 / 10%);
+  --drop-shadow-depth-1:
+    0 1px 2px rgb(60 64 67 / 30%),
+    0 1px 3px 1px rgb(60 64 67 / 15%);
+  --drop-shadow-depth-2:
+    0 1px 2px rgb(60 64 67 / 30%),
+    0 2px 6px 2px rgb(60 64 67 / 15%);
+  --drop-shadow-depth-3:
+    0 4px 8px 3px rgb(60 64 67 / 15%),
+    0 1px 3px rgb(60 64 67 / 30%);
+  --drop-shadow-depth-4:
+    0 6px 10px 4px rgb(60 64 67 / 15%),
+    0 2px 3px rgb(60 64 67 / 30%);
+  --drop-shadow-depth-5:
+    0 8px 12px 6px rgb(60 64 67 / 15%),
+    0 4px 4px rgb(60 64 67 / 30%);
   --box-shadow-outline-color: rgb(0 0 0 / 50%);
   /** These are the colors of the native Mac scrollbars */
   --color-scrollbar-mac: hsl(0deg 0% 56% / 60%);
@@ -111,6 +126,21 @@
     0 0 0 1px rgb(255 255 255 / 20%),
     0 2px 4px 2px rgb(0 0 0 / 20%),
     0 2px 6px 2px rgb(0 0 0 / 10%);
+  --drop-shadow-depth-1:
+    0 1px 2px rgb(0 0 0 / 30%),
+    0 1px 3px 1px rgb(0 0 0 / 15%);
+  --drop-shadow-depth-2:
+    0 1px 2px rgb(0 0 0 / 30%),
+    0 2px 6px 2px rgb(0 0 0 / 15%);
+  --drop-shadow-depth-3:
+    0 4px 8px 3px rgb(0 0 0 / 15%),
+    0 1px 3px rgb(0 0 0 / 30%);
+  --drop-shadow-depth-4:
+    0 6px 10px 4px rgb(0 0 0 / 15%),
+    0 2px 3px rgb(0 0 0 / 30%);
+  --drop-shadow-depth-5:
+    0 8px 12px 6px rgb(0 0 0 / 15%),
+    0 4px 4px rgb(0 0 0 / 30%);
   --box-shadow-outline-color: rgb(0 0 0 / 50%);
   --color-scrollbar-mac: #333;
   --color-scrollbar-mac-hover: #4b4c4f;

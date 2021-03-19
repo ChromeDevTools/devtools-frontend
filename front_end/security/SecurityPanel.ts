@@ -983,7 +983,7 @@ export class SecurityMainView extends UI.Widget.VBox {
   _securityState: Protocol.Security.SecurityState|null;
   constructor(panel: SecurityPanel) {
     super(true);
-    this.registerRequiredCSS('security/mainView.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('security/mainView.css', {enableLegacyPatching: false});
     this.registerRequiredCSS('security/lockIcon.css', {enableLegacyPatching: true});
     this.setMinimumSize(200, 100);
 

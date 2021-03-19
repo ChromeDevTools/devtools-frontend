@@ -11,6 +11,7 @@
   user-select: text;
   overflow-x: hidden;
   overflow-y: auto;
+  /* crbug.com/1152736 Consider moving --toolbar-bg-color to theme colors */
   background-color: var(--toolbar-bg-color);
 }
 
@@ -82,8 +83,7 @@
   border-style: solid;
   border-width: 1px 1px 0 0;
   background: var(--color-background);
-  border-color: rgb(217 217 217); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  border-color: var(--color-background-elevation-1);
 }
 
 .security-summary-secure .triangle-pointer-wrapper {
@@ -108,15 +108,13 @@
   border-width: 1px 0;
   font-size: 15px;
   background: var(--color-background);
-  border-color: rgb(217 217 217); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  border-color: var(--color-background-elevation-1);
 }
 
 .security-summary-secure .triangle-pointer,
 .security-summary-secure .security-summary-text,
 .security-explanation-title-secure {
-  color: #0b8043; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-accent-green);
 }
 
 .security-summary-insecure-broken .triangle-pointer,
@@ -124,8 +122,7 @@
 .security-explanation-title-neutral,
 .security-explanation-title-insecure,
 .security-explanation-title-insecure-broken {
-  color: #cb3626; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-accent-red);
 }
 
 .security-explanation-list {
@@ -140,8 +137,7 @@
 .security-explanations-main {
   margin-top: -5px;
   background-color: var(--color-background);
-  border-bottom: 1px solid rgb(230 230 230); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  border-bottom: 1px solid var(--color-background-elevation-1);
 }
 
 .security-explanations-extra {
@@ -153,8 +149,7 @@
   display: flex;
   white-space: nowrap;
   border: none;
-  color: rgb(90 90 90); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-text-secondary);
 }
 
 .security-explanation-text {
@@ -171,8 +166,7 @@
 }
 
 .security-explanation-title {
-  color: rgb(48 57 66); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-text-secondary);
   margin-top: 1px;
   margin-bottom: 8px;
 }

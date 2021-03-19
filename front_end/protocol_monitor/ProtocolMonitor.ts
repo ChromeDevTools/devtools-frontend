@@ -98,7 +98,6 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
     this._started = false;
     this._startTime = 0;
     this._dataGridRowForId = new Map();
-    this.registerRequiredCSS('protocol_monitor/protocolMonitor.css', {enableLegacyPatching: true});
     const topToolbar = new UI.Toolbar.Toolbar('protocol-monitor-toolbar', this.contentElement);
     const recordButton = new UI.Toolbar.ToolbarToggle(
         i18nString(UIStrings.record), 'largeicon-start-recording', 'largeicon-stop-recording');

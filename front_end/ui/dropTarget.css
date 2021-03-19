@@ -11,21 +11,20 @@
   left: 0;
   right: 0;
   display: flex;
-  background-color: rgb(255 255 255 / 80%); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  background-color: var(--color-background-opacity-80);
   z-index: 1000;
 }
 
 .drop-target-message {
   flex: auto;
   font-size: 30px;
-  color: #999; /* stylelint-disable-line plugin/use_theme_colors */
+  color: var(--color-text-secondary); /* stylelint-disable-line plugin/use_theme_colors */
   /* See: crbug.com/1152736 for color variable migration. */
   display: flex;
   justify-content: center;
   align-items: center;
   margin: 20px;
-  border: 4px dashed #ddd; /* stylelint-disable-line plugin/use_theme_colors */
+  border: 4px dashed var(--color-details-hairline); /* stylelint-disable-line plugin/use_theme_colors */
   /* See: crbug.com/1152736 for color variable migration. */
   pointer-events: none;
 }

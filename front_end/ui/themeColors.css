@@ -12,6 +12,7 @@
   --color-primary: #1a73e8;
   --color-primary-variant: #4285f4;
   --color-background: #fff;
+  --color-background-inverted: #000;
   --color-background-opacity-50: rgb(255 255 255 / 50%);
   --color-background-opacity-80: rgb(255 255 255 / 80%);
   --color-background-elevation-0: #f8f9f9;
@@ -77,6 +78,7 @@
   --color-primary: #8ab4f8;
   --color-primary-variant: #669df6;
   --color-background: #202124;
+  --color-background-inverted: #fff;
   --color-background-opacity-50: rgb(32 33 36 / 50%);
   --color-background-opacity-80: rgb(32 33 36 / 80%);
   --color-background-elevation-0: #202023;

@@ -5,8 +5,7 @@
  */
 
 .settings-window-main {
-  color: rgb(48 57 66); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-text-primary);
   background-color: var(--color-background);
   padding: 11px 0 0 0;
 }
@@ -17,13 +16,6 @@
   margin: 8px 8px 8px 0;
   padding: 0 4px;
   flex: auto;
-}
-
-.settings-footnote {
-  border-top: 1px solid #eee; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
-  margin: 0;
-  padding: 12px;
 }
 
 .settings-container {
@@ -71,39 +63,9 @@
   text-align: left;
 }
 
-.settings-key {
-  padding: 0.1em 0.6em;
-  border: 1px solid #ccc; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
-  font-size: 11px;
-  background-color: #f7f7f7; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
-  color: #333; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
-  box-shadow: 0 1px 0 rgb(0 0 0 / 20%), 0 0 0 2px #fff inset; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */ /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
-  border-radius: 3px;
-  display: inline-block;
-  margin: 0 0.1em;
-  text-shadow: 0 1px 0 #fff; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
-  line-height: 1.5;
-  white-space: nowrap;
-}
-
-.settings-combine-keys,
-.settings-key-delimiter {
-  font-size: 9px;
-}
-
 .settings-combine-keys {
   margin: 0 0.3em;
-}
-
-.settings-key-delimiter {
-  margin: 0 0.5em;
-  display: none;
+  font-size: 9px;
 }
 
 fieldset {
@@ -127,8 +89,7 @@ fieldset {
 }
 
 .settings-experiments-warning-subsection-warning {
-  color: rgb(200 0 0); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-accent-red);
 }
 
 .settings-experiments-warning-subsection-message {
@@ -141,8 +102,7 @@ fieldset {
 
 .settings-window-title {
   font-size: 18px;
-  color: rgb(48 57 66); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-text-primary);
   padding: 0 0 5px 13px;
 }
 
@@ -154,8 +114,7 @@ fieldset {
   bottom: 0;
   overflow: auto;
   padding-top: 9px;
-  border-top: 1px solid #eee; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  border-top: 1px solid var(--color-details-hairline);
 }
 
 .settings-tab.settings-content {
@@ -191,13 +150,11 @@ fieldset {
 
 .settings-tab .settings-section-title {
   margin-left: -20px;
-  color: #222; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-text-secondary);
 }
 
 .settings-tab .settings-block label:hover {
-  color: #222; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-text-secondary);
 }
 
 .settings-tab .settings-block fieldset:disabled label:hover {
@@ -210,6 +167,5 @@ fieldset {
 
 .settings-experiment-unstable {
   display: block;
-  color: #888; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-text-secondary);
 }

@@ -30,7 +30,7 @@
   --focus-bg-color: hsl(214deg 40% 92%);
   --focus-ring-inactive-shadow-color: #e0e0e0;
   --input-validation-error: #db1600;
-  --toolbar-bg-color: #f3f3f3;
+  --toolbar-bg-color: var(--color-background-elevation-1);
   --toolbar-hover-bg-color: #eaeaea;
   --selection-fg-color: #fff;
   --selection-bg-color: var(--accent-color);
@@ -71,21 +71,18 @@
    * Chat to jacktfranklin@ or petermueller@ if you have questions.
    * https://crbug.com/1122511
    */
-  --accent-color: #0e639c;
   --accent-fg-color: #ccc;
   --accent-fg-color-hover: #fff;
   --accent-color-hover: rgb(17 119 187);
   --active-control-bg-color: #cdcdcd;
   --focus-bg-color: hsl(214deg 19% 27%);
   --focus-ring-inactive-shadow-color: #5a5a5a;
-  --toolbar-bg-color: #292a2d; /* --google-grey-900-white-4-percent */
   --toolbar-hover-bg-color: #202020;
   --selection-fg-color: #cdcdcd;
   --selection-inactive-fg-color: #cdcdcd;
   --selection-inactive-bg-color: hsl(0deg 0% 28%);
   --tab-selected-fg-color: #eaeaea;
   --tab-selected-bg-color: #000;
-  --divider-color: #525252;
   --focus-ring-inactive-shadow: 0 0 0 1px var(--focus-ring-inactive-shadow-color);
   --item-selection-bg-color: hsl(207deg 88% 22%);
   --item-selection-inactive-bg-color: #454545;

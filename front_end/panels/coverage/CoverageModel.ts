@@ -4,11 +4,11 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import type * as Bindings from '../bindings/bindings.js';
-import * as Common from '../common/common.js';
-import * as Platform from '../platform/platform.js';
-import * as SDK from '../sdk/sdk.js';
-import * as TextUtils from '../text_utils/text_utils.js';
+import type * as Bindings from '../../bindings/bindings.js';
+import * as Common from '../../common/common.js';
+import * as Platform from '../../platform/platform.js';
+import * as SDK from '../../sdk/sdk.js';
+import * as TextUtils from '../../text_utils/text_utils.js';
 
 export const enum CoverageType {
   CSS = (1 << 0),

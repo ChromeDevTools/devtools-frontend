@@ -1,7 +1,7 @@
 {
   "dependencies": [
     "test_runner",
-    "coverage",
+    "panels/coverage",
     "sources_test_runner"
   ],
   "modules": [

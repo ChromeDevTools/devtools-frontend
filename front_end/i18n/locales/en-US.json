@@ -377,126 +377,6 @@
   "cookie_table/CookiesTable.ts | value": {
     "message": "Value"
   },
-  "coverage/coverage-meta.ts | coverage": {
-    "message": "Coverage"
-  },
-  "coverage/coverage-meta.ts | instrumentCoverage": {
-    "message": "Instrument coverage"
-  },
-  "coverage/coverage-meta.ts | showCoverage": {
-    "message": "Show Coverage"
-  },
-  "coverage/coverage-meta.ts | startInstrumentingCoverageAnd": {
-    "message": "Start instrumenting coverage and reload page"
-  },
-  "coverage/coverage-meta.ts | stopInstrumentingCoverageAndShow": {
-    "message": "Stop instrumenting coverage and show results"
-  },
-  "coverage/CoverageListView.ts | codeCoverage": {
-    "message": "Code Coverage"
-  },
-  "coverage/CoverageListView.ts | css": {
-    "message": "CSS"
-  },
-  "coverage/CoverageListView.ts | jsCoverageWithPerBlock": {
-    "message": "JS coverage with per block granularity: Once a block of JavaScript was executed, that block is marked as covered."
-  },
-  "coverage/CoverageListView.ts | jsCoverageWithPerFunction": {
-    "message": "JS coverage with per function granularity: Once a function was executed, the whole function is marked as covered."
-  },
-  "coverage/CoverageListView.ts | jsPerBlock": {
-    "message": "JS (per block)"
-  },
-  "coverage/CoverageListView.ts | jsPerFunction": {
-    "message": "JS (per function)"
-  },
-  "coverage/CoverageListView.ts | sBytes": {
-    "message": "{n, plural, =1 {# byte} other {# bytes}}"
-  },
-  "coverage/CoverageListView.ts | sBytesS": {
-    "message": "{n, plural, =1 {# byte, {percentage}} other {# bytes, {percentage}}}"
-  },
-  "coverage/CoverageListView.ts | sBytesSBelongToBlocksOf": {
-    "message": "{PH1} bytes ({PH2} %) belong to blocks of JavaScript that have not (yet) been executed."
-  },
-  "coverage/CoverageListView.ts | sBytesSBelongToBlocksOfJavascript": {
-    "message": "{PH1} bytes ({PH2} %) belong to blocks of JavaScript that have executed at least once."
-  },
-  "coverage/CoverageListView.ts | sBytesSBelongToFunctionsThatHave": {
-    "message": "{PH1} bytes ({PH2} %) belong to functions that have not (yet) been executed."
-  },
-  "coverage/CoverageListView.ts | sBytesSBelongToFunctionsThatHaveExecuted": {
-    "message": "{PH1} bytes ({PH2} %) belong to functions that have executed at least once."
-  },
-  "coverage/CoverageListView.ts | sOfFileUnusedSOfFileUsed": {
-    "message": "{PH1} % of file unused, {PH2} % of file used"
-  },
-  "coverage/CoverageListView.ts | sPercent": {
-    "message": "{PH1} %"
-  },
-  "coverage/CoverageListView.ts | totalBytes": {
-    "message": "Total Bytes"
-  },
-  "coverage/CoverageListView.ts | type": {
-    "message": "Type"
-  },
-  "coverage/CoverageListView.ts | unusedBytes": {
-    "message": "Unused Bytes"
-  },
-  "coverage/CoverageListView.ts | url": {
-    "message": "URL"
-  },
-  "coverage/CoverageListView.ts | usageVisualization": {
-    "message": "Usage Visualization"
-  },
-  "coverage/CoverageView.ts | all": {
-    "message": "All"
-  },
-  "coverage/CoverageView.ts | chooseCoverageGranularityPer": {
-    "message": "Choose coverage granularity: Per function has low overhead, per block has significant overhead."
-  },
-  "coverage/CoverageView.ts | clearAll": {
-    "message": "Clear all"
-  },
-  "coverage/CoverageView.ts | clickTheRecordButtonSToStart": {
-    "message": "Click the record button {PH1} to start capturing coverage."
-  },
-  "coverage/CoverageView.ts | clickTheReloadButtonSToReloadAnd": {
-    "message": "Click the reload button {PH1} to reload and start capturing coverage."
-  },
-  "coverage/CoverageView.ts | contentScripts": {
-    "message": "Content scripts"
-  },
-  "coverage/CoverageView.ts | css": {
-    "message": "CSS"
-  },
-  "coverage/CoverageView.ts | export": {
-    "message": "Export..."
-  },
-  "coverage/CoverageView.ts | filterCoverageByType": {
-    "message": "Filter coverage by type"
-  },
-  "coverage/CoverageView.ts | filteredSTotalS": {
-    "message": "Filtered: {PH1}  Total: {PH2}"
-  },
-  "coverage/CoverageView.ts | includeExtensionContentScripts": {
-    "message": "Include extension content scripts"
-  },
-  "coverage/CoverageView.ts | javascript": {
-    "message": "JavaScript"
-  },
-  "coverage/CoverageView.ts | perBlock": {
-    "message": "Per block"
-  },
-  "coverage/CoverageView.ts | perFunction": {
-    "message": "Per function"
-  },
-  "coverage/CoverageView.ts | sOfSSUsedSoFarSUnused": {
-    "message": "{PH1} of {PH2} ({PH3}%) used so far, {PH4} unused."
-  },
-  "coverage/CoverageView.ts | urlFilter": {
-    "message": "URL filter"
-  },
   "css_overview/css_overview-meta.ts | cssOverview": {
     "message": "CSS Overview"
   },
@@ -5578,6 +5458,126 @@
   },
   "panels/console/ConsoleViewMessage.ts | warningS": {
     "message": "{n, plural, =1 {Warning, Repeated # time} other {Warning, Repeated # times}}"
+  },
+  "panels/coverage/coverage-meta.ts | coverage": {
+    "message": "Coverage"
+  },
+  "panels/coverage/coverage-meta.ts | instrumentCoverage": {
+    "message": "Instrument coverage"
+  },
+  "panels/coverage/coverage-meta.ts | showCoverage": {
+    "message": "Show Coverage"
+  },
+  "panels/coverage/coverage-meta.ts | startInstrumentingCoverageAnd": {
+    "message": "Start instrumenting coverage and reload page"
+  },
+  "panels/coverage/coverage-meta.ts | stopInstrumentingCoverageAndShow": {
+    "message": "Stop instrumenting coverage and show results"
+  },
+  "panels/coverage/CoverageListView.ts | codeCoverage": {
+    "message": "Code Coverage"
+  },
+  "panels/coverage/CoverageListView.ts | css": {
+    "message": "CSS"
+  },
+  "panels/coverage/CoverageListView.ts | jsCoverageWithPerBlock": {
+    "message": "JS coverage with per block granularity: Once a block of JavaScript was executed, that block is marked as covered."
+  },
+  "panels/coverage/CoverageListView.ts | jsCoverageWithPerFunction": {
+    "message": "JS coverage with per function granularity: Once a function was executed, the whole function is marked as covered."
+  },
+  "panels/coverage/CoverageListView.ts | jsPerBlock": {
+    "message": "JS (per block)"
+  },
+  "panels/coverage/CoverageListView.ts | jsPerFunction": {
+    "message": "JS (per function)"
+  },
+  "panels/coverage/CoverageListView.ts | sBytes": {
+    "message": "{n, plural, =1 {# byte} other {# bytes}}"
+  },
+  "panels/coverage/CoverageListView.ts | sBytesS": {
+    "message": "{n, plural, =1 {# byte, {percentage}} other {# bytes, {percentage}}}"
+  },
+  "panels/coverage/CoverageListView.ts | sBytesSBelongToBlocksOf": {
+    "message": "{PH1} bytes ({PH2} %) belong to blocks of JavaScript that have not (yet) been executed."
+  },
+  "panels/coverage/CoverageListView.ts | sBytesSBelongToBlocksOfJavascript": {
+    "message": "{PH1} bytes ({PH2} %) belong to blocks of JavaScript that have executed at least once."
+  },
+  "panels/coverage/CoverageListView.ts | sBytesSBelongToFunctionsThatHave": {
+    "message": "{PH1} bytes ({PH2} %) belong to functions that have not (yet) been executed."
+  },
+  "panels/coverage/CoverageListView.ts | sBytesSBelongToFunctionsThatHaveExecuted": {
+    "message": "{PH1} bytes ({PH2} %) belong to functions that have executed at least once."
+  },
+  "panels/coverage/CoverageListView.ts | sOfFileUnusedSOfFileUsed": {
+    "message": "{PH1} % of file unused, {PH2} % of file used"
+  },
+  "panels/coverage/CoverageListView.ts | sPercent": {
+    "message": "{PH1} %"
+  },
+  "panels/coverage/CoverageListView.ts | totalBytes": {
+    "message": "Total Bytes"
+  },
+  "panels/coverage/CoverageListView.ts | type": {
+    "message": "Type"
+  },
+  "panels/coverage/CoverageListView.ts | unusedBytes": {
+    "message": "Unused Bytes"
+  },
+  "panels/coverage/CoverageListView.ts | url": {
+    "message": "URL"
+  },
+  "panels/coverage/CoverageListView.ts | usageVisualization": {
+    "message": "Usage Visualization"
+  },
+  "panels/coverage/CoverageView.ts | all": {
+    "message": "All"
+  },
+  "panels/coverage/CoverageView.ts | chooseCoverageGranularityPer": {
+    "message": "Choose coverage granularity: Per function has low overhead, per block has significant overhead."
+  },
+  "panels/coverage/CoverageView.ts | clearAll": {
+    "message": "Clear all"
+  },
+  "panels/coverage/CoverageView.ts | clickTheRecordButtonSToStart": {
+    "message": "Click the record button {PH1} to start capturing coverage."
+  },
+  "panels/coverage/CoverageView.ts | clickTheReloadButtonSToReloadAnd": {
+    "message": "Click the reload button {PH1} to reload and start capturing coverage."
+  },
+  "panels/coverage/CoverageView.ts | contentScripts": {
+    "message": "Content scripts"
+  },
+  "panels/coverage/CoverageView.ts | css": {
+    "message": "CSS"
+  },
+  "panels/coverage/CoverageView.ts | export": {
+    "message": "Export..."
+  },
+  "panels/coverage/CoverageView.ts | filterCoverageByType": {
+    "message": "Filter coverage by type"
+  },
+  "panels/coverage/CoverageView.ts | filteredSTotalS": {
+    "message": "Filtered: {PH1}  Total: {PH2}"
+  },
+  "panels/coverage/CoverageView.ts | includeExtensionContentScripts": {
+    "message": "Include extension content scripts"
+  },
+  "panels/coverage/CoverageView.ts | javascript": {
+    "message": "JavaScript"
+  },
+  "panels/coverage/CoverageView.ts | perBlock": {
+    "message": "Per block"
+  },
+  "panels/coverage/CoverageView.ts | perFunction": {
+    "message": "Per function"
+  },
+  "panels/coverage/CoverageView.ts | sOfSSUsedSoFarSUnused": {
+    "message": "{PH1} of {PH2} ({PH3}%) used so far, {PH4} unused."
+  },
+  "panels/coverage/CoverageView.ts | urlFilter": {
+    "message": "URL filter"
   },
   "perf_ui/FilmStripView.ts | doubleclickToZoomImageClickTo": {
     "message": "Doubleclick to zoom image. Click to view preceding requests."

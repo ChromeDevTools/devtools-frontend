@@ -377,126 +377,6 @@
   "cookie_table/CookiesTable.ts | value": {
     "message": "V̂ál̂úê"
   },
-  "coverage/coverage-meta.ts | coverage": {
-    "message": "Ĉóv̂ér̂áĝé"
-  },
-  "coverage/coverage-meta.ts | instrumentCoverage": {
-    "message": "Îńŝt́r̂úm̂én̂t́ ĉóv̂ér̂áĝé"
-  },
-  "coverage/coverage-meta.ts | showCoverage": {
-    "message": "Ŝh́ôẃ Ĉóv̂ér̂áĝé"
-  },
-  "coverage/coverage-meta.ts | startInstrumentingCoverageAnd": {
-    "message": "Ŝt́âŕt̂ ín̂śt̂ŕûḿêńt̂ín̂ǵ ĉóv̂ér̂áĝé âńd̂ ŕêĺôád̂ ṕâǵê"
-  },
-  "coverage/coverage-meta.ts | stopInstrumentingCoverageAndShow": {
-    "message": "Ŝt́ôṕ îńŝt́r̂úm̂én̂t́îńĝ ćôv́êŕâǵê án̂d́ ŝh́ôẃ r̂éŝúl̂t́ŝ"
-  },
-  "coverage/CoverageListView.ts | codeCoverage": {
-    "message": "Ĉód̂é Ĉóv̂ér̂áĝé"
-  },
-  "coverage/CoverageListView.ts | css": {
-    "message": "ĈŚŜ"
-  },
-  "coverage/CoverageListView.ts | jsCoverageWithPerBlock": {
-    "message": "ĴŚ ĉóv̂ér̂áĝé ŵít̂h́ p̂ér̂ b́l̂óĉḱ ĝŕâńûĺâŕît́ŷ: Ón̂ćê á b̂ĺôćk̂ óf̂ J́âv́âŚĉŕîṕt̂ ẃâś êx́êćût́êd́, t̂h́ât́ b̂ĺôćk̂ íŝ ḿâŕk̂éd̂ áŝ ćôv́êŕêd́."
-  },
-  "coverage/CoverageListView.ts | jsCoverageWithPerFunction": {
-    "message": "ĴŚ ĉóv̂ér̂áĝé ŵít̂h́ p̂ér̂ f́ûńĉt́îón̂ ǵr̂án̂úl̂ár̂ít̂ý: Ôńĉé â f́ûńĉt́îón̂ ẃâś êx́êćût́êd́, t̂h́ê ẃĥól̂é f̂ún̂ćt̂íôń îś m̂ár̂ḱêd́ âś ĉóv̂ér̂éd̂."
-  },
-  "coverage/CoverageListView.ts | jsPerBlock": {
-    "message": "ĴŚ (p̂ér̂ b́l̂óĉḱ)"
-  },
-  "coverage/CoverageListView.ts | jsPerFunction": {
-    "message": "ĴŚ (p̂ér̂ f́ûńĉt́îón̂)"
-  },
-  "coverage/CoverageListView.ts | sBytes": {
-    "message": "{n, plural, =1 {# b̂ýt̂é} other {# b̂ýt̂éŝ}}"
-  },
-  "coverage/CoverageListView.ts | sBytesS": {
-    "message": "{n, plural, =1 {# b̂ýt̂é, {percentage}} other {# b̂ýt̂éŝ, {percentage}}}"
-  },
-  "coverage/CoverageListView.ts | sBytesSBelongToBlocksOf": {
-    "message": "{PH1} b̂ýt̂éŝ ({PH2} %) b́êĺôńĝ t́ô b́l̂óĉḱŝ óf̂ J́âv́âŚĉŕîṕt̂ t́ĥát̂ h́âv́ê ńôt́ (ŷét̂) b́êén̂ éx̂éĉút̂éd̂."
-  },
-  "coverage/CoverageListView.ts | sBytesSBelongToBlocksOfJavascript": {
-    "message": "{PH1} b̂ýt̂éŝ ({PH2} %) b́êĺôńĝ t́ô b́l̂óĉḱŝ óf̂ J́âv́âŚĉŕîṕt̂ t́ĥát̂ h́âv́ê éx̂éĉút̂éd̂ át̂ ĺêáŝt́ ôńĉé."
-  },
-  "coverage/CoverageListView.ts | sBytesSBelongToFunctionsThatHave": {
-    "message": "{PH1} b̂ýt̂éŝ ({PH2} %) b́êĺôńĝ t́ô f́ûńĉt́îón̂ś t̂h́ât́ ĥáv̂é n̂ót̂ (ýêt́) b̂éêń êx́êćût́êd́."
-  },
-  "coverage/CoverageListView.ts | sBytesSBelongToFunctionsThatHaveExecuted": {
-    "message": "{PH1} b̂ýt̂éŝ ({PH2} %) b́êĺôńĝ t́ô f́ûńĉt́îón̂ś t̂h́ât́ ĥáv̂é êx́êćût́êd́ ât́ l̂éâśt̂ ón̂ćê."
-  },
-  "coverage/CoverageListView.ts | sOfFileUnusedSOfFileUsed": {
-    "message": "{PH1} % ôf́ f̂íl̂é ûńûśêd́, {PH2} % ôf́ f̂íl̂é ûśêd́"
-  },
-  "coverage/CoverageListView.ts | sPercent": {
-    "message": "{PH1} %"
-  },
-  "coverage/CoverageListView.ts | totalBytes": {
-    "message": "T̂ót̂ál̂ B́ŷt́êś"
-  },
-  "coverage/CoverageListView.ts | type": {
-    "message": "T̂ýp̂é"
-  },
-  "coverage/CoverageListView.ts | unusedBytes": {
-    "message": "Ûńûśêd́ B̂ýt̂éŝ"
-  },
-  "coverage/CoverageListView.ts | url": {
-    "message": "ÛŔL̂"
-  },
-  "coverage/CoverageListView.ts | usageVisualization": {
-    "message": "Ûśâǵê V́îśûál̂íẑát̂íôń"
-  },
-  "coverage/CoverageView.ts | all": {
-    "message": "Âĺl̂"
-  },
-  "coverage/CoverageView.ts | chooseCoverageGranularityPer": {
-    "message": "Ĉh́ôóŝé ĉóv̂ér̂áĝé ĝŕâńûĺâŕît́ŷ: Ṕêŕ f̂ún̂ćt̂íôń ĥáŝ ĺôẃ ôv́êŕĥéâd́, p̂ér̂ b́l̂óĉḱ ĥáŝ śîǵn̂íf̂íĉán̂t́ ôv́êŕĥéâd́."
-  },
-  "coverage/CoverageView.ts | clearAll": {
-    "message": "Ĉĺêár̂ ál̂ĺ"
-  },
-  "coverage/CoverageView.ts | clickTheRecordButtonSToStart": {
-    "message": "Ĉĺîćk̂ t́ĥé r̂éĉór̂d́ b̂út̂t́ôń {PH1} t̂ó ŝt́âŕt̂ ćâṕt̂úr̂ín̂ǵ ĉóv̂ér̂áĝé."
-  },
-  "coverage/CoverageView.ts | clickTheReloadButtonSToReloadAnd": {
-    "message": "Ĉĺîćk̂ t́ĥé r̂él̂óâd́ b̂út̂t́ôń {PH1} t̂ó r̂él̂óâd́ âńd̂ śt̂ár̂t́ ĉáp̂t́ûŕîńĝ ćôv́êŕâǵê."
-  },
-  "coverage/CoverageView.ts | contentScripts": {
-    "message": "Ĉón̂t́êńt̂ śĉŕîṕt̂ś"
-  },
-  "coverage/CoverageView.ts | css": {
-    "message": "ĈŚŜ"
-  },
-  "coverage/CoverageView.ts | export": {
-    "message": "Êx́p̂ór̂t́..."
-  },
-  "coverage/CoverageView.ts | filterCoverageByType": {
-    "message": "F̂íl̂t́êŕ ĉóv̂ér̂áĝé b̂ý t̂ýp̂é"
-  },
-  "coverage/CoverageView.ts | filteredSTotalS": {
-    "message": "F̂íl̂t́êŕêd́: {PH1}  T̂ót̂ál̂: {PH2}"
-  },
-  "coverage/CoverageView.ts | includeExtensionContentScripts": {
-    "message": "Îńĉĺûd́ê éx̂t́êńŝíôń ĉón̂t́êńt̂ śĉŕîṕt̂ś"
-  },
-  "coverage/CoverageView.ts | javascript": {
-    "message": "Ĵáv̂áŜćr̂íp̂t́"
-  },
-  "coverage/CoverageView.ts | perBlock": {
-    "message": "P̂ér̂ b́l̂óĉḱ"
-  },
-  "coverage/CoverageView.ts | perFunction": {
-    "message": "P̂ér̂ f́ûńĉt́îón̂"
-  },
-  "coverage/CoverageView.ts | sOfSSUsedSoFarSUnused": {
-    "message": "{PH1} ôf́ {PH2} ({PH3}%) ûśêd́ ŝó f̂ár̂, {PH4} ún̂úŝéd̂."
-  },
-  "coverage/CoverageView.ts | urlFilter": {
-    "message": "ÛŔL̂ f́îĺt̂ér̂"
-  },
   "css_overview/css_overview-meta.ts | cssOverview": {
     "message": "ĈŚŜ Óv̂ér̂v́îéŵ"
   },
@@ -5578,6 +5458,126 @@
   },
   "panels/console/ConsoleViewMessage.ts | warningS": {
     "message": "{n, plural, =1 {Ŵár̂ńîńĝ, Ŕêṕêát̂éd̂ # t́îḿê} other {Ẃâŕn̂ín̂ǵ, R̂ép̂éât́êd́ # t̂ím̂éŝ}}"
+  },
+  "panels/coverage/coverage-meta.ts | coverage": {
+    "message": "Ĉóv̂ér̂áĝé"
+  },
+  "panels/coverage/coverage-meta.ts | instrumentCoverage": {
+    "message": "Îńŝt́r̂úm̂én̂t́ ĉóv̂ér̂áĝé"
+  },
+  "panels/coverage/coverage-meta.ts | showCoverage": {
+    "message": "Ŝh́ôẃ Ĉóv̂ér̂áĝé"
+  },
+  "panels/coverage/coverage-meta.ts | startInstrumentingCoverageAnd": {
+    "message": "Ŝt́âŕt̂ ín̂śt̂ŕûḿêńt̂ín̂ǵ ĉóv̂ér̂áĝé âńd̂ ŕêĺôád̂ ṕâǵê"
+  },
+  "panels/coverage/coverage-meta.ts | stopInstrumentingCoverageAndShow": {
+    "message": "Ŝt́ôṕ îńŝt́r̂úm̂én̂t́îńĝ ćôv́êŕâǵê án̂d́ ŝh́ôẃ r̂éŝúl̂t́ŝ"
+  },
+  "panels/coverage/CoverageListView.ts | codeCoverage": {
+    "message": "Ĉód̂é Ĉóv̂ér̂áĝé"
+  },
+  "panels/coverage/CoverageListView.ts | css": {
+    "message": "ĈŚŜ"
+  },
+  "panels/coverage/CoverageListView.ts | jsCoverageWithPerBlock": {
+    "message": "ĴŚ ĉóv̂ér̂áĝé ŵít̂h́ p̂ér̂ b́l̂óĉḱ ĝŕâńûĺâŕît́ŷ: Ón̂ćê á b̂ĺôćk̂ óf̂ J́âv́âŚĉŕîṕt̂ ẃâś êx́êćût́êd́, t̂h́ât́ b̂ĺôćk̂ íŝ ḿâŕk̂éd̂ áŝ ćôv́êŕêd́."
+  },
+  "panels/coverage/CoverageListView.ts | jsCoverageWithPerFunction": {
+    "message": "ĴŚ ĉóv̂ér̂áĝé ŵít̂h́ p̂ér̂ f́ûńĉt́îón̂ ǵr̂án̂úl̂ár̂ít̂ý: Ôńĉé â f́ûńĉt́îón̂ ẃâś êx́êćût́êd́, t̂h́ê ẃĥól̂é f̂ún̂ćt̂íôń îś m̂ár̂ḱêd́ âś ĉóv̂ér̂éd̂."
+  },
+  "panels/coverage/CoverageListView.ts | jsPerBlock": {
+    "message": "ĴŚ (p̂ér̂ b́l̂óĉḱ)"
+  },
+  "panels/coverage/CoverageListView.ts | jsPerFunction": {
+    "message": "ĴŚ (p̂ér̂ f́ûńĉt́îón̂)"
+  },
+  "panels/coverage/CoverageListView.ts | sBytes": {
+    "message": "{n, plural, =1 {# b̂ýt̂é} other {# b̂ýt̂éŝ}}"
+  },
+  "panels/coverage/CoverageListView.ts | sBytesS": {
+    "message": "{n, plural, =1 {# b̂ýt̂é, {percentage}} other {# b̂ýt̂éŝ, {percentage}}}"
+  },
+  "panels/coverage/CoverageListView.ts | sBytesSBelongToBlocksOf": {
+    "message": "{PH1} b̂ýt̂éŝ ({PH2} %) b́êĺôńĝ t́ô b́l̂óĉḱŝ óf̂ J́âv́âŚĉŕîṕt̂ t́ĥát̂ h́âv́ê ńôt́ (ŷét̂) b́êén̂ éx̂éĉút̂éd̂."
+  },
+  "panels/coverage/CoverageListView.ts | sBytesSBelongToBlocksOfJavascript": {
+    "message": "{PH1} b̂ýt̂éŝ ({PH2} %) b́êĺôńĝ t́ô b́l̂óĉḱŝ óf̂ J́âv́âŚĉŕîṕt̂ t́ĥát̂ h́âv́ê éx̂éĉút̂éd̂ át̂ ĺêáŝt́ ôńĉé."
+  },
+  "panels/coverage/CoverageListView.ts | sBytesSBelongToFunctionsThatHave": {
+    "message": "{PH1} b̂ýt̂éŝ ({PH2} %) b́êĺôńĝ t́ô f́ûńĉt́îón̂ś t̂h́ât́ ĥáv̂é n̂ót̂ (ýêt́) b̂éêń êx́êćût́êd́."
+  },
+  "panels/coverage/CoverageListView.ts | sBytesSBelongToFunctionsThatHaveExecuted": {
+    "message": "{PH1} b̂ýt̂éŝ ({PH2} %) b́êĺôńĝ t́ô f́ûńĉt́îón̂ś t̂h́ât́ ĥáv̂é êx́êćût́êd́ ât́ l̂éâśt̂ ón̂ćê."
+  },
+  "panels/coverage/CoverageListView.ts | sOfFileUnusedSOfFileUsed": {
+    "message": "{PH1} % ôf́ f̂íl̂é ûńûśêd́, {PH2} % ôf́ f̂íl̂é ûśêd́"
+  },
+  "panels/coverage/CoverageListView.ts | sPercent": {
+    "message": "{PH1} %"
+  },
+  "panels/coverage/CoverageListView.ts | totalBytes": {
+    "message": "T̂ót̂ál̂ B́ŷt́êś"
+  },
+  "panels/coverage/CoverageListView.ts | type": {
+    "message": "T̂ýp̂é"
+  },
+  "panels/coverage/CoverageListView.ts | unusedBytes": {
+    "message": "Ûńûśêd́ B̂ýt̂éŝ"
+  },
+  "panels/coverage/CoverageListView.ts | url": {
+    "message": "ÛŔL̂"
+  },
+  "panels/coverage/CoverageListView.ts | usageVisualization": {
+    "message": "Ûśâǵê V́îśûál̂íẑát̂íôń"
+  },
+  "panels/coverage/CoverageView.ts | all": {
+    "message": "Âĺl̂"
+  },
+  "panels/coverage/CoverageView.ts | chooseCoverageGranularityPer": {
+    "message": "Ĉh́ôóŝé ĉóv̂ér̂áĝé ĝŕâńûĺâŕît́ŷ: Ṕêŕ f̂ún̂ćt̂íôń ĥáŝ ĺôẃ ôv́êŕĥéâd́, p̂ér̂ b́l̂óĉḱ ĥáŝ śîǵn̂íf̂íĉán̂t́ ôv́êŕĥéâd́."
+  },
+  "panels/coverage/CoverageView.ts | clearAll": {
+    "message": "Ĉĺêár̂ ál̂ĺ"
+  },
+  "panels/coverage/CoverageView.ts | clickTheRecordButtonSToStart": {
+    "message": "Ĉĺîćk̂ t́ĥé r̂éĉór̂d́ b̂út̂t́ôń {PH1} t̂ó ŝt́âŕt̂ ćâṕt̂úr̂ín̂ǵ ĉóv̂ér̂áĝé."
+  },
+  "panels/coverage/CoverageView.ts | clickTheReloadButtonSToReloadAnd": {
+    "message": "Ĉĺîćk̂ t́ĥé r̂él̂óâd́ b̂út̂t́ôń {PH1} t̂ó r̂él̂óâd́ âńd̂ śt̂ár̂t́ ĉáp̂t́ûŕîńĝ ćôv́êŕâǵê."
+  },
+  "panels/coverage/CoverageView.ts | contentScripts": {
+    "message": "Ĉón̂t́êńt̂ śĉŕîṕt̂ś"
+  },
+  "panels/coverage/CoverageView.ts | css": {
+    "message": "ĈŚŜ"
+  },
+  "panels/coverage/CoverageView.ts | export": {
+    "message": "Êx́p̂ór̂t́..."
+  },
+  "panels/coverage/CoverageView.ts | filterCoverageByType": {
+    "message": "F̂íl̂t́êŕ ĉóv̂ér̂áĝé b̂ý t̂ýp̂é"
+  },
+  "panels/coverage/CoverageView.ts | filteredSTotalS": {
+    "message": "F̂íl̂t́êŕêd́: {PH1}  T̂ót̂ál̂: {PH2}"
+  },
+  "panels/coverage/CoverageView.ts | includeExtensionContentScripts": {
+    "message": "Îńĉĺûd́ê éx̂t́êńŝíôń ĉón̂t́êńt̂ śĉŕîṕt̂ś"
+  },
+  "panels/coverage/CoverageView.ts | javascript": {
+    "message": "Ĵáv̂áŜćr̂íp̂t́"
+  },
+  "panels/coverage/CoverageView.ts | perBlock": {
+    "message": "P̂ér̂ b́l̂óĉḱ"
+  },
+  "panels/coverage/CoverageView.ts | perFunction": {
+    "message": "P̂ér̂ f́ûńĉt́îón̂"
+  },
+  "panels/coverage/CoverageView.ts | sOfSSUsedSoFarSUnused": {
+    "message": "{PH1} ôf́ {PH2} ({PH3}%) ûśêd́ ŝó f̂ár̂, {PH4} ún̂úŝéd̂."
+  },
+  "panels/coverage/CoverageView.ts | urlFilter": {
+    "message": "ÛŔL̂ f́îĺt̂ér̂"
   },
   "perf_ui/FilmStripView.ts | doubleclickToZoomImageClickTo": {
     "message": "D̂óûb́l̂éĉĺîćk̂ t́ô źôóm̂ ím̂áĝé. Ĉĺîćk̂ t́ô v́îéŵ ṕr̂éĉéd̂ín̂ǵ r̂éq̂úêśt̂ś."

@@ -11,7 +11,7 @@
     "color_picker",
     "event_listeners",
     "object_ui",
-    "coverage"
+    "panels/coverage"
   ],
   "modules": [
     "sources-legacy.js"

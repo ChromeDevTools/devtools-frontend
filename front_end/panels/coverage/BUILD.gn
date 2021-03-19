@@ -2,8 +2,8 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-import("../../scripts/build/ninja/devtools_entrypoint.gni")
-import("../../scripts/build/ninja/devtools_module.gni")
+import("../../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../../../scripts/build/ninja/devtools_module.gni")
 
 devtools_module("coverage") {
   sources = [
@@ -14,18 +14,18 @@ devtools_module("coverage") {
   ]
 
   deps = [
-    "../bindings:bundle",
-    "../common:bundle",
-    "../data_grid:bundle",
-    "../formatter:bundle",
-    "../host:bundle",
-    "../i18n:bundle",
-    "../platform:bundle",
-    "../sdk:bundle",
-    "../source_frame:bundle",
-    "../text_utils:bundle",
-    "../ui:bundle",
-    "../workspace:bundle",
+    "../../bindings:bundle",
+    "../../common:bundle",
+    "../../data_grid:bundle",
+    "../../formatter:bundle",
+    "../../host:bundle",
+    "../../i18n:bundle",
+    "../../platform:bundle",
+    "../../sdk:bundle",
+    "../../source_frame:bundle",
+    "../../text_utils:bundle",
+    "../../ui:bundle",
+    "../../workspace:bundle",
   ]
 }
 

@@ -4,15 +4,15 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Bindings from '../bindings/bindings.js';
-import * as Common from '../common/common.js';
-import * as Host from '../host/host.js';
-import * as i18n from '../i18n/i18n.js';
-import * as Platform from '../platform/platform.js';
-import * as SDK from '../sdk/sdk.js';
-import * as SourceFrame from '../source_frame/source_frame.js';
-import * as UI from '../ui/ui.js';
-import type * as Workspace from '../workspace/workspace.js';
+import * as Bindings from '../../bindings/bindings.js';
+import * as Common from '../../common/common.js';
+import * as Host from '../../host/host.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as Platform from '../../platform/platform.js';
+import * as SDK from '../../sdk/sdk.js';
+import * as SourceFrame from '../../source_frame/source_frame.js';
+import * as UI from '../../ui/ui.js';
+import type * as Workspace from '../../workspace/workspace.js';
 
 import {CoverageDecorationManager, decoratorType} from './CoverageDecorationManager.js';
 import {CoverageListView} from './CoverageListView.js';
@@ -94,7 +94,7 @@ const UIStrings = {
   */
   sOfSSUsedSoFarSUnused: '{PH1} of {PH2} ({PH3}%) used so far, {PH4} unused.',
 };
-const str_ = i18n.i18n.registerUIStrings('coverage/CoverageView.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/coverage/CoverageView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 let coverageViewInstance: CoverageView;
@@ -130,7 +130,7 @@ export class CoverageView extends UI.Widget.VBox {
     this._decorationManager = null;
     this._resourceTreeModel = null;
 
-    this.registerRequiredCSS('coverage/coverageView.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('panels/coverage/coverageView.css', {enableLegacyPatching: false});
 
     const toolbarContainer = this.contentElement.createChild('div', 'coverage-toolbar-container');
     const toolbar = new UI.Toolbar.Toolbar('coverage-toolbar', toolbarContainer);

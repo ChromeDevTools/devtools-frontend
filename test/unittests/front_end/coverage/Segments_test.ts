@@ -4,13 +4,13 @@
 
 const {assert} = chai;
 
-import type * as CoverageModule from '../../../../front_end/coverage/coverage.js';
+import type * as CoverageModule from '../../../../front_end/panels/coverage/coverage.js';
 import {describeWithEnvironment} from '../helpers/EnvironmentHelpers.js';
 
 describeWithEnvironment('mergeSegments', () => {
   let Coverage: typeof CoverageModule;
   before(async () => {
-    Coverage = await import('../../../../front_end/coverage/coverage.js');
+    Coverage = await import('../../../../front_end/panels/coverage/coverage.js');
   });
 
   const checkMerge =

@@ -129,7 +129,7 @@ non_autostart_non_remote_modules = [
   "color_picker/color_picker_module.js",
   "panels/console/console_module.js",
   "cookie_table/cookie_table_module.js",
-  "coverage/coverage_module.js",
+  "panels/coverage/coverage_module.js",
   "css_overview/css_overview_module.js",
   "data_grid/data_grid_module.js",
   "elements/elements_module.js",

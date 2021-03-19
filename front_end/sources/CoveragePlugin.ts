@@ -4,9 +4,9 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Coverage from '../coverage/coverage.js';
 import * as Formatter from '../formatter/formatter.js';
 import * as i18n from '../i18n/i18n.js';
+import * as Coverage from '../panels/coverage/coverage.js';
 import * as SDK from '../sdk/sdk.js';
 import * as SourceFrame from '../source_frame/source_frame.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../ui/ui.js';

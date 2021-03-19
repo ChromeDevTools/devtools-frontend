@@ -4,13 +4,13 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../common/common.js';
-import * as DataGrid from '../data_grid/data_grid.js';
-import * as Formatter from '../formatter/formatter.js';
-import * as i18n from '../i18n/i18n.js';
-import * as TextUtils from '../text_utils/text_utils.js';
-import * as UI from '../ui/ui.js';
-import * as Workspace from '../workspace/workspace.js';
+import * as Common from '../../common/common.js';
+import * as DataGrid from '../../data_grid/data_grid.js';
+import * as Formatter from '../../formatter/formatter.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as TextUtils from '../../text_utils/text_utils.js';
+import * as UI from '../../ui/ui.js';
+import * as Workspace from '../../workspace/workspace.js';
 
 import type {URLCoverageInfo} from './CoverageModel.js';
 import {CoverageType} from './CoverageModel.js';
@@ -114,7 +114,7 @@ const UIStrings = {
   */
   sOfFileUnusedSOfFileUsed: '{PH1} % of file unused, {PH2} % of file used',
 };
-const str_ = i18n.i18n.registerUIStrings('coverage/CoverageListView.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/coverage/CoverageListView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export function coverageTypeToString(type: CoverageType): string {
@@ -141,7 +141,7 @@ export class CoverageListView extends UI.Widget.VBox {
     this._nodeForCoverageInfo = new Map();
     this._isVisibleFilter = isVisibleFilter;
     this._highlightRegExp = null;
-    this.registerRequiredCSS('coverage/coverageListView.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('panels/coverage/coverageListView.css', {enableLegacyPatching: false});
     const columns: DataGrid.DataGrid.ColumnDescriptor[] = [
       {id: 'url', title: i18nString(UIStrings.url), width: '250px', fixedWidth: false, sortable: true},
       {id: 'type', title: i18nString(UIStrings.type), width: '45px', fixedWidth: true, sortable: true},

@@ -2,9 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as i18n from '../i18n/i18n.js';
-import * as Root from '../root/root.js';
-import * as UI from '../ui/ui.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as Root from '../../root/root.js';
+import * as UI from '../../ui/ui.js';
 
 // eslint-disable-next-line rulesdir/es_modules_import
 import type * as Coverage from './coverage.js';
@@ -31,7 +31,7 @@ const UIStrings = {
   */
   startInstrumentingCoverageAnd: 'Start instrumenting coverage and reload page',
 };
-const str_ = i18n.i18n.registerUIStrings('coverage/coverage-meta.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/coverage/coverage-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 let loadedCoverageModule: (typeof Coverage|undefined);
@@ -39,7 +39,7 @@ let loadedCoverageModule: (typeof Coverage|undefined);
 async function loadCoverageModule(): Promise<typeof Coverage> {
   if (!loadedCoverageModule) {
     // Side-effect import resources in module.json
-    await Root.Runtime.Runtime.instance().loadModulePromise('coverage');
+    await Root.Runtime.Runtime.instance().loadModulePromise('panels/coverage');
     loadedCoverageModule = await import('./coverage.js');
   }
   return loadedCoverageModule;

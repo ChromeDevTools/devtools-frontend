@@ -12,7 +12,7 @@
     { "name": "cm" },
     { "name": "color_picker" },
     { "name": "panels/console" },
-    { "name": "coverage" },
+    { "name": "panels/coverage" },
     { "name": "data_grid" },
     { "name": "event_listeners" },
     { "name": "inline_editor" },

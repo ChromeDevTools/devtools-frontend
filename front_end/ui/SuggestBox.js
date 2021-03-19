@@ -103,7 +103,7 @@ export class SuggestBox {
     this._glassPane.setOutsideClickCallback(this.hide.bind(this));
     const shadowRoot = createShadowRootWithCoreStyles(
         this._glassPane.contentElement,
-        {cssFile: 'ui/suggestBox.css', enableLegacyPatching: true, delegatesFocus: undefined});
+        {cssFile: 'ui/suggestBox.css', enableLegacyPatching: false, delegatesFocus: undefined});
     shadowRoot.appendChild(this._element);
   }
 

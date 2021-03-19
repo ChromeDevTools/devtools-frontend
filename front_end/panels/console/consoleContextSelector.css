@@ -28,7 +28,7 @@
 }
 
 .subtitle {
-  color: var(--selection-inactive-fg-color);
+  color: var(--color-text-secondary);
   margin-right: 3px;
   overflow: hidden;
   text-overflow: ellipsis;

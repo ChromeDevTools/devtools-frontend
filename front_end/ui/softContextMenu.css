@@ -16,7 +16,7 @@
 
   --context-menu-hover-bg: #ebebeb;
   --context-menu-hover-color: #222;
-  --context-menu-seperator-color: var(--divider-color);
+  --context-menu-seperator-color: var(--color-details-hairline);
 }
 
 :host-context(.-theme-with-dark-background) .soft-context-menu {

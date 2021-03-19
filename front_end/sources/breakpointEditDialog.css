@@ -24,7 +24,7 @@
   pointer-events: auto;
   margin: 2px 0 2px -1px;
   padding: 0 10px 10px 5px;
-  border: 1px solid var(--divider-color);
+  border: 1px solid var(--color-details-hairline);
 }
 
 :host-context(.sources-edit-breakpoint-dialog) .condition-editor {

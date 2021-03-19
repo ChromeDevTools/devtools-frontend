@@ -154,7 +154,7 @@ export class ValueInterpreterDisplay extends HTMLElement {
         .signed-divider {
           width: 1px;
           height: 15px;
-          background-color: var(--divider-color);
+          background-color: var(--color-details-hairline);
           margin: 0 4px;
         }
       </style>

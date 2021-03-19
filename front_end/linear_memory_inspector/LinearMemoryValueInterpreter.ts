@@ -135,7 +135,7 @@ export class LinearMemoryValueInterpreter extends HTMLElement {
           display: block;
           height: 1px;
           margin-bottom: 12px;
-          background-color: var(--divider-color, #d0d0d0); /* stylelint-disable-line plugin/use_theme_colors */
+          background-color: var(--color-details-hairline, #d0d0d0); /* stylelint-disable-line plugin/use_theme_colors */
           /* See: crbug.com/1152736 for color variable migration. */
         }
       </style>

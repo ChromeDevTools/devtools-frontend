@@ -219,7 +219,7 @@ export class LinearMemoryViewer extends HTMLElement {
         .divider {
           width: 1px;
           height: inherit;
-          background-color: var(--divider-color);
+          background-color: var(--color-details-hairline);
           margin: 0 4px;
         }
       </style>

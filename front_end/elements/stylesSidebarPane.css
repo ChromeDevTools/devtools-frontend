@@ -8,7 +8,7 @@
   min-height: 18px;
   white-space: nowrap;
   user-select: text;
-  border-bottom: 1px solid var(--divider-color);
+  border-bottom: 1px solid var(--color-details-hairline);
   position: relative;
   overflow: hidden;
 }
@@ -226,7 +226,7 @@
 .sidebar-separator {
   background-color: var(--toolbar-bg-color);
   padding: 0 5px;
-  border-bottom: 1px solid var(--divider-color);
+  border-bottom: 1px solid var(--color-details-hairline);
   color: hsl(0deg 0% 32% / 100%); /* stylelint-disable-line plugin/use_theme_colors */
   /* See: crbug.com/1152736 for color variable migration. */
   white-space: nowrap;

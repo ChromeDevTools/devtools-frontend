@@ -132,7 +132,7 @@
 }
 
 .CodeMirror-gutters {
-  border-right: 1px solid var(--divider-color);
+  border-right: 1px solid var(--color-details-hairline);
   white-space: nowrap;
   background-color: var(--color-background);
 }

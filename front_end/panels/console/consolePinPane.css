@@ -21,7 +21,7 @@
 }
 
 .console-pins:not(:empty) {
-  border-bottom: 1px solid var(--divider-color);
+  border-bottom: 1px solid var(--color-details-hairline);
 }
 
 :host-context(.-theme-with-dark-background) .console-pins {

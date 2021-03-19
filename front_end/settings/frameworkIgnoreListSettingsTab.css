@@ -83,7 +83,7 @@
 
 .ignore-list-separator {
   flex: 0 0 1px;
-  background-color: var(--divider-color);
+  background-color: var(--color-details-hairline);
   height: 30px;
   margin: 0 4px;
 }

@@ -57,7 +57,7 @@
 }
 
 .font-section {
-  border-top: 1px solid var(--divider-color);
+  border-top: 1px solid var(--color-details-hairline);
 }
 
 .chrome-select.font-editor-select {

@@ -79,7 +79,7 @@ export class IconButton extends HTMLElement {
 
         .icon-button.with-click-handler {
           cursor: pointer;
-          border: 1px solid var(--divider-color);
+          border: 1px solid var(--color-details-hairline);
           border-radius: 2px;
         }
 
@@ -89,7 +89,7 @@ export class IconButton extends HTMLElement {
 
         .icon-button:focus-visible {
           background-color: var(--toolbar-hover-bg-color);
-          border: 1px solid var(--divider-color);
+          border: 1px solid var(--color-details-hairline);
         }
 
         .icon-button-title {

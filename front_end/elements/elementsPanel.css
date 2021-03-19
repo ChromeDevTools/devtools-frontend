@@ -38,7 +38,7 @@
 }
 
 .style-panes-wrapper > div:not(:last-child) {
-  border-bottom: 1px solid var(--divider-color);
+  border-bottom: 1px solid var(--color-details-hairline);
 }
 
 #elements-content:not(.elements-wrap) > div {
@@ -48,15 +48,15 @@
 
 #elements-crumbs {
   background-color: var(--color-background);
-  border-top: 1px solid var(--divider-color);
+  border-top: 1px solid var(--color-details-hairline);
   overflow: hidden;
   width: 100%;
 }
 
 .elements-tree-header {
   height: 24px;
-  border-top: 1px solid var(--divider-color);
-  border-bottom: 1px solid var(--divider-color);
+  border-top: 1px solid var(--color-details-hairline);
+  border-bottom: 1px solid var(--color-details-hairline);
   display: flex;
   flex-direction: row;
   align-items: center;

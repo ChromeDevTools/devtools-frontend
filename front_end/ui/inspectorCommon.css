@@ -38,8 +38,7 @@
   --selection-inactive-bg-color: #dadada;
   --tab-selected-fg-color: #333;
   --tab-selected-bg-color: var(--toolbar-bg-color);
-  --divider-color: var(--color-details-hairline);
-  --divider-border: 1px solid var(--divider-color);
+  --divider-border: 1px solid var(--color-details-hairline);
   --focus-ring-inactive-shadow: 0 0 0 1px var(--focus-ring-inactive-shadow-color);
   --focus-ring-active-shadow: 0 0 0 1px var(--accent-color);
   --item-selection-bg-color: #cfe8fc;

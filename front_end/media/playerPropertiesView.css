@@ -5,7 +5,7 @@
  */
 
 .media-attributes-view {
-  border-bottom: 1px solid var(--divider-color);
+  border-bottom: 1px solid var(--color-details-hairline);
 }
 
 .media-property-renderer {

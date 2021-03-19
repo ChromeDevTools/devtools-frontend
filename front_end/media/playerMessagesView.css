@@ -5,7 +5,7 @@
  */
 .media-messages-header {
   background-color: var(--toolbar-bg-color);
-  border-bottom: 1px solid var(--divider-color);
+  border-bottom: 1px solid var(--color-details-hairline);
   min-height: 26px;
 }
 
@@ -43,7 +43,7 @@
   line-height: 18px;
   padding: 4px;
   user-select: text;
-  border-bottom: 1px solid var(--divider-color);
+  border-bottom: 1px solid var(--color-details-hairline);
 }
 
 .media-message-warning {

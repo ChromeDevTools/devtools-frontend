@@ -155,7 +155,7 @@ export class BackgroundServiceView extends UI.Widget.VBox {
 
   constructor(serviceName: Protocol.BackgroundService.ServiceName, model: BackgroundServiceModel) {
     super(true);
-    this.registerRequiredCSS('resources/backgroundServiceView.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('resources/backgroundServiceView.css', {enableLegacyPatching: false});
     this.registerRequiredCSS('ui/emptyWidget.css', {enableLegacyPatching: false});
 
     this._serviceName = serviceName;
@@ -500,7 +500,7 @@ export class EventDataNode extends DataGrid.DataGrid.DataGridNode<EventData> {
     if (!preview.element.children.length) {
       const div = document.createElement('div');
       div.classList.add('background-service-metadata-entry');
-      div.createChild('div', 'background-service-metadata-name').textContent =
+      div.createChild('div', 'background-service-metadata-name background-service-empty-value').textContent =
           i18nString(UIStrings.noMetadataForThisEvent);
       preview.element.appendChild(div);
     }

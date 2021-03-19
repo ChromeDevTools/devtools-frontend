@@ -1663,7 +1663,7 @@ export class DevToolsSmallBubble extends HTMLSpanElement {
   constructor() {
     super();
     const root = createShadowRootWithCoreStyles(
-        this, {cssFile: 'ui/smallBubble.css', enableLegacyPatching: true, delegatesFocus: undefined});
+        this, {cssFile: 'ui/smallBubble.css', enableLegacyPatching: false, delegatesFocus: undefined});
     this._textElement = root.createChild('div');
     this._textElement.className = 'info';
     this._textElement.createChild('slot');

@@ -15,28 +15,39 @@ div {
   line-height: normal;
   font-weight: bold;
   text-shadow: none;
-  color: #fff; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  /*
+   * We need an "inverted" color here - because the text is on a darker background the regular foreground text colors don't work. It's been logged to the dark mode tracking spreadsheet
+   */
+  color: var(--color-background);
   margin-top: -1px;
   border-radius: 7px;
 }
 
 div.verbose {
-  background-color: rgb(0 0 255); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  background-color: var(--color-syntax-3);
+}
+
+:host-context(.-theme-with-dark-background) div.verbose {
+  /* color-syntax-3 isn't blue in dark mode, but the text that gets logged is,
+  so we use a different syntax in dark mode that matches the text. Once the text
+  colors have been updated we can remove this. */
+  background-color: var(--color-syntax-2);
 }
 
 div.info {
-  background-color: rgb(128 151 189); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  background-color: var(--color-syntax-8);
 }
 
 div.warning {
-  background-color: rgb(232 164 0); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  background-color: var(--color-syntax-4);
+}
+
+:host-context(.-theme-with-dark-background) div.warning {
+  /* Pick a color that's closer to the color shown on the background of the
+  entire message */
+  background-color: var(--color-syntax-3);
 }
 
 div.error {
-  background-color: rgb(216 35 35); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  background-color: var(--color-accent-red);
 }

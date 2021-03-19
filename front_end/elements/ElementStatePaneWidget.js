@@ -26,7 +26,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class ElementStatePaneWidget extends UI.Widget.Widget {
   constructor() {
     super(true);
-    this.registerRequiredCSS('elements/elementStatePaneWidget.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('elements/elementStatePaneWidget.css', {enableLegacyPatching: false});
     this.contentElement.className = 'styles-element-state-pane';
     UI.UIUtils.createTextChild(this.contentElement.createChild('div'), i18nString(UIStrings.forceElementState));
     const table = document.createElement('table');

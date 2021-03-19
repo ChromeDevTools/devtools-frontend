@@ -35,53 +35,50 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('sources/CoveragePlugin.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+
 export class CoveragePlugin extends Plugin {
-  _textEditor: SourceFrame.SourcesTextEditor.SourcesTextEditor;
-  _uiSourceCode: Workspace.UISourceCode.UISourceCode;
-  _originalSourceCode: Workspace.UISourceCode.UISourceCode;
-  _text: UI.Toolbar.ToolbarButton;
-  _model: Coverage.CoverageModel.CoverageModel|null|undefined;
-  _coverage: Coverage.CoverageModel.URLCoverageInfo|null|undefined;
+  private uiSourceCode: Workspace.UISourceCode.UISourceCode;
+  private originalSourceCode: Workspace.UISourceCode.UISourceCode;
+  private infoInToolbar: UI.Toolbar.ToolbarButton;
+  private model: Coverage.CoverageModel.CoverageModel|null|undefined;
+  private coverage: Coverage.CoverageModel.URLCoverageInfo|null|undefined;
+
   constructor(
-      textEditor: SourceFrame.SourcesTextEditor.SourcesTextEditor, uiSourceCode: Workspace.UISourceCode.UISourceCode) {
+      _textEditor: SourceFrame.SourcesTextEditor.SourcesTextEditor, uiSourceCode: Workspace.UISourceCode.UISourceCode) {
     super();
-
-    this._textEditor = textEditor;
-    this._uiSourceCode = uiSourceCode;
-
-    this._originalSourceCode =
-        Formatter.SourceFormatter.SourceFormatter.instance().getOriginalUISourceCode(this._uiSourceCode);
-
-    this._text = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.clickToShowCoveragePanel));
-    this._text.setSecondary();
-    this._text.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => {
+    this.uiSourceCode = uiSourceCode;
+    this.originalSourceCode =
+        Formatter.SourceFormatter.SourceFormatter.instance().getOriginalUISourceCode(this.uiSourceCode);
+    this.infoInToolbar = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.clickToShowCoveragePanel));
+    this.infoInToolbar.setSecondary();
+    this.infoInToolbar.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => {
       UI.ViewManager.ViewManager.instance().showView('coverage');
     });
 
     const mainTarget = SDK.SDKModel.TargetManager.instance().mainTarget();
     if (mainTarget) {
-      this._model = mainTarget.model(Coverage.CoverageModel.CoverageModel);
-      if (this._model) {
-        this._model.addEventListener(Coverage.CoverageModel.Events.CoverageReset, this._handleReset, this);
+      this.model = mainTarget.model(Coverage.CoverageModel.CoverageModel);
+      if (this.model) {
+        this.model.addEventListener(Coverage.CoverageModel.Events.CoverageReset, this.handleReset, this);
 
-        this._coverage = this._model.getCoverageForUrl(this._originalSourceCode.url());
-        if (this._coverage) {
-          this._coverage.addEventListener(
-              Coverage.CoverageModel.URLCoverageInfo.Events.SizesChanged, this._handleCoverageSizesChanged, this);
+        this.coverage = this.model.getCoverageForUrl(this.originalSourceCode.url());
+        if (this.coverage) {
+          this.coverage.addEventListener(
+              Coverage.CoverageModel.URLCoverageInfo.Events.SizesChanged, this.handleCoverageSizesChanged, this);
         }
       }
     }
 
-    this._updateStats();
+    this.updateStats();
   }
 
   dispose(): void {
-    if (this._coverage) {
-      this._coverage.removeEventListener(
-          Coverage.CoverageModel.URLCoverageInfo.Events.SizesChanged, this._handleCoverageSizesChanged, this);
+    if (this.coverage) {
+      this.coverage.removeEventListener(
+          Coverage.CoverageModel.URLCoverageInfo.Events.SizesChanged, this.handleCoverageSizesChanged, this);
     }
-    if (this._model) {
-      this._model.removeEventListener(Coverage.CoverageModel.Events.CoverageReset, this._handleReset, this);
+    if (this.model) {
+      this.model.removeEventListener(Coverage.CoverageModel.Events.CoverageReset, this.handleReset, this);
     }
   }
 
@@ -89,26 +86,26 @@ export class CoveragePlugin extends Plugin {
     return uiSourceCode.contentType().isDocumentOrScriptOrStyleSheet();
   }
 
-  _handleReset(): void {
-    this._coverage = null;
-    this._updateStats();
+  private handleReset(): void {
+    this.coverage = null;
+    this.updateStats();
   }
 
-  _handleCoverageSizesChanged(): void {
-    this._updateStats();
+  private handleCoverageSizesChanged(): void {
+    this.updateStats();
   }
 
-  _updateStats(): void {
-    if (this._coverage) {
-      this._text.setTitle(i18nString(UIStrings.showDetails));
-      this._text.setText(i18nString(UIStrings.coverageS, {PH1: this._coverage.usedPercentage().toFixed(1)}));
+  private updateStats(): void {
+    if (this.coverage) {
+      this.infoInToolbar.setTitle(i18nString(UIStrings.showDetails));
+      this.infoInToolbar.setText(i18nString(UIStrings.coverageS, {PH1: this.coverage.usedPercentage().toFixed(1)}));
     } else {
-      this._text.setTitle(i18nString(UIStrings.clickToShowCoveragePanel));
-      this._text.setText(i18nString(UIStrings.coverageNa));
+      this.infoInToolbar.setTitle(i18nString(UIStrings.clickToShowCoveragePanel));
+      this.infoInToolbar.setText(i18nString(UIStrings.coverageNa));
     }
   }
 
   async rightToolbarItems(): Promise<UI.Toolbar.ToolbarItem[]> {
-    return [this._text];
+    return [this.infoInToolbar];
   }
 }

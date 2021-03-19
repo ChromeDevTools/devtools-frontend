@@ -32,13 +32,11 @@ li.search-result {
 }
 
 li.search-result:hover {
-  background-color: rgb(121 121 121 / 10%); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  background-color: var(--item-hover-color);
 }
 
 li.search-result .search-result-file-name {
-  color: #222; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-text-primary);
   flex: 1 1;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -46,8 +44,7 @@ li.search-result .search-result-file-name {
 }
 
 li.search-result .search-result-matches-count {
-  color: #888; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-text-secondary);
   margin: 0 8px;
 }
 
@@ -56,8 +53,7 @@ li.search-result.expanded .search-result-matches-count {
 }
 
 li.show-more-matches {
-  color: #222; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-text-primary);
   cursor: pointer;
   margin: 8px 0 0 -4px;
 }
@@ -77,8 +73,7 @@ li.search-match::before {
 }
 
 li.search-match .search-match-line-number {
-  color: rgb(128 128 128); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-text-secondary);
   text-align: right;
   vertical-align: top;
   word-break: normal;
@@ -91,12 +86,15 @@ li.search-match:hover {
 }
 
 li.search-match .highlighted-match {
-  background-color: #f1ea00; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  background-color: var(--color-syntax-5);
 }
 
 :host-context(.-theme-with-dark-background) li.search-match .highlighted-match {
-  background-color: hsl(133deg 100% 30%) !important;
+  /* The highlight color is light in dark mode so we want dark text. We need
+   * inverted color variables for this case which is logged in the dark mode
+   * tracking spreadsheet.
+   */
+  color: var(--color-background);
 }
 
 .tree-outline .devtools-link {
@@ -106,8 +104,7 @@ li.search-match .highlighted-match {
 }
 
 li.search-match .search-match-content {
-  color: #000; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-text-primary);
 }
 
 ol.children.expanded {
@@ -121,12 +118,10 @@ ol.children.expanded {
 }
 
 .search-result-qualifier {
-  color: #aaa; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-text-secondary);
 }
 
 .search-result-dash {
-  color: #aaa; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-background-elevation-2);
   margin: 0 4px;
 }

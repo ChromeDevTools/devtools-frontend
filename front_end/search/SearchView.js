@@ -84,7 +84,7 @@ export class SearchView extends UI.Widget.VBox {
   constructor(settingKey) {
     super(true);
     this.setMinimumSize(0, 40);
-    this.registerRequiredCSS('search/searchView.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('search/searchView.css', {enableLegacyPatching: false});
 
     this._focusOnShow = false;
     this._isIndexing = false;

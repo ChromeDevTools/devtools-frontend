@@ -14,6 +14,7 @@ import * as LitHtml from '../third_party/lit-html/lit-html.js';
 import * as WebComponents from '../ui/components/components.js';
 import * as UI from '../ui/ui.js';
 import * as Workspace from '../workspace/workspace.js';
+import * as Components from '../components/components.js';
 
 const UIStrings = {
   /**
@@ -507,14 +508,20 @@ export class FrameDetailsReportView extends HTMLElement {
 
   private maybeRenderCreationStacktrace(): LitHtml.TemplateResult|{} {
     if (this.frame && this.frame._creationStackTrace) {
+      // Disabled until https://crbug.com/1079231 is fixed.
+      // clang-format off
       return LitHtml.html`
         <devtools-report-key title=${i18nString(UIStrings.creationStackTraceExplanation)}>${
           i18nString(UIStrings.creationStackTrace)}</devtools-report-key>
         <devtools-report-value>
-          <devtools-resources-stack-trace .data=${{frame: this.frame} as StackTraceData}>
+          <devtools-resources-stack-trace .data=${{
+            frame: this.frame,
+            buildStackTraceRows: Components.JSPresentationUtils.buildStackTraceRows,
+          } as StackTraceData}>
           </devtools-resources-stack-trace>
         </devtools-report-value>
       `;
+      // clang-format on
     }
     return LitHtml.nothing;
   }

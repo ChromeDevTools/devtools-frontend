@@ -206,3 +206,14 @@ export async function raf() {
 export function stripLitHtmlCommentNodes(text: string) {
   return text.replaceAll('<!---->', '');
 }
+
+/**
+ * Returns an array of textContents
+ * NewLine and multiple space characters are replaced with single space character
+ */
+export function getCleanTextContentFromElements(shadowRoot: ShadowRoot, selector: string) {
+  const elements = Array.from(shadowRoot.querySelectorAll(selector));
+  return elements.map(element => {
+    return element.textContent ? element.textContent.trim().replace(/[ \n]+/g, ' ') : '';
+  });
+}

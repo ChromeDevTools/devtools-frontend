@@ -13,82 +13,134 @@ const UIStrings = {
   *@description Error message stating that something went wrong when tring to render stack trace
   */
   cannotRenderStackTrace: 'Cannot not render stack trace',
+  /**
+  *@description A link to show more frames in the stack trace if more are available. Never 0.
+  */
+  showSMoreFrames: '{n, plural, =1 {Show # more frame} other {Show # more frames}}',
 };
 const str_ = i18n.i18n.registerUIStrings('resources/StackTrace.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export interface StackTraceData {
   frame: SDK.ResourceTreeModel.ResourceTreeFrame;
+  buildStackTraceRows: (
+      stackTrace: Protocol.Runtime.StackTrace,
+      target: SDK.SDKModel.Target|null,
+      linkifier: Components.Linkifier.Linkifier,
+      tabStops: boolean|undefined,
+      updateCallback?: (arg0: (Components.JSPresentationUtils.StackTraceRegularRow|
+                               Components.JSPresentationUtils.StackTraceAsyncRow)[]) => void,
+      ) => (Components.JSPresentationUtils.StackTraceRegularRow | Components.JSPresentationUtils.StackTraceAsyncRow)[];
 }
 
 export class StackTrace extends HTMLElement {
   private readonly shadow = this.attachShadow({mode: 'open'});
   private readonly linkifier = new Components.Linkifier.Linkifier();
-  private expandableRows: LitHtml.TemplateResult[] = [];
+  private stackTraceRows: (Components.JSPresentationUtils.StackTraceRegularRow|
+                           Components.JSPresentationUtils.StackTraceAsyncRow)[] = [];
+  private showHidden = false;
 
   set data(data: StackTraceData) {
     const frame = data.frame;
-    let stackTraceRows: (Components.JSPresentationUtils.StackTraceRegularRow|
-                         Components.JSPresentationUtils.StackTraceAsyncRow)[] = [];
     if (frame && frame._creationStackTrace) {
-      stackTraceRows = Components.JSPresentationUtils.buildStackTraceRows(
+      this.stackTraceRows = data.buildStackTraceRows(
           frame._creationStackTrace, frame.resourceTreeModel().target(), this.linkifier, true,
-          this.createRowTemplates.bind(this));
-    }
-    this.createRowTemplates(stackTraceRows);
-  }
-
-  private createRowTemplates(stackTraceRows: (Components.JSPresentationUtils.StackTraceRegularRow|
-                                              Components.JSPresentationUtils.StackTraceAsyncRow)[]): void {
-    this.expandableRows = [];
-    for (const item of stackTraceRows) {
-      if ('functionName' in item) {
-        this.expandableRows.push(LitHtml.html`
-        <style>
-        .stack-trace-row {
-          display: flex;
-        }
-
-        .stack-trace-function-name {
-          width: 100px;
-        }
-
-        .stack-trace-source-location {
-          display: flex;
-          overflow: hidden;
-        }
-
-        .text-ellipsis {
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-        }
-
-        .ignore-list-link {
-          opacity: 60%;
-        }
-      </style>
-          <div class="stack-trace-row">
-            <div class="stack-trace-function-name text-ellipsis" title="${item.functionName}">
-              ${item.functionName}
-            </div>
-            <div class="stack-trace-source-location">
-              ${item.link ? LitHtml.html`<div class="text-ellipsis">@\xA0${item.link}</div>` : LitHtml.nothing}
-            </div>
-          </div>
-        `);
-      }
-      if ('asyncDescription' in item) {
-        this.expandableRows.push(LitHtml.html`
-          <div>${item.asyncDescription}</div>
-        `);
-      }
+          this.onStackTraceRowsUpdated.bind(this));
     }
     this.render();
   }
 
+  private onStackTraceRowsUpdated(stackTraceRows: (Components.JSPresentationUtils.StackTraceRegularRow|
+                                                   Components.JSPresentationUtils.StackTraceAsyncRow)[]): void {
+    this.stackTraceRows = stackTraceRows;
+    this.render();
+  }
+
+  private onShowAllClick(): void {
+    this.showHidden = true;
+    this.render();
+  }
+
+  createRowTemplates(): LitHtml.TemplateResult[] {
+    const expandableRows = [];
+    let hiddenCallFramesCount = 0;
+    for (const item of this.stackTraceRows) {
+      if (this.showHidden || (!item.ignoreListHide && !item.rowCountHide)) {
+        if ('functionName' in item) {
+          expandableRows.push(LitHtml.html`
+            <style>
+              .stack-trace-row {
+                display: flex;
+              }
+
+              .stack-trace-function-name {
+                width: 100px;
+              }
+
+              .stack-trace-source-location {
+                display: flex;
+                overflow: hidden;
+              }
+
+              .text-ellipsis {
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+              }
+
+              .ignore-list-link {
+                opacity: 60%;
+              }
+            </style>
+            <div class="stack-trace-row">
+              <div class="stack-trace-function-name text-ellipsis" title="${item.functionName}">
+                ${item.functionName}
+              </div>
+              <div class="stack-trace-source-location">
+                ${item.link ? LitHtml.html`<div class="text-ellipsis">@\xA0${item.link}</div>` : LitHtml.nothing}
+              </div>
+            </div>
+          `);
+        }
+        if ('asyncDescription' in item) {
+          expandableRows.push(LitHtml.html`
+            <div>${item.asyncDescription}</div>
+          `);
+        }
+      }
+      if (!this.showHidden && 'functionName' in item && (item.ignoreListHide || item.rowCountHide)) {
+        hiddenCallFramesCount++;
+      }
+    }
+    if (hiddenCallFramesCount) {
+      // Disabled until https://crbug.com/1079231 is fixed.
+      // clang-format off
+      expandableRows.push(LitHtml.html`
+        <style>
+          button.link {
+            color: var(--color-link);
+            text-decoration: underline;
+            cursor: pointer;
+            padding: 2px 0; /* adjust focus ring size */
+            border: none;
+            background: none;
+            font-family: inherit;
+            font-size: inherit;
+          }
+        </style>
+        <div class="stack-trace-row">
+          <button class="link" @click=${(): void => this.onShowAllClick()}>
+            ${i18nString(UIStrings.showSMoreFrames, {n: hiddenCallFramesCount})}
+          </button>
+        </div>
+      `);
+      // clang-format on
+    }
+    return expandableRows;
+  }
+
   private render(): void {
-    if (!this.expandableRows.length) {
+    if (!this.stackTraceRows.length) {
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off
       LitHtml.render(
@@ -98,10 +150,11 @@ export class StackTrace extends HTMLElement {
         this.shadow);
       return;
     }
+    const expandableRows = this.createRowTemplates();
     LitHtml.render(
       LitHtml.html`
         <devtools-expandable-list .data=${{
-          rows: this.expandableRows,
+          rows: expandableRows,
         } as UIComponents.ExpandableList.ExpandableListData}>
         </devtools-expandable-list>
       `,

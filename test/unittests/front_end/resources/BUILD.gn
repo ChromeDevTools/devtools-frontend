@@ -9,6 +9,7 @@ ts_library("resources") {
   sources = [
     "FrameDetailsView_test.ts",
     "ServiceWorkerUpdateCycleView_test.ts",
+    "StackTrace_test.ts",
     "TrustTokensView_test.ts",
   ]
 

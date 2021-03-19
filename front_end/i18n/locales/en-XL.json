@@ -7394,6 +7394,9 @@
   "resources/StackTrace.ts | cannotRenderStackTrace": {
     "message": "Ĉán̂ńôt́ n̂ót̂ ŕêńd̂ér̂ śt̂áĉḱ t̂ŕâćê"
   },
+  "resources/StackTrace.ts | showSMoreFrames": {
+    "message": "{n, plural, =1 {Ŝh́ôẃ # m̂ór̂é f̂ŕâḿê} other {Śĥóŵ # ḿôŕê f́r̂ám̂éŝ}}"
+  },
   "resources/StorageItemsView.ts | clearAll": {
     "message": "Ĉĺêár̂ Ál̂ĺ"
   },

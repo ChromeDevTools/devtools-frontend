@@ -7394,6 +7394,9 @@
   "resources/StackTrace.ts | cannotRenderStackTrace": {
     "message": "Cannot not render stack trace"
   },
+  "resources/StackTrace.ts | showSMoreFrames": {
+    "message": "{n, plural, =1 {Show # more frame} other {Show # more frames}}"
+  },
   "resources/StorageItemsView.ts | clearAll": {
     "message": "Clear All"
   },

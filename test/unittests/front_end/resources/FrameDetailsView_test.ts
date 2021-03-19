@@ -6,7 +6,7 @@ import * as Coordinator from '../../../../front_end/render_coordinator/render_co
 import * as Resources from '../../../../front_end/resources/resources.js';
 import * as SDK from '../../../../front_end/sdk/sdk.js';
 import * as Components from '../../../../front_end/ui/components/components.js';
-import {assertShadowRoot, getElementWithinComponent, renderElementIntoDOM} from '../helpers/DOMHelpers.js';
+import {assertShadowRoot, getCleanTextContentFromElements, getElementWithinComponent, renderElementIntoDOM} from '../helpers/DOMHelpers.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
@@ -61,13 +61,6 @@ const makeFrame = (): SDK.ResourceTreeModel.ResourceTreeFrame => {
   return newFrame;
 };
 
-function extractTextFromReportView(shadowRoot: ShadowRoot, selector: string) {
-  const elements = Array.from(shadowRoot.querySelectorAll(selector));
-  return elements.map(element => {
-    return element.textContent ? element.textContent.trim().replace(/[ \n]+/g, ' ') : '';
-  });
-}
-
 describe('FrameDetailsView', () => {
   it('renders with a title', async () => {
     const frame = makeFrame();
@@ -97,7 +90,7 @@ describe('FrameDetailsView', () => {
     await coordinator.done();
     await coordinator.done();  // 2nd call awaits async render
 
-    const keys = extractTextFromReportView(component.shadowRoot, 'devtools-report-key');
+    const keys = getCleanTextContentFromElements(component.shadowRoot, 'devtools-report-key');
     assert.deepEqual(keys, [
       'URL',
       'Origin',
@@ -111,7 +104,7 @@ describe('FrameDetailsView', () => {
       'Measure Memory',
     ]);
 
-    const values = extractTextFromReportView(component.shadowRoot, 'devtools-report-value');
+    const values = getCleanTextContentFromElements(component.shadowRoot, 'devtools-report-value');
     assert.deepEqual(values, [
       'https://www.example.com/path/page.html',
       'https://www.example.com',
@@ -131,7 +124,7 @@ describe('FrameDetailsView', () => {
     const expandableList =
         getElementWithinComponent(stackTrace, 'devtools-expandable-list', Components.ExpandableList.ExpandableList);
     assertShadowRoot(expandableList.shadowRoot);
-    const expandableListText = extractTextFromReportView(expandableList.shadowRoot, '.stack-trace-row');
+    const expandableListText = getCleanTextContentFromElements(expandableList.shadowRoot, '.stack-trace-row');
     assert.deepEqual(expandableListText, ['function1 @ www.example.com/script.js:16']);
   });
 });

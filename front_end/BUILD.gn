@@ -219,7 +219,6 @@ ts_library("devtools_app") {
 
   deps = [
     ":shell",
-    "css_overview:meta",
     "developer_resources:meta",
     "elements:meta",
     "emulation:meta",
@@ -235,6 +234,7 @@ ts_library("devtools_app") {
     "panels/accessibility:meta",
     "panels/animation:meta",
     "panels/browser_debugger:meta",
+    "panels/css_overview:meta",
     "performance_monitor:meta",
     "resources:meta",
     "security:meta",

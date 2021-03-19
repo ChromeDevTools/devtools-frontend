@@ -2,9 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as i18n from '../i18n/i18n.js';
-import * as Root from '../root/root.js';
-import * as UI from '../ui/ui.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as Root from '../../root/root.js';
+import * as UI from '../../ui/ui.js';
 
 // eslint-disable-next-line rulesdir/es_modules_import
 import type * as CSSOverview from './css_overview.js';
@@ -20,7 +20,7 @@ const UIStrings = {
   showCssOverview: 'Show CSS Overview',
 };
 
-const str_ = i18n.i18n.registerUIStrings('css_overview/css_overview-meta.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/css_overview/css_overview-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 let loadedCSSOverviewModule: (typeof CSSOverview|undefined);
@@ -28,7 +28,7 @@ let loadedCSSOverviewModule: (typeof CSSOverview|undefined);
 async function loadCSSOverviewModule(): Promise<typeof CSSOverview> {
   if (!loadedCSSOverviewModule) {
     // Side-effect import resources in module.json
-    await Root.Runtime.Runtime.instance().loadModulePromise('css_overview');
+    await Root.Runtime.Runtime.instance().loadModulePromise('panels/css_overview');
     loadedCSSOverviewModule = await import('./css_overview.js');
   }
   return loadedCSSOverviewModule;

@@ -377,150 +377,6 @@
   "cookie_table/CookiesTable.ts | value": {
     "message": "Value"
   },
-  "css_overview/css_overview-meta.ts | cssOverview": {
-    "message": "CSS Overview"
-  },
-  "css_overview/css_overview-meta.ts | showCssOverview": {
-    "message": "Show CSS Overview"
-  },
-  "css_overview/CSSOverviewCompletedView.ts | aa": {
-    "message": "AA"
-  },
-  "css_overview/CSSOverviewCompletedView.ts | aaa": {
-    "message": "AAA"
-  },
-  "css_overview/CSSOverviewCompletedView.ts | apca": {
-    "message": "APCA"
-  },
-  "css_overview/CSSOverviewCompletedView.ts | attributeSelectors": {
-    "message": "Attribute selectors"
-  },
-  "css_overview/CSSOverviewCompletedView.ts | backgroundColorsS": {
-    "message": "Background colors: {PH1}"
-  },
-  "css_overview/CSSOverviewCompletedView.ts | borderColorsS": {
-    "message": "Border colors: {PH1}"
-  },
-  "css_overview/CSSOverviewCompletedView.ts | classSelectors": {
-    "message": "Class selectors"
-  },
-  "css_overview/CSSOverviewCompletedView.ts | colors": {
-    "message": "Colors"
-  },
-  "css_overview/CSSOverviewCompletedView.ts | contrastIssues": {
-    "message": "Contrast issues"
-  },
-  "css_overview/CSSOverviewCompletedView.ts | contrastIssuesS": {
-    "message": "Contrast issues: {PH1}"
-  },
-  "css_overview/CSSOverviewCompletedView.ts | contrastRatio": {
-    "message": "Contrast ratio"
-  },
-  "css_overview/CSSOverviewCompletedView.ts | cssOverviewElements": {
-    "message": "CSS Overview Elements"
-  },
-  "css_overview/CSSOverviewCompletedView.ts | declaration": {
-    "message": "Declaration"
-  },
-  "css_overview/CSSOverviewCompletedView.ts | element": {
-    "message": "Element"
-  },
-  "css_overview/CSSOverviewCompletedView.ts | elements": {
-    "message": "Elements"
-  },
-  "css_overview/CSSOverviewCompletedView.ts | externalStylesheets": {
-    "message": "External stylesheets"
-  },
-  "css_overview/CSSOverviewCompletedView.ts | fillColorsS": {
-    "message": "Fill colors: {PH1}"
-  },
-  "css_overview/CSSOverviewCompletedView.ts | fontInfo": {
-    "message": "Font info"
-  },
-  "css_overview/CSSOverviewCompletedView.ts | idSelectors": {
-    "message": "ID selectors"
-  },
-  "css_overview/CSSOverviewCompletedView.ts | inlineStyleElements": {
-    "message": "Inline style elements"
-  },
-  "css_overview/CSSOverviewCompletedView.ts | mediaQueries": {
-    "message": "Media queries"
-  },
-  "css_overview/CSSOverviewCompletedView.ts | nOccurrences": {
-    "message": "{n, plural, =1 {# occurrence} other {# occurrences}}"
-  },
-  "css_overview/CSSOverviewCompletedView.ts | nonsimpleSelectors": {
-    "message": "Non-simple selectors"
-  },
-  "css_overview/CSSOverviewCompletedView.ts | overviewSummary": {
-    "message": "Overview summary"
-  },
-  "css_overview/CSSOverviewCompletedView.ts | showElement": {
-    "message": "Show element"
-  },
-  "css_overview/CSSOverviewCompletedView.ts | source": {
-    "message": "Source"
-  },
-  "css_overview/CSSOverviewCompletedView.ts | styleRules": {
-    "message": "Style rules"
-  },
-  "css_overview/CSSOverviewCompletedView.ts | textColorSOverSBackgroundResults": {
-    "message": "Text color {PH1} over {PH2} background results in low contrast for {PH3} elements"
-  },
-  "css_overview/CSSOverviewCompletedView.ts | textColorsS": {
-    "message": "Text colors: {PH1}"
-  },
-  "css_overview/CSSOverviewCompletedView.ts | thereAreNoFonts": {
-    "message": "There are no fonts."
-  },
-  "css_overview/CSSOverviewCompletedView.ts | thereAreNoMediaQueries": {
-    "message": "There are no media queries."
-  },
-  "css_overview/CSSOverviewCompletedView.ts | thereAreNoUnusedDeclarations": {
-    "message": "There are no unused declarations."
-  },
-  "css_overview/CSSOverviewCompletedView.ts | typeSelectors": {
-    "message": "Type selectors"
-  },
-  "css_overview/CSSOverviewCompletedView.ts | universalSelectors": {
-    "message": "Universal selectors"
-  },
-  "css_overview/CSSOverviewCompletedView.ts | unusedDeclarations": {
-    "message": "Unused declarations"
-  },
-  "css_overview/CSSOverviewProcessingView.ts | cancel": {
-    "message": "Cancel"
-  },
-  "css_overview/CSSOverviewSidebarPanel.ts | clearOverview": {
-    "message": "Clear overview"
-  },
-  "css_overview/CSSOverviewStartView.ts | captureOverview": {
-    "message": "Capture overview"
-  },
-  "css_overview/CSSOverviewStartView.ts | cssOverview": {
-    "message": "CSS Overview"
-  },
-  "css_overview/CSSOverviewUnusedDeclarations.ts | bottomAppliedToAStatically": {
-    "message": "Bottom applied to a statically positioned element"
-  },
-  "css_overview/CSSOverviewUnusedDeclarations.ts | heightAppliedToAnInlineElement": {
-    "message": "Height applied to an inline element"
-  },
-  "css_overview/CSSOverviewUnusedDeclarations.ts | leftAppliedToAStatically": {
-    "message": "Left applied to a statically positioned element"
-  },
-  "css_overview/CSSOverviewUnusedDeclarations.ts | rightAppliedToAStatically": {
-    "message": "Right applied to a statically positioned element"
-  },
-  "css_overview/CSSOverviewUnusedDeclarations.ts | topAppliedToAStatically": {
-    "message": "Top applied to a statically positioned element"
-  },
-  "css_overview/CSSOverviewUnusedDeclarations.ts | verticalAlignmentAppliedTo": {
-    "message": "Vertical alignment applied to element which is neither inline nor table-cell"
-  },
-  "css_overview/CSSOverviewUnusedDeclarations.ts | widthAppliedToAnInlineElement": {
-    "message": "Width applied to an inline element"
-  },
   "data_grid/DataGrid.ts | addNew": {
     "message": "Add new"
   },
@@ -5572,6 +5428,150 @@
   },
   "panels/coverage/CoverageView.ts | urlFilter": {
     "message": "URL filter"
+  },
+  "panels/css_overview/css_overview-meta.ts | cssOverview": {
+    "message": "CSS Overview"
+  },
+  "panels/css_overview/css_overview-meta.ts | showCssOverview": {
+    "message": "Show CSS Overview"
+  },
+  "panels/css_overview/CSSOverviewCompletedView.ts | aa": {
+    "message": "AA"
+  },
+  "panels/css_overview/CSSOverviewCompletedView.ts | aaa": {
+    "message": "AAA"
+  },
+  "panels/css_overview/CSSOverviewCompletedView.ts | apca": {
+    "message": "APCA"
+  },
+  "panels/css_overview/CSSOverviewCompletedView.ts | attributeSelectors": {
+    "message": "Attribute selectors"
+  },
+  "panels/css_overview/CSSOverviewCompletedView.ts | backgroundColorsS": {
+    "message": "Background colors: {PH1}"
+  },
+  "panels/css_overview/CSSOverviewCompletedView.ts | borderColorsS": {
+    "message": "Border colors: {PH1}"
+  },
+  "panels/css_overview/CSSOverviewCompletedView.ts | classSelectors": {
+    "message": "Class selectors"
+  },
+  "panels/css_overview/CSSOverviewCompletedView.ts | colors": {
+    "message": "Colors"
+  },
+  "panels/css_overview/CSSOverviewCompletedView.ts | contrastIssues": {
+    "message": "Contrast issues"
+  },
+  "panels/css_overview/CSSOverviewCompletedView.ts | contrastIssuesS": {
+    "message": "Contrast issues: {PH1}"
+  },
+  "panels/css_overview/CSSOverviewCompletedView.ts | contrastRatio": {
+    "message": "Contrast ratio"
+  },
+  "panels/css_overview/CSSOverviewCompletedView.ts | cssOverviewElements": {
+    "message": "CSS Overview Elements"
+  },
+  "panels/css_overview/CSSOverviewCompletedView.ts | declaration": {
+    "message": "Declaration"
+  },
+  "panels/css_overview/CSSOverviewCompletedView.ts | element": {
+    "message": "Element"
+  },
+  "panels/css_overview/CSSOverviewCompletedView.ts | elements": {
+    "message": "Elements"
+  },
+  "panels/css_overview/CSSOverviewCompletedView.ts | externalStylesheets": {
+    "message": "External stylesheets"
+  },
+  "panels/css_overview/CSSOverviewCompletedView.ts | fillColorsS": {
+    "message": "Fill colors: {PH1}"
+  },
+  "panels/css_overview/CSSOverviewCompletedView.ts | fontInfo": {
+    "message": "Font info"
+  },
+  "panels/css_overview/CSSOverviewCompletedView.ts | idSelectors": {
+    "message": "ID selectors"
+  },
+  "panels/css_overview/CSSOverviewCompletedView.ts | inlineStyleElements": {
+    "message": "Inline style elements"
+  },
+  "panels/css_overview/CSSOverviewCompletedView.ts | mediaQueries": {
+    "message": "Media queries"
+  },
+  "panels/css_overview/CSSOverviewCompletedView.ts | nOccurrences": {
+    "message": "{n, plural, =1 {# occurrence} other {# occurrences}}"
+  },
+  "panels/css_overview/CSSOverviewCompletedView.ts | nonsimpleSelectors": {
+    "message": "Non-simple selectors"
+  },
+  "panels/css_overview/CSSOverviewCompletedView.ts | overviewSummary": {
+    "message": "Overview summary"
+  },
+  "panels/css_overview/CSSOverviewCompletedView.ts | showElement": {
+    "message": "Show element"
+  },
+  "panels/css_overview/CSSOverviewCompletedView.ts | source": {
+    "message": "Source"
+  },
+  "panels/css_overview/CSSOverviewCompletedView.ts | styleRules": {
+    "message": "Style rules"
+  },
+  "panels/css_overview/CSSOverviewCompletedView.ts | textColorSOverSBackgroundResults": {
+    "message": "Text color {PH1} over {PH2} background results in low contrast for {PH3} elements"
+  },
+  "panels/css_overview/CSSOverviewCompletedView.ts | textColorsS": {
+    "message": "Text colors: {PH1}"
+  },
+  "panels/css_overview/CSSOverviewCompletedView.ts | thereAreNoFonts": {
+    "message": "There are no fonts."
+  },
+  "panels/css_overview/CSSOverviewCompletedView.ts | thereAreNoMediaQueries": {
+    "message": "There are no media queries."
+  },
+  "panels/css_overview/CSSOverviewCompletedView.ts | thereAreNoUnusedDeclarations": {
+    "message": "There are no unused declarations."
+  },
+  "panels/css_overview/CSSOverviewCompletedView.ts | typeSelectors": {
+    "message": "Type selectors"
+  },
+  "panels/css_overview/CSSOverviewCompletedView.ts | universalSelectors": {
+    "message": "Universal selectors"
+  },
+  "panels/css_overview/CSSOverviewCompletedView.ts | unusedDeclarations": {
+    "message": "Unused declarations"
+  },
+  "panels/css_overview/CSSOverviewProcessingView.ts | cancel": {
+    "message": "Cancel"
+  },
+  "panels/css_overview/CSSOverviewSidebarPanel.ts | clearOverview": {
+    "message": "Clear overview"
+  },
+  "panels/css_overview/CSSOverviewStartView.ts | captureOverview": {
+    "message": "Capture overview"
+  },
+  "panels/css_overview/CSSOverviewStartView.ts | cssOverview": {
+    "message": "CSS Overview"
+  },
+  "panels/css_overview/CSSOverviewUnusedDeclarations.ts | bottomAppliedToAStatically": {
+    "message": "Bottom applied to a statically positioned element"
+  },
+  "panels/css_overview/CSSOverviewUnusedDeclarations.ts | heightAppliedToAnInlineElement": {
+    "message": "Height applied to an inline element"
+  },
+  "panels/css_overview/CSSOverviewUnusedDeclarations.ts | leftAppliedToAStatically": {
+    "message": "Left applied to a statically positioned element"
+  },
+  "panels/css_overview/CSSOverviewUnusedDeclarations.ts | rightAppliedToAStatically": {
+    "message": "Right applied to a statically positioned element"
+  },
+  "panels/css_overview/CSSOverviewUnusedDeclarations.ts | topAppliedToAStatically": {
+    "message": "Top applied to a statically positioned element"
+  },
+  "panels/css_overview/CSSOverviewUnusedDeclarations.ts | verticalAlignmentAppliedTo": {
+    "message": "Vertical alignment applied to element which is neither inline nor table-cell"
+  },
+  "panels/css_overview/CSSOverviewUnusedDeclarations.ts | widthAppliedToAnInlineElement": {
+    "message": "Width applied to an inline element"
   },
   "perf_ui/FilmStripView.ts | doubleclickToZoomImageClickTo": {
     "message": "Doubleclick to zoom image. Click to view preceding requests."

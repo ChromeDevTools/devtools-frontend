@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as CssOverviewModule from '../css_overview/css_overview.js';
+import * as CssOverviewModule from '../panels/css_overview/css_overview.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 

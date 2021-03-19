@@ -4,15 +4,15 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../common/common.js';
-import * as Components from '../components/components.js';
-import * as DataGrid from '../data_grid/data_grid.js';
-import * as i18n from '../i18n/i18n.js';
-import * as Platform from '../platform/platform.js';
-import * as Root from '../root/root.js';
-import * as SDK from '../sdk/sdk.js';
-import * as TextUtils from '../text_utils/text_utils.js';
-import * as UI from '../ui/ui.js';
+import * as Common from '../../common/common.js';
+import * as Components from '../../components/components.js';
+import * as DataGrid from '../../data_grid/data_grid.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as Platform from '../../platform/platform.js';
+import * as Root from '../../root/root.js';
+import * as SDK from '../../sdk/sdk.js';
+import * as TextUtils from '../../text_utils/text_utils.js';
+import * as UI from '../../ui/ui.js';
 
 import type {OverviewController} from './CSSOverviewController.js';
 import {Events} from './CSSOverviewController.js';
@@ -169,7 +169,7 @@ const UIStrings = {
   */
   showElement: 'Show element',
 };
-const str_ = i18n.i18n.registerUIStrings('css_overview/CSSOverviewCompletedView.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/css_overview/CSSOverviewCompletedView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export type NodeStyleStats = Map<string, Set<number>>;
@@ -234,7 +234,7 @@ export class CSSOverviewCompletedView extends UI.Panel.PanelWithSidebar {
 
   constructor(controller: OverviewController, target: SDK.SDKModel.Target) {
     super('css_overview_completed_view');
-    this.registerRequiredCSS('css_overview/cssOverviewCompletedView.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('panels/css_overview/cssOverviewCompletedView.css', {enableLegacyPatching: false});
 
     this._controller = controller;
     this._formatter = new Intl.NumberFormat('en-US');
@@ -251,7 +251,8 @@ export class CSSOverviewCompletedView extends UI.Panel.PanelWithSidebar {
     });
 
     // Dupe the styles into the main container because of the shadow root will prevent outer styles.
-    this._mainContainer.registerRequiredCSS('css_overview/cssOverviewCompletedView.css', {enableLegacyPatching: true});
+    this._mainContainer.registerRequiredCSS(
+        'panels/css_overview/cssOverviewCompletedView.css', {enableLegacyPatching: true});
 
     this._mainContainer.setMainWidget(this._resultsContainer);
     this._mainContainer.setSidebarWidget(this._elementContainer);

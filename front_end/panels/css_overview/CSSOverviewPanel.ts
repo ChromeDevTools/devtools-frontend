@@ -4,10 +4,10 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import type * as Common from '../common/common.js';
-import * as Host from '../host/host.js';
-import * as SDK from '../sdk/sdk.js';
-import * as UI from '../ui/ui.js';
+import type * as Common from '../../common/common.js';
+import * as Host from '../../host/host.js';
+import * as SDK from '../../sdk/sdk.js';
+import * as UI from '../../ui/ui.js';
 
 import type {ContrastIssue} from './CSSOverviewCompletedView.js';
 import {CSSOverviewCompletedView} from './CSSOverviewCompletedView.js';
@@ -40,7 +40,7 @@ export class CSSOverviewPanel extends UI.Panel.Panel {
 
   private constructor() {
     super('css_overview');
-    this.registerRequiredCSS('css_overview/cssOverview.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('panels/css_overview/cssOverview.css', {enableLegacyPatching: false});
     this.element.classList.add('css-overview-panel');
 
     const [model] = SDK.SDKModel.TargetManager.instance().models(CSSOverviewModel);

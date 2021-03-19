@@ -4,8 +4,8 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as i18n from '../i18n/i18n.js';
-import * as UI from '../ui/ui.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as UI from '../../ui/ui.js';
 
 const UIStrings = {
   /**
@@ -13,7 +13,7 @@ const UIStrings = {
   */
   clearOverview: 'Clear overview',
 };
-const str_ = i18n.i18n.registerUIStrings('css_overview/CSSOverviewSidebarPanel.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/css_overview/CSSOverviewSidebarPanel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class CSSOverviewSidebarPanel extends UI.Widget.VBox {
@@ -30,7 +30,7 @@ export class CSSOverviewSidebarPanel extends UI.Widget.VBox {
   constructor() {
     super(true);
 
-    this.registerRequiredCSS('css_overview/cssOverviewSidebarPanel.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('panels/css_overview/cssOverviewSidebarPanel.css', {enableLegacyPatching: false});
     this.contentElement.classList.add('overview-sidebar-panel');
     this.contentElement.addEventListener('click', this._onItemClick.bind(this));
 

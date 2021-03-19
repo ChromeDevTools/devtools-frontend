@@ -4,7 +4,7 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as i18n from '../i18n/i18n.js';
+import * as i18n from '../../i18n/i18n.js';
 
 const UIStrings = {
   /**
@@ -36,7 +36,7 @@ const UIStrings = {
   */
   verticalAlignmentAppliedTo: 'Vertical alignment applied to element which is neither `inline` nor `table-cell`',
 };
-const str_ = i18n.i18n.registerUIStrings('css_overview/CSSOverviewUnusedDeclarations.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/css_overview/CSSOverviewUnusedDeclarations.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export interface UnusedDeclaration {
   declaration: string;

@@ -4,8 +4,8 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as i18n from '../i18n/i18n.js';
-import * as UI from '../ui/ui.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as UI from '../../ui/ui.js';
 
 import type {OverviewController} from './CSSOverviewController.js';
 import {Events} from './CSSOverviewController.js';
@@ -16,7 +16,7 @@ const UIStrings = {
   */
   cancel: 'Cancel',
 };
-const str_ = i18n.i18n.registerUIStrings('css_overview/CSSOverviewProcessingView.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/css_overview/CSSOverviewProcessingView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class CSSOverviewProcessingView extends UI.Widget.Widget {
   _formatter: Intl.NumberFormat;
@@ -24,7 +24,7 @@ export class CSSOverviewProcessingView extends UI.Widget.Widget {
   fragment?: UI.Fragment.Fragment;
   constructor(controller: OverviewController) {
     super();
-    this.registerRequiredCSS('css_overview/cssOverviewProcessingView.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('panels/css_overview/cssOverviewProcessingView.css', {enableLegacyPatching: false});
 
     this._formatter = new Intl.NumberFormat('en-US');
     this._controller = controller;

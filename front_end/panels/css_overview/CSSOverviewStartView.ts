@@ -4,8 +4,8 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as i18n from '../i18n/i18n.js';
-import * as UI from '../ui/ui.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as UI from '../../ui/ui.js';
 
 import type {OverviewController} from './CSSOverviewController.js';
 import {Events} from './CSSOverviewController.js';
@@ -20,13 +20,13 @@ const UIStrings = {
   */
   cssOverview: 'CSS Overview',
 };
-const str_ = i18n.i18n.registerUIStrings('css_overview/CSSOverviewStartView.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/css_overview/CSSOverviewStartView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class CSSOverviewStartView extends UI.Widget.Widget {
   _controller: OverviewController;
   constructor(controller: OverviewController) {
     super();
-    this.registerRequiredCSS('css_overview/cssOverviewStartView.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('panels/css_overview/cssOverviewStartView.css', {enableLegacyPatching: false});
 
     this._controller = controller;
     this._render();

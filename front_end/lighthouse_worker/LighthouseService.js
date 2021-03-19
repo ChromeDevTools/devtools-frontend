@@ -111,8 +111,8 @@ async function fetchLocaleData(locales) {
       const localeUrl = `${remoteBase.base}third_party/lighthouse/locales/${locale}.json`;
       localeDataTextPromise = Root.Runtime.loadResourcePromise(localeUrl);
     } else {
-      const module = Root.Runtime.Runtime.instance().module('lighthouse_worker');
-      localeDataTextPromise = module.fetchResource(`../third_party/lighthouse/locales/${locale}.json`);
+      const localeUrl = new URL(`../third_party/lighthouse/locales/${locale}.json`, import.meta.url);
+      localeDataTextPromise = Root.Runtime.loadResourcePromise(localeUrl.toString());
     }
 
     const timeoutPromise =

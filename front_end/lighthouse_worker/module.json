@@ -1,6 +1,0 @@
-{
-  "modules": [
-    "LighthouseService.js",
-    "../third_party/lighthouse/lighthouse-dt-bundle.js"
-  ]
-}

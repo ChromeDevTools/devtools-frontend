@@ -1,7 +1,5 @@
 {
-  "modules": [
-    "security-legacy.js"
-  ],
+  "modules": [],
   "dependencies": [
     "network"
   ],

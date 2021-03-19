@@ -12,9 +12,7 @@
     "sources",
     "browser_sdk"
   ],
-  "modules": [
-    "resources-legacy.js"
-  ],
+  "modules": [],
   "resources": [
     "appManifestView.css",
     "backgroundServiceView.css",

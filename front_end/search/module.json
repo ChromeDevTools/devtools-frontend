@@ -2,9 +2,7 @@
   "dependencies": [
     "components"
   ],
-  "modules": [
-    "search-legacy.js"
-  ],
+  "modules": [],
   "resources": [
     "searchResultsPane.css",
     "searchView.css"

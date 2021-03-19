@@ -3,9 +3,7 @@
     "components",
     "ui"
   ],
-  "modules": [
-    "web_audio-legacy.js"
-  ],
+  "modules": [],
   "resources": [
     "webAudio.css",
     "audioContextSelector.css"

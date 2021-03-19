@@ -2,9 +2,7 @@
   "dependencies": [
     "components"
   ],
-  "modules": [
-    "settings-legacy.js"
-  ],
+  "modules": [],
   "resources": [
     "frameworkIgnoreListSettingsTab.css",
     "settingsScreen.css",

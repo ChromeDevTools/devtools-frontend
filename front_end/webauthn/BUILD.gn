@@ -24,12 +24,6 @@ devtools_entrypoint("bundle") {
   deps = [ ":webauthn" ]
 }
 
-devtools_entrypoint("legacy") {
-  entrypoint = "webauthn-legacy.ts"
-
-  deps = [ ":bundle" ]
-}
-
 devtools_entrypoint("meta") {
   entrypoint = "webauthn-meta.ts"
 

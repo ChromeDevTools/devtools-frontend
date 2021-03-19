@@ -13,9 +13,7 @@
     "object_ui",
     "panels/coverage"
   ],
-  "modules": [
-    "sources-legacy.js"
-  ],
+  "modules": [],
   "resources": [
     "breakpointEditDialog.css",
     "callStackSidebarPane.css",

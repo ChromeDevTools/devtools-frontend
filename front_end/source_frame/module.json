@@ -6,20 +6,7 @@
     "object_ui",
     "workspace_diff"
   ],
-  "modules": [
-    "source_frame.js",
-    "source_frame-legacy.js",
-    "BinaryResourceViewFactory.js",
-    "SourcesTextEditor.js",
-    "FontView.js",
-    "ImageView.js",
-    "SourceFrame.js",
-    "ResourceSourceFrame.js",
-    "JSONView.js",
-    "XMLView.js",
-    "PreviewFactory.js",
-    "SourceCodeDiff.js"
-  ],
+  "modules": [],
   "resources": [
     "fontView.css",
     "imageView.css",

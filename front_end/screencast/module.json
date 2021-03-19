@@ -3,9 +3,7 @@
     "components",
     "emulation"
   ],
-  "modules": [
-    "screencast-legacy.js"
-  ],
+  "modules": [],
   "resources": [
     "screencastView.css"
   ]

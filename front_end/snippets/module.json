@@ -3,7 +3,5 @@
     "quick_open",
     "persistence"
   ],
-  "modules": [
-    "snippets-legacy.js"
-  ]
+  "modules": []
 }

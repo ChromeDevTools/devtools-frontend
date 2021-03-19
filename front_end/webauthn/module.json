@@ -3,9 +3,7 @@
     "data_grid",
     "ui"
   ],
-  "modules": [
-    "webauthn-legacy.js"
-  ],
+  "modules": [],
   "resources": [
     "webauthnPane.css"
   ]

@@ -5,6 +5,7 @@
 (async function() {
   TestRunner.addResult('Tests that snippet scripts are evaluated in REPL mode\n');
 
+  await TestRunner.loadLegacyModule('snippets');
   await TestRunner.showPanel('sources');
 
   TestRunner.addSniffer(TestRunner.RuntimeAgent, 'invoke_evaluate', function(args) {

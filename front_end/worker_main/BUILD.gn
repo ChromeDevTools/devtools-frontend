@@ -22,9 +22,3 @@ devtools_entrypoint("bundle") {
 
   deps = [ ":worker_main" ]
 }
-
-devtools_entrypoint("legacy") {
-  entrypoint = "worker_main-legacy.js"
-
-  deps = [ ":bundle" ]
-}

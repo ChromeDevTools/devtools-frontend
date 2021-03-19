@@ -27,12 +27,6 @@ devtools_entrypoint("bundle") {
   deps = [ ":screencast" ]
 }
 
-devtools_entrypoint("legacy") {
-  entrypoint = "screencast-legacy.ts"
-
-  deps = [ ":bundle" ]
-}
-
 devtools_entrypoint("meta") {
   entrypoint = "screencast-meta.ts"
 

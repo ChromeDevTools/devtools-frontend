@@ -10,9 +10,7 @@
     "profiler",
     "mobile_throttling"
   ],
-  "modules": [
-    "timeline-legacy.js"
-  ],
+  "modules": [],
   "resources": [
     "historyToolbarButton.css",
     "invalidationsTree.css",

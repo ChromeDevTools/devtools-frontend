@@ -6,16 +6,12 @@ import {assert} from 'chai';
 
 import {enableExperiment, getBrowserAndPages, goToResource, waitFor} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {focusOnSelectedElementsNode, getFontEditorButtons, getHiddenFontEditorButtons, waitForContentOfSelectedElementsNode, waitForCSSPropertyValue} from '../helpers/elements-helpers.js';
-
+import {clickNthChildOfSelectedElementNode, getFontEditorButtons, getHiddenFontEditorButtons, waitForContentOfSelectedElementsNode, waitForCSSPropertyValue} from '../helpers/elements-helpers.js';
 
 async function goToTestPageAndSelectTestElement(path: string = 'inline_editor/fontEditor.html') {
-  const {frontend} = getBrowserAndPages();
-
   await goToResource(path);
   await waitForContentOfSelectedElementsNode('<body>\u200B');
-  await focusOnSelectedElementsNode();
-  await frontend.keyboard.press('ArrowRight');
+  await clickNthChildOfSelectedElementNode(1);
 }
 
 async function openFontEditor(index: number) {

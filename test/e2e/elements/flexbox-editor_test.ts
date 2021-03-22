@@ -4,18 +4,17 @@
 
 import {assert} from 'chai';
 
-import {$$, enableExperiment, getBrowserAndPages, goToResource, waitFor} from '../../shared/helper.js';
+import {$$, enableExperiment, goToResource, waitFor} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {focusOnSelectedElementsNode, getCSSPropertyInRule, waitForContentOfSelectedElementsNode, waitForCSSPropertyValue} from '../helpers/elements-helpers.js';
+import {clickNthChildOfSelectedElementNode, focusElementsTree, getCSSPropertyInRule, waitForContentOfSelectedElementsNode, waitForCSSPropertyValue} from '../helpers/elements-helpers.js';
 
 describe('Flexbox Editor', async function() {
   beforeEach(async function() {
-    const {frontend} = getBrowserAndPages();
     await enableExperiment('cssFlexboxFeatures');
     await goToResource('elements/flexbox-editor.html');
     await waitForContentOfSelectedElementsNode('<body>\u200B');
-    await focusOnSelectedElementsNode();
-    await frontend.keyboard.press('ArrowRight');
+    await focusElementsTree();
+    await clickNthChildOfSelectedElementNode(1);
     await waitForCSSPropertyValue('#target', 'display', 'flex');
   });
 
@@ -28,6 +27,7 @@ describe('Flexbox Editor', async function() {
   }
 
   async function clickFlexEditButton(selector: string) {
+    await waitFor(selector);
     const buttons = await $$(selector);
     assert.strictEqual(buttons.length, 1);
     const button = buttons[0];

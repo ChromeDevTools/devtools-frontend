@@ -8,7 +8,6 @@ import * as puppeteer from 'puppeteer';
 import {$, $$, click, getBrowserAndPages, step, timeout, waitFor, waitForFunction} from '../../shared/helper.js';
 
 const SELECTED_TREE_ELEMENT_SELECTOR = '.selected[role="treeitem"]';
-const EXPANDED_SELECTED_TREE_ELEMENT_SELECTOR = '.selected.expanded[role="treeitem"]';
 const CSS_PROPERTY_NAME_SELECTOR = '.webkit-css-property';
 const CSS_PROPERTY_VALUE_SELECTOR = '.value';
 const COLOR_SWATCH_SELECTOR = '.color-swatch-inner';
@@ -104,21 +103,6 @@ export const waitForContentOfSelectedElementsNode = async (expectedTextContent: 
   });
 };
 
-export const focusOnSelectedElementsNode = async () => {
-  const selectedNode = await waitFor(SELECTED_TREE_ELEMENT_SELECTOR);
-  selectedNode.focus();
-};
-
-export const waitForContentOfExpandedSelectedElementsNode = async (expectedTextContent: string) => {
-  await waitForFunction(async () => {
-    const selectedNode = await waitFor(EXPANDED_SELECTED_TREE_ELEMENT_SELECTOR);
-    const selectedTextContent = await selectedNode.evaluate(node => node.textContent);
-    return selectedTextContent === expectedTextContent;
-  });
-  // Make sure that the element is focused and can receive keyboard events.
-  await click(EXPANDED_SELECTED_TREE_ELEMENT_SELECTOR);
-};
-
 /**
  * Gets the text content of the currently selected element.
  */
@@ -170,6 +154,12 @@ export const waitForSelectedTreeElementSelectorWhichIncludesText = async (expect
 
 export const waitForChildrenOfSelectedElementNode = async () => {
   await waitFor(`${SELECTED_TREE_ELEMENT_SELECTOR} + ol > li`);
+};
+
+export const clickNthChildOfSelectedElementNode = async (childIndex: number) => {
+  assert(childIndex > 0, 'CSS :nth-child() selector indices are 1-based.');
+  const element = await waitFor(`${SELECTED_TREE_ELEMENT_SELECTOR} + ol > li:nth-child(${childIndex})`);
+  await element.click();
 };
 
 export const focusElementsTree = async () => {

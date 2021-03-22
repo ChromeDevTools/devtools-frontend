@@ -1,5 +1,5 @@
 {
   "dependencies": [
-    "layer_viewer"
+    "panels/layer_viewer"
   ]
 }

@@ -30,10 +30,10 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as i18n from '../i18n/i18n.js';
-import * as Platform from '../platform/platform.js';
-import * as SDK from '../sdk/sdk.js';
-import * as UI from '../ui/ui.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as Platform from '../../platform/platform.js';
+import * as SDK from '../../sdk/sdk.js';
+import * as UI from '../../ui/ui.js';
 
 import type {LayerView, LayerViewHost, Selection, SnapshotSelection} from './LayerViewHost.js';
 import {ScrollRectSelection, Type} from './LayerViewHost.js';
@@ -150,7 +150,7 @@ const UIStrings = {
   */
   mainThreadScrollingReason: 'Main thread scrolling reason',
 };
-const str_ = i18n.i18n.registerUIStrings('layer_viewer/LayerDetailsView.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/layer_viewer/LayerDetailsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 export class LayerDetailsView extends UI.Widget.Widget implements LayerView {
@@ -170,7 +170,7 @@ export class LayerDetailsView extends UI.Widget.Widget implements LayerView {
 
   constructor(layerViewHost: LayerViewHost) {
     super(true);
-    this.registerRequiredCSS('layer_viewer/layerDetailsView.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('panels/layer_viewer/layerDetailsView.css', {enableLegacyPatching: true});
     this._layerViewHost = layerViewHost;
     this._layerViewHost.registerView(this);
     this._emptyWidget = new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.selectALayerToSeeItsDetails));

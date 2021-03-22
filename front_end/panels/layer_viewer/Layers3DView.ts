@@ -30,11 +30,11 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../common/common.js';
-import * as i18n from '../i18n/i18n.js';
-import * as Platform from '../platform/platform.js';
-import type * as SDK from '../sdk/sdk.js';
-import * as UI from '../ui/ui.js';
+import * as Common from '../../common/common.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as Platform from '../../platform/platform.js';
+import type * as SDK from '../../sdk/sdk.js';
+import * as UI from '../../ui/ui.js';
 
 import type {LayerView, LayerViewHost} from './LayerViewHost.js';
 import {LayerSelection, Selection, SnapshotSelection, Type, ScrollRectSelection} from './LayerViewHost.js';
@@ -81,7 +81,7 @@ const UIStrings = {
   */
   showPaintProfiler: 'Show Paint Profiler',
 };
-const str_ = i18n.i18n.registerUIStrings('layer_viewer/Layers3DView.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/layer_viewer/Layers3DView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 const vertexPositionAttributes = new Map<WebGLProgram, number>();
@@ -128,7 +128,7 @@ export class Layers3DView extends UI.Widget.VBox implements LayerView {
   constructor(layerViewHost: LayerViewHost) {
     super(true);
 
-    this.registerRequiredCSS('layer_viewer/layers3DView.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('panels/layer_viewer/layers3DView.css', {enableLegacyPatching: false});
     this.contentElement.classList.add('layers-3d-view');
     this._failBanner = new UI.Widget.VBox();
     this._failBanner.element.classList.add('full-widget-dimmed-banner');

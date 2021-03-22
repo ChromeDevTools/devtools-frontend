@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
-import * as LayerViewer from '../layer_viewer/layer_viewer.js';
+import * as LayerViewer from '../panels/layer_viewer/layer_viewer.js';
 import * as SDK from '../sdk/sdk.js';                                  // eslint-disable-line no-unused-vars
 import * as TimelineModel from '../timeline_model/timeline_model.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../ui/ui.js';

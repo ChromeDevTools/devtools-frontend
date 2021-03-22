@@ -9,7 +9,7 @@
     { "name": "panels/help" },
     { "name": "issues" },
     { "name": "panels/developer_resources" },
-    { "name": "layer_viewer" },
+    { "name": "panels/layer_viewer" },
     { "name": "network" },
     { "name": "resources" },
     { "name": "timeline" }

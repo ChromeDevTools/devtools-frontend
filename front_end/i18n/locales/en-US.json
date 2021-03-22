@@ -2000,165 +2000,6 @@
   "js_profiler/js_profiler-meta.ts | showProfiler": {
     "message": "Show Profiler"
   },
-  "layer_viewer/layer_viewer-meta.ts | panOrRotateDown": {
-    "message": "Pan or rotate down"
-  },
-  "layer_viewer/layer_viewer-meta.ts | panOrRotateLeft": {
-    "message": "Pan or rotate left"
-  },
-  "layer_viewer/layer_viewer-meta.ts | panOrRotateRight": {
-    "message": "Pan or rotate right"
-  },
-  "layer_viewer/layer_viewer-meta.ts | panOrRotateUp": {
-    "message": "Pan or rotate up"
-  },
-  "layer_viewer/layer_viewer-meta.ts | resetView": {
-    "message": "Reset view"
-  },
-  "layer_viewer/layer_viewer-meta.ts | switchToPanMode": {
-    "message": "Switch to pan mode"
-  },
-  "layer_viewer/layer_viewer-meta.ts | switchToRotateMode": {
-    "message": "Switch to rotate mode"
-  },
-  "layer_viewer/layer_viewer-meta.ts | zoomIn": {
-    "message": "Zoom in"
-  },
-  "layer_viewer/layer_viewer-meta.ts | zoomOut": {
-    "message": "Zoom out"
-  },
-  "layer_viewer/LayerDetailsView.ts | compositingReasons": {
-    "message": "Compositing Reasons"
-  },
-  "layer_viewer/LayerDetailsView.ts | containingBlocRectangleDimensions": {
-    "message": "Containing Block {PH1} × {PH2} (at {PH3}, {PH4})"
-  },
-  "layer_viewer/LayerDetailsView.ts | mainThreadScrollingReason": {
-    "message": "Main thread scrolling reason"
-  },
-  "layer_viewer/LayerDetailsView.ts | memoryEstimate": {
-    "message": "Memory estimate"
-  },
-  "layer_viewer/LayerDetailsView.ts | nearestLayerShiftingContaining": {
-    "message": "Nearest Layer Shifting Containing Block"
-  },
-  "layer_viewer/LayerDetailsView.ts | nearestLayerShiftingStickyBox": {
-    "message": "Nearest Layer Shifting Sticky Box"
-  },
-  "layer_viewer/LayerDetailsView.ts | nonFastScrollable": {
-    "message": "Non fast scrollable"
-  },
-  "layer_viewer/LayerDetailsView.ts | paintCount": {
-    "message": "Paint count"
-  },
-  "layer_viewer/LayerDetailsView.ts | paintProfiler": {
-    "message": "Paint Profiler"
-  },
-  "layer_viewer/LayerDetailsView.ts | repaintsOnScroll": {
-    "message": "Repaints on scroll"
-  },
-  "layer_viewer/LayerDetailsView.ts | scrollRectangleDimensions": {
-    "message": "{PH1} {PH2} × {PH3} (at {PH4}, {PH5})"
-  },
-  "layer_viewer/LayerDetailsView.ts | selectALayerToSeeItsDetails": {
-    "message": "Select a layer to see its details"
-  },
-  "layer_viewer/LayerDetailsView.ts | size": {
-    "message": "Size"
-  },
-  "layer_viewer/LayerDetailsView.ts | slowScrollRegions": {
-    "message": "Slow scroll regions"
-  },
-  "layer_viewer/LayerDetailsView.ts | stickyAncenstorLayersS": {
-    "message": "{PH1}: {PH2} ({PH3})"
-  },
-  "layer_viewer/LayerDetailsView.ts | stickyBoxRectangleDimensions": {
-    "message": "Sticky Box {PH1} × {PH2} (at {PH3}, {PH4})"
-  },
-  "layer_viewer/LayerDetailsView.ts | stickyPositionConstraint": {
-    "message": "Sticky position constraint"
-  },
-  "layer_viewer/LayerDetailsView.ts | touchEventHandler": {
-    "message": "Touch event handler"
-  },
-  "layer_viewer/LayerDetailsView.ts | unnamed": {
-    "message": "<unnamed>"
-  },
-  "layer_viewer/LayerDetailsView.ts | updateRectangleDimensions": {
-    "message": "{PH1} × {PH2} (at {PH3}, {PH4})"
-  },
-  "layer_viewer/LayerDetailsView.ts | wheelEventHandler": {
-    "message": "Wheel event handler"
-  },
-  "layer_viewer/Layers3DView.ts | cantDisplayLayers": {
-    "message": "Can't display layers,"
-  },
-  "layer_viewer/Layers3DView.ts | checkSForPossibleReasons": {
-    "message": "Check {PH1} for possible reasons."
-  },
-  "layer_viewer/Layers3DView.ts | dLayersView": {
-    "message": "3D Layers View"
-  },
-  "layer_viewer/Layers3DView.ts | layerInformationIsNotYet": {
-    "message": "Layer information is not yet available."
-  },
-  "layer_viewer/Layers3DView.ts | paints": {
-    "message": "Paints"
-  },
-  "layer_viewer/Layers3DView.ts | resetView": {
-    "message": "Reset View"
-  },
-  "layer_viewer/Layers3DView.ts | showPaintProfiler": {
-    "message": "Show Paint Profiler"
-  },
-  "layer_viewer/Layers3DView.ts | slowScrollRects": {
-    "message": "Slow scroll rects"
-  },
-  "layer_viewer/Layers3DView.ts | webglSupportIsDisabledInYour": {
-    "message": "WebGL support is disabled in your browser."
-  },
-  "layer_viewer/LayerTreeOutline.ts | layersTreePane": {
-    "message": "Layers Tree Pane"
-  },
-  "layer_viewer/LayerTreeOutline.ts | showPaintProfiler": {
-    "message": "Show Paint Profiler"
-  },
-  "layer_viewer/LayerTreeOutline.ts | updateChildDimension": {
-    "message": " ({PH1} × {PH2})"
-  },
-  "layer_viewer/LayerViewHost.ts | showInternalLayers": {
-    "message": "Show internal layers"
-  },
-  "layer_viewer/PaintProfilerView.ts | bitmap": {
-    "message": "Bitmap"
-  },
-  "layer_viewer/PaintProfilerView.ts | commandLog": {
-    "message": "Command Log"
-  },
-  "layer_viewer/PaintProfilerView.ts | misc": {
-    "message": "Misc"
-  },
-  "layer_viewer/PaintProfilerView.ts | profiling": {
-    "message": "Profiling…"
-  },
-  "layer_viewer/PaintProfilerView.ts | profilingResults": {
-    "message": "Profiling results"
-  },
-  "layer_viewer/PaintProfilerView.ts | shapes": {
-    "message": "Shapes"
-  },
-  "layer_viewer/PaintProfilerView.ts | text": {
-    "message": "Text"
-  },
-  "layer_viewer/TransformController.ts | panModeX": {
-    "message": "Pan mode (X)"
-  },
-  "layer_viewer/TransformController.ts | resetTransform": {
-    "message": "Reset transform (0)"
-  },
-  "layer_viewer/TransformController.ts | rotateModeV": {
-    "message": "Rotate mode (V)"
-  },
   "layers/layers-meta.ts | layers": {
     "message": "Layers"
   },
@@ -5593,6 +5434,165 @@
   },
   "panels/help/ReleaseNoteView.ts | learnMore": {
     "message": "Learn more"
+  },
+  "panels/layer_viewer/layer_viewer-meta.ts | panOrRotateDown": {
+    "message": "Pan or rotate down"
+  },
+  "panels/layer_viewer/layer_viewer-meta.ts | panOrRotateLeft": {
+    "message": "Pan or rotate left"
+  },
+  "panels/layer_viewer/layer_viewer-meta.ts | panOrRotateRight": {
+    "message": "Pan or rotate right"
+  },
+  "panels/layer_viewer/layer_viewer-meta.ts | panOrRotateUp": {
+    "message": "Pan or rotate up"
+  },
+  "panels/layer_viewer/layer_viewer-meta.ts | resetView": {
+    "message": "Reset view"
+  },
+  "panels/layer_viewer/layer_viewer-meta.ts | switchToPanMode": {
+    "message": "Switch to pan mode"
+  },
+  "panels/layer_viewer/layer_viewer-meta.ts | switchToRotateMode": {
+    "message": "Switch to rotate mode"
+  },
+  "panels/layer_viewer/layer_viewer-meta.ts | zoomIn": {
+    "message": "Zoom in"
+  },
+  "panels/layer_viewer/layer_viewer-meta.ts | zoomOut": {
+    "message": "Zoom out"
+  },
+  "panels/layer_viewer/LayerDetailsView.ts | compositingReasons": {
+    "message": "Compositing Reasons"
+  },
+  "panels/layer_viewer/LayerDetailsView.ts | containingBlocRectangleDimensions": {
+    "message": "Containing Block {PH1} × {PH2} (at {PH3}, {PH4})"
+  },
+  "panels/layer_viewer/LayerDetailsView.ts | mainThreadScrollingReason": {
+    "message": "Main thread scrolling reason"
+  },
+  "panels/layer_viewer/LayerDetailsView.ts | memoryEstimate": {
+    "message": "Memory estimate"
+  },
+  "panels/layer_viewer/LayerDetailsView.ts | nearestLayerShiftingContaining": {
+    "message": "Nearest Layer Shifting Containing Block"
+  },
+  "panels/layer_viewer/LayerDetailsView.ts | nearestLayerShiftingStickyBox": {
+    "message": "Nearest Layer Shifting Sticky Box"
+  },
+  "panels/layer_viewer/LayerDetailsView.ts | nonFastScrollable": {
+    "message": "Non fast scrollable"
+  },
+  "panels/layer_viewer/LayerDetailsView.ts | paintCount": {
+    "message": "Paint count"
+  },
+  "panels/layer_viewer/LayerDetailsView.ts | paintProfiler": {
+    "message": "Paint Profiler"
+  },
+  "panels/layer_viewer/LayerDetailsView.ts | repaintsOnScroll": {
+    "message": "Repaints on scroll"
+  },
+  "panels/layer_viewer/LayerDetailsView.ts | scrollRectangleDimensions": {
+    "message": "{PH1} {PH2} × {PH3} (at {PH4}, {PH5})"
+  },
+  "panels/layer_viewer/LayerDetailsView.ts | selectALayerToSeeItsDetails": {
+    "message": "Select a layer to see its details"
+  },
+  "panels/layer_viewer/LayerDetailsView.ts | size": {
+    "message": "Size"
+  },
+  "panels/layer_viewer/LayerDetailsView.ts | slowScrollRegions": {
+    "message": "Slow scroll regions"
+  },
+  "panels/layer_viewer/LayerDetailsView.ts | stickyAncenstorLayersS": {
+    "message": "{PH1}: {PH2} ({PH3})"
+  },
+  "panels/layer_viewer/LayerDetailsView.ts | stickyBoxRectangleDimensions": {
+    "message": "Sticky Box {PH1} × {PH2} (at {PH3}, {PH4})"
+  },
+  "panels/layer_viewer/LayerDetailsView.ts | stickyPositionConstraint": {
+    "message": "Sticky position constraint"
+  },
+  "panels/layer_viewer/LayerDetailsView.ts | touchEventHandler": {
+    "message": "Touch event handler"
+  },
+  "panels/layer_viewer/LayerDetailsView.ts | unnamed": {
+    "message": "<unnamed>"
+  },
+  "panels/layer_viewer/LayerDetailsView.ts | updateRectangleDimensions": {
+    "message": "{PH1} × {PH2} (at {PH3}, {PH4})"
+  },
+  "panels/layer_viewer/LayerDetailsView.ts | wheelEventHandler": {
+    "message": "Wheel event handler"
+  },
+  "panels/layer_viewer/Layers3DView.ts | cantDisplayLayers": {
+    "message": "Can't display layers,"
+  },
+  "panels/layer_viewer/Layers3DView.ts | checkSForPossibleReasons": {
+    "message": "Check {PH1} for possible reasons."
+  },
+  "panels/layer_viewer/Layers3DView.ts | dLayersView": {
+    "message": "3D Layers View"
+  },
+  "panels/layer_viewer/Layers3DView.ts | layerInformationIsNotYet": {
+    "message": "Layer information is not yet available."
+  },
+  "panels/layer_viewer/Layers3DView.ts | paints": {
+    "message": "Paints"
+  },
+  "panels/layer_viewer/Layers3DView.ts | resetView": {
+    "message": "Reset View"
+  },
+  "panels/layer_viewer/Layers3DView.ts | showPaintProfiler": {
+    "message": "Show Paint Profiler"
+  },
+  "panels/layer_viewer/Layers3DView.ts | slowScrollRects": {
+    "message": "Slow scroll rects"
+  },
+  "panels/layer_viewer/Layers3DView.ts | webglSupportIsDisabledInYour": {
+    "message": "WebGL support is disabled in your browser."
+  },
+  "panels/layer_viewer/LayerTreeOutline.ts | layersTreePane": {
+    "message": "Layers Tree Pane"
+  },
+  "panels/layer_viewer/LayerTreeOutline.ts | showPaintProfiler": {
+    "message": "Show Paint Profiler"
+  },
+  "panels/layer_viewer/LayerTreeOutline.ts | updateChildDimension": {
+    "message": " ({PH1} × {PH2})"
+  },
+  "panels/layer_viewer/LayerViewHost.ts | showInternalLayers": {
+    "message": "Show internal layers"
+  },
+  "panels/layer_viewer/PaintProfilerView.ts | bitmap": {
+    "message": "Bitmap"
+  },
+  "panels/layer_viewer/PaintProfilerView.ts | commandLog": {
+    "message": "Command Log"
+  },
+  "panels/layer_viewer/PaintProfilerView.ts | misc": {
+    "message": "Misc"
+  },
+  "panels/layer_viewer/PaintProfilerView.ts | profiling": {
+    "message": "Profiling…"
+  },
+  "panels/layer_viewer/PaintProfilerView.ts | profilingResults": {
+    "message": "Profiling results"
+  },
+  "panels/layer_viewer/PaintProfilerView.ts | shapes": {
+    "message": "Shapes"
+  },
+  "panels/layer_viewer/PaintProfilerView.ts | text": {
+    "message": "Text"
+  },
+  "panels/layer_viewer/TransformController.ts | panModeX": {
+    "message": "Pan mode (X)"
+  },
+  "panels/layer_viewer/TransformController.ts | resetTransform": {
+    "message": "Reset transform (0)"
+  },
+  "panels/layer_viewer/TransformController.ts | rotateModeV": {
+    "message": "Rotate mode (V)"
   },
   "perf_ui/FilmStripView.ts | doubleclickToZoomImageClickTo": {
     "message": "Doubleclick to zoom image. Click to view preceding requests."

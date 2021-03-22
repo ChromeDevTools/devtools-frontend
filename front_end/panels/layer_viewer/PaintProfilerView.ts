@@ -30,11 +30,11 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as i18n from '../i18n/i18n.js';
-import * as PerfUI from '../perf_ui/perf_ui.js';
-import * as Platform from '../platform/platform.js';
-import type * as SDK from '../sdk/sdk.js';
-import * as UI from '../ui/ui.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as PerfUI from '../../perf_ui/perf_ui.js';
+import * as Platform from '../../platform/platform.js';
+import type * as SDK from '../../sdk/sdk.js';
+import * as UI from '../../ui/ui.js';
 
 const UIStrings = {
   /**
@@ -66,7 +66,7 @@ const UIStrings = {
   */
   commandLog: 'Command Log',
 };
-const str_ = i18n.i18n.registerUIStrings('layer_viewer/PaintProfilerView.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/layer_viewer/PaintProfilerView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let categories: {[x: string]: PaintProfilerCategory}|null = null;
 
@@ -95,7 +95,7 @@ export class PaintProfilerView extends UI.Widget.HBox {
 
   constructor(showImageCallback: (arg0?: string|undefined) => void) {
     super(true);
-    this.registerRequiredCSS('layer_viewer/paintProfiler.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('panels/layer_viewer/paintProfiler.css', {enableLegacyPatching: true});
     this.contentElement.classList.add('paint-profiler-overview');
     this._canvasContainer = this.contentElement.createChild('div', 'paint-profiler-canvas-container');
     this._progressBanner = this.contentElement.createChild('div', 'full-widget-dimmed-banner hidden');

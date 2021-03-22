@@ -4,10 +4,10 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../common/common.js';
-import * as i18n from '../i18n/i18n.js';
-import * as Platform from '../platform/platform.js';
-import * as UI from '../ui/ui.js';
+import * as Common from '../../common/common.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as Platform from '../../platform/platform.js';
+import * as UI from '../../ui/ui.js';
 
 const UIStrings = {
   /**
@@ -23,7 +23,7 @@ const UIStrings = {
   */
   resetTransform: 'Reset transform (0)',
 };
-const str_ = i18n.i18n.registerUIStrings('layer_viewer/TransformController.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/layer_viewer/TransformController.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class TransformController extends Common.ObjectWrapper.ObjectWrapper {
   _mode!: Modes;

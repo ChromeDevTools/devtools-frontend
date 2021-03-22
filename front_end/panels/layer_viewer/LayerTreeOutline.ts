@@ -30,10 +30,10 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../common/common.js';
-import * as i18n from '../i18n/i18n.js';
-import type * as SDK from '../sdk/sdk.js';
-import * as UI from '../ui/ui.js';
+import * as Common from '../../common/common.js';
+import * as i18n from '../../i18n/i18n.js';
+import type * as SDK from '../../sdk/sdk.js';
+import * as UI from '../../ui/ui.js';
 
 import type {LayerView, LayerViewHost, Selection, SnapshotSelection} from './LayerViewHost.js';
 import {LayerSelection} from './LayerViewHost.js';
@@ -54,7 +54,7 @@ const UIStrings = {
   */
   updateChildDimension: ' ({PH1} × {PH2})',
 };
-const str_ = i18n.i18n.registerUIStrings('layer_viewer/LayerTreeOutline.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/layer_viewer/LayerTreeOutline.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class LayerTreeOutline extends Common.ObjectWrapper.ObjectWrapper implements LayerView {
   _layerViewHost: LayerViewHost;

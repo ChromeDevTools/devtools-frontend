@@ -2,7 +2,7 @@
   "dependencies": [
     "components",
     "panels/coverage",
-    "layer_viewer",
+    "panels/layer_viewer",
     "perf_ui",
     "extensions",
     "data_grid",

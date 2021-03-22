@@ -2000,165 +2000,6 @@
   "js_profiler/js_profiler-meta.ts | showProfiler": {
     "message": "Ŝh́ôẃ P̂ŕôf́îĺêŕ"
   },
-  "layer_viewer/layer_viewer-meta.ts | panOrRotateDown": {
-    "message": "P̂án̂ ór̂ ŕôt́ât́ê d́ôẃn̂"
-  },
-  "layer_viewer/layer_viewer-meta.ts | panOrRotateLeft": {
-    "message": "P̂án̂ ór̂ ŕôt́ât́ê ĺêf́t̂"
-  },
-  "layer_viewer/layer_viewer-meta.ts | panOrRotateRight": {
-    "message": "P̂án̂ ór̂ ŕôt́ât́ê ŕîǵĥt́"
-  },
-  "layer_viewer/layer_viewer-meta.ts | panOrRotateUp": {
-    "message": "P̂án̂ ór̂ ŕôt́ât́ê úp̂"
-  },
-  "layer_viewer/layer_viewer-meta.ts | resetView": {
-    "message": "R̂éŝét̂ v́îéŵ"
-  },
-  "layer_viewer/layer_viewer-meta.ts | switchToPanMode": {
-    "message": "Ŝẃît́ĉh́ t̂ó p̂án̂ ḿôd́ê"
-  },
-  "layer_viewer/layer_viewer-meta.ts | switchToRotateMode": {
-    "message": "Ŝẃît́ĉh́ t̂ó r̂ót̂át̂é m̂ód̂é"
-  },
-  "layer_viewer/layer_viewer-meta.ts | zoomIn": {
-    "message": "Ẑóôḿ îń"
-  },
-  "layer_viewer/layer_viewer-meta.ts | zoomOut": {
-    "message": "Ẑóôḿ ôút̂"
-  },
-  "layer_viewer/LayerDetailsView.ts | compositingReasons": {
-    "message": "Ĉóm̂ṕôśît́îńĝ Ŕêáŝón̂ś"
-  },
-  "layer_viewer/LayerDetailsView.ts | containingBlocRectangleDimensions": {
-    "message": "Ĉón̂t́âín̂ín̂ǵ B̂ĺôćk̂ {PH1} × {PH2} (át̂ {PH3}, {PH4})"
-  },
-  "layer_viewer/LayerDetailsView.ts | mainThreadScrollingReason": {
-    "message": "M̂áîń t̂h́r̂éâd́ ŝćr̂ól̂ĺîńĝ ŕêáŝón̂"
-  },
-  "layer_viewer/LayerDetailsView.ts | memoryEstimate": {
-    "message": "M̂ém̂ór̂ý êśt̂ím̂át̂é"
-  },
-  "layer_viewer/LayerDetailsView.ts | nearestLayerShiftingContaining": {
-    "message": "N̂éâŕêśt̂ Ĺâýêŕ Ŝh́îf́t̂ín̂ǵ Ĉón̂t́âín̂ín̂ǵ B̂ĺôćk̂"
-  },
-  "layer_viewer/LayerDetailsView.ts | nearestLayerShiftingStickyBox": {
-    "message": "N̂éâŕêśt̂ Ĺâýêŕ Ŝh́îf́t̂ín̂ǵ Ŝt́îćk̂ý B̂óx̂"
-  },
-  "layer_viewer/LayerDetailsView.ts | nonFastScrollable": {
-    "message": "N̂ón̂ f́âśt̂ śĉŕôĺl̂áb̂ĺê"
-  },
-  "layer_viewer/LayerDetailsView.ts | paintCount": {
-    "message": "P̂áîńt̂ ćôún̂t́"
-  },
-  "layer_viewer/LayerDetailsView.ts | paintProfiler": {
-    "message": "P̂áîńt̂ Ṕr̂óf̂íl̂ér̂"
-  },
-  "layer_viewer/LayerDetailsView.ts | repaintsOnScroll": {
-    "message": "R̂ép̂áîńt̂ś ôń ŝćr̂ól̂ĺ"
-  },
-  "layer_viewer/LayerDetailsView.ts | scrollRectangleDimensions": {
-    "message": "{PH1} {PH2} × {PH3} (ât́ {PH4}, {PH5})"
-  },
-  "layer_viewer/LayerDetailsView.ts | selectALayerToSeeItsDetails": {
-    "message": "Ŝél̂éĉt́ â ĺâýêŕ t̂ó ŝéê ít̂ś d̂ét̂áîĺŝ"
-  },
-  "layer_viewer/LayerDetailsView.ts | size": {
-    "message": "Ŝíẑé"
-  },
-  "layer_viewer/LayerDetailsView.ts | slowScrollRegions": {
-    "message": "Ŝĺôẃ ŝćr̂ól̂ĺ r̂éĝíôńŝ"
-  },
-  "layer_viewer/LayerDetailsView.ts | stickyAncenstorLayersS": {
-    "message": "{PH1}: {PH2} ({PH3})"
-  },
-  "layer_viewer/LayerDetailsView.ts | stickyBoxRectangleDimensions": {
-    "message": "Ŝt́îćk̂ý B̂óx̂ {PH1} × {PH2} (át̂ {PH3}, {PH4})"
-  },
-  "layer_viewer/LayerDetailsView.ts | stickyPositionConstraint": {
-    "message": "Ŝt́îćk̂ý p̂óŝít̂íôń ĉón̂śt̂ŕâín̂t́"
-  },
-  "layer_viewer/LayerDetailsView.ts | touchEventHandler": {
-    "message": "T̂óûćĥ év̂én̂t́ ĥán̂d́l̂ér̂"
-  },
-  "layer_viewer/LayerDetailsView.ts | unnamed": {
-    "message": "<ûńn̂ám̂éd̂>"
-  },
-  "layer_viewer/LayerDetailsView.ts | updateRectangleDimensions": {
-    "message": "{PH1} × {PH2} (ât́ {PH3}, {PH4})"
-  },
-  "layer_viewer/LayerDetailsView.ts | wheelEventHandler": {
-    "message": "Ŵh́êél̂ év̂én̂t́ ĥán̂d́l̂ér̂"
-  },
-  "layer_viewer/Layers3DView.ts | cantDisplayLayers": {
-    "message": "Ĉán̂'t́ d̂íŝṕl̂áŷ ĺâýêŕŝ,"
-  },
-  "layer_viewer/Layers3DView.ts | checkSForPossibleReasons": {
-    "message": "Ĉh́êćk̂ {PH1} f́ôŕ p̂óŝśîb́l̂é r̂éâśôńŝ."
-  },
-  "layer_viewer/Layers3DView.ts | dLayersView": {
-    "message": "3D̂ Ĺâýêŕŝ V́îéŵ"
-  },
-  "layer_viewer/Layers3DView.ts | layerInformationIsNotYet": {
-    "message": "L̂áŷér̂ ín̂f́ôŕm̂át̂íôń îś n̂ót̂ ýêt́ âv́âíl̂áb̂ĺê."
-  },
-  "layer_viewer/Layers3DView.ts | paints": {
-    "message": "P̂áîńt̂ś"
-  },
-  "layer_viewer/Layers3DView.ts | resetView": {
-    "message": "R̂éŝét̂ V́îéŵ"
-  },
-  "layer_viewer/Layers3DView.ts | showPaintProfiler": {
-    "message": "Ŝh́ôẃ P̂áîńt̂ Ṕr̂óf̂íl̂ér̂"
-  },
-  "layer_viewer/Layers3DView.ts | slowScrollRects": {
-    "message": "Ŝĺôẃ ŝćr̂ól̂ĺ r̂éĉt́ŝ"
-  },
-  "layer_viewer/Layers3DView.ts | webglSupportIsDisabledInYour": {
-    "message": "Ŵéb̂ǴL̂ śûṕp̂ór̂t́ îś d̂íŝáb̂ĺêd́ îń ŷóûŕ b̂ŕôẃŝér̂."
-  },
-  "layer_viewer/LayerTreeOutline.ts | layersTreePane": {
-    "message": "L̂áŷér̂ś T̂ŕêé P̂án̂é"
-  },
-  "layer_viewer/LayerTreeOutline.ts | showPaintProfiler": {
-    "message": "Ŝh́ôẃ P̂áîńt̂ Ṕr̂óf̂íl̂ér̂"
-  },
-  "layer_viewer/LayerTreeOutline.ts | updateChildDimension": {
-    "message": " ({PH1} × {PH2})"
-  },
-  "layer_viewer/LayerViewHost.ts | showInternalLayers": {
-    "message": "Ŝh́ôẃ îńt̂ér̂ńâĺ l̂áŷér̂ś"
-  },
-  "layer_viewer/PaintProfilerView.ts | bitmap": {
-    "message": "B̂ít̂ḿâṕ"
-  },
-  "layer_viewer/PaintProfilerView.ts | commandLog": {
-    "message": "Ĉóm̂ḿâńd̂ Ĺôǵ"
-  },
-  "layer_viewer/PaintProfilerView.ts | misc": {
-    "message": "M̂íŝć"
-  },
-  "layer_viewer/PaintProfilerView.ts | profiling": {
-    "message": "P̂ŕôf́îĺîńĝ…"
-  },
-  "layer_viewer/PaintProfilerView.ts | profilingResults": {
-    "message": "P̂ŕôf́îĺîńĝ ŕêśûĺt̂ś"
-  },
-  "layer_viewer/PaintProfilerView.ts | shapes": {
-    "message": "Ŝh́âṕêś"
-  },
-  "layer_viewer/PaintProfilerView.ts | text": {
-    "message": "T̂éx̂t́"
-  },
-  "layer_viewer/TransformController.ts | panModeX": {
-    "message": "P̂án̂ ḿôd́ê (X́)"
-  },
-  "layer_viewer/TransformController.ts | resetTransform": {
-    "message": "R̂éŝét̂ t́r̂án̂śf̂ór̂ḿ (0)"
-  },
-  "layer_viewer/TransformController.ts | rotateModeV": {
-    "message": "R̂ót̂át̂é m̂ód̂é (V̂)"
-  },
   "layers/layers-meta.ts | layers": {
     "message": "L̂áŷér̂ś"
   },
@@ -5593,6 +5434,165 @@
   },
   "panels/help/ReleaseNoteView.ts | learnMore": {
     "message": "L̂éâŕn̂ ḿôŕê"
+  },
+  "panels/layer_viewer/layer_viewer-meta.ts | panOrRotateDown": {
+    "message": "P̂án̂ ór̂ ŕôt́ât́ê d́ôẃn̂"
+  },
+  "panels/layer_viewer/layer_viewer-meta.ts | panOrRotateLeft": {
+    "message": "P̂án̂ ór̂ ŕôt́ât́ê ĺêf́t̂"
+  },
+  "panels/layer_viewer/layer_viewer-meta.ts | panOrRotateRight": {
+    "message": "P̂án̂ ór̂ ŕôt́ât́ê ŕîǵĥt́"
+  },
+  "panels/layer_viewer/layer_viewer-meta.ts | panOrRotateUp": {
+    "message": "P̂án̂ ór̂ ŕôt́ât́ê úp̂"
+  },
+  "panels/layer_viewer/layer_viewer-meta.ts | resetView": {
+    "message": "R̂éŝét̂ v́îéŵ"
+  },
+  "panels/layer_viewer/layer_viewer-meta.ts | switchToPanMode": {
+    "message": "Ŝẃît́ĉh́ t̂ó p̂án̂ ḿôd́ê"
+  },
+  "panels/layer_viewer/layer_viewer-meta.ts | switchToRotateMode": {
+    "message": "Ŝẃît́ĉh́ t̂ó r̂ót̂át̂é m̂ód̂é"
+  },
+  "panels/layer_viewer/layer_viewer-meta.ts | zoomIn": {
+    "message": "Ẑóôḿ îń"
+  },
+  "panels/layer_viewer/layer_viewer-meta.ts | zoomOut": {
+    "message": "Ẑóôḿ ôút̂"
+  },
+  "panels/layer_viewer/LayerDetailsView.ts | compositingReasons": {
+    "message": "Ĉóm̂ṕôśît́îńĝ Ŕêáŝón̂ś"
+  },
+  "panels/layer_viewer/LayerDetailsView.ts | containingBlocRectangleDimensions": {
+    "message": "Ĉón̂t́âín̂ín̂ǵ B̂ĺôćk̂ {PH1} × {PH2} (át̂ {PH3}, {PH4})"
+  },
+  "panels/layer_viewer/LayerDetailsView.ts | mainThreadScrollingReason": {
+    "message": "M̂áîń t̂h́r̂éâd́ ŝćr̂ól̂ĺîńĝ ŕêáŝón̂"
+  },
+  "panels/layer_viewer/LayerDetailsView.ts | memoryEstimate": {
+    "message": "M̂ém̂ór̂ý êśt̂ím̂át̂é"
+  },
+  "panels/layer_viewer/LayerDetailsView.ts | nearestLayerShiftingContaining": {
+    "message": "N̂éâŕêśt̂ Ĺâýêŕ Ŝh́îf́t̂ín̂ǵ Ĉón̂t́âín̂ín̂ǵ B̂ĺôćk̂"
+  },
+  "panels/layer_viewer/LayerDetailsView.ts | nearestLayerShiftingStickyBox": {
+    "message": "N̂éâŕêśt̂ Ĺâýêŕ Ŝh́îf́t̂ín̂ǵ Ŝt́îćk̂ý B̂óx̂"
+  },
+  "panels/layer_viewer/LayerDetailsView.ts | nonFastScrollable": {
+    "message": "N̂ón̂ f́âśt̂ śĉŕôĺl̂áb̂ĺê"
+  },
+  "panels/layer_viewer/LayerDetailsView.ts | paintCount": {
+    "message": "P̂áîńt̂ ćôún̂t́"
+  },
+  "panels/layer_viewer/LayerDetailsView.ts | paintProfiler": {
+    "message": "P̂áîńt̂ Ṕr̂óf̂íl̂ér̂"
+  },
+  "panels/layer_viewer/LayerDetailsView.ts | repaintsOnScroll": {
+    "message": "R̂ép̂áîńt̂ś ôń ŝćr̂ól̂ĺ"
+  },
+  "panels/layer_viewer/LayerDetailsView.ts | scrollRectangleDimensions": {
+    "message": "{PH1} {PH2} × {PH3} (ât́ {PH4}, {PH5})"
+  },
+  "panels/layer_viewer/LayerDetailsView.ts | selectALayerToSeeItsDetails": {
+    "message": "Ŝél̂éĉt́ â ĺâýêŕ t̂ó ŝéê ít̂ś d̂ét̂áîĺŝ"
+  },
+  "panels/layer_viewer/LayerDetailsView.ts | size": {
+    "message": "Ŝíẑé"
+  },
+  "panels/layer_viewer/LayerDetailsView.ts | slowScrollRegions": {
+    "message": "Ŝĺôẃ ŝćr̂ól̂ĺ r̂éĝíôńŝ"
+  },
+  "panels/layer_viewer/LayerDetailsView.ts | stickyAncenstorLayersS": {
+    "message": "{PH1}: {PH2} ({PH3})"
+  },
+  "panels/layer_viewer/LayerDetailsView.ts | stickyBoxRectangleDimensions": {
+    "message": "Ŝt́îćk̂ý B̂óx̂ {PH1} × {PH2} (át̂ {PH3}, {PH4})"
+  },
+  "panels/layer_viewer/LayerDetailsView.ts | stickyPositionConstraint": {
+    "message": "Ŝt́îćk̂ý p̂óŝít̂íôń ĉón̂śt̂ŕâín̂t́"
+  },
+  "panels/layer_viewer/LayerDetailsView.ts | touchEventHandler": {
+    "message": "T̂óûćĥ év̂én̂t́ ĥán̂d́l̂ér̂"
+  },
+  "panels/layer_viewer/LayerDetailsView.ts | unnamed": {
+    "message": "<ûńn̂ám̂éd̂>"
+  },
+  "panels/layer_viewer/LayerDetailsView.ts | updateRectangleDimensions": {
+    "message": "{PH1} × {PH2} (ât́ {PH3}, {PH4})"
+  },
+  "panels/layer_viewer/LayerDetailsView.ts | wheelEventHandler": {
+    "message": "Ŵh́êél̂ év̂én̂t́ ĥán̂d́l̂ér̂"
+  },
+  "panels/layer_viewer/Layers3DView.ts | cantDisplayLayers": {
+    "message": "Ĉán̂'t́ d̂íŝṕl̂áŷ ĺâýêŕŝ,"
+  },
+  "panels/layer_viewer/Layers3DView.ts | checkSForPossibleReasons": {
+    "message": "Ĉh́êćk̂ {PH1} f́ôŕ p̂óŝśîb́l̂é r̂éâśôńŝ."
+  },
+  "panels/layer_viewer/Layers3DView.ts | dLayersView": {
+    "message": "3D̂ Ĺâýêŕŝ V́îéŵ"
+  },
+  "panels/layer_viewer/Layers3DView.ts | layerInformationIsNotYet": {
+    "message": "L̂áŷér̂ ín̂f́ôŕm̂át̂íôń îś n̂ót̂ ýêt́ âv́âíl̂áb̂ĺê."
+  },
+  "panels/layer_viewer/Layers3DView.ts | paints": {
+    "message": "P̂áîńt̂ś"
+  },
+  "panels/layer_viewer/Layers3DView.ts | resetView": {
+    "message": "R̂éŝét̂ V́îéŵ"
+  },
+  "panels/layer_viewer/Layers3DView.ts | showPaintProfiler": {
+    "message": "Ŝh́ôẃ P̂áîńt̂ Ṕr̂óf̂íl̂ér̂"
+  },
+  "panels/layer_viewer/Layers3DView.ts | slowScrollRects": {
+    "message": "Ŝĺôẃ ŝćr̂ól̂ĺ r̂éĉt́ŝ"
+  },
+  "panels/layer_viewer/Layers3DView.ts | webglSupportIsDisabledInYour": {
+    "message": "Ŵéb̂ǴL̂ śûṕp̂ór̂t́ îś d̂íŝáb̂ĺêd́ îń ŷóûŕ b̂ŕôẃŝér̂."
+  },
+  "panels/layer_viewer/LayerTreeOutline.ts | layersTreePane": {
+    "message": "L̂áŷér̂ś T̂ŕêé P̂án̂é"
+  },
+  "panels/layer_viewer/LayerTreeOutline.ts | showPaintProfiler": {
+    "message": "Ŝh́ôẃ P̂áîńt̂ Ṕr̂óf̂íl̂ér̂"
+  },
+  "panels/layer_viewer/LayerTreeOutline.ts | updateChildDimension": {
+    "message": " ({PH1} × {PH2})"
+  },
+  "panels/layer_viewer/LayerViewHost.ts | showInternalLayers": {
+    "message": "Ŝh́ôẃ îńt̂ér̂ńâĺ l̂áŷér̂ś"
+  },
+  "panels/layer_viewer/PaintProfilerView.ts | bitmap": {
+    "message": "B̂ít̂ḿâṕ"
+  },
+  "panels/layer_viewer/PaintProfilerView.ts | commandLog": {
+    "message": "Ĉóm̂ḿâńd̂ Ĺôǵ"
+  },
+  "panels/layer_viewer/PaintProfilerView.ts | misc": {
+    "message": "M̂íŝć"
+  },
+  "panels/layer_viewer/PaintProfilerView.ts | profiling": {
+    "message": "P̂ŕôf́îĺîńĝ…"
+  },
+  "panels/layer_viewer/PaintProfilerView.ts | profilingResults": {
+    "message": "P̂ŕôf́îĺîńĝ ŕêśûĺt̂ś"
+  },
+  "panels/layer_viewer/PaintProfilerView.ts | shapes": {
+    "message": "Ŝh́âṕêś"
+  },
+  "panels/layer_viewer/PaintProfilerView.ts | text": {
+    "message": "T̂éx̂t́"
+  },
+  "panels/layer_viewer/TransformController.ts | panModeX": {
+    "message": "P̂án̂ ḿôd́ê (X́)"
+  },
+  "panels/layer_viewer/TransformController.ts | resetTransform": {
+    "message": "R̂éŝét̂ t́r̂án̂śf̂ór̂ḿ (0)"
+  },
+  "panels/layer_viewer/TransformController.ts | rotateModeV": {
+    "message": "R̂ót̂át̂é m̂ód̂é (V̂)"
   },
   "perf_ui/FilmStripView.ts | doubleclickToZoomImageClickTo": {
     "message": "D̂óûb́l̂éĉĺîćk̂ t́ô źôóm̂ ím̂áĝé. Ĉĺîćk̂ t́ô v́îéŵ ṕr̂éĉéd̂ín̂ǵ r̂éq̂úêśt̂ś."

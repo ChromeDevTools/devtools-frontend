@@ -4,10 +4,10 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../common/common.js';
-import * as i18n from '../i18n/i18n.js';
-import * as SDK from '../sdk/sdk.js';
-import type * as UI from '../ui/ui.js';
+import * as Common from '../../common/common.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as SDK from '../../sdk/sdk.js';
+import type * as UI from '../../ui/ui.js';
 
 const UIStrings = {
   /**
@@ -15,7 +15,7 @@ const UIStrings = {
   */
   showInternalLayers: 'Show internal layers',
 };
-const str_ = i18n.i18n.registerUIStrings('layer_viewer/LayerViewHost.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/layer_viewer/LayerViewHost.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 

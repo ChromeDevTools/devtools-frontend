@@ -24,7 +24,7 @@ describeWithEnvironment('Imports entrypoints that are yet to be tested', () => {
     await import('../../../../front_end/inspector_main/inspector_main.js');
     await import('../../../../front_end/javascript_metadata/javascript_metadata.js');
     await import('../../../../front_end/js_main/js_main.js');
-    await import('../../../../front_end/layer_viewer/layer_viewer.js');
+    await import('../../../../front_end/panels/layer_viewer/layer_viewer.js');
     await import('../../../../front_end/layers/layers.js');
     await import('../../../../front_end/lighthouse/lighthouse.js');
     await import('../../../../front_end/main/main.js');

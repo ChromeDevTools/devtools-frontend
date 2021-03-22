@@ -39,7 +39,8 @@ async function assertNoColorSwatch(container: puppeteer.ElementHandle|undefined)
 }
 
 describe('The color swatch', async () => {
-  it('is displayed for color properties in the Styles pane', async () => {
+  // Test flaky on Mac
+  it.skipOnPlatforms(['mac'], '[crbug.com/1184160]: is displayed for color properties in the Styles pane', async () => {
     await goToTestPageAndSelectTestElement();
 
     await waitForCSSPropertyValue('#inspected', 'color', 'red');
@@ -59,14 +60,16 @@ describe('The color swatch', async () => {
         await assertColorSwatch(property, 'rgb(255, 0, 0)');
       });
 
-  it('is not displayed for non-color properties in the Styles pane', async () => {
-    await goToTestPageAndSelectTestElement();
+  // Test flaky on Mac
+  it.skipOnPlatforms(
+      ['mac'], '[crbug.com/1184160]: is not displayed for non-color properties in the Styles pane', async () => {
+        await goToTestPageAndSelectTestElement();
 
-    await waitForCSSPropertyValue('#inspected', 'margin', '10px');
-    const property = await getCSSPropertyInRule('#inspected', 'margin');
+        await waitForCSSPropertyValue('#inspected', 'margin', '10px');
+        const property = await getCSSPropertyInRule('#inspected', 'margin');
 
-    await assertNoColorSwatch(property);
-  });
+        await assertNoColorSwatch(property);
+      });
 
   // Test flaky on Mac
   it.skipOnPlatforms(

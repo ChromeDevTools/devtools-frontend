@@ -38,13 +38,11 @@
 }
 
 .profile-view .data-grid tr:not(.selected) .highlight {
-  background-color: rgb(255 230 179); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  background-color: var(--color-selection-highlight);
 }
 
 .profile-view .data-grid tr:hover td:not(.bottom-filler-td) {
-  background-color: rgb(0 0 0 / 10%); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  background-color: var(--color-background-hover-overlay);
 }
 
 .profile-view .data-grid td.numeric-column {
@@ -56,8 +54,7 @@
 }
 
 .profile-view .data-grid span.percent-column {
-  color: #999; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-text-secondary);
   width: 50px;
   display: inline-block;
 }
@@ -68,8 +65,7 @@
 
 .profiles-toolbar {
   background-color: var(--toolbar-bg-color);
-  border-bottom: 1px solid #ccc; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  border-bottom: 1px solid var(--color-details-hairline);
   flex-shrink: 0;
 }
 
@@ -99,37 +95,12 @@
 
 .profile-node-file {
   float: right;
-  color: #808080; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-text-secondary);
 }
 
 .profile-warn-marker {
   vertical-align: -1px;
   margin-right: 2px;
-}
-
-.data-grid tr.selected .profile-node-file {
-  color: rgb(33% 33% 33%); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
-}
-
-.data-grid:focus tr.selected .profile-node-file {
-  color: #fff; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
-}
-
-.highlighted-row {
-  animation: row_highlight 2s 0s;
-}
-
-@keyframes row_highlight {
-  from {
-    background-color: rgb(255 255 120 / 100%); /* stylelint-disable-line plugin/use_theme_colors */ /* See: crbug.com/1152736 for color variable migration. */
-  }
-
-  to {
-    background-color: rgb(255 255 120 / 0%); /* stylelint-disable-line plugin/use_theme_colors */ /* See: crbug.com/1152736 for color variable migration. */
-  }
 }
 
 .cpu-profile-flame-chart-overview-container {
@@ -141,8 +112,7 @@
 }
 
 #cpu-profile-flame-chart-overview-container {
-  border-bottom: 1px solid rgb(0 0 0 / 30%); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  border-bottom: 1px solid var(--color-details-hairline);
   overflow: hidden;
 }
 

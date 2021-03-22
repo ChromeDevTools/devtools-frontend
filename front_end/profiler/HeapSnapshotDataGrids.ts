@@ -153,7 +153,6 @@ export class HeapSnapshotSortableDataGrid extends DataGrid.DataGrid.DataGridImpl
   _heapProfilerModel: SDK.HeapProfilerModel.HeapProfilerModel|null;
   _dataDisplayDelegate: DataDisplayDelegate;
   _recursiveSortingDepth: number;
-  _highlightedNode: HeapSnapshotGridNode|null;
   _populatedAndSorted: boolean;
   _nameFilter: UI.Toolbar.ToolbarInput|null;
   _nodeFilter: HeapSnapshotModel.HeapSnapshotModel.NodeFilter|undefined;
@@ -181,7 +180,6 @@ export class HeapSnapshotSortableDataGrid extends DataGrid.DataGrid.DataGridImpl
     }
 
     this._recursiveSortingDepth = 0;
-    this._highlightedNode = null;
     this._populatedAndSorted = false;
     this._nameFilter = null;
     this._nodeFilter = new HeapSnapshotModel.HeapSnapshotModel.NodeFilter();
@@ -249,7 +247,6 @@ export class HeapSnapshotSortableDataGrid extends DataGrid.DataGrid.DataGridImpl
     if (this._nameFilter) {
       this._nameFilter.removeEventListener(UI.Toolbar.ToolbarInput.Event.TextChanged, this._onNameFilterChanged, this);
     }
-    this._clearCurrentHighlight();
   }
 
   _populateContextMenu(
@@ -274,20 +271,6 @@ export class HeapSnapshotSortableDataGrid extends DataGrid.DataGrid.DataGridImpl
 
   revealObjectByHeapSnapshotId(_heapSnapshotObjectId: string): Promise<HeapSnapshotGridNode|null> {
     return Promise.resolve((null as HeapSnapshotGridNode | null));
-  }
-
-  highlightNode(node: HeapSnapshotGridNode): void {
-    this._clearCurrentHighlight();
-    this._highlightedNode = node;
-    UI.UIUtils.runCSSAnimationOnce(this._highlightedNode.element(), 'highlighted-row');
-  }
-
-  _clearCurrentHighlight(): void {
-    if (!this._highlightedNode) {
-      return;
-    }
-    this._highlightedNode.element().classList.remove('highlighted-row');
-    this._highlightedNode = null;
   }
 
   resetNameFilter(): void {

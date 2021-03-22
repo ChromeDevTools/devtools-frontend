@@ -88,7 +88,9 @@ const UIStrings = {
   */
   drawFrame: 'Draw Frame',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
+  *@description The process the browser uses to determine a target element for a
+  *pointer event. Typically, this is determined by considering the pointer's
+  *location and also the visual layout of elements on the screen.
   */
   hitTest: 'Hit Test',
   /**
@@ -112,7 +114,9 @@ const UIStrings = {
   */
   paintSetup: 'Paint Setup',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
+  *@description Noun for a paint event in the Performance panel, where an image
+  *was being painted. A paint event is when the browser draws pixels to the
+  *screen, in this case specifically for an image in a website.
   */
   paintImage: 'Paint Image',
   /**
@@ -124,7 +128,7 @@ const UIStrings = {
   */
   updateLayerTree: 'Update Layer Tree',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
+  *@description Noun for a paint event in the Performance panel. A paint event is when the browser draws pixels to the screen.
   */
   paint: 'Paint',
   /**
@@ -380,11 +384,12 @@ const UIStrings = {
   */
   digest: 'Digest',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
+  *@description Noun phrase meaning 'the browser was preparing the digest
+  *reply'. Digest: https://developer.mozilla.org/en-US/docs/Glossary/Digest
   */
   digestReply: 'Digest Reply',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
+  *@description The 'sign' stage of a web crypto event. Shown when displaying what the website was doing at a particular point in time.
   */
   sign: 'Sign',
   /**
@@ -416,7 +421,7 @@ const UIStrings = {
   */
   keyDown: 'Key Down',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
+  *@description Noun for the end keyboard key event in the Performance panel. 'Up' refers to the keyboard key bouncing back up after being pushed down.
   */
   keyUp: 'Key Up',
   /**
@@ -428,15 +433,15 @@ const UIStrings = {
   */
   contextMenu: 'Context Menu',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
+  *@description Noun for the start of a mouse event in the Performance panel. Down refers to the button on the mouse being pressed down.
   */
   mouseDown: 'Mouse Down',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
+  *@description Noun for a mouse move event in the Performance panel.
   */
   mouseMove: 'Mouse Move',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
+  *@description Noun for the end of a mouse event in the Performance panel. Up refers to the button on the mouse being released.
   */
   mouseUp: 'Mouse Up',
   /**
@@ -444,7 +449,7 @@ const UIStrings = {
   */
   mouseWheel: 'Mouse Wheel',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
+  *@description Noun for the beginning of a mouse scroll wheel event in the Performance panel.
   */
   scrollBegin: 'Scroll Begin',
   /**
@@ -452,15 +457,15 @@ const UIStrings = {
   */
   scrollEnd: 'Scroll End',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
+  *@description Noun for an update of a mouse scroll wheel event in the Performance panel.
   */
   scrollUpdate: 'Scroll Update',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
+  *@description Noun for the beginning of a fling gesture event in the Performance panel.
   */
   flingStart: 'Fling Start',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
+  *@description Noun for the end of a fling gesture event in the Performance panel.
   */
   flingHalt: 'Fling Halt',
   /**
@@ -476,7 +481,9 @@ const UIStrings = {
   */
   tapBegin: 'Tap Begin',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
+  *@description Noun for the beginning of a tap gesture event in the Performance
+  *panel. 'Down' refers to the start (downward tap direction), as opposed to up
+  *(finger leaving the touch surface).
   */
   tapDown: 'Tap Down',
   /**
@@ -496,7 +503,7 @@ const UIStrings = {
   */
   touchStart: 'Touch Start',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
+  *@description Noun for the beginning of a pinch gesture event in the Performance panel.
   */
   pinchBegin: 'Pinch Begin',
   /**
@@ -858,7 +865,7 @@ const UIStrings = {
   */
   FromCache: ' (from cache)',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
+  *@description Label for a network request indicating that it was a HTTP2 server push instead of a regular network request, in the Performance panel
   */
   FromPush: ' (from push)',
   /**
@@ -914,7 +921,7 @@ const UIStrings = {
   */
   reveal: 'Reveal',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
+  *@description Noun label for a stack trace which indicates the first time some condition was invalidated.
   */
   firstInvalidated: 'First Invalidated',
   /**
@@ -1046,7 +1053,7 @@ const UIStrings = {
   */
   handlerTookS: 'Handler took {PH1}',
   /**
-  *@description Span text content in Timeline UIUtils of the Performance panel
+  *@description Warning to the user in the Performance panel that an input handler, which was run multiple times, took too long. Placeholder text is time in ms.
   *@example {20ms} PH1
   */
   recurringHandlerTookS: 'Recurring handler took {PH1}',

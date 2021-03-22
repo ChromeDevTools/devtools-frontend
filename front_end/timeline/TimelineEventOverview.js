@@ -41,7 +41,7 @@ import {EventDispatchTypeDescriptor, TimelineCategory, TimelineRecordStyle, Time
 
 const UIStrings = {
   /**
-  *@description Text in Timeline Event Overview of the Performance panel
+  *@description Short for Network. Label for the network requests section of the Performance panel.
   */
   net: 'NET',
   /**

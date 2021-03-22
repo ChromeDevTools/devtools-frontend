@@ -199,10 +199,6 @@ const UIStrings = {
   *@description Name of the default set of DevTools keyboard shortcuts
   */
   devtoolsDefault: 'DevTools (Default)',
-  /**
-  *@description Name of a set of keyboard shortcuts from Visual Studio Code
-  */
-  visualStudioCode: 'Visual Studio Code',
 };
 const str_ = i18n.i18n.registerUIStrings('main/main-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
@@ -713,8 +709,8 @@ Common.Settings.registerSettingExtension({
     },
     {
       value: 'vsCode',
-      title: i18nLazyString(UIStrings.visualStudioCode),
-      text: i18nLazyString(UIStrings.visualStudioCode),
+      title: i18n.i18n.lockedLazyString('Visual Studio Code'),
+      text: i18n.i18n.lockedLazyString('Visual Studio Code'),
     },
   ],
 });

@@ -42,10 +42,6 @@ const UIStrings = {
   */
   timeCached: 'Time Cached',
   /**
-  *@description Text in Service Worker Cache Views of the Application panel
-  */
-  varyHeader: 'Vary Header',
-  /**
   * @description Tooltip text that appears when hovering over the vary header column in the Service Worker Cache Views of the Application panel
   */
   varyHeaderWarning: '⚠️ Set ignoreVary to true when matching this entry',
@@ -205,7 +201,7 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
         align: DataGrid.DataGrid.Align.Right,
         sortable: true,
       },
-      {id: 'varyHeader', title: i18nString(UIStrings.varyHeader), weight: 1, sortable: true},
+      {id: 'varyHeader', title: i18n.i18n.lockedString('Vary Header'), weight: 1, sortable: true},
     ] as DataGrid.DataGrid.ColumnDescriptor[]);
     const dataGrid = new DataGrid.DataGrid.DataGridImpl({
       displayName: i18nString(UIStrings.serviceWorkerCache),

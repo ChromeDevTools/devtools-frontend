@@ -2843,9 +2843,6 @@
   "main/main-meta.ts | vertical": {
     "message": "vertical"
   },
-  "main/main-meta.ts | visualStudioCode": {
-    "message": "Visual Studio Code"
-  },
   "main/main-meta.ts | zoomIn": {
     "message": "Zoom in"
   },
@@ -7268,9 +7265,6 @@
   "resources/ServiceWorkerCacheViews.ts | totalEntriesS": {
     "message": "Total entries: {PH1}"
   },
-  "resources/ServiceWorkerCacheViews.ts | varyHeader": {
-    "message": "Vary Header"
-  },
   "resources/ServiceWorkerCacheViews.ts | varyHeaderWarning": {
     "message": "⚠️ Set ignoreVary to true when matching this entry"
   },
@@ -7904,15 +7898,6 @@
   "sdk/sdk-meta.ts | captureAsyncStackTraces": {
     "message": "Capture async stack traces"
   },
-  "sdk/sdk-meta.ts | colorgamutP": {
-    "message": "color-gamut: p3"
-  },
-  "sdk/sdk-meta.ts | colorgamutRec": {
-    "message": "color-gamut: rec2020"
-  },
-  "sdk/sdk-meta.ts | colorgamutSrgb": {
-    "message": "color-gamut: srgb"
-  },
   "sdk/sdk-meta.ts | deuteranopia": {
     "message": "Deuteranopia"
   },
@@ -8095,18 +8080,6 @@
   },
   "sdk/sdk-meta.ts | pauseOnExceptions": {
     "message": "Pause on exceptions"
-  },
-  "sdk/sdk-meta.ts | preferscolorschemeDark": {
-    "message": "prefers-color-scheme: dark"
-  },
-  "sdk/sdk-meta.ts | preferscolorschemeLight": {
-    "message": "prefers-color-scheme: light"
-  },
-  "sdk/sdk-meta.ts | prefersreduceddataReduce": {
-    "message": "prefers-reduced-data: reduce"
-  },
-  "sdk/sdk-meta.ts | prefersreducedmotionReduce": {
-    "message": "prefers-reduced-motion: reduce"
   },
   "sdk/sdk-meta.ts | preserveLogUponNavigation": {
     "message": "Preserve log upon navigation"

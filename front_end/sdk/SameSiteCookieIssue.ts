@@ -21,11 +21,11 @@ const UIStrings = {
   */
   howSchemefulSamesiteWorks: 'How Schemeful Same-Site Works',
   /**
-  *@description Phase used to descript the security of a context
+  *@description Phrase used to describe the security of a context. Substitued like 'a secure context' or 'a secure origin'.
   */
   aSecure: 'a secure',
   /**
-  *@description Phase used to descript the security of a context
+  *@description Phrase used to describe the security of a context. Substitued like 'an insecure context' or 'an insecure origin'.
   */
   anInsecure: 'an insecure',
 };

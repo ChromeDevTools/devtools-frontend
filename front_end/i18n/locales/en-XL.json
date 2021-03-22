@@ -2843,9 +2843,6 @@
   "main/main-meta.ts | vertical": {
     "message": "v̂ér̂t́îćâĺ"
   },
-  "main/main-meta.ts | visualStudioCode": {
-    "message": "V̂íŝúâĺ Ŝt́ûd́îó Ĉód̂é"
-  },
   "main/main-meta.ts | zoomIn": {
     "message": "Ẑóôḿ îń"
   },
@@ -7268,9 +7265,6 @@
   "resources/ServiceWorkerCacheViews.ts | totalEntriesS": {
     "message": "T̂ót̂ál̂ én̂t́r̂íêś: {PH1}"
   },
-  "resources/ServiceWorkerCacheViews.ts | varyHeader": {
-    "message": "V̂ár̂ý Ĥéâd́êŕ"
-  },
   "resources/ServiceWorkerCacheViews.ts | varyHeaderWarning": {
     "message": "⚠️ Ŝét̂ íĝńôŕêV́âŕŷ t́ô t́r̂úê ẃĥén̂ ḿât́ĉh́îńĝ t́ĥíŝ én̂t́r̂ý"
   },
@@ -7904,15 +7898,6 @@
   "sdk/sdk-meta.ts | captureAsyncStackTraces": {
     "message": "Ĉáp̂t́ûŕê áŝýn̂ć ŝt́âćk̂ t́r̂áĉéŝ"
   },
-  "sdk/sdk-meta.ts | colorgamutP": {
-    "message": "ĉól̂ór̂-ǵâḿût́: p̂3"
-  },
-  "sdk/sdk-meta.ts | colorgamutRec": {
-    "message": "ĉól̂ór̂-ǵâḿût́: r̂éĉ2020"
-  },
-  "sdk/sdk-meta.ts | colorgamutSrgb": {
-    "message": "ĉól̂ór̂-ǵâḿût́: ŝŕĝb́"
-  },
   "sdk/sdk-meta.ts | deuteranopia": {
     "message": "D̂éût́êŕâńôṕîá"
   },
@@ -7944,19 +7929,19 @@
     "message": "D̂ó n̂ót̂ ém̂úl̂át̂é âńŷ v́îśîón̂ d́êf́îćîén̂ćŷ"
   },
   "sdk/sdk-meta.ts | doNotEmulateCss": {
-    "message": "D̂ó n̂ót̂ ém̂úl̂át̂é ĈŚŜ ṕr̂éf̂ér̂ś-ĉól̂ór̂-śĉh́êḿê"
+    "message": "D̂ó n̂ót̂ ém̂úl̂át̂é ĈŚŜ prefers-color-scheme"
   },
   "sdk/sdk-meta.ts | doNotEmulateCssColorgamut": {
-    "message": "D̂ó n̂ót̂ ém̂úl̂át̂é ĈŚŜ ćôĺôŕ-ĝám̂út̂"
+    "message": "D̂ó n̂ót̂ ém̂úl̂át̂é ĈŚŜ color-gamut"
   },
   "sdk/sdk-meta.ts | doNotEmulateCssMediaType": {
     "message": "D̂ó n̂ót̂ ém̂úl̂át̂é ĈŚŜ ḿêd́îá t̂ýp̂é"
   },
   "sdk/sdk-meta.ts | doNotEmulateCssPrefersreduceddata": {
-    "message": "D̂ó n̂ót̂ ém̂úl̂át̂é ĈŚŜ ṕr̂éf̂ér̂ś-r̂éd̂úĉéd̂-d́ât́â"
+    "message": "D̂ó n̂ót̂ ém̂úl̂át̂é ĈŚŜ prefers-reduced-data"
   },
   "sdk/sdk-meta.ts | doNotEmulateCssPrefersreducedmotion": {
-    "message": "D̂ó n̂ót̂ ém̂úl̂át̂é ĈŚŜ ṕr̂éf̂ér̂ś-r̂éd̂úĉéd̂-ḿôt́îón̂"
+    "message": "D̂ó n̂ót̂ ém̂úl̂át̂é ĈŚŜ prefers-reduced-motion"
   },
   "sdk/sdk-meta.ts | doNotExtendGridLines": {
     "message": "D̂ó n̂ót̂ éx̂t́êńd̂ ǵr̂íd̂ ĺîńêś"
@@ -7986,40 +7971,40 @@
     "message": "Êḿûĺât́ê b́l̂úr̂ŕêd́ v̂íŝíôń"
   },
   "sdk/sdk-meta.ts | emulateCssColorgamutP": {
-    "message": "Êḿûĺât́ê ĆŜŚ ĉól̂ór̂-ǵâḿût́: p̂3"
+    "message": "Êḿûĺât́ê ĆŜŚ color-gamut: p3"
   },
   "sdk/sdk-meta.ts | emulateCssColorgamutRec": {
-    "message": "Êḿûĺât́ê ĆŜŚ ĉól̂ór̂-ǵâḿût́: r̂éĉ2020"
+    "message": "Êḿûĺât́ê ĆŜŚ color-gamut: rec2020"
   },
   "sdk/sdk-meta.ts | emulateCssColorgamutSrgb": {
-    "message": "Êḿûĺât́ê ĆŜŚ ĉól̂ór̂-ǵâḿût́: ŝŕĝb́"
+    "message": "Êḿûĺât́ê ĆŜŚ color-gamut: srgb"
   },
   "sdk/sdk-meta.ts | emulateCssMediaFeature": {
-    "message": "Êḿûĺât́ê ĆŜŚ m̂éd̂íâ f́êát̂úr̂é p̂ŕêf́êŕŝ-ćôĺôŕ-ŝćĥém̂é"
+    "message": "Êḿûĺât́ê ĆŜŚ m̂éd̂íâ f́êát̂úr̂é prefers-color-scheme"
   },
   "sdk/sdk-meta.ts | emulateCssMediaFeatureColorgamut": {
-    "message": "Êḿûĺât́ê ĆŜŚ m̂éd̂íâ f́êát̂úr̂é ĉól̂ór̂-ǵâḿût́"
+    "message": "Êḿûĺât́ê ĆŜŚ m̂éd̂íâ f́êát̂úr̂é color-gamut"
   },
   "sdk/sdk-meta.ts | emulateCssMediaFeaturePrefersreduceddata": {
-    "message": "Êḿûĺât́ê ĆŜŚ m̂éd̂íâ f́êát̂úr̂é p̂ŕêf́êŕŝ-ŕêd́ûćêd́-d̂át̂á"
+    "message": "Êḿûĺât́ê ĆŜŚ m̂éd̂íâ f́êát̂úr̂é prefers-reduced-data"
   },
   "sdk/sdk-meta.ts | emulateCssMediaFeaturePrefersreducedmotion": {
-    "message": "Êḿûĺât́ê ĆŜŚ m̂éd̂íâ f́êát̂úr̂é p̂ŕêf́êŕŝ-ŕêd́ûćêd́-m̂ót̂íôń"
+    "message": "Êḿûĺât́ê ĆŜŚ m̂éd̂íâ f́êát̂úr̂é prefers-reduced-motion"
   },
   "sdk/sdk-meta.ts | emulateCssMediaType": {
     "message": "Êḿûĺât́ê ĆŜŚ m̂éd̂íâ t́ŷṕê"
   },
   "sdk/sdk-meta.ts | emulateCssPreferscolorscheme": {
-    "message": "Êḿûĺât́ê ĆŜŚ p̂ŕêf́êŕŝ-ćôĺôŕ-ŝćĥém̂é: l̂íĝh́t̂"
+    "message": "Êḿûĺât́ê ĆŜŚ prefers-color-scheme: light"
   },
   "sdk/sdk-meta.ts | emulateCssPreferscolorschemeDark": {
-    "message": "Êḿûĺât́ê ĆŜŚ p̂ŕêf́êŕŝ-ćôĺôŕ-ŝćĥém̂é: d̂ár̂ḱ"
+    "message": "Êḿûĺât́ê ĆŜŚ prefers-color-scheme: dark"
   },
   "sdk/sdk-meta.ts | emulateCssPrefersreduceddata": {
-    "message": "Êḿûĺât́ê ĆŜŚ p̂ŕêf́êŕŝ-ŕêd́ûćêd́-d̂át̂á: r̂éd̂úĉé"
+    "message": "Êḿûĺât́ê ĆŜŚ prefers-reduced-data: reduce"
   },
   "sdk/sdk-meta.ts | emulateCssPrefersreducedmotion": {
-    "message": "Êḿûĺât́ê ĆŜŚ p̂ŕêf́êŕŝ-ŕêd́ûćêd́-m̂ót̂íôń: r̂éd̂úĉé"
+    "message": "Êḿûĺât́ê ĆŜŚ prefers-reduced-motion: reduce"
   },
   "sdk/sdk-meta.ts | emulateCssPrintMediaType": {
     "message": "Êḿûĺât́ê ĆŜŚ p̂ŕîńt̂ ḿêd́îá t̂ýp̂é"
@@ -8095,18 +8080,6 @@
   },
   "sdk/sdk-meta.ts | pauseOnExceptions": {
     "message": "P̂áûśê ón̂ éx̂ćêṕt̂íôńŝ"
-  },
-  "sdk/sdk-meta.ts | preferscolorschemeDark": {
-    "message": "p̂ŕêf́êŕŝ-ćôĺôŕ-ŝćĥém̂é: d̂ár̂ḱ"
-  },
-  "sdk/sdk-meta.ts | preferscolorschemeLight": {
-    "message": "p̂ŕêf́êŕŝ-ćôĺôŕ-ŝćĥém̂é: l̂íĝh́t̂"
-  },
-  "sdk/sdk-meta.ts | prefersreduceddataReduce": {
-    "message": "p̂ŕêf́êŕŝ-ŕêd́ûćêd́-d̂át̂á: r̂éd̂úĉé"
-  },
-  "sdk/sdk-meta.ts | prefersreducedmotionReduce": {
-    "message": "p̂ŕêf́êŕŝ-ŕêd́ûćêd́-m̂ót̂íôń: r̂éd̂úĉé"
   },
   "sdk/sdk-meta.ts | preserveLogUponNavigation": {
     "message": "P̂ŕêśêŕv̂é l̂óĝ úp̂ón̂ ńâv́îǵât́îón̂"

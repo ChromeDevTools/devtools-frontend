@@ -252,11 +252,19 @@ const UIStrings = {
   */
   disableJavascriptSourceMaps: 'Disable JavaScript source maps',
   /**
-  *@description Title of a setting under the Sources category that can be invoked through the Command Menu
+  *@description Title of a setting that can be invoked through the Command Menu.
+  *'tab moves focus' is the name of the setting, which means that when the user
+  *hits the tab key, the focus in the UI will be moved to the next part of the
+  *text editor, as opposed to inserting a tab character into the text in the
+  *text editor.
   */
   enableTabMovesFocus: 'Enable tab moves focus',
   /**
-  *@description Title of a setting under the Sources category that can be invoked through the Command Menu
+  *@description Title of a setting that can be invoked through the Command Menu.
+  *'tab moves focus' is the name of the setting, which means that when the user
+  *hits the tab key, the focus in the UI will be moved to the next part of the
+  *text editor, as opposed to inserting a tab character into the text in the
+  *text editor.
   */
   disableTabMovesFocus: 'Disable tab moves focus',
   /**

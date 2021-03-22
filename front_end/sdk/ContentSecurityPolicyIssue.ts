@@ -21,11 +21,11 @@ const UIStrings = {
   */
   contentSecurityPolicyEval: 'Content Security Policy - Eval',
   /**
-  *@description Title for Trusted Types policy violation issue link
+  *@description Title for Trusted Types policy violation issue link. https://developer.mozilla.org/en-US/docs/Web/API/Trusted_Types_API
   */
   trustedTypesFixViolations: 'Trusted Types - Fix violations',
   /**
-  *@description Title for Trusted Types policy violation issue link
+  *@description Title for Trusted Types policy violation issue link. https://developer.mozilla.org/en-US/docs/Web/API/Trusted_Types_API
   */
   trustedTypesPolicyViolation: 'Trusted Types - Policy violation',
 };

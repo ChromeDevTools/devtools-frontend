@@ -119,7 +119,9 @@ const UIStrings = {
   */
   frames: 'Frames',
   /**
-  *@description Text in Timeline Flame Chart Data Provider of the Performance panel
+  * @description Text in the Performance panel to show how long was spent in a particular part of the code.
+  * The first placeholder is the total time taken for this node and all children, the second is the self time
+  * (time taken in this node, without children included).
   *@example {10ms} PH1
   *@example {10ms} PH2
   */
@@ -1015,7 +1017,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       const event = /** @type {!SDK.TracingModel.Event} */ (this._entryData[entryIndex]);
       const totalTime = event.duration;
       const selfTime = event.selfTime;
-      const /** @const */ eps = 1e-6;
+      const eps = 1e-6;
       if (typeof totalTime === 'number') {
         time = Math.abs(totalTime - selfTime) > eps && selfTime > eps ?
             i18nString(

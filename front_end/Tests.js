@@ -726,7 +726,7 @@
       }
     }
 
-    this.takeControl();
+    this.takeControl({slownessFactor: 10});
 
     // It is possible for the ready console messagage to be already received but not handled
     // or received later. This ensures we can catch both cases.
@@ -1106,7 +1106,7 @@
 
   TestSuite.prototype.testRawHeadersWithHSTS = function(url) {
     const test = this;
-    test.takeControl();
+    test.takeControl({slownessFactor: 10});
     self.SDK.targetManager.addModelListener(
         SDK.NetworkManager, SDK.NetworkManager.Events.ResponseReceived, onResponseReceived);
 
@@ -1467,7 +1467,7 @@
       });
     }
 
-    this.takeControl();
+    this.takeControl({slownessFactor: 10});
     await testCase(baseURL + 'non-existent.html', undefined, 404, [], '');
     await testCase(baseURL + 'hello.html', undefined, 200, [], '<!doctype html>\n<p>hello</p>\n');
     await testCase(baseURL + 'echoheader?x-devtools-test', {'x-devtools-test': 'Foo'}, 200, ['cache-control'], 'Foo');

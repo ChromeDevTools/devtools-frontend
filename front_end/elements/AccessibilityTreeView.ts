@@ -3,16 +3,20 @@
 // found in the LICENSE file.
 
 import * as SDK from '../sdk/sdk.js';
+import * as LitHtml from '../third_party/lit-html/lit-html.js';
+import * as Components from '../ui/components/components.js';
 import * as UI from '../ui/ui.js';
 
-import {AccessibilityTree} from './AccessibilityTree.js';
-import {sdkNodeToAXNode} from './AccessibilityTreeUtils.js';
+import {accessibilityNodeRenderer, AXTreeNode, sdkNodeToAXTreeNode} from './AccessibilityTreeUtils.js';
 
 // This class simply acts as a wrapper around the AccessibilityTree web component for
 // compatibility with DevTools legacy UI widgets. It in itself contains no business logic
 // or functionality.
+
 export class AccessibilityTreeView extends UI.Widget.VBox {
-  private readonly accessibilityTreeComponent = new AccessibilityTree();
+  private readonly accessibilityTreeComponent =
+      new Components.TreeOutline.TreeOutline<SDK.AccessibilityModel.AccessibilityNode>();
+  private treeData: AXTreeNode[] = [];
   private readonly toggleButton: HTMLButtonElement;
 
   constructor(toggleButton: HTMLButtonElement) {
@@ -34,13 +38,19 @@ export class AccessibilityTreeView extends UI.Widget.VBox {
     return result || null;
   }
 
+
   async setNode(inspectedNode: SDK.DOMModel.DOMNode): Promise<void> {
     const root = await this.refreshAccessibilityTree(inspectedNode);
     if (!root) {
       return;
     }
+
+    this.treeData = [sdkNodeToAXTreeNode(root)];
+
     this.accessibilityTreeComponent.data = {
-      rootNode: sdkNodeToAXNode(null, root, this.accessibilityTreeComponent),
+      defaultRenderer: (node): LitHtml.TemplateResult => accessibilityNodeRenderer(node),
+      tree: this.treeData,
     };
+    this.accessibilityTreeComponent.expandRecursively(2);
   }
 }

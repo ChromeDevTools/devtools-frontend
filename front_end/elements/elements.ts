@@ -26,8 +26,6 @@ import './ClassesPaneWidget.js';
 import './ElementStatePaneWidget.js';
 import './ElementsTreeElementHighlighter.js';
 
-import * as AccessibilityNode from './AccessibilityNode.js';
-import * as AccessibilityTree from './AccessibilityTree.js';
 import * as AccessibilityTreeUtils from './AccessibilityTreeUtils.js';
 import * as Adorner from './Adorner.js';
 import * as AdornerManager from './AdornerManager.js';
@@ -67,8 +65,6 @@ import * as StylePropertyTreeElement from './StylePropertyTreeElement.js';
 import * as StylesSidebarPane from './StylesSidebarPane.js';
 
 export {
-  AccessibilityNode,
-  AccessibilityTree,
   AccessibilityTreeUtils,
   Adorner,
   AdornerManager,

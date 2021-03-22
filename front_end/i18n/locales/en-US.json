@@ -632,9 +632,6 @@
   "developer_resources/DeveloperResourcesView.ts | resourcesCurrentlyLoading": {
     "message": "{PH1} resources, {PH2} currently loading"
   },
-  "elements/AccessibilityNode.ts | ignored": {
-    "message": "Ignored"
-  },
   "elements/AdornerSettingsPane.ts | closeButton": {
     "message": "Close"
   },

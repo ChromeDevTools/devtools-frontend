@@ -301,12 +301,12 @@ export class AccessibilityModel extends SDKModel {
 
   /**
    * @param {!string} nodeId
-   * @return ?{!Promise<AccessibilityNode[]>}
+   * @return ?{!Promise<!AccessibilityNode[]>}
    */
   async requestAXChildren(nodeId) {
     const {nodes} = await this._agent.invoke_getChildAXNodes({id: nodeId});
     if (!nodes) {
-      return;
+      return [];
     }
 
     const axNodes = [];

@@ -3,15 +3,13 @@
     "components",
     "panels/coverage",
     "layer_viewer",
-    "timeline_model",
     "perf_ui",
     "extensions",
     "data_grid",
     "profiler",
     "mobile_throttling"
   ],
-  "modules": [],
-  "resources": [
+    "resources": [
     "historyToolbarButton.css",
     "invalidationsTree.css",
     "timelineFlamechartPopover.css",

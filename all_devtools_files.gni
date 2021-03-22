@@ -337,7 +337,6 @@ all_devtools_files = [
   "front_end/third_party/lighthouse/report-assets/report-generator.js",
   "front_end/third_party/lighthouse/report-assets/template.html",
   "front_end/third_party/lighthouse/report-assets/templates.html",
-  "front_end/timeline_model/module.json",
   "front_end/timeline/historyToolbarButton.css",
   "front_end/timeline/invalidationsTree.css",
   "front_end/timeline/module.json",

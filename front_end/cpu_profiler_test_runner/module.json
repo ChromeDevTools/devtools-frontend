@@ -2,8 +2,5 @@
   "dependencies": [
     "profiler",
     "test_runner"
-  ],
-  "modules": [
-    "cpu_profiler_test_runner.js"
   ]
 }

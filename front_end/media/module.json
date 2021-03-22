@@ -6,8 +6,7 @@
     "source_frame",
     "perf_ui"
   ],
-  "modules": [],
-  "resources": [
+    "resources": [
     "eventDisplayTable.css",
     "playerListView.css",
     "playerPropertiesView.css",

@@ -2,8 +2,7 @@
   "dependencies": [
     "components"
   ],
-  "modules": [],
-  "resources": [
+    "resources": [
     "editFileSystemView.css",
     "workspaceSettingsTab.css"
   ]

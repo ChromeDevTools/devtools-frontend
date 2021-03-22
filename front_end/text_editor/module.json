@@ -3,8 +3,7 @@
     "cm",
     "ui"
   ],
-  "modules": [],
-  "resources": [
+    "resources": [
     "autocompleteTooltip.css",
     "cmdevtools.css",
     "cmdevtools.darkmode.css"

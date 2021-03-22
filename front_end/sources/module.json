@@ -13,8 +13,7 @@
     "object_ui",
     "panels/coverage"
   ],
-  "modules": [],
-  "resources": [
+    "resources": [
     "breakpointEditDialog.css",
     "callStackSidebarPane.css",
     "debuggerPausedMessage.css",

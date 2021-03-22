@@ -2,9 +2,5 @@
   "dependencies": [
     "ui",
     "main"
-  ],
-  "modules": [
-    "test_runner.js",
-    "TestRunner.js"
   ]
 }

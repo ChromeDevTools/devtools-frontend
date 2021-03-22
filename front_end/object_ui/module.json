@@ -3,8 +3,7 @@
     "ui",
     "components"
   ],
-  "modules": [],
-  "resources": [
+    "resources": [
     "customPreviewComponent.css",
     "objectPopover.css",
     "objectPropertiesSection.css",

@@ -1,6 +1,5 @@
 {
   "dependencies": [
     "profiler"
-  ],
-  "modules": []
+  ]
 }

@@ -4,8 +4,7 @@
     "components",
     "object_ui"
   ],
-  "modules": [],
-  "resources": [
+    "resources": [
     "eventListenersView.css"
   ]
 }

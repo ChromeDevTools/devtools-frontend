@@ -2,13 +2,5 @@
   "dependencies": [
     "test_runner",
     "persistence"
-  ],
-  "modules": [
-    "bindings_test_runner.js",
-    "BindingsTestRunner.js",
-    "IsolatedFilesystemTestRunner.js",
-    "AutomappingTestRunner.js",
-    "PersistenceTestRunner.js",
-    "OverridesTestRunner.js"
   ]
 }

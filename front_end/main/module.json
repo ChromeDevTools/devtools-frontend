@@ -2,8 +2,5 @@
   "dependencies": [
     "extensions",
     "persistence"
-  ],
-  "modules": [
-    "main-legacy.js"
   ]
 }

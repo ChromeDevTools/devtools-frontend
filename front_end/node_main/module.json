@@ -3,8 +3,7 @@
     "ui",
     "components"
   ],
-  "modules": [],
-  "resources": [
+    "resources": [
     "nodeConnectionsPanel.css"
   ]
 }

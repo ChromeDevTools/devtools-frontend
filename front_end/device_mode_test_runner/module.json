@@ -2,8 +2,5 @@
   "dependencies": [
     "test_runner",
     "emulation"
-  ],
-  "modules": [
-    "device_mode_test_runner.js"
   ]
 }

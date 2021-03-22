@@ -3,8 +3,7 @@
     "ui",
     "data_grid"
   ],
-  "modules": [],
-  "resources": [
+    "resources": [
     "cookiesTable.css"
   ]
 }

@@ -2,10 +2,5 @@
   "dependencies": [
     "test_runner",
     "extensions"
-  ],
-  "modules": [
-    "extensions_test_runner.js",
-    "ExtensionsNetworkTestRunner.js",
-    "ExtensionsTestRunner.js"
   ]
 }

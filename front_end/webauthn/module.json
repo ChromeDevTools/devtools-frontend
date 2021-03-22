@@ -3,8 +3,7 @@
     "data_grid",
     "ui"
   ],
-  "modules": [],
-  "resources": [
+    "resources": [
     "webauthnPane.css"
   ]
 }

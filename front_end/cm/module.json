@@ -1,6 +1,5 @@
 {
-  "modules": [],
-  "resources": [
+    "resources": [
     "codemirror.css"
   ]
 }

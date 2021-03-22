@@ -1,12 +1,4 @@
 {
-  "modules": [
-    "browser_sdk.js",
-    "LogManager.js",
-    "IssuesManager.js",
-    "ContrastCheckTrigger.js",
-    "RelatedIssue.js",
-    "SourceFrameIssuesManager.js"
-  ],
   "resources": [
     "../issues/descriptions/cspTrustedTypesSinkViolation.md",
     "../issues/descriptions/cspTrustedTypesPolicyViolation.md"

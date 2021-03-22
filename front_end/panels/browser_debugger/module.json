@@ -4,8 +4,7 @@
     "sources",
     "panels/console"
   ],
-  "modules": [],
-  "resources": [
+    "resources": [
     "domBreakpointsSidebarPane.css",
     "categorizedBreakpointsSidebarPane.css",
     "xhrBreakpointsSidebarPane.css"

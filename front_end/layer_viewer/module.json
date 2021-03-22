@@ -1,12 +1,10 @@
 {
   "dependencies": [
     "components",
-    "timeline_model",
     "ui",
     "perf_ui"
   ],
-  "modules": [],
-  "resources": [
+    "resources": [
     "layers3DView.css",
     "paintProfiler.css",
     "layerDetailsView.css"

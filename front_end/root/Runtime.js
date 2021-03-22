@@ -304,7 +304,7 @@ export class ModuleDescriptor {
     this.scripts;
 
     /**
-     * @type {!Array.<string>}
+     * @type {?Array.<string>}
      */
     this.modules;
 
@@ -415,20 +415,17 @@ export class Module {
   async _loadModules() {
     const containingFolderName = computeContainingFolderName(this._name);
 
-    const legacyFileName = `${containingFolderName}-legacy.js`;
     const moduleFileName = `${containingFolderName}_module.js`;
     const entrypointFileName = `${containingFolderName}.js`;
 
     // If a module has resources, they are part of the `_module.js` files that are generated
     // by `build_release_applications`. These need to be loaded before any other code is
     // loaded, to make sure that the resource content is properly cached in `cachedResources`.
-    if (this._descriptor.modules.includes(moduleFileName)) {
+    if (this._descriptor.modules && this._descriptor.modules.includes(moduleFileName)) {
       await import(`../${this._name}/${moduleFileName}`);
     }
 
-    const fileName = this._descriptor.modules.includes(legacyFileName) ? legacyFileName : entrypointFileName;
-
-    await import(`../${this._name}/${fileName}`);
+    await import(`../${this._name}/${entrypointFileName}`);
   }
 
   /**

@@ -22,7 +22,6 @@
     { "name": "resources" },
     { "name": "security" },
     { "name": "timeline" },
-    { "name": "timeline_model" },
     { "name": "web_audio" },
     { "name": "webauthn"},
     { "name": "media" }

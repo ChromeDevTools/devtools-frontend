@@ -6,8 +6,7 @@
     "snippets",
     "ui"
   ],
-  "modules": [],
-  "resources": [
+    "resources": [
     "changesView.css",
     "changesSidebar.css"
   ]

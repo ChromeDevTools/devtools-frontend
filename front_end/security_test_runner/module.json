@@ -2,8 +2,5 @@
   "dependencies": [
     "test_runner",
     "security"
-  ],
-  "modules": [
-    "security_test_runner.js"
   ]
 }

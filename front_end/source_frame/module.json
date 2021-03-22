@@ -6,8 +6,7 @@
     "object_ui",
     "workspace_diff"
   ],
-  "modules": [],
-  "resources": [
+    "resources": [
     "fontView.css",
     "imageView.css",
     "jsonView.css",

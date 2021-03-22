@@ -12,8 +12,7 @@
     "sources",
     "browser_sdk"
   ],
-  "modules": [],
-  "resources": [
+    "resources": [
     "appManifestView.css",
     "backgroundServiceView.css",
     "storageView.css",

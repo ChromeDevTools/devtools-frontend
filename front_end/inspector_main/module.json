@@ -3,8 +3,7 @@
     "components",
     "mobile_throttling"
   ],
-  "modules": [],
-  "resources": [
+    "resources": [
     "nodeIcon.css",
     "renderingOptions.css"
   ]

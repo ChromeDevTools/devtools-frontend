@@ -12,8 +12,7 @@
     { "name": "layer_viewer" },
     { "name": "network" },
     { "name": "resources" },
-    { "name": "timeline" },
-    { "name": "timeline_model" }
+    { "name": "timeline" }
   ],
   "extends": "shell"
 }

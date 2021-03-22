@@ -4,8 +4,5 @@
     "panels/console",
     "object_ui",
     "panels/console_counters"
-  ],
-  "modules": [
-    "console_test_runner.js"
   ]
 }

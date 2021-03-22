@@ -4,8 +4,5 @@
     "layers",
     "elements",
     "components"
-  ],
-  "modules": [
-    "layers_test_runner.js"
   ]
 }

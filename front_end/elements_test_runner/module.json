@@ -4,13 +4,5 @@
     "elements",
     "event_listeners",
     "panels/animation"
-  ],
-  "modules": [
-    "elements_test_runner.js",
-    "ElementsTestRunner.js",
-    "EditDOMTestRunner.js",
-    "SetOuterHTMLTestRunner.js",
-    "ElementsPanelShadowSelectionOnRefreshTestRunner.js",
-    "StylesUpdateLinksTestRunner.js"
   ]
 }

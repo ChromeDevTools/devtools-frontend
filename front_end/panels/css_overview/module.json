@@ -1,6 +1,5 @@
 {
-  "modules": [],
-  "dependencies": [
+    "dependencies": [
     "data_grid"
   ],
   "resources": [

@@ -3,8 +3,7 @@
     "components",
     "ui"
   ],
-  "modules": [],
-  "resources": [
+    "resources": [
     "webAudio.css",
     "audioContextSelector.css"
   ]

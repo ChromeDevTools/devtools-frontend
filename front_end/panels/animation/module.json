@@ -1,6 +1,5 @@
 {
-  "modules": [],
-  "resources": [
+    "resources": [
     "animationScreenshotPopover.css",
     "animationTimeline.css"
   ]

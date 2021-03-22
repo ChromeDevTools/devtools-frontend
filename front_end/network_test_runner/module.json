@@ -2,8 +2,5 @@
   "dependencies": [
     "test_runner",
     "console_test_runner"
-  ],
-  "modules": [
-    "network_test_runner.js"
   ]
 }

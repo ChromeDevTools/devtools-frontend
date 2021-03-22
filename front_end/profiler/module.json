@@ -5,8 +5,7 @@
     "data_grid",
     "object_ui"
   ],
-  "modules": [],
-  "resources": [
+    "resources": [
     "heapProfiler.css",
     "liveHeapProfile.css",
     "profileLauncherView.css",

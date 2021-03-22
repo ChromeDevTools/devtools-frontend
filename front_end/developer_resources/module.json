@@ -1,6 +1,5 @@
 {
-  "modules": [],
-  "resources": [
+    "resources": [
     "developerResourcesView.css",
     "developerResourcesListView.css"
   ],

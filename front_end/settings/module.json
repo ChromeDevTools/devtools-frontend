@@ -2,8 +2,7 @@
   "dependencies": [
     "components"
   ],
-  "modules": [],
-  "resources": [
+    "resources": [
     "frameworkIgnoreListSettingsTab.css",
     "settingsScreen.css",
     "keybindsSettingsTab.css"

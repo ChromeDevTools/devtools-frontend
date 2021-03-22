@@ -9,12 +9,6 @@
         "type": "string"
       }
     },
-    "modules": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      }
-    },
     "resources": {
       "type": "array",
       "items": {

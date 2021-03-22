@@ -12,8 +12,7 @@
     "source_frame",
     "ui"
   ],
-  "modules": [],
-  "resources": [
+    "resources": [
     "binaryResourceView.css",
     "blockedURLsPane.css",
     "eventSourceMessagesView.css",

@@ -5,14 +5,5 @@
     "source_frame",
     "text_editor",
     "panels/browser_debugger"
-  ],
-  "modules": [
-    "sources_test_runner.js",
-    "SourcesTestRunner.js",
-    "DebuggerTestRunner.js",
-    "LiveEditTestRunner.js",
-    "SearchTestRunner.js",
-    "EditorTestRunner.js",
-    "AutocompleteTestRunner.js"
   ]
 }

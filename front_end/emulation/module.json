@@ -4,8 +4,7 @@
     "ui",
     "mobile_throttling"
   ],
-  "modules": [],
-  "resources": [
+    "resources": [
     "deviceModeToolbar.css",
     "deviceModeView.css",
     "devicesSettingsTab.css",

@@ -1,6 +1,5 @@
 {
   "dependencies": [
     "persistence"
-  ],
-  "modules": []
+  ]
 }

@@ -4,8 +4,7 @@
     "source_frame",
     "text_editor"
   ],
-  "modules": [],
-  "resources": [
+    "resources": [
     "chartViewport.css",
     "filmStripView.css",
     "flameChart.css",

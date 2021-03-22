@@ -3,8 +3,5 @@
     "test_runner",
     "panels/coverage",
     "sources_test_runner"
-  ],
-  "modules": [
-    "coverage_test_runner.js"
   ]
 }

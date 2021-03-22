@@ -630,6 +630,11 @@ export class MainImpl {
 /** @type {?MainImpl} */
 MainImpl._instanceForTest = null;
 
+// @ts-ignore Exported for Tests.js
+globalThis.Main = globalThis.Main || {};
+// @ts-ignore Exported for Tests.js
+globalThis.Main.Main = MainImpl;
+
 /** @type {!ZoomActionDelegate} */
 let zoomActionDelegateInstance;
 

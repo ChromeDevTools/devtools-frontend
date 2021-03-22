@@ -5,15 +5,5 @@
     "console_test_runner",
     "sources",
     "sources_test_runner"
-  ],
-  "modules": [
-    "application_test_runner.js",
-    "AppcacheTestRunner.js",
-    "CacheStorageTestRunner.js",
-    "IndexedDBTestRunner.js",
-    "ResourceTreeTestRunner.js",
-    "ResourcesTestRunner.js",
-    "ServiceWorkersTestRunner.js",
-    "StorageTestRunner.js"
   ]
 }

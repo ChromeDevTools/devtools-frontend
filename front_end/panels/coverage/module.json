@@ -4,8 +4,7 @@
     "source_frame",
     "ui"
   ],
-  "modules": [],
-  "resources": [
+    "resources": [
     "coverageListView.css",
     "coverageView.css"
   ]

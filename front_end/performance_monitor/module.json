@@ -2,8 +2,7 @@
   "dependencies": [
     "ui"
   ],
-  "modules": [],
-  "resources": [
+    "resources": [
     "performanceMonitor.css"
   ]
 }

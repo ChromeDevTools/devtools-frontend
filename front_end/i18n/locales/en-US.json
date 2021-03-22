@@ -431,63 +431,6 @@
   "data_grid/ViewportDataGrid.ts | collapsed": {
     "message": "collapsed"
   },
-  "developer_resources/developer_resources-meta.ts | developerResources": {
-    "message": "Developer Resources"
-  },
-  "developer_resources/developer_resources-meta.ts | showDeveloperResources": {
-    "message": "Show Developer Resources"
-  },
-  "developer_resources/DeveloperResourcesListView.ts | copyInitiatorUrl": {
-    "message": "Copy initiator URL"
-  },
-  "developer_resources/DeveloperResourcesListView.ts | copyUrl": {
-    "message": "Copy URL"
-  },
-  "developer_resources/DeveloperResourcesListView.ts | developerResources": {
-    "message": "Developer Resources"
-  },
-  "developer_resources/DeveloperResourcesListView.ts | error": {
-    "message": "Error"
-  },
-  "developer_resources/DeveloperResourcesListView.ts | failure": {
-    "message": "failure"
-  },
-  "developer_resources/DeveloperResourcesListView.ts | initiator": {
-    "message": "Initiator"
-  },
-  "developer_resources/DeveloperResourcesListView.ts | pending": {
-    "message": "pending"
-  },
-  "developer_resources/DeveloperResourcesListView.ts | sBytes": {
-    "message": "{n, plural, =1 {# byte} other {# bytes}}"
-  },
-  "developer_resources/DeveloperResourcesListView.ts | status": {
-    "message": "Status"
-  },
-  "developer_resources/DeveloperResourcesListView.ts | success": {
-    "message": "success"
-  },
-  "developer_resources/DeveloperResourcesListView.ts | totalBytes": {
-    "message": "Total Bytes"
-  },
-  "developer_resources/DeveloperResourcesListView.ts | url": {
-    "message": "URL"
-  },
-  "developer_resources/DeveloperResourcesView.ts | enableLoadingThroughTarget": {
-    "message": "Enable loading through target"
-  },
-  "developer_resources/DeveloperResourcesView.ts | enterTextToSearchTheUrlAndError": {
-    "message": "Enter text to search the URL and Error columns"
-  },
-  "developer_resources/DeveloperResourcesView.ts | loadHttpsDeveloperResources": {
-    "message": "Load HTTP(S) developer resources through the inspected target"
-  },
-  "developer_resources/DeveloperResourcesView.ts | resources": {
-    "message": "{n, plural, =1 {# resource} other {# resources}}"
-  },
-  "developer_resources/DeveloperResourcesView.ts | resourcesCurrentlyLoading": {
-    "message": "{PH1} resources, {PH2} currently loading"
-  },
   "elements/AdornerSettingsPane.ts | closeButton": {
     "message": "Close"
   },
@@ -5593,6 +5536,63 @@
   },
   "panels/css_overview/CSSOverviewUnusedDeclarations.ts | widthAppliedToAnInlineElement": {
     "message": "Width applied to an inline element"
+  },
+  "panels/developer_resources/developer_resources-meta.ts | developerResources": {
+    "message": "Developer Resources"
+  },
+  "panels/developer_resources/developer_resources-meta.ts | showDeveloperResources": {
+    "message": "Show Developer Resources"
+  },
+  "panels/developer_resources/DeveloperResourcesListView.ts | copyInitiatorUrl": {
+    "message": "Copy initiator URL"
+  },
+  "panels/developer_resources/DeveloperResourcesListView.ts | copyUrl": {
+    "message": "Copy URL"
+  },
+  "panels/developer_resources/DeveloperResourcesListView.ts | developerResources": {
+    "message": "Developer Resources"
+  },
+  "panels/developer_resources/DeveloperResourcesListView.ts | error": {
+    "message": "Error"
+  },
+  "panels/developer_resources/DeveloperResourcesListView.ts | failure": {
+    "message": "failure"
+  },
+  "panels/developer_resources/DeveloperResourcesListView.ts | initiator": {
+    "message": "Initiator"
+  },
+  "panels/developer_resources/DeveloperResourcesListView.ts | pending": {
+    "message": "pending"
+  },
+  "panels/developer_resources/DeveloperResourcesListView.ts | sBytes": {
+    "message": "{n, plural, =1 {# byte} other {# bytes}}"
+  },
+  "panels/developer_resources/DeveloperResourcesListView.ts | status": {
+    "message": "Status"
+  },
+  "panels/developer_resources/DeveloperResourcesListView.ts | success": {
+    "message": "success"
+  },
+  "panels/developer_resources/DeveloperResourcesListView.ts | totalBytes": {
+    "message": "Total Bytes"
+  },
+  "panels/developer_resources/DeveloperResourcesListView.ts | url": {
+    "message": "URL"
+  },
+  "panels/developer_resources/DeveloperResourcesView.ts | enableLoadingThroughTarget": {
+    "message": "Enable loading through target"
+  },
+  "panels/developer_resources/DeveloperResourcesView.ts | enterTextToSearchTheUrlAndError": {
+    "message": "Enter text to search the URL and Error columns"
+  },
+  "panels/developer_resources/DeveloperResourcesView.ts | loadHttpsDeveloperResources": {
+    "message": "Load HTTP(S) developer resources through the inspected target"
+  },
+  "panels/developer_resources/DeveloperResourcesView.ts | resources": {
+    "message": "{n, plural, =1 {# resource} other {# resources}}"
+  },
+  "panels/developer_resources/DeveloperResourcesView.ts | resourcesCurrentlyLoading": {
+    "message": "{PH1} resources, {PH2} currently loading"
   },
   "perf_ui/FilmStripView.ts | doubleclickToZoomImageClickTo": {
     "message": "Doubleclick to zoom image. Click to view preceding requests."

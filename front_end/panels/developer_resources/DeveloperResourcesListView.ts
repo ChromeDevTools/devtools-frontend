@@ -4,12 +4,12 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as DataGrid from '../data_grid/data_grid.js';
-import * as Host from '../host/host.js';
-import * as i18n from '../i18n/i18n.js';
-import * as SDK from '../sdk/sdk.js';
-import * as TextUtils from '../text_utils/text_utils.js';
-import * as UI from '../ui/ui.js';
+import * as DataGrid from '../../data_grid/data_grid.js';
+import * as Host from '../../host/host.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as SDK from '../../sdk/sdk.js';
+import * as TextUtils from '../../text_utils/text_utils.js';
+import * as UI from '../../ui/ui.js';
 
 const UIStrings = {
   /**
@@ -62,7 +62,7 @@ const UIStrings = {
   */
   sBytes: '{n, plural, =1 {# byte} other {# bytes}}',
 };
-const str_ = i18n.i18n.registerUIStrings('developer_resources/DeveloperResourcesListView.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/developer_resources/DeveloperResourcesListView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class DeveloperResourcesListView extends UI.Widget.VBox {
@@ -75,7 +75,8 @@ export class DeveloperResourcesListView extends UI.Widget.VBox {
     this._nodeForItem = new Map();
     this._isVisibleFilter = isVisibleFilter;
     this._highlightRegExp = null;
-    this.registerRequiredCSS('developer_resources/developerResourcesListView.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS(
+        'panels/developer_resources/developerResourcesListView.css', {enableLegacyPatching: false});
 
     const columns = [
       {id: 'status', title: i18nString(UIStrings.status), width: '60px', fixedWidth: true, sortable: true},

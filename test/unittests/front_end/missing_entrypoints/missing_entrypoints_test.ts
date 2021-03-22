@@ -16,7 +16,7 @@ describeWithEnvironment('Imports entrypoints that are yet to be tested', () => {
     await import('../../../../front_end/panels/console/console.js');
     await import('../../../../front_end/panels/console_counters/console_counters.js');
     await import('../../../../front_end/panels/css_overview/css_overview.js');
-    await import('../../../../front_end/developer_resources/developer_resources.js');
+    await import('../../../../front_end/panels/developer_resources/developer_resources.js');
     await import('../../../../front_end/heap_snapshot_model/heap_snapshot_model.js');
     await import('../../../../front_end/heap_snapshot_worker/heap_snapshot_worker.js');
     await import('../../../../front_end/help/help.js');

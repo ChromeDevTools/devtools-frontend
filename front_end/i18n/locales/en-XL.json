@@ -431,63 +431,6 @@
   "data_grid/ViewportDataGrid.ts | collapsed": {
     "message": "ĉól̂ĺâṕŝéd̂"
   },
-  "developer_resources/developer_resources-meta.ts | developerResources": {
-    "message": "D̂év̂él̂óp̂ér̂ Ŕêśôúr̂ćêś"
-  },
-  "developer_resources/developer_resources-meta.ts | showDeveloperResources": {
-    "message": "Ŝh́ôẃ D̂év̂él̂óp̂ér̂ Ŕêśôúr̂ćêś"
-  },
-  "developer_resources/DeveloperResourcesListView.ts | copyInitiatorUrl": {
-    "message": "Ĉóp̂ý îńît́îát̂ór̂ ÚR̂Ĺ"
-  },
-  "developer_resources/DeveloperResourcesListView.ts | copyUrl": {
-    "message": "Ĉóp̂ý ÛŔL̂"
-  },
-  "developer_resources/DeveloperResourcesListView.ts | developerResources": {
-    "message": "D̂év̂él̂óp̂ér̂ Ŕêśôúr̂ćêś"
-  },
-  "developer_resources/DeveloperResourcesListView.ts | error": {
-    "message": "Êŕr̂ór̂"
-  },
-  "developer_resources/DeveloperResourcesListView.ts | failure": {
-    "message": "f̂áîĺûŕê"
-  },
-  "developer_resources/DeveloperResourcesListView.ts | initiator": {
-    "message": "Îńît́îát̂ór̂"
-  },
-  "developer_resources/DeveloperResourcesListView.ts | pending": {
-    "message": "p̂én̂d́îńĝ"
-  },
-  "developer_resources/DeveloperResourcesListView.ts | sBytes": {
-    "message": "{n, plural, =1 {# b̂ýt̂é} other {# b̂ýt̂éŝ}}"
-  },
-  "developer_resources/DeveloperResourcesListView.ts | status": {
-    "message": "Ŝt́ât́ûś"
-  },
-  "developer_resources/DeveloperResourcesListView.ts | success": {
-    "message": "ŝúĉćêśŝ"
-  },
-  "developer_resources/DeveloperResourcesListView.ts | totalBytes": {
-    "message": "T̂ót̂ál̂ B́ŷt́êś"
-  },
-  "developer_resources/DeveloperResourcesListView.ts | url": {
-    "message": "ÛŔL̂"
-  },
-  "developer_resources/DeveloperResourcesView.ts | enableLoadingThroughTarget": {
-    "message": "Êńâb́l̂é l̂óâd́îńĝ t́ĥŕôúĝh́ t̂ár̂ǵêt́"
-  },
-  "developer_resources/DeveloperResourcesView.ts | enterTextToSearchTheUrlAndError": {
-    "message": "Êńt̂ér̂ t́êx́t̂ t́ô śêár̂ćĥ t́ĥé ÛŔL̂ án̂d́ Êŕr̂ór̂ ćôĺûḿn̂ś"
-  },
-  "developer_resources/DeveloperResourcesView.ts | loadHttpsDeveloperResources": {
-    "message": "L̂óâd́ HTTP(S) d̂év̂él̂óp̂ér̂ ŕêśôúr̂ćêś t̂h́r̂óûǵĥ t́ĥé îńŝṕêćt̂éd̂ t́âŕĝét̂"
-  },
-  "developer_resources/DeveloperResourcesView.ts | resources": {
-    "message": "{n, plural, =1 {# r̂éŝóûŕĉé} other {# r̂éŝóûŕĉéŝ}}"
-  },
-  "developer_resources/DeveloperResourcesView.ts | resourcesCurrentlyLoading": {
-    "message": "{PH1} r̂éŝóûŕĉéŝ, {PH2} ćûŕr̂én̂t́l̂ý l̂óâd́îńĝ"
-  },
   "elements/AdornerSettingsPane.ts | closeButton": {
     "message": "Ĉĺôśê"
   },
@@ -5593,6 +5536,63 @@
   },
   "panels/css_overview/CSSOverviewUnusedDeclarations.ts | widthAppliedToAnInlineElement": {
     "message": "Width âṕp̂ĺîéd̂ t́ô án̂ ín̂ĺîńê él̂ém̂én̂t́"
+  },
+  "panels/developer_resources/developer_resources-meta.ts | developerResources": {
+    "message": "D̂év̂él̂óp̂ér̂ Ŕêśôúr̂ćêś"
+  },
+  "panels/developer_resources/developer_resources-meta.ts | showDeveloperResources": {
+    "message": "Ŝh́ôẃ D̂év̂él̂óp̂ér̂ Ŕêśôúr̂ćêś"
+  },
+  "panels/developer_resources/DeveloperResourcesListView.ts | copyInitiatorUrl": {
+    "message": "Ĉóp̂ý îńît́îát̂ór̂ ÚR̂Ĺ"
+  },
+  "panels/developer_resources/DeveloperResourcesListView.ts | copyUrl": {
+    "message": "Ĉóp̂ý ÛŔL̂"
+  },
+  "panels/developer_resources/DeveloperResourcesListView.ts | developerResources": {
+    "message": "D̂év̂él̂óp̂ér̂ Ŕêśôúr̂ćêś"
+  },
+  "panels/developer_resources/DeveloperResourcesListView.ts | error": {
+    "message": "Êŕr̂ór̂"
+  },
+  "panels/developer_resources/DeveloperResourcesListView.ts | failure": {
+    "message": "f̂áîĺûŕê"
+  },
+  "panels/developer_resources/DeveloperResourcesListView.ts | initiator": {
+    "message": "Îńît́îát̂ór̂"
+  },
+  "panels/developer_resources/DeveloperResourcesListView.ts | pending": {
+    "message": "p̂én̂d́îńĝ"
+  },
+  "panels/developer_resources/DeveloperResourcesListView.ts | sBytes": {
+    "message": "{n, plural, =1 {# b̂ýt̂é} other {# b̂ýt̂éŝ}}"
+  },
+  "panels/developer_resources/DeveloperResourcesListView.ts | status": {
+    "message": "Ŝt́ât́ûś"
+  },
+  "panels/developer_resources/DeveloperResourcesListView.ts | success": {
+    "message": "ŝúĉćêśŝ"
+  },
+  "panels/developer_resources/DeveloperResourcesListView.ts | totalBytes": {
+    "message": "T̂ót̂ál̂ B́ŷt́êś"
+  },
+  "panels/developer_resources/DeveloperResourcesListView.ts | url": {
+    "message": "ÛŔL̂"
+  },
+  "panels/developer_resources/DeveloperResourcesView.ts | enableLoadingThroughTarget": {
+    "message": "Êńâb́l̂é l̂óâd́îńĝ t́ĥŕôúĝh́ t̂ár̂ǵêt́"
+  },
+  "panels/developer_resources/DeveloperResourcesView.ts | enterTextToSearchTheUrlAndError": {
+    "message": "Êńt̂ér̂ t́êx́t̂ t́ô śêár̂ćĥ t́ĥé ÛŔL̂ án̂d́ Êŕr̂ór̂ ćôĺûḿn̂ś"
+  },
+  "panels/developer_resources/DeveloperResourcesView.ts | loadHttpsDeveloperResources": {
+    "message": "L̂óâd́ HTTP(S) d̂év̂él̂óp̂ér̂ ŕêśôúr̂ćêś t̂h́r̂óûǵĥ t́ĥé îńŝṕêćt̂éd̂ t́âŕĝét̂"
+  },
+  "panels/developer_resources/DeveloperResourcesView.ts | resources": {
+    "message": "{n, plural, =1 {# r̂éŝóûŕĉé} other {# r̂éŝóûŕĉéŝ}}"
+  },
+  "panels/developer_resources/DeveloperResourcesView.ts | resourcesCurrentlyLoading": {
+    "message": "{PH1} r̂éŝóûŕĉéŝ, {PH2} ćûŕr̂én̂t́l̂ý l̂óâd́îńĝ"
   },
   "perf_ui/FilmStripView.ts | doubleclickToZoomImageClickTo": {
     "message": "D̂óûb́l̂éĉĺîćk̂ t́ô źôóm̂ ím̂áĝé. Ĉĺîćk̂ t́ô v́îéŵ ṕr̂éĉéd̂ín̂ǵ r̂éq̂úêśt̂ś."

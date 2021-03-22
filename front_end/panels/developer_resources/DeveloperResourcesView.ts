@@ -4,10 +4,10 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../common/common.js';
-import * as i18n from '../i18n/i18n.js';
-import * as SDK from '../sdk/sdk.js';
-import * as UI from '../ui/ui.js';
+import * as Common from '../../common/common.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as SDK from '../../sdk/sdk.js';
+import * as UI from '../../ui/ui.js';
 
 import {DeveloperResourcesListView} from './DeveloperResourcesListView.js';
 
@@ -40,7 +40,7 @@ const UIStrings = {
    */
   resources: '{n, plural, =1 {# resource} other {# resources}}',
 };
-const str_ = i18n.i18n.registerUIStrings('developer_resources/DeveloperResourcesView.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/developer_resources/DeveloperResourcesView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 let developerResourcesViewInstance: DeveloperResourcesView;
@@ -56,7 +56,7 @@ export class DeveloperResourcesView extends UI.Widget.VBox {
   _loader: SDK.PageResourceLoader.PageResourceLoader;
   private constructor() {
     super(true);
-    this.registerRequiredCSS('developer_resources/developerResourcesView.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('panels/developer_resources/developerResourcesView.css', {enableLegacyPatching: false});
 
     const toolbarContainer = this.contentElement.createChild('div', 'developer-resource-view-toolbar-container');
     const toolbar = new UI.Toolbar.Toolbar('developer-resource-view-toolbar', toolbarContainer);

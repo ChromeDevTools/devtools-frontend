@@ -8,7 +8,7 @@
     { "name": "elements" },
     { "name": "help" },
     { "name": "issues" },
-    { "name": "developer_resources" },
+    { "name": "panels/developer_resources" },
     { "name": "layer_viewer" },
     { "name": "network" },
     { "name": "resources" },

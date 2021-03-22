@@ -120,7 +120,6 @@ group("legacy_entrypoints") {
     "components:legacy",
     "cookie_table:legacy",
     "data_grid:legacy",
-    "developer_resources:legacy",
     "diff:legacy",
     "elements:legacy",
     "emulation:legacy",
@@ -149,6 +148,7 @@ group("legacy_entrypoints") {
     "panels/console:legacy",
     "panels/console_counters:legacy",
     "panels/coverage:legacy",
+    "panels/developer_resources:legacy",
     "perf_ui:legacy",
     "persistence:legacy",
     "profiler:legacy",
@@ -219,7 +219,6 @@ ts_library("devtools_app") {
 
   deps = [
     ":shell",
-    "developer_resources:meta",
     "elements:meta",
     "emulation:meta",
     "help:meta",
@@ -235,6 +234,7 @@ ts_library("devtools_app") {
     "panels/animation:meta",
     "panels/browser_debugger:meta",
     "panels/css_overview:meta",
+    "panels/developer_resources:meta",
     "performance_monitor:meta",
     "resources:meta",
     "security:meta",
@@ -305,7 +305,6 @@ ts_library("worker_app") {
 
   deps = [
     ":shell",
-    "developer_resources:meta",
     "elements:meta",
     "help:meta",
     "issues:meta",
@@ -313,6 +312,7 @@ ts_library("worker_app") {
     "mobile_throttling:meta",
     "network:meta",
     "panels/browser_debugger:meta",
+    "panels/developer_resources:meta",
     "resources:meta",
     "startup:bundle",
     "timeline:meta",

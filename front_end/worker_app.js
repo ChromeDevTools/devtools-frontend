@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 import './shell.js';
 import './panels/browser_debugger/browser_debugger-meta.js';
-import './developer_resources/developer_resources-meta.js';
+import './panels/developer_resources/developer_resources-meta.js';
 import './elements/elements-meta.js';
 import './help/help-meta.js';
 import './issues/issues-meta.js';

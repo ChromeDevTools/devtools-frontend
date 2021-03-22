@@ -390,6 +390,39 @@ describeWithEnvironment('ElementsBreadcrumbs', () => {
         assert.isTrue(rightButton.classList.contains('hidden'));
       });
 
+      it('hides the overflow should the list of nodes change so the crumbs no longer overflow', async () => {
+        const thinWrapper = document.createElement('div');
+        thinWrapper.style.width = '400px';
+        thinWrapper.style.minWidth = '400px';
+        thinWrapper.style.maxWidth = '400px';
+
+        const component = new Elements.ElementsBreadcrumbs.ElementsBreadcrumbs();
+        thinWrapper.appendChild(component);
+        renderElementIntoDOM(thinWrapper);
+        component.data = {
+          crumbs: [divCrumb, bodyCrumb],
+          selectedNode: bodyCrumb,
+        };
+        assertShadowRoot(component.shadowRoot);
+        // So the browser has time to paint
+        await doubleRaf();
+        const leftButton = component.shadowRoot.querySelector('button.overflow.left');
+        assertElement(leftButton, HTMLButtonElement);
+        const rightButton = component.shadowRoot.querySelector('button.overflow.right');
+        assertElement(rightButton, HTMLButtonElement);
+
+        // Ensure the buttons are visible now
+        assert.isFalse(leftButton.classList.contains('hidden'));
+        assert.isFalse(rightButton.classList.contains('hidden'));
+
+        component.data = {
+          crumbs: [bodyCrumb],
+          selectedNode: bodyCrumb,
+        };
+        assert.isTrue(leftButton.classList.contains('hidden'));
+        assert.isTrue(rightButton.classList.contains('hidden'));
+      });
+
       it('shows the overflow buttons should the user resize the window down to be small', async () => {
         const thinWrapper = document.createElement('div');
         thinWrapper.style.width = '800px';

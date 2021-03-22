@@ -130,10 +130,6 @@ export class ElementsBreadcrumbs extends HTMLElement {
    * does nothing.
    */
   private checkForOverflow(): void {
-    if (this.overflowing) {
-      return;
-    }
-
     const crumbScrollContainer = this.shadow.querySelector('.crumbs-scroll-container');
     const crumbWindow = this.shadow.querySelector('.crumbs-window');
 
@@ -145,11 +141,21 @@ export class ElementsBreadcrumbs extends HTMLElement {
     const maxChildWidth = crumbWindow.clientWidth - paddingAllowance;
 
     if (crumbScrollContainer.clientWidth < maxChildWidth) {
+      if (this.overflowing) {
+        // We were overflowing, but now we have enough room, so re-render with
+        // overflowing set to false so the overflow buttons get removed.
+        this.overflowing = false;
+        this.render();
+      }
       return;
     }
 
-    this.overflowing = true;
-    this.render();
+    // We don't have enough room, so if we are not currently overflowing, mark
+    // as overflowing and re-render to update the UI.
+    if (!this.overflowing) {
+      this.overflowing = true;
+      this.render();
+    }
   }
 
   private onCrumbsWindowScroll(event: Event): void {

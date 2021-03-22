@@ -52,3 +52,10 @@ component.data = {
   crumbs: [emCrumb, spanCrumb, divCrumb, bodyCrumb],
   selectedNode: bodyCrumb,
 };
+
+document.getElementById('focus-body')?.addEventListener('click', () => {
+  component.data = {
+    crumbs: [bodyCrumb],
+    selectedNode: bodyCrumb,
+  };
+});

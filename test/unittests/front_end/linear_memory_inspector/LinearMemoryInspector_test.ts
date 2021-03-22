@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as LinearMemoryInspectorModule from '../../../../front_end/linear_memory_inspector/linear_memory_inspector.js';
-import {getElementsWithinComponent, getElementWithinComponent, getEventPromise, renderElementIntoDOM} from '../helpers/DOMHelpers.js';
+import {dispatchClickEvent, getElementsWithinComponent, getElementWithinComponent, getEventPromise, renderElementIntoDOM} from '../helpers/DOMHelpers.js';
 
 import {NAVIGATOR_ADDRESS_SELECTOR, NAVIGATOR_HISTORY_BUTTON_SELECTOR, NAVIGATOR_PAGE_BUTTON_SELECTOR} from './LinearMemoryNavigator_test.js';
 import {ENDIANNESS_SELECTOR} from './LinearMemoryValueInterpreter_test.js';
@@ -97,6 +97,38 @@ describe('LinearMemoryInspector', () => {
     assert.isNotNull(interpreter);
   });
 
+  it('only saves history entries if addresses differ', async () => {
+    const {component, data} = setUpComponent();
+    // Set the address to zero to avoid the LMI to jump around in terms of addresses
+    // before the LMI is completely rendered (it requires two rendering processes,
+    // meanwhile our test might have already started).
+    data.address = 0;
+    component.data = data;
+
+    const navigator = getNavigator(component);
+    const buttons = getElementsWithinComponent(navigator, NAVIGATOR_HISTORY_BUTTON_SELECTOR, HTMLButtonElement);
+    const [backwardButton] = buttons;
+
+    const viewer = getViewer(component);
+    const byteCells = getElementsWithinComponent(viewer, VIEWER_BYTE_CELL_SELECTOR, HTMLSpanElement);
+
+    const byteIndices = [2, 1, 1, 2];
+    const expectedHistory = [2, 1, 2];
+
+    for (const index of byteIndices) {
+      const byteSelectedPromise =
+          getEventPromise<LinearMemoryInspectorModule.LinearMemoryViewer.ByteSelectedEvent>(viewer, 'byte-selected');
+      dispatchClickEvent(byteCells[index]);
+      await byteSelectedPromise;
+    }
+
+    const navigatorAddress = getElementWithinComponent(navigator, NAVIGATOR_ADDRESS_SELECTOR, HTMLInputElement);
+    for (const index of expectedHistory) {
+      assert.strictEqual(parseInt(navigatorAddress.value, 16), index);
+      dispatchClickEvent(backwardButton);
+    }
+  });
+
   it('can navigate addresses back and forth in history', async () => {
     const {component, data: {address}} = setUpComponent();
 
@@ -113,7 +145,7 @@ describe('LinearMemoryInspector', () => {
     for (let i = 1; i < historyLength; ++i) {
       const byteSelectedPromise =
           getEventPromise<LinearMemoryInspectorModule.LinearMemoryViewer.ByteSelectedEvent>(viewer, 'byte-selected');
-      byteCells[i].click();
+      dispatchClickEvent(byteCells[i]);
       const byteSelectedEvent = await byteSelectedPromise;
       visitedByteValue.push(byteSelectedEvent.data);
     }
@@ -122,7 +154,7 @@ describe('LinearMemoryInspector', () => {
       const currentByteValue =
           getElementWithinComponent(viewer, VIEWER_BYTE_CELL_SELECTOR + '.selected', HTMLSpanElement);
       assert.strictEqual(parseInt(currentByteValue.innerText, 16), visitedByteValue[i]);
-      backwardButton.click();
+      dispatchClickEvent(backwardButton);
     }
 
     for (let i = 0; i < historyLength; ++i) {
@@ -130,7 +162,7 @@ describe('LinearMemoryInspector', () => {
           getElementWithinComponent(viewer, VIEWER_BYTE_CELL_SELECTOR + '.selected', HTMLSpanElement);
       assert.strictEqual(parseInt(currentByteValue.innerText, 16), visitedByteValue[i]);
 
-      forwardButton.click();
+      dispatchClickEvent(forwardButton);
     }
   });
 
@@ -147,12 +179,12 @@ describe('LinearMemoryInspector', () => {
     const bytesShown = getElementsWithinComponent(viewer, VIEWER_BYTE_CELL_SELECTOR, HTMLSpanElement);
     const numBytesPerPage = bytesShown.length;
 
-    forwardButton.click();
+    dispatchClickEvent(forwardButton);
     let addressAfter = parseInt(address.value, 16);
     let expectedAddressAfter = addressBefore + numBytesPerPage;
     assert.strictEqual(addressAfter, expectedAddressAfter);
 
-    backwardButton.click();
+    dispatchClickEvent(backwardButton);
     addressAfter = parseInt(address.value, 16);
     expectedAddressAfter -= numBytesPerPage;
     assert.strictEqual(addressAfter, Math.max(0, expectedAddressAfter));
@@ -198,7 +230,7 @@ describe('LinearMemoryInspector', () => {
         interpreter, 'devtools-linear-memory-inspector-interpreter-display',
         LinearMemoryInspectorModule.ValueInterpreterDisplay.ValueInterpreterDisplay);
     const button = getElementWithinComponent(display, DISPLAY_JUMP_TO_POINTER_BUTTON_SELECTOR, HTMLButtonElement);
-    button.click();
+    dispatchClickEvent(button);
 
     const navigator = getNavigator(component);
     const selectedByte = getElementWithinComponent(navigator, NAVIGATOR_ADDRESS_SELECTOR, HTMLInputElement);
@@ -263,8 +295,8 @@ describe('LinearMemoryInspector', () => {
     const bytes = getElementsWithinComponent(viewer, VIEWER_BYTE_CELL_SELECTOR, HTMLSpanElement);
     const numBytesPerPage = bytes.length;
     const pageNumber = data.address / numBytesPerPage;
-    const addressOfFirstByte = pageNumber * numBytesPerPage;
-    bytes[0].click();
+    const addressOfFirstByte = pageNumber * numBytesPerPage + 1;
+    dispatchClickEvent(bytes[1]);
     const event = await eventPromise;
     assert.strictEqual(event.data, addressOfFirstByte);
   });

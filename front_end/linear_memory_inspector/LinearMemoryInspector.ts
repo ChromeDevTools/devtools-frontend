@@ -105,7 +105,7 @@ export class LinearMemoryInspector extends HTMLElement {
   private memoryOffset = 0;
   private outerMemoryLength = 0;
 
-  private address = 0;
+  private address = -1;
 
   private currentNavigatorMode = Mode.Submitted;
   private currentNavigatorAddressLine = `${this.address}`;
@@ -322,6 +322,10 @@ export class LinearMemoryInspector extends HTMLElement {
   }
 
   private setAddress(address: number): void {
+    // If we are already showing the address that is requested, no need to act upon it.
+    if (this.address === address) {
+      return;
+    }
     const historyEntry = new AddressHistoryEntry(address, () => this.jumpToAddress(address));
     this.history.push(historyEntry);
     this.address = address;

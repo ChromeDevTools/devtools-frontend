@@ -234,7 +234,9 @@ export class ValueInterpreterDisplay extends HTMLElement {
   private renderSignedAndUnsigned(type: ValueType): LitHtml.TemplateResult {
     const unsignedValue = this.parse({type, signed: false});
     const signedValue = this.parse({type, signed: true});
-    const showSignedAndUnsigned = signedValue !== unsignedValue;
+    const mode = this.valueTypeModeConfig.get(type);
+    const showSignedAndUnsigned =
+        signedValue !== unsignedValue && mode !== ValueTypeMode.Hexadecimal && mode !== ValueTypeMode.Octal;
 
     const unsignedRendered = html`<span class="value-type-cell"  title=${
         i18nString(UIStrings.unsignedValue)} data-value="true">${unsignedValue}</span>`;
@@ -274,11 +276,6 @@ export class ValueInterpreterDisplay extends HTMLElement {
 
   private parse(data: {type: ValueType, signed?: boolean}): string {
     const mode = this.valueTypeModeConfig.get(data.type);
-    if (!mode) {
-      console.error(`No known way of showing value for ${data.type}`);
-      return 'N/A';
-    }
-
     return format(
         {buffer: this.buffer, type: data.type, endianness: this.endianness, signed: data.signed || false, mode});
   }

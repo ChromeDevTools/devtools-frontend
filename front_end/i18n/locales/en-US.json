@@ -2558,6 +2558,9 @@
   "linear_memory_inspector/ValueInterpreterDisplayUtils.ts | littleEndian": {
     "message": "Little Endian"
   },
+  "linear_memory_inspector/ValueInterpreterDisplayUtils.ts | notApplicable": {
+    "message": "N/A"
+  },
   "linear_memory_inspector/ValueInterpreterDisplayUtils.ts | pointer32Bit": {
     "message": "Pointer 32-bit"
   },

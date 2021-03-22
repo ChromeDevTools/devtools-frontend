@@ -46,6 +46,12 @@ const UIStrings = {
   *@description Text that describes the type of a value in the Linear Memory Inspector
   */
   pointer64Bit: 'Pointer 64-bit',
+  /**
+  *@description Text that is shown in the LinearMemoryInspector if a value could not be correctly formatted
+  *             for the requested mode (e.g. we do not floats to be represented as hexadecimal numbers).
+  *             Abbreviation stands for 'not applicable'.
+  */
+  notApplicable: 'N/A',
 };
 const str_ = i18n.i18n.registerUIStrings('linear_memory_inspector/ValueInterpreterDisplayUtils.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -201,10 +207,14 @@ export interface FormatData {
   type: ValueType;
   endianness: Endianness;
   signed: boolean;
-  mode: ValueTypeMode;
+  mode?: ValueTypeMode;
 }
 
 export function format(formatData: FormatData): string {
+  if (!formatData.mode) {
+    console.error(`No known way of showing value for ${formatData.type}`);
+    return i18nString(UIStrings.notApplicable);
+  }
   const valueView = new DataView(formatData.buffer);
   const isLittleEndian = formatData.endianness === Endianness.Little;
   let value;
@@ -240,7 +250,7 @@ export function format(formatData: FormatData): string {
         return Platform.assertNever(formatData.type, `Unknown value type: ${formatData.type}`);
     }
   } catch (e) {
-    return 'N/A';
+    return i18nString(UIStrings.notApplicable);
   }
 }
 
@@ -260,8 +270,14 @@ export function formatInteger(value: number|bigint, mode: ValueTypeMode): string
     case ValueTypeMode.Decimal:
       return value.toString();
     case ValueTypeMode.Hexadecimal:
+      if (value < 0) {
+        return i18nString(UIStrings.notApplicable);
+      }
       return '0x' + value.toString(16).toUpperCase();
     case ValueTypeMode.Octal:
+      if (value < 0) {
+        return i18nString(UIStrings.notApplicable);
+      }
       return value.toString(8);
     default:
       throw new Error(`Unknown mode for integers: ${mode}.`);

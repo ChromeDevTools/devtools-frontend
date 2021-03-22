@@ -187,11 +187,11 @@ describe('ValueInterpreterDisplay', () => {
     assert.strictEqual(actualValue, '0x10');
   });
 
-  it('correctly formats integers in octal mode', () => {
-    const expectedInteger = 16;
+  it('returns N/A for negative hex numbers', () => {
+    const negativeInteger = -16;
     const actualValue = LinearMemoryInspector.ValueInterpreterDisplayUtils.formatInteger(
-        expectedInteger, LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueTypeMode.Octal);
-    assert.strictEqual(actualValue, '20');
+        negativeInteger, LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueTypeMode.Hexadecimal);
+    assert.strictEqual(actualValue, 'N/A');
   });
 
   it('correctly formats integers in octal mode', () => {
@@ -199,6 +199,13 @@ describe('ValueInterpreterDisplay', () => {
     const actualValue = LinearMemoryInspector.ValueInterpreterDisplayUtils.formatInteger(
         expectedInteger, LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueTypeMode.Octal);
     assert.strictEqual(actualValue, '20');
+  });
+
+  it('returns N/A for negative octal numbers', () => {
+    const expectedInteger = -16;
+    const actualValue = LinearMemoryInspector.ValueInterpreterDisplayUtils.formatInteger(
+        expectedInteger, LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueTypeMode.Octal);
+    assert.strictEqual(actualValue, 'N/A');
   });
 
   it('renders pointer values in LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueTypes', () => {
@@ -240,6 +247,42 @@ describe('ValueInterpreterDisplay', () => {
 
     const actualValues = Array.from(dataValues).map(x => x.innerText);
     const expectedValues = ['33793', '-31743', '88328.01'];
+    assert.deepStrictEqual(actualValues, expectedValues);
+  });
+
+  it('renders only unsigned values for Octal and Hexadecimal representation', () => {
+    const component = new LinearMemoryInspector.ValueInterpreterDisplay.ValueInterpreterDisplay();
+    const array = [0xC8, 0xC9, 0xCA, 0XCB];
+    component.data = {
+      buffer: new Uint8Array(array).buffer,
+      endianness: LinearMemoryInspector.ValueInterpreterDisplayUtils.Endianness.Little,
+      valueTypes: new Set([
+        LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType.Int8,
+        LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType.Int16,
+        LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType.Int32,
+      ]),
+      valueTypeModes: new Map([
+        [
+          LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType.Int8,
+          LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueTypeMode.Octal,
+        ],
+        [
+          LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType.Int16,
+          LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueTypeMode.Hexadecimal,
+        ],
+        [
+          LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType.Int32,
+          LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueTypeMode.Decimal,
+        ],
+      ]),
+    };
+    renderElementIntoDOM(component);
+
+    const dataValues = getElementsWithinComponent(component, '[data-value]', HTMLSpanElement);
+    assert.lengthOf(dataValues, 4);
+
+    const actualValues = Array.from(dataValues).map(x => x.innerText);
+    const expectedValues = ['310', '0xC9C8', '3419064776', '-875902520'];
     assert.deepStrictEqual(actualValues, expectedValues);
   });
 

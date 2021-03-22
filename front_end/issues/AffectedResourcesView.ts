@@ -99,7 +99,7 @@ export class AffectedResourcesView extends UI.TreeOutline.TreeElement {
     return affectedResources;
   }
 
-  private getResourceName(count: number): string {
+  protected getResourceName(count: number): string {
     if (count === 1) {
       return this.resourceName.singular;
     }

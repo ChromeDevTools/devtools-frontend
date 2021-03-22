@@ -1775,6 +1775,9 @@
   "issues/AffectedBlockedByResponseView.ts | blockedResource": {
     "message": "Blocked Resource"
   },
+  "issues/AffectedBlockedByResponseView.ts | nRequests": {
+    "message": "{n, plural, =1 { request} other { requests}}"
+  },
   "issues/AffectedBlockedByResponseView.ts | parentFrame": {
     "message": "Parent Frame"
   },
@@ -1807,6 +1810,9 @@
   },
   "issues/AffectedElementsView.ts | elements": {
     "message": "elements"
+  },
+  "issues/AffectedElementsView.ts | nElements": {
+    "message": "{n, plural, =1 { element} other { elements}}"
   },
   "issues/AffectedElementsWithLowContrastView.ts | contrastRatio": {
     "message": "Contrast ratio"
@@ -2041,6 +2047,18 @@
   },
   "issues/IssueView.ts | name": {
     "message": "Name"
+  },
+  "issues/IssueView.ts | nDirectives": {
+    "message": "{n, plural, =1 { directive} other { directives}}"
+  },
+  "issues/IssueView.ts | nRequests": {
+    "message": "{n, plural, =1 { request} other { requests}}"
+  },
+  "issues/IssueView.ts | nResources": {
+    "message": "{n, plural, =1 { resource} other { resources}}"
+  },
+  "issues/IssueView.ts | nSources": {
+    "message": "{n, plural, =1 { source} other { sources}}"
   },
   "issues/IssueView.ts | reportonly": {
     "message": "report-only"

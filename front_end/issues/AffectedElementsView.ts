@@ -5,12 +5,17 @@
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
 import * as i18n from '../i18n/i18n.js';
+import * as Platform from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 
 import {AffectedItem, AffectedResourcesView} from './AffectedResourcesView.js';
 import {IssueView} from './IssueView.js';
 
 const UIStrings = {
+  /**
+  *@description Noun for singular or plural number of affected element resource indication in issue view.
+  */
+  nElements: '{n, plural, =1 { element} other { elements}}',
   /**
   *@description Singular label for number of affected element resource indication in issue view
   */
@@ -41,6 +46,10 @@ export class AffectedElementsView extends AffectedResourcesView {
       count++;
     }
     this.updateAffectedResourceCount(count);
+  }
+
+  protected getResourceName(count: number): Platform.UIString.LocalizedString {
+    return i18nString(UIStrings.nElements, {n: count});
   }
 
   private async appendAffectedElement(element: SDK.Issue.AffectedElement): Promise<void> {

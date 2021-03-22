@@ -10,9 +10,9 @@ import type {IssuesModel} from './IssuesModel.js';
 
 const UIStrings = {
   /**
-  *@description Label for the link for Shared Array Buffer Issues
+  *@description Label for the link for SharedArrayBuffer Issues
   */
-  enablingSharedArrayBuffer: 'Enabling Shared Array Buffer',
+  enablingSharedArrayBuffer: 'Enabling `SharedArrayBuffer`',
 };
 const str_ = i18n.i18n.registerUIStrings('sdk/SharedArrayBufferIssue.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

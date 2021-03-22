@@ -8177,9 +8177,6 @@
   "sdk/ServerTiming.js | noValueFoundForParameterS": {
     "message": "No value found for parameter \"{PH1}\"."
   },
-  "sdk/ServerTiming.js | servertimingS": {
-    "message": "ServerTiming: {PH1}"
-  },
   "sdk/ServerTiming.js | unableToParseSValueS": {
     "message": "Unable to parse \"{PH1}\" value \"{PH2}\"."
   },
@@ -8223,7 +8220,7 @@
     "message": "stopping"
   },
   "sdk/SharedArrayBufferIssue.ts | enablingSharedArrayBuffer": {
-    "message": "Enabling Shared Array Buffer"
+    "message": "Enabling SharedArrayBuffer"
   },
   "sdk/SourceMap.js | couldNotLoadContentForSS": {
     "message": "Could not load content for {PH1}: {PH2}"
@@ -10476,7 +10473,7 @@
     "message": "JS Frame"
   },
   "timeline/TimelineUIUtils.js | keyCharacter": {
-    "message": "Key Character"
+    "message": "Key — Character"
   },
   "timeline/TimelineUIUtils.js | keyDown": {
     "message": "Key Down"

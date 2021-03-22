@@ -110,7 +110,9 @@ const UIStrings = {
   */
   layout: 'Layout',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
+  *@description Noun for an event in the Performance panel. Paint setup is a
+  *step before the 'Paint' event. A paint event is when the browser draws pixels
+  *to the screen. This step is the setup beforehand.
   */
   paintSetup: 'Paint Setup',
   /**
@@ -248,7 +250,11 @@ const UIStrings = {
   */
   timestamp: 'Timestamp',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
+  *@description Noun for a 'time' event that happens in the Console (a tool in
+  * DevTools). The user can trigger console time events from their code, and
+  * they will show up in the Performance panel. Time events are used to measure
+  * the duration of something, e.g. the user will emit two time events at the
+  * start and end of some interesting task.
   */
   consoleTime: 'Console Time',
   /**
@@ -415,7 +421,7 @@ const UIStrings = {
   /**
   *@description Text in Timeline UIUtils of the Performance panel
   */
-  keyCharacter: 'Key Character',
+  keyCharacter: 'Key — Character',
   /**
   *@description Text in Timeline UIUtils of the Performance panel
   */
@@ -491,15 +497,15 @@ const UIStrings = {
   */
   touchCancel: 'Touch Cancel',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
+  *@description Noun for the end of an input touch event in the Performance panel.
   */
   touchEnd: 'Touch End',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
+  *@description Noun for an input touch event in the Performance panel.
   */
   touchMove: 'Touch Move',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
+  *@description Noun for the start of an input touch event in the Performance panel.
   */
   touchStart: 'Touch Start',
   /**

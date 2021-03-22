@@ -38,11 +38,6 @@ const UIStrings = {
   *@example {2.0} PH2
   */
   unableToParseSValueS: 'Unable to parse "{PH1}" value "{PH2}".',
-  /**
-  *@description Text in Server Timing
-  *@example {Extraneous trailing characters.} PH1
-  */
-  servertimingS: 'ServerTiming: {PH1}',
 };
 const str_ = i18n.i18n.registerUIStrings('sdk/ServerTiming.js', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -255,6 +250,6 @@ export class ServerTiming {
    * @param {string} msg
    */
   static showWarning(msg) {
-    Common.Console.Console.instance().warn(i18nString(UIStrings.servertimingS, {PH1: msg}));
+    Common.Console.Console.instance().warn(`ServerTiming: ${msg}`);
   }
 }

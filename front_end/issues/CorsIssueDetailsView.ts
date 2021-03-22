@@ -19,7 +19,7 @@ const UIStrings = {
   */
   items: 'items',
   /**
-  *@description Value for the status column in Shared Array Buffer issues
+  *@description Value for the status column in SharedArrayBuffer issues
   */
   warning: 'warning',
   /**

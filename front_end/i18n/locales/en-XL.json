@@ -8177,9 +8177,6 @@
   "sdk/ServerTiming.js | noValueFoundForParameterS": {
     "message": "N̂ó v̂ál̂úê f́ôún̂d́ f̂ór̂ ṕâŕâḿêt́êŕ \"{PH1}\"."
   },
-  "sdk/ServerTiming.js | servertimingS": {
-    "message": "Ŝér̂v́êŕT̂ím̂ín̂ǵ: {PH1}"
-  },
   "sdk/ServerTiming.js | unableToParseSValueS": {
     "message": "Ûńâb́l̂é t̂ó p̂ár̂śê \"{PH1}\" v́âĺûé \"{PH2}\"."
   },
@@ -8223,7 +8220,7 @@
     "message": "ŝt́ôṕp̂ín̂ǵ"
   },
   "sdk/SharedArrayBufferIssue.ts | enablingSharedArrayBuffer": {
-    "message": "Êńâb́l̂ín̂ǵ Ŝh́âŕêd́ Âŕr̂áŷ B́ûf́f̂ér̂"
+    "message": "Êńâb́l̂ín̂ǵ SharedArrayBuffer"
   },
   "sdk/SourceMap.js | couldNotLoadContentForSS": {
     "message": "Ĉóûĺd̂ ńôt́ l̂óâd́ ĉón̂t́êńt̂ f́ôŕ {PH1}: {PH2}"
@@ -10476,7 +10473,7 @@
     "message": "ĴŚ F̂ŕâḿê"
   },
   "timeline/TimelineUIUtils.js | keyCharacter": {
-    "message": "K̂éŷ Ćĥár̂áĉt́êŕ"
+    "message": "K̂éŷ — Ćĥár̂áĉt́êŕ"
   },
   "timeline/TimelineUIUtils.js | keyDown": {
     "message": "K̂éŷ D́ôẃn̂"

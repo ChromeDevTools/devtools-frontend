@@ -34,6 +34,13 @@
    */
   --color-selection-highlight: rgb(56 121 217 / 30%);
   --color-selection-highlight-border: rgb(16 81 177);
+  /**
+   * When showing matching elements of a particular search filter (for example
+   * when showing all matching css selectors/rules in the elements style
+   * pane). The highlight is intended to be used on top of the original background
+   * color and text color.
+   */
+  --color-match-highlight: rgb(56 121 217 / 20%);
   --color-text-primary: #202124;
   --color-text-secondary: #5f6368;
   --color-text-secondary-selected: #bcb9b6;
@@ -106,6 +113,7 @@
   --color-background-hover-overlay: rgb(56 121 217 / 10%);
   --color-selection-highlight: rgb(251 202 70 / 20%);
   --color-selection-highlight-border: rgb(251 202 70);
+  --color-match-highlight: rgb(56 121 217 / 35%);
   --color-text-primary: #e8eaed;
   --color-text-secondary: #9aa0a6;
   --color-text-secondary-selected: #bcb9b6;

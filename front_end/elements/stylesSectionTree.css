@@ -14,21 +14,7 @@
 }
 
 .tree-outline li.filter-match {
-  background-color: rgb(255 255 0 / 50%); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
-}
-
-:host-context(.-theme-with-dark-background) .tree-outline li.filter-match {
-  background-color: hsl(133deg 100% 30% / 50%);
-}
-
-.tree-outline li.overloaded.filter-match {
-  background-color: rgb(255 255 0 / 25%); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
-}
-
-:host-context(.-theme-with-dark-background) .tree-outline li.overloaded.filter-match {
-  background-color: hsl(133deg 100% 30% / 25%);
+  background-color: var(--color-match-highlight);
 }
 
 .tree-outline li.has-warning .exclamation-mark,
@@ -141,8 +127,7 @@ ol.expanded {
 }
 
 .has-ignorable-error {
-  color: #808080; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-text-disabled);
 }
 
 .tree-outline li.editing {

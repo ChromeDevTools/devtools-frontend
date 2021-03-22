@@ -190,7 +190,7 @@ export class StylesSidebarPane extends ElementsSidebarPane {
   constructor() {
     super(true /* delegatesFocus */);
     this.setMinimumSize(96, 26);
-    this.registerRequiredCSS('elements/stylesSidebarPane.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('elements/stylesSidebarPane.css', {enableLegacyPatching: false});
 
     Common.Settings.Settings.instance().moduleSetting('colorFormat').addChangeListener(this.update.bind(this));
     Common.Settings.Settings.instance().moduleSetting('textEditorIndent').addChangeListener(this.update.bind(this));
@@ -1317,7 +1317,7 @@ export class StylePropertiesSection {
 
     this.propertiesTreeOutline = new UI.TreeOutline.TreeOutlineInShadow();
     this.propertiesTreeOutline.setFocusable(false);
-    this.propertiesTreeOutline.registerRequiredCSS('elements/stylesSectionTree.css', {enableLegacyPatching: true});
+    this.propertiesTreeOutline.registerRequiredCSS('elements/stylesSectionTree.css', {enableLegacyPatching: false});
     this.propertiesTreeOutline.element.classList.add('style-properties', 'matched-styles', 'monospace');
     // @ts-ignore TODO: fix ad hoc section property in a separate CL to be safe
     this.propertiesTreeOutline.section = this;

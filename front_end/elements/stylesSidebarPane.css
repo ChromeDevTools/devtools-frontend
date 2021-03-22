@@ -22,8 +22,7 @@
 }
 
 .styles-section.read-only {
-  background-color: #fafafa; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  background-color: var(--color-background-opacity-50);
   font-style: italic;
 }
 
@@ -32,22 +31,16 @@
 }
 
 .styles-section:focus-visible {
-  background-color: hsl(214deg 48% 95%); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  background-color: var(--color-background-elevation-2);
 }
 
 .styles-section.read-only:focus-visible {
-  background-color: hsl(215deg 25% 87%); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  background-color: var(--color-background-elevation-2);
 }
 
 .styles-section .simple-selector.filter-match {
-  background-color: rgb(255 255 0 / 50%); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
-}
-
-:host-context(.-theme-with-dark-background) .styles-section .simple-selector.filter-match {
-  background-color: hsl(133deg 100% 30% / 50%);
+  background-color: var(--color-match-highlight);
+  color: var(--color-text-primary);
 }
 
 .sidebar-pane-closing-brace {
@@ -62,19 +55,16 @@
 }
 
 .styles-section-title .media-list {
-  color: hsl(0deg 0% 46%); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-text-disabled);
 }
 
-.styles-section-title .media-list.media-matches .media.editable-media {
-  color: #222; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+.styles-section-title .editable-media .media-text {
+  color: var(--color-text-primary);
 }
 
 .styles-section-title .media .subtitle {
   float: right;
-  color: hsl(0deg 0% 34%); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-text-secondary);
 }
 
 .styles-section-title .media:not(.editing-media),
@@ -83,8 +73,7 @@
 }
 
 .styles-section-subtitle {
-  color: hsl(0deg 0% 44%); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-text-secondary);
   float: right;
   padding-left: 15px;
   max-width: 100%;
@@ -97,8 +86,7 @@
 
 .sidebar-pane-open-brace,
 .sidebar-pane-closing-brace {
-  color: hsl(0deg 0% 46%); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-text-primary);
 }
 
 .styles-section .devtools-link {
@@ -106,20 +94,12 @@
 }
 
 .styles-section .styles-section-subtitle .devtools-link {
-  color: hsl(0deg 0% 44%); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-text-primary);
   text-decoration-color: hsl(0deg 0% 60%);
 }
 
 .styles-section .selector {
-  color: hsl(0deg 0% 46%); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
-}
-
-.styles-section .simple-selector.selector-matches,
-.styles-section.keyframe-key {
-  color: #222; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-text-primary);
 }
 
 .styles-section .style-properties {
@@ -180,8 +160,7 @@
 }
 
 .styles-sidebar-pane-toolbar {
-  border-bottom: 1px solid #eee; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  border-bottom: 1px solid var(--color-details-hairline);
   flex-shrink: 0;
 }
 
@@ -213,8 +192,7 @@
 }
 
 .styles-sidebar-pane-filter-box > input::placeholder {
-  color: rgb(0 0 0 / 54%); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-text-secondary);
 }
 
 .styles-section.styles-panel-hovered:not(.read-only) span.simple-selector:hover,
@@ -227,8 +205,7 @@
   background-color: var(--toolbar-bg-color);
   padding: 0 5px;
   border-bottom: 1px solid var(--color-details-hairline);
-  color: hsl(0deg 0% 32% / 100%); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-text-secondary);
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
@@ -248,18 +225,11 @@
   position: absolute;
   right: 0;
   bottom: 0;
-  background-color: rgb(255 255 255 / 90%); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
   z-index: 0;
 }
 
 .sidebar-pane-section-toolbar.new-rule-toolbar {
   visibility: hidden;
-}
-
-.styles-section:focus-visible .sidebar-pane-section-toolbar {
-  background-color: hsl(214deg 67% 95% / 90%); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .styles-pane:not(.is-editing-style) .styles-section.matched-styles:not(.read-only):hover .sidebar-pane-section-toolbar.new-rule-toolbar {

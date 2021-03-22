@@ -4,7 +4,7 @@
     "extensions",
     "inline_editor",
     "color_picker",
-    "event_listeners",
+    "panels/event_listeners",
     "text_editor"
   ],
     "resources": [

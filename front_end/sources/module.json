@@ -9,7 +9,7 @@
     "quick_open",
     "inline_editor",
     "color_picker",
-    "event_listeners",
+    "panels/event_listeners",
     "object_ui",
     "panels/coverage"
   ],

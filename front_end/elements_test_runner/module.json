@@ -2,7 +2,7 @@
   "dependencies": [
     "test_runner",
     "elements",
-    "event_listeners",
+    "panels/event_listeners",
     "panels/animation"
   ]
 }

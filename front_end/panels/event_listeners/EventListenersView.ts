@@ -4,12 +4,12 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../common/common.js';
-import * as Components from '../components/components.js';
-import * as i18n from '../i18n/i18n.js';
-import * as ObjectUI from '../object_ui/object_ui.js';
-import * as SDK from '../sdk/sdk.js';
-import * as UI from '../ui/ui.js';
+import * as Common from '../../common/common.js';
+import * as Components from '../../components/components.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as ObjectUI from '../../object_ui/object_ui.js';
+import * as SDK from '../../sdk/sdk.js';
+import * as UI from '../../ui/ui.js';
 
 import type {FrameworkEventListenersObject} from './EventListenersUtils.js';
 import {frameworkEventListeners} from './EventListenersUtils.js';
@@ -44,7 +44,7 @@ const UIStrings = {
   */
   passive: 'Passive',
 };
-const str_ = i18n.i18n.registerUIStrings('event_listeners/EventListenersView.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/event_listeners/EventListenersView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class EventListenersView extends UI.Widget.VBox {
   _changeCallback: () => void;
@@ -60,7 +60,8 @@ export class EventListenersView extends UI.Widget.VBox {
     this._treeOutline = new UI.TreeOutline.TreeOutlineInShadow();
     this._treeOutline.hideOverflow();
     this._treeOutline.registerRequiredCSS('object_ui/objectValue.css', {enableLegacyPatching: true});
-    this._treeOutline.registerRequiredCSS('event_listeners/eventListenersView.css', {enableLegacyPatching: true});
+    this._treeOutline.registerRequiredCSS(
+        'panels/event_listeners/eventListenersView.css', {enableLegacyPatching: true});
     this._treeOutline.setComparator(EventListenersTreeElement.comparator);
     this._treeOutline.element.classList.add('monospace');
     this._treeOutline.setShowSelectionOnKeyboardFocus(true);

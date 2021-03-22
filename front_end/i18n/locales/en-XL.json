@@ -1370,27 +1370,6 @@
   "emulation/SensorsView.js | timezoneId": {
     "message": "T̂ím̂éẑón̂é ÎD́"
   },
-  "event_listeners/EventListenersView.ts | deleteEventListener": {
-    "message": "D̂él̂ét̂é êv́êńt̂ ĺîśt̂én̂ér̂"
-  },
-  "event_listeners/EventListenersView.ts | noEventListeners": {
-    "message": "N̂ó êv́êńt̂ ĺîśt̂én̂ér̂ś"
-  },
-  "event_listeners/EventListenersView.ts | passive": {
-    "message": "P̂áŝśîv́ê"
-  },
-  "event_listeners/EventListenersView.ts | remove": {
-    "message": "R̂ém̂óv̂é"
-  },
-  "event_listeners/EventListenersView.ts | revealInElementsPanel": {
-    "message": "R̂év̂éâĺ îń Êĺêḿêńt̂ś p̂án̂él̂"
-  },
-  "event_listeners/EventListenersView.ts | togglePassive": {
-    "message": "T̂óĝǵl̂é P̂áŝśîv́ê"
-  },
-  "event_listeners/EventListenersView.ts | toggleWhetherEventListenerIs": {
-    "message": "T̂óĝǵl̂é ŵh́êt́ĥér̂ év̂én̂t́ l̂íŝt́êńêŕ îś p̂áŝśîv́ê ór̂ b́l̂óĉḱîńĝ"
-  },
   "help/help-meta.ts | bug": {
     "message": "b̂úĝ"
   },
@@ -5593,6 +5572,27 @@
   },
   "panels/developer_resources/DeveloperResourcesView.ts | resourcesCurrentlyLoading": {
     "message": "{PH1} r̂éŝóûŕĉéŝ, {PH2} ćûŕr̂én̂t́l̂ý l̂óâd́îńĝ"
+  },
+  "panels/event_listeners/EventListenersView.ts | deleteEventListener": {
+    "message": "D̂él̂ét̂é êv́êńt̂ ĺîśt̂én̂ér̂"
+  },
+  "panels/event_listeners/EventListenersView.ts | noEventListeners": {
+    "message": "N̂ó êv́êńt̂ ĺîśt̂én̂ér̂ś"
+  },
+  "panels/event_listeners/EventListenersView.ts | passive": {
+    "message": "P̂áŝśîv́ê"
+  },
+  "panels/event_listeners/EventListenersView.ts | remove": {
+    "message": "R̂ém̂óv̂é"
+  },
+  "panels/event_listeners/EventListenersView.ts | revealInElementsPanel": {
+    "message": "R̂év̂éâĺ îń Êĺêḿêńt̂ś p̂án̂él̂"
+  },
+  "panels/event_listeners/EventListenersView.ts | togglePassive": {
+    "message": "T̂óĝǵl̂é P̂áŝśîv́ê"
+  },
+  "panels/event_listeners/EventListenersView.ts | toggleWhetherEventListenerIs": {
+    "message": "T̂óĝǵl̂é ŵh́êt́ĥér̂ év̂én̂t́ l̂íŝt́êńêŕ îś p̂áŝśîv́ê ór̂ b́l̂óĉḱîńĝ"
   },
   "perf_ui/FilmStripView.ts | doubleclickToZoomImageClickTo": {
     "message": "D̂óûb́l̂éĉĺîćk̂ t́ô źôóm̂ ím̂áĝé. Ĉĺîćk̂ t́ô v́îéŵ ṕr̂éĉéd̂ín̂ǵ r̂éq̂úêśt̂ś."

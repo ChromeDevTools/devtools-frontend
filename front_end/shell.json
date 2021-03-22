@@ -14,7 +14,7 @@
     { "name": "panels/console" },
     { "name": "panels/coverage" },
     { "name": "data_grid" },
-    { "name": "event_listeners" },
+    { "name": "panels/event_listeners" },
     { "name": "inline_editor" },
     { "name": "input"},
     { "name": "object_ui" },

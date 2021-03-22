@@ -1370,27 +1370,6 @@
   "emulation/SensorsView.js | timezoneId": {
     "message": "Timezone ID"
   },
-  "event_listeners/EventListenersView.ts | deleteEventListener": {
-    "message": "Delete event listener"
-  },
-  "event_listeners/EventListenersView.ts | noEventListeners": {
-    "message": "No event listeners"
-  },
-  "event_listeners/EventListenersView.ts | passive": {
-    "message": "Passive"
-  },
-  "event_listeners/EventListenersView.ts | remove": {
-    "message": "Remove"
-  },
-  "event_listeners/EventListenersView.ts | revealInElementsPanel": {
-    "message": "Reveal in Elements panel"
-  },
-  "event_listeners/EventListenersView.ts | togglePassive": {
-    "message": "Toggle Passive"
-  },
-  "event_listeners/EventListenersView.ts | toggleWhetherEventListenerIs": {
-    "message": "Toggle whether event listener is passive or blocking"
-  },
   "help/help-meta.ts | bug": {
     "message": "bug"
   },
@@ -5593,6 +5572,27 @@
   },
   "panels/developer_resources/DeveloperResourcesView.ts | resourcesCurrentlyLoading": {
     "message": "{PH1} resources, {PH2} currently loading"
+  },
+  "panels/event_listeners/EventListenersView.ts | deleteEventListener": {
+    "message": "Delete event listener"
+  },
+  "panels/event_listeners/EventListenersView.ts | noEventListeners": {
+    "message": "No event listeners"
+  },
+  "panels/event_listeners/EventListenersView.ts | passive": {
+    "message": "Passive"
+  },
+  "panels/event_listeners/EventListenersView.ts | remove": {
+    "message": "Remove"
+  },
+  "panels/event_listeners/EventListenersView.ts | revealInElementsPanel": {
+    "message": "Reveal in Elements panel"
+  },
+  "panels/event_listeners/EventListenersView.ts | togglePassive": {
+    "message": "Toggle Passive"
+  },
+  "panels/event_listeners/EventListenersView.ts | toggleWhetherEventListenerIs": {
+    "message": "Toggle whether event listener is passive or blocking"
   },
   "perf_ui/FilmStripView.ts | doubleclickToZoomImageClickTo": {
     "message": "Doubleclick to zoom image. Click to view preceding requests."

@@ -60,8 +60,7 @@
 .authenticator-section {
   display: block;
   padding: 16px 0;
-  border-bottom: 1px solid rgb(230 230 230); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  border-bottom: 1px solid var(--color-details-hairline);
 }
 
 .authenticator-fields {
@@ -92,8 +91,7 @@
 }
 
 .authenticator-section-title.editing-name .authenticator-name-field {
-  border-bottom: 2px solid #808080; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  border-bottom: 1px solid var(--input-outline);
   font-weight: normal;
   animation: none;
 }
@@ -116,8 +114,6 @@
 }
 
 .authenticator-option-label {
-  color: var(--main-fg-color); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
   text-align: right;
   width: 200px;
   display: inline-block;

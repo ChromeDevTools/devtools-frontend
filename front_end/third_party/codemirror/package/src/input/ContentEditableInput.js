@@ -30,6 +30,7 @@ export default class ContentEditableInput {
   init(display) {
     let input = this, cm = input.cm
     let div = input.div = display.lineDiv
+    div.contentEditable = true
     disableBrowserMagic(div, cm.options.spellcheck, cm.options.autocorrect, cm.options.autocapitalize)
 
     function belongsToInput(e) {

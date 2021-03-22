@@ -239,8 +239,9 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
   _processVar(text) {
     const computedSingleValue = this._matchedStyles.computeSingleVariableValue(this._style, text);
     if (!computedSingleValue) {
-      throw new Error('Unable to compute single value');
+      return document.createTextNode(text);
     }
+
     const {computedValue, fromFallback} = computedSingleValue;
 
     const varSwatch = new InlineEditor.CSSVarSwatch.CSSVarSwatch();

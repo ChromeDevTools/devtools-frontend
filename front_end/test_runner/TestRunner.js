@@ -262,6 +262,14 @@ export async function loadLegacyModule(module) {
 }
 
 /**
+ * @param {string} module
+ * @return {!Promise<void>}
+ */
+export async function loadTestModule(module) {
+  await import(`../${module}/${module}.js`);
+}
+
+/**
  * @param {string} panel
  * @return {!Promise.<?UI.Panel.Panel>}
  */
@@ -680,7 +688,7 @@ export async function deprecatedInitAsync(code) {
   _pendingInits++;
   await TestRunner.RuntimeAgent.invoke_evaluate({expression: code, objectGroup: 'console'});
   _pendingInits--;
-  if (!_pendingInits) {
+  if (!_pendingInits && _resolveOnFinishInits !== undefined) {
     _resolveOnFinishInits();
   }
 }
@@ -1515,6 +1523,7 @@ TestRunner.url = url;
 TestRunner.dumpSyntaxHighlight = dumpSyntaxHighlight;
 TestRunner.loadModule = loadModule;
 TestRunner.loadLegacyModule = loadLegacyModule;
+TestRunner.loadTestModule = loadTestModule;
 TestRunner.evaluateInPageRemoteObject = evaluateInPageRemoteObject;
 TestRunner.evaluateInPage = evaluateInPage;
 TestRunner.evaluateInPageAnonymously = evaluateInPageAnonymously;

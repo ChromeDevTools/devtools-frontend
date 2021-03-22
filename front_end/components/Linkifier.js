@@ -244,6 +244,7 @@ export class Linkifier {
       columnNumber: options ? options.columnNumber : undefined,
       className: options ? options.className : undefined,
       tabStop: options ? options.tabStop : undefined,
+      inlineFrameIndex: options ? options.inlineFrameIndex : 0,
       text: undefined,
       preventClick: undefined,
       bypassURLTrimming: undefined
@@ -262,14 +263,17 @@ export class Linkifier {
 
     let rawLocation;
     if (scriptId) {
-      rawLocation = debuggerModel.createRawLocationByScriptId(scriptId, lineNumber || 0, columnNumber);
+      rawLocation = debuggerModel.createRawLocationByScriptId(
+          scriptId, lineNumber || 0, columnNumber, linkifyURLOptions.inlineFrameIndex);
     }
     // The function createRawLocationByScriptId will always return a raw location. Normally
     // we rely on the live location that is created from it to update missing information
     // to create the link. If we, however, already have a similar script with the same source url,
     // use that one.
     if (!rawLocation?.script()) {
-      rawLocation = debuggerModel.createRawLocationByURL(sourceURL, lineNumber || 0, columnNumber) || rawLocation;
+      rawLocation = debuggerModel.createRawLocationByURL(
+                        sourceURL, lineNumber || 0, columnNumber, linkifyURLOptions.inlineFrameIndex) ||
+          rawLocation;
     }
 
     if (!rawLocation) {
@@ -331,6 +335,7 @@ export class Linkifier {
       maxLength: this._maxLength,
       className: options ? options.className : undefined,
       columnNumber: options ? options.columnNumber : undefined,
+      inlineFrameIndex: options ? options.inlineFrameIndex : 0,
       tabStop: options ? options.tabStop : undefined,
       text: undefined,
       preventClick: undefined,
@@ -348,8 +353,12 @@ export class Linkifier {
    */
   linkifyRawLocation(rawLocation, fallbackUrl, className) {
     return this.linkifyScriptLocation(
-        rawLocation.debuggerModel.target(), rawLocation.scriptId, fallbackUrl, rawLocation.lineNumber,
-        {columnNumber: rawLocation.columnNumber, className, tabStop: undefined});
+        rawLocation.debuggerModel.target(), rawLocation.scriptId, fallbackUrl, rawLocation.lineNumber, {
+          columnNumber: rawLocation.columnNumber,
+          className,
+          tabStop: undefined,
+          inlineFrameIndex: rawLocation.inlineFrameIndex
+        });
   }
 
   /**
@@ -361,8 +370,9 @@ export class Linkifier {
   maybeLinkifyConsoleCallFrame(target, callFrame, options) {
     const linkifyOptions = {
       columnNumber: callFrame.columnNumber,
+      inlineFrameIndex: options ? options.inlineFrameIndex : 0,
       tabStop: options ? options.tabStop : undefined,
-      className: options ? options.className : undefined
+      className: options ? options.className : undefined,
     };
     return this.maybeLinkifyScriptLocation(
         target, callFrame.scriptId, callFrame.url, callFrame.lineNumber, linkifyOptions);
@@ -382,6 +392,7 @@ export class Linkifier {
       className: classes,
       lineNumber: topFrame.lineNumber,
       columnNumber: topFrame.columnNumber,
+      inlineFrameIndex: 0,
       maxLength: this._maxLength,
       text: undefined,
       preventClick: undefined,
@@ -567,6 +578,7 @@ export class Linkifier {
       className: undefined,
       lineNumber: undefined,
       columnNumber: undefined,
+      inlineFrameIndex: 0,
       preventClick: undefined,
       maxLength: undefined,
       tabStop: undefined,
@@ -682,6 +694,7 @@ export class Linkifier {
       url: href || null,
       lineNumber: null,
       columnNumber: null,
+      inlineFrameIndex: 0,
       revealable: null,
       fallback: null
     };
@@ -1156,6 +1169,7 @@ export class ContentProviderContextMenuProvider {
  *     url: ?string,
  *     lineNumber: ?number,
  *     columnNumber: ?number,
+ *     inlineFrameIndex: number,
  *     revealable: ?Object,
  *     fallback: ?Element
  * }}
@@ -1169,6 +1183,7 @@ export let _LinkInfo;
  *     className: (string|undefined),
  *     lineNumber: (number|undefined),
  *     columnNumber: (number|undefined),
+ *     inlineFrameIndex: number,
  *     preventClick: (boolean|undefined),
  *     maxLength: (number|undefined),
  *     tabStop: (boolean|undefined),
@@ -1182,6 +1197,7 @@ export let LinkifyURLOptions;
  * @typedef {{
  *     className: (string|undefined),
  *     columnNumber: (number|undefined),
+ *     inlineFrameIndex: number,
  *     tabStop: (boolean|undefined)
  * }}
  */

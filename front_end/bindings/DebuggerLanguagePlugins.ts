@@ -798,7 +798,7 @@ export class DebuggerLanguagePluginManager implements SDK.SDKModel.SDKModelObser
   _expandCallFrames(callFrames: SDK.DebuggerModel.CallFrame[]): Promise<SDK.DebuggerModel.CallFrame[]> {
     return Promise
         .all(callFrames.map(async callFrame => {
-          const {frames} = await this.getFunctionInfo(callFrame);
+          const {frames} = await this.getFunctionInfo(callFrame.script, callFrame.location());
           if (frames.length) {
             return frames.map(({name}, index) => callFrame.createVirtualCallFrame(index, name));
           }
@@ -910,6 +910,15 @@ export class DebuggerLanguagePluginManager implements SDK.SDKModel.SDKModelObser
     return {rawModuleId, plugin: null};
   }
 
+  uiSourceCodeForURL(debuggerModel: SDK.DebuggerModel.DebuggerModel, url: string): Workspace.UISourceCode.UISourceCode
+      |null {
+    const modelData = this._debuggerModelToData.get(debuggerModel);
+    if (modelData) {
+      return modelData._project.uiSourceCodeForURL(url);
+    }
+    return null;
+  }
+
   async rawLocationToUILocation(rawLocation: SDK.DebuggerModel.Location):
       Promise<Workspace.UISourceCode.UILocation|null> {
     const script = rawLocation.script();
@@ -932,11 +941,7 @@ export class DebuggerLanguagePluginManager implements SDK.SDKModel.SDKModelObser
     try {
       const sourceLocations = await plugin.rawLocationToSourceLocation(pluginLocation);
       for (const sourceLocation of sourceLocations) {
-        const modelData = this._debuggerModelToData.get(script.debuggerModel);
-        if (!modelData) {
-          continue;
-        }
-        const uiSourceCode = modelData._project.uiSourceCodeForURL(sourceLocation.sourceFileURL);
+        const uiSourceCode = this.uiSourceCodeForURL(script.debuggerModel, sourceLocation.sourceFileURL);
         if (!uiSourceCode) {
           continue;
         }
@@ -1130,28 +1135,23 @@ export class DebuggerLanguagePluginManager implements SDK.SDKModel.SDKModelObser
     }
   }
 
-  async getFunctionInfo(callFrame: SDK.DebuggerModel.CallFrame): Promise<{
+  async getFunctionInfo(script: SDK.Script.Script, location: SDK.DebuggerModel.Location): Promise<{
     frames: Array<FunctionInfo>,
   }> {
     const noDwarfInfo = {frames: []};
-    if (!callFrame) {
-      return noDwarfInfo;
-    }
-    const script = callFrame.script;
     const {rawModuleId, plugin} = await this._rawModuleIdAndPluginForScript(script);
     if (!plugin) {
       return noDwarfInfo;
     }
 
-    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-    // @ts-ignore
-    const location: RawLocation = {
+    const rawLocation: RawLocation = {
       rawModuleId,
-      codeOffset: callFrame.location().columnNumber - (script.codeOffset() || 0),
+      codeOffset: location.columnNumber - (script.codeOffset() || 0),
+      inlineFrameIndex: 0,
     };
 
     try {
-      return await plugin.getFunctionInfo(location);
+      return await plugin.getFunctionInfo(rawLocation);
     } catch (error) {
       Common.Console.Console.instance().warn(i18nString(UIStrings.errorInDebuggerLanguagePlugin, {PH1: error.message}));
       return noDwarfInfo;

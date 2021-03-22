@@ -453,6 +453,20 @@ describe('The Debugger Language Plugins', async () => {
 
     await switchToCallFrame(3);
     assert.deepEqual(await getValuesForScope('LOCAL', 0, 1), ['localX2: undefined']);
+
+    await click(RESUME_BUTTON);
+    await waitForFunction(async () => {
+      const messages = await getStructuredConsoleMessages();
+      if (!messages.length) {
+        return false;
+      }
+      const message = messages[messages.length - 1];
+      return message.message === `Uncaught (in promise) RuntimeError: unreachable
+    at inner_inline_func (unreachable.ll:6)
+    at outer_inline_func (unreachable.ll:11)
+    at Main (unreachable.ll:16)
+    at go (unreachable.html:27)`;
+    });
   });
 
   it('falls back to wasm function names when inline info not present', async () => {

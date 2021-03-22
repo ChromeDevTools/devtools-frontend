@@ -951,19 +951,21 @@ export class DebuggerModel extends SDKModel {
    * @param {!Script} script
    * @param {number} lineNumber
    * @param {number} columnNumber
+   * @param {number=} inlineFrameIndex
    * @return {!Location}
    */
-  createRawLocation(script, lineNumber, columnNumber) {
-    return this.createRawLocationByScriptId(script.scriptId, lineNumber, columnNumber);
+  createRawLocation(script, lineNumber, columnNumber, inlineFrameIndex) {
+    return this.createRawLocationByScriptId(script.scriptId, lineNumber, columnNumber, inlineFrameIndex);
   }
 
   /**
    * @param {string} sourceURL
    * @param {number} lineNumber
    * @param {number=} columnNumber
+   * @param {number=} inlineFrameIndex
    * @return {?Location}
    */
-  createRawLocationByURL(sourceURL, lineNumber, columnNumber) {
+  createRawLocationByURL(sourceURL, lineNumber, columnNumber, inlineFrameIndex) {
     for (const script of this._scriptsBySourceURL.get(sourceURL) || []) {
       if (script.lineOffset > lineNumber ||
           (script.lineOffset === lineNumber && columnNumber !== undefined && script.columnOffset > columnNumber)) {
@@ -973,7 +975,7 @@ export class DebuggerModel extends SDKModel {
           (script.endLine === lineNumber && columnNumber !== undefined && script.endColumn <= columnNumber)) {
         continue;
       }
-      return new Location(this, script.scriptId, lineNumber, columnNumber);
+      return new Location(this, script.scriptId, lineNumber, columnNumber, inlineFrameIndex);
     }
     return null;
   }
@@ -982,10 +984,11 @@ export class DebuggerModel extends SDKModel {
    * @param {!Protocol.Runtime.ScriptId} scriptId
    * @param {number} lineNumber
    * @param {number=} columnNumber
+   * @param {number=} inlineFrameIndex
    * @return {!Location}
    */
-  createRawLocationByScriptId(scriptId, lineNumber, columnNumber) {
-    return new Location(this, scriptId, lineNumber, columnNumber);
+  createRawLocationByScriptId(scriptId, lineNumber, columnNumber, inlineFrameIndex) {
+    return new Location(this, scriptId, lineNumber, columnNumber, inlineFrameIndex);
   }
 
   /**

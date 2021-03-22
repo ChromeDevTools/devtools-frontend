@@ -1873,6 +1873,7 @@ export class TimelineUIUtils {
             tabStop: true,
             className: undefined,
             columnNumber: undefined,
+            inlineFrameIndex: 0,
             text: undefined,
             lineNumber: undefined,
             preventClick: undefined,
@@ -1942,7 +1943,7 @@ export class TimelineUIUtils {
      * @return {?Element}
      */
     function linkifyLocation(scriptId, url, lineNumber, columnNumber) {
-      const options = {columnNumber, className: 'timeline-details', tabStop: true};
+      const options = {columnNumber, inlineFrameIndex: 0, className: 'timeline-details', tabStop: true};
       return linkifier.linkifyScriptLocation(target, scriptId, url, lineNumber, options);
     }
 
@@ -1952,7 +1953,8 @@ export class TimelineUIUtils {
     function linkifyTopCallFrame() {
       const frame = TimelineModel.TimelineModel.TimelineData.forEvent(event).topFrame();
       return frame ? linkifier.maybeLinkifyConsoleCallFrame(
-                         target, frame, {className: 'timeline-details', tabStop: true, columnNumber: undefined}) :
+                         target, frame,
+                         {className: 'timeline-details', tabStop: true, inlineFrameIndex: 0, columnNumber: undefined}) :
                      null;
     }
   }
@@ -2147,6 +2149,7 @@ export class TimelineUIUtils {
             tabStop: true,
             className: undefined,
             columnNumber: undefined,
+            inlineFrameIndex: 0,
             lineNumber: undefined,
             text: undefined,
             preventClick: undefined,
@@ -2260,6 +2263,7 @@ export class TimelineUIUtils {
             className: undefined,
             columnNumber: undefined,
             lineNumber: undefined,
+            inlineFrameIndex: 0,
             text: undefined,
             preventClick: undefined,
             maxLength: undefined,
@@ -2278,6 +2282,7 @@ export class TimelineUIUtils {
             tabStop: true,
             className: undefined,
             columnNumber: undefined,
+            inlineFrameIndex: 0,
             lineNumber: undefined,
             text: undefined,
             preventClick: undefined,
@@ -2641,6 +2646,7 @@ export class TimelineUIUtils {
         className: undefined,
         columnNumber: undefined,
         text: undefined,
+        inlineFrameIndex: 0,
         lineNumber: undefined,
         preventClick: undefined,
         maxLength: undefined,
@@ -2706,7 +2712,7 @@ export class TimelineUIUtils {
     const topFrame = TimelineModel.TimelineModel.TimelineData.forEvent(sendRequest).topFrame();
     if (topFrame) {
       const link = linkifier.maybeLinkifyConsoleCallFrame(
-          target, topFrame, {tabStop: true, className: undefined, columnNumber: undefined});
+          target, topFrame, {tabStop: true, className: undefined, inlineFrameIndex: 0, columnNumber: undefined});
       if (link) {
         contentHelper.appendElementRow(title, link);
       }
@@ -2716,7 +2722,8 @@ export class TimelineUIUtils {
         const initiatorURL = TimelineModel.TimelineModel.TimelineData.forEvent(initiator).url;
         if (initiatorURL) {
           const link = linkifier.maybeLinkifyScriptLocation(
-              target, null, initiatorURL, 0, {tabStop: true, className: undefined, columnNumber: undefined});
+              target, null, initiatorURL, 0,
+              {tabStop: true, className: undefined, inlineFrameIndex: 0, columnNumber: undefined});
           if (link) {
             contentHelper.appendElementRow(title, link);
           }
@@ -3928,6 +3935,7 @@ export class TimelineDetailsContentHelper {
       tabStop: true,
       className: undefined,
       columnNumber: startColumn,
+      inlineFrameIndex: 0,
       text: undefined,
       lineNumber: undefined,
       preventClick: undefined,
@@ -3953,7 +3961,8 @@ export class TimelineDetailsContentHelper {
     }
     const locationContent = document.createElement('span');
     const link = this._linkifier.maybeLinkifyScriptLocation(
-        this._target, null, url, startLine, {tabStop: true, className: undefined, columnNumber: undefined});
+        this._target, null, url, startLine,
+        {tabStop: true, className: undefined, inlineFrameIndex: 0, columnNumber: undefined});
     if (!link) {
       return;
     }

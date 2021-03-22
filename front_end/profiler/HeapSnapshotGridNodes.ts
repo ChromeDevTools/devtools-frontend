@@ -1284,8 +1284,12 @@ export class AllocationGridNode extends HeapSnapshotGridNode {
       const linkifier = (this._dataGrid as AllocationDataGrid).linkifier;
       const urlElement = linkifier.linkifyScriptLocation(
           heapProfilerModel ? heapProfilerModel.target() : null, String(allocationNode.scriptId),
-          allocationNode.scriptName, allocationNode.line - 1,
-          {columnNumber: allocationNode.column - 1, className: 'profile-node-file', tabStop: undefined});
+          allocationNode.scriptName, allocationNode.line - 1, {
+            columnNumber: allocationNode.column - 1,
+            inlineFrameIndex: 0,
+            className: 'profile-node-file',
+            tabStop: undefined,
+          });
       urlElement.style.maxWidth = '75%';
       cell.insertBefore(urlElement, cell.firstChild);
     }

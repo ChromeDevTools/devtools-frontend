@@ -117,7 +117,8 @@ export function buildStackTraceRows(
       let ignoreListHide = false;
       const functionName = UI.UIUtils.beautifyFunctionName(stackFrame.functionName);
       const link = linkifier.maybeLinkifyConsoleCallFrame(
-          target, stackFrame, {tabStop: Boolean(tabStops), className: undefined, columnNumber: undefined});
+          target, stackFrame,
+          {tabStop: Boolean(tabStops), className: undefined, columnNumber: undefined, inlineFrameIndex: 0});
       if (link) {
         link.addEventListener('contextmenu', populateContextMenu.bind(null, link));
         // TODO(crbug.com/1183325): fix race condition with uiLocation still being null here

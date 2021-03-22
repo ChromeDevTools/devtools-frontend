@@ -305,7 +305,7 @@ export class NodeFormatter implements Formatter {
   linkifyNode(node: ProfileDataGridNode): Element|null {
     const cpuProfilerModel = this._profileView.profileHeader._cpuProfilerModel;
     const target = cpuProfilerModel ? cpuProfilerModel.target() : null;
-    const options = {className: 'profile-node-file', columnNumber: undefined, tabStop: undefined};
+    const options = {className: 'profile-node-file', columnNumber: undefined, inlineFrameIndex: 0, tabStop: undefined};
     return this._profileView.linkifier().maybeLinkifyConsoleCallFrame(target, node.profileNode.callFrame, options);
   }
 }

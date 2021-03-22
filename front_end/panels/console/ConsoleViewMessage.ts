@@ -34,6 +34,7 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
+import * as Bindings from '../../bindings/bindings.js';
 import * as Common from '../../common/common.js';
 import * as Components from '../../components/components.js';
 import * as DataGrid from '../../data_grid/data_grid.js';
@@ -45,6 +46,7 @@ import * as TextEditor from '../../text_editor/text_editor.js';
 import * as TextUtils from '../../text_utils/text_utils.js';
 import * as ThemeSupport from '../../theme_support/theme_support.js';
 import * as UI from '../../ui/ui.js';
+import * as Workspace from '../../workspace/workspace.js';
 
 import type {ConsoleViewportElement} from './ConsoleViewport.js';
 
@@ -484,7 +486,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     }
     return this._linkifier.linkifyScriptLocation(
         runtimeModel.target(), /* scriptId */ null, url, lineNumber,
-        {columnNumber, className: undefined, tabStop: undefined});
+        {columnNumber, className: undefined, tabStop: undefined, inlineFrameIndex: 0});
   }
 
   _linkifyStackTraceTopFrame(stackTrace: Protocol.Runtime.StackTrace): HTMLElement|null {
@@ -501,7 +503,8 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
       return null;
     }
     return this._linkifier.linkifyScriptLocation(
-        runtimeModel.target(), scriptId, url, lineNumber, {columnNumber, className: undefined, tabStop: undefined});
+        runtimeModel.target(), scriptId, url, lineNumber,
+        {columnNumber, className: undefined, tabStop: undefined, inlineFrameIndex: 0});
   }
 
   _format(rawParameters: (string|SDK.RemoteObject.RemoteObject|Protocol.Runtime.RemoteObject|undefined)[]):
@@ -1422,6 +1425,53 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     return this._searchHighlightNodes[index];
   }
 
+  async _getInlineFrames(
+      debuggerModel: SDK.DebuggerModel.DebuggerModel, url: string, lineNumber: number|undefined,
+      columnNumber: number|undefined): Promise<{frames: Bindings.DebuggerLanguagePlugins.FunctionInfo[]}> {
+    const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance();
+    if (debuggerWorkspaceBinding.pluginManager) {
+      const projects = Workspace.Workspace.WorkspaceImpl.instance().projects();
+      const uiSourceCodes = projects.map(project => project.uiSourceCodeForURL(url)).flat().filter(f => Boolean(f)) as
+          Workspace.UISourceCode.UISourceCode[];
+      const scripts =
+          uiSourceCodes.map(uiSourceCode => debuggerWorkspaceBinding.scriptsForUISourceCode(uiSourceCode)).flat();
+      if (scripts.length) {
+        const location =
+            new SDK.DebuggerModel.Location(debuggerModel, scripts[0].scriptId, lineNumber || 0, columnNumber);
+        return debuggerWorkspaceBinding.pluginManager.getFunctionInfo(scripts[0], location);
+      }
+    }
+
+    return {frames: []};
+  }
+
+  // Expand inline stack frames in the formatted error in the stackTrace element, inserting new elements before the
+  // insertBefore anchor.
+  async _expandInlineStackFrames(
+      debuggerModel: SDK.DebuggerModel.DebuggerModel, prefix: string, suffix: string, url: string,
+      lineNumber: number|undefined, columnNumber: number|undefined, stackTrace: HTMLElement,
+      insertBefore: HTMLElement): Promise<boolean> {
+    const {frames} = await this._getInlineFrames(debuggerModel, url, lineNumber, columnNumber);
+    if (!frames.length) {
+      return false;
+    }
+
+    for (let f = 0; f < frames.length; ++f) {
+      const {name} = frames[f];
+      const formattedLine = document.createElement('span');
+      formattedLine.appendChild(this._linkifyStringAsFragment(`${prefix} ${name} (`));
+      const scriptLocationLink = this._linkifier.linkifyScriptLocation(
+          debuggerModel.target(), null, url, lineNumber,
+          {columnNumber, className: undefined, tabStop: undefined, inlineFrameIndex: f});
+      scriptLocationLink.tabIndex = -1;
+      this._selectableChildren.push({element: scriptLocationLink, forceSelect: (): void => scriptLocationLink.focus()});
+      formattedLine.appendChild(scriptLocationLink);
+      formattedLine.appendChild(this._linkifyStringAsFragment(suffix));
+      stackTrace.insertBefore(formattedLine, insertBefore);
+    }
+    return true;
+  }
+
   _tryFormatAsError(string: string): HTMLElement|null {
     function startsWith(prefix: string): boolean {
       return string.startsWith(prefix);
@@ -1446,16 +1496,15 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     const baseURL = runtimeModel.target().inspectedURL();
 
     const lines = string.split('\n');
-    const links = [];
-    let position = 0;
-    for (let i = 0; i < lines.length; ++i) {
-      position += i > 0 ? lines[i - 1].length + 1 : 0;
-      const isCallFrameLine = /^\s*at\s/.test(lines[i]);
-      if (!isCallFrameLine && links.length) {
+    const linkInfos = [];
+    for (const line of lines) {
+      const isCallFrameLine = /^\s*at\s/.test(line);
+      if (!isCallFrameLine && linkInfos.length && linkInfos[linkInfos.length - 1].link) {
         return null;
       }
 
       if (!isCallFrameLine) {
+        linkInfos.push({line});
         continue;
       }
 
@@ -1465,11 +1514,11 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
       const inBrackets = /\([^\)\(]+\)/g;
       let lastMatch: RegExpExecArray|null = null;
       let currentMatch;
-      while ((currentMatch = inBracketsWithLineAndColumn.exec(lines[i]))) {
+      while ((currentMatch = inBracketsWithLineAndColumn.exec(line))) {
         lastMatch = currentMatch;
       }
       if (!lastMatch) {
-        while ((currentMatch = inBrackets.exec(lines[i]))) {
+        while ((currentMatch = inBrackets.exec(line))) {
           lastMatch = currentMatch;
         }
       }
@@ -1478,18 +1527,19 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
         closeBracketIndex = lastMatch.index + lastMatch[0].length - 1;
       }
       const hasOpenBracket = openBracketIndex !== -1;
-      let left = hasOpenBracket ? openBracketIndex + 1 : lines[i].indexOf('at') + 3;
-      if (!hasOpenBracket && lines[i].indexOf('async ') === left) {
+      let left = hasOpenBracket ? openBracketIndex + 1 : line.indexOf('at') + 3;
+      if (!hasOpenBracket && line.indexOf('async ') === left) {
         left += 6;
       }
-      const right = hasOpenBracket ? closeBracketIndex : lines[i].length;
-      const linkCandidate = lines[i].substring(left, right);
+      const right = hasOpenBracket ? closeBracketIndex : line.length;
+      const linkCandidate = line.substring(left, right);
       const splitResult = Common.ParsedURL.ParsedURL.splitLineAndColumn(linkCandidate);
       if (!splitResult) {
         return null;
       }
 
       if (splitResult.url === '<anonymous>') {
+        linkInfos.push({line});
         continue;
       }
       let url = parseOrScriptMatch(splitResult.url);
@@ -1500,34 +1550,63 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
         return null;
       }
 
-      links.push({
-        url: url,
-        positionLeft: position + left,
-        positionRight: position + right,
-        lineNumber: splitResult.lineNumber,
-        columnNumber: splitResult.columnNumber,
+      linkInfos.push({
+        line,
+        link: {
+          url,
+          enclosedInBraces: hasOpenBracket,
+          positionLeft: left,
+          positionRight: right,
+          lineNumber: splitResult.lineNumber,
+          columnNumber: splitResult.columnNumber,
+        },
       });
     }
 
-    if (!links.length) {
+    if (!linkInfos.length) {
       return null;
     }
 
     const formattedResult = document.createElement('span');
-    let start = 0;
-    for (let i = 0; i < links.length; ++i) {
-      formattedResult.appendChild(this._linkifyStringAsFragment(string.substring(start, links[i].positionLeft)));
+    for (let i = 0; i < linkInfos.length; ++i) {
+      const newline = i < linkInfos.length - 1 ? '\n' : '';
+      const {line, link} = linkInfos[i];
+      if (!link) {
+        formattedResult.appendChild(this._linkifyStringAsFragment(`${line}${newline}`));
+        continue;
+      }
+      const formattedLine = document.createElement('span');
+      const prefix = line.substring(0, link.positionLeft);
+      const suffix = `${line.substring(link.positionRight)}${newline}`;
+
+      formattedLine.appendChild(this._linkifyStringAsFragment(prefix));
       const scriptLocationLink = this._linkifier.linkifyScriptLocation(
-          debuggerModel.target(), null, links[i].url, links[i].lineNumber,
-          {columnNumber: links[i].columnNumber, className: undefined, tabStop: undefined});
+          debuggerModel.target(), null, link.url, link.lineNumber,
+          {columnNumber: link.columnNumber, className: undefined, tabStop: undefined, inlineFrameIndex: 0});
       scriptLocationLink.tabIndex = -1;
       this._selectableChildren.push({element: scriptLocationLink, forceSelect: (): void => scriptLocationLink.focus()});
-      formattedResult.appendChild(scriptLocationLink);
-      start = links[i].positionRight;
-    }
+      formattedLine.appendChild(scriptLocationLink);
+      formattedLine.appendChild(this._linkifyStringAsFragment(suffix));
+      formattedResult.appendChild(formattedLine);
 
-    if (start !== string.length) {
-      formattedResult.appendChild(this._linkifyStringAsFragment(string.substring(start)));
+      if (!link.enclosedInBraces) {
+        continue;
+      }
+
+      const prefixWithoutFunction = prefix.substring(0, prefix.lastIndexOf(' ', prefix.length - 3));
+
+      // If we were able to parse the function name from the stack trace line, try to replace it with an expansion of
+      // any inline frames.
+      const selectableChildIndex = this._selectableChildren.length - 1;
+      this._expandInlineStackFrames(
+              debuggerModel, prefixWithoutFunction, suffix, link.url, link.lineNumber, link.columnNumber,
+              formattedResult, formattedLine)
+          .then(modified => {
+            if (modified) {
+              formattedResult.removeChild(formattedLine);
+              this._selectableChildren.splice(selectableChildIndex, 1);
+            }
+          });
     }
 
     return formattedResult;

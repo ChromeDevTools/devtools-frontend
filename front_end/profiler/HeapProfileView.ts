@@ -599,6 +599,7 @@ export class NodeFormatter implements Formatter {
     const options = {
       className: 'profile-node-file',
       columnNumber: undefined,
+      inlineFrameIndex: 0,
       tabStop: undefined,
     };
     return this._profileView.linkifier().maybeLinkifyConsoleCallFrame(target, node.profileNode.callFrame, options);

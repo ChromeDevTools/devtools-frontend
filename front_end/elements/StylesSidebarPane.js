@@ -3457,6 +3457,7 @@ export class StylesSidebarPropertyRenderer {
           className: undefined,
           lineNumber: undefined,
           columnNumber: undefined,
+          inlineFrameIndex: 0,
           maxLength: undefined,
           tabStop: undefined,
         }),

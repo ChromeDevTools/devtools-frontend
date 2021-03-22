@@ -80,7 +80,6 @@ export const CSS_RESOURCES_TO_LOAD_INTO_RUNTIME = [
   'ui/searchableView.css',
   'ui/slider.css',
   'ui/smallBubble.css',
-  'ui/segmentedButton.css',
   'ui/softContextMenu.css',
   'ui/softDropDown.css',
   'ui/softDropDownButton.css',

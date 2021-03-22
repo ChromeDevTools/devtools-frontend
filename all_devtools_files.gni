@@ -374,7 +374,6 @@ all_devtools_files = [
   "front_end/ui/reportView.css",
   "front_end/ui/rootView.css",
   "front_end/ui/searchableView.css",
-  "front_end/ui/segmentedButton.css",
   "front_end/ui/slider.css",
   "front_end/ui/smallBubble.css",
   "front_end/ui/softContextMenu.css",

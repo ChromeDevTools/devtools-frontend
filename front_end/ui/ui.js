@@ -35,7 +35,6 @@ import * as ReportView from './ReportView.js';
 import * as ResizerWidget from './ResizerWidget.js';
 import * as RootView from './RootView.js';
 import * as SearchableView from './SearchableView.js';
-import * as SegmentedButton from './SegmentedButton.js';
 import * as SettingsUI from './SettingsUI.js';
 import * as ShortcutRegistry from './ShortcutRegistry.js';
 import * as SoftContextMenu from './SoftContextMenu.js';
@@ -94,7 +93,6 @@ export {
   ResizerWidget,
   RootView,
   SearchableView,
-  SegmentedButton,
   SettingsUI,
   ShortcutRegistry,
   SoftContextMenu,

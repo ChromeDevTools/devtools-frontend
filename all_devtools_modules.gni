@@ -773,7 +773,6 @@ all_typescript_module_sources = [
   "ui/ResizerWidget.js",
   "ui/RootView.js",
   "ui/SearchableView.js",
-  "ui/SegmentedButton.js",
   "ui/SettingsUI.js",
   "ui/ShortcutRegistry.js",
   "ui/SoftContextMenu.js",

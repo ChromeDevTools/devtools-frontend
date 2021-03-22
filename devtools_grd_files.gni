@@ -1186,7 +1186,6 @@ grd_files_debug_sources = [
   "front_end/ui/ResizerWidget.js",
   "front_end/ui/RootView.js",
   "front_end/ui/SearchableView.js",
-  "front_end/ui/SegmentedButton.js",
   "front_end/ui/SettingsUI.js",
   "front_end/ui/ShortcutRegistry.js",
   "front_end/ui/SoftContextMenu.js",

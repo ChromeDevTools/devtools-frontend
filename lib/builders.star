@@ -62,23 +62,27 @@ def recipe(
 def builder(
         recipe_name,
         swarming_tags = defaults.swarming_tags,
-        **kvargs):
+        **kwargs):
     """Create builder with dtf defaults"""
-    builder_group = kvargs.pop("builder_group")
+    builder_group = kwargs.pop("builder_group")
 
-    properties = dict(kvargs.pop("properties", {}))
+    properties = dict(kwargs.pop("properties", {}))
     properties.update(builder_group = builder_group)
     properties.update(goma_rbe_prod_default)
     properties["$recipe_engine/isolated"] = {
         "server": "https://isolateserver.appspot.com",
     }
-    kvargs["properties"] = properties
+    kwargs["properties"] = properties
 
-    kvargs["executable"] = recipe(recipe_name)
+    kwargs["executable"] = recipe(recipe_name)
+
+    # TODO(machenbach): Remove this when CAS is the default.
+    if recipe_name in ["chromium_integration", "chromium_trybot"]:
+      kwargs["experiments"] = {"luci.swarming.use_rbe_cas": 20}
 
     luci.builder(
         swarming_tags = swarming_tags,
-        **kvargs
+        **kwargs
     )
 
 os_dimensions = {
@@ -87,12 +91,12 @@ os_dimensions = {
     "mac": dimensions.mac,
 }
 
-def builder_coverage(covered_oss, builder_factory, builder_name_pattern, **kvargs):
+def builder_coverage(covered_oss, builder_factory, builder_name_pattern, **kwargs):
     for os in covered_oss:
         builder_factory(
             dimensions = os_dimensions[os],
             name = builder_name_pattern % os,
-            **kvargs
+            **kwargs
         )
 
 def config_section(
@@ -153,9 +157,9 @@ def generate_ci_configs(configurations, builders):
     for c in configurations:
         builders_refs = []
 
-        def ci_builder(**kvargs):
-            category = kvargs.pop("console_category")
-            properties = kvargs.pop("properties")
+        def ci_builder(**kwargs):
+            category = kwargs.pop("console_category")
+            properties = kwargs.pop("properties")
             properties.update(goma_rbe_prod_default)
             builder(
                 bucket = "ci",
@@ -163,9 +167,9 @@ def generate_ci_configs(configurations, builders):
                 service_account = SERVICE_ACCOUNT,
                 schedule = "triggered",
                 properties = properties,
-                **kvargs
+                **kwargs
             )
-            builders_refs.append((kvargs["name"], category))
+            builders_refs.append((kwargs["name"], category))
 
         for b in builders:
             if c.name not in b.excluded_from:

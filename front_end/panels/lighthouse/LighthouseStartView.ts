@@ -4,9 +4,9 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../common/common.js';
-import * as i18n from '../i18n/i18n.js';
-import * as UI from '../ui/ui.js';
+import * as Common from '../../common/common.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as UI from '../../ui/ui.js';
 
 import {Events, LighthouseController, Presets, RuntimeSettings} from './LighthouseController.js';
 import {RadioSetting} from './RadioSetting.js';
@@ -38,7 +38,7 @@ const UIStrings = {
   identifyAndFixCommonProblemsThat:
       'Identify and fix common problems that affect your site\'s performance, accessibility, and user experience.',
 };
-const str_ = i18n.i18n.registerUIStrings('lighthouse/LighthouseStartView.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/lighthouse/LighthouseStartView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class StartView extends UI.Widget.Widget {
   _controller: LighthouseController;
@@ -50,7 +50,7 @@ export class StartView extends UI.Widget.Widget {
 
   constructor(controller: LighthouseController) {
     super();
-    this.registerRequiredCSS('lighthouse/lighthouseStartView.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('panels/lighthouse/lighthouseStartView.css', {enableLegacyPatching: false});
     this._controller = controller;
     this._settingsToolbar = new UI.Toolbar.Toolbar('');
     this._render();

@@ -4,17 +4,17 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../common/common.js';
-import * as Components from '../components/components.js';
-import * as Host from '../host/host.js';
-import * as i18n from '../i18n/i18n.js';
-import * as Platform from '../platform/platform.js';
-import * as Root from '../root/root.js';
-import * as SDK from '../sdk/sdk.js';
-import * as ThemeSupport from '../theme_support/theme_support.js';
-import * as Timeline from '../timeline/timeline.js';
-import * as UI from '../ui/ui.js';
-import * as Workspace from '../workspace/workspace.js';
+import * as Common from '../../common/common.js';
+import * as Components from '../../components/components.js';
+import * as Host from '../../host/host.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as Platform from '../../platform/platform.js';
+import * as Root from '../../root/root.js';
+import * as SDK from '../../sdk/sdk.js';
+import * as ThemeSupport from '../../theme_support/theme_support.js';
+import * as Timeline from '../../timeline/timeline.js';
+import * as UI from '../../ui/ui.js';
+import * as Workspace from '../../workspace/workspace.js';
 
 import type * as ReportRenderer from './LighthouseReporterTypes.js';
 
@@ -33,7 +33,7 @@ const UIStrings = {
   thePerformanceMetricsAboveAre:
       'The performance metrics above are simulated and won\'t match the timings found in this trace. Disable simulated throttling in "Lighthouse Settings" if you want the timings to match.',
 };
-const str_ = i18n.i18n.registerUIStrings('lighthouse/LighthouseReportRenderer.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/lighthouse/LighthouseReportRenderer.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const MaxLengthForLinks = 40;
 

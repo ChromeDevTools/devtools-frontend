@@ -1061,234 +1061,6 @@
   "js_profiler/js_profiler-meta.ts | showProfiler": {
     "message": "Ŝh́ôẃ P̂ŕôf́îĺêŕ"
   },
-  "lighthouse/lighthouse-meta.ts | showLighthouse": {
-    "message": "Ŝh́ôẃ Lighthouse"
-  },
-  "lighthouse/LighthouseController.ts | accessibility": {
-    "message": "Âćĉéŝśîb́îĺît́ŷ"
-  },
-  "lighthouse/LighthouseController.ts | applyMobileEmulation": {
-    "message": "Âṕp̂ĺŷ ḿôb́îĺê ém̂úl̂át̂íôń"
-  },
-  "lighthouse/LighthouseController.ts | applyMobileEmulationDuring": {
-    "message": "Âṕp̂ĺŷ ḿôb́îĺê ém̂úl̂át̂íôń d̂úr̂ín̂ǵ âúd̂ít̂ín̂ǵ"
-  },
-  "lighthouse/LighthouseController.ts | atLeastOneCategoryMustBeSelected": {
-    "message": "Ât́ l̂éâśt̂ ón̂é ĉát̂éĝór̂ý m̂úŝt́ b̂é ŝél̂éĉt́êd́."
-  },
-  "lighthouse/LighthouseController.ts | bestPractices": {
-    "message": "B̂éŝt́ p̂ŕâćt̂íĉéŝ"
-  },
-  "lighthouse/LighthouseController.ts | canOnlyAuditHttphttpsPagesAnd": {
-    "message": "Ĉán̂ ón̂ĺŷ áûd́ît́ ĤT́T̂Ṕ/ĤT́T̂ṔŜ ṕâǵêś âńd̂ Chrome éx̂t́êńŝíôńŝ. Ńâv́îǵât́ê t́ô á d̂íf̂f́êŕêńt̂ ṕâǵê t́ô śt̂ár̂t́ âń âúd̂ít̂."
-  },
-  "lighthouse/LighthouseController.ts | clearStorage": {
-    "message": "Ĉĺêár̂ śt̂ór̂áĝé"
-  },
-  "lighthouse/LighthouseController.ts | desktop": {
-    "message": "D̂éŝḱt̂óp̂"
-  },
-  "lighthouse/LighthouseController.ts | doesThisPageFollowBestPractices": {
-    "message": "D̂óêś t̂h́îś p̂áĝé f̂ól̂ĺôẃ b̂éŝt́ p̂ŕâćt̂íĉéŝ f́ôŕ m̂ód̂ér̂ń ŵéb̂ d́êv́êĺôṕm̂én̂t́"
-  },
-  "lighthouse/LighthouseController.ts | doesThisPageMeetTheStandardOfA": {
-    "message": "D̂óêś t̂h́îś p̂áĝé m̂éêt́ t̂h́ê śt̂án̂d́âŕd̂ óf̂ á P̂ŕôǵr̂éŝśîv́ê Ẃêb́ Âṕp̂"
-  },
-  "lighthouse/LighthouseController.ts | howLongDoesThisAppTakeToShow": {
-    "message": "Ĥóŵ ĺôńĝ d́ôéŝ t́ĥíŝ áp̂ṕ t̂ák̂é t̂ó ŝh́ôẃ ĉón̂t́êńt̂ án̂d́ b̂éĉóm̂é ûśâb́l̂é"
-  },
-  "lighthouse/LighthouseController.ts | indexeddb": {
-    "message": "Îńd̂éx̂éd̂D́B̂"
-  },
-  "lighthouse/LighthouseController.ts | isThisPageOptimizedForAdSpeedAnd": {
-    "message": "Îś t̂h́îś p̂áĝé ôṕt̂ím̂íẑéd̂ f́ôŕ âd́ ŝṕêéd̂ án̂d́ q̂úâĺît́ŷ"
-  },
-  "lighthouse/LighthouseController.ts | isThisPageOptimizedForSearch": {
-    "message": "Îś t̂h́îś p̂áĝé ôṕt̂ím̂íẑéd̂ f́ôŕ ŝéâŕĉh́ êńĝín̂é r̂éŝúl̂t́ŝ ŕâńk̂ín̂ǵ"
-  },
-  "lighthouse/LighthouseController.ts | isThisPageUsableByPeopleWith": {
-    "message": "Îś t̂h́îś p̂áĝé ûśâb́l̂é b̂ý p̂éôṕl̂é ŵít̂h́ d̂íŝáb̂íl̂ít̂íêś ôŕ îḿp̂áîŕm̂én̂t́ŝ"
-  },
-  "lighthouse/LighthouseController.ts | localStorage": {
-    "message": "L̂óĉál̂ Śt̂ór̂áĝé"
-  },
-  "lighthouse/LighthouseController.ts | mobile": {
-    "message": "M̂ób̂íl̂é"
-  },
-  "lighthouse/LighthouseController.ts | multipleTabsAreBeingControlledBy": {
-    "message": "M̂úl̂t́îṕl̂é t̂áb̂ś âŕê b́êín̂ǵ ĉón̂t́r̂ól̂ĺêd́ b̂ý t̂h́ê śâḿê service worker. Ćl̂óŝé ŷóûŕ ôt́ĥér̂ t́âb́ŝ ón̂ t́ĥé ŝám̂é ôŕîǵîń t̂ó âúd̂ít̂ t́ĥíŝ ṕâǵê."
-  },
-  "lighthouse/LighthouseController.ts | performance": {
-    "message": "P̂ér̂f́ôŕm̂án̂ćê"
-  },
-  "lighthouse/LighthouseController.ts | progressiveWebApp": {
-    "message": "P̂ŕôǵr̂éŝśîv́ê Ẃêb́ Âṕp̂"
-  },
-  "lighthouse/LighthouseController.ts | publisherAds": {
-    "message": "P̂úb̂ĺîśĥér̂ Ád̂ś"
-  },
-  "lighthouse/LighthouseController.ts | resetStorageLocalstorage": {
-    "message": "R̂éŝét̂ śt̂ór̂áĝé (localStorage, IndexedDB, êt́ĉ) b́êf́ôŕê áûd́ît́îńĝ. (Ǵôód̂ f́ôŕ p̂ér̂f́ôŕm̂án̂ćê & PWA t́êśt̂ín̂ǵ)"
-  },
-  "lighthouse/LighthouseController.ts | seo": {
-    "message": "ŜÉÔ"
-  },
-  "lighthouse/LighthouseController.ts | simulateASlowerPageLoadBasedOn": {
-    "message": "Ŝím̂úl̂át̂é â śl̂óŵér̂ ṕâǵê ĺôád̂, b́âśêd́ ôń d̂át̂á f̂ŕôḿ âń îńît́îál̂ ún̂t́ĥŕôt́t̂ĺêd́ l̂óâd́. Îf́ d̂íŝáb̂ĺêd́, t̂h́ê ṕâǵê íŝ áĉt́ûál̂ĺŷ śl̂óŵéd̂ ẃît́ĥ áp̂ṕl̂íêd́ t̂h́r̂ót̂t́l̂ín̂ǵ."
-  },
-  "lighthouse/LighthouseController.ts | simulatedThrottling": {
-    "message": "Ŝím̂úl̂át̂éd̂ t́ĥŕôt́t̂ĺîńĝ"
-  },
-  "lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingLoadingPlural": {
-    "message": "T̂h́êŕê ḿâý b̂é ŝt́ôŕêd́ d̂át̂á âf́f̂éĉt́îńĝ ĺôád̂ín̂ǵ p̂ér̂f́ôŕm̂án̂ćê ín̂ t́ĥéŝé l̂óĉát̂íôńŝ: {PH1}. Áûd́ît́ t̂h́îś p̂áĝé îń âń îńĉóĝńît́ô ẃîńd̂óŵ t́ô ṕr̂év̂én̂t́ t̂h́ôśê ŕêśôúr̂ćêś f̂ŕôḿ âf́f̂éĉt́îńĝ ýôúr̂ śĉór̂éŝ."
-  },
-  "lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingSingular": {
-    "message": "T̂h́êŕê ḿâý b̂é ŝt́ôŕêd́ d̂át̂á âf́f̂éĉt́îńĝ ĺôád̂ín̂ǵ p̂ér̂f́ôŕm̂án̂ćê ín̂ t́ĥíŝ ĺôćât́îón̂: {PH1}. Áûd́ît́ t̂h́îś p̂áĝé îń âń îńĉóĝńît́ô ẃîńd̂óŵ t́ô ṕr̂év̂én̂t́ t̂h́ôśê ŕêśôúr̂ćêś f̂ŕôḿ âf́f̂éĉt́îńĝ ýôúr̂ śĉór̂éŝ."
-  },
-  "lighthouse/LighthouseController.ts | webSql": {
-    "message": "Ŵéb̂ ŚQ̂Ĺ"
-  },
-  "lighthouse/LighthousePanel.ts | cancelling": {
-    "message": "Ĉán̂ćêĺl̂ín̂ǵ"
-  },
-  "lighthouse/LighthousePanel.ts | clearAll": {
-    "message": "Ĉĺêár̂ ál̂ĺ"
-  },
-  "lighthouse/LighthousePanel.ts | dropLighthouseJsonHere": {
-    "message": "D̂ŕôṕ Lighthouse ĴŚÔŃ ĥér̂é"
-  },
-  "lighthouse/LighthousePanel.ts | lighthouseSettings": {
-    "message": "Lighthouse ŝét̂t́îńĝś"
-  },
-  "lighthouse/LighthousePanel.ts | performAnAudit": {
-    "message": "P̂ér̂f́ôŕm̂ án̂ áûd́ît́…"
-  },
-  "lighthouse/LighthousePanel.ts | printing": {
-    "message": "P̂ŕîńt̂ín̂ǵ"
-  },
-  "lighthouse/LighthousePanel.ts | thePrintPopupWindowIsOpenPlease": {
-    "message": "T̂h́ê ṕr̂ín̂t́ p̂óp̂úp̂ ẃîńd̂óŵ íŝ óp̂én̂. Ṕl̂éâśê ćl̂óŝé ît́ t̂ó ĉón̂t́îńûé."
-  },
-  "lighthouse/LighthouseReportRenderer.ts | thePerformanceMetricsAboveAre": {
-    "message": "T̂h́ê ṕêŕf̂ór̂ḿâńĉé m̂ét̂ŕîćŝ áb̂óv̂é âŕê śîḿûĺât́êd́ âńd̂ ẃôń't̂ ḿât́ĉh́ t̂h́ê t́îḿîńĝś f̂óûńd̂ ín̂ t́ĥíŝ t́r̂áĉé. D̂íŝáb̂ĺê śîḿûĺât́êd́ t̂h́r̂ót̂t́l̂ín̂ǵ îń \"L̂íĝh́t̂h́ôúŝé Ŝét̂t́îńĝś\" îf́ ŷóû ẃâńt̂ t́ĥé t̂ím̂ín̂ǵŝ t́ô ḿât́ĉh́."
-  },
-  "lighthouse/LighthouseReportRenderer.ts | viewOriginalTrace": {
-    "message": "V̂íêẃ Ôŕîǵîńâĺ T̂ŕâćê"
-  },
-  "lighthouse/LighthouseReportRenderer.ts | viewTrace": {
-    "message": "V̂íêẃ T̂ŕâćê"
-  },
-  "lighthouse/LighthouseReportSelector.ts | newReport": {
-    "message": "(n̂éŵ ŕêṕôŕt̂)"
-  },
-  "lighthouse/LighthouseReportSelector.ts | reports": {
-    "message": "R̂ép̂ór̂t́ŝ"
-  },
-  "lighthouse/LighthouseStartView.ts | categories": {
-    "message": "Ĉát̂éĝór̂íêś"
-  },
-  "lighthouse/LighthouseStartView.ts | communityPluginsBeta": {
-    "message": "Ĉóm̂ḿûńît́ŷ Ṕl̂úĝín̂ś (b̂ét̂á)"
-  },
-  "lighthouse/LighthouseStartView.ts | device": {
-    "message": "D̂év̂íĉé"
-  },
-  "lighthouse/LighthouseStartView.ts | generateReport": {
-    "message": "Ĝén̂ér̂át̂é r̂ép̂ór̂t́"
-  },
-  "lighthouse/LighthouseStartView.ts | identifyAndFixCommonProblemsThat": {
-    "message": "Îd́êńt̂íf̂ý âńd̂ f́îx́ ĉóm̂ḿôń p̂ŕôb́l̂ém̂ś t̂h́ât́ âf́f̂éĉt́ ŷóûŕ ŝít̂é'ŝ ṕêŕf̂ór̂ḿâńĉé, âćĉéŝśîb́îĺît́ŷ, án̂d́ ûśêŕ êx́p̂ér̂íêńĉé."
-  },
-  "lighthouse/LighthouseStartView.ts | learnMore": {
-    "message": "L̂éâŕn̂ ḿôŕê"
-  },
-  "lighthouse/LighthouseStatusView.ts | ahSorryWeRanIntoAnError": {
-    "message": "Âh́, ŝór̂ŕŷ! Ẃê ŕâń îńt̂ó âń êŕr̂ór̂."
-  },
-  "lighthouse/LighthouseStatusView.ts | almostThereLighthouseIsNow": {
-    "message": "Âĺm̂óŝt́ t̂h́êŕê! Lighthouse íŝ ńôẃ ĝén̂ér̂át̂ín̂ǵ ŷóûŕ r̂ép̂ór̂t́."
-  },
-  "lighthouse/LighthouseStatusView.ts | asPageLoadTimeIncreasesFromOne": {
-    "message": "Âś p̂áĝé l̂óâd́ t̂ím̂é îńĉŕêáŝéŝ f́r̂óm̂ ón̂é ŝéĉón̂d́ t̂ó ŝév̂én̂ śêćôńd̂ś, t̂h́ê ṕr̂ób̂áb̂íl̂ít̂ý ôf́ â ḿôb́îĺê śît́ê v́îśît́ôŕ b̂óûńĉín̂ǵ îńĉŕêáŝéŝ 113%. [Śôúr̂ćê: Think with Google]"
-  },
-  "lighthouse/LighthouseStatusView.ts | asTheNumberOfElementsOnAPage": {
-    "message": "Âś t̂h́ê ńûḿb̂ér̂ óf̂ él̂ém̂én̂t́ŝ ón̂ á p̂áĝé îńĉŕêáŝéŝ f́r̂óm̂ 400 t́ô 6,000, t́ĥé p̂ŕôb́âb́îĺît́ŷ óf̂ ćôńv̂ér̂śîón̂ d́r̂óp̂ś 95%. [Ŝóûŕĉé: Think with Google]"
-  },
-  "lighthouse/LighthouseStatusView.ts | auditingS": {
-    "message": "Âúd̂ít̂ín̂ǵ {PH1}"
-  },
-  "lighthouse/LighthouseStatusView.ts | auditingYourWebPage": {
-    "message": "Âúd̂ít̂ín̂ǵ ŷóûŕ ŵéb̂ ṕâǵê"
-  },
-  "lighthouse/LighthouseStatusView.ts | byReducingTheResponseSizeOfJson": {
-    "message": "B̂ý r̂éd̂úĉín̂ǵ t̂h́ê ŕêśp̂ón̂śê śîźê óf̂ J́ŜÓN̂ ńêéd̂éd̂ f́ôŕ d̂íŝṕl̂áŷín̂ǵ ĉóm̂ḿêńt̂ś, Îńŝt́âǵr̂ám̂ śâẃ îńĉŕêáŝéd̂ ím̂ṕr̂éŝśîón̂ś [Ŝóûŕĉé: WPO Stats]"
-  },
-  "lighthouse/LighthouseStatusView.ts | cancel": {
-    "message": "Ĉán̂ćêĺ"
-  },
-  "lighthouse/LighthouseStatusView.ts | cancelling": {
-    "message": "Ĉán̂ćêĺl̂ín̂ǵ…"
-  },
-  "lighthouse/LighthouseStatusView.ts | fastFactMessageWithPlaceholder": {
-    "message": "💡 {PH1}"
-  },
-  "lighthouse/LighthouseStatusView.ts | ifASiteTakesSecondToBecome": {
-    "message": "Îf́ â śît́ê t́âḱêś >1 ŝéĉón̂d́ t̂ó b̂éĉóm̂é îńt̂ér̂áĉt́îv́ê, úŝér̂ś l̂óŝé ât́t̂én̂t́îón̂, án̂d́ t̂h́êír̂ ṕêŕĉép̂t́îón̂ óf̂ ćôḿp̂ĺêt́îńĝ t́ĥé p̂áĝé t̂áŝḱ îś b̂ŕôḱêń [Ŝóûŕĉé: Google Developers Blog]"
-  },
-  "lighthouse/LighthouseStatusView.ts | ifThisIssueIsReproduciblePlease": {
-    "message": "Îf́ t̂h́îś îśŝúê íŝ ŕêṕr̂ód̂úĉíb̂ĺê, ṕl̂éâśê ŕêṕôŕt̂ ít̂ át̂ t́ĥé Lighthouse GitHub r̂ép̂ó."
-  },
-  "lighthouse/LighthouseStatusView.ts | lighthouseIsGatheringInformation": {
-    "message": "Lighthouse îś ĝát̂h́êŕîńĝ ín̂f́ôŕm̂át̂íôń âb́ôút̂ t́ĥé p̂áĝé t̂ó ĉóm̂ṕût́ê ýôúr̂ śĉór̂é."
-  },
-  "lighthouse/LighthouseStatusView.ts | lighthouseIsLoadingThePage": {
-    "message": "L̂íĝh́t̂h́ôúŝé îś l̂óâd́îńĝ t́ĥé p̂áĝé."
-  },
-  "lighthouse/LighthouseStatusView.ts | lighthouseIsLoadingYourPage": {
-    "message": "Lighthouse îś l̂óâd́îńĝ ýôúr̂ ṕâǵê"
-  },
-  "lighthouse/LighthouseStatusView.ts | lighthouseIsLoadingYourPageWith": {
-    "message": "Lighthouse îś l̂óâd́îńĝ ýôúr̂ ṕâǵê ẃît́ĥ t́ĥŕôt́t̂ĺîńĝ t́ô ḿêáŝúr̂é p̂ér̂f́ôŕm̂án̂ćê ón̂ á m̂ób̂íl̂é d̂év̂íĉé ôń 3Ĝ."
-  },
-  "lighthouse/LighthouseStatusView.ts | lighthouseIsLoadingYourPageWithMobile": {
-    "message": "Lighthouse îś l̂óâd́îńĝ ýôúr̂ ṕâǵê ẃît́ĥ ḿôb́îĺê ém̂úl̂át̂íôń."
-  },
-  "lighthouse/LighthouseStatusView.ts | lighthouseIsLoadingYourPageWithThrottling": {
-    "message": "Lighthouse îś l̂óâd́îńĝ ýôúr̂ ṕâǵê ẃît́ĥ t́ĥŕôt́t̂ĺîńĝ t́ô ḿêáŝúr̂é p̂ér̂f́ôŕm̂án̂ćê ón̂ á ŝĺôẃ d̂éŝḱt̂óp̂ ón̂ 3Ǵ."
-  },
-  "lighthouse/LighthouseStatusView.ts | lighthouseIsWarmingUp": {
-    "message": "Lighthouse îś ŵár̂ḿîńĝ úp̂…"
-  },
-  "lighthouse/LighthouseStatusView.ts | lighthouseOnlySimulatesMobile": {
-    "message": "Lighthouse ôńl̂ý ŝím̂úl̂át̂éŝ ḿôb́îĺê ṕêŕf̂ór̂ḿâńĉé; t̂ó m̂éâśûŕê ṕêŕf̂ór̂ḿâńĉé ôń â ŕêál̂ d́êv́îćê, t́r̂ý Ŵéb̂ṔâǵêT́êśt̂.ór̂ǵ [Ŝóûŕĉé: Lighthouse t̂éâḿ]"
-  },
-  "lighthouse/LighthouseStatusView.ts | loading": {
-    "message": "L̂óâd́îńĝ…"
-  },
-  "lighthouse/LighthouseStatusView.ts | mbTakesAMinimumOfSecondsTo": {
-    "message": "1M̂B́ t̂ák̂éŝ á m̂ín̂ím̂úm̂ óf̂ 5 śêćôńd̂ś t̂ó d̂óŵńl̂óâd́ ôń â t́ŷṕîćâĺ 3Ĝ ćôńn̂éĉt́îón̂ [Śôúr̂ćê: WebPageTest án̂d́ DevTools 3Ĝ d́êf́îńît́îón̂]."
-  },
-  "lighthouse/LighthouseStatusView.ts | OfGlobalMobileUsersInWereOnGOrG": {
-    "message": "75% ôf́ ĝĺôb́âĺ m̂ób̂íl̂é ûśêŕŝ ín̂ 2016 ẃêŕê ón̂ 2Ǵ ôŕ 3Ĝ [Śôúr̂ćê: GSMA Mobile]"
-  },
-  "lighthouse/LighthouseStatusView.ts | OfMobilePagesTakeNearlySeconds": {
-    "message": "70% ôf́ m̂ób̂íl̂é p̂áĝéŝ t́âḱê ńêár̂ĺŷ 7 śêćôńd̂ś f̂ór̂ t́ĥé v̂íŝúâĺ ĉón̂t́êńt̂ áb̂óv̂é t̂h́ê f́ôĺd̂ t́ô d́îśp̂ĺâý ôń t̂h́ê śĉŕêén̂. [Śôúr̂ćê: Think with Google]"
-  },
-  "lighthouse/LighthouseStatusView.ts | rebuildingPinterestPagesFor": {
-    "message": "R̂éb̂úîĺd̂ín̂ǵ P̂ín̂t́êŕêśt̂ ṕâǵêś f̂ór̂ ṕêŕf̂ór̂ḿâńĉé îńĉŕêáŝéd̂ ćôńv̂ér̂śîón̂ ŕât́êś b̂ý 15% [Ŝóûŕĉé: WPO Stats]"
-  },
-  "lighthouse/LighthouseStatusView.ts | SecondsIsTheAverageTimeAMobile": {
-    "message": "19 ŝéĉón̂d́ŝ íŝ t́ĥé âv́êŕâǵê t́îḿê á m̂ób̂íl̂é ŵéb̂ ṕâǵê t́âḱêś t̂ó l̂óâd́ ôń â 3Ǵ ĉón̂ńêćt̂íôń [Ŝóûŕĉé: Google DoubleClick blog]"
-  },
-  "lighthouse/LighthouseStatusView.ts | theAverageUserDeviceCostsLess": {
-    "message": "T̂h́ê áv̂ér̂áĝé ûśêŕ d̂év̂íĉé ĉóŝt́ŝ ĺêśŝ t́ĥán̂ 200 ÚŜD́. [Ŝóûŕĉé: International Data Corporation]"
-  },
-  "lighthouse/LighthouseStatusView.ts | tryToNavigateToTheUrlInAFresh": {
-    "message": "T̂ŕŷ t́ô ńâv́îǵât́ê t́ô t́ĥé ÛŔL̂ ín̂ á f̂ŕêśĥ Chrome ṕr̂óf̂íl̂é ŵít̂h́ôút̂ án̂ý ôt́ĥér̂ t́âb́ŝ ór̂ éx̂t́êńŝíôńŝ óp̂én̂ án̂d́ t̂ŕŷ áĝáîń."
-  },
-  "lighthouse/LighthouseStatusView.ts | walmartSawAIncreaseInRevenueFor": {
-    "message": "Ŵál̂ḿâŕt̂ śâẃ â 1% ín̂ćr̂éâśê ín̂ ŕêv́êńûé f̂ór̂ év̂ér̂ý 100m̂ś îḿp̂ŕôv́êḿêńt̂ ín̂ ṕâǵê ĺôád̂ [Śôúr̂ćê: WPO Stats]"
-  },
   "linear_memory_inspector/linear_memory_inspector-meta.ts | memoryInspector": {
     "message": "M̂ém̂ór̂ý Îńŝṕêćt̂ór̂"
   },
@@ -5593,6 +5365,234 @@
   },
   "panels/layers/LayersPanel.ts | profiler": {
     "message": "P̂ŕôf́îĺêŕ"
+  },
+  "panels/lighthouse/lighthouse-meta.ts | showLighthouse": {
+    "message": "Ŝh́ôẃ Lighthouse"
+  },
+  "panels/lighthouse/LighthouseController.ts | accessibility": {
+    "message": "Âćĉéŝśîb́îĺît́ŷ"
+  },
+  "panels/lighthouse/LighthouseController.ts | applyMobileEmulation": {
+    "message": "Âṕp̂ĺŷ ḿôb́îĺê ém̂úl̂át̂íôń"
+  },
+  "panels/lighthouse/LighthouseController.ts | applyMobileEmulationDuring": {
+    "message": "Âṕp̂ĺŷ ḿôb́îĺê ém̂úl̂át̂íôń d̂úr̂ín̂ǵ âúd̂ít̂ín̂ǵ"
+  },
+  "panels/lighthouse/LighthouseController.ts | atLeastOneCategoryMustBeSelected": {
+    "message": "Ât́ l̂éâśt̂ ón̂é ĉát̂éĝór̂ý m̂úŝt́ b̂é ŝél̂éĉt́êd́."
+  },
+  "panels/lighthouse/LighthouseController.ts | bestPractices": {
+    "message": "B̂éŝt́ p̂ŕâćt̂íĉéŝ"
+  },
+  "panels/lighthouse/LighthouseController.ts | canOnlyAuditHttphttpsPagesAnd": {
+    "message": "Ĉán̂ ón̂ĺŷ áûd́ît́ ĤT́T̂Ṕ/ĤT́T̂ṔŜ ṕâǵêś âńd̂ Chrome éx̂t́êńŝíôńŝ. Ńâv́îǵât́ê t́ô á d̂íf̂f́êŕêńt̂ ṕâǵê t́ô śt̂ár̂t́ âń âúd̂ít̂."
+  },
+  "panels/lighthouse/LighthouseController.ts | clearStorage": {
+    "message": "Ĉĺêár̂ śt̂ór̂áĝé"
+  },
+  "panels/lighthouse/LighthouseController.ts | desktop": {
+    "message": "D̂éŝḱt̂óp̂"
+  },
+  "panels/lighthouse/LighthouseController.ts | doesThisPageFollowBestPractices": {
+    "message": "D̂óêś t̂h́îś p̂áĝé f̂ól̂ĺôẃ b̂éŝt́ p̂ŕâćt̂íĉéŝ f́ôŕ m̂ód̂ér̂ń ŵéb̂ d́êv́êĺôṕm̂én̂t́"
+  },
+  "panels/lighthouse/LighthouseController.ts | doesThisPageMeetTheStandardOfA": {
+    "message": "D̂óêś t̂h́îś p̂áĝé m̂éêt́ t̂h́ê śt̂án̂d́âŕd̂ óf̂ á P̂ŕôǵr̂éŝśîv́ê Ẃêb́ Âṕp̂"
+  },
+  "panels/lighthouse/LighthouseController.ts | howLongDoesThisAppTakeToShow": {
+    "message": "Ĥóŵ ĺôńĝ d́ôéŝ t́ĥíŝ áp̂ṕ t̂ák̂é t̂ó ŝh́ôẃ ĉón̂t́êńt̂ án̂d́ b̂éĉóm̂é ûśâb́l̂é"
+  },
+  "panels/lighthouse/LighthouseController.ts | indexeddb": {
+    "message": "Îńd̂éx̂éd̂D́B̂"
+  },
+  "panels/lighthouse/LighthouseController.ts | isThisPageOptimizedForAdSpeedAnd": {
+    "message": "Îś t̂h́îś p̂áĝé ôṕt̂ím̂íẑéd̂ f́ôŕ âd́ ŝṕêéd̂ án̂d́ q̂úâĺît́ŷ"
+  },
+  "panels/lighthouse/LighthouseController.ts | isThisPageOptimizedForSearch": {
+    "message": "Îś t̂h́îś p̂áĝé ôṕt̂ím̂íẑéd̂ f́ôŕ ŝéâŕĉh́ êńĝín̂é r̂éŝúl̂t́ŝ ŕâńk̂ín̂ǵ"
+  },
+  "panels/lighthouse/LighthouseController.ts | isThisPageUsableByPeopleWith": {
+    "message": "Îś t̂h́îś p̂áĝé ûśâb́l̂é b̂ý p̂éôṕl̂é ŵít̂h́ d̂íŝáb̂íl̂ít̂íêś ôŕ îḿp̂áîŕm̂én̂t́ŝ"
+  },
+  "panels/lighthouse/LighthouseController.ts | localStorage": {
+    "message": "L̂óĉál̂ Śt̂ór̂áĝé"
+  },
+  "panels/lighthouse/LighthouseController.ts | mobile": {
+    "message": "M̂ób̂íl̂é"
+  },
+  "panels/lighthouse/LighthouseController.ts | multipleTabsAreBeingControlledBy": {
+    "message": "M̂úl̂t́îṕl̂é t̂áb̂ś âŕê b́êín̂ǵ ĉón̂t́r̂ól̂ĺêd́ b̂ý t̂h́ê śâḿê service worker. Ćl̂óŝé ŷóûŕ ôt́ĥér̂ t́âb́ŝ ón̂ t́ĥé ŝám̂é ôŕîǵîń t̂ó âúd̂ít̂ t́ĥíŝ ṕâǵê."
+  },
+  "panels/lighthouse/LighthouseController.ts | performance": {
+    "message": "P̂ér̂f́ôŕm̂án̂ćê"
+  },
+  "panels/lighthouse/LighthouseController.ts | progressiveWebApp": {
+    "message": "P̂ŕôǵr̂éŝśîv́ê Ẃêb́ Âṕp̂"
+  },
+  "panels/lighthouse/LighthouseController.ts | publisherAds": {
+    "message": "P̂úb̂ĺîśĥér̂ Ád̂ś"
+  },
+  "panels/lighthouse/LighthouseController.ts | resetStorageLocalstorage": {
+    "message": "R̂éŝét̂ śt̂ór̂áĝé (localStorage, IndexedDB, êt́ĉ) b́êf́ôŕê áûd́ît́îńĝ. (Ǵôód̂ f́ôŕ p̂ér̂f́ôŕm̂án̂ćê & PWA t́êśt̂ín̂ǵ)"
+  },
+  "panels/lighthouse/LighthouseController.ts | seo": {
+    "message": "ŜÉÔ"
+  },
+  "panels/lighthouse/LighthouseController.ts | simulateASlowerPageLoadBasedOn": {
+    "message": "Ŝím̂úl̂át̂é â śl̂óŵér̂ ṕâǵê ĺôád̂, b́âśêd́ ôń d̂át̂á f̂ŕôḿ âń îńît́îál̂ ún̂t́ĥŕôt́t̂ĺêd́ l̂óâd́. Îf́ d̂íŝáb̂ĺêd́, t̂h́ê ṕâǵê íŝ áĉt́ûál̂ĺŷ śl̂óŵéd̂ ẃît́ĥ áp̂ṕl̂íêd́ t̂h́r̂ót̂t́l̂ín̂ǵ."
+  },
+  "panels/lighthouse/LighthouseController.ts | simulatedThrottling": {
+    "message": "Ŝím̂úl̂át̂éd̂ t́ĥŕôt́t̂ĺîńĝ"
+  },
+  "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingLoadingPlural": {
+    "message": "T̂h́êŕê ḿâý b̂é ŝt́ôŕêd́ d̂át̂á âf́f̂éĉt́îńĝ ĺôád̂ín̂ǵ p̂ér̂f́ôŕm̂án̂ćê ín̂ t́ĥéŝé l̂óĉát̂íôńŝ: {PH1}. Áûd́ît́ t̂h́îś p̂áĝé îń âń îńĉóĝńît́ô ẃîńd̂óŵ t́ô ṕr̂év̂én̂t́ t̂h́ôśê ŕêśôúr̂ćêś f̂ŕôḿ âf́f̂éĉt́îńĝ ýôúr̂ śĉór̂éŝ."
+  },
+  "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingSingular": {
+    "message": "T̂h́êŕê ḿâý b̂é ŝt́ôŕêd́ d̂át̂á âf́f̂éĉt́îńĝ ĺôád̂ín̂ǵ p̂ér̂f́ôŕm̂án̂ćê ín̂ t́ĥíŝ ĺôćât́îón̂: {PH1}. Áûd́ît́ t̂h́îś p̂áĝé îń âń îńĉóĝńît́ô ẃîńd̂óŵ t́ô ṕr̂év̂én̂t́ t̂h́ôśê ŕêśôúr̂ćêś f̂ŕôḿ âf́f̂éĉt́îńĝ ýôúr̂ śĉór̂éŝ."
+  },
+  "panels/lighthouse/LighthouseController.ts | webSql": {
+    "message": "Ŵéb̂ ŚQ̂Ĺ"
+  },
+  "panels/lighthouse/LighthousePanel.ts | cancelling": {
+    "message": "Ĉán̂ćêĺl̂ín̂ǵ"
+  },
+  "panels/lighthouse/LighthousePanel.ts | clearAll": {
+    "message": "Ĉĺêár̂ ál̂ĺ"
+  },
+  "panels/lighthouse/LighthousePanel.ts | dropLighthouseJsonHere": {
+    "message": "D̂ŕôṕ Lighthouse ĴŚÔŃ ĥér̂é"
+  },
+  "panels/lighthouse/LighthousePanel.ts | lighthouseSettings": {
+    "message": "Lighthouse ŝét̂t́îńĝś"
+  },
+  "panels/lighthouse/LighthousePanel.ts | performAnAudit": {
+    "message": "P̂ér̂f́ôŕm̂ án̂ áûd́ît́…"
+  },
+  "panels/lighthouse/LighthousePanel.ts | printing": {
+    "message": "P̂ŕîńt̂ín̂ǵ"
+  },
+  "panels/lighthouse/LighthousePanel.ts | thePrintPopupWindowIsOpenPlease": {
+    "message": "T̂h́ê ṕr̂ín̂t́ p̂óp̂úp̂ ẃîńd̂óŵ íŝ óp̂én̂. Ṕl̂éâśê ćl̂óŝé ît́ t̂ó ĉón̂t́îńûé."
+  },
+  "panels/lighthouse/LighthouseReportRenderer.ts | thePerformanceMetricsAboveAre": {
+    "message": "T̂h́ê ṕêŕf̂ór̂ḿâńĉé m̂ét̂ŕîćŝ áb̂óv̂é âŕê śîḿûĺât́êd́ âńd̂ ẃôń't̂ ḿât́ĉh́ t̂h́ê t́îḿîńĝś f̂óûńd̂ ín̂ t́ĥíŝ t́r̂áĉé. D̂íŝáb̂ĺê śîḿûĺât́êd́ t̂h́r̂ót̂t́l̂ín̂ǵ îń \"L̂íĝh́t̂h́ôúŝé Ŝét̂t́îńĝś\" îf́ ŷóû ẃâńt̂ t́ĥé t̂ím̂ín̂ǵŝ t́ô ḿât́ĉh́."
+  },
+  "panels/lighthouse/LighthouseReportRenderer.ts | viewOriginalTrace": {
+    "message": "V̂íêẃ Ôŕîǵîńâĺ T̂ŕâćê"
+  },
+  "panels/lighthouse/LighthouseReportRenderer.ts | viewTrace": {
+    "message": "V̂íêẃ T̂ŕâćê"
+  },
+  "panels/lighthouse/LighthouseReportSelector.ts | newReport": {
+    "message": "(n̂éŵ ŕêṕôŕt̂)"
+  },
+  "panels/lighthouse/LighthouseReportSelector.ts | reports": {
+    "message": "R̂ép̂ór̂t́ŝ"
+  },
+  "panels/lighthouse/LighthouseStartView.ts | categories": {
+    "message": "Ĉát̂éĝór̂íêś"
+  },
+  "panels/lighthouse/LighthouseStartView.ts | communityPluginsBeta": {
+    "message": "Ĉóm̂ḿûńît́ŷ Ṕl̂úĝín̂ś (b̂ét̂á)"
+  },
+  "panels/lighthouse/LighthouseStartView.ts | device": {
+    "message": "D̂év̂íĉé"
+  },
+  "panels/lighthouse/LighthouseStartView.ts | generateReport": {
+    "message": "Ĝén̂ér̂át̂é r̂ép̂ór̂t́"
+  },
+  "panels/lighthouse/LighthouseStartView.ts | identifyAndFixCommonProblemsThat": {
+    "message": "Îd́êńt̂íf̂ý âńd̂ f́îx́ ĉóm̂ḿôń p̂ŕôb́l̂ém̂ś t̂h́ât́ âf́f̂éĉt́ ŷóûŕ ŝít̂é'ŝ ṕêŕf̂ór̂ḿâńĉé, âćĉéŝśîb́îĺît́ŷ, án̂d́ ûśêŕ êx́p̂ér̂íêńĉé."
+  },
+  "panels/lighthouse/LighthouseStartView.ts | learnMore": {
+    "message": "L̂éâŕn̂ ḿôŕê"
+  },
+  "panels/lighthouse/LighthouseStatusView.ts | ahSorryWeRanIntoAnError": {
+    "message": "Âh́, ŝór̂ŕŷ! Ẃê ŕâń îńt̂ó âń êŕr̂ór̂."
+  },
+  "panels/lighthouse/LighthouseStatusView.ts | almostThereLighthouseIsNow": {
+    "message": "Âĺm̂óŝt́ t̂h́êŕê! Lighthouse íŝ ńôẃ ĝén̂ér̂át̂ín̂ǵ ŷóûŕ r̂ép̂ór̂t́."
+  },
+  "panels/lighthouse/LighthouseStatusView.ts | asPageLoadTimeIncreasesFromOne": {
+    "message": "Âś p̂áĝé l̂óâd́ t̂ím̂é îńĉŕêáŝéŝ f́r̂óm̂ ón̂é ŝéĉón̂d́ t̂ó ŝév̂én̂ śêćôńd̂ś, t̂h́ê ṕr̂ób̂áb̂íl̂ít̂ý ôf́ â ḿôb́îĺê śît́ê v́îśît́ôŕ b̂óûńĉín̂ǵ îńĉŕêáŝéŝ 113%. [Śôúr̂ćê: Think with Google]"
+  },
+  "panels/lighthouse/LighthouseStatusView.ts | asTheNumberOfElementsOnAPage": {
+    "message": "Âś t̂h́ê ńûḿb̂ér̂ óf̂ él̂ém̂én̂t́ŝ ón̂ á p̂áĝé îńĉŕêáŝéŝ f́r̂óm̂ 400 t́ô 6,000, t́ĥé p̂ŕôb́âb́îĺît́ŷ óf̂ ćôńv̂ér̂śîón̂ d́r̂óp̂ś 95%. [Ŝóûŕĉé: Think with Google]"
+  },
+  "panels/lighthouse/LighthouseStatusView.ts | auditingS": {
+    "message": "Âúd̂ít̂ín̂ǵ {PH1}"
+  },
+  "panels/lighthouse/LighthouseStatusView.ts | auditingYourWebPage": {
+    "message": "Âúd̂ít̂ín̂ǵ ŷóûŕ ŵéb̂ ṕâǵê"
+  },
+  "panels/lighthouse/LighthouseStatusView.ts | byReducingTheResponseSizeOfJson": {
+    "message": "B̂ý r̂éd̂úĉín̂ǵ t̂h́ê ŕêśp̂ón̂śê śîźê óf̂ J́ŜÓN̂ ńêéd̂éd̂ f́ôŕ d̂íŝṕl̂áŷín̂ǵ ĉóm̂ḿêńt̂ś, Îńŝt́âǵr̂ám̂ śâẃ îńĉŕêáŝéd̂ ím̂ṕr̂éŝśîón̂ś [Ŝóûŕĉé: WPO Stats]"
+  },
+  "panels/lighthouse/LighthouseStatusView.ts | cancel": {
+    "message": "Ĉán̂ćêĺ"
+  },
+  "panels/lighthouse/LighthouseStatusView.ts | cancelling": {
+    "message": "Ĉán̂ćêĺl̂ín̂ǵ…"
+  },
+  "panels/lighthouse/LighthouseStatusView.ts | fastFactMessageWithPlaceholder": {
+    "message": "💡 {PH1}"
+  },
+  "panels/lighthouse/LighthouseStatusView.ts | ifASiteTakesSecondToBecome": {
+    "message": "Îf́ â śît́ê t́âḱêś >1 ŝéĉón̂d́ t̂ó b̂éĉóm̂é îńt̂ér̂áĉt́îv́ê, úŝér̂ś l̂óŝé ât́t̂én̂t́îón̂, án̂d́ t̂h́êír̂ ṕêŕĉép̂t́îón̂ óf̂ ćôḿp̂ĺêt́îńĝ t́ĥé p̂áĝé t̂áŝḱ îś b̂ŕôḱêń [Ŝóûŕĉé: Google Developers Blog]"
+  },
+  "panels/lighthouse/LighthouseStatusView.ts | ifThisIssueIsReproduciblePlease": {
+    "message": "Îf́ t̂h́îś îśŝúê íŝ ŕêṕr̂ód̂úĉíb̂ĺê, ṕl̂éâśê ŕêṕôŕt̂ ít̂ át̂ t́ĥé Lighthouse GitHub r̂ép̂ó."
+  },
+  "panels/lighthouse/LighthouseStatusView.ts | lighthouseIsGatheringInformation": {
+    "message": "Lighthouse îś ĝát̂h́êŕîńĝ ín̂f́ôŕm̂át̂íôń âb́ôút̂ t́ĥé p̂áĝé t̂ó ĉóm̂ṕût́ê ýôúr̂ śĉór̂é."
+  },
+  "panels/lighthouse/LighthouseStatusView.ts | lighthouseIsLoadingThePage": {
+    "message": "L̂íĝh́t̂h́ôúŝé îś l̂óâd́îńĝ t́ĥé p̂áĝé."
+  },
+  "panels/lighthouse/LighthouseStatusView.ts | lighthouseIsLoadingYourPage": {
+    "message": "Lighthouse îś l̂óâd́îńĝ ýôúr̂ ṕâǵê"
+  },
+  "panels/lighthouse/LighthouseStatusView.ts | lighthouseIsLoadingYourPageWith": {
+    "message": "Lighthouse îś l̂óâd́îńĝ ýôúr̂ ṕâǵê ẃît́ĥ t́ĥŕôt́t̂ĺîńĝ t́ô ḿêáŝúr̂é p̂ér̂f́ôŕm̂án̂ćê ón̂ á m̂ób̂íl̂é d̂év̂íĉé ôń 3Ĝ."
+  },
+  "panels/lighthouse/LighthouseStatusView.ts | lighthouseIsLoadingYourPageWithMobile": {
+    "message": "Lighthouse îś l̂óâd́îńĝ ýôúr̂ ṕâǵê ẃît́ĥ ḿôb́îĺê ém̂úl̂át̂íôń."
+  },
+  "panels/lighthouse/LighthouseStatusView.ts | lighthouseIsLoadingYourPageWithThrottling": {
+    "message": "Lighthouse îś l̂óâd́îńĝ ýôúr̂ ṕâǵê ẃît́ĥ t́ĥŕôt́t̂ĺîńĝ t́ô ḿêáŝúr̂é p̂ér̂f́ôŕm̂án̂ćê ón̂ á ŝĺôẃ d̂éŝḱt̂óp̂ ón̂ 3Ǵ."
+  },
+  "panels/lighthouse/LighthouseStatusView.ts | lighthouseIsWarmingUp": {
+    "message": "Lighthouse îś ŵár̂ḿîńĝ úp̂…"
+  },
+  "panels/lighthouse/LighthouseStatusView.ts | lighthouseOnlySimulatesMobile": {
+    "message": "Lighthouse ôńl̂ý ŝím̂úl̂át̂éŝ ḿôb́îĺê ṕêŕf̂ór̂ḿâńĉé; t̂ó m̂éâśûŕê ṕêŕf̂ór̂ḿâńĉé ôń â ŕêál̂ d́êv́îćê, t́r̂ý Ŵéb̂ṔâǵêT́êśt̂.ór̂ǵ [Ŝóûŕĉé: Lighthouse t̂éâḿ]"
+  },
+  "panels/lighthouse/LighthouseStatusView.ts | loading": {
+    "message": "L̂óâd́îńĝ…"
+  },
+  "panels/lighthouse/LighthouseStatusView.ts | mbTakesAMinimumOfSecondsTo": {
+    "message": "1M̂B́ t̂ák̂éŝ á m̂ín̂ím̂úm̂ óf̂ 5 śêćôńd̂ś t̂ó d̂óŵńl̂óâd́ ôń â t́ŷṕîćâĺ 3Ĝ ćôńn̂éĉt́îón̂ [Śôúr̂ćê: WebPageTest án̂d́ DevTools 3Ĝ d́êf́îńît́îón̂]."
+  },
+  "panels/lighthouse/LighthouseStatusView.ts | OfGlobalMobileUsersInWereOnGOrG": {
+    "message": "75% ôf́ ĝĺôb́âĺ m̂ób̂íl̂é ûśêŕŝ ín̂ 2016 ẃêŕê ón̂ 2Ǵ ôŕ 3Ĝ [Śôúr̂ćê: GSMA Mobile]"
+  },
+  "panels/lighthouse/LighthouseStatusView.ts | OfMobilePagesTakeNearlySeconds": {
+    "message": "70% ôf́ m̂ób̂íl̂é p̂áĝéŝ t́âḱê ńêár̂ĺŷ 7 śêćôńd̂ś f̂ór̂ t́ĥé v̂íŝúâĺ ĉón̂t́êńt̂ áb̂óv̂é t̂h́ê f́ôĺd̂ t́ô d́îśp̂ĺâý ôń t̂h́ê śĉŕêén̂. [Śôúr̂ćê: Think with Google]"
+  },
+  "panels/lighthouse/LighthouseStatusView.ts | rebuildingPinterestPagesFor": {
+    "message": "R̂éb̂úîĺd̂ín̂ǵ P̂ín̂t́êŕêśt̂ ṕâǵêś f̂ór̂ ṕêŕf̂ór̂ḿâńĉé îńĉŕêáŝéd̂ ćôńv̂ér̂śîón̂ ŕât́êś b̂ý 15% [Ŝóûŕĉé: WPO Stats]"
+  },
+  "panels/lighthouse/LighthouseStatusView.ts | SecondsIsTheAverageTimeAMobile": {
+    "message": "19 ŝéĉón̂d́ŝ íŝ t́ĥé âv́êŕâǵê t́îḿê á m̂ób̂íl̂é ŵéb̂ ṕâǵê t́âḱêś t̂ó l̂óâd́ ôń â 3Ǵ ĉón̂ńêćt̂íôń [Ŝóûŕĉé: Google DoubleClick blog]"
+  },
+  "panels/lighthouse/LighthouseStatusView.ts | theAverageUserDeviceCostsLess": {
+    "message": "T̂h́ê áv̂ér̂áĝé ûśêŕ d̂év̂íĉé ĉóŝt́ŝ ĺêśŝ t́ĥán̂ 200 ÚŜD́. [Ŝóûŕĉé: International Data Corporation]"
+  },
+  "panels/lighthouse/LighthouseStatusView.ts | tryToNavigateToTheUrlInAFresh": {
+    "message": "T̂ŕŷ t́ô ńâv́îǵât́ê t́ô t́ĥé ÛŔL̂ ín̂ á f̂ŕêśĥ Chrome ṕr̂óf̂íl̂é ŵít̂h́ôút̂ án̂ý ôt́ĥér̂ t́âb́ŝ ór̂ éx̂t́êńŝíôńŝ óp̂én̂ án̂d́ t̂ŕŷ áĝáîń."
+  },
+  "panels/lighthouse/LighthouseStatusView.ts | walmartSawAIncreaseInRevenueFor": {
+    "message": "Ŵál̂ḿâŕt̂ śâẃ â 1% ín̂ćr̂éâśê ín̂ ŕêv́êńûé f̂ór̂ év̂ér̂ý 100m̂ś îḿp̂ŕôv́êḿêńt̂ ín̂ ṕâǵê ĺôád̂ [Śôúr̂ćê: WPO Stats]"
   },
   "perf_ui/FilmStripView.ts | doubleclickToZoomImageClickTo": {
     "message": "D̂óûb́l̂éĉĺîćk̂ t́ô źôóm̂ ím̂áĝé. Ĉĺîćk̂ t́ô v́îéŵ ṕr̂éĉéd̂ín̂ǵ r̂éq̂úêśt̂ś."

@@ -1,6 +1,6 @@
 {
   "dependencies": [
     "test_runner",
-    "lighthouse"
+    "panels/lighthouse"
   ]
 }

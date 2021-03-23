@@ -6,7 +6,7 @@
 
     { "name": "panels/accessibility" },
     { "name": "panels/animation" },
-    { "name": "lighthouse" },
+    { "name": "panels/lighthouse" },
     { "name": "panels/browser_debugger" },
     { "name": "panels/css_overview" },
     { "name": "cookie_table" },

@@ -4,9 +4,9 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../common/common.js';
-import * as i18n from '../i18n/i18n.js';
-import * as UI from '../ui/ui.js';
+import * as Common from '../../common/common.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as UI from '../../ui/ui.js';
 
 import type {LighthouseController} from './LighthouseController.js';
 import {Events, RuntimeSettings} from './LighthouseController.js';
@@ -145,7 +145,7 @@ const UIStrings = {
   lighthouseOnlySimulatesMobile:
       '`Lighthouse` only simulates mobile performance; to measure performance on a real device, try WebPageTest.org [Source: `Lighthouse` team]',
 };
-const str_ = i18n.i18n.registerUIStrings('lighthouse/LighthouseStatusView.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/lighthouse/LighthouseStatusView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
@@ -192,7 +192,7 @@ export class StatusView {
   _render(): void {
     const dialogRoot = UI.Utils.createShadowRootWithCoreStyles(
         this._dialog.contentElement,
-        {cssFile: 'lighthouse/lighthouseDialog.css', enableLegacyPatching: false, delegatesFocus: undefined});
+        {cssFile: 'panels/lighthouse/lighthouseDialog.css', enableLegacyPatching: false, delegatesFocus: undefined});
     const lighthouseViewElement = dialogRoot.createChild('div', 'lighthouse-view vbox');
 
     const cancelButton = UI.UIUtils.createTextButton(i18nString(UIStrings.cancel), this._cancel.bind(this));

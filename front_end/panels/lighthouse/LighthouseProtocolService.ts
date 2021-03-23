@@ -2,9 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../common/common.js';
-import type * as ProtocolClient from '../protocol_client/protocol_client.js';
-import * as SDK from '../sdk/sdk.js';
+import * as Common from '../../common/common.js';
+import type * as ProtocolClient from '../../protocol_client/protocol_client.js';
+import * as SDK from '../../sdk/sdk.js';
 
 import type * as ReportRenderer from './LighthouseReporterTypes.js';
 
@@ -87,7 +87,7 @@ export class ProtocolService extends Common.ObjectWrapper.ObjectWrapper {
   private initWorker(): Promise<Worker> {
     this.lighthouseWorkerPromise = new Promise<Worker>(resolve => {
       const worker =
-          new Worker(new URL('../lighthouse_worker/lighthouse_worker.js', import.meta.url), {type: 'module'});
+          new Worker(new URL('../../lighthouse_worker/lighthouse_worker.js', import.meta.url), {type: 'module'});
 
       worker.addEventListener('message', event => {
         if (event.data === 'workerReady') {

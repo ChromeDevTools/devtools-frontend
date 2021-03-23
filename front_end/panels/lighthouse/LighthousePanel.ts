@@ -4,13 +4,13 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../common/common.js';
-import * as Host from '../host/host.js';
-import * as i18n from '../i18n/i18n.js';
-import * as Emulation from '../panels/emulation/emulation.js';
-import * as Root from '../root/root.js';
-import * as SDK from '../sdk/sdk.js';
-import * as UI from '../ui/ui.js';
+import * as Common from '../../common/common.js';
+import * as Host from '../../host/host.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as Root from '../../root/root.js';
+import * as SDK from '../../sdk/sdk.js';
+import * as UI from '../../ui/ui.js';
+import * as Emulation from '../emulation/emulation.js';
 
 import {Events, LighthouseController} from './LighthouseController.js';
 import {ProtocolService} from './LighthouseProtocolService.js';
@@ -51,7 +51,7 @@ const UIStrings = {
   */
   cancelling: 'Cancelling',
 };
-const str_ = i18n.i18n.registerUIStrings('lighthouse/LighthousePanel.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/lighthouse/LighthousePanel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 let lighthousePanelInstace: LighthousePanel;
@@ -81,7 +81,7 @@ export class LighthousePanel extends UI.Panel.Panel {
   private constructor() {
     super('lighthouse');
     this.registerRequiredCSS('third_party/lighthouse/report-assets/report.css', {enableLegacyPatching: false});
-    this.registerRequiredCSS('lighthouse/lighthousePanel.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('panels/lighthouse/lighthousePanel.css', {enableLegacyPatching: false});
 
     this._protocolService = new ProtocolService();
     this._controller = new LighthouseController(this._protocolService);

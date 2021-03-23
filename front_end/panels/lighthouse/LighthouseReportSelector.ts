@@ -4,9 +4,9 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../common/common.js';
-import * as i18n from '../i18n/i18n.js';
-import * as UI from '../ui/ui.js';
+import * as Common from '../../common/common.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as UI from '../../ui/ui.js';
 
 import type * as ReportRenderer from './LighthouseReporterTypes.js';
 
@@ -20,7 +20,7 @@ const UIStrings = {
   */
   newReport: '(new report)',
 };
-const str_ = i18n.i18n.registerUIStrings('lighthouse/LighthouseReportSelector.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/lighthouse/LighthouseReportSelector.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class ReportSelector {
   _renderNewLighthouseView: () => void;

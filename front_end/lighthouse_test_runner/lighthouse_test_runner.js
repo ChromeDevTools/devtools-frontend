@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import '../test_runner/test_runner.js';
-import '../lighthouse/lighthouse-legacy.js';
+import '../panels/lighthouse/lighthouse-legacy.js';
 
 /**
  * @fileoverview using private properties isn't a Closure violation in tests.

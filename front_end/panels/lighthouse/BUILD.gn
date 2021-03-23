@@ -2,8 +2,8 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-import("../../scripts/build/ninja/devtools_entrypoint.gni")
-import("../../scripts/build/ninja/devtools_module.gni")
+import("../../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../../../scripts/build/ninja/devtools_module.gni")
 
 devtools_module("lighthouse") {
   sources = [
@@ -19,17 +19,17 @@ devtools_module("lighthouse") {
   ]
 
   deps = [
-    "../common:bundle",
-    "../components:bundle",
-    "../host:bundle",
-    "../i18n:bundle",
-    "../panels/emulation:bundle",
-    "../platform:bundle",
-    "../protocol_client:bundle",
-    "../sdk:bundle",
-    "../timeline:bundle",
-    "../ui:bundle",
-    "../workspace:bundle",
+    "../../common:bundle",
+    "../../components:bundle",
+    "../../host:bundle",
+    "../../i18n:bundle",
+    "../../panels/emulation:bundle",
+    "../../platform:bundle",
+    "../../protocol_client:bundle",
+    "../../sdk:bundle",
+    "../../timeline:bundle",
+    "../../ui:bundle",
+    "../../workspace:bundle",
   ]
 }
 
@@ -38,7 +38,7 @@ devtools_entrypoint("bundle") {
 
   deps = [
     ":lighthouse",
-    "../third_party/lighthouse",
+    "../../third_party/lighthouse",
   ]
 }
 

@@ -7,7 +7,7 @@ import {describeWithEnvironment} from '../helpers/EnvironmentHelpers.js';
 
 const {assert} = chai;
 
-describeWithEnvironment('LayoutPane', async () => {
+describeWithEnvironment('StylesSidebarPane', async () => {
   let Elements: typeof ElementsModule;
   before(async () => {
     Elements = await import('../../../../front_end/elements/elements.js');

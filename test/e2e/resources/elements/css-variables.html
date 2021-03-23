@@ -8,6 +8,7 @@
   html {
     --color: black;
     --title-color: var(--color);
+    --move-final-width: 100%;
   }
 
   body, body {
@@ -17,5 +18,20 @@
   #properties-to-inspect {
     color: var(--title-color);
   }
+
+  #keyframes-rule {
+    animation: move;
+  }
+
+  @keyframes move {
+    from {
+      width: 0%;
+    }
+
+    to {
+      width: var( --move-final-width);
+    }
+  }
 </style>
 <div id="properties-to-inspect"></div>
+<div id="keyframes-rule"></div>

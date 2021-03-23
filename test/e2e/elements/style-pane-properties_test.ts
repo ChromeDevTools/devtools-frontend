@@ -11,6 +11,7 @@ import {getComputedStylesForDomNode, getDisplayedCSSPropertyNames, getDisplayedS
 
 const PROPERTIES_TO_DELETE_SELECTOR = '#properties-to-delete';
 const PROPERTIES_TO_INSPECT_SELECTOR = '#properties-to-inspect';
+const KEYFRAMES_100_PERCENT_RULE_SELECTOR = '100%';
 const FIRST_PROPERTY_NAME_SELECTOR = '.tree-outline li:nth-of-type(1) > .webkit-css-property';
 const SECOND_PROPERTY_NAME_SELECTOR = '.tree-outline li:nth-of-type(2) > .webkit-css-property';
 const FIRST_PROPERTY_VALUE_SELECTOR = '.tree-outline li:nth-of-type(1) > .value';
@@ -108,6 +109,22 @@ describe('The Styles pane', async () => {
     const propertyValue = await waitFor(FIRST_PROPERTY_VALUE_SELECTOR, propertiesSection);
     const link = await $$('.css-var-link', propertyValue);
     assert.strictEqual(link.length, 1, 'The expected var link was not created');
+  });
+
+  it('renders computed CSS variables in @keyframes rules', async () => {
+    const {frontend} = getBrowserAndPages();
+    await goToResourceAndWaitForStyleSection('elements/css-variables.html');
+
+    // Select div that we will inspect the CSS variables for
+    await frontend.keyboard.press('ArrowRight');
+    await frontend.keyboard.press('ArrowDown');
+    await waitForContentOfSelectedElementsNode('<div id=\u200B"keyframes-rule">\u200B</div>\u200B');
+
+    const propertiesSection = await getStyleRule(KEYFRAMES_100_PERCENT_RULE_SELECTOR);
+    const propertyValue = await waitFor(FIRST_PROPERTY_VALUE_SELECTOR, propertiesSection);
+    const propertyValueText = await propertyValue.evaluate(node => node.textContent);
+    assert.strictEqual(
+        propertyValueText, 'var( --move-final-width)', 'CSS variable in @keyframes rule is not correctly rendered');
   });
 
   it('can remove a CSS property when its name or value is deleted', async () => {

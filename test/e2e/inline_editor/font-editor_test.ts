@@ -40,7 +40,8 @@ describe('The font editor', async function() {
     await openFontEditor(0);
   });
 
-  it('is properly applying font family changes to the style section', async () => {
+  // Flaky test.
+  it.skip('[crbug.com/1184627] is properly applying font family changes to the style section', async () => {
     const {frontend} = getBrowserAndPages();
     await openFontEditor(0);
     const fontFamilySelector = await waitFor('[aria-label="Font Family"]');
@@ -67,7 +68,8 @@ describe('The font editor', async function() {
     await waitForCSSPropertyValue('element.style', 'font-size', '11px');
   });
 
-  it('is properly applying selector key values to the style section', async () => {
+  // Flaky test.
+  it.skip('[crbug.com/1184627] is properly applying selector key values to the style section', async () => {
     const {frontend} = getBrowserAndPages();
     await openFontEditor(0);
     const fontWeightSelectorInput = await waitFor('[aria-label="font-weight Key Value Selector"]');

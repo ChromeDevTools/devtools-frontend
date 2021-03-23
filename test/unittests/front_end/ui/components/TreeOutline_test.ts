@@ -800,7 +800,6 @@ describe('TreeOutline', () => {
            });
            await component.expandRecursively(Number.POSITIVE_INFINITY);
            await waitForRenderedTreeNodeCount(shadowRoot, NODE_COUNT_BASIC_DATA_FULLY_EXPANDED);
-           await coordinator.done();
            const germanyNode = getVisibleTreeNodeByText(shadowRoot, 'Germany');
            dispatchClickEvent(germanyNode);
            dispatchKeyDownEvent(germanyNode, {key: 'ArrowUp', bubbles: true});
@@ -818,7 +817,7 @@ describe('TreeOutline', () => {
           tree: basicTreeData,
         });
         await component.expandRecursively(Number.POSITIVE_INFINITY);
-        await coordinator.done();
+        await waitForRenderedTreeNodeCount(shadowRoot, NODE_COUNT_BASIC_DATA_FULLY_EXPANDED);
         const chromeNode = getVisibleTreeNodeByText(shadowRoot, 'Chrome');
         dispatchClickEvent(chromeNode);
         dispatchKeyDownEvent(chromeNode, {key: 'ArrowRight', bubbles: true});

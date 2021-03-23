@@ -67,6 +67,7 @@ devtools_module("elements") {
     "../panels/event_listeners:bundle",
     "../platform:bundle",
     "../protocol_client:bundle",
+    "../render_coordinator:bundle",
     "../root:bundle",
     "../sdk:bundle",
     "../text_editor:bundle",

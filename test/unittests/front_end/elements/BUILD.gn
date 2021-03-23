@@ -18,6 +18,7 @@ ts_library("elements") {
   deps = [
     "../../../../front_end/elements:bundle",
     "../../../../front_end/inline_editor:bundle",
+    "../../../../front_end/render_coordinator:bundle",
     "../../../../front_end/ui:bundle",
     "../helpers",
   ]

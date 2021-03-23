@@ -4,6 +4,7 @@
 
 import './NodeText.js';
 
+import * as Coordinator from '../render_coordinator/render_coordinator.js';
 import * as LitHtml from '../third_party/lit-html/lit-html.js';
 
 import {crumbsToRender, DOMNode, NodeSelectedEvent, UserScrollPosition} from './ElementsBreadcrumbsUtils.js';
@@ -25,6 +26,8 @@ export interface ElementsBreadcrumbs extends HTMLElement {
       type: string, listener: EventListenerOrEventListenerObject, options?: boolean|AddEventListenerOptions): void;
   addEventListener(type: 'node-selected', callback: (event: NodeSelectedEvent) => void): void;
 }
+
+const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 export class ElementsBreadcrumbs extends HTMLElement {
   private readonly shadow = this.attachShadow({mode: 'open'});
@@ -63,15 +66,15 @@ export class ElementsBreadcrumbs extends HTMLElement {
    *
    * If either of these are true, we toggle the overflowing state accordingly and trigger a re-render.
    */
-  private checkForOverflowOnResize(): void {
+  private async checkForOverflowOnResize(): Promise<void> {
     const wrappingElement = this.shadow.querySelector('.crumbs');
     const crumbs = this.shadow.querySelector('.crumbs-scroll-container');
     if (!wrappingElement || !crumbs) {
       return;
     }
 
-    const totalContainingWidth = wrappingElement.clientWidth;
-    const totalCrumbsWidth = crumbs.clientWidth;
+    const totalContainingWidth = await coordinator.read<number>(() => wrappingElement.clientWidth);
+    const totalCrumbsWidth = await coordinator.read<number>(() => crumbs.clientWidth);
 
     if (totalCrumbsWidth >= totalContainingWidth && this.overflowing === false) {
       this.overflowing = true;
@@ -84,8 +87,8 @@ export class ElementsBreadcrumbs extends HTMLElement {
     }
   }
 
-  private update(): void {
-    this.render();
+  private async update(): Promise<void> {
+    await this.render();
     this.engageResizeObserver();
     this.ensureSelectedNodeIsVisible();
   }
@@ -129,7 +132,7 @@ export class ElementsBreadcrumbs extends HTMLElement {
    * triggers a re-render. If we are not overflowing, this method returns and
    * does nothing.
    */
-  private checkForOverflow(): void {
+  private async checkForOverflow(): Promise<void> {
     const crumbScrollContainer = this.shadow.querySelector('.crumbs-scroll-container');
     const crumbWindow = this.shadow.querySelector('.crumbs-window');
 
@@ -137,10 +140,18 @@ export class ElementsBreadcrumbs extends HTMLElement {
       return;
     }
 
-    const paddingAllowance = 20;
-    const maxChildWidth = crumbWindow.clientWidth - paddingAllowance;
+    const crumbWindowWidth = await coordinator.read<number>(() => {
+      return crumbWindow.clientWidth;
+    });
 
-    if (crumbScrollContainer.clientWidth < maxChildWidth) {
+    const scrollContainerWidth = await coordinator.read<number>(() => {
+      return crumbScrollContainer.clientWidth;
+    });
+
+    const paddingAllowance = 20;
+    const maxChildWidth = crumbWindowWidth - paddingAllowance;
+
+    if (scrollContainerWidth < maxChildWidth) {
       if (this.overflowing) {
         // We were overflowing, but now we have enough room, so re-render with
         // overflowing set to false so the overflow buttons get removed.
@@ -239,141 +250,143 @@ export class ElementsBreadcrumbs extends HTMLElement {
       `;
   }
 
-  private render(): void {
+  private async render(): Promise<void> {
     const crumbs = crumbsToRender(this.crumbsData, this.selectedDOMNode);
 
-    // Disabled until https://crbug.com/1079231 is fixed.
-    // clang-format off
-    LitHtml.render(LitHtml.html`
-      <style>
-        :host {
-          --node-text-label-color: var(--color-syntax-2);
-          --node-text-class-color: var(--color-syntax-4);
-          --node-text-id-color: var(--color-syntax-4);
-          --node-text-multiple-descriptors-id: var(--color-syntax-7);
-        }
+    await coordinator.write('Breadcrumbs render', () => {
+      // Disabled until https://crbug.com/1079231 is fixed.
+      // clang-format off
+      LitHtml.render(LitHtml.html`
+        <style>
+          :host {
+            --node-text-label-color: var(--color-syntax-2);
+            --node-text-class-color: var(--color-syntax-4);
+            --node-text-id-color: var(--color-syntax-4);
+            --node-text-multiple-descriptors-id: var(--color-syntax-7);
+          }
 
-        .crumbs {
-          display: inline-flex;
-          align-items: stretch;
-          width: 100%;
-          overflow: hidden;
-          pointer-events: auto;
-          cursor: default;
-          white-space: nowrap;
-          position: relative;
-          background: var(--color-background);
-        }
+          .crumbs {
+            display: inline-flex;
+            align-items: stretch;
+            width: 100%;
+            overflow: hidden;
+            pointer-events: auto;
+            cursor: default;
+            white-space: nowrap;
+            position: relative;
+            background: var(--color-background);
+          }
 
-        .crumbs-window {
-          flex-grow: 2;
-          overflow: hidden;
-        }
+          .crumbs-window {
+            flex-grow: 2;
+            overflow: hidden;
+          }
 
-        .crumbs-scroll-container {
-          display: inline-flex;
-          margin: 0;
-          padding: 0;
-        }
+          .crumbs-scroll-container {
+            display: inline-flex;
+            margin: 0;
+            padding: 0;
+          }
 
-        .crumb {
-          display: block;
-          padding: 0 7px;
-          line-height: 23px;
-          white-space: nowrap;
-        }
+          .crumb {
+            display: block;
+            padding: 0 7px;
+            line-height: 23px;
+            white-space: nowrap;
+          }
 
-        .overflow {
-          padding: 0 7px;
-          font-weight: bold;
-          display: block;
-          border: none;
-          flex-grow: 0;
-          flex-shrink: 0;
-          text-align: center;
-          background-color: var(--color-background-elevation-1);
-          color: var(--color-text-secondary);
-        }
+          .overflow {
+            padding: 0 7px;
+            font-weight: bold;
+            display: block;
+            border: none;
+            flex-grow: 0;
+            flex-shrink: 0;
+            text-align: center;
+            background-color: var(--color-background-elevation-1);
+            color: var(--color-text-secondary);
+          }
 
-        .overflow.hidden {
-          display: none;
-        }
+          .overflow.hidden {
+            display: none;
+          }
 
-        .overflow:disabled {
-          opacity: 50%;
-        }
+          .overflow:disabled {
+            opacity: 50%;
+          }
 
-        .overflow:focus {
-          outline: var(--color-primary) auto 1px;
-        }
+          .overflow:focus {
+            outline: var(--color-primary) auto 1px;
+          }
 
-        .overflow:not(:disabled):hover {
-          background-color: var(--color-background-elevation-2);
-          color: var(--color-text-primary);
-          cursor: pointer;
-        }
+          .overflow:not(:disabled):hover {
+            background-color: var(--color-background-elevation-2);
+            color: var(--color-text-primary);
+            cursor: pointer;
+          }
 
-        .crumb-link {
-          text-decoration: none;
-          color: inherit;
-        }
+          .crumb-link {
+            text-decoration: none;
+            color: inherit;
+          }
 
-        .crumb:hover {
-          background: var(--color-background-elevation-2);
-        }
+          .crumb:hover {
+            background: var(--color-background-elevation-2);
+          }
 
-        .crumb.selected {
-          background: var(--color-background-elevation-1);
-        }
+          .crumb.selected {
+            background: var(--color-background-elevation-1);
+          }
 
-        .crumb:focus {
-          outline: var(--color-primary) auto 1px;
-        }
-      </style>
+          .crumb:focus {
+            outline: var(--color-primary) auto 1px;
+          }
+        </style>
 
-      <nav class="crumbs">
-        ${this.renderOverflowButton('left', this.userScrollPosition === 'start')}
+        <nav class="crumbs">
+          ${this.renderOverflowButton('left', this.userScrollPosition === 'start')}
 
-        <div class="crumbs-window" @scroll=${this.onCrumbsWindowScroll}>
-          <ul class="crumbs-scroll-container">
-            ${crumbs.map(crumb => {
-              const crumbClasses = {
-                crumb: true,
-                selected: crumb.selected,
-              };
-              return LitHtml.html`
-                <li class=${LitHtml.Directives.classMap(crumbClasses)}
-                  data-node-id=${crumb.node.id}
-                  data-crumb="true"
-                >
-                  <a href="#"
-                    draggable=false
-                    class="crumb-link"
-                    @click=${this.onCrumbClick(crumb.node)}
-                    @mousemove=${this.onCrumbMouseMove(crumb.node)}
-                    @mouseleave=${this.onCrumbMouseLeave(crumb.node)}
-                    @focus=${this.onCrumbFocus(crumb.node)}
-                    @blur=${this.onCrumbBlur(crumb.node)}
-                  ><devtools-node-text data-node-title=${crumb.title.main} .data=${{
-                    nodeTitle: crumb.title.main,
-                    nodeId: crumb.title.extras.id,
-                    nodeClasses: crumb.title.extras.classes,
-                  } as NodeTextData}></devtools-node-text></a>
-                </li>`;
-            })}
-          </ul>
-        </div>
-        ${this.renderOverflowButton('right', this.userScrollPosition === 'end')}
-      </nav>
-    `, this.shadow, {
-      eventContext: this,
+          <div class="crumbs-window" @scroll=${this.onCrumbsWindowScroll}>
+            <ul class="crumbs-scroll-container">
+              ${crumbs.map(crumb => {
+                const crumbClasses = {
+                  crumb: true,
+                  selected: crumb.selected,
+                };
+                return LitHtml.html`
+                  <li class=${LitHtml.Directives.classMap(crumbClasses)}
+                    data-node-id=${crumb.node.id}
+                    data-crumb="true"
+                  >
+                    <a href="#"
+                      draggable=false
+                      class="crumb-link"
+                      @click=${this.onCrumbClick(crumb.node)}
+                      @mousemove=${this.onCrumbMouseMove(crumb.node)}
+                      @mouseleave=${this.onCrumbMouseLeave(crumb.node)}
+                      @focus=${this.onCrumbFocus(crumb.node)}
+                      @blur=${this.onCrumbBlur(crumb.node)}
+                    ><devtools-node-text data-node-title=${crumb.title.main} .data=${{
+                      nodeTitle: crumb.title.main,
+                      nodeId: crumb.title.extras.id,
+                      nodeClasses: crumb.title.extras.classes,
+                    } as NodeTextData}></devtools-node-text></a>
+                  </li>`;
+              })}
+            </ul>
+          </div>
+          ${this.renderOverflowButton('right', this.userScrollPosition === 'end')}
+        </nav>
+      `, this.shadow, {
+        eventContext: this,
+      });
+      // clang-format on
     });
-    // clang-format on
 
     this.checkForOverflow();
   }
 
-  private ensureSelectedNodeIsVisible(): void {
+  private async ensureSelectedNodeIsVisible(): Promise<void> {
     /*
      * If the user has manually scrolled the crumbs in either direction, we
      * effectively hand control over the scrolling down to them. This is to
@@ -391,8 +404,10 @@ export class ElementsBreadcrumbs extends HTMLElement {
     const activeCrumb = this.shadow.querySelector(`.crumb[data-node-id="${activeCrumbId}"]`);
 
     if (activeCrumb) {
-      activeCrumb.scrollIntoView({
-        behavior: 'smooth',
+      await coordinator.scroll(() => {
+        activeCrumb.scrollIntoView({
+          behavior: 'smooth',
+        });
       });
     }
   }

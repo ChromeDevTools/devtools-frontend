@@ -2,9 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as i18n from '../i18n/i18n.js';
-import * as Root from '../root/root.js';
-import * as UI from '../ui/ui.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as Root from '../../root/root.js';
+import * as UI from '../../ui/ui.js';
 
 // eslint-disable-next-line rulesdir/es_modules_import
 import type * as Layers from './layers.js';
@@ -19,7 +19,7 @@ const UIStrings = {
   */
   showLayers: 'Show Layers',
 };
-const str_ = i18n.i18n.registerUIStrings('layers/layers-meta.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/layers/layers-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 let loadedLayersModule: (typeof Layers|undefined);
@@ -27,7 +27,7 @@ let loadedLayersModule: (typeof Layers|undefined);
 async function loadLayersModule(): Promise<typeof Layers> {
   if (!loadedLayersModule) {
     // Side-effect import resources in module.json
-    await Root.Runtime.Runtime.instance().loadModulePromise('layers');
+    await Root.Runtime.Runtime.instance().loadModulePromise('panels/layers');
     loadedLayersModule = await import('./layers.js');
   }
   return loadedLayersModule;

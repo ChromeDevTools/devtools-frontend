@@ -15,7 +15,7 @@ import './inspector_main/inspector_main-meta.js';
 import './resources/resources-meta.js';
 import './issues/issues-meta.js';
 import './panels/help/help-meta.js';
-import './layers/layers-meta.js';
+import './panels/layers/layers-meta.js';
 import './lighthouse/lighthouse-meta.js';
 import './media/media-meta.js';
 import './mobile_throttling/mobile_throttling-meta.js';

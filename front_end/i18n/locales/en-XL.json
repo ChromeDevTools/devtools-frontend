@@ -1061,18 +1061,6 @@
   "js_profiler/js_profiler-meta.ts | showProfiler": {
     "message": "Ŝh́ôẃ P̂ŕôf́îĺêŕ"
   },
-  "layers/layers-meta.ts | layers": {
-    "message": "L̂áŷér̂ś"
-  },
-  "layers/layers-meta.ts | showLayers": {
-    "message": "Ŝh́ôẃ L̂áŷér̂ś"
-  },
-  "layers/LayersPanel.ts | details": {
-    "message": "D̂ét̂áîĺŝ"
-  },
-  "layers/LayersPanel.ts | profiler": {
-    "message": "P̂ŕôf́îĺêŕ"
-  },
   "lighthouse/lighthouse-meta.ts | showLighthouse": {
     "message": "Ŝh́ôẃ Lighthouse"
   },
@@ -5590,6 +5578,18 @@
   },
   "panels/layer_viewer/TransformController.ts | rotateModeV": {
     "message": "R̂ót̂át̂é m̂ód̂é (V̂)"
+  },
+  "panels/layers/layers-meta.ts | layers": {
+    "message": "L̂áŷér̂ś"
+  },
+  "panels/layers/layers-meta.ts | showLayers": {
+    "message": "Ŝh́ôẃ L̂áŷér̂ś"
+  },
+  "panels/layers/LayersPanel.ts | details": {
+    "message": "D̂ét̂áîĺŝ"
+  },
+  "panels/layers/LayersPanel.ts | profiler": {
+    "message": "P̂ŕôf́îĺêŕ"
   },
   "perf_ui/FilmStripView.ts | doubleclickToZoomImageClickTo": {
     "message": "D̂óûb́l̂éĉĺîćk̂ t́ô źôóm̂ ím̂áĝé. Ĉĺîćk̂ t́ô v́îéŵ ṕr̂éĉéd̂ín̂ǵ r̂éq̂úêśt̂ś."

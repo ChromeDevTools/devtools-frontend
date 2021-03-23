@@ -30,11 +30,11 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../common/common.js';
-import * as i18n from '../i18n/i18n.js';
-import * as LayerViewer from '../panels/layer_viewer/layer_viewer.js';
-import * as SDK from '../sdk/sdk.js';
-import * as UI from '../ui/ui.js';
+import * as Common from '../../common/common.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as SDK from '../../sdk/sdk.js';
+import * as UI from '../../ui/ui.js';
+import * as LayerViewer from '../layer_viewer/layer_viewer.js';
 
 import {LayerPaintProfilerView} from './LayerPaintProfilerView.js';
 import {Events, LayerTreeModel} from './LayerTreeModel.js';
@@ -49,7 +49,7 @@ const UIStrings = {
   */
   profiler: 'Profiler',
 };
-const str_ = i18n.i18n.registerUIStrings('layers/LayersPanel.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/layers/LayersPanel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 let layersPanelInstance: LayersPanel;

@@ -2,8 +2,8 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-import("../../scripts/build/ninja/devtools_entrypoint.gni")
-import("../../scripts/build/ninja/devtools_module.gni")
+import("../../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../../../scripts/build/ninja/devtools_module.gni")
 
 devtools_module("layers") {
   sources = [
@@ -13,11 +13,11 @@ devtools_module("layers") {
   ]
 
   deps = [
-    "../common:bundle",
-    "../i18n:bundle",
-    "../panels/layer_viewer:bundle",
-    "../sdk:bundle",
-    "../ui:bundle",
+    "../../common:bundle",
+    "../../i18n:bundle",
+    "../../panels/layer_viewer:bundle",
+    "../../sdk:bundle",
+    "../../ui:bundle",
   ]
 }
 

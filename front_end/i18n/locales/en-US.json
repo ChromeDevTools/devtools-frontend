@@ -1061,18 +1061,6 @@
   "js_profiler/js_profiler-meta.ts | showProfiler": {
     "message": "Show Profiler"
   },
-  "layers/layers-meta.ts | layers": {
-    "message": "Layers"
-  },
-  "layers/layers-meta.ts | showLayers": {
-    "message": "Show Layers"
-  },
-  "layers/LayersPanel.ts | details": {
-    "message": "Details"
-  },
-  "layers/LayersPanel.ts | profiler": {
-    "message": "Profiler"
-  },
   "lighthouse/lighthouse-meta.ts | showLighthouse": {
     "message": "Show Lighthouse"
   },
@@ -5590,6 +5578,18 @@
   },
   "panels/layer_viewer/TransformController.ts | rotateModeV": {
     "message": "Rotate mode (V)"
+  },
+  "panels/layers/layers-meta.ts | layers": {
+    "message": "Layers"
+  },
+  "panels/layers/layers-meta.ts | showLayers": {
+    "message": "Show Layers"
+  },
+  "panels/layers/LayersPanel.ts | details": {
+    "message": "Details"
+  },
+  "panels/layers/LayersPanel.ts | profiler": {
+    "message": "Profiler"
   },
   "perf_ui/FilmStripView.ts | doubleclickToZoomImageClickTo": {
     "message": "Doubleclick to zoom image. Click to view preceding requests."

@@ -67,6 +67,9 @@ DEPS = {
     "karma-spec-reporter": "0.0.32",
     "license-checker": "25.0.1",
     "mocha": "8.3.0",
+    # Purposefully not the latest; we keep this in sync with what stylelint
+    # depends on
+    "postcss": "7.0.35",
     "puppeteer": "7.1.0",
     "recast": "0.20.4",
     "rimraf": "3.0.2",

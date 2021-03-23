@@ -172,7 +172,8 @@ const isGitHubShorthand = (arg) => {
   const colonOnlyAfterHash = firstColon === -1 || (firstHash > -1 && firstColon > firstHash)
   const secondSlashOnlyAfterHash = secondSlash === -1 || (firstHash > -1 && secondSlash > firstHash)
   const hasSlash = firstSlash > 0
-  const doesNotEndWithSlash = !arg.endsWith('/')
+  // if a # is found, what we really want to know is that the character immediately before # is not a /
+  const doesNotEndWithSlash = firstHash > -1 ? arg[firstHash - 1] !== '/' : !arg.endsWith('/')
   const doesNotStartWithDot = !arg.startsWith('.')
 
   return spaceOnlyAfterHash && hasSlash && doesNotEndWithSlash && doesNotStartWithDot && atOnlyAfterHash && colonOnlyAfterHash && secondSlashOnlyAfterHash

@@ -885,7 +885,7 @@ export class SourcesPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
 
     // Copy object context menu.
     if (remoteObject.type !== 'function') {
-      const copyDecodedValueHandler = async(): Promise<void> => {
+      const copyDecodedValueHandler = async (): Promise<void> => {
         const result = await remoteObject.callFunctionJSON(toStringForClipboard, [{
                                                              value: {
                                                                subtype: remoteObject.subtype,

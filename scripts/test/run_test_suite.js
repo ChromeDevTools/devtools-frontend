@@ -91,6 +91,14 @@ const yargsObject =
         .strict()
         .argv;
 
+function validatePathExistsOrError(nameOfPath, filePath) {
+  try {
+    fs.accessSync(filePath, fs.constants.R_OK);
+  } catch (_error) {
+    err(`Failed: ${nameOfPath} [${filePath}] does not exist.`);
+    process.exit(1);
+  }
+}
 
 function getAbsoluteTestSuitePath(target) {
   const pathInput = yargsObject['test-suite-path'];
@@ -112,9 +120,12 @@ function setNodeModulesPath(nodeModulesPath) {
   if (nodeModulesPath) {
     // Node requires the path to be absolute
     if (path.isAbsolute(nodeModulesPath)) {
+      validatePathExistsOrError('node-modules-path', nodeModulesPath);
       setEnvValueIfValuePresent('NODE_PATH', nodeModulesPath);
     } else {
-      setEnvValueIfValuePresent('NODE_PATH', path.resolve(path.join(yargsObject['cwd'], nodeModulesPath)));
+      const absolutePath = path.resolve(path.join(yargsObject['cwd'], nodeModulesPath));
+      validatePathExistsOrError('node-modules-path', absolutePath);
+      setEnvValueIfValuePresent('NODE_PATH', absolutePath);
     }
   }
 }
@@ -147,6 +158,7 @@ function executeTestSuite(
   }
 
   const testSuiteConfig = path.join(absoluteTestSuitePath, '.mocharc.js');
+  validatePathExistsOrError('.mocharc.js location', testSuiteConfig);
   argumentsForNode.push('--config', testSuiteConfig);
   const result = childProcess.spawnSync(nodePath(), argumentsForNode, {encoding: 'utf-8', stdio: 'inherit', cwd});
   return result.status;
@@ -177,6 +189,9 @@ function main() {
   const chromeFeatures = yargsObject['chrome-features'] ? `--enable-features=${yargsObject['chrome-features']}` : '';
 
   const target = yargsObject['target'];
+  const targetPath = path.join(yargsObject['cwd'], 'out', target);
+  validatePathExistsOrError(`Target out/${target}`, targetPath);
+
   // eslint-disable-next-line no-unused-vars
   const {$0, _, ...namedConfigFlags} = yargsObject;
 
@@ -201,6 +216,7 @@ function main() {
   log(`Using target ${target}`);
 
   const testSuitePath = getAbsoluteTestSuitePath(target);
+  validatePathExistsOrError('Full path to test suite', testSuitePath);
 
   let resultStatusCode = -1;
   try {

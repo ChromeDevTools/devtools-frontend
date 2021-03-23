@@ -647,15 +647,12 @@ div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
 }
 
 .CodeMirror .text-editor-line-decoration-icon {
-  position: absolute;
   cursor: pointer;
-  left: calc(100% + 4px);
-  white-space: nowrap;
-  top: -9px;
 }
 
 .CodeMirror .text-editor-line-decoration-icon > * {
-  margin-right: 2px;
+  vertical-align: text-bottom;
+  margin-left: 2px;
 }
 
 .CodeMirror .text-editor-line-decoration-icon-issue {

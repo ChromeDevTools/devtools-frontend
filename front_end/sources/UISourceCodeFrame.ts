@@ -491,13 +491,7 @@ export class UISourceCodeFrame extends SourceFrame.SourceFrame.SourceFrameImpl {
   _getErrorPopoverContent(event: Event): UI.PopoverHelper.PopoverRequest|null {
     const mouseEvent = (event as MouseEvent);
     const eventTarget = (mouseEvent.target as HTMLElement);
-
-    const messageBucket = elementToMessageBucket.get(
-        (eventTarget.enclosingNodeOrSelfWithClass('text-editor-line-decoration') as Element));
-    if (!messageBucket) {
-      return null;
-    }
-    return messageBucket.getPopover(eventTarget, mouseEvent);
+    return RowMessageBucket.getPopover(eventTarget, mouseEvent);
   }
 
   _updateBucketDecorations(): void {
@@ -573,15 +567,15 @@ export class UISourceCodeFrame extends SourceFrame.SourceFrame.SourceFrameImpl {
 
 function getIconDataForLevel(level: Workspace.UISourceCode.Message.Level): WebComponents.Icon.IconData {
   if (level === Workspace.UISourceCode.Message.Level.Error) {
-    return {color: '', width: '11px', height: '11px', iconName: 'error_icon'};
+    return {color: '', width: '12px', height: '12px', iconName: 'error_icon'};
   }
   if (level === Workspace.UISourceCode.Message.Level.Warning) {
-    return {color: '', width: '11px', height: '11px', iconName: 'warning_icon'};
+    return {color: '', width: '12px', height: '12px', iconName: 'warning_icon'};
   }
   if (level === Workspace.UISourceCode.Message.Level.Issue) {
-    return {color: 'var(--issue-color-yellow)', width: '11px', height: '11px', iconName: 'issue-exclamation-icon'};
+    return {color: 'var(--issue-color-yellow)', width: '12px', height: '12px', iconName: 'issue-exclamation-icon'};
   }
-  return {color: '', width: '11px', height: '11px', iconName: 'error_icon'};
+  return {color: '', width: '12px', height: '12px', iconName: 'error_icon'};
 }
 
 const bubbleTypePerLevel = new Map<Workspace.UISourceCode.Message.Level, string>();
@@ -659,10 +653,11 @@ export class RowMessage {
 }
 
 const elementToMessageBucket = new WeakMap<Element, RowMessageBucket>();
+const bookmarkTypeRowBucket = Symbol('bookmarkTypeRowBucket');
 
 export class RowMessageBucket {
   _sourceFrame: UISourceCodeFrame;
-  textEditor: SourceFrame.SourcesTextEditor.SourcesTextEditor;
+  private textEditor: SourceFrame.SourcesTextEditor.SourcesTextEditor;
   _lineHandle: TextEditor.CodeMirrorTextEditor.TextEditorPositionHandle;
   _decoration: HTMLDivElement;
   _wave: HTMLElement;
@@ -672,6 +667,8 @@ export class RowMessageBucket {
   _messagesDescriptionElement: HTMLDivElement;
   _messages: RowMessage[];
   _level: Workspace.UISourceCode.Message.Level|null;
+  private bookmark?: TextEditor.CodeMirrorTextEditor.TextEditorBookMark;
+  private iconsElement: HTMLSpanElement;
 
   constructor(
       sourceFrame: UISourceCodeFrame, textEditor: SourceFrame.SourcesTextEditor.SourcesTextEditor,
@@ -686,18 +683,17 @@ export class RowMessageBucket {
 
     this._errorIcon = new WebComponents.Icon.Icon();
     this._errorIcon.data = getIconDataForLevel(Workspace.UISourceCode.Message.Level.Warning);
-    this._errorIcon.classList.add('text-editor-line-decoration-icon-error', 'hidden');
+    this._errorIcon.classList.add('text-editor-line-decoration-icon-error');
     this._issueIcon = new WebComponents.Icon.Icon();
     this._issueIcon.data = getIconDataForLevel(Workspace.UISourceCode.Message.Level.Issue);
-    this._issueIcon.classList.add('text-editor-line-decoration-icon-issue', 'hidden');
+    this._issueIcon.classList.add('text-editor-line-decoration-icon-issue');
     this._issueIcon.addEventListener('click', () => this._issueClickHandler());
 
-    const iconsElement = this._wave.createChild('span');
-    iconsElement.append(this._errorIcon);
-    iconsElement.append(this._issueIcon);
-    iconsElement.classList.add('text-editor-line-decoration-icon');
-
-    this._wave.append(iconsElement);
+    this.iconsElement = document.createElement('span');
+    this.iconsElement.append(this._errorIcon);
+    this.iconsElement.append(this._issueIcon);
+    this.iconsElement.classList.add('text-editor-line-decoration-icon');
+    elementToMessageBucket.set(this.iconsElement, this);
 
     this._decorationStartColumn = null;
 
@@ -824,8 +820,6 @@ export class RowMessageBucket {
     }
     if (this._level) {
       this.textEditor.toggleLineClass(editorLineNumber, (lineClassPerLevel.get(this._level) as string), false);
-      this._errorIcon.classList.add('hidden');
-      this._issueIcon.classList.add('hidden');
     }
     this._level = maxMessage.level();
     if (!this._level) {
@@ -834,14 +828,19 @@ export class RowMessageBucket {
     this.textEditor.toggleLineClass(editorLineNumber, (lineClassPerLevel.get(this._level) as string), true);
     if (showErrors) {
       this._errorIcon.data = getIconDataForLevel(this._level);
-      this._errorIcon.classList.remove('hidden');
     }
-    if (showIssues) {
-      this._issueIcon.classList.remove('hidden');
+    this._issueIcon.classList.toggle('hidden', !showIssues);
+    this._errorIcon.classList.toggle('hidden', !showErrors);
+    if (this.bookmark) {
+      this.bookmark.clear();
+    }
+    if (showIssues || showErrors) {
+      this.bookmark = this.textEditor.addBookmark(
+          editorLineNumber, Number.MAX_SAFE_INTEGER, this.iconsElement, bookmarkTypeRowBucket);
     }
   }
 
-  _getPopoverMessages(eventTarget: HTMLElement): Element|null {
+  private getPopoverMessages(eventTarget: HTMLElement): Element|null {
     let messagesOutline: Element|null = null;
     if (eventTarget.classList.contains('text-editor-line-decoration-icon-error')) {
       messagesOutline = this._messageDescription(
@@ -856,12 +855,19 @@ export class RowMessageBucket {
     }
     return messagesOutline;
   }
-  getPopover(eventTarget: HTMLElement, mouseEvent: MouseEvent): UI.PopoverHelper.PopoverRequest|null {
+
+  static getPopover(eventTarget: HTMLElement, mouseEvent: MouseEvent): UI.PopoverHelper.PopoverRequest|null {
+    const enclosingNode = eventTarget.enclosingNodeOrSelfWithClass('text-editor-line-decoration') ||
+        eventTarget.enclosingNodeOrSelfWithClass('text-editor-line-decoration-icon');
+    const messageBucket = elementToMessageBucket.get(enclosingNode);
+    if (!messageBucket) {
+      return null;
+    }
     const anchorElement = eventTarget.enclosingNodeOrSelfWithClass('text-editor-line-decoration-icon-error') ||
         eventTarget.enclosingNodeOrSelfWithClass('text-editor-line-decoration-icon-issue');
     const anchor =
         anchorElement ? anchorElement.boxInWindow() : new AnchorBox(mouseEvent.clientX, mouseEvent.clientY, 1, 1);
-    const messagesOutline = this._getPopoverMessages(eventTarget);
+    const messagesOutline = messageBucket.getPopoverMessages(eventTarget);
     if (!messagesOutline) {
       return null;
     }

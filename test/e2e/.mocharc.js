@@ -28,7 +28,10 @@ if (testRunnerCWDConfig && testRunnerTestSourceDirConfig) {
   ROOT_DIRECTORY = path.join(testRunnerCWDConfig, testRunnerTestSourceDirConfig);
 }
 const allTestFiles = glob.sync(path.join(ROOT_DIRECTORY, '**/*_test.ts'));
-const customPattern = process.env['TEST_PATTERNS'];
+/**
+ * TODO(jacktfranklin): once we are migrated to the new test runner, we can remove the fallback to process.env['TESET_PATTERNS']
+ */
+const customPattern = getTestRunnerConfigSetting('test-file-pattern', process.env['TEST_PATTERNS']);
 
 const testFiles = !customPattern ? allTestFiles :
                                    customPattern.split(';')
@@ -39,7 +42,7 @@ const testFiles = !customPattern ? allTestFiles :
 
 if (customPattern && testFiles.length === 0) {
   throw new Error(
-      `\nNo test found matching --test-file=${process.env['TEST_PATTERNS']}.` +
+      `\nNo test found matching custom pattern ${customPattern}.` +
       ' Use a relative path from test/e2e/.');
 }
 

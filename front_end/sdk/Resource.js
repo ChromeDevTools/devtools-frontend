@@ -285,14 +285,17 @@ export class Resource {
     }
     this._contentRequested = true;
 
-    /** @type {!TextUtils.ContentProvider.DeferredContent} */
-    let loadResult;
+    /** @type {?TextUtils.ContentProvider.DeferredContent} */
+    let loadResult = null;
     if (this.request) {
       const contentData = await this.request.contentData();
-      this._content = contentData.content;
-      this._contentEncoded = contentData.encoded;
-      loadResult = {content: /** @type{string} */ (contentData.content), isEncoded: contentData.encoded};
-    } else {
+      if (!contentData.error) {
+        this._content = contentData.content;
+        this._contentEncoded = contentData.encoded;
+        loadResult = {content: /** @type{string} */ (contentData.content), isEncoded: contentData.encoded};
+      }
+    }
+    if (!loadResult) {
       const response = await this._resourceTreeModel.target().pageAgent().invoke_getResourceContent(
           {frameId: this.frameId, url: this.url});
       const protocolError = response.getError();

@@ -1370,33 +1370,6 @@
   "emulation/SensorsView.js | timezoneId": {
     "message": "Timezone ID"
   },
-  "help/help-meta.ts | bug": {
-    "message": "bug"
-  },
-  "help/help-meta.ts | doNotShowWhatsNewAfterEachUpdate": {
-    "message": "Do not show What's New after each update"
-  },
-  "help/help-meta.ts | releaseNotes": {
-    "message": "Release notes"
-  },
-  "help/help-meta.ts | reportADevtoolsIssue": {
-    "message": "Report a DevTools issue"
-  },
-  "help/help-meta.ts | showWhatsNew": {
-    "message": "Show What's New"
-  },
-  "help/help-meta.ts | showWhatsNewAfterEachUpdate": {
-    "message": "Show What's New after each update"
-  },
-  "help/help-meta.ts | whatsNew": {
-    "message": "What's New"
-  },
-  "help/ReleaseNoteView.ts | close": {
-    "message": "Close"
-  },
-  "help/ReleaseNoteView.ts | learnMore": {
-    "message": "Learn more"
-  },
   "host/InspectorFrontendHost.ts | devtoolsS": {
     "message": "DevTools - {PH1}"
   },
@@ -5593,6 +5566,33 @@
   },
   "panels/event_listeners/EventListenersView.ts | toggleWhetherEventListenerIs": {
     "message": "Toggle whether event listener is passive or blocking"
+  },
+  "panels/help/help-meta.ts | bug": {
+    "message": "bug"
+  },
+  "panels/help/help-meta.ts | doNotShowWhatsNewAfterEachUpdate": {
+    "message": "Do not show What's New after each update"
+  },
+  "panels/help/help-meta.ts | releaseNotes": {
+    "message": "Release notes"
+  },
+  "panels/help/help-meta.ts | reportADevtoolsIssue": {
+    "message": "Report a DevTools issue"
+  },
+  "panels/help/help-meta.ts | showWhatsNew": {
+    "message": "Show What's New"
+  },
+  "panels/help/help-meta.ts | showWhatsNewAfterEachUpdate": {
+    "message": "Show What's New after each update"
+  },
+  "panels/help/help-meta.ts | whatsNew": {
+    "message": "What's New"
+  },
+  "panels/help/ReleaseNoteView.ts | close": {
+    "message": "Close"
+  },
+  "panels/help/ReleaseNoteView.ts | learnMore": {
+    "message": "Learn more"
   },
   "perf_ui/FilmStripView.ts | doubleclickToZoomImageClickTo": {
     "message": "Doubleclick to zoom image. Click to view preceding requests."

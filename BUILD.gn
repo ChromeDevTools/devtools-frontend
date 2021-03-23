@@ -133,7 +133,7 @@ non_autostart_non_remote_modules = [
   "data_grid/data_grid_module.js",
   "elements/elements_module.js",
   "panels/event_listeners/event_listeners_module.js",
-  "help/help_module.js",
+  "panels/help/help_module.js",
   "inline_editor/inline_editor_module.js",
   "input/input_module.js",
   "js_profiler/js_profiler_module.js",

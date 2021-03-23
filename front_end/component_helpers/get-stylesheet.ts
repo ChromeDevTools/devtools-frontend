@@ -110,7 +110,7 @@ export const CSS_RESOURCES_TO_LOAD_INTO_RUNTIME = [
   'inspector_main/nodeIcon.css',
   'inspector_main/renderingOptions.css',
   'data_grid/dataGrid.css',
-  'help/releaseNote.css',
+  'panels/help/releaseNote.css',
   'object_ui/customPreviewComponent.css',
   'object_ui/objectPopover.css',
   'object_ui/objectPropertiesSection.css',

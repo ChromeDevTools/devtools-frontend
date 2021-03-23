@@ -4,9 +4,9 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Host from '../host/host.js';
-import * as i18n from '../i18n/i18n.js';
-import * as UI from '../ui/ui.js';
+import * as Host from '../../host/host.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as UI from '../../ui/ui.js';
 
 import {latestReleaseNote, releaseNoteViewId} from './HelpImpl.js';
 import type {ReleaseNote} from './HelpImpl.js';
@@ -21,7 +21,7 @@ const UIStrings = {
   */
   close: 'Close',
 };
-const str_ = i18n.i18n.registerUIStrings('help/ReleaseNoteView.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/help/ReleaseNoteView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let releaseNoteViewInstance: ReleaseNoteView;
 
@@ -29,7 +29,7 @@ export class ReleaseNoteView extends UI.Widget.VBox {
   _releaseNoteElement: Element;
   constructor() {
     super(true);
-    this.registerRequiredCSS('help/releaseNote.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('panels/help/releaseNote.css', {enableLegacyPatching: true});
     this._releaseNoteElement = this._createReleaseNoteElement(latestReleaseNote());
     const topSection = this.contentElement.createChild('div', 'release-note-top-section');
     topSection.textContent = latestReleaseNote().header;
@@ -93,7 +93,7 @@ export class ReleaseNoteView extends UI.Widget.VBox {
 
     hbox.appendChild(imageLink);
     const image = imageLink.createChild('img') as HTMLImageElement;
-    image.src = new URL('../Images/whatsnew.avif', import.meta.url).toString();
+    image.src = new URL('../../Images/whatsnew.avif', import.meta.url).toString();
     UI.Tooltip.Tooltip.install(image, UI.Tooltip.Tooltip.getContent(imageLink));
     image.alt = UI.Tooltip.Tooltip.getContent(image);
 

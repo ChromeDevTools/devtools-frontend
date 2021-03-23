@@ -14,7 +14,7 @@
     { "name": "emulated_devices" },
     { "name": "issues" },
     { "name": "panels/developer_resources" },
-    { "name": "help" },
+    { "name": "panels/help" },
     { "name": "layers" },
     { "name": "layer_viewer" },
     { "name": "network" },

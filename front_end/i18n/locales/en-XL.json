@@ -1370,33 +1370,6 @@
   "emulation/SensorsView.js | timezoneId": {
     "message": "T̂ím̂éẑón̂é ÎD́"
   },
-  "help/help-meta.ts | bug": {
-    "message": "b̂úĝ"
-  },
-  "help/help-meta.ts | doNotShowWhatsNewAfterEachUpdate": {
-    "message": "D̂ó n̂ót̂ śĥóŵ Ẃĥát̂'ś N̂éŵ áf̂t́êŕ êáĉh́ ûṕd̂át̂é"
-  },
-  "help/help-meta.ts | releaseNotes": {
-    "message": "R̂él̂éâśê ńôt́êś"
-  },
-  "help/help-meta.ts | reportADevtoolsIssue": {
-    "message": "R̂ép̂ór̂t́ â D́êv́T̂óôĺŝ íŝśûé"
-  },
-  "help/help-meta.ts | showWhatsNew": {
-    "message": "Ŝh́ôẃ Ŵh́ât́'ŝ Ńêẃ"
-  },
-  "help/help-meta.ts | showWhatsNewAfterEachUpdate": {
-    "message": "Ŝh́ôẃ Ŵh́ât́'ŝ Ńêẃ âf́t̂ér̂ éâćĥ úp̂d́ât́ê"
-  },
-  "help/help-meta.ts | whatsNew": {
-    "message": "Ŵh́ât́'ŝ Ńêẃ"
-  },
-  "help/ReleaseNoteView.ts | close": {
-    "message": "Ĉĺôśê"
-  },
-  "help/ReleaseNoteView.ts | learnMore": {
-    "message": "L̂éâŕn̂ ḿôŕê"
-  },
   "host/InspectorFrontendHost.ts | devtoolsS": {
     "message": "D̂év̂T́ôól̂ś - {PH1}"
   },
@@ -5593,6 +5566,33 @@
   },
   "panels/event_listeners/EventListenersView.ts | toggleWhetherEventListenerIs": {
     "message": "T̂óĝǵl̂é ŵh́êt́ĥér̂ év̂én̂t́ l̂íŝt́êńêŕ îś p̂áŝśîv́ê ór̂ b́l̂óĉḱîńĝ"
+  },
+  "panels/help/help-meta.ts | bug": {
+    "message": "b̂úĝ"
+  },
+  "panels/help/help-meta.ts | doNotShowWhatsNewAfterEachUpdate": {
+    "message": "D̂ó n̂ót̂ śĥóŵ Ẃĥát̂'ś N̂éŵ áf̂t́êŕ êáĉh́ ûṕd̂át̂é"
+  },
+  "panels/help/help-meta.ts | releaseNotes": {
+    "message": "R̂él̂éâśê ńôt́êś"
+  },
+  "panels/help/help-meta.ts | reportADevtoolsIssue": {
+    "message": "R̂ép̂ór̂t́ â D́êv́T̂óôĺŝ íŝśûé"
+  },
+  "panels/help/help-meta.ts | showWhatsNew": {
+    "message": "Ŝh́ôẃ Ŵh́ât́'ŝ Ńêẃ"
+  },
+  "panels/help/help-meta.ts | showWhatsNewAfterEachUpdate": {
+    "message": "Ŝh́ôẃ Ŵh́ât́'ŝ Ńêẃ âf́t̂ér̂ éâćĥ úp̂d́ât́ê"
+  },
+  "panels/help/help-meta.ts | whatsNew": {
+    "message": "Ŵh́ât́'ŝ Ńêẃ"
+  },
+  "panels/help/ReleaseNoteView.ts | close": {
+    "message": "Ĉĺôśê"
+  },
+  "panels/help/ReleaseNoteView.ts | learnMore": {
+    "message": "L̂éâŕn̂ ḿôŕê"
   },
   "perf_ui/FilmStripView.ts | doubleclickToZoomImageClickTo": {
     "message": "D̂óûb́l̂éĉĺîćk̂ t́ô źôóm̂ ím̂áĝé. Ĉĺîćk̂ t́ô v́îéŵ ṕr̂éĉéd̂ín̂ǵ r̂éq̂úêśt̂ś."

@@ -8,7 +8,7 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Host from '../host/host.js';
+import * as Host from '../../host/host.js';
 
 import type {ReleaseNote} from './HelpImpl.js';
 

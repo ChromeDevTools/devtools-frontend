@@ -2,10 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../common/common.js';
-import * as i18n from '../i18n/i18n.js';
-import * as Root from '../root/root.js';
-import * as UI from '../ui/ui.js';
+import * as Common from '../../common/common.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as Root from '../../root/root.js';
+import * as UI from '../../ui/ui.js';
 
 // eslint-disable-next-line rulesdir/es_modules_import
 import type * as Help from './help.js';
@@ -40,7 +40,7 @@ const UIStrings = {
   */
   doNotShowWhatsNewAfterEachUpdate: 'Do not show What\'s New after each update',
 };
-const str_ = i18n.i18n.registerUIStrings('help/help-meta.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/help/help-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 let loadedHelpModule: (typeof Help|undefined);
@@ -48,7 +48,7 @@ let loadedHelpModule: (typeof Help|undefined);
 async function loadHelpModule(): Promise<typeof Help> {
   if (!loadedHelpModule) {
     // Side-effect import resources in module.json
-    await Root.Runtime.Runtime.instance().loadModulePromise('help');
+    await Root.Runtime.Runtime.instance().loadModulePromise('panels/help');
     loadedHelpModule = await import('./help.js');
   }
   return loadedHelpModule;

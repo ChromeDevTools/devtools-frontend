@@ -145,7 +145,11 @@ export class LinearMemoryInspector extends HTMLElement {
     const invalidAddressMsg = i18nString(
         UIStrings.addressHasToBeANumberBetweenSAnd,
         {PH1: formatAddress(0), PH2: formatAddress(this.outerMemoryLength)});
+
     const errorMsg = navigatorAddressIsValid ? undefined : invalidAddressMsg;
+
+    const canGoBackInHistory = this.history.canRollback();
+    const canGoForwardInHistory = this.history.canRollover();
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     render(html`
@@ -175,7 +179,7 @@ export class LinearMemoryInspector extends HTMLElement {
       </style>
       <div class="view">
         <devtools-linear-memory-inspector-navigator
-          .data=${{address: navigatorAddressToShow, valid: navigatorAddressIsValid, mode: this.currentNavigatorMode, error: errorMsg} as LinearMemoryNavigatorData}
+          .data=${{address: navigatorAddressToShow, valid: navigatorAddressIsValid, mode: this.currentNavigatorMode, error: errorMsg, canGoBackInHistory, canGoForwardInHistory} as LinearMemoryNavigatorData}
           @refresh-requested=${this.onRefreshRequest}
           @address-input-changed=${this.onAddressChange}
           @page-navigation=${this.navigatePage}

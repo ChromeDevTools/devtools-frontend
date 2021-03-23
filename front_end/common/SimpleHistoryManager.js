@@ -59,18 +59,47 @@ export class SimpleHistoryManager {
     this._historyDepth = historyDepth;
   }
 
-  readOnlyLock() {
+  _readOnlyLock() {
     ++this._coalescingReadonly;
   }
 
-  releaseReadOnlyLock() {
+  _releaseReadOnlyLock() {
     --this._coalescingReadonly;
+  }
+
+  _getPreviousValidIndex() {
+    if (this.empty()) {
+      return -1;
+    }
+
+    let revealIndex = this._activeEntryIndex - 1;
+    while (revealIndex >= 0 && !this._entries[revealIndex].valid()) {
+      --revealIndex;
+    }
+    if (revealIndex < 0) {
+      return -1;
+    }
+
+    return revealIndex;
+  }
+
+  _getNextValidIndex() {
+    let revealIndex = this._activeEntryIndex + 1;
+
+    while (revealIndex < this._entries.length && !this._entries[revealIndex].valid()) {
+      ++revealIndex;
+    }
+    if (revealIndex >= this._entries.length) {
+      return -1;
+    }
+
+    return revealIndex;
   }
 
   /**
    * @return {boolean}
    */
-  readOnly() {
+  _readOnly() {
     return Boolean(this._coalescingReadonly);
   }
 
@@ -78,7 +107,7 @@ export class SimpleHistoryManager {
    * @param {function(!HistoryEntry):boolean} filterOutCallback
    */
   filterOut(filterOutCallback) {
-    if (this.readOnly()) {
+    if (this._readOnly()) {
       return;
     }
     const filteredEntries = [];
@@ -112,7 +141,7 @@ export class SimpleHistoryManager {
    * @param {!HistoryEntry} entry
    */
   push(entry) {
-    if (this.readOnly()) {
+    if (this._readOnly()) {
       return;
     }
     if (!this.empty()) {
@@ -128,24 +157,30 @@ export class SimpleHistoryManager {
   /**
    * @return {boolean}
    */
+  canRollback() {
+    return this._getPreviousValidIndex() >= 0;
+  }
+
+  /**
+   * @return {boolean}
+   */
+  canRollover() {
+    return this._getNextValidIndex() >= 0;
+  }
+
+  /**
+   * @return {boolean}
+   */
   rollback() {
-    if (this.empty()) {
+    const revealIndex = this._getPreviousValidIndex();
+    if (revealIndex === -1) {
       return false;
     }
-
-    let revealIndex = this._activeEntryIndex - 1;
-    while (revealIndex >= 0 && !this._entries[revealIndex].valid()) {
-      --revealIndex;
-    }
-    if (revealIndex < 0) {
-      return false;
-    }
-
-    this.readOnlyLock();
-    this._entries[revealIndex].reveal();
-    this.releaseReadOnlyLock();
-
+    this._readOnlyLock();
     this._activeEntryIndex = revealIndex;
+    this._entries[revealIndex].reveal();
+    this._releaseReadOnlyLock();
+
     return true;
   }
 
@@ -153,20 +188,16 @@ export class SimpleHistoryManager {
    * @return {boolean}
    */
   rollover() {
-    let revealIndex = this._activeEntryIndex + 1;
-
-    while (revealIndex < this._entries.length && !this._entries[revealIndex].valid()) {
-      ++revealIndex;
-    }
-    if (revealIndex >= this._entries.length) {
+    const revealIndex = this._getNextValidIndex();
+    if (revealIndex === -1) {
       return false;
     }
 
-    this.readOnlyLock();
-    this._entries[revealIndex].reveal();
-    this.releaseReadOnlyLock();
-
+    this._readOnlyLock();
     this._activeEntryIndex = revealIndex;
+    this._entries[revealIndex].reveal();
+    this._releaseReadOnlyLock();
+
     return true;
   }
 }

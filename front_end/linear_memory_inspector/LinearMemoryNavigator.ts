@@ -78,6 +78,8 @@ export class RefreshRequestedEvent extends Event {
 export interface LinearMemoryNavigatorData {
   address: string;
   mode: Mode;
+  canGoBackInHistory: boolean;
+  canGoForwardInHistory: boolean;
   valid: boolean;
   error: string|undefined;
 }
@@ -93,11 +95,15 @@ export class LinearMemoryNavigator extends HTMLElement {
   private address = '0';
   private error: string|undefined = undefined;
   private valid = true;
+  private canGoBackInHistory = false;
+  private canGoForwardInHistory = false;
 
   set data(data: LinearMemoryNavigatorData) {
     this.address = data.address;
     this.error = data.error;
     this.valid = data.valid;
+    this.canGoBackInHistory = data.canGoBackInHistory;
+    this.canGoForwardInHistory = data.canGoForwardInHistory;
     this.render();
 
     const addressInput = this.shadow.querySelector<HTMLInputElement>('.address-input');
@@ -165,25 +171,30 @@ export class LinearMemoryNavigator extends HTMLElement {
           min-width: 14px;
         }
 
-        .navigator-button:hover devtools-icon {
+        .navigator-button:enabled:hover devtools-icon {
           --icon-color: var(--color-text-primary);
         }
 
-        .navigator-button:focus devtools-icon {
+        .navigator-button:enabled:focus devtools-icon {
           --icon-color: var(--color-text-secondary);
         }
         </style>
       <div class="navigator">
         <div class="navigator-item">
-          ${this.createButton('ic_undo_16x16_icon', i18nString(UIStrings.goBackInAddressHistory), new HistoryNavigationEvent(Navigation.Backward))}
-          ${this.createButton('ic_redo_16x16_icon', i18nString(UIStrings.goForwardInAddressHistory), new HistoryNavigationEvent(Navigation.Forward))}
+          ${this.createButton({icon: 'ic_undo_16x16_icon', title: i18nString(UIStrings.goBackInAddressHistory),
+              event: new HistoryNavigationEvent(Navigation.Backward), enabled: this.canGoBackInHistory})}
+          ${this.createButton({icon: 'ic_redo_16x16_icon', title: i18nString(UIStrings.goForwardInAddressHistory),
+              event: new HistoryNavigationEvent(Navigation.Forward), enabled: this.canGoForwardInHistory})}
         </div>
         <div class="navigator-item">
-          ${this.createButton('ic_page_prev_16x16_icon', i18nString(UIStrings.previousPage), new PageNavigationEvent(Navigation.Backward))}
+          ${this.createButton({icon: 'ic_page_prev_16x16_icon', title: i18nString(UIStrings.previousPage),
+              event: new PageNavigationEvent(Navigation.Backward), enabled: true})}
           ${this.createAddressInput()}
-          ${this.createButton('ic_page_next_16x16_icon', i18nString(UIStrings.nextPage), new PageNavigationEvent(Navigation.Forward))}
+          ${this.createButton({icon: 'ic_page_next_16x16_icon', title: i18nString(UIStrings.nextPage),
+              event: new PageNavigationEvent(Navigation.Forward), enabled: true})}
         </div>
-        ${this.createButton('refresh_12x12_icon', i18nString(UIStrings.refresh), new RefreshRequestedEvent())}
+        ${this.createButton({icon: 'refresh_12x12_icon', title: i18nString(UIStrings.refresh),
+            event: new RefreshRequestedEvent(), enabled: true})}
       </div>
       `;
       render(result, this.shadow, {eventContext: this});
@@ -206,13 +217,13 @@ export class LinearMemoryNavigator extends HTMLElement {
     this.dispatchEvent(new AddressInputChangedEvent(addressInput.value, mode));
   }
 
-  private createButton(name: string, title: string, event: Event): LitHtml.TemplateResult {
+  private createButton(data: {icon: string, title: string, event: Event, enabled: boolean}): LitHtml.TemplateResult {
+    const color = data.enabled ? 'var(--color-text-secondary)' : 'var(--color-background-highlight)';
     return html`
-      <button class="navigator-button"
-        data-button=${event.type} title=${title}
-        @click=${this.dispatchEvent.bind(this, event)}>
-        <devtools-icon .data=${
-        {iconName: name, color: 'var(--color-text-secondary)', width: '14px'} as Components.Icon.IconWithName}>
+      <button class="navigator-button" ?disabled=${!data.enabled}
+        data-button=${data.event.type} title=${data.title}
+        @click=${this.dispatchEvent.bind(this, data.event)}>
+        <devtools-icon .data=${{iconName: data.icon, color, width: '14px'} as Components.Icon.IconWithName}>
         </devtools-icon>
       </button>`;
   }

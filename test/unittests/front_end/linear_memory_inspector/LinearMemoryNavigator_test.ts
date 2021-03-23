@@ -26,6 +26,8 @@ describe('LinearMemoryNavigator', () => {
       valid: true,
       mode: LinearMemoryInspector.LinearMemoryNavigator.Mode.Submitted,
       error: undefined,
+      canGoBackInHistory: true,
+      canGoForwardInHistory: true,
     };
   }
 
@@ -65,6 +67,8 @@ describe('LinearMemoryNavigator', () => {
       valid: true,
       mode: LinearMemoryInspector.LinearMemoryNavigator.Mode.Submitted,
       error: undefined,
+      canGoBackInHistory: false,
+      canGoForwardInHistory: false,
     };
 
     const shadowRoot = component.shadowRoot;
@@ -95,6 +99,25 @@ describe('LinearMemoryNavigator', () => {
     await assertNavigationEvents('page-navigation');
   });
 
+  it('disables the previous and next page buttons if specified as not navigatable', () => {
+    component.data = {
+      address: '0',
+      valid: true,
+      mode: LinearMemoryInspector.LinearMemoryNavigator.Mode.Submitted,
+      error: undefined,
+      canGoBackInHistory: false,
+      canGoForwardInHistory: false,
+    };
+
+    const buttons = getElementsWithinComponent(component, NAVIGATOR_HISTORY_BUTTON_SELECTOR, HTMLButtonElement);
+    assert.lengthOf(buttons, 2);
+    const historyBack = buttons[0];
+    const historyForward = buttons[1];
+
+    assert.isTrue(historyBack.disabled);
+    assert.isTrue(historyForward.disabled);
+  });
+
   it('shows tooltip on hovering over address', () => {
     const input = getElementWithinComponent(component, NAVIGATOR_ADDRESS_SELECTOR, HTMLInputElement);
     assert.strictEqual(input.title, 'Enter address');
@@ -108,6 +131,8 @@ describe('LinearMemoryNavigator', () => {
       valid: false,
       mode: LinearMemoryInspector.LinearMemoryNavigator.Mode.InvalidSubmit,
       error,
+      canGoBackInHistory: false,
+      canGoForwardInHistory: false,
     };
     const input = getElementWithinComponent(component, NAVIGATOR_ADDRESS_SELECTOR, HTMLInputElement);
     assert.strictEqual(input.title, error);
@@ -126,6 +151,8 @@ describe('LinearMemoryNavigator', () => {
       valid: false,
       mode: LinearMemoryInspector.LinearMemoryNavigator.Mode.Edit,
       error,
+      canGoBackInHistory: false,
+      canGoForwardInHistory: false,
     };
     const input = getElementWithinComponent(component, NAVIGATOR_ADDRESS_SELECTOR, HTMLInputElement);
     assert.strictEqual(input.title, error);

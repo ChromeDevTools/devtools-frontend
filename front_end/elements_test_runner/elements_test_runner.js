@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import '../test_runner/test_runner.js';
-import '../elements/elements-legacy.js';
+import '../panels/elements/elements-legacy.js';
 import '../panels/event_listeners/event_listeners-legacy.js';
 import '../panels/animation/animation-legacy.js';
 

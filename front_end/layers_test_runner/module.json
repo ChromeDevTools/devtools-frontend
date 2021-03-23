@@ -2,7 +2,7 @@
   "dependencies": [
     "test_runner",
     "layers",
-    "elements",
+    "panels/elements",
     "components"
   ]
 }

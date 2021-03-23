@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../../../../front_end/common/common.js';
-import type * as ElementsModule from '../../../../front_end/elements/elements.js';
+import type * as ElementsModule from '../../../../front_end/panels/elements/elements.js';
 import {describeWithEnvironment} from '../helpers/EnvironmentHelpers.js';
 import {assertElement, assertShadowRoot, getEventPromise, renderElementIntoDOM} from '../helpers/DOMHelpers.js';
 
@@ -12,7 +12,7 @@ const {assert} = chai;
 describeWithEnvironment('LayoutPane', async () => {
   let Elements: typeof ElementsModule;
   before(async () => {
-    Elements = await import('../../../../front_end/elements/elements.js');
+    Elements = await import('../../../../front_end/panels/elements/elements.js');
   });
 
   function queryLabels(component: HTMLElement, selector: string) {

@@ -39,6 +39,7 @@ export const mappingForLayoutTests = new Map([
   ['panels/browser_debugger', 'browser_debugger'],
   ['panels/changes', 'changes'],
   ['panels/console', 'console'],
+  ['panels/elements', 'elements'],
 ]);
 
 export class Runtime {

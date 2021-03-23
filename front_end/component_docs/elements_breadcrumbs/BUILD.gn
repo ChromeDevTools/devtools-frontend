@@ -14,7 +14,7 @@ ts_library("ts") {
     "scroll.ts",
   ]
 
-  deps = [ "../../elements:bundle" ]
+  deps = [ "../../panels/elements:bundle" ]
 }
 
 copy_to_gen("elements_breadcrumbs") {

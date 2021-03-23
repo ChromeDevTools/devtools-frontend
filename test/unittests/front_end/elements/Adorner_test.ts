@@ -6,7 +6,7 @@ const {assert} = chai;
 
 import * as Common from '../../../../front_end/common/common.js';
 import type * as Platform from '../../../../front_end/platform/platform.js';
-import type * as ElementsModule from '../../../../front_end/elements/elements.js';
+import type * as ElementsModule from '../../../../front_end/panels/elements/elements.js';
 import {describeWithEnvironment} from '../helpers/EnvironmentHelpers.js';
 
 const ADORNER_TAG_NAME = 'DEVTOOLS-ADORNER';
@@ -15,7 +15,7 @@ const ADORNER_NAME = 'grid';
 describeWithEnvironment('Adorner', async () => {
   let Elements: typeof ElementsModule;
   before(async () => {
-    Elements = await import('../../../../front_end/elements/elements.js');
+    Elements = await import('../../../../front_end/panels/elements/elements.js');
   });
 
   function assertIsAdorner(element: HTMLElement) {

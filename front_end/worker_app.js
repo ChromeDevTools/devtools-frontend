@@ -4,7 +4,7 @@
 import './shell.js';
 import './panels/browser_debugger/browser_debugger-meta.js';
 import './panels/developer_resources/developer_resources-meta.js';
-import './elements/elements-meta.js';
+import './panels/elements/elements-meta.js';
 import './panels/help/help-meta.js';
 import './issues/issues-meta.js';
 import './panels/layer_viewer/layer_viewer-meta.js';

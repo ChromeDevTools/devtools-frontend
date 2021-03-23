@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Elements from '../elements/elements.js';
+import * as Elements from '../panels/elements/elements.js';
 import * as SDK from '../sdk/sdk.js';
 import {Condition, WaitForNavigationCondition} from './Conditions.js';
 import {RecordingSession} from './RecordingSession.js';

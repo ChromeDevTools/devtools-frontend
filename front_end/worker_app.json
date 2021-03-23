@@ -5,7 +5,7 @@
 
     { "name": "panels/browser_debugger" },
     { "name": "cookie_table" },
-    { "name": "elements" },
+    { "name": "panels/elements" },
     { "name": "panels/help" },
     { "name": "issues" },
     { "name": "panels/developer_resources" },

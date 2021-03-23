@@ -4,7 +4,7 @@
 
 const {assert} = chai;
 
-import type * as ElementsModule from '../../../../front_end/elements/elements.js';
+import type * as ElementsModule from '../../../../front_end/panels/elements/elements.js';
 import {describeWithEnvironment} from '../helpers/EnvironmentHelpers.js';
 
 class FakeSettingStore {
@@ -27,7 +27,7 @@ describeWithEnvironment('AdornerManager', async () => {
   let Elements: typeof ElementsModule;
 
   before(async () => {
-    Elements = await import('../../../../front_end/elements/elements.js');
+    Elements = await import('../../../../front_end/panels/elements/elements.js');
   });
 
   it('can sync adorner settings with the settings store correctly', () => {

@@ -12,7 +12,7 @@ ts_library("ts") {
   deps = [
     "../../../test/unittests/front_end/helpers",
     "../../component_helpers:bundle",
-    "../../elements:bundle",
+    "../../panels/elements:bundle",
   ]
 }
 

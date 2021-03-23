@@ -14,8 +14,8 @@ devtools_module("generated") {
   deps = []
 
   visibility = [
-    "../elements:*",
     "../panels/accessibility:*",
+    "../panels/elements:*",
     "../protocol_client:*",
     "../sdk:sdk-typescript",
   ]

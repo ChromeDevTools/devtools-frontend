@@ -93,7 +93,7 @@ export const CSS_RESOURCES_TO_LOAD_INTO_RUNTIME = [
   'ui/tooltip.css',
   'ui/treeoutline.css',
   'ui/viewContainers.css',
-  'elements/layoutPane.css',
+  'panels/elements/layoutPane.css',
   'components/imagePreview.css',
   'components/jsUtils.css',
   'persistence/editFileSystemView.css',

@@ -1,6 +1,6 @@
 {
   "dependencies": [
-    "elements",
+    "panels/elements",
     "sources",
     "panels/console"
   ],

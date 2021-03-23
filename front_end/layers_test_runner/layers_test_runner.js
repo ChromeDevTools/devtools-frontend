@@ -5,7 +5,7 @@
 import '../test_runner/test_runner.js';
 import '../layers/layers-legacy.js';
 import '../panels/layer_viewer/layer_viewer-legacy.js';
-import '../elements/elements-legacy.js';
+import '../panels/elements/elements-legacy.js';
 import '../components/components-legacy.js';
 
 /**

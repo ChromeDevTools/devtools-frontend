@@ -1,6 +1,6 @@
 {
   "dependencies": [
     "test_runner",
-    "emulation"
+    "panels/emulation"
   ]
 }

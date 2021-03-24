@@ -2,11 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../common/common.js';
-import * as Host from '../host/host.js';
-import * as i18n from '../i18n/i18n.js';
-import * as Platform from '../platform/platform.js';
-import * as UI from '../ui/ui.js';
+import * as Common from '../../common/common.js';
+import * as Host from '../../host/host.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as Platform from '../../platform/platform.js';
+import * as UI from '../../ui/ui.js';
 
 import {DeviceModeModel, Events, MaxDeviceSize, MinDeviceSize, Type} from './DeviceModeModel.js';
 import {DeviceModeToolbar} from './DeviceModeToolbar.js';
@@ -42,7 +42,7 @@ const UIStrings = {
   */
   laptopL: 'Laptop L',
 };
-const str_ = i18n.i18n.registerUIStrings('emulation/DeviceModeView.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/emulation/DeviceModeView.js', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class DeviceModeView extends UI.Widget.VBox {
@@ -57,7 +57,7 @@ export class DeviceModeView extends UI.Widget.VBox {
 
     this.setMinimumSize(150, 150);
     this.element.classList.add('device-mode-view');
-    this.registerRequiredCSS('emulation/deviceModeView.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('panels/emulation/deviceModeView.css', {enableLegacyPatching: true});
     UI.Tooltip.Tooltip.addNativeOverrideContainer(this.contentElement);
 
     this._model = DeviceModeModel.instance();

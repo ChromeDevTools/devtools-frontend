@@ -2,13 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Bindings from '../bindings/bindings.js';
-import * as Common from '../common/common.js';
-import * as i18n from '../i18n/i18n.js';
-import * as Platform from '../platform/platform.js';
-import * as SDK from '../sdk/sdk.js';
-import * as UI from '../ui/ui.js';
-import * as Workspace from '../workspace/workspace.js';  // eslint-disable-line no-unused-vars
+import * as Bindings from '../../bindings/bindings.js';
+import * as Common from '../../common/common.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as Platform from '../../platform/platform.js';
+import * as SDK from '../../sdk/sdk.js';
+import * as UI from '../../ui/ui.js';
+import * as Workspace from '../../workspace/workspace.js';  // eslint-disable-line no-unused-vars
 
 const UIStrings = {
   /**
@@ -17,7 +17,7 @@ const UIStrings = {
   */
   revealInSourceCode: 'Reveal in source code',
 };
-const str_ = i18n.i18n.registerUIStrings('emulation/MediaQueryInspector.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/emulation/MediaQueryInspector.js', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /**
  * @implements {SDK.SDKModel.SDKModelObserver<!SDK.CSSModel.CSSModel>}
@@ -29,7 +29,7 @@ export class MediaQueryInspector extends UI.Widget.Widget {
    */
   constructor(getWidthCallback, setWidthCallback) {
     super(true);
-    this.registerRequiredCSS('emulation/mediaQueryInspector.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('panels/emulation/mediaQueryInspector.css', {enableLegacyPatching: true});
     this.contentElement.classList.add('media-inspector-view');
     this.contentElement.addEventListener('click', this._onMediaQueryClicked.bind(this), false);
     this.contentElement.addEventListener('contextmenu', this._onContextMenu.bind(this), false);
@@ -367,10 +367,12 @@ export class MediaQueryInspector extends UI.Widget.Widget {
       marker
           .createChild(
               'div',
-              'media-inspector-marker-label-container ' + (atLeft ? 'media-inspector-marker-label-container-left' :
-                                                                    'media-inspector-marker-label-container-right'))
+              'media-inspector-marker-label-container ' +
+                  (atLeft ? 'media-inspector-marker-label-container-left' :
+                            'media-inspector-marker-label-container-right'))
           .createChild(
-              'span', 'media-inspector-marker-label ' +
+              'span',
+              'media-inspector-marker-label ' +
                   (leftAlign ? 'media-inspector-label-left' : 'media-inspector-label-right'))
           .textContent = expression.value() + expression.unit();
     }

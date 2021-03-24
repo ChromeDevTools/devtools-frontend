@@ -12,7 +12,7 @@ ts_library("emulation") {
   ]
 
   deps = [
-    "../../../../front_end/emulation:bundle",
+    "../../../../front_end/panels/emulation:bundle",
     "../helpers",
   ]
 }

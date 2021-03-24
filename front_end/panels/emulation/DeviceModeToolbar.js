@@ -2,12 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../common/common.js';
-import * as Host from '../host/host.js';
-import * as i18n from '../i18n/i18n.js';
-import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
-import * as Root from '../root/root.js';
-import * as UI from '../ui/ui.js';
+import * as Common from '../../common/common.js';
+import * as Host from '../../host/host.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as MobileThrottling from '../../mobile_throttling/mobile_throttling.js';
+import * as Root from '../../root/root.js';
+import * as UI from '../../ui/ui.js';
 
 import {defaultMobileScaleFactor, DeviceModeModel, Type, UA} from './DeviceModeModel.js';
 import {EmulatedDevice, EmulatedDevicesList, Events, Horizontal, HorizontalSpanned, Mode, Vertical, VerticalSpanned} from './EmulatedDevices.js';  // eslint-disable-line no-unused-vars
@@ -169,7 +169,7 @@ const UIStrings = {
   */
   toggleDualscreenMode: 'Toggle dual-screen mode',
 };
-const str_ = i18n.i18n.registerUIStrings('emulation/DeviceModeToolbar.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/emulation/DeviceModeToolbar.js', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 /**
@@ -606,7 +606,7 @@ export class DeviceModeToolbar {
     const container = document.createElement('div');
     const shadowRoot = UI.Utils.createShadowRootWithCoreStyles(
         container,
-        {cssFile: 'emulation/deviceModeToolbar.css', enableLegacyPatching: false, delegatesFocus: undefined});
+        {cssFile: 'panels/emulation/deviceModeToolbar.css', enableLegacyPatching: false, delegatesFocus: undefined});
     shadowRoot.appendChild(element);
     return new UI.Toolbar.ToolbarItem(container);
   }

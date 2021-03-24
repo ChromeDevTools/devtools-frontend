@@ -1,7 +1,7 @@
 {
   "dependencies": [
     "components",
-    "emulation"
+    "panels/emulation"
   ],
     "resources": [
     "screencastView.css"

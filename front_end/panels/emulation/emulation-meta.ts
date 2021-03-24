@@ -2,14 +2,14 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../common/common.js';
-import * as Root from '../root/root.js';
-import * as UI from '../ui/ui.js';
+import * as Common from '../../common/common.js';
+import * as Root from '../../root/root.js';
+import * as UI from '../../ui/ui.js';
 
 // eslint-disable-next-line rulesdir/es_modules_import
 import type * as Emulation from './emulation.js';
 
-import * as i18n from '../i18n/i18n.js';
+import * as i18n from '../../i18n/i18n.js';
 const UIStrings = {
   /**
   *@description Title of an action in the emulation tool to toggle device mode
@@ -153,7 +153,7 @@ const UIStrings = {
   */
   showLocations: 'Show Locations',
 };
-const str_ = i18n.i18n.registerUIStrings('emulation/emulation-meta.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/emulation/emulation-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 let loadedEmulationModule: (typeof Emulation|undefined);
@@ -161,7 +161,7 @@ let loadedEmulationModule: (typeof Emulation|undefined);
 async function loadEmulationModule(): Promise<typeof Emulation> {
   if (!loadedEmulationModule) {
     // Side-effect import resources in module.json
-    await Root.Runtime.Runtime.instance().loadModulePromise('emulation');
+    await Root.Runtime.Runtime.instance().loadModulePromise('panels/emulation');
     loadedEmulationModule = await import('./emulation.js');
   }
   return loadedEmulationModule;

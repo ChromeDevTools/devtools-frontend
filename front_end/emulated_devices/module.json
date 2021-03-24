@@ -1,6 +1,6 @@
 {
   "dependencies": [
-    "emulation"
+    "panels/emulation"
   ],
   "resources": []
 }

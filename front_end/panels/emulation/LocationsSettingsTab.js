@@ -2,9 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../common/common.js';
-import * as i18n from '../i18n/i18n.js';
-import * as UI from '../ui/ui.js';
+import * as Common from '../../common/common.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as UI from '../../ui/ui.js';
 
 /** @type {!LocationsSettingsTab} */
 let locationsSettingsTabInstance;
@@ -93,7 +93,7 @@ const UIStrings = {
   */
   addLocation: 'Add location...',
 };
-const str_ = i18n.i18n.registerUIStrings('emulation/LocationsSettingsTab.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/emulation/LocationsSettingsTab.js', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 /**
@@ -103,7 +103,7 @@ export class LocationsSettingsTab extends UI.Widget.VBox {
   /** @private */
   constructor() {
     super(true);
-    this.registerRequiredCSS('emulation/locationsSettingsTab.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('panels/emulation/locationsSettingsTab.css', {enableLegacyPatching: false});
 
     this.contentElement.createChild('div', 'header').textContent = i18nString(UIStrings.customLocations);
 
@@ -113,7 +113,7 @@ export class LocationsSettingsTab extends UI.Widget.VBox {
 
     this._list = new UI.ListWidget.ListWidget(this);
     this._list.element.classList.add('locations-list');
-    this._list.registerRequiredCSS('emulation/locationsSettingsTab.css', {enableLegacyPatching: false});
+    this._list.registerRequiredCSS('panels/emulation/locationsSettingsTab.css', {enableLegacyPatching: false});
     this._list.show(this.contentElement);
     /** @type {Common.Settings.Setting<Array<LocationDescription>>} */
     this._customSetting = /** @type {Common.Settings.Setting<Array<LocationDescription>>} */ (

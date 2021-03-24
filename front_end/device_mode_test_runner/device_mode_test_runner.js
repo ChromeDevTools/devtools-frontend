@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import '../test_runner/test_runner.js';
-import '../emulation/emulation-legacy.js';
+import '../panels/emulation/emulation-legacy.js';
 
 /**
  * @fileoverview using private properties isn't a Closure violation in tests.

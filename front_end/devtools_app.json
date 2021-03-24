@@ -1,6 +1,6 @@
 {
   "modules" : [
-    { "name": "emulation", "type": "autostart" },
+    { "name": "panels/emulation", "type": "autostart" },
     { "name": "inspector_main", "type": "autostart" },
     { "name": "mobile_throttling", "type": "autostart" },
 

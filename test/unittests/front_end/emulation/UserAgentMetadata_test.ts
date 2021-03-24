@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 const {assert} = chai;
-import * as Emulation from '../../../../front_end/emulation/emulation.js';
+import * as Emulation from '../../../../front_end/panels/emulation/emulation.js';
 const UserAgentMetadata = Emulation.UserAgentMetadata;
 
 const errParse = 'syntax error';

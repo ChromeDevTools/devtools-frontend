@@ -40,6 +40,7 @@ export const mappingForLayoutTests = new Map([
   ['panels/changes', 'changes'],
   ['panels/console', 'console'],
   ['panels/elements', 'elements'],
+  ['panels/emulation', 'emulation'],
 ]);
 
 export class Runtime {

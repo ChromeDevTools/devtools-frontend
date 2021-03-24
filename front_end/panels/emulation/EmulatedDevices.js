@@ -2,11 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../common/common.js';
-import * as i18n from '../i18n/i18n.js';
-import * as Root from '../root/root.js';
-import * as SDK from '../sdk/sdk.js';
-import * as UI from '../ui/ui.js';
+import * as Common from '../../common/common.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as Root from '../../root/root.js';
+import * as SDK from '../../sdk/sdk.js';
+import * as UI from '../../ui/ui.js';
 
 import {MaxDeviceSize, MinDeviceSize} from './DeviceModeModel.js';
 
@@ -24,7 +24,7 @@ const UIStrings = {
   */
   laptopWithMDPIScreen: 'Laptop with MDPI screen',
 };
-const str_ = i18n.i18n.registerUIStrings('emulation/EmulatedDevices.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/emulation/EmulatedDevices.js', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 export class EmulatedDevice {
   constructor() {
@@ -60,7 +60,6 @@ export class EmulatedDevice {
     this._show = _Show.Default;
     /** @type {boolean} */
     this._showByDefault = true;
-
   }
 
   /**

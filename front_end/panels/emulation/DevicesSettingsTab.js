@@ -2,8 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as i18n from '../i18n/i18n.js';
-import * as UI from '../ui/ui.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as UI from '../../ui/ui.js';
 
 import {DeviceModeModel, MaxDeviceNameLength, UA} from './DeviceModeModel.js';
 import {Capability, EmulatedDevice, EmulatedDevicesList, Events, Horizontal, Vertical,} from './EmulatedDevices.js';
@@ -108,7 +108,7 @@ const UIStrings = {
   */
   brandsListMust: 'Brands list must consist of strings, each with a v parameter with a string value.',
 };
-const str_ = i18n.i18n.registerUIStrings('emulation/DevicesSettingsTab.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/emulation/DevicesSettingsTab.js', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /**
  * @implements {UI.ListWidget.Delegate<!EmulatedDevice>}
@@ -119,7 +119,7 @@ export class DevicesSettingsTab extends UI.Widget.VBox {
     super();
     this.element.classList.add('settings-tab-container');
     this.element.classList.add('devices-settings-tab');
-    this.registerRequiredCSS('emulation/devicesSettingsTab.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('panels/emulation/devicesSettingsTab.css', {enableLegacyPatching: true});
 
     const header = this.element.createChild('header');
     UI.UIUtils.createTextChild(header.createChild('h1'), i18nString(UIStrings.emulatedDevices));
@@ -133,7 +133,7 @@ export class DevicesSettingsTab extends UI.Widget.VBox {
     buttonsRow.appendChild(this._addCustomButton);
 
     this._list = new UI.ListWidget.ListWidget(this, false /* delegatesFocus */);
-    this._list.registerRequiredCSS('emulation/devicesSettingsTab.css', {enableLegacyPatching: true});
+    this._list.registerRequiredCSS('panels/emulation/devicesSettingsTab.css', {enableLegacyPatching: true});
     this._list.element.classList.add('devices-list');
     this._list.show(this.containerElement);
 
@@ -382,7 +382,7 @@ export class DevicesSettingsTab extends UI.Widget.VBox {
     uaChFields.appendChild(helpIconWrapper);
 
     const tree = new UI.TreeOutline.TreeOutlineInShadow();
-    tree.registerRequiredCSS('emulation/devicesSettingsTab.css', {enableLegacyPatching: true});
+    tree.registerRequiredCSS('panels/emulation/devicesSettingsTab.css', {enableLegacyPatching: true});
     tree.setShowSelectionOnKeyboardFocus(true, false);
     const treeRoot = new UI.TreeOutline.TreeElement(uaChFields, true);
     tree.appendChild(treeRoot);

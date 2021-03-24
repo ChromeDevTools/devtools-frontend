@@ -2,11 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../common/common.js';
-import * as Host from '../host/host.js';
-import * as i18n from '../i18n/i18n.js';
-import * as SDK from '../sdk/sdk.js';
-import * as UI from '../ui/ui.js';
+import * as Common from '../../common/common.js';
+import * as Host from '../../host/host.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as SDK from '../../sdk/sdk.js';
+import * as UI from '../../ui/ui.js';
 
 const UIStrings = {
   /**
@@ -157,7 +157,7 @@ const UIStrings = {
    */
   gamma: '\u03B3 (gamma)',
 };
-const str_ = i18n.i18n.registerUIStrings('emulation/SensorsView.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/emulation/SensorsView.js', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /**
  * @type {?SensorsView}
@@ -167,7 +167,7 @@ let _instanceObject = null;
 export class SensorsView extends UI.Widget.VBox {
   constructor() {
     super(true);
-    this.registerRequiredCSS('emulation/sensors.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('panels/emulation/sensors.css', {enableLegacyPatching: true});
     this.contentElement.classList.add('sensors-view');
 
     this._LocationSetting = Common.Settings.Settings.instance().createSetting('emulation.locationOverride', '');

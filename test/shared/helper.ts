@@ -8,6 +8,7 @@ import * as puppeteer from 'puppeteer';
 
 import {reloadDevTools} from '../conductor/hooks.js';
 import {getBrowserAndPages, getTestServerPort} from '../conductor/puppeteer-state.js';
+import {getTestRunnerConfigSetting} from '../conductor/test_runner_config.js';
 import {AsyncScope} from './mocha-extensions.js';
 
 declare global {
@@ -332,7 +333,8 @@ export const goToResourceWithCustomHost = async (host: string, path: string) => 
 };
 
 export const getResourcesPath = (host: string = 'localhost') => {
-  return `https://${host}:${getTestServerPort()}/test/e2e/resources`;
+  const resourcesPath = getTestRunnerConfigSetting('hosted-server-e2e-resources-path', '/test/e2e/resources');
+  return `https://${host}:${getTestServerPort()}${resourcesPath}`;
 };
 
 export const step = async (description: string, step: Function) => {

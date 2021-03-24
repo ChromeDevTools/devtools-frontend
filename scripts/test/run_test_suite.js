@@ -63,6 +63,11 @@ const yargsObject =
           desc: 'Configures the page that will be loaded by conductor when using the hosted-server for tests.',
           default: 'front_end/devtools_app.html'
         })
+        .option('hosted-server-e2e-resources-path', {
+          type: 'string',
+          desc: 'The base URL that will be used when loading e2e test resources',
+          default: '/test/e2e/resources'
+        })
         .option(
             'chrome-binary-path',
             {type: 'string', desc: 'Path to the Chromium binary.', default: downloadedChromeBinaryPath()})

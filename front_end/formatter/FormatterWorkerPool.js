@@ -182,23 +182,6 @@ export class FormatterWorkerPool {
 
   /**
    * @param {string} content
-   * @param {function(boolean, !Array<!JSOutlineItem>):void} callback
-   */
-  javaScriptOutline(content, callback) {
-    this._runChunkedTask(FormatterActions.FormatterActions.JAVASCRIPT_OUTLINE, {content: content}, onDataChunk);
-
-    /**
-     * @param {boolean} isLastChunk
-     * @param {*} data
-     */
-    function onDataChunk(isLastChunk, data) {
-      const items = /** @type {!Array.<!JSOutlineItem>} */ (data || []);
-      callback(isLastChunk, items);
-    }
-  }
-
-  /**
-   * @param {string} content
    * @param {string} mimeType
    * @param {function(boolean, !Array<!OutlineItem>):void} callback
    * @return {boolean}
@@ -207,23 +190,13 @@ export class FormatterWorkerPool {
     switch (mimeType) {
       case 'text/html':
       case 'text/javascript':
-        this.javaScriptOutline(content, javaScriptCallback);
+        this._runChunkedTask(FormatterActions.FormatterActions.JAVASCRIPT_OUTLINE, {content: content}, callback);
         return true;
       case 'text/css':
         this.parseCSS(content, cssCallback);
         return true;
     }
     return false;
-
-    /**
-     * @param {boolean} isLastChunk
-     * @param {!Array<!JSOutlineItem>} items
-     */
-    function javaScriptCallback(isLastChunk, items) {
-      callback(
-          isLastChunk,
-          items.map(item => ({line: item.line, column: item.column, title: item.name, subtitle: item.arguments})));
-    }
 
     /**
      * @param {boolean} isLastChunk
@@ -286,20 +259,6 @@ export class FormatResult {
     this.content;
     /** @type {!FormatMapping} */
     this.mapping;
-  }
-}
-
-// eslint-disable-next-line no-unused-vars
-class JSOutlineItem {
-  constructor() {
-    /** @type {string} */
-    this.name;
-    /** @type {(string|undefined)} */
-    this.arguments;
-    /** @type {number} */
-    this.line;
-    /** @type {number} */
-    this.column;
   }
 }
 

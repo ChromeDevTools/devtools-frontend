@@ -10,18 +10,18 @@ import * as Acorn from '../third_party/acorn/acorn.js';
 import {ECMA_VERSION} from './AcornTokenizer.js';
 import {ESTreeWalker} from './ESTreeWalker.js';
 
-/** @typedef {{name: string, line: number, column: number, arguments: (string|undefined)}} */
+/** @typedef {{title: string, subtitle: (string|undefined), line: number, column: number}} */
 // @ts-ignore typedef
-export let Chunk;
+export let Item;
 
 /**
  * @param {string} content
- * @return {{chunk: !Array<!Chunk>, isLastChunk: boolean}}
+ * @param {function({chunk: !Array<!Item>, isLastChunk: boolean}):void} chunkCallback
  */
-export function javaScriptOutline(content) {
+export function javaScriptOutline(content, chunkCallback) {
   const chunkSize = 100000;
-  /** @type {!Array<!Chunk>} */
-  let outlineChunk = [];
+  /** @type {!Array<!Item>} */
+  let chunk = [];
   let lastReportedOffset = 0;
 
   let ast;
@@ -41,7 +41,7 @@ export function javaScriptOutline(content) {
   // typecheck it.
   walker.walk(ast);
 
-  return {chunk: outlineChunk, isLastChunk: true};
+  chunkCallback({chunk, isLastChunk: true});
 
   /**
    * @param {!ESTree.Node} node
@@ -83,8 +83,7 @@ export function javaScriptOutline(content) {
   function reportClass(nameNode) {
     const name = 'class ' + stringifyNameNode(nameNode);
     textCursor.advance(nameNode.start);
-    addOutlineItem(
-        {name: name, line: textCursor.lineNumber(), column: textCursor.columnNumber(), arguments: undefined});
+    addOutlineItem(name);
   }
 
   /**
@@ -106,12 +105,7 @@ export function javaScriptOutline(content) {
     }
 
     textCursor.advance(nameNode.start);
-    addOutlineItem({
-      name: name,
-      line: textCursor.lineNumber(),
-      column: textCursor.columnNumber(),
-      arguments: stringifyArguments(/** @type {!Array<!ESTree.Node>} */ (functionDeclarationNode.params))
-    });
+    addOutlineItem(name, stringifyArguments(/** @type {!Array<!ESTree.Node>} */ (functionDeclarationNode.params)));
   }
 
   /**
@@ -179,17 +173,17 @@ export function javaScriptOutline(content) {
   }
 
   /**
-   * @param {!Chunk} item
+   * @param {string} title
+   * @param {string=} subtitle
    */
-  function addOutlineItem(item) {
-    outlineChunk.push(item);
-    if (textCursor.offset() - lastReportedOffset < chunkSize) {
-      return;
+  function addOutlineItem(title, subtitle) {
+    const line = textCursor.lineNumber();
+    const column = textCursor.columnNumber();
+    chunk.push({title, subtitle, line, column});
+    if (textCursor.offset() - lastReportedOffset >= chunkSize) {
+      chunkCallback({chunk, isLastChunk: false});
+      chunk = [];
+      lastReportedOffset = textCursor.offset();
     }
-
-    // @ts-ignore Worker.postMessage signature is different to Window.postMessage; lib.dom.ts assumes this code is on window.
-    postMessage({chunk: outlineChunk, isLastChunk: false});
-    outlineChunk = [];
-    lastReportedOffset = textCursor.offset();
   }
 }

@@ -26,7 +26,7 @@ self.onmessage = function(event: MessageEvent): void {
       FormatterWorker.CSSRuleParser.parseCSS(params.content, self.postMessage);
       break;
     case FormatterActions.JAVASCRIPT_OUTLINE:
-      self.postMessage(FormatterWorker.JavaScriptOutline.javaScriptOutline(params.content));
+      FormatterWorker.JavaScriptOutline.javaScriptOutline(params.content, self.postMessage);
       break;
     case FormatterActions.JAVASCRIPT_IDENTIFIERS:
       self.postMessage(FormatterWorker.FormatterWorker.javaScriptIdentifiers(params.content));

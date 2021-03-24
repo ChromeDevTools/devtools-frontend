@@ -129,34 +129,6 @@ SourcesTestRunner.testPrettyPrint = function(mimeType, text, mappingQueries, nex
   }
 };
 
-SourcesTestRunner.testJavascriptOutline = function(text) {
-  let fulfill;
-  const promise = new Promise(x => {
-    fulfill = x;
-  });
-  Formatter.formatterWorkerPool().javaScriptOutline(text, onChunk);
-  const items = [];
-  return promise;
-
-  function onChunk(isLastChunk, outlineItems) {
-    items.push(...outlineItems);
-
-    if (!isLastChunk) {
-      return;
-    }
-
-    TestRunner.addResult('Text:');
-    TestRunner.addResult(text.split('\n').map(line => '    ' + line).join('\n'));
-    TestRunner.addResult('Outline:');
-
-    for (const item of items) {
-      TestRunner.addResult('    ' + item.name + (item.arguments || '') + ':' + item.line + ':' + item.column);
-    }
-
-    fulfill();
-  }
-};
-
 SourcesTestRunner.dumpSwatchPositions = function(sourceFrame, bookmarkType) {
   const textEditor = sourceFrame.textEditor;
   const markers = textEditor.bookmarks(textEditor.fullRange(), bookmarkType);

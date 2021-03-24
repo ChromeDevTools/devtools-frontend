@@ -423,20 +423,18 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper implements
   addLineMessage(
       level: Message.Level, text: string, lineNumber: number, columnNumber?: number,
       clickHandler?: (() => void)): Message {
-    return this.addMessage(
-        level, text, new TextUtils.TextRange.TextRange(lineNumber, columnNumber || 0, lineNumber, columnNumber || 0),
-        clickHandler);
+    const range = TextUtils.TextRange.TextRange.createFromLocation(lineNumber, columnNumber || 0);
+    const message = new Message(this, level, text, range, clickHandler);
+    this.addMessage(message);
+    return message;
   }
 
-  addMessage(level: Message.Level, text: string, range: TextUtils.TextRange.TextRange, clickHandler?: (() => void)):
-      Message {
-    const message = new Message(this, level, text, range, clickHandler);
+  private addMessage(message: Message): void {
     if (!this._messages) {
       this._messages = new Set();
     }
     this._messages.add(message);
     this.dispatchEventToListeners(Events.MessageAdded, message);
-    return message;
   }
 
   removeMessage(message: Message): void {

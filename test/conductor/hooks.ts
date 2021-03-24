@@ -71,7 +71,8 @@ interface DevToolsTarget {
   id: string;
 }
 
-const envChromeBinary = process.env['CHROME_BIN'];
+// TODO (jacktfranklin): remove fallback to process.env once test runner config migration is done: crbug.com/1186163
+const envChromeBinary = getTestRunnerConfigSetting('chrome-binary', process.env['CHROME_BIN']);
 
 function launchChrome() {
   // Use port 0 to request any free port.

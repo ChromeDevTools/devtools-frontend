@@ -71,10 +71,6 @@ const yargsObject =
         .option(
             'chrome-binary-path',
             {type: 'string', desc: 'Path to the Chromium binary.', default: downloadedChromeBinaryPath()})
-        .option('chrome-features', {
-          type: 'string',
-          desc: 'Comma separated list of strings passed to --enable-features on the Chromium command line.'
-        })
         .option('jobs', {
           type: 'number',
           desc: 'Number of parallel runners to use (if supported). Defaults to 1.',
@@ -136,7 +132,7 @@ function setNodeModulesPath(nodeModulesPath) {
 }
 
 function executeTestSuite(
-    {absoluteTestSuitePath, jobs, target, nodeModulesPath, chromeBinaryPath, chromeFeatures, testFilePattern, cwd}) {
+    {absoluteTestSuitePath, jobs, target, nodeModulesPath, chromeBinaryPath, testFilePattern, cwd}) {
   /**
   * Internally within various scripts (Mocha configs, Conductor, etc), we rely on
   * process.env.FOO. We are moving to exposing the entire configuration to
@@ -145,7 +141,6 @@ function executeTestSuite(
   * required changes.
   */
   setEnvValueIfValuePresent('CHROME_BIN', chromeBinaryPath);
-  setEnvValueIfValuePresent('CHROME_FEATURES', chromeFeatures);
   setEnvValueIfValuePresent('JOBS', jobs);
   setEnvValueIfValuePresent('TARGET', target);
   setEnvValueIfValuePresent('TEST_PATTERNS', testFilePattern);
@@ -191,8 +186,6 @@ function main() {
     err(`Chrome binary path ${chromeBinaryPath} is not valid`);
   }
 
-  const chromeFeatures = yargsObject['chrome-features'] ? `--enable-features=${yargsObject['chrome-features']}` : '';
-
   const target = yargsObject['target'];
   const targetPath = path.join(yargsObject['cwd'], 'out', target);
   validatePathExistsOrError(`Target out/${target}`, targetPath);
@@ -217,7 +210,7 @@ function main() {
    */
   process.env.TEST_RUNNER_JSON_CONFIG = JSON.stringify(namedConfigFlags);
 
-  log(`Using Chromium binary ${chromeBinaryPath} ${chromeFeatures}`);
+  log(`Using Chromium binary ${chromeBinaryPath}`);
   log(`Using target ${target}`);
 
   const testSuitePath = getAbsoluteTestSuitePath(target);
@@ -228,7 +221,6 @@ function main() {
     resultStatusCode = executeTestSuite({
       absoluteTestSuitePath: testSuitePath,
       chromeBinaryPath,
-      chromeFeatures,
       nodeModulesPath: yargsObject['node-modules-path'],
       jobs: yargsObject['jobs'],
       testFilePattern: yargsObject['test-file-pattern'],

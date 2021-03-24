@@ -17,7 +17,6 @@ interface SupportedEnvVars {
   CHROME_BIN: string;       // Absolute path to the Chrome binary.
   INTERACTIVE: boolean;     // [Unused]: Placeholder for screenshot diffing.
   TIMEOUT: number;          // The timeout in ms to wait for tests.
-  CHROME_FEATURES: string;  // --enable-features={} for the Chrome binary.
   /* eslint-enable @typescript-eslint/naming-convention */
 }
 

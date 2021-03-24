@@ -44,10 +44,6 @@ def parse_options(cli_args):
         dest='target',
         help='The name of the Ninja output directory. Defaults to "Default"')
     parser.add_argument(
-        '--chrome-features',
-        dest='chrome_features',
-        help='comma separated list of strings passed to --enable-features on the chromium commandline')
-    parser.add_argument(
         '--jobs',
         default='1',
         dest='jobs',
@@ -68,7 +64,6 @@ def parse_options(cli_args):
 
 
 def run_tests(chrome_binary,
-              chrome_features,
               test_suite_path,
               test_suite,
               jobs,
@@ -78,8 +73,6 @@ def run_tests(chrome_binary,
               test_patterns=None):
     env = os.environ.copy()
     env['CHROME_BIN'] = chrome_binary
-    if chrome_features:
-        env['CHROME_FEATURES'] = chrome_features
 
     if test_patterns:
         env['TEST_PATTERNS'] = ';'.join(test_patterns)
@@ -120,7 +113,6 @@ def run_test():
     is_cygwin = sys.platform == 'cygwin'
     chrome_binary = None
     test_suite = None
-    chrome_features = None
 
     # Default to the downloaded / pinned Chromium binary
     downloaded_chrome_binary = devtools_paths.downloaded_chrome_binary_path()
@@ -134,9 +126,6 @@ def run_test():
             print('Unable to find a Chrome binary at \'%s\'' % chrome_binary)
             sys.exit(1)
 
-    if OPTIONS.chrome_features:
-        chrome_features = '--enable-features=%s' % OPTIONS.chrome_features
-
     if (chrome_binary is None):
         print('Unable to run, no Chrome binary provided')
         sys.exit(1)
@@ -149,8 +138,7 @@ def run_test():
     if test_file:
         test_patterns.append(test_file)
 
-    print('Using Chromium binary ({}{})\n'.format(
-        chrome_binary, ' ' + chrome_features if chrome_features else ''))
+    print('Using Chromium binary ({})\n'.format(chrome_binary))
     print('Using target (%s)\n' % OPTIONS.target)
 
     if test_file is not None:
@@ -189,7 +177,6 @@ def run_test():
     errors_found = False
     try:
         errors_found = run_tests(chrome_binary,
-                                 chrome_features,
                                  test_suite_path,
                                  test_suite,
                                  jobs,

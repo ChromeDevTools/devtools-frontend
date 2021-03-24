@@ -15,6 +15,105 @@ const path = require('path');
 const puppeteer = require('puppeteer');
 const {argv} = require('yargs');
 const devtoolsPaths = require('../devtools_paths.js');
+const postcss = require('postcss');
+
+/**
+ * Finds the rules from the source CSS sheet that need to be passed into the color patching. If we have:
+ *
+ * ```
+ * p { color: red; }
+ * a { color: blue; }
+ * .-theme-with-dark-background p { color: pink; }
+ * ```
+ *
+ * Then we only need to pass `a { color: blue; }` into the patching, because the
+ * `p` has been explicitly styled for dark mode.
+ * @param {string} contents
+ */
+function rulesToPassToColorPatching(contents) {
+  /**
+   * @type {Set<postcss.Rule>}
+   */
+  const darkModeOverrideRules = new Set();
+  /**
+   * @type {Map<string, postcss.Rule>}
+   */
+  const nonDarkModeRulesBySelector = new Map();
+
+  /* We first walk through the CSS to split rules into two categories
+   * 1) rules that are dark mode overrides
+   * 2) rules that are not
+   */
+  const parsedCSS = postcss.parse(contents);
+  parsedCSS.walkRules(rule => {
+    if (rule.parent && rule.parent.type === 'atrule' && rule.parent.params.includes('forced-colors: active')) {
+      // atrule here = @media, @charset, etc.
+      // Do nothing for the forced-color styles.
+      return;
+    }
+    if (rule.parent && rule.parent.type === 'atrule' && rule.parent.name === 'keyframes') {
+      // We never want to include keyframes because they are not color patched.
+      // Developers must explicitly define keyframes for light and dark mode.
+      return;
+    }
+
+    const ruleIsDarkModeOverride = rule.selector.includes('.-theme-with-dark-background');
+    if (ruleIsDarkModeOverride) {
+      darkModeOverrideRules.add(rule);
+    } else {
+      // We trim the selector down so we can look it up later and not be dependent on whitespace
+      nonDarkModeRulesBySelector.set(rule.selector.trim().replace(/\n/g, ''), rule);
+    }
+  });
+
+  // Now we have the dark mode rules, we need to go through the sheet again to
+  // find a matching (non-dark) rule for it.
+  for (const darkModeOverride of darkModeOverrideRules) {
+    // Take the dark mode selector and remove the dark-mode specific parts, such
+    // that we can look for the non-dark-mode selector from the input
+    // stylesheet.
+    const withHostContextRemoved =
+        darkModeOverride.selector.replace(/:host-context\(\.-theme-with-dark-background\) /g, '');
+    const withThemeClassRemoved =
+        withHostContextRemoved.replace(/\.-theme-with-dark-background /g, '').replace(/\n/g, '').trim();
+
+    /*
+     * if we have :host-context(.-theme-with-dark-background) p, .-theme-with-dark-background p {}, then the above replaces have made that:
+     * p,p {}
+     * So we split on commas, trim, make sure we have just unique selectors, and
+     * then use those to look up the source rule.
+     */
+    const ruleDeduplicated = Array.from(new Set(withThemeClassRemoved.split(',').map(part => part.trim()))).join(',');
+    const matchingRule = nonDarkModeRulesBySelector.get(ruleDeduplicated);
+    if (matchingRule) {
+      /* Now we go through the rule and look at each declaration within it. Any that are also declared in the dark mode override can be removed.
+       * Then at the end we are left with either an empty rule, which can be dropped, or a rule containing colors that still need patching.
+       */
+      const darkModeDeclarationPropertyNames = new Set();
+      darkModeOverride.walkDecls(decl => {
+        darkModeDeclarationPropertyNames.add(decl.prop);
+      });
+
+      let totalDeclarationsInRule = 0;
+      matchingRule.walkDecls(decl => {
+        totalDeclarationsInRule++;
+        if (darkModeDeclarationPropertyNames.has(decl.prop)) {
+          decl.remove();
+          totalDeclarationsInRule--;
+        }
+      });
+
+      if (totalDeclarationsInRule === 0) {
+        // We removed all declarations from the rule, so this rule can go. There's nothing to patch.
+        nonDarkModeRulesBySelector.delete(ruleDeduplicated);
+      }
+    }
+  }
+
+  const rulesNeedingPatching = Array.from(nonDarkModeRulesBySelector.values());
+  return rulesNeedingPatching.join('\n');
+}
+
 
 /**
  * @param {string} chromeBinary
@@ -23,7 +122,8 @@ const devtoolsPaths = require('../devtools_paths.js');
 async function generateDarkModeStyleSheet(chromeBinary, sheetFilePath) {
   console.log(
       'IMPORTANT: for the dark mode generator to work, the hosted server must be running on https://localhost:8090.');
-  const contents = fs.readFileSync(path.join(process.cwd(), sheetFilePath), 'utf-8');
+  const sourceSheetContents = fs.readFileSync(path.join(process.cwd(), sheetFilePath), 'utf-8');
+  const rulesForColorPatching = rulesToPassToColorPatching(sourceSheetContents);
 
   const browser = await puppeteer.launch({executablePath: chromeBinary, args: ['--ignore-certificate-errors']});
   const page = await browser.newPage();
@@ -59,17 +159,16 @@ async function generateDarkModeStyleSheet(chromeBinary, sheetFilePath) {
           `.-theme-with-dark-background ${selector.trim()}`,
         ];
       });
-      return scopedSelectors.join(', ') + '{\n' + rules;
+      return scopedSelectors.join(',\n') + ' {\n' + rules.split(';').map(r => `  ${r}`).join(';\n');
     });
 
-    return withHostSelector.join('\n');
-  }, contents);
+    return withHostSelector.join('\n\n');
+  }, rulesForColorPatching);
 
   await browser.close();
 
   const inputBaseName = path.basename(sheetFilePath, '.css');
   const outputFileName = inputBaseName + '.darkmode.css';
-
   const outputFilePath = path.join(process.cwd(), path.dirname(sheetFilePath), outputFileName);
 
   const output = `/* This file was automatically generated via:
@@ -102,3 +201,6 @@ if (!inputFile) {
 }
 
 run(devtoolsPaths.downloadedChromeBinaryPath(), inputFile);
+
+// We export the function so we can unit test it, it's not used otherwise externally.
+module.exports = {rulesToPassToColorPatching};

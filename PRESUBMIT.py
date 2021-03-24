@@ -484,8 +484,7 @@ def _CommonChecks(input_api, output_api):
     results.extend(_CheckDevToolsStyleJS(input_api, output_api))
     results.extend(_CheckDevToolsStyleCSS(input_api, output_api))
 
-    # TODO(jacktfranklin) re-enable. Temporarily disabled due to CSS generation bug. See crbug.com/1188524 for details.
-    # results.extend(_CheckDarkModeStyleSheetsUpToDate(input_api, output_api))
+    results.extend(_CheckDarkModeStyleSheetsUpToDate(input_api, output_api))
     results.extend(_CheckFormat(input_api, output_api))
     results.extend(_CheckOptimizeSVGHashes(input_api, output_api))
     results.extend(_CheckChangesAreExclusiveToDirectory(input_api, output_api))

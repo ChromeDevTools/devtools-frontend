@@ -1050,7 +1050,6 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper {
    */
   setRequestHeaders(headers) {
     this._requestHeaders = headers;
-    delete this._requestCookies;
 
     this.dispatchEventToListeners(Events.RequestHeadersChanged);
   }
@@ -1081,16 +1080,6 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper {
     }
     this._requestHeaderValues[headerName] = this._computeHeaderValue(this.requestHeaders(), headerName);
     return this._requestHeaderValues[headerName];
-  }
-
-  /**
-   * @return {!Array.<!Cookie>}
-   */
-  get requestCookies() {
-    if (!this._requestCookies) {
-      this._requestCookies = CookieParser.parseCookie(this.requestHeaderValue('Cookie')) || [];
-    }
-    return this._requestCookies;
   }
 
   /**

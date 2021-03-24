@@ -51,11 +51,6 @@ const UIStrings = {
   */
   onIgnoreList: 'On ignore list',
   /**
-  *@description Title in Timeline Flame Chart Data Provider of the Performance panel
-  *@example {2} PH1
-  */
-  unexpectedEntryindexD: 'Unexpected entryIndex {PH1}',
-  /**
   *@description Text in Timeline Flame Chart Data Provider of the Performance panel
   */
   input: 'Input',
@@ -314,7 +309,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     }
     let title = this._entryIndexToTitle[entryIndex];
     if (!title) {
-      title = i18nString(UIStrings.unexpectedEntryindexD, {PH1: entryIndex});
+      title = `Unexpected entryIndex ${entryIndex}`;
       console.error(title);
     }
     return title;

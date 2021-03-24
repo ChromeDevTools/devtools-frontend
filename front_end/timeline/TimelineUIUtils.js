@@ -190,7 +190,7 @@ const UIStrings = {
   */
   evaluateModule: 'Evaluate Module',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
+  *@description Noun indicating that a compile task (type: streaming) happened.
   */
   streamingCompileTask: 'Streaming Compile Task',
   /**
@@ -431,7 +431,7 @@ const UIStrings = {
   */
   keyUp: 'Key Up',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
+  *@description Noun for a mouse click event in the Performance panel.
   */
   click: 'Click',
   /**
@@ -479,11 +479,11 @@ const UIStrings = {
   */
   tap: 'Tap',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
+  *@description Noun for the end of a tap event (tap on a touch screen device) in the Performance panel.
   */
   tapHalt: 'Tap Halt',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
+  *@description Noun for the start of a tap event (tap on a touch screen device) in the Performance panel.
   */
   tapBegin: 'Tap Begin',
   /**

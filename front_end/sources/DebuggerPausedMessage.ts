@@ -44,7 +44,7 @@ const UIStrings = {
   */
   pausedOnException: 'Paused on exception',
   /**
-  *@description Text in Debugger Paused Message of the Sources panel
+  *@description We pause exactly when the promise rejection is happening, so that the user can see where in the code it comes from.
   */
   pausedOnPromiseRejection: 'Paused on promise rejection',
   /**

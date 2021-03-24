@@ -215,9 +215,6 @@
   "common/ResourceType.js | ws": {
     "message": "WS"
   },
-  "common/ResourceType.js | xhr": {
-    "message": "XHR"
-  },
   "common/ResourceType.js | xhrAndFetch": {
     "message": "XHR and Fetch"
   },
@@ -9910,9 +9907,6 @@
   },
   "timeline/TimelineFlameChartDataProvider.js | timings": {
     "message": "Timings"
-  },
-  "timeline/TimelineFlameChartDataProvider.js | unexpectedEntryindexD": {
-    "message": "Unexpected entryIndex {PH1}"
   },
   "timeline/TimelineFlameChartNetworkDataProvider.js | network": {
     "message": "Network"

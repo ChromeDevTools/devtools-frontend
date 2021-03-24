@@ -35,11 +35,7 @@ const UIStrings = {
   /**
   *@description Text that appears in a tooltip the xhr and fetch resource types filter.
   */
-  xhrAndFetch: 'XHR and Fetch',
-  /**
-  *@description Text that appears on a button for the xhr resource type filter.
-  */
-  xhr: 'XHR',
+  xhrAndFetch: '`XHR` and `Fetch`',
   /**
   *@description Text that appears in a tooltip for the JavaScript types filter.
   */
@@ -367,7 +363,7 @@ export class ResourceCategory {
  * @enum {!ResourceCategory}
  */
 export const resourceCategories = {
-  XHR: new ResourceCategory(i18nLazyString(UIStrings.xhrAndFetch), i18nLazyString(UIStrings.xhr)),
+  XHR: new ResourceCategory(i18nLazyString(UIStrings.xhrAndFetch), i18n.i18n.lockedLazyString('XHR')),
   Script: new ResourceCategory(i18nLazyString(UIStrings.scripts), i18nLazyString(UIStrings.js)),
   Stylesheet: new ResourceCategory(i18nLazyString(UIStrings.stylesheets), i18nLazyString(UIStrings.css)),
   Image: new ResourceCategory(i18nLazyString(UIStrings.images), i18nLazyString(UIStrings.img)),
@@ -391,7 +387,7 @@ export const resourceTypes = {
   Font: new ResourceType('font', i18nLazyString(UIStrings.font), resourceCategories.Font, false),
   Script: new ResourceType('script', i18nLazyString(UIStrings.script), resourceCategories.Script, true),
   TextTrack: new ResourceType('texttrack', i18nLazyString(UIStrings.texttrack), resourceCategories.Other, true),
-  XHR: new ResourceType('xhr', i18nLazyString(UIStrings.xhr), resourceCategories.XHR, true),
+  XHR: new ResourceType('xhr', i18n.i18n.lockedLazyString('XHR'), resourceCategories.XHR, true),
   Fetch: new ResourceType('fetch', i18nLazyString(UIStrings.fetch), resourceCategories.XHR, true),
   EventSource: new ResourceType('eventsource', i18nLazyString(UIStrings.eventsource), resourceCategories.XHR, true),
   WebSocket: new ResourceType('websocket', i18nLazyString(UIStrings.websocket), resourceCategories.WebSocket, false),

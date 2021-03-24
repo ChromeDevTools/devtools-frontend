@@ -1,0 +1,5 @@
+{
+  "test-suite-path": "gen/test/perf",
+  "test-suite-source-dir": "test/perf",
+  "test-server-type": "hosted-mode"
+}

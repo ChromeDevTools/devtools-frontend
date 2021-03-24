@@ -6,16 +6,33 @@
 const path = require('path');
 const glob = require('glob');
 const fs = require('fs');
+const {getTestRunnerConfigSetting} = require('../../scripts/test/test_config_helpers.js');
 
-// To make sure that any leftover JavaScript files (e.g. that were outputs from now-removed tests)
-// aren't incorrectly included, we glob for the TypeScript files instead and use that
-// to instruct Mocha to run the output JavaScript file.
-const ROOT_DIRECTORY = path.join(__dirname, '..', '..', '..', '..', '..', 'test', 'perf');
+const testRunnerCWDConfig = getTestRunnerConfigSetting('cwd');
+const testRunnerTestSourceDirConfig = getTestRunnerConfigSetting('test-suite-source-dir');
+
+/**
+ * Set the ROOT_DIRECTORY based on the assumed folder structure, but if we have
+ * config from the new test runner, use that instead.
+ *
+ * Once we are fully migrated to the new test runner, this initial
+ * ROOT_DIRECTORY setting can go as we'll always have configuration provided.
+ *
+ * TODO(jacktfranklin): tidy up as part of crbug.com/1186163
+ */
+let ROOT_DIRECTORY = path.join(__dirname, '..', '..', '..', '..', '..', 'test', 'interactions');
+if (testRunnerCWDConfig && testRunnerTestSourceDirConfig) {
+  ROOT_DIRECTORY = path.join(testRunnerCWDConfig, testRunnerTestSourceDirConfig);
+}
+
 const allTestFiles = glob.sync(path.join(ROOT_DIRECTORY, '**/*_test.ts'));
-const customPattern = process.env['TEST_PATTERNS'];
+/**
+ * TODO(jacktfranklin): once we are migrated to the new test runner, we can remove the fallback to process.env['TESET_PATTERNS']
+ */
+const customPattern = getTestRunnerConfigSetting('test-file-pattern', process.env['TEST_PATTERNS']);
 
 const testFiles = !customPattern ? allTestFiles :
-                                   customPattern.split(';')
+                                   customPattern.split(',')
                                        .map(pattern => glob.sync(pattern, {absolute: true, cwd: ROOT_DIRECTORY}))
                                        .flat()
                                        .filter(filename => allTestFiles.includes(filename));
@@ -24,7 +41,7 @@ const testFiles = !customPattern ? allTestFiles :
 if (customPattern && testFiles.length === 0) {
   throw new Error(
       `\nNo test found matching --test-file=${process.env['TEST_PATTERNS']}.` +
-      ' Use a relative path from test/e2e/.');
+      ' Use a relative path from test/perf/.');
 }
 
 const spec = testFiles.map(fileName => {
@@ -41,8 +58,6 @@ const spec = testFiles.map(fileName => {
 // When we are debugging, we don't want to timeout any test. This allows to inspect the state
 // of the application at the moment of the timeout. Here, 0 denotes "indefinite timeout".
 const timeout = process.env['DEBUG'] ? 0 : 5 * 1000;
-
-process.env.TEST_SERVER_TYPE = 'hosted-mode';
 module.exports = {
   require: path.join(__dirname, '..', 'conductor', 'mocha_hooks.js'),
   spec,

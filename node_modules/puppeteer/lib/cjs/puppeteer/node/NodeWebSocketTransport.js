@@ -25,7 +25,7 @@ class NodeWebSocketTransport {
         return new Promise((resolve, reject) => {
             const ws = new ws_1.default(url, [], {
                 perMessageDeflate: false,
-                maxPayload: 256 * 1024 * 1024,
+                maxPayload: 256 * 1024 * 1024, // 256Mb
             });
             ws.addEventListener('open', () => resolve(new NodeWebSocketTransport(ws)));
             ws.addEventListener('error', reject);

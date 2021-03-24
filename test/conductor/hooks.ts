@@ -82,8 +82,7 @@ function launchChrome() {
     '--site-per-process',  // Default on Desktop anyway, but ensure that we always use out-of-process frames when we intend to.
     '--host-resolver-rules=MAP *.test 127.0.0.1',
   ];
-  // TODO(jacktfranklin): crbug.com/1176642 expose this as a cleaner type in Puppeteer and update this type.
-  const opts: puppeteer.LaunchOptions&puppeteer.ChromeArgOptions&puppeteer.BrowserOptions = {
+  const opts: puppeteer.LaunchOptions&puppeteer.BrowserLaunchArgumentOptions&puppeteer.BrowserConnectOptions = {
     headless,
     executablePath: envChromeBinary,
     dumpio: !headless,

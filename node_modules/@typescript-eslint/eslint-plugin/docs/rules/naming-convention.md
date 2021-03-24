@@ -110,7 +110,7 @@ This can be useful if you want to enforce no particular format for a specific se
 The `custom` option defines a custom regex that the identifier must (or must not) match. This option allows you to have a bit more finer-grained control over identifiers, letting you ban (or force) certain patterns and substrings.
 Accepts an object with the following properties:
 
-- `regex` - accepts a regular expression (anything accepted into `new RegExp(regex)`).
+- `regex` - a string that is then passed into RegExp to create a new regular expression: `new RegExp(regex)`
 - `match` - true if the identifier _must_ match the `regex`, false if the identifier _must not_ match the `regex`.
 
 ### `filter`
@@ -121,7 +121,7 @@ You can use this to include or exclude specific identifiers from specific config
 
 Accepts an object with the following properties:
 
-- `regex` - accepts a regular expression (anything accepted into `new RegExp(regex)`).
+- `regex` - a string that is then passed into RegExp to create a new regular expression: `new RegExp(regex)`
 - `match` - true if the identifier _must_ match the `regex`, false if the identifier _must not_ match the `regex`.
 
 Alternatively, `filter` accepts a regular expression (anything accepted into `new RegExp(filter)`). In this case, it's treated as if you had passed an object with the regex and `match: true`.
@@ -320,8 +320,8 @@ To clearly spell it out:
 
 - (3) is tested first because it has `types` and is an individual selector.
 - (2) is tested next because it is an individual selector.
-- (1) is tested next as it is a grouped selector.
-- (4) is tested last as it is the base default selector.
+- (4) is tested next as it is a grouped selector.
+- (1) is tested last as it is the base default selector.
 
 Its worth noting that whilst this order is applied, all selectors may not run on a name.
 This is explained in ["How does the rule evaluate a name's format?"](#how-does-the-rule-evaluate-a-names-format)

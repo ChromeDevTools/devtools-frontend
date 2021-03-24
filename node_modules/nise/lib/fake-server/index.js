@@ -144,7 +144,7 @@ var fakeServer = {
 
     configure: function(config) {
         var self = this;
-        var whitelist = {
+        var allowlist = {
             autoRespond: true,
             autoRespondAfter: true,
             respondImmediately: true,
@@ -157,7 +157,7 @@ var fakeServer = {
         config = config || {};
 
         Object.keys(config).forEach(function(setting) {
-            if (setting in whitelist) {
+            if (setting in allowlist) {
                 self[setting] = config[setting];
             }
         });

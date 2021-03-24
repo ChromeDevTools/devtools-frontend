@@ -804,6 +804,8 @@ function fakeXMLHttpRequestFor(globalScope) {
             this.setStatus(status);
             this.setResponseHeaders(headers || {});
             this.setResponseBody(body || "");
+
+            this.responseURL = this.url;
         },
 
         uploadProgress: function uploadProgress(progressEventRaw) {

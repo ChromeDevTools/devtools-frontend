@@ -44,7 +44,6 @@ Support us with a monthly donation and help us continue our activities. [[Become
 <a href="https://opencollective.com/sinon/backer/28/website" target="_blank"><img src="https://opencollective.com/sinon/backer/28/avatar.svg"></a>
 <a href="https://opencollective.com/sinon/backer/29/website" target="_blank"><img src="https://opencollective.com/sinon/backer/29/avatar.svg"></a>
 
-
 ## Sponsors
 
 Become a sponsor and get your logo on our README on GitHub with a link to your site. [[Become a sponsor](https://opencollective.com/sinon#sponsor)]

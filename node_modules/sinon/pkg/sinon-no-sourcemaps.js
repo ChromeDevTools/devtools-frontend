@@ -1,4 +1,4 @@
-/* Sinon.JS 9.2.4, 2021-01-23, @license BSD-3 */(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.sinon = f()}})(function(){var define,module,exports;return (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
+/* Sinon.JS 10.0.0, 2021-03-22, @license BSD-3 */(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.sinon = f()}})(function(){var define,module,exports;return (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 "use strict";
 
 var behavior = require("./sinon/behavior");
@@ -32,11 +32,13 @@ var apiMethods = {
     fakeServer: nise.fakeServer,
     fakeServerWithClock: nise.fakeServerWithClock,
     createFakeServer: nise.fakeServer.create.bind(nise.fakeServer),
-    createFakeServerWithClock: nise.fakeServerWithClock.create.bind(nise.fakeServerWithClock),
+    createFakeServerWithClock: nise.fakeServerWithClock.create.bind(
+        nise.fakeServerWithClock
+    ),
 
-    addBehavior: function(name, fn) {
+    addBehavior: function (name, fn) {
         behavior.addBehavior(stub, name, fn);
-    }
+    },
 };
 
 var sandbox = new Sandbox();
@@ -69,7 +71,7 @@ function createAssertObject() {
     function verifyIsStub() {
         var args = arraySlice(arguments);
 
-        forEach(args, function(method) {
+        forEach(args, function (method) {
             if (!method) {
                 assert.fail("fake is not a spy");
             }
@@ -78,11 +80,11 @@ function createAssertObject() {
                 verifyIsStub(method.proxy);
             } else {
                 if (typeof method !== "function") {
-                    assert.fail(method + " is not a function");
+                    assert.fail(`${method} is not a function`);
                 }
 
                 if (typeof method.getCall !== "function") {
-                    assert.fail(method + " is not stubbed");
+                    assert.fail(`${method} is not stubbed`);
                 }
             }
         });
@@ -97,10 +99,9 @@ function createAssertObject() {
             case "calledThrice":
                 if (assertionArgs.length !== 0) {
                     assert.fail(
-                        assertionMethod +
-                            " takes 1 argument but was called with " +
-                            (assertionArgs.length + 1) +
-                            " arguments"
+                        `${assertionMethod} takes 1 argument but was called with ${
+                            assertionArgs.length + 1
+                        } arguments`
                     );
                 }
                 break;
@@ -123,7 +124,7 @@ function createAssertObject() {
             meth = name;
         }
 
-        assert[name] = function(fake) {
+        assert[name] = function (fake) {
             verifyIsStub(fake);
 
             var args = arraySlice(arguments, 1);
@@ -134,11 +135,20 @@ function createAssertObject() {
             if (typeof meth === "function") {
                 failed = !meth(fake);
             } else {
-                failed = typeof fake[meth] === "function" ? !fake[meth].apply(fake, args) : !fake[meth];
+                failed =
+                    typeof fake[meth] === "function"
+                        ? !fake[meth].apply(fake, args)
+                        : !fake[meth];
             }
 
             if (failed) {
-                failAssertion(this, (fake.printf || fake.proxy.printf).apply(fake, concat([msg], args)));
+                failAssertion(
+                    this,
+                    (fake.printf || fake.proxy.printf).apply(
+                        fake,
+                        concat([msg], args)
+                    )
+                );
             } else {
                 assert.pass(name);
             }
@@ -148,7 +158,9 @@ function createAssertObject() {
     function exposedName(prefix, prop) {
         return !prefix || /^fail/.test(prop)
             ? prop
-            : prefix + stringSlice(prop, 0, 1).toUpperCase() + stringSlice(prop, 1);
+            : prefix +
+                  stringSlice(prop, 0, 1).toUpperCase() +
+                  stringSlice(prop, 1);
     }
 
     assert = {
@@ -185,7 +197,10 @@ function createAssertObject() {
                     // If this fails, we'll just fall back to the blank string
                 }
 
-                failAssertion(this, "expected " + expected + " to be called in order but were called as " + actual);
+                failAssertion(
+                    this,
+                    `expected ${expected} to be called in order but were called as ${actual}`
+                );
             } else {
                 assert.pass("callOrder");
             }
@@ -195,7 +210,9 @@ function createAssertObject() {
             verifyIsStub(method);
 
             if (method.callCount !== count) {
-                var msg = "expected %n to be called " + timesInWords(count) + " but was called %c%C";
+                var msg = `expected %n to be called ${timesInWords(
+                    count
+                )} but was called %c%C`;
                 failAssertion(this, method.printf(msg));
             } else {
                 assert.pass("callCount");
@@ -208,12 +225,17 @@ function createAssertObject() {
             }
 
             var o = options || {};
-            var prefix = (typeof o.prefix === "undefined" && "assert") || o.prefix;
-            var includeFail = typeof o.includeFail === "undefined" || Boolean(o.includeFail);
+            var prefix =
+                (typeof o.prefix === "undefined" && "assert") || o.prefix;
+            var includeFail =
+                typeof o.includeFail === "undefined" || Boolean(o.includeFail);
             var instance = this;
 
-            forEach(Object.keys(instance), function(method) {
-                if (method !== "expose" && (includeFail || !/^(fail)/.test(method))) {
+            forEach(Object.keys(instance), function (method) {
+                if (
+                    method !== "expose" &&
+                    (includeFail || !/^(fail)/.test(method))
+                ) {
                     target[exposedName(prefix, method)] = instance[method];
                 }
             });
@@ -228,40 +250,91 @@ function createAssertObject() {
             } else {
                 var formatted = [
                     "expected value to match",
-                    "    expected = " + format(expectation),
-                    "    actual = " + format(actual)
+                    `    expected = ${format(expectation)}`,
+                    `    actual = ${format(actual)}`,
                 ];
 
                 failAssertion(this, join(formatted, "\n"));
             }
-        }
+        },
     };
 
-    mirrorPropAsAssertion("called", "expected %n to have been called at least once but was never called");
+    mirrorPropAsAssertion(
+        "called",
+        "expected %n to have been called at least once but was never called"
+    );
     mirrorPropAsAssertion(
         "notCalled",
-        function(spy) {
+        function (spy) {
             return !spy.called;
         },
         "expected %n to not have been called but was called %c%C"
     );
-    mirrorPropAsAssertion("calledOnce", "expected %n to be called once but was called %c%C");
-    mirrorPropAsAssertion("calledTwice", "expected %n to be called twice but was called %c%C");
-    mirrorPropAsAssertion("calledThrice", "expected %n to be called thrice but was called %c%C");
-    mirrorPropAsAssertion("calledOn", "expected %n to be called with %1 as this but was called with %t");
-    mirrorPropAsAssertion("alwaysCalledOn", "expected %n to always be called with %1 as this but was called with %t");
+    mirrorPropAsAssertion(
+        "calledOnce",
+        "expected %n to be called once but was called %c%C"
+    );
+    mirrorPropAsAssertion(
+        "calledTwice",
+        "expected %n to be called twice but was called %c%C"
+    );
+    mirrorPropAsAssertion(
+        "calledThrice",
+        "expected %n to be called thrice but was called %c%C"
+    );
+    mirrorPropAsAssertion(
+        "calledOn",
+        "expected %n to be called with %1 as this but was called with %t"
+    );
+    mirrorPropAsAssertion(
+        "alwaysCalledOn",
+        "expected %n to always be called with %1 as this but was called with %t"
+    );
     mirrorPropAsAssertion("calledWithNew", "expected %n to be called with new");
-    mirrorPropAsAssertion("alwaysCalledWithNew", "expected %n to always be called with new");
-    mirrorPropAsAssertion("calledWith", "expected %n to be called with arguments %D");
-    mirrorPropAsAssertion("calledWithMatch", "expected %n to be called with match %D");
-    mirrorPropAsAssertion("alwaysCalledWith", "expected %n to always be called with arguments %D");
-    mirrorPropAsAssertion("alwaysCalledWithMatch", "expected %n to always be called with match %D");
-    mirrorPropAsAssertion("calledWithExactly", "expected %n to be called with exact arguments %D");
-    mirrorPropAsAssertion("calledOnceWithExactly", "expected %n to be called once and with exact arguments %D");
-    mirrorPropAsAssertion("calledOnceWithMatch", "expected %n to be called once and with match %D");
-    mirrorPropAsAssertion("alwaysCalledWithExactly", "expected %n to always be called with exact arguments %D");
-    mirrorPropAsAssertion("neverCalledWith", "expected %n to never be called with arguments %*%C");
-    mirrorPropAsAssertion("neverCalledWithMatch", "expected %n to never be called with match %*%C");
+    mirrorPropAsAssertion(
+        "alwaysCalledWithNew",
+        "expected %n to always be called with new"
+    );
+    mirrorPropAsAssertion(
+        "calledWith",
+        "expected %n to be called with arguments %D"
+    );
+    mirrorPropAsAssertion(
+        "calledWithMatch",
+        "expected %n to be called with match %D"
+    );
+    mirrorPropAsAssertion(
+        "alwaysCalledWith",
+        "expected %n to always be called with arguments %D"
+    );
+    mirrorPropAsAssertion(
+        "alwaysCalledWithMatch",
+        "expected %n to always be called with match %D"
+    );
+    mirrorPropAsAssertion(
+        "calledWithExactly",
+        "expected %n to be called with exact arguments %D"
+    );
+    mirrorPropAsAssertion(
+        "calledOnceWithExactly",
+        "expected %n to be called once and with exact arguments %D"
+    );
+    mirrorPropAsAssertion(
+        "calledOnceWithMatch",
+        "expected %n to be called once and with match %D"
+    );
+    mirrorPropAsAssertion(
+        "alwaysCalledWithExactly",
+        "expected %n to always be called with exact arguments %D"
+    );
+    mirrorPropAsAssertion(
+        "neverCalledWith",
+        "expected %n to never be called with arguments %*%C"
+    );
+    mirrorPropAsAssertion(
+        "neverCalledWithMatch",
+        "expected %n to never be called with match %*%C"
+    );
     mirrorPropAsAssertion("threw", "%n did not throw exception%C");
     mirrorPropAsAssertion("alwaysThrew", "%n did not always throw exception%C");
 
@@ -313,7 +386,11 @@ function getCallback(behavior, args) {
             return argumentList[i];
         }
 
-        if (callArgProp && argumentList[i] && typeof argumentList[i][callArgProp] === "function") {
+        if (
+            callArgProp &&
+            argumentList[i] &&
+            typeof argumentList[i][callArgProp] === "function"
+        ) {
             return argumentList[i][callArgProp];
         }
     }
@@ -326,23 +403,25 @@ function getCallbackError(behavior, func, args) {
         var msg;
 
         if (behavior.callArgProp) {
-            msg =
-                functionName(behavior.stub) +
-                " expected to yield to '" +
-                valueToString(behavior.callArgProp) +
-                "', but no object with such a property was passed.";
+            msg = `${functionName(
+                behavior.stub
+            )} expected to yield to '${valueToString(
+                behavior.callArgProp
+            )}', but no object with such a property was passed.`;
         } else {
-            msg = functionName(behavior.stub) + " expected to yield, but no callback was passed.";
+            msg = `${functionName(
+                behavior.stub
+            )} expected to yield, but no callback was passed.`;
         }
 
         if (args.length > 0) {
-            msg += " Received [" + join(args, ", ") + "]";
+            msg += ` Received [${join(args, ", ")}]`;
         }
 
         return msg;
     }
 
-    return "argument at index " + behavior.callArgAt + " is not a function: " + func;
+    return `argument at index ${behavior.callArgAt} is not a function: ${func}`;
 }
 
 function ensureArgs(name, behavior, args) {
@@ -353,7 +432,9 @@ function ensureArgs(name, behavior, args) {
 
     if (index >= args.length) {
         throw new TypeError(
-            name + " failed: " + (index + 1) + " arguments required but only " + args.length + " present"
+            `${name} failed: ${index + 1} arguments required but only ${
+                args.length
+            } present`
         );
     }
 }
@@ -368,11 +449,17 @@ function callCallback(behavior, args) {
         }
 
         if (behavior.callbackAsync) {
-            nextTick(function() {
-                func.apply(behavior.callbackContext, behavior.callbackArguments);
+            nextTick(function () {
+                func.apply(
+                    behavior.callbackContext,
+                    behavior.callbackArguments
+                );
             });
         } else {
-            return func.apply(behavior.callbackContext, behavior.callbackArguments);
+            return func.apply(
+                behavior.callbackContext,
+                behavior.callbackArguments
+            );
         }
     }
 
@@ -437,7 +524,9 @@ var proto = {
             return this.fakeFn.apply(context, args);
         } else if (typeof this.resolveArgAt === "number") {
             ensureArgs("resolvesArg", this, args);
-            return (this.promiseLibrary || Promise).resolve(args[this.resolveArgAt]);
+            return (this.promiseLibrary || Promise).resolve(
+                args[this.resolveArgAt]
+            );
         } else if (this.resolveThis) {
             return (this.promiseLibrary || Promise).resolve(context);
         } else if (this.resolve) {
@@ -454,7 +543,10 @@ var proto = {
             // Turn the arguments object into a normal array
             var argsArray = slice(args);
             // Call the constructor
-            var F = WrappedClass.bind.apply(WrappedClass, concat([null], argsArray));
+            var F = WrappedClass.bind.apply(
+                WrappedClass,
+                concat([null], argsArray)
+            );
             return new F();
         } else if (typeof this.returnValue !== "undefined") {
             return this.returnValue;
@@ -496,19 +588,22 @@ var proto = {
                 'is not supported. Use "stub.withArgs(...).onCall(...)" ' +
                 "to define sequential behavior for calls with certain arguments."
         );
-    }
+    },
 };
 
 function createBehavior(behaviorMethod) {
-    return function() {
+    return function () {
         this.defaultBehavior = this.defaultBehavior || proto.create(this);
-        this.defaultBehavior[behaviorMethod].apply(this.defaultBehavior, arguments);
+        this.defaultBehavior[behaviorMethod].apply(
+            this.defaultBehavior,
+            arguments
+        );
         return this;
     };
 }
 
 function addBehavior(stub, name, fn) {
-    proto[name] = function() {
+    proto[name] = function () {
         fn.apply(this, concat([this], slice(arguments)));
         return this.stub || this;
     };
@@ -528,11 +623,15 @@ module.exports = extend.nonEnum({}, proto, asyncBehaviors);
 
 var walk = require("./util/core/walk");
 var getPropertyDescriptor = require("./util/core/get-property-descriptor");
-var hasOwnProperty = require("@sinonjs/commons").prototypes.object.hasOwnProperty;
+var hasOwnProperty = require("@sinonjs/commons").prototypes.object
+    .hasOwnProperty;
 var push = require("@sinonjs/commons").prototypes.array.push;
 
 function collectMethod(methods, object, prop, propOwner) {
-    if (typeof getPropertyDescriptor(propOwner, prop).value === "function" && hasOwnProperty(object, prop)) {
+    if (
+        typeof getPropertyDescriptor(propOwner, prop).value === "function" &&
+        hasOwnProperty(object, prop)
+    ) {
         push(methods, object[prop]);
     }
 }
@@ -558,26 +657,26 @@ function colorize(str, color) {
         return str;
     }
 
-    return "\x1b[" + color + "m" + str + "\x1b[0m";
+    return `\x1b[${color}m${str}\x1b[0m`;
 }
 
-exports.red = function(str) {
+exports.red = function (str) {
     return colorize(str, 31);
 };
 
-exports.green = function(str) {
+exports.green = function (str) {
     return colorize(str, 32);
 };
 
-exports.cyan = function(str) {
+exports.cyan = function (str) {
     return colorize(str, 96);
 };
 
-exports.white = function(str) {
+exports.white = function (str) {
     return colorize(str, 39);
 };
 
-exports.bold = function(str) {
+exports.bold = function (str) {
     return colorize(str, 1);
 };
 
@@ -637,8 +736,9 @@ function createSandbox(config) {
     var exposed = configuredSandbox.inject({});
 
     if (config.properties) {
-        forEach(config.properties, function(prop) {
-            var value = exposed[prop] || (prop === "sandbox" && configuredSandbox);
+        forEach(config.properties, function (prop) {
+            var value =
+                exposed[prop] || (prop === "sandbox" && configuredSandbox);
             exposeValue(configuredSandbox, config, prop, value);
         });
     } else {
@@ -667,13 +767,13 @@ function throwsException(fake, error, message) {
     if (typeof error === "function") {
         fake.exceptionCreator = error;
     } else if (typeof error === "string") {
-        fake.exceptionCreator = function() {
+        fake.exceptionCreator = function () {
             var newException = new Error(message || "");
             newException.name = error;
             return newException;
         };
     } else if (!error) {
-        fake.exceptionCreator = function() {
+        fake.exceptionCreator = function () {
             return new Error("Error");
         };
     } else {
@@ -738,7 +838,7 @@ var defaultBehaviors = {
         fake.promiseLibrary = promiseLibrary;
     },
 
-    yields: function(fake) {
+    yields: function (fake) {
         fake.callArgAt = useLeftMostCallback;
         fake.callbackArguments = slice(arguments, 1);
         fake.callbackContext = undefined;
@@ -746,7 +846,7 @@ var defaultBehaviors = {
         fake.callbackAsync = false;
     },
 
-    yieldsRight: function(fake) {
+    yieldsRight: function (fake) {
         fake.callArgAt = useRightMostCallback;
         fake.callbackArguments = slice(arguments, 1);
         fake.callbackContext = undefined;
@@ -754,7 +854,7 @@ var defaultBehaviors = {
         fake.callbackAsync = false;
     },
 
-    yieldsOn: function(fake, context) {
+    yieldsOn: function (fake, context) {
         fake.callArgAt = useLeftMostCallback;
         fake.callbackArguments = slice(arguments, 2);
         fake.callbackContext = context;
@@ -762,7 +862,7 @@ var defaultBehaviors = {
         fake.callbackAsync = false;
     },
 
-    yieldsTo: function(fake, prop) {
+    yieldsTo: function (fake, prop) {
         fake.callArgAt = useLeftMostCallback;
         fake.callbackArguments = slice(arguments, 2);
         fake.callbackContext = undefined;
@@ -770,7 +870,7 @@ var defaultBehaviors = {
         fake.callbackAsync = false;
     },
 
-    yieldsToOn: function(fake, prop, context) {
+    yieldsToOn: function (fake, prop, context) {
         fake.callArgAt = useLeftMostCallback;
         fake.callbackArguments = slice(arguments, 3);
         fake.callbackContext = context;
@@ -883,7 +983,10 @@ var defaultBehaviors = {
 
         Object.defineProperty(rootStub.rootObj, rootStub.propName, {
             get: getterFunction,
-            configurable: isPropertyConfigurable(rootStub.rootObj, rootStub.propName)
+            configurable: isPropertyConfigurable(
+                rootStub.rootObj,
+                rootStub.propName
+            ),
         });
 
         return fake;
@@ -898,7 +1001,10 @@ var defaultBehaviors = {
             // eslint-disable-next-line accessor-pairs
             {
                 set: setterFunction,
-                configurable: isPropertyConfigurable(rootStub.rootObj, rootStub.propName)
+                configurable: isPropertyConfigurable(
+                    rootStub.rootObj,
+                    rootStub.propName
+                ),
             }
         );
 
@@ -911,11 +1017,13 @@ var defaultBehaviors = {
         Object.defineProperty(rootStub.rootObj, rootStub.propName, {
             value: newVal,
             enumerable: true,
-            configurable: rootStub.shadowsPropOnPrototype || isPropertyConfigurable(rootStub.rootObj, rootStub.propName)
+            configurable:
+                rootStub.shadowsPropOnPrototype ||
+                isPropertyConfigurable(rootStub.rootObj, rootStub.propName),
         });
 
         return fake;
-    }
+    },
 };
 
 var asyncBehaviors = exportAsyncBehaviors(defaultBehaviors);
@@ -938,7 +1046,7 @@ function getError(value) {
 var uuid = 0;
 function wrapFunc(f) {
     var proxy;
-    var fakeInstance = function() {
+    var fakeInstance = function () {
         var firstArg, lastArg;
 
         if (arguments.length > 0) {
@@ -946,7 +1054,8 @@ function wrapFunc(f) {
             lastArg = arguments[arguments.length - 1];
         }
 
-        var callback = lastArg && typeof lastArg === "function" ? lastArg : undefined;
+        var callback =
+            lastArg && typeof lastArg === "function" ? lastArg : undefined;
 
         proxy.firstArg = firstArg;
         proxy.lastArg = lastArg;
@@ -957,7 +1066,7 @@ function wrapFunc(f) {
     proxy = createProxy(fakeInstance, f || fakeInstance);
 
     proxy.displayName = "fake";
-    proxy.id = "fake#" + uuid++;
+    proxy.id = `fake#${uuid++}`;
 
     return proxy;
 }
@@ -1020,7 +1129,7 @@ function fakeClass() {
                 throw new TypeError("Expected last argument to be a function");
             }
             if (async) {
-                nextTick(function() {
+                nextTick(function () {
                     callback.apply(null, values);
                 });
             } else {
@@ -1069,7 +1178,7 @@ function callCountInWords(callCount) {
         return "never called";
     }
 
-    return "called " + timesInWords(callCount);
+    return `called ${timesInWords(callCount)}`;
 }
 
 function expectedCallCountInWords(expectation) {
@@ -1080,17 +1189,17 @@ function expectedCallCountInWords(expectation) {
         var str = timesInWords(min);
 
         if (min !== max) {
-            str = "at least " + str + " and at most " + timesInWords(max);
+            str = `at least ${str} and at most ${timesInWords(max)}`;
         }
 
         return str;
     }
 
     if (typeof min === "number") {
-        return "at least " + timesInWords(min);
+        return `at least ${timesInWords(min)}`;
     }
 
-    return "at most " + timesInWords(max);
+    return `at most ${timesInWords(max)}`;
 }
 
 function receivedMinCalls(expectation) {
@@ -1132,7 +1241,7 @@ var mockExpectation = {
 
     atLeast: function atLeast(num) {
         if (typeof num !== "number") {
-            throw new TypeError("'" + valueToString(num) + "' is not number");
+            throw new TypeError(`'${valueToString(num)}' is not number`);
         }
 
         if (!this.limitsSet) {
@@ -1147,7 +1256,7 @@ var mockExpectation = {
 
     atMost: function atMost(num) {
         if (typeof num !== "number") {
-            throw new TypeError("'" + valueToString(num) + "' is not number");
+            throw new TypeError(`'${valueToString(num)}' is not number`);
         }
 
         if (!this.limitsSet) {
@@ -1178,7 +1287,7 @@ var mockExpectation = {
 
     exactly: function exactly(num) {
         if (typeof num !== "number") {
-            throw new TypeError("'" + valueToString(num) + "' is not a number");
+            throw new TypeError(`'${valueToString(num)}' is not a number`);
         }
 
         this.atLeast(num);
@@ -1194,16 +1303,16 @@ var mockExpectation = {
 
         if (receivedMaxCalls(this)) {
             this.failed = true;
-            mockExpectation.fail(this.method + " already called " + timesInWords(this.maxCalls));
+            mockExpectation.fail(
+                `${this.method} already called ${timesInWords(this.maxCalls)}`
+            );
         }
 
         if ("expectedThis" in this && this.expectedThis !== thisValue) {
             mockExpectation.fail(
-                this.method +
-                    " called with " +
-                    valueToString(thisValue) +
-                    " as thisValue, expected " +
-                    valueToString(this.expectedThis)
+                `${this.method} called with ${valueToString(
+                    thisValue
+                )} as thisValue, expected ${valueToString(this.expectedThis)}`
             );
         }
 
@@ -1212,49 +1321,48 @@ var mockExpectation = {
         }
 
         if (!args) {
-            mockExpectation.fail(this.method + " received no arguments, expected " + format(expectedArguments));
+            mockExpectation.fail(
+                `${this.method} received no arguments, expected ${format(
+                    expectedArguments
+                )}`
+            );
         }
 
         if (args.length < expectedArguments.length) {
             mockExpectation.fail(
-                this.method +
-                    " received too few arguments (" +
-                    format(args) +
-                    "), expected " +
-                    format(expectedArguments)
+                `${this.method} received too few arguments (${format(
+                    args
+                )}), expected ${format(expectedArguments)}`
             );
         }
 
-        if (this.expectsExactArgCount && args.length !== expectedArguments.length) {
+        if (
+            this.expectsExactArgCount &&
+            args.length !== expectedArguments.length
+        ) {
             mockExpectation.fail(
-                this.method +
-                    " received too many arguments (" +
-                    format(args) +
-                    "), expected " +
-                    format(expectedArguments)
+                `${this.method} received too many arguments (${format(
+                    args
+                )}), expected ${format(expectedArguments)}`
             );
         }
 
         forEach(
             expectedArguments,
-            function(expectedArgument, i) {
+            function (expectedArgument, i) {
                 if (!verifyMatcher(expectedArgument, args[i])) {
                     mockExpectation.fail(
-                        this.method +
-                            " received wrong arguments " +
-                            format(args) +
-                            ", didn't match " +
-                            String(expectedArguments)
+                        `${this.method} received wrong arguments ${format(
+                            args
+                        )}, didn't match ${String(expectedArguments)}`
                     );
                 }
 
                 if (!deepEqual(args[i], expectedArgument)) {
                     mockExpectation.fail(
-                        this.method +
-                            " received wrong arguments " +
-                            format(args) +
-                            ", expected " +
-                            format(expectedArguments)
+                        `${this.method} received wrong arguments ${format(
+                            args
+                        )}, expected ${format(expectedArguments)}`
                     );
                 }
             },
@@ -1284,11 +1392,14 @@ var mockExpectation = {
             return false;
         }
 
-        if (this.expectsExactArgCount && _args.length !== expectedArguments.length) {
+        if (
+            this.expectsExactArgCount &&
+            _args.length !== expectedArguments.length
+        ) {
             return false;
         }
 
-        return every(expectedArguments, function(expectedArgument, i) {
+        return every(expectedArguments, function (expectedArgument, i) {
             if (!verifyMatcher(expectedArgument, _args[i])) {
                 return false;
             }
@@ -1317,7 +1428,7 @@ var mockExpectation = {
         return this;
     },
 
-    toString: function() {
+    toString: function () {
         var args = slice(this.expectedArguments || []);
 
         if (!this.expectsExactArgCount) {
@@ -1326,16 +1437,19 @@ var mockExpectation = {
 
         var callStr = proxyCallToString.call({
             proxy: this.method || "anonymous mock expectation",
-            args: args
+            args: args,
         });
 
-        var message = callStr.replace(", [...", "[, ...") + " " + expectedCallCountInWords(this);
+        var message = `${callStr.replace(
+            ", [...",
+            "[, ..."
+        )} ${expectedCallCountInWords(this)}`;
 
         if (this.met()) {
-            return "Expectation met: " + message;
+            return `Expectation met: ${message}`;
         }
 
-        return "Expected " + message + " (" + callCountInWords(this.callCount) + ")";
+        return `Expected ${message} (${callCountInWords(this.callCount)})`;
     },
 
     verify: function verify() {
@@ -1357,7 +1471,7 @@ var mockExpectation = {
         exception.name = "ExpectationError";
 
         throw exception;
-    }
+    },
 };
 
 module.exports = mockExpectation;
@@ -1401,7 +1515,7 @@ function arrayEquals(arr1, arr2, compareLength) {
         return false;
     }
 
-    return every(arr1, function(element, i) {
+    return every(arr1, function (element, i) {
         return deepEqual(arr2[i], element);
     });
 }
@@ -1433,7 +1547,7 @@ extend(mock, {
             this.expectations[method] = [];
             var mockObject = this;
 
-            wrapMethod(this.object, method, function() {
+            wrapMethod(this.object, method, function () {
                 return mockObject.invokeMethod(method, this, arguments);
             });
 
@@ -1451,7 +1565,7 @@ extend(mock, {
     restore: function restore() {
         var object = this.object;
 
-        each(this.proxies, function(proxy) {
+        each(this.proxies, function (proxy) {
             if (typeof object[proxy].restore === "function") {
                 object[proxy].restore();
             }
@@ -1463,8 +1577,8 @@ extend(mock, {
         var messages = this.failures ? slice(this.failures) : [];
         var met = [];
 
-        each(this.proxies, function(proxy) {
-            each(expectations[proxy], function(expectation) {
+        each(this.proxies, function (proxy) {
+            each(expectations[proxy], function (expectation) {
                 if (!expectation.met()) {
                     push(messages, String(expectation));
                 } else {
@@ -1493,19 +1607,35 @@ extend(mock, {
     invokeMethod: function invokeMethod(method, thisValue, args) {
         /* if we cannot find any matching files we will explicitly call mockExpection#fail with error messages */
         /* eslint consistent-return: "off" */
-        var expectations = this.expectations && this.expectations[method] ? this.expectations[method] : [];
+        var expectations =
+            this.expectations && this.expectations[method]
+                ? this.expectations[method]
+                : [];
         var currentArgs = args || [];
         var available;
 
-        var expectationsWithMatchingArgs = filter(expectations, function(expectation) {
-            var expectedArgs = expectation.expectedArguments || [];
+        var expectationsWithMatchingArgs = filter(
+            expectations,
+            function (expectation) {
+                var expectedArgs = expectation.expectedArguments || [];
 
-            return arrayEquals(expectedArgs, currentArgs, expectation.expectsExactArgCount);
-        });
+                return arrayEquals(
+                    expectedArgs,
+                    currentArgs,
+                    expectation.expectsExactArgCount
+                );
+            }
+        );
 
-        var expectationsToApply = filter(expectationsWithMatchingArgs, function(expectation) {
-            return !expectation.met() && expectation.allowsCall(thisValue, args);
-        });
+        var expectationsToApply = filter(
+            expectationsWithMatchingArgs,
+            function (expectation) {
+                return (
+                    !expectation.met() &&
+                    expectation.allowsCall(thisValue, args)
+                );
+            }
+        );
 
         if (expectationsToApply.length > 0) {
             return expectationsToApply[0].apply(thisValue, args);
@@ -1514,7 +1644,7 @@ extend(mock, {
         var messages = [];
         var exhausted = 0;
 
-        forEach(expectationsWithMatchingArgs, function(expectation) {
+        forEach(expectationsWithMatchingArgs, function (expectation) {
             if (expectation.allowsCall(thisValue, args)) {
                 available = available || expectation;
             } else {
@@ -1526,17 +1656,16 @@ extend(mock, {
             return available.apply(thisValue, args);
         }
 
-        forEach(expectations, function(expectation) {
-            push(messages, "    " + String(expectation));
+        forEach(expectations, function (expectation) {
+            push(messages, `    ${String(expectation)}`);
         });
 
         unshift(
             messages,
-            "Unexpected call: " +
-                proxyCallToString.call({
-                    proxy: method,
-                    args: args
-                })
+            `Unexpected call: ${proxyCallToString.call({
+                proxy: method,
+                args: args,
+            })}`
         );
 
         var err = new Error();
@@ -1550,16 +1679,15 @@ extend(mock, {
         }
         push(
             this.failures,
-            "Unexpected call: " +
-                proxyCallToString.call({
-                    proxy: method,
-                    args: args,
-                    stack: err.stack
-                })
+            `Unexpected call: ${proxyCallToString.call({
+                proxy: method,
+                args: args,
+                stack: err.stack,
+            })}`
         );
 
         mockExpectation.fail(join(messages, "\n"));
-    }
+    },
 });
 
 module.exports = mock;
@@ -1594,7 +1722,7 @@ exports.delegateToCalls = function delegateToCalls(
     notCalled,
     totalCallCount
 ) {
-    proxy[method] = function() {
+    proxy[method] = function () {
         if (!this.called) {
             if (notCalled) {
                 return notCalled.apply(this, arguments);
@@ -1612,7 +1740,10 @@ exports.delegateToCalls = function delegateToCalls(
 
         for (var i = 0, l = this.callCount; i < l; i += 1) {
             currentCall = this.getCall(i);
-            var returnValue = currentCall[actual || method].apply(currentCall, arguments);
+            var returnValue = currentCall[actual || method].apply(
+                currentCall,
+                arguments
+            );
             push(returnValues, returnValue);
             if (returnValue) {
                 matches += 1;
@@ -1650,7 +1781,7 @@ var slice = arrayProto.slice;
 function throwYieldError(proxy, text, args) {
     var msg = functionName(proxy) + text;
     if (args.length) {
-        msg += " Received [" + join(slice(args), ", ") + "]";
+        msg += ` Received [${join(slice(args), ", ")}]`;
     }
     throw new Error(msg);
 }
@@ -1673,7 +1804,7 @@ var callProto = {
 
         return reduce(
             calledWithArgs,
-            function(prev, arg, i) {
+            function (prev, arg, i) {
                 return prev && deepEqual(self.args[i], arg);
             },
             true
@@ -1690,7 +1821,7 @@ var callProto = {
 
         return reduce(
             calledWithMatchArgs,
-            function(prev, expectation, i) {
+            function (prev, expectation, i) {
                 var actual = self.args[i];
 
                 return prev && match(expectation).test(actual);
@@ -1700,7 +1831,10 @@ var callProto = {
     },
 
     calledWithExactly: function calledWithExactly() {
-        return arguments.length === this.args.length && this.calledWith.apply(this, arguments);
+        return (
+            arguments.length === this.args.length &&
+            this.calledWith.apply(this, arguments)
+        );
     },
 
     notCalledWith: function notCalledWith() {
@@ -1727,74 +1861,86 @@ var callProto = {
         return this.proxy.prototype && this.thisValue instanceof this.proxy;
     },
 
-    calledBefore: function(other) {
+    calledBefore: function (other) {
         return this.callId < other.callId;
     },
 
-    calledAfter: function(other) {
+    calledAfter: function (other) {
         return this.callId > other.callId;
     },
 
-    calledImmediatelyBefore: function(other) {
+    calledImmediatelyBefore: function (other) {
         return this.callId === other.callId - 1;
     },
 
-    calledImmediatelyAfter: function(other) {
+    calledImmediatelyAfter: function (other) {
         return this.callId === other.callId + 1;
     },
 
-    callArg: function(pos) {
+    callArg: function (pos) {
         this.ensureArgIsAFunction(pos);
         return this.args[pos]();
     },
 
-    callArgOn: function(pos, thisValue) {
+    callArgOn: function (pos, thisValue) {
         this.ensureArgIsAFunction(pos);
         return this.args[pos].apply(thisValue);
     },
 
-    callArgWith: function(pos) {
-        return this.callArgOnWith.apply(this, concat([pos, null], slice(arguments, 1)));
+    callArgWith: function (pos) {
+        return this.callArgOnWith.apply(
+            this,
+            concat([pos, null], slice(arguments, 1))
+        );
     },
 
-    callArgOnWith: function(pos, thisValue) {
+    callArgOnWith: function (pos, thisValue) {
         this.ensureArgIsAFunction(pos);
         var args = slice(arguments, 2);
         return this.args[pos].apply(thisValue, args);
     },
 
-    throwArg: function(pos) {
+    throwArg: function (pos) {
         if (pos > this.args.length) {
-            throw new TypeError("Not enough arguments: " + pos + " required but only " + this.args.length + " present");
+            throw new TypeError(
+                `Not enough arguments: ${pos} required but only ${this.args.length} present`
+            );
         }
 
         throw this.args[pos];
     },
 
-    yield: function() {
+    yield: function () {
         return this.yieldOn.apply(this, concat([null], slice(arguments, 0)));
     },
 
-    yieldOn: function(thisValue) {
+    yieldOn: function (thisValue) {
         var args = slice(this.args);
-        var yieldFn = filter(args, function(arg) {
+        var yieldFn = filter(args, function (arg) {
             return typeof arg === "function";
         })[0];
 
         if (!yieldFn) {
-            throwYieldError(this.proxy, " cannot yield since no callback was passed.", args);
+            throwYieldError(
+                this.proxy,
+                " cannot yield since no callback was passed.",
+                args
+            );
         }
 
         return yieldFn.apply(thisValue, slice(arguments, 1));
     },
 
-    yieldTo: function(prop) {
-        return this.yieldToOn.apply(this, concat([prop, null], slice(arguments, 1)));
+    yieldTo: function (prop) {
+        return this.yieldToOn.apply(
+            this,
+            concat([prop, null], slice(arguments, 1))
+        );
     },
 
-    yieldToOn: function(prop, thisValue) {
+    yieldToOn: function (prop, thisValue) {
         var args = slice(this.args);
-        var yieldArg = filter(args, function(arg) {
+        var yieldArg = filter(args, function (arg) {
             return arg && typeof arg[prop] === "function";
         })[0];
         var yieldFn = yieldArg && yieldArg[prop];
@@ -1802,7 +1948,9 @@ var callProto = {
         if (!yieldFn) {
             throwYieldError(
                 this.proxy,
-                " cannot yield to '" + valueToString(prop) + "' since no callback was passed.",
+                ` cannot yield to '${valueToString(
+                    prop
+                )}' since no callback was passed.`,
                 args
             );
         }
@@ -1810,58 +1958,70 @@ var callProto = {
         return yieldFn.apply(thisValue, slice(arguments, 2));
     },
 
-    toString: function() {
-        var callStr = this.proxy ? String(this.proxy) + "(" : "";
+    toString: function () {
+        var callStr = this.proxy ? `${String(this.proxy)}(` : "";
         var formattedArgs;
 
         if (!this.args) {
             return ":(";
         }
 
-        formattedArgs = map(this.args, function(arg) {
+        formattedArgs = map(this.args, function (arg) {
             return sinonFormat(arg);
         });
 
-        callStr = callStr + join(formattedArgs, ", ") + ")";
+        callStr = `${callStr + join(formattedArgs, ", ")})`;
 
         if (typeof this.returnValue !== "undefined") {
-            callStr += " => " + sinonFormat(this.returnValue);
+            callStr += ` => ${sinonFormat(this.returnValue)}`;
         }
 
         if (this.exception) {
-            callStr += " !" + this.exception.name;
+            callStr += ` !${this.exception.name}`;
 
             if (this.exception.message) {
-                callStr += "(" + this.exception.message + ")";
+                callStr += `(${this.exception.message})`;
             }
         }
         if (this.stack) {
             // Omit the error message and the two top stack frames in sinon itself:
-            callStr += (this.stack.split("\n")[3] || "unknown").replace(/^\s*(?:at\s+|@)?/, " at ");
+            callStr += (this.stack.split("\n")[3] || "unknown").replace(
+                /^\s*(?:at\s+|@)?/,
+                " at "
+            );
         }
 
         return callStr;
     },
 
-    ensureArgIsAFunction: function(pos) {
+    ensureArgIsAFunction: function (pos) {
         if (typeof this.args[pos] !== "function") {
             throw new TypeError(
-                "Expected argument at position " + pos + " to be a Function, but was " + typeof this.args[pos]
+                `Expected argument at position ${pos} to be a Function, but was ${typeof this
+                    .args[pos]}`
             );
         }
-    }
+    },
 };
 Object.defineProperty(callProto, "stack", {
     enumerable: true,
     configurable: true,
-    get: function() {
+    get: function () {
         return (this.errorWithCallStack && this.errorWithCallStack.stack) || "";
-    }
+    },
 });
 
 callProto.invokeCallback = callProto.yield;
 
-function createProxyCall(proxy, thisValue, args, returnValue, exception, id, errorWithCallStack) {
+function createProxyCall(
+    proxy,
+    thisValue,
+    args,
+    returnValue,
+    exception,
+    id,
+    errorWithCallStack
+) {
     if (typeof id !== "number") {
         throw new TypeError("Call id is not a number");
     }
@@ -1874,7 +2034,8 @@ function createProxyCall(proxy, thisValue, args, returnValue, exception, id, err
     }
 
     var proxyCall = Object.create(callProto);
-    var callback = lastArg && typeof lastArg === "function" ? lastArg : undefined;
+    var callback =
+        lastArg && typeof lastArg === "function" ? lastArg : undefined;
 
     proxyCall.proxy = proxy;
     proxyCall.thisValue = thisValue;
@@ -1916,7 +2077,7 @@ module.exports = function invoke(func, thisValue, args) {
     push(this.thisValues, thisValue);
     push(this.args, args);
     push(this.callIds, currentCallId);
-    forEach(matchings, function(matching) {
+    forEach(matchings, function (matching) {
         proxyCallUtil.incrementCallCount(matching);
         push(matching.thisValues, thisValue);
         push(matching.args, args);
@@ -1934,7 +2095,10 @@ module.exports = function invoke(func, thisValue, args) {
 
         if (thisCall.calledWithNew()) {
             // Call through with `new`
-            returnValue = new (bind.apply(this.func || func, concat([thisValue], args)))();
+            returnValue = new (bind.apply(
+                this.func || func,
+                concat([thisValue], args)
+            ))();
 
             if (typeof returnValue !== "object") {
                 returnValue = thisValue;
@@ -1950,7 +2114,7 @@ module.exports = function invoke(func, thisValue, args) {
 
     push(this.exceptions, exception);
     push(this.returnValues, returnValue);
-    forEach(matchings, function(matching) {
+    forEach(matchings, function (matching) {
         push(matching.exceptions, exception);
         push(matching.returnValues, returnValue);
     });
@@ -1965,7 +2129,7 @@ module.exports = function invoke(func, thisValue, args) {
         /* empty */
     }
     push(this.errorsWithCallStack, err);
-    forEach(matchings, function(matching) {
+    forEach(matchings, function (matching) {
         push(matching.errorsWithCallStack, err);
     });
 
@@ -2019,7 +2183,7 @@ var proxyApi = {
      * Hook for derived implementation to return fake instances matching the
      * given arguments.
      */
-    matchingFakes: function(/*args, strict*/) {
+    matchingFakes: function (/*args, strict*/) {
         return emptyFakes;
     },
 
@@ -2044,7 +2208,7 @@ var proxyApi = {
         );
     },
 
-    getCalls: function() {
+    getCalls: function () {
         var calls = [];
         var i;
 
@@ -2080,7 +2244,10 @@ var proxyApi = {
             return false;
         }
 
-        return this.callIds[this.callCount - 1] === proxy.callIds[proxy.callCount - 1] - 1;
+        return (
+            this.callIds[this.callCount - 1] ===
+            proxy.callIds[proxy.callCount - 1] - 1
+        );
     },
 
     calledImmediatelyAfter: function calledImmediatelyAfter(proxy) {
@@ -2088,16 +2255,19 @@ var proxyApi = {
             return false;
         }
 
-        return this.callIds[this.callCount - 1] === proxy.callIds[proxy.callCount - 1] + 1;
+        return (
+            this.callIds[this.callCount - 1] ===
+            proxy.callIds[proxy.callCount - 1] + 1
+        );
     },
 
     formatters: require("./spy-formatters"),
-    printf: function(format) {
+    printf: function (format) {
         var spyInstance = this;
         var args = slice(arguments, 1);
         var formatter;
 
-        return (format || "").replace(/%(.)/g, function(match, specifyer) {
+        return (format || "").replace(/%(.)/g, function (match, specifyer) {
             formatter = proxyApi.formatters[specifyer];
 
             if (typeof formatter === "function") {
@@ -2106,11 +2276,11 @@ var proxyApi = {
                 return sinonFormat(args[specifyer - 1]);
             }
 
-            return "%" + specifyer;
+            return `%${specifyer}`;
         });
     },
 
-    resetHistory: function() {
+    resetHistory: function () {
         if (this.invoking) {
             var err = new Error(
                 "Cannot reset Sinon function while invoking it. " +
@@ -2140,33 +2310,76 @@ var proxyApi = {
         this.errorsWithCallStack = [];
 
         if (this.fakes) {
-            forEach(this.fakes, function(fake) {
+            forEach(this.fakes, function (fake) {
                 fake.resetHistory();
             });
         }
 
         return this;
-    }
+    },
 };
 
 var delegateToCalls = proxyCallUtil.delegateToCalls;
 delegateToCalls(proxyApi, "calledOn", true);
 delegateToCalls(proxyApi, "alwaysCalledOn", false, "calledOn");
 delegateToCalls(proxyApi, "calledWith", true);
-delegateToCalls(proxyApi, "calledOnceWith", true, "calledWith", false, undefined, 1);
+delegateToCalls(
+    proxyApi,
+    "calledOnceWith",
+    true,
+    "calledWith",
+    false,
+    undefined,
+    1
+);
 delegateToCalls(proxyApi, "calledWithMatch", true);
 delegateToCalls(proxyApi, "alwaysCalledWith", false, "calledWith");
 delegateToCalls(proxyApi, "alwaysCalledWithMatch", false, "calledWithMatch");
 delegateToCalls(proxyApi, "calledWithExactly", true);
-delegateToCalls(proxyApi, "calledOnceWithExactly", true, "calledWithExactly", false, undefined, 1);
-delegateToCalls(proxyApi, "calledOnceWithMatch", true, "calledWithMatch", false, undefined, 1);
-delegateToCalls(proxyApi, "alwaysCalledWithExactly", false, "calledWithExactly");
-delegateToCalls(proxyApi, "neverCalledWith", false, "notCalledWith", false, function() {
-    return true;
-});
-delegateToCalls(proxyApi, "neverCalledWithMatch", false, "notCalledWithMatch", false, function() {
-    return true;
-});
+delegateToCalls(
+    proxyApi,
+    "calledOnceWithExactly",
+    true,
+    "calledWithExactly",
+    false,
+    undefined,
+    1
+);
+delegateToCalls(
+    proxyApi,
+    "calledOnceWithMatch",
+    true,
+    "calledWithMatch",
+    false,
+    undefined,
+    1
+);
+delegateToCalls(
+    proxyApi,
+    "alwaysCalledWithExactly",
+    false,
+    "calledWithExactly"
+);
+delegateToCalls(
+    proxyApi,
+    "neverCalledWith",
+    false,
+    "notCalledWith",
+    false,
+    function () {
+        return true;
+    }
+);
+delegateToCalls(
+    proxyApi,
+    "neverCalledWithMatch",
+    false,
+    "notCalledWithMatch",
+    false,
+    function () {
+        return true;
+    }
+);
 delegateToCalls(proxyApi, "threw", true);
 delegateToCalls(proxyApi, "alwaysThrew", false, "threw");
 delegateToCalls(proxyApi, "returned", true);
@@ -2292,7 +2505,7 @@ function wrapFunction(func, originalFunc) {
         thisValues: [],
         exceptions: [],
         callIds: [],
-        errorsWithCallStack: []
+        errorsWithCallStack: [],
     });
     return p;
 }
@@ -2343,11 +2556,11 @@ var push = arrayProto.push;
 var reverse = arrayProto.reverse;
 
 function applyOnEach(fakes, method) {
-    var matchingFakes = filter(fakes, function(fake) {
+    var matchingFakes = filter(fakes, function (fake) {
         return typeof fake[method] === "function";
     });
 
-    forEach(matchingFakes, function(fake) {
+    forEach(matchingFakes, function (fake) {
         fake[method]();
     });
 }
@@ -2368,7 +2581,7 @@ function Sandbox() {
     };
 
     // this is for testing only
-    sandbox.getRestorers = function() {
+    sandbox.getRestorers = function () {
         return fakeRestorers;
     };
 
@@ -2377,7 +2590,7 @@ function Sandbox() {
 
         var ownMethods = collectOwnMethods(stubbed);
 
-        forEach(ownMethods, function(method) {
+        forEach(ownMethods, function (method) {
             push(collection, method);
         });
 
@@ -2387,35 +2600,35 @@ function Sandbox() {
     };
 
     sandbox.inject = function inject(obj) {
-        obj.spy = function() {
+        obj.spy = function () {
             return sandbox.spy.apply(null, arguments);
         };
 
-        obj.stub = function() {
+        obj.stub = function () {
             return sandbox.stub.apply(null, arguments);
         };
 
-        obj.mock = function() {
+        obj.mock = function () {
             return sandbox.mock.apply(null, arguments);
         };
 
-        obj.createStubInstance = function() {
+        obj.createStubInstance = function () {
             return sandbox.createStubInstance.apply(sandbox, arguments);
         };
 
-        obj.fake = function() {
+        obj.fake = function () {
             return sandbox.fake.apply(null, arguments);
         };
 
-        obj.replace = function() {
+        obj.replace = function () {
             return sandbox.replace.apply(null, arguments);
         };
 
-        obj.replaceSetter = function() {
+        obj.replaceSetter = function () {
             return sandbox.replaceSetter.apply(null, arguments);
         };
 
-        obj.replaceGetter = function() {
+        obj.replaceGetter = function () {
             return sandbox.replaceGetter.apply(null, arguments);
         };
 
@@ -2459,7 +2672,7 @@ function Sandbox() {
             }
         }
 
-        forEach(collection, function(fake) {
+        forEach(collection, function (fake) {
             if (typeof fake === "function") {
                 privateResetHistory(fake);
                 return;
@@ -2480,14 +2693,16 @@ function Sandbox() {
 
     sandbox.restore = function restore() {
         if (arguments.length) {
-            throw new Error("sandbox.restore() does not take any parameters. Perhaps you meant stub.restore()");
+            throw new Error(
+                "sandbox.restore() does not take any parameters. Perhaps you meant stub.restore()"
+            );
         }
 
         reverse(collection);
         applyOnEach(collection, "restore");
         collection = [];
 
-        forEach(fakeRestorers, function(restorer) {
+        forEach(fakeRestorers, function (restorer) {
             restorer();
         });
         fakeRestorers = [];
@@ -2503,7 +2718,7 @@ function Sandbox() {
             return;
         }
 
-        forEach(injectedKeys, function(injectedKey) {
+        forEach(injectedKeys, function (injectedKey) {
             delete injectInto[injectedKey];
         });
 
@@ -2526,9 +2741,14 @@ function Sandbox() {
     }
 
     function verifyNotReplaced(object, property) {
-        forEach(fakeRestorers, function(fakeRestorer) {
-            if (fakeRestorer.object === object && fakeRestorer.property === property) {
-                throw new TypeError("Attempted to replace " + property + " which is already replaced");
+        forEach(fakeRestorers, function (fakeRestorer) {
+            if (
+                fakeRestorer.object === object &&
+                fakeRestorer.property === property
+            ) {
+                throw new TypeError(
+                    `Attempted to replace ${property} which is already replaced`
+                );
             }
         });
     }
@@ -2537,7 +2757,11 @@ function Sandbox() {
         var descriptor = getPropertyDescriptor(object, property);
 
         if (typeof descriptor === "undefined") {
-            throw new TypeError("Cannot replace non-existent property " + valueToString(property));
+            throw new TypeError(
+                `Cannot replace non-existent property ${valueToString(
+                    property
+                )}`
+            );
         }
 
         if (typeof replacement === "undefined") {
@@ -2553,7 +2777,11 @@ function Sandbox() {
         }
 
         if (typeof object[property] !== typeof replacement) {
-            throw new TypeError("Cannot replace " + typeof object[property] + " with " + typeof replacement);
+            throw new TypeError(
+                `Cannot replace ${typeof object[
+                    property
+                ]} with ${typeof replacement}`
+            );
         }
 
         verifyNotReplaced(object, property);
@@ -2566,15 +2794,25 @@ function Sandbox() {
         return replacement;
     };
 
-    sandbox.replaceGetter = function replaceGetter(object, property, replacement) {
+    sandbox.replaceGetter = function replaceGetter(
+        object,
+        property,
+        replacement
+    ) {
         var descriptor = getPropertyDescriptor(object, property);
 
         if (typeof descriptor === "undefined") {
-            throw new TypeError("Cannot replace non-existent property " + valueToString(property));
+            throw new TypeError(
+                `Cannot replace non-existent property ${valueToString(
+                    property
+                )}`
+            );
         }
 
         if (typeof replacement !== "function") {
-            throw new TypeError("Expected replacement argument to be a function");
+            throw new TypeError(
+                "Expected replacement argument to be a function"
+            );
         }
 
         if (typeof descriptor.get !== "function") {
@@ -2588,21 +2826,31 @@ function Sandbox() {
 
         Object.defineProperty(object, property, {
             get: replacement,
-            configurable: isPropertyConfigurable(object, property)
+            configurable: isPropertyConfigurable(object, property),
         });
 
         return replacement;
     };
 
-    sandbox.replaceSetter = function replaceSetter(object, property, replacement) {
+    sandbox.replaceSetter = function replaceSetter(
+        object,
+        property,
+        replacement
+    ) {
         var descriptor = getPropertyDescriptor(object, property);
 
         if (typeof descriptor === "undefined") {
-            throw new TypeError("Cannot replace non-existent property " + valueToString(property));
+            throw new TypeError(
+                `Cannot replace non-existent property ${valueToString(
+                    property
+                )}`
+            );
         }
 
         if (typeof replacement !== "function") {
-            throw new TypeError("Expected replacement argument to be a function");
+            throw new TypeError(
+                "Expected replacement argument to be a function"
+            );
         }
 
         if (typeof descriptor.set !== "function") {
@@ -2617,7 +2865,7 @@ function Sandbox() {
         // eslint-disable-next-line accessor-pairs
         Object.defineProperty(object, property, {
             set: replacement,
-            configurable: isPropertyConfigurable(object, property)
+            configurable: isPropertyConfigurable(object, property),
         });
 
         return replacement;
@@ -2627,12 +2875,13 @@ function Sandbox() {
         var object = args[0];
         var property = args[1];
 
-        var isSpyingOnEntireObject = typeof property === "undefined" && typeof object === "object";
+        var isSpyingOnEntireObject =
+            typeof property === "undefined" && typeof object === "object";
 
         if (isSpyingOnEntireObject) {
             var ownMethods = collectOwnMethods(spy);
 
-            forEach(ownMethods, function(method) {
+            forEach(ownMethods, function (method) {
                 push(collection, method);
             });
 
@@ -2664,10 +2913,10 @@ function Sandbox() {
         return s;
     };
 
-    forEach(Object.keys(sinonFake), function(key) {
+    forEach(Object.keys(sinonFake), function (key) {
         var fakeBehavior = sinonFake[key];
         if (typeof fakeBehavior === "function") {
-            sandbox.fake[key] = function() {
+            sandbox.fake[key] = function () {
                 var s = fakeBehavior.apply(fakeBehavior, arguments);
 
                 push(collection, s);
@@ -2760,11 +3009,11 @@ function colorSinonMatchText(matcher, calledArg, calledArgMessage) {
             calledArgumentMessage = color.green(calledArgumentMessage);
         }
     }
-    return calledArgumentMessage + " " + matcher.message;
+    return `${calledArgumentMessage} ${matcher.message}`;
 }
 
 function colorDiffText(diff) {
-    var objects = map(diff, function(part) {
+    var objects = map(diff, function (part) {
         var text = part.value;
         if (part.added) {
             text = color.green(text);
@@ -2787,27 +3036,31 @@ function quoteStringValue(value) {
 }
 
 module.exports = {
-    c: function(spyInstance) {
+    c: function (spyInstance) {
         return timesInWords(spyInstance.callCount);
     },
 
-    n: function(spyInstance) {
+    n: function (spyInstance) {
         // eslint-disable-next-line @sinonjs/no-prototype-methods/no-prototype-methods
         return spyInstance.toString();
     },
 
-    D: function(spyInstance, args) {
+    D: function (spyInstance, args) {
         var message = "";
 
         for (var i = 0, l = spyInstance.callCount; i < l; ++i) {
             // describe multiple calls
             if (l > 1) {
-                message += "\nCall " + (i + 1) + ":";
+                message += `\nCall ${i + 1}:`;
             }
             var calledArgs = spyInstance.getCall(i).args;
             var expectedArgs = slice(args);
 
-            for (var j = 0; j < calledArgs.length || j < expectedArgs.length; ++j) {
+            for (
+                var j = 0;
+                j < calledArgs.length || j < expectedArgs.length;
+                ++j
+            ) {
                 if (calledArgs[j]) {
                     calledArgs[j] = quoteStringValue(calledArgs[j]);
                 }
@@ -2818,12 +3071,23 @@ module.exports = {
 
                 message += "\n";
 
-                var calledArgMessage = j < calledArgs.length ? sinonFormat(calledArgs[j]) : "";
+                var calledArgMessage =
+                    j < calledArgs.length ? sinonFormat(calledArgs[j]) : "";
                 if (match.isMatcher(expectedArgs[j])) {
-                    message += colorSinonMatchText(expectedArgs[j], calledArgs[j], calledArgMessage);
+                    message += colorSinonMatchText(
+                        expectedArgs[j],
+                        calledArgs[j],
+                        calledArgMessage
+                    );
                 } else {
-                    var expectedArgMessage = j < expectedArgs.length ? sinonFormat(expectedArgs[j]) : "";
-                    var diff = jsDiff.diffJson(calledArgMessage, expectedArgMessage);
+                    var expectedArgMessage =
+                        j < expectedArgs.length
+                            ? sinonFormat(expectedArgs[j])
+                            : "";
+                    var diff = jsDiff.diffJson(
+                        calledArgMessage,
+                        expectedArgMessage
+                    );
                     message += colorDiffText(diff);
                 }
             }
@@ -2832,22 +3096,22 @@ module.exports = {
         return message;
     },
 
-    C: function(spyInstance) {
+    C: function (spyInstance) {
         var calls = [];
 
         for (var i = 0, l = spyInstance.callCount; i < l; ++i) {
             // eslint-disable-next-line @sinonjs/no-prototype-methods/no-prototype-methods
-            var stringifiedCall = "    " + spyInstance.getCall(i).toString();
+            var stringifiedCall = `    ${spyInstance.getCall(i).toString()}`;
             if (/\n/.test(calls[i - 1])) {
-                stringifiedCall = "\n" + stringifiedCall;
+                stringifiedCall = `\n${stringifiedCall}`;
             }
             push(calls, stringifiedCall);
         }
 
-        return calls.length > 0 ? "\n" + join(calls, "\n") : "";
+        return calls.length > 0 ? `\n${join(calls, "\n")}` : "";
     },
 
-    t: function(spyInstance) {
+    t: function (spyInstance) {
         var objects = [];
 
         for (var i = 0, l = spyInstance.callCount; i < l; ++i) {
@@ -2857,14 +3121,14 @@ module.exports = {
         return join(objects, ", ");
     },
 
-    "*": function(spyInstance, args) {
+    "*": function (spyInstance, args) {
         return join(
-            map(args, function(arg) {
+            map(args, function (arg) {
                 return sinonFormat(arg);
             }),
             ", "
         );
-    }
+    },
 };
 
 },{"./color":5,"./util/core/format":24,"./util/core/times-in-words":32,"@sinonjs/commons":44,"@sinonjs/samsam":82,"diff":86}],18:[function(require,module,exports){
@@ -2893,7 +3157,10 @@ var uuid = 0;
 
 function matches(fake, args, strict) {
     var margs = fake.matchingArguments;
-    if (margs.length <= args.length && deepEqual(slice(args, 0, margs.length), margs)) {
+    if (
+        margs.length <= args.length &&
+        deepEqual(slice(args, 0, margs.length), margs)
+    ) {
         return !strict || margs.length === args.length;
     }
     return false;
@@ -2901,7 +3168,7 @@ function matches(fake, args, strict) {
 
 // Public API
 var spyApi = {
-    withArgs: function() {
+    withArgs: function () {
         var args = slice(arguments);
         var matching = pop(this.matchingFakes(args, true));
         if (matching) {
@@ -2914,11 +3181,11 @@ var spyApi = {
         fake.parent = this;
         push(this.fakes, fake);
 
-        fake.withArgs = function() {
+        fake.withArgs = function () {
             return original.withArgs.apply(original, arguments);
         };
 
-        forEach(original.args, function(arg, i) {
+        forEach(original.args, function (arg, i) {
             if (!matches(fake, arg)) {
                 return;
             }
@@ -2937,51 +3204,72 @@ var spyApi = {
     },
 
     // Override proxy default implementation
-    matchingFakes: function(args, strict) {
-        return filter.call(this.fakes, function(fake) {
+    matchingFakes: function (args, strict) {
+        return filter.call(this.fakes, function (fake) {
             return matches(fake, args, strict);
         });
-    }
+    },
 };
 
 /* eslint-disable @sinonjs/no-prototype-methods/no-prototype-methods */
 var delegateToCalls = proxyCallUtil.delegateToCalls;
-delegateToCalls(spyApi, "callArg", false, "callArgWith", true, function() {
-    throw new Error(this.toString() + " cannot call arg since it was not yet invoked.");
+delegateToCalls(spyApi, "callArg", false, "callArgWith", true, function () {
+    throw new Error(
+        `${this.toString()} cannot call arg since it was not yet invoked.`
+    );
 });
 spyApi.callArgWith = spyApi.callArg;
-delegateToCalls(spyApi, "callArgOn", false, "callArgOnWith", true, function() {
-    throw new Error(this.toString() + " cannot call arg since it was not yet invoked.");
+delegateToCalls(spyApi, "callArgOn", false, "callArgOnWith", true, function () {
+    throw new Error(
+        `${this.toString()} cannot call arg since it was not yet invoked.`
+    );
 });
 spyApi.callArgOnWith = spyApi.callArgOn;
-delegateToCalls(spyApi, "throwArg", false, "throwArg", false, function() {
-    throw new Error(this.toString() + " cannot throw arg since it was not yet invoked.");
+delegateToCalls(spyApi, "throwArg", false, "throwArg", false, function () {
+    throw new Error(
+        `${this.toString()} cannot throw arg since it was not yet invoked.`
+    );
 });
-delegateToCalls(spyApi, "yield", false, "yield", true, function() {
-    throw new Error(this.toString() + " cannot yield since it was not yet invoked.");
+delegateToCalls(spyApi, "yield", false, "yield", true, function () {
+    throw new Error(
+        `${this.toString()} cannot yield since it was not yet invoked.`
+    );
 });
 // "invokeCallback" is an alias for "yield" since "yield" is invalid in strict mode.
 spyApi.invokeCallback = spyApi.yield;
-delegateToCalls(spyApi, "yieldOn", false, "yieldOn", true, function() {
-    throw new Error(this.toString() + " cannot yield since it was not yet invoked.");
-});
-delegateToCalls(spyApi, "yieldTo", false, "yieldTo", true, function(property) {
+delegateToCalls(spyApi, "yieldOn", false, "yieldOn", true, function () {
     throw new Error(
-        this.toString() + " cannot yield to '" + valueToString(property) + "' since it was not yet invoked."
+        `${this.toString()} cannot yield since it was not yet invoked.`
     );
 });
-delegateToCalls(spyApi, "yieldToOn", false, "yieldToOn", true, function(property) {
+delegateToCalls(spyApi, "yieldTo", false, "yieldTo", true, function (property) {
     throw new Error(
-        this.toString() + " cannot yield to '" + valueToString(property) + "' since it was not yet invoked."
+        `${this.toString()} cannot yield to '${valueToString(
+            property
+        )}' since it was not yet invoked.`
     );
 });
+delegateToCalls(
+    spyApi,
+    "yieldToOn",
+    false,
+    "yieldToOn",
+    true,
+    function (property) {
+        throw new Error(
+            `${this.toString()} cannot yield to '${valueToString(
+                property
+            )}' since it was not yet invoked.`
+        );
+    }
+);
 
 function createSpy(func) {
     var name;
     var funk = func;
 
     if (typeof funk !== "function") {
-        funk = function() {
+        funk = function () {
             return;
         };
     } else {
@@ -2996,7 +3284,7 @@ function createSpy(func) {
         displayName: name || "spy",
         fakes: [],
         instantiateFake: createSpy,
-        id: "spy#" + uuid++
+        id: `spy#${uuid++}`,
     });
     return proxy;
 }
@@ -3017,7 +3305,7 @@ function spy(object, property, types) {
     }
 
     if (!object && !property) {
-        return createSpy(function() {
+        return createSpy(function () {
             return;
         });
     }
@@ -3029,7 +3317,7 @@ function spy(object, property, types) {
     descriptor = {};
     methodDesc = getPropertyDescriptor(object, property);
 
-    forEach(types, function(type) {
+    forEach(types, function (type) {
         descriptor[type] = createSpy(methodDesc[type]);
     });
 
@@ -3047,7 +3335,8 @@ var behavior = require("./behavior");
 var behaviors = require("./default-behaviors");
 var createProxy = require("./proxy");
 var functionName = require("@sinonjs/commons").functionName;
-var hasOwnProperty = require("@sinonjs/commons").prototypes.object.hasOwnProperty;
+var hasOwnProperty = require("@sinonjs/commons").prototypes.object
+    .hasOwnProperty;
 var isNonExistentProperty = require("./util/core/is-non-existent-property");
 var spy = require("./spy");
 var extend = require("./util/core/extend");
@@ -3074,8 +3363,10 @@ function createStub(originalFunc) {
 
         var fnStub =
             pop(
-                sort(matchings, function(a, b) {
-                    return a.matchingArguments.length - b.matchingArguments.length;
+                sort(matchings, function (a, b) {
+                    return (
+                        a.matchingArguments.length - b.matchingArguments.length
+                    );
                 })
             ) || proxy;
         return getCurrentBehavior(fnStub).invoke(this, arguments);
@@ -3094,7 +3385,7 @@ function createStub(originalFunc) {
         displayName: name || "stub",
         defaultBehavior: null,
         behaviors: [],
-        id: "stub#" + uuid++
+        id: `stub#${uuid++}`,
     });
 
     return proxy;
@@ -3102,7 +3393,9 @@ function createStub(originalFunc) {
 
 function stub(object, property) {
     if (arguments.length > 2) {
-        throw new TypeError("stub(obj, 'meth', fn) has been removed, see documentation");
+        throw new TypeError(
+            "stub(obj, 'meth', fn) has been removed, see documentation"
+        );
     }
 
     if (isEsModule(object)) {
@@ -3112,17 +3405,22 @@ function stub(object, property) {
     throwOnFalsyObject.apply(null, arguments);
 
     if (isNonExistentProperty(object, property)) {
-        throw new TypeError("Cannot stub non-existent property " + valueToString(property));
+        throw new TypeError(
+            `Cannot stub non-existent property ${valueToString(property)}`
+        );
     }
 
     var actualDescriptor = getPropertyDescriptor(object, property);
-    var isObjectOrFunction = typeof object === "object" || typeof object === "function";
-    var isStubbingEntireObject = typeof property === "undefined" && isObjectOrFunction;
+    var isObjectOrFunction =
+        typeof object === "object" || typeof object === "function";
+    var isStubbingEntireObject =
+        typeof property === "undefined" && isObjectOrFunction;
     var isCreatingNewStub = !object && typeof property === "undefined";
     var isStubbingNonFuncProperty =
         isObjectOrFunction &&
         typeof property !== "undefined" &&
-        (typeof actualDescriptor === "undefined" || typeof actualDescriptor.value !== "function");
+        (typeof actualDescriptor === "undefined" ||
+            typeof actualDescriptor.value !== "function");
 
     if (isStubbingEntireObject) {
         return walkObject(stub, object);
@@ -3132,7 +3430,10 @@ function stub(object, property) {
         return createStub();
     }
 
-    var func = typeof actualDescriptor.value === "function" ? actualDescriptor.value : null;
+    var func =
+        typeof actualDescriptor.value === "function"
+            ? actualDescriptor.value
+            : null;
     var s = createStub(func);
 
     extend.nonEnum(s, {
@@ -3146,20 +3447,20 @@ function stub(object, property) {
             }
 
             delete object[property];
-        }
+        },
     });
 
     return isStubbingNonFuncProperty ? s : wrapMethod(object, property, s);
 }
 
-stub.createStubInstance = function(constructor, overrides) {
+stub.createStubInstance = function (constructor, overrides) {
     if (typeof constructor !== "function") {
         throw new TypeError("The constructor should be a function.");
     }
 
     var stubbedObject = stub(Object.create(constructor.prototype));
 
-    forEach(Object.keys(overrides || {}), function(propertyName) {
+    forEach(Object.keys(overrides || {}), function (propertyName) {
         if (propertyName in stubbedObject) {
             var value = overrides[propertyName];
             if (value && value.createStubInstance) {
@@ -3168,7 +3469,9 @@ stub.createStubInstance = function(constructor, overrides) {
                 stubbedObject[propertyName].returns(value);
             }
         } else {
-            throw new Error("Cannot stub " + propertyName + ". Property does not exist!");
+            throw new Error(
+                `Cannot stub ${propertyName}. Property does not exist!`
+            );
         }
     });
     return stubbedObject;
@@ -3180,17 +3483,23 @@ function getParentBehaviour(stubInstance) {
 }
 
 function getDefaultBehavior(stubInstance) {
-    return stubInstance.defaultBehavior || getParentBehaviour(stubInstance) || behavior.create(stubInstance);
+    return (
+        stubInstance.defaultBehavior ||
+        getParentBehaviour(stubInstance) ||
+        behavior.create(stubInstance)
+    );
 }
 
 function getCurrentBehavior(stubInstance) {
     var currentBehavior = stubInstance.behaviors[stubInstance.callCount - 1];
-    return currentBehavior && currentBehavior.isPresent() ? currentBehavior : getDefaultBehavior(stubInstance);
+    return currentBehavior && currentBehavior.isPresent()
+        ? currentBehavior
+        : getDefaultBehavior(stubInstance);
 }
 /*eslint-enable no-use-before-define*/
 
 var proto = {
-    resetBehavior: function() {
+    resetBehavior: function () {
         this.defaultBehavior = null;
         this.behaviors = [];
 
@@ -3202,12 +3511,12 @@ var proto = {
         this.returnThis = false;
         this.resolveThis = false;
 
-        forEach(this.fakes, function(fake) {
+        forEach(this.fakes, function (fake) {
             fake.resetBehavior();
         });
     },
 
-    reset: function() {
+    reset: function () {
         this.resetHistory();
         this.resetBehavior();
     },
@@ -3235,14 +3544,15 @@ var proto = {
     withArgs: function withArgs() {
         var fake = spy.withArgs.apply(this, arguments);
         if (this.defaultBehavior && this.defaultBehavior.promiseLibrary) {
-            fake.defaultBehavior = fake.defaultBehavior || behavior.create(fake);
+            fake.defaultBehavior =
+                fake.defaultBehavior || behavior.create(fake);
             fake.defaultBehavior.promiseLibrary = this.defaultBehavior.promiseLibrary;
         }
         return fake;
-    }
+    },
 };
 
-forEach(Object.keys(behavior), function(method) {
+forEach(Object.keys(behavior), function (method) {
     if (
         hasOwnProperty(behavior, method) &&
         !hasOwnProperty(proto, method) &&
@@ -3253,7 +3563,7 @@ forEach(Object.keys(behavior), function(method) {
     }
 });
 
-forEach(Object.keys(behaviors), function(method) {
+forEach(Object.keys(behaviors), function (method) {
     if (hasOwnProperty(behaviors, method) && !hasOwnProperty(proto, method)) {
         behavior.addBehavior(stub, method, behaviors[method]);
     }
@@ -3269,7 +3579,9 @@ var valueToString = require("@sinonjs/commons").valueToString;
 function throwOnFalsyObject(object, property) {
     if (property && !object) {
         var type = object === null ? "null" : "undefined";
-        throw new Error("Trying to stub property '" + valueToString(property) + "' of " + type);
+        throw new Error(
+            `Trying to stub property '${valueToString(property)}' of ${type}`
+        );
     }
 }
 
@@ -3291,10 +3603,10 @@ module.exports = {
         "replace",
         "replaceSetter",
         "replaceGetter",
-        "createStubInstance"
+        "createStubInstance",
     ],
     useFakeTimers: true,
-    useFakeServer: true
+    useFakeServer: true,
 };
 
 },{}],22:[function(require,module,exports){
@@ -3306,10 +3618,10 @@ var reduce = arrayProto.reduce;
 module.exports = function exportAsyncBehaviors(behaviorMethods) {
     return reduce(
         Object.keys(behaviorMethods),
-        function(acc, method) {
+        function (acc, method) {
             // need to avoid creating another async versions of the newly added async methods
             if (method.match(/^(callsArg|yields)/) && !method.match(/Async/)) {
-                acc[method + "Async"] = function() {
+                acc[`${method}Async`] = function () {
                     var result = behaviorMethods[method].apply(this, arguments);
                     this.callbackAsync = true;
                     return result;
@@ -3325,45 +3637,45 @@ module.exports = function exportAsyncBehaviors(behaviorMethods) {
 "use strict";
 
 var arrayProto = require("@sinonjs/commons").prototypes.array;
-var hasOwnProperty = require("@sinonjs/commons").prototypes.object.hasOwnProperty;
+var hasOwnProperty = require("@sinonjs/commons").prototypes.object
+    .hasOwnProperty;
 
 var join = arrayProto.join;
 var push = arrayProto.push;
-var slice = arrayProto.slice;
 
 // Adapted from https://developer.mozilla.org/en/docs/ECMAScript_DontEnum_attribute#JScript_DontEnum_Bug
-var hasDontEnumBug = (function() {
+var hasDontEnumBug = (function () {
     var obj = {
-        constructor: function() {
+        constructor: function () {
             return "0";
         },
-        toString: function() {
+        toString: function () {
             return "1";
         },
-        valueOf: function() {
+        valueOf: function () {
             return "2";
         },
-        toLocaleString: function() {
+        toLocaleString: function () {
             return "3";
         },
-        prototype: function() {
+        prototype: function () {
             return "4";
         },
-        isPrototypeOf: function() {
+        isPrototypeOf: function () {
             return "5";
         },
-        propertyIsEnumerable: function() {
+        propertyIsEnumerable: function () {
             return "6";
         },
-        hasOwnProperty: function() {
+        hasOwnProperty: function () {
             return "7";
         },
-        length: function() {
+        length: function () {
             return "8";
         },
-        unique: function() {
+        unique: function () {
             return "9";
-        }
+        },
     };
 
     var result = [];
@@ -3389,7 +3701,11 @@ function extendCommon(target, sources, doCopy) {
 
         // Make sure we copy (own) toString method even when in JScript with DontEnum bug
         // See https://developer.mozilla.org/en/docs/ECMAScript_DontEnum_attribute#JScript_DontEnum_Bug
-        if (hasDontEnumBug && hasOwnProperty(source, "toString") && source.toString !== target.toString) {
+        if (
+            hasDontEnumBug &&
+            hasOwnProperty(source, "toString") &&
+            source.toString !== target.toString
+        ) {
             target.toString = source.toString;
         }
     }
@@ -3400,50 +3716,60 @@ function extendCommon(target, sources, doCopy) {
 /** Public: Extend target in place with all (own) properties, except 'name' when [[writable]] is false,
  *         from sources in-order. Thus, last source will override properties in previous sources.
  *
- * @arg {Object} target - The Object to extend
- * @arg {Object[]} sources - Objects to copy properties from.
+ * @param {object} target - The Object to extend
+ * @param {object[]} sources - Objects to copy properties from.
  *
- * @returns {Object} the extended target
+ * @returns {object} the extended target
  */
-module.exports = function extend(target /*, sources */) {
-    var sources = slice(arguments, 1);
+module.exports = function extend(target, ...sources) {
+    return extendCommon(
+        target,
+        sources,
+        function copyValue(dest, source, prop) {
+            var destOwnPropertyDescriptor = Object.getOwnPropertyDescriptor(
+                dest,
+                prop
+            );
+            var sourceOwnPropertyDescriptor = Object.getOwnPropertyDescriptor(
+                source,
+                prop
+            );
 
-    return extendCommon(target, sources, function copyValue(dest, source, prop) {
-        var destOwnPropertyDescriptor = Object.getOwnPropertyDescriptor(dest, prop);
-        var sourceOwnPropertyDescriptor = Object.getOwnPropertyDescriptor(source, prop);
+            if (prop === "name" && !destOwnPropertyDescriptor.writable) {
+                return;
+            }
 
-        if (prop === "name" && !destOwnPropertyDescriptor.writable) {
-            return;
+            Object.defineProperty(dest, prop, {
+                configurable: sourceOwnPropertyDescriptor.configurable,
+                enumerable: sourceOwnPropertyDescriptor.enumerable,
+                writable: sourceOwnPropertyDescriptor.writable,
+                value: sourceOwnPropertyDescriptor.value,
+            });
         }
-
-        Object.defineProperty(dest, prop, {
-            configurable: sourceOwnPropertyDescriptor.configurable,
-            enumerable: sourceOwnPropertyDescriptor.enumerable,
-            writable: sourceOwnPropertyDescriptor.writable,
-            value: sourceOwnPropertyDescriptor.value
-        });
-    });
+    );
 };
 
 /** Public: Extend target in place with all (own) properties from sources in-order. Thus, last source will
  *         override properties in previous sources. Define the properties as non enumerable.
  *
- * @arg {Object} target - The Object to extend
- * @arg {Object[]} sources - Objects to copy properties from.
+ * @param {object} target - The Object to extend
+ * @param {object[]} sources - Objects to copy properties from.
  *
- * @returns {Object} the extended target
+ * @returns {object} the extended target
  */
-module.exports.nonEnum = function extendNonEnum(target /*, sources */) {
-    var sources = slice(arguments, 1);
-
-    return extendCommon(target, sources, function copyProperty(dest, source, prop) {
-        Object.defineProperty(dest, prop, {
-            value: source[prop],
-            enumerable: false,
-            configurable: true,
-            writable: true
-        });
-    });
+module.exports.nonEnum = function extendNonEnum(target, ...sources) {
+    return extendCommon(
+        target,
+        sources,
+        function copyProperty(dest, source, prop) {
+            Object.defineProperty(dest, prop, {
+                value: source[prop],
+                enumerable: false,
+                configurable: true,
+                writable: true,
+            });
+        }
+    );
 };
 
 },{"@sinonjs/commons":44}],24:[function(require,module,exports){
@@ -3460,7 +3786,7 @@ function format() {
     return inspect.apply(inspect, arguments);
 }
 
-format.setFormatter = function(aCustomFormatter) {
+format.setFormatter = function (aCustomFormatter) {
     if (typeof aCustomFormatter !== "function") {
         throw new Error("format.setFormatter must be called with a function");
     }
@@ -3523,9 +3849,14 @@ module.exports = function getNextTick(process, setImmediate) {
 module.exports = function getPropertyDescriptor(object, property) {
     var proto = object;
     var descriptor;
-    var isOwn = Boolean(object && Object.getOwnPropertyDescriptor(object, property));
+    var isOwn = Boolean(
+        object && Object.getOwnPropertyDescriptor(object, property)
+    );
 
-    while (proto && !(descriptor = Object.getOwnPropertyDescriptor(proto, property))) {
+    while (
+        proto &&
+        !(descriptor = Object.getOwnPropertyDescriptor(proto, property))
+    ) {
         proto = Object.getPrototypeOf(proto);
     }
 
@@ -3546,13 +3877,16 @@ module.exports = function getPropertyDescriptor(object, property) {
  * using spies or stubs. Let the consumer know this to avoid bug reports
  * on weird error messages.
  *
- * @param {Object} object The object to examine
+ * @param {object} object The object to examine
  *
- * @returns {Boolean} true when the object is a module
+ * @returns {boolean} true when the object is a module
  */
-module.exports = function(object) {
+module.exports = function (object) {
     return (
-        object && typeof Symbol !== "undefined" && object[Symbol.toStringTag] === "Module" && Object.isSealed(object)
+        object &&
+        typeof Symbol !== "undefined" &&
+        object[Symbol.toStringTag] === "Module" &&
+        Object.isSealed(object)
     );
 };
 
@@ -3561,11 +3895,13 @@ module.exports = function(object) {
 
 /**
  * @param {*} object
- * @param {String} property
- * @returns whether a prop exists in the prototype chain
+ * @param {string} property
+ * @returns {boolean} whether a prop exists in the prototype chain
  */
 function isNonExistentProperty(object, property) {
-    return object && typeof property !== "undefined" && !(property in object);
+    return Boolean(
+        object && typeof property !== "undefined" && !(property in object)
+    );
 }
 
 module.exports = isNonExistentProperty;
@@ -3597,7 +3933,7 @@ module.exports = getNextTick(globalObject.process, globalObject.setImmediate);
 var array = [null, "once", "twice", "thrice"];
 
 module.exports = function timesInWords(count) {
-    return array[count] || (count || 0) + " times";
+    return array[count] || `${count || 0} times`;
 };
 
 },{}],33:[function(require,module,exports){
@@ -3636,10 +3972,12 @@ function walkObject(predicate, object, filter) {
     var name = functionName(predicate);
 
     if (!object) {
-        throw new Error("Trying to " + name + " object but received " + String(object));
+        throw new Error(
+            `Trying to ${name} object but received ${String(object)}`
+        );
     }
 
-    walk(object, function(prop, propOwner) {
+    walk(object, function (prop, propOwner) {
         // we don't want to stub things like toString(), valueOf(), etc. so we only stub if the object
         // is not Object.prototype
         if (
@@ -3660,7 +3998,7 @@ function walkObject(predicate, object, filter) {
     });
 
     if (!called) {
-        throw new Error("Expected to " + name + " methods on object but found none");
+        throw new Error(`Expected to ${name} methods on object but found none`);
     }
 
     return object;
@@ -3687,10 +4025,14 @@ function walkInternal(obj, iterator, context, originalObj, seen) {
         return;
     }
 
-    forEach(Object.getOwnPropertyNames(obj), function(k) {
+    forEach(Object.getOwnPropertyNames(obj), function (k) {
         if (seen[k] !== true) {
             seen[k] = true;
-            var target = typeof Object.getOwnPropertyDescriptor(obj, k).get === "function" ? originalObj : obj;
+            var target =
+                typeof Object.getOwnPropertyDescriptor(obj, k).get ===
+                "function"
+                    ? originalObj
+                    : obj;
             iterator.call(context, k, target);
         }
     });
@@ -3720,11 +4062,15 @@ module.exports = function walk(obj, iterator, context) {
 
 var getPropertyDescriptor = require("./get-property-descriptor");
 var extend = require("./extend");
-var hasOwnProperty = require("@sinonjs/commons").prototypes.object.hasOwnProperty;
+var hasOwnProperty = require("@sinonjs/commons").prototypes.object
+    .hasOwnProperty;
 var valueToString = require("@sinonjs/commons").valueToString;
 
 function isFunction(obj) {
-    return typeof obj === "function" || Boolean(obj && obj.constructor && obj.call && obj.apply);
+    return (
+        typeof obj === "function" ||
+        Boolean(obj && obj.constructor && obj.call && obj.apply)
+    );
 }
 
 function mirrorProperties(target, source) {
@@ -3744,7 +4090,9 @@ module.exports = function wrapMethod(object, property, method) {
     }
 
     if (typeof method !== "function" && typeof method !== "object") {
-        throw new TypeError("Method wrapper should be a function or a property descriptor");
+        throw new TypeError(
+            "Method wrapper should be a function or a property descriptor"
+        );
     }
 
     function checkWrappedMethod(wrappedMethod) {
@@ -3752,18 +4100,28 @@ module.exports = function wrapMethod(object, property, method) {
 
         if (!isFunction(wrappedMethod)) {
             error = new TypeError(
-                "Attempted to wrap " + typeof wrappedMethod + " property " + valueToString(property) + " as function"
+                `Attempted to wrap ${typeof wrappedMethod} property ${valueToString(
+                    property
+                )} as function`
             );
         } else if (wrappedMethod.restore && wrappedMethod.restore.sinon) {
-            error = new TypeError("Attempted to wrap " + valueToString(property) + " which is already wrapped");
+            error = new TypeError(
+                `Attempted to wrap ${valueToString(
+                    property
+                )} which is already wrapped`
+            );
         } else if (wrappedMethod.calledBefore) {
             var verb = wrappedMethod.returns ? "stubbed" : "spied on";
-            error = new TypeError("Attempted to wrap " + valueToString(property) + " which is already " + verb);
+            error = new TypeError(
+                `Attempted to wrap ${valueToString(
+                    property
+                )} which is already ${verb}`
+            );
         }
 
         if (error) {
             if (wrappedMethod && wrappedMethod.stackTraceError) {
-                error.stack += "\n--------------\n" + wrappedMethod.stackTraceError.stack;
+                error.stack += `\n--------------\n${wrappedMethod.stackTraceError.stack}`;
             }
             throw error;
         }
@@ -3779,23 +4137,30 @@ module.exports = function wrapMethod(object, property, method) {
     }
 
     // Firefox has a problem when using hasOwn.call on objects from other frames.
-    /* eslint-disable-next-line @sinonjs/no-prototype-methods/no-prototype-methods */
-    var owned = object.hasOwnProperty ? object.hasOwnProperty(property) : hasOwnProperty(object, property);
+    var owned = object.hasOwnProperty
+        ? object.hasOwnProperty(property) // eslint-disable-line @sinonjs/no-prototype-methods/no-prototype-methods
+        : hasOwnProperty(object, property);
 
     if (hasES5Support) {
-        var methodDesc = typeof method === "function" ? { value: method } : method;
+        var methodDesc =
+            typeof method === "function" ? { value: method } : method;
         wrappedMethodDesc = getPropertyDescriptor(object, property);
 
         if (!wrappedMethodDesc) {
             error = new TypeError(
-                "Attempted to wrap " + typeof wrappedMethod + " property " + property + " as function"
+                `Attempted to wrap ${typeof wrappedMethod} property ${property} as function`
             );
-        } else if (wrappedMethodDesc.restore && wrappedMethodDesc.restore.sinon) {
-            error = new TypeError("Attempted to wrap " + property + " which is already wrapped");
+        } else if (
+            wrappedMethodDesc.restore &&
+            wrappedMethodDesc.restore.sinon
+        ) {
+            error = new TypeError(
+                `Attempted to wrap ${property} which is already wrapped`
+            );
         }
         if (error) {
             if (wrappedMethodDesc && wrappedMethodDesc.stackTraceError) {
-                error.stack += "\n--------------\n" + wrappedMethodDesc.stackTraceError.stack;
+                error.stack += `\n--------------\n${wrappedMethodDesc.stackTraceError.stack}`;
             }
             throw error;
         }
@@ -3833,7 +4198,7 @@ module.exports = function wrapMethod(object, property, method) {
         // code the original method was created on.
         stackTraceError: new Error("Stack Trace for original"),
 
-        restore: function() {
+        restore: function () {
             // For prototype properties try to reset by delete first.
             // If this fails (ex: localStorage on mobile safari) then force a reset
             // via direct assignment.
@@ -3860,7 +4225,7 @@ module.exports = function wrapMethod(object, property, method) {
                     object[property] = wrappedMethod;
                 }
             }
-        }
+        },
     });
 
     method.restore.sinon = true;
@@ -3897,24 +4262,28 @@ function addIfDefined(obj, globalPropName) {
 }
 
 /**
- * @param {number|Date|Object} dateOrConfig The unix epoch value to install with (default 0)
- * @returns {Object} Returns a lolex clock instance
+ * @param {number|Date|object} dateOrConfig The unix epoch value to install with (default 0)
+ * @returns {object} Returns a lolex clock instance
  */
-exports.useFakeTimers = function(dateOrConfig) {
+exports.useFakeTimers = function (dateOrConfig) {
     var hasArguments = typeof dateOrConfig !== "undefined";
     var argumentIsDateLike =
-        (typeof dateOrConfig === "number" || dateOrConfig instanceof Date) && arguments.length === 1;
-    var argumentIsObject = dateOrConfig !== null && typeof dateOrConfig === "object" && arguments.length === 1;
+        (typeof dateOrConfig === "number" || dateOrConfig instanceof Date) &&
+        arguments.length === 1;
+    var argumentIsObject =
+        dateOrConfig !== null &&
+        typeof dateOrConfig === "object" &&
+        arguments.length === 1;
 
     if (!hasArguments) {
         return createClock({
-            now: 0
+            now: 0,
         });
     }
 
     if (argumentIsDateLike) {
         return createClock({
-            now: dateOrConfig
+            now: dateOrConfig,
         });
     }
 
@@ -3925,13 +4294,15 @@ exports.useFakeTimers = function(dateOrConfig) {
         return createClock(config, globalCtx);
     }
 
-    throw new TypeError("useFakeTimers expected epoch or config object. See https://github.com/sinonjs/sinon");
+    throw new TypeError(
+        "useFakeTimers expected epoch or config object. See https://github.com/sinonjs/sinon"
+    );
 };
 
 exports.clock = {
-    create: function(now) {
+    create: function (now) {
         return FakeTimers.createClock(now);
-    }
+    },
 };
 
 var timers = {
@@ -3939,7 +4310,7 @@ var timers = {
     clearTimeout: clearTimeout,
     setInterval: setInterval,
     clearInterval: clearInterval,
-    Date: Date
+    Date: Date,
 };
 addIfDefined(timers, "setImmediate");
 addIfDefined(timers, "clearImmediate");
@@ -12161,13 +12532,13 @@ function extend(/* [deep], obj1, obj2, [objn] */) {
   for (var i = 0; i < len; i++) {
     var extender = extenders[i];
     for (var key in extender) {
-      if (extender.hasOwnProperty(key)) {
+      if (Object.prototype.hasOwnProperty.call(extender, key)) {
         var value = extender[key];
         if (deep && isCloneable(value)) {
           var base = Array.isArray(value) ? [] : {};
           result[key] = extend(
             true,
-            result.hasOwnProperty(key) && !isUnextendable(result[key])
+            Object.prototype.hasOwnProperty.call(result, key) && !isUnextendable(result[key])
               ? result[key]
               : base,
             value
@@ -13599,7 +13970,7 @@ var fakeServer = {
 
     configure: function(config) {
         var self = this;
-        var whitelist = {
+        var allowlist = {
             autoRespond: true,
             autoRespondAfter: true,
             respondImmediately: true,
@@ -13612,7 +13983,7 @@ var fakeServer = {
         config = config || {};
 
         Object.keys(config).forEach(function(setting) {
-            if (setting in whitelist) {
+            if (setting in allowlist) {
                 self[setting] = config[setting];
             }
         });
@@ -14624,6 +14995,8 @@ function fakeXMLHttpRequestFor(globalScope) {
             this.setStatus(status);
             this.setResponseHeaders(headers || {});
             this.setResponseBody(body || "");
+
+            this.responseURL = this.url;
         },
 
         uploadProgress: function uploadProgress(progressEventRaw) {

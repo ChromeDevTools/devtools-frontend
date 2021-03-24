@@ -1,3 +1,9 @@
+v0.4.0 - February 27, 2021
+
+* [`d9a527b`](https://github.com/eslint/eslintrc/commit/d9a527bdb16af46a28d37fa9022131149970a438) New: Implement DotCompat class (#20) (Nicholas C. Zakas)
+* [`dac76c0`](https://github.com/eslint/eslintrc/commit/dac76c035a9ab9d315050f688867373966aab288) Chore: Replace usage of lodash with cache set (#29) (Tim van der Lippe)
+* [`3ae2d77`](https://github.com/eslint/eslintrc/commit/3ae2d770cb810c026de817e6861e25dac111da9f) Update: add AggregateError global to es2021 environment (#28) (Milos Djermanovic)
+
 v0.3.0 - January 15, 2021
 
 * [`5184490`](https://github.com/eslint/eslintrc/commit/51844902bc4132f264f05a0614f2cdeb89290f68) Upgrade: lodash@4.17.20 (#24) (Milos Djermanovic)

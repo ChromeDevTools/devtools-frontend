@@ -39,7 +39,7 @@ export class ExpandableList extends HTMLElement {
 
         .arrow-icon-button {
           cursor: pointer;
-          padding: 0;
+          padding: 1px 0;
           border: none;
           background: none;
         }
@@ -68,11 +68,19 @@ export class ExpandableList extends HTMLElement {
           overflow: hidden;
         }
 
+        .link,
         .devtools-link {
           color: var(--color-link);
           text-decoration: underline;
           cursor: pointer;
           padding: 2px 0; /* adjust focus ring size */
+        }
+
+        button.link {
+          border: none;
+          background: none;
+          font-family: inherit;
+          font-size: inherit;
         }
       </style>
       <div class="expandable-list-container">

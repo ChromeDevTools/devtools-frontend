@@ -198,6 +198,45 @@ const UIStrings = {
   *trace shows where in the code the frame has been created programmatically
   */
   creationStackTraceExplanation: 'This frame was created programmatically. The stack trace shows where this happened.',
+  /**
+   *@description Label for a button. When clicked more details (for the content this button refers to) will be shown.
+   */
+  showDetails: 'Show details',
+  /**
+  *@description Label for a button. When clicked some details (for the content this button refers to) will be hidden.
+  */
+  hideDetails: 'Hide details',
+  /**
+  *@description Permissions policy is a mechanism that allows developers to enable/disable browser features and APIs
+  *(e.g. camera, geolocation, autoplay). In some languages, this might not need to be translated.
+  */
+  permissionsPolicy: 'Permissions Policy',
+  /**
+  *@description Label for a list of features which are allowed according to the current Permissions policy
+  *(a mechanism that allows developers to enable/disable browser features and APIs (e.g. camera, geolocation, autoplay))
+  */
+  allowedFeatures: 'Allowed Features',
+  /**
+  *@description Label for a list of features which are disabled according to the current Permissions policy
+  *(a mechanism that allows developers to enable/disable browser features and APIs (e.g. camera, geolocation, autoplay))
+  */
+  disabledFeatures: 'Disabled Features',
+  /**
+  *@description Tooltip text for a link to a specific request's headers in the Network panel.
+  */
+  clickToShowHeader: 'Click to reveal the request whose "`Permissions-Policy`" HTTP header disables this feature.',
+  /**
+  *@description Tooltip text for a link to a specific iframe in the Elements panel.
+  */
+  clickToShowIframe: 'Click to reveal the top-most iframe which does not allow this feature in the elements panel.',
+  /**
+  *@description Text describing that a specific feature is blocked by not being included in the iframe's "allow" attribute.
+  */
+  disabledByIframe: 'missing in iframe "`allow`" attribute',
+  /**
+  *@description Text describing that a specific feature is blocked by a Permissions Policy specified in a request header.
+  */
+  disabledByHeader: 'disabled by "`Permissions-Policy`" header',
 };
 const str_ = i18n.i18n.registerUIStrings('resources/FrameDetailsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -226,6 +265,7 @@ export class FrameDetailsReportView extends HTMLElement {
   private readonly shadow = this.attachShadow({mode: 'open'});
   private frame?: SDK.ResourceTreeModel.ResourceTreeFrame;
   private protocolMonitorExperimentEnabled = false;
+  private showPermissionsDisallowedDetails = false;
 
   connectedCallback(): void {
     this.protocolMonitorExperimentEnabled = Root.Runtime.experiments.isEnabled('protocolMonitor');
@@ -297,6 +337,16 @@ export class FrameDetailsReportView extends HTMLElement {
         .inline-items {
           display: flex;
         }
+
+        .span-cols {
+          grid-column-start: span 2;
+          margin: 0 0 8px 30px;
+          line-height: 28px;
+        }
+
+        .policies-list {
+          padding-top: 3px;
+        }
       </style>
       <devtools-report .data=${{reportTitle: this.frame.displayName()} as WebComponents.ReportView.ReportData}>
         ${this.renderDocumentSection()}
@@ -310,21 +360,132 @@ export class FrameDetailsReportView extends HTMLElement {
   }
 
   private async renderPermissionPolicy(): Promise<LitHtml.TemplateResult|{}> {
-    const stats = await (this.frame && this.frame.getPermissionsPolicyState());
-    if (!stats) {
+    const policies = await (this.frame && this.frame.getPermissionsPolicyState());
+    if (!policies) {
       return LitHtml.nothing;
     }
-    const allowed = stats.filter(s => s.allowed).map(s => s.feature).sort();
-    const disallowed = stats.filter(s => !s.allowed).map(s => s.feature).sort();
-    return LitHtml.html`<devtools-report-section-header>Permissions Policy</devtools-report-section-header>
-    ${
-        allowed.length ? LitHtml.html`<devtools-report-key>Allowed Features</devtools-report-key>
-    <devtools-report-value>${allowed.join(', ')}</devtools-report-value>` :
-                         LitHtml.nothing}
-    ${
-        disallowed.length ? LitHtml.html`<devtools-report-key>Disallowed Features</devtools-report-key>
-    <devtools-report-value>${disallowed.join(', ')}</devtools-report-value>` :
-                            LitHtml.nothing}
+
+    const toggleShowPermissionsDisallowedDetails = (): void => {
+      this.showPermissionsDisallowedDetails = !this.showPermissionsDisallowedDetails;
+      this.render();
+    };
+
+    const renderAllowed = (): LitHtml.TemplateResult|{} => {
+      const allowed = policies.filter(p => p.allowed).map(p => p.feature).sort();
+      if (!allowed.length) {
+        return LitHtml.nothing;
+      }
+      return LitHtml.html`
+        <devtools-report-key>${i18nString(UIStrings.allowedFeatures)}</devtools-report-key>
+        <devtools-report-value>
+          ${allowed.join(', ')}
+        </devtools-report-value>
+      `;
+    };
+
+    const renderDisallowed = async(): Promise<LitHtml.TemplateResult|{}> => {
+      const disallowed = policies.filter(p => !p.allowed).sort((a, b) => a.feature.localeCompare(b.feature));
+      if (!disallowed.length) {
+        return LitHtml.nothing;
+      }
+      if (!this.showPermissionsDisallowedDetails) {
+        return LitHtml.html`
+          <devtools-report-key>${i18nString(UIStrings.disabledFeatures)}</devtools-report-key>
+          <devtools-report-value>
+            ${disallowed.map(p => p.feature).join(', ')}
+            <button class="link" @click=${(): void => toggleShowPermissionsDisallowedDetails()}>
+              ${i18nString(UIStrings.showDetails)}
+            </button>
+          </devtools-report-value>
+        `;
+      }
+
+      const frameManager = SDK.FrameManager.FrameManager.instance();
+      const featureRows = await Promise.all(disallowed.map(async policy => {
+        const frame = policy.locator ? frameManager.getFrame(policy.locator.frameId) : null;
+        const blockReason = policy.locator?.blockReason;
+        const linkTargetDOMNode = await (
+            blockReason === Protocol.Page.PermissionsPolicyBlockReason.IframeAttribute && frame &&
+            frame.getOwnerDOMNodeOrDocument());
+        const resource = frame && frame.resourceForURL(frame.url);
+        const linkTargetRequest =
+            blockReason === Protocol.Page.PermissionsPolicyBlockReason.Header && resource && resource.request;
+        const blockReasonText = blockReason === Protocol.Page.PermissionsPolicyBlockReason.IframeAttribute ?
+            i18nString(UIStrings.disabledByIframe) :
+            blockReason === Protocol.Page.PermissionsPolicyBlockReason.Header ? i18nString(UIStrings.disabledByHeader) :
+                                                                                '';
+        return LitHtml.html`
+          <div class="permissions-row">
+            <div>
+              <devtools-icon class="allowed-icon"
+                .data=${{color: '', iconName: 'error_icon', width: '14px'} as WebComponents.Icon.IconData}>
+              </devtools-icon>
+            </div>
+            <div class="feature-name text-ellipsis">
+              ${policy.feature}
+            </div>
+            <div class="block-reason">${blockReasonText}</div>
+            <div>
+              ${
+            linkTargetDOMNode ? this.renderIconLink(
+                                    'elements_panel_icon',
+                                    i18nString(UIStrings.clickToShowIframe),
+                                    (): Promise<void> => Common.Revealer.reveal(linkTargetDOMNode),
+                                    ) :
+                                LitHtml.nothing}
+            ${
+            linkTargetRequest ? this.renderIconLink(
+                                    'network_panel_icon',
+                                    i18nString(UIStrings.clickToShowHeader),
+                                    (): Promise<void> => Network.NetworkPanel.NetworkPanel.selectAndShowRequest(
+                                        linkTargetRequest, Network.NetworkItemView.Tabs.Headers),
+                                    ) :
+                                LitHtml.nothing}
+            </div>
+          </div>
+        `;
+      }));
+
+      return LitHtml.html`
+        <devtools-report-key>${i18nString(UIStrings.disabledFeatures)}</devtools-report-key>
+        <devtools-report-value class="policies-list">
+          <style>
+            .permissions-row {
+              display: flex;
+              line-height: 22px;
+            }
+
+            .permissions-row div {
+              padding-right: 5px;
+            }
+
+            .feature-name {
+              width: 135px;
+            }
+
+            .allowed-icon {
+              padding: 2.5px 0;
+            }
+
+            .block-reason {
+              width: 215px;
+            }
+          </style>
+          ${featureRows}
+          <div class="permissions-row">
+            <button class="link" @click=${(): void => toggleShowPermissionsDisallowedDetails()}>
+              ${i18nString(UIStrings.hideDetails)}
+            </button>
+          </div>
+        </devtools-report-value>
+      `;
+    };
+
+    return LitHtml.html`
+      <devtools-report-section-header>${i18nString(UIStrings.permissionsPolicy)}</devtools-report-section-header>
+      ${renderAllowed()}
+      ${LitHtml.Directives.until(renderDisallowed(), LitHtml.nothing)}
+      <devtools-report-divider></devtools-report-divider>
     `;
   }
 
@@ -639,17 +800,10 @@ export class FrameDetailsReportView extends HTMLElement {
     }
 
     return LitHtml.html`
-      <style>
-        .span-cols {
-          grid-column-start: span 2;
-          margin: 0 0 8px 30px;
-          line-height: 28px;
-        }
-      </style>
       <devtools-report-section-header>${i18nString(UIStrings.apiAvailability)}</devtools-report-section-header>
       <div class="span-cols">
         ${i18nString(UIStrings.availabilityOfCertainApisDepends)}
-        <x-link href="https://web.dev/why-coop-coep/" class="link">Learn more</x-link>
+        <x-link href="https://web.dev/why-coop-coep/" class="link">${i18nString(UIStrings.learnMore)}</x-link>
       </div>
       ${this.renderSharedArrayBufferAvailability()}
       ${this.renderMeasureMemoryAvailability()}

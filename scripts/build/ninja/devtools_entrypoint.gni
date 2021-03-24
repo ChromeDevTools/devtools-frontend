@@ -116,6 +116,8 @@ template("devtools_entrypoint") {
 
       rootdir = target_gen_dir
 
+      deps = invoker.deps
+
       public_deps = [ ":$_copy_target_name" ]
 
       is_web_worker = _is_web_worker

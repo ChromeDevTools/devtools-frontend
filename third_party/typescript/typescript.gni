@@ -102,7 +102,7 @@ template("ts_library") {
     if (defined(deps)) {
       args += [ "--deps" ]
       foreach(dep, deps) {
-        args += [ rebase_path(get_label_info(dep, "dir"), _rootdir) + "/" +
+        args += [ rebase_path(get_label_info(dep, "dir"), ".") + "/" +
                   get_label_info(dep, "name") + "-tsconfig.json" ]
       }
 

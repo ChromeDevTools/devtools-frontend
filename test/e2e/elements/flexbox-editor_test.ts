@@ -4,13 +4,12 @@
 
 import {assert} from 'chai';
 
-import {$$, enableExperiment, goToResource, waitFor} from '../../shared/helper.js';
+import {$$, goToResource, waitFor} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {clickNthChildOfSelectedElementNode, focusElementsTree, getCSSPropertyInRule, waitForContentOfSelectedElementsNode, waitForCSSPropertyValue} from '../helpers/elements-helpers.js';
 
 describe('Flexbox Editor', async function() {
   beforeEach(async function() {
-    await enableExperiment('cssFlexboxFeatures');
     await goToResource('elements/flexbox-editor.html');
     await waitForContentOfSelectedElementsNode('<body>\u200B');
     await focusElementsTree();

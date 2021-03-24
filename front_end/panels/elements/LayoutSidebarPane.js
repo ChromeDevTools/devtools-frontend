@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import * as Common from '../../common/common.js';
-import * as Root from '../../root/root.js';
 import * as SDK from '../../sdk/sdk.js';
 import * as UI from '../../ui/ui.js';
 
@@ -232,9 +231,7 @@ export class LayoutSidebarPane extends UI.ThrottledWidget.ThrottledWidget {
   async doUpdate() {
     this._layoutPane.data = {
       gridElements: gridNodesToElements(await this._fetchGridNodes()),
-      flexContainerElements: Root.Runtime.experiments.isEnabled('cssFlexboxFeatures') ?
-          flexContainerNodesToElements(await this._fetchFlexContainerNodes()) :
-          undefined,
+      flexContainerElements: flexContainerNodesToElements(await this._fetchFlexContainerNodes()),
       settings: this._mapSettings(),
     };
   }

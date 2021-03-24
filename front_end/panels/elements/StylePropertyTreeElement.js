@@ -9,7 +9,6 @@ import * as Host from '../../host/host.js';
 import * as i18n from '../../i18n/i18n.js';
 import * as InlineEditor from '../../inline_editor/inline_editor.js';
 import * as Platform from '../../platform/platform.js';
-import * as Root from '../../root/root.js';
 import * as SDK from '../../sdk/sdk.js';
 import * as TextUtils from '../../text_utils/text_utils.js';
 import * as UI from '../../ui/ui.js';
@@ -688,8 +687,8 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     }
 
     const section = this.section();
-    if (Root.Runtime.experiments.isEnabled('cssFlexboxFeatures') && this.valueElement && section && section.editable &&
-        this.property.name === 'display' && (this.property.value === 'flex' || this.property.value === 'inline-flex')) {
+    if (this.valueElement && section && section.editable && this.property.name === 'display' &&
+        (this.property.value === 'flex' || this.property.value === 'inline-flex')) {
       this.listItemElement.appendChild(FlexboxEditorWidget.createFlexboxEditorButton(this._parentPane, section));
     }
 

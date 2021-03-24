@@ -586,7 +586,6 @@ export const DevtoolsExperiments: {
   'wasmDWARFDebugging': 31,
   'dualScreenSupport': 32,
   'keyboardShortcutEditor': 35,
-  'cssFlexboxFeatures': 36,
   'recorder': 38,
   'APCA': 39,
   'cspViolationsView': 40,

@@ -2933,12 +2933,12 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
     }
 
     /**
-     * Computed styles cache populated by cssFlexboxFeatures experiment.
+     * Computed styles cache populated for flexbox features.
      * @type {?Map<string, string>}
      */
     this._selectedNodeComputedStyles = null;
     /**
-     * Computed styles cache populated by cssFlexboxFeatures experiment.
+     * Computed styles cache populated for flexbox features.
      * @type {?Map<string, string>}
      */
     this._parentNodeComputedStyles = null;
@@ -3146,51 +3146,46 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
       }
     }
 
-    if (Root.Runtime.experiments.isEnabled('cssFlexboxFeatures')) {
-      const node = this._treeElement.node();
-
-      const ensureComputedStyles = async () => {
-        if (!node || this._selectedNodeComputedStyles) {
-          return;
-        }
-        this._selectedNodeComputedStyles = await node.domModel().cssModel().computedStylePromise(node.id);
-        const parentNode = node.parentNode;
-        if (parentNode) {
-          this._parentNodeComputedStyles = await parentNode.domModel().cssModel().computedStylePromise(node.id);
-        }
-      };
-
-      for (const result of results) {
-        await ensureComputedStyles();
-        // Using parent node's computed styles does not work in all cases. For example:
-        //
-        // <div id="container" style="display:flex">
-        //  <div id="useless" style="display:contents">
-        //    <div id="item">item</div>
-        //  </div>
-        // </div>
-        // TODO(crbug/1139945): Find a better way to get the flex container styles.
-        const iconInfo = findIcon(
-            this._isEditingName ? result.text : `${this._treeElement.property.name}: ${result.text}`,
-            this._selectedNodeComputedStyles, this._parentNodeComputedStyles);
-        if (!iconInfo) {
-          continue;
-        }
-        const icon = new WebComponents.Icon.Icon();
-        const width = '12.5px';
-        const height = '12.5px';
-        icon.data = {
-          iconName: iconInfo.iconName,
-          width,
-          height,
-          color: 'black',
-        };
-        icon.style.transform =
-            `rotate(${iconInfo.rotate}deg) scale(${iconInfo.scaleX * 1.1}, ${iconInfo.scaleY * 1.1})`;
-        icon.style.maxHeight = height;
-        icon.style.maxWidth = width;
-        result.iconElement = icon;
+    const ensureComputedStyles = async () => {
+      if (!node || this._selectedNodeComputedStyles) {
+        return;
       }
+      this._selectedNodeComputedStyles = await node.domModel().cssModel().computedStylePromise(node.id);
+      const parentNode = node.parentNode;
+      if (parentNode) {
+        this._parentNodeComputedStyles = await parentNode.domModel().cssModel().computedStylePromise(node.id);
+      }
+    };
+
+    for (const result of results) {
+      await ensureComputedStyles();
+      // Using parent node's computed styles does not work in all cases. For example:
+      //
+      // <div id="container" style="display:flex">
+      //  <div id="useless" style="display:contents">
+      //    <div id="item">item</div>
+      //  </div>
+      // </div>
+      // TODO(crbug/1139945): Find a better way to get the flex container styles.
+      const iconInfo = findIcon(
+          this._isEditingName ? result.text : `${this._treeElement.property.name}: ${result.text}`,
+          this._selectedNodeComputedStyles, this._parentNodeComputedStyles);
+      if (!iconInfo) {
+        continue;
+      }
+      const icon = new WebComponents.Icon.Icon();
+      const width = '12.5px';
+      const height = '12.5px';
+      icon.data = {
+        iconName: iconInfo.iconName,
+        width,
+        height,
+        color: 'black',
+      };
+      icon.style.transform = `rotate(${iconInfo.rotate}deg) scale(${iconInfo.scaleX * 1.1}, ${iconInfo.scaleY * 1.1})`;
+      icon.style.maxHeight = height;
+      icon.style.maxWidth = width;
+      result.iconElement = icon;
     }
 
     if (this._isColorAware && !this._isEditingName) {

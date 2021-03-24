@@ -39,7 +39,6 @@ import * as Host from '../../host/host.js';
 import * as i18n from '../../i18n/i18n.js';
 import * as Platform from '../../platform/platform.js';
 import * as ProtocolClient from '../../protocol_client/protocol_client.js';  // eslint-disable-line no-unused-vars
-import * as Root from '../../root/root.js';
 import * as SDK from '../../sdk/sdk.js';
 import * as TextEditor from '../../text_editor/text_editor.js';  // eslint-disable-line no-unused-vars
 import * as TextUtils from '../../text_utils/text_utils.js';
@@ -2246,8 +2245,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
 
     const display = styles.get('display');
     const isGrid = display === 'grid' || display === 'inline-grid';
-    const isFlex =
-        Root.Runtime.experiments.isEnabled('cssFlexboxFeatures') && (display === 'flex' || display === 'inline-flex');
+    const isFlex = display === 'flex' || display === 'inline-flex';
 
     let adorner;
     if (isGrid) {

@@ -75,18 +75,6 @@ describeWithEnvironment('CookieParser', () => {
     SDK = await import('../../../../front_end/sdk/sdk.js');
   });
 
-  function parseAndExpectCookies(cookieString: string, cookieExpectations: CookieExpectation[]) {
-    const cookies = SDK.CookieParser.CookieParser.parseCookie(cookieString);
-    if (ensureCookiesExistOrFailTest(cookies)) {
-      assert.lengthOf(
-          cookies, cookieExpectations.length,
-          'Expected number of parsed cookies to agree with number of expected cookies');
-      for (let i = 0; i < cookieExpectations.length; ++i) {
-        expectCookie(cookies[i], cookieExpectations[i]);
-      }
-    }
-  }
-
   function parseAndExpectSetCookies(setCookieString: string, cookieExpectations: CookieExpectation[]) {
     const cookies = SDK.CookieParser.CookieParser.parseSetCookie(setCookieString);
     if (ensureCookiesExistOrFailTest(cookies)) {
@@ -98,79 +86,6 @@ describeWithEnvironment('CookieParser', () => {
       }
     }
   }
-
-  describe('parseCookie', () => {
-    it('can parse basic cookies', () => {
-      const cookie = 'foo=bar';
-      const cookies = SDK.CookieParser.CookieParser.parseCookie(cookie);
-      if (ensureCookiesExistOrFailTest(cookies)) {
-        assert.lengthOf(cookies, 1);
-        expectCookie(cookies[0], {name: 'foo', value: 'bar', size: cookie.length});
-      }
-    });
-
-    it('parses multiple cookies', () => {
-      const cookie = 'one=jack; two=tim';
-      const cookies = SDK.CookieParser.CookieParser.parseCookie(cookie);
-      if (ensureCookiesExistOrFailTest(cookies)) {
-        assert.lengthOf(cookies, 2);
-        expectCookie(cookies[0], {name: 'one', value: 'jack', size: 10});
-        expectCookie(cookies[1], {name: 'two', value: 'tim', size: 7});
-      }
-    });
-
-    it('parses cookie with version and spacing', () => {
-      parseAndExpectCookies('$version=1; a=b,c  =   d, e=f', [{name: 'a', value: 'b,c  =   d, e=f', size: 17}]);
-    });
-
-    it('parses several cookies with version and spacing', () => {
-      parseAndExpectCookies(
-          '$version=1; a=b;c  =   d; e =f',
-          [{name: 'a', value: 'b', size: 4}, {name: 'c', value: 'd', size: 10}, {name: 'e', value: 'f', size: 4}]);
-    });
-
-    it('parses two cookies with a space in the name', () => {
-      parseAndExpectCookies('cookie1 = value1; another cookie = another value', [
-        {name: 'cookie1', value: 'value1', size: 26},
-        {name: 'cookie', value: 'another value', size: 22},
-      ]);
-    });
-
-    it('parses the domain attribute', () => {
-      parseAndExpectCookies(
-          'cookie = value; $Path=/; $Domain=.example.com;',
-          [{name: 'cookie', value: 'value', path: '/', domain: '.example.com', size: 46}]);
-    });
-
-    it('handles multiple cookies with domain values', () => {
-      parseAndExpectCookies(
-          'cookie1 = value; $Path=/; $Domain=.example.com ; Cookie2 = value2; $Path = /foo; $DOMAIN = foo.example.com;',
-          [
-            {name: 'cookie1', value: 'value', path: '/', domain: '.example.com', size: 49},
-            {name: 'Cookie2', value: 'value2', path: '/foo', domain: 'foo.example.com', size: 58},
-          ]);
-    });
-
-    it('handles multiple cookies with domain values and a separating line break', () => {
-      parseAndExpectCookies(
-          `cookie1 = value; $Path=/; $Domain=.example.com
-      Cookie2 = value2; $Path = /foo; $DOMAIN = foo.example.com;`,
-          [
-            {name: 'cookie1', value: 'value', path: '/', domain: '.example.com', size: 53},
-            {name: 'Cookie2', value: 'value2', path: '/foo', domain: 'foo.example.com', size: 58},
-          ]);
-    });
-
-    it('handles multiple cookies with domain values, a separating line-break, and spaces', () => {
-      parseAndExpectCookies(
-          `$version =1; cookie1 = value; $Path=/; $Domain   =.example.com;
-      Cookie2 = value2; $Path = /foo; $DOMAIN = foo.example.com;`,
-          [
-            {name: 'cookie1', value: 'value', path: '/', domain: '.example.com', size: 57},
-            {name: 'Cookie2', value: 'value2', path: '/foo', domain: 'foo.example.com', size: 58},
-          ]);
-    });
-  });
 
   describe('parseSetCookie', () => {
     it('parses basic cookies', () => {

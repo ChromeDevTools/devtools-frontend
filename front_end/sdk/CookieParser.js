@@ -58,14 +58,6 @@ export class CookieParser {
 
   /**
    * @param {string|undefined} header
-   * @return {?Array<!Cookie>}
-   */
-  static parseCookie(header) {
-    return (new CookieParser()).parseCookie(header);
-  }
-
-  /**
-   * @param {string|undefined} header
    * @param {string=} domain
    * @return {?Array<!Cookie>}
    */
@@ -77,27 +69,6 @@ export class CookieParser {
    * @return {!Array<!Cookie>}
    */
   cookies() {
-    return this._cookies;
-  }
-
-  /**
-   * @param {string|undefined} cookieHeader
-   * @return {?Array<!Cookie>}
-   */
-  parseCookie(cookieHeader) {
-    if (!this._initialize(cookieHeader)) {
-      return null;
-    }
-
-    for (let kv = this._extractKeyValue(); kv; kv = this._extractKeyValue()) {
-      if (kv.key.charAt(0) === '$' && this._lastCookie) {
-        this._lastCookie.addAttribute(kv.key.slice(1), kv.value);
-      } else if (kv.key.toLowerCase() !== '$version' && typeof kv.value === 'string') {
-        this._addCookie(kv, Type.Request);
-      }
-      this._advanceAndCheckCookieDelimiter();
-    }
-    this._flushCookie();
     return this._cookies;
   }
 

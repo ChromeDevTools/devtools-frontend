@@ -2561,9 +2561,6 @@
   "network/NetworkDataGridNode.ts | diskCache": {
     "message": "(disk cache)"
   },
-  "network/NetworkDataGridNode.ts | extension": {
-    "message": "extension"
-  },
   "network/NetworkDataGridNode.ts | failed": {
     "message": "(failed)"
   },

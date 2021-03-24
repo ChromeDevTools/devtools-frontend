@@ -1660,6 +1660,17 @@ declare namespace ProtocolProxyApi {
 
   export interface NetworkApi {
     /**
+     * Sets a list of content encodings that will be accepted. Empty list means no encoding is accepted.
+     */
+    invoke_setAcceptedEncodings(params: Protocol.Network.SetAcceptedEncodingsRequest):
+        Promise<Protocol.ProtocolResponseWithError>;
+
+    /**
+     * Clears accepted encodings set by setAcceptedEncodings
+     */
+    invoke_clearAcceptedEncodingsOverride(): Promise<Protocol.ProtocolResponseWithError>;
+
+    /**
      * Tells whether clearing browser cache is supported.
      */
     invoke_canClearBrowserCache(): Promise<Protocol.Network.CanClearBrowserCacheResponse>;

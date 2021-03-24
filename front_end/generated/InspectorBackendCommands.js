@@ -1427,7 +1427,6 @@ export function registerCommands(inspectorBackend) {
     Inspector: 'inspector',
     SubresourceFilter: 'subresource-filter',
     ContentType: 'content-type',
-    CollapsedByClient: 'collapsed-by-client',
     CoepFrameResourceNeedsCoepHeader: 'coep-frame-resource-needs-coep-header',
     CoopSandboxedIframeCannotNavigateToCoopPage: 'coop-sandboxed-iframe-cannot-navigate-to-coop-page',
     CorpNotSameOrigin: 'corp-not-same-origin',
@@ -1522,6 +1521,7 @@ export function registerCommands(inspectorBackend) {
     SignatureValidityUrl: 'signatureValidityUrl',
     SignatureTimestamps: 'signatureTimestamps'
   });
+  inspectorBackend.registerEnum('Network.ContentEncoding', {Deflate: 'deflate', Gzip: 'gzip', Br: 'br'});
   inspectorBackend.registerEnum('Network.PrivateNetworkRequestPolicy', {
     Allow: 'Allow',
     BlockFromInsecureToMorePrivate: 'BlockFromInsecureToMorePrivate',
@@ -1590,6 +1590,9 @@ export function registerCommands(inspectorBackend) {
   inspectorBackend.registerEvent(
       'Network.trustTokenOperationDone',
       ['status', 'type', 'requestId', 'topLevelOrigin', 'issuerOrigin', 'issuedTokenCount']);
+  inspectorBackend.registerCommand(
+      'Network.setAcceptedEncodings', [{'name': 'encodings', 'type': 'object', 'optional': false}], []);
+  inspectorBackend.registerCommand('Network.clearAcceptedEncodingsOverride', [], []);
   inspectorBackend.registerCommand('Network.canClearBrowserCache', [], ['result']);
   inspectorBackend.registerCommand('Network.canClearBrowserCookies', [], ['result']);
   inspectorBackend.registerCommand('Network.canEmulateNetworkConditions', [], ['result']);
@@ -2460,6 +2463,7 @@ export function registerCommands(inspectorBackend) {
   inspectorBackend.registerEnum('Tracing.StreamCompression', {None: 'none', Gzip: 'gzip'});
   inspectorBackend.registerEnum(
       'Tracing.MemoryDumpLevelOfDetail', {Background: 'background', Light: 'light', Detailed: 'detailed'});
+  inspectorBackend.registerEnum('Tracing.TracingBackend', {Auto: 'auto', Chrome: 'chrome', System: 'system'});
   inspectorBackend.registerEvent('Tracing.bufferUsage', ['percentFull', 'eventCount', 'value']);
   inspectorBackend.registerEvent('Tracing.dataCollected', ['value']);
   inspectorBackend.registerEvent(
@@ -2487,7 +2491,8 @@ export function registerCommands(inspectorBackend) {
         {'name': 'streamFormat', 'type': 'string', 'optional': true},
         {'name': 'streamCompression', 'type': 'string', 'optional': true},
         {'name': 'traceConfig', 'type': 'object', 'optional': true},
-        {'name': 'perfettoConfig', 'type': 'string', 'optional': true}
+        {'name': 'perfettoConfig', 'type': 'string', 'optional': true},
+        {'name': 'tracingBackend', 'type': 'string', 'optional': true}
       ],
       []);
 

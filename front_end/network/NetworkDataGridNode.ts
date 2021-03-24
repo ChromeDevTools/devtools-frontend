@@ -101,10 +101,6 @@ const UIStrings = {
   */
   devtools: 'devtools',
   /**
-  *@description Reason in Network Data Grid Node of the Network panel
-  */
-  extension: 'extension',
-  /**
   *@description Text in Network Data Grid Node of the Network panel
   */
   notsameoriginafterdefaultedtosameoriginbycoep: 'NotSameOriginAfterDefaultedToSameOriginByCoep',
@@ -1112,9 +1108,6 @@ export class NetworkRequestNode extends NetworkNode {
           break;
         case Protocol.Network.BlockedReason.ContentType:
           reason = i18n.i18n.lockedString('content-type');
-          break;
-        case Protocol.Network.BlockedReason.CollapsedByClient:
-          reason = i18nString(UIStrings.extension);
           break;
         case Protocol.Network.BlockedReason.CoepFrameResourceNeedsCoepHeader:
           displayShowHeadersLink = true;

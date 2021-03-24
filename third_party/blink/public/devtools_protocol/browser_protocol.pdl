@@ -4605,7 +4605,6 @@ domain Network
       inspector
       subresource-filter
       content-type
-      collapsed-by-client
       coep-frame-resource-needs-coep-header
       coop-sandboxed-iframe-cannot-navigate-to-coop-page
       corp-not-same-origin
@@ -5104,6 +5103,22 @@ domain Network
       optional SecurityDetails securityDetails
       # Errors occurred while handling the signed exchagne.
       optional array of SignedExchangeError errors
+
+  # List of content encodings supported by the backend.
+  experimental type ContentEncoding extends string
+    enum
+      deflate
+      gzip
+      br
+
+  # Sets a list of content encodings that will be accepted. Empty list means no encoding is accepted.
+  experimental command setAcceptedEncodings
+    parameters
+      # List of accepted content encodings.
+      array of ContentEncoding encodings
+
+  # Clears accepted encodings set by setAcceptedEncodings
+  experimental command clearAcceptedEncodingsOverride
 
   # Tells whether clearing browser cache is supported.
   deprecated command canClearBrowserCache
@@ -6746,11 +6761,11 @@ domain Page
   # Returns metrics relating to the layouting of the page, such as viewport bounds/scale.
   command getLayoutMetrics
     returns
-      # Deprecated metrics relating to the layout viewport. Can be in DP or in CSS pixels depending on the `enable-use-zoom-for-dsf` flag. Use `normalisedLayoutViewport` instead.
+      # Deprecated metrics relating to the layout viewport. Can be in DP or in CSS pixels depending on the `enable-use-zoom-for-dsf` flag. Use `cssLayoutViewport` instead.
       deprecated LayoutViewport layoutViewport
-      # Deprecated metrics relating to the visual viewport. Can be in DP or in CSS pixels depending on the `enable-use-zoom-for-dsf` flag. Use `normalisedVisualViewport` instead.
+      # Deprecated metrics relating to the visual viewport. Can be in DP or in CSS pixels depending on the `enable-use-zoom-for-dsf` flag. Use `cssVisualViewport` instead.
       deprecated VisualViewport visualViewport
-      # Deprecated size of scrollable area. Can be in DP or in CSS pixels depending on the `enable-use-zoom-for-dsf` flag. Use `normalisedContentSize` instead.
+      # Deprecated size of scrollable area. Can be in DP or in CSS pixels depending on the `enable-use-zoom-for-dsf` flag. Use `cssContentSize` instead.
       deprecated DOM.Rect contentSize
       # Metrics relating to the layout viewport in CSS pixels.
       LayoutViewport cssLayoutViewport
@@ -8168,7 +8183,7 @@ domain Target
   # Creates a new page.
   command createTarget
     parameters
-      # The initial URL the page will be navigated to.
+      # The initial URL the page will be navigated to. An empty string indicates about:blank.
       string url
       # Frame width in DIP (headless chrome only).
       optional integer width
@@ -8381,6 +8396,17 @@ experimental domain Tracing
       light
       detailed
 
+  # Backend type to use for tracing. `chrome` uses the Chrome-integrated
+  # tracing service and is supported on all platforms. `system` is only
+  # supported on Chrome OS and uses the Perfetto system tracing service.
+  # `auto` chooses `system` when the perfettoConfig provided to Tracing.start
+  # specifies at least one non-Chrome data source; otherwise uses `chrome`.
+  type TracingBackend extends string
+    enum
+      auto
+      chrome
+      system
+
   # Stop trace events collection.
   command end
 
@@ -8434,6 +8460,8 @@ experimental domain Tracing
       # When specified, the parameters `categories`, `options`, `traceConfig`
       # are ignored.
       optional binary perfettoConfig
+      # Backend type (defaults to `auto`)
+      optional TracingBackend tracingBackend
 
   event bufferUsage
     parameters

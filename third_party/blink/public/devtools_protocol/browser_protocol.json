@@ -10085,7 +10085,6 @@
                         "inspector",
                         "subresource-filter",
                         "content-type",
-                        "collapsed-by-client",
                         "coep-frame-resource-needs-coep-header",
                         "coop-sandboxed-iframe-cannot-navigate-to-coop-page",
                         "corp-not-same-origin",
@@ -11009,6 +11008,17 @@
                     ]
                 },
                 {
+                    "id": "ContentEncoding",
+                    "description": "List of content encodings supported by the backend.",
+                    "experimental": true,
+                    "type": "string",
+                    "enum": [
+                        "deflate",
+                        "gzip",
+                        "br"
+                    ]
+                },
+                {
                     "id": "PrivateNetworkRequestPolicy",
                     "experimental": true,
                     "type": "string",
@@ -11194,6 +11204,26 @@
                 }
             ],
             "commands": [
+                {
+                    "name": "setAcceptedEncodings",
+                    "description": "Sets a list of content encodings that will be accepted. Empty list means no encoding is accepted.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "encodings",
+                            "description": "List of accepted content encodings.",
+                            "type": "array",
+                            "items": {
+                                "$ref": "ContentEncoding"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "clearAcceptedEncodingsOverride",
+                    "description": "Clears accepted encodings set by setAcceptedEncodings",
+                    "experimental": true
+                },
                 {
                     "name": "canClearBrowserCache",
                     "description": "Tells whether clearing browser cache is supported.",
@@ -14536,19 +14566,19 @@
                     "returns": [
                         {
                             "name": "layoutViewport",
-                            "description": "Deprecated metrics relating to the layout viewport. Can be in DP or in CSS pixels depending on the `enable-use-zoom-for-dsf` flag. Use `normalisedLayoutViewport` instead.",
+                            "description": "Deprecated metrics relating to the layout viewport. Can be in DP or in CSS pixels depending on the `enable-use-zoom-for-dsf` flag. Use `cssLayoutViewport` instead.",
                             "deprecated": true,
                             "$ref": "LayoutViewport"
                         },
                         {
                             "name": "visualViewport",
-                            "description": "Deprecated metrics relating to the visual viewport. Can be in DP or in CSS pixels depending on the `enable-use-zoom-for-dsf` flag. Use `normalisedVisualViewport` instead.",
+                            "description": "Deprecated metrics relating to the visual viewport. Can be in DP or in CSS pixels depending on the `enable-use-zoom-for-dsf` flag. Use `cssVisualViewport` instead.",
                             "deprecated": true,
                             "$ref": "VisualViewport"
                         },
                         {
                             "name": "contentSize",
-                            "description": "Deprecated size of scrollable area. Can be in DP or in CSS pixels depending on the `enable-use-zoom-for-dsf` flag. Use `normalisedContentSize` instead.",
+                            "description": "Deprecated size of scrollable area. Can be in DP or in CSS pixels depending on the `enable-use-zoom-for-dsf` flag. Use `cssContentSize` instead.",
                             "deprecated": true,
                             "$ref": "DOM.Rect"
                         },
@@ -17620,7 +17650,7 @@
                     "parameters": [
                         {
                             "name": "url",
-                            "description": "The initial URL the page will be navigated to.",
+                            "description": "The initial URL the page will be navigated to. An empty string indicates about:blank.",
                             "type": "string"
                         },
                         {
@@ -18074,6 +18104,16 @@
                         "light",
                         "detailed"
                     ]
+                },
+                {
+                    "id": "TracingBackend",
+                    "description": "Backend type to use for tracing. `chrome` uses the Chrome-integrated\ntracing service and is supported on all platforms. `system` is only\nsupported on Chrome OS and uses the Perfetto system tracing service.\n`auto` chooses `system` when the perfettoConfig provided to Tracing.start\nspecifies at least one non-Chrome data source; otherwise uses `chrome`.",
+                    "type": "string",
+                    "enum": [
+                        "auto",
+                        "chrome",
+                        "system"
+                    ]
                 }
             ],
             "commands": [
@@ -18192,6 +18232,12 @@
                             "description": "Base64-encoded serialized perfetto.protos.TraceConfig protobuf message\nWhen specified, the parameters `categories`, `options`, `traceConfig`\nare ignored.",
                             "optional": true,
                             "type": "binary"
+                        },
+                        {
+                            "name": "tracingBackend",
+                            "description": "Backend type (defaults to `auto`)",
+                            "optional": true,
+                            "$ref": "TracingBackend"
                         }
                     ]
                 }

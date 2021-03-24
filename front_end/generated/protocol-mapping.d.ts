@@ -1726,6 +1726,14 @@ export namespace ProtocolMapping {
      */
     'Memory.getSamplingProfile': {paramsType: []; returnType: Protocol.Memory.GetSamplingProfileResponse;};
     /**
+     * Sets a list of content encodings that will be accepted. Empty list means no encoding is accepted.
+     */
+    'Network.setAcceptedEncodings': {paramsType: [Protocol.Network.SetAcceptedEncodingsRequest]; returnType: void;};
+    /**
+     * Clears accepted encodings set by setAcceptedEncodings
+     */
+    'Network.clearAcceptedEncodingsOverride': {paramsType: []; returnType: void;};
+    /**
      * Tells whether clearing browser cache is supported.
      */
     'Network.canClearBrowserCache': {paramsType: []; returnType: Protocol.Network.CanClearBrowserCacheResponse;};

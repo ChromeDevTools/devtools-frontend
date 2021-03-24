@@ -6764,7 +6764,6 @@ declare namespace Protocol {
       Inspector = 'inspector',
       SubresourceFilter = 'subresource-filter',
       ContentType = 'content-type',
-      CollapsedByClient = 'collapsed-by-client',
       CoepFrameResourceNeedsCoepHeader = 'coep-frame-resource-needs-coep-header',
       CoopSandboxedIframeCannotNavigateToCoopPage = 'coop-sandboxed-iframe-cannot-navigate-to-coop-page',
       CorpNotSameOrigin = 'corp-not-same-origin',
@@ -7476,6 +7475,15 @@ declare namespace Protocol {
       errors?: SignedExchangeError[];
     }
 
+    /**
+     * List of content encodings supported by the backend.
+     */
+    export enum ContentEncoding {
+      Deflate = 'deflate',
+      Gzip = 'gzip',
+      Br = 'br',
+    }
+
     export enum PrivateNetworkRequestPolicy {
       Allow = 'Allow',
       BlockFromInsecureToMorePrivate = 'BlockFromInsecureToMorePrivate',
@@ -7555,6 +7563,13 @@ declare namespace Protocol {
     export interface LoadNetworkResourceOptions {
       disableCache: boolean;
       includeCredentials: boolean;
+    }
+
+    export interface SetAcceptedEncodingsRequest {
+      /**
+       * List of accepted content encodings.
+       */
+      encodings: ContentEncoding[];
     }
 
     export interface CanClearBrowserCacheResponse extends ProtocolResponseWithError {
@@ -9903,15 +9918,15 @@ declare namespace Protocol {
 
     export interface GetLayoutMetricsResponse extends ProtocolResponseWithError {
       /**
-       * Deprecated metrics relating to the layout viewport. Can be in DP or in CSS pixels depending on the `enable-use-zoom-for-dsf` flag. Use `normalisedLayoutViewport` instead.
+       * Deprecated metrics relating to the layout viewport. Can be in DP or in CSS pixels depending on the `enable-use-zoom-for-dsf` flag. Use `cssLayoutViewport` instead.
        */
       layoutViewport: LayoutViewport;
       /**
-       * Deprecated metrics relating to the visual viewport. Can be in DP or in CSS pixels depending on the `enable-use-zoom-for-dsf` flag. Use `normalisedVisualViewport` instead.
+       * Deprecated metrics relating to the visual viewport. Can be in DP or in CSS pixels depending on the `enable-use-zoom-for-dsf` flag. Use `cssVisualViewport` instead.
        */
       visualViewport: VisualViewport;
       /**
-       * Deprecated size of scrollable area. Can be in DP or in CSS pixels depending on the `enable-use-zoom-for-dsf` flag. Use `normalisedContentSize` instead.
+       * Deprecated size of scrollable area. Can be in DP or in CSS pixels depending on the `enable-use-zoom-for-dsf` flag. Use `cssContentSize` instead.
        */
       contentSize: DOM.Rect;
       /**
@@ -11916,7 +11931,7 @@ declare namespace Protocol {
 
     export interface CreateTargetRequest {
       /**
-       * The initial URL the page will be navigated to.
+       * The initial URL the page will be navigated to. An empty string indicates about:blank.
        */
       url: string;
       /**
@@ -12222,6 +12237,19 @@ declare namespace Protocol {
       Detailed = 'detailed',
     }
 
+    /**
+     * Backend type to use for tracing. `chrome` uses the Chrome-integrated
+     * tracing service and is supported on all platforms. `system` is only
+     * supported on Chrome OS and uses the Perfetto system tracing service.
+     * `auto` chooses `system` when the perfettoConfig provided to Tracing.start
+     * specifies at least one non-Chrome data source; otherwise uses `chrome`.
+     */
+    export enum TracingBackend {
+      Auto = 'auto',
+      Chrome = 'chrome',
+      System = 'system',
+    }
+
     export interface GetCategoriesResponse extends ProtocolResponseWithError {
       /**
        * A list of supported tracing categories.
@@ -12298,6 +12326,10 @@ declare namespace Protocol {
        * are ignored.
        */
       perfettoConfig?: binary;
+      /**
+       * Backend type (defaults to `auto`)
+       */
+      tracingBackend?: TracingBackend;
     }
 
     export interface BufferUsageEvent {

@@ -6,7 +6,7 @@ import {assert} from 'chai';
 
 import {enableExperiment, getBrowserAndPages, goToResource, waitFor} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {clickNthChildOfSelectedElementNode, getFontEditorButtons, getHiddenFontEditorButtons, waitForContentOfSelectedElementsNode, waitForCSSPropertyValue} from '../helpers/elements-helpers.js';
+import {clickNthChildOfSelectedElementNode, getElementStyleFontEditorButton, getFontEditorButtons, getHiddenFontEditorButtons, waitForContentOfSelectedElementsNode, waitForCSSPropertyValue} from '../helpers/elements-helpers.js';
 
 async function goToTestPageAndSelectTestElement(path: string = 'inline_editor/fontEditor.html') {
   await goToResource(path);
@@ -14,11 +14,12 @@ async function goToTestPageAndSelectTestElement(path: string = 'inline_editor/fo
   await clickNthChildOfSelectedElementNode(1);
 }
 
-async function openFontEditor(index: number) {
-  const fontEditorButtons = await getFontEditorButtons();
-  const fontEditorButton = fontEditorButtons[index];
-  assert.exists(fontEditorButton);
-  await fontEditorButtons[index].click();
+async function openFontEditorForInlineStyle() {
+  const fontEditorButton = await getElementStyleFontEditorButton();
+  if (!fontEditorButton) {
+    throw new Error('Missing font editor button in the element style section');
+  }
+  await fontEditorButton.click();
   await waitFor('.font-selector-section');
 }
 
@@ -37,13 +38,12 @@ describe('The font editor', async function() {
   });
 
   it('opens when button is clicked', async () => {
-    await openFontEditor(0);
+    await openFontEditorForInlineStyle();
   });
 
-  // Flaky test.
-  it.skip('[crbug.com/1184627] is properly applying font family changes to the style section', async () => {
+  it('is properly applying font family changes to the style section', async () => {
     const {frontend} = getBrowserAndPages();
-    await openFontEditor(0);
+    await openFontEditorForInlineStyle();
     const fontFamilySelector = await waitFor('[aria-label="Font Family"]');
     await fontFamilySelector.focus();
     await frontend.keyboard.press('a');
@@ -52,7 +52,7 @@ describe('The font editor', async function() {
 
   it('is properly applying slider input changes to the style section', async () => {
     const {frontend} = getBrowserAndPages();
-    await openFontEditor(0);
+    await openFontEditorForInlineStyle();
     const fontSizeSliderInput = await waitFor('[aria-label="font-size Slider Input"]');
     await fontSizeSliderInput.focus();
     await frontend.keyboard.press('ArrowRight');
@@ -61,17 +61,16 @@ describe('The font editor', async function() {
 
   it('is properly applying text input changes to the style section', async () => {
     const {frontend} = getBrowserAndPages();
-    await openFontEditor(0);
+    await openFontEditorForInlineStyle();
     const fontSizeTextInput = await waitFor('[aria-label="font-size Text Input"]');
     await fontSizeTextInput.focus();
     await frontend.keyboard.press('ArrowUp');
     await waitForCSSPropertyValue('element.style', 'font-size', '11px');
   });
 
-  // Flaky test.
-  it.skip('[crbug.com/1184627] is properly applying selector key values to the style section', async () => {
+  it('is properly applying selector key values to the style section', async () => {
     const {frontend} = getBrowserAndPages();
-    await openFontEditor(0);
+    await openFontEditorForInlineStyle();
     const fontWeightSelectorInput = await waitFor('[aria-label="font-weight Key Value Selector"]');
     await fontWeightSelectorInput.focus();
     await frontend.keyboard.press('i');
@@ -80,7 +79,7 @@ describe('The font editor', async function() {
 
   it('is properly converting units and applying changes to the styles section', async () => {
     const {frontend} = getBrowserAndPages();
-    await openFontEditor(0);
+    await openFontEditorForInlineStyle();
     const fontSizeUnitInput = await waitFor('[aria-label="font-size Unit Input"]');
     await fontSizeUnitInput.focus();
     await frontend.keyboard.press('e');
@@ -88,7 +87,7 @@ describe('The font editor', async function() {
   });
 
   it('computed font list is being generated correctly', async () => {
-    await openFontEditor(0);
+    await openFontEditorForInlineStyle();
     await waitFor('[value="testFont"]');
   });
 });

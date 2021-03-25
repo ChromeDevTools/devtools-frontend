@@ -13,7 +13,7 @@ devtools_module("elements") {
     "Adorner.ts",
     "AdornerManager.ts",
     "AdornerSettingsPane.ts",
-    "CSSPropertyIconResolver.js",
+    "CSSPropertyIconResolver.ts",
     "ClassesPaneWidget.js",
     "ColorSwatchPopoverIcon.js",
     "ComputedStyleModel.js",

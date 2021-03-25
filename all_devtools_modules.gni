@@ -97,6 +97,7 @@ all_typescript_module_sources = [
   "formatter_worker/FormattedContentBuilder.js",
   "formatter_worker/FormatterWorker.js",
   "formatter_worker/HTMLFormatter.js",
+  "formatter_worker/HTMLOutline.js",
   "formatter_worker/IdentityFormatter.js",
   "formatter_worker/JavaScriptFormatter.js",
   "formatter_worker/JavaScriptOutline.js",

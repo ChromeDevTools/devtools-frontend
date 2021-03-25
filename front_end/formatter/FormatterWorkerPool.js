@@ -189,6 +189,8 @@ export class FormatterWorkerPool {
   outlineForMimetype(content, mimeType, callback) {
     switch (mimeType) {
       case 'text/html':
+        this._runChunkedTask(FormatterActions.FormatterActions.HTML_OUTLINE, {content: content}, callback);
+        return true;
       case 'text/javascript':
         this._runChunkedTask(FormatterActions.FormatterActions.JAVASCRIPT_OUTLINE, {content: content}, callback);
         return true;

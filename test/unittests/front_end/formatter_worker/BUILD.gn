@@ -10,6 +10,7 @@ ts_library("formatter_worker") {
     "CSSFormatter_test.ts",
     "FormattedContentBuilder_test.ts",
     "HTMLFormatter_test.ts",
+    "HTMLOutline_test.ts",
     "JavaScriptFormatter_test.ts",
     "JavaScriptOutline_test.ts",
   ]

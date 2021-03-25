@@ -26,6 +26,11 @@ const UIStrings = {
   *@description Tooltip text that appears when hovering over a 'jump-to-address' button that is next to a pointer (32-bit or 64-bit) under the Value Interpreter
   */
   jumpToPointer: 'Jump to address',
+  /**
+  *@description Tooltip text that appears when hovering over a 'jump-to-address' button that is next to a pointer (32-bit or 64-bit) with an invalid address under the Value Interpreter.
+  */
+  addressOutOfRange: 'Address out of memory range',
+
 };
 const str_ = i18n.i18n.registerUIStrings('linear_memory_inspector/ValueInterpreterDisplay.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -38,6 +43,7 @@ export interface ValueDisplayData {
   buffer: ArrayBuffer;
   valueTypes: Set<ValueType>;
   endianness: Endianness;
+  memoryLength: number;
   valueTypeModes?: Map<ValueType, ValueTypeMode>;
 }
 
@@ -69,6 +75,7 @@ export class ValueInterpreterDisplay extends HTMLElement {
   private buffer = new ArrayBuffer(0);
   private valueTypes: Set<ValueType> = new Set();
   private valueTypeModeConfig: Map<ValueType, ValueTypeMode> = getDefaultValueTypeMapping();
+  private memoryLength = 0;
 
   constructor() {
     super();
@@ -81,6 +88,7 @@ export class ValueInterpreterDisplay extends HTMLElement {
     this.buffer = data.buffer;
     this.endianness = data.endianness;
     this.valueTypes = data.valueTypes;
+    this.memoryLength = data.memoryLength;
 
     if (data.valueTypeModes) {
       data.valueTypeModes.forEach((mode, valueType) => {
@@ -180,6 +188,9 @@ export class ValueInterpreterDisplay extends HTMLElement {
     const unsignedValue = this.parse({type, signed: false});
     const localizedType = valueTypeToLocalizedString(type);
     const address = getPointerAddress(type, this.buffer, this.endianness);
+    const jumpDisabled = Number.isNaN(address) || BigInt(address) >= BigInt(this.memoryLength);
+    const buttonTitle = jumpDisabled ? i18nString(UIStrings.addressOutOfRange) : i18nString(UIStrings.jumpToPointer);
+    const iconColor = jumpDisabled ? 'var(--color-text-secondary)' : 'var(--color-primary)';
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     return html`
@@ -187,21 +198,19 @@ export class ValueInterpreterDisplay extends HTMLElement {
       <div class="value-type-cell">
         <div class="value-type-value-with-link" data-value="true">
         <span>${unsignedValue}</span>
-          ${
-          // TODO(crbug.com/1184436) support go-to-pointer-address links for big ints (Pointer64)
-          type === ValueType.Pointer32 && !Number.isNaN(address) ?
-              html`
-              <button class="jump-to-button" data-jump="true" title=${i18nString(UIStrings.jumpToPointer)}
-                @click=${this.onJumpToAddressClicked.bind(this, address as number)}>
+          ${html`
+              <button class="jump-to-button" data-jump="true" title=${buttonTitle} ?disabled=${jumpDisabled}
+                @click=${this.onJumpToAddressClicked.bind(this, Number(address))}>
                 <devtools-icon .data=${
-                  {iconName: 'link_icon', color: 'var(--color-primary)', width: '14px'} as Components.Icon.IconWithName}>
+                  {iconName: 'link_icon', color: iconColor, width: '14px'} as Components.Icon.IconWithName}>
                 </devtools-icon>
-              </button>` : ''}
+              </button>`}
         </div>
       </div>
     `;
     // clang-format on
   }
+
   private onJumpToAddressClicked(address: number): void {
     this.dispatchEvent(new JumpToPointerAddressEvent(address));
   }

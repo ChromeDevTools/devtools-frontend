@@ -38,6 +38,7 @@ describe('LinearMemoryValueInterpreter', () => {
       value: buffer,
       endianness: LinearMemoryInspector.ValueInterpreterDisplayUtils.Endianness.Little,
       valueTypes: new Set([LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType.Int8]),
+      memoryLength: buffer.byteLength,
     };
     renderElementIntoDOM(component);
     return component;

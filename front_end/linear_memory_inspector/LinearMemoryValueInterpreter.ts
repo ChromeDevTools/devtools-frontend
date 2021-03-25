@@ -53,6 +53,7 @@ export interface LinearMemoryValueInterpreterData {
   valueTypes: Set<ValueType>;
   endianness: Endianness;
   valueTypeModes?: Map<ValueType, ValueTypeMode>;
+  memoryLength: number;
 }
 
 export class LinearMemoryValueInterpreter extends HTMLElement {
@@ -61,6 +62,7 @@ export class LinearMemoryValueInterpreter extends HTMLElement {
   private buffer = new ArrayBuffer(0);
   private valueTypes: Set<ValueType> = new Set();
   private valueTypeModeConfig: Map<ValueType, ValueTypeMode> = new Map();
+  private memoryLength = 0;
   private showSettings = false;
 
   constructor() {
@@ -75,6 +77,7 @@ export class LinearMemoryValueInterpreter extends HTMLElement {
     this.buffer = data.value;
     this.valueTypes = data.valueTypes;
     this.valueTypeModeConfig = data.valueTypeModes || new Map();
+    this.memoryLength = data.memoryLength;
     this.render();
   }
 
@@ -163,6 +166,7 @@ export class LinearMemoryValueInterpreter extends HTMLElement {
                   valueTypes: this.valueTypes,
                   endianness: this.endianness,
                   valueTypeModes: this.valueTypeModeConfig,
+                  memoryLength: this.memoryLength,
                 } as ValueDisplayData}
               </devtools-linear-memory-inspector-interpreter-display>`}
         </div>
@@ -187,7 +191,7 @@ export class LinearMemoryValueInterpreter extends HTMLElement {
     return html`
     <label data-endianness-setting="true" title=${i18nString(UIStrings.changeEndianness)}>
       <select class="chrome-select"
-        style="border: none; background-color: transparent;"
+        style="border: none; background-color: transparent; cursor: pointer;"
         data-endianness="true" @change=${onEnumSettingChange}>
         ${[Endianness.Little, Endianness.Big].map(endianness => {
             return html`<option value=${endianness} .selected=${this.endianness === endianness}>${

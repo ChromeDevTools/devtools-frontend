@@ -218,12 +218,12 @@ export class LinearMemoryNavigator extends HTMLElement {
   }
 
   private createButton(data: {icon: string, title: string, event: Event, enabled: boolean}): LitHtml.TemplateResult {
-    const color = data.enabled ? 'var(--color-text-secondary)' : 'var(--color-background-highlight)';
+    const iconColor = data.enabled ? 'var(--color-text-secondary)' : 'var(--color-background-highlight)';
     return html`
       <button class="navigator-button" ?disabled=${!data.enabled}
         data-button=${data.event.type} title=${data.title}
         @click=${this.dispatchEvent.bind(this, data.event)}>
-        <devtools-icon .data=${{iconName: data.icon, color, width: '14px'} as Components.Icon.IconWithName}>
+        <devtools-icon .data=${{iconName: data.icon, color: iconColor, width: '14px'} as Components.Icon.IconWithName}>
         </devtools-icon>
       </button>`;
   }

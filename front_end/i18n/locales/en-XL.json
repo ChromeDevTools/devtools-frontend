@@ -1325,6 +1325,9 @@
   "linear_memory_inspector/LinearMemoryValueInterpreter.ts | toggleValueTypeSettings": {
     "message": "T̂óĝǵl̂é v̂ál̂úê t́ŷṕê śêt́t̂ín̂ǵŝ"
   },
+  "linear_memory_inspector/ValueInterpreterDisplay.ts | addressOutOfRange": {
+    "message": "Âd́d̂ŕêśŝ óût́ ôf́ m̂ém̂ór̂ý r̂án̂ǵê"
+  },
   "linear_memory_inspector/ValueInterpreterDisplay.ts | changeValueTypeMode": {
     "message": "Ĉh́âńĝé m̂ód̂é"
   },

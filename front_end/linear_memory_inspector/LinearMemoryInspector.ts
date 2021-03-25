@@ -196,7 +196,8 @@ export class LinearMemoryInspector extends HTMLElement {
             value: this.memory.slice(this.address - this.memoryOffset, this.address + VALUE_INTEPRETER_MAX_NUM_BYTES).buffer,
             valueTypes: this.valueTypes,
             valueTypeModes: this.valueTypeModes,
-            endianness: this.endianness } as LinearMemoryValueInterpreterData}
+            endianness: this.endianness,
+            memoryLength: this.outerMemoryLength } as LinearMemoryValueInterpreterData}
           @value-type-toggled=${this.onValueTypeToggled}
           @value-type-mode-changed=${this.onValueTypeModeChanged}
           @endianness-changed=${this.onEndiannessChanged}

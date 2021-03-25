@@ -218,6 +218,7 @@ describe('ValueInterpreterDisplay', () => {
         LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType.Pointer32,
         LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType.Pointer64,
       ]),
+      memoryLength: array.length,
     };
     renderElementIntoDOM(component);
 
@@ -239,6 +240,7 @@ describe('ValueInterpreterDisplay', () => {
         LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType.Int16,
         LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType.Float32,
       ]),
+      memoryLength: array.length,
     };
     renderElementIntoDOM(component);
 
@@ -275,6 +277,7 @@ describe('ValueInterpreterDisplay', () => {
           LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueTypeMode.Decimal,
         ],
       ]),
+      memoryLength: array.length,
     };
     renderElementIntoDOM(component);
 
@@ -302,6 +305,7 @@ describe('ValueInterpreterDisplay', () => {
         LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType.Float32,
       ]),
       valueTypeModes: mapping,
+      memoryLength: array.length,
     };
 
     const input = getElementWithinComponent(component, '[data-mode-settings]', HTMLSelectElement);
@@ -316,15 +320,16 @@ describe('ValueInterpreterDisplay', () => {
         event.data, {type: LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType.Float32, mode: newMode});
   });
 
-  it('triggers an event on jumping to an address', async () => {
+  it('triggers an event on jumping to an address from a 32-bit pointer', async () => {
     const component = new LinearMemoryInspector.ValueInterpreterDisplay.ValueInterpreterDisplay();
-    const array = [1, 132, 172, 71];
+    const array = [1, 0, 0, 0];
     component.data = {
       buffer: new Uint8Array(array).buffer,
       endianness: LinearMemoryInspector.ValueInterpreterDisplayUtils.Endianness.Little,
       valueTypes: new Set([
         LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType.Pointer32,
       ]),
+      memoryLength: array.length,
     };
     renderElementIntoDOM(component);
 
@@ -333,6 +338,47 @@ describe('ValueInterpreterDisplay', () => {
         component, 'jump-to-pointer-address');
     dispatchClickEvent(button);
     const event = await eventPromise;
-    assert.deepEqual(event.data, 1202488321);
+    assert.deepEqual(event.data, 1);
+  });
+
+  it('triggers an event on jumping to an address from a 64-bit pointer', async () => {
+    const component = new LinearMemoryInspector.ValueInterpreterDisplay.ValueInterpreterDisplay();
+    const array = [1, 0, 0, 0, 0, 0, 0, 0];
+    component.data = {
+      buffer: new Uint8Array(array).buffer,
+      endianness: LinearMemoryInspector.ValueInterpreterDisplayUtils.Endianness.Little,
+      valueTypes: new Set([
+        LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType.Pointer64,
+      ]),
+      memoryLength: array.length,
+    };
+    renderElementIntoDOM(component);
+
+    const button = getElementWithinComponent(component, DISPLAY_JUMP_TO_POINTER_BUTTON_SELECTOR, HTMLButtonElement);
+    const eventPromise = getEventPromise<LinearMemoryInspector.ValueInterpreterDisplay.JumpToPointerAddressEvent>(
+        component, 'jump-to-pointer-address');
+    dispatchClickEvent(button);
+    const event = await eventPromise;
+    assert.deepEqual(event.data, 1);
+  });
+
+  it('renders a disabled jump-to-address button if address is invalid', () => {
+    const component = new LinearMemoryInspector.ValueInterpreterDisplay.ValueInterpreterDisplay();
+    const array = [8, 0, 0, 0, 0, 0, 0, 0];
+    component.data = {
+      buffer: new Uint8Array(array).buffer,
+      endianness: LinearMemoryInspector.ValueInterpreterDisplayUtils.Endianness.Little,
+      valueTypes: new Set([
+        LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType.Pointer32,
+        LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType.Pointer64,
+      ]),
+      memoryLength: array.length,
+    };
+    renderElementIntoDOM(component);
+
+    const buttons = getElementsWithinComponent(component, DISPLAY_JUMP_TO_POINTER_BUTTON_SELECTOR, HTMLButtonElement);
+    assert.lengthOf(buttons, 2);
+    assert.isTrue(buttons[0].disabled);
+    assert.isTrue(buttons[1].disabled);
   });
 });

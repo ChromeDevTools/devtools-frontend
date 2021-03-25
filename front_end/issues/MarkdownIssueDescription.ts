@@ -14,13 +14,14 @@ export interface IssueDescription {
   links: {link: string, linkTitle: string}[];
 }
 
-export function createIssueDescriptionFromMarkdown(description: SDK.Issue.MarkdownIssueDescription): IssueDescription {
-  const rawMarkdown = getMarkdownFileContent(description.file);
+export async function createIssueDescriptionFromMarkdown(description: SDK.Issue.MarkdownIssueDescription):
+    Promise<IssueDescription> {
+  const rawMarkdown = await getMarkdownFileContent(description.file);
   const rawMarkdownWithPlaceholdersReplaced = substitutePlaceholders(rawMarkdown, description.substitutions);
   return createIssueDescriptionFromRawMarkdown(rawMarkdownWithPlaceholdersReplaced, description);
 }
 
-function getMarkdownFileContent(filename: string): string {
+async function getMarkdownFileContent(filename: string): Promise<string> {
   const rawMarkdown = Root.Runtime.cachedResources.get(filename);
   if (!rawMarkdown) {
     throw new Error(`Markdown file ${filename} not found. Declare it as a resource in the module.json file`);

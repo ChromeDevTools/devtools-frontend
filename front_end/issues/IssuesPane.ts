@@ -149,6 +149,7 @@ export class IssuesPane extends UI.Widget.VBox {
   private noIssuesMessageDiv: HTMLDivElement;
   private issuesManager: BrowserSDK.IssuesManager.IssuesManager;
   private aggregator: IssueAggregator;
+  private issueViewUpdatePromise: Promise<void> = Promise.resolve();
 
   private constructor() {
     super(true);
@@ -176,7 +177,7 @@ export class IssuesPane extends UI.Widget.VBox {
     this.aggregator.addEventListener(IssueAggregatorEvents.AggregatedIssueUpdated, this.issueUpdated, this);
     this.aggregator.addEventListener(IssueAggregatorEvents.FullUpdateRequired, this.fullUpdate, this);
     for (const issue of this.aggregator.aggregatedIssues()) {
-      this.updateIssueView(issue);
+      this.scheduleIssueViewUpdate(issue);
     }
     this.issuesManager.addEventListener(BrowserSDK.IssuesManager.Events.IssuesCountUpdated, this.updateCounts, this);
     this.updateCounts();
@@ -237,10 +238,15 @@ export class IssuesPane extends UI.Widget.VBox {
 
   private issueUpdated(event: Common.EventTarget.EventTargetEvent): void {
     const issue = event.data as AggregatedIssue;
-    this.updateIssueView(issue);
+    this.scheduleIssueViewUpdate(issue);
   }
 
-  private updateIssueView(issue: AggregatedIssue): void {
+  private scheduleIssueViewUpdate(issue: AggregatedIssue): void {
+    this.issueViewUpdatePromise = this.issueViewUpdatePromise.then(() => this.updateIssueView(issue));
+  }
+
+  /** Don't call directly. Use `scheduleIssueViewUpdate` instead. */
+  private async updateIssueView(issue: AggregatedIssue): Promise<void> {
     let issueView = this.issueViews.get(issue.code());
     if (!issueView) {
       const description = issue.getDescription();
@@ -248,7 +254,7 @@ export class IssuesPane extends UI.Widget.VBox {
         console.warn('Could not find description for issue code:', issue.code());
         return;
       }
-      const markdownDescription = createIssueDescriptionFromMarkdown(description);
+      const markdownDescription = await createIssueDescriptionFromMarkdown(description);
       issueView = new IssueView(this, issue, markdownDescription);
       this.issueViews.set(issue.code(), issueView);
       const parent = this.getIssueViewParent(issue);
@@ -298,7 +304,7 @@ export class IssuesPane extends UI.Widget.VBox {
     this.clearViews(this.issueViews);
     if (this.aggregator) {
       for (const issue of this.aggregator.aggregatedIssues()) {
-        this.updateIssueView(issue);
+        this.scheduleIssueViewUpdate(issue);
       }
     }
     this.updateCounts();

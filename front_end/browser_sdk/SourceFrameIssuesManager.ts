@@ -57,16 +57,18 @@ export class SourceFrameIssuesManager {
     }
   }
 
-  private createIssueDescriptionFromMarkdown(description: SDK.Issue.MarkdownIssueDescription): string|null {
-    const rawMarkdown = getMarkdownFileContent(description.file);
+  private async getIssueTitleFromMarkdownDescription(description: SDK.Issue.MarkdownIssueDescription):
+      Promise<string|null> {
+    const rawMarkdown = await getMarkdownFileContent(description.file);
     const markdownAst = Marked.Marked.lexer(rawMarkdown);
     return findTitleFromMarkdownAst(markdownAst);
   }
 
-  private addIssueMessageToScript(issue: SDK.Issue.Issue, rawLocation: SDK.DebuggerModel.Location): void {
+  private async addIssueMessageToScript(issue: SDK.Issue.Issue, rawLocation: SDK.DebuggerModel.Location):
+      Promise<void> {
     const description = issue.getDescription();
     if (description) {
-      const title = this.createIssueDescriptionFromMarkdown(description);
+      const title = await this.getIssueTitleFromMarkdownDescription(description);
       if (title) {
         const clickHandler = (): void => {
           Common.Revealer.reveal(issue);

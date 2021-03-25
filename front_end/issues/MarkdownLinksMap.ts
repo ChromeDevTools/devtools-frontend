@@ -16,6 +16,11 @@ export const markdownLinks = new Map<string, string>([
   ['issuesContrastWCAG21AA', 'https://www.w3.org/TR/WCAG21/#contrast-minimum'],
   ['issuesContrastWCAG21AAA', 'https://www.w3.org/TR/WCAG21/#contrast-enhanced'],
   ['issuesContrastSuggestColor', 'https://developers.google.com/web/updates/2020/08/devtools#accessible-color'],
+  ['issuesCSPSetStrict', 'https://web.dev/strict-csp'],
+  [
+    'issuesCSPWhyStrictOverAllowlist',
+    'https://web.dev/strict-csp/#why-a-strict-csp-is-recommended-over-allowlist-csps',
+  ],
 ]);
 
 export const getMarkdownLink = (key: string): string => {

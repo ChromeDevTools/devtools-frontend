@@ -2,12 +2,19 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
+import("../scripts/build/ninja/copy.gni")
+
 group("test") {
   deps = [
+    ":config",
     "e2e",
     "interactions",
     "perf",
     "shared",
     "unittests",
   ]
+}
+
+copy_to_gen("config") {
+  sources = [ "base-mocharc.js" ]
 }

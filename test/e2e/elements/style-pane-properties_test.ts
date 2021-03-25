@@ -183,7 +183,8 @@ describe('The Styles pane', async () => {
 
     const subtitles = await getStyleSectionSubtitles();
     assert.deepEqual(
-        subtitles, ['', 'constructed stylesheet', 'stylesheets…ces.html:10', '<style>', 'user agent stylesheet'],
+        subtitles,
+        ['', 'constructed stylesheet', 'stylesheets…ces.html:10', 'stylesheets…rces.html:7', 'user agent stylesheet'],
         'incorrectly displayed style sources');
 
     const divRules = await getDisplayedStyleRules();

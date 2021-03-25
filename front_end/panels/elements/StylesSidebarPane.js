@@ -1475,9 +1475,26 @@ export class StylePropertiesSection {
 
     const header = rule.styleSheetId ? matchedStyles.cssModel().styleSheetHeaderForId(rule.styleSheetId) : null;
 
-    if (header && header.isMutable && !header.isViaInspector()) {
-      const label = header.isConstructed ? i18nString(UIStrings.constructedStylesheet) : '<style>';
-      if (header.ownerNode) {
+    /**
+     * @return {?Node}
+     */
+    function linkifyRuleLocation() {
+      if (!rule) {
+        return null;
+      }
+      if (ruleLocation && rule.styleSheetId && header && !header.isAnonymousInlineStyleSheet()) {
+        return StylePropertiesSection._linkifyRuleLocation(
+            matchedStyles.cssModel(), linkifier, rule.styleSheetId, ruleLocation);
+      }
+      return null;
+    }
+
+    /**
+     * @param {string} label
+     * @return {?Node}
+     */
+    function linkifyNode(label) {
+      if (header?.ownerNode) {
         const link = linkifyDeferredNodeReference(header.ownerNode, {
           preventKeyboardFocus: false,
           tooltip: undefined,
@@ -1485,12 +1502,25 @@ export class StylePropertiesSection {
         link.textContent = label;
         return link;
       }
+      return null;
+    }
+
+    if (header?.isMutable && !header.isViaInspector()) {
+      const location = !header.isConstructed ? linkifyRuleLocation() : null;
+      if (location) {
+        return location;
+      }
+      const label = header.isConstructed ? i18nString(UIStrings.constructedStylesheet) : '<style>';
+      const node = linkifyNode(label);
+      if (node) {
+        return node;
+      }
       return document.createTextNode(label);
     }
 
-    if (ruleLocation && rule.styleSheetId && header && !header.isAnonymousInlineStyleSheet()) {
-      return StylePropertiesSection._linkifyRuleLocation(
-          matchedStyles.cssModel(), linkifier, rule.styleSheetId, ruleLocation);
+    const location = linkifyRuleLocation();
+    if (location) {
+      return location;
     }
 
     if (rule.isUserAgent()) {
@@ -1503,13 +1533,9 @@ export class StylePropertiesSection {
       return document.createTextNode(i18nString(UIStrings.viaInspector));
     }
 
-    if (header && header.ownerNode) {
-      const link = linkifyDeferredNodeReference(header.ownerNode, {
-        preventKeyboardFocus: false,
-        tooltip: undefined,
-      });
-      link.textContent = '<style>';
-      return link;
+    const node = linkifyNode('<style>');
+    if (node) {
+      return node;
     }
 
     return document.createTextNode('');

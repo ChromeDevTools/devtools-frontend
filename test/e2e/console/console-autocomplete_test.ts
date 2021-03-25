@@ -5,6 +5,7 @@
 import {click, getBrowserAndPages, typeText, waitFor, waitForNone} from '../../shared/helper.js';
 import {beforeEach, describe, it} from '../../shared/mocha-extensions.js';
 import {CONSOLE_TAB_SELECTOR, focusConsolePrompt} from '../helpers/console-helpers.js';
+import {openSourcesPanel} from '../helpers/sources-helpers.js';
 
 describe('The Console Tab', async () => {
   beforeEach(async () => {
@@ -20,6 +21,12 @@ describe('The Console Tab', async () => {
     await frontend.waitForFunction(() => {
       return document.querySelectorAll('.console-user-command-result').length === 1;
     });
+  });
+
+  afterEach(async () => {
+    // Make sure we don't close DevTools while there is an outstanding
+    // Runtime.evaluate CDP request, which causes an error. crbug.com/1134579.
+    await openSourcesPanel();
   });
 
   // See the comments in console-repl-mode_test to see why this is necessary.

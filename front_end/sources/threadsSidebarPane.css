@@ -14,13 +14,11 @@
 }
 
 .thread-item + .thread-item {
-  border-top: 1px solid #efefef; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  border-top: 1px solid var(--color-details-hairline-light);
 }
 
 .thread-item:hover {
-  background-color: #eee; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  background-color: var(--color-background-elevation-1);
 }
 
 .thread-item:focus-visible {
@@ -35,8 +33,7 @@
 }
 
 .thread-item-paused-state {
-  color: #888; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-text-disabled);
   margin-left: auto;
   padding: 0 10px 0 10px;
 }

@@ -28,7 +28,7 @@ export class ThreadsSidebarPane extends UI.Widget.VBox implements
 
   private constructor() {
     super(true);
-    this.registerRequiredCSS('sources/threadsSidebarPane.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('sources/threadsSidebarPane.css', {enableLegacyPatching: false});
 
     this._items = new UI.ListModel.ListModel();
     this._list = new UI.ListControl.ListControl(this._items, this, UI.ListControl.ListMode.NonViewport);

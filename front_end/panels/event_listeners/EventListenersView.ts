@@ -61,7 +61,7 @@ export class EventListenersView extends UI.Widget.VBox {
     this._treeOutline.hideOverflow();
     this._treeOutline.registerRequiredCSS('object_ui/objectValue.css', {enableLegacyPatching: true});
     this._treeOutline.registerRequiredCSS(
-        'panels/event_listeners/eventListenersView.css', {enableLegacyPatching: true});
+        'panels/event_listeners/eventListenersView.css', {enableLegacyPatching: false});
     this._treeOutline.setComparator(EventListenersTreeElement.comparator);
     this._treeOutline.element.classList.add('monospace');
     this._treeOutline.setShowSelectionOnKeyboardFocus(true);

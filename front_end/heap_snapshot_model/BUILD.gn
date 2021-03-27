@@ -6,19 +6,19 @@ import("../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../scripts/build/ninja/devtools_module.gni")
 
 devtools_module("heap_snapshot_model") {
-  sources = [ "HeapSnapshotModel.js" ]
+  sources = [ "HeapSnapshotModel.ts" ]
 
   deps = []
 }
 
 devtools_entrypoint("bundle") {
-  entrypoint = "heap_snapshot_model.js"
+  entrypoint = "heap_snapshot_model.ts"
 
   deps = [ ":heap_snapshot_model" ]
 }
 
 devtools_entrypoint("legacy") {
-  entrypoint = "heap_snapshot_model-legacy.js"
+  entrypoint = "heap_snapshot_model-legacy.ts"
 
   deps = [ ":bundle" ]
 }

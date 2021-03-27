@@ -443,7 +443,7 @@ UI.ViewManager.registerViewExtension({
   title: i18nLazyString(UIStrings.recordings),
   order: 8,
   persistence: UI.ViewManager.ViewPersistence.PERMANENT,
-  experiment: 'recorder',
+  experiment: Root.Runtime.ExperimentName.RECORDER,
   async loadView() {
     const Sources = await loadSourcesModule();
     return Sources.SourcesNavigator.RecordingsNavigatorView.instance();
@@ -468,7 +468,7 @@ UI.ViewManager.registerViewExtension({
   commandPrompt: i18nLazyString(UIStrings.showThreads),
   title: i18nLazyString(UIStrings.threads),
   persistence: UI.ViewManager.ViewPersistence.PERMANENT,
-  condition: '!sources.hide_thread_sidebar',
+  condition: Root.Runtime.ConditionName.NOT_SOURCES_HIDE_ADD_FOLDER,
   async loadView() {
     const Sources = await loadSourcesModule();
     return Sources.ThreadsSidebarPane.ThreadsSidebarPane.instance();

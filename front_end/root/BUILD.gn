@@ -6,19 +6,19 @@ import("../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../scripts/build/ninja/devtools_module.gni")
 
 devtools_module("root") {
-  sources = [ "Runtime.js" ]
+  sources = [ "Runtime.ts" ]
 
   deps = [ "../platform:bundle" ]
 }
 
 devtools_entrypoint("bundle") {
-  entrypoint = "root.js"
+  entrypoint = "root.ts"
 
   deps = [ ":root" ]
 }
 
 devtools_entrypoint("legacy") {
-  entrypoint = "root-legacy.js"
+  entrypoint = "root-legacy.ts"
 
   deps = [ ":bundle" ]
 }

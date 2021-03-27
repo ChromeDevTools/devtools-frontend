@@ -7,7 +7,7 @@ import("../../scripts/build/ninja/devtools_module.gni")
 
 devtools_module("javascript_metadata") {
   sources = [
-    "JavaScriptMetadata.js",
+    "JavaScriptMetadata.ts",
     "NativeFunctions.js",
   ]
 
@@ -21,7 +21,7 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_entrypoint("legacy") {
-  entrypoint = "javascript_metadata-legacy.js"
+  entrypoint = "javascript_metadata-legacy.ts"
 
   deps = [ ":bundle" ]
 }

@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
 import * as i18n from '../i18n/i18n.js';
 import * as UI from '../ui/ui.js';
@@ -15,25 +17,22 @@ const UIStrings = {
   */
   noOpenInspections: 'No open inspections',
 };
-const str_ = i18n.i18n.registerUIStrings('linear_memory_inspector/LinearMemoryInspectorPane.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('linear_memory_inspector/LinearMemoryInspectorPane.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-/** @type {!LinearMemoryInspectorPaneImpl} */
-let inspectorInstance;
+let inspectorInstance: LinearMemoryInspectorPaneImpl;
 
-/** @type {!Wrapper} */
-let wrapperInstance;
+let wrapperInstance: Wrapper;
 
 export class Wrapper extends UI.Widget.VBox {
-  /** @private */
-  constructor() {
+  view: LinearMemoryInspectorPaneImpl;
+  private constructor() {
     super();
     this.view = LinearMemoryInspectorPaneImpl.instance();
   }
 
-  /**
-   * @param {{forceNew: ?boolean}} opts
-   */
-  static instance(opts = {forceNew: null}) {
+  static instance(opts: {
+    forceNew: boolean|null,
+  } = {forceNew: null}): Wrapper {
     const {forceNew} = opts;
     if (!wrapperInstance || forceNew) {
       wrapperInstance = new Wrapper();
@@ -42,15 +41,14 @@ export class Wrapper extends UI.Widget.VBox {
     return wrapperInstance;
   }
 
-  /**
-   * @override
-   */
-  wasShown() {
+  wasShown(): void {
     this.view.show(this.contentElement);
   }
 }
 
 export class LinearMemoryInspectorPaneImpl extends UI.Widget.VBox {
+  _tabbedPane: UI.TabbedPane.TabbedPane;
+  _tabIdToInspectorView: Map<string, LinearMemoryInspectorView>;
   constructor() {
     super(false);
     const placeholder = document.createElement('div');
@@ -63,42 +61,28 @@ export class LinearMemoryInspectorPaneImpl extends UI.Widget.VBox {
     this._tabbedPane.addEventListener(UI.TabbedPane.Events.TabClosed, this._tabClosed, this);
     this._tabbedPane.show(this.contentElement);
 
-    /** @type {!Map<string, LinearMemoryInspectorView>} */
     this._tabIdToInspectorView = new Map();
   }
 
-  static instance() {
+  static instance(): LinearMemoryInspectorPaneImpl {
     if (!inspectorInstance) {
       inspectorInstance = new LinearMemoryInspectorPaneImpl();
     }
     return inspectorInstance;
   }
 
-  /**
-   * @param {string} tabId
-   * @param {string} title
-   * @param {!LazyUint8Array} arrayWrapper
-   * @param {number=} address
-   */
-  create(tabId, title, arrayWrapper, address) {
+  create(tabId: string, title: string, arrayWrapper: LazyUint8Array, address?: number): void {
     const inspectorView = new LinearMemoryInspectorView(arrayWrapper, address);
     this._tabIdToInspectorView.set(tabId, inspectorView);
     this._tabbedPane.appendTab(tabId, title, inspectorView, undefined, false, true);
     this._tabbedPane.selectTab(tabId);
   }
 
-  /**
-   * @param {string} tabId
-   */
-  close(tabId) {
+  close(tabId: string): void {
     this._tabbedPane.closeTab(tabId, false);
   }
 
-  /**
-   * @param {string} tabId
-   * @param {number=} address
-   */
-  reveal(tabId, address) {
+  reveal(tabId: string, address?: number): void {
     const view = this._tabIdToInspectorView.get(tabId);
     if (!view) {
       throw new Error(`No linear memory inspector view for given tab id: ${tabId}`);
@@ -111,10 +95,7 @@ export class LinearMemoryInspectorPaneImpl extends UI.Widget.VBox {
     this._tabbedPane.selectTab(tabId);
   }
 
-  /**
-   * @param {string} tabId
-   */
-  refreshView(tabId) {
+  refreshView(tabId: string): void {
     const view = this._tabIdToInspectorView.get(tabId);
     if (!view) {
       throw new Error(`View for specified tab id does not exist: ${tabId}`);
@@ -122,10 +103,7 @@ export class LinearMemoryInspectorPaneImpl extends UI.Widget.VBox {
     view.refreshData();
   }
 
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  _tabClosed(event) {
+  _tabClosed(event: Common.EventTarget.EventTargetEvent): void {
     const tabId = event.data.tabId;
     this._tabIdToInspectorView.delete(tabId);
     this.dispatchEventToListeners('view-closed', tabId);
@@ -133,12 +111,11 @@ export class LinearMemoryInspectorPaneImpl extends UI.Widget.VBox {
 }
 
 class LinearMemoryInspectorView extends UI.Widget.VBox {
-  /**
-   *
-   * @param {!LazyUint8Array} memoryWrapper
-   * @param {number=} address
-   */
-  constructor(memoryWrapper, address = 0) {
+  _memoryWrapper: LazyUint8Array;
+  _address: number;
+  _inspector: LinearMemoryInspector;
+  firstTimeOpen: boolean;
+  constructor(memoryWrapper: LazyUint8Array, address: number|undefined = 0) {
     super(false);
 
     if (address < 0 || address >= memoryWrapper.length()) {
@@ -148,46 +125,43 @@ class LinearMemoryInspectorView extends UI.Widget.VBox {
     this._memoryWrapper = memoryWrapper;
     this._address = address;
     this._inspector = new LinearMemoryInspector();
-    this._inspector.addEventListener('memory-request', /** @param {!Event} event */ event => {
-      this._memoryRequested(/** @type {?} */ (event));
+    this._inspector.addEventListener('memory-request', (event: Event) => {
+      // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      this._memoryRequested((event as any));
     });
-    this._inspector.addEventListener('address-changed', /** @param {!Event} event */ event => {
-      this.updateAddress(/** @type {?} */ (event).data);
+    this._inspector.addEventListener('address-changed', (event: Event) => {
+      // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      this.updateAddress((event as any).data);
     });
-    this._inspector.addEventListener('settings-changed', /** @param {!Event} event */ event => {
+    this._inspector.addEventListener('settings-changed', (event: Event) => {
       // Stop event from bubbling up, since no element further up needs the event.
       event.stopPropagation();
-      this.saveSettings(/** @type {?} */ (event).data);
+      // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      this.saveSettings((event as any).data);
     });
     this.contentElement.appendChild(this._inspector);
     this.firstTimeOpen = true;
   }
 
-  /**
-   * @override
-   */
-  wasShown() {
+  wasShown(): void {
     this.refreshData();
   }
 
-  /**
-   * @param {Settings} settings
-   */
-  saveSettings(settings) {
+  saveSettings(settings: Settings): void {
     LinearMemoryInspectorController.instance().saveSettings(settings);
   }
 
-  /**
-   * @param {number} address
-   */
-  updateAddress(address) {
+  updateAddress(address: number): void {
     if (address < 0 || address >= this._memoryWrapper.length()) {
       throw new Error('Requested address is out of bounds.');
     }
     this._address = address;
   }
 
-  refreshData() {
+  refreshData(): void {
     LinearMemoryInspectorController.getMemoryForAddress(this._memoryWrapper, this._address).then(({memory, offset}) => {
       let valueTypes;
       let valueTypeModes;
@@ -206,16 +180,17 @@ class LinearMemoryInspectorView extends UI.Widget.VBox {
         outerMemoryLength: this._memoryWrapper.length(),
         valueTypes,
         valueTypeModes,
-        endianness
+        endianness,
       };
     });
   }
 
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  _memoryRequested(event) {
-    const {start, end, address} = /** @type {!{start: number, end: number, address: number}} */ (event.data);
+  _memoryRequested(event: Common.EventTarget.EventTargetEvent): void {
+    const {start, end, address} = (event.data as {
+      start: number,
+      end: number,
+      address: number,
+    });
     if (address < start || address >= end) {
       throw new Error('Requested address is out of bounds.');
     }

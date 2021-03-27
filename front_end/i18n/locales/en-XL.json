@@ -1070,7 +1070,7 @@
   "linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "Âd́d̂ŕêśŝ h́âś t̂ó b̂é â ńûḿb̂ér̂ b́êt́ŵéêń {PH1} âńd̂ {PH2}"
   },
-  "linear_memory_inspector/LinearMemoryInspectorPane.js | noOpenInspections": {
+  "linear_memory_inspector/LinearMemoryInspectorPane.ts | noOpenInspections": {
     "message": "N̂ó ôṕêń îńŝṕêćt̂íôńŝ"
   },
   "linear_memory_inspector/LinearMemoryNavigator.ts | enterAddress": {

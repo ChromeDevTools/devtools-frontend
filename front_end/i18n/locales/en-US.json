@@ -1070,7 +1070,7 @@
   "linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "Address has to be a number between {PH1} and {PH2}"
   },
-  "linear_memory_inspector/LinearMemoryInspectorPane.js | noOpenInspections": {
+  "linear_memory_inspector/LinearMemoryInspectorPane.ts | noOpenInspections": {
     "message": "No open inspections"
   },
   "linear_memory_inspector/LinearMemoryNavigator.ts | enterAddress": {

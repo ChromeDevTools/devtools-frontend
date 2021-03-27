@@ -5,10 +5,8 @@
 /**
  * @interface
  */
-export class ContextFlavorListener {
-  /**
-   * @param {?Object} object
-   */
-  flavorChanged(object) {
-  }
+/* eslint-disable rulesdir/no_underscored_properties */
+
+export interface ContextFlavorListener {
+  flavorChanged(object: Object|null): void;
 }

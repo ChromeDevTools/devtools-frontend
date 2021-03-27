@@ -28,19 +28,23 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Common from '../common/common.js';
 import * as WasmDis from '../third_party/wasmparser/package/dist/esm/WasmDis.js';
 import * as WasmParser from '../third_party/wasmparser/package/dist/esm/WasmParser.js';
 
-/**
- * @param {!{content: string}} params
- * @param {function(*):void} postMessage
- */
-export function dissambleWASM(params, postMessage) {
+export function dissambleWASM(
+    params: {
+      content: string,
+    },
+    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    postMessage: (arg0: any) => void): void {
   try {
     const dataBuffer = Common.Base64.decode(params.content);
 
-    let parser = new WasmParser.BinaryReader();
+    let parser: WasmParser.BinaryReader = new WasmParser.BinaryReader();
     parser.setData(dataBuffer, 0, dataBuffer.byteLength);
     const nameGenerator = new WasmDis.DevToolsNameGenerator();
     nameGenerator.read(parser);
@@ -55,8 +59,8 @@ export function dissambleWASM(params, postMessage) {
     const offsets = [];
     const functionBodyOffsets = [];
     const MAX_LINES = 1000 * 1000;
-    let chunkSize = 128 * 1024;
-    let buffer = new Uint8Array(chunkSize);
+    let chunkSize: number = 128 * 1024;
+    let buffer: Uint8Array = new Uint8Array(chunkSize);
     let pendingSize = 0;
     let offsetInModule = 0;
     for (let i = 0; i < data.length;) {
@@ -77,9 +81,14 @@ export function dissambleWASM(params, postMessage) {
       // The disassemble will attemp to fetch the data as much as possible.
       const finished = dis.disassembleChunk(parser, offsetInModule);
 
-      const result =
-          /** @type {!{lines: !Array<string>, offsets: !Array<number>, functionBodyOffsets: !Array<!{start:number, end:number}>}} */
-          (dis.getResult());
+      const result = (dis.getResult() as {
+        lines: Array<string>,
+        offsets: Array<number>,
+        functionBodyOffsets: Array<{
+          start: number,
+          end: number,
+        }>,
+      });
       for (const line of result.lines) {
         lines.push(line);
       }

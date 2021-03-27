@@ -1,3 +1,7 @@
+// Copyright 2021 The Chromium Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+
 /*
  * Copyright (C) 2007 Apple Inc.  All rights reserved.
  * Copyright (C) 2012 Google Inc. All rights reserved.
@@ -32,17 +36,12 @@
 
 // @ts-nocheck This file is not checked by TypeScript Compiler as it has a lot of legacy code.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Platform from '../platform/platform.js';
 
-/**
- * @param {!Node} rootNode
- * @param {number} offset
- * @param {string} stopCharacters
- * @param {!Node} stayWithinNode
- * @param {string=} direction
- * @return {!Range}
- */
-export function rangeOfWord(rootNode, offset, stopCharacters, stayWithinNode, direction) {
+export function rangeOfWord(
+    rootNode: Node, offset: number, stopCharacters: string, stayWithinNode: Node, direction?: string): Range {
   let startNode;
   let startOffset = 0;
   let endNode;
@@ -53,7 +52,7 @@ export function rangeOfWord(rootNode, offset, stopCharacters, stayWithinNode, di
   }
 
   if (!direction || direction === 'backward' || direction === 'both') {
-    let node = rootNode;
+    let node: Node = rootNode;
     while (node) {
       if (node === stayWithinNode) {
         if (!startNode) {
@@ -90,7 +89,7 @@ export function rangeOfWord(rootNode, offset, stopCharacters, stayWithinNode, di
   }
 
   if (!direction || direction === 'forward' || direction === 'both') {
-    let node = rootNode;
+    let node: (Node|null)|Node = rootNode;
     while (node) {
       if (node === stayWithinNode) {
         if (!endNode) {
@@ -134,22 +133,12 @@ export function rangeOfWord(rootNode, offset, stopCharacters, stayWithinNode, di
   return result;
 }
 
-/**
- * @param {number} offset
- * @param {string} stopCharacters
- * @param {!Node} stayWithinNode
- * @param {string=} direction
- * @return {!Range}
- */
-Node.prototype.rangeOfWord = function(offset, stopCharacters, stayWithinNode, direction) {
+Node.prototype.rangeOfWord = function(
+    offset: number, stopCharacters: string, stayWithinNode: Node, direction?: string): Range {
   return rangeOfWord(this, offset, stopCharacters, stayWithinNode, direction);
 };
 
-/**
- * @param {!Node=} stayWithin
- * @return {?Node}
- */
-Node.prototype.traverseNextTextNode = function(stayWithin) {
+Node.prototype.traverseNextTextNode = function(stayWithin?: Node): Node|null {
   let node = this.traverseNextNode(stayWithin);
   if (!node) {
     return null;
@@ -163,13 +152,11 @@ Node.prototype.traverseNextTextNode = function(stayWithin) {
   return node;
 };
 
-/**
- * @param {number|undefined} x
- * @param {number|undefined} y
- * @param {!Element=} relativeTo
- */
-Element.prototype.positionAt = function(x, y, relativeTo) {
-  let shift = {x: 0, y: 0};
+Element.prototype.positionAt = function(x: number|undefined, y: number|undefined, relativeTo?: Element): void {
+  let shift: AnchorBox|{
+    x: number,
+    y: number,
+  } = {x: 0, y: 0};
   if (relativeTo) {
     shift = relativeTo.boxInWindow(this.ownerDocument.defaultView);
   }
@@ -193,22 +180,11 @@ Element.prototype.positionAt = function(x, y, relativeTo) {
   }
 };
 
-/**
- * @param {string} className
- * @param {!Element=} stayWithin
- * @return {?Element}
- */
-Node.prototype.enclosingNodeOrSelfWithClass = function(className, stayWithin) {
+Node.prototype.enclosingNodeOrSelfWithClass = function(className: string, stayWithin?: Element): Element|null {
   return this.enclosingNodeOrSelfWithClassList([className], stayWithin);
 };
-
-/**
- * @param {!Array.<string>} classNames
- * @param {!Element=} stayWithin
- * @return {?Element}
- */
-Node.prototype.enclosingNodeOrSelfWithClassList = function(classNames, stayWithin) {
-  for (let node = this; node && node !== stayWithin && node !== this.ownerDocument;
+Node.prototype.enclosingNodeOrSelfWithClassList = function(classNames: string[], stayWithin: Node): Element|null {
+  for (let node: Node|null = this; node && node !== stayWithin && node !== this.ownerDocument;
        node = node.parentNodeOrShadowHost()) {
     if (node.nodeType === Node.ELEMENT_NODE) {
       let containsAll = true;
@@ -218,17 +194,14 @@ Node.prototype.enclosingNodeOrSelfWithClassList = function(classNames, stayWithi
         }
       }
       if (containsAll) {
-        return /** @type {!Element} */ (node);
+        return node as Element;
       }
     }
   }
   return null;
 };
 
-/**
- * @return {?Node}
- */
-Node.prototype.enclosingShadowRoot = function() {
+Node.prototype.enclosingShadowRoot = function(): Node|null {
   let parentNode = this.parentNodeOrShadowHost();
   while (parentNode) {
     if (parentNode instanceof ShadowRoot) {
@@ -239,38 +212,27 @@ Node.prototype.enclosingShadowRoot = function() {
   return null;
 };
 
-/**
- * @param {!Node} node
- * @return {boolean}
- */
-Node.prototype.hasSameShadowRoot = function(node) {
+Node.prototype.hasSameShadowRoot = function(node: Node): boolean {
   return this.enclosingShadowRoot() === node.enclosingShadowRoot();
 };
-
-/**
- * @return {?Element}
- */
-Node.prototype.parentElementOrShadowHost = function() {
+Node.prototype.parentElementOrShadowHost = function(): Element|null {
   if (this.nodeType === Node.DOCUMENT_FRAGMENT_NODE && this.host) {
-    return /** @type {!Element} */ (this.host);
+    return this.host as Element;
   }
   const node = this.parentNode;
   if (!node) {
     return null;
   }
   if (node.nodeType === Node.ELEMENT_NODE) {
-    return /** @type {!Element} */ (node);
+    return node as Element;
   }
   if (node.nodeType === Node.DOCUMENT_FRAGMENT_NODE) {
-    return /** @type {!Element} */ (node.host);
+    return node.host as Element;
   }
   return null;
 };
 
-/**
- * @return {?Node}
- */
-Node.prototype.parentNodeOrShadowHost = function() {
+Node.prototype.parentNodeOrShadowHost = function(): Node|null {
   if (this.parentNode) {
     return this.parentNode;
   }
@@ -280,21 +242,15 @@ Node.prototype.parentNodeOrShadowHost = function() {
   return null;
 };
 
-/**
- * @return {?Selection}
- */
-Node.prototype.getComponentSelection = function() {
-  let parent = this.parentNode;
+Node.prototype.getComponentSelection = function(): Selection|null {
+  let parent: ((Node & ParentNode)|null) = this.parentNode;
   while (parent && parent.nodeType !== Node.DOCUMENT_FRAGMENT_NODE) {
     parent = parent.parentNode;
   }
   return parent instanceof ShadowRoot ? parent.getSelection() : this.window().getSelection();
 };
 
-/**
- * @return {boolean}
- */
-Node.prototype.hasSelection = function() {
+Node.prototype.hasSelection = function(): boolean {
   // TODO(luoe): use contains(node, {includeShadow: true}) when it is fixed for shadow dom.
   if (this instanceof Element) {
     const slots = this.querySelectorAll('slot');
@@ -312,44 +268,26 @@ Node.prototype.hasSelection = function() {
   return selection.containsNode(this, true) || selection.anchorNode.isSelfOrDescendant(this) ||
       selection.focusNode.isSelfOrDescendant(this);
 };
-
-/**
- * @return {!Window}
- */
-Node.prototype.window = function() {
-  return /** @type {!Window} */ (this.ownerDocument.defaultView);
+Node.prototype.window = function(): Window {
+  return this.ownerDocument.defaultView as Window;
 };
 
-Element.prototype.removeChildren = function() {
+Element.prototype.removeChildren = function(): void {
   if (this.firstChild) {
     this.textContent = '';
   }
 };
 
-/**
- * @param {string} tagName
- * @param {string=} customElementType
- * @return {!Element}
- */
-self.createElement = function(tagName, customElementType) {
+self.createElement = function(tagName: string, customElementType?: string): Element {
   return document.createElement(tagName, {is: customElementType});
 };
 
-/**
- * @param {number|string} data
- * @return {!Text}
- */
-self.createTextNode = function(data) {
+self.createTextNode = function(data: string|number): Text {
   return document.createTextNode(data);
 };
 
-/**
- * @param {string} elementName
- * @param {string=} className
- * @param {string=} customElementType
- * @return {!Element}
- */
-Document.prototype.createElementWithClass = function(elementName, className, customElementType) {
+Document.prototype.createElementWithClass = function(
+    elementName: string, className?: string, customElementType?: string): Element {
   const element = this.createElement(elementName, {is: customElementType});
   if (className) {
     element.className = className;
@@ -357,20 +295,11 @@ Document.prototype.createElementWithClass = function(elementName, className, cus
   return element;
 };
 
-/**
- * @return {!DocumentFragment}
- */
-self.createDocumentFragment = function() {
+self.createDocumentFragment = function(): DocumentFragment {
   return document.createDocumentFragment();
 };
 
-/**
- * @param {string} elementName
- * @param {string=} className
- * @param {string=} customElementType
- * @return {!Element}
- */
-Element.prototype.createChild = function(elementName, className, customElementType) {
+Element.prototype.createChild = function(elementName: string, className?: string, customElementType?: string): Element {
   const element = this.ownerDocument.createElementWithClass(elementName, className, customElementType);
   this.appendChild(element);
   return element;
@@ -378,87 +307,54 @@ Element.prototype.createChild = function(elementName, className, customElementTy
 
 DocumentFragment.prototype.createChild = Element.prototype.createChild;
 
-/**
- * @return {number}
- */
-Element.prototype.totalOffsetLeft = function() {
+Element.prototype.totalOffsetLeft = function(): number {
   return this.totalOffset().left;
 };
 
-/**
- * @return {number}
- */
-Element.prototype.totalOffsetTop = function() {
+Element.prototype.totalOffsetTop = function(): number {
   return this.totalOffset().top;
 };
 
-/**
- * @return {!{left: number, top: number}}
- */
-Element.prototype.totalOffset = function() {
+Element.prototype.totalOffset = function(): {
+  left: number,
+  top: number,
+} {
   const rect = this.getBoundingClientRect();
   return {left: rect.left, top: rect.top};
 };
 
 self.AnchorBox = class {
-  /**
-   * @param {number=} x
-   * @param {number=} y
-   * @param {number=} width
-   * @param {number=} height
-   */
-  constructor(x, y, width, height) {
+  constructor(x?: number, y?: number, width?: number, height?: number) {
     this.x = x || 0;
     this.y = y || 0;
     this.width = width || 0;
     this.height = height || 0;
   }
 
-  /**
-   * @param {number} x
-   * @param {number} y
-   * @return {boolean}
-   */
-  contains(x, y) {
+  contains(x: number, y: number): boolean {
     return x >= this.x && x <= this.x + this.width && y >= this.y && y <= this.y + this.height;
   }
 
-  /**
-   * @param {!AnchorBox} box
-   * @return {!AnchorBox}
-   */
-  relativeTo(box) {
+  relativeTo(box: AnchorBox): AnchorBox {
     return new AnchorBox(this.x - box.x, this.y - box.y, this.width, this.height);
   }
 
-  /**
-   * @param {!Element} element
-   * @return {!AnchorBox}
-   */
-  relativeToElement(element) {
+  relativeToElement(element: Element): AnchorBox {
     return this.relativeTo(element.boxInWindow(element.ownerDocument.defaultView));
   }
 
-  /**
-   * @param {?AnchorBox} anchorBox
-   * @return {boolean}
-   */
-  equals(anchorBox) {
+  equals(anchorBox: AnchorBox|null): boolean {
     return Boolean(anchorBox) && this.x === anchorBox.x && this.y === anchorBox.y && this.width === anchorBox.width &&
         this.height === anchorBox.height;
   }
 };
 
-/**
- * @param {?Window=} targetWindow
- * @return {!AnchorBox}
- */
-Element.prototype.boxInWindow = function(targetWindow) {
+Element.prototype.boxInWindow = function(targetWindow?: Window|null): AnchorBox {
   targetWindow = targetWindow || this.ownerDocument.defaultView;
 
   const anchorBox = new AnchorBox();
-  let curElement = this;
-  let curWindow = this.ownerDocument.defaultView;
+  let curElement: Element = this;
+  let curWindow: Window|((Window & typeof globalThis) | null) = this.ownerDocument.defaultView;
   while (curWindow && curElement) {
     anchorBox.x += curElement.totalOffsetLeft();
     anchorBox.y += curElement.totalOffsetTop();
@@ -474,10 +370,7 @@ Element.prototype.boxInWindow = function(targetWindow) {
   return anchorBox;
 };
 
-/**
- * @param {boolean=} preventDefault
- */
-Event.prototype.consume = function(preventDefault) {
+Event.prototype.consume = function(preventDefault?: boolean): void {
   this.stopImmediatePropagation();
   if (preventDefault) {
     this.preventDefault();
@@ -485,12 +378,7 @@ Event.prototype.consume = function(preventDefault) {
   this.handled = true;
 };
 
-/**
- * @param {number=} start
- * @param {number=} end
- * @return {!Text}
- */
-Text.prototype.select = function(start, end) {
+Text.prototype.select = function(start?: number, end?: number): Text {
   start = start || 0;
   end = end || this.textContent.length;
 
@@ -507,10 +395,7 @@ Text.prototype.select = function(start, end) {
   return this;
 };
 
-/**
- * @return {?number}
- */
-Element.prototype.selectionLeftOffset = function() {
+Element.prototype.selectionLeftOffset = function(): number|null {
   // Calculate selection offset relative to the current element.
 
   const selection = this.getComponentSelection();
@@ -519,7 +404,7 @@ Element.prototype.selectionLeftOffset = function() {
   }
 
   let leftOffset = selection.anchorOffset;
-  let node = selection.anchorNode;
+  let node: ChildNode|(Node | null) = selection.anchorNode;
 
   while (node !== this) {
     while (node.previousSibling) {
@@ -532,10 +417,7 @@ Element.prototype.selectionLeftOffset = function() {
   return leftOffset;
 };
 
-/**
- * @return {string}
- */
-Node.prototype.deepTextContent = function() {
+Node.prototype.deepTextContent = function(): string {
   return this.childTextNodes()
       .map(function(node) {
         return node.textContent;
@@ -543,10 +425,7 @@ Node.prototype.deepTextContent = function() {
       .join('');
 };
 
-/**
- * @return {!Array.<!Node>}
- */
-Node.prototype.childTextNodes = function() {
+Node.prototype.childTextNodes = function(): Node[] {
   let node = this.traverseNextTextNode(this);
   const result = [];
   const nonTextTags = {'STYLE': 1, 'SCRIPT': 1};
@@ -559,11 +438,7 @@ Node.prototype.childTextNodes = function() {
   return result;
 };
 
-/**
- * @param {?Node} node
- * @return {boolean}
- */
-Node.prototype.isAncestor = function(node) {
+Node.prototype.isAncestor = function(node: Node|null): boolean {
   if (!node) {
     return false;
   }
@@ -578,35 +453,19 @@ Node.prototype.isAncestor = function(node) {
   return false;
 };
 
-/**
- * @param {?Node} descendant
- * @return {boolean}
- */
-Node.prototype.isDescendant = function(descendant) {
+Node.prototype.isDescendant = function(descendant: Node|null): boolean {
   return Boolean(descendant) && descendant.isAncestor(this);
 };
 
-/**
- * @param {?Node} node
- * @return {boolean}
- */
-Node.prototype.isSelfOrAncestor = function(node) {
+Node.prototype.isSelfOrAncestor = function(node: Node|null): boolean {
   return Boolean(node) && (node === this || this.isAncestor(node));
 };
 
-/**
- * @param {?Node} node
- * @return {boolean}
- */
-Node.prototype.isSelfOrDescendant = function(node) {
+Node.prototype.isSelfOrDescendant = function(node: Node|null): boolean {
   return Boolean(node) && (node === this || this.isDescendant(node));
 };
 
-/**
- * @param {!Node=} stayWithin
- * @return {?Node}
- */
-Node.prototype.traverseNextNode = function(stayWithin) {
+Node.prototype.traverseNextNode = function(stayWithin?: Node): Node|null {
   if (this.shadowRoot) {
     return this.shadowRoot;
   }
@@ -621,7 +480,7 @@ Node.prototype.traverseNextNode = function(stayWithin) {
     return this.firstChild;
   }
 
-  let node = this;
+  let node: Node = this;
   while (node) {
     if (stayWithin && node === stayWithin) {
       return null;
@@ -635,11 +494,7 @@ Node.prototype.traverseNextNode = function(stayWithin) {
     node = node.assignedSlot || node.parentNodeOrShadowHost();
   }
 
-  /**
-   * @param {!Node} node
-   * @return {?Node}
-   */
-  function nextSibling(node) {
+  function nextSibling(node: Node): Node|null {
     if (!node.assignedSlot) {
       return node.nextSibling;
     }
@@ -655,15 +510,11 @@ Node.prototype.traverseNextNode = function(stayWithin) {
   return null;
 };
 
-/**
- * @param {!Node=} stayWithin
- * @return {?Node}
- */
-Node.prototype.traversePreviousNode = function(stayWithin) {
+Node.prototype.traversePreviousNode = function(stayWithin?: Node): Node|null {
   if (stayWithin && this === stayWithin) {
     return null;
   }
-  let node = this.previousSibling;
+  let node: ChildNode|(ChildNode | null) = this.previousSibling;
   while (node && node.lastChild) {
     node = node.lastChild;
   }
@@ -673,12 +524,7 @@ Node.prototype.traversePreviousNode = function(stayWithin) {
   return this.parentNodeOrShadowHost();
 };
 
-/**
- * @param {*} text
- * @param {string=} placeholder
- * @return {boolean} true if was truncated
- */
-Node.prototype.setTextContentTruncatedIfNeeded = function(text, placeholder) {
+Node.prototype.setTextContentTruncatedIfNeeded = function(text: string|Node, placeholder?: string): boolean {
   // Huge texts in the UI reduce rendering performance drastically.
   // Moreover, Blink/WebKit uses <unsigned short> internally for storing text content
   // length, so texts longer than 65535 are inherently displayed incorrectly.
@@ -694,11 +540,8 @@ Node.prototype.setTextContentTruncatedIfNeeded = function(text, placeholder) {
   return false;
 };
 
-/**
- * @return {?Element}
- */
-Document.prototype.deepActiveElement = function() {
-  let activeElement = this.activeElement;
+Document.prototype.deepActiveElement = function(): Element|null {
+  let activeElement: Element|(Element | null) = this.activeElement;
   while (activeElement && activeElement.shadowRoot && activeElement.shadowRoot.activeElement) {
     activeElement = activeElement.shadowRoot.activeElement;
   }
@@ -707,30 +550,19 @@ Document.prototype.deepActiveElement = function() {
 
 DocumentFragment.prototype.deepActiveElement = Document.prototype.deepActiveElement;
 
-/**
- * @return {boolean}
- */
-Element.prototype.hasFocus = function() {
+Element.prototype.hasFocus = function(): boolean {
   const root = this.getComponentRoot();
   return Boolean(root) && this.isSelfOrAncestor(root.activeElement);
 };
-
-/**
- * @return {?Document|?DocumentFragment}
- */
-Node.prototype.getComponentRoot = function() {
-  let node = this;
+Node.prototype.getComponentRoot = function(): Document|DocumentFragment|null {
+  let node: ((Node & ParentNode)|null)|Node = this;
   while (node && node.nodeType !== Node.DOCUMENT_FRAGMENT_NODE && node.nodeType !== Node.DOCUMENT_NODE) {
     node = node.parentNode;
   }
-  return /** @type {?Document|?DocumentFragment} */ (node);
+  return node as Document | DocumentFragment | null;
 };
 
-/**
- * @param {!Element} element
- * @param {function(!Event)} callback
- */
-self.onInvokeElement = function(element, callback) {
+self.onInvokeElement = function(element: Element, callback: (arg0: Event) => void): void {
   element.addEventListener('keydown', event => {
     if (self.isEnterOrSpaceKey(event)) {
       callback(event);
@@ -739,19 +571,11 @@ self.onInvokeElement = function(element, callback) {
   element.addEventListener('click', event => callback(event));
 };
 
-/**
- * @param {!Event} event
- * @return {boolean}
- */
-self.isEnterOrSpaceKey = function(event) {
+self.isEnterOrSpaceKey = function(event: Event): boolean {
   return event.key === 'Enter' || event.key === ' ';
 };
 
-/**
- * @param {!Event} event
- * @return {boolean}
- */
-self.isEscKey = function(event) {
+self.isEscKey = function(event: Event): boolean {
   return event.keyCode === 27;
 };
 
@@ -759,9 +583,9 @@ self.isEscKey = function(event) {
 //   classList.toggle('a', undefined) works as
 //   classList.toggle('a', false) rather than as
 //   classList.toggle('a');
-(function() {
+(function(): void {
 const originalToggle = DOMTokenList.prototype.toggle;
-DOMTokenList.prototype['toggle'] = function(token, force) {
+DOMTokenList.prototype['toggle'] = function(token: string, force: boolean|undefined): boolean {
   if (arguments.length === 1) {
     force = !this.contains(token);
   }
@@ -774,44 +598,28 @@ export const originalInsertBefore = Element.prototype.insertBefore;
 export const originalRemoveChild = Element.prototype.removeChild;
 export const originalRemoveChildren = Element.prototype.removeChildren;
 
-/**
- * @override
- * @param {?Node} child
- * @return {!Node}
- */
-Element.prototype.appendChild = function(child) {
+Element.prototype.appendChild = function(child: Node|null): Node {
   if (child.__widget && child.parentElement !== this) {
     throw new Error('Attempt to add widget via regular DOM operation.');
   }
   return originalAppendChild.call(this, child);
 };
 
-/**
- * @override
- * @param {?Node} child
- * @param {?Node} anchor
- * @return {!Node}
- */
-Element.prototype.insertBefore = function(child, anchor) {
+Element.prototype.insertBefore = function(child: Node|null, anchor: Node|null): Node {
   if (child.__widget && child.parentElement !== this) {
     throw new Error('Attempt to add widget via regular DOM operation.');
   }
   return originalInsertBefore.call(this, child, anchor);
 };
 
-/**
- * @override
- * @param {?Node} child
- * @return {!Node}
- */
-Element.prototype.removeChild = function(child) {
+Element.prototype.removeChild = function(child: Node|null): Node {
   if (child.__widgetCounter || child.__widget) {
     throw new Error('Attempt to remove element containing widget via regular DOM operation');
   }
   return originalRemoveChild.call(this, child);
 };
 
-Element.prototype.removeChildren = function() {
+Element.prototype.removeChildren = function(): void {
   if (this.__widgetCounter) {
     throw new Error('Attempt to remove element containing widget via regular DOM operation');
   }

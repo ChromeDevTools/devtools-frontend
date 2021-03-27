@@ -6,13 +6,13 @@ import("../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../scripts/build/ninja/devtools_module.gni")
 
 devtools_module("dom_extension") {
-  sources = [ "DOMExtension.js" ]
+  sources = [ "DOMExtension.ts" ]
 
   deps = [ "../platform:bundle" ]
 }
 
 devtools_entrypoint("bundle") {
-  entrypoint = "dom_extension.js"
+  entrypoint = "dom_extension.ts"
 
   deps = [ ":dom_extension" ]
 }

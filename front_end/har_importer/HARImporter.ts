@@ -2,39 +2,39 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Common from '../common/common.js';
 import * as SDK from '../sdk/sdk.js';
 
 import {HAREntry, HARLog, HARPage, HARTimings} from './HARFormat.js';  // eslint-disable-line no-unused-vars
 
 export class Importer {
-  /**
-   * @param {!HARLog} log
-   * @return {!Array<!SDK.NetworkRequest.NetworkRequest>}
-   */
-  static requestsFromHARLog(log) {
-    /** @type {!Map<string, !HARPage>} */
-    const pages = new Map();
+  static requestsFromHARLog(log: HARLog): SDK.NetworkRequest.NetworkRequest[] {
+    const pages = new Map<string, HARPage>();
     for (const page of log.pages) {
       pages.set(page.id, page);
     }
 
     log.entries.sort((a, b) => a.startedDateTime.valueOf() - b.startedDateTime.valueOf());
 
-    /** @type {!Map<string, !SDK.NetworkLog.PageLoad>} */
-    const pageLoads = new Map();
-    /** @type {!Array<!SDK.NetworkRequest.NetworkRequest>} */
-    const requests = [];
+    const pageLoads = new Map<string, SDK.NetworkLog.PageLoad>();
+    const requests: SDK.NetworkRequest.NetworkRequest[] = [];
     for (const entry of log.entries) {
       const pageref = entry.pageref;
-      let pageLoad = pageref ? pageLoads.get(pageref) : undefined;
+      let pageLoad: SDK.NetworkLog.PageLoad|(SDK.NetworkLog.PageLoad | undefined) =
+          pageref ? pageLoads.get(pageref) : undefined;
       const documentURL = pageLoad ? pageLoad.mainRequest.url() : entry.request.url;
 
-      let initiator = null;
+      let initiator: {
+        type: Protocol.Network.InitiatorType,
+        url: string|undefined,
+        lineNumber: number|undefined,
+      }|null = null;
       const initiatorEntry = entry.customInitiator();
       if (initiatorEntry) {
         initiator = {
-          type: /** @type{!Protocol.Network.InitiatorType} **/ (initiatorEntry.type),
+          type: (initiatorEntry.type as Protocol.Network.InitiatorType),
           url: initiatorEntry.url,
           lineNumber: initiatorEntry.lineNumber,
         };
@@ -56,12 +56,7 @@ export class Importer {
     return requests;
   }
 
-  /**
-   * @param {!HARPage} page
-   * @param {!SDK.NetworkRequest.NetworkRequest} mainRequest
-   * @return {!SDK.NetworkLog.PageLoad}
-   */
-  static _buildPageLoad(page, mainRequest) {
+  static _buildPageLoad(page: HARPage, mainRequest: SDK.NetworkRequest.NetworkRequest): SDK.NetworkLog.PageLoad {
     const pageLoad = new SDK.NetworkLog.PageLoad(mainRequest);
     pageLoad.startTime = page.startedDateTime.valueOf();
     pageLoad.contentLoadTime = Number(page.pageTimings.onContentLoad) * 1000;
@@ -69,12 +64,8 @@ export class Importer {
     return pageLoad;
   }
 
-  /**
-   * @param {!SDK.NetworkRequest.NetworkRequest} request
-   * @param {!HAREntry} entry
-   * @param {!SDK.NetworkLog.PageLoad|undefined} pageLoad
-   */
-  static _fillRequestFromHAREntry(request, entry, pageLoad) {
+  static _fillRequestFromHAREntry(
+      request: SDK.NetworkRequest.NetworkRequest, entry: HAREntry, pageLoad: SDK.NetworkLog.PageLoad|undefined): void {
     // Request data.
     if (entry.request.postData) {
       request.setRequestFormData(true, entry.request.postData.text);
@@ -87,7 +78,7 @@ export class Importer {
 
     // Response data.
     if (entry.response.content.mimeType && entry.response.content.mimeType !== 'x-unknown') {
-      request.mimeType = /** @type {!SDK.NetworkRequest.MIME_TYPE} */ (entry.response.content.mimeType);
+      request.mimeType = (entry.response.content.mimeType as string);
     }
     request.responseHeaders = entry.response.headers;
     request.statusCode = entry.response.status;
@@ -124,7 +115,7 @@ export class Importer {
     const contentData = {
       error: null,
       content: contentText ? contentText : null,
-      encoded: entry.response.content.encoding === 'base64'
+      encoded: entry.response.content.encoding === 'base64',
     };
     request.setContentDataProvider(async () => contentData);
 
@@ -137,7 +128,7 @@ export class Importer {
 
     const priority = entry.customAsString('priority');
     if (priority && Protocol.Network.ResourcePriority.hasOwnProperty(priority)) {
-      request.setPriority(/** @type {!Protocol.Network.ResourcePriority} */ (priority));
+      request.setPriority((priority as Protocol.Network.ResourcePriority));
     }
 
     const messages = entry.customAsArray('webSocketMessages');
@@ -165,13 +156,9 @@ export class Importer {
     request.finished = true;
   }
 
-  /**
-   * @param {!SDK.NetworkRequest.NetworkRequest} request
-   * @param {!HAREntry} entry
-   * @param {!SDK.NetworkLog.PageLoad|undefined} pageLoad
-   * @return {!Common.ResourceType.ResourceType}
-   */
-  static _getResourceType(request, entry, pageLoad) {
+  static _getResourceType(
+      request: SDK.NetworkRequest.NetworkRequest, entry: HAREntry,
+      pageLoad: SDK.NetworkLog.PageLoad|undefined): Common.ResourceType.ResourceType {
     const customResourceTypeName = entry.customAsString('resourceType');
     if (customResourceTypeName) {
       const customResourceType = Common.ResourceType.ResourceType.fromName(customResourceTypeName);
@@ -197,18 +184,10 @@ export class Importer {
     return Common.ResourceType.resourceTypes.Other;
   }
 
-  /**
-   * @param {!SDK.NetworkRequest.NetworkRequest} request
-   * @param {number} issueTime
-   * @param {number} entryTotalDuration
-   * @param {!HARTimings} timings
-   */
-  static _setupTiming(request, issueTime, entryTotalDuration, timings) {
-    /**
-     * @param {number|undefined} timing
-     * @return {number}
-     */
-    function accumulateTime(timing) {
+  static _setupTiming(
+      request: SDK.NetworkRequest.NetworkRequest, issueTime: number, entryTotalDuration: number,
+      timings: HARTimings): void {
+    function accumulateTime(timing: number|undefined): number {
       if (timing === undefined || timing < 0) {
         return -1;
       }
@@ -248,7 +227,7 @@ export class Importer {
       sendEnd: accumulateTime(timings.send),
       pushStart: 0,
       pushEnd: 0,
-      receiveHeadersEnd: accumulateTime(timings.wait)
+      receiveHeadersEnd: accumulateTime(timings.wait),
     };
     accumulateTime(timings.receive);
 

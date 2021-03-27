@@ -7,8 +7,8 @@ import("../../scripts/build/ninja/devtools_module.gni")
 
 devtools_module("har_importer") {
   sources = [
-    "HARFormat.js",
-    "HARImporter.js",
+    "HARFormat.ts",
+    "HARImporter.ts",
   ]
 
   deps = [
@@ -24,7 +24,7 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_entrypoint("legacy") {
-  entrypoint = "har_importer-legacy.js"
+  entrypoint = "har_importer-legacy.ts"
 
   deps = [ ":bundle" ]
 }

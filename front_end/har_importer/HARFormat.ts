@@ -2,23 +2,18 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties, @typescript-eslint/no-explicit-any */
+
 class HARBase {
-  /**
-   * @param {*} data
-   */
-  constructor(data) {
+  _custom: Map<string, any>;
+  constructor(data: any) {
     if (!data || typeof data !== 'object') {
       throw 'First parameter is expected to be an object';
     }
-    /** @type {!Map<string, ?>} */
     this._custom = new Map();
   }
 
-  /**
-   * @param {*} data
-   * @return {!Date}
-   */
-  static _safeDate(data) {
+  static _safeDate(data: any): Date {
     const date = new Date(data);
     if (!Number.isNaN(date.getTime())) {
       return date;
@@ -26,11 +21,7 @@ class HARBase {
     throw 'Invalid date format';
   }
 
-  /**
-   * @param {*} data
-   * @return {number}
-   */
-  static _safeNumber(data) {
+  static _safeNumber(data: any): number {
     const result = Number(data);
     if (!Number.isNaN(result)) {
       return result;
@@ -38,27 +29,15 @@ class HARBase {
     throw 'Casting to number results in NaN';
   }
 
-  /**
-   * @param {*} data
-   * @return {number|undefined}
-   */
-  static _optionalNumber(data) {
+  static _optionalNumber(data: any): number|undefined {
     return data !== undefined ? HARBase._safeNumber(data) : undefined;
   }
 
-  /**
-   * @param {*} data
-   * @return {string|undefined}
-   */
-  static _optionalString(data) {
+  static _optionalString(data: any): string|undefined {
     return data !== undefined ? String(data) : undefined;
   }
 
-  /**
-   * @param {string} name
-   * @return {string|undefined}
-   */
-  customAsString(name) {
+  customAsString(name: string): string|undefined {
     const value = this._custom.get(name);
     if (!value) {
       return undefined;
@@ -66,11 +45,7 @@ class HARBase {
     return String(value);
   }
 
-  /**
-   * @param {string} name
-   * @return {number|undefined}
-   */
-  customAsNumber(name) {
+  customAsNumber(name: string): number|undefined {
     const value = this._custom.get(name);
     if (!value) {
       return undefined;
@@ -82,11 +57,7 @@ class HARBase {
     return numberValue;
   }
 
-  /**
-   * @param {string} name
-   * @return {!Array<?>|undefined}
-   */
-  customAsArray(name) {
+  customAsArray(name: string): any[]|undefined {
     const value = this._custom.get(name);
     if (!value) {
       return undefined;
@@ -94,29 +65,27 @@ class HARBase {
     return Array.isArray(value) ? value : undefined;
   }
 
-  /**
-   * @return {!HARInitiator|undefined}
-   */
-  customInitiator() {
+  customInitiator(): HARInitiator|undefined {
     return this._custom.get('initiator');
   }
 }
 
 export class HARRoot extends HARBase {
-  /**
-   * @param {*} data
-   */
-  constructor(data) {
+  log: HARLog;
+  constructor(data: any) {
     super(data);
     this.log = new HARLog(data['log']);
   }
 }
 
 export class HARLog extends HARBase {
-  /**
-   * @param {*} data
-   */
-  constructor(data) {
+  version: string;
+  creator: HARCreator;
+  browser: HARCreator|undefined;
+  pages: HARPage[];
+  entries: HAREntry[];
+  comment: string|undefined;
+  constructor(data: any) {
     super(data);
     this.version = String(data['version']);
     this.creator = new HARCreator(data['creator']);
@@ -131,10 +100,10 @@ export class HARLog extends HARBase {
 }
 
 class HARCreator extends HARBase {
-  /**
-   * @param {*} data
-   */
-  constructor(data) {
+  name: string;
+  version: string;
+  comment: string|undefined;
+  constructor(data: any) {
     super(data);
     this.name = String(data['name']);
     this.version = String(data['version']);
@@ -143,10 +112,12 @@ class HARCreator extends HARBase {
 }
 
 export class HARPage extends HARBase {
-  /**
-   * @param {*} data
-   */
-  constructor(data) {
+  startedDateTime: Date;
+  id: string;
+  title: string;
+  pageTimings: HARPageTimings;
+  comment: string|undefined;
+  constructor(data: any) {
     super(data);
     this.startedDateTime = HARBase._safeDate(data['startedDateTime']);
     this.id = String(data['id']);
@@ -157,10 +128,10 @@ export class HARPage extends HARBase {
 }
 
 class HARPageTimings extends HARBase {
-  /**
-   * @param {*} data
-   */
-  constructor(data) {
+  onContentLoad: number|undefined;
+  onLoad: number|undefined;
+  comment: string|undefined;
+  constructor(data: any) {
     super(data);
     this.onContentLoad = HARBase._optionalNumber(data['onContentLoad']);
     this.onLoad = HARBase._optionalNumber(data['onLoad']);
@@ -169,10 +140,17 @@ class HARPageTimings extends HARBase {
 }
 
 export class HAREntry extends HARBase {
-  /**
-   * @param {*} data
-   */
-  constructor(data) {
+  pageref: string|undefined;
+  startedDateTime: Date;
+  time: number;
+  request: HARRequest;
+  response: HARResponse;
+  cache: {};
+  timings: HARTimings;
+  serverIPAddress: string|undefined;
+  connection: string|undefined;
+  comment: string|undefined;
+  constructor(data: any) {
     super(data);
     this.pageref = HARBase._optionalString(data['pageref']);
     this.startedDateTime = HARBase._safeDate(data['startedDateTime']);
@@ -193,11 +171,7 @@ export class HAREntry extends HARBase {
     this._custom.set('webSocketMessages', this._importWebSocketMessages(data['_webSocketMessages']));
   }
 
-  /**
-   * @param {*} initiator
-   * @return {!HARInitiator|undefined}
-   */
-  _importInitiator(initiator) {
+  _importInitiator(initiator: any): HARInitiator|undefined {
     if (typeof initiator !== 'object') {
       return;
     }
@@ -205,11 +179,7 @@ export class HAREntry extends HARBase {
     return new HARInitiator(initiator);
   }
 
-  /**
-   * @param {*} inputMessages
-   * @return {!Array<!HARWebSocketMessage>|undefined}
-   */
-  _importWebSocketMessages(inputMessages) {
+  _importWebSocketMessages(inputMessages: any): HARWebSocketMessage[]|undefined {
     if (!Array.isArray(inputMessages)) {
       return;
     }
@@ -226,10 +196,17 @@ export class HAREntry extends HARBase {
 }
 
 class HARRequest extends HARBase {
-  /**
-   * @param {*} data
-   */
-  constructor(data) {
+  method: string;
+  url: string;
+  httpVersion: string;
+  cookies: HARCookie[];
+  headers: HARHeader[];
+  queryString: HARQueryString[];
+  postData: HARPostData|undefined;
+  headersSize: number;
+  bodySize: number;
+  comment: string|undefined;
+  constructor(data: any) {
     super(data);
     this.method = String(data['method']);
     this.url = String(data['url']);
@@ -245,10 +222,17 @@ class HARRequest extends HARBase {
 }
 
 class HARResponse extends HARBase {
-  /**
-   * @param {*} data
-   */
-  constructor(data) {
+  status: number;
+  statusText: string;
+  httpVersion: string;
+  cookies: HARCookie[];
+  headers: HARHeader[];
+  content: HARContent;
+  redirectURL: string;
+  headersSize: number;
+  bodySize: number;
+  comment: string|undefined;
+  constructor(data: any) {
     super(data);
     this.status = HARBase._safeNumber(data['status']);
     this.statusText = String(data['statusText']);
@@ -268,10 +252,15 @@ class HARResponse extends HARBase {
 }
 
 class HARCookie extends HARBase {
-  /**
-   * @param {*} data
-   */
-  constructor(data) {
+  name: string;
+  value: string;
+  path: string|undefined;
+  domain: string|undefined;
+  expires: Date|undefined;
+  httpOnly: boolean|undefined;
+  secure: boolean|undefined;
+  comment: string|undefined;
+  constructor(data: any) {
     super(data);
     this.name = String(data['name']);
     this.value = String(data['value']);
@@ -285,10 +274,10 @@ class HARCookie extends HARBase {
 }
 
 class HARHeader extends HARBase {
-  /**
-   * @param {*} data
-   */
-  constructor(data) {
+  name: string;
+  value: string;
+  comment: string|undefined;
+  constructor(data: any) {
     super(data);
     this.name = String(data['name']);
     this.value = String(data['value']);
@@ -297,10 +286,10 @@ class HARHeader extends HARBase {
 }
 
 class HARQueryString extends HARBase {
-  /**
-   * @param {*} data
-   */
-  constructor(data) {
+  name: string;
+  value: string;
+  comment: string|undefined;
+  constructor(data: any) {
     super(data);
     this.name = String(data['name']);
     this.value = String(data['value']);
@@ -309,10 +298,11 @@ class HARQueryString extends HARBase {
 }
 
 class HARPostData extends HARBase {
-  /**
-   * @param {*} data
-   */
-  constructor(data) {
+  mimeType: string;
+  params: HARParam[];
+  text: string;
+  comment: string|undefined;
+  constructor(data: any) {
     super(data);
     this.mimeType = String(data['mimeType']);
     this.params = Array.isArray(data['params']) ? data['params'].map(param => new HARParam(param)) : [];
@@ -322,10 +312,12 @@ class HARPostData extends HARBase {
 }
 
 export class HARParam extends HARBase {
-  /**
-   * @param {*} data
-   */
-  constructor(data) {
+  name: string;
+  value: string|undefined;
+  fileName: string|undefined;
+  contentType: string|undefined;
+  comment: string|undefined;
+  constructor(data: any) {
     super(data);
     this.name = String(data['name']);
     this.value = HARBase._optionalString(data['value']);
@@ -336,10 +328,13 @@ export class HARParam extends HARBase {
 }
 
 class HARContent extends HARBase {
-  /**
-   * @param {*} data
-   */
-  constructor(data) {
+  size: number;
+  compression: number|undefined;
+  mimeType: string;
+  text: string|undefined;
+  encoding: string|undefined;
+  comment: string|undefined;
+  constructor(data: any) {
     super(data);
     this.size = HARBase._safeNumber(data['size']);
     this.compression = HARBase._optionalNumber(data['compression']);
@@ -351,10 +346,15 @@ class HARContent extends HARBase {
 }
 
 export class HARTimings extends HARBase {
-  /**
-   * @param {*} data
-   */
-  constructor(data) {
+  blocked: number|undefined;
+  dns: number|undefined;
+  connect: number|undefined;
+  send: number;
+  wait: number;
+  receive: number;
+  ssl: number|undefined;
+  comment: string|undefined;
+  constructor(data: any) {
     super(data);
     this.blocked = HARBase._optionalNumber(data['blocked']);
     this.dns = HARBase._optionalNumber(data['dns']);
@@ -372,12 +372,13 @@ export class HARTimings extends HARBase {
 }
 
 export class HARInitiator extends HARBase {
+  type: string|undefined;
+  url: string|undefined;
+  lineNumber: number|undefined;
   /**
    * Based on Initiator defined in browser_protocol.pdl
-   *
-   * @param {*} data
    */
-  constructor(data) {
+  constructor(data: any) {
     super(data);
     this.type = HARBase._optionalString(data['type']);
     this.url = HARBase._optionalString(data['url']);
@@ -386,10 +387,11 @@ export class HARInitiator extends HARBase {
 }
 
 class HARWebSocketMessage extends HARBase {
-  /**
-   * @param {*} data
-   */
-  constructor(data) {
+  time: number|undefined;
+  opcode: number|undefined;
+  data: string|undefined;
+  type: string|undefined;
+  constructor(data: any) {
     super(data);
     this.time = HARBase._optionalNumber(data['time']);
     this.opcode = HARBase._optionalNumber(data['opcode']);

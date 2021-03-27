@@ -11405,7 +11405,7 @@
   "webauthn/WebauthnPane.ts | yes": {
     "message": "Ŷéŝ"
   },
-  "worker_main/WorkerMain.js | main": {
+  "worker_main/WorkerMain.ts | main": {
     "message": "M̂áîń"
   },
   "workspace/UISourceCode.ts | index": {

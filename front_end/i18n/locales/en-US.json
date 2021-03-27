@@ -11405,7 +11405,7 @@
   "webauthn/WebauthnPane.ts | yes": {
     "message": "Yes"
   },
-  "worker_main/WorkerMain.js | main": {
+  "worker_main/WorkerMain.ts | main": {
     "message": "Main"
   },
   "workspace/UISourceCode.ts | index": {

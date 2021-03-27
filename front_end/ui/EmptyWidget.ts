@@ -28,6 +28,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as i18n from '../i18n/i18n.js';
 
 import {VBox} from './Widget.js';
@@ -39,14 +41,14 @@ const UIStrings = {
   */
   learnMore: 'Learn more',
 };
-const str_ = i18n.i18n.registerUIStrings('ui/EmptyWidget.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('ui/EmptyWidget.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class EmptyWidget extends VBox {
-  /**
-   * @param {string} text
-   */
-  constructor(text) {
+  _contentElement: HTMLElement;
+  _textElement: HTMLElement;
+
+  constructor(text: string) {
     super();
     this.registerRequiredCSS('ui/emptyWidget.css', {enableLegacyPatching: false});
     this.element.classList.add('empty-view-scroller');
@@ -55,26 +57,15 @@ export class EmptyWidget extends VBox {
     this._textElement.textContent = text;
   }
 
-  /**
-   * @return {!Element}
-   */
-  appendParagraph() {
+  appendParagraph(): Element {
     return this._contentElement.createChild('p');
   }
 
-  /**
-   * @param {string} link
-   * @return {!HTMLElement}
-   */
-  appendLink(link) {
-    return /** @type {!HTMLElement} */ (
-        this._contentElement.appendChild(XLink.create(link, i18nString(UIStrings.learnMore))));
+  appendLink(link: string): HTMLElement {
+    return this._contentElement.appendChild(XLink.create(link, i18nString(UIStrings.learnMore))) as HTMLElement;
   }
 
-  /**
-   * @param {string} text
-   */
-  set text(text) {
+  set text(text: string) {
     this._textElement.textContent = text;
   }
 }

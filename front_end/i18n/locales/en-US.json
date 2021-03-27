@@ -11072,7 +11072,7 @@
   "ui/DockController.js | undockIntoSeparateWindow": {
     "message": "Undock into separate window"
   },
-  "ui/EmptyWidget.js | learnMore": {
+  "ui/EmptyWidget.ts | learnMore": {
     "message": "Learn more"
   },
   "ui/FilterBar.js | allStrings": {

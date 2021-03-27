@@ -6,7 +6,7 @@ import("../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../scripts/build/ninja/devtools_module.gni")
 
 devtools_module("workspace_diff") {
-  sources = [ "WorkspaceDiff.js" ]
+  sources = [ "WorkspaceDiff.ts" ]
 
   deps = [
     "../common:bundle",
@@ -24,7 +24,7 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_entrypoint("legacy") {
-  entrypoint = "workspace_diff-legacy.js"
+  entrypoint = "workspace_diff-legacy.ts"
 
   deps = [ ":bundle" ]
 }

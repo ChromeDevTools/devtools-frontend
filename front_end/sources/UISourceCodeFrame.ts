@@ -578,15 +578,27 @@ function getIconDataForLevel(level: Workspace.UISourceCode.Message.Level): WebCo
   return {color: '', width: '12px', height: '12px', iconName: 'error_icon'};
 }
 
-const bubbleTypePerLevel = new Map<Workspace.UISourceCode.Message.Level, string>();
-bubbleTypePerLevel.set(Workspace.UISourceCode.Message.Level.Error, 'error');
-bubbleTypePerLevel.set(Workspace.UISourceCode.Message.Level.Warning, 'warning');
-bubbleTypePerLevel.set(Workspace.UISourceCode.Message.Level.Issue, 'warning');
+function getBubbleTypePerLevel(level: Workspace.UISourceCode.Message.Level): string {
+  switch (level) {
+    case Workspace.UISourceCode.Message.Level.Error:
+      return 'error';
+    case Workspace.UISourceCode.Message.Level.Warning:
+      return 'warning';
+    case Workspace.UISourceCode.Message.Level.Issue:
+      return 'warning';
+  }
+}
 
-const lineClassPerLevel = new Map<Workspace.UISourceCode.Message.Level, string>();
-lineClassPerLevel.set(Workspace.UISourceCode.Message.Level.Error, 'text-editor-line-with-error');
-lineClassPerLevel.set(Workspace.UISourceCode.Message.Level.Warning, 'text-editor-line-with-warning');
-lineClassPerLevel.set(Workspace.UISourceCode.Message.Level.Issue, 'text-editor-line-with-warning');
+function getLineClassPerLevel(level: Workspace.UISourceCode.Message.Level): string {
+  switch (level) {
+    case Workspace.UISourceCode.Message.Level.Error:
+      return 'text-editor-line-with-error';
+    case Workspace.UISourceCode.Message.Level.Warning:
+      return 'text-editor-line-with-warning';
+    case Workspace.UISourceCode.Message.Level.Issue:
+      return 'text-editor-line-with-warning';
+  }
+}
 
 export class RowMessage {
   _message: Workspace.UISourceCode.Message;
@@ -612,7 +624,7 @@ export class RowMessage {
         // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (this.element.createChild('span', 'text-editor-row-message-repeat-count hidden', 'dt-small-bubble') as any);
-    this._repeatCountElement.type = (bubbleTypePerLevel.get(message.level()) as string);
+    this._repeatCountElement.type = getBubbleTypePerLevel(message.level());
     const linesContainer = this.element.createChild('div');
     const lines = this._message.text().split('\n');
     for (let i = 0; i < lines.length; ++i) {
@@ -737,7 +749,7 @@ export class RowMessageBucket {
     }
     const editorLineNumber = position.lineNumber;
     if (this._level) {
-      this.textEditor.toggleLineClass(editorLineNumber, (lineClassPerLevel.get(this._level) as string), false);
+      this.textEditor.toggleLineClass(editorLineNumber, getLineClassPerLevel(this._level), false);
     }
     if (this._decorationStartColumn !== null) {
       this.textEditor.removeDecoration(this._decoration, editorLineNumber);
@@ -819,13 +831,13 @@ export class RowMessageBucket {
       return;
     }
     if (this._level) {
-      this.textEditor.toggleLineClass(editorLineNumber, (lineClassPerLevel.get(this._level) as string), false);
+      this.textEditor.toggleLineClass(editorLineNumber, getLineClassPerLevel(this._level), false);
     }
     this._level = maxMessage.level();
     if (!this._level) {
       return;
     }
-    this.textEditor.toggleLineClass(editorLineNumber, (lineClassPerLevel.get(this._level) as string), true);
+    this.textEditor.toggleLineClass(editorLineNumber, getLineClassPerLevel(this._level), true);
     if (showErrors) {
       this._errorIcon.data = getIconDataForLevel(this._level);
     }

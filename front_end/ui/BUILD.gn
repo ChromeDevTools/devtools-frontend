@@ -26,7 +26,7 @@ devtools_module("ui") {
     "HistoryInput.js",
     "Icon.js",
     "Infobar.js",
-    "InplaceEditor.js",
+    "InplaceEditor.ts",
     "InspectorView.js",
     "KeyboardShortcut.js",
     "ListControl.js",

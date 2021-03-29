@@ -2,46 +2,36 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as ARIAUtils from './ARIAUtils.js';
 import {Keys} from './KeyboardShortcut.js';
 import {ElementFocusRestorer, markBeingEdited} from './UIUtils.js';
 
-/**
- * @type {?InplaceEditor}
- */
-let _defaultInstance = null;
+// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+// eslint-disable-next-line @typescript-eslint/naming-convention
+let _defaultInstance: InplaceEditor<unknown>|null = null;
 
-export class InplaceEditor {
-  /**
-   * @param {!Element} element
-   * @param {!Config<?>=} config
-   * @return {?Controller}
-   */
-  static startEditing(element, config) {
+export class InplaceEditor<T> {
+  _focusRestorer?: ElementFocusRestorer;
+  static startEditing<T>(element: Element, config?: Config<T>): Controller|null {
     if (!_defaultInstance) {
       _defaultInstance = new InplaceEditor();
     }
-    return _defaultInstance.startEditing(element, config);
+    return _defaultInstance.startEditing(element, config as Config<unknown>);
   }
 
-  /**
-   * @param {!EditingContext} editingContext
-   * @return {string}
-   */
-  editorContent(editingContext) {
+  editorContent(editingContext: EditingContext<T>): string {
     const element = editingContext.element;
-    if (element.tagName === 'INPUT' && /** @type {!HTMLInputElement} */ (element).type === 'text') {
-      return /** @type {!HTMLInputElement} */ (element).value;
+    if (element.tagName === 'INPUT' && (element as HTMLInputElement).type === 'text') {
+      return (element as HTMLInputElement).value;
     }
 
     return element.textContent || '';
   }
 
-  /**
-   * @param {!EditingContext} editingContext
-   */
-  setUpEditor(editingContext) {
-    const element = /** @type {!HTMLElement} */ (editingContext.element);
+  setUpEditor(editingContext: EditingContext<T>): void {
+    const element = (editingContext.element as HTMLElement);
     element.classList.add('editing');
     element.setAttribute('contenteditable', 'plaintext-only');
 
@@ -53,16 +43,12 @@ export class InplaceEditor {
     if (typeof oldTabIndex !== 'number' || oldTabIndex < 0) {
       element.tabIndex = 0;
     }
-    /** @type {!ElementFocusRestorer} */
     this._focusRestorer = new ElementFocusRestorer(element);
     editingContext.oldTabIndex = oldTabIndex;
   }
 
-  /**
-   * @param {!EditingContext} editingContext
-   */
-  closeEditor(editingContext) {
-    const element = /** @type {!HTMLElement} */ (editingContext.element);
+  closeEditor(editingContext: EditingContext<T>): void {
+    const element = (editingContext.element as HTMLElement);
     element.classList.remove('editing');
     element.removeAttribute('contenteditable');
 
@@ -81,31 +67,23 @@ export class InplaceEditor {
     element.scrollLeft = 0;
   }
 
-  /**
-   * @param {!EditingContext} editingContext
-   */
-  cancelEditing(editingContext) {
-    const element = /** @type {!HTMLElement} */ (editingContext.element);
-    if (element.tagName === 'INPUT' && /** @type {!HTMLInputElement} */ (element).type === 'text') {
-      /** @type {!HTMLInputElement} */ (element).value = editingContext.oldText || '';
+  cancelEditing(editingContext: EditingContext<T>): void {
+    const element = (editingContext.element as HTMLElement);
+    if (element.tagName === 'INPUT' && (element as HTMLInputElement).type === 'text') {
+      (element as HTMLInputElement).value = editingContext.oldText || '';
     } else {
       element.textContent = editingContext.oldText;
     }
   }
 
-  /**
-   * @param {!Element} element
-   * @param {!Config<*>=} inputConfig
-   * @return {?Controller}
-   */
-  startEditing(element, inputConfig) {
+  startEditing(element: Element, inputConfig?: Config<T>): Controller|null {
     if (!markBeingEdited(element, true)) {
       return null;
     }
 
     const config = inputConfig || new Config(function() {}, function() {});
-    /** @type {!EditingContext} */
-    const editingContext = {element: element, config: config, oldRole: null, oldTabIndex: null, oldText: null};
+    const editingContext:
+        EditingContext<T> = {element: element, config: config, oldRole: null, oldTabIndex: null, oldText: null};
     const committedCallback = config.commitHandler;
     const cancelledCallback = config.cancelHandler;
     const pasteCallback = config.pasteHandler;
@@ -117,17 +95,14 @@ export class InplaceEditor {
 
     editingContext.oldText = this.editorContent(editingContext);
 
-    /**
-     * @param {!Event=} e
-     */
-    function blurEventListener(e) {
+    function blurEventListener(e?: Event): void {
       if (config.blurHandler && !config.blurHandler(element, e)) {
         return;
       }
       editingCommitted.call(element);
     }
 
-    function cleanUpAfterEditing() {
+    function cleanUpAfterEditing(): void {
       markBeingEdited(element, false);
 
       element.removeEventListener('blur', blurEventListener, false);
@@ -142,25 +117,19 @@ export class InplaceEditor {
       self.closeEditor(editingContext);
     }
 
-    /** @this {Element} */
-    function editingCancelled() {
+    function editingCancelled(this: Element): void {
       self.cancelEditing(editingContext);
       cleanUpAfterEditing();
       cancelledCallback(this, context);
     }
 
-    /** @this {Element} */
-    function editingCommitted() {
+    function editingCommitted(this: Element): void {
       cleanUpAfterEditing();
 
       committedCallback(this, self.editorContent(editingContext), editingContext.oldText || '', context, moveDirection);
     }
 
-    /**
-     * @param {!KeyboardEvent} event
-     * @return {string}
-     */
-    function defaultFinishHandler(event) {
+    function defaultFinishHandler(event: KeyboardEvent): string {
       if (event.key === 'Enter') {
         return 'commit';
       }
@@ -173,11 +142,7 @@ export class InplaceEditor {
       return '';
     }
 
-    /**
-     * @param {string|undefined} result
-     * @param {!Event} event
-     */
-    function handleEditingResult(result, event) {
+    function handleEditingResult(result: string|undefined, event: Event): void {
       if (result === 'commit') {
         editingCommitted.call(element);
         event.consume(true);
@@ -186,17 +151,14 @@ export class InplaceEditor {
         event.consume(true);
       } else if (result && result.startsWith('move-')) {
         moveDirection = result.substring(5);
-        if (/** @type {!KeyboardEvent} */ (event).key === 'Tab') {
+        if ((event as KeyboardEvent).key === 'Tab') {
           event.consume(true);
         }
         blurEventListener();
       }
     }
 
-    /**
-     * @param {!Event} event
-     */
-    function pasteEventListener(event) {
+    function pasteEventListener(event: Event): void {
       if (!pasteCallback) {
         return;
       }
@@ -204,11 +166,8 @@ export class InplaceEditor {
       handleEditingResult(result, event);
     }
 
-    /**
-     * @param {!Event} event
-     */
-    function keyDownEventListener(event) {
-      let result = defaultFinishHandler(/** @type {!KeyboardEvent} */ (event));
+    function keyDownEventListener(event: Event): void {
+      let result = defaultFinishHandler((event as KeyboardEvent));
       if (!result && config.postKeydownFinishHandler) {
         const postKeydownResult = config.postKeydownFinishHandler(event);
         if (postKeydownResult) {
@@ -229,63 +188,46 @@ export class InplaceEditor {
   }
 }
 
+export type CommitHandler<T> = (arg0: Element, arg1: string, arg2: string, arg3: T, arg4: string) => void;
+export type CancelHandler<T> = (arg0: Element, arg1: T) => void;
+export type BlurHandler = (arg0: Element, arg1?: Event|undefined) => boolean;
 
-/**
- * @template T
- */
-export class Config {
-  /**
-   * @param {function(!Element,string,string,T,string):void} commitHandler
-   * @param {function(!Element,T):void} cancelHandler
-   * @param {T=} context
-   * @param {function(!Element,!Event=):boolean=} blurHandler
-   */
-  constructor(commitHandler, cancelHandler, context, blurHandler) {
+export class Config<T = undefined> {
+  commitHandler: CommitHandler<T>;
+  cancelHandler: CancelHandler<T>;
+  context: T;
+  blurHandler: BlurHandler|undefined;
+  pasteHandler!: EventHandler|null;
+  postKeydownFinishHandler!: EventHandler|null;
+
+  constructor(
+      commitHandler: CommitHandler<T>, cancelHandler: CancelHandler<T>, context?: T, blurHandler?: BlurHandler) {
     this.commitHandler = commitHandler;
     this.cancelHandler = cancelHandler;
-    this.context = context;
+    this.context = context as T;
     this.blurHandler = blurHandler;
-
-    /**
-     * @type {?EventHandler}
-     */
-    this.pasteHandler;
-
-    /**
-     * @type {?EventHandler}
-     */
-    this.postKeydownFinishHandler;
   }
 
-  /**
-   * @param {!EventHandler} pasteHandler
-   */
-  setPasteHandler(pasteHandler) {
+  setPasteHandler(pasteHandler: EventHandler): void {
     this.pasteHandler = pasteHandler;
   }
 
-  /**
-   * @param {!EventHandler} postKeydownFinishHandler
-   */
-  setPostKeydownFinishHandler(postKeydownFinishHandler) {
+  setPostKeydownFinishHandler(postKeydownFinishHandler: EventHandler): void {
     this.postKeydownFinishHandler = postKeydownFinishHandler;
   }
 }
 
-/**
- * @typedef {function(!Event):string|undefined}
- */
-// @ts-ignore typedef.
-export let EventHandler;
+export type EventHandler = (event: Event) => string|undefined;
 
-/**
- * @typedef {{cancel: function():void, commit: function():void}}
- */
-// @ts-ignore typedef.
-export let Controller;  // eslint-disable-line no-unused-vars
+export interface Controller {
+  cancel: () => void;
+  commit: () => void;
+}
 
-/**
- * @typedef {!{element: Element, config: !Config<*>, oldRole: ?string, oldText: ?string, oldTabIndex: ?number}}
- */
-// @ts-ignore typedef.
-export let EditingContext;  // eslint-disable-line no-unused-vars
+export interface EditingContext<T> {
+  element: Element;
+  config: Config<T>;
+  oldRole: string|null;
+  oldText: string|null;
+  oldTabIndex: number|null;
+}

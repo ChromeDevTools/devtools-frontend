@@ -11075,16 +11075,16 @@
   "ui/EmptyWidget.ts | learnMore": {
     "message": "L̂éâŕn̂ ḿôŕê"
   },
-  "ui/FilterBar.js | allStrings": {
+  "ui/FilterBar.ts | allStrings": {
     "message": "Âĺl̂"
   },
-  "ui/FilterBar.js | egSmalldUrlacomb": {
+  "ui/FilterBar.ts | egSmalldUrlacomb": {
     "message": "ê.ǵ. /small[d]+/ url:a.com/b"
   },
-  "ui/FilterBar.js | filter": {
+  "ui/FilterBar.ts | filter": {
     "message": "F̂íl̂t́êŕ"
   },
-  "ui/FilterBar.js | sclickToSelectMultipleTypes": {
+  "ui/FilterBar.ts | sclickToSelectMultipleTypes": {
     "message": "{PH1}Ĉĺîćk̂ t́ô śêĺêćt̂ ḿûĺt̂íp̂ĺê t́ŷṕêś"
   },
   "ui/Infobar.js | close": {

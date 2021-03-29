@@ -11075,16 +11075,16 @@
   "ui/EmptyWidget.ts | learnMore": {
     "message": "Learn more"
   },
-  "ui/FilterBar.js | allStrings": {
+  "ui/FilterBar.ts | allStrings": {
     "message": "All"
   },
-  "ui/FilterBar.js | egSmalldUrlacomb": {
+  "ui/FilterBar.ts | egSmalldUrlacomb": {
     "message": "e.g. /small[d]+/ url:a.com/b"
   },
-  "ui/FilterBar.js | filter": {
+  "ui/FilterBar.ts | filter": {
     "message": "Filter"
   },
-  "ui/FilterBar.js | sclickToSelectMultipleTypes": {
+  "ui/FilterBar.ts | sclickToSelectMultipleTypes": {
     "message": "{PH1}Click to select multiple types"
   },
   "ui/Infobar.js | close": {

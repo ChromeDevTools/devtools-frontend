@@ -17,7 +17,7 @@ devtools_module("ui") {
     "DockController.js",
     "DropTarget.ts",
     "EmptyWidget.ts",
-    "FilterBar.js",
+    "FilterBar.ts",
     "FilterSuggestionBuilder.js",
     "ForwardedInputEventHandler.js",
     "Fragment.js",

@@ -7,7 +7,7 @@ import {assert} from 'chai';
 import {getBrowserAndPages, getTestServerPort, step} from '../../shared/helper.js';
 import {doubleClickSourceTreeItem, getStorageItemsData, navigateToApplicationTab} from '../helpers/application-helpers.js';
 
-const SESSION_STORAGE_SELECTOR = '[aria-label="Session Storage"]';
+const SESSION_STORAGE_SELECTOR = '[aria-label="Session Storage"].parent';
 let DOMAIN_SELECTOR: string;
 
 describe('The Application Tab', async () => {
@@ -15,8 +15,7 @@ describe('The Application Tab', async () => {
     DOMAIN_SELECTOR = `${SESSION_STORAGE_SELECTOR} + ol > [aria-label="https://localhost:${getTestServerPort()}"]`;
   });
 
-  // Flaky test
-  it.skip('[crbug.com/1178496] shows Session Storage keys and values', async () => {
+  it('shows Session Storage keys and values', async () => {
     const {target} = getBrowserAndPages();
 
     await step('navigate to session-storage resource and open Application tab', async () => {

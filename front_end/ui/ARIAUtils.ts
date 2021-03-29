@@ -2,271 +2,167 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Platform from '../platform/platform.js';
 
+// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+// eslint-disable-next-line @typescript-eslint/naming-convention
 let _id = 0;
 
-/**
- * @param {string} prefix
- * @return {string}
- */
-export function nextId(prefix) {
+export function nextId(prefix: string): string {
   return (prefix || '') + ++_id;
 }
 
-/**
- * @param {!Element} label
- * @param {!Element} control
- */
-export function bindLabelToControl(label, control) {
+export function bindLabelToControl(label: Element, control: Element): void {
   const controlId = nextId('labelledControl');
   control.id = controlId;
   label.setAttribute('for', controlId);
 }
 
-/**
- * @param {!Element} element
- */
-export function markAsAlert(element) {
+export function markAsAlert(element: Element): void {
   element.setAttribute('role', 'alert');
   element.setAttribute('aria-live', 'polite');
 }
 
-/**
- * @param {!Element} element
- */
-export function markAsApplication(element) {
+export function markAsApplication(element: Element): void {
   element.setAttribute('role', 'application');
 }
 
-/**
- * @param {!Element} element
- */
-export function markAsButton(element) {
+export function markAsButton(element: Element): void {
   element.setAttribute('role', 'button');
 }
 
-/**
- * @param {!Element} element
- */
-export function markAsCheckbox(element) {
+export function markAsCheckbox(element: Element): void {
   element.setAttribute('role', 'checkbox');
 }
 
-/**
- * @param {!Element} element
- */
-export function markAsCombobox(element) {
+export function markAsCombobox(element: Element): void {
   element.setAttribute('role', 'combobox');
 }
 
-/**
- * @param {!Element} element
- */
-export function markAsModalDialog(element) {
+export function markAsModalDialog(element: Element): void {
   element.setAttribute('role', 'dialog');
   element.setAttribute('aria-modal', 'true');
 }
 
-/**
- * @param {!Element} element
- */
-export function markAsGroup(element) {
+export function markAsGroup(element: Element): void {
   element.setAttribute('role', 'group');
 }
 
-/**
- * @param {!Element} element
- */
-export function markAsLink(element) {
+export function markAsLink(element: Element): void {
   element.setAttribute('role', 'link');
 }
 
-/**
- * @param {!Element} element
- */
-export function markAsMenuButton(element) {
+export function markAsMenuButton(element: Element): void {
   markAsButton(element);
   element.setAttribute('aria-haspopup', 'true');
 }
 
-/**
- * @param {!Element} element
- * @param {number=} min
- * @param {number=} max
- */
-export function markAsProgressBar(element, min = 0, max = 100) {
+export function markAsProgressBar(element: Element, min: number|undefined = 0, max: number|undefined = 100): void {
   element.setAttribute('role', 'progressbar');
   element.setAttribute('aria-valuemin', min.toString());
   element.setAttribute('aria-valuemax', max.toString());
 }
 
-/**
- * @param {!Element} element
- */
-export function markAsTab(element) {
+export function markAsTab(element: Element): void {
   element.setAttribute('role', 'tab');
 }
 
-/**
- * @param {!Element} element
- */
-export function markAsTablist(element) {
+export function markAsTablist(element: Element): void {
   element.setAttribute('role', 'tablist');
 }
 
-/**
- * @param {!Element} element
- */
-export function markAsTabpanel(element) {
+export function markAsTabpanel(element: Element): void {
   element.setAttribute('role', 'tabpanel');
 }
 
-/**
- * @param {!Element} element
- */
-export function markAsTree(element) {
+export function markAsTree(element: Element): void {
   element.setAttribute('role', 'tree');
 }
 
-/**
- * @param {!Element} element
- */
-export function markAsTreeitem(element) {
+export function markAsTreeitem(element: Element): void {
   element.setAttribute('role', 'treeitem');
 }
 
-/**
- * @param {!Element} element
- */
-export function markAsTextBox(element) {
+export function markAsTextBox(element: Element): void {
   element.setAttribute('role', 'textbox');
 }
 
-/**
- * @param {!Element} element
- */
-export function markAsMenu(element) {
+export function markAsMenu(element: Element): void {
   element.setAttribute('role', 'menu');
 }
 
-/**
- * @param {!Element} element
- */
-export function markAsMenuItem(element) {
+export function markAsMenuItem(element: Element): void {
   element.setAttribute('role', 'menuitem');
 }
 
-/**
- * @param {!Element} element
- */
-export function markAsMenuItemSubMenu(element) {
+export function markAsMenuItemSubMenu(element: Element): void {
   markAsMenuItem(element);
   element.setAttribute('aria-haspopup', 'true');
 }
 
-/**
- * @param {!Element} element
- */
-export function markAsList(element) {
+export function markAsList(element: Element): void {
   element.setAttribute('role', 'list');
 }
 
-/**
- * @param {!Element} element
- */
-export function markAsListitem(element) {
+export function markAsListitem(element: Element): void {
   element.setAttribute('role', 'listitem');
 }
 
 /**
  * Must contain children whose role is option.
- * @param {!Element} element
  */
-export function markAsListBox(element) {
+export function markAsListBox(element: Element): void {
   element.setAttribute('role', 'listbox');
 }
 
-/**
- * @param {!Element} element
- */
-export function markAsMultiSelectable(element) {
+export function markAsMultiSelectable(element: Element): void {
   element.setAttribute('aria-multiselectable', 'true');
 }
 
 /**
  * Must be contained in, or owned by, an element with the role listbox.
- * @param {!Element} element
  */
-export function markAsOption(element) {
+export function markAsOption(element: Element): void {
   element.setAttribute('role', 'option');
 }
 
-/**
- * @param {!Element} element
- */
-export function markAsRadioGroup(element) {
+export function markAsRadioGroup(element: Element): void {
   element.setAttribute('role', 'radiogroup');
 }
 
-/**
- * @param {!Element} element
- */
-export function markAsHidden(element) {
+export function markAsHidden(element: Element): void {
   element.setAttribute('aria-hidden', 'true');
 }
 
-/**
- * @param {!Element} element
- * @param {number=} min
- * @param {number=} max
- */
-export function markAsSlider(element, min = 0, max = 100) {
+export function markAsSlider(element: Element, min: number|undefined = 0, max: number|undefined = 100): void {
   element.setAttribute('role', 'slider');
   element.setAttribute('aria-valuemin', String(min));
   element.setAttribute('aria-valuemax', String(max));
 }
 
-/**
- * @param {!Element} element
- * @param {number} level
- */
-export function markAsHeading(element, level) {
+export function markAsHeading(element: Element, level: number): void {
   element.setAttribute('role', 'heading');
   element.setAttribute('aria-level', level.toString());
 }
 
-/**
- * @param {!Element} element
- * @param {boolean} isAtomic
- */
-export function markAsPoliteLiveRegion(element, isAtomic) {
+export function markAsPoliteLiveRegion(element: Element, isAtomic: boolean): void {
   element.setAttribute('aria-live', 'polite');
   if (isAtomic) {
     element.setAttribute('aria-atomic', 'true');
   }
 }
 
-/**
- * @param {!Element} element
- * @return {boolean}
- */
-export function hasRole(element) {
+export function hasRole(element: Element): boolean {
   return element.hasAttribute('role');
 }
 
-/**
- * @param {!Element} element
- */
-export function removeRole(element) {
+export function removeRole(element: Element): void {
   element.removeAttribute('role');
 }
 
-/**
- * @param {!Element} element
- * @param {?string} placeholder
- */
-export function setPlaceholder(element, placeholder) {
+export function setPlaceholder(element: Element, placeholder: string|null): void {
   if (placeholder) {
     element.setAttribute('aria-placeholder', placeholder);
   } else {
@@ -274,61 +170,34 @@ export function setPlaceholder(element, placeholder) {
   }
 }
 
-/**
- * @param {!Element} element
- */
-export function markAsPresentation(element) {
+export function markAsPresentation(element: Element): void {
   element.setAttribute('role', 'presentation');
 }
 
-/**
- * @param {!Element} element
- */
-export function markAsStatus(element) {
+export function markAsStatus(element: Element): void {
   element.setAttribute('role', 'status');
 }
 
-/**
- * @param {!Element} element
- */
-export function ensureId(element) {
+export function ensureId(element: Element): void {
   if (!element.id) {
     element.id = nextId('ariaElement');
   }
 }
 
-/**
- * @param {!Element} element
- * @param {string} valueText
- */
-export function setAriaValueText(element, valueText) {
+export function setAriaValueText(element: Element, valueText: string): void {
   element.setAttribute('aria-valuetext', valueText);
 }
 
-/**
- * @param {!Element} element
- * @param {string} value
- */
-export function setAriaValueNow(element, value) {
+export function setAriaValueNow(element: Element, value: string): void {
   element.setAttribute('aria-valuenow', value);
 }
 
-
-/**
- * @param {!Element} element
- * @param {string} min
- * @param {string} max
- */
-export function setAriaValueMinMax(element, min, max) {
+export function setAriaValueMinMax(element: Element, min: string, max: string): void {
   element.setAttribute('aria-valuemin', min);
   element.setAttribute('aria-valuemax', max);
 }
 
-/**
- * @param {!Element} element
- * @param {?Element} controlledElement
- */
-export function setControls(element, controlledElement) {
+export function setControls(element: Element, controlledElement: Element|null): void {
   if (!controlledElement) {
     element.removeAttribute('aria-controls');
     return;
@@ -338,101 +207,70 @@ export function setControls(element, controlledElement) {
   element.setAttribute('aria-controls', controlledElement.id);
 }
 
-/**
- * @param {!Element} element
- * @param {boolean} value
- */
-export function setChecked(element, value) {
+export function setChecked(element: Element, value: boolean): void {
   element.setAttribute('aria-checked', (Boolean(value)).toString());
 }
 
-/**
- * @param {!Element} element
- */
-export function setCheckboxAsIndeterminate(element) {
+export function setCheckboxAsIndeterminate(element: Element): void {
   element.setAttribute('aria-checked', 'mixed');
 }
 
-/**
- * @param {!Element} element
- * @param {boolean} value
- */
-export function setDisabled(element, value) {
+export function setDisabled(element: Element, value: boolean): void {
   element.setAttribute('aria-disabled', (Boolean(value)).toString());
 }
 
-/**
- * @param {!Element} element
- * @param {boolean} value
- */
-export function setExpanded(element, value) {
+export function setExpanded(element: Element, value: boolean): void {
   element.setAttribute('aria-expanded', (Boolean(value)).toString());
 }
 
-/**
- * @param {!Element} element
- */
-export function unsetExpandable(element) {
+export function unsetExpandable(element: Element): void {
   element.removeAttribute('aria-expanded');
 }
 
-/**
- * @param {!Element} element
- * @param {boolean} value
- */
-export function setHidden(element, value) {
+export function setHidden(element: Element, value: boolean): void {
   element.setAttribute('aria-hidden', (Boolean(value)).toString());
 }
 
-/**
- * @param {!Element} element
- * @param {number} level
- */
-export function setLevel(element, level) {
+export function setLevel(element: Element, level: number): void {
   element.setAttribute('aria-level', level.toString());
 }
 
-/**
- * @enum {string}
- */
-export const AutocompleteInteractionModel = {
-  inline: 'inline',
-  list: 'list',
-  both: 'both',
-  none: 'none',
-};
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum AutocompleteInteractionModel {
+  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  inline = 'inline',
+  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  list = 'list',
+  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  both = 'both',
+  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  none = 'none',
+}
 
-/**
- * @param {!Element} element
- * @param {!AutocompleteInteractionModel=} interactionModel
- */
-export function setAutocomplete(element, interactionModel = AutocompleteInteractionModel.none) {
+
+export function setAutocomplete(
+    element: Element,
+    interactionModel: AutocompleteInteractionModel|undefined = AutocompleteInteractionModel.none): void {
   element.setAttribute('aria-autocomplete', interactionModel);
 }
 
-/**
- * @param {!Element} element
- * @param {boolean} value
- */
-export function setSelected(element, value) {
+export function setSelected(element: Element, value: boolean): void {
   // aria-selected behaves differently for false and undefined.
   // Often times undefined values are unintentionally typed as booleans.
   // Use !! to make sure this is true or false.
   element.setAttribute('aria-selected', (Boolean(value)).toString());
 }
 
-/**
- * @param {!Element} element
- */
-export function clearSelected(element) {
+export function clearSelected(element: Element): void {
   element.removeAttribute('aria-selected');
 }
 
-/**
- * @param {!Element} element
- * @param {boolean} value
- */
-export function setInvalid(element, value) {
+export function setInvalid(element: Element, value: boolean): void {
   if (value) {
     element.setAttribute('aria-invalid', value.toString());
   } else {
@@ -440,39 +278,22 @@ export function setInvalid(element, value) {
   }
 }
 
-/**
- * @param {!Element} element
- * @param {boolean} value
- */
-export function setPressed(element, value) {
+export function setPressed(element: Element, value: boolean): void {
   // aria-pressed behaves differently for false and undefined.
   // Often times undefined values are unintentionally typed as booleans.
   // Use !! to make sure this is true or false.
   element.setAttribute('aria-pressed', (Boolean(value)).toString());
 }
 
-/**
- * @param {!Element} element
- * @param {number} value
- */
-export function setValueNow(element, value) {
+export function setValueNow(element: Element, value: number): void {
   element.setAttribute('aria-valuenow', value.toString());
 }
 
-/**
- * @param {!Element} element
- * @param {number} value
- */
-export function setValueText(element, value) {
+export function setValueText(element: Element, value: number): void {
   element.setAttribute('aria-valuetext', value.toString());
 }
 
-/**
- * @param {!Element} element
- * @param {number} valueNow
- * @param {string=} valueText
- */
-export function setProgressBarValue(element, valueNow, valueText) {
+export function setProgressBarValue(element: Element, valueNow: number, valueText?: string): void {
   element.setAttribute('aria-valuenow', valueNow.toString());
 
   if (valueText) {
@@ -480,22 +301,15 @@ export function setProgressBarValue(element, valueNow, valueText) {
   }
 }
 
-/**
- * @param {!Element} element
- * @param {string} name
- */
-export function setAccessibleName(element, name) {
+export function setAccessibleName(element: Element, name: string): void {
   element.setAttribute('aria-label', name);
 }
 
-/** @type {!WeakMap<!Element, !Element>} */
-const _descriptionMap = new WeakMap();
+// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+// eslint-disable-next-line @typescript-eslint/naming-convention
+const _descriptionMap = new WeakMap<Element, Element>();
 
-/**
- * @param {!Element} element
- * @param {string} description
- */
-export function setDescription(element, description) {
+export function setDescription(element: Element, description: string): void {
   // Nodes in the accessibility tree are made up of a core
   // triplet of "name", "value", "description"
   // The "description" field is taken from either
@@ -546,7 +360,7 @@ export function setDescription(element, description) {
   // as a child of the main element. But wait! Some HTML elements
   // aren't supposed to have children. Blink won't search inside
   // these elements, and won't find our description element.
-  const contentfulVoidTags = new Set(['INPUT', 'IMG']);
+  const contentfulVoidTags = new Set<string>(['INPUT', 'IMG']);
   if (!contentfulVoidTags.has(element.tagName)) {
     element.appendChild(descriptionElement);
     // If we made it here, someone setting .textContent
@@ -580,11 +394,7 @@ export function setDescription(element, description) {
   }, {once: true});
 }
 
-/**
- * @param {!Element} element
- * @param {?Element} activedescendant
- */
-export function setActiveDescendant(element, activedescendant) {
+export function setActiveDescendant(element: Element, activedescendant: Element|null): void {
   if (!activedescendant) {
     element.removeAttribute('aria-activedescendant');
     return;
@@ -600,49 +410,35 @@ export function setActiveDescendant(element, activedescendant) {
   element.setAttribute('aria-activedescendant', activedescendant.id);
 }
 
-/**
- * @param {!Element} element
- * @param {number} size
- */
-export function setSetSize(element, size) {
+export function setSetSize(element: Element, size: number): void {
   element.setAttribute('aria-setsize', size.toString());
 }
 
-/**
- * @param {!Element} element
- * @param {number} position
- */
-export function setPositionInSet(element, position) {
+export function setPositionInSet(element: Element, position: number): void {
   element.setAttribute('aria-posinset', position.toString());
 }
 
-/**
- * @param {!HTMLElement} element
- */
-function hideFromLayout(element) {
+function hideFromLayout(element: HTMLElement): void {
   element.style.position = 'absolute';
   element.style.left = '-999em';
   element.style.width = '100em';
   element.style.overflow = 'hidden';
 }
 
-/**
- * @type {!WeakMap<!Document, !HTMLElement>}>}
+/** >}
  */
-const alertsMap = new WeakMap();
+const alertsMap = new WeakMap<Document, HTMLElement>();
 
 /**
  * This function is used to announce a message with the screen reader.
  * Setting the textContent would allow the SR to access the offscreen element via browse mode
- * @param {string} message
- * @param {!Element} element
  */
-export function alert(message, element) {
-  const document = /** @type {!Document} */ (element.ownerDocument);
+export function alert(message: string, element: Element): void {
+  const document = (element.ownerDocument as Document);
 
   let alertElement = alertsMap.get(document);
   if (!alertElement) {
-    alertElement = /** @type {!HTMLElement} */ (document.body.createChild('div'));
+    alertElement = (document.body.createChild('div') as HTMLElement);
     hideFromLayout(alertElement);
     alertElement.setAttribute('role', 'alert');
     alertElement.setAttribute('aria-atomic', 'true');

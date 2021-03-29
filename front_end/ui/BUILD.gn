@@ -50,7 +50,7 @@ devtools_module("ui") {
     "TargetCrashedScreen.ts",
     "TextEditor.js",
     "TextPrompt.js",
-    "ThrottledWidget.js",
+    "ThrottledWidget.ts",
     "Toolbar.js",
     "Tooltip.js",
     "Treeoutline.ts",

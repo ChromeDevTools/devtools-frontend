@@ -404,6 +404,10 @@ export class SubMenu extends Item {
       return order1 - order2;
     });
     for (const item of items) {
+      if (item.experiment && !Root.Runtime.experiments.isEnabled(item.experiment)) {
+        continue;
+      }
+
       const itemLocation = item.location;
       const actionId = item.actionId;
       if (!itemLocation || !itemLocation.startsWith(location + '/')) {
@@ -741,7 +745,8 @@ export let ProviderRegistration;
  * @typedef {{
   *  location: !ItemLocation,
   *  actionId: string,
-  *  order: (undefined|number)
+  *  order: (undefined|number),
+  *  experiment?: Root.Runtime.ExperimentName,
   * }} */
 // @ts-ignore typedef
 export let ContextMenuItemRegistration;

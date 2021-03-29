@@ -31,7 +31,10 @@
 // @ts-nocheck
 // TODO(crbug.com/1011811): Enable TypeScript compiler checks
 
-export function defineCommonExtensionSymbols(apiPrivate) {
+// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+/* eslint-disable @typescript-eslint/no-explicit-any,@typescript-eslint/naming-convention */
+
+export function defineCommonExtensionSymbols(apiPrivate: any): void {
   if (!apiPrivate.panels) {
     apiPrivate.panels = {};
   }
@@ -39,7 +42,7 @@ export function defineCommonExtensionSymbols(apiPrivate) {
     CancelSearch: 'cancelSearch',
     PerformSearch: 'performSearch',
     NextSearchResult: 'nextSearchResult',
-    PreviousSearchResult: 'previousSearchResult'
+    PreviousSearchResult: 'previousSearchResult',
   };
 
   /** @enum {string} */
@@ -54,7 +57,7 @@ export function defineCommonExtensionSymbols(apiPrivate) {
     ResourceAdded: 'resource-added',
     ResourceContentCommitted: 'resource-content-committed',
     ViewShown: 'view-shown-',
-    ViewHidden: 'view-hidden-'
+    ViewHidden: 'view-hidden-',
   };
 
   /** @enum {string} */
@@ -84,7 +87,7 @@ export function defineCommonExtensionSymbols(apiPrivate) {
     ShowPanel: 'showPanel',
     Unsubscribe: 'unsubscribe',
     UpdateButton: 'updateButton',
-    RegisterLanguageExtensionPlugin: 'registerLanguageExtensionPlugin'
+    RegisterLanguageExtensionPlugin: 'registerLanguageExtensionPlugin',
   };
 
   /** @enum {string} */
@@ -106,22 +109,16 @@ export function defineCommonExtensionSymbols(apiPrivate) {
 
   /** @enum {string} */
   apiPrivate.LanguageExtensionPluginEvents = {
-    UnregisteredLanguageExtensionPlugin: 'unregisteredLanguageExtensionPlugin'
+    UnregisteredLanguageExtensionPlugin: 'unregisteredLanguageExtensionPlugin',
   };
 }
 
-/**
- * @param {!ExtensionDescriptor} extensionInfo
- * @param {string} inspectedTabId
- * @param {string} themeName
- * @param {!Array<number>} keysToForward
- * @param {number} injectedScriptId
- * @param {function(!Object, !Object)} testHook
- */
 self.injectedExtensionAPI = function(
-    extensionInfo, inspectedTabId, themeName, keysToForward, testHook, injectedScriptId) {
-  const keysToForwardSet = new Set(keysToForward);
+    extensionInfo: any, inspectedTabId: string, themeName: string, keysToForward: number[],
+    testHook: (arg0: Object, arg1: Object) => any, injectedScriptId: number): void {
+  const keysToForwardSet = new Set<number>(keysToForward);
   const chrome = window.chrome || {};
+
   const devtools_descriptor = Object.getOwnPropertyDescriptor(chrome, 'devtools');
   if (devtools_descriptor) {
     return;
@@ -143,17 +140,16 @@ self.injectedExtensionAPI = function(
   // by Foo consutrctor to re-bind publicly exported members to an instance
   // of Foo.
 
-  /**
-   * @constructor
-   */
-  function EventSinkImpl(type, customDispatch) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/naming-convention
+  function EventSinkImpl(type: any, customDispatch: any): void {
     this._type = type;
     this._listeners = [];
     this._customDispatch = customDispatch;
   }
 
   EventSinkImpl.prototype = {
-    addListener: function(callback) {
+
+    addListener: function(callback: any): void {
       if (typeof callback !== 'function') {
         throw 'addListener: callback is not a function';
       }
@@ -164,7 +160,8 @@ self.injectedExtensionAPI = function(
       extensionServer.registerHandler('notify-' + this._type, this._dispatch.bind(this));
     },
 
-    removeListener: function(callback) {
+
+    removeListener: function(callback: any): void {
       const listeners = this._listeners;
 
       for (let i = 0; i < listeners.length; ++i) {
@@ -178,29 +175,29 @@ self.injectedExtensionAPI = function(
       }
     },
 
-    /**
-     * @param {...} vararg
-     */
-    _fire: function(vararg) {
+
+    _fire: function _(_vararg: any): void {
       const listeners = this._listeners.slice();
       for (let i = 0; i < listeners.length; ++i) {
         listeners[i].apply(null, arguments);
       }
     },
 
-    _dispatch: function(request) {
+
+    _dispatch: function(request: any): void {
       if (this._customDispatch) {
         this._customDispatch.call(this, request);
       } else {
         this._fire.apply(this, request.arguments);
       }
-    }
+    },
   };
 
   /**
    * @constructor
    */
-  function InspectorExtensionAPI() {
+
+  function InspectorExtensionAPI(): void {
     this.inspectedWindow = new InspectedWindow();
     this.panels = new Panels();
     this.network = new Network();
@@ -212,11 +209,9 @@ self.injectedExtensionAPI = function(
   /**
    * @constructor
    */
-  function Network() {
-    /**
-     * @this {EventSinkImpl}
-     */
-    function dispatchRequestEvent(message) {
+
+  function Network(): void {
+    function dispatchRequestEvent(this: EventSinkImpl, message: any): void {
       const request = message.arguments[1];
       request.__proto__ = new Request(message.arguments[0]);
       this._fire(request);
@@ -227,8 +222,8 @@ self.injectedExtensionAPI = function(
   }
 
   Network.prototype = {
-    getHAR: function(callback) {
-      function callbackWrapper(result) {
+    getHAR: function(callback: any): void {
+      function callbackWrapper(result: any): void {
         const entries = (result && result.entries) || [];
         for (let i = 0; i < entries.length; ++i) {
           entries[i].__proto__ = new Request(entries[i]._requestId);
@@ -239,59 +234,57 @@ self.injectedExtensionAPI = function(
       extensionServer.sendRequest({command: commands.GetHAR}, callback && callbackWrapper);
     },
 
-    addRequestHeaders: function(headers) {
+    addRequestHeaders: function(headers: any): void {
       extensionServer.sendRequest(
           {command: commands.AddRequestHeaders, headers: headers, extensionId: window.location.hostname});
-    }
+    },
   };
 
-  /**
-   * @constructor
-   */
-  function RequestImpl(id) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/naming-convention
+  function RequestImpl(id: any): void {
     this._id = id;
   }
 
   RequestImpl.prototype = {
-    getContent: function(callback) {
-      function callbackWrapper(response) {
+    getContent: function(callback: any): void {
+      function callbackWrapper(response: any): void {
         callback(response.content, response.encoding);
       }
       extensionServer.sendRequest({command: commands.GetRequestContent, id: this._id}, callback && callbackWrapper);
-    }
+    },
   };
 
   /**
    * @constructor
    */
-  function Panels() {
+  function Panels(): void {
     const panels = {
       elements: new ElementsPanel(),
       sources: new SourcesPanel(),
     };
 
-    function panelGetter(name) {
+    function panelGetter(name: any): any {
       return panels[name];
     }
     for (const panel in panels) {
       Object.defineProperty(this, panel, {get: panelGetter.bind(null, panel), enumerable: true});
     }
-    this.applyStyleSheet = function(styleSheet) {
+    this.applyStyleSheet = function(styleSheet: any): void {
       extensionServer.sendRequest({command: commands.ApplyStyleSheet, styleSheet: styleSheet});
     };
   }
 
   Panels.prototype = {
-    create: function(title, icon, page, callback) {
+    create: function(title: any, icon: any, page: any, callback: any): void {
       const id = 'extension-panel-' + extensionServer.nextObjectId();
       const request = {command: commands.CreatePanel, id: id, title: title, icon: icon, page: page};
       extensionServer.sendRequest(request, callback && callback.bind(this, new ExtensionPanel(id)));
     },
 
-    setOpenResourceHandler: function(callback) {
+    setOpenResourceHandler: function(callback: any): void {
       const hadHandler = extensionServer.hasHandler(events.OpenResource);
 
-      function callbackWrapper(message) {
+      function callbackWrapper(message: any): void {
         // Allow the panel to show itself when handling the event.
         userAction = true;
         try {
@@ -313,25 +306,22 @@ self.injectedExtensionAPI = function(
       }
     },
 
-    openResource: function(url, lineNumber, callback) {
+    openResource: function(url: any, lineNumber: any, callback: any): void {
       extensionServer.sendRequest({command: commands.OpenResource, 'url': url, 'lineNumber': lineNumber}, callback);
     },
 
-    get SearchAction() {
+    get SearchAction(): any {
       return apiPrivate.panels.SearchAction;
-    }
+    },
   };
 
   /**
    * @constructor
    */
-  function ExtensionViewImpl(id) {
+  function ExtensionViewImpl(id: any): void {
     this._id = id;
 
-    /**
-     * @this {EventSinkImpl}
-     */
-    function dispatchShowEvent(message) {
+    function dispatchShowEvent(this: EventSinkImpl, message: any): void {
       const frameIndex = message.arguments[0];
       if (typeof frameIndex === 'number') {
         this._fire(window.parent.frames[frameIndex]);
@@ -349,50 +339,46 @@ self.injectedExtensionAPI = function(
   /**
    * @constructor
    * @extends {ExtensionViewImpl}
-   * @param {string} hostPanelName
    */
-  function PanelWithSidebarImpl(hostPanelName) {
+  function PanelWithSidebarImpl(hostPanelName: string): void {
     ExtensionViewImpl.call(this, null);
     this._hostPanelName = hostPanelName;
     this.onSelectionChanged = new EventSink(events.PanelObjectSelected + hostPanelName);
   }
 
   PanelWithSidebarImpl.prototype = {
-    createSidebarPane: function(title, callback) {
+    createSidebarPane: function(title: any, callback: any): void {
       const id = 'extension-sidebar-' + extensionServer.nextObjectId();
       const request = {command: commands.CreateSidebarPane, panel: this._hostPanelName, id: id, title: title};
-      function callbackWrapper() {
+      function callbackWrapper(): void {
         callback(new ExtensionSidebarPane(id));
       }
       extensionServer.sendRequest(request, callback && callbackWrapper);
     },
 
-    __proto__: ExtensionViewImpl.prototype
+    __proto__: ExtensionViewImpl.prototype,
   };
 
   /**
    * @constructor
    */
-  function LanguageServicesAPIImpl() {
+  function LanguageServicesAPIImpl(): void {
     /** @type {!Map<*, !MessagePort>} */
     this._plugins = new Map();
   }
 
   LanguageServicesAPIImpl.prototype = {
-    /**
-     * @param {*} plugin The language plugin instance to register.
-     * @param {string} pluginName The plugin name
-     * @param {{language: string, symbol_types: !Array<string>}} supportedScriptTypes Script language and debug symbol types supported by this extension.
-     * @return {!Promise<void>}
-     */
-    registerLanguageExtensionPlugin: async function(plugin, pluginName, supportedScriptTypes) {
+    registerLanguageExtensionPlugin: async function(plugin: any, pluginName: string, supportedScriptTypes: {
+      language: string,
+      symbol_types: string[],
+    }): Promise<void> {
       if (this._plugins.has(plugin)) {
         throw new Error(`Tried to register plugin '${pluginName}' twice`);
       }
       const channel = new MessageChannel();
       const port = channel.port1;
       this._plugins.set(plugin, port);
-      port.onmessage = ({data: {requestId, method, parameters}}) => {
+      port.onmessage = ({data: {requestId, method, parameters}}: MessageEvent<any>): void => {
         console.time(`${requestId}: ${method}`);
         dispatchMethodCall(method, parameters)
             .then(result => port.postMessage({requestId, result}))
@@ -400,12 +386,7 @@ self.injectedExtensionAPI = function(
             .finally(() => console.timeEnd(`${requestId}: ${method}`));
       };
 
-      /**
-       * @param {string} method
-       * @param {*} parameters
-       * @return {!Promise<*>}
-       */
-      function dispatchMethodCall(method, parameters) {
+      function dispatchMethodCall(method: string, parameters: any): Promise<any> {
         switch (method) {
           case languageExtensionPluginCommands.AddRawModule:
             return plugin.addRawModule(parameters.rawModuleId, parameters.symbolsURL, parameters.rawModule);
@@ -450,11 +431,7 @@ self.injectedExtensionAPI = function(
       });
     },
 
-    /**
-     * @param {*} plugin The language plugin instance to unregister.
-     * @return {!Promise<void>}
-     */
-    unregisterLanguageExtensionPlugin: async function(plugin) {
+    unregisterLanguageExtensionPlugin: async function(plugin: any): Promise<void> {
       const port = this._plugins.get(plugin);
       if (!port) {
         throw new Error('Tried to unregister a plugin that was not previously registered');
@@ -462,20 +439,20 @@ self.injectedExtensionAPI = function(
       this._plugins.delete(plugin);
       port.postMessage({event: languageExtensionPluginEvents.UnregisteredLanguageExtensionPlugin});
       port.close();
-    }
+    },
   };
 
-  function declareInterfaceClass(implConstructor) {
-    return function() {
+  function declareInterfaceClass(implConstructor: any): (...args: any[]) => void {
+    return function(): void {
       const impl = {__proto__: implConstructor.prototype};
       implConstructor.apply(impl, arguments);
       populateInterfaceClass(this, impl);
     };
   }
 
-  function defineDeprecatedProperty(object, className, oldName, newName) {
+  function defineDeprecatedProperty(object: any, className: any, oldName: any, newName: any): void {
     let warningGiven = false;
-    function getter() {
+    function getter(): any {
       if (!warningGiven) {
         console.warn(className + '.' + oldName + ' is deprecated. Use ' + className + '.' + newName + ' instead');
         warningGiven = true;
@@ -485,7 +462,7 @@ self.injectedExtensionAPI = function(
     object.__defineGetter__(oldName, getter);
   }
 
-  function extractCallbackArgument(args) {
+  function extractCallbackArgument(args: any): any {
     const lastArgument = args[args.length - 1];
     return typeof lastArgument === 'function' ? lastArgument : undefined;
   }
@@ -520,16 +497,13 @@ self.injectedExtensionAPI = function(
    * @constructor
    * @extends {ExtensionViewImpl}
    */
-  function ExtensionPanelImpl(id) {
+  function ExtensionPanelImpl(id: any): void {
     ExtensionViewImpl.call(this, id);
     this.onSearch = new EventSink(events.PanelSearch + id);
   }
 
   ExtensionPanelImpl.prototype = {
-    /**
-     * @return {!Object}
-     */
-    createStatusBarButton: function(iconPath, tooltipText, disabled) {
+    createStatusBarButton: function(iconPath: any, tooltipText: any, disabled: any): Object {
       const id = 'button-' + extensionServer.nextObjectId();
       const request = {
         command: commands.CreateToolbarButton,
@@ -537,13 +511,13 @@ self.injectedExtensionAPI = function(
         id: id,
         icon: iconPath,
         tooltip: tooltipText,
-        disabled: Boolean(disabled)
+        disabled: Boolean(disabled),
       };
       extensionServer.sendRequest(request);
       return new Button(id);
     },
 
-    show: function() {
+    show: function(): void {
       if (!userAction) {
         return;
       }
@@ -552,23 +526,23 @@ self.injectedExtensionAPI = function(
       extensionServer.sendRequest(request);
     },
 
-    __proto__: ExtensionViewImpl.prototype
+    __proto__: ExtensionViewImpl.prototype,
   };
 
   /**
    * @constructor
    * @extends {ExtensionViewImpl}
    */
-  function ExtensionSidebarPaneImpl(id) {
+  function ExtensionSidebarPaneImpl(id: any): void {
     ExtensionViewImpl.call(this, id);
   }
 
   ExtensionSidebarPaneImpl.prototype = {
-    setHeight: function(height) {
+    setHeight: function(height: any): void {
       extensionServer.sendRequest({command: commands.SetSidebarHeight, id: this._id, height: height});
     },
 
-    setExpression: function(expression, rootTitle, evaluateOptions) {
+    setExpression: function(expression: any, rootTitle: any, evaluateOptions: any): void {
       const request = {
         command: commands.SetSidebarContent,
         id: this._id,
@@ -582,88 +556,74 @@ self.injectedExtensionAPI = function(
       extensionServer.sendRequest(request, extractCallbackArgument(arguments));
     },
 
-    setObject: function(jsonObject, rootTitle, callback) {
+    setObject: function(jsonObject: any, rootTitle: any, callback: any): void {
       extensionServer.sendRequest(
           {command: commands.SetSidebarContent, id: this._id, expression: jsonObject, rootTitle: rootTitle}, callback);
     },
 
-    setPage: function(page) {
+    setPage: function(page: any): void {
       extensionServer.sendRequest({command: commands.SetSidebarPage, id: this._id, page: page});
     },
 
-    __proto__: ExtensionViewImpl.prototype
+    __proto__: ExtensionViewImpl.prototype,
   };
 
   /**
    * @constructor
    */
-  function ButtonImpl(id) {
+  function ButtonImpl(id: any): void {
     this._id = id;
     this.onClicked = new EventSink(events.ButtonClicked + id);
   }
 
   ButtonImpl.prototype = {
-    update: function(iconPath, tooltipText, disabled) {
+    update: function(iconPath: any, tooltipText: any, disabled: any): void {
       const request = {
         command: commands.UpdateButton,
         id: this._id,
         icon: iconPath,
         tooltip: tooltipText,
-        disabled: Boolean(disabled)
+        disabled: Boolean(disabled),
       };
       extensionServer.sendRequest(request);
-    }
+    },
   };
 
   /**
    * @constructor
    */
-  function Timeline() {
+  function Timeline(): void {
   }
 
   Timeline.prototype = {
-    /**
-     * @param {string} categoryName
-     * @param {string} categoryTooltip
-     * @return {!TraceProvider}
-     */
-    addTraceProvider: function(categoryName, categoryTooltip) {
+    addTraceProvider: function(categoryName: string, categoryTooltip: string): TraceProvider {
       const id = 'extension-trace-provider-' + extensionServer.nextObjectId();
       extensionServer.sendRequest(
           {command: commands.AddTraceProvider, id: id, categoryName: categoryName, categoryTooltip: categoryTooltip});
       return new TraceProvider(id);
-    }
+    },
   };
 
   /**
    * @constructor
-   * @param {string} id
    */
-  function TraceSessionImpl(id) {
+  function TraceSessionImpl(id: string): void {
     this._id = id;
   }
 
   TraceSessionImpl.prototype = {
-    /**
-     * @param {string=} url
-     * @param {number=} timeOffset
-     */
-    complete: function(url, timeOffset) {
+    complete: function(url?: string, timeOffset?: number): void {
       const request =
           {command: commands.CompleteTraceSession, id: this._id, url: url || '', timeOffset: timeOffset || 0};
       extensionServer.sendRequest(request);
-    }
+    },
   };
 
   /**
    * @constructor
-   * @param {string} id
    */
-  function TraceProvider(id) {
-    /**
-     * @this {EventSinkImpl}
-     */
-    function dispatchRecordingStarted(message) {
+  function TraceProvider(id: string): void {
+    function dispatchRecordingStarted(this: EventSinkImpl, message: any): void {
       const sessionId = message.arguments[0];
       this._fire(new TraceSession(sessionId));
     }
@@ -675,18 +635,12 @@ self.injectedExtensionAPI = function(
   /**
    * @constructor
    */
-  function InspectedWindow() {
-    /**
-     * @this {EventSinkImpl}
-     */
-    function dispatchResourceEvent(message) {
+  function InspectedWindow(): void {
+    function dispatchResourceEvent(this: EventSinkImpl, message: any): void {
       this._fire(new Resource(message.arguments[0]));
     }
 
-    /**
-     * @this {EventSinkImpl}
-     */
-    function dispatchResourceContentEvent(message) {
+    function dispatchResourceContentEvent(this: EventSinkImpl, message: any): void {
       this._fire(new Resource(message.arguments[0]), message.arguments[1]);
     }
 
@@ -695,8 +649,10 @@ self.injectedExtensionAPI = function(
   }
 
   InspectedWindow.prototype = {
-    reload: function(optionsOrUserAgent) {
-      let options = null;
+    reload: function(optionsOrUserAgent: any): void {
+      let options: {
+        userAgent: string,
+      }|null = null;
       if (typeof optionsOrUserAgent === 'object') {
         options = optionsOrUserAgent;
       } else if (typeof optionsOrUserAgent === 'string') {
@@ -708,75 +664,73 @@ self.injectedExtensionAPI = function(
       extensionServer.sendRequest({command: commands.Reload, options: options});
     },
 
-    /**
-     * @return {?Object}
-     */
-    eval: function(expression, evaluateOptions) {
-      const callback = extractCallbackArgument(arguments);
-      function callbackWrapper(result) {
-        if (result.isError || result.isException) {
-          callback(undefined, result);
-        } else {
-          callback(result.value);
-        }
-      }
-      const request = {command: commands.EvaluateOnInspectedPage, expression: expression};
-      if (typeof evaluateOptions === 'object') {
-        request.evaluateOptions = evaluateOptions;
-      }
-      extensionServer.sendRequest(request, callback && callbackWrapper);
-      return null;
-    },
+    eval: function(expression: any, evaluateOptions: any): Object |
+        null {
+          const callback = extractCallbackArgument(arguments);
+          function callbackWrapper(result: any): void {
+            if (result.isError || result.isException) {
+              callback(undefined, result);
+            } else {
+              callback(result.value);
+            }
+          }
+          const request = {command: commands.EvaluateOnInspectedPage, expression: expression};
+          if (typeof evaluateOptions === 'object') {
+            request.evaluateOptions = evaluateOptions;
+          }
+          extensionServer.sendRequest(request, callback && callbackWrapper);
+          return null;
+        },
 
-    getResources: function(callback) {
-      function wrapResource(resourceData) {
+    getResources: function(callback: any): void {
+      function wrapResource(resourceData: any): any {
         return new Resource(resourceData);
       }
-      function callbackWrapper(resources) {
+      function callbackWrapper(resources: any): void {
         callback(resources.map(wrapResource));
       }
       extensionServer.sendRequest({command: commands.GetPageResources}, callback && callbackWrapper);
-    }
+    },
   };
 
   /**
    * @constructor
    */
-  function ResourceImpl(resourceData) {
+  function ResourceImpl(resourceData: any): void {
     this._url = resourceData.url;
     this._type = resourceData.type;
   }
 
   ResourceImpl.prototype = {
-    get url() {
+    get url(): string {
       return this._url;
     },
 
-    get type() {
+    get type(): string {
       return this._type;
     },
 
-    getContent: function(callback) {
-      function callbackWrapper(response) {
+    getContent: function(callback: any): void {
+      function callbackWrapper(response: any): void {
         callback(response.content, response.encoding);
       }
 
       extensionServer.sendRequest({command: commands.GetResourceContent, url: this._url}, callback && callbackWrapper);
     },
 
-    setContent: function(content, commit, callback) {
+    setContent: function(content: any, commit: any, callback: any): void {
       extensionServer.sendRequest(
           {command: commands.SetResourceContent, url: this._url, content: content, commit: commit}, callback);
-    }
+    },
   };
 
-  function getTabId() {
+  function getTabId(): string {
     return inspectedTabId;
   }
 
-  let keyboardEventRequestQueue = [];
-  let forwardTimer = null;
-  function forwardKeyboardEvent(event) {
+  let keyboardEventRequestQueue: any[] = [];
+  let forwardTimer: number|null = null;
+  function forwardKeyboardEvent(event: any): void {
     // Check if the event should be forwarded.
     // This is a workaround for crbug.com/923338.
     const focused = document.activeElement;
@@ -816,7 +770,7 @@ self.injectedExtensionAPI = function(
       key: event.key,
       code: event.code,
       location: event.location,
-      keyCode: event.keyCode
+      keyCode: event.keyCode,
     };
     keyboardEventRequestQueue.push(requestPayload);
     if (!forwardTimer) {
@@ -824,7 +778,7 @@ self.injectedExtensionAPI = function(
     }
   }
 
-  function forwardEventQueue() {
+  function forwardEventQueue(): void {
     forwardTimer = null;
     const request = {command: commands.ForwardKeyboardEvent, entries: keyboardEventRequestQueue};
     extensionServer.sendRequest(request);
@@ -836,7 +790,7 @@ self.injectedExtensionAPI = function(
   /**
    * @constructor
    */
-  function ExtensionServerClient() {
+  function ExtensionServerClient(): void {
     this._callbacks = {};
     this._handlers = {};
     this._lastRequestId = 0;
@@ -853,47 +807,36 @@ self.injectedExtensionAPI = function(
   }
 
   ExtensionServerClient.prototype = {
-    /**
-     * @param {!Object} message
-     * @param {function()=} callback
-     * @param {!Array<*>=} transfers
-     */
-    sendRequest: function(message, callback, transfers) {
+    sendRequest: function(message: Object, callback?: (() => any), transfers?: any[]): void {
       if (typeof callback === 'function') {
         message.requestId = this._registerCallback(callback);
       }
       this._port.postMessage(message, transfers);
     },
 
-    /**
-     * @return {boolean}
-     */
-    hasHandler: function(command) {
+    hasHandler: function(command: any): boolean {
       return Boolean(this._handlers[command]);
     },
 
-    registerHandler: function(command, handler) {
+    registerHandler: function(command: any, handler: any): void {
       this._handlers[command] = handler;
     },
 
-    unregisterHandler: function(command) {
+    unregisterHandler: function(command: any): void {
       delete this._handlers[command];
     },
 
-    /**
-     * @return {string}
-     */
-    nextObjectId: function() {
+    nextObjectId: function(): string {
       return injectedScriptId.toString() + '_' + ++this._lastObjectId;
     },
 
-    _registerCallback: function(callback) {
+    _registerCallback: function(callback: any): number {
       const id = ++this._lastRequestId;
       this._callbacks[id] = callback;
       return id;
     },
 
-    _onCallback: function(request) {
+    _onCallback: function(request: any): void {
       if (request.requestId in this._callbacks) {
         const callback = this._callbacks[request.requestId];
         delete this._callbacks[request.requestId];
@@ -901,21 +844,21 @@ self.injectedExtensionAPI = function(
       }
     },
 
-    _onMessage: function(event) {
+    _onMessage: function(event: any): void {
       const request = event.data;
       const handler = this._handlers[request.command];
       if (handler) {
         handler.call(this, request);
       }
-    }
+    },
   };
 
-  function populateInterfaceClass(interfaze, implementation) {
+  function populateInterfaceClass(interfaze: any, implementation: any): void {
     for (const member in implementation) {
       if (member.charAt(0) === '_') {
         continue;
       }
-      let descriptor = null;
+      let descriptor: (PropertyDescriptor|undefined)|null = null;
       // Traverse prototype chain until we find the owner.
       for (let owner = implementation; owner && !descriptor; owner = owner.__proto__) {
         descriptor = Object.getOwnPropertyDescriptor(owner, member);
@@ -968,19 +911,18 @@ self.injectedExtensionAPI = function(
   testHook(extensionServer, coreAPI);
 };
 
-/**
- * @param {!{startPage: string, name: string, exposeExperimentalAPIs: boolean}} extensionInfo
- * @param {string} inspectedTabId
- * @param {string} themeName
- * @param {!Array<number>} keysToForward
- * @param {function(!Object, !Object)|undefined} testHook
- * @return {string}
- */
-self.buildExtensionAPIInjectedScript = function(extensionInfo, inspectedTabId, themeName, keysToForward, testHook) {
+self.buildExtensionAPIInjectedScript = function(
+    extensionInfo: {
+      startPage: string,
+      name: string,
+      exposeExperimentalAPIs: boolean,
+    },
+    inspectedTabId: string, themeName: string, keysToForward: number[],
+    testHook: ((arg0: Object, arg1: Object) => any)|undefined): string {
   const argumentsJSON =
       [extensionInfo, inspectedTabId || null, themeName, keysToForward].map(_ => JSON.stringify(_)).join(',');
   if (!testHook) {
-    testHook = () => {};
+    testHook = (): void => {};
   }
   return '(function(injectedScriptId){ ' + defineCommonExtensionSymbols.toString() + ';' +
       '(' + self.injectedExtensionAPI.toString() + ')(' + argumentsJSON + ',' + testHook + ', injectedScriptId);' +

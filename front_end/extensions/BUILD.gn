@@ -7,12 +7,12 @@ import("../../scripts/build/ninja/devtools_module.gni")
 
 devtools_module("extensions") {
   sources = [
-    "ExtensionAPI.js",
-    "ExtensionPanel.js",
-    "ExtensionServer.js",
-    "ExtensionTraceProvider.js",
-    "ExtensionView.js",
-    "LanguageExtensionEndpoint.js",
+    "ExtensionAPI.ts",
+    "ExtensionPanel.ts",
+    "ExtensionServer.ts",
+    "ExtensionTraceProvider.ts",
+    "ExtensionView.ts",
+    "LanguageExtensionEndpoint.ts",
   ]
 
   deps = [
@@ -33,13 +33,13 @@ devtools_module("extensions") {
 }
 
 devtools_entrypoint("bundle") {
-  entrypoint = "extensions.js"
+  entrypoint = "extensions.ts"
 
   deps = [ ":extensions" ]
 }
 
 devtools_entrypoint("legacy") {
-  entrypoint = "extensions-legacy.js"
+  entrypoint = "extensions-legacy.ts"
 
   deps = [ ":bundle" ]
 }

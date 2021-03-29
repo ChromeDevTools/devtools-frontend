@@ -28,18 +28,18 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as UI from '../ui/ui.js';
 
 import {ExtensionServer} from './ExtensionServer.js';  // eslint-disable-line no-unused-vars
 
 export class ExtensionView extends UI.Widget.Widget {
-  /**
-   * @param {!ExtensionServer} server
-   * @param {string} id
-   * @param {string} src
-   * @param {string} className
-   */
-  constructor(server, id, src, className) {
+  _server: ExtensionServer;
+  _id: string;
+  _iframe: HTMLIFrameElement;
+  _frameIndex?: number;
+  constructor(server: ExtensionServer, id: string, src: string, className: string) {
     super();
     this.setHideOnDetach();
     this.element.className = 'vbox flex-auto';  // Override
@@ -60,25 +60,19 @@ export class ExtensionView extends UI.Widget.Widget {
     this.element.appendChild(this._iframe);
   }
 
-  /**
-   * @override
-   */
-  wasShown() {
+  wasShown(): void {
     if (typeof this._frameIndex === 'number') {
       this._server.notifyViewShown(this._id, this._frameIndex);
     }
   }
 
-  /**
-   * @override
-   */
-  willHide() {
+  willHide(): void {
     if (typeof this._frameIndex === 'number') {
       this._server.notifyViewHidden(this._id);
     }
   }
 
-  _onLoad() {
+  _onLoad(): void {
     const frames = window.frames;
     this._frameIndex = Array.prototype.indexOf.call(frames, this._iframe.contentWindow);
     if (this.isShowing()) {
@@ -88,28 +82,20 @@ export class ExtensionView extends UI.Widget.Widget {
 }
 
 export class ExtensionNotifierView extends UI.Widget.VBox {
-  /**
-   * @param {!ExtensionServer} server
-   * @param {string} id
-   */
-  constructor(server, id) {
+  _server: ExtensionServer;
+  _id: string;
+  constructor(server: ExtensionServer, id: string) {
     super();
 
     this._server = server;
     this._id = id;
   }
 
-  /**
-   * @override
-   */
-  wasShown() {
+  wasShown(): void {
     this._server.notifyViewShown(this._id);
   }
 
-  /**
-   * @override
-   */
-  willHide() {
+  willHide(): void {
     this._server.notifyViewHidden(this._id);
   }
 }

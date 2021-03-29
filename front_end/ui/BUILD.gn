@@ -59,7 +59,7 @@ devtools_module("ui") {
     "ViewManager.ts",
     "ViewRegistration.ts",
     "Widget.js",
-    "XElement.js",
+    "XElement.ts",
     "XLink.js",
     "XWidget.ts",
     "ZoomManager.js",

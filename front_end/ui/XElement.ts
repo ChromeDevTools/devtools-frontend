@@ -2,27 +2,20 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 export class XElement extends HTMLElement {
-  /**
-   * @override
-   */
-  static get observedAttributes() {
+  static get observedAttributes(): string[] {
     return [
       'flex',          'padding',     'padding-top',      'padding-bottom', 'padding-left',
       'padding-right', 'margin',      'margin-top',       'margin-bottom',  'margin-left',
       'margin-right',  'overflow',    'overflow-x',       'overflow-y',     'font-size',
       'color',         'background',  'background-color', 'border',         'border-top',
-      'border-bottom', 'border-left', 'border-right',     'max-width',      'max-height'
+      'border-bottom', 'border-left', 'border-right',     'max-width',      'max-height',
     ];
   }
 
-  /**
-   * @param {string} attr
-   * @param {?string} oldValue
-   * @param {?string} newValue
-   * @override
-   */
-  attributeChangedCallback(attr, oldValue, newValue) {
+  attributeChangedCallback(attr: string, _oldValue: string|null, newValue: string|null): void {
     if (attr === 'flex') {
       if (newValue === null) {
         this.style.removeProperty('flex');
@@ -49,34 +42,21 @@ export class XElement extends HTMLElement {
   }
 }
 
-/**
- * @extends {XElement}
- */
+// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+// eslint-disable-next-line @typescript-eslint/naming-convention
 class _XBox extends XElement {
-  /**
-   * @param {string} direction
-   */
-  constructor(direction) {
+  constructor(direction: string) {
     super();
     this.style.setProperty('display', 'flex');
     this.style.setProperty('flex-direction', direction);
     this.style.setProperty('justify-content', 'flex-start');
   }
 
-  /**
-   * @override
-   */
-  static get observedAttributes() {
+  static get observedAttributes(): string[] {
     return super.observedAttributes.concat(['x-start', 'x-center', 'x-stretch', 'x-baseline', 'justify-content']);
   }
 
-  /**
-   * @param {string} attr
-   * @param {?string} oldValue
-   * @param {?string} newValue
-   * @override
-   */
-  attributeChangedCallback(attr, oldValue, newValue) {
+  attributeChangedCallback(attr: string, oldValue: string|null, newValue: string|null): void {
     if (attr === 'x-start' || attr === 'x-center' || attr === 'x-stretch' || attr === 'x-baseline') {
       if (newValue === null) {
         this.style.removeProperty('align-items');
@@ -89,27 +69,18 @@ class _XBox extends XElement {
   }
 }
 
-/**
- * @extends {_XBox}
- */
 class XVBox extends _XBox {
   constructor() {
     super('column');
   }
 }
 
-/**
- * @extends {_XBox}
- */
 class XHBox extends _XBox {
   constructor() {
     super('row');
   }
 }
 
-/**
- * @extends {XElement}
- */
 class XCBox extends XElement {
   constructor() {
     super();
@@ -120,9 +91,6 @@ class XCBox extends XElement {
   }
 }
 
-/**
- * @extends {XElement}
- */
 class XDiv extends XElement {
   constructor() {
     super();
@@ -130,9 +98,6 @@ class XDiv extends XElement {
   }
 }
 
-/**
- * @extends {XElement}
- */
 class XSpan extends XElement {
   constructor() {
     super();
@@ -140,9 +105,6 @@ class XSpan extends XElement {
   }
 }
 
-/**
- * @extends {XElement}
- */
 class XText extends XElement {
   constructor() {
     super();

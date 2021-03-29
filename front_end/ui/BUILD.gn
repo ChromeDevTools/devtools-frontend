@@ -22,7 +22,7 @@ devtools_module("ui") {
     "ForwardedInputEventHandler.ts",
     "Fragment.ts",
     "Geometry.js",
-    "GlassPane.js",
+    "GlassPane.ts",
     "HistoryInput.js",
     "Icon.ts",
     "Infobar.js",

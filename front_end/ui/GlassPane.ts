@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Common from '../common/common.js';
 import * as Platform from '../platform/platform.js';
 
@@ -9,9 +11,23 @@ import {Size} from './Geometry.js';  // eslint-disable-line no-unused-vars
 import {Icon} from './Icon.js';
 import {deepElementFromEvent} from './UIUtils.js';
 import {measuredScrollbarWidth} from './utils/measured-scrollbar-width.js';
-import {Widget} from './Widget.js';
+import {Widget, WidgetElement} from './Widget.js';
 
 export class GlassPane extends Common.ObjectWrapper.ObjectWrapper {
+  _widget: Widget;
+  element: WidgetElement;
+  contentElement: HTMLDivElement;
+  _arrowElement: Icon;
+  _onMouseDownBound: (event: Event) => void;
+  _onClickOutsideCallback: ((arg0: Event) => void)|null;
+  _maxSize: Size|null;
+  _positionX: number|null;
+  _positionY: number|null;
+  _anchorBox: AnchorBox|null;
+  _anchorBehavior: AnchorBehavior;
+  _sizeBehavior: SizeBehavior;
+  _marginBehavior: MarginBehavior;
+
   constructor() {
     super();
     this._widget = new Widget(true);
@@ -27,122 +43,76 @@ export class GlassPane extends Common.ObjectWrapper.ObjectWrapper {
     this.setPointerEventsBehavior(PointerEventsBehavior.PierceGlassPane);
 
     this._onMouseDownBound = this._onMouseDown.bind(this);
-    /** @type {?function(!Event):void} */
     this._onClickOutsideCallback = null;
-    /** @type {?Size} */
     this._maxSize = null;
-    /** @type {?number} */
     this._positionX = null;
-    /** @type {?number} */
     this._positionY = null;
-    /** @type {?AnchorBox} */
     this._anchorBox = null;
     this._anchorBehavior = AnchorBehavior.PreferTop;
     this._sizeBehavior = SizeBehavior.SetExactSize;
     this._marginBehavior = MarginBehavior.DefaultMargin;
   }
 
-  /**
-   * @return {boolean}
-   */
-  isShowing() {
+  isShowing(): boolean {
     return this._widget.isShowing();
   }
 
-  /**
-   * @param {string} cssFile
-  * @param {!{enableLegacyPatching:boolean}} options
-   */
-  registerRequiredCSS(cssFile, options) {
+  registerRequiredCSS(cssFile: string, options: {
+    enableLegacyPatching: boolean,
+  }): void {
     this._widget.registerRequiredCSS(cssFile, options);
   }
 
-  /**
-   * @param {?Element} element
-   */
-  setDefaultFocusedElement(element) {
+  setDefaultFocusedElement(element: Element|null): void {
     this._widget.setDefaultFocusedElement(element);
   }
 
-  /**
-   * @param {boolean} dimmed
-   */
-  setDimmed(dimmed) {
+  setDimmed(dimmed: boolean): void {
     this.element.classList.toggle('dimmed-pane', dimmed);
   }
 
-  /**
-   * @param {!PointerEventsBehavior} pointerEventsBehavior
-   */
-  setPointerEventsBehavior(pointerEventsBehavior) {
+  setPointerEventsBehavior(pointerEventsBehavior: PointerEventsBehavior): void {
     this.element.classList.toggle(
         'no-pointer-events', pointerEventsBehavior !== PointerEventsBehavior.BlockedByGlassPane);
     this.contentElement.classList.toggle(
         'no-pointer-events', pointerEventsBehavior === PointerEventsBehavior.PierceContents);
   }
 
-  /**
-   * @param {?function(!Event):void} callback
-   */
-  setOutsideClickCallback(callback) {
+  setOutsideClickCallback(callback: ((arg0: Event) => void)|null): void {
     this._onClickOutsideCallback = callback;
   }
 
-  /**
-   * @param {?Size} size
-   */
-  setMaxContentSize(size) {
+  setMaxContentSize(size: Size|null): void {
     this._maxSize = size;
     this.positionContent();
   }
 
-  /**
-   * @param {!SizeBehavior} sizeBehavior
-   */
-  setSizeBehavior(sizeBehavior) {
+  setSizeBehavior(sizeBehavior: SizeBehavior): void {
     this._sizeBehavior = sizeBehavior;
     this.positionContent();
   }
 
-  /**
-   * @param {?number} x
-   * @param {?number} y
-   * Position is relative to root element.
-   */
-  setContentPosition(x, y) {
+  setContentPosition(x: number|null, y: number|null): void {
     this._positionX = x;
     this._positionY = y;
     this.positionContent();
   }
 
-  /**
-   * @param {?AnchorBox} anchorBox
-   * Anchor box is relative to the document.
-   */
-  setContentAnchorBox(anchorBox) {
+  setContentAnchorBox(anchorBox: AnchorBox|null): void {
     this._anchorBox = anchorBox;
     this.positionContent();
   }
 
-  /**
-   * @param {!AnchorBehavior} behavior
-   */
-  setAnchorBehavior(behavior) {
+  setAnchorBehavior(behavior: AnchorBehavior): void {
     this._anchorBehavior = behavior;
   }
 
-  /**
-   * @param {!MarginBehavior} behavior
-   */
-  setMarginBehavior(behavior) {
+  setMarginBehavior(behavior: MarginBehavior): void {
     this._marginBehavior = behavior;
     this._arrowElement.classList.toggle('hidden', behavior !== MarginBehavior.Arrow);
   }
 
-  /**
-   * @param {!Document} document
-   */
-  show(document) {
+  show(document: Document): void {
     if (this.isShowing()) {
       return;
     }
@@ -155,7 +125,7 @@ export class GlassPane extends Common.ObjectWrapper.ObjectWrapper {
     this.positionContent();
   }
 
-  hide() {
+  hide(): void {
     if (!this.isShowing()) {
       return;
     }
@@ -164,10 +134,7 @@ export class GlassPane extends Common.ObjectWrapper.ObjectWrapper {
     this._widget.detach();
   }
 
-  /**
-   * @param {!Event} event
-   */
-  _onMouseDown(event) {
+  _onMouseDown(event: Event): void {
     if (!this._onClickOutsideCallback) {
       return;
     }
@@ -178,7 +145,7 @@ export class GlassPane extends Common.ObjectWrapper.ObjectWrapper {
     this._onClickOutsideCallback.call(null, event);
   }
 
-  positionContent() {
+  positionContent(): void {
     if (!this.isShowing()) {
       return;
     }
@@ -188,8 +155,7 @@ export class GlassPane extends Common.ObjectWrapper.ObjectWrapper {
     const scrollbarSize = measuredScrollbarWidth(this.element.ownerDocument);
     const arrowSize = 10;
 
-    const container =
-        /** @type {!HTMLElement} */ (_containers.get(/** @type {!Document} */ (this.element.ownerDocument)));
+    const container = (_containers.get((this.element.ownerDocument as Document))) as HTMLElement;
     if (this._sizeBehavior === SizeBehavior.MeasureContent) {
       this.contentElement.positionAt(0, 0);
       this.contentElement.style.width = '';
@@ -221,7 +187,8 @@ export class GlassPane extends Common.ObjectWrapper.ObjectWrapper {
 
     if (this._anchorBox) {
       const anchorBox = this._anchorBox.relativeToElement(container);
-      let behavior = this._anchorBehavior;
+      let behavior: AnchorBehavior.PreferBottom|AnchorBehavior.PreferTop|AnchorBehavior.PreferRight|
+          AnchorBehavior.PreferLeft|AnchorBehavior = this._anchorBehavior;
       this._arrowElement.classList.remove('arrow-none', 'arrow-top', 'arrow-bottom', 'arrow-left', 'arrow-right');
 
       if (behavior === AnchorBehavior.PreferTop || behavior === AnchorBehavior.PreferBottom) {
@@ -277,7 +244,7 @@ export class GlassPane extends Common.ObjectWrapper.ObjectWrapper {
         if (2 * arrowSize >= width) {
           this._arrowElement.classList.add('arrow-none');
         } else {
-          let arrowX = anchorBox.x + Math.min(50, Math.floor(anchorBox.width / 2));
+          let arrowX: number = anchorBox.x + Math.min(50, Math.floor(anchorBox.width / 2));
           arrowX = Platform.NumberUtilities.clamp(arrowX, positionX + arrowSize, positionX + width - arrowSize);
           this._arrowElement.positionAt(arrowX, arrowY, container);
         }
@@ -334,7 +301,7 @@ export class GlassPane extends Common.ObjectWrapper.ObjectWrapper {
         if (2 * arrowSize >= height) {
           this._arrowElement.classList.add('arrow-none');
         } else {
-          let arrowY = anchorBox.y + Math.min(50, Math.floor(anchorBox.height / 2));
+          let arrowY: number = anchorBox.y + Math.min(50, Math.floor(anchorBox.height / 2));
           arrowY = Platform.NumberUtilities.clamp(arrowY, positionY + arrowSize, positionY + height - arrowSize);
           this._arrowElement.positionAt(arrowX, arrowY, container);
         }
@@ -358,34 +325,20 @@ export class GlassPane extends Common.ObjectWrapper.ObjectWrapper {
     this._widget.doResize();
   }
 
-  /**
-   * @protected
-   * @return {!Widget}
-   */
-  widget() {
+  widget(): Widget {
     return this._widget;
   }
 
-  /**
-   * @param {!Element} element
-   */
-  static setContainer(element) {
-    _containers.set(/** @type {!Document} */ (element.ownerDocument), element);
+  static setContainer(element: Element): void {
+    _containers.set((element.ownerDocument as Document), element);
     GlassPane.containerMoved(element);
   }
 
-  /**
-   * @param {!Document} document
-   * @return {!Element}
-   */
-  static container(document) {
-    return /** @type {!Element} */ (_containers.get(document));
+  static container(document: Document): Element {
+    return _containers.get(document) as Element;
   }
 
-  /**
-   * @param {!Element} element
-   */
-  static containerMoved(element) {
+  static containerMoved(element: Element): void {
     for (const pane of _panes) {
       if (pane.isShowing() && pane.element.ownerDocument === element.ownerDocument) {
         pane.positionContent();
@@ -394,40 +347,45 @@ export class GlassPane extends Common.ObjectWrapper.ObjectWrapper {
   }
 }
 
-/** @enum {symbol} */
-export const PointerEventsBehavior = {
-  BlockedByGlassPane: Symbol('BlockedByGlassPane'),
-  PierceGlassPane: Symbol('PierceGlassPane'),
-  PierceContents: Symbol('PierceContents')
-};
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum PointerEventsBehavior {
+  BlockedByGlassPane = 'BlockedByGlassPane',
+  PierceGlassPane = 'PierceGlassPane',
+  PierceContents = 'PierceContents',
+}
 
-/** @enum {symbol} */
-export const AnchorBehavior = {
-  PreferTop: Symbol('PreferTop'),
-  PreferBottom: Symbol('PreferBottom'),
-  PreferLeft: Symbol('PreferLeft'),
-  PreferRight: Symbol('PreferRight'),
-};
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum AnchorBehavior {
+  PreferTop = 'PreferTop',
+  PreferBottom = 'PreferBottom',
+  PreferLeft = 'PreferLeft',
+  PreferRight = 'PreferRight',
+}
 
-/** @enum {symbol} */
-export const SizeBehavior = {
-  SetExactSize: Symbol('SetExactSize'),
-  SetExactWidthMaxHeight: Symbol('SetExactWidthMaxHeight'),
-  MeasureContent: Symbol('MeasureContent')
-};
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum SizeBehavior {
+  SetExactSize = 'SetExactSize',
+  SetExactWidthMaxHeight = 'SetExactWidthMaxHeight',
+  MeasureContent = 'MeasureContent',
+}
 
-/** @enum {symbol} */
-export const MarginBehavior = {
-  Arrow: Symbol('Arrow'),
-  DefaultMargin: Symbol('DefaultMargin'),
-  NoMargin: Symbol('NoMargin')
-};
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum MarginBehavior {
+  Arrow = 'Arrow',
+  DefaultMargin = 'DefaultMargin',
+  NoMargin = 'NoMargin',
+}
 
-/** @type {!Map<!Document, !Element>} */
-const _containers = new Map();
-
-/** @type {!Set<!GlassPane>} */
-const _panes = new Set();
+// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+// eslint-disable-next-line @typescript-eslint/naming-convention
+const _containers = new Map<Document, Element>();
+// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+// eslint-disable-next-line @typescript-eslint/naming-convention
+const _panes = new Set<GlassPane>();
 
 // Exported for layout tests.
 export const GlassPanePanes = _panes;

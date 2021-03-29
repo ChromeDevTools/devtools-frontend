@@ -4601,6 +4601,9 @@
   "panels/elements/StylePropertyTreeElement.js | valueForSettingSSIsOutsideThe": {
     "message": "Value for setting “{PH1}” {PH2} is outside the supported range [{PH3}, {PH4}] for font-family “{PH5}”."
   },
+  "panels/elements/StylePropertyTreeElement.js | viewComputedValue": {
+    "message": "View computed value"
+  },
   "panels/elements/StylesSidebarPane.js | constructedStylesheet": {
     "message": "constructed stylesheet"
   },

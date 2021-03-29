@@ -1176,6 +1176,13 @@ export class ElementsPanel extends UI.Panel.Panel {
   }
 
   /**
+   * @return {ComputedStyleWidget}
+   */
+  getComputedStyleWidget() {
+    return this._computedStyleWidget;
+  }
+
+  /**
    * @param {!SDK.CSSModel.CSSModel} cssModel
    */
   _setupStyleTracking(cssModel) {

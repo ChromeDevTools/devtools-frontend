@@ -14,6 +14,7 @@ import * as TextUtils from '../../text_utils/text_utils.js';
 import * as UI from '../../ui/ui.js';
 
 import {BezierPopoverIcon, ColorSwatchPopoverIcon, ShadowSwatchPopoverHelper} from './ColorSwatchPopoverIcon.js';
+import {ElementsPanel} from './ElementsPanel.js';
 import {FlexboxEditorWidget} from './FlexboxEditorWidget.js';
 import {CSSPropertyPrompt, StylePropertiesSection, StylesSidebarPane, StylesSidebarPropertyRenderer,} from './StylesSidebarPane.js';  // eslint-disable-line no-unused-vars
 
@@ -65,6 +66,10 @@ const UIStrings = {
   *@description A context menu item in Styles panel to copy all CSS declarations
   */
   copyAllDeclarations: 'Copy all declarations',
+  /**
+  *@description A context menu item in Styles panel to view the computed CSS property value.
+  */
+  viewComputedValue: 'View computed value',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/elements/StylePropertyTreeElement.js', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -867,7 +872,32 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(allDeclarationText);
     });
 
+    contextMenu.defaultSection().appendItem(i18nString(UIStrings.viewComputedValue), () => {
+      this._viewComputedValue();
+    });
+
     contextMenu.show();
+  }
+
+  async _viewComputedValue() {
+    const computedStyleWidget = ElementsPanel.instance().getComputedStyleWidget();
+
+    if (!computedStyleWidget.isShowing()) {
+      await UI.ViewManager.ViewManager.instance().showView('Computed');
+    }
+
+    let propertyNamePattern = '';
+    if (this.isShorthand) {
+      propertyNamePattern = '^' + this.property.name + '-';
+    } else {
+      propertyNamePattern = '^' + this.property.name + '$';
+    }
+    const regex = new RegExp(propertyNamePattern, 'i');
+    computedStyleWidget.filterComputedStyles(regex);
+
+    const filterInput = /** @type {HTMLInputElement} */ (computedStyleWidget.input);
+    filterInput.value = this.property.name;
+    filterInput.focus();
   }
 
   /**

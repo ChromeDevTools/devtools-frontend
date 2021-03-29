@@ -4601,6 +4601,9 @@
   "panels/elements/StylePropertyTreeElement.js | valueForSettingSSIsOutsideThe": {
     "message": "V̂ál̂úê f́ôŕ ŝét̂t́îńĝ “{PH1}” {PH2} íŝ óût́ŝíd̂é t̂h́ê śûṕp̂ór̂t́êd́ r̂án̂ǵê [{PH3}, {PH4}] f́ôŕ f̂ón̂t́-f̂ám̂íl̂ý “{PH5}”."
   },
+  "panels/elements/StylePropertyTreeElement.js | viewComputedValue": {
+    "message": "V̂íêẃ ĉóm̂ṕût́êd́ v̂ál̂úê"
+  },
   "panels/elements/StylesSidebarPane.js | constructedStylesheet": {
     "message": "ĉón̂śt̂ŕûćt̂éd̂ śt̂ýl̂éŝh́êét̂"
   },

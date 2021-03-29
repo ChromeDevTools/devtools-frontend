@@ -71,7 +71,9 @@ interface DevToolsTarget {
   id: string;
 }
 
-const envChromeBinary = process.env['CHROME_BIN'];
+// TODO (jacktfranklin): remove fallback to process.env once test runner config migration is done: crbug.com/1186163
+const envChromeBinary = getTestRunnerConfigSetting('chrome-binary-path', process.env['CHROME_BIN']);
+const envChromeFeatures = getTestRunnerConfigSetting('chrome-features', process.env['CHROME_FEATURES']);
 
 function launchChrome() {
   // Use port 0 to request any free port.
@@ -94,6 +96,10 @@ function launchChrome() {
     opts.defaultViewport = {width, height};
   } else {
     launchArgs.push(`--window-size=${width},${height}`);
+  }
+
+  if (envChromeFeatures) {
+    launchArgs.push(`--enable-features=${envChromeFeatures}`);
   }
 
   opts.args = launchArgs;

@@ -135,7 +135,7 @@ def run_test():
             sys.exit(1)
 
     if OPTIONS.chrome_features:
-        chrome_features = '--enable-features=%s' % OPTIONS.chrome_features
+        chrome_features = OPTIONS.chrome_features
 
     if (chrome_binary is None):
         print('Unable to run, no Chrome binary provided')

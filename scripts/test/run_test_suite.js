@@ -191,8 +191,6 @@ function main() {
     err(`Chrome binary path ${chromeBinaryPath} is not valid`);
   }
 
-  const chromeFeatures = yargsObject['chrome-features'] ? `--enable-features=${yargsObject['chrome-features']}` : '';
-
   const target = yargsObject['target'];
   const targetPath = path.join(yargsObject['cwd'], 'out', target);
   validatePathExistsOrError(`Target out/${target}`, targetPath);
@@ -217,7 +215,10 @@ function main() {
    */
   process.env.TEST_RUNNER_JSON_CONFIG = JSON.stringify(namedConfigFlags);
 
-  log(`Using Chromium binary ${chromeBinaryPath} ${chromeFeatures}`);
+  log(`Using Chromium binary ${chromeBinaryPath}`);
+  if (yargsObject['chrome-features']) {
+    log(`with --enable-features=${yargsObject['chrome-features']}`);
+  }
   log(`Using target ${target}`);
 
   const testSuitePath = getAbsoluteTestSuitePath(target);
@@ -228,7 +229,7 @@ function main() {
     resultStatusCode = executeTestSuite({
       absoluteTestSuitePath: testSuitePath,
       chromeBinaryPath,
-      chromeFeatures,
+      chromeFeatures: yargsObject['chrome-features'],
       nodeModulesPath: yargsObject['node-modules-path'],
       jobs: yargsObject['jobs'],
       testFilePattern: yargsObject['test-file-pattern'],

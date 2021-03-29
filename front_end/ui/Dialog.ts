@@ -28,15 +28,25 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as ARIAUtils from './ARIAUtils.js';
 import {GlassPane, PointerEventsBehavior} from './GlassPane.js';
 import {InspectorView} from './InspectorView.js';
 import {KeyboardShortcut, Keys} from './KeyboardShortcut.js';
 import {SplitWidget} from './SplitWidget.js';      // eslint-disable-line no-unused-vars
 import {DevToolsCloseButton} from './UIUtils.js';  // eslint-disable-line no-unused-vars
-import {WidgetFocusRestorer} from './Widget.js';
+import {WidgetElement, WidgetFocusRestorer} from './Widget.js';
 
 export class Dialog extends GlassPane {
+  _tabIndexBehavior: OutsideTabIndexBehavior;
+  _tabIndexMap: Map<HTMLElement, number>;
+  _focusRestorer: WidgetFocusRestorer|null;
+  _closeOnEscape: boolean;
+  _targetDocument!: Document|null;
+  _targetDocumentKeyDownHandler: (event: Event) => void;
+  _escapeKeyCallback: ((arg0: Event) => void)|null;
+
   constructor() {
     super();
     this.registerRequiredCSS('ui/dialog.css', {enableLegacyPatching: false});
@@ -49,34 +59,20 @@ export class Dialog extends GlassPane {
       event.consume(true);
     });
     ARIAUtils.markAsModalDialog(this.contentElement);
-    /** @type {!OutsideTabIndexBehavior} */
     this._tabIndexBehavior = OutsideTabIndexBehavior.DisableAllOutsideTabIndex;
-    /** @type {!Map<!HTMLElement, number>} */
     this._tabIndexMap = new Map();
-    /** @type {?WidgetFocusRestorer} */
     this._focusRestorer = null;
     this._closeOnEscape = true;
-    /** @type {?Document} */
-    this._targetDocument;
     this._targetDocumentKeyDownHandler = this._onKeyDown.bind(this);
-    /** @type {?function(!Event):void} */
     this._escapeKeyCallback = null;
   }
 
-  /**
-   * @return {boolean}
-   */
-  static hasInstance() {
+  static hasInstance(): boolean {
     return Boolean(Dialog._instance);
   }
 
-  /**
-   * @override
-   * @param {(!Document|!Element)=} where
-   */
-  show(where) {
-    const document = /** @type {!Document} */ (
-        where instanceof Document ? where : (where || InspectorView.instance().element).ownerDocument);
+  show(where?: Document | Element): void {
+    const document = (where instanceof Document ? where : (where || InspectorView.instance().element).ownerDocument as Document);
     this._targetDocument = document;
     this._targetDocument.addEventListener('keydown', this._targetDocumentKeyDownHandler, true);
 
@@ -89,10 +85,7 @@ export class Dialog extends GlassPane {
     this._focusRestorer = new WidgetFocusRestorer(this.widget());
   }
 
-  /**
-   * @override
-   */
-  hide() {
+  hide(): void {
     if (this._focusRestorer) {
       this._focusRestorer.restore();
     }
@@ -106,53 +99,40 @@ export class Dialog extends GlassPane {
     Dialog._instance = null;
   }
 
-  /**
-   * @param {boolean} close
-   */
-  setCloseOnEscape(close) {
+  setCloseOnEscape(close: boolean): void {
     this._closeOnEscape = close;
   }
 
-  /**
-   * @param {function(!Event):void} callback
-   */
-  setEscapeKeyCallback(callback) {
+  setEscapeKeyCallback(callback: (arg0: Event) => void): void {
     this._escapeKeyCallback = callback;
   }
 
-  addCloseButton() {
-    const closeButton = /** @type {!DevToolsCloseButton} */ (
-        this.contentElement.createChild('div', 'dialog-close-button', 'dt-close-button'));
+  addCloseButton(): void {
+    const closeButton =
+        (this.contentElement.createChild('div', 'dialog-close-button', 'dt-close-button') as DevToolsCloseButton);
     closeButton.gray = true;
     closeButton.addEventListener('click', () => this.hide(), false);
   }
 
-  /**
-   * @param {!OutsideTabIndexBehavior} tabIndexBehavior
-   */
-  setOutsideTabIndexBehavior(tabIndexBehavior) {
+  setOutsideTabIndexBehavior(tabIndexBehavior: OutsideTabIndexBehavior): void {
     this._tabIndexBehavior = tabIndexBehavior;
   }
 
-  /**
-   * @param {!Document} document
-   */
-  _disableTabIndexOnElements(document) {
+  _disableTabIndexOnElements(document: Document): void {
     if (this._tabIndexBehavior === OutsideTabIndexBehavior.PreserveTabIndex) {
       return;
     }
 
-    let exclusionSet = /** @type {?Set.<!HTMLElement>} */ (null);
+    let exclusionSet: Set<HTMLElement>|(Set<HTMLElement>| null) = (null as Set<HTMLElement>| null);
     if (this._tabIndexBehavior === OutsideTabIndexBehavior.PreserveMainViewTabIndex) {
       exclusionSet = this._getMainWidgetTabIndexElements(InspectorView.instance().ownerSplit());
     }
 
     this._tabIndexMap.clear();
-    /** @type {?Node} */
-    let node = document;
+    let node: (Node|null)|Document = document;
     for (; node; node = node.traverseNextNode(document)) {
       if (node instanceof HTMLElement) {
-        const element = /** @type {!HTMLElement} */ (node);
+        const element = (node as HTMLElement);
         const tabIndex = element.tabIndex;
         if (tabIndex >= 0 && (!exclusionSet || !exclusionSet.has(element))) {
           this._tabIndexMap.set(element, tabIndex);
@@ -162,12 +142,8 @@ export class Dialog extends GlassPane {
     }
   }
 
-  /**
-   * @param {?SplitWidget} splitWidget
-   * @return {!Set.<!HTMLElement>}
-   */
-  _getMainWidgetTabIndexElements(splitWidget) {
-    const elementSet = /** @type {!Set.<!HTMLElement>} */ (new Set());
+  _getMainWidgetTabIndexElements(splitWidget: SplitWidget|null): Set<HTMLElement> {
+    const elementSet = (new Set() as Set<HTMLElement>);
     if (!splitWidget) {
       return elementSet;
     }
@@ -177,14 +153,13 @@ export class Dialog extends GlassPane {
       return elementSet;
     }
 
-    /** @type {?Node} */
-    let node = mainWidget.element;
+    let node: Node|null|WidgetElement = mainWidget.element;
     for (; node; node = node.traverseNextNode(mainWidget.element)) {
       if (!(node instanceof HTMLElement)) {
         continue;
       }
 
-      const element = /** @type {!HTMLElement} */ (node);
+      const element = (node as HTMLElement);
       const tabIndex = element.tabIndex;
       if (tabIndex < 0) {
         continue;
@@ -196,18 +171,15 @@ export class Dialog extends GlassPane {
     return elementSet;
   }
 
-  _restoreTabIndexOnElements() {
+  _restoreTabIndexOnElements(): void {
     for (const element of this._tabIndexMap.keys()) {
-      element.tabIndex = /** @type {number} */ (this._tabIndexMap.get(element));
+      element.tabIndex = (this._tabIndexMap.get(element) as number);
     }
     this._tabIndexMap.clear();
   }
 
-  /**
-   * @param {!Event} event
-   */
-  _onKeyDown(event) {
-    const keyboardEvent = /** @type {!KeyboardEvent} */ (event);
+  _onKeyDown(event: Event): void {
+    const keyboardEvent = (event as KeyboardEvent);
     if (keyboardEvent.keyCode === Keys.Esc.code && KeyboardShortcut.hasNoModifiers(event)) {
       if (this._escapeKeyCallback) {
         this._escapeKeyCallback(event);
@@ -223,14 +195,14 @@ export class Dialog extends GlassPane {
       }
     }
   }
+
+  static _instance: Dialog|null = null;
 }
 
-/** @type {?Dialog} */
-Dialog._instance = null;
-
-/** @enum {symbol} */
-export const OutsideTabIndexBehavior = {
-  DisableAllOutsideTabIndex: Symbol('DisableAllTabIndex'),
-  PreserveMainViewTabIndex: Symbol('PreserveMainViewTabIndex'),
-  PreserveTabIndex: Symbol('PreserveTabIndex')
-};
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum OutsideTabIndexBehavior {
+  DisableAllOutsideTabIndex = 'DisableAllTabIndex',
+  PreserveMainViewTabIndex = 'PreserveMainViewTabIndex',
+  PreserveTabIndex = 'PreserveTabIndex',
+}

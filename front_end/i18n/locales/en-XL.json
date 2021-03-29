@@ -11279,7 +11279,7 @@
   "ui/UIUtils.js | sAsync": {
     "message": "{PH1} (âśŷńĉ)"
   },
-  "ui/ViewManager.js | sPanel": {
+  "ui/ViewManager.ts | sPanel": {
     "message": "{PH1} p̂án̂él̂"
   },
   "web_audio/AudioContextContentBuilder.ts | callbackBufferSize": {

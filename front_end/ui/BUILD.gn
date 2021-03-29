@@ -56,7 +56,7 @@ devtools_module("ui") {
     "Treeoutline.js",
     "UIUtils.js",
     "View.js",
-    "ViewManager.js",
+    "ViewManager.ts",
     "ViewRegistration.ts",
     "Widget.js",
     "XElement.js",

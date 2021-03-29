@@ -11195,7 +11195,7 @@
   "ui/SoftContextMenu.js | unchecked": {
     "message": "unchecked"
   },
-  "ui/SoftDropDown.js | noItemSelected": {
+  "ui/SoftDropDown.ts | noItemSelected": {
     "message": "(no item selected)"
   },
   "ui/SuggestBox.js | sSuggestionSOfS": {

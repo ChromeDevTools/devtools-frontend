@@ -43,7 +43,7 @@ devtools_module("ui") {
     "SettingsUI.js",
     "ShortcutRegistry.js",
     "SoftContextMenu.js",
-    "SoftDropDown.js",
+    "SoftDropDown.ts",
     "SplitWidget.js",
     "SuggestBox.js",
     "TabbedPane.js",

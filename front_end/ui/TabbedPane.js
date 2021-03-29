@@ -1344,7 +1344,7 @@ export class TabbedPaneTab {
   _tabMouseDown(ev) {
     const event = /** @type {!MouseEvent} */ (ev);
     if (/** @type {!HTMLElement} */ (event.target).classList.contains('tabbed-pane-close-button') ||
-        event.button === 1) {
+        event.button !== 0) {
       return;
     }
     this._tabbedPane.selectTab(this.id, true);

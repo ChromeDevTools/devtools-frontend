@@ -14,15 +14,12 @@
   line-height: 27px;
   padding: 0 15px;
   flex: none;
+  color: var(--color-text-primary);
   background-color: var(--toolbar-bg-color);
   border-bottom: var(--divider-border);
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-}
-
-:host-context(.-theme-with-dark-background) .release-note-top-section {
-  color: #fff;
 }
 
 .release-note-container {
@@ -47,14 +44,8 @@
   font-size: 14px;
 }
 
-.release-note-container li:hover {
-  color: #039be5; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
-}
-
 .release-note-container .release-note-link {
-  border: 1px solid rgb(0 0 0 / 20%); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  border: 1px solid var(--color-details-hairline);
   padding-left: 8px;
   padding-right: 8px;
   margin-bottom: 4px;
@@ -62,8 +53,7 @@
 }
 
 .release-note-container .release-note-link:hover {
-  box-shadow: 0 0 0 1px rgb(0 0 0 / 50%) inset; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  box-shadow: 0 0 0 1px var(--box-shadow-outline-color) inset;
 }
 
 .release-note-title,
@@ -79,14 +69,12 @@
 }
 
 .release-note-container li:not(:hover) .release-note-subtitle {
-  color: #999; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-text-secondary);
 }
 
 .release-note-action-container > button {
   margin: 10px 0 20px 20px;
-  color: #757575; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-text-secondary);
 }
 
 .release-note-action-container {
@@ -102,13 +90,11 @@ img {
   width: 260px;
   height: 200px;
   flex: none;
-  box-shadow: 0 2px 4px rgb(0 0 0 / 30%); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  box-shadow: var(--drop-shadow-depth-1);
 }
 
 img:hover {
-  box-shadow: 0 2px 4px rgb(0 0 0 / 50%); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  box-shadow: var(--drop-shadow-depth-4);
 }
 
 @media (forced-colors: active) {

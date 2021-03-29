@@ -9,7 +9,7 @@ devtools_module("ui") {
   sources = [
     "ARIAUtils.ts",
     "ActionRegistration.ts",
-    "ActionRegistry.js",
+    "ActionRegistry.ts",
     "Context.js",
     "ContextFlavorListener.js",
     "ContextMenu.js",

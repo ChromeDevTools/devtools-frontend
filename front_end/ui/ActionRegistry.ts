@@ -2,28 +2,23 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Root from '../root/root.js';  // eslint-disable-line no-unused-vars
+/* eslint-disable rulesdir/no_underscored_properties */
 
 import {Action, getRegisteredActionExtensions} from './ActionRegistration.js';  // eslint-disable-line no-unused-vars
-import {Context} from './Context.js';  // eslint-disable-line no-unused-vars
+import {Context} from './Context.js';                                           // eslint-disable-line no-unused-vars
 
-/** @type {!ActionRegistry|undefined} */
-let actionRegistryInstance;
+let actionRegistryInstance: ActionRegistry|undefined;
 
 export class ActionRegistry {
-  /**
-   * @private
-   */
-  constructor() {
-    /** @type {!Map.<string, !Action>} */
+  _actionsById: Map<string, Action>;
+  private constructor() {
     this._actionsById = new Map();
     this._registerActions();
   }
 
-  /**
-   * @param {{forceNew: ?boolean}} opts
-   */
-  static instance(opts = {forceNew: null}) {
+  static instance(opts: {
+    forceNew: boolean|null,
+  } = {forceNew: null}): ActionRegistry {
     const {forceNew} = opts;
     if (!actionRegistryInstance || forceNew) {
       actionRegistryInstance = new ActionRegistry();
@@ -32,11 +27,11 @@ export class ActionRegistry {
     return actionRegistryInstance;
   }
 
-  static removeInstance() {
+  static removeInstance(): void {
     actionRegistryInstance = undefined;
   }
 
-  _registerActions() {
+  _registerActions(): void {
     for (const action of getRegisteredActionExtensions()) {
       this._actionsById.set(action.id(), action);
       if (!action.canInstantiate()) {
@@ -45,45 +40,27 @@ export class ActionRegistry {
     }
   }
 
-  /**
-   * @return {!Array.<!Action>}
-   */
-  availableActions() {
+  availableActions(): Action[] {
     return this.applicableActions([...this._actionsById.keys()], Context.instance());
   }
 
-  /**
-   * @return {!Array.<!Action>}
-   */
-  actions() {
+  actions(): Action[] {
     return [...this._actionsById.values()];
   }
 
-  /**
-   * @param {!Array.<string>} actionIds
-   * @param {!Context} context
-   * @return {!Array.<!Action>}
-   */
-  applicableActions(actionIds, context) {
-    /** @type {!Array<!Action>} */
-    const applicableActions = [];
+  applicableActions(actionIds: string[], context: Context): Action[] {
+    const applicableActions: Action[] = [];
     for (const actionId of actionIds) {
       const action = this._actionsById.get(actionId);
       if (action && action.enabled()) {
-        if (isActionApplicableToContextTypes(
-                /** @type {!Action} */ (action), context.flavors())) {
-          applicableActions.push(/** @type {!Action} */ (action));
+        if (isActionApplicableToContextTypes((action as Action), context.flavors())) {
+          applicableActions.push((action as Action));
         }
       }
     }
     return applicableActions;
 
-    /**
-     * @param {!Action} action
-     * @param {!Set.<?>} currentContextTypes
-     * @return {boolean}
-     */
-    function isActionApplicableToContextTypes(action, currentContextTypes) {
+    function isActionApplicableToContextTypes(action: Action, currentContextTypes: Set<unknown>): boolean {
       const contextTypes = action.contextTypes();
       if (!contextTypes) {
         return true;
@@ -99,11 +76,7 @@ export class ActionRegistry {
     }
   }
 
-  /**
-   * @param {string} actionId
-   * @return {?Action}
-   */
-  action(actionId) {
+  action(actionId: string): Action|null {
     return this._actionsById.get(actionId) || null;
   }
 }

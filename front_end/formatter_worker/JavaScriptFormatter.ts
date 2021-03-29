@@ -28,6 +28,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Acorn from '../third_party/acorn/acorn.js';
 
 import {AcornTokenizer, ECMA_VERSION, TokenOrComment} from './AcornTokenizer.js';  // eslint-disable-line no-unused-vars
@@ -35,29 +37,17 @@ import {ESTreeWalker} from './ESTreeWalker.js';
 import {FormattedContentBuilder} from './FormattedContentBuilder.js';  // eslint-disable-line no-unused-vars
 
 export class JavaScriptFormatter {
-  /**
-   * @param {!FormattedContentBuilder} builder
-   */
-  constructor(builder) {
+  _builder: FormattedContentBuilder;
+  _tokenizer!: AcornTokenizer;
+  _content!: string;
+  _fromOffset!: number;
+  _lastLineNumber!: number;
+  _toOffset?: number;
+  constructor(builder: FormattedContentBuilder) {
     this._builder = builder;
-
-    /** @type {!AcornTokenizer} */
-    this._tokenizer;
-    /** @type {string} */
-    this._content;
-    /** @type {number} */
-    this._fromOffset;
-    /** @type {number} */
-    this._lastLineNumber;
   }
 
-  /**
-   * @param {string} text
-   * @param {!Array<number>} lineEndings
-   * @param {number} fromOffset
-   * @param {number} toOffset
-   */
-  format(text, lineEndings, fromOffset, toOffset) {
+  format(text: string, lineEndings: number[], fromOffset: number, toOffset: number): void {
     this._fromOffset = fromOffset;
     this._toOffset = toOffset;
     this._content = text.substring(this._fromOffset, this._toOffset);
@@ -68,7 +58,7 @@ export class JavaScriptFormatter {
       preserveParens: true,
       allowImportExportEverywhere: true,
       ecmaVersion: ECMA_VERSION,
-      allowHashBang: true
+      allowHashBang: true,
     });
     const walker = new ESTreeWalker(this._beforeVisit.bind(this), this._afterVisit.bind(this));
     // @ts-ignore Technically, the acorn Node type is a subclass of ESTree.Node.
@@ -78,11 +68,7 @@ export class JavaScriptFormatter {
     walker.walk(ast);
   }
 
-  /**
-   * @param {?TokenOrComment} token
-   * @param {string} format
-   */
-  _push(token, format) {
+  _push(token: Acorn.Token|Acorn.Comment|null, format: string): void {
     for (let i = 0; i < format.length; ++i) {
       if (format[i] === 's') {
         this._builder.addSoftSpace();
@@ -106,17 +92,13 @@ export class JavaScriptFormatter {
     }
   }
 
-  /**
-   * @param {!ESTree.Node} node
-   * @return {undefined}
-   */
-  _beforeVisit(node) {
+  _beforeVisit(node: ESTree.Node): undefined {
     if (!node.parent) {
       return;
     }
     let token;
     while ((token = this._tokenizer.peekToken()) && token.start < node.start) {
-      const token = /** @type {!TokenOrComment} */ (this._tokenizer.nextToken());
+      const token = (this._tokenizer.nextToken() as TokenOrComment);
       // @ts-ignore Same reason as above about Acorn types and ESTree types
       const format = this._formatToken(node.parent, token);
       this._push(token, format);
@@ -124,45 +106,33 @@ export class JavaScriptFormatter {
     return;
   }
 
-  /**
-   * @param {!ESTree.Node} node
-   */
-  _afterVisit(node) {
+  _afterVisit(node: ESTree.Node): void {
     let token;
     while ((token = this._tokenizer.peekToken()) && token.start < node.end) {
-      const token = /** @type {!TokenOrComment} */ (this._tokenizer.nextToken());
+      const token = (this._tokenizer.nextToken() as TokenOrComment);
       const format = this._formatToken(node, token);
       this._push(token, format);
     }
     this._push(null, this._finishNode(node));
   }
 
-  /**
-   * @param {!ESTree.Node} node
-   * @return {boolean}
-   */
-  _inForLoopHeader(node) {
+  _inForLoopHeader(node: ESTree.Node): boolean {
     const parent = node.parent;
     if (!parent) {
       return false;
     }
     if (parent.type === 'ForStatement') {
-      const parentNode = /** @type {!ESTree.ForStatement} */ (parent);
+      const parentNode = (parent as ESTree.ForStatement);
       return node === parentNode.init || node === parentNode.test || node === parentNode.update;
     }
     if (parent.type === 'ForInStatement' || parent.type === 'ForOfStatement') {
-      const parentNode = /** @type {(!ESTree.ForInStatement|!ESTree.ForOfStatement)} */ (parent);
+      const parentNode = (parent as ESTree.ForInStatement | ESTree.ForOfStatement);
       return node === parentNode.left || node === parentNode.right;
     }
     return false;
   }
 
-  /**
-   * @param {!ESTree.Node} node
-   * @param {!TokenOrComment} tokenOrComment
-   * @return {string}
-   */
-  _formatToken(node, tokenOrComment) {
+  _formatToken(node: ESTree.Node, tokenOrComment: TokenOrComment): string {
     const AT = AcornTokenizer;
     if (AT.lineComment(tokenOrComment)) {
       return 'tn';
@@ -170,7 +140,7 @@ export class JavaScriptFormatter {
     if (AT.blockComment(tokenOrComment)) {
       return 'tn';
     }
-    const token = /** @type {!Acorn.Token} */ (tokenOrComment);
+    const token = (tokenOrComment as Acorn.Token);
     if (node.type === 'ContinueStatement' || node.type === 'BreakStatement') {
       return node.label && AT.keyword(token) ? 'ts' : 't';
     }
@@ -263,7 +233,7 @@ export class JavaScriptFormatter {
     } else if (node.type === 'VariableDeclaration') {
       if (AT.punctuator(token, ',')) {
         let allVariablesInitialized = true;
-        const declarations = /** @type {!Array.<!ESTree.Node>} */ (node.declarations);
+        const declarations = (node.declarations as ESTree.Node[]);
         for (let i = 0; i < declarations.length; ++i) {
           // @ts-ignore We are doing a subtype check, without properly checking whether
           // it exists. We can't fix that, unless we use proper typechecking
@@ -377,11 +347,7 @@ export class JavaScriptFormatter {
     return AT.keyword(token) && !AT.keyword(token, 'this') ? 'ts' : 't';
   }
 
-  /**
-   * @param {!ESTree.Node} node
-   * @return {string}
-   */
-  _finishNode(node) {
+  _finishNode(node: ESTree.Node): string {
     if (node.type === 'WithStatement') {
       if (node.body && node.body.type !== 'BlockStatement') {
         return 'n<';
@@ -396,7 +362,7 @@ export class JavaScriptFormatter {
       }
     } else if (node.type === 'BlockStatement') {
       if (node.parent && node.parent.type === 'IfStatement') {
-        const parentNode = /** @type {!ESTree.IfStatement} */ (node.parent);
+        const parentNode = (node.parent as ESTree.IfStatement);
         if (parentNode.alternate && parentNode.consequent === node) {
           return '';
         }
@@ -417,13 +383,13 @@ export class JavaScriptFormatter {
         return '';
       }
       if (node.parent && node.parent.type === 'TryStatement') {
-        const parentNode = /** @type {!ESTree.TryStatement} */ (node.parent);
+        const parentNode = (node.parent as ESTree.TryStatement);
         if (parentNode.block === node) {
           return 's';
         }
       }
       if (node.parent && node.parent.type === 'CatchClause') {
-        const parentNode = /** @type {!ESTree.CatchClause} */ (node.parent);
+        const parentNode = (node.parent as ESTree.CatchClause);
         // @ts-ignore We are doing a subtype check, without properly checking whether
         // it exists. We can't fix that, unless we use proper typechecking
         if (parentNode.parent && parentNode.parent.finalizer) {

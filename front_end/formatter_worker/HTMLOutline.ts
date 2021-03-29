@@ -2,20 +2,23 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Platform from '../platform/platform.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 
 import {javaScriptOutline} from './JavaScriptOutline.js';
+export interface Item {
+  title: string;
+  subtitle?: string;
+  line: number;
+  column: number;
+}
 
-/** @typedef {{title: string, subtitle: (string|undefined), line: number, column: number}} */
-// @ts-ignore typedef
-export let Item;
-
-/**
- * @param {string} content
- * @param {function({chunk: !Array<!Item>, isLastChunk: boolean}):void} chunkCallback
- */
-export function htmlOutline(content, chunkCallback) {
+export function htmlOutline(content: string, chunkCallback: (arg0: {
+                                               chunk: Array<Item>,
+                                               isLastChunk: boolean,
+                                             }) => void): void {
   const SCRIPT_OPENING_TAG = /<script[^>]*>/im;
   const SCRIPT_CLOSING_TAG = /<\/script\s*>/im;
 

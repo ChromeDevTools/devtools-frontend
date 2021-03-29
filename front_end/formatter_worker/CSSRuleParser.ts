@@ -2,7 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {createTokenizer} from './FormatterWorker.js';
+/* eslint-disable rulesdir/no_underscored_properties */
+
+import {Chunk, ChunkCallback, createTokenizer} from './FormatterWorker.js';
 
 export const CSSParserStates = {
   Initial: 'Initial',
@@ -10,52 +12,46 @@ export const CSSParserStates = {
   Style: 'Style',
   PropertyName: 'PropertyName',
   PropertyValue: 'PropertyValue',
-  AtRule: 'AtRule'
+  AtRule: 'AtRule',
 };
 
-/** @typedef {*} */
-let Rule;  // eslint-disable-line no-unused-vars
+// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type Rule = any;
 
-/**
- * @typedef {{ chunk: Array.<!Rule>, isLastChunk: boolean }} */
-let Chunk;  // eslint-disable-line no-unused-vars
+interface Property {
+  name: string;
+  value: string;
+  range: Range;
+  nameRange: Range;
+  valueRange?: Range;
+}
 
-/**
- * @param {string} text
- * @param {function({ chunk: !Array.<!Rule>, isLastChunk:boolean}):void} chunkCallback
- */
-export function parseCSS(text, chunkCallback) {
+interface Range {
+  startLine: number;
+  startColumn: number;
+  endLine: number;
+  endColumn: number;
+}
+
+export function parseCSS(text: string, chunkCallback: ChunkCallback): void {
   const chunkSize = 100000;  // characters per data chunk
   const lines = text.split('\n');
-  /** @type {!Array.<!Rule>} */
-  let rules = [];
+  let rules: Rule[] = [];
   let processedChunkCharacters = 0;
 
-  let state = CSSParserStates.Initial;
-  /** @type {!Rule} */
-  let rule;
-  /** @type {*} */
-  let property;
+  let state: string = CSSParserStates.Initial;
+  let rule: Rule;
+  let property: Property;
   const UndefTokenType = new Set();
 
-  /** @type {!Array.<!Rule>} */
-  let disabledRules = [];
+  let disabledRules: Rule[] = [];
 
-  /**
-   *
-   * @param {!Chunk} chunk
-   */
-  function disabledRulesCallback(chunk) {
+  function disabledRulesCallback(chunk: Chunk): void {
     disabledRules = disabledRules.concat(chunk.chunk);
   }
 
-  /**
-   * @param {string} tokenValue
-   * @param {?string} tokenTypes
-   * @param {number} column
-   * @param {number} newColumn
-   */
-  function processToken(tokenValue, tokenTypes, column, newColumn) {
+  function processToken(tokenValue: string, tokenTypes: string|null, column: number, newColumn: number): void {
     const tokenType = tokenTypes ? new Set(tokenTypes.split(' ')) : UndefTokenType;
     switch (state) {
       case CSSParserStates.Initial:
@@ -100,7 +96,7 @@ export function parseCSS(text, chunkCallback) {
             name: tokenValue,
             value: '',
             range: createRange(lineNumber, column),
-            nameRange: createRange(lineNumber, column)
+            nameRange: createRange(lineNumber, column),
           };
           state = CSSParserStates.PropertyName;
         } else if (tokenValue === '}' && tokenType === UndefTokenType) {
@@ -151,7 +147,11 @@ export function parseCSS(text, chunkCallback) {
       case CSSParserStates.PropertyValue:
         if ((tokenValue === ';' || tokenValue === '}') && tokenType === UndefTokenType) {
           property.value = property.value;
+          // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+          // @ts-expect-error
           property.valueRange.endLine = lineNumber;
+          // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+          // @ts-expect-error
           property.valueRange.endColumn = column;
           property.range.endLine = lineNumber;
           property.range.endColumn = tokenValue === ';' ? newColumn : column;
@@ -179,8 +179,7 @@ export function parseCSS(text, chunkCallback) {
     }
   }
   const tokenizer = createTokenizer('text/css');
-  /** @type {number} */
-  let lineNumber;
+  let lineNumber: number;
   for (lineNumber = 0; lineNumber < lines.length; ++lineNumber) {
     const line = lines[lineNumber];
     tokenizer(line, processToken);
@@ -188,12 +187,7 @@ export function parseCSS(text, chunkCallback) {
   }
   chunkCallback({chunk: rules, isLastChunk: true});
 
-  /**
-   * @param {number} lineNumber
-   * @param {number} columnNumber
-   * @return {!{startLine: number, startColumn: number, endLine: number, endColumn: number}}
-   */
-  function createRange(lineNumber, columnNumber) {
+  function createRange(lineNumber: number, columnNumber: number): Range {
     return {startLine: lineNumber, startColumn: columnNumber, endLine: lineNumber, endColumn: columnNumber};
   }
 }

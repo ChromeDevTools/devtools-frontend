@@ -2,48 +2,40 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/** @type {!Object} */
-const SkipSubTreeObject = {};
+/* eslint-disable rulesdir/no_underscored_properties */
+
+import * as ESTree from 'estree';
+
+const SkipSubTreeObject: Object = {};
 
 export class ESTreeWalker {
-  /**
-   * @param {function(!ESTree.Node):(!Object|undefined)} beforeVisit
-   * @param {function(!ESTree.Node):void=} afterVisit
-   */
-  constructor(beforeVisit, afterVisit) {
+  _beforeVisit: (arg0: ESTree.Node) => (Object | undefined);
+  _afterVisit: Function;
+  _walkNulls: boolean;
+
+  constructor(beforeVisit: (arg0: ESTree.Node) => (Object | undefined), afterVisit?: ((arg0: ESTree.Node) => void)) {
     this._beforeVisit = beforeVisit;
     this._afterVisit = afterVisit || new Function();
     this._walkNulls = false;
   }
 
-  /**
-   * @return {!Object}
-   */
-  static get SkipSubtree() {
+  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  static get SkipSubtree(): Object {
     return SkipSubTreeObject;
   }
 
-  /**
-   * @param {boolean} value
-   */
-  setWalkNulls(value) {
+  setWalkNulls(value: boolean): void {
     this._walkNulls = value;
   }
 
-  /**
-   * @param {!ESTree.Node} ast
-   */
-  walk(ast) {
+  walk(ast: ESTree.Node): void {
     this._innerWalk(ast, null);
   }
 
-  /**
-   * @param {!ESTree.Node} node
-   * @param {?ESTree.Node} parent
-   */
-  _innerWalk(node, parent) {
+  _innerWalk(node: ESTree.Node, parent: ESTree.Node|null): void {
     if (!node && parent && this._walkNulls) {
-      const result = /** @type {!ESTree.SimpleLiteral} */ ({raw: 'null', value: null, parent: null});
+      const result = ({raw: 'null', value: null, parent: null} as ESTree.SimpleLiteral);
       // Otherwise Closure can't handle the definition
       result.type = 'Literal';
 
@@ -67,7 +59,7 @@ export class ESTreeWalker {
     }
 
     if (node.type === 'TemplateLiteral') {
-      const templateLiteral = /** @type {!ESTree.TemplateLiteralNode} */ (node);
+      const templateLiteral = (node as ESTree.TemplateLiteral);
       const expressionsLength = templateLiteral.expressions.length;
       for (let i = 0; i < expressionsLength; ++i) {
         this._innerWalk(templateLiteral.quasis[i], templateLiteral);
@@ -79,11 +71,13 @@ export class ESTreeWalker {
         // @ts-ignore We are doing type traversal here, but the strings
         // in _walkOrder are not mapping. Preferably, we would use the
         // properties as defined in the types, but we can't do that yet.
-        const entity = /** @type {?} */ (node[walkOrder[i]]);
+        // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const entity = (node[walkOrder[i]] as any);
         if (Array.isArray(entity)) {
-          this._walkArray(/** @type {!Array<!ESTree.Node>} */ (entity), node);
+          this._walkArray((entity as ESTree.Node[]), node);
         } else {
-          this._innerWalk(/** @type {!ESTree.Node} */ (entity), node);
+          this._innerWalk((entity as ESTree.Node), node);
         }
       }
     }
@@ -91,18 +85,15 @@ export class ESTreeWalker {
     this._afterVisit.call(null, node);
   }
 
-  /**
-   * @param {!Array.<!ESTree.Node>} nodeArray
-   * @param {?ESTree.Node} parentNode
-   */
-  _walkArray(nodeArray, parentNode) {
+  _walkArray(nodeArray: ESTree.Node[], parentNode: ESTree.Node|null): void {
     for (let i = 0; i < nodeArray.length; ++i) {
       this._innerWalk(nodeArray[i], parentNode);
     }
   }
 }
 
-/** @enum {!Array.<string>} */
+// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+// eslint-disable-next-line @typescript-eslint/naming-convention
 const _walkOrder = {
   'AwaitExpression': ['argument'],
   'ArrayExpression': ['elements'],
@@ -172,5 +163,5 @@ const _walkOrder = {
   'VariableDeclarator': ['id', 'init'],
   'WhileStatement': ['test', 'body'],
   'WithStatement': ['object', 'body'],
-  'YieldExpression': ['argument']
+  'YieldExpression': ['argument'],
 };

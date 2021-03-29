@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Platform from '../platform/platform.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as AcornLoose from '../third_party/acorn-loose/package/dist/acorn-loose.mjs';
@@ -9,19 +11,18 @@ import * as Acorn from '../third_party/acorn/acorn.js';
 
 import {ECMA_VERSION} from './AcornTokenizer.js';
 import {ESTreeWalker} from './ESTreeWalker.js';
+import {ChunkCallback} from './FormatterWorker.js';
 
-/** @typedef {{title: string, subtitle: (string|undefined), line: number, column: number}} */
-// @ts-ignore typedef
-export let Item;
+export interface Item {
+  title: string;
+  subtitle?: string;
+  line: number;
+  column: number;
+}
 
-/**
- * @param {string} content
- * @param {function({chunk: !Array<!Item>, isLastChunk: boolean}):void} chunkCallback
- */
-export function javaScriptOutline(content, chunkCallback) {
+export function javaScriptOutline(content: string, chunkCallback: ChunkCallback): void {
   const chunkSize = 100000;
-  /** @type {!Array<!Item>} */
-  let chunk = [];
+  let chunk: Item[] = [];
   let lastReportedOffset = 0;
 
   let ast;
@@ -43,24 +44,21 @@ export function javaScriptOutline(content, chunkCallback) {
 
   chunkCallback({chunk, isLastChunk: true});
 
-  /**
-   * @param {!ESTree.Node} node
-   */
-  function beforeVisit(node) {
+  function beforeVisit(node: ESTree.Node): undefined {
     if (node.type === 'ClassDeclaration') {
-      reportClass(/** @type {!ESTree.Node} */ (node.id));
+      reportClass((node.id as ESTree.Node));
     } else if (node.type === 'VariableDeclarator' && node.init && isClassNode(node.init)) {
-      reportClass(/** @type {!ESTree.Node} */ (node.id));
+      reportClass((node.id as ESTree.Node));
     } else if (node.type === 'AssignmentExpression' && isNameNode(node.left) && isClassNode(node.right)) {
-      reportClass(/** @type {!ESTree.Node} */ (node.left));
+      reportClass((node.left as ESTree.Node));
     } else if (node.type === 'Property' && isNameNode(node.key) && isClassNode(node.value)) {
-      reportClass(/** @type {!ESTree.Node} */ (node.key));
+      reportClass((node.key as ESTree.Node));
     } else if (node.type === 'FunctionDeclaration') {
-      reportFunction(/** @type {!ESTree.Node} */ (node.id), node);
+      reportFunction((node.id as ESTree.Node), node);
     } else if (node.type === 'VariableDeclarator' && node.init && isFunctionNode(node.init)) {
-      reportFunction(/** @type {!ESTree.Node} */ (node.id), /** @type {!ESTree.Node} */ (node.init));
+      reportFunction((node.id as ESTree.Node), (node.init as ESTree.Node));
     } else if (node.type === 'AssignmentExpression' && isNameNode(node.left) && isFunctionNode(node.right)) {
-      reportFunction(/** @type {!ESTree.Node} */ (node.left), /** @type {!ESTree.Node} */ (node.right));
+      reportFunction((node.left as ESTree.Node), (node.right as ESTree.Node));
     } else if (
         (node.type === 'MethodDefinition' || node.type === 'Property') && isNameNode(node.key) &&
         isFunctionNode(node.value)) {
@@ -71,29 +69,21 @@ export function javaScriptOutline(content, chunkCallback) {
       if ('static' in node && node.static) {
         namePrefix.push('static');
       }
-      reportFunction(/** @type {!ESTree.Node} */ (node.key), node.value, namePrefix.join(' '));
+      reportFunction((node.key as ESTree.Node), node.value, namePrefix.join(' '));
     }
 
     return undefined;
   }
 
-  /**
-   * @param {!ESTree.Node} nameNode
-   */
-  function reportClass(nameNode) {
+  function reportClass(nameNode: ESTree.Node): void {
     const name = 'class ' + stringifyNameNode(nameNode);
     textCursor.advance(nameNode.start);
     addOutlineItem(name);
   }
 
-  /**
-   * @param {!ESTree.Node} nameNode
-   * @param {!ESTree.Node} functionNode
-   * @param {string=} namePrefix
-   */
-  function reportFunction(nameNode, functionNode, namePrefix) {
+  function reportFunction(nameNode: ESTree.Node, functionNode: ESTree.Node, namePrefix?: string): void {
     let name = stringifyNameNode(nameNode);
-    const functionDeclarationNode = /** @type {!ESTree.FunctionDeclaration} */ (functionNode);
+    const functionDeclarationNode = (functionNode as ESTree.FunctionDeclaration);
     if (functionDeclarationNode.generator) {
       name = '*' + name;
     }
@@ -105,14 +95,10 @@ export function javaScriptOutline(content, chunkCallback) {
     }
 
     textCursor.advance(nameNode.start);
-    addOutlineItem(name, stringifyArguments(/** @type {!Array<!ESTree.Node>} */ (functionDeclarationNode.params)));
+    addOutlineItem(name, stringifyArguments((functionDeclarationNode.params as ESTree.Node[])));
   }
 
-  /**
-   * @param {(!ESTree.Node|undefined)} node
-   * @return {boolean}
-   */
-  function isNameNode(node) {
+  function isNameNode(node: ESTree.Node): boolean {
     if (!node) {
       return false;
     }
@@ -122,43 +108,27 @@ export function javaScriptOutline(content, chunkCallback) {
     return node.type === 'Identifier';
   }
 
-  /**
-   * @param {(!ESTree.Node|undefined)} node
-   * @return {boolean}
-   */
-  function isFunctionNode(node) {
+  function isFunctionNode(node: ESTree.Node): boolean {
     if (!node) {
       return false;
     }
     return node.type === 'FunctionExpression' || node.type === 'ArrowFunctionExpression';
   }
 
-  /**
-   * @param {(!ESTree.Node|undefined)} node
-   * @return {boolean}
-   */
-  function isClassNode(node) {
+  function isClassNode(node: ESTree.Node): boolean {
     return node !== undefined && node.type === 'ClassExpression';
   }
 
-  /**
-   * @param {!ESTree.Node} node
-   * @return {string}
-   */
-  function stringifyNameNode(node) {
+  function stringifyNameNode(node: ESTree.Node): string {
     if (node.type === 'MemberExpression') {
-      node = /** @type {!ESTree.Node} */ (node.property);
+      node = (node.property as ESTree.Node);
     }
     console.assert(node.type === 'Identifier', 'Cannot extract identifier from unknown type: ' + node.type);
-    const identifier = /** @type {!ESTree.Identifier} */ (node);
+    const identifier = (node as ESTree.Identifier);
     return identifier.name;
   }
 
-  /**
-   * @param {!Array<!ESTree.Node>} params
-   * @return {string}
-   */
-  function stringifyArguments(params) {
+  function stringifyArguments(params: ESTree.Node[]): string {
     const result = [];
     for (const param of params) {
       if (param.type === 'Identifier') {
@@ -172,11 +142,7 @@ export function javaScriptOutline(content, chunkCallback) {
     return '(' + result.join(', ') + ')';
   }
 
-  /**
-   * @param {string} title
-   * @param {string=} subtitle
-   */
-  function addOutlineItem(title, subtitle) {
+  function addOutlineItem(title: string, subtitle?: string): void {
     const line = textCursor.lineNumber();
     const column = textCursor.columnNumber();
     chunk.push({title, subtitle, line, column});

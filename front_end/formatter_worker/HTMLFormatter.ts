@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Platform from '../platform/platform.js';
 
 import {CSSFormatter} from './CSSFormatter.js';
@@ -10,47 +12,40 @@ import {AbortTokenization, createTokenizer} from './FormatterWorker.js';
 import {JavaScriptFormatter} from './JavaScriptFormatter.js';
 
 export class HTMLFormatter {
-  /**
-   * @param {!FormattedContentBuilder} builder
-   */
-  constructor(builder) {
+  _builder: FormattedContentBuilder;
+  _jsFormatter: JavaScriptFormatter;
+  _cssFormatter: CSSFormatter;
+  _text?: string;
+  _lineEndings?: number[];
+  _model?: HTMLModel;
+
+  constructor(builder: FormattedContentBuilder) {
     this._builder = builder;
     this._jsFormatter = new JavaScriptFormatter(builder);
     this._cssFormatter = new CSSFormatter(builder);
   }
 
-  /**
-   * @param {string} text
-   * @param {!Array<number>} lineEndings
-   */
-  format(text, lineEndings) {
+  format(text: string, lineEndings: number[]): void {
     this._text = text;
     this._lineEndings = lineEndings;
     this._model = new HTMLModel(text);
     this._walk(this._model.document());
   }
 
-  /**
-   * @param {!FormatterElement} element
-   * @param {number} offset
-   */
-  _formatTokensTill(element, offset) {
+  _formatTokensTill(element: FormatterElement, offset: number): void {
     if (!this._model) {
       return;
     }
 
     let nextToken = this._model.peekToken();
     while (nextToken && nextToken.startOffset < offset) {
-      const token = /** @type {!Token} */ (this._model.nextToken());
+      const token = (this._model.nextToken() as Token);
       this._formatToken(element, token);
       nextToken = this._model.peekToken();
     }
   }
 
-  /**
-   * @param {!FormatterElement} element
-   */
-  _walk(element) {
+  _walk(element: FormatterElement): void {
     if (!element.openTag || !element.closeTag) {
       throw new Error('Element is missing open or close tag');
     }
@@ -71,10 +66,7 @@ export class HTMLFormatter {
     this._afterCloseTag(element);
   }
 
-  /**
-   * @param {!FormatterElement} element
-   */
-  _beforeOpenTag(element) {
+  _beforeOpenTag(element: FormatterElement): void {
     if (!this._model) {
       return;
     }
@@ -85,10 +77,7 @@ export class HTMLFormatter {
     this._builder.addNewLine();
   }
 
-  /**
-   * @param {!FormatterElement} element
-   */
-  _afterOpenTag(element) {
+  _afterOpenTag(element: FormatterElement): void {
     if (!this._model) {
       return;
     }
@@ -100,10 +89,7 @@ export class HTMLFormatter {
     this._builder.addNewLine();
   }
 
-  /**
-   * @param {!FormatterElement} element
-   */
-  _beforeCloseTag(element) {
+  _beforeCloseTag(element: FormatterElement): void {
     if (!this._model) {
       return;
     }
@@ -115,18 +101,11 @@ export class HTMLFormatter {
     this._builder.addNewLine();
   }
 
-  /**
-   * @param {!FormatterElement} element
-   */
-  _afterCloseTag(element) {
+  _afterCloseTag(_element: FormatterElement): void {
     this._builder.addNewLine();
   }
 
-  /**
-   * @param {!FormatterElement} element
-   * @param {!Token} token
-   */
-  _formatToken(element, token) {
+  _formatToken(element: FormatterElement, token: Token): void {
     if (Platform.StringUtilities.isWhitespace(token.value)) {
       return;
     }
@@ -170,11 +149,7 @@ export class HTMLFormatter {
     this._builder.addToken(token.value, token.startOffset);
   }
 
-  /**
-   * @param {!FormatterElement} element
-   * @return {boolean}
-   */
-  _scriptTagIsJavaScript(element) {
+  _scriptTagIsJavaScript(element: FormatterElement): boolean {
     if (!element.openTag) {
       return true;
     }
@@ -195,20 +170,30 @@ export class HTMLFormatter {
     }
     return HTMLFormatter.SupportedJavaScriptMimeTypes.has(type.trim());
   }
+
+  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  static readonly SupportedJavaScriptMimeTypes = new Set([
+    'application/ecmascript',
+    'application/javascript',
+    'application/x-ecmascript',
+    'application/x-javascript',
+    'text/ecmascript',
+    'text/javascript',
+    'text/javascript1.0',
+    'text/javascript1.1',
+    'text/javascript1.2',
+    'text/javascript1.3',
+    'text/javascript1.4',
+    'text/javascript1.5',
+    'text/jscript',
+    'text/livescript',
+    'text/x-ecmascript',
+    'text/x-javascript',
+  ]);
 }
 
-HTMLFormatter.SupportedJavaScriptMimeTypes = new Set([
-  'application/ecmascript', 'application/javascript', 'application/x-ecmascript', 'application/x-javascript',
-  'text/ecmascript', 'text/javascript', 'text/javascript1.0', 'text/javascript1.1', 'text/javascript1.2',
-  'text/javascript1.3', 'text/javascript1.4', 'text/javascript1.5', 'text/jscript', 'text/livescript',
-  'text/x-ecmascript', 'text/x-javascript'
-]);
-
-/**
- * @param {!Set<string>} tokenTypes
- * @param {string} type
- */
-function hasTokenInSet(tokenTypes, type) {
+function hasTokenInSet(tokenTypes: Set<string>, type: string): boolean {
   // We prefix the CodeMirror HTML tokenizer with the xml- prefix
   // in a full version. When running in a worker context, this
   // prefix is not appended, as the global is only overridden
@@ -217,10 +202,19 @@ function hasTokenInSet(tokenTypes, type) {
 }
 
 export class HTMLModel {
-  /**
-   * @param {string} text
-   */
-  constructor(text) {
+  _state: ParseState;
+  _document: FormatterElement;
+  _stack: FormatterElement[];
+  _tokens: Token[];
+  _tokenIndex: number;
+  _attributes: Map<string, string>;
+  _attributeName: string;
+  _tagName: string;
+  _isOpenTag: boolean;
+  _tagStartOffset?: number|null;
+  _tagEndOffset?: number|null;
+
+  constructor(text: string) {
     this._state = ParseState.Initial;
     this._document = new FormatterElement('document');
     this._document.openTag = new Tag('document', 0, 0, new Map(), true, false);
@@ -228,22 +222,17 @@ export class HTMLModel {
 
     this._stack = [this._document];
 
-    /** @type {!Array<Token>} */
     this._tokens = [];
     this._tokenIndex = 0;
     this._build(text);
 
-    /** @type {!Map<string, string>} */
     this._attributes = new Map();
     this._attributeName = '';
     this._tagName = '';
     this._isOpenTag = false;
   }
 
-  /**
-   * @param {string} text
-   */
-  _build(text) {
+  _build(text: string): void {
     const tokenizer = createTokenizer('text/html');
     let lastOffset = 0;
     const lowerCaseText = text.toLowerCase();
@@ -282,21 +271,14 @@ export class HTMLModel {
       this._popElement(new Tag(element.name, text.length, text.length, new Map(), false, false));
     }
 
-    /**
-     * @param {number} baseOffset
-     * @param {string} tokenValue
-     * @param {?string} type
-     * @param {number} tokenStart
-     * @param {number} tokenEnd
-     * @return {(!Object|undefined)}
-     * @this {HTMLModel}
-     */
-    function processToken(baseOffset, tokenValue, type, tokenStart, tokenEnd) {
+    function processToken(
+        this: HTMLModel, baseOffset: number, tokenValue: string, type: string|null, tokenStart: number,
+        tokenEnd: number): Object|undefined {
       tokenStart += baseOffset;
       tokenEnd += baseOffset;
       lastOffset = tokenEnd;
 
-      const tokenType = type ? new Set(type.split(' ')) : new Set();
+      const tokenType = type ? new Set<string>(type.split(' ')) : new Set<string>();
       const token = new Token(tokenValue, tokenType, tokenStart, tokenEnd);
       this._tokens.push(token);
       this._updateDOM(token);
@@ -311,69 +293,58 @@ export class HTMLModel {
     }
   }
 
-  /**
-   * @param {!Token} token
-   */
-  _updateDOM(token) {
-    const S = ParseState;
+  _updateDOM(token: Token): void {
     const value = token.value;
     const type = token.type;
     switch (this._state) {
-      case S.Initial:
+      case ParseState.Initial:
         if (hasTokenInSet(type, 'bracket') && (value === '<' || value === '</')) {
           this._onStartTag(token);
-          this._state = S.Tag;
+          this._state = ParseState.Tag;
         }
         return;
-      case S.Tag:
+      case ParseState.Tag:
         if (hasTokenInSet(type, 'tag') && !hasTokenInSet(type, 'bracket')) {
           this._tagName = value.trim().toLowerCase();
         } else if (hasTokenInSet(type, 'attribute')) {
           this._attributeName = value.trim().toLowerCase();
           this._attributes.set(this._attributeName, '');
-          this._state = S.AttributeName;
+          this._state = ParseState.AttributeName;
         } else if (hasTokenInSet(type, 'bracket') && (value === '>' || value === '/>')) {
           this._onEndTag(token);
-          this._state = S.Initial;
+          this._state = ParseState.Initial;
         }
         return;
-      case S.AttributeName:
+      case ParseState.AttributeName:
         if (!type.size && value === '=') {
-          this._state = S.AttributeValue;
+          this._state = ParseState.AttributeValue;
         } else if (hasTokenInSet(type, 'bracket') && (value === '>' || value === '/>')) {
           this._onEndTag(token);
-          this._state = S.Initial;
+          this._state = ParseState.Initial;
         }
         return;
-      case S.AttributeValue:
+      case ParseState.AttributeValue:
         if (hasTokenInSet(type, 'string')) {
           this._attributes.set(this._attributeName, value);
-          this._state = S.Tag;
+          this._state = ParseState.Tag;
         } else if (hasTokenInSet(type, 'bracket') && (value === '>' || value === '/>')) {
           this._onEndTag(token);
-          this._state = S.Initial;
+          this._state = ParseState.Initial;
         }
         return;
     }
   }
 
-  /**
-   * @param {!Token} token
-   */
-  _onStartTag(token) {
+  _onStartTag(token: Token): void {
     this._tagName = '';
     this._tagStartOffset = token.startOffset;
     this._tagEndOffset = null;
-    /** @type {!Map<string, string>} */
     this._attributes = new Map();
     this._attributeName = '';
     this._isOpenTag = token.value === '<';
   }
 
-  /**
-   * @param {!Token} token
-   */
-  _onEndTag(token) {
+  _onEndTag(token: Token): void {
     this._tagEndOffset = token.endOffset;
     const selfClosingTag = token.value === '/>' || SelfClosingTags.has(this._tagName);
     const tag = new Tag(
@@ -382,10 +353,7 @@ export class HTMLModel {
     this._onTagComplete(tag);
   }
 
-  /**
-   * @param {!Tag} tag
-   */
-  _onTagComplete(tag) {
+  _onTagComplete(tag: Tag): void {
     if (tag.isOpenTag) {
       const topElement = this._stack[this._stack.length - 1];
       if (topElement) {
@@ -410,20 +378,12 @@ export class HTMLModel {
     }
     this._popElement(tag);
 
-    /**
-     * @param {!FormatterElement} element
-     * @param {number} offset
-     * @return {!Tag}
-     */
-    function autocloseTag(element, offset) {
+    function autocloseTag(element: FormatterElement, offset: number): Tag {
       return new Tag(element.name, offset, offset, new Map(), false, false);
     }
   }
 
-  /**
-   * @param {!Tag} closeTag
-   */
-  _popElement(closeTag) {
+  _popElement(closeTag: Tag): void {
     const element = this._stack.pop();
     if (!element) {
       return;
@@ -431,10 +391,7 @@ export class HTMLModel {
     element.closeTag = closeTag;
   }
 
-  /**
-   * @param {!Tag} openTag
-   */
-  _pushElement(openTag) {
+  _pushElement(openTag: Tag): void {
     const topElement = this._stack[this._stack.length - 1];
     const newElement = new FormatterElement(openTag.name);
     if (topElement) {
@@ -445,31 +402,36 @@ export class HTMLModel {
     this._stack.push(newElement);
   }
 
-  /**
-   * @return {?Token}
-   */
-  peekToken() {
+  peekToken(): Token|null {
     return this._tokenIndex < this._tokens.length ? this._tokens[this._tokenIndex] : null;
   }
 
-  /**
-   * @return {?Token}
-   */
-  nextToken() {
+  nextToken(): Token|null {
     return this._tokens[this._tokenIndex++];
   }
 
-  /**
-   * @return {!FormatterElement}
-   */
-  document() {
+  document(): FormatterElement {
     return this._document;
   }
 }
 
-const SelfClosingTags = new Set([
-  'area', 'base', 'br', 'col', 'command', 'embed', 'hr', 'img', 'input', 'keygen', 'link', 'meta', 'param', 'source',
-  'track', 'wbr'
+const SelfClosingTags = new Set<string>([
+  'area',
+  'base',
+  'br',
+  'col',
+  'command',
+  'embed',
+  'hr',
+  'img',
+  'input',
+  'keygen',
+  'link',
+  'meta',
+  'param',
+  'source',
+  'track',
+  'wbr',
 ]);
 
 // @see https://www.w3.org/TR/html/syntax.html 8.1.2.4 Optional tags
@@ -479,11 +441,12 @@ const AutoClosingTags = new Map([
   ['dt', new Set(['dt', 'dd'])],
   ['dd', new Set(['dt', 'dd'])],
   [
-    'p', new Set([
+    'p',
+    new Set([
       'address', 'article', 'aside', 'blockquote', 'div', 'dl',      'fieldset', 'footer', 'form',
       'h1',      'h2',      'h3',    'h4',         'h5',  'h6',      'header',   'hgroup', 'hr',
-      'main',    'nav',     'ol',    'p',          'pre', 'section', 'table',    'ul'
-    ])
+      'main',    'nav',     'ol',    'p',          'pre', 'section', 'table',    'ul',
+    ]),
   ],
   ['rb', new Set(['rb', 'rt', 'rtc', 'rp'])],
   ['rt', new Set(['rb', 'rt', 'rtc', 'rp'])],
@@ -500,39 +463,38 @@ const AutoClosingTags = new Map([
   ['th', new Set(['td', 'th'])],
 ]);
 
-/** @enum {string} */
-const ParseState = {
-  Initial: 'Initial',
-  Tag: 'Tag',
-  AttributeName: 'AttributeName',
-  AttributeValue: 'AttributeValue'
-};
+const enum ParseState {
+  Initial = 'Initial',
+  Tag = 'Tag',
+  AttributeName = 'AttributeName',
+  AttributeValue = 'AttributeValue',
+}
 
-const Token = class {
-  /**
-   * @param {string} value
-   * @param {!Set<string>} type
-   * @param {number} startOffset
-   * @param {number} endOffset
-   */
-  constructor(value, type, startOffset, endOffset) {
+class Token {
+  value: string;
+  type: Set<string>;
+  startOffset: number;
+  endOffset: number;
+
+  constructor(value: string, type: Set<string>, startOffset: number, endOffset: number) {
     this.value = value;
     this.type = type;
     this.startOffset = startOffset;
     this.endOffset = endOffset;
   }
-};
+}
 
-const Tag = class {
-  /**
-   * @param {string} name
-   * @param {number} startOffset
-   * @param {number} endOffset
-   * @param {!Map<string, string>} attributes
-   * @param {boolean} isOpenTag
-   * @param {boolean} selfClosingTag
-   */
-  constructor(name, startOffset, endOffset, attributes, isOpenTag, selfClosingTag) {
+class Tag {
+  name: string;
+  startOffset: number;
+  endOffset: number;
+  attributes: Map<string, string>;
+  isOpenTag: boolean;
+  selfClosingTag: boolean;
+
+  constructor(
+      name: string, startOffset: number, endOffset: number, attributes: Map<string, string>, isOpenTag: boolean,
+      selfClosingTag: boolean) {
     this.name = name;
     this.startOffset = startOffset;
     this.endOffset = endOffset;
@@ -540,33 +502,16 @@ const Tag = class {
     this.isOpenTag = isOpenTag;
     this.selfClosingTag = selfClosingTag;
   }
-};
+}
 
+class FormatterElement {
+  name: string;
+  children: FormatterElement[] = [];
+  parent: FormatterElement|null = null;
+  openTag: Tag|null = null;
+  closeTag: Tag|null = null;
 
-const FormatterElement = class {
-  /**
-   * @param {string} name
-   */
-  constructor(name) {
+  constructor(name: string) {
     this.name = name;
-    /**
-     * @type {!Array<FormatterElement>}
-     */
-    this.children = [];
-
-    /**
-     * @type {?FormatterElement}
-     */
-    this.parent = null;
-
-    /**
-     * @type {?Tag}
-     */
-    this.openTag = null;
-
-    /**
-     * @type {?Tag}
-     */
-    this.closeTag = null;
   }
-};
+}

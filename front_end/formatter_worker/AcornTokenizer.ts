@@ -2,15 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Platform from '../platform/platform.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as Acorn from '../third_party/acorn/acorn.js';
 
-/**
- * @typedef {(!Acorn.Token|!Acorn.Comment)}
- */
-// @ts-ignore typedef
-export let TokenOrComment;
+export type TokenOrComment = Acorn.Token|Acorn.Comment;
 
 /**
  * The tokenizer in Acorn does not allow you to peek into the next token.
@@ -38,12 +36,20 @@ export let TokenOrComment;
  * out whether the next token should be the preceding comment or not.
  */
 export class AcornTokenizer {
-  /**
-   * @param {string} content
-   */
-  constructor(content) {
+  _content: string;
+  _comments: Acorn.Comment[];
+  _tokenizer: {
+    getToken(): Acorn.Token,
+    [Symbol.iterator](): Iterator<Acorn.Token>,
+  };
+  _textCursor: TextUtils.TextCursor.TextCursor;
+  _tokenLineStart: number;
+  _tokenLineEnd: number;
+  _tokenColumnStart: number;
+  _bufferedToken?: TokenOrComment;
+
+  constructor(content: string) {
     this._content = content;
-    /** @type {!Array<!Acorn.Comment>} */
     this._comments = [];
     this._tokenizer =
         Acorn.tokenizer(this._content, {onComment: this._comments, ecmaVersion: ECMA_VERSION, allowHashBang: true});
@@ -64,61 +70,33 @@ export class AcornTokenizer {
     if (this._comments.length === 0) {
       this._nextTokenInternal();
     }
-    /** @type {(!TokenOrComment|undefined)} */
-    this._bufferedToken;
   }
 
-  /**
-   * @param {!Acorn.Token} token
-   * @param {string=} values
-   * @return {boolean}
-   */
-  static punctuator(token, values) {
+  static punctuator(token: Acorn.Token, values?: string): boolean {
     return token.type !== Acorn.tokTypes.num && token.type !== Acorn.tokTypes.regexp &&
         token.type !== Acorn.tokTypes.string && token.type !== Acorn.tokTypes.name && !token.type.keyword &&
         (!values || (token.type.label.length === 1 && values.indexOf(token.type.label) !== -1));
   }
 
-  /**
-   * @param {!Acorn.Token} token
-   * @param {string=} keyword
-   * @return {boolean}
-   */
-  static keyword(token, keyword) {
+  static keyword(token: Acorn.Token, keyword?: string): boolean {
     return Boolean(token.type.keyword) && token.type !== Acorn.tokTypes['_true'] &&
         token.type !== Acorn.tokTypes['_false'] && token.type !== Acorn.tokTypes['_null'] &&
         (!keyword || token.type.keyword === keyword);
   }
 
-  /**
-   * @param {!TokenOrComment} token
-   * @param {string=} identifier
-   * @return {boolean}
-   */
-  static identifier(token, identifier) {
+  static identifier(token: TokenOrComment, identifier?: string): boolean {
     return token.type === Acorn.tokTypes.name && (!identifier || token.value === identifier);
   }
 
-  /**
-   * @param {!TokenOrComment} token
-   * @return {boolean}
-   */
-  static lineComment(token) {
+  static lineComment(token: TokenOrComment): boolean {
     return token.type === 'Line';
   }
 
-  /**
-   * @param {!TokenOrComment} token
-   * @return {boolean}
-   */
-  static blockComment(token) {
+  static blockComment(token: TokenOrComment): boolean {
     return token.type === 'Block';
   }
 
-  /**
-   * @return {(TokenOrComment|undefined)}
-   */
-  _nextTokenInternal() {
+  _nextTokenInternal(): TokenOrComment|undefined {
     if (this._comments.length) {
       const nextComment = this._comments.shift();
       // If this was the last comment to process, we need to make
@@ -136,10 +114,7 @@ export class AcornTokenizer {
     return token;
   }
 
-  /**
-   * @return {?TokenOrComment}
-   */
-  nextToken() {
+  nextToken(): TokenOrComment|null {
     const token = this._nextTokenInternal();
     if (!token || token.type === Acorn.tokTypes.eof) {
       return null;
@@ -154,10 +129,7 @@ export class AcornTokenizer {
     return token;
   }
 
-  /**
-   * @return {?TokenOrComment}
-   */
-  peekToken() {
+  peekToken(): TokenOrComment|null {
     if (this._comments.length) {
       return this._comments[0];
     }
@@ -167,24 +139,15 @@ export class AcornTokenizer {
     return this._bufferedToken.type !== Acorn.tokTypes.eof ? this._bufferedToken : null;
   }
 
-  /**
-   * @return {number}
-   */
-  tokenLineStart() {
+  tokenLineStart(): number {
     return this._tokenLineStart;
   }
 
-  /**
-   * @return {number}
-   */
-  tokenLineEnd() {
+  tokenLineEnd(): number {
     return this._tokenLineEnd;
   }
 
-  /**
-   * @return {number}
-   */
-  tokenColumnStart() {
+  tokenColumnStart(): number {
     return this._tokenColumnStart;
   }
 }

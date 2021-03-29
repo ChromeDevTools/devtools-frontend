@@ -109,6 +109,15 @@ export function resetSettings(): void {
   registeredSettings = [];
 }
 
+export function maybeRemoveSettingExtension(settingName: string): boolean {
+  const settingIndex = registeredSettings.findIndex(setting => setting.settingName === settingName);
+  if (settingIndex < 0 || !settingNameSet.delete(settingName)) {
+    return false;
+  }
+  registeredSettings.splice(settingIndex, 1);
+  return true;
+}
+
 export const enum SettingCategory {
   NONE = '',  // `NONE` must be a falsy value. Legacy code uses if-checks for the category.
   ELEMENTS = 'ELEMENTS',

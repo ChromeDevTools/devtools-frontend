@@ -129,6 +129,16 @@ export function getRegisteredViewExtensions(): Array<PreRegisteredView> {
       view => Root.Runtime.Runtime.isDescriptorEnabled({experiment: view.experiment(), condition: view.condition()}));
 }
 
+export function maybeRemoveViewExtension(viewId: string): boolean {
+  const viewIndex = registeredViewExtensions.findIndex(view => view.viewId() === viewId);
+  if (viewIndex < 0 || !viewIdSet.delete(viewId)) {
+    return false;
+  }
+  registeredViewExtensions.splice(viewIndex, 1);
+  return true;
+}
+
+
 const registeredLocationResolvers: Array<LocationResolverRegistration> = [];
 
 const viewLocationNameSet = new Set<ViewLocationValues>();

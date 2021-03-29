@@ -163,6 +163,15 @@ export function getRegisteredActionExtensions(): Array<Action> {
       });
 }
 
+export function maybeRemoveActionExtension(actionId: string): boolean {
+  const actionIndex = registeredActionExtensions.findIndex(action => action.id() === actionId);
+  if (actionIndex < 0 || !actionIdSet.delete(actionId)) {
+    return false;
+  }
+  registeredActionExtensions.splice(actionIndex, 1);
+  return true;
+}
+
 export const enum Platforms {
   All = 'All platforms',
   Mac = 'mac',

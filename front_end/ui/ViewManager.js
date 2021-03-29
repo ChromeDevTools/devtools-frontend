@@ -13,7 +13,7 @@ import {Events as TabbedPaneEvents, TabbedPane} from './TabbedPane.js';
 import {ItemsProvider, Toolbar, ToolbarItem, ToolbarMenuButton} from './Toolbar.js';  // eslint-disable-line no-unused-vars
 import {createTextChild} from './UIUtils.js';
 import {TabbedViewLocation, View, ViewLocation, ViewLocationResolver} from './View.js';  // eslint-disable-line no-unused-vars
-import {getRegisteredLocationResolvers, getRegisteredViewExtensions, registerLocationResolver, registerViewExtension, ViewLocationCategoryValues, ViewLocationValues, ViewPersistence, ViewRegistration} from './ViewRegistration.js';
+import {getRegisteredLocationResolvers, getRegisteredViewExtensions, maybeRemoveViewExtension, registerLocationResolver, registerViewExtension, ViewLocationCategoryValues, ViewLocationValues, ViewPersistence, ViewRegistration} from './ViewRegistration.js';
 import {VBox, Widget} from './Widget.js';  // eslint-disable-line no-unused-vars
 
 const UIStrings = {
@@ -1050,6 +1050,7 @@ export {
   ViewRegistration,
   ViewPersistence,
   getRegisteredViewExtensions,
+  maybeRemoveViewExtension,
   registerViewExtension,
   ViewLocationValues,
   getRegisteredLocationResolvers,

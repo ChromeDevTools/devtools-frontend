@@ -697,6 +697,20 @@ export function registerItem(registration) {
 }
 
 /**
+ * @param {!ContextMenuItemRegistration} registration
+ * @return {boolean}
+ */
+export function maybeRemoveItem(registration) {
+  const itemIndex = registeredItemsProviders.findIndex(
+      item => item.actionId === registration.actionId && item.location === registration.location);
+  if (itemIndex < 0) {
+    return false;
+  }
+  registeredItemsProviders.splice(itemIndex, 1);
+  return true;
+}
+
+/**
  * @return {!Array<!ContextMenuItemRegistration>}
  */
 function getRegisteredItems() {

@@ -28,9 +28,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
-import * as TextUtils from '../text_utils/text_utils.js';  // eslint-disable-line no-unused-vars
 
 import * as ARIAUtils from './ARIAUtils.js';
 import {Size} from './Geometry.js';
@@ -51,47 +52,42 @@ const UIStrings = {
   */
   sSuggestionSOfS: '{PH1}, suggestion {PH2} of {PH3}',
 };
-const str_ = i18n.i18n.registerUIStrings('ui/SuggestBox.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('ui/SuggestBox.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /**
  * @interface
  */
-export class SuggestBoxDelegate {
-  /**
-   * @param {?Suggestion} suggestion
-   * @param {boolean=} isIntermediateSuggestion
-   */
-  applySuggestion(suggestion, isIntermediateSuggestion) {
-  }
+export interface SuggestBoxDelegate {
+  applySuggestion(suggestion: Suggestion|null, isIntermediateSuggestion?: boolean): void;
 
   /**
    * acceptSuggestion will be always called after call to applySuggestion with isIntermediateSuggestion being equal to false.
    */
-  acceptSuggestion() {
-  }
+  acceptSuggestion(): void;
 }
 
-/**
- * @implements {ListDelegate<!Suggestion>}
- */
-export class SuggestBox {
-  /**
-   * @param {!SuggestBoxDelegate} suggestBoxDelegate
-   * @param {number=} maxItemsHeight
-   */
-  constructor(suggestBoxDelegate, maxItemsHeight) {
+export class SuggestBox implements ListDelegate<Suggestion> {
+  _suggestBoxDelegate: SuggestBoxDelegate;
+  _maxItemsHeight: number|undefined;
+  _rowHeight: number;
+  _userEnteredText: string;
+  _defaultSelectionIsDimmed: boolean;
+  _onlyCompletion: Suggestion|null;
+  _items: ListModel<Suggestion>;
+  _list: ListControl<Suggestion>;
+  _element: HTMLDivElement;
+  _glassPane: GlassPane;
+
+  constructor(suggestBoxDelegate: SuggestBoxDelegate, maxItemsHeight?: number) {
     this._suggestBoxDelegate = suggestBoxDelegate;
     this._maxItemsHeight = maxItemsHeight;
     this._rowHeight = 17;
     this._userEnteredText = '';
     this._defaultSelectionIsDimmed = false;
 
-    /** @type {?Suggestion} */
     this._onlyCompletion = null;
 
-    /** @type {!ListModel<!Suggestion>} */
     this._items = new ListModel();
-    /** @type {!ListControl<!Suggestion>} */
     this._list = new ListControl(this._items, this, ListMode.EqualHeightItems);
     this._element = this._list.element;
     this._element.classList.add('suggest-box');
@@ -107,48 +103,32 @@ export class SuggestBox {
     shadowRoot.appendChild(this._element);
   }
 
-  /**
-   * @return {boolean}
-   */
-  visible() {
+  visible(): boolean {
     return this._glassPane.isShowing();
   }
 
-  /**
-   * @param {!AnchorBox} anchorBox
-   */
-  setPosition(anchorBox) {
+  setPosition(anchorBox: AnchorBox): void {
     this._glassPane.setContentAnchorBox(anchorBox);
   }
 
-  /**
-   * @param {!AnchorBehavior} behavior
-   */
-  setAnchorBehavior(behavior) {
+  setAnchorBehavior(behavior: symbol): void {
     this._glassPane.setAnchorBehavior(behavior);
   }
 
-  /**
-   * @param {!Suggestions} items
-   */
-  _updateMaxSize(items) {
+  _updateMaxSize(items: Suggestion[]): void {
     const maxWidth = this._maxWidth(items);
     const length = this._maxItemsHeight ? Math.min(this._maxItemsHeight, items.length) : items.length;
     const maxHeight = length * this._rowHeight;
     this._glassPane.setMaxContentSize(new Size(maxWidth, maxHeight));
   }
 
-  /**
-   * @param {!Suggestions} items
-   * @return {number}
-   */
-  _maxWidth(items) {
+  _maxWidth(items: Suggestion[]): number {
     const kMaxWidth = 300;
     if (!items.length) {
       return kMaxWidth;
     }
     let maxItem;
-    let maxLength = -Infinity;
+    let maxLength: number = -Infinity;
     for (let i = 0; i < items.length; i++) {
       const length = (items[i].title || items[i].text).length + (items[i].subtitle || '').length;
       if (length > maxLength) {
@@ -156,33 +136,29 @@ export class SuggestBox {
         maxItem = items[i];
       }
     }
-    const element = this.createElementForItem(/** @type {!Suggestion} */ (maxItem));
+    const element = this.createElementForItem((maxItem as Suggestion));
     const preferredWidth =
         measurePreferredSize(element, this._element).width + measuredScrollbarWidth(this._element.ownerDocument);
     return Math.min(kMaxWidth, preferredWidth);
   }
-  _show() {
+  _show(): void {
     if (this.visible()) {
       return;
     }
     // TODO(dgozman): take document as a parameter.
     this._glassPane.show(document);
-    const suggestion = /** @type {!Suggestion} */ ({text: '1', subtitle: '12'});
+    const suggestion = ({text: '1', subtitle: '12'} as Suggestion);
     this._rowHeight = measurePreferredSize(this.createElementForItem(suggestion), this._element).height;
   }
 
-  hide() {
+  hide(): void {
     if (!this.visible()) {
       return;
     }
     this._glassPane.hide();
   }
 
-  /**
-   * @param {boolean=} isIntermediateSuggestion
-   * @return {boolean}
-   */
-  _applySuggestion(isIntermediateSuggestion) {
+  _applySuggestion(isIntermediateSuggestion?: boolean): boolean {
     if (this._onlyCompletion) {
       ARIAUtils.alert(
           i18nString(
@@ -205,10 +181,7 @@ export class SuggestBox {
     return this.visible() && Boolean(suggestion);
   }
 
-  /**
-   * @return {boolean}
-   */
-  acceptSuggestion() {
+  acceptSuggestion(): boolean {
     const result = this._applySuggestion();
     this.hide();
     if (!result) {
@@ -220,12 +193,7 @@ export class SuggestBox {
     return true;
   }
 
-  /**
-   * @override
-   * @param {!Suggestion} item
-   * @return {!Element}
-   */
-  createElementForItem(item) {
+  createElementForItem(item: Suggestion): Element {
     const query = this._userEnteredText;
     const element = document.createElement('div');
     element.classList.add('suggest-box-content-item');
@@ -253,7 +221,7 @@ export class SuggestBox {
     titleElement.createChild('span').textContent = displayText.substring(index > -1 ? index + query.length : 0);
     titleElement.createChild('span', 'spacer');
     if (item.subtitleRenderer) {
-      const subtitleElement = /** @type {!HTMLElement} */ (item.subtitleRenderer.call(null));
+      const subtitleElement = (item.subtitleRenderer.call(null) as HTMLElement);
       subtitleElement.classList.add('suggestion-subtitle');
       element.appendChild(subtitleElement);
     } else if (item.subtitle) {
@@ -267,32 +235,16 @@ export class SuggestBox {
     return element;
   }
 
-  /**
-   * @override
-   * @param {!Suggestion} item
-   * @return {number}
-   */
-  heightForItem(item) {
+  heightForItem(_item: Suggestion): number {
     return this._rowHeight;
   }
 
-  /**
-   * @override
-   * @param {!Suggestion} item
-   * @return {boolean}
-   */
-  isItemSelectable(item) {
+  isItemSelectable(_item: Suggestion): boolean {
     return true;
   }
 
-  /**
-   * @override
-   * @param {?Suggestion} from
-   * @param {?Suggestion} to
-   * @param {?Element} fromElement
-   * @param {?Element} toElement
-   */
-  selectedItemChanged(from, to, fromElement, toElement) {
+  selectedItemChanged(from: Suggestion|null, to: Suggestion|null, fromElement: Element|null, toElement: Element|null):
+      void {
     if (fromElement) {
       fromElement.classList.remove('selected', 'force-white-icons');
     }
@@ -303,21 +255,12 @@ export class SuggestBox {
     this._applySuggestion(true);
   }
 
-  /**
-   * @override
-   * @param {?Element} fromElement
-   * @param {?Element} toElement
-   * @return {boolean}
-   */
-  updateSelectedItemARIA(fromElement, toElement) {
+  updateSelectedItemARIA(_fromElement: Element|null, _toElement: Element|null): boolean {
     return false;
   }
 
-  /**
-   * @param {!Event} event
-   */
-  _onClick(event) {
-    const item = this._list.itemForNode(/** @type {?Node} */ (event.target));
+  _onClick(event: Event): void {
+    const item = this._list.itemForNode((event.target as Node | null));
     if (!item) {
       return;
     }
@@ -327,14 +270,9 @@ export class SuggestBox {
     event.consume(true);
   }
 
-  /**
-   * @param {!Suggestions} completions
-   * @param {?Suggestion} highestPriorityItem
-   * @param {boolean} canShowForSingleItem
-   * @param {string} userEnteredText
-   * @return {boolean}
-   */
-  _canShowBox(completions, highestPriorityItem, canShowForSingleItem, userEnteredText) {
+  _canShowBox(
+      completions: Suggestion[], highestPriorityItem: Suggestion|null, canShowForSingleItem: boolean,
+      userEnteredText: string): boolean {
     if (!completions || !completions.length) {
       return false;
     }
@@ -352,14 +290,9 @@ export class SuggestBox {
     return canShowForSingleItem && highestPriorityItem.text !== userEnteredText;
   }
 
-  /**
-   * @param {!AnchorBox} anchorBox
-   * @param {!Suggestions} completions
-   * @param {boolean} selectHighestPriority
-   * @param {boolean} canShowForSingleItem
-   * @param {string} userEnteredText
-   */
-  updateSuggestions(anchorBox, completions, selectHighestPriority, canShowForSingleItem, userEnteredText) {
+  updateSuggestions(
+      anchorBox: AnchorBox, completions: Suggestion[], selectHighestPriority: boolean, canShowForSingleItem: boolean,
+      userEnteredText: string): void {
     this._onlyCompletion = null;
     const highestPriorityItem =
         selectHighestPriority ? completions.reduce((a, b) => (a.priority || 0) >= (b.priority || 0) ? a : b) : null;
@@ -386,11 +319,7 @@ export class SuggestBox {
     }
   }
 
-  /**
-   * @param {!KeyboardEvent} event
-   * @return {boolean}
-   */
-  keyPressed(event) {
+  keyPressed(event: KeyboardEvent): boolean {
     switch (event.key) {
       case 'Enter':
         return this.enterKeyPressed();
@@ -406,10 +335,7 @@ export class SuggestBox {
     return false;
   }
 
-  /**
-   * @return {boolean}
-   */
-  enterKeyPressed() {
+  enterKeyPressed(): boolean {
     const hasSelectedItem = Boolean(this._list.selectedItem()) || Boolean(this._onlyCompletion);
     this.acceptSuggestion();
 
@@ -419,37 +345,20 @@ export class SuggestBox {
   }
 }
 
-/**
- * @typedef {{
-  *      text: string,
-  *      title: (string|undefined),
-  *      subtitle: (string|undefined),
-  *      iconType: (string|undefined),
-  *      priority: (number|undefined),
-  *      isSecondary: (boolean|undefined),
-  *      subtitleRenderer: ((function():!Element)|undefined),
-  *      selectionRange: ({startColumn: number, endColumn: number}|undefined),
-  *      hideGhostText: (boolean|undefined),
-  *      iconElement: (!HTMLElement|undefined),
-  * }}
-  */
-// @ts-ignore typedef
-export let Suggestion;
+export interface Suggestion {
+  text: string;
+  title?: string;
+  subtitle?: string;
+  iconType?: string;
+  priority?: number;
+  isSecondary?: boolean;
+  subtitleRenderer?: (() => Element);
+  selectionRange?: {
+    startColumn: number,
+    endColumn: number,
+  };
+  hideGhostText?: boolean;
+  iconElement?: HTMLElement;
+}
 
-/**
-  * @typedef {!Array<!Suggestion>}
-  */
-// @ts-ignore typedef
-export let Suggestions;
-
-/**
-  * @typedef {{
-    *     substituteRangeCallback: ((function(number, number):?TextUtils.TextRange.TextRange)|undefined),
-    *     tooltipCallback: ((function(number, number):!Promise<?Element>)|undefined),
-    *     suggestionsCallback: ((function(!TextUtils.TextRange.TextRange, !TextUtils.TextRange.TextRange, boolean=):?Promise.<!Suggestions>)|undefined),
-    *     isWordChar: ((function(string):boolean)|undefined),
-    *     anchorBehavior: (AnchorBehavior|undefined)
-    * }}
-    */
-// @ts-ignore typedef
-export let AutocompleteConfig;
+export type Suggestions = Suggestion[];

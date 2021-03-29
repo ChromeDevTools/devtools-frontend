@@ -3,8 +3,8 @@
 // found in the LICENSE file.
 (async function() {
   TestRunner.addResult('Tests accessibility in the Storage view using the axe-core linter.');
-  await TestRunner.loadModule('application_test_runner');
-  await TestRunner.loadModule('axe_core_test_runner');
+  await TestRunner.loadTestModule('application_test_runner');
+  await TestRunner.loadTestModule('axe_core_test_runner');
   await ApplicationTestRunner.resetState();
   await TestRunner.showPanel('resources');
   await UI.viewManager.showView('resources');

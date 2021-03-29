@@ -6,7 +6,7 @@
   TestRunner.addResult('Tests that Lighthouse block requests specified in DevTools BlockedURLsPane.\n');
   await TestRunner.navigatePromise('resources/lighthouse-basic.html');
 
-  await TestRunner.loadModule('lighthouse_test_runner');
+  await TestRunner.loadTestModule('lighthouse_test_runner');
   await TestRunner.showPanel('lighthouse');
 
   const containerElement = LighthouseTestRunner.getContainerElement();

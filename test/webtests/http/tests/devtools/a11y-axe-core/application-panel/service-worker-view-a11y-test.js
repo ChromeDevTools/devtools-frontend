@@ -4,8 +4,8 @@
 
 (async function() {
   TestRunner.addResult('Tests accessibility of ServiceWorkersView on application panel.');
-  await TestRunner.loadModule('axe_core_test_runner');
-  await TestRunner.loadModule('application_test_runner');
+  await TestRunner.loadTestModule('axe_core_test_runner');
+  await TestRunner.loadTestModule('application_test_runner');
   await ApplicationTestRunner.resetState();
 
   await TestRunner.showPanel('resources');

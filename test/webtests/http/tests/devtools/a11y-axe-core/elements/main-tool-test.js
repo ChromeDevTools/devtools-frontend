@@ -11,8 +11,8 @@
     },
   };
   const DEFAULT_RULESET = {};
-  await TestRunner.loadModule('axe_core_test_runner');
-  await TestRunner.loadModule('elements_test_runner');
+  await TestRunner.loadTestModule('axe_core_test_runner');
+  await TestRunner.loadTestModule('elements_test_runner');
   const tests = [
     testElementsDomTree,
     testElementsDomBreadcrumbs,

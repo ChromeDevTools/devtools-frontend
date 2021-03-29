@@ -5,7 +5,7 @@
 (async function() {
   TestRunner.addResult('Tests that console inputs are evaluated in REPL mode\n');
 
-  await TestRunner.loadModule('console_test_runner');
+  await TestRunner.loadTestModule('console_test_runner');
   await TestRunner.showPanel('console');
 
   TestRunner.addSniffer(TestRunner.RuntimeAgent, 'invoke_evaluate', function(args) {

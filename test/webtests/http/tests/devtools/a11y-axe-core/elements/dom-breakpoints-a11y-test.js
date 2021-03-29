@@ -5,8 +5,8 @@
   TestRunner.addResult(
       'Tests accessibility in DOM breakpoints using the axe-core linter.');
 
-  await TestRunner.loadModule('axe_core_test_runner');
-  await TestRunner.loadModule('elements_test_runner');
+  await TestRunner.loadTestModule('axe_core_test_runner');
+  await TestRunner.loadTestModule('elements_test_runner');
   await TestRunner.showPanel('elements');
   UI.panels.elements.sidebarPaneView.tabbedPane().selectTab('elements.domBreakpoints', true);
 

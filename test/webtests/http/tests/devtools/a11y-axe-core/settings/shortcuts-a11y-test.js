@@ -4,7 +4,7 @@
 
 (async function() {
   TestRunner.addResult('Tests accessibility in the settings tool shortcuts pane using the axe-core linter.');
-  await TestRunner.loadModule('axe_core_test_runner');
+  await TestRunner.loadTestModule('axe_core_test_runner');
   await TestRunner.loadLegacyModule('settings');
 
   async function testShortcuts() {

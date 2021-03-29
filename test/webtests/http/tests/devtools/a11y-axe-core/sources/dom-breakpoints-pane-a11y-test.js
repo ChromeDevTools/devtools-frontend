@@ -3,9 +3,9 @@
 // found in the LICENSE file.
 
 (async function() {
-  await TestRunner.loadModule('axe_core_test_runner');
-  await TestRunner.loadModule('elements_test_runner');
-  await TestRunner.loadModule('sources_test_runner');
+  await TestRunner.loadTestModule('axe_core_test_runner');
+  await TestRunner.loadTestModule('elements_test_runner');
+  await TestRunner.loadTestModule('sources_test_runner');
   await TestRunner.showPanel('elements');
   await TestRunner.showPanel('sources');
   await TestRunner.navigatePromise(

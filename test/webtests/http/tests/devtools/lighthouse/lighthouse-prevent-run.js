@@ -16,7 +16,7 @@
   TestRunner.addResult('Tests that audits panel prevents run of unauditable pages.\n');
   await TestRunner.navigatePromise('resources/lighthouse-basic.html');
 
-  await TestRunner.loadModule('lighthouse_test_runner');
+  await TestRunner.loadTestModule('lighthouse_test_runner');
   await TestRunner.showPanel('lighthouse');
 
   TestRunner.addResult('\n\n**Prevents audit with no categories**');

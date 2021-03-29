@@ -6,7 +6,7 @@
   TestRunner.addResult('Tests that audits panel works when only the pwa category is selected.\n');
   await TestRunner.navigatePromise('resources/lighthouse-basic.html');
 
-  await TestRunner.loadModule('lighthouse_test_runner');
+  await TestRunner.loadTestModule('lighthouse_test_runner');
   await TestRunner.showPanel('lighthouse');
 
   const containerElement = LighthouseTestRunner.getContainerElement();

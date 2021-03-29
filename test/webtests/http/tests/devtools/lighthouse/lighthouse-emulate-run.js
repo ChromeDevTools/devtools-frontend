@@ -6,7 +6,7 @@
   TestRunner.addResult('Tests that mobile emulation works.\n');
   await TestRunner.navigatePromise('resources/lighthouse-emulate-pass.html');
 
-  await TestRunner.loadModule('lighthouse_test_runner');
+  await TestRunner.loadTestModule('lighthouse_test_runner');
   await TestRunner.showPanel('lighthouse');
 
   LighthouseTestRunner.dumpStartAuditState();

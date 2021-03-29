@@ -13,8 +13,8 @@
     },
   };
 
-  await TestRunner.loadModule('axe_core_test_runner');
-  await TestRunner.loadModule('sources_test_runner');
+  await TestRunner.loadTestModule('axe_core_test_runner');
+  await TestRunner.loadTestModule('sources_test_runner');
 
   await UI.viewManager.showView('sources');
   await testA11yForView(NO_REQUIRED_CHILDREN_RULESET);

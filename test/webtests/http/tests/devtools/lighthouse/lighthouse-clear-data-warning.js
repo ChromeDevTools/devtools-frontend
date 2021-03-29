@@ -6,7 +6,7 @@
   TestRunner.addResult('Tests that Lighthouse panel displays a warning when important data may affect performance.\n');
   await TestRunner.navigatePromise('resources/lighthouse-storage.html');
 
-  await TestRunner.loadModule('lighthouse_test_runner');
+  await TestRunner.loadTestModule('lighthouse_test_runner');
   await TestRunner.showPanel('lighthouse');
 
   const containerElement = LighthouseTestRunner.getContainerElement();

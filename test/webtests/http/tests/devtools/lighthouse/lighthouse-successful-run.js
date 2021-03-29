@@ -37,7 +37,7 @@
   TestRunner.addResult('Tests that audits panel works.\n');
   await TestRunner.navigatePromise('resources/lighthouse-basic.html');
 
-  await TestRunner.loadModule('lighthouse_test_runner');
+  await TestRunner.loadTestModule('lighthouse_test_runner');
   await TestRunner.showPanel('lighthouse');
 
   // Use all the default settings, but also enable a plugin.

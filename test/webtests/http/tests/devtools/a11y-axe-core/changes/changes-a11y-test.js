@@ -4,7 +4,7 @@
 
 (async function() {
   TestRunner.addResult('Tests accessibility in the Changes drawer.');
-  await TestRunner.loadModule('axe_core_test_runner');
+  await TestRunner.loadTestModule('axe_core_test_runner');
   await TestRunner.loadModule('changes');
 
   const diff = [

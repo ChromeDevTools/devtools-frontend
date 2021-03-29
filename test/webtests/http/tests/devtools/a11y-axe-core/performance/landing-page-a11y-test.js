@@ -5,7 +5,7 @@
 (async function() {
   TestRunner.addResult('Tests accessibility in Performance landing page using the axe-core linter.');
 
-  await TestRunner.loadModule('axe_core_test_runner');
+  await TestRunner.loadTestModule('axe_core_test_runner');
   const view = 'timeline';
   await UI.viewManager.showView(view);
   const widget = await UI.viewManager.view(view).widget();

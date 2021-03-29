@@ -5,7 +5,7 @@
 (async function() {
   TestRunner.addResult('Tests accessibility in the settings tool locations pane using the axe-core linter.');
 
-  await TestRunner.loadModule('axe_core_test_runner');
+  await TestRunner.loadTestModule('axe_core_test_runner');
   await UI.viewManager.showView('emulation-locations');
   const locationsWidget = await UI.viewManager.view('emulation-locations').widget();
 

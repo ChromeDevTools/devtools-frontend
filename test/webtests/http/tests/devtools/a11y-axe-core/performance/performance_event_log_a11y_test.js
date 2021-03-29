@@ -3,8 +3,8 @@
 // found in the LICENSE file.
 
 (async function() {
-  await TestRunner.loadModule('axe_core_test_runner');
-  await TestRunner.loadModule('performance_test_runner');
+  await TestRunner.loadTestModule('axe_core_test_runner');
+  await TestRunner.loadTestModule('performance_test_runner');
 
   await TestRunner.showPanel('timeline');
   TestRunner.addResult('Performance panel loaded.');

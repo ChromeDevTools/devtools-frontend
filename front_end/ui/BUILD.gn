@@ -53,7 +53,7 @@ devtools_module("ui") {
     "ThrottledWidget.js",
     "Toolbar.js",
     "Tooltip.js",
-    "Treeoutline.js",
+    "Treeoutline.ts",
     "UIUtils.js",
     "View.js",
     "ViewManager.ts",

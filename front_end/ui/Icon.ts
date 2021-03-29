@@ -2,33 +2,29 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import {registerCustomElement} from './utils/register-custom-element.js';
 
-/** @type {?function():!Element} */
-let iconConstructor = null;
+let iconConstructor: (() => Element)|null = null;
 
 export class Icon extends HTMLSpanElement {
+  _descriptor: Descriptor|null;
+  _spriteSheet: SpriteSheet|null;
+  _iconType: string;
   constructor() {
     super();
-    /** @type {?Descriptor} */
     this._descriptor = null;
-    /** @type {?SpriteSheet} */
     this._spriteSheet = null;
-    /** @type {string} */
     this._iconType = '';
   }
 
-  /**
-   * @param {string=} iconType
-   * @param {string=} className
-   * @return {!Icon}
-   */
-  static create(iconType, className) {
+  static create(iconType?: string, className?: string): Icon {
     if (!iconConstructor) {
       iconConstructor = registerCustomElement('span', 'ui-icon', Icon);
     }
 
-    const icon = /** @type {!Icon} */ (iconConstructor());
+    const icon = (iconConstructor() as Icon);
     if (className) {
       icon.className = className;
     }
@@ -38,10 +34,7 @@ export class Icon extends HTMLSpanElement {
     return icon;
   }
 
-  /**
-   * @param {string} iconType
-   */
-  setIconType(iconType) {
+  setIconType(iconType: string): void {
     if (this._descriptor) {
       this.style.removeProperty('--spritesheet-position');
       this.style.removeProperty('width');
@@ -68,10 +61,7 @@ export class Icon extends HTMLSpanElement {
     }
   }
 
-  /**
-   * @param {boolean} value
-   */
-  _toggleClasses(value) {
+  _toggleClasses(value: boolean): void {
     if (this._descriptor) {
       this.classList.toggle('spritesheet-' + this._descriptor.spritesheet, value);
       this.classList.toggle(this._iconType, value);
@@ -80,10 +70,7 @@ export class Icon extends HTMLSpanElement {
     }
   }
 
-  /**
-   * @return {string}
-   */
-  _propertyValue() {
+  _propertyValue(): string {
     if (!this._descriptor || !this._spriteSheet) {
       throw new Error('Descriptor and spriteSheet expected to be present');
     }
@@ -95,25 +82,25 @@ export class Icon extends HTMLSpanElement {
       const row = parseInt(this._descriptor.position.substring(1), 10) - 1;
       this._descriptor.coordinates = {
         x: -(this._spriteSheet.cellWidth + this._spriteSheet.padding) * column,
-        y: (this._spriteSheet.cellHeight + this._spriteSheet.padding) * (row + 1) - this._spriteSheet.padding
+        y: (this._spriteSheet.cellHeight + this._spriteSheet.padding) * (row + 1) - this._spriteSheet.padding,
       };
     }
     return `${this._descriptor.coordinates.x}px ${this._descriptor.coordinates.y}px`;
   }
 }
 
+// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+// eslint-disable-next-line @typescript-eslint/naming-convention
 const _positionRegex = /^[a-z][1-9][0-9]*$/;
 
-/** @type {!Map<string, !SpriteSheet>} */
-const spriteSheets = new Map([
+const spriteSheets = new Map<string, SpriteSheet>([
   ['smallicons', {cellWidth: 10, cellHeight: 10, padding: 10}],
   ['mediumicons', {cellWidth: 16, cellHeight: 16, padding: 0}],
   ['largeicons', {cellWidth: 28, cellHeight: 24, padding: 0}],
   ['arrowicons', {cellWidth: 19, cellHeight: 19, padding: 0}],
 ]);
 
-/** @type {!Map<string, *>} */
-const initialDescriptors = new Map([
+const initialDescriptors = new Map<string, Descriptor>([
   ['smallicon-bezier', {position: 'a5', spritesheet: 'smallicons', isMask: true}],
   ['smallicon-checkmark', {position: 'b5', spritesheet: 'smallicons'}],
   ['smallicon-checkmark-square', {position: 'b6', spritesheet: 'smallicons', isMask: true}],
@@ -278,12 +265,20 @@ const initialDescriptors = new Map([
   ['mediumicon-arrow-left', {position: 'a2', spritesheet: 'arrowicons'}],
   ['mediumicon-arrow-right', {position: 'a1', spritesheet: 'arrowicons'}],
 ]);
-const descriptors = /** @type {!Map<string, !Descriptor>} */ (initialDescriptors);
 
-/** @typedef {{position: string, spritesheet: string, isMask: (boolean|undefined), coordinates: ({x: number, y: number}|undefined), invert: (boolean|undefined)}} */
-// @ts-ignore typedef
-export let Descriptor;
-
-/** @typedef {{cellWidth: number, cellHeight: number, padding: number}} */
-// @ts-ignore typedef
-export let SpriteSheet;
+const descriptors = (initialDescriptors as Map<string, Descriptor>);
+export interface Descriptor {
+  position: string;
+  spritesheet: string;
+  isMask?: boolean;
+  coordinates?: {
+    x: number,
+    y: number,
+  };
+  invert?: boolean;
+}
+export interface SpriteSheet {
+  cellWidth: number;
+  cellHeight: number;
+  padding: number;
+}

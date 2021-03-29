@@ -61,7 +61,7 @@ devtools_module("ui") {
     "Widget.js",
     "XElement.js",
     "XLink.js",
-    "XWidget.js",
+    "XWidget.ts",
     "ZoomManager.js",
   ]
 

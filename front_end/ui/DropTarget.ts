@@ -2,16 +2,27 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import {createShadowRootWithCoreStyles} from './utils/create-shadow-root-with-core-styles.js';
 
 export class DropTarget {
-  /**
-   * @param {!Element} element
-   * @param {!Array<{kind: string, type: !RegExp}>} transferTypes
-   * @param {string} messageText
-   * @param {function(!DataTransfer):*} handleDrop
-   */
-  constructor(element, transferTypes, messageText, handleDrop) {
+  _element: Element;
+  _transferTypes: {
+    kind: string,
+    type: RegExp,
+  }[];
+  _messageText: string;
+  _handleDrop: (arg0: DataTransfer) => void;
+  _enabled: boolean;
+  _dragMaskElement: Element|null;
+
+  constructor(
+      element: Element, transferTypes: {
+        kind: string,
+        type: RegExp,
+      }[],
+      messageText: string, handleDrop: (arg0: DataTransfer) => void) {
     element.addEventListener('dragenter', this._onDragEnter.bind(this), true);
     element.addEventListener('dragover', this._onDragOver.bind(this), true);
     this._element = element;
@@ -19,32 +30,21 @@ export class DropTarget {
     this._messageText = messageText;
     this._handleDrop = handleDrop;
     this._enabled = true;
-    /** @type {?Element} */
     this._dragMaskElement = null;
   }
 
-  /**
-   * @param {boolean} enabled
-   */
-  setEnabled(enabled) {
+  setEnabled(enabled: boolean): void {
     this._enabled = enabled;
   }
 
-  /**
-   * @param {!Event} event
-   */
-  _onDragEnter(event) {
+  _onDragEnter(event: Event): void {
     if (this._enabled && this._hasMatchingType(event)) {
       event.consume(true);
     }
   }
 
-  /**
-   * @param {!Event} ev
-   * @return {boolean}
-   */
-  _hasMatchingType(ev) {
-    const event = /** @type {!DragEvent} */ (ev);
+  _hasMatchingType(ev: Event): boolean {
+    const event = (ev as DragEvent);
     if (!event.dataTransfer) {
       return false;
     }
@@ -59,11 +59,8 @@ export class DropTarget {
     return false;
   }
 
-  /**
-   * @param {!Event} ev
-   */
-  _onDragOver(ev) {
-    const event = /** @type {!DragEvent} */ (ev);
+  _onDragOver(ev: Event): void {
+    const event = (ev as DragEvent);
     if (!this._enabled || !this._hasMatchingType(event)) {
       return;
     }
@@ -82,11 +79,8 @@ export class DropTarget {
     this._dragMaskElement.addEventListener('dragleave', this._onDragLeave.bind(this), true);
   }
 
-  /**
-   * @param {!Event} ev
-   */
-  _onDrop(ev) {
-    const event = /** @type {!DragEvent} */ (ev);
+  _onDrop(ev: Event): void {
+    const event = (ev as DragEvent);
     event.consume(true);
     this._removeMask();
     if (this._enabled && event.dataTransfer) {
@@ -94,15 +88,12 @@ export class DropTarget {
     }
   }
 
-  /**
-   * @param {!Event} event
-   */
-  _onDragLeave(event) {
+  _onDragLeave(event: Event): void {
     event.consume(true);
     this._removeMask();
   }
 
-  _removeMask() {
+  _removeMask(): void {
     if (this._dragMaskElement) {
       this._dragMaskElement.remove();
       this._dragMaskElement = null;

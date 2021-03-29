@@ -96,4 +96,15 @@ describe('Action registration', () => {
            UI.ActionRegistry.ActionRegistry.instance().availableActions().map(action => action.id());
        assert.strictEqual(availableActions.indexOf(actionId), -1);
      });
+
+  it('deletes a registered action using its id', () => {
+    const removalResult = UI.ActionRegistration.maybeRemoveActionExtension(actionId);
+    assert.isTrue(removalResult);
+    assert.doesNotThrow(() => {
+      UI.ActionRegistration.registerActionExtension({
+        actionId,
+        category: UI.ActionRegistration.ActionCategory.ELEMENTS,
+      });
+    });
+  });
 });

@@ -91,4 +91,16 @@ describe('Setting registration', () => {
       });
     });
   });
+
+  it('deletes a registered setting using its name', () => {
+    const removalResult = Common.Settings.maybeRemoveSettingExtension(settingName);
+    assert.isTrue(removalResult);
+    assert.doesNotThrow(() => {
+      Common.Settings.registerSettingExtension({
+        settingName,
+        settingType: Common.Settings.SettingType.BOOLEAN,
+        defaultValue: false,
+      });
+    });
+  });
 });

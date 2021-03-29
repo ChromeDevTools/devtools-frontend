@@ -70,4 +70,19 @@ describeWithEnvironment('View registration', () => {
       });
     });
   });
+
+  it('deletes a registered view using its id', () => {
+    const removalResult = UI.ViewManager.maybeRemoveViewExtension(viewId);
+    assert.isTrue(removalResult);
+    assert.doesNotThrow(() => {
+      UI.ViewManager.registerViewExtension({
+        id: viewId,
+        commandPrompt: (): Platform.UIString.LocalizedString => commandPrompt as Platform.UIString.LocalizedString,
+        title: (): Platform.UIString.LocalizedString => viewTitle as Platform.UIString.LocalizedString,
+        async loadView() {
+          return new MockView();
+        },
+      });
+    });
+  });
 });

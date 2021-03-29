@@ -2,55 +2,44 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/**
- * @param {*} node
- * @return {string}
- */
-function getNodeData(node) {
-  return /** @type {{data: string}} */ (node).data;
+/* eslint-disable rulesdir/no_underscored_properties, @typescript-eslint/no-explicit-any */
+
+function getNodeData(node: Node): string {
+  return (node as unknown as {
+           data: string,
+         })
+      .data;
+}
+
+function setNodeData<T>(node: Node, value: T): void {
+  (node as unknown as {
+    data: T,
+  }).data = value;
 }
 
 export class Fragment {
-  /**
-   * @param {!Element} element
-   */
-  constructor(element) {
+  _element: Element;
+  _elementsById: Map<string, Element>;
+
+  constructor(element: Element) {
     this._element = element;
 
-    /** @type {!Map<string, !Element>} */
     this._elementsById = new Map();
   }
 
-  /**
-   * @return {!Element}
-   */
-  element() {
+  element(): Element {
     return this._element;
   }
 
-  /**
-   * @param {string} elementId
-   * @return {!Element}
-   */
-  $(elementId) {
-    return /** @type {!Element} */ (this._elementsById.get(elementId));
+  $(elementId: string): Element {
+    return this._elementsById.get(elementId) as Element;
   }
 
-  /**
-   * @param {!TemplateDefinition} strings
-   * @param {...*} values
-   * @return {!Fragment}
-   */
-  static build(strings, ...values) {
+  static build(strings: TemplateDefinition, ...values: any[]): Fragment {
     return Fragment._render(Fragment._template(strings), values);
   }
 
-  /**
-   * @param {!TemplateDefinition} strings
-   * @param {...*} values
-   * @return {!Fragment}
-   */
-  static cached(strings, ...values) {
+  static cached(strings: TemplateDefinition, ...values: any[]): Fragment {
     let template = _templateCache.get(strings);
     if (!template) {
       template = Fragment._template(strings);
@@ -59,11 +48,7 @@ export class Fragment {
     return Fragment._render(template, values);
   }
 
-  /**
-   * @param {!TemplateDefinition} strings
-   * @return {!_Template}
-   */
-  static _template(strings) {
+  static _template(strings: TemplateDefinition): _Template {
     let html = '';
     let insideText = true;
     for (let i = 0; i < strings.length - 1; i++) {
@@ -79,17 +64,16 @@ export class Fragment {
     }
     html += strings[strings.length - 1];
 
-    const template = /** @type {!HTMLTemplateElement} */ (document.createElement('template'));
+    const template = (document.createElement('template') as HTMLTemplateElement);
     template.innerHTML = html;
     const walker = template.ownerDocument.createTreeWalker(
         template.content, NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_TEXT, null, false);
     let valueIndex = 0;
     const emptyTextNodes = [];
-    /** @type {!Array<!_Bind>} */
-    const binds = [];
+    const binds: _Bind[] = [];
     const nodesToMark = [];
     while (walker.nextNode()) {
-      const node = /** @type {!HTMLElement} */ (walker.currentNode);
+      const node = (walker.currentNode as HTMLElement);
       if (node.nodeType === Node.ELEMENT_NODE && node.hasAttributes()) {
         if (node.hasAttribute('$')) {
           nodesToMark.push(node);
@@ -111,12 +95,11 @@ export class Fragment {
           const attr = {
             index: valueIndex,
             names: name.split(_attributeMarkerRegex),
-            values: node.attributes[i].value.split(_attributeMarkerRegex)
+            values: node.attributes[i].value.split(_attributeMarkerRegex),
           };
           valueIndex += attr.names.length - 1;
           valueIndex += attr.values.length - 1;
-          /** @type {!_Bind} */
-          const bind = {
+          const bind: _Bind = {
             elementId: undefined,
             replaceNodeIndex: undefined,
             attr,
@@ -130,8 +113,8 @@ export class Fragment {
 
       if (node.nodeType === Node.TEXT_NODE && getNodeData(node).indexOf(_textMarker) !== -1) {
         const texts = getNodeData(node).split(_textMarkerRegex);
-        /** @type {*} */ (node).data = texts[texts.length - 1];
-        const parentNode = /** @type {!HTMLElement} */ (node.parentNode);
+        setNodeData(node, texts[texts.length - 1]);
+        const parentNode = (node.parentNode as HTMLElement);
         for (let i = 0; i < texts.length - 1; i++) {
           if (texts[i]) {
             parentNode.insertBefore(document.createTextNode(texts[i]), node);
@@ -160,21 +143,15 @@ export class Fragment {
     return {template, binds};
   }
 
-  /**
-   * @param {!_Template} template
-   * @param {!Array<*>} values
-   * @return {!Fragment}
-   */
-  static _render(template, values) {
+  static _render(template: _Template, values: any[]): Fragment {
     const content = template.template.ownerDocument.importNode(template.template.content, true);
-    const resultElement =
-        /** @type {!Element} */ (content.firstChild === content.lastChild ? content.firstChild : content);
+    const resultElement = (content.firstChild === content.lastChild ? content.firstChild : content) as Element;
     const result = new Fragment(resultElement);
 
     const boundElements = [];
     for (let i = 0; i < template.binds.length; i++) {
       const className = _class(i);
-      const element = /** @type {!Element} */ (content.querySelector('.' + className));
+      const element = (content.querySelector('.' + className) as Element);
       element.classList.remove(className);
       boundElements.push(element);
     }
@@ -186,7 +163,7 @@ export class Fragment {
         result._elementsById.set(bind.elementId, element);
       } else if (bind.replaceNodeIndex !== undefined) {
         const value = values[bind.replaceNodeIndex];
-        /** @type {!HTMLElement} */ (element.parentNode).replaceChild(this._nodeForValue(value), element);
+        (element.parentNode as HTMLElement).replaceChild(this._nodeForValue(value), element);
       } else if (bind.attr !== undefined) {
         if (bind.attr.names.length === 2 && bind.attr.values.length === 1 &&
             typeof values[bind.attr.index] === 'function') {
@@ -213,11 +190,7 @@ export class Fragment {
     return result;
   }
 
-  /**
-   * @param {*} value
-   * @return {!Node}
-   */
-  static _nodeForValue(value) {
+  static _nodeForValue(value: any): Node {
     if (value instanceof Node) {
       return value;
     }
@@ -235,45 +208,46 @@ export class Fragment {
   }
 }
 
+// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export const _textMarker = '{{template-text}}';
+// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+// eslint-disable-next-line @typescript-eslint/naming-convention
 const _textMarkerRegex = /{{template-text}}/;
-export const _attributeMarker = /** @param {number} index */ index => 'template-attribute' + index;
+// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+// eslint-disable-next-line @typescript-eslint/naming-convention
+export const _attributeMarker = (index: number): string => 'template-attribute' + index;
+// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+// eslint-disable-next-line @typescript-eslint/naming-convention
 const _attributeMarkerRegex = /template-attribute\d+/;
-const _class = /** @param {number} index */ index => 'template-class-' + index;
-const _templateCache = new Map();
+// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+// eslint-disable-next-line @typescript-eslint/naming-convention
+const _class = (index: number): string => 'template-class-' + index;
+// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+// eslint-disable-next-line @typescript-eslint/naming-convention
+const _templateCache = new Map<TemplateDefinition, _Template>();
 
-/**
- * @param {!TemplateDefinition} strings
- * @param {...*} vararg
- * @return {!Element}
- */
-export const html = (strings, ...vararg) => {
+export const html = (strings: TemplateDefinition, ...vararg: any[]): Element => {
   return Fragment.cached(strings, ...vararg).element();
 };
 
-/** @typedef {(!Array<string>|!TemplateStringsArray)} */
-// @ts-ignore typedef
-export let TemplateDefinition;
+export type TemplateDefinition = string[]|TemplateStringsArray;
 
-/**
-  * @typedef {!{
-  *   elementId: (string|undefined),
-  *   attr: (!{
-  *     index: number,
-  *     names: !Array<string>,
-  *     values: !Array<string>
-  *   }|undefined),
-  *   replaceNodeIndex: (number|undefined)
-  * }}
-  */
-// @ts-ignore typedef
-export let _Bind;
+// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+// eslint-disable-next-line @typescript-eslint/naming-convention
+export interface _Bind {
+  elementId?: string;
+  attr?: {
+    index: number,
+    names: string[],
+    values: string[],
+  };
+  replaceNodeIndex?: number;
+}
 
-/**
- * @typedef {!{
-  *   template: !HTMLTemplateElement,
-  *   binds: !Array<!_Bind>
-  * }}
-  */
-// @ts-ignore typedef
-export let _Template;
+// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+// eslint-disable-next-line @typescript-eslint/naming-convention
+export interface _Template {
+  template: HTMLTemplateElement;
+  binds: _Bind[];
+}

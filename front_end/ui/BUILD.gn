@@ -20,7 +20,7 @@ devtools_module("ui") {
     "FilterBar.ts",
     "FilterSuggestionBuilder.js",
     "ForwardedInputEventHandler.ts",
-    "Fragment.js",
+    "Fragment.ts",
     "Geometry.js",
     "GlassPane.js",
     "HistoryInput.js",

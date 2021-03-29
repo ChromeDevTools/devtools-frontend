@@ -5,12 +5,12 @@
 import * as Bindings from '../bindings/bindings.js';
 import * as Common from '../common/common.js';
 import * as SDK from '../sdk/sdk.js';
-import * as TextUtils from '../text_utils/text_utils.js';
 import * as Marked from '../third_party/marked/marked.js';
 import * as Workspace from '../workspace/workspace.js';
 
 import * as IssuesManager from './IssuesManager.js';
 import {findTitleFromMarkdownAst, getMarkdownFileContent} from './MarkdownHelpers.js';
+
 
 export class SourceFrameIssuesManager {
   private issuesManager: IssuesManager.IssuesManager;
@@ -94,33 +94,44 @@ export class SourceFrameIssuesManager {
   }
 }
 
-export class IssueMessage extends Workspace.UISourceCode.Message {
-  private uiSourceCode?: Workspace.UISourceCode.UISourceCode = undefined;
+export class IssueMessage {
+  private text: string;
+  private level: Workspace.UISourceCode.Message.Level;
+  private uiMessage?: Workspace.UISourceCode.Message;
+  private clickHandler: () => void;
 
   constructor(
       title: string, rawLocation: SDK.DebuggerModel.Location, locationPool: Bindings.LiveLocation.LiveLocationPool,
       clickHandler: () => void) {
-    super(Workspace.UISourceCode.Message.Level.Issue, title, clickHandler);
+    this.text = title;
+    this.level = Workspace.UISourceCode.Message.Level.Issue;
+    this.uiMessage = undefined;
+    this.clickHandler = clickHandler;
     Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().createLiveLocation(
         rawLocation, this.updateLocation.bind(this), locationPool);
   }
 
   private async updateLocation(liveLocation: Bindings.LiveLocation.LiveLocation): Promise<void> {
-    if (this.uiSourceCode) {
-      this.uiSourceCode.removeMessage(this);
+    if (this.uiMessage) {
+      this.uiMessage.remove();
     }
     const uiLocation = await liveLocation.uiLocation();
     if (!uiLocation) {
       return;
     }
-    this._range = TextUtils.TextRange.TextRange.createFromLocation(uiLocation.lineNumber, uiLocation.columnNumber || 0);
-    this.uiSourceCode = uiLocation.uiSourceCode;
-    this.uiSourceCode.addMessage(this);
+    this.uiMessage = uiLocation.uiSourceCode.addLineMessage(
+        this.level, this.text, uiLocation.lineNumber, uiLocation.columnNumber, this.clickHandler);
   }
 
   dispose(): void {
-    if (this.uiSourceCode) {
-      this.uiSourceCode.removeMessage(this);
-    }
+    this.uiMessage?.remove();
+  }
+
+  getText(): string {
+    return this.text;
+  }
+
+  getLevel(): string {
+    return this.level;
   }
 }

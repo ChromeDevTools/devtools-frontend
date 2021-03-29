@@ -424,12 +424,12 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper implements
       level: Message.Level, text: string, lineNumber: number, columnNumber?: number,
       clickHandler?: (() => void)): Message {
     const range = TextUtils.TextRange.TextRange.createFromLocation(lineNumber, columnNumber || 0);
-    const message = new Message(level, text, clickHandler, range);
+    const message = new Message(this, level, text, range, clickHandler);
     this.addMessage(message);
     return message;
   }
 
-  addMessage(message: Message): void {
+  private addMessage(message: Message): void {
     if (!this._messages) {
       this._messages = new Set();
     }
@@ -581,25 +581,25 @@ export class UILocation {
   }
 }
 
-/**
- * A message associated with a range in a `UISourceCode`. The range will be
- * underlined starting at the range's start and ending at the line end (the
- * end of the range is currently disregarded).
- * An icon is going to appear at the end of the line according to the
- * `level` of the Message. This is only the model; displaying is handled
- * where UISourceCode displaying is handled.
- */
 export class Message {
+  _uiSourceCode: UISourceCode;
   _level: Message.Level;
   _text: string;
   _range: TextUtils.TextRange.TextRange;
   _clickHandler?: (() => void);
 
-  constructor(level: Message.Level, text: string, clickHandler?: (() => void), range?: TextUtils.TextRange.TextRange) {
+  constructor(
+      uiSourceCode: UISourceCode, level: Message.Level, text: string, range: TextUtils.TextRange.TextRange,
+      clickHandler?: (() => void)) {
+    this._uiSourceCode = uiSourceCode;
     this._level = level;
     this._text = text;
-    this._range = range ?? new TextUtils.TextRange.TextRange(0, 0, 0, 0);
+    this._range = range;
     this._clickHandler = clickHandler;
+  }
+
+  uiSourceCode(): UISourceCode {
+    return this._uiSourceCode;
   }
 
   level(): Message.Level {
@@ -608,6 +608,10 @@ export class Message {
 
   text(): string {
     return this._text;
+  }
+
+  range(): TextUtils.TextRange.TextRange {
+    return this._range;
   }
 
   clickHandler(): (() => void)|undefined {
@@ -623,10 +627,14 @@ export class Message {
   }
 
   isEqual(another: Message): boolean {
-    return this.text() === another.text() && this.level() === another.level() && this._range.equal(another._range);
+    return this._uiSourceCode === another._uiSourceCode && this.text() === another.text() &&
+        this.level() === another.level() && this.range().equal(another.range());
+  }
+
+  remove(): void {
+    this._uiSourceCode.removeMessage(this);
   }
 }
-
 export namespace Message {
   // TODO(crbug.com/1167717): Make this a const enum again
   // eslint-disable-next-line rulesdir/const_enum

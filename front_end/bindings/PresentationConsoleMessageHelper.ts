@@ -32,7 +32,6 @@
 
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
 import * as SDK from '../sdk/sdk.js';
-import * as TextUtils from '../text_utils/text_utils.js';
 import * as Workspace from '../workspace/workspace.js';
 
 import {DebuggerWorkspaceBinding} from './DebuggerWorkspaceBinding.js';
@@ -190,34 +189,35 @@ export class PresentationConsoleMessageHelper {
   }
 }
 
-export class PresentationConsoleMessage extends Workspace.UISourceCode.Message {
-  private uiSourceCode?: Workspace.UISourceCode.UISourceCode;
+export class PresentationConsoleMessage {
+  _text: string;
+  _level: Workspace.UISourceCode.Message.Level;
+  _uiMessage?: Workspace.UISourceCode.Message;
 
   constructor(
       message: SDK.ConsoleModel.ConsoleMessage, rawLocation: SDK.DebuggerModel.Location,
       locationPool: LiveLocationPool) {
-    const level = message.level === SDK.ConsoleModel.MessageLevel.Error ? Workspace.UISourceCode.Message.Level.Error :
+    this._text = message.messageText;
+    this._level = message.level === SDK.ConsoleModel.MessageLevel.Error ? Workspace.UISourceCode.Message.Level.Error :
                                                                           Workspace.UISourceCode.Message.Level.Warning;
-    super(level, message.messageText);
     DebuggerWorkspaceBinding.instance().createLiveLocation(rawLocation, this._updateLocation.bind(this), locationPool);
   }
 
   async _updateLocation(liveLocation: LiveLocation): Promise<void> {
-    if (this.uiSourceCode) {
-      this.uiSourceCode.removeMessage(this);
+    if (this._uiMessage) {
+      this._uiMessage.remove();
     }
     const uiLocation = await liveLocation.uiLocation();
     if (!uiLocation) {
       return;
     }
-    this._range = TextUtils.TextRange.TextRange.createFromLocation(uiLocation.lineNumber, uiLocation.columnNumber || 0);
-    this.uiSourceCode = uiLocation.uiSourceCode;
-    this.uiSourceCode.addMessage(this);
+    this._uiMessage =
+        uiLocation.uiSourceCode.addLineMessage(this._level, this._text, uiLocation.lineNumber, uiLocation.columnNumber);
   }
 
   dispose(): void {
-    if (this.uiSourceCode) {
-      this.uiSourceCode.removeMessage(this);
+    if (this._uiMessage) {
+      this._uiMessage.remove();
     }
   }
 }

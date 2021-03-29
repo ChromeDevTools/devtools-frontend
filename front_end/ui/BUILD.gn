@@ -47,7 +47,7 @@ devtools_module("ui") {
     "SplitWidget.js",
     "SuggestBox.js",
     "TabbedPane.js",
-    "TargetCrashedScreen.js",
+    "TargetCrashedScreen.ts",
     "TextEditor.js",
     "TextPrompt.js",
     "ThrottledWidget.js",

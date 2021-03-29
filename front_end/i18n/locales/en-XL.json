@@ -11219,10 +11219,10 @@
   "ui/TabbedPane.js | moreTabs": {
     "message": "M̂ór̂é t̂áb̂ś"
   },
-  "ui/TargetCrashedScreen.js | devtoolsWasDisconnectedFromThe": {
+  "ui/TargetCrashedScreen.ts | devtoolsWasDisconnectedFromThe": {
     "message": "D̂év̂T́ôól̂ś ŵáŝ d́îśĉón̂ńêćt̂éd̂ f́r̂óm̂ t́ĥé p̂áĝé."
   },
-  "ui/TargetCrashedScreen.js | oncePageIsReloadedDevtoolsWill": {
+  "ui/TargetCrashedScreen.ts | oncePageIsReloadedDevtoolsWill": {
     "message": "Ôńĉé p̂áĝé îś r̂él̂óâd́êd́, D̂év̂T́ôól̂ś ŵíl̂ĺ âút̂óm̂át̂íĉál̂ĺŷ ŕêćôńn̂éĉt́."
   },
   "ui/UIUtils.js | anonymous": {

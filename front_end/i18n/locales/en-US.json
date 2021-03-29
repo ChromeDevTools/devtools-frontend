@@ -11219,10 +11219,10 @@
   "ui/TabbedPane.js | moreTabs": {
     "message": "More tabs"
   },
-  "ui/TargetCrashedScreen.js | devtoolsWasDisconnectedFromThe": {
+  "ui/TargetCrashedScreen.ts | devtoolsWasDisconnectedFromThe": {
     "message": "DevTools was disconnected from the page."
   },
-  "ui/TargetCrashedScreen.js | oncePageIsReloadedDevtoolsWill": {
+  "ui/TargetCrashedScreen.ts | oncePageIsReloadedDevtoolsWill": {
     "message": "Once page is reloaded, DevTools will automatically reconnect."
   },
   "ui/UIUtils.js | anonymous": {

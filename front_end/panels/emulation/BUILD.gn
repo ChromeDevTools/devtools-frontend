@@ -29,7 +29,7 @@ devtools_module("emulation") {
     "../../components:bundle",
     "../../host:bundle",
     "../../i18n:bundle",
-    "../../mobile_throttling:bundle",
+    "../../panels/mobile_throttling:bundle",
     "../../platform:bundle",
     "../../protocol_client:bundle",
     "../../sdk:bundle",

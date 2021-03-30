@@ -41,6 +41,7 @@ export const mappingForLayoutTests = new Map<string, string>([
   ['panels/console', 'console'],
   ['panels/elements', 'elements'],
   ['panels/emulation', 'emulation'],
+  ['panels/mobile_throttling', 'mobile_throttling'],
 ]);
 
 export class Runtime {

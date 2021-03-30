@@ -4,9 +4,9 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../common/common.js';
-import * as i18n from '../i18n/i18n.js';
-import * as SDK from '../sdk/sdk.js';
+import * as Common from '../../common/common.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as SDK from '../../sdk/sdk.js';
 
 import type {NetworkThrottlingConditionsGroup} from './ThrottlingPresets.js';
 import {ThrottlingPresets} from './ThrottlingPresets.js';
@@ -25,7 +25,7 @@ const UIStrings = {
   */
   custom: 'Custom',
 };
-const str_ = i18n.i18n.registerUIStrings('mobile_throttling/NetworkThrottlingSelector.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/mobile_throttling/NetworkThrottlingSelector.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class NetworkThrottlingSelector {
   _populateCallback: (arg0: Array<NetworkThrottlingConditionsGroup>) => Array<SDK.NetworkManager.Conditions|null>;

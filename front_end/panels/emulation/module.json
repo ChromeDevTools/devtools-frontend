@@ -2,7 +2,7 @@
   "dependencies": [
     "components",
     "ui",
-    "mobile_throttling"
+    "panels/mobile_throttling"
   ],
     "resources": [
     "deviceModeToolbar.css",

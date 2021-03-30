@@ -1325,159 +1325,6 @@
   "main/MainImpl.js | undockIntoSeparateWindow": {
     "message": "Ûńd̂óĉḱ îńt̂ó ŝép̂ár̂át̂é ŵín̂d́ôẃ"
   },
-  "mobile_throttling/mobile_throttling-meta.ts | device": {
-    "message": "d̂év̂íĉé"
-  },
-  "mobile_throttling/mobile_throttling-meta.ts | enableFastGThrottling": {
-    "message": "Êńâb́l̂é f̂áŝt́ 3G t̂h́r̂ót̂t́l̂ín̂ǵ"
-  },
-  "mobile_throttling/mobile_throttling-meta.ts | enableSlowGThrottling": {
-    "message": "Êńâb́l̂é ŝĺôẃ 3G t̂h́r̂ót̂t́l̂ín̂ǵ"
-  },
-  "mobile_throttling/mobile_throttling-meta.ts | goOffline": {
-    "message": "Ĝó ôf́f̂ĺîńê"
-  },
-  "mobile_throttling/mobile_throttling-meta.ts | goOnline": {
-    "message": "Ĝó ôńl̂ín̂é"
-  },
-  "mobile_throttling/mobile_throttling-meta.ts | showThrottling": {
-    "message": "Ŝh́ôẃ T̂h́r̂ót̂t́l̂ín̂ǵ"
-  },
-  "mobile_throttling/mobile_throttling-meta.ts | throttling": {
-    "message": "T̂h́r̂ót̂t́l̂ín̂ǵ"
-  },
-  "mobile_throttling/mobile_throttling-meta.ts | throttlingTag": {
-    "message": "t̂h́r̂ót̂t́l̂ín̂ǵ"
-  },
-  "mobile_throttling/MobileThrottlingSelector.ts | advanced": {
-    "message": "Âd́v̂án̂ćêd́"
-  },
-  "mobile_throttling/MobileThrottlingSelector.ts | disabled": {
-    "message": "D̂íŝáb̂ĺêd́"
-  },
-  "mobile_throttling/MobileThrottlingSelector.ts | presets": {
-    "message": "P̂ŕêśêt́ŝ"
-  },
-  "mobile_throttling/NetworkPanelIndicator.ts | acceptedEncodingOverrideSet": {
-    "message": "T̂h́ê śêt́ ôf́ âćĉép̂t́êd́ Content-Encodingŝ h́âś b̂éêń m̂ód̂íf̂íêd́ b̂ý D̂év̂T́ôól̂ś. Ŝéê t́ĥé N̂ét̂ẃôŕk̂ Ćôńd̂ít̂íôńŝ ṕâńêĺ."
-  },
-  "mobile_throttling/NetworkPanelIndicator.ts | networkThrottlingIsEnabled": {
-    "message": "N̂ét̂ẃôŕk̂ t́ĥŕôt́t̂ĺîńĝ íŝ én̂áb̂ĺêd́"
-  },
-  "mobile_throttling/NetworkPanelIndicator.ts | requestsMayBeBlocked": {
-    "message": "R̂éq̂úêśt̂ś m̂áŷ b́ê b́l̂óĉḱêd́"
-  },
-  "mobile_throttling/NetworkPanelIndicator.ts | requestsMayBeRewrittenByLocal": {
-    "message": "R̂éq̂úêśt̂ś m̂áŷ b́ê ŕêẃr̂ít̂t́êń b̂ý l̂óĉál̂ óv̂ér̂ŕîd́êś"
-  },
-  "mobile_throttling/NetworkThrottlingSelector.ts | custom": {
-    "message": "Ĉúŝt́ôḿ"
-  },
-  "mobile_throttling/NetworkThrottlingSelector.ts | disabled": {
-    "message": "D̂íŝáb̂ĺêd́"
-  },
-  "mobile_throttling/NetworkThrottlingSelector.ts | presets": {
-    "message": "P̂ŕêśêt́ŝ"
-  },
-  "mobile_throttling/ThrottlingManager.ts | add": {
-    "message": "Âd́d̂…"
-  },
-  "mobile_throttling/ThrottlingManager.ts | addS": {
-    "message": "Âd́d̂ {PH1}"
-  },
-  "mobile_throttling/ThrottlingManager.ts | cpuThrottling": {
-    "message": "ĈṔÛ t́ĥŕôt́t̂ĺîńĝ"
-  },
-  "mobile_throttling/ThrottlingManager.ts | cpuThrottlingIsEnabled": {
-    "message": "ĈṔÛ t́ĥŕôt́t̂ĺîńĝ íŝ én̂áb̂ĺêd́"
-  },
-  "mobile_throttling/ThrottlingManager.ts | dSlowdown": {
-    "message": "{PH1}× ŝĺôẃd̂óŵń"
-  },
-  "mobile_throttling/ThrottlingManager.ts | forceDisconnectedFromNetwork": {
-    "message": "F̂ór̂ćê d́îśĉón̂ńêćt̂éd̂ f́r̂óm̂ ńêt́ŵór̂ḱ"
-  },
-  "mobile_throttling/ThrottlingManager.ts | noThrottling": {
-    "message": "N̂ó t̂h́r̂ót̂t́l̂ín̂ǵ"
-  },
-  "mobile_throttling/ThrottlingManager.ts | offline": {
-    "message": "Ôf́f̂ĺîńê"
-  },
-  "mobile_throttling/ThrottlingManager.ts | sS": {
-    "message": "{PH1}: {PH2}"
-  },
-  "mobile_throttling/ThrottlingManager.ts | throttling": {
-    "message": "T̂h́r̂ót̂t́l̂ín̂ǵ"
-  },
-  "mobile_throttling/ThrottlingPresets.ts | checkNetworkAndPerformancePanels": {
-    "message": "Ĉh́êćk̂ Ńêt́ŵór̂ḱ âńd̂ Ṕêŕf̂ór̂ḿâńĉé p̂án̂él̂ś"
-  },
-  "mobile_throttling/ThrottlingPresets.ts | custom": {
-    "message": "Ĉúŝt́ôḿ"
-  },
-  "mobile_throttling/ThrottlingPresets.ts | fastGXCpuSlowdown": {
-    "message": "F̂áŝt́ 3Ĝ & 4x́ ĈṔÛ śl̂óŵd́ôẃn̂"
-  },
-  "mobile_throttling/ThrottlingPresets.ts | lowendMobile": {
-    "message": "L̂óŵ-én̂d́ m̂ób̂íl̂é"
-  },
-  "mobile_throttling/ThrottlingPresets.ts | midtierMobile": {
-    "message": "M̂íd̂-t́îér̂ ḿôb́îĺê"
-  },
-  "mobile_throttling/ThrottlingPresets.ts | noInternetConnectivity": {
-    "message": "N̂ó îńt̂ér̂ńêt́ ĉón̂ńêćt̂ív̂ít̂ý"
-  },
-  "mobile_throttling/ThrottlingPresets.ts | noThrottling": {
-    "message": "N̂ó t̂h́r̂ót̂t́l̂ín̂ǵ"
-  },
-  "mobile_throttling/ThrottlingPresets.ts | slowGXCpuSlowdown": {
-    "message": "Ŝĺôẃ 3Ĝ & 6x́ ĈṔÛ śl̂óŵd́ôẃn̂"
-  },
-  "mobile_throttling/ThrottlingSettingsTab.ts | addCustomProfile": {
-    "message": "Âd́d̂ ćûśt̂óm̂ ṕr̂óf̂íl̂é..."
-  },
-  "mobile_throttling/ThrottlingSettingsTab.ts | dms": {
-    "message": "{PH1}m̂ś"
-  },
-  "mobile_throttling/ThrottlingSettingsTab.ts | download": {
-    "message": "D̂óŵńl̂óâd́"
-  },
-  "mobile_throttling/ThrottlingSettingsTab.ts | dskbs": {
-    "message": "{PH1} k̂B́/ŝ"
-  },
-  "mobile_throttling/ThrottlingSettingsTab.ts | fsmbs": {
-    "message": "{PH1} M̂B́/ŝ"
-  },
-  "mobile_throttling/ThrottlingSettingsTab.ts | kbs": {
-    "message": "k̂b́/ŝ"
-  },
-  "mobile_throttling/ThrottlingSettingsTab.ts | latency": {
-    "message": "L̂át̂én̂ćŷ"
-  },
-  "mobile_throttling/ThrottlingSettingsTab.ts | latencyMustBeAnIntegerBetweenSms": {
-    "message": "L̂át̂én̂ćŷ ḿûśt̂ b́ê án̂ ín̂t́êǵêŕ b̂ét̂ẃêén̂ {PH1}ḿŝ t́ô {PH2}ḿŝ ín̂ćl̂úŝív̂é"
-  },
-  "mobile_throttling/ThrottlingSettingsTab.ts | ms": {
-    "message": "m̂ś"
-  },
-  "mobile_throttling/ThrottlingSettingsTab.ts | networkThrottlingProfiles": {
-    "message": "N̂ét̂ẃôŕk̂ T́ĥŕôt́t̂ĺîńĝ Ṕr̂óf̂íl̂éŝ"
-  },
-  "mobile_throttling/ThrottlingSettingsTab.ts | optional": {
-    "message": "ôṕt̂íôńâĺ"
-  },
-  "mobile_throttling/ThrottlingSettingsTab.ts | profileName": {
-    "message": "P̂ŕôf́îĺê Ńâḿê"
-  },
-  "mobile_throttling/ThrottlingSettingsTab.ts | profileNameCharactersLengthMust": {
-    "message": "P̂ŕôf́îĺê Ńâḿê ćĥár̂áĉt́êŕŝ ĺêńĝt́ĥ ḿûśt̂ b́ê b́êt́ŵéêń 1 t̂ó {PH1} îńĉĺûśîv́ê"
-  },
-  "mobile_throttling/ThrottlingSettingsTab.ts | sMustBeANumberBetweenSkbsToSkbs": {
-    "message": "{PH1} m̂úŝt́ b̂é â ńûḿb̂ér̂ b́êt́ŵéêń {PH2}k̂b́/ŝ t́ô {PH3}ḱb̂/ś îńĉĺûśîv́ê"
-  },
-  "mobile_throttling/ThrottlingSettingsTab.ts | upload": {
-    "message": "Ûṕl̂óâd́"
-  },
   "network/BinaryResourceView.ts | binaryViewType": {
     "message": "B̂ín̂ár̂ý v̂íêẃ t̂ýp̂é"
   },
@@ -5602,6 +5449,159 @@
   },
   "panels/media/PlayerPropertiesView.ts | videoPlaybackRoughness": {
     "message": "V̂íd̂éô ṕl̂áŷb́âćk̂ ŕôúĝh́n̂éŝś"
+  },
+  "panels/mobile_throttling/mobile_throttling-meta.ts | device": {
+    "message": "d̂év̂íĉé"
+  },
+  "panels/mobile_throttling/mobile_throttling-meta.ts | enableFastGThrottling": {
+    "message": "Êńâb́l̂é f̂áŝt́ 3G t̂h́r̂ót̂t́l̂ín̂ǵ"
+  },
+  "panels/mobile_throttling/mobile_throttling-meta.ts | enableSlowGThrottling": {
+    "message": "Êńâb́l̂é ŝĺôẃ 3G t̂h́r̂ót̂t́l̂ín̂ǵ"
+  },
+  "panels/mobile_throttling/mobile_throttling-meta.ts | goOffline": {
+    "message": "Ĝó ôf́f̂ĺîńê"
+  },
+  "panels/mobile_throttling/mobile_throttling-meta.ts | goOnline": {
+    "message": "Ĝó ôńl̂ín̂é"
+  },
+  "panels/mobile_throttling/mobile_throttling-meta.ts | showThrottling": {
+    "message": "Ŝh́ôẃ T̂h́r̂ót̂t́l̂ín̂ǵ"
+  },
+  "panels/mobile_throttling/mobile_throttling-meta.ts | throttling": {
+    "message": "T̂h́r̂ót̂t́l̂ín̂ǵ"
+  },
+  "panels/mobile_throttling/mobile_throttling-meta.ts | throttlingTag": {
+    "message": "t̂h́r̂ót̂t́l̂ín̂ǵ"
+  },
+  "panels/mobile_throttling/MobileThrottlingSelector.ts | advanced": {
+    "message": "Âd́v̂án̂ćêd́"
+  },
+  "panels/mobile_throttling/MobileThrottlingSelector.ts | disabled": {
+    "message": "D̂íŝáb̂ĺêd́"
+  },
+  "panels/mobile_throttling/MobileThrottlingSelector.ts | presets": {
+    "message": "P̂ŕêśêt́ŝ"
+  },
+  "panels/mobile_throttling/NetworkPanelIndicator.ts | acceptedEncodingOverrideSet": {
+    "message": "T̂h́ê śêt́ ôf́ âćĉép̂t́êd́ Content-Encodingŝ h́âś b̂éêń m̂ód̂íf̂íêd́ b̂ý D̂év̂T́ôól̂ś. Ŝéê t́ĥé N̂ét̂ẃôŕk̂ Ćôńd̂ít̂íôńŝ ṕâńêĺ."
+  },
+  "panels/mobile_throttling/NetworkPanelIndicator.ts | networkThrottlingIsEnabled": {
+    "message": "N̂ét̂ẃôŕk̂ t́ĥŕôt́t̂ĺîńĝ íŝ én̂áb̂ĺêd́"
+  },
+  "panels/mobile_throttling/NetworkPanelIndicator.ts | requestsMayBeBlocked": {
+    "message": "R̂éq̂úêśt̂ś m̂áŷ b́ê b́l̂óĉḱêd́"
+  },
+  "panels/mobile_throttling/NetworkPanelIndicator.ts | requestsMayBeRewrittenByLocal": {
+    "message": "R̂éq̂úêśt̂ś m̂áŷ b́ê ŕêẃr̂ít̂t́êń b̂ý l̂óĉál̂ óv̂ér̂ŕîd́êś"
+  },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | custom": {
+    "message": "Ĉúŝt́ôḿ"
+  },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | disabled": {
+    "message": "D̂íŝáb̂ĺêd́"
+  },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | presets": {
+    "message": "P̂ŕêśêt́ŝ"
+  },
+  "panels/mobile_throttling/ThrottlingManager.ts | add": {
+    "message": "Âd́d̂…"
+  },
+  "panels/mobile_throttling/ThrottlingManager.ts | addS": {
+    "message": "Âd́d̂ {PH1}"
+  },
+  "panels/mobile_throttling/ThrottlingManager.ts | cpuThrottling": {
+    "message": "ĈṔÛ t́ĥŕôt́t̂ĺîńĝ"
+  },
+  "panels/mobile_throttling/ThrottlingManager.ts | cpuThrottlingIsEnabled": {
+    "message": "ĈṔÛ t́ĥŕôt́t̂ĺîńĝ íŝ én̂áb̂ĺêd́"
+  },
+  "panels/mobile_throttling/ThrottlingManager.ts | dSlowdown": {
+    "message": "{PH1}× ŝĺôẃd̂óŵń"
+  },
+  "panels/mobile_throttling/ThrottlingManager.ts | forceDisconnectedFromNetwork": {
+    "message": "F̂ór̂ćê d́îśĉón̂ńêćt̂éd̂ f́r̂óm̂ ńêt́ŵór̂ḱ"
+  },
+  "panels/mobile_throttling/ThrottlingManager.ts | noThrottling": {
+    "message": "N̂ó t̂h́r̂ót̂t́l̂ín̂ǵ"
+  },
+  "panels/mobile_throttling/ThrottlingManager.ts | offline": {
+    "message": "Ôf́f̂ĺîńê"
+  },
+  "panels/mobile_throttling/ThrottlingManager.ts | sS": {
+    "message": "{PH1}: {PH2}"
+  },
+  "panels/mobile_throttling/ThrottlingManager.ts | throttling": {
+    "message": "T̂h́r̂ót̂t́l̂ín̂ǵ"
+  },
+  "panels/mobile_throttling/ThrottlingPresets.ts | checkNetworkAndPerformancePanels": {
+    "message": "Ĉh́êćk̂ Ńêt́ŵór̂ḱ âńd̂ Ṕêŕf̂ór̂ḿâńĉé p̂án̂él̂ś"
+  },
+  "panels/mobile_throttling/ThrottlingPresets.ts | custom": {
+    "message": "Ĉúŝt́ôḿ"
+  },
+  "panels/mobile_throttling/ThrottlingPresets.ts | fastGXCpuSlowdown": {
+    "message": "F̂áŝt́ 3Ĝ & 4x́ ĈṔÛ śl̂óŵd́ôẃn̂"
+  },
+  "panels/mobile_throttling/ThrottlingPresets.ts | lowendMobile": {
+    "message": "L̂óŵ-én̂d́ m̂ób̂íl̂é"
+  },
+  "panels/mobile_throttling/ThrottlingPresets.ts | midtierMobile": {
+    "message": "M̂íd̂-t́îér̂ ḿôb́îĺê"
+  },
+  "panels/mobile_throttling/ThrottlingPresets.ts | noInternetConnectivity": {
+    "message": "N̂ó îńt̂ér̂ńêt́ ĉón̂ńêćt̂ív̂ít̂ý"
+  },
+  "panels/mobile_throttling/ThrottlingPresets.ts | noThrottling": {
+    "message": "N̂ó t̂h́r̂ót̂t́l̂ín̂ǵ"
+  },
+  "panels/mobile_throttling/ThrottlingPresets.ts | slowGXCpuSlowdown": {
+    "message": "Ŝĺôẃ 3Ĝ & 6x́ ĈṔÛ śl̂óŵd́ôẃn̂"
+  },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | addCustomProfile": {
+    "message": "Âd́d̂ ćûśt̂óm̂ ṕr̂óf̂íl̂é..."
+  },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | dms": {
+    "message": "{PH1}m̂ś"
+  },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | download": {
+    "message": "D̂óŵńl̂óâd́"
+  },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | dskbs": {
+    "message": "{PH1} k̂B́/ŝ"
+  },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | fsmbs": {
+    "message": "{PH1} M̂B́/ŝ"
+  },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | kbs": {
+    "message": "k̂b́/ŝ"
+  },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | latency": {
+    "message": "L̂át̂én̂ćŷ"
+  },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | latencyMustBeAnIntegerBetweenSms": {
+    "message": "L̂át̂én̂ćŷ ḿûśt̂ b́ê án̂ ín̂t́êǵêŕ b̂ét̂ẃêén̂ {PH1}ḿŝ t́ô {PH2}ḿŝ ín̂ćl̂úŝív̂é"
+  },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | ms": {
+    "message": "m̂ś"
+  },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | networkThrottlingProfiles": {
+    "message": "N̂ét̂ẃôŕk̂ T́ĥŕôt́t̂ĺîńĝ Ṕr̂óf̂íl̂éŝ"
+  },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | optional": {
+    "message": "ôṕt̂íôńâĺ"
+  },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | profileName": {
+    "message": "P̂ŕôf́îĺê Ńâḿê"
+  },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | profileNameCharactersLengthMust": {
+    "message": "P̂ŕôf́îĺê Ńâḿê ćĥár̂áĉt́êŕŝ ĺêńĝt́ĥ ḿûśt̂ b́ê b́êt́ŵéêń 1 t̂ó {PH1} îńĉĺûśîv́ê"
+  },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | sMustBeANumberBetweenSkbsToSkbs": {
+    "message": "{PH1} m̂úŝt́ b̂é â ńûḿb̂ér̂ b́êt́ŵéêń {PH2}k̂b́/ŝ t́ô {PH3}ḱb̂/ś îńĉĺûśîv́ê"
+  },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | upload": {
+    "message": "Ûṕl̂óâd́"
   },
   "perf_ui/FilmStripView.ts | doubleclickToZoomImageClickTo": {
     "message": "D̂óûb́l̂éĉĺîćk̂ t́ô źôóm̂ ím̂áĝé. Ĉĺîćk̂ t́ô v́îéŵ ṕr̂éĉéd̂ín̂ǵ r̂éq̂úêśt̂ś."

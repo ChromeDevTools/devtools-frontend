@@ -98,7 +98,7 @@ export const CSS_RESOURCES_TO_LOAD_INTO_RUNTIME = [
   'components/jsUtils.css',
   'persistence/editFileSystemView.css',
   'persistence/workspaceSettingsTab.css',
-  'mobile_throttling/throttlingSettingsTab.css',
+  'panels/mobile_throttling/throttlingSettingsTab.css',
   'panels/emulation/deviceModeToolbar.css',
   'panels/emulation/deviceModeView.css',
   'panels/emulation/devicesSettingsTab.css',

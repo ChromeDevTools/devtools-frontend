@@ -4,8 +4,8 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as i18n from '../i18n/i18n.js';
-import * as SDK from '../sdk/sdk.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as SDK from '../../sdk/sdk.js';
 
 const UIStrings = {
   /**
@@ -42,7 +42,7 @@ const UIStrings = {
   checkNetworkAndPerformancePanels: 'Check Network and Performance panels',
 };
 
-const str_ = i18n.i18n.registerUIStrings('mobile_throttling/ThrottlingPresets.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/mobile_throttling/ThrottlingPresets.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 // TODO(crbug.com/1167717): Make this a const enum again

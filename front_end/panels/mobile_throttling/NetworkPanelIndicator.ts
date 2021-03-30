@@ -4,9 +4,9 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as i18n from '../i18n/i18n.js';
-import * as SDK from '../sdk/sdk.js';
-import * as UI from '../ui/ui.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as SDK from '../../sdk/sdk.js';
+import * as UI from '../../ui/ui.js';
 
 const UIStrings = {
   /**
@@ -27,7 +27,7 @@ const UIStrings = {
   acceptedEncodingOverrideSet:
       'The set of accepted `Content-Encoding`s has been modified by DevTools. See the Network Conditions panel.',
 };
-const str_ = i18n.i18n.registerUIStrings('mobile_throttling/NetworkPanelIndicator.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/mobile_throttling/NetworkPanelIndicator.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class NetworkPanelIndicator {
   constructor() {

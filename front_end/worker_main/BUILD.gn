@@ -12,7 +12,7 @@ devtools_module("worker_main") {
     "../common:bundle",
     "../components:bundle",
     "../i18n:bundle",
-    "../mobile_throttling:bundle",
+    "../panels/mobile_throttling:bundle",
     "../sdk:bundle",
   ]
 }

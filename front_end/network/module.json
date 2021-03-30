@@ -4,7 +4,7 @@
     "components",
     "cookie_table",
     "data_grid",
-    "mobile_throttling",
+    "panels/mobile_throttling",
     "object_ui",
     "perf_ui",
     "persistence",

@@ -16,7 +16,7 @@ devtools_module("inspector_main") {
     "../components:bundle",
     "../host:bundle",
     "../i18n:bundle",
-    "../mobile_throttling:bundle",
+    "../panels/mobile_throttling:bundle",
     "../sdk:bundle",
     "../ui:bundle",
   ]

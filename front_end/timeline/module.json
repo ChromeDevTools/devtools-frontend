@@ -7,7 +7,7 @@
     "extensions",
     "data_grid",
     "profiler",
-    "mobile_throttling"
+    "panels/mobile_throttling"
   ],
     "resources": [
     "historyToolbarButton.css",

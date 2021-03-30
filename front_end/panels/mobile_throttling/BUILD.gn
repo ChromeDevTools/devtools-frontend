@@ -2,8 +2,8 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-import("../../scripts/build/ninja/devtools_entrypoint.gni")
-import("../../scripts/build/ninja/devtools_module.gni")
+import("../../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../../../scripts/build/ninja/devtools_module.gni")
 
 devtools_module("mobile_throttling") {
   sources = [
@@ -16,11 +16,11 @@ devtools_module("mobile_throttling") {
   ]
 
   deps = [
-    "../common:bundle",
-    "../host:bundle",
-    "../i18n:bundle",
-    "../sdk:bundle",
-    "../ui:bundle",
+    "../../common:bundle",
+    "../../host:bundle",
+    "../../i18n:bundle",
+    "../../sdk:bundle",
+    "../../ui:bundle",
   ]
 }
 

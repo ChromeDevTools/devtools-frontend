@@ -1,6 +1,6 @@
 {
   "dependencies": [
     "components",
-    "mobile_throttling"
+    "panels/mobile_throttling"
   ]
 }

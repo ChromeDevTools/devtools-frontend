@@ -4,10 +4,10 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../common/common.js';
-import * as i18n from '../i18n/i18n.js';
-import type * as SDK from '../sdk/sdk.js';
-import * as UI from '../ui/ui.js';
+import * as Common from '../../common/common.js';
+import * as i18n from '../../i18n/i18n.js';
+import type * as SDK from '../../sdk/sdk.js';
+import * as UI from '../../ui/ui.js';
 
 const UIStrings = {
   /**
@@ -84,7 +84,7 @@ const UIStrings = {
   */
   fsmbs: '{PH1} MB/s',
 };
-const str_ = i18n.i18n.registerUIStrings('mobile_throttling/ThrottlingSettingsTab.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/mobile_throttling/ThrottlingSettingsTab.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 let throttlingSettingsTabInstance: ThrottlingSettingsTab;
@@ -96,7 +96,7 @@ export class ThrottlingSettingsTab extends UI.Widget.VBox implements
   _editor?: UI.ListWidget.Editor<SDK.NetworkManager.Conditions>;
   constructor() {
     super(true);
-    this.registerRequiredCSS('mobile_throttling/throttlingSettingsTab.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('panels/mobile_throttling/throttlingSettingsTab.css', {enableLegacyPatching: true});
 
     const header = this.contentElement.createChild('div', 'header');
     header.textContent = i18nString(UIStrings.networkThrottlingProfiles);
@@ -108,7 +108,7 @@ export class ThrottlingSettingsTab extends UI.Widget.VBox implements
 
     this._list = new UI.ListWidget.ListWidget(this);
     this._list.element.classList.add('conditions-list');
-    this._list.registerRequiredCSS('mobile_throttling/throttlingSettingsTab.css', {enableLegacyPatching: true});
+    this._list.registerRequiredCSS('panels/mobile_throttling/throttlingSettingsTab.css', {enableLegacyPatching: true});
     this._list.show(this.contentElement);
 
     this._customSetting = Common.Settings.Settings.instance().moduleSetting('customNetworkConditions');

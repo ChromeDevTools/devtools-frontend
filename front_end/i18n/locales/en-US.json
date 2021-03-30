@@ -1325,159 +1325,6 @@
   "main/MainImpl.js | undockIntoSeparateWindow": {
     "message": "Undock into separate window"
   },
-  "mobile_throttling/mobile_throttling-meta.ts | device": {
-    "message": "device"
-  },
-  "mobile_throttling/mobile_throttling-meta.ts | enableFastGThrottling": {
-    "message": "Enable fast 3G throttling"
-  },
-  "mobile_throttling/mobile_throttling-meta.ts | enableSlowGThrottling": {
-    "message": "Enable slow 3G throttling"
-  },
-  "mobile_throttling/mobile_throttling-meta.ts | goOffline": {
-    "message": "Go offline"
-  },
-  "mobile_throttling/mobile_throttling-meta.ts | goOnline": {
-    "message": "Go online"
-  },
-  "mobile_throttling/mobile_throttling-meta.ts | showThrottling": {
-    "message": "Show Throttling"
-  },
-  "mobile_throttling/mobile_throttling-meta.ts | throttling": {
-    "message": "Throttling"
-  },
-  "mobile_throttling/mobile_throttling-meta.ts | throttlingTag": {
-    "message": "throttling"
-  },
-  "mobile_throttling/MobileThrottlingSelector.ts | advanced": {
-    "message": "Advanced"
-  },
-  "mobile_throttling/MobileThrottlingSelector.ts | disabled": {
-    "message": "Disabled"
-  },
-  "mobile_throttling/MobileThrottlingSelector.ts | presets": {
-    "message": "Presets"
-  },
-  "mobile_throttling/NetworkPanelIndicator.ts | acceptedEncodingOverrideSet": {
-    "message": "The set of accepted Content-Encodings has been modified by DevTools. See the Network Conditions panel."
-  },
-  "mobile_throttling/NetworkPanelIndicator.ts | networkThrottlingIsEnabled": {
-    "message": "Network throttling is enabled"
-  },
-  "mobile_throttling/NetworkPanelIndicator.ts | requestsMayBeBlocked": {
-    "message": "Requests may be blocked"
-  },
-  "mobile_throttling/NetworkPanelIndicator.ts | requestsMayBeRewrittenByLocal": {
-    "message": "Requests may be rewritten by local overrides"
-  },
-  "mobile_throttling/NetworkThrottlingSelector.ts | custom": {
-    "message": "Custom"
-  },
-  "mobile_throttling/NetworkThrottlingSelector.ts | disabled": {
-    "message": "Disabled"
-  },
-  "mobile_throttling/NetworkThrottlingSelector.ts | presets": {
-    "message": "Presets"
-  },
-  "mobile_throttling/ThrottlingManager.ts | add": {
-    "message": "Add…"
-  },
-  "mobile_throttling/ThrottlingManager.ts | addS": {
-    "message": "Add {PH1}"
-  },
-  "mobile_throttling/ThrottlingManager.ts | cpuThrottling": {
-    "message": "CPU throttling"
-  },
-  "mobile_throttling/ThrottlingManager.ts | cpuThrottlingIsEnabled": {
-    "message": "CPU throttling is enabled"
-  },
-  "mobile_throttling/ThrottlingManager.ts | dSlowdown": {
-    "message": "{PH1}× slowdown"
-  },
-  "mobile_throttling/ThrottlingManager.ts | forceDisconnectedFromNetwork": {
-    "message": "Force disconnected from network"
-  },
-  "mobile_throttling/ThrottlingManager.ts | noThrottling": {
-    "message": "No throttling"
-  },
-  "mobile_throttling/ThrottlingManager.ts | offline": {
-    "message": "Offline"
-  },
-  "mobile_throttling/ThrottlingManager.ts | sS": {
-    "message": "{PH1}: {PH2}"
-  },
-  "mobile_throttling/ThrottlingManager.ts | throttling": {
-    "message": "Throttling"
-  },
-  "mobile_throttling/ThrottlingPresets.ts | checkNetworkAndPerformancePanels": {
-    "message": "Check Network and Performance panels"
-  },
-  "mobile_throttling/ThrottlingPresets.ts | custom": {
-    "message": "Custom"
-  },
-  "mobile_throttling/ThrottlingPresets.ts | fastGXCpuSlowdown": {
-    "message": "Fast 3G & 4x CPU slowdown"
-  },
-  "mobile_throttling/ThrottlingPresets.ts | lowendMobile": {
-    "message": "Low-end mobile"
-  },
-  "mobile_throttling/ThrottlingPresets.ts | midtierMobile": {
-    "message": "Mid-tier mobile"
-  },
-  "mobile_throttling/ThrottlingPresets.ts | noInternetConnectivity": {
-    "message": "No internet connectivity"
-  },
-  "mobile_throttling/ThrottlingPresets.ts | noThrottling": {
-    "message": "No throttling"
-  },
-  "mobile_throttling/ThrottlingPresets.ts | slowGXCpuSlowdown": {
-    "message": "Slow 3G & 6x CPU slowdown"
-  },
-  "mobile_throttling/ThrottlingSettingsTab.ts | addCustomProfile": {
-    "message": "Add custom profile..."
-  },
-  "mobile_throttling/ThrottlingSettingsTab.ts | dms": {
-    "message": "{PH1}ms"
-  },
-  "mobile_throttling/ThrottlingSettingsTab.ts | download": {
-    "message": "Download"
-  },
-  "mobile_throttling/ThrottlingSettingsTab.ts | dskbs": {
-    "message": "{PH1} kB/s"
-  },
-  "mobile_throttling/ThrottlingSettingsTab.ts | fsmbs": {
-    "message": "{PH1} MB/s"
-  },
-  "mobile_throttling/ThrottlingSettingsTab.ts | kbs": {
-    "message": "kb/s"
-  },
-  "mobile_throttling/ThrottlingSettingsTab.ts | latency": {
-    "message": "Latency"
-  },
-  "mobile_throttling/ThrottlingSettingsTab.ts | latencyMustBeAnIntegerBetweenSms": {
-    "message": "Latency must be an integer between {PH1}ms to {PH2}ms inclusive"
-  },
-  "mobile_throttling/ThrottlingSettingsTab.ts | ms": {
-    "message": "ms"
-  },
-  "mobile_throttling/ThrottlingSettingsTab.ts | networkThrottlingProfiles": {
-    "message": "Network Throttling Profiles"
-  },
-  "mobile_throttling/ThrottlingSettingsTab.ts | optional": {
-    "message": "optional"
-  },
-  "mobile_throttling/ThrottlingSettingsTab.ts | profileName": {
-    "message": "Profile Name"
-  },
-  "mobile_throttling/ThrottlingSettingsTab.ts | profileNameCharactersLengthMust": {
-    "message": "Profile Name characters length must be between 1 to {PH1} inclusive"
-  },
-  "mobile_throttling/ThrottlingSettingsTab.ts | sMustBeANumberBetweenSkbsToSkbs": {
-    "message": "{PH1} must be a number between {PH2}kb/s to {PH3}kb/s inclusive"
-  },
-  "mobile_throttling/ThrottlingSettingsTab.ts | upload": {
-    "message": "Upload"
-  },
   "network/BinaryResourceView.ts | binaryViewType": {
     "message": "Binary view type"
   },
@@ -5602,6 +5449,159 @@
   },
   "panels/media/PlayerPropertiesView.ts | videoPlaybackRoughness": {
     "message": "Video playback roughness"
+  },
+  "panels/mobile_throttling/mobile_throttling-meta.ts | device": {
+    "message": "device"
+  },
+  "panels/mobile_throttling/mobile_throttling-meta.ts | enableFastGThrottling": {
+    "message": "Enable fast 3G throttling"
+  },
+  "panels/mobile_throttling/mobile_throttling-meta.ts | enableSlowGThrottling": {
+    "message": "Enable slow 3G throttling"
+  },
+  "panels/mobile_throttling/mobile_throttling-meta.ts | goOffline": {
+    "message": "Go offline"
+  },
+  "panels/mobile_throttling/mobile_throttling-meta.ts | goOnline": {
+    "message": "Go online"
+  },
+  "panels/mobile_throttling/mobile_throttling-meta.ts | showThrottling": {
+    "message": "Show Throttling"
+  },
+  "panels/mobile_throttling/mobile_throttling-meta.ts | throttling": {
+    "message": "Throttling"
+  },
+  "panels/mobile_throttling/mobile_throttling-meta.ts | throttlingTag": {
+    "message": "throttling"
+  },
+  "panels/mobile_throttling/MobileThrottlingSelector.ts | advanced": {
+    "message": "Advanced"
+  },
+  "panels/mobile_throttling/MobileThrottlingSelector.ts | disabled": {
+    "message": "Disabled"
+  },
+  "panels/mobile_throttling/MobileThrottlingSelector.ts | presets": {
+    "message": "Presets"
+  },
+  "panels/mobile_throttling/NetworkPanelIndicator.ts | acceptedEncodingOverrideSet": {
+    "message": "The set of accepted Content-Encodings has been modified by DevTools. See the Network Conditions panel."
+  },
+  "panels/mobile_throttling/NetworkPanelIndicator.ts | networkThrottlingIsEnabled": {
+    "message": "Network throttling is enabled"
+  },
+  "panels/mobile_throttling/NetworkPanelIndicator.ts | requestsMayBeBlocked": {
+    "message": "Requests may be blocked"
+  },
+  "panels/mobile_throttling/NetworkPanelIndicator.ts | requestsMayBeRewrittenByLocal": {
+    "message": "Requests may be rewritten by local overrides"
+  },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | custom": {
+    "message": "Custom"
+  },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | disabled": {
+    "message": "Disabled"
+  },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | presets": {
+    "message": "Presets"
+  },
+  "panels/mobile_throttling/ThrottlingManager.ts | add": {
+    "message": "Add…"
+  },
+  "panels/mobile_throttling/ThrottlingManager.ts | addS": {
+    "message": "Add {PH1}"
+  },
+  "panels/mobile_throttling/ThrottlingManager.ts | cpuThrottling": {
+    "message": "CPU throttling"
+  },
+  "panels/mobile_throttling/ThrottlingManager.ts | cpuThrottlingIsEnabled": {
+    "message": "CPU throttling is enabled"
+  },
+  "panels/mobile_throttling/ThrottlingManager.ts | dSlowdown": {
+    "message": "{PH1}× slowdown"
+  },
+  "panels/mobile_throttling/ThrottlingManager.ts | forceDisconnectedFromNetwork": {
+    "message": "Force disconnected from network"
+  },
+  "panels/mobile_throttling/ThrottlingManager.ts | noThrottling": {
+    "message": "No throttling"
+  },
+  "panels/mobile_throttling/ThrottlingManager.ts | offline": {
+    "message": "Offline"
+  },
+  "panels/mobile_throttling/ThrottlingManager.ts | sS": {
+    "message": "{PH1}: {PH2}"
+  },
+  "panels/mobile_throttling/ThrottlingManager.ts | throttling": {
+    "message": "Throttling"
+  },
+  "panels/mobile_throttling/ThrottlingPresets.ts | checkNetworkAndPerformancePanels": {
+    "message": "Check Network and Performance panels"
+  },
+  "panels/mobile_throttling/ThrottlingPresets.ts | custom": {
+    "message": "Custom"
+  },
+  "panels/mobile_throttling/ThrottlingPresets.ts | fastGXCpuSlowdown": {
+    "message": "Fast 3G & 4x CPU slowdown"
+  },
+  "panels/mobile_throttling/ThrottlingPresets.ts | lowendMobile": {
+    "message": "Low-end mobile"
+  },
+  "panels/mobile_throttling/ThrottlingPresets.ts | midtierMobile": {
+    "message": "Mid-tier mobile"
+  },
+  "panels/mobile_throttling/ThrottlingPresets.ts | noInternetConnectivity": {
+    "message": "No internet connectivity"
+  },
+  "panels/mobile_throttling/ThrottlingPresets.ts | noThrottling": {
+    "message": "No throttling"
+  },
+  "panels/mobile_throttling/ThrottlingPresets.ts | slowGXCpuSlowdown": {
+    "message": "Slow 3G & 6x CPU slowdown"
+  },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | addCustomProfile": {
+    "message": "Add custom profile..."
+  },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | dms": {
+    "message": "{PH1}ms"
+  },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | download": {
+    "message": "Download"
+  },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | dskbs": {
+    "message": "{PH1} kB/s"
+  },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | fsmbs": {
+    "message": "{PH1} MB/s"
+  },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | kbs": {
+    "message": "kb/s"
+  },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | latency": {
+    "message": "Latency"
+  },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | latencyMustBeAnIntegerBetweenSms": {
+    "message": "Latency must be an integer between {PH1}ms to {PH2}ms inclusive"
+  },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | ms": {
+    "message": "ms"
+  },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | networkThrottlingProfiles": {
+    "message": "Network Throttling Profiles"
+  },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | optional": {
+    "message": "optional"
+  },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | profileName": {
+    "message": "Profile Name"
+  },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | profileNameCharactersLengthMust": {
+    "message": "Profile Name characters length must be between 1 to {PH1} inclusive"
+  },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | sMustBeANumberBetweenSkbsToSkbs": {
+    "message": "{PH1} must be a number between {PH2}kb/s to {PH3}kb/s inclusive"
+  },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | upload": {
+    "message": "Upload"
   },
   "perf_ui/FilmStripView.ts | doubleclickToZoomImageClickTo": {
     "message": "Doubleclick to zoom image. Click to view preceding requests."

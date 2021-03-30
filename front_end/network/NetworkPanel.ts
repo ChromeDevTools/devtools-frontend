@@ -38,7 +38,7 @@ import * as Bindings from '../bindings/bindings.js';
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
 import * as i18n from '../i18n/i18n.js';
-import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
+import * as MobileThrottling from '../panels/mobile_throttling/mobile_throttling.js';
 import * as PerfUI from '../perf_ui/perf_ui.js';
 import * as SDK from '../sdk/sdk.js';
 import * as Search from '../search/search.js';

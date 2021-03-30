@@ -4,8 +4,8 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as i18n from '../i18n/i18n.js';
-import * as SDK from '../sdk/sdk.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as SDK from '../../sdk/sdk.js';
 
 import {Events, throttlingManager} from './ThrottlingManager.js';
 import type {Conditions, ConditionsList, MobileThrottlingConditionsGroup} from './ThrottlingPresets.js';
@@ -28,7 +28,7 @@ const UIStrings = {
   */
   advanced: 'Advanced',
 };
-const str_ = i18n.i18n.registerUIStrings('mobile_throttling/MobileThrottlingSelector.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/mobile_throttling/MobileThrottlingSelector.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class MobileThrottlingSelector {

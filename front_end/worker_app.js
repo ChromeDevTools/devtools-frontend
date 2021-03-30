@@ -8,7 +8,7 @@ import './panels/elements/elements-meta.js';
 import './panels/help/help-meta.js';
 import './issues/issues-meta.js';
 import './panels/layer_viewer/layer_viewer-meta.js';
-import './mobile_throttling/mobile_throttling-meta.js';
+import './panels/mobile_throttling/mobile_throttling-meta.js';
 import './network/network-meta.js';
 import './resources/resources-meta.js';
 import './timeline/timeline-meta.js';

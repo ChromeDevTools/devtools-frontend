@@ -125,6 +125,9 @@ function drawFlexibilityArrow(
                                   y: (itemQuad.p4.y + itemQuad.p3.y) / 2,
                                 };
 
+  if (to.x === from.x && to.y === from.y) {
+    return;
+  }
   // Draw the arrow line.
   const path = segmentToPath([from, to]);
   drawPathWithLineStyle(

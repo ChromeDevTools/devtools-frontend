@@ -4,9 +4,9 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../common/common.js';
-import * as i18n from '../i18n/i18n.js';
-import * as UI from '../ui/ui.js';
+import * as Common from '../../common/common.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as UI from '../../ui/ui.js';
 
 const UIStrings = {
   /**
@@ -46,7 +46,7 @@ const UIStrings = {
   */
   filterLogMessages: 'Filter log messages',
 };
-const str_ = i18n.i18n.registerUIStrings('media/PlayerMessagesView.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/media/PlayerMessagesView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 const enum MessageLevelBitfield {
@@ -202,7 +202,8 @@ class MessageLevelSelector extends Common.ObjectWrapper.ObjectWrapper implements
   createElementForItem(item: SelectableLevel): Element {
     const element = document.createElement('div');
     const shadowRoot = UI.Utils.createShadowRootWithCoreStyles(
-        element, {cssFile: 'media/playerMessagesView.css', enableLegacyPatching: true, delegatesFocus: undefined});
+        element,
+        {cssFile: 'panels/media/playerMessagesView.css', enableLegacyPatching: true, delegatesFocus: undefined});
     const container = shadowRoot.createChild('div', 'media-messages-level-dropdown-element');
     const checkBox = container.createChild('div', 'media-messages-level-dropdown-checkbox') as HTMLElement;
     const text = container.createChild('span', 'media-messages-level-dropdown-text');
@@ -236,7 +237,7 @@ export class PlayerMessagesView extends UI.Widget.VBox {
 
   constructor() {
     super();
-    this.registerRequiredCSS('media/playerMessagesView.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('panels/media/playerMessagesView.css', {enableLegacyPatching: true});
 
     this._headerPanel = this.contentElement.createChild('div', 'media-messages-header');
     this._bodyPanel = this.contentElement.createChild('div', 'media-messages-body');

@@ -1325,177 +1325,6 @@
   "main/MainImpl.js | undockIntoSeparateWindow": {
     "message": "Undock into separate window"
   },
-  "media/EventDisplayTable.ts | eventDisplay": {
-    "message": "Event display"
-  },
-  "media/EventDisplayTable.ts | eventName": {
-    "message": "Event name"
-  },
-  "media/EventDisplayTable.ts | timestamp": {
-    "message": "Timestamp"
-  },
-  "media/EventDisplayTable.ts | value": {
-    "message": "Value"
-  },
-  "media/EventTimelineView.ts | bufferingStatus": {
-    "message": "Buffering Status"
-  },
-  "media/EventTimelineView.ts | playbackStatus": {
-    "message": "Playback Status"
-  },
-  "media/media-meta.ts | media": {
-    "message": "Media"
-  },
-  "media/media-meta.ts | showMedia": {
-    "message": "Show Media"
-  },
-  "media/media-meta.ts | video": {
-    "message": "video"
-  },
-  "media/PlayerDetailView.ts | events": {
-    "message": "Events"
-  },
-  "media/PlayerDetailView.ts | messages": {
-    "message": "Messages"
-  },
-  "media/PlayerDetailView.ts | playerEvents": {
-    "message": "Player events"
-  },
-  "media/PlayerDetailView.ts | playerMessages": {
-    "message": "Player messages"
-  },
-  "media/PlayerDetailView.ts | playerProperties": {
-    "message": "Player properties"
-  },
-  "media/PlayerDetailView.ts | playerTimeline": {
-    "message": "Player timeline"
-  },
-  "media/PlayerDetailView.ts | properties": {
-    "message": "Properties"
-  },
-  "media/PlayerDetailView.ts | timeline": {
-    "message": "Timeline"
-  },
-  "media/PlayerListView.ts | hideAllOthers": {
-    "message": "Hide all others"
-  },
-  "media/PlayerListView.ts | hidePlayer": {
-    "message": "Hide player"
-  },
-  "media/PlayerListView.ts | players": {
-    "message": "Players"
-  },
-  "media/PlayerListView.ts | savePlayerInfo": {
-    "message": "Save player info"
-  },
-  "media/PlayerMessagesView.ts | all": {
-    "message": "All"
-  },
-  "media/PlayerMessagesView.ts | custom": {
-    "message": "Custom"
-  },
-  "media/PlayerMessagesView.ts | debug": {
-    "message": "Debug"
-  },
-  "media/PlayerMessagesView.ts | default": {
-    "message": "Default"
-  },
-  "media/PlayerMessagesView.ts | error": {
-    "message": "Error"
-  },
-  "media/PlayerMessagesView.ts | filterLogMessages": {
-    "message": "Filter log messages"
-  },
-  "media/PlayerMessagesView.ts | info": {
-    "message": "Info"
-  },
-  "media/PlayerMessagesView.ts | logLevel": {
-    "message": "Log level:"
-  },
-  "media/PlayerMessagesView.ts | warning": {
-    "message": "Warning"
-  },
-  "media/PlayerPropertiesView.ts | audio": {
-    "message": "Audio"
-  },
-  "media/PlayerPropertiesView.ts | bitrate": {
-    "message": "Bitrate"
-  },
-  "media/PlayerPropertiesView.ts | decoder": {
-    "message": "Decoder"
-  },
-  "media/PlayerPropertiesView.ts | decoderName": {
-    "message": "Decoder name"
-  },
-  "media/PlayerPropertiesView.ts | decryptingDemuxer": {
-    "message": "Decrypting demuxer"
-  },
-  "media/PlayerPropertiesView.ts | duration": {
-    "message": "Duration"
-  },
-  "media/PlayerPropertiesView.ts | encoderName": {
-    "message": "Encoder name"
-  },
-  "media/PlayerPropertiesView.ts | fileSize": {
-    "message": "File size"
-  },
-  "media/PlayerPropertiesView.ts | frameRate": {
-    "message": "Frame rate"
-  },
-  "media/PlayerPropertiesView.ts | hardwareDecoder": {
-    "message": "Hardware decoder"
-  },
-  "media/PlayerPropertiesView.ts | hardwareEncoder": {
-    "message": "Hardware encoder"
-  },
-  "media/PlayerPropertiesView.ts | noDecoder": {
-    "message": "No decoder"
-  },
-  "media/PlayerPropertiesView.ts | noEncoder": {
-    "message": "No encoder"
-  },
-  "media/PlayerPropertiesView.ts | noTextTracks": {
-    "message": "No text tracks"
-  },
-  "media/PlayerPropertiesView.ts | playbackFrameTitle": {
-    "message": "Playback frame title"
-  },
-  "media/PlayerPropertiesView.ts | playbackFrameUrl": {
-    "message": "Playback frame URL"
-  },
-  "media/PlayerPropertiesView.ts | properties": {
-    "message": "Properties"
-  },
-  "media/PlayerPropertiesView.ts | rangeHeaderSupport": {
-    "message": "Range header support"
-  },
-  "media/PlayerPropertiesView.ts | resolution": {
-    "message": "Resolution"
-  },
-  "media/PlayerPropertiesView.ts | singleoriginPlayback": {
-    "message": "Single-origin playback"
-  },
-  "media/PlayerPropertiesView.ts | startTime": {
-    "message": "Start time"
-  },
-  "media/PlayerPropertiesView.ts | streaming": {
-    "message": "Streaming"
-  },
-  "media/PlayerPropertiesView.ts | textTrack": {
-    "message": "Text track"
-  },
-  "media/PlayerPropertiesView.ts | track": {
-    "message": "Track"
-  },
-  "media/PlayerPropertiesView.ts | video": {
-    "message": "Video"
-  },
-  "media/PlayerPropertiesView.ts | videoFreezingScore": {
-    "message": "Video freezing score"
-  },
-  "media/PlayerPropertiesView.ts | videoPlaybackRoughness": {
-    "message": "Video playback roughness"
-  },
   "mobile_throttling/mobile_throttling-meta.ts | device": {
     "message": "device"
   },
@@ -5602,6 +5431,177 @@
   },
   "panels/lighthouse/LighthouseStatusView.ts | walmartSawAIncreaseInRevenueFor": {
     "message": "Walmart saw a 1% increase in revenue for every 100ms improvement in page load [Source: WPO Stats]"
+  },
+  "panels/media/EventDisplayTable.ts | eventDisplay": {
+    "message": "Event display"
+  },
+  "panels/media/EventDisplayTable.ts | eventName": {
+    "message": "Event name"
+  },
+  "panels/media/EventDisplayTable.ts | timestamp": {
+    "message": "Timestamp"
+  },
+  "panels/media/EventDisplayTable.ts | value": {
+    "message": "Value"
+  },
+  "panels/media/EventTimelineView.ts | bufferingStatus": {
+    "message": "Buffering Status"
+  },
+  "panels/media/EventTimelineView.ts | playbackStatus": {
+    "message": "Playback Status"
+  },
+  "panels/media/media-meta.ts | media": {
+    "message": "Media"
+  },
+  "panels/media/media-meta.ts | showMedia": {
+    "message": "Show Media"
+  },
+  "panels/media/media-meta.ts | video": {
+    "message": "video"
+  },
+  "panels/media/PlayerDetailView.ts | events": {
+    "message": "Events"
+  },
+  "panels/media/PlayerDetailView.ts | messages": {
+    "message": "Messages"
+  },
+  "panels/media/PlayerDetailView.ts | playerEvents": {
+    "message": "Player events"
+  },
+  "panels/media/PlayerDetailView.ts | playerMessages": {
+    "message": "Player messages"
+  },
+  "panels/media/PlayerDetailView.ts | playerProperties": {
+    "message": "Player properties"
+  },
+  "panels/media/PlayerDetailView.ts | playerTimeline": {
+    "message": "Player timeline"
+  },
+  "panels/media/PlayerDetailView.ts | properties": {
+    "message": "Properties"
+  },
+  "panels/media/PlayerDetailView.ts | timeline": {
+    "message": "Timeline"
+  },
+  "panels/media/PlayerListView.ts | hideAllOthers": {
+    "message": "Hide all others"
+  },
+  "panels/media/PlayerListView.ts | hidePlayer": {
+    "message": "Hide player"
+  },
+  "panels/media/PlayerListView.ts | players": {
+    "message": "Players"
+  },
+  "panels/media/PlayerListView.ts | savePlayerInfo": {
+    "message": "Save player info"
+  },
+  "panels/media/PlayerMessagesView.ts | all": {
+    "message": "All"
+  },
+  "panels/media/PlayerMessagesView.ts | custom": {
+    "message": "Custom"
+  },
+  "panels/media/PlayerMessagesView.ts | debug": {
+    "message": "Debug"
+  },
+  "panels/media/PlayerMessagesView.ts | default": {
+    "message": "Default"
+  },
+  "panels/media/PlayerMessagesView.ts | error": {
+    "message": "Error"
+  },
+  "panels/media/PlayerMessagesView.ts | filterLogMessages": {
+    "message": "Filter log messages"
+  },
+  "panels/media/PlayerMessagesView.ts | info": {
+    "message": "Info"
+  },
+  "panels/media/PlayerMessagesView.ts | logLevel": {
+    "message": "Log level:"
+  },
+  "panels/media/PlayerMessagesView.ts | warning": {
+    "message": "Warning"
+  },
+  "panels/media/PlayerPropertiesView.ts | audio": {
+    "message": "Audio"
+  },
+  "panels/media/PlayerPropertiesView.ts | bitrate": {
+    "message": "Bitrate"
+  },
+  "panels/media/PlayerPropertiesView.ts | decoder": {
+    "message": "Decoder"
+  },
+  "panels/media/PlayerPropertiesView.ts | decoderName": {
+    "message": "Decoder name"
+  },
+  "panels/media/PlayerPropertiesView.ts | decryptingDemuxer": {
+    "message": "Decrypting demuxer"
+  },
+  "panels/media/PlayerPropertiesView.ts | duration": {
+    "message": "Duration"
+  },
+  "panels/media/PlayerPropertiesView.ts | encoderName": {
+    "message": "Encoder name"
+  },
+  "panels/media/PlayerPropertiesView.ts | fileSize": {
+    "message": "File size"
+  },
+  "panels/media/PlayerPropertiesView.ts | frameRate": {
+    "message": "Frame rate"
+  },
+  "panels/media/PlayerPropertiesView.ts | hardwareDecoder": {
+    "message": "Hardware decoder"
+  },
+  "panels/media/PlayerPropertiesView.ts | hardwareEncoder": {
+    "message": "Hardware encoder"
+  },
+  "panels/media/PlayerPropertiesView.ts | noDecoder": {
+    "message": "No decoder"
+  },
+  "panels/media/PlayerPropertiesView.ts | noEncoder": {
+    "message": "No encoder"
+  },
+  "panels/media/PlayerPropertiesView.ts | noTextTracks": {
+    "message": "No text tracks"
+  },
+  "panels/media/PlayerPropertiesView.ts | playbackFrameTitle": {
+    "message": "Playback frame title"
+  },
+  "panels/media/PlayerPropertiesView.ts | playbackFrameUrl": {
+    "message": "Playback frame URL"
+  },
+  "panels/media/PlayerPropertiesView.ts | properties": {
+    "message": "Properties"
+  },
+  "panels/media/PlayerPropertiesView.ts | rangeHeaderSupport": {
+    "message": "Range header support"
+  },
+  "panels/media/PlayerPropertiesView.ts | resolution": {
+    "message": "Resolution"
+  },
+  "panels/media/PlayerPropertiesView.ts | singleoriginPlayback": {
+    "message": "Single-origin playback"
+  },
+  "panels/media/PlayerPropertiesView.ts | startTime": {
+    "message": "Start time"
+  },
+  "panels/media/PlayerPropertiesView.ts | streaming": {
+    "message": "Streaming"
+  },
+  "panels/media/PlayerPropertiesView.ts | textTrack": {
+    "message": "Text track"
+  },
+  "panels/media/PlayerPropertiesView.ts | track": {
+    "message": "Track"
+  },
+  "panels/media/PlayerPropertiesView.ts | video": {
+    "message": "Video"
+  },
+  "panels/media/PlayerPropertiesView.ts | videoFreezingScore": {
+    "message": "Video freezing score"
+  },
+  "panels/media/PlayerPropertiesView.ts | videoPlaybackRoughness": {
+    "message": "Video playback roughness"
   },
   "perf_ui/FilmStripView.ts | doubleclickToZoomImageClickTo": {
     "message": "Doubleclick to zoom image. Click to view preceding requests."

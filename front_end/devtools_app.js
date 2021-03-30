@@ -17,7 +17,7 @@ import './issues/issues-meta.js';
 import './panels/help/help-meta.js';
 import './panels/layers/layers-meta.js';
 import './panels/lighthouse/lighthouse-meta.js';
-import './media/media-meta.js';
+import './panels/media/media-meta.js';
 import './mobile_throttling/mobile_throttling-meta.js';
 import './performance_monitor/performance_monitor-meta.js';
 import './timeline/timeline-meta.js';

@@ -4,10 +4,10 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as DataGrid from '../data_grid/data_grid.js';
-import * as i18n from '../i18n/i18n.js';
-import * as SourceFrame from '../source_frame/source_frame.js';
-import * as UI from '../ui/ui.js';
+import * as DataGrid from '../../data_grid/data_grid.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as SourceFrame from '../../source_frame/source_frame.js';
+import * as UI from '../../ui/ui.js';
 
 import type {PlayerEvent} from './MediaModel.js';
 
@@ -30,7 +30,7 @@ const UIStrings = {
   */
   eventDisplay: 'Event display',
 };
-const str_ = i18n.i18n.registerUIStrings('media/EventDisplayTable.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/media/EventDisplayTable.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export interface EventDisplayColumnConfig {
   id: string;
@@ -78,7 +78,7 @@ export class PlayerEventsView extends UI.Widget.VBox {
     super();
 
     // Set up element styles.
-    this.registerRequiredCSS('media/eventDisplayTable.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('panels/media/eventDisplayTable.css', {enableLegacyPatching: false});
     this.contentElement.classList.add('event-display-table-contents-table-container');
 
     this._dataGrid = this._createDataGrid([

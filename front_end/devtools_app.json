@@ -24,7 +24,7 @@
     { "name": "timeline" },
     { "name": "web_audio" },
     { "name": "webauthn"},
-    { "name": "media" }
+    { "name": "panels/media" }
   ],
   "extends": "shell"
 }

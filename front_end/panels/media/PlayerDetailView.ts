@@ -4,8 +4,8 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as i18n from '../i18n/i18n.js';
-import * as UI from '../ui/ui.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as UI from '../../ui/ui.js';
 
 import {PlayerEventsView} from './EventDisplayTable.js';
 import {PlayerEventsTimeline} from './EventTimelineView.js';
@@ -48,7 +48,7 @@ const UIStrings = {
   */
   playerTimeline: 'Player timeline',
 };
-const str_ = i18n.i18n.registerUIStrings('media/PlayerDetailView.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/media/PlayerDetailView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export const enum PlayerDetailViewTabs {

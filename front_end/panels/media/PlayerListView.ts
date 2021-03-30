@@ -4,8 +4,8 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as i18n from '../i18n/i18n.js';
-import * as UI from '../ui/ui.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as UI from '../../ui/ui.js';
 
 import type {MainView, TriggerDispatcher} from './MainView.js';
 import type {PlayerEvent} from './MediaModel.js';
@@ -29,7 +29,7 @@ const UIStrings = {
   */
   players: 'Players',
 };
-const str_ = i18n.i18n.registerUIStrings('media/PlayerListView.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/media/PlayerListView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export interface PlayerStatus {
   playerTitle: string;
@@ -102,7 +102,7 @@ export class PlayerListView extends UI.Widget.VBox implements TriggerDispatcher 
     // The parent tree for storing sections
     this._sidebarTree = new UI.TreeOutline.TreeOutlineInShadow();
     this.contentElement.appendChild(this._sidebarTree.element);
-    this._sidebarTree.registerRequiredCSS('media/playerListView.css', {enableLegacyPatching: true});
+    this._sidebarTree.registerRequiredCSS('panels/media/playerListView.css', {enableLegacyPatching: true});
 
     // Players active in this tab.
     this._playerList = this._addListSection(i18nString(UIStrings.players));

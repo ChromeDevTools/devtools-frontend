@@ -118,7 +118,7 @@ non_autostart_non_remote_modules = [
   "panels/layer_viewer/layer_viewer_module.js",
   "panels/layers/layers_module.js",
   "panels/lighthouse/lighthouse_module.js",
-  "media/media_module.js",
+  "panels/media/media_module.js",
   "network/network_module.js",
   "node_debugger/node_debugger_module.js",
   "object_ui/object_ui_module.js",

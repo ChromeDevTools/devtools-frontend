@@ -4,7 +4,7 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as i18n from '../i18n/i18n.js';
+import * as i18n from '../../i18n/i18n.js';
 
 import type {PlayerEvent} from './MediaModel.js';
 import type {Event, EventProperties} from './TickingFlameChart.js';
@@ -23,7 +23,7 @@ const UIStrings = {
   */
   bufferingStatus: 'Buffering Status',
 };
-const str_ = i18n.i18n.registerUIStrings('media/EventTimelineView.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/media/EventTimelineView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 type State = {

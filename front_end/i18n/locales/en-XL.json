@@ -1325,177 +1325,6 @@
   "main/MainImpl.js | undockIntoSeparateWindow": {
     "message": "Ûńd̂óĉḱ îńt̂ó ŝép̂ár̂át̂é ŵín̂d́ôẃ"
   },
-  "media/EventDisplayTable.ts | eventDisplay": {
-    "message": "Êv́êńt̂ d́îśp̂ĺâý"
-  },
-  "media/EventDisplayTable.ts | eventName": {
-    "message": "Êv́êńt̂ ńâḿê"
-  },
-  "media/EventDisplayTable.ts | timestamp": {
-    "message": "T̂ím̂éŝt́âḿp̂"
-  },
-  "media/EventDisplayTable.ts | value": {
-    "message": "V̂ál̂úê"
-  },
-  "media/EventTimelineView.ts | bufferingStatus": {
-    "message": "B̂úf̂f́êŕîńĝ Śt̂át̂úŝ"
-  },
-  "media/EventTimelineView.ts | playbackStatus": {
-    "message": "P̂ĺâýb̂áĉḱ Ŝt́ât́ûś"
-  },
-  "media/media-meta.ts | media": {
-    "message": "M̂éd̂íâ"
-  },
-  "media/media-meta.ts | showMedia": {
-    "message": "Ŝh́ôẃ M̂éd̂íâ"
-  },
-  "media/media-meta.ts | video": {
-    "message": "v̂íd̂éô"
-  },
-  "media/PlayerDetailView.ts | events": {
-    "message": "Êv́êńt̂ś"
-  },
-  "media/PlayerDetailView.ts | messages": {
-    "message": "M̂éŝśâǵêś"
-  },
-  "media/PlayerDetailView.ts | playerEvents": {
-    "message": "P̂ĺâýêŕ êv́êńt̂ś"
-  },
-  "media/PlayerDetailView.ts | playerMessages": {
-    "message": "P̂ĺâýêŕ m̂éŝśâǵêś"
-  },
-  "media/PlayerDetailView.ts | playerProperties": {
-    "message": "P̂ĺâýêŕ p̂ŕôṕêŕt̂íêś"
-  },
-  "media/PlayerDetailView.ts | playerTimeline": {
-    "message": "P̂ĺâýêŕ t̂ím̂él̂ín̂é"
-  },
-  "media/PlayerDetailView.ts | properties": {
-    "message": "P̂ŕôṕêŕt̂íêś"
-  },
-  "media/PlayerDetailView.ts | timeline": {
-    "message": "T̂ím̂él̂ín̂é"
-  },
-  "media/PlayerListView.ts | hideAllOthers": {
-    "message": "Ĥíd̂é âĺl̂ ót̂h́êŕŝ"
-  },
-  "media/PlayerListView.ts | hidePlayer": {
-    "message": "Ĥíd̂é p̂ĺâýêŕ"
-  },
-  "media/PlayerListView.ts | players": {
-    "message": "P̂ĺâýêŕŝ"
-  },
-  "media/PlayerListView.ts | savePlayerInfo": {
-    "message": "Ŝáv̂é p̂ĺâýêŕ îńf̂ó"
-  },
-  "media/PlayerMessagesView.ts | all": {
-    "message": "Âĺl̂"
-  },
-  "media/PlayerMessagesView.ts | custom": {
-    "message": "Ĉúŝt́ôḿ"
-  },
-  "media/PlayerMessagesView.ts | debug": {
-    "message": "D̂éb̂úĝ"
-  },
-  "media/PlayerMessagesView.ts | default": {
-    "message": "D̂éf̂áûĺt̂"
-  },
-  "media/PlayerMessagesView.ts | error": {
-    "message": "Êŕr̂ór̂"
-  },
-  "media/PlayerMessagesView.ts | filterLogMessages": {
-    "message": "F̂íl̂t́êŕ l̂óĝ ḿêśŝáĝéŝ"
-  },
-  "media/PlayerMessagesView.ts | info": {
-    "message": "Îńf̂ó"
-  },
-  "media/PlayerMessagesView.ts | logLevel": {
-    "message": "L̂óĝ ĺêv́êĺ:"
-  },
-  "media/PlayerMessagesView.ts | warning": {
-    "message": "Ŵár̂ńîńĝ"
-  },
-  "media/PlayerPropertiesView.ts | audio": {
-    "message": "Âúd̂íô"
-  },
-  "media/PlayerPropertiesView.ts | bitrate": {
-    "message": "B̂ít̂ŕât́ê"
-  },
-  "media/PlayerPropertiesView.ts | decoder": {
-    "message": "D̂éĉód̂ér̂"
-  },
-  "media/PlayerPropertiesView.ts | decoderName": {
-    "message": "D̂éĉód̂ér̂ ńâḿê"
-  },
-  "media/PlayerPropertiesView.ts | decryptingDemuxer": {
-    "message": "D̂éĉŕŷṕt̂ín̂ǵ d̂ém̂úx̂ér̂"
-  },
-  "media/PlayerPropertiesView.ts | duration": {
-    "message": "D̂úr̂át̂íôń"
-  },
-  "media/PlayerPropertiesView.ts | encoderName": {
-    "message": "Êńĉód̂ér̂ ńâḿê"
-  },
-  "media/PlayerPropertiesView.ts | fileSize": {
-    "message": "F̂íl̂é ŝíẑé"
-  },
-  "media/PlayerPropertiesView.ts | frameRate": {
-    "message": "F̂ŕâḿê ŕât́ê"
-  },
-  "media/PlayerPropertiesView.ts | hardwareDecoder": {
-    "message": "Ĥár̂d́ŵár̂é d̂éĉód̂ér̂"
-  },
-  "media/PlayerPropertiesView.ts | hardwareEncoder": {
-    "message": "Ĥár̂d́ŵár̂é êńĉód̂ér̂"
-  },
-  "media/PlayerPropertiesView.ts | noDecoder": {
-    "message": "N̂ó d̂éĉód̂ér̂"
-  },
-  "media/PlayerPropertiesView.ts | noEncoder": {
-    "message": "N̂ó êńĉód̂ér̂"
-  },
-  "media/PlayerPropertiesView.ts | noTextTracks": {
-    "message": "N̂ó t̂éx̂t́ t̂ŕâćk̂ś"
-  },
-  "media/PlayerPropertiesView.ts | playbackFrameTitle": {
-    "message": "P̂ĺâýb̂áĉḱ f̂ŕâḿê t́ît́l̂é"
-  },
-  "media/PlayerPropertiesView.ts | playbackFrameUrl": {
-    "message": "P̂ĺâýb̂áĉḱ f̂ŕâḿê ÚR̂Ĺ"
-  },
-  "media/PlayerPropertiesView.ts | properties": {
-    "message": "P̂ŕôṕêŕt̂íêś"
-  },
-  "media/PlayerPropertiesView.ts | rangeHeaderSupport": {
-    "message": "Range ĥéâd́êŕ ŝúp̂ṕôŕt̂"
-  },
-  "media/PlayerPropertiesView.ts | resolution": {
-    "message": "R̂éŝól̂út̂íôń"
-  },
-  "media/PlayerPropertiesView.ts | singleoriginPlayback": {
-    "message": "Ŝín̂ǵl̂é-ôŕîǵîń p̂ĺâýb̂áĉḱ"
-  },
-  "media/PlayerPropertiesView.ts | startTime": {
-    "message": "Ŝt́âŕt̂ t́îḿê"
-  },
-  "media/PlayerPropertiesView.ts | streaming": {
-    "message": "Ŝt́r̂éâḿîńĝ"
-  },
-  "media/PlayerPropertiesView.ts | textTrack": {
-    "message": "T̂éx̂t́ t̂ŕâćk̂"
-  },
-  "media/PlayerPropertiesView.ts | track": {
-    "message": "T̂ŕâćk̂"
-  },
-  "media/PlayerPropertiesView.ts | video": {
-    "message": "V̂íd̂éô"
-  },
-  "media/PlayerPropertiesView.ts | videoFreezingScore": {
-    "message": "V̂íd̂éô f́r̂éêźîńĝ śĉór̂é"
-  },
-  "media/PlayerPropertiesView.ts | videoPlaybackRoughness": {
-    "message": "V̂íd̂éô ṕl̂áŷb́âćk̂ ŕôúĝh́n̂éŝś"
-  },
   "mobile_throttling/mobile_throttling-meta.ts | device": {
     "message": "d̂év̂íĉé"
   },
@@ -5602,6 +5431,177 @@
   },
   "panels/lighthouse/LighthouseStatusView.ts | walmartSawAIncreaseInRevenueFor": {
     "message": "Ŵál̂ḿâŕt̂ śâẃ â 1% ín̂ćr̂éâśê ín̂ ŕêv́êńûé f̂ór̂ év̂ér̂ý 100m̂ś îḿp̂ŕôv́êḿêńt̂ ín̂ ṕâǵê ĺôád̂ [Śôúr̂ćê: WPO Stats]"
+  },
+  "panels/media/EventDisplayTable.ts | eventDisplay": {
+    "message": "Êv́êńt̂ d́îśp̂ĺâý"
+  },
+  "panels/media/EventDisplayTable.ts | eventName": {
+    "message": "Êv́êńt̂ ńâḿê"
+  },
+  "panels/media/EventDisplayTable.ts | timestamp": {
+    "message": "T̂ím̂éŝt́âḿp̂"
+  },
+  "panels/media/EventDisplayTable.ts | value": {
+    "message": "V̂ál̂úê"
+  },
+  "panels/media/EventTimelineView.ts | bufferingStatus": {
+    "message": "B̂úf̂f́êŕîńĝ Śt̂át̂úŝ"
+  },
+  "panels/media/EventTimelineView.ts | playbackStatus": {
+    "message": "P̂ĺâýb̂áĉḱ Ŝt́ât́ûś"
+  },
+  "panels/media/media-meta.ts | media": {
+    "message": "M̂éd̂íâ"
+  },
+  "panels/media/media-meta.ts | showMedia": {
+    "message": "Ŝh́ôẃ M̂éd̂íâ"
+  },
+  "panels/media/media-meta.ts | video": {
+    "message": "v̂íd̂éô"
+  },
+  "panels/media/PlayerDetailView.ts | events": {
+    "message": "Êv́êńt̂ś"
+  },
+  "panels/media/PlayerDetailView.ts | messages": {
+    "message": "M̂éŝśâǵêś"
+  },
+  "panels/media/PlayerDetailView.ts | playerEvents": {
+    "message": "P̂ĺâýêŕ êv́êńt̂ś"
+  },
+  "panels/media/PlayerDetailView.ts | playerMessages": {
+    "message": "P̂ĺâýêŕ m̂éŝśâǵêś"
+  },
+  "panels/media/PlayerDetailView.ts | playerProperties": {
+    "message": "P̂ĺâýêŕ p̂ŕôṕêŕt̂íêś"
+  },
+  "panels/media/PlayerDetailView.ts | playerTimeline": {
+    "message": "P̂ĺâýêŕ t̂ím̂él̂ín̂é"
+  },
+  "panels/media/PlayerDetailView.ts | properties": {
+    "message": "P̂ŕôṕêŕt̂íêś"
+  },
+  "panels/media/PlayerDetailView.ts | timeline": {
+    "message": "T̂ím̂él̂ín̂é"
+  },
+  "panels/media/PlayerListView.ts | hideAllOthers": {
+    "message": "Ĥíd̂é âĺl̂ ót̂h́êŕŝ"
+  },
+  "panels/media/PlayerListView.ts | hidePlayer": {
+    "message": "Ĥíd̂é p̂ĺâýêŕ"
+  },
+  "panels/media/PlayerListView.ts | players": {
+    "message": "P̂ĺâýêŕŝ"
+  },
+  "panels/media/PlayerListView.ts | savePlayerInfo": {
+    "message": "Ŝáv̂é p̂ĺâýêŕ îńf̂ó"
+  },
+  "panels/media/PlayerMessagesView.ts | all": {
+    "message": "Âĺl̂"
+  },
+  "panels/media/PlayerMessagesView.ts | custom": {
+    "message": "Ĉúŝt́ôḿ"
+  },
+  "panels/media/PlayerMessagesView.ts | debug": {
+    "message": "D̂éb̂úĝ"
+  },
+  "panels/media/PlayerMessagesView.ts | default": {
+    "message": "D̂éf̂áûĺt̂"
+  },
+  "panels/media/PlayerMessagesView.ts | error": {
+    "message": "Êŕr̂ór̂"
+  },
+  "panels/media/PlayerMessagesView.ts | filterLogMessages": {
+    "message": "F̂íl̂t́êŕ l̂óĝ ḿêśŝáĝéŝ"
+  },
+  "panels/media/PlayerMessagesView.ts | info": {
+    "message": "Îńf̂ó"
+  },
+  "panels/media/PlayerMessagesView.ts | logLevel": {
+    "message": "L̂óĝ ĺêv́êĺ:"
+  },
+  "panels/media/PlayerMessagesView.ts | warning": {
+    "message": "Ŵár̂ńîńĝ"
+  },
+  "panels/media/PlayerPropertiesView.ts | audio": {
+    "message": "Âúd̂íô"
+  },
+  "panels/media/PlayerPropertiesView.ts | bitrate": {
+    "message": "B̂ít̂ŕât́ê"
+  },
+  "panels/media/PlayerPropertiesView.ts | decoder": {
+    "message": "D̂éĉód̂ér̂"
+  },
+  "panels/media/PlayerPropertiesView.ts | decoderName": {
+    "message": "D̂éĉód̂ér̂ ńâḿê"
+  },
+  "panels/media/PlayerPropertiesView.ts | decryptingDemuxer": {
+    "message": "D̂éĉŕŷṕt̂ín̂ǵ d̂ém̂úx̂ér̂"
+  },
+  "panels/media/PlayerPropertiesView.ts | duration": {
+    "message": "D̂úr̂át̂íôń"
+  },
+  "panels/media/PlayerPropertiesView.ts | encoderName": {
+    "message": "Êńĉód̂ér̂ ńâḿê"
+  },
+  "panels/media/PlayerPropertiesView.ts | fileSize": {
+    "message": "F̂íl̂é ŝíẑé"
+  },
+  "panels/media/PlayerPropertiesView.ts | frameRate": {
+    "message": "F̂ŕâḿê ŕât́ê"
+  },
+  "panels/media/PlayerPropertiesView.ts | hardwareDecoder": {
+    "message": "Ĥár̂d́ŵár̂é d̂éĉód̂ér̂"
+  },
+  "panels/media/PlayerPropertiesView.ts | hardwareEncoder": {
+    "message": "Ĥár̂d́ŵár̂é êńĉód̂ér̂"
+  },
+  "panels/media/PlayerPropertiesView.ts | noDecoder": {
+    "message": "N̂ó d̂éĉód̂ér̂"
+  },
+  "panels/media/PlayerPropertiesView.ts | noEncoder": {
+    "message": "N̂ó êńĉód̂ér̂"
+  },
+  "panels/media/PlayerPropertiesView.ts | noTextTracks": {
+    "message": "N̂ó t̂éx̂t́ t̂ŕâćk̂ś"
+  },
+  "panels/media/PlayerPropertiesView.ts | playbackFrameTitle": {
+    "message": "P̂ĺâýb̂áĉḱ f̂ŕâḿê t́ît́l̂é"
+  },
+  "panels/media/PlayerPropertiesView.ts | playbackFrameUrl": {
+    "message": "P̂ĺâýb̂áĉḱ f̂ŕâḿê ÚR̂Ĺ"
+  },
+  "panels/media/PlayerPropertiesView.ts | properties": {
+    "message": "P̂ŕôṕêŕt̂íêś"
+  },
+  "panels/media/PlayerPropertiesView.ts | rangeHeaderSupport": {
+    "message": "Range ĥéâd́êŕ ŝúp̂ṕôŕt̂"
+  },
+  "panels/media/PlayerPropertiesView.ts | resolution": {
+    "message": "R̂éŝól̂út̂íôń"
+  },
+  "panels/media/PlayerPropertiesView.ts | singleoriginPlayback": {
+    "message": "Ŝín̂ǵl̂é-ôŕîǵîń p̂ĺâýb̂áĉḱ"
+  },
+  "panels/media/PlayerPropertiesView.ts | startTime": {
+    "message": "Ŝt́âŕt̂ t́îḿê"
+  },
+  "panels/media/PlayerPropertiesView.ts | streaming": {
+    "message": "Ŝt́r̂éâḿîńĝ"
+  },
+  "panels/media/PlayerPropertiesView.ts | textTrack": {
+    "message": "T̂éx̂t́ t̂ŕâćk̂"
+  },
+  "panels/media/PlayerPropertiesView.ts | track": {
+    "message": "T̂ŕâćk̂"
+  },
+  "panels/media/PlayerPropertiesView.ts | video": {
+    "message": "V̂íd̂éô"
+  },
+  "panels/media/PlayerPropertiesView.ts | videoFreezingScore": {
+    "message": "V̂íd̂éô f́r̂éêźîńĝ śĉór̂é"
+  },
+  "panels/media/PlayerPropertiesView.ts | videoPlaybackRoughness": {
+    "message": "V̂íd̂éô ṕl̂áŷb́âćk̂ ŕôúĝh́n̂éŝś"
   },
   "perf_ui/FilmStripView.ts | doubleclickToZoomImageClickTo": {
     "message": "D̂óûb́l̂éĉĺîćk̂ t́ô źôóm̂ ím̂áĝé. Ĉĺîćk̂ t́ô v́îéŵ ṕr̂éĉéd̂ín̂ǵ r̂éq̂úêśt̂ś."

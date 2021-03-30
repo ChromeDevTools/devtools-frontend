@@ -2,8 +2,8 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-import("../../scripts/build/ninja/devtools_entrypoint.gni")
-import("../../scripts/build/ninja/devtools_module.gni")
+import("../../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../../../scripts/build/ninja/devtools_module.gni")
 
 devtools_module("media") {
   sources = [
@@ -20,14 +20,14 @@ devtools_module("media") {
   ]
 
   deps = [
-    "../common:bundle",
-    "../data_grid:bundle",
-    "../host:bundle",
-    "../i18n:bundle",
-    "../perf_ui:bundle",
-    "../sdk:bundle",
-    "../theme_support:bundle",
-    "../ui:bundle",
+    "../../common:bundle",
+    "../../data_grid:bundle",
+    "../../host:bundle",
+    "../../i18n:bundle",
+    "../../perf_ui:bundle",
+    "../../sdk:bundle",
+    "../../theme_support:bundle",
+    "../../ui:bundle",
   ]
 }
 

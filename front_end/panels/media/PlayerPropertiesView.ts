@@ -4,8 +4,8 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as i18n from '../i18n/i18n.js';
-import * as UI from '../ui/ui.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as UI from '../../ui/ui.js';
 
 const UIStrings = {
   /**
@@ -123,7 +123,7 @@ const UIStrings = {
   hardwareEncoder: 'Hardware encoder',
 };
 
-const str_ = i18n.i18n.registerUIStrings('media/PlayerPropertiesView.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/media/PlayerPropertiesView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
@@ -131,7 +131,7 @@ type TabData = {
   [x: string]: string,
 };
 
-// Keep this enum in sync with media/base/media_log_properties.h
+// Keep this enum in sync with panels/media/base/media_log_properties.h
 export const enum PlayerPropertyKeys {
   Resolution = 'kResolution',
   TotalBytes = 'kTotalBytes',
@@ -413,7 +413,7 @@ export class PlayerPropertiesView extends UI.Widget.VBox {
   constructor() {
     super();
     this.contentElement.classList.add('media-properties-frame');
-    this.registerRequiredCSS('media/playerPropertiesView.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('panels/media/playerPropertiesView.css', {enableLegacyPatching: true});
     this._mediaElements = [];
     this._videoDecoderElements = [];
     this._audioDecoderElements = [];

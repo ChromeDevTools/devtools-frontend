@@ -4,7 +4,7 @@
 
 const {assert} = chai;
 
-import type * as MediaModule from '../../../../front_end/media/media.js';
+import type * as MediaModule from '../../../../front_end/panels/media/media.js';
 
 function assertParameters(
     bounds: MediaModule.TickingFlameChartHelpers.Bounds, low: number, high: number, min: number, max: number,
@@ -19,7 +19,7 @@ function assertParameters(
 describe('TickingFlameChartTests', () => {
   let Media: typeof MediaModule;
   before(async () => {
-    Media = await import('../../../../front_end/media/media.js');
+    Media = await import('../../../../front_end/panels/media/media.js');
   });
 
   it('checks that the formatter works correctly', () => {

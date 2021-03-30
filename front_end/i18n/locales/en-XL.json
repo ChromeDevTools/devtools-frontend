@@ -11198,7 +11198,7 @@
   "ui/SoftDropDown.js | noItemSelected": {
     "message": "(n̂ó ît́êḿ ŝél̂éĉt́êd́)"
   },
-  "ui/SuggestBox.ts | sSuggestionSOfS": {
+  "ui/SuggestBox.js | sSuggestionSOfS": {
     "message": "{PH1}, ŝúĝǵêśt̂íôń {PH2} ôf́ {PH3}"
   },
   "ui/TabbedPane.js | close": {

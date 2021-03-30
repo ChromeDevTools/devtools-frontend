@@ -751,7 +751,7 @@ export class JavaScriptAutocompleteConfig {
     this._editor = editor;
   }
 
-  static createConfigForEditor(editor: UI.TextEditor.TextEditor): UI.TextEditor.AutocompleteConfig {
+  static createConfigForEditor(editor: UI.TextEditor.TextEditor): UI.SuggestBox.AutocompleteConfig {
     const autocomplete = new JavaScriptAutocompleteConfig(editor);
     return {
       substituteRangeCallback: autocomplete._substituteRange.bind(autocomplete),

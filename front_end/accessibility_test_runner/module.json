@@ -1,7 +1,0 @@
-{
-  "dependencies": [
-    "test_runner",
-    "panels/accessibility",
-    "elements_test_runner"
-  ]
-}

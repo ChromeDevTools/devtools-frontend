@@ -44,6 +44,7 @@ group("front_end") {
     "inline_editor:bundle",
     "javascript_metadata:bundle",
     "js_main:bundle",
+    "legacy_test_runner",
     "lighthouse_worker:bundle",
     "panels/event_listeners:bundle",
     "protocol_client:bundle",
@@ -53,7 +54,6 @@ group("front_end") {
     "search:bundle",
     "snippets:bundle",
     "startup:bundle",
-    "test_runner:bundle",
     "text_editor:bundle",
     "text_utils:bundle",
     "theme_support:bundle",
@@ -66,30 +66,6 @@ group("front_end") {
     "worker_main:bundle",
     "workspace:bundle",
     "workspace_diff:bundle",
-  ]
-}
-
-group("legacy_test-resources") {
-  public_deps = [
-    "accessibility_test_runner:bundle",
-    "application_test_runner:bundle",
-    "axe_core_test_runner:bundle",
-    "bindings_test_runner:bundle",
-    "console_test_runner:bundle",
-    "coverage_test_runner:bundle",
-    "cpu_profiler_test_runner:bundle",
-    "data_grid_test_runner:bundle",
-    "device_mode_test_runner:bundle",
-    "elements_test_runner:bundle",
-    "extensions_test_runner:bundle",
-    "heap_profiler_test_runner:bundle",
-    "layers_test_runner:bundle",
-    "lighthouse_test_runner:bundle",
-    "network_test_runner:bundle",
-    "performance_test_runner:bundle",
-    "sdk_test_runner:bundle",
-    "security_test_runner:bundle",
-    "sources_test_runner:bundle",
   ]
 }
 

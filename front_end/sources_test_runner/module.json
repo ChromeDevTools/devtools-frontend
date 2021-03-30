@@ -1,9 +1,0 @@
-{
-  "dependencies": [
-    "test_runner",
-    "sources",
-    "source_frame",
-    "text_editor",
-    "panels/browser_debugger"
-  ]
-}

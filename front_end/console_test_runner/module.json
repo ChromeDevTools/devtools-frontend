@@ -1,8 +1,0 @@
-{
-  "dependencies": [
-    "test_runner",
-    "panels/console",
-    "object_ui",
-    "panels/console_counters"
-  ]
-}

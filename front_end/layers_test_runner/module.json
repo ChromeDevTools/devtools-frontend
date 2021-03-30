@@ -1,8 +1,0 @@
-{
-  "dependencies": [
-    "test_runner",
-    "panels/layers",
-    "panels/elements",
-    "components"
-  ]
-}

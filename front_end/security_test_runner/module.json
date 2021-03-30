@@ -1,6 +1,0 @@
-{
-  "dependencies": [
-    "test_runner",
-    "security"
-  ]
-}

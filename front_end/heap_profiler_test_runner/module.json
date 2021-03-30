@@ -1,7 +1,0 @@
-{
-  "dependencies": [
-    "test_runner",
-    "profiler",
-    "data_grid"
-  ]
-}

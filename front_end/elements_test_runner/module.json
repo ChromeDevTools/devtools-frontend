@@ -1,8 +1,0 @@
-{
-  "dependencies": [
-    "test_runner",
-    "panels/elements",
-    "panels/event_listeners",
-    "panels/animation"
-  ]
-}

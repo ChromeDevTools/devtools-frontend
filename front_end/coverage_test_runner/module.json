@@ -1,7 +1,0 @@
-{
-  "dependencies": [
-    "test_runner",
-    "panels/coverage",
-    "sources_test_runner"
-  ]
-}

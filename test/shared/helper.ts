@@ -517,4 +517,6 @@ export function assertNotNull<T>(val: T): asserts val is NonNullable<T> {
   assert.isNotNull(val);
 }
 
-export {getBrowserAndPages, getTestServerPort as getTestServerPort, reloadDevTools};
+// We export Puppeteer so other test utils can import it from here and not rely
+// on Node modules resolution to import it.
+export {getBrowserAndPages, getTestServerPort, reloadDevTools, puppeteer};

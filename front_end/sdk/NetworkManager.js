@@ -1113,6 +1113,8 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
     this._userAgentOverride = '';
     /** @type {?Protocol.Emulation.UserAgentMetadata} */
     this._userAgentMetadataOverride = null;
+    /** @type {?Array<Protocol.Network.ContentEncoding>} */
+    this._customAcceptedEncodings = null;
     /** @type {!Set<!ProtocolProxyApi.NetworkApi>} */
     this._agents = new Set();
     /** @type {!Map<string, !NetworkRequest>} */
@@ -1195,6 +1197,11 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
     }
     if (this.isIntercepting()) {
       networkAgent.invoke_setRequestInterception({patterns: this._urlsForRequestInterceptor.valuesArray()});
+    }
+    if (this._customAcceptedEncodings === null) {
+      networkAgent.invoke_clearAcceptedEncodingsOverride();
+    } else {
+      networkAgent.invoke_setAcceptedEncodings({encodings: this._customAcceptedEncodings});
     }
     this._agents.add(networkAgent);
     if (this.isThrottling()) {
@@ -1327,6 +1334,36 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
     this._customUserAgent = userAgent;
     this._userAgentMetadataOverride = null;
     this._updateUserAgentOverride();
+  }
+
+  /**
+   * @param {Array<Protocol.Network.ContentEncoding>} acceptedEncodings
+   */
+  setCustomAcceptedEncodingsOverride(acceptedEncodings) {
+    this._customAcceptedEncodings = acceptedEncodings;
+    this._updateAcceptedEncodingsOverride();
+    this.dispatchEventToListeners(MultitargetNetworkManager.Events.AcceptedEncodingsChanged);
+  }
+
+  clearCustomAcceptedEncodingsOverride() {
+    this._customAcceptedEncodings = null;
+    this._updateAcceptedEncodingsOverride();
+    this.dispatchEventToListeners(MultitargetNetworkManager.Events.AcceptedEncodingsChanged);
+  }
+
+  isAcceptedEncodingOverrideSet() {
+    return this._customAcceptedEncodings !== null;
+  }
+
+  _updateAcceptedEncodingsOverride() {
+    const customAcceptedEncodings = this._customAcceptedEncodings;
+    for (const agent of this._agents) {
+      if (customAcceptedEncodings === null) {
+        agent.invoke_clearAcceptedEncodingsOverride();
+      } else {
+        agent.invoke_setAcceptedEncodings({encodings: customAcceptedEncodings});
+      }
+    }
   }
 
   // TODO(allada) Move all request blocking into interception and let view manage blocking.
@@ -1511,7 +1548,8 @@ MultitargetNetworkManager.Events = {
   BlockedPatternsChanged: Symbol('BlockedPatternsChanged'),
   ConditionsChanged: Symbol('ConditionsChanged'),
   UserAgentChanged: Symbol('UserAgentChanged'),
-  InterceptorsChanged: Symbol('InterceptorsChanged')
+  InterceptorsChanged: Symbol('InterceptorsChanged'),
+  AcceptedEncodingsChanged: Symbol('AcceptedEncodingsChanged'),
 };
 
 export class InterceptedRequest {

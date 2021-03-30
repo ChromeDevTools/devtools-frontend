@@ -21,6 +21,11 @@ const UIStrings = {
   *@description Icon title in Network Panel Indicator of the Network panel
   */
   requestsMayBeBlocked: 'Requests may be blocked',
+  /**
+   * @description Title of an icon in the Network panel that indicates that accepted content encodings have been overriden.
+   */
+  acceptedEncodingOverrideSet:
+      'The set of accepted `Content-Encoding`s has been modified by DevTools. See the Network Conditions panel.',
 };
 const str_ = i18n.i18n.registerUIStrings('mobile_throttling/NetworkPanelIndicator.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -35,6 +40,8 @@ export class NetworkPanelIndicator {
     manager.addEventListener(
         SDK.NetworkManager.MultitargetNetworkManager.Events.BlockedPatternsChanged, updateVisibility);
     manager.addEventListener(SDK.NetworkManager.MultitargetNetworkManager.Events.InterceptorsChanged, updateVisibility);
+    manager.addEventListener(
+        SDK.NetworkManager.MultitargetNetworkManager.Events.AcceptedEncodingsChanged, updateVisibility);
     updateVisibility();
 
     function updateVisibility(): void {
@@ -48,6 +55,9 @@ export class NetworkPanelIndicator {
       } else if (manager.isBlocking()) {
         icon = UI.Icon.Icon.create('smallicon-warning');
         UI.Tooltip.Tooltip.install(icon, i18nString(UIStrings.requestsMayBeBlocked));
+      } else if (manager.isAcceptedEncodingOverrideSet()) {
+        icon = UI.Icon.Icon.create('smallicon-warning');
+        UI.Tooltip.Tooltip.install(icon, i18nString(UIStrings.acceptedEncodingOverrideSet));
       }
       UI.InspectorView.InspectorView.instance().setPanelIcon('network', icon);
     }

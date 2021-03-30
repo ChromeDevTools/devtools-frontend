@@ -42,7 +42,12 @@ const UIStrings = {
   /**
   *@description Text in Network Config View of the Network panel
   */
-  selectAutomatically: 'Select automatically',
+  selectAutomatically: 'Use browser default',
+  /**
+   * @description Title of a section in the Network conditions view that includes
+   * a set of checkboxes to override the content encodings supported by the browser.
+   */
+  acceptedEncoding: 'Accepted `Content-Encoding`s',
 };
 const str_ = i18n.i18n.registerUIStrings('network/NetworkConfigView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -60,6 +65,8 @@ export class NetworkConfigView extends UI.Widget.VBox {
     this._createNetworkThrottlingSection();
     this.contentElement.createChild('div').classList.add('panel-section-separator');
     this._createUserAgentSection();
+    this.contentElement.createChild('div').classList.add('panel-section-separator');
+    this._createAcceptedEncodingSection();
   }
 
   static instance(opts: {
@@ -213,6 +220,63 @@ export class NetworkConfigView extends UI.Widget.VBox {
       customSelectAndInput.error.hidden = !useCustomUA;
       const customUA = useCustomUA ? customUserAgentSetting.get() : '';
       SDK.NetworkManager.MultitargetNetworkManager.instance().setCustomUserAgentOverride(customUA);
+    }
+  }
+
+  _createAcceptedEncodingSection(): void {
+    const title = i18nString(UIStrings.acceptedEncoding);
+    const section = this._createSection(title, 'network-config-accepted-encoding');
+    const checkboxLabel = UI.UIUtils.CheckboxLabel.create(i18nString(UIStrings.selectAutomatically), true);
+    section.appendChild(checkboxLabel);
+    const autoCheckbox = checkboxLabel.checkboxElement;
+
+    const useCustomAcceptedEncodingSetting =
+        Common.Settings.Settings.instance().createSetting('useCustomAcceptedEncodings', false);
+    const customAcceptedEncodingSetting = Common.Settings.Settings.instance().createSetting(
+        'customAcceptedEncodings',
+        `${Protocol.Network.ContentEncoding.Gzip},${Protocol.Network.ContentEncoding.Br},${
+            Protocol.Network.ContentEncoding.Deflate}`);
+
+    function onSettingChange(): void {
+      if (!useCustomAcceptedEncodingSetting.get()) {
+        SDK.NetworkManager.MultitargetNetworkManager.instance().clearCustomAcceptedEncodingsOverride();
+      } else {
+        SDK.NetworkManager.MultitargetNetworkManager.instance().setCustomAcceptedEncodingsOverride(
+            customAcceptedEncodingSetting.get() === '' ? [] : customAcceptedEncodingSetting.get().split(','));
+      }
+    }
+
+    customAcceptedEncodingSetting.addChangeListener(onSettingChange);
+    useCustomAcceptedEncodingSetting.addChangeListener(onSettingChange);
+
+    const encodingsSection = section.createChild('div', 'network-config-accepted-encoding-custom');
+    autoCheckbox.checked = !useCustomAcceptedEncodingSetting.get();
+    autoCheckbox.addEventListener('change', acceptedEncodingsChanged);
+    const checkboxes = new Map<Protocol.Network.ContentEncoding, HTMLInputElement>();
+    for (const encoding of Object.values(Protocol.Network.ContentEncoding)) {
+      const label = UI.UIUtils.CheckboxLabel.create(encoding, true);
+      encodingsSection.appendChild(label);
+      checkboxes.set(encoding, label.checkboxElement);
+    }
+    for (const [encoding, checkbox] of checkboxes) {
+      checkbox.checked = customAcceptedEncodingSetting.get().includes(encoding);
+      checkbox.addEventListener('change', acceptedEncodingsChanged);
+    }
+
+    acceptedEncodingsChanged();
+
+    function acceptedEncodingsChanged(): void {
+      useCustomAcceptedEncodingSetting.set(!autoCheckbox.checked);
+      for (const [, checkbox] of checkboxes) {
+        checkbox.disabled = autoCheckbox.checked;
+      }
+      const encodings = [];
+      for (const [encoding, checkbox] of checkboxes) {
+        if (checkbox.checked) {
+          encodings.push(encoding);
+        }
+      }
+      customAcceptedEncodingSetting.set(encodings.join(','));
     }
   }
 }

@@ -12,7 +12,7 @@ import {Platform, platform} from './helper.js';
 
 export {beforeEach} from 'mocha';
 
-async function takeScreenshots() {
+export async function takeScreenshots() {
   try {
     const {target, frontend} = getBrowserAndPages();
     const opts = {

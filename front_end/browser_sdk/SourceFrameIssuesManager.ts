@@ -73,7 +73,7 @@ export class SourceFrameIssuesManager {
         const clickHandler = (): void => {
           Common.Revealer.reveal(issue);
         };
-        this.issueMessages.push(new IssueMessage(title, rawLocation, this.locationPool, clickHandler));
+        this.issueMessages.push(new IssueMessage(title, issue.getKind(), rawLocation, this.locationPool, clickHandler));
       }
     }
   }
@@ -96,11 +96,13 @@ export class SourceFrameIssuesManager {
 
 export class IssueMessage extends Workspace.UISourceCode.Message {
   private uiSourceCode?: Workspace.UISourceCode.UISourceCode = undefined;
+  private kind: SDK.Issue.IssueKind;
 
   constructor(
-      title: string, rawLocation: SDK.DebuggerModel.Location, locationPool: Bindings.LiveLocation.LiveLocationPool,
-      clickHandler: () => void) {
+      title: string, kind: SDK.Issue.IssueKind, rawLocation: SDK.DebuggerModel.Location,
+      locationPool: Bindings.LiveLocation.LiveLocationPool, clickHandler: () => void) {
     super(Workspace.UISourceCode.Message.Level.Issue, title, clickHandler);
+    this.kind = kind;
     Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().createLiveLocation(
         rawLocation, this.updateLocation.bind(this), locationPool);
   }
@@ -116,6 +118,10 @@ export class IssueMessage extends Workspace.UISourceCode.Message {
     this._range = TextUtils.TextRange.TextRange.createFromLocation(uiLocation.lineNumber, uiLocation.columnNumber || 0);
     this.uiSourceCode = uiLocation.uiSourceCode;
     this.uiSourceCode.addMessage(this);
+  }
+
+  getIssueKind(): SDK.Issue.IssueKind {
+    return this.kind;
   }
 
   dispose(): void {

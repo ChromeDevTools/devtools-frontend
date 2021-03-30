@@ -46,6 +46,7 @@ devtools_module("sources") {
 
   deps = [
     "../bindings:bundle",
+    "../browser_sdk:bundle",
     "../color_picker:bundle",
     "../common:bundle",
     "../components:bundle",
@@ -57,6 +58,7 @@ devtools_module("sources") {
     "../inline_editor:bundle",
     "../linear_memory_inspector:bundle",
     "../object_ui:bundle",
+    "../panels/console_counters:bundle",
     "../panels/coverage:bundle",
     "../persistence:bundle",
     "../platform:bundle",

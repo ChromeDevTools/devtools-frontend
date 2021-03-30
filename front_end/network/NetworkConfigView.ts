@@ -267,11 +267,9 @@ export class NetworkConfigView extends UI.Widget.VBox {
 
     function acceptedEncodingsChanged(): void {
       useCustomAcceptedEncodingSetting.set(!autoCheckbox.checked);
-      for (const [, checkbox] of checkboxes) {
-        checkbox.disabled = autoCheckbox.checked;
-      }
       const encodings = [];
       for (const [encoding, checkbox] of checkboxes) {
+        checkbox.disabled = autoCheckbox.checked;
         if (checkbox.checked) {
           encodings.push(encoding);
         }

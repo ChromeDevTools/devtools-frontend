@@ -6260,6 +6260,48 @@
   "panels/profiler/ProfileView.ts | treeTopDown": {
     "message": "Tree (Top Down)"
   },
+  "panels/protocol_monitor/protocol_monitor-meta.ts | protocolMonitor": {
+    "message": "Protocol monitor"
+  },
+  "panels/protocol_monitor/protocol_monitor-meta.ts | showProtocolMonitor": {
+    "message": "Show Protocol monitor"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | clearAll": {
+    "message": "Clear all"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | direction": {
+    "message": "Direction"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | documentation": {
+    "message": "Documentation"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | filter": {
+    "message": "Filter"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | method": {
+    "message": "Method"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | noMessageSelected": {
+    "message": "No message selected"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | record": {
+    "message": "Record"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | request": {
+    "message": "Request"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | response": {
+    "message": "Response"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | sMs": {
+    "message": "{PH1} ms"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | target": {
+    "message": "Target"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | timestamp": {
+    "message": "Timestamp"
+  },
   "perf_ui/FilmStripView.ts | doubleclickToZoomImageClickTo": {
     "message": "Doubleclick to zoom image. Click to view preceding requests."
   },
@@ -6454,48 +6496,6 @@
   },
   "persistence/WorkspaceSettingsTab.ts | workspace": {
     "message": "Workspace"
-  },
-  "protocol_monitor/protocol_monitor-meta.ts | protocolMonitor": {
-    "message": "Protocol monitor"
-  },
-  "protocol_monitor/protocol_monitor-meta.ts | showProtocolMonitor": {
-    "message": "Show Protocol monitor"
-  },
-  "protocol_monitor/ProtocolMonitor.ts | clearAll": {
-    "message": "Clear all"
-  },
-  "protocol_monitor/ProtocolMonitor.ts | direction": {
-    "message": "Direction"
-  },
-  "protocol_monitor/ProtocolMonitor.ts | documentation": {
-    "message": "Documentation"
-  },
-  "protocol_monitor/ProtocolMonitor.ts | filter": {
-    "message": "Filter"
-  },
-  "protocol_monitor/ProtocolMonitor.ts | method": {
-    "message": "Method"
-  },
-  "protocol_monitor/ProtocolMonitor.ts | noMessageSelected": {
-    "message": "No message selected"
-  },
-  "protocol_monitor/ProtocolMonitor.ts | record": {
-    "message": "Record"
-  },
-  "protocol_monitor/ProtocolMonitor.ts | request": {
-    "message": "Request"
-  },
-  "protocol_monitor/ProtocolMonitor.ts | response": {
-    "message": "Response"
-  },
-  "protocol_monitor/ProtocolMonitor.ts | sMs": {
-    "message": "{PH1} ms"
-  },
-  "protocol_monitor/ProtocolMonitor.ts | target": {
-    "message": "Target"
-  },
-  "protocol_monitor/ProtocolMonitor.ts | timestamp": {
-    "message": "Timestamp"
   },
   "quick_open/CommandMenu.ts | noCommandsFound": {
     "message": "No commands found"

@@ -4,15 +4,15 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Host from '../host/host.js';
-import * as i18n from '../i18n/i18n.js';
-import * as ProtocolClient from '../protocol_client/protocol_client.js';
-import * as SDK from '../sdk/sdk.js';
-import * as SourceFrame from '../source_frame/source_frame.js';
-import * as TextUtils from '../text_utils/text_utils.js';
-import * as LitHtml from '../third_party/lit-html/lit-html.js';
-import * as Components from '../ui/components/components.js';
-import * as UI from '../ui/ui.js';
+import * as Host from '../../host/host.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as ProtocolClient from '../../protocol_client/protocol_client.js';
+import * as SDK from '../../sdk/sdk.js';
+import * as SourceFrame from '../../source_frame/source_frame.js';
+import * as TextUtils from '../../text_utils/text_utils.js';
+import * as LitHtml from '../../third_party/lit-html/lit-html.js';
+import * as Components from '../../ui/components/components.js';
+import * as UI from '../../ui/ui.js';
 
 const UIStrings = {
   /**
@@ -67,7 +67,7 @@ const UIStrings = {
   */
   noMessageSelected: 'No message selected',
 };
-const str_ = i18n.i18n.registerUIStrings('protocol_monitor/ProtocolMonitor.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/protocol_monitor/ProtocolMonitor.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 const timestampRenderer = (value: Components.DataGridUtils.CellValue): LitHtml.TemplateResult => {

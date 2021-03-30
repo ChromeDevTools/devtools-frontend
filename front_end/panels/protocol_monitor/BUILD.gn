@@ -2,22 +2,22 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-import("../../scripts/build/ninja/devtools_entrypoint.gni")
-import("../../scripts/build/ninja/devtools_module.gni")
+import("../../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../../../scripts/build/ninja/devtools_module.gni")
 
 devtools_module("protocol_monitor") {
   sources = [ "ProtocolMonitor.ts" ]
 
   deps = [
-    "../host:bundle",
-    "../i18n:bundle",
-    "../protocol_client:bundle",
-    "../sdk:bundle",
-    "../source_frame:bundle",
-    "../text_utils:bundle",
-    "../third_party/lit-html:bundle",
-    "../ui:bundle",
-    "../ui/components:bundle",
+    "../../host:bundle",
+    "../../i18n:bundle",
+    "../../protocol_client:bundle",
+    "../../sdk:bundle",
+    "../../source_frame:bundle",
+    "../../text_utils:bundle",
+    "../../third_party/lit-html:bundle",
+    "../../ui:bundle",
+    "../../ui/components:bundle",
   ]
 }
 

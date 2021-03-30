@@ -24,7 +24,7 @@ import './panels/changes/changes-meta.js';
 import './input/input-meta.js';
 import './linear_memory_inspector/linear_memory_inspector-meta.js';
 import './settings/settings-meta.js';
-import './protocol_monitor/protocol_monitor-meta.js';
+import './panels/protocol_monitor/protocol_monitor-meta.js';
 import './persistence/persistence-meta.js';
 import './browser_sdk/browser_sdk-meta.js';
 import './main/main-meta.js';

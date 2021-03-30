@@ -6260,6 +6260,48 @@
   "panels/profiler/ProfileView.ts | treeTopDown": {
     "message": "T̂ŕêé (T̂óp̂ D́ôẃn̂)"
   },
+  "panels/protocol_monitor/protocol_monitor-meta.ts | protocolMonitor": {
+    "message": "P̂ŕôt́ôćôĺ m̂ón̂ít̂ór̂"
+  },
+  "panels/protocol_monitor/protocol_monitor-meta.ts | showProtocolMonitor": {
+    "message": "Ŝh́ôẃ P̂ŕôt́ôćôĺ m̂ón̂ít̂ór̂"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | clearAll": {
+    "message": "Ĉĺêár̂ ál̂ĺ"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | direction": {
+    "message": "D̂ír̂éĉt́îón̂"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | documentation": {
+    "message": "D̂óĉúm̂én̂t́ât́îón̂"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | filter": {
+    "message": "F̂íl̂t́êŕ"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | method": {
+    "message": "M̂ét̂h́ôd́"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | noMessageSelected": {
+    "message": "N̂ó m̂éŝśâǵê śêĺêćt̂éd̂"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | record": {
+    "message": "R̂éĉór̂d́"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | request": {
+    "message": "R̂éq̂úêśt̂"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | response": {
+    "message": "R̂éŝṕôńŝé"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | sMs": {
+    "message": "{PH1} m̂ś"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | target": {
+    "message": "T̂ár̂ǵêt́"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | timestamp": {
+    "message": "T̂ím̂éŝt́âḿp̂"
+  },
   "perf_ui/FilmStripView.ts | doubleclickToZoomImageClickTo": {
     "message": "D̂óûb́l̂éĉĺîćk̂ t́ô źôóm̂ ím̂áĝé. Ĉĺîćk̂ t́ô v́îéŵ ṕr̂éĉéd̂ín̂ǵ r̂éq̂úêśt̂ś."
   },
@@ -6454,48 +6496,6 @@
   },
   "persistence/WorkspaceSettingsTab.ts | workspace": {
     "message": "Ŵór̂ḱŝṕâćê"
-  },
-  "protocol_monitor/protocol_monitor-meta.ts | protocolMonitor": {
-    "message": "P̂ŕôt́ôćôĺ m̂ón̂ít̂ór̂"
-  },
-  "protocol_monitor/protocol_monitor-meta.ts | showProtocolMonitor": {
-    "message": "Ŝh́ôẃ P̂ŕôt́ôćôĺ m̂ón̂ít̂ór̂"
-  },
-  "protocol_monitor/ProtocolMonitor.ts | clearAll": {
-    "message": "Ĉĺêár̂ ál̂ĺ"
-  },
-  "protocol_monitor/ProtocolMonitor.ts | direction": {
-    "message": "D̂ír̂éĉt́îón̂"
-  },
-  "protocol_monitor/ProtocolMonitor.ts | documentation": {
-    "message": "D̂óĉúm̂én̂t́ât́îón̂"
-  },
-  "protocol_monitor/ProtocolMonitor.ts | filter": {
-    "message": "F̂íl̂t́êŕ"
-  },
-  "protocol_monitor/ProtocolMonitor.ts | method": {
-    "message": "M̂ét̂h́ôd́"
-  },
-  "protocol_monitor/ProtocolMonitor.ts | noMessageSelected": {
-    "message": "N̂ó m̂éŝśâǵê śêĺêćt̂éd̂"
-  },
-  "protocol_monitor/ProtocolMonitor.ts | record": {
-    "message": "R̂éĉór̂d́"
-  },
-  "protocol_monitor/ProtocolMonitor.ts | request": {
-    "message": "R̂éq̂úêśt̂"
-  },
-  "protocol_monitor/ProtocolMonitor.ts | response": {
-    "message": "R̂éŝṕôńŝé"
-  },
-  "protocol_monitor/ProtocolMonitor.ts | sMs": {
-    "message": "{PH1} m̂ś"
-  },
-  "protocol_monitor/ProtocolMonitor.ts | target": {
-    "message": "T̂ár̂ǵêt́"
-  },
-  "protocol_monitor/ProtocolMonitor.ts | timestamp": {
-    "message": "T̂ím̂éŝt́âḿp̂"
   },
   "quick_open/CommandMenu.ts | noCommandsFound": {
     "message": "N̂ó ĉóm̂ḿâńd̂ś f̂óûńd̂"

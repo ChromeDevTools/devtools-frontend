@@ -127,7 +127,7 @@ non_autostart_non_remote_modules = [
   "panels/profiler/profiler_module.js",
   "issues/issues_module.js",
   "panels/developer_resources/developer_resources_module.js",
-  "protocol_monitor/protocol_monitor_module.js",
+  "panels/protocol_monitor/protocol_monitor_module.js",
   "quick_open/quick_open_module.js",
   "resources/resources_module.js",
   "search/search_module.js",

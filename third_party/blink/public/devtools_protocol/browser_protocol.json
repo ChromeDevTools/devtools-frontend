@@ -1466,6 +1466,11 @@
                             "$ref": "AffectedRequest"
                         },
                         {
+                            "name": "initiatorOrigin",
+                            "optional": true,
+                            "type": "string"
+                        },
+                        {
                             "name": "resourceIPAddressSpace",
                             "optional": true,
                             "$ref": "Network.IPAddressSpace"
@@ -13013,6 +13018,52 @@
                     ]
                 },
                 {
+                    "id": "ScrollSnapContainerHighlightConfig",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "snapportBorder",
+                            "description": "The style of the snapport border (default: transparent)",
+                            "optional": true,
+                            "$ref": "LineStyle"
+                        },
+                        {
+                            "name": "snapAreaBorder",
+                            "description": "The style of the snap area border (default: transparent)",
+                            "optional": true,
+                            "$ref": "LineStyle"
+                        },
+                        {
+                            "name": "scrollMarginColor",
+                            "description": "The margin highlight fill color (default: transparent).",
+                            "optional": true,
+                            "$ref": "DOM.RGBA"
+                        },
+                        {
+                            "name": "scrollPaddingColor",
+                            "description": "The padding highlight fill color (default: transparent).",
+                            "optional": true,
+                            "$ref": "DOM.RGBA"
+                        }
+                    ]
+                },
+                {
+                    "id": "ScrollSnapHighlightConfig",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "scrollSnapContainerHighlightConfig",
+                            "description": "A descriptor for the highlight appearance of scroll snap containers.",
+                            "$ref": "ScrollSnapContainerHighlightConfig"
+                        },
+                        {
+                            "name": "nodeId",
+                            "description": "Identifier of the node to highlight.",
+                            "$ref": "DOM.NodeId"
+                        }
+                    ]
+                },
+                {
                     "id": "HingeConfig",
                     "description": "Configuration for dual screen hinge",
                     "type": "object",
@@ -13374,6 +13425,19 @@
                             "type": "array",
                             "items": {
                                 "$ref": "FlexNodeHighlightConfig"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "setShowScrollSnapOverlays",
+                    "parameters": [
+                        {
+                            "name": "scrollSnapHighlightConfigs",
+                            "description": "An array of node identifiers and descriptors for the highlight appearance.",
+                            "type": "array",
+                            "items": {
+                                "$ref": "ScrollSnapHighlightConfig"
                             }
                         }
                     ]

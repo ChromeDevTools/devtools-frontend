@@ -2080,6 +2080,9 @@ declare namespace ProtocolProxyApi {
     invoke_setShowFlexOverlays(params: Protocol.Overlay.SetShowFlexOverlaysRequest):
         Promise<Protocol.ProtocolResponseWithError>;
 
+    invoke_setShowScrollSnapOverlays(params: Protocol.Overlay.SetShowScrollSnapOverlaysRequest):
+        Promise<Protocol.ProtocolResponseWithError>;
+
     /**
      * Requests that backend shows paint rectangles
      */

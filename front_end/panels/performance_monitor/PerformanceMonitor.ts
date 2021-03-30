@@ -4,13 +4,13 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../common/common.js';
-import * as Host from '../host/host.js';
-import * as i18n from '../i18n/i18n.js';
-import * as Platform from '../platform/platform.js';
-import * as SDK from '../sdk/sdk.js';
-import * as ThemeSupport from '../theme_support/theme_support.js';
-import * as UI from '../ui/ui.js';
+import * as Common from '../../common/common.js';
+import * as Host from '../../host/host.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as Platform from '../../platform/platform.js';
+import * as SDK from '../../sdk/sdk.js';
+import * as ThemeSupport from '../../theme_support/theme_support.js';
+import * as UI from '../../ui/ui.js';
 
 const UIStrings = {
   /**
@@ -54,7 +54,7 @@ const UIStrings = {
   */
   styleRecalcsSec: 'Style recalcs / sec',
 };
-const str_ = i18n.i18n.registerUIStrings('performance_monitor/PerformanceMonitor.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/performance_monitor/PerformanceMonitor.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 let performanceMonitorImplInstance: PerformanceMonitorImpl;
@@ -79,7 +79,7 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox implements
 
   constructor() {
     super(true);
-    this.registerRequiredCSS('performance_monitor/performanceMonitor.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('panels/performance_monitor/performanceMonitor.css', {enableLegacyPatching: true});
     this.contentElement.classList.add('perfmon-pane');
     this._metricsBuffer = [];
     /** @const */

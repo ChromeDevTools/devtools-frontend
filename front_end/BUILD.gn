@@ -212,7 +212,7 @@ ts_library("devtools_app") {
     "panels/media:meta",
     "panels/mobile_throttling:meta",
     "panels/network:meta",
-    "performance_monitor:meta",
+    "panels/performance_monitor:meta",
     "resources:meta",
     "security:meta",
     "startup:bundle",

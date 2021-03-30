@@ -18,7 +18,7 @@
     { "name": "panels/layers" },
     { "name": "panels/layer_viewer" },
     { "name": "panels/network" },
-    { "name": "performance_monitor" },
+    { "name": "panels/performance_monitor" },
     { "name": "resources" },
     { "name": "security" },
     { "name": "timeline" },

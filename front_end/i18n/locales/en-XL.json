@@ -5603,6 +5603,57 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "V̂íêẃ ĉér̂t́îf́îćât́ê"
   },
+  "panels/performance_monitor/performance_monitor-meta.ts | activity": {
+    "message": "âćt̂ív̂ít̂ý"
+  },
+  "panels/performance_monitor/performance_monitor-meta.ts | metrics": {
+    "message": "m̂ét̂ŕîćŝ"
+  },
+  "panels/performance_monitor/performance_monitor-meta.ts | monitor": {
+    "message": "m̂ón̂ít̂ór̂"
+  },
+  "panels/performance_monitor/performance_monitor-meta.ts | performance": {
+    "message": "p̂ér̂f́ôŕm̂án̂ćê"
+  },
+  "panels/performance_monitor/performance_monitor-meta.ts | performanceMonitor": {
+    "message": "P̂ér̂f́ôŕm̂án̂ćê ḿôńît́ôŕ"
+  },
+  "panels/performance_monitor/performance_monitor-meta.ts | showPerformanceMonitor": {
+    "message": "Ŝh́ôẃ P̂ér̂f́ôŕm̂án̂ćê ḿôńît́ôŕ"
+  },
+  "panels/performance_monitor/performance_monitor-meta.ts | systemMonitor": {
+    "message": "ŝýŝt́êḿ m̂ón̂ít̂ór̂"
+  },
+  "panels/performance_monitor/PerformanceMonitor.ts | cpuUsage": {
+    "message": "ĈṔÛ úŝáĝé"
+  },
+  "panels/performance_monitor/PerformanceMonitor.ts | documentFrames": {
+    "message": "D̂óĉúm̂én̂t́ F̂ŕâḿêś"
+  },
+  "panels/performance_monitor/PerformanceMonitor.ts | documents": {
+    "message": "D̂óĉúm̂én̂t́ŝ"
+  },
+  "panels/performance_monitor/PerformanceMonitor.ts | domNodes": {
+    "message": "D̂ÓM̂ Ńôd́êś"
+  },
+  "panels/performance_monitor/PerformanceMonitor.ts | graphsDisplayingARealtimeViewOf": {
+    "message": "Ĝŕâṕĥś d̂íŝṕl̂áŷín̂ǵ â ŕêál̂-t́îḿê v́îéŵ óf̂ ṕêŕf̂ór̂ḿâńĉé m̂ét̂ŕîćŝ"
+  },
+  "panels/performance_monitor/PerformanceMonitor.ts | jsEventListeners": {
+    "message": "ĴŚ êv́êńt̂ ĺîśt̂én̂ér̂ś"
+  },
+  "panels/performance_monitor/PerformanceMonitor.ts | jsHeapSize": {
+    "message": "ĴŚ ĥéâṕ ŝíẑé"
+  },
+  "panels/performance_monitor/PerformanceMonitor.ts | layoutsSec": {
+    "message": "L̂áŷóût́ŝ / śêć"
+  },
+  "panels/performance_monitor/PerformanceMonitor.ts | paused": {
+    "message": "P̂áûśêd́"
+  },
+  "panels/performance_monitor/PerformanceMonitor.ts | styleRecalcsSec": {
+    "message": "Ŝt́ŷĺê ŕêćâĺĉś / ŝéĉ"
+  },
   "perf_ui/FilmStripView.ts | doubleclickToZoomImageClickTo": {
     "message": "D̂óûb́l̂éĉĺîćk̂ t́ô źôóm̂ ím̂áĝé. Ĉĺîćk̂ t́ô v́îéŵ ṕr̂éĉéd̂ín̂ǵ r̂éq̂úêśt̂ś."
   },
@@ -5689,57 +5740,6 @@
   },
   "perf_ui/PieChart.ts | total": {
     "message": "T̂ót̂ál̂"
-  },
-  "performance_monitor/performance_monitor-meta.ts | activity": {
-    "message": "âćt̂ív̂ít̂ý"
-  },
-  "performance_monitor/performance_monitor-meta.ts | metrics": {
-    "message": "m̂ét̂ŕîćŝ"
-  },
-  "performance_monitor/performance_monitor-meta.ts | monitor": {
-    "message": "m̂ón̂ít̂ór̂"
-  },
-  "performance_monitor/performance_monitor-meta.ts | performance": {
-    "message": "p̂ér̂f́ôŕm̂án̂ćê"
-  },
-  "performance_monitor/performance_monitor-meta.ts | performanceMonitor": {
-    "message": "P̂ér̂f́ôŕm̂án̂ćê ḿôńît́ôŕ"
-  },
-  "performance_monitor/performance_monitor-meta.ts | showPerformanceMonitor": {
-    "message": "Ŝh́ôẃ P̂ér̂f́ôŕm̂án̂ćê ḿôńît́ôŕ"
-  },
-  "performance_monitor/performance_monitor-meta.ts | systemMonitor": {
-    "message": "ŝýŝt́êḿ m̂ón̂ít̂ór̂"
-  },
-  "performance_monitor/PerformanceMonitor.ts | cpuUsage": {
-    "message": "ĈṔÛ úŝáĝé"
-  },
-  "performance_monitor/PerformanceMonitor.ts | documentFrames": {
-    "message": "D̂óĉúm̂én̂t́ F̂ŕâḿêś"
-  },
-  "performance_monitor/PerformanceMonitor.ts | documents": {
-    "message": "D̂óĉúm̂én̂t́ŝ"
-  },
-  "performance_monitor/PerformanceMonitor.ts | domNodes": {
-    "message": "D̂ÓM̂ Ńôd́êś"
-  },
-  "performance_monitor/PerformanceMonitor.ts | graphsDisplayingARealtimeViewOf": {
-    "message": "Ĝŕâṕĥś d̂íŝṕl̂áŷín̂ǵ â ŕêál̂-t́îḿê v́îéŵ óf̂ ṕêŕf̂ór̂ḿâńĉé m̂ét̂ŕîćŝ"
-  },
-  "performance_monitor/PerformanceMonitor.ts | jsEventListeners": {
-    "message": "ĴŚ êv́êńt̂ ĺîśt̂én̂ér̂ś"
-  },
-  "performance_monitor/PerformanceMonitor.ts | jsHeapSize": {
-    "message": "ĴŚ ĥéâṕ ŝíẑé"
-  },
-  "performance_monitor/PerformanceMonitor.ts | layoutsSec": {
-    "message": "L̂áŷóût́ŝ / śêć"
-  },
-  "performance_monitor/PerformanceMonitor.ts | paused": {
-    "message": "P̂áûśêd́"
-  },
-  "performance_monitor/PerformanceMonitor.ts | styleRecalcsSec": {
-    "message": "Ŝt́ŷĺê ŕêćâĺĉś / ŝéĉ"
   },
   "persistence/Automapping.ts | theAttemptToBindSInTheWorkspace": {
     "message": "T̂h́ê át̂t́êḿp̂t́ t̂ó b̂ín̂d́ \"{PH1}\" îń t̂h́ê ẃôŕk̂śp̂áĉé f̂áîĺêd́ âś t̂h́îś ÛŔÎ íŝ ḿâĺf̂ór̂ḿêd́."

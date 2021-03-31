@@ -19,7 +19,7 @@
     { "name": "input"},
     { "name": "object_ui" },
     { "name": "perf_ui" },
-    { "name": "profiler" },
+    { "name": "panels/profiler" },
     { "name": "protocol_monitor"},
     { "name": "quick_open" },
     { "name": "search" },

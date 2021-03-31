@@ -30,11 +30,11 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../common/common.js';
-import * as Host from '../host/host.js';
-import * as PerfUI from '../perf_ui/perf_ui.js';
-import type * as SDK from '../sdk/sdk.js';
-import * as UI from '../ui/ui.js';
+import * as Common from '../../common/common.js';
+import * as Host from '../../host/host.js';
+import * as PerfUI from '../../perf_ui/perf_ui.js';
+import type * as SDK from '../../sdk/sdk.js';
+import * as UI from '../../ui/ui.js';
 
 let colorGeneratorInstance: Common.Color.Generator|null = null;
 

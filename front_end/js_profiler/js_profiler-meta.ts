@@ -7,7 +7,7 @@ import * as Root from '../root/root.js';
 import * as UI from '../ui/ui.js';
 
 // eslint-disable-next-line rulesdir/es_modules_import
-import type * as Profiler from '../profiler/profiler.js';
+import type * as Profiler from '../panels/profiler/profiler.js';
 
 const UIStrings = {
   /**
@@ -28,7 +28,7 @@ async function loadProfilerModule(): Promise<typeof Profiler> {
   if (!loadedProfilerModule) {
     // Side-effect import resources in module.json
     await Root.Runtime.Runtime.instance().loadModulePromise('profiler');
-    loadedProfilerModule = await import('../profiler/profiler.js');
+    loadedProfilerModule = await import('../panels/profiler/profiler.js');
   }
   return loadedProfilerModule;
 }

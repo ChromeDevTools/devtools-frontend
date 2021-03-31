@@ -4,9 +4,9 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import type * as Common from '../common/common.js';
-import * as i18n from '../i18n/i18n.js';
-import * as UI from '../ui/ui.js';
+import type * as Common from '../../common/common.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as UI from '../../ui/ui.js';
 
 import type {DataDisplayDelegate} from './ProfileHeader.js';
 import {Events as ProfileHeaderEvents, ProfileHeader} from './ProfileHeader.js';
@@ -29,7 +29,7 @@ const UIStrings = {
   */
   delete: 'Delete',
 };
-const str_ = i18n.i18n.registerUIStrings('profiler/ProfileSidebarTreeElement.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/profiler/ProfileSidebarTreeElement.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let sharedFileSelectorElement: HTMLInputElement|null = null;
 

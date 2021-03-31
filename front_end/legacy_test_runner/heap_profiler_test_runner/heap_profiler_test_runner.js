@@ -4,7 +4,7 @@
 
 import '../../heap_snapshot_worker/heap_snapshot_worker-legacy.js';
 import '../test_runner/test_runner.js';
-import '../../profiler/profiler-legacy.js';
+import '../../panels/profiler/profiler-legacy.js';
 import '../../data_grid/data_grid-legacy.js';
 
 /**

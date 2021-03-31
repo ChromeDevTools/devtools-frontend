@@ -17,7 +17,7 @@ import './browser_sdk/browser_sdk.js';
 import './extensions/extensions-legacy.js';
 import './panels/console_counters/console_counters-legacy.js';
 import './sources/sources-meta.js';
-import './profiler/profiler-meta.js';
+import './panels/profiler/profiler-meta.js';
 import './panels/console/console-meta.js';
 import './panels/coverage/coverage-meta.js';
 import './panels/changes/changes-meta.js';

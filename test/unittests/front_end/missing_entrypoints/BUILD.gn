@@ -25,7 +25,7 @@ ts_library("missing_entrypoints") {
     "../../../../front_end/panels/layers:bundle",
     "../../../../front_end/panels/lighthouse:bundle",
     "../../../../front_end/panels/performance_monitor:bundle",
-    "../../../../front_end/profiler:bundle",
+    "../../../../front_end/panels/profiler:bundle",
     "../../../../front_end/protocol_monitor:bundle",
     "../../../../front_end/resources:bundle",
     "../../../../front_end/screencast:bundle",

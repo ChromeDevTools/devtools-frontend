@@ -4,10 +4,10 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Host from '../host/host.js';
-import * as i18n from '../i18n/i18n.js';
-import * as SDK from '../sdk/sdk.js';
-import * as UI from '../ui/ui.js';
+import * as Host from '../../host/host.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as SDK from '../../sdk/sdk.js';
+import * as UI from '../../ui/ui.js';
 
 import type {HeapSnapshotView} from './HeapSnapshotView.js';
 import {ProfileType} from './ProfileHeader.js';
@@ -20,7 +20,7 @@ const UIStrings = {
   */
   revealInSummaryView: 'Reveal in Summary view',
 };
-const str_ = i18n.i18n.registerUIStrings('profiler/HeapProfilerPanel.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/profiler/HeapProfilerPanel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let heapProfilerPanelInstance: HeapProfilerPanel;
 export class HeapProfilerPanel extends ProfilesPanel implements UI.ContextMenu.Provider,

@@ -124,7 +124,7 @@ non_autostart_non_remote_modules = [
   "object_ui/object_ui_module.js",
   "perf_ui/perf_ui_module.js",
   "panels/performance_monitor/performance_monitor_module.js",
-  "profiler/profiler_module.js",
+  "panels/profiler/profiler_module.js",
   "issues/issues_module.js",
   "panels/developer_resources/developer_resources_module.js",
   "protocol_monitor/protocol_monitor_module.js",

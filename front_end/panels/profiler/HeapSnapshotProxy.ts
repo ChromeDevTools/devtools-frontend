@@ -30,9 +30,9 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../common/common.js';
-import type * as HeapSnapshotModel from '../heap_snapshot_model/heap_snapshot_model.js';
-import * as i18n from '../i18n/i18n.js';
+import * as Common from '../../common/common.js';
+import type * as HeapSnapshotModel from '../../heap_snapshot_model/heap_snapshot_model.js';
+import * as i18n from '../../i18n/i18n.js';
 import type {ChildrenProvider} from './ChildrenProvider.js';
 
 const UIStrings = {
@@ -42,7 +42,7 @@ const UIStrings = {
   */
   anErrorOccurredWhenACallToMethod: 'An error occurred when a call to method \'{PH1}\' was requested',
 };
-const str_ = i18n.i18n.registerUIStrings('profiler/HeapSnapshotProxy.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/profiler/HeapSnapshotProxy.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class HeapSnapshotWorkerProxy extends Common.ObjectWrapper.ObjectWrapper {
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
@@ -69,7 +69,7 @@ export class HeapSnapshotWorkerProxy extends Common.ObjectWrapper.ObjectWrapper 
     // defined on the global scope. Ideally we use some sort of import-export mechanism across
     // worker boundaries, but that requires a partial rewrite of the heap_snapshot_worker.
     this._worker = Common.Worker.WorkerWrapper.fromURL(
-        new URL('../heap_snapshot_worker/heap_snapshot_worker-legacy.js', import.meta.url));
+        new URL('../../heap_snapshot_worker/heap_snapshot_worker-legacy.js', import.meta.url));
     this._worker.onmessage = this._messageReceived.bind(this);
   }
 

@@ -30,19 +30,19 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Bindings from '../bindings/bindings.js';
-import * as Common from '../common/common.js';
-import * as Components from '../components/components.js';
-import * as DataGrid from '../data_grid/data_grid.js';
-import * as HeapSnapshotModel from '../heap_snapshot_model/heap_snapshot_model.js';
-import * as Host from '../host/host.js';
-import * as i18n from '../i18n/i18n.js';
-import * as ObjectUI from '../object_ui/object_ui.js';
-import * as PerfUI from '../perf_ui/perf_ui.js';
-import * as Platform from '../platform/platform.js';
-import * as Root from '../root/root.js';
-import * as SDK from '../sdk/sdk.js';
-import * as UI from '../ui/ui.js';
+import * as Bindings from '../../bindings/bindings.js';
+import * as Common from '../../common/common.js';
+import * as Components from '../../components/components.js';
+import * as DataGrid from '../../data_grid/data_grid.js';
+import * as HeapSnapshotModel from '../../heap_snapshot_model/heap_snapshot_model.js';
+import * as Host from '../../host/host.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as ObjectUI from '../../object_ui/object_ui.js';
+import * as PerfUI from '../../perf_ui/perf_ui.js';
+import * as Platform from '../../platform/platform.js';
+import * as Root from '../../root/root.js';
+import * as SDK from '../../sdk/sdk.js';
+import * as UI from '../../ui/ui.js';
 
 import type {HeapSnapshotSortableDataGrid} from './HeapSnapshotDataGrids.js';
 import {AllocationDataGrid, HeapSnapshotSortableDataGridEvents, HeapSnapshotConstructorsDataGrid, HeapSnapshotDiffDataGrid, HeapSnapshotRetainmentDataGrid, HeapSnapshotContainmentDataGrid} from './HeapSnapshotDataGrids.js';
@@ -243,14 +243,14 @@ const UIStrings = {
   stackWasNotRecordedForThisObject:
       'Stack was not recorded for this object because it had been allocated before this profile recording started.',
 };
-const str_ = i18n.i18n.registerUIStrings('profiler/HeapSnapshotView.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/profiler/HeapSnapshotView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 // The way this is handled is to workaround the strings inside the heap_snapshot_worker
 // If strings are removed from inside the worker strings can be declared in this module
 // as any other.
 // eslint-disable-next-line @typescript-eslint/naming-convention
-const moduleUIstr_ = i18n.i18n.registerUIStrings('profiler/ModuleUIStrings.ts', ModuleUIStrings.UIStrings);
+const moduleUIstr_ = i18n.i18n.registerUIStrings('panels/profiler/ModuleUIStrings.ts', ModuleUIStrings.UIStrings);
 const moduleI18nString = i18n.i18n.getLocalizedString.bind(undefined, moduleUIstr_);
 export class HeapSnapshotView extends UI.View.SimpleView implements DataDisplayDelegate, UI.SearchableView.Searchable {
   _searchResults: number[];

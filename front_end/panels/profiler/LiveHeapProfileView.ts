@@ -4,12 +4,12 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../common/common.js';
-import * as DataGrid from '../data_grid/data_grid.js';
-import * as i18n from '../i18n/i18n.js';
-import * as SDK from '../sdk/sdk.js';
-import * as UI from '../ui/ui.js';
-import * as Workspace from '../workspace/workspace.js';
+import * as Common from '../../common/common.js';
+import * as DataGrid from '../../data_grid/data_grid.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as SDK from '../../sdk/sdk.js';
+import * as UI from '../../ui/ui.js';
+import * as Workspace from '../../workspace/workspace.js';
 
 const UIStrings = {
   /**
@@ -50,7 +50,7 @@ const UIStrings = {
   */
   kb: 'kB',
 };
-const str_ = i18n.i18n.registerUIStrings('profiler/LiveHeapProfileView.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/profiler/LiveHeapProfileView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let liveHeapProfileViewInstance: LiveHeapProfileView;
 export class LiveHeapProfileView extends UI.Widget.VBox {
@@ -65,7 +65,7 @@ export class LiveHeapProfileView extends UI.Widget.VBox {
   private constructor() {
     super(true);
     this._gridNodeByUrl = new Map();
-    this.registerRequiredCSS('profiler/liveHeapProfile.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('panels/profiler/liveHeapProfile.css', {enableLegacyPatching: false});
 
     this._setting = Common.Settings.Settings.instance().moduleSetting('memoryLiveHeapProfile');
     const toolbar = new UI.Toolbar.Toolbar('live-heap-profile-toolbar', this.contentElement);

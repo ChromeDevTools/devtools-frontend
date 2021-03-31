@@ -29,10 +29,10 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as DataGrid from '../data_grid/data_grid.js';
-import * as i18n from '../i18n/i18n.js';
-import type * as SDK from '../sdk/sdk.js';
-import * as UI from '../ui/ui.js';
+import * as DataGrid from '../../data_grid/data_grid.js';
+import * as i18n from '../../i18n/i18n.js';
+import type * as SDK from '../../sdk/sdk.js';
+import * as UI from '../../ui/ui.js';
 
 const UIStrings = {
   /**
@@ -50,7 +50,7 @@ const UIStrings = {
   */
   genericTextTwoPlaceholders: '{PH1}, {PH2}',
 };
-const str_ = i18n.i18n.registerUIStrings('profiler/ProfileDataGrid.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/profiler/ProfileDataGrid.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class ProfileDataGridNode extends DataGrid.DataGrid.DataGridNode<unknown> {
   _searchMatchedSelfColumn: boolean;

@@ -6,7 +6,7 @@
     "perf_ui",
     "extensions",
     "data_grid",
-    "profiler",
+    "panels/profiler",
     "panels/mobile_throttling"
   ],
     "resources": [

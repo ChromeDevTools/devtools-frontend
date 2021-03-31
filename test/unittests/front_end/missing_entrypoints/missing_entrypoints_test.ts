@@ -30,7 +30,7 @@ describeWithEnvironment('Imports entrypoints that are yet to be tested', () => {
     await import('../../../../front_end/main/main.js');
     await import('../../../../front_end/node_main/node_main.js');
     await import('../../../../front_end/panels/performance_monitor/performance_monitor.js');
-    await import('../../../../front_end/profiler/profiler.js');
+    await import('../../../../front_end/panels/profiler/profiler.js');
     await import('../../../../front_end/protocol_monitor/protocol_monitor.js');
     await import('../../../../front_end/resources/resources.js');
     await import('../../../../front_end/screencast/screencast.js');

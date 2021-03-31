@@ -30,9 +30,9 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../common/common.js';
-import * as i18n from '../i18n/i18n.js';
-import * as UI from '../ui/ui.js';
+import * as Common from '../../common/common.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as UI from '../../ui/ui.js';
 
 import {IsolateSelector} from './IsolateSelector.js';
 import type {ProfileType} from './ProfileHeader.js';
@@ -64,7 +64,7 @@ const UIStrings = {
   */
   selectProfilingType: 'Select profiling type',
 };
-const str_ = i18n.i18n.registerUIStrings('profiler/ProfileLauncherView.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/profiler/ProfileLauncherView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class ProfileLauncherView extends UI.Widget.VBox {
   _panel: ProfilesPanel;
@@ -85,7 +85,7 @@ export class ProfileLauncherView extends UI.Widget.VBox {
 
   constructor(profilesPanel: ProfilesPanel) {
     super();
-    this.registerRequiredCSS('profiler/profileLauncherView.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('panels/profiler/profileLauncherView.css', {enableLegacyPatching: false});
 
     this._panel = profilesPanel;
     this.element.classList.add('profile-launcher-view');

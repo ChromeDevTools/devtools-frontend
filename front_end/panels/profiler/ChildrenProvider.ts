@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as HeapSnapshotModel from '../heap_snapshot_model/heap_snapshot_model.js';
+import type * as HeapSnapshotModel from '../../heap_snapshot_model/heap_snapshot_model.js';
 
 export interface ChildrenProvider {
   dispose(): void;

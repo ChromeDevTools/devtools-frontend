@@ -4,16 +4,16 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Bindings from '../bindings/bindings.js';
-import * as Common from '../common/common.js';
-import * as Components from '../components/components.js';
-import * as DataGrid from '../data_grid/data_grid.js';
-import * as Host from '../host/host.js';
-import * as i18n from '../i18n/i18n.js';
-import * as PerfUI from '../perf_ui/perf_ui.js';
-import * as Platform from '../platform/platform.js';
-import type * as SDK from '../sdk/sdk.js';
-import * as UI from '../ui/ui.js';
+import * as Bindings from '../../bindings/bindings.js';
+import * as Common from '../../common/common.js';
+import * as Components from '../../components/components.js';
+import * as DataGrid from '../../data_grid/data_grid.js';
+import * as Host from '../../host/host.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as PerfUI from '../../perf_ui/perf_ui.js';
+import * as Platform from '../../platform/platform.js';
+import type * as SDK from '../../sdk/sdk.js';
+import * as UI from '../../ui/ui.js';
 
 import {BottomUpProfileDataGridTree} from './BottomUpProfileDataGrid.js';
 import type {ProfileFlameChartDataProvider} from './CPUProfileFlameChart.js';
@@ -105,7 +105,7 @@ const UIStrings = {
   */
   loaded: 'Loaded',
 };
-const str_ = i18n.i18n.registerUIStrings('profiler/ProfileView.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/profiler/ProfileView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class ProfileView extends UI.View.SimpleView implements UI.SearchableView.Searchable {
   _profile: SDK.ProfileTreeModel.ProfileTreeModel|null;

@@ -4,14 +4,14 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../common/common.js';
-import * as Components from '../components/components.js';
-import * as i18n from '../i18n/i18n.js';
-import * as PerfUI from '../perf_ui/perf_ui.js';
-import * as Platform from '../platform/platform.js';
-import * as Root from '../root/root.js';
-import * as SDK from '../sdk/sdk.js';
-import * as UI from '../ui/ui.js';
+import * as Common from '../../common/common.js';
+import * as Components from '../../components/components.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as PerfUI from '../../perf_ui/perf_ui.js';
+import * as Platform from '../../platform/platform.js';
+import * as Root from '../../root/root.js';
+import * as SDK from '../../sdk/sdk.js';
+import * as UI from '../../ui/ui.js';
 
 import {ProfileFlameChartDataProvider} from './CPUProfileFlameChart.js';
 import type {Samples} from './HeapTimelineOverview.js';
@@ -114,7 +114,7 @@ const UIStrings = {
   */
   url: 'URL',
 };
-const str_ = i18n.i18n.registerUIStrings('profiler/HeapProfileView.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/profiler/HeapProfileView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 function convertToSamplingHeapProfile(profileHeader: SamplingHeapProfileHeader):
     Protocol.HeapProfiler.SamplingHeapProfile {

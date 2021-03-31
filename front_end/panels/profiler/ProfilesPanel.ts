@@ -29,10 +29,10 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../common/common.js';
-import * as i18n from '../i18n/i18n.js';
-import * as SDK from '../sdk/sdk.js';
-import * as UI from '../ui/ui.js';
+import * as Common from '../../common/common.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as SDK from '../../sdk/sdk.js';
+import * as UI from '../../ui/ui.js';
 
 import type {DataDisplayDelegate} from './ProfileHeader.js';
 import {ProfileEvents as ProfileTypeEvents, ProfileHeader, ProfileType} from './ProfileHeader.js';
@@ -73,7 +73,7 @@ const UIStrings = {
   */
   profiles: 'Profiles',
 };
-const str_ = i18n.i18n.registerUIStrings('profiler/ProfilesPanel.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/profiler/ProfilesPanel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class ProfilesPanel extends UI.Panel.PanelWithSidebar implements DataDisplayDelegate {
   _profileTypes: ProfileType[];
@@ -100,8 +100,8 @@ export class ProfilesPanel extends UI.Panel.PanelWithSidebar implements DataDisp
   constructor(name: string, profileTypes: ProfileType[], recordingActionId: string) {
     super(name);
     this._profileTypes = profileTypes;
-    this.registerRequiredCSS('profiler/heapProfiler.css', {enableLegacyPatching: false});
-    this.registerRequiredCSS('profiler/profilesPanel.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('panels/profiler/heapProfiler.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('panels/profiler/profilesPanel.css', {enableLegacyPatching: false});
     this.registerRequiredCSS('object_ui/objectValue.css', {enableLegacyPatching: true});
 
     const mainContainer = new UI.Widget.VBox();
@@ -110,7 +110,7 @@ export class ProfilesPanel extends UI.Panel.PanelWithSidebar implements DataDisp
     this.profilesItemTreeElement = new ProfilesSidebarTreeElement(this);
 
     this._sidebarTree = new UI.TreeOutline.TreeOutlineInShadow();
-    this._sidebarTree.registerRequiredCSS('profiler/profilesSidebarTree.css', {enableLegacyPatching: true});
+    this._sidebarTree.registerRequiredCSS('panels/profiler/profilesSidebarTree.css', {enableLegacyPatching: true});
     this._sidebarTree.element.classList.add('profiles-sidebar-tree-box');
     this.panelSidebarElement().appendChild(this._sidebarTree.element);
 

@@ -16,11 +16,11 @@ devtools_module("coverage") {
   deps = [
     "../../bindings:bundle",
     "../../common:bundle",
+    "../../core/platform:bundle",
     "../../data_grid:bundle",
     "../../formatter:bundle",
     "../../host:bundle",
     "../../i18n:bundle",
-    "../../platform:bundle",
     "../../sdk:bundle",
     "../../source_frame:bundle",
     "../../text_utils:bundle",

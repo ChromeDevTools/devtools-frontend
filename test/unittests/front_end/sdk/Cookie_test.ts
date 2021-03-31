@@ -5,7 +5,7 @@
 const {assert} = chai;
 
 import type * as SDKModule from '../../../../front_end/sdk/sdk.js';
-import {assertNotNull} from '../../../../front_end/platform/platform.js';
+import {assertNotNull} from '../../../../front_end/core/platform/platform.js';
 import {describeWithEnvironment} from '../helpers/EnvironmentHelpers.js';
 
 describeWithEnvironment('Cookie', () => {

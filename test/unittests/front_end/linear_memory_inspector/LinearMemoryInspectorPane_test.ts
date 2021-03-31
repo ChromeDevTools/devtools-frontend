@@ -4,7 +4,7 @@
 
 import {describeWithEnvironment} from '../helpers/EnvironmentHelpers.js';
 import type * as LinearMemoryInspectorModule from '../../../../front_end/linear_memory_inspector/linear_memory_inspector.js';
-import {assertNotNull} from '../../../../front_end/platform/platform.js';
+import {assertNotNull} from '../../../../front_end/core/platform/platform.js';
 import {assertElement} from '../helpers/DOMHelpers.js';
 
 function createArray() {

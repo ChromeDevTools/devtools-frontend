@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../../common/common.js';
-import * as Platform from '../../platform/platform.js';
+import * as Platform from '../../core/platform/platform.js';
 
 import {EdgeTypes, EdgeView, generateEdgePortIdsByData} from './EdgeView.js';
 import {NodeCreationData, NodeParamConnectionData, NodeParamDisconnectionData, NodesConnectionData, NodesDisconnectionData, NodesDisconnectionDataWithDestination, ParamCreationData} from './GraphStyle.js';  // eslint-disable-line no-unused-vars

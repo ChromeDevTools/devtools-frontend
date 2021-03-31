@@ -5,7 +5,7 @@
 const {assert} = chai;
 
 import * as UI from '../../../../front_end/ui/ui.js';
-import * as Platform from '../../../../front_end/platform/platform.js';
+import * as Platform from '../../../../front_end/core/platform/platform.js';
 import {describeWithEnvironment} from '../helpers/EnvironmentHelpers.js';
 
 describeWithEnvironment('ViewLocation', () => {

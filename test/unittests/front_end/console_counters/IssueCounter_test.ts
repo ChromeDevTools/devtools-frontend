@@ -3,8 +3,8 @@
 // found in the LICENSE file.
 
 import * as BrowserSDK from '../../../../front_end/browser_sdk/browser_sdk.js';
+import {assertNotNull} from '../../../../front_end/core/platform/platform.js';
 import * as ConsoleCounters from '../../../../front_end/panels/console_counters/console_counters.js';
-import {assertNotNull} from '../../../../front_end/platform/platform.js';
 import * as WebComponents from '../../../../front_end/ui/components/components.js';
 import {MockIssuesManager} from '../browser_sdk/MockIssuesManager.js';
 import {assertElement, assertElements, assertShadowRoot, renderElementIntoDOM} from '../helpers/DOMHelpers.js';

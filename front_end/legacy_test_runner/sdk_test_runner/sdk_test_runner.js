@@ -4,7 +4,7 @@
 
 import '../../sdk/sdk-legacy.js';
 import '../test_runner/test_runner.js';
-import * as Platform from '../../platform/platform.js';
+import * as Platform from '../../core/platform/platform.js';
 
 /**
  * @fileoverview using private properties isn't a Closure violation in tests.

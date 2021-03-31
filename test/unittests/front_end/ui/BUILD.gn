@@ -17,7 +17,7 @@ ts_library("ui") {
   ]
 
   deps = [
-    "../../../../front_end/platform:bundle",
+    "../../../../front_end/core/platform:bundle",
     "../helpers",
   ]
 }

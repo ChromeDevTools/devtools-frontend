@@ -9,7 +9,7 @@ import type * as WorkspaceModule from '../../../../front_end/workspace/workspace
 
 import {createTarget} from '../helpers/EnvironmentHelpers.js';
 import {describeWithMockConnection, dispatchEvent} from '../helpers/MockConnection.js';
-import {assertNotNull} from '../../../../front_end/platform/platform.js';
+import {assertNotNull} from '../../../../front_end/core/platform/platform.js';
 
 const {assert} = chai;
 

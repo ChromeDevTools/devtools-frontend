@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assertNotNull} from '../../../../../front_end/platform/platform.js';
+import {assertNotNull} from '../../../../../front_end/core/platform/platform.js';
 import * as Coordinator from '../../../../../front_end/render_coordinator/render_coordinator.js';
 import * as UIComponents from '../../../../../front_end/ui/components/components.js';
 import {assertShadowRoot, dispatchClickEvent, renderElementIntoDOM} from '../../helpers/DOMHelpers.js';

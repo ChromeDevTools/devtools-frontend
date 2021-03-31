@@ -4,7 +4,7 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Platform from '../platform/platform.js';
+import * as Platform from '../core/platform/platform.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as AcornLoose from '../third_party/acorn-loose/package/dist/acorn-loose.mjs';
 import * as Acorn from '../third_party/acorn/acorn.js';

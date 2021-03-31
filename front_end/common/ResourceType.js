@@ -27,8 +27,9 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as Platform from '../core/platform/platform.js';  // eslint-disable-line no-unused-vars
 import * as i18n from '../i18n/i18n.js';
-import * as Platform from '../platform/platform.js';  // eslint-disable-line no-unused-vars
+
 import {ParsedURL} from './ParsedURL.js';
 
 const UIStrings = {

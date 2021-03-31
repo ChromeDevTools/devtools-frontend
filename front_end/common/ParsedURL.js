@@ -28,7 +28,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import * as Platform from '../platform/platform.js';
+import * as Platform from '../core/platform/platform.js';
 import * as Root from '../root/root.js';
 
 export class ParsedURL {

@@ -15,9 +15,9 @@ devtools_module("heap_snapshot_worker") {
 
   deps = [
     "../common:bundle",
+    "../core/platform:bundle",
     "../heap_snapshot_model:bundle",
     "../i18n:bundle",
-    "../platform:bundle",
     "../text_utils:bundle",
   ]
 }

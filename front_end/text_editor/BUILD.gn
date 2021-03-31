@@ -16,9 +16,9 @@ devtools_module("text_editor") {
   deps = [
     "../cm",
     "../common:bundle",
+    "../core/platform:bundle",
     "../host:bundle",
     "../i18n:bundle",
-    "../platform:bundle",
     "../text_utils:bundle",
     "../ui:bundle",
   ]

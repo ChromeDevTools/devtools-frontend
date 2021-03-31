@@ -16,8 +16,8 @@ devtools_module("host") {
 
   deps = [
     "../common:bundle",
+    "../core/platform:bundle",
     "../i18n:bundle",
-    "../platform:bundle",
   ]
 }
 

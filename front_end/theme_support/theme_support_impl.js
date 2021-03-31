@@ -30,7 +30,7 @@
  */
 
 import * as Common from '../common/common.js';
-import * as Platform from '../platform/platform.js';
+import * as Platform from '../core/platform/platform.js';
 import * as Root from '../root/root.js';
 
 /**

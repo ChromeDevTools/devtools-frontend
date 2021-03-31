@@ -2,13 +2,14 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Platform from '../core/platform/platform.js';
 import * as Host from '../host/host.js';
 import * as i18n from '../i18n/i18n.js';
 import * as Network from '../panels/network/network.js';
-import * as Platform from '../platform/platform.js';
 import * as UI from '../ui/ui.js';
 
 import {AffectedItem, AffectedResourcesView} from './AffectedResourcesView.js';
+
 import type {AggregatedIssue} from './IssueAggregator.js';
 import {IssueView} from './IssueView.js';
 

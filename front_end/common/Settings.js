@@ -28,7 +28,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import * as Platform from '../platform/platform.js';  // eslint-disable-line no-unused-vars
+import * as Platform from '../core/platform/platform.js';  // eslint-disable-line no-unused-vars
 import * as Root from '../root/root.js';
 
 import {Color, Format} from './Color.js';  // eslint-disable-line no-unused-vars

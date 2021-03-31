@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Plaform from '../../../../front_end/platform/platform.js';
+import * as Plaform from '../../../../front_end/core/platform/platform.js';
 
 const {assert} = chai;
 

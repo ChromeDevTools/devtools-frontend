@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Platform from '../platform/platform.js';
+import * as Platform from '../core/platform/platform.js';
 // eslint-disable-next-line
 import i18nBundle from '../third_party/i18n/i18n-bundle.js';
 

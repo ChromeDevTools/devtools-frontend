@@ -14,7 +14,7 @@ devtools_module("i18n") {
   ]
 
   deps = [
-    "../platform:bundle",
+    "../core/platform:bundle",
     "../third_party/i18n:bundle",
   ]
 }

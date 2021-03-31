@@ -1,3 +1,7 @@
+// Copyright 2021 The Chromium Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+
 /*
  * Copyright (C) 2011 Google Inc.  All rights reserved.
  * Copyright (C) 2006, 2007, 2008 Apple Inc.  All rights reserved.
@@ -35,4 +39,3 @@ class LocalizedStringTag {
 export type LocalizedString = string&LocalizedStringTag;
 
 export const LocalizedEmptyString = '' as LocalizedString;
-

@@ -5,7 +5,7 @@
 const {assert} = chai;
 
 import * as Common from '../../../../front_end/common/common.js';
-import type * as Platform from '../../../../front_end/platform/platform.js';
+import type * as Platform from '../../../../front_end/core/platform/platform.js';
 import type * as ElementsModule from '../../../../front_end/panels/elements/elements.js';
 import {describeWithEnvironment} from '../helpers/EnvironmentHelpers.js';
 

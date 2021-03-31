@@ -30,8 +30,8 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
+import * as Platform from '../../core/platform/platform.js';
 import * as i18n from '../../i18n/i18n.js';
-import * as Platform from '../../platform/platform.js';
 import * as SDK from '../../sdk/sdk.js';
 import * as UI from '../../ui/ui.js';
 

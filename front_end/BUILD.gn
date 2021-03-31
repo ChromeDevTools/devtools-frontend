@@ -273,7 +273,7 @@ devtools_entrypoint("toolbox") {
   deps = [
     "Images:generate_css_vars",
     "core/dom_extension:bundle",
-    "platform:bundle",
+    "core/platform:bundle",
   ]
 }
 

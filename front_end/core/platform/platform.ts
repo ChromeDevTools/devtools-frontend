@@ -46,16 +46,15 @@ import * as UIString from './UIString.js';
  * compiler error)
  */
 export {assertNotNull} from './typescript-utilities.js';
-
-export {runOnWindowLoad, assertNever} from './utilities.js';
+export {assertNever, runOnWindowLoad} from './utilities.js';
 export {
   ArrayUtilities,
-  TypeScriptUtilities,
   DateUtilities,
-  MapUtilities,
   KeyboardUtilities,
+  MapUtilities,
   NumberUtilities,
   SetUtilities,
   StringUtilities,
+  TypeScriptUtilities,
   UIString,
 };

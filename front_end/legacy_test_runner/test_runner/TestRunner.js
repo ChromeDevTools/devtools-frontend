@@ -6,7 +6,7 @@
 
 import * as Bindings from '../../bindings/bindings.js';
 import * as Common from '../../common/common.js';  // eslint-disable-line no-unused-vars
-import * as Platform from '../../platform/platform.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as ProtocolClientModule from '../../protocol_client/protocol_client.js';
 import * as Root from '../../root/root.js';
 import * as TextEditor from '../../text_editor/text_editor.js';

@@ -38,8 +38,8 @@
 import * as Bindings from '../bindings/bindings.js';
 import * as Common from '../common/common.js';
 import * as Components from '../components/components.js';
+import * as Platform from '../core/platform/platform.js';
 import * as Host from '../host/host.js';
-import * as Platform from '../platform/platform.js';
 import * as _ProtocolClient from '../protocol_client/protocol_client.js';  // eslint-disable-line @typescript-eslint/no-unused-vars
 import * as Root from '../root/root.js';                                   // eslint-disable-line no-unused-vars
 import * as SDK from '../sdk/sdk.js';

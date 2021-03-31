@@ -17,9 +17,9 @@ devtools_module("components") {
   deps = [
     "../bindings:bundle",
     "../common:bundle",
+    "../core/platform:bundle",
     "../host:bundle",
     "../i18n:bundle",
-    "../platform:bundle",
     "../sdk:bundle",
     "../text_utils:bundle",
     "../ui:bundle",

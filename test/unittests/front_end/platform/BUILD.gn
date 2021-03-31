@@ -12,5 +12,5 @@ ts_library("platform") {
     "StringUtilities_test.ts",
   ]
 
-  deps = [ "../../../../front_end/platform:bundle" ]
+  deps = [ "../../../../front_end/core/platform:bundle" ]
 }

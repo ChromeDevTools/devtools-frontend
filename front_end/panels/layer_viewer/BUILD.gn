@@ -17,9 +17,9 @@ devtools_module("layer_viewer") {
 
   deps = [
     "../../common:bundle",
+    "../../core/platform:bundle",
     "../../i18n:bundle",
     "../../perf_ui:bundle",
-    "../../platform:bundle",
     "../../sdk:bundle",
     "../../ui:bundle",
   ]

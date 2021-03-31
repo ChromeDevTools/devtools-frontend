@@ -3,8 +3,8 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
+import * as Platform from '../core/platform/platform.js';
 import * as Host from '../host/host.js';
-import * as Platform from '../platform/platform.js';
 import * as Root from '../root/root.js';
 
 import {Action, getRegisteredActionExtensions, KeybindSet} from './ActionRegistration.js';  // eslint-disable-line no-unused-vars

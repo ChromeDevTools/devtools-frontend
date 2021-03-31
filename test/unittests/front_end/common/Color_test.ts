@@ -5,7 +5,7 @@
 const {assert} = chai;
 
 import * as Common from '../../../../front_end/common/common.js';
-import {assertNotNull} from '../../../../front_end/platform/platform.js';
+import {assertNotNull} from '../../../../front_end/core/platform/platform.js';
 
 const Color = Common.Color;
 

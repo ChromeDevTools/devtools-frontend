@@ -32,8 +32,8 @@
 
 import * as Bindings from '../bindings/bindings.js';
 import * as Common from '../common/common.js';
+import * as Platform from '../core/platform/platform.js';
 import * as Persistence from '../persistence/persistence.js';
-import * as Platform from '../platform/platform.js';
 import * as Search from '../search/search.js';  // eslint-disable-line no-unused-vars
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as Workspace from '../workspace/workspace.js';

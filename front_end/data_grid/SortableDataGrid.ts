@@ -5,7 +5,7 @@
 /* eslint-disable rulesdir/no_underscored_properties */
 /* eslint-disable @typescript-eslint/naming-convention */
 
-import * as Platform from '../platform/platform.js';
+import * as Platform from '../core/platform/platform.js';
 
 import type {ColumnDescriptor, DataGridData, Parameters} from './DataGrid.js';
 import {Events} from './DataGrid.js';

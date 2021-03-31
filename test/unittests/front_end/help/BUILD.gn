@@ -10,8 +10,8 @@ ts_library("help") {
 
   deps = [
     "../../../../front_end/common:bundle",
+    "../../../../front_end/core/platform:bundle",
     "../../../../front_end/panels/help:bundle",
-    "../../../../front_end/platform:bundle",
     "../../../../front_end/ui:bundle",
     "../../../../test/unittests/front_end/helpers",
   ]

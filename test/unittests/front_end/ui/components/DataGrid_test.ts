@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Platform from '../../../../../front_end/platform/platform.js';
+import * as Platform from '../../../../../front_end/core/platform/platform.js';
 import * as Coordinator from '../../../../../front_end/render_coordinator/render_coordinator.js';
 import * as LitHtml from '../../../../../front_end/third_party/lit-html/lit-html.js';
 import * as UIComponents from '../../../../../front_end/ui/components/components.js';

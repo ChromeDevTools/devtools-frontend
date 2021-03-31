@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 const {assert} = chai;
-import '../../../../front_end/dom_extension/DOMExtension.js';
+import '../../../../front_end/core/dom_extension/DOMExtension.js';
 
 declare global {
   interface HTMLElement {  // eslint-disable-line @typescript-eslint/no-unused-vars

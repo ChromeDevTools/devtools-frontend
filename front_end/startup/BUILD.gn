@@ -20,7 +20,7 @@ devtools_entrypoint("bundle") {
     "../browser_sdk:bundle",
     "../common:legacy",
     "../components:legacy",
-    "../dom_extension:bundle",
+    "../core/dom_extension:bundle",
     "../extensions:legacy",
     "../host:legacy",
     "../panels/console_counters:legacy",

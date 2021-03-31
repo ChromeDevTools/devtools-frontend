@@ -4,7 +4,7 @@
 
 import './Images/Images.js';
 import './startup/startup.js';
-import './dom_extension/dom_extension.js';
+import './core/dom_extension/dom_extension.js';
 import './host/host-legacy.js';
 import './protocol_client/protocol_client-legacy.js';
 import './sdk/sdk-legacy.js';

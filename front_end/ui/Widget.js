@@ -25,7 +25,7 @@
  */
 
 import * as Common from '../common/common.js';
-import * as DOMExtension from '../dom_extension/dom_extension.js';
+import * as DOMExtension from '../core/dom_extension/dom_extension.js';
 import {Constraints, Size} from './Geometry.js';
 import {appendStyle} from './utils/append-style.js';
 import {createShadowRootWithCoreStyles} from './utils/create-shadow-root-with-core-styles.js';

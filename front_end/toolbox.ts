@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import './dom_extension/dom_extension.js';
+import './core/dom_extension/dom_extension.js';
 import './Images/Images.js';
 
 import * as Platform from './platform/platform.js';  // eslint-disable-line rulesdir/es_modules_import

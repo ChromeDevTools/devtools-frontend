@@ -38,7 +38,7 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Platform from '../platform/platform.js';
+import * as Platform from '../../platform/platform.js';
 
 export function rangeOfWord(
     rootNode: Node, offset: number, stopCharacters: string, stayWithinNode: Node, direction?: string): Range {

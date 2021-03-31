@@ -4,5 +4,5 @@ ts_library("dom_extension") {
   testonly = true
   sources = [ "DOMExtension_test.ts" ]
 
-  deps = [ "../../../../front_end/dom_extension:bundle" ]
+  deps = [ "../../../../front_end/core/dom_extension:bundle" ]
 }

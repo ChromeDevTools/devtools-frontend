@@ -160,7 +160,7 @@ ts_library("shell") {
     "bindings:legacy",
     "browser_sdk:meta",
     "components:legacy",
-    "dom_extension:bundle",
+    "core/dom_extension:bundle",
     "extensions:legacy",
     "host:legacy",
     "input:meta",
@@ -272,7 +272,7 @@ devtools_entrypoint("toolbox") {
 
   deps = [
     "Images:generate_css_vars",
-    "dom_extension:bundle",
+    "core/dom_extension:bundle",
     "platform:bundle",
   ]
 }
@@ -357,7 +357,7 @@ ts_library("ts_library-verification") {
     "browser_sdk:bundle",
     "color_picker:bundle",
     "common:bundle",
-    "dom_extension:bundle",
+    "core/dom_extension:bundle",
     "host:bundle",
     "protocol_client:bundle",
     "root:bundle",

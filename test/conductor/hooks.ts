@@ -52,6 +52,13 @@ const ALLOWED_ASSERTION_FAILURES = [
   // A failing fetch isn't itself a real error.
   // TODO(https://crbug.com/124534) Remove once those messages are not printed anymore.
   'Failed to load resource: the server responded with a status of 404 (Not Found)',
+  // Every letter "typed" into the console can trigger a preview `Runtime.evaluate` call.
+  // There is no way for an e2e test to know whether all of them have resolved or if there are
+  // still pending calls. If the test finishes too early, the JS context is destroyed and pending
+  // evaluations will fail. We ignore these kinds of errors. Tests have to make sure themselves
+  // that all assertions and success criteria are met (e.g. autocompletions etc).
+  // See: https://crbug.com/1192052
+  'Request Runtime.evaluate failed. {"code":-32602,"message":"uniqueContextId not found"}',
 ];
 
 const logLevels = {

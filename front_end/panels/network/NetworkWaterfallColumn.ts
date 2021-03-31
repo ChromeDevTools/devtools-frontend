@@ -4,11 +4,11 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../common/common.js';
-import * as PerfUI from '../perf_ui/perf_ui.js';
-import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
-import * as ThemeSupport from '../theme_support/theme_support.js';
-import * as UI from '../ui/ui.js';
+import * as Common from '../../common/common.js';
+import * as PerfUI from '../../perf_ui/perf_ui.js';
+import * as SDK from '../../sdk/sdk.js';  // eslint-disable-line no-unused-vars
+import * as ThemeSupport from '../../theme_support/theme_support.js';
+import * as UI from '../../ui/ui.js';
 
 import {NetworkNode} from './NetworkDataGridNode.js';                     // eslint-disable-line no-unused-vars
 import {Label, NetworkTimeCalculator} from './NetworkTimeCalculator.js';  // eslint-disable-line no-unused-vars
@@ -45,7 +45,7 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
   constructor(calculator: NetworkTimeCalculator) {
     // TODO(allada) Make this a shadowDOM when the NetworkWaterfallColumn gets moved into NetworkLogViewColumns.
     super(false);
-    this.registerRequiredCSS('network/networkWaterfallColumn.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('panels/network/networkWaterfallColumn.css', {enableLegacyPatching: false});
     this._canvas = (this.contentElement.createChild('canvas') as HTMLCanvasElement);
     this._canvas.tabIndex = -1;
     this.setDefaultFocusedElement(this._canvas);

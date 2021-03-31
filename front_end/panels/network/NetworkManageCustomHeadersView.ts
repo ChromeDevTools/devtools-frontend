@@ -4,8 +4,8 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as i18n from '../i18n/i18n.js';
-import * as UI from '../ui/ui.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as UI from '../../ui/ui.js';
 
 const UIStrings = {
   /**
@@ -25,7 +25,7 @@ const UIStrings = {
   */
   headerName: 'Header Name',
 };
-const str_ = i18n.i18n.registerUIStrings('network/NetworkManageCustomHeadersView.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/network/NetworkManageCustomHeadersView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 interface CustomHeader {
@@ -52,14 +52,14 @@ export class NetworkManageCustomHeadersView extends UI.Widget.VBox implements UI
       changeHeaderColumnCallback: (arg0: string, arg1: string) => boolean,
       removeHeaderColumnCallback: (arg0: string) => boolean) {
     super(true);
-    this.registerRequiredCSS('network/networkManageCustomHeadersView.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('panels/network/networkManageCustomHeadersView.css', {enableLegacyPatching: false});
 
     this.contentElement.classList.add('custom-headers-wrapper');
     this.contentElement.createChild('div', 'header').textContent = i18nString(UIStrings.manageHeaderColumns);
 
     this._list = new UI.ListWidget.ListWidget(this);
     this._list.element.classList.add('custom-headers-list');
-    this._list.registerRequiredCSS('network/networkManageCustomHeadersView.css', {enableLegacyPatching: false});
+    this._list.registerRequiredCSS('panels/network/networkManageCustomHeadersView.css', {enableLegacyPatching: false});
 
     const placeholder = document.createElement('div');
     placeholder.classList.add('custom-headers-list-list-empty');

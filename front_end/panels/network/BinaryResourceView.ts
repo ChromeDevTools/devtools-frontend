@@ -4,12 +4,12 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
-import * as Host from '../host/host.js';
-import * as i18n from '../i18n/i18n.js';
-import * as SourceFrame from '../source_frame/source_frame.js';
-import * as TextUtils from '../text_utils/text_utils.js';  // eslint-disable-line no-unused-vars
-import * as UI from '../ui/ui.js';
+import * as Common from '../../common/common.js';  // eslint-disable-line no-unused-vars
+import * as Host from '../../host/host.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as SourceFrame from '../../source_frame/source_frame.js';
+import * as TextUtils from '../../text_utils/text_utils.js';  // eslint-disable-line no-unused-vars
+import * as UI from '../../ui/ui.js';
 
 const UIStrings = {
   /**
@@ -57,7 +57,7 @@ const UIStrings = {
   */
   copyAsUtf: 'Copy as `UTF-8`',
 };
-const str_ = i18n.i18n.registerUIStrings('network/BinaryResourceView.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/network/BinaryResourceView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class BinaryResourceView extends UI.Widget.VBox {
   _binaryResourceViewFactory: SourceFrame.BinaryResourceViewFactory.BinaryResourceViewFactory;
@@ -71,7 +71,7 @@ export class BinaryResourceView extends UI.Widget.VBox {
 
   constructor(base64content: string, contentUrl: string, resourceType: Common.ResourceType.ResourceType) {
     super();
-    this.registerRequiredCSS('network/binaryResourceView.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('panels/network/binaryResourceView.css', {enableLegacyPatching: false});
 
     this._binaryResourceViewFactory =
         new SourceFrame.BinaryResourceViewFactory.BinaryResourceViewFactory(base64content, contentUrl, resourceType);

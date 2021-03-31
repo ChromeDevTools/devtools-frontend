@@ -1325,1179 +1325,6 @@
   "main/MainImpl.js | undockIntoSeparateWindow": {
     "message": "Undock into separate window"
   },
-  "network/BinaryResourceView.ts | binaryViewType": {
-    "message": "Binary view type"
-  },
-  "network/BinaryResourceView.ts | copiedAsBase": {
-    "message": "Copied as Base64"
-  },
-  "network/BinaryResourceView.ts | copiedAsHex": {
-    "message": "Copied as Hex"
-  },
-  "network/BinaryResourceView.ts | copiedAsUtf": {
-    "message": "Copied as UTF-8"
-  },
-  "network/BinaryResourceView.ts | copyAsBase": {
-    "message": "Copy as Base64"
-  },
-  "network/BinaryResourceView.ts | copyAsHex": {
-    "message": "Copy as Hex"
-  },
-  "network/BinaryResourceView.ts | copyAsUtf": {
-    "message": "Copy as UTF-8"
-  },
-  "network/BinaryResourceView.ts | copyToClipboard": {
-    "message": "Copy to clipboard"
-  },
-  "network/BinaryResourceView.ts | hexViewer": {
-    "message": "Hex Viewer"
-  },
-  "network/BlockedURLsPane.ts | addNetworkRequestBlockingPattern": {
-    "message": "Add network request blocking pattern"
-  },
-  "network/BlockedURLsPane.ts | addPattern": {
-    "message": "Add pattern"
-  },
-  "network/BlockedURLsPane.ts | dBlocked": {
-    "message": "{PH1} blocked"
-  },
-  "network/BlockedURLsPane.ts | enableNetworkRequestBlocking": {
-    "message": "Enable network request blocking"
-  },
-  "network/BlockedURLsPane.ts | networkRequestsAreNotBlockedS": {
-    "message": "Network requests are not blocked. {PH1}"
-  },
-  "network/BlockedURLsPane.ts | patternAlreadyExists": {
-    "message": "Pattern already exists."
-  },
-  "network/BlockedURLsPane.ts | patternInputCannotBeEmpty": {
-    "message": "Pattern input cannot be empty."
-  },
-  "network/BlockedURLsPane.ts | removeAllPatterns": {
-    "message": "Remove all patterns"
-  },
-  "network/BlockedURLsPane.ts | textPatternToBlockMatching": {
-    "message": "Text pattern to block matching requests; use * for wildcard"
-  },
-  "network/EventSourceMessagesView.ts | copyMessage": {
-    "message": "Copy message"
-  },
-  "network/EventSourceMessagesView.ts | data": {
-    "message": "Data"
-  },
-  "network/EventSourceMessagesView.ts | eventSource": {
-    "message": "Event Source"
-  },
-  "network/EventSourceMessagesView.ts | id": {
-    "message": "Id"
-  },
-  "network/EventSourceMessagesView.ts | time": {
-    "message": "Time"
-  },
-  "network/EventSourceMessagesView.ts | type": {
-    "message": "Type"
-  },
-  "network/HARWriter.ts | collectingContent": {
-    "message": "Collecting content…"
-  },
-  "network/HARWriter.ts | writingFile": {
-    "message": "Writing file…"
-  },
-  "network/network-meta.ts | colorCode": {
-    "message": "color code"
-  },
-  "network/network-meta.ts | colorCodeByResourceType": {
-    "message": "Color code by resource type"
-  },
-  "network/network-meta.ts | colorcodeResourceTypes": {
-    "message": "Color-code resource types"
-  },
-  "network/network-meta.ts | diskCache": {
-    "message": "disk cache"
-  },
-  "network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
-    "message": "Don't group network log items by frame"
-  },
-  "network/network-meta.ts | frame": {
-    "message": "frame"
-  },
-  "network/network-meta.ts | group": {
-    "message": "group"
-  },
-  "network/network-meta.ts | groupNetworkLogByFrame": {
-    "message": "Group network log by frame"
-  },
-  "network/network-meta.ts | groupNetworkLogItemsByFrame": {
-    "message": "Group network log items by frame"
-  },
-  "network/network-meta.ts | hideRequestDetails": {
-    "message": "Hide request details"
-  },
-  "network/network-meta.ts | network": {
-    "message": "Network"
-  },
-  "network/network-meta.ts | netWork": {
-    "message": "network"
-  },
-  "network/network-meta.ts | networkConditions": {
-    "message": "Network conditions"
-  },
-  "network/network-meta.ts | networkRequestBlocking": {
-    "message": "Network request blocking"
-  },
-  "network/network-meta.ts | networkThrottling": {
-    "message": "network throttling"
-  },
-  "network/network-meta.ts | recordNetworkLog": {
-    "message": "Record network log"
-  },
-  "network/network-meta.ts | resourceType": {
-    "message": "resource type"
-  },
-  "network/network-meta.ts | search": {
-    "message": "Search"
-  },
-  "network/network-meta.ts | showNetwork": {
-    "message": "Show Network"
-  },
-  "network/network-meta.ts | showNetworkConditions": {
-    "message": "Show Network conditions"
-  },
-  "network/network-meta.ts | showNetworkRequestBlocking": {
-    "message": "Show Network request blocking"
-  },
-  "network/network-meta.ts | showSearch": {
-    "message": "Show Search"
-  },
-  "network/network-meta.ts | stopRecordingNetworkLog": {
-    "message": "Stop recording network log"
-  },
-  "network/network-meta.ts | useDefaultColors": {
-    "message": "Use default colors"
-  },
-  "network/NetworkConfigView.ts | acceptedEncoding": {
-    "message": "Accepted Content-Encodings"
-  },
-  "network/NetworkConfigView.ts | caching": {
-    "message": "Caching"
-  },
-  "network/NetworkConfigView.ts | custom": {
-    "message": "Custom..."
-  },
-  "network/NetworkConfigView.ts | customUserAgentFieldIsRequired": {
-    "message": "Custom user agent field is required"
-  },
-  "network/NetworkConfigView.ts | disableCache": {
-    "message": "Disable cache"
-  },
-  "network/NetworkConfigView.ts | enterACustomUserAgent": {
-    "message": "Enter a custom user agent"
-  },
-  "network/NetworkConfigView.ts | networkThrottling": {
-    "message": "Network throttling"
-  },
-  "network/NetworkConfigView.ts | selectAutomatically": {
-    "message": "Use browser default"
-  },
-  "network/NetworkConfigView.ts | userAgent": {
-    "message": "User agent"
-  },
-  "network/NetworkDataGridNode.ts | blockeds": {
-    "message": "(blocked:{PH1})"
-  },
-  "network/NetworkDataGridNode.ts | canceled": {
-    "message": "(canceled)"
-  },
-  "network/NetworkDataGridNode.ts | corsError": {
-    "message": "CORS error"
-  },
-  "network/NetworkDataGridNode.ts | crossoriginResourceSharingErrorS": {
-    "message": "Cross-Origin Resource Sharing error: {PH1}"
-  },
-  "network/NetworkDataGridNode.ts | csp": {
-    "message": "csp"
-  },
-  "network/NetworkDataGridNode.ts | data": {
-    "message": "(data)"
-  },
-  "network/NetworkDataGridNode.ts | devtools": {
-    "message": "devtools"
-  },
-  "network/NetworkDataGridNode.ts | diskCache": {
-    "message": "(disk cache)"
-  },
-  "network/NetworkDataGridNode.ts | failed": {
-    "message": "(failed)"
-  },
-  "network/NetworkDataGridNode.ts | finished": {
-    "message": "Finished"
-  },
-  "network/NetworkDataGridNode.ts | level": {
-    "message": "level 1"
-  },
-  "network/NetworkDataGridNode.ts | memoryCache": {
-    "message": "(memory cache)"
-  },
-  "network/NetworkDataGridNode.ts | notsameoriginafterdefaultedtosameoriginbycoep": {
-    "message": "NotSameOriginAfterDefaultedToSameOriginByCoep"
-  },
-  "network/NetworkDataGridNode.ts | origin": {
-    "message": "origin"
-  },
-  "network/NetworkDataGridNode.ts | other": {
-    "message": "other"
-  },
-  "network/NetworkDataGridNode.ts | otherC": {
-    "message": "Other"
-  },
-  "network/NetworkDataGridNode.ts | parser": {
-    "message": "Parser"
-  },
-  "network/NetworkDataGridNode.ts | pending": {
-    "message": "Pending"
-  },
-  "network/NetworkDataGridNode.ts | pendingq": {
-    "message": "(pending)"
-  },
-  "network/NetworkDataGridNode.ts | prefetchCache": {
-    "message": "(prefetch cache)"
-  },
-  "network/NetworkDataGridNode.ts | preflight": {
-    "message": "Preflight"
-  },
-  "network/NetworkDataGridNode.ts | preload": {
-    "message": "Preload"
-  },
-  "network/NetworkDataGridNode.ts | push": {
-    "message": "Push / "
-  },
-  "network/NetworkDataGridNode.ts | redirect": {
-    "message": "Redirect"
-  },
-  "network/NetworkDataGridNode.ts | script": {
-    "message": "Script"
-  },
-  "network/NetworkDataGridNode.ts | selectPreflightRequest": {
-    "message": "Select preflight request"
-  },
-  "network/NetworkDataGridNode.ts | selectTheRequestThatTriggered": {
-    "message": "Select the request that triggered this preflight"
-  },
-  "network/NetworkDataGridNode.ts | servedFromDiskCacheResourceSizeS": {
-    "message": "Served from disk cache, resource size: {PH1}"
-  },
-  "network/NetworkDataGridNode.ts | servedFromMemoryCacheResource": {
-    "message": "Served from memory cache, resource size: {PH1}"
-  },
-  "network/NetworkDataGridNode.ts | servedFromPrefetchCacheResource": {
-    "message": "Served from prefetch cache, resource size: {PH1}"
-  },
-  "network/NetworkDataGridNode.ts | servedFromServiceworkerResource": {
-    "message": "Served from ServiceWorker, resource size: {PH1}"
-  },
-  "network/NetworkDataGridNode.ts | servedFromSignedHttpExchange": {
-    "message": "Served from Signed HTTP Exchange, resource size: {PH1}"
-  },
-  "network/NetworkDataGridNode.ts | serviceworker": {
-    "message": "(ServiceWorker)"
-  },
-  "network/NetworkDataGridNode.ts | signedexchange": {
-    "message": "signed-exchange"
-  },
-  "network/NetworkDataGridNode.ts | sPreflight": {
-    "message": "{PH1} + Preflight"
-  },
-  "network/NetworkItemView.ts | cookies": {
-    "message": "Cookies"
-  },
-  "network/NetworkItemView.ts | eventstream": {
-    "message": "EventStream"
-  },
-  "network/NetworkItemView.ts | headers": {
-    "message": "Headers"
-  },
-  "network/NetworkItemView.ts | headersAndRequestBody": {
-    "message": "Headers and request body"
-  },
-  "network/NetworkItemView.ts | initiator": {
-    "message": "Initiator"
-  },
-  "network/NetworkItemView.ts | messages": {
-    "message": "Messages"
-  },
-  "network/NetworkItemView.ts | preview": {
-    "message": "Preview"
-  },
-  "network/NetworkItemView.ts | rawResponseData": {
-    "message": "Raw response data"
-  },
-  "network/NetworkItemView.ts | requestAndResponseCookies": {
-    "message": "Request and response cookies"
-  },
-  "network/NetworkItemView.ts | requestAndResponseTimeline": {
-    "message": "Request and response timeline"
-  },
-  "network/NetworkItemView.ts | requestInitiatorCallStack": {
-    "message": "Request initiator call stack"
-  },
-  "network/NetworkItemView.ts | response": {
-    "message": "Response"
-  },
-  "network/NetworkItemView.ts | responsePreview": {
-    "message": "Response preview"
-  },
-  "network/NetworkItemView.ts | signedexchangeError": {
-    "message": "SignedExchange error"
-  },
-  "network/NetworkItemView.ts | timing": {
-    "message": "Timing"
-  },
-  "network/NetworkItemView.ts | trustTokenOperationDetails": {
-    "message": "Trust Token operation details"
-  },
-  "network/NetworkItemView.ts | trustTokens": {
-    "message": "Trust Tokens"
-  },
-  "network/NetworkItemView.ts | websocketMessages": {
-    "message": "WebSocket messages"
-  },
-  "network/NetworkLogView.ts | areYouSureYouWantToClearBrowser": {
-    "message": "Are you sure you want to clear browser cache?"
-  },
-  "network/NetworkLogView.ts | areYouSureYouWantToClearBrowserCookies": {
-    "message": "Are you sure you want to clear browser cookies?"
-  },
-  "network/NetworkLogView.ts | blockedRequests": {
-    "message": "Blocked Requests"
-  },
-  "network/NetworkLogView.ts | blockRequestDomain": {
-    "message": "Block request domain"
-  },
-  "network/NetworkLogView.ts | blockRequestUrl": {
-    "message": "Block request URL"
-  },
-  "network/NetworkLogView.ts | clearBrowserCache": {
-    "message": "Clear browser cache"
-  },
-  "network/NetworkLogView.ts | clearBrowserCookies": {
-    "message": "Clear browser cookies"
-  },
-  "network/NetworkLogView.ts | copy": {
-    "message": "Copy"
-  },
-  "network/NetworkLogView.ts | copyAllAsCurl": {
-    "message": "Copy all as cURL"
-  },
-  "network/NetworkLogView.ts | copyAllAsCurlBash": {
-    "message": "Copy all as cURL (bash)"
-  },
-  "network/NetworkLogView.ts | copyAllAsCurlCmd": {
-    "message": "Copy all as cURL (cmd)"
-  },
-  "network/NetworkLogView.ts | copyAllAsFetch": {
-    "message": "Copy all as fetch"
-  },
-  "network/NetworkLogView.ts | copyAllAsHar": {
-    "message": "Copy all as HAR"
-  },
-  "network/NetworkLogView.ts | copyAllAsNodejsFetch": {
-    "message": "Copy all as Node.js fetch"
-  },
-  "network/NetworkLogView.ts | copyAllAsPowershell": {
-    "message": "Copy all as PowerShell"
-  },
-  "network/NetworkLogView.ts | copyAsCurl": {
-    "message": "Copy as cURL"
-  },
-  "network/NetworkLogView.ts | copyAsCurlBash": {
-    "message": "Copy as cURL (bash)"
-  },
-  "network/NetworkLogView.ts | copyAsCurlCmd": {
-    "message": "Copy as cURL (cmd)"
-  },
-  "network/NetworkLogView.ts | copyAsFetch": {
-    "message": "Copy as fetch"
-  },
-  "network/NetworkLogView.ts | copyAsNodejsFetch": {
-    "message": "Copy as Node.js fetch"
-  },
-  "network/NetworkLogView.ts | copyAsPowershell": {
-    "message": "Copy as PowerShell"
-  },
-  "network/NetworkLogView.ts | copyRequestHeaders": {
-    "message": "Copy request headers"
-  },
-  "network/NetworkLogView.ts | copyResponse": {
-    "message": "Copy response"
-  },
-  "network/NetworkLogView.ts | copyResponseHeaders": {
-    "message": "Copy response headers"
-  },
-  "network/NetworkLogView.ts | copyStacktrace": {
-    "message": "Copy stack trace"
-  },
-  "network/NetworkLogView.ts | domcontentloadedS": {
-    "message": "DOMContentLoaded: {PH1}"
-  },
-  "network/NetworkLogView.ts | dropHarFilesHere": {
-    "message": "Drop HAR files here"
-  },
-  "network/NetworkLogView.ts | finishS": {
-    "message": "Finish: {PH1}"
-  },
-  "network/NetworkLogView.ts | hasBlockedCookies": {
-    "message": "Has blocked cookies"
-  },
-  "network/NetworkLogView.ts | hideDataUrls": {
-    "message": "Hide data URLs"
-  },
-  "network/NetworkLogView.ts | hidesDataAndBlobUrls": {
-    "message": "Hides data: and blob: URLs"
-  },
-  "network/NetworkLogView.ts | learnMore": {
-    "message": "Learn more"
-  },
-  "network/NetworkLogView.ts | loadS": {
-    "message": "Load: {PH1}"
-  },
-  "network/NetworkLogView.ts | networkDataAvailable": {
-    "message": "Network Data Available"
-  },
-  "network/NetworkLogView.ts | onlyShowBlockedRequests": {
-    "message": "Only show blocked requests"
-  },
-  "network/NetworkLogView.ts | onlyShowRequestsWithBlocked": {
-    "message": "Only show requests with blocked response cookies"
-  },
-  "network/NetworkLogView.ts | performARequestOrHitSToRecordThe": {
-    "message": "Perform a request or hit {PH1} to record the reload."
-  },
-  "network/NetworkLogView.ts | recordingNetworkActivity": {
-    "message": "Recording network activity…"
-  },
-  "network/NetworkLogView.ts | recordSToDisplayNetworkActivity": {
-    "message": "Record ({PH1}) to display network activity."
-  },
-  "network/NetworkLogView.ts | replayXhr": {
-    "message": "Replay XHR"
-  },
-  "network/NetworkLogView.ts | resourceTypesToInclude": {
-    "message": "Resource types to include"
-  },
-  "network/NetworkLogView.ts | saveAllAsHarWithContent": {
-    "message": "Save all as HAR with content"
-  },
-  "network/NetworkLogView.ts | sBResourcesLoadedByThePage": {
-    "message": "{PH1} B resources loaded by the page"
-  },
-  "network/NetworkLogView.ts | sBSBResourcesLoadedByThePage": {
-    "message": "{PH1} B / {PH2} B resources loaded by the page"
-  },
-  "network/NetworkLogView.ts | sBSBTransferredOverNetwork": {
-    "message": "{PH1} B / {PH2} B transferred over network"
-  },
-  "network/NetworkLogView.ts | sBTransferredOverNetwork": {
-    "message": "{PH1} B transferred over network"
-  },
-  "network/NetworkLogView.ts | sRequests": {
-    "message": "{PH1} requests"
-  },
-  "network/NetworkLogView.ts | sResources": {
-    "message": "{PH1} resources"
-  },
-  "network/NetworkLogView.ts | sSRequests": {
-    "message": "{PH1} / {PH2} requests"
-  },
-  "network/NetworkLogView.ts | sSResources": {
-    "message": "{PH1} / {PH2} resources"
-  },
-  "network/NetworkLogView.ts | sSTransferred": {
-    "message": "{PH1} / {PH2} transferred"
-  },
-  "network/NetworkLogView.ts | sTransferred": {
-    "message": "{PH1} transferred"
-  },
-  "network/NetworkLogView.ts | unblockS": {
-    "message": "Unblock {PH1}"
-  },
-  "network/NetworkLogViewColumns.ts | connectionId": {
-    "message": "Connection ID"
-  },
-  "network/NetworkLogViewColumns.ts | content": {
-    "message": "Content"
-  },
-  "network/NetworkLogViewColumns.ts | cookies": {
-    "message": "Cookies"
-  },
-  "network/NetworkLogViewColumns.ts | domain": {
-    "message": "Domain"
-  },
-  "network/NetworkLogViewColumns.ts | endTime": {
-    "message": "End Time"
-  },
-  "network/NetworkLogViewColumns.ts | initiator": {
-    "message": "Initiator"
-  },
-  "network/NetworkLogViewColumns.ts | initiatorAddressSpace": {
-    "message": "Initiator Address Space"
-  },
-  "network/NetworkLogViewColumns.ts | latency": {
-    "message": "Latency"
-  },
-  "network/NetworkLogViewColumns.ts | manageHeaderColumns": {
-    "message": "Manage Header Columns…"
-  },
-  "network/NetworkLogViewColumns.ts | method": {
-    "message": "Method"
-  },
-  "network/NetworkLogViewColumns.ts | name": {
-    "message": "Name"
-  },
-  "network/NetworkLogViewColumns.ts | networkLog": {
-    "message": "Network Log"
-  },
-  "network/NetworkLogViewColumns.ts | path": {
-    "message": "Path"
-  },
-  "network/NetworkLogViewColumns.ts | priority": {
-    "message": "Priority"
-  },
-  "network/NetworkLogViewColumns.ts | protocol": {
-    "message": "Protocol"
-  },
-  "network/NetworkLogViewColumns.ts | remoteAddress": {
-    "message": "Remote Address"
-  },
-  "network/NetworkLogViewColumns.ts | remoteAddressSpace": {
-    "message": "Remote Address Space"
-  },
-  "network/NetworkLogViewColumns.ts | responseHeaders": {
-    "message": "Response Headers"
-  },
-  "network/NetworkLogViewColumns.ts | responseTime": {
-    "message": "Response Time"
-  },
-  "network/NetworkLogViewColumns.ts | scheme": {
-    "message": "Scheme"
-  },
-  "network/NetworkLogViewColumns.ts | setCookies": {
-    "message": "Set Cookies"
-  },
-  "network/NetworkLogViewColumns.ts | size": {
-    "message": "Size"
-  },
-  "network/NetworkLogViewColumns.ts | startTime": {
-    "message": "Start Time"
-  },
-  "network/NetworkLogViewColumns.ts | status": {
-    "message": "Status"
-  },
-  "network/NetworkLogViewColumns.ts | text": {
-    "message": "Text"
-  },
-  "network/NetworkLogViewColumns.ts | time": {
-    "message": "Time"
-  },
-  "network/NetworkLogViewColumns.ts | totalDuration": {
-    "message": "Total Duration"
-  },
-  "network/NetworkLogViewColumns.ts | type": {
-    "message": "Type"
-  },
-  "network/NetworkLogViewColumns.ts | url": {
-    "message": "Url"
-  },
-  "network/NetworkLogViewColumns.ts | waterfall": {
-    "message": "Waterfall"
-  },
-  "network/NetworkManageCustomHeadersView.ts | addCustomHeader": {
-    "message": "Add custom header…"
-  },
-  "network/NetworkManageCustomHeadersView.ts | headerName": {
-    "message": "Header Name"
-  },
-  "network/NetworkManageCustomHeadersView.ts | manageHeaderColumns": {
-    "message": "Manage Header Columns"
-  },
-  "network/NetworkManageCustomHeadersView.ts | noCustomHeaders": {
-    "message": "No custom headers"
-  },
-  "network/NetworkPanel.ts | captureScreenshots": {
-    "message": "Capture screenshots"
-  },
-  "network/NetworkPanel.ts | captureScreenshotsWhenLoadingA": {
-    "message": "Capture screenshots when loading a page"
-  },
-  "network/NetworkPanel.ts | clear": {
-    "message": "Clear"
-  },
-  "network/NetworkPanel.ts | close": {
-    "message": "Close"
-  },
-  "network/NetworkPanel.ts | disableCache": {
-    "message": "Disable cache"
-  },
-  "network/NetworkPanel.ts | disableCacheWhileDevtoolsIsOpen": {
-    "message": "Disable cache (while DevTools is open)"
-  },
-  "network/NetworkPanel.ts | doNotClearLogOnPageReload": {
-    "message": "Do not clear log on page reload / navigation"
-  },
-  "network/NetworkPanel.ts | exportHar": {
-    "message": "Export HAR..."
-  },
-  "network/NetworkPanel.ts | fetchingFrames": {
-    "message": "Fetching frames..."
-  },
-  "network/NetworkPanel.ts | groupByFrame": {
-    "message": "Group by frame"
-  },
-  "network/NetworkPanel.ts | groupRequestsByTopLevelRequest": {
-    "message": "Group requests by top level request frame"
-  },
-  "network/NetworkPanel.ts | hitSToReloadAndCaptureFilmstrip": {
-    "message": "Hit {PH1} to reload and capture filmstrip."
-  },
-  "network/NetworkPanel.ts | importHarFile": {
-    "message": "Import HAR file..."
-  },
-  "network/NetworkPanel.ts | moreNetworkConditions": {
-    "message": "More network conditions…"
-  },
-  "network/NetworkPanel.ts | networkSettings": {
-    "message": "Network settings"
-  },
-  "network/NetworkPanel.ts | preserveLog": {
-    "message": "Preserve log"
-  },
-  "network/NetworkPanel.ts | recordingFrames": {
-    "message": "Recording frames..."
-  },
-  "network/NetworkPanel.ts | revealInNetworkPanel": {
-    "message": "Reveal in Network panel"
-  },
-  "network/NetworkPanel.ts | search": {
-    "message": "Search"
-  },
-  "network/NetworkPanel.ts | showMoreInformationInRequestRows": {
-    "message": "Show more information in request rows"
-  },
-  "network/NetworkPanel.ts | showOverview": {
-    "message": "Show overview"
-  },
-  "network/NetworkPanel.ts | showOverviewOfNetworkRequests": {
-    "message": "Show overview of network requests"
-  },
-  "network/NetworkPanel.ts | throttling": {
-    "message": "Throttling"
-  },
-  "network/NetworkPanel.ts | useLargeRequestRows": {
-    "message": "Use large request rows"
-  },
-  "network/NetworkSearchScope.ts | url": {
-    "message": "URL"
-  },
-  "network/NetworkTimeCalculator.ts | sDownload": {
-    "message": "{PH1} download"
-  },
-  "network/NetworkTimeCalculator.ts | sFromCache": {
-    "message": "{PH1} (from cache)"
-  },
-  "network/NetworkTimeCalculator.ts | sFromServiceworker": {
-    "message": "{PH1} (from ServiceWorker)"
-  },
-  "network/NetworkTimeCalculator.ts | sLatency": {
-    "message": "{PH1} latency"
-  },
-  "network/NetworkTimeCalculator.ts | sLatencySDownloadSTotal": {
-    "message": "{PH1} latency, {PH2} download ({PH3} total)"
-  },
-  "network/RequestCookiesView.ts | cookiesThatWereReceivedFromThe": {
-    "message": "Cookies that were received from the server in the 'set-cookie' header of the response"
-  },
-  "network/RequestCookiesView.ts | cookiesThatWereReceivedFromTheServer": {
-    "message": "Cookies that were received from the server in the 'set-cookie' header of the response but were malformed"
-  },
-  "network/RequestCookiesView.ts | cookiesThatWereSentToTheServerIn": {
-    "message": "Cookies that were sent to the server in the 'cookie' header of the request"
-  },
-  "network/RequestCookiesView.ts | malformedResponseCookies": {
-    "message": "Malformed Response Cookies"
-  },
-  "network/RequestCookiesView.ts | noRequestCookiesWereSent": {
-    "message": "No request cookies were sent."
-  },
-  "network/RequestCookiesView.ts | requestCookies": {
-    "message": "Request Cookies"
-  },
-  "network/RequestCookiesView.ts | responseCookies": {
-    "message": "Response Cookies"
-  },
-  "network/RequestCookiesView.ts | showFilteredOutRequestCookies": {
-    "message": "show filtered out request cookies"
-  },
-  "network/RequestCookiesView.ts | thisRequestHasNoCookies": {
-    "message": "This request has no cookies."
-  },
-  "network/RequestHeadersView.ts | activeClientExperimentVariation": {
-    "message": "Active client experiment variation IDs."
-  },
-  "network/RequestHeadersView.ts | activeClientExperimentVariationIds": {
-    "message": "Active client experiment variation IDs that trigger server-side behavior."
-  },
-  "network/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
-    "message": "Choose this option if the resource and the document are served from the same site."
-  },
-  "network/RequestHeadersView.ts | copyValue": {
-    "message": "Copy value"
-  },
-  "network/RequestHeadersView.ts | decoded": {
-    "message": "Decoded:"
-  },
-  "network/RequestHeadersView.ts | empty": {
-    "message": "(empty)"
-  },
-  "network/RequestHeadersView.ts | formData": {
-    "message": "Form Data"
-  },
-  "network/RequestHeadersView.ts | fromDiskCache": {
-    "message": "(from disk cache)"
-  },
-  "network/RequestHeadersView.ts | fromMemoryCache": {
-    "message": "(from memory cache)"
-  },
-  "network/RequestHeadersView.ts | fromPrefetchCache": {
-    "message": "(from prefetch cache)"
-  },
-  "network/RequestHeadersView.ts | fromServiceWorker": {
-    "message": "(from service worker)"
-  },
-  "network/RequestHeadersView.ts | fromSignedexchange": {
-    "message": "(from signed-exchange)"
-  },
-  "network/RequestHeadersView.ts | general": {
-    "message": "General"
-  },
-  "network/RequestHeadersView.ts | learnMore": {
-    "message": "Learn more"
-  },
-  "network/RequestHeadersView.ts | learnMoreInTheIssuesTab": {
-    "message": "Learn more in the issues tab"
-  },
-  "network/RequestHeadersView.ts | onlyChooseThisOptionIfAn": {
-    "message": "Only choose this option if an arbitrary website including this resource does not impose a security risk."
-  },
-  "network/RequestHeadersView.ts | onlyProvisionalHeadersAre": {
-    "message": "Only provisional headers are available because this request was not sent over the network and instead was served from a local cache, which doesn’t store the original request headers. Disable cache to see full request headers."
-  },
-  "network/RequestHeadersView.ts | provisionalHeadersAreShown": {
-    "message": "Provisional headers are shown"
-  },
-  "network/RequestHeadersView.ts | provisionalHeadersAreShownS": {
-    "message": "Provisional headers are shown. Disable cache to see full headers."
-  },
-  "network/RequestHeadersView.ts | queryStringParameters": {
-    "message": "Query String Parameters"
-  },
-  "network/RequestHeadersView.ts | referrerPolicy": {
-    "message": "Referrer Policy"
-  },
-  "network/RequestHeadersView.ts | remoteAddress": {
-    "message": "Remote Address"
-  },
-  "network/RequestHeadersView.ts | requestHeaders": {
-    "message": "Request Headers"
-  },
-  "network/RequestHeadersView.ts | requestMethod": {
-    "message": "Request Method"
-  },
-  "network/RequestHeadersView.ts | requestPayload": {
-    "message": "Request Payload"
-  },
-  "network/RequestHeadersView.ts | requestUrl": {
-    "message": "Request URL"
-  },
-  "network/RequestHeadersView.ts | responseHeaders": {
-    "message": "Response Headers"
-  },
-  "network/RequestHeadersView.ts | showMore": {
-    "message": "Show more"
-  },
-  "network/RequestHeadersView.ts | statusCode": {
-    "message": "Status Code"
-  },
-  "network/RequestHeadersView.ts | thisDocumentWasBlockedFrom": {
-    "message": "This document was blocked from loading in an iframe with a sandbox attribute because this document specified a cross-origin opener policy."
-  },
-  "network/RequestHeadersView.ts | toEmbedThisFrameInYourDocument": {
-    "message": "To embed this frame in your document, the response needs to enable the cross-origin embedder policy by specifying the following response header:"
-  },
-  "network/RequestHeadersView.ts | toUseThisResourceFromADifferent": {
-    "message": "To use this resource from a different origin, the server needs to specify a cross-origin resource policy in the response headers:"
-  },
-  "network/RequestHeadersView.ts | toUseThisResourceFromADifferentOrigin": {
-    "message": "To use this resource from a different origin, the server may relax the cross-origin resource policy response header:"
-  },
-  "network/RequestHeadersView.ts | toUseThisResourceFromADifferentSite": {
-    "message": "To use this resource from a different site, the server may relax the cross-origin resource policy response header:"
-  },
-  "network/RequestHeadersView.ts | unableToDecodeValue": {
-    "message": "(unable to decode value)"
-  },
-  "network/RequestHeadersView.ts | viewDecoded": {
-    "message": "View decoded"
-  },
-  "network/RequestHeadersView.ts | viewDecodedL": {
-    "message": "view decoded"
-  },
-  "network/RequestHeadersView.ts | viewParsed": {
-    "message": "View parsed"
-  },
-  "network/RequestHeadersView.ts | viewParsedL": {
-    "message": "view parsed"
-  },
-  "network/RequestHeadersView.ts | viewSource": {
-    "message": "View source"
-  },
-  "network/RequestHeadersView.ts | viewSourceL": {
-    "message": "view source"
-  },
-  "network/RequestHeadersView.ts | viewUrlEncoded": {
-    "message": "View URL-encoded"
-  },
-  "network/RequestHeadersView.ts | viewUrlEncodedL": {
-    "message": "view URL-encoded"
-  },
-  "network/RequestInitiatorView.ts | requestCallStack": {
-    "message": "Request call stack"
-  },
-  "network/RequestInitiatorView.ts | requestInitiatorChain": {
-    "message": "Request initiator chain"
-  },
-  "network/RequestInitiatorView.ts | thisRequestHasNoInitiatorData": {
-    "message": "This request has no initiator data."
-  },
-  "network/RequestPreviewView.ts | failedToLoadResponseData": {
-    "message": "Failed to load response data"
-  },
-  "network/RequestPreviewView.ts | previewNotAvailable": {
-    "message": "Preview not available"
-  },
-  "network/RequestResponseView.ts | failedToLoadResponseData": {
-    "message": "Failed to load response data"
-  },
-  "network/RequestResponseView.ts | thisRequestHasNoResponseData": {
-    "message": "This request has no response data available."
-  },
-  "network/RequestTimingView.ts | cacheStorageCacheNameS": {
-    "message": "Cache storage cache name: {PH1}"
-  },
-  "network/RequestTimingView.ts | cacheStorageCacheNameUnknown": {
-    "message": "Cache storage cache name: Unknown"
-  },
-  "network/RequestTimingView.ts | cautionRequestIsNotFinishedYet": {
-    "message": "CAUTION: request is not finished yet!"
-  },
-  "network/RequestTimingView.ts | connectionStart": {
-    "message": "Connection Start"
-  },
-  "network/RequestTimingView.ts | contentDownload": {
-    "message": "Content Download"
-  },
-  "network/RequestTimingView.ts | dnsLookup": {
-    "message": "DNS Lookup"
-  },
-  "network/RequestTimingView.ts | duration": {
-    "message": "Duration"
-  },
-  "network/RequestTimingView.ts | durationC": {
-    "message": "DURATION"
-  },
-  "network/RequestTimingView.ts | duringDevelopmentYouCanUseSToAdd": {
-    "message": "During development, you can use {PH1} to add insights into the server-side timing of this request."
-  },
-  "network/RequestTimingView.ts | explanation": {
-    "message": "Explanation"
-  },
-  "network/RequestTimingView.ts | fallbackCode": {
-    "message": "Fallback code"
-  },
-  "network/RequestTimingView.ts | fromHttpCache": {
-    "message": "From HTTP cache"
-  },
-  "network/RequestTimingView.ts | initialConnection": {
-    "message": "Initial connection"
-  },
-  "network/RequestTimingView.ts | label": {
-    "message": "Label"
-  },
-  "network/RequestTimingView.ts | networkFetch": {
-    "message": "Network fetch"
-  },
-  "network/RequestTimingView.ts | originalRequest": {
-    "message": "Original Request"
-  },
-  "network/RequestTimingView.ts | proxyNegotiation": {
-    "message": "Proxy negotiation"
-  },
-  "network/RequestTimingView.ts | queuedAtS": {
-    "message": "Queued at {PH1}"
-  },
-  "network/RequestTimingView.ts | queueing": {
-    "message": "Queueing"
-  },
-  "network/RequestTimingView.ts | readingPush": {
-    "message": "Reading Push"
-  },
-  "network/RequestTimingView.ts | receivingPush": {
-    "message": "Receiving Push"
-  },
-  "network/RequestTimingView.ts | requestresponse": {
-    "message": "Request/Response"
-  },
-  "network/RequestTimingView.ts | requestSent": {
-    "message": "Request sent"
-  },
-  "network/RequestTimingView.ts | requestToServiceworker": {
-    "message": "Request to ServiceWorker"
-  },
-  "network/RequestTimingView.ts | resourceScheduling": {
-    "message": "Resource Scheduling"
-  },
-  "network/RequestTimingView.ts | respondwith": {
-    "message": "respondWith"
-  },
-  "network/RequestTimingView.ts | responseReceived": {
-    "message": "Response Received"
-  },
-  "network/RequestTimingView.ts | retrievalTimeS": {
-    "message": "Retrieval Time: {PH1}"
-  },
-  "network/RequestTimingView.ts | serverPush": {
-    "message": "Server Push"
-  },
-  "network/RequestTimingView.ts | serverTiming": {
-    "message": "Server Timing"
-  },
-  "network/RequestTimingView.ts | serviceworkerCacheStorage": {
-    "message": "ServiceWorker cache storage"
-  },
-  "network/RequestTimingView.ts | sourceOfResponseS": {
-    "message": "Source of response: {PH1}"
-  },
-  "network/RequestTimingView.ts | ssl": {
-    "message": "SSL"
-  },
-  "network/RequestTimingView.ts | stalled": {
-    "message": "Stalled"
-  },
-  "network/RequestTimingView.ts | startedAtS": {
-    "message": "Started at {PH1}"
-  },
-  "network/RequestTimingView.ts | startup": {
-    "message": "Startup"
-  },
-  "network/RequestTimingView.ts | theServerTimingApi": {
-    "message": "the Server Timing API"
-  },
-  "network/RequestTimingView.ts | time": {
-    "message": "TIME"
-  },
-  "network/RequestTimingView.ts | total": {
-    "message": "Total"
-  },
-  "network/RequestTimingView.ts | unknown": {
-    "message": "Unknown"
-  },
-  "network/RequestTimingView.ts | waitingTtfb": {
-    "message": "Waiting (TTFB)"
-  },
-  "network/RequestTimingView.ts | waterfall": {
-    "message": "Waterfall"
-  },
-  "network/RequestTrustTokensView.ts | aClientprovidedArgumentWas": {
-    "message": "A client-provided argument was malformed or otherwise invalid."
-  },
-  "network/RequestTrustTokensView.ts | eitherNoInputsForThisOperation": {
-    "message": "Either no inputs for this operation are available or the output exceeds the operations quota."
-  },
-  "network/RequestTrustTokensView.ts | failure": {
-    "message": "Failure"
-  },
-  "network/RequestTrustTokensView.ts | issuer": {
-    "message": "Issuer"
-  },
-  "network/RequestTrustTokensView.ts | issuers": {
-    "message": "Issuers"
-  },
-  "network/RequestTrustTokensView.ts | numberOfIssuedTokens": {
-    "message": "Number of issued tokens"
-  },
-  "network/RequestTrustTokensView.ts | parameters": {
-    "message": "Parameters"
-  },
-  "network/RequestTrustTokensView.ts | refreshPolicy": {
-    "message": "Refresh policy"
-  },
-  "network/RequestTrustTokensView.ts | result": {
-    "message": "Result"
-  },
-  "network/RequestTrustTokensView.ts | status": {
-    "message": "Status"
-  },
-  "network/RequestTrustTokensView.ts | success": {
-    "message": "Success"
-  },
-  "network/RequestTrustTokensView.ts | theOperationFailedForAnUnknown": {
-    "message": "The operation failed for an unknown reason."
-  },
-  "network/RequestTrustTokensView.ts | theOperationsResultWasServedFrom": {
-    "message": "The operations result was served from cache."
-  },
-  "network/RequestTrustTokensView.ts | theOperationWasFulfilledLocally": {
-    "message": "The operation was fulfilled locally, no request was sent."
-  },
-  "network/RequestTrustTokensView.ts | theServersResponseWasMalformedOr": {
-    "message": "The servers response was malformed or otherwise invalid."
-  },
-  "network/RequestTrustTokensView.ts | topLevelOrigin": {
-    "message": "Top level origin"
-  },
-  "network/RequestTrustTokensView.ts | type": {
-    "message": "Type"
-  },
-  "network/ResourceWebSocketFrameView.ts | all": {
-    "message": "All"
-  },
-  "network/ResourceWebSocketFrameView.ts | binaryMessage": {
-    "message": "Binary Message"
-  },
-  "network/ResourceWebSocketFrameView.ts | clearAll": {
-    "message": "Clear All"
-  },
-  "network/ResourceWebSocketFrameView.ts | clearAllL": {
-    "message": "Clear all"
-  },
-  "network/ResourceWebSocketFrameView.ts | connectionCloseMessage": {
-    "message": "Connection Close Message"
-  },
-  "network/ResourceWebSocketFrameView.ts | continuationFrame": {
-    "message": "Continuation Frame"
-  },
-  "network/ResourceWebSocketFrameView.ts | copyMessage": {
-    "message": "Copy message"
-  },
-  "network/ResourceWebSocketFrameView.ts | copyMessageD": {
-    "message": "Copy message..."
-  },
-  "network/ResourceWebSocketFrameView.ts | data": {
-    "message": "Data"
-  },
-  "network/ResourceWebSocketFrameView.ts | enterRegex": {
-    "message": "Enter regex, for example: (web)?socket"
-  },
-  "network/ResourceWebSocketFrameView.ts | filter": {
-    "message": "Filter"
-  },
-  "network/ResourceWebSocketFrameView.ts | length": {
-    "message": "Length"
-  },
-  "network/ResourceWebSocketFrameView.ts | na": {
-    "message": "N/A"
-  },
-  "network/ResourceWebSocketFrameView.ts | pingMessage": {
-    "message": "Ping Message"
-  },
-  "network/ResourceWebSocketFrameView.ts | pongMessage": {
-    "message": "Pong Message"
-  },
-  "network/ResourceWebSocketFrameView.ts | receive": {
-    "message": "Receive"
-  },
-  "network/ResourceWebSocketFrameView.ts | selectMessageToBrowseItsContent": {
-    "message": "Select message to browse its content."
-  },
-  "network/ResourceWebSocketFrameView.ts | send": {
-    "message": "Send"
-  },
-  "network/ResourceWebSocketFrameView.ts | sOpcodeS": {
-    "message": "{PH1} (Opcode {PH2})"
-  },
-  "network/ResourceWebSocketFrameView.ts | sOpcodeSMask": {
-    "message": "{PH1} (Opcode {PH2}, mask)"
-  },
-  "network/ResourceWebSocketFrameView.ts | textMessage": {
-    "message": "Text Message"
-  },
-  "network/ResourceWebSocketFrameView.ts | time": {
-    "message": "Time"
-  },
-  "network/ResourceWebSocketFrameView.ts | webSocketFrame": {
-    "message": "Web Socket Frame"
-  },
-  "network/SignedExchangeInfoView.ts | certificate": {
-    "message": "Certificate"
-  },
-  "network/SignedExchangeInfoView.ts | certificateSha": {
-    "message": "Certificate SHA256"
-  },
-  "network/SignedExchangeInfoView.ts | certificateUrl": {
-    "message": "Certificate URL"
-  },
-  "network/SignedExchangeInfoView.ts | date": {
-    "message": "Date"
-  },
-  "network/SignedExchangeInfoView.ts | errors": {
-    "message": "Errors"
-  },
-  "network/SignedExchangeInfoView.ts | expires": {
-    "message": "Expires"
-  },
-  "network/SignedExchangeInfoView.ts | headerIntegrityHash": {
-    "message": "Header integrity hash"
-  },
-  "network/SignedExchangeInfoView.ts | integrity": {
-    "message": "Integrity"
-  },
-  "network/SignedExchangeInfoView.ts | issuer": {
-    "message": "Issuer"
-  },
-  "network/SignedExchangeInfoView.ts | label": {
-    "message": "Label"
-  },
-  "network/SignedExchangeInfoView.ts | learnmore": {
-    "message": "Learn more"
-  },
-  "network/SignedExchangeInfoView.ts | requestUrl": {
-    "message": "Request URL"
-  },
-  "network/SignedExchangeInfoView.ts | responseCode": {
-    "message": "Response code"
-  },
-  "network/SignedExchangeInfoView.ts | responseHeaders": {
-    "message": "Response headers"
-  },
-  "network/SignedExchangeInfoView.ts | signature": {
-    "message": "Signature"
-  },
-  "network/SignedExchangeInfoView.ts | signedHttpExchange": {
-    "message": "Signed HTTP exchange"
-  },
-  "network/SignedExchangeInfoView.ts | subject": {
-    "message": "Subject"
-  },
-  "network/SignedExchangeInfoView.ts | validFrom": {
-    "message": "Valid from"
-  },
-  "network/SignedExchangeInfoView.ts | validityUrl": {
-    "message": "Validity URL"
-  },
-  "network/SignedExchangeInfoView.ts | validUntil": {
-    "message": "Valid until"
-  },
-  "network/SignedExchangeInfoView.ts | viewCertificate": {
-    "message": "View certificate"
-  },
   "node_debugger/node_debugger-meta.ts | node": {
     "message": "Node"
   },
@@ -5602,6 +4429,1179 @@
   },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | upload": {
     "message": "Upload"
+  },
+  "panels/network/BinaryResourceView.ts | binaryViewType": {
+    "message": "Binary view type"
+  },
+  "panels/network/BinaryResourceView.ts | copiedAsBase": {
+    "message": "Copied as Base64"
+  },
+  "panels/network/BinaryResourceView.ts | copiedAsHex": {
+    "message": "Copied as Hex"
+  },
+  "panels/network/BinaryResourceView.ts | copiedAsUtf": {
+    "message": "Copied as UTF-8"
+  },
+  "panels/network/BinaryResourceView.ts | copyAsBase": {
+    "message": "Copy as Base64"
+  },
+  "panels/network/BinaryResourceView.ts | copyAsHex": {
+    "message": "Copy as Hex"
+  },
+  "panels/network/BinaryResourceView.ts | copyAsUtf": {
+    "message": "Copy as UTF-8"
+  },
+  "panels/network/BinaryResourceView.ts | copyToClipboard": {
+    "message": "Copy to clipboard"
+  },
+  "panels/network/BinaryResourceView.ts | hexViewer": {
+    "message": "Hex Viewer"
+  },
+  "panels/network/BlockedURLsPane.ts | addNetworkRequestBlockingPattern": {
+    "message": "Add network request blocking pattern"
+  },
+  "panels/network/BlockedURLsPane.ts | addPattern": {
+    "message": "Add pattern"
+  },
+  "panels/network/BlockedURLsPane.ts | dBlocked": {
+    "message": "{PH1} blocked"
+  },
+  "panels/network/BlockedURLsPane.ts | enableNetworkRequestBlocking": {
+    "message": "Enable network request blocking"
+  },
+  "panels/network/BlockedURLsPane.ts | networkRequestsAreNotBlockedS": {
+    "message": "Network requests are not blocked. {PH1}"
+  },
+  "panels/network/BlockedURLsPane.ts | patternAlreadyExists": {
+    "message": "Pattern already exists."
+  },
+  "panels/network/BlockedURLsPane.ts | patternInputCannotBeEmpty": {
+    "message": "Pattern input cannot be empty."
+  },
+  "panels/network/BlockedURLsPane.ts | removeAllPatterns": {
+    "message": "Remove all patterns"
+  },
+  "panels/network/BlockedURLsPane.ts | textPatternToBlockMatching": {
+    "message": "Text pattern to block matching requests; use * for wildcard"
+  },
+  "panels/network/EventSourceMessagesView.ts | copyMessage": {
+    "message": "Copy message"
+  },
+  "panels/network/EventSourceMessagesView.ts | data": {
+    "message": "Data"
+  },
+  "panels/network/EventSourceMessagesView.ts | eventSource": {
+    "message": "Event Source"
+  },
+  "panels/network/EventSourceMessagesView.ts | id": {
+    "message": "Id"
+  },
+  "panels/network/EventSourceMessagesView.ts | time": {
+    "message": "Time"
+  },
+  "panels/network/EventSourceMessagesView.ts | type": {
+    "message": "Type"
+  },
+  "panels/network/HARWriter.ts | collectingContent": {
+    "message": "Collecting content…"
+  },
+  "panels/network/HARWriter.ts | writingFile": {
+    "message": "Writing file…"
+  },
+  "panels/network/network-meta.ts | colorCode": {
+    "message": "color code"
+  },
+  "panels/network/network-meta.ts | colorCodeByResourceType": {
+    "message": "Color code by resource type"
+  },
+  "panels/network/network-meta.ts | colorcodeResourceTypes": {
+    "message": "Color-code resource types"
+  },
+  "panels/network/network-meta.ts | diskCache": {
+    "message": "disk cache"
+  },
+  "panels/network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
+    "message": "Don't group network log items by frame"
+  },
+  "panels/network/network-meta.ts | frame": {
+    "message": "frame"
+  },
+  "panels/network/network-meta.ts | group": {
+    "message": "group"
+  },
+  "panels/network/network-meta.ts | groupNetworkLogByFrame": {
+    "message": "Group network log by frame"
+  },
+  "panels/network/network-meta.ts | groupNetworkLogItemsByFrame": {
+    "message": "Group network log items by frame"
+  },
+  "panels/network/network-meta.ts | hideRequestDetails": {
+    "message": "Hide request details"
+  },
+  "panels/network/network-meta.ts | network": {
+    "message": "Network"
+  },
+  "panels/network/network-meta.ts | netWork": {
+    "message": "network"
+  },
+  "panels/network/network-meta.ts | networkConditions": {
+    "message": "Network conditions"
+  },
+  "panels/network/network-meta.ts | networkRequestBlocking": {
+    "message": "Network request blocking"
+  },
+  "panels/network/network-meta.ts | networkThrottling": {
+    "message": "network throttling"
+  },
+  "panels/network/network-meta.ts | recordNetworkLog": {
+    "message": "Record network log"
+  },
+  "panels/network/network-meta.ts | resourceType": {
+    "message": "resource type"
+  },
+  "panels/network/network-meta.ts | search": {
+    "message": "Search"
+  },
+  "panels/network/network-meta.ts | showNetwork": {
+    "message": "Show Network"
+  },
+  "panels/network/network-meta.ts | showNetworkConditions": {
+    "message": "Show Network conditions"
+  },
+  "panels/network/network-meta.ts | showNetworkRequestBlocking": {
+    "message": "Show Network request blocking"
+  },
+  "panels/network/network-meta.ts | showSearch": {
+    "message": "Show Search"
+  },
+  "panels/network/network-meta.ts | stopRecordingNetworkLog": {
+    "message": "Stop recording network log"
+  },
+  "panels/network/network-meta.ts | useDefaultColors": {
+    "message": "Use default colors"
+  },
+  "panels/network/NetworkConfigView.ts | acceptedEncoding": {
+    "message": "Accepted Content-Encodings"
+  },
+  "panels/network/NetworkConfigView.ts | caching": {
+    "message": "Caching"
+  },
+  "panels/network/NetworkConfigView.ts | custom": {
+    "message": "Custom..."
+  },
+  "panels/network/NetworkConfigView.ts | customUserAgentFieldIsRequired": {
+    "message": "Custom user agent field is required"
+  },
+  "panels/network/NetworkConfigView.ts | disableCache": {
+    "message": "Disable cache"
+  },
+  "panels/network/NetworkConfigView.ts | enterACustomUserAgent": {
+    "message": "Enter a custom user agent"
+  },
+  "panels/network/NetworkConfigView.ts | networkThrottling": {
+    "message": "Network throttling"
+  },
+  "panels/network/NetworkConfigView.ts | selectAutomatically": {
+    "message": "Use browser default"
+  },
+  "panels/network/NetworkConfigView.ts | userAgent": {
+    "message": "User agent"
+  },
+  "panels/network/NetworkDataGridNode.ts | blockeds": {
+    "message": "(blocked:{PH1})"
+  },
+  "panels/network/NetworkDataGridNode.ts | canceled": {
+    "message": "(canceled)"
+  },
+  "panels/network/NetworkDataGridNode.ts | corsError": {
+    "message": "CORS error"
+  },
+  "panels/network/NetworkDataGridNode.ts | crossoriginResourceSharingErrorS": {
+    "message": "Cross-Origin Resource Sharing error: {PH1}"
+  },
+  "panels/network/NetworkDataGridNode.ts | csp": {
+    "message": "csp"
+  },
+  "panels/network/NetworkDataGridNode.ts | data": {
+    "message": "(data)"
+  },
+  "panels/network/NetworkDataGridNode.ts | devtools": {
+    "message": "devtools"
+  },
+  "panels/network/NetworkDataGridNode.ts | diskCache": {
+    "message": "(disk cache)"
+  },
+  "panels/network/NetworkDataGridNode.ts | failed": {
+    "message": "(failed)"
+  },
+  "panels/network/NetworkDataGridNode.ts | finished": {
+    "message": "Finished"
+  },
+  "panels/network/NetworkDataGridNode.ts | level": {
+    "message": "level 1"
+  },
+  "panels/network/NetworkDataGridNode.ts | memoryCache": {
+    "message": "(memory cache)"
+  },
+  "panels/network/NetworkDataGridNode.ts | notsameoriginafterdefaultedtosameoriginbycoep": {
+    "message": "NotSameOriginAfterDefaultedToSameOriginByCoep"
+  },
+  "panels/network/NetworkDataGridNode.ts | origin": {
+    "message": "origin"
+  },
+  "panels/network/NetworkDataGridNode.ts | other": {
+    "message": "other"
+  },
+  "panels/network/NetworkDataGridNode.ts | otherC": {
+    "message": "Other"
+  },
+  "panels/network/NetworkDataGridNode.ts | parser": {
+    "message": "Parser"
+  },
+  "panels/network/NetworkDataGridNode.ts | pending": {
+    "message": "Pending"
+  },
+  "panels/network/NetworkDataGridNode.ts | pendingq": {
+    "message": "(pending)"
+  },
+  "panels/network/NetworkDataGridNode.ts | prefetchCache": {
+    "message": "(prefetch cache)"
+  },
+  "panels/network/NetworkDataGridNode.ts | preflight": {
+    "message": "Preflight"
+  },
+  "panels/network/NetworkDataGridNode.ts | preload": {
+    "message": "Preload"
+  },
+  "panels/network/NetworkDataGridNode.ts | push": {
+    "message": "Push / "
+  },
+  "panels/network/NetworkDataGridNode.ts | redirect": {
+    "message": "Redirect"
+  },
+  "panels/network/NetworkDataGridNode.ts | script": {
+    "message": "Script"
+  },
+  "panels/network/NetworkDataGridNode.ts | selectPreflightRequest": {
+    "message": "Select preflight request"
+  },
+  "panels/network/NetworkDataGridNode.ts | selectTheRequestThatTriggered": {
+    "message": "Select the request that triggered this preflight"
+  },
+  "panels/network/NetworkDataGridNode.ts | servedFromDiskCacheResourceSizeS": {
+    "message": "Served from disk cache, resource size: {PH1}"
+  },
+  "panels/network/NetworkDataGridNode.ts | servedFromMemoryCacheResource": {
+    "message": "Served from memory cache, resource size: {PH1}"
+  },
+  "panels/network/NetworkDataGridNode.ts | servedFromPrefetchCacheResource": {
+    "message": "Served from prefetch cache, resource size: {PH1}"
+  },
+  "panels/network/NetworkDataGridNode.ts | servedFromServiceworkerResource": {
+    "message": "Served from ServiceWorker, resource size: {PH1}"
+  },
+  "panels/network/NetworkDataGridNode.ts | servedFromSignedHttpExchange": {
+    "message": "Served from Signed HTTP Exchange, resource size: {PH1}"
+  },
+  "panels/network/NetworkDataGridNode.ts | serviceworker": {
+    "message": "(ServiceWorker)"
+  },
+  "panels/network/NetworkDataGridNode.ts | signedexchange": {
+    "message": "signed-exchange"
+  },
+  "panels/network/NetworkDataGridNode.ts | sPreflight": {
+    "message": "{PH1} + Preflight"
+  },
+  "panels/network/NetworkItemView.ts | cookies": {
+    "message": "Cookies"
+  },
+  "panels/network/NetworkItemView.ts | eventstream": {
+    "message": "EventStream"
+  },
+  "panels/network/NetworkItemView.ts | headers": {
+    "message": "Headers"
+  },
+  "panels/network/NetworkItemView.ts | headersAndRequestBody": {
+    "message": "Headers and request body"
+  },
+  "panels/network/NetworkItemView.ts | initiator": {
+    "message": "Initiator"
+  },
+  "panels/network/NetworkItemView.ts | messages": {
+    "message": "Messages"
+  },
+  "panels/network/NetworkItemView.ts | preview": {
+    "message": "Preview"
+  },
+  "panels/network/NetworkItemView.ts | rawResponseData": {
+    "message": "Raw response data"
+  },
+  "panels/network/NetworkItemView.ts | requestAndResponseCookies": {
+    "message": "Request and response cookies"
+  },
+  "panels/network/NetworkItemView.ts | requestAndResponseTimeline": {
+    "message": "Request and response timeline"
+  },
+  "panels/network/NetworkItemView.ts | requestInitiatorCallStack": {
+    "message": "Request initiator call stack"
+  },
+  "panels/network/NetworkItemView.ts | response": {
+    "message": "Response"
+  },
+  "panels/network/NetworkItemView.ts | responsePreview": {
+    "message": "Response preview"
+  },
+  "panels/network/NetworkItemView.ts | signedexchangeError": {
+    "message": "SignedExchange error"
+  },
+  "panels/network/NetworkItemView.ts | timing": {
+    "message": "Timing"
+  },
+  "panels/network/NetworkItemView.ts | trustTokenOperationDetails": {
+    "message": "Trust Token operation details"
+  },
+  "panels/network/NetworkItemView.ts | trustTokens": {
+    "message": "Trust Tokens"
+  },
+  "panels/network/NetworkItemView.ts | websocketMessages": {
+    "message": "WebSocket messages"
+  },
+  "panels/network/NetworkLogView.ts | areYouSureYouWantToClearBrowser": {
+    "message": "Are you sure you want to clear browser cache?"
+  },
+  "panels/network/NetworkLogView.ts | areYouSureYouWantToClearBrowserCookies": {
+    "message": "Are you sure you want to clear browser cookies?"
+  },
+  "panels/network/NetworkLogView.ts | blockedRequests": {
+    "message": "Blocked Requests"
+  },
+  "panels/network/NetworkLogView.ts | blockRequestDomain": {
+    "message": "Block request domain"
+  },
+  "panels/network/NetworkLogView.ts | blockRequestUrl": {
+    "message": "Block request URL"
+  },
+  "panels/network/NetworkLogView.ts | clearBrowserCache": {
+    "message": "Clear browser cache"
+  },
+  "panels/network/NetworkLogView.ts | clearBrowserCookies": {
+    "message": "Clear browser cookies"
+  },
+  "panels/network/NetworkLogView.ts | copy": {
+    "message": "Copy"
+  },
+  "panels/network/NetworkLogView.ts | copyAllAsCurl": {
+    "message": "Copy all as cURL"
+  },
+  "panels/network/NetworkLogView.ts | copyAllAsCurlBash": {
+    "message": "Copy all as cURL (bash)"
+  },
+  "panels/network/NetworkLogView.ts | copyAllAsCurlCmd": {
+    "message": "Copy all as cURL (cmd)"
+  },
+  "panels/network/NetworkLogView.ts | copyAllAsFetch": {
+    "message": "Copy all as fetch"
+  },
+  "panels/network/NetworkLogView.ts | copyAllAsHar": {
+    "message": "Copy all as HAR"
+  },
+  "panels/network/NetworkLogView.ts | copyAllAsNodejsFetch": {
+    "message": "Copy all as Node.js fetch"
+  },
+  "panels/network/NetworkLogView.ts | copyAllAsPowershell": {
+    "message": "Copy all as PowerShell"
+  },
+  "panels/network/NetworkLogView.ts | copyAsCurl": {
+    "message": "Copy as cURL"
+  },
+  "panels/network/NetworkLogView.ts | copyAsCurlBash": {
+    "message": "Copy as cURL (bash)"
+  },
+  "panels/network/NetworkLogView.ts | copyAsCurlCmd": {
+    "message": "Copy as cURL (cmd)"
+  },
+  "panels/network/NetworkLogView.ts | copyAsFetch": {
+    "message": "Copy as fetch"
+  },
+  "panels/network/NetworkLogView.ts | copyAsNodejsFetch": {
+    "message": "Copy as Node.js fetch"
+  },
+  "panels/network/NetworkLogView.ts | copyAsPowershell": {
+    "message": "Copy as PowerShell"
+  },
+  "panels/network/NetworkLogView.ts | copyRequestHeaders": {
+    "message": "Copy request headers"
+  },
+  "panels/network/NetworkLogView.ts | copyResponse": {
+    "message": "Copy response"
+  },
+  "panels/network/NetworkLogView.ts | copyResponseHeaders": {
+    "message": "Copy response headers"
+  },
+  "panels/network/NetworkLogView.ts | copyStacktrace": {
+    "message": "Copy stack trace"
+  },
+  "panels/network/NetworkLogView.ts | domcontentloadedS": {
+    "message": "DOMContentLoaded: {PH1}"
+  },
+  "panels/network/NetworkLogView.ts | dropHarFilesHere": {
+    "message": "Drop HAR files here"
+  },
+  "panels/network/NetworkLogView.ts | finishS": {
+    "message": "Finish: {PH1}"
+  },
+  "panels/network/NetworkLogView.ts | hasBlockedCookies": {
+    "message": "Has blocked cookies"
+  },
+  "panels/network/NetworkLogView.ts | hideDataUrls": {
+    "message": "Hide data URLs"
+  },
+  "panels/network/NetworkLogView.ts | hidesDataAndBlobUrls": {
+    "message": "Hides data: and blob: URLs"
+  },
+  "panels/network/NetworkLogView.ts | learnMore": {
+    "message": "Learn more"
+  },
+  "panels/network/NetworkLogView.ts | loadS": {
+    "message": "Load: {PH1}"
+  },
+  "panels/network/NetworkLogView.ts | networkDataAvailable": {
+    "message": "Network Data Available"
+  },
+  "panels/network/NetworkLogView.ts | onlyShowBlockedRequests": {
+    "message": "Only show blocked requests"
+  },
+  "panels/network/NetworkLogView.ts | onlyShowRequestsWithBlocked": {
+    "message": "Only show requests with blocked response cookies"
+  },
+  "panels/network/NetworkLogView.ts | performARequestOrHitSToRecordThe": {
+    "message": "Perform a request or hit {PH1} to record the reload."
+  },
+  "panels/network/NetworkLogView.ts | recordingNetworkActivity": {
+    "message": "Recording network activity…"
+  },
+  "panels/network/NetworkLogView.ts | recordSToDisplayNetworkActivity": {
+    "message": "Record ({PH1}) to display network activity."
+  },
+  "panels/network/NetworkLogView.ts | replayXhr": {
+    "message": "Replay XHR"
+  },
+  "panels/network/NetworkLogView.ts | resourceTypesToInclude": {
+    "message": "Resource types to include"
+  },
+  "panels/network/NetworkLogView.ts | saveAllAsHarWithContent": {
+    "message": "Save all as HAR with content"
+  },
+  "panels/network/NetworkLogView.ts | sBResourcesLoadedByThePage": {
+    "message": "{PH1} B resources loaded by the page"
+  },
+  "panels/network/NetworkLogView.ts | sBSBResourcesLoadedByThePage": {
+    "message": "{PH1} B / {PH2} B resources loaded by the page"
+  },
+  "panels/network/NetworkLogView.ts | sBSBTransferredOverNetwork": {
+    "message": "{PH1} B / {PH2} B transferred over network"
+  },
+  "panels/network/NetworkLogView.ts | sBTransferredOverNetwork": {
+    "message": "{PH1} B transferred over network"
+  },
+  "panels/network/NetworkLogView.ts | sRequests": {
+    "message": "{PH1} requests"
+  },
+  "panels/network/NetworkLogView.ts | sResources": {
+    "message": "{PH1} resources"
+  },
+  "panels/network/NetworkLogView.ts | sSRequests": {
+    "message": "{PH1} / {PH2} requests"
+  },
+  "panels/network/NetworkLogView.ts | sSResources": {
+    "message": "{PH1} / {PH2} resources"
+  },
+  "panels/network/NetworkLogView.ts | sSTransferred": {
+    "message": "{PH1} / {PH2} transferred"
+  },
+  "panels/network/NetworkLogView.ts | sTransferred": {
+    "message": "{PH1} transferred"
+  },
+  "panels/network/NetworkLogView.ts | unblockS": {
+    "message": "Unblock {PH1}"
+  },
+  "panels/network/NetworkLogViewColumns.ts | connectionId": {
+    "message": "Connection ID"
+  },
+  "panels/network/NetworkLogViewColumns.ts | content": {
+    "message": "Content"
+  },
+  "panels/network/NetworkLogViewColumns.ts | cookies": {
+    "message": "Cookies"
+  },
+  "panels/network/NetworkLogViewColumns.ts | domain": {
+    "message": "Domain"
+  },
+  "panels/network/NetworkLogViewColumns.ts | endTime": {
+    "message": "End Time"
+  },
+  "panels/network/NetworkLogViewColumns.ts | initiator": {
+    "message": "Initiator"
+  },
+  "panels/network/NetworkLogViewColumns.ts | initiatorAddressSpace": {
+    "message": "Initiator Address Space"
+  },
+  "panels/network/NetworkLogViewColumns.ts | latency": {
+    "message": "Latency"
+  },
+  "panels/network/NetworkLogViewColumns.ts | manageHeaderColumns": {
+    "message": "Manage Header Columns…"
+  },
+  "panels/network/NetworkLogViewColumns.ts | method": {
+    "message": "Method"
+  },
+  "panels/network/NetworkLogViewColumns.ts | name": {
+    "message": "Name"
+  },
+  "panels/network/NetworkLogViewColumns.ts | networkLog": {
+    "message": "Network Log"
+  },
+  "panels/network/NetworkLogViewColumns.ts | path": {
+    "message": "Path"
+  },
+  "panels/network/NetworkLogViewColumns.ts | priority": {
+    "message": "Priority"
+  },
+  "panels/network/NetworkLogViewColumns.ts | protocol": {
+    "message": "Protocol"
+  },
+  "panels/network/NetworkLogViewColumns.ts | remoteAddress": {
+    "message": "Remote Address"
+  },
+  "panels/network/NetworkLogViewColumns.ts | remoteAddressSpace": {
+    "message": "Remote Address Space"
+  },
+  "panels/network/NetworkLogViewColumns.ts | responseHeaders": {
+    "message": "Response Headers"
+  },
+  "panels/network/NetworkLogViewColumns.ts | responseTime": {
+    "message": "Response Time"
+  },
+  "panels/network/NetworkLogViewColumns.ts | scheme": {
+    "message": "Scheme"
+  },
+  "panels/network/NetworkLogViewColumns.ts | setCookies": {
+    "message": "Set Cookies"
+  },
+  "panels/network/NetworkLogViewColumns.ts | size": {
+    "message": "Size"
+  },
+  "panels/network/NetworkLogViewColumns.ts | startTime": {
+    "message": "Start Time"
+  },
+  "panels/network/NetworkLogViewColumns.ts | status": {
+    "message": "Status"
+  },
+  "panels/network/NetworkLogViewColumns.ts | text": {
+    "message": "Text"
+  },
+  "panels/network/NetworkLogViewColumns.ts | time": {
+    "message": "Time"
+  },
+  "panels/network/NetworkLogViewColumns.ts | totalDuration": {
+    "message": "Total Duration"
+  },
+  "panels/network/NetworkLogViewColumns.ts | type": {
+    "message": "Type"
+  },
+  "panels/network/NetworkLogViewColumns.ts | url": {
+    "message": "Url"
+  },
+  "panels/network/NetworkLogViewColumns.ts | waterfall": {
+    "message": "Waterfall"
+  },
+  "panels/network/NetworkManageCustomHeadersView.ts | addCustomHeader": {
+    "message": "Add custom header…"
+  },
+  "panels/network/NetworkManageCustomHeadersView.ts | headerName": {
+    "message": "Header Name"
+  },
+  "panels/network/NetworkManageCustomHeadersView.ts | manageHeaderColumns": {
+    "message": "Manage Header Columns"
+  },
+  "panels/network/NetworkManageCustomHeadersView.ts | noCustomHeaders": {
+    "message": "No custom headers"
+  },
+  "panels/network/NetworkPanel.ts | captureScreenshots": {
+    "message": "Capture screenshots"
+  },
+  "panels/network/NetworkPanel.ts | captureScreenshotsWhenLoadingA": {
+    "message": "Capture screenshots when loading a page"
+  },
+  "panels/network/NetworkPanel.ts | clear": {
+    "message": "Clear"
+  },
+  "panels/network/NetworkPanel.ts | close": {
+    "message": "Close"
+  },
+  "panels/network/NetworkPanel.ts | disableCache": {
+    "message": "Disable cache"
+  },
+  "panels/network/NetworkPanel.ts | disableCacheWhileDevtoolsIsOpen": {
+    "message": "Disable cache (while DevTools is open)"
+  },
+  "panels/network/NetworkPanel.ts | doNotClearLogOnPageReload": {
+    "message": "Do not clear log on page reload / navigation"
+  },
+  "panels/network/NetworkPanel.ts | exportHar": {
+    "message": "Export HAR..."
+  },
+  "panels/network/NetworkPanel.ts | fetchingFrames": {
+    "message": "Fetching frames..."
+  },
+  "panels/network/NetworkPanel.ts | groupByFrame": {
+    "message": "Group by frame"
+  },
+  "panels/network/NetworkPanel.ts | groupRequestsByTopLevelRequest": {
+    "message": "Group requests by top level request frame"
+  },
+  "panels/network/NetworkPanel.ts | hitSToReloadAndCaptureFilmstrip": {
+    "message": "Hit {PH1} to reload and capture filmstrip."
+  },
+  "panels/network/NetworkPanel.ts | importHarFile": {
+    "message": "Import HAR file..."
+  },
+  "panels/network/NetworkPanel.ts | moreNetworkConditions": {
+    "message": "More network conditions…"
+  },
+  "panels/network/NetworkPanel.ts | networkSettings": {
+    "message": "Network settings"
+  },
+  "panels/network/NetworkPanel.ts | preserveLog": {
+    "message": "Preserve log"
+  },
+  "panels/network/NetworkPanel.ts | recordingFrames": {
+    "message": "Recording frames..."
+  },
+  "panels/network/NetworkPanel.ts | revealInNetworkPanel": {
+    "message": "Reveal in Network panel"
+  },
+  "panels/network/NetworkPanel.ts | search": {
+    "message": "Search"
+  },
+  "panels/network/NetworkPanel.ts | showMoreInformationInRequestRows": {
+    "message": "Show more information in request rows"
+  },
+  "panels/network/NetworkPanel.ts | showOverview": {
+    "message": "Show overview"
+  },
+  "panels/network/NetworkPanel.ts | showOverviewOfNetworkRequests": {
+    "message": "Show overview of network requests"
+  },
+  "panels/network/NetworkPanel.ts | throttling": {
+    "message": "Throttling"
+  },
+  "panels/network/NetworkPanel.ts | useLargeRequestRows": {
+    "message": "Use large request rows"
+  },
+  "panels/network/NetworkSearchScope.ts | url": {
+    "message": "URL"
+  },
+  "panels/network/NetworkTimeCalculator.ts | sDownload": {
+    "message": "{PH1} download"
+  },
+  "panels/network/NetworkTimeCalculator.ts | sFromCache": {
+    "message": "{PH1} (from cache)"
+  },
+  "panels/network/NetworkTimeCalculator.ts | sFromServiceworker": {
+    "message": "{PH1} (from ServiceWorker)"
+  },
+  "panels/network/NetworkTimeCalculator.ts | sLatency": {
+    "message": "{PH1} latency"
+  },
+  "panels/network/NetworkTimeCalculator.ts | sLatencySDownloadSTotal": {
+    "message": "{PH1} latency, {PH2} download ({PH3} total)"
+  },
+  "panels/network/RequestCookiesView.ts | cookiesThatWereReceivedFromThe": {
+    "message": "Cookies that were received from the server in the 'set-cookie' header of the response"
+  },
+  "panels/network/RequestCookiesView.ts | cookiesThatWereReceivedFromTheServer": {
+    "message": "Cookies that were received from the server in the 'set-cookie' header of the response but were malformed"
+  },
+  "panels/network/RequestCookiesView.ts | cookiesThatWereSentToTheServerIn": {
+    "message": "Cookies that were sent to the server in the 'cookie' header of the request"
+  },
+  "panels/network/RequestCookiesView.ts | malformedResponseCookies": {
+    "message": "Malformed Response Cookies"
+  },
+  "panels/network/RequestCookiesView.ts | noRequestCookiesWereSent": {
+    "message": "No request cookies were sent."
+  },
+  "panels/network/RequestCookiesView.ts | requestCookies": {
+    "message": "Request Cookies"
+  },
+  "panels/network/RequestCookiesView.ts | responseCookies": {
+    "message": "Response Cookies"
+  },
+  "panels/network/RequestCookiesView.ts | showFilteredOutRequestCookies": {
+    "message": "show filtered out request cookies"
+  },
+  "panels/network/RequestCookiesView.ts | thisRequestHasNoCookies": {
+    "message": "This request has no cookies."
+  },
+  "panels/network/RequestHeadersView.ts | activeClientExperimentVariation": {
+    "message": "Active client experiment variation IDs."
+  },
+  "panels/network/RequestHeadersView.ts | activeClientExperimentVariationIds": {
+    "message": "Active client experiment variation IDs that trigger server-side behavior."
+  },
+  "panels/network/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
+    "message": "Choose this option if the resource and the document are served from the same site."
+  },
+  "panels/network/RequestHeadersView.ts | copyValue": {
+    "message": "Copy value"
+  },
+  "panels/network/RequestHeadersView.ts | decoded": {
+    "message": "Decoded:"
+  },
+  "panels/network/RequestHeadersView.ts | empty": {
+    "message": "(empty)"
+  },
+  "panels/network/RequestHeadersView.ts | formData": {
+    "message": "Form Data"
+  },
+  "panels/network/RequestHeadersView.ts | fromDiskCache": {
+    "message": "(from disk cache)"
+  },
+  "panels/network/RequestHeadersView.ts | fromMemoryCache": {
+    "message": "(from memory cache)"
+  },
+  "panels/network/RequestHeadersView.ts | fromPrefetchCache": {
+    "message": "(from prefetch cache)"
+  },
+  "panels/network/RequestHeadersView.ts | fromServiceWorker": {
+    "message": "(from service worker)"
+  },
+  "panels/network/RequestHeadersView.ts | fromSignedexchange": {
+    "message": "(from signed-exchange)"
+  },
+  "panels/network/RequestHeadersView.ts | general": {
+    "message": "General"
+  },
+  "panels/network/RequestHeadersView.ts | learnMore": {
+    "message": "Learn more"
+  },
+  "panels/network/RequestHeadersView.ts | learnMoreInTheIssuesTab": {
+    "message": "Learn more in the issues tab"
+  },
+  "panels/network/RequestHeadersView.ts | onlyChooseThisOptionIfAn": {
+    "message": "Only choose this option if an arbitrary website including this resource does not impose a security risk."
+  },
+  "panels/network/RequestHeadersView.ts | onlyProvisionalHeadersAre": {
+    "message": "Only provisional headers are available because this request was not sent over the network and instead was served from a local cache, which doesn’t store the original request headers. Disable cache to see full request headers."
+  },
+  "panels/network/RequestHeadersView.ts | provisionalHeadersAreShown": {
+    "message": "Provisional headers are shown"
+  },
+  "panels/network/RequestHeadersView.ts | provisionalHeadersAreShownS": {
+    "message": "Provisional headers are shown. Disable cache to see full headers."
+  },
+  "panels/network/RequestHeadersView.ts | queryStringParameters": {
+    "message": "Query String Parameters"
+  },
+  "panels/network/RequestHeadersView.ts | referrerPolicy": {
+    "message": "Referrer Policy"
+  },
+  "panels/network/RequestHeadersView.ts | remoteAddress": {
+    "message": "Remote Address"
+  },
+  "panels/network/RequestHeadersView.ts | requestHeaders": {
+    "message": "Request Headers"
+  },
+  "panels/network/RequestHeadersView.ts | requestMethod": {
+    "message": "Request Method"
+  },
+  "panels/network/RequestHeadersView.ts | requestPayload": {
+    "message": "Request Payload"
+  },
+  "panels/network/RequestHeadersView.ts | requestUrl": {
+    "message": "Request URL"
+  },
+  "panels/network/RequestHeadersView.ts | responseHeaders": {
+    "message": "Response Headers"
+  },
+  "panels/network/RequestHeadersView.ts | showMore": {
+    "message": "Show more"
+  },
+  "panels/network/RequestHeadersView.ts | statusCode": {
+    "message": "Status Code"
+  },
+  "panels/network/RequestHeadersView.ts | thisDocumentWasBlockedFrom": {
+    "message": "This document was blocked from loading in an iframe with a sandbox attribute because this document specified a cross-origin opener policy."
+  },
+  "panels/network/RequestHeadersView.ts | toEmbedThisFrameInYourDocument": {
+    "message": "To embed this frame in your document, the response needs to enable the cross-origin embedder policy by specifying the following response header:"
+  },
+  "panels/network/RequestHeadersView.ts | toUseThisResourceFromADifferent": {
+    "message": "To use this resource from a different origin, the server needs to specify a cross-origin resource policy in the response headers:"
+  },
+  "panels/network/RequestHeadersView.ts | toUseThisResourceFromADifferentOrigin": {
+    "message": "To use this resource from a different origin, the server may relax the cross-origin resource policy response header:"
+  },
+  "panels/network/RequestHeadersView.ts | toUseThisResourceFromADifferentSite": {
+    "message": "To use this resource from a different site, the server may relax the cross-origin resource policy response header:"
+  },
+  "panels/network/RequestHeadersView.ts | unableToDecodeValue": {
+    "message": "(unable to decode value)"
+  },
+  "panels/network/RequestHeadersView.ts | viewDecoded": {
+    "message": "View decoded"
+  },
+  "panels/network/RequestHeadersView.ts | viewDecodedL": {
+    "message": "view decoded"
+  },
+  "panels/network/RequestHeadersView.ts | viewParsed": {
+    "message": "View parsed"
+  },
+  "panels/network/RequestHeadersView.ts | viewParsedL": {
+    "message": "view parsed"
+  },
+  "panels/network/RequestHeadersView.ts | viewSource": {
+    "message": "View source"
+  },
+  "panels/network/RequestHeadersView.ts | viewSourceL": {
+    "message": "view source"
+  },
+  "panels/network/RequestHeadersView.ts | viewUrlEncoded": {
+    "message": "View URL-encoded"
+  },
+  "panels/network/RequestHeadersView.ts | viewUrlEncodedL": {
+    "message": "view URL-encoded"
+  },
+  "panels/network/RequestInitiatorView.ts | requestCallStack": {
+    "message": "Request call stack"
+  },
+  "panels/network/RequestInitiatorView.ts | requestInitiatorChain": {
+    "message": "Request initiator chain"
+  },
+  "panels/network/RequestInitiatorView.ts | thisRequestHasNoInitiatorData": {
+    "message": "This request has no initiator data."
+  },
+  "panels/network/RequestPreviewView.ts | failedToLoadResponseData": {
+    "message": "Failed to load response data"
+  },
+  "panels/network/RequestPreviewView.ts | previewNotAvailable": {
+    "message": "Preview not available"
+  },
+  "panels/network/RequestResponseView.ts | failedToLoadResponseData": {
+    "message": "Failed to load response data"
+  },
+  "panels/network/RequestResponseView.ts | thisRequestHasNoResponseData": {
+    "message": "This request has no response data available."
+  },
+  "panels/network/RequestTimingView.ts | cacheStorageCacheNameS": {
+    "message": "Cache storage cache name: {PH1}"
+  },
+  "panels/network/RequestTimingView.ts | cacheStorageCacheNameUnknown": {
+    "message": "Cache storage cache name: Unknown"
+  },
+  "panels/network/RequestTimingView.ts | cautionRequestIsNotFinishedYet": {
+    "message": "CAUTION: request is not finished yet!"
+  },
+  "panels/network/RequestTimingView.ts | connectionStart": {
+    "message": "Connection Start"
+  },
+  "panels/network/RequestTimingView.ts | contentDownload": {
+    "message": "Content Download"
+  },
+  "panels/network/RequestTimingView.ts | dnsLookup": {
+    "message": "DNS Lookup"
+  },
+  "panels/network/RequestTimingView.ts | duration": {
+    "message": "Duration"
+  },
+  "panels/network/RequestTimingView.ts | durationC": {
+    "message": "DURATION"
+  },
+  "panels/network/RequestTimingView.ts | duringDevelopmentYouCanUseSToAdd": {
+    "message": "During development, you can use {PH1} to add insights into the server-side timing of this request."
+  },
+  "panels/network/RequestTimingView.ts | explanation": {
+    "message": "Explanation"
+  },
+  "panels/network/RequestTimingView.ts | fallbackCode": {
+    "message": "Fallback code"
+  },
+  "panels/network/RequestTimingView.ts | fromHttpCache": {
+    "message": "From HTTP cache"
+  },
+  "panels/network/RequestTimingView.ts | initialConnection": {
+    "message": "Initial connection"
+  },
+  "panels/network/RequestTimingView.ts | label": {
+    "message": "Label"
+  },
+  "panels/network/RequestTimingView.ts | networkFetch": {
+    "message": "Network fetch"
+  },
+  "panels/network/RequestTimingView.ts | originalRequest": {
+    "message": "Original Request"
+  },
+  "panels/network/RequestTimingView.ts | proxyNegotiation": {
+    "message": "Proxy negotiation"
+  },
+  "panels/network/RequestTimingView.ts | queuedAtS": {
+    "message": "Queued at {PH1}"
+  },
+  "panels/network/RequestTimingView.ts | queueing": {
+    "message": "Queueing"
+  },
+  "panels/network/RequestTimingView.ts | readingPush": {
+    "message": "Reading Push"
+  },
+  "panels/network/RequestTimingView.ts | receivingPush": {
+    "message": "Receiving Push"
+  },
+  "panels/network/RequestTimingView.ts | requestresponse": {
+    "message": "Request/Response"
+  },
+  "panels/network/RequestTimingView.ts | requestSent": {
+    "message": "Request sent"
+  },
+  "panels/network/RequestTimingView.ts | requestToServiceworker": {
+    "message": "Request to ServiceWorker"
+  },
+  "panels/network/RequestTimingView.ts | resourceScheduling": {
+    "message": "Resource Scheduling"
+  },
+  "panels/network/RequestTimingView.ts | respondwith": {
+    "message": "respondWith"
+  },
+  "panels/network/RequestTimingView.ts | responseReceived": {
+    "message": "Response Received"
+  },
+  "panels/network/RequestTimingView.ts | retrievalTimeS": {
+    "message": "Retrieval Time: {PH1}"
+  },
+  "panels/network/RequestTimingView.ts | serverPush": {
+    "message": "Server Push"
+  },
+  "panels/network/RequestTimingView.ts | serverTiming": {
+    "message": "Server Timing"
+  },
+  "panels/network/RequestTimingView.ts | serviceworkerCacheStorage": {
+    "message": "ServiceWorker cache storage"
+  },
+  "panels/network/RequestTimingView.ts | sourceOfResponseS": {
+    "message": "Source of response: {PH1}"
+  },
+  "panels/network/RequestTimingView.ts | ssl": {
+    "message": "SSL"
+  },
+  "panels/network/RequestTimingView.ts | stalled": {
+    "message": "Stalled"
+  },
+  "panels/network/RequestTimingView.ts | startedAtS": {
+    "message": "Started at {PH1}"
+  },
+  "panels/network/RequestTimingView.ts | startup": {
+    "message": "Startup"
+  },
+  "panels/network/RequestTimingView.ts | theServerTimingApi": {
+    "message": "the Server Timing API"
+  },
+  "panels/network/RequestTimingView.ts | time": {
+    "message": "TIME"
+  },
+  "panels/network/RequestTimingView.ts | total": {
+    "message": "Total"
+  },
+  "panels/network/RequestTimingView.ts | unknown": {
+    "message": "Unknown"
+  },
+  "panels/network/RequestTimingView.ts | waitingTtfb": {
+    "message": "Waiting (TTFB)"
+  },
+  "panels/network/RequestTimingView.ts | waterfall": {
+    "message": "Waterfall"
+  },
+  "panels/network/RequestTrustTokensView.ts | aClientprovidedArgumentWas": {
+    "message": "A client-provided argument was malformed or otherwise invalid."
+  },
+  "panels/network/RequestTrustTokensView.ts | eitherNoInputsForThisOperation": {
+    "message": "Either no inputs for this operation are available or the output exceeds the operations quota."
+  },
+  "panels/network/RequestTrustTokensView.ts | failure": {
+    "message": "Failure"
+  },
+  "panels/network/RequestTrustTokensView.ts | issuer": {
+    "message": "Issuer"
+  },
+  "panels/network/RequestTrustTokensView.ts | issuers": {
+    "message": "Issuers"
+  },
+  "panels/network/RequestTrustTokensView.ts | numberOfIssuedTokens": {
+    "message": "Number of issued tokens"
+  },
+  "panels/network/RequestTrustTokensView.ts | parameters": {
+    "message": "Parameters"
+  },
+  "panels/network/RequestTrustTokensView.ts | refreshPolicy": {
+    "message": "Refresh policy"
+  },
+  "panels/network/RequestTrustTokensView.ts | result": {
+    "message": "Result"
+  },
+  "panels/network/RequestTrustTokensView.ts | status": {
+    "message": "Status"
+  },
+  "panels/network/RequestTrustTokensView.ts | success": {
+    "message": "Success"
+  },
+  "panels/network/RequestTrustTokensView.ts | theOperationFailedForAnUnknown": {
+    "message": "The operation failed for an unknown reason."
+  },
+  "panels/network/RequestTrustTokensView.ts | theOperationsResultWasServedFrom": {
+    "message": "The operations result was served from cache."
+  },
+  "panels/network/RequestTrustTokensView.ts | theOperationWasFulfilledLocally": {
+    "message": "The operation was fulfilled locally, no request was sent."
+  },
+  "panels/network/RequestTrustTokensView.ts | theServersResponseWasMalformedOr": {
+    "message": "The servers response was malformed or otherwise invalid."
+  },
+  "panels/network/RequestTrustTokensView.ts | topLevelOrigin": {
+    "message": "Top level origin"
+  },
+  "panels/network/RequestTrustTokensView.ts | type": {
+    "message": "Type"
+  },
+  "panels/network/ResourceWebSocketFrameView.ts | all": {
+    "message": "All"
+  },
+  "panels/network/ResourceWebSocketFrameView.ts | binaryMessage": {
+    "message": "Binary Message"
+  },
+  "panels/network/ResourceWebSocketFrameView.ts | clearAll": {
+    "message": "Clear All"
+  },
+  "panels/network/ResourceWebSocketFrameView.ts | clearAllL": {
+    "message": "Clear all"
+  },
+  "panels/network/ResourceWebSocketFrameView.ts | connectionCloseMessage": {
+    "message": "Connection Close Message"
+  },
+  "panels/network/ResourceWebSocketFrameView.ts | continuationFrame": {
+    "message": "Continuation Frame"
+  },
+  "panels/network/ResourceWebSocketFrameView.ts | copyMessage": {
+    "message": "Copy message"
+  },
+  "panels/network/ResourceWebSocketFrameView.ts | copyMessageD": {
+    "message": "Copy message..."
+  },
+  "panels/network/ResourceWebSocketFrameView.ts | data": {
+    "message": "Data"
+  },
+  "panels/network/ResourceWebSocketFrameView.ts | enterRegex": {
+    "message": "Enter regex, for example: (web)?socket"
+  },
+  "panels/network/ResourceWebSocketFrameView.ts | filter": {
+    "message": "Filter"
+  },
+  "panels/network/ResourceWebSocketFrameView.ts | length": {
+    "message": "Length"
+  },
+  "panels/network/ResourceWebSocketFrameView.ts | na": {
+    "message": "N/A"
+  },
+  "panels/network/ResourceWebSocketFrameView.ts | pingMessage": {
+    "message": "Ping Message"
+  },
+  "panels/network/ResourceWebSocketFrameView.ts | pongMessage": {
+    "message": "Pong Message"
+  },
+  "panels/network/ResourceWebSocketFrameView.ts | receive": {
+    "message": "Receive"
+  },
+  "panels/network/ResourceWebSocketFrameView.ts | selectMessageToBrowseItsContent": {
+    "message": "Select message to browse its content."
+  },
+  "panels/network/ResourceWebSocketFrameView.ts | send": {
+    "message": "Send"
+  },
+  "panels/network/ResourceWebSocketFrameView.ts | sOpcodeS": {
+    "message": "{PH1} (Opcode {PH2})"
+  },
+  "panels/network/ResourceWebSocketFrameView.ts | sOpcodeSMask": {
+    "message": "{PH1} (Opcode {PH2}, mask)"
+  },
+  "panels/network/ResourceWebSocketFrameView.ts | textMessage": {
+    "message": "Text Message"
+  },
+  "panels/network/ResourceWebSocketFrameView.ts | time": {
+    "message": "Time"
+  },
+  "panels/network/ResourceWebSocketFrameView.ts | webSocketFrame": {
+    "message": "Web Socket Frame"
+  },
+  "panels/network/SignedExchangeInfoView.ts | certificate": {
+    "message": "Certificate"
+  },
+  "panels/network/SignedExchangeInfoView.ts | certificateSha": {
+    "message": "Certificate SHA256"
+  },
+  "panels/network/SignedExchangeInfoView.ts | certificateUrl": {
+    "message": "Certificate URL"
+  },
+  "panels/network/SignedExchangeInfoView.ts | date": {
+    "message": "Date"
+  },
+  "panels/network/SignedExchangeInfoView.ts | errors": {
+    "message": "Errors"
+  },
+  "panels/network/SignedExchangeInfoView.ts | expires": {
+    "message": "Expires"
+  },
+  "panels/network/SignedExchangeInfoView.ts | headerIntegrityHash": {
+    "message": "Header integrity hash"
+  },
+  "panels/network/SignedExchangeInfoView.ts | integrity": {
+    "message": "Integrity"
+  },
+  "panels/network/SignedExchangeInfoView.ts | issuer": {
+    "message": "Issuer"
+  },
+  "panels/network/SignedExchangeInfoView.ts | label": {
+    "message": "Label"
+  },
+  "panels/network/SignedExchangeInfoView.ts | learnmore": {
+    "message": "Learn more"
+  },
+  "panels/network/SignedExchangeInfoView.ts | requestUrl": {
+    "message": "Request URL"
+  },
+  "panels/network/SignedExchangeInfoView.ts | responseCode": {
+    "message": "Response code"
+  },
+  "panels/network/SignedExchangeInfoView.ts | responseHeaders": {
+    "message": "Response headers"
+  },
+  "panels/network/SignedExchangeInfoView.ts | signature": {
+    "message": "Signature"
+  },
+  "panels/network/SignedExchangeInfoView.ts | signedHttpExchange": {
+    "message": "Signed HTTP exchange"
+  },
+  "panels/network/SignedExchangeInfoView.ts | subject": {
+    "message": "Subject"
+  },
+  "panels/network/SignedExchangeInfoView.ts | validFrom": {
+    "message": "Valid from"
+  },
+  "panels/network/SignedExchangeInfoView.ts | validityUrl": {
+    "message": "Validity URL"
+  },
+  "panels/network/SignedExchangeInfoView.ts | validUntil": {
+    "message": "Valid until"
+  },
+  "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
+    "message": "View certificate"
   },
   "perf_ui/FilmStripView.ts | doubleclickToZoomImageClickTo": {
     "message": "Doubleclick to zoom image. Click to view preceding requests."

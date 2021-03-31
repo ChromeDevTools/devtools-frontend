@@ -34,17 +34,17 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Bindings from '../bindings/bindings.js';
-import * as Common from '../common/common.js';
-import * as Host from '../host/host.js';
-import * as i18n from '../i18n/i18n.js';
-import * as MobileThrottling from '../panels/mobile_throttling/mobile_throttling.js';
-import * as PerfUI from '../perf_ui/perf_ui.js';
-import * as SDK from '../sdk/sdk.js';
-import * as Search from '../search/search.js';
-import * as Components from '../ui/components/components.js';
-import * as UI from '../ui/ui.js';
-import * as Workspace from '../workspace/workspace.js';
+import * as Bindings from '../../bindings/bindings.js';
+import * as Common from '../../common/common.js';
+import * as Host from '../../host/host.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as PerfUI from '../../perf_ui/perf_ui.js';
+import * as SDK from '../../sdk/sdk.js';
+import * as Search from '../../search/search.js';
+import * as Components from '../../ui/components/components.js';
+import * as UI from '../../ui/ui.js';
+import * as Workspace from '../../workspace/workspace.js';
+import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
 
 import {BlockedURLsPane} from './BlockedURLsPane.js';
 import {Events} from './NetworkDataGridNode.js';
@@ -156,7 +156,7 @@ const UIStrings = {
    */
   moreNetworkConditions: 'More network conditions…',
 };
-const str_ = i18n.i18n.registerUIStrings('network/NetworkPanel.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/network/NetworkPanel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let networkPanelInstance: NetworkPanel;
 
@@ -193,7 +193,7 @@ export class NetworkPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
 
   constructor() {
     super('network');
-    this.registerRequiredCSS('network/networkPanel.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('panels/network/networkPanel.css', {enableLegacyPatching: true});
 
     this._networkLogShowOverviewSetting =
         Common.Settings.Settings.instance().createSetting('networkLogShowOverview', true);

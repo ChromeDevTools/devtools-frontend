@@ -30,11 +30,11 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../common/common.js';
-import * as CookieTable from '../cookie_table/cookie_table.js';  // eslint-disable-line no-unused-vars
-import * as i18n from '../i18n/i18n.js';
-import * as SDK from '../sdk/sdk.js';
-import * as UI from '../ui/ui.js';
+import * as Common from '../../common/common.js';
+import * as CookieTable from '../../cookie_table/cookie_table.js';  // eslint-disable-line no-unused-vars
+import * as i18n from '../../i18n/i18n.js';
+import * as SDK from '../../sdk/sdk.js';
+import * as UI from '../../ui/ui.js';
 
 const UIStrings = {
   /**
@@ -78,7 +78,7 @@ const UIStrings = {
   cookiesThatWereReceivedFromTheServer:
       'Cookies that were received from the server in the \'`set-cookie`\' header of the response but were malformed',
 };
-const str_ = i18n.i18n.registerUIStrings('network/RequestCookiesView.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/network/RequestCookiesView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class RequestCookiesView extends UI.Widget.Widget {
@@ -95,7 +95,7 @@ export class RequestCookiesView extends UI.Widget.Widget {
 
   constructor(request: SDK.NetworkRequest.NetworkRequest) {
     super();
-    this.registerRequiredCSS('network/requestCookiesView.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('panels/network/requestCookiesView.css', {enableLegacyPatching: false});
     this.element.classList.add('request-cookies-view');
 
     this._request = request;

@@ -2,15 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import '../ui/components/components.js';
+import '../../ui/components/components.js';
 
-import type * as Components from '../ui/components/components.js';
+import type * as Components from '../../ui/components/components.js';
 
-import * as LitHtml from '../third_party/lit-html/lit-html.js';
-import * as SDK from '../sdk/sdk.js';
-import * as UI from '../ui/ui.js';
+import * as LitHtml from '../../third_party/lit-html/lit-html.js';
+import * as SDK from '../../sdk/sdk.js';
+import * as UI from '../../ui/ui.js';
 
-import * as i18n from '../i18n/i18n.js';
+import * as i18n from '../../i18n/i18n.js';
 const UIStrings = {
   /**
   *@description Section heading in the Trust Token tab
@@ -83,7 +83,7 @@ const UIStrings = {
   */
   theOperationFailedForAnUnknown: 'The operation failed for an unknown reason.',
 };
-const str_ = i18n.i18n.registerUIStrings('network/RequestTrustTokensView.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/network/RequestTrustTokensView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class RequestTrustTokensView extends UI.Widget.VBox {

@@ -34,20 +34,20 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Bindings from '../bindings/bindings.js';
-import * as BrowserSDK from '../browser_sdk/browser_sdk.js';
-import * as Common from '../common/common.js';
-import * as Components from '../components/components.js';
-import * as DataGrid from '../data_grid/data_grid.js';
-import * as HARImporter from '../har_importer/har_importer.js';
-import * as Host from '../host/host.js';
-import * as i18n from '../i18n/i18n.js';
-import * as PerfUI from '../perf_ui/perf_ui.js';
-import * as Platform from '../platform/platform.js';
-import * as SDK from '../sdk/sdk.js';
-import * as TextUtils from '../text_utils/text_utils.js';
-import * as ThemeSupport from '../theme_support/theme_support.js';
-import * as UI from '../ui/ui.js';
+import * as Bindings from '../../bindings/bindings.js';
+import * as BrowserSDK from '../../browser_sdk/browser_sdk.js';
+import * as Common from '../../common/common.js';
+import * as Components from '../../components/components.js';
+import * as DataGrid from '../../data_grid/data_grid.js';
+import * as HARImporter from '../../har_importer/har_importer.js';
+import * as Host from '../../host/host.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as PerfUI from '../../perf_ui/perf_ui.js';
+import * as Platform from '../../platform/platform.js';
+import * as SDK from '../../sdk/sdk.js';
+import * as TextUtils from '../../text_utils/text_utils.js';
+import * as ThemeSupport from '../../theme_support/theme_support.js';
+import * as UI from '../../ui/ui.js';
 
 import {HARWriter} from './HARWriter.js';
 import {Events, NetworkGroupNode, NetworkLogViewInterface, NetworkNode, NetworkRequestNode} from './NetworkDataGridNode.js';  // eslint-disable-line no-unused-vars
@@ -324,7 +324,7 @@ const UIStrings = {
   */
   areYouSureYouWantToClearBrowserCookies: 'Are you sure you want to clear browser cookies?',
 };
-const str_ = i18n.i18n.registerUIStrings('network/NetworkLogView.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/network/NetworkLogView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class NetworkLogView extends UI.Widget.VBox implements
     SDK.SDKModel.SDKModelObserver<SDK.NetworkManager.NetworkManager>, NetworkLogViewInterface {
@@ -377,7 +377,7 @@ export class NetworkLogView extends UI.Widget.VBox implements
       networkLogLargeRowsSetting: Common.Settings.Setting<boolean>) {
     super();
     this.setMinimumSize(50, 64);
-    this.registerRequiredCSS('network/networkLogView.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('panels/network/networkLogView.css', {enableLegacyPatching: true});
 
     this.element.id = 'network-container';
     this.element.classList.add('no-node-selected');

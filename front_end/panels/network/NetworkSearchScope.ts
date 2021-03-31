@@ -4,11 +4,11 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
-import * as i18n from '../i18n/i18n.js';
-import * as SDK from '../sdk/sdk.js';                      // eslint-disable-line no-unused-vars
-import * as Search from '../search/search.js';             // eslint-disable-line no-unused-vars
-import * as TextUtils from '../text_utils/text_utils.js';  // eslint-disable-line no-unused-vars
+import * as Common from '../../common/common.js';  // eslint-disable-line no-unused-vars
+import * as i18n from '../../i18n/i18n.js';
+import * as SDK from '../../sdk/sdk.js';                      // eslint-disable-line no-unused-vars
+import * as Search from '../../search/search.js';             // eslint-disable-line no-unused-vars
+import * as TextUtils from '../../text_utils/text_utils.js';  // eslint-disable-line no-unused-vars
 
 const UIStrings = {
   /**
@@ -16,7 +16,7 @@ const UIStrings = {
   */
   url: 'URL',
 };
-const str_ = i18n.i18n.registerUIStrings('network/NetworkSearchScope.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/network/NetworkSearchScope.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class NetworkSearchScope implements Search.SearchConfig.SearchScope {
   performIndexing(progress: Common.Progress.Progress): void {

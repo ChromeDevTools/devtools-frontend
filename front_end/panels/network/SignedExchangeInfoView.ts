@@ -4,11 +4,11 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Components from '../components/components.js';
-import * as Host from '../host/host.js';
-import * as i18n from '../i18n/i18n.js';
-import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
-import * as UI from '../ui/ui.js';
+import * as Components from '../../components/components.js';
+import * as Host from '../../host/host.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as SDK from '../../sdk/sdk.js';  // eslint-disable-line no-unused-vars
+import * as UI from '../../ui/ui.js';
 
 const UIStrings = {
   /**
@@ -96,7 +96,7 @@ const UIStrings = {
   */
   issuer: 'Issuer',
 };
-const str_ = i18n.i18n.registerUIStrings('network/SignedExchangeInfoView.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/network/SignedExchangeInfoView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class SignedExchangeInfoView extends UI.Widget.VBox {
   _responseHeadersItem?: UI.TreeOutline.TreeElement;
@@ -106,11 +106,11 @@ export class SignedExchangeInfoView extends UI.Widget.VBox {
     console.assert(request.signedExchangeInfo() !== null);
     const signedExchangeInfo = (request.signedExchangeInfo() as Protocol.Network.SignedExchangeInfo);
 
-    this.registerRequiredCSS('network/signedExchangeInfoView.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('panels/network/signedExchangeInfoView.css', {enableLegacyPatching: false});
     this.element.classList.add('signed-exchange-info-view');
 
     const root = new UI.TreeOutline.TreeOutlineInShadow();
-    root.registerRequiredCSS('network/signedExchangeInfoTree.css', {enableLegacyPatching: true});
+    root.registerRequiredCSS('panels/network/signedExchangeInfoTree.css', {enableLegacyPatching: true});
     root.element.classList.add('signed-exchange-info-tree');
     root.setFocusable(false);
     root.makeDense();

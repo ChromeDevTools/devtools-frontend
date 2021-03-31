@@ -34,10 +34,10 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../common/common.js';
-import * as i18n from '../i18n/i18n.js';
-import * as PerfUI from '../perf_ui/perf_ui.js';  // eslint-disable-line no-unused-vars
-import * as SDK from '../sdk/sdk.js';             // eslint-disable-line no-unused-vars
+import * as Common from '../../common/common.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as PerfUI from '../../perf_ui/perf_ui.js';  // eslint-disable-line no-unused-vars
+import * as SDK from '../../sdk/sdk.js';             // eslint-disable-line no-unused-vars
 
 const UIStrings = {
   /**
@@ -68,7 +68,7 @@ const UIStrings = {
   */
   sFromCache: '{PH1} (from cache)',
 };
-const str_ = i18n.i18n.registerUIStrings('network/NetworkTimeCalculator.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/network/NetworkTimeCalculator.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export interface Label {

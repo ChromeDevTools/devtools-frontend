@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Network from '../../../../front_end/network/network.js';
+import * as Network from '../../../../front_end/panels/network/network.js';
 import {assertNotNull} from '../../../../front_end/platform/platform.js';
 import {getElementsWithinComponent, getElementWithinComponent, renderElementIntoDOM} from '../helpers/DOMHelpers.js';
 

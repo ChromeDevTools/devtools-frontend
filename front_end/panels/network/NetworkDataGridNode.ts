@@ -38,17 +38,17 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 
 
-import * as Bindings from '../bindings/bindings.js';
-import * as Common from '../common/common.js';
-import * as Components from '../components/components.js';
-import * as DataGrid from '../data_grid/data_grid.js';
-import * as Host from '../host/host.js';
-import * as i18n from '../i18n/i18n.js';
-import * as PerfUI from '../perf_ui/perf_ui.js';
-import * as Platform from '../platform/platform.js';
-import * as SDK from '../sdk/sdk.js';
-import * as UI from '../ui/ui.js';
-import * as Workspace from '../workspace/workspace.js';
+import * as Bindings from '../../bindings/bindings.js';
+import * as Common from '../../common/common.js';
+import * as Components from '../../components/components.js';
+import * as DataGrid from '../../data_grid/data_grid.js';
+import * as Host from '../../host/host.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as PerfUI from '../../perf_ui/perf_ui.js';
+import * as Platform from '../../platform/platform.js';
+import * as SDK from '../../sdk/sdk.js';
+import * as UI from '../../ui/ui.js';
+import * as Workspace from '../../workspace/workspace.js';
 
 import {Tabs as NetworkItemViewTabs} from './NetworkItemView.js';
 import {NetworkTimeCalculator} from './NetworkTimeCalculator.js';  // eslint-disable-line no-unused-vars
@@ -206,7 +206,7 @@ const UIStrings = {
   */
   level: 'level 1',
 };
-const str_ = i18n.i18n.registerUIStrings('network/NetworkDataGridNode.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/network/NetworkDataGridNode.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 // TODO(crbug.com/1167717): Make this a const enum again

@@ -30,12 +30,12 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../common/common.js';
-import * as Host from '../host/host.js';
-import * as i18n from '../i18n/i18n.js';
-import * as ObjectUI from '../object_ui/object_ui.js';
-import * as SDK from '../sdk/sdk.js';
-import * as UI from '../ui/ui.js';
+import * as Common from '../../common/common.js';
+import * as Host from '../../host/host.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as ObjectUI from '../../object_ui/object_ui.js';
+import * as SDK from '../../sdk/sdk.js';
+import * as UI from '../../ui/ui.js';
 
 import {Events, NetworkTimeCalculator} from './NetworkTimeCalculator.js';  // eslint-disable-line no-unused-vars
 
@@ -216,7 +216,7 @@ const UIStrings = {
   */
   fallbackCode: 'Fallback code',
 };
-const str_ = i18n.i18n.registerUIStrings('network/RequestTimingView.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/network/RequestTimingView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class RequestTimingView extends UI.Widget.VBox {
   _request: SDK.NetworkRequest.NetworkRequest;
@@ -353,7 +353,7 @@ export class RequestTimingView extends UI.Widget.VBox {
   static createTimingTable(request: SDK.NetworkRequest.NetworkRequest, calculator: NetworkTimeCalculator): Element {
     const tableElement = document.createElement('table');
     tableElement.classList.add('network-timing-table');
-    UI.Utils.appendStyle(tableElement, 'network/networkTimingTable.css', {enableLegacyPatching: true});
+    UI.Utils.appendStyle(tableElement, 'panels/network/networkTimingTable.css', {enableLegacyPatching: true});
     const colgroup = tableElement.createChild('colgroup');
     colgroup.createChild('col', 'labels');
     colgroup.createChild('col', 'bars');

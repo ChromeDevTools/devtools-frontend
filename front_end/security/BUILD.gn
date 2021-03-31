@@ -15,7 +15,7 @@ devtools_module("security") {
     "../common:bundle",
     "../host:bundle",
     "../i18n:bundle",
-    "../network:bundle",
+    "../panels/network:bundle",
     "../sdk:bundle",
     "../ui:bundle",
   ]

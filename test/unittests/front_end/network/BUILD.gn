@@ -13,7 +13,7 @@ ts_library("network") {
 
   deps = [
     "../../../../front_end/common:bundle",
-    "../../../../front_end/network:bundle",
+    "../../../../front_end/panels/network:bundle",
     "../../../../front_end/ui:bundle",
     "../helpers",
   ]

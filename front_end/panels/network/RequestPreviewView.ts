@@ -30,11 +30,11 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as i18n from '../i18n/i18n.js';
-import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
-import * as SourceFrame from '../source_frame/source_frame.js';
-import * as TextUtils from '../text_utils/text_utils.js';
-import * as UI from '../ui/ui.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as SDK from '../../sdk/sdk.js';  // eslint-disable-line no-unused-vars
+import * as SourceFrame from '../../source_frame/source_frame.js';
+import * as TextUtils from '../../text_utils/text_utils.js';
+import * as UI from '../../ui/ui.js';
 
 import {RequestHTMLView} from './RequestHTMLView.js';
 import {RequestResponseView} from './RequestResponseView.js';
@@ -50,7 +50,7 @@ const UIStrings = {
   */
   previewNotAvailable: 'Preview not available',
 };
-const str_ = i18n.i18n.registerUIStrings('network/RequestPreviewView.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/network/RequestPreviewView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class RequestPreviewView extends RequestResponseView {
   constructor(request: SDK.NetworkRequest.NetworkRequest) {

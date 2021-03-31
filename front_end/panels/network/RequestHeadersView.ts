@@ -34,15 +34,15 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as BrowserSDK from '../browser_sdk/browser_sdk.js';
-import * as Common from '../common/common.js';
-import * as Host from '../host/host.js';
-import * as i18n from '../i18n/i18n.js';
-import * as ObjectUI from '../object_ui/object_ui.js';
-import * as Platform from '../platform/platform.js';
-import * as SDK from '../sdk/sdk.js';
-import * as ClientVariations from '../third_party/chromium/client-variations/client-variations.js';
-import * as UI from '../ui/ui.js';
+import * as BrowserSDK from '../../browser_sdk/browser_sdk.js';
+import * as Common from '../../common/common.js';
+import * as Host from '../../host/host.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as ObjectUI from '../../object_ui/object_ui.js';
+import * as Platform from '../../platform/platform.js';
+import * as SDK from '../../sdk/sdk.js';
+import * as ClientVariations from '../../third_party/chromium/client-variations/client-variations.js';
+import * as UI from '../../ui/ui.js';
 
 const UIStrings = {
   /**
@@ -231,7 +231,7 @@ const UIStrings = {
   toUseThisResourceFromADifferentOrigin:
       'To use this resource from a different origin, the server may relax the cross-origin resource policy response header:',
 };
-const str_ = i18n.i18n.registerUIStrings('network/RequestHeadersView.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/network/RequestHeadersView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 export class RequestHeadersView extends UI.Widget.VBox {
@@ -254,7 +254,7 @@ export class RequestHeadersView extends UI.Widget.VBox {
 
   constructor(request: SDK.NetworkRequest.NetworkRequest) {
     super();
-    this.registerRequiredCSS('network/requestHeadersView.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('panels/network/requestHeadersView.css', {enableLegacyPatching: false});
     this.element.classList.add('request-headers-view');
 
     this._request = request;
@@ -272,7 +272,7 @@ export class RequestHeadersView extends UI.Widget.VBox {
     const root = new UI.TreeOutline.TreeOutlineInShadow();
     root.registerRequiredCSS('object_ui/objectValue.css', {enableLegacyPatching: true});
     root.registerRequiredCSS('object_ui/objectPropertiesSection.css', {enableLegacyPatching: true});
-    root.registerRequiredCSS('network/requestHeadersTree.css', {enableLegacyPatching: true});
+    root.registerRequiredCSS('panels/network/requestHeadersTree.css', {enableLegacyPatching: true});
     root.element.classList.add('request-headers-tree');
     root.makeDense();
     this.element.appendChild(root.element);

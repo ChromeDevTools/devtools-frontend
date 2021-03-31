@@ -4,12 +4,12 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
-import * as DataGrid from '../data_grid/data_grid.js';
-import * as Host from '../host/host.js';
-import * as i18n from '../i18n/i18n.js';
-import * as SDK from '../sdk/sdk.js';
-import * as UI from '../ui/ui.js';
+import * as Common from '../../common/common.js';  // eslint-disable-line no-unused-vars
+import * as DataGrid from '../../data_grid/data_grid.js';
+import * as Host from '../../host/host.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as SDK from '../../sdk/sdk.js';
+import * as UI from '../../ui/ui.js';
 
 const UIStrings = {
   /**
@@ -37,7 +37,7 @@ const UIStrings = {
   */
   copyMessage: 'Copy message',
 };
-const str_ = i18n.i18n.registerUIStrings('network/EventSourceMessagesView.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/network/EventSourceMessagesView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class EventSourceMessagesView extends UI.Widget.VBox {
   _request: SDK.NetworkRequest.NetworkRequest;
@@ -45,7 +45,7 @@ export class EventSourceMessagesView extends UI.Widget.VBox {
 
   constructor(request: SDK.NetworkRequest.NetworkRequest) {
     super();
-    this.registerRequiredCSS('network/eventSourceMessagesView.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('panels/network/eventSourceMessagesView.css', {enableLegacyPatching: false});
     this.element.classList.add('event-source-messages-view');
     this._request = request;
 

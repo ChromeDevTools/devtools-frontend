@@ -10,7 +10,7 @@
     { "name": "issues" },
     { "name": "panels/developer_resources" },
     { "name": "panels/layer_viewer" },
-    { "name": "network" },
+    { "name": "panels/network" },
     { "name": "resources" },
     { "name": "timeline" }
   ],

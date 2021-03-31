@@ -8,7 +8,7 @@
     "object_ui",
     "perf_ui",
     "panels/mobile_throttling",
-    "network",
+    "panels/network",
     "sources",
     "browser_sdk"
   ],

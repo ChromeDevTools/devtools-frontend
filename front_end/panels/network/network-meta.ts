@@ -2,16 +2,16 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../common/common.js';
-import * as Root from '../root/root.js';
-import * as SDK from '../sdk/sdk.js';
-import * as UI from '../ui/ui.js';
-import * as Workspace from '../workspace/workspace.js';
+import * as Common from '../../common/common.js';
+import * as Root from '../../root/root.js';
+import * as SDK from '../../sdk/sdk.js';
+import * as UI from '../../ui/ui.js';
+import * as Workspace from '../../workspace/workspace.js';
 
 // eslint-disable-next-line rulesdir/es_modules_import
 import type * as Network from './network.js';
 
-import * as i18n from '../i18n/i18n.js';
+import * as i18n from '../../i18n/i18n.js';
 const UIStrings = {
   /**
   *@description Command for showing the 'Network' tool
@@ -110,14 +110,14 @@ const UIStrings = {
   */
   dontGroupNetworkLogItemsByFrame: 'Don\'t group network log items by frame',
 };
-const str_ = i18n.i18n.registerUIStrings('network/network-meta.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/network/network-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 let loadedNetworkModule: (typeof Network|undefined);
 
 async function loadNetworkModule(): Promise<typeof Network> {
   if (!loadedNetworkModule) {
     // Side-effect import resources in module.json
-    await Root.Runtime.Runtime.instance().loadModulePromise('network');
+    await Root.Runtime.Runtime.instance().loadModulePromise('panels/network');
     loadedNetworkModule = await import('./network.js');
   }
   return loadedNetworkModule;

@@ -4,10 +4,10 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../common/common.js';
-import * as DataGrid from '../data_grid/data_grid.js';  // eslint-disable-line no-unused-vars
-import * as SDK from '../sdk/sdk.js';
-import * as UI from '../ui/ui.js';
+import * as Common from '../../common/common.js';
+import * as DataGrid from '../../data_grid/data_grid.js';  // eslint-disable-line no-unused-vars
+import * as SDK from '../../sdk/sdk.js';
+import * as UI from '../../ui/ui.js';
 
 import {NetworkGroupNode} from './NetworkDataGridNode.js';
 import {GroupLookupInterface, NetworkLogView} from './NetworkLogView.js';  // eslint-disable-line no-unused-vars

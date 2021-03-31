@@ -4,11 +4,11 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../common/common.js';
-import * as i18n from '../i18n/i18n.js';
-import * as MobileThrottling from '../panels/mobile_throttling/mobile_throttling.js';
-import * as SDK from '../sdk/sdk.js';
-import * as UI from '../ui/ui.js';
+import * as Common from '../../common/common.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as SDK from '../../sdk/sdk.js';
+import * as UI from '../../ui/ui.js';
+import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
 
 const UIStrings = {
   /**
@@ -49,7 +49,7 @@ const UIStrings = {
    */
   acceptedEncoding: 'Accepted `Content-Encoding`s',
 };
-const str_ = i18n.i18n.registerUIStrings('network/NetworkConfigView.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/network/NetworkConfigView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 let networkConfigViewInstance: NetworkConfigView;
@@ -57,7 +57,7 @@ let networkConfigViewInstance: NetworkConfigView;
 export class NetworkConfigView extends UI.Widget.VBox {
   constructor() {
     super(true);
-    this.registerRequiredCSS('network/networkConfigView.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('panels/network/networkConfigView.css', {enableLegacyPatching: false});
     this.contentElement.classList.add('network-config');
 
     this._createCacheSection();

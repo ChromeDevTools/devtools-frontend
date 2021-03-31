@@ -2,7 +2,7 @@
   "dependencies": [
     "browser_sdk",
     "components",
-    "network",
+    "panels/network",
     "ui"
   ],
     "resources": [

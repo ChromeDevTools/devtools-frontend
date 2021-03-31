@@ -4,10 +4,10 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../common/common.js';
-import * as i18n from '../i18n/i18n.js';
-import * as SDK from '../sdk/sdk.js';
-import * as UI from '../ui/ui.js';
+import * as Common from '../../common/common.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as SDK from '../../sdk/sdk.js';
+import * as UI from '../../ui/ui.js';
 
 const UIStrings = {
   /**
@@ -49,7 +49,7 @@ const UIStrings = {
   */
   patternAlreadyExists: 'Pattern already exists.',
 };
-const str_ = i18n.i18n.registerUIStrings('network/BlockedURLsPane.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/network/BlockedURLsPane.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export let blockedURLsPaneInstance: BlockedURLsPane|null = null;
 
@@ -65,7 +65,7 @@ export class BlockedURLsPane extends UI.Widget.VBox implements
 
   constructor() {
     super(true);
-    this.registerRequiredCSS('network/blockedURLsPane.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('panels/network/blockedURLsPane.css', {enableLegacyPatching: false});
 
     this._manager = SDK.NetworkManager.MultitargetNetworkManager.instance();
     this._manager.addEventListener(SDK.NetworkManager.MultitargetNetworkManager.Events.BlockedPatternsChanged, () => {
@@ -86,7 +86,7 @@ export class BlockedURLsPane extends UI.Widget.VBox implements
 
     this._list = new UI.ListWidget.ListWidget(this);
     this._list.element.classList.add('blocked-urls');
-    this._list.registerRequiredCSS('network/blockedURLsPane.css', {enableLegacyPatching: false});
+    this._list.registerRequiredCSS('panels/network/blockedURLsPane.css', {enableLegacyPatching: false});
     this._list.setEmptyPlaceholder(this._createEmptyPlaceholder());
     this._list.show(this.contentElement);
 

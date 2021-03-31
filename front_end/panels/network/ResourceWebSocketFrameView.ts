@@ -22,15 +22,15 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../common/common.js';
-import * as DataGrid from '../data_grid/data_grid.js';
-import * as Host from '../host/host.js';
-import * as i18n from '../i18n/i18n.js';
-import * as Platform from '../platform/platform.js';
-import * as SDK from '../sdk/sdk.js';
-import * as SourceFrame from '../source_frame/source_frame.js';
-import * as TextUtils from '../text_utils/text_utils.js';
-import * as UI from '../ui/ui.js';
+import * as Common from '../../common/common.js';
+import * as DataGrid from '../../data_grid/data_grid.js';
+import * as Host from '../../host/host.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as Platform from '../../platform/platform.js';
+import * as SDK from '../../sdk/sdk.js';
+import * as SourceFrame from '../../source_frame/source_frame.js';
+import * as TextUtils from '../../text_utils/text_utils.js';
+import * as UI from '../../ui/ui.js';
 
 import {BinaryResourceView} from './BinaryResourceView.js';
 
@@ -137,7 +137,7 @@ const UIStrings = {
   */
   enterRegex: 'Enter regex, for example: (web)?socket',
 };
-const str_ = i18n.i18n.registerUIStrings('network/ResourceWebSocketFrameView.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/network/ResourceWebSocketFrameView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 export class ResourceWebSocketFrameView extends UI.Widget.VBox {
@@ -159,7 +159,7 @@ export class ResourceWebSocketFrameView extends UI.Widget.VBox {
 
   constructor(request: SDK.NetworkRequest.NetworkRequest) {
     super();
-    this.registerRequiredCSS('network/webSocketFrameView.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('panels/network/webSocketFrameView.css', {enableLegacyPatching: true});
     this.element.classList.add('websocket-frame-view');
     this._request = request;
 

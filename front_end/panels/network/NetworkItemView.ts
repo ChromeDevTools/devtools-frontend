@@ -30,10 +30,10 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../common/common.js';
-import * as i18n from '../i18n/i18n.js';
-import * as SDK from '../sdk/sdk.js';
-import * as UI from '../ui/ui.js';
+import * as Common from '../../common/common.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as SDK from '../../sdk/sdk.js';
+import * as UI from '../../ui/ui.js';
 
 import {EventSourceMessagesView} from './EventSourceMessagesView.js';
 import {NetworkTimeCalculator} from './NetworkTimeCalculator.js';  // eslint-disable-line no-unused-vars
@@ -123,7 +123,7 @@ const UIStrings = {
   */
   requestAndResponseCookies: 'Request and response cookies',
 };
-const str_ = i18n.i18n.registerUIStrings('network/NetworkItemView.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/network/NetworkItemView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class NetworkItemView extends UI.TabbedPane.TabbedPane {
   _request: SDK.NetworkRequest.NetworkRequest;

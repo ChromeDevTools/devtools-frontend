@@ -40,16 +40,41 @@ function createMochaConfig({suiteName, extraMochaConfig = {}}) {
                                          .flat()
                                          .filter(filename => allTestFiles.includes(filename));
 
-
   if (customPattern && testFiles.length === 0) {
     throw new Error(
         `\nNo test found matching custom pattern ${customPattern}.` +
         ` Use a relative path from test/${suiteName}/.`);
   }
 
+  /**
+ * TODO(jacktfranklin): once we are migrated to the new test runner, we can
+ * remove the fallbacks to process.env['X']
+ */
+  const testSuitePath = getTestRunnerConfigSetting('test-suite-path', '');
+  const target = getTestRunnerConfigSetting('target', process.env.TARGET);
+
   const spec = testFiles.map(fileName => {
-    const renamedFile = fileName.replace(/\.ts$/, '.js');
-    const generatedFile = path.join(__dirname, suiteName, path.relative(ROOT_DIRECTORY, renamedFile));
+    let generatedFile;
+
+    if (testSuitePath) {
+      // This means we are being run with the new test runner
+      /**
+     * We take the source file, change its extension to .js, and then we need to
+     * find its location in out/TARGET. To do that we can remove the
+     * ROOT_DIRECTORY part from the file path, and then prepend it with
+     * test-suite-path (which is relative to out/TARGET), to get our full path
+     * to the compiled output.
+     */
+      const renamedFile = fileName.replace(/\.ts$/, '.js').replace(ROOT_DIRECTORY, '');
+      generatedFile = path.join('out', target, testSuitePath, renamedFile);
+
+    } else {
+      // legacy run_test_suite.py runner
+      // We don't have the right set of flags to calculate this path as smartly as we'd like, so let's go relative to this file's __dirname.
+      // TODO(jacktfranklin): once we are migrated to the new test runner, this branch can go.
+      const renamedFile = fileName.replace(/\.ts$/, '.js');
+      generatedFile = path.join(__dirname, suiteName, path.relative(ROOT_DIRECTORY, renamedFile));
+    }
 
     if (!fs.existsSync(generatedFile)) {
       throw new Error(`Test file missing in "ts_library": ${generatedFile}`);
@@ -57,6 +82,7 @@ function createMochaConfig({suiteName, extraMochaConfig = {}}) {
 
     return generatedFile;
   });
+
 
   // When we are debugging, we don't want to timeout any test. This allows to inspect the state
   // of the application at the moment of the timeout. Here, 0 denotes "indefinite timeout".

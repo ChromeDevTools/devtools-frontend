@@ -54,7 +54,6 @@
   text-shadow: rgb(255 255 255 / 75%) 0 1px 0; /* stylelint-disable-line plugin/use_theme_colors */
   /* See: crbug.com/1152736 for color variable migration. */
   line-height: 28px;
-  overflow: hidden;
 }
 
 .tabbed-pane-placeholder-row {

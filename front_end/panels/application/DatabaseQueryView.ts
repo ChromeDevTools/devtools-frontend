@@ -29,9 +29,9 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as DataGrid from '../data_grid/data_grid.js';
-import * as i18n from '../i18n/i18n.js';
-import * as UI from '../ui/ui.js';
+import * as DataGrid from '../../data_grid/data_grid.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as UI from '../../ui/ui.js';
 
 import {Database} from './DatabaseModel.js';  // eslint-disable-line no-unused-vars
 
@@ -46,7 +46,7 @@ const UIStrings = {
   */
   queryS: 'Query: {PH1}',
 };
-const str_ = i18n.i18n.registerUIStrings('resources/DatabaseQueryView.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/application/DatabaseQueryView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class DatabaseQueryView extends UI.Widget.VBox {
   database: Database;

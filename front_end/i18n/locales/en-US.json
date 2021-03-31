@@ -1886,6 +1886,1029 @@
   "panels/animation/AnimationUI.ts | sSlider": {
     "message": "{PH1} slider"
   },
+  "panels/application/application-meta.ts | application": {
+    "message": "Application"
+  },
+  "panels/application/application-meta.ts | clearSiteData": {
+    "message": "Clear site data"
+  },
+  "panels/application/application-meta.ts | clearSiteDataIncludingThirdparty": {
+    "message": "Clear site data (including third-party cookies)"
+  },
+  "panels/application/application-meta.ts | pwa": {
+    "message": "pwa"
+  },
+  "panels/application/application-meta.ts | showApplication": {
+    "message": "Show Application"
+  },
+  "panels/application/application-meta.ts | startRecordingEvents": {
+    "message": "Start recording events"
+  },
+  "panels/application/application-meta.ts | stopRecordingEvents": {
+    "message": "Stop recording events"
+  },
+  "panels/application/ApplicationCacheItemsView.ts | appcache": {
+    "message": "AppCache"
+  },
+  "panels/application/ApplicationCacheItemsView.ts | applicationCache": {
+    "message": "Application Cache"
+  },
+  "panels/application/ApplicationCacheItemsView.ts | deleteString": {
+    "message": "Delete"
+  },
+  "panels/application/ApplicationCacheItemsView.ts | noApplicationCacheInformation": {
+    "message": "No Application Cache information available."
+  },
+  "panels/application/ApplicationCacheItemsView.ts | offline": {
+    "message": "Offline"
+  },
+  "panels/application/ApplicationCacheItemsView.ts | online": {
+    "message": "Online"
+  },
+  "panels/application/ApplicationCacheItemsView.ts | resource": {
+    "message": "Resource"
+  },
+  "panels/application/ApplicationCacheItemsView.ts | sizeString": {
+    "message": "Size"
+  },
+  "panels/application/ApplicationCacheItemsView.ts | typeString": {
+    "message": "Type"
+  },
+  "panels/application/ApplicationPanelCacheSection.ts | cacheStorage": {
+    "message": "Cache Storage"
+  },
+  "panels/application/ApplicationPanelCacheSection.ts | delete": {
+    "message": "Delete"
+  },
+  "panels/application/ApplicationPanelCacheSection.ts | refreshCaches": {
+    "message": "Refresh Caches"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | application": {
+    "message": "Application"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | applicationCache": {
+    "message": "Application Cache"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | backgroundServices": {
+    "message": "Background Services"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | cache": {
+    "message": "Cache"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | clear": {
+    "message": "Clear"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | cookies": {
+    "message": "Cookies"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | cookiesUsedByFramesFromS": {
+    "message": "Cookies used by frames from {PH1}"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | documentNotAvailable": {
+    "message": "Document not available"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | frames": {
+    "message": "Frames"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | indexeddb": {
+    "message": "IndexedDB"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | keyPathS": {
+    "message": "Key path: {PH1}"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | localFiles": {
+    "message": "Local Files"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | localStorage": {
+    "message": "Local Storage"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | manifest": {
+    "message": "Manifest"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | openedWindows": {
+    "message": "Opened Windows"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | refreshIndexeddb": {
+    "message": "Refresh IndexedDB"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | sessionStorage": {
+    "message": "Session Storage"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | storage": {
+    "message": "Storage"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | theContentOfThisDocumentHasBeen": {
+    "message": "The content of this document has been generated dynamically via 'document.write()'."
+  },
+  "panels/application/ApplicationPanelSidebar.ts | versionS": {
+    "message": "Version: {PH1}"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | versionSEmpty": {
+    "message": "Version: {PH1} (empty)"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | webSql": {
+    "message": "Web SQL"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | webWorkers": {
+    "message": "Web Workers"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | windowWithoutTitle": {
+    "message": "Window without title"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | worker": {
+    "message": "worker"
+  },
+  "panels/application/AppManifestView.ts | actualHeightSpxOfSSDoesNotMatch": {
+    "message": "Actual height ({PH1}px) of {PH2} {PH3} does not match specified height ({PH4}px)"
+  },
+  "panels/application/AppManifestView.ts | actualSizeSspxOfSSDoesNotMatch": {
+    "message": "Actual size ({PH1}×{PH2})px of {PH3} {PH4} does not match specified size ({PH5}×{PH6}px)"
+  },
+  "panels/application/AppManifestView.ts | actualWidthSpxOfSSDoesNotMatch": {
+    "message": "Actual width ({PH1}px) of {PH2} {PH3} does not match specified width ({PH4}px)"
+  },
+  "panels/application/AppManifestView.ts | appManifest": {
+    "message": "App Manifest"
+  },
+  "panels/application/AppManifestView.ts | aUrlInTheManifestContainsA": {
+    "message": "A URL in the manifest contains a username, password, or port"
+  },
+  "panels/application/AppManifestView.ts | backgroundColor": {
+    "message": "Background color"
+  },
+  "panels/application/AppManifestView.ts | couldNotCheckServiceWorker": {
+    "message": "Could not check service worker without a 'start_url' field in the manifest"
+  },
+  "panels/application/AppManifestView.ts | couldNotDownloadARequiredIcon": {
+    "message": "Could not download a required icon from the manifest"
+  },
+  "panels/application/AppManifestView.ts | description": {
+    "message": "Description"
+  },
+  "panels/application/AppManifestView.ts | descriptionMayBeTruncated": {
+    "message": "Description may be truncated."
+  },
+  "panels/application/AppManifestView.ts | display": {
+    "message": "Display"
+  },
+  "panels/application/AppManifestView.ts | documentationOnMaskableIcons": {
+    "message": "documentation on maskable icons"
+  },
+  "panels/application/AppManifestView.ts | downloadedIconWasEmptyOr": {
+    "message": "Downloaded icon was empty or corrupted"
+  },
+  "panels/application/AppManifestView.ts | errorsAndWarnings": {
+    "message": "Errors and warnings"
+  },
+  "panels/application/AppManifestView.ts | icon": {
+    "message": "Icon"
+  },
+  "panels/application/AppManifestView.ts | icons": {
+    "message": "Icons"
+  },
+  "panels/application/AppManifestView.ts | identity": {
+    "message": "Identity"
+  },
+  "panels/application/AppManifestView.ts | imageFromS": {
+    "message": "Image from {PH1}"
+  },
+  "panels/application/AppManifestView.ts | installability": {
+    "message": "Installability"
+  },
+  "panels/application/AppManifestView.ts | manifestContainsDisplayoverride": {
+    "message": "Manifest contains 'display_override' field, and the first supported display mode must be one of 'standalone', 'fullscreen', or 'minimal-ui'"
+  },
+  "panels/application/AppManifestView.ts | manifestCouldNotBeFetchedIsEmpty": {
+    "message": "Manifest could not be fetched, is empty, or could not be parsed"
+  },
+  "panels/application/AppManifestView.ts | manifestDisplayPropertyMustBeOne": {
+    "message": "Manifest 'display' property must be one of 'standalone', 'fullscreen', or 'minimal-ui'"
+  },
+  "panels/application/AppManifestView.ts | manifestDoesNotContainANameOr": {
+    "message": "Manifest does not contain a 'name' or 'short_name' field"
+  },
+  "panels/application/AppManifestView.ts | manifestDoesNotContainASuitable": {
+    "message": "Manifest does not contain a suitable icon - PNG, SVG or WebP format of at least {PH1}px is required, the sizes attribute must be set, and the purpose attribute, if set, must include \"any\" and should not include \"maskable\"."
+  },
+  "panels/application/AppManifestView.ts | manifestSpecifies": {
+    "message": "Manifest specifies prefer_related_applications: true"
+  },
+  "panels/application/AppManifestView.ts | manifestStartUrlIsNotValid": {
+    "message": "Manifest start URL is not valid"
+  },
+  "panels/application/AppManifestView.ts | name": {
+    "message": "Name"
+  },
+  "panels/application/AppManifestView.ts | needHelpReadOurS": {
+    "message": "Need help? Read {PH1}."
+  },
+  "panels/application/AppManifestView.ts | noManifestDetected": {
+    "message": "No manifest detected"
+  },
+  "panels/application/AppManifestView.ts | noMatchingServiceWorkerDetected": {
+    "message": "No matching service worker detected. You may need to reload the page, or check that the scope of the service worker for the current page encloses the scope and start URL from the manifest."
+  },
+  "panels/application/AppManifestView.ts | noPlayStoreIdProvided": {
+    "message": "No Play store ID provided"
+  },
+  "panels/application/AppManifestView.ts | noSuppliedIconIsAtLeastSpxSquare": {
+    "message": "No supplied icon is at least {PH1} pixels square in PNG, SVG or WebP format, with the purpose attribute unset or set to \"any\"."
+  },
+  "panels/application/AppManifestView.ts | orientation": {
+    "message": "Orientation"
+  },
+  "panels/application/AppManifestView.ts | pageDoesNotWorkOffline": {
+    "message": "Page does not work offline"
+  },
+  "panels/application/AppManifestView.ts | pageDoesNotWorkOfflineThePage": {
+    "message": "Page does not work offline. Starting in Chrome 93, the installability criteria are changing, and this site will not be installable. See {PH1} for more information."
+  },
+  "panels/application/AppManifestView.ts | pageHasNoManifestLinkUrl": {
+    "message": "Page has no manifest <link> URL"
+  },
+  "panels/application/AppManifestView.ts | pageIsLoadedInAnIncognitoWindow": {
+    "message": "Page is loaded in an incognito window"
+  },
+  "panels/application/AppManifestView.ts | pageIsNotLoadedInTheMainFrame": {
+    "message": "Page is not loaded in the main frame"
+  },
+  "panels/application/AppManifestView.ts | pageIsNotServedFromASecureOrigin": {
+    "message": "Page is not served from a secure origin"
+  },
+  "panels/application/AppManifestView.ts | preferrelatedapplicationsIsOnly": {
+    "message": "prefer_related_applications is only supported on Chrome Beta and Stable channels on Android."
+  },
+  "panels/application/AppManifestView.ts | presentation": {
+    "message": "Presentation"
+  },
+  "panels/application/AppManifestView.ts | primaryIconasUsedByChrome": {
+    "message": "Primary icon as used by Chrome"
+  },
+  "panels/application/AppManifestView.ts | primaryManifestIconFromS": {
+    "message": "Primary manifest icon from {PH1}"
+  },
+  "panels/application/AppManifestView.ts | screenshot": {
+    "message": "Screenshot"
+  },
+  "panels/application/AppManifestView.ts | screenshotS": {
+    "message": "Screenshot #{PH1}"
+  },
+  "panels/application/AppManifestView.ts | shortcutS": {
+    "message": "Shortcut #{PH1}"
+  },
+  "panels/application/AppManifestView.ts | shortcutSShouldIncludeAXPixel": {
+    "message": "Shortcut #{PH1} should include a 96x96 pixel icon"
+  },
+  "panels/application/AppManifestView.ts | shortName": {
+    "message": "Short name"
+  },
+  "panels/application/AppManifestView.ts | showOnlyTheMinimumSafeAreaFor": {
+    "message": "Show only the minimum safe area for maskable icons"
+  },
+  "panels/application/AppManifestView.ts | sSDoesNotSpecifyItsSizeInThe": {
+    "message": "{PH1} {PH2} does not specify its size in the manifest"
+  },
+  "panels/application/AppManifestView.ts | sSFailedToLoad": {
+    "message": "{PH1} {PH2} failed to load"
+  },
+  "panels/application/AppManifestView.ts | sSHeightDoesNotComplyWithRatioRequirement": {
+    "message": "{PH1} {PH2} height can't be more than 2.3 times as long as the width"
+  },
+  "panels/application/AppManifestView.ts | sSrcIsNotSet": {
+    "message": "{PH1} src is not set"
+  },
+  "panels/application/AppManifestView.ts | sSShouldHaveSquareIcon": {
+    "message": "Most operating systems require square icons. Please include at least one square icon in the array."
+  },
+  "panels/application/AppManifestView.ts | sSShouldSpecifyItsSizeAs": {
+    "message": "{PH1} {PH2} should specify its size as {width}x{height}"
+  },
+  "panels/application/AppManifestView.ts | sSSizeShouldBeAtLeast320": {
+    "message": "{PH1} {PH2} size should be at least 320×320"
+  },
+  "panels/application/AppManifestView.ts | sSSizeShouldBeAtMost3840": {
+    "message": "{PH1} {PH2} size should be at most 3840×3840"
+  },
+  "panels/application/AppManifestView.ts | sSWidthDoesNotComplyWithRatioRequirement": {
+    "message": "{PH1} {PH2} width can't be more than 2.3 times as long as the height"
+  },
+  "panels/application/AppManifestView.ts | startUrl": {
+    "message": "Start URL"
+  },
+  "panels/application/AppManifestView.ts | sUrlSFailedToParse": {
+    "message": "{PH1} URL '{PH2}' failed to parse"
+  },
+  "panels/application/AppManifestView.ts | theAppIsAlreadyInstalled": {
+    "message": "The app is already installed"
+  },
+  "panels/application/AppManifestView.ts | themeColor": {
+    "message": "Theme color"
+  },
+  "panels/application/AppManifestView.ts | thePlayStoreAppUrlAndPlayStoreId": {
+    "message": "The Play Store app URL and Play Store ID do not match"
+  },
+  "panels/application/AppManifestView.ts | theSpecifiedApplicationPlatform": {
+    "message": "The specified application platform is not supported on Android"
+  },
+  "panels/application/BackgroundServiceView.ts | backgroundFetch": {
+    "message": "Background Fetch"
+  },
+  "panels/application/BackgroundServiceView.ts | backgroundServices": {
+    "message": "Background Services"
+  },
+  "panels/application/BackgroundServiceView.ts | backgroundSync": {
+    "message": "Background Sync"
+  },
+  "panels/application/BackgroundServiceView.ts | clear": {
+    "message": "Clear"
+  },
+  "panels/application/BackgroundServiceView.ts | clickTheRecordButtonSOrHitSTo": {
+    "message": "Click the record button {PH1} or hit {PH2} to start recording."
+  },
+  "panels/application/BackgroundServiceView.ts | devtoolsWillRecordAllSActivity": {
+    "message": "DevTools will record all {PH1} activity for up to 3 days, even when closed."
+  },
+  "panels/application/BackgroundServiceView.ts | empty": {
+    "message": "empty"
+  },
+  "panels/application/BackgroundServiceView.ts | event": {
+    "message": "Event"
+  },
+  "panels/application/BackgroundServiceView.ts | instanceId": {
+    "message": "Instance ID"
+  },
+  "panels/application/BackgroundServiceView.ts | learnMore": {
+    "message": "Learn more"
+  },
+  "panels/application/BackgroundServiceView.ts | noMetadataForThisEvent": {
+    "message": "No metadata for this event"
+  },
+  "panels/application/BackgroundServiceView.ts | notifications": {
+    "message": "Notifications"
+  },
+  "panels/application/BackgroundServiceView.ts | origin": {
+    "message": "Origin"
+  },
+  "panels/application/BackgroundServiceView.ts | paymentHandler": {
+    "message": "Payment Handler"
+  },
+  "panels/application/BackgroundServiceView.ts | periodicBackgroundSync": {
+    "message": "Periodic Background Sync"
+  },
+  "panels/application/BackgroundServiceView.ts | pushMessaging": {
+    "message": "Push Messaging"
+  },
+  "panels/application/BackgroundServiceView.ts | recordingSActivity": {
+    "message": "Recording {PH1} activity..."
+  },
+  "panels/application/BackgroundServiceView.ts | saveEvents": {
+    "message": "Save events"
+  },
+  "panels/application/BackgroundServiceView.ts | selectAnEntryToViewMetadata": {
+    "message": "Select an entry to view metadata"
+  },
+  "panels/application/BackgroundServiceView.ts | showEventsFromOtherDomains": {
+    "message": "Show events from other domains"
+  },
+  "panels/application/BackgroundServiceView.ts | startRecordingEvents": {
+    "message": "Start recording events"
+  },
+  "panels/application/BackgroundServiceView.ts | stopRecordingEvents": {
+    "message": "Stop recording events"
+  },
+  "panels/application/BackgroundServiceView.ts | swScope": {
+    "message": "Service Worker Scope"
+  },
+  "panels/application/BackgroundServiceView.ts | timestamp": {
+    "message": "Timestamp"
+  },
+  "panels/application/CookieItemsView.ts | clearAllCookies": {
+    "message": "Clear all cookies"
+  },
+  "panels/application/CookieItemsView.ts | clearFilteredCookies": {
+    "message": "Clear filtered cookies"
+  },
+  "panels/application/CookieItemsView.ts | cookies": {
+    "message": "Cookies"
+  },
+  "panels/application/CookieItemsView.ts | numberOfCookiesShownInTableS": {
+    "message": "Number of cookies shown in table: {PH1}"
+  },
+  "panels/application/CookieItemsView.ts | onlyShowCookiesWhichHaveAn": {
+    "message": "Only show cookies which have an associated issue"
+  },
+  "panels/application/CookieItemsView.ts | onlyShowCookiesWithAnIssue": {
+    "message": "Only show cookies with an issue"
+  },
+  "panels/application/CookieItemsView.ts | selectACookieToPreviewItsValue": {
+    "message": "Select a cookie to preview its value"
+  },
+  "panels/application/CookieItemsView.ts | showUrlDecoded": {
+    "message": "Show URL decoded"
+  },
+  "panels/application/DatabaseModel.ts | anUnexpectedErrorSOccurred": {
+    "message": "An unexpected error {PH1} occurred."
+  },
+  "panels/application/DatabaseModel.ts | databaseNoLongerHasExpected": {
+    "message": "Database no longer has expected version."
+  },
+  "panels/application/DatabaseQueryView.ts | databaseQuery": {
+    "message": "Database Query"
+  },
+  "panels/application/DatabaseQueryView.ts | queryS": {
+    "message": "Query: {PH1}"
+  },
+  "panels/application/DatabaseTableView.ts | anErrorOccurredTryingToreadTheS": {
+    "message": "An error occurred trying to read the \"{PH1}\" table."
+  },
+  "panels/application/DatabaseTableView.ts | database": {
+    "message": "Database"
+  },
+  "panels/application/DatabaseTableView.ts | refresh": {
+    "message": "Refresh"
+  },
+  "panels/application/DatabaseTableView.ts | theStableIsEmpty": {
+    "message": "The \"{PH1}\" table is empty."
+  },
+  "panels/application/DatabaseTableView.ts | visibleColumns": {
+    "message": "Visible columns"
+  },
+  "panels/application/DOMStorageItemsView.ts | domStorage": {
+    "message": "DOM Storage"
+  },
+  "panels/application/DOMStorageItemsView.ts | domStorageItems": {
+    "message": "DOM Storage Items"
+  },
+  "panels/application/DOMStorageItemsView.ts | key": {
+    "message": "Key"
+  },
+  "panels/application/DOMStorageItemsView.ts | selectAValueToPreview": {
+    "message": "Select a value to preview"
+  },
+  "panels/application/DOMStorageItemsView.ts | value": {
+    "message": "Value"
+  },
+  "panels/application/FrameDetailsView.ts | additionalInformation": {
+    "message": "Additional Information"
+  },
+  "panels/application/FrameDetailsView.ts | adStatus": {
+    "message": "Ad Status"
+  },
+  "panels/application/FrameDetailsView.ts | aFrameAncestorIsAnInsecure": {
+    "message": "A frame ancestor is an insecure context"
+  },
+  "panels/application/FrameDetailsView.ts | allowedFeatures": {
+    "message": "Allowed Features"
+  },
+  "panels/application/FrameDetailsView.ts | apiAvailability": {
+    "message": "API availability"
+  },
+  "panels/application/FrameDetailsView.ts | availabilityOfCertainApisDepends": {
+    "message": "Availability of certain APIs depends on the document being cross-origin isolated."
+  },
+  "panels/application/FrameDetailsView.ts | available": {
+    "message": "available"
+  },
+  "panels/application/FrameDetailsView.ts | availableNotTransferable": {
+    "message": "available, not transferable"
+  },
+  "panels/application/FrameDetailsView.ts | availableTransferable": {
+    "message": "available, transferable"
+  },
+  "panels/application/FrameDetailsView.ts | child": {
+    "message": "child"
+  },
+  "panels/application/FrameDetailsView.ts | clickToRevealInElementsPanel": {
+    "message": "Click to reveal in Elements panel"
+  },
+  "panels/application/FrameDetailsView.ts | clickToRevealInNetworkPanel": {
+    "message": "Click to reveal in Network panel"
+  },
+  "panels/application/FrameDetailsView.ts | clickToRevealInNetworkPanelMight": {
+    "message": "Click to reveal in Network panel (might require page reload)"
+  },
+  "panels/application/FrameDetailsView.ts | clickToRevealInSourcesPanel": {
+    "message": "Click to reveal in Sources panel"
+  },
+  "panels/application/FrameDetailsView.ts | clickToShowHeader": {
+    "message": "Click to reveal the request whose \"Permissions-Policy\" HTTP header disables this feature."
+  },
+  "panels/application/FrameDetailsView.ts | clickToShowIframe": {
+    "message": "Click to reveal the top-most iframe which does not allow this feature in the elements panel."
+  },
+  "panels/application/FrameDetailsView.ts | creationStackTrace": {
+    "message": "Frame Creation Stack Trace"
+  },
+  "panels/application/FrameDetailsView.ts | creationStackTraceExplanation": {
+    "message": "This frame was created programmatically. The stack trace shows where this happened."
+  },
+  "panels/application/FrameDetailsView.ts | crossoriginEmbedderPolicy": {
+    "message": "Cross-Origin Embedder Policy"
+  },
+  "panels/application/FrameDetailsView.ts | crossoriginIsolated": {
+    "message": "Cross-Origin Isolated"
+  },
+  "panels/application/FrameDetailsView.ts | crossoriginOpenerPolicy": {
+    "message": "Cross-Origin Opener Policy"
+  },
+  "panels/application/FrameDetailsView.ts | disabledByHeader": {
+    "message": "disabled by \"Permissions-Policy\" header"
+  },
+  "panels/application/FrameDetailsView.ts | disabledByIframe": {
+    "message": "missing in iframe \"allow\" attribute"
+  },
+  "panels/application/FrameDetailsView.ts | disabledFeatures": {
+    "message": "Disabled Features"
+  },
+  "panels/application/FrameDetailsView.ts | document": {
+    "message": "Document"
+  },
+  "panels/application/FrameDetailsView.ts | frameId": {
+    "message": "Frame ID"
+  },
+  "panels/application/FrameDetailsView.ts | hideDetails": {
+    "message": "Hide details"
+  },
+  "panels/application/FrameDetailsView.ts | learnMore": {
+    "message": "Learn more"
+  },
+  "panels/application/FrameDetailsView.ts | localhostIsAlwaysASecureContext": {
+    "message": "Localhost is always a secure context"
+  },
+  "panels/application/FrameDetailsView.ts | measureMemory": {
+    "message": "Measure Memory"
+  },
+  "panels/application/FrameDetailsView.ts | no": {
+    "message": "No"
+  },
+  "panels/application/FrameDetailsView.ts | origin": {
+    "message": "Origin"
+  },
+  "panels/application/FrameDetailsView.ts | ownerElement": {
+    "message": "Owner Element"
+  },
+  "panels/application/FrameDetailsView.ts | permissionsPolicy": {
+    "message": "Permissions Policy"
+  },
+  "panels/application/FrameDetailsView.ts | reportingTo": {
+    "message": "reporting to"
+  },
+  "panels/application/FrameDetailsView.ts | requiresCrossoriginIsolated": {
+    "message": "requires cross-origin isolated context"
+  },
+  "panels/application/FrameDetailsView.ts | root": {
+    "message": "root"
+  },
+  "panels/application/FrameDetailsView.ts | secureContext": {
+    "message": "Secure Context"
+  },
+  "panels/application/FrameDetailsView.ts | securityIsolation": {
+    "message": "Security & Isolation"
+  },
+  "panels/application/FrameDetailsView.ts | sharedarraybufferConstructorIs": {
+    "message": "SharedArrayBuffer constructor is available and SABs can be transferred via postMessage"
+  },
+  "panels/application/FrameDetailsView.ts | sharedarraybufferConstructorIsAvailable": {
+    "message": "SharedArrayBuffer constructor is available but SABs cannot be transferred via postMessage"
+  },
+  "panels/application/FrameDetailsView.ts | showDetails": {
+    "message": "Show details"
+  },
+  "panels/application/FrameDetailsView.ts | theFramesSchemeIsInsecure": {
+    "message": "The frame's scheme is insecure"
+  },
+  "panels/application/FrameDetailsView.ts | thePerformanceAPI": {
+    "message": "The performance.measureUserAgentSpecificMemory() API is available"
+  },
+  "panels/application/FrameDetailsView.ts | thePerformancemeasureuseragentspecificmemory": {
+    "message": "The performance.measureUserAgentSpecificMemory() API is not available"
+  },
+  "panels/application/FrameDetailsView.ts | thisAdditionalDebugging": {
+    "message": "This additional (debugging) information is shown because the 'Protocol Monitor' experiment is enabled."
+  },
+  "panels/application/FrameDetailsView.ts | thisFrameHasBeenIdentifiedAsThe": {
+    "message": "This frame has been identified as the root frame of an ad"
+  },
+  "panels/application/FrameDetailsView.ts | thisFrameHasBeenIdentifiedAsTheA": {
+    "message": "This frame has been identified as a child frame of an ad"
+  },
+  "panels/application/FrameDetailsView.ts | unavailable": {
+    "message": "unavailable"
+  },
+  "panels/application/FrameDetailsView.ts | unreachableUrl": {
+    "message": "Unreachable URL"
+  },
+  "panels/application/FrameDetailsView.ts | url": {
+    "message": "URL"
+  },
+  "panels/application/FrameDetailsView.ts | WillRequireCrossoriginIsolated": {
+    "message": "⚠️ will require cross-origin isolated context in the future"
+  },
+  "panels/application/FrameDetailsView.ts | yes": {
+    "message": "Yes"
+  },
+  "panels/application/IndexedDBViews.ts | clearObjectStore": {
+    "message": "Clear object store"
+  },
+  "panels/application/IndexedDBViews.ts | collapse": {
+    "message": "Collapse"
+  },
+  "panels/application/IndexedDBViews.ts | dataMayBeStale": {
+    "message": "Data may be stale"
+  },
+  "panels/application/IndexedDBViews.ts | deleteDatabase": {
+    "message": "Delete database"
+  },
+  "panels/application/IndexedDBViews.ts | deleteSelected": {
+    "message": "Delete selected"
+  },
+  "panels/application/IndexedDBViews.ts | expandRecursively": {
+    "message": "Expand Recursively"
+  },
+  "panels/application/IndexedDBViews.ts | idb": {
+    "message": "IDB"
+  },
+  "panels/application/IndexedDBViews.ts | indexedDb": {
+    "message": "Indexed DB"
+  },
+  "panels/application/IndexedDBViews.ts | keyGeneratorValueS": {
+    "message": "Key generator value: {PH1}"
+  },
+  "panels/application/IndexedDBViews.ts | keyPath": {
+    "message": "Key path: "
+  },
+  "panels/application/IndexedDBViews.ts | keyString": {
+    "message": "Key"
+  },
+  "panels/application/IndexedDBViews.ts | loading": {
+    "message": "Loading…"
+  },
+  "panels/application/IndexedDBViews.ts | objectStores": {
+    "message": "Object stores"
+  },
+  "panels/application/IndexedDBViews.ts | pleaseConfirmDeleteOfSDatabase": {
+    "message": "Please confirm delete of \"{PH1}\" database."
+  },
+  "panels/application/IndexedDBViews.ts | primaryKey": {
+    "message": "Primary key"
+  },
+  "panels/application/IndexedDBViews.ts | refresh": {
+    "message": "Refresh"
+  },
+  "panels/application/IndexedDBViews.ts | refreshDatabase": {
+    "message": "Refresh database"
+  },
+  "panels/application/IndexedDBViews.ts | securityOrigin": {
+    "message": "Security origin"
+  },
+  "panels/application/IndexedDBViews.ts | showNextPage": {
+    "message": "Show next page"
+  },
+  "panels/application/IndexedDBViews.ts | showPreviousPage": {
+    "message": "Show previous page"
+  },
+  "panels/application/IndexedDBViews.ts | someEntriesMayHaveBeenModified": {
+    "message": "Some entries may have been modified"
+  },
+  "panels/application/IndexedDBViews.ts | startFromKey": {
+    "message": "Start from key"
+  },
+  "panels/application/IndexedDBViews.ts | totalEntriesS": {
+    "message": "Total entries: {PH1}"
+  },
+  "panels/application/IndexedDBViews.ts | valueString": {
+    "message": "Value"
+  },
+  "panels/application/IndexedDBViews.ts | version": {
+    "message": "Version"
+  },
+  "panels/application/OpenedWindowDetailsView.ts | accessToOpener": {
+    "message": "Access to opener"
+  },
+  "panels/application/OpenedWindowDetailsView.ts | clickToRevealInElementsPanel": {
+    "message": "Click to reveal in Elements panel"
+  },
+  "panels/application/OpenedWindowDetailsView.ts | closed": {
+    "message": "closed"
+  },
+  "panels/application/OpenedWindowDetailsView.ts | crossoriginEmbedderPolicy": {
+    "message": "Cross-Origin Embedder Policy"
+  },
+  "panels/application/OpenedWindowDetailsView.ts | document": {
+    "message": "Document"
+  },
+  "panels/application/OpenedWindowDetailsView.ts | no": {
+    "message": "No"
+  },
+  "panels/application/OpenedWindowDetailsView.ts | openerFrame": {
+    "message": "Opener Frame"
+  },
+  "panels/application/OpenedWindowDetailsView.ts | reportingTo": {
+    "message": "reporting to"
+  },
+  "panels/application/OpenedWindowDetailsView.ts | security": {
+    "message": "Security"
+  },
+  "panels/application/OpenedWindowDetailsView.ts | securityIsolation": {
+    "message": "Security & Isolation"
+  },
+  "panels/application/OpenedWindowDetailsView.ts | showsWhetherTheOpenedWindowIs": {
+    "message": "Shows whether the opened window is able to access its opener and vice versa"
+  },
+  "panels/application/OpenedWindowDetailsView.ts | type": {
+    "message": "Type"
+  },
+  "panels/application/OpenedWindowDetailsView.ts | unknown": {
+    "message": "Unknown"
+  },
+  "panels/application/OpenedWindowDetailsView.ts | url": {
+    "message": "URL"
+  },
+  "panels/application/OpenedWindowDetailsView.ts | webWorker": {
+    "message": "Web Worker"
+  },
+  "panels/application/OpenedWindowDetailsView.ts | windowWithoutTitle": {
+    "message": "Window without title"
+  },
+  "panels/application/OpenedWindowDetailsView.ts | worker": {
+    "message": "worker"
+  },
+  "panels/application/OpenedWindowDetailsView.ts | yes": {
+    "message": "Yes"
+  },
+  "panels/application/ServiceWorkerCacheViews.ts | cache": {
+    "message": "Cache"
+  },
+  "panels/application/ServiceWorkerCacheViews.ts | deleteSelected": {
+    "message": "Delete Selected"
+  },
+  "panels/application/ServiceWorkerCacheViews.ts | filterByPath": {
+    "message": "Filter by Path"
+  },
+  "panels/application/ServiceWorkerCacheViews.ts | headers": {
+    "message": "Headers"
+  },
+  "panels/application/ServiceWorkerCacheViews.ts | matchingEntriesS": {
+    "message": "Matching entries: {PH1}"
+  },
+  "panels/application/ServiceWorkerCacheViews.ts | name": {
+    "message": "Name"
+  },
+  "panels/application/ServiceWorkerCacheViews.ts | preview": {
+    "message": "Preview"
+  },
+  "panels/application/ServiceWorkerCacheViews.ts | refresh": {
+    "message": "Refresh"
+  },
+  "panels/application/ServiceWorkerCacheViews.ts | selectACacheEntryAboveToPreview": {
+    "message": "Select a cache entry above to preview"
+  },
+  "panels/application/ServiceWorkerCacheViews.ts | serviceWorkerCache": {
+    "message": "Service Worker Cache"
+  },
+  "panels/application/ServiceWorkerCacheViews.ts | timeCached": {
+    "message": "Time Cached"
+  },
+  "panels/application/ServiceWorkerCacheViews.ts | totalEntriesS": {
+    "message": "Total entries: {PH1}"
+  },
+  "panels/application/ServiceWorkerCacheViews.ts | varyHeaderWarning": {
+    "message": "⚠️ Set ignoreVary to true when matching this entry"
+  },
+  "panels/application/ServiceWorkersView.ts | bypassForNetwork": {
+    "message": "Bypass for network"
+  },
+  "panels/application/ServiceWorkersView.ts | bypassTheServiceWorkerAndLoad": {
+    "message": "Bypass the service worker and load resources from the network"
+  },
+  "panels/application/ServiceWorkersView.ts | clients": {
+    "message": "Clients"
+  },
+  "panels/application/ServiceWorkersView.ts | focus": {
+    "message": "focus"
+  },
+  "panels/application/ServiceWorkersView.ts | inspect": {
+    "message": "inspect"
+  },
+  "panels/application/ServiceWorkersView.ts | networkRequests": {
+    "message": "Network requests"
+  },
+  "panels/application/ServiceWorkersView.ts | onPageReloadForceTheService": {
+    "message": "On page reload, force the service worker to update, and activate it"
+  },
+  "panels/application/ServiceWorkersView.ts | periodicSync": {
+    "message": "Periodic Sync"
+  },
+  "panels/application/ServiceWorkersView.ts | periodicSyncTag": {
+    "message": "Periodic Sync tag"
+  },
+  "panels/application/ServiceWorkersView.ts | pushData": {
+    "message": "Push data"
+  },
+  "panels/application/ServiceWorkersView.ts | pushString": {
+    "message": "Push"
+  },
+  "panels/application/ServiceWorkersView.ts | receivedS": {
+    "message": "Received {PH1}"
+  },
+  "panels/application/ServiceWorkersView.ts | sActivatedAndIsS": {
+    "message": "#{PH1} activated and is {PH2}"
+  },
+  "panels/application/ServiceWorkersView.ts | sDeleted": {
+    "message": "{PH1} - deleted"
+  },
+  "panels/application/ServiceWorkersView.ts | serviceWorkerForS": {
+    "message": "Service worker for {PH1}"
+  },
+  "panels/application/ServiceWorkersView.ts | serviceWorkersFromOtherOrigins": {
+    "message": "Service workers from other origins"
+  },
+  "panels/application/ServiceWorkersView.ts | sIsRedundant": {
+    "message": "#{PH1} is redundant"
+  },
+  "panels/application/ServiceWorkersView.ts | source": {
+    "message": "Source"
+  },
+  "panels/application/ServiceWorkersView.ts | sRegistrationErrors": {
+    "message": "{PH1} registration errors"
+  },
+  "panels/application/ServiceWorkersView.ts | startString": {
+    "message": "start"
+  },
+  "panels/application/ServiceWorkersView.ts | status": {
+    "message": "Status"
+  },
+  "panels/application/ServiceWorkersView.ts | stopString": {
+    "message": "stop"
+  },
+  "panels/application/ServiceWorkersView.ts | sTryingToInstall": {
+    "message": "#{PH1} trying to install"
+  },
+  "panels/application/ServiceWorkersView.ts | sWaitingToActivate": {
+    "message": "#{PH1} waiting to activate"
+  },
+  "panels/application/ServiceWorkersView.ts | syncString": {
+    "message": "Sync"
+  },
+  "panels/application/ServiceWorkersView.ts | syncTag": {
+    "message": "Sync tag"
+  },
+  "panels/application/ServiceWorkersView.ts | testPushMessageFromDevtools": {
+    "message": "Test push message from DevTools."
+  },
+  "panels/application/ServiceWorkersView.ts | unregister": {
+    "message": "Unregister"
+  },
+  "panels/application/ServiceWorkersView.ts | unregisterServiceWorker": {
+    "message": "Unregister service worker"
+  },
+  "panels/application/ServiceWorkersView.ts | update": {
+    "message": "Update"
+  },
+  "panels/application/ServiceWorkersView.ts | updateCycle": {
+    "message": "Update Cycle"
+  },
+  "panels/application/ServiceWorkersView.ts | updateOnReload": {
+    "message": "Update on reload"
+  },
+  "panels/application/ServiceWorkersView.ts | workerS": {
+    "message": "Worker: {PH1}"
+  },
+  "panels/application/ServiceWorkerUpdateCycleView.ts | endTimeS": {
+    "message": "End time: {PH1}"
+  },
+  "panels/application/ServiceWorkerUpdateCycleView.ts | startTimeS": {
+    "message": "Start time: {PH1}"
+  },
+  "panels/application/ServiceWorkerUpdateCycleView.ts | timeline": {
+    "message": "Timeline"
+  },
+  "panels/application/ServiceWorkerUpdateCycleView.ts | updateActivity": {
+    "message": "Update Activity"
+  },
+  "panels/application/ServiceWorkerUpdateCycleView.ts | version": {
+    "message": "Version"
+  },
+  "panels/application/StackTrace.ts | cannotRenderStackTrace": {
+    "message": "Cannot not render stack trace"
+  },
+  "panels/application/StackTrace.ts | showSMoreFrames": {
+    "message": "{n, plural, =1 {Show # more frame} other {Show # more frames}}"
+  },
+  "panels/application/StorageItemsView.ts | clearAll": {
+    "message": "Clear All"
+  },
+  "panels/application/StorageItemsView.ts | deleteSelected": {
+    "message": "Delete Selected"
+  },
+  "panels/application/StorageItemsView.ts | filter": {
+    "message": "Filter"
+  },
+  "panels/application/StorageItemsView.ts | refresh": {
+    "message": "Refresh"
+  },
+  "panels/application/StorageView.ts | application": {
+    "message": "Application"
+  },
+  "panels/application/StorageView.ts | applicationCache": {
+    "message": "Application cache"
+  },
+  "panels/application/StorageView.ts | cache": {
+    "message": "Cache"
+  },
+  "panels/application/StorageView.ts | cacheStorage": {
+    "message": "Cache storage"
+  },
+  "panels/application/StorageView.ts | clearing": {
+    "message": "Clearing..."
+  },
+  "panels/application/StorageView.ts | clearSiteData": {
+    "message": "Clear site data"
+  },
+  "panels/application/StorageView.ts | cookies": {
+    "message": "Cookies"
+  },
+  "panels/application/StorageView.ts | fileSystem": {
+    "message": "File System"
+  },
+  "panels/application/StorageView.ts | includingThirdPartyCookies": {
+    "message": "including third-party cookies"
+  },
+  "panels/application/StorageView.ts | indexDB": {
+    "message": "IndexedDB"
+  },
+  "panels/application/StorageView.ts | internalError": {
+    "message": "Internal error"
+  },
+  "panels/application/StorageView.ts | learnMore": {
+    "message": "Learn more"
+  },
+  "panels/application/StorageView.ts | localAndSessionStorage": {
+    "message": "Local and session storage"
+  },
+  "panels/application/StorageView.ts | mb": {
+    "message": "MB"
+  },
+  "panels/application/StorageView.ts | numberMustBeNonNegative": {
+    "message": "Number must be non-negative"
+  },
+  "panels/application/StorageView.ts | other": {
+    "message": "Other"
+  },
+  "panels/application/StorageView.ts | pleaseEnterANumber": {
+    "message": "Please enter a number"
+  },
+  "panels/application/StorageView.ts | serviceWorkers": {
+    "message": "Service Workers"
+  },
+  "panels/application/StorageView.ts | sFailedToLoad": {
+    "message": "{PH1} (failed to load)"
+  },
+  "panels/application/StorageView.ts | storageQuotaIsLimitedIn": {
+    "message": "Storage quota is limited in Incognito mode"
+  },
+  "panels/application/StorageView.ts | storageQuotaUsed": {
+    "message": "{PH1} used out of {PH2} storage quota"
+  },
+  "panels/application/StorageView.ts | storageQuotaUsedWithBytes": {
+    "message": "{PH1} bytes used out of {PH2} bytes storage quota"
+  },
+  "panels/application/StorageView.ts | storageTitle": {
+    "message": "Storage"
+  },
+  "panels/application/StorageView.ts | storageUsage": {
+    "message": "Storage usage"
+  },
+  "panels/application/StorageView.ts | storageWithCustomMarker": {
+    "message": "{PH1} (custom)"
+  },
+  "panels/application/StorageView.ts | unregisterServiceWorker": {
+    "message": "Unregister service workers"
+  },
+  "panels/application/StorageView.ts | usage": {
+    "message": "Usage"
+  },
+  "panels/application/StorageView.ts | webSql": {
+    "message": "Web SQL"
+  },
+  "panels/application/TrustTokensView.ts | allStoredTrustTokensAvailableIn": {
+    "message": "All stored Trust Tokens available in this browser instance."
+  },
+  "panels/application/TrustTokensView.ts | deleteTrustTokens": {
+    "message": "Delete all stored Trust Tokens issued by {PH1}."
+  },
+  "panels/application/TrustTokensView.ts | issuer": {
+    "message": "Issuer"
+  },
+  "panels/application/TrustTokensView.ts | noTrustTokensStored": {
+    "message": "No Trust Tokens are currently stored."
+  },
+  "panels/application/TrustTokensView.ts | storedTokenCount": {
+    "message": "Stored token count"
+  },
+  "panels/application/TrustTokensView.ts | trustTokens": {
+    "message": "Trust Tokens"
+  },
   "panels/browser_debugger/browser_debugger-meta.ts | contentScripts": {
     "message": "Content scripts"
   },
@@ -6535,1029 +7558,6 @@
   },
   "recorder/RecordingFileSystem.ts | linkedToS": {
     "message": "Linked to {PH1}"
-  },
-  "resources/ApplicationCacheItemsView.ts | appcache": {
-    "message": "AppCache"
-  },
-  "resources/ApplicationCacheItemsView.ts | applicationCache": {
-    "message": "Application Cache"
-  },
-  "resources/ApplicationCacheItemsView.ts | deleteString": {
-    "message": "Delete"
-  },
-  "resources/ApplicationCacheItemsView.ts | noApplicationCacheInformation": {
-    "message": "No Application Cache information available."
-  },
-  "resources/ApplicationCacheItemsView.ts | offline": {
-    "message": "Offline"
-  },
-  "resources/ApplicationCacheItemsView.ts | online": {
-    "message": "Online"
-  },
-  "resources/ApplicationCacheItemsView.ts | resource": {
-    "message": "Resource"
-  },
-  "resources/ApplicationCacheItemsView.ts | sizeString": {
-    "message": "Size"
-  },
-  "resources/ApplicationCacheItemsView.ts | typeString": {
-    "message": "Type"
-  },
-  "resources/ApplicationPanelCacheSection.ts | cacheStorage": {
-    "message": "Cache Storage"
-  },
-  "resources/ApplicationPanelCacheSection.ts | delete": {
-    "message": "Delete"
-  },
-  "resources/ApplicationPanelCacheSection.ts | refreshCaches": {
-    "message": "Refresh Caches"
-  },
-  "resources/ApplicationPanelSidebar.ts | application": {
-    "message": "Application"
-  },
-  "resources/ApplicationPanelSidebar.ts | applicationCache": {
-    "message": "Application Cache"
-  },
-  "resources/ApplicationPanelSidebar.ts | backgroundServices": {
-    "message": "Background Services"
-  },
-  "resources/ApplicationPanelSidebar.ts | cache": {
-    "message": "Cache"
-  },
-  "resources/ApplicationPanelSidebar.ts | clear": {
-    "message": "Clear"
-  },
-  "resources/ApplicationPanelSidebar.ts | cookies": {
-    "message": "Cookies"
-  },
-  "resources/ApplicationPanelSidebar.ts | cookiesUsedByFramesFromS": {
-    "message": "Cookies used by frames from {PH1}"
-  },
-  "resources/ApplicationPanelSidebar.ts | documentNotAvailable": {
-    "message": "Document not available"
-  },
-  "resources/ApplicationPanelSidebar.ts | frames": {
-    "message": "Frames"
-  },
-  "resources/ApplicationPanelSidebar.ts | indexeddb": {
-    "message": "IndexedDB"
-  },
-  "resources/ApplicationPanelSidebar.ts | keyPathS": {
-    "message": "Key path: {PH1}"
-  },
-  "resources/ApplicationPanelSidebar.ts | localFiles": {
-    "message": "Local Files"
-  },
-  "resources/ApplicationPanelSidebar.ts | localStorage": {
-    "message": "Local Storage"
-  },
-  "resources/ApplicationPanelSidebar.ts | manifest": {
-    "message": "Manifest"
-  },
-  "resources/ApplicationPanelSidebar.ts | openedWindows": {
-    "message": "Opened Windows"
-  },
-  "resources/ApplicationPanelSidebar.ts | refreshIndexeddb": {
-    "message": "Refresh IndexedDB"
-  },
-  "resources/ApplicationPanelSidebar.ts | sessionStorage": {
-    "message": "Session Storage"
-  },
-  "resources/ApplicationPanelSidebar.ts | storage": {
-    "message": "Storage"
-  },
-  "resources/ApplicationPanelSidebar.ts | theContentOfThisDocumentHasBeen": {
-    "message": "The content of this document has been generated dynamically via 'document.write()'."
-  },
-  "resources/ApplicationPanelSidebar.ts | versionS": {
-    "message": "Version: {PH1}"
-  },
-  "resources/ApplicationPanelSidebar.ts | versionSEmpty": {
-    "message": "Version: {PH1} (empty)"
-  },
-  "resources/ApplicationPanelSidebar.ts | webSql": {
-    "message": "Web SQL"
-  },
-  "resources/ApplicationPanelSidebar.ts | webWorkers": {
-    "message": "Web Workers"
-  },
-  "resources/ApplicationPanelSidebar.ts | windowWithoutTitle": {
-    "message": "Window without title"
-  },
-  "resources/ApplicationPanelSidebar.ts | worker": {
-    "message": "worker"
-  },
-  "resources/AppManifestView.ts | actualHeightSpxOfSSDoesNotMatch": {
-    "message": "Actual height ({PH1}px) of {PH2} {PH3} does not match specified height ({PH4}px)"
-  },
-  "resources/AppManifestView.ts | actualSizeSspxOfSSDoesNotMatch": {
-    "message": "Actual size ({PH1}×{PH2})px of {PH3} {PH4} does not match specified size ({PH5}×{PH6}px)"
-  },
-  "resources/AppManifestView.ts | actualWidthSpxOfSSDoesNotMatch": {
-    "message": "Actual width ({PH1}px) of {PH2} {PH3} does not match specified width ({PH4}px)"
-  },
-  "resources/AppManifestView.ts | appManifest": {
-    "message": "App Manifest"
-  },
-  "resources/AppManifestView.ts | aUrlInTheManifestContainsA": {
-    "message": "A URL in the manifest contains a username, password, or port"
-  },
-  "resources/AppManifestView.ts | backgroundColor": {
-    "message": "Background color"
-  },
-  "resources/AppManifestView.ts | couldNotCheckServiceWorker": {
-    "message": "Could not check service worker without a 'start_url' field in the manifest"
-  },
-  "resources/AppManifestView.ts | couldNotDownloadARequiredIcon": {
-    "message": "Could not download a required icon from the manifest"
-  },
-  "resources/AppManifestView.ts | description": {
-    "message": "Description"
-  },
-  "resources/AppManifestView.ts | descriptionMayBeTruncated": {
-    "message": "Description may be truncated."
-  },
-  "resources/AppManifestView.ts | display": {
-    "message": "Display"
-  },
-  "resources/AppManifestView.ts | documentationOnMaskableIcons": {
-    "message": "documentation on maskable icons"
-  },
-  "resources/AppManifestView.ts | downloadedIconWasEmptyOr": {
-    "message": "Downloaded icon was empty or corrupted"
-  },
-  "resources/AppManifestView.ts | errorsAndWarnings": {
-    "message": "Errors and warnings"
-  },
-  "resources/AppManifestView.ts | icon": {
-    "message": "Icon"
-  },
-  "resources/AppManifestView.ts | icons": {
-    "message": "Icons"
-  },
-  "resources/AppManifestView.ts | identity": {
-    "message": "Identity"
-  },
-  "resources/AppManifestView.ts | imageFromS": {
-    "message": "Image from {PH1}"
-  },
-  "resources/AppManifestView.ts | installability": {
-    "message": "Installability"
-  },
-  "resources/AppManifestView.ts | manifestContainsDisplayoverride": {
-    "message": "Manifest contains 'display_override' field, and the first supported display mode must be one of 'standalone', 'fullscreen', or 'minimal-ui'"
-  },
-  "resources/AppManifestView.ts | manifestCouldNotBeFetchedIsEmpty": {
-    "message": "Manifest could not be fetched, is empty, or could not be parsed"
-  },
-  "resources/AppManifestView.ts | manifestDisplayPropertyMustBeOne": {
-    "message": "Manifest 'display' property must be one of 'standalone', 'fullscreen', or 'minimal-ui'"
-  },
-  "resources/AppManifestView.ts | manifestDoesNotContainANameOr": {
-    "message": "Manifest does not contain a 'name' or 'short_name' field"
-  },
-  "resources/AppManifestView.ts | manifestDoesNotContainASuitable": {
-    "message": "Manifest does not contain a suitable icon - PNG, SVG or WebP format of at least {PH1}px is required, the sizes attribute must be set, and the purpose attribute, if set, must include \"any\" and should not include \"maskable\"."
-  },
-  "resources/AppManifestView.ts | manifestSpecifies": {
-    "message": "Manifest specifies prefer_related_applications: true"
-  },
-  "resources/AppManifestView.ts | manifestStartUrlIsNotValid": {
-    "message": "Manifest start URL is not valid"
-  },
-  "resources/AppManifestView.ts | name": {
-    "message": "Name"
-  },
-  "resources/AppManifestView.ts | needHelpReadOurS": {
-    "message": "Need help? Read {PH1}."
-  },
-  "resources/AppManifestView.ts | noManifestDetected": {
-    "message": "No manifest detected"
-  },
-  "resources/AppManifestView.ts | noMatchingServiceWorkerDetected": {
-    "message": "No matching service worker detected. You may need to reload the page, or check that the scope of the service worker for the current page encloses the scope and start URL from the manifest."
-  },
-  "resources/AppManifestView.ts | noPlayStoreIdProvided": {
-    "message": "No Play store ID provided"
-  },
-  "resources/AppManifestView.ts | noSuppliedIconIsAtLeastSpxSquare": {
-    "message": "No supplied icon is at least {PH1} pixels square in PNG, SVG or WebP format, with the purpose attribute unset or set to \"any\"."
-  },
-  "resources/AppManifestView.ts | orientation": {
-    "message": "Orientation"
-  },
-  "resources/AppManifestView.ts | pageDoesNotWorkOffline": {
-    "message": "Page does not work offline"
-  },
-  "resources/AppManifestView.ts | pageDoesNotWorkOfflineThePage": {
-    "message": "Page does not work offline. Starting in Chrome 93, the installability criteria are changing, and this site will not be installable. See {PH1} for more information."
-  },
-  "resources/AppManifestView.ts | pageHasNoManifestLinkUrl": {
-    "message": "Page has no manifest <link> URL"
-  },
-  "resources/AppManifestView.ts | pageIsLoadedInAnIncognitoWindow": {
-    "message": "Page is loaded in an incognito window"
-  },
-  "resources/AppManifestView.ts | pageIsNotLoadedInTheMainFrame": {
-    "message": "Page is not loaded in the main frame"
-  },
-  "resources/AppManifestView.ts | pageIsNotServedFromASecureOrigin": {
-    "message": "Page is not served from a secure origin"
-  },
-  "resources/AppManifestView.ts | preferrelatedapplicationsIsOnly": {
-    "message": "prefer_related_applications is only supported on Chrome Beta and Stable channels on Android."
-  },
-  "resources/AppManifestView.ts | presentation": {
-    "message": "Presentation"
-  },
-  "resources/AppManifestView.ts | primaryIconasUsedByChrome": {
-    "message": "Primary icon as used by Chrome"
-  },
-  "resources/AppManifestView.ts | primaryManifestIconFromS": {
-    "message": "Primary manifest icon from {PH1}"
-  },
-  "resources/AppManifestView.ts | screenshot": {
-    "message": "Screenshot"
-  },
-  "resources/AppManifestView.ts | screenshotS": {
-    "message": "Screenshot #{PH1}"
-  },
-  "resources/AppManifestView.ts | shortcutS": {
-    "message": "Shortcut #{PH1}"
-  },
-  "resources/AppManifestView.ts | shortcutSShouldIncludeAXPixel": {
-    "message": "Shortcut #{PH1} should include a 96x96 pixel icon"
-  },
-  "resources/AppManifestView.ts | shortName": {
-    "message": "Short name"
-  },
-  "resources/AppManifestView.ts | showOnlyTheMinimumSafeAreaFor": {
-    "message": "Show only the minimum safe area for maskable icons"
-  },
-  "resources/AppManifestView.ts | sSDoesNotSpecifyItsSizeInThe": {
-    "message": "{PH1} {PH2} does not specify its size in the manifest"
-  },
-  "resources/AppManifestView.ts | sSFailedToLoad": {
-    "message": "{PH1} {PH2} failed to load"
-  },
-  "resources/AppManifestView.ts | sSHeightDoesNotComplyWithRatioRequirement": {
-    "message": "{PH1} {PH2} height can't be more than 2.3 times as long as the width"
-  },
-  "resources/AppManifestView.ts | sSrcIsNotSet": {
-    "message": "{PH1} src is not set"
-  },
-  "resources/AppManifestView.ts | sSShouldHaveSquareIcon": {
-    "message": "Most operating systems require square icons. Please include at least one square icon in the array."
-  },
-  "resources/AppManifestView.ts | sSShouldSpecifyItsSizeAs": {
-    "message": "{PH1} {PH2} should specify its size as {width}x{height}"
-  },
-  "resources/AppManifestView.ts | sSSizeShouldBeAtLeast320": {
-    "message": "{PH1} {PH2} size should be at least 320×320"
-  },
-  "resources/AppManifestView.ts | sSSizeShouldBeAtMost3840": {
-    "message": "{PH1} {PH2} size should be at most 3840×3840"
-  },
-  "resources/AppManifestView.ts | sSWidthDoesNotComplyWithRatioRequirement": {
-    "message": "{PH1} {PH2} width can't be more than 2.3 times as long as the height"
-  },
-  "resources/AppManifestView.ts | startUrl": {
-    "message": "Start URL"
-  },
-  "resources/AppManifestView.ts | sUrlSFailedToParse": {
-    "message": "{PH1} URL '{PH2}' failed to parse"
-  },
-  "resources/AppManifestView.ts | theAppIsAlreadyInstalled": {
-    "message": "The app is already installed"
-  },
-  "resources/AppManifestView.ts | themeColor": {
-    "message": "Theme color"
-  },
-  "resources/AppManifestView.ts | thePlayStoreAppUrlAndPlayStoreId": {
-    "message": "The Play Store app URL and Play Store ID do not match"
-  },
-  "resources/AppManifestView.ts | theSpecifiedApplicationPlatform": {
-    "message": "The specified application platform is not supported on Android"
-  },
-  "resources/BackgroundServiceView.ts | backgroundFetch": {
-    "message": "Background Fetch"
-  },
-  "resources/BackgroundServiceView.ts | backgroundServices": {
-    "message": "Background Services"
-  },
-  "resources/BackgroundServiceView.ts | backgroundSync": {
-    "message": "Background Sync"
-  },
-  "resources/BackgroundServiceView.ts | clear": {
-    "message": "Clear"
-  },
-  "resources/BackgroundServiceView.ts | clickTheRecordButtonSOrHitSTo": {
-    "message": "Click the record button {PH1} or hit {PH2} to start recording."
-  },
-  "resources/BackgroundServiceView.ts | devtoolsWillRecordAllSActivity": {
-    "message": "DevTools will record all {PH1} activity for up to 3 days, even when closed."
-  },
-  "resources/BackgroundServiceView.ts | empty": {
-    "message": "empty"
-  },
-  "resources/BackgroundServiceView.ts | event": {
-    "message": "Event"
-  },
-  "resources/BackgroundServiceView.ts | instanceId": {
-    "message": "Instance ID"
-  },
-  "resources/BackgroundServiceView.ts | learnMore": {
-    "message": "Learn more"
-  },
-  "resources/BackgroundServiceView.ts | noMetadataForThisEvent": {
-    "message": "No metadata for this event"
-  },
-  "resources/BackgroundServiceView.ts | notifications": {
-    "message": "Notifications"
-  },
-  "resources/BackgroundServiceView.ts | origin": {
-    "message": "Origin"
-  },
-  "resources/BackgroundServiceView.ts | paymentHandler": {
-    "message": "Payment Handler"
-  },
-  "resources/BackgroundServiceView.ts | periodicBackgroundSync": {
-    "message": "Periodic Background Sync"
-  },
-  "resources/BackgroundServiceView.ts | pushMessaging": {
-    "message": "Push Messaging"
-  },
-  "resources/BackgroundServiceView.ts | recordingSActivity": {
-    "message": "Recording {PH1} activity..."
-  },
-  "resources/BackgroundServiceView.ts | saveEvents": {
-    "message": "Save events"
-  },
-  "resources/BackgroundServiceView.ts | selectAnEntryToViewMetadata": {
-    "message": "Select an entry to view metadata"
-  },
-  "resources/BackgroundServiceView.ts | showEventsFromOtherDomains": {
-    "message": "Show events from other domains"
-  },
-  "resources/BackgroundServiceView.ts | startRecordingEvents": {
-    "message": "Start recording events"
-  },
-  "resources/BackgroundServiceView.ts | stopRecordingEvents": {
-    "message": "Stop recording events"
-  },
-  "resources/BackgroundServiceView.ts | swScope": {
-    "message": "Service Worker Scope"
-  },
-  "resources/BackgroundServiceView.ts | timestamp": {
-    "message": "Timestamp"
-  },
-  "resources/CookieItemsView.ts | clearAllCookies": {
-    "message": "Clear all cookies"
-  },
-  "resources/CookieItemsView.ts | clearFilteredCookies": {
-    "message": "Clear filtered cookies"
-  },
-  "resources/CookieItemsView.ts | cookies": {
-    "message": "Cookies"
-  },
-  "resources/CookieItemsView.ts | numberOfCookiesShownInTableS": {
-    "message": "Number of cookies shown in table: {PH1}"
-  },
-  "resources/CookieItemsView.ts | onlyShowCookiesWhichHaveAn": {
-    "message": "Only show cookies which have an associated issue"
-  },
-  "resources/CookieItemsView.ts | onlyShowCookiesWithAnIssue": {
-    "message": "Only show cookies with an issue"
-  },
-  "resources/CookieItemsView.ts | selectACookieToPreviewItsValue": {
-    "message": "Select a cookie to preview its value"
-  },
-  "resources/CookieItemsView.ts | showUrlDecoded": {
-    "message": "Show URL decoded"
-  },
-  "resources/DatabaseModel.ts | anUnexpectedErrorSOccurred": {
-    "message": "An unexpected error {PH1} occurred."
-  },
-  "resources/DatabaseModel.ts | databaseNoLongerHasExpected": {
-    "message": "Database no longer has expected version."
-  },
-  "resources/DatabaseQueryView.ts | databaseQuery": {
-    "message": "Database Query"
-  },
-  "resources/DatabaseQueryView.ts | queryS": {
-    "message": "Query: {PH1}"
-  },
-  "resources/DatabaseTableView.ts | anErrorOccurredTryingToreadTheS": {
-    "message": "An error occurred trying to read the \"{PH1}\" table."
-  },
-  "resources/DatabaseTableView.ts | database": {
-    "message": "Database"
-  },
-  "resources/DatabaseTableView.ts | refresh": {
-    "message": "Refresh"
-  },
-  "resources/DatabaseTableView.ts | theStableIsEmpty": {
-    "message": "The \"{PH1}\" table is empty."
-  },
-  "resources/DatabaseTableView.ts | visibleColumns": {
-    "message": "Visible columns"
-  },
-  "resources/DOMStorageItemsView.ts | domStorage": {
-    "message": "DOM Storage"
-  },
-  "resources/DOMStorageItemsView.ts | domStorageItems": {
-    "message": "DOM Storage Items"
-  },
-  "resources/DOMStorageItemsView.ts | key": {
-    "message": "Key"
-  },
-  "resources/DOMStorageItemsView.ts | selectAValueToPreview": {
-    "message": "Select a value to preview"
-  },
-  "resources/DOMStorageItemsView.ts | value": {
-    "message": "Value"
-  },
-  "resources/FrameDetailsView.ts | additionalInformation": {
-    "message": "Additional Information"
-  },
-  "resources/FrameDetailsView.ts | adStatus": {
-    "message": "Ad Status"
-  },
-  "resources/FrameDetailsView.ts | aFrameAncestorIsAnInsecure": {
-    "message": "A frame ancestor is an insecure context"
-  },
-  "resources/FrameDetailsView.ts | allowedFeatures": {
-    "message": "Allowed Features"
-  },
-  "resources/FrameDetailsView.ts | apiAvailability": {
-    "message": "API availability"
-  },
-  "resources/FrameDetailsView.ts | availabilityOfCertainApisDepends": {
-    "message": "Availability of certain APIs depends on the document being cross-origin isolated."
-  },
-  "resources/FrameDetailsView.ts | available": {
-    "message": "available"
-  },
-  "resources/FrameDetailsView.ts | availableNotTransferable": {
-    "message": "available, not transferable"
-  },
-  "resources/FrameDetailsView.ts | availableTransferable": {
-    "message": "available, transferable"
-  },
-  "resources/FrameDetailsView.ts | child": {
-    "message": "child"
-  },
-  "resources/FrameDetailsView.ts | clickToRevealInElementsPanel": {
-    "message": "Click to reveal in Elements panel"
-  },
-  "resources/FrameDetailsView.ts | clickToRevealInNetworkPanel": {
-    "message": "Click to reveal in Network panel"
-  },
-  "resources/FrameDetailsView.ts | clickToRevealInNetworkPanelMight": {
-    "message": "Click to reveal in Network panel (might require page reload)"
-  },
-  "resources/FrameDetailsView.ts | clickToRevealInSourcesPanel": {
-    "message": "Click to reveal in Sources panel"
-  },
-  "resources/FrameDetailsView.ts | clickToShowHeader": {
-    "message": "Click to reveal the request whose \"Permissions-Policy\" HTTP header disables this feature."
-  },
-  "resources/FrameDetailsView.ts | clickToShowIframe": {
-    "message": "Click to reveal the top-most iframe which does not allow this feature in the elements panel."
-  },
-  "resources/FrameDetailsView.ts | creationStackTrace": {
-    "message": "Frame Creation Stack Trace"
-  },
-  "resources/FrameDetailsView.ts | creationStackTraceExplanation": {
-    "message": "This frame was created programmatically. The stack trace shows where this happened."
-  },
-  "resources/FrameDetailsView.ts | crossoriginEmbedderPolicy": {
-    "message": "Cross-Origin Embedder Policy"
-  },
-  "resources/FrameDetailsView.ts | crossoriginIsolated": {
-    "message": "Cross-Origin Isolated"
-  },
-  "resources/FrameDetailsView.ts | crossoriginOpenerPolicy": {
-    "message": "Cross-Origin Opener Policy"
-  },
-  "resources/FrameDetailsView.ts | disabledByHeader": {
-    "message": "disabled by \"Permissions-Policy\" header"
-  },
-  "resources/FrameDetailsView.ts | disabledByIframe": {
-    "message": "missing in iframe \"allow\" attribute"
-  },
-  "resources/FrameDetailsView.ts | disabledFeatures": {
-    "message": "Disabled Features"
-  },
-  "resources/FrameDetailsView.ts | document": {
-    "message": "Document"
-  },
-  "resources/FrameDetailsView.ts | frameId": {
-    "message": "Frame ID"
-  },
-  "resources/FrameDetailsView.ts | hideDetails": {
-    "message": "Hide details"
-  },
-  "resources/FrameDetailsView.ts | learnMore": {
-    "message": "Learn more"
-  },
-  "resources/FrameDetailsView.ts | localhostIsAlwaysASecureContext": {
-    "message": "Localhost is always a secure context"
-  },
-  "resources/FrameDetailsView.ts | measureMemory": {
-    "message": "Measure Memory"
-  },
-  "resources/FrameDetailsView.ts | no": {
-    "message": "No"
-  },
-  "resources/FrameDetailsView.ts | origin": {
-    "message": "Origin"
-  },
-  "resources/FrameDetailsView.ts | ownerElement": {
-    "message": "Owner Element"
-  },
-  "resources/FrameDetailsView.ts | permissionsPolicy": {
-    "message": "Permissions Policy"
-  },
-  "resources/FrameDetailsView.ts | reportingTo": {
-    "message": "reporting to"
-  },
-  "resources/FrameDetailsView.ts | requiresCrossoriginIsolated": {
-    "message": "requires cross-origin isolated context"
-  },
-  "resources/FrameDetailsView.ts | root": {
-    "message": "root"
-  },
-  "resources/FrameDetailsView.ts | secureContext": {
-    "message": "Secure Context"
-  },
-  "resources/FrameDetailsView.ts | securityIsolation": {
-    "message": "Security & Isolation"
-  },
-  "resources/FrameDetailsView.ts | sharedarraybufferConstructorIs": {
-    "message": "SharedArrayBuffer constructor is available and SABs can be transferred via postMessage"
-  },
-  "resources/FrameDetailsView.ts | sharedarraybufferConstructorIsAvailable": {
-    "message": "SharedArrayBuffer constructor is available but SABs cannot be transferred via postMessage"
-  },
-  "resources/FrameDetailsView.ts | showDetails": {
-    "message": "Show details"
-  },
-  "resources/FrameDetailsView.ts | theFramesSchemeIsInsecure": {
-    "message": "The frame's scheme is insecure"
-  },
-  "resources/FrameDetailsView.ts | thePerformanceAPI": {
-    "message": "The performance.measureUserAgentSpecificMemory() API is available"
-  },
-  "resources/FrameDetailsView.ts | thePerformancemeasureuseragentspecificmemory": {
-    "message": "The performance.measureUserAgentSpecificMemory() API is not available"
-  },
-  "resources/FrameDetailsView.ts | thisAdditionalDebugging": {
-    "message": "This additional (debugging) information is shown because the 'Protocol Monitor' experiment is enabled."
-  },
-  "resources/FrameDetailsView.ts | thisFrameHasBeenIdentifiedAsThe": {
-    "message": "This frame has been identified as the root frame of an ad"
-  },
-  "resources/FrameDetailsView.ts | thisFrameHasBeenIdentifiedAsTheA": {
-    "message": "This frame has been identified as a child frame of an ad"
-  },
-  "resources/FrameDetailsView.ts | unavailable": {
-    "message": "unavailable"
-  },
-  "resources/FrameDetailsView.ts | unreachableUrl": {
-    "message": "Unreachable URL"
-  },
-  "resources/FrameDetailsView.ts | url": {
-    "message": "URL"
-  },
-  "resources/FrameDetailsView.ts | WillRequireCrossoriginIsolated": {
-    "message": "⚠️ will require cross-origin isolated context in the future"
-  },
-  "resources/FrameDetailsView.ts | yes": {
-    "message": "Yes"
-  },
-  "resources/IndexedDBViews.ts | clearObjectStore": {
-    "message": "Clear object store"
-  },
-  "resources/IndexedDBViews.ts | collapse": {
-    "message": "Collapse"
-  },
-  "resources/IndexedDBViews.ts | dataMayBeStale": {
-    "message": "Data may be stale"
-  },
-  "resources/IndexedDBViews.ts | deleteDatabase": {
-    "message": "Delete database"
-  },
-  "resources/IndexedDBViews.ts | deleteSelected": {
-    "message": "Delete selected"
-  },
-  "resources/IndexedDBViews.ts | expandRecursively": {
-    "message": "Expand Recursively"
-  },
-  "resources/IndexedDBViews.ts | idb": {
-    "message": "IDB"
-  },
-  "resources/IndexedDBViews.ts | indexedDb": {
-    "message": "Indexed DB"
-  },
-  "resources/IndexedDBViews.ts | keyGeneratorValueS": {
-    "message": "Key generator value: {PH1}"
-  },
-  "resources/IndexedDBViews.ts | keyPath": {
-    "message": "Key path: "
-  },
-  "resources/IndexedDBViews.ts | keyString": {
-    "message": "Key"
-  },
-  "resources/IndexedDBViews.ts | loading": {
-    "message": "Loading…"
-  },
-  "resources/IndexedDBViews.ts | objectStores": {
-    "message": "Object stores"
-  },
-  "resources/IndexedDBViews.ts | pleaseConfirmDeleteOfSDatabase": {
-    "message": "Please confirm delete of \"{PH1}\" database."
-  },
-  "resources/IndexedDBViews.ts | primaryKey": {
-    "message": "Primary key"
-  },
-  "resources/IndexedDBViews.ts | refresh": {
-    "message": "Refresh"
-  },
-  "resources/IndexedDBViews.ts | refreshDatabase": {
-    "message": "Refresh database"
-  },
-  "resources/IndexedDBViews.ts | securityOrigin": {
-    "message": "Security origin"
-  },
-  "resources/IndexedDBViews.ts | showNextPage": {
-    "message": "Show next page"
-  },
-  "resources/IndexedDBViews.ts | showPreviousPage": {
-    "message": "Show previous page"
-  },
-  "resources/IndexedDBViews.ts | someEntriesMayHaveBeenModified": {
-    "message": "Some entries may have been modified"
-  },
-  "resources/IndexedDBViews.ts | startFromKey": {
-    "message": "Start from key"
-  },
-  "resources/IndexedDBViews.ts | totalEntriesS": {
-    "message": "Total entries: {PH1}"
-  },
-  "resources/IndexedDBViews.ts | valueString": {
-    "message": "Value"
-  },
-  "resources/IndexedDBViews.ts | version": {
-    "message": "Version"
-  },
-  "resources/OpenedWindowDetailsView.ts | accessToOpener": {
-    "message": "Access to opener"
-  },
-  "resources/OpenedWindowDetailsView.ts | clickToRevealInElementsPanel": {
-    "message": "Click to reveal in Elements panel"
-  },
-  "resources/OpenedWindowDetailsView.ts | closed": {
-    "message": "closed"
-  },
-  "resources/OpenedWindowDetailsView.ts | crossoriginEmbedderPolicy": {
-    "message": "Cross-Origin Embedder Policy"
-  },
-  "resources/OpenedWindowDetailsView.ts | document": {
-    "message": "Document"
-  },
-  "resources/OpenedWindowDetailsView.ts | no": {
-    "message": "No"
-  },
-  "resources/OpenedWindowDetailsView.ts | openerFrame": {
-    "message": "Opener Frame"
-  },
-  "resources/OpenedWindowDetailsView.ts | reportingTo": {
-    "message": "reporting to"
-  },
-  "resources/OpenedWindowDetailsView.ts | security": {
-    "message": "Security"
-  },
-  "resources/OpenedWindowDetailsView.ts | securityIsolation": {
-    "message": "Security & Isolation"
-  },
-  "resources/OpenedWindowDetailsView.ts | showsWhetherTheOpenedWindowIs": {
-    "message": "Shows whether the opened window is able to access its opener and vice versa"
-  },
-  "resources/OpenedWindowDetailsView.ts | type": {
-    "message": "Type"
-  },
-  "resources/OpenedWindowDetailsView.ts | unknown": {
-    "message": "Unknown"
-  },
-  "resources/OpenedWindowDetailsView.ts | url": {
-    "message": "URL"
-  },
-  "resources/OpenedWindowDetailsView.ts | webWorker": {
-    "message": "Web Worker"
-  },
-  "resources/OpenedWindowDetailsView.ts | windowWithoutTitle": {
-    "message": "Window without title"
-  },
-  "resources/OpenedWindowDetailsView.ts | worker": {
-    "message": "worker"
-  },
-  "resources/OpenedWindowDetailsView.ts | yes": {
-    "message": "Yes"
-  },
-  "resources/resources-meta.ts | application": {
-    "message": "Application"
-  },
-  "resources/resources-meta.ts | clearSiteData": {
-    "message": "Clear site data"
-  },
-  "resources/resources-meta.ts | clearSiteDataIncludingThirdparty": {
-    "message": "Clear site data (including third-party cookies)"
-  },
-  "resources/resources-meta.ts | pwa": {
-    "message": "pwa"
-  },
-  "resources/resources-meta.ts | showApplication": {
-    "message": "Show Application"
-  },
-  "resources/resources-meta.ts | startRecordingEvents": {
-    "message": "Start recording events"
-  },
-  "resources/resources-meta.ts | stopRecordingEvents": {
-    "message": "Stop recording events"
-  },
-  "resources/ServiceWorkerCacheViews.ts | cache": {
-    "message": "Cache"
-  },
-  "resources/ServiceWorkerCacheViews.ts | deleteSelected": {
-    "message": "Delete Selected"
-  },
-  "resources/ServiceWorkerCacheViews.ts | filterByPath": {
-    "message": "Filter by Path"
-  },
-  "resources/ServiceWorkerCacheViews.ts | headers": {
-    "message": "Headers"
-  },
-  "resources/ServiceWorkerCacheViews.ts | matchingEntriesS": {
-    "message": "Matching entries: {PH1}"
-  },
-  "resources/ServiceWorkerCacheViews.ts | name": {
-    "message": "Name"
-  },
-  "resources/ServiceWorkerCacheViews.ts | preview": {
-    "message": "Preview"
-  },
-  "resources/ServiceWorkerCacheViews.ts | refresh": {
-    "message": "Refresh"
-  },
-  "resources/ServiceWorkerCacheViews.ts | selectACacheEntryAboveToPreview": {
-    "message": "Select a cache entry above to preview"
-  },
-  "resources/ServiceWorkerCacheViews.ts | serviceWorkerCache": {
-    "message": "Service Worker Cache"
-  },
-  "resources/ServiceWorkerCacheViews.ts | timeCached": {
-    "message": "Time Cached"
-  },
-  "resources/ServiceWorkerCacheViews.ts | totalEntriesS": {
-    "message": "Total entries: {PH1}"
-  },
-  "resources/ServiceWorkerCacheViews.ts | varyHeaderWarning": {
-    "message": "⚠️ Set ignoreVary to true when matching this entry"
-  },
-  "resources/ServiceWorkersView.ts | bypassForNetwork": {
-    "message": "Bypass for network"
-  },
-  "resources/ServiceWorkersView.ts | bypassTheServiceWorkerAndLoad": {
-    "message": "Bypass the service worker and load resources from the network"
-  },
-  "resources/ServiceWorkersView.ts | clients": {
-    "message": "Clients"
-  },
-  "resources/ServiceWorkersView.ts | focus": {
-    "message": "focus"
-  },
-  "resources/ServiceWorkersView.ts | inspect": {
-    "message": "inspect"
-  },
-  "resources/ServiceWorkersView.ts | networkRequests": {
-    "message": "Network requests"
-  },
-  "resources/ServiceWorkersView.ts | onPageReloadForceTheService": {
-    "message": "On page reload, force the service worker to update, and activate it"
-  },
-  "resources/ServiceWorkersView.ts | periodicSync": {
-    "message": "Periodic Sync"
-  },
-  "resources/ServiceWorkersView.ts | periodicSyncTag": {
-    "message": "Periodic Sync tag"
-  },
-  "resources/ServiceWorkersView.ts | pushData": {
-    "message": "Push data"
-  },
-  "resources/ServiceWorkersView.ts | pushString": {
-    "message": "Push"
-  },
-  "resources/ServiceWorkersView.ts | receivedS": {
-    "message": "Received {PH1}"
-  },
-  "resources/ServiceWorkersView.ts | sActivatedAndIsS": {
-    "message": "#{PH1} activated and is {PH2}"
-  },
-  "resources/ServiceWorkersView.ts | sDeleted": {
-    "message": "{PH1} - deleted"
-  },
-  "resources/ServiceWorkersView.ts | serviceWorkerForS": {
-    "message": "Service worker for {PH1}"
-  },
-  "resources/ServiceWorkersView.ts | serviceWorkersFromOtherOrigins": {
-    "message": "Service workers from other origins"
-  },
-  "resources/ServiceWorkersView.ts | sIsRedundant": {
-    "message": "#{PH1} is redundant"
-  },
-  "resources/ServiceWorkersView.ts | source": {
-    "message": "Source"
-  },
-  "resources/ServiceWorkersView.ts | sRegistrationErrors": {
-    "message": "{PH1} registration errors"
-  },
-  "resources/ServiceWorkersView.ts | startString": {
-    "message": "start"
-  },
-  "resources/ServiceWorkersView.ts | status": {
-    "message": "Status"
-  },
-  "resources/ServiceWorkersView.ts | stopString": {
-    "message": "stop"
-  },
-  "resources/ServiceWorkersView.ts | sTryingToInstall": {
-    "message": "#{PH1} trying to install"
-  },
-  "resources/ServiceWorkersView.ts | sWaitingToActivate": {
-    "message": "#{PH1} waiting to activate"
-  },
-  "resources/ServiceWorkersView.ts | syncString": {
-    "message": "Sync"
-  },
-  "resources/ServiceWorkersView.ts | syncTag": {
-    "message": "Sync tag"
-  },
-  "resources/ServiceWorkersView.ts | testPushMessageFromDevtools": {
-    "message": "Test push message from DevTools."
-  },
-  "resources/ServiceWorkersView.ts | unregister": {
-    "message": "Unregister"
-  },
-  "resources/ServiceWorkersView.ts | unregisterServiceWorker": {
-    "message": "Unregister service worker"
-  },
-  "resources/ServiceWorkersView.ts | update": {
-    "message": "Update"
-  },
-  "resources/ServiceWorkersView.ts | updateCycle": {
-    "message": "Update Cycle"
-  },
-  "resources/ServiceWorkersView.ts | updateOnReload": {
-    "message": "Update on reload"
-  },
-  "resources/ServiceWorkersView.ts | workerS": {
-    "message": "Worker: {PH1}"
-  },
-  "resources/ServiceWorkerUpdateCycleView.ts | endTimeS": {
-    "message": "End time: {PH1}"
-  },
-  "resources/ServiceWorkerUpdateCycleView.ts | startTimeS": {
-    "message": "Start time: {PH1}"
-  },
-  "resources/ServiceWorkerUpdateCycleView.ts | timeline": {
-    "message": "Timeline"
-  },
-  "resources/ServiceWorkerUpdateCycleView.ts | updateActivity": {
-    "message": "Update Activity"
-  },
-  "resources/ServiceWorkerUpdateCycleView.ts | version": {
-    "message": "Version"
-  },
-  "resources/StackTrace.ts | cannotRenderStackTrace": {
-    "message": "Cannot not render stack trace"
-  },
-  "resources/StackTrace.ts | showSMoreFrames": {
-    "message": "{n, plural, =1 {Show # more frame} other {Show # more frames}}"
-  },
-  "resources/StorageItemsView.ts | clearAll": {
-    "message": "Clear All"
-  },
-  "resources/StorageItemsView.ts | deleteSelected": {
-    "message": "Delete Selected"
-  },
-  "resources/StorageItemsView.ts | filter": {
-    "message": "Filter"
-  },
-  "resources/StorageItemsView.ts | refresh": {
-    "message": "Refresh"
-  },
-  "resources/StorageView.ts | application": {
-    "message": "Application"
-  },
-  "resources/StorageView.ts | applicationCache": {
-    "message": "Application cache"
-  },
-  "resources/StorageView.ts | cache": {
-    "message": "Cache"
-  },
-  "resources/StorageView.ts | cacheStorage": {
-    "message": "Cache storage"
-  },
-  "resources/StorageView.ts | clearing": {
-    "message": "Clearing..."
-  },
-  "resources/StorageView.ts | clearSiteData": {
-    "message": "Clear site data"
-  },
-  "resources/StorageView.ts | cookies": {
-    "message": "Cookies"
-  },
-  "resources/StorageView.ts | fileSystem": {
-    "message": "File System"
-  },
-  "resources/StorageView.ts | includingThirdPartyCookies": {
-    "message": "including third-party cookies"
-  },
-  "resources/StorageView.ts | indexDB": {
-    "message": "IndexedDB"
-  },
-  "resources/StorageView.ts | internalError": {
-    "message": "Internal error"
-  },
-  "resources/StorageView.ts | learnMore": {
-    "message": "Learn more"
-  },
-  "resources/StorageView.ts | localAndSessionStorage": {
-    "message": "Local and session storage"
-  },
-  "resources/StorageView.ts | mb": {
-    "message": "MB"
-  },
-  "resources/StorageView.ts | numberMustBeNonNegative": {
-    "message": "Number must be non-negative"
-  },
-  "resources/StorageView.ts | other": {
-    "message": "Other"
-  },
-  "resources/StorageView.ts | pleaseEnterANumber": {
-    "message": "Please enter a number"
-  },
-  "resources/StorageView.ts | serviceWorkers": {
-    "message": "Service Workers"
-  },
-  "resources/StorageView.ts | sFailedToLoad": {
-    "message": "{PH1} (failed to load)"
-  },
-  "resources/StorageView.ts | storageQuotaIsLimitedIn": {
-    "message": "Storage quota is limited in Incognito mode"
-  },
-  "resources/StorageView.ts | storageQuotaUsed": {
-    "message": "{PH1} used out of {PH2} storage quota"
-  },
-  "resources/StorageView.ts | storageQuotaUsedWithBytes": {
-    "message": "{PH1} bytes used out of {PH2} bytes storage quota"
-  },
-  "resources/StorageView.ts | storageTitle": {
-    "message": "Storage"
-  },
-  "resources/StorageView.ts | storageUsage": {
-    "message": "Storage usage"
-  },
-  "resources/StorageView.ts | storageWithCustomMarker": {
-    "message": "{PH1} (custom)"
-  },
-  "resources/StorageView.ts | unregisterServiceWorker": {
-    "message": "Unregister service workers"
-  },
-  "resources/StorageView.ts | usage": {
-    "message": "Usage"
-  },
-  "resources/StorageView.ts | webSql": {
-    "message": "Web SQL"
-  },
-  "resources/TrustTokensView.ts | allStoredTrustTokensAvailableIn": {
-    "message": "All stored Trust Tokens available in this browser instance."
-  },
-  "resources/TrustTokensView.ts | deleteTrustTokens": {
-    "message": "Delete all stored Trust Tokens issued by {PH1}."
-  },
-  "resources/TrustTokensView.ts | issuer": {
-    "message": "Issuer"
-  },
-  "resources/TrustTokensView.ts | noTrustTokensStored": {
-    "message": "No Trust Tokens are currently stored."
-  },
-  "resources/TrustTokensView.ts | storedTokenCount": {
-    "message": "Stored token count"
-  },
-  "resources/TrustTokensView.ts | trustTokens": {
-    "message": "Trust Tokens"
   },
   "screencast/ScreencastApp.ts | toggleScreencast": {
     "message": "Toggle screencast"

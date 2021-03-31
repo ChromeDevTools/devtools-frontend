@@ -4,7 +4,7 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as SDK from '../sdk/sdk.js';
+import * as SDK from '../../sdk/sdk.js';
 
 export class BackgroundServiceModel extends SDK.SDKModel.SDKModel implements
     ProtocolProxyApi.BackgroundServiceDispatcher {

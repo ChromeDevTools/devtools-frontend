@@ -30,12 +30,12 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
-import * as DataGrid from '../data_grid/data_grid.js';
-import * as i18n from '../i18n/i18n.js';
-import * as ObjectUI from '../object_ui/object_ui.js';
-import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
-import * as UI from '../ui/ui.js';
+import * as Common from '../../common/common.js';  // eslint-disable-line no-unused-vars
+import * as DataGrid from '../../data_grid/data_grid.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as ObjectUI from '../../object_ui/object_ui.js';
+import * as SDK from '../../sdk/sdk.js';  // eslint-disable-line no-unused-vars
+import * as UI from '../../ui/ui.js';
 
 import {Database, DatabaseId, Entry, Index, IndexedDBModel, ObjectStore, ObjectStoreMetadata} from './IndexedDBModel.js';  // eslint-disable-line no-unused-vars
 
@@ -144,7 +144,7 @@ const UIStrings = {
   */
   keyGeneratorValueS: 'Key generator value: {PH1}',
 };
-const str_ = i18n.i18n.registerUIStrings('resources/IndexedDBViews.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/application/IndexedDBViews.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class IDBDatabaseView extends UI.Widget.VBox {
   _model: IndexedDBModel;
@@ -161,13 +161,13 @@ export class IDBDatabaseView extends UI.Widget.VBox {
     this._model = model;
     const databaseName = database ? database.databaseId.name : i18nString(UIStrings.loading);
 
-    this.registerRequiredCSS('resources/indexedDBViews.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('panels/application/indexedDBViews.css', {enableLegacyPatching: false});
     this.contentElement.classList.add('indexed-db-container');
 
     // TODO(crbug.com/1156978): Replace UI.ReportView.ReportView with ReportView.ts web component.
     this._reportView = new UI.ReportView.ReportView(databaseName);
     this._reportView.show(this.contentElement);
-    this._reportView.registerRequiredCSS('resources/indexedDBViews.css', {enableLegacyPatching: false});
+    this._reportView.registerRequiredCSS('panels/application/indexedDBViews.css', {enableLegacyPatching: false});
     this._reportView.element.classList.add('indexed-db-header');
 
     const bodySection = this._reportView.appendSection('');
@@ -253,7 +253,7 @@ export class IDBDataView extends UI.View.SimpleView {
       model: IndexedDBModel, databaseId: DatabaseId, objectStore: ObjectStore, index: Index|null,
       refreshObjectStoreCallback: () => void) {
     super(i18nString(UIStrings.idb));
-    this.registerRequiredCSS('resources/indexedDBViews.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('panels/application/indexedDBViews.css', {enableLegacyPatching: false});
 
     this._model = model;
     this._databaseId = databaseId;

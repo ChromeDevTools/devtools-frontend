@@ -32,8 +32,8 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as i18n from '../i18n/i18n.js';
-import * as SDK from '../sdk/sdk.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as SDK from '../../sdk/sdk.js';
 
 const UIStrings = {
   /**
@@ -46,7 +46,7 @@ const UIStrings = {
   */
   anUnexpectedErrorSOccurred: 'An unexpected error {PH1} occurred.',
 };
-const str_ = i18n.i18n.registerUIStrings('resources/DatabaseModel.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/application/DatabaseModel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class Database {
   _model: DatabaseModel;

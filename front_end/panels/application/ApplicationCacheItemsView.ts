@@ -29,11 +29,11 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
-import * as DataGrid from '../data_grid/data_grid.js';
-import * as i18n from '../i18n/i18n.js';
-import * as Platform from '../platform/platform.js';
-import * as UI from '../ui/ui.js';
+import * as Common from '../../common/common.js';  // eslint-disable-line no-unused-vars
+import * as DataGrid from '../../data_grid/data_grid.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as Platform from '../../platform/platform.js';
+import * as UI from '../../ui/ui.js';
 
 import {ApplicationCacheModel, CHECKING, DOWNLOADING, IDLE, OBSOLETE, UNCACHED, UPDATEREADY} from './ApplicationCacheModel.js';  // eslint-disable-line no-unused-vars
 
@@ -75,7 +75,7 @@ const UIStrings = {
   */
   applicationCache: 'Application Cache',
 };
-const str_ = i18n.i18n.registerUIStrings('resources/ApplicationCacheItemsView.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/application/ApplicationCacheItemsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class ApplicationCacheItemsView extends UI.View.SimpleView {
   _model: ApplicationCacheModel;

@@ -4,7 +4,7 @@
 
 // @ts-nocheck
 
-import * as ResourcesModule from './resources.js';
+import * as ResourcesModule from './application.js';
 
 self.Resources = self.Resources || {};
 Resources = Resources || {};

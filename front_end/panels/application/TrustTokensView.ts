@@ -2,11 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as i18n from '../i18n/i18n.js';
-import * as SDK from '../sdk/sdk.js';
-import * as LitHtml from '../third_party/lit-html/lit-html.js';
-import * as Components from '../ui/components/components.js';
-import * as UI from '../ui/ui.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as SDK from '../../sdk/sdk.js';
+import * as LitHtml from '../../third_party/lit-html/lit-html.js';
+import * as Components from '../../ui/components/components.js';
+import * as UI from '../../ui/ui.js';
 
 import type {ResourcesPanel} from './ResourcesPanel.js';
 
@@ -41,7 +41,7 @@ const UIStrings = {
    */
   deleteTrustTokens: 'Delete all stored Trust Tokens issued by {PH1}.',
 };
-const str_ = i18n.i18n.registerUIStrings('resources/TrustTokensView.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/application/TrustTokensView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 /** Fetch the Trust Token data regularly from the backend while the panel is open */

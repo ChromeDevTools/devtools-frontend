@@ -4,10 +4,10 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
-import * as SDK from '../sdk/sdk.js';
-import * as SourceFrame from '../source_frame/source_frame.js';
-import * as UI from '../ui/ui.js';
+import * as Common from '../../common/common.js';  // eslint-disable-line no-unused-vars
+import * as SDK from '../../sdk/sdk.js';
+import * as SourceFrame from '../../source_frame/source_frame.js';
+import * as UI from '../../ui/ui.js';
 
 import {ApplicationPanelSidebar, CookieTreeElement, StorageCategoryView} from './ApplicationPanelSidebar.js';  // eslint-disable-line no-unused-vars
 import {CookieItemsView} from './CookieItemsView.js';
@@ -33,7 +33,7 @@ export class ResourcesPanel extends UI.Panel.PanelWithSidebar {
 
   private constructor() {
     super('resources');
-    this.registerRequiredCSS('resources/resourcesPanel.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('panels/application/resourcesPanel.css', {enableLegacyPatching: false});
 
     this._resourcesLastSelectedItemSetting =
         Common.Settings.Settings.instance().createSetting('resourcesLastSelectedElementPath', []);

@@ -11,7 +11,7 @@
     { "name": "panels/developer_resources" },
     { "name": "panels/layer_viewer" },
     { "name": "panels/network" },
-    { "name": "resources" },
+    { "name": "panels/application" },
     { "name": "timeline" }
   ],
   "extends": "shell"

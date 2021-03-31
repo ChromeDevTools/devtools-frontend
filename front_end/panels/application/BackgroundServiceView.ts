@@ -4,13 +4,13 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Bindings from '../bindings/bindings.js';
-import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
-import * as DataGrid from '../data_grid/data_grid.js';
-import * as i18n from '../i18n/i18n.js';
-import * as Platform from '../platform/platform.js';
-import * as SDK from '../sdk/sdk.js';
-import * as UI from '../ui/ui.js';
+import * as Bindings from '../../bindings/bindings.js';
+import * as Common from '../../common/common.js';  // eslint-disable-line no-unused-vars
+import * as DataGrid from '../../data_grid/data_grid.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as Platform from '../../platform/platform.js';
+import * as SDK from '../../sdk/sdk.js';
+import * as UI from '../../ui/ui.js';
 
 import {BackgroundServiceModel, Events} from './BackgroundServiceModel.js';  // eslint-disable-line no-unused-vars
 
@@ -116,7 +116,7 @@ const UIStrings = {
   */
   noMetadataForThisEvent: 'No metadata for this event',
 };
-const str_ = i18n.i18n.registerUIStrings('resources/BackgroundServiceView.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/application/BackgroundServiceView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class BackgroundServiceView extends UI.Widget.VBox {
   _serviceName: Protocol.BackgroundService.ServiceName;
@@ -155,7 +155,7 @@ export class BackgroundServiceView extends UI.Widget.VBox {
 
   constructor(serviceName: Protocol.BackgroundService.ServiceName, model: BackgroundServiceModel) {
     super(true);
-    this.registerRequiredCSS('resources/backgroundServiceView.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('panels/application/backgroundServiceView.css', {enableLegacyPatching: false});
     this.registerRequiredCSS('ui/emptyWidget.css', {enableLegacyPatching: false});
 
     this._serviceName = serviceName;

@@ -19,7 +19,7 @@
     { "name": "panels/layer_viewer" },
     { "name": "panels/network" },
     { "name": "panels/performance_monitor" },
-    { "name": "resources" },
+    { "name": "panels/application" },
     { "name": "security" },
     { "name": "timeline" },
     { "name": "web_audio" },

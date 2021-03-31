@@ -2,11 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Components from '../components/components.js';
-import * as i18n from '../i18n/i18n.js';
-import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
-import * as LitHtml from '../third_party/lit-html/lit-html.js';
-import * as UIComponents from '../ui/components/components.js';
+import * as Components from '../../components/components.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as SDK from '../../sdk/sdk.js';  // eslint-disable-line no-unused-vars
+import * as LitHtml from '../../third_party/lit-html/lit-html.js';
+import * as UIComponents from '../../ui/components/components.js';
 
 const UIStrings = {
   /**
@@ -18,7 +18,7 @@ const UIStrings = {
   */
   showSMoreFrames: '{n, plural, =1 {Show # more frame} other {Show # more frames}}',
 };
-const str_ = i18n.i18n.registerUIStrings('resources/StackTrace.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/application/StackTrace.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export interface StackTraceData {

@@ -12,7 +12,7 @@ import './panels/accessibility/accessibility-meta.js';
 import './panels/animation/animation-meta.js';
 import './panels/developer_resources/developer_resources-meta.js';
 import './inspector_main/inspector_main-meta.js';
-import './resources/resources-meta.js';
+import './panels/application/application-meta.js';
 import './issues/issues-meta.js';
 import './panels/help/help-meta.js';
 import './panels/layers/layers-meta.js';

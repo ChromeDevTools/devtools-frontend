@@ -4,14 +4,14 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../common/common.js';
-import * as Components from '../components/components.js';
-import * as Host from '../host/host.js';
-import * as i18n from '../i18n/i18n.js';
-import * as MobileThrottling from '../panels/mobile_throttling/mobile_throttling.js';
-import * as Network from '../panels/network/network.js';
-import * as SDK from '../sdk/sdk.js';
-import * as UI from '../ui/ui.js';
+import * as Common from '../../common/common.js';
+import * as Components from '../../components/components.js';
+import * as Host from '../../host/host.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as SDK from '../../sdk/sdk.js';
+import * as UI from '../../ui/ui.js';
+import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
+import * as Network from '../network/network.js';
 
 import {ServiceWorkerUpdateCycleView} from './ServiceWorkerUpdateCycleView.js';
 
@@ -166,7 +166,7 @@ const UIStrings = {
   */
   focus: 'focus',
 };
-const str_ = i18n.i18n.registerUIStrings('resources/ServiceWorkersView.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/application/ServiceWorkersView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let throttleDisabledForDebugging = false;
 export const setThrottleDisabledForDebugging = (enable: boolean): void => {
@@ -185,7 +185,7 @@ export class ServiceWorkersView extends UI.Widget.VBox implements
 
   constructor() {
     super(true);
-    this.registerRequiredCSS('resources/serviceWorkersView.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('panels/application/serviceWorkersView.css', {enableLegacyPatching: false});
 
     // TODO(crbug.com/1156978): Replace UI.ReportView.ReportView with ReportView.ts web component.
     this._currentWorkersView = new UI.ReportView.ReportView(i18n.i18n.lockedString('Service Workers'));
@@ -812,7 +812,7 @@ export class Section {
   _wrapWidget(container: Element): Element {
     const shadowRoot = UI.Utils.createShadowRootWithCoreStyles(
         container, {cssFile: undefined, enableLegacyPatching: true, delegatesFocus: undefined});
-    UI.Utils.appendStyle(shadowRoot, 'resources/serviceWorkersView.css', {enableLegacyPatching: false});
+    UI.Utils.appendStyle(shadowRoot, 'panels/application/serviceWorkersView.css', {enableLegacyPatching: false});
     const contentElement = document.createElement('div');
     shadowRoot.appendChild(contentElement);
     return contentElement;

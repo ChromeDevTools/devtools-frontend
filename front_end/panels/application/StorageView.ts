@@ -2,12 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../common/common.js';
-import * as i18n from '../i18n/i18n.js';
-import * as PerfUI from '../perf_ui/perf_ui.js';
-import * as Platform from '../platform/platform.js';
-import * as SDK from '../sdk/sdk.js';
-import * as UI from '../ui/ui.js';
+import * as Common from '../../common/common.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as PerfUI from '../../perf_ui/perf_ui.js';
+import * as Platform from '../../platform/platform.js';
+import * as SDK from '../../sdk/sdk.js';
+import * as UI from '../../ui/ui.js';
 
 import {ApplicationCacheModel} from './ApplicationCacheModel.js';
 import {DatabaseModel} from './DatabaseModel.js';
@@ -134,7 +134,7 @@ const UIStrings = {
    */
   serviceWorkers: 'Service Workers',
 };
-const str_ = i18n.i18n.registerUIStrings('resources/StorageView.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/application/StorageView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 /**
@@ -159,7 +159,7 @@ export class StorageView extends UI.ThrottledWidget.ThrottledWidget {
 
   constructor() {
     super(true, 1000);
-    this.registerRequiredCSS('resources/storageView.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('panels/application/storageView.css', {enableLegacyPatching: false});
     this.contentElement.classList.add('clear-storage-container');
     const types = Protocol.Storage.StorageType;
     this.pieColors = new Map([
@@ -174,7 +174,7 @@ export class StorageView extends UI.ThrottledWidget.ThrottledWidget {
 
     // TODO(crbug.com/1156978): Replace UI.ReportView.ReportView with ReportView.ts web component.
     this.reportView = new UI.ReportView.ReportView(i18nString(UIStrings.storageTitle));
-    this.reportView.registerRequiredCSS('resources/storageView.css', {enableLegacyPatching: false});
+    this.reportView.registerRequiredCSS('panels/application/storageView.css', {enableLegacyPatching: false});
     this.reportView.element.classList.add('clear-storage-header');
     this.reportView.show(this.contentElement);
     /** @type {?SDK.SDKModel.Target} */

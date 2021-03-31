@@ -30,12 +30,12 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../common/common.js';
-import * as DataGrid from '../data_grid/data_grid.js';
-import * as i18n from '../i18n/i18n.js';
-import * as SourceFrame from '../source_frame/source_frame.js';
-import * as TextUtils from '../text_utils/text_utils.js';
-import * as UI from '../ui/ui.js';
+import * as Common from '../../common/common.js';
+import * as DataGrid from '../../data_grid/data_grid.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as SourceFrame from '../../source_frame/source_frame.js';
+import * as TextUtils from '../../text_utils/text_utils.js';
+import * as UI from '../../ui/ui.js';
 
 import {DOMStorage} from './DOMStorageModel.js';
 import {StorageItemsView} from './StorageItemsView.js';
@@ -62,7 +62,7 @@ const UIStrings = {
   */
   selectAValueToPreview: 'Select a value to preview',
 };
-const str_ = i18n.i18n.registerUIStrings('resources/DOMStorageItemsView.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/application/DOMStorageItemsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class DOMStorageItemsView extends StorageItemsView {
   _domStorage: DOMStorage;

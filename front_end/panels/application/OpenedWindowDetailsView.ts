@@ -4,10 +4,10 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../common/common.js';
-import * as i18n from '../i18n/i18n.js';
-import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
-import * as UI from '../ui/ui.js';
+import * as Common from '../../common/common.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as SDK from '../../sdk/sdk.js';  // eslint-disable-line no-unused-vars
+import * as UI from '../../ui/ui.js';
 
 const UIStrings = {
   /**
@@ -84,7 +84,7 @@ const UIStrings = {
   */
   reportingTo: 'reporting to',
 };
-const str_ = i18n.i18n.registerUIStrings('resources/OpenedWindowDetailsView.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/application/OpenedWindowDetailsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const booleanToYesNo = (b: boolean): Common.UIString.LocalizedString =>
     b ? i18nString(UIStrings.yes) : i18nString(UIStrings.no);
@@ -157,11 +157,12 @@ export class OpenedWindowDetailsView extends UI.ThrottledWidget.ThrottledWidget 
     super();
     this._targetInfo = targetInfo;
     this._isWindowClosed = isWindowClosed;
-    this.registerRequiredCSS('resources/frameDetailsReportView.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('panels/application/frameDetailsReportView.css', {enableLegacyPatching: false});
     this.contentElement.classList.add('frame-details-container');
     // TODO(crbug.com/1156978): Replace UI.ReportView.ReportView with ReportView.ts web component.
     this._reportView = new UI.ReportView.ReportView(this.buildTitle());
-    this._reportView.registerRequiredCSS('resources/frameDetailsReportView.css', {enableLegacyPatching: false});
+    this._reportView.registerRequiredCSS(
+        'panels/application/frameDetailsReportView.css', {enableLegacyPatching: false});
     this._reportView.show(this.contentElement);
     this._reportView.element.classList.add('frame-details-report-container');
 
@@ -224,12 +225,13 @@ export class WorkerDetailsView extends UI.ThrottledWidget.ThrottledWidget {
   constructor(targetInfo: Protocol.Target.TargetInfo) {
     super();
     this._targetInfo = targetInfo;
-    this.registerRequiredCSS('resources/frameDetailsReportView.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('panels/application/frameDetailsReportView.css', {enableLegacyPatching: false});
     this.contentElement.classList.add('frame-details-container');
     // TODO(crbug.com/1156978): Replace UI.ReportView.ReportView with ReportView.ts web component.
     this._reportView =
         new UI.ReportView.ReportView(this._targetInfo.title || this._targetInfo.url || i18nString(UIStrings.worker));
-    this._reportView.registerRequiredCSS('resources/frameDetailsReportView.css', {enableLegacyPatching: false});
+    this._reportView.registerRequiredCSS(
+        'panels/application/frameDetailsReportView.css', {enableLegacyPatching: false});
     this._reportView.show(this.contentElement);
     this._reportView.element.classList.add('frame-details-report-container');
 

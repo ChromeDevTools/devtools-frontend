@@ -3,18 +3,18 @@
 // found in the LICENSE file.
 
 import type {StackTraceData} from './StackTrace.js';
-import * as Bindings from '../bindings/bindings.js';
-import * as Common from '../common/common.js';
-import * as i18n from '../i18n/i18n.js';
-import * as Network from '../panels/network/network.js';
-import * as Platform from '../platform/platform.js';
-import * as Root from '../root/root.js';
-import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
-import * as LitHtml from '../third_party/lit-html/lit-html.js';
-import * as WebComponents from '../ui/components/components.js';
-import * as UI from '../ui/ui.js';
-import * as Workspace from '../workspace/workspace.js';
-import * as Components from '../components/components.js';
+import * as Bindings from '../../bindings/bindings.js';
+import * as Common from '../../common/common.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as Network from '../network/network.js';
+import * as Platform from '../../platform/platform.js';
+import * as Root from '../../root/root.js';
+import * as SDK from '../../sdk/sdk.js';  // eslint-disable-line no-unused-vars
+import * as LitHtml from '../../third_party/lit-html/lit-html.js';
+import * as WebComponents from '../../ui/components/components.js';
+import * as UI from '../../ui/ui.js';
+import * as Workspace from '../../workspace/workspace.js';
+import * as Components from '../../components/components.js';
 
 const UIStrings = {
   /**
@@ -238,7 +238,7 @@ const UIStrings = {
   */
   disabledByHeader: 'disabled by "`Permissions-Policy`" header',
 };
-const str_ = i18n.i18n.registerUIStrings('resources/FrameDetailsView.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/application/FrameDetailsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class FrameDetailsView extends UI.ThrottledWidget.ThrottledWidget {
   private readonly reportView = new FrameDetailsReportView();

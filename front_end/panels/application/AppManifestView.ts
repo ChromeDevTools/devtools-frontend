@@ -4,12 +4,12 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../common/common.js';
-import * as Components from '../components/components.js';
-import * as i18n from '../i18n/i18n.js';
-import * as InlineEditor from '../inline_editor/inline_editor.js';
-import * as SDK from '../sdk/sdk.js';
-import * as UI from '../ui/ui.js';
+import * as Common from '../../common/common.js';
+import * as Components from '../../components/components.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as InlineEditor from '../../inline_editor/inline_editor.js';
+import * as SDK from '../../sdk/sdk.js';
+import * as UI from '../../ui/ui.js';
 
 const UIStrings = {
   /**
@@ -323,7 +323,7 @@ const UIStrings = {
   */
   sSHeightDoesNotComplyWithRatioRequirement: '{PH1} {PH2} height can\'t be more than 2.3 times as long as the width',
 };
-const str_ = i18n.i18n.registerUIStrings('resources/AppManifestView.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/application/AppManifestView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class AppManifestView extends UI.Widget.VBox implements SDK.SDKModel.Observer {
   _emptyView: UI.EmptyWidget.EmptyWidget;
@@ -350,7 +350,7 @@ export class AppManifestView extends UI.Widget.VBox implements SDK.SDKModel.Obse
   _serviceWorkerManager?: SDK.ServiceWorkerManager.ServiceWorkerManager|null;
   constructor() {
     super(true);
-    this.registerRequiredCSS('resources/appManifestView.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('panels/application/appManifestView.css', {enableLegacyPatching: false});
     this.contentElement.classList.add('manifest-container');
 
     Common.Settings.Settings.instance()
@@ -365,7 +365,7 @@ export class AppManifestView extends UI.Widget.VBox implements SDK.SDKModel.Obse
 
     // TODO(crbug.com/1156978): Replace UI.ReportView.ReportView with ReportView.ts web component.
     this._reportView = new UI.ReportView.ReportView(i18nString(UIStrings.appManifest));
-    this._reportView.registerRequiredCSS('resources/appManifestView.css', {enableLegacyPatching: false});
+    this._reportView.registerRequiredCSS('panels/application/appManifestView.css', {enableLegacyPatching: false});
     this._reportView.element.classList.add('manifest-view-header');
     this._reportView.show(this.contentElement);
     this._reportView.hideWidget();

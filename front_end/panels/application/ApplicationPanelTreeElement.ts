@@ -2,8 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../common/common.js';
-import * as UI from '../ui/ui.js';
+import * as Common from '../../common/common.js';
+import * as UI from '../../ui/ui.js';
 
 import {ResourcesPanel} from './ResourcesPanel.js';
 

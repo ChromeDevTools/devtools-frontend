@@ -2,9 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as i18n from '../i18n/i18n.js';
-import * as SDK from '../sdk/sdk.js';
-import * as UI from '../ui/ui.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as SDK from '../../sdk/sdk.js';
+import * as UI from '../../ui/ui.js';
 
 const UIStrings = {
   /**
@@ -30,7 +30,7 @@ const UIStrings = {
   */
   endTimeS: 'End time: {PH1}',
 };
-const str_ = i18n.i18n.registerUIStrings('resources/ServiceWorkerUpdateCycleView.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/application/ServiceWorkerUpdateCycleView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class ServiceWorkerUpdateCycleView {
   private registration: SDK.ServiceWorkerManager.ServiceWorkerRegistration;
@@ -132,7 +132,7 @@ export class ServiceWorkerUpdateCycleView {
 
   private createTimingTable(): void {
     this.tableElement.classList.add('service-worker-update-timing-table');
-    UI.Utils.appendStyle(this.tableElement, 'resources/serviceWorkerUpdateCycleView.css');
+    UI.Utils.appendStyle(this.tableElement, 'panels/application/serviceWorkerUpdateCycleView.css');
     const timeRanges = this.calculateServiceWorkerUpdateRanges();
     this.updateTimingTable(timeRanges);
   }

@@ -2,15 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../common/common.js';
-import * as Root from '../root/root.js';
-import * as SDK from '../sdk/sdk.js';
-import * as UI from '../ui/ui.js';
+import * as Common from '../../common/common.js';
+import * as Root from '../../root/root.js';
+import * as SDK from '../../sdk/sdk.js';
+import * as UI from '../../ui/ui.js';
 
 // eslint-disable-next-line rulesdir/es_modules_import
-import type * as Resources from './resources.js';
+import type * as Resources from './application.js';
 
-import * as i18n from '../i18n/i18n.js';
+import * as i18n from '../../i18n/i18n.js';
 const UIStrings = {
   /**
   *@description Text in Application Panel Sidebar of the Application panel
@@ -41,15 +41,15 @@ const UIStrings = {
   */
   stopRecordingEvents: 'Stop recording events',
 };
-const str_ = i18n.i18n.registerUIStrings('resources/resources-meta.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/application/application-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 let loadedResourcesModule: (typeof Resources|undefined);
 
 async function loadResourcesModule(): Promise<typeof Resources> {
   if (!loadedResourcesModule) {
     // Side-effect import resources in module.json
-    await Root.Runtime.Runtime.instance().loadModulePromise('resources');
-    loadedResourcesModule = await import('./resources.js');
+    await Root.Runtime.Runtime.instance().loadModulePromise('panels/application');
+    loadedResourcesModule = await import('./application.js');
   }
   return loadedResourcesModule;
 }

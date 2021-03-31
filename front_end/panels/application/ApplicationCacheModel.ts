@@ -32,8 +32,8 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
-import * as SDK from '../sdk/sdk.js';
+import * as Common from '../../common/common.js';  // eslint-disable-line no-unused-vars
+import * as SDK from '../../sdk/sdk.js';
 
 export class ApplicationCacheModel extends SDK.SDKModel.SDKModel {
   _agent: ProtocolProxyApi.ApplicationCacheApi;

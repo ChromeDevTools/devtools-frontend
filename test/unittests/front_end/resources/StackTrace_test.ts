@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as Components from '../../../../front_end/components/components.js';
-import * as Resources from '../../../../front_end/resources/resources.js';
+import * as Resources from '../../../../front_end/panels/application/application.js';
 import * as SDK from '../../../../front_end/sdk/sdk.js';
 import * as UIComponents from '../../../../front_end/ui/components/components.js';
 import {assertElement, assertShadowRoot, dispatchClickEvent, getCleanTextContentFromElements, getElementWithinComponent, renderElementIntoDOM} from '../helpers/DOMHelpers.js';

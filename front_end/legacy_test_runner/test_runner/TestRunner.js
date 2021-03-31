@@ -258,7 +258,7 @@ export async function loadLegacyModule(module) {
       containingFolder = remappedFolder;
     }
   }
-  await import(`../../${containingFolder}/${module}-legacy.js`);
+  await import(`../../${containingFolder}/${containingFolder.split('/').reverse()[0]}-legacy.js`);
 }
 
 /**

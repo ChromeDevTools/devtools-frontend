@@ -4,13 +4,13 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../common/common.js';
-import * as DataGrid from '../data_grid/data_grid.js';
-import * as i18n from '../i18n/i18n.js';
-import * as Network from '../panels/network/network.js';
-import * as Platform from '../platform/platform.js';
-import * as SDK from '../sdk/sdk.js';
-import * as UI from '../ui/ui.js';
+import * as Common from '../../common/common.js';
+import * as DataGrid from '../../data_grid/data_grid.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as Platform from '../../platform/platform.js';
+import * as SDK from '../../sdk/sdk.js';
+import * as UI from '../../ui/ui.js';
+import * as Network from '../network/network.js';
 
 const UIStrings = {
   /**
@@ -68,7 +68,7 @@ const UIStrings = {
   */
   preview: 'Preview',
 };
-const str_ = i18n.i18n.registerUIStrings('resources/ServiceWorkerCacheViews.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/application/ServiceWorkerCacheViews.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class ServiceWorkerCacheView extends UI.View.SimpleView {
   _model: SDK.ServiceWorkerCacheModel.ServiceWorkerCacheModel;
@@ -90,7 +90,7 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
   }>|null;
   constructor(model: SDK.ServiceWorkerCacheModel.ServiceWorkerCacheModel, cache: SDK.ServiceWorkerCacheModel.Cache) {
     super(i18nString(UIStrings.cache));
-    this.registerRequiredCSS('resources/serviceWorkerCacheViews.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('panels/application/serviceWorkerCacheViews.css', {enableLegacyPatching: false});
 
     this._model = model;
     this._entriesForTest = null;

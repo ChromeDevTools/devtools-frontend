@@ -2,10 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../common/common.js';
-import * as i18n from '../i18n/i18n.js';
-import * as SDK from '../sdk/sdk.js';
-import * as UI from '../ui/ui.js';
+import * as Common from '../../common/common.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as SDK from '../../sdk/sdk.js';
+import * as UI from '../../ui/ui.js';
 
 import {ApplicationPanelSidebar} from './ApplicationPanelSidebar.js';
 import {ApplicationPanelTreeElement, ExpandableApplicationPanelTreeElement} from './ApplicationPanelTreeElement.js';
@@ -26,7 +26,7 @@ const UIStrings = {
   */
   delete: 'Delete',
 };
-const str_ = i18n.i18n.registerUIStrings('resources/ApplicationPanelCacheSection.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/application/ApplicationPanelCacheSection.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class ApplicationCacheManifestTreeElement extends ApplicationPanelTreeElement {
   private readonly manifestURL: string;

@@ -4,10 +4,10 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
-import * as i18n from '../i18n/i18n.js';
-import * as Platform from '../platform/platform.js';
-import * as UI from '../ui/ui.js';
+import * as Common from '../../common/common.js';  // eslint-disable-line no-unused-vars
+import * as i18n from '../../i18n/i18n.js';
+import * as Platform from '../../platform/platform.js';
+import * as UI from '../../ui/ui.js';
 
 const UIStrings = {
   /**
@@ -27,7 +27,7 @@ const UIStrings = {
   */
   deleteSelected: 'Delete Selected',
 };
-const str_ = i18n.i18n.registerUIStrings('resources/StorageItemsView.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/application/StorageItemsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class StorageItemsView extends UI.Widget.VBox {
   _filterRegex: RegExp|null;

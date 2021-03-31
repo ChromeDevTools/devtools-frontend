@@ -34,14 +34,14 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../common/common.js';
-import * as Host from '../host/host.js';
-import * as i18n from '../i18n/i18n.js';
-import * as Platform from '../platform/platform.js';
-import * as Root from '../root/root.js';
-import * as SDK from '../sdk/sdk.js';
-import * as SourceFrame from '../source_frame/source_frame.js';
-import * as UI from '../ui/ui.js';
+import * as Common from '../../common/common.js';
+import * as Host from '../../host/host.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as Platform from '../../platform/platform.js';
+import * as Root from '../../root/root.js';
+import * as SDK from '../../sdk/sdk.js';
+import * as SourceFrame from '../../source_frame/source_frame.js';
+import * as UI from '../../ui/ui.js';
 
 import {ApplicationCacheItemsView} from './ApplicationCacheItemsView.js';
 import {ApplicationCacheModel, Events as ApplicationCacheModelEvents} from './ApplicationCacheModel.js';
@@ -170,7 +170,7 @@ const UIStrings = {
   */
   worker: 'worker',
 };
-const str_ = i18n.i18n.registerUIStrings('resources/ApplicationPanelSidebar.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/application/ApplicationPanelSidebar.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.SDKModel.Observer {
   _panel: ResourcesPanel;
@@ -220,7 +220,7 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.SDKMo
 
     this._sidebarTree = new UI.TreeOutline.TreeOutlineInShadow();
     this._sidebarTree.element.classList.add('resources-sidebar');
-    this._sidebarTree.registerRequiredCSS('resources/resourcesSidebar.css', {enableLegacyPatching: false});
+    this._sidebarTree.registerRequiredCSS('panels/application/resourcesSidebar.css', {enableLegacyPatching: false});
     this._sidebarTree.element.classList.add('filter-all');
     // Listener needs to have been set up before the elements are added
     this._sidebarTree.addEventListener(UI.TreeOutline.Events.ElementAttached, this._treeElementAdded, this);

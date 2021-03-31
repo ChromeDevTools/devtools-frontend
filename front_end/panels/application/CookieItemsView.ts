@@ -33,12 +33,12 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as BrowserSDK from '../browser_sdk/browser_sdk.js';
-import * as Common from '../common/common.js';
-import * as CookieTable from '../cookie_table/cookie_table.js';
-import * as i18n from '../i18n/i18n.js';
-import * as SDK from '../sdk/sdk.js';
-import * as UI from '../ui/ui.js';
+import * as BrowserSDK from '../../browser_sdk/browser_sdk.js';
+import * as Common from '../../common/common.js';
+import * as CookieTable from '../../cookie_table/cookie_table.js';
+import * as i18n from '../../i18n/i18n.js';
+import * as SDK from '../../sdk/sdk.js';
+import * as UI from '../../ui/ui.js';
 
 import {StorageItemsView} from './StorageItemsView.js';
 
@@ -77,7 +77,7 @@ const UIStrings = {
   */
   numberOfCookiesShownInTableS: 'Number of cookies shown in table: {PH1}',
 };
-const str_ = i18n.i18n.registerUIStrings('resources/CookieItemsView.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/application/CookieItemsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 class CookiePreviewWidget extends UI.Widget.VBox {
   _cookie: SDK.Cookie.Cookie|null;
@@ -173,7 +173,7 @@ export class CookieItemsView extends StorageItemsView {
   constructor(model: SDK.CookieModel.CookieModel, cookieDomain: string) {
     super(i18nString(UIStrings.cookies), 'cookiesPanel');
 
-    this.registerRequiredCSS('resources/cookieItemsView.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('panels/application/cookieItemsView.css', {enableLegacyPatching: false});
     this.element.classList.add('storage-view');
 
     this._model = model;

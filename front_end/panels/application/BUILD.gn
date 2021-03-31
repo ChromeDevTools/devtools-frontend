@@ -2,10 +2,10 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-import("../../scripts/build/ninja/devtools_entrypoint.gni")
-import("../../scripts/build/ninja/devtools_module.gni")
+import("../../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../../../scripts/build/ninja/devtools_module.gni")
 
-devtools_module("resources") {
+devtools_module("application") {
   sources = [
     "AppManifestView.ts",
     "ApplicationCacheItemsView.ts",
@@ -36,33 +36,33 @@ devtools_module("resources") {
   ]
 
   deps = [
-    "../bindings:bundle",
-    "../browser_sdk:bundle",
-    "../common:bundle",
-    "../components:bundle",
-    "../cookie_table:bundle",
-    "../data_grid:bundle",
-    "../host:bundle",
-    "../i18n:bundle",
-    "../inline_editor:bundle",
-    "../object_ui:bundle",
-    "../panels/mobile_throttling:bundle",
-    "../panels/network:bundle",
-    "../platform:bundle",
-    "../protocol_client:bundle",
-    "../root:bundle",
-    "../sdk:bundle",
-    "../source_frame:bundle",
-    "../text_utils:bundle",
-    "../ui:bundle",
-    "../workspace:bundle",
+    "../../bindings:bundle",
+    "../../browser_sdk:bundle",
+    "../../common:bundle",
+    "../../components:bundle",
+    "../../cookie_table:bundle",
+    "../../data_grid:bundle",
+    "../../host:bundle",
+    "../../i18n:bundle",
+    "../../inline_editor:bundle",
+    "../../object_ui:bundle",
+    "../../panels/mobile_throttling:bundle",
+    "../../panels/network:bundle",
+    "../../platform:bundle",
+    "../../protocol_client:bundle",
+    "../../root:bundle",
+    "../../sdk:bundle",
+    "../../source_frame:bundle",
+    "../../text_utils:bundle",
+    "../../ui:bundle",
+    "../../workspace:bundle",
   ]
 }
 
 devtools_entrypoint("bundle") {
-  entrypoint = "resources.ts"
+  entrypoint = "application.ts"
 
-  deps = [ ":resources" ]
+  deps = [ ":application" ]
 }
 
 copy_to_gen("legacy_css") {
@@ -70,13 +70,13 @@ copy_to_gen("legacy_css") {
 }
 
 devtools_entrypoint("legacy") {
-  entrypoint = "resources-legacy.ts"
+  entrypoint = "application-legacy.ts"
 
   deps = [ ":bundle" ]
 }
 
 devtools_entrypoint("meta") {
-  entrypoint = "resources-meta.ts"
+  entrypoint = "application-meta.ts"
 
   deps = [ ":bundle" ]
 }

@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import '../root/root-legacy.js';
+import '../core/root/root-legacy.js';
 import '../core/platform/platform.js';
 import '../common/common-legacy.js';
 import '../text_utils/text_utils-legacy.js';

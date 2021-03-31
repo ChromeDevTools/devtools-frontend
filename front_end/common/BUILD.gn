@@ -44,8 +44,8 @@ devtools_module("common") {
   deps = [
     ":ColorUtils",
     "../core/platform:bundle",
+    "../core/root:bundle",
     "../i18n:bundle",
-    "../root:bundle",
   ]
 
   # Add files built by ColorUtils ts_library so that they are included in layout tests.

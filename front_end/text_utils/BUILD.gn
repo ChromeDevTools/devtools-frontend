@@ -19,7 +19,7 @@ devtools_module("text_utils") {
   deps = [
     "../common:bundle",
     "../core/platform:bundle",
-    "../root:bundle",
+    "../core/root:bundle",
   ]
 
   visibility = [ "../../test/unittests/front_end/text_utils:text_utils" ]

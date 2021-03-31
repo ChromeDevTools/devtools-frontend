@@ -17,7 +17,7 @@ import("./vars.gni")
 #    the form of "../entrypoint/entrypoint.js".
 # 2. it defines a file that is dynamically imported by the
 #    runtime. This uses the same notation, but uses a dynamic
-#    import in `root/Runtime.js`.
+#    import in `core/root/Runtime.js`.
 template("devtools_entrypoint") {
   assert(defined(invoker.entrypoint),
          "You must define the 'entrypoint' for a rollup target")

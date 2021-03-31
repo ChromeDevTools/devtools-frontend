@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
-import * as Root from '../root/root.js';  // eslint-disable-line no-unused-vars
+import * as Root from '../core/root/root.js';  // eslint-disable-line no-unused-vars
 
 import {ContextFlavorListener} from './ContextFlavorListener.js';  // eslint-disable-line no-unused-vars
 

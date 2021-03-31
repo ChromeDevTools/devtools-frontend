@@ -302,10 +302,10 @@ export class Module {
     // by `build_release_applications`. These need to be loaded before any other code is
     // loaded, to make sure that the resource content is properly cached in `cachedResources`.
     if (this._descriptor.modules && this._descriptor.modules.includes(moduleFileName)) {
-      await import(`../${this._name}/${moduleFileName}`);
+      await import(`../../${this._name}/${moduleFileName}`);
     }
 
-    await import(`../${this._name}/${entrypointFileName}`);
+    await import(`../../${this._name}/${entrypointFileName}`);
   }
 
   _modularizeURL(resourceName: string): string {

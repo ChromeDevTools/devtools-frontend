@@ -28,8 +28,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as Root from '../core/root/root.js';
 import * as i18n from '../i18n/i18n.js';
-import * as Root from '../root/root.js';
 
 import {DebuggerModel, Location} from './DebuggerModel.js';
 import {RuntimeModel} from './RuntimeModel.js';              // eslint-disable-line no-unused-vars

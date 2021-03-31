@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
-import * as Root from '../root/root.js';
+import * as Root from '../core/root/root.js';
 import * as ThemeSupport from '../theme_support/theme_support.js';
 
 import {CSS_RESOURCES_TO_LOAD_INTO_RUNTIME} from './get-stylesheet.js';

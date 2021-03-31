@@ -42,6 +42,7 @@ devtools_module("network") {
     "../../components:bundle",
     "../../cookie_table:bundle",
     "../../core/platform:bundle",
+    "../../core/root:bundle",
     "../../data_grid:bundle",
     "../../har_importer:bundle",
     "../../host:bundle",
@@ -50,7 +51,6 @@ devtools_module("network") {
     "../../panels/elements:bundle",
     "../../panels/mobile_throttling:bundle",
     "../../perf_ui:bundle",
-    "../../root:bundle",
     "../../sdk:bundle",
     "../../search:bundle",
     "../../source_frame:bundle",
@@ -80,7 +80,7 @@ devtools_entrypoint("meta") {
 
   deps = [
     ":bundle",
-    "../../root:bundle",
+    "../../core/root:bundle",
     "../../ui:bundle",
   ]
 }

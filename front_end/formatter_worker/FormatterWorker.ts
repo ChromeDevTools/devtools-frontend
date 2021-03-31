@@ -31,8 +31,8 @@
 /* eslint-disable rulesdir/no_underscored_properties */
 
 import * as Platform from '../core/platform/platform.js';
+import * as Root from '../core/root/root.js';
 import * as Formatter from '../formatter/formatter.js';
-import * as Root from '../root/root.js';
 import * as Acorn from '../third_party/acorn/acorn.js';
 
 import {AcornTokenizer, ECMA_VERSION} from './AcornTokenizer.js';

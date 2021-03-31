@@ -33,9 +33,9 @@
 import * as BrowserSDK from '../browser_sdk/browser_sdk.js';
 import * as Common from '../common/common.js';
 import * as Platform from '../core/platform/platform.js';
+import * as Root from '../core/root/root.js';
 import * as ConsoleCounters from '../panels/console_counters/console_counters.js';
 import * as Persistence from '../persistence/persistence.js';  // eslint-disable-line no-unused-vars
-import * as Root from '../root/root.js';
 import * as SDK from '../sdk/sdk.js';
 import * as SourceFrame from '../source_frame/source_frame.js';
 import * as TextEditor from '../text_editor/text_editor.js';  // eslint-disable-line no-unused-vars

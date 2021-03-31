@@ -28,7 +28,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import * as RootModule from '../root/root.js';
+import * as RootModule from '../core/root/root.js';
 
 // Legacy runtime namespace definitions
 // @ts-ignore

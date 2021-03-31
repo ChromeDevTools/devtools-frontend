@@ -7,5 +7,5 @@ ts_library("root") {
   testonly = true
   sources = [ "Runtime_test.ts" ]
 
-  deps = [ "../../../../front_end/root:bundle" ]
+  deps = [ "../../../../front_end/core/root:bundle" ]
 }

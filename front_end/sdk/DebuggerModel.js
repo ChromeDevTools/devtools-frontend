@@ -30,10 +30,10 @@
 
 import * as Common from '../common/common.js';
 import * as Platform from '../core/platform/platform.js';
+import * as Root from '../core/root/root.js';
 import * as Host from '../host/host.js';
 import * as i18n from '../i18n/i18n.js';
 import * as ProtocolClient from '../protocol_client/protocol_client.js';  // eslint-disable-line no-unused-vars
-import * as Root from '../root/root.js';
 
 import {GetPropertiesResult, RemoteObject, ScopeRef} from './RemoteObject.js';  // eslint-disable-line no-unused-vars
 import {Events as ResourceTreeModelEvents, ResourceTreeModel} from './ResourceTreeModel.js';  // eslint-disable-line no-unused-vars

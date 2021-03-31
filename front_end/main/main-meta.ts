@@ -3,11 +3,11 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
-import * as Root from '../root/root.js';
+import * as Components from '../components/components.js';
+import * as Root from '../core/root/root.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 import * as Workspace from '../workspace/workspace.js';
-import * as Components from '../components/components.js';
 
 // eslint-disable-next-line rulesdir/es_modules_import
 import type * as Main from './main.js';

@@ -4,7 +4,7 @@
 
 import * as Common from '../common/common.js';
 import * as Platform from '../core/platform/platform.js';
-import * as Root from '../root/root.js';
+import * as Root from '../core/root/root.js';
 
 import {Context} from './Context.js';
 

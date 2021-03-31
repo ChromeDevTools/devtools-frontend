@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
-import * as Root from '../root/root.js';
+import * as Root from '../core/root/root.js';
 
 import {Attributes, Cookie} from './Cookie.js';  // eslint-disable-line no-unused-vars
 import {Resource} from './Resource.js';          // eslint-disable-line no-unused-vars

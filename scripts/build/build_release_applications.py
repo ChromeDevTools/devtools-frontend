@@ -184,7 +184,7 @@ class ReleaseBuilder(object):
         else:
             output.write('Root.applicationDescriptor = %s;' % self.descriptors.application_json())
 
-        output.write("import * as RootModule from './root/root.js';")
+        output.write("import * as RootModule from './core/root/root.js';")
         self._write_module_resources(self.autorun_resource_names(), output)
 
         output.write(minify_js(read_file(join(self.application_dir, self.app_file('js')))))
@@ -197,7 +197,7 @@ class ReleaseBuilder(object):
         module_dir = join(self.application_dir, module_name)
         output = StringIO()
         if resources:
-            relative_file_name = '../root/root.js'
+            relative_file_name = '../core/root/root.js'
             if "/" in module_name:
                 relative_file_name = '../' + relative_file_name
             output.write("import * as RootModule from '%s';" %

@@ -29,7 +29,7 @@
  */
 
 import * as Platform from '../core/platform/platform.js';  // eslint-disable-line no-unused-vars
-import * as Root from '../root/root.js';
+import * as Root from '../core/root/root.js';
 
 import {Color, Format} from './Color.js';  // eslint-disable-line no-unused-vars
 import {Console} from './Console.js';

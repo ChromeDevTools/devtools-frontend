@@ -8,7 +8,7 @@ import("../../scripts/build/ninja/devtools_module.gni")
 devtools_module("startup") {
   sources = [ "RuntimeInstantiator.js" ]
 
-  deps = [ "../root:bundle" ]
+  deps = [ "../core/root:bundle" ]
 }
 
 devtools_entrypoint("bundle") {
@@ -22,12 +22,12 @@ devtools_entrypoint("bundle") {
     "../components:legacy",
     "../core/dom_extension:bundle",
     "../core/platform:bundle",
+    "../core/root:legacy",
     "../extensions:legacy",
     "../host:legacy",
     "../panels/console_counters:legacy",
     "../persistence:legacy",
     "../protocol_client:legacy",
-    "../root:legacy",
     "../sdk:legacy",
     "../text_utils:legacy",
     "../ui:legacy",

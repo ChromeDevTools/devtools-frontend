@@ -44,7 +44,7 @@ devtools_entrypoint("meta") {
   deps = [
     ":bundle",
     "../../core/platform:bundle",
-    "../../root:bundle",
+    "../../core/root:bundle",
     "../../ui:bundle",
   ]
 }

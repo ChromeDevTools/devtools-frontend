@@ -57,6 +57,7 @@ devtools_module("elements") {
     "../../common:bundle",
     "../../components:bundle",
     "../../core/platform:bundle",
+    "../../core/root:bundle",
     "../../extensions:bundle",
     "../../formatter:bundle",
     "../../generated",
@@ -68,7 +69,6 @@ devtools_module("elements") {
     "../../panels/mobile_throttling:bundle",
     "../../protocol_client:bundle",
     "../../render_coordinator:bundle",
-    "../../root:bundle",
     "../../sdk:bundle",
     "../../text_editor:bundle",
     "../../third_party/lit-html:bundle",
@@ -104,7 +104,7 @@ devtools_entrypoint("meta") {
 
   deps = [
     ":bundle",
-    "../../root:bundle",
+    "../../core/root:bundle",
     "../../ui:bundle",
   ]
 }

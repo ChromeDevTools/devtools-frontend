@@ -315,13 +315,13 @@ const UIStrings = {
   *@example {Image} PH1
   *@example {https://example.com/image.png} PH2
   */
-  sSWidthShouldBeLessThanTwiceTheHeight: '{PH1} {PH2} width should be less than twice the height',
+  sSWidthDoesNotComplyWithRatioRequirement: '{PH1} {PH2} width can\'t be more than 2.3 times as long as the height',
   /**
   *@description Warning message for image resources from the manifest
   *@example {Image} PH1
   *@example {https://example.com/image.png} PH2
   */
-  sSHeightShouldBeLessThanTwiceTheWidth: '{PH1} {PH2} height should be less than twice the width',
+  sSHeightDoesNotComplyWithRatioRequirement: '{PH1} {PH2} height can\'t be more than 2.3 times as long as the width',
 };
 const str_ = i18n.i18n.registerUIStrings('resources/AppManifestView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -827,12 +827,12 @@ export class AppManifestView extends UI.Widget.VBox implements SDK.SDKModel.Obse
           imageResourceErrors.push(i18nString(UIStrings.sSSizeShouldBeAtLeast320, {PH1: resourceName, PH2: imageUrl}));
         } else if (width > 3840 || height > 3840) {
           imageResourceErrors.push(i18nString(UIStrings.sSSizeShouldBeAtMost3840, {PH1: resourceName, PH2: imageUrl}));
-        } else if (width > height * 2) {
+        } else if (width > (height * 2.3)) {
           imageResourceErrors.push(
-              i18nString(UIStrings.sSWidthShouldBeLessThanTwiceTheHeight, {PH1: resourceName, PH2: imageUrl}));
-        } else if (height > width * 2) {
+              i18nString(UIStrings.sSWidthDoesNotComplyWithRatioRequirement, {PH1: resourceName, PH2: imageUrl}));
+        } else if (height > (width * 2.3)) {
           imageResourceErrors.push(
-              i18nString(UIStrings.sSHeightShouldBeLessThanTwiceTheWidth, {PH1: resourceName, PH2: imageUrl}));
+              i18nString(UIStrings.sSHeightDoesNotComplyWithRatioRequirement, {PH1: resourceName, PH2: imageUrl}));
         }
       }
     }

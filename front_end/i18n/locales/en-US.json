@@ -6800,8 +6800,8 @@
   "resources/AppManifestView.ts | sSFailedToLoad": {
     "message": "{PH1} {PH2} failed to load"
   },
-  "resources/AppManifestView.ts | sSHeightShouldBeLessThanTwiceTheWidth": {
-    "message": "{PH1} {PH2} height should be less than twice the width"
+  "resources/AppManifestView.ts | sSHeightDoesNotComplyWithRatioRequirement": {
+    "message": "{PH1} {PH2} height can't be more than 2.3 times as long as the width"
   },
   "resources/AppManifestView.ts | sSrcIsNotSet": {
     "message": "{PH1} src is not set"
@@ -6818,8 +6818,8 @@
   "resources/AppManifestView.ts | sSSizeShouldBeAtMost3840": {
     "message": "{PH1} {PH2} size should be at most 3840×3840"
   },
-  "resources/AppManifestView.ts | sSWidthShouldBeLessThanTwiceTheHeight": {
-    "message": "{PH1} {PH2} width should be less than twice the height"
+  "resources/AppManifestView.ts | sSWidthDoesNotComplyWithRatioRequirement": {
+    "message": "{PH1} {PH2} width can't be more than 2.3 times as long as the height"
   },
   "resources/AppManifestView.ts | startUrl": {
     "message": "Start URL"

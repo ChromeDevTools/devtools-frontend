@@ -6800,8 +6800,8 @@
   "resources/AppManifestView.ts | sSFailedToLoad": {
     "message": "{PH1} {PH2} f̂áîĺêd́ t̂ó l̂óâd́"
   },
-  "resources/AppManifestView.ts | sSHeightShouldBeLessThanTwiceTheWidth": {
-    "message": "{PH1} {PH2} ĥéîǵĥt́ ŝh́ôúl̂d́ b̂é l̂éŝś t̂h́âń t̂ẃîćê t́ĥé ŵíd̂t́ĥ"
+  "resources/AppManifestView.ts | sSHeightDoesNotComplyWithRatioRequirement": {
+    "message": "{PH1} {PH2} ĥéîǵĥt́ ĉán̂'t́ b̂é m̂ór̂é t̂h́âń 2.3 t̂ím̂éŝ áŝ ĺôńĝ áŝ t́ĥé ŵíd̂t́ĥ"
   },
   "resources/AppManifestView.ts | sSrcIsNotSet": {
     "message": "{PH1} src îś n̂ót̂ śêt́"
@@ -6818,8 +6818,8 @@
   "resources/AppManifestView.ts | sSSizeShouldBeAtMost3840": {
     "message": "{PH1} {PH2} ŝíẑé ŝh́ôúl̂d́ b̂é ât́ m̂óŝt́ 3840×3840"
   },
-  "resources/AppManifestView.ts | sSWidthShouldBeLessThanTwiceTheHeight": {
-    "message": "{PH1} {PH2} ŵíd̂t́ĥ śĥóûĺd̂ b́ê ĺêśŝ t́ĥán̂ t́ŵíĉé t̂h́ê h́êíĝh́t̂"
+  "resources/AppManifestView.ts | sSWidthDoesNotComplyWithRatioRequirement": {
+    "message": "{PH1} {PH2} ŵíd̂t́ĥ ćâń't̂ b́ê ḿôŕê t́ĥán̂ 2.3 t́îḿêś âś l̂ón̂ǵ âś t̂h́ê h́êíĝh́t̂"
   },
   "resources/AppManifestView.ts | startUrl": {
     "message": "Ŝt́âŕt̂ ÚR̂Ĺ"

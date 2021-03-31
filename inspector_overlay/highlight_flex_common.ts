@@ -35,6 +35,7 @@ export interface FlexItemHighlight {
   baseSize: number;
   isHorizontalFlow: boolean;
   flexItemHighlightConfig: {baseSizeBox?: BoxStyle, baseSizeBorder?: LineStyle, flexibilityArrow?: LineStyle};
+  boxSizing: 'content'|'border';
 }
 
 interface LineQuads {

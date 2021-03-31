@@ -127,6 +127,7 @@ export class HighlightOverlay extends Overlay {
 
     const bounds = emptyBounds();
     let contentPath: PathCommands|null = null;
+    let borderPath: PathCommands|null = null;
 
     for (let paths = highlight.paths.slice(); paths.length;) {
       const path = paths.pop();
@@ -143,6 +144,9 @@ export class HighlightOverlay extends Overlay {
 
       if (path.name === 'content') {
         contentPath = path.path;
+      }
+      if (path.name === 'border') {
+        borderPath = path.path;
       }
     }
     this.context.restore();
@@ -189,13 +193,14 @@ export class HighlightOverlay extends Overlay {
       return Object.keys(config.flexContainerHighlightConfig).length > 0;
     });
 
-    if (highlight.flexItemInfo && contentPath && !isVisibleFlexContainer) {
+    if (highlight.flexItemInfo && !isVisibleFlexContainer) {
       for (const flexItem of highlight.flexItemInfo) {
-        // TODO: both flex-basis and width/height determine the base size of the content-box by default, but if
-        // box-sizing is set to border-box, then they determine the base size of the border-box. So we should use the
-        // border-box path here in this case.
+        const path = flexItem.boxSizing === 'content' ? contentPath : borderPath;
+        if (!path) {
+          continue;
+        }
         drawLayoutFlexItemHighlight(
-            flexItem, contentPath, this.context, this.deviceScaleFactor, this.canvasWidth, this.canvasHeight,
+            flexItem, path, this.context, this.deviceScaleFactor, this.canvasWidth, this.canvasHeight,
             this.emulationScaleFactor);
       }
     }

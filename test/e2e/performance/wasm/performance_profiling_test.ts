@@ -7,7 +7,7 @@ import * as puppeteer from 'puppeteer';
 
 import {$, getBrowserAndPages, step, waitFor, waitForElementWithTextContent, waitForFunction} from '../../../shared/helper.js';
 import {describe, it} from '../../../shared/mocha-extensions.js';
-import {clickOnFunctionLink, getTotalTimeFromSummary, navigateToBottomUpTab, navigateToCallTreeTab, navigateToPerformanceTab, searchForComponent, startRecording, stopRecording} from '../../helpers/performance-helpers.js';
+import {BOTTOM_UP_SELECTOR, CALL_TREE_SELECTOR, clickOnFunctionLink, getTotalTimeFromSummary, navigateToBottomUpTab, navigateToCallTreeTab, navigateToPerformanceTab, searchForComponent, startRecording, stopRecording, SUMMARY_TAB_SELECTOR} from '../../helpers/performance-helpers.js';
 
 async function expandAndCheckActivityTree(frontend: puppeteer.Page, expectedActivities: string[]) {
   let index = 0;
@@ -35,10 +35,7 @@ async function expandAndCheckActivityTree(frontend: puppeteer.Page, expectedActi
 }
 
 describe('The Performance panel', async function() {
-  // These tests have lots of waiting which might take more time to execute
-  this.timeout(20000);
-
-  beforeEach(async () => {
+  it('is able to record performance', async () => {
     const {target, frontend} = getBrowserAndPages();
 
     await step('navigate to the Performance tab', async () => {
@@ -64,6 +61,29 @@ describe('The Performance panel', async function() {
 
     await step('stop the recording', async () => {
       await stopRecording();
+    });
+
+    await step('check that the recording finished successfully', async () => {
+      await waitFor(SUMMARY_TAB_SELECTOR);
+      await waitFor(BOTTOM_UP_SELECTOR);
+      await waitFor(CALL_TREE_SELECTOR);
+    });
+  });
+});
+
+describe('The Performance panel', async function() {
+  // These tests have lots of waiting which might take more time to execute
+  this.timeout(20000);
+
+  beforeEach(async () => {
+    const {frontend} = getBrowserAndPages();
+
+    await step('navigate to the Performance tab and uplaod performance profile', async () => {
+      await navigateToPerformanceTab('wasm/profiling');
+
+      const uploadProfileHandle = await waitFor('input[type=file]');
+      assert.isNotNull(uploadProfileHandle, 'unable to upload the performance profile');
+      await uploadProfileHandle.uploadFile('test/e2e/resources/performance/wasm/mainWasm_profile.json');
     });
 
     await step('search for "mainWasm"', async () => {
@@ -98,8 +118,7 @@ describe('The Performance panel', async function() {
     });
   });
 
-  // Flaky test
-  it.skip('[crbug.com/1193940] is able to inspect the call stack for a wasm function from the bottom up', async () => {
+  it('is able to inspect the call stack for a wasm function from the bottom up', async () => {
     const {frontend} = getBrowserAndPages();
     const expectedActivities = ['mainWasm', 'js-to-wasm::i', '(anonymous)', 'Run Microtasks'];
 

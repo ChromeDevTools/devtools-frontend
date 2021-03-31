@@ -21,11 +21,11 @@ devtools_module("media") {
 
   deps = [
     "../../common:bundle",
+    "../../core/sdk:bundle",
     "../../data_grid:bundle",
     "../../host:bundle",
     "../../i18n:bundle",
     "../../perf_ui:bundle",
-    "../../sdk:bundle",
     "../../theme_support:bundle",
     "../../ui:bundle",
   ]

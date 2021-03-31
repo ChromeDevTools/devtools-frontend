@@ -6,8 +6,8 @@
 
 import * as Bindings from '../bindings/bindings.js';
 import * as Platform from '../core/platform/platform.js';
+import * as SDK from '../core/sdk/sdk.js';
 import * as i18n from '../i18n/i18n.js';
-import * as SDK from '../sdk/sdk.js';
 import * as SourceFrame from '../source_frame/source_frame.js';  // eslint-disable-line no-unused-vars
 import * as Workspace from '../workspace/workspace.js';          // eslint-disable-line no-unused-vars
 

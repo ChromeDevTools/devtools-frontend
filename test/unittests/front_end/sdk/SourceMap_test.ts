@@ -4,7 +4,7 @@
 
 const {assert} = chai;
 
-import type * as SDKModule from '../../../../front_end/sdk/sdk.js';
+import type * as SDKModule from '../../../../front_end/core/sdk/sdk.js';
 import {assertNotNull} from '../../../../front_end/core/platform/platform.js';
 import {describeWithEnvironment} from '../helpers/EnvironmentHelpers.js';
 
@@ -17,7 +17,7 @@ const fakeInitiator = {
 describeWithEnvironment('SourceMapEntry', () => {
   let SDK: typeof SDKModule;
   before(async () => {
-    SDK = await import('../../../../front_end/sdk/sdk.js');
+    SDK = await import('../../../../front_end/core/sdk/sdk.js');
   });
 
   it('can be instantiated correctly', () => {
@@ -56,7 +56,7 @@ describeWithEnvironment('SourceMapEntry', () => {
 describeWithEnvironment('TextSourceMap', () => {
   let SDK: typeof SDKModule;
   before(async () => {
-    SDK = await import('../../../../front_end/sdk/sdk.js');
+    SDK = await import('../../../../front_end/core/sdk/sdk.js');
   });
 
   describe('StringCharIterator', () => {

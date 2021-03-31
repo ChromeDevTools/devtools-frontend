@@ -18,7 +18,7 @@ import '../har_importer/har_importer-legacy.js';
 import '../host/host-legacy.js';
 import '../inline_editor/inline_editor-legacy.js';
 import '../core/root/root-legacy.js';
-import '../sdk/sdk-legacy.js';
+import '../core/sdk/sdk-legacy.js';
 import './test_runner/test_runner.js';
 
 // @ts-ignore

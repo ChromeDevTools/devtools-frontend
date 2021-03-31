@@ -34,7 +34,7 @@ import * as Components from '../../components/components.js';
 import * as DataGrid from '../../data_grid/data_grid.js';
 import * as HeapSnapshotModel from '../../heap_snapshot_model/heap_snapshot_model.js';
 import * as i18n from '../../i18n/i18n.js';
-import type * as SDK from '../../sdk/sdk.js';
+import type * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/ui.js';
 
 import type {HeapSnapshotGridNode} from './HeapSnapshotGridNodes.js';

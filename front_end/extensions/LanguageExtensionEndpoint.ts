@@ -5,7 +5,7 @@
 /* eslint-disable rulesdir/no_underscored_properties */
 
 import * as Bindings from '../bindings/bindings.js';  // eslint-disable-line no-unused-vars
-import * as SDK from '../sdk/sdk.js';                 // eslint-disable-line no-unused-vars
+import * as SDK from '../core/sdk/sdk.js';            // eslint-disable-line no-unused-vars
 
 export class LanguageExtensionEndpoint extends Bindings.DebuggerLanguagePlugins.DebuggerLanguagePlugin {
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration

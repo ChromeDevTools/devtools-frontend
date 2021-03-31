@@ -2,8 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as SDK from '../core/sdk/sdk.js';
 import * as CssOverviewModule from '../panels/css_overview/css_overview.js';
-import * as SDK from '../sdk/sdk.js';
+
 
 // The following regexes are used within in the StylesSidebarPropertyRenderer class
 // and will parse both invalid and valid values.

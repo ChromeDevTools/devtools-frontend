@@ -11,9 +11,9 @@ devtools_module("worker_main") {
   deps = [
     "../common:bundle",
     "../components:bundle",
+    "../core/sdk:bundle",
     "../i18n:bundle",
     "../panels/mobile_throttling:bundle",
-    "../sdk:bundle",
   ]
 }
 

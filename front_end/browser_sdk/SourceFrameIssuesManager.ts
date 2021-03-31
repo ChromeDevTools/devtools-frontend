@@ -4,7 +4,7 @@
 
 import * as Bindings from '../bindings/bindings.js';
 import * as Common from '../common/common.js';
-import * as SDK from '../sdk/sdk.js';
+import * as SDK from '../core/sdk/sdk.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as Marked from '../third_party/marked/marked.js';
 import * as Workspace from '../workspace/workspace.js';

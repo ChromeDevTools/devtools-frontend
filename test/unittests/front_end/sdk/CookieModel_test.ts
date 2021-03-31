@@ -6,12 +6,12 @@ const {assert} = chai;
 
 import {createTarget} from '../helpers/EnvironmentHelpers.js';
 import {describeWithMockConnection, setMockConnectionResponseHandler} from '../helpers/MockConnection.js';
-import type * as SDKModule from '../../../../front_end/sdk/sdk.js';
+import type * as SDKModule from '../../../../front_end/core/sdk/sdk.js';
 
 describeWithMockConnection('CookieModel', () => {
   let SDK: typeof SDKModule;
   before(async () => {
-    SDK = await import('../../../../front_end/sdk/sdk.js');
+    SDK = await import('../../../../front_end/core/sdk/sdk.js');
   });
 
   it('can retrieve cookies', async () => {

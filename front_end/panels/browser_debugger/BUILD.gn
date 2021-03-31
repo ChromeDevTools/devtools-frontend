@@ -18,9 +18,9 @@ devtools_module("browser_debugger") {
 
   deps = [
     "../../common:bundle",
+    "../../core/sdk:bundle",
     "../../i18n:bundle",
     "../../panels/event_listeners:bundle",
-    "../../sdk:bundle",
     "../../sources:bundle",
     "../../ui:bundle",
   ]

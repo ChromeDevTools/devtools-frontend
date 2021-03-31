@@ -6,7 +6,7 @@ import {ProtocolMapping} from '../../../../front_end/generated/protocol-mapping.
 import * as ProtocolClient from '../../../../front_end/protocol_client/protocol_client.js';
 
 import {deinitializeGlobalVars, initializeGlobalVars} from './EnvironmentHelpers.js';
-import type * as SDK from '../../../../front_end/sdk/sdk.js';
+import type * as SDK from '../../../../front_end/core/sdk/sdk.js';
 
 type ProtocolCommand = keyof ProtocolMapping.Commands;
 type ProtocolCommandParams<C extends ProtocolCommand> = ProtocolMapping.Commands[C]['paramsType'];

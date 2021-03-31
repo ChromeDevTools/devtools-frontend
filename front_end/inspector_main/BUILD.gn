@@ -14,10 +14,10 @@ devtools_module("inspector_main") {
   deps = [
     "../common:bundle",
     "../components:bundle",
+    "../core/sdk:bundle",
     "../host:bundle",
     "../i18n:bundle",
     "../panels/mobile_throttling:bundle",
-    "../sdk:bundle",
     "../ui:bundle",
   ]
 }

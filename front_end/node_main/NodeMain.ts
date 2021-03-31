@@ -9,7 +9,7 @@ import * as Components from '../components/components.js';
 import * as Host from '../host/host.js';
 import * as i18n from '../i18n/i18n.js';
 import type * as ProtocolClient from '../protocol_client/protocol_client.js';
-import * as SDK from '../sdk/sdk.js';
+import * as SDK from '../core/sdk/sdk.js';
 
 const UIStrings = {
   /**

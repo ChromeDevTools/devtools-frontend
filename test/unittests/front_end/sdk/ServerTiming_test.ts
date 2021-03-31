@@ -4,13 +4,13 @@
 
 const {assert} = chai;
 
-import type * as SDKModule from '../../../../front_end/sdk/sdk.js';
+import type * as SDKModule from '../../../../front_end/core/sdk/sdk.js';
 import {describeWithEnvironment} from '../helpers/EnvironmentHelpers.js';
 
 describeWithEnvironment('ServerTiming', () => {
   let SDK: typeof SDKModule;
   before(async () => {
-    SDK = await import('../../../../front_end/sdk/sdk.js');
+    SDK = await import('../../../../front_end/core/sdk/sdk.js');
   });
 
   it('can be instantiated correctly', () => {
@@ -24,7 +24,7 @@ describeWithEnvironment('ServerTiming', () => {
 describeWithEnvironment('SDK.ServerTiming.ServerTiming.createFromHeaderValue', () => {
   let SDK: typeof SDKModule;
   before(async () => {
-    SDK = await import('../../../../front_end/sdk/sdk.js');
+    SDK = await import('../../../../front_end/core/sdk/sdk.js');
   });
 
   it('parses headers correctly', () => {

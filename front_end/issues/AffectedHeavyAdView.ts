@@ -2,10 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as SDK from '../core/sdk/sdk.js';
 import * as i18n from '../i18n/i18n.js';
-import * as SDK from '../sdk/sdk.js';
 
 import {AffectedResourcesView} from './AffectedResourcesView.js';
+
 import type {AggregatedIssue} from './IssueAggregator.js';
 import type {IssueView} from './IssueView.js';
 

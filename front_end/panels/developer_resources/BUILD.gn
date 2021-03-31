@@ -14,9 +14,9 @@ devtools_module("developer_resources") {
   deps = [
     "../../common:bundle",
     "../../core/platform:bundle",
+    "../../core/sdk:bundle",
     "../../data_grid:bundle",
     "../../i18n:bundle",
-    "../../sdk:bundle",
     "../../text_utils:bundle",
     "../../ui:bundle",
   ]

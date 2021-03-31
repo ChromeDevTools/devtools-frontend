@@ -8,7 +8,7 @@ import * as Bindings from '../bindings/bindings.js';
 import * as Common from '../common/common.js';
 import * as Components from '../components/components.js';
 import * as Platform from '../core/platform/platform.js';
-import * as SDK from '../sdk/sdk.js';
+import * as SDK from '../core/sdk/sdk.js';
 import * as Workspace from '../workspace/workspace.js';
 
 import type {AutomappingStatus} from './Automapping.js';

@@ -4,7 +4,7 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import type * as SDK from '../sdk/sdk.js';
+import type * as SDK from '../core/sdk/sdk.js';
 
 import {TimelineJSProfileProcessor} from './TimelineJSProfile.js';
 import {RecordType, TimelineData, TimelineModelImpl} from './TimelineModel.js';

@@ -3,8 +3,8 @@
 // found in the LICENSE file.
 
 import * as Components from '../../components/components.js';
+import * as SDK from '../../core/sdk/sdk.js';
 import * as i18n from '../../i18n/i18n.js';
-import * as SDK from '../../sdk/sdk.js';
 import * as UI from '../../ui/ui.js';
 
 const UIStrings = {

@@ -4,12 +4,12 @@
 
 const {assert} = chai;
 
-import type * as SDKModule from '../../../../front_end/sdk/sdk.js';
+import type * as SDKModule from '../../../../front_end/core/sdk/sdk.js';
 
 describe('ConsoleMessage', () => {
   let SDK: typeof SDKModule;
   before(async () => {
-    SDK = await import('../../../../front_end/sdk/sdk.js');
+    SDK = await import('../../../../front_end/core/sdk/sdk.js');
   });
 
   function newMessage(options: {

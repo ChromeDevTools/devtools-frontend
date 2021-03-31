@@ -6,9 +6,9 @@
 
 import * as Bindings from '../bindings/bindings.js';
 import * as Platform from '../core/platform/platform.js';
+import * as SDK from '../core/sdk/sdk.js';
 import * as i18n from '../i18n/i18n.js';
 import * as ProtocolClient from '../protocol_client/protocol_client.js';
-import * as SDK from '../sdk/sdk.js';
 import * as Timeline from '../timeline/timeline.js';
 import * as UI from '../ui/ui.js';
 

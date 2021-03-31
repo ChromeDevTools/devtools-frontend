@@ -32,7 +32,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 
 import * as Platform from '../core/platform/platform.js';
-import * as SDK from '../sdk/sdk.js';
+import * as SDK from '../core/sdk/sdk.js';
 
 import {RecordType, TimelineData} from './TimelineModel.js';
 import type {TracingLayerPayload, TracingLayerTile} from './TracingLayerTree.js';

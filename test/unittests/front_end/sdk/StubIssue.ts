@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {Issue, IssueCategory, IssueKind} from '../../../../front_end/sdk/Issue.js';  // eslint-disable-line rulesdir/es_modules_import
+import {Issue, IssueCategory, IssueKind} from '../../../../front_end/core/sdk/Issue.js';  // eslint-disable-line rulesdir/es_modules_import
 
 export class StubIssue extends Issue {
   private requestIds: string[];

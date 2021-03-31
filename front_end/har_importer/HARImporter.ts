@@ -5,7 +5,7 @@
 /* eslint-disable rulesdir/no_underscored_properties */
 
 import * as Common from '../common/common.js';
-import * as SDK from '../sdk/sdk.js';
+import * as SDK from '../core/sdk/sdk.js';
 
 import {HAREntry, HARLog, HARPage, HARTimings} from './HARFormat.js';  // eslint-disable-line no-unused-vars
 

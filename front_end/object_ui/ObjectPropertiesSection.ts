@@ -37,7 +37,7 @@ import * as i18n from '../i18n/i18n.js';
 import * as LinearMemoryInspector from '../linear_memory_inspector/linear_memory_inspector.js';
 import * as Platform from '../core/platform/platform.js';
 import * as Root from '../core/root/root.js';
-import * as SDK from '../sdk/sdk.js';
+import * as SDK from '../core/sdk/sdk.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as WebComponents from '../ui/components/components.js';
 import * as UI from '../ui/ui.js';

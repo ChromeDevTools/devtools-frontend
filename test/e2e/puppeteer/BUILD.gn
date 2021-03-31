@@ -8,8 +8,8 @@ node_ts_library("puppeteer") {
   sources = [ "puppeteer_test.ts" ]
 
   deps = [
+    "../../../front_end/core/sdk:bundle",
     "../../../front_end/protocol_client:bundle",
-    "../../../front_end/sdk:bundle",
     "../../../front_end/third_party/puppeteer:bundle",
     "../../shared",
     "../helpers",

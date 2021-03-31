@@ -4,9 +4,9 @@
 
 import * as Common from '../../common/common.js';  // eslint-disable-line no-unused-vars
 import * as Root from '../../core/root/root.js';
+import * as SDK from '../../core/sdk/sdk.js';
 import * as Host from '../../host/host.js';
 import * as i18n from '../../i18n/i18n.js';
-import * as SDK from '../../sdk/sdk.js';
 import * as UI from '../../ui/ui.js';
 
 import {EmulatedDevice, Horizontal, HorizontalSpanned, Mode, Vertical, VerticalSpanned} from './EmulatedDevices.js';  // eslint-disable-line no-unused-vars

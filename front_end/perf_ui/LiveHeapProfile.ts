@@ -5,8 +5,8 @@
 /* eslint-disable rulesdir/no_underscored_properties */
 
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
+import * as SDK from '../core/sdk/sdk.js';
 import * as Host from '../host/host.js';
-import * as SDK from '../sdk/sdk.js';
 
 import {Memory} from './LineLevelProfile.js';
 

@@ -5,7 +5,7 @@
 const {assert} = chai;
 
 import * as Host from '../../../../front_end/host/host.js';
-import type * as SDKModule from '../../../../front_end/sdk/sdk.js';
+import type * as SDKModule from '../../../../front_end/core/sdk/sdk.js';
 import {describeWithEnvironment} from '../helpers/EnvironmentHelpers.js';
 
 interface LoadResult {
@@ -17,7 +17,7 @@ interface LoadResult {
 describeWithEnvironment('PageResourceLoader', () => {
   let SDK: typeof SDKModule;
   before(async () => {
-    SDK = await import('../../../../front_end/sdk/sdk.js');
+    SDK = await import('../../../../front_end/core/sdk/sdk.js');
   });
 
   const loads: Array<{url: string}> = [];

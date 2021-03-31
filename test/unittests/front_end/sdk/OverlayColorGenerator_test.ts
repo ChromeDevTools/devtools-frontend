@@ -5,13 +5,13 @@
 const {assert} = chai;
 
 import * as Common from '../../../../front_end/common/common.js';
-import type * as SDKModule from '../../../../front_end/sdk/sdk.js';
+import type * as SDKModule from '../../../../front_end/core/sdk/sdk.js';
 import {describeWithEnvironment} from '../helpers/EnvironmentHelpers.js';
 
 describeWithEnvironment('OverlayColorGenerator', () => {
   let SDK: typeof SDKModule;
   before(async () => {
-    SDK = await import('../../../../front_end/sdk/sdk.js');
+    SDK = await import('../../../../front_end/core/sdk/sdk.js');
   });
 
   it('generates colors for at least 100 iterations', () => {

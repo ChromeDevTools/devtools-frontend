@@ -40,10 +40,10 @@ import * as Common from '../common/common.js';
 import * as Components from '../components/components.js';
 import * as Platform from '../core/platform/platform.js';
 import * as Root from '../core/root/root.js';  // eslint-disable-line no-unused-vars
+import * as SDK from '../core/sdk/sdk.js';
 import * as Host from '../host/host.js';
 import * as _ProtocolClient from '../protocol_client/protocol_client.js';  // eslint-disable-line @typescript-eslint/no-unused-vars
-import * as SDK from '../sdk/sdk.js';
-import * as TextUtils from '../text_utils/text_utils.js';  // eslint-disable-line no-unused-vars
+import * as TextUtils from '../text_utils/text_utils.js';                  // eslint-disable-line no-unused-vars
 import * as ThemeSupport from '../theme_support/theme_support.js';
 import * as UI from '../ui/ui.js';
 import * as Workspace from '../workspace/workspace.js';

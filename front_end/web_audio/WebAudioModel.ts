@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 /* eslint-disable rulesdir/no_underscored_properties */
-import * as SDK from '../sdk/sdk.js';
+import * as SDK from '../core/sdk/sdk.js';
 
 export class WebAudioModel extends SDK.SDKModel.SDKModel implements ProtocolProxyApi.WebAudioDispatcher {
   _enabled: boolean;

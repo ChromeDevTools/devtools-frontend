@@ -3,11 +3,11 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
+import * as SDK from '../core/sdk/sdk.js';
 import * as Host from '../host/host.js';
-import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
-import {Settings} from './LinearMemoryInspector.js';
 
+import {Settings} from './LinearMemoryInspector.js';
 import {LinearMemoryInspectorPaneImpl} from './LinearMemoryInspectorPane.js';
 import {Endianness, getDefaultValueTypeMapping, ValueType, ValueTypeMode} from './ValueInterpreterDisplayUtils.js';
 

@@ -14,9 +14,9 @@ devtools_module("input") {
   deps = [
     "../bindings:bundle",
     "../core/platform:bundle",
+    "../core/sdk:bundle",
     "../i18n:bundle",
     "../protocol_client:bundle",
-    "../sdk:bundle",
     "../timeline:bundle",
     "../ui:bundle",
   ]

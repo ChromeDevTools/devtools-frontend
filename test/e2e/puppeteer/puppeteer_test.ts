@@ -13,7 +13,7 @@ describe('Puppeteer', () => {
     const version = await browser.version();
     const result = await frontend.evaluate(`(async () => {
       const puppeteer = await import('./third_party/puppeteer/puppeteer.js');
-      const SDK = await import('./sdk/sdk.js');
+      const SDK = await import('./core/sdk/sdk.js');
 
       class Transport {
 

@@ -4,7 +4,7 @@
 
 const {assert} = chai;
 
-import type * as SDKModule from '../../../../front_end/sdk/sdk.js';
+import type * as SDKModule from '../../../../front_end/core/sdk/sdk.js';
 import * as Resources from '../../../../front_end/panels/application/application.js';
 
 import View = Resources.ServiceWorkerUpdateCycleView;
@@ -13,7 +13,7 @@ describe('ServiceWorkerUpdateCycleView', () => {
   let versionId = 0;
   let SDK: typeof SDKModule;
   before(async () => {
-    SDK = await import('../../../../front_end/sdk/sdk.js');
+    SDK = await import('../../../../front_end/core/sdk/sdk.js');
   });
 
   it('calculates update cycle ranges', () => {

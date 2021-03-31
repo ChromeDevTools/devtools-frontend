@@ -5,8 +5,8 @@
 /* eslint-disable rulesdir/no_underscored_properties */
 
 import * as Common from '../../common/common.js';
+import * as SDK from '../../core/sdk/sdk.js';  // eslint-disable-line no-unused-vars
 import * as PerfUI from '../../perf_ui/perf_ui.js';
-import * as SDK from '../../sdk/sdk.js';  // eslint-disable-line no-unused-vars
 import * as ThemeSupport from '../../theme_support/theme_support.js';
 import * as UI from '../../ui/ui.js';
 

@@ -4,8 +4,8 @@
 
 import * as Common from '../common/common.js';
 import * as Root from '../core/root/root.js';
+import * as SDK from '../core/sdk/sdk.js';
 import * as ObjectUI from '../object_ui/object_ui.js';
-import * as SDK from '../sdk/sdk.js';
 import * as TextEditor from '../text_editor/text_editor.js';
 import * as UI from '../ui/ui.js';
 import * as Workspace from '../workspace/workspace.js';

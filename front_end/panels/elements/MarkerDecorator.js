@@ -3,8 +3,8 @@
 // found in the LICENSE file.
 
 import * as Platform from '../../core/platform/platform.js';  // eslint-disable-line no-unused-vars
+import * as SDK from '../../core/sdk/sdk.js';                 // eslint-disable-line no-unused-vars
 import * as i18n from '../../i18n/i18n.js';
-import * as SDK from '../../sdk/sdk.js';  // eslint-disable-line no-unused-vars
 
 import {PseudoStateMarkerDecorator} from './ElementsPanel.js';  // eslint-disable-line no-unused-vars
 

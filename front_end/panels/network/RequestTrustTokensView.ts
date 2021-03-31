@@ -7,7 +7,7 @@ import '../../ui/components/components.js';
 import type * as Components from '../../ui/components/components.js';
 
 import * as LitHtml from '../../third_party/lit-html/lit-html.js';
-import * as SDK from '../../sdk/sdk.js';
+import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/ui.js';
 
 import * as i18n from '../../i18n/i18n.js';

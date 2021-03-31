@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as Platform from '../../core/platform/platform.js';
-import * as SDK from '../../sdk/sdk.js';
+import * as SDK from '../../core/sdk/sdk.js';
 import * as LitHtml from '../../third_party/lit-html/lit-html.js';
 import * as UIComponents from '../../ui/components/components.js';
 

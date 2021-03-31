@@ -30,8 +30,8 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
+import * as SDK from '../core/sdk/sdk.js';
 import * as _ProtocolClient from '../protocol_client/protocol_client.js';  // eslint-disable-line @typescript-eslint/no-unused-vars
-import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
 import {ExtensionServer} from './ExtensionServer.js';  // eslint-disable-line no-unused-vars

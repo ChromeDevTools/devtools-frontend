@@ -6,7 +6,7 @@ const {assert} = chai;
 
 import type * as IssuesModule from '../../../../front_end/issues/issues.js';
 import type * as BrowserSDKModule from '../../../../front_end/browser_sdk/browser_sdk.js';
-import type * as SDKModule from '../../../../front_end/sdk/sdk.js';
+import type * as SDKModule from '../../../../front_end/core/sdk/sdk.js';
 import {describeWithEnvironment} from '../helpers/EnvironmentHelpers.js';
 import {StubIssue} from '../sdk/StubIssue.js';
 import {MockIssuesModel} from '../sdk/MockIssuesModel.js';
@@ -52,7 +52,7 @@ describeWithEnvironment('IssueAggregator', async () => {
   before(async () => {
     Issues = await import('../../../../front_end/issues/issues.js');
     BrowserSDK = await import('../../../../front_end/browser_sdk/browser_sdk.js');
-    SDK = await import('../../../../front_end/sdk/sdk.js');
+    SDK = await import('../../../../front_end/core/sdk/sdk.js');
   });
 
   it('deduplicates issues with the same code', () => {
@@ -161,7 +161,7 @@ describeWithEnvironment('IssueAggregator', async () => {
   let SDK: typeof SDKModule;
   let BrowserSDK: typeof BrowserSDKModule;
   before(async () => {
-    SDK = await import('../../../../front_end/sdk/sdk.js');
+    SDK = await import('../../../../front_end/core/sdk/sdk.js');
     BrowserSDK = await import('../../../../front_end/browser_sdk/browser_sdk.js');
     Issues = await import('../../../../front_end/issues/issues.js');
   });

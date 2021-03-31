@@ -12,9 +12,9 @@ devtools_module("cookie_table") {
     "../browser_sdk:bundle",
     "../common:bundle",
     "../core/root:bundle",
+    "../core/sdk:bundle",
     "../data_grid:bundle",
     "../i18n:bundle",
-    "../sdk:bundle",
     "../ui:bundle",
   ]
 }

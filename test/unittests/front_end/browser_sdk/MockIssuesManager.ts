@@ -4,7 +4,7 @@
 
 import * as BrowserSDK from '../../../../front_end/browser_sdk/browser_sdk.js';
 import * as Common from '../../../../front_end/common/common.js';
-import * as SDK from '../../../../front_end/sdk/sdk.js';
+import * as SDK from '../../../../front_end/core/sdk/sdk.js';
 
 export class MockIssuesManager extends Common.ObjectWrapper.ObjectWrapper {
   private mockIssues: Iterable<SDK.Issue.Issue>;

@@ -4,10 +4,10 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 import * as Common from '../common/common.js';
+import * as SDK from '../core/sdk/sdk.js';
 import * as DataGrid from '../data_grid/data_grid.js';
 import * as Host from '../host/host.js';
 import * as i18n from '../i18n/i18n.js';
-import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
 const UIStrings = {

@@ -31,9 +31,9 @@ devtools_module("inline_editor") {
     "../component_helpers:bundle",
     "../components:bundle",
     "../core/platform:bundle",
+    "../core/sdk:bundle",
     "../i18n:bundle",
     "../panels/css_overview:bundle",
-    "../sdk:bundle",
     "../text_utils:bundle",
     "../third_party/lit-html:bundle",
     "../ui:bundle",
@@ -52,7 +52,7 @@ devtools_entrypoint("bundle") {
 
   deps = [
     ":inline_editor",
-    "../sdk:bundle",
+    "../core/sdk:bundle",
   ]
 }
 

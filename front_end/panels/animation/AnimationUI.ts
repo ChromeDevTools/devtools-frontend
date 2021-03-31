@@ -9,7 +9,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as i18n from '../../i18n/i18n.js';
 import * as InlineEditor from '../../inline_editor/inline_editor.js';
 
-import type * as SDK from '../../sdk/sdk.js';
+import type * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/ui.js';
 
 import type {AnimationImpl, KeyframeStyle} from './AnimationModel.js';

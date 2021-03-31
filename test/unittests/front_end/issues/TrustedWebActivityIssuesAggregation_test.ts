@@ -6,7 +6,7 @@ const {assert} = chai;
 
 import type * as IssuesModule from '../../../../front_end/issues/issues.js';
 import type * as BrowserSDKModule from '../../../../front_end/browser_sdk/browser_sdk.js';
-import type * as SDKModule from '../../../../front_end/sdk/sdk.js';
+import type * as SDKModule from '../../../../front_end/core/sdk/sdk.js';
 import {describeWithEnvironment} from '../helpers/EnvironmentHelpers.js';
 import {MockIssuesModel} from '../sdk/MockIssuesModel.js';
 import {MockIssuesManager} from '../browser_sdk/MockIssuesManager.js';
@@ -18,7 +18,7 @@ describeWithEnvironment('AggregatedIssue', async () => {
   before(async () => {
     Issues = await import('../../../../front_end/issues/issues.js');
     BrowserSDK = await import('../../../../front_end/browser_sdk/browser_sdk.js');
-    SDK = await import('../../../../front_end/sdk/sdk.js');
+    SDK = await import('../../../../front_end/core/sdk/sdk.js');
   });
 
   it('aggregates two TWA issues with same violationType correctly', () => {

@@ -9,7 +9,7 @@ import * as i18n from '../../i18n/i18n.js';
 import * as Network from '../network/network.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
-import * as SDK from '../../sdk/sdk.js';  // eslint-disable-line no-unused-vars
+import * as SDK from '../../core/sdk/sdk.js';  // eslint-disable-line no-unused-vars
 import * as LitHtml from '../../third_party/lit-html/lit-html.js';
 import * as WebComponents from '../../ui/components/components.js';
 import * as UI from '../../ui/ui.js';

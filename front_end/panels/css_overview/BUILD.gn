@@ -21,10 +21,10 @@ devtools_module("css_overview") {
     "../../color_picker:bundle",
     "../../common:bundle",
     "../../components:bundle",
+    "../../core/sdk:bundle",
     "../../data_grid:bundle",
     "../../host:bundle",
     "../../i18n:bundle",
-    "../../sdk:bundle",
     "../../text_utils:bundle",
     "../../ui:bundle",
   ]

@@ -28,11 +28,11 @@ devtools_module("emulation") {
     "../../common:bundle",
     "../../components:bundle",
     "../../core/platform:bundle",
+    "../../core/sdk:bundle",
     "../../host:bundle",
     "../../i18n:bundle",
     "../../panels/mobile_throttling:bundle",
     "../../protocol_client:bundle",
-    "../../sdk:bundle",
     "../../ui:bundle",
     "../../workspace:bundle",
   ]

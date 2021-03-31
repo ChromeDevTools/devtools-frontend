@@ -5,13 +5,14 @@
 /* eslint-disable rulesdir/no_underscored_properties */
 
 import * as Common from '../../common/common.js';
+import * as SDK from '../../core/sdk/sdk.js';
 import * as Host from '../../host/host.js';
 import * as i18n from '../../i18n/i18n.js';
-import * as SDK from '../../sdk/sdk.js';
 import * as UI from '../../ui/ui.js';
 
 import {MobileThrottlingSelector} from './MobileThrottlingSelector.js';
 import {NetworkThrottlingSelector} from './NetworkThrottlingSelector.js';
+
 import type {Conditions, ConditionsList, MobileThrottlingConditionsGroup, NetworkThrottlingConditionsGroup} from './ThrottlingPresets.js';
 import {CPUThrottlingRates, ThrottlingPresets} from './ThrottlingPresets.js';
 

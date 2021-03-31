@@ -32,7 +32,7 @@
 
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
 
-import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
+import * as SDK from '../core/sdk/sdk.js';  // eslint-disable-line no-unused-vars
 
 import {ChunkedFileReader, ChunkedReader} from './FileUtils.js';  // eslint-disable-line no-unused-vars
 

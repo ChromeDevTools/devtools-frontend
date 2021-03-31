@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as Root from '../core/root/root.js';
-import type * as SDK from '../sdk/sdk.js';
+import type * as SDK from '../core/sdk/sdk.js';
 import * as Marked from '../third_party/marked/marked.js';
 
 import {MarkdownView} from './MarkdownView.js';

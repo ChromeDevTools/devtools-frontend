@@ -4,10 +4,11 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
+import * as SDK from '../../core/sdk/sdk.js';
 import * as i18n from '../../i18n/i18n.js';
-import * as SDK from '../../sdk/sdk.js';
 
 import {Events, throttlingManager} from './ThrottlingManager.js';
+
 import type {Conditions, ConditionsList, MobileThrottlingConditionsGroup} from './ThrottlingPresets.js';
 import {ThrottlingPresets} from './ThrottlingPresets.js';
 

@@ -4,7 +4,7 @@
 
 import * as Common from '../../common/common.js';
 import type * as ProtocolClient from '../../protocol_client/protocol_client.js';
-import * as SDK from '../../sdk/sdk.js';
+import * as SDK from '../../core/sdk/sdk.js';
 
 import type * as ReportRenderer from './LighthouseReporterTypes.js';
 

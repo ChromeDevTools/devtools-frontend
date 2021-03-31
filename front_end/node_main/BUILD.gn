@@ -14,10 +14,10 @@ devtools_module("node_main") {
   deps = [
     "../common:bundle",
     "../components:bundle",
+    "../core/sdk:bundle",
     "../host:bundle",
     "../i18n:bundle",
     "../protocol_client:bundle",
-    "../sdk:bundle",
     "../ui:bundle",
   ]
 }

@@ -4,7 +4,7 @@
 
 const {assert} = chai;
 
-import * as SDK from '../../../../front_end/sdk/sdk.js';
+import * as SDK from '../../../../front_end/core/sdk/sdk.js';
 
 describe('HARLog', () => {
   it('blocked time when no response received is returned in milliseconds (crbug.com/1145177)', async () => {

@@ -4,7 +4,7 @@
 
 const {assert} = chai;
 
-import type * as SDKModule from '../../../../front_end/sdk/sdk.js';
+import type * as SDKModule from '../../../../front_end/core/sdk/sdk.js';
 import {describeWithEnvironment} from '../helpers/EnvironmentHelpers.js';
 
 function ensureCookiesExistOrFailTest(cookies: SDKModule.Cookie.Cookie[]|null): cookies is SDKModule.Cookie.Cookie[] {
@@ -72,7 +72,7 @@ function expectCookie(cookie: SDKModule.Cookie.Cookie, cookieExpectation: Cookie
 describeWithEnvironment('CookieParser', () => {
   let SDK: typeof SDKModule;
   before(async () => {
-    SDK = await import('../../../../front_end/sdk/sdk.js');
+    SDK = await import('../../../../front_end/core/sdk/sdk.js');
   });
 
   function parseAndExpectSetCookies(setCookieString: string, cookieExpectations: CookieExpectation[]) {

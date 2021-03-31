@@ -51,6 +51,7 @@ devtools_module("sources") {
     "../common:bundle",
     "../components:bundle",
     "../core/platform:bundle",
+    "../core/sdk:bundle",
     "../diff:bundle",
     "../extensions:bundle",
     "../formatter:bundle",
@@ -64,7 +65,6 @@ devtools_module("sources") {
     "../persistence:bundle",
     "../quick_open:bundle",
     "../recorder:bundle",
-    "../sdk:bundle",
     "../search:bundle",
     "../snippets:bundle",
     "../source_frame:bundle",
@@ -93,7 +93,7 @@ devtools_entrypoint("meta") {
 
   deps = [
     ":bundle",
+    "../core/sdk:bundle",
     "../i18n:bundle",
-    "../sdk:bundle",
   ]
 }

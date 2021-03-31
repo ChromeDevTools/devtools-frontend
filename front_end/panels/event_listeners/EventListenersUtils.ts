@@ -4,7 +4,7 @@
 
 
 import * as Common from '../../common/common.js';
-import * as SDK from '../../sdk/sdk.js';
+import * as SDK from '../../core/sdk/sdk.js';
 
 export function frameworkEventListeners(object: SDK.RemoteObject.RemoteObject): Promise<FrameworkEventListenersObject> {
   const domDebuggerModel = object.runtimeModel().target().model(SDK.DOMDebuggerModel.DOMDebuggerModel);

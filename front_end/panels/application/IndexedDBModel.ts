@@ -31,7 +31,7 @@
 /* eslint-disable rulesdir/no_underscored_properties */
 
 import * as Common from '../../common/common.js';
-import * as SDK from '../../sdk/sdk.js';
+import * as SDK from '../../core/sdk/sdk.js';
 
 export class IndexedDBModel extends SDK.SDKModel.SDKModel implements ProtocolProxyApi.StorageDispatcher {
   _securityOriginManager: SDK.SecurityOriginManager.SecurityOriginManager|null;

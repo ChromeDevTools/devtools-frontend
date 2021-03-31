@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as SDKModule from '../../../../front_end/sdk/sdk.js';
+import type * as SDKModule from '../../../../front_end/core/sdk/sdk.js';
 
 import {createTarget, describeWithEnvironment} from '../helpers/EnvironmentHelpers.js';
 import {describeWithMockConnection, dispatchEvent} from '../helpers/MockConnection.js';
@@ -12,7 +12,7 @@ const {assert} = chai;
 describeWithMockConnection('DebuggerModel', () => {
   let SDK: typeof SDKModule;
   before(async () => {
-    SDK = await import('../../../../front_end/sdk/sdk.js');
+    SDK = await import('../../../../front_end/core/sdk/sdk.js');
   });
 
   describe('createRawLocationFromURL', () => {
@@ -58,7 +58,7 @@ describeWithMockConnection('DebuggerModel', () => {
 describeWithEnvironment('LocationRanges', () => {
   let SDK: typeof SDKModule;
   before(async () => {
-    SDK = await import('../../../../front_end/sdk/sdk.js');
+    SDK = await import('../../../../front_end/core/sdk/sdk.js');
   });
 
   function createRange(scriptId: string, startLine: number, startColumn: number, endLine: number, endColumn: number) {

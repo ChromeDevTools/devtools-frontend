@@ -4,7 +4,7 @@
 
 const {assert} = chai;
 
-import * as SDK from '../../../../front_end/sdk/sdk.js';
+import * as SDK from '../../../../front_end/core/sdk/sdk.js';
 import {StubIssue} from './StubIssue.js';
 
 describe('Issue', () => {

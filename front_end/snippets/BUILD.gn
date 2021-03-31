@@ -14,10 +14,10 @@ devtools_module("snippets") {
 
   deps = [
     "../common:bundle",
+    "../core/sdk:bundle",
     "../i18n:bundle",
     "../persistence:bundle",
     "../quick_open:bundle",
-    "../sdk:bundle",
     "../text_utils:bundle",
     "../workspace:bundle",
   ]

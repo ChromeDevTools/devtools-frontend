@@ -14,9 +14,9 @@ devtools_module("screencast") {
 
   deps = [
     "../common:bundle",
+    "../core/sdk:bundle",
     "../host:bundle",
     "../i18n:bundle",
-    "../sdk:bundle",
     "../ui:bundle",
   ]
 }

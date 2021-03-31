@@ -31,10 +31,10 @@
 /* eslint-disable rulesdir/no_underscored_properties */
 
 import * as Common from '../../common/common.js';  // eslint-disable-line no-unused-vars
+import * as SDK from '../../core/sdk/sdk.js';      // eslint-disable-line no-unused-vars
 import * as DataGrid from '../../data_grid/data_grid.js';
 import * as i18n from '../../i18n/i18n.js';
 import * as ObjectUI from '../../object_ui/object_ui.js';
-import * as SDK from '../../sdk/sdk.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../../ui/ui.js';
 
 import {Database, DatabaseId, Entry, Index, IndexedDBModel, ObjectStore, ObjectStoreMetadata} from './IndexedDBModel.js';  // eslint-disable-line no-unused-vars

@@ -14,8 +14,8 @@ ts_library("linear_memory_inspector") {
   ]
 
   deps = [
+    "../../../../front_end/core/sdk:bundle",
     "../../../../front_end/linear_memory_inspector:bundle",
-    "../../../../front_end/sdk:bundle",
     "../helpers",
   ]
 }

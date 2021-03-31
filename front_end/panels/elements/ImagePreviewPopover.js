@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as Components from '../../components/components.js';
-import * as SDK from '../../sdk/sdk.js';  // eslint-disable-line no-unused-vars
+import * as SDK from '../../core/sdk/sdk.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../../ui/ui.js';
 
 /**

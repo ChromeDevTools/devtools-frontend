@@ -2,9 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as SDK from '../../../../front_end/core/sdk/sdk.js';
 import * as Resources from '../../../../front_end/panels/application/application.js';
 import * as Coordinator from '../../../../front_end/render_coordinator/render_coordinator.js';
-import * as SDK from '../../../../front_end/sdk/sdk.js';
 import * as Components from '../../../../front_end/ui/components/components.js';
 import {assertShadowRoot, getCleanTextContentFromElements, getElementWithinComponent, renderElementIntoDOM} from '../helpers/DOMHelpers.js';
 

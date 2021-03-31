@@ -4,7 +4,7 @@
 
 const {assert} = chai;
 
-import * as SDK from '../../../../front_end/sdk/sdk.js';
+import * as SDK from '../../../../front_end/core/sdk/sdk.js';
 
 import * as TimelineModel from '../../../../front_end/timeline_model/timeline_model.js';
 

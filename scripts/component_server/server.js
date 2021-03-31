@@ -202,25 +202,6 @@ async function checkFileExists(filePath) {
   }
 }
 
-/**
- * In Devtools-Frontend we load images without a leading slash, e.g.
- * var(--image-file-checker). This works within devtools, but breaks this component
- * server as the path ends up as /component_docs/my_component/Images/checker.png.
- * So we check if the path ends in Images/*.* and if so, remove anything before
- * it. Then it will be resolved correctly.
- */
-function normalizeImagePathIfRequired(filePath) {
-  const imagePathRegex = /\/Images\/(\S+)\.(\w{3})/;
-  const match = imagePathRegex.exec(filePath);
-  if (!match) {
-    return filePath;
-  }
-
-  const [, imageName, imageExt] = match;
-  const normalizedPath = path.join('front_end', 'Images', `${imageName}.${imageExt}`);
-  return normalizedPath;
-}
-
 async function requestHandler(request, response) {
   const filePath = parseURL(request.url).pathname;
   if (filePath === '/favicon.ico') {
@@ -273,9 +254,7 @@ async function requestHandler(request, response) {
 
   } else {
     // This means it's an asset like a JS file or an image.
-    const normalizedPath = normalizeImagePathIfRequired(filePath);
-
-    let fullPath = path.join(componentDocsBaseFolder, normalizedPath);
+    let fullPath = path.join(componentDocsBaseFolder, filePath);
     if (fullPath.endsWith(path.join('locales', 'en-US.json'))) {
       // Rewrite this path so we can load up the locale in the component-docs
       fullPath = path.join(componentDocsBaseFolder, 'front_end', 'i18n', 'locales', 'en-US.json');

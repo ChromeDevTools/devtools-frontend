@@ -46,6 +46,10 @@ const yargsObject =
           type: 'string',
           desc: 'A comma separated glob (or just a file path) to select specific test files to execute.'
         })
+        // test-file-pattern can be provided as a flag or as a positional
+        // argument. $0 here is Yarg's syntax for the default command:
+        // https://github.com/yargs/yargs/blob/master/docs/advanced.md#default-commands
+        .command('$0 [test-file-pattern]')
         .option('component-server-base-path', {
           type: 'string',
           desc:

@@ -6,6 +6,8 @@
 
 .service-worker-version {
   display: flex;
+  /* The status string can be long, allow this line of the report to wrap. */
+  flex-wrap: wrap;
 }
 
 .service-worker-version-stack {
@@ -27,8 +29,9 @@
 }
 
 .service-worker-version-string {
-  overflow: hidden;
-  text-overflow: ellipsis;
+  /* This label contains important information that needs to be legible at all
+     times. Don't shrink it. */
+  flex-shrink: 0;
 }
 
 .service-worker-active-circle,
@@ -44,6 +47,8 @@
   border-radius: 50%;
   border: 1px solid var(--color-text-secondary);
   align-self: center;
+  /* The circle should not shrink, to avoid risking becoming invisible. */
+  flex-shrink: 0;
 }
 /* The circle's color does not change for light/dark mode on purpose */
 .service-worker-active-circle {
@@ -87,6 +92,10 @@
   margin-right: 4px;
   max-width: 400px;
   min-width: 80px;
+}
+
+.report-field-value {
+  white-space: normal;
 }
 
 .report-field-value-filename,
@@ -134,7 +143,7 @@
 
 .service-workers-this-origin,
 .service-workers-other-origin {
-  min-width: 400px;
+  min-width: 530px;
 }
 
 .service-worker-has-current .service-workers-other-origin {

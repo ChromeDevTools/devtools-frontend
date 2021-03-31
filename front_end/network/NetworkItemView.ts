@@ -131,7 +131,7 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
   _headersView: RequestHeadersView;
   _responseView: RequestResponseView|undefined;
   _cookiesView: RequestCookiesView|null;
-  _initialTab: Tabs;
+  _initialTab?: Tabs;
 
   constructor(request: SDK.NetworkRequest.NetworkRequest, calculator: NetworkTimeCalculator, initialTab?: Tabs) {
     super();
@@ -182,6 +182,8 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
     this._cookiesView = null;
 
     this._initialTab = initialTab || this._resourceViewTabSetting.get();
+    // Selecting tabs should not be handled by the super class.
+    this.setAutoSelectFirstItemOnShow(false);
   }
 
   wasShown(): void {
@@ -194,7 +196,15 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
         SDK.NetworkRequest.Events.TrustTokenResultAdded, this._maybeShowErrorIconInTrustTokenTabHeader, this);
     this._maybeAppendCookiesPanel();
     this._maybeShowErrorIconInTrustTokenTabHeader();
-    this._selectTab(this._initialTab);
+
+    // Only select the initial tab the first time the view is shown after construction.
+    // When the view is re-shown (without re-constructing) users or revealers might have changed
+    // the selected tab in the mean time. Show the previously selected tab in that
+    // case instead, by simply doing nohting.
+    if (this._initialTab) {
+      this._selectTab(this._initialTab);
+      this._initialTab = undefined;
+    }
   }
 
   willHide(): void {

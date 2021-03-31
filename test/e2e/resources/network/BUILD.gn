@@ -12,6 +12,7 @@ copy_to_gen("network") {
     "image.svg",
     "last-modified.html",
     "last-modified.rawresponse",
+    "requests.html",
     "resources-from-cache.html",
     "trusted-type-policy-violation-report-only.rawresponse",
     "trusted-type-violations-enforced.rawresponse",

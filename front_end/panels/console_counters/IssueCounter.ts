@@ -68,11 +68,17 @@ export function getIssueKindDescription(issueKind: SDK.Issue.IssueKind): Common.
   }
 }
 
+export const enum DisplayMode {
+  OmitEmpty = 'OmitEmpty',
+  ShowAlways = 'ShowAlways',
+  OnlyMostImportant = 'OnlyMostImportant',
+}
+
 export interface IssueCounterData {
   clickHandler?: () => void;
   tooltipCallback?: () => void;
   leadingText?: string;
-  omitEmpty?: boolean;
+  displayMode?: DisplayMode;
   issuesManager: BrowserSDK.IssuesManager.IssuesManager;
   throttlerTimeout?: number;
   accessibleName?: string;
@@ -103,7 +109,7 @@ export class IssueCounter extends HTMLElement {
   private leadingText: string = '';
   private throttler: undefined|Common.Throttler.Throttler;
   private counts: [number, number, number] = [0, 0, 0];
-  private omitEmpty: boolean = true;
+  private displayMode: DisplayMode = DisplayMode.OmitEmpty;
   private issuesManager: BrowserSDK.IssuesManager.IssuesManager|undefined = undefined;
   private accessibleName: string|undefined = undefined;
   private throttlerTimeout: number|undefined;
@@ -120,7 +126,7 @@ export class IssueCounter extends HTMLElement {
     this.clickHandler = data.clickHandler;
     this.leadingText = data.leadingText ?? '';
     this.tooltipCallback = data.tooltipCallback;
-    this.omitEmpty = data.omitEmpty ?? true;
+    this.displayMode = data.displayMode ?? DisplayMode.OmitEmpty;
     this.accessibleName = data.accessibleName;
     this.throttlerTimeout = data.throttlerTimeout;
     if (this.issuesManager !== data.issuesManager) {
@@ -143,7 +149,7 @@ export class IssueCounter extends HTMLElement {
       clickHandler: this.clickHandler,
       tooltipCallback: this.tooltipCallback,
       leadingText: this.leadingText,
-      omitEmpty: this.omitEmpty,
+      displayMode: this.displayMode,
       issuesManager: this.issuesManager as BrowserSDK.IssuesManager.IssuesManager,
       accessibleName: this.accessibleName,
       throttlerTimeout: this.throttlerTimeout,
@@ -159,21 +165,34 @@ export class IssueCounter extends HTMLElement {
       this.issuesManager.numberOfIssues(SDK.Issue.IssueKind.BreakingChange),
       this.issuesManager.numberOfIssues(SDK.Issue.IssueKind.Improvement),
     ];
-    const countToString = (count: number): string|undefined => (count > 0 || !this.omitEmpty) ? `${count}` : undefined;
+    const importance =
+        [SDK.Issue.IssueKind.PageError, SDK.Issue.IssueKind.BreakingChange, SDK.Issue.IssueKind.Improvement];
+    const mostImportant = importance[this.counts.findIndex(x => x > 0) ?? 2];
+
+    const countToString = (kind: SDK.Issue.IssueKind, count: number): string|undefined => {
+      switch (this.displayMode) {
+        case DisplayMode.OmitEmpty:
+          return count > 0 ? `${count}` : undefined;
+        case DisplayMode.ShowAlways:
+          return `${count}`;
+        case DisplayMode.OnlyMostImportant:
+          return kind === mostImportant ? `${count}` : undefined;
+      }
+    };
     const iconSize = '2ex';
     const data: UIComponents.IconButton.IconButtonData = {
       groups: [
         {
           ...toIconGroup(getIssueKindIconData(SDK.Issue.IssueKind.PageError), iconSize),
-          text: countToString(this.counts[0]),
+          text: countToString(SDK.Issue.IssueKind.PageError, this.counts[0]),
         },
         {
           ...toIconGroup(getIssueKindIconData(SDK.Issue.IssueKind.BreakingChange), iconSize),
-          text: countToString(this.counts[1]),
+          text: countToString(SDK.Issue.IssueKind.BreakingChange, this.counts[1]),
         },
         {
           ...toIconGroup(getIssueKindIconData(SDK.Issue.IssueKind.Improvement), iconSize),
-          text: countToString(this.counts[2]),
+          text: countToString(SDK.Issue.IssueKind.Improvement, this.counts[2]),
         },
       ],
       clickHandler: this.clickHandler,
@@ -183,6 +202,7 @@ export class IssueCounter extends HTMLElement {
         LitHtml.html`
         <style>
             :host {
+              white-space: normal;
               display: inline-block;
             }
         </style>

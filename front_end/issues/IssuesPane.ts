@@ -226,7 +226,7 @@ export class IssuesPane extends UI.Widget.VBox {
             BrowserSDK.IssuesManager.IssuesManager.instance(), false);
         UI.Tooltip.Tooltip.install(issueCounter, issueEnumeration);
       },
-      omitEmpty: false,
+      displayMode: ConsoleCounters.IssueCounter.DisplayMode.ShowAlways,
       issuesManager: BrowserSDK.IssuesManager.IssuesManager.instance(),
     };
     issueCounter.id = 'console-issues-counter';

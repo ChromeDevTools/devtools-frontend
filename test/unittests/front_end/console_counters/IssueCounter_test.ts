@@ -86,7 +86,7 @@ describe('IssueCounter', () => {
       const issuesManager = new MockIssuesManager([]);
       const {shadowRoot} = renderIssueCounter({
         issuesManager: issuesManager as unknown as BrowserSDK.IssuesManager.IssuesManager,
-        omitEmpty: false,
+        displayMode: ConsoleCounters.IssueCounter.DisplayMode.ShowAlways,
         throttlerTimeout: 0,
       });
 
@@ -101,7 +101,7 @@ describe('IssueCounter', () => {
       const issuesManager = new MockIssuesManager([]);
       const {shadowRoot} = renderIssueCounter({
         issuesManager: issuesManager as unknown as BrowserSDK.IssuesManager.IssuesManager,
-        omitEmpty: false,
+        displayMode: ConsoleCounters.IssueCounter.DisplayMode.ShowAlways,
         throttlerTimeout: 0,
       });
 

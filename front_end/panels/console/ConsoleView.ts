@@ -362,6 +362,7 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
       },
       issuesManager: BrowserSDK.IssuesManager.IssuesManager.instance(),
       accessibleName: i18nString(UIStrings.issueToolbarTooltipGeneral),
+      displayMode: ConsoleCounters.IssueCounter.DisplayMode.OmitEmpty,
     };
     toolbar.appendToolbarItem(issuesToolbarItem);
     rightToolbar.appendSeparator();

@@ -1056,7 +1056,7 @@
     "message": "Could not parse content for {PH1}: {PH2}"
   },
   "core/sdk/SourceMapManager.js | devtoolsFailedToLoadSourcemapS": {
-    "message": "DevTools failed to load SourceMap: {PH1}"
+    "message": "DevTools failed to load source map: {PH1}"
   },
   "core/sdk/TrustedWebActivityIssue.ts | changesToQualityCriteriaForPwas": {
     "message": "Changes to quality criteria for PWAs using Trusted Web Activity"
@@ -9117,7 +9117,7 @@
     "message": "Remove from ignore list"
   },
   "sources/DebuggerPlugin.ts | sourceMapDetected": {
-    "message": "Source Map detected."
+    "message": "Source map detected."
   },
   "sources/DebuggerPlugin.ts | sourceMapFoundButIgnoredForFile": {
     "message": "Source map found, but ignored for file on ignore list."

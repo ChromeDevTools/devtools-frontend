@@ -1056,7 +1056,7 @@
     "message": "Ĉóûĺd̂ ńôt́ p̂ár̂śê ćôńt̂én̂t́ f̂ór̂ {PH1}: {PH2}"
   },
   "core/sdk/SourceMapManager.js | devtoolsFailedToLoadSourcemapS": {
-    "message": "D̂év̂T́ôól̂ś f̂áîĺêd́ t̂ó l̂óâd́ ŜóûŕĉéM̂áp̂: {PH1}"
+    "message": "D̂év̂T́ôól̂ś f̂áîĺêd́ t̂ó l̂óâd́ ŝóûŕĉé m̂áp̂: {PH1}"
   },
   "core/sdk/TrustedWebActivityIssue.ts | changesToQualityCriteriaForPwas": {
     "message": "Ĉh́âńĝéŝ t́ô q́ûál̂ít̂ý ĉŕît́êŕîá f̂ór̂ ṔŴÁŝ úŝín̂ǵ T̂ŕûśt̂éd̂ Ẃêb́ Âćt̂ív̂ít̂ý"
@@ -9117,7 +9117,7 @@
     "message": "R̂ém̂óv̂é f̂ŕôḿ îǵn̂ór̂é l̂íŝt́"
   },
   "sources/DebuggerPlugin.ts | sourceMapDetected": {
-    "message": "Ŝóûŕĉé M̂áp̂ d́êt́êćt̂éd̂."
+    "message": "Ŝóûŕĉé m̂áp̂ d́êt́êćt̂éd̂."
   },
   "sources/DebuggerPlugin.ts | sourceMapFoundButIgnoredForFile": {
     "message": "Ŝóûŕĉé m̂áp̂ f́ôún̂d́, b̂út̂ íĝńôŕêd́ f̂ór̂ f́îĺê ón̂ íĝńôŕê ĺîśt̂."

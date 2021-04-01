@@ -111,7 +111,7 @@ const UIStrings = {
   /**
   *@description Text in Debugger Plugin of the Sources panel
   */
-  sourceMapDetected: 'Source Map detected.',
+  sourceMapDetected: 'Source map detected.',
   /**
   *@description Text in Debugger Plugin of the Sources panel
   */

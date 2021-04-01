@@ -15,7 +15,7 @@ const UIStrings = {
   *@description Error message when failing to load a source map text
   *@example {An error occurred} PH1
   */
-  devtoolsFailedToLoadSourcemapS: 'DevTools failed to load SourceMap: {PH1}',
+  devtoolsFailedToLoadSourcemapS: 'DevTools failed to load source map: {PH1}',
 };
 const str_ = i18n.i18n.registerUIStrings('core/sdk/SourceMapManager.js', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

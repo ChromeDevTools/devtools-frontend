@@ -9,7 +9,8 @@ group("legacy_test_runner") {
     ":legacy_test_runner-resources",
     ":legacy_test_runner-source",
   ]
-  data_deps = public_deps
+
+  data = [ "$target_gen_dir/legacy_test_runner.js" ]
 }
 
 ts_library("legacy_test_runner-source") {

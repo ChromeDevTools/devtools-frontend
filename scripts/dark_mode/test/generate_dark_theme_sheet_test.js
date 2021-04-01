@@ -58,6 +58,20 @@ describe('generate_dark_theme_sheet parsing', () => {
     }`);
   });
 
+  it('excludes any rules that are defined as a variable', () => {
+    const inputCSS = `.foo { border-color: var(--color-background); }
+
+    .bar {
+      color: blue;
+      background-color: var(--override-custom-color);
+    }`;
+
+    const output = rulesToPassToColorPatching(inputCSS);
+    assert.strictEqual(output, `.bar {
+      color: blue;
+    }`);
+  });
+
   it('correctly excludes @media(forced-colors)', () => {
     const inputCSS = `.foo { border-color: red; }
 

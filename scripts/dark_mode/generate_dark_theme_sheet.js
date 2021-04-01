@@ -18,7 +18,8 @@ const devtoolsPaths = require('../devtools_paths.js');
 const postcss = require('postcss');
 
 /**
- * Finds the rules from the source CSS sheet that need to be passed into the color patching. If we have:
+ * Finds the rules from the source CSS sheet that need to be passed into the
+ * color patching. If we have:
  *
  * ```
  * p { color: red; }
@@ -27,7 +28,8 @@ const postcss = require('postcss');
  * ```
  *
  * Then we only need to pass `a { color: blue; }` into the patching, because the
- * `p` has been explicitly styled for dark mode.
+ * `p` has been explicitly styled for dark mode. We can also ignore any rules
+ * that are defined as CSS variables, as they won't be patched.
  * @param {string} contents
  */
 function rulesToPassToColorPatching(contents) {
@@ -61,7 +63,26 @@ function rulesToPassToColorPatching(contents) {
     if (ruleIsDarkModeOverride) {
       darkModeOverrideRules.add(rule);
     } else {
-      // We trim the selector down so we can look it up later and not be dependent on whitespace
+      // Go through the rule and remove any declarations that use variables, as
+      // they don't get patched.
+      let totalDeclsInRule = 0;
+      rule.walkDecls(decl => {
+        totalDeclsInRule++;
+        if (/^var\(.*\)$/.test(decl.value)) {
+          totalDeclsInRule--;
+          decl.remove();
+        }
+      });
+      if (totalDeclsInRule === 0) {
+        // The rule only had declarations whose values are variables, so we can ditch the rule entirely.
+        return;
+      }
+
+      // If we're here, that means the rule contains declarations that do need
+      // to be patched.
+
+      // We trim the selector down so we can look it up later and not be
+      // dependent on whitespace
       nonDarkModeRulesBySelector.set(rule.selector.trim().replace(/\n/g, ''), rule);
     }
   });

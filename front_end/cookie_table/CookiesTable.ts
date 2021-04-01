@@ -113,7 +113,7 @@ export class CookiesTable extends UI.Widget.VBox {
       deleteCallback?: ((arg0: SDK.Cookie.Cookie, arg1: () => void) => void)) {
     super();
 
-    this.registerRequiredCSS('cookie_table/cookiesTable.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('cookie_table/cookiesTable.css', {enableLegacyPatching: false});
     this.element.classList.add('cookies-table');
 
     this._saveCallback = saveCallback;

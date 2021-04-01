@@ -3494,6 +3494,9 @@
   "panels/application/StorageItemsView.ts | refresh": {
     "message": "Refresh"
   },
+  "panels/application/StorageItemsView.ts | refreshedStatus": {
+    "message": "Table refreshed"
+  },
   "panels/application/StorageView.ts | application": {
     "message": "Application"
   },

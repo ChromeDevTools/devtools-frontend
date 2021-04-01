@@ -26,6 +26,10 @@ const UIStrings = {
   *@description Tooltip text that appears when hovering over the largeicon delete button in the Service Worker Cache Views of the Application panel
   */
   deleteSelected: 'Delete Selected',
+  /**
+   *@description Text that informs screen reader users that the storage table has been refreshed
+   */
+  refreshedStatus: 'Table refreshed',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/application/StorageItemsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -41,7 +45,10 @@ export class StorageItemsView extends UI.Widget.VBox {
     super(false);
     this._filterRegex = null;
 
-    this._refreshButton = this._addButton(i18nString(UIStrings.refresh), 'largeicon-refresh', this.refreshItems);
+    this._refreshButton = this._addButton(i18nString(UIStrings.refresh), 'largeicon-refresh', () => {
+      this.refreshItems();
+      UI.ARIAUtils.alert(i18nString(UIStrings.refreshedStatus), this._refreshButton.element);
+    });
 
     this._mainToolbar = new UI.Toolbar.Toolbar('top-resources-toolbar', this.element);
 

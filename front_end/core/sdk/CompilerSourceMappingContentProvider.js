@@ -29,8 +29,8 @@
  */
 
 import * as Common from '../../common/common.js';  // eslint-disable-line no-unused-vars
-import * as i18n from '../../i18n/i18n.js';
 import * as TextUtils from '../../text_utils/text_utils.js';
+import * as i18n from '../i18n/i18n.js';
 
 import {PageResourceLoader, PageResourceLoadInitiator} from './PageResourceLoader.js';  // eslint-disable-line no-unused-vars
 

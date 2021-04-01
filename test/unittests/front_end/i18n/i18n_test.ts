@@ -4,7 +4,7 @@
 
 const {assert} = chai;
 
-import * as i18n from '../../../../front_end/i18n/i18n.js';
+import * as i18n from '../../../../front_end/core/i18n/i18n.js';
 
 describe('serializeUIString', () => {
   it('serializes strings without placeholders', () => {

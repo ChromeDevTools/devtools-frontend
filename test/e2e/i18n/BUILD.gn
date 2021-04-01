@@ -8,7 +8,7 @@ node_ts_library("i18n") {
   sources = [ "i18n-debug-locale_test.ts" ]
 
   deps = [
-    "../../../front_end/i18n:i18n_test_locales",
+    "../../../front_end/core/i18n:i18n_test_locales",
     "../../shared",
     "../helpers",
   ]

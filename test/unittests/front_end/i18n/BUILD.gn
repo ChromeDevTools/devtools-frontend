@@ -4,5 +4,5 @@ ts_library("i18n") {
   testonly = true
   sources = [ "i18n_test.ts" ]
 
-  deps = [ "../../../../front_end/i18n:bundle" ]
+  deps = [ "../../../../front_end/core/i18n:bundle" ]
 }

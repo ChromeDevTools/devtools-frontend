@@ -29,7 +29,7 @@
  */
 
 import * as Common from '../../common/common.js';
-import * as i18n from '../../i18n/i18n.js';
+import * as i18n from '../i18n/i18n.js';
 
 import {Events as RuntimeModelEvents, ExecutionContext, RuntimeModel} from './RuntimeModel.js';  // eslint-disable-line no-unused-vars
 import {Capability, SDKModel, Target, TargetManager, Type} from './SDKModel.js';  // eslint-disable-line no-unused-vars

@@ -11,7 +11,7 @@ import type * as Timeline from './timeline.js';
 
 import type * as Profiler from '../panels/profiler/profiler.js';
 
-import * as i18n from '../i18n/i18n.js';
+import * as i18n from '../core/i18n/i18n.js';
 const UIStrings = {
   /**
   *@description Text for the performance of something

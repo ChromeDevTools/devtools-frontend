@@ -6,11 +6,11 @@
 
 import * as Common from '../../common/common.js';
 import * as Components from '../../components/components.js';
+import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as DataGrid from '../../data_grid/data_grid.js';
-import * as i18n from '../../i18n/i18n.js';
 import * as TextUtils from '../../text_utils/text_utils.js';
 import * as UI from '../../ui/ui.js';
 

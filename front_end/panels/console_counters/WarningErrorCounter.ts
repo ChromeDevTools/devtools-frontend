@@ -7,9 +7,9 @@
 import * as BrowserSDK from '../../browser_sdk/browser_sdk.js';
 import * as Common from '../../common/common.js';
 import * as Host from '../../core/host/host.js';
+import * as i18n from '../../core/i18n/i18n.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import * as i18n from '../../i18n/i18n.js';
 import * as Components from '../../ui/components/components.js';
 import * as UI from '../../ui/ui.js';
 import {DisplayMode, IssueCounter} from './IssueCounter.js';

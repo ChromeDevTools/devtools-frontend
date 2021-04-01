@@ -13,7 +13,7 @@ import type {ValueDisplayData} from './ValueInterpreterDisplay.js';
 import {Endianness, endiannessToLocalizedString, ValueType, ValueTypeMode} from './ValueInterpreterDisplayUtils.js';
 import type {TypeToggleEvent, ValueInterpreterSettingsData} from './ValueInterpreterSettings.js';
 
-import * as i18n from '../i18n/i18n.js';
+import * as i18n from '../core/i18n/i18n.js';
 const UIStrings = {
   /**
   *@description Tooltip text that appears when hovering over the gear button to open and close settings in the Linear Memory Inspector

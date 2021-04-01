@@ -3,8 +3,8 @@
 // found in the LICENSE file.
 
 import * as Components from '../../components/components.js';
+import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';  // eslint-disable-line no-unused-vars
-import * as i18n from '../../i18n/i18n.js';
 import * as LitHtml from '../../third_party/lit-html/lit-html.js';
 import * as UIComponents from '../../ui/components/components.js';
 

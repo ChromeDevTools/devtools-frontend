@@ -4,8 +4,8 @@
 
 import * as Common from '../common/common.js';
 import * as Host from '../core/host/host.js';
+import * as i18n from '../core/i18n/i18n.js';
 import * as Platform from '../core/platform/platform.js';
-import * as i18n from '../i18n/i18n.js';
 import * as PerfUI from '../perf_ui/perf_ui.js';
 import * as ThemeSupport from '../theme_support/theme_support.js';
 import * as TimelineModel from '../timeline_model/timeline_model.js';  // eslint-disable-line no-unused-vars

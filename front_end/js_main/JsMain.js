@@ -5,8 +5,8 @@
 import * as Common from '../common/common.js';
 import * as Components from '../components/components.js';
 import * as Host from '../core/host/host.js';
+import * as i18n from '../core/i18n/i18n.js';
 import * as SDK from '../core/sdk/sdk.js';
-import * as i18n from '../i18n/i18n.js';
 
 const UIStrings = {
   /**

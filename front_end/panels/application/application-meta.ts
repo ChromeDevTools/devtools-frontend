@@ -10,7 +10,7 @@ import * as UI from '../../ui/ui.js';
 // eslint-disable-next-line rulesdir/es_modules_import
 import type * as Resources from './application.js';
 
-import * as i18n from '../../i18n/i18n.js';
+import * as i18n from '../../core/i18n/i18n.js';
 const UIStrings = {
   /**
   *@description Text in Application Panel Sidebar of the Application panel

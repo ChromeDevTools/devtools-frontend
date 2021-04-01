@@ -18,7 +18,7 @@ import {VALUE_INTEPRETER_MAX_NUM_BYTES, Endianness, ValueType, ValueTypeMode, ge
 import {formatAddress, parseAddress} from './LinearMemoryInspectorUtils.js';
 import type {JumpToPointerAddressEvent, ValueTypeModeChangedEvent} from './ValueInterpreterDisplay.js';
 
-import * as i18n from '../i18n/i18n.js';
+import * as i18n from '../core/i18n/i18n.js';
 const UIStrings = {
   /**
   *@description Tooltip text that appears when hovering over an invalid address in the address line in the Linear Memory Inspector

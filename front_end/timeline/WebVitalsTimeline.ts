@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as Host from '../core/host/host.js';
-import * as i18n from '../i18n/i18n.js';
+import * as i18n from '../core/i18n/i18n.js';
 import * as Coordinator from '../render_coordinator/render_coordinator.js';
 import * as LitHtml from '../third_party/lit-html/lit-html.js';
 

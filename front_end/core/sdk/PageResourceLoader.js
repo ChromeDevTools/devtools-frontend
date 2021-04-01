@@ -3,8 +3,8 @@
 // found in the LICENSE file.
 
 import * as Common from '../../common/common.js';
-import * as i18n from '../../i18n/i18n.js';
 import * as Host from '../host/host.js';  // eslint-disable-line no-unused-vars
+import * as i18n from '../i18n/i18n.js';
 
 import {FrameManager} from './FrameManager.js';
 import {IOModel} from './IOModel.js';

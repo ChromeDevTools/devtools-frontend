@@ -20,9 +20,9 @@ devtools_module("accessibility") {
   deps = [
     "../../common:bundle",
     "../../core/host:bundle",
+    "../../core/i18n:bundle",
     "../../core/sdk:bundle",
     "../../generated",
-    "../../i18n:bundle",
     "../../ui:bundle",
   ]
 }

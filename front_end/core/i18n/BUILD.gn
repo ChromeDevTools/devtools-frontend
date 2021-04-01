@@ -2,10 +2,10 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-import("../../all_devtools_files.gni")
-import("../../scripts/build/ninja/devtools_entrypoint.gni")
-import("../../scripts/build/ninja/devtools_module.gni")
-import("../../scripts/build/ninja/devtools_pre_built.gni")
+import("../../../all_devtools_files.gni")
+import("../../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../../../scripts/build/ninja/devtools_module.gni")
+import("../../../scripts/build/ninja/devtools_pre_built.gni")
 
 devtools_module("i18n") {
   sources = [
@@ -14,8 +14,8 @@ devtools_module("i18n") {
   ]
 
   deps = [
-    "../core/platform:bundle",
-    "../third_party/i18n:bundle",
+    "../../core/platform:bundle",
+    "../../third_party/i18n:bundle",
   ]
 }
 

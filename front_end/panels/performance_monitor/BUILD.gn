@@ -11,9 +11,9 @@ devtools_module("performance_monitor") {
   deps = [
     "../../common:bundle",
     "../../core/host:bundle",
+    "../../core/i18n:bundle",
     "../../core/platform:bundle",
     "../../core/sdk:bundle",
-    "../../i18n:bundle",
     "../../theme_support:bundle",
     "../../ui:bundle",
   ]

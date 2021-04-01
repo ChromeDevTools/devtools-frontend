@@ -83,9 +83,9 @@ devtools_module("sdk") {
   deps = [
     "../../common:bundle",
     "../../core/host:bundle",
+    "../../core/i18n:bundle",
     "../../core/platform:bundle",
     "../../generated",
-    "../../i18n:bundle",
     "../../protocol_client:bundle",
     "../../text_utils:bundle",
   ]

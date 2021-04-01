@@ -8,7 +8,7 @@ import * as UI from '../ui/ui.js';
 // eslint-disable-next-line rulesdir/es_modules_import
 import type * as LinearMemoryInspector from './linear_memory_inspector.js';
 
-import * as i18n from '../i18n/i18n.js';
+import * as i18n from '../core/i18n/i18n.js';
 const UIStrings = {
   /**
   *@description Title of the Linear Memory Inspector tool

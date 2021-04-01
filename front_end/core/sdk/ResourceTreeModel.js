@@ -29,7 +29,7 @@
  */
 
 import * as Common from '../../common/common.js';
-import * as i18n from '../../i18n/i18n.js';
+import * as i18n from '../i18n/i18n.js';
 
 import {DeferredDOMNode, DOMModel, DOMNode} from './DOMModel.js';  // eslint-disable-line no-unused-vars
 import {Events as NetworkManagerEvents, NetworkManager, RequestUpdateDroppedEventData} from './NetworkManager.js';  // eslint-disable-line no-unused-vars

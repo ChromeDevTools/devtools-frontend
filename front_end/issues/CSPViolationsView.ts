@@ -4,7 +4,7 @@
 
 import * as BrowserSDK from '../browser_sdk/browser_sdk.js';
 import type * as Common from '../common/common.js';
-import * as i18n from '../i18n/i18n.js';
+import * as i18n from '../core/i18n/i18n.js';
 import * as SDK from '../core/sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 

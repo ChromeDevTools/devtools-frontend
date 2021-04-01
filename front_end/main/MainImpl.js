@@ -32,11 +32,11 @@ import * as Bindings from '../bindings/bindings.js';
 import * as Common from '../common/common.js';
 import * as Components from '../components/components.js';
 import * as Host from '../core/host/host.js';
+import * as i18n from '../core/i18n/i18n.js';
 import * as Platform from '../core/platform/platform.js';
 import * as Root from '../core/root/root.js';
 import * as SDK from '../core/sdk/sdk.js';
 import * as Extensions from '../extensions/extensions.js';
-import * as i18n from '../i18n/i18n.js';
 import * as PerfUI from '../perf_ui/perf_ui.js';
 import * as Persistence from '../persistence/persistence.js';
 import * as ProtocolClient from '../protocol_client/protocol_client.js';
@@ -157,8 +157,8 @@ export class MainImpl {
     i18n.i18n.registerLocale(hostLocale);
     const locale = i18n.i18n.registeredLocale;
     if (locale) {
-      const data =
-          await Root.Runtime.loadResourcePromise(new URL(`../i18n/locales/${locale}.json`, import.meta.url).toString());
+      const data = await Root.Runtime.loadResourcePromise(
+          new URL(`../core/i18n/locales/${locale}.json`, import.meta.url).toString());
       if (data) {
         const localizedStrings = JSON.parse(data);
         i18n.i18n.registerLocaleData(locale, localizedStrings);

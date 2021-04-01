@@ -15,7 +15,7 @@ devtools_module("help") {
   deps = [
     "../../common:bundle",
     "../../core/host:bundle",
-    "../../i18n:bundle",
+    "../../core/i18n:bundle",
     "../../ui:bundle",
   ]
 }

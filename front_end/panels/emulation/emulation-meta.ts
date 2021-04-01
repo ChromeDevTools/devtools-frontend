@@ -9,7 +9,7 @@ import * as UI from '../../ui/ui.js';
 // eslint-disable-next-line rulesdir/es_modules_import
 import type * as Emulation from './emulation.js';
 
-import * as i18n from '../../i18n/i18n.js';
+import * as i18n from '../../core/i18n/i18n.js';
 const UIStrings = {
   /**
   *@description Title of an action in the emulation tool to toggle device mode

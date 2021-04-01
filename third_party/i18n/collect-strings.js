@@ -660,7 +660,7 @@ function collectAllStringsInDir(dir) {
  * @param {Record<string, CtcMessage>} strings
  */
 function writeStringsToCtcFiles(locale, strings) {
-  const fullPath = path.join(SRC_ROOT, `front_end/i18n/locales/${locale}.ctc.json`);
+  const fullPath = path.join(SRC_ROOT, `front_end/core/i18n/locales/${locale}.ctc.json`);
   /** @type {Record<string, CtcMessage>} */
   const output = {};
   const sortedEntries = Object.entries(strings).sort(([keyA], [keyB]) => keyA.localeCompare(keyB));
@@ -683,7 +683,7 @@ if (require.main === module) {
 
   // Bake the ctc en-US and en-XL files into en-US and en-XL LHL format
   const lhl = collectAndBakeCtcStrings(
-      path.join(SRC_ROOT, 'front_end/i18n/locales/'), path.join(SRC_ROOT, 'front_end/i18n/locales/'));
+      path.join(SRC_ROOT, 'front_end/core/i18n/locales/'), path.join(SRC_ROOT, 'front_end/core/i18n/locales/'));
 }
 
 module.exports = {

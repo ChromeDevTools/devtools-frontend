@@ -4,7 +4,7 @@
 
 import * as Common from '../../common/common.js';
 
-import * as i18n from '../../i18n/i18n.js';
+import * as i18n from '../i18n/i18n.js';
 const UIStrings = {
   /**
   *@description Title of a setting under the Console category that can be invoked through the Command Menu

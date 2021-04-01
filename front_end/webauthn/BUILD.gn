@@ -11,9 +11,9 @@ devtools_module("webauthn") {
   deps = [
     "../common:bundle",
     "../core/host:bundle",
+    "../core/i18n:bundle",
     "../core/sdk:bundle",
     "../data_grid:bundle",
-    "../i18n:bundle",
     "../ui:bundle",
   ]
 }

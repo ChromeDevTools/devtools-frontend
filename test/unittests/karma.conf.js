@@ -119,7 +119,7 @@ module.exports = function(config) {
       ...TEST_FILES_SOURCE_MAPS.map(pattern => ({pattern, served: true, included: false, watched: false})),
       ...TEST_SOURCES.map(source => ({pattern: source, served: true, included: false, watched: false})),
       {pattern: path.join(GEN_DIRECTORY, 'front_end/Images/*.{svg,png}'), served: true, included: false},
-      {pattern: path.join(GEN_DIRECTORY, 'front_end/i18n/locales/*.json'), served: true, included: false},
+      {pattern: path.join(GEN_DIRECTORY, 'front_end/core/i18n/locales/*.json'), served: true, included: false},
       // Inject the CSS color theme variables into the page so any rendered
       // components have access to them.
       {pattern: path.join(GEN_DIRECTORY, 'front_end/ui/themeColors.css'), served: true, included: true},
@@ -167,8 +167,10 @@ module.exports = function(config) {
       [path.join(GEN_DIRECTORY, 'inspector_overlay/**/*.{js,mjs}')]: [...coveragePreprocessors],
     },
 
-    proxies:
-        {'/Images': `/base/${targetDir}/front_end/Images`, '/locales': `/base/${targetDir}/front_end/i18n/locales`},
+    proxies: {
+      '/Images': `/base/${targetDir}/front_end/Images`,
+      '/locales': `/base/${targetDir}/front_end/core/i18n/locales`
+    },
 
     coverageReporter: {dir: COVERAGE_OUTPUT_DIRECTORY, subdir: '.', reporters: istanbulReportOutputs},
 

@@ -23,7 +23,7 @@ devtools_module("linear_memory_inspector") {
     "../common:bundle",
     "../component_helpers:bundle",
     "../components:bundle",
-    "../i18n:bundle",
+    "../core/i18n:bundle",
     "../third_party/lit-html:bundle",
     "../ui/components:bundle",
   ]

@@ -6326,6 +6326,9 @@
   "panels/network/NetworkDataGridNode.ts | blockeds": {
     "message": "(blocked:{PH1})"
   },
+  "panels/network/NetworkDataGridNode.ts | blockedTooltip": {
+    "message": "This request was blocked due to misconfigured response headers, click to view the headers"
+  },
   "panels/network/NetworkDataGridNode.ts | canceled": {
     "message": "(canceled)"
   },
@@ -6358,9 +6361,6 @@
   },
   "panels/network/NetworkDataGridNode.ts | memoryCache": {
     "message": "(memory cache)"
-  },
-  "panels/network/NetworkDataGridNode.ts | notsameoriginafterdefaultedtosameoriginbycoep": {
-    "message": "NotSameOriginAfterDefaultedToSameOriginByCoep"
   },
   "panels/network/NetworkDataGridNode.ts | origin": {
     "message": "origin"

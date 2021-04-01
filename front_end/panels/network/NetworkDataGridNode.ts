@@ -102,13 +102,13 @@ const UIStrings = {
   devtools: 'devtools',
   /**
   *@description Text in Network Data Grid Node of the Network panel
-  */
-  notsameoriginafterdefaultedtosameoriginbycoep: 'NotSameOriginAfterDefaultedToSameOriginByCoep',
-  /**
-  *@description Text in Network Data Grid Node of the Network panel
   *@example {mixed-content} PH1
   */
   blockeds: '(blocked:{PH1})',
+  /**
+  *@description Text in Network Data Grid Node of the Network panel
+  */
+  blockedTooltip: 'This request was blocked due to misconfigured response headers, click to view the headers',
   /**
   *@description Text in Network Data Grid Node of the Network panel
   */
@@ -866,15 +866,13 @@ export class NetworkRequestNode extends NetworkNode {
     UI.Tooltip.Tooltip.install(element, title || text);
   }
 
-  _setTextAndTitleAndLink(element: HTMLElement, cellText: string, linkText: string, handler: () => void): void {
-    UI.UIUtils.createTextChild(element, cellText);
-    element.createChild('span', 'separator-in-cell');
+  _setTextAndTitleAsLink(element: HTMLElement, cellText: string, titleText: string, handler: () => void): void {
     const link = document.createElement('span');
     link.classList.add('devtools-link');
-    link.textContent = linkText;
+    link.textContent = cellText;
     link.addEventListener('click', handler);
     element.appendChild(link);
-    UI.Tooltip.Tooltip.install(element, cellText);
+    UI.Tooltip.Tooltip.install(element, titleText);
   }
 
   renderCell(c: Element, columnId: string): void {
@@ -1127,16 +1125,19 @@ export class NetworkRequestNode extends NetworkNode {
           break;
         case Protocol.Network.BlockedReason.CorpNotSameOriginAfterDefaultedToSameOriginByCoep:
           displayShowHeadersLink = true;
-          reason = i18nString(UIStrings.notsameoriginafterdefaultedtosameoriginbycoep);
+          reason = i18n.i18n.lockedString('NotSameOriginAfterDefaultedToSameOriginByCoep');
           break;
       }
       if (displayShowHeadersLink) {
-        this._setTextAndTitleAndLink(cell, i18nString(UIStrings.blockeds, {PH1: reason}), 'View Headers', () => {
-          // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          (this.parentView() as any)
-              .dispatchEventToListeners(Events.RequestActivated, {showPanel: true, tab: NetworkItemViewTabs.Headers});
-        });
+        this._setTextAndTitleAsLink(
+            cell, i18nString(UIStrings.blockeds, {PH1: reason}), i18nString(UIStrings.blockedTooltip), () => {
+              // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              (this.parentView() as any).dispatchEventToListeners(Events.RequestActivated, {
+                showPanel: true,
+                tab: NetworkItemViewTabs.Headers,
+              });
+            });
       } else {
         this._setTextAndTitle(cell, i18nString(UIStrings.blockeds, {PH1: reason}));
       }

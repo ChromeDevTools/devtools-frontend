@@ -157,6 +157,10 @@
   margin-right: 4px;
 }
 
+.status-column .devtools-link {
+  color: inherit;
+}
+
 .initiator-column .devtools-link {
   color: inherit;
 }

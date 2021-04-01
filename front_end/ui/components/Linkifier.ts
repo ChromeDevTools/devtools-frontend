@@ -2,8 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Coordinator from '../../render_coordinator/render_coordinator.js';
 import * as LitHtml from '../../third_party/lit-html/lit-html.js';
+
 import * as LinkifierUtils from './LinkifierUtils.js';
+
+const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 export interface LinkifierData {
   url: string;
@@ -34,6 +38,10 @@ export class Linkifier extends HTMLElement {
     this.lineNumber = data.lineNumber;
     this.columnNumber = data.columnNumber;
 
+    if (!this.url) {
+      throw new Error('Cannot construct a Linkifier without providing a valid string URL.');
+    }
+
     this.render();
   }
 
@@ -47,24 +55,23 @@ export class Linkifier extends HTMLElement {
     this.dispatchEvent(linkifierClickEvent);
   }
 
-  private render(): void {
-    if (!this.url) {
-      throw new Error('Cannot construct a Linkifier without providing a valid string URL.');
-    }
+  private async render(): Promise<void> {
     // Disabled until https://crbug.com/1079231 is fixed.
-    // clang-format off
-    return LitHtml.render(LitHtml.html`
-      <style>
+    await coordinator.write(() => {
+      // clang-format off
+      LitHtml.render(LitHtml.html`
+        <style>
           .link:link,
           .link:visited {
             color: var(--color-link);
             text-decoration: underline;
             cursor: pointer;
           }
-      </style>
-      <a class="link" href=${this.url} @click=${this.onLinkActivation}>${LinkifierUtils.linkText(this.url, this.lineNumber)}</a>
-    `, this.shadow, { eventContext: this});
-    // clang-format on
+        </style>
+        <a class="link" href=${this.url} @click=${this.onLinkActivation}>${LinkifierUtils.linkText(this.url, this.lineNumber)}</a>
+      `, this.shadow, { eventContext: this});
+      // clang-format on
+    });
   }
 }
 

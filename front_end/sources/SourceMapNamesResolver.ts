@@ -79,14 +79,14 @@ export const resolveScopeChain =
   return callFrame.scopeChain();
 };
 
-export const resolveScope = async (scope: SDK.DebuggerModel.ScopeChainEntry): Promise<Map<string, string>> => {
+export const resolveScope = async(scope: SDK.DebuggerModel.ScopeChainEntry): Promise<Map<string, string>> => {
   let identifiersPromise = scopeToCachedIdentifiersMap.get(scope);
   if (!identifiersPromise) {
     // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    identifiersPromise = (async (): Promise<Map<any, any>> => {
+    identifiersPromise = (async(): Promise<Map<any, any>> => {
       const namesMapping = new Map<string, string>();
       const script = scope.callFrame().script;
       const sourceMap =
@@ -149,7 +149,7 @@ export const resolveScope = async (scope: SDK.DebuggerModel.ScopeChainEntry): Pr
   }
 };
 
-export const allVariablesInCallFrame = async (callFrame: SDK.DebuggerModel.CallFrame): Promise<Map<string, string>> => {
+export const allVariablesInCallFrame = async(callFrame: SDK.DebuggerModel.CallFrame): Promise<Map<string, string>> => {
   const cachedMap = cachedMapByCallFrame.get(callFrame);
   if (cachedMap) {
     return cachedMap;
@@ -169,7 +169,7 @@ export const allVariablesInCallFrame = async (callFrame: SDK.DebuggerModel.CallF
   return reverseMapping;
 };
 
-export const resolveExpression = async (
+export const resolveExpression = async(
     callFrame: SDK.DebuggerModel.CallFrame, originalText: string, uiSourceCode: Workspace.UISourceCode.UISourceCode,
     lineNumber: number, startColumnNumber: number, endColumnNumber: number): Promise<string> => {
   if (uiSourceCode.mimeType() === 'application/wasm') {
@@ -220,7 +220,7 @@ export const resolveExpression = async (
 };
 
 export const resolveThisObject =
-    async (callFrame: SDK.DebuggerModel.CallFrame|null): Promise<SDK.RemoteObject.RemoteObject|null> => {
+    async(callFrame: SDK.DebuggerModel.CallFrame|null): Promise<SDK.RemoteObject.RemoteObject|null> => {
   if (!callFrame) {
     return null;
   }

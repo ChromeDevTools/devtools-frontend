@@ -203,7 +203,7 @@ export class AffectedResourcesView extends UI.TreeOutline.TreeElement {
       const icon = new WebComponents.Icon.Icon();
       icon.data = {iconName: 'elements_panel_icon', color: 'var(--color-link)', width: '16px', height: '16px'};
       icon.classList.add('link', 'elements-panel');
-      icon.onclick = async (): Promise<void> => {
+      icon.onclick = async(): Promise<void> => {
         Host.userMetrics.issuesPanelResourceOpened(issue.getCategory(), AffectedItem.Element);
         const frame = SDK.FrameManager.FrameManager.instance().getFrame(frameId);
         if (frame) {

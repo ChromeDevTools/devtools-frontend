@@ -32,7 +32,6 @@ describe('The Console Tab', async function() {
       });
       assert.strictEqual(evaluateResult, '2', 'Eval result was not correct');
     });
-
   });
 
   it('eval in console fails for pages with CSP that blocks eval', async () => {

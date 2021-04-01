@@ -192,7 +192,7 @@ module.exports = {
       'rulesdir/prefer_readonly_keyword': 2,
       'space-before-function-paren': 'off',
       '@typescript-eslint/space-before-function-paren':
-          ['error', {'anonymous': 'never', 'named': 'never', 'asyncArrow': 'always'}]
+          ['error', {'anonymous': 'never', 'named': 'never', 'asyncArrow': 'never'}]
     }
   }]
 };

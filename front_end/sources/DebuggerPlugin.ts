@@ -222,7 +222,7 @@ export class DebuggerPlugin extends Plugin {
     this._scriptsPanel.element.addEventListener('scroll', this._boundPopoverHelperHide, true);
 
     const shortcutHandlers = {
-      'debugger.toggle-breakpoint': async (): Promise<boolean> => {
+      'debugger.toggle-breakpoint': async(): Promise<boolean> => {
         const selection = this._textEditor.selection();
         if (!selection) {
           return false;
@@ -230,7 +230,7 @@ export class DebuggerPlugin extends Plugin {
         await this._toggleBreakpoint(selection.startLine, false);
         return true;
       },
-      'debugger.toggle-breakpoint-enabled': async (): Promise<boolean> => {
+      'debugger.toggle-breakpoint-enabled': async(): Promise<boolean> => {
         const selection = this._textEditor.selection();
         if (!selection) {
           return false;
@@ -238,7 +238,7 @@ export class DebuggerPlugin extends Plugin {
         await this._toggleBreakpoint(selection.startLine, true);
         return true;
       },
-      'debugger.breakpoint-input-window': async (): Promise<boolean> => {
+      'debugger.breakpoint-input-window': async(): Promise<boolean> => {
         const selection = this._textEditor.selection();
         if (!selection) {
           return false;
@@ -719,7 +719,7 @@ export class DebuggerPlugin extends Plugin {
 
     return {
       box,
-      show: async (popover: UI.GlassPane.GlassPane): Promise<boolean> => {
+      show: async(popover: UI.GlassPane.GlassPane): Promise<boolean> => {
         const evaluationText = this._textEditor.line(editorLineNumber).substring(startHighlight, endHighlight + 1);
         const result = await evaluate(this._uiSourceCode, evaluationText);
 

@@ -4646,6 +4646,9 @@
   "panels/elements/ElementsTreeElement.js | disableGridMode": {
     "message": "D̂íŝáb̂ĺê ǵr̂íd̂ ḿôd́ê"
   },
+  "panels/elements/ElementsTreeElement.js | disableScrollSnap": {
+    "message": "D̂íŝáb̂ĺê śĉŕôĺl̂-śn̂áp̂ óv̂ér̂ĺâý"
+  },
   "panels/elements/ElementsTreeElement.js | duplicateElement": {
     "message": "D̂úp̂ĺîćât́ê él̂ém̂én̂t́"
   },
@@ -4663,6 +4666,9 @@
   },
   "panels/elements/ElementsTreeElement.js | enableGridMode": {
     "message": "Êńâb́l̂é ĝŕîd́ m̂ód̂é"
+  },
+  "panels/elements/ElementsTreeElement.js | enableScrollSnap": {
+    "message": "Êńâb́l̂é ŝćr̂ól̂ĺ-ŝńâṕ ôv́êŕl̂áŷ"
   },
   "panels/elements/ElementsTreeElement.js | expandRecursively": {
     "message": "Êx́p̂án̂d́ r̂éĉúr̂śîv́êĺŷ"

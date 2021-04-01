@@ -4646,6 +4646,9 @@
   "panels/elements/ElementsTreeElement.js | disableGridMode": {
     "message": "Disable grid mode"
   },
+  "panels/elements/ElementsTreeElement.js | disableScrollSnap": {
+    "message": "Disable scroll-snap overlay"
+  },
   "panels/elements/ElementsTreeElement.js | duplicateElement": {
     "message": "Duplicate element"
   },
@@ -4663,6 +4666,9 @@
   },
   "panels/elements/ElementsTreeElement.js | enableGridMode": {
     "message": "Enable grid mode"
+  },
+  "panels/elements/ElementsTreeElement.js | enableScrollSnap": {
+    "message": "Enable scroll-snap overlay"
   },
   "panels/elements/ElementsTreeElement.js | expandRecursively": {
     "message": "Expand recursively"

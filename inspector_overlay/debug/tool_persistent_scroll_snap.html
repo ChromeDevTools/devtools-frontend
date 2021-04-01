@@ -1,0 +1,39 @@
+<!--
+Copyright 2021 The Chromium Authors. All rights reserved.
+Use of this source code is governed by a BSD-style license that can be
+found in the LICENSE file.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Debug</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <script type="module" src="/out/Default/resources/inspector_overlay/main.js"></script>
+</head>
+<body>
+  <script type="module">
+    const viewportWidth = document.documentElement.clientWidth;
+    const viewportHeight = document.documentElement.clientHeight;
+    dispatch(["setPlatform", "mac"]);
+    dispatch(["setOverlay", "persistent"]);
+    dispatch(["reset", {
+      viewportSize: {
+        width: viewportWidth,
+        height: viewportHeight,
+      },
+      deviceScaleFactor: 1,
+      pageScaleFactor: 1,
+      pageZoomFactor: 1,
+      emulationScaleFactor: 1,
+      scrollX: 0,
+      scrollY: 0,
+    }]);
+    dispatch(["drawScrollSnapHighlight", {"snapportBorder":{"color":"#7f20d2","pattern":"dashed"},"snapAreaBorder":{"color":"#7f20d2","pattern":"dashed"},"scrollMarginColor":"rgba(246, 178, 107, 0.658823529411765)","scrollPaddingColor":"rgba(147, 196, 125, 0.549019607843137)","paddingBox":["M",22.5,150.09375,"L",397.5,150.09375,"L",397.5,510.09375,"L",22.5,510.09375,"Z"],"snapport":["M",47.5,175.09375,"L",372.5,175.09375,"L",372.5,485.09375,"L",47.5,485.09375,"Z"],"snapAreas":[{"path":["M",785,217.59375,"L",1010,217.59375,"L",1010,442.59375,"L",785,442.59375,"Z"],"borderBox":["M",810,242.59375,"L",985,242.59375,"L",985,417.59375,"L",810,417.59375,"Z"],"alignInline":"end"},{"path":["M",535,217.59375,"L",760,217.59375,"L",760,442.59375,"L",535,442.59375,"Z"],"borderBox":["M",560,242.59375,"L",735,242.59375,"L",735,417.59375,"L",560,417.59375,"Z"],"alignInline":"center"},{"path":["M",285,217.59375,"L",510,217.59375,"L",510,442.59375,"L",285,442.59375,"Z"],"borderBox":["M",310,242.59375,"L",485,242.59375,"L",485,417.59375,"L",310,417.59375,"Z"],"alignInline":"center"},{"path":["M",35,217.59375,"L",260,217.59375,"L",260,442.59375,"L",35,442.59375,"Z"],"borderBox":["M",60,242.59375,"L",235,242.59375,"L",235,417.59375,"L",60,417.59375,"Z"],"alignInline":"start"}],"test":"test"}]);
+  </script>
+</body>
+</html>
+
+
+
+

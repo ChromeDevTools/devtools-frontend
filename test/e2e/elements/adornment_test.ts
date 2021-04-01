@@ -28,6 +28,15 @@ describe('Adornment in the Elements Tab', async function() {
     ]);
   });
 
+  it('displays scroll-snap adorners', async () => {
+    await goToResource('elements/adornment-scroll-snap.html');
+    await prepareElementsTab();
+
+    await waitForAdorners([
+      {textContent: 'scroll-snap', isActive: false},
+    ]);
+  });
+
   // Flaky test
   it.skip('[crbug.com/1134593] can toggle adorners', async () => {
     await goToResource('elements/adornment.html');

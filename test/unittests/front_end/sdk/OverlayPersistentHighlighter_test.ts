@@ -28,6 +28,7 @@ describeWithEnvironment('OverlayColorGenerator', () => {
           return {
             invoke_setShowGridOverlays() {},
             invoke_setShowFlexOverlays() {},
+            invoke_setShowScrollSnapOverlays() {},
           };
         },
       };
@@ -55,5 +56,16 @@ describeWithEnvironment('OverlayColorGenerator', () => {
     assert(highlighter.colorOfGrid(nodeId) instanceof Common.Color.Color);
     highlighter.hideGridInOverlay(nodeId);
     assert(!highlighter.isGridHighlighted(nodeId));
+  });
+
+  it('is able to highlight scroll snal elements', () => {
+    const highlighter = new SDK.OverlayPersistentHighlighter.OverlayPersistentHighlighter(mockModel);
+    const nodeId = 1;
+    highlighter.highlightScrollSnapInOverlay(nodeId);
+    assert(highlighter.isScrollSnapHighlighted(nodeId));
+    assert(!highlighter.isFlexHighlighted(nodeId));
+    assert(!highlighter.isGridHighlighted(nodeId));
+    highlighter.hideScrollSnapInOverlay(nodeId);
+    assert(!highlighter.isScrollSnapHighlighted(nodeId));
   });
 });

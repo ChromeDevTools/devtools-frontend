@@ -30,6 +30,10 @@ export const DefaultAdornerSettings = [
     adorner: 'Ad',
     isEnabled: true,
   },
+  {
+    adorner: 'scroll-snap',
+    isEnabled: true,
+  },
 ];
 
 interface SettingStore<Setting> {

@@ -1,0 +1,24 @@
+<!--
+  Copyright 2021 The Chromium Authors. All rights reserved.
+  Use of this source code is governed by a BSD-style license that can be
+  found in the LICENSE file.
+-->
+<!DOCTYPE html>
+  <style>
+    #snap {
+      background-color: white;
+      scroll-snap-type: y mandatory;
+      overflow-x: hidden;
+      overflow-y: scroll;
+      width: 150px;
+      height: 150px;
+    }
+    #snap > div {
+      width: 75px;
+      height: 75px;
+      scroll-snap-align: start;
+      margin: 10px;
+      padding: 10px;
+    }
+  </style>
+  <div id="snap"><div>A</div><div>B</div></div>

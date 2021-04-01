@@ -29,7 +29,8 @@
 //  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import {rgbaToHsla} from '../front_end/common/ColorUtils.js';
-import {Bounds, Quad} from './common.js';
+
+import {Bounds, PathCommands, Quad} from './common.js';
 
 export type PathBounds = Bounds&{
   leftmostXForY: {[key: string]: number},
@@ -48,7 +49,7 @@ export interface BoxStyle {
   hatchColor?: string;
 }
 
-const enum LinePattern {
+export const enum LinePattern {
   Solid = 'solid',
   Dotted = 'dotted',
   Dashed = 'dashed',
@@ -146,8 +147,8 @@ export function emptyBounds(): PathBounds {
   const bounds = {
     minX: Number.MAX_VALUE,
     minY: Number.MAX_VALUE,
-    maxX: Number.MIN_VALUE,
-    maxY: Number.MIN_VALUE,
+    maxX: -Number.MAX_VALUE,
+    maxY: -Number.MAX_VALUE,
     leftmostXForY: {},
     rightmostXForY: {},
     topmostYForX: {},
@@ -286,4 +287,29 @@ export function formatColor(hexa: string, colorFormat: string): string {
   }
 
   return hexa;
+}
+
+export function drawPath(
+    context: CanvasRenderingContext2D, commands: PathCommands, fillColor: string|undefined,
+    outlineColor: string|undefined, outlinePattern: LinePattern|undefined, bounds: PathBounds,
+    emulationScaleFactor: number) {
+  context.save();
+  const path = buildPath(commands, bounds, emulationScaleFactor);
+  if (fillColor) {
+    context.fillStyle = fillColor;
+    context.fill(path);
+  }
+  if (outlineColor) {
+    if (outlinePattern === LinePattern.Dashed) {
+      context.setLineDash([3, 3]);
+    }
+    if (outlinePattern === LinePattern.Dotted) {
+      context.setLineDash([2, 2]);
+    }
+    context.lineWidth = 2;
+    context.strokeStyle = outlineColor;
+    context.stroke(path);
+  }
+  context.restore();
+  return path;
 }

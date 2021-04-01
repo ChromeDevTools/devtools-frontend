@@ -17,6 +17,9 @@ export class OverlayPersistentHighlighter {
     /** @type {!Map<number, !Protocol.Overlay.GridHighlightConfig>} */
     this._gridHighlights = new Map();
 
+    /** @type {!Map<number, !Protocol.Overlay.ScrollSnapContainerHighlightConfig>} */
+    this._scrollSnapHighlights = new Map();
+
     /** @type {!Map<number, !Protocol.Overlay.FlexContainerHighlightConfig>} */
     this._flexHighlights = new Map();
 
@@ -102,6 +105,23 @@ export class OverlayPersistentHighlighter {
   }
 
   /**
+   * @private
+   * @param {number} nodeId
+   * @return {!Protocol.Overlay.ScrollSnapContainerHighlightConfig}
+   */
+  _buildScrollSnapContainerHighlightConfig(nodeId) {
+    return {
+      snapAreaBorder: {
+        color: Common.Color.PageHighlight.GridBorder.toProtocolRGBA(),
+        pattern: Protocol.Overlay.LineStylePattern.Dashed
+      },
+      snapportBorder: {color: Common.Color.PageHighlight.GridBorder.toProtocolRGBA()},
+      scrollMarginColor: Common.Color.PageHighlight.Margin.toProtocolRGBA(),
+      scrollPaddingColor: Common.Color.PageHighlight.Padding.toProtocolRGBA(),
+    };
+  }
+
+  /**
    * @param {number} nodeId
    */
   highlightGridInOverlay(nodeId) {
@@ -145,6 +165,32 @@ export class OverlayPersistentHighlighter {
   hideGridInOverlay(nodeId) {
     if (this._gridHighlights.has(nodeId)) {
       this._gridHighlights.delete(nodeId);
+      this._updateHighlightsInOverlay();
+    }
+  }
+
+  /**
+   * @param {number} nodeId
+   */
+  highlightScrollSnapInOverlay(nodeId) {
+    this._scrollSnapHighlights.set(nodeId, this._buildScrollSnapContainerHighlightConfig(nodeId));
+    this._updateHighlightsInOverlay();
+  }
+
+  /**
+   * @param {number} nodeId
+   * @return {boolean}
+   */
+  isScrollSnapHighlighted(nodeId) {
+    return this._scrollSnapHighlights.has(nodeId);
+  }
+
+  /**
+   * @param {number} nodeId
+   */
+  hideScrollSnapInOverlay(nodeId) {
+    if (this._scrollSnapHighlights.has(nodeId)) {
+      this._scrollSnapHighlights.delete(nodeId);
       this._updateHighlightsInOverlay();
     }
   }
@@ -200,20 +246,22 @@ export class OverlayPersistentHighlighter {
   hideAllInOverlay() {
     this._flexHighlights.clear();
     this._gridHighlights.clear();
+    this._scrollSnapHighlights.clear();
     this._updateHighlightsInOverlay();
   }
 
   refreshHighlights() {
     const gridsNeedUpdate = this._updateHighlightsForDeletedNodes(this._gridHighlights);
     const flexboxesNeedUpdate = this._updateHighlightsForDeletedNodes(this._flexHighlights);
-    if (flexboxesNeedUpdate || gridsNeedUpdate) {
+    const scrollSnapsNeedUpdate = this._updateHighlightsForDeletedNodes(this._scrollSnapHighlights);
+    if (flexboxesNeedUpdate || gridsNeedUpdate || scrollSnapsNeedUpdate) {
       this._updateHighlightsInOverlay();
     }
   }
 
   /**
    *
-   * @param {!Map<number, !Protocol.Overlay.GridHighlightConfig>|!Map<number, !Protocol.Overlay.FlexContainerHighlightConfig>} highlights
+   * @param {!Map<number, unknown>} highlights
    * @return {boolean} whether there were changes to highlights
    */
   _updateHighlightsForDeletedNodes(highlights) {
@@ -234,6 +282,9 @@ export class OverlayPersistentHighlighter {
     for (const nodeId of this._flexHighlights.keys()) {
       this._flexHighlights.set(nodeId, this._buildFlexContainerHighlightConfig(nodeId));
     }
+    for (const nodeId of this._scrollSnapHighlights.keys()) {
+      this._scrollSnapHighlights.set(nodeId, this._buildScrollSnapContainerHighlightConfig(nodeId));
+    }
     this._updateHighlightsInOverlay();
   }
 
@@ -245,6 +296,7 @@ export class OverlayPersistentHighlighter {
     this._model.setShowViewportSizeOnResize(!hasNodesToHighlight);
     this._updateGridHighlightsInOverlay();
     this._updateFlexHighlightsInOverlay();
+    this._updateScrollSnapHighlightsInOverlay();
   }
 
   /**
@@ -272,6 +324,18 @@ export class OverlayPersistentHighlighter {
       flexNodeHighlightConfigs.push({nodeId, flexContainerHighlightConfig});
     }
     overlayModel.target().overlayAgent().invoke_setShowFlexOverlays({flexNodeHighlightConfigs});
+  }
+
+  /**
+   * @private
+   */
+  _updateScrollSnapHighlightsInOverlay() {
+    const overlayModel = this._model;
+    const scrollSnapHighlightConfigs = [];
+    for (const [nodeId, scrollSnapContainerHighlightConfig] of this._scrollSnapHighlights.entries()) {
+      scrollSnapHighlightConfigs.push({nodeId, scrollSnapContainerHighlightConfig});
+    }
+    overlayModel.target().overlayAgent().invoke_setShowScrollSnapOverlays({scrollSnapHighlightConfigs});
   }
 }
 
@@ -301,6 +365,13 @@ export class OverlayAgent {
    * @param {!{flexNodeHighlightConfigs: !Array<!{nodeId: number, flexContainerHighlightConfig: !Protocol.Overlay.FlexContainerHighlightConfig}>}} param
    */
   invoke_setShowFlexOverlays(param) {
+  }
+
+  /**
+   *
+   * @param {!{scrollSnapHighlightConfigs: !Array<!{nodeId: number}>}} param
+   */
+  invoke_setShowScrollSnapOverlays(param) {
   }
 }
 

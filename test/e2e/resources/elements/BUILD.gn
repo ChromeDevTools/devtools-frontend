@@ -6,6 +6,7 @@ import("../../../../scripts/build/ninja/copy.gni")
 
 copy_to_gen("elements") {
   sources = [
+    "adornment-scroll-snap.html",
     "adornment-shadow.html",
     "adornment.html",
     "css-grid-ua-shadow.html",

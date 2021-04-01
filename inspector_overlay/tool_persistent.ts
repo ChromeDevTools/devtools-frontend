@@ -31,6 +31,7 @@
 import {Overlay, ResetData} from './common.js';
 import {drawLayoutFlexContainerHighlight, FlexContainerHighlight} from './highlight_flex_common.js';
 import {drawLayoutGridHighlight, GridHighlight} from './highlight_grid_common.js';
+import {drawScrollSnapHighlight, ScrollSnapHighlight} from './highlight_scroll_snap.js';
 
 export class PersistentOverlay extends Overlay {
   private gridLabelState = {gridLayerCounter: 0};
@@ -84,6 +85,12 @@ export class PersistentOverlay extends Overlay {
     drawLayoutFlexContainerHighlight(
         highlight, this.context, this.deviceScaleFactor, this.canvasWidth, this.canvasHeight,
         this.emulationScaleFactor);
+    this.context.restore();
+  }
+
+  drawScrollSnapHighlight(highlight: ScrollSnapHighlight) {
+    this.context.save();
+    drawScrollSnapHighlight(highlight, this.context, this.emulationScaleFactor);
     this.context.restore();
   }
 }

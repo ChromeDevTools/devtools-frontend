@@ -247,9 +247,12 @@ export class HeapProfileView extends ProfileView implements UI.SearchableView.Se
 
 export class SamplingHeapProfileTypeBase extends ProfileType {
   _recording: boolean;
+  _clearedDuringRecording: boolean;
+
   constructor(typeId: string, description: string) {
     super(typeId, description);
     this._recording = false;
+    this._clearedDuringRecording = false;
   }
 
   profileBeingRecorded(): SamplingHeapProfileHeader|null {
@@ -313,6 +316,15 @@ export class SamplingHeapProfileTypeBase extends ProfileType {
       this.setProfileBeingRecorded(null);
     }
     UI.InspectorView.InspectorView.instance().setPanelIcon('heap_profiler', null);
+
+    // If the data was cleared during the middle of the recording we no
+    // longer treat the profile as being completed. This means we avoid
+    // a change of view to the profile list.
+    const wasClearedDuringRecording = this._clearedDuringRecording;
+    this._clearedDuringRecording = false;
+    if (wasClearedDuringRecording) {
+      return;
+    }
     this.dispatchEventToListeners(ProfileEvents.ProfileComplete, recordedProfile);
   }
 
@@ -321,6 +333,7 @@ export class SamplingHeapProfileTypeBase extends ProfileType {
   }
 
   profileBeingRecordedRemoved(): void {
+    this._clearedDuringRecording = true;
     this._stopRecordingProfile();
   }
 

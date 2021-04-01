@@ -135,6 +135,7 @@ export class CoverageView extends UI.Widget.VBox {
 
     const toolbarContainer = this.contentElement.createChild('div', 'coverage-toolbar-container');
     const toolbar = new UI.Toolbar.Toolbar('coverage-toolbar', toolbarContainer);
+    toolbar.makeWrappable(true);
 
     this._coverageTypeComboBox = new UI.Toolbar.ToolbarComboBox(
         this._onCoverageTypeComboBoxSelectionChanged.bind(this), i18nString(UIStrings.chooseCoverageGranularityPer));

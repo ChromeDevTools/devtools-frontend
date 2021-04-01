@@ -212,6 +212,7 @@ export class NetworkPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
 
     const networkToolbarContainer = panel.contentElement.createChild('div', 'network-toolbar-container');
     this._panelToolbar = new UI.Toolbar.Toolbar('', networkToolbarContainer);
+    this._panelToolbar.makeWrappable(true);
     this._rightToolbar = new UI.Toolbar.Toolbar('', networkToolbarContainer);
 
     this._filterBar = new UI.FilterBar.FilterBar('networkPanel', true);

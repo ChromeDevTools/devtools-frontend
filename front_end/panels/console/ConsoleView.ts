@@ -335,6 +335,7 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
         this._groupSimilarSetting, i18nString(UIStrings.groupSimilarMessagesInConsole));
 
     const toolbar = new UI.Toolbar.Toolbar('console-main-toolbar', this._consoleToolbarContainer);
+    toolbar.makeWrappable(true);
     const rightToolbar = new UI.Toolbar.Toolbar('', this._consoleToolbarContainer);
     toolbar.appendToolbarItem(this._splitWidget.createShowHideSidebarButton(
         i18nString(UIStrings.showConsoleSidebar), i18nString(UIStrings.hideConsoleSidebar)));

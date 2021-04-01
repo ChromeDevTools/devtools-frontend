@@ -18,7 +18,7 @@ button.soft-dropdown[disabled] {
 
 button.soft-dropdown > .title {
   padding-right: 5px;
-  width: 120px;
+  flex: 0 1 120px;
   overflow: hidden;
   text-overflow: ellipsis;
 }

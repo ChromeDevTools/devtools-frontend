@@ -311,6 +311,7 @@ export class TimelinePanel extends UI.Panel.Panel {
 
     const timelineToolbarContainer = this.element.createChild('div', 'timeline-toolbar-container');
     this._panelToolbar = new UI.Toolbar.Toolbar('timeline-main-toolbar', timelineToolbarContainer);
+    this._panelToolbar.makeWrappable(true);
     this._panelRightToolbar = new UI.Toolbar.Toolbar('', timelineToolbarContainer);
     this._createSettingsPane();
     this._updateShowSettingsToolbarButton();

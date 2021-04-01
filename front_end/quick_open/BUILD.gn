@@ -17,9 +17,9 @@ devtools_module("quick_open") {
 
   deps = [
     "../common:bundle",
+    "../core/host:bundle",
     "../core/platform:bundle",
     "../diff:bundle",
-    "../host:bundle",
     "../i18n:bundle",
     "../text_utils:bundle",
     "../ui:bundle",

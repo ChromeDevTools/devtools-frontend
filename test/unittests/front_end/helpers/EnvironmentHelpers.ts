@@ -3,9 +3,9 @@
 // found in the LICENSE file.
 
 import * as Common from '../../../../front_end/common/common.js';
+import * as Host from '../../../../front_end/core/host/host.js';
 import * as Root from '../../../../front_end/core/root/root.js';
 import * as SDK from '../../../../front_end/core/sdk/sdk.js';
-import * as Host from '../../../../front_end/host/host.js';
 import * as i18n from '../../../../front_end/i18n/i18n.js';
 
 import type * as UIModule from '../../../../front_end/ui/ui.js';

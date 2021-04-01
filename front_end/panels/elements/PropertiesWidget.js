@@ -32,8 +32,8 @@
  */
 
 import * as Common from '../../common/common.js';  // eslint-disable-line no-unused-vars
+import * as Host from '../../core/host/host.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import * as Host from '../../host/host.js';
 import * as ObjectUI from '../../object_ui/object_ui.js';
 import * as UI from '../../ui/ui.js';
 

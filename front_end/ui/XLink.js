@@ -2,8 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Host from '../core/host/host.js';
 import * as Platform from '../core/platform/platform.js';
-import * as Host from '../host/host.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
 import {ContextMenu, Provider} from './ContextMenu.js';  // eslint-disable-line no-unused-vars

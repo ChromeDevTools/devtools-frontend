@@ -29,7 +29,7 @@
  */
 
 import * as Common from '../../common/common.js';
-import * as Host from '../../host/host.js';
+import * as Host from '../host/host.js';
 
 import {DebuggerModel, FunctionDetails} from './DebuggerModel.js';  // eslint-disable-line no-unused-vars
 import {HeapProfilerModel} from './HeapProfilerModel.js';

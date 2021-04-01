@@ -13,8 +13,8 @@ devtools_module("protocol_client") {
 
   deps = [
     "../common:bundle",
+    "../core/host:bundle",
     "../generated",
-    "../host:bundle",
   ]
 }
 

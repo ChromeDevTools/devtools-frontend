@@ -23,9 +23,9 @@ devtools_module("perf_ui") {
   deps = [
     "../bindings:bundle",
     "../common:bundle",
+    "../core/host:bundle",
     "../core/platform:bundle",
     "../core/sdk:bundle",
-    "../host:bundle",
     "../i18n:bundle",
     "../source_frame:bundle",
     "../text_editor:bundle",

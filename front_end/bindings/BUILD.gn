@@ -29,8 +29,8 @@ devtools_module("bindings") {
 
   deps = [
     "../common:bundle",
+    "../core/host:bundle",
     "../core/sdk:bundle",
-    "../host:bundle",
     "../i18n:bundle",
     "../text_utils:bundle",
     "../workspace:bundle",

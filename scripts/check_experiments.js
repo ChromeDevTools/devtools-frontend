@@ -151,7 +151,7 @@ function main() {
   const mainImplPath = path.resolve(__dirname, '..', 'front_end', 'main', 'MainImpl.js');
   const mainImplFile = fs.readFileSync(mainImplPath, 'utf-8');
 
-  const userMetricsPath = path.resolve(__dirname, '..', 'front_end', 'host', 'UserMetrics.ts');
+  const userMetricsPath = path.resolve(__dirname, '..', 'front_end', 'core', 'host', 'UserMetrics.ts');
   const userMetricsFile = fs.readFileSync(userMetricsPath, 'utf-8');
 
   compareExperimentLists(getMainImplExperimentList(mainImplFile), getUserMetricExperimentList(userMetricsFile));

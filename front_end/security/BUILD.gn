@@ -13,8 +13,8 @@ devtools_module("security") {
 
   deps = [
     "../common:bundle",
+    "../core/host:bundle",
     "../core/sdk:bundle",
-    "../host:bundle",
     "../i18n:bundle",
     "../panels/network:bundle",
     "../ui:bundle",

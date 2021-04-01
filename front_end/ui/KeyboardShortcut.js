@@ -27,7 +27,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import * as Host from '../host/host.js';
+import * as Host from '../core/host/host.js';
 import {DefaultShortcutSetting} from './ShortcutRegistry.js';
 
 

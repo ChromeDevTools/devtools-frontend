@@ -3,9 +3,9 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
+import * as Host from '../core/host/host.js';
 import * as Platform from '../core/platform/platform.js';
 import * as Root from '../core/root/root.js';
-import * as Host from '../host/host.js';
 
 import {Action, getRegisteredActionExtensions, KeybindSet} from './ActionRegistration.js';  // eslint-disable-line no-unused-vars
 import {ActionRegistry} from './ActionRegistry.js';  // eslint-disable-line no-unused-vars

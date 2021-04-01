@@ -21,9 +21,9 @@ devtools_module("media") {
 
   deps = [
     "../../common:bundle",
+    "../../core/host:bundle",
     "../../core/sdk:bundle",
     "../../data_grid:bundle",
-    "../../host:bundle",
     "../../i18n:bundle",
     "../../perf_ui:bundle",
     "../../theme_support:bundle",

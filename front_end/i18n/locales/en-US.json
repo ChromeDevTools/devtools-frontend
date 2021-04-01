@@ -374,6 +374,48 @@
   "cookie_table/CookiesTable.ts | value": {
     "message": "Value"
   },
+  "core/host/InspectorFrontendHost.ts | devtoolsS": {
+    "message": "DevTools - {PH1}"
+  },
+  "core/host/ResourceLoader.ts | cacheError": {
+    "message": "Cache error"
+  },
+  "core/host/ResourceLoader.ts | certificateError": {
+    "message": "Certificate error"
+  },
+  "core/host/ResourceLoader.ts | certificateManagerError": {
+    "message": "Certificate manager error"
+  },
+  "core/host/ResourceLoader.ts | connectionError": {
+    "message": "Connection error"
+  },
+  "core/host/ResourceLoader.ts | decodingDataUrlFailed": {
+    "message": "Decoding Data URL failed"
+  },
+  "core/host/ResourceLoader.ts | dnsResolverError": {
+    "message": "DNS resolver error"
+  },
+  "core/host/ResourceLoader.ts | ftpError": {
+    "message": "FTP error"
+  },
+  "core/host/ResourceLoader.ts | httpError": {
+    "message": "HTTP error"
+  },
+  "core/host/ResourceLoader.ts | httpErrorStatusCodeSS": {
+    "message": "HTTP error: status code {PH1}, {PH2}"
+  },
+  "core/host/ResourceLoader.ts | invalidUrl": {
+    "message": "Invalid URL"
+  },
+  "core/host/ResourceLoader.ts | signedExchangeError": {
+    "message": "Signed Exchange error"
+  },
+  "core/host/ResourceLoader.ts | systemError": {
+    "message": "System error"
+  },
+  "core/host/ResourceLoader.ts | unknownError": {
+    "message": "Unknown error"
+  },
   "core/sdk/CompilerSourceMappingContentProvider.js | couldNotLoadContentForSS": {
     "message": "Could not load content for {PH1} ({PH2})"
   },
@@ -1114,48 +1156,6 @@
   },
   "data_grid/ViewportDataGrid.ts | collapsed": {
     "message": "collapsed"
-  },
-  "host/InspectorFrontendHost.ts | devtoolsS": {
-    "message": "DevTools - {PH1}"
-  },
-  "host/ResourceLoader.ts | cacheError": {
-    "message": "Cache error"
-  },
-  "host/ResourceLoader.ts | certificateError": {
-    "message": "Certificate error"
-  },
-  "host/ResourceLoader.ts | certificateManagerError": {
-    "message": "Certificate manager error"
-  },
-  "host/ResourceLoader.ts | connectionError": {
-    "message": "Connection error"
-  },
-  "host/ResourceLoader.ts | decodingDataUrlFailed": {
-    "message": "Decoding Data URL failed"
-  },
-  "host/ResourceLoader.ts | dnsResolverError": {
-    "message": "DNS resolver error"
-  },
-  "host/ResourceLoader.ts | ftpError": {
-    "message": "FTP error"
-  },
-  "host/ResourceLoader.ts | httpError": {
-    "message": "HTTP error"
-  },
-  "host/ResourceLoader.ts | httpErrorStatusCodeSS": {
-    "message": "HTTP error: status code {PH1}, {PH2}"
-  },
-  "host/ResourceLoader.ts | invalidUrl": {
-    "message": "Invalid URL"
-  },
-  "host/ResourceLoader.ts | signedExchangeError": {
-    "message": "Signed Exchange error"
-  },
-  "host/ResourceLoader.ts | systemError": {
-    "message": "System error"
-  },
-  "host/ResourceLoader.ts | unknownError": {
-    "message": "Unknown error"
   },
   "inline_editor/ColorSwatch.ts | shiftclickToChangeColorFormat": {
     "message": "Shift-click to change color format"

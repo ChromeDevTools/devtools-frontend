@@ -17,8 +17,8 @@ devtools_module("mobile_throttling") {
 
   deps = [
     "../../common:bundle",
+    "../../core/host:bundle",
     "../../core/sdk:bundle",
-    "../../host:bundle",
     "../../i18n:bundle",
     "../../ui:bundle",
   ]

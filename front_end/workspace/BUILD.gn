@@ -14,8 +14,8 @@ devtools_module("workspace") {
 
   deps = [
     "../common:bundle",
+    "../core/host:bundle",
     "../core/platform:bundle",
-    "../host:bundle",
     "../i18n:bundle",
     "../text_utils:bundle",
   ]

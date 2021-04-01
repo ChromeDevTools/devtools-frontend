@@ -21,11 +21,11 @@ devtools_module("source_frame") {
 
   deps = [
     "../common:bundle",
+    "../core/host:bundle",
     "../core/platform:bundle",
     "../core/sdk:bundle",
     "../diff:bundle",
     "../formatter:bundle",
-    "../host:bundle",
     "../i18n:bundle",
     "../object_ui:bundle",
     "../text_editor:bundle",

@@ -21,9 +21,9 @@ devtools_module("lighthouse") {
   deps = [
     "../../common:bundle",
     "../../components:bundle",
+    "../../core/host:bundle",
     "../../core/platform:bundle",
     "../../core/sdk:bundle",
-    "../../host:bundle",
     "../../i18n:bundle",
     "../../panels/emulation:bundle",
     "../../protocol_client:bundle",

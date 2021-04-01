@@ -31,11 +31,11 @@
 
 import * as Bindings from '../bindings/bindings.js';
 import * as Common from '../common/common.js';
+import * as Host from '../core/host/host.js';
 import * as Platform from '../core/platform/platform.js';
 import * as Root from '../core/root/root.js';
 import * as SDK from '../core/sdk/sdk.js';
 import * as Extensions from '../extensions/extensions.js';
-import * as Host from '../host/host.js';
 import * as i18n from '../i18n/i18n.js';
 import * as Coverage from '../panels/coverage/coverage.js';  // eslint-disable-line no-unused-vars
 import * as MobileThrottling from '../panels/mobile_throttling/mobile_throttling.js';

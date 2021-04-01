@@ -15,9 +15,9 @@ devtools_module("color_picker") {
 
   deps = [
     "../common:bundle",
+    "../core/host:bundle",
     "../core/platform:bundle",
     "../core/sdk:bundle",
-    "../host:bundle",
     "../i18n:bundle",
     "../ui:bundle",
     "../ui/components:bundle",

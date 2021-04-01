@@ -5,8 +5,8 @@
 /* eslint-disable rulesdir/no_underscored_properties */
 
 import * as Common from '../common/common.js';
+import * as Host from '../core/host/host.js';
 import * as Diff from '../diff/diff.js';
-import * as Host from '../host/host.js';
 import * as Persistence from '../persistence/persistence.js';
 import * as Workspace from '../workspace/workspace.js';
 

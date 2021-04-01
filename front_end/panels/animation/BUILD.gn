@@ -16,9 +16,9 @@ devtools_module("animation") {
 
   deps = [
     "../../common:bundle",
+    "../../core/host:bundle",
     "../../core/platform:bundle",
     "../../core/sdk:bundle",
-    "../../host:bundle",
     "../../i18n:bundle",
     "../../inline_editor:bundle",
     "../../ui:bundle",

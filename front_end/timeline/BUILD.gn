@@ -36,9 +36,9 @@ devtools_module("timeline") {
 
   deps = [
     "../components:bundle",
+    "../core/host:bundle",
     "../data_grid:bundle",
     "../extensions:bundle",
-    "../host:bundle",
     "../i18n:bundle",
     "../panels/coverage:bundle",
     "../panels/layer_viewer:bundle",

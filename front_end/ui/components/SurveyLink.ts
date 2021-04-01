@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../../common/common.js';
-import type * as Host from '../../host/host.js';
+import type * as Host from '../../core/host/host.js';
 import * as LitHtml from '../../third_party/lit-html/lit-html.js';
 
 import type {IconData} from './Icon.js';

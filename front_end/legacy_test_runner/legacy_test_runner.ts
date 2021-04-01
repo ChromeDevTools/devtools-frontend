@@ -15,7 +15,7 @@ import '../panels/event_listeners/event_listeners-legacy.js';
 import '../extensions/extensions-legacy.js';
 import '../formatter/formatter-legacy.js';
 import '../har_importer/har_importer-legacy.js';
-import '../host/host-legacy.js';
+import '../core/host/host-legacy.js';
 import '../inline_editor/inline_editor-legacy.js';
 import '../core/root/root-legacy.js';
 import '../core/sdk/sdk-legacy.js';

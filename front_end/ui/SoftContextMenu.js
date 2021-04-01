@@ -28,7 +28,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import * as Host from '../host/host.js';
+import * as Host from '../core/host/host.js';
 import * as i18n from '../i18n/i18n.js';
 import * as ThemeSupport from '../theme_support/theme_support.js';
 

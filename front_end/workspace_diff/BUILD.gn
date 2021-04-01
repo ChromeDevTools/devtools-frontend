@@ -10,8 +10,8 @@ devtools_module("workspace_diff") {
 
   deps = [
     "../common:bundle",
+    "../core/host:bundle",
     "../diff:bundle",
-    "../host:bundle",
     "../persistence:bundle",
     "../workspace:bundle",
   ]

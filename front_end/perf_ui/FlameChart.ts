@@ -31,10 +31,10 @@
 /* eslint-disable rulesdir/no_underscored_properties */
 
 import * as Common from '../common/common.js';
+import * as Host from '../core/host/host.js';
 import * as Platform from '../core/platform/platform.js';
 import * as Root from '../core/root/root.js';
 import * as SDK from '../core/sdk/sdk.js';  // eslint-disable-line no-unused-vars
-import * as Host from '../host/host.js';
 import * as i18n from '../i18n/i18n.js';
 import * as ThemeSupport from '../theme_support/theme_support.js';
 import * as TimelineModel from '../timeline_model/timeline_model.js';  // eslint-disable-line no-unused-vars

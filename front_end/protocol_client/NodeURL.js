@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
-import * as Host from '../host/host.js';
+import * as Host from '../core/host/host.js';
 
 export class NodeURL {
   /**

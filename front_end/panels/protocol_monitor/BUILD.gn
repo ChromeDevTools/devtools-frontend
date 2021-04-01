@@ -9,8 +9,8 @@ devtools_module("protocol_monitor") {
   sources = [ "ProtocolMonitor.ts" ]
 
   deps = [
+    "../../core/host:bundle",
     "../../core/sdk:bundle",
-    "../../host:bundle",
     "../../i18n:bundle",
     "../../protocol_client:bundle",
     "../../source_frame:bundle",

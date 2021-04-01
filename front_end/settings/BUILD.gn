@@ -15,7 +15,7 @@ devtools_module("settings") {
   deps = [
     "../common:bundle",
     "../components:bundle",
-    "../host:bundle",
+    "../core/host:bundle",
     "../i18n:bundle",
     "../ui:bundle",
   ]

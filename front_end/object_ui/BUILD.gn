@@ -18,10 +18,10 @@ devtools_module("object_ui") {
   deps = [
     "../common:bundle",
     "../components:bundle",
+    "../core/host:bundle",
     "../core/platform:bundle",
     "../core/sdk:bundle",
     "../formatter:bundle",
-    "../host:bundle",
     "../i18n:bundle",
     "../javascript_metadata:bundle",
     "../linear_memory_inspector:bundle",

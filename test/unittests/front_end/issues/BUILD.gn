@@ -13,8 +13,8 @@ ts_library("issues") {
   ]
 
   deps = [
+    "../../../../front_end/core/host:bundle",
     "../../../../front_end/core/sdk:bundle",
-    "../../../../front_end/host:bundle",
     "../../../../front_end/issues:bundle",
     "../../../../front_end/third_party/marked:bundle",
     "../../../../front_end/ui/components:bundle",

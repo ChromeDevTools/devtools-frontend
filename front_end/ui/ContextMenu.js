@@ -29,8 +29,8 @@
  */
 
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
+import * as Host from '../core/host/host.js';
 import * as Root from '../core/root/root.js';
-import * as Host from '../host/host.js';
 
 import {ActionRegistry} from './ActionRegistry.js';
 import {ShortcutRegistry} from './ShortcutRegistry.js';

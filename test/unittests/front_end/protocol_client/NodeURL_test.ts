@@ -5,7 +5,7 @@
 const {assert} = chai;
 
 import * as ProtocolClient from '../../../../front_end/protocol_client/protocol_client.js';
-import * as Host from '../../../../front_end/host/host.js';
+import * as Host from '../../../../front_end/core/host/host.js';
 
 describe('NodeURL', () => {
   describe('platform detection for paths', () => {

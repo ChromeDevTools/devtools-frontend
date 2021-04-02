@@ -6,7 +6,7 @@
 
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 
-import {cssMetadata, VariableRegex} from './CSSMetadata.js';
+import {cssMetadata, CustomVariableRegex, VariableRegex} from './CSSMetadata.js';
 import {CSSModel} from './CSSModel.js';        // eslint-disable-line no-unused-vars
 import {CSSProperty} from './CSSProperty.js';  // eslint-disable-line no-unused-vars
 import {CSSKeyframesRule, CSSStyleRule} from './CSSRule.js';
@@ -452,7 +452,8 @@ class NodeCascade {
 
       for (const property of style.allProperties()) {
         // Do not pick non-inherited properties from inherited styles.
-        if (this._isInherited && !cssMetadata().isPropertyInherited(property.name)) {
+        const metadata = cssMetadata();
+        if (this._isInherited && !metadata.isPropertyInherited(property.name)) {
           continue;
         }
 
@@ -461,7 +462,25 @@ class NodeCascade {
           continue;
         }
 
-        const canonicalName = cssMetadata().canonicalPropertyName(property.name);
+        const canonicalName = metadata.canonicalPropertyName(property.name);
+        const isPropShorthand = Boolean(metadata.longhands(canonicalName));
+
+        if (isPropShorthand) {
+          const longhandsFromShort =
+              (property.value.match(CustomVariableRegex) || []).map(e => e.replace(CustomVariableRegex, '$2'));
+          longhandsFromShort.forEach(longhandProperty => {
+            if (metadata.isCSSPropertyName(longhandProperty)) {
+              const activeProperty = this._activeProperties.get(longhandProperty);
+              if (!activeProperty) {
+                this._activeProperties.set(longhandProperty, property);
+              } else {
+                this._propertiesState.set(activeProperty, PropertyState.Overloaded);
+                this._activeProperties.set(longhandProperty, property);
+              }
+            }
+          });
+        }
+
         const activeProperty = this._activeProperties.get(canonicalName);
         if (activeProperty && (activeProperty.important || !property.important)) {
           this._propertiesState.set(property, PropertyState.Overloaded);

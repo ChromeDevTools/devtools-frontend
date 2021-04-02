@@ -58,6 +58,12 @@
   /* See: crbug.com/1152736 for color variable migration. */
 }
 
+.toolbar-shadow.vertical .toolbar-item {
+  height: auto;
+  min-height: 26px;
+  white-space: normal;
+}
+
 .toolbar-dropdown-arrow {
   background-color: #6d6d6d; /* stylelint-disable-line plugin/use_theme_colors */
   /* See: crbug.com/1152736 for color variable migration. */

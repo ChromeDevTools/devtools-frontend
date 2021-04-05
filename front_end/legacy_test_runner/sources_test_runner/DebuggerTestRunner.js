@@ -578,7 +578,9 @@ SourcesTestRunner.expandScopeVariablesSidebarPane = function(callback) {
     sections[i].expand();
   }
 
-  TestRunner.deprecatedRunAfterPendingDispatches(callback);
+  setTimeout(() => {
+    TestRunner.deprecatedRunAfterPendingDispatches(callback);
+  }, 1000);
 };
 
 SourcesTestRunner.expandProperties = function(properties, callback) {

@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Common from '../common/common.js';
 import * as i18n from '../core/i18n/i18n.js';
 import * as SDK from '../core/sdk/sdk.js';  // eslint-disable-line no-unused-vars
@@ -37,13 +39,13 @@ const UIStrings = {
   */
   all: 'All',
 };
-const str_ = i18n.i18n.registerUIStrings('timeline/EventsTimelineTreeView.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('timeline/EventsTimelineTreeView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class EventsTimelineTreeView extends TimelineTreeView {
-  /**
-   * @param {!TimelineModeViewDelegate} delegate
-   */
-  constructor(delegate) {
+  _filtersControl: Filters;
+  _delegate: TimelineModeViewDelegate;
+  _currentTree!: TimelineModel.TimelineProfileTree.Node;
+  constructor(delegate: TimelineModeViewDelegate) {
     super();
     this._filtersControl = new Filters();
     this._filtersControl.addEventListener(Filters.Events.FilterChanged, this._onFilterChanged, this);
@@ -51,50 +53,30 @@ export class EventsTimelineTreeView extends TimelineTreeView {
     this._delegate = delegate;
     this.dataGrid.markColumnAsSortedBy('startTime', DataGrid.DataGrid.Order.Ascending);
     this.splitWidget.showBoth();
-
-    /** @type {!TimelineModel.TimelineProfileTree.Node} */
-    this._currentTree;
   }
 
-  /**
-   * @override
-   * @protected
-   * @return {!Array<!TimelineModel.TimelineModelFilter.TimelineModelFilter>}
-   */
-  filters() {
+  filters(): TimelineModel.TimelineModelFilter.TimelineModelFilter[] {
     return [...super.filters(), ...this._filtersControl.filters()];
   }
 
-  /**
-   * @override
-   * @param {!TimelineSelection} selection
-   */
-  updateContents(selection) {
+  updateContents(selection: TimelineSelection): void {
     super.updateContents(selection);
     if (selection.type() === TimelineSelection.Type.TraceEvent) {
-      const event = /** @type {!SDK.TracingModel.Event} */ (selection.object());
+      const event = (selection.object() as SDK.TracingModel.Event);
       this._selectEvent(event, true);
     }
   }
 
-  /**
-   * @override
-   * @return {string}
-   */
-  getToolbarInputAccessiblePlaceHolder() {
+  getToolbarInputAccessiblePlaceHolder(): string {
     return i18nString(UIStrings.filterEventLog);
   }
 
-  /**
-   * @override
-   * @return {!TimelineModel.TimelineProfileTree.Node}
-   */
-  _buildTree() {
+  _buildTree(): TimelineModel.TimelineProfileTree.Node {
     this._currentTree = this.buildTopDownTree(true, null);
     return this._currentTree;
   }
 
-  _onFilterChanged() {
+  _onFilterChanged(): void {
     const lastSelectedNode = this.lastSelectedNode();
     const selectedEvent = lastSelectedNode && lastSelectedNode.event;
     this.refreshTree();
@@ -103,11 +85,7 @@ export class EventsTimelineTreeView extends TimelineTreeView {
     }
   }
 
-  /**
-   * @param {!SDK.TracingModel.Event} event
-   * @return {?TimelineModel.TimelineProfileTree.Node}
-   */
-  _findNodeWithEvent(event) {
+  _findNodeWithEvent(event: SDK.TracingModel.Event): TimelineModel.TimelineProfileTree.Node|null {
     const iterators = [this._currentTree.children().values()];
 
     while (iterators.length) {
@@ -117,7 +95,7 @@ export class EventsTimelineTreeView extends TimelineTreeView {
         iterators.pop();
         continue;
       }
-      const child = /** @type {!TimelineModel.TimelineProfileTree.Node} */ (iterator.value);
+      const child = (iterator.value as TimelineModel.TimelineProfileTree.Node);
       if (child.event === event) {
         return child;
       }
@@ -126,11 +104,7 @@ export class EventsTimelineTreeView extends TimelineTreeView {
     return null;
   }
 
-  /**
-   * @param {!SDK.TracingModel.Event} event
-   * @param {boolean=} expand
-   */
-  _selectEvent(event, expand) {
+  _selectEvent(event: SDK.TracingModel.Event, expand?: boolean): void {
     const node = this._findNodeWithEvent(event);
     if (!node) {
       return;
@@ -144,39 +118,26 @@ export class EventsTimelineTreeView extends TimelineTreeView {
     }
   }
 
-  /**
-   * @override
-   * @param {!Array<!DataGrid.DataGrid.ColumnDescriptor>} columns
-   */
-  populateColumns(columns) {
-    columns.push(/** @type {!DataGrid.DataGrid.ColumnDescriptor} */ ({
+  populateColumns(columns: DataGrid.DataGrid.ColumnDescriptor[]): void {
+    columns.push(({
       id: 'startTime',
       title: i18nString(UIStrings.startTime),
       width: '80px',
       fixedWidth: true,
       sortable: true,
-    }));
+    } as DataGrid.DataGrid.ColumnDescriptor));
     super.populateColumns(columns);
     columns.filter(c => c.fixedWidth).forEach(c => {
       c.width = '80px';
     });
   }
 
-  /**
-   * @override
-   * @param {!UI.Toolbar.Toolbar} toolbar
-   */
-  populateToolbar(toolbar) {
+  populateToolbar(toolbar: UI.Toolbar.Toolbar): void {
     super.populateToolbar(toolbar);
     this._filtersControl.populateToolbar(toolbar);
   }
 
-  /**
-   * @override
-   * @param {!TimelineModel.TimelineProfileTree.Node} node
-   * @return {boolean}
-   */
-  _showDetailsForNode(node) {
+  _showDetailsForNode(node: TimelineModel.TimelineProfileTree.Node): boolean {
     const traceEvent = node.event;
     if (!traceEvent) {
       return false;
@@ -190,16 +151,15 @@ export class EventsTimelineTreeView extends TimelineTreeView {
     return true;
   }
 
-  /**
-   * @override
-   * @param {?TimelineModel.TimelineProfileTree.Node} node
-   */
-  _onHover(node) {
+  _onHover(node: TimelineModel.TimelineProfileTree.Node|null): void {
     this._delegate.highlightEvent(node && node.event);
   }
 }
 
 export class Filters extends Common.ObjectWrapper.ObjectWrapper {
+  _categoryFilter: Category;
+  _durationFilter: IsLong;
+  _filters: (IsLong|Category)[];
   constructor() {
     super();
     this._categoryFilter = new Category();
@@ -207,17 +167,11 @@ export class Filters extends Common.ObjectWrapper.ObjectWrapper {
     this._filters = [this._categoryFilter, this._durationFilter];
   }
 
-  /**
-   * @return {!Array<!TimelineModel.TimelineModelFilter.TimelineModelFilter>}
-   */
-  filters() {
+  filters(): TimelineModel.TimelineModelFilter.TimelineModelFilter[] {
     return this._filters;
   }
 
-  /**
-   * @param {!UI.Toolbar.Toolbar} toolbar
-   */
-  populateToolbar(toolbar) {
+  populateToolbar(toolbar: UI.Toolbar.Toolbar): void {
     const durationFilterUI =
         new UI.Toolbar.ToolbarComboBox(durationFilterChanged.bind(this), i18nString(UIStrings.durationFilter));
     for (const durationMs of Filters._durationFilterPresetsMs) {
@@ -227,8 +181,7 @@ export class Filters extends Common.ObjectWrapper.ObjectWrapper {
     }
     toolbar.appendToolbarItem(durationFilterUI);
 
-    /** @type {!Map<string, !UI.Toolbar.ToolbarCheckbox>} */
-    const categoryFiltersUI = new Map();
+    const categoryFiltersUI = new Map<string, UI.Toolbar.ToolbarCheckbox>();
     const categories = TimelineUIUtils.categories();
     for (const categoryName in categories) {
       const category = categories[categoryName];
@@ -243,21 +196,14 @@ export class Filters extends Common.ObjectWrapper.ObjectWrapper {
       toolbar.appendToolbarItem(checkbox);
     }
 
-    /**
-     * @this {Filters}
-     */
-    function durationFilterChanged() {
-      const duration = /** @type {!HTMLOptionElement} */ (durationFilterUI.selectedOption()).value;
+    function durationFilterChanged(this: Filters): void {
+      const duration = (durationFilterUI.selectedOption() as HTMLOptionElement).value;
       const minimumRecordDuration = parseInt(duration, 10);
       this._durationFilter.setMinimumRecordDuration(minimumRecordDuration);
       this._notifyFiltersChanged();
     }
 
-    /**
-     * @param {string} name
-     * @this {Filters}
-     */
-    function categoriesFilterChanged(name) {
+    function categoriesFilterChanged(this: Filters, name: string): void {
       const categories = TimelineUIUtils.categories();
       const checkBox = categoryFiltersUI.get(name);
       categories[name].hidden = !checkBox || !checkBox.checked();
@@ -265,14 +211,20 @@ export class Filters extends Common.ObjectWrapper.ObjectWrapper {
     }
   }
 
-  _notifyFiltersChanged() {
+  _notifyFiltersChanged(): void {
     this.dispatchEventToListeners(Filters.Events.FilterChanged);
   }
+
+  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  static readonly _durationFilterPresetsMs = [0, 1, 15];
 }
 
-Filters._durationFilterPresetsMs = [0, 1, 15];
 
-/** @enum {symbol} */
-Filters.Events = {
-  FilterChanged: Symbol('FilterChanged')
-};
+export namespace Filters {
+  // TODO(crbug.com/1167717): Make this a const enum again
+  // eslint-disable-next-line rulesdir/const_enum
+  export enum Events {
+    FilterChanged = 'FilterChanged',
+  }
+}

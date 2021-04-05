@@ -28,6 +28,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as i18n from '../core/i18n/i18n.js';
 import * as Root from '../core/root/root.js';
 
@@ -67,26 +69,28 @@ const UIStrings = {
   */
   idle: 'Idle',
 };
-const str_ = i18n.i18n.registerUIStrings('timeline/UIDevtoolsUtils.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('timeline/UIDevtoolsUtils.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-/** @type {?Object<string, !TimelineRecordStyle>} */
-let _eventStylesMap = null;
+// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+// eslint-disable-next-line @typescript-eslint/naming-convention
+let _eventStylesMap: {
+  [x: string]: TimelineRecordStyle,
+}|null = null;
 
-/** @type {?Object<string, !TimelineCategory>} */
-let _categories = null;
+// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+// eslint-disable-next-line @typescript-eslint/naming-convention
+let _categories: {
+  [x: string]: TimelineCategory,
+}|null = null;
 
 export class UIDevtoolsUtils {
-  /**
-   * @return {boolean}
-   */
-  static isUiDevTools() {
+  static isUiDevTools(): boolean {
     return Root.Runtime.Runtime.queryParam('uiDevTools') === 'true';
   }
 
-  /**
-   * @return {!Object.<string, !TimelineRecordStyle>}
-   */
-  static categorizeEvents() {
+  static categorizeEvents(): {
+    [x: string]: TimelineRecordStyle,
+  } {
     if (_eventStylesMap) {
       return _eventStylesMap;
     }
@@ -99,8 +103,9 @@ export class UIDevtoolsUtils {
     const painting = categories['painting'];
     const other = categories['other'];
 
-    /** @type {!Object<string, !TimelineRecordStyle>} */
-    const eventStyles = {};
+    const eventStyles: {
+      [x: string]: TimelineRecordStyle,
+    } = {};
 
     // Paint Categories
     eventStyles[type.ViewPaint] = new TimelineRecordStyle('View::Paint', painting);
@@ -133,10 +138,9 @@ export class UIDevtoolsUtils {
     return eventStyles;
   }
 
-  /**
-   * @return {!Object.<string, !TimelineCategory>}
-   */
-  static categories() {
+  static categories(): {
+    [x: string]: TimelineCategory,
+  } {
     if (_categories) {
       return _categories;
     }
@@ -150,36 +154,32 @@ export class UIDevtoolsUtils {
       painting: new TimelineCategory(
           'painting', i18nString(UIStrings.painting), true, 'hsl(109, 33%, 64%)', 'hsl(109, 33%, 55%)'),
       other: new TimelineCategory('other', i18nString(UIStrings.system), false, 'hsl(0, 0%, 87%)', 'hsl(0, 0%, 79%)'),
-      idle: new TimelineCategory('idle', i18nString(UIStrings.idle), false, 'hsl(0, 0%, 98%)', 'hsl(0, 0%, 98%)')
+      idle: new TimelineCategory('idle', i18nString(UIStrings.idle), false, 'hsl(0, 0%, 98%)', 'hsl(0, 0%, 98%)'),
     };
     return _categories;
   }
 
-  /**
-   * @return {!Array<string>}
-   */
-  static getMainCategoriesList() {
+  static getMainCategoriesList(): string[] {
     return ['idle', 'drawing', 'painting', 'rasterizing', 'layout', 'other'];
   }
 }
 
-/**
- * @enum {string}
- */
-export const RecordType = {
-  ViewPaint: 'View::Paint',
-  ViewOnPaint: 'View::OnPaint',
-  ViewPaintChildren: 'View::PaintChildren',
-  ViewOnPaintBackground: 'View::OnPaintBackground',
-  ViewOnPaintBorder: 'View::OnPaintBorder',
-  ViewLayout: 'View::Layout',
-  ViewLayoutBoundsChanged: 'View::Layout(bounds_changed)',
-  LayerPaintContentsToDisplayList: 'Layer::PaintContentsToDisplayList',
-  DirectRendererDrawFrame: 'DirectRenderer::DrawFrame',
-  RasterTask: 'RasterTask',
-  RasterizerTaskImplRunOnWorkerThread: 'RasterizerTaskImpl::RunOnWorkerThread',
-  BeginFrame: 'BeginFrame',
-  DrawFrame: 'DrawFrame',
-  NeedsBeginFrameChanged: 'NeedsBeginFrameChanged',
-  ThreadControllerImplRunTask: 'ThreadControllerImpl::RunTask',
-};
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum RecordType {
+  ViewPaint = 'View::Paint',
+  ViewOnPaint = 'View::OnPaint',
+  ViewPaintChildren = 'View::PaintChildren',
+  ViewOnPaintBackground = 'View::OnPaintBackground',
+  ViewOnPaintBorder = 'View::OnPaintBorder',
+  ViewLayout = 'View::Layout',
+  ViewLayoutBoundsChanged = 'View::Layout(bounds_changed)',
+  LayerPaintContentsToDisplayList = 'Layer::PaintContentsToDisplayList',
+  DirectRendererDrawFrame = 'DirectRenderer::DrawFrame',
+  RasterTask = 'RasterTask',
+  RasterizerTaskImplRunOnWorkerThread = 'RasterizerTaskImpl::RunOnWorkerThread',
+  BeginFrame = 'BeginFrame',
+  DrawFrame = 'DrawFrame',
+  NeedsBeginFrameChanged = 'NeedsBeginFrameChanged',
+  ThreadControllerImplRunTask = 'ThreadControllerImpl::RunTask',
+}

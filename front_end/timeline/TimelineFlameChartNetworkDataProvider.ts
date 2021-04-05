@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Common from '../common/common.js';
 import * as Host from '../core/host/host.js';
 import * as i18n from '../core/i18n/i18n.js';
@@ -22,12 +24,36 @@ const UIStrings = {
   */
   network: 'Network',
 };
-const str_ = i18n.i18n.registerUIStrings('timeline/TimelineFlameChartNetworkDataProvider.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('timeline/TimelineFlameChartNetworkDataProvider.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-/**
- * @implements {PerfUI.FlameChart.FlameChartDataProvider}
- */
-export class TimelineFlameChartNetworkDataProvider {
+export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.FlameChartDataProvider {
+  _font: string;
+  _style: {
+    padding: number,
+    height: number,
+    collapsible: boolean,
+    color: string,
+    font: string,
+    backgroundColor: string,
+    nestingLevel: number,
+    useFirstLineForOverview: boolean,
+    useDecoratorsForOverview: boolean,
+    shareHeaderLine: boolean,
+  };
+  _group: PerfUI.FlameChart.Group;
+  _minimumBoundary: number;
+  _maximumBoundary: number;
+  _timeSpan: number;
+  _requests: TimelineModel.TimelineModel.NetworkRequest[];
+  _maxLevel: number;
+  _model?: TimelineModel.TimelineModel.TimelineModelImpl|null;
+  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  _timelineData?: any;
+  _startTime?: number;
+  _endTime?: number;
+  _lastSelection?: Selection;
+  _priorityToValue?: Map<string, number>;
   constructor() {
     this._font = '11px ' + Host.Platform.fontFamily();
     this.setModel(null);
@@ -43,47 +69,33 @@ export class TimelineFlameChartNetworkDataProvider {
       nestingLevel: 0,
       useFirstLineForOverview: false,
       useDecoratorsForOverview: true,
-      shareHeaderLine: false
+      shareHeaderLine: false,
     };
-    /** @type {!PerfUI.FlameChart.Group} */
-    this._group = ({startLevel: 0, name: i18nString(UIStrings.network), expanded: false, style: this._style});
+    this._group =
+        ({startLevel: 0, name: i18nString(UIStrings.network), expanded: false, style: this._style} as
+         PerfUI.FlameChart.Group);
     this._minimumBoundary = 0;
     this._maximumBoundary = 0;
     this._timeSpan = 0;
-    /** @type {!Array<!TimelineModel.TimelineModel.NetworkRequest>} */
     this._requests = [];
     this._maxLevel = 0;
   }
 
-  /**
-   * @param {?PerformanceModel} performanceModel
-   */
-  setModel(performanceModel) {
+  setModel(performanceModel: PerformanceModel|null): void {
     this._model = performanceModel && performanceModel.timelineModel();
     this._timelineData = null;
   }
 
-  /**
-   * @return {boolean}
-   */
-  isEmpty() {
+  isEmpty(): boolean {
     this.timelineData();
     return !this._requests.length;
   }
 
-  /**
-   * @override
-   * @return {number}
-   */
-  maxStackDepth() {
+  maxStackDepth(): number {
     return this._maxLevel;
   }
 
-  /**
-   * @override
-   * @return {!PerfUI.FlameChart.TimelineData}
-   */
-  timelineData() {
+  timelineData(): PerfUI.FlameChart.TimelineData {
     if (this._timelineData) {
       return this._timelineData;
     }
@@ -96,37 +108,21 @@ export class TimelineFlameChartNetworkDataProvider {
     return this._timelineData;
   }
 
-  /**
-   * @override
-   * @return {number}
-   */
-  minimumBoundary() {
+  minimumBoundary(): number {
     return this._minimumBoundary;
   }
 
-  /**
-   * @override
-   * @return {number}
-   */
-  totalTime() {
+  totalTime(): number {
     return this._timeSpan;
   }
 
-  /**
-   * @param {number} startTime
-   * @param {number} endTime
-   */
-  setWindowTimes(startTime, endTime) {
+  setWindowTimes(startTime: number, endTime: number): void {
     this._startTime = startTime;
     this._endTime = endTime;
     this._updateTimelineData();
   }
 
-  /**
-   * @param {number} index
-   * @return {?TimelineSelection}
-   */
-  createSelection(index) {
+  createSelection(index: number): TimelineSelection|null {
     if (index === -1) {
       return null;
     }
@@ -135,11 +131,7 @@ export class TimelineFlameChartNetworkDataProvider {
     return this._lastSelection.timelineSelection;
   }
 
-  /**
-   * @param {?TimelineSelection} selection
-   * @return {number}
-   */
-  entryIndexForSelection(selection) {
+  entryIndexForSelection(selection: TimelineSelection|null): number {
     if (!selection) {
       return -1;
     }
@@ -151,7 +143,7 @@ export class TimelineFlameChartNetworkDataProvider {
     if (selection.type() !== TimelineSelection.Type.NetworkRequest) {
       return -1;
     }
-    const request = /** @type{!TimelineModel.TimelineModel.NetworkRequest} */ (selection.object());
+    const request = (selection.object() as TimelineModel.TimelineModel.NetworkRequest);
     const index = this._requests.indexOf(request);
     if (index !== -1) {
       this._lastSelection = new Selection(TimelineSelection.fromNetworkRequest(request), index);
@@ -159,72 +151,39 @@ export class TimelineFlameChartNetworkDataProvider {
     return index;
   }
 
-  /**
-   * @override
-   * @param {number} index
-   * @return {string}
-   */
-  entryColor(index) {
-    const request = /** @type {!TimelineModel.TimelineModel.NetworkRequest} */ (this._requests[index]);
+  entryColor(index: number): string {
+    const request = (this._requests[index] as TimelineModel.TimelineModel.NetworkRequest);
     const category = TimelineUIUtils.networkRequestCategory(request);
     return TimelineUIUtils.networkCategoryColor(category);
   }
 
-  /**
-   * @override
-   * @param {number} index
-   * @return {string}
-   */
-  textColor(index) {
+  textColor(_index: number): string {
     return FlameChartStyle.textColor;
   }
 
-  /**
-   * @override
-   * @param {number} index
-   * @return {?string}
-   */
-  entryTitle(index) {
-    const request = /** @type {!TimelineModel.TimelineModel.NetworkRequest} */ (this._requests[index]);
+  entryTitle(index: number): string|null {
+    const request = (this._requests[index] as TimelineModel.TimelineModel.NetworkRequest);
     const parsedURL = new Common.ParsedURL.ParsedURL(request.url || '');
     return parsedURL.isValid ? `${parsedURL.displayName} (${parsedURL.host})` : request.url || null;
   }
 
-  /**
-   * @override
-   * @param {number} index
-   * @return {?string}
-   */
-  entryFont(index) {
+  entryFont(_index: number): string|null {
     return this._font;
   }
 
-  /**
-   * @override
-   * @param {number} index
-   * @param {!CanvasRenderingContext2D} context
-   * @param {?string} text
-   * @param {number} barX
-   * @param {number} barY
-   * @param {number} barWidth
-   * @param {number} barHeight
-   * @param {number} unclippedBarX
-   * @param {number} timeToPixelRatio
-   * @return {boolean}
-   */
-  decorateEntry(index, context, text, barX, barY, barWidth, barHeight, unclippedBarX, timeToPixelRatio) {
-    const request = /** @type {!TimelineModel.TimelineModel.NetworkRequest} */ (this._requests[index]);
+  decorateEntry(
+      index: number, context: CanvasRenderingContext2D, text: string|null, barX: number, barY: number, barWidth: number,
+      barHeight: number, unclippedBarX: number, timeToPixelRatio: number): boolean {
+    const request = (this._requests[index] as TimelineModel.TimelineModel.NetworkRequest);
     if (!request.timing) {
       return false;
     }
-    const timing = /** @type {*} */ (request.timing);
+    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const timing = (request.timing as any);
 
     const beginTime = request.beginTime();
-    /**
-     * @param {number} time
-     * @return {number}
-     */
-    const timeToPixel = time => Math.floor(unclippedBarX + (time - beginTime) * timeToPixelRatio);
+    const timeToPixel = (time: number): number => Math.floor(unclippedBarX + (time - beginTime) * timeToPixelRatio);
     const minBarWidthPx = 2;
     const startTime = request.getStartTime();
     const endTime = request.endTime;
@@ -274,12 +233,7 @@ export class TimelineFlameChartNetworkDataProvider {
       context.restore();
     }
 
-    /**
-     * @param {number} begin
-     * @param {number} end
-     * @param {number} y
-     */
-    function drawTick(begin, end, y) {
+    function drawTick(begin: number, end: number, y: number): void {
       const /** @const */ tickHeightPx = 6;
       context.moveTo(begin, y - tickHeightPx / 2);
       context.lineTo(begin, y + tickHeightPx / 2);
@@ -326,23 +280,13 @@ export class TimelineFlameChartNetworkDataProvider {
     return true;
   }
 
-  /**
-   * @override
-   * @param {number} index
-   * @return {boolean}
-   */
-  forceDecoration(index) {
+  forceDecoration(_index: number): boolean {
     return true;
   }
 
-  /**
-   * @override
-   * @param {number} index
-   * @return {?Element}
-   */
-  prepareHighlightedEntryInfo(index) {
+  prepareHighlightedEntryInfo(index: number): Element|null {
     const /** @const */ maxURLChars = 80;
-    const request = /** @type {!TimelineModel.TimelineModel.NetworkRequest} */ (this._requests[index]);
+    const request = (this._requests[index] as TimelineModel.TimelineModel.NetworkRequest);
     if (!request.url) {
       return null;
     }
@@ -357,33 +301,31 @@ export class TimelineFlameChartNetworkDataProvider {
       contents.createChild('span', 'timeline-info-network-time').textContent = Number.millisToString(duration, true);
     }
     if (typeof request.priority === 'string') {
-      const div = /** @type {!HTMLElement} */ (contents.createChild('span'));
-      div.textContent = PerfUI.NetworkPriorities.uiLabelForNetworkPriority(
-          /** @type {!Protocol.Network.ResourcePriority} */ (request.priority));
+      const div = (contents.createChild('span') as HTMLElement);
+      div.textContent =
+          PerfUI.NetworkPriorities.uiLabelForNetworkPriority((request.priority as Protocol.Network.ResourcePriority));
       div.style.color = this._colorForPriority(request.priority) || 'black';
     }
     contents.createChild('span').textContent = Platform.StringUtilities.trimMiddle(request.url, maxURLChars);
     return element;
   }
 
-  /**
-   * @param {string} priority
-   * @return {?string}
-   */
-  _colorForPriority(priority) {
+  _colorForPriority(priority: string): string|null {
     if (!this._priorityToValue) {
       const priorities = Protocol.Network.ResourcePriority;
-      /** @type {!Map<string, number>} */
       this._priorityToValue = new Map([
-        [priorities.VeryLow, 1], [priorities.Low, 2], [priorities.Medium, 3], [priorities.High, 4],
-        [priorities.VeryHigh, 5]
+        [priorities.VeryLow, 1],
+        [priorities.Low, 2],
+        [priorities.Medium, 3],
+        [priorities.High, 4],
+        [priorities.VeryHigh, 5],
       ]);
     }
     const value = this._priorityToValue.get(priority);
     return value ? `hsla(214, 80%, 50%, ${value / 5})` : null;
   }
 
-  _appendTimelineData() {
+  _appendTimelineData(): void {
     if (this._model) {
       this._minimumBoundary = this._model.minimumRecordTime();
       this._maximumBoundary = this._model.maximumRecordTime();
@@ -393,7 +335,7 @@ export class TimelineFlameChartNetworkDataProvider {
     }
   }
 
-  _updateTimelineData() {
+  _updateTimelineData(): void {
     if (!this._timelineData) {
       return;
     }
@@ -402,8 +344,8 @@ export class TimelineFlameChartNetworkDataProvider {
     for (let i = 0; i < this._requests.length; ++i) {
       const r = this._requests[i];
       const beginTime = r.beginTime();
-      const startTime = /** @type {number} */ (this._startTime);
-      const endTime = /** @type {number} */ (this._endTime);
+      const startTime = (this._startTime as number);
+      const endTime = (this._endTime as number);
       const visible = beginTime < endTime && r.endTime > startTime;
       if (!visible) {
         this._timelineData.entryLevels[i] = -1;
@@ -427,54 +369,34 @@ export class TimelineFlameChartNetworkDataProvider {
     this._maxLevel = maxLevel;
   }
 
-
-  /**
-   * @param {!TimelineModel.TimelineModel.NetworkRequest} request
-   */
-  _appendEntry(request) {
+  _appendEntry(request: TimelineModel.TimelineModel.NetworkRequest): void {
     this._requests.push(request);
     this._timelineData.entryStartTimes.push(request.beginTime());
     this._timelineData.entryTotalTimes.push(request.endTime - request.beginTime());
     this._timelineData.entryLevels.push(this._requests.length - 1);
   }
 
-  /**
-   * @return {number}
-   */
-  preferredHeight() {
+  preferredHeight(): number {
     return this._style.height * (this._group.expanded ? Platform.NumberUtilities.clamp(this._maxLevel + 1, 4, 8.5) : 1);
   }
 
-  /**
-   * @return {boolean}
-   */
-  isExpanded() {
+  isExpanded(): boolean {
     return this._group && Boolean(this._group.expanded);
   }
 
-  /**
-   * @override
-   * @param {number} value
-   * @param {number=} precision
-   * @return {string}
-   */
-  formatValue(value, precision) {
+  formatValue(value: number, precision?: number): string {
     return Number.preciseMillisToString(value, precision);
   }
 
-  /**
-   * @override
-   * @param {number} entryIndex
-   * @return {boolean}
-   */
-  canJumpToEntry(entryIndex) {
+  canJumpToEntry(_entryIndex: number): boolean {
     return false;
   }
 
-  /**
-   * @override
-   */
-  navStartTimes() {
+  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  navStartTimes(): Map<any, any> {
     if (!this._model) {
       return new Map();
     }

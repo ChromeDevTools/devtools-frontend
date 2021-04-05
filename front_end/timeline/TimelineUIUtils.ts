@@ -1,3 +1,7 @@
+// Copyright 2021 The Chromium Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+
 /*
  * Copyright (C) 2013 Google Inc. All rights reserved.
  * Copyright (C) 2012 Intel Inc. All rights reserved.
@@ -28,6 +32,8 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+/* eslint-disable rulesdir/no_underscored_properties */
 
 import * as Bindings from '../bindings/bindings.js';
 import * as Common from '../common/common.js';
@@ -1161,37 +1167,35 @@ const UIStrings = {
   */
   sDetails: '{PH1} - Details',
 };
-const str_ = i18n.i18n.registerUIStrings('timeline/TimelineUIUtils.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('timeline/TimelineUIUtils.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-/** @type {!Object.<!TimelineModel.TimelineModel.RecordType, !TimelineRecordStyle>} */
-let eventStylesMap;
 
-/** @type {!Map<!TimelineModel.TimelineIRModel.InputEvents, string>} */
-let inputEventToDisplayName;
+let eventStylesMap: EventStylesMap;
 
-/** @type {!Map<!TimelineModel.TimelineIRModel.Phases, !{color: string, label: string}>} */
-let interactionPhaseStylesMap;
+let inputEventToDisplayName: Map<TimelineModel.TimelineIRModel.InputEvents, string>;
 
-/** @type {!Object.<string, !TimelineCategory>} */
-let categories;
+let interactionPhaseStylesMap: Map<TimelineModel.TimelineIRModel.Phases, {
+  color: string,
+  label: string,
+}>;
 
-/** @type {!Array<string>} */
-let eventCategories;
+let categories: {
+  [x: string]: TimelineCategory,
+};
 
-/** @type {!Array.<!EventDispatchTypeDescriptor>} */
-let eventDispatchDesciptors;
+let eventCategories: string[];
 
-/** @type {!Common.Color.Generator} */
-let colorGenerator;
+let eventDispatchDesciptors: EventDispatchTypeDescriptor[];
 
-/** @type {!WeakMap<!TimelineModel.TimelineModel.NetworkRequest, !HTMLImageElement>} */
-const requestPreviewElements = new WeakMap();
+let colorGenerator: Common.Color.Generator;
 
+const requestPreviewElements = new WeakMap<TimelineModel.TimelineModel.NetworkRequest, HTMLImageElement>();
+
+interface EventStylesMap {
+  [x: string]: TimelineRecordStyle;
+}
 export class TimelineUIUtils {
-  /**
-   * @return {!Object.<string, !TimelineRecordStyle>}
-   */
-  static _initEventStyles() {
+  static _initEventStyles(): EventStylesMap {
     if (eventStylesMap) {
       return eventStylesMap;
     }
@@ -1206,8 +1210,7 @@ export class TimelineUIUtils {
     const other = categories['other'];
     const idle = categories['idle'];
 
-    /** @type {!Object.<!TimelineModel.TimelineModel.RecordType, !TimelineRecordStyle>} */
-    const eventStyles = {};
+    const eventStyles: EventStylesMap = {};
     eventStyles[type.Task] = new TimelineRecordStyle(i18nString(UIStrings.task), other);
     eventStyles[type.Program] = new TimelineRecordStyle(i18nString(UIStrings.other), other);
     eventStyles[type.Animation] = new TimelineRecordStyle(i18nString(UIStrings.animation), rendering);
@@ -1325,16 +1328,13 @@ export class TimelineUIUtils {
     return eventStyles;
   }
 
-  /** @param {!Object.<!TimelineModel.TimelineModel.RecordType, !TimelineRecordStyle>} eventStyles */
-  static setEventStylesMap(eventStyles) {
+  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  static setEventStylesMap(eventStyles: any): void {
     eventStylesMap = eventStyles;
   }
 
-  /**
-   * @param {!TimelineModel.TimelineIRModel.InputEvents} inputEventType
-   * @return {?string}
-   */
-  static inputEventDisplayName(inputEventType) {
+  static inputEventDisplayName(inputEventType: TimelineModel.TimelineIRModel.InputEvents): string|null {
     if (!inputEventToDisplayName) {
       const inputEvent = TimelineModel.TimelineIRModel.InputEvents;
 
@@ -1364,17 +1364,13 @@ export class TimelineUIUtils {
         [inputEvent.TouchStart, i18nString(UIStrings.touchStart)],
         [inputEvent.PinchBegin, i18nString(UIStrings.pinchBegin)],
         [inputEvent.PinchEnd, i18nString(UIStrings.pinchEnd)],
-        [inputEvent.PinchUpdate, i18nString(UIStrings.pinchUpdate)]
+        [inputEvent.PinchUpdate, i18nString(UIStrings.pinchUpdate)],
       ]);
     }
     return inputEventToDisplayName.get(inputEventType) || null;
   }
 
-  /**
-   * @param {!Protocol.Runtime.CallFrame} frame
-   * @return {string}
-   */
-  static frameDisplayName(frame) {
+  static frameDisplayName(frame: Protocol.Runtime.CallFrame): string {
     if (!TimelineModel.TimelineJSProfile.TimelineJSProfileProcessor.isNativeRuntimeFrame(frame)) {
       return UI.UIUtils.beautifyFunctionName(frame.functionName);
     }
@@ -1389,12 +1385,7 @@ export class TimelineUIUtils {
     return frame.functionName;
   }
 
-  /**
-   * @param {!SDK.TracingModel.Event} traceEvent
-   * @param {!RegExp} regExp
-   * @return {boolean}
-   */
-  static testContentMatching(traceEvent, regExp) {
+  static testContentMatching(traceEvent: SDK.TracingModel.Event, regExp: RegExp): boolean {
     const title = TimelineUIUtils.eventStyle(traceEvent).title;
     const tokens = [title];
     const url = TimelineModel.TimelineModel.TimelineData.forEvent(traceEvent).url;
@@ -1404,11 +1395,9 @@ export class TimelineUIUtils {
     appendObjectProperties(traceEvent.args, 2);
     return regExp.test(tokens.join('|'));
 
-    /**
-     * @param {!*} object
-     * @param {number} depth
-     */
-    function appendObjectProperties(object, depth) {
+    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    function appendObjectProperties(object: any, depth: number): void {
       if (!depth) {
         return;
       }
@@ -1426,11 +1415,7 @@ export class TimelineUIUtils {
     }
   }
 
-  /**
-   * @param {!SDK.TracingModel.Event} event
-   * @return {?string}
-   */
-  static eventURL(event) {
+  static eventURL(event: SDK.TracingModel.Event): string|null {
     const data = event.args['data'] || event.args['beginData'];
     const url = data && data.url;
     if (url) {
@@ -1442,11 +1427,7 @@ export class TimelineUIUtils {
     return frame && frame.url || null;
   }
 
-  /**
-   * @param {!SDK.TracingModel.Event} event
-   * @return {!TimelineRecordStyle}
-   */
-  static eventStyle(event) {
+  static eventStyle(event: SDK.TracingModel.Event): TimelineRecordStyle {
     const eventStyles = TimelineUIUtils._initEventStyles();
     if (event.hasCategory(TimelineModel.TimelineModel.TimelineModelImpl.Category.Console) ||
         event.hasCategory(TimelineModel.TimelineModel.TimelineModelImpl.Category.UserTiming)) {
@@ -1457,11 +1438,11 @@ export class TimelineUIUtils {
       /** @const */
       const prefix = 'InputLatency::';
       const inputEventType = event.name.startsWith(prefix) ? event.name.substr(prefix.length) : event.name;
-      const displayName = TimelineUIUtils.inputEventDisplayName(
-          /** @type {!TimelineModel.TimelineIRModel.InputEvents} */ (inputEventType));
+      const displayName =
+          TimelineUIUtils.inputEventDisplayName((inputEventType as TimelineModel.TimelineIRModel.InputEvents));
       return new TimelineRecordStyle(displayName || inputEventType, TimelineUIUtils.categories()['scripting']);
     }
-    let result = eventStyles[event.name];
+    let result: TimelineRecordStyle = eventStyles[event.name];
     if (!result) {
       result = new TimelineRecordStyle(event.name, TimelineUIUtils.categories()['other'], true);
       eventStyles[event.name] = result;
@@ -1469,11 +1450,7 @@ export class TimelineUIUtils {
     return result;
   }
 
-  /**
-   * @param {!SDK.TracingModel.Event} event
-   * @return {string}
-   */
-  static eventColor(event) {
+  static eventColor(event: SDK.TracingModel.Event): string {
     if (event.name === TimelineModel.TimelineModel.RecordType.JSFrame) {
       const frame = event.args['data'];
       if (TimelineUIUtils.isUserFrame(frame)) {
@@ -1489,19 +1466,15 @@ export class TimelineUIUtils {
       if (!color) {
         throw new Error('Unable to parse color from TimelineUIUtils.categories().scripting.color');
       }
-      return /** @type {string} */ (color.setAlpha(0.3).asString(null));
+      return /** @type {string} */ color.setAlpha(0.3).asString(null) as string;
     }
 
     return color;
   }
 
-  /**
-   * @param {!TimelineModel.TimelineModel.TimelineModelImpl} model
-   * @param {!Map<string, string>} urlToColorCache
-   * @param {!SDK.TracingModel.Event} event
-   * @return {string}
-   */
-  static eventColorByProduct(model, urlToColorCache, event) {
+  static eventColorByProduct(
+      model: TimelineModel.TimelineModel.TimelineModelImpl, urlToColorCache: Map<string, string>,
+      event: SDK.TracingModel.Event): string {
     const url = TimelineUIUtils.eventURL(event) || '';
     let color = urlToColorCache.get(url);
     if (color) {
@@ -1524,11 +1497,7 @@ export class TimelineUIUtils {
     return color;
   }
 
-  /**
-   * @param {!SDK.TracingModel.Event} event
-   * @return {string}
-   */
-  static eventTitle(event) {
+  static eventTitle(event: SDK.TracingModel.Event): string {
     const recordType = TimelineModel.TimelineModel.RecordType;
     const eventData = event.args['data'];
     if (event.name === recordType.JSFrame) {
@@ -1550,43 +1519,45 @@ export class TimelineUIUtils {
     return title;
   }
 
-  /**
-   * @return {!Map<!TimelineModel.TimelineIRModel.Phases, !{color: string, label: string}>}
-   */
-  static _interactionPhaseStyles() {
-    let map = interactionPhaseStylesMap;
+  static _interactionPhaseStyles(): Map<TimelineModel.TimelineIRModel.Phases, {
+    color: string,
+    label: string,
+  }> {
+    let map: Map<TimelineModel.TimelineIRModel.Phases, {
+      color: string,
+      label: string,
+    }>|Map<TimelineModel.TimelineIRModel.Phases, {
+      color: string,
+      label: string,
+    }> = interactionPhaseStylesMap;
     if (!map) {
       map = new Map([
         [TimelineModel.TimelineIRModel.Phases.Idle, {color: 'white', label: 'Idle'}],
         [
           TimelineModel.TimelineIRModel.Phases.Response,
-          {color: 'hsl(43, 83%, 64%)', label: i18nString(UIStrings.response)}
+          {color: 'hsl(43, 83%, 64%)', label: i18nString(UIStrings.response)},
         ],
         [
           TimelineModel.TimelineIRModel.Phases.Scroll,
-          {color: 'hsl(256, 67%, 70%)', label: i18nString(UIStrings.scroll)}
+          {color: 'hsl(256, 67%, 70%)', label: i18nString(UIStrings.scroll)},
         ],
         [TimelineModel.TimelineIRModel.Phases.Fling, {color: 'hsl(256, 67%, 70%)', label: i18nString(UIStrings.fling)}],
         [TimelineModel.TimelineIRModel.Phases.Drag, {color: 'hsl(256, 67%, 70%)', label: i18nString(UIStrings.drag)}],
         [
           TimelineModel.TimelineIRModel.Phases.Animation,
-          {color: 'hsl(256, 67%, 70%)', label: i18nString(UIStrings.animation)}
+          {color: 'hsl(256, 67%, 70%)', label: i18nString(UIStrings.animation)},
         ],
         [
           TimelineModel.TimelineIRModel.Phases.Uncategorized,
-          {color: 'hsl(0, 0%, 87%)', label: i18nString(UIStrings.uncategorized)}
-        ]
+          {color: 'hsl(0, 0%, 87%)', label: i18nString(UIStrings.uncategorized)},
+        ],
       ]);
       interactionPhaseStylesMap = map;
     }
     return map;
   }
 
-  /**
-   * @param {!TimelineModel.TimelineIRModel.Phases} phase
-   * @return {string}
-   */
-  static interactionPhaseColor(phase) {
+  static interactionPhaseColor(phase: TimelineModel.TimelineIRModel.Phases): string {
     const interactionPhase = TimelineUIUtils._interactionPhaseStyles().get(phase);
     if (!interactionPhase) {
       throw new Error(`Unknown phase ${phase}`);
@@ -1594,11 +1565,7 @@ export class TimelineUIUtils {
     return interactionPhase.color;
   }
 
-  /**
-   * @param {!TimelineModel.TimelineIRModel.Phases} phase
-   * @return {string}
-   */
-  static interactionPhaseLabel(phase) {
+  static interactionPhaseLabel(phase: TimelineModel.TimelineIRModel.Phases): string {
     const interactionPhase = TimelineUIUtils._interactionPhaseStyles().get(phase);
     if (!interactionPhase) {
       throw new Error(`Unknown phase ${phase}`);
@@ -1606,19 +1573,11 @@ export class TimelineUIUtils {
     return interactionPhase.label;
   }
 
-  /**
-   * @param {!Protocol.Runtime.CallFrame} frame
-   * @return {boolean}
-   */
-  static isUserFrame(frame) {
+  static isUserFrame(frame: Protocol.Runtime.CallFrame): boolean {
     return frame.scriptId !== '0' && !(frame.url && frame.url.startsWith('native '));
   }
 
-  /**
-   * @param {!TimelineModel.TimelineModel.NetworkRequest} request
-   * @return {!NetworkCategory}
-   */
-  static networkRequestCategory(request) {
+  static networkRequestCategory(request: TimelineModel.TimelineModel.NetworkRequest): NetworkCategory {
     const categories = NetworkCategory;
     switch (request.mimeType) {
       case 'text/html':
@@ -1645,11 +1604,7 @@ export class TimelineUIUtils {
     }
   }
 
-  /**
-   * @param {!NetworkCategory} category
-   * @return {string}
-   */
-  static networkCategoryColor(category) {
+  static networkCategoryColor(category: NetworkCategory): string {
     const categories = NetworkCategory;
     switch (category) {
       case categories.HTML:
@@ -1665,12 +1620,8 @@ export class TimelineUIUtils {
     }
   }
 
-  /**
-   * @param {!SDK.TracingModel.Event} event
-   * @param {?SDK.SDKModel.Target} target
-   * @return {!Promise<?string>}
-   */
-  static async buildDetailsTextForTraceEvent(event, target) {
+  static async buildDetailsTextForTraceEvent(event: SDK.TracingModel.Event, target: SDK.SDKModel.Target|null):
+      Promise<string|null> {
     const recordType = TimelineModel.TimelineModel.RecordType;
     let detailsText;
     const eventData = event.args['data'];
@@ -1789,13 +1740,8 @@ export class TimelineUIUtils {
 
     return detailsText;
 
-    /**
-     * @param {string} scriptId
-     * @param {number} lineNumber
-     * @param {number} columnNumber
-     * @return {!Promise<?string>}
-     */
-    async function linkifyLocationAsText(scriptId, lineNumber, columnNumber) {
+    async function linkifyLocationAsText(
+        scriptId: string, lineNumber: number, columnNumber: number): Promise<string|null> {
       const debuggerModel = target ? target.model(SDK.DebuggerModel.DebuggerModel) : null;
       if (!target || target.isDisposed() || !scriptId || !debuggerModel) {
         return null;
@@ -1810,15 +1756,13 @@ export class TimelineUIUtils {
       return uiLocation ? uiLocation.linkText() : null;
     }
 
-    /**
-     * @return {!Promise<?string>}
-     */
-    async function linkifyTopCallFrameAsText() {
+    async function linkifyTopCallFrameAsText(): Promise<string|null> {
       const frame = TimelineModel.TimelineModel.TimelineData.forEvent(event).topFrame();
       if (!frame) {
         return null;
       }
-      let text = await linkifyLocationAsText(frame.scriptId, frame.lineNumber, frame.columnNumber);
+      let text: string|(string | null) =
+          await linkifyLocationAsText(frame.scriptId, frame.lineNumber, frame.columnNumber);
       if (!text) {
         text = frame.url;
         if (typeof frame.lineNumber === 'number') {
@@ -1829,15 +1773,11 @@ export class TimelineUIUtils {
     }
   }
 
-  /**
-   * @param {!SDK.TracingModel.Event} event
-   * @param {?SDK.SDKModel.Target} target
-   * @param {!Components.Linkifier.Linkifier} linkifier
-   * @return {!Promise<?Node>}
-   */
-  static async buildDetailsNodeForTraceEvent(event, target, linkifier) {
+  static async buildDetailsNodeForTraceEvent(
+      event: SDK.TracingModel.Event, target: SDK.SDKModel.Target|null,
+      linkifier: Components.Linkifier.Linkifier): Promise<Node|null> {
     const recordType = TimelineModel.TimelineModel.RecordType;
-    let details = null;
+    let details: HTMLElement|HTMLSpanElement|(Element | null)|Text|null = null;
     let detailsText;
     const eventData = event.args['data'];
     switch (event.name) {
@@ -1884,7 +1824,7 @@ export class TimelineUIUtils {
             lineNumber: undefined,
             preventClick: undefined,
             maxLength: undefined,
-            bypassURLTrimming: undefined
+            bypassURLTrimming: undefined,
           };
           details = Components.Linkifier.Linkifier.linkifyURL(url, options);
         }
@@ -1941,22 +1881,12 @@ export class TimelineUIUtils {
     }
     return details;
 
-    /**
-     * @param {string} scriptId
-     * @param {string} url
-     * @param {number} lineNumber
-     * @param {number=} columnNumber
-     * @return {?Element}
-     */
-    function linkifyLocation(scriptId, url, lineNumber, columnNumber) {
+    function linkifyLocation(scriptId: string, url: string, lineNumber: number, columnNumber?: number): Element|null {
       const options = {columnNumber, inlineFrameIndex: 0, className: 'timeline-details', tabStop: true};
       return linkifier.linkifyScriptLocation(target, scriptId, url, lineNumber, options);
     }
 
-    /**
-     * @return {?Element}
-     */
-    function linkifyTopCallFrame() {
+    function linkifyTopCallFrame(): Element|null {
       const frame = TimelineModel.TimelineModel.TimelineData.forEvent(event).topFrame();
       return frame ? linkifier.maybeLinkifyConsoleCallFrame(
                          target, frame,
@@ -1965,13 +1895,8 @@ export class TimelineUIUtils {
     }
   }
 
-  /**
-   * @param {!SDK.TracingModel.Event} event
-   * @return {!Element}
-   */
-  static buildDetailsNodeForPerformanceEvent(event) {
-    /** @type {string} */
-    let link = 'https://web.dev/user-centric-performance-metrics/';
+  static buildDetailsNodeForPerformanceEvent(event: SDK.TracingModel.Event): Element {
+    let link: string = 'https://web.dev/user-centric-performance-metrics/';
     let name = 'page performance metrics';
     const recordType = TimelineModel.TimelineModel.RecordType;
     switch (event.name) {
@@ -1990,11 +1915,9 @@ export class TimelineUIUtils {
     return UI.Fragment.html`<div>${UI.XLink.XLink.create(link, i18nString(UIStrings.learnMore))} about ${name}.</div>`;
   }
 
-  /**
-   * @param {*} eventData
-   * @param {!TimelineDetailsContentHelper} contentHelper
-   */
-  static buildCompilationCacheDetails(eventData, contentHelper) {
+  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  static buildCompilationCacheDetails(eventData: any, contentHelper: TimelineDetailsContentHelper): void {
     if ('producedCacheSize' in eventData) {
       contentHelper.appendTextRow(
           i18nString(UIStrings.compilationCacheStatus), i18nString(UIStrings.scriptSavedToCache));
@@ -2017,27 +1940,21 @@ export class TimelineUIUtils {
     }
   }
 
-  /**
-   * @param {!SDK.TracingModel.Event} event
-   * @param {!TimelineModel.TimelineModel.TimelineModelImpl} model
-   * @param {!Components.Linkifier.Linkifier} linkifier
-   * @param {boolean} detailed
-   * @return {!Promise<!DocumentFragment>}
-   */
-  static async buildTraceEventDetails(event, model, linkifier, detailed) {
+  static async buildTraceEventDetails(
+      event: SDK.TracingModel.Event, model: TimelineModel.TimelineModel.TimelineModelImpl,
+      linkifier: Components.Linkifier.Linkifier, detailed: boolean): Promise<DocumentFragment> {
     const maybeTarget = model.targetByEvent(event);
-    /** @type {?Map<number, ?SDK.DOMModel.DOMNode>} */
-    let relatedNodesMap = null;
+    let relatedNodesMap: (Map<number, SDK.DOMModel.DOMNode|null>|null)|null = null;
     if (maybeTarget) {
-      const target = /** @type {!SDK.SDKModel.Target} */ (maybeTarget);
+      const target = (maybeTarget as SDK.SDKModel.Target);
       // @ts-ignore TODO(crbug.com/1011811): Remove symbol usage.
       if (typeof event[previewElementSymbol] === 'undefined') {
-        let previewElement = null;
+        let previewElement: (Element|null)|null = null;
         const url = TimelineModel.TimelineModel.TimelineData.forEvent(event).url;
         if (url) {
           previewElement = await Components.ImagePreview.ImagePreview.build(target, url, false, {
             imageAltText: Components.ImagePreview.ImagePreview.defaultAltTextForImageURL(url),
-            precomputedFeatures: undefined
+            precomputedFeatures: undefined,
           });
         } else if (TimelineModel.TimelineModel.TimelineData.forEvent(event).picture) {
           previewElement = await TimelineUIUtils.buildPicturePreviewContent(event, target);
@@ -2046,8 +1963,7 @@ export class TimelineUIUtils {
         event[previewElementSymbol] = previewElement;
       }
 
-      /** @type {!Set<number>} */
-      const nodeIdsToResolve = new Set();
+      const nodeIdsToResolve = new Set<number>();
       const timelineData = TimelineModel.TimelineModel.TimelineData.forEvent(event);
       if (timelineData.backendNodeIds) {
         for (let i = 0; i < timelineData.backendNodeIds.length; ++i) {
@@ -2084,7 +2000,7 @@ export class TimelineUIUtils {
     const eventData = event.args['data'];
     const timelineData = TimelineModel.TimelineModel.TimelineData.forEvent(event);
     const initiator = timelineData.initiator();
-    let url = null;
+    let url: (string|null)|null = null;
 
     if (timelineData.warning) {
       contentHelper.appendWarningRow(event);
@@ -2160,7 +2076,7 @@ export class TimelineUIUtils {
             text: undefined,
             preventClick: undefined,
             maxLength: undefined,
-            bypassURLTrimming: undefined
+            bypassURLTrimming: undefined,
           };
           contentHelper.appendElementRow(
               i18nString(UIStrings.resource), Components.Linkifier.Linkifier.linkifyURL(url, options));
@@ -2273,7 +2189,7 @@ export class TimelineUIUtils {
             text: undefined,
             preventClick: undefined,
             maxLength: undefined,
-            bypassURLTrimming: undefined
+            bypassURLTrimming: undefined,
           };
           contentHelper.appendElementRow(
               i18nString(UIStrings.imageUrl), Components.Linkifier.Linkifier.linkifyURL(url, options));
@@ -2293,7 +2209,7 @@ export class TimelineUIUtils {
             text: undefined,
             preventClick: undefined,
             maxLength: undefined,
-            bypassURLTrimming: undefined
+            bypassURLTrimming: undefined,
           };
           contentHelper.appendElementRow(
               i18nString(UIStrings.stylesheetUrl), Components.Linkifier.Linkifier.linkifyURL(url, options));
@@ -2389,7 +2305,7 @@ export class TimelineUIUtils {
       case recordTypes.MarkFCP:
       case recordTypes.MarkLoad:
       case recordTypes.MarkDOMContent: {
-        let eventTime = event.startTime - model.minimumRecordTime();
+        let eventTime: number = event.startTime - model.minimumRecordTime();
 
         // Find the appropriate navStart based on the navigation ID.
         const {navigationId} = event.args.data;
@@ -2471,8 +2387,9 @@ export class TimelineUIUtils {
       TimelineUIUtils._generateCauses(event, model.targetByEvent(event), relatedNodesMap, contentHelper);
     }
 
-    /** @type {!Object.<string, number>} */
-    const stats = {};
+    const stats: {
+      [x: string]: number,
+    } = {};
     const showPieChart = detailed && TimelineUIUtils._aggregatedStatsForTraceEvent(stats, model, event);
     if (showPieChart) {
       contentHelper.addSection(i18nString(UIStrings.aggregatedTime));
@@ -2484,13 +2401,9 @@ export class TimelineUIUtils {
     return contentHelper.fragment;
   }
 
-  /**
-   * @param {!Array<!SDK.TracingModel.Event>} events
-   * @param {number} startTime
-   * @param {number} endTime
-   * @return {!Object<string, number>}
-   */
-  static statsForTimeRange(events, startTime, endTime) {
+  static statsForTimeRange(events: SDK.TracingModel.Event[], startTime: number, endTime: number): {
+    [x: string]: number,
+  } {
     if (!events.length) {
       return {'idle': endTime - startTime};
     }
@@ -2501,13 +2414,12 @@ export class TimelineUIUtils {
     aggregatedStats['idle'] = Math.max(0, endTime - startTime - aggregatedTotal);
     return aggregatedStats;
 
-    /**
-     * @param {number} time
-     * @return {!Object.<string, number>}
-     */
-    function aggregatedStatsAtTime(time) {
-      /** @type {!Object.<string, number>} */
-      const stats = {};
+    function aggregatedStatsAtTime(time: number): {
+      [x: string]: number,
+    } {
+      const stats: {
+        [x: string]: number,
+      } = {};
       // @ts-ignore TODO(crbug.com/1011811): Remove symbol usage.
       const cache = events[categoryBreakdownCacheSymbol];
       for (const category in cache) {
@@ -2531,12 +2443,15 @@ export class TimelineUIUtils {
       return stats;
     }
 
-    /**
-      * @param {!Object<string, number>} a
-      * @param {!Object<string, number>} b
-      * @return {!Object<string, number>}
-      */
-    function subtractStats(a, b) {
+    function subtractStats(
+        a: {
+          [x: string]: number,
+        },
+        b: {
+          [x: string]: number,
+        }): {
+      [x: string]: number,
+    } {
       const result = Object.assign({}, a);
       for (const key in b) {
         result[key] -= b[key];
@@ -2544,10 +2459,7 @@ export class TimelineUIUtils {
       return result;
     }
 
-    /**
-     * @param {!Array<!SDK.TracingModel.Event>} events
-     */
-    function buildRangeStatsCacheIfNeeded(events) {
+    function buildRangeStatsCacheIfNeeded(events: SDK.TracingModel.Event[]): void {
       // @ts-ignore TODO(crbug.com/1011811): Remove symbol usage.
       if (events[categoryBreakdownCacheSymbol]) {
         return;
@@ -2555,28 +2467,28 @@ export class TimelineUIUtils {
 
       // aggeregatedStats is a map by categories. For each category there's an array
       // containing sorted time points which records accumulated value of the category.
-      /** @type {!Object.<string, {time: !Array<number>, value: !Array<number>}>} */
-      const aggregatedStats = {};
-      /** @type {!Array<string>} */
-      const categoryStack = [];
+      const aggregatedStats: {
+        [x: string]: {
+          time: number[],
+          value: number[],
+        },
+      } = {};
+      const categoryStack: string[] = [];
       let lastTime = 0;
       TimelineModel.TimelineModel.TimelineModelImpl.forEachEvent(
           events, onStartEvent, onEndEvent, undefined, undefined, undefined, filterForStats());
 
-      /**
-       * @return {function(!SDK.TracingModel.Event):boolean}
-       */
-      function filterForStats() {
+      function filterForStats(): (arg0: SDK.TracingModel.Event) => boolean {
         const visibleEventsFilter = TimelineUIUtils.visibleEventsFilter();
-        return event => visibleEventsFilter.accept(event) || SDK.TracingModel.TracingModel.isTopLevelEvent(event);
+        return (event: SDK.TracingModel.Event): boolean =>
+                   visibleEventsFilter.accept(event) || SDK.TracingModel.TracingModel.isTopLevelEvent(event);
       }
 
-      /**
-       * @param {string} category
-       * @param {number} time
-       */
-      function updateCategory(category, time) {
-        let statsArrays = aggregatedStats[category];
+      function updateCategory(category: string, time: number): void {
+        let statsArrays: {
+          time: number[],
+          value: number[],
+        } = aggregatedStats[category];
         if (!statsArrays) {
           statsArrays = {time: [], value: []};
           aggregatedStats[category] = statsArrays;
@@ -2589,12 +2501,7 @@ export class TimelineUIUtils {
         statsArrays.time.push(time);
       }
 
-      /**
-       * @param {?string} from
-       * @param {?string} to
-       * @param {number} time
-       */
-      function categoryChange(from, to, time) {
+      function categoryChange(from: string|null, to: string|null, time: number): void {
         if (from) {
           updateCategory(from, time);
         }
@@ -2604,10 +2511,7 @@ export class TimelineUIUtils {
         }
       }
 
-      /**
-       * @param {!SDK.TracingModel.Event} e
-       */
-      function onStartEvent(e) {
+      function onStartEvent(e: SDK.TracingModel.Event): void {
         const category = TimelineUIUtils.eventStyle(e).category.name;
         const parentCategory = categoryStack.length ? categoryStack[categoryStack.length - 1] : null;
         if (category !== parentCategory) {
@@ -2616,10 +2520,7 @@ export class TimelineUIUtils {
         categoryStack.push(category);
       }
 
-      /**
-       * @param {!SDK.TracingModel.Event} e
-       */
-      function onEndEvent(e) {
+      function onEndEvent(e: SDK.TracingModel.Event): void {
         const category = categoryStack.pop();
         const parentCategory = categoryStack.length ? categoryStack[categoryStack.length - 1] : null;
         if (category !== parentCategory) {
@@ -2627,19 +2528,15 @@ export class TimelineUIUtils {
         }
       }
 
-      const obj = /** @type {!Object} */ (events);
+      const obj = (events as Object);
       // @ts-ignore TODO(crbug.com/1011811): Remove symbol usage.
       obj[categoryBreakdownCacheSymbol] = aggregatedStats;
     }
   }
 
-  /**
-   * @param {!TimelineModel.TimelineModel.NetworkRequest} request
-   * @param {!TimelineModel.TimelineModel.TimelineModelImpl} model
-   * @param {!Components.Linkifier.Linkifier} linkifier
-   * @return {!Promise<!DocumentFragment>}
-   */
-  static async buildNetworkRequestDetails(request, model, linkifier) {
+  static async buildNetworkRequestDetails(
+      request: TimelineModel.TimelineModel.NetworkRequest, model: TimelineModel.TimelineModel.TimelineModelImpl,
+      linkifier: Components.Linkifier.Linkifier): Promise<DocumentFragment> {
     const target = model.targetByEvent(request.children[0]);
     const contentHelper = new TimelineDetailsContentHelper(target, linkifier);
     const category = TimelineUIUtils.networkRequestCategory(request);
@@ -2656,7 +2553,7 @@ export class TimelineUIUtils {
         lineNumber: undefined,
         preventClick: undefined,
         maxLength: undefined,
-        bypassURLTrimming: undefined
+        bypassURLTrimming: undefined,
       };
       contentHelper.appendElementRow(
           i18n.i18n.lockedString('URL'), Components.Linkifier.Linkifier.linkifyURL(request.url, options));
@@ -2687,8 +2584,8 @@ export class TimelineUIUtils {
       contentHelper.appendTextRow(i18nString(UIStrings.requestMethod), request.requestMethod);
     }
     if (typeof request.priority === 'string') {
-      const priority = PerfUI.NetworkPriorities.uiLabelForNetworkPriority(
-          /** @type {!Protocol.Network.ResourcePriority} */ (request.priority));
+      const priority =
+          PerfUI.NetworkPriorities.uiLabelForNetworkPriority((request.priority as Protocol.Network.ResourcePriority));
       contentHelper.appendTextRow(i18nString(UIStrings.priority), priority);
     }
     if (request.mimeType) {
@@ -2738,12 +2635,10 @@ export class TimelineUIUtils {
     }
 
     if (!requestPreviewElements.get(request) && request.url && target) {
-      /** @type {!HTMLImageElement} */
-      const previewElement = /** @type {!HTMLImageElement} */ (
-          await Components.ImagePreview.ImagePreview.build(target, request.url, false, {
-            imageAltText: Components.ImagePreview.ImagePreview.defaultAltTextForImageURL(request.url),
-            precomputedFeatures: undefined
-          }));
+      const previewElement = (await Components.ImagePreview.ImagePreview.build(target, request.url, false, {
+        imageAltText: Components.ImagePreview.ImagePreview.defaultAltTextForImageURL(request.url),
+        precomputedFeatures: undefined,
+      }) as HTMLImageElement);
 
       requestPreviewElements.set(request, previewElement);
     }
@@ -2755,21 +2650,13 @@ export class TimelineUIUtils {
     return contentHelper.fragment;
   }
 
-  /**
-   * @param {!Array<!Protocol.Runtime.CallFrame>} callFrames
-   * @return {!Protocol.Runtime.StackTrace}
-   */
-  static _stackTraceFromCallFrames(callFrames) {
-    return /** @type {!Protocol.Runtime.StackTrace} */ ({callFrames: callFrames});
+  static _stackTraceFromCallFrames(callFrames: Protocol.Runtime.CallFrame[]): Protocol.Runtime.StackTrace {
+    return {callFrames: callFrames} as Protocol.Runtime.StackTrace;
   }
 
-  /**
-   * @param {!SDK.TracingModel.Event} event
-   * @param {?SDK.SDKModel.Target} target
-   * @param {?Map<number, ?SDK.DOMModel.DOMNode>} relatedNodesMap
-   * @param {!TimelineDetailsContentHelper} contentHelper
-   */
-  static _generateCauses(event, target, relatedNodesMap, contentHelper) {
+  static _generateCauses(
+      event: SDK.TracingModel.Event, target: SDK.SDKModel.Target|null,
+      relatedNodesMap: Map<number, SDK.DOMModel.DOMNode|null>|null, contentHelper: TimelineDetailsContentHelper): void {
     const recordTypes = TimelineModel.TimelineModel.RecordType;
 
     let callSiteStackLabel;
@@ -2820,13 +2707,11 @@ export class TimelineUIUtils {
       link.tabIndex = 0;
       link.textContent = i18nString(UIStrings.reveal);
       link.addEventListener('click', () => {
-        TimelinePanel.instance().select(
-            TimelineSelection.fromTraceEvent(/** @type {!SDK.TracingModel.Event} */ (initiator)));
+        TimelinePanel.instance().select(TimelineSelection.fromTraceEvent((initiator as SDK.TracingModel.Event)));
       });
       link.addEventListener('keydown', event => {
         if (event.key === 'Enter') {
-          TimelinePanel.instance().select(
-              TimelineSelection.fromTraceEvent(/** @type {!SDK.TracingModel.Event} */ (initiator)));
+          TimelinePanel.instance().select(TimelineSelection.fromTraceEvent((initiator as SDK.TracingModel.Event)));
           event.consume(true);
         }
       });
@@ -2841,20 +2726,17 @@ export class TimelineUIUtils {
     }
   }
 
-  /**
-   * @param {!SDK.TracingModel.Event} event
-   * @param {!SDK.SDKModel.Target} target
-   * @param {?Map<number, ?SDK.DOMModel.DOMNode>} relatedNodesMap
-   * @param {!TimelineDetailsContentHelper} contentHelper
-   */
-  static _generateInvalidations(event, target, relatedNodesMap, contentHelper) {
+  static _generateInvalidations(
+      event: SDK.TracingModel.Event, target: SDK.SDKModel.Target,
+      relatedNodesMap: Map<number, SDK.DOMModel.DOMNode|null>|null, contentHelper: TimelineDetailsContentHelper): void {
     const invalidationTrackingEvents = TimelineModel.TimelineModel.InvalidationTracker.invalidationEventsFor(event);
     if (!invalidationTrackingEvents) {
       return;
     }
 
-    /** @type {!Object.<string, !Array<!TimelineModel.TimelineModel.InvalidationTrackingEvent>>} */
-    const invalidations = {};
+    const invalidations: {
+      [x: string]: TimelineModel.TimelineModel.InvalidationTrackingEvent[],
+    } = {};
     for (const invalidation of invalidationTrackingEvents) {
       if (!invalidations[invalidation.type]) {
         invalidations[invalidation.type] = [];
@@ -2867,14 +2749,9 @@ export class TimelineUIUtils {
     });
   }
 
-  /**
-   * @param {string} type
-   * @param {!SDK.SDKModel.Target} target
-   * @param {!Array.<!TimelineModel.TimelineModel.InvalidationTrackingEvent>} invalidations
-   * @param {?Map<number, ?SDK.DOMModel.DOMNode>} relatedNodesMap
-   * @param {!TimelineDetailsContentHelper} contentHelper
-   */
-  static _generateInvalidationsForType(type, target, invalidations, relatedNodesMap, contentHelper) {
+  static _generateInvalidationsForType(
+      type: string, target: SDK.SDKModel.Target, invalidations: TimelineModel.TimelineModel.InvalidationTrackingEvent[],
+      relatedNodesMap: Map<number, SDK.DOMModel.DOMNode|null>|null, contentHelper: TimelineDetailsContentHelper): void {
     let title;
     switch (type) {
       case TimelineModel.TimelineModel.RecordType.StyleRecalcInvalidationTracking:
@@ -2899,13 +2776,9 @@ export class TimelineUIUtils {
     });
     contentHelper.appendElementRow(title, invalidationsTreeOutline.element, false, true);
 
-    /**
-     * @param {!Array<!TimelineModel.TimelineModel.InvalidationTrackingEvent>} invalidations
-     * @return {!Array<!Array<!TimelineModel.TimelineModel.InvalidationTrackingEvent>>}
-     */
-    function groupInvalidationsByCause(invalidations) {
-      /** @type {!Map<string, !Array<!TimelineModel.TimelineModel.InvalidationTrackingEvent>>} */
-      const causeToInvalidationMap = new Map();
+    function groupInvalidationsByCause(invalidations: TimelineModel.TimelineModel.InvalidationTrackingEvent[]):
+        TimelineModel.TimelineModel.InvalidationTrackingEvent[][] {
+      const causeToInvalidationMap = new Map<string, TimelineModel.TimelineModel.InvalidationTrackingEvent[]>();
       for (let index = 0; index < invalidations.length; index++) {
         const invalidation = invalidations[index];
         let causeKey = '';
@@ -2933,28 +2806,18 @@ export class TimelineUIUtils {
     }
   }
 
-  /**
-   * @param {!Set<number>} nodeIds
-   * @param {!Array<!TimelineModel.TimelineModel.InvalidationTrackingEvent>} invalidations
-   */
-  static _collectInvalidationNodeIds(nodeIds, invalidations) {
+  static _collectInvalidationNodeIds(
+      nodeIds: Set<number>, invalidations: TimelineModel.TimelineModel.InvalidationTrackingEvent[]): void {
     Platform.SetUtilities.addAll(nodeIds, invalidations.map(invalidation => invalidation.nodeId).filter(id => id));
   }
 
-  /**
-   * @param {!Object.<string, number>} total
-   * @param {!TimelineModel.TimelineModel.TimelineModelImpl} model
-   * @param {!SDK.TracingModel.Event} event
-   * @return {boolean}
-   */
-  static _aggregatedStatsForTraceEvent(total, model, event) {
+  static _aggregatedStatsForTraceEvent(
+      total: {
+        [x: string]: number,
+      },
+      model: TimelineModel.TimelineModel.TimelineModelImpl, event: SDK.TracingModel.Event): boolean {
     const events = model.inspectedTargetEvents();
-    /**
-     * @param {number} startTime
-     * @param {!SDK.TracingModel.Event} e
-     * @return {number}
-     */
-    function eventComparator(startTime, e) {
+    function eventComparator(startTime: number, e: SDK.TracingModel.Event): number {
       return startTime - e.startTime;
     }
 
@@ -2997,12 +2860,8 @@ export class TimelineUIUtils {
     return hasChildren;
   }
 
-  /**
-   * @param {!SDK.TracingModel.Event} event
-   * @param {!SDK.SDKModel.Target} target
-   * @return {!Promise<?Element>}
-   */
-  static async buildPicturePreviewContent(event, target) {
+  static async buildPicturePreviewContent(event: SDK.TracingModel.Event, target: SDK.SDKModel.Target):
+      Promise<Element|null> {
     const snapshotWithRect =
         await new TimelineModel.TimelineFrameModel.LayerPaintEvent(event, target).snapshotPromise();
     if (!snapshotWithRect) {
@@ -3017,7 +2876,7 @@ export class TimelineUIUtils {
     const container = document.createElement('div');
     UI.Utils.appendStyle(container, 'components/imagePreview.css', {enableLegacyPatching: false});
     container.classList.add('image-preview-container', 'vbox', 'link');
-    const img = /** @type {!HTMLImageElement} */ (container.createChild('img'));
+    const img = (container.createChild('img') as HTMLImageElement);
     img.src = imageURL;
     img.alt = Components.ImagePreview.ImagePreview.defaultAltTextForImageURL(imageURL);
     const paintProfilerButton = container.createChild('a');
@@ -3035,12 +2894,7 @@ export class TimelineUIUtils {
     return container;
   }
 
-  /**
-   * @param {!SDK.TracingModel.Event} event
-   * @param {number} zeroTime
-   * @return {!Element}
-   */
-  static createEventDivider(event, zeroTime) {
+  static createEventDivider(event: SDK.TracingModel.Event, zeroTime: number): Element {
     const eventDivider = document.createElement('div');
     eventDivider.classList.add('resources-event-divider');
     const startTime = Number.millisToString(event.startTime - zeroTime);
@@ -3053,10 +2907,7 @@ export class TimelineUIUtils {
     return eventDivider;
   }
 
-  /**
-   * @return {!Array.<string>}
-   */
-  static _visibleTypes() {
+  static _visibleTypes(): string[] {
     const eventStyles = TimelineUIUtils._initEventStyles();
     const result = [];
     for (const name in eventStyles) {
@@ -3067,17 +2918,13 @@ export class TimelineUIUtils {
     return result;
   }
 
-  /**
-   * @return {!TimelineModel.TimelineModelFilter.TimelineModelFilter}
-   */
-  static visibleEventsFilter() {
+  static visibleEventsFilter(): TimelineModel.TimelineModelFilter.TimelineModelFilter {
     return new TimelineModel.TimelineModelFilter.TimelineVisibleEventsFilter(TimelineUIUtils._visibleTypes());
   }
 
-  /**
-   * @return {!Object.<string, !TimelineCategory>}
-   */
-  static categories() {
+  static categories(): {
+    [x: string]: TimelineCategory,
+  } {
     if (categories) {
       return categories;
     }
@@ -3096,22 +2943,18 @@ export class TimelineUIUtils {
       async:
           new TimelineCategory('async', i18nString(UIStrings.async), false, 'hsl(0, 100%, 50%)', 'hsl(0, 100%, 40%)'),
       other: new TimelineCategory('other', i18nString(UIStrings.system), false, 'hsl(0, 0%, 87%)', 'hsl(0, 0%, 79%)'),
-      idle: new TimelineCategory('idle', i18nString(UIStrings.idle), false, 'hsl(0, 0%, 98%)', 'hsl(0, 0%, 98%)')
+      idle: new TimelineCategory('idle', i18nString(UIStrings.idle), false, 'hsl(0, 0%, 98%)', 'hsl(0, 0%, 98%)'),
     };
     return categories;
   }
 
-  /**
-   * @param {!Object.<string, !TimelineCategory>} cats
-   */
-  static setCategories(cats) {
+  static setCategories(cats: {
+    [x: string]: TimelineCategory,
+  }): void {
     categories = cats;
   }
 
-  /**
-   * @return {!Array<string>}
-   */
-  static getTimelineMainEventCategories() {
+  static getTimelineMainEventCategories(): string[] {
     if (eventCategories) {
       return eventCategories;
     }
@@ -3119,20 +2962,15 @@ export class TimelineUIUtils {
     return eventCategories;
   }
 
-  /**
-   * @param {!Array<string>} categories
-   */
-  static setTimelineMainEventCategories(categories) {
+  static setTimelineMainEventCategories(categories: string[]): void {
     eventCategories = categories;
   }
 
-  /**
-   * @param {!Object.<string, number>} aggregatedStats
-   * @param {!TimelineCategory=} selfCategory
-   * @param {number=} selfTime
-   * @return {!Element}
-   */
-  static generatePieChart(aggregatedStats, selfCategory, selfTime) {
+  static generatePieChart(
+      aggregatedStats: {
+        [x: string]: number,
+      },
+      selfCategory?: TimelineCategory, selfTime?: number): Element {
     let total = 0;
     for (const categoryName in aggregatedStats) {
       total += aggregatedStats[categoryName];
@@ -3143,16 +2981,13 @@ export class TimelineUIUtils {
     element.classList.add('hbox');
 
     const pieChart = new PerfUI.PieChart.PieChart();
-    /** @type {!Array<{value: number, color: string, title: string}>} */
-    const slices = [];
+    const slices: {
+      value: number,
+      color: string,
+      title: string,
+    }[] = [];
 
-    /**
-     * @param {string} name
-     * @param {string} title
-     * @param {number} value
-     * @param {string} color
-     */
-    function appendLegendRow(name, title, value, color) {
+    function appendLegendRow(name: string, title: string, value: number, color: string): void {
       if (!value) {
         return;
       }
@@ -3187,10 +3022,10 @@ export class TimelineUIUtils {
     pieChart.data = {
       chartName: i18nString(UIStrings.timeSpentInRendering),
       size: 110,
-      formatter: value => Number.preciseMillisToString(value),
+      formatter: (value: number): string => Number.preciseMillisToString(value),
       showLegend: true,
       total,
-      slices
+      slices,
     };
     const pieChartContainer = element.createChild('div', 'vbox');
     pieChartContainer.appendChild(pieChart);
@@ -3198,12 +3033,9 @@ export class TimelineUIUtils {
     return element;
   }
 
-  /**
-   * @param {!TimelineModel.TimelineFrameModel.TimelineFrame} frame
-   * @param {?SDK.FilmStripModel.Frame} filmStripFrame
-   * @return {!DocumentFragment}
-   */
-  static generateDetailsContentForFrame(frame, filmStripFrame) {
+  static generateDetailsContentForFrame(
+      frame: TimelineModel.TimelineFrameModel.TimelineFrame,
+      filmStripFrame: SDK.FilmStripModel.Frame|null): DocumentFragment {
     const contentHelper = new TimelineDetailsContentHelper(null, null);
     contentHelper.addSection(i18nString(UIStrings.frame));
 
@@ -3228,24 +3060,17 @@ export class TimelineUIUtils {
           Components.Linkifier.Linkifier.linkifyRevealable(frame.layerTree, i18nString(UIStrings.show)));
     }
 
-    /**
-     * @param {!SDK.FilmStripModel.Frame} filmStripFrame
-     */
-    function frameClicked(filmStripFrame) {
+    function frameClicked(filmStripFrame: SDK.FilmStripModel.Frame): void {
       new PerfUI.FilmStripView.Dialog(filmStripFrame, 0);
     }
 
     return contentHelper.fragment;
   }
 
-  /**
-   * @param {!TimelineModel.TimelineFrameModel.TimelineFrame} frame
-   * @return {!Element}
-   */
-  static frameDuration(frame) {
+  static frameDuration(frame: TimelineModel.TimelineFrameModel.TimelineFrame): Element {
     const durationText = i18nString(UIStrings.sAtSParentheses, {
       PH1: Number.millisToString(frame.endTime - frame.startTime, true),
-      PH2: Number.millisToString(frame.startTimeOffset, true)
+      PH2: Number.millisToString(frame.startTimeOffset, true),
     });
     if (!frame.hasWarnings()) {
       return i18n.i18n.getFormatLocalizedString(str_, UIStrings.emptyPlaceholder, {PH1: durationText});
@@ -3257,16 +3082,9 @@ export class TimelineUIUtils {
         str_, UIStrings.sLongFrameTimesAreAnIndicationOf, {PH1: durationText, PH2: link});
   }
 
-  /**
-   * @param {!CanvasRenderingContext2D} context
-   * @param {number} width
-   * @param {number} height
-   * @param {string} color0
-   * @param {string} color1
-   * @param {string} color2
-   * @return {!CanvasGradient}
-   */
-  static createFillStyle(context, width, height, color0, color1, color2) {
+  static createFillStyle(
+      context: CanvasRenderingContext2D, width: number, height: number, color0: string, color1: string,
+      color2: string): CanvasGradient {
     const gradient = context.createLinearGradient(0, 0, width, height);
     gradient.addColorStop(0, color0);
     gradient.addColorStop(0.25, color1);
@@ -3275,26 +3093,15 @@ export class TimelineUIUtils {
     return gradient;
   }
 
-  /**
-   * @param {!Array.<number>} quad
-   * @return {number}
-   */
-  static quadWidth(quad) {
+  static quadWidth(quad: number[]): number {
     return Math.round(Math.sqrt(Math.pow(quad[0] - quad[2], 2) + Math.pow(quad[1] - quad[3], 2)));
   }
 
-  /**
-   * @param {!Array.<number>} quad
-   * @return {number}
-   */
-  static quadHeight(quad) {
+  static quadHeight(quad: number[]): number {
     return Math.round(Math.sqrt(Math.pow(quad[0] - quad[6], 2) + Math.pow(quad[1] - quad[7], 2)));
   }
 
-  /**
-   * @return {!Array.<!EventDispatchTypeDescriptor>}
-   */
-  static eventDispatchDesciptors() {
+  static eventDispatchDesciptors(): EventDispatchTypeDescriptor[] {
     if (eventDispatchDesciptors) {
       return eventDispatchDesciptors;
     }
@@ -3312,16 +3119,12 @@ export class TimelineUIUtils {
       new EventDispatchTypeDescriptor(3, orange, ['touchstart', 'touchend', 'touchmove', 'touchcancel']),
       new EventDispatchTypeDescriptor(
           3, orange, ['pointerdown', 'pointerup', 'pointercancel', 'gotpointercapture', 'lostpointercapture']),
-      new EventDispatchTypeDescriptor(3, purple, ['keydown', 'keyup', 'keypress'])
+      new EventDispatchTypeDescriptor(3, purple, ['keydown', 'keyup', 'keypress']),
     ];
     return eventDispatchDesciptors;
   }
 
-  /**
-   * @param {!SDK.TracingModel.Event} event
-   * @return {?string}
-   */
-  static markerShortTitle(event) {
+  static markerShortTitle(event: SDK.TracingModel.Event): string|null {
     const recordTypes = TimelineModel.TimelineModel.RecordType;
     switch (event.name) {
       case recordTypes.MarkDOMContent:
@@ -3338,11 +3141,7 @@ export class TimelineUIUtils {
     return null;
   }
 
-  /**
-   * @param {!SDK.TracingModel.Event} event
-   * @return {!TimelineMarkerStyle}
-   */
-  static markerStyleForEvent(event) {
+  static markerStyleForEvent(event: SDK.TracingModel.Event): TimelineMarkerStyle {
     const tallMarkerDashStyle = [6, 4];
     const title = TimelineUIUtils.eventTitle(event);
     const recordTypes = TimelineModel.TimelineModel.RecordType;
@@ -3405,25 +3204,18 @@ export class TimelineUIUtils {
     };
   }
 
-  /**
-   * @return {!TimelineMarkerStyle}
-   */
-  static markerStyleForFrame() {
+  static markerStyleForFrame(): TimelineMarkerStyle {
     return {
       title: i18nString(UIStrings.frame),
       color: 'rgba(100, 100, 100, 0.4)',
       lineWidth: 3,
       dashStyle: [3],
       tall: true,
-      lowPriority: true
+      lowPriority: true,
     };
   }
 
-  /**
-   * @param {string} id
-   * @return {string}
-   */
-  static colorForId(id) {
+  static colorForId(id: string): string {
     if (!colorGenerator) {
       colorGenerator =
           new Common.Color.Generator({min: 30, max: 330, count: undefined}, {min: 50, max: 80, count: 3}, 85);
@@ -3432,12 +3224,7 @@ export class TimelineUIUtils {
     return colorGenerator.colorForID(id);
   }
 
-  /**
-   * @param {!SDK.TracingModel.Event} event
-   * @param {string=} warningType
-   * @return {?Element}
-   */
-  static eventWarning(event, warningType) {
+  static eventWarning(event: SDK.TracingModel.Event, warningType?: string): Element|null {
     const timelineData = TimelineModel.TimelineModel.TimelineData.forEvent(event);
     const warning = warningType || timelineData.warning;
     if (!warning) {
@@ -3498,11 +3285,9 @@ export class TimelineUIUtils {
     return span;
   }
 
-  /**
-   * @param {!TimelineModel.TimelineModel.PageFrame} frame
-   * @param {number=} trimAt
-   */
-  static displayNameForFrame(frame, trimAt) {
+  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  static displayNameForFrame(frame: TimelineModel.TimelineModel.PageFrame, trimAt?: number): any {
     const url = frame.url;
     if (!trimAt) {
       trimAt = 30;
@@ -3513,39 +3298,40 @@ export class TimelineUIUtils {
 }
 
 export class TimelineRecordStyle {
-  /**
-   * @param {string} title
-   * @param {!TimelineCategory} category
-   * @param {boolean=} hidden
-   */
-  constructor(title, category, hidden = false) {
+  title: string;
+  category: TimelineCategory;
+  hidden: boolean;
+
+  constructor(title: string, category: TimelineCategory, hidden: boolean|undefined = false) {
     this.title = title;
     this.category = category;
     this.hidden = hidden;
   }
 }
 
-/**
- * @enum {symbol}
- */
-export const NetworkCategory = {
-  HTML: Symbol('HTML'),
-  Script: Symbol('Script'),
-  Style: Symbol('Style'),
-  Media: Symbol('Media'),
-  Other: Symbol('Other')
-};
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum NetworkCategory {
+  HTML = 'HTML',
+  Script = 'Script',
+  Style = 'Style',
+  Media = 'Media',
+  Other = 'Other',
+}
+
 
 export const aggregatedStatsKey = Symbol('aggregatedStats');
 
 export class InvalidationsGroupElement extends UI.TreeOutline.TreeElement {
-  /**
-   * @param {!SDK.SDKModel.Target} target
-   * @param {?Map<number, ?SDK.DOMModel.DOMNode>} relatedNodesMap
-   * @param {!TimelineDetailsContentHelper} contentHelper
-   * @param {!Array.<!TimelineModel.TimelineModel.InvalidationTrackingEvent>} invalidations
-   */
-  constructor(target, relatedNodesMap, contentHelper, invalidations) {
+  toggleOnClick: boolean;
+  _relatedNodesMap: Map<number, SDK.DOMModel.DOMNode|null>|null;
+  _contentHelper: TimelineDetailsContentHelper;
+  _invalidations: TimelineModel.TimelineModel.InvalidationTrackingEvent[];
+
+  constructor(
+      target: SDK.SDKModel.Target, relatedNodesMap: Map<number, SDK.DOMModel.DOMNode|null>|null,
+      contentHelper: TimelineDetailsContentHelper,
+      invalidations: TimelineModel.TimelineModel.InvalidationTrackingEvent[]) {
     super('', true);
 
     this.listItemElement.classList.add('header');
@@ -3558,11 +3344,7 @@ export class InvalidationsGroupElement extends UI.TreeOutline.TreeElement {
     this.title = this._createTitle(target);
   }
 
-  /**
-   * @param {!SDK.SDKModel.Target} target
-   * @return {!Element}
-   */
-  _createTitle(target) {
+  _createTitle(target: SDK.SDKModel.Target): Element {
     const first = this._invalidations[0];
     const reason = first.cause.reason || i18nString(UIStrings.unknownCause);
     const topFrame = first.cause.stackTrace && first.cause.stackTrace[0];
@@ -3598,11 +3380,7 @@ export class InvalidationsGroupElement extends UI.TreeOutline.TreeElement {
     return title;
   }
 
-  /**
-   * @override
-   * @returns {!Promise<void>}
-   */
-  async onpopulate() {
+  async onpopulate(): Promise<void> {
     const content = document.createElement('div');
     content.classList.add('content');
 
@@ -3655,18 +3433,18 @@ export class InvalidationsGroupElement extends UI.TreeOutline.TreeElement {
     this.appendChild(contentTreeElement);
   }
 
-  /**
-   * @param {!Array.<!TimelineModel.TimelineModel.InvalidationTrackingEvent>} invalidations
-   * @returns {?Element}
-   */
-  _getTruncatedNodesElement(invalidations) {
+  _getTruncatedNodesElement(invalidations: TimelineModel.TimelineModel.InvalidationTrackingEvent[]): Element|null {
     const invalidationNodes = [];
-    /** @type {!Object.<number, boolean>} */
-    const invalidationNodeIdMap = {};
+    const invalidationNodeIdMap: {
+      [x: number]: boolean,
+    } = {};
     for (let i = 0; i < invalidations.length; i++) {
       const invalidation = invalidations[i];
       const invalidationNode = this._createInvalidationNode(invalidation, false);
-      invalidationNode.addEventListener('click', /** @param {!Event} evt */ evt => evt.consume(), false);
+      invalidationNode.addEventListener(
+          'click',
+
+          (evt: Event) => evt.consume(), false);
       if (invalidationNode && invalidation.nodeId && !invalidationNodeIdMap[invalidation.nodeId]) {
         invalidationNodes.push(invalidationNode);
         invalidationNodeIdMap[invalidation.nodeId] = true;
@@ -3697,11 +3475,9 @@ export class InvalidationsGroupElement extends UI.TreeOutline.TreeElement {
     return null;
   }
 
-  /**
-   * @param {!TimelineModel.TimelineModel.InvalidationTrackingEvent} invalidation
-   * @param {boolean} showUnknownNodes
-   */
-  _createInvalidationNode(invalidation, showUnknownNodes) {
+  _createInvalidationNode(
+      invalidation: TimelineModel.TimelineModel.InvalidationTrackingEvent, showUnknownNodes: boolean): HTMLSpanElement
+      |Text {
     const node = (invalidation.nodeId && this._relatedNodesMap) ? this._relatedNodesMap.get(invalidation.nodeId) : null;
     if (node) {
       const nodeSpan = document.createElement('span');
@@ -3725,12 +3501,11 @@ export class InvalidationsGroupElement extends UI.TreeOutline.TreeElement {
 export const previewElementSymbol = Symbol('previewElement');
 
 export class EventDispatchTypeDescriptor {
-  /**
-   * @param {number} priority
-   * @param {string} color
-   * @param {!Array.<string>} eventTypes
-   */
-  constructor(priority, color, eventTypes) {
+  priority: number;
+  color: string;
+  eventTypes: string[];
+
+  constructor(priority: number, color: string, eventTypes: string[]) {
     this.priority = priority;
     this.color = color;
     this.eventTypes = eventTypes;
@@ -3738,14 +3513,14 @@ export class EventDispatchTypeDescriptor {
 }
 
 export class TimelineCategory extends Common.ObjectWrapper.ObjectWrapper {
-  /**
-   * @param {string} name
-   * @param {string} title
-   * @param {boolean} visible
-   * @param {string} childColor
-   * @param {string} color
-   */
-  constructor(name, title, visible, childColor, color) {
+  name: string;
+  title: string;
+  visible: boolean;
+  childColor: string;
+  color: string;
+  _hidden?: boolean;
+
+  constructor(name: string, title: string, visible: boolean, childColor: string, color: string) {
     super();
     this.name = name;
     this.title = title;
@@ -3755,32 +3530,28 @@ export class TimelineCategory extends Common.ObjectWrapper.ObjectWrapper {
     this.hidden = false;
   }
 
-  /**
-   * @return {boolean}
-   */
-  get hidden() {
+  get hidden(): boolean {
     return Boolean(this._hidden);
   }
 
-  /**
-   * @param {boolean} hidden
-   */
-  set hidden(hidden) {
+  set hidden(hidden: boolean) {
     this._hidden = hidden;
     this.dispatchEventToListeners(TimelineCategory.Events.VisibilityChanged, this);
   }
 }
 
-/** @enum {symbol} */
-TimelineCategory.Events = {
-  VisibilityChanged: Symbol('VisibilityChanged')
-};
+export namespace TimelineCategory {
+  // TODO(crbug.com/1167717): Make this a const enum again
+  // eslint-disable-next-line rulesdir/const_enum
+  export enum Events {
+    VisibilityChanged = 'VisibilityChanged',
+  }
+}
 
 export class TimelinePopupContentHelper {
-  /**
-   * @param {string} title
-   */
-  constructor(title) {
+  _contentTable: HTMLTableElement;
+
+  constructor(title: string) {
     this._contentTable = document.createElement('table');
     const titleCell = this._createCell(i18nString(UIStrings.sDetails, {PH1: title}), 'timeline-details-title');
     titleCell.colSpan = 2;
@@ -3789,18 +3560,11 @@ export class TimelinePopupContentHelper {
     this._contentTable.appendChild(titleRow);
   }
 
-  /**
-   * @return {!Element}
-   */
-  contentTable() {
+  contentTable(): Element {
     return this._contentTable;
   }
 
-  /**
-   * @param {string|number} content
-   * @param {string=} styleName
-   */
-  _createCell(content, styleName) {
+  _createCell(content: string|number, styleName?: string): HTMLTableDataCellElement {
     const text = document.createElement('label');
     UI.UIUtils.createTextChild(text, String(content));
     const cell = document.createElement('td');
@@ -3812,22 +3576,14 @@ export class TimelinePopupContentHelper {
     return cell;
   }
 
-  /**
-   * @param {string} title
-   * @param {string|number} content
-   */
-  appendTextRow(title, content) {
+  appendTextRow(title: string, content: string|number): void {
     const row = document.createElement('tr');
     row.appendChild(this._createCell(title, 'timeline-details-row-title'));
     row.appendChild(this._createCell(content, 'timeline-details-row-data'));
     this._contentTable.appendChild(row);
   }
 
-  /**
-   * @param {string} title
-   * @param {!Node|string} content
-   */
-  appendElementRow(title, content) {
+  appendElementRow(title: string, content: string|Node): void {
     const row = document.createElement('tr');
     const titleCell = this._createCell(title, 'timeline-details-row-title');
     row.appendChild(titleCell);
@@ -3844,11 +3600,13 @@ export class TimelinePopupContentHelper {
 }
 
 export class TimelineDetailsContentHelper {
-  /**
-   * @param {?SDK.SDKModel.Target} target
-   * @param {?Components.Linkifier.Linkifier} linkifier
-   */
-  constructor(target, linkifier) {
+  fragment: DocumentFragment;
+  _linkifier: Components.Linkifier.Linkifier|null;
+  _target: SDK.SDKModel.Target|null;
+  element: HTMLDivElement;
+  _tableElement: HTMLElement;
+
+  constructor(target: SDK.SDKModel.Target|null, linkifier: Components.Linkifier.Linkifier|null) {
     this.fragment = document.createDocumentFragment();
 
     this._linkifier = linkifier;
@@ -3860,11 +3618,7 @@ export class TimelineDetailsContentHelper {
     this.fragment.appendChild(this.element);
   }
 
-  /**
-   * @param {string} title
-   * @param {string=} swatchColor
-   */
-  addSection(title, swatchColor) {
+  addSection(title: string, swatchColor?: string): void {
     if (!this._tableElement.hasChildNodes()) {
       this.element.removeChildren();
     } else {
@@ -3885,30 +3639,17 @@ export class TimelineDetailsContentHelper {
     this.fragment.appendChild(this.element);
   }
 
-  /**
-   * @return {?Components.Linkifier.Linkifier}
-   */
-  linkifier() {
+  linkifier(): Components.Linkifier.Linkifier|null {
     return this._linkifier;
   }
 
-  /**
-   * @param {string} title
-   * @param {string|number|boolean} value
-   */
-  appendTextRow(title, value) {
+  appendTextRow(title: string, value: string|number|boolean): void {
     const rowElement = this._tableElement.createChild('div', 'timeline-details-view-row');
     rowElement.createChild('div', 'timeline-details-view-row-title').textContent = title;
     rowElement.createChild('div', 'timeline-details-view-row-value').textContent = value.toString();
   }
 
-  /**
-   * @param {string} title
-   * @param {!Node|string} content
-   * @param {boolean=} isWarning
-   * @param {boolean=} isStacked
-   */
-  appendElementRow(title, content, isWarning, isStacked) {
+  appendElementRow(title: string, content: string|Node, isWarning?: boolean, isStacked?: boolean): void {
     const rowElement = this._tableElement.createChild('div', 'timeline-details-view-row');
     if (isWarning) {
       rowElement.classList.add('timeline-details-warning');
@@ -3926,13 +3667,7 @@ export class TimelineDetailsContentHelper {
     }
   }
 
-  /**
-   * @param {string} title
-   * @param {string} url
-   * @param {number} startLine
-   * @param {number=} startColumn
-   */
-  appendLocationRow(title, url, startLine, startColumn) {
+  appendLocationRow(title: string, url: string, startLine: number, startColumn?: number): void {
     if (!this._linkifier || !this._target) {
       return;
     }
@@ -3946,7 +3681,7 @@ export class TimelineDetailsContentHelper {
       lineNumber: undefined,
       preventClick: undefined,
       maxLength: undefined,
-      bypassURLTrimming: undefined
+      bypassURLTrimming: undefined,
     };
     const link = this._linkifier.maybeLinkifyScriptLocation(this._target, null, url, startLine, options);
     if (!link) {
@@ -3955,13 +3690,7 @@ export class TimelineDetailsContentHelper {
     this.appendElementRow(title, link);
   }
 
-  /**
-   * @param {string} title
-   * @param {string} url
-   * @param {number} startLine
-   * @param {number=} endLine
-   */
-  appendLocationRange(title, url, startLine, endLine) {
+  appendLocationRange(title: string, url: string, startLine: number, endLine?: number): void {
     if (!this._linkifier || !this._target) {
       return;
     }
@@ -3978,11 +3707,7 @@ export class TimelineDetailsContentHelper {
     this.appendElementRow(title, locationContent);
   }
 
-  /**
-   * @param {string} title
-   * @param {!Protocol.Runtime.StackTrace} stackTrace
-   */
-  appendStackTrace(title, stackTrace) {
+  appendStackTrace(title: string, stackTrace: Protocol.Runtime.StackTrace): void {
     if (!this._linkifier || !this._target) {
       return;
     }
@@ -3992,11 +3717,7 @@ export class TimelineDetailsContentHelper {
     this.createChildStackTraceElement(rowElement, stackTrace);
   }
 
-  /**
-   * @param {!Element} parentElement
-   * @param {!Protocol.Runtime.StackTrace} stackTrace
-   */
-  createChildStackTraceElement(parentElement, stackTrace) {
+  createChildStackTraceElement(parentElement: Element, stackTrace: Protocol.Runtime.StackTrace): void {
     if (!this._linkifier || !this._target) {
       return;
     }
@@ -4008,11 +3729,7 @@ export class TimelineDetailsContentHelper {
     stackTraceElement.appendChild(callFrameContents.element);
   }
 
-  /**
-   * @param {!SDK.TracingModel.Event} event
-   * @param {string=} warningType
-   */
-  appendWarningRow(event, warningType) {
+  appendWarningRow(event: SDK.TracingModel.Event, warningType?: string): void {
     const warning = TimelineUIUtils.eventWarning(event, warningType);
     if (warning) {
       this.appendElementRow(i18nString(UIStrings.warning), warning, true);
@@ -4021,16 +3738,11 @@ export class TimelineDetailsContentHelper {
 }
 
 export const categoryBreakdownCacheSymbol = Symbol('categoryBreakdownCache');
-
-/**
- * @typedef {!{
- *     title: string,
- *     color: string,
- *     lineWidth: number,
- *     dashStyle: !Array.<number>,
- *     tall: boolean,
- *     lowPriority: boolean
- * }}
- */
-// @ts-ignore Typedef.
-export let TimelineMarkerStyle;
+export interface TimelineMarkerStyle {
+  title: string;
+  color: string;
+  lineWidth: number;
+  dashStyle: number[];
+  tall: boolean;
+  lowPriority: boolean;
+}

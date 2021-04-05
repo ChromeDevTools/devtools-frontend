@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Bindings from '../bindings/bindings.js';
 import * as Common from '../common/common.js';
 import * as i18n from '../core/i18n/i18n.js';
@@ -31,42 +33,24 @@ const UIStrings = {
   */
   sAtS: '{PH1} at {PH2}',
 };
-const str_ = i18n.i18n.registerUIStrings('timeline/TimelineFlameChartView.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('timeline/TimelineFlameChartView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 class MainSplitWidget extends UI.SplitWidget.SplitWidget {
-  /**
-   * @param {boolean} isVertical
-   * @param {boolean} secondIsSidebar
-   * @param {string=} settingName
-   * @param {number=} defaultSidebarWidth
-   * @param {number=} defaultSidebarHeight
-   * @param {boolean=} constraintsInDip
-   */
-  constructor(isVertical, secondIsSidebar, settingName, defaultSidebarWidth, defaultSidebarHeight, constraintsInDip) {
+  _webVitals!: WebVitalsIntegrator;
+  _model!: PerformanceModel|null;
+  constructor(
+      isVertical: boolean, secondIsSidebar: boolean, settingName?: string, defaultSidebarWidth?: number,
+      defaultSidebarHeight?: number, constraintsInDip?: boolean) {
     super(isVertical, secondIsSidebar, settingName, defaultSidebarWidth, defaultSidebarHeight, constraintsInDip);
-
-    /** @type {!WebVitalsIntegrator} */
-    this._webVitals;
-
-    /** @type {?PerformanceModel} */
-    this._model;
   }
 
-  /**
-   * @param {!WebVitalsIntegrator} webVitals
-   */
-  setWebVitals(webVitals) {
+  setWebVitals(webVitals: WebVitalsIntegrator): void {
     /** @type {!WebVitalsIntegrator} */
     this._webVitals = webVitals;
     this._webVitals.setMinimumSize(0, 120);
   }
 
-  /**
-   * @param {number} left
-   * @param {number} right
-   * @param {boolean} animate
-   */
-  setWindowTimes(left, right, animate) {
+  setWindowTimes(left: number, right: number, animate: boolean): void {
     if (!this._webVitals) {
       return;
     }
@@ -85,10 +69,7 @@ class MainSplitWidget extends UI.SplitWidget.SplitWidget {
     };
   }
 
-  /**
-   * @param {?PerformanceModel} model
-   */
-  setModelAndUpdateBoundaries(model) {
+  setModelAndUpdateBoundaries(model: PerformanceModel|null): void {
     this._model = model;
     if (!this._webVitals || !model) {
       return;
@@ -98,16 +79,15 @@ class MainSplitWidget extends UI.SplitWidget.SplitWidget {
     const right = model.window().right;
     const timelineModel = model.timelineModel();
 
-    /** @type {!Array<!SDK.TracingModel.Event>} */
-    const events = timelineModel.tracks().reduce(
-        (prev, curr) => prev.concat(curr.events), /** @type {!Array<!SDK.TracingModel.Event>} */ ([]));
+    const events: SDK.TracingModel.Event[] =
+        timelineModel.tracks().reduce((prev, curr) => prev.concat(curr.events), ([] as SDK.TracingModel.Event[]));
     const minimumBoundary = model.timelineModel().minimumRecordTime();
 
-    const prepareEvents = /** @param {function(!SDK.TracingModel.Event): boolean} filterFunction */ filterFunction =>
+    const prepareEvents = (filterFunction: (arg0: SDK.TracingModel.Event) => boolean): number[] =>
         events.filter(filterFunction).map(e => e.startTime - minimumBoundary);
 
     const lcpEvents = events.filter(e => timelineModel.isLCPCandidateEvent(e) || timelineModel.isLCPInvalidateEvent(e));
-    const lcpEventsByNavigationId = new Map();
+    const lcpEventsByNavigationId = new Map<string, SDK.TracingModel.Event>();
     for (const e of lcpEvents) {
       const navigationId = e.args['data']['navigationId'];
       const previousLastEvent = lcpEventsByNavigationId.get(navigationId);
@@ -141,23 +121,52 @@ class MainSplitWidget extends UI.SplitWidget.SplitWidget {
   }
 }
 
-/**
- * @implements {PerfUI.FlameChart.FlameChartDelegate}
- * @implements {UI.SearchableView.Searchable}
- */
-export class TimelineFlameChartView extends UI.Widget.VBox {
-  /**
-   * @param {!TimelineModeViewDelegate} delegate
-   */
-  constructor(delegate) {
+export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.FlameChart.FlameChartDelegate,
+                                                                      UI.SearchableView.Searchable {
+  _delegate: TimelineModeViewDelegate;
+  _model: PerformanceModel|null;
+  _searchResults!: number[]|undefined;
+  _eventListeners: Common.EventTarget.EventDescriptor[];
+  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  _showMemoryGraphSetting: Common.Settings.Setting<any>;
+  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  _showWebVitalsSetting: Common.Settings.Setting<any>;
+  _networkSplitWidget: UI.SplitWidget.SplitWidget;
+  _mainDataProvider: TimelineFlameChartDataProvider;
+  _mainFlameChart: PerfUI.FlameChart.FlameChart;
+  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  _networkFlameChartGroupExpansionSetting: Common.Settings.Setting<any>;
+  _networkDataProvider: TimelineFlameChartNetworkDataProvider;
+  _networkFlameChart: PerfUI.FlameChart.FlameChart;
+  _networkPane: UI.Widget.VBox;
+  _splitResizer: HTMLElement;
+  _webVitals: WebVitalsIntegrator;
+  _mainSplitWidget: MainSplitWidget;
+  _chartSplitWidget: UI.SplitWidget.SplitWidget;
+  _countersView: CountersGraph;
+  _detailsSplitWidget: UI.SplitWidget.SplitWidget;
+  _detailsView: TimelineDetailsView;
+  _onMainEntrySelected: (event?: Common.EventTarget.EventTargetEvent) => void;
+  _onNetworkEntrySelected: (event?: Common.EventTarget.EventTargetEvent) => void;
+  _nextExtensionIndex: number;
+  _boundRefresh: () => void;
+  _selectedTrack: TimelineModel.TimelineModel.Track|null;
+  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  _groupBySetting: Common.Settings.Setting<any>;
+  _searchableView!: UI.SearchableView.SearchableView;
+  _urlToColorCache?: Map<string, string>;
+  _needsResizeToPreferredHeights?: boolean;
+  _selectedSearchResult?: number;
+  _searchRegex?: RegExp;
+  constructor(delegate: TimelineModeViewDelegate) {
     super();
     this.element.classList.add('timeline-flamechart');
     this._delegate = delegate;
-    /** @type {?PerformanceModel} */
     this._model = null;
-    /** @type {!Array<number>|undefined} */
-    this._searchResults;
-    /** @type {!Array<!Common.EventTarget.EventDescriptor>} */
     this._eventListeners = [];
 
     this._showMemoryGraphSetting = Common.Settings.Settings.instance().createSetting('timelineShowMemory', false);
@@ -211,7 +220,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox {
     this._chartSplitWidget.setMainWidget(this._networkSplitWidget);
     this._chartSplitWidget.setSidebarWidget(this._countersView);
     this._chartSplitWidget.hideDefaultResizer();
-    this._chartSplitWidget.installResizer(/** @type {!Element} */ (this._countersView.resizerElement()));
+    this._chartSplitWidget.installResizer((this._countersView.resizerElement() as Element));
     this._updateCountersGraphToggle();
 
     // Create top level properties splitter.
@@ -223,11 +232,16 @@ export class TimelineFlameChartView extends UI.Widget.VBox {
     this._detailsSplitWidget.setSidebarWidget(this._detailsView);
     this._detailsSplitWidget.show(this.element);
 
+    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+    // @ts-expect-error
     this._onMainEntrySelected = this._onEntrySelected.bind(this, this._mainDataProvider);
+    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+    // @ts-expect-error
     this._onNetworkEntrySelected = this._onEntrySelected.bind(this, this._networkDataProvider);
     this._mainFlameChart.addEventListener(PerfUI.FlameChart.Events.EntrySelected, this._onMainEntrySelected, this);
     this._mainFlameChart.addEventListener(PerfUI.FlameChart.Events.EntryInvoked, this._onMainEntrySelected, this);
-    this._networkFlameChart.addEventListener(PerfUI.FlameChart.Events.EntrySelected, this._onNetworkEntrySelected, this);
+    this._networkFlameChart.addEventListener(
+        PerfUI.FlameChart.Events.EntrySelected, this._onNetworkEntrySelected, this);
     this._networkFlameChart.addEventListener(PerfUI.FlameChart.Events.EntryInvoked, this._onNetworkEntrySelected, this);
     this._mainFlameChart.addEventListener(PerfUI.FlameChart.Events.EntryHighlighted, this._onEntryHighlighted, this);
     this._nextExtensionIndex = 0;
@@ -240,12 +254,9 @@ export class TimelineFlameChartView extends UI.Widget.VBox {
         'timelineTreeGroupBy', AggregatedTimelineTreeView.GroupBy.None);
     this._groupBySetting.addChangeListener(this._updateColorMapper, this);
     this._updateColorMapper();
-
-    /** @type {!UI.SearchableView.SearchableView} */
-    this._searchableView;
   }
 
-  toggleWebVitalsLane() {
+  toggleWebVitalsLane(): void {
     if (this._showWebVitalsSetting.get()) {
       this._mainSplitWidget.showBoth();
       this._mainSplitWidget.setSidebarSize(120);
@@ -256,8 +267,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox {
     }
   }
 
-  _updateColorMapper() {
-    /** @type {!Map<string, string>} */
+  _updateColorMapper(): void {
     this._urlToColorCache = new Map();
     if (!this._model) {
       return;
@@ -266,11 +276,8 @@ export class TimelineFlameChartView extends UI.Widget.VBox {
     this._mainFlameChart.update();
   }
 
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  _onWindowChanged(event) {
-    const window = /** @type {!Window} */ (event.data.window);
+  _onWindowChanged(event: Common.EventTarget.EventTargetEvent): void {
+    const window = (event.data.window as Window);
     const animate = Boolean(event.data.animate);
     this._mainFlameChart.setWindowTimes(window.left, window.right, animate);
     this._networkFlameChart.setWindowTimes(window.left, window.right, animate);
@@ -279,33 +286,17 @@ export class TimelineFlameChartView extends UI.Widget.VBox {
     this._updateSearchResults(false, false);
   }
 
-  /**
-   * @override
-   * @param {number} windowStartTime
-   * @param {number} windowEndTime
-   * @param {boolean} animate
-   */
-  windowChanged(windowStartTime, windowEndTime, animate) {
+  windowChanged(windowStartTime: number, windowEndTime: number, animate: boolean): void {
     if (this._model) {
       this._model.setWindow({left: windowStartTime, right: windowEndTime}, animate);
     }
   }
 
-  /**
-   * @override
-   * @param {number} startTime
-   * @param {number} endTime
-   */
-  updateRangeSelection(startTime, endTime) {
+  updateRangeSelection(startTime: number, endTime: number): void {
     this._delegate.select(TimelineSelection.fromRange(startTime, endTime));
   }
 
-  /**
-   * @override
-   * @param {!PerfUI.FlameChart.FlameChart} flameChart
-   * @param {?PerfUI.FlameChart.Group} group
-   */
-  updateSelectedGroup(flameChart, group) {
+  updateSelectedGroup(flameChart: PerfUI.FlameChart.FlameChart, group: PerfUI.FlameChart.Group|null): void {
     if (flameChart !== this._mainFlameChart) {
       return;
     }
@@ -314,10 +305,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox {
     this._updateTrack();
   }
 
-  /**
-   * @param {?PerformanceModel} model
-   */
-  setModel(model) {
+  setModel(model: PerformanceModel|null): void {
     if (model === this._model) {
       return;
     }
@@ -329,7 +317,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox {
     if (this._model) {
       this._eventListeners = [
         this._model.addEventListener(PerformanceModelEvents.WindowChanged, this._onWindowChanged, this),
-        this._model.addEventListener(PerformanceModelEvents.ExtensionDataAdded, this._appendExtensionData, this)
+        this._model.addEventListener(PerformanceModelEvents.ExtensionDataAdded, this._appendExtensionData, this),
       ];
       const window = this._model.window();
       this._mainFlameChart.setWindowTimes(window.left, window.right);
@@ -345,12 +333,12 @@ export class TimelineFlameChartView extends UI.Widget.VBox {
     this._refresh();
   }
 
-  _updateTrack() {
+  _updateTrack(): void {
     this._countersView.setModel(this._model, this._selectedTrack);
     this._detailsView.setModel(this._model, this._selectedTrack);
   }
 
-  _refresh() {
+  _refresh(): void {
     if (this._networkDataProvider.isEmpty()) {
       this._mainFlameChart.enableRuler(true);
       this._networkSplitWidget.hideSidebar();
@@ -364,7 +352,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox {
     this._updateSearchResults(false, false);
   }
 
-  _appendExtensionData() {
+  _appendExtensionData(): void {
     if (!this._model) {
       return;
     }
@@ -375,12 +363,9 @@ export class TimelineFlameChartView extends UI.Widget.VBox {
     this._mainFlameChart.scheduleUpdate();
   }
 
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} commonEvent
-   */
-  _onEntryHighlighted(commonEvent) {
+  _onEntryHighlighted(commonEvent: Common.EventTarget.EventTargetEvent): void {
     SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();
-    const entryIndex = /** @type {number} */ (commonEvent.data);
+    const entryIndex = (commonEvent.data as number);
     const event = this._mainDataProvider.eventByIndex(entryIndex);
     if (!event) {
       return;
@@ -399,10 +384,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox {
     }
   }
 
-  /**
-   * @param {?SDK.TracingModel.Event} event
-   */
-  highlightEvent(event) {
+  highlightEvent(event: SDK.TracingModel.Event|null): void {
     const entryIndex =
         event ? this._mainDataProvider.entryIndexForSelection(TimelineSelection.fromTraceEvent(event)) : -1;
     if (entryIndex >= 0) {
@@ -412,19 +394,13 @@ export class TimelineFlameChartView extends UI.Widget.VBox {
     }
   }
 
-  /**
-   * @override
-   */
-  willHide() {
+  willHide(): void {
     this._networkFlameChartGroupExpansionSetting.removeChangeListener(this.resizeToPreferredHeights, this);
     this._showMemoryGraphSetting.removeChangeListener(this._updateCountersGraphToggle, this);
     Bindings.IgnoreListManager.IgnoreListManager.instance().removeChangeListener(this._boundRefresh);
   }
 
-  /**
-   * @override
-   */
-  wasShown() {
+  wasShown(): void {
     this._networkFlameChartGroupExpansionSetting.addChangeListener(this.resizeToPreferredHeights, this);
     this._showMemoryGraphSetting.addChangeListener(this._updateCountersGraphToggle, this);
     Bindings.IgnoreListManager.IgnoreListManager.instance().addChangeListener(this._boundRefresh);
@@ -435,7 +411,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox {
     this._networkFlameChart.scheduleUpdate();
   }
 
-  _updateCountersGraphToggle() {
+  _updateCountersGraphToggle(): void {
     if (this._showMemoryGraphSetting.get()) {
       this._chartSplitWidget.showBoth();
     } else {
@@ -443,10 +419,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox {
     }
   }
 
-  /**
-   * @param {?TimelineSelection} selection
-   */
-  setSelection(selection) {
+  setSelection(selection: TimelineSelection|null): void {
     let index = this._mainDataProvider.entryIndexForSelection(selection);
     this._mainFlameChart.setSelectedEntry(index);
     index = this._networkDataProvider.entryIndexForSelection(selection);
@@ -456,22 +429,18 @@ export class TimelineFlameChartView extends UI.Widget.VBox {
     }
   }
 
-  /**
-   * @param {!PerfUI.FlameChart.FlameChartDataProvider} dataProvider
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  _onEntrySelected(dataProvider, event) {
-    const entryIndex = /** @type{number} */ (event.data);
+  _onEntrySelected(dataProvider: PerfUI.FlameChart.FlameChartDataProvider, event: Common.EventTarget.EventTargetEvent):
+      void {
+    const entryIndex = (event.data as number);
     if (Root.Runtime.experiments.isEnabled('timelineEventInitiators') && dataProvider === this._mainDataProvider) {
       if (this._mainDataProvider.buildFlowForInitiator(entryIndex)) {
         this._mainFlameChart.scheduleUpdate();
       }
     }
-    this._delegate.select(
-        /** @type {!TimelineFlameChartNetworkDataProvider} */ (dataProvider).createSelection(entryIndex));
+    this._delegate.select((dataProvider as TimelineFlameChartNetworkDataProvider).createSelection(entryIndex));
   }
 
-  resizeToPreferredHeights() {
+  resizeToPreferredHeights(): void {
     if (!this.isShowing()) {
       this._needsResizeToPreferredHeights = true;
       return;
@@ -484,19 +453,13 @@ export class TimelineFlameChartView extends UI.Widget.VBox {
         2);
   }
 
-  /**
-   * @param {!UI.SearchableView.SearchableView} searchableView
-   */
-  setSearchableView(searchableView) {
+  setSearchableView(searchableView: UI.SearchableView.SearchableView): void {
     this._searchableView = searchableView;
   }
 
   // UI.SearchableView.Searchable implementation
 
-  /**
-   * @override
-   */
-  jumpToNextSearchResult() {
+  jumpToNextSearchResult(): void {
     if (!this._searchResults || !this._searchResults.length) {
       return;
     }
@@ -506,10 +469,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox {
     this._selectSearchResult(Platform.NumberUtilities.mod(index + 1, this._searchResults.length));
   }
 
-  /**
-   * @override
-   */
-  jumpToPreviousSearchResult() {
+  jumpToPreviousSearchResult(): void {
     if (!this._searchResults || !this._searchResults.length) {
       return;
     }
@@ -518,26 +478,15 @@ export class TimelineFlameChartView extends UI.Widget.VBox {
     this._selectSearchResult(Platform.NumberUtilities.mod(index - 1, this._searchResults.length));
   }
 
-  /**
-   * @override
-   * @return {boolean}
-   */
-  supportsCaseSensitiveSearch() {
+  supportsCaseSensitiveSearch(): boolean {
     return true;
   }
 
-  /**
-   * @override
-   * @return {boolean}
-   */
-  supportsRegexSearch() {
+  supportsRegexSearch(): boolean {
     return true;
   }
 
-  /**
-   * @param {number} index
-   */
-  _selectSearchResult(index) {
+  _selectSearchResult(index: number): void {
     this._searchableView.updateCurrentMatchIndex(index);
     if (this._searchResults) {
       this._selectedSearchResult = this._searchResults[index];
@@ -545,12 +494,8 @@ export class TimelineFlameChartView extends UI.Widget.VBox {
     }
   }
 
-  /**
-   * @param {boolean} shouldJump
-   * @param {boolean=} jumpBackwards
-   */
-  _updateSearchResults(shouldJump, jumpBackwards) {
-    const oldSelectedSearchResult = /** @type {number} */ (this._selectedSearchResult);
+  _updateSearchResults(shouldJump: boolean, jumpBackwards?: boolean): void {
+    const oldSelectedSearchResult = (this._selectedSearchResult as number);
     delete this._selectedSearchResult;
     this._searchResults = [];
     if (!this._searchRegex || !this._model) {
@@ -570,10 +515,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox {
     this._selectSearchResult(selectedIndex);
   }
 
-  /**
-   * @override
-   */
-  searchCanceled() {
+  searchCanceled(): void {
     if (typeof this._selectedSearchResult !== 'undefined') {
       this._delegate.select(null);
     }
@@ -582,69 +524,44 @@ export class TimelineFlameChartView extends UI.Widget.VBox {
     delete this._searchRegex;
   }
 
-  /**
-   * @override
-   * @param {!UI.SearchableView.SearchConfig} searchConfig
-   * @param {boolean} shouldJump
-   * @param {boolean=} jumpBackwards
-   */
-  performSearch(searchConfig, shouldJump, jumpBackwards) {
+  performSearch(searchConfig: UI.SearchableView.SearchConfig, shouldJump: boolean, jumpBackwards?: boolean): void {
     this._searchRegex = searchConfig.toSearchRegex();
     this._updateSearchResults(shouldJump, jumpBackwards);
   }
 }
 
 export class Selection {
-  /**
-   * @param {!TimelineSelection} selection
-   * @param {number} entryIndex
-   */
-  constructor(selection, entryIndex) {
+  timelineSelection: TimelineSelection;
+  entryIndex: number;
+  constructor(selection: TimelineSelection, entryIndex: number) {
     this.timelineSelection = selection;
     this.entryIndex = entryIndex;
   }
 }
 
 export const FlameChartStyle = {
-  textColor: '#333'
+  textColor: '#333',
 };
 
-/**
- * @implements {PerfUI.FlameChart.FlameChartMarker}
- */
-export class TimelineFlameChartMarker {
-  /**
-   * @param {number} startTime
-   * @param {number} startOffset
-   * @param {!TimelineMarkerStyle} style
-   */
-  constructor(startTime, startOffset, style) {
+export class TimelineFlameChartMarker implements PerfUI.FlameChart.FlameChartMarker {
+  _startTime: number;
+  _startOffset: number;
+  _style: TimelineMarkerStyle;
+  constructor(startTime: number, startOffset: number, style: TimelineMarkerStyle) {
     this._startTime = startTime;
     this._startOffset = startOffset;
     this._style = style;
   }
 
-  /**
-   * @override
-   * @return {number}
-   */
-  startTime() {
+  startTime(): number {
     return this._startTime;
   }
 
-  /**
-   * @override
-   * @return {string}
-   */
-  color() {
+  color(): string {
     return this._style.color;
   }
 
-  /**
-   * @override
-   * @return {?string}
-   */
-  title() {
+  title(): string|null {
     if (this._style.lowPriority) {
       return null;
     }
@@ -652,14 +569,7 @@ export class TimelineFlameChartMarker {
     return i18nString(UIStrings.sAtS, {PH1: this._style.title, PH2: startTime});
   }
 
-  /**
-   * @override
-   * @param {!CanvasRenderingContext2D} context
-   * @param {number} x
-   * @param {number} height
-   * @param {number} pixelsPerMillisecond
-   */
-  draw(context, x, height, pixelsPerMillisecond) {
+  draw(context: CanvasRenderingContext2D, x: number, height: number, pixelsPerMillisecond: number): void {
     const lowPriorityVisibilityThresholdInPixelsPerMs = 4;
 
     if (this._style.lowPriority && pixelsPerMillisecond < lowPriorityVisibilityThresholdInPixelsPerMs) {
@@ -681,7 +591,8 @@ export class TimelineFlameChartMarker {
   }
 }
 
-/** @enum {string} */
-export const ColorBy = {
-  URL: 'URL',
-};
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum ColorBy {
+  URL = 'URL',
+}

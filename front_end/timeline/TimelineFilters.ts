@@ -2,30 +2,25 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as SDK from '../core/sdk/sdk.js';  // eslint-disable-line no-unused-vars
 import * as TimelineModel from '../timeline_model/timeline_model.js';
 
 import {TimelineUIUtils} from './TimelineUIUtils.js';
 
 export class IsLong extends TimelineModel.TimelineModelFilter.TimelineModelFilter {
+  _minimumRecordDuration: number;
   constructor() {
     super();
     this._minimumRecordDuration = 0;
   }
 
-  /**
-   * @param {number} value
-   */
-  setMinimumRecordDuration(value) {
+  setMinimumRecordDuration(value: number): void {
     this._minimumRecordDuration = value;
   }
 
-  /**
-   * @override
-   * @param {!SDK.TracingModel.Event} event
-   * @return {boolean}
-   */
-  accept(event) {
+  accept(event: SDK.TracingModel.Event): boolean {
     const duration = event.endTime ? event.endTime - event.startTime : 0;
     return duration >= this._minimumRecordDuration;
   }
@@ -36,47 +31,27 @@ export class Category extends TimelineModel.TimelineModelFilter.TimelineModelFil
     super();
   }
 
-  /**
-   * @override
-   * @param {!SDK.TracingModel.Event} event
-   * @return {boolean}
-   */
-  accept(event) {
+  accept(event: SDK.TracingModel.Event): boolean {
     return !TimelineUIUtils.eventStyle(event).category.hidden;
   }
 }
 
 export class TimelineRegExp extends TimelineModel.TimelineModelFilter.TimelineModelFilter {
-  /**
-   * @param {!RegExp=} regExp
-   */
-  constructor(regExp) {
+  _regExp!: RegExp|null;
+  constructor(regExp?: RegExp) {
     super();
-    /** @type {?RegExp} */
-    this._regExp;
     this.setRegExp(regExp || null);
   }
 
-  /**
-   * @param {?RegExp} regExp
-   */
-  setRegExp(regExp) {
+  setRegExp(regExp: RegExp|null): void {
     this._regExp = regExp;
   }
 
-  /**
-   * @return {?RegExp}
-   */
-  regExp() {
+  regExp(): RegExp|null {
     return this._regExp;
   }
 
-  /**
-   * @override
-   * @param {!SDK.TracingModel.Event} event
-   * @return {boolean}
-   */
-  accept(event) {
+  accept(event: SDK.TracingModel.Event): boolean {
     return !this._regExp || TimelineUIUtils.testContentMatching(event, this._regExp);
   }
 }

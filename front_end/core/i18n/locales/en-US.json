@@ -9752,37 +9752,37 @@
   "timeline_model/TimelineModel.ts | workerSS": {
     "message": "Worker: {PH1} — {PH2}"
   },
-  "timeline/CountersGraph.js | documents": {
+  "timeline/CountersGraph.ts | documents": {
     "message": "Documents"
   },
-  "timeline/CountersGraph.js | gpuMemory": {
+  "timeline/CountersGraph.ts | gpuMemory": {
     "message": "GPU Memory"
   },
-  "timeline/CountersGraph.js | jsHeap": {
+  "timeline/CountersGraph.ts | jsHeap": {
     "message": "JS Heap"
   },
-  "timeline/CountersGraph.js | listeners": {
+  "timeline/CountersGraph.ts | listeners": {
     "message": "Listeners"
   },
-  "timeline/CountersGraph.js | nodes": {
+  "timeline/CountersGraph.ts | nodes": {
     "message": "Nodes"
   },
-  "timeline/CountersGraph.js | ss": {
+  "timeline/CountersGraph.ts | ss": {
     "message": "[{PH1} – {PH2}]"
   },
-  "timeline/EventsTimelineTreeView.js | all": {
+  "timeline/EventsTimelineTreeView.ts | all": {
     "message": "All"
   },
-  "timeline/EventsTimelineTreeView.js | Dms": {
+  "timeline/EventsTimelineTreeView.ts | Dms": {
     "message": "{PH1} ms"
   },
-  "timeline/EventsTimelineTreeView.js | durationFilter": {
+  "timeline/EventsTimelineTreeView.ts | durationFilter": {
     "message": "Duration filter"
   },
-  "timeline/EventsTimelineTreeView.js | filterEventLog": {
+  "timeline/EventsTimelineTreeView.ts | filterEventLog": {
     "message": "Filter event log"
   },
-  "timeline/EventsTimelineTreeView.js | startTime": {
+  "timeline/EventsTimelineTreeView.ts | startTime": {
     "message": "Start Time"
   },
   "timeline/timeline-meta.ts | hideChromeFrameInLayersView": {
@@ -9830,1198 +9830,1198 @@
   "timeline/timeline-meta.ts | stop": {
     "message": "Stop"
   },
-  "timeline/TimelineController.js | cpuProfileForATargetIsNot": {
+  "timeline/TimelineController.ts | cpuProfileForATargetIsNot": {
     "message": "CPU profile for a target is not available."
   },
-  "timeline/TimelineDetailsView.js | bottomup": {
+  "timeline/TimelineDetailsView.ts | bottomup": {
     "message": "Bottom-Up"
   },
-  "timeline/TimelineDetailsView.js | callTree": {
+  "timeline/TimelineDetailsView.ts | callTree": {
     "message": "Call Tree"
   },
-  "timeline/TimelineDetailsView.js | estimated": {
+  "timeline/TimelineDetailsView.ts | estimated": {
     "message": "estimated"
   },
-  "timeline/TimelineDetailsView.js | eventLog": {
+  "timeline/TimelineDetailsView.ts | eventLog": {
     "message": "Event Log"
   },
-  "timeline/TimelineDetailsView.js | layers": {
+  "timeline/TimelineDetailsView.ts | layers": {
     "message": "Layers"
   },
-  "timeline/TimelineDetailsView.js | learnMore": {
+  "timeline/TimelineDetailsView.ts | learnMore": {
     "message": "Learn more"
   },
-  "timeline/TimelineDetailsView.js | paintProfiler": {
+  "timeline/TimelineDetailsView.ts | paintProfiler": {
     "message": "Paint Profiler"
   },
-  "timeline/TimelineDetailsView.js | rangeSS": {
+  "timeline/TimelineDetailsView.ts | rangeSS": {
     "message": "Range:  {PH1} – {PH2}"
   },
-  "timeline/TimelineDetailsView.js | summary": {
+  "timeline/TimelineDetailsView.ts | summary": {
     "message": "Summary"
   },
-  "timeline/TimelineDetailsView.js | totalBlockingTimeSmss": {
+  "timeline/TimelineDetailsView.ts | totalBlockingTimeSmss": {
     "message": "Total blocking time: {PH1}ms{PH2}"
   },
-  "timeline/TimelineEventOverview.js | coverage": {
+  "timeline/TimelineEventOverview.ts | coverage": {
     "message": "COVERAGE"
   },
-  "timeline/TimelineEventOverview.js | cpu": {
+  "timeline/TimelineEventOverview.ts | cpu": {
     "message": "CPU"
   },
-  "timeline/TimelineEventOverview.js | fps": {
+  "timeline/TimelineEventOverview.ts | fps": {
     "message": "FPS"
   },
-  "timeline/TimelineEventOverview.js | heap": {
+  "timeline/TimelineEventOverview.ts | heap": {
     "message": "HEAP"
   },
-  "timeline/TimelineEventOverview.js | net": {
+  "timeline/TimelineEventOverview.ts | net": {
     "message": "NET"
   },
-  "timeline/TimelineEventOverview.js | sSDash": {
+  "timeline/TimelineEventOverview.ts | sSDash": {
     "message": "{PH1} – {PH2}"
   },
-  "timeline/TimelineFlameChartDataProvider.js | animation": {
+  "timeline/TimelineFlameChartDataProvider.ts | animation": {
     "message": "Animation"
   },
-  "timeline/TimelineFlameChartDataProvider.js | console": {
+  "timeline/TimelineFlameChartDataProvider.ts | console": {
     "message": "Console"
   },
-  "timeline/TimelineFlameChartDataProvider.js | droppedFrame": {
+  "timeline/TimelineFlameChartDataProvider.ts | droppedFrame": {
     "message": "Dropped Frame"
   },
-  "timeline/TimelineFlameChartDataProvider.js | experience": {
+  "timeline/TimelineFlameChartDataProvider.ts | experience": {
     "message": "Experience"
   },
-  "timeline/TimelineFlameChartDataProvider.js | frame": {
+  "timeline/TimelineFlameChartDataProvider.ts | frame": {
     "message": "Frame"
   },
-  "timeline/TimelineFlameChartDataProvider.js | frames": {
+  "timeline/TimelineFlameChartDataProvider.ts | frames": {
     "message": "Frames"
   },
-  "timeline/TimelineFlameChartDataProvider.js | frameS": {
+  "timeline/TimelineFlameChartDataProvider.ts | frameS": {
     "message": "Frame — {PH1}"
   },
-  "timeline/TimelineFlameChartDataProvider.js | gpu": {
+  "timeline/TimelineFlameChartDataProvider.ts | gpu": {
     "message": "GPU"
   },
-  "timeline/TimelineFlameChartDataProvider.js | idleFrame": {
+  "timeline/TimelineFlameChartDataProvider.ts | idleFrame": {
     "message": "Idle Frame"
   },
-  "timeline/TimelineFlameChartDataProvider.js | input": {
+  "timeline/TimelineFlameChartDataProvider.ts | input": {
     "message": "Input"
   },
-  "timeline/TimelineFlameChartDataProvider.js | interactions": {
+  "timeline/TimelineFlameChartDataProvider.ts | interactions": {
     "message": "Interactions"
   },
-  "timeline/TimelineFlameChartDataProvider.js | longFrame": {
+  "timeline/TimelineFlameChartDataProvider.ts | longFrame": {
     "message": "Long frame"
   },
-  "timeline/TimelineFlameChartDataProvider.js | main": {
+  "timeline/TimelineFlameChartDataProvider.ts | main": {
     "message": "Main"
   },
-  "timeline/TimelineFlameChartDataProvider.js | mainS": {
+  "timeline/TimelineFlameChartDataProvider.ts | mainS": {
     "message": "Main — {PH1}"
   },
-  "timeline/TimelineFlameChartDataProvider.js | occurrencesS": {
+  "timeline/TimelineFlameChartDataProvider.ts | occurrencesS": {
     "message": "Occurrences: {PH1}"
   },
-  "timeline/TimelineFlameChartDataProvider.js | onIgnoreList": {
+  "timeline/TimelineFlameChartDataProvider.ts | onIgnoreList": {
     "message": "On ignore list"
   },
-  "timeline/TimelineFlameChartDataProvider.js | raster": {
+  "timeline/TimelineFlameChartDataProvider.ts | raster": {
     "message": "Raster"
   },
-  "timeline/TimelineFlameChartDataProvider.js | rasterizerThreadS": {
+  "timeline/TimelineFlameChartDataProvider.ts | rasterizerThreadS": {
     "message": "Rasterizer Thread {PH1}"
   },
-  "timeline/TimelineFlameChartDataProvider.js | sFfps": {
+  "timeline/TimelineFlameChartDataProvider.ts | sFfps": {
     "message": "{PH1} ~ {PH2} fps"
   },
-  "timeline/TimelineFlameChartDataProvider.js | sSelfS": {
+  "timeline/TimelineFlameChartDataProvider.ts | sSelfS": {
     "message": "{PH1} (self {PH2})"
   },
-  "timeline/TimelineFlameChartDataProvider.js | subframe": {
+  "timeline/TimelineFlameChartDataProvider.ts | subframe": {
     "message": "Subframe"
   },
-  "timeline/TimelineFlameChartDataProvider.js | thread": {
+  "timeline/TimelineFlameChartDataProvider.ts | thread": {
     "message": "Thread"
   },
-  "timeline/TimelineFlameChartDataProvider.js | threadS": {
+  "timeline/TimelineFlameChartDataProvider.ts | threadS": {
     "message": "Thread {PH1}"
   },
-  "timeline/TimelineFlameChartDataProvider.js | timings": {
+  "timeline/TimelineFlameChartDataProvider.ts | timings": {
     "message": "Timings"
   },
-  "timeline/TimelineFlameChartNetworkDataProvider.js | network": {
+  "timeline/TimelineFlameChartNetworkDataProvider.ts | network": {
     "message": "Network"
   },
-  "timeline/TimelineFlameChartView.js | sAtS": {
+  "timeline/TimelineFlameChartView.ts | sAtS": {
     "message": "{PH1} at {PH2}"
   },
-  "timeline/TimelineHistoryManager.js | currentSessionSS": {
+  "timeline/TimelineHistoryManager.ts | currentSessionSS": {
     "message": "Current Session: {PH1}. {PH2}"
   },
-  "timeline/TimelineHistoryManager.js | moments": {
+  "timeline/TimelineHistoryManager.ts | moments": {
     "message": "moments"
   },
-  "timeline/TimelineHistoryManager.js | noRecordings": {
+  "timeline/TimelineHistoryManager.ts | noRecordings": {
     "message": "(no recordings)"
   },
-  "timeline/TimelineHistoryManager.js | sAgo": {
+  "timeline/TimelineHistoryManager.ts | sAgo": {
     "message": "({PH1} ago)"
   },
-  "timeline/TimelineHistoryManager.js | sD": {
+  "timeline/TimelineHistoryManager.ts | sD": {
     "message": "{PH1} #{PH2}"
   },
-  "timeline/TimelineHistoryManager.js | selectTimelineSession": {
+  "timeline/TimelineHistoryManager.ts | selectTimelineSession": {
     "message": "Select Timeline Session"
   },
-  "timeline/TimelineHistoryManager.js | sH": {
+  "timeline/TimelineHistoryManager.ts | sH": {
     "message": "{PH1} h"
   },
-  "timeline/TimelineHistoryManager.js | sM": {
+  "timeline/TimelineHistoryManager.ts | sM": {
     "message": "{PH1} m"
   },
-  "timeline/TimelineLoader.js | legacyTimelineFormatIsNot": {
+  "timeline/TimelineLoader.ts | legacyTimelineFormatIsNot": {
     "message": "Legacy Timeline format is not supported."
   },
-  "timeline/TimelineLoader.js | malformedCpuProfileFormat": {
+  "timeline/TimelineLoader.ts | malformedCpuProfileFormat": {
     "message": "Malformed CPU profile format"
   },
-  "timeline/TimelineLoader.js | malformedTimelineDataS": {
+  "timeline/TimelineLoader.ts | malformedTimelineDataS": {
     "message": "Malformed timeline data: {PH1}"
   },
-  "timeline/TimelineLoader.js | malformedTimelineDataUnknownJson": {
+  "timeline/TimelineLoader.ts | malformedTimelineDataUnknownJson": {
     "message": "Malformed timeline data: Unknown JSON format"
   },
-  "timeline/TimelineLoader.js | malformedTimelineInputWrongJson": {
+  "timeline/TimelineLoader.ts | malformedTimelineInputWrongJson": {
     "message": "Malformed timeline input, wrong JSON brackets balance"
   },
-  "timeline/TimelinePanel.js | afterRecordingSelectAnAreaOf": {
+  "timeline/TimelinePanel.ts | afterRecordingSelectAnAreaOf": {
     "message": "After recording, select an area of interest in the overview by dragging. Then, zoom and pan the timeline with the mousewheel or {PH1} keys. {PH2}"
   },
-  "timeline/TimelinePanel.js | bufferUsage": {
+  "timeline/TimelinePanel.ts | bufferUsage": {
     "message": "Buffer usage"
   },
-  "timeline/TimelinePanel.js | capturesAdvancedPaint": {
+  "timeline/TimelinePanel.ts | capturesAdvancedPaint": {
     "message": "Captures advanced paint instrumentation, introduces significant performance overhead"
   },
-  "timeline/TimelinePanel.js | captureScreenshots": {
+  "timeline/TimelinePanel.ts | captureScreenshots": {
     "message": "Capture screenshots"
   },
-  "timeline/TimelinePanel.js | captureSettings": {
+  "timeline/TimelinePanel.ts | captureSettings": {
     "message": "Capture settings"
   },
-  "timeline/TimelinePanel.js | clear": {
+  "timeline/TimelinePanel.ts | clear": {
     "message": "Clear"
   },
-  "timeline/TimelinePanel.js | clickTheRecordButtonSOrHitSTo": {
+  "timeline/TimelinePanel.ts | clickTheRecordButtonSOrHitSTo": {
     "message": "Click the record button {PH1} or hit {PH2} to start a new recording."
   },
-  "timeline/TimelinePanel.js | clickTheReloadButtonSOrHitSTo": {
+  "timeline/TimelinePanel.ts | clickTheReloadButtonSOrHitSTo": {
     "message": "Click the reload button {PH1} or hit {PH2} to record the page load."
   },
-  "timeline/TimelinePanel.js | close": {
+  "timeline/TimelinePanel.ts | close": {
     "message": "Close"
   },
-  "timeline/TimelinePanel.js | coverage": {
+  "timeline/TimelinePanel.ts | coverage": {
     "message": "Coverage"
   },
-  "timeline/TimelinePanel.js | cpu": {
+  "timeline/TimelinePanel.ts | cpu": {
     "message": "CPU:"
   },
-  "timeline/TimelinePanel.js | CpuThrottlingIsEnabled": {
+  "timeline/TimelinePanel.ts | CpuThrottlingIsEnabled": {
     "message": "- CPU throttling is enabled"
   },
-  "timeline/TimelinePanel.js | description": {
+  "timeline/TimelinePanel.ts | description": {
     "message": "Description"
   },
-  "timeline/TimelinePanel.js | disableJavascriptSamples": {
+  "timeline/TimelinePanel.ts | disableJavascriptSamples": {
     "message": "Disable JavaScript samples"
   },
-  "timeline/TimelinePanel.js | disablesJavascriptSampling": {
+  "timeline/TimelinePanel.ts | disablesJavascriptSampling": {
     "message": "Disables JavaScript sampling, reduces overhead when running against mobile devices"
   },
-  "timeline/TimelinePanel.js | dropTimelineFileOrUrlHere": {
+  "timeline/TimelinePanel.ts | dropTimelineFileOrUrlHere": {
     "message": "Drop timeline file or URL here"
   },
-  "timeline/TimelinePanel.js | enableAdvancedPaint": {
+  "timeline/TimelinePanel.ts | enableAdvancedPaint": {
     "message": "Enable advanced paint instrumentation (slow)"
   },
-  "timeline/TimelinePanel.js | failedToSaveTimelineSSS": {
+  "timeline/TimelinePanel.ts | failedToSaveTimelineSSS": {
     "message": "Failed to save timeline: {PH1} ({PH2}, {PH3})"
   },
-  "timeline/TimelinePanel.js | initializingProfiler": {
+  "timeline/TimelinePanel.ts | initializingProfiler": {
     "message": "Initializing profiler…"
   },
-  "timeline/TimelinePanel.js | JavascriptSamplingIsDisabled": {
+  "timeline/TimelinePanel.ts | JavascriptSamplingIsDisabled": {
     "message": "- JavaScript sampling is disabled"
   },
-  "timeline/TimelinePanel.js | learnmore": {
+  "timeline/TimelinePanel.ts | learnmore": {
     "message": "Learn more"
   },
-  "timeline/TimelinePanel.js | loadingProfile": {
+  "timeline/TimelinePanel.ts | loadingProfile": {
     "message": "Loading profile…"
   },
-  "timeline/TimelinePanel.js | loadProfile": {
+  "timeline/TimelinePanel.ts | loadProfile": {
     "message": "Load profile…"
   },
-  "timeline/TimelinePanel.js | memory": {
+  "timeline/TimelinePanel.ts | memory": {
     "message": "Memory"
   },
-  "timeline/TimelinePanel.js | network": {
+  "timeline/TimelinePanel.ts | network": {
     "message": "Network:"
   },
-  "timeline/TimelinePanel.js | networkConditions": {
+  "timeline/TimelinePanel.ts | networkConditions": {
     "message": "Network conditions"
   },
-  "timeline/TimelinePanel.js | NetworkThrottlingIsEnabled": {
+  "timeline/TimelinePanel.ts | NetworkThrottlingIsEnabled": {
     "message": "- Network throttling is enabled"
   },
-  "timeline/TimelinePanel.js | processingProfile": {
+  "timeline/TimelinePanel.ts | processingProfile": {
     "message": "Processing profile…"
   },
-  "timeline/TimelinePanel.js | profiling": {
+  "timeline/TimelinePanel.ts | profiling": {
     "message": "Profiling…"
   },
-  "timeline/TimelinePanel.js | received": {
+  "timeline/TimelinePanel.ts | received": {
     "message": "Received"
   },
-  "timeline/TimelinePanel.js | recordCoverageWithPerformance": {
+  "timeline/TimelinePanel.ts | recordCoverageWithPerformance": {
     "message": "Record coverage with performance trace"
   },
-  "timeline/TimelinePanel.js | recordingFailed": {
+  "timeline/TimelinePanel.ts | recordingFailed": {
     "message": "Recording failed"
   },
-  "timeline/TimelinePanel.js | saveProfile": {
+  "timeline/TimelinePanel.ts | saveProfile": {
     "message": "Save profile…"
   },
-  "timeline/TimelinePanel.js | screenshots": {
+  "timeline/TimelinePanel.ts | screenshots": {
     "message": "Screenshots"
   },
-  "timeline/TimelinePanel.js | showMemoryTimeline": {
+  "timeline/TimelinePanel.ts | showMemoryTimeline": {
     "message": "Show memory timeline"
   },
-  "timeline/TimelinePanel.js | showWebVitals": {
+  "timeline/TimelinePanel.ts | showWebVitals": {
     "message": "Show Web Vitals"
   },
-  "timeline/TimelinePanel.js | SignificantOverheadDueToPaint": {
+  "timeline/TimelinePanel.ts | SignificantOverheadDueToPaint": {
     "message": "- Significant overhead due to paint instrumentation"
   },
-  "timeline/TimelinePanel.js | ssec": {
+  "timeline/TimelinePanel.ts | ssec": {
     "message": "{PH1} sec"
   },
-  "timeline/TimelinePanel.js | status": {
+  "timeline/TimelinePanel.ts | status": {
     "message": "Status"
   },
-  "timeline/TimelinePanel.js | stop": {
+  "timeline/TimelinePanel.ts | stop": {
     "message": "Stop"
   },
-  "timeline/TimelinePanel.js | stoppingTimeline": {
+  "timeline/TimelinePanel.ts | stoppingTimeline": {
     "message": "Stopping timeline…"
   },
-  "timeline/TimelinePanel.js | time": {
+  "timeline/TimelinePanel.ts | time": {
     "message": "Time"
   },
-  "timeline/TimelinePanel.js | wasd": {
+  "timeline/TimelinePanel.ts | wasd": {
     "message": "WASD"
   },
-  "timeline/TimelinePanel.js | webVitals": {
+  "timeline/TimelinePanel.ts | webVitals": {
     "message": "Web Vitals"
   },
-  "timeline/TimelineTreeView.js | activity": {
+  "timeline/TimelineTreeView.ts | activity": {
     "message": "Activity"
   },
-  "timeline/TimelineTreeView.js | chromeExtensionsOverhead": {
+  "timeline/TimelineTreeView.ts | chromeExtensionsOverhead": {
     "message": "[Chrome extensions overhead]"
   },
-  "timeline/TimelineTreeView.js | filter": {
+  "timeline/TimelineTreeView.ts | filter": {
     "message": "Filter"
   },
-  "timeline/TimelineTreeView.js | filterBottomup": {
+  "timeline/TimelineTreeView.ts | filterBottomup": {
     "message": "Filter bottom-up"
   },
-  "timeline/TimelineTreeView.js | filterCallTree": {
+  "timeline/TimelineTreeView.ts | filterCallTree": {
     "message": "Filter call tree"
   },
-  "timeline/TimelineTreeView.js | fms": {
+  "timeline/TimelineTreeView.ts | fms": {
     "message": "{PH1} ms"
   },
-  "timeline/TimelineTreeView.js | groupBy": {
+  "timeline/TimelineTreeView.ts | groupBy": {
     "message": "Group by"
   },
-  "timeline/TimelineTreeView.js | groupByActivity": {
+  "timeline/TimelineTreeView.ts | groupByActivity": {
     "message": "Group by Activity"
   },
-  "timeline/TimelineTreeView.js | groupByCategory": {
+  "timeline/TimelineTreeView.ts | groupByCategory": {
     "message": "Group by Category"
   },
-  "timeline/TimelineTreeView.js | groupByDomain": {
+  "timeline/TimelineTreeView.ts | groupByDomain": {
     "message": "Group by Domain"
   },
-  "timeline/TimelineTreeView.js | groupByFrame": {
+  "timeline/TimelineTreeView.ts | groupByFrame": {
     "message": "Group by Frame"
   },
-  "timeline/TimelineTreeView.js | groupBySubdomain": {
+  "timeline/TimelineTreeView.ts | groupBySubdomain": {
     "message": "Group by Subdomain"
   },
-  "timeline/TimelineTreeView.js | groupByUrl": {
+  "timeline/TimelineTreeView.ts | groupByUrl": {
     "message": "Group by URL"
   },
-  "timeline/TimelineTreeView.js | heaviestStack": {
+  "timeline/TimelineTreeView.ts | heaviestStack": {
     "message": "Heaviest stack"
   },
-  "timeline/TimelineTreeView.js | hideHeaviestStack": {
+  "timeline/TimelineTreeView.ts | hideHeaviestStack": {
     "message": "Hide Heaviest stack"
   },
-  "timeline/TimelineTreeView.js | javascript": {
+  "timeline/TimelineTreeView.ts | javascript": {
     "message": "JavaScript"
   },
-  "timeline/TimelineTreeView.js | noGrouping": {
+  "timeline/TimelineTreeView.ts | noGrouping": {
     "message": "No Grouping"
   },
-  "timeline/TimelineTreeView.js | notOptimizedS": {
+  "timeline/TimelineTreeView.ts | notOptimizedS": {
     "message": "Not optimized: {PH1}"
   },
-  "timeline/TimelineTreeView.js | page": {
+  "timeline/TimelineTreeView.ts | page": {
     "message": "Page"
   },
-  "timeline/TimelineTreeView.js | percentPlaceholder": {
+  "timeline/TimelineTreeView.ts | percentPlaceholder": {
     "message": "{PH1} %"
   },
-  "timeline/TimelineTreeView.js | performance": {
+  "timeline/TimelineTreeView.ts | performance": {
     "message": "Performance"
   },
-  "timeline/TimelineTreeView.js | selectItemForDetails": {
+  "timeline/TimelineTreeView.ts | selectItemForDetails": {
     "message": "Select item for details."
   },
-  "timeline/TimelineTreeView.js | selfTime": {
+  "timeline/TimelineTreeView.ts | selfTime": {
     "message": "Self Time"
   },
-  "timeline/TimelineTreeView.js | showHeaviestStack": {
+  "timeline/TimelineTreeView.ts | showHeaviestStack": {
     "message": "Show Heaviest stack"
   },
-  "timeline/TimelineTreeView.js | timelineStack": {
+  "timeline/TimelineTreeView.ts | timelineStack": {
     "message": "Timeline Stack"
   },
-  "timeline/TimelineTreeView.js | totalTime": {
+  "timeline/TimelineTreeView.ts | totalTime": {
     "message": "Total Time"
   },
-  "timeline/TimelineTreeView.js | unattributed": {
+  "timeline/TimelineTreeView.ts | unattributed": {
     "message": "[unattributed]"
   },
-  "timeline/TimelineTreeView.js | vRuntime": {
+  "timeline/TimelineTreeView.ts | vRuntime": {
     "message": "[V8 Runtime]"
   },
-  "timeline/TimelineUIUtils.js | aggregatedTime": {
+  "timeline/TimelineUIUtils.ts | aggregatedTime": {
     "message": "Aggregated Time"
   },
-  "timeline/TimelineUIUtils.js | allottedTime": {
+  "timeline/TimelineUIUtils.ts | allottedTime": {
     "message": "Allotted Time"
   },
-  "timeline/TimelineUIUtils.js | animation": {
+  "timeline/TimelineUIUtils.ts | animation": {
     "message": "Animation"
   },
-  "timeline/TimelineUIUtils.js | animationFrameFired": {
+  "timeline/TimelineUIUtils.ts | animationFrameFired": {
     "message": "Animation Frame Fired"
   },
-  "timeline/TimelineUIUtils.js | animationFrameRequested": {
+  "timeline/TimelineUIUtils.ts | animationFrameRequested": {
     "message": "Animation Frame Requested"
   },
-  "timeline/TimelineUIUtils.js | async": {
+  "timeline/TimelineUIUtils.ts | async": {
     "message": "Async"
   },
-  "timeline/TimelineUIUtils.js | asyncTask": {
+  "timeline/TimelineUIUtils.ts | asyncTask": {
     "message": "Async Task"
   },
-  "timeline/TimelineUIUtils.js | cachedWasmModule": {
+  "timeline/TimelineUIUtils.ts | cachedWasmModule": {
     "message": "Cached Wasm Module"
   },
-  "timeline/TimelineUIUtils.js | callbackFunction": {
+  "timeline/TimelineUIUtils.ts | callbackFunction": {
     "message": "Callback Function"
   },
-  "timeline/TimelineUIUtils.js | callbackId": {
+  "timeline/TimelineUIUtils.ts | callbackId": {
     "message": "Callback ID"
   },
-  "timeline/TimelineUIUtils.js | callStacks": {
+  "timeline/TimelineUIUtils.ts | callStacks": {
     "message": "Call Stacks"
   },
-  "timeline/TimelineUIUtils.js | cancelAnimationFrame": {
+  "timeline/TimelineUIUtils.ts | cancelAnimationFrame": {
     "message": "Cancel Animation Frame"
   },
-  "timeline/TimelineUIUtils.js | cancelIdleCallback": {
+  "timeline/TimelineUIUtils.ts | cancelIdleCallback": {
     "message": "Cancel Idle Callback"
   },
-  "timeline/TimelineUIUtils.js | changedAttributeToSs": {
+  "timeline/TimelineUIUtils.ts | changedAttributeToSs": {
     "message": "(changed attribute to \"{PH1}\"{PH2})"
   },
-  "timeline/TimelineUIUtils.js | changedClassToSs": {
+  "timeline/TimelineUIUtils.ts | changedClassToSs": {
     "message": "(changed class to \"{PH1}\"{PH2})"
   },
-  "timeline/TimelineUIUtils.js | changedIdToSs": {
+  "timeline/TimelineUIUtils.ts | changedIdToSs": {
     "message": "(changed id to \"{PH1}\"{PH2})"
   },
-  "timeline/TimelineUIUtils.js | changedPesudoToSs": {
+  "timeline/TimelineUIUtils.ts | changedPesudoToSs": {
     "message": "(changed pseudo to \"{PH1}\"{PH2})"
   },
-  "timeline/TimelineUIUtils.js | changedSs": {
+  "timeline/TimelineUIUtils.ts | changedSs": {
     "message": "(changed \"{PH1}\"{PH2})"
   },
-  "timeline/TimelineUIUtils.js | click": {
+  "timeline/TimelineUIUtils.ts | click": {
     "message": "Click"
   },
-  "timeline/TimelineUIUtils.js | collected": {
+  "timeline/TimelineUIUtils.ts | collected": {
     "message": "Collected"
   },
-  "timeline/TimelineUIUtils.js | compilationCacheSize": {
+  "timeline/TimelineUIUtils.ts | compilationCacheSize": {
     "message": "Compilation cache size"
   },
-  "timeline/TimelineUIUtils.js | compilationCacheStatus": {
+  "timeline/TimelineUIUtils.ts | compilationCacheStatus": {
     "message": "Compilation cache status"
   },
-  "timeline/TimelineUIUtils.js | compile": {
+  "timeline/TimelineUIUtils.ts | compile": {
     "message": "Compile"
   },
-  "timeline/TimelineUIUtils.js | compiledWasmModule": {
+  "timeline/TimelineUIUtils.ts | compiledWasmModule": {
     "message": "Compiled Wasm Module"
   },
-  "timeline/TimelineUIUtils.js | compileModule": {
+  "timeline/TimelineUIUtils.ts | compileModule": {
     "message": "Compile Module"
   },
-  "timeline/TimelineUIUtils.js | compileScript": {
+  "timeline/TimelineUIUtils.ts | compileScript": {
     "message": "Compile Script"
   },
-  "timeline/TimelineUIUtils.js | compositeLayers": {
+  "timeline/TimelineUIUtils.ts | compositeLayers": {
     "message": "Composite Layers"
   },
-  "timeline/TimelineUIUtils.js | consoleTime": {
+  "timeline/TimelineUIUtils.ts | consoleTime": {
     "message": "Console Time"
   },
-  "timeline/TimelineUIUtils.js | consumedCacheSize": {
+  "timeline/TimelineUIUtils.ts | consumedCacheSize": {
     "message": "Consumed Cache Size"
   },
-  "timeline/TimelineUIUtils.js | contextMenu": {
+  "timeline/TimelineUIUtils.ts | contextMenu": {
     "message": "Context Menu"
   },
-  "timeline/TimelineUIUtils.js | cpuTime": {
+  "timeline/TimelineUIUtils.ts | cpuTime": {
     "message": "CPU time"
   },
-  "timeline/TimelineUIUtils.js | createWebsocket": {
+  "timeline/TimelineUIUtils.ts | createWebsocket": {
     "message": "Create WebSocket"
   },
-  "timeline/TimelineUIUtils.js | cumulativeLayoutShifts": {
+  "timeline/TimelineUIUtils.ts | cumulativeLayoutShifts": {
     "message": "Cumulative Layout Shifts"
   },
-  "timeline/TimelineUIUtils.js | cumulativeScore": {
+  "timeline/TimelineUIUtils.ts | cumulativeScore": {
     "message": "Cumulative Score"
   },
-  "timeline/TimelineUIUtils.js | decodedBody": {
+  "timeline/TimelineUIUtils.ts | decodedBody": {
     "message": "Decoded Body"
   },
-  "timeline/TimelineUIUtils.js | decrypt": {
+  "timeline/TimelineUIUtils.ts | decrypt": {
     "message": "Decrypt"
   },
-  "timeline/TimelineUIUtils.js | decryptReply": {
+  "timeline/TimelineUIUtils.ts | decryptReply": {
     "message": "Decrypt Reply"
   },
-  "timeline/TimelineUIUtils.js | destroyWebsocket": {
+  "timeline/TimelineUIUtils.ts | destroyWebsocket": {
     "message": "Destroy WebSocket"
   },
-  "timeline/TimelineUIUtils.js | details": {
+  "timeline/TimelineUIUtils.ts | details": {
     "message": "Details"
   },
-  "timeline/TimelineUIUtils.js | digest": {
+  "timeline/TimelineUIUtils.ts | digest": {
     "message": "Digest"
   },
-  "timeline/TimelineUIUtils.js | digestReply": {
+  "timeline/TimelineUIUtils.ts | digestReply": {
     "message": "Digest Reply"
   },
-  "timeline/TimelineUIUtils.js | dimensions": {
+  "timeline/TimelineUIUtils.ts | dimensions": {
     "message": "Dimensions"
   },
-  "timeline/TimelineUIUtils.js | domcontentloadedEvent": {
+  "timeline/TimelineUIUtils.ts | domcontentloadedEvent": {
     "message": "DOMContentLoaded Event"
   },
-  "timeline/TimelineUIUtils.js | domGc": {
+  "timeline/TimelineUIUtils.ts | domGc": {
     "message": "DOM GC"
   },
-  "timeline/TimelineUIUtils.js | drag": {
+  "timeline/TimelineUIUtils.ts | drag": {
     "message": "Drag"
   },
-  "timeline/TimelineUIUtils.js | drawFrame": {
+  "timeline/TimelineUIUtils.ts | drawFrame": {
     "message": "Draw Frame"
   },
-  "timeline/TimelineUIUtils.js | duration": {
+  "timeline/TimelineUIUtils.ts | duration": {
     "message": "Duration"
   },
-  "timeline/TimelineUIUtils.js | elementsAffected": {
+  "timeline/TimelineUIUtils.ts | elementsAffected": {
     "message": "Elements Affected"
   },
-  "timeline/TimelineUIUtils.js | embedderCallback": {
+  "timeline/TimelineUIUtils.ts | embedderCallback": {
     "message": "Embedder Callback"
   },
-  "timeline/TimelineUIUtils.js | emptyPlaceholder": {
+  "timeline/TimelineUIUtils.ts | emptyPlaceholder": {
     "message": "{PH1}"
   },
-  "timeline/TimelineUIUtils.js | emptyPlaceholderColon": {
+  "timeline/TimelineUIUtils.ts | emptyPlaceholderColon": {
     "message": ": {PH1}"
   },
-  "timeline/TimelineUIUtils.js | encodedData": {
+  "timeline/TimelineUIUtils.ts | encodedData": {
     "message": "Encoded Data"
   },
-  "timeline/TimelineUIUtils.js | encrypt": {
+  "timeline/TimelineUIUtils.ts | encrypt": {
     "message": "Encrypt"
   },
-  "timeline/TimelineUIUtils.js | encryptReply": {
+  "timeline/TimelineUIUtils.ts | encryptReply": {
     "message": "Encrypt Reply"
   },
-  "timeline/TimelineUIUtils.js | evaluateModule": {
+  "timeline/TimelineUIUtils.ts | evaluateModule": {
     "message": "Evaluate Module"
   },
-  "timeline/TimelineUIUtils.js | evaluateScript": {
+  "timeline/TimelineUIUtils.ts | evaluateScript": {
     "message": "Evaluate Script"
   },
-  "timeline/TimelineUIUtils.js | event": {
+  "timeline/TimelineUIUtils.ts | event": {
     "message": "Event"
   },
-  "timeline/TimelineUIUtils.js | experience": {
+  "timeline/TimelineUIUtils.ts | experience": {
     "message": "Experience"
   },
-  "timeline/TimelineUIUtils.js | failedToLoadScriptFromCache": {
+  "timeline/TimelineUIUtils.ts | failedToLoadScriptFromCache": {
     "message": "failed to load script from cache"
   },
-  "timeline/TimelineUIUtils.js | finishLoading": {
+  "timeline/TimelineUIUtils.ts | finishLoading": {
     "message": "Finish Loading"
   },
-  "timeline/TimelineUIUtils.js | fireIdleCallback": {
+  "timeline/TimelineUIUtils.ts | fireIdleCallback": {
     "message": "Fire Idle Callback"
   },
-  "timeline/TimelineUIUtils.js | firstContentfulPaint": {
+  "timeline/TimelineUIUtils.ts | firstContentfulPaint": {
     "message": "First Contentful Paint"
   },
-  "timeline/TimelineUIUtils.js | firstInvalidated": {
+  "timeline/TimelineUIUtils.ts | firstInvalidated": {
     "message": "First Invalidated"
   },
-  "timeline/TimelineUIUtils.js | firstLayoutInvalidation": {
+  "timeline/TimelineUIUtils.ts | firstLayoutInvalidation": {
     "message": "First Layout Invalidation"
   },
-  "timeline/TimelineUIUtils.js | firstPaint": {
+  "timeline/TimelineUIUtils.ts | firstPaint": {
     "message": "First Paint"
   },
-  "timeline/TimelineUIUtils.js | fling": {
+  "timeline/TimelineUIUtils.ts | fling": {
     "message": "Fling"
   },
-  "timeline/TimelineUIUtils.js | flingHalt": {
+  "timeline/TimelineUIUtils.ts | flingHalt": {
     "message": "Fling Halt"
   },
-  "timeline/TimelineUIUtils.js | flingStart": {
+  "timeline/TimelineUIUtils.ts | flingStart": {
     "message": "Fling Start"
   },
-  "timeline/TimelineUIUtils.js | forcedReflow": {
+  "timeline/TimelineUIUtils.ts | forcedReflow": {
     "message": "Forced reflow"
   },
-  "timeline/TimelineUIUtils.js | fps": {
+  "timeline/TimelineUIUtils.ts | fps": {
     "message": "FPS"
   },
-  "timeline/TimelineUIUtils.js | frame": {
+  "timeline/TimelineUIUtils.ts | frame": {
     "message": "Frame"
   },
-  "timeline/TimelineUIUtils.js | frameStart": {
+  "timeline/TimelineUIUtils.ts | frameStart": {
     "message": "Frame Start"
   },
-  "timeline/TimelineUIUtils.js | frameStartedLoading": {
+  "timeline/TimelineUIUtils.ts | frameStartedLoading": {
     "message": "Frame Started Loading"
   },
-  "timeline/TimelineUIUtils.js | frameStartMainThread": {
+  "timeline/TimelineUIUtils.ts | frameStartMainThread": {
     "message": "Frame Start (main thread)"
   },
-  "timeline/TimelineUIUtils.js | FromCache": {
+  "timeline/TimelineUIUtils.ts | FromCache": {
     "message": " (from cache)"
   },
-  "timeline/TimelineUIUtils.js | FromMemoryCache": {
+  "timeline/TimelineUIUtils.ts | FromMemoryCache": {
     "message": " (from memory cache)"
   },
-  "timeline/TimelineUIUtils.js | FromPush": {
+  "timeline/TimelineUIUtils.ts | FromPush": {
     "message": " (from push)"
   },
-  "timeline/TimelineUIUtils.js | FromServiceWorker": {
+  "timeline/TimelineUIUtils.ts | FromServiceWorker": {
     "message": " (from service worker)"
   },
-  "timeline/TimelineUIUtils.js | function": {
+  "timeline/TimelineUIUtils.ts | function": {
     "message": "Function"
   },
-  "timeline/TimelineUIUtils.js | functionCall": {
+  "timeline/TimelineUIUtils.ts | functionCall": {
     "message": "Function Call"
   },
-  "timeline/TimelineUIUtils.js | gcEvent": {
+  "timeline/TimelineUIUtils.ts | gcEvent": {
     "message": "GC Event"
   },
-  "timeline/TimelineUIUtils.js | gpu": {
+  "timeline/TimelineUIUtils.ts | gpu": {
     "message": "GPU"
   },
-  "timeline/TimelineUIUtils.js | hadRecentInput": {
+  "timeline/TimelineUIUtils.ts | hadRecentInput": {
     "message": "Had recent input"
   },
-  "timeline/TimelineUIUtils.js | handlerTookS": {
+  "timeline/TimelineUIUtils.ts | handlerTookS": {
     "message": "Handler took {PH1}"
   },
-  "timeline/TimelineUIUtils.js | hitTest": {
+  "timeline/TimelineUIUtils.ts | hitTest": {
     "message": "Hit Test"
   },
-  "timeline/TimelineUIUtils.js | idle": {
+  "timeline/TimelineUIUtils.ts | idle": {
     "message": "Idle"
   },
-  "timeline/TimelineUIUtils.js | idleCallbackExecutionExtended": {
+  "timeline/TimelineUIUtils.ts | idleCallbackExecutionExtended": {
     "message": "Idle callback execution extended beyond deadline by {PH1}"
   },
-  "timeline/TimelineUIUtils.js | idleCallbackRequested": {
+  "timeline/TimelineUIUtils.ts | idleCallbackRequested": {
     "message": "Idle Callback Requested"
   },
-  "timeline/TimelineUIUtils.js | imageDecode": {
+  "timeline/TimelineUIUtils.ts | imageDecode": {
     "message": "Image Decode"
   },
-  "timeline/TimelineUIUtils.js | imageResize": {
+  "timeline/TimelineUIUtils.ts | imageResize": {
     "message": "Image Resize"
   },
-  "timeline/TimelineUIUtils.js | imageUrl": {
+  "timeline/TimelineUIUtils.ts | imageUrl": {
     "message": "Image URL"
   },
-  "timeline/TimelineUIUtils.js | initiator": {
+  "timeline/TimelineUIUtils.ts | initiator": {
     "message": "Initiator"
   },
-  "timeline/TimelineUIUtils.js | inputLatency": {
+  "timeline/TimelineUIUtils.ts | inputLatency": {
     "message": "Input Latency"
   },
-  "timeline/TimelineUIUtils.js | installTimer": {
+  "timeline/TimelineUIUtils.ts | installTimer": {
     "message": "Install Timer"
   },
-  "timeline/TimelineUIUtils.js | invalidateLayout": {
+  "timeline/TimelineUIUtils.ts | invalidateLayout": {
     "message": "Invalidate Layout"
   },
-  "timeline/TimelineUIUtils.js | invalidations": {
+  "timeline/TimelineUIUtils.ts | invalidations": {
     "message": "Invalidations"
   },
-  "timeline/TimelineUIUtils.js | invokedByTimeout": {
+  "timeline/TimelineUIUtils.ts | invokedByTimeout": {
     "message": "Invoked by Timeout"
   },
-  "timeline/TimelineUIUtils.js | jank": {
+  "timeline/TimelineUIUtils.ts | jank": {
     "message": "jank"
   },
-  "timeline/TimelineUIUtils.js | jsFrame": {
+  "timeline/TimelineUIUtils.ts | jsFrame": {
     "message": "JS Frame"
   },
-  "timeline/TimelineUIUtils.js | keyCharacter": {
+  "timeline/TimelineUIUtils.ts | keyCharacter": {
     "message": "Key — Character"
   },
-  "timeline/TimelineUIUtils.js | keyDown": {
+  "timeline/TimelineUIUtils.ts | keyDown": {
     "message": "Key Down"
   },
-  "timeline/TimelineUIUtils.js | keyUp": {
+  "timeline/TimelineUIUtils.ts | keyUp": {
     "message": "Key Up"
   },
-  "timeline/TimelineUIUtils.js | largestContentfulPaint": {
+  "timeline/TimelineUIUtils.ts | largestContentfulPaint": {
     "message": "Largest Contentful Paint"
   },
-  "timeline/TimelineUIUtils.js | layerRoot": {
+  "timeline/TimelineUIUtils.ts | layerRoot": {
     "message": "Layer Root"
   },
-  "timeline/TimelineUIUtils.js | layerTree": {
+  "timeline/TimelineUIUtils.ts | layerTree": {
     "message": "Layer tree"
   },
-  "timeline/TimelineUIUtils.js | layout": {
+  "timeline/TimelineUIUtils.ts | layout": {
     "message": "Layout"
   },
-  "timeline/TimelineUIUtils.js | layoutForced": {
+  "timeline/TimelineUIUtils.ts | layoutForced": {
     "message": "Layout Forced"
   },
-  "timeline/TimelineUIUtils.js | layoutInvalidations": {
+  "timeline/TimelineUIUtils.ts | layoutInvalidations": {
     "message": "Layout Invalidations"
   },
-  "timeline/TimelineUIUtils.js | layoutRoot": {
+  "timeline/TimelineUIUtils.ts | layoutRoot": {
     "message": "Layout root"
   },
-  "timeline/TimelineUIUtils.js | layoutShift": {
+  "timeline/TimelineUIUtils.ts | layoutShift": {
     "message": "Layout Shift"
   },
-  "timeline/TimelineUIUtils.js | learnMore": {
+  "timeline/TimelineUIUtils.ts | learnMore": {
     "message": "Learn more"
   },
-  "timeline/TimelineUIUtils.js | loadFromCache": {
+  "timeline/TimelineUIUtils.ts | loadFromCache": {
     "message": "load from cache"
   },
-  "timeline/TimelineUIUtils.js | loading": {
+  "timeline/TimelineUIUtils.ts | loading": {
     "message": "Loading"
   },
-  "timeline/TimelineUIUtils.js | location": {
+  "timeline/TimelineUIUtils.ts | location": {
     "message": "Location"
   },
-  "timeline/TimelineUIUtils.js | longTask": {
+  "timeline/TimelineUIUtils.ts | longTask": {
     "message": "Long task"
   },
-  "timeline/TimelineUIUtils.js | majorGc": {
+  "timeline/TimelineUIUtils.ts | majorGc": {
     "message": "Major GC"
   },
-  "timeline/TimelineUIUtils.js | message": {
+  "timeline/TimelineUIUtils.ts | message": {
     "message": "Message"
   },
-  "timeline/TimelineUIUtils.js | mimeType": {
+  "timeline/TimelineUIUtils.ts | mimeType": {
     "message": "Mime Type"
   },
-  "timeline/TimelineUIUtils.js | mimeTypeCaps": {
+  "timeline/TimelineUIUtils.ts | mimeTypeCaps": {
     "message": "MIME Type"
   },
-  "timeline/TimelineUIUtils.js | minorGc": {
+  "timeline/TimelineUIUtils.ts | minorGc": {
     "message": "Minor GC"
   },
-  "timeline/TimelineUIUtils.js | module": {
+  "timeline/TimelineUIUtils.ts | module": {
     "message": "Module"
   },
-  "timeline/TimelineUIUtils.js | mouseDown": {
+  "timeline/TimelineUIUtils.ts | mouseDown": {
     "message": "Mouse Down"
   },
-  "timeline/TimelineUIUtils.js | mouseMove": {
+  "timeline/TimelineUIUtils.ts | mouseMove": {
     "message": "Mouse Move"
   },
-  "timeline/TimelineUIUtils.js | mouseUp": {
+  "timeline/TimelineUIUtils.ts | mouseUp": {
     "message": "Mouse Up"
   },
-  "timeline/TimelineUIUtils.js | mouseWheel": {
+  "timeline/TimelineUIUtils.ts | mouseWheel": {
     "message": "Mouse Wheel"
   },
-  "timeline/TimelineUIUtils.js | movedFrom": {
+  "timeline/TimelineUIUtils.ts | movedFrom": {
     "message": "Moved from"
   },
-  "timeline/TimelineUIUtils.js | movedTo": {
+  "timeline/TimelineUIUtils.ts | movedTo": {
     "message": "Moved to"
   },
-  "timeline/TimelineUIUtils.js | networkRequest": {
+  "timeline/TimelineUIUtils.ts | networkRequest": {
     "message": "Network request"
   },
-  "timeline/TimelineUIUtils.js | networkTransfer": {
+  "timeline/TimelineUIUtils.ts | networkTransfer": {
     "message": "network transfer"
   },
-  "timeline/TimelineUIUtils.js | no": {
+  "timeline/TimelineUIUtils.ts | no": {
     "message": "No"
   },
-  "timeline/TimelineUIUtils.js | node": {
+  "timeline/TimelineUIUtils.ts | node": {
     "message": "Node:"
   },
-  "timeline/TimelineUIUtils.js | nodes": {
+  "timeline/TimelineUIUtils.ts | nodes": {
     "message": "Nodes:"
   },
-  "timeline/TimelineUIUtils.js | nodesThatNeedLayout": {
+  "timeline/TimelineUIUtils.ts | nodesThatNeedLayout": {
     "message": "Nodes That Need Layout"
   },
-  "timeline/TimelineUIUtils.js | notOptimized": {
+  "timeline/TimelineUIUtils.ts | notOptimized": {
     "message": "Not optimized"
   },
-  "timeline/TimelineUIUtils.js | onloadEvent": {
+  "timeline/TimelineUIUtils.ts | onloadEvent": {
     "message": "Onload Event"
   },
-  "timeline/TimelineUIUtils.js | other": {
+  "timeline/TimelineUIUtils.ts | other": {
     "message": "Other"
   },
-  "timeline/TimelineUIUtils.js | otherInvalidations": {
+  "timeline/TimelineUIUtils.ts | otherInvalidations": {
     "message": "Other Invalidations"
   },
-  "timeline/TimelineUIUtils.js | ownerElement": {
+  "timeline/TimelineUIUtils.ts | ownerElement": {
     "message": "Owner Element"
   },
-  "timeline/TimelineUIUtils.js | paint": {
+  "timeline/TimelineUIUtils.ts | paint": {
     "message": "Paint"
   },
-  "timeline/TimelineUIUtils.js | paintImage": {
+  "timeline/TimelineUIUtils.ts | paintImage": {
     "message": "Paint Image"
   },
-  "timeline/TimelineUIUtils.js | painting": {
+  "timeline/TimelineUIUtils.ts | painting": {
     "message": "Painting"
   },
-  "timeline/TimelineUIUtils.js | paintProfiler": {
+  "timeline/TimelineUIUtils.ts | paintProfiler": {
     "message": "Paint Profiler"
   },
-  "timeline/TimelineUIUtils.js | paintSetup": {
+  "timeline/TimelineUIUtils.ts | paintSetup": {
     "message": "Paint Setup"
   },
-  "timeline/TimelineUIUtils.js | parse": {
+  "timeline/TimelineUIUtils.ts | parse": {
     "message": "Parse"
   },
-  "timeline/TimelineUIUtils.js | parseAndCompile": {
+  "timeline/TimelineUIUtils.ts | parseAndCompile": {
     "message": "Parse and Compile"
   },
-  "timeline/TimelineUIUtils.js | parseHtml": {
+  "timeline/TimelineUIUtils.ts | parseHtml": {
     "message": "Parse HTML"
   },
-  "timeline/TimelineUIUtils.js | parseStylesheet": {
+  "timeline/TimelineUIUtils.ts | parseStylesheet": {
     "message": "Parse Stylesheet"
   },
-  "timeline/TimelineUIUtils.js | pendingFor": {
+  "timeline/TimelineUIUtils.ts | pendingFor": {
     "message": "Pending for"
   },
-  "timeline/TimelineUIUtils.js | pinchBegin": {
+  "timeline/TimelineUIUtils.ts | pinchBegin": {
     "message": "Pinch Begin"
   },
-  "timeline/TimelineUIUtils.js | pinchEnd": {
+  "timeline/TimelineUIUtils.ts | pinchEnd": {
     "message": "Pinch End"
   },
-  "timeline/TimelineUIUtils.js | pinchUpdate": {
+  "timeline/TimelineUIUtils.ts | pinchUpdate": {
     "message": "Pinch Update"
   },
-  "timeline/TimelineUIUtils.js | preview": {
+  "timeline/TimelineUIUtils.ts | preview": {
     "message": "Preview"
   },
-  "timeline/TimelineUIUtils.js | priority": {
+  "timeline/TimelineUIUtils.ts | priority": {
     "message": "Priority"
   },
-  "timeline/TimelineUIUtils.js | producedCacheSize": {
+  "timeline/TimelineUIUtils.ts | producedCacheSize": {
     "message": "Produced Cache Size"
   },
-  "timeline/TimelineUIUtils.js | range": {
+  "timeline/TimelineUIUtils.ts | range": {
     "message": "Range"
   },
-  "timeline/TimelineUIUtils.js | rasterizePaint": {
+  "timeline/TimelineUIUtils.ts | rasterizePaint": {
     "message": "Rasterize Paint"
   },
-  "timeline/TimelineUIUtils.js | recalculateStyle": {
+  "timeline/TimelineUIUtils.ts | recalculateStyle": {
     "message": "Recalculate Style"
   },
-  "timeline/TimelineUIUtils.js | recalculationForced": {
+  "timeline/TimelineUIUtils.ts | recalculationForced": {
     "message": "Recalculation Forced"
   },
-  "timeline/TimelineUIUtils.js | receiveData": {
+  "timeline/TimelineUIUtils.ts | receiveData": {
     "message": "Receive Data"
   },
-  "timeline/TimelineUIUtils.js | receiveResponse": {
+  "timeline/TimelineUIUtils.ts | receiveResponse": {
     "message": "Receive Response"
   },
-  "timeline/TimelineUIUtils.js | receiveWebsocketHandshake": {
+  "timeline/TimelineUIUtils.ts | receiveWebsocketHandshake": {
     "message": "Receive WebSocket Handshake"
   },
-  "timeline/TimelineUIUtils.js | recurringHandlerTookS": {
+  "timeline/TimelineUIUtils.ts | recurringHandlerTookS": {
     "message": "Recurring handler took {PH1}"
   },
-  "timeline/TimelineUIUtils.js | relatedNode": {
+  "timeline/TimelineUIUtils.ts | relatedNode": {
     "message": "Related Node"
   },
-  "timeline/TimelineUIUtils.js | removeTimer": {
+  "timeline/TimelineUIUtils.ts | removeTimer": {
     "message": "Remove Timer"
   },
-  "timeline/TimelineUIUtils.js | rendering": {
+  "timeline/TimelineUIUtils.ts | rendering": {
     "message": "Rendering"
   },
-  "timeline/TimelineUIUtils.js | repeats": {
+  "timeline/TimelineUIUtils.ts | repeats": {
     "message": "Repeats"
   },
-  "timeline/TimelineUIUtils.js | requestAnimationFrame": {
+  "timeline/TimelineUIUtils.ts | requestAnimationFrame": {
     "message": "Request Animation Frame"
   },
-  "timeline/TimelineUIUtils.js | requestIdleCallback": {
+  "timeline/TimelineUIUtils.ts | requestIdleCallback": {
     "message": "Request Idle Callback"
   },
-  "timeline/TimelineUIUtils.js | requestMainThreadFrame": {
+  "timeline/TimelineUIUtils.ts | requestMainThreadFrame": {
     "message": "Request Main Thread Frame"
   },
-  "timeline/TimelineUIUtils.js | requestMethod": {
+  "timeline/TimelineUIUtils.ts | requestMethod": {
     "message": "Request Method"
   },
-  "timeline/TimelineUIUtils.js | resource": {
+  "timeline/TimelineUIUtils.ts | resource": {
     "message": "Resource"
   },
-  "timeline/TimelineUIUtils.js | response": {
+  "timeline/TimelineUIUtils.ts | response": {
     "message": "Response"
   },
-  "timeline/TimelineUIUtils.js | reveal": {
+  "timeline/TimelineUIUtils.ts | reveal": {
     "message": "Reveal"
   },
-  "timeline/TimelineUIUtils.js | runMicrotasks": {
+  "timeline/TimelineUIUtils.ts | runMicrotasks": {
     "message": "Run Microtasks"
   },
-  "timeline/TimelineUIUtils.js | sAndS": {
+  "timeline/TimelineUIUtils.ts | sAndS": {
     "message": "{PH1} and {PH2}"
   },
-  "timeline/TimelineUIUtils.js | sAndSOther": {
+  "timeline/TimelineUIUtils.ts | sAndSOther": {
     "message": "{PH1}, {PH2}, and 1 other"
   },
-  "timeline/TimelineUIUtils.js | sAtS": {
+  "timeline/TimelineUIUtils.ts | sAtS": {
     "message": "{PH1} at {PH2}"
   },
-  "timeline/TimelineUIUtils.js | sAtSParentheses": {
+  "timeline/TimelineUIUtils.ts | sAtSParentheses": {
     "message": "{PH1} (at {PH2})"
   },
-  "timeline/TimelineUIUtils.js | sBytes": {
+  "timeline/TimelineUIUtils.ts | sBytes": {
     "message": "{n, plural, =1 {# Byte} other {# Bytes}}"
   },
-  "timeline/TimelineUIUtils.js | sCanResultInPoorUserExperiences": {
+  "timeline/TimelineUIUtils.ts | sCanResultInPoorUserExperiences": {
     "message": "{PH1} can result in poor user experiences."
   },
-  "timeline/TimelineUIUtils.js | scheduleStyleRecalculation": {
+  "timeline/TimelineUIUtils.ts | scheduleStyleRecalculation": {
     "message": "Schedule Style Recalculation"
   },
-  "timeline/TimelineUIUtils.js | sChildren": {
+  "timeline/TimelineUIUtils.ts | sChildren": {
     "message": "{PH1} (children)"
   },
-  "timeline/TimelineUIUtils.js | sCollected": {
+  "timeline/TimelineUIUtils.ts | sCollected": {
     "message": "{PH1} collected"
   },
-  "timeline/TimelineUIUtils.js | score": {
+  "timeline/TimelineUIUtils.ts | score": {
     "message": "Score"
   },
-  "timeline/TimelineUIUtils.js | script": {
+  "timeline/TimelineUIUtils.ts | script": {
     "message": "Script"
   },
-  "timeline/TimelineUIUtils.js | scripting": {
+  "timeline/TimelineUIUtils.ts | scripting": {
     "message": "Scripting"
   },
-  "timeline/TimelineUIUtils.js | scriptLoadedFromCache": {
+  "timeline/TimelineUIUtils.ts | scriptLoadedFromCache": {
     "message": "script loaded from cache"
   },
-  "timeline/TimelineUIUtils.js | scriptNotEligible": {
+  "timeline/TimelineUIUtils.ts | scriptNotEligible": {
     "message": "script not eligible"
   },
-  "timeline/TimelineUIUtils.js | scriptSavedToCache": {
+  "timeline/TimelineUIUtils.ts | scriptSavedToCache": {
     "message": "script saved to cache"
   },
-  "timeline/TimelineUIUtils.js | scroll": {
+  "timeline/TimelineUIUtils.ts | scroll": {
     "message": "Scroll"
   },
-  "timeline/TimelineUIUtils.js | scrollBegin": {
+  "timeline/TimelineUIUtils.ts | scrollBegin": {
     "message": "Scroll Begin"
   },
-  "timeline/TimelineUIUtils.js | scrollEnd": {
+  "timeline/TimelineUIUtils.ts | scrollEnd": {
     "message": "Scroll End"
   },
-  "timeline/TimelineUIUtils.js | scrollUpdate": {
+  "timeline/TimelineUIUtils.ts | scrollUpdate": {
     "message": "Scroll Update"
   },
-  "timeline/TimelineUIUtils.js | sDetails": {
+  "timeline/TimelineUIUtils.ts | sDetails": {
     "message": "{PH1} - Details"
   },
-  "timeline/TimelineUIUtils.js | selfTime": {
+  "timeline/TimelineUIUtils.ts | selfTime": {
     "message": "Self Time"
   },
-  "timeline/TimelineUIUtils.js | sendRequest": {
+  "timeline/TimelineUIUtils.ts | sendRequest": {
     "message": "Send Request"
   },
-  "timeline/TimelineUIUtils.js | sendWebsocketHandshake": {
+  "timeline/TimelineUIUtils.ts | sendWebsocketHandshake": {
     "message": "Send WebSocket Handshake"
   },
-  "timeline/TimelineUIUtils.js | sForS": {
+  "timeline/TimelineUIUtils.ts | sForS": {
     "message": "{PH1} for {PH2}"
   },
-  "timeline/TimelineUIUtils.js | show": {
+  "timeline/TimelineUIUtils.ts | show": {
     "message": "Show"
   },
-  "timeline/TimelineUIUtils.js | sign": {
+  "timeline/TimelineUIUtils.ts | sign": {
     "message": "Sign"
   },
-  "timeline/TimelineUIUtils.js | signReply": {
+  "timeline/TimelineUIUtils.ts | signReply": {
     "message": "Sign Reply"
   },
-  "timeline/TimelineUIUtils.js | sIsALikelyPerformanceBottleneck": {
+  "timeline/TimelineUIUtils.ts | sIsALikelyPerformanceBottleneck": {
     "message": "{PH1} is a likely performance bottleneck."
   },
-  "timeline/TimelineUIUtils.js | size": {
+  "timeline/TimelineUIUtils.ts | size": {
     "message": "Size"
   },
-  "timeline/TimelineUIUtils.js | sLongFrameTimesAreAnIndicationOf": {
+  "timeline/TimelineUIUtils.ts | sLongFrameTimesAreAnIndicationOf": {
     "message": "{PH1}. Long frame times are an indication of {PH2}"
   },
-  "timeline/TimelineUIUtils.js | sOfS": {
+  "timeline/TimelineUIUtils.ts | sOfS": {
     "message": "{PH1} of {PH2}"
   },
-  "timeline/TimelineUIUtils.js | sS": {
+  "timeline/TimelineUIUtils.ts | sS": {
     "message": "{PH1}: {PH2}"
   },
-  "timeline/TimelineUIUtils.js | sSAndSOthers": {
+  "timeline/TimelineUIUtils.ts | sSAndSOthers": {
     "message": "{PH1}, {PH2}, and {PH3} others"
   },
-  "timeline/TimelineUIUtils.js | sSCurlyBrackets": {
+  "timeline/TimelineUIUtils.ts | sSCurlyBrackets": {
     "message": "({PH1}, {PH2})"
   },
-  "timeline/TimelineUIUtils.js | sSDimensions": {
+  "timeline/TimelineUIUtils.ts | sSDimensions": {
     "message": "{PH1} × {PH2}"
   },
-  "timeline/TimelineUIUtils.js | sSDot": {
+  "timeline/TimelineUIUtils.ts | sSDot": {
     "message": "{PH1}. {PH2}"
   },
-  "timeline/TimelineUIUtils.js | sSelf": {
+  "timeline/TimelineUIUtils.ts | sSelf": {
     "message": "{PH1} (self)"
   },
-  "timeline/TimelineUIUtils.js | sSs": {
+  "timeline/TimelineUIUtils.ts | sSs": {
     "message": "{PH1} [{PH2}…{PH3}]"
   },
-  "timeline/TimelineUIUtils.js | sSSquareBrackets": {
+  "timeline/TimelineUIUtils.ts | sSSquareBrackets": {
     "message": "{PH1} [{PH2}…]"
   },
-  "timeline/TimelineUIUtils.js | SSSResourceLoading": {
+  "timeline/TimelineUIUtils.ts | SSSResourceLoading": {
     "message": " ({PH1} {PH2} + {PH3} resource loading)"
   },
-  "timeline/TimelineUIUtils.js | stackTrace": {
+  "timeline/TimelineUIUtils.ts | stackTrace": {
     "message": "Stack Trace"
   },
-  "timeline/TimelineUIUtils.js | stackTraceColon": {
+  "timeline/TimelineUIUtils.ts | stackTraceColon": {
     "message": "Stack trace:"
   },
-  "timeline/TimelineUIUtils.js | state": {
+  "timeline/TimelineUIUtils.ts | state": {
     "message": "State"
   },
-  "timeline/TimelineUIUtils.js | statusCode": {
+  "timeline/TimelineUIUtils.ts | statusCode": {
     "message": "Status Code"
   },
-  "timeline/TimelineUIUtils.js | sTookS": {
+  "timeline/TimelineUIUtils.ts | sTookS": {
     "message": "{PH1} took {PH2}."
   },
-  "timeline/TimelineUIUtils.js | streamed": {
+  "timeline/TimelineUIUtils.ts | streamed": {
     "message": "Streamed"
   },
-  "timeline/TimelineUIUtils.js | streamingCompileTask": {
+  "timeline/TimelineUIUtils.ts | streamingCompileTask": {
     "message": "Streaming Compile Task"
   },
-  "timeline/TimelineUIUtils.js | streamingWasmResponse": {
+  "timeline/TimelineUIUtils.ts | streamingWasmResponse": {
     "message": "Streaming Wasm Response"
   },
-  "timeline/TimelineUIUtils.js | styleInvalidations": {
+  "timeline/TimelineUIUtils.ts | styleInvalidations": {
     "message": "Style Invalidations"
   },
-  "timeline/TimelineUIUtils.js | stylesheetUrl": {
+  "timeline/TimelineUIUtils.ts | stylesheetUrl": {
     "message": "Stylesheet URL"
   },
-  "timeline/TimelineUIUtils.js | system": {
+  "timeline/TimelineUIUtils.ts | system": {
     "message": "System"
   },
-  "timeline/TimelineUIUtils.js | tap": {
+  "timeline/TimelineUIUtils.ts | tap": {
     "message": "Tap"
   },
-  "timeline/TimelineUIUtils.js | tapBegin": {
+  "timeline/TimelineUIUtils.ts | tapBegin": {
     "message": "Tap Begin"
   },
-  "timeline/TimelineUIUtils.js | tapDown": {
+  "timeline/TimelineUIUtils.ts | tapDown": {
     "message": "Tap Down"
   },
-  "timeline/TimelineUIUtils.js | tapHalt": {
+  "timeline/TimelineUIUtils.ts | tapHalt": {
     "message": "Tap Halt"
   },
-  "timeline/TimelineUIUtils.js | task": {
+  "timeline/TimelineUIUtils.ts | task": {
     "message": "Task"
   },
-  "timeline/TimelineUIUtils.js | timeout": {
+  "timeline/TimelineUIUtils.ts | timeout": {
     "message": "Timeout"
   },
-  "timeline/TimelineUIUtils.js | timerFired": {
+  "timeline/TimelineUIUtils.ts | timerFired": {
     "message": "Timer Fired"
   },
-  "timeline/TimelineUIUtils.js | timerId": {
+  "timeline/TimelineUIUtils.ts | timerId": {
     "message": "Timer ID"
   },
-  "timeline/TimelineUIUtils.js | timerInstalled": {
+  "timeline/TimelineUIUtils.ts | timerInstalled": {
     "message": "Timer Installed"
   },
-  "timeline/TimelineUIUtils.js | timeSpentInRendering": {
+  "timeline/TimelineUIUtils.ts | timeSpentInRendering": {
     "message": "Time spent in rendering"
   },
-  "timeline/TimelineUIUtils.js | timestamp": {
+  "timeline/TimelineUIUtils.ts | timestamp": {
     "message": "Timestamp"
   },
-  "timeline/TimelineUIUtils.js | timeWaitingForMainThread": {
+  "timeline/TimelineUIUtils.ts | timeWaitingForMainThread": {
     "message": "Time Waiting for Main Thread"
   },
-  "timeline/TimelineUIUtils.js | totalTime": {
+  "timeline/TimelineUIUtils.ts | totalTime": {
     "message": "Total Time"
   },
-  "timeline/TimelineUIUtils.js | touchCancel": {
+  "timeline/TimelineUIUtils.ts | touchCancel": {
     "message": "Touch Cancel"
   },
-  "timeline/TimelineUIUtils.js | touchEnd": {
+  "timeline/TimelineUIUtils.ts | touchEnd": {
     "message": "Touch End"
   },
-  "timeline/TimelineUIUtils.js | touchMove": {
+  "timeline/TimelineUIUtils.ts | touchMove": {
     "message": "Touch Move"
   },
-  "timeline/TimelineUIUtils.js | touchStart": {
+  "timeline/TimelineUIUtils.ts | touchStart": {
     "message": "Touch Start"
   },
-  "timeline/TimelineUIUtils.js | type": {
+  "timeline/TimelineUIUtils.ts | type": {
     "message": "Type"
   },
-  "timeline/TimelineUIUtils.js | uncategorized": {
+  "timeline/TimelineUIUtils.ts | uncategorized": {
     "message": "Uncategorized"
   },
-  "timeline/TimelineUIUtils.js | unknown": {
+  "timeline/TimelineUIUtils.ts | unknown": {
     "message": "unknown"
   },
-  "timeline/TimelineUIUtils.js | unknownCause": {
+  "timeline/TimelineUIUtils.ts | unknownCause": {
     "message": "Unknown cause"
   },
-  "timeline/TimelineUIUtils.js | UnknownNode": {
+  "timeline/TimelineUIUtils.ts | UnknownNode": {
     "message": "[ unknown node ]"
   },
-  "timeline/TimelineUIUtils.js | updateLayer": {
+  "timeline/TimelineUIUtils.ts | updateLayer": {
     "message": "Update Layer"
   },
-  "timeline/TimelineUIUtils.js | updateLayerTree": {
+  "timeline/TimelineUIUtils.ts | updateLayerTree": {
     "message": "Update Layer Tree"
   },
-  "timeline/TimelineUIUtils.js | url": {
+  "timeline/TimelineUIUtils.ts | url": {
     "message": "Url"
   },
-  "timeline/TimelineUIUtils.js | userTiming": {
+  "timeline/TimelineUIUtils.ts | userTiming": {
     "message": "User Timing"
   },
-  "timeline/TimelineUIUtils.js | verify": {
+  "timeline/TimelineUIUtils.ts | verify": {
     "message": "Verify"
   },
-  "timeline/TimelineUIUtils.js | verifyReply": {
+  "timeline/TimelineUIUtils.ts | verifyReply": {
     "message": "Verify Reply"
   },
-  "timeline/TimelineUIUtils.js | waitingForNetwork": {
+  "timeline/TimelineUIUtils.ts | waitingForNetwork": {
     "message": "Waiting for Network"
   },
-  "timeline/TimelineUIUtils.js | warning": {
+  "timeline/TimelineUIUtils.ts | warning": {
     "message": "Warning"
   },
-  "timeline/TimelineUIUtils.js | wasmModuleCacheHit": {
+  "timeline/TimelineUIUtils.ts | wasmModuleCacheHit": {
     "message": "Wasm Module Cache Hit"
   },
-  "timeline/TimelineUIUtils.js | wasmModuleCacheInvalid": {
+  "timeline/TimelineUIUtils.ts | wasmModuleCacheInvalid": {
     "message": "Wasm Module Cache Invalid"
   },
-  "timeline/TimelineUIUtils.js | websocketProtocol": {
+  "timeline/TimelineUIUtils.ts | websocketProtocol": {
     "message": "WebSocket Protocol"
   },
-  "timeline/TimelineUIUtils.js | willSendRequest": {
+  "timeline/TimelineUIUtils.ts | willSendRequest": {
     "message": "Will Send Request"
   },
-  "timeline/TimelineUIUtils.js | xhrLoad": {
+  "timeline/TimelineUIUtils.ts | xhrLoad": {
     "message": "XHR Load"
   },
-  "timeline/TimelineUIUtils.js | xhrReadyStateChange": {
+  "timeline/TimelineUIUtils.ts | xhrReadyStateChange": {
     "message": "XHR Ready State Change"
   },
-  "timeline/TimelineUIUtils.js | yes": {
+  "timeline/TimelineUIUtils.ts | yes": {
     "message": "Yes"
   },
-  "timeline/UIDevtoolsUtils.js | drawFrame": {
+  "timeline/UIDevtoolsUtils.ts | drawFrame": {
     "message": "Draw Frame"
   },
-  "timeline/UIDevtoolsUtils.js | drawing": {
+  "timeline/UIDevtoolsUtils.ts | drawing": {
     "message": "Drawing"
   },
-  "timeline/UIDevtoolsUtils.js | frameStart": {
+  "timeline/UIDevtoolsUtils.ts | frameStart": {
     "message": "Frame Start"
   },
-  "timeline/UIDevtoolsUtils.js | idle": {
+  "timeline/UIDevtoolsUtils.ts | idle": {
     "message": "Idle"
   },
-  "timeline/UIDevtoolsUtils.js | layout": {
+  "timeline/UIDevtoolsUtils.ts | layout": {
     "message": "Layout"
   },
-  "timeline/UIDevtoolsUtils.js | painting": {
+  "timeline/UIDevtoolsUtils.ts | painting": {
     "message": "Painting"
   },
-  "timeline/UIDevtoolsUtils.js | rasterizing": {
+  "timeline/UIDevtoolsUtils.ts | rasterizing": {
     "message": "Rasterizing"
   },
-  "timeline/UIDevtoolsUtils.js | system": {
+  "timeline/UIDevtoolsUtils.ts | system": {
     "message": "System"
   },
   "timeline/WebVitalsTimeline.ts | fcp": {

@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
 import * as SDK from '../core/sdk/sdk.js';      // eslint-disable-line no-unused-vars
 import * as LayerViewer from '../panels/layer_viewer/layer_viewer.js';
@@ -9,11 +11,16 @@ import * as TimelineModel from '../timeline_model/timeline_model.js';  // eslint
 import * as UI from '../ui/ui.js';
 
 export class TimelineLayersView extends UI.SplitWidget.SplitWidget {
-  /**
-   * @param {!TimelineModel.TimelineModel.TimelineModelImpl} model
-   * @param {function(!SDK.PaintProfiler.PaintProfilerSnapshot):void} showPaintProfilerCallback
-   */
-  constructor(model, showPaintProfilerCallback) {
+  _model: TimelineModel.TimelineModel.TimelineModelImpl;
+  _showPaintProfilerCallback: (arg0: SDK.PaintProfiler.PaintProfilerSnapshot) => void;
+  _rightSplitWidget: UI.SplitWidget.SplitWidget;
+  _layerViewHost: LayerViewer.LayerViewHost.LayerViewHost;
+  _layers3DView: LayerViewer.Layers3DView.Layers3DView;
+  _frameLayerTree?: TimelineModel.TimelineFrameModel.TracingFrameLayerTree;
+  _updateWhenVisible?: boolean;
+  constructor(
+      model: TimelineModel.TimelineModel.TimelineModelImpl,
+      showPaintProfilerCallback: (arg0: SDK.PaintProfiler.PaintProfilerSnapshot) => void) {
     super(true, false, 'timelineLayersView');
     this._model = model;
     this._showPaintProfilerCallback = showPaintProfilerCallback;
@@ -42,10 +49,7 @@ export class TimelineLayersView extends UI.SplitWidget.SplitWidget {
         LayerViewer.LayerDetailsView.Events.PaintProfilerRequested, this._onPaintProfilerRequested, this);
   }
 
-  /**
-   * @param {!TimelineModel.TimelineFrameModel.TracingFrameLayerTree} frameLayerTree
-   */
-  showLayerTree(frameLayerTree) {
+  showLayerTree(frameLayerTree: TimelineModel.TimelineFrameModel.TracingFrameLayerTree): void {
     this._frameLayerTree = frameLayerTree;
     if (this.isShowing()) {
       this._update();
@@ -54,21 +58,15 @@ export class TimelineLayersView extends UI.SplitWidget.SplitWidget {
     }
   }
 
-  /**
-   * @override
-   */
-  wasShown() {
+  wasShown(): void {
     if (this._updateWhenVisible) {
       this._updateWhenVisible = false;
       this._update();
     }
   }
 
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  _onPaintProfilerRequested(event) {
-    const selection = /** @type {!LayerViewer.LayerViewHost.Selection} */ (event.data);
+  _onPaintProfilerRequested(event: Common.EventTarget.EventTargetEvent): void {
+    const selection = (event.data as LayerViewer.LayerViewHost.Selection);
     this._layers3DView.snapshotForSelection(selection).then(snapshotWithRect => {
       if (snapshotWithRect) {
         this._showPaintProfilerCallback(snapshotWithRect.snapshot);
@@ -76,7 +74,7 @@ export class TimelineLayersView extends UI.SplitWidget.SplitWidget {
     });
   }
 
-  _update() {
+  _update(): void {
     if (this._frameLayerTree) {
       this._frameLayerTree.layerTreePromise().then(layerTree => this._layerViewHost.setLayerTree(layerTree));
     }

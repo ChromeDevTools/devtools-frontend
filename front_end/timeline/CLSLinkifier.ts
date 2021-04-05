@@ -2,15 +2,26 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
 import * as SDK from '../core/sdk/sdk.js';
 
+interface Color {
+  r: number;
+  g: number;
+  b: number;
+  a: number;
+}
+
 export class CLSRect {
-  /**
-   *
-   * @param {!Array<number>} data
-   */
-  constructor([x, y, width, height]) {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  color: Color;
+  outlineColor: Color;
+  constructor([x, y, width, height]: [number, number, number, number]) {
     this.x = x;
     this.y = y;
     this.width = width;
@@ -20,20 +31,12 @@ export class CLSRect {
   }
 }
 
-/**
- * @type {!Linkifier}
- */
+let linkifierInstance: Linkifier;
 
-let linkifierInstance;
-
-/**
- * @implements {Common.Linkifier.Linkifier}
- */
-export class Linkifier {
-  /**
-   * @param {{forceNew: ?boolean}} opts
-   */
-  static instance(opts = {forceNew: null}) {
+export class Linkifier implements Common.Linkifier.Linkifier {
+  static instance(opts: {
+    forceNew: boolean|null,
+  } = {forceNew: null}): Linkifier {
     const {forceNew} = opts;
     if (!linkifierInstance || forceNew) {
       linkifierInstance = new Linkifier();
@@ -42,15 +45,9 @@ export class Linkifier {
     return linkifierInstance;
   }
 
-  /**
-   * @override
-   * @param {!Object} object
-   * @param {!Common.Linkifier.Options=} options
-   * @return {!Node}
-   */
-  linkify(object, options) {
+  linkify(object: Object, _options?: Common.Linkifier.Options): Node {
     const link = document.createElement('span');
-    const rect = /** @type {!CLSRect} */ (object);
+    const rect = (object as CLSRect);
     const {x, y, width, height} = rect;
     link.textContent = `Location: [${x},${y}], Size: [${width}x${height}]`;
 

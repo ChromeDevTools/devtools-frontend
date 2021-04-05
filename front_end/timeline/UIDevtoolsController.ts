@@ -28,21 +28,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as SDK from '../core/sdk/sdk.js';  // eslint-disable-line no-unused-vars
 
 import {Client, TimelineController} from './TimelineController.js';  // eslint-disable-line no-unused-vars
 import {TimelineUIUtils} from './TimelineUIUtils.js';
 import {UIDevtoolsUtils} from './UIDevtoolsUtils.js';
 
-/**
- * @extends {TimelineController}
- */
 export class UIDevtoolsController extends TimelineController {
-  /**
-   * @param {!SDK.SDKModel.Target} target
-   * @param {!Client} client
-   */
-  constructor(target, client) {
+  constructor(target: SDK.SDKModel.Target, client: Client) {
     super(target, client);
     TimelineUIUtils.setEventStylesMap(UIDevtoolsUtils.categorizeEvents());
     TimelineUIUtils.setCategories(UIDevtoolsUtils.categories());

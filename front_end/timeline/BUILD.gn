@@ -7,30 +7,30 @@ import("../../scripts/build/ninja/devtools_module.gni")
 
 devtools_module("timeline") {
   sources = [
-    "CLSLinkifier.js",
-    "CountersGraph.js",
-    "EventsTimelineTreeView.js",
-    "ExtensionTracingSession.js",
-    "PerformanceModel.js",
-    "TimelineController.js",
-    "TimelineDetailsView.js",
-    "TimelineEventOverview.js",
-    "TimelineFilters.js",
-    "TimelineFlameChartDataProvider.js",
-    "TimelineFlameChartNetworkDataProvider.js",
-    "TimelineFlameChartView.js",
-    "TimelineHistoryManager.js",
-    "TimelineLayersView.js",
-    "TimelineLoader.js",
-    "TimelinePaintProfilerView.js",
-    "TimelinePanel.js",
-    "TimelineTreeView.js",
-    "TimelineUIUtils.js",
-    "UIDevtoolsController.js",
-    "UIDevtoolsUtils.js",
+    "CLSLinkifier.ts",
+    "CountersGraph.ts",
+    "EventsTimelineTreeView.ts",
+    "ExtensionTracingSession.ts",
+    "PerformanceModel.ts",
+    "TimelineController.ts",
+    "TimelineDetailsView.ts",
+    "TimelineEventOverview.ts",
+    "TimelineFilters.ts",
+    "TimelineFlameChartDataProvider.ts",
+    "TimelineFlameChartNetworkDataProvider.ts",
+    "TimelineFlameChartView.ts",
+    "TimelineHistoryManager.ts",
+    "TimelineLayersView.ts",
+    "TimelineLoader.ts",
+    "TimelinePaintProfilerView.ts",
+    "TimelinePanel.ts",
+    "TimelineTreeView.ts",
+    "TimelineUIUtils.ts",
+    "UIDevtoolsController.ts",
+    "UIDevtoolsUtils.ts",
     "WebVitalsLane.ts",
     "WebVitalsTimeline.ts",
-    "WebVitalsTimelineUtils.js",
+    "WebVitalsTimelineUtils.ts",
     "WebVitalsTooltip.ts",
   ]
 
@@ -58,7 +58,7 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_entrypoint("legacy") {
-  entrypoint = "timeline-legacy.js"
+  entrypoint = "timeline-legacy.ts"
 
   deps = [ ":bundle" ]
 }

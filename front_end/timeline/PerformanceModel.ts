@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Bindings from '../bindings/bindings.js';  // eslint-disable-line no-unused-vars
 import * as Common from '../common/common.js';
 import * as SDK from '../core/sdk/sdk.js';
@@ -10,91 +12,73 @@ import * as TimelineModel from '../timeline_model/timeline_model.js';
 import {TimelineUIUtils} from './TimelineUIUtils.js';
 
 export class PerformanceModel extends Common.ObjectWrapper.ObjectWrapper {
+  _mainTarget: SDK.SDKModel.Target|null;
+  _tracingModel: SDK.TracingModel.TracingModel|null;
+  _filters: TimelineModel.TimelineModelFilter.TimelineModelFilter[];
+  _timelineModel: TimelineModel.TimelineModel.TimelineModelImpl;
+  _frameModel: TimelineModel.TimelineFrameModel.TimelineFrameModel;
+  _filmStripModel: SDK.FilmStripModel.FilmStripModel|null;
+  _irModel: TimelineModel.TimelineIRModel.TimelineIRModel;
+  _window: Window;
+  _extensionTracingModels: {
+    title: string,
+    model: SDK.TracingModel.TracingModel,
+    timeOffset: number,
+  }[];
+  _recordStartTime?: number;
+
   constructor() {
     super();
-    /** @type {?SDK.SDKModel.Target} */
     this._mainTarget = null;
-    /** @type {?SDK.TracingModel.TracingModel} */
     this._tracingModel = null;
-    /** @type {!Array<!TimelineModel.TimelineModelFilter.TimelineModelFilter>} */
     this._filters = [];
 
     this._timelineModel = new TimelineModel.TimelineModel.TimelineModelImpl();
     this._frameModel = new TimelineModel.TimelineFrameModel.TimelineFrameModel(
         event => TimelineUIUtils.eventStyle(event).category.name);
-    /** @type {?SDK.FilmStripModel.FilmStripModel} */
     this._filmStripModel = null;
-    /** @type {!TimelineModel.TimelineIRModel.TimelineIRModel} */
     this._irModel = new TimelineModel.TimelineIRModel.TimelineIRModel();
 
-    /** @type {!Window} */
     this._window = {left: 0, right: Infinity};
 
-    /** @type {!Array<!{title: string, model: !SDK.TracingModel.TracingModel, timeOffset: number}>} */
     this._extensionTracingModels = [];
-    /** @type {number|undefined} */
     this._recordStartTime = undefined;
   }
 
-  /**
-   * @param {!SDK.SDKModel.Target} target
-   */
-  setMainTarget(target) {
+  setMainTarget(target: SDK.SDKModel.Target): void {
     this._mainTarget = target;
   }
 
-  /**
-   * @return {?SDK.SDKModel.Target}
-   */
-  mainTarget() {
+  mainTarget(): SDK.SDKModel.Target|null {
     return this._mainTarget;
   }
 
-  /**
-   * @param {number} time
-   */
-  setRecordStartTime(time) {
+  setRecordStartTime(time: number): void {
     this._recordStartTime = time;
   }
 
-  /**
-   * @return {number|undefined}
-   */
-  recordStartTime() {
+  recordStartTime(): number|undefined {
     return this._recordStartTime;
   }
 
-  /**
-   * @param {!Array<!TimelineModel.TimelineModelFilter.TimelineModelFilter>} filters
-   */
-  setFilters(filters) {
+  setFilters(filters: TimelineModel.TimelineModelFilter.TimelineModelFilter[]): void {
     this._filters = filters;
   }
 
-  /**
-   * @return {!Array<!TimelineModel.TimelineModelFilter.TimelineModelFilter>}
-   */
-  filters() {
+  filters(): TimelineModel.TimelineModelFilter.TimelineModelFilter[] {
     return this._filters;
   }
 
-  /**
-   * @param {!SDK.TracingModel.Event} event
-   * @return {boolean}
-   */
-  isVisible(event) {
+  isVisible(event: SDK.TracingModel.Event): boolean {
     return this._filters.every(f => f.accept(event));
   }
 
-  /**
-   * @param {!SDK.TracingModel.TracingModel} model
-   */
-  setTracingModel(model) {
+  setTracingModel(model: SDK.TracingModel.TracingModel): void {
     this._tracingModel = model;
     this._timelineModel.setEvents(model);
 
-    let inputEvents = null;
-    let animationEvents = null;
+    let inputEvents: SDK.TracingModel.AsyncEvent[]|null = null;
+    let animationEvents: SDK.TracingModel.AsyncEvent[]|null = null;
     for (const track of this._timelineModel.tracks()) {
       if (track.type === TimelineModel.TimelineModel.TrackType.Input) {
         inputEvents = track.asyncEvents;
@@ -118,48 +102,32 @@ export class PerformanceModel extends Common.ObjectWrapper.ObjectWrapper {
 
     for (const entry of this._extensionTracingModels) {
       entry.model.adjustTime(
-          this._tracingModel.minimumRecordTime() + (entry.timeOffset / 1000) -
-          /** @type {number} */ (this._recordStartTime));
+          this._tracingModel.minimumRecordTime() + (entry.timeOffset / 1000) - (this._recordStartTime as number));
     }
     this._autoWindowTimes();
   }
 
-  /**
-   * @param {string} title
-   * @param {!SDK.TracingModel.TracingModel} model
-   * @param {number} timeOffset
-   */
-  addExtensionEvents(title, model, timeOffset) {
+  addExtensionEvents(title: string, model: SDK.TracingModel.TracingModel, timeOffset: number): void {
     this._extensionTracingModels.push({model: model, title: title, timeOffset: timeOffset});
     if (!this._tracingModel) {
       return;
     }
-    model.adjustTime(
-        this._tracingModel.minimumRecordTime() + (timeOffset / 1000) - /** @type {number} */ (this._recordStartTime));
+    model.adjustTime(this._tracingModel.minimumRecordTime() + (timeOffset / 1000) - (this._recordStartTime as number));
     this.dispatchEventToListeners(Events.ExtensionDataAdded);
   }
 
-  /**
-   * @return {!SDK.TracingModel.TracingModel}
-   */
-  tracingModel() {
+  tracingModel(): SDK.TracingModel.TracingModel {
     if (!this._tracingModel) {
       throw 'call setTracingModel before accessing PerformanceModel';
     }
     return this._tracingModel;
   }
 
-  /**
-   * @return {!TimelineModel.TimelineModel.TimelineModelImpl}
-   */
-  timelineModel() {
+  timelineModel(): TimelineModel.TimelineModel.TimelineModelImpl {
     return this._timelineModel;
   }
 
-  /**
-   * @return {!SDK.FilmStripModel.FilmStripModel} filmStripModel
-   */
-  filmStripModel() {
+  filmStripModel(): SDK.FilmStripModel.FilmStripModel {
     if (this._filmStripModel) {
       return this._filmStripModel;
     }
@@ -170,35 +138,26 @@ export class PerformanceModel extends Common.ObjectWrapper.ObjectWrapper {
     return this._filmStripModel;
   }
 
-  /**
-   * @return {!Array<!TimelineModel.TimelineFrameModel.TimelineFrame>} frames
-   */
-  frames() {
+  frames(): TimelineModel.TimelineFrameModel.TimelineFrame[] {
     return this._frameModel.frames();
   }
 
-  /**
-   * @return {!TimelineModel.TimelineFrameModel.TimelineFrameModel} frames
-   */
-  frameModel() {
+  frameModel(): TimelineModel.TimelineFrameModel.TimelineFrameModel {
     return this._frameModel;
   }
 
-  /**
-   * @return {!Array<!Common.SegmentedRange.Segment>}
-   */
-  interactionRecords() {
+  interactionRecords(): Common.SegmentedRange.Segment[] {
     return this._irModel.interactionRecords();
   }
 
-  /**
-   * @return {!Array<!{title: string, model: !SDK.TracingModel.TracingModel}>}
-   */
-  extensionInfo() {
+  extensionInfo(): {
+    title: string,
+    model: SDK.TracingModel.TracingModel,
+  }[] {
     return this._extensionTracingModels;
   }
 
-  dispose() {
+  dispose(): void {
     if (this._tracingModel) {
       this._tracingModel.dispose();
     }
@@ -207,51 +166,34 @@ export class PerformanceModel extends Common.ObjectWrapper.ObjectWrapper {
     }
   }
 
-  /**
-   * @param {!TimelineModel.TimelineFrameModel.TimelineFrame} frame
-   * @return {?SDK.FilmStripModel.Frame}
-   */
-  filmStripModelFrame(frame) {
+  filmStripModelFrame(frame: TimelineModel.TimelineFrameModel.TimelineFrame): SDK.FilmStripModel.Frame|null {
     // For idle frames, look at the state at the beginning of the frame.
     const screenshotTime = frame.idle ? frame.startTime : frame.endTime;
-    const filmStripModel = /** @type {!SDK.FilmStripModel.FilmStripModel} */ (this._filmStripModel);
+    const filmStripModel = (this._filmStripModel as SDK.FilmStripModel.FilmStripModel);
     const filmStripFrame = filmStripModel.frameByTimestamp(screenshotTime);
     return filmStripFrame && filmStripFrame.timestamp - frame.endTime < 10 ? filmStripFrame : null;
   }
 
-  /**
-   * @param {!Common.StringOutputStream.OutputStream} stream
-   * @return {!Promise<?DOMError>}
-   */
-  save(stream) {
+  save(stream: Common.StringOutputStream.OutputStream): Promise<DOMError|null> {
     if (!this._tracingModel) {
       throw 'call setTracingModel before accessing PerformanceModel';
     }
-    const backingStorage =
-        /** @type {!Bindings.TempFile.TempFileBackingStorage} */ (this._tracingModel.backingStorage());
+    const backingStorage = (this._tracingModel.backingStorage() as Bindings.TempFile.TempFileBackingStorage);
     return backingStorage.writeToStream(stream);
   }
 
-  /**
-   * @param {!Window} window
-   * @param {boolean=} animate
-   */
-  setWindow(window, animate) {
+  setWindow(window: Window, animate?: boolean): void {
     this._window = window;
     this.dispatchEventToListeners(Events.WindowChanged, {window, animate});
   }
 
-  /**
-   * @return {!Window}
-   */
-  window() {
+  window(): Window {
     return this._window;
   }
 
-  _autoWindowTimes() {
+  _autoWindowTimes(): void {
     const timelineModel = this._timelineModel;
-    /** @type {!Array<!SDK.TracingModel.Event>} */
-    let tasks = [];
+    let tasks: SDK.TracingModel.Event[] = [];
     for (const track of timelineModel.tracks()) {
       // Deliberately pick up last main frame's track.
       if (track.type === TimelineModel.TimelineModel.TrackType.MainThread && track.forMainFrame) {
@@ -263,34 +205,29 @@ export class PerformanceModel extends Common.ObjectWrapper.ObjectWrapper {
       return;
     }
 
-    /**
-     * @param {number} startIndex
-     * @param {number} stopIndex
-     * @return {number}
-     */
-    function findLowUtilizationRegion(startIndex, stopIndex) {
+    function findLowUtilizationRegion(startIndex: number, stopIndex: number): number {
       const threshold = 0.1;
       let cutIndex = startIndex;
-      let cutTime = (tasks[cutIndex].startTime + /** @type {number} */ (tasks[cutIndex].endTime)) / 2;
+      let cutTime = (tasks[cutIndex].startTime + (tasks[cutIndex].endTime as number)) / 2;
       let usedTime = 0;
       const step = Math.sign(stopIndex - startIndex);
       for (let i = startIndex; i !== stopIndex; i += step) {
         const task = tasks[i];
-        const taskTime = (task.startTime + /** @type {number} */ (task.endTime)) / 2;
+        const taskTime = (task.startTime + (task.endTime as number)) / 2;
         const interval = Math.abs(cutTime - taskTime);
         if (usedTime < threshold * interval) {
           cutIndex = i;
           cutTime = taskTime;
           usedTime = 0;
         }
-        usedTime += /** @type {number} */ (task.duration);
+        usedTime += (task.duration as number);
       }
       return cutIndex;
     }
     const rightIndex = findLowUtilizationRegion(tasks.length - 1, 0);
     const leftIndex = findLowUtilizationRegion(0, rightIndex);
-    let leftTime = tasks[leftIndex].startTime;
-    let rightTime = /** @type {number} */ (tasks[rightIndex].endTime);
+    let leftTime: number = tasks[leftIndex].startTime;
+    let rightTime: number = (tasks[rightIndex].endTime as number);
     const span = rightTime - leftTime;
     const totalSpan = timelineModel.maximumRecordTime() - timelineModel.minimumRecordTime();
     if (span < totalSpan * 0.1) {
@@ -304,14 +241,14 @@ export class PerformanceModel extends Common.ObjectWrapper.ObjectWrapper {
   }
 }
 
-/**
- * @enum {symbol}
- */
-export const Events = {
-  ExtensionDataAdded: Symbol('ExtensionDataAdded'),
-  WindowChanged: Symbol('WindowChanged')
-};
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum Events {
+  ExtensionDataAdded = 'ExtensionDataAdded',
+  WindowChanged = 'WindowChanged',
+}
 
-/** @typedef {!{left: number, right: number}} */
-// @ts-ignore typedef
-export let Window;
+export interface Window {
+  left: number;
+  right: number;
+}

@@ -2,16 +2,25 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as SDK from '../core/sdk/sdk.js';  // eslint-disable-line no-unused-vars
 import * as LayerViewer from '../panels/layer_viewer/layer_viewer.js';
 import * as TimelineModel from '../timeline_model/timeline_model.js';
 import * as UI from '../ui/ui.js';
 
 export class TimelinePaintProfilerView extends UI.SplitWidget.SplitWidget {
-  /**
-   * @param {!TimelineModel.TimelineFrameModel.TimelineFrameModel} frameModel
-   */
-  constructor(frameModel) {
+  _frameModel: TimelineModel.TimelineFrameModel.TimelineFrameModel;
+  _logAndImageSplitWidget: UI.SplitWidget.SplitWidget;
+  _imageView: TimelinePaintImageView;
+  _paintProfilerView: LayerViewer.PaintProfilerView.PaintProfilerView;
+  _logTreeView: LayerViewer.PaintProfilerView.PaintProfilerCommandLogView;
+  _needsUpdateWhenVisible: boolean;
+  _pendingSnapshot: SDK.PaintProfiler.PaintProfilerSnapshot|null;
+  _event: SDK.TracingModel.Event|null;
+  _paintProfilerModel: SDK.PaintProfiler.PaintProfilerModel|null;
+  _lastLoadedSnapshot: SDK.PaintProfiler.PaintProfilerSnapshot|null;
+  constructor(frameModel: TimelineModel.TimelineFrameModel.TimelineFrameModel) {
     super(false, false);
     this.element.classList.add('timeline-paint-profiler-view');
     this.setSidebarSize(60);
@@ -34,42 +43,27 @@ export class TimelinePaintProfilerView extends UI.SplitWidget.SplitWidget {
     this._logAndImageSplitWidget.setSidebarWidget(this._logTreeView);
 
     this._needsUpdateWhenVisible = false;
-    /** @type {?SDK.PaintProfiler.PaintProfilerSnapshot} */
     this._pendingSnapshot = null;
-    /** @type {?SDK.TracingModel.Event} */
     this._event = null;
-    /** @type {?SDK.PaintProfiler.PaintProfilerModel} */
     this._paintProfilerModel = null;
-    /** @type {?SDK.PaintProfiler.PaintProfilerSnapshot} */
     this._lastLoadedSnapshot = null;
   }
 
-  /**
-   * @override
-   */
-  wasShown() {
+  wasShown(): void {
     if (this._needsUpdateWhenVisible) {
       this._needsUpdateWhenVisible = false;
       this._update();
     }
   }
 
-  /**
-   * @param {!SDK.PaintProfiler.PaintProfilerSnapshot} snapshot
-   */
-  setSnapshot(snapshot) {
+  setSnapshot(snapshot: SDK.PaintProfiler.PaintProfilerSnapshot): void {
     this._releaseSnapshot();
     this._pendingSnapshot = snapshot;
     this._event = null;
     this._updateWhenVisible();
   }
 
-  /**
-   * @param {!SDK.PaintProfiler.PaintProfilerModel} paintProfilerModel
-   * @param {!SDK.TracingModel.Event} event
-   * @return {boolean}
-   */
-  setEvent(paintProfilerModel, event) {
+  setEvent(paintProfilerModel: SDK.PaintProfiler.PaintProfilerModel, event: SDK.TracingModel.Event): boolean {
     this._releaseSnapshot();
     this._paintProfilerModel = paintProfilerModel;
     this._pendingSnapshot = null;
@@ -85,7 +79,7 @@ export class TimelinePaintProfilerView extends UI.SplitWidget.SplitWidget {
     return false;
   }
 
-  _updateWhenVisible() {
+  _updateWhenVisible(): void {
     if (this.isShowing()) {
       this._update();
     } else {
@@ -93,23 +87,25 @@ export class TimelinePaintProfilerView extends UI.SplitWidget.SplitWidget {
     }
   }
 
-  _update() {
+  _update(): void {
     this._logTreeView.setCommandLog([]);
     this._paintProfilerView.setSnapshotAndLog(null, [], null);
 
-    /** @type {!Promise<?{rect: ?Protocol.DOM.Rect, snapshot: !SDK.PaintProfiler.PaintProfilerSnapshot}>} */
-    let snapshotPromise;
+    let snapshotPromise: Promise<{
+      rect: Protocol.DOM.Rect | null,
+      snapshot: SDK.PaintProfiler.PaintProfilerSnapshot,
+    }|null>;
     if (this._pendingSnapshot) {
       snapshotPromise = Promise.resolve({rect: null, snapshot: this._pendingSnapshot});
     } else if (this._event && this._event.name === TimelineModel.TimelineModel.RecordType.Paint) {
-      /** @type {!SDK.TracingModel.ObjectSnapshot} */
-      const picture = /** @type {!SDK.TracingModel.ObjectSnapshot} */ (
-          TimelineModel.TimelineModel.TimelineData.forEvent(this._event).picture);
-      snapshotPromise = picture.objectPromise()
-                            .then(
-                                data => /** @type {!SDK.PaintProfiler.PaintProfilerModel} */ (this._paintProfilerModel)
-                                            .loadSnapshot(data['skp64']))
-                            .then(snapshot => snapshot && {rect: null, snapshot: snapshot});
+      const picture =
+          (TimelineModel.TimelineModel.TimelineData.forEvent(this._event).picture as SDK.TracingModel.ObjectSnapshot);
+      snapshotPromise =
+          picture.objectPromise()
+              .then(
+                  data =>
+                      (this._paintProfilerModel as SDK.PaintProfiler.PaintProfilerModel).loadSnapshot(data['skp64']))
+              .then(snapshot => snapshot && {rect: null, snapshot: snapshot});
     } else if (this._event && this._event.name === TimelineModel.TimelineModel.RecordType.RasterTask) {
       snapshotPromise = this._frameModel.rasterTilePromise(this._event);
     } else {
@@ -128,19 +124,15 @@ export class TimelinePaintProfilerView extends UI.SplitWidget.SplitWidget {
       snapshot.commandLog().then(log => onCommandLogDone.call(this, snapshot, snapshotWithRect.rect, log || []));
     });
 
-    /**
-     * @param {!SDK.PaintProfiler.PaintProfilerSnapshot} snapshot
-     * @param {?Protocol.DOM.Rect} clipRect
-     * @param {!Array.<!SDK.PaintProfiler.PaintProfilerLogItem>=} log
-     * @this {TimelinePaintProfilerView}
-     */
-    function onCommandLogDone(snapshot, clipRect, log) {
+    function onCommandLogDone(
+        this: TimelinePaintProfilerView, snapshot: SDK.PaintProfiler.PaintProfilerSnapshot,
+        clipRect: Protocol.DOM.Rect|null, log?: SDK.PaintProfiler.PaintProfilerLogItem[]): void {
       this._logTreeView.setCommandLog(log || []);
       this._paintProfilerView.setSnapshotAndLog(snapshot, log || [], clipRect);
     }
   }
 
-  _releaseSnapshot() {
+  _releaseSnapshot(): void {
     if (!this._lastLoadedSnapshot) {
       return;
     }
@@ -148,38 +140,38 @@ export class TimelinePaintProfilerView extends UI.SplitWidget.SplitWidget {
     this._lastLoadedSnapshot = null;
   }
 
-  _onWindowChanged() {
+  _onWindowChanged(): void {
     this._logTreeView.updateWindow(this._paintProfilerView.selectionWindow());
   }
 }
 
 export class TimelinePaintImageView extends UI.Widget.Widget {
+  _imageContainer: HTMLElement;
+  _imageElement: HTMLImageElement;
+  _maskElement: HTMLElement;
+  _transformController: LayerViewer.TransformController.TransformController;
+  _maskRectangle?: Protocol.DOM.Rect|null;
   constructor() {
     super(true);
     this.registerRequiredCSS('timeline/timelinePaintProfiler.css', {enableLegacyPatching: true});
     this.contentElement.classList.add('fill', 'paint-profiler-image-view');
     this._imageContainer = this.contentElement.createChild('div', 'paint-profiler-image-container');
-    /** @type {!HTMLImageElement} */
-    this._imageElement = /** @type {!HTMLImageElement} */ (this._imageContainer.createChild('img'));
+    this._imageElement = (this._imageContainer.createChild('img') as HTMLImageElement);
     this._maskElement = this._imageContainer.createChild('div');
     this._imageElement.addEventListener('load', this._updateImagePosition.bind(this), false);
-
-    this._transformController = new LayerViewer.TransformController.TransformController(
-        /** @type {!HTMLElement} */ (this.contentElement), true);
+    this._transformController =
+        new LayerViewer.TransformController.TransformController((this.contentElement as HTMLElement), true);
     this._transformController.addEventListener(
         LayerViewer.TransformController.Events.TransformChanged, this._updateImagePosition, this);
   }
 
-  /**
-   * @override
-   */
-  onResize() {
+  onResize(): void {
     if (this._imageElement.src) {
       this._updateImagePosition();
     }
   }
 
-  _updateImagePosition() {
+  _updateImagePosition(): void {
     const width = this._imageElement.naturalWidth;
     const height = this._imageElement.naturalHeight;
     const clientWidth = this.contentElement.clientWidth;
@@ -217,20 +209,14 @@ export class TimelinePaintImageView extends UI.Widget.Widget {
     this._imageContainer.style.webkitTransform = matrix.toString();
   }
 
-  /**
-   * @param {string=} imageURL
-   */
-  showImage(imageURL) {
+  showImage(imageURL?: string): void {
     this._imageContainer.classList.toggle('hidden', !imageURL);
     if (imageURL) {
       this._imageElement.src = imageURL;
     }
   }
 
-  /**
-   * @param {?Protocol.DOM.Rect} maskRectangle
-   */
-  setMask(maskRectangle) {
+  setMask(maskRectangle: Protocol.DOM.Rect|null): void {
     this._maskRectangle = maskRectangle;
     this._maskElement.classList.toggle('hidden', !maskRectangle);
   }

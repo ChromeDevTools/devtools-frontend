@@ -80,7 +80,6 @@ let loadedTimelineModule: (typeof Timeline|undefined);
 
 let loadedProfilerModule: (typeof Profiler|undefined);
 
-
 async function loadTimelineModule(): Promise<typeof Timeline> {
   if (!loadedTimelineModule) {
     // Side-effect import resources in module.json

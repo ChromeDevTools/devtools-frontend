@@ -2,21 +2,19 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as PerfUI from '../perf_ui/perf_ui.js';
 import * as UI from '../ui/ui.js';
 
-import {PerformanceModel} from './PerformanceModel.js';  // eslint-disable-line no-unused-vars
 import {WebVitalsTimeline} from './WebVitalsTimeline.js';
 
-/**
- * @implements {PerfUI.ChartViewport.ChartViewportDelegate}
- */
-export class WebVitalsIntegrator extends UI.Widget.VBox {
-  /**
-   *
-   * @param {!PerfUI.FlameChart.FlameChartDelegate} delegate
-   */
-  constructor(delegate) {
+export class WebVitalsIntegrator extends UI.Widget.VBox implements PerfUI.ChartViewport.ChartViewportDelegate {
+  delegate: PerfUI.FlameChart.FlameChartDelegate;
+  webVitalsTimeline: WebVitalsTimeline;
+  chartViewport: PerfUI.ChartViewport.ChartViewport;
+
+  constructor(delegate: PerfUI.FlameChart.FlameChartDelegate) {
     super(true, true);
     this.delegate = delegate;
 
@@ -32,38 +30,19 @@ export class WebVitalsIntegrator extends UI.Widget.VBox {
     this.chartViewport.viewportElement.appendChild(this.webVitalsTimeline);
   }
 
-  /**
-   * @override
-   * @param {number} startTime
-   * @param {number} endTime
-   * @param {boolean} animate
-   */
-  windowChanged(startTime, endTime, animate) {
+  windowChanged(startTime: number, endTime: number, animate: boolean): void {
     this.delegate.windowChanged(startTime, endTime, animate);
   }
 
-  /**
-   * @override
-   * @param {number} startTime
-   * @param {number} endTime
-   */
-  updateRangeSelection(startTime, endTime) {
+  updateRangeSelection(startTime: number, endTime: number): void {
     this.delegate.updateRangeSelection(startTime, endTime);
   }
 
-  /**
-   * @override
-   * @param {number} width
-   * @param {number} height
-   */
-  setSize(width, height) {
+  setSize(width: number, height: number): void {
     this.webVitalsTimeline.setSize(width, height);
   }
 
-  /**
-   * @override
-   */
-  update() {
+  update(): void {
     this.webVitalsTimeline.render();
   }
 }

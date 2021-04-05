@@ -2,53 +2,40 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as SDK from '../core/sdk/sdk.js';                  // eslint-disable-line no-unused-vars
 import * as Extensions from '../extensions/extensions.js';  // eslint-disable-line no-unused-vars
 
 import {PerformanceModel} from './PerformanceModel.js';      // eslint-disable-line no-unused-vars
 import {Client, TimelineLoader} from './TimelineLoader.js';  // eslint-disable-line no-unused-vars
 
-/**
- * @implements {Extensions.ExtensionTraceProvider.TracingSession}
- * @implements {Client}
- */
-export class ExtensionTracingSession {
-  /**
-   * @param {!Extensions.ExtensionTraceProvider.ExtensionTraceProvider} provider
-   * @param {!PerformanceModel} performanceModel
-   */
-  constructor(provider, performanceModel) {
+export class ExtensionTracingSession implements Extensions.ExtensionTraceProvider.TracingSession, Client {
+  _provider: Extensions.ExtensionTraceProvider.ExtensionTraceProvider;
+  _performanceModel: PerformanceModel;
+  _completionCallback!: () => void;
+  _completionPromise: Promise<void>;
+  _timeOffset: number;
+
+  constructor(provider: Extensions.ExtensionTraceProvider.ExtensionTraceProvider, performanceModel: PerformanceModel) {
     this._provider = provider;
     this._performanceModel = performanceModel;
-    /** @type {function(): void} */
-    this._completionCallback;
-    /** @type {!Promise<void>} */
     this._completionPromise = new Promise(fulfill => {
       this._completionCallback = fulfill;
     });
     this._timeOffset = 0;
   }
 
-  /** @override */
-  loadingStarted() {
+  loadingStarted(): void {
   }
 
-  /** @override */
-  processingStarted() {
+  processingStarted(): void {
   }
 
-  /**
-   * @override
-   * @param {number=} progress
-   */
-  loadingProgress(progress) {
+  loadingProgress(_progress?: number): void {
   }
 
-  /**
-   * @override
-   * @param {?SDK.TracingModel.TracingModel} tracingModel
-   */
-  loadingComplete(tracingModel) {
+  loadingComplete(tracingModel: SDK.TracingModel.TracingModel|null): void {
     if (!tracingModel) {
       return;
     }
@@ -56,12 +43,7 @@ export class ExtensionTracingSession {
     this._completionCallback();
   }
 
-  /**
-   * @override
-   * @param {string} url
-   * @param {number} timeOffsetMicroseconds
-   */
-  complete(url, timeOffsetMicroseconds) {
+  complete(url: string, timeOffsetMicroseconds: number): void {
     if (!url) {
       this._completionCallback();
       return;
@@ -70,12 +52,11 @@ export class ExtensionTracingSession {
     TimelineLoader.loadFromURL(url, this);
   }
 
-  start() {
+  start(): void {
     this._provider.start(this);
   }
 
-  /** @return {!Promise<void>} */
-  stop() {
+  stop(): Promise<void> {
     this._provider.stop();
     return this._completionPromise;
   }

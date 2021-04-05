@@ -20,7 +20,7 @@ devtools_module("sdk") {
     "CSSRule.js",
     "CSSStyleDeclaration.js",
     "CSSStyleSheetHeader.js",
-    "ChildTargetManager.js",
+    "ChildTargetManager.ts",
     "CompilerSourceMappingContentProvider.js",
     "Connections.js",
     "ConsoleModel.js",

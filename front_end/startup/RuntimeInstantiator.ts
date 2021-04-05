@@ -28,6 +28,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as RootModule from '../core/root/root.js';
 
 // Legacy runtime namespace definitions
@@ -41,20 +43,23 @@ Root.allDescriptors = Root.allDescriptors || [];
 // @ts-ignore
 Root.applicationDescriptor = Root.applicationDescriptor || undefined;
 
-/**
- * @param {string} appName
- * @return {!Promise.<void>}
- */
-export async function startApplication(appName) {
+export async function startApplication(_appName: string): Promise<void> {
   console.timeStamp('Root.Runtime.startApplication');
 
-  /** @type {!Object<string, RootModule.Runtime.ModuleDescriptor>} */
-  const allDescriptorsByName = {};
+  const allDescriptorsByName: {
+    [x: string]: RootModule.Runtime.ModuleDescriptor,
+  } = {};
+  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+  // @ts-ignore
   for (let i = 0; i < Root.allDescriptors.length; ++i) {
+    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+    // @ts-ignore
     const d = Root.allDescriptors[i];
     allDescriptorsByName[d['name']] = d;
   }
 
+  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+  // @ts-ignore
   const configuration = Root.applicationDescriptor.modules;
   const moduleDescriptors = [];
   const coreModuleNames = [];
@@ -80,14 +85,10 @@ export async function startApplication(appName) {
   RootModule.Runtime.appStartedPromiseCallback();
 }
 
-/**
- * @param {string} appName
- * @return {!Promise.<void>}
- */
-export async function startWorker(appName) {
+export async function startWorker(appName: string): Promise<void> {
   return startApplication(appName).then(sendWorkerReady);
 
-  function sendWorkerReady() {
+  function sendWorkerReady(): void {
     // @ts-ignore
     self.postMessage('workerReady');
   }

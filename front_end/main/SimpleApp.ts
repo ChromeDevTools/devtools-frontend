@@ -2,18 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../ui/ui.js';
 
-/**
- * @implements {Common.App.App}
- */
-export class SimpleApp {
-  /**
-   * @override
-   * @param {!Document} document
-   */
-  presentUI(document) {
+export class SimpleApp implements Common.App.App {
+  presentUI(document: Document): void {
     const rootView = new UI.RootView.RootView();
     UI.InspectorView.InspectorView.instance().show(rootView.element);
     rootView.attachToDocument(document);
@@ -21,19 +16,12 @@ export class SimpleApp {
   }
 }
 
+let simpleAppProviderInstance: SimpleAppProvider;
 
-/** @type {!SimpleAppProvider} */
-let simpleAppProviderInstance;
-
-
-/**
- * @implements {Common.AppProvider.AppProvider}
- */
-export class SimpleAppProvider {
-  /**
-   * @param {{forceNew: ?boolean}} opts
-   */
-  static instance(opts = {forceNew: null}) {
+export class SimpleAppProvider implements Common.AppProvider.AppProvider {
+  static instance(opts: {
+    forceNew: boolean|null,
+  } = {forceNew: null}): SimpleAppProvider {
     const {forceNew} = opts;
     if (!simpleAppProviderInstance || forceNew) {
       simpleAppProviderInstance = new SimpleAppProvider();
@@ -42,11 +30,7 @@ export class SimpleAppProvider {
     return simpleAppProviderInstance;
   }
 
-  /**
-   * @override
-   * @return {!Common.App.App}
-   */
-  createApp() {
+  createApp(): Common.App.App {
     return new SimpleApp();
   }
 }

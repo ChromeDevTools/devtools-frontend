@@ -1,3 +1,7 @@
+// Copyright 2021 The Chromium Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+
 /*
  * Copyright (C) 2006, 2007, 2008 Apple Inc.  All rights reserved.
  * Copyright (C) 2007 Matt Lilek (pewtermoose@gmail.com).
@@ -27,6 +31,8 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+/* eslint-disable rulesdir/no_underscored_properties */
 
 import * as Bindings from '../bindings/bindings.js';
 import * as Common from '../common/common.js';
@@ -105,44 +111,37 @@ const UIStrings = {
   */
   help: 'Help',
 };
-const str_ = i18n.i18n.registerUIStrings('main/MainImpl.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('main/MainImpl.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class MainImpl {
+  _lateInitDonePromise!: Promise<void>;
+
   constructor() {
     MainImpl._instanceForTest = this;
     Platform.runOnWindowLoad(() => {
       this._loaded();
     });
-
-    /** @type {!Promise<void>} */
-    this._lateInitDonePromise;
   }
 
-  /**
-   * @param {string} label
-   */
-  static time(label) {
+  static time(label: string): void {
     if (Host.InspectorFrontendHost.isUnderTest()) {
       return;
     }
     console.time(label);
   }
 
-  /**
-   * @param {string} label
-   */
-  static timeEnd(label) {
+  static timeEnd(label: string): void {
     if (Host.InspectorFrontendHost.isUnderTest()) {
       return;
     }
     console.timeEnd(label);
   }
 
-  async _loaded() {
+  async _loaded(): Promise<void> {
     console.timeStamp('Main._loaded');
     await Root.Runtime.appStarted;
     Root.Runtime.Runtime.setPlatform(Host.Platform.platform());
-    const prefs = await new Promise(resolve => {
+    const prefs = await new Promise<{[key: string]: string}>(resolve => {
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.getPreferences(resolve);
     });
 
@@ -152,7 +151,7 @@ export class MainImpl {
     this._createAppUI();
   }
 
-  async requestAndRegisterLocaleData() {
+  async requestAndRegisterLocaleData(): Promise<void> {
     const hostLocale = navigator.language || 'en-US';
     i18n.i18n.registerLocale(hostLocale);
     const locale = i18n.i18n.registeredLocale;
@@ -166,11 +165,9 @@ export class MainImpl {
     }
   }
 
-  /**
-   * @param {!Object<string, string>} prefs
-   * Note: this function is called from testSettings in Tests.js.
-   */
-  _createSettings(prefs) {
+  _createSettings(prefs: {
+    [x: string]: string,
+  }): void {
     this._initializeExperiments();
     let storagePrefix = '';
     if (Host.Platform.isCustomDevtoolsFrontend()) {
@@ -202,7 +199,7 @@ export class MainImpl {
     }
   }
 
-  _initializeExperiments() {
+  _initializeExperiments(): void {
     Root.Runtime.experiments.register('applyCustomStylesheet', 'Allow custom UI themes');
     Root.Runtime.experiments.register('captureNodeCreationStacks', 'Capture node creation stacks');
     Root.Runtime.experiments.register('sourcesPrettyPrint', 'Automatically pretty print in the Sources Panel');
@@ -300,7 +297,7 @@ export class MainImpl {
       Host.userMetrics.experimentEnabledAtLaunch(experiment.name);
     }
   }
-  async _createAppUI() {
+  async _createAppUI(): Promise<void> {
     MainImpl.time('Main._createAppUI');
 
     // @ts-ignore layout test global
@@ -321,8 +318,7 @@ export class MainImpl {
             i18nString(UIStrings.theSystempreferredColorSchemeHas));
       });
     }
-
-    UI.UIUtils.installComponentRootStyles(/** @type {!Element} */ (document.body));
+    UI.UIUtils.installComponentRootStyles((document.body as Element));
 
     this._addMainEventListeners(document);
 
@@ -363,27 +359,27 @@ export class MainImpl {
     self.Bindings.resourceMapping = Bindings.ResourceMapping.ResourceMapping.instance({
       forceNew: true,
       targetManager: SDK.SDKModel.TargetManager.instance(),
-      workspace: Workspace.Workspace.WorkspaceImpl.instance()
+      workspace: Workspace.Workspace.WorkspaceImpl.instance(),
     });
     new Bindings.PresentationConsoleMessageHelper.PresentationConsoleMessageManager();
     // @ts-ignore layout test global
     self.Bindings.cssWorkspaceBinding = Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.instance({
       forceNew: true,
       targetManager: SDK.SDKModel.TargetManager.instance(),
-      workspace: Workspace.Workspace.WorkspaceImpl.instance()
+      workspace: Workspace.Workspace.WorkspaceImpl.instance(),
     });
     // @ts-ignore layout test global
     self.Bindings.debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
       forceNew: true,
       targetManager: SDK.SDKModel.TargetManager.instance(),
-      workspace: Workspace.Workspace.WorkspaceImpl.instance()
+      workspace: Workspace.Workspace.WorkspaceImpl.instance(),
     });
     // @ts-ignore layout test global
     self.Bindings.breakpointManager = Bindings.BreakpointManager.BreakpointManager.instance({
       forceNew: true,
       workspace: Workspace.Workspace.WorkspaceImpl.instance(),
       targetManager: SDK.SDKModel.TargetManager.instance(),
-      debuggerWorkspaceBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
+      debuggerWorkspaceBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance(),
     });
     // @ts-ignore layout test global
     self.Extensions.extensionServer = Extensions.ExtensionServer.ExtensionServer.instance({forceNew: true});
@@ -405,7 +401,7 @@ export class MainImpl {
     self.Persistence.persistence = Persistence.Persistence.PersistenceImpl.instance({
       forceNew: true,
       workspace: Workspace.Workspace.WorkspaceImpl.instance(),
-      breakpointManager: Bindings.BreakpointManager.BreakpointManager.instance()
+      breakpointManager: Bindings.BreakpointManager.BreakpointManager.instance(),
     });
     // @ts-ignore layout test global
     self.Persistence.networkPersistenceManager =
@@ -416,7 +412,7 @@ export class MainImpl {
     // @ts-ignore layout test global
     self.Bindings.ignoreListManager = Bindings.IgnoreListManager.IgnoreListManager.instance({
       forceNew: true,
-      debuggerWorkspaceBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
+      debuggerWorkspaceBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance(),
     });
 
     new PauseListener();
@@ -439,12 +435,9 @@ export class MainImpl {
     await this._showAppUI(await appProvider.loadAppProvider());
   }
 
-  /**
-   * @param {!Object} appProvider
-   */
-  async _showAppUI(appProvider) {
+  async _showAppUI(appProvider: Object): Promise<void> {
     MainImpl.time('Main._showAppUI');
-    const app = /** @type {!Common.AppProvider.AppProvider} */ (appProvider).createApp();
+    const app = (appProvider as Common.AppProvider.AppProvider).createApp();
     // It is important to kick controller lifetime after apps are instantiated.
     UI.DockController.DockController.instance().initialize();
     app.presentUI(document);
@@ -473,7 +466,7 @@ export class MainImpl {
     MainImpl.timeEnd('Main._showAppUI');
   }
 
-  async _initializeTarget() {
+  async _initializeTarget(): Promise<void> {
     MainImpl.time('Main._initializeTarget');
 
     // We rely on having the early initialization runnables registered in Common when an app loads its
@@ -489,20 +482,17 @@ export class MainImpl {
     MainImpl.timeEnd('Main._initializeTarget');
   }
 
-  _lateInitialization() {
+  _lateInitialization(): void {
     MainImpl.time('Main._lateInitialization');
     Extensions.ExtensionServer.ExtensionServer.instance().initializeExtensions();
-    /** @type {!Array<!Promise<void>>} */
-    const promises = Common.Runnable.lateInitializationRunnables().map(runnableInstance => runnableInstance().run());
+    const promises: Promise<void>[] =
+        Common.Runnable.lateInitializationRunnables().map(runnableInstance => runnableInstance().run());
     if (Root.Runtime.experiments.isEnabled('liveHeapProfile')) {
       const setting = 'memoryLiveHeapProfile';
       if (Common.Settings.Settings.instance().moduleSetting(setting).get()) {
         promises.push(PerfUI.LiveHeapProfile.LiveHeapProfile.instance().run());
       } else {
-        /**
-         * @param {!Common.EventTarget.EventTargetEvent} event
-         */
-        const changeListener = async event => {
+        const changeListener = async(event: Common.EventTarget.EventTargetEvent): Promise<void> => {
           if (!event.data) {
             return;
           }
@@ -516,34 +506,25 @@ export class MainImpl {
     MainImpl.timeEnd('Main._lateInitialization');
   }
 
-  /**
-   * @return {?Promise<void>}
-   */
-  lateInitDonePromiseForTest() {
+  lateInitDonePromiseForTest(): Promise<void>|null {
     return this._lateInitDonePromise;
   }
 
-  _registerMessageSinkListener() {
+  _registerMessageSinkListener(): void {
     Common.Console.Console.instance().addEventListener(Common.Console.Events.MessageAdded, messageAdded);
 
-    /**
-     * @param {!Common.EventTarget.EventTargetEvent} event
-     */
-    function messageAdded(event) {
-      const message = /** @type {!Common.Console.Message} */ (event.data);
+    function messageAdded(event: Common.EventTarget.EventTargetEvent): void {
+      const message = (event.data as Common.Console.Message);
       if (message.show) {
         Common.Console.Console.instance().show();
       }
     }
   }
 
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  _revealSourceLine(event) {
-    const url = /** @type {string} */ (event.data['url']);
-    const lineNumber = /** @type {number} */ (event.data['lineNumber']);
-    const columnNumber = /** @type {number} */ (event.data['columnNumber']);
+  _revealSourceLine(event: Common.EventTarget.EventTargetEvent): void {
+    const url = (event.data['url'] as string);
+    const lineNumber = (event.data['lineNumber'] as number);
+    const columnNumber = (event.data['columnNumber'] as number);
 
     const uiSourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(url);
     if (uiSourceCode) {
@@ -551,11 +532,8 @@ export class MainImpl {
       return;
     }
 
-    /**
-     * @param {!Common.EventTarget.EventTargetEvent} event
-     */
-    function listener(event) {
-      const uiSourceCode = /** @type {!Workspace.UISourceCode.UISourceCode} */ (event.data);
+    function listener(event: Common.EventTarget.EventTargetEvent): void {
+      const uiSourceCode = (event.data as Workspace.UISourceCode.UISourceCode);
       if (uiSourceCode.url() === url) {
         Common.Revealer.reveal(uiSourceCode.uiLocation(lineNumber, columnNumber));
         Workspace.Workspace.WorkspaceImpl.instance().removeEventListener(
@@ -567,23 +545,17 @@ export class MainImpl {
         Workspace.Workspace.Events.UISourceCodeAdded, listener);
   }
 
-  /**
-   * @param {!Event} event
-   */
-  _postDocumentKeyDown(event) {
+  _postDocumentKeyDown(event: Event): void {
     if (!event.handled) {
-      UI.ShortcutRegistry.ShortcutRegistry.instance().handleShortcut(/** @type {!KeyboardEvent} */ (event));
+      UI.ShortcutRegistry.ShortcutRegistry.instance().handleShortcut((event as KeyboardEvent));
     }
   }
 
-  /**
-   * @param {!Event} event
-   */
-  _redispatchClipboardEvent(event) {
+  _redispatchClipboardEvent(event: Event): void {
     const eventCopy = new CustomEvent('clipboard-' + event.type, {bubbles: true});
     // @ts-ignore Used in ElementsTreeOutline
     eventCopy['original'] = event;
-    const document = event.target && /** @type {!HTMLElement} */ (event.target).ownerDocument;
+    const document = event.target && (event.target as HTMLElement).ownerDocument;
     const target = document ? document.deepActiveElement() : null;
     if (target) {
       target.dispatchEvent(eventCopy);
@@ -593,19 +565,13 @@ export class MainImpl {
     }
   }
 
-  /**
-   * @param {!Event} event
-   */
-  _contextMenuEventFired(event) {
-    if (event.handled || /** @type {!HTMLElement} */ (event.target).classList.contains('popup-glasspane')) {
+  _contextMenuEventFired(event: Event): void {
+    if (event.handled || (event.target as HTMLElement).classList.contains('popup-glasspane')) {
       event.preventDefault();
     }
   }
 
-  /**
-   * @param {!Document} document
-   */
-  _addMainEventListeners(document) {
+  _addMainEventListeners(document: Document): void {
     document.addEventListener('keydown', this._postDocumentKeyDown.bind(this), false);
     document.addEventListener('beforecopy', this._redispatchClipboardEvent.bind(this), true);
     document.addEventListener('copy', this._redispatchClipboardEvent.bind(this), false);
@@ -614,31 +580,25 @@ export class MainImpl {
     document.addEventListener('contextmenu', this._contextMenuEventFired.bind(this), true);
   }
 
-  _onSuspendStateChanged() {
+  _onSuspendStateChanged(): void {
     const suspended = SDK.SDKModel.TargetManager.instance().allTargetsSuspended();
     UI.InspectorView.InspectorView.instance().onSuspendStateChanged(suspended);
   }
-}
 
-/** @type {?MainImpl} */
-MainImpl._instanceForTest = null;
+  static _instanceForTest: MainImpl|null = null;
+}
 
 // @ts-ignore Exported for Tests.js
 globalThis.Main = globalThis.Main || {};
 // @ts-ignore Exported for Tests.js
 globalThis.Main.Main = MainImpl;
 
-/** @type {!ZoomActionDelegate} */
-let zoomActionDelegateInstance;
+let zoomActionDelegateInstance: ZoomActionDelegate;
 
-/**
- * @implements {UI.ActionRegistration.ActionDelegate}
- */
-export class ZoomActionDelegate {
-  /**
-   * @param {{forceNew: ?boolean}} opts
-   */
-  static instance(opts = {forceNew: null}) {
+export class ZoomActionDelegate implements UI.ActionRegistration.ActionDelegate {
+  static instance(opts: {
+    forceNew: boolean|null,
+  } = {forceNew: null}): ZoomActionDelegate {
     const {forceNew} = opts;
     if (!zoomActionDelegateInstance || forceNew) {
       zoomActionDelegateInstance = new ZoomActionDelegate();
@@ -647,13 +607,7 @@ export class ZoomActionDelegate {
     return zoomActionDelegateInstance;
   }
 
-  /**
-   * @override
-   * @param {!UI.Context.Context} context
-   * @param {string} actionId
-   * @return {boolean}
-   */
-  handleAction(context, actionId) {
+  handleAction(context: UI.Context.Context, actionId: string): boolean {
     if (Host.InspectorFrontendHost.InspectorFrontendHostInstance.isHostedMode()) {
       return false;
     }
@@ -673,17 +627,12 @@ export class ZoomActionDelegate {
   }
 }
 
-/** @type {!SearchActionDelegate} */
-let searchActionDelegateInstance;
+let searchActionDelegateInstance: SearchActionDelegate;
 
-/**
- * @implements {UI.ActionRegistration.ActionDelegate}
- */
-export class SearchActionDelegate {
-  /**
-   * @param {{forceNew: ?boolean}} opts
-   */
-  static instance(opts = {forceNew: null}) {
+export class SearchActionDelegate implements UI.ActionRegistration.ActionDelegate {
+  static instance(opts: {
+    forceNew: boolean|null,
+  } = {forceNew: null}): SearchActionDelegate {
     const {forceNew} = opts;
     if (!searchActionDelegateInstance || forceNew) {
       searchActionDelegateInstance = new SearchActionDelegate();
@@ -692,17 +641,10 @@ export class SearchActionDelegate {
     return searchActionDelegateInstance;
   }
 
-  /**
-   * @override
-   * @param {!UI.Context.Context} context
-   * @param {string} actionId
-   * @return {boolean}
-   */
-  handleAction(context, actionId) {
+  handleAction(context: UI.Context.Context, actionId: string): boolean {
     let searchableView = UI.SearchableView.SearchableView.fromElement(document.deepActiveElement());
     if (!searchableView) {
-      const currentPanel =
-          /** @type {!UI.Panel.Panel} */ (UI.InspectorView.InspectorView.instance().currentPanelDeprecated());
+      const currentPanel = (UI.InspectorView.InspectorView.instance().currentPanelDeprecated() as UI.Panel.Panel);
       if (currentPanel && currentPanel.searchableView) {
         searchableView = currentPanel.searchableView();
       }
@@ -723,22 +665,18 @@ export class SearchActionDelegate {
     return false;
   }
 }
-/** @type {!MainMenuItem} */
-let mainMenuItemInstance;
+let mainMenuItemInstance: MainMenuItem;
 
-/**
- * @implements {UI.Toolbar.Provider}
- */
-export class MainMenuItem {
+export class MainMenuItem implements UI.Toolbar.Provider {
+  _item: UI.Toolbar.ToolbarMenuButton;
   constructor() {
     this._item = new UI.Toolbar.ToolbarMenuButton(this._handleContextMenu.bind(this), true);
     this._item.setTitle(i18nString(UIStrings.customizeAndControlDevtools));
   }
 
-  /**
-   * @param {{forceNew: ?boolean}} opts
-   */
-  static instance(opts = {forceNew: null}) {
+  static instance(opts: {
+    forceNew: boolean|null,
+  } = {forceNew: null}): MainMenuItem {
     const {forceNew} = opts;
     if (!mainMenuItemInstance || forceNew) {
       mainMenuItemInstance = new MainMenuItem();
@@ -747,18 +685,11 @@ export class MainMenuItem {
     return mainMenuItemInstance;
   }
 
-  /**
-   * @override
-   * @return {?UI.Toolbar.ToolbarItem}
-   */
-  item() {
+  item(): UI.Toolbar.ToolbarItem|null {
     return this._item;
   }
 
-  /**
-   * @param {!UI.ContextMenu.ContextMenu} contextMenu
-   */
-  _handleContextMenu(contextMenu) {
+  _handleContextMenu(contextMenu: UI.ContextMenu.ContextMenu): void {
     if (UI.DockController.DockController.instance().canDock()) {
       const dockItemElement = document.createElement('div');
       dockItemElement.classList.add('flex-centered');
@@ -822,13 +753,9 @@ export class MainMenuItem {
       contextMenu.headerSection().appendCustomItem(dockItemElement);
     }
 
+    const button = (this._item.element as HTMLButtonElement);
 
-    const button = /** @type {!HTMLButtonElement} */ (this._item.element);
-
-    /**
-     * @param {string} side
-     */
-    function setDockSide(side) {
+    function setDockSide(side: string): void {
       UI.DockController.DockController.instance().once(UI.DockController.Events.AfterDockSideChanged).then(() => {
         button.focus();
       });
@@ -886,24 +813,19 @@ export class MainMenuItem {
   }
 }
 
-/** @type {!SettingsButtonProvider} */
-let settingsButtonProviderInstance;
+let settingsButtonProviderInstance: SettingsButtonProvider;
 
-/**
- * @implements {UI.Toolbar.Provider}
- */
-export class SettingsButtonProvider {
-  /** @private */
-  constructor() {
+export class SettingsButtonProvider implements UI.Toolbar.Provider {
+  _settingsButton: UI.Toolbar.ToolbarButton;
+  private constructor() {
     const settingsActionId = 'settings.show';
     this._settingsButton =
         UI.Toolbar.Toolbar.createActionButtonForId(settingsActionId, {showLabel: false, userActionCode: undefined});
   }
 
-  /**
-   * @param {{forceNew: ?boolean}} opts
-   */
-  static instance(opts = {forceNew: null}) {
+  static instance(opts: {
+    forceNew: boolean|null,
+  } = {forceNew: null}): SettingsButtonProvider {
     const {forceNew} = opts;
     if (!settingsButtonProviderInstance || forceNew) {
       settingsButtonProviderInstance = new SettingsButtonProvider();
@@ -912,11 +834,7 @@ export class SettingsButtonProvider {
     return settingsButtonProviderInstance;
   }
 
-  /**
-   * @override
-   * @return {?UI.Toolbar.ToolbarItem}
-   */
-  item() {
+  item(): UI.Toolbar.ToolbarItem|null {
     return this._settingsButton;
   }
 }
@@ -927,25 +845,19 @@ export class PauseListener {
         SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.DebuggerPaused, this._debuggerPaused, this);
   }
 
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  _debuggerPaused(event) {
+  _debuggerPaused(event: Common.EventTarget.EventTargetEvent): void {
     SDK.SDKModel.TargetManager.instance().removeModelListener(
         SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.DebuggerPaused, this._debuggerPaused, this);
-    const debuggerModel = /** @type {!SDK.DebuggerModel.DebuggerModel} */ (event.data);
+    const debuggerModel = (event.data as SDK.DebuggerModel.DebuggerModel);
     const debuggerPausedDetails = debuggerModel.debuggerPausedDetails();
     UI.Context.Context.instance().setFlavor(SDK.SDKModel.Target, debuggerModel.target());
     Common.Revealer.reveal(debuggerPausedDetails);
   }
 }
 
-/**
- * @param {string} method
- * @param {?Object} params
- * @return {!Promise<?Array<*>>}
- */
-export function sendOverProtocol(method, params) {
+// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function sendOverProtocol(method: string, params: Object|null): Promise<any[]|null> {
   return new Promise((resolve, reject) => {
     const sendRawMessage = ProtocolClient.InspectorBackend.test.sendRawMessage;
     if (!sendRawMessage) {
@@ -960,17 +872,12 @@ export function sendOverProtocol(method, params) {
   });
 }
 
-/** @type {!ReloadActionDelegate} */
-let reloadActionDelegateInstance;
+let reloadActionDelegateInstance: ReloadActionDelegate;
 
-/**
- * @implements {UI.ActionRegistration.ActionDelegate}
- */
-export class ReloadActionDelegate {
-  /**
-   * @param {{forceNew: ?boolean}} opts
-   */
-  static instance(opts = {forceNew: null}) {
+export class ReloadActionDelegate implements UI.ActionRegistration.ActionDelegate {
+  static instance(opts: {
+    forceNew: boolean|null,
+  } = {forceNew: null}): ReloadActionDelegate {
     const {forceNew} = opts;
     if (!reloadActionDelegateInstance || forceNew) {
       reloadActionDelegateInstance = new ReloadActionDelegate();
@@ -979,13 +886,7 @@ export class ReloadActionDelegate {
     return reloadActionDelegateInstance;
   }
 
-  /**
-   * @override
-   * @param {!UI.Context.Context} context
-   * @param {string} actionId
-   * @return {boolean}
-   */
-  handleAction(context, actionId) {
+  handleAction(context: UI.Context.Context, actionId: string): boolean {
     switch (actionId) {
       case 'main.debug-reload':
         Components.Reload.reload();

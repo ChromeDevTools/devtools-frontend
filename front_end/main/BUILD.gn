@@ -7,9 +7,9 @@ import("../../scripts/build/ninja/devtools_module.gni")
 
 devtools_module("main") {
   sources = [
-    "ExecutionContextSelector.js",
-    "MainImpl.js",
-    "SimpleApp.js",
+    "ExecutionContextSelector.ts",
+    "MainImpl.ts",
+    "SimpleApp.ts",
   ]
 
   deps = [
@@ -39,7 +39,7 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_entrypoint("legacy") {
-  entrypoint = "main-legacy.js"
+  entrypoint = "main-legacy.ts"
 
   deps = [ ":bundle" ]
 }

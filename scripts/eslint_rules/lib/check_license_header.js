@@ -87,7 +87,7 @@ const OTHER_LICENSE_HEADERS = [
   'elements/EventListenersWidget.js',
   'elements/PropertiesWidget.js',
   'elements/StylesSidebarPane.js',
-  'main/MainImpl.js',
+  'main/MainImpl.ts',
   'platform/UIString.ts',
   'sdk/DOMModel.js',
   'sources/ScopeChainSidebarPane.js',

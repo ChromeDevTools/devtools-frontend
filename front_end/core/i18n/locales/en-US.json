@@ -1973,43 +1973,43 @@
   "main/main-meta.ts | zoomOut": {
     "message": "Zoom out"
   },
-  "main/MainImpl.js | customizeAndControlDevtools": {
+  "main/MainImpl.ts | customizeAndControlDevtools": {
     "message": "Customize and control DevTools"
   },
-  "main/MainImpl.js | dockSide": {
+  "main/MainImpl.ts | dockSide": {
     "message": "Dock side"
   },
-  "main/MainImpl.js | dockToBottom": {
+  "main/MainImpl.ts | dockToBottom": {
     "message": "Dock to bottom"
   },
-  "main/MainImpl.js | dockToLeft": {
+  "main/MainImpl.ts | dockToLeft": {
     "message": "Dock to left"
   },
-  "main/MainImpl.js | dockToRight": {
+  "main/MainImpl.ts | dockToRight": {
     "message": "Dock to right"
   },
-  "main/MainImpl.js | focusDebuggee": {
+  "main/MainImpl.ts | focusDebuggee": {
     "message": "Focus debuggee"
   },
-  "main/MainImpl.js | help": {
+  "main/MainImpl.ts | help": {
     "message": "Help"
   },
-  "main/MainImpl.js | hideConsoleDrawer": {
+  "main/MainImpl.ts | hideConsoleDrawer": {
     "message": "Hide console drawer"
   },
-  "main/MainImpl.js | moreTools": {
+  "main/MainImpl.ts | moreTools": {
     "message": "More tools"
   },
-  "main/MainImpl.js | placementOfDevtoolsRelativeToThe": {
+  "main/MainImpl.ts | placementOfDevtoolsRelativeToThe": {
     "message": "Placement of DevTools relative to the page. ({PH1} to restore last position)"
   },
-  "main/MainImpl.js | showConsoleDrawer": {
+  "main/MainImpl.ts | showConsoleDrawer": {
     "message": "Show console drawer"
   },
-  "main/MainImpl.js | theSystempreferredColorSchemeHas": {
+  "main/MainImpl.ts | theSystempreferredColorSchemeHas": {
     "message": "The system-preferred color scheme has changed. To apply this change to DevTools, reload."
   },
-  "main/MainImpl.js | undockIntoSeparateWindow": {
+  "main/MainImpl.ts | undockIntoSeparateWindow": {
     "message": "Undock into separate window"
   },
   "node_debugger/node_debugger-meta.ts | node": {

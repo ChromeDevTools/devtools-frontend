@@ -137,7 +137,7 @@ def _CheckBuildGN(input_api, output_api):
 def _CheckExperimentTelemetry(input_api, output_api):
     experiment_telemetry_files = [
         input_api.os_path.join(input_api.PresubmitLocalPath(), 'front_end',
-                               'main', 'MainImpl.js'),
+                               'main', 'MainImpl.ts'),
         input_api.os_path.join(input_api.PresubmitLocalPath(), 'front_end',
                                'core', 'host', 'UserMetrics.ts')
     ]

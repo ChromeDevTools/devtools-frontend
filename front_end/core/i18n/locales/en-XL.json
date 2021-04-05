@@ -1973,43 +1973,43 @@
   "main/main-meta.ts | zoomOut": {
     "message": "Ẑóôḿ ôút̂"
   },
-  "main/MainImpl.js | customizeAndControlDevtools": {
+  "main/MainImpl.ts | customizeAndControlDevtools": {
     "message": "Ĉúŝt́ôḿîźê án̂d́ ĉón̂t́r̂ól̂ D́êv́T̂óôĺŝ"
   },
-  "main/MainImpl.js | dockSide": {
+  "main/MainImpl.ts | dockSide": {
     "message": "D̂óĉḱ ŝíd̂é"
   },
-  "main/MainImpl.js | dockToBottom": {
+  "main/MainImpl.ts | dockToBottom": {
     "message": "D̂óĉḱ t̂ó b̂ót̂t́ôḿ"
   },
-  "main/MainImpl.js | dockToLeft": {
+  "main/MainImpl.ts | dockToLeft": {
     "message": "D̂óĉḱ t̂ó l̂éf̂t́"
   },
-  "main/MainImpl.js | dockToRight": {
+  "main/MainImpl.ts | dockToRight": {
     "message": "D̂óĉḱ t̂ó r̂íĝh́t̂"
   },
-  "main/MainImpl.js | focusDebuggee": {
+  "main/MainImpl.ts | focusDebuggee": {
     "message": "F̂óĉúŝ d́êb́ûǵĝéê"
   },
-  "main/MainImpl.js | help": {
+  "main/MainImpl.ts | help": {
     "message": "Ĥél̂ṕ"
   },
-  "main/MainImpl.js | hideConsoleDrawer": {
+  "main/MainImpl.ts | hideConsoleDrawer": {
     "message": "Ĥíd̂é ĉón̂śôĺê d́r̂áŵér̂"
   },
-  "main/MainImpl.js | moreTools": {
+  "main/MainImpl.ts | moreTools": {
     "message": "M̂ór̂é t̂óôĺŝ"
   },
-  "main/MainImpl.js | placementOfDevtoolsRelativeToThe": {
+  "main/MainImpl.ts | placementOfDevtoolsRelativeToThe": {
     "message": "P̂ĺâćêḿêńt̂ óf̂ D́êv́T̂óôĺŝ ŕêĺât́îv́ê t́ô t́ĥé p̂áĝé. ({PH1} t̂ó r̂éŝt́ôŕê ĺâśt̂ ṕôśît́îón̂)"
   },
-  "main/MainImpl.js | showConsoleDrawer": {
+  "main/MainImpl.ts | showConsoleDrawer": {
     "message": "Ŝh́ôẃ ĉón̂śôĺê d́r̂áŵér̂"
   },
-  "main/MainImpl.js | theSystempreferredColorSchemeHas": {
+  "main/MainImpl.ts | theSystempreferredColorSchemeHas": {
     "message": "T̂h́ê śŷśt̂ém̂-ṕr̂éf̂ér̂ŕêd́ ĉól̂ór̂ śĉh́êḿê h́âś ĉh́âńĝéd̂. T́ô áp̂ṕl̂ý t̂h́îś ĉh́âńĝé t̂ó D̂év̂T́ôól̂ś, r̂él̂óâd́."
   },
-  "main/MainImpl.js | undockIntoSeparateWindow": {
+  "main/MainImpl.ts | undockIntoSeparateWindow": {
     "message": "Ûńd̂óĉḱ îńt̂ó ŝép̂ár̂át̂é ŵín̂d́ôẃ"
   },
   "node_debugger/node_debugger-meta.ts | node": {

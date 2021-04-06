@@ -69,7 +69,7 @@ export class TracingManager extends SDKModel {
    * @param {!TracingManagerClient} client
    * @param {string} categoryFilter
    * @param {string} options
-   * @return {!Promise<!Object>}
+   * @return {!Promise<!Protocol.ProtocolResponseWithError>}
    */
   async start(client, categoryFilter, options) {
     if (this._activeClient) {

@@ -46,7 +46,6 @@ import * as Extensions from '../extensions/extensions.js';
 import * as Coverage from '../panels/coverage/coverage.js';  // eslint-disable-line no-unused-vars
 import * as MobileThrottling from '../panels/mobile_throttling/mobile_throttling.js';
 import * as PerfUI from '../perf_ui/perf_ui.js';
-import * as ProtocolClient from '../protocol_client/protocol_client.js';
 import * as TimelineModel from '../timeline_model/timeline_model.js';
 import * as UI from '../ui/ui.js';
 
@@ -793,13 +792,15 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     }
     this._setUIControlsEnabled(false);
     this._hideLandingPage();
-    const response = await this._controller.startRecording(recordingOptions, enabledTraceProviders);
-    // @ts-ignore crbug.com/1011811 Closure does not understand `.getError()` propagation from the tracing model
-    if (response[ProtocolClient.InspectorBackend.ProtocolError]) {
-      // @ts-ignore crbug.com/1011811 Closure does not understand `.getError()` propagation from the tracing model
-      this._recordingFailed(response[ProtocolClient.InspectorBackend.ProtocolError]);
-    } else {
-      this._recordingStarted();
+    try {
+      const response = await this._controller.startRecording(recordingOptions, enabledTraceProviders);
+      if (response.getError()) {
+        throw new Error(response.getError());
+      } else {
+        this._recordingStarted();
+      }
+    } catch (e) {
+      this._recordingFailed(e.message);
     }
   }
 

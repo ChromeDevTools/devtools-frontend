@@ -9833,6 +9833,9 @@
   "timeline/TimelineController.ts | cpuProfileForATargetIsNot": {
     "message": "CPU profile for a target is not available."
   },
+  "timeline/TimelineController.ts | tracingNotSupported": {
+    "message": "Tracing not supported for this type of target"
+  },
   "timeline/TimelineDetailsView.ts | bottomup": {
     "message": "Bottom-Up"
   },

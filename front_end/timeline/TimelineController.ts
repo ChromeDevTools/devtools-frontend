@@ -11,7 +11,6 @@ import * as Platform from '../core/platform/platform.js';
 import * as Root from '../core/root/root.js';
 import * as SDK from '../core/sdk/sdk.js';
 import * as Extensions from '../extensions/extensions.js';  // eslint-disable-line no-unused-vars
-import * as ProtocolClient from '../protocol_client/protocol_client.js';
 import * as TimelineModel from '../timeline_model/timeline_model.js';
 
 import {ExtensionTracingSession} from './ExtensionTracingSession.js';
@@ -22,6 +21,10 @@ const UIStrings = {
   *@description Text in Timeline Controller of the Performance panel
   */
   cpuProfileForATargetIsNot: 'CPU profile for a target is not available.',
+  /**
+  *@description Text in Timeline Controller of the Performance panel
+  */
+  tracingNotSupported: 'Tracing not supported for this type of target',
 };
 const str_ = i18n.i18n.registerUIStrings('timeline/TimelineController.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -65,8 +68,8 @@ export class TimelineController implements SDK.SDKModel.SDKModelObserver<SDK.CPU
   }
 
   async startRecording(
-      options: RecordingOptions,
-      providers: Extensions.ExtensionTraceProvider.ExtensionTraceProvider[]): Promise<Object> {
+      options: RecordingOptions, providers: Extensions.ExtensionTraceProvider.ExtensionTraceProvider[]):
+      Promise<Protocol.ProtocolResponseWithError> {
     this._extensionTraceProviders = Extensions.ExtensionServer.ExtensionServer.instance().traceProviders().slice();
 
     function disabledByDefault(category: string): string {
@@ -107,10 +110,7 @@ export class TimelineController implements SDK.SDKModel.SDKModelObserver<SDK.CPU
     this._extensionSessions.forEach(session => session.start());
     this._performanceModel.setRecordStartTime(Date.now());
     const response = await this._startRecordingWithCategories(categoriesArray.join(','), options.enableJSSampling);
-    if (!response) {
-      throw new Error('Missing backend response');
-    }
-    if (ProtocolClient.InspectorBackend.ProtocolError in response) {
+    if (response.getError()) {
       await this._waitForTracingToStop(false);
       await SDK.SDKModel.TargetManager.instance().resumeAllTargets();
     }
@@ -186,16 +186,17 @@ export class TimelineController implements SDK.SDKModel.SDKModelObserver<SDK.CPU
     await Promise.all(promises);
   }
 
-  async _startRecordingWithCategories(categories: string, enableJSSampling?: boolean): Promise<Object|undefined> {
+  async _startRecordingWithCategories(categories: string, enableJSSampling?: boolean):
+      Promise<Protocol.ProtocolResponseWithError> {
+    if (!this._tracingManager) {
+      throw new Error(UIStrings.tracingNotSupported);
+    }
     // There might be a significant delay in the beginning of timeline recording
     // caused by starting CPU profiler, that needs to traverse JS heap to collect
     // all the functions data.
     await SDK.SDKModel.TargetManager.instance().suspendAllTargets('performance-timeline');
     if (enableJSSampling && Root.Runtime.Runtime.queryParam('timelineTracingJSProfileDisabled')) {
       await this._startProfilingOnAllModels();
-    }
-    if (!this._tracingManager) {
-      return;
     }
 
     return this._tracingManager.start(this, categories, '');

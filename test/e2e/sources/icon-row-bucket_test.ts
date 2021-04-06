@@ -55,7 +55,11 @@ async function getExpandedIssuesTitle(): Promise<Set<string>> {
   return expandedIssues;
 }
 
-describe('The row\'s icon bucket', async () => {
+describe('The row\'s icon bucket', async function() {
+  if (this.timeout()) {
+    this.timeout(10000);
+  }
+
   it('should display error messages', async () => {
     await openFileInSourceTab('trusted-type-policy-violation-report-only.rawresponse');
     const iconComponents = await getIconComponents('text-editor-line-decoration-icon-error');

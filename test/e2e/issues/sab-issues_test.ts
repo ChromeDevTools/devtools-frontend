@@ -21,7 +21,8 @@ describe('SAB issues test', async () => {
     if (issueElement) {
       const section = await getResourcesElement('violation', issueElement);
       const text = await section.label.evaluate(el => el.textContent);
-      assert.strictEqual(text, '2 violations');
+      // TODO(crbug.com/1189877): Remove 2nd space after fixing l10n presubmit check
+      assert.strictEqual(text, '2  violations');
       await expandResourceSection(section);
       const table = await extractTableFromResourceSection(section.content);
       assert.isNotNull(table);

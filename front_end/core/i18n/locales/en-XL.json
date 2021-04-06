@@ -1526,6 +1526,9 @@
   "issues/AffectedSharedArrayBufferIssueDetailsView.ts | instantiation": {
     "message": "Îńŝt́âńt̂íât́îón̂"
   },
+  "issues/AffectedSharedArrayBufferIssueDetailsView.ts | nViolations": {
+    "message": "{n, plural, =1 { v̂íôĺât́îón̂} other { v́îól̂át̂íôńŝ}}"
+  },
   "issues/AffectedSharedArrayBufferIssueDetailsView.ts | sharedarraybufferWasTransferedTo": {
     "message": "SharedArrayBuffer ŵáŝ t́r̂án̂śf̂ér̂éd̂ t́ô á ĉón̂t́êx́t̂ t́ĥát̂ íŝ ńôt́ ĉŕôśŝ-ór̂íĝín̂ íŝól̂át̂éd̂"
   },

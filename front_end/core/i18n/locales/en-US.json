@@ -1526,6 +1526,9 @@
   "issues/AffectedSharedArrayBufferIssueDetailsView.ts | instantiation": {
     "message": "Instantiation"
   },
+  "issues/AffectedSharedArrayBufferIssueDetailsView.ts | nViolations": {
+    "message": "{n, plural, =1 { violation} other { violations}}"
+  },
   "issues/AffectedSharedArrayBufferIssueDetailsView.ts | sharedarraybufferWasTransferedTo": {
     "message": "SharedArrayBuffer was transfered to a context that is not cross-origin isolated"
   },

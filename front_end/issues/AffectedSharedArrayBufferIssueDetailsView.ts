@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as i18n from '../core/i18n/i18n.js';
+import * as Platform from '../core/platform/platform.js';
 import * as SDK from '../core/sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
@@ -11,6 +12,10 @@ import {AggregatedIssue} from './IssueAggregator.js';
 import {IssueView} from './IssueView.js';
 
 const UIStrings = {
+  /**
+  *@description Label for number of affected resources indication in issue view
+  */
+  nViolations: '{n, plural, =1 { violation} other { violations}}',
   /**
   *@description Label for number of affected resources indication in issue view
   */
@@ -64,6 +69,10 @@ export class AffectedSharedArrayBufferIssueDetailsView extends AffectedResources
   constructor(parentView: IssueView, issue: AggregatedIssue) {
     super(parentView, {singular: i18nString(UIStrings.violation), plural: i18nString(UIStrings.violations)});
     this.issue = issue;
+  }
+
+  protected getResourceName(count: number): Platform.UIString.LocalizedString {
+    return i18nString(UIStrings.nViolations, {n: count});
   }
 
   private appendStatus(element: HTMLElement, isWarning: boolean): void {

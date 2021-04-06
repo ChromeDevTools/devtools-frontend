@@ -17,7 +17,7 @@ devtools_module("recorder") {
   ]
 
   deps = [
-    "../common:bundle",
+    "../core/common:bundle",
     "../core/i18n:bundle",
     "../panels/accessibility:bundle",
     "../panels/elements:bundle",

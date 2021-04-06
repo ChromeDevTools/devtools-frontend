@@ -17,7 +17,7 @@ devtools_module("text_utils") {
   ]
 
   deps = [
-    "../common:bundle",
+    "../core/common:bundle",
     "../core/platform:bundle",
     "../core/root:bundle",
   ]

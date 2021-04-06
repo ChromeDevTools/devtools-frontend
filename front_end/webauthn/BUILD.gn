@@ -9,7 +9,7 @@ devtools_module("webauthn") {
   sources = [ "WebauthnPane.ts" ]
 
   deps = [
-    "../common:bundle",
+    "../core/common:bundle",
     "../core/host:bundle",
     "../core/i18n:bundle",
     "../core/sdk:bundle",

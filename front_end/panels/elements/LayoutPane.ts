@@ -4,8 +4,8 @@
 
 import './NodeText.js';
 
-import * as Common from '../../common/common.js';
 import * as ComponentHelpers from '../../component_helpers/component_helpers.js';
+import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as LitHtml from '../../third_party/lit-html/lit-html.js';
 import * as Components from '../../ui/components/components.js';

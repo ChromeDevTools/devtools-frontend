@@ -10,7 +10,7 @@ devtools_module("cookie_table") {
 
   deps = [
     "../browser_sdk:bundle",
-    "../common:bundle",
+    "../core/common:bundle",
     "../core/i18n:bundle",
     "../core/root:bundle",
     "../core/sdk:bundle",

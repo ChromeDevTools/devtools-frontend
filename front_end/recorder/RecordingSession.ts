@@ -4,7 +4,7 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../common/common.js';
+import * as Common from '../core/common/common.js';
 import * as SDK from '../core/sdk/sdk.js';
 import type * as Workspace from '../workspace/workspace.js';
 import {RecordingEventHandler} from './RecordingEventHandler.js';

@@ -20,7 +20,7 @@ devtools_module("source_frame") {
   ]
 
   deps = [
-    "../common:bundle",
+    "../core/common:bundle",
     "../core/host:bundle",
     "../core/i18n:bundle",
     "../core/platform:bundle",

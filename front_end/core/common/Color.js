@@ -1,3 +1,7 @@
+// Copyright 2021 The Chromium Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+
 /*
  * Copyright (C) 2009 Apple Inc.  All rights reserved.
  * Copyright (C) 2009 Joseph Pecoraro
@@ -27,7 +31,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import * as Platform from '../core/platform/platform.js';
+import * as Platform from '../platform/platform.js';
 
 import {blendColors, contrastRatioAPCA, desiredLuminanceAPCA, luminance, luminanceAPCA, rgbaToHsla} from './ColorUtils.js';
 
@@ -125,7 +129,9 @@ export class Color {
           if (values.length !== 4) {
             return null;
           }
-        } else if ((values.length > 2 && values[2].indexOf('/') !== -1) || (values.length > 3 && values[3].indexOf('/') !== -1)) {
+        } else if (
+            (values.length > 2 && values[2].indexOf('/') !== -1) ||
+            (values.length > 3 && values[3].indexOf('/') !== -1)) {
           const alpha = values.slice(2, 4).join('');
           values = values.slice(0, 2).concat(alpha.split(/\//)).concat(values.slice(4));
         } else if (values.length >= 4) {

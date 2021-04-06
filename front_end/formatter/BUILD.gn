@@ -14,7 +14,7 @@ devtools_module("formatter") {
 
   deps = [
     "../bindings:bundle",
-    "../common:bundle",
+    "../core/common:bundle",
     "../core/platform:bundle",
     "../core/sdk:bundle",
     "../formatter_worker:formatter_actions",

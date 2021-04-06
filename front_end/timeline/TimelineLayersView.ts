@@ -4,7 +4,7 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
+import * as Common from '../core/common/common.js';  // eslint-disable-line no-unused-vars
 import * as SDK from '../core/sdk/sdk.js';      // eslint-disable-line no-unused-vars
 import * as LayerViewer from '../panels/layer_viewer/layer_viewer.js';
 import * as TimelineModel from '../timeline_model/timeline_model.js';  // eslint-disable-line no-unused-vars

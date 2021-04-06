@@ -9,7 +9,7 @@ devtools_module("workspace_diff") {
   sources = [ "WorkspaceDiff.ts" ]
 
   deps = [
-    "../common:bundle",
+    "../core/common:bundle",
     "../core/host:bundle",
     "../diff:bundle",
     "../persistence:bundle",

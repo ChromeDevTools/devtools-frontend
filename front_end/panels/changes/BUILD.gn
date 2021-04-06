@@ -14,7 +14,7 @@ devtools_module("changes") {
   ]
 
   deps = [
-    "../../common:bundle",
+    "../../core/common:bundle",
     "../../core/i18n:bundle",
     "../../diff:bundle",
     "../../snippets:bundle",

@@ -9,7 +9,7 @@ ts_library("help") {
   sources = [ "ReleaseNote_test.ts" ]
 
   deps = [
-    "../../../../front_end/common:bundle",
+    "../../../../front_end/core/common:bundle",
     "../../../../front_end/core/platform:bundle",
     "../../../../front_end/panels/help:bundle",
     "../../../../front_end/ui:bundle",

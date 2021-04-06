@@ -12,8 +12,8 @@ devtools_module("event_listeners") {
   ]
 
   deps = [
-    "../../common:bundle",
     "../../components:bundle",
+    "../../core/common:bundle",
     "../../core/i18n:bundle",
     "../../core/sdk:bundle",
     "../../object_ui:bundle",

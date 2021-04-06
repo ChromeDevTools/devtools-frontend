@@ -18,8 +18,8 @@ devtools_module("extensions") {
   deps = [
     "../bindings:bundle",
     "../browser_sdk:bundle",
-    "../common:bundle",
     "../components:bundle",
+    "../core/common:bundle",
     "../core/host:bundle",
     "../core/platform:bundle",
     "../core/root:bundle",

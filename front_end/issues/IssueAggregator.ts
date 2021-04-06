@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as BrowserSDK from '../browser_sdk/browser_sdk.js';
-import * as Common from '../common/common.js';
+import * as Common from '../core/common/common.js';
 import * as SDK from '../core/sdk/sdk.js';
 
 /**

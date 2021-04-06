@@ -13,8 +13,8 @@ devtools_module("search") {
   ]
 
   deps = [
-    "../common:bundle",
     "../components:bundle",
+    "../core/common:bundle",
     "../core/i18n:bundle",
     "../text_utils:bundle",
     "../ui:bundle",

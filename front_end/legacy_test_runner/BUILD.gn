@@ -20,7 +20,7 @@ ts_library("legacy_test_runner-source") {
     "../:devtools_app",
     "../bindings:legacy",
     "../color_picker:legacy",
-    "../common:legacy",
+    "../core/common:legacy",
     "../core/host:legacy",
     "../core/root:legacy",
     "../core/sdk:legacy",

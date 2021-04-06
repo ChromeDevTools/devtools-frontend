@@ -30,8 +30,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import * as Common from '../../common/common.js';
 import * as SupportedCSSProperties from '../../generated/SupportedCSSProperties.js';
+import * as Common from '../common/common.js';
 import * as Platform from '../platform/platform.js';
 
 

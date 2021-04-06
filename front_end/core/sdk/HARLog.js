@@ -34,7 +34,7 @@
 // FIXME: Some fields are not yet supported due to back-end limitations.
 // See https://bugs.webkit.org/show_bug.cgi?id=58127 for details.
 
-import * as Common from '../../common/common.js';
+import * as Common from '../common/common.js';
 
 import {Cookie} from './Cookie.js';                  // eslint-disable-line no-unused-vars
 import {PageLoad} from './NetworkLog.js';            // eslint-disable-line no-unused-vars

@@ -4,7 +4,7 @@
 
 // @ts-nocheck
 
-import * as Common from '../../common/common.js';
+import * as Common from '../../core/common/common.js';
 
 import * as HelpModule from './help.js';
 

@@ -1,3 +1,7 @@
+// Copyright 2021 The Chromium Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+
 /*
  * Copyright (C) 2012 Google Inc.  All rights reserved.
  * Copyright (C) 2007, 2008 Apple Inc.  All rights reserved.
@@ -27,8 +31,8 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import * as i18n from '../core/i18n/i18n.js';
-import * as Platform from '../core/platform/platform.js';  // eslint-disable-line no-unused-vars
+import * as i18n from '../i18n/i18n.js';
+import * as Platform from '../platform/platform.js';  // eslint-disable-line no-unused-vars
 
 import {ParsedURL} from './ParsedURL.js';
 
@@ -150,7 +154,7 @@ const UIStrings = {
   */
   preflight: 'Preflight',
 };
-const str_ = i18n.i18n.registerUIStrings('common/ResourceType.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('core/common/ResourceType.js', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 export class ResourceType {
   /**
@@ -217,7 +221,7 @@ export class ResourceType {
    */
   static fromName(name) {
     for (const resourceTypeId in resourceTypes) {
-      const resourceType = /** @type {!Object<string, !ResourceType>} */(resourceTypes)[resourceTypeId];
+      const resourceType = /** @type {!Object<string, !ResourceType>} */ (resourceTypes)[resourceTypeId];
       if (resourceType.name() === name) {
         return resourceType;
       }

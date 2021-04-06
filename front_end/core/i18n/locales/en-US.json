@@ -131,159 +131,6 @@
   "color_picker/Spectrum.ts | toggleColorPicker": {
     "message": "Toggle color picker"
   },
-  "common/ResourceType.js | cspviolationreport": {
-    "message": "CSPViolationReport"
-  },
-  "common/ResourceType.js | css": {
-    "message": "CSS"
-  },
-  "common/ResourceType.js | doc": {
-    "message": "Doc"
-  },
-  "common/ResourceType.js | document": {
-    "message": "Document"
-  },
-  "common/ResourceType.js | documents": {
-    "message": "Documents"
-  },
-  "common/ResourceType.js | eventsource": {
-    "message": "EventSource"
-  },
-  "common/ResourceType.js | fetch": {
-    "message": "Fetch"
-  },
-  "common/ResourceType.js | font": {
-    "message": "Font"
-  },
-  "common/ResourceType.js | fonts": {
-    "message": "Fonts"
-  },
-  "common/ResourceType.js | image": {
-    "message": "Image"
-  },
-  "common/ResourceType.js | images": {
-    "message": "Images"
-  },
-  "common/ResourceType.js | img": {
-    "message": "Img"
-  },
-  "common/ResourceType.js | js": {
-    "message": "JS"
-  },
-  "common/ResourceType.js | manifest": {
-    "message": "Manifest"
-  },
-  "common/ResourceType.js | media": {
-    "message": "Media"
-  },
-  "common/ResourceType.js | other": {
-    "message": "Other"
-  },
-  "common/ResourceType.js | ping": {
-    "message": "Ping"
-  },
-  "common/ResourceType.js | preflight": {
-    "message": "Preflight"
-  },
-  "common/ResourceType.js | script": {
-    "message": "Script"
-  },
-  "common/ResourceType.js | scripts": {
-    "message": "Scripts"
-  },
-  "common/ResourceType.js | signedexchange": {
-    "message": "SignedExchange"
-  },
-  "common/ResourceType.js | stylesheet": {
-    "message": "Stylesheet"
-  },
-  "common/ResourceType.js | stylesheets": {
-    "message": "Stylesheets"
-  },
-  "common/ResourceType.js | texttrack": {
-    "message": "TextTrack"
-  },
-  "common/ResourceType.js | websocket": {
-    "message": "WebSocket"
-  },
-  "common/ResourceType.js | websockets": {
-    "message": "WebSockets"
-  },
-  "common/ResourceType.js | webtransport": {
-    "message": "WebTransport"
-  },
-  "common/ResourceType.js | ws": {
-    "message": "WS"
-  },
-  "common/ResourceType.js | xhrAndFetch": {
-    "message": "XHR and Fetch"
-  },
-  "common/Revealer.js | applicationPanel": {
-    "message": "Application panel"
-  },
-  "common/Revealer.js | changesDrawer": {
-    "message": "Changes drawer"
-  },
-  "common/Revealer.js | elementsPanel": {
-    "message": "Elements panel"
-  },
-  "common/Revealer.js | issuesView": {
-    "message": "Issues view"
-  },
-  "common/Revealer.js | networkPanel": {
-    "message": "Network panel"
-  },
-  "common/Revealer.js | sourcesPanel": {
-    "message": "Sources panel"
-  },
-  "common/Revealer.js | stylesSidebar": {
-    "message": "styles sidebar"
-  },
-  "common/SettingRegistration.ts | adorner": {
-    "message": "Adorner"
-  },
-  "common/SettingRegistration.ts | appearance": {
-    "message": "Appearance"
-  },
-  "common/SettingRegistration.ts | console": {
-    "message": "Console"
-  },
-  "common/SettingRegistration.ts | debugger": {
-    "message": "Debugger"
-  },
-  "common/SettingRegistration.ts | elements": {
-    "message": "Elements"
-  },
-  "common/SettingRegistration.ts | extension": {
-    "message": "Extension"
-  },
-  "common/SettingRegistration.ts | global": {
-    "message": "Global"
-  },
-  "common/SettingRegistration.ts | grid": {
-    "message": "Grid"
-  },
-  "common/SettingRegistration.ts | memory": {
-    "message": "Memory"
-  },
-  "common/SettingRegistration.ts | mobile": {
-    "message": "Mobile"
-  },
-  "common/SettingRegistration.ts | network": {
-    "message": "Network"
-  },
-  "common/SettingRegistration.ts | performance": {
-    "message": "Performance"
-  },
-  "common/SettingRegistration.ts | persistence": {
-    "message": "Persistence"
-  },
-  "common/SettingRegistration.ts | rendering": {
-    "message": "Rendering"
-  },
-  "common/SettingRegistration.ts | sources": {
-    "message": "Sources"
-  },
   "components/ImagePreview.js | currentSource": {
     "message": "Current source:"
   },
@@ -373,6 +220,159 @@
   },
   "cookie_table/CookiesTable.ts | value": {
     "message": "Value"
+  },
+  "core/common/ResourceType.js | cspviolationreport": {
+    "message": "CSPViolationReport"
+  },
+  "core/common/ResourceType.js | css": {
+    "message": "CSS"
+  },
+  "core/common/ResourceType.js | doc": {
+    "message": "Doc"
+  },
+  "core/common/ResourceType.js | document": {
+    "message": "Document"
+  },
+  "core/common/ResourceType.js | documents": {
+    "message": "Documents"
+  },
+  "core/common/ResourceType.js | eventsource": {
+    "message": "EventSource"
+  },
+  "core/common/ResourceType.js | fetch": {
+    "message": "Fetch"
+  },
+  "core/common/ResourceType.js | font": {
+    "message": "Font"
+  },
+  "core/common/ResourceType.js | fonts": {
+    "message": "Fonts"
+  },
+  "core/common/ResourceType.js | image": {
+    "message": "Image"
+  },
+  "core/common/ResourceType.js | images": {
+    "message": "Images"
+  },
+  "core/common/ResourceType.js | img": {
+    "message": "Img"
+  },
+  "core/common/ResourceType.js | js": {
+    "message": "JS"
+  },
+  "core/common/ResourceType.js | manifest": {
+    "message": "Manifest"
+  },
+  "core/common/ResourceType.js | media": {
+    "message": "Media"
+  },
+  "core/common/ResourceType.js | other": {
+    "message": "Other"
+  },
+  "core/common/ResourceType.js | ping": {
+    "message": "Ping"
+  },
+  "core/common/ResourceType.js | preflight": {
+    "message": "Preflight"
+  },
+  "core/common/ResourceType.js | script": {
+    "message": "Script"
+  },
+  "core/common/ResourceType.js | scripts": {
+    "message": "Scripts"
+  },
+  "core/common/ResourceType.js | signedexchange": {
+    "message": "SignedExchange"
+  },
+  "core/common/ResourceType.js | stylesheet": {
+    "message": "Stylesheet"
+  },
+  "core/common/ResourceType.js | stylesheets": {
+    "message": "Stylesheets"
+  },
+  "core/common/ResourceType.js | texttrack": {
+    "message": "TextTrack"
+  },
+  "core/common/ResourceType.js | websocket": {
+    "message": "WebSocket"
+  },
+  "core/common/ResourceType.js | websockets": {
+    "message": "WebSockets"
+  },
+  "core/common/ResourceType.js | webtransport": {
+    "message": "WebTransport"
+  },
+  "core/common/ResourceType.js | ws": {
+    "message": "WS"
+  },
+  "core/common/ResourceType.js | xhrAndFetch": {
+    "message": "XHR and Fetch"
+  },
+  "core/common/Revealer.js | applicationPanel": {
+    "message": "Application panel"
+  },
+  "core/common/Revealer.js | changesDrawer": {
+    "message": "Changes drawer"
+  },
+  "core/common/Revealer.js | elementsPanel": {
+    "message": "Elements panel"
+  },
+  "core/common/Revealer.js | issuesView": {
+    "message": "Issues view"
+  },
+  "core/common/Revealer.js | networkPanel": {
+    "message": "Network panel"
+  },
+  "core/common/Revealer.js | sourcesPanel": {
+    "message": "Sources panel"
+  },
+  "core/common/Revealer.js | stylesSidebar": {
+    "message": "styles sidebar"
+  },
+  "core/common/SettingRegistration.ts | adorner": {
+    "message": "Adorner"
+  },
+  "core/common/SettingRegistration.ts | appearance": {
+    "message": "Appearance"
+  },
+  "core/common/SettingRegistration.ts | console": {
+    "message": "Console"
+  },
+  "core/common/SettingRegistration.ts | debugger": {
+    "message": "Debugger"
+  },
+  "core/common/SettingRegistration.ts | elements": {
+    "message": "Elements"
+  },
+  "core/common/SettingRegistration.ts | extension": {
+    "message": "Extension"
+  },
+  "core/common/SettingRegistration.ts | global": {
+    "message": "Global"
+  },
+  "core/common/SettingRegistration.ts | grid": {
+    "message": "Grid"
+  },
+  "core/common/SettingRegistration.ts | memory": {
+    "message": "Memory"
+  },
+  "core/common/SettingRegistration.ts | mobile": {
+    "message": "Mobile"
+  },
+  "core/common/SettingRegistration.ts | network": {
+    "message": "Network"
+  },
+  "core/common/SettingRegistration.ts | performance": {
+    "message": "Performance"
+  },
+  "core/common/SettingRegistration.ts | persistence": {
+    "message": "Persistence"
+  },
+  "core/common/SettingRegistration.ts | rendering": {
+    "message": "Rendering"
+  },
+  "core/common/SettingRegistration.ts | sources": {
+    "message": "Sources"
   },
   "core/host/InspectorFrontendHost.ts | devtoolsS": {
     "message": "DevTools - {PH1}"

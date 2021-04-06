@@ -4,7 +4,7 @@
 
 const {assert} = chai;
 
-import * as Common from '../../../../front_end/common/common.js';
+import * as Common from '../../../../front_end/core/common/common.js';
 import {assertNotNull} from '../../../../front_end/core/platform/platform.js';
 import * as Platform from '../../../../front_end/core/platform/platform.js';
 

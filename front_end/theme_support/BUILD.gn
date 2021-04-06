@@ -9,7 +9,7 @@ devtools_module("theme_support") {
   sources = [ "theme_support_impl.js" ]
 
   deps = [
-    "../common:bundle",
+    "../core/common:bundle",
     "../core/platform:bundle",
   ]
 }

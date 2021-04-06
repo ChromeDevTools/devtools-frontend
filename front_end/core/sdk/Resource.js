@@ -30,8 +30,8 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import * as Common from '../../common/common.js';
 import * as TextUtils from '../../text_utils/text_utils.js';
+import * as Common from '../common/common.js';
 import * as Platfrom from '../platform/platform.js';
 
 import {Events, NetworkRequest} from './NetworkRequest.js';                   // eslint-disable-line no-unused-vars

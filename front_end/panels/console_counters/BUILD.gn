@@ -13,7 +13,7 @@ devtools_module("console_counters") {
 
   deps = [
     "../../browser_sdk:bundle",
-    "../../common:bundle",
+    "../../core/common:bundle",
     "../../core/host:bundle",
     "../../core/i18n:bundle",
     "../../core/sdk:bundle",

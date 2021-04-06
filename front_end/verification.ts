@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import './browser_sdk/browser_sdk.js';
-import './common/common.js';
+import './core/common/common.js';
 import './core/host/host.js';
 import './inspector_overlay/inspector_overlay.js';
 import './protocol_client/protocol_client.js';

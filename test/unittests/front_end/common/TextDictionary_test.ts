@@ -4,7 +4,7 @@
 
 const {assert} = chai;
 
-import * as Common from '../../../../front_end/common/common.js';
+import * as Common from '../../../../front_end/core/common/common.js';
 
 const TextDictionary = Common.TextDictionary.TextDictionary;
 const Trie = Common.Trie.Trie;

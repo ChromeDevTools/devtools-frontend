@@ -2,8 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as i18n from '../core/i18n/i18n.js';
-import * as Platform from '../core/platform/platform.js';  // eslint-disable-line no-unused-vars
+import * as i18n from '../i18n/i18n.js';
+import * as Platform from '../platform/platform.js';  // eslint-disable-line no-unused-vars
 
 const UIStrings = {
   /**
@@ -35,7 +35,7 @@ const UIStrings = {
   */
   sourcesPanel: 'Sources panel',
 };
-const str_ = i18n.i18n.registerUIStrings('common/Revealer.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('core/common/Revealer.js', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 /**

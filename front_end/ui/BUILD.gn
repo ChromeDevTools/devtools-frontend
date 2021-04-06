@@ -66,7 +66,7 @@ devtools_module("ui") {
   ]
 
   deps = [
-    "../common:bundle",
+    "../core/common:bundle",
     "../core/dom_extension:bundle",
     "../core/host:bundle",
     "../core/i18n:bundle",

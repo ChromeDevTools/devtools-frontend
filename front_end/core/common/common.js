@@ -35,7 +35,7 @@ import * as Worker from './Worker.js';
  * common and wanted to avoid a huge rename of imports. A future CL will
  * update all references to `Common.UIString` to `Platform.UIString`.
  */
-export {UIString} from '../core/platform/platform.js';
+export {UIString} from '../platform/platform.js';
 
 
 /**

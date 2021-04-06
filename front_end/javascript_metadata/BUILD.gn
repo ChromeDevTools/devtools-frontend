@@ -11,7 +11,7 @@ devtools_module("javascript_metadata") {
     "NativeFunctions.js",
   ]
 
-  deps = [ "../common:bundle" ]
+  deps = [ "../core/common:bundle" ]
 }
 
 devtools_entrypoint("bundle") {

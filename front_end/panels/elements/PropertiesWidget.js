@@ -31,7 +31,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import * as Common from '../../common/common.js';  // eslint-disable-line no-unused-vars
+import * as Common from '../../core/common/common.js';  // eslint-disable-line no-unused-vars
 import * as Host from '../../core/host/host.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as ObjectUI from '../../object_ui/object_ui.js';

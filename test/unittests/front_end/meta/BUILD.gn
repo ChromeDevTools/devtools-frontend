@@ -13,7 +13,7 @@ ts_library("meta") {
   ]
 
   deps = [
-    "../../../../front_end/common:bundle",
+    "../../../../front_end/core/common:bundle",
     "../../../../front_end/quick_open:bundle",
     "../../../../front_end/ui:bundle",
     "../helpers",

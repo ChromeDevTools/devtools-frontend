@@ -16,7 +16,7 @@ ts_library("helpers") {
   ]
 
   deps = [
-    "../../../../front_end/common:bundle",
+    "../../../../front_end/core/common:bundle",
     "../../../../front_end/core/host:bundle",
     "../../../../front_end/core/i18n:bundle",
     "../../../../front_end/core/root:bundle",

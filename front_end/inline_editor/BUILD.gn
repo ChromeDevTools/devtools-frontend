@@ -27,9 +27,9 @@ devtools_module("inline_editor") {
 
   deps = [
     "../bindings:bundle",
-    "../common:bundle",
     "../component_helpers:bundle",
     "../components:bundle",
+    "../core/common:bundle",
     "../core/i18n:bundle",
     "../core/platform:bundle",
     "../core/sdk:bundle",

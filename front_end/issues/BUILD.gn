@@ -33,8 +33,8 @@ devtools_module("issues") {
 
   deps = [
     "../browser_sdk:bundle",
-    "../common:bundle",
     "../components:bundle",
+    "../core/common:bundle",
     "../core/i18n:bundle",
     "../core/sdk:bundle",
     "../panels/console_counters:bundle",

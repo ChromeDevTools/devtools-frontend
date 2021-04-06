@@ -54,8 +54,8 @@ devtools_module("elements") {
   deps = [
     "../../bindings:bundle",
     "../../color_picker:bundle",
-    "../../common:bundle",
     "../../components:bundle",
+    "../../core/common:bundle",
     "../../core/i18n:bundle",
     "../../core/platform:bundle",
     "../../core/root:bundle",

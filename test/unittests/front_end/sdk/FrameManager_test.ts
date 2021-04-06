@@ -5,7 +5,7 @@
 const {assert} = chai;
 
 import * as SDK from '../../../../front_end/core/sdk/sdk.js';
-import * as Common from '../../../../front_end/common/common.js';
+import * as Common from '../../../../front_end/core/common/common.js';
 
 class MockResourceTreeModel extends Common.ObjectWrapper.ObjectWrapper {
   private targetId: string;

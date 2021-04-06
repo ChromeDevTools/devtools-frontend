@@ -9,8 +9,8 @@ devtools_module("js_main") {
   sources = [ "JsMain.js" ]
 
   deps = [
-    "../common:bundle",
     "../components:bundle",
+    "../core/common:bundle",
     "../core/host:bundle",
     "../core/i18n:bundle",
     "../core/sdk:bundle",

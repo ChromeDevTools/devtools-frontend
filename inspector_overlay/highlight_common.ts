@@ -28,7 +28,7 @@
 //  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 //  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import {rgbaToHsla} from '../front_end/common/ColorUtils.js';
+import {rgbaToHsla} from '../front_end/core/common/ColorUtils.js';
 
 import {Bounds, PathCommands, Quad} from './common.js';
 

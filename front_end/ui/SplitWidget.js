@@ -28,7 +28,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import * as Common from '../common/common.js';
+import * as Common from '../core/common/common.js';
 import * as Platform from '../core/platform/platform.js';
 
 import {Constraints} from './Geometry.js';

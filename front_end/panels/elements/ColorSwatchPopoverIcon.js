@@ -4,7 +4,7 @@
 
 import * as Bindings from '../../bindings/bindings.js';
 import * as ColorPicker from '../../color_picker/color_picker.js';
-import * as Common from '../../common/common.js';
+import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Root from '../../core/root/root.js';

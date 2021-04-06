@@ -5,7 +5,7 @@
 /* eslint-disable rulesdir/no_underscored_properties */
 /* eslint-disable @typescript-eslint/naming-convention */
 
-import * as Common from '../common/common.js';
+import * as Common from '../core/common/common.js';
 import * as SDK from '../core/sdk/sdk.js';
 
 import type {LayerPaintEvent} from './TimelineFrameModel.js';

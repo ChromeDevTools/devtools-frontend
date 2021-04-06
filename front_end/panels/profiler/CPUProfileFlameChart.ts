@@ -30,7 +30,7 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../../common/common.js';
+import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as PerfUI from '../../perf_ui/perf_ui.js';
 import type * as SDK from '../../core/sdk/sdk.js';

@@ -4,7 +4,7 @@
 
 const {assert} = chai;
 
-import * as Common from '../../../../front_end/common/common.js';
+import * as Common from '../../../../front_end/core/common/common.js';
 
 it('is able to blend two colors according to alpha blending', () => {
   const firstColor = [1, 0, 0, 1];

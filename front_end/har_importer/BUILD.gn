@@ -12,7 +12,7 @@ devtools_module("har_importer") {
   ]
 
   deps = [
-    "../common:bundle",
+    "../core/common:bundle",
     "../core/sdk:bundle",
   ]
 }

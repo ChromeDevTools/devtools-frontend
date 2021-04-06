@@ -5,7 +5,7 @@
 const {assert} = chai;
 
 import * as UIComponents from '../../../../../front_end/ui/components/components.js';
-import * as Common from '../../../../../front_end/common/common.js';
+import * as Common from '../../../../../front_end/core/common/common.js';
 import {describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
 import {assertNotNull} from '../../../../../front_end/core/platform/platform.js';
 import {assertShadowRoot, renderElementIntoDOM} from '../../helpers/DOMHelpers.js';

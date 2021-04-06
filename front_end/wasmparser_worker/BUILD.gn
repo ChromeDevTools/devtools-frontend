@@ -9,7 +9,7 @@ devtools_module("wasmparser_worker") {
   sources = [ "WasmParserWorker.ts" ]
 
   deps = [
-    "../common:bundle",
+    "../core/common:bundle",
     "../third_party/wasmparser",
   ]
 }

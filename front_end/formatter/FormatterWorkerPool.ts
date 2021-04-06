@@ -4,7 +4,7 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../common/common.js';
+import * as Common from '../core/common/common.js';
 import * as FormatterActions from '../formatter_worker/FormatterActions.js';  // eslint-disable-line rulesdir/es_modules_import
 
 const MAX_WORKERS = Math.min(2, navigator.hardwareConcurrency - 1);

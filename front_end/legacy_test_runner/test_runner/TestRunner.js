@@ -5,7 +5,7 @@
 // @ts-nocheck This file is not checked by TypeScript as it has a lot of legacy code.
 
 import * as Bindings from '../../bindings/bindings.js';
-import * as Common from '../../common/common.js';  // eslint-disable-line no-unused-vars
+import * as Common from '../../core/common/common.js';  // eslint-disable-line no-unused-vars
 import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as ProtocolClientModule from '../../protocol_client/protocol_client.js';

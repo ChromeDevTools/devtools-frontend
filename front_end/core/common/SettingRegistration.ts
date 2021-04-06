@@ -2,9 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as i18n from '../core/i18n/i18n.js';
-import * as Platform from '../core/platform/platform.js';
-import * as Root from '../core/root/root.js';
+import * as i18n from '../i18n/i18n.js';
+import * as Platform from '../platform/platform.js';
+import * as Root from '../root/root.js';
 
 import {SettingStorageType} from './Settings.js';
 
@@ -70,7 +70,7 @@ const UIStrings = {
   */
   adorner: 'Adorner',
 };
-const str_ = i18n.i18n.registerUIStrings('common/SettingRegistration.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('core/common/SettingRegistration.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let registeredSettings: Array<SettingRegistration> = [];
 const settingNameSet = new Set<string>();

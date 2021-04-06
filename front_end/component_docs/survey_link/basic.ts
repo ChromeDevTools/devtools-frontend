@@ -2,9 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../../../front_end/common/common.js';
 import * as FrontendHelpers from '../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
 import * as ComponentHelpers from '../../component_helpers/component_helpers.js';
+import * as Common from '../../core/common/common.js';
 import * as Components from '../../ui/components/components.js';
 
 await ComponentHelpers.ComponentServerSetup.setup();

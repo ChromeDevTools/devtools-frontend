@@ -4,7 +4,7 @@
 
 import '../core/root/root-legacy.js';
 import '../core/platform/platform.js';
-import '../common/common-legacy.js';
+import '../core/common/common-legacy.js';
 import '../text_utils/text_utils-legacy.js';
 
 import * as RuntimeInstantiator from './RuntimeInstantiator.js';

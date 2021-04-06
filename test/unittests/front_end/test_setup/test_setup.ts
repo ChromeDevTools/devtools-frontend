@@ -6,8 +6,8 @@
  * This file is automatically loaded and run by Karma because it automatically
  * loads and injects all *.js files it finds.
  */
-import * as Common from '../../../../front_end/common/common.js';
 import * as ComponentHelpers from '../../../../front_end/component_helpers/component_helpers.js';
+import * as Common from '../../../../front_end/core/common/common.js';
 import * as Root from '../../../../front_end/core/root/root.js';
 import * as ThemeSupport from '../../../../front_end/theme_support/theme_support.js';
 import {resetTestDOM} from '../helpers/DOMHelpers.js';

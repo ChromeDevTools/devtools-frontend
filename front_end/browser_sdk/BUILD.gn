@@ -17,7 +17,7 @@ devtools_module("browser_sdk") {
 
   deps = [
     "../bindings:bundle",
-    "../common:bundle",
+    "../core/common:bundle",
     "../core/i18n:bundle",
     "../core/sdk:bundle",
     "../third_party/marked:bundle",

@@ -86,6 +86,8 @@ export class TextEditorAutocompleteController implements UI.SuggestBox.SuggestBo
       // @ts-ignore CodeMirror types are wrong.
       this._addWordsFromText(this._codeMirror.getValue());
     }
+    UI.ARIAUtils.setAutocomplete(this._textEditor.element, UI.ARIAUtils.AutocompleteInteractionModel.both);
+    UI.ARIAUtils.setHasPopup(this._textEditor.element, UI.ARIAUtils.PopupRole.ListBox);
   }
 
   dispose(): void {
@@ -106,6 +108,8 @@ export class TextEditorAutocompleteController implements UI.SuggestBox.SuggestBo
       this._codeMirror.off('beforeChange', this._beforeChange);
       this._dictionary.reset();
     }
+    UI.ARIAUtils.clearAutocomplete(this._textEditor.element);
+    UI.ARIAUtils.setHasPopup(this._textEditor.element, UI.ARIAUtils.PopupRole.False);
   }
 
   _beforeChange(codeMirror: typeof CodeMirror, changeObject: any): void {
@@ -457,6 +461,10 @@ export class TextEditorAutocompleteController implements UI.SuggestBox.SuggestBo
         this._codeMirror.replaceRange(suggestion, start, end, '+autocomplete');
       }
     });
+  }
+
+  ariaControlledBy(): Element {
+    return this._textEditor.element;
   }
 
   textWithCurrentSuggestion(): string {

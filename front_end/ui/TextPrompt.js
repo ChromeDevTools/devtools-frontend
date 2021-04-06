@@ -145,6 +145,8 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper {
     this._contentElement.appendChild(element);
     this._element.classList.add('text-prompt');
     ARIAUtils.markAsTextBox(this._element);
+    ARIAUtils.setAutocomplete(this._element, ARIAUtils.AutocompleteInteractionModel.both);
+    ARIAUtils.setHasPopup(this._element, ARIAUtils.PopupRole.ListBox);
     this._element.setAttribute('contenteditable', 'plaintext-only');
     this.element().addEventListener('keydown', this._boundOnKeyDown, false);
     this._element.addEventListener('input', this._boundOnInput, false);
@@ -185,6 +187,8 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper {
     this.element().classList.remove('text-prompt');
     this.element().removeAttribute('contenteditable');
     this.element().removeAttribute('role');
+    ARIAUtils.clearAutocomplete(this.element());
+    ARIAUtils.setHasPopup(this.element(), ARIAUtils.PopupRole.False);
   }
 
   /**
@@ -702,6 +706,14 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper {
     this.dispatchEventToListeners(Events.TextChanged);
 
     return true;
+  }
+
+  /**
+   * @override
+   * @return {!Element}
+   */
+  ariaControlledBy() {
+    return this.element();
   }
 
   /**

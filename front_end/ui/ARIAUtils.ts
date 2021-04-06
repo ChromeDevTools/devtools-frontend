@@ -259,6 +259,28 @@ export function setAutocomplete(
   element.setAttribute('aria-autocomplete', interactionModel);
 }
 
+export function clearAutocomplete(element: Element): void {
+  element.removeAttribute('aria-autocomplete');
+}
+
+export const enum PopupRole {
+  False = 'false',      // (default) Indicates the element does not have a popup.
+  True = 'true',        // Indicates the popup is a menu.
+  Menu = 'menu',        // Indicates the popup is a menu.
+  ListBox = 'listbox',  // Indicates the popup is a listbox.
+  Tree = 'tree',        // Indicates the popup is a tree.
+  Grid = 'grid',        // Indicates the popup is a grid.
+  Dialog = 'dialog',    // Indicates the popup is a dialog.
+}
+
+export function setHasPopup(element: Element, value: PopupRole = PopupRole.False): void {
+  if (value !== PopupRole.False) {
+    element.setAttribute('aria-haspopup', value);
+  } else {
+    element.removeAttribute('aria-haspopup');
+  }
+}
+
 export function setSelected(element: Element, value: boolean): void {
   // aria-selected behaves differently for false and undefined.
   // Often times undefined values are unintentionally typed as booleans.

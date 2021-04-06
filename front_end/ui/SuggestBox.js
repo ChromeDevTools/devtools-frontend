@@ -69,6 +69,14 @@ export class SuggestBoxDelegate {
    */
   acceptSuggestion() {
   }
+
+  /**
+   * Called to obtain the element whose aria-controls property should reference this SuggestBox.
+   * @return {!Element}
+   */
+  ariaControlledBy() {
+    throw new Error('not implemented');
+  }
 }
 
 /**
@@ -161,6 +169,7 @@ export class SuggestBox {
         measurePreferredSize(element, this._element).width + measuredScrollbarWidth(this._element.ownerDocument);
     return Math.min(kMaxWidth, preferredWidth);
   }
+
   _show() {
     if (this.visible()) {
       return;
@@ -169,6 +178,8 @@ export class SuggestBox {
     this._glassPane.show(document);
     const suggestion = /** @type {!Suggestion} */ ({text: '1', subtitle: '12'});
     this._rowHeight = measurePreferredSize(this.createElementForItem(suggestion), this._element).height;
+    ARIAUtils.setControls(this._suggestBoxDelegate.ariaControlledBy(), this._element);
+    ARIAUtils.setExpanded(this._suggestBoxDelegate.ariaControlledBy(), true);
   }
 
   hide() {
@@ -176,6 +187,8 @@ export class SuggestBox {
       return;
     }
     this._glassPane.hide();
+    ARIAUtils.setControls(this._suggestBoxDelegate.ariaControlledBy(), null);
+    ARIAUtils.setExpanded(this._suggestBoxDelegate.ariaControlledBy(), false);
   }
 
   /**

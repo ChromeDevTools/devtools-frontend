@@ -39,11 +39,6 @@ describe('Scope View', async () => {
       await waitFor('[aria-label="Module"][aria-expanded="true"]');
     });
 
-    await step('expand the memories list', async () => {
-      await click('[data-object-property-name-for-test="memories"]');
-      await waitFor('[data-object-property-name-for-test="memories"][aria-expanded="true"]');
-    });
-
     await step('open linear memory inspector from context menu', async () => {
       await inspectMemory('$imports.memory');
     });

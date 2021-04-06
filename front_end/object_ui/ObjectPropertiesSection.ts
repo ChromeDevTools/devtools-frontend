@@ -747,7 +747,14 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
       }
       const canShowProperty = property.getter || !property.isAccessorProperty();
       if (canShowProperty && property.name !== '__proto__') {
-        treeNode.appendChild(new ObjectPropertyTreeElement(property, linkifier));
+        const element = new ObjectPropertyTreeElement(property, linkifier);
+        if (property.name === 'memories' && property.value?.className === 'Memories') {
+          element._updateExpandable();
+          if (element.isExpandable()) {
+            element.expand();
+          }
+        }
+        treeNode.appendChild(element);
       }
     }
     for (let i = 0; i < tailProperties.length; ++i) {

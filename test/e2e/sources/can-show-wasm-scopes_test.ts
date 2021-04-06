@@ -67,7 +67,8 @@ describe('Source Tab', async () => {
         'functions: Functions\xA0{$foo: ƒ}',
         'globals: Globals\xA0{$imports.global: i32}',
         'instance: Instance\xA0{}',
-        'memories: Memories\xA0{$memory0: Memory(1)}',
+        'memories: Memories',
+        '$memory0: Memory(1)',
         'module: Module\xA0{}',
       ]);
     });

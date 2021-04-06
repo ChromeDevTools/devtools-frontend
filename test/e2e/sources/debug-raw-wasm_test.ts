@@ -141,8 +141,6 @@ describe('Sources Tab', async function() {
       0x020,
       0x04b,
     ]);
-    // Line 1 is non-breakable.
-    await addBreakpointForLine(frontend, '0x000', true);
     assert.deepEqual(await getBreakpointDecorators(frontend), []);
     // Line 3 is breakable.
     await addBreakpointForLine(frontend, '0x023');

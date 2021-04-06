@@ -150,19 +150,13 @@ export async function waitForHighlightedLineWhichIncludesText(expectedTextConten
   });
 }
 
-export async function addBreakpointForLine(
-    frontend: puppeteer.Page, index: number|string, expectedFail: boolean = false) {
+export async function addBreakpointForLine(frontend: puppeteer.Page, index: number|string) {
   await navigateToLine(frontend, index);
   const breakpointLine = await getLineNumberElement(index);
   assert.isNotNull(breakpointLine, 'Line is not visible or does not exist');
 
   await waitForFunction(async () => !(await isBreakpointSet(index)));
   await breakpointLine?.click();
-
-  // FIXME(crbug/1172294): add an assertion to check that breakpoint hasn't been set
-  if (expectedFail) {
-    return;
-  }
 
   await waitForFunction(async () => await isBreakpointSet(index));
 }

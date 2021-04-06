@@ -7,7 +7,7 @@ import {assert} from 'chai';
 import {$, click, enableExperiment, getBrowserAndPages, getResourcesPath, goToResource, pasteText, waitFor, waitForFunction, waitForMany, waitForNone} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {CONSOLE_TAB_SELECTOR, focusConsolePrompt, getCurrentConsoleMessages, getStructuredConsoleMessages} from '../helpers/console-helpers.js';
-import {addBreakpointForLine, getCallFrameLocations, getCallFrameNames, getValuesForScope, isBreakpointSet, listenForSourceFilesAdded, openFileInEditor, openFileInSourcesPanel, openSourceCodeEditorForFile, openSourcesPanel, PAUSE_ON_EXCEPTION_BUTTON, RESUME_BUTTON, retrieveSourceFilesAdded, retrieveTopCallFrameScriptLocation, switchToCallFrame, waitForAdditionalSourceFiles} from '../helpers/sources-helpers.js';
+import {addBreakpointForLine, getCallFrameLocations, getCallFrameNames, getNonBreakableLines, getValuesForScope, isBreakpointSet, listenForSourceFilesAdded, openFileInEditor, openFileInSourcesPanel, openSourceCodeEditorForFile, openSourcesPanel, PAUSE_ON_EXCEPTION_BUTTON, RESUME_BUTTON, retrieveSourceFilesAdded, retrieveTopCallFrameScriptLocation, switchToCallFrame, waitForAdditionalSourceFiles} from '../helpers/sources-helpers.js';
 
 
 // TODO: Remove once Chromium updates its version of Node.js to 12+.
@@ -298,7 +298,8 @@ describe('The Debugger Language Plugins', async () => {
     await target.evaluate('go();');
     await openFileInEditor('global_variable.ll');
     // Line 4 is non-breakable.
-    await addBreakpointForLine(frontend, 4, true);
+    assert.include(await getNonBreakableLines(frontend), 4);
+
     await addBreakpointForLine(frontend, 9);
 
     const scriptLocation = await retrieveTopCallFrameScriptLocation('main();', target);

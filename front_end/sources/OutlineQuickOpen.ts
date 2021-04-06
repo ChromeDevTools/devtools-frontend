@@ -26,14 +26,9 @@ const UIStrings = {
   *@description Text to show no results have been found
   */
   noResultsFound: 'No results found',
-  /**
-  *@description Title of the Filtered List WidgetProvider of Quick Open
-  */
-  goToSymbol: 'Go to symbol',
 };
 const str_ = i18n.i18n.registerUIStrings('sources/OutlineQuickOpen.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 let outlineQuickOpenInstance: OutlineQuickOpen;
 
@@ -131,9 +126,3 @@ export class OutlineQuickOpen extends QuickOpen.FilteredListWidget.Provider {
     return i18nString(UIStrings.noResultsFound);
   }
 }
-
-QuickOpen.FilteredListWidget.registerProvider({
-  prefix: '@',
-  title: i18nLazyString(UIStrings.goToSymbol),
-  provider: OutlineQuickOpen.instance,
-});

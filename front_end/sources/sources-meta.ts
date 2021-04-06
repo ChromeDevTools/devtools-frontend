@@ -6,6 +6,7 @@ import * as Common from '../core/common/common.js';
 import * as Root from '../core/root/root.js';
 import * as SDK from '../core/sdk/sdk.js';
 import * as ObjectUI from '../object_ui/object_ui.js';
+import * as QuickOpen from '../quick_open/quick_open.js';
 import * as TextEditor from '../text_editor/text_editor.js';
 import * as UI from '../ui/ui.js';
 import * as Workspace from '../workspace/workspace.js';
@@ -364,6 +365,14 @@ const UIStrings = {
   *@description Title of a setting under the Sources category in Settings
   */
   disallowScrollingPastEndOfFile: 'Disallow scrolling past end of file',
+  /**
+  *@description Title of the Filtered List WidgetProvider of Quick Open
+  */
+  goToSymbol: 'Go to symbol',
+  /**
+  *@description Text to open a file
+  */
+  openFile: 'Open file',
 };
 const str_ = i18n.i18n.registerUIStrings('sources/sources-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
@@ -1727,4 +1736,31 @@ UI.ContextMenu.registerItem({
   location: UI.ContextMenu.ItemLocation.MAIN_MENU_DEFAULT,
   actionId: 'sources.search',
   order: undefined,
+});
+
+QuickOpen.FilteredListWidget.registerProvider({
+  prefix: '@',
+  title: i18nLazyString(UIStrings.goToSymbol),
+  async provider() {
+    const Sources = await loadSourcesModule();
+    return Sources.OutlineQuickOpen.OutlineQuickOpen.instance();
+  },
+});
+
+QuickOpen.FilteredListWidget.registerProvider({
+  prefix: ':',
+  title: i18nLazyString(UIStrings.goToLine),
+  async provider() {
+    const Sources = await loadSourcesModule();
+    return Sources.GoToLineQuickOpen.GoToLineQuickOpen.instance();
+  },
+});
+
+QuickOpen.FilteredListWidget.registerProvider({
+  prefix: '',
+  title: i18nLazyString(UIStrings.openFile),
+  async provider() {
+    const Sources = await loadSourcesModule();
+    return Sources.OpenFileQuickOpen.OpenFileQuickOpen.instance();
+  },
 });

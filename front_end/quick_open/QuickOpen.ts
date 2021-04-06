@@ -27,7 +27,7 @@ export const history: string[] = [];
 export class QuickOpenImpl {
   _prefix: string|null;
   _query: string;
-  _providers: Map<string, () => Provider>;
+  _providers: Map<string, () => Promise<Provider>>;
   _prefixes: string[];
   _filteredListWidget: FilteredListWidget|null;
   constructor() {
@@ -53,7 +53,7 @@ export class QuickOpenImpl {
 
   _addProvider(extension: {
     prefix: string,
-    provider: () => Provider,
+    provider: () => Promise<Provider>,
   }): void {
     const prefix = extension.prefix;
     if (prefix === null) {
@@ -79,12 +79,13 @@ export class QuickOpenImpl {
     if (!providerFunction) {
       return;
     }
-    const provider = providerFunction();
-    if (this._prefix !== prefix || !this._filteredListWidget) {
-      return;
-    }
-    this._filteredListWidget.setProvider(provider);
-    this._providerLoadedForTest(provider);
+    providerFunction().then(provider => {
+      if (this._prefix !== prefix || !this._filteredListWidget) {
+        return;
+      }
+      this._filteredListWidget.setProvider(provider);
+      this._providerLoadedForTest(provider);
+    });
   }
 
   _providerLoadedForTest(_provider: Provider): void {

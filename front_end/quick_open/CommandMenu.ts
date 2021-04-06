@@ -383,5 +383,5 @@ export class ShowActionDelegate implements UI.ActionRegistration.ActionDelegate 
 registerProvider({
   prefix: '>',
   title: (): Common.UIString.LocalizedString => i18nString(UIStrings.runCommand),
-  provider: CommandMenuProvider.instance,
+  provider: () => Promise.resolve(CommandMenuProvider.instance()),
 });

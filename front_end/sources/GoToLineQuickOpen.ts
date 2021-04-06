@@ -52,14 +52,9 @@ const UIStrings = {
   *@example {2} PH1
   */
   goToLineS: 'Go to line {PH1}.',
-  /**
-  *@description Text to go to a given line
-  */
-  goToLine: 'Go to line',
 };
 const str_ = i18n.i18n.registerUIStrings('sources/GoToLineQuickOpen.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 let goToLineQuickOpenInstance: GoToLineQuickOpen;
 export class GoToLineQuickOpen extends QuickOpen.FilteredListWidget.Provider {
@@ -159,9 +154,3 @@ export class GoToLineQuickOpen extends QuickOpen.FilteredListWidget.Provider {
     return sourcesView.currentSourceFrame();
   }
 }
-
-QuickOpen.FilteredListWidget.registerProvider({
-  prefix: ':',
-  title: i18nLazyString(UIStrings.goToLine),
-  provider: GoToLineQuickOpen.instance,
-});

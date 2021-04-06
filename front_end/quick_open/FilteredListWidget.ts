@@ -587,7 +587,7 @@ export function getRegisteredProviders(): ProviderRegistration[] {
   return registeredProviders;
 }
 export interface ProviderRegistration {
-  provider: () => Provider;
+  provider: () => Promise<Provider>;
   title?: (() => string);
   prefix: string;
 }

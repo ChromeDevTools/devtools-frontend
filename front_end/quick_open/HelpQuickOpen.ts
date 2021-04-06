@@ -75,5 +75,5 @@ export class HelpQuickOpen extends Provider {
 registerProvider({
   prefix: '?',
   title: undefined,
-  provider: HelpQuickOpen.instance,
+  provider: () => Promise.resolve(HelpQuickOpen.instance()),
 });

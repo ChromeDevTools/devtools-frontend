@@ -9131,9 +9131,6 @@
   "sources/GoToLineQuickOpen.ts | currentPositionXsTypeAnOffset": {
     "message": "Ĉúr̂ŕêńt̂ ṕôśît́îón̂: 0x́{PH1}. T̂ýp̂é âń ôf́f̂śêt́ b̂ét̂ẃêén̂ 0x́{PH2} âńd̂ 0x́{PH3} t̂ó n̂áv̂íĝát̂é t̂ó."
   },
-  "sources/GoToLineQuickOpen.ts | goToLine": {
-    "message": "Ĝó t̂ó l̂ín̂é"
-  },
   "sources/GoToLineQuickOpen.ts | goToLineS": {
     "message": "Ĝó t̂ó l̂ín̂é {PH1}."
   },
@@ -9253,12 +9250,6 @@
   },
   "sources/NavigatorView.ts | sFromSourceMap": {
     "message": "{PH1} (f̂ŕôḿ ŝóûŕĉé m̂áp̂)"
-  },
-  "sources/OpenFileQuickOpen.ts | openFile": {
-    "message": "Ôṕêń f̂íl̂é"
-  },
-  "sources/OutlineQuickOpen.ts | goToSymbol": {
-    "message": "Ĝó t̂ó ŝým̂b́ôĺ"
   },
   "sources/OutlineQuickOpen.ts | noFileSelected": {
     "message": "N̂ó f̂íl̂é ŝél̂éĉt́êd́."
@@ -9434,6 +9425,9 @@
   "sources/sources-meta.ts | goToLine": {
     "message": "Ĝó t̂ó l̂ín̂é"
   },
+  "sources/sources-meta.ts | goToSymbol": {
+    "message": "Ĝó t̂ó ŝým̂b́ôĺ"
+  },
   "sources/sources-meta.ts | incrementCssUnitByTen": {
     "message": "Îńĉŕêḿêńt̂ ĆŜŚ ûńît́ b̂ý 10"
   },
@@ -9448,6 +9442,9 @@
   },
   "sources/sources-meta.ts | none": {
     "message": "N̂ón̂é"
+  },
+  "sources/sources-meta.ts | openFile": {
+    "message": "Ôṕêń f̂íl̂é"
   },
   "sources/sources-meta.ts | pauseScriptExecution": {
     "message": "P̂áûśê śĉŕîṕt̂ éx̂éĉút̂íôń"

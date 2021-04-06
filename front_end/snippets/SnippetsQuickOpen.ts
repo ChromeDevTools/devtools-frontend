@@ -79,5 +79,5 @@ export class SnippetsQuickOpen extends QuickOpen.FilteredListWidget.Provider {
 QuickOpen.FilteredListWidget.registerProvider({
   prefix: '!',
   title: i18nLazyString(UIStrings.runSnippet),
-  provider: SnippetsQuickOpen.instance,
+  provider: () => Promise.resolve(SnippetsQuickOpen.instance()),
 });

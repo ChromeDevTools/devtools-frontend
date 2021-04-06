@@ -493,9 +493,10 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper {
     if (request.isPreflightRequest()) {
       const initiator = request.initiator();
       if (initiator && initiator.requestId) {
-        const requests = this.requestsForId(initiator.requestId);
-        if (requests.length) {
-          request.setPreflightInitiatorRequest(requests[0]);
+        const [initiatorRequest] = this.requestsForId(initiator.requestId);
+        if (initiatorRequest) {
+          request.setPreflightInitiatorRequest(initiatorRequest);
+          initiatorRequest.setPreflightRequest(request);
         } else {
           this._unresolvedPreflightRequests.set(initiator.requestId, request);
         }

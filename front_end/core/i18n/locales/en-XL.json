@@ -579,10 +579,10 @@
     "message": "Ŝét̂ innerHTML"
   },
   "core/sdk/DOMDebuggerModel.js | setintervalFired": {
-    "message": "ŝét̂Ín̂t́êŕv̂ál̂ f́îŕêd́"
+    "message": "setInterval f̂ír̂éd̂"
   },
   "core/sdk/DOMDebuggerModel.js | settimeoutFired": {
-    "message": "ŝét̂T́îḿêóût́ f̂ír̂éd̂"
+    "message": "setTimeout f̂ír̂éd̂"
   },
   "core/sdk/DOMDebuggerModel.js | sinkViolations": {
     "message": "Ŝín̂ḱ V̂íôĺât́îón̂ś"

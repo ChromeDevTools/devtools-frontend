@@ -115,11 +115,11 @@ const UIStrings = {
   /**
   *@description Text in the Event Listener Breakpoints Panel of the JavaScript Debugger in the Sources Panel
   */
-  settimeoutFired: 'setTimeout fired',
+  settimeoutFired: '`setTimeout` fired',
   /**
   *@description Text in the Event Listener Breakpoints Panel of the JavaScript Debugger in the Sources Panel
   */
-  setintervalFired: 'setInterval fired',
+  setintervalFired: '`setInterval` fired',
   /**
   *@description Text in the Event Listener Breakpoints Panel of the JavaScript Debugger in the Sources Panel
   */

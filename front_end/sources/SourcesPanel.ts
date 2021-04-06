@@ -109,7 +109,9 @@ const UIStrings = {
   */
   revealInSidebar: 'Reveal in sidebar',
   /**
-  *@description A context menu item in the Sources Panel of the Sources panel
+  *@description A context menu item in the Sources Panel of the Sources panel when debugging JS code.
+  * When clicked, the execution is resumed until it reaches the line specified by the right-click that
+  * opened the context menu.
   */
   continueToHere: 'Continue to here',
   /**

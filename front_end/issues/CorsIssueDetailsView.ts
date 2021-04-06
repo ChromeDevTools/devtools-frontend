@@ -43,15 +43,15 @@ const UIStrings = {
    */
   initiatorAddressSpace: 'Initiator Address',
   /**
-  *@description Text for the status of something
+  *@description Text for the status of the initiator context
   */
   secure: 'secure',
   /**
-  *@description Text for the status of something
+  *@description Text for the status of the initiator context
   */
   insecure: 'insecure',
   /**
-  *@description Text for the status of something
+  *@description Title for a column showing the status of the initiator context. The initiator context is either secure or insecure depending on whether it was loaded via HTTP or HTTPS.
   */
   initiatorContext: 'Initiator Context',
 };

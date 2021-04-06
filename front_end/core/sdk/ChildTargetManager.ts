@@ -4,9 +4,9 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as ProtocolClient from '../../protocol_client/protocol_client.js';  // eslint-disable-line no-unused-vars
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
+import * as ProtocolClient from '../protocol_client/protocol_client.js';  // eslint-disable-line no-unused-vars
 
 import {ParallelConnection} from './Connections.js';
 import {Capability, Events as SDKModelEvents, SDKModel, Target, TargetManager, Type} from './SDKModel.js';  // eslint-disable-line no-unused-vars

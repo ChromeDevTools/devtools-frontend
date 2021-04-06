@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
-import type * as ProtocolClient from '../../protocol_client/protocol_client.js';
+import type * as ProtocolClient from '../../core/protocol_client/protocol_client.js';
 import * as SDK from '../../core/sdk/sdk.js';
 
 import type * as ReportRenderer from './LighthouseReporterTypes.js';

@@ -2,10 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as ProtocolClient from '../../../../front_end/core/protocol_client/protocol_client.js';
 import {ProtocolMapping} from '../../../../front_end/generated/protocol-mapping.js';  // eslint-disable-line rulesdir/es_modules_import
-import * as ProtocolClient from '../../../../front_end/protocol_client/protocol_client.js';
 
 import {deinitializeGlobalVars, initializeGlobalVars} from './EnvironmentHelpers.js';
+
 import type * as SDK from '../../../../front_end/core/sdk/sdk.js';
 
 type ProtocolCommand = keyof ProtocolMapping.Commands;

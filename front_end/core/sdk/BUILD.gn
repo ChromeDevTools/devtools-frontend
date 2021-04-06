@@ -85,8 +85,8 @@ devtools_module("sdk") {
     "../../core/host:bundle",
     "../../core/i18n:bundle",
     "../../core/platform:bundle",
+    "../../core/protocol_client:bundle",
     "../../generated",
-    "../../protocol_client:bundle",
     "../../text_utils:bundle",
   ]
 }

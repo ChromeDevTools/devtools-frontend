@@ -2,9 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as ProtocolClient from '../../protocol_client/protocol_client.js';
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
+import * as ProtocolClient from '../protocol_client/protocol_client.js';
 import * as Root from '../root/root.js';
 
 import {TargetManager} from './SDKModel.js';

@@ -4,7 +4,7 @@
 
 const {assert} = chai;
 
-import * as ProtocolClient from '../../../../front_end/protocol_client/protocol_client.js';
+import * as ProtocolClient from '../../../../front_end/core/protocol_client/protocol_client.js';
 import * as Host from '../../../../front_end/core/host/host.js';
 
 describe('NodeURL', () => {

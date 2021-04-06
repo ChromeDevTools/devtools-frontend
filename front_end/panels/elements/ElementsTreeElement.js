@@ -37,9 +37,9 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
+import * as ProtocolClient from '../../core/protocol_client/protocol_client.js';  // eslint-disable-line no-unused-vars
 import * as SDK from '../../core/sdk/sdk.js';
-import * as ProtocolClient from '../../protocol_client/protocol_client.js';  // eslint-disable-line no-unused-vars
-import * as TextEditor from '../../text_editor/text_editor.js';              // eslint-disable-line no-unused-vars
+import * as TextEditor from '../../text_editor/text_editor.js';  // eslint-disable-line no-unused-vars
 import * as TextUtils from '../../text_utils/text_utils.js';
 import * as UI from '../../ui/ui.js';
 import * as Emulation from '../emulation/emulation.js';

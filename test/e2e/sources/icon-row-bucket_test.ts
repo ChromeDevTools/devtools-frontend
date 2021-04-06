@@ -114,25 +114,15 @@ describe('The row\'s icon bucket', async function() {
     assert.strictEqual(icons.length, 1);
   });
 
-  it('should reveal Issues tab when the icon is clicked', async () => {
-    await openFileInSourceTab('trusted-type-policy-violation-report-only.rawresponse');
-    const HIDE_DEBUGGER_SELECTOR = '[aria-label="Hide debugger"]';
-    const HIDE_NAVIGATOR_SELECTOR = '[aria-label="Hide navigator"]';
-    await click(HIDE_DEBUGGER_SELECTOR);
-    await click(HIDE_NAVIGATOR_SELECTOR);
+  // Flaky test.
+  it.skipOnPlatforms(['mac'], '[crbug.com/1184162]: should reveal Issues tab when the icon is clicked', async () => {
+    await openFileInSourceTab('trusted-type-violations-report-only.rawresponse');
     const bucketIssueIconComponents = await getIconComponents('text-editor-line-decoration-icon-issue');
     assert.strictEqual(bucketIssueIconComponents.length, 1);
     const issueIconComponent = bucketIssueIconComponents[0];
+    await click(issueIconComponent);
 
-    const expandedIssues = await waitForFunction(async () => {
-      await click(issueIconComponent);
-      const expandedIssues = await getExpandedIssuesTitle();
-      if (expandedIssues.size) {
-        return expandedIssues;
-      }
-      return undefined;
-    });
-
+    const expandedIssues = await getExpandedIssuesTitle();
     assert.isTrue(expandedIssues.has('Trusted Type policy creation blocked by Content Security Policy'));
   });
 

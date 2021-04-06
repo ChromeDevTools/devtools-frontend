@@ -6105,28 +6105,22 @@
     "message": "Âd́d̂ ćûśt̂óm̂ ṕr̂óf̂íl̂é..."
   },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | dms": {
-    "message": "{PH1}m̂ś"
+    "message": "{PH1} ms"
   },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | download": {
     "message": "D̂óŵńl̂óâd́"
   },
-  "panels/mobile_throttling/ThrottlingSettingsTab.ts | dskbs": {
-    "message": "{PH1} k̂B́/ŝ"
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | dskbits": {
+    "message": "{PH1} kbit/s"
   },
-  "panels/mobile_throttling/ThrottlingSettingsTab.ts | fsmbs": {
-    "message": "{PH1} M̂B́/ŝ"
-  },
-  "panels/mobile_throttling/ThrottlingSettingsTab.ts | kbs": {
-    "message": "k̂b́/ŝ"
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | fsmbits": {
+    "message": "{PH1} Mbit/s"
   },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | latency": {
     "message": "L̂át̂én̂ćŷ"
   },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | latencyMustBeAnIntegerBetweenSms": {
-    "message": "L̂át̂én̂ćŷ ḿûśt̂ b́ê án̂ ín̂t́êǵêŕ b̂ét̂ẃêén̂ {PH1}ḿŝ t́ô {PH2}ḿŝ ín̂ćl̂úŝív̂é"
-  },
-  "panels/mobile_throttling/ThrottlingSettingsTab.ts | ms": {
-    "message": "m̂ś"
+    "message": "L̂át̂én̂ćŷ ḿûśt̂ b́ê án̂ ín̂t́êǵêŕ b̂ét̂ẃêén̂ {PH1} ms t́ô {PH2} ms ín̂ćl̂úŝív̂é"
   },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | networkThrottlingProfiles": {
     "message": "N̂ét̂ẃôŕk̂ T́ĥŕôt́t̂ĺîńĝ Ṕr̂óf̂íl̂éŝ"
@@ -6141,7 +6135,7 @@
     "message": "P̂ŕôf́îĺê Ńâḿê ćĥár̂áĉt́êŕŝ ĺêńĝt́ĥ ḿûśt̂ b́ê b́êt́ŵéêń 1 t̂ó {PH1} îńĉĺûśîv́ê"
   },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | sMustBeANumberBetweenSkbsToSkbs": {
-    "message": "{PH1} m̂úŝt́ b̂é â ńûḿb̂ér̂ b́êt́ŵéêń {PH2}k̂b́/ŝ t́ô {PH3}ḱb̂/ś îńĉĺûśîv́ê"
+    "message": "{PH1} m̂úŝt́ b̂é â ńûḿb̂ér̂ b́êt́ŵéêń {PH2} kbit/s t̂ó {PH3} kbit/s îńĉĺûśîv́ê"
   },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | upload": {
     "message": "Ûṕl̂óâd́"

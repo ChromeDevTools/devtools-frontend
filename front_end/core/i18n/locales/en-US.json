@@ -6105,28 +6105,22 @@
     "message": "Add custom profile..."
   },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | dms": {
-    "message": "{PH1}ms"
+    "message": "{PH1} ms"
   },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | download": {
     "message": "Download"
   },
-  "panels/mobile_throttling/ThrottlingSettingsTab.ts | dskbs": {
-    "message": "{PH1} kB/s"
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | dskbits": {
+    "message": "{PH1} kbit/s"
   },
-  "panels/mobile_throttling/ThrottlingSettingsTab.ts | fsmbs": {
-    "message": "{PH1} MB/s"
-  },
-  "panels/mobile_throttling/ThrottlingSettingsTab.ts | kbs": {
-    "message": "kb/s"
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | fsmbits": {
+    "message": "{PH1} Mbit/s"
   },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | latency": {
     "message": "Latency"
   },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | latencyMustBeAnIntegerBetweenSms": {
-    "message": "Latency must be an integer between {PH1}ms to {PH2}ms inclusive"
-  },
-  "panels/mobile_throttling/ThrottlingSettingsTab.ts | ms": {
-    "message": "ms"
+    "message": "Latency must be an integer between {PH1} ms to {PH2} ms inclusive"
   },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | networkThrottlingProfiles": {
     "message": "Network Throttling Profiles"
@@ -6141,7 +6135,7 @@
     "message": "Profile Name characters length must be between 1 to {PH1} inclusive"
   },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | sMustBeANumberBetweenSkbsToSkbs": {
-    "message": "{PH1} must be a number between {PH2}kb/s to {PH3}kb/s inclusive"
+    "message": "{PH1} must be a number between {PH2} kbit/s to {PH3} kbit/s inclusive"
   },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | upload": {
     "message": "Upload"

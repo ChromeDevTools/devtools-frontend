@@ -19,10 +19,10 @@ const UIStrings = {
   */
   addCustomProfile: 'Add custom profile...',
   /**
-  *@description Text in Throttling Settings Tab of the Network panel
+  *@description A value in milliseconds
   *@example {3} PH1
   */
-  dms: '{PH1}ms',
+  dms: '{PH1} `ms`',
   /**
   *@description Text in Throttling Settings Tab of the Network panel
   */
@@ -44,15 +44,7 @@ const UIStrings = {
   /**
   *@description Text in Throttling Settings Tab of the Network panel
   */
-  kbs: 'kb/s',
-  /**
-  *@description Text in Throttling Settings Tab of the Network panel
-  */
   optional: 'optional',
-  /**
-  *@description The milisecond unit
-  */
-  ms: 'ms',
   /**
   *@description Error message for Profile Name input in Throtting pane of the Settings
   *@example {49} PH1
@@ -64,25 +56,25 @@ const UIStrings = {
   *@example {0} PH2
   *@example {10000000} PH3
   */
-  sMustBeANumberBetweenSkbsToSkbs: '{PH1} must be a number between {PH2}kb/s to {PH3}kb/s inclusive',
+  sMustBeANumberBetweenSkbsToSkbs: '{PH1} must be a number between {PH2} `kbit/s` to {PH3} `kbit/s` inclusive',
   /**
   *@description Error message for Latency input in Throttling pane of the Settings
   *@example {0} PH1
   *@example {1000000} PH2
   */
-  latencyMustBeAnIntegerBetweenSms: 'Latency must be an integer between {PH1}ms to {PH2}ms inclusive',
+  latencyMustBeAnIntegerBetweenSms: 'Latency must be an integer between {PH1} `ms` to {PH2} `ms` inclusive',
   /**
   * @description Text in Throttling Settings Tab of the Network panel, indicating the download or
-  * upload speed that will be applied in kilobytes per second.
+  * upload speed that will be applied in kilobits per second.
   * @example {25} PH1
   */
-  dskbs: '{PH1} kB/s',
+  dskbits: '{PH1} `kbit/s`',
   /**
   * @description Text in Throttling Settings Tab of the Network panel, indicating the download or
-  * upload speed that will be applied in megabytes per second.
+  * upload speed that will be applied in megabits per second.
   * @example {25.4} PH1
   */
-  fsmbs: '{PH1} MB/s',
+  fsmbits: '{PH1} `Mbit/s`',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/mobile_throttling/ThrottlingSettingsTab.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -237,7 +229,7 @@ export class ThrottlingSettingsTab extends UI.Widget.VBox implements
     fields.createChild('div', 'conditions-list-separator conditions-list-separator-invisible');
 
     let cell = fields.createChild('div', 'conditions-list-text');
-    const downloadInput = editor.createInput('download', 'text', i18nString(UIStrings.kbs), throughputValidator);
+    const downloadInput = editor.createInput('download', 'text', i18n.i18n.lockedString('kbit/s'), throughputValidator);
     cell.appendChild(downloadInput);
     UI.ARIAUtils.setAccessibleName(downloadInput, downloadStr);
     const downloadOptional = cell.createChild('div', 'conditions-edit-optional');
@@ -247,7 +239,7 @@ export class ThrottlingSettingsTab extends UI.Widget.VBox implements
     fields.createChild('div', 'conditions-list-separator conditions-list-separator-invisible');
 
     cell = fields.createChild('div', 'conditions-list-text');
-    const uploadInput = editor.createInput('upload', 'text', i18nString(UIStrings.kbs), throughputValidator);
+    const uploadInput = editor.createInput('upload', 'text', i18n.i18n.lockedString('kbit/s'), throughputValidator);
     UI.ARIAUtils.setAccessibleName(uploadInput, uploadStr);
     cell.appendChild(uploadInput);
     const uploadOptional = cell.createChild('div', 'conditions-edit-optional');
@@ -256,7 +248,7 @@ export class ThrottlingSettingsTab extends UI.Widget.VBox implements
     fields.createChild('div', 'conditions-list-separator conditions-list-separator-invisible');
 
     cell = fields.createChild('div', 'conditions-list-text');
-    const latencyInput = editor.createInput('latency', 'text', i18nString(UIStrings.ms), latencyValidator);
+    const latencyInput = editor.createInput('latency', 'text', i18n.i18n.lockedString('ms'), latencyValidator);
     UI.ARIAUtils.setAccessibleName(latencyInput, latencyStr);
     cell.appendChild(latencyInput);
     const latencyOptional = cell.createChild('div', 'conditions-edit-optional');
@@ -318,13 +310,13 @@ function throughputText(throughput: number): string {
   }
   const throughputInKbps = throughput / (1000 / 8);
   if (throughputInKbps < 1000) {
-    return i18nString(UIStrings.dskbs, {PH1: throughputInKbps});
+    return i18nString(UIStrings.dskbits, {PH1: throughputInKbps});
   }
   if (throughputInKbps < 1000 * 10) {
     const formattedResult = (throughputInKbps / 1000).toFixed(1);
-    return i18nString(UIStrings.fsmbs, {PH1: formattedResult});
+    return i18nString(UIStrings.fsmbits, {PH1: formattedResult});
   }
   // TODO(petermarshall): Figure out if there is a difference we need to tell i18n about
   // for these two versions: one with decimal places and one without.
-  return i18nString(UIStrings.fsmbs, {PH1: (throughputInKbps / 1000) | 0});
+  return i18nString(UIStrings.fsmbits, {PH1: (throughputInKbps / 1000) | 0});
 }

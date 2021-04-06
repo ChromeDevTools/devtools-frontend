@@ -154,6 +154,10 @@ export function markAsPoliteLiveRegion(element: Element, isAtomic: boolean): voi
   }
 }
 
+export function markAsLog(element: Element): void {
+  element.setAttribute('role', 'log');
+}
+
 export function hasRole(element: Element): boolean {
   return element.hasAttribute('role');
 }

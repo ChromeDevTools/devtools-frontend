@@ -436,10 +436,13 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     const toggleElement = (document.createElement('div') as HTMLElement);
     toggleElement.classList.add('console-message-stack-trace-toggle');
     const contentElement = toggleElement.createChild('div', 'console-message-stack-trace-wrapper');
+    UI.ARIAUtils.markAsTree(contentElement);
 
     const messageElement = this._buildMessage();
     const icon = UI.Icon.Icon.create('smallicon-triangle-right', 'console-message-expand-icon');
     const clickableElement = contentElement.createChild('div');
+    UI.ARIAUtils.markAsTreeitem(clickableElement);
+    UI.ARIAUtils.setExpanded(clickableElement, false);
     clickableElement.appendChild(icon);
     // Intercept focus to avoid highlight on click.
     clickableElement.tabIndex = -1;
@@ -452,12 +455,11 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
       this._selectableChildren.push({element: linkElement, forceSelect: (): void => linkElement.focus()});
     }
     stackTraceElement.classList.add('hidden');
-    UI.ARIAUtils.markAsTreeitem(this.element());
-    UI.ARIAUtils.setExpanded(this.element(), false);
+    UI.ARIAUtils.markAsGroup(stackTraceElement);
     this._expandTrace = (expand: boolean): void => {
       icon.setIconType(expand ? 'smallicon-triangle-down' : 'smallicon-triangle-right');
       stackTraceElement.classList.toggle('hidden', !expand);
-      UI.ARIAUtils.setExpanded(this.element(), expand);
+      UI.ARIAUtils.setExpanded(clickableElement, expand);
       this._traceExpanded = expand;
     };
 

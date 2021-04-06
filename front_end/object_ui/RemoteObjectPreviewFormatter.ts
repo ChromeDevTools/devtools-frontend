@@ -286,7 +286,7 @@ export class RemoteObjectPreviewFormatter {
     }
 
     if (type === 'string') {
-      UI.UIUtils.createTextChildren(span, '"', description.replace(/\n/g, '\u21B5'), '"');
+      UI.UIUtils.createTextChildren(span, JSON.stringify(description));
       return span;
     }
 

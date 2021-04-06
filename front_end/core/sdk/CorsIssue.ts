@@ -34,15 +34,20 @@ export class CorsIssue extends Issue {
     return this.issueDetails;
   }
 
-  getDescription(): MarkdownIssueDescription {
-    return {
-      file: 'issues/descriptions/corsInsecurePrivateNetwork.md',
-      substitutions: undefined,
-      links: [{
-        link: 'https://web.dev/cors-rfc1918-guide',
-        linkTitle: i18nString(UIStrings.corsForPrivateNetworksRfc),
-      }],
-    };
+  getDescription(): MarkdownIssueDescription|null {
+    switch (this.issueDetails.corsErrorStatus.corsError) {
+      case Protocol.Network.CorsError.InsecurePrivateNetwork:
+        return {
+          file: 'issues/descriptions/corsInsecurePrivateNetwork.md',
+          substitutions: undefined,
+          links: [{
+            link: 'https://web.dev/cors-rfc1918-guide',
+            linkTitle: i18nString(UIStrings.corsForPrivateNetworksRfc),
+          }],
+        };
+      default:
+        return null;
+    }
   }
 
   primaryKey(): string {

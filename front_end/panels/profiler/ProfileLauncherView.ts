@@ -100,7 +100,9 @@ export class ProfileLauncherView extends UI.Widget.VBox {
     const isolateSelectorElement = this._contentElement.createChild('div', 'vbox profile-isolate-selector-block');
     isolateSelectorElement.createChild('h1').textContent = i18nString(UIStrings.selectJavascriptVmInstance);
     const isolateSelector = new IsolateSelector();
-    isolateSelector.show(isolateSelectorElement.createChild('div', 'vbox profile-launcher-target-list'));
+    const isolateSelectorElementChild = isolateSelectorElement.createChild('div', 'vbox profile-launcher-target-list');
+    isolateSelectorElementChild.classList.add('profile-launcher-target-list-container');
+    isolateSelector.show(isolateSelectorElementChild);
     isolateSelectorElement.appendChild(isolateSelector.totalMemoryElement());
 
     const buttonsDiv = this._contentElement.createChild('div', 'hbox profile-launcher-buttons');

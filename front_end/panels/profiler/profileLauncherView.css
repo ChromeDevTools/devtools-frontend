@@ -43,6 +43,7 @@
 
 .profile-launcher-view-content > .profile-isolate-selector-block {
   flex: auto 1 0;
+  overflow: hidden;
 }
 
 .profile-isolate-selector-block button {
@@ -55,11 +56,16 @@
   flex: 150px 1 0;
 }
 
+.profile-launcher-target-list-container {
+  overflow: auto;
+}
+
 .profile-memory-usage-item {
+  min-width: 100%;
+  width: max-content;
   padding: 4px;
   line-height: 16px;
   border-left: 3px solid transparent;
-  overflow-x: hidden;
 }
 
 .profile-isolate-selector-block > .profile-memory-usage-item {
@@ -74,6 +80,11 @@
 
 .profile-memory-usage-item.selected {
   background-color: var(--item-selection-inactive-bg-color);
+}
+
+.javascript-vm-instances-list {
+  width: max-content;
+  min-width: 100%;
 }
 
 .javascript-vm-instances-list:focus .profile-memory-usage-item.selected {

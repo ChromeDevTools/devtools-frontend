@@ -10,9 +10,12 @@ import * as PerfUI from '../../perf_ui/perf_ui.js';
 import * as ThemeSupport from '../../theme_support/theme_support.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import {NetworkNode} from './NetworkDataGridNode.js';                     // eslint-disable-line no-unused-vars
+import {NetworkNode} from './NetworkDataGridNode.js';  // eslint-disable-line no-unused-vars
+import {RequestTimeRangeNameToColor} from './NetworkOverview.js';
 import {Label, NetworkTimeCalculator} from './NetworkTimeCalculator.js';  // eslint-disable-line no-unused-vars
 import {RequestTimeRange, RequestTimeRangeNames, RequestTimingView} from './RequestTimingView.js';  // eslint-disable-line no-unused-vars
+
+const BAR_SPACING = 1;
 
 export class NetworkWaterfallColumn extends UI.Widget.VBox {
   _canvas: HTMLCanvasElement;
@@ -102,20 +105,29 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
   static _buildRequestTimeRangeStyle(): Map<RequestTimeRangeNames, _LayerStyle> {
     const types = RequestTimeRangeNames;
     const styleMap = new Map<RequestTimeRangeNames, _LayerStyle>();
-    styleMap.set(types.Connecting, {fillStyle: '#FF9800'});
-    styleMap.set(types.SSL, {fillStyle: '#9C27B0'});
-    styleMap.set(types.DNS, {fillStyle: '#009688'});
-    styleMap.set(types.Proxy, {fillStyle: '#A1887F'});
-    styleMap.set(types.Blocking, {fillStyle: '#AAAAAA'});
-    styleMap.set(types.Push, {fillStyle: '#8CDBff'});
-    styleMap.set(types.Queueing, {fillStyle: 'white', lineWidth: 2, borderColor: 'lightgrey'});
+    styleMap.set(types.Connecting, {fillStyle: RequestTimeRangeNameToColor[types.Connecting]});
+    styleMap.set(types.SSL, {fillStyle: RequestTimeRangeNameToColor[types.SSL]});
+    styleMap.set(types.DNS, {fillStyle: RequestTimeRangeNameToColor[types.DNS]});
+    styleMap.set(types.Proxy, {fillStyle: RequestTimeRangeNameToColor[types.Proxy]});
+    styleMap.set(types.Blocking, {fillStyle: RequestTimeRangeNameToColor[types.Blocking]});
+    styleMap.set(types.Push, {fillStyle: RequestTimeRangeNameToColor[types.Push]});
+    styleMap.set(
+        types.Queueing,
+        {fillStyle: RequestTimeRangeNameToColor[types.Queueing], lineWidth: 2, borderColor: 'lightgrey'});
     // This ensures we always show at least 2 px for a request.
-    styleMap.set(types.Receiving, {fillStyle: '#03A9F4', lineWidth: 2, borderColor: '#03A9F4'});
-    styleMap.set(types.Waiting, {fillStyle: '#00C853'});
-    styleMap.set(types.ReceivingPush, {fillStyle: '#03A9F4'});
-    styleMap.set(types.ServiceWorker, {fillStyle: 'orange'});
-    styleMap.set(types.ServiceWorkerPreparation, {fillStyle: 'orange'});
-    styleMap.set(types.ServiceWorkerRespondWith, {fillStyle: '#A8A3FF'});
+    styleMap.set(types.Receiving, {
+      fillStyle: RequestTimeRangeNameToColor[types.Receiving],
+      lineWidth: 2,
+      borderColor: '#03A9F4',
+    });
+    styleMap.set(types.Waiting, {fillStyle: RequestTimeRangeNameToColor[types.Waiting]});
+    styleMap.set(types.ReceivingPush, {fillStyle: RequestTimeRangeNameToColor[types.ReceivingPush]});
+    styleMap.set(types.ServiceWorker, {fillStyle: RequestTimeRangeNameToColor[types.ServiceWorker]});
+    styleMap.set(
+        types.ServiceWorkerPreparation, {fillStyle: RequestTimeRangeNameToColor[types.ServiceWorkerPreparation]});
+    styleMap.set(types.ServiceWorkerRespondWith, {
+      fillStyle: RequestTimeRangeNameToColor[types.ServiceWorkerRespondWith],
+    });
     return styleMap;
   }
 
@@ -445,7 +457,7 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
         context.stroke(path);
       }
       if (style.fillStyle) {
-        context.fillStyle = style.fillStyle;
+        context.fillStyle = ThemeSupport.ThemeSupport.instance().getComputedValue(style.fillStyle);
         context.fill(path);
       }
       context.restore();
@@ -580,6 +592,7 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
       return;
     }
     const ranges = RequestTimingView.calculateRequestTimeRanges(request, 0);
+    let index = 0;
     for (const range of ranges) {
       if (range.name === RequestTimeRangeNames.Total || range.name === RequestTimeRangeNames.Sending ||
           range.end - range.start === 0) {
@@ -593,7 +606,8 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
       const middleBarY = y + Math.floor(this._rowHeight / 2 - height / 2) + lineWidth / 2;
       const start = this._timeToPosition(range.start);
       const end = this._timeToPosition(range.end);
-      path.rect(start, middleBarY, end - start, height - lineWidth);
+      path.rect(start + (index * BAR_SPACING), middleBarY, end - start, height - lineWidth);
+      index++;
     }
   }
 

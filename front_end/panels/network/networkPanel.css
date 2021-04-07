@@ -27,6 +27,22 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+:root {
+  --override-network-overview-total: #919191;
+  --override-network-overview-blocking: #858585;
+  --override-network-overview-connecting: #d68100;
+  --override-network-overview-service-worker: #d68100;
+  --override-network-overview-service-worker-respond-with: #00a3a3;
+  --override-network-overview-push: #0099e0;
+  --override-network-overview-proxy: #a1887f;
+  --override-network-overview-dns: #009688;
+  --override-network-overview-ssl: #b52dcd;
+  --override-network-overview-sending: #74979a;
+  --override-network-overview-waiting: #00a846;
+  --override-network-overview-receiving: #0299de;
+  --override-network-overview-queueing: #fff;
+}
+
 .network-details-view {
   background: rgb(203 203 203); /* stylelint-disable-line plugin/use_theme_colors */
   /* See: crbug.com/1152736 for color variable migration. */

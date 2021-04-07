@@ -171,7 +171,9 @@ export class NetworkOverview extends PerfUI.TimelineOverviewPane.TimelineOvervie
       }
       const n = lines.length;
       context.beginPath();
-      context.strokeStyle = RequestTimeRangeNameToColor[type];
+      context.strokeStyle = ThemeSupport.ThemeSupport.instance().getComputedValue('--neutral-layer-l4');
+      context.lineWidth = BORDER_WIDTH;
+      context.fillStyle = ThemeSupport.ThemeSupport.instance().getComputedValue(RequestTimeRangeNameToColor[type]);
       for (let i = 0; i < n;) {
         const y = lines[i++] * _bandHeight + paddingTop;
         const startTime = lines[i++];
@@ -179,10 +181,11 @@ export class NetworkOverview extends PerfUI.TimelineOverviewPane.TimelineOvervie
         if (endTime === Number.MAX_VALUE) {
           endTime = calculator.maximumBoundary();
         }
-        context.moveTo(calculator.computePosition(startTime), y);
-        context.lineTo(calculator.computePosition(endTime) + 1, y);
+        const startX = calculator.computePosition(startTime);
+        const endX = calculator.computePosition(endTime) + 1;
+        context.fillRect(startX, y, endX - startX, _bandHeight);
+        context.strokeRect(startX, y, endX - startX, _bandHeight);
       }
-      context.stroke();
     }
 
     function addLine(type: string, y: number, start: number, end: number): void {
@@ -248,7 +251,8 @@ export class NetworkOverview extends PerfUI.TimelineOverviewPane.TimelineOvervie
         const type = timeRanges[j].name;
         if (band !== -1 || type === RequestTimeRangeNames.Total) {
           context.beginPath();
-          context.strokeStyle = RequestTimeRangeNameToColor[type];
+          context.strokeStyle =
+              ThemeSupport.ThemeSupport.instance().getComputedValue(RequestTimeRangeNameToColor[type]);
           context.lineWidth = size;
 
           const start = timeRanges[j].start * 1000;
@@ -294,19 +298,20 @@ export class NetworkOverview extends PerfUI.TimelineOverviewPane.TimelineOvervie
 }
 
 export const RequestTimeRangeNameToColor = {
-  [RequestTimeRangeNames.Total]: '#CCCCCC',
-  [RequestTimeRangeNames.Blocking]: '#AAAAAA',
-  [RequestTimeRangeNames.Connecting]: '#FF9800',
-  [RequestTimeRangeNames.ServiceWorker]: '#FF9800',
-  [RequestTimeRangeNames.ServiceWorkerPreparation]: '#FF9800',
-  [RequestTimeRangeNames.ServiceWorkerRespondWith]: '#00FFFF',
-  [RequestTimeRangeNames.Push]: '#8CDBff',
-  [RequestTimeRangeNames.Proxy]: '#A1887F',
-  [RequestTimeRangeNames.DNS]: '#009688',
-  [RequestTimeRangeNames.SSL]: '#9C27B0',
-  [RequestTimeRangeNames.Sending]: '#B0BEC5',
-  [RequestTimeRangeNames.Waiting]: '#00C853',
-  [RequestTimeRangeNames.Receiving]: '#03A9F4',
+  [RequestTimeRangeNames.Total]: '--override-network-overview-total',
+  [RequestTimeRangeNames.Blocking]: '--override-network-overview-blocking',
+  [RequestTimeRangeNames.Connecting]: '--override-network-overview-connecting',
+  [RequestTimeRangeNames.ServiceWorker]: '--override-network-overview-service-worker',
+  [RequestTimeRangeNames.ServiceWorkerPreparation]: '--override-network-overview-service-worker',
+  [RequestTimeRangeNames.ServiceWorkerRespondWith]: '--override-network-overview-service-worker-respond-with',
+  [RequestTimeRangeNames.Push]: '--override-network-overview-push',
+  [RequestTimeRangeNames.Proxy]: '--override-network-overview-proxy',
+  [RequestTimeRangeNames.DNS]: '--override-network-overview-dns',
+  [RequestTimeRangeNames.SSL]: '--override-network-overview-ssl',
+  [RequestTimeRangeNames.Sending]: '--override-network-overview-sending',
+  [RequestTimeRangeNames.Waiting]: '--override-network-overview-waiting',
+  [RequestTimeRangeNames.Receiving]: '--override-network-overview-receiving',
+  [RequestTimeRangeNames.Queueing]: '--override-network-overview-queueing',
 } as {[key: string]: string};
 
 // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
@@ -316,3 +321,6 @@ export const _bandHeight: number = 3;
 // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export const _padding: number = 5;
+
+// Border between bars in network overview panel for accessibility.
+const BORDER_WIDTH = 1;

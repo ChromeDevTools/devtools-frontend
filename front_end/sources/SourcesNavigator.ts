@@ -175,8 +175,7 @@ export class FilesNavigatorView extends NavigatorView {
   <div>${i18nString(UIStrings.syncChangesInDevtoolsWithThe)}</div><br />
   ${
         UI.XLink.XLink.create(
-            'https://developers.google.com/web/tools/chrome-devtools/workspaces/',
-            i18nString(UIStrings.learnMoreAboutWorkspaces))}
+            'https://developer.chrome.com/docs/devtools/workspaces/', i18nString(UIStrings.learnMoreAboutWorkspaces))}
   `);
 
     const toolbar = new UI.Toolbar.Toolbar('navigator-toolbar');
@@ -341,8 +340,7 @@ export class SnippetsNavigatorView extends NavigatorView {
   <div>${i18nString(UIStrings.createAndSaveCodeSnippetsFor)}</div><br />
   ${
         UI.XLink.XLink.create(
-            'https://developers.google.com/web/tools/chrome-devtools/javascript/snippets',
-            i18nString(UIStrings.learnMore))}
+            'https://developer.chrome.com/docs/devtools/javascript/snippets/', i18nString(UIStrings.learnMore))}
   `);
 
     const toolbar = new UI.Toolbar.Toolbar('navigator-toolbar');

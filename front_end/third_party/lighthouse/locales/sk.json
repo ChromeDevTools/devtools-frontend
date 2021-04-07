@@ -1467,7 +1467,7 @@
     "message": "Webová adresa mapy"
   },
   "lighthouse-core/audits/valid-source-maps.js | description": {
-    "message": "Mapy zdroja prekladajú minifikovaný kód na pôvodný zdrojový kód. Vývojárom to pomáha pri ladení ostrej verzie. Lighthouse dokáže okrem toho poskytnúť ďalšie štatistiky. Zvážte nasadenie máp zdroja, aby ste tieto výhody využili. [Ďalšie informácie](https://developers.google.com/web/tools/chrome-devtools/javascript/source-maps)"
+    "message": "Mapy zdroja prekladajú minifikovaný kód na pôvodný zdrojový kód. Vývojárom to pomáha pri ladení ostrej verzie. Lighthouse dokáže okrem toho poskytnúť ďalšie štatistiky. Zvážte nasadenie máp zdroja, aby ste tieto výhody využili. [Ďalšie informácie](https://developer.chrome.com/docs/devtools/javascript/source-maps/)"
   },
   "lighthouse-core/audits/valid-source-maps.js | failureTitle": {
     "message": "Veľkej vlastnej knižnici JavaScriptu chýbajú mapy zdroja"

@@ -1467,7 +1467,7 @@
     "message": "عنوان URL لخريطة المصدر"
   },
   "lighthouse-core/audits/valid-source-maps.js | description": {
-    "message": "تترجم خرائط المصدر الرمز المصغَّر إلى رمز المصدر الأصلي. ويساعد هذا الإجراء مطوّري البرامج على تصحيح الأخطاء في مرحلة الإنتاج. وتستطيع أيضًا أداة Lighthouse أن توفّر معلومات إضافية. ننصحك بنشر خرائط المصدر للاستفادة من هذه المزايا. [مزيد من المعلومات](https://developers.google.com/web/tools/chrome-devtools/javascript/source-maps)"
+    "message": "تترجم خرائط المصدر الرمز المصغَّر إلى رمز المصدر الأصلي. ويساعد هذا الإجراء مطوّري البرامج على تصحيح الأخطاء في مرحلة الإنتاج. وتستطيع أيضًا أداة Lighthouse أن توفّر معلومات إضافية. ننصحك بنشر خرائط المصدر للاستفادة من هذه المزايا. [مزيد من المعلومات](https://developer.chrome.com/docs/devtools/javascript/source-maps/)"
   },
   "lighthouse-core/audits/valid-source-maps.js | failureTitle": {
     "message": "عدم توفّر خرائط مصدر للغة JavaScript من الطرف الأول الكبير"

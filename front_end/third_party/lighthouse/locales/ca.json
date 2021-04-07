@@ -1467,7 +1467,7 @@
     "message": "URL del mapa"
   },
   "lighthouse-core/audits/valid-source-maps.js | description": {
-    "message": "Els mapes d'origen tradueixen el codi reduït al codi font original. Això ajuda els desenvolupadors a depurar durant la producció. A més, Lighthouse pot proporcionar estadístiques addicionals. Planteja't implementar mapes d'origen per treure partit d'aquests avantatges. [Obtén més informació](https://developers.google.com/web/tools/chrome-devtools/javascript/source-maps)."
+    "message": "Els mapes d'origen tradueixen el codi reduït al codi font original. Això ajuda els desenvolupadors a depurar durant la producció. A més, Lighthouse pot proporcionar estadístiques addicionals. Planteja't implementar mapes d'origen per treure partit d'aquests avantatges. [Obtén més informació](https://developer.chrome.com/docs/devtools/javascript/source-maps/)."
   },
   "lighthouse-core/audits/valid-source-maps.js | failureTitle": {
     "message": "Falten mapes d'origen per a un fitxer JavaScript propi gran"

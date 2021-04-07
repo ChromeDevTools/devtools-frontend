@@ -1467,7 +1467,7 @@
     "message": "URL zemljevida"
   },
   "lighthouse-core/audits/valid-source-maps.js | description": {
-    "message": "Zemljevidi izvorne kode prevedejo pomanjšano kodo v izvirno izvorno kodo. To je razvijalcem v pomoč pri odpravljanju napak v različici za splošno razpoložljivost. Lighthouse lahko zagotovi tudi dodatne vpoglede. Če želite izkoristiti te prednosti, razmislite o uvedbi zemljevidov izvorne kode. [Več o tem](https://developers.google.com/web/tools/chrome-devtools/javascript/source-maps)."
+    "message": "Zemljevidi izvorne kode prevedejo pomanjšano kodo v izvirno izvorno kodo. To je razvijalcem v pomoč pri odpravljanju napak v različici za splošno razpoložljivost. Lighthouse lahko zagotovi tudi dodatne vpoglede. Če želite izkoristiti te prednosti, razmislite o uvedbi zemljevidov izvorne kode. [Več o tem](https://developer.chrome.com/docs/devtools/javascript/source-maps/)."
   },
   "lighthouse-core/audits/valid-source-maps.js | failureTitle": {
     "message": "Manjkajoči zemljevidi izvorne kode za veliko lastno knjižnico JavaScript"

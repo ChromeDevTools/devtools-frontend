@@ -1467,7 +1467,7 @@
     "message": "Kaart-URL"
   },
   "lighthouse-core/audits/valid-source-maps.js | description": {
-    "message": "Bronkaarten zetten verkleinde code om in de oorspronkelijke broncode. Aan de hand hiervan kunnen ontwikkelaars foutopsporing uitvoeren in productie. Daarnaast kan Lighthouse meer inzichten bieden. Overweeg bronkaarten te implementeren om gebruik te maken van deze voordelen. [Meer informatie](https://developers.google.com/web/tools/chrome-devtools/javascript/source-maps)"
+    "message": "Bronkaarten zetten verkleinde code om in de oorspronkelijke broncode. Aan de hand hiervan kunnen ontwikkelaars foutopsporing uitvoeren in productie. Daarnaast kan Lighthouse meer inzichten bieden. Overweeg bronkaarten te implementeren om gebruik te maken van deze voordelen. [Meer informatie](https://developer.chrome.com/docs/devtools/javascript/source-maps/)"
   },
   "lighthouse-core/audits/valid-source-maps.js | failureTitle": {
     "message": "De bronkaarten voor een groot first-party JavaScript-bestand ontbreken"

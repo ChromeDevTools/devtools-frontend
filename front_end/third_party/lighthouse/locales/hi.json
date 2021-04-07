@@ -1467,7 +1467,7 @@
     "message": "मैप का यूआरएल"
   },
   "lighthouse-core/audits/valid-source-maps.js | description": {
-    "message": "सोर्स मैप, छोटे किए गए कोड का मूल सोर्स कोड में अनुवाद करते हैं. यह डेवलपर को डेटा तैयार करने के दौरान, डीबग करने में मदद करता है. इसके अलावा, Lighthouse, आगे की अहम जानकारी दे सकता है. ये फ़ायदे पाने के लिए, सोर्स मैप को डिप्लॉय करने पर विचार करें. [ज़्यादा जानें](https://developers.google.com/web/tools/chrome-devtools/javascript/source-maps)."
+    "message": "सोर्स मैप, छोटे किए गए कोड का मूल सोर्स कोड में अनुवाद करते हैं. यह डेवलपर को डेटा तैयार करने के दौरान, डीबग करने में मदद करता है. इसके अलावा, Lighthouse, आगे की अहम जानकारी दे सकता है. ये फ़ायदे पाने के लिए, सोर्स मैप को डिप्लॉय करने पर विचार करें. [ज़्यादा जानें](https://developer.chrome.com/docs/devtools/javascript/source-maps/)."
   },
   "lighthouse-core/audits/valid-source-maps.js | failureTitle": {
     "message": "पहले पक्ष की बड़ी JavaScript के लिए सोर्स मैप नहीं मिले"

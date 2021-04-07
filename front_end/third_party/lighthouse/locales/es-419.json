@@ -1467,7 +1467,7 @@
     "message": "URL de mapas"
   },
   "lighthouse-core/audits/valid-source-maps.js | description": {
-    "message": "Los mapas de orígenes convierten código reducido en el código fuente original. Esto ayuda a los desarrolladores a depurar el código durante la producción. Además, Lighthouse puede brindar más datos. Analiza implementar los mapas de orígenes para aprovechar estos beneficios. [Obtén más información](https://developers.google.com/web/tools/chrome-devtools/javascript/source-maps)."
+    "message": "Los mapas de orígenes convierten código reducido en el código fuente original. Esto ayuda a los desarrolladores a depurar el código durante la producción. Además, Lighthouse puede brindar más datos. Analiza implementar los mapas de orígenes para aprovechar estos beneficios. [Obtén más información](https://developer.chrome.com/docs/devtools/javascript/source-maps/)."
   },
   "lighthouse-core/audits/valid-source-maps.js | failureTitle": {
     "message": "Faltan mapas de orígenes para el archivo JavaScript grande propio"

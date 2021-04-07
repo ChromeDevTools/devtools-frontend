@@ -1467,7 +1467,7 @@
     "message": "映射网址"
   },
   "lighthouse-core/audits/valid-source-maps.js | description": {
-    "message": "源代码映射会将缩减了大小的代码转换成原始源代码。这有助于开发者在正式版中调试。此外，Lighthouse 还能提供进一步的数据分析。您不妨考虑部署源代码映射以充分利用这些好处。[了解详情](https://developers.google.com/web/tools/chrome-devtools/javascript/source-maps)。"
+    "message": "源代码映射会将缩减了大小的代码转换成原始源代码。这有助于开发者在正式版中调试。此外，Lighthouse 还能提供进一步的数据分析。您不妨考虑部署源代码映射以充分利用这些好处。[了解详情](https://developer.chrome.com/docs/devtools/javascript/source-maps/)。"
   },
   "lighthouse-core/audits/valid-source-maps.js | failureTitle": {
     "message": "大型第一方 JavaScript 缺少源代码映射"

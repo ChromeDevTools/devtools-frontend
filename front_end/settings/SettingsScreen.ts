@@ -489,7 +489,7 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
         return true;
       case 'settings.documentation':
         Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(
-            UI.UIUtils.addReferrerToURL('https://developers.google.com/web/tools/chrome-devtools/'));
+            UI.UIUtils.addReferrerToURL('https://developer.chrome.com/docs/devtools/'));
         return true;
       case 'settings.shortcuts':
         SettingsScreen._showSettingsScreen({name: 'keybinds', focusTabHeader: true});

@@ -1467,7 +1467,7 @@
     "message": "כתובת URL של מפה"
   },
   "lighthouse-core/audits/valid-source-maps.js | description": {
-    "message": "מפות מקור מתרגמות קוד מוקטן לקוד המקורי. פעולה זו עוזרת למפתחים לנפות באגים בסביבת ייצור. בנוסף, ניתן לקבל תובנות נוספות ב-Lighthouse. כדאי לשקול לפרוס את מפות המקור כדי לנצל את ההטבות האלה. [למידע נוסף](https://developers.google.com/web/tools/chrome-devtools/javascript/source-maps)."
+    "message": "מפות מקור מתרגמות קוד מוקטן לקוד המקורי. פעולה זו עוזרת למפתחים לנפות באגים בסביבת ייצור. בנוסף, ניתן לקבל תובנות נוספות ב-Lighthouse. כדאי לשקול לפרוס את מפות המקור כדי לנצל את ההטבות האלה. [למידע נוסף](https://developer.chrome.com/docs/devtools/javascript/source-maps/)."
   },
   "lighthouse-core/audits/valid-source-maps.js | failureTitle": {
     "message": "חסרות מפות מקור לספריית JavaScript של צד ראשון"

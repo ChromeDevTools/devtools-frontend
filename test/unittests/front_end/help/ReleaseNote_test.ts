@@ -19,15 +19,15 @@ describe('Release Note', () => {
           {
             title: 'Improved Performance and Memory panels',
             subtitle: '',
-            link: 'https://developers.google.com/web/tools/chrome-devtools/',
+            link: 'https://developer.chrome.com/docs/devtools/',
           },
           {
             title: 'Edit cookies directly from the Application panel',
             subtitle: '',
-            link: 'https://developers.google.com/web/tools/chrome-devtools/',
+            link: 'https://developer.chrome.com/docs/devtools/',
           },
         ],
-        link: 'https://developers.google.com/web/tools/chrome-devtools/',
+        link: 'https://developer.chrome.com/docs/devtools/',
       },
     ]);
 

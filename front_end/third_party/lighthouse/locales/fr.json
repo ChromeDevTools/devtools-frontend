@@ -1467,7 +1467,7 @@
     "message": "URL de mappage du code source"
   },
   "lighthouse-core/audits/valid-source-maps.js | description": {
-    "message": "Les mappages source traduisent le code minimisé pour obtenir le code source d'origine. Ce processus aide les développeurs à effectuer le débogage en phase de production. De plus, Lighthouse est en mesure de fournir d'autres renseignements. Envisagez de déployer des mappages source pour profiter de ces avantages. [En savoir plus](https://developers.google.com/web/tools/chrome-devtools/javascript/source-maps)"
+    "message": "Les mappages source traduisent le code minimisé pour obtenir le code source d'origine. Ce processus aide les développeurs à effectuer le débogage en phase de production. De plus, Lighthouse est en mesure de fournir d'autres renseignements. Envisagez de déployer des mappages source pour profiter de ces avantages. [En savoir plus](https://developer.chrome.com/docs/devtools/javascript/source-maps/)"
   },
   "lighthouse-core/audits/valid-source-maps.js | failureTitle": {
     "message": "Mappages source manquants pour des fichiers JavaScript propriétaires volumineux"

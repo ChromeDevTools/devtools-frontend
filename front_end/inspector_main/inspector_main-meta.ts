@@ -12,7 +12,7 @@ const UIStrings = {
   * @description Title of the Rendering tool. The rendering tool is a collection of settings that
   * lets the user debug the rendering (i.e. how the website is drawn onto the screen) of the
   * website.
-  * https://developers.google.com/web/tools/chrome-devtools/evaluate-performance/reference#rendering
+  * https://developer.chrome.com/docs/devtools/evaluate-performance/reference#rendering
   */
   rendering: 'Rendering',
   /**

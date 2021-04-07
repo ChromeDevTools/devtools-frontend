@@ -1467,7 +1467,7 @@
     "message": "對應網址"
   },
   "lighthouse-core/audits/valid-source-maps.js | description": {
-    "message": "來源對應會將經過壓縮的程式碼轉譯成原始碼。這項功能可協助開發人員在正式版中偵錯。此外，Lighthouse 還能提供進一步的深入分析。我們建議你部署來源對應，以善用這些優勢。[瞭解詳情](https://developers.google.com/web/tools/chrome-devtools/javascript/source-maps)。"
+    "message": "來源對應會將經過壓縮的程式碼轉譯成原始碼。這項功能可協助開發人員在正式版中偵錯。此外，Lighthouse 還能提供進一步的深入分析。我們建議你部署來源對應，以善用這些優勢。[瞭解詳情](https://developer.chrome.com/docs/devtools/javascript/source-maps/)。"
   },
   "lighthouse-core/audits/valid-source-maps.js | failureTitle": {
     "message": "缺少大型第一方 JavaScript 的來源對應"

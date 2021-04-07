@@ -1467,7 +1467,7 @@
     "message": "マップ URL"
   },
   "lighthouse-core/audits/valid-source-maps.js | description": {
-    "message": "ソースマップは軽量化したコードを元のソースコードに変換するもので、デベロッパーが本番環境でデバッグする際に役立ちます。また、Lighthouse で詳しい分析情報を提供することも可能になります。このようなメリットをふまえ、ソースマップの導入をご検討ください。[詳細](https://developers.google.com/web/tools/chrome-devtools/javascript/source-maps)"
+    "message": "ソースマップは軽量化したコードを元のソースコードに変換するもので、デベロッパーが本番環境でデバッグする際に役立ちます。また、Lighthouse で詳しい分析情報を提供することも可能になります。このようなメリットをふまえ、ソースマップの導入をご検討ください。[詳細](https://developer.chrome.com/docs/devtools/javascript/source-maps/)"
   },
   "lighthouse-core/audits/valid-source-maps.js | failureTitle": {
     "message": "サイズの大きいファーストパーティの JavaScript でソースマップが使用されていません"

@@ -1467,7 +1467,7 @@
     "message": "URL mapy"
   },
   "lighthouse-core/audits/valid-source-maps.js | description": {
-    "message": "Mapy źródeł tłumaczą zminifikowany kod na oryginalny kod źródłowy. Ułatwia to programistom debugowanie w środowisku produkcyjnym. Oprócz tego Lighthouse może udostępniać dodatkowe statystyki. Warto wdrożyć mapy źródeł, aby korzystać z tych możliwości. [Więcej informacji](https://developers.google.com/web/tools/chrome-devtools/javascript/source-maps)"
+    "message": "Mapy źródeł tłumaczą zminifikowany kod na oryginalny kod źródłowy. Ułatwia to programistom debugowanie w środowisku produkcyjnym. Oprócz tego Lighthouse może udostępniać dodatkowe statystyki. Warto wdrożyć mapy źródeł, aby korzystać z tych możliwości. [Więcej informacji](https://developer.chrome.com/docs/devtools/javascript/source-maps/)"
   },
   "lighthouse-core/audits/valid-source-maps.js | failureTitle": {
     "message": "Brakuje map źródeł dla własnych dużych plików JavaScript"

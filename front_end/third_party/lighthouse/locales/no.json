@@ -1467,7 +1467,7 @@
     "message": "Nettadresse til kildekart"
   },
   "lighthouse-core/audits/valid-source-maps.js | description": {
-    "message": "Kildekart oversetter minifisert kode til den opprinnelige kildekoden. Dette hjelper utviklere med feilsøking under produksjonen. I tillegg kan Lighthouse gi ytterligere innsikt. Vurder å implementere kildekart for å dra nytte av disse fordelene. [Finn ut mer](https://developers.google.com/web/tools/chrome-devtools/javascript/source-maps)."
+    "message": "Kildekart oversetter minifisert kode til den opprinnelige kildekoden. Dette hjelper utviklere med feilsøking under produksjonen. I tillegg kan Lighthouse gi ytterligere innsikt. Vurder å implementere kildekart for å dra nytte av disse fordelene. [Finn ut mer](https://developer.chrome.com/docs/devtools/javascript/source-maps/)."
   },
   "lighthouse-core/audits/valid-source-maps.js | failureTitle": {
     "message": "Manglende kildekart for stor førsteparts JavaScript-kode"

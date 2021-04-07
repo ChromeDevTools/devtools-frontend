@@ -1467,7 +1467,7 @@
     "message": "URL mappa"
   },
   "lighthouse-core/audits/valid-source-maps.js | description": {
-    "message": "Le mappe di origine convertono il codice minimizzato nel codice sorgente originale. Questo facilita il debug agli sviluppatori in fase di produzione. Inoltre, Lighthouse può fornire ulteriori informazioni. Valuta la possibilità di implementare le mappe di origine per usufruire di questi vantaggi. [Ulteriori informazioni](https://developers.google.com/web/tools/chrome-devtools/javascript/source-maps)"
+    "message": "Le mappe di origine convertono il codice minimizzato nel codice sorgente originale. Questo facilita il debug agli sviluppatori in fase di produzione. Inoltre, Lighthouse può fornire ulteriori informazioni. Valuta la possibilità di implementare le mappe di origine per usufruire di questi vantaggi. [Ulteriori informazioni](https://developer.chrome.com/docs/devtools/javascript/source-maps/)"
   },
   "lighthouse-core/audits/valid-source-maps.js | failureTitle": {
     "message": "Mancano le mappe di origine per il file JavaScript proprietario di grandi dimensioni"

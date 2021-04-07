@@ -1467,7 +1467,7 @@
     "message": "URL-hozzárendelés"
   },
   "lighthouse-core/audits/valid-source-maps.js | description": {
-    "message": "A forrás-hozzárendelések lefordítják a kicsinyített kódot az eredeti forráskódra. Ez segít a fejlesztőknek az éles verzión végzett hibaelhárításban. A Lighthouse további statisztikákat is tud biztosítani. Fontolja meg a forrás-hozzárendelések használatát, hogy kihasználhassa ezeket az előnyöket. [További információ](https://developers.google.com/web/tools/chrome-devtools/javascript/source-maps)."
+    "message": "A forrás-hozzárendelések lefordítják a kicsinyített kódot az eredeti forráskódra. Ez segít a fejlesztőknek az éles verzión végzett hibaelhárításban. A Lighthouse további statisztikákat is tud biztosítani. Fontolja meg a forrás-hozzárendelések használatát, hogy kihasználhassa ezeket az előnyöket. [További információ](https://developer.chrome.com/docs/devtools/javascript/source-maps/)."
   },
   "lighthouse-core/audits/valid-source-maps.js | failureTitle": {
     "message": "Hiányzó forrás-hozzárendelések a nagy belső JavaScriptnél"

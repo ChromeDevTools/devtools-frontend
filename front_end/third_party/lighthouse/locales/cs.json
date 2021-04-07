@@ -1467,7 +1467,7 @@
     "message": "Adresa URL souboru sourcemap"
   },
   "lighthouse-core/audits/valid-source-maps.js | description": {
-    "message": "Soubory sourcemap překládají minifikovaný kód na původní zdrojový kód. To vývojářům usnadňuje ladění produkčních verzí. Kromě toho to nástroji Lighthouse umožňuje poskytovat více informací. Zvažte implementaci souborů sourcemap, abyste tyto výhody získali. [Další informace](https://developers.google.com/web/tools/chrome-devtools/javascript/source-maps)"
+    "message": "Soubory sourcemap překládají minifikovaný kód na původní zdrojový kód. To vývojářům usnadňuje ladění produkčních verzí. Kromě toho to nástroji Lighthouse umožňuje poskytovat více informací. Zvažte implementaci souborů sourcemap, abyste tyto výhody získali. [Další informace](https://developer.chrome.com/docs/devtools/javascript/source-maps/)"
   },
   "lighthouse-core/audits/valid-source-maps.js | failureTitle": {
     "message": "Chybí soubory sourcemap pro velké soubory JavaScript první strany"

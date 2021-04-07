@@ -986,8 +986,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     }
 
     const learnMoreNode = UI.XLink.XLink.create(
-        'https://developers.google.com/web/tools/chrome-devtools/evaluate-performance/',
-        i18nString(UIStrings.learnmore));
+        'https://developer.chrome.com/docs/devtools/evaluate-performance/', i18nString(UIStrings.learnmore));
 
     const recordKey = encloseWithTag(
         'b',

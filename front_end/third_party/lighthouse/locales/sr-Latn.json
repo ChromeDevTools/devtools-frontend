@@ -1467,7 +1467,7 @@
     "message": "URL mape"
   },
   "lighthouse-core/audits/valid-source-maps.js | description": {
-    "message": "Izvorne mape prevode umanjen kôd u originalni izvorni kôd. To pomaže programerima pri otklanjanju grešaka u proizvodnji. Pored toga, Lighthouse sadrži dodatni uvid. Ne bi bilo loše da primenite izvorne mape da biste mogli da koristite te prednosti. [Saznajte više](https://developers.google.com/web/tools/chrome-devtools/javascript/source-maps)."
+    "message": "Izvorne mape prevode umanjen kôd u originalni izvorni kôd. To pomaže programerima pri otklanjanju grešaka u proizvodnji. Pored toga, Lighthouse sadrži dodatni uvid. Ne bi bilo loše da primenite izvorne mape da biste mogli da koristite te prednosti. [Saznajte više](https://developer.chrome.com/docs/devtools/javascript/source-maps/)."
   },
   "lighthouse-core/audits/valid-source-maps.js | failureTitle": {
     "message": "Nedostaju izvorne mape za veliki JavaScript prve strane"

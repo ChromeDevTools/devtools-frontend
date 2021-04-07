@@ -1467,7 +1467,7 @@
     "message": "URL Peta"
   },
   "lighthouse-core/audits/valid-source-maps.js | description": {
-    "message": "Peta sumber menerjemahkan kode yang diminifikasi ke kode sumber asli. Ini akan membantu developer melakukan debug dalam produksi. Selain itu, Lighthouse dapat memberikan data lebih lanjut. Sebaiknya deploy peta sumber untuk mendapatkan manfaat yang optimal. [Pelajari lebih lanjut](https://developers.google.com/web/tools/chrome-devtools/javascript/source-maps)."
+    "message": "Peta sumber menerjemahkan kode yang diminifikasi ke kode sumber asli. Ini akan membantu developer melakukan debug dalam produksi. Selain itu, Lighthouse dapat memberikan data lebih lanjut. Sebaiknya deploy peta sumber untuk mendapatkan manfaat yang optimal. [Pelajari lebih lanjut](https://developer.chrome.com/docs/devtools/javascript/source-maps/)."
   },
   "lighthouse-core/audits/valid-source-maps.js | failureTitle": {
     "message": "Tidak ada peta sumber untuk JavaScript pihak pertama berukuran besar"

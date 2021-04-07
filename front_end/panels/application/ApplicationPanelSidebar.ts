@@ -241,7 +241,7 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.SDKMo
     this.localStorageListTreeElement =
         new ExpandableApplicationPanelTreeElement(panel, i18nString(UIStrings.localStorage), 'LocalStorage');
     this.localStorageListTreeElement.setLink(
-        'https://developers.google.com/web/tools/chrome-devtools/storage/localstorage?utm_source=devtools');
+        'https://developer.chrome.com/docs/devtools/storage/localstorage/?utm_source=devtools');
     const localStorageIcon = UI.Icon.Icon.create('mediumicon-table', 'resource-tree-item');
     this.localStorageListTreeElement.setLeadingIcons([localStorageIcon]);
 
@@ -249,19 +249,19 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.SDKMo
     this.sessionStorageListTreeElement =
         new ExpandableApplicationPanelTreeElement(panel, i18nString(UIStrings.sessionStorage), 'SessionStorage');
     this.sessionStorageListTreeElement.setLink(
-        'https://developers.google.com/web/tools/chrome-devtools/storage/sessionstorage?utm_source=devtools');
+        'https://developer.chrome.com/docs/devtools/storage/sessionstorage/?utm_source=devtools');
     const sessionStorageIcon = UI.Icon.Icon.create('mediumicon-table', 'resource-tree-item');
     this.sessionStorageListTreeElement.setLeadingIcons([sessionStorageIcon]);
 
     storageTreeElement.appendChild(this.sessionStorageListTreeElement);
     this.indexedDBListTreeElement = new IndexedDBTreeElement(panel);
     this.indexedDBListTreeElement.setLink(
-        'https://developers.google.com/web/tools/chrome-devtools/storage/indexeddb?utm_source=devtools');
+        'https://developer.chrome.com/docs/devtools/storage/indexeddb/?utm_source=devtools');
     storageTreeElement.appendChild(this.indexedDBListTreeElement);
     this.databasesListTreeElement =
         new ExpandableApplicationPanelTreeElement(panel, i18nString(UIStrings.webSql), 'Databases');
     this.databasesListTreeElement.setLink(
-        'https://developers.google.com/web/tools/chrome-devtools/storage/websql?utm_source=devtools');
+        'https://developer.chrome.com/docs/devtools/storage/websql/?utm_source=devtools');
     const databaseIcon = UI.Icon.Icon.create('mediumicon-database', 'resource-tree-item');
     this.databasesListTreeElement.setLeadingIcons([databaseIcon]);
 
@@ -269,7 +269,7 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.SDKMo
     this.cookieListTreeElement =
         new ExpandableApplicationPanelTreeElement(panel, i18nString(UIStrings.cookies), 'Cookies');
     this.cookieListTreeElement.setLink(
-        'https://developers.google.com/web/tools/chrome-devtools/storage/cookies?utm_source=devtools');
+        'https://developer.chrome.com/docs/devtools/storage/cookies/?utm_source=devtools');
     const cookieIcon = UI.Icon.Icon.create('mediumicon-cookie', 'resource-tree-item');
     this.cookieListTreeElement.setLeadingIcons([cookieIcon]);
     storageTreeElement.appendChild(this.cookieListTreeElement);
@@ -284,7 +284,7 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.SDKMo
     this.applicationCacheListTreeElement =
         new ExpandableApplicationPanelTreeElement(panel, i18nString(UIStrings.applicationCache), 'ApplicationCache');
     this.applicationCacheListTreeElement.setLink(
-        'https://developers.google.com/web/tools/chrome-devtools/storage/applicationcache?utm_source=devtools');
+        'https://developer.chrome.com/docs/devtools/storage/applicationcache/?utm_source=devtools');
     const applicationCacheIcon = UI.Icon.Icon.create('mediumicon-table', 'resource-tree-item');
     this.applicationCacheListTreeElement.setLeadingIcons([applicationCacheIcon]);
 

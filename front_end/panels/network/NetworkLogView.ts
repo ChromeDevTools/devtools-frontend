@@ -865,7 +865,7 @@ export class NetworkLogView extends UI.Widget.VBox implements
     }
     hintText.createChild('br');
     hintText.appendChild(UI.XLink.XLink.create(
-        'https://developers.google.com/web/tools/chrome-devtools/network/?utm_source=devtools&utm_campaign=2019Q1',
+        'https://developer.chrome.com/docs/devtools/network/?utm_source=devtools&utm_campaign=2019Q1',
         i18nString(UIStrings.learnMore)));
 
     this._setHidden(true);

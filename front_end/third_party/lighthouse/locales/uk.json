@@ -1467,7 +1467,7 @@
     "message": "URL-адреси карт"
   },
   "lighthouse-core/audits/valid-source-maps.js | description": {
-    "message": "Карти джерела перетворюють стиснуті коди в оригінальні вихідні коди. Завдяки цьому розробники можуть здійснювати налагодження в робочому режимі. Крім того, інструмент Lighthouse може надавати іншу статистику. Спробуйте ввести в дію карти джерела, щоб скористатися цими перевагами. [Докладніше](https://developers.google.com/web/tools/chrome-devtools/javascript/source-maps)."
+    "message": "Карти джерела перетворюють стиснуті коди в оригінальні вихідні коди. Завдяки цьому розробники можуть здійснювати налагодження в робочому режимі. Крім того, інструмент Lighthouse може надавати іншу статистику. Спробуйте ввести в дію карти джерела, щоб скористатися цими перевагами. [Докладніше](https://developer.chrome.com/docs/devtools/javascript/source-maps/)."
   },
   "lighthouse-core/audits/valid-source-maps.js | failureTitle": {
     "message": "Великий власний файл JavaScript не містить карт джерела"

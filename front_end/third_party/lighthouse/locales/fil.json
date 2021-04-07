@@ -1467,7 +1467,7 @@
     "message": "URL ng Map"
   },
   "lighthouse-core/audits/valid-source-maps.js | description": {
-    "message": "Tina-translate ng mga source map ang pinaliit na code sa orihinal na source code. Nakakatulong ito sa mga developer na mag-debug sa produksyon. Dagdag pa rito, nakakapagbigay ang Lighthouse ng higit pang insight. Pag-isipang mag-deploy ng mga source map para masulit ang mga benepisyong ito. [Matuto pa](https://developers.google.com/web/tools/chrome-devtools/javascript/source-maps)."
+    "message": "Tina-translate ng mga source map ang pinaliit na code sa orihinal na source code. Nakakatulong ito sa mga developer na mag-debug sa produksyon. Dagdag pa rito, nakakapagbigay ang Lighthouse ng higit pang insight. Pag-isipang mag-deploy ng mga source map para masulit ang mga benepisyong ito. [Matuto pa](https://developer.chrome.com/docs/devtools/javascript/source-maps/)."
   },
   "lighthouse-core/audits/valid-source-maps.js | failureTitle": {
     "message": "Nawawala ang mga source map para sa malaking first-party na JavaScript"

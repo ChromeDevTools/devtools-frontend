@@ -381,8 +381,7 @@ export class BackgroundServiceView extends UI.Widget.VBox {
   }
 
   _createLearnMoreLink(): Element {
-    let url =
-        'https://developers.google.com/web/tools/chrome-devtools/javascript/background-services?utm_source=devtools';
+    let url = 'https://developer.chrome.com/docs/devtools/javascript/background-services/?utm_source=devtools';
 
     switch (this._serviceName) {
       case Protocol.BackgroundService.ServiceName.BackgroundFetch:

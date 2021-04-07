@@ -1512,7 +1512,7 @@
     "message": "M̂áp̂ ÚR̂Ĺ"
   },
   "lighthouse-core/audits/valid-source-maps.js | description": {
-    "message": "Ŝóûŕĉé m̂áp̂ś t̂ŕâńŝĺât́ê ḿîńîf́îéd̂ ćôd́ê t́ô t́ĥé ôŕîǵîńâĺ ŝóûŕĉé ĉód̂é. T̂h́îś ĥél̂ṕŝ d́êv́êĺôṕêŕŝ d́êb́ûǵ îń p̂ŕôd́ûćt̂íôń. Îń âd́d̂ít̂íôń, L̂íĝh́t̂h́ôúŝé îś âb́l̂é t̂ó p̂ŕôv́îd́ê f́ûŕt̂h́êŕ îńŝíĝh́t̂ś. Ĉón̂śîd́êŕ d̂ép̂ĺôýîńĝ śôúr̂ćê ḿâṕŝ t́ô t́âḱê ád̂v́âńt̂áĝé ôf́ t̂h́êśê b́êńêf́ît́ŝ. [Ĺêár̂ń m̂ór̂é](https://developers.google.com/web/tools/chrome-devtools/javascript/source-maps)."
+    "message": "Ŝóûŕĉé m̂áp̂ś t̂ŕâńŝĺât́ê ḿîńîf́îéd̂ ćôd́ê t́ô t́ĥé ôŕîǵîńâĺ ŝóûŕĉé ĉód̂é. T̂h́îś ĥél̂ṕŝ d́êv́êĺôṕêŕŝ d́êb́ûǵ îń p̂ŕôd́ûćt̂íôń. Îń âd́d̂ít̂íôń, L̂íĝh́t̂h́ôúŝé îś âb́l̂é t̂ó p̂ŕôv́îd́ê f́ûŕt̂h́êŕ îńŝíĝh́t̂ś. Ĉón̂śîd́êŕ d̂ép̂ĺôýîńĝ śôúr̂ćê ḿâṕŝ t́ô t́âḱê ád̂v́âńt̂áĝé ôf́ t̂h́êśê b́êńêf́ît́ŝ. [Ĺêár̂ń m̂ór̂é](https://developer.chrome.com/docs/devtools/javascript/source-maps/)."
   },
   "lighthouse-core/audits/valid-source-maps.js | failureTitle": {
     "message": "M̂íŝśîńĝ śôúr̂ćê ḿâṕŝ f́ôŕ l̂ár̂ǵê f́îŕŝt́-p̂ár̂t́ŷ J́âv́âŚĉŕîṕt̂"

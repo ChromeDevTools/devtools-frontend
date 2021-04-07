@@ -1467,7 +1467,7 @@
     "message": "Kartans webbadress"
   },
   "lighthouse-core/audits/valid-source-maps.js | description": {
-    "message": "Källkartor översätter minifierad kod till den ursprungliga källkoden. Detta hjälper utvecklare att felsöka i produktionsläget. Lighthouse kan dessutom ge ytterligare insikter. Överväg att implementera källkartor för att dra nytta av dessa fördelar. [Läs mer](https://developers.google.com/web/tools/chrome-devtools/javascript/source-maps)."
+    "message": "Källkartor översätter minifierad kod till den ursprungliga källkoden. Detta hjälper utvecklare att felsöka i produktionsläget. Lighthouse kan dessutom ge ytterligare insikter. Överväg att implementera källkartor för att dra nytta av dessa fördelar. [Läs mer](https://developer.chrome.com/docs/devtools/javascript/source-maps/)."
   },
   "lighthouse-core/audits/valid-source-maps.js | failureTitle": {
     "message": "Det saknas källkartor för stor JavaScript från första part"

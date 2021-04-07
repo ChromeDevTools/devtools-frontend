@@ -1467,7 +1467,7 @@
     "message": "URL của bản đồ"
   },
   "lighthouse-core/audits/valid-source-maps.js | description": {
-    "message": "Bản đồ nguồn sẽ chuyển mã đã giảm thiểu thành mã nguồn gốc. Việc này giúp các nhà phát triển gỡ lỗi trong bản phát hành chính thức. Ngoài ra, Lighthouse cũng có thể cung cấp thêm thông tin chi tiết. Hãy cân nhắc triển khai bản đồ nguồn để tận dụng những lợi ích này. [Tìm hiểu thêm](https://developers.google.com/web/tools/chrome-devtools/javascript/source-maps)"
+    "message": "Bản đồ nguồn sẽ chuyển mã đã giảm thiểu thành mã nguồn gốc. Việc này giúp các nhà phát triển gỡ lỗi trong bản phát hành chính thức. Ngoài ra, Lighthouse cũng có thể cung cấp thêm thông tin chi tiết. Hãy cân nhắc triển khai bản đồ nguồn để tận dụng những lợi ích này. [Tìm hiểu thêm](https://developer.chrome.com/docs/devtools/javascript/source-maps/)"
   },
   "lighthouse-core/audits/valid-source-maps.js | failureTitle": {
     "message": "Thiếu bản đồ nguồn cho JavaScript lớn của bên thứ nhất"

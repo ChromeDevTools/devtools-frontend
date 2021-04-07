@@ -1467,7 +1467,7 @@
     "message": "맵 URL"
   },
   "lighthouse-core/audits/valid-source-maps.js | description": {
-    "message": "소스 맵은 축소된 코드를 원본 소스 코드로 변환합니다. 이는 프로덕션 단계에서 개발자의 디버깅에 도움이 됩니다. 또한 Lighthouse에서 더 많은 정보를 확인할 수 있습니다. 소스 맵을 배포하여 이러한 이점을 활용해 보세요. [자세히 알아보기](https://developers.google.com/web/tools/chrome-devtools/javascript/source-maps)"
+    "message": "소스 맵은 축소된 코드를 원본 소스 코드로 변환합니다. 이는 프로덕션 단계에서 개발자의 디버깅에 도움이 됩니다. 또한 Lighthouse에서 더 많은 정보를 확인할 수 있습니다. 소스 맵을 배포하여 이러한 이점을 활용해 보세요. [자세히 알아보기](https://developer.chrome.com/docs/devtools/javascript/source-maps/)"
   },
   "lighthouse-core/audits/valid-source-maps.js | failureTitle": {
     "message": "큰 자사 자바스크립트에 소스 맵이 누락됨"

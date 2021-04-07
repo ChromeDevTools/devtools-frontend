@@ -451,24 +451,22 @@ function hideFromLayout(element: HTMLElement): void {
   element.style.overflow = 'hidden';
 }
 
-/** >}
- */
-const alertsMap = new WeakMap<Document, HTMLElement>();
+let alertElement: HTMLElement|undefined;
 
+function createAriaAlertElement(): HTMLElement {
+  const element = document.body.createChild('div') as HTMLElement;
+  hideFromLayout(element);
+  element.setAttribute('role', 'alert');
+  element.setAttribute('aria-atomic', 'true');
+  return element;
+}
 /**
  * This function is used to announce a message with the screen reader.
  * Setting the textContent would allow the SR to access the offscreen element via browse mode
  */
-export function alert(message: string, element: Element): void {
-  const document = (element.ownerDocument as Document);
-
-  let alertElement = alertsMap.get(document);
+export function alert(message: string): void {
   if (!alertElement) {
-    alertElement = (document.body.createChild('div') as HTMLElement);
-    hideFromLayout(alertElement);
-    alertElement.setAttribute('role', 'alert');
-    alertElement.setAttribute('aria-atomic', 'true');
-    alertsMap.set(document, alertElement);
+    alertElement = createAriaAlertElement();
   }
   // We first set the textContent to blank so that the string will announce even if it is replaced
   // with the same string.

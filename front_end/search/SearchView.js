@@ -298,9 +298,7 @@ export class SearchView extends UI.Widget.VBox {
     }
     this._searchFinished(finished);
     this._searchConfig = null;
-    UI.ARIAUtils.alert(
-        this._searchMessageElement.textContent + ' ' + this._searchResultsMessageElement.textContent,
-        this._searchMessageElement);
+    UI.ARIAUtils.alert(this._searchMessageElement.textContent + ' ' + this._searchResultsMessageElement.textContent);
   }
 
   /**
@@ -482,7 +480,7 @@ export class SearchView extends UI.Widget.VBox {
 
   _onAction() {
     // Resetting alert variable to prime for next search query result.
-    UI.ARIAUtils.alert(' ', this._searchMessageElement);
+    UI.ARIAUtils.alert(' ');
     const searchConfig = this._buildSearchConfig();
     if (!searchConfig.query() || !searchConfig.query().length) {
       return;

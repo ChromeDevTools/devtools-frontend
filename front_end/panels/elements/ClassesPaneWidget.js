@@ -119,7 +119,7 @@ export class ClassesPaneWidget extends UI.Widget.Widget {
     const joinClassString = classNames.join(' ');
     const announcementString = classNames.length > 1 ? i18nString(UIStrings.classesSAdded, {PH1: joinClassString}) :
                                                        i18nString(UIStrings.classSAdded, {PH1: joinClassString});
-    UI.ARIAUtils.alert(announcementString, this.contentElement);
+    UI.ARIAUtils.alert(announcementString);
 
     this._installNodeClasses(node);
     this._update();

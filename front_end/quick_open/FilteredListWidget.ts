@@ -456,7 +456,7 @@ export class FilteredListWidget extends UI.Widget.VBox implements UI.ListControl
     this._notFoundElement.classList.toggle('hidden', hasItems);
     if (!hasItems && this._provider) {
       this._notFoundElement.textContent = this._provider.notFoundText(this._cleanValue());
-      UI.ARIAUtils.alert(this._notFoundElement.textContent, this._notFoundElement);
+      UI.ARIAUtils.alert(this._notFoundElement.textContent);
     }
   }
 

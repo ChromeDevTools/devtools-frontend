@@ -47,7 +47,7 @@ export class StorageItemsView extends UI.Widget.VBox {
 
     this._refreshButton = this._addButton(i18nString(UIStrings.refresh), 'largeicon-refresh', () => {
       this.refreshItems();
-      UI.ARIAUtils.alert(i18nString(UIStrings.refreshedStatus), this._refreshButton.element);
+      UI.ARIAUtils.alert(i18nString(UIStrings.refreshedStatus));
     });
 
     this._mainToolbar = new UI.Toolbar.Toolbar('top-resources-toolbar', this.element);

@@ -906,7 +906,7 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
     if (hadFocus) {
       this._prompt.focus();
     }
-    UI.ARIAUtils.alert(i18nString(UIStrings.consoleCleared), this._viewport.element);
+    UI.ARIAUtils.alert(i18nString(UIStrings.consoleCleared));
   }
 
   _handleContextMenuEvent(event: Event): void {

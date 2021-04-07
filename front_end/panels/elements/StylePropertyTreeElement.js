@@ -1087,7 +1087,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
 
     const invalidString = this.property.getInvalidStringForInvalidProperty();
     if (invalidString && selectElement) {
-      UI.ARIAUtils.alert(invalidString, selectElement);
+      UI.ARIAUtils.alert(invalidString);
     }
 
     if (selectElement) {

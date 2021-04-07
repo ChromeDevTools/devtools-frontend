@@ -315,7 +315,7 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper {
         (this.selectedNode && this.selectedNode.existingElement()) ? this.selectedNode.nodeAccessibleText : '';
     if (this.element === this.element.ownerDocument.deepActiveElement()) {
       // Only alert if the datagrid has focus
-      UI.ARIAUtils.alert(text ? text : accessibleText, this.element);
+      UI.ARIAUtils.alert(text ? text : accessibleText);
     }
   }
 
@@ -340,7 +340,7 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper {
       const items = i18nString(UIStrings.rowsS, {PH1: children.length});
       accessibleText = i18nString(UIStrings.sSUseTheUpAndDownArrowKeysTo, {PH1: this._displayName, PH2: items});
     }
-    UI.ARIAUtils.alert(accessibleText, this.element);
+    UI.ARIAUtils.alert(accessibleText);
   }
 
   headerTableBody(): Element {

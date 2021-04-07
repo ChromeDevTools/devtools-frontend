@@ -277,7 +277,7 @@ export class FontEditor extends UI.Widget.VBox {
     let fontSelectorObject = this._fontSelectors[index];
     const isPrimary = index === 0;
     if (fontSelectorObject.input.value === '' && !isGlobalValue) {
-      UI.ARIAUtils.alert(i18nString(UIStrings.thereIsNoValueToDeleteAtIndexS, {PH1: index}), this.contentElement);
+      UI.ARIAUtils.alert(i18nString(UIStrings.thereIsNoValueToDeleteAtIndexS, {PH1: index}));
       return;
     }
     if (isPrimary) {
@@ -303,7 +303,7 @@ export class FontEditor extends UI.Widget.VBox {
           this._updateFontSelectorList();
         }
       }
-      UI.ARIAUtils.alert(i18nString(UIStrings.fontSelectorDeletedAtIndexS, {PH1: index}), this.contentElement);
+      UI.ARIAUtils.alert(i18nString(UIStrings.fontSelectorDeletedAtIndexS, {PH1: index}));
     }
     this._onFontSelectorChanged();
     this._resizePopout();
@@ -819,7 +819,7 @@ class FontPropertyInputs {
       this._unitInput.hidden = true;
       this._selectorInput.hidden = false;
       this._showSliderMode = false;
-      UI.ARIAUtils.alert(i18nString(UIStrings.selectorInputMode), this._textBoxInput);
+      UI.ARIAUtils.alert(i18nString(UIStrings.selectorInputMode));
     } else {
       // Show sliderinput type
       this._sliderInput.hidden = false;
@@ -827,7 +827,7 @@ class FontPropertyInputs {
       this._unitInput.hidden = false;
       this._selectorInput.hidden = true;
       this._showSliderMode = true;
-      UI.ARIAUtils.alert(i18nString(UIStrings.sliderInputMode), this._textBoxInput);
+      UI.ARIAUtils.alert(i18nString(UIStrings.sliderInputMode));
     }
   }
 

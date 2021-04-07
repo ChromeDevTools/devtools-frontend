@@ -282,8 +282,7 @@ export class CookieItemsView extends StorageItemsView {
       this.setDeleteAllGlyph('largeicon-delete-list');
     }
     this._cookiesTable.setCookies(this._shownCookies, this._model.getCookieToBlockedReasonsMap());
-    UI.ARIAUtils.alert(
-        i18nString(UIStrings.numberOfCookiesShownInTableS, {PH1: this._shownCookies.length}), this.element);
+    UI.ARIAUtils.alert(i18nString(UIStrings.numberOfCookiesShownInTableS, {PH1: this._shownCookies.length}));
     this.setCanFilter(true);
     this.setCanDeleteAll(this._shownCookies.length > 0);
     this.setCanDeleteSelected(Boolean(this._cookiesTable.selectedCookie()));

@@ -877,7 +877,7 @@ export class NetworkLogView extends UI.Widget.VBox implements
     if (this._recordingHint) {
       this._recordingHint.remove();
     }
-    UI.ARIAUtils.alert(i18nString(UIStrings.networkDataAvailable), this._summaryToolbar.element);
+    UI.ARIAUtils.alert(i18nString(UIStrings.networkDataAvailable));
     this._recordingHint = null;
   }
 

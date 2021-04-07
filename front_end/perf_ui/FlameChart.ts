@@ -520,13 +520,13 @@ export class FlameChart extends UI.Widget.VBox implements Calculator, ChartViewp
     const groupName = groups[groupIndex].name;
     if (!groups[groupIndex].selectable) {
       this._deselectAllGroups();
-      UI.ARIAUtils.alert(i18nString(UIStrings.sHovered, {PH1: groupName}), this._canvas);
+      UI.ARIAUtils.alert(i18nString(UIStrings.sHovered, {PH1: groupName}));
     } else {
       this._selectedGroup = groupIndex;
       this._flameChartDelegate.updateSelectedGroup(this, groups[groupIndex]);
       this._resetCanvas();
       this._draw();
-      UI.ARIAUtils.alert(i18nString(UIStrings.sSelected, {PH1: groupName}), this._canvas);
+      UI.ARIAUtils.alert(i18nString(UIStrings.sSelected, {PH1: groupName}));
     }
   }
 
@@ -634,7 +634,7 @@ export class FlameChart extends UI.Widget.VBox implements Calculator, ChartViewp
       const groupName = groups[groupIndex].name;
       const content = group.expanded ? i18nString(UIStrings.sExpanded, {PH1: groupName}) :
                                        i18nString(UIStrings.sCollapsed, {PH1: groupName});
-      UI.ARIAUtils.alert(content, this._canvas);
+      UI.ARIAUtils.alert(content);
     }
   }
 

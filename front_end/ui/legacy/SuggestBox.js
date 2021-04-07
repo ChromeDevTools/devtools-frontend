@@ -197,21 +197,17 @@ export class SuggestBox {
    */
   _applySuggestion(isIntermediateSuggestion) {
     if (this._onlyCompletion) {
-      ARIAUtils.alert(
-          i18nString(
-              UIStrings.sSuggestionSOfS,
-              {PH1: this._onlyCompletion.text, PH2: this._list.selectedIndex() + 1, PH3: this._items.length}),
-          this._element);
+      ARIAUtils.alert(i18nString(
+          UIStrings.sSuggestionSOfS,
+          {PH1: this._onlyCompletion.text, PH2: this._list.selectedIndex() + 1, PH3: this._items.length}));
       this._suggestBoxDelegate.applySuggestion(this._onlyCompletion, isIntermediateSuggestion);
       return true;
     }
     const suggestion = this._list.selectedItem();
     if (suggestion && suggestion.text) {
-      ARIAUtils.alert(
-          i18nString(
-              UIStrings.sSuggestionSOfS,
-              {PH1: suggestion.title || suggestion.text, PH2: this._list.selectedIndex() + 1, PH3: this._items.length}),
-          this._element);
+      ARIAUtils.alert(i18nString(
+          UIStrings.sSuggestionSOfS,
+          {PH1: suggestion.title || suggestion.text, PH2: this._list.selectedIndex() + 1, PH3: this._items.length}));
     }
     this._suggestBoxDelegate.applySuggestion(suggestion, isIntermediateSuggestion);
 

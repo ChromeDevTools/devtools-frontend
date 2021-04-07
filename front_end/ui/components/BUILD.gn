@@ -24,11 +24,11 @@ devtools_module("components") {
     "TreeOutlineUtils.ts",
   ]
   deps = [
-    "../../bindings:bundle",
     "../../component_helpers:bundle",
     "../../core/common:bundle",
     "../../core/host:bundle",
     "../../core/platform:bundle",
+    "../../models/bindings:bundle",
     "../../render_coordinator:bundle",
     "../../text_utils:bundle",
     "../../third_party/lit-html:bundle",

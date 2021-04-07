@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Bindings from '../../bindings/bindings.js';
+import * as Bindings from '../../models/bindings/bindings.js';
 
 export function linkText(url: string, lineNumber?: number): string {
   if (url) {

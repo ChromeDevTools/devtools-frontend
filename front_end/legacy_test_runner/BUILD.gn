@@ -18,7 +18,6 @@ ts_library("legacy_test_runner-source") {
 
   deps = [
     "../:devtools_app",
-    "../bindings:legacy",
     "../color_picker:legacy",
     "../core/common:legacy",
     "../core/host:legacy",
@@ -30,6 +29,7 @@ ts_library("legacy_test_runner-source") {
     "../formatter:legacy",
     "../har_importer:legacy",
     "../inline_editor:legacy",
+    "../models/bindings:legacy",
     "../panels/accessibility:legacy",
     "../panels/animation:legacy",
     "../panels/developer_resources:legacy",

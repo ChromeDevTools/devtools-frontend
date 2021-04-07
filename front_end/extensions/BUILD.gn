@@ -16,7 +16,6 @@ devtools_module("extensions") {
   ]
 
   deps = [
-    "../bindings:bundle",
     "../browser_sdk:bundle",
     "../components:bundle",
     "../core/common:bundle",
@@ -25,6 +24,7 @@ devtools_module("extensions") {
     "../core/protocol_client:bundle",
     "../core/root:bundle",
     "../core/sdk:bundle",
+    "../models/bindings:bundle",
     "../text_utils:bundle",
     "../theme_support:bundle",
     "../ui:bundle",

@@ -30,7 +30,6 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Bindings from '../../bindings/bindings.js';
 import * as Components from '../../components/components.js';
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
@@ -40,6 +39,7 @@ import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as DataGrid from '../../data_grid/data_grid.js';
 import * as HeapSnapshotModel from '../../heap_snapshot_model/heap_snapshot_model.js';
+import * as Bindings from '../../models/bindings/bindings.js';
 import * as ObjectUI from '../../object_ui/object_ui.js';
 import * as PerfUI from '../../perf_ui/perf_ui.js';
 import * as UI from '../../ui/ui.js';

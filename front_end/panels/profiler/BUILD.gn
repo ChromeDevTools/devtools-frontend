@@ -32,7 +32,6 @@ devtools_module("profiler") {
   ]
 
   deps = [
-    "../../bindings:bundle",
     "../../components:bundle",
     "../../core/common:bundle",
     "../../core/host:bundle",
@@ -41,6 +40,7 @@ devtools_module("profiler") {
     "../../core/sdk:bundle",
     "../../data_grid:bundle",
     "../../heap_snapshot_model:bundle",
+    "../../models/bindings:bundle",
     "../../object_ui:bundle",
     "../../perf_ui:bundle",
     "../../ui:bundle",

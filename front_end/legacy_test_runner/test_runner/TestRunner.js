@@ -4,11 +4,11 @@
 
 // @ts-nocheck This file is not checked by TypeScript as it has a lot of legacy code.
 
-import * as Bindings from '../../bindings/bindings.js';
 import * as Common from '../../core/common/common.js';  // eslint-disable-line no-unused-vars
 import * as Platform from '../../core/platform/platform.js';
 import * as ProtocolClientModule from '../../core/protocol_client/protocol_client.js';
 import * as Root from '../../core/root/root.js';
+import * as Bindings from '../../models/bindings/bindings.js';
 import * as TextEditor from '../../text_editor/text_editor.js';
 import * as UI from '../../ui/ui.js';
 import * as Workspace from '../../workspace/workspace.js';

@@ -36,7 +36,6 @@ devtools_module("application") {
   ]
 
   deps = [
-    "../../bindings:bundle",
     "../../browser_sdk:bundle",
     "../../components:bundle",
     "../../cookie_table:bundle",
@@ -49,6 +48,7 @@ devtools_module("application") {
     "../../core/sdk:bundle",
     "../../data_grid:bundle",
     "../../inline_editor:bundle",
+    "../../models/bindings:bundle",
     "../../object_ui:bundle",
     "../../panels/mobile_throttling:bundle",
     "../../panels/network:bundle",

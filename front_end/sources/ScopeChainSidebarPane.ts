@@ -30,13 +30,13 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Bindings from '../bindings/bindings.js';
 import * as Components from '../components/components.js';
 import * as Common from '../core/common/common.js';
 import * as Host from '../core/host/host.js';
 import * as i18n from '../core/i18n/i18n.js';
 import * as SDK from '../core/sdk/sdk.js';
 import * as LinearMemoryInspector from '../linear_memory_inspector/linear_memory_inspector.js';
+import * as Bindings from '../models/bindings/bindings.js';
 import * as ObjectUI from '../object_ui/object_ui.js';
 import * as UI from '../ui/ui.js';
 

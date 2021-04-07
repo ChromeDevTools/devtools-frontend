@@ -14,7 +14,6 @@ devtools_module("coverage") {
   ]
 
   deps = [
-    "../../bindings:bundle",
     "../../core/common:bundle",
     "../../core/host:bundle",
     "../../core/i18n:bundle",
@@ -22,6 +21,7 @@ devtools_module("coverage") {
     "../../core/sdk:bundle",
     "../../data_grid:bundle",
     "../../formatter:bundle",
+    "../../models/bindings:bundle",
     "../../source_frame:bundle",
     "../../text_utils:bundle",
     "../../ui:bundle",

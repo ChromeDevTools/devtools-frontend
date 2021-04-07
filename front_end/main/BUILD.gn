@@ -13,7 +13,6 @@ devtools_module("main") {
   ]
 
   deps = [
-    "../bindings:bundle",
     "../components:bundle",
     "../core/common:bundle",
     "../core/host:bundle",
@@ -22,6 +21,7 @@ devtools_module("main") {
     "../core/protocol_client:bundle",
     "../core/sdk:bundle",
     "../extensions:bundle",
+    "../models/bindings:bundle",
     "../persistence:bundle",
     "../recorder:bundle",
     "../snippets:bundle",

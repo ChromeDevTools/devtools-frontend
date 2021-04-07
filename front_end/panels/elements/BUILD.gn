@@ -52,7 +52,6 @@ devtools_module("elements") {
   ]
 
   deps = [
-    "../../bindings:bundle",
     "../../color_picker:bundle",
     "../../components:bundle",
     "../../core/common:bundle",
@@ -65,6 +64,7 @@ devtools_module("elements") {
     "../../formatter:bundle",
     "../../generated",
     "../../inline_editor:bundle",
+    "../../models/bindings:bundle",
     "../../object_ui:bundle",
     "../../panels/emulation:bundle",
     "../../panels/event_listeners:bundle",

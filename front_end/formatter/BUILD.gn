@@ -13,11 +13,11 @@ devtools_module("formatter") {
   ]
 
   deps = [
-    "../bindings:bundle",
     "../core/common:bundle",
     "../core/platform:bundle",
     "../core/sdk:bundle",
     "../formatter_worker:formatter_actions",
+    "../models/bindings:bundle",
     "../text_utils:bundle",
     "../workspace:bundle",
   ]

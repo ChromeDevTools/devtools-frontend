@@ -5,7 +5,7 @@
 import '../test_runner/test_runner.js';
 import '../../workspace/workspace-legacy.js';
 import '../../diff/diff-legacy.js';
-import '../../bindings/bindings-legacy.js';
+import '../../models/bindings/bindings-legacy.js';
 import '../../persistence/persistence-legacy.js';
 
 import './BindingsTestRunner.js';

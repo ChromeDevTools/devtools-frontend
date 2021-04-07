@@ -24,7 +24,6 @@ devtools_module("emulation") {
   ]
 
   deps = [
-    "../../bindings:bundle",
     "../../components:bundle",
     "../../core/common:bundle",
     "../../core/host:bundle",
@@ -32,6 +31,7 @@ devtools_module("emulation") {
     "../../core/platform:bundle",
     "../../core/protocol_client:bundle",
     "../../core/sdk:bundle",
+    "../../models/bindings:bundle",
     "../../panels/mobile_throttling:bundle",
     "../../ui:bundle",
     "../../workspace:bundle",

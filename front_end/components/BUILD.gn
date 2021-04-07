@@ -15,12 +15,12 @@ devtools_module("components") {
   ]
 
   deps = [
-    "../bindings:bundle",
     "../core/common:bundle",
     "../core/host:bundle",
     "../core/i18n:bundle",
     "../core/platform:bundle",
     "../core/sdk:bundle",
+    "../models/bindings:bundle",
     "../text_utils:bundle",
     "../ui:bundle",
     "../workspace:bundle",

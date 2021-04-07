@@ -26,13 +26,13 @@ devtools_module("inline_editor") {
   ]
 
   deps = [
-    "../bindings:bundle",
     "../component_helpers:bundle",
     "../components:bundle",
     "../core/common:bundle",
     "../core/i18n:bundle",
     "../core/platform:bundle",
     "../core/sdk:bundle",
+    "../models/bindings:bundle",
     "../panels/css_overview:bundle",
     "../text_utils:bundle",
     "../third_party/lit-html:bundle",

@@ -34,7 +34,6 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Bindings from '../../bindings/bindings.js';
 import * as BrowserSDK from '../../browser_sdk/browser_sdk.js';
 import * as Components from '../../components/components.js';
 import * as Common from '../../core/common/common.js';
@@ -44,6 +43,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as DataGrid from '../../data_grid/data_grid.js';
 import * as HARImporter from '../../har_importer/har_importer.js';
+import * as Bindings from '../../models/bindings/bindings.js';
 import * as PerfUI from '../../perf_ui/perf_ui.js';
 import * as TextUtils from '../../text_utils/text_utils.js';
 import * as ThemeSupport from '../../theme_support/theme_support.js';

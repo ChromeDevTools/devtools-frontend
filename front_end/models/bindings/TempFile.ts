@@ -30,9 +30,9 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../core/common/common.js';  // eslint-disable-line no-unused-vars
+import * as Common from '../../core/common/common.js';  // eslint-disable-line no-unused-vars
 
-import * as SDK from '../core/sdk/sdk.js';  // eslint-disable-line no-unused-vars
+import * as SDK from '../../core/sdk/sdk.js';  // eslint-disable-line no-unused-vars
 
 import {ChunkedFileReader, ChunkedReader} from './FileUtils.js';  // eslint-disable-line no-unused-vars
 

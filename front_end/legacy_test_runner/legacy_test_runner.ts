@@ -5,7 +5,7 @@
 import '../devtools_app.js';
 import '../panels/accessibility/accessibility-legacy.js';
 import '../panels/animation/animation-legacy.js';
-import '../bindings/bindings-legacy.js';
+import '../models/bindings/bindings-legacy.js';
 import '../color_picker/color_picker-legacy.js';
 import '../core/common/common-legacy.js';
 import '../data_grid/data_grid-legacy.js';

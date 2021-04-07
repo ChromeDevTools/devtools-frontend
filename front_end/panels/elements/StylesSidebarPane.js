@@ -31,7 +31,6 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import * as Bindings from '../../bindings/bindings.js';
 import * as Components from '../../components/components.js';
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
@@ -40,6 +39,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as InlineEditor from '../../inline_editor/inline_editor.js';
+import * as Bindings from '../../models/bindings/bindings.js';
 import * as TextUtils from '../../text_utils/text_utils.js';
 import * as WebComponents from '../../ui/components/components.js';
 import * as UI from '../../ui/ui.js';

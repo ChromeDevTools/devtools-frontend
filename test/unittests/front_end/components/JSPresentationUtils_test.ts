@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import type * as ComponentsModule from '../../../../front_end/components/components.js';
-import type * as BindingsModule from '../../../../front_end/bindings/bindings.js';
+import type * as BindingsModule from '../../../../front_end/models/bindings/bindings.js';
 import type * as WorkspaceModule from '../../../../front_end/workspace/workspace.js';
 
 import {createTarget} from '../helpers/EnvironmentHelpers.js';
@@ -18,7 +18,7 @@ describeWithMockConnection('JSPresentationUtils', async () => {
 
   before(async () => {
     Components = await import('../../../../front_end/components/components.js');
-    Bindings = await import('../../../../front_end/bindings/bindings.js');
+    Bindings = await import('../../../../front_end/models/bindings/bindings.js');
     Workspace = await import('../../../../front_end/workspace/workspace.js');
   });
 

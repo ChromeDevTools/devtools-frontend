@@ -10,7 +10,7 @@ import './core/protocol_client/protocol_client-legacy.js';
 import './core/sdk/sdk-legacy.js';
 import './ui/ui-legacy.js';
 import './workspace/workspace-legacy.js';
-import './bindings/bindings-legacy.js';
+import './models/bindings/bindings-legacy.js';
 import './components/components-legacy.js';
 import './persistence/persistence-legacy.js';
 import './browser_sdk/browser_sdk.js';

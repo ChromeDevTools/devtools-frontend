@@ -6,8 +6,6 @@ import("./scripts/build/ninja/vars.gni")
 
 devtools_module_entrypoint_sources = [
   "Images/Images.js",
-  "bindings/bindings-legacy.js",
-  "bindings/bindings.js",
   "browser_sdk/browser_sdk-meta.js",
   "browser_sdk/browser_sdk.js",
   "cm/cm.js",
@@ -73,6 +71,8 @@ devtools_module_entrypoint_sources = [
   "main/main-legacy.js",
   "main/main-meta.js",
   "main/main.js",
+  "models/bindings/bindings-legacy.js",
+  "models/bindings/bindings.js",
   "node_debugger/node_debugger-meta.js",
   "node_debugger/node_debugger.js",
   "node_main/node_main-meta.js",

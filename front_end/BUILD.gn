@@ -24,7 +24,6 @@ group("front_end") {
     ":toolbox",
     ":ts_library-verification",
     ":worker_app",
-    "bindings:bundle",
     "color_picker:bundle",
     "component_helpers:bundle",
     "components:bundle",
@@ -47,6 +46,7 @@ group("front_end") {
     "js_main:bundle",
     "legacy_test_runner",
     "lighthouse_worker:bundle",
+    "models/bindings:bundle",
     "panels/event_listeners:bundle",
     "recorder:bundle",
     "render_coordinator:bundle",
@@ -91,7 +91,6 @@ group("legacy_css") {
 
 group("legacy_entrypoints") {
   public_deps = [
-    "bindings:legacy",
     "color_picker:legacy",
     "components:legacy",
     "cookie_table:legacy",
@@ -111,6 +110,7 @@ group("legacy_entrypoints") {
     "javascript_metadata:legacy",
     "linear_memory_inspector:legacy",
     "main:legacy",
+    "models/bindings:legacy",
     "object_ui:legacy",
     "panels/accessibility:legacy",
     "panels/animation:legacy",
@@ -157,7 +157,6 @@ ts_library("shell") {
 
   deps = [
     "Images:generate_css_vars",
-    "bindings:legacy",
     "browser_sdk:meta",
     "components:legacy",
     "core/dom_extension:bundle",
@@ -169,6 +168,7 @@ ts_library("shell") {
     "input:meta",
     "linear_memory_inspector:meta",
     "main:meta",
+    "models/bindings:legacy",
     "object_ui:meta",
     "panels/changes:meta",
     "panels/console:meta",
@@ -353,7 +353,6 @@ ts_library("ts_library-verification") {
   sources = [ "verification.ts" ]
 
   deps = [
-    "bindings:bundle",
     "browser_sdk:bundle",
     "color_picker:bundle",
     "core/common:bundle",
@@ -362,6 +361,7 @@ ts_library("ts_library-verification") {
     "core/protocol_client:bundle",
     "core/root:bundle",
     "core/sdk:bundle",
+    "models/bindings:bundle",
     "workspace:bundle",
   ]
 }

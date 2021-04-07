@@ -30,13 +30,13 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Bindings from '../bindings/bindings.js';
 import * as Common from '../core/common/common.js';
 import * as Host from '../core/host/host.js';
 import * as i18n from '../core/i18n/i18n.js';
 import * as Root from '../core/root/root.js';
 import * as SDK from '../core/sdk/sdk.js';
 import * as Extensions from '../extensions/extensions.js';
+import * as Bindings from '../models/bindings/bindings.js';
 import * as ObjectUI from '../object_ui/object_ui.js';
 import * as Recorder from '../recorder/recorder.js';
 import * as Snippets from '../snippets/snippets.js';

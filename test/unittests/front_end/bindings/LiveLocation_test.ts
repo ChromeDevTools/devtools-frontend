@@ -4,7 +4,7 @@
 
 const {assert} = chai;
 
-import * as Bindings from '../../../../front_end/bindings/bindings.js';
+import * as Bindings from '../../../../front_end/models/bindings/bindings.js';
 
 const LiveLocationPool = Bindings.LiveLocation.LiveLocationPool;
 const LiveLocationWithPool = Bindings.LiveLocation.LiveLocationWithPool;

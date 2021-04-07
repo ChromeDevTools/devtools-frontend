@@ -2,8 +2,8 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-import("../../scripts/build/ninja/devtools_entrypoint.gni")
-import("../../scripts/build/ninja/devtools_module.gni")
+import("../../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../../../scripts/build/ninja/devtools_module.gni")
 
 devtools_module("extensions") {
   sources = [
@@ -16,19 +16,19 @@ devtools_module("extensions") {
   ]
 
   deps = [
-    "../browser_sdk:bundle",
-    "../components:bundle",
-    "../core/common:bundle",
-    "../core/host:bundle",
-    "../core/platform:bundle",
-    "../core/protocol_client:bundle",
-    "../core/root:bundle",
-    "../core/sdk:bundle",
-    "../models/bindings:bundle",
-    "../text_utils:bundle",
-    "../theme_support:bundle",
-    "../ui:bundle",
-    "../workspace:bundle",
+    "../../browser_sdk:bundle",
+    "../../components:bundle",
+    "../../core/common:bundle",
+    "../../core/host:bundle",
+    "../../core/platform:bundle",
+    "../../core/protocol_client:bundle",
+    "../../core/root:bundle",
+    "../../core/sdk:bundle",
+    "../../models/bindings:bundle",
+    "../../text_utils:bundle",
+    "../../theme_support:bundle",
+    "../../ui:bundle",
+    "../../workspace:bundle",
   ]
 }
 

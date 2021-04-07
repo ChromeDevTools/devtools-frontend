@@ -4,7 +4,7 @@
     "panels/coverage",
     "panels/layer_viewer",
     "perf_ui",
-    "extensions",
+    "models/extensions",
     "data_grid",
     "panels/profiler",
     "panels/mobile_throttling"

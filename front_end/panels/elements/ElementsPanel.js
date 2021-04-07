@@ -38,7 +38,7 @@ import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import * as Extensions from '../../extensions/extensions.js';
+import * as Extensions from '../../models/extensions/extensions.js';
 import * as UI from '../../ui/ui.js';
 
 import {AccessibilityTreeView} from './AccessibilityTreeView.js';

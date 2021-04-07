@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import '../test_runner/test_runner.js';
-import '../../extensions/extensions-legacy.js';
+import '../../models/extensions/extensions-legacy.js';
 
 import './ExtensionsNetworkTestRunner.js';
 import './ExtensionsTestRunner.js';

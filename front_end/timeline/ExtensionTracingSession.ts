@@ -5,7 +5,7 @@
 /* eslint-disable rulesdir/no_underscored_properties */
 
 import * as SDK from '../core/sdk/sdk.js';                  // eslint-disable-line no-unused-vars
-import * as Extensions from '../extensions/extensions.js';  // eslint-disable-line no-unused-vars
+import * as Extensions from '../models/extensions/extensions.js';  // eslint-disable-line no-unused-vars
 
 import {PerformanceModel} from './PerformanceModel.js';      // eslint-disable-line no-unused-vars
 import {Client, TimelineLoader} from './TimelineLoader.js';  // eslint-disable-line no-unused-vars

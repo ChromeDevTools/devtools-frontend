@@ -14,7 +14,7 @@ import './models/bindings/bindings-legacy.js';
 import './components/components-legacy.js';
 import './persistence/persistence-legacy.js';
 import './browser_sdk/browser_sdk.js';
-import './extensions/extensions-legacy.js';
+import './models/extensions/extensions-legacy.js';
 import './panels/console_counters/console_counters-legacy.js';
 import './sources/sources-meta.js';
 import './panels/profiler/profiler-meta.js';

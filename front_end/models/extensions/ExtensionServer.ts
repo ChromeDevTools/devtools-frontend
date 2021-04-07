@@ -35,18 +35,18 @@
 /* eslint-disable @typescript-eslint/no-explicit-any,@typescript-eslint/naming-convention,rulesdir/no_underscored_properties */
 
 
-import * as Components from '../components/components.js';
-import * as Common from '../core/common/common.js';
-import * as Host from '../core/host/host.js';
-import * as Platform from '../core/platform/platform.js';
-import * as _ProtocolClient from '../core/protocol_client/protocol_client.js';  // eslint-disable-line @typescript-eslint/no-unused-vars
-import * as Root from '../core/root/root.js';                                   // eslint-disable-line no-unused-vars
-import * as SDK from '../core/sdk/sdk.js';
-import * as Bindings from '../models/bindings/bindings.js';
-import * as TextUtils from '../text_utils/text_utils.js';  // eslint-disable-line no-unused-vars
-import * as ThemeSupport from '../theme_support/theme_support.js';
-import * as UI from '../ui/ui.js';
-import * as Workspace from '../workspace/workspace.js';
+import * as Components from '../../components/components.js';
+import * as Common from '../../core/common/common.js';
+import * as Host from '../../core/host/host.js';
+import * as Platform from '../../core/platform/platform.js';
+import * as _ProtocolClient from '../../core/protocol_client/protocol_client.js';  // eslint-disable-line @typescript-eslint/no-unused-vars
+import * as Root from '../../core/root/root.js';                                   // eslint-disable-line no-unused-vars
+import * as SDK from '../../core/sdk/sdk.js';
+import * as TextUtils from '../../text_utils/text_utils.js';  // eslint-disable-line no-unused-vars
+import * as ThemeSupport from '../../theme_support/theme_support.js';
+import * as UI from '../../ui/ui.js';
+import * as Workspace from '../../workspace/workspace.js';
+import * as Bindings from '../bindings/bindings.js';
 
 import {ExtensionButton, ExtensionPanel, ExtensionSidebarPane} from './ExtensionPanel.js';
 import {ExtensionTraceProvider, TracingSession} from './ExtensionTraceProvider.js';  // eslint-disable-line no-unused-vars

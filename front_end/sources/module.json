@@ -4,7 +4,7 @@
     "search",
     "source_frame",
     "snippets",
-    "extensions",
+    "models/extensions",
     "persistence",
     "quick_open",
     "inline_editor",

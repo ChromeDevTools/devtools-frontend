@@ -12,7 +12,7 @@ import '../data_grid/data_grid-legacy.js';
 import '../panels/developer_resources/developer_resources-legacy.js';
 import '../diff/diff-legacy.js';
 import '../panels/event_listeners/event_listeners-legacy.js';
-import '../extensions/extensions-legacy.js';
+import '../models/extensions/extensions-legacy.js';
 import '../formatter/formatter-legacy.js';
 import '../har_importer/har_importer-legacy.js';
 import '../core/host/host-legacy.js';

@@ -333,7 +333,10 @@ export const goToResourceWithCustomHost = async (host: string, path: string) => 
 };
 
 export const getResourcesPath = (host: string = 'localhost') => {
-  const resourcesPath = getTestRunnerConfigSetting('hosted-server-e2e-resources-path', '/test/e2e/resources');
+  let resourcesPath = getTestRunnerConfigSetting('hosted-server-e2e-resources-path', '/test/e2e/resources');
+  if (!resourcesPath.startsWith('/')) {
+    resourcesPath = `/${resourcesPath}`;
+  }
   return `https://${host}:${getTestServerPort()}${resourcesPath}`;
 };
 

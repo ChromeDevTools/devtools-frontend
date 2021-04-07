@@ -1616,7 +1616,7 @@ UI.ContextMenu.registerProvider({
     const Sources = await loadSourcesModule();
     return Sources.ScopeChainSidebarPane.OpenLinearMemoryInspector.instance();
   },
-  experiment: Root.Runtime.ExperimentName.WASM_DWARF_DEBUGGING,
+  experiment: undefined,
   contextTypes() {
     return [
       ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement,

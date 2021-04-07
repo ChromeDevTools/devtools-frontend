@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Root from '../core/root/root.js';
 import * as UI from '../ui/ui.js';
 
 // eslint-disable-next-line rulesdir/es_modules_import
@@ -42,5 +41,4 @@ UI.ViewManager.registerViewExtension({
     const LinearMemoryInspector = await loadLinearMemoryInspectorModule();
     return LinearMemoryInspector.LinearMemoryInspectorPane.Wrapper.instance();
   },
-  experiment: Root.Runtime.ExperimentName.WASM_DWARF_DEBUGGING,
 });

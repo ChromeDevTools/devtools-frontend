@@ -4,7 +4,7 @@
 
 import {assert} from 'chai';
 
-import {$, $$, click, enableExperiment, getBrowserAndPages, goToResource, step, waitFor} from '../../shared/helper.js';
+import {$, $$, click, getBrowserAndPages, goToResource, step, waitFor} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {checkIfTabExistsInDrawer, DRAWER_PANEL_SELECTOR} from '../helpers/cross-tool-helper.js';
 import {addBreakpointForLine, inspectMemory, openSourceCodeEditorForFile, PAUSE_BUTTON, reloadPageAndWaitForSourceFile, RESUME_BUTTON} from '../helpers/sources-helpers.js';
@@ -16,8 +16,6 @@ const LINEAR_MEMORY_INSPECTOR_TAB_TITLE_SELECTOR = '.tabbed-pane-header-tab-titl
 
 describe('Scope View', async () => {
   it('opens linear memory inspector', async () => {
-    await enableExperiment('wasmDWARFDebugging');
-
     const {frontend, target} = getBrowserAndPages();
     const breakpointLine = '0x039';
     const fileName = 'memory.wasm';
@@ -61,8 +59,6 @@ describe('Scope View', async () => {
 
   // Times out on Windows
   it.skip('[crbug.com/1169143] opens one linear memory inspector per ArrayBuffer', async () => {
-    await enableExperiment('wasmDWARFDebugging');
-
     const {frontend} = getBrowserAndPages();
 
     await step('navigate to a page', async () => {

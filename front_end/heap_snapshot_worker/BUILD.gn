@@ -17,7 +17,7 @@ devtools_module("heap_snapshot_worker") {
     "../core/common:bundle",
     "../core/i18n:bundle",
     "../core/platform:bundle",
-    "../heap_snapshot_model:bundle",
+    "../models/heap_snapshot_model:bundle",
     "../text_utils:bundle",
   ]
 }
@@ -41,6 +41,6 @@ devtools_entrypoint("legacy") {
 
   deps = [
     ":worker_entrypoint",
-    "../heap_snapshot_model:legacy",
+    "../models/heap_snapshot_model:legacy",
   ]
 }

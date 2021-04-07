@@ -48,7 +48,7 @@ devtools_module("ui") {
     "SuggestBox.js",
     "TabbedPane.js",
     "TargetCrashedScreen.ts",
-    "TextEditor.js",
+    "TextEditor.ts",
     "TextPrompt.js",
     "ThrottledWidget.ts",
     "Toolbar.js",

@@ -29,6 +29,7 @@ export class TextEditorAutocompleteController implements UI.SuggestBox.SuggestBo
   _updatedLines?: any;
   _hintMarker?: any|null;
   _anchorBox?: AnchorBox|null;
+
   // https://crbug.com/1151919 * = CodeMirror.Editor
   constructor(textEditor: CodeMirrorTextEditor, codeMirror: any, config: UI.TextEditor.AutocompleteConfig) {
     this._textEditor = textEditor;

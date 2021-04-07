@@ -654,7 +654,7 @@ input.custom-search-input::-webkit-search-cancel-button {
   width: 16px;
   height: 15px;
   margin-right: 0;
-  background-size: -32px 32px;
+  background-position: -32px 32px;
   background-image: var(--image-file-mediumIcons);
 }
 /* loading spinner */

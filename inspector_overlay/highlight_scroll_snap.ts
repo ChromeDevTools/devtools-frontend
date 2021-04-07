@@ -4,7 +4,7 @@
 // found in the LICENSE file.
 
 import {Bounds, PathCommands, Position} from './common.js';
-import {drawPath, emptyBounds, LineStyle} from './highlight_common.js';
+import {drawPath, emptyBounds, LineStyle, PathBounds} from './highlight_common.js';
 
 type SnapAlignment = 'none'|'start'|'end'|'center';
 export interface ScrollSnapHighlight {
@@ -85,7 +85,7 @@ function drawAlignment(context: CanvasRenderingContext2D, point: Position): void
   context.restore();
 }
 
-export function drawScrollSnapHighlight(
+function drawScrollPadding(
     highlight: ScrollSnapHighlight, context: CanvasRenderingContext2D, emulationScaleFactor: number) {
   drawPath(
       context, highlight.paddingBox, highlight.scrollPaddingColor, undefined, undefined, emptyBounds(),
@@ -96,11 +96,11 @@ export function drawScrollSnapHighlight(
   context.globalCompositeOperation = 'destination-out';
   drawPath(context, highlight.snapport, 'white', undefined, undefined, emptyBounds(), emulationScaleFactor);
   context.restore();
+}
 
-  drawPath(
-      context, highlight.snapport, undefined, highlight.snapportBorder.color, undefined, emptyBounds(),
-      emulationScaleFactor);
-
+function drawSnapAreas(
+    highlight: ScrollSnapHighlight, context: CanvasRenderingContext2D, emulationScaleFactor: number): PathBounds[] {
+  const bounds = [];
   for (const area of highlight.snapAreas) {
     const areaBounds = emptyBounds();
     drawPath(
@@ -113,8 +113,17 @@ export function drawScrollSnapHighlight(
     drawPath(context, area.borderBox, 'white', undefined, undefined, emptyBounds(), emulationScaleFactor);
     context.restore();
 
-    const inlinePoint = area.alignInline ? getSnapAlignInlinePoint(areaBounds, area.alignInline) : null;
-    const blockPoint = area.alignBlock ? getSnapAlignBlockPoint(areaBounds, area.alignBlock) : null;
+    bounds.push(areaBounds);
+  }
+  return bounds;
+}
+
+function drawAlignmentPoints(
+    areaBounds: PathBounds[], highlight: ScrollSnapHighlight, context: CanvasRenderingContext2D) {
+  for (let i = 0; i < highlight.snapAreas.length; i++) {
+    const area = highlight.snapAreas[i];
+    const inlinePoint = area.alignInline ? getSnapAlignInlinePoint(areaBounds[i], area.alignInline) : null;
+    const blockPoint = area.alignBlock ? getSnapAlignBlockPoint(areaBounds[i], area.alignBlock) : null;
     if (inlinePoint) {
       drawAlignment(context, inlinePoint);
     }
@@ -122,4 +131,20 @@ export function drawScrollSnapHighlight(
       drawAlignment(context, blockPoint);
     }
   }
+}
+
+function drawSnapportBorder(
+    highlight: ScrollSnapHighlight, context: CanvasRenderingContext2D, emulationScaleFactor: number) {
+  drawPath(
+      context, highlight.snapport, undefined, highlight.snapportBorder.color, undefined, emptyBounds(),
+      emulationScaleFactor);
+}
+
+export function drawScrollSnapHighlight(
+    highlight: ScrollSnapHighlight, context: CanvasRenderingContext2D, emulationScaleFactor: number) {
+  // The order of the following draw calls is important, change it carefully.
+  drawScrollPadding(highlight, context, emulationScaleFactor);
+  const areaBounds = drawSnapAreas(highlight, context, emulationScaleFactor);
+  drawSnapportBorder(highlight, context, emulationScaleFactor);
+  drawAlignmentPoints(areaBounds, highlight, context);
 }

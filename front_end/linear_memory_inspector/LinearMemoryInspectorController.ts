@@ -50,7 +50,7 @@ async function getBufferFromObject(obj: SDK.RemoteObject.RemoteObject): Promise<
   const response = await obj.runtimeModel()._agent.invoke_callFunctionOn({
     objectId: obj.objectId,
     functionDeclaration:
-        'function() { return this instanceof ArrayBuffer || this instanceof SharedArrayBuffer ? this : this.buffer; }',
+        'function() { return this instanceof ArrayBuffer || (typeof SharedArrayBuffer !== \'undefined\' && this instanceof SharedArrayBuffer) ? this : this.buffer; }',
     silent: true,
     // Set object group in order to bind the object lifetime to the linear memory inspector.
     objectGroup: LINEAR_MEMORY_INSPECTOR_OBJECT_GROUP,

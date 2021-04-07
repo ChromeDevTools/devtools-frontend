@@ -223,7 +223,7 @@
   background-color: var(--color-link);
 }
 
-.selected .devtools-link [is=ui-icon].icon-mask {
+:focus .selected .devtools-link [is=ui-icon].icon-mask {
   background-color: var(--item-selection-bg-color);
 }
 

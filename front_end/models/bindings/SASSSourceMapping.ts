@@ -68,12 +68,6 @@ export class SASSSourceMapping implements SourceMapping {
             this._sourceMapDetached(event);
           },
           this),
-      this._sourceMapManager.addEventListener(
-          SDK.SourceMapManager.Events.SourceMapChanged,
-          event => {
-            this._sourceMapChanged(event);
-          },
-          this),
     ];
   }
 
@@ -123,23 +117,6 @@ export class SASSSourceMapping implements SourceMapping {
       }
     }
     await CSSWorkspaceBinding.instance().updateLocations(header);
-  }
-
-  async _sourceMapChanged(event: Common.EventTarget.EventTargetEvent): Promise<void> {
-    const sourceMap = (event.data.sourceMap as SDK.SourceMap.SourceMap);
-    const newSources = (event.data.newSources as Map<string, string>);
-    const headers = this._sourceMapManager.clientsForSourceMap(sourceMap);
-    for (const sourceURL of newSources.keys()) {
-      const uiSourceCode = this._project.uiSourceCodeForURL(sourceURL);
-      if (!uiSourceCode) {
-        console.error('Failed to update source for ' + sourceURL);
-        continue;
-      }
-      const sassText = (newSources.get(sourceURL) as string);
-      uiSourceCode.setWorkingCopy(sassText);
-    }
-    const updatePromises = headers.map(header => CSSWorkspaceBinding.instance().updateLocations(header));
-    await Promise.all(updatePromises);
   }
 
   rawLocationToUILocation(rawLocation: SDK.CSSModel.CSSLocation): Workspace.UISourceCode.UILocation|null {

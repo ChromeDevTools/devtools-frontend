@@ -272,6 +272,5 @@ export const Events = {
   SourceMapWillAttach: Symbol('SourceMapWillAttach'),
   SourceMapFailedToAttach: Symbol('SourceMapFailedToAttach'),
   SourceMapAttached: Symbol('SourceMapAttached'),
-  SourceMapDetached: Symbol('SourceMapDetached'),
-  SourceMapChanged: Symbol('SourceMapChanged')
+  SourceMapDetached: Symbol('SourceMapDetached')
 };

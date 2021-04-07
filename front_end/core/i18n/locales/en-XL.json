@@ -1499,6 +1499,9 @@
   "issues/AffectedSharedArrayBufferIssueDetailsView.ts | warning": {
     "message": "ŵár̂ńîńĝ"
   },
+  "issues/AffectedTrustedWebActivityIssueDetailsView.ts | nResources": {
+    "message": "{n, plural, =1 { r̂éŝóûŕĉé} other { r̂éŝóûŕĉéŝ}}"
+  },
   "issues/AffectedTrustedWebActivityIssueDetailsView.ts | packageName": {
     "message": "P̂áĉḱâǵê ńâḿê"
   },

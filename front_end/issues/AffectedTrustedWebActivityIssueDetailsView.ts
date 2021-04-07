@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as i18n from '../core/i18n/i18n.js';
+import * as Platform from '../core/platform/platform.js';
 import * as SDK from '../core/sdk/sdk.js';
 
 import {AffectedResourcesView} from './AffectedResourcesView.js';
@@ -10,6 +11,10 @@ import {AggregatedIssue} from './IssueAggregator.js';
 import {IssueView} from './IssueView.js';
 
 const UIStrings = {
+  /**
+  *@description Label for number of affected resources indication in issue view
+  */
+  nResources: '{n, plural, =1 { resource} other { resources}}',
   /**
   *@description Label for number of affected resources indication in issue view
   */
@@ -43,6 +48,10 @@ export class AffectedTrustedWebActivityIssueDetailsView extends AffectedResource
   constructor(parentView: IssueView, issue: AggregatedIssue) {
     super(parentView, {singular: i18nString(UIStrings.resource), plural: i18nString(UIStrings.resources)});
     this.issue = issue;
+  }
+
+  protected getResourceName(count: number): Platform.UIString.LocalizedString {
+    return i18nString(UIStrings.nResources, {n: count});
   }
 
   private appendDetail(twaIssue: SDK.TrustedWebActivityIssue.TrustedWebActivityIssue): void {

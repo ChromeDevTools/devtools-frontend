@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as LitHtml from '../../third_party/lit-html/lit-html.js';
 import * as Components from '../../ui/components/components.js';
@@ -9,15 +10,12 @@ import * as UI from '../../ui/ui.js';
 
 import {accessibilityNodeRenderer, AXTreeNode, sdkNodeToAXTreeNode} from './AccessibilityTreeUtils.js';
 
-// This class simply acts as a wrapper around the AccessibilityTree web component for
-// compatibility with DevTools legacy UI widgets. It in itself contains no business logic
-// or functionality.
-
 export class AccessibilityTreeView extends UI.Widget.VBox {
   private readonly accessibilityTreeComponent =
       new Components.TreeOutline.TreeOutline<SDK.AccessibilityModel.AccessibilityNode>();
   private treeData: AXTreeNode[] = [];
   private readonly toggleButton: HTMLButtonElement;
+  private accessibilityModel: SDK.AccessibilityModel.AccessibilityModel|null = null;
 
   constructor(toggleButton: HTMLButtonElement) {
     super();
@@ -26,21 +24,49 @@ export class AccessibilityTreeView extends UI.Widget.VBox {
     this.toggleButton = toggleButton;
     this.contentElement.appendChild(this.toggleButton);
     this.contentElement.appendChild(this.accessibilityTreeComponent);
+
+    // The DOM tree and accessibility are kept in sync as much as possible, so
+    // on node selection, update the currently inspected node and reveal in the
+    // DOM tree.
+    this.accessibilityTreeComponent.addEventListener('itemselected', (event: Event) => {
+      const evt = event as Components.TreeOutline.ItemSelectedEvent<SDK.AccessibilityModel.AccessibilityNode>;
+      const axNode = evt.data.node.treeNodeData;
+      if (!axNode.isDOMNode()) {
+        return;
+      }
+      const deferredNode = axNode.deferredDOMNode();
+      if (deferredNode) {
+        deferredNode.resolve(domNode => {
+          Common.Revealer.reveal(domNode, true /* omitFocus */);
+        });
+      }
+
+      // Highlight the node as well, for keyboard navigation.
+      evt.data.node.treeNodeData.highlightDOMNode();
+    });
+
+    this.accessibilityTreeComponent.addEventListener('itemmouseover', (event: Event) => {
+      const evt = event as Components.TreeOutline.ItemMouseOverEvent<SDK.AccessibilityModel.AccessibilityNode>;
+      evt.data.node.treeNodeData.highlightDOMNode();
+    });
+
+    this.accessibilityTreeComponent.addEventListener('itemmouseout', () => {
+      SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();
+    });
   }
 
-  async refreshAccessibilityTree(node: SDK.DOMModel.DOMNode): Promise<SDK.AccessibilityModel.AccessibilityNode|null> {
-    const accessibilityModel = node.domModel().target().model(SDK.AccessibilityModel.AccessibilityModel);
-    if (!accessibilityModel) {
-      return null;
+  setAccessibilityModel(model: SDK.AccessibilityModel.AccessibilityModel|null): void {
+    this.accessibilityModel = model;
+    this.refreshAccessibilityTree();
+  }
+
+  async refreshAccessibilityTree(): Promise<void> {
+    if (!this.accessibilityModel) {
+      return;
     }
 
-    const result = await accessibilityModel.requestRootNode();
-    return result || null;
-  }
+    const root = await this.accessibilityModel.requestRootNode();
 
-
-  async setNode(inspectedNode: SDK.DOMModel.DOMNode): Promise<void> {
-    const root = await this.refreshAccessibilityTree(inspectedNode);
     if (!root) {
       return;
     }

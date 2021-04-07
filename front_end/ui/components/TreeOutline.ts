@@ -381,12 +381,6 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
         aria-posinset=${positionInSet + 1}
         class=${listItemClasses}
         @click=${this.onNodeClick}
-        @mouseover=${(): void => {
-          this.dispatchEvent(new ItemMouseOverEvent(node));
-        }}
-        @mouseout=${(): void => {
-          this.dispatchEvent(new ItemMouseOutEvent(node));
-        }}
         track-dom-node-to-tree-node=${trackDOMNodeToTreeNode(this.domNodeToTreeNodeMap, node)}
         on-render=${ComponentHelpers.Directives.nodeRenderedCallback(domNode => {
          /**
@@ -404,7 +398,14 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
           }
         })}
       >
-        <span class="arrow-and-key-wrapper">
+        <span class="arrow-and-key-wrapper"
+          @mouseover=${(): void => {
+            this.dispatchEvent(new ItemMouseOverEvent(node));
+          }}
+          @mouseout=${(): void => {
+            this.dispatchEvent(new ItemMouseOutEvent(node));
+          }}
+        >
           <span class="arrow-icon" @click=${this.onArrowClick(node)}>
           </span>
           <span class="tree-node-key" data-node-key=${node.treeNodeData}>${renderedNodeKey}</span>

@@ -263,6 +263,7 @@ export class ElementsPanel extends UI.Panel.Panel {
   }
 
   _showDOMTree() {
+    // TODO(meredithl): Scroll to inspected DOM node.
     this._splitWidget.setMainWidget(this._searchableView);
   }
 
@@ -316,6 +317,13 @@ export class ElementsPanel extends UI.Panel.Panel {
    */
   modelAdded(domModel) {
     const parentModel = domModel.parentModel();
+
+    // Different frames will have different DOMModels, we only want to add the accessibility model
+    // for the top level frame, as the accessibility tree does not yet support exploring IFrames.
+    if (!parentModel && this._accessibilityTreeView) {
+      this._accessibilityTreeView.setAccessibilityModel(
+          domModel.target().model(SDK.AccessibilityModel.AccessibilityModel));
+    }
     let treeOutline = parentModel ? ElementsTreeOutline.forDOMModel(parentModel) : null;
     if (!treeOutline) {
       treeOutline = new ElementsTreeOutline(true, true);
@@ -525,9 +533,6 @@ export class ElementsPanel extends UI.Panel.Panel {
       return;
     }
     selectedNode.setAsInspectedNode();
-    if (this._accessibilityTreeView) {
-      this._accessibilityTreeView.setNode(selectedNode);
-    }
     if (focus) {
       this._selectedNodeOnReset = selectedNode;
       this._hasNonDefaultSelectedNode = true;

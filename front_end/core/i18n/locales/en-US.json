@@ -1433,6 +1433,9 @@
   "issues/AffectedHeavyAdView.ts | networkLimit": {
     "message": "Network limit"
   },
+  "issues/AffectedHeavyAdView.ts | nResources": {
+    "message": "{n, plural, =1 { resource} other { resources}}"
+  },
   "issues/AffectedHeavyAdView.ts | removed": {
     "message": "Removed"
   },
@@ -1531,6 +1534,9 @@
   },
   "issues/CorsIssueDetailsView.ts | items": {
     "message": "items"
+  },
+  "issues/CorsIssueDetailsView.ts | nItems": {
+    "message": "{n, plural, =1 { item} other { items}}"
   },
   "issues/CorsIssueDetailsView.ts | request": {
     "message": "Request"

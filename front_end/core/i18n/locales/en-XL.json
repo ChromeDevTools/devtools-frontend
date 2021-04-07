@@ -1433,6 +1433,9 @@
   "issues/AffectedHeavyAdView.ts | networkLimit": {
     "message": "N̂ét̂ẃôŕk̂ ĺîḿît́"
   },
+  "issues/AffectedHeavyAdView.ts | nResources": {
+    "message": "{n, plural, =1 { r̂éŝóûŕĉé} other { r̂éŝóûŕĉéŝ}}"
+  },
   "issues/AffectedHeavyAdView.ts | removed": {
     "message": "R̂ém̂óv̂éd̂"
   },
@@ -1531,6 +1534,9 @@
   },
   "issues/CorsIssueDetailsView.ts | items": {
     "message": "ît́êḿŝ"
+  },
+  "issues/CorsIssueDetailsView.ts | nItems": {
+    "message": "{n, plural, =1 { ît́êḿ} other { ît́êḿŝ}}"
   },
   "issues/CorsIssueDetailsView.ts | request": {
     "message": "R̂éq̂úêśt̂"

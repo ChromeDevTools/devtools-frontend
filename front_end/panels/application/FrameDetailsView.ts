@@ -414,6 +414,20 @@ export class FrameDetailsReportView extends HTMLElement {
             i18nString(UIStrings.disabledByIframe) :
             blockReason === Protocol.Page.PermissionsPolicyBlockReason.Header ? i18nString(UIStrings.disabledByHeader) :
                                                                                 '';
+        const revealHeader = async(): Promise<void> => {
+          if (!linkTargetRequest) {
+            return;
+          }
+          const headerName =
+              linkTargetRequest.responseHeaderValue('permissions-policy') ? 'permissions-policy' : 'feature-policy';
+          const requestLocation = Network.NetworkSearchScope.UIRequestLocation.responseHeaderMatch(
+              linkTargetRequest,
+              {name: headerName, value: ''},
+          );
+          // TODO(crbug.com/1196676) Refactor to use Common.Revealer
+          await Network.NetworkPanel.RequestLocationRevealer.instance().reveal(requestLocation);
+        };
+
         return LitHtml.html`
           <div class="permissions-row">
             <div>
@@ -433,12 +447,11 @@ export class FrameDetailsReportView extends HTMLElement {
                                     (): Promise<void> => Common.Revealer.reveal(linkTargetDOMNode),
                                     ) :
                                 LitHtml.nothing}
-            ${
+              ${
             linkTargetRequest ? this.renderIconLink(
                                     'network_panel_icon',
                                     i18nString(UIStrings.clickToShowHeader),
-                                    (): Promise<void> => Network.NetworkPanel.NetworkPanel.selectAndShowRequest(
-                                        linkTargetRequest, Network.NetworkItemView.Tabs.Headers),
+                                    revealHeader,
                                     ) :
                                 LitHtml.nothing}
             </div>

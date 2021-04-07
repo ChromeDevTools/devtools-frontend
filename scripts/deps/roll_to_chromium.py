@@ -26,7 +26,7 @@ def update(options):
     # Update from upstream
     subprocess.check_call(['git', 'fetch', 'origin'],
                           cwd=options.chromium_dir)
-    subprocess.check_call(['git', 'checkout', 'origin/master'],
+    subprocess.check_call(['git', 'checkout', 'origin/main'],
                           cwd=options.chromium_dir)
     subprocess.check_call(['git', 'fetch', 'origin'],
                           cwd=options.devtools_dir)

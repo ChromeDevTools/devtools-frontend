@@ -1077,7 +1077,7 @@ export class LocalJSONObject extends RemoteObject {
     }
 
     if (this._value instanceof ArrayBuffer ||
-        typeof SharedArrayBuffer !== undefined && this._value instanceof SharedArrayBuffer) {
+        typeof SharedArrayBuffer !== 'undefined' && this._value instanceof SharedArrayBuffer) {
       return 'arraybuffer';
     }
 

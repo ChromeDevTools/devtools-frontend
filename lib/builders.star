@@ -78,7 +78,7 @@ def builder(
 
     # TODO(machenbach): Remove this when CAS is the default.
     if recipe_name in ["chromium_integration", "chromium_trybot"]:
-      kwargs["experiments"] = {"luci.swarming.use_rbe_cas": 20}
+      kwargs["experiments"] = {"luci.swarming.use_rbe_cas": 100}
 
     luci.builder(
         swarming_tags = swarming_tags,

@@ -1211,36 +1211,6 @@
   "inline_editor/FontEditor.js | units": {
     "message": "Units"
   },
-  "input/input-meta.ts | inputs": {
-    "message": "Inputs"
-  },
-  "input/input-meta.ts | pause": {
-    "message": "Pause"
-  },
-  "input/input-meta.ts | resume": {
-    "message": "Resume"
-  },
-  "input/input-meta.ts | showInputs": {
-    "message": "Show Inputs"
-  },
-  "input/input-meta.ts | startRecording": {
-    "message": "Start recording"
-  },
-  "input/input-meta.ts | startReplaying": {
-    "message": "Start replaying"
-  },
-  "input/input-meta.ts | stopRecording": {
-    "message": "Stop recording"
-  },
-  "input/InputTimeline.ts | clearAll": {
-    "message": "Clear all"
-  },
-  "input/InputTimeline.ts | loadProfile": {
-    "message": "Load profile…"
-  },
-  "input/InputTimeline.ts | saveProfile": {
-    "message": "Save profile…"
-  },
   "inspector_main/inspector_main-meta.ts | autoOpenDevTools": {
     "message": "Auto-open DevTools for popups"
   },
@@ -5428,6 +5398,36 @@
   },
   "panels/help/ReleaseNoteView.ts | learnMore": {
     "message": "Learn more"
+  },
+  "panels/input/input-meta.ts | inputs": {
+    "message": "Inputs"
+  },
+  "panels/input/input-meta.ts | pause": {
+    "message": "Pause"
+  },
+  "panels/input/input-meta.ts | resume": {
+    "message": "Resume"
+  },
+  "panels/input/input-meta.ts | showInputs": {
+    "message": "Show Inputs"
+  },
+  "panels/input/input-meta.ts | startRecording": {
+    "message": "Start recording"
+  },
+  "panels/input/input-meta.ts | startReplaying": {
+    "message": "Start replaying"
+  },
+  "panels/input/input-meta.ts | stopRecording": {
+    "message": "Stop recording"
+  },
+  "panels/input/InputTimeline.ts | clearAll": {
+    "message": "Clear all"
+  },
+  "panels/input/InputTimeline.ts | loadProfile": {
+    "message": "Load profile…"
+  },
+  "panels/input/InputTimeline.ts | saveProfile": {
+    "message": "Save profile…"
   },
   "panels/layer_viewer/layer_viewer-meta.ts | panOrRotateDown": {
     "message": "Pan or rotate down"

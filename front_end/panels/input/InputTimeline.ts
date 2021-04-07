@@ -4,13 +4,13 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as i18n from '../core/i18n/i18n.js';
-import * as Platform from '../core/platform/platform.js';
-import * as ProtocolClient from '../core/protocol_client/protocol_client.js';
-import * as SDK from '../core/sdk/sdk.js';
-import * as Bindings from '../models/bindings/bindings.js';
-import * as Timeline from '../timeline/timeline.js';
-import * as UI from '../ui/ui.js';
+import * as i18n from '../../core/i18n/i18n.js';
+import * as Platform from '../../core/platform/platform.js';
+import * as ProtocolClient from '../../core/protocol_client/protocol_client.js';
+import * as SDK from '../../core/sdk/sdk.js';
+import * as Bindings from '../../models/bindings/bindings.js';
+import * as Timeline from '../../timeline/timeline.js';
+import * as UI from '../../ui/ui.js';
 
 import {InputModel} from './InputModel.js';
 
@@ -28,7 +28,7 @@ const UIStrings = {
   */
   saveProfile: 'Save profile…',
 };
-const str_ = i18n.i18n.registerUIStrings('input/InputTimeline.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/input//InputTimeline.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 let inputTimelineInstance: InputTimeline;
@@ -49,7 +49,7 @@ export class InputTimeline extends UI.Widget.VBox implements Timeline.TimelineLo
 
   constructor() {
     super(true);
-    this.registerRequiredCSS('input/inputTimeline.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('panels/input//inputTimeline.css', {enableLegacyPatching: false});
     this.element.classList.add('inputs-timeline');
 
     this._tracingClient = null;

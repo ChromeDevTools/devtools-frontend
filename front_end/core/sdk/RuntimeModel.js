@@ -588,7 +588,6 @@ class RuntimeDispatcher {
   }
 
   /**
-   * @override
    * @param {!Protocol.Runtime.ExecutionContextCreatedEvent} context
    */
   executionContextCreated({context}) {
@@ -596,22 +595,17 @@ class RuntimeDispatcher {
   }
 
   /**
-   * @override
    * @param {!Protocol.Runtime.ExecutionContextDestroyedEvent} executionContextId
    */
   executionContextDestroyed({executionContextId}) {
     this._runtimeModel._executionContextDestroyed(executionContextId);
   }
 
-  /**
-   * @override
-   */
   executionContextsCleared() {
     this._runtimeModel._executionContextsCleared();
   }
 
   /**
-   * @override
    * @param {!Protocol.Runtime.ExceptionThrownEvent} event
    */
   exceptionThrown({timestamp, exceptionDetails}) {
@@ -619,7 +613,6 @@ class RuntimeDispatcher {
   }
 
   /**
-   * @override
    * @param {!Protocol.Runtime.ExceptionRevokedEvent} event
    */
   exceptionRevoked({reason, exceptionId}) {
@@ -627,7 +620,6 @@ class RuntimeDispatcher {
   }
 
   /**
-   * @override
    * @param {!Protocol.Runtime.ConsoleAPICalledEvent} event
    */
   consoleAPICalled({type, args, executionContextId, timestamp, stackTrace, context}) {
@@ -635,7 +627,6 @@ class RuntimeDispatcher {
   }
 
   /**
-   * @override
    * @param {!Protocol.Runtime.InspectRequestedEvent} event
    */
   inspectRequested({object, hints}) {
@@ -643,7 +634,6 @@ class RuntimeDispatcher {
   }
 
   /**
-   * @override
    * @param {!Protocol.Runtime.BindingCalledEvent} event
    */
   bindingCalled(event) {

@@ -29,7 +29,6 @@ export class StringOutputStream {
   }
 
   /**
-   * @override
    * @param {string} chunk
    * @return {!Promise.<void>}
    */
@@ -38,7 +37,6 @@ export class StringOutputStream {
   }
 
   /**
-   * @override
    * @return {!Promise.<void>}
    */
   async close() {

@@ -160,7 +160,6 @@ export class CSSStyleSheetHeader {
   }
 
   /**
-   * @override
    * @return {string}
    */
   contentURL() {
@@ -168,7 +167,6 @@ export class CSSStyleSheetHeader {
   }
 
   /**
-   * @override
    * @return {!Common.ResourceType.ResourceType}
    */
   contentType() {
@@ -176,7 +174,6 @@ export class CSSStyleSheetHeader {
   }
 
   /**
-   * @override
    * @return {!Promise<boolean>}
    */
   contentEncoded() {
@@ -184,7 +181,6 @@ export class CSSStyleSheetHeader {
   }
 
   /**
-   * @override
    * @return {!Promise<!TextUtils.ContentProvider.DeferredContent>}
    */
   async requestContent() {
@@ -201,7 +197,6 @@ export class CSSStyleSheetHeader {
   }
 
   /**
-   * @override
    * @param {string} query
    * @param {boolean} caseSensitive
    * @param {boolean} isRegex

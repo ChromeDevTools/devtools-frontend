@@ -51,6 +51,7 @@ export class AccessibilityNode {
     this._value = payload.value || null;
     this._properties = payload.properties || null;
     this._childIds = payload.childIds || null;
+    /** @type {AccessibilityNode|null} */
     this._parentNode = null;
   }
 

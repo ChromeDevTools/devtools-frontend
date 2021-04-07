@@ -75,7 +75,6 @@ export class ScreenCaptureModel extends SDKModel {
   }
 
   /**
-   * @override
    * @param {!Protocol.Page.ScreencastFrameEvent} _
    */
   screencastFrame({data, metadata, sessionId}) {
@@ -86,7 +85,6 @@ export class ScreenCaptureModel extends SDKModel {
   }
 
   /**
-   * @override
    * @param {!Protocol.Page.ScreencastVisibilityChangedEvent} _
    */
   screencastVisibilityChanged({visible}) {
@@ -96,77 +94,66 @@ export class ScreenCaptureModel extends SDKModel {
   }
 
   /**
-   * @override
    * @param {!Protocol.Page.DomContentEventFiredEvent} params
    */
   domContentEventFired(params) {
   }
 
   /**
-   * @override
    * @param {!Protocol.Page.LoadEventFiredEvent} params
    */
   loadEventFired(params) {
   }
 
   /**
-   * @override
    * @param {!Protocol.Page.LifecycleEventEvent} params
    */
   lifecycleEvent(params) {
   }
 
   /**
-   * @override
    * @param {!Protocol.Page.NavigatedWithinDocumentEvent} params
    */
   navigatedWithinDocument(params) {
   }
 
   /**
-   * @override
    * @param {!Protocol.Page.FrameAttachedEvent} params
    */
   frameAttached(params) {
   }
 
   /**
-   * @override
    * @param {!Protocol.Page.FrameNavigatedEvent} params
    */
   frameNavigated(params) {
   }
 
   /**
-   * @override
    * @param {!Protocol.Page.DocumentOpenedEvent} params
    */
   documentOpened(params) {
   }
 
   /**
-   * @override
    * @param {!Protocol.Page.FrameDetachedEvent} params
    */
   frameDetached(params) {
   }
 
   /**
-   * @override
    * @param {!Protocol.Page.FrameStartedLoadingEvent} params
    */
   frameStartedLoading(params) {
   }
 
   /**
-   * @override
    * @param {!Protocol.Page.FrameStoppedLoadingEvent} params
    */
   frameStoppedLoading(params) {
   }
 
   /**
-   * @override
    * @param {!Protocol.Page.FrameRequestedNavigationEvent} params
    */
   frameRequestedNavigation(params) {
@@ -174,82 +161,62 @@ export class ScreenCaptureModel extends SDKModel {
 
 
   /**
-   * @override
    * @param {!Protocol.Page.FrameScheduledNavigationEvent} params
    */
   frameScheduledNavigation(params) {
   }
 
   /**
-   * @override
    * @param {!Protocol.Page.FrameClearedScheduledNavigationEvent} params
    */
   frameClearedScheduledNavigation(params) {
   }
 
-  /**
-   * @override
-   */
   frameResized() {
   }
 
   /**
-   * @override
    * @param {!Protocol.Page.JavascriptDialogOpeningEvent} params
    */
   javascriptDialogOpening(params) {
   }
 
   /**
-   * @override
    * @param {!Protocol.Page.JavascriptDialogClosedEvent} params
    */
   javascriptDialogClosed(params) {
   }
 
-  /**
-   * @override
-   */
   interstitialShown() {
   }
 
-  /**
-   * @override
-   */
   interstitialHidden() {
   }
 
   /**
-   * @override
    * @param {!Protocol.Page.WindowOpenEvent} params
    */
   windowOpen(params) {
   }
 
   /**
-   * @override
    * @param {!Protocol.Page.FileChooserOpenedEvent} params
    */
   fileChooserOpened(params) {
   }
 
   /**
-   * @override
    * @param {!Protocol.Page.CompilationCacheProducedEvent} params
    */
   compilationCacheProduced(params) {
   }
 
   /**
-   * @override
    * @param {!Protocol.Page.DownloadWillBeginEvent} params
    */
   downloadWillBegin(params) {
   }
 
-  /**
-   * @override
-   */
   downloadProgress() {
   }
 }

@@ -44,7 +44,6 @@ export class ObjectWrapper {
   }
 
   /**
-   * @override
    * @param {string|symbol} eventType
    * @param {function(!EventTargetEvent):void} listener
    * @param {!Object=} thisObject
@@ -70,7 +69,6 @@ export class ObjectWrapper {
   }
 
   /**
-   * @override
    * @param {string|symbol} eventType
    * @return {!Promise<*>}
    */
@@ -84,7 +82,6 @@ export class ObjectWrapper {
   }
 
   /**
-   * @override
    * @param {string|symbol} eventType
    * @param {function(!EventTargetEvent):void} listener
    * @param {!Object=} thisObject
@@ -109,7 +106,6 @@ export class ObjectWrapper {
   }
 
   /**
-   * @override
    * @param {string|symbol} eventType
    * @return {boolean}
    */
@@ -118,7 +114,6 @@ export class ObjectWrapper {
   }
 
   /**
-   * @override
    * @param {string|symbol} eventType
    * @param {*=} eventData
    */

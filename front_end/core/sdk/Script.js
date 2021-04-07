@@ -194,7 +194,6 @@ export class Script {
   }
 
   /**
-   * @override
    * @return {string}
    */
   contentURL() {
@@ -202,7 +201,6 @@ export class Script {
   }
 
   /**
-   * @override
    * @return {!Common.ResourceType.ResourceType}
    */
   contentType() {
@@ -210,7 +208,6 @@ export class Script {
   }
 
   /**
-   * @override
    * @return {!Promise<boolean>}
    */
   async contentEncoded() {
@@ -218,7 +215,6 @@ export class Script {
   }
 
   /**
-   * @override
    * @return {!Promise<!TextUtils.ContentProvider.DeferredContent>}
    */
   requestContent() {
@@ -280,7 +276,6 @@ export class Script {
   }
 
   /**
-   * @override
    * @param {string} query
    * @param {boolean} caseSensitive
    * @param {boolean} isRegex

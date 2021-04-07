@@ -34,7 +34,6 @@ export class StaticContentProvider {
   }
 
   /**
-   * @override
    * @return {string}
    */
   contentURL() {
@@ -42,7 +41,6 @@ export class StaticContentProvider {
   }
 
   /**
-   * @override
    * @return {!Common.ResourceType.ResourceType}
    */
   contentType() {
@@ -50,7 +48,6 @@ export class StaticContentProvider {
   }
 
   /**
-   * @override
    * @return {!Promise<boolean>}
    */
   contentEncoded() {
@@ -58,7 +55,6 @@ export class StaticContentProvider {
   }
 
   /**
-   * @override
    * @return {!Promise<!DeferredContent>}
    */
   requestContent() {
@@ -66,7 +62,6 @@ export class StaticContentProvider {
   }
 
   /**
-   * @override
    * @param {string} query
    * @param {boolean} caseSensitive
    * @param {boolean} isRegex

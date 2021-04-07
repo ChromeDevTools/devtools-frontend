@@ -364,7 +364,6 @@ class ServiceWorkerDispatcher {
   }
 
   /**
-   * @override
    * @param {!Protocol.ServiceWorker.WorkerRegistrationUpdatedEvent} event
    */
   workerRegistrationUpdated({registrations}) {
@@ -372,7 +371,6 @@ class ServiceWorkerDispatcher {
   }
 
   /**
-   * @override
    * @param {!Protocol.ServiceWorker.WorkerVersionUpdatedEvent} event
    */
   workerVersionUpdated({versions}) {
@@ -380,7 +378,6 @@ class ServiceWorkerDispatcher {
   }
 
   /**
-   * @override
    * @param {!Protocol.ServiceWorker.WorkerErrorReportedEvent} event
    */
   workerErrorReported({errorMessage}) {

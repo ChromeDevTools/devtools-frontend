@@ -287,7 +287,6 @@ export class TextRange {
   }
 
   /**
-   * @override
    * @return {string}
    */
   toString() {

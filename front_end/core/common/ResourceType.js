@@ -329,7 +329,6 @@ export class ResourceType {
   }
 
   /**
-   * @override
    * @return {string}
    */
   toString() {

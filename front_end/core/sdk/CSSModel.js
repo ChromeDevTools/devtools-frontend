@@ -944,15 +944,11 @@ class CSSDispatcher {
     this._cssModel = cssModel;
   }
 
-  /**
-   * @override
-   */
   mediaQueryResultChanged() {
     this._cssModel.mediaQueryResultChanged();
   }
 
   /**
-   * @override
    * @param {!Protocol.CSS.FontsUpdatedEvent} event
    */
   fontsUpdated({font}) {
@@ -960,7 +956,6 @@ class CSSDispatcher {
   }
 
   /**
-   * @override
    * @param {!Protocol.CSS.StyleSheetChangedEvent} event
    */
   styleSheetChanged({styleSheetId}) {
@@ -968,7 +963,6 @@ class CSSDispatcher {
   }
 
   /**
-   * @override
    * @param {!Protocol.CSS.StyleSheetAddedEvent} event
    */
   styleSheetAdded({header}) {
@@ -976,7 +970,6 @@ class CSSDispatcher {
   }
 
   /**
-   * @override
    * @param {!Protocol.CSS.StyleSheetRemovedEvent} event
    */
   styleSheetRemoved({styleSheetId}) {

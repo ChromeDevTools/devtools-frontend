@@ -623,6 +623,7 @@ export class ResourceTreeFrame {
    */
   constructor(model, parentFrame, frameId, payload, creationStackTrace) {
     this._model = model;
+    /** @type {?ResourceTreeFrame} */
     this._sameTargetParentFrame = parentFrame;
     this._id = frameId;
     /** @type {?Protocol.Page.FrameId} */
@@ -1043,7 +1044,6 @@ export class PageDispatcher {
   }
 
   /**
-   * @override
    * @param {!Protocol.Page.DomContentEventFiredEvent} event
    */
   domContentEventFired({timestamp}) {
@@ -1051,7 +1051,6 @@ export class PageDispatcher {
   }
 
   /**
-   * @override
    * @param {!Protocol.Page.LoadEventFiredEvent} event
    */
   loadEventFired({timestamp}) {
@@ -1060,7 +1059,6 @@ export class PageDispatcher {
   }
 
   /**
-   * @override
    * @param {!Protocol.Page.LifecycleEventEvent} event
    */
   lifecycleEvent({frameId, loaderId, name, timestamp}) {
@@ -1068,7 +1066,6 @@ export class PageDispatcher {
   }
 
   /**
-   * @override
    * @param {!Protocol.Page.FrameAttachedEvent} event
    */
   frameAttached({frameId, parentFrameId, stack}) {
@@ -1076,7 +1073,6 @@ export class PageDispatcher {
   }
 
   /**
-   * @override
    * @param {!Protocol.Page.FrameNavigatedEvent} event
    */
   frameNavigated({frame}) {
@@ -1084,7 +1080,6 @@ export class PageDispatcher {
   }
 
   /**
- * @override
  * @param {!Protocol.Page.DocumentOpenedEvent} event
  */
   documentOpened({frame}) {
@@ -1092,7 +1087,6 @@ export class PageDispatcher {
   }
 
   /**
-   * @override
    * @param {!Protocol.Page.FrameDetachedEvent} event
    */
   frameDetached({frameId}) {
@@ -1100,56 +1094,48 @@ export class PageDispatcher {
   }
 
   /**
-   * @override
    * @param {!Protocol.Page.FrameStartedLoadingEvent} event
    */
   frameStartedLoading({frameId}) {
   }
 
   /**
-   * @override
    * @param {!Protocol.Page.FrameStoppedLoadingEvent} event
    */
   frameStoppedLoading({frameId}) {
   }
 
   /**
-   * @override
    * @param {!Protocol.Page.FrameRequestedNavigationEvent} event
    */
   frameRequestedNavigation({frameId}) {
   }
 
   /**
-   * @override
    * @param {!Protocol.Page.FrameScheduledNavigationEvent} event
    */
   frameScheduledNavigation({frameId, delay}) {
   }
 
   /**
-   * @override
    * @param {!Protocol.Page.FrameClearedScheduledNavigationEvent} event
    */
   frameClearedScheduledNavigation({frameId}) {
   }
 
   /**
-   * @override
    * @param {!Protocol.Page.NavigatedWithinDocumentEvent} event
    */
   navigatedWithinDocument({frameId, url}) {
   }
 
   /**
-   * @override
    */
   frameResized() {
     this._resourceTreeModel.dispatchEventToListeners(Events.FrameResized, null);
   }
 
   /**
-   * @override
    * @param {!Protocol.Page.JavascriptDialogOpeningEvent} event
    */
   javascriptDialogOpening({url, message, type, hasBrowserHandler, defaultPrompt}) {
@@ -1159,73 +1145,57 @@ export class PageDispatcher {
   }
 
   /**
-   * @override
    * @param {!Protocol.Page.JavascriptDialogClosedEvent} event
    */
   javascriptDialogClosed({result, userInput}) {
   }
 
   /**
-   * @override
    * @param {!Protocol.Page.ScreencastFrameEvent} event
    */
   screencastFrame({data, metadata, sessionId}) {
   }
 
   /**
-   * @override
    * @param {!Protocol.Page.ScreencastVisibilityChangedEvent} event
    */
   screencastVisibilityChanged({visible}) {
   }
 
-  /**
-   * @override
-   */
   interstitialShown() {
     this._resourceTreeModel._isInterstitialShowing = true;
     this._resourceTreeModel.dispatchEventToListeners(Events.InterstitialShown);
   }
 
-  /**
-   * @override
-   */
   interstitialHidden() {
     this._resourceTreeModel._isInterstitialShowing = false;
     this._resourceTreeModel.dispatchEventToListeners(Events.InterstitialHidden);
   }
 
   /**
-   * @override
    * @param {!Protocol.Page.WindowOpenEvent} event
    */
   windowOpen({url, windowName, windowFeatures, userGesture}) {
   }
 
   /**
-   * @override
    * @param {!Protocol.Page.CompilationCacheProducedEvent} event
    */
   compilationCacheProduced({url, data}) {
   }
 
   /**
-   * @override
    * @param {!Protocol.Page.FileChooserOpenedEvent} event
    */
   fileChooserOpened({mode}) {
   }
 
   /**
-   * @override
    * @param {!Protocol.Page.DownloadWillBeginEvent} event
    */
   downloadWillBegin({frameId, url}) {
   }
 
-  /**
-   * @override
-   */
   downloadProgress() {
   }
 }

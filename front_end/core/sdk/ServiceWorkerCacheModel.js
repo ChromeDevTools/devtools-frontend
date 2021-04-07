@@ -300,7 +300,6 @@ export class ServiceWorkerCacheModel extends SDKModel {
 
   /**
    * @param {!Protocol.Storage.CacheStorageListUpdatedEvent} event
-   * @override
    */
   cacheStorageListUpdated({origin}) {
     this._originsUpdated.add(origin);
@@ -314,7 +313,6 @@ export class ServiceWorkerCacheModel extends SDKModel {
 
   /**
    * @param {!Protocol.Storage.CacheStorageContentUpdatedEvent} event
-   * @override
    */
   cacheStorageContentUpdated({origin, cacheName}) {
     this.dispatchEventToListeners(Events.CacheStorageContentUpdated, {origin, cacheName});
@@ -322,14 +320,12 @@ export class ServiceWorkerCacheModel extends SDKModel {
 
   /**
    * @param {!Protocol.Storage.IndexedDBListUpdatedEvent} event
-   * @override
    */
   indexedDBListUpdated(event) {
   }
 
   /**
    * @param {!Protocol.Storage.IndexedDBContentUpdatedEvent} event
-   * @override
    */
   indexedDBContentUpdated(event) {
   }
@@ -366,7 +362,6 @@ export class Cache {
   }
 
   /**
-   * @override
    * @return {string}
    */
   toString() {

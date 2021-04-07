@@ -138,7 +138,6 @@ class TracingDispatcher {
   }
 
   /**
-   * @override
    * @param {!Protocol.Tracing.BufferUsageEvent} event
    */
   bufferUsage({value, eventCount, percentFull}) {
@@ -146,16 +145,12 @@ class TracingDispatcher {
   }
 
   /**
-   * @override
    * @param {!Protocol.Tracing.DataCollectedEvent} event
    */
   dataCollected({value}) {
     this._tracingManager._eventsCollected(value);
   }
 
-  /**
-   * @override
-   */
   tracingComplete() {
     this._tracingManager._tracingComplete();
   }

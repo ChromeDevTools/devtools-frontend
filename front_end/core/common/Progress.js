@@ -131,7 +131,6 @@ export class SubProgress {
   }
 
   /**
-   * @override
    * @return {boolean}
    */
   isCanceled() {
@@ -139,23 +138,18 @@ export class SubProgress {
   }
 
   /**
-   * @override
    * @param {string} title
    */
   setTitle(title) {
     this._composite._parent.setTitle(title);
   }
 
-  /**
-   * @override
-   */
   done() {
     this.setWorked(this._totalWork);
     this._composite._childDone();
   }
 
   /**
-   * @override
    * @param {number} totalWork
    */
   setTotalWork(totalWork) {
@@ -164,7 +158,6 @@ export class SubProgress {
   }
 
   /**
-   * @override
    * @param {number} worked
    * @param {string=} title
    */
@@ -177,7 +170,6 @@ export class SubProgress {
   }
 
   /**
-   * @override
    * @param {number=} worked
    */
   worked(worked) {
@@ -199,7 +191,6 @@ export class ProgressProxy {
   }
 
   /**
-   * @override
    * @return {boolean}
    */
   isCanceled() {
@@ -207,7 +198,6 @@ export class ProgressProxy {
   }
 
   /**
-   * @override
    * @param {string} title
    */
   setTitle(title) {
@@ -216,9 +206,6 @@ export class ProgressProxy {
     }
   }
 
-  /**
-   * @override
-   */
   done() {
     if (this._delegate) {
       this._delegate.done();
@@ -229,7 +216,6 @@ export class ProgressProxy {
   }
 
   /**
-   * @override
    * @param {number} totalWork
    */
   setTotalWork(totalWork) {
@@ -239,7 +225,6 @@ export class ProgressProxy {
   }
 
   /**
-   * @override
    * @param {number} worked
    * @param {string=} title
    */
@@ -250,7 +235,6 @@ export class ProgressProxy {
   }
 
   /**
-   * @override
    * @param {number=} worked
    */
   worked(worked) {

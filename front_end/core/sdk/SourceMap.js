@@ -276,7 +276,6 @@ export class TextSourceMap {
   }
 
   /**
-   * @override
    * @return {string}
    */
   compiledURL() {
@@ -284,7 +283,6 @@ export class TextSourceMap {
   }
 
   /**
-   * @override
    * @return {string}
    */
   url() {
@@ -292,7 +290,6 @@ export class TextSourceMap {
   }
 
   /**
-   * @override
    * @return {!Array.<string>}
    */
   sourceURLs() {
@@ -300,7 +297,6 @@ export class TextSourceMap {
   }
 
   /**
-   * @override
    * @param {string} sourceURL
    * @param {!Common.ResourceType.ResourceType} contentType
    * @return {!TextUtils.ContentProvider.ContentProvider}
@@ -314,7 +310,6 @@ export class TextSourceMap {
   }
 
   /**
-   * @override
    * @param {string} sourceURL
    * @return {?string}
    */
@@ -327,7 +322,6 @@ export class TextSourceMap {
   }
 
   /**
-   * @override
    * @param {number} lineNumber in compiled resource
    * @param {number} columnNumber in compiled resource
    * @return {?SourceMapEntry}
@@ -340,7 +334,6 @@ export class TextSourceMap {
   }
 
   /**
-   * @override
    * @param {string} sourceURL
    * @param {number} lineNumber
    * @param {number} columnNumber
@@ -392,7 +385,6 @@ export class TextSourceMap {
   }
 
   /**
-   * @override
    * @return {!Array<!SourceMapEntry>}
    */
   mappings() {

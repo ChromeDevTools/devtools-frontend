@@ -79,7 +79,6 @@ export class CPUProfilerModel extends SDKModel {
   }
 
   /**
-   * @override
    * @param {!Protocol.Profiler.ConsoleProfileStartedEvent} event
    */
   consoleProfileStarted({id, location, title}) {
@@ -91,7 +90,6 @@ export class CPUProfilerModel extends SDKModel {
   }
 
   /**
-   * @override
    * @param {!Protocol.Profiler.ConsoleProfileFinishedEvent} event
    */
   consoleProfileFinished({id, location, profile, title}) {
@@ -177,7 +175,6 @@ export class CPUProfilerModel extends SDKModel {
   }
 
   /**
-   * @override
    * @param {!Protocol.Profiler.PreciseCoverageDeltaUpdateEvent} event
    */
   preciseCoverageDeltaUpdate({timestamp, occassion, result}) {

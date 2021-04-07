@@ -4,7 +4,7 @@
 
 import * as Platform from '../../../../front_end/core/platform/platform.js';
 import * as QuickOpen from '../../../../front_end/quick_open/quick_open.js';
-import * as UI from '../../../../front_end/ui/ui.js';
+import * as UI from '../../../../front_end/ui/legacy/legacy.js';
 import {describeWithEnvironment} from '../helpers/EnvironmentHelpers.js';
 
 const {assert} = chai;

@@ -1,0 +1,135 @@
+# Copyright 2020 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("../../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../../../scripts/build/ninja/devtools_module.gni")
+
+devtools_module("ui") {
+  sources = [
+    "ARIAUtils.ts",
+    "ActionRegistration.ts",
+    "ActionRegistry.ts",
+    "Context.js",
+    "ContextFlavorListener.ts",
+    "ContextMenu.js",
+    "Dialog.ts",
+    "DockController.js",
+    "DropTarget.ts",
+    "EmptyWidget.ts",
+    "FilterBar.ts",
+    "FilterSuggestionBuilder.js",
+    "ForwardedInputEventHandler.ts",
+    "Fragment.ts",
+    "Geometry.js",
+    "GlassPane.ts",
+    "HistoryInput.ts",
+    "Icon.ts",
+    "Infobar.js",
+    "InplaceEditor.ts",
+    "InspectorView.js",
+    "KeyboardShortcut.js",
+    "ListControl.js",
+    "ListModel.js",
+    "ListWidget.js",
+    "Panel.js",
+    "PopoverHelper.js",
+    "ProgressIndicator.js",
+    "RemoteDebuggingTerminatedScreen.js",
+    "ReportView.js",
+    "ResizerWidget.js",
+    "RootView.js",
+    "SearchableView.js",
+    "SettingsUI.js",
+    "ShortcutRegistry.js",
+    "SoftContextMenu.js",
+    "SoftDropDown.ts",
+    "SplitWidget.js",
+    "SuggestBox.js",
+    "TabbedPane.js",
+    "TargetCrashedScreen.ts",
+    "TextEditor.js",
+    "TextPrompt.js",
+    "ThrottledWidget.ts",
+    "Toolbar.js",
+    "Tooltip.js",
+    "Treeoutline.ts",
+    "UIUtils.js",
+    "View.ts",
+    "ViewManager.ts",
+    "ViewRegistration.ts",
+    "Widget.js",
+    "XElement.ts",
+    "XLink.ts",
+    "XWidget.ts",
+    "ZoomManager.js",
+  ]
+
+  deps = [
+    "../../core/common:bundle",
+    "../../core/dom_extension:bundle",
+    "../../core/host:bundle",
+    "../../core/i18n:bundle",
+    "../../core/platform:bundle",
+    "../../core/sdk:bundle",
+    "../../text_utils:bundle",
+    "../../theme_support:bundle",
+    "utils:bundle",
+  ]
+}
+
+copy_to_gen("legacy_css") {
+  sources = [
+    "checkboxTextLabel.css",
+    "closeButton.css",
+    "confirmDialog.css",
+    "dialog.css",
+    "dropTarget.css",
+    "emptyWidget.css",
+    "filter.css",
+    "glassPane.css",
+    "infobar.css",
+    "inlineButton.css",
+    "inspectorCommon.css",
+    "inspectorScrollbars.css",
+    "inspectorSyntaxHighlight.css",
+    "inspectorSyntaxHighlightDark.css",
+    "inspectorViewTabbedPane.css",
+    "listWidget.css",
+    "popover.css",
+    "progressIndicator.css",
+    "radioButton.css",
+    "remoteDebuggingTerminatedScreen.css",
+    "reportView.css",
+    "rootView.css",
+    "searchableView.css",
+    "slider.css",
+    "smallBubble.css",
+    "softContextMenu.css",
+    "softDropDown.css",
+    "softDropDownButton.css",
+    "splitWidget.css",
+    "suggestBox.css",
+    "tabbedPane.css",
+    "targetCrashedScreen.css",
+    "textButton.css",
+    "textPrompt.css",
+    "themeColors.css",
+    "toolbar.css",
+    "tooltip.css",
+    "treeoutline.css",
+    "viewContainers.css",
+  ]
+}
+
+devtools_entrypoint("bundle") {
+  entrypoint = "legacy.js"
+
+  deps = [ ":ui" ]
+}
+
+devtools_entrypoint("legacy") {
+  entrypoint = "legacy-legacy.js"
+
+  deps = [ ":bundle" ]
+}

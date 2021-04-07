@@ -7,7 +7,7 @@
 import * as SDK from '../core/sdk/sdk.js';  // eslint-disable-line no-unused-vars
 import * as LayerViewer from '../panels/layer_viewer/layer_viewer.js';
 import * as TimelineModel from '../timeline_model/timeline_model.js';
-import * as UI from '../ui/ui.js';
+import * as UI from '../ui/legacy/legacy.js';
 
 export class TimelinePaintProfilerView extends UI.SplitWidget.SplitWidget {
   _frameModel: TimelineModel.TimelineFrameModel.TimelineFrameModel;

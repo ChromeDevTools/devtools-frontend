@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../core/common/common.js';  // eslint-disable-line no-unused-vars
-import * as UI from '../ui/ui.js';
+import * as UI from '../ui/legacy/legacy.js';
 
 export class SimpleApp implements Common.App.App {
   presentUI(document: Document): void {

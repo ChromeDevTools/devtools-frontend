@@ -42,8 +42,8 @@ const COLOR_INDICATOR_REGEXES = new Set([
 
 const CUSTOM_VARIABLE_OVERRIDE_PREFIX = '--override-';
 
-const themeColorsPath = path.join(__dirname, '..', '..', '..', 'front_end', 'ui', 'themeColors.css');
-const inspectorCommonPath = path.join(__dirname, '..', '..', '..', 'front_end', 'ui', 'inspectorCommon.css');
+const themeColorsPath = path.join(__dirname, '..', '..', '..', 'front_end', 'ui', 'legacy', 'themeColors.css');
+const inspectorCommonPath = path.join(__dirname, '..', '..', '..', 'front_end', 'ui', 'legacy', 'inspectorCommon.css');
 
 function getRootVariableDeclarationsFromCSSFile(filePath) {
   const fileContents = fs.readFileSync(filePath, {encoding: 'utf-8'});
@@ -89,7 +89,7 @@ module.exports = stylelint.createPlugin(RULE_NAME, function(primary, secondary, 
         declaration.after(' /* stylelint-disable-line plugin/use_theme_colors */');
       } else {
         stylelint.utils.report({
-          message: 'All CSS color declarations should use a variable defined in ui/themeColors.css',
+          message: 'All CSS color declarations should use a variable defined in ui/legacy/themeColors.css',
           ruleName: RULE_NAME,
           node: declaration,
           result: postcssResult,

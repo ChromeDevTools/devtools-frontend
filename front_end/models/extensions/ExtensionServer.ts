@@ -44,7 +44,7 @@ import * as Root from '../../core/root/root.js';                                
 import * as SDK from '../../core/sdk/sdk.js';
 import * as TextUtils from '../../text_utils/text_utils.js';  // eslint-disable-line no-unused-vars
 import * as ThemeSupport from '../../theme_support/theme_support.js';
-import * as UI from '../../ui/ui.js';
+import * as UI from '../../ui/legacy/legacy.js';
 import * as Workspace from '../../workspace/workspace.js';
 import * as Bindings from '../bindings/bindings.js';
 

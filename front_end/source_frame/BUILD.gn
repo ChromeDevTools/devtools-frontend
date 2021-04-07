@@ -30,7 +30,7 @@ devtools_module("source_frame") {
     "../object_ui:bundle",
     "../text_editor:bundle",
     "../text_utils:bundle",
-    "../ui:bundle",
+    "../ui/legacy:bundle",
     "../workspace:bundle",
   ]
 }

@@ -6,7 +6,7 @@
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Diff from '../../diff/diff.js';
-import * as UI from '../../ui/ui.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
 import type * as Workspace from '../../workspace/workspace.js';
 import * as WorkspaceDiff from '../../workspace_diff/workspace_diff.js';

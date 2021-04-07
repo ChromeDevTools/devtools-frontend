@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 // eslint-disable-next-line rulesdir/es_modules_import
-import * as UI from '../../ui/ui.js';
+import * as UI from '../legacy/legacy.js';
 
 import type {DataGrid} from './DataGrid.js';
 import {ContextMenuColumnSortClickEvent} from './DataGridUtils.js';

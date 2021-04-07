@@ -40,7 +40,7 @@ import * as Extensions from '../models/extensions/extensions.js';
 import * as ObjectUI from '../object_ui/object_ui.js';
 import * as Recorder from '../recorder/recorder.js';
 import * as Snippets from '../snippets/snippets.js';
-import * as UI from '../ui/ui.js';
+import * as UI from '../ui/legacy/legacy.js';
 import * as Workspace from '../workspace/workspace.js';
 
 import {CallStackSidebarPane} from './CallStackSidebarPane.js';

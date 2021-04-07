@@ -14,7 +14,7 @@ import * as ConsoleCounters from '../panels/console_counters/console_counters.js
 import * as Elements from '../panels/elements/elements.js';
 import * as Network from '../panels/network/network.js';
 import * as WebComponents from '../ui/components/components.js';
-import * as UI from '../ui/ui.js';
+import * as UI from '../ui/legacy/legacy.js';
 
 import {AffectedBlockedByResponseView} from './AffectedBlockedByResponseView.js';
 import {AffectedCookiesView} from './AffectedCookiesView.js';

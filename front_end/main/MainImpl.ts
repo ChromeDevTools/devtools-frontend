@@ -50,7 +50,7 @@ import * as Recorder from '../recorder/recorder.js';
 import * as Snippets from '../snippets/snippets.js';
 import * as ThemeSupport from '../theme_support/theme_support.js';
 import * as Timeline from '../timeline/timeline.js';
-import * as UI from '../ui/ui.js';
+import * as UI from '../ui/legacy/legacy.js';
 import * as Workspace from '../workspace/workspace.js';
 
 import {ExecutionContextSelector} from './ExecutionContextSelector.js';

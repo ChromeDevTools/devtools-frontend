@@ -8,7 +8,7 @@ import * as Common from '../core/common/common.js';  // eslint-disable-line no-u
 import * as SDK from '../core/sdk/sdk.js';      // eslint-disable-line no-unused-vars
 import * as LayerViewer from '../panels/layer_viewer/layer_viewer.js';
 import * as TimelineModel from '../timeline_model/timeline_model.js';  // eslint-disable-line no-unused-vars
-import * as UI from '../ui/ui.js';
+import * as UI from '../ui/legacy/legacy.js';
 
 export class TimelineLayersView extends UI.SplitWidget.SplitWidget {
   _model: TimelineModel.TimelineModel.TimelineModelImpl;

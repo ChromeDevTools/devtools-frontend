@@ -96,8 +96,8 @@ export class LayoutPane extends HTMLElement {
   constructor() {
     super();
     this.shadow.adoptedStyleSheets = [
-      ...getStyleSheets('ui/inspectorCommon.css', {enableLegacyPatching: true}),
-      ...getStyleSheets('ui/inspectorSyntaxHighlight.css', {enableLegacyPatching: true}),
+      ...getStyleSheets('ui/legacy/inspectorCommon.css', {enableLegacyPatching: true}),
+      ...getStyleSheets('ui/legacy/inspectorSyntaxHighlight.css', {enableLegacyPatching: true}),
       ...getStyleSheets('panels/elements/layoutPane.css', {enableLegacyPatching: false}),
     ];
     this.onSummaryKeyDown = this.onSummaryKeyDown.bind(this);

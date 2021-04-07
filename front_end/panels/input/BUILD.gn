@@ -18,7 +18,7 @@ devtools_module("input") {
     "../../core/sdk:bundle",
     "../../models/bindings:bundle",
     "../../timeline:bundle",
-    "../../ui:bundle",
+    "../../ui/legacy:bundle",
   ]
 }
 

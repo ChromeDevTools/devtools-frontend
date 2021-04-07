@@ -23,7 +23,7 @@ ts_library("helpers") {
     "../../../../front_end/core/root:bundle",
     "../../../../front_end/core/sdk:bundle",
     "../../../../front_end/third_party/lit-html:bundle",
-    "../../../../front_end/ui:bundle",
+    "../../../../front_end/ui/legacy:bundle",
     "../../../../inspector_overlay",
   ]
 }

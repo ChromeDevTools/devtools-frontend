@@ -11,7 +11,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as PerfUI from '../../perf_ui/perf_ui.js';
-import * as UI from '../../ui/ui.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
 import {ProfileFlameChartDataProvider} from './CPUProfileFlameChart.js';
 

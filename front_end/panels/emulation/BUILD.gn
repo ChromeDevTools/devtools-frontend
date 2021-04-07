@@ -33,7 +33,7 @@ devtools_module("emulation") {
     "../../core/sdk:bundle",
     "../../models/bindings:bundle",
     "../../panels/mobile_throttling:bundle",
-    "../../ui:bundle",
+    "../../ui/legacy:bundle",
     "../../workspace:bundle",
   ]
 }

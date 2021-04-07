@@ -248,7 +248,7 @@ module.exports = {
              * TODO * (https://crbug.com/1148274) tidy up the utils and remove this
              * special case.
              */
-            if (importingFileName.includes(['ui', 'utils', 'utils.js'].join(path.sep))) {
+            if (importingFileName.includes(['ui', 'legacy', 'utils', 'utils.js'].join(path.sep))) {
               return;
             }
             if (importingFileName.includes(['test_setup', 'test_setup.ts'].join(path.sep)) &&

@@ -11,7 +11,7 @@ import * as Platform from '../core/platform/platform.js';
 import * as SDK from '../core/sdk/sdk.js';
 import * as DataGrid from '../data_grid/data_grid.js';
 import * as TimelineModel from '../timeline_model/timeline_model.js';
-import * as UI from '../ui/ui.js';
+import * as UI from '../ui/legacy/legacy.js';
 
 import {PerformanceModel} from './PerformanceModel.js';  // eslint-disable-line no-unused-vars
 import {TimelineRegExp} from './TimelineFilters.js';

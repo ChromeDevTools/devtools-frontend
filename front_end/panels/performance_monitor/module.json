@@ -1,6 +1,6 @@
 {
   "dependencies": [
-    "ui"
+    "ui/legacy"
   ],
     "resources": [
     "performanceMonitor.css"

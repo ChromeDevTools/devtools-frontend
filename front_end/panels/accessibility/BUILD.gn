@@ -23,7 +23,7 @@ devtools_module("accessibility") {
     "../../core/i18n:bundle",
     "../../core/sdk:bundle",
     "../../generated",
-    "../../ui:bundle",
+    "../../ui/legacy:bundle",
   ]
 }
 

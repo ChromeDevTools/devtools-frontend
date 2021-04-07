@@ -8,7 +8,7 @@ import type * as Components from '../../ui/components/components.js';
 
 import * as LitHtml from '../../third_party/lit-html/lit-html.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import * as UI from '../../ui/ui.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
 import * as i18n from '../../core/i18n/i18n.js';
 const UIStrings = {

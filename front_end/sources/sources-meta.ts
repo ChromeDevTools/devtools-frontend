@@ -8,7 +8,7 @@ import * as SDK from '../core/sdk/sdk.js';
 import * as ObjectUI from '../object_ui/object_ui.js';
 import * as QuickOpen from '../quick_open/quick_open.js';
 import * as TextEditor from '../text_editor/text_editor.js';
-import * as UI from '../ui/ui.js';
+import * as UI from '../ui/legacy/legacy.js';
 import * as Workspace from '../workspace/workspace.js';
 
 // eslint-disable-next-line rulesdir/es_modules_import

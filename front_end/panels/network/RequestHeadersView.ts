@@ -42,7 +42,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as ObjectUI from '../../object_ui/object_ui.js';
 import * as ClientVariations from '../../third_party/chromium/client-variations/client-variations.js';
-import * as UI from '../../ui/ui.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
 const UIStrings = {
   /**

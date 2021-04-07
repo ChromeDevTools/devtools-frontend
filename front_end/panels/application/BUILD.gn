@@ -54,7 +54,7 @@ devtools_module("application") {
     "../../panels/network:bundle",
     "../../source_frame:bundle",
     "../../text_utils:bundle",
-    "../../ui:bundle",
+    "../../ui/legacy:bundle",
     "../../workspace:bundle",
   ]
 }

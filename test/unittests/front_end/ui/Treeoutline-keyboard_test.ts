@@ -4,7 +4,7 @@
 
 const {assert} = chai;
 
-import * as UI from '../../../../front_end/ui/ui.js';
+import * as UI from '../../../../front_end/ui/legacy/legacy.js';
 
 import {assertNotNull} from '../../../../front_end/core/platform/platform.js';
 import {renderElementIntoDOM} from '../helpers/DOMHelpers.js';

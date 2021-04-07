@@ -17,8 +17,8 @@ devtools_module("console_counters") {
     "../../core/host:bundle",
     "../../core/i18n:bundle",
     "../../core/sdk:bundle",
-    "../../ui:bundle",
     "../../ui/components:bundle",
+    "../../ui/legacy:bundle",
   ]
 }
 

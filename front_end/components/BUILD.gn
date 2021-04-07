@@ -22,7 +22,7 @@ devtools_module("components") {
     "../core/sdk:bundle",
     "../models/bindings:bundle",
     "../text_utils:bundle",
-    "../ui:bundle",
+    "../ui/legacy:bundle",
     "../workspace:bundle",
   ]
 }

@@ -11,14 +11,14 @@ const {assert} = chai;
 describe('ComponentHelpers', () => {
   describe('getStylesheets', () => {
     it('returns a single stylesheet with the contents of the resource', () => {
-      const sheets = ComponentHelpers.GetStylesheet.getStyleSheets('ui/inspectorCommon.css');
+      const sheets = ComponentHelpers.GetStylesheet.getStyleSheets('ui/legacy/inspectorCommon.css');
       assert.lengthOf(sheets, 1);
       assert.instanceOf(sheets[0], CSSStyleSheet);
     });
 
     it('caches the stylesheet rather than constructing it every time', () => {
-      const firstCallSheet = ComponentHelpers.GetStylesheet.getStyleSheets('ui/inspectorCommon.css')[0];
-      const secondCallSheet = ComponentHelpers.GetStylesheet.getStyleSheets('ui/inspectorCommon.css')[0];
+      const firstCallSheet = ComponentHelpers.GetStylesheet.getStyleSheets('ui/legacy/inspectorCommon.css')[0];
+      const secondCallSheet = ComponentHelpers.GetStylesheet.getStyleSheets('ui/legacy/inspectorCommon.css')[0];
       assert.strictEqual(firstCallSheet, secondCallSheet);
     });
 
@@ -33,15 +33,15 @@ describe('ComponentHelpers', () => {
 
       it('returns the original and the patched stylesheet if there is a themed stylesheet and the option is set',
          () => {
-           const sheets =
-               ComponentHelpers.GetStylesheet.getStyleSheets('ui/inspectorCommon.css', {enableLegacyPatching: true});
+           const sheets = ComponentHelpers.GetStylesheet.getStyleSheets(
+               'ui/legacy/inspectorCommon.css', {enableLegacyPatching: true});
            assert.lengthOf(sheets, 2);
            assert.instanceOf(sheets[0], CSSStyleSheet);
            assert.instanceOf(sheets[1], CSSStyleSheet);
          });
 
       it('does not patch by default', () => {
-        const sheets = ComponentHelpers.GetStylesheet.getStyleSheets('ui/inspectorCommon.css');
+        const sheets = ComponentHelpers.GetStylesheet.getStyleSheets('ui/legacy/inspectorCommon.css');
         assert.lengthOf(sheets, 1);
         assert.instanceOf(sheets[0], CSSStyleSheet);
       });

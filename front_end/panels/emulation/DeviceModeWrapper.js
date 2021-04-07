@@ -5,7 +5,7 @@
 import * as Common from '../../core/common/common.js';  // eslint-disable-line no-unused-vars
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import * as UI from '../../ui/ui.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
 import {DeviceModeModel} from './DeviceModeModel.js';
 import {DeviceModeView} from './DeviceModeView.js';

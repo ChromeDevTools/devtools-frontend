@@ -1,7 +1,7 @@
 {
   "dependencies": [
     "cm",
-    "ui"
+    "ui/legacy"
   ],
     "resources": [
     "autocompleteTooltip.css",

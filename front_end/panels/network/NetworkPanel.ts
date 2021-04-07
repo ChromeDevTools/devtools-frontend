@@ -42,7 +42,7 @@ import * as Bindings from '../../models/bindings/bindings.js';
 import * as PerfUI from '../../perf_ui/perf_ui.js';
 import * as Search from '../../search/search.js';
 import * as Components from '../../ui/components/components.js';
-import * as UI from '../../ui/ui.js';
+import * as UI from '../../ui/legacy/legacy.js';
 import * as Workspace from '../../workspace/workspace.js';
 import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
 

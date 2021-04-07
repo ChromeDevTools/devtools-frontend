@@ -17,7 +17,7 @@ devtools_module("layers") {
     "../../core/i18n:bundle",
     "../../core/sdk:bundle",
     "../../panels/layer_viewer:bundle",
-    "../../ui:bundle",
+    "../../ui/legacy:bundle",
   ]
 }
 

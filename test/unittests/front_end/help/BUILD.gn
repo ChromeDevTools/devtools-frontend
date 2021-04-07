@@ -12,7 +12,7 @@ ts_library("help") {
     "../../../../front_end/core/common:bundle",
     "../../../../front_end/core/platform:bundle",
     "../../../../front_end/panels/help:bundle",
-    "../../../../front_end/ui:bundle",
+    "../../../../front_end/ui/legacy:bundle",
     "../../../../test/unittests/front_end/helpers",
   ]
 }

@@ -5,7 +5,7 @@
 /* eslint-disable rulesdir/no_underscored_properties */
 
 import type * as SDK from '../../core/sdk/sdk.js';
-import * as UI from '../../ui/ui.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
 export class AccessibilitySubPane extends UI.View.SimpleView {
   _axNode: SDK.AccessibilityModel.AccessibilityNode|null;

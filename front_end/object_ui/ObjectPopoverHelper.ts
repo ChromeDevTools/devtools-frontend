@@ -33,7 +33,7 @@
 import * as Components from '../components/components.js';
 import * as Platform from '../core/platform/platform.js';
 import * as SDK from '../core/sdk/sdk.js';
-import * as UI from '../ui/ui.js';
+import * as UI from '../ui/legacy/legacy.js';
 
 import {CustomPreviewComponent} from './CustomPreviewComponent.js';
 import {ObjectPropertiesSection} from './ObjectPropertiesSection.js';

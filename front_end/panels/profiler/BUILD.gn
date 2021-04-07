@@ -43,7 +43,7 @@ devtools_module("profiler") {
     "../../models/heap_snapshot_model:bundle",
     "../../object_ui:bundle",
     "../../perf_ui:bundle",
-    "../../ui:bundle",
+    "../../ui/legacy:bundle",
     "../../workspace:bundle",
   ]
 }

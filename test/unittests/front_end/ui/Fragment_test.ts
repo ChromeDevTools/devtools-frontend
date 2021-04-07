@@ -5,7 +5,7 @@
 const {assert} = chai;
 
 import '../../../../front_end/core/dom_extension/DOMExtension.js';
-import * as UI from '../../../../front_end/ui/ui.js';
+import * as UI from '../../../../front_end/ui/legacy/legacy.js';
 
 describe('Fragment', () => {
   it('can be instantiated correctly', () => {

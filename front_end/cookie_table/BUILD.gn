@@ -15,7 +15,7 @@ devtools_module("cookie_table") {
     "../core/root:bundle",
     "../core/sdk:bundle",
     "../data_grid:bundle",
-    "../ui:bundle",
+    "../ui/legacy:bundle",
   ]
 }
 

@@ -6,7 +6,7 @@
 
 import * as Common from '../core/common/common.js';
 import * as Platform from '../core/platform/platform.js';
-import * as UI from '../ui/ui.js';
+import * as UI from '../ui/legacy/legacy.js';
 
 import {MinimalTimeWindowMs} from './FlameChart.js';
 

@@ -4,7 +4,7 @@
 
 import * as Common from '../core/common/common.js';
 import * as TextUtils from '../text_utils/text_utils.js';
-import * as UI from '../ui/ui.js';
+import * as UI from '../ui/legacy/legacy.js';
 
 import {ColorSwatch} from './ColorSwatch.js';
 import {CSSShadowModel} from './CSSShadowModel.js';  // eslint-disable-line no-unused-vars

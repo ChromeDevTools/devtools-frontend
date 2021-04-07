@@ -10,7 +10,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as InlineEditor from '../../inline_editor/inline_editor.js';
 
 import type * as SDK from '../../core/sdk/sdk.js';
-import * as UI from '../../ui/ui.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
 import type {AnimationImpl, KeyframeStyle} from './AnimationModel.js';
 import type {AnimationTimeline} from './AnimationTimeline.js';

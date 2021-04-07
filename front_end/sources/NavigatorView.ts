@@ -38,7 +38,7 @@ import * as SDK from '../core/sdk/sdk.js';
 import * as Bindings from '../models/bindings/bindings.js';
 import * as Persistence from '../persistence/persistence.js';
 import * as Snippets from '../snippets/snippets.js';
-import * as UI from '../ui/ui.js';
+import * as UI from '../ui/legacy/legacy.js';
 import * as Workspace from '../workspace/workspace.js';
 
 import {SearchSourcesView} from './SearchSourcesView.js';

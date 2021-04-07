@@ -36,8 +36,8 @@ devtools_module("inline_editor") {
     "../panels/css_overview:bundle",
     "../text_utils:bundle",
     "../third_party/lit-html:bundle",
-    "../ui:bundle",
     "../ui/components:bundle",
+    "../ui/legacy:bundle",
   ]
 
   visibility = [ "../component_docs/*" ]

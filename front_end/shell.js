@@ -8,7 +8,7 @@ import './core/dom_extension/dom_extension.js';
 import './core/host/host-legacy.js';
 import './core/protocol_client/protocol_client-legacy.js';
 import './core/sdk/sdk-legacy.js';
-import './ui/ui-legacy.js';
+import './ui/legacy/legacy-legacy.js';
 import './workspace/workspace-legacy.js';
 import './models/bindings/bindings-legacy.js';
 import './components/components-legacy.js';

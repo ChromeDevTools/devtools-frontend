@@ -57,8 +57,8 @@ devtools_module("network") {
     "../../text_utils:bundle",
     "../../theme_support:bundle",
     "../../third_party/chromium/client-variations:bundle",
-    "../../ui:bundle",
     "../../ui/components:bundle",
+    "../../ui/legacy:bundle",
     "../../workspace:bundle",
   ]
 }
@@ -81,6 +81,6 @@ devtools_entrypoint("meta") {
   deps = [
     ":bundle",
     "../../core/root:bundle",
-    "../../ui:bundle",
+    "../../ui/legacy:bundle",
   ]
 }

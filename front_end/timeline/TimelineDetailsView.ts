@@ -9,7 +9,7 @@ import * as Common from '../core/common/common.js';  // eslint-disable-line no-u
 import * as i18n from '../core/i18n/i18n.js';
 import * as SDK from '../core/sdk/sdk.js';
 import * as TimelineModel from '../timeline_model/timeline_model.js';
-import * as UI from '../ui/ui.js';
+import * as UI from '../ui/legacy/legacy.js';
 
 import {EventsTimelineTreeView} from './EventsTimelineTreeView.js';
 import {Events, PerformanceModel} from './PerformanceModel.js';  // eslint-disable-line no-unused-vars

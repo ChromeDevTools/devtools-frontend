@@ -27,7 +27,7 @@ devtools_module("main") {
     "../snippets:bundle",
     "../theme_support:bundle",
     "../timeline:bundle",
-    "../ui:bundle",
+    "../ui/legacy:bundle",
     "../workspace:bundle",
   ]
 }

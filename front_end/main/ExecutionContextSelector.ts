@@ -6,7 +6,7 @@
 
 import * as Common from '../core/common/common.js';  // eslint-disable-line no-unused-vars
 import * as SDK from '../core/sdk/sdk.js';
-import * as UI from '../ui/ui.js';  // eslint-disable-line no-unused-vars
+import * as UI from '../ui/legacy/legacy.js';  // eslint-disable-line no-unused-vars
 
 export class ExecutionContextSelector implements SDK.SDKModel.SDKModelObserver<SDK.RuntimeModel.RuntimeModel> {
   _targetManager: SDK.SDKModel.TargetManager;

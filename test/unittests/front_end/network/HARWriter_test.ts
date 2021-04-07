@@ -8,7 +8,7 @@ import {describeWithEnvironment} from '../helpers/EnvironmentHelpers.js';
 import * as Common from '../../../../front_end/core/common/common.js';
 import * as Network from '../../../../front_end/panels/network/network.js';
 import * as SDK from '../../../../front_end/core/sdk/sdk.js';
-import * as UI from '../../../../front_end/ui/ui.js';
+import * as UI from '../../../../front_end/ui/legacy/legacy.js';
 
 const simulateRequestWithStartTime = (startTime: number): SDK.NetworkRequest.NetworkRequest => {
   const request = new SDK.NetworkRequest.NetworkRequest('r0', 'p0.com', '', '', '', null);

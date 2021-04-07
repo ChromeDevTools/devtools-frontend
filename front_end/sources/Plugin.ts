@@ -4,7 +4,7 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as UI from '../ui/ui.js';                       // eslint-disable-line no-unused-vars
+import * as UI from '../ui/legacy/legacy.js';            // eslint-disable-line no-unused-vars
 import * as Workspace from '../workspace/workspace.js';  // eslint-disable-line no-unused-vars
 
 export class Plugin {

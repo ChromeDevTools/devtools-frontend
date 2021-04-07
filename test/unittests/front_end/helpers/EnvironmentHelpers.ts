@@ -8,7 +8,7 @@ import * as i18n from '../../../../front_end/core/i18n/i18n.js';
 import * as Root from '../../../../front_end/core/root/root.js';
 import * as SDK from '../../../../front_end/core/sdk/sdk.js';
 
-import type * as UIModule from '../../../../front_end/ui/ui.js';
+import type * as UIModule from '../../../../front_end/ui/legacy/legacy.js';
 
 // Don't import UI at this stage because it will fail without
 // the environment. Instead we do the import at the end of the
@@ -131,7 +131,7 @@ export async function initializeGlobalVars({reset = true} = {}) {
   Common.Settings.Settings.instance({forceNew: reset, globalStorage: storage, localStorage: storage});
 
   // Dynamically import UI after the rest of the environment is set up, otherwise it will fail.
-  UI = await import('../../../../front_end/ui/ui.js');
+  UI = await import('../../../../front_end/ui/legacy/legacy.js');
   UI.ZoomManager.ZoomManager.instance(
       {forceNew: true, win: window, frontendHost: Host.InspectorFrontendHost.InspectorFrontendHostInstance});
 

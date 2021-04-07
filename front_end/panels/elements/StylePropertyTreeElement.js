@@ -11,7 +11,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as InlineEditor from '../../inline_editor/inline_editor.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as TextUtils from '../../text_utils/text_utils.js';
-import * as UI from '../../ui/ui.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
 import {BezierPopoverIcon, ColorSwatchPopoverIcon, ShadowSwatchPopoverHelper} from './ColorSwatchPopoverIcon.js';
 import {ElementsPanel} from './ElementsPanel.js';

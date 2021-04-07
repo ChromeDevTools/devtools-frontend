@@ -12,7 +12,7 @@ import * as SourceFrame from '../../source_frame/source_frame.js';
 import * as TextUtils from '../../text_utils/text_utils.js';
 import * as LitHtml from '../../third_party/lit-html/lit-html.js';
 import * as Components from '../../ui/components/components.js';
-import * as UI from '../../ui/ui.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
 const UIStrings = {
   /**

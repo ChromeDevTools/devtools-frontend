@@ -1,6 +1,6 @@
 {
   "dependencies": [
     "browser_sdk",
-    "ui"
+    "ui/legacy"
   ]
 }

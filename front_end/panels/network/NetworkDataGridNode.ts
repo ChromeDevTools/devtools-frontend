@@ -47,7 +47,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as DataGrid from '../../data_grid/data_grid.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as PerfUI from '../../perf_ui/perf_ui.js';
-import * as UI from '../../ui/ui.js';
+import * as UI from '../../ui/legacy/legacy.js';
 import * as Workspace from '../../workspace/workspace.js';
 
 import {Tabs as NetworkItemViewTabs} from './NetworkItemView.js';

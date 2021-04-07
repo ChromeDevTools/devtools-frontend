@@ -9,7 +9,7 @@ import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';  // eslint-disable-line no-unused-vars
 import * as DataGrid from '../../data_grid/data_grid.js';
-import * as UI from '../../ui/ui.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
 import {NetworkNode, NetworkRequestNode} from './NetworkDataGridNode.js';  // eslint-disable-line no-unused-vars
 import {NetworkLogView} from './NetworkLogView.js';                        // eslint-disable-line no-unused-vars

@@ -6,7 +6,7 @@
 
 import * as Common from '../core/common/common.js';
 import * as Root from '../core/root/root.js';
-import * as UI from '../ui/ui.js';
+import * as UI from '../ui/legacy/legacy.js';
 
 import type {ContrastInfo} from './ContrastInfo.js';
 import {Events} from './ContrastInfo.js';

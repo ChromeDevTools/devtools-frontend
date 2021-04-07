@@ -38,7 +38,7 @@ import * as SDK from '../core/sdk/sdk.js';
 import * as LinearMemoryInspector from '../linear_memory_inspector/linear_memory_inspector.js';
 import * as Bindings from '../models/bindings/bindings.js';
 import * as ObjectUI from '../object_ui/object_ui.js';
-import * as UI from '../ui/ui.js';
+import * as UI from '../ui/legacy/legacy.js';
 
 import {resolveScopeChain, resolveScopeInObject, resolveThisObject} from './SourceMapNamesResolver.js';
 

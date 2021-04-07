@@ -28,7 +28,7 @@ devtools_module("lighthouse") {
     "../../core/sdk:bundle",
     "../../panels/emulation:bundle",
     "../../timeline:bundle",
-    "../../ui:bundle",
+    "../../ui/legacy:bundle",
     "../../workspace:bundle",
   ]
 }

@@ -37,7 +37,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as ProtocolClient from '../../core/protocol_client/protocol_client.js';  // eslint-disable-line no-unused-vars
 import * as Root from '../../core/root/root.js';                                  // eslint-disable-line no-unused-vars
 import * as SDK from '../../core/sdk/sdk.js';
-import * as UI from '../../ui/ui.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
 import {linkifyDeferredNodeReference} from './DOMLinkifier.js';
 import {ElementsPanel} from './ElementsPanel.js';

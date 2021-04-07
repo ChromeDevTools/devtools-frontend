@@ -47,7 +47,7 @@ import * as Coverage from '../panels/coverage/coverage.js';  // eslint-disable-l
 import * as MobileThrottling from '../panels/mobile_throttling/mobile_throttling.js';
 import * as PerfUI from '../perf_ui/perf_ui.js';
 import * as TimelineModel from '../timeline_model/timeline_model.js';
-import * as UI from '../ui/ui.js';
+import * as UI from '../ui/legacy/legacy.js';
 
 import {Events, PerformanceModel, Window} from './PerformanceModel.js';  // eslint-disable-line no-unused-vars
 import {Client, TimelineController} from './TimelineController.js';      // eslint-disable-line no-unused-vars

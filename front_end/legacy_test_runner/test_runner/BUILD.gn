@@ -13,7 +13,7 @@ devtools_module("test_runner") {
     "../../core/protocol_client:bundle",
     "../../models/bindings:bundle",
     "../../text_editor:bundle",
-    "../../ui:bundle",
+    "../../ui/legacy:bundle",
     "../../workspace:bundle",
   ]
 }

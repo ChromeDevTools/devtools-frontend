@@ -19,8 +19,8 @@ devtools_module("color_picker") {
     "../core/i18n:bundle",
     "../core/platform:bundle",
     "../core/sdk:bundle",
-    "../ui:bundle",
     "../ui/components:bundle",
+    "../ui/legacy:bundle",
   ]
 }
 

@@ -20,7 +20,7 @@ devtools_module("mobile_throttling") {
     "../../core/host:bundle",
     "../../core/i18n:bundle",
     "../../core/sdk:bundle",
-    "../../ui:bundle",
+    "../../ui/legacy:bundle",
   ]
 }
 

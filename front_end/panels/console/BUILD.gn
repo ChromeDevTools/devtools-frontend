@@ -32,8 +32,8 @@ devtools_module("console") {
     "../../text_editor:bundle",
     "../../text_utils:bundle",
     "../../theme_support:bundle",
-    "../../ui:bundle",
     "../../ui/components:bundle",
+    "../../ui/legacy:bundle",
     "../console_counters:bundle",
   ]
 }

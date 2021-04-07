@@ -32,7 +32,7 @@ devtools_module("perf_ui") {
     "../theme_support:bundle",
     "../third_party/lit-html:bundle",
     "../timeline_model:bundle",
-    "../ui:bundle",
+    "../ui/legacy:bundle",
     "../workspace:bundle",
   ]
 

@@ -11,7 +11,7 @@ import * as SDK from '../core/sdk/sdk.js';
 import * as Persistence from '../persistence/persistence.js';
 
 import type * as TextUtils from '../text_utils/text_utils.js';
-import * as UI from '../ui/ui.js';
+import * as UI from '../ui/legacy/legacy.js';
 import * as Workspace from '../workspace/workspace.js';
 
 const UIStrings = {

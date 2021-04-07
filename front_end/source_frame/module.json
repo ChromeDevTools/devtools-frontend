@@ -1,7 +1,7 @@
 {
   "dependencies": [
     "text_editor",
-    "ui",
+    "ui/legacy",
     "persistence",
     "object_ui",
     "workspace_diff"

@@ -17,7 +17,7 @@ devtools_module("web_audio") {
     "../core/common:bundle",
     "../core/i18n:bundle",
     "../core/sdk:bundle",
-    "../ui:bundle",
+    "../ui/legacy:bundle",
     "graph_visualizer:bundle",
   ]
 }

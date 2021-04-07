@@ -12,7 +12,7 @@ ts_library("console_counters") {
     "../../../../front_end/browser_sdk:bundle",
     "../../../../front_end/core/common:bundle",
     "../../../../front_end/panels/console_counters:bundle",
-    "../../../../front_end/ui:bundle",
+    "../../../../front_end/ui/legacy:bundle",
     "../browser_sdk",
     "../helpers",
   ]

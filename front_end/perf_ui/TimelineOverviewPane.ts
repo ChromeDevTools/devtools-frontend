@@ -32,7 +32,7 @@
 
 import * as Common from '../core/common/common.js';
 import * as SDK from '../core/sdk/sdk.js';  // eslint-disable-line no-unused-vars
-import * as UI from '../ui/ui.js';
+import * as UI from '../ui/legacy/legacy.js';
 
 import {Events as OverviewGridEvents, OverviewGrid} from './OverviewGrid.js';
 import {Calculator} from './TimelineGrid.js';  // eslint-disable-line no-unused-vars

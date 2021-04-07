@@ -3,7 +3,7 @@
     "browser_sdk",
     "components",
     "panels/network",
-    "ui"
+    "ui/legacy"
   ],
     "resources": [
     "descriptions/CoepCoopSandboxedIframeCannotNavigateToCoopPage.md",

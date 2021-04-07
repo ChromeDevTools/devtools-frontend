@@ -4,7 +4,7 @@
     "panels/emulation",
     "timeline",
     "inspector_main",
-    "ui"
+    "ui/legacy"
   ],
     "resources": [
     "../../third_party/lighthouse/report-assets/template.html",

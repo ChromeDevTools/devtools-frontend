@@ -111,9 +111,9 @@ export class ThemeSupport {
    */
   injectHighlightStyleSheets(element) {
     this._injectingStyleSheet = true;
-    this._appendStyle(element, 'ui/inspectorSyntaxHighlight.css', {enableLegacyPatching: true});
+    this._appendStyle(element, 'ui/legacy/inspectorSyntaxHighlight.css', {enableLegacyPatching: true});
     if (this._themeName === 'dark') {
-      this._appendStyle(element, 'ui/inspectorSyntaxHighlightDark.css', {enableLegacyPatching: true});
+      this._appendStyle(element, 'ui/legacy/inspectorSyntaxHighlightDark.css', {enableLegacyPatching: true});
     }
     this._injectingStyleSheet = false;
   }

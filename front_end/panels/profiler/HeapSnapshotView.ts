@@ -42,7 +42,7 @@ import * as Bindings from '../../models/bindings/bindings.js';
 import * as HeapSnapshotModel from '../../models/heap_snapshot_model/heap_snapshot_model.js';
 import * as ObjectUI from '../../object_ui/object_ui.js';
 import * as PerfUI from '../../perf_ui/perf_ui.js';
-import * as UI from '../../ui/ui.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
 import type {HeapSnapshotSortableDataGrid} from './HeapSnapshotDataGrids.js';
 import {AllocationDataGrid, HeapSnapshotSortableDataGridEvents, HeapSnapshotConstructorsDataGrid, HeapSnapshotDiffDataGrid, HeapSnapshotRetainmentDataGrid, HeapSnapshotContainmentDataGrid} from './HeapSnapshotDataGrids.js';

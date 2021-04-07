@@ -21,7 +21,7 @@ devtools_module("layer_viewer") {
     "../../core/platform:bundle",
     "../../core/sdk:bundle",
     "../../perf_ui:bundle",
-    "../../ui:bundle",
+    "../../ui/legacy:bundle",
   ]
 }
 

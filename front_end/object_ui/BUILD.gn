@@ -26,8 +26,8 @@ devtools_module("object_ui") {
     "../javascript_metadata:bundle",
     "../linear_memory_inspector:bundle",
     "../text_utils:bundle",
-    "../ui:bundle",
     "../ui/components:bundle",
+    "../ui/legacy:bundle",
   ]
 }
 

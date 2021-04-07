@@ -4,7 +4,7 @@
 
 import * as Platform from '../../core/platform/platform.js';
 import * as LitHtml from '../../third_party/lit-html/lit-html.js';
-import * as UI from '../../ui/ui.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
 import {AdornerCategories} from './AdornerManager.js';
 

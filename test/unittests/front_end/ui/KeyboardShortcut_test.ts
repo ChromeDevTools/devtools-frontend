@@ -4,7 +4,7 @@
 
 const {assert} = chai;
 
-import * as UI from '../../../../front_end/ui/ui.js';
+import * as UI from '../../../../front_end/ui/legacy/legacy.js';
 
 describe('KeyboardShortcut', () => {
   it('can be instantiated', () => {

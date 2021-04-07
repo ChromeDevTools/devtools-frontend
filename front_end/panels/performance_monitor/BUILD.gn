@@ -15,7 +15,7 @@ devtools_module("performance_monitor") {
     "../../core/platform:bundle",
     "../../core/sdk:bundle",
     "../../theme_support:bundle",
-    "../../ui:bundle",
+    "../../ui/legacy:bundle",
   ]
 }
 

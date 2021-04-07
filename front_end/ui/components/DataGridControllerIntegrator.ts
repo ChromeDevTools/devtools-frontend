@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 // eslint-disable-next-line rulesdir/es_modules_import
-import * as UI from '../../ui/ui.js';
+import * as UI from '../legacy/legacy.js';
 import {DataGridController} from './DataGridController.js';
 import type {DataGridControllerData} from './DataGridController.js';
 

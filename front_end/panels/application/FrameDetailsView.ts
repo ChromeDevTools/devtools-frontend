@@ -12,7 +12,7 @@ import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';  // eslint-disable-line no-unused-vars
 import * as LitHtml from '../../third_party/lit-html/lit-html.js';
 import * as WebComponents from '../../ui/components/components.js';
-import * as UI from '../../ui/ui.js';
+import * as UI from '../../ui/legacy/legacy.js';
 import * as Workspace from '../../workspace/workspace.js';
 import * as Components from '../../components/components.js';
 

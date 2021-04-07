@@ -7,7 +7,7 @@
 import type * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import * as UI from '../../ui/ui.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
 import type {ContrastIssue} from './CSSOverviewCompletedView.js';
 import {CSSOverviewCompletedView} from './CSSOverviewCompletedView.js';

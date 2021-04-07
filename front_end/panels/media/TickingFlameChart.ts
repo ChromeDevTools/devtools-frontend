@@ -9,7 +9,7 @@ import * as Host from '../../core/host/host.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as PerfUI from '../../perf_ui/perf_ui.js';
 import * as ThemeSupport from '../../theme_support/theme_support.js';
-import * as UI from '../../ui/ui.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
 import {Bounds, formatMillisecondsToSeconds} from './TickingFlameChartHelpers.js';
 

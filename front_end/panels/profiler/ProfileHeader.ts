@@ -6,7 +6,7 @@
 
 import type * as Bindings from '../../models/bindings/bindings.js';
 import * as Common from '../../core/common/common.js';
-import type * as UI from '../../ui/ui.js';
+import type * as UI from '../../ui/legacy/legacy.js';
 
 export class ProfileHeader extends Common.ObjectWrapper.ObjectWrapper {
   _profileType: ProfileType;

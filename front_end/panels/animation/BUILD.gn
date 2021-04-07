@@ -21,7 +21,7 @@ devtools_module("animation") {
     "../../core/platform:bundle",
     "../../core/sdk:bundle",
     "../../inline_editor:bundle",
-    "../../ui:bundle",
+    "../../ui/legacy:bundle",
   ]
 }
 

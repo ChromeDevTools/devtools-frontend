@@ -1,6 +1,6 @@
 {
   "dependencies": [
-    "ui",
+    "ui/legacy",
     "data_grid"
   ],
     "resources": [

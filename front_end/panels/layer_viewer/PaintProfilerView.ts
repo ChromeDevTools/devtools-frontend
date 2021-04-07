@@ -35,7 +35,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as PerfUI from '../../perf_ui/perf_ui.js';
 
 import type * as SDK from '../../core/sdk/sdk.js';
-import * as UI from '../../ui/ui.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
 const UIStrings = {
   /**

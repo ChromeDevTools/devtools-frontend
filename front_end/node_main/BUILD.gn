@@ -18,7 +18,7 @@ devtools_module("node_main") {
     "../core/i18n:bundle",
     "../core/protocol_client:bundle",
     "../core/sdk:bundle",
-    "../ui:bundle",
+    "../ui/legacy:bundle",
   ]
 }
 

@@ -1,6 +1,6 @@
 {
   "dependencies": [
-    "ui",
+    "ui/legacy",
     "components",
     "source_frame"
   ]

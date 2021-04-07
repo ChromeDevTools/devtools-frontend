@@ -35,7 +35,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';  // eslint-disable-line no-unused-vars
 import * as DataGrid from '../../data_grid/data_grid.js';
 import * as ObjectUI from '../../object_ui/object_ui.js';
-import * as UI from '../../ui/ui.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
 import {Database, DatabaseId, Entry, Index, IndexedDBModel, ObjectStore, ObjectStoreMetadata} from './IndexedDBModel.js';  // eslint-disable-line no-unused-vars
 

@@ -22,7 +22,7 @@ devtools_module("browser_debugger") {
     "../../core/sdk:bundle",
     "../../panels/event_listeners:bundle",
     "../../sources:bundle",
-    "../../ui:bundle",
+    "../../ui/legacy:bundle",
   ]
 }
 
@@ -45,6 +45,6 @@ devtools_entrypoint("meta") {
     ":bundle",
     "../../core/platform:bundle",
     "../../core/root:bundle",
-    "../../ui:bundle",
+    "../../ui/legacy:bundle",
   ]
 }

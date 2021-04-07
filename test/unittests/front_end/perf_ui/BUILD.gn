@@ -6,7 +6,7 @@ ts_library("perf_ui") {
 
   deps = [
     "../../../../front_end/perf_ui:bundle",
-    "../../../../front_end/ui:bundle",
+    "../../../../front_end/ui/legacy:bundle",
     "../helpers",
   ]
 }

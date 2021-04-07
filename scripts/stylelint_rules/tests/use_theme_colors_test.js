@@ -19,7 +19,7 @@ async function lint(code) {
   return warnings;
 }
 
-const EXPECTED_ERROR_MESSAGE = 'All CSS color declarations should use a variable defined in ui/themeColors.css';
+const EXPECTED_ERROR_MESSAGE = 'All CSS color declarations should use a variable defined in ui/legacy/themeColors.css';
 
 describe('use_theme_colors', () => {
   beforeEach(() => {
@@ -186,14 +186,14 @@ describe('use_theme_colors', () => {
         column: 7,
         rule: 'plugin/use_theme_colors',
         severity: 'error',
-        text: 'All CSS color declarations should use a variable defined in ui/themeColors.css'
+        text: 'All CSS color declarations should use a variable defined in ui/legacy/themeColors.css'
       },
       {
         line: 2,
         column: 7,
         rule: 'plugin/use_theme_colors',
         severity: 'error',
-        text: 'All CSS color declarations should use a variable defined in ui/themeColors.css'
+        text: 'All CSS color declarations should use a variable defined in ui/legacy/themeColors.css'
       }
     ]);
   });

@@ -30,7 +30,7 @@ devtools_entrypoint("bundle") {
     "../panels/console_counters:legacy",
     "../persistence:legacy",
     "../text_utils:legacy",
-    "../ui:legacy",
+    "../ui/legacy:legacy",
     "../workspace:legacy",
   ]
 }

@@ -17,7 +17,7 @@ devtools_module("event_listeners") {
     "../../core/i18n:bundle",
     "../../core/sdk:bundle",
     "../../object_ui:bundle",
-    "../../ui:bundle",
+    "../../ui/legacy:bundle",
   ]
 }
 

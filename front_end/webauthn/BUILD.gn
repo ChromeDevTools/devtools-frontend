@@ -14,7 +14,7 @@ devtools_module("webauthn") {
     "../core/i18n:bundle",
     "../core/sdk:bundle",
     "../data_grid:bundle",
-    "../ui:bundle",
+    "../ui/legacy:bundle",
   ]
 }
 

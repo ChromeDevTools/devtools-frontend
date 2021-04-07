@@ -10,7 +10,7 @@ import * as Diff from '../diff/diff.js';  // eslint-disable-line no-unused-vars
 import * as Persistence from '../persistence/persistence.js';
 import * as SourceFrame from '../source_frame/source_frame.js';
 import * as TextEditor from '../text_editor/text_editor.js';  // eslint-disable-line no-unused-vars
-import * as UI from '../ui/ui.js';                            // eslint-disable-line no-unused-vars
+import * as UI from '../ui/legacy/legacy.js';                 // eslint-disable-line no-unused-vars
 import * as Workspace from '../workspace/workspace.js';
 import * as WorkspaceDiff from '../workspace_diff/workspace_diff.js';
 

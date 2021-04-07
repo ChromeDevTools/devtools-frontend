@@ -1,7 +1,7 @@
 {
   "dependencies": [
     "components",
-    "ui",
+    "ui/legacy",
     "panels/mobile_throttling"
   ],
     "resources": [

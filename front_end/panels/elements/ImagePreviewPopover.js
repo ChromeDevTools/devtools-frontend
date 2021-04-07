@@ -4,7 +4,7 @@
 
 import * as Components from '../../components/components.js';
 import * as SDK from '../../core/sdk/sdk.js';  // eslint-disable-line no-unused-vars
-import * as UI from '../../ui/ui.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
 /**
  * ImagePreviewPopover sets listeners on the container element to display

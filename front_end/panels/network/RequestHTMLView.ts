@@ -30,7 +30,7 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as UI from '../../ui/ui.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
 export class RequestHTMLView extends UI.Widget.VBox {
   _dataURL: string;

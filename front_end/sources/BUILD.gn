@@ -70,7 +70,7 @@ devtools_module("sources") {
     "../source_frame:bundle",
     "../text_editor:bundle",
     "../text_utils:bundle",
-    "../ui:bundle",
+    "../ui/legacy:bundle",
     "../workspace:bundle",
     "../workspace_diff:bundle",
   ]

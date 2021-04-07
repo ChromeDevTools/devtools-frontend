@@ -1,6 +1,6 @@
 {
   "dependencies": [
-    "ui",
+    "ui/legacy",
     "persistence",
     "panels/accessibility",
     "panels/elements"

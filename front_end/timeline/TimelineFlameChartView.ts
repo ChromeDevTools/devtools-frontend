@@ -12,7 +12,7 @@ import * as SDK from '../core/sdk/sdk.js';
 import * as Bindings from '../models/bindings/bindings.js';
 import * as PerfUI from '../perf_ui/perf_ui.js';
 import * as TimelineModel from '../timeline_model/timeline_model.js';
-import * as UI from '../ui/ui.js';
+import * as UI from '../ui/legacy/legacy.js';
 
 import {CountersGraph} from './CountersGraph.js';
 import {Events as PerformanceModelEvents, PerformanceModel, Window} from './PerformanceModel.js';  // eslint-disable-line no-unused-vars

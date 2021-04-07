@@ -13,7 +13,7 @@ ts_library("inline_editor") {
 
   deps = [
     "../../../../front_end/inline_editor:bundle",
-    "../../../../front_end/ui:bundle",
+    "../../../../front_end/ui/legacy:bundle",
     "../helpers",
   ]
 }

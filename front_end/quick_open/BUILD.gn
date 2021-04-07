@@ -22,7 +22,7 @@ devtools_module("quick_open") {
     "../core/platform:bundle",
     "../diff:bundle",
     "../text_utils:bundle",
-    "../ui:bundle",
+    "../ui/legacy:bundle",
   ]
 }
 

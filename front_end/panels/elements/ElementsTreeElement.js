@@ -41,7 +41,7 @@ import * as ProtocolClient from '../../core/protocol_client/protocol_client.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as TextEditor from '../../text_editor/text_editor.js';  // eslint-disable-line no-unused-vars
 import * as TextUtils from '../../text_utils/text_utils.js';
-import * as UI from '../../ui/ui.js';
+import * as UI from '../../ui/legacy/legacy.js';
 import * as Emulation from '../emulation/emulation.js';
 
 import {Adorner} from './Adorner.js';

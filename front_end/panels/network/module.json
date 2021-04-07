@@ -10,7 +10,7 @@
     "persistence",
     "search",
     "source_frame",
-    "ui"
+    "ui/legacy"
   ],
     "resources": [
     "binaryResourceView.css",

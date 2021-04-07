@@ -27,7 +27,7 @@ devtools_module("media") {
     "../../data_grid:bundle",
     "../../perf_ui:bundle",
     "../../theme_support:bundle",
-    "../../ui:bundle",
+    "../../ui/legacy:bundle",
   ]
 }
 

@@ -35,7 +35,7 @@ import * as i18n from '../core/i18n/i18n.js';
 import * as Platform from '../core/platform/platform.js';
 import * as PerfUI from '../perf_ui/perf_ui.js';
 import * as TimelineModel from '../timeline_model/timeline_model.js';
-import * as UI from '../ui/ui.js';
+import * as UI from '../ui/legacy/legacy.js';
 
 import {Events, PerformanceModel, Window} from './PerformanceModel.js';  // eslint-disable-line no-unused-vars
 import {TimelineModeViewDelegate} from './TimelinePanel.js';             // eslint-disable-line no-unused-vars

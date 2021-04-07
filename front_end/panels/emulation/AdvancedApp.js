@@ -4,7 +4,7 @@
 
 import * as Common from '../../core/common/common.js';  // eslint-disable-line no-unused-vars
 import * as Host from '../../core/host/host.js';
-import * as UI from '../../ui/ui.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
 import {DeviceModeWrapper} from './DeviceModeWrapper.js';
 import {Events, InspectedPagePlaceholder} from './InspectedPagePlaceholder.js';  // eslint-disable-line no-unused-vars

@@ -2,7 +2,7 @@
   "dependencies": [
     "data_grid",
     "source_frame",
-    "ui"
+    "ui/legacy"
   ],
     "resources": [
     "coverageListView.css",

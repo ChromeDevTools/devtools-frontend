@@ -42,7 +42,7 @@ import * as InlineEditor from '../../inline_editor/inline_editor.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as TextUtils from '../../text_utils/text_utils.js';
 import * as WebComponents from '../../ui/components/components.js';
-import * as UI from '../../ui/ui.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
 import {FontEditorSectionManager} from './ColorSwatchPopoverIcon.js';
 import {ComputedStyleModel} from './ComputedStyleModel.js';

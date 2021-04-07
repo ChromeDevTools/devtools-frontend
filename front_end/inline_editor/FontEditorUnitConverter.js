@@ -4,7 +4,7 @@
 
 import * as SDK from '../core/sdk/sdk.js';
 import * as CssOverviewModule from '../panels/css_overview/css_overview.js';
-import * as UI from '../ui/ui.js';
+import * as UI from '../ui/legacy/legacy.js';
 
 const computedArrayFontSizeIndex = 6;
 

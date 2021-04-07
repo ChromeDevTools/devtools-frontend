@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as UI from '../../../../front_end/ui/ui.js';
+import * as UI from '../../../../front_end/ui/legacy/legacy.js';
 import type * as IssuesModule from '../../../../front_end/issues/issues.js';
 import {assertShadowRoot, renderElementIntoDOM, getElementWithinComponent} from '../helpers/DOMHelpers.js';
 

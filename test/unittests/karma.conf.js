@@ -122,7 +122,7 @@ module.exports = function(config) {
       {pattern: path.join(GEN_DIRECTORY, 'front_end/core/i18n/locales/*.json'), served: true, included: false},
       // Inject the CSS color theme variables into the page so any rendered
       // components have access to them.
-      {pattern: path.join(GEN_DIRECTORY, 'front_end/ui/themeColors.css'), served: true, included: true},
+      {pattern: path.join(GEN_DIRECTORY, 'front_end/ui/legacy/themeColors.css'), served: true, included: true},
       {pattern: path.join(GEN_DIRECTORY, 'front_end/**/*.css'), served: true, included: false},
       {pattern: path.join(GEN_DIRECTORY, 'front_end/**/*.js'), served: true, included: false},
       {pattern: path.join(GEN_DIRECTORY, 'front_end/**/*.js.map'), served: true, included: false},

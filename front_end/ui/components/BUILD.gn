@@ -32,7 +32,7 @@ devtools_module("components") {
     "../../render_coordinator:bundle",
     "../../text_utils:bundle",
     "../../third_party/lit-html:bundle",
-    "../../ui:bundle",
+    "../../ui/legacy:bundle",
   ]
 
   visibility = [ "../../../test/unittests/front_end/ui/components" ]

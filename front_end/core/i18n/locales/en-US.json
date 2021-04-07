@@ -4866,7 +4866,7 @@
     "message": "Show All Properties ({PH1} more)"
   },
   "panels/elements/StylesSidebarPane.js | styleAttribute": {
-    "message": "Style Attribute"
+    "message": "style attribute"
   },
   "panels/elements/StylesSidebarPane.js | unknownPropertyName": {
     "message": "Unknown property name"

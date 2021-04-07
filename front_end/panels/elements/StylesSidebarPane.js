@@ -107,7 +107,7 @@ const UIStrings = {
   /**
   *@description Text in Styles Sidebar Pane of the Elements panel
   */
-  styleAttribute: 'Style Attribute',
+  styleAttribute: '`style` attribute',
   /**
   *@description Text in Styles Sidebar Pane of the Elements panel
   *@example {html} PH1

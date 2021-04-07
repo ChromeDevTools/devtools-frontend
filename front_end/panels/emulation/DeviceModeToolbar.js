@@ -510,7 +510,7 @@ export class DeviceModeToolbar {
         this._model.uaSetting().get() === UA.Mobile || this._model.uaSetting().get() === UA.MobileNoTouch ?
         defaultMobileScaleFactor :
         window.devicePixelRatio;
-    appendDeviceScaleFactorItem(contextMenu.headerSection(), i18nString(UIStrings.defaultF, {PH: defaultValue}), 0);
+    appendDeviceScaleFactorItem(contextMenu.headerSection(), i18nString(UIStrings.defaultF, {PH1: defaultValue}), 0);
     appendDeviceScaleFactorItem(contextMenu.defaultSection(), '1', 1);
     appendDeviceScaleFactorItem(contextMenu.defaultSection(), '2', 2);
     appendDeviceScaleFactorItem(contextMenu.defaultSection(), '3', 3);

@@ -64,9 +64,9 @@ const UIStrings = {
   */
   reveal: 'reveal',
   /**
-   * @description A context menu item to open the adorner settings pane
+   * @description A context menu item to open the badge settings pane
    */
-  adornerSettings: 'Adorner settings\u2026',
+  adornerSettings: 'Badge settings\u2026',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/elements/ElementsTreeOutline.js', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

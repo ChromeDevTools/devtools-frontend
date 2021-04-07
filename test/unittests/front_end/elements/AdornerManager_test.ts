@@ -30,7 +30,7 @@ describeWithEnvironment('AdornerManager', async () => {
     Elements = await import('../../../../front_end/panels/elements/elements.js');
   });
 
-  it('can sync adorner settings with the settings store correctly', () => {
+  it('can sync badge settings with the settings store correctly', () => {
     const nonexistentAdorner = '__SHOULD_NEVER_EXIST__';
     const settingStore = new FakeSettingStore([
       {
@@ -78,14 +78,14 @@ describeWithEnvironment('AdornerManager', async () => {
     adornerManager.updateSettings(new Map([
       [adorner, updatedSetting],
     ]));
-    assert.isTrue(adornerManager.getSettings().has(adorner), 'adorner setting should still exist after update');
+    assert.isTrue(adornerManager.getSettings().has(adorner), 'badge setting should still exist after update');
     assert.strictEqual(
-        adornerManager.isAdornerEnabled(adorner), updatedSetting, 'adorner setting should be updated in the manager');
+        adornerManager.isAdornerEnabled(adorner), updatedSetting, 'badge setting should be updated in the manager');
     assert.deepOwnInclude(
         settingStore.get(), {
           adorner,
           isEnabled: updatedSetting,
         },
-        'adorner setting update should be persisted to the setting store');
+        'badge setting update should be persisted to the setting store');
   });
 });

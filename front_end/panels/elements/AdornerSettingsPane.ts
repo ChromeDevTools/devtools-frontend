@@ -9,11 +9,11 @@ import {AdornerSettingsMap} from './AdornerManager.js';
 
 const UIStrings = {
   /**
-    * @description Title of a list of settings to toggle adorners.
+    * @description Title of a list of settings to toggle badges.
     */
-  settingsTitle: 'Show adorners',
+  settingsTitle: 'Show badges',
   /**
-   * @description ARIA label of the button to close the adorner settings pane
+   * @description ARIA label of the button to close the badge settings pane
    */
   closeButton: 'Close',
 };

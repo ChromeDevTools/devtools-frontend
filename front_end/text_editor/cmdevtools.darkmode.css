@@ -1,26 +1,11 @@
 /* This file was automatically generated via:
 npm run generate-dark-mode-styles front_end/text_editor/cmdevtools.css
-* Last Updated: Wed Mar 24 2021 09:32:56 GMT+0000 (Coordinated Universal Time)
+* Last Updated: Thu Apr 08 2021 11:18:34 GMT+0000 (Coordinated Universal Time)
 */
 /* stylelint-disable */
 :host-context(.-theme-with-dark-background) .CodeMirror,
 .-theme-with-dark-background .CodeMirror {
   color:rgb(213 213 213);
-  }
-
-:host-context(.-theme-with-dark-background) .CodeMirror-gutter-performance,
-.-theme-with-dark-background .CodeMirror-gutter-performance {
-  background-color:var(--color-background);
-  }
-
-:host-context(.-theme-with-dark-background) .CodeMirror-gutter-memory,
-.-theme-with-dark-background .CodeMirror-gutter-memory {
-  background-color:var(--color-background);
-  }
-
-:host-context(.-theme-with-dark-background) .CodeMirror-gutter-coverage,
-.-theme-with-dark-background .CodeMirror-gutter-coverage {
-  background-color:var(--color-background);
   }
 
 :host-context(.-theme-with-dark-background) .CodeMirror .source-frame-eval-expression,
@@ -51,19 +36,9 @@ npm run generate-dark-mode-styles front_end/text_editor/cmdevtools.css
   border-left-color:rgb(230 230 230);
   }
 
-:host-context(.-theme-with-dark-background) .CodeMirror-gutters,
-.-theme-with-dark-background .CodeMirror-gutters {
-  background-color:var(--color-background);
-  }
-
 :host-context(.-theme-with-dark-background) .CodeMirror-linenumber,
 .-theme-with-dark-background .CodeMirror-linenumber {
   color:rgb(138 138 138);
-  }
-
-:host-context(.-theme-with-dark-background) .pretty-printed .CodeMirror-linenumber,
-.-theme-with-dark-background .pretty-printed .CodeMirror-linenumber {
-  color:var(--accent-color);
   }
 
 :host-context(.-theme-with-dark-background) .cm-non-breakable-line .CodeMirror-linenumber,
@@ -88,11 +63,6 @@ npm run generate-dark-mode-styles front_end/text_editor/cmdevtools.css
 :host-context(.-theme-with-dark-background) .cm-inline-breakpoint.cm-execution-line-tail,
 .-theme-with-dark-background .cm-inline-breakpoint.cm-execution-line-tail {
   background-color:rgb(1 36 150);
-  }
-
-:host-context(.-theme-with-dark-background) .cm-execution-line-tail .cm-inline-breakpoint,
-.-theme-with-dark-background .cm-execution-line-tail .cm-inline-breakpoint {
-  background-color:var(--color-background);
   }
 
 :host-context(.-theme-with-dark-background) .cm-inline-breakpoint.cm-inline-conditional,
@@ -176,11 +146,6 @@ npm run generate-dark-mode-styles front_end/text_editor/cmdevtools.css
 :host-context(.-theme-with-dark-background) .cm-trailing-whitespace,
 .-theme-with-dark-background .cm-trailing-whitespace {
   background-color:rgb(255 0 0 / 5%);
-  }
-
-:host-context(.-theme-with-dark-background) .CodeMirror-focused .CodeMirror-selected,
-.-theme-with-dark-background .CodeMirror-focused .CodeMirror-selected {
-  background-color:var(--item-selection-bg-color);
   }
 
 :host-context(.-theme-with-dark-background) .CodeMirror .auto-complete-text,

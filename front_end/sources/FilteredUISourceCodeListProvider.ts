@@ -143,8 +143,9 @@ export class FilteredUISourceCodeListProvider extends QuickOpen.FilteredListWidg
   _renderSubtitleElement(element: Element, text: string): void {
     element.removeChildren();
     let splitPosition = text.lastIndexOf('/');
-    if (text.length > 55) {
-      splitPosition = text.length - 55;
+    const maxTextLength = 43;
+    if (text.length > maxTextLength) {
+      splitPosition = text.length - maxTextLength;
     }
     const first = element.createChild('div', 'first-part');
     first.textContent = text.substring(0, splitPosition);

@@ -35,6 +35,96 @@ export declare function __asyncValues(o: any): any;
 export declare function __makeTemplateObject(cooked: string[], raw: string[]): TemplateStringsArray;
 export declare function __importStar<T>(mod: T): T;
 export declare function __importDefault<T>(mod: T): T | { default: T };
-export declare function __classPrivateFieldGet<T extends object, V>(receiver: T, privateMap: { has(o: T): boolean, get(o: T): V | undefined }): V;
-export declare function __classPrivateFieldSet<T extends object, V>(receiver: T, privateMap: { has(o: T): boolean, set(o: T, value: V): any }, value: V): V;
+/**
+ * Reading from a private instance field
+ */
+export declare function __classPrivateFieldGet<T extends object, V>(
+    receiver: T,
+    state: { has(o: T): boolean, get(o: T): V | undefined },
+    kind?: "f"
+): V;
+/**
+ * Reading from a private static field
+ */
+export declare function __classPrivateFieldGet<T extends new (...args: any[]) => unknown, V>(
+    receiver: T,
+    state: T,
+    kind: "f",
+    f: { value: V }
+): V;
+/**
+ * Reading from a private instance get accessor
+ */
+export declare function __classPrivateFieldGet<T extends object, V>(
+    receiver: T,
+    state: { has(o: T): boolean },
+    kind: "a",
+    f: () => V
+): V;
+/**
+ * Reading from a private static get accessor
+ */
+export declare function __classPrivateFieldGet<T extends new (...args: any[]) => unknown, V>(
+    receiver: T,
+    state: T,
+    kind: "a",
+    f: () => V
+): V;
+/**
+ * Reading from a private instance method
+ */
+export declare function __classPrivateFieldGet<T extends object, V extends (...args: any[]) => unknown>(
+    receiver: T,
+    state: { has(o: T): boolean },
+    kind: "m",
+    f: V
+): V;
+/**
+ * Reading from a private static method
+ */
+export declare function __classPrivateFieldGet<T extends new (...args: any[]) => unknown, V extends (...args: any[]) => unknown>(
+    receiver: T,
+    state: T,
+    kind: "m",
+    f: V
+): V;
+/**
+ * Writing to a private instance field
+ */
+ export declare function __classPrivateFieldSet<T extends object, V>(
+    receiver: T,
+    state: { has(o: T): boolean, set(o: T, value: V): unknown },
+    value: V,
+    kind?: "f"
+): V;
+/**
+ * Writing to a private static field
+ */
+export declare function __classPrivateFieldSet<T extends new (...args: any[]) => unknown, V>(
+    receiver: T,
+    state: T,
+    value: V,
+    kind: "f",
+    f: { value: V }
+): V;
+/**
+ * Writing to a private instance set accessor
+ */
+export declare function __classPrivateFieldSet<T extends object, V>(
+    receiver: T,
+    state: { has(o: T): boolean },
+    value: V,
+    kind: "a",
+    f: (v: V) => void
+): V;
+/**
+ * Writing to a private static set accessor
+ */
+export declare function __classPrivateFieldSet<T extends new (...args: any[]) => unknown, V>(
+    receiver: T,
+    state: T,
+    value: V,
+    kind: "a",
+    f: (v: V) => void
+): V;
 export declare function __createBinding(object: object, target: object, key: PropertyKey, objectKey?: PropertyKey): void;

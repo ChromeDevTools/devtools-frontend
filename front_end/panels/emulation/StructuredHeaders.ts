@@ -513,7 +513,7 @@ function parseString(input: Input): String|Error {
       outputString += String.fromCodePoint(nextChar);
     } else if (char === CHAR_DQUOTE) {
       return {kind: ResultKind.STRING, value: outputString};
-    } else if (char<CHAR_MIN_ASCII_PRINTABLE || char>CHAR_MAX_ASCII_PRINTABLE) {
+    } else if (char < CHAR_MIN_ASCII_PRINTABLE || char > CHAR_MAX_ASCII_PRINTABLE) {
       return makeError();
     } else {
       outputString += String.fromCodePoint(char);
@@ -742,7 +742,7 @@ function serializeString(input: String): SerializationResult|Error {
   // Only printable ASCII strings are supported by the spec.
   for (let i = 0; i < input.value.length; ++i) {
     const char = input.value.charCodeAt(i);
-    if (char<CHAR_MIN_ASCII_PRINTABLE || char>CHAR_MAX_ASCII_PRINTABLE) {
+    if (char < CHAR_MIN_ASCII_PRINTABLE || char > CHAR_MAX_ASCII_PRINTABLE) {
       return makeError();
     }
   }

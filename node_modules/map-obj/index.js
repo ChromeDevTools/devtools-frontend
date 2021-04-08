@@ -33,6 +33,11 @@ const mapObject = (object, mapper, options, isSeen = new WeakMap()) => {
 	for (const [key, value] of Object.entries(object)) {
 		let [newKey, newValue, {shouldRecurse = true} = {}] = mapper(key, value, object);
 
+		// Drop `__proto__` keys.
+		if (newKey === '__proto__') {
+			continue;
+		}
+
 		if (options.deep && shouldRecurse && isObjectCustom(newValue)) {
 			newValue = Array.isArray(newValue) ?
 				mapArray(newValue) :

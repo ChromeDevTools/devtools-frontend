@@ -489,6 +489,7 @@ export class NetworkLogView extends UI.Widget.VBox implements
         this._dataGrid.scheduleUpdate.bind(this._dataGrid, true /* isFromUser */));
 
     this._summaryToolbar = new UI.Toolbar.Toolbar('network-summary-bar', this.element);
+    this._summaryToolbar.element.setAttribute('role', 'status');
 
     new UI.DropTarget.DropTarget(
         this.element, [UI.DropTarget.Type.File], i18nString(UIStrings.dropHarFilesHere), this._handleDrop.bind(this));

@@ -164,19 +164,36 @@ export class URLGroupTreeElement extends ConsoleSidebarTreeElement {
   }
 }
 
+/**
+ * Maps the GroupName for a filter to the UIString used to render messages.
+ * Stored here so we only construct it once at runtime, rather than everytime we
+ * construct a filter or get a new message.
+ */
+const stringForFilterSidebarItemMap = new Map<GroupName, string>([
+  [GroupName.ConsoleAPI, UIStrings.dUserMessages],
+  [GroupName.All, UIStrings.dMessages],
+  [GroupName.Error, UIStrings.dErrors],
+  [GroupName.Warning, UIStrings.dWarnings],
+  [GroupName.Info, UIStrings.dInfo],
+  [GroupName.Verbose, UIStrings.dVerbose],
+]);
+
 export class FilterTreeElement extends ConsoleSidebarTreeElement {
   _selectedFilterSetting: Common.Settings.Setting<string>;
   _urlTreeElements: Map<string|null, URLGroupTreeElement>;
   _messageCount: number;
+  private uiStringForFilterCount: string;
 
   constructor(filter: ConsoleFilter, icon: UI.Icon.Icon, selectedFilterSetting: Common.Settings.Setting<string>) {
     super(filter.name, filter);
+    this.uiStringForFilterCount = stringForFilterSidebarItemMap.get(filter.name as GroupName) || '';
     this._selectedFilterSetting = selectedFilterSetting;
     this._urlTreeElements = new Map();
     this.setLeadingIcons([icon]);
     this._messageCount = 0;
     this._updateCounter();
   }
+
 
   clear(): void {
     this._urlTreeElements.clear();
@@ -195,21 +212,17 @@ export class FilterTreeElement extends ConsoleSidebarTreeElement {
   }
 
   _updateCounter(): void {
-    this.title = this._updateGroupTitle(this._filter.name, this._messageCount);
+    this.title = this._updateGroupTitle(this._messageCount);
     this.setExpandable(Boolean(this.childCount()));
   }
 
-  _updateGroupTitle(filterName: string, messageCount: number): string {
-    const groupTitleMap = new Map([
-      [GroupName.ConsoleAPI, i18nString(UIStrings.dUserMessages, {n: messageCount})],
-      [GroupName.All, i18nString(UIStrings.dMessages, {n: messageCount})],
-      [GroupName.Error, i18nString(UIStrings.dErrors, {n: messageCount})],
-      [GroupName.Warning, i18nString(UIStrings.dWarnings, {n: messageCount})],
-      [GroupName.Info, i18nString(UIStrings.dInfo, {n: messageCount})],
-      [GroupName.Verbose, i18nString(UIStrings.dVerbose, {n: messageCount})],
-    ]);
-    return groupTitleMap.get(filterName as GroupName) || '';
+  _updateGroupTitle(messageCount: number): string {
+    if (this.uiStringForFilterCount) {
+      return i18nString(this.uiStringForFilterCount, {n: messageCount});
+    }
+    return '';
   }
+
   onMessageAdded(viewMessage: ConsoleViewMessage): void {
     const message = viewMessage.consoleMessage();
     const shouldIncrementCounter = message.type !== SDK.ConsoleModel.MessageType.Command &&

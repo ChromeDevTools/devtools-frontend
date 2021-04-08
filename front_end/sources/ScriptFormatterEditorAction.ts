@@ -7,7 +7,7 @@
 import * as Common from '../core/common/common.js';  // eslint-disable-line no-unused-vars
 import * as i18n from '../core/i18n/i18n.js';
 import * as FormatterModule from '../formatter/formatter.js';
-import * as Persistence from '../persistence/persistence.js';
+import * as Persistence from '../models/persistence/persistence.js';
 import * as SourceFrame from '../source_frame/source_frame.js';
 import * as UI from '../ui/legacy/legacy.js';
 import * as Workspace from '../workspace/workspace.js';

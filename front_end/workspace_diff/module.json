@@ -1,5 +1,5 @@
 {
   "dependencies": [
-    "persistence"
+    "models/persistence"
   ]
 }

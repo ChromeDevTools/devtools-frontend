@@ -4,8 +4,8 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as i18n from '../core/i18n/i18n.js';
-import * as UI from '../ui/legacy/legacy.js';
+import * as i18n from '../../core/i18n/i18n.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
 import {EditFileSystemView} from './EditFileSystemView.js';
 import type {FileSystem} from './FileSystemWorkspaceBinding.js';
@@ -36,7 +36,7 @@ const UIStrings = {
   */
   remove: 'Remove',
 };
-const str_ = i18n.i18n.registerUIStrings('persistence/WorkspaceSettingsTab.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('models/persistence/WorkspaceSettingsTab.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 let workspaceSettingsTabInstance: WorkspaceSettingsTab;
@@ -48,7 +48,7 @@ export class WorkspaceSettingsTab extends UI.Widget.VBox {
   _mappingViewByPath: Map<string, EditFileSystemView>;
   private constructor() {
     super();
-    this.registerRequiredCSS('persistence/workspaceSettingsTab.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('models/persistence/workspaceSettingsTab.css', {enableLegacyPatching: true});
 
     const header = this.element.createChild('header');
     UI.UIUtils.createTextChild(header.createChild('h1'), i18nString(UIStrings.workspace));

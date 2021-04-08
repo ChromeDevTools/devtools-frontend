@@ -7,7 +7,7 @@
     "panels/mobile_throttling",
     "object_ui",
     "perf_ui",
-    "persistence",
+    "models/persistence",
     "search",
     "source_frame",
     "ui/legacy"

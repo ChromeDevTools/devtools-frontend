@@ -30,9 +30,9 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../core/common/common.js';
-import * as i18n from '../core/i18n/i18n.js';
-import * as UI from '../ui/legacy/legacy.js';
+import * as Common from '../../core/common/common.js';
+import * as i18n from '../../core/i18n/i18n.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
 import {Events, IsolatedFileSystemManager} from './IsolatedFileSystemManager.js';
 import type {PlatformFileSystem} from './PlatformFileSystem.js';
@@ -70,7 +70,7 @@ const UIStrings = {
   */
   enterAUniquePath: 'Enter a unique path',
 };
-const str_ = i18n.i18n.registerUIStrings('persistence/EditFileSystemView.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('models/persistence/EditFileSystemView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class EditFileSystemView extends UI.Widget.VBox implements UI.ListWidget.Delegate<string> {
   _fileSystemPath: string;
@@ -81,7 +81,7 @@ export class EditFileSystemView extends UI.Widget.VBox implements UI.ListWidget.
   _excludedFolderEditor?: UI.ListWidget.Editor<string>;
   constructor(fileSystemPath: string) {
     super(true);
-    this.registerRequiredCSS('persistence/editFileSystemView.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('models/persistence/editFileSystemView.css', {enableLegacyPatching: false});
     this._fileSystemPath = fileSystemPath;
 
     this._excludedFolders = [];
@@ -98,7 +98,8 @@ export class EditFileSystemView extends UI.Widget.VBox implements UI.ListWidget.
         i18nString(UIStrings.add), this._addExcludedFolderButtonClicked.bind(this), 'add-button'));
     this._excludedFoldersList = new UI.ListWidget.ListWidget(this);
     this._excludedFoldersList.element.classList.add('file-system-list');
-    this._excludedFoldersList.registerRequiredCSS('persistence/editFileSystemView.css', {enableLegacyPatching: false});
+    this._excludedFoldersList.registerRequiredCSS(
+        'models/persistence/editFileSystemView.css', {enableLegacyPatching: false});
     const excludedFoldersPlaceholder = document.createElement('div');
     excludedFoldersPlaceholder.classList.add('file-system-list-empty');
     excludedFoldersPlaceholder.textContent = i18nString(UIStrings.none);

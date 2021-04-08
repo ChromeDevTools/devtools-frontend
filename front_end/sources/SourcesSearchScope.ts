@@ -33,7 +33,7 @@
 import * as Common from '../core/common/common.js';
 import * as Platform from '../core/platform/platform.js';
 import * as Bindings from '../models/bindings/bindings.js';
-import * as Persistence from '../persistence/persistence.js';
+import * as Persistence from '../models/persistence/persistence.js';
 import * as Search from '../search/search.js';  // eslint-disable-line no-unused-vars
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as Workspace from '../workspace/workspace.js';

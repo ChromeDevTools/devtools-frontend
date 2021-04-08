@@ -8,7 +8,7 @@ import * as Common from '../core/common/common.js';
 import * as i18n from '../core/i18n/i18n.js';
 import * as Platform from '../core/platform/platform.js';
 import * as Root from '../core/root/root.js';
-import * as Persistence from '../persistence/persistence.js';
+import * as Persistence from '../models/persistence/persistence.js';
 import * as QuickOpen from '../quick_open/quick_open.js';
 import * as SourceFrame from '../source_frame/source_frame.js';
 import * as UI from '../ui/legacy/legacy.js';

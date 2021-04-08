@@ -4,12 +4,12 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Components from '../components/components.js';
-import * as Common from '../core/common/common.js';
-import * as Platform from '../core/platform/platform.js';
-import * as SDK from '../core/sdk/sdk.js';
-import * as Bindings from '../models/bindings/bindings.js';
-import * as Workspace from '../workspace/workspace.js';
+import * as Components from '../../components/components.js';
+import * as Common from '../../core/common/common.js';
+import * as Platform from '../../core/platform/platform.js';
+import * as SDK from '../../core/sdk/sdk.js';
+import * as Workspace from '../../workspace/workspace.js';
+import * as Bindings from '../bindings/bindings.js';
 
 import type {AutomappingStatus} from './Automapping.js';
 import {Automapping} from './Automapping.js';

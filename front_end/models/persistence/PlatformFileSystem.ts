@@ -4,9 +4,9 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import type * as Common from '../core/common/common.js';
-import * as i18n from '../core/i18n/i18n.js';
-import type * as TextUtils from '../text_utils/text_utils.js';
+import type * as Common from '../../core/common/common.js';
+import * as i18n from '../../core/i18n/i18n.js';
+import type * as TextUtils from '../../text_utils/text_utils.js';
 
 const UIStrings = {
   /**
@@ -14,7 +14,7 @@ const UIStrings = {
   */
   unableToReadFilesWithThis: '`PlatformFileSystem` cannot read files.',
 };
-const str_ = i18n.i18n.registerUIStrings('persistence/PlatformFileSystem.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('models/persistence/PlatformFileSystem.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class PlatformFileSystem {
   _path: string;

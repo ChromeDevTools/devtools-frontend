@@ -1,6 +1,6 @@
 {
   "dependencies": [
     "quick_open",
-    "persistence"
+    "models/persistence"
   ]
 }

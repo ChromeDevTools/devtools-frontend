@@ -2,12 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../core/common/common.js';
-import * as i18n from '../core/i18n/i18n.js';
-import * as Root from '../core/root/root.js';
-import * as SDK from '../core/sdk/sdk.js';
-import * as UI from '../ui/legacy/legacy.js';
-import * as Workspace from '../workspace/workspace.js';
+import * as Common from '../../core/common/common.js';
+import * as i18n from '../../core/i18n/i18n.js';
+import * as Root from '../../core/root/root.js';
+import * as SDK from '../../core/sdk/sdk.js';
+import * as UI from '../../ui/legacy/legacy.js';
+import * as Workspace from '../../workspace/workspace.js';
 
 // eslint-disable-next-line rulesdir/es_modules_import
 import type * as Persistence from './persistence.js';
@@ -55,7 +55,7 @@ const UIStrings = {
   */
   disableOverrideNetworkRequests: 'Disable override network requests',
 };
-const str_ = i18n.i18n.registerUIStrings('persistence/persistence-meta.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('models/persistence/persistence-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 let loadedPersistenceModule: (typeof Persistence|undefined);

@@ -45,6 +45,7 @@ export const mappingForLayoutTests = new Map<string, string>([
   ['panels/network', 'network'],
   ['panels/profiler', 'profiler'],
   ['panels/application', 'resources'],
+  ['models/persistence', 'persistence'],
 ]);
 
 export class Runtime {

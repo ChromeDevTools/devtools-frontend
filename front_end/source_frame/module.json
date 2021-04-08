@@ -2,7 +2,7 @@
   "dependencies": [
     "text_editor",
     "ui/legacy",
-    "persistence",
+    "models/persistence",
     "object_ui",
     "workspace_diff"
   ],

@@ -4,7 +4,7 @@
 
 const {assert} = chai;
 
-import * as Persistence from '../../../../front_end/persistence/persistence.js';
+import * as Persistence from '../../../../front_end/models/persistence/persistence.js';
 
 describe('PlatformFileSystem', () => {
   it('can be instantiated successfully', () => {

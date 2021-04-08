@@ -7,7 +7,7 @@
 import * as Common from '../core/common/common.js';
 import * as Host from '../core/host/host.js';
 import * as Diff from '../diff/diff.js';
-import * as Persistence from '../persistence/persistence.js';
+import * as Persistence from '../models/persistence/persistence.js';
 import * as Workspace from '../workspace/workspace.js';
 
 export class WorkspaceDiffImpl extends Common.ObjectWrapper.ObjectWrapper {

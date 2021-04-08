@@ -5,7 +5,7 @@
     "source_frame",
     "snippets",
     "models/extensions",
-    "persistence",
+    "models/persistence",
     "quick_open",
     "inline_editor",
     "color_picker",

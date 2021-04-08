@@ -1991,6 +1991,114 @@
   "models/bindings/ResourceScriptMapping.ts | liveEditFailed": {
     "message": "LiveEdit f̂áîĺêd́: {PH1}"
   },
+  "models/persistence/Automapping.ts | theAttemptToBindSInTheWorkspace": {
+    "message": "T̂h́ê át̂t́êḿp̂t́ t̂ó b̂ín̂d́ \"{PH1}\" îń t̂h́ê ẃôŕk̂śp̂áĉé f̂áîĺêd́ âś t̂h́îś ÛŔÎ íŝ ḿâĺf̂ór̂ḿêd́."
+  },
+  "models/persistence/EditFileSystemView.ts | add": {
+    "message": "Âd́d̂"
+  },
+  "models/persistence/EditFileSystemView.ts | enterAPath": {
+    "message": "Êńt̂ér̂ á p̂át̂h́"
+  },
+  "models/persistence/EditFileSystemView.ts | enterAUniquePath": {
+    "message": "Êńt̂ér̂ á ûńîq́ûé p̂át̂h́"
+  },
+  "models/persistence/EditFileSystemView.ts | excludedFolders": {
+    "message": "Êx́ĉĺûd́êd́ f̂ól̂d́êŕŝ"
+  },
+  "models/persistence/EditFileSystemView.ts | folderPath": {
+    "message": "F̂ól̂d́êŕ p̂át̂h́"
+  },
+  "models/persistence/EditFileSystemView.ts | none": {
+    "message": "N̂ón̂é"
+  },
+  "models/persistence/EditFileSystemView.ts | sViaDevtools": {
+    "message": "{PH1} (v̂íâ .d́êv́t̂óôĺŝ)"
+  },
+  "models/persistence/IsolatedFileSystem.ts | blobCouldNotBeLoaded": {
+    "message": "B̂ĺôb́ ĉóûĺd̂ ńôt́ b̂é l̂óâd́êd́."
+  },
+  "models/persistence/IsolatedFileSystem.ts | cantReadFileSS": {
+    "message": "Ĉán̂'t́ r̂éâd́ f̂íl̂é: {PH1}: {PH2}"
+  },
+  "models/persistence/IsolatedFileSystem.ts | fileSystemErrorS": {
+    "message": "F̂íl̂é ŝýŝt́êḿ êŕr̂ór̂: {PH1}"
+  },
+  "models/persistence/IsolatedFileSystem.ts | linkedToS": {
+    "message": "L̂ín̂ḱêd́ t̂ó {PH1}"
+  },
+  "models/persistence/IsolatedFileSystem.ts | unknownErrorReadingFileS": {
+    "message": "Ûńk̂ńôẃn̂ ér̂ŕôŕ r̂éâd́îńĝ f́îĺê: {PH1}"
+  },
+  "models/persistence/IsolatedFileSystemManager.ts | unableToAddFilesystemS": {
+    "message": "Ûńâb́l̂é t̂ó âd́d̂ f́îĺêśŷśt̂ém̂: {PH1}"
+  },
+  "models/persistence/persistence-meta.ts | disableOverrideNetworkRequests": {
+    "message": "D̂íŝáb̂ĺê óv̂ér̂ŕîd́ê ńêt́ŵór̂ḱ r̂éq̂úêśt̂ś"
+  },
+  "models/persistence/persistence-meta.ts | enableLocalOverrides": {
+    "message": "Êńâb́l̂é L̂óĉál̂ Óv̂ér̂ŕîd́êś"
+  },
+  "models/persistence/persistence-meta.ts | enableOverrideNetworkRequests": {
+    "message": "Êńâb́l̂é ôv́êŕr̂íd̂é n̂ét̂ẃôŕk̂ ŕêq́ûéŝt́ŝ"
+  },
+  "models/persistence/persistence-meta.ts | interception": {
+    "message": "îńt̂ér̂ćêṕt̂íôń"
+  },
+  "models/persistence/persistence-meta.ts | network": {
+    "message": "n̂ét̂ẃôŕk̂"
+  },
+  "models/persistence/persistence-meta.ts | override": {
+    "message": "ôv́êŕr̂íd̂é"
+  },
+  "models/persistence/persistence-meta.ts | request": {
+    "message": "r̂éq̂úêśt̂"
+  },
+  "models/persistence/persistence-meta.ts | rewrite": {
+    "message": "r̂éŵŕît́ê"
+  },
+  "models/persistence/persistence-meta.ts | showWorkspace": {
+    "message": "Ŝh́ôẃ Ŵór̂ḱŝṕâćê"
+  },
+  "models/persistence/persistence-meta.ts | workspace": {
+    "message": "Ŵór̂ḱŝṕâćê"
+  },
+  "models/persistence/PersistenceActions.ts | openInContainingFolder": {
+    "message": "Ôṕêń îń ĉón̂t́âín̂ín̂ǵ f̂ól̂d́êŕ"
+  },
+  "models/persistence/PersistenceActions.ts | saveAs": {
+    "message": "Ŝáv̂é âś..."
+  },
+  "models/persistence/PersistenceActions.ts | saveForOverrides": {
+    "message": "Ŝáv̂é f̂ór̂ óv̂ér̂ŕîd́êś"
+  },
+  "models/persistence/PersistenceActions.ts | saveImage": {
+    "message": "Ŝáv̂é îḿâǵê"
+  },
+  "models/persistence/PersistenceUtils.ts | linkedToS": {
+    "message": "L̂ín̂ḱêd́ t̂ó {PH1}"
+  },
+  "models/persistence/PersistenceUtils.ts | linkedToSourceMapS": {
+    "message": "L̂ín̂ḱêd́ t̂ó ŝóûŕĉé m̂áp̂: {PH1}"
+  },
+  "models/persistence/PlatformFileSystem.ts | unableToReadFilesWithThis": {
+    "message": "PlatformFileSystem ĉán̂ńôt́ r̂éâd́ f̂íl̂éŝ."
+  },
+  "models/persistence/WorkspaceSettingsTab.ts | addFolder": {
+    "message": "Âd́d̂ f́ôĺd̂ér̂…"
+  },
+  "models/persistence/WorkspaceSettingsTab.ts | folderExcludePattern": {
+    "message": "F̂ól̂d́êŕ êx́ĉĺûd́ê ṕât́t̂ér̂ń"
+  },
+  "models/persistence/WorkspaceSettingsTab.ts | mappingsAreInferredAutomatically": {
+    "message": "M̂áp̂ṕîńĝś âŕê ín̂f́êŕr̂éd̂ áût́ôḿât́îćâĺl̂ý."
+  },
+  "models/persistence/WorkspaceSettingsTab.ts | remove": {
+    "message": "R̂ém̂óv̂é"
+  },
+  "models/persistence/WorkspaceSettingsTab.ts | workspace": {
+    "message": "Ŵór̂ḱŝṕâćê"
+  },
   "node_debugger/node_debugger-meta.ts | node": {
     "message": "N̂ód̂é"
   },
@@ -8110,114 +8218,6 @@
   },
   "perf_ui/PieChart.ts | total": {
     "message": "T̂ót̂ál̂"
-  },
-  "persistence/Automapping.ts | theAttemptToBindSInTheWorkspace": {
-    "message": "T̂h́ê át̂t́êḿp̂t́ t̂ó b̂ín̂d́ \"{PH1}\" îń t̂h́ê ẃôŕk̂śp̂áĉé f̂áîĺêd́ âś t̂h́îś ÛŔÎ íŝ ḿâĺf̂ór̂ḿêd́."
-  },
-  "persistence/EditFileSystemView.ts | add": {
-    "message": "Âd́d̂"
-  },
-  "persistence/EditFileSystemView.ts | enterAPath": {
-    "message": "Êńt̂ér̂ á p̂át̂h́"
-  },
-  "persistence/EditFileSystemView.ts | enterAUniquePath": {
-    "message": "Êńt̂ér̂ á ûńîq́ûé p̂át̂h́"
-  },
-  "persistence/EditFileSystemView.ts | excludedFolders": {
-    "message": "Êx́ĉĺûd́êd́ f̂ól̂d́êŕŝ"
-  },
-  "persistence/EditFileSystemView.ts | folderPath": {
-    "message": "F̂ól̂d́êŕ p̂át̂h́"
-  },
-  "persistence/EditFileSystemView.ts | none": {
-    "message": "N̂ón̂é"
-  },
-  "persistence/EditFileSystemView.ts | sViaDevtools": {
-    "message": "{PH1} (v̂íâ .d́êv́t̂óôĺŝ)"
-  },
-  "persistence/IsolatedFileSystem.ts | blobCouldNotBeLoaded": {
-    "message": "B̂ĺôb́ ĉóûĺd̂ ńôt́ b̂é l̂óâd́êd́."
-  },
-  "persistence/IsolatedFileSystem.ts | cantReadFileSS": {
-    "message": "Ĉán̂'t́ r̂éâd́ f̂íl̂é: {PH1}: {PH2}"
-  },
-  "persistence/IsolatedFileSystem.ts | fileSystemErrorS": {
-    "message": "F̂íl̂é ŝýŝt́êḿ êŕr̂ór̂: {PH1}"
-  },
-  "persistence/IsolatedFileSystem.ts | linkedToS": {
-    "message": "L̂ín̂ḱêd́ t̂ó {PH1}"
-  },
-  "persistence/IsolatedFileSystem.ts | unknownErrorReadingFileS": {
-    "message": "Ûńk̂ńôẃn̂ ér̂ŕôŕ r̂éâd́îńĝ f́îĺê: {PH1}"
-  },
-  "persistence/IsolatedFileSystemManager.ts | unableToAddFilesystemS": {
-    "message": "Ûńâb́l̂é t̂ó âd́d̂ f́îĺêśŷśt̂ém̂: {PH1}"
-  },
-  "persistence/persistence-meta.ts | disableOverrideNetworkRequests": {
-    "message": "D̂íŝáb̂ĺê óv̂ér̂ŕîd́ê ńêt́ŵór̂ḱ r̂éq̂úêśt̂ś"
-  },
-  "persistence/persistence-meta.ts | enableLocalOverrides": {
-    "message": "Êńâb́l̂é L̂óĉál̂ Óv̂ér̂ŕîd́êś"
-  },
-  "persistence/persistence-meta.ts | enableOverrideNetworkRequests": {
-    "message": "Êńâb́l̂é ôv́êŕr̂íd̂é n̂ét̂ẃôŕk̂ ŕêq́ûéŝt́ŝ"
-  },
-  "persistence/persistence-meta.ts | interception": {
-    "message": "îńt̂ér̂ćêṕt̂íôń"
-  },
-  "persistence/persistence-meta.ts | network": {
-    "message": "n̂ét̂ẃôŕk̂"
-  },
-  "persistence/persistence-meta.ts | override": {
-    "message": "ôv́êŕr̂íd̂é"
-  },
-  "persistence/persistence-meta.ts | request": {
-    "message": "r̂éq̂úêśt̂"
-  },
-  "persistence/persistence-meta.ts | rewrite": {
-    "message": "r̂éŵŕît́ê"
-  },
-  "persistence/persistence-meta.ts | showWorkspace": {
-    "message": "Ŝh́ôẃ Ŵór̂ḱŝṕâćê"
-  },
-  "persistence/persistence-meta.ts | workspace": {
-    "message": "Ŵór̂ḱŝṕâćê"
-  },
-  "persistence/PersistenceActions.ts | openInContainingFolder": {
-    "message": "Ôṕêń îń ĉón̂t́âín̂ín̂ǵ f̂ól̂d́êŕ"
-  },
-  "persistence/PersistenceActions.ts | saveAs": {
-    "message": "Ŝáv̂é âś..."
-  },
-  "persistence/PersistenceActions.ts | saveForOverrides": {
-    "message": "Ŝáv̂é f̂ór̂ óv̂ér̂ŕîd́êś"
-  },
-  "persistence/PersistenceActions.ts | saveImage": {
-    "message": "Ŝáv̂é îḿâǵê"
-  },
-  "persistence/PersistenceUtils.ts | linkedToS": {
-    "message": "L̂ín̂ḱêd́ t̂ó {PH1}"
-  },
-  "persistence/PersistenceUtils.ts | linkedToSourceMapS": {
-    "message": "L̂ín̂ḱêd́ t̂ó ŝóûŕĉé m̂áp̂: {PH1}"
-  },
-  "persistence/PlatformFileSystem.ts | unableToReadFilesWithThis": {
-    "message": "PlatformFileSystem ĉán̂ńôt́ r̂éâd́ f̂íl̂éŝ."
-  },
-  "persistence/WorkspaceSettingsTab.ts | addFolder": {
-    "message": "Âd́d̂ f́ôĺd̂ér̂…"
-  },
-  "persistence/WorkspaceSettingsTab.ts | folderExcludePattern": {
-    "message": "F̂ól̂d́êŕ êx́ĉĺûd́ê ṕât́t̂ér̂ń"
-  },
-  "persistence/WorkspaceSettingsTab.ts | mappingsAreInferredAutomatically": {
-    "message": "M̂áp̂ṕîńĝś âŕê ín̂f́êŕr̂éd̂ áût́ôḿât́îćâĺl̂ý."
-  },
-  "persistence/WorkspaceSettingsTab.ts | remove": {
-    "message": "R̂ém̂óv̂é"
-  },
-  "persistence/WorkspaceSettingsTab.ts | workspace": {
-    "message": "Ŵór̂ḱŝṕâćê"
   },
   "quick_open/CommandMenu.ts | noCommandsFound": {
     "message": "N̂ó ĉóm̂ḿâńd̂ś f̂óûńd̂"

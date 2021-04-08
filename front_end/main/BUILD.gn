@@ -22,7 +22,7 @@ devtools_module("main") {
     "../core/sdk:bundle",
     "../models/bindings:bundle",
     "../models/extensions:bundle",
-    "../persistence:bundle",
+    "../models/persistence:bundle",
     "../recorder:bundle",
     "../snippets:bundle",
     "../theme_support:bundle",

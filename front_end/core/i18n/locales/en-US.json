@@ -1991,6 +1991,114 @@
   "models/bindings/ResourceScriptMapping.ts | liveEditFailed": {
     "message": "LiveEdit failed: {PH1}"
   },
+  "models/persistence/Automapping.ts | theAttemptToBindSInTheWorkspace": {
+    "message": "The attempt to bind \"{PH1}\" in the workspace failed as this URI is malformed."
+  },
+  "models/persistence/EditFileSystemView.ts | add": {
+    "message": "Add"
+  },
+  "models/persistence/EditFileSystemView.ts | enterAPath": {
+    "message": "Enter a path"
+  },
+  "models/persistence/EditFileSystemView.ts | enterAUniquePath": {
+    "message": "Enter a unique path"
+  },
+  "models/persistence/EditFileSystemView.ts | excludedFolders": {
+    "message": "Excluded folders"
+  },
+  "models/persistence/EditFileSystemView.ts | folderPath": {
+    "message": "Folder path"
+  },
+  "models/persistence/EditFileSystemView.ts | none": {
+    "message": "None"
+  },
+  "models/persistence/EditFileSystemView.ts | sViaDevtools": {
+    "message": "{PH1} (via .devtools)"
+  },
+  "models/persistence/IsolatedFileSystem.ts | blobCouldNotBeLoaded": {
+    "message": "Blob could not be loaded."
+  },
+  "models/persistence/IsolatedFileSystem.ts | cantReadFileSS": {
+    "message": "Can't read file: {PH1}: {PH2}"
+  },
+  "models/persistence/IsolatedFileSystem.ts | fileSystemErrorS": {
+    "message": "File system error: {PH1}"
+  },
+  "models/persistence/IsolatedFileSystem.ts | linkedToS": {
+    "message": "Linked to {PH1}"
+  },
+  "models/persistence/IsolatedFileSystem.ts | unknownErrorReadingFileS": {
+    "message": "Unknown error reading file: {PH1}"
+  },
+  "models/persistence/IsolatedFileSystemManager.ts | unableToAddFilesystemS": {
+    "message": "Unable to add filesystem: {PH1}"
+  },
+  "models/persistence/persistence-meta.ts | disableOverrideNetworkRequests": {
+    "message": "Disable override network requests"
+  },
+  "models/persistence/persistence-meta.ts | enableLocalOverrides": {
+    "message": "Enable Local Overrides"
+  },
+  "models/persistence/persistence-meta.ts | enableOverrideNetworkRequests": {
+    "message": "Enable override network requests"
+  },
+  "models/persistence/persistence-meta.ts | interception": {
+    "message": "interception"
+  },
+  "models/persistence/persistence-meta.ts | network": {
+    "message": "network"
+  },
+  "models/persistence/persistence-meta.ts | override": {
+    "message": "override"
+  },
+  "models/persistence/persistence-meta.ts | request": {
+    "message": "request"
+  },
+  "models/persistence/persistence-meta.ts | rewrite": {
+    "message": "rewrite"
+  },
+  "models/persistence/persistence-meta.ts | showWorkspace": {
+    "message": "Show Workspace"
+  },
+  "models/persistence/persistence-meta.ts | workspace": {
+    "message": "Workspace"
+  },
+  "models/persistence/PersistenceActions.ts | openInContainingFolder": {
+    "message": "Open in containing folder"
+  },
+  "models/persistence/PersistenceActions.ts | saveAs": {
+    "message": "Save as..."
+  },
+  "models/persistence/PersistenceActions.ts | saveForOverrides": {
+    "message": "Save for overrides"
+  },
+  "models/persistence/PersistenceActions.ts | saveImage": {
+    "message": "Save image"
+  },
+  "models/persistence/PersistenceUtils.ts | linkedToS": {
+    "message": "Linked to {PH1}"
+  },
+  "models/persistence/PersistenceUtils.ts | linkedToSourceMapS": {
+    "message": "Linked to source map: {PH1}"
+  },
+  "models/persistence/PlatformFileSystem.ts | unableToReadFilesWithThis": {
+    "message": "PlatformFileSystem cannot read files."
+  },
+  "models/persistence/WorkspaceSettingsTab.ts | addFolder": {
+    "message": "Add folder…"
+  },
+  "models/persistence/WorkspaceSettingsTab.ts | folderExcludePattern": {
+    "message": "Folder exclude pattern"
+  },
+  "models/persistence/WorkspaceSettingsTab.ts | mappingsAreInferredAutomatically": {
+    "message": "Mappings are inferred automatically."
+  },
+  "models/persistence/WorkspaceSettingsTab.ts | remove": {
+    "message": "Remove"
+  },
+  "models/persistence/WorkspaceSettingsTab.ts | workspace": {
+    "message": "Workspace"
+  },
   "node_debugger/node_debugger-meta.ts | node": {
     "message": "Node"
   },
@@ -8110,114 +8218,6 @@
   },
   "perf_ui/PieChart.ts | total": {
     "message": "Total"
-  },
-  "persistence/Automapping.ts | theAttemptToBindSInTheWorkspace": {
-    "message": "The attempt to bind \"{PH1}\" in the workspace failed as this URI is malformed."
-  },
-  "persistence/EditFileSystemView.ts | add": {
-    "message": "Add"
-  },
-  "persistence/EditFileSystemView.ts | enterAPath": {
-    "message": "Enter a path"
-  },
-  "persistence/EditFileSystemView.ts | enterAUniquePath": {
-    "message": "Enter a unique path"
-  },
-  "persistence/EditFileSystemView.ts | excludedFolders": {
-    "message": "Excluded folders"
-  },
-  "persistence/EditFileSystemView.ts | folderPath": {
-    "message": "Folder path"
-  },
-  "persistence/EditFileSystemView.ts | none": {
-    "message": "None"
-  },
-  "persistence/EditFileSystemView.ts | sViaDevtools": {
-    "message": "{PH1} (via .devtools)"
-  },
-  "persistence/IsolatedFileSystem.ts | blobCouldNotBeLoaded": {
-    "message": "Blob could not be loaded."
-  },
-  "persistence/IsolatedFileSystem.ts | cantReadFileSS": {
-    "message": "Can't read file: {PH1}: {PH2}"
-  },
-  "persistence/IsolatedFileSystem.ts | fileSystemErrorS": {
-    "message": "File system error: {PH1}"
-  },
-  "persistence/IsolatedFileSystem.ts | linkedToS": {
-    "message": "Linked to {PH1}"
-  },
-  "persistence/IsolatedFileSystem.ts | unknownErrorReadingFileS": {
-    "message": "Unknown error reading file: {PH1}"
-  },
-  "persistence/IsolatedFileSystemManager.ts | unableToAddFilesystemS": {
-    "message": "Unable to add filesystem: {PH1}"
-  },
-  "persistence/persistence-meta.ts | disableOverrideNetworkRequests": {
-    "message": "Disable override network requests"
-  },
-  "persistence/persistence-meta.ts | enableLocalOverrides": {
-    "message": "Enable Local Overrides"
-  },
-  "persistence/persistence-meta.ts | enableOverrideNetworkRequests": {
-    "message": "Enable override network requests"
-  },
-  "persistence/persistence-meta.ts | interception": {
-    "message": "interception"
-  },
-  "persistence/persistence-meta.ts | network": {
-    "message": "network"
-  },
-  "persistence/persistence-meta.ts | override": {
-    "message": "override"
-  },
-  "persistence/persistence-meta.ts | request": {
-    "message": "request"
-  },
-  "persistence/persistence-meta.ts | rewrite": {
-    "message": "rewrite"
-  },
-  "persistence/persistence-meta.ts | showWorkspace": {
-    "message": "Show Workspace"
-  },
-  "persistence/persistence-meta.ts | workspace": {
-    "message": "Workspace"
-  },
-  "persistence/PersistenceActions.ts | openInContainingFolder": {
-    "message": "Open in containing folder"
-  },
-  "persistence/PersistenceActions.ts | saveAs": {
-    "message": "Save as..."
-  },
-  "persistence/PersistenceActions.ts | saveForOverrides": {
-    "message": "Save for overrides"
-  },
-  "persistence/PersistenceActions.ts | saveImage": {
-    "message": "Save image"
-  },
-  "persistence/PersistenceUtils.ts | linkedToS": {
-    "message": "Linked to {PH1}"
-  },
-  "persistence/PersistenceUtils.ts | linkedToSourceMapS": {
-    "message": "Linked to source map: {PH1}"
-  },
-  "persistence/PlatformFileSystem.ts | unableToReadFilesWithThis": {
-    "message": "PlatformFileSystem cannot read files."
-  },
-  "persistence/WorkspaceSettingsTab.ts | addFolder": {
-    "message": "Add folder…"
-  },
-  "persistence/WorkspaceSettingsTab.ts | folderExcludePattern": {
-    "message": "Folder exclude pattern"
-  },
-  "persistence/WorkspaceSettingsTab.ts | mappingsAreInferredAutomatically": {
-    "message": "Mappings are inferred automatically."
-  },
-  "persistence/WorkspaceSettingsTab.ts | remove": {
-    "message": "Remove"
-  },
-  "persistence/WorkspaceSettingsTab.ts | workspace": {
-    "message": "Workspace"
   },
   "quick_open/CommandMenu.ts | noCommandsFound": {
     "message": "No commands found"

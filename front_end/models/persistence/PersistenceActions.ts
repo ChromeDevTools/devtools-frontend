@@ -4,14 +4,14 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../core/common/common.js';
-import * as Host from '../core/host/host.js';
-import * as i18n from '../core/i18n/i18n.js';
-import * as SDK from '../core/sdk/sdk.js';
+import * as Common from '../../core/common/common.js';
+import * as Host from '../../core/host/host.js';
+import * as i18n from '../../core/i18n/i18n.js';
+import * as SDK from '../../core/sdk/sdk.js';
 
-import type * as TextUtils from '../text_utils/text_utils.js';
-import type * as UI from '../ui/legacy/legacy.js';
-import * as Workspace from '../workspace/workspace.js';
+import type * as TextUtils from '../../text_utils/text_utils.js';
+import type * as UI from '../../ui/legacy/legacy.js';
+import * as Workspace from '../../workspace/workspace.js';
 
 import {NetworkPersistenceManager} from './NetworkPersistenceManager.js';
 import {PersistenceImpl} from './PersistenceImpl.js';
@@ -34,7 +34,7 @@ const UIStrings = {
   */
   openInContainingFolder: 'Open in containing folder',
 };
-const str_ = i18n.i18n.registerUIStrings('persistence/PersistenceActions.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('models/persistence/PersistenceActions.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 let contextMenuProviderInstance: ContextMenuProvider;

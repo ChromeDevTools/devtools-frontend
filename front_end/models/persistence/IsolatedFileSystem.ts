@@ -30,12 +30,12 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../core/common/common.js';
-import * as Host from '../core/host/host.js';
-import * as i18n from '../core/i18n/i18n.js';
-import * as Platform from '../core/platform/platform.js';
+import * as Common from '../../core/common/common.js';
+import * as Host from '../../core/host/host.js';
+import * as i18n from '../../core/i18n/i18n.js';
+import * as Platform from '../../core/platform/platform.js';
 
-import type * as TextUtils from '../text_utils/text_utils.js';
+import type * as TextUtils from '../../text_utils/text_utils.js';
 
 import type {IsolatedFileSystemManager} from './IsolatedFileSystemManager.js';
 import {Events} from './IsolatedFileSystemManager.js';
@@ -68,7 +68,7 @@ const UIStrings = {
   */
   linkedToS: 'Linked to {PH1}',
 };
-const str_ = i18n.i18n.registerUIStrings('persistence/IsolatedFileSystem.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('models/persistence/IsolatedFileSystem.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class IsolatedFileSystem extends PlatformFileSystem {
   _manager: IsolatedFileSystemManager;

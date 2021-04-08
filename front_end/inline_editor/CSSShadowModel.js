@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../core/common/common.js';
-import * as TextUtils from '../text_utils/text_utils.js';
+import * as TextUtils from '../models/text_utils/text_utils.js';
 
 export class CSSShadowModel {
   /**

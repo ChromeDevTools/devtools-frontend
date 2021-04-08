@@ -16,7 +16,7 @@ ts_library("ts") {
   deps = [
     "../../../test/unittests/front_end/helpers",
     "../../component_helpers:bundle",
-    "../../text_utils:bundle",
+    "../../models/text_utils:bundle",
     "../../ui/components:bundle",
   ]
 }

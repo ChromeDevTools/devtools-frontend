@@ -28,8 +28,8 @@ devtools_entrypoint("bundle") {
     "../models/bindings:legacy",
     "../models/extensions:legacy",
     "../models/persistence:legacy",
+    "../models/text_utils:legacy",
     "../panels/console_counters:legacy",
-    "../text_utils:legacy",
     "../ui/legacy:legacy",
     "../workspace:legacy",
   ]

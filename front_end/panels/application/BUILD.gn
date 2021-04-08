@@ -49,11 +49,11 @@ devtools_module("application") {
     "../../data_grid:bundle",
     "../../inline_editor:bundle",
     "../../models/bindings:bundle",
+    "../../models/text_utils:bundle",
     "../../object_ui:bundle",
     "../../panels/mobile_throttling:bundle",
     "../../panels/network:bundle",
     "../../source_frame:bundle",
-    "../../text_utils:bundle",
     "../../ui/legacy:bundle",
     "../../workspace:bundle",
   ]

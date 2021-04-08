@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as ComponentHelpers from '../../component_helpers/component_helpers.js';
-import * as TextUtils from '../../text_utils/text_utils.js';
+import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Components from '../../ui/components/components.js';
 
 await ComponentHelpers.ComponentServerSetup.setup();

@@ -10,7 +10,7 @@ import * as Platform from '../core/platform/platform.js';
 import * as SDK from '../core/sdk/sdk.js';
 import * as Persistence from '../models/persistence/persistence.js';
 
-import type * as TextUtils from '../text_utils/text_utils.js';
+import type * as TextUtils from '../models/text_utils/text_utils.js';
 import * as UI from '../ui/legacy/legacy.js';
 import * as Workspace from '../workspace/workspace.js';
 

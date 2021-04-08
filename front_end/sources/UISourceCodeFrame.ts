@@ -36,10 +36,10 @@ import * as Platform from '../core/platform/platform.js';
 import * as Root from '../core/root/root.js';
 import * as SDK from '../core/sdk/sdk.js';
 import * as Persistence from '../models/persistence/persistence.js';  // eslint-disable-line no-unused-vars
+import * as TextUtils from '../models/text_utils/text_utils.js';
 import * as ConsoleCounters from '../panels/console_counters/console_counters.js';
 import * as SourceFrame from '../source_frame/source_frame.js';
 import * as TextEditor from '../text_editor/text_editor.js';  // eslint-disable-line no-unused-vars
-import * as TextUtils from '../text_utils/text_utils.js';
 import * as UIComponents from '../ui/components/components.js';
 import * as UI from '../ui/legacy/legacy.js';
 import * as Workspace from '../workspace/workspace.js';

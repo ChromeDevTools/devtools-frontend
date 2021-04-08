@@ -27,9 +27,9 @@ devtools_module("source_frame") {
     "../core/sdk:bundle",
     "../diff:bundle",
     "../formatter:bundle",
+    "../models/text_utils:bundle",
     "../object_ui:bundle",
     "../text_editor:bundle",
-    "../text_utils:bundle",
     "../ui/legacy:bundle",
     "../workspace:bundle",
   ]

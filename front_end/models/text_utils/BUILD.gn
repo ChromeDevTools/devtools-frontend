@@ -2,8 +2,8 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-import("../../scripts/build/ninja/devtools_entrypoint.gni")
-import("../../scripts/build/ninja/devtools_module.gni")
+import("../../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../../../scripts/build/ninja/devtools_module.gni")
 
 devtools_module("text_utils") {
   sources = [
@@ -17,12 +17,13 @@ devtools_module("text_utils") {
   ]
 
   deps = [
-    "../core/common:bundle",
-    "../core/platform:bundle",
-    "../core/root:bundle",
+    "../../core/common:bundle",
+    "../../core/platform:bundle",
+    "../../core/root:bundle",
   ]
 
-  visibility = [ "../../test/unittests/front_end/text_utils:text_utils" ]
+  visibility =
+      [ "../../../test/unittests/front_end/models/text_utils:text_utils" ]
 }
 
 devtools_entrypoint("bundle") {
@@ -30,7 +31,7 @@ devtools_entrypoint("bundle") {
 
   deps = [
     ":text_utils",
-    "../third_party/codemirror",
+    "../../third_party/codemirror",
   ]
 }
 

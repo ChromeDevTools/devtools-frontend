@@ -22,8 +22,8 @@ devtools_module("coverage") {
     "../../data_grid:bundle",
     "../../formatter:bundle",
     "../../models/bindings:bundle",
+    "../../models/text_utils:bundle",
     "../../source_frame:bundle",
-    "../../text_utils:bundle",
     "../../ui/legacy:bundle",
     "../../workspace:bundle",
   ]

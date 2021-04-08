@@ -4,7 +4,7 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as TextUtils from '../text_utils/text_utils.js';
+import * as TextUtils from '../models/text_utils/text_utils.js';
 import * as UI from '../ui/legacy/legacy.js';
 
 export class SyntaxHighlighter {

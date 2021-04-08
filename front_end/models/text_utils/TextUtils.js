@@ -28,7 +28,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import * as Platform from '../core/platform/platform.js';
+import * as Platform from '../../core/platform/platform.js';
 
 import {SearchMatch} from './ContentProvider.js';
 import {Text} from './Text.js';

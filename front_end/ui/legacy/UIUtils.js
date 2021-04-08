@@ -38,7 +38,7 @@ import * as DOMExtension from '../../core/dom_extension/dom_extension.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
-import * as TextUtils from '../../text_utils/text_utils.js';
+import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as ThemeSupport from '../../theme_support/theme_support.js';
 
 import * as ARIAUtils from './ARIAUtils.js';

@@ -17,7 +17,7 @@ devtools_module("developer_resources") {
     "../../core/platform:bundle",
     "../../core/sdk:bundle",
     "../../data_grid:bundle",
-    "../../text_utils:bundle",
+    "../../models/text_utils:bundle",
     "../../ui/legacy:bundle",
   ]
 }

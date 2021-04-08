@@ -5,7 +5,7 @@
 /* eslint-disable rulesdir/no_underscored_properties */
 
 import * as SDK from '../../core/sdk/sdk.js';
-import * as TextUtils from '../../text_utils/text_utils.js';
+import * as TextUtils from '../../models/text_utils/text_utils.js';
 
 import type {ConsoleViewMessage} from './ConsoleViewMessage.js';
 

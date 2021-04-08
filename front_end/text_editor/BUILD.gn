@@ -19,7 +19,7 @@ devtools_module("text_editor") {
     "../core/host:bundle",
     "../core/i18n:bundle",
     "../core/platform:bundle",
-    "../text_utils:bundle",
+    "../models/text_utils:bundle",
     "../ui/legacy:bundle",
   ]
 }

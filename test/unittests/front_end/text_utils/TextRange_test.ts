@@ -4,7 +4,7 @@
 
 const {assert} = chai;
 
-import * as TextUtils from '../../../../front_end/text_utils/text_utils.js';
+import * as TextUtils from '../../../../front_end/models/text_utils/text_utils.js';
 
 interface ExpectedTextRange {
   startLine: number;

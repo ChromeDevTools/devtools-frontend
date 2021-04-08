@@ -34,7 +34,7 @@
 import * as Common from '../core/common/common.js';
 import * as i18n from '../core/i18n/i18n.js';
 import * as Platform from '../core/platform/platform.js';
-import * as TextUtils from '../text_utils/text_utils.js';
+import * as TextUtils from '../models/text_utils/text_utils.js';
 
 import type {Project} from './WorkspaceImpl.js';
 import {Events as WorkspaceImplEvents, projectTypes} from './WorkspaceImpl.js';

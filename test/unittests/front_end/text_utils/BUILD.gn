@@ -10,5 +10,5 @@ ts_library("text_utils") {
     "Text_test.ts",
   ]
 
-  deps = [ "../../../../front_end/text_utils:bundle" ]
+  deps = [ "../../../../front_end/models/text_utils:bundle" ]
 }

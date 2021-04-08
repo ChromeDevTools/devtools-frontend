@@ -243,9 +243,9 @@ async function requestHandler(request, response) {
         componentDocsBaseArg && componentDocsBaseArg.endsWith(sharedResourcesBase) ? '/' : `/${sharedResourcesBase}`;
     const fileContents = await fs.promises.readFile(path.join(componentDocsBaseFolder, filePath), {encoding: 'utf8'});
     const themeColoursLink = `<link rel="stylesheet" href="${
-        path.join(baseUrlForSharedResource, 'front_end', 'ui', 'themeColors.css')}" type="text/css" />`;
+        path.join(baseUrlForSharedResource, 'front_end', 'ui', 'legacy', 'themeColors.css')}" type="text/css" />`;
     const inspectorCommonLink = `<link rel="stylesheet" href="${
-        path.join(baseUrlForSharedResource, 'front_end', 'ui', 'inspectorCommon.css')}" type="text/css" />`;
+        path.join(baseUrlForSharedResource, 'front_end', 'ui', 'legacy', 'inspectorCommon.css')}" type="text/css" />`;
     const toggleDarkModeScript = `<script type="module" src="${
         path.join(baseUrlForSharedResource, 'front_end', 'component_docs', 'component_docs.js')}"></script>`;
     const newFileContents = fileContents.replace('<style>', `${themeColoursLink}\n${inspectorCommonLink}\n<style>`)

@@ -288,7 +288,7 @@ const UIStrings = {
   */
   receiveData: 'Receive Data',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
+  *@description Event category in the Performance panel for time spent to execute microtasks in JavaScript
   */
   runMicrotasks: 'Run Microtasks',
   /**
@@ -300,15 +300,15 @@ const UIStrings = {
   */
   gcEvent: 'GC Event',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
+  *@description Event category in the Performance panel for time spent to perform a full Garbage Collection pass
   */
   majorGc: 'Major GC',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
+  *@description Event category in the Performance panel for time spent to perform a quick Garbage Collection pass
   */
   minorGc: 'Minor GC',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
+  *@description Event category in the Performance panel for time spent to execute JavaScript
   */
   jsFrame: 'JS Frame',
   /**
@@ -352,19 +352,19 @@ const UIStrings = {
   */
   destroyWebsocket: 'Destroy WebSocket',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
+  *@description Event category in the Performance panel for time spent in the embedder of the WebView
   */
   embedderCallback: 'Embedder Callback',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
+  *@description Event category in the Performance panel for time spent decoding an image
   */
   imageDecode: 'Image Decode',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
+  *@description Event category in the Performance panel for time spent to resize an image
   */
   imageResize: 'Image Resize',
   /**
-  *@description Text in Timeline Flame Chart Data Provider of the Performance panel
+  *@description Event category in the Performance panel for time spent in the GPU
   */
   gpu: 'GPU',
   /**
@@ -372,11 +372,11 @@ const UIStrings = {
   */
   inputLatency: 'Input Latency',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
+  *@description Event category in the Performance panel for time spent to perform Garbage Collection for the Document Object Model
   */
   domGc: 'DOM GC',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
+  *@description Event category in the Performance panel for time spent to perform encryption
   */
   encrypt: 'Encrypt',
   /**
@@ -384,7 +384,7 @@ const UIStrings = {
   */
   encryptReply: 'Encrypt Reply',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
+  *@description Event category in the Performance panel for time spent to perform decryption
   */
   decrypt: 'Decrypt',
   /**
@@ -611,7 +611,7 @@ const UIStrings = {
   */
   selfTime: 'Self Time',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
+  *@description Label in the summary view in the Performance panel for a number which indicates how much managed memory has been reclaimed by performing Garbage Collection
   */
   collected: 'Collected',
   /**
@@ -959,7 +959,7 @@ const UIStrings = {
   */
   sAtS: '{PH1} at {PH2}',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
+  *@description Category in the Summary view of the Performance panel to indicate time spent to load resources
   */
   loading: 'Loading',
   /**
@@ -967,15 +967,15 @@ const UIStrings = {
   */
   experience: 'Experience',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
+  *@description Category in the Summary view of the Performance panel to indicate time spent in script execution
   */
   scripting: 'Scripting',
   /**
-  *@description Title of the Rendering tool
+  *@description Category in the Summary view of the Performance panel to indicate time spent in rendering the web page
   */
   rendering: 'Rendering',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
+  *@description Category in the Summary view of the Performance panel to indicate time spent to visually represent the web page
   */
   painting: 'Painting',
   /**
@@ -983,11 +983,11 @@ const UIStrings = {
   */
   async: 'Async',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
+  *@description Category in the Summary view of the Performance panel to indicate time spent in the rest of the system
   */
   system: 'System',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
+  *@description Category in the Summary view of the Performance panel to indicate idle time
   */
   idle: 'Idle',
   /**

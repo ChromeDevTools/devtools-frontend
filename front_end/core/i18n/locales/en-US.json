@@ -5064,7 +5064,7 @@
     "message": "\"Experimental Web Platform Feature\" flag is disabled. Click to enable it."
   },
   "panels/emulation/DeviceModeToolbar.js | fitToWindowF": {
-    "message": "Fit to window ({PH1}%%)"
+    "message": "Fit to window ({PH1}%)"
   },
   "panels/emulation/DeviceModeToolbar.js | heightLeaveEmptyForFull": {
     "message": "Height (leave empty for full)"

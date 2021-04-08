@@ -58,7 +58,7 @@ const UIStrings = {
   * will be displayed after fitting.
   * @example {30.0} PH1
   */
-  fitToWindowF: 'Fit to window ({PH1}%%)',
+  fitToWindowF: 'Fit to window ({PH1}%)',
   /**
   * @description A checkbox setting that appears in the context menu for the zoom level, in the
   * Device Mode Toolbar.

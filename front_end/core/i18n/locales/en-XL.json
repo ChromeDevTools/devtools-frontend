@@ -5064,7 +5064,7 @@
     "message": "\"Experimental Web Platform Feature\" f̂ĺâǵ îś d̂íŝáb̂ĺêd́. Ĉĺîćk̂ t́ô én̂áb̂ĺê ít̂."
   },
   "panels/emulation/DeviceModeToolbar.js | fitToWindowF": {
-    "message": "F̂ít̂ t́ô ẃîńd̂óŵ ({PH1}%%)"
+    "message": "F̂ít̂ t́ô ẃîńd̂óŵ ({PH1}%)"
   },
   "panels/emulation/DeviceModeToolbar.js | heightLeaveEmptyForFull": {
     "message": "Ĥéîǵĥt́ (l̂éâv́ê ém̂ṕt̂ý f̂ór̂ f́ûĺl̂)"

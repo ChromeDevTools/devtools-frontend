@@ -615,14 +615,14 @@ function getIconDataForMessage(message: Workspace.UISourceCode.Message): UICompo
 }
 
 export class RowMessage {
-  private uiMessage: Workspace.UISourceCode.Message;
+  private message: Workspace.UISourceCode.Message;
   private repeatCount: number;
   element: HTMLDivElement;
   private icon: UIComponents.Icon.Icon;
   private repeatCountElement: UI.UIUtils.DevToolsSmallBubble;
 
   constructor(message: Workspace.UISourceCode.Message) {
-    this.uiMessage = message;
+    this.message = message;
     this.repeatCount = 1;
     this.element = document.createElement('div');
     this.element.classList.add('text-editor-row-message');
@@ -637,26 +637,19 @@ export class RowMessage {
     this.element.appendChild(this.repeatCountElement);
     this.repeatCountElement.type = getBubbleTypePerLevel(message.level());
     const linesContainer = this.element.createChild('div');
-    const lines = this.uiMessage.text().split('\n');
+    const lines = this.message.text().split('\n');
     for (let i = 0; i < lines.length; ++i) {
       const messageLine = linesContainer.createChild('div');
       messageLine.textContent = lines[i];
     }
   }
 
-  /**
-   * @deprecated
-   */
-  message(): Workspace.UISourceCode.Message {
-    return this.uiMessage;
-  }
-
   getMessage(): Workspace.UISourceCode.Message {
-    return this.uiMessage;
+    return this.message;
   }
 
   callClickHandler(): void {
-    const handler = this.uiMessage.clickHandler();
+    const handler = this.message.clickHandler();
     if (handler) {
       handler();
     }

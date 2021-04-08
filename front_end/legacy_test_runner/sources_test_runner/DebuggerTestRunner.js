@@ -124,7 +124,7 @@ SourcesTestRunner.dumpSourceFrameMessages = function(sourceFrame, dumpFullURL) {
 
   for (const bucket of sourceFrame._rowMessageBuckets.values()) {
     for (const rowMessage of bucket._messages) {
-      const message = rowMessage.message();
+      const message = rowMessage.getMessage();
       messages.push(String.sprintf(
           '  %d:%d [%s] %s', message.lineNumber(), message.columnNumber(), message.level(), message.text()));
     }

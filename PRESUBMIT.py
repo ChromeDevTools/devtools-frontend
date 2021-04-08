@@ -39,7 +39,7 @@ import time
 EXCLUSIVE_CHANGE_DIRECTORIES = [
     ['third_party', 'v8'],
     ['node_modules'],
-    ['OWNERS'],
+    ['OWNERS', 'config/owner'],
 ]
 
 AUTOROLL_ACCOUNT = "devtools-ci-autoroll-builder@chops-service-accounts.iam.gserviceaccount.com"

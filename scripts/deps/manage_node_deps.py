@@ -230,7 +230,7 @@ def addOwnersFile():
     with open(path.join(devtools_paths.node_modules_path(), 'OWNERS'),
               'w+') as owners_file:
         try:
-            owners_file.write('file://INFRA_OWNERS\n')
+            owners_file.write('file://config/owner/INFRA_OWNERS\n')
         except:
             print('Unable to write OWNERS file')
             return True

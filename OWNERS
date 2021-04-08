@@ -1,22 +1,22 @@
-file://ENG_REVIEW_OWNERS
+file://config/owner/ENG_REVIEW_OWNERS
 
-per-file .*=file://INFRA_OWNERS
-per-file AUTHORS=file://COMMON_OWNERS
-per-file BUILD.gn=file://INFRA_OWNERS
-per-file DEPS=file://INFRA_OWNERS
-per-file PRESUBMIT.py=file://INFRA_OWNERS
-per-file ARCHITECTURE.md=file://INFRA_OWNERS
-per-file README.md=file://COMMON_OWNERS
-per-file WATCHLISTS=file://INFRA_OWNERS
-per-file all_devtools_files.gni=file://COMMON_OWNERS
-per-file all_devtools_modules.gni=file://COMMON_OWNERS
-per-file devtools_grd_files.gni=file://COMMON_OWNERS
-per-file codereview.settings=file://INFRA_OWNERS
-per-file devtools_image_files.gni=file://COMMON_OWNERS
-per-file devtools_module_entrypoints.gni=file://COMMON_OWNERS
-per-file htaccess=file://INFRA_OWNERS
-per-file karma.conf.json=file://INFRA_OWNERS
-per-file package-lock.json=file://INFRA_OWNERS
-per-file package.json=file://INFRA_OWNERS
-per-file tsconfig.base.json=file://INFRA_OWNERS
-per-file tsconfig.json=file://INFRA_OWNERS
+per-file .*=file://config/owner/INFRA_OWNERS
+per-file AUTHORS=file://config/owner/COMMON_OWNERS
+per-file BUILD.gn=file://config/owner/INFRA_OWNERS
+per-file DEPS=file://config/owner/INFRA_OWNERS
+per-file PRESUBMIT.py=file://config/owner/INFRA_OWNERS
+per-file ARCHITECTURE.md=file://config/owner/INFRA_OWNERS
+per-file README.md=file://config/owner/COMMON_OWNERS
+per-file WATCHLISTS=file://config/owner/INFRA_OWNERS
+per-file all_devtools_files.gni=file://config/owner/COMMON_OWNERS
+per-file all_devtools_modules.gni=file://config/owner/COMMON_OWNERS
+per-file devtools_grd_files.gni=file://config/owner/COMMON_OWNERS
+per-file codereview.settings=file://config/owner/INFRA_OWNERS
+per-file devtools_image_files.gni=file://config/owner/COMMON_OWNERS
+per-file devtools_module_entrypoints.gni=file://config/owner/COMMON_OWNERS
+per-file htaccess=file://config/owner/INFRA_OWNERS
+per-file karma.conf.json=file://config/owner/INFRA_OWNERS
+per-file package-lock.json=file://config/owner/INFRA_OWNERS
+per-file package.json=file://config/owner/INFRA_OWNERS
+per-file tsconfig.base.json=file://config/owner/INFRA_OWNERS
+per-file tsconfig.json=file://config/owner/INFRA_OWNERS

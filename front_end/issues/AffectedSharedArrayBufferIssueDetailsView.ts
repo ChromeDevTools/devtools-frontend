@@ -57,7 +57,7 @@ const UIStrings = {
   */
   trigger: 'Trigger',
   /**
-  *@description Text for the status of something
+  *@description Title for the status column in the SAB affected resources list
   */
   status: 'Status',
 };

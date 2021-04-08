@@ -32,19 +32,19 @@ const UIStrings = {
   */
   blocked: 'blocked',
   /**
-  *@description Text for the status of something
+  *@description Text for the status column in the item list in the CORS issue details view
   */
   status: 'Status',
   /**
-  *@description Text for the status of something
+  *@description Text for the column showing the associated network request in the item list in the CORS issue details view
   */
   request: 'Request',
   /**
-   *@description Text for the status of something
+   *@description Text for the column showing the resource's address in the item list in the CORS issue details view
    */
   resourceAddressSpace: 'Resource Address',
   /**
-   *@description Text for the status of something
+   *@description Text for the column showing the address of the resource load initiator in the item list in the CORS issue details view
    */
   initiatorAddressSpace: 'Initiator Address',
   /**

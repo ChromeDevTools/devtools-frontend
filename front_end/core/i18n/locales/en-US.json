@@ -2099,6 +2099,27 @@
   "models/persistence/WorkspaceSettingsTab.ts | workspace": {
     "message": "Workspace"
   },
+  "models/timeline_model/TimelineIRModel.ts | twoFlingsAtTheSameTimeSVsS": {
+    "message": "Two flings at the same time? {PH1} vs {PH2}"
+  },
+  "models/timeline_model/TimelineIRModel.ts | twoTouchesAtTheSameTimeSVsS": {
+    "message": "Two touches at the same time? {PH1} vs {PH2}"
+  },
+  "models/timeline_model/TimelineJSProfile.ts | threadS": {
+    "message": "Thread {PH1}"
+  },
+  "models/timeline_model/TimelineModel.ts | dedicatedWorker": {
+    "message": "Dedicated Worker"
+  },
+  "models/timeline_model/TimelineModel.ts | threadS": {
+    "message": "Thread {PH1}"
+  },
+  "models/timeline_model/TimelineModel.ts | workerS": {
+    "message": "Worker — {PH1}"
+  },
+  "models/timeline_model/TimelineModel.ts | workerSS": {
+    "message": "Worker: {PH1} — {PH2}"
+  },
   "node_debugger/node_debugger-meta.ts | node": {
     "message": "Node"
   },
@@ -9733,27 +9754,6 @@
   },
   "text_editor/CodeMirrorTextEditor.ts | codeEditor": {
     "message": "Code editor"
-  },
-  "timeline_model/TimelineIRModel.ts | twoFlingsAtTheSameTimeSVsS": {
-    "message": "Two flings at the same time? {PH1} vs {PH2}"
-  },
-  "timeline_model/TimelineIRModel.ts | twoTouchesAtTheSameTimeSVsS": {
-    "message": "Two touches at the same time? {PH1} vs {PH2}"
-  },
-  "timeline_model/TimelineJSProfile.ts | threadS": {
-    "message": "Thread {PH1}"
-  },
-  "timeline_model/TimelineModel.ts | dedicatedWorker": {
-    "message": "Dedicated Worker"
-  },
-  "timeline_model/TimelineModel.ts | threadS": {
-    "message": "Thread {PH1}"
-  },
-  "timeline_model/TimelineModel.ts | workerS": {
-    "message": "Worker — {PH1}"
-  },
-  "timeline_model/TimelineModel.ts | workerSS": {
-    "message": "Worker: {PH1} — {PH2}"
   },
   "timeline/CountersGraph.ts | documents": {
     "message": "Documents"

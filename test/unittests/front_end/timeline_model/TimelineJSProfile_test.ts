@@ -6,7 +6,7 @@ const {assert} = chai;
 
 import * as SDK from '../../../../front_end/core/sdk/sdk.js';
 
-import * as TimelineModel from '../../../../front_end/timeline_model/timeline_model.js';
+import * as TimelineModel from '../../../../front_end/models/timeline_model/timeline_model.js';
 
 describe('TimelineJSProfile', () => {
   let tracingModel: SDK.TracingModel.TracingModel;

@@ -10,8 +10,8 @@ import * as Platform from '../core/platform/platform.js';
 import * as Root from '../core/root/root.js';
 import * as SDK from '../core/sdk/sdk.js';
 import * as Bindings from '../models/bindings/bindings.js';
+import * as TimelineModel from '../models/timeline_model/timeline_model.js';
 import * as PerfUI from '../perf_ui/perf_ui.js';
-import * as TimelineModel from '../timeline_model/timeline_model.js';
 import * as UI from '../ui/legacy/legacy.js';
 
 import {CountersGraph} from './CountersGraph.js';

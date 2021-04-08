@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import '../test_runner/test_runner.js';
-import '../../timeline_model/timeline_model-legacy.js';
+import '../../models/timeline_model/timeline_model-legacy.js';
 import '../../timeline/timeline-legacy.js';
 
 import './TimelineTestRunner.js';

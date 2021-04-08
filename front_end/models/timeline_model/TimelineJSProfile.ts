@@ -5,8 +5,8 @@
 /* eslint-disable rulesdir/no_underscored_properties */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import * as i18n from '../core/i18n/i18n.js';
-import * as SDK from '../core/sdk/sdk.js';
+import * as i18n from '../../core/i18n/i18n.js';
+import * as SDK from '../../core/sdk/sdk.js';
 
 import {RecordType, TimelineModelImpl} from './TimelineModel.js';
 
@@ -17,7 +17,7 @@ const UIStrings = {
   */
   threadS: 'Thread {PH1}',
 };
-const str_ = i18n.i18n.registerUIStrings('timeline_model/TimelineJSProfile.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('models/timeline_model/TimelineJSProfile.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class TimelineJSProfileProcessor {
   static generateTracingEventsFromCpuProfile(

@@ -27,11 +27,11 @@ devtools_module("perf_ui") {
     "../core/platform:bundle",
     "../core/sdk:bundle",
     "../models/bindings:bundle",
+    "../models/timeline_model:bundle",
     "../source_frame:bundle",
     "../text_editor:bundle",
     "../theme_support:bundle",
     "../third_party/lit-html:bundle",
-    "../timeline_model:bundle",
     "../ui/legacy:bundle",
     "../workspace:bundle",
   ]

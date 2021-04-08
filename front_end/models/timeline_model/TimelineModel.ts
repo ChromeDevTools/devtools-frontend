@@ -32,11 +32,11 @@
 // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import * as Common from '../core/common/common.js';
-import * as i18n from '../core/i18n/i18n.js';
-import * as Platform from '../core/platform/platform.js';
-import * as Root from '../core/root/root.js';
-import * as SDK from '../core/sdk/sdk.js';
+import * as Common from '../../core/common/common.js';
+import * as i18n from '../../core/i18n/i18n.js';
+import * as Platform from '../../core/platform/platform.js';
+import * as Root from '../../core/root/root.js';
+import * as SDK from '../../core/sdk/sdk.js';
 
 import {TimelineJSProfileProcessor} from './TimelineJSProfile.js';
 
@@ -62,7 +62,7 @@ const UIStrings = {
   */
   workerSS: '`Worker`: {PH1} — {PH2}',
 };
-const str_ = i18n.i18n.registerUIStrings('timeline_model/TimelineModel.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('models/timeline_model/TimelineModel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class TimelineModelImpl {
   _isGenericTrace!: boolean;

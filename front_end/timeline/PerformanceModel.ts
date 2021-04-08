@@ -7,7 +7,7 @@
 import * as Common from '../core/common/common.js';
 import * as SDK from '../core/sdk/sdk.js';
 import * as Bindings from '../models/bindings/bindings.js';  // eslint-disable-line no-unused-vars
-import * as TimelineModel from '../timeline_model/timeline_model.js';
+import * as TimelineModel from '../models/timeline_model/timeline_model.js';
 
 import {TimelineUIUtils} from './TimelineUIUtils.js';
 

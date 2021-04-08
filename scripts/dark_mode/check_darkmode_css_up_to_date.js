@@ -3,13 +3,27 @@
 // found in the LICENSE file.
 const path = require('path');
 const fs = require('fs');
+const glob = require('glob');
 
-// Gets called from the PRESUBMIT with a list of changed CSS files in the developer's branch.
-const changedCSSFiles = process.argv.slice(2);
-
+const args = process.argv.slice(2);
+const shouldCheckAllFiles = args.some(arg => arg === '--check-all-files');
+const darkModeScript = path.join(__dirname, 'generate_dark_theme_sheet.js');
 const errors = [];
 
-changedCSSFiles.forEach(file => {
+if (shouldCheckAllFiles) {
+  // Rather than glob for every *.css file and check if it has a dark mode file,
+  // we glob for every *.darkmode.css file.
+  const files = glob.sync('front_end/**/*.darkmode.css');
+  files.forEach(file => checkCSSFileIsUpToDate(file));
+} else {
+  // If we don't get the --check-all-files flag, the args are a list of CSS files to chekc.
+  const changedCSSFiles = args;
+  changedCSSFiles.forEach(file => {
+    checkCSSFileIsUpToDate(file);
+  });
+}
+
+function checkCSSFileIsUpToDate(file) {
   if (file.includes(path.join('front_end', 'third_party'))) {
     return;
   }
@@ -37,14 +51,17 @@ changedCSSFiles.forEach(file => {
     // If the source & dark mode exist, check if the source is more recent than the dark mode, and if so, we need to regen the dark mode.
     const sourceFileMTime = fs.statSync(sourceFile).mtime;
     const darkFileMTime = fs.statSync(darkModeFile).mtime;
+    const generationScriptMTime = fs.statSync(darkModeScript).mtime;
     // If the source file was modified more recently than the dark file, the dark file needs to be regenerated.
     if (sourceFileMTime > darkFileMTime) {
       errors.push(`${sourcePathRelative} has been modified (${sourceFileMTime}) and ${
           darkModePathRelative} should be regenerated (${darkFileMTime}).`);
+    } else if (generationScriptMTime > darkFileMTime) {
+      // The generation script itself has been changed so we must rerun.
+      errors.push(`generate_dark_theme_sheet.js has been modified and ${darkModePathRelative} should be regenerated.`);
     }
   }
-});
-
+}
 
 if (errors.length) {
   console.error('Dark mode stylesheet errors:');

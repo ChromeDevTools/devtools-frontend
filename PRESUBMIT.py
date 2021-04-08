@@ -38,7 +38,10 @@ import time
 
 EXCLUSIVE_CHANGE_DIRECTORIES = [
     ['third_party', 'v8'],
-    ['node_modules'],
+    [
+        'node_modules', 'package.json', 'package-lock.json',
+        'scripts/deps/manage_node_deps.py'
+    ],
     ['OWNERS', 'config/owner'],
 ]
 

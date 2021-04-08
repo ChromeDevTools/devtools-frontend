@@ -23,7 +23,6 @@ import subprocess
 from modular_build import read_file, write_file, bail_error
 import modular_build
 import rjsmin
-import special_case_namespaces
 
 try:
     import simplejson as json
@@ -85,7 +84,6 @@ class ReleaseBuilder(object):
         self.application_dir = application_dir
         self.output_path_gen_dir = output_path_gen_dir
         self.use_rollup = use_rollup
-        self._special_case_namespaces = special_case_namespaces.special_case_namespaces
 
     def app_file(self, extension):
         return self.application_name + '.' + extension

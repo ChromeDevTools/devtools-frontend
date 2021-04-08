@@ -8,7 +8,7 @@ ts_library("javascript_metadata") {
   sources = [ "JavascriptMetadata_test.ts" ]
 
   deps = [
-    "../../../../front_end/javascript_metadata:bundle",
+    "../../../../front_end/models/javascript_metadata:bundle",
     "../helpers",
   ]
 }

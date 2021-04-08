@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as JavascriptMetadata from '../../../../front_end/javascript_metadata/javascript_metadata.js';
+import * as JavascriptMetadata from '../../../../front_end/models/javascript_metadata/javascript_metadata.js';
 
 describe('JavaScriptMetadata', () => {
   let metadata: JavascriptMetadata.JavaScriptMetadata.JavaScriptMetadataImpl;

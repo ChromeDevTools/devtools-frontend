@@ -2,7 +2,7 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-import("./scripts/build/ninja/vars.gni")
+import("../../scripts/build/ninja/vars.gni")
 
 devtools_module_entrypoint_sources = [
   "Images/Images.js",

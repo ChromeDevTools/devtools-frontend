@@ -104,7 +104,7 @@ To generate the GRD, there are numerous variables that list all kinds of files.
 
 ### Entrypoints
 
-All entrypoints are listed in `/devtools_module_entrypoints.gni`.
+All entrypoints are listed in `/config/gni/devtools_module_entrypoints.gni`.
 
 > Rule: in both release and debug builds, entrypoints are always included in the GRD file
 
@@ -114,7 +114,7 @@ All entrypoints are listed in `/devtools_module_entrypoints.gni`.
 
 ### Module implementation files
 
-All implementation files for components are listed in `/all_devtools_modules.gni`.
+All implementation files for components are listed in `/config/gni/all_devtools_modules.gni`.
 
 > Rule: the implementation files are only present in the GRD file in a debug build, because the release build bundles all files into the respective entrypoint
 

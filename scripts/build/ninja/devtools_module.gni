@@ -2,7 +2,7 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-import("../../../all_devtools_modules.gni")
+import("../../../config/gni/all_devtools_modules.gni")
 import("../../../third_party/typescript/typescript.gni")
 import("./copy.gni")
 import("./vars.gni")

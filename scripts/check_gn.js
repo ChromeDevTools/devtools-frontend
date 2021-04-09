@@ -67,7 +67,7 @@ function checkAllDevToolsFiles() {
 }
 
 function checkGNVariable(fileName, gnVariable, obtainFiles, obtainRelativePath) {
-  const filePath = path.resolve(__dirname, '..', `${fileName}.gni`);
+  const filePath = path.resolve(__dirname, '..', 'config', 'gni', `${fileName}.gni`);
   const fileContent = fs.readFileSync(filePath, 'utf-8');
   const linesToCheck = fileContent.split('\n');
 

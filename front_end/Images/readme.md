@@ -17,8 +17,8 @@
    - Save the icon with `_icon.svg` suffix. For instance `list_icon.svg`.
 
 2. Add respective entries to `.gni` files.
-   - Update the `devtols_image_files` list in `devtools_image_files.gni`.
-   - Update the `grd_files_release_sources` list in `devtools_grd_files.gni`.
+   - Update the `devtols_image_files` list in `config/gni/devtools_image_files.gni`.
+   - Update the `grd_files_release_sources` list in `config/gni/devtools_grd_files.gni`.
 
 3. Optimize:
    - `./scripts/optimize_svg_images.py`.

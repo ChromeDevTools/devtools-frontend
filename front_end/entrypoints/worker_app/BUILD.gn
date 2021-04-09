@@ -1,0 +1,24 @@
+# Copyright 2021 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+import("../../../third_party/typescript/typescript.gni")
+
+ts_library("worker_app") {
+  no_emit = true
+  sources = [ "worker_app.js" ]
+
+  deps = [
+    "../../issues:meta",
+    "../../panels/application:meta",
+    "../../panels/browser_debugger:meta",
+    "../../panels/developer_resources:meta",
+    "../../panels/elements:meta",
+    "../../panels/help:meta",
+    "../../panels/layer_viewer:meta",
+    "../../panels/mobile_throttling:meta",
+    "../../panels/network:meta",
+    "../../startup:bundle",
+    "../../timeline:meta",
+    "../shell",
+  ]
+}

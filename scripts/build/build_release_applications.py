@@ -86,7 +86,8 @@ class ReleaseBuilder(object):
         self.use_rollup = use_rollup
 
     def app_file(self, extension):
-        return self.application_name + '.' + extension
+        return path.join('entrypoints', self.application_name,
+                         self.application_name + '.' + extension)
 
     def autorun_resource_names(self):
         result = []
@@ -182,7 +183,7 @@ class ReleaseBuilder(object):
         else:
             output.write('Root.applicationDescriptor = %s;' % self.descriptors.application_json())
 
-        output.write("import * as RootModule from './core/root/root.js';")
+        output.write("import * as RootModule from '../../core/root/root.js';")
         self._write_module_resources(self.autorun_resource_names(), output)
 
         output.write(minify_js(read_file(join(self.application_dir, self.app_file('js')))))

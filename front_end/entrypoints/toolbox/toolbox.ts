@@ -2,10 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import './core/dom_extension/dom_extension.js';
-import './Images/Images.js';
+import '../../core/dom_extension/dom_extension.js';
+import '../../Images/Images.js';
 
-import * as Platform from './core/platform/platform.js';  // eslint-disable-line rulesdir/es_modules_import
+import * as Platform from '../../core/platform/platform.js';  // eslint-disable-line rulesdir/es_modules_import
 
 function toolboxLoaded(): void {
   if (!window.opener) {

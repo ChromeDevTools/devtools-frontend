@@ -9,9 +9,8 @@ const path = require('path');
 const FRONTEND_PATH = path.resolve(__dirname, '..', 'front_end');
 
 const manifestModules = [];
-for (const config
-         of ['inspector.json', 'devtools_app.json', 'js_app.json', 'node_app.json', 'shell.json', 'worker_app.json']) {
-  manifestModules.push(...require(path.resolve(FRONTEND_PATH, config)).modules);
+for (const config of ['inspector', 'devtools_app', 'js_app', 'node_app', 'shell', 'worker_app']) {
+  manifestModules.push(...require(path.resolve(FRONTEND_PATH, 'entrypoints', config, `${config}.json`)).modules);
 }
 
 const gnPath = path.resolve(__dirname, '..', 'BUILD.gn');

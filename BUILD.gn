@@ -82,19 +82,23 @@ generated_applications_html = [
   "worker_app.html",
 ]
 
-applications_js = [
-  "devtools_app.js",
-  "inspector.js",
-  "js_app.js",
-  "node_app.js",
-  "shell.js",
-  "worker_app.js",
+devtools_applications = [
+  "devtools_app",
+  "inspector",
+  "js_app",
+  "ndb_app",
+  "node_app",
+  "shell",
+  "worker_app",
 ]
 
 gen_generated_applications_js = []
+applications_js = []
 
-foreach(application, applications_js) {
-  gen_generated_applications_js += [ "$target_gen_dir/front_end/$application" ]
+foreach(application, devtools_applications) {
+  applications_js += [ "entrypoints/$application/$application.js" ]
+  gen_generated_applications_js +=
+      [ "$target_gen_dir/front_end/entrypoints/$application/$application.js" ]
 }
 
 non_autostart_non_remote_modules = [
@@ -150,16 +154,6 @@ foreach(module_file, non_autostart_non_remote_modules) {
   gen_non_autostart_non_remote_modules +=
       [ "$target_gen_dir/front_end/$module_file" ]
 }
-
-devtools_applications = [
-  "devtools_app",
-  "inspector",
-  "js_app",
-  "ndb_app",
-  "node_app",
-  "shell",
-  "worker_app",
-]
 
 #-------------------------------------------------------------------------------
 

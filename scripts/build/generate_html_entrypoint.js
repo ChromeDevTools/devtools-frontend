@@ -31,6 +31,6 @@ if (!outDirectory) {
 const templateContent = fs.readFileSync(template, 'utf-8');
 
 for (const entrypoint of ENTRYPOINTS) {
-  const rewrittenTemplateContent = templateContent.replace('%ENTRYPOINT_NAME%', entrypoint);
+  const rewrittenTemplateContent = templateContent.replace(new RegExp('%ENTRYPOINT_NAME%', 'g'), entrypoint);
   fs.writeFileSync(path.join(outDirectory, `${entrypoint}.html`), rewrittenTemplateContent);
 }

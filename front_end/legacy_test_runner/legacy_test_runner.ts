@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import '../devtools_app.js';
+import '../entrypoints/devtools_app/devtools_app.js';
 import '../panels/accessibility/accessibility-legacy.js';
 import '../panels/animation/animation-legacy.js';
 import '../models/bindings/bindings-legacy.js';

@@ -17,7 +17,6 @@ ts_library("legacy_test_runner-source") {
   sources = [ "legacy_test_runner.ts" ]
 
   deps = [
-    "../:devtools_app",
     "../color_picker:legacy",
     "../core/common:legacy",
     "../core/host:legacy",
@@ -25,6 +24,7 @@ ts_library("legacy_test_runner-source") {
     "../core/sdk:legacy",
     "../data_grid:legacy",
     "../diff:legacy",
+    "../entrypoints/devtools_app",
     "../formatter:legacy",
     "../har_importer:legacy",
     "../inline_editor:legacy",

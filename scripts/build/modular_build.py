@@ -146,7 +146,9 @@ class DescriptorLoader:
 
     def _load_application(self, application_descriptor_name, all_module_descriptors):
         module_descriptors = {}
-        application_descriptor_filename = path.join(self.application_dir, application_descriptor_name + '.json')
+        application_descriptor_filename = path.join(
+            self.application_dir, 'entrypoints', application_descriptor_name,
+            application_descriptor_name + '.json')
         descriptor_json = load_and_parse_json(application_descriptor_filename)
         application_descriptor = {desc['name']: desc for desc in descriptor_json['modules']}
         extends = descriptor_json['extends'] if 'extends' in descriptor_json else None

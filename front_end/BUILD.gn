@@ -10,20 +10,12 @@ import("../third_party/typescript/typescript.gni")
 
 group("front_end") {
   public_deps = [
-    ":devtools_app",
     ":embedder-scripts",
     ":html_entrypoints",
-    ":inspector",
     ":integration_test_runner",
-    ":js_app",
     ":legacy_css",
     ":legacy_entrypoints",
-    ":ndb_app",
-    ":node_app",
-    ":shell",
-    ":toolbox",
     ":ts_library-verification",
-    ":worker_app",
     "color_picker:bundle",
     "component_helpers:bundle",
     "components:bundle",
@@ -35,6 +27,14 @@ group("front_end") {
     "data_grid:bundle",
     "diff:bundle",
     "emulated_devices/optimized:optimized_emulated_devices",
+    "entrypoints/devtools_app",
+    "entrypoints/inspector",
+    "entrypoints/js_app",
+    "entrypoints/ndb_app",
+    "entrypoints/node_app",
+    "entrypoints/shell",
+    "entrypoints/toolbox",
+    "entrypoints/worker_app",
     "formatter:bundle",
     "formatter_worker:worker_entrypoint",
     "har_importer:bundle",
@@ -148,152 +148,6 @@ group("legacy_entrypoints") {
     "ui/legacy:legacy",
     "web_audio:legacy",
     "workspace_diff:legacy",
-  ]
-}
-
-ts_library("shell") {
-  no_emit = true
-  sources = [ "shell.js" ]
-
-  deps = [
-    "Images:generate_css_vars",
-    "browser_sdk:meta",
-    "components:legacy",
-    "core/dom_extension:bundle",
-    "core/host:legacy",
-    "core/protocol_client:legacy",
-    "core/sdk:legacy",
-    "core/sdk:meta",
-    "linear_memory_inspector:meta",
-    "main:meta",
-    "models/bindings:legacy",
-    "models/extensions:legacy",
-    "models/persistence:legacy",
-    "models/persistence:meta",
-    "models/workspace:legacy",
-    "object_ui:meta",
-    "panels/changes:meta",
-    "panels/console:meta",
-    "panels/console_counters:legacy",
-    "panels/console_counters:meta",
-    "panels/coverage:meta",
-    "panels/input:meta",
-    "panels/profiler:meta",
-    "panels/protocol_monitor:meta",
-    "perf_ui:meta",
-    "quick_open:meta",
-    "settings:meta",
-    "source_frame:meta",
-    "sources:meta",
-    "startup:bundle",
-    "ui/legacy:legacy",
-  ]
-}
-
-ts_library("devtools_app") {
-  no_emit = true
-  sources = [ "devtools_app.js" ]
-
-  deps = [
-    ":shell",
-    "inspector_main:meta",
-    "issues:meta",
-    "panels/accessibility:meta",
-    "panels/animation:meta",
-    "panels/application:meta",
-    "panels/browser_debugger:meta",
-    "panels/css_overview:meta",
-    "panels/developer_resources:meta",
-    "panels/elements:meta",
-    "panels/emulation:meta",
-    "panels/help:meta",
-    "panels/layer_viewer:meta",
-    "panels/layers:meta",
-    "panels/lighthouse:meta",
-    "panels/media:meta",
-    "panels/mobile_throttling:meta",
-    "panels/network:meta",
-    "panels/performance_monitor:meta",
-    "security:meta",
-    "startup:bundle",
-    "timeline:meta",
-    "web_audio:meta",
-    "webauthn:meta",
-  ]
-}
-
-ts_library("inspector") {
-  no_emit = true
-  sources = [ "inspector.js" ]
-
-  deps = [
-    ":devtools_app",
-    "screencast:meta",
-    "startup:bundle",
-  ]
-}
-
-ts_library("js_app") {
-  no_emit = true
-  sources = [ "js_app.js" ]
-
-  deps = [
-    ":shell",
-    "js_profiler:meta",
-    "startup:bundle",
-  ]
-}
-
-ts_library("ndb_app") {
-  no_emit = true
-  sources = [ "ndb_app.js" ]
-
-  deps = [
-    ":shell",
-    "startup:bundle",
-  ]
-}
-
-ts_library("node_app") {
-  no_emit = true
-  sources = [ "node_app.js" ]
-
-  deps = [
-    ":shell",
-    "js_profiler:meta",
-    "node_debugger:meta",
-    "node_main:meta",
-    "startup:bundle",
-  ]
-}
-
-devtools_entrypoint("toolbox") {
-  entrypoint = "toolbox.ts"
-
-  deps = [
-    "Images:generate_css_vars",
-    "core/dom_extension:bundle",
-    "core/platform:bundle",
-  ]
-}
-
-ts_library("worker_app") {
-  no_emit = true
-  sources = [ "worker_app.js" ]
-
-  deps = [
-    ":shell",
-    "issues:meta",
-    "panels/application:meta",
-    "panels/browser_debugger:meta",
-    "panels/developer_resources:meta",
-    "panels/elements:meta",
-    "panels/help:meta",
-    "panels/layer_viewer:meta",
-    "panels/mobile_throttling:meta",
-    "panels/network:meta",
-    "startup:bundle",
-    "timeline:meta",
   ]
 }
 

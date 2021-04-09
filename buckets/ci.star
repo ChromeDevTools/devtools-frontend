@@ -3,6 +3,7 @@ load(
     "builder",
     "builder_descriptor",
     "config_section",
+    "default_timeout",
     "defaults",
     "dimensions",
     "generate_ci_configs",
@@ -43,6 +44,7 @@ generate_ci_configs(
             name = "DevTools Linux",
             recipe_name = "chromium_integration",
             excluded_from = ["beta", "stable"],
+            execution_timeout = 2 * time.hour,
         ),
         builder_descriptor(
             name = "Stand-alone Linux",
@@ -84,11 +86,11 @@ generate_ci_configs(
 )
 
 target_config = {
-  'solution_name': 'devtools-frontend',
-  'project_name': 'devtools/devtools-frontend',
-  'account': 'devtools-ci-autoroll-builder@chops-service-accounts.iam.gserviceaccount.com',
-  'log_template': 'Rolling %s: %s/+log/%s..%s',
-  'cipd_log_template': 'Rolling %s: %s..%s',
+    "solution_name": "devtools-frontend",
+    "project_name": "devtools/devtools-frontend",
+    "account": "devtools-ci-autoroll-builder@chops-service-accounts.iam.gserviceaccount.com",
+    "log_template": "Rolling %s: %s/+log/%s..%s",
+    "cipd_log_template": "Rolling %s: %s..%s",
 }
 
 builder(
@@ -99,19 +101,19 @@ builder(
     schedule = "0 3,12 * * *",
     recipe_name = "v8/auto_roll_v8_deps",
     dimensions = dimensions.default_ubuntu,
-    execution_timeout = 2 * time.hour,
+    execution_timeout = default_timeout,
     properties = {
-        'autoroller_config' : {
-            'target_config': target_config,
-            'subject': 'Update DevTools DEPS.',
-            'reviewers': [
-                'machenbach@chromium.org',
-                'liviurau@chromium.org',
+        "autoroller_config": {
+            "target_config": target_config,
+            "subject": "Update DevTools DEPS.",
+            "reviewers": [
+                "machenbach@chromium.org",
+                "liviurau@chromium.org",
             ],
-            'show_commit_log': False,
-            'bugs': 'none',
+            "show_commit_log": False,
+            "bugs": "none",
         },
-    }
+    },
 )
 
 builder(
@@ -122,22 +124,22 @@ builder(
     schedule = "0 6 * * *",
     recipe_name = "v8/auto_roll_v8_deps",
     dimensions = dimensions.default_ubuntu,
-    execution_timeout = 2 * time.hour,
+    execution_timeout = default_timeout,
     properties = {
-        'autoroller_config': {
-            'target_config': target_config,
-            'subject': 'Update DevTools Chromium DEPS.',
+        "autoroller_config": {
+            "target_config": target_config,
+            "subject": "Update DevTools Chromium DEPS.",
             # Don't roll any of the other dependencies.
-            'includes': [],
-            'reviewers': [
-                'machenbach@chromium.org',
-                'liviurau@chromium.org',
+            "includes": [],
+            "reviewers": [
+                "machenbach@chromium.org",
+                "liviurau@chromium.org",
             ],
-            'show_commit_log': False,
-            'roll_chromium_pin': True,
-            'bugs': 'none',
+            "show_commit_log": False,
+            "roll_chromium_pin": True,
+            "bugs": "none",
         },
-    }
+    },
 )
 
 luci.list_view(

@@ -19,14 +19,6 @@ const UIStrings = {
   */
   nCookies: '{n, plural, =1 { cookie} other { cookies}}',
   /**
-  *@description Noun, singular. Label for the kind and number of affected resources associated with a DevTools issue. A cookie is a small piece of data that a server sends to the user's web browser. See https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies.
-  */
-  cookie: 'cookie',
-  /**
-  *@description Noun, plural. Label for the kind and number of affected resources associated with a DevTools issue. A cookie is a small piece of data that a server sends to the user's web browser. See https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies.
-  */
-  cookies: 'cookies',
-  /**
   *@description Noun, singular. Label for a column in a table which lists cookies in the affected resources section of a DevTools issue. Each cookie has a name.
   */
   name: 'Name',
@@ -45,7 +37,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class AffectedCookiesView extends AffectedResourcesView {
   private issue: AggregatedIssue;
   constructor(parent: IssueView, issue: AggregatedIssue) {
-    super(parent, {singular: i18nString(UIStrings.cookie), plural: i18nString(UIStrings.cookies)});
+    super(parent);
     this.issue = issue;
   }
 

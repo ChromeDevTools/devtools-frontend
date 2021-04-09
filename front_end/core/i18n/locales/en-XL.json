@@ -1373,20 +1373,8 @@
   "issues/AffectedBlockedByResponseView.ts | parentFrame": {
     "message": "P̂ár̂én̂t́ F̂ŕâḿê"
   },
-  "issues/AffectedBlockedByResponseView.ts | request": {
-    "message": "r̂éq̂úêśt̂"
-  },
   "issues/AffectedBlockedByResponseView.ts | requestC": {
     "message": "R̂éq̂úêśt̂"
-  },
-  "issues/AffectedBlockedByResponseView.ts | requests": {
-    "message": "r̂éq̂úêśt̂ś"
-  },
-  "issues/AffectedCookiesView.ts | cookie": {
-    "message": "ĉóôḱîé"
-  },
-  "issues/AffectedCookiesView.ts | cookies": {
-    "message": "ĉóôḱîéŝ"
   },
   "issues/AffectedCookiesView.ts | domain": {
     "message": "D̂óm̂áîń"
@@ -1399,12 +1387,6 @@
   },
   "issues/AffectedCookiesView.ts | path": {
     "message": "P̂át̂h́"
-  },
-  "issues/AffectedElementsView.ts | element": {
-    "message": "êĺêḿêńt̂"
-  },
-  "issues/AffectedElementsView.ts | elements": {
-    "message": "êĺêḿêńt̂ś"
   },
   "issues/AffectedElementsView.ts | nElements": {
     "message": "{n, plural, =1 { êĺêḿêńt̂} other { él̂ém̂én̂t́ŝ}}"
@@ -1451,12 +1433,6 @@
   "issues/AffectedHeavyAdView.ts | resolutionStatus": {
     "message": "R̂éŝól̂út̂íôń Ŝt́ât́ûś"
   },
-  "issues/AffectedHeavyAdView.ts | resource": {
-    "message": "r̂éŝóûŕĉé"
-  },
-  "issues/AffectedHeavyAdView.ts | resources": {
-    "message": "r̂éŝóûŕĉéŝ"
-  },
   "issues/AffectedHeavyAdView.ts | warned": {
     "message": "Ŵár̂ńêd́"
   },
@@ -1499,12 +1475,6 @@
   "issues/AffectedSharedArrayBufferIssueDetailsView.ts | trigger": {
     "message": "T̂ŕîǵĝér̂"
   },
-  "issues/AffectedSharedArrayBufferIssueDetailsView.ts | violation": {
-    "message": "v̂íôĺât́îón̂"
-  },
-  "issues/AffectedSharedArrayBufferIssueDetailsView.ts | violations": {
-    "message": "v̂íôĺât́îón̂ś"
-  },
   "issues/AffectedSharedArrayBufferIssueDetailsView.ts | warning": {
     "message": "ŵár̂ńîńĝ"
   },
@@ -1516,12 +1486,6 @@
   },
   "issues/AffectedTrustedWebActivityIssueDetailsView.ts | packageSignature": {
     "message": "P̂áĉḱâǵê śîǵn̂át̂úr̂é"
-  },
-  "issues/AffectedTrustedWebActivityIssueDetailsView.ts | resource": {
-    "message": "r̂éŝóûŕĉé"
-  },
-  "issues/AffectedTrustedWebActivityIssueDetailsView.ts | resources": {
-    "message": "r̂éŝóûŕĉéŝ"
   },
   "issues/AffectedTrustedWebActivityIssueDetailsView.ts | statusCode": {
     "message": "Ŝt́ât́ûś ĉód̂é"
@@ -1540,12 +1504,6 @@
   },
   "issues/CorsIssueDetailsView.ts | insecure": {
     "message": "îńŝéĉúr̂é"
-  },
-  "issues/CorsIssueDetailsView.ts | item": {
-    "message": "ît́êḿ"
-  },
-  "issues/CorsIssueDetailsView.ts | items": {
-    "message": "ît́êḿŝ"
   },
   "issues/CorsIssueDetailsView.ts | nItems": {
     "message": "{n, plural, =1 { ît́êḿ} other { ît́êḿŝ}}"
@@ -1637,14 +1595,8 @@
   "issues/IssueView.ts | clickToRevealTheViolatingDomNode": {
     "message": "Ĉĺîćk̂ t́ô ŕêv́êál̂ t́ĥé v̂íôĺât́îńĝ D́ÔḾ n̂ód̂é îń t̂h́ê Él̂ém̂én̂t́ŝ ṕâńêĺ"
   },
-  "issues/IssueView.ts | directive": {
-    "message": "d̂ír̂éĉt́îv́ê"
-  },
   "issues/IssueView.ts | directiveC": {
     "message": "D̂ír̂éĉt́îv́ê"
-  },
-  "issues/IssueView.ts | directives": {
-    "message": "d̂ír̂éĉt́îv́êś"
   },
   "issues/IssueView.ts | element": {
     "message": "Êĺêḿêńt̂"
@@ -1670,32 +1622,14 @@
   "issues/IssueView.ts | reportonly": {
     "message": "r̂ép̂ór̂t́-ôńl̂ý"
   },
-  "issues/IssueView.ts | request": {
-    "message": "r̂éq̂úêśt̂"
-  },
-  "issues/IssueView.ts | requests": {
-    "message": "r̂éq̂úêśt̂ś"
-  },
-  "issues/IssueView.ts | resource": {
-    "message": "r̂éŝóûŕĉé"
-  },
   "issues/IssueView.ts | resourceC": {
     "message": "R̂éŝóûŕĉé"
-  },
-  "issues/IssueView.ts | resources": {
-    "message": "r̂éŝóûŕĉéŝ"
   },
   "issues/IssueView.ts | restrictionStatus": {
     "message": "R̂éŝt́r̂íĉt́îón̂ Śt̂át̂úŝ"
   },
-  "issues/IssueView.ts | source": {
-    "message": "ŝóûŕĉé"
-  },
   "issues/IssueView.ts | sourceLocation": {
     "message": "Ŝóûŕĉé L̂óĉát̂íôń"
-  },
-  "issues/IssueView.ts | sources": {
-    "message": "ŝóûŕĉéŝ"
   },
   "issues/IssueView.ts | status": {
     "message": "Ŝt́ât́ûś"

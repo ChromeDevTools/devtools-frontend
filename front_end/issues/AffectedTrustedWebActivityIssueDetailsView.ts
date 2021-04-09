@@ -16,14 +16,6 @@ const UIStrings = {
   */
   nResources: '{n, plural, =1 { resource} other { resources}}',
   /**
-  *@description Label for number of affected resources indication in issue view
-  */
-  resource: 'resource',
-  /**
-  *@description Label for number of affected resources indication in issue view
-  */
-  resources: 'resources',
-  /**
   *@description Title for a column in a Trusted Web Activity issue view
   */
   statusCode: 'Status code',
@@ -46,7 +38,7 @@ export class AffectedTrustedWebActivityIssueDetailsView extends AffectedResource
   private issue: AggregatedIssue;
 
   constructor(parentView: IssueView, issue: AggregatedIssue) {
-    super(parentView, {singular: i18nString(UIStrings.resource), plural: i18nString(UIStrings.resources)});
+    super(parentView);
     this.issue = issue;
   }
 

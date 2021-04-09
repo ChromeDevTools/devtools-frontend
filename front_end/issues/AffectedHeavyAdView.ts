@@ -18,14 +18,6 @@ const UIStrings = {
   */
   nResources: '{n, plural, =1 { resource} other { resources}}',
   /**
-  *@description Label for number of affected resources indication in issue view
-  */
-  resource: 'resource',
-  /**
-  *@description Label for number of affected resources indication in issue view
-  */
-  resources: 'resources',
-  /**
   *@description Title for a column in an Heavy Ads issue view
   */
   limitExceeded: 'Limit exceeded',
@@ -68,7 +60,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class AffectedHeavyAdView extends AffectedResourcesView {
   private issue: AggregatedIssue;
   constructor(parent: IssueView, issue: AggregatedIssue) {
-    super(parent, {singular: i18nString(UIStrings.resource), plural: i18nString(UIStrings.resources)});
+    super(parent);
     this.issue = issue;
   }
 

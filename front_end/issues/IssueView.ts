@@ -39,14 +39,6 @@ const UIStrings = {
   */
   nDirectives: '{n, plural, =1 { directive} other { directives}}',
   /**
-  *@description Singular label for number of affected directive resource indication in issue view
-  */
-  directive: 'directive',
-  /**
-  *@description Plural label for number of affected directive resource indication in issue view
-  */
-  directives: 'directives',
-  /**
   *@description Indicates that a CSP error should be treated as a warning
   */
   reportonly: 'report-only',
@@ -83,37 +75,13 @@ const UIStrings = {
   */
   nRequests: '{n, plural, =1 { request} other { requests}}',
   /**
-  *@description Label for a type of issue that can appear in the Issues view. Noun for a singular network request.
-  */
-  request: 'request',
-  /**
-  *@description Label for a type of issue that can appear in the Issues view. Noun for plural network requests.
-  */
-  requests: 'requests',
-  /**
   *@description Singular or Plural label for number of affected source resource indication in issue view
   */
   nSources: '{n, plural, =1 { source} other { sources}}',
   /**
-  *@description Singular label for number of affected source resource indication in issue view
-  */
-  source: 'source',
-  /**
-  *@description Plural label for number of affected source resource indication in issue view
-  */
-  sources: 'sources',
-  /**
   *@description Label for singular or plural number of affected resources indication in issue view
   */
   nResources: '{n, plural, =1 { resource} other { resources}}',
-  /**
-  *@description Label for number of affected resources indication in issue view
-  */
-  resource: 'resource',
-  /**
-  *@description Label for number of affected resources indication in issue view
-  */
-  resources: 'resources',
   /**
   *@description Label for mixed content issue's restriction status
   */
@@ -143,7 +111,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 class AffectedDirectivesView extends AffectedResourcesView {
   _issue: AggregatedIssue;
   constructor(parent: IssueView, issue: AggregatedIssue) {
-    super(parent, {singular: i18nString(UIStrings.directive), plural: i18nString(UIStrings.directives)});
+    super(parent);
     this._issue = issue;
   }
 
@@ -299,7 +267,7 @@ class AffectedDirectivesView extends AffectedResourcesView {
 class AffectedRequestsView extends AffectedResourcesView {
   _issue: SDK.Issue.Issue;
   constructor(parent: IssueView, issue: SDK.Issue.Issue) {
-    super(parent, {singular: i18nString(UIStrings.request), plural: i18nString(UIStrings.requests)});
+    super(parent);
     this._issue = issue;
   }
 
@@ -348,7 +316,7 @@ class AffectedRequestsView extends AffectedResourcesView {
 class AffectedSourcesView extends AffectedResourcesView {
   _issue: SDK.Issue.Issue;
   constructor(parent: IssueView, issue: SDK.Issue.Issue) {
-    super(parent, {singular: i18nString(UIStrings.source), plural: i18nString(UIStrings.sources)});
+    super(parent);
     this._issue = issue;
   }
 
@@ -398,7 +366,7 @@ const issueTypeToNetworkHeaderMap = new Map<SDK.Issue.IssueCategory, Network.Net
 class AffectedMixedContentView extends AffectedResourcesView {
   _issue: AggregatedIssue;
   constructor(parent: IssueView, issue: AggregatedIssue) {
-    super(parent, {singular: i18nString(UIStrings.resource), plural: i18nString(UIStrings.resources)});
+    super(parent);
     this._issue = issue;
   }
 

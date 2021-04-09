@@ -17,14 +17,6 @@ const UIStrings = {
   */
   nViolations: '{n, plural, =1 { violation} other { violations}}',
   /**
-  *@description Label for number of affected resources indication in issue view
-  */
-  violation: 'violation',
-  /**
-  *@description Label for number of affected resources indication in issue view
-  */
-  violations: 'violations',
-  /**
   *@description Value for the status column in SharedArrayBuffer issues
   */
   warning: 'warning',
@@ -67,7 +59,7 @@ export class AffectedSharedArrayBufferIssueDetailsView extends AffectedResources
   private issue: AggregatedIssue;
 
   constructor(parentView: IssueView, issue: AggregatedIssue) {
-    super(parentView, {singular: i18nString(UIStrings.violation), plural: i18nString(UIStrings.violations)});
+    super(parentView);
     this.issue = issue;
   }
 

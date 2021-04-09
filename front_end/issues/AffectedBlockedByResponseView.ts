@@ -16,14 +16,6 @@ const UIStrings = {
   */
   nRequests: '{n, plural, =1 { request} other { requests}}',
   /**
-  *@description Noun for a singular network request. Label for the affected resources section in the issue view.
-  */
-  request: 'request',
-  /**
-  *@description Noun for plural network requests. Label for the affected resources section in the issue view.
-  */
-  requests: 'requests',
-  /**
   *@description Noun for a singular network request. Label for a column in the affected resources table in the issue view.
   */
   requestC: 'Request',
@@ -43,7 +35,7 @@ export class AffectedBlockedByResponseView extends AffectedResourcesView {
   private issue: SDK.Issue.Issue;
 
   constructor(parent: IssueView, issue: SDK.Issue.Issue) {
-    super(parent, {singular: i18nString(UIStrings.request), plural: i18nString(UIStrings.requests)});
+    super(parent);
     this.issue = issue;
   }
 

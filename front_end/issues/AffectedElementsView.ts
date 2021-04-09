@@ -16,14 +16,6 @@ const UIStrings = {
   *@description Noun for singular or plural number of affected element resource indication in issue view.
   */
   nElements: '{n, plural, =1 { element} other { elements}}',
-  /**
-  *@description Singular label for number of affected element resource indication in issue view
-  */
-  element: 'element',
-  /**
-  *@description Plural label for number of affected element resource indication in issue view
-  */
-  elements: 'elements',
 };
 const str_ = i18n.i18n.registerUIStrings('issues/AffectedElementsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -31,7 +23,7 @@ export class AffectedElementsView extends AffectedResourcesView {
   private issue: SDK.Issue.Issue;
 
   constructor(parent: IssueView, issue: SDK.Issue.Issue) {
-    super(parent, {singular: i18nString(UIStrings.element), plural: i18nString(UIStrings.elements)});
+    super(parent);
     this.issue = issue;
   }
 

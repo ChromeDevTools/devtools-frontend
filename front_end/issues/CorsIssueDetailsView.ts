@@ -16,14 +16,6 @@ const UIStrings = {
   */
   nItems: '{n, plural, =1 { item} other { items}}',
   /**
-  *@description Label for number of affected resources indication in issue view
-  */
-  item: 'item',
-  /**
-  *@description Label for number of affected resources indication in issue view
-  */
-  items: 'items',
-  /**
   *@description Value for the status column in SharedArrayBuffer issues
   */
   warning: 'warning',
@@ -67,7 +59,7 @@ export class CorsIssueDetailsView extends AffectedResourcesView {
   private issue: AggregatedIssue;
 
   constructor(parentView: IssueView, issue: AggregatedIssue) {
-    super(parentView, {singular: i18nString(UIStrings.item), plural: i18nString(UIStrings.items)});
+    super(parentView);
     this.issue = issue;
   }
 

@@ -53,9 +53,8 @@ export const extractShortPath = (path: string): string => {
  * The base class for all affected resource views. It provides basic scaffolding
  * as well as machinery for resolving request and frame ids to SDK objects.
  */
-export class AffectedResourcesView extends UI.TreeOutline.TreeElement {
+export abstract class AffectedResourcesView extends UI.TreeOutline.TreeElement {
   private readonly parentView: IssueView;
-  protected readonly resourceName: {singular: string, plural: string};
   private affectedResourcesCountElement: HTMLElement;
   protected affectedResources: HTMLElement;
   private affectedResourcesCount: number;
@@ -67,11 +66,10 @@ export class AffectedResourcesView extends UI.TreeOutline.TreeElement {
   /**
    * @param resourceName - Singular and plural of the affected resource name.
    */
-  constructor(parent: IssueView, resourceName: {singular: string, plural: string}) {
+  constructor(parent: IssueView) {
     super();
     this.toggleOnClick = true;
     this.parentView = parent;
-    this.resourceName = resourceName;
     this.affectedResourcesCountElement = this.createAffectedResourcesCounter();
 
     this.affectedResources = this.createAffectedResources();
@@ -99,12 +97,7 @@ export class AffectedResourcesView extends UI.TreeOutline.TreeElement {
     return affectedResources;
   }
 
-  protected getResourceName(count: number): string {
-    if (count === 1) {
-      return this.resourceName.singular;
-    }
-    return this.resourceName.plural;
-  }
+  protected abstract getResourceName(count: number): string;
 
   protected updateAffectedResourceCount(count: number): void {
     this.affectedResourcesCount = count;

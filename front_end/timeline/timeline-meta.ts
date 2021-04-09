@@ -73,6 +73,10 @@ const UIStrings = {
   *@description Title of a setting under the Performance category in Settings
   */
   hideChromeFrameInLayersView: 'Hide `chrome` frame in Layers view',
+  /**
+  *@description Text in the Shortcuts page to explain a keyboard shortcut (start/stop recording performance)
+  */
+  startStopRecording: 'Start/stop recording',
 };
 const str_ = i18n.i18n.registerUIStrings('timeline/timeline-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
@@ -90,11 +94,14 @@ async function loadTimelineModule(): Promise<typeof Timeline> {
 }
 
 
-// The profiler module is imported here because the view with id `js_profiler`
-// is implemented by `JSProfilerPanel` in profiler. It cannot be registered
-// in the profiler module as it belongs to the shell app and thus all apps
-// that extend from shell will have such view registered. This would cause a
-// collision with js_app as a separate view with the same id is registered in it.
+// The profiler module is imported here because the js profiler tab is implemented
+// in the profiler module. Since the tab doesn't belong to all apps that extend
+// the shell app, it cannot be registered in profiler's meta file, as profiler is
+// part of the shell app, and thus all of the extensions registered in profiler
+// belong to all apps that extend from shell.
+// Instead, we register the extensions for the js profiler tab in timeline/ and
+// js_profiler/ so that the tab is available only in the apps it belongs to.
+
 async function loadProfilerModule(): Promise<typeof Profiler> {
   if (!loadedProfilerModule) {
     // Side-effect import resources in module.json
@@ -104,12 +111,21 @@ async function loadProfilerModule(): Promise<typeof Profiler> {
   return loadedProfilerModule;
 }
 
+function maybeRetrieveProfilerContextTypes<T = unknown>(getClassCallBack: (profilerModule: typeof Profiler) => T[]):
+    T[] {
+  if (loadedProfilerModule === undefined) {
+    return [];
+  }
+  return getClassCallBack(loadedProfilerModule);
+}
+
 function maybeRetrieveContextTypes<T = unknown>(getClassCallBack: (timelineModule: typeof Timeline) => T[]): T[] {
   if (loadedTimelineModule === undefined) {
     return [];
   }
   return getClassCallBack(loadedTimelineModule);
 }
+
 
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.PANEL,
@@ -344,6 +360,33 @@ UI.ActionRegistration.registerActionExtension({
     {
       platform: UI.ActionRegistration.Platforms.Mac,
       shortcut: 'Meta+Right',
+    },
+  ],
+});
+
+UI.ActionRegistration.registerActionExtension({
+  actionId: 'profiler.js-toggle-recording',
+  category: UI.ActionRegistration.ActionCategory.JAVASCRIPT_PROFILER,
+  title: i18nLazyString(UIStrings.startStopRecording),
+  iconClass: UI.ActionRegistration.IconClass.LARGEICON_START_RECORDING,
+  toggleable: true,
+  toggledIconClass: UI.ActionRegistration.IconClass.LARGEICON_STOP_RECORDING,
+  toggleWithRedColor: true,
+  contextTypes() {
+    return maybeRetrieveProfilerContextTypes(Profiler => [Profiler.ProfilesPanel.JSProfilerPanel]);
+  },
+  async loadActionDelegate() {
+    const Profiler = await loadProfilerModule();
+    return Profiler.ProfilesPanel.JSProfilerPanel.instance();
+  },
+  bindings: [
+    {
+      platform: UI.ActionRegistration.Platforms.WindowsLinux,
+      shortcut: 'Ctrl+E',
+    },
+    {
+      platform: UI.ActionRegistration.Platforms.Mac,
+      shortcut: 'Meta+E',
     },
   ],
 });

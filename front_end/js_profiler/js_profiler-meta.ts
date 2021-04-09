@@ -18,6 +18,10 @@ const UIStrings = {
   *@description Command for showing the Profiler tool
   */
   showProfiler: 'Show Profiler',
+  /**
+  *@description Text in the Shortcuts page to explain a keyboard shortcut (start/stop recording performance)
+  */
+  startStopRecording: 'Start/stop recording',
 };
 const str_ = i18n.i18n.registerUIStrings('js_profiler/js_profiler-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
@@ -33,6 +37,13 @@ async function loadProfilerModule(): Promise<typeof Profiler> {
   return loadedProfilerModule;
 }
 
+function maybeRetrieveContextTypes<T = unknown>(getClassCallBack: (profilerModule: typeof Profiler) => T[]): T[] {
+  if (loadedProfilerModule === undefined) {
+    return [];
+  }
+  return getClassCallBack(loadedProfilerModule);
+}
+
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.PANEL,
   id: 'js_profiler',
@@ -43,4 +54,31 @@ UI.ViewManager.registerViewExtension({
     const Profiler = await loadProfilerModule();
     return Profiler.ProfilesPanel.JSProfilerPanel.instance();
   },
+});
+
+UI.ActionRegistration.registerActionExtension({
+  actionId: 'profiler.js-toggle-recording',
+  category: UI.ActionRegistration.ActionCategory.JAVASCRIPT_PROFILER,
+  title: i18nLazyString(UIStrings.startStopRecording),
+  iconClass: UI.ActionRegistration.IconClass.LARGEICON_START_RECORDING,
+  toggleable: true,
+  toggledIconClass: UI.ActionRegistration.IconClass.LARGEICON_STOP_RECORDING,
+  toggleWithRedColor: true,
+  contextTypes() {
+    return maybeRetrieveContextTypes(Profiler => [Profiler.ProfilesPanel.JSProfilerPanel]);
+  },
+  async loadActionDelegate() {
+    const Profiler = await loadProfilerModule();
+    return Profiler.ProfilesPanel.JSProfilerPanel.instance();
+  },
+  bindings: [
+    {
+      platform: UI.ActionRegistration.Platforms.WindowsLinux,
+      shortcut: 'Ctrl+E',
+    },
+    {
+      platform: UI.ActionRegistration.Platforms.Mac,
+      shortcut: 'Meta+E',
+    },
+  ],
 });

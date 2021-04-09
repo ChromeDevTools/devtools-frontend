@@ -1703,6 +1703,9 @@
   "js_profiler/js_profiler-meta.ts | showProfiler": {
     "message": "Show Profiler"
   },
+  "js_profiler/js_profiler-meta.ts | startStopRecording": {
+    "message": "Start/stop recording"
+  },
   "linear_memory_inspector/linear_memory_inspector-meta.ts | memoryInspector": {
     "message": "Memory Inspector"
   },
@@ -9838,6 +9841,9 @@
   },
   "timeline/timeline-meta.ts | startProfilingAndReloadPage": {
     "message": "Start profiling and reload page"
+  },
+  "timeline/timeline-meta.ts | startStopRecording": {
+    "message": "Start/stop recording"
   },
   "timeline/timeline-meta.ts | stop": {
     "message": "Stop"

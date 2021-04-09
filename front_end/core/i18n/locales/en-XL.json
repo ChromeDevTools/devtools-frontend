@@ -1703,6 +1703,9 @@
   "js_profiler/js_profiler-meta.ts | showProfiler": {
     "message": "Ŝh́ôẃ P̂ŕôf́îĺêŕ"
   },
+  "js_profiler/js_profiler-meta.ts | startStopRecording": {
+    "message": "Ŝt́âŕt̂/śt̂óp̂ ŕêćôŕd̂ín̂ǵ"
+  },
   "linear_memory_inspector/linear_memory_inspector-meta.ts | memoryInspector": {
     "message": "M̂ém̂ór̂ý Îńŝṕêćt̂ór̂"
   },
@@ -9838,6 +9841,9 @@
   },
   "timeline/timeline-meta.ts | startProfilingAndReloadPage": {
     "message": "Ŝt́âŕt̂ ṕr̂óf̂íl̂ín̂ǵ âńd̂ ŕêĺôád̂ ṕâǵê"
+  },
+  "timeline/timeline-meta.ts | startStopRecording": {
+    "message": "Ŝt́âŕt̂/śt̂óp̂ ŕêćôŕd̂ín̂ǵ"
   },
   "timeline/timeline-meta.ts | stop": {
     "message": "Ŝt́ôṕ"

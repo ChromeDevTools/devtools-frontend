@@ -2,9 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {waitFor} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-
-import {createAProfile, navigateToProfilerTab} from '../helpers/profiler-helpers.js';
+import {createAProfile, navigateToProfilerTab, START_PROFILING_BUTTON, STOP_PROFILING_BUTTON, toggleRecordingWithKeyboad} from '../helpers/profiler-helpers.js';
 
 describe('The JavaScript Profiler Panel', async () => {
   it('Loads content', async () => {
@@ -14,5 +14,14 @@ describe('The JavaScript Profiler Panel', async () => {
   it('Can make one profile and display its information', async () => {
     await navigateToProfilerTab();
     await createAProfile();
+  });
+
+  it('Can start and stop a recording using keyboard shortcuts', async () => {
+    await navigateToProfilerTab();
+    await waitFor(START_PROFILING_BUTTON);
+    await toggleRecordingWithKeyboad();
+    await waitFor(STOP_PROFILING_BUTTON);
+    await toggleRecordingWithKeyboad();
+    await waitFor(START_PROFILING_BUTTON);
   });
 });

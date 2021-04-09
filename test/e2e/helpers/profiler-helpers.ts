@@ -2,11 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {click, goToResource, waitFor, waitForNone} from '../../shared/helper.js';
+import {click, getBrowserAndPages, goToResource, platform, waitFor, waitForNone} from '../../shared/helper.js';
+
 import {openPanelViaMoreTools} from './settings-helpers.js';
 
-const START_PROFILING_BUTTON = 'button[aria-label="Start CPU profiling"]';
-const STOP_PROFILING_BUTTON = 'button[aria-label="Stop CPU profiling"]';
+export const START_PROFILING_BUTTON = 'button[aria-label="Start CPU profiling"]';
+export const STOP_PROFILING_BUTTON = 'button[aria-label="Stop CPU profiling"]';
 
 export async function navigateToProfilerTab() {
   await goToResource('profiler/default.html');
@@ -24,4 +25,12 @@ export async function createAProfile() {
   await waitForNone('.profile-launcher-view');
   // the detail information should appear
   await waitFor('#profile-views');
+}
+
+export async function toggleRecordingWithKeyboad() {
+  const {frontend} = getBrowserAndPages();
+  const modifierKey = platform === 'mac' ? 'Meta' : 'Control';
+  await frontend.keyboard.down(modifierKey);
+  await frontend.keyboard.press('E');
+  await frontend.keyboard.up(modifierKey);
 }

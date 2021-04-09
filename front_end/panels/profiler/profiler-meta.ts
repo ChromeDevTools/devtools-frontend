@@ -160,33 +160,6 @@ UI.ActionRegistration.registerActionExtension({
   ],
 });
 
-UI.ActionRegistration.registerActionExtension({
-  actionId: 'profiler.js-toggle-recording',
-  category: UI.ActionRegistration.ActionCategory.JAVASCRIPT_PROFILER,
-  title: i18nLazyString(UIStrings.startStopRecording),
-  iconClass: UI.ActionRegistration.IconClass.LARGEICON_START_RECORDING,
-  toggleable: true,
-  toggledIconClass: UI.ActionRegistration.IconClass.LARGEICON_STOP_RECORDING,
-  toggleWithRedColor: true,
-  contextTypes() {
-    return maybeRetrieveContextTypes(Profiler => [Profiler.ProfilesPanel.JSProfilerPanel]);
-  },
-  async loadActionDelegate() {
-    const Profiler = await loadProfilerModule();
-    return Profiler.ProfilesPanel.JSProfilerPanel.instance();
-  },
-  bindings: [
-    {
-      platform: UI.ActionRegistration.Platforms.WindowsLinux,
-      shortcut: 'Ctrl+E',
-    },
-    {
-      platform: UI.ActionRegistration.Platforms.Mac,
-      shortcut: 'Meta+E',
-    },
-  ],
-});
-
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.PERFORMANCE,
   title: i18nLazyString(UIStrings.showNativeFunctions),

@@ -157,6 +157,9 @@ export class ResourceWebSocketFrameView extends UI.Widget.VBox {
   _selectedNode: ResourceWebSocketFrameNode|null;
   _currentSelectedNode?: ResourceWebSocketFrameNode|null;
 
+  private messageFilterSetting: Common.Settings.Setting<string> =
+      Common.Settings.Settings.instance().createSetting('networkWebSocketMessageFilter', '');
+
   constructor(request: SDK.NetworkRequest.NetworkRequest) {
     super();
     this.registerRequiredCSS('panels/network/webSocketFrameView.css', {enableLegacyPatching: true});
@@ -220,6 +223,9 @@ export class ResourceWebSocketFrameView extends UI.Widget.VBox {
     const placeholder = i18nString(UIStrings.enterRegex);
     this._filterTextInput = new UI.Toolbar.ToolbarInput(placeholder, '', 0.4);
     this._filterTextInput.addEventListener(UI.Toolbar.ToolbarInput.Event.TextChanged, this._updateFilterSetting, this);
+    if (this.messageFilterSetting.get()) {
+      this._filterTextInput.setValue(this.messageFilterSetting.get());
+    }
     this._mainToolbar.appendToolbarItem(this._filterTextInput);
     this._filterRegex = null;
 
@@ -291,6 +297,7 @@ export class ResourceWebSocketFrameView extends UI.Widget.VBox {
 
   _updateFilterSetting(): void {
     const text = this._filterTextInput.value();
+    this.messageFilterSetting.set(text);
     const type = (this._filterTypeCombobox.selectedOption() as HTMLOptionElement).value;
     this._filterRegex = text ? new RegExp(text, 'i') : null;
     this._filterType = type === 'all' ? null : type;

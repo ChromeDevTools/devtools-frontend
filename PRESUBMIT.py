@@ -97,9 +97,16 @@ def _CheckChangesAreExclusiveToDirectory(input_api, output_api):
         if '.gitignore' in affected_files:
             num_in_dir = num_in_dir + 1
         if num_in_dir < num_affected:
-            results.append(output_api
-                .PresubmitError(('CLs that affect files in "%s" should be limited to these files/directories.' % dir_list) +
-                                ' You can disable this check by adding DISABLE_THIRD_PARTY_CHECK=<reason> to your commit message'))
+            unexpected_files = [
+                file for file in affected_files if file not in affected_in_dir
+            ]
+            results.append(
+                output_api.PresubmitError(
+                    ('CLs that affect files in "%s" should be limited to these files/directories.'
+                     % dir_list) +
+                    ('\nUnexpected files: %s.' % unexpected_files) +
+                    '\nYou can disable this check by adding DISABLE_THIRD_PARTY_CHECK=<reason> to your commit message'
+                ))
             break
 
     return results

@@ -20,57 +20,47 @@ import {TrustedWebActivityIssue} from './TrustedWebActivityIssue.js';
  * class (usually derived from `Issue`) and passes the instances on via a dispatched event.
  * We chose this approach here because the lifetime of the Model is tied to the target, but DevTools
  * wants to preserve issues for targets (e.g. iframes) that are already gone as well.
- * @implements {ProtocolProxyApi.AuditsDispatcher}
  */
-export class IssuesModel extends SDKModel {
-  /**
-   * @param {!Target} target
-   */
-  constructor(target) {
+export class IssuesModel extends SDKModel implements ProtocolProxyApi.AuditsDispatcher {
+  private disposed: boolean;
+  private enabled: boolean;
+  private auditsAgent: ProtocolProxyApi.AuditsApi|null;
+
+  constructor(target: Target) {
     super(target);
-    this._enabled = false;
-    /** @type {*} */
-    this._auditsAgent = null;
+    this.enabled = false;
+    this.auditsAgent = null;
     this.ensureEnabled();
-    this._disposed = false;
+    this.disposed = false;
   }
 
-  ensureEnabled() {
-    if (this._enabled) {
+  private async ensureEnabled(): Promise<void> {
+    if (this.enabled) {
       return;
     }
 
-    this._enabled = true;
+    this.enabled = true;
     this.target().registerAuditsDispatcher(this);
-    this._auditsAgent = this.target().auditsAgent();
-    this._auditsAgent.invoke_enable();
+    this.auditsAgent = this.target().auditsAgent();
+    await this.auditsAgent.invoke_enable();
   }
 
-  /**
-   * @override
-   * @param {!Protocol.Audits.IssueAddedEvent} issueAddedEvent
-   */
-  issueAdded(issueAddedEvent) {
-    const issues = this._createIssuesFromProtocolIssue(issueAddedEvent.issue);
+  issueAdded(issueAddedEvent: Protocol.Audits.IssueAddedEvent): void {
+    const issues = this.createIssuesFromProtocolIssue(issueAddedEvent.issue);
     for (const issue of issues) {
       this.addIssue(issue);
     }
   }
 
-  /**
-   * @param {!Issue} issue
-   */
-  addIssue(issue) {
+  private addIssue(issue: Issue): void {
     this.dispatchEventToListeners(Events.IssueAdded, {issuesModel: this, issue});
   }
 
   /**
    * Each issue reported by the backend can result in multiple {!Issue} instances.
    * Handlers are simple functions hard-coded into a map.
-   * @param {!Protocol.Audits.InspectorIssue} inspectorIssue} inspectorIssue
-   * @return {!Array<!Issue>}
    */
-  _createIssuesFromProtocolIssue(inspectorIssue) {
+  private createIssuesFromProtocolIssue(inspectorIssue: Protocol.Audits.InspectorIssue): Issue[] {
     const handler = issueCodeHandlers.get(inspectorIssue.code);
     if (handler) {
       return handler(this, inspectorIssue.details);
@@ -80,31 +70,21 @@ export class IssuesModel extends SDKModel {
     return [];
   }
 
-  /**
-   * @override
-   */
-  dispose() {
+  dispose(): void {
     super.dispose();
-    this._disposed = true;
+    this.disposed = true;
   }
 
-  /**
-   * @returns {?Target}
-   */
-  getTargetIfNotDisposed() {
-    if (!this._disposed) {
+  getTargetIfNotDisposed(): Target|null {
+    if (!this.disposed) {
       return this.target();
     }
     return null;
   }
 }
 
-/**
- * @param {!IssuesModel} issuesModel
- * @param {!Protocol.Audits.InspectorIssueDetails} inspectorDetails
- * @return {!Array<!Issue>}
- */
-function createIssuesForSameSiteCookieIssue(issuesModel, inspectorDetails) {
+function createIssuesForSameSiteCookieIssue(
+    issuesModel: IssuesModel, inspectorDetails: Protocol.Audits.InspectorIssueDetails): SameSiteCookieIssue[] {
   const sameSiteDetails = inspectorDetails.sameSiteCookieIssueDetails;
   if (!sameSiteDetails) {
     console.warn('SameSite issue without details received.');
@@ -114,12 +94,8 @@ function createIssuesForSameSiteCookieIssue(issuesModel, inspectorDetails) {
   return SameSiteCookieIssue.createIssuesFromSameSiteDetails(sameSiteDetails, issuesModel);
 }
 
-/**
- * @param {!IssuesModel} issuesModel
- * @param {!Protocol.Audits.InspectorIssueDetails} inspectorDetails
- * @return {!Array<!Issue>}
- */
-function createIssuesForMixedContentIssue(issuesModel, inspectorDetails) {
+function createIssuesForMixedContentIssue(
+    issuesModel: IssuesModel, inspectorDetails: Protocol.Audits.InspectorIssueDetails): MixedContentIssue[] {
   const mixedContentDetails = inspectorDetails.mixedContentIssueDetails;
   if (!mixedContentDetails) {
     console.warn('Mixed content issue without details received.');
@@ -128,13 +104,8 @@ function createIssuesForMixedContentIssue(issuesModel, inspectorDetails) {
   return [new MixedContentIssue(mixedContentDetails, issuesModel)];
 }
 
-
-/**
- * @param {!IssuesModel} issuesModel
- * @param {!Protocol.Audits.InspectorIssueDetails} inspectorDetails
- * @return {!Array<!Issue>}
- */
-function createIssuesForContentSecurityPolicyIssue(issuesModel, inspectorDetails) {
+function createIssuesForContentSecurityPolicyIssue(
+    issuesModel: IssuesModel, inspectorDetails: Protocol.Audits.InspectorIssueDetails): ContentSecurityPolicyIssue[] {
   const cspDetails = inspectorDetails.contentSecurityPolicyIssueDetails;
   if (!cspDetails) {
     console.warn('Content security policy issue without details received.');
@@ -143,13 +114,8 @@ function createIssuesForContentSecurityPolicyIssue(issuesModel, inspectorDetails
   return [new ContentSecurityPolicyIssue(cspDetails, issuesModel)];
 }
 
-
-/**
- * @param {!IssuesModel} issuesModel
- * @param {!Protocol.Audits.InspectorIssueDetails} inspectorDetails
- * @return {!Array<!Issue>}
- */
-function createIssuesForHeavyAdIssue(issuesModel, inspectorDetails) {
+function createIssuesForHeavyAdIssue(
+    issuesModel: IssuesModel, inspectorDetails: Protocol.Audits.InspectorIssueDetails): HeavyAdIssue[] {
   const heavyAdIssueDetails = inspectorDetails.heavyAdIssueDetails;
   if (!heavyAdIssueDetails) {
     console.warn('Heavy Ad issue without details received.');
@@ -158,12 +124,9 @@ function createIssuesForHeavyAdIssue(issuesModel, inspectorDetails) {
   return [new HeavyAdIssue(heavyAdIssueDetails, issuesModel)];
 }
 
-/**
- * @param {!IssuesModel} issuesModel
- * @param {!Protocol.Audits.InspectorIssueDetails} inspectorDetails
- * @return {!Array<!Issue>}
- */
-function createIssuesForBlockedByResponseIssue(issuesModel, inspectorDetails) {
+function createIssuesForBlockedByResponseIssue(
+    issuesModel: IssuesModel,
+    inspectorDetails: Protocol.Audits.InspectorIssueDetails): CrossOriginEmbedderPolicyIssue[] {
   const blockedByResponseIssueDetails = inspectorDetails.blockedByResponseIssueDetails;
   if (!blockedByResponseIssueDetails) {
     console.warn('BlockedByResponse issue without details received.');
@@ -175,12 +138,8 @@ function createIssuesForBlockedByResponseIssue(issuesModel, inspectorDetails) {
   return [];
 }
 
-/**
- * @param {!IssuesModel} issuesModel
- * @param {!Protocol.Audits.InspectorIssueDetails} inspectorDetails
- * @return {!Array<!Issue>}
- */
-function createIssuesForSharedArrayBufferIssue(issuesModel, inspectorDetails) {
+function createIssuesForSharedArrayBufferIssue(
+    issuesModel: IssuesModel, inspectorDetails: Protocol.Audits.InspectorIssueDetails): SharedArrayBufferIssue[] {
   const sabIssueDetails = inspectorDetails.sharedArrayBufferIssueDetails;
   if (!sabIssueDetails) {
     console.warn('SAB transfer issue without details received.');
@@ -189,12 +148,8 @@ function createIssuesForSharedArrayBufferIssue(issuesModel, inspectorDetails) {
   return [new SharedArrayBufferIssue(sabIssueDetails, issuesModel)];
 }
 
-/**
- * @param {!IssuesModel} issuesModel
- * @param {!Protocol.Audits.InspectorIssueDetails} inspectorDetails
- * @return {!Array<!Issue>}
- */
-function createIssuesForTrustedWebActivityIssue(issuesModel, inspectorDetails) {
+function createIssuesForTrustedWebActivityIssue(
+    issuesModel: IssuesModel, inspectorDetails: Protocol.Audits.InspectorIssueDetails): TrustedWebActivityIssue[] {
   const twaQualityEnforcementDetails = inspectorDetails.twaQualityEnforcementDetails;
   if (!twaQualityEnforcementDetails) {
     console.warn('TWA Quality Enforcement issue without details received.');
@@ -203,12 +158,8 @@ function createIssuesForTrustedWebActivityIssue(issuesModel, inspectorDetails) {
   return [new TrustedWebActivityIssue(twaQualityEnforcementDetails)];
 }
 
-/**
- * @param {!IssuesModel} issuesModel
- * @param {!Protocol.Audits.InspectorIssueDetails} inspectorDetails
- * @return {!Array<!Issue>}
- */
-function createIssuesForLowTextContrastIssue(issuesModel, inspectorDetails) {
+function createIssuesForLowTextContrastIssue(
+    issuesModel: IssuesModel, inspectorDetails: Protocol.Audits.InspectorIssueDetails): LowTextContrastIssue[] {
   const lowTextContrastIssueDetails = inspectorDetails.lowTextContrastIssueDetails;
   if (!lowTextContrastIssueDetails) {
     console.warn('LowTextContrast issue without details received.');
@@ -217,12 +168,8 @@ function createIssuesForLowTextContrastIssue(issuesModel, inspectorDetails) {
   return [new LowTextContrastIssue(lowTextContrastIssueDetails)];
 }
 
-/**
- * @param {!IssuesModel} issuesModel
- * @param {!Protocol.Audits.InspectorIssueDetails} inspectorDetails
- * @return {!Array<!Issue>}
- */
-function createIssuesForCorsIssue(issuesModel, inspectorDetails) {
+function createIssuesForCorsIssue(
+    issuesModel: IssuesModel, inspectorDetails: Protocol.Audits.InspectorIssueDetails): CorsIssue[] {
   const corsIssueDetails = inspectorDetails.corsIssueDetails;
   if (!corsIssueDetails) {
     console.warn('Cors issue without details received.');
@@ -231,10 +178,9 @@ function createIssuesForCorsIssue(issuesModel, inspectorDetails) {
   return [new CorsIssue(corsIssueDetails, issuesModel)];
 }
 
-/**
- * @type {!Map<!Protocol.Audits.InspectorIssueCode, function(!IssuesModel, !Protocol.Audits.InspectorIssueDetails):!Array<!Issue>>}
- */
-const issueCodeHandlers = new Map([
+const issueCodeHandlers = new Map<
+    Protocol.Audits.InspectorIssueCode,
+    (model: IssuesModel, details: Protocol.Audits.InspectorIssueDetails) => Issue[]>([
   [Protocol.Audits.InspectorIssueCode.SameSiteCookieIssue, createIssuesForSameSiteCookieIssue],
   [Protocol.Audits.InspectorIssueCode.MixedContentIssue, createIssuesForMixedContentIssue],
   [Protocol.Audits.InspectorIssueCode.HeavyAdIssue, createIssuesForHeavyAdIssue],
@@ -246,7 +192,6 @@ const issueCodeHandlers = new Map([
   [Protocol.Audits.InspectorIssueCode.CorsIssue, createIssuesForCorsIssue],
 ]);
 
-/** @enum {symbol} */
 export const Events = {
   IssueAdded: Symbol('IssueAdded'),
 };

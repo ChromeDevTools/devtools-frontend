@@ -44,7 +44,7 @@ devtools_module("sdk") {
     "IOModel.js",
     "IsolateManager.js",
     "Issue.ts",
-    "IssuesModel.js",
+    "IssuesModel.ts",
     "LayerTreeBase.js",
     "LogModel.js",
     "LowTextContrastIssue.ts",

@@ -5,7 +5,7 @@
 import {assert} from 'chai';
 import * as puppeteer from 'puppeteer';
 
-import {$$, click, getBrowserAndPages, getPendingEvents, getTestServerPort, goToResource, pressKey, step, timeout, typeText, waitFor, waitForFunction} from '../../shared/helper.js';
+import {$$, click, getBrowserAndPages, getPendingEvents, getTestServerPort, goToResource, platform, pressKey, step, timeout, typeText, waitFor, waitForFunction} from '../../shared/helper.js';
 
 export const ACTIVE_LINE = '.CodeMirror-activeline > pre > span';
 export const PAUSE_ON_EXCEPTION_BUTTON = '[aria-label="Don\'t pause on exceptions"]';
@@ -19,6 +19,7 @@ export const SELECTED_THREAD_SELECTOR = 'div.thread-item.selected > div.thread-i
 export const TURNED_OFF_PAUSE_BUTTON_SELECTOR = 'button.toolbar-state-off';
 export const TURNED_ON_PAUSE_BUTTON_SELECTOR = 'button.toolbar-state-on';
 export const DEBUGGER_PAUSED_EVENT = 'DevTools.DebuggerPaused';
+const WATCH_EXPRESSION_VALUE_SELECTOR = '.watch-expression-tree-item .object-value-string.value';
 
 export async function navigateToLine(frontend: puppeteer.Page, lineNumber: number|string) {
   // Navigating to a line will trigger revealing the current
@@ -473,4 +474,41 @@ export async function getPausedMessages() {
     statusMain: await statusMain.evaluate(x => x.textContent),
     statusSub: await statusSub.evaluate(x => x.textContent),
   };
+}
+
+export async function getWatchExpressionsValues() {
+  const {frontend} = getBrowserAndPages();
+  await click('[aria-label="Watch"]');
+  await frontend.keyboard.press('ArrowRight');
+  await waitFor(WATCH_EXPRESSION_VALUE_SELECTOR);
+  const values = await $$(WATCH_EXPRESSION_VALUE_SELECTOR);
+  return await Promise.all(values.map(value => value.evaluate(element => element.innerText)));
+}
+
+export async function runSnippet() {
+  const {frontend} = getBrowserAndPages();
+  const modifierKey = platform === 'mac' ? 'Meta' : 'Control';
+  await frontend.keyboard.down(modifierKey);
+  await frontend.keyboard.press('Enter');
+  await frontend.keyboard.up(modifierKey);
+}
+
+export async function evaluateSelectedTextInConsole() {
+  const {frontend} = getBrowserAndPages();
+  const modifierKey = platform === 'mac' ? 'Meta' : 'Control';
+  await frontend.keyboard.down(modifierKey);
+  await frontend.keyboard.down('Shift');
+  await frontend.keyboard.press('E');
+  await frontend.keyboard.up(modifierKey);
+  await frontend.keyboard.up('Shift');
+}
+
+export async function addSelectedTextToWatches() {
+  const {frontend} = getBrowserAndPages();
+  const modifierKey = platform === 'mac' ? 'Meta' : 'Control';
+  await frontend.keyboard.down(modifierKey);
+  await frontend.keyboard.down('Shift');
+  await frontend.keyboard.press('A');
+  await frontend.keyboard.up(modifierKey);
+  await frontend.keyboard.up('Shift');
 }

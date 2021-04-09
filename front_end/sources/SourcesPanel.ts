@@ -37,11 +37,11 @@ import * as Root from '../core/root/root.js';
 import * as SDK from '../core/sdk/sdk.js';
 import * as Bindings from '../models/bindings/bindings.js';
 import * as Extensions from '../models/extensions/extensions.js';
+import * as Workspace from '../models/workspace/workspace.js';
 import * as ObjectUI from '../object_ui/object_ui.js';
 import * as Recorder from '../recorder/recorder.js';
 import * as Snippets from '../snippets/snippets.js';
 import * as UI from '../ui/legacy/legacy.js';
-import * as Workspace from '../workspace/workspace.js';
 
 import {CallStackSidebarPane} from './CallStackSidebarPane.js';
 import {DebuggerPausedMessage} from './DebuggerPausedMessage.js';

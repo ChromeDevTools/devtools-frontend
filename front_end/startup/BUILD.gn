@@ -29,8 +29,8 @@ devtools_entrypoint("bundle") {
     "../models/extensions:legacy",
     "../models/persistence:legacy",
     "../models/text_utils:legacy",
+    "../models/workspace:legacy",
     "../panels/console_counters:legacy",
     "../ui/legacy:legacy",
-    "../workspace:legacy",
   ]
 }

@@ -17,10 +17,10 @@ devtools_module("changes") {
     "../../core/common:bundle",
     "../../core/i18n:bundle",
     "../../diff:bundle",
+    "../../models/workspace:bundle",
     "../../snippets:bundle",
     "../../text_editor:bundle",
     "../../ui/legacy:bundle",
-    "../../workspace:bundle",
     "../../workspace_diff:bundle",
   ]
 }

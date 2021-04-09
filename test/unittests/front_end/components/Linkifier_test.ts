@@ -5,7 +5,7 @@
 import type * as ComponentsModule from '../../../../front_end/components/components.js';
 import type * as BindingsModule from '../../../../front_end/models/bindings/bindings.js';
 import type * as SDKModule from '../../../../front_end/core/sdk/sdk.js';
-import type * as WorkspaceModule from '../../../../front_end/workspace/workspace.js';
+import type * as WorkspaceModule from '../../../../front_end/models/workspace/workspace.js';
 
 import {createTarget} from '../helpers/EnvironmentHelpers.js';
 import {describeWithMockConnection, dispatchEvent} from '../helpers/MockConnection.js';
@@ -23,7 +23,7 @@ describeWithMockConnection('Linkifier', async () => {
     SDK = await import('../../../../front_end/core/sdk/sdk.js');
     Components = await import('../../../../front_end/components/components.js');
     Bindings = await import('../../../../front_end/models/bindings/bindings.js');
-    Workspace = await import('../../../../front_end/workspace/workspace.js');
+    Workspace = await import('../../../../front_end/models/workspace/workspace.js');
   });
 
   function setUpEnvironment() {

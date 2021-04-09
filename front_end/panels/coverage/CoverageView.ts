@@ -13,7 +13,7 @@ import * as Bindings from '../../models/bindings/bindings.js';
 import * as SourceFrame from '../../source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import type * as Workspace from '../../workspace/workspace.js';
+import type * as Workspace from '../../models/workspace/workspace.js';
 
 import {CoverageDecorationManager, decoratorType} from './CoverageDecorationManager.js';
 import {CoverageListView} from './CoverageListView.js';

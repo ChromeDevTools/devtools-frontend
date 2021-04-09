@@ -11,10 +11,10 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import * as Workspace from '../../models/workspace/workspace.js';
 import * as ThemeSupport from '../../theme_support/theme_support.js';
 import * as Timeline from '../../timeline/timeline.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import * as Workspace from '../../workspace/workspace.js';
 
 import type * as ReportRenderer from './LighthouseReporterTypes.js';
 

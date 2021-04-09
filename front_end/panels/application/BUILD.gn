@@ -50,12 +50,12 @@ devtools_module("application") {
     "../../inline_editor:bundle",
     "../../models/bindings:bundle",
     "../../models/text_utils:bundle",
+    "../../models/workspace:bundle",
     "../../object_ui:bundle",
     "../../panels/mobile_throttling:bundle",
     "../../panels/network:bundle",
     "../../source_frame:bundle",
     "../../ui/legacy:bundle",
-    "../../workspace:bundle",
   ]
 }
 

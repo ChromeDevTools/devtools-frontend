@@ -19,7 +19,7 @@ devtools_module("formatter") {
     "../formatter_worker:formatter_actions",
     "../models/bindings:bundle",
     "../models/text_utils:bundle",
-    "../workspace:bundle",
+    "../models/workspace:bundle",
   ]
 }
 

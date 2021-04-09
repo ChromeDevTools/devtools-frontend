@@ -28,10 +28,10 @@ devtools_module("source_frame") {
     "../diff:bundle",
     "../formatter:bundle",
     "../models/text_utils:bundle",
+    "../models/workspace:bundle",
     "../object_ui:bundle",
     "../text_editor:bundle",
     "../ui/legacy:bundle",
-    "../workspace:bundle",
   ]
 }
 

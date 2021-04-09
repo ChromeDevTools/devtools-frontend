@@ -31,10 +31,10 @@
 /* eslint-disable rulesdir/no_underscored_properties */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import * as Common from '../core/common/common.js';
-import * as i18n from '../core/i18n/i18n.js';
-import * as Platform from '../core/platform/platform.js';
-import * as TextUtils from '../models/text_utils/text_utils.js';
+import * as Common from '../../core/common/common.js';
+import * as i18n from '../../core/i18n/i18n.js';
+import * as Platform from '../../core/platform/platform.js';
+import * as TextUtils from '../text_utils/text_utils.js';
 
 import type {Project} from './WorkspaceImpl.js';
 import {Events as WorkspaceImplEvents, projectTypes} from './WorkspaceImpl.js';
@@ -49,7 +49,7 @@ const UIStrings = {
   */
   thisFileWasChangedExternally: 'This file was changed externally. Would you like to reload it?',
 };
-const str_ = i18n.i18n.registerUIStrings('workspace/UISourceCode.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('models/workspace/UISourceCode.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper implements

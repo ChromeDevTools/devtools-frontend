@@ -20,8 +20,8 @@ devtools_module("browser_sdk") {
     "../core/i18n:bundle",
     "../core/sdk:bundle",
     "../models/bindings:bundle",
+    "../models/workspace:bundle",
     "../third_party/marked:bundle",
-    "../workspace:bundle",
   ]
 }
 

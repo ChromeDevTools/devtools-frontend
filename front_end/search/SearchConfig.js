@@ -4,7 +4,7 @@
 
 import * as Common from '../core/common/common.js';  // eslint-disable-line no-unused-vars
 import * as Platform from '../core/platform/platform.js';
-import * as Workspace from '../workspace/workspace.js';  // eslint-disable-line no-unused-vars
+import * as Workspace from '../models/workspace/workspace.js';  // eslint-disable-line no-unused-vars
 
 /**
  * @implements {Workspace.Workspace.ProjectSearchConfig}

@@ -41,10 +41,10 @@ devtools_module("profiler") {
     "../../data_grid:bundle",
     "../../models/bindings:bundle",
     "../../models/heap_snapshot_model:bundle",
+    "../../models/workspace:bundle",
     "../../object_ui:bundle",
     "../../perf_ui:bundle",
     "../../ui/legacy:bundle",
-    "../../workspace:bundle",
   ]
 }
 

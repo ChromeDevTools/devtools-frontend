@@ -2123,6 +2123,12 @@
   "models/timeline_model/TimelineModel.ts | workerSS": {
     "message": "Worker: {PH1} — {PH2}"
   },
+  "models/workspace/UISourceCode.ts | index": {
+    "message": "(index)"
+  },
+  "models/workspace/UISourceCode.ts | thisFileWasChangedExternally": {
+    "message": "This file was changed externally. Would you like to reload it?"
+  },
   "node_debugger/node_debugger-meta.ts | node": {
     "message": "Node"
   },
@@ -11431,11 +11437,5 @@
   },
   "worker_main/WorkerMain.ts | main": {
     "message": "Main"
-  },
-  "workspace/UISourceCode.ts | index": {
-    "message": "(index)"
-  },
-  "workspace/UISourceCode.ts | thisFileWasChangedExternally": {
-    "message": "This file was changed externally. Would you like to reload it?"
   }
 }

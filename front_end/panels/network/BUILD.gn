@@ -49,6 +49,7 @@ devtools_module("network") {
     "../../har_importer:bundle",
     "../../models/bindings:bundle",
     "../../models/text_utils:bundle",
+    "../../models/workspace:bundle",
     "../../object_ui:bundle",
     "../../panels/elements:bundle",
     "../../panels/mobile_throttling:bundle",
@@ -59,7 +60,6 @@ devtools_module("network") {
     "../../third_party/chromium/client-variations:bundle",
     "../../ui/components:bundle",
     "../../ui/legacy:bundle",
-    "../../workspace:bundle",
   ]
 }
 

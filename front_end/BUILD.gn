@@ -49,6 +49,7 @@ group("front_end") {
     "models/javascript_metadata:bundle",
     "models/text_utils:bundle",
     "models/timeline_model:bundle",
+    "models/workspace:bundle",
     "panels/event_listeners:bundle",
     "recorder:bundle",
     "render_coordinator:bundle",
@@ -64,7 +65,6 @@ group("front_end") {
     "ui/legacy:bundle",
     "wasmparser_worker:worker_entrypoint",
     "worker_main:bundle",
-    "workspace:bundle",
     "workspace_diff:bundle",
   ]
 }
@@ -114,6 +114,7 @@ group("legacy_entrypoints") {
     "models/persistence:legacy",
     "models/text_utils:legacy",
     "models/timeline_model:legacy",
+    "models/workspace:legacy",
     "object_ui:legacy",
     "panels/accessibility:legacy",
     "panels/animation:legacy",
@@ -146,7 +147,6 @@ group("legacy_entrypoints") {
     "timeline:legacy",
     "ui/legacy:legacy",
     "web_audio:legacy",
-    "workspace:legacy",
     "workspace_diff:legacy",
   ]
 }
@@ -170,6 +170,7 @@ ts_library("shell") {
     "models/extensions:legacy",
     "models/persistence:legacy",
     "models/persistence:meta",
+    "models/workspace:legacy",
     "object_ui:meta",
     "panels/changes:meta",
     "panels/console:meta",
@@ -186,7 +187,6 @@ ts_library("shell") {
     "sources:meta",
     "startup:bundle",
     "ui/legacy:legacy",
-    "workspace:legacy",
   ]
 }
 
@@ -362,6 +362,6 @@ ts_library("ts_library-verification") {
     "core/root:bundle",
     "core/sdk:bundle",
     "models/bindings:bundle",
-    "workspace:bundle",
+    "models/workspace:bundle",
   ]
 }

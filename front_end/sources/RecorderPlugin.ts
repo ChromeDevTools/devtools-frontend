@@ -5,10 +5,10 @@
 /* eslint-disable rulesdir/no_underscored_properties */
 
 import * as i18n from '../core/i18n/i18n.js';
+import * as Workspace from '../models/workspace/workspace.js';  // eslint-disable-line no-unused-vars
 import * as Recorder from '../recorder/recorder.js';
 import * as SourceFrame from '../source_frame/source_frame.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../ui/legacy/legacy.js';
-import * as Workspace from '../workspace/workspace.js';  // eslint-disable-line no-unused-vars
 
 import {Plugin} from './Plugin.js';
 

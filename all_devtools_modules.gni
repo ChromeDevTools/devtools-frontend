@@ -283,6 +283,9 @@ all_typescript_module_sources = [
   "models/timeline_model/TimelineModelFilter.js",
   "models/timeline_model/TimelineProfileTree.js",
   "models/timeline_model/TracingLayerTree.js",
+  "models/workspace/FileManager.js",
+  "models/workspace/UISourceCode.js",
+  "models/workspace/WorkspaceImpl.js",
   "node_main/NodeConnectionsPanel.js",
   "node_main/NodeMain.js",
   "object_ui/CustomPreviewComponent.js",
@@ -833,9 +836,6 @@ all_typescript_module_sources = [
   "web_audio/graph_visualizer/NodeView.js",
   "webauthn/WebauthnPane.js",
   "worker_main/WorkerMain.js",
-  "workspace/FileManager.js",
-  "workspace/UISourceCode.js",
-  "workspace/WorkspaceImpl.js",
   "workspace_diff/WorkspaceDiff.js",
 ]
 

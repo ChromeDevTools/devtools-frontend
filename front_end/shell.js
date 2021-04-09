@@ -9,7 +9,7 @@ import './core/host/host-legacy.js';
 import './core/protocol_client/protocol_client-legacy.js';
 import './core/sdk/sdk-legacy.js';
 import './ui/legacy/legacy-legacy.js';
-import './workspace/workspace-legacy.js';
+import './models/workspace/workspace-legacy.js';
 import './models/bindings/bindings-legacy.js';
 import './components/components-legacy.js';
 import './models/persistence/persistence-legacy.js';

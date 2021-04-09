@@ -35,8 +35,8 @@ import * as i18n from '../core/i18n/i18n.js';
 import * as Platform from '../core/platform/platform.js';
 import * as Formatter from '../formatter/formatter.js';
 import * as TextUtils from '../models/text_utils/text_utils.js';
+import * as Workspace from '../models/workspace/workspace.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../ui/legacy/legacy.js';
-import * as Workspace from '../workspace/workspace.js';  // eslint-disable-line no-unused-vars
 
 import {Events, SourcesTextEditor, SourcesTextEditorDelegate} from './SourcesTextEditor.js';  // eslint-disable-line no-unused-vars
 

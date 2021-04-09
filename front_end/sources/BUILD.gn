@@ -61,6 +61,7 @@ devtools_module("sources") {
     "../models/extensions:bundle",
     "../models/persistence:bundle",
     "../models/text_utils:bundle",
+    "../models/workspace:bundle",
     "../object_ui:bundle",
     "../panels/console_counters:bundle",
     "../panels/coverage:bundle",
@@ -71,7 +72,6 @@ devtools_module("sources") {
     "../source_frame:bundle",
     "../text_editor:bundle",
     "../ui/legacy:bundle",
-    "../workspace:bundle",
     "../workspace_diff:bundle",
   ]
 }

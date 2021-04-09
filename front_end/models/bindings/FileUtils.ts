@@ -31,7 +31,7 @@
 /* eslint-disable rulesdir/no_underscored_properties */
 
 import * as Common from '../../core/common/common.js';  // eslint-disable-line no-unused-vars
-import * as Workspace from '../../workspace/workspace.js';
+import * as Workspace from '../workspace/workspace.js';
 
 /**
  * @interface

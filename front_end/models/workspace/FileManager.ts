@@ -30,8 +30,8 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../core/common/common.js';
-import * as Host from '../core/host/host.js';
+import * as Common from '../../core/common/common.js';
+import * as Host from '../../core/host/host.js';
 
 let fileManagerInstance: FileManager|null;
 

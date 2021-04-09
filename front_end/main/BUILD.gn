@@ -23,12 +23,12 @@ devtools_module("main") {
     "../models/bindings:bundle",
     "../models/extensions:bundle",
     "../models/persistence:bundle",
+    "../models/workspace:bundle",
     "../recorder:bundle",
     "../snippets:bundle",
     "../theme_support:bundle",
     "../timeline:bundle",
     "../ui/legacy:bundle",
-    "../workspace:bundle",
   ]
 }
 

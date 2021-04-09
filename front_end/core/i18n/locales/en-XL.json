@@ -2123,6 +2123,12 @@
   "models/timeline_model/TimelineModel.ts | workerSS": {
     "message": "Worker: {PH1} — {PH2}"
   },
+  "models/workspace/UISourceCode.ts | index": {
+    "message": "(îńd̂éx̂)"
+  },
+  "models/workspace/UISourceCode.ts | thisFileWasChangedExternally": {
+    "message": "T̂h́îś f̂íl̂é ŵáŝ ćĥán̂ǵêd́ êx́t̂ér̂ńâĺl̂ý. Ŵóûĺd̂ ýôú l̂ík̂é t̂ó r̂él̂óâd́ ît́?"
+  },
   "node_debugger/node_debugger-meta.ts | node": {
     "message": "N̂ód̂é"
   },
@@ -11431,11 +11437,5 @@
   },
   "worker_main/WorkerMain.ts | main": {
     "message": "M̂áîń"
-  },
-  "workspace/UISourceCode.ts | index": {
-    "message": "(îńd̂éx̂)"
-  },
-  "workspace/UISourceCode.ts | thisFileWasChangedExternally": {
-    "message": "T̂h́îś f̂íl̂é ŵáŝ ćĥán̂ǵêd́ êx́t̂ér̂ńâĺl̂ý. Ŵóûĺd̂ ýôú l̂ík̂é t̂ó r̂él̂óâd́ ît́?"
   }
 }

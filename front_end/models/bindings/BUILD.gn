@@ -33,7 +33,7 @@ devtools_module("bindings") {
     "../../core/i18n:bundle",
     "../../core/sdk:bundle",
     "../../models/text_utils:bundle",
-    "../../workspace:bundle",
+    "../../models/workspace:bundle",
   ]
 }
 

@@ -12,7 +12,7 @@ import * as Persistence from '../models/persistence/persistence.js';
 
 import type * as TextUtils from '../models/text_utils/text_utils.js';
 import * as UI from '../ui/legacy/legacy.js';
-import * as Workspace from '../workspace/workspace.js';
+import * as Workspace from '../models/workspace/workspace.js';
 
 const UIStrings = {
   /**

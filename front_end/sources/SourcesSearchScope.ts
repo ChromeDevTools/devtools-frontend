@@ -35,8 +35,8 @@ import * as Platform from '../core/platform/platform.js';
 import * as Bindings from '../models/bindings/bindings.js';
 import * as Persistence from '../models/persistence/persistence.js';
 import * as TextUtils from '../models/text_utils/text_utils.js';
+import * as Workspace from '../models/workspace/workspace.js';
 import * as Search from '../search/search.js';  // eslint-disable-line no-unused-vars
-import * as Workspace from '../workspace/workspace.js';
 
 export class SourcesSearchScope implements Search.SearchConfig.SearchScope {
   _searchId: number;

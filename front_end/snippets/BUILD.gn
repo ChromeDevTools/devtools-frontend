@@ -18,8 +18,8 @@ devtools_module("snippets") {
     "../core/sdk:bundle",
     "../models/persistence:bundle",
     "../models/text_utils:bundle",
+    "../models/workspace:bundle",
     "../quick_open:bundle",
-    "../workspace:bundle",
   ]
 }
 

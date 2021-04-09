@@ -26,9 +26,9 @@ devtools_module("extensions") {
     "../../core/sdk:bundle",
     "../../models/bindings:bundle",
     "../../models/text_utils:bundle",
+    "../../models/workspace:bundle",
     "../../theme_support:bundle",
     "../../ui/legacy:bundle",
-    "../../workspace:bundle",
   ]
 }
 

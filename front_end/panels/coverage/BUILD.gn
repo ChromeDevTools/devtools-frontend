@@ -23,9 +23,9 @@ devtools_module("coverage") {
     "../../formatter:bundle",
     "../../models/bindings:bundle",
     "../../models/text_utils:bundle",
+    "../../models/workspace:bundle",
     "../../source_frame:bundle",
     "../../ui/legacy:bundle",
-    "../../workspace:bundle",
   ]
 }
 

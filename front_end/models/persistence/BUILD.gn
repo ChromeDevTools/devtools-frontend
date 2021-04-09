@@ -29,8 +29,8 @@ devtools_module("persistence") {
     "../../core/sdk:bundle",
     "../../models/bindings:bundle",
     "../../models/text_utils:bundle",
+    "../../models/workspace:bundle",
     "../../ui/legacy:bundle",
-    "../../workspace:bundle",
   ]
 }
 

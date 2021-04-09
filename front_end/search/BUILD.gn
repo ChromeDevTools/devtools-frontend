@@ -17,8 +17,8 @@ devtools_module("search") {
     "../core/common:bundle",
     "../core/i18n:bundle",
     "../models/text_utils:bundle",
+    "../models/workspace:bundle",
     "../ui/legacy:bundle",
-    "../workspace:bundle",
   ]
 }
 

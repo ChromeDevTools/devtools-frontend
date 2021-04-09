@@ -8,7 +8,7 @@ import * as Common from '../../core/common/common.js';  // eslint-disable-line n
 import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import * as Workspace from '../../workspace/workspace.js';  // eslint-disable-line no-unused-vars
+import * as Workspace from '../workspace/workspace.js';  // eslint-disable-line no-unused-vars
 
 import {CompilerScriptMapping} from './CompilerScriptMapping.js';
 import {DebuggerLanguagePluginManager} from './DebuggerLanguagePlugins.js';

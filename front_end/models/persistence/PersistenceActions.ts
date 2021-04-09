@@ -11,7 +11,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 
 import type * as TextUtils from '../text_utils/text_utils.js';
 import type * as UI from '../../ui/legacy/legacy.js';
-import * as Workspace from '../../workspace/workspace.js';
+import * as Workspace from '../workspace/workspace.js';
 
 import {NetworkPersistenceManager} from './NetworkPersistenceManager.js';
 import {PersistenceImpl} from './PersistenceImpl.js';

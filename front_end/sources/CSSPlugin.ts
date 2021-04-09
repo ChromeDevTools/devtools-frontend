@@ -37,10 +37,10 @@ import * as Platform from '../core/platform/platform.js';
 import * as SDK from '../core/sdk/sdk.js';
 import * as InlineEditor from '../inline_editor/inline_editor.js';
 import * as TextUtils from '../models/text_utils/text_utils.js';
+import * as Workspace from '../models/workspace/workspace.js';  // eslint-disable-line no-unused-vars
 import * as SourceFrame from '../source_frame/source_frame.js';
 import * as TextEditor from '../text_editor/text_editor.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../ui/legacy/legacy.js';
-import * as Workspace from '../workspace/workspace.js';  // eslint-disable-line no-unused-vars
 
 import {Plugin} from './Plugin.js';
 

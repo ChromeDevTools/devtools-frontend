@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import '../test_runner/test_runner.js';
-import '../../workspace/workspace-legacy.js';
+import '../../models/workspace/workspace-legacy.js';
 import '../../diff/diff-legacy.js';
 import '../../models/bindings/bindings-legacy.js';
 import '../../models/persistence/persistence-legacy.js';

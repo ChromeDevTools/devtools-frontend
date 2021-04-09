@@ -12,9 +12,9 @@ devtools_module("test_runner") {
     "../../core/common:bundle",
     "../../core/protocol_client:bundle",
     "../../models/bindings:bundle",
+    "../../models/workspace:bundle",
     "../../text_editor:bundle",
     "../../ui/legacy:bundle",
-    "../../workspace:bundle",
   ]
 }
 

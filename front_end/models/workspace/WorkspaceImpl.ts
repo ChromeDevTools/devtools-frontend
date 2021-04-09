@@ -30,8 +30,8 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../core/common/common.js';
-import type * as TextUtils from '../models/text_utils/text_utils.js';
+import * as Common from '../../core/common/common.js';
+import type * as TextUtils from '../text_utils/text_utils.js';
 
 import type {UISourceCodeMetadata} from './UISourceCode.js';
 import {UISourceCode} from './UISourceCode.js';

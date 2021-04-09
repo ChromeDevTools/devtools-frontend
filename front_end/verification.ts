@@ -9,4 +9,4 @@ import './inspector_overlay/inspector_overlay.js';
 import './core/protocol_client/protocol_client.js';
 import './core/root/root.js';
 import './core/sdk/sdk.js';
-import './workspace/workspace.js';
+import './models/workspace/workspace.js';

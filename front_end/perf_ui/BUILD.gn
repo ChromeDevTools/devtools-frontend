@@ -28,12 +28,12 @@ devtools_module("perf_ui") {
     "../core/sdk:bundle",
     "../models/bindings:bundle",
     "../models/timeline_model:bundle",
+    "../models/workspace:bundle",
     "../source_frame:bundle",
     "../text_editor:bundle",
     "../theme_support:bundle",
     "../third_party/lit-html:bundle",
     "../ui/legacy:bundle",
-    "../workspace:bundle",
   ]
 
   visibility = [

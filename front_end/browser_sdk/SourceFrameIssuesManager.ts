@@ -6,8 +6,8 @@ import * as Common from '../core/common/common.js';
 import * as SDK from '../core/sdk/sdk.js';
 import * as Bindings from '../models/bindings/bindings.js';
 import * as TextUtils from '../models/text_utils/text_utils.js';
+import * as Workspace from '../models/workspace/workspace.js';
 import * as Marked from '../third_party/marked/marked.js';
-import * as Workspace from '../workspace/workspace.js';
 
 import * as IssuesManager from './IssuesManager.js';
 import {findTitleFromMarkdownAst, getMarkdownFileContent} from './MarkdownHelpers.js';

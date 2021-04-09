@@ -5,6 +5,7 @@
 import * as i18n from '../i18n/i18n.js';
 
 import {Issue, IssueCategory, IssueKind, LazyMarkdownIssueDescription, MarkdownIssueDescription, resolveLazyDescription} from './Issue.js';
+import type {IssuesModel} from './IssuesModel.js';
 
 const UIStrings = {
   /**
@@ -47,6 +48,16 @@ export class TrustedWebActivityIssue extends Issue {
 
   getKind(): IssueKind {
     return IssueKind.PageError;
+  }
+
+  static fromInspectorIssue(issuesModel: IssuesModel, inspectorDetails: Protocol.Audits.InspectorIssueDetails):
+      TrustedWebActivityIssue[] {
+    const twaQualityEnforcementDetails = inspectorDetails.twaQualityEnforcementDetails;
+    if (!twaQualityEnforcementDetails) {
+      console.warn('TWA Quality Enforcement issue without details received.');
+      return [];
+    }
+    return [new TrustedWebActivityIssue(twaQualityEnforcementDetails)];
   }
 }
 

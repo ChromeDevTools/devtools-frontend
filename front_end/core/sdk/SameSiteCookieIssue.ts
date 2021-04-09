@@ -177,6 +177,17 @@ export class SameSiteCookieIssue extends Issue {
     }
     return IssueKind.BreakingChange;
   }
+
+  static fromInspectorIssue(issuesModel: IssuesModel, inspectorDetails: Protocol.Audits.InspectorIssueDetails):
+      SameSiteCookieIssue[] {
+    const sameSiteDetails = inspectorDetails.sameSiteCookieIssueDetails;
+    if (!sameSiteDetails) {
+      console.warn('SameSite issue without details received.');
+      return [];
+    }
+
+    return SameSiteCookieIssue.createIssuesFromSameSiteDetails(sameSiteDetails, issuesModel);
+  }
 }
 
 /**

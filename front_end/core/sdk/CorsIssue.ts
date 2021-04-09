@@ -61,4 +61,14 @@ export class CorsIssue extends Issue {
     }
     return IssueKind.PageError;
   }
+
+  static fromInspectorIssue(issuesModel: IssuesModel, inspectorDetails: Protocol.Audits.InspectorIssueDetails):
+      CorsIssue[] {
+    const corsIssueDetails = inspectorDetails.corsIssueDetails;
+    if (!corsIssueDetails) {
+      console.warn('Cors issue without details received.');
+      return [];
+    }
+    return [new CorsIssue(corsIssueDetails, issuesModel)];
+  }
 }

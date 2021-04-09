@@ -6,6 +6,7 @@ import * as i18n from '../i18n/i18n.js';
 
 import {Issue, IssueCategory, IssueKind} from './Issue.js';
 import type {MarkdownIssueDescription} from './Issue.js';
+import type {IssuesModel} from './IssuesModel.js';
 
 const UIStrings = {
   /**
@@ -53,5 +54,15 @@ export class LowTextContrastIssue extends Issue {
 
   getKind(): IssueKind {
     return IssueKind.Improvement;
+  }
+
+  static fromInspectorIssue(_issuesModel: IssuesModel, inspectorDetails: Protocol.Audits.InspectorIssueDetails):
+      LowTextContrastIssue[] {
+    const lowTextContrastIssueDetails = inspectorDetails.lowTextContrastIssueDetails;
+    if (!lowTextContrastIssueDetails) {
+      console.warn('LowTextContrast issue without details received.');
+      return [];
+    }
+    return [new LowTextContrastIssue(lowTextContrastIssueDetails)];
   }
 }

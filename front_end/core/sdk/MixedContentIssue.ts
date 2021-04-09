@@ -62,4 +62,14 @@ export class MixedContentIssue extends Issue {
         return IssueKind.Improvement;
     }
   }
+
+  static fromInspectorIssue(issuesModel: IssuesModel, inspectorDetails: Protocol.Audits.InspectorIssueDetails):
+      MixedContentIssue[] {
+    const mixedContentDetails = inspectorDetails.mixedContentIssueDetails;
+    if (!mixedContentDetails) {
+      console.warn('Mixed content issue without details received.');
+      return [];
+    }
+    return [new MixedContentIssue(mixedContentDetails, issuesModel)];
+  }
 }

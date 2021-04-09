@@ -58,4 +58,14 @@ export class HeavyAdIssue extends Issue {
         return IssueKind.BreakingChange;
     }
   }
+
+  static fromInspectorIssue(issuesModel: IssuesModel, inspectorDetails: Protocol.Audits.InspectorIssueDetails):
+      HeavyAdIssue[] {
+    const heavyAdIssueDetails = inspectorDetails.heavyAdIssueDetails;
+    if (!heavyAdIssueDetails) {
+      console.warn('Heavy Ad issue without details received.');
+      return [];
+    }
+    return [new HeavyAdIssue(heavyAdIssueDetails, issuesModel)];
+  }
 }

@@ -76,6 +76,16 @@ export class ContentSecurityPolicyIssue extends Issue {
     }
     return IssueKind.PageError;
   }
+
+  static fromInsectorIssue(issuesModel: IssuesModel, inspectorDetails: Protocol.Audits.InspectorIssueDetails):
+      ContentSecurityPolicyIssue[] {
+    const cspDetails = inspectorDetails.contentSecurityPolicyIssueDetails;
+    if (!cspDetails) {
+      console.warn('Content security policy issue without details received.');
+      return [];
+    }
+    return [new ContentSecurityPolicyIssue(cspDetails, issuesModel)];
+  }
 }
 
 const cspURLViolation = {

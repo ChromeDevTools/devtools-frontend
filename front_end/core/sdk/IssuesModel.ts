@@ -6,11 +6,11 @@ import {ContentSecurityPolicyIssue} from './ContentSecurityPolicyIssue.js';
 import {CorsIssue} from './CorsIssue.js';
 import {CrossOriginEmbedderPolicyIssue, isCrossOriginEmbedderPolicyIssue} from './CrossOriginEmbedderPolicyIssue.js';
 import {HeavyAdIssue} from './HeavyAdIssue.js';
-import {Issue} from './Issue.js';  // eslint-disable-line no-unused-vars
+import {Issue} from './Issue.js';
 import {LowTextContrastIssue} from './LowTextContrastIssue.js';
 import {MixedContentIssue} from './MixedContentIssue.js';
 import {SameSiteCookieIssue} from './SameSiteCookieIssue.js';
-import {Capability, SDKModel, Target} from './SDKModel.js';  // eslint-disable-line no-unused-vars
+import {Capability, SDKModel, Target} from './SDKModel.js';
 import {SharedArrayBufferIssue} from './SharedArrayBufferIssue.js';
 import {TrustedWebActivityIssue} from './TrustedWebActivityIssue.js';
 
@@ -83,47 +83,6 @@ export class IssuesModel extends SDKModel implements ProtocolProxyApi.AuditsDisp
   }
 }
 
-function createIssuesForSameSiteCookieIssue(
-    issuesModel: IssuesModel, inspectorDetails: Protocol.Audits.InspectorIssueDetails): SameSiteCookieIssue[] {
-  const sameSiteDetails = inspectorDetails.sameSiteCookieIssueDetails;
-  if (!sameSiteDetails) {
-    console.warn('SameSite issue without details received.');
-    return [];
-  }
-
-  return SameSiteCookieIssue.createIssuesFromSameSiteDetails(sameSiteDetails, issuesModel);
-}
-
-function createIssuesForMixedContentIssue(
-    issuesModel: IssuesModel, inspectorDetails: Protocol.Audits.InspectorIssueDetails): MixedContentIssue[] {
-  const mixedContentDetails = inspectorDetails.mixedContentIssueDetails;
-  if (!mixedContentDetails) {
-    console.warn('Mixed content issue without details received.');
-    return [];
-  }
-  return [new MixedContentIssue(mixedContentDetails, issuesModel)];
-}
-
-function createIssuesForContentSecurityPolicyIssue(
-    issuesModel: IssuesModel, inspectorDetails: Protocol.Audits.InspectorIssueDetails): ContentSecurityPolicyIssue[] {
-  const cspDetails = inspectorDetails.contentSecurityPolicyIssueDetails;
-  if (!cspDetails) {
-    console.warn('Content security policy issue without details received.');
-    return [];
-  }
-  return [new ContentSecurityPolicyIssue(cspDetails, issuesModel)];
-}
-
-function createIssuesForHeavyAdIssue(
-    issuesModel: IssuesModel, inspectorDetails: Protocol.Audits.InspectorIssueDetails): HeavyAdIssue[] {
-  const heavyAdIssueDetails = inspectorDetails.heavyAdIssueDetails;
-  if (!heavyAdIssueDetails) {
-    console.warn('Heavy Ad issue without details received.');
-    return [];
-  }
-  return [new HeavyAdIssue(heavyAdIssueDetails, issuesModel)];
-}
-
 function createIssuesForBlockedByResponseIssue(
     issuesModel: IssuesModel,
     inspectorDetails: Protocol.Audits.InspectorIssueDetails): CrossOriginEmbedderPolicyIssue[] {
@@ -138,58 +97,18 @@ function createIssuesForBlockedByResponseIssue(
   return [];
 }
 
-function createIssuesForSharedArrayBufferIssue(
-    issuesModel: IssuesModel, inspectorDetails: Protocol.Audits.InspectorIssueDetails): SharedArrayBufferIssue[] {
-  const sabIssueDetails = inspectorDetails.sharedArrayBufferIssueDetails;
-  if (!sabIssueDetails) {
-    console.warn('SAB transfer issue without details received.');
-    return [];
-  }
-  return [new SharedArrayBufferIssue(sabIssueDetails, issuesModel)];
-}
-
-function createIssuesForTrustedWebActivityIssue(
-    issuesModel: IssuesModel, inspectorDetails: Protocol.Audits.InspectorIssueDetails): TrustedWebActivityIssue[] {
-  const twaQualityEnforcementDetails = inspectorDetails.twaQualityEnforcementDetails;
-  if (!twaQualityEnforcementDetails) {
-    console.warn('TWA Quality Enforcement issue without details received.');
-    return [];
-  }
-  return [new TrustedWebActivityIssue(twaQualityEnforcementDetails)];
-}
-
-function createIssuesForLowTextContrastIssue(
-    issuesModel: IssuesModel, inspectorDetails: Protocol.Audits.InspectorIssueDetails): LowTextContrastIssue[] {
-  const lowTextContrastIssueDetails = inspectorDetails.lowTextContrastIssueDetails;
-  if (!lowTextContrastIssueDetails) {
-    console.warn('LowTextContrast issue without details received.');
-    return [];
-  }
-  return [new LowTextContrastIssue(lowTextContrastIssueDetails)];
-}
-
-function createIssuesForCorsIssue(
-    issuesModel: IssuesModel, inspectorDetails: Protocol.Audits.InspectorIssueDetails): CorsIssue[] {
-  const corsIssueDetails = inspectorDetails.corsIssueDetails;
-  if (!corsIssueDetails) {
-    console.warn('Cors issue without details received.');
-    return [];
-  }
-  return [new CorsIssue(corsIssueDetails, issuesModel)];
-}
-
 const issueCodeHandlers = new Map<
     Protocol.Audits.InspectorIssueCode,
     (model: IssuesModel, details: Protocol.Audits.InspectorIssueDetails) => Issue[]>([
-  [Protocol.Audits.InspectorIssueCode.SameSiteCookieIssue, createIssuesForSameSiteCookieIssue],
-  [Protocol.Audits.InspectorIssueCode.MixedContentIssue, createIssuesForMixedContentIssue],
-  [Protocol.Audits.InspectorIssueCode.HeavyAdIssue, createIssuesForHeavyAdIssue],
-  [Protocol.Audits.InspectorIssueCode.ContentSecurityPolicyIssue, createIssuesForContentSecurityPolicyIssue],
+  [Protocol.Audits.InspectorIssueCode.SameSiteCookieIssue, SameSiteCookieIssue.fromInspectorIssue],
+  [Protocol.Audits.InspectorIssueCode.MixedContentIssue, MixedContentIssue.fromInspectorIssue],
+  [Protocol.Audits.InspectorIssueCode.HeavyAdIssue, HeavyAdIssue.fromInspectorIssue],
+  [Protocol.Audits.InspectorIssueCode.ContentSecurityPolicyIssue, ContentSecurityPolicyIssue.fromInsectorIssue],
   [Protocol.Audits.InspectorIssueCode.BlockedByResponseIssue, createIssuesForBlockedByResponseIssue],
-  [Protocol.Audits.InspectorIssueCode.SharedArrayBufferIssue, createIssuesForSharedArrayBufferIssue],
-  [Protocol.Audits.InspectorIssueCode.TrustedWebActivityIssue, createIssuesForTrustedWebActivityIssue],
-  [Protocol.Audits.InspectorIssueCode.LowTextContrastIssue, createIssuesForLowTextContrastIssue],
-  [Protocol.Audits.InspectorIssueCode.CorsIssue, createIssuesForCorsIssue],
+  [Protocol.Audits.InspectorIssueCode.SharedArrayBufferIssue, SharedArrayBufferIssue.fromInspectorIssue],
+  [Protocol.Audits.InspectorIssueCode.TrustedWebActivityIssue, TrustedWebActivityIssue.fromInspectorIssue],
+  [Protocol.Audits.InspectorIssueCode.LowTextContrastIssue, LowTextContrastIssue.fromInspectorIssue],
+  [Protocol.Audits.InspectorIssueCode.CorsIssue, CorsIssue.fromInspectorIssue],
 ]);
 
 export const Events = {

@@ -248,8 +248,8 @@ async function requestHandler(request, response) {
         path.join(baseUrlForSharedResource, 'front_end', 'ui', 'legacy', 'inspectorCommon.css')}" type="text/css" />`;
     const toggleDarkModeScript = `<script type="module" src="${
         path.join(baseUrlForSharedResource, 'front_end', 'component_docs', 'component_docs.js')}"></script>`;
-    const newFileContents = fileContents.replace('<style>', `${themeColoursLink}\n${inspectorCommonLink}\n<style>`)
-                                .replace('<script', toggleDarkModeScript + '\n<script');
+    const newFileContents = fileContents.replace('</head>', `${themeColoursLink}\n${inspectorCommonLink}\n</head>`)
+                                .replace('</body>', toggleDarkModeScript + '\n</body>');
     respondWithHtml(response, newFileContents);
 
   } else {

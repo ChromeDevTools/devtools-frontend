@@ -13,6 +13,7 @@ devtools_module("main") {
   ]
 
   deps = [
+    "../browser_sdk:bundle",
     "../components:bundle",
     "../core/common:bundle",
     "../core/host:bundle",

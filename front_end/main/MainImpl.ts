@@ -34,6 +34,7 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
+import * as BrowserSDK from '../browser_sdk/browser_sdk.js';
 import * as Components from '../components/components.js';
 import * as Common from '../core/common/common.js';
 import * as Host from '../core/host/host.js';
@@ -44,6 +45,7 @@ import * as Root from '../core/root/root.js';
 import * as SDK from '../core/sdk/sdk.js';
 import * as Bindings from '../models/bindings/bindings.js';
 import * as Extensions from '../models/extensions/extensions.js';
+import * as IssuesManager from '../models/issues_manager/issues_manager.js';
 import * as Persistence from '../models/persistence/persistence.js';
 import * as Workspace from '../models/workspace/workspace.js';
 import * as PerfUI from '../perf_ui/perf_ui.js';
@@ -113,6 +115,7 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('main/MainImpl.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+
 export class MainImpl {
   _lateInitDonePromise!: Promise<void>;
 
@@ -332,10 +335,13 @@ export class MainImpl {
     UI.ContextMenu.ContextMenu.installHandler(document);
     UI.Tooltip.Tooltip.installHandler(document);
 
-    // We need to force creation of the FrameManager early to make sure no issues are missed.
-    SDK.FrameManager.FrameManager.instance();
-    // We need to force creation of the NetworkLog early to make sure no requests are missed.
+
+    // These instances need to be created early so they don't miss any events about requests/issues/etc.
     SDK.NetworkLog.NetworkLog.instance();
+    SDK.FrameManager.FrameManager.instance();
+    BrowserSDK.LogManager.LogManager.instance();
+    IssuesManager.IssuesManager.IssuesManager.instance();
+    IssuesManager.ContrastCheckTrigger.ContrastCheckTrigger.instance();
 
     // @ts-ignore layout test global
     self.SDK.consoleModel = SDK.ConsoleModel.ConsoleModel.instance();

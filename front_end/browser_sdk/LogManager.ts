@@ -9,9 +9,19 @@ import * as SDK from '../core/sdk/sdk.js';
 
 const modelToEventListeners = new WeakMap<SDK.LogModel.LogModel, Common.EventTarget.EventDescriptor[]>();
 
+let instance: LogManager|null = null;
+
 export class LogManager implements SDK.SDKModel.SDKModelObserver<SDK.LogModel.LogModel> {
-  constructor() {
+  private constructor() {
     SDK.SDKModel.TargetManager.instance().observeModels(SDK.LogModel.LogModel, this);
+  }
+
+  static instance({forceNew}: {forceNew: boolean} = {forceNew: false}): LogManager {
+    if (!instance || forceNew) {
+      instance = new LogManager();
+    }
+
+    return instance;
   }
 
   modelAdded(logModel: SDK.LogModel.LogModel): void {

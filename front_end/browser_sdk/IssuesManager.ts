@@ -8,6 +8,75 @@ import {SourceFrameIssuesManager} from './SourceFrameIssuesManager.js';
 
 let issuesManagerInstance: IssuesManager|null = null;
 
+
+function createIssuesForBlockedByResponseIssue(
+    issuesModel: SDK.IssuesModel.IssuesModel, inspectorDetails: Protocol.Audits.InspectorIssueDetails):
+    SDK.CrossOriginEmbedderPolicyIssue.CrossOriginEmbedderPolicyIssue[] {
+  const blockedByResponseIssueDetails = inspectorDetails.blockedByResponseIssueDetails;
+  if (!blockedByResponseIssueDetails) {
+    console.warn('BlockedByResponse issue without details received.');
+    return [];
+  }
+  if (SDK.CrossOriginEmbedderPolicyIssue.isCrossOriginEmbedderPolicyIssue(blockedByResponseIssueDetails.reason)) {
+    return [new SDK.CrossOriginEmbedderPolicyIssue.CrossOriginEmbedderPolicyIssue(
+        blockedByResponseIssueDetails, issuesModel)];
+  }
+  return [];
+}
+
+const issueCodeHandlers = new Map<
+    Protocol.Audits.InspectorIssueCode,
+    (model: SDK.IssuesModel.IssuesModel, details: Protocol.Audits.InspectorIssueDetails) => SDK.Issue.Issue[]>([
+  [
+    Protocol.Audits.InspectorIssueCode.SameSiteCookieIssue,
+    SDK.SameSiteCookieIssue.SameSiteCookieIssue.fromInspectorIssue,
+  ],
+  [
+    Protocol.Audits.InspectorIssueCode.MixedContentIssue,
+    SDK.MixedContentIssue.MixedContentIssue.fromInspectorIssue,
+  ],
+  [
+    Protocol.Audits.InspectorIssueCode.HeavyAdIssue,
+    SDK.HeavyAdIssue.HeavyAdIssue.fromInspectorIssue,
+  ],
+  [
+    Protocol.Audits.InspectorIssueCode.ContentSecurityPolicyIssue,
+    SDK.ContentSecurityPolicyIssue.ContentSecurityPolicyIssue.fromInsectorIssue,
+  ],
+  [Protocol.Audits.InspectorIssueCode.BlockedByResponseIssue, createIssuesForBlockedByResponseIssue],
+  [
+    Protocol.Audits.InspectorIssueCode.SharedArrayBufferIssue,
+    SDK.SharedArrayBufferIssue.SharedArrayBufferIssue.fromInspectorIssue,
+  ],
+  [
+    Protocol.Audits.InspectorIssueCode.TrustedWebActivityIssue,
+    SDK.TrustedWebActivityIssue.TrustedWebActivityIssue.fromInspectorIssue,
+  ],
+  [
+    Protocol.Audits.InspectorIssueCode.LowTextContrastIssue,
+    SDK.LowTextContrastIssue.LowTextContrastIssue.fromInspectorIssue,
+  ],
+  [
+    Protocol.Audits.InspectorIssueCode.CorsIssue,
+    SDK.CorsIssue.CorsIssue.fromInspectorIssue,
+  ],
+]);
+
+/**
+   * Each issue reported by the backend can result in multiple {!Issue} instances.
+   * Handlers are simple functions hard-coded into a map.
+   */
+function createIssuesFromProtocolIssue(
+    issuesModel: SDK.IssuesModel.IssuesModel, inspectorIssue: Protocol.Audits.InspectorIssue): SDK.Issue.Issue[] {
+  const handler = issueCodeHandlers.get(inspectorIssue.code);
+  if (handler) {
+    return handler(issuesModel, inspectorIssue.details);
+  }
+
+  console.warn(`No handler registered for issue code ${inspectorIssue.code}`);
+  return [];
+}
+
 /**
  * The `IssuesManager` is the central storage for issues. It collects issues from all the
  * `IssuesModel` instances in the page, and deduplicates them wrt their primary key.
@@ -94,7 +163,7 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper implements
   }
 
   modelAdded(issuesModel: SDK.IssuesModel.IssuesModel): void {
-    const listener = issuesModel.addEventListener(SDK.IssuesModel.Events.IssueAdded, this.onIssueAdded, this);
+    const listener = issuesModel.addEventListener(SDK.IssuesModel.Events.IssueAdded, this.onIssueAddedEvent, this);
     this.eventListeners.set(issuesModel, listener);
   }
 
@@ -105,11 +174,18 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper implements
     }
   }
 
-  private onIssueAdded(event: Common.EventTarget.EventTargetEvent): void {
-    const {issuesModel, issue} = event.data as {
+  private onIssueAddedEvent(event: Common.EventTarget.EventTargetEvent): void {
+    const {issuesModel, inspectorIssue} = event.data as {
       issuesModel: SDK.IssuesModel.IssuesModel,
-      issue: SDK.Issue.Issue,
+      inspectorIssue: Protocol.Audits.InspectorIssue,
     };
+    const issues = createIssuesFromProtocolIssue(issuesModel, inspectorIssue);
+    for (const issue of issues) {
+      this.addIssue(issuesModel, issue);
+    }
+  }
+
+  addIssue(issuesModel: SDK.IssuesModel.IssuesModel, issue: SDK.Issue.Issue): void {
     // Ignore issues without proper description; they are invisible to the user and only cause confusion.
     if (!issue.getDescription()) {
       return;

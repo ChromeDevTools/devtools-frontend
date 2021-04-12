@@ -70,3 +70,17 @@ export class ThirdPartyStubIssue extends StubIssue {
     return this.isThirdParty;
   }
 }
+
+export function mkInspectorCspIssue(blockedURL: string): Protocol.Audits.InspectorIssue {
+  return {
+    code: Protocol.Audits.InspectorIssueCode.ContentSecurityPolicyIssue,
+    details: {
+      contentSecurityPolicyIssueDetails: {
+        isReportOnly: true,
+        violatedDirective: 'testdirective',
+        contentSecurityPolicyViolationType: Protocol.Audits.ContentSecurityPolicyViolationType.KURLViolation,
+        blockedURL,
+      },
+    },
+  };
+}

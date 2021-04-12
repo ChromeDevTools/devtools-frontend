@@ -22,6 +22,7 @@ import * as CookieParser from './CookieParser.js';
 import * as CorsIssue from './CorsIssue.js';
 import * as CPUProfileDataModel from './CPUProfileDataModel.js';
 import * as CPUProfilerModel from './CPUProfilerModel.js';
+import * as CrossOriginEmbedderPolicyIssue from './CrossOriginEmbedderPolicyIssue.js';
 import * as CSSFontFace from './CSSFontFace.js';
 import * as CSSMatchedStyles from './CSSMatchedStyles.js';
 import * as CSSMedia from './CSSMedia.js';
@@ -92,6 +93,7 @@ export {
   CorsIssue,
   CPUProfileDataModel,
   CPUProfilerModel,
+  CrossOriginEmbedderPolicyIssue,
   CSSFontFace,
   CSSMatchedStyles,
   CSSMedia,

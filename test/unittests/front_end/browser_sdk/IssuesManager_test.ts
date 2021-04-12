@@ -8,7 +8,7 @@ import * as SDK from '../../../../front_end/core/sdk/sdk.js';
 import type * as BrowserSDKModule from '../../../../front_end/browser_sdk/browser_sdk.js';
 
 import {describeWithEnvironment} from '../helpers/EnvironmentHelpers.js';
-import {StubIssue, ThirdPartyStubIssue} from '../sdk/StubIssue.js';
+import {mkInspectorCspIssue, StubIssue, ThirdPartyStubIssue} from '../sdk/StubIssue.js';
 import {MockIssuesModel} from '../sdk/MockIssuesModel.js';
 
 describeWithEnvironment('IssuesManager', () => {
@@ -19,9 +19,6 @@ describeWithEnvironment('IssuesManager', () => {
 
   it('collects issues from an issues model', () => {
     const issue1 = new StubIssue('StubIssue1', ['id1', 'id2'], []);
-    const issue2 = new StubIssue('StubIssue2', ['id1', 'id2'], []);
-    const issue2b = new StubIssue('StubIssue2', ['id1', 'id2'], ['id3']);
-
     const mockModel = new MockIssuesModel([issue1]) as unknown as SDK.IssuesModel.IssuesModel;
     const issuesManager = new BrowserSDK.IssuesManager.IssuesManager();
     issuesManager.modelAdded(mockModel);
@@ -30,15 +27,18 @@ describeWithEnvironment('IssuesManager', () => {
     issuesManager.addEventListener(
         BrowserSDK.IssuesManager.Events.IssueAdded, event => dispatchedIssues.push(event.data.issue));
 
-    mockModel.dispatchEventToListeners(SDK.IssuesModel.Events.IssueAdded, {issuesModel: mockModel, issue: issue2});
-    mockModel.dispatchEventToListeners(SDK.IssuesModel.Events.IssueAdded, {issuesModel: mockModel, issue: issue2b});
+    mockModel.dispatchEventToListeners(
+        SDK.IssuesModel.Events.IssueAdded, {issuesModel: mockModel, inspectorIssue: mkInspectorCspIssue('url1')});
+    mockModel.dispatchEventToListeners(
+        SDK.IssuesModel.Events.IssueAdded, {issuesModel: mockModel, inspectorIssue: mkInspectorCspIssue('url2')});
 
-    assert.deepStrictEqual(dispatchedIssues.map(i => i.code()), ['StubIssue2', 'StubIssue2']);
+    const expected = ['ContentSecurityPolicyIssue::kURLViolation', 'ContentSecurityPolicyIssue::kURLViolation'];
+    assert.deepStrictEqual(dispatchedIssues.map(i => i.code()), expected);
 
     // The `issue1` should not be present, as it was present before the IssuesManager
     // was instantiated.
     const issueCodes = Array.from(issuesManager.issues()).map(r => r.code());
-    assert.deepStrictEqual(issueCodes, ['StubIssue2', 'StubIssue2']);
+    assert.deepStrictEqual(issueCodes, expected);
   });
 
   it('filters third-party issues when the third-party issues setting is false, includes them otherwise', () => {
@@ -60,7 +60,7 @@ describeWithEnvironment('IssuesManager', () => {
         BrowserSDK.IssuesManager.Events.IssueAdded, event => firedIssueAddedEventCodes.push(event.data.issue.code()));
 
     for (const issue of issues) {
-      mockModel.dispatchEventToListeners(SDK.IssuesModel.Events.IssueAdded, {issuesModel: mockModel, issue: issue});
+      issuesManager.addIssue(mockModel, issue);
     }
 
     let issueCodes = Array.from(issuesManager.issues()).map(i => i.code());
@@ -82,9 +82,9 @@ describeWithEnvironment('IssuesManager', () => {
     const issuesManager = new BrowserSDK.IssuesManager.IssuesManager();
     issuesManager.modelAdded(mockModel);
 
-    mockModel.dispatchEventToListeners(SDK.IssuesModel.Events.IssueAdded, {issuesModel: mockModel, issue: issue1});
-    mockModel.dispatchEventToListeners(SDK.IssuesModel.Events.IssueAdded, {issuesModel: mockModel, issue: issue2});
-    mockModel.dispatchEventToListeners(SDK.IssuesModel.Events.IssueAdded, {issuesModel: mockModel, issue: issue3});
+    issuesManager.addIssue(mockModel, issue1);
+    issuesManager.addIssue(mockModel, issue2);
+    issuesManager.addIssue(mockModel, issue3);
 
     assert.deepStrictEqual(issuesManager.numberOfIssues(), 3);
     assert.deepStrictEqual(issuesManager.numberOfIssues(SDK.Issue.IssueKind.Improvement), 2);

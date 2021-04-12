@@ -246,6 +246,11 @@ def _CheckDevToolsStyleJS(input_api, output_api):
     if should_bail_out:
         return results
 
+    # If there are more than 50 files to check, don't bother and check
+    # everything, so as to not run into command line length limits on Windows.
+    if len(files_to_lint) > 50:
+        files_to_lint = []
+
     results.extend(
         _checkWithNodeScript(input_api, output_api, lint_path, files_to_lint))
     return results

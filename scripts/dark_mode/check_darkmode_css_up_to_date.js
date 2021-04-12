@@ -57,8 +57,10 @@ function checkCSSFileIsUpToDate(file) {
       errors.push(`${sourcePathRelative} has been modified (${sourceFileMTime}) and ${
           darkModePathRelative} should be regenerated (${darkFileMTime}).`);
     } else if (generationScriptMTime > darkFileMTime) {
+      // Disabled due to false positives. See https://crbug.com/1198054 for details.
+      // TODO(jacktfranklin): fix above bug and re-enable this check.
       // The generation script itself has been changed so we must rerun.
-      errors.push(`generate_dark_theme_sheet.js has been modified and ${darkModePathRelative} should be regenerated.`);
+      // errors.push(`generate_dark_theme_sheet.js has been modified and ${darkModePathRelative} should be regenerated.`);
     }
   }
 }

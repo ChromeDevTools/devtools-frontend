@@ -37,7 +37,7 @@ import six
 import time
 
 EXCLUSIVE_CHANGE_DIRECTORIES = [
-    ['third_party', 'v8'],
+    ['third_party', 'v8', 'front_end/generated'],
     [
         'node_modules', 'package.json', 'package-lock.json',
         'scripts/deps/manage_node_deps.py'

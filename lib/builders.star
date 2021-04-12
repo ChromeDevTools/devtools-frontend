@@ -77,10 +77,6 @@ def builder(
 
     kwargs["executable"] = recipe(recipe_name)
 
-    # TODO(machenbach): Remove this when CAS is the default.
-    if recipe_name in ["chromium_integration", "chromium_trybot"]:
-        kwargs["experiments"] = {"chromium.chromium_tests.use_rbe_cas": 100}
-
     luci.builder(
         swarming_tags = swarming_tags,
         **kwargs

@@ -72,10 +72,11 @@ try_builder(
     build_numbers = True,
 )
 
-try_builder(
-    name = "dtf_linux_experiments",
+builder_coverage(
+    covered_oss = ["linux", "win64", "mac"],
+    builder_factory = try_builder,
+    builder_name_pattern = "dtf_%s_experiments",
     recipe_name = "devtools/devtools-frontend",
-    dimensions = dimensions.default_ubuntu,
     execution_timeout = default_timeout,
     build_numbers = True,
     properties = {"run_experimental_steps": True},

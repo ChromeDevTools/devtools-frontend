@@ -56,8 +56,6 @@ const BLOCK_REGEX = new RegExp('[\\s\\\\n\\*]*' + BLOCK_LICENSE_HEADER.join('[\\
 const LICENSE_HEADER_ADDITION = LINE_LICENSE_HEADER.map(line => `// ${line}`).join('\n') + '\n\n';
 
 const EXCLUDED_FILES = [
-  // FIXME: Dagre bundles must be moved to third_party
-  'dagre_layout/dagre.js',
   // FIXME: Diff bundles must be moved to third_party
   'diff/diff_match_patch.js',
 ];

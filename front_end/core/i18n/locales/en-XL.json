@@ -768,10 +768,13 @@
     "message": "D̂íŝáb̂ĺê áŝýn̂ć ŝt́âćk̂ t́r̂áĉéŝ"
   },
   "core/sdk/sdk-meta.ts | disableAvifFormat": {
-    "message": "D̂íŝáb̂ĺê ÁV̂ÍF̂ f́ôŕm̂át̂"
+    "message": "D̂íŝáb̂ĺê AVIF f́ôŕm̂át̂"
   },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "D̂íŝáb̂ĺê J́âv́âŚĉŕîṕt̂"
+  },
+  "core/sdk/sdk-meta.ts | disableJxlFormat": {
+    "message": "D̂íŝáb̂ĺê JPEG XL f́ôŕm̂át̂"
   },
   "core/sdk/sdk-meta.ts | disableLocalFonts": {
     "message": "D̂íŝáb̂ĺê ĺôćâĺ f̂ón̂t́ŝ"
@@ -780,7 +783,7 @@
     "message": "D̂íŝáb̂ĺê ńêt́ŵór̂ḱ r̂éq̂úêśt̂ b́l̂óĉḱîńĝ"
   },
   "core/sdk/sdk-meta.ts | disableWebpFormat": {
-    "message": "D̂íŝáb̂ĺê Ẃêb́P̂ f́ôŕm̂át̂"
+    "message": "D̂íŝáb̂ĺê WebP f́ôŕm̂át̂"
   },
   "core/sdk/sdk-meta.ts | doNotCaptureAsyncStackTraces": {
     "message": "D̂ó n̂ót̂ ćâṕt̂úr̂é âśŷńĉ śt̂áĉḱ t̂ŕâćêś"
@@ -888,7 +891,7 @@
     "message": "Êḿûĺât́ê v́îśîón̂ d́êf́îćîén̂ćîéŝ"
   },
   "core/sdk/sdk-meta.ts | enableAvifFormat": {
-    "message": "Êńâb́l̂é ÂV́ÎF́ f̂ór̂ḿât́"
+    "message": "Êńâb́l̂é AVIF f̂ór̂ḿât́"
   },
   "core/sdk/sdk-meta.ts | enableCache": {
     "message": "Êńâb́l̂é ĉáĉh́ê"
@@ -899,6 +902,9 @@
   "core/sdk/sdk-meta.ts | enableJavascript": {
     "message": "Êńâb́l̂é Ĵáv̂áŜćr̂íp̂t́"
   },
+  "core/sdk/sdk-meta.ts | enableJxlFormat": {
+    "message": "Êńâb́l̂é JPEG XL f̂ór̂ḿât́"
+  },
   "core/sdk/sdk-meta.ts | enableLocalFonts": {
     "message": "Êńâb́l̂é l̂óĉál̂ f́ôńt̂ś"
   },
@@ -906,7 +912,7 @@
     "message": "Êńâb́l̂é n̂ét̂ẃôŕk̂ ŕêq́ûéŝt́ b̂ĺôćk̂ín̂ǵ"
   },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
-    "message": "Êńâb́l̂é Ŵéb̂Ṕ f̂ór̂ḿât́"
+    "message": "Êńâb́l̂é WebP f̂ór̂ḿât́"
   },
   "core/sdk/sdk-meta.ts | extendGridLines": {
     "message": "Êx́t̂én̂d́ ĝŕîd́ l̂ín̂éŝ"
@@ -1273,6 +1279,9 @@
   },
   "inspector_main/RenderingOptions.js | disableAvifImageFormat": {
     "message": "D̂íŝáb̂ĺê AVIF ím̂áĝé f̂ór̂ḿât́"
+  },
+  "inspector_main/RenderingOptions.js | disableJxlImageFormat": {
+    "message": "D̂íŝáb̂ĺê JPEG XL ím̂áĝé f̂ór̂ḿât́"
   },
   "inspector_main/RenderingOptions.js | disableLocalFonts": {
     "message": "D̂íŝáb̂ĺê ĺôćâĺ f̂ón̂t́ŝ"

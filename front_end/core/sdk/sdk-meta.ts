@@ -317,19 +317,27 @@ const UIStrings = {
   /**
   *@description Title of a setting that disables AVIF format
   */
-  disableAvifFormat: 'Disable AVIF format',
+  disableAvifFormat: 'Disable `AVIF` format',
   /**
   *@description Title of a setting that enables AVIF format
   */
-  enableAvifFormat: 'Enable AVIF format',
+  enableAvifFormat: 'Enable `AVIF` format',
+  /**
+  *@description Title of a setting that disables JPEG XL format
+  */
+  disableJxlFormat: 'Disable `JPEG XL` format',
+  /**
+  *@description Title of a setting that enables JPEG XL format
+  */
+  enableJxlFormat: 'Enable `JPEG XL` format',
   /**
   *@description Title of a setting that disables WebP format
   */
-  disableWebpFormat: 'Disable WebP format',
+  disableWebpFormat: 'Disable `WebP` format',
   /**
   *@description Title of a setting that enables WebP format
   */
-  enableWebpFormat: 'Enable WebP format',
+  enableWebpFormat: 'Enable `WebP` format',
   /**
   *@description Title of a setting under the Console category in Settings
   */
@@ -907,6 +915,24 @@ Common.Settings.registerSettingExtension({
     {
       value: false,
       title: i18nLazyString(UIStrings.enableAvifFormat),
+    },
+  ],
+  defaultValue: false,
+});
+
+Common.Settings.registerSettingExtension({
+  category: Common.Settings.SettingCategory.RENDERING,
+  settingName: 'jxlFormatDisabled',
+  settingType: Common.Settings.SettingType.BOOLEAN,
+  storageType: Common.Settings.SettingStorageType.Session,
+  options: [
+    {
+      value: true,
+      title: i18nLazyString(UIStrings.disableJxlFormat),
+    },
+    {
+      value: false,
+      title: i18nLazyString(UIStrings.enableJxlFormat),
     },
   ],
   defaultValue: false,

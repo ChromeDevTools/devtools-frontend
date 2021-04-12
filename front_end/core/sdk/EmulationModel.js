@@ -109,12 +109,16 @@ export class EmulationModel extends SDKModel {
     }
 
     const avifFormatDisabledSetting = Common.Settings.Settings.instance().moduleSetting('avifFormatDisabled');
+    const jxlFormatDisabledSetting = Common.Settings.Settings.instance().moduleSetting('jxlFormatDisabled');
     const webpFormatDisabledSetting = Common.Settings.Settings.instance().moduleSetting('webpFormatDisabled');
 
     const updateDisabledImageFormats = () => {
       const types = [];
       if (avifFormatDisabledSetting.get()) {
         types.push(Protocol.Emulation.DisabledImageType.Avif);
+      }
+      if (jxlFormatDisabledSetting.get()) {
+        types.push(Protocol.Emulation.DisabledImageType.Jxl);
       }
       if (webpFormatDisabledSetting.get()) {
         types.push(Protocol.Emulation.DisabledImageType.Webp);
@@ -124,8 +128,9 @@ export class EmulationModel extends SDKModel {
 
     avifFormatDisabledSetting.addChangeListener(updateDisabledImageFormats);
     webpFormatDisabledSetting.addChangeListener(updateDisabledImageFormats);
+    jxlFormatDisabledSetting.addChangeListener(updateDisabledImageFormats);
 
-    if (webpFormatDisabledSetting.get() || avifFormatDisabledSetting.get()) {
+    if (avifFormatDisabledSetting.get() || jxlFormatDisabledSetting.get() || webpFormatDisabledSetting.get()) {
       updateDisabledImageFormats();
     }
 

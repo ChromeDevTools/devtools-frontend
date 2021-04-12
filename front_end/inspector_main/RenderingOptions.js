@@ -163,6 +163,11 @@ const UIStrings = {
   */
   disableAvifImageFormat: 'Disable `AVIF` image format',
   /**
+  * @description The name of a checkbox setting in the Rendering tool. This setting disables the
+  * page from loading images with the JPEG XL format.
+  */
+  disableJxlImageFormat: 'Disable `JPEG XL` image format',
+  /**
   * @description Explanation text for both the 'Disable AVIF image format' and 'Disable WebP image
   * format' settings in the Rendering tool.
   */
@@ -188,6 +193,18 @@ const supportsPrefersReducedData = () => {
   const query = '(prefers-reduced-data: reduce)';
   // Note: `media` serializes to `'not all'` for unsupported queries.
   return window.matchMedia(query).media === query;
+};
+
+const supportsJXL = async () => {
+  const JXL_IMAGE_URL =
+      'data:image/jxl;base64,/woAEJBQXAgAEogCALQAVQ8AAKhQGWXc4OVcz5cfOiymbVxnaKttC0sSRcaxSTqBQ5JYIwFkZDDYr5IE';
+  const promise = new Promise(resolve => {
+    const img = document.createElement('img');
+    img.onload = () => resolve(true);
+    img.onerror = () => resolve(false);
+    img.src = JXL_IMAGE_URL;
+  });
+  return promise;
 };
 
 /** @type {!RenderingOptionsView} */
@@ -262,11 +279,20 @@ export class RenderingOptionsView extends UI.Widget.VBox {
         i18nString(UIStrings.disableAvifImageFormat), i18nString(UIStrings.requiresAPageReloadToApplyAnd),
         Common.Settings.Settings.instance().moduleSetting('avifFormatDisabled'));
 
-    this._appendCheckbox(
+    const webpCheckbox = this._appendCheckbox(
         i18nString(UIStrings.disableWebpImageFormat), i18nString(UIStrings.requiresAPageReloadToApplyAnd),
         Common.Settings.Settings.instance().moduleSetting('webpFormatDisabled'));
 
     this.contentElement.createChild('div').classList.add('panel-section-separator');
+
+    supportsJXL().then(jxlSupported => {
+      if (!jxlSupported) {
+        return;
+      }
+      webpCheckbox.before(this._createCheckbox(
+          i18nString(UIStrings.disableJxlImageFormat), i18nString(UIStrings.requiresAPageReloadToApplyAnd),
+          Common.Settings.Settings.instance().moduleSetting('jxlFormatDisabled')));
+    });
   }
 
   /**
@@ -286,10 +312,21 @@ export class RenderingOptionsView extends UI.Widget.VBox {
    * @param {string} subtitle
    * @param {!Common.Settings.Setting<boolean>} setting
    */
-  _appendCheckbox(label, subtitle, setting) {
+  _createCheckbox(label, subtitle, setting) {
     const checkboxLabel = UI.UIUtils.CheckboxLabel.create(label, false, subtitle);
     UI.SettingsUI.bindCheckbox(checkboxLabel.checkboxElement, setting);
-    this.contentElement.appendChild(checkboxLabel);
+    return checkboxLabel;
+  }
+
+  /**
+   * @param {string} label
+   * @param {string} subtitle
+   * @param {!Common.Settings.Setting<boolean>} setting
+   */
+  _appendCheckbox(label, subtitle, setting) {
+    const checkbox = this._createCheckbox(label, subtitle, setting);
+    this.contentElement.appendChild(checkbox);
+    return checkbox;
   }
 
   /**

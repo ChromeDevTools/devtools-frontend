@@ -773,6 +773,9 @@
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "Disable JavaScript"
   },
+  "core/sdk/sdk-meta.ts | disableJxlFormat": {
+    "message": "Disable JPEG XL format"
+  },
   "core/sdk/sdk-meta.ts | disableLocalFonts": {
     "message": "Disable local fonts"
   },
@@ -898,6 +901,9 @@
   },
   "core/sdk/sdk-meta.ts | enableJavascript": {
     "message": "Enable JavaScript"
+  },
+  "core/sdk/sdk-meta.ts | enableJxlFormat": {
+    "message": "Enable JPEG XL format"
   },
   "core/sdk/sdk-meta.ts | enableLocalFonts": {
     "message": "Enable local fonts"
@@ -1273,6 +1279,9 @@
   },
   "inspector_main/RenderingOptions.js | disableAvifImageFormat": {
     "message": "Disable AVIF image format"
+  },
+  "inspector_main/RenderingOptions.js | disableJxlImageFormat": {
+    "message": "Disable JPEG XL image format"
   },
   "inspector_main/RenderingOptions.js | disableLocalFonts": {
     "message": "Disable local fonts"

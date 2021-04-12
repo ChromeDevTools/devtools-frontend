@@ -6,7 +6,7 @@
     "ui/legacy/components/data_grid",
     "components",
     "ui/legacy/components/object_ui",
-    "perf_ui",
+    "ui/legacy/components/perf_ui",
     "panels/mobile_throttling",
     "panels/network",
     "sources",

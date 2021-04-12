@@ -30,10 +30,10 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../core/common/common.js';
-import * as i18n from '../core/i18n/i18n.js';
-import * as Platform from '../core/platform/platform.js';
-import * as UI from '../ui/legacy/legacy.js';
+import * as Common from '../../../../core/common/common.js';
+import * as i18n from '../../../../core/i18n/i18n.js';
+import * as Platform from '../../../../core/platform/platform.js';
+import * as UI from '../../legacy.js';
 
 import {Calculator, TimelineGrid} from './TimelineGrid.js';  // eslint-disable-line no-unused-vars
 
@@ -51,7 +51,7 @@ const UIStrings = {
   */
   rightResizer: 'Right Resizer',
 };
-const str_ = i18n.i18n.registerUIStrings('perf_ui/OverviewGrid.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/perf_ui/OverviewGrid.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class OverviewGrid {
   element: HTMLDivElement;
@@ -162,7 +162,8 @@ export class Window extends Common.ObjectWrapper.ObjectWrapper {
 
     this._parentElement.addEventListener('wheel', this._onMouseWheel.bind(this), true);
     this._parentElement.addEventListener('dblclick', this._resizeWindowMaximum.bind(this), true);
-    UI.Utils.appendStyle(this._parentElement, 'perf_ui/overviewGrid.css', {enableLegacyPatching: false});
+    UI.Utils.appendStyle(
+        this._parentElement, 'ui/legacy/components/perf_ui/overviewGrid.css', {enableLegacyPatching: false});
 
     this._leftResizeElement = parentElement.createChild('div', 'overview-grid-window-resizer') as HTMLElement;
     UI.UIUtils.installDragHandle(

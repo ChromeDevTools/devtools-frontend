@@ -4,11 +4,11 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Host from '../core/host/host.js';
-import * as i18n from '../core/i18n/i18n.js';
-import * as Platform from '../core/platform/platform.js';
-import * as SDK from '../core/sdk/sdk.js';  // eslint-disable-line no-unused-vars
-import * as UI from '../ui/legacy/legacy.js';
+import * as Host from '../../../../core/host/host.js';
+import * as i18n from '../../../../core/i18n/i18n.js';
+import * as Platform from '../../../../core/platform/platform.js';
+import * as SDK from '../../../../core/sdk/sdk.js';  // eslint-disable-line no-unused-vars
+import * as UI from '../../legacy.js';
 
 const UIStrings = {
   /**
@@ -33,7 +33,7 @@ const UIStrings = {
   */
   nextFrame: 'Next frame',
 };
-const str_ = i18n.i18n.registerUIStrings('perf_ui/FilmStripView.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/perf_ui/FilmStripView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class FilmStripView extends UI.Widget.HBox {
   _statusLabel: HTMLElement;
@@ -44,7 +44,7 @@ export class FilmStripView extends UI.Widget.HBox {
 
   constructor() {
     super(true);
-    this.registerRequiredCSS('perf_ui/filmStripView.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('ui/legacy/components/perf_ui/filmStripView.css', {enableLegacyPatching: false});
     this.contentElement.classList.add('film-strip-view');
     this._statusLabel = this.contentElement.createChild('div', 'label');
     this.reset();

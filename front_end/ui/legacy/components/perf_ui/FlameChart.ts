@@ -30,15 +30,15 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../core/common/common.js';
-import * as Host from '../core/host/host.js';
-import * as i18n from '../core/i18n/i18n.js';
-import * as Platform from '../core/platform/platform.js';
-import * as Root from '../core/root/root.js';
-import * as SDK from '../core/sdk/sdk.js';                                    // eslint-disable-line no-unused-vars
-import * as TimelineModel from '../models/timeline_model/timeline_model.js';  // eslint-disable-line no-unused-vars
-import * as ThemeSupport from '../theme_support/theme_support.js';
-import * as UI from '../ui/legacy/legacy.js';
+import * as Common from '../../../../core/common/common.js';
+import * as Host from '../../../../core/host/host.js';
+import * as i18n from '../../../../core/i18n/i18n.js';
+import * as Platform from '../../../../core/platform/platform.js';
+import * as Root from '../../../../core/root/root.js';
+import * as SDK from '../../../../core/sdk/sdk.js';  // eslint-disable-line no-unused-vars
+import * as TimelineModel from '../../../../models/timeline_model/timeline_model.js';  // eslint-disable-line no-unused-vars
+import * as ThemeSupport from '../../../../theme_support/theme_support.js';
+import * as UI from '../../legacy.js';
 
 import {ChartViewport, ChartViewportDelegate} from './ChartViewport.js';  // eslint-disable-line no-unused-vars
 import {Calculator, TimelineGrid} from './TimelineGrid.js';               // eslint-disable-line no-unused-vars
@@ -69,7 +69,7 @@ const UIStrings = {
   */
   sCollapsed: '{PH1} collapsed',
 };
-const str_ = i18n.i18n.registerUIStrings('perf_ui/FlameChart.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/perf_ui/FlameChart.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class FlameChartDelegate {
@@ -156,7 +156,7 @@ export class FlameChart extends UI.Widget.VBox implements Calculator, ChartViewp
       dataProvider: FlameChartDataProvider, flameChartDelegate: FlameChartDelegate,
       groupExpansionSetting?: Common.Settings.Setting<GroupExpansionState>) {
     super(true);
-    this.registerRequiredCSS('perf_ui/flameChart.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('ui/legacy/components/perf_ui/flameChart.css', {enableLegacyPatching: false});
     this.contentElement.classList.add('flame-chart-main-pane');
     this._groupExpansionSetting = groupExpansionSetting;
     this._groupExpansionState = groupExpansionSetting && groupExpansionSetting.get() || {};

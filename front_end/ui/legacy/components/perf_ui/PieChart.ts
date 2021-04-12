@@ -2,18 +2,18 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as LitHtml from '../third_party/lit-html/lit-html.js';
+import * as LitHtml from '../../../../third_party/lit-html/lit-html.js';
 
 const {render, html, svg} = LitHtml;
 
-import * as i18n from '../core/i18n/i18n.js';
+import * as i18n from '../../../../core/i18n/i18n.js';
 const UIStrings = {
   /**
   *@description Text for sum
   */
   total: 'Total',
 };
-const str_ = i18n.i18n.registerUIStrings('perf_ui/PieChart.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/perf_ui/PieChart.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export interface Slice {

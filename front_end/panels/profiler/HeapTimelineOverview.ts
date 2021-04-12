@@ -5,7 +5,7 @@
 /* eslint-disable rulesdir/no_underscored_properties */
 
 import * as Platform from '../../core/platform/platform.js';
-import * as PerfUI from '../../perf_ui/perf_ui.js';
+import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 export class HeapTimelineOverview extends UI.Widget.VBox {

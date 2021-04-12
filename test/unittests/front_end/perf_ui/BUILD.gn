@@ -5,8 +5,8 @@ ts_library("perf_ui") {
   sources = [ "PieChart_test.ts" ]
 
   deps = [
-    "../../../../front_end/perf_ui:bundle",
     "../../../../front_end/ui/legacy:bundle",
+    "../../../../front_end/ui/legacy/components/perf_ui:bundle",
     "../helpers",
   ]
 }

@@ -3,7 +3,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as PerfUI from '../../perf_ui/perf_ui.js';
+import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 
 const chart = new PerfUI.PieChart.PieChart();
 document.getElementById('container')?.appendChild(chart);

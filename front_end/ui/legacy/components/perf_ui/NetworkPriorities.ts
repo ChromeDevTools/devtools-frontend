@@ -4,8 +4,8 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as i18n from '../core/i18n/i18n.js';
-import * as Platform from '../core/platform/platform.js';
+import * as i18n from '../../../../core/i18n/i18n.js';
+import * as Platform from '../../../../core/platform/platform.js';
 
 const UIStrings = {
   /**
@@ -29,7 +29,7 @@ const UIStrings = {
   */
   highest: 'Highest',
 };
-const str_ = i18n.i18n.registerUIStrings('perf_ui/NetworkPriorities.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/perf_ui/NetworkPriorities.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export function uiLabelForNetworkPriority(priority: Protocol.Network.ResourcePriority): string {
   return priorityUILabelMap().get(priority) || '';

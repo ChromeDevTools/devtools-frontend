@@ -134,7 +134,6 @@ group("legacy_entrypoints") {
     "panels/mobile_throttling:legacy",
     "panels/network:legacy",
     "panels/profiler:legacy",
-    "perf_ui:legacy",
     "quick_open:legacy",
     "search:legacy",
     "security:legacy",
@@ -147,6 +146,7 @@ group("legacy_entrypoints") {
     "ui/legacy:legacy",
     "ui/legacy/components/data_grid:legacy",
     "ui/legacy/components/object_ui:legacy",
+    "ui/legacy/components/perf_ui:legacy",
     "web_audio:legacy",
     "workspace_diff:legacy",
   ]

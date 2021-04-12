@@ -34,9 +34,9 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Host from '../core/host/host.js';
-import * as ThemeSupport from '../theme_support/theme_support.js';
-import * as UI from '../ui/legacy/legacy.js';
+import * as Host from '../../../../core/host/host.js';
+import * as ThemeSupport from '../../../../theme_support/theme_support.js';
+import * as UI from '../../legacy.js';
 
 const labelMap = new Map<HTMLDivElement|HTMLElement, HTMLDivElement>();
 
@@ -49,7 +49,7 @@ export class TimelineGrid {
 
   constructor() {
     this.element = document.createElement('div');
-    UI.Utils.appendStyle(this.element, 'perf_ui/timelineGrid.css', {enableLegacyPatching: false});
+    UI.Utils.appendStyle(this.element, 'ui/legacy/components/perf_ui/timelineGrid.css', {enableLegacyPatching: false});
 
     this._dividersElement = this.element.createChild('div', 'resources-dividers');
 

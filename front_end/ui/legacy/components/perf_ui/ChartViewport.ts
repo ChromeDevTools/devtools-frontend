@@ -4,9 +4,9 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../core/common/common.js';
-import * as Platform from '../core/platform/platform.js';
-import * as UI from '../ui/legacy/legacy.js';
+import * as Common from '../../../../core/common/common.js';
+import * as Platform from '../../../../core/platform/platform.js';
+import * as UI from '../../legacy.js';
 
 import {MinimalTimeWindowMs} from './FlameChart.js';
 
@@ -52,7 +52,7 @@ export class ChartViewport extends UI.Widget.VBox {
 
   constructor(delegate: ChartViewportDelegate) {
     super();
-    this.registerRequiredCSS('perf_ui/chartViewport.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('ui/legacy/components/perf_ui/chartViewport.css', {enableLegacyPatching: false});
 
     this._delegate = delegate;
 

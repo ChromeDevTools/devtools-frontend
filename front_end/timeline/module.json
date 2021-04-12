@@ -3,7 +3,7 @@
     "components",
     "panels/coverage",
     "panels/layer_viewer",
-    "perf_ui",
+    "ui/legacy/components/perf_ui",
     "models/extensions",
     "ui/legacy/components/data_grid",
     "panels/profiler",

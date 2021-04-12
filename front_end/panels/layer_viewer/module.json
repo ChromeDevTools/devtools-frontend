@@ -2,7 +2,7 @@
   "dependencies": [
     "components",
     "ui/legacy",
-    "perf_ui"
+    "ui/legacy/components/perf_ui"
   ],
     "resources": [
     "layers3DView.css",

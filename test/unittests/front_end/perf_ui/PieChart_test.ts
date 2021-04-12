@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {assertNotNull} from '../../../../front_end/core/platform/platform.js';
-import * as PerfUI from '../../../../front_end/perf_ui/perf_ui.js';
+import * as PerfUI from '../../../../front_end/ui/legacy/components/perf_ui/perf_ui.js';
 import {assertShadowRoot, renderElementIntoDOM} from '../helpers/DOMHelpers.js';
 
 const {assert} = chai;

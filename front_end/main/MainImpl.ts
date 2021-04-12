@@ -48,11 +48,11 @@ import * as Extensions from '../models/extensions/extensions.js';
 import * as IssuesManager from '../models/issues_manager/issues_manager.js';
 import * as Persistence from '../models/persistence/persistence.js';
 import * as Workspace from '../models/workspace/workspace.js';
-import * as PerfUI from '../perf_ui/perf_ui.js';
 import * as Recorder from '../recorder/recorder.js';
 import * as Snippets from '../snippets/snippets.js';
 import * as ThemeSupport from '../theme_support/theme_support.js';
 import * as Timeline from '../timeline/timeline.js';
+import * as PerfUI from '../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../ui/legacy/legacy.js';
 
 import {ExecutionContextSelector} from './ExecutionContextSelector.js';

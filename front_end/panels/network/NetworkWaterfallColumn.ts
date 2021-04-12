@@ -6,8 +6,8 @@
 
 import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';  // eslint-disable-line no-unused-vars
-import * as PerfUI from '../../perf_ui/perf_ui.js';
 import * as ThemeSupport from '../../theme_support/theme_support.js';
+import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import {NetworkNode} from './NetworkDataGridNode.js';  // eslint-disable-line no-unused-vars

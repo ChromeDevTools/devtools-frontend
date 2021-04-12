@@ -7985,93 +7985,6 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | timestamp": {
     "message": "Timestamp"
   },
-  "perf_ui/FilmStripView.ts | doubleclickToZoomImageClickTo": {
-    "message": "Doubleclick to zoom image. Click to view preceding requests."
-  },
-  "perf_ui/FilmStripView.ts | nextFrame": {
-    "message": "Next frame"
-  },
-  "perf_ui/FilmStripView.ts | previousFrame": {
-    "message": "Previous frame"
-  },
-  "perf_ui/FilmStripView.ts | screenshot": {
-    "message": "Screenshot"
-  },
-  "perf_ui/FilmStripView.ts | screenshotForSSelectToView": {
-    "message": "Screenshot for {PH1} - select to view preceding requests."
-  },
-  "perf_ui/FlameChart.ts | flameChart": {
-    "message": "Flame Chart"
-  },
-  "perf_ui/FlameChart.ts | sCollapsed": {
-    "message": "{PH1} collapsed"
-  },
-  "perf_ui/FlameChart.ts | sExpanded": {
-    "message": "{PH1} expanded"
-  },
-  "perf_ui/FlameChart.ts | sHovered": {
-    "message": "{PH1} hovered"
-  },
-  "perf_ui/FlameChart.ts | sSelected": {
-    "message": "{PH1} selected"
-  },
-  "perf_ui/LineLevelProfile.ts | kb": {
-    "message": "kB"
-  },
-  "perf_ui/LineLevelProfile.ts | mb": {
-    "message": "MB"
-  },
-  "perf_ui/LineLevelProfile.ts | ms": {
-    "message": "ms"
-  },
-  "perf_ui/NetworkPriorities.ts | high": {
-    "message": "High"
-  },
-  "perf_ui/NetworkPriorities.ts | highest": {
-    "message": "Highest"
-  },
-  "perf_ui/NetworkPriorities.ts | low": {
-    "message": "Low"
-  },
-  "perf_ui/NetworkPriorities.ts | lowest": {
-    "message": "Lowest"
-  },
-  "perf_ui/NetworkPriorities.ts | medium": {
-    "message": "Medium"
-  },
-  "perf_ui/OverviewGrid.ts | leftResizer": {
-    "message": "Left Resizer"
-  },
-  "perf_ui/OverviewGrid.ts | overviewGridWindow": {
-    "message": "Overview grid window"
-  },
-  "perf_ui/OverviewGrid.ts | rightResizer": {
-    "message": "Right Resizer"
-  },
-  "perf_ui/perf_ui-meta.ts | collectGarbage": {
-    "message": "Collect garbage"
-  },
-  "perf_ui/perf_ui-meta.ts | flamechartMouseWheelAction": {
-    "message": "Flamechart mouse wheel action:"
-  },
-  "perf_ui/perf_ui-meta.ts | hideLiveMemoryAllocation": {
-    "message": "Hide live memory allocation annotations"
-  },
-  "perf_ui/perf_ui-meta.ts | liveMemoryAllocationAnnotations": {
-    "message": "Live memory allocation annotations"
-  },
-  "perf_ui/perf_ui-meta.ts | scroll": {
-    "message": "Scroll"
-  },
-  "perf_ui/perf_ui-meta.ts | showLiveMemoryAllocation": {
-    "message": "Show live memory allocation annotations"
-  },
-  "perf_ui/perf_ui-meta.ts | zoom": {
-    "message": "Zoom"
-  },
-  "perf_ui/PieChart.ts | total": {
-    "message": "Total"
-  },
   "quick_open/CommandMenu.ts | noCommandsFound": {
     "message": "No commands found"
   },
@@ -11035,6 +10948,93 @@
   },
   "ui/legacy/components/object_ui/RemoteObjectPreviewFormatter.ts | thePropertyIsComputedWithAGetter": {
     "message": "The property is computed with a getter"
+  },
+  "ui/legacy/components/perf_ui/FilmStripView.ts | doubleclickToZoomImageClickTo": {
+    "message": "Doubleclick to zoom image. Click to view preceding requests."
+  },
+  "ui/legacy/components/perf_ui/FilmStripView.ts | nextFrame": {
+    "message": "Next frame"
+  },
+  "ui/legacy/components/perf_ui/FilmStripView.ts | previousFrame": {
+    "message": "Previous frame"
+  },
+  "ui/legacy/components/perf_ui/FilmStripView.ts | screenshot": {
+    "message": "Screenshot"
+  },
+  "ui/legacy/components/perf_ui/FilmStripView.ts | screenshotForSSelectToView": {
+    "message": "Screenshot for {PH1} - select to view preceding requests."
+  },
+  "ui/legacy/components/perf_ui/FlameChart.ts | flameChart": {
+    "message": "Flame Chart"
+  },
+  "ui/legacy/components/perf_ui/FlameChart.ts | sCollapsed": {
+    "message": "{PH1} collapsed"
+  },
+  "ui/legacy/components/perf_ui/FlameChart.ts | sExpanded": {
+    "message": "{PH1} expanded"
+  },
+  "ui/legacy/components/perf_ui/FlameChart.ts | sHovered": {
+    "message": "{PH1} hovered"
+  },
+  "ui/legacy/components/perf_ui/FlameChart.ts | sSelected": {
+    "message": "{PH1} selected"
+  },
+  "ui/legacy/components/perf_ui/LineLevelProfile.ts | kb": {
+    "message": "kB"
+  },
+  "ui/legacy/components/perf_ui/LineLevelProfile.ts | mb": {
+    "message": "MB"
+  },
+  "ui/legacy/components/perf_ui/LineLevelProfile.ts | ms": {
+    "message": "ms"
+  },
+  "ui/legacy/components/perf_ui/NetworkPriorities.ts | high": {
+    "message": "High"
+  },
+  "ui/legacy/components/perf_ui/NetworkPriorities.ts | highest": {
+    "message": "Highest"
+  },
+  "ui/legacy/components/perf_ui/NetworkPriorities.ts | low": {
+    "message": "Low"
+  },
+  "ui/legacy/components/perf_ui/NetworkPriorities.ts | lowest": {
+    "message": "Lowest"
+  },
+  "ui/legacy/components/perf_ui/NetworkPriorities.ts | medium": {
+    "message": "Medium"
+  },
+  "ui/legacy/components/perf_ui/OverviewGrid.ts | leftResizer": {
+    "message": "Left Resizer"
+  },
+  "ui/legacy/components/perf_ui/OverviewGrid.ts | overviewGridWindow": {
+    "message": "Overview grid window"
+  },
+  "ui/legacy/components/perf_ui/OverviewGrid.ts | rightResizer": {
+    "message": "Right Resizer"
+  },
+  "ui/legacy/components/perf_ui/perf_ui-meta.ts | collectGarbage": {
+    "message": "Collect garbage"
+  },
+  "ui/legacy/components/perf_ui/perf_ui-meta.ts | flamechartMouseWheelAction": {
+    "message": "Flamechart mouse wheel action:"
+  },
+  "ui/legacy/components/perf_ui/perf_ui-meta.ts | hideLiveMemoryAllocation": {
+    "message": "Hide live memory allocation annotations"
+  },
+  "ui/legacy/components/perf_ui/perf_ui-meta.ts | liveMemoryAllocationAnnotations": {
+    "message": "Live memory allocation annotations"
+  },
+  "ui/legacy/components/perf_ui/perf_ui-meta.ts | scroll": {
+    "message": "Scroll"
+  },
+  "ui/legacy/components/perf_ui/perf_ui-meta.ts | showLiveMemoryAllocation": {
+    "message": "Show live memory allocation annotations"
+  },
+  "ui/legacy/components/perf_ui/perf_ui-meta.ts | zoom": {
+    "message": "Zoom"
+  },
+  "ui/legacy/components/perf_ui/PieChart.ts | total": {
+    "message": "Total"
   },
   "ui/legacy/DockController.js | close": {
     "message": "Close"

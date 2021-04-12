@@ -328,6 +328,7 @@ export enum Action {
   ServiceWorkerNetworkRequestClosedQuickly = 50,
   NetworkPanelServiceWorkerRespondWith = 51,
   NetworkPanelCopyValue = 52,
+  ConsoleSidebarOpened = 53,
 }
 
 

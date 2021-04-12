@@ -277,6 +277,7 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
   _waitForScrollTimeout?: number;
   _issueCounter: ConsoleCounters.IssueCounter.IssueCounter;
   private pendingSidebarMessages: ConsoleViewMessage[] = [];
+  private userHasOpenedSidebarAtLeastOnce = false;
 
   constructor() {
     super();
@@ -306,9 +307,19 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
     this._splitWidget.addEventListener(UI.SplitWidget.Events.ShowModeChanged, event => {
       this._isSidebarOpen = event.data === UI.SplitWidget.ShowMode.Both;
 
-      // If the user has now opened the sidebar, we need to update it, so send
-      // through all the pending messages.
       if (this._isSidebarOpen) {
+        if (!this.userHasOpenedSidebarAtLeastOnce) {
+          /**
+           * We only want to know if the user opens the sidebar once, not how
+           * many times in a given session they might open and close it, hence
+           * the userHasOpenedSidebarAtLeastOnce variable to track this.
+           */
+          Host.userMetrics.actionTaken(Host.UserMetrics.Action.ConsoleSidebarOpened);
+          this.userHasOpenedSidebarAtLeastOnce = true;
+        }
+
+        // If the user has now opened the sidebar, we need to update it, so send
+        // through all the pending messages.
         this.pendingSidebarMessages.forEach(message => {
           this._sidebar.onMessageAdded(message);
         });

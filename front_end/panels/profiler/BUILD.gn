@@ -38,13 +38,13 @@ devtools_module("profiler") {
     "../../core/i18n:bundle",
     "../../core/platform:bundle",
     "../../core/sdk:bundle",
-    "../../data_grid:bundle",
     "../../models/bindings:bundle",
     "../../models/heap_snapshot_model:bundle",
     "../../models/workspace:bundle",
     "../../object_ui:bundle",
     "../../perf_ui:bundle",
     "../../ui/legacy:bundle",
+    "../../ui/legacy/components/data_grid:bundle",
   ]
 }
 

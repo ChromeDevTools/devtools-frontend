@@ -219,6 +219,10 @@ module.exports = {
         }
 
         if (isStarAsImportSpecifier(node.specifiers)) {
+          if (exportingFileName.includes(['ui', 'legacy', 'legacy.js'].join(path.sep)) &&
+              importingFileName.includes(['ui', 'legacy', 'components'].join(path.sep))) {
+            return;
+          }
           checkStarImport(context, node, importPath, importingFileName, exportingFileName);
         } else {
           if (computeTopLevelFolder(importingFileName) !== computeTopLevelFolder(exportingFileName)) {

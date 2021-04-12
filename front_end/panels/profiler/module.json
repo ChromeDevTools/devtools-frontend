@@ -2,7 +2,7 @@
   "dependencies": [
     "components",
     "perf_ui",
-    "data_grid",
+    "ui/legacy/components/data_grid",
     "object_ui"
   ],
     "resources": [

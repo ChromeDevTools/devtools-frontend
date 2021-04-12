@@ -8,7 +8,7 @@ import '../panels/animation/animation-legacy.js';
 import '../models/bindings/bindings-legacy.js';
 import '../color_picker/color_picker-legacy.js';
 import '../core/common/common-legacy.js';
-import '../data_grid/data_grid-legacy.js';
+import '../ui/legacy/components/data_grid/data_grid-legacy.js';
 import '../panels/developer_resources/developer_resources-legacy.js';
 import '../diff/diff-legacy.js';
 import '../panels/event_listeners/event_listeners-legacy.js';

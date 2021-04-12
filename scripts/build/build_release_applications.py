@@ -198,7 +198,8 @@ class ReleaseBuilder(object):
         if resources:
             relative_file_name = '../core/root/root.js'
             if "/" in module_name:
-                relative_file_name = '../' + relative_file_name
+                relative_file_name = (
+                    '../' * module_name.count('/')) + relative_file_name
             output.write("import * as RootModule from '%s';" %
                          relative_file_name)
             self._write_module_resources(resources, output)

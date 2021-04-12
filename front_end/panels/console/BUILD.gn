@@ -25,7 +25,6 @@ devtools_module("console") {
     "../../core/i18n:bundle",
     "../../core/platform:bundle",
     "../../core/sdk:bundle",
-    "../../data_grid:bundle",
     "../../models/bindings:bundle",
     "../../models/issues_manager:bundle",
     "../../models/text_utils:bundle",
@@ -34,6 +33,7 @@ devtools_module("console") {
     "../../theme_support:bundle",
     "../../ui/components:bundle",
     "../../ui/legacy:bundle",
+    "../../ui/legacy/components/data_grid:bundle",
     "../console_counters:bundle",
   ]
 }

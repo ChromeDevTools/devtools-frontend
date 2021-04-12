@@ -22,7 +22,6 @@ ts_library("legacy_test_runner-source") {
     "../core/host:legacy",
     "../core/root:legacy",
     "../core/sdk:legacy",
-    "../data_grid:legacy",
     "../diff:legacy",
     "../entrypoints/devtools_app",
     "../formatter:legacy",
@@ -34,6 +33,7 @@ ts_library("legacy_test_runner-source") {
     "../panels/animation:legacy",
     "../panels/developer_resources:legacy",
     "../panels/event_listeners:legacy",
+    "../ui/legacy/components/data_grid:legacy",
     "test_runner:bundle",
   ]
 }

@@ -5,7 +5,7 @@
 import '../../heap_snapshot_worker/heap_snapshot_worker-legacy.js';
 import '../test_runner/test_runner.js';
 import '../../panels/profiler/profiler-legacy.js';
-import '../../data_grid/data_grid-legacy.js';
+import '../../ui/legacy/components/data_grid/data_grid-legacy.js';
 
 /**
  * @fileoverview using private properties isn't a Closure violation in tests.

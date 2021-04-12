@@ -4,9 +4,9 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as i18n from '../core/i18n/i18n.js';
-import * as Platform from '../core/platform/platform.js';
-import * as UI from '../ui/legacy/legacy.js';
+import * as i18n from '../../../../core/i18n/i18n.js';
+import * as Platform from '../../../../core/platform/platform.js';
+import * as UI from '../../legacy.js';
 
 import type {DataGridData, Parameters} from './DataGrid.js';
 import {DataGridImpl, DataGridNode} from './DataGrid.js';
@@ -17,7 +17,7 @@ const UIStrings = {
   */
   collapsed: 'collapsed',
 };
-const str_ = i18n.i18n.registerUIStrings('data_grid/ViewportDataGrid.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/data_grid/ViewportDataGrid.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class ViewportDataGrid<T> extends DataGridImpl<ViewportDataGridNode<T>> {

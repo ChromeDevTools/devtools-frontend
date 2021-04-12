@@ -46,6 +46,7 @@ export const mappingForLayoutTests = new Map<string, string>([
   ['panels/profiler', 'profiler'],
   ['panels/application', 'resources'],
   ['models/persistence', 'persistence'],
+  ['ui/legacy/components/data_grid', 'data_grid'],
 ]);
 
 export class Runtime {

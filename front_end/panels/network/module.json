@@ -3,7 +3,7 @@
     "browser_sdk",
     "components",
     "cookie_table",
-    "data_grid",
+    "ui/legacy/components/data_grid",
     "panels/mobile_throttling",
     "object_ui",
     "perf_ui",

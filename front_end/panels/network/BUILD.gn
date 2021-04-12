@@ -44,7 +44,6 @@ devtools_module("network") {
     "../../core/platform:bundle",
     "../../core/root:bundle",
     "../../core/sdk:bundle",
-    "../../data_grid:bundle",
     "../../har_importer:bundle",
     "../../models/bindings:bundle",
     "../../models/issues_manager:bundle",
@@ -60,6 +59,7 @@ devtools_module("network") {
     "../../third_party/chromium/client-variations:bundle",
     "../../ui/components:bundle",
     "../../ui/legacy:bundle",
+    "../../ui/legacy/components/data_grid:bundle",
   ]
 }
 

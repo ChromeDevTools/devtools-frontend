@@ -24,7 +24,6 @@ group("front_end") {
     "core/i18n:bundle",
     "core/i18n:i18n_locales",
     "core/protocol_client:bundle",
-    "data_grid:bundle",
     "diff:bundle",
     "emulated_devices/optimized:optimized_emulated_devices",
     "entrypoints/devtools_app",
@@ -64,6 +63,7 @@ group("front_end") {
     "third_party/puppeteer:bundle",
     "ui/components:bundle",
     "ui/legacy:bundle",
+    "ui/legacy/components/data_grid:bundle",
     "wasmparser_worker:worker_entrypoint",
     "worker_main:bundle",
     "workspace_diff:bundle",
@@ -74,7 +74,6 @@ group("legacy_css") {
   public_deps = [
     "cm:legacy_css",
     "components:legacy_css",
-    "data_grid:legacy_css",
     "inline_editor:legacy_css",
     "inspector_main:legacy_css",
     "models/persistence:legacy_css",
@@ -87,6 +86,7 @@ group("legacy_css") {
     "panels/mobile_throttling:legacy_css",
     "text_editor:legacy_css",
     "ui/legacy:legacy_css",
+    "ui/legacy/components/data_grid:legacy_css",
   ]
 }
 
@@ -100,7 +100,6 @@ group("legacy_entrypoints") {
     "core/protocol_client:legacy",
     "core/root:legacy",
     "core/sdk:legacy",
-    "data_grid:legacy",
     "diff:legacy",
     "formatter:legacy",
     "har_importer:legacy",
@@ -147,6 +146,7 @@ group("legacy_entrypoints") {
     "text_editor:legacy",
     "timeline:legacy",
     "ui/legacy:legacy",
+    "ui/legacy/components/data_grid:legacy",
     "web_audio:legacy",
     "workspace_diff:legacy",
   ]

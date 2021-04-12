@@ -5,7 +5,7 @@
     "panels/layer_viewer",
     "perf_ui",
     "models/extensions",
-    "data_grid",
+    "ui/legacy/components/data_grid",
     "panels/profiler",
     "panels/mobile_throttling"
   ],

@@ -27,10 +27,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable rulesdir/check_license_header */
 
-import * as Common from '../core/common/common.js';
-import * as i18n from '../core/i18n/i18n.js';
-import * as Platform from '../core/platform/platform.js';
-import * as UI from '../ui/legacy/legacy.js';
+import * as Common from '../../../../core/common/common.js';
+import * as i18n from '../../../../core/i18n/i18n.js';
+import * as Platform from '../../../../core/platform/platform.js';
+import * as UI from '../../legacy.js';
 
 const UIStrings = {
   /**
@@ -100,7 +100,7 @@ const UIStrings = {
   */
   checked: 'checked',
 };
-const str_ = i18n.i18n.registerUIStrings('data_grid/DataGrid.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/data_grid/DataGrid.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 const elementToLongTextMap = new WeakMap<Element, string>();
@@ -166,7 +166,7 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper {
     const {displayName, columns: columnsArray, editCallback, deleteCallback, refreshCallback} = dataGridParameters;
     this.element = document.createElement('div');
     this.element.classList.add('data-grid');
-    UI.Utils.appendStyle(this.element, 'data_grid/dataGrid.css', {enableLegacyPatching: true});
+    UI.Utils.appendStyle(this.element, 'ui/legacy/components/data_grid/dataGrid.css', {enableLegacyPatching: true});
     this.element.tabIndex = 0;
     this.element.addEventListener('keydown', this._keyDown.bind(this), false);
     this.element.addEventListener('contextmenu', this._contextMenu.bind(this), true);

@@ -13,7 +13,7 @@
     { "name": "color_picker" },
     { "name": "panels/console" },
     { "name": "panels/coverage" },
-    { "name": "data_grid" },
+    { "name": "ui/legacy/components/data_grid" },
     { "name": "panels/event_listeners" },
     { "name": "inline_editor" },
     { "name": "panels/input"},

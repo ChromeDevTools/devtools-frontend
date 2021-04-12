@@ -13,9 +13,9 @@ devtools_module("cookie_table") {
     "../core/i18n:bundle",
     "../core/root:bundle",
     "../core/sdk:bundle",
-    "../data_grid:bundle",
     "../models/issues_manager:bundle",
     "../ui/legacy:bundle",
+    "../ui/legacy/components/data_grid:bundle",
   ]
 }
 

@@ -50,7 +50,11 @@ ruleTester.run('es_modules_import', rule, {
     // that really needs to be removed and folded into UI directly.
     {
       code: 'import {appendStyle} from \'./append-style.js\';',
-      filename: 'front_end/ui/utils/utils.js',
+      filename: 'front_end/ui/legacy/utils/utils.js',
+    },
+    {
+      code: 'import * as UI from \'../../legacy.js\';',
+      filename: 'front_end/ui/legacy/components/data_grid/DataGrid.ts',
     },
     // the `ls` helper from Platform is an exception
     {

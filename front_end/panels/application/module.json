@@ -3,7 +3,7 @@
     "source_frame",
     "cookie_table",
     "inline_editor",
-    "data_grid",
+    "ui/legacy/components/data_grid",
     "components",
     "object_ui",
     "perf_ui",

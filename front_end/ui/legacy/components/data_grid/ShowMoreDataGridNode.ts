@@ -30,7 +30,7 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as i18n from '../core/i18n/i18n.js';
+import * as i18n from '../../../../core/i18n/i18n.js';
 
 import {DataGridNode} from './DataGrid.js';
 
@@ -55,7 +55,7 @@ const UIStrings = {
   */
   showAllD: 'Show all {PH1}',
 };
-const str_ = i18n.i18n.registerUIStrings('data_grid/ShowMoreDataGridNode.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/data_grid/ShowMoreDataGridNode.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 type ShowMoreDataGridNodeCallback = (arg0: number, arg1: number) => Promise<void>;

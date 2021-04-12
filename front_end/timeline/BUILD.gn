@@ -38,7 +38,6 @@ devtools_module("timeline") {
     "../components:bundle",
     "../core/host:bundle",
     "../core/i18n:bundle",
-    "../data_grid:bundle",
     "../models/extensions:bundle",
     "../models/timeline_model:bundle",
     "../panels/coverage:bundle",
@@ -48,6 +47,7 @@ devtools_module("timeline") {
     "../perf_ui:bundle",
     "../theme_support:bundle",
     "../third_party/lit-html:bundle",
+    "../ui/legacy/components/data_grid:bundle",
   ]
 }
 

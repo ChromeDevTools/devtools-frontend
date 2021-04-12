@@ -39,12 +39,12 @@ export class StylePropertyHighlighter {
   }
 
   /**
-   * Find the first property that matches the provided name, scroll to it and highlight it.
+   * Find the first non-overridden property that matches the provided name, scroll to it and highlight it.
    * @param {string} propertyName
    */
   findAndHighlightPropertyName(propertyName) {
-    const {treeElement, section} =
-        this._findTreeElementAndSection(treeElement => treeElement.property.name === propertyName);
+    const {treeElement, section} = this._findTreeElementAndSection(
+        treeElement => treeElement.property.name === propertyName && !treeElement.overloaded());
     if (treeElement) {
       this._scrollAndHighlightTreeElement(treeElement);
       if (section) {

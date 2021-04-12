@@ -9,11 +9,11 @@ ts_library("console_counters") {
   sources = [ "IssueCounter_test.ts" ]
 
   deps = [
-    "../../../../front_end/browser_sdk:bundle",
     "../../../../front_end/core/common:bundle",
+    "../../../../front_end/models/issues_manager:bundle",
     "../../../../front_end/panels/console_counters:bundle",
     "../../../../front_end/ui/legacy:bundle",
-    "../browser_sdk",
     "../helpers",
+    "../issues_manager",
   ]
 }

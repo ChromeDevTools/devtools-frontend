@@ -5,26 +5,25 @@
 const {assert} = chai;
 
 import type * as IssuesModule from '../../../../front_end/issues/issues.js';
-import type * as BrowserSDKModule from '../../../../front_end/browser_sdk/browser_sdk.js';
+import type * as IssuesManagerModule from '../../../../front_end/models/issues_manager/issues_manager.js';
 import type * as SDKModule from '../../../../front_end/core/sdk/sdk.js';
 import {describeWithEnvironment} from '../helpers/EnvironmentHelpers.js';
 import {MockIssuesModel} from '../sdk/MockIssuesModel.js';
-import {MockIssuesManager} from '../browser_sdk/MockIssuesManager.js';
+import {MockIssuesManager} from '../issues_manager/MockIssuesManager.js';
 
 describeWithEnvironment('AggregatedIssue', async () => {
   let Issues: typeof IssuesModule;
-  let BrowserSDK: typeof BrowserSDKModule;
+  let IssuesManager: typeof IssuesManagerModule;
   let SDK: typeof SDKModule;
   before(async () => {
     Issues = await import('../../../../front_end/issues/issues.js');
-
-    BrowserSDK = await import('../../../../front_end/browser_sdk/browser_sdk.js');
+    IssuesManager = await import('../../../../front_end/models/issues_manager/issues_manager.js');
     SDK = await import('../../../../front_end/core/sdk/sdk.js');
   });
 
   it('aggregates multiple issues with duplicates correctly', () => {
     const mockModel = new MockIssuesModel([]) as unknown as SDKModule.IssuesModel.IssuesModel;
-    const mockManager = new MockIssuesManager([]) as unknown as BrowserSDKModule.IssuesManager.IssuesManager;
+    const mockManager = new MockIssuesManager([]) as unknown as IssuesManagerModule.IssuesManager.IssuesManager;
     const commonDetails = {
       violatingNodeSelector: 'div',
       contrastRatio: 1,
@@ -51,7 +50,8 @@ describeWithEnvironment('AggregatedIssue', async () => {
 
     const aggregator = new Issues.IssueAggregator.IssueAggregator(mockManager);
     for (const issue of issues) {
-      mockManager.dispatchEventToListeners(BrowserSDK.IssuesManager.Events.IssueAdded, {issuesModel: mockModel, issue});
+      mockManager.dispatchEventToListeners(
+          IssuesManager.IssuesManager.Events.IssueAdded, {issuesModel: mockModel, issue});
     }
 
     const aggregatedIssues = Array.from(aggregator.aggregatedIssues());

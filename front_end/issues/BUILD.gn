@@ -32,11 +32,11 @@ devtools_module("issues") {
   ]
 
   deps = [
-    "../browser_sdk:bundle",
     "../components:bundle",
     "../core/common:bundle",
     "../core/i18n:bundle",
     "../core/sdk:bundle",
+    "../models/issues_manager:bundle",
     "../panels/console_counters:bundle",
     "../panels/elements:bundle",
     "../panels/network:bundle",

@@ -34,12 +34,12 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as BrowserSDK from '../../browser_sdk/browser_sdk.js';
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import * as ObjectUI from '../../object_ui/object_ui.js';
 import * as ClientVariations from '../../third_party/chromium/client-variations/client-variations.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -374,13 +374,13 @@ export class RequestHeadersView extends UI.Widget.VBox {
         }
       }
 
-      if (BrowserSDK.RelatedIssue.hasIssueOfCategory(
+      if (IssuesManager.RelatedIssue.hasIssueOfCategory(
               this._request, SDK.Issue.IssueCategory.CrossOriginEmbedderPolicy)) {
         const link = document.createElement('div');
         link.classList.add('devtools-link');
         link.onclick = (): void => {
           Host.userMetrics.issuesPanelOpenedFrom(Host.UserMetrics.IssueOpener.LearnMoreLinkCOEP);
-          BrowserSDK.RelatedIssue.reveal(this._request, SDK.Issue.IssueCategory.CrossOriginEmbedderPolicy);
+          IssuesManager.RelatedIssue.reveal(this._request, SDK.Issue.IssueCategory.CrossOriginEmbedderPolicy);
         };
         const text = document.createElement('span');
         text.classList.add('devtools-link');

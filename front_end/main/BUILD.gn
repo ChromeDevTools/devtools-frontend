@@ -22,6 +22,7 @@ devtools_module("main") {
     "../core/sdk:bundle",
     "../models/bindings:bundle",
     "../models/extensions:bundle",
+    "../models/issues_manager:bundle",
     "../models/persistence:bundle",
     "../models/workspace:bundle",
     "../recorder:bundle",

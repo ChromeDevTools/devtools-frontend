@@ -36,7 +36,6 @@ devtools_module("network") {
   ]
 
   deps = [
-    "../../browser_sdk:bundle",
     "../../components:bundle",
     "../../cookie_table:bundle",
     "../../core/common:bundle",
@@ -48,6 +47,7 @@ devtools_module("network") {
     "../../data_grid:bundle",
     "../../har_importer:bundle",
     "../../models/bindings:bundle",
+    "../../models/issues_manager:bundle",
     "../../models/text_utils:bundle",
     "../../models/workspace:bundle",
     "../../object_ui:bundle",

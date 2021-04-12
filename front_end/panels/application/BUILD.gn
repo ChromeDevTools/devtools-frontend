@@ -49,6 +49,7 @@ devtools_module("application") {
     "../../data_grid:bundle",
     "../../inline_editor:bundle",
     "../../models/bindings:bundle",
+    "../../models/issues_manager:bundle",
     "../../models/text_utils:bundle",
     "../../models/workspace:bundle",
     "../../object_ui:bundle",

@@ -45,7 +45,6 @@ devtools_module("sources") {
   ]
 
   deps = [
-    "../browser_sdk:bundle",
     "../color_picker:bundle",
     "../components:bundle",
     "../core/common:bundle",
@@ -59,6 +58,7 @@ devtools_module("sources") {
     "../linear_memory_inspector:bundle",
     "../models/bindings:bundle",
     "../models/extensions:bundle",
+    "../models/issues_manager:bundle",
     "../models/persistence:bundle",
     "../models/text_utils:bundle",
     "../models/workspace:bundle",

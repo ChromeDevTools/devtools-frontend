@@ -34,13 +34,13 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as BrowserSDK from '../browser_sdk/browser_sdk.js';
 import * as Common from '../core/common/common.js';
 import * as i18n from '../core/i18n/i18n.js';
 import * as Platform from '../core/platform/platform.js';
 import * as Root from '../core/root/root.js';
 import * as SDK from '../core/sdk/sdk.js';
 import * as DataGrid from '../data_grid/data_grid.js';
+import * as IssuesManager from '../models/issues_manager/issues_manager.js';
 import * as UI from '../ui/legacy/legacy.js';
 
 const UIStrings = {
@@ -688,10 +688,10 @@ export class CookiesTable extends UI.Widget.VBox {
 
       this.element.dispatchEvent(evt);
     });
-    if (BrowserSDK.RelatedIssue.hasIssues(cookie)) {
+    if (IssuesManager.RelatedIssue.hasIssues(cookie)) {
       contextMenu.revealSection().appendItem(i18nString(UIStrings.showIssueAssociatedWithThis), () => {
         // TODO(chromium:1077719): Just filter for the cookie instead of revealing one of the associated issues.
-        BrowserSDK.RelatedIssue.reveal(cookie);
+        IssuesManager.RelatedIssue.reveal(cookie);
       });
     }
   }

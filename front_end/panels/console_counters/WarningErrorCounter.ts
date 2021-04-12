@@ -4,16 +4,16 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as BrowserSDK from '../../browser_sdk/browser_sdk.js';
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import * as Components from '../../ui/components/components.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import {DisplayMode, IssueCounter} from './IssueCounter.js';
 
+import {DisplayMode, IssueCounter} from './IssueCounter.js';
 import {getIssueCountsEnumeration} from './IssueCounter.js';
 
 const UIStrings = {
@@ -76,7 +76,7 @@ export class WarningErrorCounter implements UI.Toolbar.Provider {
       };
     }
 
-    const issuesManager = BrowserSDK.IssuesManager.IssuesManager.instance();
+    const issuesManager = IssuesManager.IssuesManager.IssuesManager.instance();
     this._issueCounter = new IssueCounter();
     countersWrapper.appendChild(this._issueCounter);
     this._issueCounter.data = {
@@ -96,7 +96,7 @@ export class WarningErrorCounter implements UI.Toolbar.Provider {
     SDK.ConsoleModel.ConsoleModel.instance().addEventListener(
         SDK.ConsoleModel.Events.MessageUpdated, this._update, this);
 
-    issuesManager.addEventListener(BrowserSDK.IssuesManager.Events.IssuesCountUpdated, this._update, this);
+    issuesManager.addEventListener(IssuesManager.IssuesManager.Events.IssuesCountUpdated, this._update, this);
 
     this._update();
   }
@@ -127,7 +127,7 @@ export class WarningErrorCounter implements UI.Toolbar.Provider {
     const errors = SDK.ConsoleModel.ConsoleModel.instance().errors();
     const warnings = SDK.ConsoleModel.ConsoleModel.instance().warnings();
     const violations = this._violationCounter ? SDK.ConsoleModel.ConsoleModel.instance().violations() : 0;
-    const issuesManager = BrowserSDK.IssuesManager.IssuesManager.instance();
+    const issuesManager = IssuesManager.IssuesManager.IssuesManager.instance();
     const issues = issuesManager.numberOfIssues();
 
     const countToText = (c: number): string|undefined => c === 0 ? undefined : `${c}`;

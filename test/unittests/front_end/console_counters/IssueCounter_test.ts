@@ -2,12 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as BrowserSDK from '../../../../front_end/browser_sdk/browser_sdk.js';
 import {assertNotNull} from '../../../../front_end/core/platform/platform.js';
+import * as IssuesManager from '../../../../front_end/models/issues_manager/issues_manager.js';
 import * as ConsoleCounters from '../../../../front_end/panels/console_counters/console_counters.js';
 import * as WebComponents from '../../../../front_end/ui/components/components.js';
-import {MockIssuesManager} from '../browser_sdk/MockIssuesManager.js';
 import {assertElement, assertElements, assertShadowRoot, renderElementIntoDOM} from '../helpers/DOMHelpers.js';
+import {MockIssuesManager} from '../issues_manager/MockIssuesManager.js';
 
 const {assert} = chai;
 
@@ -43,7 +43,7 @@ describe('IssueCounter', () => {
     it('renders correctly', () => {
       const issuesManager = new MockIssuesManager([]);
       const {shadowRoot} = renderIssueCounter({
-        issuesManager: issuesManager as unknown as BrowserSDK.IssuesManager.IssuesManager,
+        issuesManager: issuesManager as unknown as IssuesManager.IssuesManager.IssuesManager,
         throttlerTimeout: 0,
       });
 
@@ -57,7 +57,7 @@ describe('IssueCounter', () => {
     it('updates correctly', () => {
       const issuesManager = new MockIssuesManager([]);
       const {shadowRoot} = renderIssueCounter({
-        issuesManager: issuesManager as unknown as BrowserSDK.IssuesManager.IssuesManager,
+        issuesManager: issuesManager as unknown as IssuesManager.IssuesManager.IssuesManager,
         throttlerTimeout: 0,
       });
 
@@ -85,7 +85,7 @@ describe('IssueCounter', () => {
     it('renders correctly', () => {
       const issuesManager = new MockIssuesManager([]);
       const {shadowRoot} = renderIssueCounter({
-        issuesManager: issuesManager as unknown as BrowserSDK.IssuesManager.IssuesManager,
+        issuesManager: issuesManager as unknown as IssuesManager.IssuesManager.IssuesManager,
         displayMode: ConsoleCounters.IssueCounter.DisplayMode.ShowAlways,
         throttlerTimeout: 0,
       });
@@ -100,7 +100,7 @@ describe('IssueCounter', () => {
     it('updates correctly', () => {
       const issuesManager = new MockIssuesManager([]);
       const {shadowRoot} = renderIssueCounter({
-        issuesManager: issuesManager as unknown as BrowserSDK.IssuesManager.IssuesManager,
+        issuesManager: issuesManager as unknown as IssuesManager.IssuesManager.IssuesManager,
         displayMode: ConsoleCounters.IssueCounter.DisplayMode.ShowAlways,
         throttlerTimeout: 0,
       });
@@ -130,13 +130,13 @@ describe('getIssueCountsEnumeration', () => {
   it('formats issue counts correctly', () => {
     const issuesManager = new MockIssuesManager([]);
     const string = ConsoleCounters.IssueCounter.getIssueCountsEnumeration(
-        issuesManager as unknown as BrowserSDK.IssuesManager.IssuesManager);
+        issuesManager as unknown as IssuesManager.IssuesManager.IssuesManager);
     assert.strictEqual(string, '2 page errors, 1 breaking change');
   });
   it('formats issue counts correctly when displaying zero entries', () => {
     const issuesManager = new MockIssuesManager([]);
     const string = ConsoleCounters.IssueCounter.getIssueCountsEnumeration(
-        issuesManager as unknown as BrowserSDK.IssuesManager.IssuesManager, false);
+        issuesManager as unknown as IssuesManager.IssuesManager.IssuesManager, false);
     assert.strictEqual(string, '2 page errors, 1 breaking change, 0 possible improvements');
   });
 });

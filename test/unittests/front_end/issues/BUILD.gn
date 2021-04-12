@@ -18,8 +18,8 @@ ts_library("issues") {
     "../../../../front_end/issues:bundle",
     "../../../../front_end/third_party/marked:bundle",
     "../../../../front_end/ui/components:bundle",
-    "../browser_sdk",
     "../helpers",
+    "../issues_manager",
     "../sdk",
   ]
 }

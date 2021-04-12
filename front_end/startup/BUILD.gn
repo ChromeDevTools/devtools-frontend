@@ -27,6 +27,7 @@ devtools_entrypoint("bundle") {
     "../core/sdk:legacy",
     "../models/bindings:legacy",
     "../models/extensions:legacy",
+    "../models/issues_manager:bundle",
     "../models/persistence:legacy",
     "../models/text_utils:legacy",
     "../models/workspace:legacy",

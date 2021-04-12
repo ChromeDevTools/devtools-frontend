@@ -5,27 +5,27 @@
 const {assert} = chai;
 
 import * as SDK from '../../../../front_end/core/sdk/sdk.js';
-import type * as BrowserSDKModule from '../../../../front_end/browser_sdk/browser_sdk.js';
+import type * as IssuesManagerModule from '../../../../front_end/models/issues_manager/issues_manager.js';
 
 import {describeWithEnvironment} from '../helpers/EnvironmentHelpers.js';
 import {mkInspectorCspIssue, StubIssue, ThirdPartyStubIssue} from '../sdk/StubIssue.js';
 import {MockIssuesModel} from '../sdk/MockIssuesModel.js';
 
 describeWithEnvironment('IssuesManager', () => {
-  let BrowserSDK: typeof BrowserSDKModule;
+  let IssuesManager: typeof IssuesManagerModule;
   before(async () => {
-    BrowserSDK = await import('../../../../front_end/browser_sdk/browser_sdk.js');
+    IssuesManager = await import('../../../../front_end/models/issues_manager/issues_manager.js');
   });
 
   it('collects issues from an issues model', () => {
     const issue1 = new StubIssue('StubIssue1', ['id1', 'id2'], []);
     const mockModel = new MockIssuesModel([issue1]) as unknown as SDK.IssuesModel.IssuesModel;
-    const issuesManager = new BrowserSDK.IssuesManager.IssuesManager();
+    const issuesManager = new IssuesManager.IssuesManager.IssuesManager();
     issuesManager.modelAdded(mockModel);
 
     const dispatchedIssues: SDK.Issue.Issue[] = [];
     issuesManager.addEventListener(
-        BrowserSDK.IssuesManager.Events.IssueAdded, event => dispatchedIssues.push(event.data.issue));
+        IssuesManager.IssuesManager.Events.IssueAdded, event => dispatchedIssues.push(event.data.issue));
 
     mockModel.dispatchEventToListeners(
         SDK.IssuesModel.Events.IssueAdded, {issuesModel: mockModel, inspectorIssue: mkInspectorCspIssue('url1')});
@@ -51,13 +51,14 @@ describeWithEnvironment('IssuesManager', () => {
 
     SDK.Issue.getShowThirdPartyIssuesSetting().set(false);
 
-    const issuesManager = new BrowserSDK.IssuesManager.IssuesManager();
+    const issuesManager = new IssuesManager.IssuesManager.IssuesManager();
     const mockModel = new MockIssuesModel([]) as unknown as SDK.IssuesModel.IssuesModel;
     issuesManager.modelAdded(mockModel);
 
     const firedIssueAddedEventCodes: string[] = [];
     issuesManager.addEventListener(
-        BrowserSDK.IssuesManager.Events.IssueAdded, event => firedIssueAddedEventCodes.push(event.data.issue.code()));
+        IssuesManager.IssuesManager.Events.IssueAdded,
+        event => firedIssueAddedEventCodes.push(event.data.issue.code()));
 
     for (const issue of issues) {
       issuesManager.addIssue(mockModel, issue);
@@ -79,7 +80,7 @@ describeWithEnvironment('IssuesManager', () => {
     const issue3 = new StubIssue('StubIssue1', ['id3'], [], SDK.Issue.IssueKind.BreakingChange);
 
     const mockModel = new MockIssuesModel([issue1]) as unknown as SDK.IssuesModel.IssuesModel;
-    const issuesManager = new BrowserSDK.IssuesManager.IssuesManager();
+    const issuesManager = new IssuesManager.IssuesManager.IssuesManager();
     issuesManager.modelAdded(mockModel);
 
     issuesManager.addIssue(mockModel, issue1);

@@ -2,10 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as BrowserSDK from '../browser_sdk/browser_sdk.js';
 import * as Common from '../core/common/common.js';
 import * as i18n from '../core/i18n/i18n.js';
 import * as SDK from '../core/sdk/sdk.js';
+import * as IssuesManager from '../models/issues_manager/issues_manager.js';
 import * as ConsoleCounters from '../panels/console_counters/console_counters.js';
 import * as UI from '../ui/legacy/legacy.js';
 
@@ -147,7 +147,7 @@ export class IssuesPane extends UI.Widget.VBox {
   private showThirdPartyCheckbox: UI.Toolbar.ToolbarSettingCheckbox|null;
   private issuesTree: UI.TreeOutline.TreeOutlineInShadow;
   private noIssuesMessageDiv: HTMLDivElement;
-  private issuesManager: BrowserSDK.IssuesManager.IssuesManager;
+  private issuesManager: IssuesManager.IssuesManager.IssuesManager;
   private aggregator: IssueAggregator;
   private issueViewUpdatePromise: Promise<void> = Promise.resolve();
 
@@ -172,14 +172,14 @@ export class IssuesPane extends UI.Widget.VBox {
     this.noIssuesMessageDiv.classList.add('issues-pane-no-issues');
     this.contentElement.appendChild(this.noIssuesMessageDiv);
 
-    this.issuesManager = BrowserSDK.IssuesManager.IssuesManager.instance();
+    this.issuesManager = IssuesManager.IssuesManager.IssuesManager.instance();
     this.aggregator = new IssueAggregator(this.issuesManager);
     this.aggregator.addEventListener(IssueAggregatorEvents.AggregatedIssueUpdated, this.issueUpdated, this);
     this.aggregator.addEventListener(IssueAggregatorEvents.FullUpdateRequired, this.fullUpdate, this);
     for (const issue of this.aggregator.aggregatedIssues()) {
       this.scheduleIssueViewUpdate(issue);
     }
-    this.issuesManager.addEventListener(BrowserSDK.IssuesManager.Events.IssuesCountUpdated, this.updateCounts, this);
+    this.issuesManager.addEventListener(IssuesManager.IssuesManager.Events.IssuesCountUpdated, this.updateCounts, this);
     this.updateCounts();
   }
 
@@ -223,11 +223,11 @@ export class IssuesPane extends UI.Widget.VBox {
     issueCounter.data = {
       tooltipCallback: (): void => {
         const issueEnumeration = ConsoleCounters.IssueCounter.getIssueCountsEnumeration(
-            BrowserSDK.IssuesManager.IssuesManager.instance(), false);
+            IssuesManager.IssuesManager.IssuesManager.instance(), false);
         UI.Tooltip.Tooltip.install(issueCounter, issueEnumeration);
       },
       displayMode: ConsoleCounters.IssueCounter.DisplayMode.ShowAlways,
-      issuesManager: BrowserSDK.IssuesManager.IssuesManager.instance(),
+      issuesManager: IssuesManager.IssuesManager.IssuesManager.instance(),
     };
     issueCounter.id = 'console-issues-counter';
     const issuesToolbarItem = new UI.Toolbar.ToolbarItem(issueCounter);

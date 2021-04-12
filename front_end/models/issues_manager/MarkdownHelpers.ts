@@ -5,7 +5,7 @@
 /* This code is duplicated from ../issues/MarkdownIssueDescription.ts
  to avoid a cyclic dependency. */
 
-import * as Root from '../core/root/root.js';
+import * as Root from '../../core/root/root.js';
 
 export async function getMarkdownFileContent(filename: string): Promise<string> {
   const rawMarkdown = Root.Runtime.cachedResources.get(filename);

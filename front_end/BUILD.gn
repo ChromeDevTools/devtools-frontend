@@ -46,6 +46,7 @@ group("front_end") {
     "models/bindings:bundle",
     "models/extensions:bundle",
     "models/heap_snapshot_model:bundle",
+    "models/issues_manager:bundle",
     "models/javascript_metadata:bundle",
     "models/text_utils:bundle",
     "models/timeline_model:bundle",

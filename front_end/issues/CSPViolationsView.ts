@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as BrowserSDK from '../browser_sdk/browser_sdk.js';
+import * as IssuesManager from '../models/issues_manager/issues_manager.js';
 import type * as Common from '../core/common/common.js';
 import * as i18n from '../core/i18n/i18n.js';
 import * as SDK from '../core/sdk/sdk.js';
@@ -22,7 +22,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let cspViolationsViewInstance: CSPViolationsView;
 export class CSPViolationsView extends UI.Widget.VBox {
   private listView = new CSPViolationsListView();
-  private issuesManager = BrowserSDK.IssuesManager.IssuesManager.instance();
+  private issuesManager = IssuesManager.IssuesManager.IssuesManager.instance();
 
   /**
    * @private
@@ -57,9 +57,9 @@ export class CSPViolationsView extends UI.Widget.VBox {
     topToolbar.appendToolbarItem(levelMenuButton);
     this.listView.show(this.contentElement);
 
-    this.issuesManager.addEventListener(BrowserSDK.IssuesManager.Events.IssueAdded, this.onIssueAdded, this);
+    this.issuesManager.addEventListener(IssuesManager.IssuesManager.Events.IssueAdded, this.onIssueAdded, this);
     this.issuesManager.addEventListener(
-        BrowserSDK.IssuesManager.Events.FullUpdateRequired, this.onFullUpdateRequired, this);
+        IssuesManager.IssuesManager.Events.FullUpdateRequired, this.onFullUpdateRequired, this);
 
     this.addAllIssues();
   }

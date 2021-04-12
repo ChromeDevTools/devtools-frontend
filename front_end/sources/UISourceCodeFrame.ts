@@ -30,11 +30,11 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as BrowserSDK from '../browser_sdk/browser_sdk.js';
 import * as Common from '../core/common/common.js';
 import * as Platform from '../core/platform/platform.js';
 import * as Root from '../core/root/root.js';
 import * as SDK from '../core/sdk/sdk.js';
+import * as IssuesManager from '../models/issues_manager/issues_manager.js';
 import * as Persistence from '../models/persistence/persistence.js';  // eslint-disable-line no-unused-vars
 import * as TextUtils from '../models/text_utils/text_utils.js';
 import * as Workspace from '../models/workspace/workspace.js';
@@ -604,7 +604,7 @@ function getLineClassPerLevel(level: Workspace.UISourceCode.Message.Level): stri
 }
 
 function getIconDataForMessage(message: Workspace.UISourceCode.Message): UIComponents.Icon.IconData {
-  if (message instanceof BrowserSDK.SourceFrameIssuesManager.IssueMessage) {
+  if (message instanceof IssuesManager.SourceFrameIssuesManager.IssueMessage) {
     return {
       ...ConsoleCounters.IssueCounter.getIssueKindIconData(message.getIssueKind()),
       width: '12px',
@@ -834,7 +834,7 @@ export class RowMessageBucket {
       if (!maxMessage || messageLevelComparator(maxMessage, message) < 0) {
         maxMessage = message;
       }
-      if (message instanceof BrowserSDK.SourceFrameIssuesManager.IssueMessage) {
+      if (message instanceof IssuesManager.SourceFrameIssuesManager.IssueMessage) {
         maxIssueKind = SDK.Issue.unionIssueKind(maxIssueKind, message.getIssueKind());
       }
       showIssues = showIssues || message.level() === Workspace.UISourceCode.Message.Level.Issue;

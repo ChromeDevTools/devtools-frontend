@@ -70,6 +70,7 @@ devtools_module_entrypoint_sources = [
   "models/extensions/extensions.js",
   "models/heap_snapshot_model/heap_snapshot_model-legacy.js",
   "models/heap_snapshot_model/heap_snapshot_model.js",
+  "models/issues_manager/issues_manager.js",
   "models/javascript_metadata/javascript_metadata-legacy.js",
   "models/javascript_metadata/javascript_metadata.js",
   "models/persistence/persistence-legacy.js",

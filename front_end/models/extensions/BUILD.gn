@@ -25,6 +25,7 @@ devtools_module("extensions") {
     "../../core/root:bundle",
     "../../core/sdk:bundle",
     "../../models/bindings:bundle",
+    "../../models/issues_manager:bundle",
     "../../models/text_utils:bundle",
     "../../models/workspace:bundle",
     "../../theme_support:bundle",

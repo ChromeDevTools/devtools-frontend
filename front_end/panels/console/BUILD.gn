@@ -19,7 +19,6 @@ devtools_module("console") {
   ]
 
   deps = [
-    "../../browser_sdk:bundle",
     "../../components:bundle",
     "../../core/common:bundle",
     "../../core/host:bundle",
@@ -28,6 +27,7 @@ devtools_module("console") {
     "../../core/sdk:bundle",
     "../../data_grid:bundle",
     "../../models/bindings:bundle",
+    "../../models/issues_manager:bundle",
     "../../models/text_utils:bundle",
     "../../object_ui:bundle",
     "../../text_editor:bundle",

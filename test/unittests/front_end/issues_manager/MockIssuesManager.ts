@@ -2,9 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as BrowserSDK from '../../../../front_end/browser_sdk/browser_sdk.js';
 import * as Common from '../../../../front_end/core/common/common.js';
 import * as SDK from '../../../../front_end/core/sdk/sdk.js';
+import * as IssuesManager from '../../../../front_end/models/issues_manager/issues_manager.js';
 
 export class MockIssuesManager extends Common.ObjectWrapper.ObjectWrapper {
   private mockIssues: Iterable<SDK.Issue.Issue>;
@@ -33,6 +33,6 @@ export class MockIssuesManager extends Common.ObjectWrapper.ObjectWrapper {
     for (const [key, value] of this.issueCounts) {
       this.issueCounts.set(key, value + 1);
     }
-    this.dispatchEventToListeners(BrowserSDK.IssuesManager.Events.IssuesCountUpdated);
+    this.dispatchEventToListeners(IssuesManager.IssuesManager.Events.IssuesCountUpdated);
   }
 }

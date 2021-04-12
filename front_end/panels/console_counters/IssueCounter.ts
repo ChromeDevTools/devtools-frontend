@@ -2,10 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as BrowserSDK from '../../browser_sdk/browser_sdk.js';
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import * as LitHtml from '../../third_party/lit-html/lit-html.js';
 import * as UIComponents from '../../ui/components/components.js';
 
@@ -79,7 +79,7 @@ export interface IssueCounterData {
   tooltipCallback?: () => void;
   leadingText?: string;
   displayMode?: DisplayMode;
-  issuesManager: BrowserSDK.IssuesManager.IssuesManager;
+  issuesManager: IssuesManager.IssuesManager.IssuesManager;
   throttlerTimeout?: number;
   accessibleName?: string;
 }
@@ -88,7 +88,7 @@ export interface IssueCounterData {
 const listFormat = new Intl.ListFormat(navigator.language, {type: 'unit', style: 'short'});
 
 export function getIssueCountsEnumeration(
-    issuesManager: BrowserSDK.IssuesManager.IssuesManager, omitEmpty: boolean = true): string {
+    issuesManager: IssuesManager.IssuesManager.IssuesManager, omitEmpty: boolean = true): string {
   const counts: [number, number, number] = [
     issuesManager.numberOfIssues(SDK.Issue.IssueKind.PageError),
     issuesManager.numberOfIssues(SDK.Issue.IssueKind.BreakingChange),
@@ -110,7 +110,7 @@ export class IssueCounter extends HTMLElement {
   private throttler: undefined|Common.Throttler.Throttler;
   private counts: [number, number, number] = [0, 0, 0];
   private displayMode: DisplayMode = DisplayMode.OmitEmpty;
-  private issuesManager: BrowserSDK.IssuesManager.IssuesManager|undefined = undefined;
+  private issuesManager: IssuesManager.IssuesManager.IssuesManager|undefined = undefined;
   private accessibleName: string|undefined = undefined;
   private throttlerTimeout: number|undefined;
 
@@ -131,10 +131,10 @@ export class IssueCounter extends HTMLElement {
     this.throttlerTimeout = data.throttlerTimeout;
     if (this.issuesManager !== data.issuesManager) {
       this.issuesManager?.removeEventListener(
-          BrowserSDK.IssuesManager.Events.IssuesCountUpdated, this.scheduleUpdate, this);
+          IssuesManager.IssuesManager.Events.IssuesCountUpdated, this.scheduleUpdate, this);
       this.issuesManager = data.issuesManager;
       this.issuesManager.addEventListener(
-          BrowserSDK.IssuesManager.Events.IssuesCountUpdated, this.scheduleUpdate, this);
+          IssuesManager.IssuesManager.Events.IssuesCountUpdated, this.scheduleUpdate, this);
     }
     if (data.throttlerTimeout !== 0) {
       this.throttler = new Common.Throttler.Throttler(data.throttlerTimeout ?? 100);
@@ -150,7 +150,7 @@ export class IssueCounter extends HTMLElement {
       tooltipCallback: this.tooltipCallback,
       leadingText: this.leadingText,
       displayMode: this.displayMode,
-      issuesManager: this.issuesManager as BrowserSDK.IssuesManager.IssuesManager,
+      issuesManager: this.issuesManager as IssuesManager.IssuesManager.IssuesManager,
       accessibleName: this.accessibleName,
       throttlerTimeout: this.throttlerTimeout,
     };

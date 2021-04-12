@@ -5,25 +5,25 @@
 const {assert} = chai;
 
 import type * as IssuesModule from '../../../../front_end/issues/issues.js';
-import type * as BrowserSDKModule from '../../../../front_end/browser_sdk/browser_sdk.js';
+import type * as IssuesManagerModule from '../../../../front_end/models/issues_manager/issues_manager.js';
 import type * as SDKModule from '../../../../front_end/core/sdk/sdk.js';
 import {describeWithEnvironment} from '../helpers/EnvironmentHelpers.js';
 import {MockIssuesModel} from '../sdk/MockIssuesModel.js';
-import {MockIssuesManager} from '../browser_sdk/MockIssuesManager.js';
+import {MockIssuesManager} from '../issues_manager/MockIssuesManager.js';
 
 describeWithEnvironment('AggregatedIssue', async () => {
-  let BrowserSDK: typeof BrowserSDKModule;
+  let IssuesManager: typeof IssuesManagerModule;
   let Issues: typeof IssuesModule;
   let SDK: typeof SDKModule;
   before(async () => {
     Issues = await import('../../../../front_end/issues/issues.js');
-    BrowserSDK = await import('../../../../front_end/browser_sdk/browser_sdk.js');
+    IssuesManager = await import('../../../../front_end/models/issues_manager/issues_manager.js');
     SDK = await import('../../../../front_end/core/sdk/sdk.js');
   });
 
   it('aggregates two TWA issues with same violationType correctly', () => {
     const mockModel = new MockIssuesModel([]) as unknown as SDKModule.IssuesModel.IssuesModel;
-    const mockManager = new MockIssuesManager([]) as unknown as BrowserSDKModule.IssuesManager.IssuesManager;
+    const mockManager = new MockIssuesManager([]) as unknown as IssuesManagerModule.IssuesManager.IssuesManager;
     const details1 = {
       violationType: Protocol.Audits.TwaQualityEnforcementViolationType.KHttpError,
       url: 'test.url1.com',
@@ -39,9 +39,9 @@ describeWithEnvironment('AggregatedIssue', async () => {
 
     const aggregator = new Issues.IssueAggregator.IssueAggregator(mockManager);
     mockManager.dispatchEventToListeners(
-        BrowserSDK.IssuesManager.Events.IssueAdded, {issuesModel: mockModel, issue: issue1});
+        IssuesManager.IssuesManager.Events.IssueAdded, {issuesModel: mockModel, issue: issue1});
     mockManager.dispatchEventToListeners(
-        BrowserSDK.IssuesManager.Events.IssueAdded, {issuesModel: mockModel, issue: issue2});
+        IssuesManager.IssuesManager.Events.IssueAdded, {issuesModel: mockModel, issue: issue2});
 
     const issues = Array.from(aggregator.aggregatedIssues());
     assert.strictEqual(issues.length, 1);
@@ -58,7 +58,7 @@ describeWithEnvironment('AggregatedIssue', async () => {
 
   it('TWA issues with different violationType do not aggregate', () => {
     const mockModel = new MockIssuesModel([]) as unknown as SDKModule.IssuesModel.IssuesModel;
-    const mockManager = new MockIssuesManager([]) as unknown as BrowserSDKModule.IssuesManager.IssuesManager;
+    const mockManager = new MockIssuesManager([]) as unknown as IssuesManagerModule.IssuesManager.IssuesManager;
     const details1 = {
       violationType: Protocol.Audits.TwaQualityEnforcementViolationType.KHttpError,
       url: 'test.url1.com',
@@ -78,11 +78,11 @@ describeWithEnvironment('AggregatedIssue', async () => {
 
     const aggregator = new Issues.IssueAggregator.IssueAggregator(mockManager);
     mockManager.dispatchEventToListeners(
-        BrowserSDK.IssuesManager.Events.IssueAdded, {issuesModel: mockModel, issue: issue1});
+        IssuesManager.IssuesManager.Events.IssueAdded, {issuesModel: mockModel, issue: issue1});
     mockManager.dispatchEventToListeners(
-        BrowserSDK.IssuesManager.Events.IssueAdded, {issuesModel: mockModel, issue: issue2});
+        IssuesManager.IssuesManager.Events.IssueAdded, {issuesModel: mockModel, issue: issue2});
     mockManager.dispatchEventToListeners(
-        BrowserSDK.IssuesManager.Events.IssueAdded, {issuesModel: mockModel, issue: issue3});
+        IssuesManager.IssuesManager.Events.IssueAdded, {issuesModel: mockModel, issue: issue3});
 
     const issues = Array.from(aggregator.aggregatedIssues());
     assert.strictEqual(issues.length, 3);

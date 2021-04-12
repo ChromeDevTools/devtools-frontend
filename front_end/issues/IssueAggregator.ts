@@ -2,9 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as BrowserSDK from '../browser_sdk/browser_sdk.js';
 import * as Common from '../core/common/common.js';
 import * as SDK from '../core/sdk/sdk.js';
+import * as IssuesManager from '../models/issues_manager/issues_manager.js';
 
 /**
  * An `AggregatedIssue` representes a number of `SDK.Issue.Issue` objects that are displayed together.
@@ -177,15 +177,15 @@ export class AggregatedIssue extends SDK.Issue.Issue {
 
 export class IssueAggregator extends Common.ObjectWrapper.ObjectWrapper {
   private aggregatedIssuesByCode: Map<string, AggregatedIssue>;
-  private issuesManager: BrowserSDK.IssuesManager.IssuesManager;
+  private issuesManager: IssuesManager.IssuesManager.IssuesManager;
 
-  constructor(issuesManager: BrowserSDK.IssuesManager.IssuesManager) {
+  constructor(issuesManager: IssuesManager.IssuesManager.IssuesManager) {
     super();
     this.aggregatedIssuesByCode = new Map();
     this.issuesManager = issuesManager;
-    this.issuesManager.addEventListener(BrowserSDK.IssuesManager.Events.IssueAdded, this.onIssueAdded, this);
+    this.issuesManager.addEventListener(IssuesManager.IssuesManager.Events.IssueAdded, this.onIssueAdded, this);
     this.issuesManager.addEventListener(
-        BrowserSDK.IssuesManager.Events.FullUpdateRequired, this.onFullUpdateRequired, this);
+        IssuesManager.IssuesManager.Events.FullUpdateRequired, this.onFullUpdateRequired, this);
     for (const issue of this.issuesManager.issues()) {
       this.aggregateIssue(issue);
     }

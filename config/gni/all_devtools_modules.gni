@@ -7,12 +7,7 @@ import("../../scripts/build/ninja/vars.gni")
 generated_typescript_modules = []
 
 all_typescript_module_sources = [
-  "browser_sdk/ContrastCheckTrigger.js",
-  "browser_sdk/IssuesManager.js",
   "browser_sdk/LogManager.js",
-  "browser_sdk/MarkdownHelpers.js",
-  "browser_sdk/RelatedIssue.js",
-  "browser_sdk/SourceFrameIssuesManager.js",
   "color_picker/ContrastDetails.js",
   "color_picker/ContrastInfo.js",
   "color_picker/ContrastOverlay.js",
@@ -256,6 +251,11 @@ all_typescript_module_sources = [
   "models/extensions/ExtensionView.js",
   "models/extensions/LanguageExtensionEndpoint.js",
   "models/heap_snapshot_model/HeapSnapshotModel.js",
+  "models/issues_manager/ContrastCheckTrigger.js",
+  "models/issues_manager/IssuesManager.js",
+  "models/issues_manager/MarkdownHelpers.js",
+  "models/issues_manager/RelatedIssue.js",
+  "models/issues_manager/SourceFrameIssuesManager.js",
   "models/javascript_metadata/JavaScriptMetadata.js",
   "models/javascript_metadata/NativeFunctions.js",
   "models/persistence/Automapping.js",

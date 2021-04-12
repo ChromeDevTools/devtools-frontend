@@ -1,6 +1,6 @@
 import("../../../../third_party/typescript/typescript.gni")
 
-ts_library("browser_sdk") {
+ts_library("issues_manager") {
   testonly = true
   sources = [
     "IssuesManager_test.ts",
@@ -9,7 +9,7 @@ ts_library("browser_sdk") {
   ]
 
   deps = [
-    "../../../../front_end/browser_sdk:bundle",
+    "../../../../front_end/models/issues_manager:bundle",
     "../common",
     "../helpers",
     "../sdk",

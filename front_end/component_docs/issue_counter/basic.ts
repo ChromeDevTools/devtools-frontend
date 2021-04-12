@@ -5,7 +5,7 @@
 import * as FrontendHelpers from '../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
 import * as ComponentHelpers from '../../component_helpers/component_helpers.js';
 import type * as ConsoleCountersModule from '../../panels/console_counters/console_counters.js';
-import type * as BrowserSDKModule from '../../browser_sdk/browser_sdk.js';
+import type * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 
 await ComponentHelpers.ComponentServerSetup.setup();
 await FrontendHelpers.initializeGlobalVars();
@@ -24,7 +24,7 @@ const mockIssueManager = {
   numberOfIssues(): number {
     return 1;
   },
-} as unknown as BrowserSDKModule.IssuesManager.IssuesManager;
+} as unknown as IssuesManager.IssuesManager.IssuesManager;
 
 appendComponent({issuesManager: mockIssueManager});
 

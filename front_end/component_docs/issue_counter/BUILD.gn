@@ -11,8 +11,8 @@ ts_library("ts") {
 
   deps = [
     "../../../test/unittests/front_end/helpers",
-    "../../browser_sdk:bundle",
     "../../component_helpers:bundle",
+    "../../models/issues_manager:bundle",
     "../../panels/console_counters:bundle",
     "../../ui/components:bundle",
   ]

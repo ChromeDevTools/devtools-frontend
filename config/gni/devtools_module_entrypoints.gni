@@ -34,6 +34,8 @@ devtools_module_entrypoint_sources = [
   "data_grid/data_grid.js",
   "diff/diff-legacy.js",
   "diff/diff.js",
+  "entrypoints/devtools_app/devtools_app-meta-files.js",
+  "entrypoints/shell/shell-meta-files.js",
   "entrypoints/toolbox/toolbox.js",
   "formatter/formatter-legacy.js",
   "formatter/formatter.js",

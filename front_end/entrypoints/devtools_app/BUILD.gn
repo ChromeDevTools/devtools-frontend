@@ -1,11 +1,11 @@
 # Copyright 2021 The Chromium Authors. All rights reserved.
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
+import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../third_party/typescript/typescript.gni")
 
-ts_library("devtools_app") {
-  no_emit = true
-  sources = [ "devtools_app.js" ]
+devtools_entrypoint("devtools_app-meta-files") {
+  entrypoint = "devtools_app-meta-files.ts"
 
   deps = [
     "../../inspector_main:meta",
@@ -27,10 +27,19 @@ ts_library("devtools_app") {
     "../../panels/network:meta",
     "../../panels/performance_monitor:meta",
     "../../security:meta",
-    "../../startup:bundle",
     "../../timeline:meta",
     "../../web_audio:meta",
     "../../webauthn:meta",
+  ]
+}
+
+ts_library("devtools_app") {
+  no_emit = true
+  sources = [ "devtools_app.js" ]
+
+  deps = [
+    ":devtools_app-meta-files",
+    "../../startup:bundle",
     "../shell",
   ]
 }

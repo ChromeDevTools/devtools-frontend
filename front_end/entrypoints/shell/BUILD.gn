@@ -1,32 +1,24 @@
 # Copyright 2021 The Chromium Authors. All rights reserved.
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
+import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../third_party/typescript/typescript.gni")
 
-ts_library("shell") {
-  no_emit = true
-  sources = [ "shell.js" ]
+devtools_entrypoint("shell-meta-files") {
+  entrypoint = "shell-meta-files.ts"
 
   deps = [
-    "../../Images:generate_css_vars",
     "../../browser_sdk:meta",
-    "../../components:legacy",
-    "../../core/dom_extension:bundle",
-    "../../core/host:legacy",
-    "../../core/protocol_client:legacy",
-    "../../core/sdk:legacy",
+    "../../core/sdk:meta",
     "../../core/sdk:meta",
     "../../linear_memory_inspector:meta",
     "../../main:meta",
-    "../../models/bindings:legacy",
-    "../../models/extensions:legacy",
-    "../../models/persistence:legacy",
     "../../models/persistence:meta",
     "../../models/workspace:legacy",
     "../../object_ui:meta",
+    "../../panels/application:meta",
     "../../panels/changes:meta",
     "../../panels/console:meta",
-    "../../panels/console_counters:legacy",
     "../../panels/console_counters:meta",
     "../../panels/coverage:meta",
     "../../panels/input:meta",
@@ -37,6 +29,27 @@ ts_library("shell") {
     "../../settings:meta",
     "../../source_frame:meta",
     "../../sources:meta",
+  ]
+}
+
+ts_library("shell") {
+  no_emit = true
+  sources = [ "shell.js" ]
+
+  deps = [
+    ":shell-meta-files",
+    "../../Images:generate_css_vars",
+    "../../components:legacy",
+    "../../core/dom_extension:bundle",
+    "../../core/host:legacy",
+    "../../core/protocol_client:legacy",
+    "../../core/sdk:legacy",
+    "../../main:meta",
+    "../../models/bindings:legacy",
+    "../../models/extensions:legacy",
+    "../../models/persistence:legacy",
+    "../../models/workspace:legacy",
+    "../../panels/console_counters:legacy",
     "../../startup:bundle",
     "../../ui/legacy:legacy",
   ]

@@ -1391,6 +1391,10 @@ declare namespace Protocol {
        * or 'allowAndName'.
        */
       downloadPath?: string;
+      /**
+       * Whether to emit download events (defaults to false).
+       */
+      eventsEnabled?: boolean;
     }
 
     export interface CancelDownloadRequest {
@@ -1528,6 +1532,56 @@ declare namespace Protocol {
 
     export interface ExecuteBrowserCommandRequest {
       commandId: BrowserCommandId;
+    }
+
+    /**
+     * Fired when page is about to start a download.
+     */
+    export interface DownloadWillBeginEvent {
+      /**
+       * Id of the frame that caused the download to begin.
+       */
+      frameId: Page.FrameId;
+      /**
+       * Global unique identifier of the download.
+       */
+      guid: string;
+      /**
+       * URL of the resource being downloaded.
+       */
+      url: string;
+      /**
+       * Suggested file name of the resource (the actual name of the file saved on disk may differ).
+       */
+      suggestedFilename: string;
+    }
+
+    export enum DownloadProgressEventState {
+      InProgress = 'inProgress',
+      Completed = 'completed',
+      Canceled = 'canceled',
+    }
+
+    /**
+     * Fired when download makes progress. Last call has |done| == true.
+     */
+    export interface DownloadProgressEvent {
+      /**
+       * Global unique identifier of the download.
+       */
+      guid: string;
+      /**
+       * Total expected bytes to download.
+       */
+      totalBytes: number;
+      /**
+       * Total bytes received.
+       */
+      receivedBytes: number;
+      /**
+       * Download status.
+       */
+      state: DownloadProgressEventState;
     }
   }
 
@@ -4690,6 +4744,7 @@ declare namespace Protocol {
      */
     export enum DisabledImageType {
       Avif = 'avif',
+      Jxl = 'jxl',
       Webp = 'webp',
     }
 
@@ -5488,6 +5543,64 @@ declare namespace Protocol {
      */
     export type TimeSinceEpoch = number;
 
+    export interface DragDataItem {
+      /**
+       * Mime type of the dragged data.
+       */
+      mimeType: string;
+      /**
+       * Depending of the value of `mimeType`, it contains the dragged link,
+       * text, HTML markup or any other data.
+       */
+      data: string;
+      /**
+       * Title associated with a link. Only valid when `mimeType` == "text/uri-list".
+       */
+      title?: string;
+      /**
+       * Stores the base URL for the contained markup. Only valid when `mimeType`
+       * == "text/html".
+       */
+      baseURL?: string;
+    }
+
+    export interface DragData {
+      items: DragDataItem[];
+      /**
+       * Bit field representing allowed drag operations. Copy = 1, Link = 2, Move = 16
+       */
+      dragOperationsMask: integer;
+    }
+
+    export enum DispatchDragEventRequestType {
+      DragEnter = 'dragEnter',
+      DragOver = 'dragOver',
+      Drop = 'drop',
+      DragCancel = 'dragCancel',
+    }
+
+    export interface DispatchDragEventRequest {
+      /**
+       * Type of the drag event.
+       */
+      type: DispatchDragEventRequestType;
+      /**
+       * X coordinate of the event relative to the main frame's viewport in CSS pixels.
+       */
+      x: number;
+      /**
+       * Y coordinate of the event relative to the main frame's viewport in CSS pixels. 0 refers to
+       * the top of the viewport and Y increases as it proceeds towards the bottom of the viewport.
+       */
+      y: number;
+      data: DragData;
+      /**
+       * Bit field representing pressed modifier keys. Alt=1, Ctrl=2, Meta/Command=4, Shift=8
+       * (default: 0).
+       */
+      modifiers?: integer;
+    }
+
     export enum DispatchKeyEventRequestType {
       KeyDown = 'keyDown',
       KeyUp = 'keyUp',
@@ -5738,6 +5851,10 @@ declare namespace Protocol {
       ignore: boolean;
     }
 
+    export interface SetInterceptDragsRequest {
+      enabled: boolean;
+    }
+
     export interface SynthesizePinchGestureRequest {
       /**
        * X coordinate of the start of the gesture in CSS pixels.
@@ -5838,6 +5955,14 @@ declare namespace Protocol {
        * for the preferred input type).
        */
       gestureSourceType?: GestureSourceType;
+    }
+
+    /**
+     * Emitted only when `Input.setInterceptDrags` is enabled. Use this data with `Input.dispatchDragEvent` to
+     * restore normal drag and drop behavior.
+     */
+    export interface DragInterceptedEvent {
+      data: DragData;
     }
   }
 
@@ -10629,6 +10754,7 @@ declare namespace Protocol {
 
     /**
      * Fired when page is about to start a download.
+     * Deprecated. Use Browser.downloadWillBegin instead.
      */
     export interface DownloadWillBeginEvent {
       /**
@@ -10657,6 +10783,7 @@ declare namespace Protocol {
 
     /**
      * Fired when download makes progress. Last call has |done| == true.
+     * Deprecated. Use Browser.downloadProgress instead.
      */
     export interface DownloadProgressEvent {
       /**

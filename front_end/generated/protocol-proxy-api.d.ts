@@ -413,7 +413,17 @@ declare namespace ProtocolProxyApi {
     invoke_executeBrowserCommand(params: Protocol.Browser.ExecuteBrowserCommandRequest):
         Promise<Protocol.ProtocolResponseWithError>;
   }
-  export interface BrowserDispatcher {}
+  export interface BrowserDispatcher {
+    /**
+     * Fired when page is about to start a download.
+     */
+    downloadWillBegin(params: Protocol.Browser.DownloadWillBeginEvent): void;
+
+    /**
+     * Fired when download makes progress. Last call has |done| == true.
+     */
+    downloadProgress(params: Protocol.Browser.DownloadProgressEvent): void;
+  }
 
   export interface CSSApi {
     /**
@@ -1430,6 +1440,12 @@ declare namespace ProtocolProxyApi {
   // eslint-disable-next-line @typescript-eslint/interface-name-prefix
   export interface InputApi {
     /**
+     * Dispatches a drag event into the page.
+     */
+    invoke_dispatchDragEvent(params: Protocol.Input.DispatchDragEventRequest):
+        Promise<Protocol.ProtocolResponseWithError>;
+
+    /**
      * Dispatches a key event to the page.
      */
     invoke_dispatchKeyEvent(params: Protocol.Input.DispatchKeyEventRequest):
@@ -1466,6 +1482,13 @@ declare namespace ProtocolProxyApi {
         Promise<Protocol.ProtocolResponseWithError>;
 
     /**
+     * Prevents default drag and drop behavior and instead emits `Input.dragIntercepted` events.
+     * Drag and drop behavior can be directly controlled via `Input.dispatchDragEvent`.
+     */
+    invoke_setInterceptDrags(params: Protocol.Input.SetInterceptDragsRequest):
+        Promise<Protocol.ProtocolResponseWithError>;
+
+    /**
      * Synthesizes a pinch gesture over a time period by issuing appropriate touch events.
      */
     invoke_synthesizePinchGesture(params: Protocol.Input.SynthesizePinchGestureRequest):
@@ -1483,7 +1506,13 @@ declare namespace ProtocolProxyApi {
     invoke_synthesizeTapGesture(params: Protocol.Input.SynthesizeTapGestureRequest):
         Promise<Protocol.ProtocolResponseWithError>;
   }
-  export interface InputDispatcher {}
+  export interface InputDispatcher {
+    /**
+     * Emitted only when `Input.setInterceptDrags` is enabled. Use this data with `Input.dispatchDragEvent` to
+     * restore normal drag and drop behavior.
+     */
+    dragIntercepted(params: Protocol.Input.DragInterceptedEvent): void;
+  }
 
   // eslint thinks this is us prefixing our interfaces but it's not!
   // eslint-disable-next-line @typescript-eslint/interface-name-prefix
@@ -2523,11 +2552,13 @@ declare namespace ProtocolProxyApi {
 
     /**
      * Fired when page is about to start a download.
+     * Deprecated. Use Browser.downloadWillBegin instead.
      */
     downloadWillBegin(params: Protocol.Page.DownloadWillBeginEvent): void;
 
     /**
      * Fired when download makes progress. Last call has |done| == true.
+     * Deprecated. Use Browser.downloadProgress instead.
      */
     downloadProgress(params: Protocol.Page.DownloadProgressEvent): void;
 

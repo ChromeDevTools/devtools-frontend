@@ -2104,6 +2104,12 @@
                             "description": "The default path to save downloaded files to. This is requred if behavior is set to 'allow'\nor 'allowAndName'.",
                             "optional": true,
                             "type": "string"
+                        },
+                        {
+                            "name": "eventsEnabled",
+                            "description": "Whether to emit download events (defaults to false).",
+                            "optional": true,
+                            "type": "boolean"
                         }
                     ]
                 },
@@ -2326,6 +2332,67 @@
                         {
                             "name": "commandId",
                             "$ref": "BrowserCommandId"
+                        }
+                    ]
+                }
+            ],
+            "events": [
+                {
+                    "name": "downloadWillBegin",
+                    "description": "Fired when page is about to start a download.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "frameId",
+                            "description": "Id of the frame that caused the download to begin.",
+                            "$ref": "Page.FrameId"
+                        },
+                        {
+                            "name": "guid",
+                            "description": "Global unique identifier of the download.",
+                            "type": "string"
+                        },
+                        {
+                            "name": "url",
+                            "description": "URL of the resource being downloaded.",
+                            "type": "string"
+                        },
+                        {
+                            "name": "suggestedFilename",
+                            "description": "Suggested file name of the resource (the actual name of the file saved on disk may differ).",
+                            "type": "string"
+                        }
+                    ]
+                },
+                {
+                    "name": "downloadProgress",
+                    "description": "Fired when download makes progress. Last call has |done| == true.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "guid",
+                            "description": "Global unique identifier of the download.",
+                            "type": "string"
+                        },
+                        {
+                            "name": "totalBytes",
+                            "description": "Total expected bytes to download.",
+                            "type": "number"
+                        },
+                        {
+                            "name": "receivedBytes",
+                            "description": "Total bytes received.",
+                            "type": "number"
+                        },
+                        {
+                            "name": "state",
+                            "description": "Download status.",
+                            "type": "string",
+                            "enum": [
+                                "inProgress",
+                                "completed",
+                                "canceled"
+                            ]
                         }
                     ]
                 }
@@ -7107,6 +7174,7 @@
                     "type": "string",
                     "enum": [
                         "avif",
+                        "jxl",
                         "webp"
                     ]
                 }
@@ -8291,9 +8359,95 @@
                     "id": "TimeSinceEpoch",
                     "description": "UTC time in seconds, counted from January 1, 1970.",
                     "type": "number"
+                },
+                {
+                    "id": "DragDataItem",
+                    "experimental": true,
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "mimeType",
+                            "description": "Mime type of the dragged data.",
+                            "type": "string"
+                        },
+                        {
+                            "name": "data",
+                            "description": "Depending of the value of `mimeType`, it contains the dragged link,\ntext, HTML markup or any other data.",
+                            "type": "string"
+                        },
+                        {
+                            "name": "title",
+                            "description": "Title associated with a link. Only valid when `mimeType` == \"text/uri-list\".",
+                            "optional": true,
+                            "type": "string"
+                        },
+                        {
+                            "name": "baseURL",
+                            "description": "Stores the base URL for the contained markup. Only valid when `mimeType`\n== \"text/html\".",
+                            "optional": true,
+                            "type": "string"
+                        }
+                    ]
+                },
+                {
+                    "id": "DragData",
+                    "experimental": true,
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "items",
+                            "type": "array",
+                            "items": {
+                                "$ref": "DragDataItem"
+                            }
+                        },
+                        {
+                            "name": "dragOperationsMask",
+                            "description": "Bit field representing allowed drag operations. Copy = 1, Link = 2, Move = 16",
+                            "type": "integer"
+                        }
+                    ]
                 }
             ],
             "commands": [
+                {
+                    "name": "dispatchDragEvent",
+                    "description": "Dispatches a drag event into the page.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "type",
+                            "description": "Type of the drag event.",
+                            "type": "string",
+                            "enum": [
+                                "dragEnter",
+                                "dragOver",
+                                "drop",
+                                "dragCancel"
+                            ]
+                        },
+                        {
+                            "name": "x",
+                            "description": "X coordinate of the event relative to the main frame's viewport in CSS pixels.",
+                            "type": "number"
+                        },
+                        {
+                            "name": "y",
+                            "description": "Y coordinate of the event relative to the main frame's viewport in CSS pixels. 0 refers to\nthe top of the viewport and Y increases as it proceeds towards the bottom of the viewport.",
+                            "type": "number"
+                        },
+                        {
+                            "name": "data",
+                            "$ref": "DragData"
+                        },
+                        {
+                            "name": "modifiers",
+                            "description": "Bit field representing pressed modifier keys. Alt=1, Ctrl=2, Meta/Command=4, Shift=8\n(default: 0).",
+                            "optional": true,
+                            "type": "integer"
+                        }
+                    ]
+                },
                 {
                     "name": "dispatchKeyEvent",
                     "description": "Dispatches a key event to the page.",
@@ -8637,6 +8791,17 @@
                     ]
                 },
                 {
+                    "name": "setInterceptDrags",
+                    "description": "Prevents default drag and drop behavior and instead emits `Input.dragIntercepted` events.\nDrag and drop behavior can be directly controlled via `Input.dispatchDragEvent`.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "enabled",
+                            "type": "boolean"
+                        }
+                    ]
+                },
+                {
                     "name": "synthesizePinchGesture",
                     "description": "Synthesizes a pinch gesture over a time period by issuing appropriate touch events.",
                     "experimental": true,
@@ -8779,6 +8944,19 @@
                             "description": "Which type of input events to be generated (default: 'default', which queries the platform\nfor the preferred input type).",
                             "optional": true,
                             "$ref": "GestureSourceType"
+                        }
+                    ]
+                }
+            ],
+            "events": [
+                {
+                    "name": "dragIntercepted",
+                    "description": "Emitted only when `Input.setInterceptDrags` is enabled. Use this data with `Input.dispatchDragEvent` to\nrestore normal drag and drop behavior.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "data",
+                            "$ref": "DragData"
                         }
                     ]
                 }
@@ -15653,8 +15831,9 @@
                 },
                 {
                     "name": "downloadWillBegin",
-                    "description": "Fired when page is about to start a download.",
+                    "description": "Fired when page is about to start a download.\nDeprecated. Use Browser.downloadWillBegin instead.",
                     "experimental": true,
+                    "deprecated": true,
                     "parameters": [
                         {
                             "name": "frameId",
@@ -15680,8 +15859,9 @@
                 },
                 {
                     "name": "downloadProgress",
-                    "description": "Fired when download makes progress. Last call has |done| == true.",
+                    "description": "Fired when download makes progress. Last call has |done| == true.\nDeprecated. Use Browser.downloadProgress instead.",
                     "experimental": true,
+                    "deprecated": true,
                     "parameters": [
                         {
                             "name": "guid",

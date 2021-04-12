@@ -337,6 +337,10 @@ export function registerCommands(inspectorBackend) {
   inspectorBackend.registerEnum('Browser.PermissionSetting', {Granted: 'granted', Denied: 'denied', Prompt: 'prompt'});
   inspectorBackend.registerEnum(
       'Browser.BrowserCommandId', {OpenTabSearch: 'openTabSearch', CloseTabSearch: 'closeTabSearch'});
+  inspectorBackend.registerEvent('Browser.downloadWillBegin', ['frameId', 'guid', 'url', 'suggestedFilename']);
+  inspectorBackend.registerEnum(
+      'Browser.DownloadProgressEventState', {InProgress: 'inProgress', Completed: 'completed', Canceled: 'canceled'});
+  inspectorBackend.registerEvent('Browser.downloadProgress', ['guid', 'totalBytes', 'receivedBytes', 'state']);
   inspectorBackend.registerCommand(
       'Browser.setPermission',
       [
@@ -364,7 +368,8 @@ export function registerCommands(inspectorBackend) {
       [
         {'name': 'behavior', 'type': 'string', 'optional': false},
         {'name': 'browserContextId', 'type': 'string', 'optional': true},
-        {'name': 'downloadPath', 'type': 'string', 'optional': true}
+        {'name': 'downloadPath', 'type': 'string', 'optional': true},
+        {'name': 'eventsEnabled', 'type': 'boolean', 'optional': true}
       ],
       []);
   inspectorBackend.registerCommand(
@@ -933,7 +938,7 @@ export function registerCommands(inspectorBackend) {
   inspectorBackend.registerEnum(
       'Emulation.VirtualTimePolicy',
       {Advance: 'advance', Pause: 'pause', PauseIfNetworkFetchesPending: 'pauseIfNetworkFetchesPending'});
-  inspectorBackend.registerEnum('Emulation.DisabledImageType', {Avif: 'avif', Webp: 'webp'});
+  inspectorBackend.registerEnum('Emulation.DisabledImageType', {Avif: 'avif', Jxl: 'jxl', Webp: 'webp'});
   inspectorBackend.registerEvent('Emulation.virtualTimeBudgetExpired', []);
   inspectorBackend.registerCommand('Emulation.canEmulate', [], ['result']);
   inspectorBackend.registerCommand('Emulation.clearDeviceMetricsOverride', [], []);
@@ -1139,6 +1144,18 @@ export function registerCommands(inspectorBackend) {
   inspectorBackend.registerEnum(
       'Input.MouseButton',
       {None: 'none', Left: 'left', Middle: 'middle', Right: 'right', Back: 'back', Forward: 'forward'});
+  inspectorBackend.registerEvent('Input.dragIntercepted', ['data']);
+  inspectorBackend.registerEnum(
+      'Input.DispatchDragEventRequestType',
+      {DragEnter: 'dragEnter', DragOver: 'dragOver', Drop: 'drop', DragCancel: 'dragCancel'});
+  inspectorBackend.registerCommand(
+      'Input.dispatchDragEvent',
+      [
+        {'name': 'type', 'type': 'string', 'optional': false}, {'name': 'x', 'type': 'number', 'optional': false},
+        {'name': 'y', 'type': 'number', 'optional': false}, {'name': 'data', 'type': 'object', 'optional': false},
+        {'name': 'modifiers', 'type': 'number', 'optional': true}
+      ],
+      []);
   inspectorBackend.registerEnum(
       'Input.DispatchKeyEventRequestType',
       {KeyDown: 'keyDown', KeyUp: 'keyUp', RawKeyDown: 'rawKeyDown', Char: 'char'});
@@ -1215,6 +1232,8 @@ export function registerCommands(inspectorBackend) {
       []);
   inspectorBackend.registerCommand(
       'Input.setIgnoreInputEvents', [{'name': 'ignore', 'type': 'boolean', 'optional': false}], []);
+  inspectorBackend.registerCommand(
+      'Input.setInterceptDrags', [{'name': 'enabled', 'type': 'boolean', 'optional': false}], []);
   inspectorBackend.registerCommand(
       'Input.synthesizePinchGesture',
       [

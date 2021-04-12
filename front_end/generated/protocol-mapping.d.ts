@@ -38,6 +38,14 @@ export namespace ProtocolMapping {
     'BackgroundService.backgroundServiceEventReceived':
         [Protocol.BackgroundService.BackgroundServiceEventReceivedEvent];
     /**
+     * Fired when page is about to start a download.
+     */
+    'Browser.downloadWillBegin': [Protocol.Browser.DownloadWillBeginEvent];
+    /**
+     * Fired when download makes progress. Last call has |done| == true.
+     */
+    'Browser.downloadProgress': [Protocol.Browser.DownloadProgressEvent];
+    /**
      * Fires whenever a web font is updated.  A non-empty font parameter indicates a successfully loaded
      * web font
      */
@@ -141,6 +149,11 @@ export namespace ProtocolMapping {
      * beginFrame to detect whether the frames were suppressed.
      */
     'HeadlessExperimental.needsBeginFramesChanged': [Protocol.HeadlessExperimental.NeedsBeginFramesChangedEvent];
+    /**
+     * Emitted only when `Input.setInterceptDrags` is enabled. Use this data with `Input.dispatchDragEvent` to
+     * restore normal drag and drop behavior.
+     */
+    'Input.dragIntercepted': [Protocol.Input.DragInterceptedEvent];
     /**
      * Fired when remote debugging connection is about to be terminated. Contains detach reason.
      */
@@ -323,10 +336,12 @@ export namespace ProtocolMapping {
     'Page.frameStoppedLoading': [Protocol.Page.FrameStoppedLoadingEvent];
     /**
      * Fired when page is about to start a download.
+     * Deprecated. Use Browser.downloadWillBegin instead.
      */
     'Page.downloadWillBegin': [Protocol.Page.DownloadWillBeginEvent];
     /**
      * Fired when download makes progress. Last call has |done| == true.
+     * Deprecated. Use Browser.downloadProgress instead.
      */
     'Page.downloadProgress': [Protocol.Page.DownloadProgressEvent];
     /**
@@ -1573,6 +1588,10 @@ export namespace ProtocolMapping {
       returnType: Protocol.IndexedDB.RequestDatabaseNamesResponse;
     };
     /**
+     * Dispatches a drag event into the page.
+     */
+    'Input.dispatchDragEvent': {paramsType: [Protocol.Input.DispatchDragEventRequest]; returnType: void;};
+    /**
      * Dispatches a key event to the page.
      */
     'Input.dispatchKeyEvent': {paramsType: [Protocol.Input.DispatchKeyEventRequest]; returnType: void;};
@@ -1598,6 +1617,11 @@ export namespace ProtocolMapping {
      * Ignores input events (useful while auditing page).
      */
     'Input.setIgnoreInputEvents': {paramsType: [Protocol.Input.SetIgnoreInputEventsRequest]; returnType: void;};
+    /**
+     * Prevents default drag and drop behavior and instead emits `Input.dragIntercepted` events.
+     * Drag and drop behavior can be directly controlled via `Input.dispatchDragEvent`.
+     */
+    'Input.setInterceptDrags': {paramsType: [Protocol.Input.SetInterceptDragsRequest]; returnType: void;};
     /**
      * Synthesizes a pinch gesture over a time period by issuing appropriate touch events.
      */

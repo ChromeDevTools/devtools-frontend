@@ -3,7 +3,7 @@
     "text_editor",
     "ui/legacy",
     "models/persistence",
-    "object_ui",
+    "ui/legacy/components/object_ui",
     "workspace_diff"
   ],
     "resources": [

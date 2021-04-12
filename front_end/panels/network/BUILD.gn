@@ -49,7 +49,6 @@ devtools_module("network") {
     "../../models/issues_manager:bundle",
     "../../models/text_utils:bundle",
     "../../models/workspace:bundle",
-    "../../object_ui:bundle",
     "../../panels/elements:bundle",
     "../../panels/mobile_throttling:bundle",
     "../../perf_ui:bundle",
@@ -60,6 +59,7 @@ devtools_module("network") {
     "../../ui/components:bundle",
     "../../ui/legacy:bundle",
     "../../ui/legacy/components/data_grid:bundle",
+    "../../ui/legacy/components/object_ui:bundle",
   ]
 }
 

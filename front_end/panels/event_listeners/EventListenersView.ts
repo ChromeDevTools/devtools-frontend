@@ -8,7 +8,7 @@ import * as Components from '../../components/components.js';
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import * as ObjectUI from '../../object_ui/object_ui.js';
+import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import type {FrameworkEventListenersObject} from './EventListenersUtils.js';
@@ -59,7 +59,8 @@ export class EventListenersView extends UI.Widget.VBox {
     this._enableDefaultTreeFocus = enableDefaultTreeFocus;
     this._treeOutline = new UI.TreeOutline.TreeOutlineInShadow();
     this._treeOutline.hideOverflow();
-    this._treeOutline.registerRequiredCSS('object_ui/objectValue.css', {enableLegacyPatching: true});
+    this._treeOutline.registerRequiredCSS(
+        'ui/legacy/components/object_ui/objectValue.css', {enableLegacyPatching: true});
     this._treeOutline.registerRequiredCSS(
         'panels/event_listeners/eventListenersView.css', {enableLegacyPatching: false});
     this._treeOutline.setComparator(EventListenersTreeElement.comparator);

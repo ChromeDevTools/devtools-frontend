@@ -4,10 +4,10 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as i18n from '../core/i18n/i18n.js';
-import * as Platform from '../core/platform/platform.js';
-import * as SDK from '../core/sdk/sdk.js';
-import * as UI from '../ui/legacy/legacy.js';
+import * as i18n from '../../../../core/i18n/i18n.js';
+import * as Platform from '../../../../core/platform/platform.js';
+import * as SDK from '../../../../core/sdk/sdk.js';
+import * as UI from '../../legacy.js';
 
 const UIStrings = {
   /**
@@ -29,7 +29,7 @@ const UIStrings = {
   */
   thePropertyIsComputedWithAGetter: 'The property is computed with a getter',
 };
-const str_ = i18n.i18n.registerUIStrings('object_ui/RemoteObjectPreviewFormatter.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/object_ui/RemoteObjectPreviewFormatter.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class RemoteObjectPreviewFormatter {
   static _objectPropertyComparator(a: Protocol.Runtime.PropertyPreview, b: Protocol.Runtime.PropertyPreview): number {

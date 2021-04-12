@@ -30,16 +30,16 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../core/common/common.js';
-import type * as Components from '../components/components.js';
-import * as Host from '../core/host/host.js';
-import * as i18n from '../core/i18n/i18n.js';
-import * as LinearMemoryInspector from '../linear_memory_inspector/linear_memory_inspector.js';
-import * as Platform from '../core/platform/platform.js';
-import * as SDK from '../core/sdk/sdk.js';
-import * as TextUtils from '../models/text_utils/text_utils.js';
-import * as WebComponents from '../ui/components/components.js';
-import * as UI from '../ui/legacy/legacy.js';
+import * as Common from '../../../../core/common/common.js';
+import type * as Components from '../../../../components/components.js';
+import * as Host from '../../../../core/host/host.js';
+import * as i18n from '../../../../core/i18n/i18n.js';
+import * as LinearMemoryInspector from '../../../../linear_memory_inspector/linear_memory_inspector.js';
+import * as Platform from '../../../../core/platform/platform.js';
+import * as SDK from '../../../../core/sdk/sdk.js';
+import * as TextUtils from '../../../../models/text_utils/text_utils.js';
+import * as WebComponents from '../../../components/components.js';
+import * as UI from '../../legacy.js';
 
 import {CustomPreviewComponent} from './CustomPreviewComponent.js';
 import {JavaScriptAutocomplete} from './JavaScriptAutocomplete.js';
@@ -120,7 +120,7 @@ const UIStrings = {
   */
   copy: 'Copy',
 };
-const str_ = i18n.i18n.registerUIStrings('object_ui/ObjectPropertiesSection.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/object_ui/ObjectPropertiesSection.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const EXPANDABLE_MAX_LENGTH = 50;
 
@@ -165,8 +165,9 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
     }
 
     objectPropertiesSectionMap.set(this.element, this);
-    this.registerRequiredCSS('object_ui/objectValue.css', {enableLegacyPatching: true});
-    this.registerRequiredCSS('object_ui/objectPropertiesSection.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('ui/legacy/components/object_ui/objectValue.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS(
+        'ui/legacy/components/object_ui/objectPropertiesSection.css', {enableLegacyPatching: true});
     this.rootElement().childrenListElement.classList.add('source-code', 'object-properties-section');
   }
 
@@ -186,8 +187,11 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
       readOnly?: boolean): ObjectPropertiesSection {
     const titleElement = document.createElement('span');
     titleElement.classList.add('source-code');
-    const shadowRoot = UI.Utils.createShadowRootWithCoreStyles(
-        titleElement, {cssFile: 'object_ui/objectValue.css', enableLegacyPatching: true, delegatesFocus: undefined});
+    const shadowRoot = UI.Utils.createShadowRootWithCoreStyles(titleElement, {
+      cssFile: 'ui/legacy/components/object_ui/objectValue.css',
+      enableLegacyPatching: true,
+      delegatesFocus: undefined,
+    });
     const propertyValue =
         ObjectPropertiesSection.createPropertyValue(object, /* wasThrown */ false, /* showPreview */ true);
     shadowRoot.appendChild(propertyValue.element);
@@ -570,8 +574,9 @@ export class ObjectPropertiesSectionsTreeOutline extends UI.TreeOutline.TreeOutl
   _editable: boolean;
   constructor(options?: TreeOutlineOptions|null) {
     super();
-    this.registerRequiredCSS('object_ui/objectValue.css', {enableLegacyPatching: true});
-    this.registerRequiredCSS('object_ui/objectPropertiesSection.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('ui/legacy/components/object_ui/objectValue.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS(
+        'ui/legacy/components/object_ui/objectPropertiesSection.css', {enableLegacyPatching: true});
     this._editable = !(options && options.readOnly);
     this.contentElement.classList.add('source-code');
     this.contentElement.classList.add('object-properties-section');

@@ -51,12 +51,12 @@ devtools_module("application") {
     "../../models/issues_manager:bundle",
     "../../models/text_utils:bundle",
     "../../models/workspace:bundle",
-    "../../object_ui:bundle",
     "../../panels/mobile_throttling:bundle",
     "../../panels/network:bundle",
     "../../source_frame:bundle",
     "../../ui/legacy:bundle",
     "../../ui/legacy/components/data_grid:bundle",
+    "../../ui/legacy/components/object_ui:bundle",
   ]
 }
 

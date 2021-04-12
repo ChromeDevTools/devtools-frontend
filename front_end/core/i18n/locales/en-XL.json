@@ -2057,75 +2057,6 @@
   "node_main/NodeMain.ts | nodejsS": {
     "message": "N̂ód̂é.ĵś: {PH1}"
   },
-  "object_ui/CustomPreviewComponent.ts | showAsJavascriptObject": {
-    "message": "Ŝh́ôẃ âś Ĵáv̂áŜćr̂íp̂t́ ôb́ĵéĉt́"
-  },
-  "object_ui/JavaScriptAutocomplete.ts | keys": {
-    "message": "K̂éŷś"
-  },
-  "object_ui/JavaScriptAutocomplete.ts | keywords": {
-    "message": "k̂éŷẃôŕd̂ś"
-  },
-  "object_ui/JavaScriptAutocomplete.ts | lexicalScopeVariables": {
-    "message": "L̂éx̂íĉál̂ śĉóp̂é v̂ár̂íâb́l̂éŝ"
-  },
-  "object_ui/ObjectPropertiesSection.ts | collapseChildren": {
-    "message": "Ĉól̂ĺâṕŝé ĉh́îĺd̂ŕêń"
-  },
-  "object_ui/ObjectPropertiesSection.ts | copy": {
-    "message": "Ĉóp̂ý"
-  },
-  "object_ui/ObjectPropertiesSection.ts | copyPropertyPath": {
-    "message": "Ĉóp̂ý p̂ŕôṕêŕt̂ý p̂át̂h́"
-  },
-  "object_ui/ObjectPropertiesSection.ts | copyValue": {
-    "message": "Ĉóp̂ý v̂ál̂úê"
-  },
-  "object_ui/ObjectPropertiesSection.ts | dots": {
-    "message": "(...)"
-  },
-  "object_ui/ObjectPropertiesSection.ts | exceptionS": {
-    "message": "[Êx́ĉép̂t́îón̂: {PH1}]"
-  },
-  "object_ui/ObjectPropertiesSection.ts | expandRecursively": {
-    "message": "Êx́p̂án̂d́ r̂éĉúr̂śîv́êĺŷ"
-  },
-  "object_ui/ObjectPropertiesSection.ts | invokePropertyGetter": {
-    "message": "Îńv̂ók̂é p̂ŕôṕêŕt̂ý ĝét̂t́êŕ"
-  },
-  "object_ui/ObjectPropertiesSection.ts | longTextWasTruncatedS": {
-    "message": "l̂ón̂ǵ t̂éx̂t́ ŵáŝ t́r̂ún̂ćât́êd́ ({PH1})"
-  },
-  "object_ui/ObjectPropertiesSection.ts | noProperties": {
-    "message": "N̂ó p̂ŕôṕêŕt̂íêś"
-  },
-  "object_ui/ObjectPropertiesSection.ts | noPropertyGetter": {
-    "message": "N̂ó p̂ŕôṕêŕt̂ý ĝét̂t́êŕ"
-  },
-  "object_ui/ObjectPropertiesSection.ts | showAllD": {
-    "message": "Ŝh́ôẃ âĺl̂ {PH1}"
-  },
-  "object_ui/ObjectPropertiesSection.ts | showMoreS": {
-    "message": "Ŝh́ôẃ m̂ór̂é ({PH1})"
-  },
-  "object_ui/ObjectPropertiesSection.ts | stringIsTooLargeToEdit": {
-    "message": "<ŝt́r̂ín̂ǵ îś t̂óô ĺâŕĝé t̂ó êd́ît́>"
-  },
-  "object_ui/ObjectPropertiesSection.ts | unknown": {
-    "message": "ûńk̂ńôẃn̂"
-  },
-  "object_ui/ObjectPropertiesSection.ts | unreadable": {
-    "message": "<ûńr̂éâd́âb́l̂é>"
-  },
-  "object_ui/RemoteObjectPreviewFormatter.ts | empty": {
-    "message": "êḿp̂t́ŷ"
-  },
-  "object_ui/RemoteObjectPreviewFormatter.ts | emptyD": {
-    "message": "êḿp̂t́ŷ × {PH1}"
-  },
-  "object_ui/RemoteObjectPreviewFormatter.ts | thePropertyIsComputedWithAGetter": {
-    "message": "T̂h́ê ṕr̂óp̂ér̂t́ŷ íŝ ćôḿp̂út̂éd̂ ẃît́ĥ á ĝét̂t́êŕ"
-  },
   "panels/accessibility/accessibility-meta.ts | accessibility": {
     "message": "Âćĉéŝśîb́îĺît́ŷ"
   },
@@ -11035,6 +10966,75 @@
   },
   "ui/legacy/components/data_grid/ViewportDataGrid.ts | collapsed": {
     "message": "ĉól̂ĺâṕŝéd̂"
+  },
+  "ui/legacy/components/object_ui/CustomPreviewComponent.ts | showAsJavascriptObject": {
+    "message": "Ŝh́ôẃ âś Ĵáv̂áŜćr̂íp̂t́ ôb́ĵéĉt́"
+  },
+  "ui/legacy/components/object_ui/JavaScriptAutocomplete.ts | keys": {
+    "message": "K̂éŷś"
+  },
+  "ui/legacy/components/object_ui/JavaScriptAutocomplete.ts | keywords": {
+    "message": "k̂éŷẃôŕd̂ś"
+  },
+  "ui/legacy/components/object_ui/JavaScriptAutocomplete.ts | lexicalScopeVariables": {
+    "message": "L̂éx̂íĉál̂ śĉóp̂é v̂ár̂íâb́l̂éŝ"
+  },
+  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | collapseChildren": {
+    "message": "Ĉól̂ĺâṕŝé ĉh́îĺd̂ŕêń"
+  },
+  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | copy": {
+    "message": "Ĉóp̂ý"
+  },
+  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | copyPropertyPath": {
+    "message": "Ĉóp̂ý p̂ŕôṕêŕt̂ý p̂át̂h́"
+  },
+  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | copyValue": {
+    "message": "Ĉóp̂ý v̂ál̂úê"
+  },
+  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | dots": {
+    "message": "(...)"
+  },
+  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | exceptionS": {
+    "message": "[Êx́ĉép̂t́îón̂: {PH1}]"
+  },
+  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | expandRecursively": {
+    "message": "Êx́p̂án̂d́ r̂éĉúr̂śîv́êĺŷ"
+  },
+  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | invokePropertyGetter": {
+    "message": "Îńv̂ók̂é p̂ŕôṕêŕt̂ý ĝét̂t́êŕ"
+  },
+  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | longTextWasTruncatedS": {
+    "message": "l̂ón̂ǵ t̂éx̂t́ ŵáŝ t́r̂ún̂ćât́êd́ ({PH1})"
+  },
+  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | noProperties": {
+    "message": "N̂ó p̂ŕôṕêŕt̂íêś"
+  },
+  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | noPropertyGetter": {
+    "message": "N̂ó p̂ŕôṕêŕt̂ý ĝét̂t́êŕ"
+  },
+  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | showAllD": {
+    "message": "Ŝh́ôẃ âĺl̂ {PH1}"
+  },
+  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | showMoreS": {
+    "message": "Ŝh́ôẃ m̂ór̂é ({PH1})"
+  },
+  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | stringIsTooLargeToEdit": {
+    "message": "<ŝt́r̂ín̂ǵ îś t̂óô ĺâŕĝé t̂ó êd́ît́>"
+  },
+  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | unknown": {
+    "message": "ûńk̂ńôẃn̂"
+  },
+  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | unreadable": {
+    "message": "<ûńr̂éâd́âb́l̂é>"
+  },
+  "ui/legacy/components/object_ui/RemoteObjectPreviewFormatter.ts | empty": {
+    "message": "êḿp̂t́ŷ"
+  },
+  "ui/legacy/components/object_ui/RemoteObjectPreviewFormatter.ts | emptyD": {
+    "message": "êḿp̂t́ŷ × {PH1}"
+  },
+  "ui/legacy/components/object_ui/RemoteObjectPreviewFormatter.ts | thePropertyIsComputedWithAGetter": {
+    "message": "T̂h́ê ṕr̂óp̂ér̂t́ŷ íŝ ćôḿp̂út̂éd̂ ẃît́ĥ á ĝét̂t́êŕ"
   },
   "ui/legacy/DockController.js | close": {
     "message": "Ĉĺôśê"

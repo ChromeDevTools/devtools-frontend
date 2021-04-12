@@ -10,7 +10,7 @@
     "inline_editor",
     "color_picker",
     "panels/event_listeners",
-    "object_ui",
+    "ui/legacy/components/object_ui",
     "panels/coverage"
   ],
     "resources": [

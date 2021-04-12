@@ -77,7 +77,6 @@ group("legacy_css") {
     "inline_editor:legacy_css",
     "inspector_main:legacy_css",
     "models/persistence:legacy_css",
-    "object_ui:legacy_css",
     "panels/application:legacy_css",
     "panels/console:legacy_css",
     "panels/elements:legacy_css",
@@ -87,6 +86,7 @@ group("legacy_css") {
     "text_editor:legacy_css",
     "ui/legacy:legacy_css",
     "ui/legacy/components/data_grid:legacy_css",
+    "ui/legacy/components/object_ui:legacy_css",
   ]
 }
 
@@ -115,7 +115,6 @@ group("legacy_entrypoints") {
     "models/text_utils:legacy",
     "models/timeline_model:legacy",
     "models/workspace:legacy",
-    "object_ui:legacy",
     "panels/accessibility:legacy",
     "panels/animation:legacy",
     "panels/application:legacy",
@@ -147,6 +146,7 @@ group("legacy_entrypoints") {
     "timeline:legacy",
     "ui/legacy:legacy",
     "ui/legacy/components/data_grid:legacy",
+    "ui/legacy/components/object_ui:legacy",
     "web_audio:legacy",
     "workspace_diff:legacy",
   ]

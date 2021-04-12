@@ -3,7 +3,7 @@
     "components",
     "perf_ui",
     "ui/legacy/components/data_grid",
-    "object_ui"
+    "ui/legacy/components/object_ui"
   ],
     "resources": [
     "heapProfiler.css",

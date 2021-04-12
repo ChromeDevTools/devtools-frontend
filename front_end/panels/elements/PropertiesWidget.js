@@ -34,7 +34,7 @@
 import * as Common from '../../core/common/common.js';  // eslint-disable-line no-unused-vars
 import * as Host from '../../core/host/host.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import * as ObjectUI from '../../object_ui/object_ui.js';
+import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 /** @type {!PropertiesWidget} */

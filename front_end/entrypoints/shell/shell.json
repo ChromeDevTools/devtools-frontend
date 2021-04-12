@@ -17,7 +17,7 @@
     { "name": "panels/event_listeners" },
     { "name": "inline_editor" },
     { "name": "panels/input"},
-    { "name": "object_ui" },
+    { "name": "ui/legacy/components/object_ui" },
     { "name": "perf_ui" },
     { "name": "panels/profiler" },
     { "name": "panels/protocol_monitor"},

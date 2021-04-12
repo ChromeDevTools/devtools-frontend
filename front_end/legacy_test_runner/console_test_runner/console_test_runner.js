@@ -4,7 +4,7 @@
 
 import '../test_runner/test_runner.js';
 import '../../panels/console/console-legacy.js';
-import '../../object_ui/object_ui-legacy.js';
+import '../../ui/legacy/components/object_ui/object_ui-legacy.js';
 import '../../panels/console_counters/console_counters-legacy.js';
 
 /**

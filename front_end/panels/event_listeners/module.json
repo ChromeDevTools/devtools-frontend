@@ -2,7 +2,7 @@
   "dependencies": [
     "ui/legacy",
     "components",
-    "object_ui"
+    "ui/legacy/components/object_ui"
   ],
     "resources": [
     "eventListenersView.css"

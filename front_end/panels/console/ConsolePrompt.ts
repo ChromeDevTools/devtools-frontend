@@ -9,8 +9,8 @@ import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
-import * as ObjectUI from '../../object_ui/object_ui.js';
 import * as TextEditor from '../../text_editor/text_editor.js';  // eslint-disable-line no-unused-vars
+import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import {ConsolePanel} from './ConsolePanel.js';

@@ -4,10 +4,10 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../core/common/common.js';
-import * as i18n from '../core/i18n/i18n.js';
-import type * as SDK from '../core/sdk/sdk.js';
-import * as UI from '../ui/legacy/legacy.js';
+import * as Common from '../../../../core/common/common.js';
+import * as i18n from '../../../../core/i18n/i18n.js';
+import type * as SDK from '../../../../core/sdk/sdk.js';
+import * as UI from '../../legacy.js';
 
 import {ObjectPropertiesSection} from './ObjectPropertiesSection.js';
 
@@ -17,7 +17,7 @@ const UIStrings = {
   */
   showAsJavascriptObject: 'Show as JavaScript object',
 };
-const str_ = i18n.i18n.registerUIStrings('object_ui/CustomPreviewComponent.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/object_ui/CustomPreviewComponent.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class CustomPreviewSection {
   _sectionElement: HTMLSpanElement;
@@ -188,9 +188,11 @@ export class CustomPreviewComponent {
     this._customPreviewSection = new CustomPreviewSection(object);
     this.element = document.createElement('span');
     this.element.classList.add('source-code');
-    const shadowRoot = UI.Utils.createShadowRootWithCoreStyles(
-        this.element,
-        {cssFile: 'object_ui/customPreviewComponent.css', enableLegacyPatching: false, delegatesFocus: undefined});
+    const shadowRoot = UI.Utils.createShadowRootWithCoreStyles(this.element, {
+      cssFile: 'ui/legacy/components/object_ui/customPreviewComponent.css',
+      enableLegacyPatching: false,
+      delegatesFocus: undefined,
+    });
     this.element.addEventListener('contextmenu', this._contextMenuEventFired.bind(this), false);
     shadowRoot.appendChild(this._customPreviewSection.element());
   }

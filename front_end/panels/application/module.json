@@ -5,7 +5,7 @@
     "inline_editor",
     "ui/legacy/components/data_grid",
     "components",
-    "object_ui",
+    "ui/legacy/components/object_ui",
     "perf_ui",
     "panels/mobile_throttling",
     "panels/network",

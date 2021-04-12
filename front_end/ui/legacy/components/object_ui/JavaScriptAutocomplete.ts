@@ -4,13 +4,13 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as i18n from '../core/i18n/i18n.js';
-import * as Platform from '../core/platform/platform.js';
-import * as SDK from '../core/sdk/sdk.js';
-import * as Formatter from '../formatter/formatter.js';
-import * as JavaScriptMetaData from '../models/javascript_metadata/javascript_metadata.js';
-import * as TextUtils from '../models/text_utils/text_utils.js';
-import * as UI from '../ui/legacy/legacy.js';
+import * as i18n from '../../../../core/i18n/i18n.js';
+import * as Platform from '../../../../core/platform/platform.js';
+import * as SDK from '../../../../core/sdk/sdk.js';
+import * as Formatter from '../../../../formatter/formatter.js';
+import * as JavaScriptMetaData from '../../../../models/javascript_metadata/javascript_metadata.js';
+import * as TextUtils from '../../../../models/text_utils/text_utils.js';
+import * as UI from '../../legacy.js';
 
 const UIStrings = {
   /**
@@ -26,7 +26,7 @@ const UIStrings = {
   */
   keywords: 'keywords',
 };
-const str_ = i18n.i18n.registerUIStrings('object_ui/JavaScriptAutocomplete.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/object_ui/JavaScriptAutocomplete.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const DEFAULT_TIMEOUT = 500;
 

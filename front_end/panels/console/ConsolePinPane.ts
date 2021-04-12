@@ -8,8 +8,8 @@ import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
-import * as ObjectUI from '../../object_ui/object_ui.js';
 import * as TextEditor from '../../text_editor/text_editor.js';  // eslint-disable-line no-unused-vars
+import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 const UIStrings = {
@@ -60,7 +60,7 @@ export class ConsolePinPane extends UI.ThrottledWidget.ThrottledWidget {
     super(true, 250);
     this._liveExpressionButton = liveExpressionButton;
     this.registerRequiredCSS('panels/console/consolePinPane.css', {enableLegacyPatching: true});
-    this.registerRequiredCSS('object_ui/objectValue.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('ui/legacy/components/object_ui/objectValue.css', {enableLegacyPatching: true});
     this.contentElement.classList.add('console-pins', 'monospace');
     this.contentElement.addEventListener('contextmenu', this._contextMenuEventFired.bind(this), false);
 

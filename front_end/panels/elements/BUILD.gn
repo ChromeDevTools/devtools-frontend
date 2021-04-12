@@ -66,7 +66,6 @@ devtools_module("elements") {
     "../../models/bindings:bundle",
     "../../models/extensions:bundle",
     "../../models/workspace:bundle",
-    "../../object_ui:bundle",
     "../../panels/emulation:bundle",
     "../../panels/event_listeners:bundle",
     "../../panels/mobile_throttling:bundle",
@@ -75,6 +74,7 @@ devtools_module("elements") {
     "../../third_party/lit-html:bundle",
     "../../ui/components:bundle",
     "../../ui/legacy:bundle",
+    "../../ui/legacy/components/object_ui:bundle",
   ]
 
   visibility = [

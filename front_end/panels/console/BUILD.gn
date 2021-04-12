@@ -28,12 +28,12 @@ devtools_module("console") {
     "../../models/bindings:bundle",
     "../../models/issues_manager:bundle",
     "../../models/text_utils:bundle",
-    "../../object_ui:bundle",
     "../../text_editor:bundle",
     "../../theme_support:bundle",
     "../../ui/components:bundle",
     "../../ui/legacy:bundle",
     "../../ui/legacy/components/data_grid:bundle",
+    "../../ui/legacy/components/object_ui:bundle",
     "../console_counters:bundle",
   ]
 }

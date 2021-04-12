@@ -4,9 +4,9 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Platform from '../core/platform/platform.js';
-import * as SDK from '../core/sdk/sdk.js';
-import * as UI from '../ui/legacy/legacy.js';
+import * as Platform from '../../../../core/platform/platform.js';
+import * as SDK from '../../../../core/sdk/sdk.js';
+import * as UI from '../../legacy.js';
 
 import {RemoteObjectPreviewFormatter} from './RemoteObjectPreviewFormatter.js';
 

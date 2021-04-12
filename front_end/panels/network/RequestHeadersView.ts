@@ -40,8 +40,8 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
-import * as ObjectUI from '../../object_ui/object_ui.js';
 import * as ClientVariations from '../../third_party/chromium/client-variations/client-variations.js';
+import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 const UIStrings = {
@@ -270,8 +270,9 @@ export class RequestHeadersView extends UI.Widget.VBox {
     this._highlightedElement = null;
 
     const root = new UI.TreeOutline.TreeOutlineInShadow();
-    root.registerRequiredCSS('object_ui/objectValue.css', {enableLegacyPatching: true});
-    root.registerRequiredCSS('object_ui/objectPropertiesSection.css', {enableLegacyPatching: true});
+    root.registerRequiredCSS('ui/legacy/components/object_ui/objectValue.css', {enableLegacyPatching: true});
+    root.registerRequiredCSS(
+        'ui/legacy/components/object_ui/objectPropertiesSection.css', {enableLegacyPatching: true});
     root.registerRequiredCSS('panels/network/requestHeadersTree.css', {enableLegacyPatching: true});
     root.element.classList.add('request-headers-tree');
     root.makeDense();

@@ -5,7 +5,7 @@
     "cookie_table",
     "ui/legacy/components/data_grid",
     "panels/mobile_throttling",
-    "object_ui",
+    "ui/legacy/components/object_ui",
     "perf_ui",
     "models/persistence",
     "search",

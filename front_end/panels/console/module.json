@@ -2,7 +2,7 @@
   "dependencies": [
     "components",
     "ui/legacy/components/data_grid",
-    "object_ui",
+    "ui/legacy/components/object_ui",
     "text_editor"
   ],
     "resources": [

@@ -19,4 +19,4 @@ import '../../quick_open/quick_open-meta.js';
 import '../../core/sdk/sdk-meta.js';
 import '../../source_frame/source_frame-meta.js';
 import '../../panels/console_counters/console_counters-meta.js';
-import '../../object_ui/object_ui-meta.js';
+import '../../ui/legacy/components/object_ui/object_ui-meta.js';

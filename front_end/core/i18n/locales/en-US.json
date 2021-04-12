@@ -2057,75 +2057,6 @@
   "node_main/NodeMain.ts | nodejsS": {
     "message": "Node.js: {PH1}"
   },
-  "object_ui/CustomPreviewComponent.ts | showAsJavascriptObject": {
-    "message": "Show as JavaScript object"
-  },
-  "object_ui/JavaScriptAutocomplete.ts | keys": {
-    "message": "Keys"
-  },
-  "object_ui/JavaScriptAutocomplete.ts | keywords": {
-    "message": "keywords"
-  },
-  "object_ui/JavaScriptAutocomplete.ts | lexicalScopeVariables": {
-    "message": "Lexical scope variables"
-  },
-  "object_ui/ObjectPropertiesSection.ts | collapseChildren": {
-    "message": "Collapse children"
-  },
-  "object_ui/ObjectPropertiesSection.ts | copy": {
-    "message": "Copy"
-  },
-  "object_ui/ObjectPropertiesSection.ts | copyPropertyPath": {
-    "message": "Copy property path"
-  },
-  "object_ui/ObjectPropertiesSection.ts | copyValue": {
-    "message": "Copy value"
-  },
-  "object_ui/ObjectPropertiesSection.ts | dots": {
-    "message": "(...)"
-  },
-  "object_ui/ObjectPropertiesSection.ts | exceptionS": {
-    "message": "[Exception: {PH1}]"
-  },
-  "object_ui/ObjectPropertiesSection.ts | expandRecursively": {
-    "message": "Expand recursively"
-  },
-  "object_ui/ObjectPropertiesSection.ts | invokePropertyGetter": {
-    "message": "Invoke property getter"
-  },
-  "object_ui/ObjectPropertiesSection.ts | longTextWasTruncatedS": {
-    "message": "long text was truncated ({PH1})"
-  },
-  "object_ui/ObjectPropertiesSection.ts | noProperties": {
-    "message": "No properties"
-  },
-  "object_ui/ObjectPropertiesSection.ts | noPropertyGetter": {
-    "message": "No property getter"
-  },
-  "object_ui/ObjectPropertiesSection.ts | showAllD": {
-    "message": "Show all {PH1}"
-  },
-  "object_ui/ObjectPropertiesSection.ts | showMoreS": {
-    "message": "Show more ({PH1})"
-  },
-  "object_ui/ObjectPropertiesSection.ts | stringIsTooLargeToEdit": {
-    "message": "<string is too large to edit>"
-  },
-  "object_ui/ObjectPropertiesSection.ts | unknown": {
-    "message": "unknown"
-  },
-  "object_ui/ObjectPropertiesSection.ts | unreadable": {
-    "message": "<unreadable>"
-  },
-  "object_ui/RemoteObjectPreviewFormatter.ts | empty": {
-    "message": "empty"
-  },
-  "object_ui/RemoteObjectPreviewFormatter.ts | emptyD": {
-    "message": "empty × {PH1}"
-  },
-  "object_ui/RemoteObjectPreviewFormatter.ts | thePropertyIsComputedWithAGetter": {
-    "message": "The property is computed with a getter"
-  },
   "panels/accessibility/accessibility-meta.ts | accessibility": {
     "message": "Accessibility"
   },
@@ -11035,6 +10966,75 @@
   },
   "ui/legacy/components/data_grid/ViewportDataGrid.ts | collapsed": {
     "message": "collapsed"
+  },
+  "ui/legacy/components/object_ui/CustomPreviewComponent.ts | showAsJavascriptObject": {
+    "message": "Show as JavaScript object"
+  },
+  "ui/legacy/components/object_ui/JavaScriptAutocomplete.ts | keys": {
+    "message": "Keys"
+  },
+  "ui/legacy/components/object_ui/JavaScriptAutocomplete.ts | keywords": {
+    "message": "keywords"
+  },
+  "ui/legacy/components/object_ui/JavaScriptAutocomplete.ts | lexicalScopeVariables": {
+    "message": "Lexical scope variables"
+  },
+  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | collapseChildren": {
+    "message": "Collapse children"
+  },
+  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | copy": {
+    "message": "Copy"
+  },
+  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | copyPropertyPath": {
+    "message": "Copy property path"
+  },
+  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | copyValue": {
+    "message": "Copy value"
+  },
+  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | dots": {
+    "message": "(...)"
+  },
+  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | exceptionS": {
+    "message": "[Exception: {PH1}]"
+  },
+  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | expandRecursively": {
+    "message": "Expand recursively"
+  },
+  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | invokePropertyGetter": {
+    "message": "Invoke property getter"
+  },
+  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | longTextWasTruncatedS": {
+    "message": "long text was truncated ({PH1})"
+  },
+  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | noProperties": {
+    "message": "No properties"
+  },
+  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | noPropertyGetter": {
+    "message": "No property getter"
+  },
+  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | showAllD": {
+    "message": "Show all {PH1}"
+  },
+  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | showMoreS": {
+    "message": "Show more ({PH1})"
+  },
+  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | stringIsTooLargeToEdit": {
+    "message": "<string is too large to edit>"
+  },
+  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | unknown": {
+    "message": "unknown"
+  },
+  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | unreadable": {
+    "message": "<unreadable>"
+  },
+  "ui/legacy/components/object_ui/RemoteObjectPreviewFormatter.ts | empty": {
+    "message": "empty"
+  },
+  "ui/legacy/components/object_ui/RemoteObjectPreviewFormatter.ts | emptyD": {
+    "message": "empty × {PH1}"
+  },
+  "ui/legacy/components/object_ui/RemoteObjectPreviewFormatter.ts | thePropertyIsComputedWithAGetter": {
+    "message": "The property is computed with a getter"
   },
   "ui/legacy/DockController.js | close": {
     "message": "Close"

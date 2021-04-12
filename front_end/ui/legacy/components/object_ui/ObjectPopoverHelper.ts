@@ -30,10 +30,10 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Components from '../components/components.js';
-import * as Platform from '../core/platform/platform.js';
-import * as SDK from '../core/sdk/sdk.js';
-import * as UI from '../ui/legacy/legacy.js';
+import * as Components from '../../../../components/components.js';
+import * as Platform from '../../../../core/platform/platform.js';
+import * as SDK from '../../../../core/sdk/sdk.js';
+import * as UI from '../../legacy.js';
 
 import {CustomPreviewComponent} from './CustomPreviewComponent.js';
 import {ObjectPropertiesSection} from './ObjectPropertiesSection.js';
@@ -74,7 +74,8 @@ export class ObjectPopoverHelper {
       } else {
         popoverContentElement = document.createElement('div');
         popoverContentElement.classList.add('object-popover-content');
-        UI.Utils.appendStyle(popoverContentElement, 'object_ui/objectPopover.css', {enableLegacyPatching: false});
+        UI.Utils.appendStyle(
+            popoverContentElement, 'ui/legacy/components/object_ui/objectPopover.css', {enableLegacyPatching: false});
         const titleElement = popoverContentElement.createChild('div', 'monospace object-popover-title');
         titleElement.createChild('span').textContent = description;
         linkifier = new Components.Linkifier.Linkifier();
@@ -93,8 +94,10 @@ export class ObjectPopoverHelper {
 
     popoverContentElement = document.createElement('span');
     popoverContentElement.dataset.stableNameForTest = 'object-popover-content';
-    UI.Utils.appendStyle(popoverContentElement, 'object_ui/objectValue.css', {enableLegacyPatching: true});
-    UI.Utils.appendStyle(popoverContentElement, 'object_ui/objectPopover.css', {enableLegacyPatching: false});
+    UI.Utils.appendStyle(
+        popoverContentElement, 'ui/legacy/components/object_ui/objectValue.css', {enableLegacyPatching: true});
+    UI.Utils.appendStyle(
+        popoverContentElement, 'ui/legacy/components/object_ui/objectPopover.css', {enableLegacyPatching: false});
     const valueElement = popoverContentElement.createChild('span', 'monospace object-value-' + result.type);
     valueElement.style.whiteSpace = 'pre';
 

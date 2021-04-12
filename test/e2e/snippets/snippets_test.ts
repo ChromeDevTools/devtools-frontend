@@ -10,7 +10,7 @@ import {getCurrentConsoleMessages} from '../helpers/console-helpers.js';
 import {getAvailableSnippets, openCommandMenu, showSnippetsAutocompletion} from '../helpers/quick_open-helpers.js';
 import {addSelectedTextToWatches, createNewSnippet, evaluateSelectedTextInConsole, getWatchExpressionsValues, openSnippetsSubPane, openSourcesPanel, runSnippet} from '../helpers/sources-helpers.js';
 
-describe('Snippet creation', () => {
+describe.skip('[crbug.com/1198160]: Snippet creation', () => {
   it('can show newly created snippets show up in command menu', async () => {
     const {frontend} = getBrowserAndPages();
 
@@ -40,7 +40,7 @@ describe('Snippet creation', () => {
   });
 });
 
-describe('Expression evaluation', () => {
+describe.skip('[crbug.com/1198160]: Expression evaluation', () => {
   const message = '"Hello"';
 
   beforeEach(async () => {

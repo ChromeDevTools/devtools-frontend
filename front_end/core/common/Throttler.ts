@@ -2,20 +2,24 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/** @typedef {function(!Error=):void} */
-// @ts-ignore Typedef.
-export let FinishCallback;
+/* eslint-disable rulesdir/no_underscored_properties */
+
+export type FinishCallback = (err: Error) => void;
 
 export class Throttler {
-  /**
-   * @param {number} timeout
-   */
-  constructor(timeout) {
+  _timeout: number;
+  _isRunningProcess: boolean;
+  _asSoonAsPossible: boolean;
+  _process: (() => (Promise<unknown>))|null;
+  _lastCompleteTime: number;
+  _schedulePromise: Promise<unknown>;
+  _scheduleResolve!: (value: unknown) => void;
+  _processTimeout?: number;
+
+  constructor(timeout: number) {
     this._timeout = timeout;
     this._isRunningProcess = false;
-    /** @type {boolean} */
     this._asSoonAsPossible = false;
-    /** @type {?function():(!Promise<void>)} */
     this._process = null;
     this._lastCompleteTime = 0;
 
@@ -24,7 +28,7 @@ export class Throttler {
     });
   }
 
-  _processCompleted() {
+  _processCompleted(): void {
     this._lastCompleteTime = this._getTime();
     this._isRunningProcess = false;
     if (this._process) {
@@ -33,11 +37,11 @@ export class Throttler {
     this._processCompletedForTests();
   }
 
-  _processCompletedForTests() {
+  _processCompletedForTests(): void {
     // For sniffing in tests.
   }
 
-  _onTimeout() {
+  _onTimeout(): void {
     delete this._processTimeout;
     this._asSoonAsPossible = false;
     this._isRunningProcess = true;
@@ -53,12 +57,7 @@ export class Throttler {
     this._process = null;
   }
 
-  /**
-   * @param {function():(!Promise<?>)} process
-   * @param {boolean=} asSoonAsPossible
-   * @return {!Promise<void>}
-   */
-  schedule(process, asSoonAsPossible) {
+  schedule(process: () => (Promise<unknown>), asSoonAsPossible?: boolean): Promise<void> {
     // Deliberately skip previous process.
     this._process = process;
 
@@ -72,13 +71,10 @@ export class Throttler {
 
     this._innerSchedule(forceTimerUpdate);
 
-    return this._schedulePromise;
+    return this._schedulePromise as Promise<void>;
   }
 
-  /**
-   * @param {boolean} forceTimerUpdate
-   */
-  _innerSchedule(forceTimerUpdate) {
+  _innerSchedule(forceTimerUpdate: boolean): void {
     if (this._isRunningProcess) {
       return;
     }
@@ -93,26 +89,15 @@ export class Throttler {
     this._processTimeout = this._setTimeout(this._onTimeout.bind(this), timeout);
   }
 
-  /**
-   *  @param {number} timeoutId
-   */
-  _clearTimeout(timeoutId) {
+  _clearTimeout(timeoutId: number): void {
     clearTimeout(timeoutId);
   }
 
-  /**
-   * @param {function():void} operation
-   * @param {number} timeout
-   * @return {number}
-   */
-  _setTimeout(operation, timeout) {
+  _setTimeout(operation: () => void, timeout: number): number {
     return window.setTimeout(operation, timeout);
   }
 
-  /**
-   * @return {number}
-   */
-  _getTime() {
+  _getTime(): number {
     return window.performance.now();
   }
 }

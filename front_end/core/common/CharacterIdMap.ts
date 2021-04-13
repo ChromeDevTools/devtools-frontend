@@ -2,23 +2,20 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/**
- * @template T
- */
-export class CharacterIdMap {
+/* eslint-disable rulesdir/no_underscored_properties */
+
+export class CharacterIdMap<T> {
+  _elementToCharacter: Map<T, string>;
+  _characterToElement: Map<string, T>;
+  _charCode: number;
+
   constructor() {
-    /** @type {!Map<T, string>} */
     this._elementToCharacter = new Map();
-    /** @type {!Map<string, T>} */
     this._characterToElement = new Map();
     this._charCode = 33;
   }
 
-  /**
-   * @param {T} object
-   * @return {string}
-   */
-  toChar(object) {
+  toChar(object: T): string {
     let character = this._elementToCharacter.get(object);
     if (!character) {
       if (this._charCode >= 0xFFFF) {
@@ -31,11 +28,7 @@ export class CharacterIdMap {
     return character;
   }
 
-  /**
-   * @param {string} character
-   * @return {?T}
-   */
-  fromChar(character) {
+  fromChar(character: string): T|null {
     const object = this._characterToElement.get(character);
     if (object === undefined) {
       return null;

@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';  // eslint-disable-line no-unused-vars
 
@@ -35,29 +37,14 @@ const UIStrings = {
   */
   sourcesPanel: 'Sources panel',
 };
-const str_ = i18n.i18n.registerUIStrings('core/common/Revealer.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('core/common/Revealer.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
-/**
- * @interface
- */
-export class Revealer {
-  /**
-   * @param {!Object} object
-   * @param {boolean=} omitFocus
-   * @return {!Promise<void>}
-   */
-  reveal(object, omitFocus) {
-    throw new Error('not implemented');
-  }
+export abstract class Revealer {
+  abstract reveal(object: Object, omitFocus?: boolean): Promise<void>;
 }
 
-/**
- * @param {?Object} revealable
- * @param {boolean=} omitFocus
- * @return {!Promise.<void>}
- */
-export let reveal = async function(revealable, omitFocus) {
+export let reveal = async function(revealable: Object|null, omitFocus?: boolean): Promise<void> {
   if (!revealable) {
     return Promise.reject(new Error('Can\'t reveal ' + revealable));
   }
@@ -65,31 +52,20 @@ export let reveal = async function(revealable, omitFocus) {
       await Promise.all(getApplicableRegisteredRevealers(revealable).map(registration => registration.loadRevealer()));
 
   return reveal(revealers);
-  /**
-   * @param {!Array.<!Revealer>} revealers
-   * @return {!Promise.<void>}
-   */
-  function reveal(revealers) {
+  function reveal(revealers: Revealer[]): Promise<void> {
     const promises = [];
     for (let i = 0; i < revealers.length; ++i) {
-      promises.push(revealers[i].reveal(/** @type {!Object} */ (revealable), omitFocus));
+      promises.push(revealers[i].reveal((revealable as Object), omitFocus));
     }
     return Promise.race(promises);
   }
 };
 
-/**
- * @param {function(?Object, boolean=):!Promise.<undefined>} newReveal
- */
-export function setRevealForTest(newReveal) {
+export function setRevealForTest(newReveal: (arg0: Object|null, arg1?: boolean|undefined) => Promise<undefined>): void {
   reveal = newReveal;
 }
 
-/**
- * @param {?Object} revealable
- * @return {?string}
- */
-export const revealDestination = function(revealable) {
+export const revealDestination = function(revealable: Object|null): string|null {
   const extension = revealable ? getApplicableRegisteredRevealers(revealable)[0] : registeredRevealers[0];
   if (!extension) {
     return null;
@@ -97,32 +73,22 @@ export const revealDestination = function(revealable) {
   return extension.destination?.() || null;
 };
 
-/** @type {!Array<!RevealerRegistration>} */
-const registeredRevealers = [];
+const registeredRevealers: RevealerRegistration[] = [];
 
-/**
- * @param {!RevealerRegistration} registration
- */
-export function registerRevealer(registration) {
+export function registerRevealer(registration: RevealerRegistration): void {
   registeredRevealers.push(registration);
 }
 
-/**
- * @param {!Object} revealable
- * @return {!Array<RevealerRegistration>}
- */
-function getApplicableRegisteredRevealers(revealable) {
+function getApplicableRegisteredRevealers(revealable: Object): RevealerRegistration[] {
   return registeredRevealers.filter(isRevealerApplicableToContextTypes);
 
-  /**
-   * @param {!RevealerRegistration} revealerRegistration
-   * @return {boolean}
-   */
-  function isRevealerApplicableToContextTypes(revealerRegistration) {
+  function isRevealerApplicableToContextTypes(revealerRegistration: RevealerRegistration): boolean {
     if (!revealerRegistration.contextTypes) {
       return true;
     }
     for (const contextType of revealerRegistration.contextTypes()) {
+      // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+      // @ts-expect-error
       if (revealable instanceof contextType) {
         return true;
       }
@@ -130,17 +96,12 @@ function getApplicableRegisteredRevealers(revealable) {
     return false;
   }
 }
+export interface RevealerRegistration {
+  contextTypes: () => Array<unknown>;
+  loadRevealer: () => Promise<Revealer>;
+  destination?: RevealerDestination;
+}
 
-/**
- * @typedef {{
-  *  contextTypes: function(): !Array<?>,
-  *  loadRevealer: function(): !Promise<!Revealer>,
-  *  destination: (undefined|RevealerDestination)
-  * }} */
-// @ts-ignore typedef
-export let RevealerRegistration;
-
-/** @enum {() => Platform.UIString.LocalizedString} */
 export const RevealerDestination = {
   ELEMENTS_PANEL: i18nLazyString(UIStrings.elementsPanel),
   STYLES_SIDEBAR: i18nLazyString(UIStrings.stylesSidebar),
@@ -150,3 +111,5 @@ export const RevealerDestination = {
   APPLICATION_PANEL: i18nLazyString(UIStrings.applicationPanel),
   SOURCES_PANEL: i18nLazyString(UIStrings.sourcesPanel),
 };
+
+export type RevealerDestination = () => Platform.UIString.LocalizedString;

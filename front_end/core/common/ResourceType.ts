@@ -31,6 +31,8 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';  // eslint-disable-line no-unused-vars
 
@@ -154,27 +156,24 @@ const UIStrings = {
   */
   preflight: 'Preflight',
 };
-const str_ = i18n.i18n.registerUIStrings('core/common/ResourceType.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('core/common/ResourceType.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
+
 export class ResourceType {
-  /**
-   * @param {string} name
-   * @param {() => Platform.UIString.LocalizedString} title
-   * @param {!ResourceCategory} category
-   * @param {boolean} isTextType
-   */
-  constructor(name, title, category, isTextType) {
+  _name: string;
+  _title: () => Platform.UIString.LocalizedString;
+  _category: ResourceCategory;
+  _isTextType: boolean;
+
+  constructor(
+      name: string, title: () => Platform.UIString.LocalizedString, category: ResourceCategory, isTextType: boolean) {
     this._name = name;
     this._title = title;
     this._category = category;
     this._isTextType = isTextType;
   }
 
-  /**
-   * @param {?string} mimeType
-   * @return {!ResourceType}
-   */
-  static fromMimeType(mimeType) {
+  static fromMimeType(mimeType: string|null): ResourceType {
     if (!mimeType) {
       return resourceTypes.Other;
     }
@@ -207,21 +206,15 @@ export class ResourceType {
     return resourceTypes.Other;
   }
 
-  /**
-   * @param {string} url
-   * @return {?ResourceType}
-   */
-  static fromURL(url) {
+  static fromURL(url: string): ResourceType|null {
     return _resourceTypeByExtension.get(ParsedURL.extractExtension(url)) || null;
   }
 
-  /**
-   * @param {string} name
-   * @return {?ResourceType}
-   */
-  static fromName(name) {
+  static fromName(name: string): ResourceType|null {
     for (const resourceTypeId in resourceTypes) {
-      const resourceType = /** @type {!Object<string, !ResourceType>} */ (resourceTypes)[resourceTypeId];
+      const resourceType = (resourceTypes as {
+        [x: string]: ResourceType,
+      })[resourceTypeId];
       if (resourceType.name() === name) {
         return resourceType;
       }
@@ -229,11 +222,7 @@ export class ResourceType {
     return null;
   }
 
-  /**
-   * @param {string} url
-   * @return {string|undefined}
-   */
-  static mimeFromURL(url) {
+  static mimeFromURL(url: string): string|undefined {
     const name = ParsedURL.extractName(url);
     if (_mimeTypeByName.has(name)) {
       return _mimeTypeByName.get(name);
@@ -243,102 +232,59 @@ export class ResourceType {
     return _mimeTypeByExtension.get(ext);
   }
 
-  /**
-   * @param {string} ext
-   * @return {string|undefined}
-   */
-  static mimeFromExtension(ext) {
+  static mimeFromExtension(ext: string): string|undefined {
     return _mimeTypeByExtension.get(ext);
   }
 
-  /**
-   * @return {string}
-   */
-  name() {
+  name(): string {
     return this._name;
   }
 
-  /**
-   * @return {string}
-   */
-  title() {
+  title(): string {
     return this._title();
   }
 
-  /**
-   * @return {!ResourceCategory}
-   */
-  category() {
+  category(): ResourceCategory {
     return this._category;
   }
 
-  /**
-   * @return {boolean}
-   */
-  isTextType() {
+  isTextType(): boolean {
     return this._isTextType;
   }
 
-  /**
-   * @return {boolean}
-   */
-  isScript() {
+  isScript(): boolean {
     return this._name === 'script' || this._name === 'sm-script';
   }
 
-  /**
-   * @return {boolean}
-   */
-  hasScripts() {
+  hasScripts(): boolean {
     return this.isScript() || this.isDocument();
   }
 
-  /**
-   * @return {boolean}
-   */
-  isStyleSheet() {
+  isStyleSheet(): boolean {
     return this._name === 'stylesheet' || this._name === 'sm-stylesheet';
   }
 
-  /**
-   * @return {boolean}
-   */
-  isDocument() {
+  isDocument(): boolean {
     return this._name === 'document';
   }
 
-  /**
-   * @return {boolean}
-   */
-  isDocumentOrScriptOrStyleSheet() {
+  isDocumentOrScriptOrStyleSheet(): boolean {
     return this.isDocument() || this.isScript() || this.isStyleSheet();
   }
 
-  /**
-   * @return {boolean}
-   */
-  isImage() {
+  isImage(): boolean {
     return this._name === 'image';
   }
 
-  /**
-   * @return {boolean}
-   */
-  isFromSourceMap() {
+  isFromSourceMap(): boolean {
     return this._name.startsWith('sm-');
   }
 
-  /**
-   * @return {string}
-   */
-  toString() {
+  toString(): string {
     return this._name;
   }
 
-  /**
-   * @return {string}
-   */
-  canonicalMimeType() {
+  canonicalMimeType(): string {
     if (this.isDocument()) {
       return 'text/html';
     }
@@ -353,19 +299,14 @@ export class ResourceType {
 }
 
 export class ResourceCategory {
-  /**
-   * @param {() => Platform.UIString.LocalizedString} title
-   * @param {() => Platform.UIString.LocalizedString} shortTitle
-   */
-  constructor(title, shortTitle) {
+  title: () => Platform.UIString.LocalizedString;
+  shortTitle: () => Platform.UIString.LocalizedString;
+  constructor(title: () => Platform.UIString.LocalizedString, shortTitle: () => Platform.UIString.LocalizedString) {
     this.title = title;
     this.shortTitle = shortTitle;
   }
 }
 
-/**
- * @enum {!ResourceCategory}
- */
 export const resourceCategories = {
   XHR: new ResourceCategory(i18nLazyString(UIStrings.xhrAndFetch), i18n.i18n.lockedLazyString('XHR')),
   Script: new ResourceCategory(i18nLazyString(UIStrings.scripts), i18nLazyString(UIStrings.js)),
@@ -381,7 +322,6 @@ export const resourceCategories = {
 
 /**
  * Keep these in sync with WebCore::InspectorPageAgent::resourceTypeJson
- * @enum {!ResourceType}
  */
 export const resourceTypes = {
   Document: new ResourceType('document', i18nLazyString(UIStrings.document), resourceCategories.Document, true),
@@ -411,37 +351,64 @@ export const resourceTypes = {
       new ResourceType('sm-stylesheet', i18nLazyString(UIStrings.stylesheet), resourceCategories.Stylesheet, true),
 };
 
-
+// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export const _mimeTypeByName = new Map([
   // CoffeeScript
-  ['Cakefile', 'text/x-coffeescript']
+  ['Cakefile', 'text/x-coffeescript'],
 ]);
 
+// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export const _resourceTypeByExtension = new Map([
-  ['js', resourceTypes.Script], ['mjs', resourceTypes.Script],
+  ['js', resourceTypes.Script],
+  ['mjs', resourceTypes.Script],
 
-  ['css', resourceTypes.Stylesheet], ['xsl', resourceTypes.Stylesheet],
+  ['css', resourceTypes.Stylesheet],
+  ['xsl', resourceTypes.Stylesheet],
 
-  ['jpeg', resourceTypes.Image], ['jpg', resourceTypes.Image], ['svg', resourceTypes.Image],
-  ['gif', resourceTypes.Image], ['png', resourceTypes.Image], ['ico', resourceTypes.Image],
-  ['tiff', resourceTypes.Image], ['tif', resourceTypes.Image], ['bmp', resourceTypes.Image],
+  ['jpeg', resourceTypes.Image],
+  ['jpg', resourceTypes.Image],
+  ['svg', resourceTypes.Image],
+  ['gif', resourceTypes.Image],
+  ['png', resourceTypes.Image],
+  ['ico', resourceTypes.Image],
+  ['tiff', resourceTypes.Image],
+  ['tif', resourceTypes.Image],
+  ['bmp', resourceTypes.Image],
 
   ['webp', resourceTypes.Media],
 
-  ['ttf', resourceTypes.Font], ['otf', resourceTypes.Font], ['ttc', resourceTypes.Font], ['woff', resourceTypes.Font]
+  ['ttf', resourceTypes.Font],
+  ['otf', resourceTypes.Font],
+  ['ttc', resourceTypes.Font],
+  ['woff', resourceTypes.Font],
 ]);
 
+// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export const _mimeTypeByExtension = new Map([
   // Web extensions
-  ['js', 'text/javascript'], ['mjs', 'text/javascript'], ['css', 'text/css'], ['html', 'text/html'],
-  ['htm', 'text/html'], ['xml', 'application/xml'], ['xsl', 'application/xml'],
+  ['js', 'text/javascript'],
+  ['mjs', 'text/javascript'],
+  ['css', 'text/css'],
+  ['html', 'text/html'],
+  ['htm', 'text/html'],
+  ['xml', 'application/xml'],
+  ['xsl', 'application/xml'],
 
   // HTML Embedded Scripts, ASP], JSP
-  ['asp', 'application/x-aspx'], ['aspx', 'application/x-aspx'], ['jsp', 'application/x-jsp'],
+  ['asp', 'application/x-aspx'],
+  ['aspx', 'application/x-aspx'],
+  ['jsp', 'application/x-jsp'],
 
   // C/C++
-  ['c', 'text/x-c++src'], ['cc', 'text/x-c++src'], ['cpp', 'text/x-c++src'], ['h', 'text/x-c++src'],
-  ['m', 'text/x-c++src'], ['mm', 'text/x-c++src'],
+  ['c', 'text/x-c++src'],
+  ['cc', 'text/x-c++src'],
+  ['cpp', 'text/x-c++src'],
+  ['h', 'text/x-c++src'],
+  ['m', 'text/x-c++src'],
+  ['mm', 'text/x-c++src'],
 
   // CoffeeScript
   ['coffee', 'text/x-coffeescript'],
@@ -450,10 +417,13 @@ export const _mimeTypeByExtension = new Map([
   ['dart', 'text/javascript'],
 
   // TypeScript
-  ['ts', 'text/typescript'], ['tsx', 'text/typescript-jsx'],
+  ['ts', 'text/typescript'],
+  ['tsx', 'text/typescript-jsx'],
 
   // JSON
-  ['json', 'application/json'], ['gyp', 'application/json'], ['gypi', 'application/json'],
+  ['json', 'application/json'],
+  ['gyp', 'application/json'],
+  ['gypi', 'application/json'],
 
   // C#
   ['cs', 'text/x-csharp'],
@@ -465,7 +435,8 @@ export const _mimeTypeByExtension = new Map([
   ['less', 'text/x-less'],
 
   // PHP
-  ['php', 'text/x-php'], ['phtml', 'application/x-httpd-php'],
+  ['php', 'text/x-php'],
+  ['phtml', 'application/x-httpd-php'],
 
   // Python
   ['py', 'text/x-python'],
@@ -486,7 +457,9 @@ export const _mimeTypeByExtension = new Map([
   ['md', 'text/markdown'],
 
   // ClojureScript
-  ['cljs', 'text/x-clojure'], ['cljc', 'text/x-clojure'], ['cljx', 'text/x-clojure'],
+  ['cljs', 'text/x-clojure'],
+  ['cljc', 'text/x-clojure'],
+  ['cljx', 'text/x-clojure'],
 
   // Stylus
   ['styl', 'text/x-styl'],
@@ -495,9 +468,20 @@ export const _mimeTypeByExtension = new Map([
   ['jsx', 'text/jsx'],
 
   // Image
-  ['jpeg', 'image/jpeg'], ['jpg', 'image/jpeg'], ['svg', 'image/svg+xml'], ['gif', 'image/gif'], ['webp', 'image/webp'],
-  ['png', 'image/png'], ['ico', 'image/ico'], ['tiff', 'image/tiff'], ['tif', 'image/tif'], ['bmp', 'image/bmp'],
+  ['jpeg', 'image/jpeg'],
+  ['jpg', 'image/jpeg'],
+  ['svg', 'image/svg+xml'],
+  ['gif', 'image/gif'],
+  ['webp', 'image/webp'],
+  ['png', 'image/png'],
+  ['ico', 'image/ico'],
+  ['tiff', 'image/tiff'],
+  ['tif', 'image/tif'],
+  ['bmp', 'image/bmp'],
 
   // Font
-  ['ttf', 'font/opentype'], ['otf', 'font/opentype'], ['ttc', 'font/opentype'], ['woff', 'application/font-woff']
+  ['ttf', 'font/opentype'],
+  ['otf', 'font/opentype'],
+  ['ttc', 'font/opentype'],
+  ['woff', 'application/font-woff'],
 ]);

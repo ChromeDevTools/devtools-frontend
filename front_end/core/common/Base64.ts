@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 const BASE64_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 const BASE64_CODES = new Uint8Array(123);
 for (let index = 0; index < BASE64_CHARS.length; ++index) {
@@ -10,11 +12,8 @@ for (let index = 0; index < BASE64_CHARS.length; ++index) {
 
 /**
  * Decodes Base64-encoded data from a string without performing any kind of checking.
- *
- * @param {string} input valid Base64-encoded data
- * @return {!ArrayBuffer} decoded result
  */
-export function decode(input) {
+export function decode(input: string): ArrayBuffer {
   let bytesLength = ((input.length * 3) / 4) >>> 0;
   if (input.charCodeAt(input.length - 2) === 0x3d /* '=' */) {
     bytesLength -= 2;

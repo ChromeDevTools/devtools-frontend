@@ -28,29 +28,26 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import {Trie} from './Trie.js';
 
 export class TextDictionary {
+  _words: Map<string, number>;
+  _index: Trie;
   constructor() {
-    /** @type {!Map<string, number>} */
     this._words = new Map();
     this._index = new Trie();
   }
 
-  /**
-   * @param {string} word
-   */
-  addWord(word) {
+  addWord(word: string): void {
     let count = this._words.get(word) || 0;
     ++count;
     this._words.set(word, count);
     this._index.add(word);
   }
 
-  /**
-   * @param {string} word
-   */
-  removeWord(word) {
+  removeWord(word: string): void {
     let count = this._words.get(word) || 0;
     if (!count) {
       return;
@@ -64,31 +61,19 @@ export class TextDictionary {
     this._words.set(word, count);
   }
 
-  /**
-   * @param {string} prefix
-   * @return {!Array.<string>}
-   */
-  wordsWithPrefix(prefix) {
+  wordsWithPrefix(prefix: string): string[] {
     return this._index.words(prefix);
   }
 
-  /**
-   * @param {string} word
-   * @return {boolean}
-   */
-  hasWord(word) {
+  hasWord(word: string): boolean {
     return this._words.has(word);
   }
 
-  /**
-   * @param {string} word
-   * @return {number}
-   */
-  wordCount(word) {
+  wordCount(word: string): number {
     return this._words.get(word) || 0;
   }
 
-  reset() {
+  reset(): void {
     this._words.clear();
     this._index.clear();
   }

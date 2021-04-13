@@ -65,8 +65,10 @@ export class ConsoleSidebar extends UI.Widget.VBox {
     this.contentElement.appendChild(this._tree.element);
     this._selectedTreeElement = null;
     this._treeElements = [];
-    const selectedFilterSetting: Common.Settings.Setting<string> =
-        Common.Settings.Settings.instance().createSetting('console.sidebarSelectedFilter', null);
+    const selectedFilterSetting =
+        // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+        // @ts-expect-error
+        Common.Settings.Settings.instance().createSetting<string>('console.sidebarSelectedFilter', null);
 
     const Levels = SDK.ConsoleModel.MessageLevel;
     const consoleAPIParsedFilters =

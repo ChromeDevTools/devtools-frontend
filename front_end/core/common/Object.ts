@@ -27,29 +27,24 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import {EventDescriptor, EventTarget, EventTargetEvent} from './EventTarget.js';  // eslint-disable-line no-unused-vars
+// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+// eslint-disable-next-line @typescript-eslint/naming-convention
+interface _listenerCallbackTuple {
+  thisObject?: Object;
+  listener: (arg0: EventTargetEvent) => void;
+  disposed?: boolean;
+}
 
-/**
- * @typedef {!{thisObject: (!Object|undefined), listener: function(!EventTargetEvent):void, disposed: (boolean|undefined)}}
- */
-let _listenerCallbackTuple;  // eslint-disable-line no-unused-vars
-
-/**
- * @implements {EventTarget}
- */
-export class ObjectWrapper {
+export class ObjectWrapper implements EventTarget {
+  _listeners!: Map<string|symbol, _listenerCallbackTuple[]>|undefined;
   constructor() {
-    /** @type {(!Map<string|symbol, !Array<!_listenerCallbackTuple>>|undefined)} */
-    this._listeners;
   }
 
-  /**
-   * @param {string|symbol} eventType
-   * @param {function(!EventTargetEvent):void} listener
-   * @param {!Object=} thisObject
-   * @return {!EventDescriptor}
-   */
-  addEventListener(eventType, listener, thisObject) {
+  addEventListener(eventType: string|symbol, listener: (arg0: EventTargetEvent) => void, thisObject?: Object):
+      EventDescriptor {
     if (!listener) {
       console.assert(false);
     }
@@ -68,11 +63,9 @@ export class ObjectWrapper {
     return {eventTarget: this, eventType: eventType, thisObject: thisObject, listener: listener};
   }
 
-  /**
-   * @param {string|symbol} eventType
-   * @return {!Promise<*>}
-   */
-  once(eventType) {
+  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  once(eventType: string|symbol): Promise<any> {
     return new Promise(resolve => {
       const descriptor = this.addEventListener(eventType, event => {
         this.removeEventListener(eventType, descriptor.listener);
@@ -81,12 +74,7 @@ export class ObjectWrapper {
     });
   }
 
-  /**
-   * @param {string|symbol} eventType
-   * @param {function(!EventTargetEvent):void} listener
-   * @param {!Object=} thisObject
-   */
-  removeEventListener(eventType, listener, thisObject) {
+  removeEventListener(eventType: string|symbol, listener: (arg0: EventTargetEvent) => void, thisObject?: Object): void {
     console.assert(Boolean(listener));
 
     if (!this._listeners || !this._listeners.has(eventType)) {
@@ -105,24 +93,18 @@ export class ObjectWrapper {
     }
   }
 
-  /**
-   * @param {string|symbol} eventType
-   * @return {boolean}
-   */
-  hasEventListeners(eventType) {
+  hasEventListeners(eventType: string|symbol): boolean {
     return Boolean(this._listeners && this._listeners.has(eventType));
   }
 
-  /**
-   * @param {string|symbol} eventType
-   * @param {*=} eventData
-   */
-  dispatchEventToListeners(eventType, eventData) {
+  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  dispatchEventToListeners(eventType: string|symbol, eventData?: any): void {
     if (!this._listeners || !this._listeners.has(eventType)) {
       return;
     }
 
-    const event = /** @type {!EventTargetEvent} */ ({data: eventData});
+    const event = ({data: eventData} as EventTargetEvent);
     // @ts-ignore we do the check for undefined above
     const listeners = this._listeners.get(eventType).slice(0) || [];
     for (let i = 0; i < listeners.length; ++i) {

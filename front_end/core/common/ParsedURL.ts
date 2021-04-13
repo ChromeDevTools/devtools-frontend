@@ -28,14 +28,28 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Platform from '../platform/platform.js';
 import * as Root from '../root/root.js';
 
 export class ParsedURL {
-  /**
-   * @param {string} url
-   */
-  constructor(url) {
+  isValid: boolean;
+  url: string;
+  scheme: string;
+  user: string;
+  host: string;
+  port: string;
+  path: string;
+  queryParams: string;
+  fragment: string;
+  folderPathComponents: string;
+  lastPathComponent: string;
+  _blobInnerScheme: string|undefined;
+  _displayName?: string;
+  _dataURLDisplayName?: string;
+
+  constructor(url: string) {
     this.isValid = false;
     this.url = url;
     this.scheme = '';
@@ -90,11 +104,7 @@ export class ParsedURL {
     }
   }
 
-  /**
-   * @param {string} string
-   * @return {?ParsedURL}
-   */
-  static fromString(string) {
+  static fromString(string: string): ParsedURL|null {
     const parsedURL = new ParsedURL(string.toString());
     if (parsedURL.isValid) {
       return parsedURL;
@@ -102,11 +112,7 @@ export class ParsedURL {
     return null;
   }
 
-  /**
-   * @param {string} fileSystemPath
-   * @return {string}
-   */
-  static platformPathToURL(fileSystemPath) {
+  static platformPathToURL(fileSystemPath: string): string {
     fileSystemPath = fileSystemPath.replace(/\\/g, '/');
     if (!fileSystemPath.startsWith('file://')) {
       if (fileSystemPath.startsWith('/')) {
@@ -118,12 +124,7 @@ export class ParsedURL {
     return fileSystemPath;
   }
 
-  /**
-   * @param {string} fileURL
-   * @param {boolean=} isWindows
-   * @return {string}
-   */
-  static urlToPlatformPath(fileURL, isWindows) {
+  static urlToPlatformPath(fileURL: string, isWindows?: boolean): string {
     console.assert(fileURL.startsWith('file://'), 'This must be a file URL.');
     if (isWindows) {
       return fileURL.substr('file:///'.length).replace(/\//g, '\\');
@@ -131,11 +132,7 @@ export class ParsedURL {
     return fileURL.substr('file://'.length);
   }
 
-  /**
-   * @param {string} url
-   * @return {string}
-   */
-  static urlWithoutHash(url) {
+  static urlWithoutHash(url: string): string {
     const hashIndex = url.indexOf('#');
     if (hashIndex !== -1) {
       return url.substr(0, hashIndex);
@@ -143,10 +140,7 @@ export class ParsedURL {
     return url;
   }
 
-  /**
-   * @return {!RegExp}
-   */
-  static _urlRegex() {
+  static _urlRegex(): RegExp {
     if (ParsedURL._urlRegexInstance) {
       return ParsedURL._urlRegexInstance;
     }
@@ -173,29 +167,17 @@ export class ParsedURL {
     return ParsedURL._urlRegexInstance;
   }
 
-  /**
-   * @param {string} url
-   * @return {string}
-   */
-  static extractPath(url) {
+  static extractPath(url: string): string {
     const parsedURL = this.fromString(url);
     return parsedURL ? parsedURL.path : '';
   }
 
-  /**
-   * @param {string} url
-   * @return {string}
-   */
-  static extractOrigin(url) {
+  static extractOrigin(url: string): string {
     const parsedURL = this.fromString(url);
     return parsedURL ? parsedURL.securityOrigin() : '';
   }
 
-  /**
-   * @param {string} url
-   * @return {string}
-   */
-  static extractExtension(url) {
+  static extractExtension(url: string): string {
     url = ParsedURL.urlWithoutHash(url);
     const indexOfQuestionMark = url.indexOf('?');
     if (indexOfQuestionMark !== -1) {
@@ -217,23 +199,14 @@ export class ParsedURL {
     return '';
   }
 
-  /**
-   * @param {string} url
-   * @return {string}
-   */
-  static extractName(url) {
+  static extractName(url: string): string {
     let index = url.lastIndexOf('/');
     const pathAndQuery = index !== -1 ? url.substr(index + 1) : url;
     index = pathAndQuery.indexOf('?');
     return index < 0 ? pathAndQuery : pathAndQuery.substr(0, index);
   }
 
-  /**
-   * @param {string} baseURL
-   * @param {string} href
-   * @return {?string}
-   */
-  static completeURL(baseURL, href) {
+  static completeURL(baseURL: string, href: string): string|null {
     // Return special URLs as-is.
     const trimmedHref = href.trim();
     if (trimmedHref.startsWith('data:') || trimmedHref.startsWith('blob:') || trimmedHref.startsWith('javascript:') ||
@@ -282,7 +255,7 @@ export class ParsedURL {
     if (!hrefMatches || !href.length) {
       throw new Error('Invalid href');
     }
-    let hrefPath = hrefMatches[0];
+    let hrefPath: string = hrefMatches[0];
     const hrefSuffix = href.substring(hrefPath.length);
     if (hrefPath.charAt(0) !== '/') {
       hrefPath = parsedURL.folderPathComponents + '/' + hrefPath;
@@ -290,15 +263,15 @@ export class ParsedURL {
     return securityOrigin + Root.Runtime.Runtime.normalizePath(hrefPath) + hrefSuffix;
   }
 
-  /**
-   * @param {string} string
-   * @return {!{url: string, lineNumber: (number|undefined), columnNumber: (number|undefined)}}
-   */
-  static splitLineAndColumn(string) {
+  static splitLineAndColumn(string: string): {
+    url: string,
+    lineNumber: (number|undefined),
+    columnNumber: (number|undefined),
+  } {
     // Only look for line and column numbers in the path to avoid matching port numbers.
     const beforePathMatch = string.match(ParsedURL._urlRegex());
     let beforePath = '';
-    let pathAndAfter = string;
+    let pathAndAfter: string = string;
     if (beforePathMatch) {
       beforePath = beforePathMatch[1];
       pathAndAfter = string.substring(beforePathMatch[1].length);
@@ -323,7 +296,7 @@ export class ParsedURL {
       columnNumber = isNaN(columnNumber) ? undefined : columnNumber - 1;
     }
 
-    let url = beforePath + pathAndAfter.substring(0, pathAndAfter.length - lineColumnMatch[0].length);
+    let url: string = beforePath + pathAndAfter.substring(0, pathAndAfter.length - lineColumnMatch[0].length);
     if (lineColumnMatch[1] === undefined && lineColumnMatch[2] === undefined) {
       const wasmCodeOffsetRegex = /wasm-function\[\d+\]:0x([a-z0-9]+)$/g;
       const wasmCodeOffsetMatch = wasmCodeOffsetRegex.exec(pathAndAfter);
@@ -337,11 +310,7 @@ export class ParsedURL {
     return {url, lineNumber, columnNumber};
   }
 
-  /**
-   * @param {string} url
-   * @return {string}
-   */
-  static removeWasmFunctionInfoFromURL(url) {
+  static removeWasmFunctionInfoFromURL(url: string): string {
     const wasmFunctionRegEx = /:wasm-function\[\d+\]/;
     const wasmFunctionIndex = url.search(wasmFunctionRegEx);
     if (wasmFunctionIndex === -1) {
@@ -350,15 +319,11 @@ export class ParsedURL {
     return url.substring(0, wasmFunctionIndex);
   }
 
-  /**
-   * @param {string} url
-   * @return {boolean}
-   */
-  static isRelativeURL(url) {
+  static isRelativeURL(url: string): boolean {
     return !(/^[A-Za-z][A-Za-z0-9+.-]*:/.test(url));
   }
 
-  get displayName() {
+  get displayName(): string {
     if (this._displayName) {
       return this._displayName;
     }
@@ -383,10 +348,7 @@ export class ParsedURL {
     return this._displayName;
   }
 
-  /**
-   * @return {string}
-   */
-  dataURLDisplayName() {
+  dataURLDisplayName(): string {
     if (this._dataURLDisplayName) {
       return this._dataURLDisplayName;
     }
@@ -397,55 +359,34 @@ export class ParsedURL {
     return this._dataURLDisplayName;
   }
 
-  /**
-   * @return {boolean}
-   */
-  isAboutBlank() {
+  isAboutBlank(): boolean {
     return this.url === 'about:blank';
   }
 
-  /**
-   * @return {boolean}
-   */
-  isDataURL() {
+  isDataURL(): boolean {
     return this.scheme === 'data';
   }
 
-  /**
-   * @return {boolean}
-   */
-  isHttpOrHttps() {
+  isHttpOrHttps(): boolean {
     return this.scheme === 'http' || this.scheme === 'https';
   }
 
-  /**
-   * @return {boolean}
-   */
-  isBlobURL() {
+  isBlobURL(): boolean {
     return this.url.startsWith('blob:');
   }
 
-  /**
-   * @return {string}
-   */
-  lastPathComponentWithFragment() {
+  lastPathComponentWithFragment(): string {
     return this.lastPathComponent + (this.fragment ? '#' + this.fragment : '');
   }
 
-  /**
-   * @return {string}
-   */
-  domain() {
+  domain(): string {
     if (this.isDataURL()) {
       return 'data:';
     }
     return this.host + (this.port ? ':' + this.port : '');
   }
 
-  /**
-   * @return {string}
-   */
-  securityOrigin() {
+  securityOrigin(): string {
     if (this.isDataURL()) {
       return 'data:';
     }
@@ -453,16 +394,12 @@ export class ParsedURL {
     return scheme + '://' + this.domain();
   }
 
-  /**
-   * @return {string}
-   */
-  urlWithoutScheme() {
+  urlWithoutScheme(): string {
     if (this.scheme && this.url.startsWith(this.scheme + '://')) {
       return this.url.substring(this.scheme.length + 3);
     }
     return this.url;
   }
-}
 
-/** @type {?RegExp} */
-ParsedURL._urlRegexInstance = null;
+  static _urlRegexInstance: RegExp|null = null;
+}

@@ -2,30 +2,26 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import {ObjectWrapper} from './Object.js';
 import {reveal} from './Revealer.js';
 
-/**
- * @type {!Console}
- */
-let consoleInstance;
+let consoleInstance: Console;
 
 export class Console extends ObjectWrapper {
+  _messages: Message[];
   /**
    * Instantiable via the instance() factory below.
-   *
-   * @private
    */
-  constructor() {
+  private constructor() {
     super();
-    /** @type {!Array.<!Message>} */
     this._messages = [];
   }
 
-  /**
-   * @param {{forceNew: boolean}} opts
-   */
-  static instance({forceNew} = {forceNew: false}) {
+  static instance({forceNew}: {
+    forceNew: boolean,
+  } = {forceNew: false}): Console {
     if (!consoleInstance || forceNew) {
       consoleInstance = new Console();
     }
@@ -33,79 +29,59 @@ export class Console extends ObjectWrapper {
     return consoleInstance;
   }
 
-  /**
-   * @param {string} text
-   * @param {!MessageLevel} level
-   * @param {boolean=} show
-   */
-  addMessage(text, level, show) {
+  addMessage(text: string, level: MessageLevel, show?: boolean): void {
     const message = new Message(text, level || MessageLevel.Info, Date.now(), show || false);
     this._messages.push(message);
     this.dispatchEventToListeners(Events.MessageAdded, message);
   }
 
-  /**
-   * @param {string} text
-   */
-  log(text) {
+  log(text: string): void {
     this.addMessage(text, MessageLevel.Info);
   }
 
-  /**
-   * @param {string} text
-   */
-  warn(text) {
+  warn(text: string): void {
     this.addMessage(text, MessageLevel.Warning);
   }
 
-  /**
-   * @param {string} text
-   */
-  error(text) {
+  error(text: string): void {
     this.addMessage(text, MessageLevel.Error, true);
   }
 
-  /**
-   * @return {!Array.<!Message>}
-   */
-  messages() {
+  messages(): Message[] {
     return this._messages;
   }
 
-  show() {
+  show(): void {
     this.showPromise();
   }
 
-  /**
-   * @return {!Promise.<void>}
-   */
-  showPromise() {
+  showPromise(): Promise<void> {
     return reveal(this);
   }
 }
 
-/** @enum {symbol} */
-export const Events = {
-  MessageAdded: Symbol('messageAdded')
-};
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum Events {
+  MessageAdded = 'messageAdded',
+}
 
-/**
- * @enum {string}
- */
-export const MessageLevel = {
-  Info: 'info',
-  Warning: 'warning',
-  Error: 'error'
-};
+
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum MessageLevel {
+  Info = 'info',
+  Warning = 'warning',
+  Error = 'error',
+}
+
 
 export class Message {
-  /**
-   * @param {string} text
-   * @param {!MessageLevel} level
-   * @param {number} timestamp
-   * @param {boolean} show
-   */
-  constructor(text, level, timestamp, show) {
+  text: string;
+  level: MessageLevel;
+  timestamp: number;
+  show: boolean;
+  constructor(text: string, level: MessageLevel, timestamp: number, show: boolean) {
     this.text = text;
     this.level = level;
     this.timestamp = (typeof timestamp === 'number') ? timestamp : Date.now();

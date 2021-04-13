@@ -2,21 +2,16 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 const UNINITIALIZED = Symbol('uninitialized');
 const ERROR_STATE = Symbol('error');
 
-/**
- * @template T
- * @param {function():T} producer
- * @return {function():symbol|T}
- */
-export function lazy(producer) {
-  /** @type {symbol|T} */
-  let value = UNINITIALIZED;
-  /** @type {?Error} */
-  let error = null;
+export function lazy<T>(producer: () => T): () => symbol | T {
+  let value: T|typeof ERROR_STATE|typeof UNINITIALIZED = UNINITIALIZED;
+  let error: null = null;
 
-  return () => {
+  return (): symbol|T => {
     if (value === ERROR_STATE) {
       throw error;
     } else if (value !== UNINITIALIZED) {

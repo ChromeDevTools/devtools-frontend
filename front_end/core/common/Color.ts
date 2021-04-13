@@ -31,20 +31,24 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Platform from '../platform/platform.js';
 
 import {blendColors, contrastRatioAPCA, desiredLuminanceAPCA, luminance, luminanceAPCA, rgbaToHsla} from './ColorUtils.js';
 
-/** @type {?Map<string, string>} */
-let _rgbaToNickname;
+// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+// eslint-disable-next-line @typescript-eslint/naming-convention
+let _rgbaToNickname: Map<string, string>|null;
 
 export class Color {
-  /**
-   * @param {!Array.<number>} rgba
-   * @param {!Format} format
-   * @param {string=} originalText
-   */
-  constructor(rgba, format, originalText) {
+  _hsla: number[]|undefined;
+  _rgba: number[];
+  _originalText: string|null;
+  _originalTextIsValid: boolean;
+  _format: Format;
+
+  constructor(rgba: number[], format: Format, originalText?: string) {
     this._hsla = undefined;
     this._rgba = rgba;
     this._originalText = originalText || null;
@@ -66,11 +70,7 @@ export class Color {
     }
   }
 
-  /**
-   * @param {string} text
-   * @return {?Color}
-   */
-  static parse(text) {
+  static parse(text: string): Color|null {
     // Simple - #hex, nickname
     const value = text.toLowerCase().replace(/\s+/g, '');
     const simple = /^(?:#([0-9a-f]{3,4}|[0-9a-f]{6}|[0-9a-f]{8})|(\w+))$/i;
@@ -145,26 +145,29 @@ export class Color {
 
       if (match[1]) {  // rgb/rgba
         const rgba = [
-          Color._parseRgbNumeric(values[0]), Color._parseRgbNumeric(values[1]), Color._parseRgbNumeric(values[2]),
-          hasAlpha ? Color._parseAlphaNumeric(values[3]) : 1
+          Color._parseRgbNumeric(values[0]),
+          Color._parseRgbNumeric(values[1]),
+          Color._parseRgbNumeric(values[2]),
+          hasAlpha ? Color._parseAlphaNumeric(values[3]) : 1,
         ];
         if (rgba.indexOf(null) > -1) {
           return null;
         }
-        return new Color(/** @type {!Array.<number>} */ (rgba), hasAlpha ? Format.RGBA : Format.RGB, text);
+        return new Color((rgba as number[]), hasAlpha ? Format.RGBA : Format.RGB, text);
       }
 
       if (match[2]) {  // hsl/hsla
         const hsla = [
-          Color._parseHueNumeric(values[0]), Color._parseSatLightNumeric(values[1]),
-          Color._parseSatLightNumeric(values[2]), hasAlpha ? Color._parseAlphaNumeric(values[3]) : 1
+          Color._parseHueNumeric(values[0]),
+          Color._parseSatLightNumeric(values[1]),
+          Color._parseSatLightNumeric(values[2]),
+          hasAlpha ? Color._parseAlphaNumeric(values[3]) : 1,
         ];
         if (hsla.indexOf(null) > -1) {
           return null;
         }
-        /** @type {!Array.<number>} */
-        const rgba = [];
-        Color.hsl2rgb(/** @type {!Array.<number>} */ (hsla), rgba);
+        const rgba: number[] = [];
+        Color.hsl2rgb((hsla as number[]), rgba);
         return new Color(rgba, hasAlpha ? Format.HSLA : Format.HSL, text);
       }
     }
@@ -172,30 +175,17 @@ export class Color {
     return null;
   }
 
-  /**
-   * @param {!Array.<number>} rgba
-   * @return {!Color}
-   */
-  static fromRGBA(rgba) {
+  static fromRGBA(rgba: number[]): Color {
     return new Color([rgba[0] / 255, rgba[1] / 255, rgba[2] / 255, rgba[3]], Format.RGBA);
   }
 
-  /**
-   * @param {!Array.<number>} hsva
-   * @return {!Color}
-   */
-  static fromHSVA(hsva) {
-    /** @type {!Array.<number>} */
-    const rgba = [];
+  static fromHSVA(hsva: number[]): Color {
+    const rgba: number[] = [];
     Color.hsva2rgba(hsva, rgba);
     return new Color(rgba, Format.HSLA);
   }
 
-  /**
-   * @param {string} value
-   * @return {number|null}
-   */
-  static _parsePercentOrNumber(value) {
+  static _parsePercentOrNumber(value: string): number|null {
     // @ts-ignore: isNaN can accept strings
     if (isNaN(value.replace('%', ''))) {
       return null;
@@ -211,11 +201,7 @@ export class Color {
     return parsed;
   }
 
-  /**
-   * @param {string} value
-   * @return {number|null}
-   */
-  static _parseRgbNumeric(value) {
+  static _parseRgbNumeric(value: string): number|null {
     const parsed = Color._parsePercentOrNumber(value);
     if (parsed === null) {
       return null;
@@ -227,11 +213,7 @@ export class Color {
     return parsed / 255;
   }
 
-  /**
-   * @param {string} value
-   * @return {number|null}
-   */
-  static _parseHueNumeric(value) {
+  static _parseHueNumeric(value: string): number|null {
     const angle = value.replace(/(deg|g?rad|turn)$/, '');
     // @ts-ignore: isNaN can accept strings
     if (isNaN(angle) || value.match(/\s+(deg|g?rad|turn)/)) {
@@ -251,11 +233,7 @@ export class Color {
     return (number / 360) % 1;
   }
 
-  /**
-   * @param {string} value
-   * @return {number|null}
-   */
-  static _parseSatLightNumeric(value) {
+  static _parseSatLightNumeric(value: string): number|null {
     // @ts-ignore: isNaN can accept strings
     if (value.indexOf('%') !== value.length - 1 || isNaN(value.replace('%', ''))) {
       return null;
@@ -264,21 +242,15 @@ export class Color {
     return Math.min(1, parsed / 100);
   }
 
-  /**
-   * @param {string} value
-   * @return {number|null}
-   */
-  static _parseAlphaNumeric(value) {
+  static _parseAlphaNumeric(value: string): number|null {
     return Color._parsePercentOrNumber(value);
   }
 
-  /**
-   * @param {!Array.<number>} hsva
-   * @param {!Array.<number>} out_hsla
-   */
-  static _hsva2hsla(hsva, out_hsla) {
+  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  static _hsva2hsla(hsva: number[], out_hsla: number[]): void {
     const h = hsva[0];
-    let s = hsva[1];
+    let s: 0|number = hsva[1];
     const v = hsva[2];
 
     const t = (2 - s) * v;
@@ -294,21 +266,14 @@ export class Color {
     out_hsla[3] = hsva[3];
   }
 
-  /**
-   * @param {!Array.<number>} hsl
-   * @param {!Array.<number>} out_rgb
-   */
-  static hsl2rgb(hsl, out_rgb) {
+  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  static hsl2rgb(hsl: number[], out_rgb: number[]): void {
     const h = hsl[0];
-    let s = hsl[1];
+    let s: 0|number = hsl[1];
     const l = hsl[2];
 
-    /**
-     * @param {number} p
-     * @param {number} q
-     * @param {number} h
-     */
-    function hue2rgb(p, q, h) {
+    function hue2rgb(p: number, q: number, h: number): number {
       if (h < 0) {
         h += 1;
       } else if (h > 1) {
@@ -350,11 +315,9 @@ export class Color {
     out_rgb[3] = hsl[3];
   }
 
-  /**
-   * @param {!Array<number>} hsva
-   * @param {!Array<number>} out_rgba
-   */
-  static hsva2rgba(hsva, out_rgba) {
+  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  static hsva2rgba(hsva: number[], out_rgba: number[]): void {
     Color._hsva2hsla(hsva, _tmpHSLA);
     Color.hsl2rgb(_tmpHSLA, out_rgba);
 
@@ -366,16 +329,9 @@ export class Color {
   /**
    * Compute a desired luminance given a given luminance and a desired contrast
    * ratio.
-   * @param {number} luminance The given luminance.
-   * @param {number} contrast The desired contrast ratio.
-   * @param {boolean} lighter Whether the desired luminance is lighter or darker
-   * than the given luminance. If no luminance can be found which meets this
-   * requirement, a luminance which meets the inverse requirement will be
-   * returned.
-   * @return {number} The desired luminance.
    */
-  static desiredLuminance(luminance, contrast, lighter) {
-    function computeLuminance() {
+  static desiredLuminance(luminance: number, contrast: number, lighter: boolean): number {
+    function computeLuminance(): number {
       if (lighter) {
         return (luminance + 0.05) * contrast - 0.05;
       }
@@ -392,20 +348,15 @@ export class Color {
   /**
    * Approach a value of the given component of `candidateHSVA` such that the
    * calculated luminance of `candidateHSVA` approximates `desiredLuminance`.
-   * @param {!Array<number>} candidateHSVA
-   * @param {!Array<number>} bgRGBA
-   * @param {number} index - the index of the color component
-   * @param {number} desiredLuminance
-   * @param {function(!Array<number>):number} candidateLuminance
-   * @return {?number} The new value for the modified component, or `null` if
-   *     no suitable value exists.
    */
-  static approachColorValue(candidateHSVA, bgRGBA, index, desiredLuminance, candidateLuminance) {
+  static approachColorValue(
+      candidateHSVA: number[], bgRGBA: number[], index: number, desiredLuminance: number,
+      candidateLuminance: (arg0: Array<number>) => number): number|null {
     const epsilon = 0.0002;
 
     let x = candidateHSVA[index];
     let multiplier = 1;
-    let dLuminance = candidateLuminance(candidateHSVA) - desiredLuminance;
+    let dLuminance: number = candidateLuminance(candidateHSVA) - desiredLuminance;
     let previousSign = Math.sign(dLuminance);
 
     for (let guard = 100; guard; guard--) {
@@ -437,21 +388,11 @@ export class Color {
     return null;
   }
 
-  /**
-   *
-   * @param {!Color} fgColor
-   * @param {!Color} bgColor
-   * @param {number} requiredContrast
-   * @return {?Color}
-   */
-  static findFgColorForContrast(fgColor, bgColor, requiredContrast) {
+  static findFgColorForContrast(fgColor: Color, bgColor: Color, requiredContrast: number): Color|null {
     const candidateHSVA = fgColor.hsva();
     const bgRGBA = bgColor.rgba();
 
-    /**
-     * @param {!Array<number>} candidateHSVA
-     */
-    const candidateLuminance = candidateHSVA => {
+    const candidateLuminance = (candidateHSVA: number[]): number => {
       return luminance(blendColors(Color.fromHSVA(candidateHSVA).rgba(), bgRGBA));
     };
 
@@ -477,21 +418,11 @@ export class Color {
     return null;
   }
 
-  /**
-   *
-   * @param {!Color} fgColor
-   * @param {!Color} bgColor
-   * @param {number} requiredContrast
-   * @return {?Color}
-   */
-  static findFgColorForContrastAPCA(fgColor, bgColor, requiredContrast) {
+  static findFgColorForContrastAPCA(fgColor: Color, bgColor: Color, requiredContrast: number): Color|null {
     const candidateHSVA = fgColor.hsva();
     const bgRGBA = bgColor.rgba();
 
-    /**
-     * @param {!Array<number>} candidateHSVA
-     */
-    const candidateLuminance = candidateHSVA => {
+    const candidateLuminance = (candidateHSVA: number[]): number => {
       return luminanceAPCA(Color.fromHSVA(candidateHSVA).rgba());
     };
 
@@ -522,17 +453,13 @@ export class Color {
     return null;
   }
 
-  /**
-   * @return {!Format}
-   */
-  format() {
+  format(): Format {
     return this._format;
   }
 
-  /**
-   * @return {!Array.<number>} HSLA with components within [0..1]
-   */
-  hsla() {
+  /** HSLA with components within [0..1]
+     */
+  hsla(): number[] {
     if (this._hsla) {
       return this._hsla;
     }
@@ -540,18 +467,14 @@ export class Color {
     return this._hsla;
   }
 
-  /**
-   * @return {!Array.<number>}
-   */
-  canonicalHSLA() {
+  canonicalHSLA(): number[] {
     const hsla = this.hsla();
     return [Math.round(hsla[0] * 360), Math.round(hsla[1] * 100), Math.round(hsla[2] * 100), hsla[3]];
   }
 
-  /**
-   * @return {!Array.<number>} HSVA with components within [0..1]
-   */
-  hsva() {
+  /** HSVA with components within [0..1]
+     */
+  hsva(): number[] {
     const hsla = this.hsla();
     const h = hsla[0];
     let s = hsla[1];
@@ -561,17 +484,11 @@ export class Color {
     return [h, s !== 0 ? 2 * s / (l + s) : 0, (l + s), hsla[3]];
   }
 
-  /**
-   * @return {boolean}
-   */
-  hasAlpha() {
+  hasAlpha(): boolean {
     return this._rgba[3] !== 1;
   }
 
-  /**
-   * @return {!Format}
-   */
-  detectHEXFormat() {
+  detectHEXFormat(): Format {
     let canBeShort = true;
     for (let i = 0; i < 4; ++i) {
       const c = Math.round(this._rgba[i] * 255);
@@ -589,11 +506,7 @@ export class Color {
     return hasAlpha ? cf.HEXA : cf.HEX;
   }
 
-  /**
-   * @param {?string=} format
-   * @return {?string}
-   */
-  asString(format) {
+  asString(format?: string|null): string|null {
     if (format === this._format && this._originalTextIsValid) {
       return this._originalText;
     }
@@ -602,28 +515,16 @@ export class Color {
       format = this._format;
     }
 
-    /**
-     * @param {number} value
-     * @return {number}
-     */
-    function toRgbValue(value) {
+    function toRgbValue(value: number): number {
       return Math.round(value * 255);
     }
 
-    /**
-     * @param {number} value
-     * @return {string}
-     */
-    function toHexValue(value) {
+    function toHexValue(value: number): string {
       const hex = Math.round(value * 255).toString(16);
       return hex.length === 1 ? '0' + hex : hex;
     }
 
-    /**
-     * @param {number} value
-     * @return {string}
-     */
-    function toShortHexValue(value) {
+    function toShortHexValue(value: number): string {
       return (Math.round(value * 255) / 17).toString(16);
     }
 
@@ -697,17 +598,11 @@ export class Color {
     return this._originalText;
   }
 
-  /**
-   * @return {!Array<number>}
-   */
-  rgba() {
+  rgba(): number[] {
     return this._rgba.slice();
   }
 
-  /**
-   * @return {!Array.<number>}
-   */
-  canonicalRGBA() {
+  canonicalRGBA(): number[] {
     const rgba = new Array(4);
     for (let i = 0; i < 3; ++i) {
       rgba[i] = Math.round(this._rgba[i] * 255);
@@ -716,14 +611,13 @@ export class Color {
     return rgba;
   }
 
-  /**
-   * @return {?string} nickname
-   */
-  nickname() {
+  /** nickname
+     */
+  nickname(): string|null {
     if (!_rgbaToNickname) {
       _rgbaToNickname = new Map();
       for (const nickname in Nicknames) {
-        let rgba = Nicknames[nickname];
+        let rgba: number[] = Nicknames[nickname];
         if (rgba.length !== 4) {
           rgba = rgba.concat(1);
         }
@@ -734,23 +628,26 @@ export class Color {
     return _rgbaToNickname.get(String(this.canonicalRGBA())) || null;
   }
 
-  /**
-   * @return {!{r: number, g: number, b: number, a: (number|undefined)}}
-   */
-  toProtocolRGBA() {
+  toProtocolRGBA(): {
+    r: number,
+    g: number,
+    b: number,
+    a: (number|undefined),
+  } {
     const rgba = this.canonicalRGBA();
-    /** @type {!{r: number, g: number, b: number, a: (number|undefined)}} */
-    const result = {r: rgba[0], g: rgba[1], b: rgba[2], a: undefined};
+    const result: {
+      r: number,
+      g: number,
+      b: number,
+      a: number|undefined,
+    } = {r: rgba[0], g: rgba[1], b: rgba[2], a: undefined};
     if (rgba[3] !== 1) {
       result.a = rgba[3];
     }
     return result;
   }
 
-  /**
-   * @return {!Color}
-   */
-  invert() {
+  invert(): Color {
     const rgba = [];
     rgba[0] = 1 - this._rgba[0];
     rgba[1] = 1 - this._rgba[1];
@@ -759,55 +656,43 @@ export class Color {
     return new Color(rgba, Format.RGBA);
   }
 
-  /**
-   * @param {number} alpha
-   * @return {!Color}
-   */
-  setAlpha(alpha) {
+  setAlpha(alpha: number): Color {
     const rgba = this._rgba.slice();
     rgba[3] = alpha;
     return new Color(rgba, Format.RGBA);
   }
 
-  /**
-   * @param {!Color} fgColor
-   * @return {!Color}
-   */
-  blendWith(fgColor) {
-    /** @type {!Array.<number>} */
-    const rgba = blendColors(fgColor._rgba, this._rgba);
+  blendWith(fgColor: Color): Color {
+    const rgba: number[] = blendColors(fgColor._rgba, this._rgba);
     return new Color(rgba, Format.RGBA);
   }
 
-  /**
-   * @param {!Format} format
-   */
-  setFormat(format) {
+  setFormat(format: Format): void {
     this._format = format;
   }
 }
 
-/** @type {!RegExp} */
-export const Regex = /((?:rgb|hsl)a?\([^)]+\)|#[0-9a-fA-F]{8}|#[0-9a-fA-F]{6}|#[0-9a-fA-F]{3,4}|\b[a-zA-Z]+\b(?!-))/g;
+export const Regex: RegExp =
+    /((?:rgb|hsl)a?\([^)]+\)|#[0-9a-fA-F]{8}|#[0-9a-fA-F]{6}|#[0-9a-fA-F]{3,4}|\b[a-zA-Z]+\b(?!-))/g;
 
-/**
- * @enum {string}
- */
-export const Format = {
-  Original: 'original',
-  Nickname: 'nickname',
-  HEX: 'hex',
-  ShortHEX: 'shorthex',
-  HEXA: 'hexa',
-  ShortHEXA: 'shorthexa',
-  RGB: 'rgb',
-  RGBA: 'rgba',
-  HSL: 'hsl',
-  HSLA: 'hsla'
-};
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum Format {
+  Original = 'original',
+  Nickname = 'nickname',
+  HEX = 'hex',
+  ShortHEX = 'shorthex',
+  HEXA = 'hexa',
+  ShortHEXA = 'shorthexa',
+  RGB = 'rgb',
+  RGBA = 'rgba',
+  HSL = 'hsl',
+  HSLA = 'hsla',
+}
 
-/** @type {!Object<string, !Array.<number>>} */
-export const Nicknames = {
+export const Nicknames: {
+  [x: string]: number[],
+} = {
   'aliceblue': [240, 248, 255],
   'antiquewhite': [250, 235, 215],
   'aqua': [0, 255, 255],
@@ -988,34 +873,60 @@ export const SourceOrderHighlight = {
 };
 
 export class Generator {
-  /**
-   * @param {!{min: number, max: number, count: (number|undefined)}|number=} hueSpace
-   * @param {!{min: number, max: number, count: (number|undefined)}|number=} satSpace
-   * @param {!{min: number, max: number, count: (number|undefined)}|number=} lightnessSpace
-   * @param {!{min: number, max: number, count: (number|undefined)}|number=} alphaSpace
-   */
-  constructor(hueSpace, satSpace, lightnessSpace, alphaSpace) {
+  _hueSpace: number|{
+    min: number,
+    max: number,
+    count: (number|undefined),
+  };
+  _satSpace: number|{
+    min: number,
+    max: number,
+    count: (number|undefined),
+  };
+  _lightnessSpace: number|{
+    min: number,
+    max: number,
+    count: (number|undefined),
+  };
+  _alphaSpace: number|{
+    min: number,
+    max: number,
+    count: (number|undefined),
+  };
+  _colors: Map<string, string>;
+  constructor(
+      hueSpace?: number|{
+        min: number,
+        max: number,
+        count: (number|undefined),
+      },
+      satSpace?: number|{
+        min: number,
+        max: number,
+        count: (number|undefined),
+      },
+      lightnessSpace?: number|{
+        min: number,
+        max: number,
+        count: (number|undefined),
+      },
+      alphaSpace?: number|{
+        min: number,
+        max: number,
+        count: (number|undefined),
+      }) {
     this._hueSpace = hueSpace || {min: 0, max: 360, count: undefined};
     this._satSpace = satSpace || 67;
     this._lightnessSpace = lightnessSpace || 80;
     this._alphaSpace = alphaSpace || 1;
-    /** @type {!Map<string, string>} */
     this._colors = new Map();
   }
 
-  /**
-   * @param {string} id
-   * @param {string} color
-   */
-  setColorForID(id, color) {
+  setColorForID(id: string, color: string): void {
     this._colors.set(id, color);
   }
 
-  /**
-   * @param {string} id
-   * @return {string}
-   */
-  colorForID(id) {
+  colorForID(id: string): string {
     let color = this._colors.get(id);
     if (!color) {
       color = this._generateColorForID(id);
@@ -1024,11 +935,7 @@ export class Generator {
     return color;
   }
 
-  /**
-   * @param {string} id
-   * @return {string}
-   */
-  _generateColorForID(id) {
+  _generateColorForID(id: string): string {
     const hash = Platform.StringUtilities.hashCode(id);
     const h = this._indexToValueInSpace(hash, this._hueSpace);
     const s = this._indexToValueInSpace(hash >> 8, this._satSpace);
@@ -1041,12 +948,11 @@ export class Generator {
     return `${start})`;
   }
 
-  /**
-   * @param {number} index
-   * @param {!{min: number, max: number, count: (number|undefined)}|number} space
-   * @return {number}
-   */
-  _indexToValueInSpace(index, space) {
+  _indexToValueInSpace(index: number, space: number|{
+    min: number,
+    max: number,
+    count: (number|undefined),
+  }): number {
     if (typeof space === 'number') {
       return space;
     }
@@ -1056,4 +962,6 @@ export class Generator {
   }
 }
 
+// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+// eslint-disable-next-line @typescript-eslint/naming-convention
 const _tmpHSLA = [0, 0, 0, 0];

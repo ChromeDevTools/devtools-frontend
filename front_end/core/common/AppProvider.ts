@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Root from '../root/root.js';  // eslint-disable-line no-unused-vars
 
 import {App} from './App.js';  // eslint-disable-line no-unused-vars
@@ -9,29 +11,16 @@ import {App} from './App.js';  // eslint-disable-line no-unused-vars
 /**
  * @interface
  */
-export class AppProvider {
-  /**
-   * @return {!App}
-   */
-  createApp() {
-    throw new Error('not implemented');
-  }
+export interface AppProvider {
+  createApp(): App;
 }
 
+const registeredAppProvider: AppProviderRegistration[] = [];
 
-/** @type {!Array<!AppProviderRegistration>} */
-const registeredAppProvider = [];
-
-/**
- * @param {!AppProviderRegistration} registration
- */
-export function registerAppProvider(registration) {
+export function registerAppProvider(registration: AppProviderRegistration): void {
   registeredAppProvider.push(registration);
 }
-/**
- * @return {!Array<!AppProviderRegistration>}
- */
-export function getRegisteredAppProviders() {
+export function getRegisteredAppProviders(): AppProviderRegistration[] {
   return registeredAppProvider
       .filter(
           provider => Root.Runtime.Runtime.isDescriptorEnabled({experiment: undefined, condition: provider.condition}))
@@ -41,13 +30,8 @@ export function getRegisteredAppProviders() {
         return order1 - order2;
       });
 }
-
-/**
-  * @typedef {{
-  *  loadAppProvider: function(): !Promise<!AppProvider>,
-  *  condition: Root.Runtime.ConditionName|undefined,
-  *  order: number,
-  * }}
-  */
-// @ts-ignore typedef
-export let AppProviderRegistration;
+export interface AppProviderRegistration {
+  loadAppProvider: () => Promise<AppProvider>;
+  condition?: Root.Runtime.ConditionName;
+  order: number;
+}

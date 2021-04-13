@@ -4,13 +4,12 @@
 
 /**
  * Debounce utility function, ensures that the function passed in is only called once the function stops being called and the delay has expired.
- * @param {!Function} func The function to debounce
- * @param {number} delay The time to wait before calling the function
- * @return {!Function} The debounced function
  */
-export const debounce = function(func, delay) {
+/* eslint-disable rulesdir/no_underscored_properties */
+
+export const debounce = function(func: Function, delay: number): Function {
   let timer = 0;
-  const debounced = () => {
+  const debounced = (): void => {
     clearTimeout(timer);
     timer = setTimeout(() => func(), delay);
   };

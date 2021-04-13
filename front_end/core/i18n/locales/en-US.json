@@ -110,112 +110,112 @@
   "cookie_table/CookiesTable.ts | value": {
     "message": "Value"
   },
-  "core/common/ResourceType.js | cspviolationreport": {
+  "core/common/ResourceType.ts | cspviolationreport": {
     "message": "CSPViolationReport"
   },
-  "core/common/ResourceType.js | css": {
+  "core/common/ResourceType.ts | css": {
     "message": "CSS"
   },
-  "core/common/ResourceType.js | doc": {
+  "core/common/ResourceType.ts | doc": {
     "message": "Doc"
   },
-  "core/common/ResourceType.js | document": {
+  "core/common/ResourceType.ts | document": {
     "message": "Document"
   },
-  "core/common/ResourceType.js | documents": {
+  "core/common/ResourceType.ts | documents": {
     "message": "Documents"
   },
-  "core/common/ResourceType.js | eventsource": {
+  "core/common/ResourceType.ts | eventsource": {
     "message": "EventSource"
   },
-  "core/common/ResourceType.js | fetch": {
+  "core/common/ResourceType.ts | fetch": {
     "message": "Fetch"
   },
-  "core/common/ResourceType.js | font": {
+  "core/common/ResourceType.ts | font": {
     "message": "Font"
   },
-  "core/common/ResourceType.js | fonts": {
+  "core/common/ResourceType.ts | fonts": {
     "message": "Fonts"
   },
-  "core/common/ResourceType.js | image": {
+  "core/common/ResourceType.ts | image": {
     "message": "Image"
   },
-  "core/common/ResourceType.js | images": {
+  "core/common/ResourceType.ts | images": {
     "message": "Images"
   },
-  "core/common/ResourceType.js | img": {
+  "core/common/ResourceType.ts | img": {
     "message": "Img"
   },
-  "core/common/ResourceType.js | js": {
+  "core/common/ResourceType.ts | js": {
     "message": "JS"
   },
-  "core/common/ResourceType.js | manifest": {
+  "core/common/ResourceType.ts | manifest": {
     "message": "Manifest"
   },
-  "core/common/ResourceType.js | media": {
+  "core/common/ResourceType.ts | media": {
     "message": "Media"
   },
-  "core/common/ResourceType.js | other": {
+  "core/common/ResourceType.ts | other": {
     "message": "Other"
   },
-  "core/common/ResourceType.js | ping": {
+  "core/common/ResourceType.ts | ping": {
     "message": "Ping"
   },
-  "core/common/ResourceType.js | preflight": {
+  "core/common/ResourceType.ts | preflight": {
     "message": "Preflight"
   },
-  "core/common/ResourceType.js | script": {
+  "core/common/ResourceType.ts | script": {
     "message": "Script"
   },
-  "core/common/ResourceType.js | scripts": {
+  "core/common/ResourceType.ts | scripts": {
     "message": "Scripts"
   },
-  "core/common/ResourceType.js | signedexchange": {
+  "core/common/ResourceType.ts | signedexchange": {
     "message": "SignedExchange"
   },
-  "core/common/ResourceType.js | stylesheet": {
+  "core/common/ResourceType.ts | stylesheet": {
     "message": "Stylesheet"
   },
-  "core/common/ResourceType.js | stylesheets": {
+  "core/common/ResourceType.ts | stylesheets": {
     "message": "Stylesheets"
   },
-  "core/common/ResourceType.js | texttrack": {
+  "core/common/ResourceType.ts | texttrack": {
     "message": "TextTrack"
   },
-  "core/common/ResourceType.js | websocket": {
+  "core/common/ResourceType.ts | websocket": {
     "message": "WebSocket"
   },
-  "core/common/ResourceType.js | websockets": {
+  "core/common/ResourceType.ts | websockets": {
     "message": "WebSockets"
   },
-  "core/common/ResourceType.js | webtransport": {
+  "core/common/ResourceType.ts | webtransport": {
     "message": "WebTransport"
   },
-  "core/common/ResourceType.js | ws": {
+  "core/common/ResourceType.ts | ws": {
     "message": "WS"
   },
-  "core/common/ResourceType.js | xhrAndFetch": {
+  "core/common/ResourceType.ts | xhrAndFetch": {
     "message": "XHR and Fetch"
   },
-  "core/common/Revealer.js | applicationPanel": {
+  "core/common/Revealer.ts | applicationPanel": {
     "message": "Application panel"
   },
-  "core/common/Revealer.js | changesDrawer": {
+  "core/common/Revealer.ts | changesDrawer": {
     "message": "Changes drawer"
   },
-  "core/common/Revealer.js | elementsPanel": {
+  "core/common/Revealer.ts | elementsPanel": {
     "message": "Elements panel"
   },
-  "core/common/Revealer.js | issuesView": {
+  "core/common/Revealer.ts | issuesView": {
     "message": "Issues view"
   },
-  "core/common/Revealer.js | networkPanel": {
+  "core/common/Revealer.ts | networkPanel": {
     "message": "Network panel"
   },
-  "core/common/Revealer.js | sourcesPanel": {
+  "core/common/Revealer.ts | sourcesPanel": {
     "message": "Sources panel"
   },
-  "core/common/Revealer.js | stylesSidebar": {
+  "core/common/Revealer.ts | stylesSidebar": {
     "message": "styles sidebar"
   },
   "core/common/SettingRegistration.ts | adorner": {

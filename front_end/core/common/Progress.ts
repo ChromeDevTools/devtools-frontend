@@ -28,77 +28,51 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- * @interface
- */
+/* eslint-disable rulesdir/no_underscored_properties, @typescript-eslint/no-unused-vars */
+
 export class Progress {
-  /**
-   * @param {number} totalWork
-   */
-  setTotalWork(totalWork) {
+  setTotalWork(totalWork: number): void {
   }
-
-  /**
-   * @param {string} title
-   */
-  setTitle(title) {
+  setTitle(title: string): void {
   }
-
-  /**
-   * @param {number} worked
-   * @param {string=} title
-   */
-  setWorked(worked, title) {
+  setWorked(worked: number, title?: string): void {
   }
-
-  /**
-   * @param {number=} worked
-   */
-  worked(worked) {
+  worked(worked?: number): void {
   }
-
-  done() {
+  done(): void {
   }
-
-  /**
-   * @return {boolean}
-   */
-  isCanceled() {
+  isCanceled(): boolean {
     return false;
   }
 }
 
 export class CompositeProgress {
-  /**
-   * @param {!Progress} parent
-   */
-  constructor(parent) {
+  _parent: Progress;
+  _children: SubProgress[];
+  _childrenDone: number;
+
+  constructor(parent: Progress) {
     this._parent = parent;
-    /** @type {!Array.<!SubProgress>} */
     this._children = [];
     this._childrenDone = 0;
     this._parent.setTotalWork(1);
     this._parent.setWorked(0);
   }
 
-  _childDone() {
+  _childDone(): void {
     if (++this._childrenDone !== this._children.length) {
       return;
     }
     this._parent.done();
   }
 
-  /**
-   * @param {number=} weight
-   * @return {!SubProgress}
-   */
-  createSubProgress(weight) {
+  createSubProgress(weight?: number): SubProgress {
     const child = new SubProgress(this, weight);
     this._children.push(child);
     return child;
   }
 
-  _update() {
+  _update(): void {
     let totalWeights = 0;
     let done = 0;
 
@@ -113,55 +87,38 @@ export class CompositeProgress {
   }
 }
 
-/**
- * @implements {Progress}
- */
-export class SubProgress {
-  /**
-   * @param {!CompositeProgress} composite
-   * @param {number=} weight
-   */
-  constructor(composite, weight) {
+export class SubProgress implements Progress {
+  _composite: CompositeProgress;
+  _weight: number;
+  _worked: number;
+  _totalWork: number;
+  constructor(composite: CompositeProgress, weight?: number) {
     this._composite = composite;
     this._weight = weight || 1;
     this._worked = 0;
 
-    /** @type {number} */
     this._totalWork = 0;
   }
 
-  /**
-   * @return {boolean}
-   */
-  isCanceled() {
+  isCanceled(): boolean {
     return this._composite._parent.isCanceled();
   }
 
-  /**
-   * @param {string} title
-   */
-  setTitle(title) {
+  setTitle(title: string): void {
     this._composite._parent.setTitle(title);
   }
 
-  done() {
+  done(): void {
     this.setWorked(this._totalWork);
     this._composite._childDone();
   }
 
-  /**
-   * @param {number} totalWork
-   */
-  setTotalWork(totalWork) {
+  setTotalWork(totalWork: number): void {
     this._totalWork = totalWork;
     this._composite._update();
   }
 
-  /**
-   * @param {number} worked
-   * @param {string=} title
-   */
-  setWorked(worked, title) {
+  setWorked(worked: number, title?: string): void {
     this._worked = worked;
     if (typeof title !== 'undefined') {
       this.setTitle(title);
@@ -169,44 +126,30 @@ export class SubProgress {
     this._composite._update();
   }
 
-  /**
-   * @param {number=} worked
-   */
-  worked(worked) {
+  worked(worked?: number): void {
     this.setWorked(this._worked + (worked || 1));
   }
 }
 
-/**
- * @implements {Progress}
- */
-export class ProgressProxy {
-  /**
-   * @param {?Progress=} delegate
-   * @param {function():void=} doneCallback
-   */
-  constructor(delegate, doneCallback) {
+export class ProgressProxy implements Progress {
+  _delegate: Progress|null|undefined;
+  _doneCallback: (() => void)|undefined;
+  constructor(delegate?: Progress|null, doneCallback?: (() => void)) {
     this._delegate = delegate;
     this._doneCallback = doneCallback;
   }
 
-  /**
-   * @return {boolean}
-   */
-  isCanceled() {
+  isCanceled(): boolean {
     return this._delegate ? this._delegate.isCanceled() : false;
   }
 
-  /**
-   * @param {string} title
-   */
-  setTitle(title) {
+  setTitle(title: string): void {
     if (this._delegate) {
       this._delegate.setTitle(title);
     }
   }
 
-  done() {
+  done(): void {
     if (this._delegate) {
       this._delegate.done();
     }
@@ -215,29 +158,19 @@ export class ProgressProxy {
     }
   }
 
-  /**
-   * @param {number} totalWork
-   */
-  setTotalWork(totalWork) {
+  setTotalWork(totalWork: number): void {
     if (this._delegate) {
       this._delegate.setTotalWork(totalWork);
     }
   }
 
-  /**
-   * @param {number} worked
-   * @param {string=} title
-   */
-  setWorked(worked, title) {
+  setWorked(worked: number, title?: string): void {
     if (this._delegate) {
       this._delegate.setWorked(worked, title);
     }
   }
 
-  /**
-   * @param {number=} worked
-   */
-  worked(worked) {
+  worked(worked?: number): void {
     if (this._delegate) {
       this._delegate.worked(worked);
     }

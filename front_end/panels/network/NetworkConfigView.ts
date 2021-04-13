@@ -242,7 +242,9 @@ export class NetworkConfigView extends UI.Widget.VBox {
         SDK.NetworkManager.MultitargetNetworkManager.instance().clearCustomAcceptedEncodingsOverride();
       } else {
         SDK.NetworkManager.MultitargetNetworkManager.instance().setCustomAcceptedEncodingsOverride(
-            customAcceptedEncodingSetting.get() === '' ? [] : customAcceptedEncodingSetting.get().split(','));
+            customAcceptedEncodingSetting.get() === '' ?
+                [] :
+                customAcceptedEncodingSetting.get().split(',') as Protocol.Network.ContentEncoding[]);
       }
     }
 

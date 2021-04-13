@@ -2,31 +2,32 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 /**
  * Metadata to map between bytecode offsets and line numbers in the
  * disassembly for WebAssembly modules.
  */
+
+interface FunctionBodyOffset {
+  start: number;
+  end: number;
+}
 export class WasmDisassembly {
-  /**
-   * @param {!Array<number>} offsets mapping of line numbers to bytecode offsets
-   * @param {!Array<{start: number, end: number}>} functionBodyOffsets mapping of function indices to start/end bytecode offsets
-   */
-  constructor(offsets, functionBodyOffsets) {
+  _offsets: number[];
+  _functionBodyOffsets: FunctionBodyOffset[];
+
+  constructor(offsets: number[], functionBodyOffsets: FunctionBodyOffset[]) {
     this._offsets = offsets;
     this._functionBodyOffsets = functionBodyOffsets;
   }
 
-  /** @return {number} */
-  get lineNumbers() {
+  get lineNumbers(): number {
     return this._offsets.length;
   }
 
-  /**
-   * @param {number} bytecodeOffset
-   * @return {number}
-   */
-  bytecodeOffsetToLineNumber(bytecodeOffset) {
-    let l = 0, r = this._offsets.length - 1;
+  bytecodeOffsetToLineNumber(bytecodeOffset: number): number {
+    let l = 0, r: number = this._offsets.length - 1;
     while (l <= r) {
       const m = Math.floor((l + r) / 2);
       const offset = this._offsets[m];
@@ -41,18 +42,14 @@ export class WasmDisassembly {
     return l;
   }
 
-  /**
-   * @param {number} lineNumber
-   * @return {number}
-   */
-  lineNumberToBytecodeOffset(lineNumber) {
+  lineNumberToBytecodeOffset(lineNumber: number): number {
     return this._offsets[lineNumber];
   }
 
   /**
-   * @return {!Iterable<number>} an iterable enumerating all the non-breakable line numbers in the disassembly
+   * returns an iterable enumerating all the non-breakable line numbers in the disassembly
    */
-  * nonBreakableLineNumbers() {
+  * nonBreakableLineNumbers(): Iterable<number> {
     let lineNumber = 0;
     let functionIndex = 0;
     while (lineNumber < this.lineNumbers) {

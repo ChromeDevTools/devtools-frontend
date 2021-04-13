@@ -28,16 +28,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 export class WorkerWrapper {
-  /**
-   * @private
-   * @param {!URL} workerLocation
-   */
-  constructor(workerLocation) {
-    /** @type {!Promise<!Worker>} */
+  _workerPromise: Promise<Worker>;
+  _disposed?: boolean;
+
+  private constructor(workerLocation: URL) {
     this._workerPromise = new Promise(fulfill => {
       const worker = new Worker(workerLocation, {type: 'module'});
-      worker.onmessage = event => {
+      worker.onmessage = (event: MessageEvent<unknown>): void => {
         console.assert(event.data === 'workerReady');
         worker.onmessage = null;
         fulfill(worker);
@@ -45,17 +45,11 @@ export class WorkerWrapper {
     });
   }
 
-  /**
-   * @param {!URL} url
-   */
-  static fromURL(url) {
+  static fromURL(url: URL): WorkerWrapper {
     return new WorkerWrapper(url);
   }
 
-  /**
-   * @param {*} message
-   */
-  postMessage(message) {
+  postMessage(message: unknown): void {
     this._workerPromise.then(worker => {
       if (!this._disposed) {
         worker.postMessage(message);
@@ -63,28 +57,22 @@ export class WorkerWrapper {
     });
   }
 
-  dispose() {
+  dispose(): void {
     this._disposed = true;
     this._workerPromise.then(worker => worker.terminate());
   }
 
-  terminate() {
+  terminate(): void {
     this.dispose();
   }
 
-  /**
-   * @param {?function(!MessageEvent):void} listener
-   */
-  set onmessage(listener) {
+  set onmessage(listener: (event: MessageEvent) => void) {
     this._workerPromise.then(worker => {
       worker.onmessage = listener;
     });
   }
 
-  /**
-   * @param {?function(!Event):void} listener
-   */
-  set onerror(listener) {
+  set onerror(listener: (event: Event) => void) {
     this._workerPromise.then(worker => {
       worker.onerror = listener;
     });

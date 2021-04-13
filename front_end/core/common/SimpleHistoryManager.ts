@@ -31,24 +31,20 @@
 /**
  * @interface
  */
-export class HistoryEntry {
-  /**
-   * @return {boolean}
-   */
-  valid() {
-    throw new Error('not implemented');
-  }
+/* eslint-disable rulesdir/no_underscored_properties */
 
-  reveal() {
-  }
+export interface HistoryEntry {
+  valid(): boolean;
+
+  reveal(): void;
 }
 
 export class SimpleHistoryManager {
-  /**
-   * @param {number} historyDepth
-   */
-  constructor(historyDepth) {
-    /** @type {!Array<!HistoryEntry>} */
+  _entries: HistoryEntry[];
+  _activeEntryIndex: number;
+  _coalescingReadonly: number;
+  _historyDepth: number;
+  constructor(historyDepth: number) {
     this._entries = [];
     this._activeEntryIndex = -1;
 
@@ -59,15 +55,15 @@ export class SimpleHistoryManager {
     this._historyDepth = historyDepth;
   }
 
-  _readOnlyLock() {
+  _readOnlyLock(): void {
     ++this._coalescingReadonly;
   }
 
-  _releaseReadOnlyLock() {
+  _releaseReadOnlyLock(): void {
     --this._coalescingReadonly;
   }
 
-  _getPreviousValidIndex() {
+  _getPreviousValidIndex(): number {
     if (this.empty()) {
       return -1;
     }
@@ -83,7 +79,7 @@ export class SimpleHistoryManager {
     return revealIndex;
   }
 
-  _getNextValidIndex() {
+  _getNextValidIndex(): number {
     let revealIndex = this._activeEntryIndex + 1;
 
     while (revealIndex < this._entries.length && !this._entries[revealIndex].valid()) {
@@ -96,17 +92,11 @@ export class SimpleHistoryManager {
     return revealIndex;
   }
 
-  /**
-   * @return {boolean}
-   */
-  _readOnly() {
+  _readOnly(): boolean {
     return Boolean(this._coalescingReadonly);
   }
 
-  /**
-   * @param {function(!HistoryEntry):boolean} filterOutCallback
-   */
-  filterOut(filterOutCallback) {
+  filterOut(filterOutCallback: (arg0: HistoryEntry) => boolean): void {
     if (this._readOnly()) {
       return;
     }
@@ -123,24 +113,15 @@ export class SimpleHistoryManager {
     this._activeEntryIndex = Math.max(0, this._activeEntryIndex - removedBeforeActiveEntry);
   }
 
-  /**
-   * @return {boolean}
-   */
-  empty() {
+  empty(): boolean {
     return !this._entries.length;
   }
 
-  /**
-   * @return {?HistoryEntry}
-   */
-  active() {
+  active(): HistoryEntry|null {
     return this.empty() ? null : this._entries[this._activeEntryIndex];
   }
 
-  /**
-   * @param {!HistoryEntry} entry
-   */
-  push(entry) {
+  push(entry: HistoryEntry): void {
     if (this._readOnly()) {
       return;
     }
@@ -154,24 +135,15 @@ export class SimpleHistoryManager {
     this._activeEntryIndex = this._entries.length - 1;
   }
 
-  /**
-   * @return {boolean}
-   */
-  canRollback() {
+  canRollback(): boolean {
     return this._getPreviousValidIndex() >= 0;
   }
 
-  /**
-   * @return {boolean}
-   */
-  canRollover() {
+  canRollover(): boolean {
     return this._getNextValidIndex() >= 0;
   }
 
-  /**
-   * @return {boolean}
-   */
-  rollback() {
+  rollback(): boolean {
     const revealIndex = this._getPreviousValidIndex();
     if (revealIndex === -1) {
       return false;
@@ -184,10 +156,7 @@ export class SimpleHistoryManager {
     return true;
   }
 
-  /**
-   * @return {boolean}
-   */
-  rollover() {
+  rollover(): boolean {
     const revealIndex = this._getNextValidIndex();
     if (revealIndex === -1) {
       return false;

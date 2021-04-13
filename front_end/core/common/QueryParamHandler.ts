@@ -5,10 +5,8 @@
 /**
  * @interface
  */
-export class App {
-  /**
-   * @param {!Document} document
-   */
-  presentUI(document) {
-  }
+/* eslint-disable rulesdir/no_underscored_properties */
+
+export interface QueryParamHandler {
+  handleQueryParam(value: string): void;
 }

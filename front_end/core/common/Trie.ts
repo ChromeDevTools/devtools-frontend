@@ -2,42 +2,39 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 export class Trie {
+  _size!: number;
+  _root: number;
+  _edges!: {
+    [x: string]: number,
+  }[];
+  _isWord!: boolean[];
+  _wordsInSubtree!: number[];
+  _freeNodes!: number[];
   constructor() {
-    /** @type {number} */
-    this._size;
-    /** @type {number} */
     this._root = 0;
-    /** @type {!Array<!Object<string, number>>} */
-    this._edges;
-    /** @type {!Array<boolean>} */
-    this._isWord;
-    /** @type {!Array<number>} */
-    this._wordsInSubtree;
-    /** @type {!Array<number>} */
-    this._freeNodes;
 
     this.clear();
   }
 
-  /**
-   * @param {string} word
-   */
-  add(word) {
-    let node = this._root;
+  add(word: string): void {
+    let node: number = this._root;
     ++this._wordsInSubtree[this._root];
     for (let i = 0; i < word.length; ++i) {
       const edge = word[i];
-      let next = this._edges[node][edge];
+      let next: number = this._edges[node][edge];
       if (!next) {
         if (this._freeNodes.length) {
-          // No need to reset any fields since they were properly cleaned up in remove().
-          next = /** @type {number} */ (this._freeNodes.pop());
+          next = (this._freeNodes.pop() as number);
         } else {
           next = this._size++;
           this._isWord.push(false);
           this._wordsInSubtree.push(0);
-          this._edges.push(/** @type {?} */ ({__proto__: null}));
+          // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          this._edges.push(({__proto__: null} as any));
         }
         this._edges[node][edge] = next;
       }
@@ -47,15 +44,11 @@ export class Trie {
     this._isWord[node] = true;
   }
 
-  /**
-   * @param {string} word
-   * @return {boolean}
-   */
-  remove(word) {
+  remove(word: string): boolean {
     if (!this.has(word)) {
       return false;
     }
-    let node = this._root;
+    let node: number = this._root;
     --this._wordsInSubtree[this._root];
     for (let i = 0; i < word.length; ++i) {
       const edge = word[i];
@@ -70,12 +63,8 @@ export class Trie {
     return true;
   }
 
-  /**
-   * @param {string} word
-   * @return {boolean}
-   */
-  has(word) {
-    let node = this._root;
+  has(word: string): boolean {
+    let node: number = this._root;
     for (let i = 0; i < word.length; ++i) {
       node = this._edges[node][word[i]];
       if (!node) {
@@ -85,31 +74,21 @@ export class Trie {
     return this._isWord[node];
   }
 
-  /**
-   * @param {string=} prefix
-   * @return {!Array<string>}
-   */
-  words(prefix) {
+  words(prefix?: string): string[] {
     prefix = prefix || '';
-    let node = this._root;
+    let node: number = this._root;
     for (let i = 0; i < prefix.length; ++i) {
       node = this._edges[node][prefix[i]];
       if (!node) {
         return [];
       }
     }
-    /** @type {!Array<string>} */
-    const results = [];
+    const results: string[] = [];
     this._dfs(node, prefix, results);
     return results;
   }
 
-  /**
-   * @param {number} node
-   * @param {string} prefix
-   * @param {!Array<string>} results
-   */
-  _dfs(node, prefix, results) {
+  _dfs(node: number, prefix: string, results: string[]): void {
     if (this._isWord[node]) {
       results.push(prefix);
     }
@@ -119,13 +98,8 @@ export class Trie {
     }
   }
 
-  /**
-   * @param {string} word
-   * @param {boolean} fullWordOnly
-   * @return {string}
-   */
-  longestPrefix(word, fullWordOnly) {
-    let node = this._root;
+  longestPrefix(word: string, fullWordOnly: boolean): string {
+    let node: number = this._root;
     let wordIndex = 0;
     for (let i = 0; i < word.length; ++i) {
       node = this._edges[node][word[i]];
@@ -139,16 +113,14 @@ export class Trie {
     return word.substring(0, wordIndex);
   }
 
-  clear() {
+  clear(): void {
     this._size = 1;
     this._root = 0;
-    /** @type {!Array<!Object<string, number>>} */
-    this._edges = [/** @type {?} */ ({__proto__: null})];
-    /** @type {!Array<boolean>} */
+    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    this._edges = [({__proto__: null} as any)];
     this._isWord = [false];
-    /** @type {!Array<number>} */
     this._wordsInSubtree = [0];
-    /** @type {!Array<number>} */
     this._freeNodes = [];
   }
 }

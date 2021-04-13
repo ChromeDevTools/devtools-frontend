@@ -61,12 +61,16 @@ module.exports = {
           path.join(currentModuleDirectory, 'ModuleUIStrings.ts'),
         ];
 
-        const actualPath = path.join(FRONT_END_DIRECTORY, callExpression.arguments[0].value);
+        const previousFileLocationArgument = callExpression.arguments[0];
+        const actualPath = path.join(FRONT_END_DIRECTORY, previousFileLocationArgument.value);
         if (!allowedPathArguments.includes(actualPath)) {
           context.report({
             node: callExpression,
             message: `First argument to 'registerUIStrings' call must be '${
                 currentFileRelativeToFrontEnd}' or the ModuleUIStrings.(js|ts)`,
+            fix(fixer) {
+              return fixer.replaceText(previousFileLocationArgument, `'${currentFileRelativeToFrontEnd}'`);
+            }
           });
         }
       }

@@ -32,7 +32,8 @@ ruleTester.run('l10n_filename_matches', rule, {
       errors: [{
         message:
             'First argument to \'registerUIStrings\' call must be \'components/test.ts\' or the ModuleUIStrings.(js|ts)'
-      }]
+      }],
+      output: 'const str_ = i18n.i18n.registerUIStrings(\'components/test.ts\', UIStrings);',
     },
   ]
 });

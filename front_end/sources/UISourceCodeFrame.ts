@@ -40,7 +40,7 @@ import * as Workspace from '../models/workspace/workspace.js';
 import * as ConsoleCounters from '../panels/console_counters/console_counters.js';
 import * as SourceFrame from '../source_frame/source_frame.js';
 import * as TextEditor from '../text_editor/text_editor.js';  // eslint-disable-line no-unused-vars
-import * as UIComponents from '../ui/components/components.js';
+import * as IconButton from '../ui/components/icon_button/icon_button.js';
 import * as UI from '../ui/legacy/legacy.js';
 
 import {CoveragePlugin} from './CoveragePlugin.js';
@@ -567,7 +567,7 @@ export class UISourceCodeFrame extends SourceFrame.SourceFrame.SourceFrameImpl {
   }
 }
 
-function getIconDataForLevel(level: Workspace.UISourceCode.Message.Level): UIComponents.Icon.IconData {
+function getIconDataForLevel(level: Workspace.UISourceCode.Message.Level): IconButton.Icon.IconData {
   if (level === Workspace.UISourceCode.Message.Level.Error) {
     return {color: '', width: '12px', height: '12px', iconName: 'error_icon'};
   }
@@ -602,7 +602,7 @@ function getLineClassPerLevel(level: Workspace.UISourceCode.Message.Level): stri
   }
 }
 
-function getIconDataForMessage(message: Workspace.UISourceCode.Message): UIComponents.Icon.IconData {
+function getIconDataForMessage(message: Workspace.UISourceCode.Message): IconButton.Icon.IconData {
   if (message instanceof IssuesManager.SourceFrameIssuesManager.IssueMessage) {
     return {
       ...ConsoleCounters.IssueCounter.getIssueKindIconData(message.getIssueKind()),
@@ -617,7 +617,7 @@ export class RowMessage {
   private message: Workspace.UISourceCode.Message;
   private repeatCount: number;
   element: HTMLDivElement;
-  private icon: UIComponents.Icon.Icon;
+  private icon: IconButton.Icon.Icon;
   private repeatCountElement: UI.UIUtils.DevToolsSmallBubble;
 
   constructor(message: Workspace.UISourceCode.Message) {
@@ -625,7 +625,7 @@ export class RowMessage {
     this.repeatCount = 1;
     this.element = document.createElement('div');
     this.element.classList.add('text-editor-row-message');
-    this.icon = new UIComponents.Icon.Icon();
+    this.icon = new IconButton.Icon.Icon();
     this.icon.data = getIconDataForMessage(message);
     this.icon.classList.add('text-editor-row-message-icon');
     this.icon.addEventListener('click', () => this.callClickHandler());
@@ -683,8 +683,8 @@ export class RowMessageBucket {
   _lineHandle: TextEditor.CodeMirrorTextEditor.TextEditorPositionHandle;
   _decoration: HTMLDivElement;
   _wave: HTMLElement;
-  _errorIcon: UIComponents.Icon.Icon;
-  _issueIcon: UIComponents.Icon.Icon;
+  _errorIcon: IconButton.Icon.Icon;
+  _issueIcon: IconButton.Icon.Icon;
   _decorationStartColumn: number|null;
   _messagesDescriptionElement: HTMLDivElement;
   _messages: RowMessage[];
@@ -703,10 +703,10 @@ export class RowMessageBucket {
     elementToMessageBucket.set(this._decoration, this);
     this._wave = this._decoration.createChild('div', 'text-editor-line-decoration-wave');
 
-    this._errorIcon = new UIComponents.Icon.Icon();
+    this._errorIcon = new IconButton.Icon.Icon();
     this._errorIcon.data = getIconDataForLevel(Workspace.UISourceCode.Message.Level.Warning);
     this._errorIcon.classList.add('text-editor-line-decoration-icon-error');
-    this._issueIcon = new UIComponents.Icon.Icon();
+    this._issueIcon = new IconButton.Icon.Icon();
     this._issueIcon.data = getIconDataForLevel(Workspace.UISourceCode.Message.Level.Issue);
     this._issueIcon.classList.add('text-editor-line-decoration-icon-issue');
     this._issueIcon.addEventListener('click', () => this._issueClickHandler());

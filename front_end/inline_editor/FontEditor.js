@@ -4,7 +4,7 @@
 
 import * as i18n from '../core/i18n/i18n.js';
 import * as SDK from '../core/sdk/sdk.js';
-import * as WebComponents from '../ui/components/components.js';
+import * as IconButton from '../ui/components/icon_button/icon_button.js';
 import * as UI from '../ui/legacy/legacy.js';
 
 import * as FontEditorUnitConverter from './FontEditorUnitConverter.js';
@@ -796,7 +796,7 @@ class FontPropertyInputs {
    */
   _createTypeToggle(field) {
     const displaySwitcher = /** @type {!HTMLElement} */ (field.createChild('div', 'spectrum-switcher'));
-    const icon = new WebComponents.Icon.Icon();
+    const icon = new IconButton.Icon.Icon();
     icon.data = {iconName: 'switcherIcon', color: 'var(--color-text-primary)', width: '16px', height: '16px'};
     displaySwitcher.appendChild(icon);
     UI.UIUtils.setTitle(displaySwitcher, i18nString(UIStrings.sToggleInputType, {PH1: this._propertyName}));

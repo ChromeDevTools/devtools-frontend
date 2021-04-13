@@ -9,7 +9,7 @@ import * as i18n from '../core/i18n/i18n.js';
 import * as SDK from '../core/sdk/sdk.js';
 import * as IssuesManager from '../models/issues_manager/issues_manager.js';
 import * as Network from '../panels/network/network.js';
-import * as WebComponents from '../ui/components/components.js';
+import * as IconButton from '../ui/components/icon_button/icon_button.js';
 import * as UI from '../ui/legacy/legacy.js';
 
 import {IssueView} from './IssueView.js';
@@ -194,7 +194,7 @@ export abstract class AffectedResourcesView extends UI.TreeOutline.TreeElement {
     const frameCell = document.createElement('td');
     frameCell.classList.add('affected-resource-cell');
     if (frame) {
-      const icon = new WebComponents.Icon.Icon();
+      const icon = new IconButton.Icon.Icon();
       icon.data = {iconName: 'elements_panel_icon', color: 'var(--color-link)', width: '16px', height: '16px'};
       icon.classList.add('link', 'elements-panel');
       icon.onclick = async(): Promise<void> => {
@@ -226,7 +226,7 @@ export abstract class AffectedResourcesView extends UI.TreeOutline.TreeElement {
     let filename = url ? extractShortPath(url) : '';
     const requestCell = document.createElement('td');
     requestCell.classList.add('affected-resource-cell');
-    const icon = new WebComponents.Icon.Icon();
+    const icon = new IconButton.Icon.Icon();
     icon.data = {iconName: 'network_panel_icon', color: 'var(--color-link)', width: '16px', height: '16px'};
     icon.classList.add('network-panel');
     requestCell.appendChild(icon);

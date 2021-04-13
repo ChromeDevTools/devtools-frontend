@@ -5,7 +5,7 @@
 import * as ComponentHelpers from '../component_helpers/component_helpers.js';
 import * as i18n from '../core/i18n/i18n.js';
 import * as LitHtml from '../third_party/lit-html/lit-html.js';
-import * as Components from '../ui/components/components.js';
+import * as IconButton from '../ui/components/icon_button/icon_button.js';
 
 import {Endianness, format, getDefaultValueTypeMapping, getPointerAddress, isNumber, isPointer, isValidMode, VALUE_TYPE_MODE_LIST, ValueType, ValueTypeMode, valueTypeModeToLocalizedString, valueTypeToLocalizedString} from './ValueInterpreterDisplayUtils.js';
 
@@ -202,7 +202,7 @@ export class ValueInterpreterDisplay extends HTMLElement {
               <button class="jump-to-button" data-jump="true" title=${buttonTitle} ?disabled=${jumpDisabled}
                 @click=${this.onJumpToAddressClicked.bind(this, Number(address))}>
                 <devtools-icon .data=${
-                  {iconName: 'link_icon', color: iconColor, width: '14px'} as Components.Icon.IconWithName}>
+                  {iconName: 'link_icon', color: iconColor, width: '14px'} as IconButton.Icon.IconWithName}>
                 </devtools-icon>
               </button>`}
         </div>

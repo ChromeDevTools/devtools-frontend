@@ -4,7 +4,7 @@
 
 import * as i18n from '../core/i18n/i18n.js';
 import * as LitHtml from '../third_party/lit-html/lit-html.js';
-import * as Components from '../ui/components/components.js';
+import * as IconButton from '../ui/components/icon_button/icon_button.js';
 
 const UIStrings = {
   /**
@@ -223,7 +223,7 @@ export class LinearMemoryNavigator extends HTMLElement {
       <button class="navigator-button" ?disabled=${!data.enabled}
         data-button=${data.event.type} title=${data.title}
         @click=${this.dispatchEvent.bind(this, data.event)}>
-        <devtools-icon .data=${{iconName: data.icon, color: iconColor, width: '14px'} as Components.Icon.IconWithName}>
+        <devtools-icon .data=${{iconName: data.icon, color: iconColor, width: '14px'} as IconButton.Icon.IconWithName}>
         </devtools-icon>
       </button>`;
   }

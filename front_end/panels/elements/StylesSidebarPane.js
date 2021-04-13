@@ -41,7 +41,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as InlineEditor from '../../inline_editor/inline_editor.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
-import * as WebComponents from '../../ui/components/components.js';
+import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import {FontEditorSectionManager} from './ColorSwatchPopoverIcon.js';
@@ -3199,7 +3199,7 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
       if (!iconInfo) {
         continue;
       }
-      const icon = new WebComponents.Icon.Icon();
+      const icon = new IconButton.Icon.Icon();
       const width = '12.5px';
       const height = '12.5px';
       icon.data = {

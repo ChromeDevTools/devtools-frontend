@@ -8,8 +8,6 @@ import("../../../scripts/build/ninja/devtools_module.gni")
 devtools_module("components") {
   sources = [
     "ExpandableList.ts",
-    "Icon.ts",
-    "IconButton.ts",
     "ReportView.ts",
     "SurveyLink.ts",
   ]
@@ -23,6 +21,7 @@ devtools_module("components") {
     "../../render_coordinator:bundle",
     "../../third_party/lit-html:bundle",
     "../../ui/legacy:bundle",
+    "icon_button:bundle",
   ]
 
   visibility = [ "../../../test/unittests/front_end/ui/components" ]

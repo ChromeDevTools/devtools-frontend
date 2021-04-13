@@ -5,7 +5,7 @@
 import {assertNotNull} from '../../../../front_end/core/platform/platform.js';
 import * as IssuesManager from '../../../../front_end/models/issues_manager/issues_manager.js';
 import * as ConsoleCounters from '../../../../front_end/panels/console_counters/console_counters.js';
-import * as WebComponents from '../../../../front_end/ui/components/components.js';
+import * as IconButton from '../../../../front_end/ui/components/icon_button/icon_button.js';
 import {assertElement, assertElements, assertShadowRoot, renderElementIntoDOM} from '../helpers/DOMHelpers.js';
 import {MockIssuesManager} from '../issues_manager/MockIssuesManager.js';
 
@@ -21,13 +21,13 @@ const renderIssueCounter = (data: ConsoleCounters.IssueCounter.IssueCounterData)
     };
 
 export const extractIconGroups =
-    (shadowRoot: ShadowRoot): {iconData: WebComponents.Icon.IconData, label: string|null}[] => {
+    (shadowRoot: ShadowRoot): {iconData: IconButton.Icon.IconData, label: string|null}[] => {
       const iconButton = shadowRoot.querySelector('icon-button');
-      assertElement(iconButton, WebComponents.IconButton.IconButton);
+      assertElement(iconButton, IconButton.IconButton.IconButton);
       const iconButtonShadowRoot = iconButton.shadowRoot;
       assertNotNull(iconButtonShadowRoot);
       const icons = iconButtonShadowRoot.querySelectorAll('.status-icon');
-      assertElements(icons, WebComponents.Icon.Icon);
+      assertElements(icons, IconButton.Icon.Icon);
       const labels = iconButtonShadowRoot.querySelectorAll('.icon-button-title');
       assertElements(labels, HTMLSpanElement);
       assert(icons.length === labels.length, 'Expected icons and labels to appear in pairs');

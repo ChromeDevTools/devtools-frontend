@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as LitHtml from '../third_party/lit-html/lit-html.js';
-import * as Components from '../ui/components/components.js';
+import * as IconButton from '../ui/components/icon_button/icon_button.js';
 
 import {getMarkdownImage, ImageData} from './MarkdownImagesMap.js';
 
@@ -39,7 +39,7 @@ export class MarkdownImage extends HTMLElement {
     }
     const {src, color, width = '100%', height = '100%'} = this.imageData;
     return LitHtml.html`
-      <devtools-icon .data=${{iconPath: src, color, width, height} as Components.Icon.IconData}></devtools-icon>
+      <devtools-icon .data=${{iconPath: src, color, width, height} as IconButton.Icon.IconData}></devtools-icon>
     `;
   }
 

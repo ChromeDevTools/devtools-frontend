@@ -12,6 +12,7 @@ import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';  // eslint-disable-line no-unused-vars
 import * as LitHtml from '../../third_party/lit-html/lit-html.js';
 import * as WebComponents from '../../ui/components/components.js';
+import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as Components from '../../components/components.js';
@@ -432,7 +433,7 @@ export class FrameDetailsReportView extends HTMLElement {
           <div class="permissions-row">
             <div>
               <devtools-icon class="allowed-icon"
-                .data=${{color: '', iconName: 'error_icon', width: '14px'} as WebComponents.Icon.IconData}>
+                .data=${{color: '', iconName: 'error_icon', width: '14px'} as IconButton.Icon.IconData}>
               </devtools-icon>
             </div>
             <div class="feature-name text-ellipsis">
@@ -566,7 +567,7 @@ export class FrameDetailsReportView extends HTMLElement {
           color: 'var(--color-primary)',
           width: '16px',
           height: '16px',
-        } as WebComponents.Icon.IconData}>
+        } as IconButton.Icon.IconData}>
       </button>
     `;
     // clang-format on
@@ -669,7 +670,7 @@ export class FrameDetailsReportView extends HTMLElement {
                 color: 'var(--color-primary)',
                 width: '16px',
                 height: '16px',
-              } as WebComponents.Icon.IconData}></devtools-icon>
+              } as IconButton.Icon.IconData}></devtools-icon>
               <${linkTargetDOMNode.nodeName().toLocaleLowerCase()}>
             </button>
           </devtools-report-value>

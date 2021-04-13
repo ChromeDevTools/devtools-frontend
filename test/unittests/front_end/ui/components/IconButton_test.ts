@@ -2,31 +2,31 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as UIComponents from '../../../../../front_end/ui/components/components.js';
+import * as IconButton from '../../../../../front_end/ui/components/icon_button/icon_button.js';
 
 import {assertElement, assertElements, assertShadowRoot, renderElementIntoDOM} from '../../helpers/DOMHelpers.js';
 
 const {assert} = chai;
 
-const renderIconButton = (data: UIComponents.IconButton.IconButtonData):
-    {component: UIComponents.IconButton.IconButton, shadowRoot: ShadowRoot} => {
-      const component = new UIComponents.IconButton.IconButton();
+const renderIconButton = (data: IconButton.IconButton.IconButtonData):
+    {component: IconButton.IconButton.IconButton, shadowRoot: ShadowRoot} => {
+      const component = new IconButton.IconButton.IconButton();
       component.data = data;
       renderElementIntoDOM(component);
       assertShadowRoot(component.shadowRoot);
       return {component, shadowRoot: component.shadowRoot};
     };
 
-const defaultIcon: UIComponents.IconButton.IconWithTextData = {
+const defaultIcon: IconButton.IconButton.IconWithTextData = {
   iconName: 'error_icon',
   iconColor: '#1a73e8',
   text: '1',
 };
 
 export const extractIconGroups =
-    (shadowRoot: ShadowRoot): {iconData: UIComponents.Icon.IconData, label: string|null}[] => {
+    (shadowRoot: ShadowRoot): {iconData: IconButton.Icon.IconData, label: string|null}[] => {
       const icons = shadowRoot.querySelectorAll('.status-icon');
-      assertElements(icons, UIComponents.Icon.Icon);
+      assertElements(icons, IconButton.Icon.Icon);
       const labels = shadowRoot.querySelectorAll('.icon-button-title');
       assertElements(labels, HTMLSpanElement);
       assert(icons.length === labels.length, 'Expected icons and labels to appear in pairs');
@@ -140,7 +140,7 @@ describe('IconButton', () => {
       });
       const {shadowRoot} = renderIconButton({clickHandler, groups: [defaultIcon]});
       const icon = shadowRoot.querySelector('.status-icon');
-      assertElement(icon, UIComponents.Icon.Icon);
+      assertElement(icon, IconButton.Icon.Icon);
       icon.click();
       await clicked;
     });

@@ -4,7 +4,7 @@
 
 import type * as IssuesModule from '../../../../front_end/issues/issues.js';
 import {assertShadowRoot, renderElementIntoDOM, getElementWithinComponent} from '../helpers/DOMHelpers.js';
-import * as Components from '../../../../front_end/ui/components/components.js';
+import * as IconButton from '../../../../front_end/ui/components/icon_button/icon_button.js';
 import * as Coordinator from '../../../../front_end/render_coordinator/render_coordinator.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
@@ -35,7 +35,7 @@ describe('MarkdownImage', () => {
     renderElementIntoDOM(component);
     await coordinator.done();
     assertShadowRoot(component.shadowRoot);
-    const iconComponent = getElementWithinComponent(component, 'devtools-icon', Components.Icon.Icon);
+    const iconComponent = getElementWithinComponent(component, 'devtools-icon', IconButton.Icon.Icon);
     assert.isNotNull(iconComponent);
     const boundingClient = iconComponent.getBoundingClientRect();
     assert.strictEqual(boundingClient.width, 16);

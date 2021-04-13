@@ -4,13 +4,13 @@
 
 import * as FrontendHelpers from '../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
 import * as ComponentHelpers from '../../component_helpers/component_helpers.js';
-import * as Components from '../../ui/components/components.js';
+import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 
 await ComponentHelpers.ComponentServerSetup.setup();
 await FrontendHelpers.initializeGlobalVars();
 
-function appendComponent(data: Components.IconButton.IconButtonData) {
-  const component = new Components.IconButton.IconButton();
+function appendComponent(data: IconButton.IconButton.IconButtonData) {
+  const component = new IconButton.IconButton.IconButton();
   component.data = data;
   document.getElementById('container')?.appendChild(component);
 }

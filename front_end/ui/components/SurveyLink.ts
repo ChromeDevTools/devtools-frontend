@@ -6,7 +6,7 @@ import * as Common from '../../core/common/common.js';
 import type * as Host from '../../core/host/host.js';
 import * as LitHtml from '../../third_party/lit-html/lit-html.js';
 
-import type {IconData} from './Icon.js';
+import type {Icon} from './icon_button/icon_button.js';
 
 import * as i18n from '../../core/i18n/i18n.js';
 const UIStrings = {
@@ -150,7 +150,7 @@ export class SurveyLink extends HTMLElement {
         }
       </style>
       <button class="link ${linkState}" tabindex=${ariaDisabled ? '-1' : '0'} .disabled=${ariaDisabled} aria-disabled=${ariaDisabled} @click=${this.sendSurvey}>
-        <devtools-icon class="link-icon" .data=${{iconName: 'feedback_thin_16x16_icon', color: 'var(--color-link)', width: 'var(--issue-link-icon-size, 16px)', height: 'var(--issue-link-icon-size, 16px)'} as IconData}></devtools-icon><!--
+        <devtools-icon class="link-icon" .data=${{iconName: 'feedback_thin_16x16_icon', color: 'var(--color-link)', width: 'var(--issue-link-icon-size, 16px)', height: 'var(--issue-link-icon-size, 16px)'} as Icon.IconData}></devtools-icon><!--
       -->${linkText}
       </button>
     `;

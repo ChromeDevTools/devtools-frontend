@@ -41,7 +41,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as Search from '../../search/search.js';
-import * as Components from '../../ui/components/components.js';
+import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
@@ -418,7 +418,7 @@ export class NetworkPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
 
     this._panelToolbar.appendToolbarItem(this._throttlingSelect);
 
-    const networkConditionsIcon = new Components.Icon.Icon();
+    const networkConditionsIcon = new IconButton.Icon.Icon();
     networkConditionsIcon.data = {
       iconName: 'network_conditions_icon',
       color: 'rgb(110 110 110)',

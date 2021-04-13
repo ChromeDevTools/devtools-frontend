@@ -6,7 +6,7 @@ import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import * as LitHtml from '../../third_party/lit-html/lit-html.js';
-import * as UIComponents from '../../ui/components/components.js';
+import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 
 const UIStrings = {
   /**
@@ -37,7 +37,7 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/console_counters/IssueCounter.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export function getIssueKindIconData(issueKind: IssuesManager.Issue.IssueKind): UIComponents.Icon.IconWithName {
+export function getIssueKindIconData(issueKind: IssuesManager.Issue.IssueKind): IconButton.Icon.IconWithName {
   switch (issueKind) {
     case IssuesManager.Issue.IssueKind.PageError:
       return {iconName: 'issue-cross-icon', color: 'var(--issue-color-red)', width: '16px', height: '16px'};
@@ -48,8 +48,8 @@ export function getIssueKindIconData(issueKind: IssuesManager.Issue.IssueKind): 
   }
 }
 
-function toIconGroup({iconName, color, width, height}: UIComponents.Icon.IconWithName, sizeOverride?: string):
-    UIComponents.IconButton.IconWithTextData {
+function toIconGroup({iconName, color, width, height}: IconButton.Icon.IconWithName, sizeOverride?: string):
+    IconButton.IconButton.IconWithTextData {
   if (sizeOverride) {
     return {iconName, iconColor: color, iconWidth: sizeOverride, iconHeight: sizeOverride};
   }
@@ -182,7 +182,7 @@ export class IssueCounter extends HTMLElement {
       }
     };
     const iconSize = '2ex';
-    const data: UIComponents.IconButton.IconButtonData = {
+    const data: IconButton.IconButton.IconButtonData = {
       groups: [
         {
           ...toIconGroup(getIssueKindIconData(IssuesManager.Issue.IssueKind.PageError), iconSize),
@@ -208,7 +208,7 @@ export class IssueCounter extends HTMLElement {
               display: inline-block;
             }
         </style>
-        <icon-button .data=${data as UIComponents.IconButton.IconButtonData}
+        <icon-button .data=${data as IconButton.IconButton.IconButtonData}
           aria-label="${LitHtml.Directives.ifDefined(this.accessibleName)}"></icon-button>
         `,
         this.shadow);

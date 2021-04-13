@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as ComponentHelpers from '../../component_helpers/component_helpers.js';
-import * as UIComponents from '../../ui/components/components.js';
+import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 
 await ComponentHelpers.ComponentServerSetup.setup();
 
@@ -14,7 +14,7 @@ const iconName1 = document.createElement('td');
 iconName1.textContent = 'node_search_icon';
 row1.appendChild(iconName1);
 
-const icon = new UIComponents.Icon.Icon();
+const icon = new IconButton.Icon.Icon();
 const name = 'node_search_icon';
 icon.data = {
   iconName: name,
@@ -37,7 +37,7 @@ const iconName2 = document.createElement('td');
 iconName2.textContent = 'issue-exclamation-icon';
 row2.appendChild(iconName2);
 
-const otherIcon = new UIComponents.Icon.Icon();
+const otherIcon = new IconButton.Icon.Icon();
 const otherPath = '/Images/issue-exclamation-icon.svg';
 otherIcon.data = {
   iconPath: otherPath,
@@ -56,7 +56,7 @@ const iconName3 = document.createElement('td');
 iconName3.textContent = 'node_search_icon';
 row3.appendChild(iconName3);
 
-const otherIcon2 = new UIComponents.Icon.Icon();
+const otherIcon2 = new IconButton.Icon.Icon();
 otherIcon2.classList.add('custom-color');
 otherIcon2.data = {
   iconName: 'node_search_icon',
@@ -75,7 +75,7 @@ iconTable?.appendChild(row3);
   const span1 = document.createElement('span');
   span1.textContent = 'Some text';
   div.appendChild(span1);
-  const otherIcon3 = new UIComponents.Icon.Icon();
+  const otherIcon3 = new IconButton.Icon.Icon();
   otherIcon3.classList.add('custom-color');
   otherIcon3.data = {
     iconName: 'node_search_icon',
@@ -95,7 +95,7 @@ iconTable?.appendChild(row3);
   const span1 = document.createElement('span');
   span1.textContent = 'Some text';
   div.appendChild(span1);
-  const otherIcon3 = new UIComponents.Icon.Icon();
+  const otherIcon3 = new IconButton.Icon.Icon();
   otherIcon3.classList.add('custom-color');
   otherIcon3.data = {
     iconName: 'node_search_icon',
@@ -112,7 +112,7 @@ iconTable?.appendChild(row3);
 })();
 
 
-const iconInFlex = document.getElementById('icon-in-flex') as UIComponents.Icon.Icon;
+const iconInFlex = document.getElementById('icon-in-flex') as IconButton.Icon.Icon;
 iconInFlex.data = {
   iconName: 'error_icon',
   width: '16px',

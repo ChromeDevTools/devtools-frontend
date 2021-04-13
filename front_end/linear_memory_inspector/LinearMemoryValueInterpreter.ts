@@ -7,7 +7,7 @@ import './ValueInterpreterSettings.js';
 
 import * as ComponentHelpers from '../component_helpers/component_helpers.js';
 import * as LitHtml from '../third_party/lit-html/lit-html.js';
-import * as Components from '../ui/components/components.js';
+import * as IconButton from '../ui/components/icon_button/icon_button.js';
 
 import type {ValueDisplayData} from './ValueInterpreterDisplay.js';
 import {Endianness, endiannessToLocalizedString, ValueType, ValueTypeMode} from './ValueInterpreterDisplayUtils.js';
@@ -147,7 +147,7 @@ export class LinearMemoryValueInterpreter extends HTMLElement {
           ${this.renderEndiannessSetting()}
           <button data-settings="true" class="settings-toolbar-button ${this.showSettings ? 'active' : ''}" title=${i18nString(UIStrings.toggleValueTypeSettings)} @click=${this.onSettingsToggle}>
             <devtools-icon
-              .data=${{ iconName: 'settings_14x14_icon', color: 'var(--color-text-secondary)', width: '14px' } as Components.Icon.IconWithName}>
+              .data=${{ iconName: 'settings_14x14_icon', color: 'var(--color-text-secondary)', width: '14px' } as IconButton.Icon.IconWithName}>
             </devtools-icon>
           </button>
         </div>

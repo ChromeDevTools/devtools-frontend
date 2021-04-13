@@ -14,7 +14,7 @@ import * as IssuesManager from '../models/issues_manager/issues_manager.js';
 import * as ConsoleCounters from '../panels/console_counters/console_counters.js';
 import * as Elements from '../panels/elements/elements.js';
 import * as Network from '../panels/network/network.js';
-import * as WebComponents from '../ui/components/components.js';
+import * as IconButton from '../ui/components/icon_button/icon_button.js';
 import * as UI from '../ui/legacy/legacy.js';
 
 import {AffectedBlockedByResponseView} from './AffectedBlockedByResponseView.js';
@@ -522,7 +522,7 @@ export class IssueView extends UI.TreeOutline.TreeElement {
   _appendHeader(): void {
     const header = document.createElement('div');
     header.classList.add('header');
-    const icon = new WebComponents.Icon.Icon();
+    const icon = new IconButton.Icon.Icon();
     const kind = this._issue.getKind();
     icon.data = ConsoleCounters.IssueCounter.getIssueKindIconData(kind);
     icon.classList.add('leading-issue-icon');
@@ -597,7 +597,7 @@ export class IssueView extends UI.TreeOutline.TreeElement {
     for (const description of this._description.links) {
       const link = UI.Fragment.html`<x-link class="link devtools-link" tabindex="0" href=${description.link}>${
                        i18nString(UIStrings.learnMoreS, {PH1: description.linkTitle})}</x-link>` as UI.XLink.XLink;
-      const linkIcon = new WebComponents.Icon.Icon();
+      const linkIcon = new IconButton.Icon.Icon();
       linkIcon.data = {iconName: 'link_icon', color: 'var(--color-link)', width: '16px', height: '16px'};
       linkIcon.classList.add('link-icon');
       link.prepend(linkIcon);

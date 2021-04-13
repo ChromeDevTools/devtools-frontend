@@ -38,7 +38,7 @@ import * as LinearMemoryInspector from '../../../../linear_memory_inspector/line
 import * as Platform from '../../../../core/platform/platform.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
 import * as TextUtils from '../../../../models/text_utils/text_utils.js';
-import * as WebComponents from '../../../components/components.js';
+import * as IconButton from '../../../components/icon_button/icon_button.js';
 import * as UI from '../../legacy.js';
 
 import {CustomPreviewComponent} from './CustomPreviewComponent.js';
@@ -360,7 +360,7 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
     if (obj.type !== 'object' || (obj.subtype !== 'arraybuffer' && obj.subtype !== 'webassemblymemory')) {
       return;
     }
-    const memoryIcon = new WebComponents.Icon.Icon();
+    const memoryIcon = new IconButton.Icon.Icon();
     memoryIcon.data = {
       iconName: 'ic_memory_16x16',
       color: 'var(--color-text-secondary)',

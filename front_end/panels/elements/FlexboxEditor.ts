@@ -4,7 +4,7 @@
 
 import * as i18n from '../../core/i18n/i18n.js';
 import * as LitHtml from '../../third_party/lit-html/lit-html.js';
-import * as Components from '../../ui/components/components.js';
+import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 
 import {findIcon} from './CSSPropertyIconResolver.js';
 
@@ -207,7 +207,7 @@ export class FlexboxEditor extends HTMLElement {
         (): void => this.onButtonClick(propertyName, propertyValue, selected)}>
        <devtools-icon style=${transform} .data=${
         {iconName: iconInfo.iconName, color: 'var(--icon-color)', width: '18px', height: '18px'} as
-        Components.Icon.IconWithName}></devtools-icon>
+        IconButton.Icon.IconWithName}></devtools-icon>
     </button>`;
   }
 

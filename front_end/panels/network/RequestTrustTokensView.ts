@@ -4,7 +4,7 @@
 
 import '../../ui/components/components.js';
 
-import type * as Components from '../../ui/components/components.js';
+import type * as IconButton from '../../ui/components/icon_button/icon_button.js';
 
 import * as LitHtml from '../../third_party/lit-html/lit-html.js';
 import * as SDK from '../../core/sdk/sdk.js';
@@ -224,7 +224,7 @@ export class RequestTrustTokensReport extends HTMLElement {
       <devtools-report-value>
         <span>
           <devtools-icon class="status-icon"
-            .data=${getIconForStatusCode(this.trustTokenData.result.status) as Components.Icon.IconData}>
+            .data=${getIconForStatusCode(this.trustTokenData.result.status) as IconButton.Icon.IconData}>
           </devtools-icon>
           <strong>${getSimplifiedStatusTextForStatusCode(this.trustTokenData.result.status)}</strong>
           ${getDetailedTextForStatusCode(this.trustTokenData.result.status)}
@@ -243,13 +243,13 @@ export class RequestTrustTokensReport extends HTMLElement {
   }
 }
 
-const SUCCESS_ICON_DATA: Components.Icon.IconWithName = {
+const SUCCESS_ICON_DATA: IconButton.Icon.IconWithName = {
   color: 'rgb(12, 164, 12)',
   iconName: 'ic_checkmark_16x16',
   width: '12px',
 };
 
-const FAILURE_ICON_DATA: Components.Icon.IconWithName = {
+const FAILURE_ICON_DATA: IconButton.Icon.IconWithName = {
   color: '',
   iconName: 'error_icon',
   width: '12px',
@@ -262,7 +262,7 @@ export function statusConsideredSuccess(status: Protocol.Network.TrustTokenOpera
 }
 
 function getIconForStatusCode(status: Protocol.Network.TrustTokenOperationDoneEventStatus):
-    Components.Icon.IconWithName {
+    IconButton.Icon.IconWithName {
   return statusConsideredSuccess(status) ? SUCCESS_ICON_DATA : FAILURE_ICON_DATA;
 }
 

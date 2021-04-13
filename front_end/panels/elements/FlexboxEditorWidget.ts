@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as i18n from '../../core/i18n/i18n.js';
-import * as Components from '../../ui/components/components.js';
+import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import {EditableProperties, FlexboxEditor, PropertyDeselectedEvent, PropertySelectedEvent} from './FlexboxEditor.js';
@@ -132,7 +132,7 @@ function createButton(): HTMLButtonElement {
     // Stop propagation to prevent the property editor from being activated.
     event.stopPropagation();
   };
-  const flexboxIcon = new Components.Icon.Icon();
+  const flexboxIcon = new IconButton.Icon.Icon();
   flexboxIcon.data = {iconName: 'flex-wrap-icon', color: 'var(--color-text-secondary)', width: '12px', height: '12px'};
   flexboxEditorButton.appendChild(flexboxIcon);
   return flexboxEditorButton;

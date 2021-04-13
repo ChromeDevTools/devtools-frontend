@@ -139,7 +139,6 @@ group("legacy_entrypoints") {
     "sources:legacy",
     "text_editor:legacy",
     "timeline:legacy",
-    "ui/components/linear_memory_inspector:legacy",
     "ui/legacy:legacy",
     "ui/legacy/components/color_picker:legacy",
     "ui/legacy/components/data_grid:legacy",

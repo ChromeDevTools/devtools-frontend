@@ -37,12 +37,6 @@ devtools_entrypoint("bundle") {
   deps = [ ":linear_memory_inspector" ]
 }
 
-devtools_entrypoint("legacy") {
-  entrypoint = "linear_memory_inspector-legacy.ts"
-
-  deps = [ ":bundle" ]
-}
-
 devtools_entrypoint("meta") {
   entrypoint = "linear_memory_inspector-meta.ts"
 

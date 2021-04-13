@@ -384,7 +384,6 @@ grd_files_release_sources = [
   "front_end/ui/components/components.js",
   "front_end/ui/components/data_grid/data_grid.js",
   "front_end/ui/components/icon_button/icon_button.js",
-  "front_end/ui/components/linear_memory_inspector/linear_memory_inspector-legacy.js",
   "front_end/ui/components/linear_memory_inspector/linear_memory_inspector-meta.js",
   "front_end/ui/components/linear_memory_inspector/linear_memory_inspector.js",
   "front_end/ui/components/linkifier/linkifier.js",

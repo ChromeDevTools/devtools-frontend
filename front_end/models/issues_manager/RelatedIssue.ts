@@ -6,12 +6,12 @@
 
 import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import {Issue, IssueCategory} from './Issue.js';
 import {IssuesManager} from './IssuesManager.js';
 
 export type IssuesAssociatable = SDK.NetworkRequest.NetworkRequest|SDK.Cookie.Cookie;
 
-function issuesAssociatedWithNetworkRequest(
-    issues: SDK.Issue.Issue[], request: SDK.NetworkRequest.NetworkRequest): SDK.Issue.Issue[] {
+function issuesAssociatedWithNetworkRequest(issues: Issue[], request: SDK.NetworkRequest.NetworkRequest): Issue[] {
   return issues.filter(issue => {
     for (const affectedRequest of issue.requests()) {
       if (affectedRequest.requestId === request.requestId()) {
@@ -22,8 +22,7 @@ function issuesAssociatedWithNetworkRequest(
   });
 }
 
-function issuesAssociatedWithCookie(
-    issues: SDK.Issue.Issue[], domain: string, name: string, path: string): SDK.Issue.Issue[] {
+function issuesAssociatedWithCookie(issues: Issue[], domain: string, name: string, path: string): Issue[] {
   return issues.filter(issue => {
     for (const cookie of issue.cookies()) {
       if (cookie.domain === domain && cookie.name === name && cookie.path === path) {
@@ -37,7 +36,7 @@ function issuesAssociatedWithCookie(
 /**
  * @throws In case obj has an unsupported type (i.e. not part of the IssuesAssociatble union).
  */
-export function issuesAssociatedWith(issues: SDK.Issue.Issue[], obj: IssuesAssociatable): SDK.Issue.Issue[] {
+export function issuesAssociatedWith(issues: Issue[], obj: IssuesAssociatable): Issue[] {
   if (obj instanceof SDK.NetworkRequest.NetworkRequest) {
     return issuesAssociatedWithNetworkRequest(issues, obj);
   }
@@ -52,12 +51,12 @@ export function hasIssues(obj: IssuesAssociatable): boolean {
   return issuesAssociatedWith(issues, obj).length > 0;
 }
 
-export function hasIssueOfCategory(obj: IssuesAssociatable, category: SDK.Issue.IssueCategory): boolean {
+export function hasIssueOfCategory(obj: IssuesAssociatable, category: IssueCategory): boolean {
   const issues = Array.from(IssuesManager.instance().issues());
   return issuesAssociatedWith(issues, obj).some(issue => issue.getCategory() === category);
 }
 
-export async function reveal(obj: IssuesAssociatable, category?: SDK.Issue.IssueCategory): Promise<void|undefined> {
+export async function reveal(obj: IssuesAssociatable, category?: IssueCategory): Promise<void|undefined> {
   const issues = Array.from(IssuesManager.instance().issues());
   const candidates = issuesAssociatedWith(issues, obj).filter(issue => !category || issue.getCategory() === category);
   if (candidates.length > 0) {

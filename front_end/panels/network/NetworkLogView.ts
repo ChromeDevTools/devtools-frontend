@@ -1639,7 +1639,7 @@ export class NetworkLogView extends UI.Widget.VBox implements
       return false;
     }
     if (this._onlyIssuesFilterUI.checked() &&
-        !IssuesManager.RelatedIssue.hasIssueOfCategory(request, SDK.Issue.IssueCategory.SameSiteCookie)) {
+        !IssuesManager.RelatedIssue.hasIssueOfCategory(request, IssuesManager.Issue.IssueCategory.SameSiteCookie)) {
       return false;
     }
     if (this._onlyBlockedRequestsUI.checked() && !request.wasBlocked() && !request.corsErrorStatus()) {

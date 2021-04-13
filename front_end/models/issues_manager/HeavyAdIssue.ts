@@ -2,10 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as i18n from '../i18n/i18n.js';
+import * as i18n from '../../core/i18n/i18n.js';
+import type * as SDK from '../../core/sdk/sdk.js';
 
 import {Issue, IssueCategory, IssueKind, MarkdownIssueDescription} from './Issue.js';
-import type {IssuesModel} from './IssuesModel.js';
+
 
 const UIStrings = {
   /**
@@ -13,13 +14,13 @@ const UIStrings = {
   */
   handlingHeavyAdInterventions: 'Handling Heavy Ad Interventions',
 };
-const str_ = i18n.i18n.registerUIStrings('core/sdk/HeavyAdIssue.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('models/issues_manager/HeavyAdIssue.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class HeavyAdIssue extends Issue {
   private issueDetails: Protocol.Audits.HeavyAdIssueDetails;
 
-  constructor(issueDetails: Protocol.Audits.HeavyAdIssueDetails, issuesModel: IssuesModel) {
+  constructor(issueDetails: Protocol.Audits.HeavyAdIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel) {
     const umaCode = [Protocol.Audits.InspectorIssueCode.HeavyAdIssue, issueDetails.reason].join('::');
     super({code: Protocol.Audits.InspectorIssueCode.HeavyAdIssue, umaCode}, issuesModel);
     this.issueDetails = issueDetails;
@@ -59,8 +60,9 @@ export class HeavyAdIssue extends Issue {
     }
   }
 
-  static fromInspectorIssue(issuesModel: IssuesModel, inspectorDetails: Protocol.Audits.InspectorIssueDetails):
-      HeavyAdIssue[] {
+  static fromInspectorIssue(
+      issuesModel: SDK.IssuesModel.IssuesModel,
+      inspectorDetails: Protocol.Audits.InspectorIssueDetails): HeavyAdIssue[] {
     const heavyAdIssueDetails = inspectorDetails.heavyAdIssueDetails;
     if (!heavyAdIssueDetails) {
       console.warn('Heavy Ad issue without details received.');

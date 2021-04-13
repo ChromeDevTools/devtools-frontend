@@ -8,8 +8,8 @@ import type * as IssuesModule from '../../../../front_end/issues/issues.js';
 import type * as IssuesManagerModule from '../../../../front_end/models/issues_manager/issues_manager.js';
 import type * as SDKModule from '../../../../front_end/core/sdk/sdk.js';
 import {describeWithEnvironment} from '../helpers/EnvironmentHelpers.js';
-import {StubIssue} from '../sdk/StubIssue.js';
-import {MockIssuesModel} from '../sdk/MockIssuesModel.js';
+import {StubIssue} from '../issues_manager/StubIssue.js';
+import {MockIssuesModel} from '../issues_manager/MockIssuesModel.js';
 import {MockIssuesManager} from '../issues_manager/MockIssuesManager.js';
 
 describeWithEnvironment('AggregatedIssue', async () => {
@@ -48,11 +48,9 @@ describeWithEnvironment('AggregatedIssue', async () => {
 describeWithEnvironment('IssueAggregator', async () => {
   let IssuesManager: typeof IssuesManagerModule;
   let Issues: typeof IssuesModule;
-  let SDK: typeof SDKModule;
   before(async () => {
     Issues = await import('../../../../front_end/issues/issues.js');
     IssuesManager = await import('../../../../front_end/models/issues_manager/issues_manager.js');
-    SDK = await import('../../../../front_end/core/sdk/sdk.js');
   });
 
   it('deduplicates issues with the same code', () => {
@@ -117,7 +115,7 @@ describeWithEnvironment('IssueAggregator', async () => {
 
   describe('aggregates issue kind', () => {
     it('for a single issue', () => {
-      const issues = StubIssue.createFromIssueKinds([SDK.Issue.IssueKind.Improvement]);
+      const issues = StubIssue.createFromIssueKinds([IssuesManager.Issue.IssueKind.Improvement]);
 
       const mockManager = new MockIssuesManager(issues) as unknown as IssuesManagerModule.IssuesManager.IssuesManager;
       const aggregator = new Issues.IssueAggregator.IssueAggregator(mockManager);
@@ -125,12 +123,15 @@ describeWithEnvironment('IssueAggregator', async () => {
       const aggregatedIssues = Array.from(aggregator.aggregatedIssues());
       assert.strictEqual(aggregatedIssues.length, 1);
       const aggregatedIssue = aggregatedIssues[0];
-      assert.strictEqual(aggregatedIssue.getKind(), SDK.Issue.IssueKind.Improvement);
+      assert.strictEqual(aggregatedIssue.getKind(), IssuesManager.Issue.IssueKind.Improvement);
     });
 
     it('for issues of two different kinds', () => {
-      const issues = StubIssue.createFromIssueKinds(
-          [SDK.Issue.IssueKind.Improvement, SDK.Issue.IssueKind.BreakingChange, SDK.Issue.IssueKind.Improvement]);
+      const issues = StubIssue.createFromIssueKinds([
+        IssuesManager.Issue.IssueKind.Improvement,
+        IssuesManager.Issue.IssueKind.BreakingChange,
+        IssuesManager.Issue.IssueKind.Improvement,
+      ]);
 
       const mockManager = new MockIssuesManager(issues) as unknown as IssuesManagerModule.IssuesManager.IssuesManager;
       const aggregator = new Issues.IssueAggregator.IssueAggregator(mockManager);
@@ -138,12 +139,15 @@ describeWithEnvironment('IssueAggregator', async () => {
       const aggregatedIssues = Array.from(aggregator.aggregatedIssues());
       assert.strictEqual(aggregatedIssues.length, 1);
       const aggregatedIssue = aggregatedIssues[0];
-      assert.strictEqual(aggregatedIssue.getKind(), SDK.Issue.IssueKind.BreakingChange);
+      assert.strictEqual(aggregatedIssue.getKind(), IssuesManager.Issue.IssueKind.BreakingChange);
     });
 
     it('for issues of three different kinds', () => {
-      const issues = StubIssue.createFromIssueKinds(
-          [SDK.Issue.IssueKind.BreakingChange, SDK.Issue.IssueKind.PageError, SDK.Issue.IssueKind.Improvement]);
+      const issues = StubIssue.createFromIssueKinds([
+        IssuesManager.Issue.IssueKind.BreakingChange,
+        IssuesManager.Issue.IssueKind.PageError,
+        IssuesManager.Issue.IssueKind.Improvement,
+      ]);
 
       const mockManager = new MockIssuesManager(issues) as unknown as IssuesManagerModule.IssuesManager.IssuesManager;
       const aggregator = new Issues.IssueAggregator.IssueAggregator(mockManager);
@@ -151,17 +155,15 @@ describeWithEnvironment('IssueAggregator', async () => {
       const aggregatedIssues = Array.from(aggregator.aggregatedIssues());
       assert.strictEqual(aggregatedIssues.length, 1);
       const aggregatedIssue = aggregatedIssues[0];
-      assert.strictEqual(aggregatedIssue.getKind(), SDK.Issue.IssueKind.PageError);
+      assert.strictEqual(aggregatedIssue.getKind(), IssuesManager.Issue.IssueKind.PageError);
     });
   });
 });
 
 describeWithEnvironment('IssueAggregator', async () => {
   let Issues: typeof IssuesModule;
-  let SDK: typeof SDKModule;
   let IssuesManager: typeof IssuesManagerModule;
   before(async () => {
-    SDK = await import('../../../../front_end/core/sdk/sdk.js');
     IssuesManager = await import('../../../../front_end/models/issues_manager/issues_manager.js');
     Issues = await import('../../../../front_end/issues/issues.js');
   });
@@ -173,13 +175,13 @@ describeWithEnvironment('IssueAggregator', async () => {
       reason: Protocol.Audits.HeavyAdReason.CpuPeakLimit,
       frame: {frameId: 'main'},
     };
-    const issue1 = new SDK.HeavyAdIssue.HeavyAdIssue(details1, mockModel);
+    const issue1 = new IssuesManager.HeavyAdIssue.HeavyAdIssue(details1, mockModel);
     const details2 = {
       resolution: Protocol.Audits.HeavyAdResolutionStatus.HeavyAdWarning,
       reason: Protocol.Audits.HeavyAdReason.NetworkTotalLimit,
       frame: {frameId: 'main'},
     };
-    const issue2 = new SDK.HeavyAdIssue.HeavyAdIssue(details2, mockModel);
+    const issue2 = new IssuesManager.HeavyAdIssue.HeavyAdIssue(details2, mockModel);
 
     const mockManager = new MockIssuesManager([]) as unknown as IssuesManagerModule.IssuesManager.IssuesManager;
     const aggregator = new Issues.IssueAggregator.IssueAggregator(mockManager);

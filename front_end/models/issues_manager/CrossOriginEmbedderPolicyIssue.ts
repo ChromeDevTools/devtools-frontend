@@ -2,10 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as i18n from '../i18n/i18n.js';
+import * as i18n from '../../core/i18n/i18n.js';
+import type * as SDK from '../../core/sdk/sdk.js';
 
 import {Issue, IssueCategory, IssueKind, LazyMarkdownIssueDescription, MarkdownIssueDescription, resolveLazyDescription} from './Issue.js';
-import type {IssuesModel} from './IssuesModel.js';
+
 
 const UIStrings = {
   /**
@@ -17,7 +18,7 @@ const UIStrings = {
   */
   samesiteAndSameorigin: 'Same-Site and Same-Origin',
 };
-const str_ = i18n.i18n.registerUIStrings('core/sdk/CrossOriginEmbedderPolicyIssue.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('models/issues_manager/CrossOriginEmbedderPolicyIssue.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 export function isCrossOriginEmbedderPolicyIssue(reason: Protocol.Audits.BlockedByResponseReason): boolean {
@@ -39,7 +40,7 @@ export function isCrossOriginEmbedderPolicyIssue(reason: Protocol.Audits.Blocked
 export class CrossOriginEmbedderPolicyIssue extends Issue {
   private issueDetails: Protocol.Audits.BlockedByResponseIssueDetails;
 
-  constructor(issueDetails: Protocol.Audits.BlockedByResponseIssueDetails, issuesModel: IssuesModel) {
+  constructor(issueDetails: Protocol.Audits.BlockedByResponseIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel) {
     super(`CrossOriginEmbedderPolicyIssue::${issueDetails.reason}`, issuesModel);
     this.issueDetails = issueDetails;
   }

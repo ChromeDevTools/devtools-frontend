@@ -2,10 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as i18n from '../i18n/i18n.js';
+import * as i18n from '../../core/i18n/i18n.js';
+import type * as SDK from '../../core/sdk/sdk.js';
 
 import {Issue, IssueCategory, IssueKind, MarkdownIssueDescription} from './Issue.js';
-import type {IssuesModel} from './IssuesModel.js';
+
 
 const UIStrings = {
   /**
@@ -13,13 +14,13 @@ const UIStrings = {
   */
   preventingMixedContent: 'Preventing mixed content',
 };
-const str_ = i18n.i18n.registerUIStrings('core/sdk/MixedContentIssue.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('models/issues_manager/MixedContentIssue.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class MixedContentIssue extends Issue {
   private issueDetails: Protocol.Audits.MixedContentIssueDetails;
 
-  constructor(issueDetails: Protocol.Audits.MixedContentIssueDetails, issuesModel: IssuesModel) {
+  constructor(issueDetails: Protocol.Audits.MixedContentIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel) {
     super(Protocol.Audits.InspectorIssueCode.MixedContentIssue, issuesModel);
     this.issueDetails = issueDetails;
   }
@@ -63,8 +64,9 @@ export class MixedContentIssue extends Issue {
     }
   }
 
-  static fromInspectorIssue(issuesModel: IssuesModel, inspectorDetails: Protocol.Audits.InspectorIssueDetails):
-      MixedContentIssue[] {
+  static fromInspectorIssue(
+      issuesModel: SDK.IssuesModel.IssuesModel,
+      inspectorDetails: Protocol.Audits.InspectorIssueDetails): MixedContentIssue[] {
     const mixedContentDetails = inspectorDetails.mixedContentIssueDetails;
     if (!mixedContentDetails) {
       console.warn('Mixed content issue without details received.');

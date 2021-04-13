@@ -2,11 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as i18n from '../i18n/i18n.js';
+import * as i18n from '../../core/i18n/i18n.js';
+import type * as SDK from '../../core/sdk/sdk.js';
 
 import {Issue, IssueCategory, IssueKind} from './Issue.js';
 import type {MarkdownIssueDescription} from './Issue.js';
-import type {IssuesModel} from './IssuesModel.js';
+
 
 const UIStrings = {
   /**
@@ -14,13 +15,13 @@ const UIStrings = {
   */
   corsForPrivateNetworksRfc: 'CORS for private networks (RFC1918)',
 };
-const str_ = i18n.i18n.registerUIStrings('core/sdk/CorsIssue.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('models/issues_manager/CorsIssue.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class CorsIssue extends Issue {
   private issueDetails: Protocol.Audits.CorsIssueDetails;
 
-  constructor(issueDetails: Protocol.Audits.CorsIssueDetails, issuesModel: IssuesModel) {
+  constructor(issueDetails: Protocol.Audits.CorsIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel) {
     const issueCode = [Protocol.Audits.InspectorIssueCode.CorsIssue, issueDetails.corsErrorStatus.corsError].join('::');
     super(issueCode, issuesModel);
     this.issueDetails = issueDetails;
@@ -62,8 +63,8 @@ export class CorsIssue extends Issue {
     return IssueKind.PageError;
   }
 
-  static fromInspectorIssue(issuesModel: IssuesModel, inspectorDetails: Protocol.Audits.InspectorIssueDetails):
-      CorsIssue[] {
+  static fromInspectorIssue(
+      issuesModel: SDK.IssuesModel.IssuesModel, inspectorDetails: Protocol.Audits.InspectorIssueDetails): CorsIssue[] {
     const corsIssueDetails = inspectorDetails.corsIssueDetails;
     if (!corsIssueDetails) {
       console.warn('Cors issue without details received.');

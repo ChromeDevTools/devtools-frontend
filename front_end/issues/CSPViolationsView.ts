@@ -5,7 +5,6 @@
 import * as IssuesManager from '../models/issues_manager/issues_manager.js';
 import type * as Common from '../core/common/common.js';
 import * as i18n from '../core/i18n/i18n.js';
-import * as SDK from '../core/sdk/sdk.js';
 import * as UI from '../ui/legacy/legacy.js';
 
 import {ComboBoxOfCheckBoxes} from './ComboBoxOfCheckBoxes.js';
@@ -42,11 +41,12 @@ export class CSPViolationsView extends UI.Widget.VBox {
     const levelMenuButton = new ComboBoxOfCheckBoxes('Categories');
     levelMenuButton.setText('Categories');
     levelMenuButton.addOption(
-        'Trusted Type Policy', SDK.ContentSecurityPolicyIssue.trustedTypesPolicyViolationCode, true);
-    levelMenuButton.addOption('Trusted Type Sink', SDK.ContentSecurityPolicyIssue.trustedTypesSinkViolationCode, true);
-    levelMenuButton.addOption('CSP Inline', SDK.ContentSecurityPolicyIssue.inlineViolationCode, true);
-    levelMenuButton.addOption('CSP Eval', SDK.ContentSecurityPolicyIssue.evalViolationCode, true);
-    levelMenuButton.addOption('CSP URL', SDK.ContentSecurityPolicyIssue.urlViolationCode, true);
+        'Trusted Type Policy', IssuesManager.ContentSecurityPolicyIssue.trustedTypesPolicyViolationCode, true);
+    levelMenuButton.addOption(
+        'Trusted Type Sink', IssuesManager.ContentSecurityPolicyIssue.trustedTypesSinkViolationCode, true);
+    levelMenuButton.addOption('CSP Inline', IssuesManager.ContentSecurityPolicyIssue.inlineViolationCode, true);
+    levelMenuButton.addOption('CSP Eval', IssuesManager.ContentSecurityPolicyIssue.evalViolationCode, true);
+    levelMenuButton.addOption('CSP URL', IssuesManager.ContentSecurityPolicyIssue.urlViolationCode, true);
     levelMenuButton.addHeader('Reset', () => {
       levelMenuButton.getOptions().forEach((x, i) => levelMenuButton.setOptionEnabled(i, x.default));
     });
@@ -75,8 +75,8 @@ export class CSPViolationsView extends UI.Widget.VBox {
 
   private onIssueAdded(event: Common.EventTarget.EventTargetEvent): void {
     const {issue} =
-        /** @type {!{issuesModel: !SDK.IssuesModel.IssuesModel, issue: !SDK.Issue.Issue}} */ (event.data);
-    if (issue instanceof SDK.ContentSecurityPolicyIssue.ContentSecurityPolicyIssue) {
+        /** @type {!{issuesModel: !IssuesManager.IssuesModel.IssuesModel, issue: !SDK.Issue.Issue}} */ (event.data);
+    if (issue instanceof IssuesManager.ContentSecurityPolicyIssue.ContentSecurityPolicyIssue) {
       this.listView.addIssue(issue);
     }
   }
@@ -88,7 +88,7 @@ export class CSPViolationsView extends UI.Widget.VBox {
 
   private addAllIssues(): void {
     for (const issue of this.issuesManager.issues()) {
-      if (issue instanceof SDK.ContentSecurityPolicyIssue.ContentSecurityPolicyIssue) {
+      if (issue instanceof IssuesManager.ContentSecurityPolicyIssue.ContentSecurityPolicyIssue) {
         this.listView.addIssue(issue);
       }
     }

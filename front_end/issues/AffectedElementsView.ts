@@ -7,6 +7,7 @@ import * as Host from '../core/host/host.js';
 import * as i18n from '../core/i18n/i18n.js';
 import * as Platform from '../core/platform/platform.js';
 import * as SDK from '../core/sdk/sdk.js';
+import * as IssuesManager from '../models/issues_manager/issues_manager.js';
 
 import {AffectedItem, AffectedResourcesView} from './AffectedResourcesView.js';
 import {IssueView} from './IssueView.js';
@@ -20,9 +21,9 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('issues/AffectedElementsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class AffectedElementsView extends AffectedResourcesView {
-  private issue: SDK.Issue.Issue;
+  private issue: IssuesManager.Issue.Issue;
 
-  constructor(parent: IssueView, issue: SDK.Issue.Issue) {
+  constructor(parent: IssueView, issue: IssuesManager.Issue.Issue) {
     super(parent);
     this.issue = issue;
   }
@@ -31,7 +32,7 @@ export class AffectedElementsView extends AffectedResourcesView {
     Host.userMetrics.issuesPanelResourceOpened(this.issue.getCategory(), AffectedItem.Element);
   }
 
-  private async appendAffectedElements(affectedElements: Iterable<SDK.Issue.AffectedElement>): Promise<void> {
+  private async appendAffectedElements(affectedElements: Iterable<IssuesManager.Issue.AffectedElement>): Promise<void> {
     let count = 0;
     for (const element of affectedElements) {
       await this.appendAffectedElement(element);
@@ -44,14 +45,14 @@ export class AffectedElementsView extends AffectedResourcesView {
     return i18nString(UIStrings.nElements, {n: count});
   }
 
-  private async appendAffectedElement(element: SDK.Issue.AffectedElement): Promise<void> {
+  private async appendAffectedElement(element: IssuesManager.Issue.AffectedElement): Promise<void> {
     const cellElement = await this.renderElementCell(element);
     const rowElement = document.createElement('tr');
     rowElement.appendChild(cellElement);
     this.affectedResources.appendChild(rowElement);
   }
 
-  protected async renderElementCell({backendNodeId, nodeName}: SDK.Issue.AffectedElement): Promise<Element> {
+  protected async renderElementCell({backendNodeId, nodeName}: IssuesManager.Issue.AffectedElement): Promise<Element> {
     const mainTarget = SDK.SDKModel.TargetManager.instance().mainTarget() as SDK.SDKModel.Target;
     const deferredDOMNode = new SDK.DOMModel.DeferredDOMNode(mainTarget, backendNodeId);
     const anchorElement = (await Common.Linkifier.Linkifier.linkify(deferredDOMNode)) as HTMLElement;

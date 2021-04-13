@@ -4,7 +4,7 @@
 
 import * as i18n from '../core/i18n/i18n.js';
 import * as Platform from '../core/platform/platform.js';
-import * as SDK from '../core/sdk/sdk.js';
+import * as IssuesManager from '../models/issues_manager/issues_manager.js';
 import * as UI from '../ui/legacy/legacy.js';
 
 import {AffectedResourcesView} from './AffectedResourcesView.js';
@@ -94,7 +94,7 @@ export class AffectedSharedArrayBufferIssueDetailsView extends AffectedResources
     element.appendChild(status);
   }
 
-  private appendDetails(sabIssues: Iterable<SDK.SharedArrayBufferIssue.SharedArrayBufferIssue>): void {
+  private appendDetails(sabIssues: Iterable<IssuesManager.SharedArrayBufferIssue.SharedArrayBufferIssue>): void {
     const header = document.createElement('tr');
     this.appendColumnTitle(header, i18nString(UIStrings.sourceLocation));
     this.appendColumnTitle(header, i18nString(UIStrings.trigger));
@@ -109,12 +109,12 @@ export class AffectedSharedArrayBufferIssueDetailsView extends AffectedResources
     this.updateAffectedResourceCount(count);
   }
 
-  private appendDetail(sabIssue: SDK.SharedArrayBufferIssue.SharedArrayBufferIssue): void {
+  private appendDetail(sabIssue: IssuesManager.SharedArrayBufferIssue.SharedArrayBufferIssue): void {
     const element = document.createElement('tr');
     element.classList.add('affected-resource-directive');
 
     const sabIssueDetails = sabIssue.details();
-    const location = SDK.Issue.toZeroBasedLocation(sabIssueDetails.sourceCodeLocation);
+    const location = IssuesManager.Issue.toZeroBasedLocation(sabIssueDetails.sourceCodeLocation);
     this.appendSourceLocation(element, location, sabIssue.model()?.getTargetIfNotDisposed());
     this.appendType(element, sabIssueDetails.type);
     this.appendStatus(element, sabIssueDetails.isWarning);

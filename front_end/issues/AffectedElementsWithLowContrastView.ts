@@ -4,7 +4,7 @@
 
 import * as i18n from '../core/i18n/i18n.js';
 import * as Platform from '../core/platform/platform.js';
-import * as SDK from '../core/sdk/sdk.js';
+import * as IssuesManager from '../models/issues_manager/issues_manager.js';
 
 import {AffectedElementsView} from './AffectedElementsView.js';
 import {AggregatedIssue} from './IssueAggregator.js';
@@ -30,7 +30,8 @@ export class AffectedElementsWithLowContrastView extends AffectedElementsView {
     await this.appendLowContrastElements(this.aggregateIssue.getLowContrastIssues());
   }
 
-  private async appendLowContrastElement(issue: SDK.LowTextContrastIssue.LowTextContrastIssue): Promise<void> {
+  private async appendLowContrastElement(issue: IssuesManager.LowTextContrastIssue.LowTextContrastIssue):
+      Promise<void> {
     const row = document.createElement('tr');
     row.classList.add('affected-resource-low-contrast');
 
@@ -47,7 +48,7 @@ export class AffectedElementsWithLowContrastView extends AffectedElementsView {
     this.affectedResources.appendChild(row);
   }
 
-  private async appendLowContrastElements(issues: Iterable<SDK.LowTextContrastIssue.LowTextContrastIssue>):
+  private async appendLowContrastElements(issues: Iterable<IssuesManager.LowTextContrastIssue.LowTextContrastIssue>):
       Promise<void> {
     const header = document.createElement('tr');
     this.appendColumnTitle(header, i18nString(UIStrings.element));

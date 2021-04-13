@@ -2,10 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as i18n from '../i18n/i18n.js';
+import * as i18n from '../../core/i18n/i18n.js';
+import type * as SDK from '../../core/sdk/sdk.js';
 
 import {Issue, IssueCategory, IssueKind, LazyMarkdownIssueDescription, MarkdownIssueDescription, resolveLazyDescription} from './Issue.js';
-import type {IssuesModel} from './IssuesModel.js';
+
 
 const UIStrings = {
   /**
@@ -29,13 +30,14 @@ const UIStrings = {
   */
   trustedTypesPolicyViolation: 'Trusted Types - Policy violation',
 };
-const str_ = i18n.i18n.registerUIStrings('core/sdk/ContentSecurityPolicyIssue.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('models/issues_manager/ContentSecurityPolicyIssue.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 export class ContentSecurityPolicyIssue extends Issue {
   private issueDetails: Protocol.Audits.ContentSecurityPolicyIssueDetails;
 
-  constructor(issueDetails: Protocol.Audits.ContentSecurityPolicyIssueDetails, issuesModel: IssuesModel) {
+  constructor(
+      issueDetails: Protocol.Audits.ContentSecurityPolicyIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel) {
     const issueCode = [
       Protocol.Audits.InspectorIssueCode.ContentSecurityPolicyIssue,
       issueDetails.contentSecurityPolicyViolationType,
@@ -77,8 +79,9 @@ export class ContentSecurityPolicyIssue extends Issue {
     return IssueKind.PageError;
   }
 
-  static fromInsectorIssue(issuesModel: IssuesModel, inspectorDetails: Protocol.Audits.InspectorIssueDetails):
-      ContentSecurityPolicyIssue[] {
+  static fromInsectorIssue(
+      issuesModel: SDK.IssuesModel.IssuesModel,
+      inspectorDetails: Protocol.Audits.InspectorIssueDetails): ContentSecurityPolicyIssue[] {
     const cspDetails = inspectorDetails.contentSecurityPolicyIssueDetails;
     if (!cspDetails) {
       console.warn('Content security policy issue without details received.');

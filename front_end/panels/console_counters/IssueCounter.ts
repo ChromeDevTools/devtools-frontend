@@ -4,7 +4,6 @@
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
-import * as SDK from '../../core/sdk/sdk.js';
 import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import * as LitHtml from '../../third_party/lit-html/lit-html.js';
 import * as UIComponents from '../../ui/components/components.js';
@@ -38,13 +37,13 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/console_counters/IssueCounter.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export function getIssueKindIconData(issueKind: SDK.Issue.IssueKind): UIComponents.Icon.IconWithName {
+export function getIssueKindIconData(issueKind: IssuesManager.Issue.IssueKind): UIComponents.Icon.IconWithName {
   switch (issueKind) {
-    case SDK.Issue.IssueKind.PageError:
+    case IssuesManager.Issue.IssueKind.PageError:
       return {iconName: 'issue-cross-icon', color: 'var(--issue-color-red)', width: '16px', height: '16px'};
-    case SDK.Issue.IssueKind.BreakingChange:
+    case IssuesManager.Issue.IssueKind.BreakingChange:
       return {iconName: 'issue-exclamation-icon', color: 'var(--issue-color-yellow)', width: '16px', height: '16px'};
-    case SDK.Issue.IssueKind.Improvement:
+    case IssuesManager.Issue.IssueKind.Improvement:
       return {iconName: 'issue-text-icon', color: 'var(--issue-color-blue)', width: '16px', height: '16px'};
   }
 }
@@ -57,13 +56,13 @@ function toIconGroup({iconName, color, width, height}: UIComponents.Icon.IconWit
   return {iconName, iconColor: color, iconWidth: width, iconHeight: height};
 }
 
-export function getIssueKindDescription(issueKind: SDK.Issue.IssueKind): Common.UIString.LocalizedString {
+export function getIssueKindDescription(issueKind: IssuesManager.Issue.IssueKind): Common.UIString.LocalizedString {
   switch (issueKind) {
-    case SDK.Issue.IssueKind.PageError:
+    case IssuesManager.Issue.IssueKind.PageError:
       return i18nString(UIStrings.pageErrorIssue);
-    case SDK.Issue.IssueKind.BreakingChange:
+    case IssuesManager.Issue.IssueKind.BreakingChange:
       return i18nString(UIStrings.breakingChangeIssue);
-    case SDK.Issue.IssueKind.Improvement:
+    case IssuesManager.Issue.IssueKind.Improvement:
       return i18nString(UIStrings.improvementIssue);
   }
 }
@@ -90,9 +89,9 @@ const listFormat = new Intl.ListFormat(navigator.language, {type: 'unit', style:
 export function getIssueCountsEnumeration(
     issuesManager: IssuesManager.IssuesManager.IssuesManager, omitEmpty: boolean = true): string {
   const counts: [number, number, number] = [
-    issuesManager.numberOfIssues(SDK.Issue.IssueKind.PageError),
-    issuesManager.numberOfIssues(SDK.Issue.IssueKind.BreakingChange),
-    issuesManager.numberOfIssues(SDK.Issue.IssueKind.Improvement),
+    issuesManager.numberOfIssues(IssuesManager.Issue.IssueKind.PageError),
+    issuesManager.numberOfIssues(IssuesManager.Issue.IssueKind.BreakingChange),
+    issuesManager.numberOfIssues(IssuesManager.Issue.IssueKind.Improvement),
   ];
   const phrases = [
     i18nString(UIStrings.pageErrors, {issueCount: counts[0]}),
@@ -161,15 +160,18 @@ export class IssueCounter extends HTMLElement {
       return;
     }
     this.counts = [
-      this.issuesManager.numberOfIssues(SDK.Issue.IssueKind.PageError),
-      this.issuesManager.numberOfIssues(SDK.Issue.IssueKind.BreakingChange),
-      this.issuesManager.numberOfIssues(SDK.Issue.IssueKind.Improvement),
+      this.issuesManager.numberOfIssues(IssuesManager.Issue.IssueKind.PageError),
+      this.issuesManager.numberOfIssues(IssuesManager.Issue.IssueKind.BreakingChange),
+      this.issuesManager.numberOfIssues(IssuesManager.Issue.IssueKind.Improvement),
     ];
-    const importance =
-        [SDK.Issue.IssueKind.PageError, SDK.Issue.IssueKind.BreakingChange, SDK.Issue.IssueKind.Improvement];
+    const importance = [
+      IssuesManager.Issue.IssueKind.PageError,
+      IssuesManager.Issue.IssueKind.BreakingChange,
+      IssuesManager.Issue.IssueKind.Improvement,
+    ];
     const mostImportant = importance[this.counts.findIndex(x => x > 0) ?? 2];
 
-    const countToString = (kind: SDK.Issue.IssueKind, count: number): string|undefined => {
+    const countToString = (kind: IssuesManager.Issue.IssueKind, count: number): string|undefined => {
       switch (this.displayMode) {
         case DisplayMode.OmitEmpty:
           return count > 0 ? `${count}` : undefined;
@@ -183,16 +185,16 @@ export class IssueCounter extends HTMLElement {
     const data: UIComponents.IconButton.IconButtonData = {
       groups: [
         {
-          ...toIconGroup(getIssueKindIconData(SDK.Issue.IssueKind.PageError), iconSize),
-          text: countToString(SDK.Issue.IssueKind.PageError, this.counts[0]),
+          ...toIconGroup(getIssueKindIconData(IssuesManager.Issue.IssueKind.PageError), iconSize),
+          text: countToString(IssuesManager.Issue.IssueKind.PageError, this.counts[0]),
         },
         {
-          ...toIconGroup(getIssueKindIconData(SDK.Issue.IssueKind.BreakingChange), iconSize),
-          text: countToString(SDK.Issue.IssueKind.BreakingChange, this.counts[1]),
+          ...toIconGroup(getIssueKindIconData(IssuesManager.Issue.IssueKind.BreakingChange), iconSize),
+          text: countToString(IssuesManager.Issue.IssueKind.BreakingChange, this.counts[1]),
         },
         {
-          ...toIconGroup(getIssueKindIconData(SDK.Issue.IssueKind.Improvement), iconSize),
-          text: countToString(SDK.Issue.IssueKind.Improvement, this.counts[2]),
+          ...toIconGroup(getIssueKindIconData(IssuesManager.Issue.IssueKind.Improvement), iconSize),
+          text: countToString(IssuesManager.Issue.IssueKind.Improvement, this.counts[2]),
         },
       ],
       clickHandler: this.clickHandler,

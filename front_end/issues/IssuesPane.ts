@@ -4,7 +4,6 @@
 
 import * as Common from '../core/common/common.js';
 import * as i18n from '../core/i18n/i18n.js';
-import * as SDK from '../core/sdk/sdk.js';
 import * as IssuesManager from '../models/issues_manager/issues_manager.js';
 import * as ConsoleCounters from '../panels/console_counters/console_counters.js';
 import * as UI from '../ui/legacy/legacy.js';
@@ -83,10 +82,10 @@ const str_ = i18n.i18n.registerUIStrings('issues/IssuesPane.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 class IssueCategoryView extends UI.TreeOutline.TreeElement {
-  private category: SDK.Issue.IssueCategory;
+  private category: IssuesManager.Issue.IssueCategory;
   private issues: AggregatedIssue[];
 
-  constructor(category: SDK.Issue.IssueCategory) {
+  constructor(category: IssuesManager.Issue.IssueCategory) {
     super();
     this.category = category;
     this.issues = [];
@@ -97,23 +96,23 @@ class IssueCategoryView extends UI.TreeOutline.TreeElement {
 
   getCategoryName(): string {
     switch (this.category) {
-      case SDK.Issue.IssueCategory.CrossOriginEmbedderPolicy:
+      case IssuesManager.Issue.IssueCategory.CrossOriginEmbedderPolicy:
         return i18nString(UIStrings.crossOriginEmbedderPolicy);
-      case SDK.Issue.IssueCategory.MixedContent:
+      case IssuesManager.Issue.IssueCategory.MixedContent:
         return i18nString(UIStrings.mixedContent);
-      case SDK.Issue.IssueCategory.SameSiteCookie:
+      case IssuesManager.Issue.IssueCategory.SameSiteCookie:
         return i18nString(UIStrings.samesiteCookie);
-      case SDK.Issue.IssueCategory.HeavyAd:
+      case IssuesManager.Issue.IssueCategory.HeavyAd:
         return i18nString(UIStrings.heavyAds);
-      case SDK.Issue.IssueCategory.ContentSecurityPolicy:
+      case IssuesManager.Issue.IssueCategory.ContentSecurityPolicy:
         return i18nString(UIStrings.contentSecurityPolicy);
-      case SDK.Issue.IssueCategory.TrustedWebActivity:
+      case IssuesManager.Issue.IssueCategory.TrustedWebActivity:
         return i18nString(UIStrings.trustedWebActivity);
-      case SDK.Issue.IssueCategory.LowTextContrast:
+      case IssuesManager.Issue.IssueCategory.LowTextContrast:
         return i18nString(UIStrings.lowTextContrast);
-      case SDK.Issue.IssueCategory.Cors:
+      case IssuesManager.Issue.IssueCategory.Cors:
         return i18nString(UIStrings.cors);
-      case SDK.Issue.IssueCategory.Other:
+      case IssuesManager.Issue.IssueCategory.Other:
         return i18nString(UIStrings.other);
     }
   }
@@ -142,7 +141,7 @@ export function getGroupIssuesByCategorySetting(): Common.Settings.Setting<boole
 let issuesPaneInstance: IssuesPane;
 
 export class IssuesPane extends UI.Widget.VBox {
-  private categoryViews: Map<SDK.Issue.IssueCategory, IssueCategoryView>;
+  private categoryViews: Map<IssuesManager.Issue.IssueCategory, IssueCategoryView>;
   private issueViews: Map<string, IssueView>;
   private showThirdPartyCheckbox: UI.Toolbar.ToolbarSettingCheckbox|null;
   private issuesTree: UI.TreeOutline.TreeOutlineInShadow;
@@ -211,7 +210,7 @@ export class IssuesPane extends UI.Widget.VBox {
       this.fullUpdate();
     });
 
-    const thirdPartySetting = SDK.Issue.getShowThirdPartyIssuesSetting();
+    const thirdPartySetting = IssuesManager.Issue.getShowThirdPartyIssuesSetting();
     this.showThirdPartyCheckbox = new UI.Toolbar.ToolbarSettingCheckbox(
         thirdPartySetting, i18nString(UIStrings.includeCookieIssuesCausedBy),
         i18nString(UIStrings.includeThirdpartyCookieIssues));

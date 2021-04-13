@@ -4,7 +4,7 @@
 
 import * as i18n from '../core/i18n/i18n.js';
 import * as Platform from '../core/platform/platform.js';
-import * as SDK from '../core/sdk/sdk.js';
+import * as IssuesManager from '../models/issues_manager/issues_manager.js';
 
 import {AffectedResourcesView} from './AffectedResourcesView.js';
 
@@ -32,9 +32,9 @@ const str_ = i18n.i18n.registerUIStrings('issues/AffectedBlockedByResponseView.t
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class AffectedBlockedByResponseView extends AffectedResourcesView {
-  private issue: SDK.Issue.Issue;
+  private issue: IssuesManager.Issue.Issue;
 
-  constructor(parent: IssueView, issue: SDK.Issue.Issue) {
+  constructor(parent: IssueView, issue: IssuesManager.Issue.Issue) {
     super(parent);
     this.issue = issue;
   }

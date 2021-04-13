@@ -3,13 +3,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../common/common.js';
-import * as i18n from '../i18n/i18n.js';
+import * as Common from '../../core/common/common.js';
+import * as i18n from '../../core/i18n/i18n.js';
+import * as SDK from '../../core/sdk/sdk.js';
 
-import {FrameManager} from './FrameManager.js';
 import {Issue, IssueCategory, IssueKind, LazyMarkdownIssueDescription, MarkdownIssueDescription, resolveLazyDescription} from './Issue.js';
-import type {IssuesModel} from './IssuesModel.js';
-import {ResourceTreeFrame} from './ResourceTreeModel.js';
 
 const UIStrings = {
   /**
@@ -29,13 +27,15 @@ const UIStrings = {
   */
   anInsecure: 'an insecure',
 };
-const str_ = i18n.i18n.registerUIStrings('core/sdk/SameSiteCookieIssue.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('models/issues_manager/SameSiteCookieIssue.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 export class SameSiteCookieIssue extends Issue {
   private issueDetails: Protocol.Audits.SameSiteCookieIssueDetails;
 
-  constructor(code: string, issueDetails: Protocol.Audits.SameSiteCookieIssueDetails, issuesModel: IssuesModel) {
+  constructor(
+      code: string, issueDetails: Protocol.Audits.SameSiteCookieIssueDetails,
+      issuesModel: SDK.IssuesModel.IssuesModel) {
     super(code, issuesModel);
     this.issueDetails = issueDetails;
   }
@@ -51,7 +51,8 @@ export class SameSiteCookieIssue extends Issue {
    * Returns an array of issues from a given SameSiteCookieIssueDetails.
    */
   static createIssuesFromSameSiteDetails(
-      sameSiteDetails: Protocol.Audits.SameSiteCookieIssueDetails, issuesModel: IssuesModel): SameSiteCookieIssue[] {
+      sameSiteDetails: Protocol.Audits.SameSiteCookieIssueDetails,
+      issuesModel: SDK.IssuesModel.IssuesModel): SameSiteCookieIssue[] {
     /** @type {!Array<!Issue>} */
     const issues = [];
 
@@ -167,7 +168,7 @@ export class SameSiteCookieIssue extends Issue {
   }
 
   isCausedByThirdParty(): boolean {
-    const topFrame = FrameManager.instance().getTopFrame();
+    const topFrame = SDK.FrameManager.FrameManager.instance().getTopFrame();
     return isCausedByThirdParty(topFrame, this.issueDetails.cookieUrl);
   }
 
@@ -178,8 +179,9 @@ export class SameSiteCookieIssue extends Issue {
     return IssueKind.BreakingChange;
   }
 
-  static fromInspectorIssue(issuesModel: IssuesModel, inspectorDetails: Protocol.Audits.InspectorIssueDetails):
-      SameSiteCookieIssue[] {
+  static fromInspectorIssue(
+      issuesModel: SDK.IssuesModel.IssuesModel,
+      inspectorDetails: Protocol.Audits.InspectorIssueDetails): SameSiteCookieIssue[] {
     const sameSiteDetails = inspectorDetails.sameSiteCookieIssueDetails;
     if (!sameSiteDetails) {
       console.warn('SameSite issue without details received.');
@@ -193,7 +195,8 @@ export class SameSiteCookieIssue extends Issue {
 /**
  * Exported for unit test.
  */
-export function isCausedByThirdParty(topFrame: ResourceTreeFrame|null, cookieUrl?: string): boolean {
+export function isCausedByThirdParty(
+    topFrame: SDK.ResourceTreeModel.ResourceTreeFrame|null, cookieUrl?: string): boolean {
   if (!topFrame) {
     // The top frame is not yet available. Consider this issue as a third-party issue
     // until the top frame is available. This will prevent the issue from being visible

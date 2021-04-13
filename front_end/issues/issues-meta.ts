@@ -4,7 +4,7 @@
 
 import * as Common from '../core/common/common.js';
 import * as Root from '../core/root/root.js';
-import * as SDK from '../core/sdk/sdk.js';
+import * as IssuesManager from '../models/issues_manager/issues_manager.js';
 import * as UI from '../ui/legacy/legacy.js';
 
 // eslint-disable-next-line rulesdir/es_modules_import
@@ -72,7 +72,7 @@ UI.ViewManager.registerViewExtension({
 Common.Revealer.registerRevealer({
   contextTypes() {
     return [
-      SDK.Issue.Issue,
+      IssuesManager.Issue.Issue,
     ];
   },
   destination: Common.Revealer.RevealerDestination.ISSUES_VIEW,

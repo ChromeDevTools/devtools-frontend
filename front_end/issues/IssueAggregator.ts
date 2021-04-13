@@ -7,26 +7,26 @@ import * as SDK from '../core/sdk/sdk.js';
 import * as IssuesManager from '../models/issues_manager/issues_manager.js';
 
 /**
- * An `AggregatedIssue` representes a number of `SDK.Issue.Issue` objects that are displayed together.
+ * An `AggregatedIssue` representes a number of `IssuesManager.Issue.Issue` objects that are displayed together.
  * Currently only grouping by issue code, is supported. The class provides helpers to support displaying
  * of all resources that are affected by the aggregated issues.
  */
-export class AggregatedIssue extends SDK.Issue.Issue {
+export class AggregatedIssue extends IssuesManager.Issue.Issue {
   private affectedCookies: Map<string, {
     cookie: Protocol.Audits.AffectedCookie,
     hasRequest: boolean,
   }>;
   private affectedRequests: Map<string, Protocol.Audits.AffectedRequest>;
-  private heavyAdIssues: Set<SDK.HeavyAdIssue.HeavyAdIssue>;
+  private heavyAdIssues: Set<IssuesManager.HeavyAdIssue.HeavyAdIssue>;
   private blockedByResponseDetails: Map<string, Protocol.Audits.BlockedByResponseIssueDetails>;
-  private corsIssues: Set<SDK.CorsIssue.CorsIssue>;
-  private cspIssues: Set<SDK.ContentSecurityPolicyIssue.ContentSecurityPolicyIssue>;
-  private issueKind: SDK.Issue.IssueKind;
-  private lowContrastIssues: Set<SDK.LowTextContrastIssue.LowTextContrastIssue>;
-  private mixedContentIssues: Set<SDK.MixedContentIssue.MixedContentIssue>;
-  private sharedArrayBufferIssues: Set<SDK.SharedArrayBufferIssue.SharedArrayBufferIssue>;
-  private trustedWebActivityIssues: Set<SDK.TrustedWebActivityIssue.TrustedWebActivityIssue>;
-  private representative: SDK.Issue.Issue|null;
+  private corsIssues: Set<IssuesManager.CorsIssue.CorsIssue>;
+  private cspIssues: Set<IssuesManager.ContentSecurityPolicyIssue.ContentSecurityPolicyIssue>;
+  private issueKind: IssuesManager.Issue.IssueKind;
+  private lowContrastIssues: Set<IssuesManager.LowTextContrastIssue.LowTextContrastIssue>;
+  private mixedContentIssues: Set<IssuesManager.MixedContentIssue.MixedContentIssue>;
+  private sharedArrayBufferIssues: Set<IssuesManager.SharedArrayBufferIssue.SharedArrayBufferIssue>;
+  private trustedWebActivityIssues: Set<IssuesManager.TrustedWebActivityIssue.TrustedWebActivityIssue>;
+  private representative: IssuesManager.Issue.Issue|null;
   private aggregatedIssuesCount: number;
 
   constructor(code: string) {
@@ -37,7 +37,7 @@ export class AggregatedIssue extends SDK.Issue.Issue {
     this.blockedByResponseDetails = new Map();
     this.corsIssues = new Set();
     this.cspIssues = new Set();
-    this.issueKind = SDK.Issue.IssueKind.Improvement;
+    this.issueKind = IssuesManager.Issue.IssueKind.Improvement;
     this.lowContrastIssues = new Set();
     this.mixedContentIssues = new Set();
     this.sharedArrayBufferIssues = new Set();
@@ -65,27 +65,27 @@ export class AggregatedIssue extends SDK.Issue.Issue {
     return this.affectedCookies.values();
   }
 
-  getHeavyAdIssues(): Iterable<SDK.HeavyAdIssue.HeavyAdIssue> {
+  getHeavyAdIssues(): Iterable<IssuesManager.HeavyAdIssue.HeavyAdIssue> {
     return this.heavyAdIssues;
   }
 
-  getMixedContentIssues(): Iterable<SDK.MixedContentIssue.MixedContentIssue> {
+  getMixedContentIssues(): Iterable<IssuesManager.MixedContentIssue.MixedContentIssue> {
     return this.mixedContentIssues;
   }
 
-  getTrustedWebActivityIssues(): Iterable<SDK.TrustedWebActivityIssue.TrustedWebActivityIssue> {
+  getTrustedWebActivityIssues(): Iterable<IssuesManager.TrustedWebActivityIssue.TrustedWebActivityIssue> {
     return this.trustedWebActivityIssues;
   }
 
-  getCorsIssues(): Iterable<SDK.CorsIssue.CorsIssue> {
+  getCorsIssues(): Iterable<IssuesManager.CorsIssue.CorsIssue> {
     return this.corsIssues;
   }
 
-  getCspIssues(): Iterable<SDK.ContentSecurityPolicyIssue.ContentSecurityPolicyIssue> {
+  getCspIssues(): Iterable<IssuesManager.ContentSecurityPolicyIssue.ContentSecurityPolicyIssue> {
     return this.cspIssues;
   }
 
-  getLowContrastIssues(): Iterable<SDK.LowTextContrastIssue.LowTextContrastIssue> {
+  getLowContrastIssues(): Iterable<IssuesManager.LowTextContrastIssue.LowTextContrastIssue> {
     return this.lowContrastIssues;
   }
 
@@ -93,22 +93,22 @@ export class AggregatedIssue extends SDK.Issue.Issue {
     return this.affectedRequests.values();
   }
 
-  getSharedArrayBufferIssues(): Iterable<SDK.SharedArrayBufferIssue.SharedArrayBufferIssue> {
+  getSharedArrayBufferIssues(): Iterable<IssuesManager.SharedArrayBufferIssue.SharedArrayBufferIssue> {
     return this.sharedArrayBufferIssues;
   }
 
-  getDescription(): SDK.Issue.MarkdownIssueDescription|null {
+  getDescription(): IssuesManager.Issue.MarkdownIssueDescription|null {
     if (this.representative) {
       return this.representative.getDescription();
     }
     return null;
   }
 
-  getCategory(): SDK.Issue.IssueCategory {
+  getCategory(): IssuesManager.Issue.IssueCategory {
     if (this.representative) {
       return this.representative.getCategory();
     }
-    return SDK.Issue.IssueCategory.Other;
+    return IssuesManager.Issue.IssueCategory.Other;
   }
 
   getAggregatedIssuesCount(): number {
@@ -124,12 +124,12 @@ export class AggregatedIssue extends SDK.Issue.Issue {
     return `${domain};${path};${name}`;
   }
 
-  addInstance(issue: SDK.Issue.Issue): void {
+  addInstance(issue: IssuesManager.Issue.Issue): void {
     this.aggregatedIssuesCount++;
     if (!this.representative) {
       this.representative = issue;
     }
-    this.issueKind = SDK.Issue.unionIssueKind(this.issueKind, issue.getKind());
+    this.issueKind = IssuesManager.Issue.unionIssueKind(this.issueKind, issue.getKind());
     let hasRequest = false;
     for (const request of issue.requests()) {
       hasRequest = true;
@@ -143,34 +143,34 @@ export class AggregatedIssue extends SDK.Issue.Issue {
         this.affectedCookies.set(key, {cookie, hasRequest});
       }
     }
-    if (issue instanceof SDK.MixedContentIssue.MixedContentIssue) {
+    if (issue instanceof IssuesManager.MixedContentIssue.MixedContentIssue) {
       this.mixedContentIssues.add(issue);
     }
-    if (issue instanceof SDK.HeavyAdIssue.HeavyAdIssue) {
+    if (issue instanceof IssuesManager.HeavyAdIssue.HeavyAdIssue) {
       this.heavyAdIssues.add(issue);
     }
     for (const details of issue.getBlockedByResponseDetails()) {
       const key = JSON.stringify(details, ['parentFrame', 'blockedFrame', 'requestId', 'frameId', 'reason', 'request']);
       this.blockedByResponseDetails.set(key, details);
     }
-    if (issue instanceof SDK.TrustedWebActivityIssue.TrustedWebActivityIssue) {
+    if (issue instanceof IssuesManager.TrustedWebActivityIssue.TrustedWebActivityIssue) {
       this.trustedWebActivityIssues.add(issue);
     }
-    if (issue instanceof SDK.ContentSecurityPolicyIssue.ContentSecurityPolicyIssue) {
+    if (issue instanceof IssuesManager.ContentSecurityPolicyIssue.ContentSecurityPolicyIssue) {
       this.cspIssues.add(issue);
     }
-    if (issue instanceof SDK.SharedArrayBufferIssue.SharedArrayBufferIssue) {
+    if (issue instanceof IssuesManager.SharedArrayBufferIssue.SharedArrayBufferIssue) {
       this.sharedArrayBufferIssues.add(issue);
     }
-    if (issue instanceof SDK.LowTextContrastIssue.LowTextContrastIssue) {
+    if (issue instanceof IssuesManager.LowTextContrastIssue.LowTextContrastIssue) {
       this.lowContrastIssues.add(issue);
     }
-    if (issue instanceof SDK.CorsIssue.CorsIssue) {
+    if (issue instanceof IssuesManager.CorsIssue.CorsIssue) {
       this.corsIssues.add(issue);
     }
   }
 
-  getKind(): SDK.Issue.IssueKind {
+  getKind(): IssuesManager.Issue.IssueKind {
     return this.issueKind;
   }
 }
@@ -194,7 +194,7 @@ export class IssueAggregator extends Common.ObjectWrapper.ObjectWrapper {
   private onIssueAdded(event: Common.EventTarget.EventTargetEvent): void {
     const {issue} = (event.data as {
       issuesModel: SDK.IssuesModel.IssuesModel,
-      issue: SDK.Issue.Issue,
+      issue: IssuesManager.Issue.Issue,
     });
     this.aggregateIssue(issue);
   }
@@ -207,7 +207,7 @@ export class IssueAggregator extends Common.ObjectWrapper.ObjectWrapper {
     this.dispatchEventToListeners(Events.FullUpdateRequired);
   }
 
-  private aggregateIssue(issue: SDK.Issue.Issue): AggregatedIssue {
+  private aggregateIssue(issue: IssuesManager.Issue.Issue): AggregatedIssue {
     let aggregatedIssue = this.aggregatedIssuesByCode.get(issue.code());
     if (!aggregatedIssue) {
       aggregatedIssue = new AggregatedIssue(issue.code());

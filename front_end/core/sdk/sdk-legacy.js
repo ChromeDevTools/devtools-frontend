@@ -126,9 +126,6 @@ SDK.IsolateManager = SDKModule.IsolateManager.IsolateManager;
 SDK.IsolateManager.MemoryTrend = SDKModule.IsolateManager.MemoryTrend;
 
 /** @constructor */
-SDK.Issue = SDKModule.Issue.Issue;
-
-/** @constructor */
 SDK.NetworkLog = SDKModule.NetworkLog.NetworkLog;
 
 SDK.NetworkLog.Events = SDKModule.NetworkLog.Events;

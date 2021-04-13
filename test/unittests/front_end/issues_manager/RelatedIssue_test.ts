@@ -7,7 +7,7 @@ const {assert} = chai;
 import * as SDK from '../../../../front_end/core/sdk/sdk.js';
 import type * as IssuesManagerModule from '../../../../front_end/models/issues_manager/issues_manager.js';
 import {describeWithEnvironment} from '../helpers/EnvironmentHelpers.js';
-import {StubIssue} from '../sdk/StubIssue.js';
+import {StubIssue} from './StubIssue.js';
 
 describeWithEnvironment('issuesAssociatedWith', () => {
   let IssuesManager: typeof IssuesManagerModule;

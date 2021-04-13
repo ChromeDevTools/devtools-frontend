@@ -4,7 +4,7 @@
 
 import * as i18n from '../core/i18n/i18n.js';
 import * as Platform from '../core/platform/platform.js';
-import * as SDK from '../core/sdk/sdk.js';
+import * as IssuesManager from '../models/issues_manager/issues_manager.js';
 
 import {AffectedResourcesView} from './AffectedResourcesView.js';
 import {AggregatedIssue} from './IssueAggregator.js';
@@ -46,17 +46,17 @@ export class AffectedTrustedWebActivityIssueDetailsView extends AffectedResource
     return i18nString(UIStrings.nResources, {n: count});
   }
 
-  private appendDetail(twaIssue: SDK.TrustedWebActivityIssue.TrustedWebActivityIssue): void {
+  private appendDetail(twaIssue: IssuesManager.TrustedWebActivityIssue.TrustedWebActivityIssue): void {
     const element = document.createElement('tr');
     element.classList.add('affected-resource-row');
 
     const details = twaIssue.details();
-    if (this.issue.code() === SDK.TrustedWebActivityIssue.httpViolationCode && details.httpStatusCode) {
+    if (this.issue.code() === IssuesManager.TrustedWebActivityIssue.httpViolationCode && details.httpStatusCode) {
       this.appendIssueDetailCell(element, details.httpStatusCode.toString());
       this.appendIssueDetailCell(element, details.url);
-    } else if (this.issue.code() === SDK.TrustedWebActivityIssue.offlineViolationCode) {
+    } else if (this.issue.code() === IssuesManager.TrustedWebActivityIssue.offlineViolationCode) {
       this.appendIssueDetailCell(element, details.url);
-    } else if (this.issue.code() === SDK.TrustedWebActivityIssue.assetlinkViolationCode) {
+    } else if (this.issue.code() === IssuesManager.TrustedWebActivityIssue.assetlinkViolationCode) {
       this.appendIssueDetailCell(element, details.packageName || '');
       this.appendIssueDetailCell(element, details.url);
       this.appendIssueDetailCell(element, details.signature || '');
@@ -65,14 +65,14 @@ export class AffectedTrustedWebActivityIssueDetailsView extends AffectedResource
     this.affectedResources.appendChild(element);
   }
 
-  private appendDetails(twaIssues: Iterable<SDK.TrustedWebActivityIssue.TrustedWebActivityIssue>): void {
+  private appendDetails(twaIssues: Iterable<IssuesManager.TrustedWebActivityIssue.TrustedWebActivityIssue>): void {
     const header = document.createElement('tr');
-    if (this.issue.code() === SDK.TrustedWebActivityIssue.httpViolationCode) {
+    if (this.issue.code() === IssuesManager.TrustedWebActivityIssue.httpViolationCode) {
       this.appendColumnTitle(header, i18nString(UIStrings.statusCode));
       this.appendColumnTitle(header, i18nString(UIStrings.url));
-    } else if (this.issue.code() === SDK.TrustedWebActivityIssue.offlineViolationCode) {
+    } else if (this.issue.code() === IssuesManager.TrustedWebActivityIssue.offlineViolationCode) {
       this.appendColumnTitle(header, i18nString(UIStrings.url));
-    } else if (this.issue.code() === SDK.TrustedWebActivityIssue.assetlinkViolationCode) {
+    } else if (this.issue.code() === IssuesManager.TrustedWebActivityIssue.assetlinkViolationCode) {
       this.appendColumnTitle(header, i18nString(UIStrings.packageName));
       this.appendColumnTitle(header, i18nString(UIStrings.url));
       this.appendColumnTitle(header, i18nString(UIStrings.packageSignature));

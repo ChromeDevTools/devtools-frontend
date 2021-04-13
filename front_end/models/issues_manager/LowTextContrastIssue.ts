@@ -2,11 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as i18n from '../i18n/i18n.js';
+import * as i18n from '../../core/i18n/i18n.js';
+import type * as SDK from '../../core/sdk/sdk.js';
 
 import {Issue, IssueCategory, IssueKind} from './Issue.js';
 import type {MarkdownIssueDescription} from './Issue.js';
-import type {IssuesModel} from './IssuesModel.js';
+
 
 const UIStrings = {
   /**
@@ -14,7 +15,7 @@ const UIStrings = {
   */
   colorAndContrastAccessibility: 'Color and contrast accessibility',
 };
-const str_ = i18n.i18n.registerUIStrings('core/sdk/LowTextContrastIssue.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('models/issues_manager/LowTextContrastIssue.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class LowTextContrastIssue extends Issue {
@@ -56,8 +57,9 @@ export class LowTextContrastIssue extends Issue {
     return IssueKind.Improvement;
   }
 
-  static fromInspectorIssue(_issuesModel: IssuesModel, inspectorDetails: Protocol.Audits.InspectorIssueDetails):
-      LowTextContrastIssue[] {
+  static fromInspectorIssue(
+      _issuesModel: SDK.IssuesModel.IssuesModel,
+      inspectorDetails: Protocol.Audits.InspectorIssueDetails): LowTextContrastIssue[] {
     const lowTextContrastIssueDetails = inspectorDetails.lowTextContrastIssueDetails;
     if (!lowTextContrastIssueDetails) {
       console.warn('LowTextContrast issue without details received.');

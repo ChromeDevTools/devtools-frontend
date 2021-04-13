@@ -8,17 +8,15 @@ import type * as IssuesModule from '../../../../front_end/issues/issues.js';
 import type * as IssuesManagerModule from '../../../../front_end/models/issues_manager/issues_manager.js';
 import type * as SDKModule from '../../../../front_end/core/sdk/sdk.js';
 import {describeWithEnvironment} from '../helpers/EnvironmentHelpers.js';
-import {MockIssuesModel} from '../sdk/MockIssuesModel.js';
+import {MockIssuesModel} from '../issues_manager/MockIssuesModel.js';
 import {MockIssuesManager} from '../issues_manager/MockIssuesManager.js';
 
 describeWithEnvironment('AggregatedIssue', async () => {
   let IssuesManager: typeof IssuesManagerModule;
   let Issues: typeof IssuesModule;
-  let SDK: typeof SDKModule;
   before(async () => {
     Issues = await import('../../../../front_end/issues/issues.js');
     IssuesManager = await import('../../../../front_end/models/issues_manager/issues_manager.js');
-    SDK = await import('../../../../front_end/core/sdk/sdk.js');
   });
 
   it('aggregates two TWA issues with same violationType correctly', () => {
@@ -29,13 +27,13 @@ describeWithEnvironment('AggregatedIssue', async () => {
       url: 'test.url1.com',
       httpStatusCode: 500,
     };
-    const issue1 = new SDK.TrustedWebActivityIssue.TrustedWebActivityIssue(details1);
+    const issue1 = new IssuesManager.TrustedWebActivityIssue.TrustedWebActivityIssue(details1);
     const details2 = {
       violationType: Protocol.Audits.TwaQualityEnforcementViolationType.KHttpError,
       url: 'test.url2.com',
       httpStatusCode: 400,
     };
-    const issue2 = new SDK.TrustedWebActivityIssue.TrustedWebActivityIssue(details2);
+    const issue2 = new IssuesManager.TrustedWebActivityIssue.TrustedWebActivityIssue(details2);
 
     const aggregator = new Issues.IssueAggregator.IssueAggregator(mockManager);
     mockManager.dispatchEventToListeners(
@@ -64,17 +62,17 @@ describeWithEnvironment('AggregatedIssue', async () => {
       url: 'test.url1.com',
       httpStatusCode: 500,
     };
-    const issue1 = new SDK.TrustedWebActivityIssue.TrustedWebActivityIssue(details1);
+    const issue1 = new IssuesManager.TrustedWebActivityIssue.TrustedWebActivityIssue(details1);
     const details2 = {
       violationType: Protocol.Audits.TwaQualityEnforcementViolationType.KUnavailableOffline,
       url: 'test.url2.com',
     };
-    const issue2 = new SDK.TrustedWebActivityIssue.TrustedWebActivityIssue(details2);
+    const issue2 = new IssuesManager.TrustedWebActivityIssue.TrustedWebActivityIssue(details2);
     const details3 = {
       violationType: Protocol.Audits.TwaQualityEnforcementViolationType.KDigitalAssetLinks,
       url: 'test.url3.com',
     };
-    const issue3 = new SDK.TrustedWebActivityIssue.TrustedWebActivityIssue(details3);
+    const issue3 = new IssuesManager.TrustedWebActivityIssue.TrustedWebActivityIssue(details3);
 
     const aggregator = new Issues.IssueAggregator.IssueAggregator(mockManager);
     mockManager.dispatchEventToListeners(

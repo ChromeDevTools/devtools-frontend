@@ -4,7 +4,7 @@
 
 import * as i18n from '../core/i18n/i18n.js';
 import * as Platform from '../core/platform/platform.js';
-import * as SDK from '../core/sdk/sdk.js';
+import * as IssuesManager from '../models/issues_manager/issues_manager.js';
 
 import {AffectedResourcesView} from './AffectedResourcesView.js';
 import {AggregatedIssue} from './IssueAggregator.js';
@@ -79,7 +79,7 @@ export class CorsIssueDetailsView extends AffectedResourcesView {
     return i18nString(UIStrings.nItems, {n: count});
   }
 
-  private appendDetails(issues: Iterable<SDK.CorsIssue.CorsIssue>): void {
+  private appendDetails(issues: Iterable<IssuesManager.CorsIssue.CorsIssue>): void {
     const header = document.createElement('tr');
     this.appendColumnTitle(header, i18nString(UIStrings.request));
     this.appendColumnTitle(header, i18nString(UIStrings.status));
@@ -106,7 +106,7 @@ export class CorsIssueDetailsView extends AffectedResourcesView {
   }
 
 
-  private appendDetail(issue: SDK.CorsIssue.CorsIssue): void {
+  private appendDetail(issue: IssuesManager.CorsIssue.CorsIssue): void {
     const element = document.createElement('tr');
     element.classList.add('affected-resource-directive');
 

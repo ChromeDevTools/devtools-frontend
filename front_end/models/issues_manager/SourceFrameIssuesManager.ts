@@ -8,6 +8,8 @@ import * as Bindings from '../../models/bindings/bindings.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as Marked from '../../third_party/marked/marked.js';
+import {ContentSecurityPolicyIssue, trustedTypesPolicyViolationCode, trustedTypesSinkViolationCode} from './ContentSecurityPolicyIssue.js';
+import {Issue, IssueKind, MarkdownIssueDescription, toZeroBasedLocation} from './Issue.js';
 
 import * as IssuesManager from './IssuesManager.js';
 import {findTitleFromMarkdownAst, getMarkdownFileContent} from './MarkdownHelpers.js';
@@ -26,11 +28,11 @@ export class SourceFrameIssuesManager {
 
   private onIssueAdded(event: Common.EventTarget.EventTargetEvent): void {
     const {issue} =
-        /** @type {!{issue: !SDK.Issue.Issue}} */ (event.data);
+        /** @type {!{issue: !Issue}} */ (event.data);
     this.addIssue(issue);
   }
 
-  private addIssue(issue: SDK.Issue.Issue): void {
+  private addIssue(issue: Issue): void {
     if (!this.isTrustedTypeIssue(issue)) {
       return;
     }
@@ -39,7 +41,7 @@ export class SourceFrameIssuesManager {
       return;
     }
     const debuggerModel = issuesModel.target().model(SDK.DebuggerModel.DebuggerModel);
-    const srcLocation = SDK.Issue.toZeroBasedLocation(issue.details().sourceCodeLocation);
+    const srcLocation = toZeroBasedLocation(issue.details().sourceCodeLocation);
     if (srcLocation && debuggerModel) {
       const rawLocation =
           debuggerModel.createRawLocationByURL(srcLocation.url, srcLocation.lineNumber, srcLocation.columnNumber);
@@ -57,15 +59,13 @@ export class SourceFrameIssuesManager {
     }
   }
 
-  private async getIssueTitleFromMarkdownDescription(description: SDK.Issue.MarkdownIssueDescription):
-      Promise<string|null> {
+  private async getIssueTitleFromMarkdownDescription(description: MarkdownIssueDescription): Promise<string|null> {
     const rawMarkdown = await getMarkdownFileContent(description.file);
     const markdownAst = Marked.Marked.lexer(rawMarkdown);
     return findTitleFromMarkdownAst(markdownAst);
   }
 
-  private async addIssueMessageToScript(issue: SDK.Issue.Issue, rawLocation: SDK.DebuggerModel.Location):
-      Promise<void> {
+  private async addIssueMessageToScript(issue: Issue, rawLocation: SDK.DebuggerModel.Location): Promise<void> {
     const description = issue.getDescription();
     if (description) {
       const title = await this.getIssueTitleFromMarkdownDescription(description);
@@ -78,11 +78,9 @@ export class SourceFrameIssuesManager {
     }
   }
 
-  private isTrustedTypeIssue(issue: SDK.Issue.Issue):
-      issue is SDK.ContentSecurityPolicyIssue.ContentSecurityPolicyIssue {
-    return issue instanceof SDK.ContentSecurityPolicyIssue.ContentSecurityPolicyIssue &&
-        issue.code() === SDK.ContentSecurityPolicyIssue.trustedTypesSinkViolationCode ||
-        issue.code() === SDK.ContentSecurityPolicyIssue.trustedTypesPolicyViolationCode;
+  private isTrustedTypeIssue(issue: Issue): issue is ContentSecurityPolicyIssue {
+    return issue instanceof ContentSecurityPolicyIssue && issue.code() === trustedTypesSinkViolationCode ||
+        issue.code() === trustedTypesPolicyViolationCode;
   }
 
   private resetMessages(): void {
@@ -96,10 +94,10 @@ export class SourceFrameIssuesManager {
 
 export class IssueMessage extends Workspace.UISourceCode.Message {
   private uiSourceCode?: Workspace.UISourceCode.UISourceCode = undefined;
-  private kind: SDK.Issue.IssueKind;
+  private kind: IssueKind;
 
   constructor(
-      title: string, kind: SDK.Issue.IssueKind, rawLocation: SDK.DebuggerModel.Location,
+      title: string, kind: IssueKind, rawLocation: SDK.DebuggerModel.Location,
       locationPool: Bindings.LiveLocation.LiveLocationPool, clickHandler: () => void) {
     super(Workspace.UISourceCode.Message.Level.Issue, title, clickHandler);
     this.kind = kind;
@@ -120,7 +118,7 @@ export class IssueMessage extends Workspace.UISourceCode.Message {
     this.uiSourceCode.addMessage(this);
   }
 
-  getIssueKind(): SDK.Issue.IssueKind {
+  getIssueKind(): IssueKind {
     return this.kind;
   }
 

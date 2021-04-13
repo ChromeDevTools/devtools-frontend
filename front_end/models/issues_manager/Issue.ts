@@ -2,10 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../common/common.js';
-import * as Host from '../host/host.js';
-
-import type {IssuesModel} from './IssuesModel.js';
+import * as Common from '../../core/common/common.js';
+import * as Host from '../../core/host/host.js';
+import type * as SDK from '../../core/sdk/sdk.js';
 
 // eslint-disable-next-line rulesdir/const_enum
 export enum IssueCategory {
@@ -84,9 +83,9 @@ export interface AffectedElement {
 
 export abstract class Issue extends Common.ObjectWrapper.ObjectWrapper {
   private issueCode: string;
-  private issuesModel: IssuesModel|null;
+  private issuesModel: SDK.IssuesModel.IssuesModel|null;
 
-  constructor(code: string|{code: string, umaCode: string}, issuesModel: IssuesModel|null = null) {
+  constructor(code: string|{code: string, umaCode: string}, issuesModel: SDK.IssuesModel.IssuesModel|null = null) {
     super();
     this.issueCode = typeof code === 'string' ? code : code.code;
     this.issuesModel = issuesModel;
@@ -134,7 +133,7 @@ export abstract class Issue extends Common.ObjectWrapper.ObjectWrapper {
   /**
    * The model might be unavailable or belong to a target that has already been disposed.
    */
-  model(): IssuesModel|null {
+  model(): SDK.IssuesModel.IssuesModel|null {
     return this.issuesModel;
   }
 

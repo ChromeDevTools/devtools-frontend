@@ -2,10 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as i18n from '../i18n/i18n.js';
+import * as i18n from '../../core/i18n/i18n.js';
+import type * as SDK from '../../core/sdk/sdk.js';
 
 import {Issue, IssueCategory, IssueKind, LazyMarkdownIssueDescription, MarkdownIssueDescription, resolveLazyDescription} from './Issue.js';
-import type {IssuesModel} from './IssuesModel.js';
+
 
 const UIStrings = {
   /**
@@ -13,7 +14,7 @@ const UIStrings = {
   */
   changesToQualityCriteriaForPwas: 'Changes to quality criteria for PWAs using Trusted Web Activity',
 };
-const str_ = i18n.i18n.registerUIStrings('core/sdk/TrustedWebActivityIssue.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('models/issues_manager/TrustedWebActivityIssue.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 export class TrustedWebActivityIssue extends Issue {
@@ -50,8 +51,9 @@ export class TrustedWebActivityIssue extends Issue {
     return IssueKind.PageError;
   }
 
-  static fromInspectorIssue(issuesModel: IssuesModel, inspectorDetails: Protocol.Audits.InspectorIssueDetails):
-      TrustedWebActivityIssue[] {
+  static fromInspectorIssue(
+      issuesModel: SDK.IssuesModel.IssuesModel,
+      inspectorDetails: Protocol.Audits.InspectorIssueDetails): TrustedWebActivityIssue[] {
     const twaQualityEnforcementDetails = inspectorDetails.twaQualityEnforcementDetails;
     if (!twaQualityEnforcementDetails) {
       console.warn('TWA Quality Enforcement issue without details received.');

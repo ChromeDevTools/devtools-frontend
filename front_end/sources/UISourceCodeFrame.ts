@@ -33,7 +33,6 @@
 import * as Common from '../core/common/common.js';
 import * as Platform from '../core/platform/platform.js';
 import * as Root from '../core/root/root.js';
-import * as SDK from '../core/sdk/sdk.js';
 import * as IssuesManager from '../models/issues_manager/issues_manager.js';
 import * as Persistence from '../models/persistence/persistence.js';  // eslint-disable-line no-unused-vars
 import * as TextUtils from '../models/text_utils/text_utils.js';
@@ -823,7 +822,7 @@ export class RowMessageBucket {
     const editorLineNumber = position.lineNumber;
     let columnNumber: number = Number.MAX_VALUE;
     let maxMessage: Workspace.UISourceCode.Message|null = null;
-    let maxIssueKind = SDK.Issue.IssueKind.Improvement;
+    let maxIssueKind = IssuesManager.Issue.IssueKind.Improvement;
     let showIssues = false;
     let showErrors = false;
     for (let i = 0; i < this._messages.length; ++i) {
@@ -835,7 +834,7 @@ export class RowMessageBucket {
         maxMessage = message;
       }
       if (message instanceof IssuesManager.SourceFrameIssuesManager.IssueMessage) {
-        maxIssueKind = SDK.Issue.unionIssueKind(maxIssueKind, message.getIssueKind());
+        maxIssueKind = IssuesManager.Issue.unionIssueKind(maxIssueKind, message.getIssueKind());
       }
       showIssues = showIssues || message.level() === Workspace.UISourceCode.Message.Level.Issue;
       showErrors = showErrors || message.level() !== Workspace.UISourceCode.Message.Level.Issue;

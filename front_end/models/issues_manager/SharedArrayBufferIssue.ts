@@ -2,11 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as i18n from '../i18n/i18n.js';
+import * as i18n from '../../core/i18n/i18n.js';
 
 import type {MarkdownIssueDescription} from './Issue.js';
 import {Issue, IssueKind, IssueCategory} from './Issue.js';
-import type {IssuesModel} from './IssuesModel.js';
+import type * as SDK from '../../core/sdk/sdk.js';
 
 const UIStrings = {
   /**
@@ -14,13 +14,13 @@ const UIStrings = {
   */
   enablingSharedArrayBuffer: 'Enabling `SharedArrayBuffer`',
 };
-const str_ = i18n.i18n.registerUIStrings('core/sdk/SharedArrayBufferIssue.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('models/issues_manager/SharedArrayBufferIssue.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class SharedArrayBufferIssue extends Issue {
   private issueDetails: Protocol.Audits.SharedArrayBufferIssueDetails;
 
-  constructor(issueDetails: Protocol.Audits.SharedArrayBufferIssueDetails, issuesModel: IssuesModel) {
+  constructor(issueDetails: Protocol.Audits.SharedArrayBufferIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel) {
     const umaCode = [Protocol.Audits.InspectorIssueCode.SharedArrayBufferIssue, issueDetails.type].join('::');
     super({code: Protocol.Audits.InspectorIssueCode.SharedArrayBufferIssue, umaCode}, issuesModel);
     this.issueDetails = issueDetails;
@@ -56,8 +56,9 @@ export class SharedArrayBufferIssue extends Issue {
     return IssueKind.PageError;
   }
 
-  static fromInspectorIssue(issuesModel: IssuesModel, inspectorDetails: Protocol.Audits.InspectorIssueDetails):
-      SharedArrayBufferIssue[] {
+  static fromInspectorIssue(
+      issuesModel: SDK.IssuesModel.IssuesModel,
+      inspectorDetails: Protocol.Audits.InspectorIssueDetails): SharedArrayBufferIssue[] {
     const sabIssueDetails = inspectorDetails.sharedArrayBufferIssueDetails;
     if (!sabIssueDetails) {
       console.warn('SAB transfer issue without details received.');

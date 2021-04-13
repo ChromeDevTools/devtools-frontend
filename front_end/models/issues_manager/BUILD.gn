@@ -7,11 +7,21 @@ import("../../../scripts/build/ninja/devtools_module.gni")
 
 devtools_module("issues_manager") {
   sources = [
+    "ContentSecurityPolicyIssue.ts",
     "ContrastCheckTrigger.ts",
+    "CorsIssue.ts",
+    "CrossOriginEmbedderPolicyIssue.ts",
+    "HeavyAdIssue.ts",
+    "Issue.ts",
     "IssuesManager.ts",
+    "LowTextContrastIssue.ts",
     "MarkdownHelpers.ts",
+    "MixedContentIssue.ts",
     "RelatedIssue.ts",
+    "SameSiteCookieIssue.ts",
+    "SharedArrayBufferIssue.ts",
     "SourceFrameIssuesManager.ts",
+    "TrustedWebActivityIssue.ts",
   ]
 
   deps = [

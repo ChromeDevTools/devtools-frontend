@@ -8,8 +8,8 @@ import * as SDK from '../../../../front_end/core/sdk/sdk.js';
 import type * as IssuesManagerModule from '../../../../front_end/models/issues_manager/issues_manager.js';
 
 import {describeWithEnvironment} from '../helpers/EnvironmentHelpers.js';
-import {mkInspectorCspIssue, StubIssue, ThirdPartyStubIssue} from '../sdk/StubIssue.js';
-import {MockIssuesModel} from '../sdk/MockIssuesModel.js';
+import {mkInspectorCspIssue, StubIssue, ThirdPartyStubIssue} from './StubIssue.js';
+import {MockIssuesModel} from '../issues_manager/MockIssuesModel.js';
 
 describeWithEnvironment('IssuesManager', () => {
   let IssuesManager: typeof IssuesManagerModule;
@@ -23,7 +23,7 @@ describeWithEnvironment('IssuesManager', () => {
     const issuesManager = new IssuesManager.IssuesManager.IssuesManager();
     issuesManager.modelAdded(mockModel);
 
-    const dispatchedIssues: SDK.Issue.Issue[] = [];
+    const dispatchedIssues: IssuesManagerModule.Issue.Issue[] = [];
     issuesManager.addEventListener(
         IssuesManager.IssuesManager.Events.IssueAdded, event => dispatchedIssues.push(event.data.issue));
 
@@ -49,7 +49,7 @@ describeWithEnvironment('IssuesManager', () => {
       new ThirdPartyStubIssue('StubIssue4', true),
     ];
 
-    SDK.Issue.getShowThirdPartyIssuesSetting().set(false);
+    IssuesManager.Issue.getShowThirdPartyIssuesSetting().set(false);
 
     const issuesManager = new IssuesManager.IssuesManager.IssuesManager();
     const mockModel = new MockIssuesModel([]) as unknown as SDK.IssuesModel.IssuesModel;
@@ -68,16 +68,16 @@ describeWithEnvironment('IssuesManager', () => {
     assert.deepStrictEqual(issueCodes, ['AllowedStubIssue1', 'AllowedStubIssue3']);
     assert.deepStrictEqual(firedIssueAddedEventCodes, ['AllowedStubIssue1', 'AllowedStubIssue3']);
 
-    SDK.Issue.getShowThirdPartyIssuesSetting().set(true);
+    IssuesManager.Issue.getShowThirdPartyIssuesSetting().set(true);
 
     issueCodes = Array.from(issuesManager.issues()).map(i => i.code());
     assert.deepStrictEqual(issueCodes, ['AllowedStubIssue1', 'StubIssue2', 'AllowedStubIssue3', 'StubIssue4']);
   });
 
   it('reports issue counts by kind', () => {
-    const issue1 = new StubIssue('StubIssue1', ['id1'], [], SDK.Issue.IssueKind.Improvement);
-    const issue2 = new StubIssue('StubIssue1', ['id2'], [], SDK.Issue.IssueKind.Improvement);
-    const issue3 = new StubIssue('StubIssue1', ['id3'], [], SDK.Issue.IssueKind.BreakingChange);
+    const issue1 = new StubIssue('StubIssue1', ['id1'], [], IssuesManager.Issue.IssueKind.Improvement);
+    const issue2 = new StubIssue('StubIssue1', ['id2'], [], IssuesManager.Issue.IssueKind.Improvement);
+    const issue3 = new StubIssue('StubIssue1', ['id3'], [], IssuesManager.Issue.IssueKind.BreakingChange);
 
     const mockModel = new MockIssuesModel([issue1]) as unknown as SDK.IssuesModel.IssuesModel;
     const issuesManager = new IssuesManager.IssuesManager.IssuesManager();
@@ -88,8 +88,8 @@ describeWithEnvironment('IssuesManager', () => {
     issuesManager.addIssue(mockModel, issue3);
 
     assert.deepStrictEqual(issuesManager.numberOfIssues(), 3);
-    assert.deepStrictEqual(issuesManager.numberOfIssues(SDK.Issue.IssueKind.Improvement), 2);
-    assert.deepStrictEqual(issuesManager.numberOfIssues(SDK.Issue.IssueKind.BreakingChange), 1);
-    assert.deepStrictEqual(issuesManager.numberOfIssues(SDK.Issue.IssueKind.PageError), 0);
+    assert.deepStrictEqual(issuesManager.numberOfIssues(IssuesManager.Issue.IssueKind.Improvement), 2);
+    assert.deepStrictEqual(issuesManager.numberOfIssues(IssuesManager.Issue.IssueKind.BreakingChange), 1);
+    assert.deepStrictEqual(issuesManager.numberOfIssues(IssuesManager.Issue.IssueKind.PageError), 0);
   });
 });

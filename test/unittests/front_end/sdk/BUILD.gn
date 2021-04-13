@@ -13,8 +13,6 @@ ts_library("sdk") {
     "DebuggerModel_test.ts",
     "FrameManager_test.ts",
     "HARLog_test.ts",
-    "Issue_test.ts",
-    "MockIssuesModel.ts",
     "NetworkManager_test.ts",
     "OverlayColorGenerator_test.ts",
     "OverlayPersistentHighlighter_test.ts",
@@ -22,7 +20,6 @@ ts_library("sdk") {
     "RemoteObject_test.ts",
     "ServerTiming_test.ts",
     "SourceMap_test.ts",
-    "StubIssue.ts",
     "TracingModel_test.ts",
   ]
 

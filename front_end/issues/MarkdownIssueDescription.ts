@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as Root from '../core/root/root.js';
-import type * as SDK from '../core/sdk/sdk.js';
+import * as IssuesManager from '../models/issues_manager/issues_manager.js';
 import * as Marked from '../third_party/marked/marked.js';
 
 import {MarkdownView} from './MarkdownView.js';
@@ -14,7 +14,7 @@ export interface IssueDescription {
   links: {link: string, linkTitle: string}[];
 }
 
-export async function createIssueDescriptionFromMarkdown(description: SDK.Issue.MarkdownIssueDescription):
+export async function createIssueDescriptionFromMarkdown(description: IssuesManager.Issue.MarkdownIssueDescription):
     Promise<IssueDescription> {
   const rawMarkdown = await getMarkdownFileContent(description.file);
   const rawMarkdownWithPlaceholdersReplaced = substitutePlaceholders(rawMarkdown, description.substitutions);
@@ -76,7 +76,7 @@ function validatePlaceholders(placeholders: Set<string>): void {
  * This function is exported separately for unit testing.
  */
 export function createIssueDescriptionFromRawMarkdown(
-    markdown: string, description: SDK.Issue.MarkdownIssueDescription): IssueDescription {
+    markdown: string, description: IssuesManager.Issue.MarkdownIssueDescription): IssueDescription {
   const markdownAst = Marked.Marked.lexer(markdown);
   const title = findTitleFromMarkdownAst(markdownAst);
   if (!title) {

@@ -4,7 +4,7 @@
 
 import * as i18n from '../core/i18n/i18n.js';
 import * as Platform from '../core/platform/platform.js';
-import * as SDK from '../core/sdk/sdk.js';
+import * as IssuesManager from '../models/issues_manager/issues_manager.js';
 
 import {AffectedResourcesView} from './AffectedResourcesView.js';
 
@@ -64,7 +64,7 @@ export class AffectedHeavyAdView extends AffectedResourcesView {
     this.issue = issue;
   }
 
-  private appendAffectedHeavyAds(heavyAds: Iterable<SDK.HeavyAdIssue.HeavyAdIssue>): void {
+  private appendAffectedHeavyAds(heavyAds: Iterable<IssuesManager.HeavyAdIssue.HeavyAdIssue>): void {
     const header = document.createElement('tr');
     this.appendColumnTitle(header, i18nString(UIStrings.limitExceeded));
     this.appendColumnTitle(header, i18nString(UIStrings.resolutionStatus));

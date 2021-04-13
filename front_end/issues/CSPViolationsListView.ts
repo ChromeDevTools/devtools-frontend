@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as SDK from '../core/sdk/sdk.js';
+import * as IssuesManager from '../models/issues_manager/issues_manager.js';
 import * as LitHtml from '../third_party/lit-html/lit-html.js';
 import * as UIComponents from '../ui/components/components.js';  // eslint-disable-line rulesdir/es_modules_import
 import * as UI from '../ui/legacy/legacy.js';
@@ -11,7 +11,7 @@ export class CSPViolationsListView extends UI.Widget.VBox {
   private table = new UIComponents.DataGridController.DataGridController();
   private categoryFilter = new Set<string>();
   private issueRows =
-      new Map<SDK.ContentSecurityPolicyIssue.ContentSecurityPolicyIssue, UIComponents.DataGridUtils.Row>();
+      new Map<IssuesManager.ContentSecurityPolicyIssue.ContentSecurityPolicyIssue, UIComponents.DataGridUtils.Row>();
 
   constructor() {
     super(true);
@@ -58,12 +58,13 @@ export class CSPViolationsListView extends UI.Widget.VBox {
     this.table.data = {...this.table.data, rows: rows};
   }
 
-  private isIssueInFilterCategories(issue: SDK.ContentSecurityPolicyIssue.ContentSecurityPolicyIssue): boolean {
+  private isIssueInFilterCategories(issue: IssuesManager.ContentSecurityPolicyIssue.ContentSecurityPolicyIssue):
+      boolean {
     return (this.categoryFilter.has(issue.code()) || this.categoryFilter.size === 0);
   }
 
-  addIssue(issue: SDK.ContentSecurityPolicyIssue.ContentSecurityPolicyIssue): void {
-    const location = SDK.Issue.toZeroBasedLocation(issue.details().sourceCodeLocation);
+  addIssue(issue: IssuesManager.ContentSecurityPolicyIssue.ContentSecurityPolicyIssue): void {
+    const location = IssuesManager.Issue.toZeroBasedLocation(issue.details().sourceCodeLocation);
     if (!location) {
       return;
     }
@@ -98,19 +99,19 @@ export class CSPViolationsListView extends UI.Widget.VBox {
   }
 
   private issueViolationCodeToCategoryName(code: string): string {
-    if (code === SDK.ContentSecurityPolicyIssue.inlineViolationCode) {
+    if (code === IssuesManager.ContentSecurityPolicyIssue.inlineViolationCode) {
       return 'Inline Violation';
     }
-    if (code === SDK.ContentSecurityPolicyIssue.urlViolationCode) {
+    if (code === IssuesManager.ContentSecurityPolicyIssue.urlViolationCode) {
       return 'URL Violation';
     }
-    if (code === SDK.ContentSecurityPolicyIssue.evalViolationCode) {
+    if (code === IssuesManager.ContentSecurityPolicyIssue.evalViolationCode) {
       return 'Eval Violation';
     }
-    if (code === SDK.ContentSecurityPolicyIssue.trustedTypesSinkViolationCode) {
+    if (code === IssuesManager.ContentSecurityPolicyIssue.trustedTypesSinkViolationCode) {
       return 'Sink Violation';
     }
-    if (code === SDK.ContentSecurityPolicyIssue.trustedTypesPolicyViolationCode) {
+    if (code === IssuesManager.ContentSecurityPolicyIssue.trustedTypesPolicyViolationCode) {
       return 'Policy Violation';
     }
     return 'unknown';

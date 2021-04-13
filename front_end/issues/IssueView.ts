@@ -10,6 +10,7 @@ import * as Host from '../core/host/host.js';
 import * as i18n from '../core/i18n/i18n.js';
 import * as Platform from '../core/platform/platform.js';
 import * as SDK from '../core/sdk/sdk.js';
+import * as IssuesManager from '../models/issues_manager/issues_manager.js';
 import * as ConsoleCounters from '../panels/console_counters/console_counters.js';
 import * as Elements from '../panels/elements/elements.js';
 import * as Network from '../panels/network/network.js';
@@ -184,26 +185,26 @@ class AffectedDirectivesView extends AffectedResourcesView {
   }
 
   _appendAffectedContentSecurityPolicyDetails(
-      cspIssues: Iterable<SDK.ContentSecurityPolicyIssue.ContentSecurityPolicyIssue>): void {
+      cspIssues: Iterable<IssuesManager.ContentSecurityPolicyIssue.ContentSecurityPolicyIssue>): void {
     const header = document.createElement('tr');
-    if (this._issue.code() === SDK.ContentSecurityPolicyIssue.inlineViolationCode) {
+    if (this._issue.code() === IssuesManager.ContentSecurityPolicyIssue.inlineViolationCode) {
       this.appendColumnTitle(header, i18nString(UIStrings.directiveC));
       this.appendColumnTitle(header, i18nString(UIStrings.element));
       this.appendColumnTitle(header, i18nString(UIStrings.sourceLocation));
       this.appendColumnTitle(header, i18nString(UIStrings.status));
-    } else if (this._issue.code() === SDK.ContentSecurityPolicyIssue.urlViolationCode) {
+    } else if (this._issue.code() === IssuesManager.ContentSecurityPolicyIssue.urlViolationCode) {
       this.appendColumnTitle(header, i18nString(UIStrings.resourceC), 'affected-resource-directive-info-header');
       this.appendColumnTitle(header, i18nString(UIStrings.status));
       this.appendColumnTitle(header, i18nString(UIStrings.directiveC));
       this.appendColumnTitle(header, i18nString(UIStrings.sourceLocation));
-    } else if (this._issue.code() === SDK.ContentSecurityPolicyIssue.evalViolationCode) {
+    } else if (this._issue.code() === IssuesManager.ContentSecurityPolicyIssue.evalViolationCode) {
       this.appendColumnTitle(header, i18nString(UIStrings.sourceLocation));
       this.appendColumnTitle(header, i18nString(UIStrings.directiveC));
       this.appendColumnTitle(header, i18nString(UIStrings.status));
-    } else if (this._issue.code() === SDK.ContentSecurityPolicyIssue.trustedTypesSinkViolationCode) {
+    } else if (this._issue.code() === IssuesManager.ContentSecurityPolicyIssue.trustedTypesSinkViolationCode) {
       this.appendColumnTitle(header, i18nString(UIStrings.sourceLocation));
       this.appendColumnTitle(header, i18nString(UIStrings.status));
-    } else if (this._issue.code() === SDK.ContentSecurityPolicyIssue.trustedTypesPolicyViolationCode) {
+    } else if (this._issue.code() === IssuesManager.ContentSecurityPolicyIssue.trustedTypesPolicyViolationCode) {
       this.appendColumnTitle(header, i18nString(UIStrings.sourceLocation));
       this.appendColumnTitle(header, i18nString(UIStrings.directiveC));
       this.appendColumnTitle(header, i18nString(UIStrings.status));
@@ -220,34 +221,34 @@ class AffectedDirectivesView extends AffectedResourcesView {
     this.updateAffectedResourceCount(count);
   }
 
-  _appendAffectedContentSecurityPolicyDetail(cspIssue: SDK.ContentSecurityPolicyIssue.ContentSecurityPolicyIssue):
-      void {
+  _appendAffectedContentSecurityPolicyDetail(
+      cspIssue: IssuesManager.ContentSecurityPolicyIssue.ContentSecurityPolicyIssue): void {
     const element = document.createElement('tr');
     element.classList.add('affected-resource-directive');
 
     const cspIssueDetails = cspIssue.details();
-    const location = SDK.Issue.toZeroBasedLocation(cspIssueDetails.sourceCodeLocation);
+    const location = IssuesManager.Issue.toZeroBasedLocation(cspIssueDetails.sourceCodeLocation);
     const model = cspIssue.model();
     const maybeTarget = cspIssue.model()?.getTargetIfNotDisposed();
-    if (this._issue.code() === SDK.ContentSecurityPolicyIssue.inlineViolationCode && model) {
+    if (this._issue.code() === IssuesManager.ContentSecurityPolicyIssue.inlineViolationCode && model) {
       this._appendViolatedDirective(element, cspIssueDetails.violatedDirective);
       this._appendBlockedElement(element, cspIssueDetails.violatingNodeId, model);
       this.appendSourceLocation(element, location, maybeTarget);
       this._appendStatus(element, cspIssueDetails.isReportOnly);
-    } else if (this._issue.code() === SDK.ContentSecurityPolicyIssue.urlViolationCode) {
+    } else if (this._issue.code() === IssuesManager.ContentSecurityPolicyIssue.urlViolationCode) {
       const url = cspIssueDetails.blockedURL ? cspIssueDetails.blockedURL : '';
       this._appendBlockedURL(element, url);
       this._appendStatus(element, cspIssueDetails.isReportOnly);
       this._appendViolatedDirective(element, cspIssueDetails.violatedDirective);
       this.appendSourceLocation(element, location, maybeTarget);
-    } else if (this._issue.code() === SDK.ContentSecurityPolicyIssue.evalViolationCode) {
+    } else if (this._issue.code() === IssuesManager.ContentSecurityPolicyIssue.evalViolationCode) {
       this.appendSourceLocation(element, location, maybeTarget);
       this._appendViolatedDirective(element, cspIssueDetails.violatedDirective);
       this._appendStatus(element, cspIssueDetails.isReportOnly);
-    } else if (this._issue.code() === SDK.ContentSecurityPolicyIssue.trustedTypesSinkViolationCode) {
+    } else if (this._issue.code() === IssuesManager.ContentSecurityPolicyIssue.trustedTypesSinkViolationCode) {
       this.appendSourceLocation(element, location, maybeTarget);
       this._appendStatus(element, cspIssueDetails.isReportOnly);
-    } else if (this._issue.code() === SDK.ContentSecurityPolicyIssue.trustedTypesPolicyViolationCode) {
+    } else if (this._issue.code() === IssuesManager.ContentSecurityPolicyIssue.trustedTypesPolicyViolationCode) {
       this.appendSourceLocation(element, location, maybeTarget);
       this._appendViolatedDirective(element, cspIssueDetails.violatedDirective);
       this._appendStatus(element, cspIssueDetails.isReportOnly);
@@ -265,8 +266,8 @@ class AffectedDirectivesView extends AffectedResourcesView {
 }
 
 class AffectedRequestsView extends AffectedResourcesView {
-  _issue: SDK.Issue.Issue;
-  constructor(parent: IssueView, issue: SDK.Issue.Issue) {
+  _issue: IssuesManager.Issue.Issue;
+  constructor(parent: IssueView, issue: IssuesManager.Issue.Issue) {
     super(parent);
     this._issue = issue;
   }
@@ -314,8 +315,8 @@ class AffectedRequestsView extends AffectedResourcesView {
 }
 
 class AffectedSourcesView extends AffectedResourcesView {
-  _issue: SDK.Issue.Issue;
-  constructor(parent: IssueView, issue: SDK.Issue.Issue) {
+  _issue: IssuesManager.Issue.Issue;
+  constructor(parent: IssueView, issue: IssuesManager.Issue.Issue) {
     super(parent);
     this._issue = issue;
   }
@@ -357,10 +358,10 @@ class AffectedSourcesView extends AffectedResourcesView {
   }
 }
 
-const issueTypeToNetworkHeaderMap = new Map<SDK.Issue.IssueCategory, Network.NetworkItemView.Tabs>([
-  [SDK.Issue.IssueCategory.SameSiteCookie, Network.NetworkItemView.Tabs.Cookies],
-  [SDK.Issue.IssueCategory.CrossOriginEmbedderPolicy, Network.NetworkItemView.Tabs.Headers],
-  [SDK.Issue.IssueCategory.MixedContent, Network.NetworkItemView.Tabs.Headers],
+const issueTypeToNetworkHeaderMap = new Map<IssuesManager.Issue.IssueCategory, Network.NetworkItemView.Tabs>([
+  [IssuesManager.Issue.IssueCategory.SameSiteCookie, Network.NetworkItemView.Tabs.Cookies],
+  [IssuesManager.Issue.IssueCategory.CrossOriginEmbedderPolicy, Network.NetworkItemView.Tabs.Headers],
+  [IssuesManager.Issue.IssueCategory.MixedContent, Network.NetworkItemView.Tabs.Headers],
 ]);
 
 class AffectedMixedContentView extends AffectedResourcesView {
@@ -370,7 +371,8 @@ class AffectedMixedContentView extends AffectedResourcesView {
     this._issue = issue;
   }
 
-  _appendAffectedMixedContentDetails(mixedContentIssues: Iterable<SDK.MixedContentIssue.MixedContentIssue>): void {
+  _appendAffectedMixedContentDetails(mixedContentIssues: Iterable<IssuesManager.MixedContentIssue.MixedContentIssue>):
+      void {
     const header = document.createElement('tr');
     this.appendColumnTitle(header, i18nString(UIStrings.name));
     this.appendColumnTitle(header, i18nString(UIStrings.restrictionStatus));
@@ -485,13 +487,13 @@ export class IssueView extends UI.TreeOutline.TreeElement {
     this._hasBeenExpandedBefore = false;
   }
 
-  private static getBodyCSSClass(issueKind: SDK.Issue.IssueKind): string {
+  private static getBodyCSSClass(issueKind: IssuesManager.Issue.IssueKind): string {
     switch (issueKind) {
-      case SDK.Issue.IssueKind.BreakingChange:
+      case IssuesManager.Issue.IssueKind.BreakingChange:
         return 'issue-kind-breaking-change';
-      case SDK.Issue.IssueKind.PageError:
+      case IssuesManager.Issue.IssueKind.PageError:
         return 'issue-kind-page-error';
-      case SDK.Issue.IssueKind.Improvement:
+      case IssuesManager.Issue.IssueKind.Improvement:
         return 'issue-kind-improvement';
     }
   }

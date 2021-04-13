@@ -376,12 +376,12 @@ export class RequestHeadersView extends UI.Widget.VBox {
       }
 
       if (IssuesManager.RelatedIssue.hasIssueOfCategory(
-              this._request, SDK.Issue.IssueCategory.CrossOriginEmbedderPolicy)) {
+              this._request, IssuesManager.Issue.IssueCategory.CrossOriginEmbedderPolicy)) {
         const link = document.createElement('div');
         link.classList.add('devtools-link');
         link.onclick = (): void => {
           Host.userMetrics.issuesPanelOpenedFrom(Host.UserMetrics.IssueOpener.LearnMoreLinkCOEP);
-          IssuesManager.RelatedIssue.reveal(this._request, SDK.Issue.IssueCategory.CrossOriginEmbedderPolicy);
+          IssuesManager.RelatedIssue.reveal(this._request, IssuesManager.Issue.IssueCategory.CrossOriginEmbedderPolicy);
         };
         const text = document.createElement('span');
         text.classList.add('devtools-link');

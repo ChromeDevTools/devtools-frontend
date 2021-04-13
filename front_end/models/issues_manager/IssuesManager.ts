@@ -4,61 +4,70 @@
 
 import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import {ContentSecurityPolicyIssue} from './ContentSecurityPolicyIssue.js';
+import {CorsIssue} from './CorsIssue.js';
+import {CrossOriginEmbedderPolicyIssue, isCrossOriginEmbedderPolicyIssue} from './CrossOriginEmbedderPolicyIssue.js';
+import {HeavyAdIssue} from './HeavyAdIssue.js';
+import {getShowThirdPartyIssuesSetting, Issue, IssueKind} from './Issue.js';
+import {LowTextContrastIssue} from './LowTextContrastIssue.js';
+import {MixedContentIssue} from './MixedContentIssue.js';
+import {SameSiteCookieIssue} from './SameSiteCookieIssue.js';
+import {SharedArrayBufferIssue} from './SharedArrayBufferIssue.js';
 import {SourceFrameIssuesManager} from './SourceFrameIssuesManager.js';
+import {TrustedWebActivityIssue} from './TrustedWebActivityIssue.js';
 
 let issuesManagerInstance: IssuesManager|null = null;
 
 
 function createIssuesForBlockedByResponseIssue(
-    issuesModel: SDK.IssuesModel.IssuesModel, inspectorDetails: Protocol.Audits.InspectorIssueDetails):
-    SDK.CrossOriginEmbedderPolicyIssue.CrossOriginEmbedderPolicyIssue[] {
+    issuesModel: SDK.IssuesModel.IssuesModel,
+    inspectorDetails: Protocol.Audits.InspectorIssueDetails): CrossOriginEmbedderPolicyIssue[] {
   const blockedByResponseIssueDetails = inspectorDetails.blockedByResponseIssueDetails;
   if (!blockedByResponseIssueDetails) {
     console.warn('BlockedByResponse issue without details received.');
     return [];
   }
-  if (SDK.CrossOriginEmbedderPolicyIssue.isCrossOriginEmbedderPolicyIssue(blockedByResponseIssueDetails.reason)) {
-    return [new SDK.CrossOriginEmbedderPolicyIssue.CrossOriginEmbedderPolicyIssue(
-        blockedByResponseIssueDetails, issuesModel)];
+  if (isCrossOriginEmbedderPolicyIssue(blockedByResponseIssueDetails.reason)) {
+    return [new CrossOriginEmbedderPolicyIssue(blockedByResponseIssueDetails, issuesModel)];
   }
   return [];
 }
 
 const issueCodeHandlers = new Map<
     Protocol.Audits.InspectorIssueCode,
-    (model: SDK.IssuesModel.IssuesModel, details: Protocol.Audits.InspectorIssueDetails) => SDK.Issue.Issue[]>([
+    (model: SDK.IssuesModel.IssuesModel, details: Protocol.Audits.InspectorIssueDetails) => Issue[]>([
   [
     Protocol.Audits.InspectorIssueCode.SameSiteCookieIssue,
-    SDK.SameSiteCookieIssue.SameSiteCookieIssue.fromInspectorIssue,
+    SameSiteCookieIssue.fromInspectorIssue,
   ],
   [
     Protocol.Audits.InspectorIssueCode.MixedContentIssue,
-    SDK.MixedContentIssue.MixedContentIssue.fromInspectorIssue,
+    MixedContentIssue.fromInspectorIssue,
   ],
   [
     Protocol.Audits.InspectorIssueCode.HeavyAdIssue,
-    SDK.HeavyAdIssue.HeavyAdIssue.fromInspectorIssue,
+    HeavyAdIssue.fromInspectorIssue,
   ],
   [
     Protocol.Audits.InspectorIssueCode.ContentSecurityPolicyIssue,
-    SDK.ContentSecurityPolicyIssue.ContentSecurityPolicyIssue.fromInsectorIssue,
+    ContentSecurityPolicyIssue.fromInsectorIssue,
   ],
   [Protocol.Audits.InspectorIssueCode.BlockedByResponseIssue, createIssuesForBlockedByResponseIssue],
   [
     Protocol.Audits.InspectorIssueCode.SharedArrayBufferIssue,
-    SDK.SharedArrayBufferIssue.SharedArrayBufferIssue.fromInspectorIssue,
+    SharedArrayBufferIssue.fromInspectorIssue,
   ],
   [
     Protocol.Audits.InspectorIssueCode.TrustedWebActivityIssue,
-    SDK.TrustedWebActivityIssue.TrustedWebActivityIssue.fromInspectorIssue,
+    TrustedWebActivityIssue.fromInspectorIssue,
   ],
   [
     Protocol.Audits.InspectorIssueCode.LowTextContrastIssue,
-    SDK.LowTextContrastIssue.LowTextContrastIssue.fromInspectorIssue,
+    LowTextContrastIssue.fromInspectorIssue,
   ],
   [
     Protocol.Audits.InspectorIssueCode.CorsIssue,
-    SDK.CorsIssue.CorsIssue.fromInspectorIssue,
+    CorsIssue.fromInspectorIssue,
   ],
 ]);
 
@@ -67,7 +76,7 @@ const issueCodeHandlers = new Map<
    * Handlers are simple functions hard-coded into a map.
    */
 function createIssuesFromProtocolIssue(
-    issuesModel: SDK.IssuesModel.IssuesModel, inspectorIssue: Protocol.Audits.InspectorIssue): SDK.Issue.Issue[] {
+    issuesModel: SDK.IssuesModel.IssuesModel, inspectorIssue: Protocol.Audits.InspectorIssue): Issue[] {
   const handler = issueCodeHandlers.get(inspectorIssue.code);
   if (handler) {
     return handler(issuesModel, inspectorIssue.details);
@@ -91,9 +100,9 @@ function createIssuesFromProtocolIssue(
 export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper implements
     SDK.SDKModel.SDKModelObserver<SDK.IssuesModel.IssuesModel> {
   private eventListeners: WeakMap<SDK.IssuesModel.IssuesModel, Common.EventTarget.EventDescriptor>;
-  private allIssues: Map<string, SDK.Issue.Issue>;
-  private filteredIssues: Map<string, SDK.Issue.Issue>;
-  private issueCounts: Map<SDK.Issue.IssueKind, number>;
+  private allIssues: Map<string, Issue>;
+  private filteredIssues: Map<string, Issue>;
+  private issueCounts: Map<IssueKind, number>;
   private hasSeenTopFrameNavigated: boolean;
   private showThirdPartySettingsChangeListener: Common.EventTarget.EventDescriptor|null;
   private sourceFrameIssuesManager: SourceFrameIssuesManager;
@@ -138,7 +147,7 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper implements
     const {frame} = event.data as {
       frame: SDK.ResourceTreeModel.ResourceTreeFrame,
     };
-    const keptIssues = new Map<string, SDK.Issue.Issue>();
+    const keptIssues = new Map<string, Issue>();
     for (const [key, issue] of this.allIssues.entries()) {
       if (issue.isAssociatedWithRequestId(frame.loaderId)) {
         keptIssues.set(key, issue);
@@ -185,7 +194,7 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper implements
     }
   }
 
-  addIssue(issuesModel: SDK.IssuesModel.IssuesModel, issue: SDK.Issue.Issue): void {
+  addIssue(issuesModel: SDK.IssuesModel.IssuesModel, issue: Issue): void {
     // Ignore issues without proper description; they are invisible to the user and only cause confusion.
     if (!issue.getDescription()) {
       return;
@@ -206,11 +215,11 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper implements
     this.dispatchEventToListeners(Events.IssuesCountUpdated);
   }
 
-  issues(): Iterable<SDK.Issue.Issue> {
+  issues(): Iterable<Issue> {
     return this.filteredIssues.values();
   }
 
-  numberOfIssues(kind?: SDK.Issue.IssueKind): number {
+  numberOfIssues(kind?: IssueKind): number {
     if (kind) {
       return this.issueCounts.get(kind) ?? 0;
     }
@@ -221,20 +230,20 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper implements
     return this.allIssues.size;
   }
 
-  private issueFilter(issue: SDK.Issue.Issue): boolean {
+  private issueFilter(issue: Issue): boolean {
     if (!this.showThirdPartySettingsChangeListener) {
       // issueFilter uses the 'showThirdPartyIssues' setting. Clients of IssuesManager need
       // a full update when the setting changes to get an up-to-date issues list.
       //
       // The settings change listener can't be set up in IssuesManager's constructor. At that
       // time, the settings storage is not initialized yet, so the setting can't be created.
-      const showThirdPartyIssuesSetting = SDK.Issue.getShowThirdPartyIssuesSetting();
+      const showThirdPartyIssuesSetting = getShowThirdPartyIssuesSetting();
       this.showThirdPartySettingsChangeListener = showThirdPartyIssuesSetting.addChangeListener(() => {
         this.updateFilteredIssues();
       });
     }
 
-    const showThirdPartyIssuesSetting = SDK.Issue.getShowThirdPartyIssuesSetting();
+    const showThirdPartyIssuesSetting = getShowThirdPartyIssuesSetting();
     return showThirdPartyIssuesSetting.get() || !issue.isCausedByThirdParty();
   }
 

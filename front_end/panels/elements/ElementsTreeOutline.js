@@ -1444,11 +1444,6 @@ export class ElementsTreeOutline extends UI.TreeOutline.TreeOutline {
       visibleChildren.push(contentDocument);
     }
 
-    const importedDocument = node.importedDocument();
-    if (importedDocument) {
-      visibleChildren.push(importedDocument);
-    }
-
     const templateContent = node.templateContent();
     if (templateContent) {
       visibleChildren.push(templateContent);
@@ -1493,9 +1488,6 @@ export class ElementsTreeOutline extends UI.TreeOutline.TreeOutline {
       return true;
     }
     if (node.contentDocument()) {
-      return true;
-    }
-    if (node.importedDocument()) {
       return true;
     }
     if (node.templateContent()) {

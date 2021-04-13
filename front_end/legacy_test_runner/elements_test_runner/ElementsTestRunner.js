@@ -68,8 +68,6 @@ ElementsTestRunner.findNode = async function(matchFunction, callback) {
         children.push(node.templateContent());
       } else if (node.contentDocument()) {
         children.push(node.contentDocument());
-      } else if (node.importedDocument()) {
-        children.push(node.importedDocument());
       }
 
       for (let i = 0; i < children.length; ++i) {
@@ -932,10 +930,6 @@ ElementsTestRunner.dumpDOMAgentTree = function(node) {
 
     if (node.contentDocument()) {
       dump(node.contentDocument(), prefix);
-    }
-
-    if (node.importedDocument()) {
-      dump(node.importedDocument(), prefix);
     }
 
     const shadowRoots = node.shadowRoots();

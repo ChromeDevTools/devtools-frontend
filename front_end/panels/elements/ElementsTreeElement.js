@@ -286,8 +286,8 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
    * @return {boolean}
    */
   static canShowInlineText(node) {
-    if (node.contentDocument() || node.importedDocument() || node.templateContent() ||
-        ElementsTreeElement.visibleShadowRoots(node).length || node.hasPseudoElements()) {
+    if (node.contentDocument() || node.templateContent() || ElementsTreeElement.visibleShadowRoots(node).length ||
+        node.hasPseudoElements()) {
       return false;
     }
     if (node.nodeType() !== Node.ELEMENT_NODE) {

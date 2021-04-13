@@ -41,7 +41,7 @@ export class Icon extends HTMLElement {
     if ('iconPath' in data) {
       this.iconPath = data.iconPath;
     } else {
-      this.iconPath = new URL(`../../Images/${data.iconName}.svg`, import.meta.url).toString();
+      this.iconPath = new URL(`../../../Images/${data.iconName}.svg`, import.meta.url).toString();
       this.iconName = data.iconName;
     }
     this.render();

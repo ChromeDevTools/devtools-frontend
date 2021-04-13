@@ -36,15 +36,6 @@ import sys
 import six
 import time
 
-EXCLUSIVE_CHANGE_DIRECTORIES = [
-    ['third_party', 'v8', 'front_end/generated'],
-    [
-        'node_modules', 'package.json', 'package-lock.json',
-        'scripts/deps/manage_node_deps.py'
-    ],
-    ['OWNERS', 'config/owner'],
-]
-
 AUTOROLL_ACCOUNT = "devtools-ci-autoroll-builder@chops-service-accounts.iam.gserviceaccount.com"
 
 
@@ -84,6 +75,20 @@ def _CheckChangesAreExclusiveToDirectory(input_api, output_api):
         for dir in dirs:
             if IsParentDir(file, dir):
                 return True
+
+    EXCLUSIVE_CHANGE_DIRECTORIES = [
+        [
+            'third_party', 'v8',
+            input_api.os_path.join('front_end', 'generated')
+        ],
+        [
+            'node_modules',
+            'package.json',
+            'package-lock.json',
+            input_api.os_path.join('scripts', 'deps', 'manage_node_deps.py'),
+        ],
+        ['OWNERS', input_api.os_path.join('config', 'owner')],
+    ]
 
     affected_files = input_api.LocalPaths()
     num_affected = len(affected_files)

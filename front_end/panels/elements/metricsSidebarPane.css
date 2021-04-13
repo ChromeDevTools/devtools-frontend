@@ -3,7 +3,6 @@
  * Use of this source code is governed by a BSD-style license that can be
  * found in the LICENSE file.
  */
-
 .metrics {
   padding: 8px;
   font-size: 10px;
@@ -14,6 +13,15 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+
+  /* Colors in the metrics panel need special treatment. The color of the
+  various box-model regions (margin, border, padding, content) are set in JS
+  by using the ones from the in-page overlay. They, therefore, do not depend on
+  the theme.
+  To ensure proper contrast between those colors and the 1px borders between
+  them, we use these local variables, not theme variables. */
+  --override-box-model-separator-color: #000;
+  --override-box-model-text-color: #222;
 }
 
 :host {
@@ -46,6 +54,9 @@
 }
 
 .metrics .position {
+  /* This border is different from the ones displayed between the box-moodel
+  regions because it is displayed against the pane background, so needs to be
+  visible in both light and dark theme. We therefore use a theme variable. */
   border: 1px var(--color-text-secondary) dotted;
   background-color: var(--color-background);
   display: inline-block;
@@ -56,7 +67,7 @@
 }
 
 .metrics .margin {
-  border: 1px dashed var(--color-syntax-7);
+  border: 1px dashed var(--override-box-model-separator-color);
   background-color: var(--color-background);
   display: inline-block;
   text-align: center;
@@ -67,7 +78,7 @@
 }
 
 .metrics .border {
-  border: 1px var(--color-text-primary) solid;
+  border: 1px solid var(--override-box-model-separator-color);
   background-color: var(--color-background);
   display: inline-block;
   text-align: center;
@@ -78,7 +89,7 @@
 }
 
 .metrics .padding {
-  border: 1px var(--color-text-disabled) dashed;
+  border: 1px dashed var(--override-box-model-separator-color);
   background-color: var(--color-background);
   display: inline-block;
   text-align: center;
@@ -91,7 +102,7 @@
 
 .metrics .content {
   position: static;
-  border: 1px var(--color-text-disabled)  solid;
+  border: 1px solid var(--override-box-model-separator-color);
   background-color: var(--color-background);
   display: inline-block;
   text-align: center;
@@ -129,23 +140,18 @@
 .metrics .bottom {
   display: inline-block;
 }
-/* All computed layout attributes except position have a quite light
- * background color applied to them, so the default light font in dark
- * mode is very low contrast. Therefore we swap back to a dark font by
- * default in dark mode because the background colors are lighter.
- */
-:host-context(.-theme-with-dark-background) .metrics .margin,
-:host-context(.-theme-with-dark-background) .metrics .border,
-:host-context(.-theme-with-dark-background) .metrics .padding,
-:host-context(.-theme-with-dark-background) .metrics .content {
-  color: #222;
+
+/* In dark theme, when a specific box-model region is hovered, the other regions
+lose their background colors, so we need to give them a lighter border color so
+that region separators remain visible against the dark panel background. */
+:host-context(.-theme-with-dark-background) .margin:hover,
+:host-context(.-theme-with-dark-background) .margin:hover * {
+  border-color: var(--color-text-secondary);
 }
-/* When you hover over margin the rest of the items get given a black
- * background and so then the black text we set above means the numbers
- * are invisible. So if you're hovering over the margin we set the
- * color of the text for all the children to light. This also fixes
- * hovering over anything within margin such as border/padding.
- */
-:host-context(.-theme-with-dark-background) .metrics > div:hover div {
-  color: #ccc;
+
+/* With the exception of the position labels, labels are displayed on top of
+the box-model region colors, so need to use the following color to remain
+visible. */
+.metrics .highlighted:not(.position) > *:not(.border):not(.padding):not(.content) {
+  color: var(--override-box-model-text-color);
 }

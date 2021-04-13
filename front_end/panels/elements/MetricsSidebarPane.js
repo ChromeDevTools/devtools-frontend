@@ -165,11 +165,9 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
     }
 
     for (const {element, name, backgroundColor} of this._boxElements) {
-      if (!node || mode === 'all' || name === mode) {
-        element.style.backgroundColor = backgroundColor;
-      } else {
-        element.style.backgroundColor = '';
-      }
+      const shouldHighlight = !node || mode === 'all' || name === mode;
+      element.style.backgroundColor = shouldHighlight ? backgroundColor : '';
+      element.classList.toggle('highlighted', shouldHighlight);
     }
   }
 
@@ -304,7 +302,7 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
       }
 
       const boxElement = /** @type {!HTMLDivElement} */ (document.createElement('div'));
-      boxElement.className = name;
+      boxElement.className = `${name} highlighted`;
       const backgroundColor = boxColors[i].asString(Common.Color.Format.RGBA) || '';
       boxElement.style.backgroundColor = backgroundColor;
       boxElement.addEventListener(
@@ -322,8 +320,11 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
         heightElement.addEventListener(
             'dblclick', this.startEditing.bind(this, heightElement, 'height', 'height', style), false);
 
+        const timesElement = document.createElement('span');
+        timesElement.textContent = ' × ';
+
         boxElement.appendChild(widthElement);
-        UI.UIUtils.createTextChild(boxElement, ' × ');
+        boxElement.appendChild(timesElement);
         boxElement.appendChild(heightElement);
       } else {
         const suffix = (name === 'border' ? '-width' : '');

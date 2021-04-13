@@ -3,7 +3,7 @@
     "components",
     "models/extensions",
     "inline_editor",
-    "color_picker",
+    "ui/legacy/components/color_picker",
     "panels/event_listeners",
     "text_editor"
   ],

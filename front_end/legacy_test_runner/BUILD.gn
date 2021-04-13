@@ -17,7 +17,6 @@ ts_library("legacy_test_runner-source") {
   sources = [ "legacy_test_runner.ts" ]
 
   deps = [
-    "../color_picker:legacy",
     "../core/common:legacy",
     "../core/host:legacy",
     "../core/root:legacy",
@@ -33,6 +32,7 @@ ts_library("legacy_test_runner-source") {
     "../panels/animation:legacy",
     "../panels/developer_resources:legacy",
     "../panels/event_listeners:legacy",
+    "../ui/legacy/components/color_picker:legacy",
     "../ui/legacy/components/data_grid:legacy",
     "test_runner:bundle",
   ]

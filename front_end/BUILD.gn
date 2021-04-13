@@ -16,7 +16,6 @@ group("front_end") {
     ":legacy_css",
     ":legacy_entrypoints",
     ":ts_library-verification",
-    "color_picker:bundle",
     "component_helpers:bundle",
     "components:bundle",
     "cookie_table:bundle",
@@ -63,6 +62,7 @@ group("front_end") {
     "third_party/puppeteer:bundle",
     "ui/components:bundle",
     "ui/legacy:bundle",
+    "ui/legacy/components/color_picker:bundle",
     "ui/legacy/components/data_grid:bundle",
     "wasmparser_worker:worker_entrypoint",
     "worker_main:bundle",
@@ -92,7 +92,6 @@ group("legacy_css") {
 
 group("legacy_entrypoints") {
   public_deps = [
-    "color_picker:legacy",
     "components:legacy",
     "cookie_table:legacy",
     "core/common:legacy",
@@ -143,6 +142,7 @@ group("legacy_entrypoints") {
     "text_editor:legacy",
     "timeline:legacy",
     "ui/legacy:legacy",
+    "ui/legacy/components/color_picker:legacy",
     "ui/legacy/components/data_grid:legacy",
     "ui/legacy/components/object_ui:legacy",
     "ui/legacy/components/perf_ui:legacy",
@@ -209,7 +209,6 @@ ts_library("ts_library-verification") {
 
   deps = [
     "browser_sdk:bundle",
-    "color_picker:bundle",
     "core/common:bundle",
     "core/dom_extension:bundle",
     "core/host:bundle",
@@ -218,5 +217,6 @@ ts_library("ts_library-verification") {
     "core/sdk:bundle",
     "models/bindings:bundle",
     "models/workspace:bundle",
+    "ui/legacy/components/color_picker:bundle",
   ]
 }

@@ -32,13 +32,13 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../core/common/common.js';
-import * as Host from '../core/host/host.js';
-import * as i18n from '../core/i18n/i18n.js';
-import * as Platform from '../core/platform/platform.js';
-import * as SDK from '../core/sdk/sdk.js';
-import * as IconButton from '../ui/components/icon_button/icon_button.js';
-import * as UI from '../ui/legacy/legacy.js';
+import * as Common from '../../../../core/common/common.js';
+import * as Host from '../../../../core/host/host.js';
+import * as i18n from '../../../../core/i18n/i18n.js';
+import * as Platform from '../../../../core/platform/platform.js';
+import * as SDK from '../../../../core/sdk/sdk.js';
+import * as IconButton from '../../../components/icon_button/icon_button.js';
+import * as UI from '../../legacy.js';
 
 import {ContrastDetails, Events as ContrastDetailsEvents} from './ContrastDetails.js';
 
@@ -121,7 +121,7 @@ const UIStrings = {
   pressArrowKeysMessage:
       'Press arrow keys with or without modifiers to move swatch position. Arrow key with Shift key moves position largely, with Ctrl key it is less and with Alt key it is even less',
 };
-const str_ = i18n.i18n.registerUIStrings('color_picker/Spectrum.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/color_picker/Spectrum.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const colorElementToMutable = new WeakMap<HTMLElement, boolean>();
 
@@ -185,7 +185,7 @@ export class Spectrum extends UI.Widget.VBox {
   _colorFormat?: string;
   constructor(contrastInfo?: ContrastInfo|null) {
     super(true);
-    this.registerRequiredCSS('color_picker/spectrum.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('ui/legacy/components/color_picker/spectrum.css', {enableLegacyPatching: false});
 
     this.contentElement.tabIndex = 0;
     this._colorElement = this.contentElement.createChild('div', 'spectrum-color');

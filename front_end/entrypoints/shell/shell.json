@@ -10,7 +10,7 @@
 
     { "name": "panels/changes" },
     { "name": "cm" },
-    { "name": "color_picker" },
+    { "name": "ui/legacy/components/color_picker" },
     { "name": "panels/console" },
     { "name": "panels/coverage" },
     { "name": "ui/legacy/components/data_grid" },

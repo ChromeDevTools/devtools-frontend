@@ -49,6 +49,7 @@ export const mappingForLayoutTests = new Map<string, string>([
   ['ui/legacy/components/data_grid', 'data_grid'],
   ['ui/legacy/components/perf_ui', 'perf_ui'],
   ['ui/legacy/components/source_frame', 'source_frame'],
+  ['ui/legacy/components/color_picker', 'color_picker'],
 ]);
 
 export class Runtime {

@@ -20,90 +20,6 @@
   "browser_sdk/browser_sdk-meta.ts | reset": {
     "message": "reset"
   },
-  "color_picker/ContrastDetails.ts | aa": {
-    "message": "AA"
-  },
-  "color_picker/ContrastDetails.ts | aaa": {
-    "message": "AAA"
-  },
-  "color_picker/ContrastDetails.ts | apca": {
-    "message": "APCA"
-  },
-  "color_picker/ContrastDetails.ts | contrastRatio": {
-    "message": "Contrast ratio"
-  },
-  "color_picker/ContrastDetails.ts | noContrastInformationAvailable": {
-    "message": "No contrast information available"
-  },
-  "color_picker/ContrastDetails.ts | pickBackgroundColor": {
-    "message": "Pick background color"
-  },
-  "color_picker/ContrastDetails.ts | placeholderWithColon": {
-    "message": ": {PH1}"
-  },
-  "color_picker/ContrastDetails.ts | showLess": {
-    "message": "Show less"
-  },
-  "color_picker/ContrastDetails.ts | showMore": {
-    "message": "Show more"
-  },
-  "color_picker/ContrastDetails.ts | toggleBackgroundColorPicker": {
-    "message": "Toggle background color picker"
-  },
-  "color_picker/ContrastDetails.ts | useSuggestedColorStoFixLow": {
-    "message": "Use suggested color {PH1}to fix low contrast"
-  },
-  "color_picker/Spectrum.ts | addToPalette": {
-    "message": "Add to palette"
-  },
-  "color_picker/Spectrum.ts | changeAlpha": {
-    "message": "Change alpha"
-  },
-  "color_picker/Spectrum.ts | changeColorFormat": {
-    "message": "Change color format"
-  },
-  "color_picker/Spectrum.ts | changeHue": {
-    "message": "Change hue"
-  },
-  "color_picker/Spectrum.ts | clearPalette": {
-    "message": "Clear palette"
-  },
-  "color_picker/Spectrum.ts | colorPalettes": {
-    "message": "Color Palettes"
-  },
-  "color_picker/Spectrum.ts | colorS": {
-    "message": "Color {PH1}"
-  },
-  "color_picker/Spectrum.ts | copyColorToClipboard": {
-    "message": "Copy color to clipboard"
-  },
-  "color_picker/Spectrum.ts | hex": {
-    "message": "HEX"
-  },
-  "color_picker/Spectrum.ts | longclickOrLongpressSpaceToShow": {
-    "message": "Long-click or long-press space to show alternate shades of {PH1}"
-  },
-  "color_picker/Spectrum.ts | pressArrowKeysMessage": {
-    "message": "Press arrow keys with or without modifiers to move swatch position. Arrow key with Shift key moves position largely, with Ctrl key it is less and with Alt key it is even less"
-  },
-  "color_picker/Spectrum.ts | previewPalettes": {
-    "message": "Preview palettes"
-  },
-  "color_picker/Spectrum.ts | removeAllToTheRight": {
-    "message": "Remove all to the right"
-  },
-  "color_picker/Spectrum.ts | removeColor": {
-    "message": "Remove color"
-  },
-  "color_picker/Spectrum.ts | returnToColorPicker": {
-    "message": "Return to color picker"
-  },
-  "color_picker/Spectrum.ts | sInS": {
-    "message": "{PH1} in {PH2}"
-  },
-  "color_picker/Spectrum.ts | toggleColorPicker": {
-    "message": "Toggle color picker"
-  },
   "components/ImagePreview.js | currentSource": {
     "message": "Current source:"
   },
@@ -10729,6 +10645,90 @@
   },
   "ui/components/SurveyLink.ts | thankYouForYourFeedback": {
     "message": "Thank you for your feedback"
+  },
+  "ui/legacy/components/color_picker/ContrastDetails.ts | aa": {
+    "message": "AA"
+  },
+  "ui/legacy/components/color_picker/ContrastDetails.ts | aaa": {
+    "message": "AAA"
+  },
+  "ui/legacy/components/color_picker/ContrastDetails.ts | apca": {
+    "message": "APCA"
+  },
+  "ui/legacy/components/color_picker/ContrastDetails.ts | contrastRatio": {
+    "message": "Contrast ratio"
+  },
+  "ui/legacy/components/color_picker/ContrastDetails.ts | noContrastInformationAvailable": {
+    "message": "No contrast information available"
+  },
+  "ui/legacy/components/color_picker/ContrastDetails.ts | pickBackgroundColor": {
+    "message": "Pick background color"
+  },
+  "ui/legacy/components/color_picker/ContrastDetails.ts | placeholderWithColon": {
+    "message": ": {PH1}"
+  },
+  "ui/legacy/components/color_picker/ContrastDetails.ts | showLess": {
+    "message": "Show less"
+  },
+  "ui/legacy/components/color_picker/ContrastDetails.ts | showMore": {
+    "message": "Show more"
+  },
+  "ui/legacy/components/color_picker/ContrastDetails.ts | toggleBackgroundColorPicker": {
+    "message": "Toggle background color picker"
+  },
+  "ui/legacy/components/color_picker/ContrastDetails.ts | useSuggestedColorStoFixLow": {
+    "message": "Use suggested color {PH1}to fix low contrast"
+  },
+  "ui/legacy/components/color_picker/Spectrum.ts | addToPalette": {
+    "message": "Add to palette"
+  },
+  "ui/legacy/components/color_picker/Spectrum.ts | changeAlpha": {
+    "message": "Change alpha"
+  },
+  "ui/legacy/components/color_picker/Spectrum.ts | changeColorFormat": {
+    "message": "Change color format"
+  },
+  "ui/legacy/components/color_picker/Spectrum.ts | changeHue": {
+    "message": "Change hue"
+  },
+  "ui/legacy/components/color_picker/Spectrum.ts | clearPalette": {
+    "message": "Clear palette"
+  },
+  "ui/legacy/components/color_picker/Spectrum.ts | colorPalettes": {
+    "message": "Color Palettes"
+  },
+  "ui/legacy/components/color_picker/Spectrum.ts | colorS": {
+    "message": "Color {PH1}"
+  },
+  "ui/legacy/components/color_picker/Spectrum.ts | copyColorToClipboard": {
+    "message": "Copy color to clipboard"
+  },
+  "ui/legacy/components/color_picker/Spectrum.ts | hex": {
+    "message": "HEX"
+  },
+  "ui/legacy/components/color_picker/Spectrum.ts | longclickOrLongpressSpaceToShow": {
+    "message": "Long-click or long-press space to show alternate shades of {PH1}"
+  },
+  "ui/legacy/components/color_picker/Spectrum.ts | pressArrowKeysMessage": {
+    "message": "Press arrow keys with or without modifiers to move swatch position. Arrow key with Shift key moves position largely, with Ctrl key it is less and with Alt key it is even less"
+  },
+  "ui/legacy/components/color_picker/Spectrum.ts | previewPalettes": {
+    "message": "Preview palettes"
+  },
+  "ui/legacy/components/color_picker/Spectrum.ts | removeAllToTheRight": {
+    "message": "Remove all to the right"
+  },
+  "ui/legacy/components/color_picker/Spectrum.ts | removeColor": {
+    "message": "Remove color"
+  },
+  "ui/legacy/components/color_picker/Spectrum.ts | returnToColorPicker": {
+    "message": "Return to color picker"
+  },
+  "ui/legacy/components/color_picker/Spectrum.ts | sInS": {
+    "message": "{PH1} in {PH2}"
+  },
+  "ui/legacy/components/color_picker/Spectrum.ts | toggleColorPicker": {
+    "message": "Toggle color picker"
   },
   "ui/legacy/components/data_grid/DataGrid.ts | addNew": {
     "message": "Add new"

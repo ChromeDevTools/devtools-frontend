@@ -8,7 +8,7 @@
     "models/persistence",
     "quick_open",
     "inline_editor",
-    "color_picker",
+    "ui/legacy/components/color_picker",
     "panels/event_listeners",
     "ui/legacy/components/object_ui",
     "panels/coverage"

@@ -4,10 +4,10 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as ColorPicker from '../../color_picker/color_picker.js';
 import * as Common from '../../core/common/common.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import * as ColorPicker from '../../ui/legacy/components/color_picker/color_picker.js';
 
 import {ContrastIssue} from './CSSOverviewCompletedView.js';
 import {CSSOverviewUnusedDeclarations, UnusedDeclaration} from './CSSOverviewUnusedDeclarations.js';

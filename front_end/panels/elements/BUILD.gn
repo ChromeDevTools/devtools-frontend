@@ -52,7 +52,6 @@ devtools_module("elements") {
   ]
 
   deps = [
-    "../../color_picker:bundle",
     "../../components:bundle",
     "../../core/common:bundle",
     "../../core/i18n:bundle",
@@ -75,6 +74,7 @@ devtools_module("elements") {
     "../../ui/components:bundle",
     "../../ui/components/tree_outline:bundle",
     "../../ui/legacy:bundle",
+    "../../ui/legacy/components/color_picker:bundle",
     "../../ui/legacy/components/object_ui:bundle",
   ]
 

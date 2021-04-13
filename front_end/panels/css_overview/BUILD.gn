@@ -18,7 +18,6 @@ devtools_module("css_overview") {
   ]
 
   deps = [
-    "../../color_picker:bundle",
     "../../components:bundle",
     "../../core/common:bundle",
     "../../core/host:bundle",
@@ -26,6 +25,7 @@ devtools_module("css_overview") {
     "../../core/sdk:bundle",
     "../../models/text_utils:bundle",
     "../../ui/legacy:bundle",
+    "../../ui/legacy/components/color_picker:bundle",
     "../../ui/legacy/components/data_grid:bundle",
   ]
 }

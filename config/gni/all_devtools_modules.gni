@@ -8,10 +8,6 @@ generated_typescript_modules = []
 
 all_typescript_module_sources = [
   "browser_sdk/LogManager.js",
-  "color_picker/ContrastDetails.js",
-  "color_picker/ContrastInfo.js",
-  "color_picker/ContrastOverlay.js",
-  "color_picker/Spectrum.js",
   "component_helpers/component-server-setup.js",
   "component_helpers/directives.js",
   "component_helpers/get-stylesheet.js",
@@ -785,6 +781,10 @@ all_typescript_module_sources = [
   "ui/legacy/XLink.js",
   "ui/legacy/XWidget.js",
   "ui/legacy/ZoomManager.js",
+  "ui/legacy/components/color_picker/ContrastDetails.js",
+  "ui/legacy/components/color_picker/ContrastInfo.js",
+  "ui/legacy/components/color_picker/ContrastOverlay.js",
+  "ui/legacy/components/color_picker/Spectrum.js",
   "ui/legacy/components/data_grid/DataGrid.js",
   "ui/legacy/components/data_grid/ShowMoreDataGridNode.js",
   "ui/legacy/components/data_grid/SortableDataGrid.js",

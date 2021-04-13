@@ -4,12 +4,12 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../core/common/common.js';
-import * as Host from '../core/host/host.js';
-import * as i18n from '../core/i18n/i18n.js';
-import * as Platform from '../core/platform/platform.js';
-import * as Root from '../core/root/root.js';
-import * as UI from '../ui/legacy/legacy.js';
+import * as Common from '../../../../core/common/common.js';
+import * as Host from '../../../../core/host/host.js';
+import * as i18n from '../../../../core/i18n/i18n.js';
+import * as Platform from '../../../../core/platform/platform.js';
+import * as Root from '../../../../core/root/root.js';
+import * as UI from '../../legacy.js';
 
 import type {ContrastInfo} from './ContrastInfo.js';
 import {Events as ContrastInfoEvents} from './ContrastInfo.js';
@@ -62,7 +62,7 @@ const UIStrings = {
   */
   showLess: 'Show less',
 };
-const str_ = i18n.i18n.registerUIStrings('color_picker/ContrastDetails.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/color_picker/ContrastDetails.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper {
   _contrastInfo: ContrastInfo;

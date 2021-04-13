@@ -45,7 +45,6 @@ devtools_module("sources") {
   ]
 
   deps = [
-    "../color_picker:bundle",
     "../components:bundle",
     "../core/common:bundle",
     "../core/host:bundle",
@@ -70,6 +69,7 @@ devtools_module("sources") {
     "../snippets:bundle",
     "../text_editor:bundle",
     "../ui/legacy:bundle",
+    "../ui/legacy/components/color_picker:bundle",
     "../ui/legacy/components/object_ui:bundle",
     "../ui/legacy/components/source_frame:bundle",
     "../workspace_diff:bundle",

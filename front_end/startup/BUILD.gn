@@ -16,7 +16,6 @@ devtools_entrypoint("bundle") {
 
   deps = [
     ":startup",
-    "../browser_sdk:bundle",
     "../components:legacy",
     "../core/common:legacy",
     "../core/dom_extension:bundle",

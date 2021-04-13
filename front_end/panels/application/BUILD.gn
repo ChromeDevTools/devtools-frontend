@@ -36,7 +36,6 @@ devtools_module("application") {
   ]
 
   deps = [
-    "../../browser_sdk:bundle",
     "../../components:bundle",
     "../../cookie_table:bundle",
     "../../core/common:bundle",

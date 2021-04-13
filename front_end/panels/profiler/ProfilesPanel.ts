@@ -144,6 +144,7 @@ export class ProfilesPanel extends UI.Panel.PanelWithSidebar implements DataDisp
     toolbar.appendToolbarItem(UI.Toolbar.Toolbar.createActionButtonForId('components.collect-garbage'));
 
     this._profileViewToolbar = new UI.Toolbar.Toolbar('', this._toolbarElement);
+    this._profileViewToolbar.makeWrappable(true);
 
     this._profileGroups = {};
     this._launcherView = new ProfileLauncherView(this);

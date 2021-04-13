@@ -837,10 +837,15 @@ export class Thread extends NamedObject {
         }
       }
     }
+
+    // Handle Begin events with no matching End.
+    // This commonly happens due to a bug in the trace machinery. See crbug.com/982252
     while (stack.length) {
       const event = stack.pop();
       if (event) {
-        event.setEndTime(this._model.maximumRecordTime());
+        // Masquerade the event as Instant, so it's rendered to the user.
+        // The ideal fix is resolving crbug.com/1021571, but handling that without a perfetto migration appears prohibitive
+        event.phase = phases.Instant;
       }
     }
     this._events = this._events.filter((_, idx) => !toDelete.has(idx));

@@ -115,15 +115,23 @@ export class TimelineLoader implements Common.StringOutputStream.OutputStream {
     }
   }
 
-  write(chunk: string): Promise<void> {
+  async write(chunk: string): Promise<void> {
     if (!this._client) {
       return Promise.resolve();
     }
     this._loadedBytes += chunk.length;
     if (this._firstRawChunk) {
-      this._client.loadingStarted();
+      await this._client.loadingStarted();
+      // Ensure we paint the loading dialog before continuing
+      await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
     } else {
-      this._client.loadingProgress(this._totalSize ? this._loadedBytes / this._totalSize : undefined);
+      let progress = undefined;
+      if (this._totalSize) {
+        progress = this._loadedBytes / this._totalSize;
+        // For compressed traces, we can't provide a definite progress percentage. So, just keep it moving.
+        progress = progress > 1 ? progress - Math.floor(progress) : progress;
+      }
+      await this._client.loadingProgress(progress);
     }
     this._firstRawChunk = false;
 

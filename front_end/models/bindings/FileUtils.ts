@@ -47,11 +47,19 @@ export interface ChunkedReader {
 
   error(): DOMError|null;
 }
+interface DecompressionStream extends GenericTransformStream {
+  readonly format: string;
+}
+declare const DecompressionStream: {
+  prototype: DecompressionStream,
+  new (format: string): DecompressionStream,
+};
 
 export class ChunkedFileReader implements ChunkedReader {
   _file: File|null;
   _fileSize: number;
   _loadedSize: number;
+  _streamReader: ReadableStreamReader<Uint8Array>|null;
   _chunkSize: number;
   _chunkTransferredCallback: ((arg0: ChunkedReader) => void)|undefined;
   _decoder: TextDecoder;
@@ -61,25 +69,33 @@ export class ChunkedFileReader implements ChunkedReader {
   _output?: Common.StringOutputStream.OutputStream;
   _reader?: FileReader|null;
 
-  constructor(blob: File, chunkSize: number, chunkTransferredCallback?: ((arg0: ChunkedReader) => void)) {
-    this._file = blob;
-    this._fileSize = blob.size;
+  constructor(file: File, chunkSize: number, chunkTransferredCallback?: ((arg0: ChunkedReader) => void)) {
+    this._file = file;
+    this._fileSize = file.size;
     this._loadedSize = 0;
     this._chunkSize = chunkSize;
     this._chunkTransferredCallback = chunkTransferredCallback;
     this._decoder = new TextDecoder();
     this._isCanceled = false;
     this._error = null;
+    this._streamReader = null;
   }
 
-  read(output: Common.StringOutputStream.OutputStream): Promise<boolean> {
+  async read(output: Common.StringOutputStream.OutputStream): Promise<boolean> {
     if (this._chunkTransferredCallback) {
       this._chunkTransferredCallback(this);
     }
+
+    if (this._file?.type.endsWith('gzip')) {
+      const stream = this._decompressStream(this._file.stream());
+      this._streamReader = stream.getReader();
+    } else {
+      this._reader = new FileReader();
+      this._reader.onload = this._onChunkLoaded.bind(this);
+      this._reader.onerror = this._onError.bind(this);
+    }
+
     this._output = output;
-    this._reader = new FileReader();
-    this._reader.onload = this._onChunkLoaded.bind(this);
-    this._reader.onerror = this._onError.bind(this);
     this._loadChunk();
 
     return new Promise(resolve => {
@@ -110,6 +126,13 @@ export class ChunkedFileReader implements ChunkedReader {
     return this._error;
   }
 
+  // Decompress gzip natively thanks to https://wicg.github.io/compression/
+  _decompressStream(stream: ReadableStream): ReadableStream {
+    const ds = new DecompressionStream('gzip');
+    const decompressionStream = stream.pipeThrough(ds);
+    return decompressionStream;
+  }
+
   _onChunkLoaded(event: Event): void {
     if (this._isCanceled) {
       return;
@@ -120,15 +143,22 @@ export class ChunkedFileReader implements ChunkedReader {
       return;
     }
 
-    if (!this._output || !this._reader) {
+    if (!this._reader) {
       return;
     }
 
     const buffer = (this._reader.result as ArrayBuffer);
     this._loadedSize += buffer.byteLength;
     const endOfFile = this._loadedSize === this._fileSize;
+    this._decodeChunkBuffer(buffer, endOfFile);
+  }
+
+  async _decodeChunkBuffer(buffer: ArrayBuffer, endOfFile: boolean): Promise<void> {
+    if (!this._output) {
+      return;
+    }
     const decodedString = this._decoder.decode(buffer, {stream: !endOfFile});
-    this._output.write(decodedString);
+    await this._output.write(decodedString);
     if (this._isCanceled) {
       return;
     }
@@ -137,24 +167,39 @@ export class ChunkedFileReader implements ChunkedReader {
     }
 
     if (endOfFile) {
-      this._file = null;
-      this._reader = null;
-      this._output.close();
-      this._transferFinished(!this._error);
+      this._finishRead();
       return;
     }
-
     this._loadChunk();
   }
 
-  _loadChunk(): void {
-    if (!this._output || !this._reader || !this._file) {
+  _finishRead(): void {
+    if (!this._output) {
       return;
     }
-    const chunkStart = this._loadedSize;
-    const chunkEnd = Math.min(this._fileSize, chunkStart + this._chunkSize);
-    const nextPart = this._file.slice(chunkStart, chunkEnd);
-    this._reader.readAsArrayBuffer(nextPart);
+    this._file = null;
+    this._reader = null;
+    this._output.close();
+    this._transferFinished(!this._error);
+  }
+
+  async _loadChunk(): Promise<void> {
+    if (!this._output || !this._file) {
+      return;
+    }
+    if (this._streamReader) {
+      const {value, done} = await this._streamReader.read();
+      if (done || !value) {
+        return this._finishRead();
+      }
+      this._decodeChunkBuffer(value.buffer, false);
+    }
+    if (this._reader) {
+      const chunkStart = this._loadedSize;
+      const chunkEnd = Math.min(this._fileSize, chunkStart + this._chunkSize);
+      const nextPart = this._file.slice(chunkStart, chunkEnd);
+      this._reader.readAsArrayBuffer(nextPart);
+    }
   }
 
   _onError(event: Event): void {

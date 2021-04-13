@@ -2,7 +2,10 @@ import("../../../../third_party/typescript/typescript.gni")
 
 ts_library("bindings") {
   testonly = true
-  sources = [ "LiveLocation_test.ts" ]
+  sources = [
+    "FileUtils_test.ts",
+    "LiveLocation_test.ts",
+  ]
 
   deps = [ "../../../../front_end/models/bindings:bundle" ]
 }

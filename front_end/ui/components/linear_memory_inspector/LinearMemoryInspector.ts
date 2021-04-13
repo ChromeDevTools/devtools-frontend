@@ -6,8 +6,8 @@ import './LinearMemoryNavigator.js';
 import './LinearMemoryValueInterpreter.js';
 import './LinearMemoryViewer.js';
 
-import * as Common from '../core/common/common.js';
-import * as LitHtml from '../third_party/lit-html/lit-html.js';
+import * as Common from '../../../core/common/common.js';
+import * as LitHtml from '../../../third_party/lit-html/lit-html.js';
 
 const {render, html} = LitHtml;
 
@@ -18,7 +18,7 @@ import {VALUE_INTEPRETER_MAX_NUM_BYTES, Endianness, ValueType, ValueTypeMode, ge
 import {formatAddress, parseAddress} from './LinearMemoryInspectorUtils.js';
 import type {JumpToPointerAddressEvent, ValueTypeModeChangedEvent} from './ValueInterpreterDisplay.js';
 
-import * as i18n from '../core/i18n/i18n.js';
+import * as i18n from '../../../core/i18n/i18n.js';
 const UIStrings = {
   /**
   *@description Tooltip text that appears when hovering over an invalid address in the address line in the Linear Memory Inspector
@@ -27,7 +27,7 @@ const UIStrings = {
   */
   addressHasToBeANumberBetweenSAnd: 'Address has to be a number between {PH1} and {PH2}',
 };
-const str_ = i18n.i18n.registerUIStrings('linear_memory_inspector/LinearMemoryInspector.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('ui/components/linear_memory_inspector/LinearMemoryInspector.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 // If the LinearMemoryInspector only receives a portion
 // of the original Uint8Array to show, it requires information

@@ -2,8 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as i18n from '../core/i18n/i18n.js';
-import * as Platform from '../core/platform/platform.js';
+import * as i18n from '../../../core/i18n/i18n.js';
+import * as Platform from '../../../core/platform/platform.js';
 
 const UIStrings = {
   /**
@@ -53,7 +53,8 @@ const UIStrings = {
   */
   notApplicable: 'N/A',
 };
-const str_ = i18n.i18n.registerUIStrings('linear_memory_inspector/ValueInterpreterDisplayUtils.ts', UIStrings);
+const str_ =
+    i18n.i18n.registerUIStrings('ui/components/linear_memory_inspector/ValueInterpreterDisplayUtils.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export const VALUE_INTEPRETER_MAX_NUM_BYTES = 8;

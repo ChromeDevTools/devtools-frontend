@@ -2,12 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as UI from '../ui/legacy/legacy.js';
+import * as UI from '../../legacy/legacy.js';
 
 // eslint-disable-next-line rulesdir/es_modules_import
 import type * as LinearMemoryInspector from './linear_memory_inspector.js';
 
-import * as i18n from '../core/i18n/i18n.js';
+import * as i18n from '../../../core/i18n/i18n.js';
 const UIStrings = {
   /**
   *@description Title of the Linear Memory Inspector tool
@@ -18,7 +18,8 @@ const UIStrings = {
   */
   showMemoryInspector: 'Show Memory Inspector',
 };
-const str_ = i18n.i18n.registerUIStrings('linear_memory_inspector/linear_memory_inspector-meta.ts', UIStrings);
+const str_ =
+    i18n.i18n.registerUIStrings('ui/components/linear_memory_inspector/linear_memory_inspector-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 let loadedLinearMemoryInspectorModule: (typeof LinearMemoryInspector|undefined);

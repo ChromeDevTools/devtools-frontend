@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {describeWithEnvironment} from '../helpers/EnvironmentHelpers.js';
-import type * as LinearMemoryInspectorModule from '../../../../front_end/linear_memory_inspector/linear_memory_inspector.js';
+import type * as LinearMemoryInspectorModule from '../../../../front_end/ui/components/linear_memory_inspector/linear_memory_inspector.js';
 import {assertNotNull} from '../../../../front_end/core/platform/platform.js';
 import {assertElement} from '../helpers/DOMHelpers.js';
 
@@ -19,7 +19,8 @@ describeWithEnvironment('LinearMemoryInspectorPane', () => {
   let LinearMemoryInspector: typeof LinearMemoryInspectorModule;
 
   before(async () => {
-    LinearMemoryInspector = await import('../../../../front_end/linear_memory_inspector/linear_memory_inspector.js');
+    LinearMemoryInspector =
+        await import('../../../../front_end/ui/components/linear_memory_inspector/linear_memory_inspector.js');
   });
 
   class Uint8Wrapper {

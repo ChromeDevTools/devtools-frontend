@@ -1460,93 +1460,6 @@
   "js_profiler/js_profiler-meta.ts | startStopRecording": {
     "message": "Start/stop recording"
   },
-  "linear_memory_inspector/linear_memory_inspector-meta.ts | memoryInspector": {
-    "message": "Memory Inspector"
-  },
-  "linear_memory_inspector/linear_memory_inspector-meta.ts | showMemoryInspector": {
-    "message": "Show Memory Inspector"
-  },
-  "linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
-    "message": "Address has to be a number between {PH1} and {PH2}"
-  },
-  "linear_memory_inspector/LinearMemoryInspectorPane.ts | noOpenInspections": {
-    "message": "No open inspections"
-  },
-  "linear_memory_inspector/LinearMemoryNavigator.ts | enterAddress": {
-    "message": "Enter address"
-  },
-  "linear_memory_inspector/LinearMemoryNavigator.ts | goBackInAddressHistory": {
-    "message": "Go back in address history"
-  },
-  "linear_memory_inspector/LinearMemoryNavigator.ts | goForwardInAddressHistory": {
-    "message": "Go forward in address history"
-  },
-  "linear_memory_inspector/LinearMemoryNavigator.ts | nextPage": {
-    "message": "Next page"
-  },
-  "linear_memory_inspector/LinearMemoryNavigator.ts | previousPage": {
-    "message": "Previous page"
-  },
-  "linear_memory_inspector/LinearMemoryNavigator.ts | refresh": {
-    "message": "Refresh"
-  },
-  "linear_memory_inspector/LinearMemoryValueInterpreter.ts | changeEndianness": {
-    "message": "Change Endianness"
-  },
-  "linear_memory_inspector/LinearMemoryValueInterpreter.ts | toggleValueTypeSettings": {
-    "message": "Toggle value type settings"
-  },
-  "linear_memory_inspector/ValueInterpreterDisplay.ts | addressOutOfRange": {
-    "message": "Address out of memory range"
-  },
-  "linear_memory_inspector/ValueInterpreterDisplay.ts | changeValueTypeMode": {
-    "message": "Change mode"
-  },
-  "linear_memory_inspector/ValueInterpreterDisplay.ts | jumpToPointer": {
-    "message": "Jump to address"
-  },
-  "linear_memory_inspector/ValueInterpreterDisplay.ts | signedValue": {
-    "message": "Signed value"
-  },
-  "linear_memory_inspector/ValueInterpreterDisplay.ts | unsignedValue": {
-    "message": "Unsigned value"
-  },
-  "linear_memory_inspector/ValueInterpreterDisplayUtils.ts | bigEndian": {
-    "message": "Big Endian"
-  },
-  "linear_memory_inspector/ValueInterpreterDisplayUtils.ts | float64Bit": {
-    "message": "Float 64-bit"
-  },
-  "linear_memory_inspector/ValueInterpreterDisplayUtils.ts | floatBit": {
-    "message": "Float 32-bit"
-  },
-  "linear_memory_inspector/ValueInterpreterDisplayUtils.ts | integer16Bit": {
-    "message": "Integer 16-bit"
-  },
-  "linear_memory_inspector/ValueInterpreterDisplayUtils.ts | integer32Bit": {
-    "message": "Integer 32-bit"
-  },
-  "linear_memory_inspector/ValueInterpreterDisplayUtils.ts | integer64Bit": {
-    "message": "Integer 64-bit"
-  },
-  "linear_memory_inspector/ValueInterpreterDisplayUtils.ts | integerBit": {
-    "message": "Integer 8-bit"
-  },
-  "linear_memory_inspector/ValueInterpreterDisplayUtils.ts | littleEndian": {
-    "message": "Little Endian"
-  },
-  "linear_memory_inspector/ValueInterpreterDisplayUtils.ts | notApplicable": {
-    "message": "N/A"
-  },
-  "linear_memory_inspector/ValueInterpreterDisplayUtils.ts | pointer32Bit": {
-    "message": "Pointer 32-bit"
-  },
-  "linear_memory_inspector/ValueInterpreterDisplayUtils.ts | pointer64Bit": {
-    "message": "Pointer 64-bit"
-  },
-  "linear_memory_inspector/ValueInterpreterSettings.ts | otherGroup": {
-    "message": "Other"
-  },
   "main/main-meta.ts | asAuthored": {
     "message": "As authored"
   },
@@ -10636,6 +10549,93 @@
   },
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "Sort By"
+  },
+  "ui/components/linear_memory_inspector/linear_memory_inspector-meta.ts | memoryInspector": {
+    "message": "Memory Inspector"
+  },
+  "ui/components/linear_memory_inspector/linear_memory_inspector-meta.ts | showMemoryInspector": {
+    "message": "Show Memory Inspector"
+  },
+  "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
+    "message": "Address has to be a number between {PH1} and {PH2}"
+  },
+  "ui/components/linear_memory_inspector/LinearMemoryInspectorPane.ts | noOpenInspections": {
+    "message": "No open inspections"
+  },
+  "ui/components/linear_memory_inspector/LinearMemoryNavigator.ts | enterAddress": {
+    "message": "Enter address"
+  },
+  "ui/components/linear_memory_inspector/LinearMemoryNavigator.ts | goBackInAddressHistory": {
+    "message": "Go back in address history"
+  },
+  "ui/components/linear_memory_inspector/LinearMemoryNavigator.ts | goForwardInAddressHistory": {
+    "message": "Go forward in address history"
+  },
+  "ui/components/linear_memory_inspector/LinearMemoryNavigator.ts | nextPage": {
+    "message": "Next page"
+  },
+  "ui/components/linear_memory_inspector/LinearMemoryNavigator.ts | previousPage": {
+    "message": "Previous page"
+  },
+  "ui/components/linear_memory_inspector/LinearMemoryNavigator.ts | refresh": {
+    "message": "Refresh"
+  },
+  "ui/components/linear_memory_inspector/LinearMemoryValueInterpreter.ts | changeEndianness": {
+    "message": "Change Endianness"
+  },
+  "ui/components/linear_memory_inspector/LinearMemoryValueInterpreter.ts | toggleValueTypeSettings": {
+    "message": "Toggle value type settings"
+  },
+  "ui/components/linear_memory_inspector/ValueInterpreterDisplay.ts | addressOutOfRange": {
+    "message": "Address out of memory range"
+  },
+  "ui/components/linear_memory_inspector/ValueInterpreterDisplay.ts | changeValueTypeMode": {
+    "message": "Change mode"
+  },
+  "ui/components/linear_memory_inspector/ValueInterpreterDisplay.ts | jumpToPointer": {
+    "message": "Jump to address"
+  },
+  "ui/components/linear_memory_inspector/ValueInterpreterDisplay.ts | signedValue": {
+    "message": "Signed value"
+  },
+  "ui/components/linear_memory_inspector/ValueInterpreterDisplay.ts | unsignedValue": {
+    "message": "Unsigned value"
+  },
+  "ui/components/linear_memory_inspector/ValueInterpreterDisplayUtils.ts | bigEndian": {
+    "message": "Big Endian"
+  },
+  "ui/components/linear_memory_inspector/ValueInterpreterDisplayUtils.ts | float64Bit": {
+    "message": "Float 64-bit"
+  },
+  "ui/components/linear_memory_inspector/ValueInterpreterDisplayUtils.ts | floatBit": {
+    "message": "Float 32-bit"
+  },
+  "ui/components/linear_memory_inspector/ValueInterpreterDisplayUtils.ts | integer16Bit": {
+    "message": "Integer 16-bit"
+  },
+  "ui/components/linear_memory_inspector/ValueInterpreterDisplayUtils.ts | integer32Bit": {
+    "message": "Integer 32-bit"
+  },
+  "ui/components/linear_memory_inspector/ValueInterpreterDisplayUtils.ts | integer64Bit": {
+    "message": "Integer 64-bit"
+  },
+  "ui/components/linear_memory_inspector/ValueInterpreterDisplayUtils.ts | integerBit": {
+    "message": "Integer 8-bit"
+  },
+  "ui/components/linear_memory_inspector/ValueInterpreterDisplayUtils.ts | littleEndian": {
+    "message": "Little Endian"
+  },
+  "ui/components/linear_memory_inspector/ValueInterpreterDisplayUtils.ts | notApplicable": {
+    "message": "N/A"
+  },
+  "ui/components/linear_memory_inspector/ValueInterpreterDisplayUtils.ts | pointer32Bit": {
+    "message": "Pointer 32-bit"
+  },
+  "ui/components/linear_memory_inspector/ValueInterpreterDisplayUtils.ts | pointer64Bit": {
+    "message": "Pointer 64-bit"
+  },
+  "ui/components/linear_memory_inspector/ValueInterpreterSettings.ts | otherGroup": {
+    "message": "Other"
   },
   "ui/components/SurveyLink.ts | anErrorOccurredWithTheSurvey": {
     "message": "An error occurred with the survey"

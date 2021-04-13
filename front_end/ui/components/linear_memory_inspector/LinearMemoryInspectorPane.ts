@@ -4,9 +4,9 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../core/common/common.js';  // eslint-disable-line no-unused-vars
-import * as i18n from '../core/i18n/i18n.js';
-import * as UI from '../ui/legacy/legacy.js';
+import * as Common from '../../../core/common/common.js';  // eslint-disable-line no-unused-vars
+import * as i18n from '../../../core/i18n/i18n.js';
+import * as UI from '../../legacy/legacy.js';
 
 import {LinearMemoryInspector, Settings} from './LinearMemoryInspector.js';  // eslint-disable-line no-unused-vars
 import {LazyUint8Array, LinearMemoryInspectorController} from './LinearMemoryInspectorController.js';  // eslint-disable-line no-unused-vars
@@ -17,7 +17,8 @@ const UIStrings = {
   */
   noOpenInspections: 'No open inspections',
 };
-const str_ = i18n.i18n.registerUIStrings('linear_memory_inspector/LinearMemoryInspectorPane.ts', UIStrings);
+const str_ =
+    i18n.i18n.registerUIStrings('ui/components/linear_memory_inspector/LinearMemoryInspectorPane.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let inspectorInstance: LinearMemoryInspectorPaneImpl;
 

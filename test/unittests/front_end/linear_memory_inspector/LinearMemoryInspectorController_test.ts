@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as SDK from '../../../../front_end/core/sdk/sdk.js';
-import * as LinearMemoryInspector from '../../../../front_end/linear_memory_inspector/linear_memory_inspector.js';
+import * as LinearMemoryInspector from '../../../../front_end/ui/components/linear_memory_inspector/linear_memory_inspector.js';
 import {describeWithEnvironment} from '../helpers/EnvironmentHelpers.js';
 
 const {assert} = chai;

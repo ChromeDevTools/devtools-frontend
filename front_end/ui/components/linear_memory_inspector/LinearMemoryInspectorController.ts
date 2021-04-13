@@ -2,10 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../core/common/common.js';
-import * as Host from '../core/host/host.js';
-import * as SDK from '../core/sdk/sdk.js';
-import * as UI from '../ui/legacy/legacy.js';
+import * as Common from '../../../core/common/common.js';
+import * as Host from '../../../core/host/host.js';
+import * as SDK from '../../../core/sdk/sdk.js';
+import * as UI from '../../legacy/legacy.js';
 
 import {Settings} from './LinearMemoryInspector.js';
 import {LinearMemoryInspectorPaneImpl} from './LinearMemoryInspectorPane.js';

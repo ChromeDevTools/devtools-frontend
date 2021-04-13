@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as ComponentHelpers from '../../component_helpers/component_helpers.js';
-import * as LinearMemoryInspector from '../../linear_memory_inspector/linear_memory_inspector.js';
+import * as LinearMemoryInspector from '../../ui/components/linear_memory_inspector/linear_memory_inspector.js';
 
 await ComponentHelpers.ComponentServerSetup.setup();
 

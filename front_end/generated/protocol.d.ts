@@ -2856,7 +2856,9 @@ declare namespace Protocol {
        */
       pseudoElements?: Node[];
       /**
-       * Import document for the HTMLImport links.
+       * Deprecated, as the HTML Imports API has been removed (crbug.com/937746).
+       * This property used to return the imported document for the HTMLImport links.
+       * The property is always undefined now.
        */
       importedDocument?: Node;
       /**
@@ -4408,6 +4410,14 @@ declare namespace Protocol {
        * The client rect of nodes. Only available when includeDOMRects is set to true
        */
       clientRects?: Rectangle[];
+      /**
+       * The list of background colors that are blended with colors of overlapping elements.
+       */
+      blendedBackgroundColors?: StringIndex[];
+      /**
+       * The list of computed text opacities.
+       */
+      textColorOpacities?: number[];
     }
 
     /**
@@ -4482,6 +4492,18 @@ declare namespace Protocol {
        * Whether to include DOM rectangles (offsetRects, clientRects, scrollRects) into the snapshot
        */
       includeDOMRects?: boolean;
+      /**
+       * Whether to include blended background colors in the snapshot (default: false).
+       * Blended background color is achieved by blending background colors of all elements
+       * that overlap with the current element.
+       */
+      includeBlendedBackgroundColors?: boolean;
+      /**
+       * Whether to include text color opacity in the snapshot (default: false).
+       * An element might have the opacity property set that affects the text color of the element.
+       * The final text color opacity is computed based on the opacity of all overlapping elements.
+       */
+      includeTextColorOpacities?: boolean;
     }
 
     export interface CaptureSnapshotResponse extends ProtocolResponseWithError {

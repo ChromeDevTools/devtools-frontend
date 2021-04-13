@@ -4258,7 +4258,8 @@
                         },
                         {
                             "name": "importedDocument",
-                            "description": "Import document for the HTMLImport links.",
+                            "description": "Deprecated, as the HTML Imports API has been removed (crbug.com/937746).\nThis property used to return the imported document for the HTMLImport links.\nThe property is always undefined now.",
+                            "deprecated": true,
                             "optional": true,
                             "$ref": "Node"
                         },
@@ -6549,6 +6550,26 @@
                             "items": {
                                 "$ref": "Rectangle"
                             }
+                        },
+                        {
+                            "name": "blendedBackgroundColors",
+                            "description": "The list of background colors that are blended with colors of overlapping elements.",
+                            "experimental": true,
+                            "optional": true,
+                            "type": "array",
+                            "items": {
+                                "$ref": "StringIndex"
+                            }
+                        },
+                        {
+                            "name": "textColorOpacities",
+                            "description": "The list of computed text opacities.",
+                            "experimental": true,
+                            "optional": true,
+                            "type": "array",
+                            "items": {
+                                "type": "number"
+                            }
                         }
                     ]
                 },
@@ -6681,6 +6702,20 @@
                         {
                             "name": "includeDOMRects",
                             "description": "Whether to include DOM rectangles (offsetRects, clientRects, scrollRects) into the snapshot",
+                            "optional": true,
+                            "type": "boolean"
+                        },
+                        {
+                            "name": "includeBlendedBackgroundColors",
+                            "description": "Whether to include blended background colors in the snapshot (default: false).\nBlended background color is achieved by blending background colors of all elements\nthat overlap with the current element.",
+                            "experimental": true,
+                            "optional": true,
+                            "type": "boolean"
+                        },
+                        {
+                            "name": "includeTextColorOpacities",
+                            "description": "Whether to include text color opacity in the snapshot (default: false).\nAn element might have the opacity property set that affects the text color of the element.\nThe final text color opacity is computed based on the opacity of all overlapping elements.",
+                            "experimental": true,
                             "optional": true,
                             "type": "boolean"
                         }

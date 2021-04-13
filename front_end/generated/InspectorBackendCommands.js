@@ -873,7 +873,9 @@ export function registerCommands(inspectorBackend) {
       [
         {'name': 'computedStyles', 'type': 'object', 'optional': false},
         {'name': 'includePaintOrder', 'type': 'boolean', 'optional': true},
-        {'name': 'includeDOMRects', 'type': 'boolean', 'optional': true}
+        {'name': 'includeDOMRects', 'type': 'boolean', 'optional': true},
+        {'name': 'includeBlendedBackgroundColors', 'type': 'boolean', 'optional': true},
+        {'name': 'includeTextColorOpacities', 'type': 'boolean', 'optional': true}
       ],
       ['documents', 'strings']);
 

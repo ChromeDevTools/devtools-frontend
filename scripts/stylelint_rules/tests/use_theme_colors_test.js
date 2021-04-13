@@ -213,4 +213,24 @@ describe('use_theme_colors', () => {
     const warnings = await lint(code);
     assert.lengthOf(warnings, 0);
   });
+
+  it('correctly only detects the relevant color variables for border-X declarations', async () => {
+    const code = 'header {border-bottom: var(--header-border-height) solid var(--color-details-hairline); }';
+    const warnings = await lint(code);
+    assert.lengthOf(warnings, 0);
+  });
+
+  it('errors on a bad variable name for a border color', async () => {
+    const code = 'header {border-top: var(--header-border-height) solid var(--color-does-not-exist); }';
+    const warnings = await lint(code);
+    assert.deepEqual(warnings, [
+      {
+        line: 1,
+        column: 9,
+        rule: 'plugin/use_theme_colors',
+        severity: 'error',
+        text: 'All CSS color declarations should use a variable defined in ui/legacy/themeColors.css'
+      },
+    ]);
+  });
 });

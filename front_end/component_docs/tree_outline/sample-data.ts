@@ -2,11 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Components from '../../ui/components/components.js';
+import * as TreeOutline from '../../ui/components/tree_outline/tree_outline.js';
+
 export const belgraveHouse = {
   treeNodeData: 'BEL',
 };
-export const officesAndProductsData: Components.TreeOutlineUtils.TreeNode<string>[] = [
+export const officesAndProductsData: TreeOutline.TreeOutlineUtils.TreeNode<string>[] = [
   {
     treeNodeData: 'Offices',
     children: () => Promise.resolve([

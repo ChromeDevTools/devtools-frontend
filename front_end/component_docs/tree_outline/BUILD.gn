@@ -18,7 +18,7 @@ ts_library("ts") {
     "../../../test/unittests/front_end/helpers",
     "../../component_helpers:bundle",
     "../../third_party/lit-html:bundle",
-    "../../ui/components:bundle",
+    "../../ui/components/tree_outline:bundle",
   ]
 }
 

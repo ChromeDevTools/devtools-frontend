@@ -1,8 +1,8 @@
 // Copyright 2020 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-import * as Platform from '../../core/platform/platform.js';
-import * as LitHtml from '../../third_party/lit-html/lit-html.js';
+import * as Platform from '../../../core/platform/platform.js';
+import * as LitHtml from '../../../third_party/lit-html/lit-html.js';
 
 interface BaseTreeNode<TreeNodeDataType> {
   treeNodeData: TreeNodeDataType;
@@ -216,80 +216,80 @@ interface KeyboardNavigationOptions<TreeNodeDataType> {
   setNodeExpandedState: (treeNode: TreeNode<TreeNodeDataType>, expanded: boolean) => void;
 }
 
-export const findNextNodeForTreeOutlineKeyboardNavigation = <TreeNodeDataType>(
-    options: KeyboardNavigationOptions<TreeNodeDataType>): HTMLLIElement => {
-  const {
-    currentDOMNode,
-    currentTreeNode,
-    direction,
-    setNodeExpandedState,
-  } = options;
-  if (!currentTreeNode) {
-    return currentDOMNode;
-  }
-
-  if (direction === Platform.KeyboardUtilities.ArrowKey.DOWN) {
-    // If the node has expanded children, down takes you into that list.
-    if (domNodeIsExpanded(currentDOMNode)) {
-      return getFirstChildOfExpandedTreeNode(currentDOMNode);
-    }
-    // If the node has a sibling, we go to that.
-    const currentNodeSibling = getNextSiblingOfCurrentDOMNode(currentDOMNode);
-    if (currentNodeSibling) {
-      return currentNodeSibling;
-    }
-
-    // If the Node's parent has a sibling then we go to that.
-    const parentSibling = findNextParentSibling(currentDOMNode);
-    if (parentSibling) {
-      return parentSibling;
-    }
-  } else if (direction === Platform.KeyboardUtilities.ArrowKey.RIGHT) {
-    if (domNodeIsLeafNode(currentDOMNode)) {
-      // If the node cannot be expanded, we have nothing to do and we leave everything as is.
-      return currentDOMNode;
-    }
-
-    // If the current node is expanded, move and focus into the first child
-    if (domNodeIsExpanded(currentDOMNode)) {
-      return getFirstChildOfExpandedTreeNode(currentDOMNode);
-    }
-    // Else, we expand the Node (but leave focus where it is)
-    setNodeExpandedState(currentTreeNode, true);
-    return currentDOMNode;
-  } else if (direction === Platform.KeyboardUtilities.ArrowKey.UP) {
-    // First see if there is a previous sibling
-    const currentNodePreviousSibling = getPreviousSiblingOfCurrentDOMNode(currentDOMNode);
-    if (currentNodePreviousSibling) {
-      // We now find the nested node within our previous sibling; if it has
-      // children that are expanded, we want to find the last child and
-      // highlight that, else we'll highlight our sibling directly.
-      if (domNodeIsExpanded(currentNodePreviousSibling)) {
-        return getDeepLastChildOfExpandedTreeNode(currentNodePreviousSibling);
+export const findNextNodeForTreeOutlineKeyboardNavigation =
+    <TreeNodeDataType>(options: KeyboardNavigationOptions<TreeNodeDataType>): HTMLLIElement => {
+      const {
+        currentDOMNode,
+        currentTreeNode,
+        direction,
+        setNodeExpandedState,
+      } = options;
+      if (!currentTreeNode) {
+        return currentDOMNode;
       }
-      // Otherwise, if we have a previous sibling with no children, focus it.
-      return currentNodePreviousSibling;
-    }
 
-    // Otherwise, let's go to the direct parent if there is one.
-    const parentNode = getParentListItemForDOMNode(currentDOMNode);
-    if (parentNode && parentNode instanceof HTMLLIElement) {
-      return parentNode;
-    }
-  } else if (direction === Platform.KeyboardUtilities.ArrowKey.LEFT) {
-    // If the node is expanded, we close it.
-    if (domNodeIsExpanded(currentDOMNode)) {
-      setNodeExpandedState(currentTreeNode, false);
+      if (direction === Platform.KeyboardUtilities.ArrowKey.DOWN) {
+        // If the node has expanded children, down takes you into that list.
+        if (domNodeIsExpanded(currentDOMNode)) {
+          return getFirstChildOfExpandedTreeNode(currentDOMNode);
+        }
+        // If the node has a sibling, we go to that.
+        const currentNodeSibling = getNextSiblingOfCurrentDOMNode(currentDOMNode);
+        if (currentNodeSibling) {
+          return currentNodeSibling;
+        }
+
+        // If the Node's parent has a sibling then we go to that.
+        const parentSibling = findNextParentSibling(currentDOMNode);
+        if (parentSibling) {
+          return parentSibling;
+        }
+      } else if (direction === Platform.KeyboardUtilities.ArrowKey.RIGHT) {
+        if (domNodeIsLeafNode(currentDOMNode)) {
+          // If the node cannot be expanded, we have nothing to do and we leave everything as is.
+          return currentDOMNode;
+        }
+
+        // If the current node is expanded, move and focus into the first child
+        if (domNodeIsExpanded(currentDOMNode)) {
+          return getFirstChildOfExpandedTreeNode(currentDOMNode);
+        }
+        // Else, we expand the Node (but leave focus where it is)
+        setNodeExpandedState(currentTreeNode, true);
+        return currentDOMNode;
+      } else if (direction === Platform.KeyboardUtilities.ArrowKey.UP) {
+        // First see if there is a previous sibling
+        const currentNodePreviousSibling = getPreviousSiblingOfCurrentDOMNode(currentDOMNode);
+        if (currentNodePreviousSibling) {
+          // We now find the nested node within our previous sibling; if it has
+          // children that are expanded, we want to find the last child and
+          // highlight that, else we'll highlight our sibling directly.
+          if (domNodeIsExpanded(currentNodePreviousSibling)) {
+            return getDeepLastChildOfExpandedTreeNode(currentNodePreviousSibling);
+          }
+          // Otherwise, if we have a previous sibling with no children, focus it.
+          return currentNodePreviousSibling;
+        }
+
+        // Otherwise, let's go to the direct parent if there is one.
+        const parentNode = getParentListItemForDOMNode(currentDOMNode);
+        if (parentNode && parentNode instanceof HTMLLIElement) {
+          return parentNode;
+        }
+      } else if (direction === Platform.KeyboardUtilities.ArrowKey.LEFT) {
+        // If the node is expanded, we close it.
+        if (domNodeIsExpanded(currentDOMNode)) {
+          setNodeExpandedState(currentTreeNode, false);
+          return currentDOMNode;
+        }
+
+        // Otherwise, let's go to the parent if there is one.
+        const parentNode = getParentListItemForDOMNode(currentDOMNode);
+        if (parentNode && parentNode instanceof HTMLLIElement) {
+          return parentNode;
+        }
+      }
+
+      // If we got here, there's no other option than to stay put.
       return currentDOMNode;
-    }
-
-    // Otherwise, let's go to the parent if there is one.
-    const parentNode = getParentListItemForDOMNode(currentDOMNode);
-    if (parentNode && parentNode instanceof HTMLLIElement) {
-      return parentNode;
-    }
-  }
-
-  // If we got here, there's no other option than to stay put.
-  return currentDOMNode;
-};
+    };

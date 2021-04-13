@@ -4,13 +4,13 @@
 
 import * as FrontendHelpers from '../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
 import * as ComponentHelpers from '../../component_helpers/component_helpers.js';
-import * as Components from '../../ui/components/components.js';
+import * as TreeOutline from '../../ui/components/tree_outline/tree_outline.js';
 
 await ComponentHelpers.ComponentServerSetup.setup();
 await FrontendHelpers.initializeGlobalVars();
 
-async function loadInSomeNodes(): Promise<Components.TreeOutlineUtils.TreeNode<string>[]> {
-  const europeanOffices: Components.TreeOutlineUtils.TreeNode<string>[] = [
+async function loadInSomeNodes(): Promise<TreeOutline.TreeOutlineUtils.TreeNode<string>[]> {
+  const europeanOffices: TreeOutline.TreeOutlineUtils.TreeNode<string>[] = [
     {
       treeNodeData: 'UK',
       children: () => Promise.resolve([
@@ -34,8 +34,8 @@ async function loadInSomeNodes(): Promise<Components.TreeOutlineUtils.TreeNode<s
   });
 }
 
-const data: Components.TreeOutline.TreeOutlineData<string> = {
-  defaultRenderer: Components.TreeOutline.defaultRenderer,
+const data: TreeOutline.TreeOutline.TreeOutlineData<string> = {
+  defaultRenderer: TreeOutline.TreeOutline.defaultRenderer,
   tree: [
     {
       treeNodeData: 'Offices',
@@ -70,7 +70,7 @@ const data: Components.TreeOutline.TreeOutlineData<string> = {
   ],
 
 };
-const component = new Components.TreeOutline.TreeOutline<string>();
+const component = new TreeOutline.TreeOutline.TreeOutline<string>();
 component.setAttribute('toplevelbordercolor', 'var(--color-syntax-1)');
 component.data = data;
 

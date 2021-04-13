@@ -4,27 +4,27 @@
 
 import * as FrontendHelpers from '../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
 import * as ComponentHelpers from '../../component_helpers/component_helpers.js';
-import * as Components from '../../ui/components/components.js';
+import * as TreeOutline from '../../ui/components/tree_outline/tree_outline.js';
 
 import {belgraveHouse, officesAndProductsData} from './sample-data.js';
 
 await ComponentHelpers.ComponentServerSetup.setup();
 await FrontendHelpers.initializeGlobalVars();
 
-const component = new Components.TreeOutline.TreeOutline<string>();
+const component = new TreeOutline.TreeOutline.TreeOutline<string>();
 component.data = {
-  defaultRenderer: Components.TreeOutline.defaultRenderer,
+  defaultRenderer: TreeOutline.TreeOutline.defaultRenderer,
   tree: officesAndProductsData,
 };
 component.setAttribute('animated', 'animated');
 
 component.addEventListener('treenodemouseover', (event: Event) => {
-  const evt = event as Components.TreeOutline.ItemMouseOverEvent<string>;
+  const evt = event as TreeOutline.TreeOutline.ItemMouseOverEvent<string>;
   // eslint-disable-next-line no-console
   console.log('Node', evt.data.node, 'mouseover');
 });
 component.addEventListener('treenodemouseout', (event: Event) => {
-  const evt = event as Components.TreeOutline.ItemMouseOutEvent<string>;
+  const evt = event as TreeOutline.TreeOutline.ItemMouseOutEvent<string>;
   // eslint-disable-next-line no-console
   console.log('Node', evt.data.node, 'mouseout');
 });

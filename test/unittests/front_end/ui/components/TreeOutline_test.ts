@@ -4,7 +4,7 @@
 
 import * as Coordinator from '../../../../../front_end/render_coordinator/render_coordinator.js';
 import * as LitHtml from '../../../../../front_end/third_party/lit-html/lit-html.js';
-import * as UIComponents from '../../../../../front_end/ui/components/components.js';
+import * as TreeOutline from '../../../../../front_end/ui/components/tree_outline/tree_outline.js';
 import {assertElement, assertShadowRoot, dispatchClickEvent, dispatchKeyDownEvent, dispatchMouseOutEvent, dispatchMouseOverEvent, getEventPromise, renderElementIntoDOM, stripLitHtmlCommentNodes} from '../../helpers/DOMHelpers.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
@@ -15,18 +15,18 @@ async function renderTreeOutline<TreeNodeDataType>({
   tree,
   defaultRenderer,
 }: {
-  tree: UIComponents.TreeOutline.TreeOutlineData<TreeNodeDataType>['tree'],
+  tree: TreeOutline.TreeOutline.TreeOutlineData<TreeNodeDataType>['tree'],
   // defaultRenderer is required usually but here we make it optinal and provide a default one as part of renderTreeOutline, to save duplication in every single test where we want to use a simple string renderer.
-  defaultRenderer?: UIComponents.TreeOutline.TreeOutlineData<TreeNodeDataType>['defaultRenderer'],
+  defaultRenderer?: TreeOutline.TreeOutline.TreeOutlineData<TreeNodeDataType>['defaultRenderer'],
 }): Promise<{
-  component: UIComponents.TreeOutline.TreeOutline<TreeNodeDataType>,
+  component: TreeOutline.TreeOutline.TreeOutline<TreeNodeDataType>,
   shadowRoot: ShadowRoot,
 }> {
-  const component = new UIComponents.TreeOutline.TreeOutline<TreeNodeDataType>();
-  const data: UIComponents.TreeOutline.TreeOutlineData<TreeNodeDataType> = {
+  const component = new TreeOutline.TreeOutline.TreeOutline<TreeNodeDataType>();
+  const data: TreeOutline.TreeOutline.TreeOutlineData<TreeNodeDataType> = {
     tree,
     defaultRenderer: defaultRenderer ||
-        ((node: UIComponents.TreeOutlineUtils.TreeNode<TreeNodeDataType>) => LitHtml.html`${node.treeNodeData}`),
+        ((node: TreeOutline.TreeOutlineUtils.TreeNode<TreeNodeDataType>) => LitHtml.html`${node.treeNodeData}`),
   };
   component.data = data;
   renderElementIntoDOM(component);
@@ -92,22 +92,22 @@ const nodeBelgraveHouse = {
 
 const nodeLondon = {
   treeNodeData: 'LON',
-  children: (): Promise<UIComponents.TreeOutlineUtils.TreeNode<string>[]> =>
+  children: (): Promise<TreeOutline.TreeOutlineUtils.TreeNode<string>[]> =>
       Promise.resolve([{treeNodeData: '6PS'}, {treeNodeData: 'CSG'}, nodeBelgraveHouse]),
 };
 
 const nodeUK = {
   treeNodeData: 'UK',
-  children: (): Promise<UIComponents.TreeOutlineUtils.TreeNode<string>[]> => Promise.resolve([nodeLondon]),
+  children: (): Promise<TreeOutline.TreeOutlineUtils.TreeNode<string>[]> => Promise.resolve([nodeLondon]),
 };
 
 const nodeEurope = {
   treeNodeData: 'Europe',
-  children: (): Promise<UIComponents.TreeOutlineUtils.TreeNode<string>[]> => Promise.resolve([
+  children: (): Promise<TreeOutline.TreeOutlineUtils.TreeNode<string>[]> => Promise.resolve([
     nodeUK,
     {
       treeNodeData: 'Germany',
-      children: (): Promise<UIComponents.TreeOutlineUtils.TreeNode<string>[]> => Promise.resolve([
+      children: (): Promise<TreeOutline.TreeOutlineUtils.TreeNode<string>[]> => Promise.resolve([
         {treeNodeData: 'MUC'},
         {treeNodeData: 'BER'},
       ]),
@@ -117,15 +117,15 @@ const nodeEurope = {
 
 const nodeOffices = {
   treeNodeData: 'Offices',
-  children: (): Promise<UIComponents.TreeOutlineUtils.TreeNode<string>[]> => Promise.resolve([nodeEurope]),
+  children: (): Promise<TreeOutline.TreeOutlineUtils.TreeNode<string>[]> => Promise.resolve([nodeEurope]),
 
 };
 
-const basicTreeData: UIComponents.TreeOutlineUtils.TreeNode<string>[] = [
+const basicTreeData: TreeOutline.TreeOutlineUtils.TreeNode<string>[] = [
   nodeOffices,
   {
     treeNodeData: 'Products',
-    children: (): Promise<UIComponents.TreeOutlineUtils.TreeNode<string>[]> => Promise.resolve([
+    children: (): Promise<TreeOutline.TreeOutlineUtils.TreeNode<string>[]> => Promise.resolve([
       {
         treeNodeData: 'Chrome',
       },
@@ -315,13 +315,13 @@ describe('TreeOutline', () => {
       property: string;
       value: string;
     }
-    const customRenderer = (node: UIComponents.TreeOutlineUtils.TreeNode<CustomTreeKeyType>) => {
+    const customRenderer = (node: TreeOutline.TreeOutlineUtils.TreeNode<CustomTreeKeyType>) => {
       return LitHtml.html`<h2 class="item">${node.treeNodeData.property.toUpperCase()}:</h2>${node.treeNodeData.value}`;
     };
-    const tinyTree: UIComponents.TreeOutlineUtils.TreeNode<CustomTreeKeyType>[] = [{
+    const tinyTree: TreeOutline.TreeOutlineUtils.TreeNode<CustomTreeKeyType>[] = [{
       treeNodeData: {property: 'name', value: 'jack'},
       renderer: customRenderer,
-      children: () => Promise.resolve<UIComponents.TreeOutlineUtils.TreeNode<CustomTreeKeyType>[]>([
+      children: () => Promise.resolve<TreeOutline.TreeOutlineUtils.TreeNode<CustomTreeKeyType>[]>([
         {
           renderer: customRenderer,
           treeNodeData: {property: 'locationGroupName', value: 'EMEA'},
@@ -485,7 +485,7 @@ describe('TreeOutline', () => {
   });
 
   it('caches async child nodes and only fetches them once', async () => {
-    const fetchChildrenSpy = sinon.spy<() => Promise<UIComponents.TreeOutlineUtils.TreeNode<string>[]>>(() => {
+    const fetchChildrenSpy = sinon.spy<() => Promise<TreeOutline.TreeOutlineUtils.TreeNode<string>[]>>(() => {
       return Promise.resolve([
         {
           treeNodeData: 'EMEA',
@@ -498,7 +498,7 @@ describe('TreeOutline', () => {
         },
       ]);
     });
-    const tinyTree: UIComponents.TreeOutlineUtils.TreeNode<string>[] = [
+    const tinyTree: TreeOutline.TreeOutlineUtils.TreeNode<string>[] = [
       {
         treeNodeData: 'Offices',
         children: fetchChildrenSpy,
@@ -537,7 +537,7 @@ describe('TreeOutline', () => {
   });
 
   it('allows a node to have a custom renderer', async () => {
-    const tinyTree: UIComponents.TreeOutlineUtils.TreeNode<string>[] = [{
+    const tinyTree: TreeOutline.TreeOutlineUtils.TreeNode<string>[] = [{
       treeNodeData: 'Offices',
       renderer: node => LitHtml.html`<h2 class="top-node">${node.treeNodeData.toUpperCase()}</h2>`,
       children: () => Promise.resolve([
@@ -567,7 +567,7 @@ describe('TreeOutline', () => {
   });
 
   it('passes the custom renderer the expanded state', async () => {
-    const tinyTree: UIComponents.TreeOutlineUtils.TreeNode<string>[] = [{
+    const tinyTree: TreeOutline.TreeOutlineUtils.TreeNode<string>[] = [{
       treeNodeData: 'Offices',
       renderer: (node, {isExpanded}) => {
         return LitHtml.html`<h2 class="top-node">${node.treeNodeData.toUpperCase()}. Expanded: ${isExpanded}</h2>`;
@@ -1110,7 +1110,7 @@ describe('TreeOutline', () => {
         await coordinator.done();
         const officeNode = getVisibleTreeNodeByText(shadowRoot, 'Offices');
         const treeItemSelectedEvent =
-            getEventPromise<UIComponents.TreeOutline.ItemSelectedEvent<string>>(component, 'itemselected');
+            getEventPromise<TreeOutline.TreeOutline.ItemSelectedEvent<string>>(component, 'itemselected');
         dispatchClickEvent(officeNode);
         const event = await treeItemSelectedEvent;
         assert.deepEqual(event.data, {node: basicTreeData[0]});
@@ -1126,7 +1126,7 @@ describe('TreeOutline', () => {
         await coordinator.done();
         dispatchKeyDownEvent(officeNode, {key: 'ArrowDown', bubbles: true});
         const treeItemSelectedEvent =
-            getEventPromise<UIComponents.TreeOutline.ItemSelectedEvent<string>>(component, 'itemselected');
+            getEventPromise<TreeOutline.TreeOutline.ItemSelectedEvent<string>>(component, 'itemselected');
         await coordinator.done();
         const event = await treeItemSelectedEvent;
         assert.deepEqual(event.data, {node: basicTreeData[1]});
@@ -1142,7 +1142,7 @@ describe('TreeOutline', () => {
         const officeNode = getVisibleTreeNodeByText(shadowRoot, 'Offices').querySelector('.arrow-and-key-wrapper');
         assertElement(officeNode, HTMLSpanElement);
         const itemMouseOverEvent =
-            getEventPromise<UIComponents.TreeOutline.ItemMouseOverEvent<string>>(component, 'itemmouseover');
+            getEventPromise<TreeOutline.TreeOutline.ItemMouseOverEvent<string>>(component, 'itemmouseover');
         dispatchMouseOverEvent(officeNode);
         const event = await itemMouseOverEvent;
         assert.deepEqual(event.data, {node: basicTreeData[0]});
@@ -1159,7 +1159,7 @@ describe('TreeOutline', () => {
         assertElement(officeNode, HTMLSpanElement);
         dispatchMouseOverEvent(officeNode);
         const itemMouseOutEvent =
-            getEventPromise<UIComponents.TreeOutline.ItemMouseOutEvent<string>>(component, 'itemmouseout');
+            getEventPromise<TreeOutline.TreeOutline.ItemMouseOutEvent<string>>(component, 'itemmouseout');
         dispatchMouseOutEvent(officeNode);
         const event = await itemMouseOutEvent;
         assert.deepEqual(event.data, {node: basicTreeData[0]});
@@ -1171,13 +1171,13 @@ describe('TreeOutline', () => {
 describe('TreeOutlineUtils', () => {
   describe('getPathToTreeNode', () => {
     it('can find the path to the given node', async () => {
-      const path = await UIComponents.TreeOutlineUtils.getPathToTreeNode(basicTreeData, nodeBelgraveHouse);
+      const path = await TreeOutline.TreeOutlineUtils.getPathToTreeNode(basicTreeData, nodeBelgraveHouse);
       assert.deepEqual(path, [nodeOffices, nodeEurope, nodeUK, nodeLondon, nodeBelgraveHouse]);
     });
 
     it('returns null if no path is found', async () => {
       const path =
-          await UIComponents.TreeOutlineUtils.getPathToTreeNode(basicTreeData, {treeNodeData: 'does-not-exist'});
+          await TreeOutline.TreeOutlineUtils.getPathToTreeNode(basicTreeData, {treeNodeData: 'does-not-exist'});
       assert.strictEqual(path, null);
     });
   });

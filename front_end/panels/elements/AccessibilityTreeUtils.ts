@@ -5,9 +5,9 @@
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as LitHtml from '../../third_party/lit-html/lit-html.js';
-import * as UIComponents from '../../ui/components/components.js';
+import * as TreeOutline from '../../ui/components/tree_outline/tree_outline.js';
 
-export type AXTreeNode = UIComponents.TreeOutlineUtils.TreeNode<SDK.AccessibilityModel.AccessibilityNode>;
+export type AXTreeNode = TreeOutline.TreeOutlineUtils.TreeNode<SDK.AccessibilityModel.AccessibilityNode>;
 
 export function sdkNodeToAXTreeNode(node: SDK.AccessibilityModel.AccessibilityNode): AXTreeNode {
   if (!node.numChildren()) {

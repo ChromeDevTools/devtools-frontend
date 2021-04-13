@@ -5,7 +5,7 @@
 import * as FrontendHelpers from '../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
 import * as ComponentHelpers from '../../component_helpers/component_helpers.js';
 import * as LitHtml from '../../third_party/lit-html/lit-html.js';
-import * as Components from '../../ui/components/components.js';
+import * as TreeOutline from '../../ui/components/tree_outline/tree_outline.js';
 
 await ComponentHelpers.ComponentServerSetup.setup();
 await FrontendHelpers.initializeGlobalVars();
@@ -15,7 +15,7 @@ interface TreeNodeData {
   cssValue: string;
 }
 
-const data: Components.TreeOutline.TreeOutlineData<TreeNodeData> = {
+const data: TreeOutline.TreeOutline.TreeOutlineData<TreeNodeData> = {
   defaultRenderer: (node, state) => {
     const {cssProperty, cssValue} = node.treeNodeData;
     const valueStyles = LitHtml.Directives.styleMap({
@@ -36,7 +36,7 @@ const data: Components.TreeOutline.TreeOutlineData<TreeNodeData> = {
     {
       treeNodeData: {cssProperty: 'margin', cssValue: '10px 5px'},
       async children() {
-        return Promise.resolve<Components.TreeOutlineUtils.TreeNode<TreeNodeData>[]>([
+        return Promise.resolve<TreeOutline.TreeOutlineUtils.TreeNode<TreeNodeData>[]>([
           {treeNodeData: {cssProperty: 'margin-left', cssValue: '5px'}},
           {treeNodeData: {cssProperty: 'margin-right', cssValue: '5px'}},
           {treeNodeData: {cssProperty: 'margin-top', cssValue: '10px'}},
@@ -47,7 +47,7 @@ const data: Components.TreeOutline.TreeOutlineData<TreeNodeData> = {
   ],
 };
 
-const component = new Components.TreeOutline.TreeOutline<TreeNodeData>();
+const component = new TreeOutline.TreeOutline.TreeOutline<TreeNodeData>();
 component.data = data;
 
 document.getElementById('container')?.appendChild(component);

@@ -5,14 +5,14 @@
 import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as LitHtml from '../../third_party/lit-html/lit-html.js';
-import * as Components from '../../ui/components/components.js';
+import * as TreeOutline from '../../ui/components/tree_outline/tree_outline.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import {accessibilityNodeRenderer, AXTreeNode, sdkNodeToAXTreeNode} from './AccessibilityTreeUtils.js';
 
 export class AccessibilityTreeView extends UI.Widget.VBox {
   private readonly accessibilityTreeComponent =
-      new Components.TreeOutline.TreeOutline<SDK.AccessibilityModel.AccessibilityNode>();
+      new TreeOutline.TreeOutline.TreeOutline<SDK.AccessibilityModel.AccessibilityNode>();
   private treeData: AXTreeNode[] = [];
   private readonly toggleButton: HTMLButtonElement;
   private accessibilityModel: SDK.AccessibilityModel.AccessibilityModel|null = null;
@@ -29,7 +29,7 @@ export class AccessibilityTreeView extends UI.Widget.VBox {
     // on node selection, update the currently inspected node and reveal in the
     // DOM tree.
     this.accessibilityTreeComponent.addEventListener('itemselected', (event: Event) => {
-      const evt = event as Components.TreeOutline.ItemSelectedEvent<SDK.AccessibilityModel.AccessibilityNode>;
+      const evt = event as TreeOutline.TreeOutline.ItemSelectedEvent<SDK.AccessibilityModel.AccessibilityNode>;
       const axNode = evt.data.node.treeNodeData;
       if (!axNode.isDOMNode()) {
         return;
@@ -46,7 +46,7 @@ export class AccessibilityTreeView extends UI.Widget.VBox {
     });
 
     this.accessibilityTreeComponent.addEventListener('itemmouseover', (event: Event) => {
-      const evt = event as Components.TreeOutline.ItemMouseOverEvent<SDK.AccessibilityModel.AccessibilityNode>;
+      const evt = event as TreeOutline.TreeOutline.ItemMouseOverEvent<SDK.AccessibilityModel.AccessibilityNode>;
       evt.data.node.treeNodeData.highlightDOMNode();
     });
 

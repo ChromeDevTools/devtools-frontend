@@ -130,7 +130,7 @@ export class ChildTargetManager extends SDKModel implements ProtocolProxyApi.Tar
       targetName = parsedURL ? parsedURL.lastPathComponentWithFragment() : '#' + (++_lastAnonymousTargetId);
     }
 
-    let type: string = Type.Browser;
+    let type = Type.Browser;
     if (targetInfo.type === 'iframe') {
       type = Type.Frame;
     }

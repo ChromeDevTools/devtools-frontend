@@ -149,7 +149,7 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
     if (request.resourceType() === Common.ResourceType.resourceTypes.WebSocket) {
       const frameView = new ResourceWebSocketFrameView(request);
       this.appendTab(Tabs.WsFrames, i18nString(UIStrings.messages), frameView, i18nString(UIStrings.websocketMessages));
-    } else if (request.mimeType === 'text/event-stream') {
+    } else if (request.mimeType === SDK.NetworkRequest.MIME_TYPE.EVENTSTREAM) {
       this.appendTab(Tabs.EventSource, i18nString(UIStrings.eventstream), new EventSourceMessagesView(request));
     } else {
       this._responseView = new RequestResponseView(request);

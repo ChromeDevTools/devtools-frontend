@@ -67,7 +67,7 @@ export class DebuggerWorkspaceBinding implements SDK.SDKModel.SDKModelObserver<S
     this._sourceMappings.push(sourceMapping);
   }
 
-  async _computeAutoStepRanges(mode: symbol, callFrame: SDK.DebuggerModel.CallFrame): Promise<{
+  async _computeAutoStepRanges(mode: SDK.DebuggerModel.StepMode, callFrame: SDK.DebuggerModel.CallFrame): Promise<{
     start: SDK.DebuggerModel.Location,
     end: SDK.DebuggerModel.Location,
   }[]> {

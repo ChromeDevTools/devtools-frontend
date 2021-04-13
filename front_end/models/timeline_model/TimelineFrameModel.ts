@@ -377,7 +377,7 @@ export class TracingFrameLayerTree {
   }
 
   async layerTreePromise(): Promise<TracingLayerTree|null> {
-    const result = (await this._snapshot.objectPromise() as {
+    const result = (await this._snapshot.objectPromise() as unknown as {
       active_tiles: TracingLayerTile[],
       device_viewport_size: {
         width: number,

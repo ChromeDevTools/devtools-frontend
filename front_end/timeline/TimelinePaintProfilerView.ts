@@ -104,7 +104,9 @@ export class TimelinePaintProfilerView extends UI.SplitWidget.SplitWidget {
           picture.objectPromise()
               .then(
                   data =>
-                      (this._paintProfilerModel as SDK.PaintProfiler.PaintProfilerModel).loadSnapshot(data['skp64']))
+                      // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+                  // @ts-expect-error
+                  (this._paintProfilerModel as SDK.PaintProfiler.PaintProfilerModel).loadSnapshot(data['skp64']))
               .then(snapshot => snapshot && {rect: null, snapshot: snapshot});
     } else if (this._event && this._event.name === TimelineModel.TimelineModel.RecordType.RasterTask) {
       snapshotPromise = this._frameModel.rasterTilePromise(this._event);

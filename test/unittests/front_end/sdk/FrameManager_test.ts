@@ -62,7 +62,7 @@ describe('FrameManager', () => {
       frameManager: FrameManager, events: SDK.FrameManager.Events[]): Array<{type: string, data: any}> {
     const dispatchedEvents: Array<{type: string, data: {}}> = [];
     for (const event of events) {
-      frameManager.addEventListener(event, e => dispatchedEvents.push({type: event.description || '', data: e.data}));
+      frameManager.addEventListener(event, e => dispatchedEvents.push({type: event || '', data: e.data}));
     }
     return dispatchedEvents;
   }

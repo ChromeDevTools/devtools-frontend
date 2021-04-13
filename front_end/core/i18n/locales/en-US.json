@@ -389,322 +389,322 @@
   "core/host/ResourceLoader.ts | unknownError": {
     "message": "Unknown error"
   },
-  "core/sdk/CompilerSourceMappingContentProvider.js | couldNotLoadContentForSS": {
+  "core/sdk/CompilerSourceMappingContentProvider.ts | couldNotLoadContentForSS": {
     "message": "Could not load content for {PH1} ({PH2})"
   },
-  "core/sdk/ConsoleModel.js | failedToSaveToTempVariable": {
+  "core/sdk/ConsoleModel.ts | failedToSaveToTempVariable": {
     "message": "Failed to save to temp variable."
   },
-  "core/sdk/ConsoleModel.js | navigatedToS": {
+  "core/sdk/ConsoleModel.ts | navigatedToS": {
     "message": "Navigated to {PH1}"
   },
-  "core/sdk/ConsoleModel.js | profileSFinished": {
+  "core/sdk/ConsoleModel.ts | profileSFinished": {
     "message": "Profile '{PH1}' finished."
   },
-  "core/sdk/ConsoleModel.js | profileSStarted": {
+  "core/sdk/ConsoleModel.ts | profileSStarted": {
     "message": "Profile '{PH1}' started."
   },
-  "core/sdk/CPUProfileDataModel.js | devtoolsCpuProfileParserIsFixing": {
+  "core/sdk/CPUProfileDataModel.ts | devtoolsCpuProfileParserIsFixing": {
     "message": "DevTools: CPU profile parser is fixing {PH1} missing samples."
   },
-  "core/sdk/CPUProfilerModel.js | profileD": {
+  "core/sdk/CPUProfilerModel.ts | profileD": {
     "message": "Profile {PH1}"
   },
-  "core/sdk/CSSStyleSheetHeader.js | couldNotFindTheOriginalStyle": {
+  "core/sdk/CSSStyleSheetHeader.ts | couldNotFindTheOriginalStyle": {
     "message": "Could not find the original style sheet."
   },
-  "core/sdk/CSSStyleSheetHeader.js | thereWasAnErrorRetrievingThe": {
+  "core/sdk/CSSStyleSheetHeader.ts | thereWasAnErrorRetrievingThe": {
     "message": "There was an error retrieving the source styles."
   },
-  "core/sdk/DebuggerModel.js | block": {
+  "core/sdk/DebuggerModel.ts | block": {
     "message": "Block"
   },
-  "core/sdk/DebuggerModel.js | closure": {
+  "core/sdk/DebuggerModel.ts | closure": {
     "message": "Closure"
   },
-  "core/sdk/DebuggerModel.js | expression": {
+  "core/sdk/DebuggerModel.ts | expression": {
     "message": "Expression"
   },
-  "core/sdk/DebuggerModel.js | global": {
+  "core/sdk/DebuggerModel.ts | global": {
     "message": "Global"
   },
-  "core/sdk/DebuggerModel.js | local": {
+  "core/sdk/DebuggerModel.ts | local": {
     "message": "Local"
   },
-  "core/sdk/DebuggerModel.js | module": {
+  "core/sdk/DebuggerModel.ts | module": {
     "message": "Module"
   },
-  "core/sdk/DebuggerModel.js | script": {
+  "core/sdk/DebuggerModel.ts | script": {
     "message": "Script"
   },
-  "core/sdk/DebuggerModel.js | withBlock": {
+  "core/sdk/DebuggerModel.ts | withBlock": {
     "message": "With Block"
   },
-  "core/sdk/DOMDebuggerModel.js | animation": {
+  "core/sdk/DOMDebuggerModel.ts | animation": {
     "message": "Animation"
   },
-  "core/sdk/DOMDebuggerModel.js | animationFrameFired": {
+  "core/sdk/DOMDebuggerModel.ts | animationFrameFired": {
     "message": "Animation Frame Fired"
   },
-  "core/sdk/DOMDebuggerModel.js | cancelAnimationFrame": {
+  "core/sdk/DOMDebuggerModel.ts | cancelAnimationFrame": {
     "message": "Cancel Animation Frame"
   },
-  "core/sdk/DOMDebuggerModel.js | canvas": {
+  "core/sdk/DOMDebuggerModel.ts | canvas": {
     "message": "Canvas"
   },
-  "core/sdk/DOMDebuggerModel.js | clipboard": {
+  "core/sdk/DOMDebuggerModel.ts | clipboard": {
     "message": "Clipboard"
   },
-  "core/sdk/DOMDebuggerModel.js | closeAudiocontext": {
+  "core/sdk/DOMDebuggerModel.ts | closeAudiocontext": {
     "message": "Close AudioContext"
   },
-  "core/sdk/DOMDebuggerModel.js | control": {
+  "core/sdk/DOMDebuggerModel.ts | control": {
     "message": "Control"
   },
-  "core/sdk/DOMDebuggerModel.js | createAudiocontext": {
+  "core/sdk/DOMDebuggerModel.ts | createAudiocontext": {
     "message": "Create AudioContext"
   },
-  "core/sdk/DOMDebuggerModel.js | createCanvasContext": {
+  "core/sdk/DOMDebuggerModel.ts | createCanvasContext": {
     "message": "Create canvas context"
   },
-  "core/sdk/DOMDebuggerModel.js | device": {
+  "core/sdk/DOMDebuggerModel.ts | device": {
     "message": "Device"
   },
-  "core/sdk/DOMDebuggerModel.js | domMutation": {
+  "core/sdk/DOMDebuggerModel.ts | domMutation": {
     "message": "DOM Mutation"
   },
-  "core/sdk/DOMDebuggerModel.js | dragDrop": {
+  "core/sdk/DOMDebuggerModel.ts | dragDrop": {
     "message": "Drag / drop"
   },
-  "core/sdk/DOMDebuggerModel.js | geolocation": {
+  "core/sdk/DOMDebuggerModel.ts | geolocation": {
     "message": "Geolocation"
   },
-  "core/sdk/DOMDebuggerModel.js | keyboard": {
+  "core/sdk/DOMDebuggerModel.ts | keyboard": {
     "message": "Keyboard"
   },
-  "core/sdk/DOMDebuggerModel.js | load": {
+  "core/sdk/DOMDebuggerModel.ts | load": {
     "message": "Load"
   },
-  "core/sdk/DOMDebuggerModel.js | media": {
+  "core/sdk/DOMDebuggerModel.ts | media": {
     "message": "Media"
   },
-  "core/sdk/DOMDebuggerModel.js | mouse": {
+  "core/sdk/DOMDebuggerModel.ts | mouse": {
     "message": "Mouse"
   },
-  "core/sdk/DOMDebuggerModel.js | notification": {
+  "core/sdk/DOMDebuggerModel.ts | notification": {
     "message": "Notification"
   },
-  "core/sdk/DOMDebuggerModel.js | parse": {
+  "core/sdk/DOMDebuggerModel.ts | parse": {
     "message": "Parse"
   },
-  "core/sdk/DOMDebuggerModel.js | pictureinpicture": {
+  "core/sdk/DOMDebuggerModel.ts | pictureinpicture": {
     "message": "Picture-in-Picture"
   },
-  "core/sdk/DOMDebuggerModel.js | pointer": {
+  "core/sdk/DOMDebuggerModel.ts | pointer": {
     "message": "Pointer"
   },
-  "core/sdk/DOMDebuggerModel.js | policyViolations": {
+  "core/sdk/DOMDebuggerModel.ts | policyViolations": {
     "message": "Policy Violations"
   },
-  "core/sdk/DOMDebuggerModel.js | requestAnimationFrame": {
+  "core/sdk/DOMDebuggerModel.ts | requestAnimationFrame": {
     "message": "Request Animation Frame"
   },
-  "core/sdk/DOMDebuggerModel.js | resumeAudiocontext": {
+  "core/sdk/DOMDebuggerModel.ts | resumeAudiocontext": {
     "message": "Resume AudioContext"
   },
-  "core/sdk/DOMDebuggerModel.js | script": {
+  "core/sdk/DOMDebuggerModel.ts | script": {
     "message": "Script"
   },
-  "core/sdk/DOMDebuggerModel.js | scriptBlockedByContentSecurity": {
+  "core/sdk/DOMDebuggerModel.ts | scriptBlockedByContentSecurity": {
     "message": "Script Blocked by Content Security Policy"
   },
-  "core/sdk/DOMDebuggerModel.js | scriptBlockedDueToContent": {
+  "core/sdk/DOMDebuggerModel.ts | scriptBlockedDueToContent": {
     "message": "Script blocked due to Content Security Policy directive: {PH1}"
   },
-  "core/sdk/DOMDebuggerModel.js | scriptFirstStatement": {
+  "core/sdk/DOMDebuggerModel.ts | scriptFirstStatement": {
     "message": "Script First Statement"
   },
-  "core/sdk/DOMDebuggerModel.js | setInnerhtml": {
+  "core/sdk/DOMDebuggerModel.ts | setInnerhtml": {
     "message": "Set innerHTML"
   },
-  "core/sdk/DOMDebuggerModel.js | setintervalFired": {
+  "core/sdk/DOMDebuggerModel.ts | setintervalFired": {
     "message": "setInterval fired"
   },
-  "core/sdk/DOMDebuggerModel.js | settimeoutFired": {
+  "core/sdk/DOMDebuggerModel.ts | settimeoutFired": {
     "message": "setTimeout fired"
   },
-  "core/sdk/DOMDebuggerModel.js | sinkViolations": {
+  "core/sdk/DOMDebuggerModel.ts | sinkViolations": {
     "message": "Sink Violations"
   },
-  "core/sdk/DOMDebuggerModel.js | suspendAudiocontext": {
+  "core/sdk/DOMDebuggerModel.ts | suspendAudiocontext": {
     "message": "Suspend AudioContext"
   },
-  "core/sdk/DOMDebuggerModel.js | timer": {
+  "core/sdk/DOMDebuggerModel.ts | timer": {
     "message": "Timer"
   },
-  "core/sdk/DOMDebuggerModel.js | touch": {
+  "core/sdk/DOMDebuggerModel.ts | touch": {
     "message": "Touch"
   },
-  "core/sdk/DOMDebuggerModel.js | trustedTypeViolations": {
+  "core/sdk/DOMDebuggerModel.ts | trustedTypeViolations": {
     "message": "Trusted Type Violations"
   },
-  "core/sdk/DOMDebuggerModel.js | webaudio": {
+  "core/sdk/DOMDebuggerModel.ts | webaudio": {
     "message": "WebAudio"
   },
-  "core/sdk/DOMDebuggerModel.js | webglErrorFired": {
+  "core/sdk/DOMDebuggerModel.ts | webglErrorFired": {
     "message": "WebGL Error Fired"
   },
-  "core/sdk/DOMDebuggerModel.js | webglErrorFiredS": {
+  "core/sdk/DOMDebuggerModel.ts | webglErrorFiredS": {
     "message": "WebGL Error Fired ({PH1})"
   },
-  "core/sdk/DOMDebuggerModel.js | webglWarningFired": {
+  "core/sdk/DOMDebuggerModel.ts | webglWarningFired": {
     "message": "WebGL Warning Fired"
   },
-  "core/sdk/DOMDebuggerModel.js | window": {
+  "core/sdk/DOMDebuggerModel.ts | window": {
     "message": "Window"
   },
-  "core/sdk/DOMDebuggerModel.js | xhr": {
+  "core/sdk/DOMDebuggerModel.ts | xhr": {
     "message": "XHR"
   },
-  "core/sdk/NetworkLog.js | anonymous": {
+  "core/sdk/NetworkLog.ts | anonymous": {
     "message": "<anonymous>"
   },
-  "core/sdk/NetworkLog.js | considerDisablingSWhileDebugging": {
+  "core/sdk/NetworkLog.ts | considerDisablingSWhileDebugging": {
     "message": "Consider disabling {PH1} while debugging. For more info see: {PH2}"
   },
-  "core/sdk/NetworkManager.js | crossoriginReadBlockingCorb": {
+  "core/sdk/NetworkManager.ts | crossoriginReadBlockingCorb": {
     "message": "Cross-Origin Read Blocking (CORB) blocked cross-origin response {PH1} with MIME type {PH2}. See https://www.chromestatus.com/feature/5629709824032768 for more details."
   },
-  "core/sdk/NetworkManager.js | fastG": {
+  "core/sdk/NetworkManager.ts | fastG": {
     "message": "Fast 3G"
   },
-  "core/sdk/NetworkManager.js | noThrottling": {
+  "core/sdk/NetworkManager.ts | noThrottling": {
     "message": "No throttling"
   },
-  "core/sdk/NetworkManager.js | offline": {
+  "core/sdk/NetworkManager.ts | offline": {
     "message": "Offline"
   },
-  "core/sdk/NetworkManager.js | requestWasBlockedByDevtoolsS": {
+  "core/sdk/NetworkManager.ts | requestWasBlockedByDevtoolsS": {
     "message": "Request was blocked by DevTools: \"{PH1}\""
   },
-  "core/sdk/NetworkManager.js | setcookieHeaderIsIgnoredIn": {
+  "core/sdk/NetworkManager.ts | setcookieHeaderIsIgnoredIn": {
     "message": "Set-Cookie header is ignored in response from url: {PH1}. Cookie length should be less than or equal to 4096 characters."
   },
-  "core/sdk/NetworkManager.js | sFailedLoadingSS": {
+  "core/sdk/NetworkManager.ts | sFailedLoadingSS": {
     "message": "{PH1} failed loading: {PH2} \"{PH3}\"."
   },
-  "core/sdk/NetworkManager.js | sFinishedLoadingSS": {
+  "core/sdk/NetworkManager.ts | sFinishedLoadingSS": {
     "message": "{PH1} finished loading: {PH2} \"{PH3}\"."
   },
-  "core/sdk/NetworkManager.js | slowG": {
+  "core/sdk/NetworkManager.ts | slowG": {
     "message": "Slow 3G"
   },
-  "core/sdk/NetworkRequest.js | anUnknownErrorWasEncounteredWhenTrying": {
+  "core/sdk/NetworkRequest.ts | anUnknownErrorWasEncounteredWhenTrying": {
     "message": "An unknown error was encountered when trying to store this cookie."
   },
-  "core/sdk/NetworkRequest.js | binary": {
+  "core/sdk/NetworkRequest.ts | binary": {
     "message": "(binary)"
   },
-  "core/sdk/NetworkRequest.js | blockedReasonInvalidDomain": {
+  "core/sdk/NetworkRequest.ts | blockedReasonInvalidDomain": {
     "message": "This Set-Cookie was blocked because its Domain attribute was invalid with regards to the current host url."
   },
-  "core/sdk/NetworkRequest.js | blockedReasonInvalidPrefix": {
+  "core/sdk/NetworkRequest.ts | blockedReasonInvalidPrefix": {
     "message": "This Set-Cookie was blocked because it used the \"__Secure-\" or \"__Host-\" prefix in its name and broke the additional rules applied to cookies with these prefixes as defined in https://tools.ietf.org/html/draft-west-cookie-prefixes-05."
   },
-  "core/sdk/NetworkRequest.js | blockedReasonOverwriteSecure": {
+  "core/sdk/NetworkRequest.ts | blockedReasonOverwriteSecure": {
     "message": "This Set-Cookie was blocked because it was not sent over a secure connection and would have overwritten a cookie with the Secure attribute."
   },
-  "core/sdk/NetworkRequest.js | blockedReasonSameSiteLax": {
+  "core/sdk/NetworkRequest.ts | blockedReasonSameSiteLax": {
     "message": "This Set-Cookie was blocked because it had the \"SameSite=Lax\" attribute but came from a cross-site response which was not the response to a top-level navigation."
   },
-  "core/sdk/NetworkRequest.js | blockedReasonSameSiteNoneInsecure": {
+  "core/sdk/NetworkRequest.ts | blockedReasonSameSiteNoneInsecure": {
     "message": "This Set-Cookie was blocked because it had the \"SameSite=None\" attribute but did not have the \"Secure\" attribute, which is required in order to use \"SameSite=None\"."
   },
-  "core/sdk/NetworkRequest.js | blockedReasonSameSiteStrict": {
+  "core/sdk/NetworkRequest.ts | blockedReasonSameSiteStrict": {
     "message": "This Set-Cookie was blocked because it had the \"SameSite=Strict\" attribute but came from a cross-site response which was not the response to a top-level navigation."
   },
-  "core/sdk/NetworkRequest.js | blockedReasonSameSiteUnspecifiedTreatedAsLax": {
+  "core/sdk/NetworkRequest.ts | blockedReasonSameSiteUnspecifiedTreatedAsLax": {
     "message": "This Set-Cookie didn't specify a \"SameSite\" attribute and was defaulted to \"SameSite=Lax,\" and was blocked because it came from a cross-site response which was not the response to a top-level navigation. The Set-Cookie had to have been set with \"SameSite=None\" to enable cross-site usage."
   },
-  "core/sdk/NetworkRequest.js | blockedReasonSecureOnly": {
+  "core/sdk/NetworkRequest.ts | blockedReasonSecureOnly": {
     "message": "This Set-Cookie was blocked because it had the \"Secure\" attribute but was not received over a secure connection."
   },
-  "core/sdk/NetworkRequest.js | domainMismatch": {
+  "core/sdk/NetworkRequest.ts | domainMismatch": {
     "message": "This cookie was blocked because neither did the request URL's domain exactly match the cookie's domain, nor was the request URL's domain a subdomain of the cookie's Domain attribute value."
   },
-  "core/sdk/NetworkRequest.js | notOnPath": {
+  "core/sdk/NetworkRequest.ts | notOnPath": {
     "message": "This cookie was blocked because its path was not an exact match for or a superdirectory of the request url's path."
   },
-  "core/sdk/NetworkRequest.js | samePartyFromCrossPartyContext": {
+  "core/sdk/NetworkRequest.ts | samePartyFromCrossPartyContext": {
     "message": "This cookie was blocked because it had the \"SameParty\" attribute but the request was cross-party. The request was considered cross-party because the domain of the resource's URL and the domains of the resource's enclosing frames/documents are neither owners nor members in the same First-Party Set."
   },
-  "core/sdk/NetworkRequest.js | sameSiteLax": {
+  "core/sdk/NetworkRequest.ts | sameSiteLax": {
     "message": "This cookie was blocked because it had the \"SameSite=Lax\" attribute and the request was made from a different site and was not initiated by a top-level navigation."
   },
-  "core/sdk/NetworkRequest.js | sameSiteNoneInsecure": {
+  "core/sdk/NetworkRequest.ts | sameSiteNoneInsecure": {
     "message": "This cookie was blocked because it had the \"SameSite=None\" attribute but was not marked \"Secure\". Cookies without SameSite restrictions must be marked \"Secure\" and sent over a secure connection."
   },
-  "core/sdk/NetworkRequest.js | sameSiteStrict": {
+  "core/sdk/NetworkRequest.ts | sameSiteStrict": {
     "message": "This cookie was blocked because it had the \"SameSite=Strict\" attribute and the request was made from a different site. This includes top-level navigation requests initiated by other sites."
   },
-  "core/sdk/NetworkRequest.js | sameSiteUnspecifiedTreatedAsLax": {
+  "core/sdk/NetworkRequest.ts | sameSiteUnspecifiedTreatedAsLax": {
     "message": "This cookie didn't specify a \"SameSite\" attribute when it was stored and was defaulted to \"SameSite=Lax,\" and was blocked because the request was made from a different site and was not initiated by a top-level navigation. The cookie had to have been set with \"SameSite=None\" to enable cross-site usage."
   },
-  "core/sdk/NetworkRequest.js | schemefulSameSiteLax": {
+  "core/sdk/NetworkRequest.ts | schemefulSameSiteLax": {
     "message": "This cookie was blocked because it had the \"SameSite=Lax\" attribute but the request was cross-site and was not initiated by a top-level navigation. This request is considered cross-site because the URL has a different scheme than the current site."
   },
-  "core/sdk/NetworkRequest.js | schemefulSameSiteStrict": {
+  "core/sdk/NetworkRequest.ts | schemefulSameSiteStrict": {
     "message": "This cookie was blocked because it had the \"SameSite=Strict\" attribute but the request was cross-site. This includes top-level navigation requests initiated by other sites. This request is considered cross-site because the URL has a different scheme than the current site."
   },
-  "core/sdk/NetworkRequest.js | schemefulSameSiteUnspecifiedTreatedAsLax": {
+  "core/sdk/NetworkRequest.ts | schemefulSameSiteUnspecifiedTreatedAsLax": {
     "message": "This cookie didn't specify a \"SameSite\" attribute when it was stored, was defaulted to \"SameSite=Lax\", and was blocked because the request was cross-site and was not initiated by a top-level navigation. This request is considered cross-site because the URL has a different scheme than the current site."
   },
-  "core/sdk/NetworkRequest.js | secureOnly": {
+  "core/sdk/NetworkRequest.ts | secureOnly": {
     "message": "This cookie was blocked because it had the \"Secure\" attribute and the connection was not secure."
   },
-  "core/sdk/NetworkRequest.js | theSchemeOfThisConnectionIsNot": {
+  "core/sdk/NetworkRequest.ts | theSchemeOfThisConnectionIsNot": {
     "message": "The scheme of this connection is not allowed to store cookies."
   },
-  "core/sdk/NetworkRequest.js | thisSetcookieDidntSpecifyASamesite": {
+  "core/sdk/NetworkRequest.ts | thisSetcookieDidntSpecifyASamesite": {
     "message": "This Set-Cookie didn't specify a \"SameSite\" attribute, was defaulted to \"SameSite=Lax\", and was blocked because it came from a cross-site response which was not the response to a top-level navigation. This response is considered cross-site because the URL has a different scheme than the current site."
   },
-  "core/sdk/NetworkRequest.js | thisSetcookieHadInvalidSyntax": {
+  "core/sdk/NetworkRequest.ts | thisSetcookieHadInvalidSyntax": {
     "message": "This Set-Cookie had invalid syntax."
   },
-  "core/sdk/NetworkRequest.js | thisSetcookieWasBlockedBecauseItHadTheSameparty": {
+  "core/sdk/NetworkRequest.ts | thisSetcookieWasBlockedBecauseItHadTheSameparty": {
     "message": "This Set-Cookie was blocked because it had the \"SameParty\" attribute but the request was cross-party. The request was considered cross-party because the domain of the resource's URL and the domains of the resource's enclosing frames/documents are neither owners nor members in the same First-Party Set."
   },
-  "core/sdk/NetworkRequest.js | thisSetcookieWasBlockedBecauseItHadTheSamepartyAttribute": {
+  "core/sdk/NetworkRequest.ts | thisSetcookieWasBlockedBecauseItHadTheSamepartyAttribute": {
     "message": "This Set-Cookie was blocked because it had the \"SameParty\" attribute but also had other conflicting attributes. Chrome requires cookies that use the \"SameParty\" attribute to also have the \"Secure\" attribute, and to not be restricted to \"SameSite=Strict\"."
   },
-  "core/sdk/NetworkRequest.js | thisSetcookieWasBlockedBecauseItHadTheSamesitelax": {
+  "core/sdk/NetworkRequest.ts | thisSetcookieWasBlockedBecauseItHadTheSamesitelax": {
     "message": "This Set-Cookie was blocked because it had the \"SameSite=Lax\" attribute but came from a cross-site response which was not the response to a top-level navigation. This response is considered cross-site because the URL has a different scheme than the current site."
   },
-  "core/sdk/NetworkRequest.js | thisSetcookieWasBlockedBecauseItHadTheSamesitestrict": {
+  "core/sdk/NetworkRequest.ts | thisSetcookieWasBlockedBecauseItHadTheSamesitestrict": {
     "message": "This Set-Cookie was blocked because it had the \"SameSite=Strict\" attribute but came from a cross-site response which was not the response to a top-level navigation. This response is considered cross-site because the URL has a different scheme than the current site."
   },
-  "core/sdk/NetworkRequest.js | thisSetcookieWasBlockedDueToUser": {
+  "core/sdk/NetworkRequest.ts | thisSetcookieWasBlockedDueToUser": {
     "message": "This Set-Cookie was blocked due to user preferences."
   },
-  "core/sdk/NetworkRequest.js | unknownError": {
+  "core/sdk/NetworkRequest.ts | unknownError": {
     "message": "An unknown error was encountered when trying to send this cookie."
   },
-  "core/sdk/NetworkRequest.js | userPreferences": {
+  "core/sdk/NetworkRequest.ts | userPreferences": {
     "message": "This cookie was blocked due to user preferences."
   },
-  "core/sdk/OverlayModel.js | pausedInDebugger": {
+  "core/sdk/OverlayModel.ts | pausedInDebugger": {
     "message": "Paused in debugger"
   },
-  "core/sdk/PageResourceLoader.js | loadCanceledDueToLoadTimeout": {
+  "core/sdk/PageResourceLoader.ts | loadCanceledDueToLoadTimeout": {
     "message": "Load canceled due to load timeout"
   },
-  "core/sdk/PageResourceLoader.js | loadCanceledDueToReloadOf": {
+  "core/sdk/PageResourceLoader.ts | loadCanceledDueToReloadOf": {
     "message": "Load canceled due to reload of inspected page"
   },
-  "core/sdk/Script.js | scriptRemovedOrDeleted": {
+  "core/sdk/Script.ts | scriptRemovedOrDeleted": {
     "message": "Script removed or deleted."
   },
-  "core/sdk/Script.js | unableToFetchScriptSource": {
+  "core/sdk/Script.ts | unableToFetchScriptSource": {
     "message": "Unable to fetch script source."
   },
   "core/sdk/sdk-meta.ts | achromatopsia": {
@@ -968,67 +968,67 @@
   "core/sdk/sdk-meta.ts | tritanopia": {
     "message": "Tritanopia"
   },
-  "core/sdk/ServerTiming.js | deprecatedSyntaxFoundPleaseUse": {
+  "core/sdk/ServerTiming.ts | deprecatedSyntaxFoundPleaseUse": {
     "message": "Deprecated syntax found. Please use: <name>;dur=<duration>;desc=<description>"
   },
-  "core/sdk/ServerTiming.js | duplicateParameterSIgnored": {
+  "core/sdk/ServerTiming.ts | duplicateParameterSIgnored": {
     "message": "Duplicate parameter \"{PH1}\" ignored."
   },
-  "core/sdk/ServerTiming.js | extraneousTrailingCharacters": {
+  "core/sdk/ServerTiming.ts | extraneousTrailingCharacters": {
     "message": "Extraneous trailing characters."
   },
-  "core/sdk/ServerTiming.js | noValueFoundForParameterS": {
+  "core/sdk/ServerTiming.ts | noValueFoundForParameterS": {
     "message": "No value found for parameter \"{PH1}\"."
   },
-  "core/sdk/ServerTiming.js | unableToParseSValueS": {
+  "core/sdk/ServerTiming.ts | unableToParseSValueS": {
     "message": "Unable to parse \"{PH1}\" value \"{PH2}\"."
   },
-  "core/sdk/ServerTiming.js | unrecognizedParameterS": {
+  "core/sdk/ServerTiming.ts | unrecognizedParameterS": {
     "message": "Unrecognized parameter \"{PH1}\"."
   },
-  "core/sdk/ServiceWorkerCacheModel.js | serviceworkercacheagentError": {
+  "core/sdk/ServiceWorkerCacheModel.ts | serviceworkercacheagentError": {
     "message": "ServiceWorkerCacheAgent error deleting cache entry {PH1} in cache: {PH2}"
   },
-  "core/sdk/ServiceWorkerManager.js | activated": {
+  "core/sdk/ServiceWorkerManager.ts | activated": {
     "message": "activated"
   },
-  "core/sdk/ServiceWorkerManager.js | activating": {
+  "core/sdk/ServiceWorkerManager.ts | activating": {
     "message": "activating"
   },
-  "core/sdk/ServiceWorkerManager.js | installed": {
+  "core/sdk/ServiceWorkerManager.ts | installed": {
     "message": "installed"
   },
-  "core/sdk/ServiceWorkerManager.js | installing": {
+  "core/sdk/ServiceWorkerManager.ts | installing": {
     "message": "installing"
   },
-  "core/sdk/ServiceWorkerManager.js | new": {
+  "core/sdk/ServiceWorkerManager.ts | new": {
     "message": "new"
   },
-  "core/sdk/ServiceWorkerManager.js | redundant": {
+  "core/sdk/ServiceWorkerManager.ts | redundant": {
     "message": "redundant"
   },
-  "core/sdk/ServiceWorkerManager.js | running": {
+  "core/sdk/ServiceWorkerManager.ts | running": {
     "message": "running"
   },
-  "core/sdk/ServiceWorkerManager.js | sSS": {
+  "core/sdk/ServiceWorkerManager.ts | sSS": {
     "message": "{PH1} #{PH2} ({PH3})"
   },
-  "core/sdk/ServiceWorkerManager.js | starting": {
+  "core/sdk/ServiceWorkerManager.ts | starting": {
     "message": "starting"
   },
-  "core/sdk/ServiceWorkerManager.js | stopped": {
+  "core/sdk/ServiceWorkerManager.ts | stopped": {
     "message": "stopped"
   },
-  "core/sdk/ServiceWorkerManager.js | stopping": {
+  "core/sdk/ServiceWorkerManager.ts | stopping": {
     "message": "stopping"
   },
-  "core/sdk/SourceMap.js | couldNotLoadContentForSS": {
+  "core/sdk/SourceMap.ts | couldNotLoadContentForSS": {
     "message": "Could not load content for {PH1}: {PH2}"
   },
-  "core/sdk/SourceMap.js | couldNotParseContentForSS": {
+  "core/sdk/SourceMap.ts | couldNotParseContentForSS": {
     "message": "Could not parse content for {PH1}: {PH2}"
   },
-  "core/sdk/SourceMapManager.js | devtoolsFailedToLoadSourcemapS": {
+  "core/sdk/SourceMapManager.ts | devtoolsFailedToLoadSourcemapS": {
     "message": "DevTools failed to load source map: {PH1}"
   },
   "inline_editor/ColorSwatch.ts | shiftclickToChangeColorFormat": {

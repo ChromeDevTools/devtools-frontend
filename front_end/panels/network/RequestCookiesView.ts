@@ -144,12 +144,9 @@ export class RequestCookiesView extends UI.Widget.Widget {
 
   _getRequestCookies(): {
     requestCookies: Array<SDK.Cookie.Cookie>,
-    requestCookieToBlockedReasons: Map<SDK.Cookie.Cookie, Array<SDK.CookieModel.BlockedReason>>,
+    requestCookieToBlockedReasons: Map<SDK.Cookie.Cookie, SDK.CookieModel.BlockedReason[]>,
   } {
-    const requestCookieToBlockedReasons = new Map<SDK.Cookie.Cookie, {
-      attribute: string | null,
-      uiString: string,
-    }[]>();
+    const requestCookieToBlockedReasons = new Map<SDK.Cookie.Cookie, SDK.CookieModel.BlockedReason[]>();
     const requestCookies = this._request.includedRequestCookies().slice();
 
     if (this._showFilteredOutCookiesSetting.get()) {
@@ -173,10 +170,7 @@ export class RequestCookiesView extends UI.Widget.Widget {
     malformedResponseCookies: Array<SDK.NetworkRequest.BlockedSetCookieWithReason>,
   } {
     let responseCookies: SDK.Cookie.Cookie[] = [];
-    const responseCookieToBlockedReasons = new Map<SDK.Cookie.Cookie, {
-      attribute: string | null,
-      uiString: string,
-    }[]>();
+    const responseCookieToBlockedReasons = new Map<SDK.Cookie.Cookie, SDK.CookieModel.BlockedReason[]>();
     const malformedResponseCookies: SDK.NetworkRequest.BlockedSetCookieWithReason[] = [];
 
     if (this._request.responseCookies.length) {

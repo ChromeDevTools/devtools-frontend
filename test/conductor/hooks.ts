@@ -59,6 +59,7 @@ const ALLOWED_ASSERTION_FAILURES = [
   // that all assertions and success criteria are met (e.g. autocompletions etc).
   // See: https://crbug.com/1192052
   'Request Runtime.evaluate failed. {"code":-32602,"message":"uniqueContextId not found"}',
+  'uniqueContextId not found',
 ];
 
 const logLevels = {

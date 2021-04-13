@@ -947,6 +947,9 @@
   "core/sdk/SourceMapManager.ts | devtoolsFailedToLoadSourcemapS": {
     "message": "D̂év̂T́ôól̂ś f̂áîĺêd́ t̂ó l̂óâd́ ŝóûŕĉé m̂áp̂: {PH1}"
   },
+  "entrypoints/js_app/JsMain.ts | main": {
+    "message": "M̂áîń"
+  },
   "inline_editor/ColorSwatch.ts | shiftclickToChangeColorFormat": {
     "message": "Ŝh́îf́t̂-ćl̂íĉḱ t̂ó ĉh́âńĝé ĉól̂ór̂ f́ôŕm̂át̂"
   },
@@ -1447,9 +1450,6 @@
   },
   "issues/IssueView.ts | warned": {
     "message": "Ŵár̂ńêd́"
-  },
-  "js_main/JsMain.js | main": {
-    "message": "M̂áîń"
   },
   "js_profiler/js_profiler-meta.ts | profiler": {
     "message": "P̂ŕôf́îĺêŕ"

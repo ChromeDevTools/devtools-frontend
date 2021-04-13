@@ -38,7 +38,6 @@ group("front_end") {
     "har_importer:bundle",
     "heap_snapshot_worker:worker_entrypoint",
     "inline_editor:bundle",
-    "js_main:bundle",
     "legacy_test_runner",
     "lighthouse_worker:bundle",
     "models/bindings:bundle",

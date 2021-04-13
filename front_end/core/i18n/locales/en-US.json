@@ -947,6 +947,9 @@
   "core/sdk/SourceMapManager.ts | devtoolsFailedToLoadSourcemapS": {
     "message": "DevTools failed to load source map: {PH1}"
   },
+  "entrypoints/js_app/JsMain.ts | main": {
+    "message": "Main"
+  },
   "inline_editor/ColorSwatch.ts | shiftclickToChangeColorFormat": {
     "message": "Shift-click to change color format"
   },
@@ -1447,9 +1450,6 @@
   },
   "issues/IssueView.ts | warned": {
     "message": "Warned"
-  },
-  "js_main/JsMain.js | main": {
-    "message": "Main"
   },
   "js_profiler/js_profiler-meta.ts | profiler": {
     "message": "Profiler"

@@ -193,7 +193,6 @@ all_typescript_module_sources = [
   "issues/MarkdownLink.js",
   "issues/MarkdownLinksMap.js",
   "issues/MarkdownView.js",
-  "js_main/JsMain.js",
   "legacy_test_runner/test_runner/TestRunner.js",
   "linear_memory_inspector/LinearMemoryInspector.js",
   "linear_memory_inspector/LinearMemoryInspectorController.js",

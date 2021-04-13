@@ -1,6 +1,7 @@
 # Copyright 2021 The Chromium Authors. All rights reserved.
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
+import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../third_party/typescript/typescript.gni")
 
 ts_library("js_app") {
@@ -8,8 +9,21 @@ ts_library("js_app") {
   sources = [ "js_app.js" ]
 
   deps = [
+    ":js_main",
     "../../js_profiler:meta",
     "../../startup:bundle",
     "../shell",
+  ]
+}
+
+devtools_entrypoint("js_main") {
+  entrypoint = "JsMain.ts"
+
+  deps = [
+    "../../components:bundle",
+    "../../core/common:bundle",
+    "../../core/host:bundle",
+    "../../core/i18n:bundle",
+    "../../core/sdk:bundle",
   ]
 }

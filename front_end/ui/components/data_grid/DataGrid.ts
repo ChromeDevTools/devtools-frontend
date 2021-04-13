@@ -2,20 +2,19 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as ComponentHelpers from '../../component_helpers/component_helpers.js';
-import * as Host from '../../core/host/host.js';
-import * as Platform from '../../core/platform/platform.js';
-import * as Coordinator from '../../render_coordinator/render_coordinator.js';
-import * as LitHtml from '../../third_party/lit-html/lit-html.js';
-// eslint-disable-next-line rulesdir/es_modules_import
-import * as UI from '../legacy/legacy.js';
+import * as ComponentHelpers from '../../../component_helpers/component_helpers.js';
+import * as Host from '../../../core/host/host.js';
+import * as Platform from '../../../core/platform/platform.js';
+import * as Coordinator from '../../../render_coordinator/render_coordinator.js';
+import * as LitHtml from '../../../third_party/lit-html/lit-html.js';
+import * as UI from '../../legacy/legacy.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 import {addColumnVisibilityCheckboxes, addSortableColumnItems} from './DataGridContextMenuUtils.js';
 import {calculateColumnWidthPercentageFromWeighting, calculateFirstFocusableCell, Cell, CellPosition, Column, ContextMenuHeaderResetClickEvent, getRowEntryForColumnId, handleArrowKeyNavigation, renderCellValue, Row, SortDirection, SortState} from './DataGridUtils.js';
 
-import * as i18n from '../../core/i18n/i18n.js';
+import * as i18n from '../../../core/i18n/i18n.js';
 const UIStrings = {
   /**
   *@description A context menu item in the Data Grid of a data grid
@@ -30,7 +29,7 @@ const UIStrings = {
   */
   headerOptions: 'Header Options',
 };
-const str_ = i18n.i18n.registerUIStrings('ui/components/DataGrid.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('ui/components/data_grid/DataGrid.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export interface DataGridContextMenusConfiguration {
   headerRow?: (menu: UI.ContextMenu.ContextMenu, columns: readonly Column[]) => void;

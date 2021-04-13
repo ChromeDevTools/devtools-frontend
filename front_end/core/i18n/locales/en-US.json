@@ -10808,13 +10808,13 @@
   "timeline/WebVitalsTimeline.ts | poor": {
     "message": "Poor"
   },
-  "ui/components/DataGrid.ts | headerOptions": {
+  "ui/components/data_grid/DataGrid.ts | headerOptions": {
     "message": "Header Options"
   },
-  "ui/components/DataGrid.ts | resetColumns": {
+  "ui/components/data_grid/DataGrid.ts | resetColumns": {
     "message": "Reset Columns"
   },
-  "ui/components/DataGrid.ts | sortBy": {
+  "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "Sort By"
   },
   "ui/components/SurveyLink.ts | anErrorOccurredWithTheSurvey": {

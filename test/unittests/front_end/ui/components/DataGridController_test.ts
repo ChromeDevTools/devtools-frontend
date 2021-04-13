@@ -4,7 +4,7 @@
 
 import {assertNotNull} from '../../../../../front_end/core/platform/platform.js';
 import * as Coordinator from '../../../../../front_end/render_coordinator/render_coordinator.js';
-import * as UIComponents from '../../../../../front_end/ui/components/components.js';
+import * as DataGrid from '../../../../../front_end/ui/components/data_grid/data_grid.js';
 import {assertShadowRoot, dispatchClickEvent, renderElementIntoDOM} from '../../helpers/DOMHelpers.js';
 import {TEXT_NODE, withMutations} from '../../helpers/MutationHelpers.js';
 
@@ -14,7 +14,7 @@ const {assert} = chai;
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
-const getInternalDataGridShadowRoot = (component: UIComponents.DataGridController.DataGridController): ShadowRoot => {
+const getInternalDataGridShadowRoot = (component: DataGrid.DataGridController.DataGridController): ShadowRoot => {
   assertShadowRoot(component.shadowRoot);
   const internalDataGrid = component.shadowRoot.querySelector('devtools-data-grid');
   assertNotNull(internalDataGrid);
@@ -40,7 +40,7 @@ describe('DataGridController', () => {
     ];
 
     it('lets the user click to sort the column in ASC order', async () => {
-      const component = new UIComponents.DataGridController.DataGridController();
+      const component = new DataGrid.DataGridController.DataGridController();
       component.data = {rows, columns};
       renderElementIntoDOM(component);
       assertShadowRoot(component.shadowRoot);
@@ -65,7 +65,7 @@ describe('DataGridController', () => {
     });
 
     it('supports sorting numeric columns', async () => {
-      const component = new UIComponents.DataGridController.DataGridController();
+      const component = new DataGrid.DataGridController.DataGridController();
       component.data = {rows: numericRows, columns};
       renderElementIntoDOM(component);
       assertShadowRoot(component.shadowRoot);
@@ -85,13 +85,13 @@ describe('DataGridController', () => {
     });
 
     it('can be provided an initial sort which is immediately applied', async () => {
-      const component = new UIComponents.DataGridController.DataGridController();
+      const component = new DataGrid.DataGridController.DataGridController();
       component.data = {
         rows,
         columns,
         initialSort: {
           columnId: 'key',
-          direction: UIComponents.DataGridUtils.SortDirection.ASC,
+          direction: DataGrid.DataGridUtils.SortDirection.ASC,
         },
       };
 
@@ -105,13 +105,13 @@ describe('DataGridController', () => {
     });
 
     it('lets the user click to change the sort when it is initially provided', async () => {
-      const component = new UIComponents.DataGridController.DataGridController();
+      const component = new DataGrid.DataGridController.DataGridController();
       component.data = {
         rows,
         columns,
         initialSort: {
           columnId: 'key',
-          direction: UIComponents.DataGridUtils.SortDirection.ASC,
+          direction: DataGrid.DataGridUtils.SortDirection.ASC,
         },
       };
 
@@ -130,7 +130,7 @@ describe('DataGridController', () => {
     });
 
     it('lets the user click twice to sort the column in DESC order', async () => {
-      const component = new UIComponents.DataGridController.DataGridController();
+      const component = new DataGrid.DataGridController.DataGridController();
       component.data = {rows, columns};
 
       renderElementIntoDOM(component);
@@ -150,7 +150,7 @@ describe('DataGridController', () => {
     });
 
     it('resets the sort if the user clicks after setting the sort to DESC', async () => {
-      const component = new UIComponents.DataGridController.DataGridController();
+      const component = new DataGrid.DataGridController.DataGridController();
       component.data = {rows, columns};
 
       renderElementIntoDOM(component);
@@ -175,7 +175,7 @@ describe('DataGridController', () => {
     });
 
     it('persists the sort as new data is added and inserts new data into the right place', async () => {
-      const component = new UIComponents.DataGridController.DataGridController();
+      const component = new DataGrid.DataGridController.DataGridController();
       component.data = {rows, columns};
 
       renderElementIntoDOM(component);
@@ -249,7 +249,7 @@ describe('DataGridController', () => {
     });
 
     it('only shows rows with values that match the filter', async () => {
-      const component = new UIComponents.DataGridController.DataGridController();
+      const component = new DataGrid.DataGridController.DataGridController();
       component.data = {rows, columns, filters: [createPlainTextFilter('bravo')]};
       renderElementIntoDOM(component);
       assertShadowRoot(component.shadowRoot);
@@ -262,7 +262,7 @@ describe('DataGridController', () => {
     });
 
     it('renders only visible rows, but maintains proper aria-rowindexes for the rows that are rendered', async () => {
-      const component = new UIComponents.DataGridController.DataGridController();
+      const component = new DataGrid.DataGridController.DataGridController();
       component.data = {rows, columns, filters: [createPlainTextFilter('bravo')]};
 
       renderElementIntoDOM(component);
@@ -274,7 +274,7 @@ describe('DataGridController', () => {
     });
 
     it('shows all rows if the filter is then cleared', async () => {
-      const component = new UIComponents.DataGridController.DataGridController();
+      const component = new DataGrid.DataGridController.DataGridController();
       component.data = {rows, columns, filters: [createPlainTextFilter('bravo')]};
       renderElementIntoDOM(component);
       assertShadowRoot(component.shadowRoot);
@@ -293,7 +293,7 @@ describe('DataGridController', () => {
     });
 
     it('supports a regex filter', async () => {
-      const component = new UIComponents.DataGridController.DataGridController();
+      const component = new DataGrid.DataGridController.DataGridController();
       component.data = {rows, columns, filters: [createRegexFilter('bravo')]};
       renderElementIntoDOM(component);
       assertShadowRoot(component.shadowRoot);
@@ -306,7 +306,7 @@ describe('DataGridController', () => {
     });
 
     it('inverts the filter if given a negative filter', async () => {
-      const component = new UIComponents.DataGridController.DataGridController();
+      const component = new DataGrid.DataGridController.DataGridController();
       const filter = createPlainTextFilter('bravo');
       filter.negative = true;
       component.data = {rows, columns, filters: [filter]};
@@ -322,7 +322,7 @@ describe('DataGridController', () => {
     });
 
     it('only shows rows that match all filters when given multiple filters', async () => {
-      const component = new UIComponents.DataGridController.DataGridController();
+      const component = new DataGrid.DataGridController.DataGridController();
       // This matches no rows, as no row can match both of these filters
       component.data = {rows, columns, filters: [createPlainTextFilter('alpha'), createPlainTextFilter('charlie')]};
       renderElementIntoDOM(component);
@@ -334,7 +334,7 @@ describe('DataGridController', () => {
     });
 
     it('supports filtering by column key', async () => {
-      const component = new UIComponents.DataGridController.DataGridController();
+      const component = new DataGrid.DataGridController.DataGridController();
       // By filtering for values with `e` we expect to only get the "Letter C: Charlie" row as it's the only value field with an `e` in.
       component.data = {rows, columns, filters: [createColumnFilter('value', 'e')]};
       renderElementIntoDOM(component);
@@ -348,7 +348,7 @@ describe('DataGridController', () => {
     });
 
     it('supports negative filtering by column key', async () => {
-      const component = new UIComponents.DataGridController.DataGridController();
+      const component = new DataGrid.DataGridController.DataGridController();
       const filter = createColumnFilter('value', 'e');
       filter.negative = true;
       component.data = {rows, columns, filters: [filter]};

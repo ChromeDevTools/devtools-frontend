@@ -19,6 +19,7 @@ ts_library("components") {
     "../../../../../front_end/render_coordinator:bundle",
     "../../../../../front_end/third_party/lit-html",
     "../../../../../front_end/ui/components:bundle",
+    "../../../../../front_end/ui/components/data_grid:bundle",
     "../../helpers",
   ]
 }

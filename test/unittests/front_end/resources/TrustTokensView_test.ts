@@ -4,7 +4,7 @@
 
 import * as Resources from '../../../../front_end/panels/application/application.js';
 import * as Coordinator from '../../../../front_end/render_coordinator/render_coordinator.js';
-import * as Components from '../../../../front_end/ui/components/components.js';
+import * as DataGrid from '../../../../front_end/ui/components/data_grid/data_grid.js';
 import {assertElement, assertShadowRoot, getElementWithinComponent, renderElementIntoDOM} from '../helpers/DOMHelpers.js';
 import {getCellByIndexes, getValuesOfAllBodyRows} from '../ui/components/DataGridHelpers.js';
 
@@ -28,8 +28,8 @@ async function renderTrustTokensView(
 
 function getInternalDataGridShadowRoot(component: Resources.TrustTokensView.TrustTokensView): ShadowRoot {
   const dataGridController = getElementWithinComponent(
-      component, 'devtools-data-grid-controller', Components.DataGridController.DataGridController);
-  const dataGrid = getElementWithinComponent(dataGridController, 'devtools-data-grid', Components.DataGrid.DataGrid);
+      component, 'devtools-data-grid-controller', DataGrid.DataGridController.DataGridController);
+  const dataGrid = getElementWithinComponent(dataGridController, 'devtools-data-grid', DataGrid.DataGrid.DataGrid);
   assertShadowRoot(dataGrid.shadowRoot);
   return dataGrid.shadowRoot;
 }

@@ -11,7 +11,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as SourceFrame from '../../source_frame/source_frame.js';
 import * as LitHtml from '../../third_party/lit-html/lit-html.js';
-import * as Components from '../../ui/components/components.js';
+import * as DataGrid from '../../ui/components/data_grid/data_grid.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 const UIStrings = {
@@ -70,7 +70,7 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/protocol_monitor/ProtocolMonitor.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-const timestampRenderer = (value: Components.DataGridUtils.CellValue): LitHtml.TemplateResult => {
+const timestampRenderer = (value: DataGrid.DataGridUtils.CellValue): LitHtml.TemplateResult => {
   return LitHtml.html`${i18nString(UIStrings.sMs, {PH1: value})}`;
 };
 
@@ -86,9 +86,9 @@ let protocolMonitorImplInstance: ProtocolMonitorImpl;
 export class ProtocolMonitorImpl extends UI.Widget.VBox {
   _started: boolean;
   _startTime: number;
-  _dataGridRowForId: Map<number, Components.DataGridUtils.Row>;
+  _dataGridRowForId: Map<number, DataGrid.DataGridUtils.Row>;
   _infoWidget: InfoWidget;
-  _dataGridIntegrator: Components.DataGridControllerIntegrator.DataGridControllerIntegrator;
+  _dataGridIntegrator: DataGrid.DataGridControllerIntegrator.DataGridControllerIntegrator;
   _filterParser: TextUtils.TextUtils.FilterParser;
   _suggestionBuilder: UI.FilterSuggestionBuilder.FilterSuggestionBuilder;
   _textFilterUI: UI.Toolbar.ToolbarInput;
@@ -119,7 +119,7 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
     split.show(this.contentElement);
     this._infoWidget = new InfoWidget();
 
-    const dataGridInitialData: Components.DataGridController.DataGridControllerData = {
+    const dataGridInitialData: DataGrid.DataGridController.DataGridControllerData = {
       columns: [
         {
           id: 'method',
@@ -173,10 +173,10 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
       rows: [],
       contextMenus: {
         bodyRow:
-            (menu: UI.ContextMenu.ContextMenu, columns: readonly Components.DataGridUtils.Column[],
-             row: Readonly<Components.DataGridUtils.Row>): void => {
-              const methodColumn = Components.DataGridUtils.getRowEntryForColumnId(row, 'method');
-              const directionColumn = Components.DataGridUtils.getRowEntryForColumnId(row, 'direction');
+            (menu: UI.ContextMenu.ContextMenu, columns: readonly DataGrid.DataGridUtils.Column[],
+             row: Readonly<DataGrid.DataGridUtils.Row>): void => {
+              const methodColumn = DataGrid.DataGridUtils.getRowEntryForColumnId(row, 'method');
+              const directionColumn = DataGrid.DataGridUtils.getRowEntryForColumnId(row, 'direction');
 
               /**
            * You can click the "Filter" item in the context menu to filter the
@@ -184,7 +184,7 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
            * current row.
            */
               menu.defaultSection().appendItem(i18nString(UIStrings.filter), () => {
-                const methodColumn = Components.DataGridUtils.getRowEntryForColumnId(row, 'method');
+                const methodColumn = DataGrid.DataGridUtils.getRowEntryForColumnId(row, 'method');
                 this._textFilterUI.setValue(`method:${methodColumn.value}`, true);
               });
 
@@ -206,21 +206,21 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
     };
 
     this._dataGridIntegrator =
-        new Components.DataGridControllerIntegrator.DataGridControllerIntegrator(dataGridInitialData);
+        new DataGrid.DataGridControllerIntegrator.DataGridControllerIntegrator(dataGridInitialData);
 
     this._dataGridIntegrator.dataGrid.addEventListener('cell-focused', (event: Event) => {
-      const focusedEvent = event as Components.DataGrid.BodyCellFocusedEvent;
+      const focusedEvent = event as DataGrid.DataGrid.BodyCellFocusedEvent;
       const focusedRow = focusedEvent.data.row;
       const infoWidgetData = {
-        request: Components.DataGridUtils.getRowEntryForColumnId(focusedRow, 'request'),
-        response: Components.DataGridUtils.getRowEntryForColumnId(focusedRow, 'response'),
-        direction: Components.DataGridUtils.getRowEntryForColumnId(focusedRow, 'direction'),
+        request: DataGrid.DataGridUtils.getRowEntryForColumnId(focusedRow, 'request'),
+        response: DataGrid.DataGridUtils.getRowEntryForColumnId(focusedRow, 'response'),
+        direction: DataGrid.DataGridUtils.getRowEntryForColumnId(focusedRow, 'direction'),
       };
       this._infoWidget.render(infoWidgetData);
     });
 
     this._dataGridIntegrator.dataGrid.addEventListener('new-user-filter-text', (event: Event) => {
-      const filterTextEvent = event as Components.DataGrid.NewUserFilterTextEvent;
+      const filterTextEvent = event as DataGrid.DataGrid.NewUserFilterTextEvent;
       this._textFilterUI.setValue(filterTextEvent.data.filterText, /* notify listeners */ true);
     });
     split.setMainWidget(this._dataGridIntegrator);
@@ -319,14 +319,14 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
     }
 
     const sdkTarget = target as SDK.SDKModel.Target | null;
-    const newRow: Components.DataGridUtils.Row = {
+    const newRow: DataGrid.DataGridUtils.Row = {
       cells: [
         {columnId: 'method', value: message.method},
-        {columnId: 'request', value: '', renderer: Components.DataGridRenderers.codeBlockRenderer},
+        {columnId: 'request', value: '', renderer: DataGrid.DataGridRenderers.codeBlockRenderer},
         {
           columnId: 'response',
           value: JSON.stringify(message.params),
-          renderer: Components.DataGridRenderers.codeBlockRenderer,
+          renderer: DataGrid.DataGridRenderers.codeBlockRenderer,
         },
         {
           columnId: 'timestamp',
@@ -349,15 +349,15 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
       message: {domain: string, method: string, params: Object, id: number},
       target: ProtocolClient.InspectorBackend.TargetBase|null): void {
     const sdkTarget = target as SDK.SDKModel.Target | null;
-    const newRow: Components.DataGridUtils.Row = {
+    const newRow: DataGrid.DataGridUtils.Row = {
       cells: [
         {columnId: 'method', value: message.method},
         {
           columnId: 'request',
           value: JSON.stringify(message.params),
-          renderer: Components.DataGridRenderers.codeBlockRenderer,
+          renderer: DataGrid.DataGridRenderers.codeBlockRenderer,
         },
-        {columnId: 'response', value: '(pending)', renderer: Components.DataGridRenderers.codeBlockRenderer},
+        {columnId: 'response', value: '(pending)', renderer: DataGrid.DataGridRenderers.codeBlockRenderer},
         {
           columnId: 'timestamp',
           value: Date.now() - this._startTime,
@@ -389,9 +389,9 @@ export class InfoWidget extends UI.Widget.VBox {
   }
 
   render(data: {
-    request: Components.DataGridUtils.Cell|undefined,
-    response: Components.DataGridUtils.Cell|undefined,
-    direction: Components.DataGridUtils.Cell|undefined,
+    request: DataGrid.DataGridUtils.Cell|undefined,
+    response: DataGrid.DataGridUtils.Cell|undefined,
+    direction: DataGrid.DataGridUtils.Cell|undefined,
   }|null): void {
     if (!data || !data.request || !data.response) {
       this._tabbedPane.changeTabView(

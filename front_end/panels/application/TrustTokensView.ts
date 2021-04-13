@@ -6,6 +6,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as LitHtml from '../../third_party/lit-html/lit-html.js';
 import * as Components from '../../ui/components/components.js';
+import * as DataGrid from '../../ui/components/data_grid/data_grid.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import type {ResourcesPanel} from './ResourcesPanel.js';
@@ -160,7 +161,7 @@ export class TrustTokensView extends HTMLElement {
       return LitHtml.html`<div class="no-tt-message">${i18nString(UIStrings.noTrustTokensStored)}</div>`;
     }
 
-    const gridData: Components.DataGridController.DataGridControllerData = {
+    const gridData: DataGrid.DataGridController.DataGridControllerData = {
       columns: [
         {
           id: 'issuer',
@@ -190,17 +191,17 @@ export class TrustTokensView extends HTMLElement {
       rows: this.buildRowsFromTokens(),
       initialSort: {
         columnId: 'issuer',
-        direction: Components.DataGridUtils.SortDirection.ASC,
+        direction: DataGrid.DataGridUtils.SortDirection.ASC,
       },
     };
 
     return LitHtml.html`
       <devtools-data-grid-controller .data=${
-        gridData as Components.DataGridController.DataGridControllerData}></devtools-data-grid-controller>
+        gridData as DataGrid.DataGridController.DataGridControllerData}></devtools-data-grid-controller>
     `;
   }
 
-  private buildRowsFromTokens(): Components.DataGridUtils.Row[] {
+  private buildRowsFromTokens(): DataGrid.DataGridUtils.Row[] {
     const tokens = this.tokens.filter(token => token.count > 0);
     return tokens.map(token => ({
                         cells: [
@@ -215,7 +216,7 @@ export class TrustTokensView extends HTMLElement {
                       }));
   }
 
-  private deleteButtonRenderer(issuer: Components.DataGridUtils.CellValue): LitHtml.TemplateResult {
+  private deleteButtonRenderer(issuer: DataGrid.DataGridUtils.CellValue): LitHtml.TemplateResult {
     // clang-format off
     return LitHtml.html`
       <style>

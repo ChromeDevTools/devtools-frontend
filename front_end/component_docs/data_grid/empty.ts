@@ -3,11 +3,11 @@
 // found in the LICENSE file.
 
 import * as ComponentHelpers from '../../component_helpers/component_helpers.js';
-import * as Components from '../../ui/components/components.js';
+import * as DataGrid from '../../ui/components/data_grid/data_grid.js';
 
 await ComponentHelpers.ComponentServerSetup.setup();
 
-const component = new Components.DataGrid.DataGrid();
+const component = new DataGrid.DataGrid.DataGrid();
 
 component.data = {
   columns: [

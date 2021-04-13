@@ -4,12 +4,12 @@
 
 import * as EnvironmentHelpers from '../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
 import * as ComponentHelpers from '../../component_helpers/component_helpers.js';
-import * as Components from '../../ui/components/components.js';
+import * as DataGrid from '../../ui/components/data_grid/data_grid.js';
 
 await EnvironmentHelpers.initializeGlobalVars();
 await ComponentHelpers.ComponentServerSetup.setup();
 
-const component = new Components.DataGridController.DataGridController();
+const component = new DataGrid.DataGridController.DataGridController();
 
 component.data = {
   columns: [

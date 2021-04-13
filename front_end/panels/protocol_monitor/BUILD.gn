@@ -17,6 +17,7 @@ devtools_module("protocol_monitor") {
     "../../source_frame:bundle",
     "../../third_party/lit-html:bundle",
     "../../ui/components:bundle",
+    "../../ui/components/data_grid:bundle",
     "../../ui/legacy:bundle",
   ]
 }

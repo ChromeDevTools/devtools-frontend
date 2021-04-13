@@ -728,7 +728,7 @@
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "D̂íŝáb̂ĺê J́âv́âŚĉŕîṕt̂"
   },
-  "core/sdk/sdk-meta.ts | disableJxlFormat": {
+  "core/sdk/sdk-meta.ts | disableJpegXlFormat": {
     "message": "D̂íŝáb̂ĺê JPEG XL f́ôŕm̂át̂"
   },
   "core/sdk/sdk-meta.ts | disableLocalFonts": {
@@ -857,7 +857,7 @@
   "core/sdk/sdk-meta.ts | enableJavascript": {
     "message": "Êńâb́l̂é Ĵáv̂áŜćr̂íp̂t́"
   },
-  "core/sdk/sdk-meta.ts | enableJxlFormat": {
+  "core/sdk/sdk-meta.ts | enableJpegXlFormat": {
     "message": "Êńâb́l̂é JPEG XL f̂ór̂ḿât́"
   },
   "core/sdk/sdk-meta.ts | enableLocalFonts": {
@@ -1175,7 +1175,7 @@
   "inspector_main/RenderingOptions.js | disableAvifImageFormat": {
     "message": "D̂íŝáb̂ĺê AVIF ím̂áĝé f̂ór̂ḿât́"
   },
-  "inspector_main/RenderingOptions.js | disableJxlImageFormat": {
+  "inspector_main/RenderingOptions.js | disableJpegXlImageFormat": {
     "message": "D̂íŝáb̂ĺê JPEG XL ím̂áĝé f̂ór̂ḿât́"
   },
   "inspector_main/RenderingOptions.js | disableLocalFonts": {

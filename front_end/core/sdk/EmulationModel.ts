@@ -126,7 +126,7 @@ export class EmulationModel extends SDKModel {
     }
 
     const avifFormatDisabledSetting = Common.Settings.Settings.instance().moduleSetting('avifFormatDisabled');
-    const jxlFormatDisabledSetting = Common.Settings.Settings.instance().moduleSetting('jxlFormatDisabled');
+    const jpegXlFormatDisabledSetting = Common.Settings.Settings.instance().moduleSetting('jpegXlFormatDisabled');
     const webpFormatDisabledSetting = Common.Settings.Settings.instance().moduleSetting('webpFormatDisabled');
 
     const updateDisabledImageFormats = (): void => {
@@ -134,7 +134,7 @@ export class EmulationModel extends SDKModel {
       if (avifFormatDisabledSetting.get()) {
         types.push(Protocol.Emulation.DisabledImageType.Avif);
       }
-      if (jxlFormatDisabledSetting.get()) {
+      if (jpegXlFormatDisabledSetting.get()) {
         types.push(Protocol.Emulation.DisabledImageType.Jxl);
       }
       if (webpFormatDisabledSetting.get()) {
@@ -145,9 +145,9 @@ export class EmulationModel extends SDKModel {
 
     avifFormatDisabledSetting.addChangeListener(updateDisabledImageFormats);
     webpFormatDisabledSetting.addChangeListener(updateDisabledImageFormats);
-    jxlFormatDisabledSetting.addChangeListener(updateDisabledImageFormats);
+    jpegXlFormatDisabledSetting.addChangeListener(updateDisabledImageFormats);
 
-    if (avifFormatDisabledSetting.get() || jxlFormatDisabledSetting.get() || webpFormatDisabledSetting.get()) {
+    if (avifFormatDisabledSetting.get() || jpegXlFormatDisabledSetting.get() || webpFormatDisabledSetting.get()) {
       updateDisabledImageFormats();
     }
 

@@ -166,7 +166,7 @@ const UIStrings = {
   * @description The name of a checkbox setting in the Rendering tool. This setting disables the
   * page from loading images with the JPEG XL format.
   */
-  disableJxlImageFormat: 'Disable `JPEG XL` image format',
+  disableJpegXlImageFormat: 'Disable `JPEG XL` image format',
   /**
   * @description Explanation text for both the 'Disable AVIF image format' and 'Disable WebP image
   * format' settings in the Rendering tool.
@@ -195,14 +195,13 @@ const supportsPrefersReducedData = () => {
   return window.matchMedia(query).media === query;
 };
 
-const supportsJXL = async () => {
-  const JXL_IMAGE_URL =
-      'data:image/jxl;base64,/woAEJBQXAgAEogCALQAVQ8AAKhQGWXc4OVcz5cfOiymbVxnaKttC0sSRcaxSTqBQ5JYIwFkZDDYr5IE';
+const supportsJpegXl = async () => {
+  const JPEG_XL_IMAGE_URL = 'data:image/jxl;base64,/wp/QCQIBgEAFABLEiRhAA==';
   const promise = new Promise(resolve => {
     const img = document.createElement('img');
     img.onload = () => resolve(true);
     img.onerror = () => resolve(false);
-    img.src = JXL_IMAGE_URL;
+    img.src = JPEG_XL_IMAGE_URL;
   });
   return promise;
 };
@@ -285,13 +284,13 @@ export class RenderingOptionsView extends UI.Widget.VBox {
 
     this.contentElement.createChild('div').classList.add('panel-section-separator');
 
-    supportsJXL().then(jxlSupported => {
-      if (!jxlSupported) {
+    supportsJpegXl().then(hasSupport => {
+      if (!hasSupport) {
         return;
       }
       webpCheckbox.before(this._createCheckbox(
-          i18nString(UIStrings.disableJxlImageFormat), i18nString(UIStrings.requiresAPageReloadToApplyAnd),
-          Common.Settings.Settings.instance().moduleSetting('jxlFormatDisabled')));
+          i18nString(UIStrings.disableJpegXlImageFormat), i18nString(UIStrings.requiresAPageReloadToApplyAnd),
+          Common.Settings.Settings.instance().moduleSetting('jpegXlFormatDisabled')));
     });
   }
 

@@ -325,11 +325,11 @@ const UIStrings = {
   /**
   *@description Title of a setting that disables JPEG XL format
   */
-  disableJxlFormat: 'Disable `JPEG XL` format',
+  disableJpegXlFormat: 'Disable `JPEG XL` format',
   /**
   *@description Title of a setting that enables JPEG XL format
   */
-  enableJxlFormat: 'Enable `JPEG XL` format',
+  enableJpegXlFormat: 'Enable `JPEG XL` format',
   /**
   *@description Title of a setting that disables WebP format
   */
@@ -922,17 +922,17 @@ Common.Settings.registerSettingExtension({
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.RENDERING,
-  settingName: 'jxlFormatDisabled',
+  settingName: 'jpegXlFormatDisabled',
   settingType: Common.Settings.SettingType.BOOLEAN,
   storageType: Common.Settings.SettingStorageType.Session,
   options: [
     {
       value: true,
-      title: i18nLazyString(UIStrings.disableJxlFormat),
+      title: i18nLazyString(UIStrings.disableJpegXlFormat),
     },
     {
       value: false,
-      title: i18nLazyString(UIStrings.enableJxlFormat),
+      title: i18nLazyString(UIStrings.enableJpegXlFormat),
     },
   ],
   defaultValue: false,

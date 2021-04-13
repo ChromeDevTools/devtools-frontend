@@ -44,6 +44,7 @@ devtools_module("issues") {
     "../third_party/marked:bundle",
     "../ui/components:bundle",
     "../ui/components/data_grid:bundle",
+    "../ui/components/linkifier:bundle",
     "../ui/legacy:bundle",
   ]
 

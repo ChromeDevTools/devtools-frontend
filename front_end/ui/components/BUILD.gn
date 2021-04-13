@@ -10,8 +10,6 @@ devtools_module("components") {
     "ExpandableList.ts",
     "Icon.ts",
     "IconButton.ts",
-    "Linkifier.ts",
-    "LinkifierUtils.ts",
     "ReportView.ts",
     "SurveyLink.ts",
   ]

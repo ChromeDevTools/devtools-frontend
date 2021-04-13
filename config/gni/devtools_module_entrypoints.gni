@@ -191,6 +191,7 @@ devtools_module_entrypoint_sources = [
   "timeline/timeline.js",
   "ui/components/components.js",
   "ui/components/data_grid/data_grid.js",
+  "ui/components/linkifier/linkifier.js",
   "ui/components/tree_outline/tree_outline.js",
   "ui/legacy/components/data_grid/data_grid-legacy.js",
   "ui/legacy/components/data_grid/data_grid.js",

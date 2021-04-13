@@ -3,11 +3,11 @@
 // found in the LICENSE file.
 
 import * as ComponentHelpers from '../../component_helpers/component_helpers.js';
-import * as Components from '../../ui/components/components.js';
+import * as Linkifier from '../../ui/components/linkifier/linkifier.js';
 
 await ComponentHelpers.ComponentServerSetup.setup();
 
-const link = new Components.Linkifier.Linkifier();
+const link = new Linkifier.Linkifier.Linkifier();
 
 link.data = {
   url: 'example.com',

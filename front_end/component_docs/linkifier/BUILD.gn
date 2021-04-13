@@ -11,7 +11,7 @@ ts_library("ts") {
 
   deps = [
     "../../component_helpers:bundle",
-    "../../ui/components:bundle",
+    "../../ui/components/linkifier:bundle",
   ]
 }
 

@@ -2,10 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import '../ui/components/linkifier/linkifier.js';
+
 import * as IssuesManager from '../models/issues_manager/issues_manager.js';
 import * as LitHtml from '../third_party/lit-html/lit-html.js';
-import * as UIComponents from '../ui/components/components.js';  // eslint-disable-line rulesdir/es_modules_import
-import * as DataGrid from '../ui/components/data_grid/data_grid.js';  // eslint-disable-line rulesdir/es_modules_import
+import * as DataGrid from '../ui/components/data_grid/data_grid.js';
+import * as Linkifier from '../ui/components/linkifier/linkifier.js';
 import * as UI from '../ui/legacy/legacy.js';
 
 export class CSPViolationsListView extends UI.Widget.VBox {
@@ -78,7 +80,7 @@ export class CSPViolationsListView extends UI.Widget.VBox {
           value: location.url,
           renderer(): LitHtml.TemplateResult {
             return LitHtml.html`<devtools-linkifier .data=${
-                location as UIComponents.Linkifier.LinkifierData}></devtools-linkifier>`;
+                location as Linkifier.Linkifier.LinkifierData}></devtools-linkifier>`;
           },
         },
         {columnId: 'violatedDirective', value: issue.details().violatedDirective},

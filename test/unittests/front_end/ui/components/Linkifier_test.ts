@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as Coordinator from '../../../../../front_end/render_coordinator/render_coordinator.js';
-import * as UIComponents from '../../../../../front_end/ui/components/components.js';
+import * as Linkifier from '../../../../../front_end/ui/components/linkifier/linkifier.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
@@ -12,7 +12,7 @@ const {assert} = chai;
 
 describe('Linkifier', () => {
   it('renders a link when given a URL', async () => {
-    const component = new UIComponents.Linkifier.Linkifier();
+    const component = new Linkifier.Linkifier.Linkifier();
     component.data = {
       url: 'https://example.com',
     };
@@ -25,7 +25,7 @@ describe('Linkifier', () => {
   });
 
   it('throws when given an invalid URL', () => {
-    const component = new UIComponents.Linkifier.Linkifier();
+    const component = new Linkifier.Linkifier.Linkifier();
 
     assert.throws(() => {
       component.data = {url: ''};
@@ -33,7 +33,7 @@ describe('Linkifier', () => {
   });
 
   it('appends the line number to the URL if given, and adds one to deal with 0 indexing', async () => {
-    const component = new UIComponents.Linkifier.Linkifier();
+    const component = new Linkifier.Linkifier.Linkifier();
     component.data = {
       url: 'https://example.com',
       lineNumber: 1,
@@ -47,7 +47,7 @@ describe('Linkifier', () => {
   });
 
   it('emits an event when clicked', async () => {
-    const component = new UIComponents.Linkifier.Linkifier();
+    const component = new Linkifier.Linkifier.Linkifier();
     component.data = {
       url: 'https://example.com',
       lineNumber: 1,
@@ -59,7 +59,7 @@ describe('Linkifier', () => {
     const link = component.shadowRoot.querySelector('a');
     assertElement(link, HTMLAnchorElement);
 
-    const clickEventPromise = getEventPromise<UIComponents.Linkifier.LinkifierClick>(component, 'linkifier-activated');
+    const clickEventPromise = getEventPromise<Linkifier.Linkifier.LinkifierClick>(component, 'linkifier-activated');
     dispatchClickEvent(link, {
       cancelable: true,
     });

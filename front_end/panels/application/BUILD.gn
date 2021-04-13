@@ -52,11 +52,11 @@ devtools_module("application") {
     "../../models/workspace:bundle",
     "../../panels/mobile_throttling:bundle",
     "../../panels/network:bundle",
-    "../../source_frame:bundle",
     "../../ui/components/data_grid:bundle",
     "../../ui/legacy:bundle",
     "../../ui/legacy/components/data_grid:bundle",
     "../../ui/legacy/components/object_ui:bundle",
+    "../../ui/legacy/components/source_frame:bundle",
   ]
 }
 

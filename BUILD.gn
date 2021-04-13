@@ -138,7 +138,7 @@ non_autostart_non_remote_modules = [
   "security/security_module.js",
   "settings/settings_module.js",
   "snippets/snippets_module.js",
-  "source_frame/source_frame_module.js",
+  "ui/legacy/components/source_frame/source_frame_module.js",
   "sources/sources_module.js",
   "text_editor/text_editor_module.js",
   "timeline/timeline_module.js",

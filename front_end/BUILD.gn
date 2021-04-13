@@ -139,7 +139,6 @@ group("legacy_entrypoints") {
     "security:legacy",
     "settings:legacy",
     "snippets:legacy",
-    "source_frame:legacy",
     "sources:legacy",
     "text_editor:legacy",
     "timeline:legacy",
@@ -147,6 +146,7 @@ group("legacy_entrypoints") {
     "ui/legacy/components/data_grid:legacy",
     "ui/legacy/components/object_ui:legacy",
     "ui/legacy/components/perf_ui:legacy",
+    "ui/legacy/components/source_frame:legacy",
     "web_audio:legacy",
     "workspace_diff:legacy",
   ]

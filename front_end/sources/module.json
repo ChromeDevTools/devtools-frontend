@@ -2,7 +2,7 @@
   "dependencies": [
     "components",
     "search",
-    "source_frame",
+    "ui/legacy/components/source_frame",
     "snippets",
     "models/extensions",
     "models/persistence",

@@ -38,9 +38,9 @@ import * as Persistence from '../models/persistence/persistence.js';  // eslint-
 import * as TextUtils from '../models/text_utils/text_utils.js';
 import * as Workspace from '../models/workspace/workspace.js';
 import * as ConsoleCounters from '../panels/console_counters/console_counters.js';
-import * as SourceFrame from '../source_frame/source_frame.js';
 import * as TextEditor from '../text_editor/text_editor.js';  // eslint-disable-line no-unused-vars
 import * as IconButton from '../ui/components/icon_button/icon_button.js';
+import * as SourceFrame from '../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../ui/legacy/legacy.js';
 
 import {CoveragePlugin} from './CoveragePlugin.js';
@@ -745,7 +745,8 @@ export class RowMessageBucket {
   _messageDescription(levels: Set<Workspace.UISourceCode.Message.Level>): Element {
     this._messagesDescriptionElement.removeChildren();
     UI.Utils.appendStyle(
-        this._messagesDescriptionElement, 'source_frame/messagesPopover.css', {enableLegacyPatching: false});
+        this._messagesDescriptionElement, 'ui/legacy/components/source_frame/messagesPopover.css',
+        {enableLegacyPatching: false});
     for (const message of this._messages.filter(m => levels.has(m.getMessage().level()))) {
       this._messagesDescriptionElement.append(message.element);
     }

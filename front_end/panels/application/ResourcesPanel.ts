@@ -6,7 +6,7 @@
 
 import * as Common from '../../core/common/common.js';  // eslint-disable-line no-unused-vars
 import * as SDK from '../../core/sdk/sdk.js';
-import * as SourceFrame from '../../source_frame/source_frame.js';
+import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import {ApplicationPanelSidebar, CookieTreeElement, StorageCategoryView} from './ApplicationPanelSidebar.js';  // eslint-disable-line no-unused-vars

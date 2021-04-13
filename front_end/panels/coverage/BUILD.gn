@@ -23,9 +23,9 @@ devtools_module("coverage") {
     "../../models/bindings:bundle",
     "../../models/text_utils:bundle",
     "../../models/workspace:bundle",
-    "../../source_frame:bundle",
     "../../ui/legacy:bundle",
     "../../ui/legacy/components/data_grid:bundle",
+    "../../ui/legacy/components/source_frame:bundle",
   ]
 }
 

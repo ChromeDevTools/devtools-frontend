@@ -4,10 +4,10 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as i18n from '../core/i18n/i18n.js';
-import * as Platform from '../core/platform/platform.js';
-import * as TextUtils from '../models/text_utils/text_utils.js';
-import * as UI from '../ui/legacy/legacy.js';
+import * as i18n from '../../../../core/i18n/i18n.js';
+import * as Platform from '../../../../core/platform/platform.js';
+import * as TextUtils from '../../../../models/text_utils/text_utils.js';
+import * as UI from '../../legacy.js';
 
 const UIStrings = {
   /**
@@ -15,7 +15,7 @@ const UIStrings = {
   */
   find: 'Find',
 };
-const str_ = i18n.i18n.registerUIStrings('source_frame/XMLView.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/source_frame/XMLView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class XMLView extends UI.Widget.Widget implements UI.SearchableView.Searchable {
@@ -27,10 +27,11 @@ export class XMLView extends UI.Widget.Widget implements UI.SearchableView.Searc
 
   constructor(parsedXML: Document) {
     super(true);
-    this.registerRequiredCSS('source_frame/xmlView.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('ui/legacy/components/source_frame/xmlView.css', {enableLegacyPatching: false});
     this.contentElement.classList.add('shadow-xml-view', 'source-code');
     this._treeOutline = new UI.TreeOutline.TreeOutlineInShadow();
-    this._treeOutline.registerRequiredCSS('source_frame/xmlTree.css', {enableLegacyPatching: true});
+    this._treeOutline.registerRequiredCSS(
+        'ui/legacy/components/source_frame/xmlTree.css', {enableLegacyPatching: true});
     this.contentElement.appendChild(this._treeOutline.element);
     this._currentSearchFocusIndex = 0;
     this._currentSearchTreeElements = [];

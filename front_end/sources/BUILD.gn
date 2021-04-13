@@ -68,10 +68,10 @@ devtools_module("sources") {
     "../recorder:bundle",
     "../search:bundle",
     "../snippets:bundle",
-    "../source_frame:bundle",
     "../text_editor:bundle",
     "../ui/legacy:bundle",
     "../ui/legacy/components/object_ui:bundle",
+    "../ui/legacy/components/source_frame:bundle",
     "../workspace_diff:bundle",
   ]
 }

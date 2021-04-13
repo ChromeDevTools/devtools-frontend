@@ -5,7 +5,7 @@
 import '../test_runner/test_runner.js';
 import '../../sources/sources-legacy.js';
 import '../../models/workspace/workspace-legacy.js';
-import '../../source_frame/source_frame-legacy.js';
+import '../../ui/legacy/components/source_frame/source_frame-legacy.js';
 import '../../models/text_utils/text_utils-legacy.js';
 import '../../ui/legacy/components/object_ui/object_ui-legacy.js';
 import '../../text_editor/text_editor-legacy.js';

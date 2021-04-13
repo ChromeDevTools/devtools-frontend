@@ -4,10 +4,10 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../core/common/common.js';
-import * as TextUtils from '../models/text_utils/text_utils.js';
-import * as TextEditor from '../text_editor/text_editor.js';
-import * as UI from '../ui/legacy/legacy.js';
+import * as Common from '../../../../core/common/common.js';
+import * as TextUtils from '../../../../models/text_utils/text_utils.js';
+import * as TextEditor from '../../../../text_editor/text_editor.js';
+import * as UI from '../../legacy.js';
 
 const whitespaceStyleInjectedSet = new WeakSet<Document>();
 

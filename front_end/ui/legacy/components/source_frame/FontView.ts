@@ -32,10 +32,10 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as i18n from '../core/i18n/i18n.js';
-import * as Platform from '../core/platform/platform.js';
-import * as TextUtils from '../models/text_utils/text_utils.js';
-import * as UI from '../ui/legacy/legacy.js';
+import * as i18n from '../../../../core/i18n/i18n.js';
+import * as Platform from '../../../../core/platform/platform.js';
+import * as TextUtils from '../../../../models/text_utils/text_utils.js';
+import * as UI from '../../legacy.js';
 
 const UIStrings = {
   /**
@@ -48,7 +48,7 @@ const UIStrings = {
   */
   previewOfFontFromS: 'Preview of font from {PH1}',
 };
-const str_ = i18n.i18n.registerUIStrings('source_frame/FontView.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/source_frame/FontView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class FontView extends UI.View.SimpleView {
   _url: string;
@@ -61,7 +61,7 @@ export class FontView extends UI.View.SimpleView {
   _inResize!: boolean|null;
   constructor(mimeType: string, contentProvider: TextUtils.ContentProvider.ContentProvider) {
     super(i18nString(UIStrings.font));
-    this.registerRequiredCSS('source_frame/fontView.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('ui/legacy/components/source_frame/fontView.css', {enableLegacyPatching: false});
     this.element.classList.add('font-view');
     this._url = contentProvider.contentURL();
     UI.ARIAUtils.setAccessibleName(this.element, i18nString(UIStrings.previewOfFontFromS, {PH1: this._url}));

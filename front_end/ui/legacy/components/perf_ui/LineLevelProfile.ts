@@ -9,7 +9,7 @@ import * as Platform from '../../../../core/platform/platform.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
 import * as Bindings from '../../../../models/bindings/bindings.js';
 import * as Workspace from '../../../../models/workspace/workspace.js';   // eslint-disable-line no-unused-vars
-import * as SourceFrame from '../../../../source_frame/source_frame.js';  // eslint-disable-line no-unused-vars
+import * as SourceFrame from '../source_frame/source_frame.js';           // eslint-disable-line no-unused-vars
 
 const UIStrings = {
   /**

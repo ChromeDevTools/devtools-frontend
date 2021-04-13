@@ -30,13 +30,13 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../core/common/common.js';
-import * as i18n from '../core/i18n/i18n.js';
-import * as Platform from '../core/platform/platform.js';
-import * as Formatter from '../formatter/formatter.js';
-import * as TextUtils from '../models/text_utils/text_utils.js';
-import * as Workspace from '../models/workspace/workspace.js';  // eslint-disable-line no-unused-vars
-import * as UI from '../ui/legacy/legacy.js';
+import * as Common from '../../../../core/common/common.js';
+import * as i18n from '../../../../core/i18n/i18n.js';
+import * as Platform from '../../../../core/platform/platform.js';
+import * as Formatter from '../../../../formatter/formatter.js';
+import * as TextUtils from '../../../../models/text_utils/text_utils.js';
+import * as Workspace from '../../../../models/workspace/workspace.js';  // eslint-disable-line no-unused-vars
+import * as UI from '../../legacy.js';
 
 import {Events, SourcesTextEditor, SourcesTextEditorDelegate} from './SourcesTextEditor.js';  // eslint-disable-line no-unused-vars
 
@@ -83,7 +83,7 @@ const UIStrings = {
   */
   dLinesDCharactersSelected: '{PH1} lines, {PH2} characters selected',
 };
-const str_ = i18n.i18n.registerUIStrings('source_frame/SourceFrame.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/source_frame/SourceFrame.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class SourceFrameImpl extends UI.View.SimpleView implements UI.SearchableView.Searchable,
@@ -357,7 +357,7 @@ export class SourceFrameImpl extends UI.View.SimpleView implements UI.Searchable
 
       if (!error && this._highlighterType === 'application/wasm') {
         const worker = Common.Worker.WorkerWrapper.fromURL(
-            new URL('../wasmparser_worker/wasmparser_worker-entrypoint.js', import.meta.url));
+            new URL('../../../../wasmparser_worker/wasmparser_worker-entrypoint.js', import.meta.url));
         const promise = new Promise<{
           source: string,
           offsets: number[],

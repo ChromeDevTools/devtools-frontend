@@ -3,7 +3,7 @@
     "components",
     "ui/legacy",
     "ui/legacy/components/data_grid",
-    "source_frame",
+    "ui/legacy/components/source_frame",
     "ui/legacy/components/perf_ui"
   ],
     "resources": [

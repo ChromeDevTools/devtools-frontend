@@ -32,13 +32,13 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../core/common/common.js';
-import * as Host from '../core/host/host.js';
-import * as i18n from '../core/i18n/i18n.js';
-import * as Platform from '../core/platform/platform.js';
-import * as TextUtils from '../models/text_utils/text_utils.js';
-import * as Workspace from '../models/workspace/workspace.js';
-import * as UI from '../ui/legacy/legacy.js';
+import * as Common from '../../../../core/common/common.js';
+import * as Host from '../../../../core/host/host.js';
+import * as i18n from '../../../../core/i18n/i18n.js';
+import * as Platform from '../../../../core/platform/platform.js';
+import * as TextUtils from '../../../../models/text_utils/text_utils.js';
+import * as Workspace from '../../../../models/workspace/workspace.js';
+import * as UI from '../../legacy.js';
 
 const UIStrings = {
   /**
@@ -81,7 +81,7 @@ const UIStrings = {
   */
   download: 'download',
 };
-const str_ = i18n.i18n.registerUIStrings('source_frame/ImageView.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/source_frame/ImageView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class ImageView extends UI.View.SimpleView {
   _url: string;
@@ -98,7 +98,7 @@ export class ImageView extends UI.View.SimpleView {
   _cachedContent?: string|null;
   constructor(mimeType: string, contentProvider: TextUtils.ContentProvider.ContentProvider) {
     super(i18nString(UIStrings.image));
-    this.registerRequiredCSS('source_frame/imageView.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('ui/legacy/components/source_frame/imageView.css', {enableLegacyPatching: false});
     this.element.tabIndex = -1;
     this.element.classList.add('image-view');
     this._url = contentProvider.contentURL();

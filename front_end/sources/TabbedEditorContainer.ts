@@ -38,7 +38,7 @@ import * as Persistence from '../models/persistence/persistence.js';
 import * as TextUtils from '../models/text_utils/text_utils.js';
 import * as Workspace from '../models/workspace/workspace.js';
 import * as Snippets from '../snippets/snippets.js';
-import * as SourceFrame from '../source_frame/source_frame.js';
+import * as SourceFrame from '../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../ui/legacy/legacy.js';
 
 import {SourcesView} from './SourcesView.js';

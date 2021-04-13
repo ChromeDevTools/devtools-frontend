@@ -9,7 +9,7 @@ import * as SDK from '../core/sdk/sdk.js';
 import * as Formatter from '../formatter/formatter.js';
 import * as Workspace from '../models/workspace/workspace.js';  // eslint-disable-line no-unused-vars
 import * as Coverage from '../panels/coverage/coverage.js';
-import * as SourceFrame from '../source_frame/source_frame.js';  // eslint-disable-line no-unused-vars
+import * as SourceFrame from '../ui/legacy/components/source_frame/source_frame.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../ui/legacy/legacy.js';
 
 import {Plugin} from './Plugin.js';

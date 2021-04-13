@@ -33,9 +33,9 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as i18n from '../core/i18n/i18n.js';
-import * as TextUtils from '../models/text_utils/text_utils.js';  // eslint-disable-line no-unused-vars
-import * as UI from '../ui/legacy/legacy.js';
+import * as i18n from '../../../../core/i18n/i18n.js';
+import * as TextUtils from '../../../../models/text_utils/text_utils.js';  // eslint-disable-line no-unused-vars
+import * as UI from '../../legacy.js';
 
 import {SourceFrameImpl} from './SourceFrame.js';
 
@@ -45,7 +45,7 @@ const UIStrings = {
   */
   find: 'Find',
 };
-const str_ = i18n.i18n.registerUIStrings('source_frame/ResourceSourceFrame.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/source_frame/ResourceSourceFrame.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class ResourceSourceFrame extends SourceFrameImpl {
@@ -87,7 +87,7 @@ export class SearchableContainer extends UI.Widget.VBox {
 
   constructor(resource: TextUtils.ContentProvider.ContentProvider, highlighterType: string, autoPrettyPrint?: boolean) {
     super(true);
-    this.registerRequiredCSS('source_frame/resourceSourceFrame.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('ui/legacy/components/source_frame/resourceSourceFrame.css', {enableLegacyPatching: true});
     const sourceFrame = new ResourceSourceFrame(resource, autoPrettyPrint);
     this._sourceFrame = sourceFrame;
     sourceFrame.setHighlighterType(highlighterType);

@@ -30,11 +30,11 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as i18n from '../core/i18n/i18n.js';
-import * as Platform from '../core/platform/platform.js';
-import * as SDK from '../core/sdk/sdk.js';
-import * as ObjectUI from '../ui/legacy/components/object_ui/object_ui.js';
-import * as UI from '../ui/legacy/legacy.js';
+import * as i18n from '../../../../core/i18n/i18n.js';
+import * as Platform from '../../../../core/platform/platform.js';
+import * as SDK from '../../../../core/sdk/sdk.js';
+import * as UI from '../../legacy.js';
+import * as ObjectUI from '../object_ui/object_ui.js';
 
 const UIStrings = {
   /**
@@ -42,7 +42,7 @@ const UIStrings = {
   */
   find: 'Find',
 };
-const str_ = i18n.i18n.registerUIStrings('source_frame/JSONView.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/source_frame/JSONView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class JSONView extends UI.Widget.VBox implements UI.SearchableView.Searchable {
   _initialized: boolean;
@@ -56,7 +56,7 @@ export class JSONView extends UI.Widget.VBox implements UI.SearchableView.Search
   constructor(parsedJSON: ParsedJSON, startCollapsed?: boolean) {
     super();
     this._initialized = false;
-    this.registerRequiredCSS('source_frame/jsonView.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('ui/legacy/components/source_frame/jsonView.css', {enableLegacyPatching: false});
     this._parsedJSON = parsedJSON;
     this._startCollapsed = Boolean(startCollapsed);
     this.element.classList.add('json-view');

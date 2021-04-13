@@ -5,8 +5,8 @@
 /* eslint-disable rulesdir/no_underscored_properties */
 
 import * as i18n from '../../core/i18n/i18n.js';
-import * as SourceFrame from '../../source_frame/source_frame.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
+import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import type {PlayerEvent} from './MediaModel.js';

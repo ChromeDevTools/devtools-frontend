@@ -2,15 +2,16 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as i18n from '../../core/i18n/i18n.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import {DeviceModeModel, MaxDeviceNameLength, UA} from './DeviceModeModel.js';
-import {Capability, EmulatedDevice, EmulatedDevicesList, Events, Horizontal, Vertical,} from './EmulatedDevices.js';
+import {Capability, EmulatedDevice, EmulatedDevicesList, Events, Horizontal, Vertical} from './EmulatedDevices.js';
 import {parseBrandsList, serializeBrandsList, validateAsStructuredHeadersString} from './UserAgentMetadata.js';
 
-/** @type {!DevicesSettingsTab} */
-let devicesSettingsTabInstance;
+let devicesSettingsTabInstance: DevicesSettingsTab;
 
 const UIStrings = {
   /**
@@ -108,14 +109,18 @@ const UIStrings = {
   */
   brandsListMust: 'Brands list must consist of strings, each with a v parameter with a string value.',
 };
-const str_ = i18n.i18n.registerUIStrings('panels/emulation/DevicesSettingsTab.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/emulation/DevicesSettingsTab.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-/**
- * @implements {UI.ListWidget.Delegate<!EmulatedDevice>}
- */
-export class DevicesSettingsTab extends UI.Widget.VBox {
-  /** @private */
-  constructor() {
+
+export class DevicesSettingsTab extends UI.Widget.VBox implements UI.ListWidget.Delegate<EmulatedDevice> {
+  containerElement: HTMLElement;
+  _addCustomButton: HTMLButtonElement;
+  _list: UI.ListWidget.ListWidget<EmulatedDevice>;
+  _muteUpdate: boolean;
+  _emulatedDevicesList: EmulatedDevicesList;
+  _editor?: UI.ListWidget.Editor<EmulatedDevice>;
+
+  private constructor() {
     super();
     this.element.classList.add('settings-tab-container');
     this.element.classList.add('devices-settings-tab');
@@ -145,22 +150,19 @@ export class DevicesSettingsTab extends UI.Widget.VBox {
     this.setDefaultFocusedElement(this._addCustomButton);
   }
 
-  static instance() {
+  static instance(): DevicesSettingsTab {
     if (!devicesSettingsTabInstance) {
       devicesSettingsTabInstance = new DevicesSettingsTab();
     }
     return devicesSettingsTabInstance;
   }
 
-  /**
-   * @override
-   */
-  wasShown() {
+  wasShown(): void {
     super.wasShown();
     this._devicesUpdated();
   }
 
-  _devicesUpdated() {
+  _devicesUpdated(): void {
     if (this._muteUpdate) {
       return;
     }
@@ -181,10 +183,7 @@ export class DevicesSettingsTab extends UI.Widget.VBox {
     }
   }
 
-  /**
-   * @param {boolean} custom
-   */
-  _muteAndSaveDeviceList(custom) {
+  _muteAndSaveDeviceList(custom: boolean): void {
     this._muteUpdate = true;
     if (custom) {
       this._emulatedDevicesList.saveCustomDevices();
@@ -194,7 +193,7 @@ export class DevicesSettingsTab extends UI.Widget.VBox {
     this._muteUpdate = false;
   }
 
-  _addCustomDevice() {
+  _addCustomDevice(): void {
     const device = new EmulatedDevice();
     device.deviceScaleFactor = 0;
     device.horizontal.width = 700;
@@ -204,24 +203,14 @@ export class DevicesSettingsTab extends UI.Widget.VBox {
     this._list.addNewItem(this._emulatedDevicesList.custom().length, device);
   }
 
-  /**
-   * @param {number} value
-   * @return {string}
-   */
-  _toNumericInputValue(value) {
+  _toNumericInputValue(value: number): string {
     return value ? String(value) : '';
   }
 
-  /**
-   * @override
-   * @param {!EmulatedDevice} device
-   * @param {boolean} editable
-   * @return {!Element}
-   */
-  renderItem(device, editable) {
+  renderItem(device: EmulatedDevice, editable: boolean): Element {
     const label = document.createElement('label');
     label.classList.add('devices-list-item');
-    const checkbox = /** @type {!HTMLInputElement}*/ (label.createChild('input', 'devices-list-checkbox'));
+    const checkbox = (label.createChild('input', 'devices-list-checkbox') as HTMLInputElement);
     checkbox.type = 'checkbox';
     checkbox.checked = device.show();
     checkbox.addEventListener('click', onItemClicked.bind(this), false);
@@ -231,11 +220,7 @@ export class DevicesSettingsTab extends UI.Widget.VBox {
     label.appendChild(span);
     return label;
 
-    /**
-     * @param {!Event} event
-     * @this {DevicesSettingsTab}
-     */
-    function onItemClicked(event) {
+    function onItemClicked(this: DevicesSettingsTab, event: Event): void {
       const show = checkbox.checked;
       device.setShow(show);
       this._muteAndSaveDeviceList(editable);
@@ -243,22 +228,11 @@ export class DevicesSettingsTab extends UI.Widget.VBox {
     }
   }
 
-  /**
-   * @override
-   * @param {*} item
-   * @param {number} index
-   */
-  removeItemRequested(item, index) {
-    this._emulatedDevicesList.removeCustomDevice(/** @type {!EmulatedDevice} */ (item));
+  removeItemRequested(item: EmulatedDevice): void {
+    this._emulatedDevicesList.removeCustomDevice(item);
   }
 
-  /**
-   * @override
-   * @param {!EmulatedDevice} device
-   * @param {!UI.ListWidget.Editor<!EmulatedDevice>} editor
-   * @param {boolean} isNew
-   */
-  commitEdit(device, editor, isNew) {
+  commitEdit(device: EmulatedDevice, editor: UI.ListWidget.Editor<EmulatedDevice>, isNew: boolean): void {
     device.title = editor.control('title').value.trim();
     device.vertical.width = editor.control('width').value ? parseInt(editor.control('width').value, 10) : 0;
     device.vertical.height = editor.control('height').value ? parseInt(editor.control('height').value, 10) : 0;
@@ -285,7 +259,7 @@ export class DevicesSettingsTab extends UI.Widget.VBox {
       platformVersion: editor.control('platform-version').value.trim(),
       architecture: editor.control('arch').value.trim(),
       model: editor.control('model').value.trim(),
-      mobile: (uaType === UA.Mobile || uaType === UA.MobileNoTouch)
+      mobile: (uaType === UA.Mobile || uaType === UA.MobileNoTouch),
     };
     if (isNew) {
       this._emulatedDevicesList.addCustomDevice(device);
@@ -296,12 +270,7 @@ export class DevicesSettingsTab extends UI.Widget.VBox {
     this._addCustomButton.focus();
   }
 
-  /**
-   * @override
-   * @param {!EmulatedDevice} device
-   * @return {!UI.ListWidget.Editor<!EmulatedDevice>}
-   */
-  beginEdit(device) {
+  beginEdit(device: EmulatedDevice): UI.ListWidget.Editor<EmulatedDevice> {
     const editor = this._createEditor();
     editor.control('title').value = device.title;
     editor.control('width').value = this._toNumericInputValue(device.vertical.width);
@@ -326,15 +295,12 @@ export class DevicesSettingsTab extends UI.Widget.VBox {
     return editor;
   }
 
-  /**
-   * @return {!UI.ListWidget.Editor<!EmulatedDevice>}
-   */
-  _createEditor() {
+  _createEditor(): UI.ListWidget.Editor<EmulatedDevice> {
     if (this._editor) {
       return this._editor;
     }
 
-    const editor = new UI.ListWidget.Editor();
+    const editor = new UI.ListWidget.Editor<EmulatedDevice>();
     this._editor = editor;
     const content = editor.contentElement();
 
@@ -390,10 +356,7 @@ export class DevicesSettingsTab extends UI.Widget.VBox {
     treeRoot.select(true, false);
     content.appendChild(tree.element);
 
-    /**
-     * @param {!HTMLInputElement|!HTMLSelectElement} input
-     */
-    function addToTree(input) {
+    function addToTree(input: HTMLInputElement|HTMLSelectElement): void {
       const treeNode = new UI.TreeOutline.TreeElement(input, false);
       // The inputs themselves are selectable, no need for the tree nodes to be.
       treeNode.selectable = false;
@@ -423,23 +386,13 @@ export class DevicesSettingsTab extends UI.Widget.VBox {
 
     return editor;
 
-    /**
-     * @param {*} item
-     * @param {number} index
-     * @param {!HTMLInputElement|!HTMLSelectElement} input
-     * @return {!UI.ListWidget.ValidatorResult}
-     */
-    function chStringValidator(item, index, input) {
+    function chStringValidator(
+        item: EmulatedDevice, index: number, input: HTMLInputElement|HTMLSelectElement): UI.ListWidget.ValidatorResult {
       return validateAsStructuredHeadersString(input.value, i18nString(UIStrings.notRepresentable));
     }
 
-    /**
-     * @param {*} item
-     * @param {number} index
-     * @param {!HTMLInputElement|!HTMLSelectElement} input
-     * @return {!UI.ListWidget.ValidatorResult}
-     */
-    function brandListValidator(item, index, input) {
+    function brandListValidator(
+        item: EmulatedDevice, index: number, input: HTMLInputElement|HTMLSelectElement): UI.ListWidget.ValidatorResult {
       const syntaxError = i18nString(UIStrings.brandsList);
       const structError = i18nString(UIStrings.brandsListMust);
       const errorOrResult = parseBrandsList(input.value, syntaxError, structError);
@@ -449,13 +402,8 @@ export class DevicesSettingsTab extends UI.Widget.VBox {
       return {valid: true, errorMessage: undefined};
     }
 
-    /**
-     * @param {*} item
-     * @param {number} index
-     * @param {!HTMLInputElement|!HTMLSelectElement} input
-     * @return {!UI.ListWidget.ValidatorResult}
-     */
-    function titleValidator(item, index, input) {
+    function titleValidator(
+        item: EmulatedDevice, index: number, input: HTMLInputElement|HTMLSelectElement): UI.ListWidget.ValidatorResult {
       let valid = false;
       let errorMessage;
 
@@ -471,33 +419,18 @@ export class DevicesSettingsTab extends UI.Widget.VBox {
       return {valid, errorMessage};
     }
 
-    /**
-     * @param {*} item
-     * @param {number} index
-     * @param {!HTMLInputElement|!HTMLSelectElement} input
-     * @return {!UI.ListWidget.ValidatorResult}
-     */
-    function widthValidator(item, index, input) {
+    function widthValidator(
+        item: EmulatedDevice, index: number, input: HTMLInputElement|HTMLSelectElement): UI.ListWidget.ValidatorResult {
       return DeviceModeModel.widthValidator(input.value);
     }
 
-    /**
-     * @param {*} item
-     * @param {number} index
-     * @param {!HTMLInputElement|!HTMLSelectElement} input
-     * @return {!UI.ListWidget.ValidatorResult}
-     */
-    function heightValidator(item, index, input) {
+    function heightValidator(
+        item: EmulatedDevice, index: number, input: HTMLInputElement|HTMLSelectElement): UI.ListWidget.ValidatorResult {
       return DeviceModeModel.heightValidator(input.value);
     }
 
-    /**
-     * @param {*} item
-     * @param {number} index
-     * @param {!HTMLInputElement|!HTMLSelectElement} input
-     * @return {!UI.ListWidget.ValidatorResult}
-     */
-    function scaleValidator(item, index, input) {
+    function scaleValidator(
+        item: EmulatedDevice, index: number, input: HTMLInputElement|HTMLSelectElement): UI.ListWidget.ValidatorResult {
       return DeviceModeModel.scaleValidator(input.value);
     }
   }

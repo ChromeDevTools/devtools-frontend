@@ -7,18 +7,18 @@ import("../../../scripts/build/ninja/devtools_module.gni")
 
 devtools_module("emulation") {
   sources = [
-    "AdvancedApp.js",
-    "DeviceModeModel.js",
-    "DeviceModeToolbar.js",
-    "DeviceModeView.js",
-    "DeviceModeWrapper.js",
-    "DevicesSettingsTab.js",
-    "EmulatedDevices.js",
-    "InspectedPagePlaceholder.js",
-    "LocationsSettingsTab.js",
-    "MediaQueryInspector.js",
-    "ModuleUIStrings.js",
-    "SensorsView.js",
+    "AdvancedApp.ts",
+    "DeviceModeModel.ts",
+    "DeviceModeToolbar.ts",
+    "DeviceModeView.ts",
+    "DeviceModeWrapper.ts",
+    "DevicesSettingsTab.ts",
+    "EmulatedDevices.ts",
+    "InspectedPagePlaceholder.ts",
+    "LocationsSettingsTab.ts",
+    "MediaQueryInspector.ts",
+    "ModuleUIStrings.ts",
+    "SensorsView.ts",
     "StructuredHeaders.ts",
     "UserAgentMetadata.ts",
   ]
@@ -57,7 +57,7 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_entrypoint("legacy") {
-  entrypoint = "emulation-legacy.js"
+  entrypoint = "emulation-legacy.ts"
 
   deps = [ ":bundle" ]
 }

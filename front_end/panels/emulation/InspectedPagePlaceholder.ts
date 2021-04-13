@@ -2,14 +2,14 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as UI from '../../ui/legacy/legacy.js';
 
-/**
- * @type {!InspectedPagePlaceholder}
- */
-let inspectedPagePlaceholderInstance;
+let inspectedPagePlaceholderInstance: InspectedPagePlaceholder;
 
 export class InspectedPagePlaceholder extends UI.Widget.Widget {
+  _updateId?: number;
   constructor() {
     super(true);
     this.registerRequiredCSS('panels/emulation/inspectedPagePlaceholder.css', {enableLegacyPatching: false});
@@ -17,7 +17,9 @@ export class InspectedPagePlaceholder extends UI.Widget.Widget {
     this.restoreMinimumSize();
   }
 
-  static instance(opts = {forceNew: null}) {
+  static instance(opts: {
+    forceNew: null,
+  } = {forceNew: null}): InspectedPagePlaceholder {
     const {forceNew} = opts;
     if (!inspectedPagePlaceholderInstance || forceNew) {
       inspectedPagePlaceholderInstance = new InspectedPagePlaceholder();
@@ -26,25 +28,27 @@ export class InspectedPagePlaceholder extends UI.Widget.Widget {
     return inspectedPagePlaceholderInstance;
   }
 
-  /**
-   * @override
-   */
-  onResize() {
+  onResize(): void {
     if (this._updateId) {
       this.element.window().cancelAnimationFrame(this._updateId);
     }
     this._updateId = this.element.window().requestAnimationFrame(this.update.bind(this, false));
   }
 
-  restoreMinimumSize() {
+  restoreMinimumSize(): void {
     this.setMinimumSize(150, 150);
   }
 
-  clearMinimumSize() {
+  clearMinimumSize(): void {
     this.setMinimumSize(1, 1);
   }
 
-  _dipPageRect() {
+  _dipPageRect(): {
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+  } {
     const zoomFactor = UI.ZoomManager.ZoomManager.instance().zoomFactor();
     const rect = this.element.getBoundingClientRect();
     const bodyRect = this.element.ownerDocument.body.getBoundingClientRect();
@@ -57,10 +61,7 @@ export class InspectedPagePlaceholder extends UI.Widget.Widget {
     return {x: left, y: top, width: right - left, height: bottom - top};
   }
 
-  /**
-   * @param {boolean=} force
-   */
-  update(force) {
+  update(force?: boolean): void {
     delete this._updateId;
     const rect = this._dipPageRect();
     const bounds = {
@@ -79,7 +80,6 @@ export class InspectedPagePlaceholder extends UI.Widget.Widget {
   }
 }
 
-/** @enum {symbol} */
-export const Events = {
-  Update: Symbol('Update')
-};
+export const enum Events {
+  Update = 'Update',
+}

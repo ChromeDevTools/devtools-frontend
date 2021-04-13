@@ -2,6 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+/* eslint-disable rulesdir/no_underscored_properties, @typescript-eslint/no-explicit-any */
+
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Root from '../../core/root/root.js';
@@ -24,58 +27,47 @@ const UIStrings = {
   */
   laptopWithMDPIScreen: 'Laptop with MDPI screen',
 };
-const str_ = i18n.i18n.registerUIStrings('panels/emulation/EmulatedDevices.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/emulation/EmulatedDevices.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 export class EmulatedDevice {
+  title: string;
+  type: string;
+  order!: number;
+  vertical: Orientation;
+  horizontal: Orientation;
+  deviceScaleFactor: number;
+  capabilities: string[];
+  userAgent: string;
+  userAgentMetadata: Protocol.Emulation.UserAgentMetadata|null;
+  modes: Mode[];
+  isDualScreen: boolean;
+  verticalSpanned: Orientation;
+  horizontalSpanned: Orientation;
+  _show: string;
+  _showByDefault: boolean;
+
   constructor() {
-    /** @type {string} */
     this.title = '';
-    /** @type {string} */
     this.type = Type.Unknown;
-    /** @type {number} */
-    this.order;
-    /** @type {!Orientation} */
     this.vertical = {width: 0, height: 0, outlineInsets: null, outlineImage: null, hinge: null};
-    /** @type {!Orientation} */
     this.horizontal = {width: 0, height: 0, outlineInsets: null, outlineImage: null, hinge: null};
-    /** @type {number} */
     this.deviceScaleFactor = 1;
-    /** @type {!Array.<string>} */
     this.capabilities = [Capability.Touch, Capability.Mobile];
-    /** @type {string} */
     this.userAgent = '';
-    /** @type {?Protocol.Emulation.UserAgentMetadata} */
     this.userAgentMetadata = null;
-    /** @type {!Array.<!Mode>} */
     this.modes = [];
 
-    /** @type {boolean} */
     this.isDualScreen = false;
-    /** @type {!Orientation} */
     this.verticalSpanned = {width: 0, height: 0, outlineInsets: null, outlineImage: null, hinge: null};
-    /** @type {!Orientation} */
     this.horizontalSpanned = {width: 0, height: 0, outlineInsets: null, outlineImage: null, hinge: null};
 
-    /** @type {string} */
     this._show = _Show.Default;
-    /** @type {boolean} */
     this._showByDefault = true;
   }
 
-  /**
-   * @param {*} json
-   * @return {?EmulatedDevice}
-   */
-  static fromJSONV1(json) {
+  static fromJSONV1(json: any): EmulatedDevice|null {
     try {
-      /**
-       * @param {*} object
-       * @param {string} key
-       * @param {string} type
-       * @param {*=} defaultValue
-       * @return {*}
-       */
-      function parseValue(object, key, type, defaultValue) {
+      function parseValue(object: any, key: string, type: string, defaultValue?: any): any {
         if (typeof object !== 'object' || object === null || !object.hasOwnProperty(key)) {
           if (typeof defaultValue !== 'undefined') {
             return defaultValue;
@@ -89,35 +81,22 @@ export class EmulatedDevice {
         return value;
       }
 
-      /**
-       * @param {*} object
-       * @param {string} key
-       * @return {number}
-       */
-      function parseIntValue(object, key) {
-        const value = /** @type {number} */ (parseValue(object, key, 'number'));
+      function parseIntValue(object: any, key: string): number {
+        const value = (parseValue(object, key, 'number') as number);
         if (value !== Math.abs(value)) {
           throw new Error('Emulated device value \'' + key + '\' must be integer');
         }
         return value;
       }
 
-      /**
-       * @param {*} json
-       * @return {!UI.Geometry.Insets}
-       */
-      function parseInsets(json) {
+      function parseInsets(json: any): UI.Geometry.Insets {
         return new UI.Geometry.Insets(
             parseIntValue(json, 'left'), parseIntValue(json, 'top'), parseIntValue(json, 'right'),
             parseIntValue(json, 'bottom'));
       }
 
-      /**
-       * @param {*} json
-       * @return {!SDK.OverlayModel.HighlightColor}
-       */
-      function parseRGBA(json) {
-        const result = {};
+      function parseRGBA(json: any): SDK.OverlayModel.HighlightColor {
+        const result = {} as SDK.OverlayModel.HighlightColor;
         result.r = parseIntValue(json, 'r');
         if (result.r < 0 || result.r > 255) {
           throw new Error('color has wrong r value: ' + result.r);
@@ -132,21 +111,16 @@ export class EmulatedDevice {
         if (result.b < 0 || result.b > 255) {
           throw new Error('color has wrong b value: ' + result.b);
         }
-
-        result.a = /** @type {number} */ (parseValue(json, 'a', 'number'));
+        result.a = (parseValue(json, 'a', 'number') as number);
         if (result.a < 0 || result.a > 1) {
           throw new Error('color has wrong a value: ' + result.a);
         }
 
-        return /** @type {!SDK.OverlayModel.HighlightColor} */ (result);
+        return result as SDK.OverlayModel.HighlightColor;
       }
 
-      /**
-       * @param {*} json
-       * @return {!SDK.OverlayModel.Hinge}
-       */
-      function parseHinge(json) {
-        const result = {};
+      function parseHinge(json: any): SDK.OverlayModel.Hinge {
+        const result = {} as SDK.OverlayModel.Hinge;
 
         result.width = parseIntValue(json, 'width');
         if (result.width < 0 || result.width > MaxDeviceSize) {
@@ -176,15 +150,11 @@ export class EmulatedDevice {
           result.outlineColor = parseRGBA(json['outlineColor']);
         }
 
-        return /** @type {!SDK.OverlayModel.Hinge} */ (result);
+        return result as SDK.OverlayModel.Hinge;
       }
 
-      /**
-       * @param {*} json
-       * @return {!Orientation}
-       */
-      function parseOrientation(json) {
-        const result = {};
+      function parseOrientation(json: any): Orientation {
+        const result = {} as Orientation;
 
         result.width = parseIntValue(json, 'width');
         if (result.width < 0 || result.width > MaxDeviceSize || result.width < MinDeviceSize) {
@@ -202,25 +172,24 @@ export class EmulatedDevice {
           if (result.outlineInsets.left < 0 || result.outlineInsets.top < 0) {
             throw new Error('Emulated device has wrong outline insets');
           }
-          result.outlineImage = /** @type {string} */ (parseValue(json['outline'], 'image', 'string'));
+          result.outlineImage = (parseValue(json['outline'], 'image', 'string') as string);
         }
 
         if (json['hinge']) {
           result.hinge = parseHinge(parseValue(json, 'hinge', 'object', undefined));
         }
 
-        return /** @type {!Orientation} */ (result);
+        return result as Orientation;
       }
 
       const result = new EmulatedDevice();
-      result.title = /** @type {string} */ (parseValue(json, 'title', 'string'));
-      result.type = /** @type {string} */ (parseValue(json, 'type', 'string'));
-      result.order = /** @type {number} */ (parseValue(json, 'order', 'number', 0));
-      const rawUserAgent = /** @type {string} */ (parseValue(json, 'user-agent', 'string'));
+      result.title = (parseValue(json, 'title', 'string') as string);
+      result.type = (parseValue(json, 'type', 'string') as string);
+      result.order = (parseValue(json, 'order', 'number', 0) as number);
+      const rawUserAgent = (parseValue(json, 'user-agent', 'string') as string);
       result.userAgent = SDK.NetworkManager.MultitargetNetworkManager.patchUserAgentWithChromeVersion(rawUserAgent);
 
-      result.userAgentMetadata =
-          /** @type {?Protocol.Emulation.UserAgentMetadata} */ parseValue(json, 'user-agent-metadata', 'object', null);
+      result.userAgentMetadata = parseValue(json, 'user-agent-metadata', 'object', null);
 
       const capabilities = parseValue(json, 'capabilities', 'object', []);
       if (!Array.isArray(capabilities)) {
@@ -233,15 +202,14 @@ export class EmulatedDevice {
         }
         result.capabilities.push(capabilities[i]);
       }
-
-      result.deviceScaleFactor = /** @type {number} */ (parseValue(json['screen'], 'device-pixel-ratio', 'number'));
+      result.deviceScaleFactor = (parseValue(json['screen'], 'device-pixel-ratio', 'number') as number);
       if (result.deviceScaleFactor < 0 || result.deviceScaleFactor > 100) {
         throw new Error('Emulated device has wrong deviceScaleFactor: ' + result.deviceScaleFactor);
       }
 
       result.vertical = parseOrientation(parseValue(json['screen'], 'vertical', 'object'));
       result.horizontal = parseOrientation(parseValue(json['screen'], 'horizontal', 'object'));
-      result.isDualScreen = /** @type {boolean} */ (parseValue(json, 'dual-screen', 'boolean', false));
+      result.isDualScreen = (parseValue(json, 'dual-screen', 'boolean', false) as boolean);
 
       if (result.isDualScreen) {
         result.verticalSpanned = parseOrientation(parseValue(json['screen'], 'vertical-spanned', 'object', null));
@@ -260,9 +228,9 @@ export class EmulatedDevice {
       }
       result.modes = [];
       for (let i = 0; i < modes.length; ++i) {
-        const mode = {};
-        mode.title = /** @type {string} */ (parseValue(modes[i], 'title', 'string'));
-        mode.orientation = /** @type {string} */ (parseValue(modes[i], 'orientation', 'string'));
+        const mode = {} as Mode;
+        mode.title = (parseValue(modes[i], 'title', 'string') as string);
+        mode.orientation = (parseValue(modes[i], 'orientation', 'string') as string);
         if (mode.orientation !== Vertical && mode.orientation !== Horizontal && mode.orientation !== VerticalSpanned &&
             mode.orientation !== HorizontalSpanned) {
           throw new Error('Emulated device mode has wrong orientation \'' + mode.orientation + '\'');
@@ -274,14 +242,11 @@ export class EmulatedDevice {
             mode.insets.left + mode.insets.right > orientation.width) {
           throw new Error('Emulated device mode \'' + mode.title + '\'has wrong mode insets');
         }
-
-        mode.image = /** @type {string} */ (parseValue(modes[i], 'image', 'string', null));
+        mode.image = (parseValue(modes[i], 'image', 'string', null) as string);
         result.modes.push(mode);
       }
-
-      result._showByDefault = /** @type {boolean} */ (parseValue(json, 'show-by-default', 'boolean', undefined));
-      result._show =
-          /** @type {string} */ (parseValue(json, 'show', 'string', _Show.Default));
+      result._showByDefault = (parseValue(json, 'show-by-default', 'boolean', undefined) as boolean);
+      result._show = (parseValue(json, 'show', 'string', _Show.Default) as string);
 
       return result;
     } catch (e) {
@@ -289,12 +254,7 @@ export class EmulatedDevice {
     }
   }
 
-  /**
-   * @param {!EmulatedDevice} device1
-   * @param {!EmulatedDevice} device2
-   * @return {number}
-   */
-  static deviceComparator(device1, device2) {
+  static deviceComparator(device1: EmulatedDevice, device2: EmulatedDevice): number {
     const order1 = device1.order || 0;
     const order2 = device2.order || 0;
     if (order1 > order2) {
@@ -306,12 +266,7 @@ export class EmulatedDevice {
     return device1.title < device2.title ? -1 : (device1.title > device2.title ? 1 : 0);
   }
 
-
-  /**
-   * @param {string} orientation
-   * @return {!Array.<!Mode>}
-   */
-  modesForOrientation(orientation) {
+  modesForOrientation(orientation: string): Mode[] {
     const result = [];
     for (let index = 0; index < this.modes.length; index++) {
       if (this.modes[index].orientation === orientation) {
@@ -321,11 +276,7 @@ export class EmulatedDevice {
     return result;
   }
 
-  /**
-   * @param {!Mode} mode
-   * @return {(!Mode|undefined)}
-   */
-  getSpanPartner(mode) {
+  getSpanPartner(mode: Mode): Mode|undefined {
     switch (mode.orientation) {
       case Vertical:
         return this.modesForOrientation(VerticalSpanned)[0];
@@ -338,11 +289,7 @@ export class EmulatedDevice {
     }
   }
 
-  /**
-   * @param {!Mode} mode
-   * @return {?Mode}
-   */
-  getRotationPartner(mode) {
+  getRotationPartner(mode: Mode): Mode|null {
     switch (mode.orientation) {
       case HorizontalSpanned:
         return this.modesForOrientation(VerticalSpanned)[0];
@@ -355,23 +302,25 @@ export class EmulatedDevice {
     }
   }
 
-  /**
-   * @return {*}
-   */
-  _toJSON() {
-    const json = {};
+  _toJSON(): any {
+    const json = {} as any;
     json['title'] = this.title;
     json['type'] = this.type;
     json['user-agent'] = this.userAgent;
     json['capabilities'] = this.capabilities;
 
-    /** @type {{'device-pixel-ratio': number, vertical: object, horizontal: object, 'vertical-spanned': (object|undefined), 'horizontal-spanned': (object|undefined)}} */
     json['screen'] = {
       'device-pixel-ratio': this.deviceScaleFactor,
       vertical: this._orientationToJSON(this.vertical),
       horizontal: this._orientationToJSON(this.horizontal),
       'vertical-spanned': undefined,
       'horizontal-spanned': undefined,
+    } as {
+      'device-pixel-ratio': number,
+      vertical: object,
+      horizontal: object,
+      'vertical-spanned': (object | undefined),
+      'horizontal-spanned': (object | undefined),
     };
 
     if (this.isDualScreen) {
@@ -379,12 +328,9 @@ export class EmulatedDevice {
       json['screen']['horizontal-spanned'] = this._orientationToJSON(this.horizontalSpanned);
     }
 
-
-    /** @type {!Array.<!JSONMode>} */
-    json['modes'] = [];
+    json['modes'] = [] as JSONMode[];
     for (let i = 0; i < this.modes.length; ++i) {
-      /** @type {!JSONMode} */
-      const mode = {
+      const mode: JSONMode = {
         'title': this.modes[i].title,
         'orientation': this.modes[i].orientation,
         'insets': {
@@ -409,16 +355,11 @@ export class EmulatedDevice {
     return json;
   }
 
-  /**
-   * @param {!Orientation} orientation
-   * @return {*}
-   */
-  _orientationToJSON(orientation) {
-    const json = {};
+  _orientationToJSON(orientation: Orientation): any {
+    const json = {} as any;
     json['width'] = orientation.width;
     json['height'] = orientation.height;
     if (orientation.outlineInsets) {
-      /** @type {!{image: ?string, insets: {left: number, right: number, top: number, bottom: number}}} */
       json.outline = {
         insets: {
           'left': orientation.outlineInsets.left,
@@ -426,12 +367,10 @@ export class EmulatedDevice {
           'right': orientation.outlineInsets.right,
           'bottom': orientation.outlineInsets.bottom,
         },
-        image: orientation.outlineImage
-      };
+        image: orientation.outlineImage,
+      } as {image: string | null, insets: {left: number, right: number, top: number, bottom: number}};
     }
     if (orientation.hinge) {
-      /** @type {!{width: number, height: number, x: number, y: number,   contentColor: (!{r:number,g:number,b:number,a:number}|undefined),  outlineColor: (!{r:number,g:number,b:number,a:number}|undefined)
-       * }} */
       json.hinge = {
         'width': orientation.hinge.width,
         'height': orientation.hinge.height,
@@ -439,6 +378,13 @@ export class EmulatedDevice {
         'y': orientation.hinge.y,
         contentColor: undefined,
         outlineColor: undefined,
+      } as {
+        width: number,
+        height: number,
+        x: number,
+        y: number,
+        contentColor?: {r: number, g: number, b: number, a: number},
+        outlineColor?: {r: number, g: number, b: number, a: number},
       };
 
       if (orientation.hinge.contentColor) {
@@ -461,22 +407,14 @@ export class EmulatedDevice {
     return json;
   }
 
-  /**
-   * @param {!Mode} mode
-   * @return {string}
-   */
-  modeImage(mode) {
+  modeImage(mode: Mode): string {
     if (!mode.image) {
       return '';
     }
     return Root.Runtime.Runtime.instance().module('emulated_devices').substituteURL(mode.image);
   }
 
-  /**
-   * @param {!Mode} mode
-   * @return {string}
-   */
-  outlineImage(mode) {
+  outlineImage(mode: Mode): string {
     const orientation = this.orientationByName(mode.orientation);
     if (!orientation.outlineImage) {
       return '';
@@ -484,11 +422,7 @@ export class EmulatedDevice {
     return Root.Runtime.Runtime.instance().module('emulated_devices').substituteURL(orientation.outlineImage);
   }
 
-  /**
-   * @param {string} name
-   * @return {!Orientation}
-   */
-  orientationByName(name) {
+  orientationByName(name: string): Orientation {
     switch (name) {
       case VerticalSpanned:
         return this.verticalSpanned;
@@ -500,41 +434,26 @@ export class EmulatedDevice {
         return this.horizontal;
     }
   }
-  /**
-   * @return {boolean}
-   */
-  show() {
+  show(): boolean {
     if (this._show === _Show.Default) {
       return this._showByDefault;
     }
     return this._show === _Show.Always;
   }
 
-  /**
-   * @param {boolean} show
-   */
-  setShow(show) {
+  setShow(show: boolean): void {
     this._show = show ? _Show.Always : _Show.Never;
   }
 
-  /**
-   * @param {!EmulatedDevice} other
-   */
-  copyShowFrom(other) {
+  copyShowFrom(other: EmulatedDevice): void {
     this._show = other._show;
   }
 
-  /**
-   * @return {boolean}
-   */
-  touch() {
+  touch(): boolean {
     return this.capabilities.indexOf(Capability.Touch) !== -1;
   }
 
-  /**
-   * @return {boolean}
-   */
-  mobile() {
+  mobile(): boolean {
     return this.capabilities.indexOf(Capability.Mobile) !== -1;
   }
 }
@@ -549,56 +468,55 @@ export const Type = {
   Tablet: 'tablet',
   Notebook: 'notebook',
   Desktop: 'desktop',
-  Unknown: 'unknown'
+  Unknown: 'unknown',
 };
 
 export const Capability = {
   Touch: 'touch',
-  Mobile: 'mobile'
+  Mobile: 'mobile',
 };
 
+// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export const _Show = {
   Always: 'Always',
   Default: 'Default',
-  Never: 'Never'
+  Never: 'Never',
 };
 
-/** @type {!EmulatedDevicesList} */
-let _instance;
+// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+// eslint-disable-next-line @typescript-eslint/naming-convention
+let _instance: EmulatedDevicesList;
 
 export class EmulatedDevicesList extends Common.ObjectWrapper.ObjectWrapper {
+  _standardSetting: Common.Settings.Setting<any[]>;
+  _standard: Set<EmulatedDevice>;
+  _customSetting: Common.Settings.Setting<any[]>;
+  _custom: Set<EmulatedDevice>;
   constructor() {
     super();
 
-    /** @type {!Common.Settings.Setting<!Array<?>>} */
     this._standardSetting = Common.Settings.Settings.instance().createSetting('standardEmulatedDeviceList', []);
-    /** @type {!Set.<!EmulatedDevice>} */
     this._standard = new Set();
     this._listFromJSONV1(this._standardSetting.get(), this._standard);
     this._updateStandardDevices();
 
-    /** @type {!Common.Settings.Setting<!Array<?>>} */
     this._customSetting = Common.Settings.Settings.instance().createSetting('customEmulatedDeviceList', []);
-    /** @type {!Set.<!EmulatedDevice>} */
     this._custom = new Set();
     if (!this._listFromJSONV1(this._customSetting.get(), this._custom)) {
       this.saveCustomDevices();
     }
   }
 
-  /**
-   * @return {!EmulatedDevicesList}
-   */
-  static instance() {
+  static instance(): EmulatedDevicesList {
     if (!_instance) {
       _instance = new EmulatedDevicesList();
     }
     return _instance;
   }
 
-  _updateStandardDevices() {
-    /** @type {!Set<!EmulatedDevice>} */
-    const devices = new Set();
+  _updateStandardDevices(): void {
+    const devices = new Set<EmulatedDevice>();
     for (const extension of emulatedDevices) {
       const device = EmulatedDevice.fromJSONV1(extension);
       if (device) {
@@ -610,12 +528,7 @@ export class EmulatedDevicesList extends Common.ObjectWrapper.ObjectWrapper {
     this.saveStandardDevices();
   }
 
-  /**
-   * @param {!Array.<*>} jsonArray
-   * @param {!Set.<!EmulatedDevice>} result
-   * @return {boolean}
-   */
-  _listFromJSONV1(jsonArray, result) {
+  _listFromJSONV1(jsonArray: any[], result: Set<EmulatedDevice>): boolean {
     if (!Array.isArray(jsonArray)) {
       return false;
     }
@@ -637,64 +550,46 @@ export class EmulatedDevicesList extends Common.ObjectWrapper.ObjectWrapper {
     return success;
   }
 
-  /**
-   * @return {!Array.<!EmulatedDevice>}
-   */
-  standard() {
+  standard(): EmulatedDevice[] {
     return [...this._standard];
   }
 
-  /**
-   * @return {!Array.<!EmulatedDevice>}
-   */
-  custom() {
+  custom(): EmulatedDevice[] {
     return [...this._custom];
   }
 
-  revealCustomSetting() {
+  revealCustomSetting(): void {
     Common.Revealer.reveal(this._customSetting);
   }
 
-  /**
-   * @param {!EmulatedDevice} device
-   */
-  addCustomDevice(device) {
+  addCustomDevice(device: EmulatedDevice): void {
     this._custom.add(device);
     this.saveCustomDevices();
   }
 
-  /**
-   * @param {!EmulatedDevice} device
-   */
-  removeCustomDevice(device) {
+  removeCustomDevice(device: EmulatedDevice): void {
     this._custom.delete(device);
     this.saveCustomDevices();
   }
 
-  saveCustomDevices() {
-    /** @type {!Array<?>} */
-    const json = [];
+  saveCustomDevices(): void {
+    const json: any[] = [];
     this._custom.forEach(device => json.push(device._toJSON()));
 
     this._customSetting.set(json);
     this.dispatchEventToListeners(Events.CustomDevicesUpdated);
   }
 
-  saveStandardDevices() {
-    /** @type {!Array<?>} */
-    const json = [];
+  saveStandardDevices(): void {
+    const json: any[] = [];
     this._standard.forEach(device => json.push(device._toJSON()));
 
     this._standardSetting.set(json);
     this.dispatchEventToListeners(Events.StandardDevicesUpdated);
   }
 
-  /**
-   * @param {!Set.<!EmulatedDevice>} from
-   * @param {!Set.<!EmulatedDevice>} to
-   */
-  _copyShowValues(from, to) {
-    const fromDeviceById = new Map();
+  _copyShowValues(from: Set<EmulatedDevice>, to: Set<EmulatedDevice>): void {
+    const fromDeviceById = new Map<string, EmulatedDevice>();
     for (const device of from) {
       fromDeviceById.set(device.title, device);
     }
@@ -708,24 +603,35 @@ export class EmulatedDevicesList extends Common.ObjectWrapper.ObjectWrapper {
   }
 }
 
-/** @enum {symbol} */
-export const Events = {
-  CustomDevicesUpdated: Symbol('CustomDevicesUpdated'),
-  StandardDevicesUpdated: Symbol('StandardDevicesUpdated')
-};
+export const enum Events {
+  CustomDevicesUpdated = 'CustomDevicesUpdated',
+  StandardDevicesUpdated = 'StandardDevicesUpdated',
+}
 
-/** @typedef {!{title: string, orientation: string, insets: !UI.Geometry.Insets, image: ?string}} */
-// @ts-ignore typedef
-export let Mode;
-
-/** @typedef {!{width: number, height: number, outlineInsets: ?UI.Geometry.Insets, outlineImage: ?string, hinge: ?SDK.OverlayModel.Hinge}} */
-// @ts-ignore typedef
-export let Orientation;
-
-/** @typedef {!{title: string, orientation: string, image: (string|undefined), insets: {left: number, right: number, top: number, bottom: number}}} */
-// @ts-ignore typedef
-export let JSONMode;  // eslint-disable-line no-unused-vars
-
+export interface Mode {
+  title: string;
+  orientation: string;
+  insets: UI.Geometry.Insets;
+  image: string|null;
+}
+export interface Orientation {
+  width: number;
+  height: number;
+  outlineInsets: UI.Geometry.Insets|null;
+  outlineImage: string|null;
+  hinge: SDK.OverlayModel.Hinge|null;
+}
+export interface JSONMode {
+  title: string;
+  orientation: string;
+  image?: string;
+  insets: {
+    left: number,
+    right: number,
+    top: number,
+    bottom: number,
+  };
+}
 
 const emulatedDevices = [
   {
@@ -734,12 +640,12 @@ const emulatedDevices = [
     'screen': {
       'horizontal': {'width': 480, 'height': 320},
       'device-pixel-ratio': 2,
-      'vertical': {'width': 320, 'height': 480}
+      'vertical': {'width': 320, 'height': 480},
     },
     'capabilities': ['touch', 'mobile'],
     'user-agent':
         'Mozilla/5.0 (iPhone; CPU iPhone OS 7_1_2 like Mac OS X) AppleWebKit/537.51.2 (KHTML, like Gecko) Version/7.0 Mobile/11D257 Safari/9537.53',
-    'type': 'phone'
+    'type': 'phone',
   },
   {
     'order': 30,
@@ -749,25 +655,25 @@ const emulatedDevices = [
       'horizontal': {
         'outline': {
           'image': '@url(optimized/iPhone5-landscape.avif)',
-          'insets': {'left': 115, 'top': 25, 'right': 115, 'bottom': 28}
+          'insets': {'left': 115, 'top': 25, 'right': 115, 'bottom': 28},
         },
         'width': 568,
-        'height': 320
+        'height': 320,
       },
       'device-pixel-ratio': 2,
       'vertical': {
         'outline': {
           'image': '@url(optimized/iPhone5-portrait.avif)',
-          'insets': {'left': 29, 'top': 105, 'right': 25, 'bottom': 111}
+          'insets': {'left': 29, 'top': 105, 'right': 25, 'bottom': 111},
         },
         'width': 320,
-        'height': 568
-      }
+        'height': 568,
+      },
     },
     'capabilities': ['touch', 'mobile'],
     'user-agent':
         'Mozilla/5.0 (iPhone; CPU iPhone OS 10_3_1 like Mac OS X) AppleWebKit/603.1.30 (KHTML, like Gecko) Version/10.0 Mobile/14E304 Safari/602.1',
-    'type': 'phone'
+    'type': 'phone',
   },
   {
     'order': 31,
@@ -777,25 +683,25 @@ const emulatedDevices = [
       'horizontal': {
         'outline': {
           'image': '@url(optimized/iPhone6-landscape.avif)',
-          'insets': {'left': 106, 'top': 28, 'right': 106, 'bottom': 28}
+          'insets': {'left': 106, 'top': 28, 'right': 106, 'bottom': 28},
         },
         'width': 667,
-        'height': 375
+        'height': 375,
       },
       'device-pixel-ratio': 2,
       'vertical': {
         'outline': {
           'image': '@url(optimized/iPhone6-portrait.avif)',
-          'insets': {'left': 28, 'top': 105, 'right': 28, 'bottom': 105}
+          'insets': {'left': 28, 'top': 105, 'right': 28, 'bottom': 105},
         },
         'width': 375,
-        'height': 667
-      }
+        'height': 667,
+      },
     },
     'capabilities': ['touch', 'mobile'],
     'user-agent':
         'Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1',
-    'type': 'phone'
+    'type': 'phone',
   },
   {
     'order': 32,
@@ -805,25 +711,25 @@ const emulatedDevices = [
       'horizontal': {
         'outline': {
           'image': '@url(optimized/iPhone6Plus-landscape.avif)',
-          'insets': {'left': 109, 'top': 29, 'right': 109, 'bottom': 27}
+          'insets': {'left': 109, 'top': 29, 'right': 109, 'bottom': 27},
         },
         'width': 736,
-        'height': 414
+        'height': 414,
       },
       'device-pixel-ratio': 3,
       'vertical': {
         'outline': {
           'image': '@url(optimized/iPhone6Plus-portrait.avif)',
-          'insets': {'left': 26, 'top': 107, 'right': 30, 'bottom': 111}
+          'insets': {'left': 26, 'top': 107, 'right': 30, 'bottom': 111},
         },
         'width': 414,
-        'height': 736
-      }
+        'height': 736,
+      },
     },
     'capabilities': ['touch', 'mobile'],
     'user-agent':
         'Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1',
-    'type': 'phone'
+    'type': 'phone',
   },
   {
     'order': 33,
@@ -832,12 +738,12 @@ const emulatedDevices = [
     'screen': {
       'horizontal': {'width': 812, 'height': 375},
       'device-pixel-ratio': 3,
-      'vertical': {'width': 375, 'height': 812}
+      'vertical': {'width': 375, 'height': 812},
     },
     'capabilities': ['touch', 'mobile'],
     'user-agent':
         'Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1',
-    'type': 'phone'
+    'type': 'phone',
   },
   {
     'show-by-default': false,
@@ -845,12 +751,12 @@ const emulatedDevices = [
     'screen': {
       'horizontal': {'width': 640, 'height': 360},
       'device-pixel-ratio': 2,
-      'vertical': {'width': 360, 'height': 640}
+      'vertical': {'width': 360, 'height': 640},
     },
     'capabilities': ['touch', 'mobile'],
     'user-agent':
         'Mozilla/5.0 (BB10; Touch) AppleWebKit/537.10+ (KHTML, like Gecko) Version/10.0.9.2372 Mobile Safari/537.10+',
-    'type': 'phone'
+    'type': 'phone',
   },
   {
     'show-by-default': false,
@@ -858,14 +764,14 @@ const emulatedDevices = [
     'screen': {
       'horizontal': {'width': 640, 'height': 384},
       'device-pixel-ratio': 2,
-      'vertical': {'width': 384, 'height': 640}
+      'vertical': {'width': 384, 'height': 640},
     },
     'capabilities': ['touch', 'mobile'],
     'user-agent':
         'Mozilla/5.0 (Linux; Android 4.4.2; Nexus 4 Build/KOT49H) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36',
     'user-agent-metadata':
         {'platform': 'Android', 'platformVersion': '4.4.2', 'architecture': '', 'model': 'Nexus 4', 'mobile': true},
-    'type': 'phone'
+    'type': 'phone',
   },
   {
     'title': 'Nexus 5',
@@ -879,7 +785,7 @@ const emulatedDevices = [
     'screen': {
       'device-pixel-ratio': 3,
       'vertical': {'width': 360, 'height': 640},
-      'horizontal': {'width': 640, 'height': 360}
+      'horizontal': {'width': 640, 'height': 360},
     },
     'modes': [
       {
@@ -887,44 +793,44 @@ const emulatedDevices = [
         'orientation': 'vertical',
         'insets': {'left': 0, 'top': 25, 'right': 0, 'bottom': 48},
         'image':
-            '@url(optimized/google-nexus-5-vertical-default-1x.avif) 1x, @url(optimized/google-nexus-5-vertical-default-2x.avif) 2x'
+            '@url(optimized/google-nexus-5-vertical-default-1x.avif) 1x, @url(optimized/google-nexus-5-vertical-default-2x.avif) 2x',
       },
       {
         'title': 'navigation bar',
         'orientation': 'vertical',
         'insets': {'left': 0, 'top': 80, 'right': 0, 'bottom': 48},
         'image':
-            '@url(optimized/google-nexus-5-vertical-navigation-1x.avif) 1x, @url(optimized/google-nexus-5-vertical-navigation-2x.avif) 2x'
+            '@url(optimized/google-nexus-5-vertical-navigation-1x.avif) 1x, @url(optimized/google-nexus-5-vertical-navigation-2x.avif) 2x',
       },
       {
         'title': 'keyboard',
         'orientation': 'vertical',
         'insets': {'left': 0, 'top': 80, 'right': 0, 'bottom': 312},
         'image':
-            '@url(optimized/google-nexus-5-vertical-keyboard-1x.avif) 1x, @url(optimized/google-nexus-5-vertical-keyboard-2x.avif) 2x'
+            '@url(optimized/google-nexus-5-vertical-keyboard-1x.avif) 1x, @url(optimized/google-nexus-5-vertical-keyboard-2x.avif) 2x',
       },
       {
         'title': 'default',
         'orientation': 'horizontal',
         'insets': {'left': 0, 'top': 25, 'right': 42, 'bottom': 0},
         'image':
-            '@url(optimized/google-nexus-5-horizontal-default-1x.avif) 1x, @url(optimized/google-nexus-5-horizontal-default-2x.avif) 2x'
+            '@url(optimized/google-nexus-5-horizontal-default-1x.avif) 1x, @url(optimized/google-nexus-5-horizontal-default-2x.avif) 2x',
       },
       {
         'title': 'navigation bar',
         'orientation': 'horizontal',
         'insets': {'left': 0, 'top': 80, 'right': 42, 'bottom': 0},
         'image':
-            '@url(optimized/google-nexus-5-horizontal-navigation-1x.avif) 1x, @url(optimized/google-nexus-5-horizontal-navigation-2x.avif) 2x'
+            '@url(optimized/google-nexus-5-horizontal-navigation-1x.avif) 1x, @url(optimized/google-nexus-5-horizontal-navigation-2x.avif) 2x',
       },
       {
         'title': 'keyboard',
         'orientation': 'horizontal',
         'insets': {'left': 0, 'top': 80, 'right': 42, 'bottom': 202},
         'image':
-            '@url(optimized/google-nexus-5-horizontal-keyboard-1x.avif) 1x, @url(optimized/google-nexus-5-horizontal-keyboard-2x.avif) 2x'
-      }
-    ]
+            '@url(optimized/google-nexus-5-horizontal-keyboard-1x.avif) 1x, @url(optimized/google-nexus-5-horizontal-keyboard-2x.avif) 2x',
+      },
+    ],
   },
   {
     'title': 'Nexus 5X',
@@ -940,19 +846,19 @@ const emulatedDevices = [
       'vertical': {
         'outline': {
           'image': '@url(optimized/Nexus5X-portrait.avif)',
-          'insets': {'left': 18, 'top': 88, 'right': 22, 'bottom': 98}
+          'insets': {'left': 18, 'top': 88, 'right': 22, 'bottom': 98},
         },
         'width': 412,
-        'height': 732
+        'height': 732,
       },
       'horizontal': {
         'outline': {
           'image': '@url(optimized/Nexus5X-landscape.avif)',
-          'insets': {'left': 88, 'top': 21, 'right': 98, 'bottom': 19}
+          'insets': {'left': 88, 'top': 21, 'right': 98, 'bottom': 19},
         },
         'width': 732,
-        'height': 412
-      }
+        'height': 412,
+      },
     },
     'modes': [
       {
@@ -960,44 +866,44 @@ const emulatedDevices = [
         'orientation': 'vertical',
         'insets': {'left': 0, 'top': 24, 'right': 0, 'bottom': 48},
         'image':
-            '@url(optimized/google-nexus-5x-vertical-default-1x.avif) 1x, @url(optimized/google-nexus-5x-vertical-default-2x.avif) 2x'
+            '@url(optimized/google-nexus-5x-vertical-default-1x.avif) 1x, @url(optimized/google-nexus-5x-vertical-default-2x.avif) 2x',
       },
       {
         'title': 'navigation bar',
         'orientation': 'vertical',
         'insets': {'left': 0, 'top': 80, 'right': 0, 'bottom': 48},
         'image':
-            '@url(optimized/google-nexus-5x-vertical-navigation-1x.avif) 1x, @url(optimized/google-nexus-5x-vertical-navigation-2x.avif) 2x'
+            '@url(optimized/google-nexus-5x-vertical-navigation-1x.avif) 1x, @url(optimized/google-nexus-5x-vertical-navigation-2x.avif) 2x',
       },
       {
         'title': 'keyboard',
         'orientation': 'vertical',
         'insets': {'left': 0, 'top': 80, 'right': 0, 'bottom': 342},
         'image':
-            '@url(optimized/google-nexus-5x-vertical-keyboard-1x.avif) 1x, @url(optimized/google-nexus-5x-vertical-keyboard-2x.avif) 2x'
+            '@url(optimized/google-nexus-5x-vertical-keyboard-1x.avif) 1x, @url(optimized/google-nexus-5x-vertical-keyboard-2x.avif) 2x',
       },
       {
         'title': 'default',
         'orientation': 'horizontal',
         'insets': {'left': 0, 'top': 24, 'right': 48, 'bottom': 0},
         'image':
-            '@url(optimized/google-nexus-5x-horizontal-default-1x.avif) 1x, @url(optimized/google-nexus-5x-horizontal-default-2x.avif) 2x'
+            '@url(optimized/google-nexus-5x-horizontal-default-1x.avif) 1x, @url(optimized/google-nexus-5x-horizontal-default-2x.avif) 2x',
       },
       {
         'title': 'navigation bar',
         'orientation': 'horizontal',
         'insets': {'left': 0, 'top': 80, 'right': 48, 'bottom': 0},
         'image':
-            '@url(optimized/google-nexus-5x-horizontal-navigation-1x.avif) 1x, @url(optimized/google-nexus-5x-horizontal-navigation-2x.avif) 2x'
+            '@url(optimized/google-nexus-5x-horizontal-navigation-1x.avif) 1x, @url(optimized/google-nexus-5x-horizontal-navigation-2x.avif) 2x',
       },
       {
         'title': 'keyboard',
         'orientation': 'horizontal',
         'insets': {'left': 0, 'top': 80, 'right': 48, 'bottom': 222},
         'image':
-            '@url(optimized/google-nexus-5x-horizontal-keyboard-1x.avif) 1x, @url(optimized/google-nexus-5x-horizontal-keyboard-2x.avif) 2x'
-      }
-    ]
+            '@url(optimized/google-nexus-5x-horizontal-keyboard-1x.avif) 1x, @url(optimized/google-nexus-5x-horizontal-keyboard-2x.avif) 2x',
+      },
+    ],
   },
   {
     'show-by-default': false,
@@ -1005,14 +911,14 @@ const emulatedDevices = [
     'screen': {
       'horizontal': {'width': 732, 'height': 412},
       'device-pixel-ratio': 3.5,
-      'vertical': {'width': 412, 'height': 732}
+      'vertical': {'width': 412, 'height': 732},
     },
     'capabilities': ['touch', 'mobile'],
     'user-agent':
         'Mozilla/5.0 (Linux; Android 7.1.1; Nexus 6 Build/N6F26U) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36',
     'user-agent-metadata':
         {'platform': 'Android', 'platformVersion': '7.1.1', 'architecture': '', 'model': 'Nexus 6', 'mobile': true},
-    'type': 'phone'
+    'type': 'phone',
   },
   {
     'show-by-default': false,
@@ -1021,27 +927,27 @@ const emulatedDevices = [
       'horizontal': {
         'outline': {
           'image': '@url(optimized/Nexus6P-landscape.avif)',
-          'insets': {'left': 94, 'top': 17, 'right': 88, 'bottom': 17}
+          'insets': {'left': 94, 'top': 17, 'right': 88, 'bottom': 17},
         },
         'width': 732,
-        'height': 412
+        'height': 412,
       },
       'device-pixel-ratio': 3.5,
       'vertical': {
         'outline': {
           'image': '@url(optimized/Nexus6P-portrait.avif)',
-          'insets': {'left': 16, 'top': 94, 'right': 16, 'bottom': 88}
+          'insets': {'left': 16, 'top': 94, 'right': 16, 'bottom': 88},
         },
         'width': 412,
-        'height': 732
-      }
+        'height': 732,
+      },
     },
     'capabilities': ['touch', 'mobile'],
     'user-agent':
         'Mozilla/5.0 (Linux; Android 8.0.0; Nexus 6P Build/OPP3.170518.006) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36',
     'user-agent-metadata':
         {'platform': 'Android', 'platformVersion': '8.0.0', 'architecture': '', 'model': 'Nexus 6P', 'mobile': true},
-    'type': 'phone'
+    'type': 'phone',
   },
   {
     'order': 20,
@@ -1050,14 +956,14 @@ const emulatedDevices = [
     'screen': {
       'horizontal': {'width': 731, 'height': 411},
       'device-pixel-ratio': 2.625,
-      'vertical': {'width': 411, 'height': 731}
+      'vertical': {'width': 411, 'height': 731},
     },
     'capabilities': ['touch', 'mobile'],
     'user-agent':
         'Mozilla/5.0 (Linux; Android 8.0; Pixel 2 Build/OPD3.170816.012) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36',
     'user-agent-metadata':
         {'platform': 'Android', 'platformVersion': '8.0', 'architecture': '', 'model': 'Pixel 2', 'mobile': true},
-    'type': 'phone'
+    'type': 'phone',
   },
   {
     'order': 21,
@@ -1066,14 +972,14 @@ const emulatedDevices = [
     'screen': {
       'horizontal': {'width': 823, 'height': 411},
       'device-pixel-ratio': 3.5,
-      'vertical': {'width': 411, 'height': 823}
+      'vertical': {'width': 411, 'height': 823},
     },
     'capabilities': ['touch', 'mobile'],
     'user-agent':
         'Mozilla/5.0 (Linux; Android 8.0.0; Pixel 2 XL Build/OPD1.170816.004) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36',
     'user-agent-metadata':
         {'platform': 'Android', 'platformVersion': '8.0.0', 'architecture': '', 'model': 'Pixel 2 XL', 'mobile': true},
-    'type': 'phone'
+    'type': 'phone',
   },
   {
     'show-by-default': false,
@@ -1081,14 +987,14 @@ const emulatedDevices = [
     'screen': {
       'horizontal': {'width': 640, 'height': 384},
       'device-pixel-ratio': 1.25,
-      'vertical': {'width': 384, 'height': 640}
+      'vertical': {'width': 384, 'height': 640},
     },
     'capabilities': ['touch', 'mobile'],
     'user-agent':
         'Mozilla/5.0 (Linux; U; Android 4.4.2; en-us; LGMS323 Build/KOT49I.MS32310c) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/%s Mobile Safari/537.36',
     'user-agent-metadata':
         {'platform': 'Android', 'platformVersion': '4.4.2', 'architecture': '', 'model': 'LGMS323', 'mobile': true},
-    'type': 'phone'
+    'type': 'phone',
   },
   {
     'show-by-default': false,
@@ -1096,12 +1002,12 @@ const emulatedDevices = [
     'screen': {
       'horizontal': {'width': 854, 'height': 480},
       'device-pixel-ratio': 1,
-      'vertical': {'width': 480, 'height': 854}
+      'vertical': {'width': 480, 'height': 854},
     },
     'capabilities': ['touch', 'mobile'],
     'user-agent':
         'Mozilla/5.0 (MeeGo; NokiaN9) AppleWebKit/534.13 (KHTML, like Gecko) NokiaBrowser/8.5.0 Mobile Safari/534.13',
-    'type': 'phone'
+    'type': 'phone',
   },
   {
     'show-by-default': false,
@@ -1109,12 +1015,12 @@ const emulatedDevices = [
     'screen': {
       'horizontal': {'width': 533, 'height': 320},
       'device-pixel-ratio': 1.5,
-      'vertical': {'width': 320, 'height': 533}
+      'vertical': {'width': 320, 'height': 533},
     },
     'capabilities': ['touch', 'mobile'],
     'user-agent':
         'Mozilla/5.0 (compatible; MSIE 10.0; Windows Phone 8.0; Trident/6.0; IEMobile/10.0; ARM; Touch; NOKIA; Lumia 520)',
-    'type': 'phone'
+    'type': 'phone',
   },
   {
     'show-by-default': false,
@@ -1122,12 +1028,12 @@ const emulatedDevices = [
     'screen': {
       'horizontal': {'width': 640, 'height': 360},
       'device-pixel-ratio': 2,
-      'vertical': {'width': 640, 'height': 360}
+      'vertical': {'width': 640, 'height': 360},
     },
     'capabilities': ['touch', 'mobile'],
     'user-agent':
         'Mozilla/5.0 (Windows Phone 10.0; Android 4.2.1; Microsoft; Lumia 550) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2486.0 Mobile Safari/537.36 Edge/14.14263',
-    'type': 'phone'
+    'type': 'phone',
   },
   {
     'show-by-default': false,
@@ -1135,12 +1041,12 @@ const emulatedDevices = [
     'screen': {
       'horizontal': {'width': 640, 'height': 360},
       'device-pixel-ratio': 4,
-      'vertical': {'width': 360, 'height': 640}
+      'vertical': {'width': 360, 'height': 640},
     },
     'capabilities': ['touch', 'mobile'],
     'user-agent':
         'Mozilla/5.0 (Windows Phone 10.0; Android 4.2.1; Microsoft; Lumia 950) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2486.0 Mobile Safari/537.36 Edge/14.14263',
-    'type': 'phone'
+    'type': 'phone',
   },
   {
     'show-by-default': false,
@@ -1148,14 +1054,14 @@ const emulatedDevices = [
     'screen': {
       'horizontal': {'width': 640, 'height': 360},
       'device-pixel-ratio': 2,
-      'vertical': {'width': 360, 'height': 640}
+      'vertical': {'width': 360, 'height': 640},
     },
     'capabilities': ['touch', 'mobile'],
     'user-agent':
         'Mozilla/5.0 (Linux; U; Android 4.0; en-us; GT-I9300 Build/IMM76D) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30',
     'user-agent-metadata':
         {'platform': 'Android', 'platformVersion': '4.0', 'architecture': '', 'model': 'GT-I9300', 'mobile': true},
-    'type': 'phone'
+    'type': 'phone',
   },
   {
     'order': 10,
@@ -1164,14 +1070,14 @@ const emulatedDevices = [
     'screen': {
       'horizontal': {'width': 640, 'height': 360},
       'device-pixel-ratio': 3,
-      'vertical': {'width': 360, 'height': 640}
+      'vertical': {'width': 360, 'height': 640},
     },
     'capabilities': ['touch', 'mobile'],
     'user-agent':
         'Mozilla/5.0 (Linux; Android 5.0; SM-G900P Build/LRX21T) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36',
     'user-agent-metadata':
         {'platform': 'Android', 'platformVersion': '5.0', 'architecture': '', 'model': 'SM-G900P', 'mobile': true},
-    'type': 'phone'
+    'type': 'phone',
   },
   {
     'order': 1,
@@ -1180,12 +1086,12 @@ const emulatedDevices = [
     'screen': {
       'horizontal': {'width': 320, 'height': 240},
       'device-pixel-ratio': 1,
-      'vertical': {'width': 240, 'height': 320}
+      'vertical': {'width': 240, 'height': 320},
     },
     'capabilities': ['touch', 'mobile'],
     'user-agent':
         'Mozilla/5.0 (Mobile; LYF/F300B/LYF-F300B-001-01-15-130718-i;Android; rv:48.0) Gecko/48.0 Firefox/48.0 KAIOS/2.5',
-    'type': 'phone'
+    'type': 'phone',
   },
   {
     'show-by-default': false,
@@ -1193,12 +1099,12 @@ const emulatedDevices = [
     'screen': {
       'horizontal': {'width': 1280, 'height': 800},
       'device-pixel-ratio': 2,
-      'vertical': {'width': 800, 'height': 1280}
+      'vertical': {'width': 800, 'height': 1280},
     },
     'capabilities': ['touch', 'mobile'],
     'user-agent':
         'Mozilla/5.0 (Linux; U; en-us; KFAPWI Build/JDQ39) AppleWebKit/535.19 (KHTML, like Gecko) Silk/3.13 Safari/535.19 Silk-Accelerated=true',
-    'type': 'tablet'
+    'type': 'tablet',
   },
   {
     'show-by-default': false,
@@ -1206,12 +1112,12 @@ const emulatedDevices = [
     'screen': {
       'horizontal': {'width': 1024, 'height': 768},
       'device-pixel-ratio': 2,
-      'vertical': {'width': 768, 'height': 1024}
+      'vertical': {'width': 768, 'height': 1024},
     },
     'capabilities': ['touch', 'mobile'],
     'user-agent':
         'Mozilla/5.0 (iPad; CPU OS 11_0 like Mac OS X) AppleWebKit/604.1.34 (KHTML, like Gecko) Version/11.0 Mobile/15A5341f Safari/604.1',
-    'type': 'tablet'
+    'type': 'tablet',
   },
   {
     'order': 40,
@@ -1221,25 +1127,25 @@ const emulatedDevices = [
       'horizontal': {
         'outline': {
           'image': '@url(optimized/iPad-landscape.avif)',
-          'insets': {'left': 112, 'top': 56, 'right': 116, 'bottom': 52}
+          'insets': {'left': 112, 'top': 56, 'right': 116, 'bottom': 52},
         },
         'width': 1024,
-        'height': 768
+        'height': 768,
       },
       'device-pixel-ratio': 2,
       'vertical': {
         'outline': {
           'image': '@url(optimized/iPad-portrait.avif)',
-          'insets': {'left': 52, 'top': 114, 'right': 55, 'bottom': 114}
+          'insets': {'left': 52, 'top': 114, 'right': 55, 'bottom': 114},
         },
         'width': 768,
-        'height': 1024
-      }
+        'height': 1024,
+      },
     },
     'capabilities': ['touch', 'mobile'],
     'user-agent':
         'Mozilla/5.0 (iPad; CPU OS 11_0 like Mac OS X) AppleWebKit/604.1.34 (KHTML, like Gecko) Version/11.0 Mobile/15A5341f Safari/604.1',
-    'type': 'tablet'
+    'type': 'tablet',
   },
   {
     'order': 41,
@@ -1248,12 +1154,12 @@ const emulatedDevices = [
     'screen': {
       'horizontal': {'width': 1366, 'height': 1024},
       'device-pixel-ratio': 2,
-      'vertical': {'width': 1024, 'height': 1366}
+      'vertical': {'width': 1024, 'height': 1366},
     },
     'capabilities': ['touch', 'mobile'],
     'user-agent':
         'Mozilla/5.0 (iPad; CPU OS 11_0 like Mac OS X) AppleWebKit/604.1.34 (KHTML, like Gecko) Version/11.0 Mobile/15A5341f Safari/604.1',
-    'type': 'tablet'
+    'type': 'tablet',
   },
   {
     'show-by-default': false,
@@ -1261,12 +1167,12 @@ const emulatedDevices = [
     'screen': {
       'horizontal': {'width': 1024, 'height': 600},
       'device-pixel-ratio': 1,
-      'vertical': {'width': 600, 'height': 1024}
+      'vertical': {'width': 600, 'height': 1024},
     },
     'capabilities': ['touch', 'mobile'],
     'user-agent':
         'Mozilla/5.0 (PlayBook; U; RIM Tablet OS 2.1.0; en-US) AppleWebKit/536.2+ (KHTML like Gecko) Version/7.2.1.0 Safari/536.2+',
-    'type': 'tablet'
+    'type': 'tablet',
   },
   {
     'show-by-default': false,
@@ -1274,14 +1180,14 @@ const emulatedDevices = [
     'screen': {
       'horizontal': {'width': 1280, 'height': 800},
       'device-pixel-ratio': 2,
-      'vertical': {'width': 800, 'height': 1280}
+      'vertical': {'width': 800, 'height': 1280},
     },
     'capabilities': ['touch', 'mobile'],
     'user-agent':
         'Mozilla/5.0 (Linux; Android 6.0.1; Nexus 10 Build/MOB31T) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Safari/537.36',
     'user-agent-metadata':
         {'platform': 'Android', 'platformVersion': '6.0.1', 'architecture': '', 'model': 'Nexus 10', 'mobile': false},
-    'type': 'tablet'
+    'type': 'tablet',
   },
   {
     'show-by-default': false,
@@ -1289,14 +1195,14 @@ const emulatedDevices = [
     'screen': {
       'horizontal': {'width': 960, 'height': 600},
       'device-pixel-ratio': 2,
-      'vertical': {'width': 600, 'height': 960}
+      'vertical': {'width': 600, 'height': 960},
     },
     'capabilities': ['touch', 'mobile'],
     'user-agent':
         'Mozilla/5.0 (Linux; Android 6.0.1; Nexus 7 Build/MOB30X) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Safari/537.36',
     'user-agent-metadata':
         {'platform': 'Android', 'platformVersion': '6.0.1', 'architecture': '', 'model': 'Nexus 7', 'mobile': false},
-    'type': 'tablet'
+    'type': 'tablet',
   },
   {
     'show-by-default': false,
@@ -1304,14 +1210,14 @@ const emulatedDevices = [
     'screen': {
       'horizontal': {'width': 640, 'height': 360},
       'device-pixel-ratio': 3,
-      'vertical': {'width': 360, 'height': 640}
+      'vertical': {'width': 360, 'height': 640},
     },
     'capabilities': ['touch', 'mobile'],
     'user-agent':
         'Mozilla/5.0 (Linux; U; Android 4.3; en-us; SM-N900T Build/JSS15J) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30',
     'user-agent-metadata':
         {'platform': 'Android', 'platformVersion': '4.3', 'architecture': '', 'model': 'SM-N900T', 'mobile': true},
-    'type': 'phone'
+    'type': 'phone',
   },
   {
     'show-by-default': false,
@@ -1319,14 +1225,14 @@ const emulatedDevices = [
     'screen': {
       'horizontal': {'width': 640, 'height': 360},
       'device-pixel-ratio': 2,
-      'vertical': {'width': 360, 'height': 640}
+      'vertical': {'width': 360, 'height': 640},
     },
     'capabilities': ['touch', 'mobile'],
     'user-agent':
         'Mozilla/5.0 (Linux; U; Android 4.1; en-us; GT-N7100 Build/JRO03C) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30',
     'user-agent-metadata':
         {'platform': 'Android', 'platformVersion': '4.1', 'architecture': '', 'model': 'GT-N7100', 'mobile': true},
-    'type': 'phone'
+    'type': 'phone',
   },
   {
     'show-by-default': false,
@@ -1334,12 +1240,12 @@ const emulatedDevices = [
     'screen': {
       'horizontal': {'width': 1280, 'height': 950},
       'device-pixel-ratio': 1,
-      'vertical': {'width': 950, 'height': 1280}
+      'vertical': {'width': 950, 'height': 1280},
     },
     'capabilities': ['touch'],
     'user-agent': '',
     'type': 'notebook',
-    'modes': [{'title': 'default', 'orientation': 'horizontal'}]
+    'modes': [{'title': 'default', 'orientation': 'horizontal'}],
   },
   {
     'show-by-default': false,
@@ -1347,12 +1253,12 @@ const emulatedDevices = [
     'screen': {
       'horizontal': {'width': 1440, 'height': 900},
       'device-pixel-ratio': 2,
-      'vertical': {'width': 900, 'height': 1440}
+      'vertical': {'width': 900, 'height': 1440},
     },
     'capabilities': [],
     'user-agent': '',
     'type': 'notebook',
-    'modes': [{'title': 'default', 'orientation': 'horizontal'}]
+    'modes': [{'title': 'default', 'orientation': 'horizontal'}],
   },
   {
     'show-by-default': false,
@@ -1360,12 +1266,12 @@ const emulatedDevices = [
     'screen': {
       'horizontal': {'width': 1280, 'height': 800},
       'device-pixel-ratio': 1,
-      'vertical': {'width': 800, 'height': 1280}
+      'vertical': {'width': 800, 'height': 1280},
     },
     'capabilities': [],
     'user-agent': '',
     'type': 'notebook',
-    'modes': [{'title': 'default', 'orientation': 'horizontal'}]
+    'modes': [{'title': 'default', 'orientation': 'horizontal'}],
   },
   {
     'show-by-default': true,
@@ -1374,27 +1280,27 @@ const emulatedDevices = [
       'horizontal': {
         'outline': {
           'image': '@url(optimized/MotoG4-landscape.avif)',
-          'insets': {'left': 91, 'top': 30, 'right': 74, 'bottom': 30}
+          'insets': {'left': 91, 'top': 30, 'right': 74, 'bottom': 30},
         },
         'width': 640,
-        'height': 360
+        'height': 360,
       },
       'device-pixel-ratio': 3,
       'vertical': {
         'outline': {
           'image': '@url(optimized/MotoG4-portrait.avif)',
-          'insets': {'left': 30, 'top': 91, 'right': 30, 'bottom': 74}
+          'insets': {'left': 30, 'top': 91, 'right': 30, 'bottom': 74},
         },
         'width': 360,
-        'height': 640
-      }
+        'height': 640,
+      },
     },
     'capabilities': ['touch', 'mobile'],
     'user-agent':
         'Mozilla/5.0 (Linux; Android 6.0.1; Moto G (4)) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36',
     'user-agent-metadata':
         {'platform': 'Android', 'platformVersion': '6.0.1', 'architecture': '', 'model': 'Moto G (4)', 'mobile': true},
-    'type': 'phone'
+    'type': 'phone',
   },
   {
     'order': 45,
@@ -1408,13 +1314,13 @@ const emulatedDevices = [
       'vertical-spanned': {
         'width': 1114,
         'height': 720,
-        'hinge': {'width': 34, 'height': 720, 'x': 540, 'y': 0, 'contentColor': {'r': 38, 'g': 38, 'b': 38, 'a': 1}}
+        'hinge': {'width': 34, 'height': 720, 'x': 540, 'y': 0, 'contentColor': {'r': 38, 'g': 38, 'b': 38, 'a': 1}},
       },
       'horizontal-spanned': {
         'width': 720,
         'height': 1114,
-        'hinge': {'width': 720, 'height': 34, 'x': 0, 'y': 540, 'contentColor': {'r': 38, 'g': 38, 'b': 38, 'a': 1}}
-      }
+        'hinge': {'width': 720, 'height': 34, 'x': 0, 'y': 540, 'contentColor': {'r': 38, 'g': 38, 'b': 38, 'a': 1}},
+      },
     },
     'capabilities': ['touch', 'mobile'],
     'user-agent':
@@ -1427,9 +1333,9 @@ const emulatedDevices = [
       {
         'title': 'spanned',
         'orientation': 'horizontal-spanned',
-        'insets': {'left': 0, 'top': 0, 'right': 0, 'bottom': 0}
-      }
-    ]
+        'insets': {'left': 0, 'top': 0, 'right': 0, 'bottom': 0},
+      },
+    ],
   },
   {
     'order': 46,
@@ -1441,7 +1347,7 @@ const emulatedDevices = [
       'device-pixel-ratio': 3,
       'vertical': {'width': 280, 'height': 653},
       'vertical-spanned': {'width': 717, 'height': 512},
-      'horizontal-spanned': {'width': 512, 'height': 717}
+      'horizontal-spanned': {'width': 512, 'height': 717},
     },
     'capabilities': ['touch', 'mobile'],
     'user-agent':
@@ -1454,8 +1360,8 @@ const emulatedDevices = [
       {
         'title': 'spanned',
         'orientation': 'horizontal-spanned',
-        'insets': {'left': 0, 'top': 0, 'right': 0, 'bottom': 0}
-      }
-    ]
-  }
+        'insets': {'left': 0, 'top': 0, 'right': 0, 'bottom': 0},
+      },
+    ],
+  },
 ];

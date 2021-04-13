@@ -4838,220 +4838,220 @@
   "panels/elements/StylesSidebarPane.js | viaInspector": {
     "message": "v̂íâ ín̂śp̂éĉt́ôŕ"
   },
-  "panels/emulation/DeviceModeModel.js | devicePixelRatioMustBeANumberOr": {
+  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
     "message": "D̂év̂íĉé p̂íx̂él̂ ŕât́îó m̂úŝt́ b̂é â ńûḿb̂ér̂ ór̂ b́l̂án̂ḱ."
   },
-  "panels/emulation/DeviceModeModel.js | devicePixelRatioMustBeGreater": {
+  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeGreater": {
     "message": "D̂év̂íĉé p̂íx̂él̂ ŕât́îó m̂úŝt́ b̂é ĝŕêát̂ér̂ t́ĥán̂ ór̂ éq̂úâĺ t̂ó {PH1}."
   },
-  "panels/emulation/DeviceModeModel.js | devicePixelRatioMustBeLessThanOr": {
+  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeLessThanOr": {
     "message": "D̂év̂íĉé p̂íx̂él̂ ŕât́îó m̂úŝt́ b̂é l̂éŝś t̂h́âń ôŕ êq́ûál̂ t́ô {PH1}."
   },
-  "panels/emulation/DeviceModeModel.js | heightMustBeANumber": {
+  "panels/emulation/DeviceModeModel.ts | heightMustBeANumber": {
     "message": "Ĥéîǵĥt́ m̂úŝt́ b̂é â ńûḿb̂ér̂."
   },
-  "panels/emulation/DeviceModeModel.js | heightMustBeGreaterThanOrEqualTo": {
+  "panels/emulation/DeviceModeModel.ts | heightMustBeGreaterThanOrEqualTo": {
     "message": "Ĥéîǵĥt́ m̂úŝt́ b̂é ĝŕêát̂ér̂ t́ĥán̂ ór̂ éq̂úâĺ t̂ó {PH1}."
   },
-  "panels/emulation/DeviceModeModel.js | heightMustBeLessThanOrEqualToS": {
+  "panels/emulation/DeviceModeModel.ts | heightMustBeLessThanOrEqualToS": {
     "message": "Ĥéîǵĥt́ m̂úŝt́ b̂é l̂éŝś t̂h́âń ôŕ êq́ûál̂ t́ô {PH1}."
   },
-  "panels/emulation/DeviceModeModel.js | widthMustBeANumber": {
+  "panels/emulation/DeviceModeModel.ts | widthMustBeANumber": {
     "message": "Ŵíd̂t́ĥ ḿûśt̂ b́ê á n̂úm̂b́êŕ."
   },
-  "panels/emulation/DeviceModeModel.js | widthMustBeGreaterThanOrEqualToS": {
+  "panels/emulation/DeviceModeModel.ts | widthMustBeGreaterThanOrEqualToS": {
     "message": "Ŵíd̂t́ĥ ḿûśt̂ b́ê ǵr̂éât́êŕ t̂h́âń ôŕ êq́ûál̂ t́ô {PH1}."
   },
-  "panels/emulation/DeviceModeModel.js | widthMustBeLessThanOrEqualToS": {
+  "panels/emulation/DeviceModeModel.ts | widthMustBeLessThanOrEqualToS": {
     "message": "Ŵíd̂t́ĥ ḿûśt̂ b́ê ĺêśŝ t́ĥán̂ ór̂ éq̂úâĺ t̂ó {PH1}."
   },
-  "panels/emulation/DeviceModeToolbar.js | addDevicePixelRatio": {
+  "panels/emulation/DeviceModeToolbar.ts | addDevicePixelRatio": {
     "message": "Âd́d̂ d́êv́îćê ṕîx́êĺ r̂át̂íô"
   },
-  "panels/emulation/DeviceModeToolbar.js | addDeviceType": {
+  "panels/emulation/DeviceModeToolbar.ts | addDeviceType": {
     "message": "Âd́d̂ d́êv́îćê t́ŷṕê"
   },
-  "panels/emulation/DeviceModeToolbar.js | autoadjustZoom": {
+  "panels/emulation/DeviceModeToolbar.ts | autoadjustZoom": {
     "message": "Âút̂ó-âd́ĵúŝt́ ẑóôḿ"
   },
-  "panels/emulation/DeviceModeToolbar.js | closeDevtools": {
+  "panels/emulation/DeviceModeToolbar.ts | closeDevtools": {
     "message": "Ĉĺôśê D́êv́T̂óôĺŝ"
   },
-  "panels/emulation/DeviceModeToolbar.js | defaultF": {
+  "panels/emulation/DeviceModeToolbar.ts | defaultF": {
     "message": "D̂éf̂áûĺt̂: {PH1}"
   },
-  "panels/emulation/DeviceModeToolbar.js | devicePixelRatio": {
+  "panels/emulation/DeviceModeToolbar.ts | devicePixelRatio": {
     "message": "D̂év̂íĉé p̂íx̂él̂ ŕât́îó"
   },
-  "panels/emulation/DeviceModeToolbar.js | deviceType": {
+  "panels/emulation/DeviceModeToolbar.ts | deviceType": {
     "message": "D̂év̂íĉé t̂ýp̂é"
   },
-  "panels/emulation/DeviceModeToolbar.js | edit": {
+  "panels/emulation/DeviceModeToolbar.ts | edit": {
     "message": "Êd́ît́…"
   },
-  "panels/emulation/DeviceModeToolbar.js | experimentalWebPlatformFeature": {
+  "panels/emulation/DeviceModeToolbar.ts | experimentalWebPlatformFeature": {
     "message": "\"Experimental Web Platform Feature\" f̂ĺâǵ îś êńâb́l̂éd̂. Ćl̂íĉḱ t̂ó d̂íŝáb̂ĺê ít̂."
   },
-  "panels/emulation/DeviceModeToolbar.js | experimentalWebPlatformFeatureFlag": {
+  "panels/emulation/DeviceModeToolbar.ts | experimentalWebPlatformFeatureFlag": {
     "message": "\"Experimental Web Platform Feature\" f̂ĺâǵ îś d̂íŝáb̂ĺêd́. Ĉĺîćk̂ t́ô én̂áb̂ĺê ít̂."
   },
-  "panels/emulation/DeviceModeToolbar.js | fitToWindowF": {
+  "panels/emulation/DeviceModeToolbar.ts | fitToWindowF": {
     "message": "F̂ít̂ t́ô ẃîńd̂óŵ ({PH1}%)"
   },
-  "panels/emulation/DeviceModeToolbar.js | heightLeaveEmptyForFull": {
+  "panels/emulation/DeviceModeToolbar.ts | heightLeaveEmptyForFull": {
     "message": "Ĥéîǵĥt́ (l̂éâv́ê ém̂ṕt̂ý f̂ór̂ f́ûĺl̂)"
   },
-  "panels/emulation/DeviceModeToolbar.js | hideDeviceFrame": {
+  "panels/emulation/DeviceModeToolbar.ts | hideDeviceFrame": {
     "message": "Ĥíd̂é d̂év̂íĉé f̂ŕâḿê"
   },
-  "panels/emulation/DeviceModeToolbar.js | hideMediaQueries": {
+  "panels/emulation/DeviceModeToolbar.ts | hideMediaQueries": {
     "message": "Ĥíd̂é m̂éd̂íâ q́ûér̂íêś"
   },
-  "panels/emulation/DeviceModeToolbar.js | hideRulers": {
+  "panels/emulation/DeviceModeToolbar.ts | hideRulers": {
     "message": "Ĥíd̂é r̂úl̂ér̂ś"
   },
-  "panels/emulation/DeviceModeToolbar.js | landscape": {
+  "panels/emulation/DeviceModeToolbar.ts | landscape": {
     "message": "L̂án̂d́ŝćâṕê"
   },
-  "panels/emulation/DeviceModeToolbar.js | moreOptions": {
+  "panels/emulation/DeviceModeToolbar.ts | moreOptions": {
     "message": "M̂ór̂é ôṕt̂íôńŝ"
   },
-  "panels/emulation/DeviceModeToolbar.js | none": {
+  "panels/emulation/DeviceModeToolbar.ts | none": {
     "message": "N̂ón̂é"
   },
-  "panels/emulation/DeviceModeToolbar.js | portrait": {
+  "panels/emulation/DeviceModeToolbar.ts | portrait": {
     "message": "P̂ór̂t́r̂áît́"
   },
-  "panels/emulation/DeviceModeToolbar.js | removeDevicePixelRatio": {
+  "panels/emulation/DeviceModeToolbar.ts | removeDevicePixelRatio": {
     "message": "R̂ém̂óv̂é d̂év̂íĉé p̂íx̂él̂ ŕât́îó"
   },
-  "panels/emulation/DeviceModeToolbar.js | removeDeviceType": {
+  "panels/emulation/DeviceModeToolbar.ts | removeDeviceType": {
     "message": "R̂ém̂óv̂é d̂év̂íĉé t̂ýp̂é"
   },
-  "panels/emulation/DeviceModeToolbar.js | resetToDefaults": {
+  "panels/emulation/DeviceModeToolbar.ts | resetToDefaults": {
     "message": "R̂éŝét̂ t́ô d́êf́âúl̂t́ŝ"
   },
-  "panels/emulation/DeviceModeToolbar.js | responsive": {
+  "panels/emulation/DeviceModeToolbar.ts | responsive": {
     "message": "R̂éŝṕôńŝív̂é"
   },
-  "panels/emulation/DeviceModeToolbar.js | rotate": {
+  "panels/emulation/DeviceModeToolbar.ts | rotate": {
     "message": "R̂ót̂át̂é"
   },
-  "panels/emulation/DeviceModeToolbar.js | screenOrientationOptions": {
+  "panels/emulation/DeviceModeToolbar.ts | screenOrientationOptions": {
     "message": "Ŝćr̂éêń ôŕîén̂t́ât́îón̂ óp̂t́îón̂ś"
   },
-  "panels/emulation/DeviceModeToolbar.js | showDeviceFrame": {
+  "panels/emulation/DeviceModeToolbar.ts | showDeviceFrame": {
     "message": "Ŝh́ôẃ d̂év̂íĉé f̂ŕâḿê"
   },
-  "panels/emulation/DeviceModeToolbar.js | showMediaQueries": {
+  "panels/emulation/DeviceModeToolbar.ts | showMediaQueries": {
     "message": "Ŝh́ôẃ m̂éd̂íâ q́ûér̂íêś"
   },
-  "panels/emulation/DeviceModeToolbar.js | showRulers": {
+  "panels/emulation/DeviceModeToolbar.ts | showRulers": {
     "message": "Ŝh́ôẃ r̂úl̂ér̂ś"
   },
-  "panels/emulation/DeviceModeToolbar.js | toggleDualscreenMode": {
+  "panels/emulation/DeviceModeToolbar.ts | toggleDualscreenMode": {
     "message": "T̂óĝǵl̂é d̂úâĺ-ŝćr̂éêń m̂ód̂é"
   },
-  "panels/emulation/DeviceModeToolbar.js | width": {
+  "panels/emulation/DeviceModeToolbar.ts | width": {
     "message": "Ŵíd̂t́ĥ"
   },
-  "panels/emulation/DeviceModeToolbar.js | zoom": {
+  "panels/emulation/DeviceModeToolbar.ts | zoom": {
     "message": "Ẑóôḿ"
   },
-  "panels/emulation/DeviceModeView.js | doubleclickForFullHeight": {
+  "panels/emulation/DeviceModeView.ts | doubleclickForFullHeight": {
     "message": "D̂óûb́l̂é-ĉĺîćk̂ f́ôŕ f̂úl̂ĺ ĥéîǵĥt́"
   },
-  "panels/emulation/DeviceModeView.js | laptop": {
+  "panels/emulation/DeviceModeView.ts | laptop": {
     "message": "L̂áp̂t́ôṕ"
   },
-  "panels/emulation/DeviceModeView.js | laptopL": {
+  "panels/emulation/DeviceModeView.ts | laptopL": {
     "message": "L̂áp̂t́ôṕ L̂"
   },
-  "panels/emulation/DeviceModeView.js | mobileL": {
+  "panels/emulation/DeviceModeView.ts | mobileL": {
     "message": "M̂ób̂íl̂é L̂"
   },
-  "panels/emulation/DeviceModeView.js | mobileM": {
+  "panels/emulation/DeviceModeView.ts | mobileM": {
     "message": "M̂ób̂íl̂é M̂"
   },
-  "panels/emulation/DeviceModeView.js | mobileS": {
+  "panels/emulation/DeviceModeView.ts | mobileS": {
     "message": "M̂ób̂íl̂é Ŝ"
   },
-  "panels/emulation/DeviceModeView.js | tablet": {
+  "panels/emulation/DeviceModeView.ts | tablet": {
     "message": "T̂áb̂ĺêt́"
   },
-  "panels/emulation/DevicesSettingsTab.js | addCustomDevice": {
+  "panels/emulation/DevicesSettingsTab.ts | addCustomDevice": {
     "message": "Âd́d̂ ćûśt̂óm̂ d́êv́îćê..."
   },
-  "panels/emulation/DevicesSettingsTab.js | architecture": {
+  "panels/emulation/DevicesSettingsTab.ts | architecture": {
     "message": "Âŕĉh́ît́êćt̂úr̂é (ê.ǵ. x̂86)"
   },
-  "panels/emulation/DevicesSettingsTab.js | brandsList": {
+  "panels/emulation/DevicesSettingsTab.ts | brandsList": {
     "message": "B̂ŕâńd̂ś l̂íŝt́ îś n̂ót̂ á v̂ál̂íd̂ śt̂ŕûćt̂úr̂éd̂ f́îél̂d́ŝ ĺîśt̂."
   },
-  "panels/emulation/DevicesSettingsTab.js | brandsListMust": {
+  "panels/emulation/DevicesSettingsTab.ts | brandsListMust": {
     "message": "B̂ŕâńd̂ś l̂íŝt́ m̂úŝt́ ĉón̂śîśt̂ óf̂ śt̂ŕîńĝś, êáĉh́ ŵít̂h́ â v́ p̂ár̂ám̂ét̂ér̂ ẃît́ĥ á ŝt́r̂ín̂ǵ v̂ál̂úê."
   },
-  "panels/emulation/DevicesSettingsTab.js | device": {
+  "panels/emulation/DevicesSettingsTab.ts | device": {
     "message": "D̂év̂íĉé"
   },
-  "panels/emulation/DevicesSettingsTab.js | deviceModel": {
+  "panels/emulation/DevicesSettingsTab.ts | deviceModel": {
     "message": "D̂év̂íĉé m̂ód̂él̂"
   },
-  "panels/emulation/DevicesSettingsTab.js | deviceName": {
+  "panels/emulation/DevicesSettingsTab.ts | deviceName": {
     "message": "D̂év̂íĉé N̂ám̂é"
   },
-  "panels/emulation/DevicesSettingsTab.js | deviceNameCannotBeEmpty": {
+  "panels/emulation/DevicesSettingsTab.ts | deviceNameCannotBeEmpty": {
     "message": "D̂év̂íĉé n̂ám̂é ĉán̂ńôt́ b̂é êḿp̂t́ŷ."
   },
-  "panels/emulation/DevicesSettingsTab.js | deviceNameMustBeLessThanS": {
+  "panels/emulation/DevicesSettingsTab.ts | deviceNameMustBeLessThanS": {
     "message": "D̂év̂íĉé n̂ám̂é m̂úŝt́ b̂é l̂éŝś t̂h́âń {PH1} ĉh́âŕâćt̂ér̂ś."
   },
-  "panels/emulation/DevicesSettingsTab.js | devicePixelRatio": {
+  "panels/emulation/DevicesSettingsTab.ts | devicePixelRatio": {
     "message": "D̂év̂íĉé p̂íx̂él̂ ŕât́îó"
   },
-  "panels/emulation/DevicesSettingsTab.js | emulatedDevices": {
+  "panels/emulation/DevicesSettingsTab.ts | emulatedDevices": {
     "message": "Êḿûĺât́êd́ D̂év̂íĉéŝ"
   },
-  "panels/emulation/DevicesSettingsTab.js | fullBrowserVersion": {
+  "panels/emulation/DevicesSettingsTab.ts | fullBrowserVersion": {
     "message": "F̂úl̂ĺ b̂ŕôẃŝér̂ v́êŕŝíôń (ê.ǵ. 87.0.4280.88)"
   },
-  "panels/emulation/DevicesSettingsTab.js | height": {
+  "panels/emulation/DevicesSettingsTab.ts | height": {
     "message": "Ĥéîǵĥt́"
   },
-  "panels/emulation/DevicesSettingsTab.js | notRepresentable": {
+  "panels/emulation/DevicesSettingsTab.ts | notRepresentable": {
     "message": "N̂ót̂ ŕêṕr̂éŝén̂t́âb́l̂é âś ŝt́r̂úĉt́ûŕêd́ ĥéâd́êŕŝ śt̂ŕîńĝ."
   },
-  "panels/emulation/DevicesSettingsTab.js | platform": {
+  "panels/emulation/DevicesSettingsTab.ts | platform": {
     "message": "P̂ĺât́f̂ór̂ḿ (ê.ǵ. Âńd̂ŕôíd̂)"
   },
-  "panels/emulation/DevicesSettingsTab.js | platformVersion": {
+  "panels/emulation/DevicesSettingsTab.ts | platformVersion": {
     "message": "P̂ĺât́f̂ór̂ḿ v̂ér̂śîón̂"
   },
-  "panels/emulation/DevicesSettingsTab.js | UABrands": {
+  "panels/emulation/DevicesSettingsTab.ts | UABrands": {
     "message": "ÛÁ b̂ŕâńd̂ś l̂íŝt́ (ê.ǵ. \"Chromium\";v=\"87\")"
   },
-  "panels/emulation/DevicesSettingsTab.js | userAgentClient": {
+  "panels/emulation/DevicesSettingsTab.ts | userAgentClient": {
     "message": "Ûśêŕ âǵêńt̂ ćl̂íêńt̂ h́îńt̂ś"
   },
-  "panels/emulation/DevicesSettingsTab.js | userAgentClientHintsAre": {
+  "panels/emulation/DevicesSettingsTab.ts | userAgentClientHintsAre": {
     "message": "Ûśêŕ âǵêńt̂ ćl̂íêńt̂ h́îńt̂ś âŕê án̂ ál̂t́êŕn̂át̂ív̂é t̂ó t̂h́ê úŝér̂ áĝén̂t́ ŝt́r̂ín̂ǵ t̂h́ât́ îd́êńt̂íf̂ý t̂h́ê b́r̂óŵśêŕ âńd̂ t́ĥé d̂év̂íĉé îń â ḿôŕê śt̂ŕûćt̂úr̂éd̂ ẃâý ŵít̂h́ b̂ét̂t́êŕ p̂ŕîv́âćŷ áĉćôún̂t́îńĝ. Ćl̂íĉḱ t̂h́ê b́ût́t̂ón̂ t́ô ĺêár̂ń m̂ór̂é."
   },
-  "panels/emulation/DevicesSettingsTab.js | userAgentString": {
+  "panels/emulation/DevicesSettingsTab.ts | userAgentString": {
     "message": "Ûśêŕ âǵêńt̂ śt̂ŕîńĝ"
   },
-  "panels/emulation/DevicesSettingsTab.js | userAgentType": {
+  "panels/emulation/DevicesSettingsTab.ts | userAgentType": {
     "message": "Ûśêŕ âǵêńt̂ t́ŷṕê"
   },
-  "panels/emulation/DevicesSettingsTab.js | width": {
+  "panels/emulation/DevicesSettingsTab.ts | width": {
     "message": "Ŵíd̂t́ĥ"
   },
-  "panels/emulation/EmulatedDevices.js | laptopWithHiDPIScreen": {
+  "panels/emulation/EmulatedDevices.ts | laptopWithHiDPIScreen": {
     "message": "L̂áp̂t́ôṕ ŵít̂h́ ĤíD̂ṔÎ śĉŕêén̂"
   },
-  "panels/emulation/EmulatedDevices.js | laptopWithMDPIScreen": {
+  "panels/emulation/EmulatedDevices.ts | laptopWithMDPIScreen": {
     "message": "L̂áp̂t́ôṕ ŵít̂h́ M̂D́P̂Í ŝćr̂éêń"
   },
-  "panels/emulation/EmulatedDevices.js | laptopWithTouch": {
+  "panels/emulation/EmulatedDevices.ts | laptopWithTouch": {
     "message": "L̂áp̂t́ôṕ ŵít̂h́ t̂óûćĥ"
   },
   "panels/emulation/emulation-meta.ts | accelerometer": {
@@ -5150,172 +5150,172 @@
   "panels/emulation/emulation-meta.ts | userIdleScreenUnlocked": {
     "message": "Ûśêŕ îd́l̂é, ŝćr̂éêń ûńl̂óĉḱêd́"
   },
-  "panels/emulation/LocationsSettingsTab.js | addLocation": {
+  "panels/emulation/LocationsSettingsTab.ts | addLocation": {
     "message": "Âd́d̂ ĺôćât́îón̂..."
   },
-  "panels/emulation/LocationsSettingsTab.js | customLocations": {
+  "panels/emulation/LocationsSettingsTab.ts | customLocations": {
     "message": "Ĉúŝt́ôḿ l̂óĉát̂íôńŝ"
   },
-  "panels/emulation/LocationsSettingsTab.js | lat": {
+  "panels/emulation/LocationsSettingsTab.ts | lat": {
     "message": "L̂át̂"
   },
-  "panels/emulation/LocationsSettingsTab.js | latitude": {
+  "panels/emulation/LocationsSettingsTab.ts | latitude": {
     "message": "L̂át̂ít̂úd̂é"
   },
-  "panels/emulation/LocationsSettingsTab.js | latitudeMustBeANumber": {
+  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeANumber": {
     "message": "L̂át̂ít̂úd̂é m̂úŝt́ b̂é â ńûḿb̂ér̂"
   },
-  "panels/emulation/LocationsSettingsTab.js | latitudeMustBeGreaterThanOrEqual": {
+  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeGreaterThanOrEqual": {
     "message": "L̂át̂ít̂úd̂é m̂úŝt́ b̂é ĝŕêát̂ér̂ t́ĥán̂ ór̂ éq̂úâĺ t̂ó {PH1}"
   },
-  "panels/emulation/LocationsSettingsTab.js | latitudeMustBeLessThanOrEqualToS": {
+  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeLessThanOrEqualToS": {
     "message": "L̂át̂ít̂úd̂é m̂úŝt́ b̂é l̂éŝś t̂h́âń ôŕ êq́ûál̂ t́ô {PH1}"
   },
-  "panels/emulation/LocationsSettingsTab.js | locale": {
+  "panels/emulation/LocationsSettingsTab.ts | locale": {
     "message": "L̂óĉál̂é"
   },
-  "panels/emulation/LocationsSettingsTab.js | localeMustContainAlphabetic": {
+  "panels/emulation/LocationsSettingsTab.ts | localeMustContainAlphabetic": {
     "message": "L̂óĉál̂é m̂úŝt́ ĉón̂t́âín̂ ál̂ṕĥáb̂ét̂íĉ ćĥár̂áĉt́êŕŝ"
   },
-  "panels/emulation/LocationsSettingsTab.js | locationName": {
+  "panels/emulation/LocationsSettingsTab.ts | locationName": {
     "message": "L̂óĉát̂íôń n̂ám̂é"
   },
-  "panels/emulation/LocationsSettingsTab.js | locationNameCannotBeEmpty": {
+  "panels/emulation/LocationsSettingsTab.ts | locationNameCannotBeEmpty": {
     "message": "L̂óĉát̂íôń n̂ám̂é ĉán̂ńôt́ b̂é êḿp̂t́ŷ"
   },
-  "panels/emulation/LocationsSettingsTab.js | locationNameMustBeLessThanS": {
+  "panels/emulation/LocationsSettingsTab.ts | locationNameMustBeLessThanS": {
     "message": "L̂óĉát̂íôń n̂ám̂é m̂úŝt́ b̂é l̂éŝś t̂h́âń {PH1} ĉh́âŕâćt̂ér̂ś"
   },
-  "panels/emulation/LocationsSettingsTab.js | long": {
+  "panels/emulation/LocationsSettingsTab.ts | long": {
     "message": "L̂ón̂ǵ"
   },
-  "panels/emulation/LocationsSettingsTab.js | longitude": {
+  "panels/emulation/LocationsSettingsTab.ts | longitude": {
     "message": "L̂ón̂ǵît́ûd́ê"
   },
-  "panels/emulation/LocationsSettingsTab.js | longitudeMustBeANumber": {
+  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeANumber": {
     "message": "L̂ón̂ǵît́ûd́ê ḿûśt̂ b́ê á n̂úm̂b́êŕ"
   },
-  "panels/emulation/LocationsSettingsTab.js | longitudeMustBeGreaterThanOr": {
+  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeGreaterThanOr": {
     "message": "L̂ón̂ǵît́ûd́ê ḿûśt̂ b́ê ǵr̂éât́êŕ t̂h́âń ôŕ êq́ûál̂ t́ô {PH1}"
   },
-  "panels/emulation/LocationsSettingsTab.js | longitudeMustBeLessThanOrEqualTo": {
+  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeLessThanOrEqualTo": {
     "message": "L̂ón̂ǵît́ûd́ê ḿûśt̂ b́ê ĺêśŝ t́ĥán̂ ór̂ éq̂úâĺ t̂ó {PH1}"
   },
-  "panels/emulation/LocationsSettingsTab.js | timezoneId": {
+  "panels/emulation/LocationsSettingsTab.ts | timezoneId": {
     "message": "T̂ím̂éẑón̂é ÎD́"
   },
-  "panels/emulation/LocationsSettingsTab.js | timezoneIdMustContainAlphabetic": {
+  "panels/emulation/LocationsSettingsTab.ts | timezoneIdMustContainAlphabetic": {
     "message": "T̂ím̂éẑón̂é ÎD́ m̂úŝt́ ĉón̂t́âín̂ ál̂ṕĥáb̂ét̂íĉ ćĥár̂áĉt́êŕŝ"
   },
-  "panels/emulation/MediaQueryInspector.js | revealInSourceCode": {
+  "panels/emulation/MediaQueryInspector.ts | revealInSourceCode": {
     "message": "R̂év̂éâĺ îń ŝóûŕĉé ĉód̂é"
   },
-  "panels/emulation/ModuleUIStrings.js | laptopWithHiDPI": {
+  "panels/emulation/ModuleUIStrings.ts | laptopWithHiDPI": {
     "message": "L̂áp̂t́ôṕ ŵít̂h́ ĤíD̂ṔÎ śĉŕêén̂"
   },
-  "panels/emulation/ModuleUIStrings.js | laptopWithMDPI": {
+  "panels/emulation/ModuleUIStrings.ts | laptopWithMDPI": {
     "message": "L̂áp̂t́ôṕ ŵít̂h́ M̂D́P̂Í ŝćr̂éêń"
   },
-  "panels/emulation/ModuleUIStrings.js | laptopWithTouch": {
+  "panels/emulation/ModuleUIStrings.ts | laptopWithTouch": {
     "message": "L̂áp̂t́ôṕ ŵít̂h́ t̂óûćĥ"
   },
-  "panels/emulation/SensorsView.js | adjustWithMousewheelOrUpdownKeys": {
+  "panels/emulation/SensorsView.ts | adjustWithMousewheelOrUpdownKeys": {
     "message": "Âd́ĵúŝt́ ŵít̂h́ m̂óûśêẃĥéêĺ ôŕ ûṕ/d̂óŵń k̂éŷś. {PH1}: ±10, Ŝh́îf́t̂: ±1, Ál̂t́: ±0.01"
   },
-  "panels/emulation/SensorsView.js | alpha": {
+  "panels/emulation/SensorsView.ts | alpha": {
     "message": "α (âĺp̂h́â)"
   },
-  "panels/emulation/SensorsView.js | beta": {
+  "panels/emulation/SensorsView.ts | beta": {
     "message": "β (b̂ét̂á)"
   },
-  "panels/emulation/SensorsView.js | customOrientation": {
+  "panels/emulation/SensorsView.ts | customOrientation": {
     "message": "Ĉúŝt́ôḿ ôŕîén̂t́ât́îón̂"
   },
-  "panels/emulation/SensorsView.js | deviceOrientationSetToAlphaSBeta": {
+  "panels/emulation/SensorsView.ts | deviceOrientationSetToAlphaSBeta": {
     "message": "D̂év̂íĉé ôŕîén̂t́ât́îón̂ śêt́ t̂ó âĺp̂h́â: {PH1}, b́êt́â: {PH2}, ǵâḿm̂á: {PH3}"
   },
-  "panels/emulation/SensorsView.js | displayDown": {
+  "panels/emulation/SensorsView.ts | displayDown": {
     "message": "D̂íŝṕl̂áŷ d́ôẃn̂"
   },
-  "panels/emulation/SensorsView.js | displayUp": {
+  "panels/emulation/SensorsView.ts | displayUp": {
     "message": "D̂íŝṕl̂áŷ úp̂"
   },
-  "panels/emulation/SensorsView.js | enableOrientationToRotate": {
+  "panels/emulation/SensorsView.ts | enableOrientationToRotate": {
     "message": "Êńâb́l̂é ôŕîén̂t́ât́îón̂ t́ô ŕôt́ât́ê"
   },
-  "panels/emulation/SensorsView.js | error": {
+  "panels/emulation/SensorsView.ts | error": {
     "message": "Êŕr̂ór̂"
   },
-  "panels/emulation/SensorsView.js | forcesSelectedIdleStateEmulation": {
+  "panels/emulation/SensorsView.ts | forcesSelectedIdleStateEmulation": {
     "message": "F̂ór̂ćêś ŝél̂éĉt́êd́ îd́l̂é ŝt́ât́ê ém̂úl̂át̂íôń"
   },
-  "panels/emulation/SensorsView.js | forcesTouchInsteadOfClick": {
+  "panels/emulation/SensorsView.ts | forcesTouchInsteadOfClick": {
     "message": "F̂ór̂ćêś t̂óûćĥ ín̂śt̂éâd́ ôf́ ĉĺîćk̂"
   },
-  "panels/emulation/SensorsView.js | gamma": {
+  "panels/emulation/SensorsView.ts | gamma": {
     "message": "γ (ĝám̂ḿâ)"
   },
-  "panels/emulation/SensorsView.js | landscapeLeft": {
+  "panels/emulation/SensorsView.ts | landscapeLeft": {
     "message": "L̂án̂d́ŝćâṕê ĺêf́t̂"
   },
-  "panels/emulation/SensorsView.js | landscapeRight": {
+  "panels/emulation/SensorsView.ts | landscapeRight": {
     "message": "L̂án̂d́ŝćâṕê ŕîǵĥt́"
   },
-  "panels/emulation/SensorsView.js | latitude": {
+  "panels/emulation/SensorsView.ts | latitude": {
     "message": "L̂át̂ít̂úd̂é"
   },
-  "panels/emulation/SensorsView.js | locale": {
+  "panels/emulation/SensorsView.ts | locale": {
     "message": "L̂óĉál̂é"
   },
-  "panels/emulation/SensorsView.js | location": {
+  "panels/emulation/SensorsView.ts | location": {
     "message": "L̂óĉát̂íôń"
   },
-  "panels/emulation/SensorsView.js | locationUnavailable": {
+  "panels/emulation/SensorsView.ts | locationUnavailable": {
     "message": "L̂óĉát̂íôń ûńâv́âíl̂áb̂ĺê"
   },
-  "panels/emulation/SensorsView.js | longitude": {
+  "panels/emulation/SensorsView.ts | longitude": {
     "message": "L̂ón̂ǵît́ûd́ê"
   },
-  "panels/emulation/SensorsView.js | manage": {
+  "panels/emulation/SensorsView.ts | manage": {
     "message": "M̂án̂áĝé"
   },
-  "panels/emulation/SensorsView.js | manageTheListOfLocations": {
+  "panels/emulation/SensorsView.ts | manageTheListOfLocations": {
     "message": "M̂án̂áĝé t̂h́ê ĺîśt̂ óf̂ ĺôćât́îón̂ś"
   },
-  "panels/emulation/SensorsView.js | noOverride": {
+  "panels/emulation/SensorsView.ts | noOverride": {
     "message": "N̂ó ôv́êŕr̂íd̂é"
   },
-  "panels/emulation/SensorsView.js | off": {
+  "panels/emulation/SensorsView.ts | off": {
     "message": "Ôf́f̂"
   },
-  "panels/emulation/SensorsView.js | orientation": {
+  "panels/emulation/SensorsView.ts | orientation": {
     "message": "Ôŕîén̂t́ât́îón̂"
   },
-  "panels/emulation/SensorsView.js | other": {
+  "panels/emulation/SensorsView.ts | other": {
     "message": "Ôt́ĥér̂…"
   },
-  "panels/emulation/SensorsView.js | overrides": {
+  "panels/emulation/SensorsView.ts | overrides": {
     "message": "Ôv́êŕr̂íd̂éŝ"
   },
-  "panels/emulation/SensorsView.js | portrait": {
+  "panels/emulation/SensorsView.ts | portrait": {
     "message": "P̂ór̂t́r̂áît́"
   },
-  "panels/emulation/SensorsView.js | portraitUpsideDown": {
+  "panels/emulation/SensorsView.ts | portraitUpsideDown": {
     "message": "P̂ór̂t́r̂áît́ ûṕŝíd̂é d̂óŵń"
   },
-  "panels/emulation/SensorsView.js | presets": {
+  "panels/emulation/SensorsView.ts | presets": {
     "message": "P̂ŕêśêt́ŝ"
   },
-  "panels/emulation/SensorsView.js | reset": {
+  "panels/emulation/SensorsView.ts | reset": {
     "message": "R̂éŝét̂"
   },
-  "panels/emulation/SensorsView.js | resetDeviceOrientation": {
+  "panels/emulation/SensorsView.ts | resetDeviceOrientation": {
     "message": "R̂éŝét̂ d́êv́îćê ór̂íêńt̂át̂íôń"
   },
-  "panels/emulation/SensorsView.js | shiftdragHorizontallyToRotate": {
+  "panels/emulation/SensorsView.ts | shiftdragHorizontallyToRotate": {
     "message": "Ŝh́îf́t̂+d́r̂áĝ h́ôŕîźôńt̂ál̂ĺŷ t́ô ŕôt́ât́ê ár̂óûńd̂ t́ĥé ŷ-áx̂íŝ"
   },
-  "panels/emulation/SensorsView.js | timezoneId": {
+  "panels/emulation/SensorsView.ts | timezoneId": {
     "message": "T̂ím̂éẑón̂é ÎD́"
   },
   "panels/event_listeners/EventListenersView.ts | deleteEventListener": {

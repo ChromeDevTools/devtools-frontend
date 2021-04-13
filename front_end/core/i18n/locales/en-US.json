@@ -4838,220 +4838,220 @@
   "panels/elements/StylesSidebarPane.js | viaInspector": {
     "message": "via inspector"
   },
-  "panels/emulation/DeviceModeModel.js | devicePixelRatioMustBeANumberOr": {
+  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
     "message": "Device pixel ratio must be a number or blank."
   },
-  "panels/emulation/DeviceModeModel.js | devicePixelRatioMustBeGreater": {
+  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeGreater": {
     "message": "Device pixel ratio must be greater than or equal to {PH1}."
   },
-  "panels/emulation/DeviceModeModel.js | devicePixelRatioMustBeLessThanOr": {
+  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeLessThanOr": {
     "message": "Device pixel ratio must be less than or equal to {PH1}."
   },
-  "panels/emulation/DeviceModeModel.js | heightMustBeANumber": {
+  "panels/emulation/DeviceModeModel.ts | heightMustBeANumber": {
     "message": "Height must be a number."
   },
-  "panels/emulation/DeviceModeModel.js | heightMustBeGreaterThanOrEqualTo": {
+  "panels/emulation/DeviceModeModel.ts | heightMustBeGreaterThanOrEqualTo": {
     "message": "Height must be greater than or equal to {PH1}."
   },
-  "panels/emulation/DeviceModeModel.js | heightMustBeLessThanOrEqualToS": {
+  "panels/emulation/DeviceModeModel.ts | heightMustBeLessThanOrEqualToS": {
     "message": "Height must be less than or equal to {PH1}."
   },
-  "panels/emulation/DeviceModeModel.js | widthMustBeANumber": {
+  "panels/emulation/DeviceModeModel.ts | widthMustBeANumber": {
     "message": "Width must be a number."
   },
-  "panels/emulation/DeviceModeModel.js | widthMustBeGreaterThanOrEqualToS": {
+  "panels/emulation/DeviceModeModel.ts | widthMustBeGreaterThanOrEqualToS": {
     "message": "Width must be greater than or equal to {PH1}."
   },
-  "panels/emulation/DeviceModeModel.js | widthMustBeLessThanOrEqualToS": {
+  "panels/emulation/DeviceModeModel.ts | widthMustBeLessThanOrEqualToS": {
     "message": "Width must be less than or equal to {PH1}."
   },
-  "panels/emulation/DeviceModeToolbar.js | addDevicePixelRatio": {
+  "panels/emulation/DeviceModeToolbar.ts | addDevicePixelRatio": {
     "message": "Add device pixel ratio"
   },
-  "panels/emulation/DeviceModeToolbar.js | addDeviceType": {
+  "panels/emulation/DeviceModeToolbar.ts | addDeviceType": {
     "message": "Add device type"
   },
-  "panels/emulation/DeviceModeToolbar.js | autoadjustZoom": {
+  "panels/emulation/DeviceModeToolbar.ts | autoadjustZoom": {
     "message": "Auto-adjust zoom"
   },
-  "panels/emulation/DeviceModeToolbar.js | closeDevtools": {
+  "panels/emulation/DeviceModeToolbar.ts | closeDevtools": {
     "message": "Close DevTools"
   },
-  "panels/emulation/DeviceModeToolbar.js | defaultF": {
+  "panels/emulation/DeviceModeToolbar.ts | defaultF": {
     "message": "Default: {PH1}"
   },
-  "panels/emulation/DeviceModeToolbar.js | devicePixelRatio": {
+  "panels/emulation/DeviceModeToolbar.ts | devicePixelRatio": {
     "message": "Device pixel ratio"
   },
-  "panels/emulation/DeviceModeToolbar.js | deviceType": {
+  "panels/emulation/DeviceModeToolbar.ts | deviceType": {
     "message": "Device type"
   },
-  "panels/emulation/DeviceModeToolbar.js | edit": {
+  "panels/emulation/DeviceModeToolbar.ts | edit": {
     "message": "Edit…"
   },
-  "panels/emulation/DeviceModeToolbar.js | experimentalWebPlatformFeature": {
+  "panels/emulation/DeviceModeToolbar.ts | experimentalWebPlatformFeature": {
     "message": "\"Experimental Web Platform Feature\" flag is enabled. Click to disable it."
   },
-  "panels/emulation/DeviceModeToolbar.js | experimentalWebPlatformFeatureFlag": {
+  "panels/emulation/DeviceModeToolbar.ts | experimentalWebPlatformFeatureFlag": {
     "message": "\"Experimental Web Platform Feature\" flag is disabled. Click to enable it."
   },
-  "panels/emulation/DeviceModeToolbar.js | fitToWindowF": {
+  "panels/emulation/DeviceModeToolbar.ts | fitToWindowF": {
     "message": "Fit to window ({PH1}%)"
   },
-  "panels/emulation/DeviceModeToolbar.js | heightLeaveEmptyForFull": {
+  "panels/emulation/DeviceModeToolbar.ts | heightLeaveEmptyForFull": {
     "message": "Height (leave empty for full)"
   },
-  "panels/emulation/DeviceModeToolbar.js | hideDeviceFrame": {
+  "panels/emulation/DeviceModeToolbar.ts | hideDeviceFrame": {
     "message": "Hide device frame"
   },
-  "panels/emulation/DeviceModeToolbar.js | hideMediaQueries": {
+  "panels/emulation/DeviceModeToolbar.ts | hideMediaQueries": {
     "message": "Hide media queries"
   },
-  "panels/emulation/DeviceModeToolbar.js | hideRulers": {
+  "panels/emulation/DeviceModeToolbar.ts | hideRulers": {
     "message": "Hide rulers"
   },
-  "panels/emulation/DeviceModeToolbar.js | landscape": {
+  "panels/emulation/DeviceModeToolbar.ts | landscape": {
     "message": "Landscape"
   },
-  "panels/emulation/DeviceModeToolbar.js | moreOptions": {
+  "panels/emulation/DeviceModeToolbar.ts | moreOptions": {
     "message": "More options"
   },
-  "panels/emulation/DeviceModeToolbar.js | none": {
+  "panels/emulation/DeviceModeToolbar.ts | none": {
     "message": "None"
   },
-  "panels/emulation/DeviceModeToolbar.js | portrait": {
+  "panels/emulation/DeviceModeToolbar.ts | portrait": {
     "message": "Portrait"
   },
-  "panels/emulation/DeviceModeToolbar.js | removeDevicePixelRatio": {
+  "panels/emulation/DeviceModeToolbar.ts | removeDevicePixelRatio": {
     "message": "Remove device pixel ratio"
   },
-  "panels/emulation/DeviceModeToolbar.js | removeDeviceType": {
+  "panels/emulation/DeviceModeToolbar.ts | removeDeviceType": {
     "message": "Remove device type"
   },
-  "panels/emulation/DeviceModeToolbar.js | resetToDefaults": {
+  "panels/emulation/DeviceModeToolbar.ts | resetToDefaults": {
     "message": "Reset to defaults"
   },
-  "panels/emulation/DeviceModeToolbar.js | responsive": {
+  "panels/emulation/DeviceModeToolbar.ts | responsive": {
     "message": "Responsive"
   },
-  "panels/emulation/DeviceModeToolbar.js | rotate": {
+  "panels/emulation/DeviceModeToolbar.ts | rotate": {
     "message": "Rotate"
   },
-  "panels/emulation/DeviceModeToolbar.js | screenOrientationOptions": {
+  "panels/emulation/DeviceModeToolbar.ts | screenOrientationOptions": {
     "message": "Screen orientation options"
   },
-  "panels/emulation/DeviceModeToolbar.js | showDeviceFrame": {
+  "panels/emulation/DeviceModeToolbar.ts | showDeviceFrame": {
     "message": "Show device frame"
   },
-  "panels/emulation/DeviceModeToolbar.js | showMediaQueries": {
+  "panels/emulation/DeviceModeToolbar.ts | showMediaQueries": {
     "message": "Show media queries"
   },
-  "panels/emulation/DeviceModeToolbar.js | showRulers": {
+  "panels/emulation/DeviceModeToolbar.ts | showRulers": {
     "message": "Show rulers"
   },
-  "panels/emulation/DeviceModeToolbar.js | toggleDualscreenMode": {
+  "panels/emulation/DeviceModeToolbar.ts | toggleDualscreenMode": {
     "message": "Toggle dual-screen mode"
   },
-  "panels/emulation/DeviceModeToolbar.js | width": {
+  "panels/emulation/DeviceModeToolbar.ts | width": {
     "message": "Width"
   },
-  "panels/emulation/DeviceModeToolbar.js | zoom": {
+  "panels/emulation/DeviceModeToolbar.ts | zoom": {
     "message": "Zoom"
   },
-  "panels/emulation/DeviceModeView.js | doubleclickForFullHeight": {
+  "panels/emulation/DeviceModeView.ts | doubleclickForFullHeight": {
     "message": "Double-click for full height"
   },
-  "panels/emulation/DeviceModeView.js | laptop": {
+  "panels/emulation/DeviceModeView.ts | laptop": {
     "message": "Laptop"
   },
-  "panels/emulation/DeviceModeView.js | laptopL": {
+  "panels/emulation/DeviceModeView.ts | laptopL": {
     "message": "Laptop L"
   },
-  "panels/emulation/DeviceModeView.js | mobileL": {
+  "panels/emulation/DeviceModeView.ts | mobileL": {
     "message": "Mobile L"
   },
-  "panels/emulation/DeviceModeView.js | mobileM": {
+  "panels/emulation/DeviceModeView.ts | mobileM": {
     "message": "Mobile M"
   },
-  "panels/emulation/DeviceModeView.js | mobileS": {
+  "panels/emulation/DeviceModeView.ts | mobileS": {
     "message": "Mobile S"
   },
-  "panels/emulation/DeviceModeView.js | tablet": {
+  "panels/emulation/DeviceModeView.ts | tablet": {
     "message": "Tablet"
   },
-  "panels/emulation/DevicesSettingsTab.js | addCustomDevice": {
+  "panels/emulation/DevicesSettingsTab.ts | addCustomDevice": {
     "message": "Add custom device..."
   },
-  "panels/emulation/DevicesSettingsTab.js | architecture": {
+  "panels/emulation/DevicesSettingsTab.ts | architecture": {
     "message": "Architecture (e.g. x86)"
   },
-  "panels/emulation/DevicesSettingsTab.js | brandsList": {
+  "panels/emulation/DevicesSettingsTab.ts | brandsList": {
     "message": "Brands list is not a valid structured fields list."
   },
-  "panels/emulation/DevicesSettingsTab.js | brandsListMust": {
+  "panels/emulation/DevicesSettingsTab.ts | brandsListMust": {
     "message": "Brands list must consist of strings, each with a v parameter with a string value."
   },
-  "panels/emulation/DevicesSettingsTab.js | device": {
+  "panels/emulation/DevicesSettingsTab.ts | device": {
     "message": "Device"
   },
-  "panels/emulation/DevicesSettingsTab.js | deviceModel": {
+  "panels/emulation/DevicesSettingsTab.ts | deviceModel": {
     "message": "Device model"
   },
-  "panels/emulation/DevicesSettingsTab.js | deviceName": {
+  "panels/emulation/DevicesSettingsTab.ts | deviceName": {
     "message": "Device Name"
   },
-  "panels/emulation/DevicesSettingsTab.js | deviceNameCannotBeEmpty": {
+  "panels/emulation/DevicesSettingsTab.ts | deviceNameCannotBeEmpty": {
     "message": "Device name cannot be empty."
   },
-  "panels/emulation/DevicesSettingsTab.js | deviceNameMustBeLessThanS": {
+  "panels/emulation/DevicesSettingsTab.ts | deviceNameMustBeLessThanS": {
     "message": "Device name must be less than {PH1} characters."
   },
-  "panels/emulation/DevicesSettingsTab.js | devicePixelRatio": {
+  "panels/emulation/DevicesSettingsTab.ts | devicePixelRatio": {
     "message": "Device pixel ratio"
   },
-  "panels/emulation/DevicesSettingsTab.js | emulatedDevices": {
+  "panels/emulation/DevicesSettingsTab.ts | emulatedDevices": {
     "message": "Emulated Devices"
   },
-  "panels/emulation/DevicesSettingsTab.js | fullBrowserVersion": {
+  "panels/emulation/DevicesSettingsTab.ts | fullBrowserVersion": {
     "message": "Full browser version (e.g. 87.0.4280.88)"
   },
-  "panels/emulation/DevicesSettingsTab.js | height": {
+  "panels/emulation/DevicesSettingsTab.ts | height": {
     "message": "Height"
   },
-  "panels/emulation/DevicesSettingsTab.js | notRepresentable": {
+  "panels/emulation/DevicesSettingsTab.ts | notRepresentable": {
     "message": "Not representable as structured headers string."
   },
-  "panels/emulation/DevicesSettingsTab.js | platform": {
+  "panels/emulation/DevicesSettingsTab.ts | platform": {
     "message": "Platform (e.g. Android)"
   },
-  "panels/emulation/DevicesSettingsTab.js | platformVersion": {
+  "panels/emulation/DevicesSettingsTab.ts | platformVersion": {
     "message": "Platform version"
   },
-  "panels/emulation/DevicesSettingsTab.js | UABrands": {
+  "panels/emulation/DevicesSettingsTab.ts | UABrands": {
     "message": "UA brands list (e.g. \"Chromium\";v=\"87\")"
   },
-  "panels/emulation/DevicesSettingsTab.js | userAgentClient": {
+  "panels/emulation/DevicesSettingsTab.ts | userAgentClient": {
     "message": "User agent client hints"
   },
-  "panels/emulation/DevicesSettingsTab.js | userAgentClientHintsAre": {
+  "panels/emulation/DevicesSettingsTab.ts | userAgentClientHintsAre": {
     "message": "User agent client hints are an alternative to the user agent string that identify the browser and the device in a more structured way with better privacy accounting. Click the button to learn more."
   },
-  "panels/emulation/DevicesSettingsTab.js | userAgentString": {
+  "panels/emulation/DevicesSettingsTab.ts | userAgentString": {
     "message": "User agent string"
   },
-  "panels/emulation/DevicesSettingsTab.js | userAgentType": {
+  "panels/emulation/DevicesSettingsTab.ts | userAgentType": {
     "message": "User agent type"
   },
-  "panels/emulation/DevicesSettingsTab.js | width": {
+  "panels/emulation/DevicesSettingsTab.ts | width": {
     "message": "Width"
   },
-  "panels/emulation/EmulatedDevices.js | laptopWithHiDPIScreen": {
+  "panels/emulation/EmulatedDevices.ts | laptopWithHiDPIScreen": {
     "message": "Laptop with HiDPI screen"
   },
-  "panels/emulation/EmulatedDevices.js | laptopWithMDPIScreen": {
+  "panels/emulation/EmulatedDevices.ts | laptopWithMDPIScreen": {
     "message": "Laptop with MDPI screen"
   },
-  "panels/emulation/EmulatedDevices.js | laptopWithTouch": {
+  "panels/emulation/EmulatedDevices.ts | laptopWithTouch": {
     "message": "Laptop with touch"
   },
   "panels/emulation/emulation-meta.ts | accelerometer": {
@@ -5150,172 +5150,172 @@
   "panels/emulation/emulation-meta.ts | userIdleScreenUnlocked": {
     "message": "User idle, screen unlocked"
   },
-  "panels/emulation/LocationsSettingsTab.js | addLocation": {
+  "panels/emulation/LocationsSettingsTab.ts | addLocation": {
     "message": "Add location..."
   },
-  "panels/emulation/LocationsSettingsTab.js | customLocations": {
+  "panels/emulation/LocationsSettingsTab.ts | customLocations": {
     "message": "Custom locations"
   },
-  "panels/emulation/LocationsSettingsTab.js | lat": {
+  "panels/emulation/LocationsSettingsTab.ts | lat": {
     "message": "Lat"
   },
-  "panels/emulation/LocationsSettingsTab.js | latitude": {
+  "panels/emulation/LocationsSettingsTab.ts | latitude": {
     "message": "Latitude"
   },
-  "panels/emulation/LocationsSettingsTab.js | latitudeMustBeANumber": {
+  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeANumber": {
     "message": "Latitude must be a number"
   },
-  "panels/emulation/LocationsSettingsTab.js | latitudeMustBeGreaterThanOrEqual": {
+  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeGreaterThanOrEqual": {
     "message": "Latitude must be greater than or equal to {PH1}"
   },
-  "panels/emulation/LocationsSettingsTab.js | latitudeMustBeLessThanOrEqualToS": {
+  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeLessThanOrEqualToS": {
     "message": "Latitude must be less than or equal to {PH1}"
   },
-  "panels/emulation/LocationsSettingsTab.js | locale": {
+  "panels/emulation/LocationsSettingsTab.ts | locale": {
     "message": "Locale"
   },
-  "panels/emulation/LocationsSettingsTab.js | localeMustContainAlphabetic": {
+  "panels/emulation/LocationsSettingsTab.ts | localeMustContainAlphabetic": {
     "message": "Locale must contain alphabetic characters"
   },
-  "panels/emulation/LocationsSettingsTab.js | locationName": {
+  "panels/emulation/LocationsSettingsTab.ts | locationName": {
     "message": "Location name"
   },
-  "panels/emulation/LocationsSettingsTab.js | locationNameCannotBeEmpty": {
+  "panels/emulation/LocationsSettingsTab.ts | locationNameCannotBeEmpty": {
     "message": "Location name cannot be empty"
   },
-  "panels/emulation/LocationsSettingsTab.js | locationNameMustBeLessThanS": {
+  "panels/emulation/LocationsSettingsTab.ts | locationNameMustBeLessThanS": {
     "message": "Location name must be less than {PH1} characters"
   },
-  "panels/emulation/LocationsSettingsTab.js | long": {
+  "panels/emulation/LocationsSettingsTab.ts | long": {
     "message": "Long"
   },
-  "panels/emulation/LocationsSettingsTab.js | longitude": {
+  "panels/emulation/LocationsSettingsTab.ts | longitude": {
     "message": "Longitude"
   },
-  "panels/emulation/LocationsSettingsTab.js | longitudeMustBeANumber": {
+  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeANumber": {
     "message": "Longitude must be a number"
   },
-  "panels/emulation/LocationsSettingsTab.js | longitudeMustBeGreaterThanOr": {
+  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeGreaterThanOr": {
     "message": "Longitude must be greater than or equal to {PH1}"
   },
-  "panels/emulation/LocationsSettingsTab.js | longitudeMustBeLessThanOrEqualTo": {
+  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeLessThanOrEqualTo": {
     "message": "Longitude must be less than or equal to {PH1}"
   },
-  "panels/emulation/LocationsSettingsTab.js | timezoneId": {
+  "panels/emulation/LocationsSettingsTab.ts | timezoneId": {
     "message": "Timezone ID"
   },
-  "panels/emulation/LocationsSettingsTab.js | timezoneIdMustContainAlphabetic": {
+  "panels/emulation/LocationsSettingsTab.ts | timezoneIdMustContainAlphabetic": {
     "message": "Timezone ID must contain alphabetic characters"
   },
-  "panels/emulation/MediaQueryInspector.js | revealInSourceCode": {
+  "panels/emulation/MediaQueryInspector.ts | revealInSourceCode": {
     "message": "Reveal in source code"
   },
-  "panels/emulation/ModuleUIStrings.js | laptopWithHiDPI": {
+  "panels/emulation/ModuleUIStrings.ts | laptopWithHiDPI": {
     "message": "Laptop with HiDPI screen"
   },
-  "panels/emulation/ModuleUIStrings.js | laptopWithMDPI": {
+  "panels/emulation/ModuleUIStrings.ts | laptopWithMDPI": {
     "message": "Laptop with MDPI screen"
   },
-  "panels/emulation/ModuleUIStrings.js | laptopWithTouch": {
+  "panels/emulation/ModuleUIStrings.ts | laptopWithTouch": {
     "message": "Laptop with touch"
   },
-  "panels/emulation/SensorsView.js | adjustWithMousewheelOrUpdownKeys": {
+  "panels/emulation/SensorsView.ts | adjustWithMousewheelOrUpdownKeys": {
     "message": "Adjust with mousewheel or up/down keys. {PH1}: ±10, Shift: ±1, Alt: ±0.01"
   },
-  "panels/emulation/SensorsView.js | alpha": {
+  "panels/emulation/SensorsView.ts | alpha": {
     "message": "α (alpha)"
   },
-  "panels/emulation/SensorsView.js | beta": {
+  "panels/emulation/SensorsView.ts | beta": {
     "message": "β (beta)"
   },
-  "panels/emulation/SensorsView.js | customOrientation": {
+  "panels/emulation/SensorsView.ts | customOrientation": {
     "message": "Custom orientation"
   },
-  "panels/emulation/SensorsView.js | deviceOrientationSetToAlphaSBeta": {
+  "panels/emulation/SensorsView.ts | deviceOrientationSetToAlphaSBeta": {
     "message": "Device orientation set to alpha: {PH1}, beta: {PH2}, gamma: {PH3}"
   },
-  "panels/emulation/SensorsView.js | displayDown": {
+  "panels/emulation/SensorsView.ts | displayDown": {
     "message": "Display down"
   },
-  "panels/emulation/SensorsView.js | displayUp": {
+  "panels/emulation/SensorsView.ts | displayUp": {
     "message": "Display up"
   },
-  "panels/emulation/SensorsView.js | enableOrientationToRotate": {
+  "panels/emulation/SensorsView.ts | enableOrientationToRotate": {
     "message": "Enable orientation to rotate"
   },
-  "panels/emulation/SensorsView.js | error": {
+  "panels/emulation/SensorsView.ts | error": {
     "message": "Error"
   },
-  "panels/emulation/SensorsView.js | forcesSelectedIdleStateEmulation": {
+  "panels/emulation/SensorsView.ts | forcesSelectedIdleStateEmulation": {
     "message": "Forces selected idle state emulation"
   },
-  "panels/emulation/SensorsView.js | forcesTouchInsteadOfClick": {
+  "panels/emulation/SensorsView.ts | forcesTouchInsteadOfClick": {
     "message": "Forces touch instead of click"
   },
-  "panels/emulation/SensorsView.js | gamma": {
+  "panels/emulation/SensorsView.ts | gamma": {
     "message": "γ (gamma)"
   },
-  "panels/emulation/SensorsView.js | landscapeLeft": {
+  "panels/emulation/SensorsView.ts | landscapeLeft": {
     "message": "Landscape left"
   },
-  "panels/emulation/SensorsView.js | landscapeRight": {
+  "panels/emulation/SensorsView.ts | landscapeRight": {
     "message": "Landscape right"
   },
-  "panels/emulation/SensorsView.js | latitude": {
+  "panels/emulation/SensorsView.ts | latitude": {
     "message": "Latitude"
   },
-  "panels/emulation/SensorsView.js | locale": {
+  "panels/emulation/SensorsView.ts | locale": {
     "message": "Locale"
   },
-  "panels/emulation/SensorsView.js | location": {
+  "panels/emulation/SensorsView.ts | location": {
     "message": "Location"
   },
-  "panels/emulation/SensorsView.js | locationUnavailable": {
+  "panels/emulation/SensorsView.ts | locationUnavailable": {
     "message": "Location unavailable"
   },
-  "panels/emulation/SensorsView.js | longitude": {
+  "panels/emulation/SensorsView.ts | longitude": {
     "message": "Longitude"
   },
-  "panels/emulation/SensorsView.js | manage": {
+  "panels/emulation/SensorsView.ts | manage": {
     "message": "Manage"
   },
-  "panels/emulation/SensorsView.js | manageTheListOfLocations": {
+  "panels/emulation/SensorsView.ts | manageTheListOfLocations": {
     "message": "Manage the list of locations"
   },
-  "panels/emulation/SensorsView.js | noOverride": {
+  "panels/emulation/SensorsView.ts | noOverride": {
     "message": "No override"
   },
-  "panels/emulation/SensorsView.js | off": {
+  "panels/emulation/SensorsView.ts | off": {
     "message": "Off"
   },
-  "panels/emulation/SensorsView.js | orientation": {
+  "panels/emulation/SensorsView.ts | orientation": {
     "message": "Orientation"
   },
-  "panels/emulation/SensorsView.js | other": {
+  "panels/emulation/SensorsView.ts | other": {
     "message": "Other…"
   },
-  "panels/emulation/SensorsView.js | overrides": {
+  "panels/emulation/SensorsView.ts | overrides": {
     "message": "Overrides"
   },
-  "panels/emulation/SensorsView.js | portrait": {
+  "panels/emulation/SensorsView.ts | portrait": {
     "message": "Portrait"
   },
-  "panels/emulation/SensorsView.js | portraitUpsideDown": {
+  "panels/emulation/SensorsView.ts | portraitUpsideDown": {
     "message": "Portrait upside down"
   },
-  "panels/emulation/SensorsView.js | presets": {
+  "panels/emulation/SensorsView.ts | presets": {
     "message": "Presets"
   },
-  "panels/emulation/SensorsView.js | reset": {
+  "panels/emulation/SensorsView.ts | reset": {
     "message": "Reset"
   },
-  "panels/emulation/SensorsView.js | resetDeviceOrientation": {
+  "panels/emulation/SensorsView.ts | resetDeviceOrientation": {
     "message": "Reset device orientation"
   },
-  "panels/emulation/SensorsView.js | shiftdragHorizontallyToRotate": {
+  "panels/emulation/SensorsView.ts | shiftdragHorizontallyToRotate": {
     "message": "Shift+drag horizontally to rotate around the y-axis"
   },
-  "panels/emulation/SensorsView.js | timezoneId": {
+  "panels/emulation/SensorsView.ts | timezoneId": {
     "message": "Timezone ID"
   },
   "panels/event_listeners/EventListenersView.ts | deleteEventListener": {

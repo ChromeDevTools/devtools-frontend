@@ -92,6 +92,7 @@ function launchChrome() {
     '--ignore-certificate-errors-spki-list=KLy6vv6synForXwI6lDIl+D3ZrMV6Y1EMTY6YpOcAos=',
     '--site-per-process',  // Default on Desktop anyway, but ensure that we always use out-of-process frames when we intend to.
     '--host-resolver-rules=MAP *.test 127.0.0.1',
+    '--disable-gpu',
   ];
   const opts: puppeteer.LaunchOptions&puppeteer.BrowserLaunchArgumentOptions&puppeteer.BrowserConnectOptions = {
     headless,

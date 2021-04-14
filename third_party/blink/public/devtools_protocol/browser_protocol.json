@@ -1483,6 +1483,39 @@
                     ]
                 },
                 {
+                    "id": "AttributionReportingIssueType",
+                    "type": "string",
+                    "enum": [
+                        "PermissionPolicyDisabled"
+                    ]
+                },
+                {
+                    "id": "AttributionReportingIssueDetails",
+                    "description": "Details for issues around \"Attribution Reporting API\" usage.\nExplainer: https://github.com/WICG/conversion-measurement-api",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "violationType",
+                            "$ref": "AttributionReportingIssueType"
+                        },
+                        {
+                            "name": "frame",
+                            "optional": true,
+                            "$ref": "AffectedFrame"
+                        },
+                        {
+                            "name": "request",
+                            "optional": true,
+                            "$ref": "AffectedRequest"
+                        },
+                        {
+                            "name": "violatingNodeId",
+                            "optional": true,
+                            "$ref": "DOM.BackendNodeId"
+                        }
+                    ]
+                },
+                {
                     "id": "InspectorIssueCode",
                     "description": "A unique identifier for the type of issue. Each type may use one of the\noptional fields in InspectorIssueDetails to convey more specific\ninformation about the kind of issue.",
                     "type": "string",
@@ -1495,7 +1528,8 @@
                         "SharedArrayBufferIssue",
                         "TrustedWebActivityIssue",
                         "LowTextContrastIssue",
-                        "CorsIssue"
+                        "CorsIssue",
+                        "AttributionReportingIssue"
                     ]
                 },
                 {
@@ -1547,6 +1581,11 @@
                             "name": "corsIssueDetails",
                             "optional": true,
                             "$ref": "CorsIssueDetails"
+                        },
+                        {
+                            "name": "attributionReportingIssueDetails",
+                            "optional": true,
+                            "$ref": "AttributionReportingIssueDetails"
                         }
                     ]
                 },
@@ -14556,6 +14595,16 @@
                             "type": "boolean"
                         }
                     ]
+                },
+                {
+                    "id": "NavigationType",
+                    "description": "The type of a frameNavigated event.",
+                    "experimental": true,
+                    "type": "string",
+                    "enum": [
+                        "Navigation",
+                        "BackForwardCacheRestore"
+                    ]
                 }
             ],
             "commands": [
@@ -15767,6 +15816,11 @@
                             "name": "frame",
                             "description": "Frame object.",
                             "$ref": "Frame"
+                        },
+                        {
+                            "name": "type",
+                            "experimental": true,
+                            "$ref": "NavigationType"
                         }
                     ]
                 },

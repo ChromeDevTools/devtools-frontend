@@ -253,6 +253,8 @@ export function registerCommands(inspectorBackend) {
   inspectorBackend.registerEnum(
       'Audits.TwaQualityEnforcementViolationType',
       {KHttpError: 'kHttpError', KUnavailableOffline: 'kUnavailableOffline', KDigitalAssetLinks: 'kDigitalAssetLinks'});
+  inspectorBackend.registerEnum(
+      'Audits.AttributionReportingIssueType', {PermissionPolicyDisabled: 'PermissionPolicyDisabled'});
   inspectorBackend.registerEnum('Audits.InspectorIssueCode', {
     SameSiteCookieIssue: 'SameSiteCookieIssue',
     MixedContentIssue: 'MixedContentIssue',
@@ -262,7 +264,8 @@ export function registerCommands(inspectorBackend) {
     SharedArrayBufferIssue: 'SharedArrayBufferIssue',
     TrustedWebActivityIssue: 'TrustedWebActivityIssue',
     LowTextContrastIssue: 'LowTextContrastIssue',
-    CorsIssue: 'CorsIssue'
+    CorsIssue: 'CorsIssue',
+    AttributionReportingIssue: 'AttributionReportingIssue'
   });
   inspectorBackend.registerEvent('Audits.issueAdded', ['issue']);
   inspectorBackend.registerEnum('Audits.GetEncodedResponseRequestEncoding', {Webp: 'webp', Jpeg: 'jpeg', Png: 'png'});
@@ -1967,6 +1970,8 @@ export function registerCommands(inspectorBackend) {
     StrictOriginWhenCrossOrigin: 'strictOriginWhenCrossOrigin',
     UnsafeUrl: 'unsafeUrl'
   });
+  inspectorBackend.registerEnum(
+      'Page.NavigationType', {Navigation: 'Navigation', BackForwardCacheRestore: 'BackForwardCacheRestore'});
   inspectorBackend.registerEvent('Page.domContentEventFired', ['timestamp']);
   inspectorBackend.registerEnum(
       'Page.FileChooserOpenedEventMode', {SelectSingle: 'selectSingle', SelectMultiple: 'selectMultiple'});
@@ -1975,7 +1980,7 @@ export function registerCommands(inspectorBackend) {
   inspectorBackend.registerEvent('Page.frameClearedScheduledNavigation', ['frameId']);
   inspectorBackend.registerEnum('Page.FrameDetachedEventReason', {Remove: 'remove', Swap: 'swap'});
   inspectorBackend.registerEvent('Page.frameDetached', ['frameId', 'reason']);
-  inspectorBackend.registerEvent('Page.frameNavigated', ['frame']);
+  inspectorBackend.registerEvent('Page.frameNavigated', ['frame', 'type']);
   inspectorBackend.registerEvent('Page.documentOpened', ['frame']);
   inspectorBackend.registerEvent('Page.frameResized', []);
   inspectorBackend.registerEvent('Page.frameRequestedNavigation', ['frameId', 'reason', 'url', 'disposition']);

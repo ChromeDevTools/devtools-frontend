@@ -990,6 +990,21 @@ declare namespace Protocol {
       clientSecurityState?: Network.ClientSecurityState;
     }
 
+    export enum AttributionReportingIssueType {
+      PermissionPolicyDisabled = 'PermissionPolicyDisabled',
+    }
+
+    /**
+     * Details for issues around "Attribution Reporting API" usage.
+     * Explainer: https://github.com/WICG/conversion-measurement-api
+     */
+    export interface AttributionReportingIssueDetails {
+      violationType: AttributionReportingIssueType;
+      frame?: AffectedFrame;
+      request?: AffectedRequest;
+      violatingNodeId?: DOM.BackendNodeId;
+    }
+
     /**
      * A unique identifier for the type of issue. Each type may use one of the
      * optional fields in InspectorIssueDetails to convey more specific
@@ -1005,6 +1020,7 @@ declare namespace Protocol {
       TrustedWebActivityIssue = 'TrustedWebActivityIssue',
       LowTextContrastIssue = 'LowTextContrastIssue',
       CorsIssue = 'CorsIssue',
+      AttributionReportingIssue = 'AttributionReportingIssue',
     }
 
     /**
@@ -1022,6 +1038,7 @@ declare namespace Protocol {
       twaQualityEnforcementDetails?: TrustedWebActivityIssueDetails;
       lowTextContrastIssueDetails?: LowTextContrastIssueDetails;
       corsIssueDetails?: CorsIssueDetails;
+      attributionReportingIssueDetails?: AttributionReportingIssueDetails;
     }
 
     /**
@@ -9948,6 +9965,14 @@ declare namespace Protocol {
       eager?: boolean;
     }
 
+    /**
+     * The type of a frameNavigated event.
+     */
+    export enum NavigationType {
+      Navigation = 'Navigation',
+      BackForwardCacheRestore = 'BackForwardCacheRestore',
+    }
+
     export interface AddScriptToEvaluateOnLoadRequest {
       scriptSource: string;
     }
@@ -10696,6 +10721,7 @@ declare namespace Protocol {
        * Frame object.
        */
       frame: Frame;
+      type: NavigationType;
     }
 
     /**

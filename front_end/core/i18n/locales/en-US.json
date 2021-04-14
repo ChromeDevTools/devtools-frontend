@@ -7868,58 +7868,58 @@
   "screencast/ScreencastView.ts | theTabIsInactive": {
     "message": "The tab is inactive"
   },
-  "search/SearchResultsPane.js | lineS": {
+  "search/SearchResultsPane.ts | lineS": {
     "message": "Line {PH1}"
   },
-  "search/SearchResultsPane.js | matchesCountS": {
+  "search/SearchResultsPane.ts | matchesCountS": {
     "message": "Matches Count {PH1}"
   },
-  "search/SearchResultsPane.js | showDMore": {
+  "search/SearchResultsPane.ts | showDMore": {
     "message": "Show {PH1} more"
   },
-  "search/SearchView.js | clear": {
+  "search/SearchView.ts | clear": {
     "message": "Clear"
   },
-  "search/SearchView.js | foundDMatchingLinesInDFiles": {
+  "search/SearchView.ts | foundDMatchingLinesInDFiles": {
     "message": "Found {PH1} matching lines in {PH2} files."
   },
-  "search/SearchView.js | foundDMatchingLinesInFile": {
+  "search/SearchView.ts | foundDMatchingLinesInFile": {
     "message": "Found {PH1} matching lines in 1 file."
   },
-  "search/SearchView.js | foundMatchingLineInFile": {
+  "search/SearchView.ts | foundMatchingLineInFile": {
     "message": "Found 1 matching line in 1 file."
   },
-  "search/SearchView.js | indexing": {
+  "search/SearchView.ts | indexing": {
     "message": "Indexing…"
   },
-  "search/SearchView.js | indexingInterrupted": {
+  "search/SearchView.ts | indexingInterrupted": {
     "message": "Indexing interrupted."
   },
-  "search/SearchView.js | matchCase": {
+  "search/SearchView.ts | matchCase": {
     "message": "Match Case"
   },
-  "search/SearchView.js | noMatchesFound": {
+  "search/SearchView.ts | noMatchesFound": {
     "message": "No matches found."
   },
-  "search/SearchView.js | refresh": {
+  "search/SearchView.ts | refresh": {
     "message": "Refresh"
   },
-  "search/SearchView.js | search": {
+  "search/SearchView.ts | search": {
     "message": "Search"
   },
-  "search/SearchView.js | searchFinished": {
+  "search/SearchView.ts | searchFinished": {
     "message": "Search finished."
   },
-  "search/SearchView.js | searching": {
+  "search/SearchView.ts | searching": {
     "message": "Searching…"
   },
-  "search/SearchView.js | searchInterrupted": {
+  "search/SearchView.ts | searchInterrupted": {
     "message": "Search interrupted."
   },
-  "search/SearchView.js | searchQuery": {
+  "search/SearchView.ts | searchQuery": {
     "message": "Search Query"
   },
-  "search/SearchView.js | useRegularExpression": {
+  "search/SearchView.ts | useRegularExpression": {
     "message": "Use Regular Expression"
   },
   "security/security-meta.ts | security": {

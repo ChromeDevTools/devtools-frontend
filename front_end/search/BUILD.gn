@@ -7,9 +7,9 @@ import("../../scripts/build/ninja/devtools_module.gni")
 
 devtools_module("search") {
   sources = [
-    "SearchConfig.js",
-    "SearchResultsPane.js",
-    "SearchView.js",
+    "SearchConfig.ts",
+    "SearchResultsPane.ts",
+    "SearchView.ts",
   ]
 
   deps = [
@@ -29,7 +29,7 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_entrypoint("legacy") {
-  entrypoint = "search-legacy.js"
+  entrypoint = "search-legacy.ts"
 
   deps = [ ":bundle" ]
 }

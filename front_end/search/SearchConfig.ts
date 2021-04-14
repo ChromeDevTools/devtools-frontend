@@ -2,72 +2,60 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Common from '../core/common/common.js';  // eslint-disable-line no-unused-vars
 import * as Platform from '../core/platform/platform.js';
 import * as Workspace from '../models/workspace/workspace.js';  // eslint-disable-line no-unused-vars
 
-/**
- * @implements {Workspace.Workspace.ProjectSearchConfig}
- */
-export class SearchConfig {
-  /**
-   * @param {string} query
-   * @param {boolean} ignoreCase
-   * @param {boolean} isRegex
-   */
-  constructor(query, ignoreCase, isRegex) {
+export class SearchConfig implements Workspace.Workspace.ProjectSearchConfig {
+  _query: string;
+  _ignoreCase: boolean;
+  _isRegex: boolean;
+  _fileQueries?: QueryTerm[];
+  _queries?: string[];
+  _fileRegexQueries?: RegexQuery[];
+  constructor(query: string, ignoreCase: boolean, isRegex: boolean) {
     this._query = query;
     this._ignoreCase = ignoreCase;
     this._isRegex = isRegex;
     this._parse();
   }
 
-  /**
-   * @param {{query: string, ignoreCase: boolean, isRegex: boolean}} object
-   * @return {!SearchConfig}
-   */
-  static fromPlainObject(object) {
+  static fromPlainObject(object: {
+    query: string,
+    ignoreCase: boolean,
+    isRegex: boolean,
+  }): SearchConfig {
     return new SearchConfig(object.query, object.ignoreCase, object.isRegex);
   }
 
-  /**
-   * @override
-   * @return {string}
-   */
-  query() {
+  query(): string {
     return this._query;
   }
 
-  /**
-   * @override
-   * @return {boolean}
-   */
-  ignoreCase() {
+  ignoreCase(): boolean {
     return this._ignoreCase;
   }
 
-  /**
-   * @override
-   * @return {boolean}
-   */
-  isRegex() {
+  isRegex(): boolean {
     return this._isRegex;
   }
 
-  /**
-   * @return {{query: string, ignoreCase: boolean, isRegex: boolean}}
-   */
-  toPlainObject() {
+  toPlainObject(): {
+    query: string,
+    ignoreCase: boolean,
+    isRegex: boolean,
+  } {
     return {query: this.query(), ignoreCase: this.ignoreCase(), isRegex: this.isRegex()};
   }
 
-  _parse() {
+  _parse(): void {
     // Inside double quotes: any symbol except double quote and backslash or any symbol escaped with a backslash.
     const quotedPattern = /"([^\\"]|\\.)+"/;
     // A word is a sequence of any symbols except space and backslash or any symbols escaped with a backslash, that does not start with file:.
     const unquotedWordPattern = /(\s*(?!-?f(ile)?:)[^\\ ]|\\.)+/;
     const unquotedPattern = unquotedWordPattern.source + '(\\s+' + unquotedWordPattern.source + ')*';
-
 
     const pattern = [
       '(\\s*' + FilePatternRegex.source + '\\s*)',
@@ -76,14 +64,8 @@ export class SearchConfig {
     ].join('|');
     const regexp = new RegExp(pattern, 'g');
     const queryParts = this._query.match(regexp) || [];
-    /**
-     * @type {!Array.<!QueryTerm>}
-     */
     this._fileQueries = [];
 
-    /**
-     * @type {!Array.<string>}
-     */
     this._queries = [];
 
     for (let i = 0; i < queryParts.length; ++i) {
@@ -94,7 +76,6 @@ export class SearchConfig {
       const fileQuery = this._parseFileQuery(queryPart);
       if (fileQuery) {
         this._fileQueries.push(fileQuery);
-        /** @type {!Array.<!RegexQuery>} */
         this._fileRegexQueries = this._fileRegexQueries || [];
         this._fileRegexQueries.push(
             {regex: new RegExp(fileQuery.text, this.ignoreCase() ? 'i' : ''), isNegative: fileQuery.isNegative});
@@ -115,12 +96,7 @@ export class SearchConfig {
     }
   }
 
-  /**
-   * @override
-   * @param {string} filePath
-   * @return {boolean}
-   */
-  filePathMatchesFileQuery(filePath) {
+  filePathMatchesFileQuery(filePath: string): boolean {
     if (!this._fileRegexQueries) {
       return true;
     }
@@ -132,33 +108,19 @@ export class SearchConfig {
     return true;
   }
 
-  /**
-   * @override
-   * @return {!Array.<string>}
-   */
-  queries() {
+  queries(): string[] {
     return this._queries || [];
   }
 
-  /**
-   * @param {string} query
-   */
-  _parseUnquotedQuery(query) {
+  _parseUnquotedQuery(query: string): string {
     return query.replace(/\\(.)/g, '$1');
   }
 
-  /**
-   * @param {string} query
-   */
-  _parseQuotedQuery(query) {
+  _parseQuotedQuery(query: string): string {
     return query.substring(1, query.length - 1).replace(/\\(.)/g, '$1');
   }
 
-  /**
-   * @param {string} query
-   * @return {?QueryTerm}
-   */
-  _parseFileQuery(query) {
+  _parseFileQuery(query: string): QueryTerm|null {
     const match = query.match(FilePatternRegex);
     if (!match) {
       return null;
@@ -191,11 +153,9 @@ export class SearchConfig {
 export const FilePatternRegex = /(-)?f(ile)?:((?:[^\\ ]|\\.)+)/;
 
 export class QueryTerm {
-  /**
-   * @param {string} text
-   * @param {boolean} isNegative
-   */
-  constructor(text, isNegative) {
+  text: string;
+  isNegative: boolean;
+  constructor(text: string, isNegative: boolean) {
     this.text = text;
     this.isNegative = isNegative;
   }
@@ -204,76 +164,34 @@ export class QueryTerm {
 /**
  * @interface
  */
-export class SearchResult {
-  /**
-   * @return {string}
-   */
-  label() {
-    throw new Error('not implemented here');
-  }
+export interface SearchResult {
+  label(): string;
 
-  /**
-   * @return {string}
-   */
-  description() {
-    throw new Error('not implemented here');
-  }
+  description(): string;
 
-  /**
-   * @return {number}
-   */
-  matchesCount() {
-    throw new Error('not implemented here');
-  }
+  matchesCount(): number;
 
-  /**
-   * @param {number} index
-   * @return {string}
-   */
-  matchLabel(index) {
-    throw new Error('not implemented here');
-  }
+  matchLabel(index: number): string;
 
-  /**
-   * @param {number} index
-   * @return {string}
-   */
-  matchLineContent(index) {
-    throw new Error('not implemented here');
-  }
+  matchLineContent(index: number): string;
 
-  /**
-   * @param {number} index
-   * @return {!Object}
-   */
-  matchRevealable(index) {
-    throw new Error('not implemented here');
-  }
+  matchRevealable(index: number): Object;
 }
 
 /**
  * @interface
  */
-export class SearchScope {
-  /**
-   * @param {!SearchConfig} searchConfig
-   * @param {!Common.Progress.Progress} progress
-   * @param {function(!SearchResult):void} searchResultCallback
-   * @param {function(boolean):void} searchFinishedCallback
-   * @return {void|!Promise<void>}
-   */
-  performSearch(searchConfig, progress, searchResultCallback, searchFinishedCallback) {
-  }
+export interface SearchScope {
+  performSearch(
+      searchConfig: SearchConfig, progress: Common.Progress.Progress,
+      searchResultCallback: (arg0: SearchResult) => void,
+      searchFinishedCallback: (arg0: boolean) => void): void|Promise<void>;
 
-  /**
-   * @param {!Common.Progress.Progress} progress
-   */
-  performIndexing(progress) {
-  }
+  performIndexing(progress: Common.Progress.Progress): void;
 
-  stopSearch() {}
+  stopSearch(): void;
 }
-
-/** @typedef {!{regex: !RegExp, isNegative: boolean}} */
-// @ts-ignore typedef
-export let RegexQuery;
+export interface RegexQuery {
+  regex: RegExp;
+  isNegative: boolean;
+}

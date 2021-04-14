@@ -34,14 +34,14 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../core/common/common.js';
-import * as i18n from '../core/i18n/i18n.js';
-import * as Platform from '../core/platform/platform.js';
-import * as Root from '../core/root/root.js';
-import * as SDK from '../core/sdk/sdk.js';
-import * as IssuesManager from '../models/issues_manager/issues_manager.js';
-import * as DataGrid from '../ui/legacy/components/data_grid/data_grid.js';
-import * as UI from '../ui/legacy/legacy.js';
+import * as Common from '../../../../core/common/common.js';
+import * as i18n from '../../../../core/i18n/i18n.js';
+import * as Platform from '../../../../core/platform/platform.js';
+import * as Root from '../../../../core/root/root.js';
+import * as SDK from '../../../../core/sdk/sdk.js';
+import * as IssuesManager from '../../../../models/issues_manager/issues_manager.js';
+import * as UI from '../../legacy.js';
+import * as DataGrid from '../data_grid/data_grid.js';
 
 const UIStrings = {
   /**
@@ -91,7 +91,7 @@ const UIStrings = {
   sourceSchemeTooltip:
       'Shows the source scheme (`Secure`, `NonSecure`) the cookie was set on. If the scheme is unknown, this shows `Unset`.',
 };
-const str_ = i18n.i18n.registerUIStrings('cookie_table/CookiesTable.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/cookie_table/CookiesTable.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
@@ -113,7 +113,7 @@ export class CookiesTable extends UI.Widget.VBox {
       deleteCallback?: ((arg0: SDK.Cookie.Cookie, arg1: () => void) => void)) {
     super();
 
-    this.registerRequiredCSS('cookie_table/cookiesTable.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('ui/legacy/components/cookie_table/cookiesTable.css', {enableLegacyPatching: false});
     this.element.classList.add('cookies-table');
 
     this._saveCallback = saveCallback;

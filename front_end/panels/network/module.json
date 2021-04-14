@@ -2,7 +2,7 @@
   "dependencies": [
     "browser_sdk",
     "components",
-    "cookie_table",
+    "ui/legacy/components/cookie_table",
     "ui/legacy/components/data_grid",
     "panels/mobile_throttling",
     "ui/legacy/components/object_ui",

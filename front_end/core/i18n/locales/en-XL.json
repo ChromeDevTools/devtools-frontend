@@ -77,39 +77,6 @@
   "components/TargetDetachedDialog.js | websocketDisconnected": {
     "message": "Ŵéb̂Śôćk̂ét̂ d́îśĉón̂ńêćt̂éd̂"
   },
-  "cookie_table/CookiesTable.ts | cookies": {
-    "message": "Ĉóôḱîéŝ"
-  },
-  "cookie_table/CookiesTable.ts | editableCookies": {
-    "message": "Êd́ît́âb́l̂é Ĉóôḱîéŝ"
-  },
-  "cookie_table/CookiesTable.ts | na": {
-    "message": "N̂/Á"
-  },
-  "cookie_table/CookiesTable.ts | name": {
-    "message": "N̂ám̂é"
-  },
-  "cookie_table/CookiesTable.ts | session": {
-    "message": "Ŝéŝśîón̂"
-  },
-  "cookie_table/CookiesTable.ts | showIssueAssociatedWithThis": {
-    "message": "Ŝh́ôẃ îśŝúê áŝśôćîát̂éd̂ ẃît́ĥ t́ĥíŝ ćôók̂íê"
-  },
-  "cookie_table/CookiesTable.ts | showRequestsWithThisCookie": {
-    "message": "Ŝh́ôẃ R̂éq̂úêśt̂ś Ŵít̂h́ T̂h́îś Ĉóôḱîé"
-  },
-  "cookie_table/CookiesTable.ts | size": {
-    "message": "Ŝíẑé"
-  },
-  "cookie_table/CookiesTable.ts | sourcePortTooltip": {
-    "message": "Ŝh́ôẃŝ t́ĥé ŝóûŕĉé p̂ór̂t́ (r̂án̂ǵê 1-65535) t́ĥé ĉóôḱîé ŵáŝ śêt́ ôń. Îf́ t̂h́ê ṕôŕt̂ íŝ ún̂ḱn̂óŵń, t̂h́îś ŝh́ôẃŝ -1."
-  },
-  "cookie_table/CookiesTable.ts | sourceSchemeTooltip": {
-    "message": "Ŝh́ôẃŝ t́ĥé ŝóûŕĉé ŝćĥém̂é (Secure, NonSecure) t̂h́ê ćôók̂íê ẃâś ŝét̂ ón̂. Íf̂ t́ĥé ŝćĥém̂é îś ûńk̂ńôẃn̂, t́ĥíŝ śĥóŵś Unset."
-  },
-  "cookie_table/CookiesTable.ts | value": {
-    "message": "V̂ál̂úê"
-  },
   "core/common/ResourceType.ts | cspviolationreport": {
     "message": "ĈŚP̂V́îól̂át̂íôńR̂ép̂ór̂t́"
   },
@@ -10729,6 +10696,39 @@
   },
   "ui/legacy/components/color_picker/Spectrum.ts | toggleColorPicker": {
     "message": "T̂óĝǵl̂é ĉól̂ór̂ ṕîćk̂ér̂"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | cookies": {
+    "message": "Ĉóôḱîéŝ"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | editableCookies": {
+    "message": "Êd́ît́âb́l̂é Ĉóôḱîéŝ"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | na": {
+    "message": "N̂/Á"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | name": {
+    "message": "N̂ám̂é"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | session": {
+    "message": "Ŝéŝśîón̂"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | showIssueAssociatedWithThis": {
+    "message": "Ŝh́ôẃ îśŝúê áŝśôćîát̂éd̂ ẃît́ĥ t́ĥíŝ ćôók̂íê"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | showRequestsWithThisCookie": {
+    "message": "Ŝh́ôẃ R̂éq̂úêśt̂ś Ŵít̂h́ T̂h́îś Ĉóôḱîé"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | size": {
+    "message": "Ŝíẑé"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | sourcePortTooltip": {
+    "message": "Ŝh́ôẃŝ t́ĥé ŝóûŕĉé p̂ór̂t́ (r̂án̂ǵê 1-65535) t́ĥé ĉóôḱîé ŵáŝ śêt́ ôń. Îf́ t̂h́ê ṕôŕt̂ íŝ ún̂ḱn̂óŵń, t̂h́îś ŝh́ôẃŝ -1."
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | sourceSchemeTooltip": {
+    "message": "Ŝh́ôẃŝ t́ĥé ŝóûŕĉé ŝćĥém̂é (Secure, NonSecure) t̂h́ê ćôók̂íê ẃâś ŝét̂ ón̂. Íf̂ t́ĥé ŝćĥém̂é îś ûńk̂ńôẃn̂, t́ĥíŝ śĥóŵś Unset."
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | value": {
+    "message": "V̂ál̂úê"
   },
   "ui/legacy/components/data_grid/DataGrid.ts | addNew": {
     "message": "Âd́d̂ ńêẃ"

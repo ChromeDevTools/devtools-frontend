@@ -50,6 +50,7 @@ export const mappingForLayoutTests = new Map<string, string>([
   ['ui/legacy/components/perf_ui', 'perf_ui'],
   ['ui/legacy/components/source_frame', 'source_frame'],
   ['ui/legacy/components/color_picker', 'color_picker'],
+  ['ui/legacy/components/cookie_table', 'cookie_table'],
 ]);
 
 export class Runtime {

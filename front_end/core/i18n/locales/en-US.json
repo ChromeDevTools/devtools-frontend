@@ -77,39 +77,6 @@
   "components/TargetDetachedDialog.js | websocketDisconnected": {
     "message": "WebSocket disconnected"
   },
-  "cookie_table/CookiesTable.ts | cookies": {
-    "message": "Cookies"
-  },
-  "cookie_table/CookiesTable.ts | editableCookies": {
-    "message": "Editable Cookies"
-  },
-  "cookie_table/CookiesTable.ts | na": {
-    "message": "N/A"
-  },
-  "cookie_table/CookiesTable.ts | name": {
-    "message": "Name"
-  },
-  "cookie_table/CookiesTable.ts | session": {
-    "message": "Session"
-  },
-  "cookie_table/CookiesTable.ts | showIssueAssociatedWithThis": {
-    "message": "Show issue associated with this cookie"
-  },
-  "cookie_table/CookiesTable.ts | showRequestsWithThisCookie": {
-    "message": "Show Requests With This Cookie"
-  },
-  "cookie_table/CookiesTable.ts | size": {
-    "message": "Size"
-  },
-  "cookie_table/CookiesTable.ts | sourcePortTooltip": {
-    "message": "Shows the source port (range 1-65535) the cookie was set on. If the port is unknown, this shows -1."
-  },
-  "cookie_table/CookiesTable.ts | sourceSchemeTooltip": {
-    "message": "Shows the source scheme (Secure, NonSecure) the cookie was set on. If the scheme is unknown, this shows Unset."
-  },
-  "cookie_table/CookiesTable.ts | value": {
-    "message": "Value"
-  },
   "core/common/ResourceType.ts | cspviolationreport": {
     "message": "CSPViolationReport"
   },
@@ -10729,6 +10696,39 @@
   },
   "ui/legacy/components/color_picker/Spectrum.ts | toggleColorPicker": {
     "message": "Toggle color picker"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | cookies": {
+    "message": "Cookies"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | editableCookies": {
+    "message": "Editable Cookies"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | na": {
+    "message": "N/A"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | name": {
+    "message": "Name"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | session": {
+    "message": "Session"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | showIssueAssociatedWithThis": {
+    "message": "Show issue associated with this cookie"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | showRequestsWithThisCookie": {
+    "message": "Show Requests With This Cookie"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | size": {
+    "message": "Size"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | sourcePortTooltip": {
+    "message": "Shows the source port (range 1-65535) the cookie was set on. If the port is unknown, this shows -1."
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | sourceSchemeTooltip": {
+    "message": "Shows the source scheme (Secure, NonSecure) the cookie was set on. If the scheme is unknown, this shows Unset."
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | value": {
+    "message": "Value"
   },
   "ui/legacy/components/data_grid/DataGrid.ts | addNew": {
     "message": "Add new"

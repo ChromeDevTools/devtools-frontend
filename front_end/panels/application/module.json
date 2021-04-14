@@ -1,7 +1,7 @@
 {
   "dependencies": [
     "ui/legacy/components/source_frame",
-    "cookie_table",
+    "ui/legacy/components/cookie_table",
     "inline_editor",
     "ui/legacy/components/data_grid",
     "components",

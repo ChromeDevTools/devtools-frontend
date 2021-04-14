@@ -4,7 +4,7 @@
     { "name": "worker_main", "type": "autostart" },
 
     { "name": "panels/browser_debugger" },
-    { "name": "cookie_table" },
+    { "name": "ui/legacy/components/cookie_table" },
     { "name": "panels/elements" },
     { "name": "panels/help" },
     { "name": "issues" },

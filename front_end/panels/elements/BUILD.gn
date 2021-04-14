@@ -72,6 +72,7 @@ devtools_module("elements") {
     "../../text_editor:bundle",
     "../../third_party/lit-html:bundle",
     "../../ui/components:bundle",
+    "../../ui/components/survey_link:bundle",
     "../../ui/components/tree_outline:bundle",
     "../../ui/legacy:bundle",
     "../../ui/legacy/components/color_picker:bundle",

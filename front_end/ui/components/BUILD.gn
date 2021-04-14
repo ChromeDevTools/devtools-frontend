@@ -9,7 +9,6 @@ devtools_module("components") {
   sources = [
     "ExpandableList.ts",
     "ReportView.ts",
-    "SurveyLink.ts",
   ]
   deps = [
     "../../component_helpers:bundle",

@@ -10604,13 +10604,13 @@
   "ui/components/linear_memory_inspector/ValueInterpreterSettings.ts | otherGroup": {
     "message": "Other"
   },
-  "ui/components/SurveyLink.ts | anErrorOccurredWithTheSurvey": {
+  "ui/components/survey_link/SurveyLink.ts | anErrorOccurredWithTheSurvey": {
     "message": "An error occurred with the survey"
   },
-  "ui/components/SurveyLink.ts | openingSurvey": {
+  "ui/components/survey_link/SurveyLink.ts | openingSurvey": {
     "message": "Opening survey …"
   },
-  "ui/components/SurveyLink.ts | thankYouForYourFeedback": {
+  "ui/components/survey_link/SurveyLink.ts | thankYouForYourFeedback": {
     "message": "Thank you for your feedback"
   },
   "ui/legacy/components/color_picker/ContrastDetails.ts | aa": {

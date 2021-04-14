@@ -3,12 +3,13 @@
 // found in the LICENSE file.
 
 import './NodeText.js';
+import '../../ui/components/survey_link/survey_link.js';
 
 import * as ComponentHelpers from '../../component_helpers/component_helpers.js';
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as LitHtml from '../../third_party/lit-html/lit-html.js';
-import * as Components from '../../ui/components/components.js';
+import * as SurveyLink from '../../ui/components/survey_link/survey_link.js';
 
 import {BooleanSetting, EnumSetting, LayoutElement, Setting} from './LayoutPaneUtils.js';
 
@@ -148,7 +149,7 @@ export class LayoutPane extends HTMLElement {
                 promptText: i18nString(UIStrings.feedback),
                 canShowSurvey: Host.InspectorFrontendHost.InspectorFrontendHostInstance.canShowSurvey,
                 showSurvey: Host.InspectorFrontendHost.InspectorFrontendHostInstance.showSurvey,
-              } as Components.SurveyLink.SurveyLinkData}></devtools-survey-link>
+              } as SurveyLink.SurveyLink.SurveyLinkData}></devtools-survey-link>
             </div>
           </div>
           <div class="select-settings">

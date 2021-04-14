@@ -4,10 +4,8 @@
 
 import * as ExpandableList from './ExpandableList.js';
 import * as ReportView from './ReportView.js';
-import * as SurveyLink from './SurveyLink.js';
 
 export {
   ExpandableList,
   ReportView,
-  SurveyLink,
 };

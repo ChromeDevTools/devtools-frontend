@@ -5,12 +5,12 @@
 import * as FrontendHelpers from '../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
 import * as ComponentHelpers from '../../component_helpers/component_helpers.js';
 import * as Common from '../../core/common/common.js';
-import * as Components from '../../ui/components/components.js';
+import * as SurveyLink from '../../ui/components/survey_link/survey_link.js';
 
 await ComponentHelpers.ComponentServerSetup.setup();
 await FrontendHelpers.initializeGlobalVars();
 
-const link = new Components.SurveyLink.SurveyLink();
+const link = new SurveyLink.SurveyLink.SurveyLink();
 document.getElementById('container')?.appendChild(link);
 
 // TODO(petermarshall): The icon doesn't render because importing sub-components cross-module

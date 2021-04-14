@@ -13,7 +13,7 @@ ts_library("ts") {
     "../../../test/unittests/front_end/helpers",
     "../../component_helpers:bundle",
     "../../core/common:bundle",
-    "../../ui/components:bundle",
+    "../../ui/components/survey_link:bundle",
   ]
 }
 

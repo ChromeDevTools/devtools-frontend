@@ -2,12 +2,26 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Common from '../core/common/common.js';
 import * as UI from '../ui/legacy/legacy.js';
 
 import {ColorSwatch} from './ColorSwatch.js';
 
 export class SwatchPopoverHelper extends Common.ObjectWrapper.ObjectWrapper {
+  _popover: UI.GlassPane.GlassPane;
+  _hideProxy: () => void;
+  _boundOnKeyDown: (event: Event) => void;
+  _boundFocusOut: (event: FocusEvent) => void;
+  _isHidden: boolean;
+  _anchorElement: Element|null;
+  _view?: UI.Widget.Widget;
+  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  _hiddenCallback?: ((arg0: boolean) => any);
+  _focusRestorer?: UI.Widget.WidgetFocusRestorer;
+
   constructor() {
     super();
     this._popover = new UI.GlassPane.GlassPane();
@@ -20,15 +34,11 @@ export class SwatchPopoverHelper extends Common.ObjectWrapper.ObjectWrapper {
     this._boundOnKeyDown = this._onKeyDown.bind(this);
     this._boundFocusOut = this._onFocusOut.bind(this);
     this._isHidden = true;
-    /** @type {?Element} */
     this._anchorElement = null;
   }
 
-  /**
-   * @param {!FocusEvent} event
-   */
-  _onFocusOut(event) {
-    const relatedTarget = /** @type {?Element} */ (event.relatedTarget);
+  _onFocusOut(event: FocusEvent): void {
+    const relatedTarget = (event.relatedTarget as Element | null);
     if (this._isHidden || !relatedTarget || !this._view ||
         relatedTarget.isSelfOrDescendant(this._view.contentElement)) {
       return;
@@ -36,19 +46,13 @@ export class SwatchPopoverHelper extends Common.ObjectWrapper.ObjectWrapper {
     this._hideProxy();
   }
 
-  /**
-   * @return {boolean}
-   */
-  isShowing() {
+  isShowing(): boolean {
     return this._popover.isShowing();
   }
 
-  /**
-   * @param {!UI.Widget.Widget} view
-   * @param {!Element} anchorElement
-   * @param {function(boolean)=} hiddenCallback
-   */
-  show(view, anchorElement, hiddenCallback) {
+  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  show(view: UI.Widget.Widget, anchorElement: Element, hiddenCallback?: ((arg0: boolean) => any)): void {
     if (this._popover.isShowing()) {
       if (this._anchorElement === anchorElement) {
         return;
@@ -75,7 +79,7 @@ export class SwatchPopoverHelper extends Common.ObjectWrapper.ObjectWrapper {
     this._view.contentElement.addEventListener('keydown', this._boundOnKeyDown, false);
   }
 
-  reposition() {
+  reposition(): void {
     // This protects against trying to reposition the popover after it has been hidden.
     if (this._isHidden || !this._view) {
       return;
@@ -86,7 +90,7 @@ export class SwatchPopoverHelper extends Common.ObjectWrapper.ObjectWrapper {
     if (this._anchorElement) {
       let anchorBox = this._anchorElement.boxInWindow();
       if (ColorSwatch.isColorSwatch(this._anchorElement)) {
-        const swatch = /** @type {!ColorSwatch} */ (this._anchorElement);
+        const swatch = (this._anchorElement as ColorSwatch);
         if (!swatch.anchorBox) {
           return;
         }
@@ -94,7 +98,7 @@ export class SwatchPopoverHelper extends Common.ObjectWrapper.ObjectWrapper {
       }
 
       this._popover.setContentAnchorBox(anchorBox);
-      this._popover.show(/** @type {!Document} */ (this._anchorElement.ownerDocument));
+      this._popover.show((this._anchorElement.ownerDocument as Document));
     }
     this._view.contentElement.addEventListener('focusout', this._boundFocusOut, false);
     if (!this._focusRestorer) {
@@ -102,10 +106,7 @@ export class SwatchPopoverHelper extends Common.ObjectWrapper.ObjectWrapper {
     }
   }
 
-  /**
-   * @param {boolean=} commitEdit
-   */
-  hide(commitEdit) {
+  hide(commitEdit?: boolean): void {
     if (this._isHidden) {
       return;
     }
@@ -134,11 +135,8 @@ export class SwatchPopoverHelper extends Common.ObjectWrapper.ObjectWrapper {
     }
   }
 
-  /**
-   * @param {!Event} event
-   */
-  _onKeyDown(event) {
-    const keyboardEvent = /** @type {!KeyboardEvent} */ (event);
+  _onKeyDown(event: Event): void {
+    const keyboardEvent = (event as KeyboardEvent);
     if (keyboardEvent.key === 'Enter') {
       this.hide(true);
       keyboardEvent.consume(true);
@@ -151,7 +149,8 @@ export class SwatchPopoverHelper extends Common.ObjectWrapper.ObjectWrapper {
   }
 }
 
-/** @enum {symbol} */
-export const Events = {
-  WillShowPopover: Symbol('WillShowPopover'),
-};
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum Events {
+  WillShowPopover = 'WillShowPopover',
+}

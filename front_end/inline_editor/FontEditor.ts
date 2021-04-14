@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as i18n from '../core/i18n/i18n.js';
 import * as SDK from '../core/sdk/sdk.js';
 import * as IconButton from '../ui/components/icon_button/icon_button.js';
@@ -110,14 +112,17 @@ const UIStrings = {
   */
   sliderInputMode: 'Slider Input Mode',
 };
-const str_ = i18n.i18n.registerUIStrings('inline_editor/FontEditor.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('inline_editor/FontEditor.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class FontEditor extends UI.Widget.VBox {
-  /**
-   * @param {!Map<string, string>} propertyMap
-   */
-  constructor(propertyMap) {
+  _selectedNode: SDK.DOMModel.DOMNode|null;
+  _propertyMap: Map<string, string>;
+  _fontSelectorSection: HTMLElement;
+  _fontSelectors: FontEditor.FontSelectorObject[];
+  _fontsList: Map<string, string[]>[]|null;
+
+  constructor(propertyMap: Map<string, string>) {
     super(true);
     this.registerRequiredCSS('inline_editor/fontEditor.css', {enableLegacyPatching: true});
     this._selectedNode = UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode);
@@ -130,14 +135,11 @@ export class FontEditor extends UI.Widget.VBox {
     this._fontSelectorSection = this.contentElement.createChild('div', 'font-selector-section');
     this._fontSelectorSection.createChild('h2', 'font-section-header').textContent = i18nString(UIStrings.fontFamily);
 
-    /** @type {!Array<!FontEditor.FontSelectorObject>} */
     this._fontSelectors = [];
 
-    /** @type {?Array<!Map<string, !Array<string>>>} */
     this._fontsList = null;
 
-    /** @type {string | undefined} */
-    const propertyValue = this._propertyMap.get('font-family');
+    const propertyValue: string|undefined = this._propertyMap.get('font-family');
 
     this._createFontSelectorSection(propertyValue);
 
@@ -173,10 +175,7 @@ export class FontEditor extends UI.Widget.VBox {
         /** hasUnits= */ true);
   }
 
-  /**
-   * @param {string=} propertyValue
-   */
-  async _createFontSelectorSection(propertyValue) {
+  async _createFontSelectorSection(propertyValue?: string): Promise<void> {
     if (propertyValue) {
       // FIXME(crbug.com/1148434): propertyValue will not be split correctly for font family names that contain commas.
       // e.g. font-family: "Name,with,commas"
@@ -194,16 +193,13 @@ export class FontEditor extends UI.Widget.VBox {
     this._resizePopout();
   }
 
-  /**
-   * @return {!Promise<!Array<!Map<string, !Array<string>>>>}
-   */
-  async _createFontsList() {
+  async _createFontsList(): Promise<Map<string, string[]>[]> {
     const computedFontArray = await FontEditorUtils.generateComputedFontArray();
-    const computedMap = new Map();
+    const computedMap = new Map<string, string[]>();
     const splicedArray = this._splitComputedFontArray(computedFontArray);
 
     computedMap.set('Computed Fonts', splicedArray);
-    const systemMap = new Map();
+    const systemMap = new Map<string, string[]>();
     systemMap.set('System Fonts', FontEditorUtils.SystemFonts);
     systemMap.set('Generic Families', FontEditorUtils.GenericFonts);
 
@@ -213,13 +209,8 @@ export class FontEditor extends UI.Widget.VBox {
     return fontList;
   }
 
-  /**
-   * @param {!Array<string>} computedFontArray
-   * @return {!Array<string>}
-   */
-  _splitComputedFontArray(computedFontArray) {
-    /** @type {!Array<string>} */
-    const array = [];
+  _splitComputedFontArray(computedFontArray: string[]): string[] {
+    const array: string[] = [];
     for (const fontFamilyValue of computedFontArray) {
       if (fontFamilyValue.includes(',')) {
         const fonts = fontFamilyValue.split(',');
@@ -233,14 +224,10 @@ export class FontEditor extends UI.Widget.VBox {
         array.push(fontFamilyValue.replace(/"/g, ''));
       }
     }
-    return /** @type {!Array<string>} */ (array);
+    return array as string[];
   }
 
-  /**
-   * @param {string} value
-   * @param {boolean=} isPrimary
-   */
-  async _createFontSelector(value, isPrimary) {
+  async _createFontSelector(value: string, isPrimary?: boolean): Promise<void> {
     // FIXME(crbug.com/1148434): Custom font family names that use single/double quotes in the font family name will not be handled correctly.
     // e.g. font-family: "FontWith\"DoubleQuotes"
     value = value ? value.trim() : '';
@@ -269,12 +256,8 @@ export class FontEditor extends UI.Widget.VBox {
     }
   }
 
-  /**
-   * @param {number} index
-   * @param {boolean=} isGlobalValue
-   */
-  _deleteFontSelector(index, isGlobalValue) {
-    let fontSelectorObject = this._fontSelectors[index];
+  _deleteFontSelector(index: number, isGlobalValue?: boolean): void {
+    let fontSelectorObject: FontEditor.FontSelectorObject = this._fontSelectors[index];
     const isPrimary = index === 0;
     if (fontSelectorObject.input.value === '' && !isGlobalValue) {
       UI.ARIAUtils.alert(i18nString(UIStrings.thereIsNoValueToDeleteAtIndexS, {PH1: index}));
@@ -311,7 +294,7 @@ export class FontEditor extends UI.Widget.VBox {
     this._fontSelectors[focusIndex].input.focus();
   }
 
-  _updateFontSelectorList() {
+  _updateFontSelectorList(): void {
     for (let i = 0; i < this._fontSelectors.length; i++) {
       const fontSelectorObject = this._fontSelectors[i];
       let label;
@@ -327,12 +310,7 @@ export class FontEditor extends UI.Widget.VBox {
     }
   }
 
-  /**
-   * @param {string} name
-   * @param {!RegExp} regex
-   * @return {!FontEditor.PropertyInfo}
-   */
-  _getPropertyInfo(name, regex) {
+  _getPropertyInfo(name: string, regex: RegExp): FontEditor.PropertyInfo {
     const value = this._propertyMap.get(name);
     if (value) {
       const valueString = value;
@@ -347,29 +325,18 @@ export class FontEditor extends UI.Widget.VBox {
     return {value: null, units: null};
   }
 
-  /**
-   * @param {!Element} field
-   * @param {string} label
-   * @param {!Array<!Map<string, !Array<string>>>} options
-   * @param {string} currentValue
-   */
-  _createSelector(field, label, options, currentValue) {
+  _createSelector(field: Element, label: string, options: Map<string, string[]>[], currentValue: string): void {
     const index = this._fontSelectors.length;
-    /** @type {!HTMLSelectElement} */
-    const selectInput = /** @type {!HTMLSelectElement} */ (UI.UIUtils.createSelect(label, options));
+    const selectInput = (UI.UIUtils.createSelect(label, options) as HTMLSelectElement);
     selectInput.value = currentValue;
     const selectLabel = UI.UIUtils.createLabel(label, 'shadow-editor-label', selectInput);
     selectInput.addEventListener('input', this._onFontSelectorChanged.bind(this), false);
     // We want to prevent the Enter key from propagating to the SwatchPopoverHelper which will close the editor.
-    selectInput.addEventListener(
-        'keydown',
-        /** @param {!KeyboardEvent} event */
-        event => {
-          if (event.key === 'Enter') {
-            event.consume();
-          }
-        },
-        false);
+    selectInput.addEventListener('keydown', (event: KeyboardEvent) => {
+      if (event.key === 'Enter') {
+        event.consume();
+      }
+    }, false);
     field.appendChild(selectLabel);
     field.appendChild(selectInput);
 
@@ -381,20 +348,16 @@ export class FontEditor extends UI.Widget.VBox {
     deleteButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => {
       this._deleteFontSelector(fontSelectorObject.index);
     });
-    deleteButton.element.addEventListener(
-        'keydown',
-        /** @param {!Event} event */
-        event => {
-          if (isEnterOrSpaceKey(event)) {
-            this._deleteFontSelector(fontSelectorObject.index);
-            event.consume();
-          }
-        },
-        false);
+    deleteButton.element.addEventListener('keydown', (event: Event) => {
+      if (isEnterOrSpaceKey(event)) {
+        this._deleteFontSelector(fontSelectorObject.index);
+        event.consume();
+      }
+    }, false);
     this._fontSelectors.push(fontSelectorObject);
   }
 
-  _onFontSelectorChanged() {
+  _onFontSelectorChanged(): void {
     let value = '';
     const isGlobalValue = FontEditorUtils.GlobalValues.includes(this._fontSelectors[0].input.value);
 
@@ -423,61 +386,76 @@ export class FontEditor extends UI.Widget.VBox {
     this._updatePropertyValue('font-family', value);
   }
 
-  /**
-   * @param {string} propertyName
-   * @param {string} value
-   */
-  _updatePropertyValue(propertyName, value) {
+  _updatePropertyValue(propertyName: string, value: string): void {
     this.dispatchEventToListeners(Events.FontChanged, {propertyName, value});
   }
 
-  _resizePopout() {
+  _resizePopout(): void {
     this.dispatchEventToListeners(Events.FontEditorResized);
   }
 }
 
-/**
- * @typedef {{value: ?string, units: ?string}}
- */
-FontEditor.PropertyInfo;
+namespace FontEditor {
+  export interface PropertyInfo {
+    value: string|null;
+    units: string|null;
+  }
 
-/**
- * @typedef {{label: !Element, input: !HTMLSelectElement, deleteButton: !UI.Toolbar.ToolbarButton, index: number}}
- */
-FontEditor.FontSelectorObject;
+  export interface FontSelectorObject {
+    label: Element;
+    input: HTMLSelectElement;
+    deleteButton: UI.Toolbar.ToolbarButton;
+    index: number;
+  }
 
-/**
- * @typedef {{min: number, max: number, step: number}}
- */
-FontEditor.PropertyRange;
+  export interface PropertyRange {
+    min: number;
+    max: number;
+    step: number;
+  }
 
-/**
- * @typedef {{regex: !RegExp, units: ?Set<string>, keyValues: !Set<string>, rangeMap: !Map<string, FontEditor.PropertyRange>, defaultUnit: ?string}}
- */
-FontEditor.FontPropertyInputStaticParams;
+  export interface FontPropertyInputStaticParams {
+    regex: RegExp;
+    units: Set<string>|null;
+    keyValues: Set<string>;
+    rangeMap: Map<string, FontEditor.PropertyRange>;
+    defaultUnit: string|null;
+  }
+}
 
-/** @enum {symbol} */
-export const Events = {
-  FontChanged: Symbol('FontChanged'),
-  FontEditorResized: Symbol('FontEditorResized'),
-};
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum Events {
+  FontChanged = 'FontChanged',
+  FontEditorResized = 'FontEditorResized',
+}
 
 class FontPropertyInputs {
-  /**
-   * @param {string} propertyName
-   * @param {string} label
-   * @param {!Element} field
-   * @param {!FontEditor.PropertyInfo} propertyInfo
-   * @param {!FontEditor.FontPropertyInputStaticParams} staticParams
-   * @param {function(string, string):void} updateCallback
-   * @param {function():void} resizeCallback
-   * @param {boolean=} hasUnits
-   */
-  constructor(propertyName, label, field, propertyInfo, staticParams, updateCallback, resizeCallback, hasUnits) {
+  _showSliderMode: boolean;
+  _errorText: HTMLElement;
+  _propertyInfo: FontEditor.PropertyInfo;
+  _propertyName: string;
+  _staticParams: FontEditor.FontPropertyInputStaticParams;
+  _hasUnits: boolean|undefined;
+  _units: string;
+  _addedUnit: boolean|undefined;
+  _initialRange: FontEditor.PropertyRange;
+  _boundUpdateCallback: (arg0: string, arg1: string) => void;
+  _boundResizeCallback: () => void;
+  _selectedNode: SDK.DOMModel.DOMNode|null;
+  _sliderInput: UI.UIUtils.DevToolsSlider;
+  _textBoxInput: HTMLInputElement;
+  _unitInput: HTMLSelectElement;
+  _selectorInput: HTMLSelectElement;
+  _applyNextInput: boolean;
+
+  constructor(
+      propertyName: string, label: string, field: Element, propertyInfo: FontEditor.PropertyInfo,
+      staticParams: FontEditor.FontPropertyInputStaticParams, updateCallback: (arg0: string, arg1: string) => void,
+      resizeCallback: () => void, hasUnits?: boolean) {
     this._showSliderMode = true;
     const propertyField = field.createChild('div', 'shadow-editor-field shadow-editor-flex-field');
-    /** @type {!HTMLElement} */
-    this._errorText = /** @type {!HTMLElement} */ (field.createChild('div', 'error-text'));
+    this._errorText = (field.createChild('div', 'error-text') as HTMLElement);
     this._errorText.textContent = i18nString(UIStrings.PleaseEnterAValidValueForSText, {PH1: propertyName});
     this._errorText.hidden = true;
     UI.ARIAUtils.markAsAlert(this._errorText);
@@ -513,10 +491,7 @@ class FontPropertyInputs {
     this._applyNextInput = false;
   }
 
-  /**
-   * @param {boolean} invalid
-   */
-  _setInvalidTextBoxInput(invalid) {
+  _setInvalidTextBoxInput(invalid: boolean): void {
     if (invalid) {
       if (this._errorText.hidden) {
         this._errorText.hidden = false;
@@ -532,10 +507,7 @@ class FontPropertyInputs {
     }
   }
 
-  /**
-   * @return {boolean}
-   */
-  _checkSelectorValueAndToggle() {
+  _checkSelectorValueAndToggle(): boolean {
     if (this._staticParams.keyValues && this._propertyInfo.value !== null &&
         (this._staticParams.keyValues.has(this._propertyInfo.value))) {
       this._toggleInputType();
@@ -544,10 +516,7 @@ class FontPropertyInputs {
     return false;
   }
 
-  /**
-   * @return {!{min: number, max: number, step: number}}
-   */
-  _getUnitRange() {
+  _getUnitRange(): FontEditor.PropertyRange {
     let min = 0;
     let max = 100;
     let step = 1;
@@ -578,18 +547,12 @@ class FontPropertyInputs {
     return {min, max, step};
   }
 
-  /**
-   * @param {!Element} field
-   * @param {string} label
-   * @return {!UI.UIUtils.DevToolsSlider}
-   */
-  _createSliderInput(field, label) {
+  _createSliderInput(field: Element, _label: string): UI.UIUtils.DevToolsSlider {
     const min = this._initialRange.min;
     const max = this._initialRange.max;
     const step = this._initialRange.step;
 
-    /** @type {!UI.UIUtils.DevToolsSlider} */
-    const slider = /** @type {!UI.UIUtils.DevToolsSlider} */ (UI.UIUtils.createSlider(min, max, -1));
+    const slider = (UI.UIUtils.createSlider(min, max, -1) as UI.UIUtils.DevToolsSlider);
     slider.sliderElement.step = step.toString();
     slider.sliderElement.tabIndex = 0;
     if (this._propertyInfo.value) {
@@ -620,13 +583,8 @@ class FontPropertyInputs {
     return slider;
   }
 
-  /**
-   * @param {!Element} field
-   * @return {!HTMLInputElement}
-   */
-  _createTextBoxInput(field) {
-    /** @type {!HTMLInputElement} */
-    const textBoxInput = UI.UIUtils.createInput('shadow-editor-text-input', 'number');
+  _createTextBoxInput(field: Element): HTMLInputElement {
+    const textBoxInput: HTMLInputElement = UI.UIUtils.createInput('shadow-editor-text-input', 'number');
 
     textBoxInput.step = this._initialRange.step.toString();
     textBoxInput.classList.add('font-editor-text-input');
@@ -643,11 +601,7 @@ class FontPropertyInputs {
     return textBoxInput;
   }
 
-  /**
-   * @param {!Element} field
-   * @return {!HTMLSelectElement}
-   */
-  _createUnitInput(field) {
+  _createUnitInput(field: Element): HTMLSelectElement {
     let unitInput;
     if (this._hasUnits && this._staticParams.units) {
       const currentValue = this._propertyInfo.units;
@@ -667,28 +621,19 @@ class FontPropertyInputs {
       unitInput.disabled = true;
     }
     // We want to prevent the Enter key from propagating to the SwatchPopoverHelper which will close the editor.
-    unitInput.addEventListener(
-        'keydown',
-        /** @param {!KeyboardEvent} event */
-        event => {
-          if (event.key === 'Enter') {
-            event.consume();
-          }
-        },
-        false);
+    unitInput.addEventListener('keydown', (event: KeyboardEvent) => {
+      if (event.key === 'Enter') {
+        event.consume();
+      }
+    }, false);
     field.appendChild(unitInput);
     UI.ARIAUtils.setAccessibleName(unitInput, i18nString(UIStrings.sUnitInput, {PH1: this._propertyName}));
 
     return unitInput;
   }
 
-  /**
-   * @param {!Element} field
-   * @return {!HTMLSelectElement}
-   */
-  _createSelectorInput(field) {
-    /** @type {!HTMLSelectElement} */
-    const selectInput = UI.UIUtils.createSelect(
+  _createSelectorInput(field: Element): HTMLSelectElement {
+    const selectInput: HTMLSelectElement = UI.UIUtils.createSelect(
         i18nString(UIStrings.sKeyValueSelector, {PH1: this._propertyName}), this._staticParams.keyValues);
     selectInput.classList.add('font-selector-input');
     if (this._propertyInfo.value) {
@@ -696,26 +641,19 @@ class FontPropertyInputs {
     }
     selectInput.addEventListener('input', this._onSelectorInput.bind(this), false);
     // We want to prevent the Enter key from propagating to the SwatchPopoverHelper which will close the editor.
-    selectInput.addEventListener(
-        'keydown',
-        /** @param {!KeyboardEvent} event */
-        event => {
-          if (event.key === 'Enter') {
-            event.consume();
-          }
-        },
-        false);
+    selectInput.addEventListener('keydown', (event: KeyboardEvent) => {
+      if (event.key === 'Enter') {
+        event.consume();
+      }
+    }, false);
     field.appendChild(selectInput);
     selectInput.hidden = true;
     return selectInput;
   }
 
-  /**
-   * @param {!Event} event
-   */
-  _onSelectorInput(event) {
+  _onSelectorInput(event: Event): void {
     if (event.currentTarget) {
-      const value = /** @type {!HTMLInputElement} */ (event.currentTarget).value;
+      const value = (event.currentTarget as HTMLInputElement).value;
       this._textBoxInput.value = '';
       const newValue =
           (parseFloat(this._sliderInput.sliderElement.min) + parseFloat(this._sliderInput.sliderElement.max)) / 2;
@@ -725,12 +663,8 @@ class FontPropertyInputs {
     }
   }
 
-  /**
-   * @param {!Event} event
-   * @param {boolean} apply
-   */
-  _onSliderInput(event, apply) {
-    const target = /** @type {!HTMLInputElement} */ (event.currentTarget);
+  _onSliderInput(event: Event, apply: boolean): void {
+    const target = (event.currentTarget as HTMLInputElement);
     if (target) {
       const value = target.value;
       this._textBoxInput.value = value;
@@ -744,11 +678,8 @@ class FontPropertyInputs {
     }
   }
 
-  /**
-   * @param {!Event} event
-   */
-  _onTextBoxInput(event) {
-    const target = /** @type {!HTMLInputElement} */ (event.currentTarget);
+  _onTextBoxInput(event: Event): void {
+    const target = (event.currentTarget as HTMLInputElement);
     if (target) {
       const value = target.value;
       const units = value === '' ? '' : this._unitInput.value;
@@ -769,11 +700,8 @@ class FontPropertyInputs {
     }
   }
 
-  /**
-   * @param {!Event} event
-   */
-  async _onUnitInput(event) {
-    const unitInput = /** @type {!HTMLInputElement} */ (event.currentTarget);
+  async _onUnitInput(event: Event): Promise<void> {
+    const unitInput = (event.currentTarget as HTMLInputElement);
     const hasFocus = unitInput.hasFocus();
     const newUnit = unitInput.value;
     unitInput.disabled = true;
@@ -791,11 +719,8 @@ class FontPropertyInputs {
     }
   }
 
-  /**
-   * @param {!Element} field
-   */
-  _createTypeToggle(field) {
-    const displaySwitcher = /** @type {!HTMLElement} */ (field.createChild('div', 'spectrum-switcher'));
+  _createTypeToggle(field: Element): void {
+    const displaySwitcher = field.createChild('div', 'spectrum-switcher') as HTMLDivElement;
     const icon = new IconButton.Icon.Icon();
     icon.data = {iconName: 'switcherIcon', color: 'var(--color-text-primary)', width: '16px', height: '16px'};
     displaySwitcher.appendChild(icon);
@@ -805,11 +730,8 @@ class FontPropertyInputs {
     UI.ARIAUtils.markAsButton(displaySwitcher);
   }
 
-  /**
-   * @param {!Event=} event
-   */
-  _toggleInputType(event) {
-    if (event && /** @type {!KeyboardEvent} */ (event).key === 'Enter') {
+  _toggleInputType(event?: Event): void {
+    if (event && (event as KeyboardEvent).key === 'Enter') {
       event.consume();
     }
     if (this._showSliderMode) {
@@ -831,11 +753,7 @@ class FontPropertyInputs {
     }
   }
 
-  /**
-   * @param {number} multiplier
-   * @param {string} newUnit
-   */
-  _setInputUnits(multiplier, newUnit) {
+  _setInputUnits(multiplier: number, newUnit: string): void {
     const newRangeMap = this._staticParams.rangeMap.get(newUnit);
     let newMin, newMax, newStep;
     if (newRangeMap) {
@@ -849,7 +767,7 @@ class FontPropertyInputs {
     }
     let hasValue = false;
     const roundingPrecision = FontEditorUtils.getRoundingPrecision(newStep);
-    let newValue = (newMin + newMax) / 2;
+    let newValue: number = (newMin + newMax) / 2;
     if (this._textBoxInput.value) {
       hasValue = true;
       newValue = parseFloat((parseFloat(this._textBoxInput.value) * multiplier).toFixed(roundingPrecision));

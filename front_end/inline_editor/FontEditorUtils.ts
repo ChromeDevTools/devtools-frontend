@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as SDK from '../core/sdk/sdk.js';
 import * as CssOverviewModule from '../panels/css_overview/css_overview.js';
 
@@ -11,15 +13,13 @@ import * as CssOverviewModule from '../panels/css_overview/css_overview.js';
 // ^[^- ][a-zA-Z-]+ matches property key values (e.g. smaller, x-large, initial)
 // -?\+?(?:[0-9]+\.[0-9]+|\.[0-9]+|[0-9]+) matches numeric property values (e.g. -.23, 3.3, 55)
 // [a-zA-Z%]{0,4} matches the units of numeric property values (e.g. px, vmin, or blank units)
-/** @type {!RegExp} */
-export const FontPropertiesRegex = /^[^- ][a-zA-Z-]+|-?\+?(?:[0-9]+\.[0-9]+|\.[0-9]+|[0-9]+)[a-zA-Z%]{0,4}/;
+export const FontPropertiesRegex: RegExp = /^[^- ][a-zA-Z-]+|-?\+?(?:[0-9]+\.[0-9]+|\.[0-9]+|[0-9]+)[a-zA-Z%]{0,4}/;
 
 // "[\w \,-]+",? ? matches double quoted values and the trailing comma/space (e.g. "Tahoma", )
 // ('[\w \,-]+',? ?) matches single quoted values and the trailing comma/space (e.g. 'Segoe UI', )
 // ([\w \,-]+,? ?) matches non quoted values and the trailing comma/space (e.g. Helvetica)
 // (?: ...)+ will match 1 or more of the groups above such that it would match a value with fallbacks (e.g. "Tahoma", 'Segoe UI', Helvetica)
-/** @type {!RegExp} */
-export const FontFamilyRegex = /(?:"[\w \,-]+",? ?|'[\w \,-]+',? ?|[\w \,-]+,? ?)+/;
+export const FontFamilyRegex: RegExp = /(?:"[\w \,-]+",? ?|'[\w \,-]+',? ?|[\w \,-]+,? ?)+/;
 
 // The following regexes are used within the Font Editor and will only parse valid property values.
 // Example Input/Outputs:
@@ -66,25 +66,41 @@ const letterSpacingKeyValues = new Set(letterSpacingKeyValuesArray);
 
 const fontSizeRangeMap = new Map([
   // Common Units
-  ['px', {min: 0, max: 72, step: 1}], ['em', {min: 0, max: 4.5, step: .1}], ['rem', {min: 0, max: 4.5, step: .1}],
-  ['%', {min: 0, max: 450, step: 1}], ['vh', {min: 0, max: 10, step: .1}], ['vw', {min: 0, max: 10, step: .1}],
+  ['px', {min: 0, max: 72, step: 1}],
+  ['em', {min: 0, max: 4.5, step: .1}],
+  ['rem', {min: 0, max: 4.5, step: .1}],
+  ['%', {min: 0, max: 450, step: 1}],
+  ['vh', {min: 0, max: 10, step: .1}],
+  ['vw', {min: 0, max: 10, step: .1}],
 
   // Extra Units
-  ['vmin', {min: 0, max: 10, step: .1}], ['vmax', {min: 0, max: 10, step: .1}], ['cm', {min: 0, max: 2, step: .1}],
-  ['mm', {min: 0, max: 20, step: .1}], ['in', {min: 0, max: 1, step: .01}], ['pt', {min: 0, max: 54, step: 1}],
-  ['pc', {min: 0, max: 4.5, step: .1}]
+  ['vmin', {min: 0, max: 10, step: .1}],
+  ['vmax', {min: 0, max: 10, step: .1}],
+  ['cm', {min: 0, max: 2, step: .1}],
+  ['mm', {min: 0, max: 20, step: .1}],
+  ['in', {min: 0, max: 1, step: .01}],
+  ['pt', {min: 0, max: 54, step: 1}],
+  ['pc', {min: 0, max: 4.5, step: .1}],
 ]);
 
 const lineHeightRangeMap = new Map([
   // Common Units
-  ['', {min: 0, max: 2, step: .1}], ['em', {min: 0, max: 2, step: .1}], ['%', {min: 0, max: 200, step: 1}],
+  ['', {min: 0, max: 2, step: .1}],
+  ['em', {min: 0, max: 2, step: .1}],
+  ['%', {min: 0, max: 200, step: 1}],
   ['px', {min: 0, max: 32, step: 1}],
 
   // Extra Units
-  ['rem', {min: 0, max: 2, step: .1}], ['vh', {min: 0, max: 4.5, step: .1}], ['vw', {min: 0, max: 4.5, step: .1}],
-  ['vmin', {min: 0, max: 4.5, step: .1}], ['vmax', {min: 0, max: 4.5, step: .1}], ['cm', {min: 0, max: 1, step: .1}],
-  ['mm', {min: 0, max: 8.5, step: .1}], ['in', {min: 0, max: .5, step: .1}], ['pt', {min: 0, max: 24, step: 1}],
-  ['pc', {min: 0, max: 2, step: .1}]
+  ['rem', {min: 0, max: 2, step: .1}],
+  ['vh', {min: 0, max: 4.5, step: .1}],
+  ['vw', {min: 0, max: 4.5, step: .1}],
+  ['vmin', {min: 0, max: 4.5, step: .1}],
+  ['vmax', {min: 0, max: 4.5, step: .1}],
+  ['cm', {min: 0, max: 1, step: .1}],
+  ['mm', {min: 0, max: 8.5, step: .1}],
+  ['in', {min: 0, max: .5, step: .1}],
+  ['pt', {min: 0, max: 24, step: 1}],
+  ['pc', {min: 0, max: 2, step: .1}],
 ]);
 
 const fontWeightRangeMap = new Map([
@@ -93,15 +109,21 @@ const fontWeightRangeMap = new Map([
 
 const letterSpacingRangeMap = new Map([
   // Common Units
-  ['px', {min: -10, max: 10, step: .01}], ['em', {min: -0.625, max: 0.625, step: .001}],
+  ['px', {min: -10, max: 10, step: .01}],
+  ['em', {min: -0.625, max: 0.625, step: .001}],
   ['rem', {min: -0.625, max: 0.625, step: .001}],
 
   // Extra Units
-  ['%', {min: -62.5, max: 62.5, step: .1}], ['vh', {min: -1.5, max: 1.5, step: .01}],
-  ['vw', {min: -1.5, max: 1.5, step: .01}], ['vmin', {min: -1.5, max: 1.5, step: .01}],
-  ['vmax', {min: -1.5, max: 1.5, step: .01}], ['cm', {min: -0.25, max: .025, step: .001}],
-  ['mm', {min: -2.5, max: 2.5, step: .01}], ['in', {min: -0.1, max: 0.1, step: .001}],
-  ['pt', {min: -7.5, max: 7.5, step: .01}], ['pc', {min: -0.625, max: 0.625, step: .001}]
+  ['%', {min: -62.5, max: 62.5, step: .1}],
+  ['vh', {min: -1.5, max: 1.5, step: .01}],
+  ['vw', {min: -1.5, max: 1.5, step: .01}],
+  ['vmin', {min: -1.5, max: 1.5, step: .01}],
+  ['vmax', {min: -1.5, max: 1.5, step: .01}],
+  ['cm', {min: -0.25, max: .025, step: .001}],
+  ['mm', {min: -2.5, max: 2.5, step: .01}],
+  ['in', {min: -0.1, max: 0.1, step: .001}],
+  ['pt', {min: -7.5, max: 7.5, step: .01}],
+  ['pc', {min: -0.625, max: 0.625, step: .001}],
 ]);
 
 export const FontSizeStaticParams = {
@@ -109,7 +131,7 @@ export const FontSizeStaticParams = {
   units: fontSizeUnits,
   keyValues: fontSizeKeyValues,
   rangeMap: fontSizeRangeMap,
-  defaultUnit: 'px'
+  defaultUnit: 'px',
 };
 
 export const LineHeightStaticParams = {
@@ -117,7 +139,7 @@ export const LineHeightStaticParams = {
   units: lineHeightUnits,
   keyValues: lineHeightKeyValues,
   rangeMap: lineHeightRangeMap,
-  defaultUnit: ''
+  defaultUnit: '',
 };
 
 export const FontWeightStaticParams = {
@@ -125,7 +147,7 @@ export const FontWeightStaticParams = {
   units: null,
   keyValues: fontWeightKeyValues,
   rangeMap: fontWeightRangeMap,
-  defaultUnit: null
+  defaultUnit: null,
 };
 
 export const LetterSpacingStaticParams = {
@@ -133,7 +155,7 @@ export const LetterSpacingStaticParams = {
   units: letterSpacingUnits,
   keyValues: letterSpacingKeyValues,
   rangeMap: letterSpacingRangeMap,
-  defaultUnit: 'em'
+  defaultUnit: 'em',
 };
 
 export const SystemFonts = [
@@ -168,10 +190,7 @@ export const GenericFonts = [
   'fangsong',
 ];
 
-/**
- * @return {!Promise<!Array<string>>}
- */
-export async function generateComputedFontArray() {
+export async function generateComputedFontArray(): Promise<string[]> {
   const modelArray = SDK.SDKModel.TargetManager.instance().models(CssOverviewModule.CSSOverviewModel.CSSOverviewModel);
   if (modelArray) {
     const cssOverviewModel = modelArray[0];
@@ -184,10 +203,7 @@ export async function generateComputedFontArray() {
   return [];
 }
 
-/**
- * @param {number} step
- */
-export function getRoundingPrecision(step) {
+export function getRoundingPrecision(step: number): 0|1|2|3 {
   switch (step) {
     case 1:
       return 0;

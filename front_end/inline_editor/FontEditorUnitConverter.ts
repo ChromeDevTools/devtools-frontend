@@ -2,23 +2,18 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as SDK from '../core/sdk/sdk.js';
 import * as CssOverviewModule from '../panels/css_overview/css_overview.js';
 import * as UI from '../ui/legacy/legacy.js';
 
 const computedArrayFontSizeIndex = 6;
 
-/**
- * @return {number}
- */
-function getPxMultiplier() {
+function getPxMultiplier(): number {
   return 1;
 }
-/**
- * @param {boolean=} isFontSizeProperty
- * @return {!Promise<number>}
- */
-async function getEmMultiplier(isFontSizeProperty) {
+async function getEmMultiplier(isFontSizeProperty?: boolean): Promise<number> {
   const selectedNode = UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode);
   let currentFontSize;
   if (selectedNode && selectedNode.parentNode && selectedNode.nodeName() !== 'HTML') {
@@ -33,10 +28,7 @@ async function getEmMultiplier(isFontSizeProperty) {
   return currentFontSize;
 }
 
-/**
- * @return {!Promise<number>}
- */
-async function getRemMultiplier() {
+async function getRemMultiplier(): Promise<number> {
   const selectedNode = UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode);
   const htmlNode = findHtmlNode(selectedNode);
   if (!htmlNode || !htmlNode.id) {
@@ -49,20 +41,13 @@ async function getRemMultiplier() {
   return rootFontSize;
 }
 
-/**
- * @param {boolean=} isFontSizeProperty
- * @return {!Promise<number>}
- */
-async function getPercentMultiplier(isFontSizeProperty) {
+async function getPercentMultiplier(isFontSizeProperty?: boolean): Promise<number> {
   const emMultiplier = await getEmMultiplier(isFontSizeProperty);
   const percMultiplier = emMultiplier / 100;
   return percMultiplier;
 }
 
-/**
- * @return {!Promise<number>}
- */
-async function getVhMultiplier() {
+async function getVhMultiplier(): Promise<number> {
   const viewportObject = await getViewportObject();
   if (!viewportObject) {
     return 1;
@@ -72,10 +57,7 @@ async function getVhMultiplier() {
   return vhMultiplier;
 }
 
-/**
- * @return {!Promise<number>}
- */
-async function getVwMultiplier() {
+async function getVwMultiplier(): Promise<number> {
   const viewportObject = await getViewportObject();
   if (!viewportObject) {
     return 1;
@@ -85,10 +67,7 @@ async function getVwMultiplier() {
   return vwMultiplier;
 }
 
-/**
- * @return {!Promise<number>}
- */
-async function getVminMultiplier() {
+async function getVminMultiplier(): Promise<number> {
   const viewportObject = await getViewportObject();
   if (!viewportObject) {
     return 1;
@@ -100,10 +79,7 @@ async function getVminMultiplier() {
   return vminMultiplier;
 }
 
-/**
- * @return {!Promise<number>}
- */
-async function getVmaxMultiplier() {
+async function getVmaxMultiplier(): Promise<number> {
   const viewportObject = await getViewportObject();
   if (!viewportObject) {
     return 1;
@@ -115,47 +91,37 @@ async function getVmaxMultiplier() {
   return vmaxMultiplier;
 }
 
-/**
- * @return {number}
- */
-function getCmMultiplier() {
+function getCmMultiplier(): number {
   return 37.795;
 }
 
-/**
- * @return {number}
- */
-function getMmMultiplier() {
+function getMmMultiplier(): number {
   return 3.7795;
 }
 
-/**
- * @return {number}
- */
-function getInMultiplier() {
+function getInMultiplier(): number {
   return 96;
 }
 
-/**
- * @return {number}
- */
-function getPtMultiplier() {
+function getPtMultiplier(): number {
   return 4 / 3;
 }
 
-/**
- * @return {number}
- */
-function getPcMultiplier() {
+function getPcMultiplier(): number {
   return 16;
 }
 
-/**
- * @param {{computedStyle: !Array<!{name: string, value: string}>, getError: function():void}} computedObject
- */
-function findFontSizeValue(computedObject) {
-  /** @type {!Array<{name: string, value: string}>} */
-  const computedArray = computedObject.computedStyle;
+function findFontSizeValue(computedObject: {
+  computedStyle: Array<{
+    name: string,
+    value: string,
+  }>,
+  getError: () => void,
+}): string {
+  const computedArray: {
+    name: string,
+    value: string,
+  }[] = computedObject.computedStyle;
   let index = computedArrayFontSizeIndex;
   if (computedArray[index].name && computedArray[index].name !== 'font-size') {
     for (let i = 0; i < computedArray.length; i++) {
@@ -168,12 +134,8 @@ function findFontSizeValue(computedObject) {
   return computedArray[index].value;
 }
 
-/**
- * @param {!SDK.DOMModel.DOMNode | null} selectedNode
- * @return {!SDK.DOMModel.DOMNode | null}
- */
-function findHtmlNode(selectedNode) {
-  let node = selectedNode;
+function findHtmlNode(selectedNode: SDK.DOMModel.DOMNode|null): SDK.DOMModel.DOMNode|null {
+  let node: SDK.DOMModel.DOMNode|(SDK.DOMModel.DOMNode | null) = selectedNode;
   while (node && node.nodeName() !== 'HTML') {
     if (node.parentNode) {
       node = node.parentNode;
@@ -198,7 +160,7 @@ const widthEvaluateParams = {
   timeout: undefined,
   disableBreaks: true,
   replMode: false,
-  allowUnsafeEvalBlockedByCSP: false
+  allowUnsafeEvalBlockedByCSP: false,
 };
 
 const heightEvaluateParams = {
@@ -215,13 +177,13 @@ const heightEvaluateParams = {
   timeout: undefined,
   disableBreaks: true,
   replMode: false,
-  allowUnsafeEvalBlockedByCSP: false
+  allowUnsafeEvalBlockedByCSP: false,
 };
 
-/**
- * @return {!Promise<?{width: number, height: number}>}
- */
-async function getViewportObject() {
+async function getViewportObject(): Promise<{
+  width: number,
+  height: number,
+}|null> {
   const currentExecutionContext = UI.Context.Context.instance().flavor(SDK.RuntimeModel.ExecutionContext);
   let width, height;
   if (currentExecutionContext) {
@@ -250,7 +212,7 @@ async function getViewportObject() {
   return {width, height};
 }
 
-const unitConversionMap = new Map();
+const unitConversionMap = new Map<string, (isFontSize?: boolean) => number | Promise<number>>();
 unitConversionMap.set('px', getPxMultiplier);
 unitConversionMap.set('em', getEmMultiplier);
 unitConversionMap.set('rem', getRemMultiplier);
@@ -265,13 +227,8 @@ unitConversionMap.set('in', getInMultiplier);
 unitConversionMap.set('pt', getPtMultiplier);
 unitConversionMap.set('pc', getPcMultiplier);
 
-/**
- * @param {string} prevUnit
- * @param {string} newUnit
- * @param {boolean=} isFontSize
- * @return {!Promise<number>}
- */
-export async function getUnitConversionMultiplier(prevUnit, newUnit, isFontSize) {
+export async function getUnitConversionMultiplier(
+    prevUnit: string, newUnit: string, isFontSize?: boolean): Promise<number> {
   if (prevUnit === '') {
     prevUnit = 'em';
   }

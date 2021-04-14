@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import '../../heap_snapshot_worker/heap_snapshot_worker-legacy.js';
+import '../../entrypoints/heap_snapshot_worker/heap_snapshot_worker-legacy.js';
 import '../test_runner/test_runner.js';
 import '../../panels/profiler/profiler-legacy.js';
 import '../../ui/legacy/components/data_grid/data_grid-legacy.js';

@@ -6,7 +6,7 @@ ts_library("missing_entrypoints") {
 
   deps = [
     "../../../../front_end/cm",
-    "../../../../front_end/heap_snapshot_worker:bundle",
+    "../../../../front_end/entrypoints/heap_snapshot_worker:bundle",
     "../../../../front_end/inspector_main:bundle",
     "../../../../front_end/main:bundle",
     "../../../../front_end/models/heap_snapshot_model:bundle",

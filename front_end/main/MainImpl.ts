@@ -677,6 +677,7 @@ export class MainMenuItem implements UI.Toolbar.Provider {
   _item: UI.Toolbar.ToolbarMenuButton;
   constructor() {
     this._item = new UI.Toolbar.ToolbarMenuButton(this._handleContextMenu.bind(this), true);
+    this._item.element.classList.add('main-menu');
     this._item.setTitle(i18nString(UIStrings.customizeAndControlDevtools));
   }
 

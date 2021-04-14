@@ -72,6 +72,7 @@ export class DockController extends Common.ObjectWrapper.ObjectWrapper {
     this._canDock = canDock;
 
     this._closeButton = new ToolbarButton(i18nString(UIStrings.close), 'largeicon-delete');
+    this._closeButton.element.classList.add('close-devtools');
     this._closeButton.addEventListener(
         ToolbarButton.Events.Click,
         Host.InspectorFrontendHost.InspectorFrontendHostInstance.closeWindow.bind(
@@ -159,6 +160,9 @@ export class DockController extends Common.ObjectWrapper.ObjectWrapper {
     if (this._dockSide === dockSide) {
       return;
     }
+
+    document.body.classList.remove(this._dockSide);
+    document.body.classList.add(dockSide);
 
     if (this._dockSide) {
       this._lastDockStateSetting.set(this._dockSide);

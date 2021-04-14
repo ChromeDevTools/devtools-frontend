@@ -2,8 +2,8 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-import("../../scripts/build/ninja/devtools_entrypoint.gni")
-import("../../scripts/build/ninja/devtools_module.gni")
+import("../../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../../../scripts/build/ninja/devtools_module.gni")
 
 devtools_module("formatter_worker") {
   sources = [
@@ -21,12 +21,12 @@ devtools_module("formatter_worker") {
   ]
 
   deps = [
-    "../core/platform:bundle",
-    "../formatter:bundle",
-    "../models/text_utils:bundle",
-    "../third_party/acorn:bundle",
-    "../third_party/acorn-loose",
-    "../third_party/codemirror",
+    "../../core/platform:bundle",
+    "../../formatter:bundle",
+    "../../models/text_utils:bundle",
+    "../../third_party/acorn:bundle",
+    "../../third_party/acorn-loose",
+    "../../third_party/codemirror",
   ]
 }
 
@@ -50,6 +50,6 @@ devtools_entrypoint("worker_entrypoint") {
   deps = [
     ":bundle",
     ":formatter_actions",
-    "../core/platform:bundle",
+    "../../core/platform:bundle",
   ]
 }

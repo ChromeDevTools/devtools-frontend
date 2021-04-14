@@ -30,7 +30,7 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Acorn from '../third_party/acorn/acorn.js';
+import * as Acorn from '../../third_party/acorn/acorn.js';
 
 import {AcornTokenizer, ECMA_VERSION, TokenOrComment} from './AcornTokenizer.js';  // eslint-disable-line no-unused-vars
 import {ESTreeWalker} from './ESTreeWalker.js';

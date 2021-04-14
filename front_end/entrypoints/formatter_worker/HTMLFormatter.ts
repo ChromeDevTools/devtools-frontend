@@ -4,7 +4,7 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Platform from '../core/platform/platform.js';
+import * as Platform from '../../core/platform/platform.js';
 
 import {CSSFormatter} from './CSSFormatter.js';
 import {FormattedContentBuilder} from './FormattedContentBuilder.js';  // eslint-disable-line no-unused-vars

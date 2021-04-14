@@ -36,7 +36,7 @@ ruleTester.run('es_modules_import', rule, {
     },
     {
       code: 'import \'../../common/common.js\';',
-      filename: 'front_end/formatter_worker/formatter_worker.js',
+      filename: 'front_end/entrypoints/formatter_worker/formatter_worker.js',
     },
     {
       code: 'import * as ARIAUtils from \'./ARIAUtils.js\';',
@@ -81,8 +81,8 @@ ruleTester.run('es_modules_import', rule, {
       filename: 'front_end/wasmparser_worker/WasmParserWorker.js',
     },
     {
-      code: 'import * as Acorn from \'../third_party/acorn/package/dist/acorn.mjs\';',
-      filename: 'front_end/formatter_worker/JavascriptOutline.js',
+      code: 'import * as Acorn from \'../../third_party/acorn/package/dist/acorn.mjs\';',
+      filename: 'front_end/entrypoints/formatter_worker/JavascriptOutline.js',
     },
     {
       code: 'import * as LitHtml from \'../third_party/lit-html/lit-html.js\';',

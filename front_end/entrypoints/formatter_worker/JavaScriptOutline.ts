@@ -4,10 +4,10 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Platform from '../core/platform/platform.js';
-import * as TextUtils from '../models/text_utils/text_utils.js';
-import * as AcornLoose from '../third_party/acorn-loose/package/dist/acorn-loose.mjs';
-import * as Acorn from '../third_party/acorn/acorn.js';
+import * as Platform from '../../core/platform/platform.js';
+import * as TextUtils from '../../models/text_utils/text_utils.js';
+import * as AcornLoose from '../../third_party/acorn-loose/package/dist/acorn-loose.mjs';
+import * as Acorn from '../../third_party/acorn/acorn.js';
 
 import {ECMA_VERSION} from './AcornTokenizer.js';
 import {ESTreeWalker} from './ESTreeWalker.js';

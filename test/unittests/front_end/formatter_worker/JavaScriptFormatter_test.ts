@@ -4,7 +4,7 @@
 
 const {assert} = chai;
 
-import * as FormatterWorker from '../../../../front_end/formatter_worker/formatter_worker.js';
+import * as FormatterWorker from '../../../../front_end/entrypoints/formatter_worker/formatter_worker.js';
 
 function formatJavaScript(text: string): string {
   return FormatterWorker.FormatterWorker.format('application/javascript', text, '  ').content;

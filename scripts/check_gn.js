@@ -72,7 +72,7 @@ function checkGNVariable(fileName, gnVariable, obtainFiles, obtainRelativePath) 
 
   const errors = [];
   const excludedFiles =
-      ['axe.js', 'formatter_worker/', 'third_party/lighthouse/', 'third_party/i18n/'].map(path.normalize);
+      ['axe.js', 'entrypoints/formatter_worker/', 'third_party/lighthouse/', 'third_party/i18n/'].map(path.normalize);
   const lines = selectGNLines(`${gnVariable} = [`, ']', linesToCheck).map(path.normalize);
   if (!lines.length) {
     return [

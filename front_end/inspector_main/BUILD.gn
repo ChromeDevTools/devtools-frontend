@@ -7,8 +7,8 @@ import("../../scripts/build/ninja/devtools_module.gni")
 
 devtools_module("inspector_main") {
   sources = [
-    "InspectorMain.js",
-    "RenderingOptions.js",
+    "InspectorMain.ts",
+    "RenderingOptions.ts",
   ]
 
   deps = [

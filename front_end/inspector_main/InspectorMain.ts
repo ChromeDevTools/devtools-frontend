@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Components from '../components/components.js';
 import * as Common from '../core/common/common.js';
 import * as Host from '../core/host/host.js';
@@ -25,19 +27,14 @@ const UIStrings = {
   */
   javascriptIsDisabled: 'JavaScript is disabled',
 };
-const str_ = i18n.i18n.registerUIStrings('inspector_main/InspectorMain.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('inspector_main/InspectorMain.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-/** @type {!InspectorMainImpl} */
-let inspectorMainImplInstance;
+let inspectorMainImplInstance: InspectorMainImpl;
 
-/**
- * @implements {Common.Runnable.Runnable}
- */
-export class InspectorMainImpl extends Common.ObjectWrapper.ObjectWrapper {
-  /**
-   * @param {{forceNew: ?boolean}} opts
-   */
-  static instance(opts = {forceNew: null}) {
+export class InspectorMainImpl extends Common.ObjectWrapper.ObjectWrapper implements Common.Runnable.Runnable {
+  static instance(opts: {
+    forceNew: boolean|null,
+  } = {forceNew: null}): InspectorMainImpl {
     const {forceNew} = opts;
     if (!inspectorMainImplInstance || forceNew) {
       inspectorMainImplInstance = new InspectorMainImpl();
@@ -46,10 +43,7 @@ export class InspectorMainImpl extends Common.ObjectWrapper.ObjectWrapper {
     return inspectorMainImplInstance;
   }
 
-  /**
-   * @override
-   */
-  async run() {
+  async run(): Promise<void> {
     let firstCall = true;
     await SDK.Connections.initMainConnection(async () => {
       const type = Root.Runtime.Runtime.queryParam('v8only') ? SDK.SDKModel.Type.Node : SDK.SDKModel.Type.Frame;
@@ -85,7 +79,7 @@ export class InspectorMainImpl extends Common.ObjectWrapper.ObjectWrapper {
 
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
         Host.InspectorFrontendHostAPI.Events.ReloadInspectedPage, event => {
-          const hard = /** @type {boolean} */ (event.data);
+          const hard = (event.data as boolean);
           SDK.ResourceTreeModel.ResourceTreeModel.reloadAllPages(hard);
         });
   }
@@ -93,17 +87,12 @@ export class InspectorMainImpl extends Common.ObjectWrapper.ObjectWrapper {
 
 Common.Runnable.registerEarlyInitializationRunnable(InspectorMainImpl.instance);
 
-/** @type {!ReloadActionDelegate} */
-let reloadActionDelegateInstance;
+let reloadActionDelegateInstance: ReloadActionDelegate;
 
-/**
- * @implements {UI.ActionRegistration.ActionDelegate}
- */
-export class ReloadActionDelegate {
-  /**
-   * @param {{forceNew: ?boolean}} opts
-   */
-  static instance(opts = {forceNew: null}) {
+export class ReloadActionDelegate implements UI.ActionRegistration.ActionDelegate {
+  static instance(opts: {
+    forceNew: boolean|null,
+  } = {forceNew: null}): ReloadActionDelegate {
     const {forceNew} = opts;
     if (!reloadActionDelegateInstance || forceNew) {
       reloadActionDelegateInstance = new ReloadActionDelegate();
@@ -112,13 +101,7 @@ export class ReloadActionDelegate {
     return reloadActionDelegateInstance;
   }
 
-  /**
-   * @override
-   * @param {!UI.Context.Context} context
-   * @param {string} actionId
-   * @return {boolean}
-   */
-  handleAction(context, actionId) {
+  handleAction(context: UI.Context.Context, actionId: string): boolean {
     switch (actionId) {
       case 'inspector_main.reload':
         SDK.ResourceTreeModel.ResourceTreeModel.reloadAllPages(false);
@@ -131,17 +114,12 @@ export class ReloadActionDelegate {
   }
 }
 
-/** @type {!FocusDebuggeeActionDelegate} */
-let focusDebuggeeActionDelegateInstance;
+let focusDebuggeeActionDelegateInstance: FocusDebuggeeActionDelegate;
 
-/**
- * @implements {UI.ActionRegistration.ActionDelegate}
- */
-export class FocusDebuggeeActionDelegate {
-  /**
-   * @param {{forceNew: ?boolean}} opts
-   */
-  static instance(opts = {forceNew: null}) {
+export class FocusDebuggeeActionDelegate implements UI.ActionRegistration.ActionDelegate {
+  static instance(opts: {
+    forceNew: boolean|null,
+  } = {forceNew: null}): FocusDebuggeeActionDelegate {
     const {forceNew} = opts;
     if (!focusDebuggeeActionDelegateInstance || forceNew) {
       focusDebuggeeActionDelegateInstance = new FocusDebuggeeActionDelegate();
@@ -149,13 +127,7 @@ export class FocusDebuggeeActionDelegate {
 
     return focusDebuggeeActionDelegateInstance;
   }
-  /**
-   * @override
-   * @param {!UI.Context.Context} context
-   * @param {string} actionId
-   * @return {boolean}
-   */
-  handleAction(context, actionId) {
+  handleAction(_context: UI.Context.Context, _actionId: string): boolean {
     const mainTarget = SDK.SDKModel.TargetManager.instance().mainTarget();
     if (!mainTarget) {
       return false;
@@ -165,15 +137,12 @@ export class FocusDebuggeeActionDelegate {
   }
 }
 
-/** @type {!NodeIndicator} */
-let nodeIndicatorInstance;
+let nodeIndicatorInstance: NodeIndicator;
 
-/**
- * @implements {UI.Toolbar.Provider}
- */
-export class NodeIndicator {
-  /** @private */
-  constructor() {
+export class NodeIndicator implements UI.Toolbar.Provider {
+  _element: Element;
+  _button: UI.Toolbar.ToolbarItem;
+  private constructor() {
     const element = document.createElement('div');
     const shadowRoot = UI.Utils.createShadowRootWithCoreStyles(
         element, {cssFile: 'inspector_main/nodeIcon.css', enableLegacyPatching: false, delegatesFocus: undefined});
@@ -184,14 +153,13 @@ export class NodeIndicator {
     this._button.setTitle(i18nString('Open dedicated DevTools for Node.js'));
     SDK.SDKModel.TargetManager.instance().addEventListener(
         SDK.SDKModel.Events.AvailableTargetsChanged,
-        event => this._update(/** @type {!Array<!Protocol.Target.TargetInfo>} */ (event.data)));
+        event => this._update((event.data as Protocol.Target.TargetInfo[])));
     this._button.setVisible(false);
     this._update([]);
   }
-  /**
-   * @param {{forceNew: ?boolean}} opts
-   */
-  static instance(opts = {forceNew: null}) {
+  static instance(opts: {
+    forceNew: boolean|null,
+  } = {forceNew: null}): NodeIndicator {
     const {forceNew} = opts;
     if (!nodeIndicatorInstance || forceNew) {
       nodeIndicatorInstance = new NodeIndicator();
@@ -200,10 +168,7 @@ export class NodeIndicator {
     return nodeIndicatorInstance;
   }
 
-  /**
-   * @param {!Array<!Protocol.Target.TargetInfo>} targetInfos
-   */
-  _update(targetInfos) {
+  _update(targetInfos: Protocol.Target.TargetInfo[]): void {
     const hasNode = Boolean(targetInfos.find(target => target.type === 'node' && !target.attached));
     this._element.classList.toggle('inactive', !hasNode);
     if (hasNode) {
@@ -211,11 +176,7 @@ export class NodeIndicator {
     }
   }
 
-  /**
-   * @override
-   * @return {?UI.Toolbar.ToolbarItem}
-   */
-  item() {
+  item(): UI.Toolbar.ToolbarItem|null {
     return this._button;
   }
 }
@@ -227,8 +188,8 @@ export class SourcesPanelIndicator {
         .addChangeListener(javaScriptDisabledChanged);
     javaScriptDisabledChanged();
 
-    function javaScriptDisabledChanged() {
-      let icon = null;
+    function javaScriptDisabledChanged(): void {
+      let icon: UI.Icon.Icon|null = null;
       const javaScriptDisabled = Common.Settings.Settings.instance().moduleSetting('javaScriptDisabled').get();
       if (javaScriptDisabled) {
         icon = UI.Icon.Icon.create('smallicon-warning');
@@ -239,10 +200,11 @@ export class SourcesPanelIndicator {
   }
 }
 
-/**
- * @implements {SDK.SDKModel.Observer}
- */
-export class BackendSettingsSync {
+export class BackendSettingsSync implements SDK.SDKModel.Observer {
+  _autoAttachSetting: Common.Settings.Setting<boolean>;
+  _adBlockEnabledSetting: Common.Settings.Setting<boolean>;
+  _emulatePageFocusSetting: Common.Settings.Setting<boolean>;
+
   constructor() {
     this._autoAttachSetting = Common.Settings.Settings.instance().moduleSetting('autoAttachToCreatedPages');
     this._autoAttachSetting.addChangeListener(this._updateAutoAttach, this);
@@ -257,10 +219,7 @@ export class BackendSettingsSync {
     SDK.SDKModel.TargetManager.instance().observeTargets(this);
   }
 
-  /**
-   * @param {!SDK.SDKModel.Target} target
-   */
-  _updateTarget(target) {
+  _updateTarget(target: SDK.SDKModel.Target): void {
     if (target.type() !== SDK.SDKModel.Type.Frame || target.parentTarget()) {
       return;
     }
@@ -268,29 +227,21 @@ export class BackendSettingsSync {
     target.emulationAgent().invoke_setFocusEmulationEnabled({enabled: this._emulatePageFocusSetting.get()});
   }
 
-  _updateAutoAttach() {
+  _updateAutoAttach(): void {
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.setOpenNewWindowForPopups(this._autoAttachSetting.get());
   }
 
-  _update() {
+  _update(): void {
     for (const target of SDK.SDKModel.TargetManager.instance().targets()) {
       this._updateTarget(target);
     }
   }
 
-  /**
-   * @param {!SDK.SDKModel.Target} target
-   * @override
-   */
-  targetAdded(target) {
+  targetAdded(target: SDK.SDKModel.Target): void {
     this._updateTarget(target);
   }
 
-  /**
-   * @param {!SDK.SDKModel.Target} target
-   * @override
-   */
-  targetRemoved(target) {
+  targetRemoved(_target: SDK.SDKModel.Target): void {
   }
 }
 

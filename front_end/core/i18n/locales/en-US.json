@@ -1049,100 +1049,100 @@
   "inspector_main/inspector_main-meta.ts | visionDeficiency": {
     "message": "vision deficiency"
   },
-  "inspector_main/InspectorMain.js | javascriptIsDisabled": {
+  "inspector_main/InspectorMain.ts | javascriptIsDisabled": {
     "message": "JavaScript is disabled"
   },
-  "inspector_main/InspectorMain.js | main": {
+  "inspector_main/InspectorMain.ts | main": {
     "message": "Main"
   },
-  "inspector_main/RenderingOptions.js | coreWebVitals": {
+  "inspector_main/RenderingOptions.ts | coreWebVitals": {
     "message": "Core Web Vitals"
   },
-  "inspector_main/RenderingOptions.js | disableAvifImageFormat": {
+  "inspector_main/RenderingOptions.ts | disableAvifImageFormat": {
     "message": "Disable AVIF image format"
   },
-  "inspector_main/RenderingOptions.js | disableJpegXlImageFormat": {
+  "inspector_main/RenderingOptions.ts | disableJpegXlImageFormat": {
     "message": "Disable JPEG XL image format"
   },
-  "inspector_main/RenderingOptions.js | disableLocalFonts": {
+  "inspector_main/RenderingOptions.ts | disableLocalFonts": {
     "message": "Disable local fonts"
   },
-  "inspector_main/RenderingOptions.js | disablesLocalSourcesInFontface": {
+  "inspector_main/RenderingOptions.ts | disablesLocalSourcesInFontface": {
     "message": "Disables local() sources in @font-face rules. Requires a page reload to apply."
   },
-  "inspector_main/RenderingOptions.js | disableWebpImageFormat": {
+  "inspector_main/RenderingOptions.ts | disableWebpImageFormat": {
     "message": "Disable WebP image format"
   },
-  "inspector_main/RenderingOptions.js | emulateAFocusedPage": {
+  "inspector_main/RenderingOptions.ts | emulateAFocusedPage": {
     "message": "Emulate a focused page"
   },
-  "inspector_main/RenderingOptions.js | emulatesAFocusedPage": {
+  "inspector_main/RenderingOptions.ts | emulatesAFocusedPage": {
     "message": "Emulates a focused page."
   },
-  "inspector_main/RenderingOptions.js | forcesCssColorgamutMediaFeature": {
+  "inspector_main/RenderingOptions.ts | forcesCssColorgamutMediaFeature": {
     "message": "Forces CSS color-gamut media feature"
   },
-  "inspector_main/RenderingOptions.js | forcesCssPreferscolorschemeMedia": {
+  "inspector_main/RenderingOptions.ts | forcesCssPreferscolorschemeMedia": {
     "message": "Forces CSS prefers-color-scheme media feature"
   },
-  "inspector_main/RenderingOptions.js | forcesCssPrefersreduceddataMedia": {
+  "inspector_main/RenderingOptions.ts | forcesCssPrefersreduceddataMedia": {
     "message": "Forces CSS prefers-reduced-data media feature"
   },
-  "inspector_main/RenderingOptions.js | forcesCssPrefersreducedmotion": {
+  "inspector_main/RenderingOptions.ts | forcesCssPrefersreducedmotion": {
     "message": "Forces CSS prefers-reduced-motion media feature"
   },
-  "inspector_main/RenderingOptions.js | forcesMediaTypeForTestingPrint": {
+  "inspector_main/RenderingOptions.ts | forcesMediaTypeForTestingPrint": {
     "message": "Forces media type for testing print and screen styles"
   },
-  "inspector_main/RenderingOptions.js | forcesVisionDeficiencyEmulation": {
+  "inspector_main/RenderingOptions.ts | forcesVisionDeficiencyEmulation": {
     "message": "Forces vision deficiency emulation"
   },
-  "inspector_main/RenderingOptions.js | frameRenderingStats": {
+  "inspector_main/RenderingOptions.ts | frameRenderingStats": {
     "message": "Frame Rendering Stats"
   },
-  "inspector_main/RenderingOptions.js | highlightAdFrames": {
+  "inspector_main/RenderingOptions.ts | highlightAdFrames": {
     "message": "Highlight ad frames"
   },
-  "inspector_main/RenderingOptions.js | highlightsAreasOfThePageBlueThat": {
+  "inspector_main/RenderingOptions.ts | highlightsAreasOfThePageBlueThat": {
     "message": "Highlights areas of the page (blue) that were shifted. May not be suitable for people prone to photosensitive epilepsy."
   },
-  "inspector_main/RenderingOptions.js | highlightsAreasOfThePageGreen": {
+  "inspector_main/RenderingOptions.ts | highlightsAreasOfThePageGreen": {
     "message": "Highlights areas of the page (green) that need to be repainted. May not be suitable for people prone to photosensitive epilepsy."
   },
-  "inspector_main/RenderingOptions.js | highlightsElementsTealThatCan": {
+  "inspector_main/RenderingOptions.ts | highlightsElementsTealThatCan": {
     "message": "Highlights elements (teal) that can slow down scrolling, including touch & wheel event handlers and other main-thread scrolling situations."
   },
-  "inspector_main/RenderingOptions.js | highlightsFramesRedDetectedToBe": {
+  "inspector_main/RenderingOptions.ts | highlightsFramesRedDetectedToBe": {
     "message": "Highlights frames (red) detected to be ads."
   },
-  "inspector_main/RenderingOptions.js | hittestBorders": {
+  "inspector_main/RenderingOptions.ts | hittestBorders": {
     "message": "Hit-test borders"
   },
-  "inspector_main/RenderingOptions.js | layerBorders": {
+  "inspector_main/RenderingOptions.ts | layerBorders": {
     "message": "Layer borders"
   },
-  "inspector_main/RenderingOptions.js | layoutShiftRegions": {
+  "inspector_main/RenderingOptions.ts | layoutShiftRegions": {
     "message": "Layout Shift Regions"
   },
-  "inspector_main/RenderingOptions.js | paintFlashing": {
+  "inspector_main/RenderingOptions.ts | paintFlashing": {
     "message": "Paint flashing"
   },
-  "inspector_main/RenderingOptions.js | plotsFrameThroughputDropped": {
+  "inspector_main/RenderingOptions.ts | plotsFrameThroughputDropped": {
     "message": "Plots frame throughput, dropped frames distribution, and GPU memory."
   },
-  "inspector_main/RenderingOptions.js | requiresAPageReloadToApplyAnd": {
+  "inspector_main/RenderingOptions.ts | requiresAPageReloadToApplyAnd": {
     "message": "Requires a page reload to apply and disables caching for image requests."
   },
-  "inspector_main/RenderingOptions.js | scrollingPerformanceIssues": {
+  "inspector_main/RenderingOptions.ts | scrollingPerformanceIssues": {
     "message": "Scrolling performance issues"
   },
-  "inspector_main/RenderingOptions.js | showsAnOverlayWithCoreWebVitals": {
+  "inspector_main/RenderingOptions.ts | showsAnOverlayWithCoreWebVitals": {
     "message": "Shows an overlay with Core Web Vitals."
   },
-  "inspector_main/RenderingOptions.js | showsBordersAroundHittestRegions": {
+  "inspector_main/RenderingOptions.ts | showsBordersAroundHittestRegions": {
     "message": "Shows borders around hit-test regions."
   },
-  "inspector_main/RenderingOptions.js | showsLayerBordersOrangeoliveAnd": {
+  "inspector_main/RenderingOptions.ts | showsLayerBordersOrangeoliveAnd": {
     "message": "Shows layer borders (orange/olive) and tiles (cyan)."
   },
   "issues/AffectedBlockedByResponseView.ts | blockedResource": {

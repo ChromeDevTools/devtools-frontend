@@ -72,15 +72,31 @@ const ALIGNMENT_POINT_OUTER_RADIUS = 6;
 const ALIGNMENT_POINT_FILL_COLOR = '#4585f6';
 const ALIGNMENT_POINT_INNER_RADIUS = 4;
 
-function drawAlignment(context: CanvasRenderingContext2D, point: Position): void {
+function drawAlignment(context: CanvasRenderingContext2D, point: Position, bounds: Bounds): void {
+  let startAngle = 0;
+  let renderFullCircle = true;
+  if (point.x === bounds.minX) {
+    startAngle = -0.5 * Math.PI;
+    renderFullCircle = false;
+  } else if (point.x === bounds.maxX) {
+    startAngle = 0.5 * Math.PI;
+    renderFullCircle = false;
+  } else if (point.y === bounds.minY) {
+    startAngle = 0;
+    renderFullCircle = false;
+  } else if (point.y === bounds.maxY) {
+    startAngle = Math.PI;
+    renderFullCircle = false;
+  }
+  const endAngle = startAngle + (renderFullCircle ? 2 * Math.PI : Math.PI);
   context.save();
   context.beginPath();
   context.lineWidth = ALIGNMENT_POINT_STROKE_WIDTH;
   context.strokeStyle = ALIGNMENT_POINT_STROKE_COLOR;
-  context.arc(point.x, point.y, ALIGNMENT_POINT_OUTER_RADIUS, 0, 2 * Math.PI);
+  context.arc(point.x, point.y, ALIGNMENT_POINT_OUTER_RADIUS, startAngle, endAngle);
   context.stroke();
   context.fillStyle = ALIGNMENT_POINT_FILL_COLOR;
-  context.arc(point.x, point.y, ALIGNMENT_POINT_INNER_RADIUS, 0, 2 * Math.PI);
+  context.arc(point.x, point.y, ALIGNMENT_POINT_INNER_RADIUS, startAngle, endAngle);
   context.fill();
   context.restore();
 }
@@ -125,10 +141,10 @@ function drawAlignmentPoints(
     const inlinePoint = area.alignInline ? getSnapAlignInlinePoint(areaBounds[i], area.alignInline) : null;
     const blockPoint = area.alignBlock ? getSnapAlignBlockPoint(areaBounds[i], area.alignBlock) : null;
     if (inlinePoint) {
-      drawAlignment(context, inlinePoint);
+      drawAlignment(context, inlinePoint, areaBounds[i]);
     }
     if (blockPoint) {
-      drawAlignment(context, blockPoint);
+      drawAlignment(context, blockPoint, areaBounds[i]);
     }
   }
 }

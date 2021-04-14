@@ -13,6 +13,7 @@ devtools_module("application") {
     "ApplicationPanelCacheSection.ts",
     "ApplicationPanelSidebar.ts",
     "ApplicationPanelTreeElement.ts",
+    "BackForwardCacheView.ts",
     "BackgroundServiceModel.ts",
     "BackgroundServiceView.ts",
     "CookieItemsView.ts",

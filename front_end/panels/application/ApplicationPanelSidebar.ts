@@ -45,7 +45,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 
 import {ApplicationCacheItemsView} from './ApplicationCacheItemsView.js';
 import {ApplicationCacheModel, Events as ApplicationCacheModelEvents} from './ApplicationCacheModel.js';
-import {ApplicationCacheFrameTreeElement, ApplicationCacheManifestTreeElement, ServiceWorkerCacheTreeElement} from './ApplicationPanelCacheSection.js';
+import {ApplicationCacheFrameTreeElement, ApplicationCacheManifestTreeElement, BackForwardCacheTreeElement, ServiceWorkerCacheTreeElement} from './ApplicationPanelCacheSection.js';
 import {ApplicationPanelTreeElement, ExpandableApplicationPanelTreeElement} from './ApplicationPanelTreeElement.js';
 import {AppManifestView} from './AppManifestView.js';
 import {BackgroundServiceModel} from './BackgroundServiceModel.js';
@@ -188,6 +188,7 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.SDKMo
   trustTokensTreeElement: TrustTokensTreeElement;
   cacheStorageListTreeElement: ServiceWorkerCacheTreeElement;
   applicationCacheListTreeElement: ExpandableApplicationPanelTreeElement;
+  private backForwardCacheListTreeElement?: BackForwardCacheTreeElement;
   backgroundFetchTreeElement: BackgroundServiceTreeElement|undefined;
   backgroundSyncTreeElement: BackgroundServiceTreeElement|undefined;
   notificationsTreeElement: BackgroundServiceTreeElement|undefined;
@@ -287,8 +288,12 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.SDKMo
         'https://developer.chrome.com/docs/devtools/storage/applicationcache/?utm_source=devtools');
     const applicationCacheIcon = UI.Icon.Icon.create('mediumicon-table', 'resource-tree-item');
     this.applicationCacheListTreeElement.setLeadingIcons([applicationCacheIcon]);
-
     cacheTreeElement.appendChild(this.applicationCacheListTreeElement);
+
+    if (Root.Runtime.experiments.isEnabled('bfcacheDebugging')) {
+      this.backForwardCacheListTreeElement = new BackForwardCacheTreeElement(panel);
+      cacheTreeElement.appendChild(this.backForwardCacheListTreeElement);
+    }
 
     if (Root.Runtime.experiments.isEnabled('backgroundServices')) {
       const backgroundServiceSectionTitle = i18nString(UIStrings.backgroundServices);

@@ -9,6 +9,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 
 import {ApplicationPanelSidebar} from './ApplicationPanelSidebar.js';
 import {ApplicationPanelTreeElement, ExpandableApplicationPanelTreeElement} from './ApplicationPanelTreeElement.js';
+import {BackForwardCacheView} from './BackForwardCacheView.js';
 import {ResourcesPanel} from './ResourcesPanel.js';
 import {ServiceWorkerCacheView} from './ServiceWorkerCacheViews.js';
 
@@ -17,6 +18,10 @@ const UIStrings = {
   *@description Text in Application Panel Sidebar of the Application panel
   */
   cacheStorage: 'Cache Storage',
+  /**
+  *@description Text in Application Panel Sidebar of the Application panel
+  */
+  backForwardCache: 'Back-forward Cache',
   /**
   *@description A context menu item in the Application Panel Sidebar of the Application panel
   */
@@ -225,6 +230,29 @@ export class ApplicationCacheFrameTreeElement extends ApplicationPanelTreeElemen
   onselect(selectedByUser: boolean|undefined): boolean {
     super.onselect(selectedByUser);
     this.sidebar._showApplicationCache(this.frameId);
+    return false;
+  }
+}
+
+export class BackForwardCacheTreeElement extends ApplicationPanelTreeElement {
+  private view?: BackForwardCacheView;
+
+  constructor(resourcesPanel: ResourcesPanel) {
+    super(resourcesPanel, i18nString(UIStrings.backForwardCache), false);
+    const icon = UI.Icon.Icon.create('mediumicon-database', 'resource-tree-item');
+    this.setLeadingIcons([icon]);
+  }
+
+  get itemURL(): string {
+    return 'bfcache://';
+  }
+
+  onselect(selectedByUser?: boolean): boolean {
+    super.onselect(selectedByUser);
+    if (!this.view) {
+      this.view = new BackForwardCacheView();
+    }
+    this.showView(this.view);
     return false;
   }
 }

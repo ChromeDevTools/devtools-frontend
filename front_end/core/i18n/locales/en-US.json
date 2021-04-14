@@ -2357,6 +2357,9 @@
   "panels/application/ApplicationCacheItemsView.ts | typeString": {
     "message": "Type"
   },
+  "panels/application/ApplicationPanelCacheSection.ts | backForwardCache": {
+    "message": "Back-forward Cache"
+  },
   "panels/application/ApplicationPanelCacheSection.ts | cacheStorage": {
     "message": "Cache Storage"
   },
@@ -2632,6 +2635,27 @@
   },
   "panels/application/AppManifestView.ts | theSpecifiedApplicationPlatform": {
     "message": "The specified application platform is not supported on Android"
+  },
+  "panels/application/BackForwardCacheView.ts | backForwardCacheTitle": {
+    "message": "Back-forward Cache"
+  },
+  "panels/application/BackForwardCacheView.ts | bfcacheStatus": {
+    "message": "Back-forward Cache Status"
+  },
+  "panels/application/BackForwardCacheView.ts | lastMainFrameNavigation": {
+    "message": "Last Main Frame Navigation"
+  },
+  "panels/application/BackForwardCacheView.ts | mainFrame": {
+    "message": "Main Frame"
+  },
+  "panels/application/BackForwardCacheView.ts | unavailable": {
+    "message": "unavailable"
+  },
+  "panels/application/BackForwardCacheView.ts | unknown": {
+    "message": "unknown"
+  },
+  "panels/application/BackForwardCacheView.ts | url": {
+    "message": "URL"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "Background Fetch"

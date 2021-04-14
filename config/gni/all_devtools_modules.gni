@@ -282,6 +282,7 @@ all_typescript_module_sources = [
   "panels/application/ApplicationPanelCacheSection.js",
   "panels/application/ApplicationPanelSidebar.js",
   "panels/application/ApplicationPanelTreeElement.js",
+  "panels/application/BackForwardCacheView.js",
   "panels/application/BackgroundServiceModel.js",
   "panels/application/BackgroundServiceView.js",
   "panels/application/CookieItemsView.js",

@@ -238,6 +238,9 @@ export class MainImpl {
     Root.Runtime.experiments.register('keyboardShortcutEditor', 'Enable keyboard shortcut editor', true);
     Root.Runtime.experiments.register('recorder', 'Recorder');
 
+    // Back-forward cache
+    Root.Runtime.experiments.register('bfcacheDebugging', 'Enable back-forward cache debugging support');
+
     // Timeline
     Root.Runtime.experiments.register('timelineEventInitiators', 'Timeline: event initiators');
     Root.Runtime.experiments.register('timelineInvalidationTracking', 'Timeline: invalidation tracking', true);

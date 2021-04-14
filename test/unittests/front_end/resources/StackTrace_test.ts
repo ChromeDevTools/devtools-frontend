@@ -5,7 +5,7 @@
 import * as Components from '../../../../front_end/components/components.js';
 import * as SDK from '../../../../front_end/core/sdk/sdk.js';
 import * as Resources from '../../../../front_end/panels/application/application.js';
-import * as UIComponents from '../../../../front_end/ui/components/components.js';
+import * as ExpandableList from '../../../../front_end/ui/components/expandable_list/expandable_list.js';
 import {assertElement, assertShadowRoot, dispatchClickEvent, getCleanTextContentFromElements, getElementWithinComponent, renderElementIntoDOM} from '../helpers/DOMHelpers.js';
 
 const {assert} = chai;
@@ -74,7 +74,7 @@ describe('StackTrace', () => {
 
     assertShadowRoot(component.shadowRoot);
     const expandableList =
-        getElementWithinComponent(component, 'devtools-expandable-list', UIComponents.ExpandableList.ExpandableList);
+        getElementWithinComponent(component, 'devtools-expandable-list', ExpandableList.ExpandableList.ExpandableList);
     assertShadowRoot(expandableList.shadowRoot);
     const expandButton = expandableList.shadowRoot.querySelector('button.arrow-icon-button');
     assertElement(expandButton, HTMLButtonElement);
@@ -117,7 +117,7 @@ describe('StackTrace', () => {
 
     assertShadowRoot(component.shadowRoot);
     const expandableList =
-        getElementWithinComponent(component, 'devtools-expandable-list', UIComponents.ExpandableList.ExpandableList);
+        getElementWithinComponent(component, 'devtools-expandable-list', ExpandableList.ExpandableList.ExpandableList);
     assertShadowRoot(expandableList.shadowRoot);
     const expandButton = expandableList.shadowRoot.querySelector('button.arrow-icon-button');
     assertElement(expandButton, HTMLButtonElement);

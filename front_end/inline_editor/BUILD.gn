@@ -36,7 +36,6 @@ devtools_module("inline_editor") {
     "../models/text_utils:bundle",
     "../panels/css_overview:bundle",
     "../third_party/lit-html:bundle",
-    "../ui/components:bundle",
     "../ui/legacy:bundle",
   ]
 

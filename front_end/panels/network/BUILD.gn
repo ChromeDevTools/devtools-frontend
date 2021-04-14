@@ -53,7 +53,7 @@ devtools_module("network") {
     "../../search:bundle",
     "../../theme_support:bundle",
     "../../third_party/chromium/client-variations:bundle",
-    "../../ui/components:bundle",
+    "../../ui/components/expandable_list:bundle",
     "../../ui/legacy:bundle",
     "../../ui/legacy/components/cookie_table:bundle",
     "../../ui/legacy/components/data_grid:bundle",

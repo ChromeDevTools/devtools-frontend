@@ -30,7 +30,6 @@ devtools_module("console") {
     "../../models/text_utils:bundle",
     "../../text_editor:bundle",
     "../../theme_support:bundle",
-    "../../ui/components:bundle",
     "../../ui/legacy:bundle",
     "../../ui/legacy/components/data_grid:bundle",
     "../../ui/legacy/components/object_ui:bundle",

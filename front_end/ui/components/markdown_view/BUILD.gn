@@ -21,7 +21,6 @@ devtools_module("markdown_view") {
     "../../../models/text_utils:bundle",
     "../../../render_coordinator:bundle",
     "../../../third_party/lit-html:bundle",
-    "../../../ui/components:bundle",
     "../../../ui/components/icon_button:bundle",
     "../../../ui/legacy:bundle",
   ]

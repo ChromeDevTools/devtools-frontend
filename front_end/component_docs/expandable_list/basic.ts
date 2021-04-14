@@ -4,11 +4,11 @@
 
 import * as FrontendHelpers from '../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
 import * as LitHtml from '../../third_party/lit-html/lit-html.js';
-import * as UIComponents from '../../ui/components/components.js';
+import * as ExpandableList from '../../ui/components/expandable_list/expandable_list.js';
 
 await FrontendHelpers.initializeGlobalVars();
 
-const component = new UIComponents.ExpandableList.ExpandableList();
+const component = new ExpandableList.ExpandableList.ExpandableList();
 
 const rows = [];
 rows.push(LitHtml.html`

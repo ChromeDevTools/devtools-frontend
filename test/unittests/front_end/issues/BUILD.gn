@@ -13,7 +13,6 @@ ts_library("issues") {
     "../../../../front_end/core/host:bundle",
     "../../../../front_end/core/sdk:bundle",
     "../../../../front_end/issues:bundle",
-    "../../../../front_end/ui/components:bundle",
     "../helpers",
     "../issues_manager",
     "../sdk",

@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import '../../ui/components/components.js';
+import '../../ui/components/icon_button/icon_button.js';
 
 import type * as IconButton from '../../ui/components/icon_button/icon_button.js';
 

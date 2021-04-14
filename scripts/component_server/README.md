@@ -21,7 +21,7 @@ ts_library("ts") {
 
   deps = [
     # As an example: anything your TS code imports needs to be listed here as a dep.
-    "../../ui/components:bundle",
+    "../../ui/components/data_grid:bundle",
   ]
 }
 

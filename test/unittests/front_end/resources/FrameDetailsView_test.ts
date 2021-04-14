@@ -5,7 +5,7 @@
 import * as SDK from '../../../../front_end/core/sdk/sdk.js';
 import * as Resources from '../../../../front_end/panels/application/application.js';
 import * as Coordinator from '../../../../front_end/render_coordinator/render_coordinator.js';
-import * as Components from '../../../../front_end/ui/components/components.js';
+import * as ExpandableList from '../../../../front_end/ui/components/expandable_list/expandable_list.js';
 import * as ReportView from '../../../../front_end/ui/components/report_view/report_view.js';
 import {assertShadowRoot, getCleanTextContentFromElements, getElementWithinComponent, renderElementIntoDOM} from '../helpers/DOMHelpers.js';
 
@@ -123,7 +123,7 @@ describe('FrameDetailsView', () => {
         getElementWithinComponent(component, 'devtools-resources-stack-trace', Resources.StackTrace.StackTrace);
     assertShadowRoot(stackTrace.shadowRoot);
     const expandableList =
-        getElementWithinComponent(stackTrace, 'devtools-expandable-list', Components.ExpandableList.ExpandableList);
+        getElementWithinComponent(stackTrace, 'devtools-expandable-list', ExpandableList.ExpandableList.ExpandableList);
     assertShadowRoot(expandableList.shadowRoot);
     const expandableListText = getCleanTextContentFromElements(expandableList.shadowRoot, '.stack-trace-row');
     assert.deepEqual(expandableListText, ['function1 @ www.example.com/script.js:16']);

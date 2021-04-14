@@ -37,7 +37,6 @@ devtools_module("issues") {
     "../panels/network:bundle",
     "../third_party/lit-html:bundle",
     "../third_party/marked:bundle",
-    "../ui/components:bundle",
     "../ui/components/data_grid:bundle",
     "../ui/components/linkifier:bundle",
     "../ui/components/markdown_view:bundle",

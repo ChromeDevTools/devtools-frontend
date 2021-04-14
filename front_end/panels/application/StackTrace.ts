@@ -2,11 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import '../../ui/components/expandable_list/expandable_list.js';
+
 import * as Components from '../../components/components.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';  // eslint-disable-line no-unused-vars
 import * as LitHtml from '../../third_party/lit-html/lit-html.js';
-import * as UIComponents from '../../ui/components/components.js';
+import * as ExpandableList from '../../ui/components/expandable_list/expandable_list.js';
 
 const UIStrings = {
   /**
@@ -155,7 +157,7 @@ export class StackTrace extends HTMLElement {
       LitHtml.html`
         <devtools-expandable-list .data=${{
           rows: expandableRows,
-        } as UIComponents.ExpandableList.ExpandableListData}>
+        } as ExpandableList.ExpandableList.ExpandableListData}>
         </devtools-expandable-list>
       `,
       this.shadow);

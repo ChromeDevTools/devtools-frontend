@@ -2,13 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/**
- * @param {string} localName
- * @param {string} typeExtension
- * @param {function(new:HTMLElement, *):void} definition
- * @return {function():!Element}
- */
-export function registerCustomElement(localName, typeExtension, definition) {
+export function registerCustomElement(
+    localName: string, typeExtension: string, definition: new () => HTMLElement): () => Element {
   self.customElements.define(typeExtension, class extends definition {
     constructor() {
       // The JSDoc above does not allow the super call to have no params, but
@@ -19,5 +14,5 @@ export function registerCustomElement(localName, typeExtension, definition) {
       this.setAttribute('is', typeExtension);
     }
   }, {extends: localName});
-  return () => document.createElement(localName, {is: typeExtension});
+  return (): Element => document.createElement(localName, {is: typeExtension});
 }

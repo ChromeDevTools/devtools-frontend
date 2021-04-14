@@ -6,16 +6,17 @@ import {appendStyle} from './append-style.js';
 import {focusChanged} from './focus-changed.js';
 import {injectCoreStyles} from './inject-core-styles.js';
 
-/**
- * @param {!Element} element
- * @param {(!{cssFile:(string|undefined),delegatesFocus:(boolean|undefined),enableLegacyPatching:boolean}|undefined)} options
- * @return {!ShadowRoot}
- */
-export function createShadowRootWithCoreStyles(element, options = {
+interface Options {
+  cssFile?: string;
+  delegatesFocus?: boolean;
+  enableLegacyPatching: boolean;
+}
+
+export function createShadowRootWithCoreStyles(element: Element, options: Options = {
   delegatesFocus: undefined,
   cssFile: undefined,
   enableLegacyPatching: false,
-}) {
+}): ShadowRoot {
   const {
     cssFile,
     delegatesFocus,

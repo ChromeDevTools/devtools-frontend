@@ -6,10 +6,7 @@ import * as ThemeSupport from '../../../theme_support/theme_support.js';
 
 import {appendStyle} from './append-style.js';
 
-/**
- * @param {!Element|!ShadowRoot} root
- */
-export function injectCoreStyles(root) {
+export function injectCoreStyles(root: Element|ShadowRoot): void {
   appendStyle(root, 'ui/legacy/inspectorCommon.css', {enableLegacyPatching: true});
   appendStyle(root, 'ui/legacy/inspectorScrollbars.css', {enableLegacyPatching: false});
   appendStyle(root, 'ui/legacy/themeColors.css', {enableLegacyPatching: false});

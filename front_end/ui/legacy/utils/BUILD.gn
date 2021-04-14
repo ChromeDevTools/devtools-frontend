@@ -7,12 +7,12 @@ import("../../../../scripts/build/ninja/devtools_module.gni")
 
 devtools_module("ui_utils") {
   sources = [
-    "append-style.js",
-    "create-shadow-root-with-core-styles.js",
-    "focus-changed.js",
-    "inject-core-styles.js",
-    "measured-scrollbar-width.js",
-    "register-custom-element.js",
+    "append-style.ts",
+    "create-shadow-root-with-core-styles.ts",
+    "focus-changed.ts",
+    "inject-core-styles.ts",
+    "measured-scrollbar-width.ts",
+    "register-custom-element.ts",
   ]
 
   deps = [
@@ -22,7 +22,7 @@ devtools_module("ui_utils") {
 }
 
 devtools_entrypoint("bundle") {
-  entrypoint = "utils.js"
+  entrypoint = "utils.ts"
 
   deps = [ ":ui_utils" ]
 }

@@ -5,14 +5,9 @@
 import * as Root from '../../../core/root/root.js';
 import * as ThemeSupport from '../../../theme_support/theme_support.js';
 
-/**
- * @param {!Node} node
- * @param {string} cssFile
- * @param {!{enableLegacyPatching:boolean}} options
- */
-export function appendStyle(node, cssFile, options = {
-  enableLegacyPatching: false
-}) {
+export function appendStyle(node: Node, cssFile: string, options: {enableLegacyPatching: boolean} = {
+  enableLegacyPatching: false,
+}): void {
   const content = Root.Runtime.cachedResources.get(cssFile) || '';
   if (!content) {
     console.error(cssFile + ' not preloaded. Check module.json');

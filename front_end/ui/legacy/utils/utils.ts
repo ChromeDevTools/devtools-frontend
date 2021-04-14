@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/es_modules_import */
+
 import {appendStyle} from './append-style.js';
 import {createShadowRootWithCoreStyles} from './create-shadow-root-with-core-styles.js';
 import {focusChanged} from './focus-changed.js';

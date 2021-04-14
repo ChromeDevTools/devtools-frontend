@@ -2,14 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/** @type {number} */
-let _measuredScrollbarWidth;
+// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+// eslint-disable-next-line @typescript-eslint/naming-convention
+let _measuredScrollbarWidth: number;
 
-/**
- * @param {?Document=} document
- * @return {number}
- */
-export function measuredScrollbarWidth(document) {
+export function measuredScrollbarWidth(document?: Document|null): number {
   if (typeof _measuredScrollbarWidth === 'number') {
     return _measuredScrollbarWidth;
   }

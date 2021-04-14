@@ -2,6 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import '../../ui/components/report_view/report_view.js';
+import '../../ui/components/icon_button/icon_button.js';
+
 import type {StackTraceData} from './StackTrace.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Common from '../../core/common/common.js';
@@ -11,7 +14,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';  // eslint-disable-line no-unused-vars
 import * as LitHtml from '../../third_party/lit-html/lit-html.js';
-import * as WebComponents from '../../ui/components/components.js';
+import * as ReportView from '../../ui/components/report_view/report_view.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Workspace from '../../models/workspace/workspace.js';
@@ -349,7 +352,7 @@ export class FrameDetailsReportView extends HTMLElement {
           padding-top: 3px;
         }
       </style>
-      <devtools-report .data=${{reportTitle: this.frame.displayName()} as WebComponents.ReportView.ReportData}>
+      <devtools-report .data=${{reportTitle: this.frame.displayName()} as ReportView.ReportView.ReportData}>
         ${this.renderDocumentSection()}
         ${this.renderIsolationSection()}
         ${this.renderApiAvailabilitySection()}

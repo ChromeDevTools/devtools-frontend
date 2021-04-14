@@ -9,7 +9,7 @@ import {VBox} from './Widget.js';
 
 /**
  * @deprecated Please consider using the web component version of this widget
- *             (`ui/components/ReportView.ts`) for new code.
+ *             (`ui/components/report_view/ReportView.ts`) for new code.
  */
 export class ReportView extends VBox {
   /**

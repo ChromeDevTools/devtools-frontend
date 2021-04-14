@@ -3,9 +3,7 @@
 // found in the LICENSE file.
 
 import * as ExpandableList from './ExpandableList.js';
-import * as ReportView from './ReportView.js';
 
 export {
   ExpandableList,
-  ReportView,
 };

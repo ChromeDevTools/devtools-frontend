@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as LitHtml from '../../../../../front_end/third_party/lit-html/lit-html.js';
-import * as UIComponents from '../../../../../front_end/ui/components/components.js';
+import * as ReportView from '../../../../../front_end/ui/components/report_view/report_view.js';
 import {getElementWithinComponent, renderElementIntoDOM} from '../../helpers/DOMHelpers.js';
 
 const {assert} = chai;
@@ -11,7 +11,7 @@ const {assert} = chai;
 describe('ReportView', () => {
   describe('header', () => {
     it('shows the provided report title', () => {
-      const report = new UIComponents.ReportView.Report();
+      const report = new ReportView.ReportView.Report();
       report.data = {reportTitle: 'Title for test report'};
       renderElementIntoDOM(report);
 
@@ -23,7 +23,7 @@ describe('ReportView', () => {
 
   describe('row', () => {
     it('renders the elements provided for the "key" and "value" slot', () => {
-      const report = new UIComponents.ReportView.Report();
+      const report = new ReportView.ReportView.Report();
       LitHtml.render(
           LitHtml.html`
         <devtools-report-key>This is the key</devtools-report-key>

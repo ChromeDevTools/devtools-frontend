@@ -2,12 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import '../../ui/components/components.js';
+import '../../ui/components/report_view/report_view.js';
 
 import * as ComponentHelpers from '../../component_helpers/component_helpers.js';
 import * as LitHtml from '../../third_party/lit-html/lit-html.js';
 
-import type * as Components from '../../ui/components/components.js';
+import type * as ReportView from '../../ui/components/report_view/report_view.js';
 
 await ComponentHelpers.ComponentServerSetup.setup();
 
@@ -29,7 +29,7 @@ LitHtml.render(
           }
         </style>
 
-        <devtools-report .data=${{reportTitle: 'Optional Title'} as Components.ReportView.ReportData}>
+        <devtools-report .data=${{reportTitle: 'Optional Title'} as ReportView.ReportView.ReportData}>
           <devtools-report-section-header>Section 1</devtools-report-section-header>
           <devtools-report-key>Basic plain text field</devtools-report-key>
           <devtools-report-value>And this is the value</devtools-report-value>

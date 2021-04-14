@@ -6,6 +6,7 @@ import * as SDK from '../../../../front_end/core/sdk/sdk.js';
 import * as Resources from '../../../../front_end/panels/application/application.js';
 import * as Coordinator from '../../../../front_end/render_coordinator/render_coordinator.js';
 import * as Components from '../../../../front_end/ui/components/components.js';
+import * as ReportView from '../../../../front_end/ui/components/report_view/report_view.js';
 import {assertShadowRoot, getCleanTextContentFromElements, getElementWithinComponent, renderElementIntoDOM} from '../helpers/DOMHelpers.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
@@ -71,7 +72,7 @@ describe('FrameDetailsView', () => {
     };
 
     assertShadowRoot(component.shadowRoot);
-    const report = getElementWithinComponent(component, 'devtools-report', Components.ReportView.Report);
+    const report = getElementWithinComponent(component, 'devtools-report', ReportView.ReportView.Report);
     assertShadowRoot(report.shadowRoot);
 
     const titleElement = report.shadowRoot.querySelector('.report-title');

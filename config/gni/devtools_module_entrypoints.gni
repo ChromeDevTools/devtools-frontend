@@ -186,6 +186,7 @@ devtools_module_entrypoint_sources = [
   "ui/components/linear_memory_inspector/linear_memory_inspector.js",
   "ui/components/linkifier/linkifier.js",
   "ui/components/markdown_view/markdown_view.js",
+  "ui/components/report_view/report_view.js",
   "ui/components/survey_link/survey_link.js",
   "ui/components/tree_outline/tree_outline.js",
   "ui/legacy/components/color_picker/color_picker-legacy.js",

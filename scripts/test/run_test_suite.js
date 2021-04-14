@@ -53,7 +53,7 @@ const yargsObject =
         .option('component-server-base-path', {
           type: 'string',
           desc:
-              'The component serve assumes examples live in out/TARGET/gen/front_end/component_docs, but you can set this option to add a prefix. Passing `foo` will redirect the server to look in out/TARGET/gen/foo/front_end/component_docs.',
+              'The component serve assumes examples live in out/TARGET/gen/front_end/ui/components/docs, but you can set this option to add a prefix. Passing `foo` will redirect the server to look in out/TARGET/gen/foo/front_end/ui/components/docs.',
           default: '',
         })
         .option('component-server-shared-resources-path', {

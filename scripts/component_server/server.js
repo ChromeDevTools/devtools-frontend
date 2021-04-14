@@ -23,9 +23,9 @@ const sharedResourcesBase =
 
 /**
  * The server assumes that examples live in
- * devtoolsRoot/out/Target/gen/front_end/component_docs, but if you need to add a
+ * devtoolsRoot/out/Target/gen/front_end/ui/components/docs, but if you need to add a
  * prefix you can pass this argument. Passing `foo` will redirect the server to
- * look in devtoolsRoot/out/Target/gen/foo/front_end/component_docs.
+ * look in devtoolsRoot/out/Target/gen/foo/front_end/ui/components/docs.
  */
 const componentDocsBaseArg = argv.componentDocsBase || process.env.COMPONENT_DOCS_BASE ||
     getTestRunnerConfigSetting('component-server-base-path', '');
@@ -71,8 +71,8 @@ server.once('listening', () => {
     process.send(serverPort);
   }
   console.log(`Started components server at http://localhost:${serverPort}\n`);
-  console.log(`component_docs location: ${
-      path.relative(process.cwd(), path.join(componentDocsBaseFolder, 'front_end', 'component_docs'))}`);
+  console.log(`ui/components/docs location: ${
+      path.relative(process.cwd(), path.join(componentDocsBaseFolder, 'front_end', 'ui', 'components', 'docs'))}`);
 });
 
 server.once('error', error => {
@@ -83,7 +83,7 @@ server.once('error', error => {
 });
 
 function createComponentIndexFile(componentPath, componentExamples) {
-  const componentName = componentPath.replace('/front_end/component_docs/', '').replace(/_/g, ' ').replace('/', '');
+  const componentName = componentPath.replace('/front_end/ui/components/docs/', '').replace(/_/g, ' ').replace('/', '');
   // clang-format off
   return `<!DOCTYPE html>
   <html>
@@ -162,7 +162,7 @@ function createServerIndexFile(componentNames) {
       <ul>
         ${componentNames.map(name => {
           const niceName = name.replace(/_/g, ' ');
-          return `<li><a href='/front_end/component_docs/${name}'>${niceName}</a></li>`;
+          return `<li><a href='/front_end/ui/components/docs/${name}'>${niceName}</a></li>`;
         }).join('\n')}
       </ul>
     </body>
@@ -210,21 +210,22 @@ async function requestHandler(request, response) {
   }
 
   if (filePath === '/' || filePath === '/index.html') {
-    const components = await fs.promises.readdir(path.join(componentDocsBaseFolder, 'front_end', 'component_docs'));
+    const components =
+        await fs.promises.readdir(path.join(componentDocsBaseFolder, 'front_end', 'ui', 'components', 'docs'));
     const html = createServerIndexFile(components.filter(filePath => {
-      const stats = fs.lstatSync(path.join(componentDocsBaseFolder, 'front_end', 'component_docs', filePath));
+      const stats = fs.lstatSync(path.join(componentDocsBaseFolder, 'front_end', 'ui', 'components', 'docs', filePath));
       // Filter out some build config files (tsconfig, d.ts, etc), and just list the directories.
       return stats.isDirectory();
     }));
     respondWithHtml(response, html);
-  } else if (filePath.startsWith('/front_end/component_docs') && path.extname(filePath) === '') {
+  } else if (filePath.startsWith('/front_end/ui/components/docs') && path.extname(filePath) === '') {
     // This means it's a component path like /breadcrumbs.
     const componentHtml = await getExamplesForPath(filePath);
     respondWithHtml(response, componentHtml);
     return;
-  } else if (/component_docs\/(.+)\/(.+)\.html/.test(filePath)) {
+  } else if (/ui\/components\/docs\/(.+)\/(.+)\.html/.test(filePath)) {
     /** This conditional checks if we are viewing an individual example's HTML
-     *  file. e.g. localhost:8090/front_end/component_docs/data_grid/basic.html For each
+     *  file. e.g. localhost:8090/front_end/ui/components/docs/data_grid/basic.html For each
      *  example we inject themeColors.css into the page so all CSS variables
      *  that components use are available.
      */
@@ -247,7 +248,7 @@ async function requestHandler(request, response) {
     const inspectorCommonLink = `<link rel="stylesheet" href="${
         path.join(baseUrlForSharedResource, 'front_end', 'ui', 'legacy', 'inspectorCommon.css')}" type="text/css" />`;
     const toggleDarkModeScript = `<script type="module" src="${
-        path.join(baseUrlForSharedResource, 'front_end', 'component_docs', 'component_docs.js')}"></script>`;
+        path.join(baseUrlForSharedResource, 'front_end', 'ui', 'components', 'docs', 'component_docs.js')}"></script>`;
     const newFileContents = fileContents.replace('</head>', `${themeColoursLink}\n${inspectorCommonLink}\n</head>`)
                                 .replace('</body>', toggleDarkModeScript + '\n</body>');
     respondWithHtml(response, newFileContents);

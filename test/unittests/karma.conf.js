@@ -163,7 +163,8 @@ module.exports = function(config) {
 
     preprocessors: {
       '**/*.{js,mjs}': ['sourcemap'],
-      [path.join(GEN_DIRECTORY, 'front_end/!(third_party|component_docs)/**/*.{js,mjs}')]: [...coveragePreprocessors],
+      [path.join(GEN_DIRECTORY, 'front_end/!(third_party|ui/components/docs)/**/*.{js,mjs}')]:
+          [...coveragePreprocessors],
       [path.join(GEN_DIRECTORY, 'inspector_overlay/**/*.{js,mjs}')]: [...coveragePreprocessors],
     },
 

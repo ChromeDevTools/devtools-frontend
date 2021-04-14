@@ -205,7 +205,8 @@ def _CheckDevToolsStyleJS(input_api, output_api):
     front_end_directory = input_api.os_path.join(
         input_api.PresubmitLocalPath(), 'front_end')
     component_docs_directory = input_api.os_path.join(front_end_directory,
-                                                      'component_docs')
+                                                      'ui', 'components',
+                                                      'docs')
     inspector_overlay_directory = input_api.os_path.join(
         input_api.PresubmitLocalPath(), 'inspector_overlay')
     test_directory = input_api.os_path.join(input_api.PresubmitLocalPath(),

@@ -124,7 +124,7 @@ ruleTester.run('es_modules_import', rule, {
     // Component doc files can reach into the test directory to use the helpers
     {
       code: 'import * as FrontendHelpers from \'../../../test/unittests/front_end/helpers/EnvironmentHelpers.js\'',
-      filename: 'front_end/component_docs/data_grid/basic.ts',
+      filename: 'front_end/ui/components/docs/data_grid/basic.ts',
     },
   ],
 

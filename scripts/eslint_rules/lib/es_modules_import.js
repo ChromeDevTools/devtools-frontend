@@ -13,7 +13,7 @@ const path = require('path');
 const FRONT_END_DIRECTORY = path.join(__dirname, '..', '..', '..', 'front_end');
 const UNITTESTS_DIRECTORY = path.join(__dirname, '..', '..', '..', 'test', 'unittests');
 const INSPECTOR_OVERLAY_DIRECTORY = path.join(__dirname, '..', '..', '..', 'front_end', 'inspector_overlay');
-const COMPONENT_DOCS_DIRECTORY = path.join(FRONT_END_DIRECTORY, 'component_docs');
+const COMPONENT_DOCS_DIRECTORY = path.join(FRONT_END_DIRECTORY, 'ui', 'components', 'docs');
 
 const EXEMPTED_THIRD_PARTY_MODULES = new Set([
   // wasmparser is exempt as it doesn't expose all its modules from the root file

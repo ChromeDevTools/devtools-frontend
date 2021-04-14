@@ -172,13 +172,18 @@ const UIStrings = {
   */
   timerFired: 'Timer Fired',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
-  xhrReadyStateChange: 'XHR Ready State Change',
+   *@description Text for an event. Shown in the timeline in the Performance panel.
+   * XHR refers to XmlHttpRequest, a Web API. This particular Web API has a property
+   * named 'readyState' (https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/readyState). When
+   * the 'readyState' property changes the text is shown.
+   */
+  xhrReadyStateChange: '`XHR` Ready State Change',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
-  xhrLoad: 'XHR Load',
+   * @description Text for an event. Shown in the timeline in the Perforamnce panel.
+   * XHR refers to XmlHttpRequest, a Web API. (see https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest)
+   * The text is shown when a XmlHttpRequest load event happens on the inspected page.
+   */
+  xhrLoad: '`XHR` Load',
   /**
   *@description Text in Timeline UIUtils of the Performance panel
   */

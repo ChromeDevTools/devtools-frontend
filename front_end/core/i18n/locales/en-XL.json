@@ -8643,7 +8643,7 @@
     "message": "P̂áûśêd́ ôń êx́ĉép̂t́îón̂"
   },
   "sources/DebuggerPausedMessage.ts | pausedOnPromiseRejection": {
-    "message": "P̂áûśêd́ ôń p̂ŕôḿîśê ŕêj́êćt̂íôń"
+    "message": "P̂áûśêd́ ôń promise r̂éĵéĉt́îón̂"
   },
   "sources/DebuggerPausedMessage.ts | pausedOnS": {
     "message": "P̂áûśêd́ ôń {PH1}"
@@ -10566,10 +10566,10 @@
     "message": "Ŵíl̂ĺ Ŝén̂d́ R̂éq̂úêśt̂"
   },
   "timeline/TimelineUIUtils.ts | xhrLoad": {
-    "message": "X̂H́R̂ Ĺôád̂"
+    "message": "XHR L̂óâd́"
   },
   "timeline/TimelineUIUtils.ts | xhrReadyStateChange": {
-    "message": "X̂H́R̂ Ŕêád̂ý Ŝt́ât́ê Ćĥán̂ǵê"
+    "message": "XHR R̂éâd́ŷ Śt̂át̂é Ĉh́âńĝé"
   },
   "timeline/TimelineUIUtils.ts | yes": {
     "message": "Ŷéŝ"

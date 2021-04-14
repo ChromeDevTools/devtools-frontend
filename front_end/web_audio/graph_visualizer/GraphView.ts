@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 
@@ -11,28 +13,28 @@ import {NodeLabelGenerator, NodeView} from './NodeView.js';
 
 // A class that tracks all the nodes and edges of an audio graph.
 export class GraphView extends Common.ObjectWrapper.ObjectWrapper {
-  /**
-   * @param {!Protocol.WebAudio.GraphObjectId} contextId
-   */
-  constructor(contextId) {
+  contextId: string;
+  _nodes: Map<string, NodeView>;
+  _edges: Map<string, EdgeView>;
+  _outboundEdgeMap: Platform.MapUtilities.Multimap<string, string>;
+  _inboundEdgeMap: Platform.MapUtilities.Multimap<string, string>;
+  _nodeLabelGenerator: NodeLabelGenerator;
+  _paramIdToNodeIdMap: Map<string, string>;
+  constructor(contextId: string) {
     super();
 
     this.contextId = contextId;
 
-    /** @type {!Map<!Protocol.WebAudio.GraphObjectId, !NodeView>} */
     this._nodes = new Map();
-    /** @type {!Map<!Protocol.WebAudio.GraphObjectId, !EdgeView>} */
     this._edges = new Map();
 
     /**
      * For each node ID, keep a set of all out-bound edge IDs.
-     * @type {!Platform.MapUtilities.Multimap<!Protocol.WebAudio.GraphObjectId, string>}
      */
     this._outboundEdgeMap = new Platform.MapUtilities.Multimap();
 
     /**
      * For each node ID, keep a set of all in-bound edge IDs.
-     * @type {!Platform.MapUtilities.Multimap<!Protocol.WebAudio.GraphObjectId, string>}
      */
     this._inboundEdgeMap = new Platform.MapUtilities.Multimap();
 
@@ -42,16 +44,14 @@ export class GraphView extends Common.ObjectWrapper.ObjectWrapper {
 
     /**
      * For each param ID, save its corresponding node Id.
-     * @type {!Map<!Protocol.WebAudio.GraphObjectId, !Protocol.WebAudio.GraphObjectId>}
       */
     this._paramIdToNodeIdMap = new Map();
   }
 
   /**
    * Add a node to the graph.
-   * @param {!NodeCreationData} data
    */
-  addNode(data) {
+  addNode(data: NodeCreationData): void {
     const label = this._nodeLabelGenerator.generateLabel(data.nodeType);
     const node = new NodeView(data, label);
     this._nodes.set(data.nodeId, node);
@@ -60,9 +60,8 @@ export class GraphView extends Common.ObjectWrapper.ObjectWrapper {
 
   /**
    * Remove a node by id and all related edges.
-   * @param {!Protocol.WebAudio.GraphObjectId} nodeId
    */
-  removeNode(nodeId) {
+  removeNode(nodeId: string): void {
     this._outboundEdgeMap.get(nodeId).forEach(edgeId => this._removeEdge(edgeId));
     this._inboundEdgeMap.get(nodeId).forEach(edgeId => this._removeEdge(edgeId));
     this._nodes.delete(nodeId);
@@ -71,9 +70,8 @@ export class GraphView extends Common.ObjectWrapper.ObjectWrapper {
 
   /**
    * Add a param to the node.
-   * @param {!ParamCreationData} data
    */
-  addParam(data) {
+  addParam(data: ParamCreationData): void {
     const node = this.getNodeById(data.nodeId);
     if (!node) {
       console.error('AudioNode should be added before AudioParam');
@@ -86,9 +84,8 @@ export class GraphView extends Common.ObjectWrapper.ObjectWrapper {
 
   /**
    * Remove a param.
-   * @param {!Protocol.WebAudio.GraphObjectId} paramId
    */
-  removeParam(paramId) {
+  removeParam(paramId: string): void {
     // Only need to delete the entry from the param id to node id map.
     this._paramIdToNodeIdMap.delete(paramId);
     // No need to remove the param port from the node because removeParam will always happen with
@@ -97,22 +94,20 @@ export class GraphView extends Common.ObjectWrapper.ObjectWrapper {
 
   /**
    * Add a Node-to-Node connection to the graph.
-   * @param {!NodesConnectionData} edgeData
    */
-  addNodeToNodeConnection(edgeData) {
+  addNodeToNodeConnection(edgeData: NodesConnectionData): void {
     const edge = new EdgeView(edgeData, EdgeTypes.NodeToNode);
     this._addEdge(edge);
   }
 
   /**
    * Remove a Node-to-Node connection from the graph.
-   * @param {!NodesDisconnectionData} edgeData
    */
-  removeNodeToNodeConnection(edgeData) {
+  removeNodeToNodeConnection(edgeData: NodesDisconnectionData): void {
     if (edgeData.destinationId) {
       // Remove a single edge if destinationId is specified.
-      const edgePortIds = generateEdgePortIdsByData(
-          /** @type {!NodesDisconnectionDataWithDestination} */ (edgeData), EdgeTypes.NodeToNode);
+      const edgePortIds =
+          generateEdgePortIdsByData((edgeData as NodesDisconnectionDataWithDestination), EdgeTypes.NodeToNode);
 
       if (!edgePortIds) {
         throw new Error('Unable to generate edge port IDs');
@@ -128,18 +123,16 @@ export class GraphView extends Common.ObjectWrapper.ObjectWrapper {
 
   /**
    * Add a Node-to-Param connection to the graph.
-   * @param {!NodeParamConnectionData} edgeData
    */
-  addNodeToParamConnection(edgeData) {
+  addNodeToParamConnection(edgeData: NodeParamConnectionData): void {
     const edge = new EdgeView(edgeData, EdgeTypes.NodeToParam);
     this._addEdge(edge);
   }
 
   /**
    * Remove a Node-to-Param connection from the graph.
-   * @param {!NodeParamDisconnectionData} edgeData
    */
-  removeNodeToParamConnection(edgeData) {
+  removeNodeToParamConnection(edgeData: NodeParamDisconnectionData): void {
     const edgePortIds = generateEdgePortIdsByData(edgeData, EdgeTypes.NodeToParam);
     if (!edgePortIds) {
       throw new Error('Unable to generate edge port IDs');
@@ -149,37 +142,26 @@ export class GraphView extends Common.ObjectWrapper.ObjectWrapper {
     this._removeEdge(edgeId);
   }
 
-  /**
-   * @param {!Protocol.WebAudio.GraphObjectId} nodeId
-   * @return {?NodeView}
-   */
-  getNodeById(nodeId) {
+  getNodeById(nodeId: string): NodeView|null {
     return this._nodes.get(nodeId) || null;
   }
 
-  /** @return {!Map<!Protocol.WebAudio.GraphObjectId, !NodeView>} */
-  getNodes() {
+  getNodes(): Map<string, NodeView> {
     return this._nodes;
   }
 
-  /** @return {!Map<!Protocol.WebAudio.GraphObjectId, !EdgeView>} */
-  getEdges() {
+  getEdges(): Map<string, EdgeView> {
     return this._edges;
   }
 
-  /**
-   * @param {!Protocol.WebAudio.GraphObjectId} paramId
-   * @return {?Protocol.WebAudio.GraphObjectId}
-   */
-  getNodeIdByParamId(paramId) {
+  getNodeIdByParamId(paramId: string): string|null {
     return this._paramIdToNodeIdMap.get(paramId) || null;
   }
 
   /**
    * Add an edge to the graph.
-   * @param {!EdgeView} edge
    */
-  _addEdge(edge) {
+  _addEdge(edge: EdgeView): void {
     const sourceId = edge.sourceId;
     // Do nothing if the edge already exists.
     if (this._outboundEdgeMap.hasValue(sourceId, edge.id)) {
@@ -196,9 +178,8 @@ export class GraphView extends Common.ObjectWrapper.ObjectWrapper {
   /**
    * Given an edge id, remove the edge from the graph.
    * Also remove the edge from inbound and outbound edge maps.
-   * @param {string} edgeId
    */
-  _removeEdge(edgeId) {
+  _removeEdge(edgeId: string): void {
     const edge = this._edges.get(edgeId);
     if (!edge) {
       return;
@@ -211,12 +192,11 @@ export class GraphView extends Common.ObjectWrapper.ObjectWrapper {
     this._notifyShouldRedraw();
   }
 
-  _notifyShouldRedraw() {
+  _notifyShouldRedraw(): void {
     this.dispatchEventToListeners(Events.ShouldRedraw, this);
   }
 }
 
-/** @enum {symbol} */
-export const Events = {
-  ShouldRedraw: Symbol('ShouldRedraw')
-};
+export const enum Events {
+  ShouldRedraw = 'ShouldRedraw',
+}

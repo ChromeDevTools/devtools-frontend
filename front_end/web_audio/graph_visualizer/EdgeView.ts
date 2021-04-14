@@ -2,17 +2,22 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import {NodeParamConnectionData, NodesConnectionData} from './GraphStyle.js';  // eslint-disable-line no-unused-vars
 import {generateInputPortId, generateOutputPortId, generateParamPortId} from './NodeView.js';
 
 // A class that represents an edge of a graph, including node-to-node connection,
 // and node-to-param connection.
 export class EdgeView {
-  /**
-   * @param {!NodesConnectionData | !NodeParamConnectionData} data
-   * @param {!EdgeTypes} type
-   */
-  constructor(data, type) {
+  id: string;
+  type: EdgeTypes;
+  sourceId: string;
+  destinationId: string;
+  sourcePortId: string;
+  destinationPortId: string;
+
+  constructor(data: NodesConnectionData|NodeParamConnectionData, type: EdgeTypes) {
     const edgePortsIds = generateEdgePortIdsByData(data, type);
     if (!edgePortsIds) {
       throw new Error('Unable to generate edge port IDs');
@@ -31,11 +36,12 @@ export class EdgeView {
 
 /**
  * Generates the edge id and source/destination portId using edge data and type.
- * @param {!NodesConnectionData | !NodeParamConnectionData} data
- * @param {!EdgeTypes} type
- * @return {?{edgeId: string, sourcePortId: string, destinationPortId: string}}
  */
-export const generateEdgePortIdsByData = (data, type) => {
+export const generateEdgePortIdsByData = (data: NodesConnectionData|NodeParamConnectionData, type: EdgeTypes): {
+  edgeId: string,
+  sourcePortId: string,
+  destinationPortId: string,
+}|null => {
   if (!data.sourceId || !data.destinationId) {
     console.error(`Undefined node message: ${JSON.stringify(data)}`);
     return null;
@@ -52,29 +58,27 @@ export const generateEdgePortIdsByData = (data, type) => {
 
   /**
    * Get the destination portId based on connection type.
-   * @param {!NodesConnectionData | !NodeParamConnectionData} data
-   * @param {!EdgeTypes} type
-   * @return {string}
    */
-  function getDestinationPortId(data, type) {
+  function getDestinationPortId(data: NodesConnectionData|NodeParamConnectionData, type: EdgeTypes): string {
     if (type === EdgeTypes.NodeToNode) {
-      const portData = /** @type {!NodesConnectionData} */ (data);
+      const portData = (data as NodesConnectionData);
       return generateInputPortId(data.destinationId, portData.destinationInputIndex);
     }
     if (type === EdgeTypes.NodeToParam) {
-      const portData = /** @type {!NodeParamConnectionData} */ (data);
+      const portData = (data as NodeParamConnectionData);
       return generateParamPortId(data.destinationId, portData.destinationParamId);
     }
-    console.error(`Unknown edge type: ${type.toString()}`);
+    console.error(`Unknown edge type: ${type}`);
     return '';
   }
 };
 
 /**
  * Supported edge types.
- * @enum {symbol}
  */
-export const EdgeTypes = {
-  NodeToNode: Symbol('NodeToNode'),
-  NodeToParam: Symbol('NodeToParam'),
-};
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum EdgeTypes {
+  NodeToNode = 'NodeToNode',
+  NodeToParam = 'NodeToParam',
+}

@@ -7,12 +7,12 @@ import("../../../scripts/build/ninja/devtools_module.gni")
 
 devtools_module("web_audio_graph_visualizer") {
   sources = [
-    "EdgeView.js",
-    "GraphManager.js",
-    "GraphStyle.js",
-    "GraphView.js",
-    "NodeRendererUtility.js",
-    "NodeView.js",
+    "EdgeView.ts",
+    "GraphManager.ts",
+    "GraphStyle.ts",
+    "GraphView.ts",
+    "NodeRendererUtility.ts",
+    "NodeView.ts",
   ]
 
   deps = [
@@ -23,7 +23,7 @@ devtools_module("web_audio_graph_visualizer") {
 }
 
 devtools_entrypoint("bundle") {
-  entrypoint = "graph_visualizer.js"
+  entrypoint = "graph_visualizer.ts"
 
   deps = [ ":web_audio_graph_visualizer" ]
 }

@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as UI from '../../ui/legacy/legacy.js';
 
 import {BottomPaddingWithoutParam, BottomPaddingWithParam, LeftMarginOfText, LeftSideTopPadding, NodeCreationData, NodeLabelFontStyle, NodeLayout, ParamLabelFontStyle, Port, PortTypes, RightMarginOfText, TotalInputPortHeight, TotalOutputPortHeight, TotalParamPortHeight} from './GraphStyle.js';  // eslint-disable-line no-unused-vars
@@ -10,11 +12,19 @@ import {calculateInputPortXY, calculateOutputPortXY, calculateParamPortXY} from 
 // A class that represents a node of a graph, consisting of the information needed to layout the
 // node and display the node. Each node has zero or more ports, including input, output, and param ports.
 export class NodeView {
-  /**
-   * @param {!NodeCreationData} data
-   * @param {string} label
-   */
-  constructor(data, label) {
+  id: string;
+  type: string;
+  numberOfInputs: number;
+  numberOfOutputs: number;
+  label: string;
+  size: {
+    width: number,
+    height: number,
+  };
+  position: Object|null;
+  _layout: NodeLayout;
+  ports: Map<string, Port>;
+  constructor(data: NodeCreationData, label: string) {
     this.id = data.nodeId;
     this.type = data.nodeType;
     this.numberOfInputs = data.numberOfInputs;
@@ -24,28 +34,20 @@ export class NodeView {
     this.size = {width: 0, height: 0};
     // Position of the center. If null, it means the graph layout has not been computed
     // and this node should not be rendered. It will be set after layouting.
-    /**
-     * @type {?Object}
-     */
     this.position = null;
 
-    /** @type {!NodeLayout} */
     this._layout = {
       inputPortSectionHeight: 0,
       outputPortSectionHeight: 0,
       maxTextLength: 0,
       totalHeight: 0,
     };
-    /** @type {!Map<string, !Port>} */
     this.ports = new Map();
 
     this._initialize(data);
   }
 
-  /**
-   * @param {!NodeCreationData} data
-   */
-  _initialize(data) {
+  _initialize(data: NodeCreationData): void {
     this._updateNodeLayoutAfterAddingNode(data);
     this._setupInputPorts();
     this._setupOutputPorts();
@@ -56,10 +58,8 @@ export class NodeView {
    * Note for @method removeParamPort: removeParamPort is not necessary because it will only happen
    * when the parent NodeView is destroyed. So there is no need to remove port individually
    * when the whole NodeView will be gone.
-   * @param {string} paramId
-   * @param {string} paramType
    */
-  addParamPort(paramId, paramType) {
+  addParamPort(paramId: string, paramType: string): void {
     const paramPorts = this.getPortsByType(PortTypes.Param);
     const numberOfParams = paramPorts.length;
 
@@ -78,15 +78,8 @@ export class NodeView {
     this._setupOutputPorts();
   }
 
-  /**
-   * @param {!PortTypes} type
-   * @return {!Array<!Port>}
-   */
-  getPortsByType(type) {
-    /**
-     * @type {!Array<!Port>}
-     */
-    const result = [];
+  getPortsByType(type: PortTypes): Port[] {
+    const result: Port[] = [];
     this.ports.forEach(port => {
       if (port.type === type) {
         result.push(port);
@@ -101,9 +94,8 @@ export class NodeView {
    * Credit: This function is mostly borrowed from Audion/
    *      `audion.entryPoints.handleNodeCreated_()`.
    *      https://github.com/google/audion/blob/master/js/entry-points/panel.js
-   * @param {!NodeCreationData} data
    */
-  _updateNodeLayoutAfterAddingNode(data) {
+  _updateNodeLayoutAfterAddingNode(data: NodeCreationData): void {
     // Even if there are no input ports, leave room for the node label.
     const inputPortSectionHeight = TotalInputPortHeight * Math.max(1, data.numberOfInputs) + LeftSideTopPadding;
     this._layout.inputPortSectionHeight = inputPortSectionHeight;
@@ -124,10 +116,8 @@ export class NodeView {
   /**
    * After adding a param port, update the node layout based on the y value
    * and label length.
-   * @param {number} numberOfParams
-   * @param {string} paramType
    */
-  _updateNodeLayoutAfterAddingParam(numberOfParams, paramType) {
+  _updateNodeLayoutAfterAddingParam(numberOfParams: number, paramType: string): void {
     // The height after adding param ports and input ports.
     // Include a little padding on the left.
     const leftSideMaxHeight =
@@ -143,7 +133,7 @@ export class NodeView {
     this._updateNodeSize();
   }
 
-  _updateNodeSize() {
+  _updateNodeSize(): void {
     this.size = {
       width: Math.ceil(LeftMarginOfText + this._layout.maxTextLength + RightMarginOfText),
       height: this._layout.totalHeight,
@@ -151,7 +141,7 @@ export class NodeView {
   }
 
   // Setup the properties of each input port.
-  _setupInputPorts() {
+  _setupInputPorts(): void {
     for (let i = 0; i < this.numberOfInputs; i++) {
       const {x, y} = calculateInputPortXY(i);
       this._addPort({id: generateInputPortId(this.id, i), type: PortTypes.In, x, y, label: undefined});
@@ -159,7 +149,7 @@ export class NodeView {
   }
 
   // Setup the properties of each output port.
-  _setupOutputPorts() {
+  _setupOutputPorts(): void {
     for (let i = 0; i < this.numberOfOutputs; i++) {
       const portId = generateOutputPortId(this.id, i);
       const {x, y} = calculateOutputPortXY(i, this.size, this.numberOfOutputs);
@@ -178,55 +168,44 @@ export class NodeView {
     }
   }
 
-  /** @param {!Port} port */
-  _addPort(port) {
+  _addPort(port: Port): void {
     this.ports.set(port.id, port);
   }
 }
 
 /**
  * Generates the port id for the input of node.
- * @param {string} nodeId
- * @param {number | undefined} inputIndex
- * @return {string}
  */
-export const generateInputPortId = (nodeId, inputIndex) => {
+export const generateInputPortId = (nodeId: string, inputIndex: number|undefined): string => {
   return `${nodeId}-input-${inputIndex || 0}`;
 };
 
 /**
  * Generates the port id for the output of node.
- * @param {string} nodeId
- * @param {number | undefined} outputIndex
- * @return {string}
  */
-export const generateOutputPortId = (nodeId, outputIndex) => {
+export const generateOutputPortId = (nodeId: string, outputIndex: number|undefined): string => {
   return `${nodeId}-output-${outputIndex || 0}`;
 };
 
 /**
  * Generates the port id for the param of node.
- * @param {string} nodeId
- * @param {string} paramId
- * @return {string}
  */
-export const generateParamPortId = (nodeId, paramId) => {
+export const generateParamPortId = (nodeId: string, paramId: string): string => {
   return `${nodeId}-param-${paramId}`;
 };
 
 // A label generator to convert UUID of node to shorter label to display.
 // Each graph should have its own generator since the node count starts from 0.
 export class NodeLabelGenerator {
+  _totalNumberOfNodes: number;
   constructor() {
     this._totalNumberOfNodes = 0;
   }
 
   /**
    * Generates the label for a node of a graph.
-   * @param {string} nodeType
-   * @return {string}
    */
-  generateLabel(nodeType) {
+  generateLabel(nodeType: string): string {
     // To make the label concise, remove the suffix "Node" from the nodeType.
     if (nodeType.endsWith('Node')) {
       nodeType = nodeType.slice(0, nodeType.length - 4);
@@ -239,18 +218,14 @@ export class NodeLabelGenerator {
   }
 }
 
-/**
- * @type {!CanvasRenderingContext2D}
- */
-let _contextForFontTextMeasuring;
+// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+// eslint-disable-next-line @typescript-eslint/naming-convention
+let _contextForFontTextMeasuring: CanvasRenderingContext2D;
 
 /**
  * Get the text width using given font style.
- * @param {string} text
- * @param {?string} fontStyle
- * @return {number}
  */
-export const measureTextWidth = (text, fontStyle) => {
+export const measureTextWidth = (text: string, fontStyle: string|null): number => {
   if (!_contextForFontTextMeasuring) {
     const context = document.createElement('canvas').getContext('2d');
     if (!context) {

@@ -40,6 +40,7 @@ interface _listenerCallbackTuple {
 
 export class ObjectWrapper implements EventTarget {
   _listeners!: Map<string|symbol, _listenerCallbackTuple[]>|undefined;
+
   constructor() {
   }
 

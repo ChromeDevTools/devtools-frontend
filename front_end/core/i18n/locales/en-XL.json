@@ -11060,19 +11060,19 @@
   "ui/legacy/components/text_editor/CodeMirrorTextEditor.ts | codeEditor": {
     "message": "Ĉód̂é êd́ît́ôŕ"
   },
-  "ui/legacy/DockController.js | close": {
+  "ui/legacy/DockController.ts | close": {
     "message": "Ĉĺôśê"
   },
-  "ui/legacy/DockController.js | dockToBottom": {
+  "ui/legacy/DockController.ts | dockToBottom": {
     "message": "D̂óĉḱ t̂ó b̂ót̂t́ôḿ"
   },
-  "ui/legacy/DockController.js | dockToLeft": {
+  "ui/legacy/DockController.ts | dockToLeft": {
     "message": "D̂óĉḱ t̂ó l̂éf̂t́"
   },
-  "ui/legacy/DockController.js | dockToRight": {
+  "ui/legacy/DockController.ts | dockToRight": {
     "message": "D̂óĉḱ t̂ó r̂íĝh́t̂"
   },
-  "ui/legacy/DockController.js | undockIntoSeparateWindow": {
+  "ui/legacy/DockController.ts | undockIntoSeparateWindow": {
     "message": "Ûńd̂óĉḱ îńt̂ó ŝép̂ár̂át̂é ŵín̂d́ôẃ"
   },
   "ui/legacy/EmptyWidget.ts | learnMore": {
@@ -11090,127 +11090,127 @@
   "ui/legacy/FilterBar.ts | sclickToSelectMultipleTypes": {
     "message": "{PH1}Ĉĺîćk̂ t́ô śêĺêćt̂ ḿûĺt̂íp̂ĺê t́ŷṕêś"
   },
-  "ui/legacy/Infobar.js | close": {
+  "ui/legacy/Infobar.ts | close": {
     "message": "Ĉĺôśê"
   },
-  "ui/legacy/Infobar.js | dontShowAgain": {
+  "ui/legacy/Infobar.ts | dontShowAgain": {
     "message": "D̂ón̂'t́ ŝh́ôẃ âǵâín̂"
   },
-  "ui/legacy/Infobar.js | learnMore": {
+  "ui/legacy/Infobar.ts | learnMore": {
     "message": "L̂éâŕn̂ ḿôŕê"
   },
-  "ui/legacy/InspectorView.js | closeDrawer": {
+  "ui/legacy/InspectorView.ts | closeDrawer": {
     "message": "Ĉĺôśê d́r̂áŵér̂"
   },
-  "ui/legacy/InspectorView.js | moreTools": {
+  "ui/legacy/InspectorView.ts | moreTools": {
     "message": "M̂ór̂é T̂óôĺŝ"
   },
-  "ui/legacy/InspectorView.js | moveToBottom": {
+  "ui/legacy/InspectorView.ts | moveToBottom": {
     "message": "M̂óv̂é t̂ó b̂ót̂t́ôḿ"
   },
-  "ui/legacy/InspectorView.js | moveToTop": {
+  "ui/legacy/InspectorView.ts | moveToTop": {
     "message": "M̂óv̂é t̂ó t̂óp̂"
   },
-  "ui/legacy/InspectorView.js | panels": {
+  "ui/legacy/InspectorView.ts | panels": {
     "message": "P̂án̂él̂ś"
   },
-  "ui/legacy/InspectorView.js | reloadDevtools": {
+  "ui/legacy/InspectorView.ts | reloadDevtools": {
     "message": "R̂él̂óâd́ D̂év̂T́ôól̂ś"
   },
-  "ui/legacy/ListWidget.js | addString": {
+  "ui/legacy/ListWidget.ts | addString": {
     "message": "Âd́d̂"
   },
-  "ui/legacy/ListWidget.js | cancelString": {
+  "ui/legacy/ListWidget.ts | cancelString": {
     "message": "Ĉán̂ćêĺ"
   },
-  "ui/legacy/ListWidget.js | editString": {
+  "ui/legacy/ListWidget.ts | editString": {
     "message": "Êd́ît́"
   },
-  "ui/legacy/ListWidget.js | removeString": {
+  "ui/legacy/ListWidget.ts | removeString": {
     "message": "R̂ém̂óv̂é"
   },
-  "ui/legacy/ListWidget.js | saveString": {
+  "ui/legacy/ListWidget.ts | saveString": {
     "message": "Ŝáv̂é"
   },
-  "ui/legacy/RemoteDebuggingTerminatedScreen.js | reconnectDevtools": {
+  "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectDevtools": {
     "message": "R̂éĉón̂ńêćt̂ D́êv́T̂óôĺŝ"
   },
-  "ui/legacy/RemoteDebuggingTerminatedScreen.js | reconnectWhenReadyByReopening": {
+  "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectWhenReadyByReopening": {
     "message": "R̂éĉón̂ńêćt̂ ẃĥén̂ ŕêád̂ý b̂ý r̂éôṕêńîńĝ D́êv́T̂óôĺŝ."
   },
-  "ui/legacy/SearchableView.js | cancel": {
+  "ui/legacy/SearchableView.ts | cancel": {
     "message": "Ĉán̂ćêĺ"
   },
-  "ui/legacy/SearchableView.js | dMatches": {
+  "ui/legacy/SearchableView.ts | dMatches": {
     "message": "{PH1} m̂át̂ćĥéŝ"
   },
-  "ui/legacy/SearchableView.js | dOfD": {
+  "ui/legacy/SearchableView.ts | dOfD": {
     "message": "{PH1} ôf́ {PH2}"
   },
-  "ui/legacy/SearchableView.js | findString": {
+  "ui/legacy/SearchableView.ts | findString": {
     "message": "F̂ín̂d́"
   },
-  "ui/legacy/SearchableView.js | matchCase": {
+  "ui/legacy/SearchableView.ts | matchCase": {
     "message": "M̂át̂ćĥ Ćâśê"
   },
-  "ui/legacy/SearchableView.js | matchString": {
+  "ui/legacy/SearchableView.ts | matchString": {
     "message": "1 m̂át̂ćĥ"
   },
-  "ui/legacy/SearchableView.js | replace": {
+  "ui/legacy/SearchableView.ts | replace": {
     "message": "R̂ép̂ĺâćê"
   },
-  "ui/legacy/SearchableView.js | replaceAll": {
+  "ui/legacy/SearchableView.ts | replaceAll": {
     "message": "R̂ép̂ĺâćê ál̂ĺ"
   },
-  "ui/legacy/SearchableView.js | searchNext": {
+  "ui/legacy/SearchableView.ts | searchNext": {
     "message": "Ŝéâŕĉh́ n̂éx̂t́"
   },
-  "ui/legacy/SearchableView.js | searchPrevious": {
+  "ui/legacy/SearchableView.ts | searchPrevious": {
     "message": "Ŝéâŕĉh́ p̂ŕêv́îóûś"
   },
-  "ui/legacy/SearchableView.js | useRegularExpression": {
+  "ui/legacy/SearchableView.ts | useRegularExpression": {
     "message": "Ûśê Ŕêǵûĺâŕ Êx́p̂ŕêśŝíôń"
   },
-  "ui/legacy/SettingsUI.js | oneOrMoreSettingsHaveChanged": {
+  "ui/legacy/SettingsUI.ts | oneOrMoreSettingsHaveChanged": {
     "message": "Ôńê ór̂ ḿôŕê śêt́t̂ín̂ǵŝ h́âv́ê ćĥán̂ǵêd́ ŵh́îćĥ ŕêq́ûír̂éŝ á r̂él̂óâd́ t̂ó t̂ák̂é êf́f̂éĉt́."
   },
-  "ui/legacy/SettingsUI.js | srequiresReload": {
+  "ui/legacy/SettingsUI.ts | srequiresReload": {
     "message": "{PH1}R̂éq̂úîŕêś r̂él̂óâd́"
   },
-  "ui/legacy/SoftContextMenu.js | checked": {
+  "ui/legacy/SoftContextMenu.ts | checked": {
     "message": "ĉh́êćk̂éd̂"
   },
-  "ui/legacy/SoftContextMenu.js | sS": {
+  "ui/legacy/SoftContextMenu.ts | sS": {
     "message": "{PH1}, {PH2}"
   },
-  "ui/legacy/SoftContextMenu.js | sSS": {
+  "ui/legacy/SoftContextMenu.ts | sSS": {
     "message": "{PH1}, {PH2}, {PH3}"
   },
-  "ui/legacy/SoftContextMenu.js | unchecked": {
+  "ui/legacy/SoftContextMenu.ts | unchecked": {
     "message": "ûńĉh́êćk̂éd̂"
   },
   "ui/legacy/SoftDropDown.ts | noItemSelected": {
     "message": "(n̂ó ît́êḿ ŝél̂éĉt́êd́)"
   },
-  "ui/legacy/SuggestBox.js | sSuggestionSOfS": {
+  "ui/legacy/SuggestBox.ts | sSuggestionSOfS": {
     "message": "{PH1}, ŝúĝǵêśt̂íôń {PH2} ôf́ {PH3}"
   },
-  "ui/legacy/TabbedPane.js | close": {
+  "ui/legacy/TabbedPane.ts | close": {
     "message": "Ĉĺôśê"
   },
-  "ui/legacy/TabbedPane.js | closeAll": {
+  "ui/legacy/TabbedPane.ts | closeAll": {
     "message": "Ĉĺôśê ál̂ĺ"
   },
-  "ui/legacy/TabbedPane.js | closeOthers": {
+  "ui/legacy/TabbedPane.ts | closeOthers": {
     "message": "Ĉĺôśê ót̂h́êŕŝ"
   },
-  "ui/legacy/TabbedPane.js | closeS": {
+  "ui/legacy/TabbedPane.ts | closeS": {
     "message": "Ĉĺôśê {PH1}"
   },
-  "ui/legacy/TabbedPane.js | closeTabsToTheRight": {
+  "ui/legacy/TabbedPane.ts | closeTabsToTheRight": {
     "message": "Ĉĺôśê t́âb́ŝ t́ô t́ĥé r̂íĝh́t̂"
   },
-  "ui/legacy/TabbedPane.js | moreTabs": {
+  "ui/legacy/TabbedPane.ts | moreTabs": {
     "message": "M̂ór̂é t̂áb̂ś"
   },
   "ui/legacy/TargetCrashedScreen.ts | devtoolsWasDisconnectedFromThe": {
@@ -11219,58 +11219,58 @@
   "ui/legacy/TargetCrashedScreen.ts | oncePageIsReloadedDevtoolsWill": {
     "message": "Ôńĉé p̂áĝé îś r̂él̂óâd́êd́, D̂év̂T́ôól̂ś ŵíl̂ĺ âút̂óm̂át̂íĉál̂ĺŷ ŕêćôńn̂éĉt́."
   },
-  "ui/legacy/UIUtils.js | anonymous": {
+  "ui/legacy/UIUtils.ts | anonymous": {
     "message": "(âńôńŷḿôúŝ)"
   },
-  "ui/legacy/UIUtils.js | anotherProfilerIsAlreadyActive": {
+  "ui/legacy/UIUtils.ts | anotherProfilerIsAlreadyActive": {
     "message": "Âńôt́ĥér̂ ṕr̂óf̂íl̂ér̂ íŝ ál̂ŕêád̂ý âćt̂ív̂é"
   },
-  "ui/legacy/UIUtils.js | asyncCall": {
+  "ui/legacy/UIUtils.ts | asyncCall": {
     "message": "Âśŷńĉ Ćâĺl̂"
   },
-  "ui/legacy/UIUtils.js | cancel": {
+  "ui/legacy/UIUtils.ts | cancel": {
     "message": "Ĉán̂ćêĺ"
   },
-  "ui/legacy/UIUtils.js | close": {
+  "ui/legacy/UIUtils.ts | close": {
     "message": "Ĉĺôśê"
   },
-  "ui/legacy/UIUtils.js | copyFileName": {
+  "ui/legacy/UIUtils.ts | copyFileName": {
     "message": "Ĉóp̂ý f̂íl̂é n̂ám̂é"
   },
-  "ui/legacy/UIUtils.js | copyLinkAddress": {
+  "ui/legacy/UIUtils.ts | copyLinkAddress": {
     "message": "Ĉóp̂ý l̂ín̂ḱ âd́d̂ŕêśŝ"
   },
-  "ui/legacy/UIUtils.js | fdays": {
+  "ui/legacy/UIUtils.ts | fdays": {
     "message": "{PH1} d̂áŷś"
   },
-  "ui/legacy/UIUtils.js | fhrs": {
+  "ui/legacy/UIUtils.ts | fhrs": {
     "message": "{PH1} ĥŕŝ"
   },
-  "ui/legacy/UIUtils.js | fmin": {
+  "ui/legacy/UIUtils.ts | fmin": {
     "message": "{PH1} m̂ín̂"
   },
-  "ui/legacy/UIUtils.js | fmms": {
+  "ui/legacy/UIUtils.ts | fmms": {
     "message": "{PH1} μŝ"
   },
-  "ui/legacy/UIUtils.js | fms": {
+  "ui/legacy/UIUtils.ts | fms": {
     "message": "{PH1} m̂ś"
   },
-  "ui/legacy/UIUtils.js | fs": {
+  "ui/legacy/UIUtils.ts | fs": {
     "message": "{PH1} ŝ"
   },
-  "ui/legacy/UIUtils.js | ok": {
+  "ui/legacy/UIUtils.ts | ok": {
     "message": "ÔḰ"
   },
-  "ui/legacy/UIUtils.js | openInNewTab": {
+  "ui/legacy/UIUtils.ts | openInNewTab": {
     "message": "Ôṕêń îń n̂éŵ t́âb́"
   },
-  "ui/legacy/UIUtils.js | promiseRejectedAsync": {
+  "ui/legacy/UIUtils.ts | promiseRejectedAsync": {
     "message": "P̂ŕôḿîśê ŕêj́êćt̂éd̂ (áŝýn̂ć)"
   },
-  "ui/legacy/UIUtils.js | promiseResolvedAsync": {
+  "ui/legacy/UIUtils.ts | promiseResolvedAsync": {
     "message": "P̂ŕôḿîśê ŕêśôĺv̂éd̂ (áŝýn̂ć)"
   },
-  "ui/legacy/UIUtils.js | sAsync": {
+  "ui/legacy/UIUtils.ts | sAsync": {
     "message": "{PH1} (âśŷńĉ)"
   },
   "ui/legacy/ViewManager.ts | sPanel": {

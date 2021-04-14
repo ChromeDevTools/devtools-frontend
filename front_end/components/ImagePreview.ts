@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Common from '../core/common/common.js';
 import * as Host from '../core/host/host.js';
 import * as i18n from '../core/i18n/i18n.js';
@@ -45,40 +47,33 @@ const UIStrings = {
    */
   intrinsicAspectRatio: 'Intrinsic aspect ratio:',
 };
-const str_ = i18n.i18n.registerUIStrings('components/ImagePreview.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('components/ImagePreview.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-/** @typedef {{
- * renderedWidth: number,
- * renderedHeight: number,
- * currentSrc: (string|undefined)
- * }}
- */
-// @ts-ignore typedef
-export let PrecomputedFeatures;
+
+export interface PrecomputedFeatures {
+  renderedWidth: number;
+  renderedHeight: number;
+  currentSrc?: string;
+}
 
 export class ImagePreview {
-  /**
-   * @param {!SDK.SDKModel.Target} target
-   * @param {string} originalImageURL
-   * @param {boolean} showDimensions
-   * @param {!{precomputedFeatures: (!PrecomputedFeatures|undefined), imageAltText: (string|undefined)}=} options
-   * @return {!Promise<?Element>}
-   */
-  static async build(
-      target, originalImageURL, showDimensions, options = {precomputedFeatures: undefined, imageAltText: undefined}) {
+  static async build(target: SDK.SDKModel.Target, originalImageURL: string, showDimensions: boolean, options: {
+    precomputedFeatures: (PrecomputedFeatures|undefined),
+    imageAltText: (string|undefined),
+  }|undefined = {precomputedFeatures: undefined, imageAltText: undefined}): Promise<Element|null> {
     const {precomputedFeatures, imageAltText} = options;
     const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
     if (!resourceTreeModel) {
-      return /** @type {?Element} */ (null);
+      return null;
     }
     let resource = resourceTreeModel.resourceForURL(originalImageURL);
-    let imageURL = originalImageURL;
+    let imageURL: string = originalImageURL;
     if (!isImageResource(resource) && precomputedFeatures && precomputedFeatures.currentSrc) {
       imageURL = precomputedFeatures.currentSrc;
       resource = resourceTreeModel.resourceForURL(imageURL);
     }
     if (!resource || !isImageResource(resource)) {
-      return /** @type {?Element} */ (null);
+      return null;
     }
 
     const displayName = resource.displayName;
@@ -89,12 +84,11 @@ export class ImagePreview {
     const resourceSize = contentSize ? contentSize : base64ToSize(content);
     const resourceSizeText = resourceSize > 0 ? Platform.NumberUtilities.bytesToString(resourceSize) : '';
 
-    /** @type {function(*):void} */
-    let fulfill;
-    const promise = new Promise(x => {
+    let fulfill: (arg0: Element|null) => void;
+    const promise = new Promise<Element|null>(x => {
       fulfill = x;
     });
-    const imageElement = /** @type{!HTMLImageElement} */ (document.createElement('img'));
+    const imageElement = (document.createElement('img') as HTMLImageElement);
     imageElement.addEventListener('load', buildContent, false);
     imageElement.addEventListener('error', () => fulfill(null), false);
     if (imageAltText) {
@@ -103,24 +97,19 @@ export class ImagePreview {
     resource.populateImageSource(imageElement);
     return promise;
 
-    /**
-     * @param {?SDK.Resource.Resource} resource
-     * @return {boolean}
-     */
-    function isImageResource(resource) {
+    function isImageResource(resource: SDK.Resource.Resource|null): boolean {
       return resource !== null && resource.resourceType() === Common.ResourceType.resourceTypes.Image;
     }
 
-    function buildContent() {
+    function buildContent(): void {
       const container = document.createElement('table');
       UI.Utils.appendStyle(container, 'components/imagePreview.css', {enableLegacyPatching: false});
       container.className = 'image-preview-container';
 
-      const imageRow =
-          /** @type {!HTMLTableDataCellElement} */ (container.createChild('tr').createChild('td', 'image-container'));
+      const imageRow = (container.createChild('tr').createChild('td', 'image-container') as HTMLTableDataCellElement);
       imageRow.colSpan = 2;
 
-      const link = /** @type {!HTMLLinkElement} */ (imageRow.createChild('div'));
+      const link = (imageRow.createChild('div') as HTMLLinkElement);
       link.title = displayName;
       link.appendChild(imageElement);
 
@@ -166,8 +155,9 @@ export class ImagePreview {
       originalRow.createChild('td', 'title').textContent = i18nString(UIStrings.currentSource);
 
       const sourceText = Platform.StringUtilities.trimMiddle(imageURL, 100);
-      const sourceLink = /** @type {!HTMLLinkElement} */ (
-          originalRow.createChild('td', 'description description-link').createChild('span', 'source-link'));
+      const sourceLink =
+          (originalRow.createChild('td', 'description description-link').createChild('span', 'source-link') as
+           HTMLLinkElement);
       sourceLink.textContent = sourceText;
       sourceLink.addEventListener('click', () => {
         Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(imageURL);
@@ -176,11 +166,7 @@ export class ImagePreview {
     }
   }
 
-  /**
-   * @param {!SDK.DOMModel.DOMNode} node
-   * @return {!Promise<!PrecomputedFeatures|undefined>}
-   */
-  static async loadDimensionsForNode(node) {
+  static async loadDimensionsForNode(node: SDK.DOMModel.DOMNode): Promise<PrecomputedFeatures|undefined> {
     if (!node.nodeName() || node.nodeName().toLowerCase() !== 'img') {
       return;
     }
@@ -191,24 +177,18 @@ export class ImagePreview {
       return;
     }
 
+    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+    // @ts-expect-error
     const featuresObject = object.callFunctionJSON(features, undefined);
     object.release();
     return featuresObject;
 
-    /**
-     * @return {!PrecomputedFeatures}
-     * @this {!HTMLImageElement}
-     */
-    function features() {
+    function features(this: HTMLImageElement): PrecomputedFeatures {
       return {renderedWidth: this.width, renderedHeight: this.height, currentSrc: this.currentSrc};
     }
   }
 
-  /**
-   * @param {string} url
-   * @return {string}
-   */
-  static defaultAltTextForImageURL(url) {
+  static defaultAltTextForImageURL(url: string): string {
     const parsedImageURL = new Common.ParsedURL.ParsedURL(url);
     const imageSourceText = parsedImageURL.isValid ? parsedImageURL.displayName : i18nString(UIStrings.unknownSource);
     return i18nString(UIStrings.imageFromS, {PH1: imageSourceText});

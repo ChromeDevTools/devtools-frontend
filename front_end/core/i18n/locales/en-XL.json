@@ -20,28 +20,28 @@
   "browser_sdk/browser_sdk-meta.ts | reset": {
     "message": "r̂éŝét̂"
   },
-  "components/ImagePreview.js | currentSource": {
+  "components/ImagePreview.ts | currentSource": {
     "message": "Ĉúr̂ŕêńt̂ śôúr̂ćê:"
   },
-  "components/ImagePreview.js | fileSize": {
+  "components/ImagePreview.ts | fileSize": {
     "message": "F̂íl̂é ŝíẑé:"
   },
-  "components/ImagePreview.js | imageFromS": {
+  "components/ImagePreview.ts | imageFromS": {
     "message": "Îḿâǵê f́r̂óm̂ {PH1}"
   },
-  "components/ImagePreview.js | intrinsicAspectRatio": {
+  "components/ImagePreview.ts | intrinsicAspectRatio": {
     "message": "Îńt̂ŕîńŝíĉ áŝṕêćt̂ ŕât́îó:"
   },
-  "components/ImagePreview.js | intrinsicSize": {
+  "components/ImagePreview.ts | intrinsicSize": {
     "message": "Îńt̂ŕîńŝíĉ śîźê:"
   },
-  "components/ImagePreview.js | renderedAspectRatio": {
+  "components/ImagePreview.ts | renderedAspectRatio": {
     "message": "R̂én̂d́êŕêd́ âśp̂éĉt́ r̂át̂íô:"
   },
-  "components/ImagePreview.js | renderedSize": {
+  "components/ImagePreview.ts | renderedSize": {
     "message": "R̂én̂d́êŕêd́ ŝíẑé:"
   },
-  "components/ImagePreview.js | unknownSource": {
+  "components/ImagePreview.ts | unknownSource": {
     "message": "ûńk̂ńôẃn̂ śôúr̂ćê"
   },
   "components/JSPresentationUtils.ts | addToIgnore": {
@@ -56,25 +56,25 @@
   "components/JSPresentationUtils.ts | unknownSource": {
     "message": "ûńk̂ńôẃn̂"
   },
-  "components/Linkifier.js | auto": {
+  "components/Linkifier.ts | auto": {
     "message": "âút̂ó"
   },
-  "components/Linkifier.js | linkHandling": {
+  "components/Linkifier.ts | linkHandling": {
     "message": "L̂ín̂ḱ ĥán̂d́l̂ín̂ǵ:"
   },
-  "components/Linkifier.js | openUsingS": {
+  "components/Linkifier.ts | openUsingS": {
     "message": "Ôṕêń ûśîńĝ {PH1}"
   },
-  "components/Linkifier.js | reveal": {
+  "components/Linkifier.ts | reveal": {
     "message": "R̂év̂éâĺ"
   },
-  "components/Linkifier.js | revealInS": {
+  "components/Linkifier.ts | revealInS": {
     "message": "R̂év̂éâĺ îń {PH1}"
   },
-  "components/Linkifier.js | unknown": {
+  "components/Linkifier.ts | unknown": {
     "message": "(ûńk̂ńôẃn̂)"
   },
-  "components/TargetDetachedDialog.js | websocketDisconnected": {
+  "components/TargetDetachedDialog.ts | websocketDisconnected": {
     "message": "Ŵéb̂Śôćk̂ét̂ d́îśĉón̂ńêćt̂éd̂"
   },
   "core/common/ResourceType.ts | cspviolationreport": {

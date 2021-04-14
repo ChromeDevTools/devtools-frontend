@@ -2,10 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Host from '../core/host/host.js';
 import * as UI from '../ui/legacy/legacy.js';
 
-export function reload() {
+export function reload(): void {
   if (UI.DockController.DockController.instance().canDock() &&
       UI.DockController.DockController.instance().dockSide() === UI.DockController.State.Undocked) {
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.setIsDocked(true, function() {});

@@ -20,28 +20,28 @@
   "browser_sdk/browser_sdk-meta.ts | reset": {
     "message": "reset"
   },
-  "components/ImagePreview.js | currentSource": {
+  "components/ImagePreview.ts | currentSource": {
     "message": "Current source:"
   },
-  "components/ImagePreview.js | fileSize": {
+  "components/ImagePreview.ts | fileSize": {
     "message": "File size:"
   },
-  "components/ImagePreview.js | imageFromS": {
+  "components/ImagePreview.ts | imageFromS": {
     "message": "Image from {PH1}"
   },
-  "components/ImagePreview.js | intrinsicAspectRatio": {
+  "components/ImagePreview.ts | intrinsicAspectRatio": {
     "message": "Intrinsic aspect ratio:"
   },
-  "components/ImagePreview.js | intrinsicSize": {
+  "components/ImagePreview.ts | intrinsicSize": {
     "message": "Intrinsic size:"
   },
-  "components/ImagePreview.js | renderedAspectRatio": {
+  "components/ImagePreview.ts | renderedAspectRatio": {
     "message": "Rendered aspect ratio:"
   },
-  "components/ImagePreview.js | renderedSize": {
+  "components/ImagePreview.ts | renderedSize": {
     "message": "Rendered size:"
   },
-  "components/ImagePreview.js | unknownSource": {
+  "components/ImagePreview.ts | unknownSource": {
     "message": "unknown source"
   },
   "components/JSPresentationUtils.ts | addToIgnore": {
@@ -56,25 +56,25 @@
   "components/JSPresentationUtils.ts | unknownSource": {
     "message": "unknown"
   },
-  "components/Linkifier.js | auto": {
+  "components/Linkifier.ts | auto": {
     "message": "auto"
   },
-  "components/Linkifier.js | linkHandling": {
+  "components/Linkifier.ts | linkHandling": {
     "message": "Link handling:"
   },
-  "components/Linkifier.js | openUsingS": {
+  "components/Linkifier.ts | openUsingS": {
     "message": "Open using {PH1}"
   },
-  "components/Linkifier.js | reveal": {
+  "components/Linkifier.ts | reveal": {
     "message": "Reveal"
   },
-  "components/Linkifier.js | revealInS": {
+  "components/Linkifier.ts | revealInS": {
     "message": "Reveal in {PH1}"
   },
-  "components/Linkifier.js | unknown": {
+  "components/Linkifier.ts | unknown": {
     "message": "(unknown)"
   },
-  "components/TargetDetachedDialog.js | websocketDisconnected": {
+  "components/TargetDetachedDialog.ts | websocketDisconnected": {
     "message": "WebSocket disconnected"
   },
   "core/common/ResourceType.ts | cspviolationreport": {

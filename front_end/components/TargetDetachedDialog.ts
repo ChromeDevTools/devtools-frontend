@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as i18n from '../core/i18n/i18n.js';
 import * as SDK from '../core/sdk/sdk.js';
 import * as UI from '../ui/legacy/legacy.js';
@@ -12,39 +14,27 @@ const UIStrings = {
   */
   websocketDisconnected: 'WebSocket disconnected',
 };
-const str_ = i18n.i18n.registerUIStrings('components/TargetDetachedDialog.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('components/TargetDetachedDialog.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-/**
- * @implements {ProtocolProxyApi.InspectorDispatcher}
- */
-export class TargetDetachedDialog extends SDK.SDKModel.SDKModel {
-  /**
-   * @param {!SDK.SDKModel.Target} target
-   */
-  constructor(target) {
+export class TargetDetachedDialog extends SDK.SDKModel.SDKModel implements ProtocolProxyApi.InspectorDispatcher {
+  _hideCrashedDialog: (() => void)|null;
+  constructor(target: SDK.SDKModel.Target) {
     super(target);
     target.registerInspectorDispatcher(this);
     target.inspectorAgent().invoke_enable();
     this._hideCrashedDialog = null;
   }
 
-  /**
-   * @override
-   * @param {!Protocol.Inspector.DetachedEvent} event
-   */
-  detached({reason}) {
+  detached({reason}: Protocol.Inspector.DetachedEvent): void {
     UI.RemoteDebuggingTerminatedScreen.RemoteDebuggingTerminatedScreen.show(reason);
   }
 
-  static webSocketConnectionLost() {
+  static webSocketConnectionLost(): void {
     UI.RemoteDebuggingTerminatedScreen.RemoteDebuggingTerminatedScreen.show(
         i18nString(UIStrings.websocketDisconnected));
   }
 
-  /**
-   * @override
-   */
-  targetCrashed() {
+  targetCrashed(): void {
     // In case of service workers targetCrashed usually signals that the worker is stopped
     // and in any case it is restarted automatically (in which case front-end will receive
     // targetReloadedAfterCrash event).
@@ -69,10 +59,9 @@ export class TargetDetachedDialog extends SDK.SDKModel.SDKModel {
     dialog.show();
   }
 
-  /**
-   * @override;
+  /** ;
    */
-  targetReloadedAfterCrash() {
+  targetReloadedAfterCrash(): void {
     this.target().runtimeAgent().invoke_runIfWaitingForDebugger();
     if (this._hideCrashedDialog) {
       this._hideCrashedDialog.call(null);

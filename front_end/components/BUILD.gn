@@ -7,11 +7,11 @@ import("../../scripts/build/ninja/devtools_module.gni")
 
 devtools_module("components") {
   sources = [
-    "ImagePreview.js",
+    "ImagePreview.ts",
     "JSPresentationUtils.ts",
-    "Linkifier.js",
-    "Reload.js",
-    "TargetDetachedDialog.js",
+    "Linkifier.ts",
+    "Reload.ts",
+    "TargetDetachedDialog.ts",
   ]
 
   deps = [
@@ -35,13 +35,13 @@ copy_to_gen("legacy_css") {
 }
 
 devtools_entrypoint("bundle") {
-  entrypoint = "components.js"
+  entrypoint = "components.ts"
 
   deps = [ ":components" ]
 }
 
 devtools_entrypoint("legacy") {
-  entrypoint = "components-legacy.js"
+  entrypoint = "components-legacy.ts"
 
   deps = [ ":bundle" ]
 }

@@ -59,15 +59,9 @@ function isInChromiumDirectory() {
     return cached;
   }
 
-  let potentialChromiumDir = PATH_TO_EXECUTED_FILE;
-  let isInChromium = false;
-  while (!pathIsMostTopLevelPath(potentialChromiumDir)) {
-    potentialChromiumDir = path.dirname(potentialChromiumDir);
-    if (path.basename(potentialChromiumDir) === 'chromium') {
-      isInChromium = true;
-      break;
-    }
-  }
+  const normalizedPath = PATH_TO_EXECUTED_FILE.split(path.sep).join('/');
+  const isInChromium = normalizedPath.includes('chromium/src/third_party/devtools-frontend');
+  const potentialChromiumDir = PATH_TO_EXECUTED_FILE.substring(0, PATH_TO_EXECUTED_FILE.indexOf('chromium') + 8);
   const result = {isInChromium, chromiumDirectory: potentialChromiumDir};
   _lookUpCaches.set('chromium', result);
   return result;

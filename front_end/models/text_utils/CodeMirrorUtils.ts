@@ -86,7 +86,7 @@ let tokenizerFactoryInstance: TokenizerFactory;
 export type Tokenizer =
     (line: string, callback: (value: string, style: string|null, start: number, end: number) => void) => void;
 
-export class TokenizerFactory extends TextUtils.TokenizerFactory {
+export class TokenizerFactory implements TextUtils.TokenizerFactory {
   static instance(opts: {forceNew: boolean|null} = {forceNew: null}): TokenizerFactory {
     const {forceNew} = opts;
     if (!tokenizerFactoryInstance || forceNew) {

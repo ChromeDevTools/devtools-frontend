@@ -8,12 +8,12 @@ import("../../../scripts/build/ninja/devtools_module.gni")
 devtools_module("text_utils") {
   sources = [
     "CodeMirrorUtils.ts",
-    "ContentProvider.js",
-    "StaticContentProvider.js",
-    "Text.js",
-    "TextCursor.js",
-    "TextRange.js",
-    "TextUtils.js",
+    "ContentProvider.ts",
+    "StaticContentProvider.ts",
+    "Text.ts",
+    "TextCursor.ts",
+    "TextRange.ts",
+    "TextUtils.ts",
   ]
 
   deps = [
@@ -27,7 +27,7 @@ devtools_module("text_utils") {
 }
 
 devtools_entrypoint("bundle") {
-  entrypoint = "text_utils.js"
+  entrypoint = "text_utils.ts"
 
   deps = [
     ":text_utils",
@@ -36,7 +36,7 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_entrypoint("legacy") {
-  entrypoint = "text_utils-legacy.js"
+  entrypoint = "text_utils-legacy.ts"
 
   deps = [ ":bundle" ]
 }

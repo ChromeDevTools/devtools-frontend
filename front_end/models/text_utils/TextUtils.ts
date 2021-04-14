@@ -28,61 +28,57 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Platform from '../../core/platform/platform.js';
 
 import {SearchMatch} from './ContentProvider.js';
 import {Text} from './Text.js';
 
 export const Utils = {
-  get _keyValueFilterRegex() {
+  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  get _keyValueFilterRegex(): RegExp {
     return /(?:^|\s)(\-)?([\w\-]+):([^\s]+)/;
   },
-  get _regexFilterRegex() {
+  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  get _regexFilterRegex(): RegExp {
     return /(?:^|\s)(\-)?\/([^\s]+)\//;
   },
-  get _textFilterRegex() {
+  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  get _textFilterRegex(): RegExp {
     return /(?:^|\s)(\-)?([^\s]+)/;
   },
-  get _SpaceCharRegex() {
+  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  get _SpaceCharRegex(): RegExp {
     return /\s/;
   },
   /**
    * @enum {string}
    */
-  get Indent() {
+  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  get Indent(): {TwoSpaces: '  ', FourSpaces: '    ', EightSpaces: '        ', TabCharacter: '\t'} {
     return {TwoSpaces: '  ', FourSpaces: '    ', EightSpaces: '        ', TabCharacter: '\t'};
   },
 
-  /**
-   * @param {string} char
-   * @return {boolean}
-   */
-  isStopChar: function(char) {
+  isStopChar: function(char: string): boolean {
     return (char > ' ' && char < '0') || (char > '9' && char < 'A') || (char > 'Z' && char < '_') ||
         (char > '_' && char < 'a') || (char > 'z' && char <= '~');
   },
 
-  /**
-   * @param {string} char
-   * @return {boolean}
-   */
-  isWordChar: function(char) {
+  isWordChar: function(char: string): boolean {
     return !Utils.isStopChar(char) && !Utils.isSpaceChar(char);
   },
 
-  /**
-   * @param {string} char
-   * @return {boolean}
-   */
-  isSpaceChar: function(char) {
+  isSpaceChar: function(char: string): boolean {
     return Utils._SpaceCharRegex.test(char);
   },
 
-  /**
-   * @param {string} word
-   * @return {boolean}
-   */
-  isWord: function(word) {
+  isWord: function(word: string): boolean {
     for (let i = 0; i < word.length; ++i) {
       if (!Utils.isWordChar(word.charAt(i))) {
         return false;
@@ -91,57 +87,37 @@ export const Utils = {
     return true;
   },
 
-  /**
-   * @param {string} char
-   * @return {boolean}
-   */
-  isOpeningBraceChar: function(char) {
+  isOpeningBraceChar: function(char: string): boolean {
     return char === '(' || char === '{';
   },
 
-  /**
-   * @param {string} char
-   * @return {boolean}
-   */
-  isClosingBraceChar: function(char) {
+  isClosingBraceChar: function(char: string): boolean {
     return char === ')' || char === '}';
   },
 
-  /**
-   * @param {string} char
-   * @return {boolean}
-   */
-  isBraceChar: function(char) {
+  isBraceChar: function(char: string): boolean {
     return Utils.isOpeningBraceChar(char) || Utils.isClosingBraceChar(char);
   },
 
-  /**
-   * @param {string} text
-   * @param {function(string):boolean} isWordChar
-   * @param {function(string)} wordCallback
-   */
-  textToWords: function(text, isWordChar, wordCallback) {
-    let startWord = -1;
-    for (let i = 0; i < text.length; ++i) {
-      if (!isWordChar(text.charAt(i))) {
-        if (startWord !== -1) {
-          wordCallback(text.substring(startWord, i));
+  textToWords: function(text: string, isWordChar: (arg0: string) => boolean, wordCallback: (arg0: string) => void):
+      void {
+        let startWord = -1;
+        for (let i = 0; i < text.length; ++i) {
+          if (!isWordChar(text.charAt(i))) {
+            if (startWord !== -1) {
+              wordCallback(text.substring(startWord, i));
+            }
+            startWord = -1;
+          } else if (startWord === -1) {
+            startWord = i;
+          }
         }
-        startWord = -1;
-      } else if (startWord === -1) {
-        startWord = i;
-      }
-    }
-    if (startWord !== -1) {
-      wordCallback(text.substring(startWord));
-    }
-  },
+        if (startWord !== -1) {
+          wordCallback(text.substring(startWord));
+        }
+      },
 
-  /**
-   * @param {string} line
-   * @return {string}
-   */
-  lineIndent: function(line) {
+  lineIndent: function(line: string): string {
     let indentation = 0;
     while (indentation < line.length && Utils.isSpaceChar(line.charAt(indentation))) {
       ++indentation;
@@ -149,32 +125,27 @@ export const Utils = {
     return line.substr(0, indentation);
   },
 
-  /**
-   * @param {string} text
-   * @return {boolean}
-   */
-  isUpperCase: function(text) {
+  isUpperCase: function(text: string): boolean {
     return text === text.toUpperCase();
   },
 
-  /**
-   * @param {string} text
-   * @return {boolean}
-   */
-  isLowerCase: function(text) {
+  isLowerCase: function(text: string): boolean {
     return text === text.toLowerCase();
   },
 
-  /**
-   * @param {string} text
-   * @param {!Array<!RegExp>} regexes
-   * @return {!Array<{value: string, position: number, regexIndex: number, captureGroups: !Array<string|undefined>}>}
-   */
-  splitStringByRegexes(text, regexes) {
-    /** @type {!Array<{value: string, position: number, regexIndex: number, captureGroups: !Array<string|undefined>}>} */
-    const matches = [];
-    /** @type {!Array<!RegExp>} */
-    const globalRegexes = [];
+  splitStringByRegexes(text: string, regexes: RegExp[]): {
+    value: string,
+    position: number,
+    regexIndex: number,
+    captureGroups: Array<string|undefined>,
+  }[] {
+    const matches: {
+      value: string,
+      position: number,
+      regexIndex: number,
+      captureGroups: (string|undefined)[],
+    }[] = [];
+    const globalRegexes: RegExp[] = [];
     for (let i = 0; i < regexes.length; i++) {
       const regex = regexes[i];
       if (!regex.global) {
@@ -186,12 +157,7 @@ export const Utils = {
     doSplit(text, 0, 0);
     return matches;
 
-    /**
-     * @param {string} text
-     * @param {number} regexIndex
-     * @param {number} startIndex
-     */
-    function doSplit(text, regexIndex, startIndex) {
+    function doSplit(text: string, regexIndex: number, startIndex: number): void {
       if (regexIndex >= globalRegexes.length) {
         // Set regexIndex as -1 if text did not match with any regular expression
         matches.push({value: text, position: startIndex, regexIndex: -1, captureGroups: []});
@@ -211,7 +177,7 @@ export const Utils = {
           value: match,
           position: startIndex + result.index,
           regexIndex: regexIndex,
-          captureGroups: result.slice(1)
+          captureGroups: result.slice(1),
         });
         currentIndex = result.index + match.length;
       }
@@ -220,34 +186,23 @@ export const Utils = {
         doSplit(stringAfterMatches, regexIndex + 1, startIndex + currentIndex);
       }
     }
-  }
+  },
 };
 
 export class FilterParser {
-  /**
-   * @param {!Array<string>} keys
-   */
-  constructor(keys) {
+  _keys: string[];
+  constructor(keys: string[]) {
     this._keys = keys;
   }
 
-  /**
-   * @param {!ParsedFilter} filter
-   * @return {!ParsedFilter}
-   */
-  static cloneFilter(filter) {
+  static cloneFilter(filter: ParsedFilter): ParsedFilter {
     return {key: filter.key, text: filter.text, regex: filter.regex, negative: filter.negative};
   }
 
-  /**
-   * @param {string} query
-   * @return {!Array<!ParsedFilter>}
-   */
-  parse(query) {
+  parse(query: string): ParsedFilter[] {
     const splitResult = Utils.splitStringByRegexes(
         query, [Utils._keyValueFilterRegex, Utils._regexFilterRegex, Utils._textFilterRegex]);
-    /** @type {!Array<!ParsedFilter>} */
-    const filters = [];
+    const filters: ParsedFilter[] = [];
     for (let i = 0; i < splitResult.length; i++) {
       const regexIndex = splitResult[i].regexIndex;
       if (regexIndex === -1) {
@@ -255,7 +210,7 @@ export class FilterParser {
       }
       const result = splitResult[i].captureGroups;
       if (regexIndex === 0) {
-        if (this._keys.indexOf(/** @type {string} */ (result[1])) !== -1) {
+        if (this._keys.indexOf((result[1] as string)) !== -1) {
           filters.push({key: result[1], regex: undefined, text: result[2], negative: Boolean(result[0])});
         } else {
           filters.push(
@@ -265,9 +220,9 @@ export class FilterParser {
         try {
           filters.push({
             key: undefined,
-            regex: new RegExp(/** @type {string} */ (result[1]), 'i'),
+            regex: new RegExp((result[1] as string), 'i'),
             text: undefined,
-            negative: Boolean(result[0])
+            negative: Boolean(result[0]),
           });
         } catch (e) {
           filters.push({key: undefined, regex: undefined, text: '/' + result[1] + '/', negative: Boolean(result[0])});
@@ -281,26 +236,23 @@ export class FilterParser {
 }
 
 export class BalancedJSONTokenizer {
-  /**
-   * @param {function(string):void} callback
-   * @param {boolean=} findMultiple
-   */
-  constructor(callback, findMultiple) {
+  _callback: (arg0: string) => void;
+  _index: number;
+  _balance: number;
+  _buffer: string;
+  _findMultiple: boolean;
+  _closingDoubleQuoteRegex: RegExp;
+  _lastBalancedIndex?: number;
+  constructor(callback: (arg0: string) => void, findMultiple?: boolean) {
     this._callback = callback;
-    /** @type {number} */
     this._index = 0;
     this._balance = 0;
-    /** @type {string} */
     this._buffer = '';
     this._findMultiple = findMultiple || false;
     this._closingDoubleQuoteRegex = /[^\\](?:\\\\)*"/g;
   }
 
-  /**
-   * @param {string} chunk
-   * @return {boolean}
-   */
-  write(chunk) {
+  write(chunk: string): boolean {
     this._buffer += chunk;
     const lastIndex = this._buffer.length;
     const buffer = this._buffer;
@@ -337,7 +289,7 @@ export class BalancedJSONTokenizer {
     return true;
   }
 
-  _reportBalanced() {
+  _reportBalanced(): void {
     if (!this._lastBalancedIndex) {
       return;
     }
@@ -347,33 +299,19 @@ export class BalancedJSONTokenizer {
     this._lastBalancedIndex = 0;
   }
 
-  /**
-   * @return {string}
-   */
-  remainder() {
+  remainder(): string {
     return this._buffer;
   }
 }
 
-/**
- * @interface
- */
-export class TokenizerFactory {
-  /**
-   * @param {string} mimeType
-   * @param {!CodeMirror.Mode<*>=} mode
-   * @return {function(string, function(string, ?string, number, number):void):void}
-   */
-  createTokenizer(mimeType, mode) {
-    throw new Error('not implemented');
-  }
+export interface TokenizerFactory {
+  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  createTokenizer(mimeType: string, mode?: CodeMirror.Mode<any>):
+      (arg0: string, arg1: (arg0: string, arg1: string|null, arg2: number, arg3: number) => void) => void;
 }
 
-/**
- * @param {string} text
- * @return {boolean}
- */
-export function isMinified(text) {
+export function isMinified(text: string): boolean {
   const kMaxNonMinifiedLength = 500;
   let linesToCheck = 10;
   let lastPosition = 0;
@@ -404,14 +342,8 @@ export function isMinified(text) {
   return false;
 }
 
-/**
- * @param {string} content
- * @param {string} query
- * @param {boolean} caseSensitive
- * @param {boolean} isRegex
- * @return {!Array.<!SearchMatch>}
- */
-export const performSearchInContent = function(content, query, caseSensitive, isRegex) {
+export const performSearchInContent = function(
+    content: string, query: string, caseSensitive: boolean, isRegex: boolean): SearchMatch[] {
   const regex = Platform.StringUtilities.createSearchRegex(query, caseSensitive, isRegex);
 
   const text = new Text(content);
@@ -425,7 +357,9 @@ export const performSearchInContent = function(content, query, caseSensitive, is
   }
   return result;
 };
-
-/** @typedef {{key:(string|undefined), text:(?string|undefined), regex:(!RegExp|undefined), negative:boolean}} */
-// @ts-ignore typedef
-export let ParsedFilter;
+export interface ParsedFilter {
+  key?: string;
+  text?: string|null;
+  regex?: RegExp;
+  negative: boolean;
+}

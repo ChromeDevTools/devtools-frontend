@@ -28,58 +28,45 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Platform from '../../core/platform/platform.js';
 
 export class TextRange {
-  /**
-   * @param {number} startLine
-   * @param {number} startColumn
-   * @param {number} endLine
-   * @param {number} endColumn
-   */
-  constructor(startLine, startColumn, endLine, endColumn) {
+  startLine: number;
+  startColumn: number;
+  endLine: number;
+  endColumn: number;
+
+  constructor(startLine: number, startColumn: number, endLine: number, endColumn: number) {
     this.startLine = startLine;
     this.startColumn = startColumn;
     this.endLine = endLine;
     this.endColumn = endColumn;
   }
 
-  /**
-   * @param {number} line
-   * @param {number} column
-   * @return {!TextRange}
-   */
-  static createFromLocation(line, column) {
+  static createFromLocation(line: number, column: number): TextRange {
     return new TextRange(line, column, line, column);
   }
 
-  /**
-   * @param {{startLine: number, startColumn: number, endLine: number, endColumn: number}} serializedTextRange
-   * @return {!TextRange}
-   */
-  static fromObject(serializedTextRange) {
+  static fromObject(serializedTextRange: {
+    startLine: number,
+    startColumn: number,
+    endLine: number,
+    endColumn: number,
+  }): TextRange {
     return new TextRange(
         serializedTextRange.startLine, serializedTextRange.startColumn, serializedTextRange.endLine,
         serializedTextRange.endColumn);
   }
 
-  /**
-   * @param {!TextRange} range1
-   * @param {!TextRange} range2
-   * @return {number}
-   */
-  static comparator(range1, range2) {
+  static comparator(range1: TextRange, range2: TextRange): number {
     return range1.compareTo(range2);
   }
 
-  /**
-   * @param {!TextRange} oldRange
-   * @param {string} newText
-   * @return {!TextRange}
-   */
-  static fromEdit(oldRange, newText) {
-    let endLine = oldRange.startLine;
-    let endColumn = oldRange.startColumn + newText.length;
+  static fromEdit(oldRange: TextRange, newText: string): TextRange {
+    let endLine: number = oldRange.startLine;
+    let endColumn: number = oldRange.startColumn + newText.length;
 
     const lineEndings = Platform.StringUtilities.findLineEndingIndexes(newText);
     if (lineEndings.length > 1) {
@@ -90,98 +77,66 @@ export class TextRange {
     return new TextRange(oldRange.startLine, oldRange.startColumn, endLine, endColumn);
   }
 
-  /**
-   * @return {boolean}
-   */
-  isEmpty() {
+  isEmpty(): boolean {
     return this.startLine === this.endLine && this.startColumn === this.endColumn;
   }
 
-  /**
-   * @param {!TextRange=} range
-   * @return {boolean}
-   */
-  immediatelyPrecedes(range) {
+  immediatelyPrecedes(range?: TextRange): boolean {
     if (!range) {
       return false;
     }
     return this.endLine === range.startLine && this.endColumn === range.startColumn;
   }
 
-  /**
-   * @param {!TextRange=} range
-   * @return {boolean}
-   */
-  immediatelyFollows(range) {
+  immediatelyFollows(range?: TextRange): boolean {
     if (!range) {
       return false;
     }
     return range.immediatelyPrecedes(this);
   }
 
-  /**
-   * @param {!TextRange} range
-   * @return {boolean}
-   */
-  follows(range) {
+  follows(range: TextRange): boolean {
     return (range.endLine === this.startLine && range.endColumn <= this.startColumn) || range.endLine < this.startLine;
   }
 
-  /**
-   * @return {number}
-   */
-  get linesCount() {
+  get linesCount(): number {
     return this.endLine - this.startLine;
   }
 
-  /**
-   * @return {!TextRange}
-   */
-  collapseToEnd() {
+  collapseToEnd(): TextRange {
     return new TextRange(this.endLine, this.endColumn, this.endLine, this.endColumn);
   }
 
-  /**
-   * @return {!TextRange}
-   */
-  collapseToStart() {
+  collapseToStart(): TextRange {
     return new TextRange(this.startLine, this.startColumn, this.startLine, this.startColumn);
   }
 
-  /**
-   * @return {!TextRange}
-   */
-  normalize() {
+  normalize(): TextRange {
     if (this.startLine > this.endLine || (this.startLine === this.endLine && this.startColumn > this.endColumn)) {
       return new TextRange(this.endLine, this.endColumn, this.startLine, this.startColumn);
     }
     return this.clone();
   }
 
-  /**
-   * @return {!TextRange}
-   */
-  clone() {
+  clone(): TextRange {
     return new TextRange(this.startLine, this.startColumn, this.endLine, this.endColumn);
   }
 
-  /**
-   * @return {!{startLine: number, startColumn: number, endLine: number, endColumn: number}}
-   */
-  serializeToObject() {
-    const serializedTextRange = {};
-    serializedTextRange.startLine = this.startLine;
-    serializedTextRange.startColumn = this.startColumn;
-    serializedTextRange.endLine = this.endLine;
-    serializedTextRange.endColumn = this.endColumn;
-    return serializedTextRange;
+  serializeToObject(): {
+    startLine: number,
+    startColumn: number,
+    endLine: number,
+    endColumn: number,
+  } {
+    return {
+      startLine: this.startLine,
+      startColumn: this.startColumn,
+      endLine: this.endLine,
+      endColumn: this.endColumn,
+    };
   }
 
-  /**
-   * @param {!TextRange} other
-   * @return {number}
-   */
-  compareTo(other) {
+  compareTo(other: TextRange): number {
     if (this.startLine > other.startLine) {
       return 1;
     }
@@ -197,12 +152,7 @@ export class TextRange {
     return 0;
   }
 
-  /**
-   * @param {number} lineNumber
-   * @param {number} columnNumber
-   * @return {number}
-   */
-  compareToPosition(lineNumber, columnNumber) {
+  compareToPosition(lineNumber: number, columnNumber: number): number {
     if (lineNumber < this.startLine || (lineNumber === this.startLine && columnNumber < this.startColumn)) {
       return -1;
     }
@@ -212,21 +162,12 @@ export class TextRange {
     return 0;
   }
 
-  /**
-   * @param {!TextRange} other
-   * @return {boolean}
-   */
-  equal(other) {
+  equal(other: TextRange): boolean {
     return this.startLine === other.startLine && this.endLine === other.endLine &&
         this.startColumn === other.startColumn && this.endColumn === other.endColumn;
   }
 
-  /**
-   * @param {number} line
-   * @param {number} column
-   * @return {!TextRange}
-   */
-  relativeTo(line, column) {
+  relativeTo(line: number, column: number): TextRange {
     const relative = this.clone();
 
     if (this.startLine === line) {
@@ -241,12 +182,7 @@ export class TextRange {
     return relative;
   }
 
-  /**
-   * @param {number} line
-   * @param {number} column
-   * @return {!TextRange}
-   */
-  relativeFrom(line, column) {
+  relativeFrom(line: number, column: number): TextRange {
     const relative = this.clone();
 
     if (this.startLine === 0) {
@@ -261,12 +197,7 @@ export class TextRange {
     return relative;
   }
 
-  /**
-   * @param {!TextRange} originalRange
-   * @param {!TextRange} editedRange
-   * @return {!TextRange}
-   */
-  rebaseAfterTextEdit(originalRange, editedRange) {
+  rebaseAfterTextEdit(originalRange: TextRange, editedRange: TextRange): TextRange {
     console.assert(originalRange.startLine === editedRange.startLine);
     console.assert(originalRange.startColumn === editedRange.startColumn);
     const rebase = this.clone();
@@ -286,19 +217,11 @@ export class TextRange {
     return rebase;
   }
 
-  /**
-   * @return {string}
-   */
-  toString() {
+  toString(): string {
     return JSON.stringify(this);
   }
 
-  /**
-   * @param {number} lineNumber
-   * @param {number} columnNumber
-   * @return {boolean}
-   */
-  containsLocation(lineNumber, columnNumber) {
+  containsLocation(lineNumber: number, columnNumber: number): boolean {
     if (this.startLine === this.endLine) {
       return this.startLine === lineNumber && this.startColumn <= columnNumber && columnNumber <= this.endColumn;
     }
@@ -313,41 +236,29 @@ export class TextRange {
 }
 
 export class SourceRange {
-  /**
-   * @param {number} offset
-   * @param {number} length
-   */
-  constructor(offset, length) {
+  offset: number;
+  length: number;
+  constructor(offset: number, length: number) {
     this.offset = offset;
     this.length = length;
   }
 }
 
 export class SourceEdit {
-  /**
-   * @param {string} sourceURL
-   * @param {!TextRange} oldRange
-   * @param {string} newText
-   */
-  constructor(sourceURL, oldRange, newText) {
+  sourceURL: string;
+  oldRange: TextRange;
+  newText: string;
+  constructor(sourceURL: string, oldRange: TextRange, newText: string) {
     this.sourceURL = sourceURL;
     this.oldRange = oldRange;
     this.newText = newText;
   }
 
-  /**
-   * @param {!SourceEdit} edit1
-   * @param {!SourceEdit} edit2
-   * @return {number}
-   */
-  static comparator(edit1, edit2) {
+  static comparator(edit1: SourceEdit, edit2: SourceEdit): number {
     return TextRange.comparator(edit1.oldRange, edit2.oldRange);
   }
 
-  /**
-   * @return {!TextRange}
-   */
-  newRange() {
+  newRange(): TextRange {
     return TextRange.fromEdit(this.oldRange, this.newText);
   }
 }

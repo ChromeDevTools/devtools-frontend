@@ -30,69 +30,26 @@
 
 import * as Common from '../../core/common/common.js';  // eslint-disable-line no-unused-vars
 
-/**
- * @interface
- */
-export class ContentProvider {
-  /**
-   * @return {string}
-   */
-  contentURL() {
-    throw new Error('not implemented');
-  }
-
-  /**
-   * @return {!Common.ResourceType.ResourceType}
-   */
-  contentType() {
-    throw new Error('not implemented');
-  }
-
-  /**
-   * @return {!Promise<boolean>}
-   */
-  contentEncoded() {
-    throw new Error('not implemented');
-  }
-
-  /**
-   * @return {!Promise<!DeferredContent>}
-   */
-  requestContent() {
-    throw new Error('not implemented');
-  }
-
-  /**
-   * @param {string} query
-   * @param {boolean} caseSensitive
-   * @param {boolean} isRegex
-   * @return {!Promise<!Array<!SearchMatch>>}
-   */
-  searchInContent(query, caseSensitive, isRegex) {
-    throw new Error('not implemented');
-  }
+export abstract class ContentProvider {
+  abstract contentURL(): string;
+  abstract contentType(): Common.ResourceType.ResourceType;
+  abstract contentEncoded(): Promise<boolean>;
+  abstract requestContent(): Promise<DeferredContent>;
+  abstract searchInContent(query: string, caseSensitive: boolean, isRegex: boolean): Promise<SearchMatch[]>;
 }
 
 export class SearchMatch {
-  /**
-   * @param {number} lineNumber
-   * @param {string} lineContent
-   */
-  constructor(lineNumber, lineContent) {
+  lineNumber: number;
+  lineContent: string;
+  constructor(lineNumber: number, lineContent: string) {
     this.lineNumber = lineNumber;
     this.lineContent = lineContent;
   }
 }
 
-/**
- * @param {?string} content
- * @param {string} mimeType
- * @param {boolean} contentEncoded
- * @param {?string=} charset
- * @param {boolean} limitSize
- * @return {?string}
- */
-export const contentAsDataURL = function(content, mimeType, contentEncoded, charset, limitSize = true) {
+export const contentAsDataURL = function(
+    content: string|null, mimeType: string, contentEncoded: boolean, charset?: string|null,
+    limitSize: boolean = true): string|null {
   const maxDataUrlSize = 1024 * 1024;
   if (content === undefined || content === null || (limitSize && content.length > maxDataUrlSize)) {
     return null;
@@ -102,15 +59,7 @@ export const contentAsDataURL = function(content, mimeType, contentEncoded, char
       content;
 };
 
-/**
- * @typedef {{
- *    content: string,
- *    isEncoded: boolean,
- * }|{
- *    content: null,
- *    error: string,
- *    isEncoded: boolean,
- * }}
- */
-// @ts-ignore typedef
-export let DeferredContent;
+export type DeferredContent = {
+  content: string,
+  isEncoded: boolean,
+}|{content: null, error: string, isEncoded: boolean};

@@ -2,18 +2,17 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import {ElementsPanel} from './ElementsPanel.js';
 import {LayoutElement, LayoutPane} from './LayoutPane.js';  // eslint-disable-line no-unused-vars
+import {Setting} from './LayoutPaneUtils.js';
 
-/**
- * @param {!SDK.DOMModel.DOMNode} node
- * @return {!LayoutElement}
- */
-const nodeToLayoutElement = node => {
+const nodeToLayoutElement = (node: SDK.DOMModel.DOMNode): LayoutElement => {
   const className = node.getAttribute('class');
   const nodeId = node.id;
   return {
@@ -23,30 +22,26 @@ const nodeToLayoutElement = node => {
     domId: node.getAttribute('id'),
     domClasses: className ? className.split(/\s+/).filter(s => Boolean(s)) : undefined,
     enabled: false,
-    reveal: () => {
+    reveal: (): void => {
       ElementsPanel.instance().revealAndSelectNode(node, true, true);
       node.scrollIntoView();
     },
-    highlight: () => {
+    highlight: (): void => {
       node.highlight();
     },
-    hideHighlight: () => {
+    hideHighlight: (): void => {
       SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();
     },
-    toggle: value => {
+    toggle: (_value: boolean): never => {
       throw new Error('Not implemented');
     },
-    setColor(value) {
+    setColor(_value: string): never {
       throw new Error('Not implemented');
     },
   };
 };
 
-/**
- * @param {!Array<!SDK.DOMModel.DOMNode>} nodes
- * @return {!Array<!LayoutElement>}
- */
-const gridNodesToElements = nodes => {
+const gridNodesToElements = (nodes: SDK.DOMModel.DOMNode[]): LayoutElement[] => {
   return nodes.map(node => {
     const layoutElement = nodeToLayoutElement(node);
     const nodeId = node.id;
@@ -54,14 +49,14 @@ const gridNodesToElements = nodes => {
       ...layoutElement,
       color: node.domModel().overlayModel().colorOfGridInPersistentOverlay(nodeId) || '#000',
       enabled: node.domModel().overlayModel().isHighlightedGridInPersistentOverlay(nodeId),
-      toggle: value => {
+      toggle: (value: boolean): void => {
         if (value) {
           node.domModel().overlayModel().highlightGridInPersistentOverlay(nodeId);
         } else {
           node.domModel().overlayModel().hideGridInPersistentOverlay(nodeId);
         }
       },
-      setColor(value) {
+      setColor(value: string): void {
         this.color = value;
         node.domModel().overlayModel().setColorOfGridInPersistentOverlay(nodeId, value);
       },
@@ -69,14 +64,9 @@ const gridNodesToElements = nodes => {
   });
 };
 
-/** @type {!LayoutSidebarPane} */
-let layoutSidebarPaneInstance;
+let layoutSidebarPaneInstance: LayoutSidebarPane;
 
-/**
- * @param {!Array<!SDK.DOMModel.DOMNode>} nodes
- * @return {!Array<!LayoutElement>}
- */
-const flexContainerNodesToElements = nodes => {
+const flexContainerNodesToElements = (nodes: SDK.DOMModel.DOMNode[]): LayoutElement[] => {
   return nodes.map(node => {
     const layoutElement = nodeToLayoutElement(node);
     const nodeId = node.id;
@@ -84,14 +74,14 @@ const flexContainerNodesToElements = nodes => {
       ...layoutElement,
       color: node.domModel().overlayModel().colorOfFlexInPersistentOverlay(nodeId) || '#000',
       enabled: node.domModel().overlayModel().isHighlightedFlexContainerInPersistentOverlay(nodeId),
-      toggle: value => {
+      toggle: (value: boolean): void => {
         if (value) {
           node.domModel().overlayModel().highlightFlexContainerInPersistentOverlay(nodeId);
         } else {
           node.domModel().overlayModel().hideFlexContainerInPersistentOverlay(nodeId);
         }
       },
-      setColor(value) {
+      setColor(value: string): void {
         this.color = value;
         node.domModel().overlayModel().setColorOfFlexInPersistentOverlay(nodeId, value);
       },
@@ -100,6 +90,14 @@ const flexContainerNodesToElements = nodes => {
 };
 
 export class LayoutSidebarPane extends UI.ThrottledWidget.ThrottledWidget {
+  _layoutPane: LayoutPane;
+  _settings: string[];
+  _uaShadowDOMSetting: Common.Settings.Setting<boolean>;
+  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  _boundOnSettingChanged: (event: any) => void;
+  _domModels: SDK.DOMModel.DOMModel[];
+
   constructor() {
     super(true /* isWebComponent */);
     this._layoutPane = new LayoutPane();
@@ -107,17 +105,12 @@ export class LayoutSidebarPane extends UI.ThrottledWidget.ThrottledWidget {
     this._settings = ['showGridLineLabels', 'showGridTrackSizes', 'showGridAreas', 'extendGridLines'];
     this._uaShadowDOMSetting = Common.Settings.Settings.instance().moduleSetting('showUAShadowDOM');
     this._boundOnSettingChanged = this.onSettingChanged.bind(this);
-    /**
-     * @type {!Array<!SDK.DOMModel.DOMModel>}
-     */
     this._domModels = [];
   }
 
-  /**
-   * @param {{forceNew: ?boolean}=} opts
-   * @return {!LayoutSidebarPane}
-   */
-  static instance(opts = {forceNew: null}) {
+  static instance(opts: {
+    forceNew: boolean|null,
+  }|undefined = {forceNew: null}): LayoutSidebarPane {
     const {forceNew} = opts;
     if (!layoutSidebarPaneInstance || forceNew) {
       layoutSidebarPaneInstance = new LayoutSidebarPane();
@@ -126,10 +119,7 @@ export class LayoutSidebarPane extends UI.ThrottledWidget.ThrottledWidget {
     return layoutSidebarPaneInstance;
   }
 
-  /**
-   * @param {!SDK.DOMModel.DOMModel} domModel
-   */
-  modelAdded(domModel) {
+  modelAdded(domModel: SDK.DOMModel.DOMModel): void {
     const overlayModel = domModel.overlayModel();
     overlayModel.addEventListener(SDK.OverlayModel.Events.PersistentGridOverlayStateChanged, this.update, this);
     overlayModel.addEventListener(
@@ -137,10 +127,7 @@ export class LayoutSidebarPane extends UI.ThrottledWidget.ThrottledWidget {
     this._domModels.push(domModel);
   }
 
-  /**
-   * @param {!SDK.DOMModel.DOMModel} domModel
-   */
-  modelRemoved(domModel) {
+  modelRemoved(domModel: SDK.DOMModel.DOMModel): void {
     const overlayModel = domModel.overlayModel();
     overlayModel.removeEventListener(SDK.OverlayModel.Events.PersistentGridOverlayStateChanged, this.update, this);
     overlayModel.removeEventListener(
@@ -148,10 +135,10 @@ export class LayoutSidebarPane extends UI.ThrottledWidget.ThrottledWidget {
     this._domModels = this._domModels.filter(model => model !== domModel);
   }
 
-  /**
-   * @param {!Array<{ name: string, value: string }>} style
-   */
-  async _fetchNodesByStyle(style) {
+  async _fetchNodesByStyle(style: {
+    name: string,
+    value: string,
+  }[]): Promise<SDK.DOMModel.DOMNode[]> {
     const showUAShadowDOM = this._uaShadowDOMSetting.get();
 
     const nodes = [];
@@ -175,15 +162,15 @@ export class LayoutSidebarPane extends UI.ThrottledWidget.ThrottledWidget {
     return nodes;
   }
 
-  async _fetchGridNodes() {
+  async _fetchGridNodes(): Promise<SDK.DOMModel.DOMNode[]> {
     return await this._fetchNodesByStyle([{name: 'display', value: 'grid'}, {name: 'display', value: 'inline-grid'}]);
   }
 
-  async _fetchFlexContainerNodes() {
+  async _fetchFlexContainerNodes(): Promise<SDK.DOMModel.DOMNode[]> {
     return await this._fetchNodesByStyle([{name: 'display', value: 'flex'}, {name: 'display', value: 'inline-flex'}]);
   }
 
-  _mapSettings() {
+  _mapSettings(): Setting[] {
     const settings = [];
     for (const settingName of this._settings) {
       const setting = Common.Settings.Settings.instance().moduleSetting(settingName);
@@ -206,8 +193,8 @@ export class LayoutSidebarPane extends UI.ThrottledWidget.ThrottledWidget {
           value: settingValue,
           options: setting.options().map(opt => ({
                                            ...opt,
-                                           value: /** @type {boolean} */ (opt.value),
-                                         }))
+                                           value: (opt.value as boolean),
+                                         })),
         });
       } else if (typeof settingValue === 'string') {
         settings.push({
@@ -215,20 +202,15 @@ export class LayoutSidebarPane extends UI.ThrottledWidget.ThrottledWidget {
           value: settingValue,
           options: setting.options().map(opt => ({
                                            ...opt,
-                                           value: /** @type {string} */ (opt.value),
-                                         }))
+                                           value: (opt.value as string),
+                                         })),
         });
       }
     }
     return settings;
   }
 
-  /**
-   * @override
-   * @protected
-   * @return {!Promise<void>}
-   */
-  async doUpdate() {
+  async doUpdate(): Promise<void> {
     this._layoutPane.data = {
       gridElements: gridNodesToElements(await this._fetchGridNodes()),
       flexContainerElements: flexContainerNodesToElements(await this._fetchFlexContainerNodes()),
@@ -236,17 +218,13 @@ export class LayoutSidebarPane extends UI.ThrottledWidget.ThrottledWidget {
     };
   }
 
-  /**
-   * @param {*} event
-   */
-  onSettingChanged(event) {
+  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  onSettingChanged(event: any): void {
     Common.Settings.Settings.instance().moduleSetting(event.data.setting).set(event.data.value);
   }
 
-  /**
-   * @override
-   */
-  wasShown() {
+  wasShown(): void {
     for (const setting of this._settings) {
       Common.Settings.Settings.instance().moduleSetting(setting).addChangeListener(this.update, this);
     }
@@ -261,10 +239,7 @@ export class LayoutSidebarPane extends UI.ThrottledWidget.ThrottledWidget {
     this.update();
   }
 
-  /**
-   * @override
-   */
-  willHide() {
+  willHide(): void {
     for (const setting of this._settings) {
       Common.Settings.Settings.instance().moduleSetting(setting).removeChangeListener(this.update, this);
     }

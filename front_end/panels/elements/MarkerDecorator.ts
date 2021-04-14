@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';  // eslint-disable-line no-unused-vars
 import * as SDK from '../../core/sdk/sdk.js';                 // eslint-disable-line no-unused-vars
@@ -18,42 +20,36 @@ const UIStrings = {
   */
   elementIsHidden: 'Element is hidden',
 };
-const str_ = i18n.i18n.registerUIStrings('panels/elements/MarkerDecorator.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/elements/MarkerDecorator.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
-/**
- * @interface
- */
-export class MarkerDecorator {
-  /**
-   * @param {!SDK.DOMModel.DOMNode} node
-   * @return {?{title: string, color: string}}
-   */
-  decorate(node) {
-    throw new Error('Not implemented yet');
-  }
+
+export interface MarkerDecorator {
+  decorate(node: SDK.DOMModel.DOMNode): {
+    title: string,
+    color: string,
+  }|null;
 }
 
-/**
- * @implements {MarkerDecorator}
- */
-export class GenericDecorator {
-  /**
-   * @param {{marker: string, title: ()=>string, color: string}} extension
-   */
-  constructor(extension) {
+export class GenericDecorator implements MarkerDecorator {
+  _title: string;
+  _color: string;
+
+  constructor(extension: {
+    marker: string,
+    title: () => string,
+    color: string,
+  }) {
     if (!extension.title || !extension.color) {
       throw new Error(`Generic decorator requires a color and a title: ${extension.marker}`);
     }
     this._title = extension.title();
-    this._color = /** @type {string} */ (extension.color);
+    this._color = (extension.color as string);
   }
 
-  /**
-   * @override
-   * @param {!SDK.DOMModel.DOMNode} node
-   * @return {?{title: string, color: string}}
-   */
-  decorate(node) {
+  decorate(_node: SDK.DOMModel.DOMNode): {
+    title: string,
+    color: string,
+  }|null {
     return {title: this._title, color: this._color};
   }
 }
@@ -70,18 +66,15 @@ const elementIsHiddenData = {
   color: '#555',
 };
 
-/**
- * @return {!Array<!MarkerDecoratorRegistration>}
- */
-export function getRegisteredDecorators() {
+export function getRegisteredDecorators(): MarkerDecoratorRegistration[] {
   return [
     {
       ...domBreakpointData,
-      decorator: () => new GenericDecorator(domBreakpointData),
+      decorator: (): GenericDecorator => new GenericDecorator(domBreakpointData),
     },
     {
       ...elementIsHiddenData,
-      decorator: () => new GenericDecorator(elementIsHiddenData),
+      decorator: (): GenericDecorator => new GenericDecorator(elementIsHiddenData),
     },
     {
       decorator: PseudoStateMarkerDecorator.instance,
@@ -91,14 +84,9 @@ export function getRegisteredDecorators() {
     },
   ];
 }
-
-/**
-  * @typedef {{
-  *   decorator: function(): !MarkerDecorator,
-  *   marker: string,
-  *   color: string|undefined,
-  *   title: (()=>Platform.UIString.LocalizedString)|undefined
-  * }}
-  */
-// @ts-ignore typedef
-export let MarkerDecoratorRegistration;
+export interface MarkerDecoratorRegistration {
+  decorator: () => MarkerDecorator;
+  marker: string;
+  color?: string;
+  title?: (() => Platform.UIString.LocalizedString);
+}

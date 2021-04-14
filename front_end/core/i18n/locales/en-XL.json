@@ -4172,46 +4172,46 @@
   "panels/elements/AdornerSettingsPane.ts | settingsTitle": {
     "message": "Ŝh́ôẃ b̂ád̂ǵêś"
   },
-  "panels/elements/ClassesPaneWidget.js | addNewClass": {
+  "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "Âd́d̂ ńêẃ ĉĺâśŝ"
   },
-  "panels/elements/ClassesPaneWidget.js | classesSAdded": {
+  "panels/elements/ClassesPaneWidget.ts | classesSAdded": {
     "message": "Ĉĺâśŝéŝ {PH1} ád̂d́êd́"
   },
-  "panels/elements/ClassesPaneWidget.js | classSAdded": {
+  "panels/elements/ClassesPaneWidget.ts | classSAdded": {
     "message": "Ĉĺâśŝ {PH1} ád̂d́êd́"
   },
-  "panels/elements/ClassesPaneWidget.js | elementClasses": {
+  "panels/elements/ClassesPaneWidget.ts | elementClasses": {
     "message": "Êĺêḿêńt̂ Ćl̂áŝśêś"
   },
-  "panels/elements/ColorSwatchPopoverIcon.js | openCubicBezierEditor": {
+  "panels/elements/ColorSwatchPopoverIcon.ts | openCubicBezierEditor": {
     "message": "Ôṕêń ĉúb̂íĉ b́êźîér̂ éd̂ít̂ór̂"
   },
-  "panels/elements/ColorSwatchPopoverIcon.js | openShadowEditor": {
+  "panels/elements/ColorSwatchPopoverIcon.ts | openShadowEditor": {
     "message": "Ôṕêń ŝh́âd́ôẃ êd́ît́ôŕ"
   },
-  "panels/elements/ComputedStyleWidget.js | filter": {
+  "panels/elements/ComputedStyleWidget.ts | filter": {
     "message": "F̂íl̂t́êŕ"
   },
-  "panels/elements/ComputedStyleWidget.js | filterComputedStyles": {
+  "panels/elements/ComputedStyleWidget.ts | filterComputedStyles": {
     "message": "F̂íl̂t́êŕ Ĉóm̂ṕût́êd́ Ŝt́ŷĺêś"
   },
-  "panels/elements/ComputedStyleWidget.js | group": {
+  "panels/elements/ComputedStyleWidget.ts | group": {
     "message": "Ĝŕôúp̂"
   },
-  "panels/elements/ComputedStyleWidget.js | navigateToSelectorSource": {
+  "panels/elements/ComputedStyleWidget.ts | navigateToSelectorSource": {
     "message": "N̂áv̂íĝát̂é t̂ó ŝél̂éĉt́ôŕ ŝóûŕĉé"
   },
-  "panels/elements/ComputedStyleWidget.js | navigateToStyle": {
+  "panels/elements/ComputedStyleWidget.ts | navigateToStyle": {
     "message": "N̂áv̂íĝát̂é t̂ó ŝt́ŷĺê"
   },
-  "panels/elements/ComputedStyleWidget.js | noMatchingProperty": {
+  "panels/elements/ComputedStyleWidget.ts | noMatchingProperty": {
     "message": "N̂ó m̂át̂ćĥín̂ǵ p̂ŕôṕêŕt̂ý"
   },
-  "panels/elements/ComputedStyleWidget.js | showAll": {
+  "panels/elements/ComputedStyleWidget.ts | showAll": {
     "message": "Ŝh́ôẃ âĺl̂"
   },
-  "panels/elements/DOMLinkifier.js | node": {
+  "panels/elements/DOMLinkifier.ts | node": {
     "message": "<n̂ód̂é>"
   },
   "panels/elements/elements-meta.ts | captureAreaScreenshot": {
@@ -4292,190 +4292,190 @@
   "panels/elements/ElementsBreadcrumbsUtils.ts | text": {
     "message": "(t̂éx̂t́)"
   },
-  "panels/elements/ElementsPanel.js | computed": {
+  "panels/elements/ElementsPanel.ts | computed": {
     "message": "Ĉóm̂ṕût́êd́"
   },
-  "panels/elements/ElementsPanel.js | elementStateS": {
+  "panels/elements/ElementsPanel.ts | elementStateS": {
     "message": "Êĺêḿêńt̂ śt̂át̂é: {PH1}"
   },
-  "panels/elements/ElementsPanel.js | findByStringSelectorOrXpath": {
+  "panels/elements/ElementsPanel.ts | findByStringSelectorOrXpath": {
     "message": "F̂ín̂d́ b̂ý ŝt́r̂ín̂ǵ, ŝél̂éĉt́ôŕ, ôŕ XPath"
   },
-  "panels/elements/ElementsPanel.js | frame": {
+  "panels/elements/ElementsPanel.ts | frame": {
     "message": "F̂ŕâḿê"
   },
-  "panels/elements/ElementsPanel.js | hideComputedStylesSidebar": {
+  "panels/elements/ElementsPanel.ts | hideComputedStylesSidebar": {
     "message": "Ĥíd̂é Ĉóm̂ṕût́êd́ Ŝt́ŷĺêś ŝíd̂éb̂ár̂"
   },
-  "panels/elements/ElementsPanel.js | nodeCannotBeFoundInTheCurrent": {
+  "panels/elements/ElementsPanel.ts | nodeCannotBeFoundInTheCurrent": {
     "message": "N̂ód̂é ĉán̂ńôt́ b̂é f̂óûńd̂ ín̂ t́ĥé ĉúr̂ŕêńt̂ ṕâǵê."
   },
-  "panels/elements/ElementsPanel.js | revealInElementsPanel": {
+  "panels/elements/ElementsPanel.ts | revealInElementsPanel": {
     "message": "R̂év̂éâĺ îń Êĺêḿêńt̂ś p̂án̂él̂"
   },
-  "panels/elements/ElementsPanel.js | showComputedStylesSidebar": {
+  "panels/elements/ElementsPanel.ts | showComputedStylesSidebar": {
     "message": "Ŝh́ôẃ Ĉóm̂ṕût́êd́ Ŝt́ŷĺêś ŝíd̂éb̂ár̂"
   },
-  "panels/elements/ElementsPanel.js | styles": {
+  "panels/elements/ElementsPanel.ts | styles": {
     "message": "Ŝt́ŷĺêś"
   },
-  "panels/elements/ElementsPanel.js | switchToAccessibilityTreeView": {
+  "panels/elements/ElementsPanel.ts | switchToAccessibilityTreeView": {
     "message": "Ŝẃît́ĉh́ t̂ó Âćĉéŝśîb́îĺît́ŷ T́r̂éê v́îéŵ"
   },
-  "panels/elements/ElementsPanel.js | switchToDomTreeView": {
+  "panels/elements/ElementsPanel.ts | switchToDomTreeView": {
     "message": "Ŝẃît́ĉh́ t̂ó D̂ÓM̂ T́r̂éê v́îéŵ"
   },
-  "panels/elements/ElementsPanel.js | theDeferredDomNodeCouldNotBe": {
+  "panels/elements/ElementsPanel.ts | theDeferredDomNodeCouldNotBe": {
     "message": "T̂h́ê d́êf́êŕr̂éd̂ DOM Ńôd́ê ćôúl̂d́ n̂ót̂ b́ê ŕêśôĺv̂éd̂ t́ô á v̂ál̂íd̂ ńôd́ê."
   },
-  "panels/elements/ElementsPanel.js | theRemoteObjectCouldNotBe": {
+  "panels/elements/ElementsPanel.ts | theRemoteObjectCouldNotBe": {
     "message": "T̂h́ê ŕêḿôt́ê ób̂j́êćt̂ ćôúl̂d́ n̂ót̂ b́ê ŕêśôĺv̂éd̂ t́ô á v̂ál̂íd̂ ńôd́ê."
   },
-  "panels/elements/ElementStatePaneWidget.js | forceElementState": {
+  "panels/elements/ElementStatePaneWidget.ts | forceElementState": {
     "message": "F̂ór̂ćê él̂ém̂én̂t́ ŝt́ât́ê"
   },
-  "panels/elements/ElementStatePaneWidget.js | toggleElementState": {
+  "panels/elements/ElementStatePaneWidget.ts | toggleElementState": {
     "message": "T̂óĝǵl̂é Êĺêḿêńt̂ Śt̂át̂é"
   },
-  "panels/elements/ElementsTreeElement.js | addAttribute": {
+  "panels/elements/ElementsTreeElement.ts | addAttribute": {
     "message": "Âd́d̂ át̂t́r̂íb̂út̂é"
   },
-  "panels/elements/ElementsTreeElement.js | captureNodeScreenshot": {
+  "panels/elements/ElementsTreeElement.ts | captureNodeScreenshot": {
     "message": "Ĉáp̂t́ûŕê ńôd́ê śĉŕêén̂śĥót̂"
   },
-  "panels/elements/ElementsTreeElement.js | children": {
+  "panels/elements/ElementsTreeElement.ts | children": {
     "message": "Ĉh́îĺd̂ŕêń:"
   },
-  "panels/elements/ElementsTreeElement.js | collapseChildren": {
+  "panels/elements/ElementsTreeElement.ts | collapseChildren": {
     "message": "Ĉól̂ĺâṕŝé ĉh́îĺd̂ŕêń"
   },
-  "panels/elements/ElementsTreeElement.js | copy": {
+  "panels/elements/ElementsTreeElement.ts | copy": {
     "message": "Ĉóp̂ý"
   },
-  "panels/elements/ElementsTreeElement.js | copyElement": {
+  "panels/elements/ElementsTreeElement.ts | copyElement": {
     "message": "Ĉóp̂ý êĺêḿêńt̂"
   },
-  "panels/elements/ElementsTreeElement.js | copyFullXpath": {
+  "panels/elements/ElementsTreeElement.ts | copyFullXpath": {
     "message": "Ĉóp̂ý f̂úl̂ĺ X̂Ṕât́ĥ"
   },
-  "panels/elements/ElementsTreeElement.js | copyJsPath": {
+  "panels/elements/ElementsTreeElement.ts | copyJsPath": {
     "message": "Ĉóp̂ý ĴŚ p̂át̂h́"
   },
-  "panels/elements/ElementsTreeElement.js | copyOuterhtml": {
+  "panels/elements/ElementsTreeElement.ts | copyOuterhtml": {
     "message": "Ĉóp̂ý ôút̂ér̂H́T̂ḾL̂"
   },
-  "panels/elements/ElementsTreeElement.js | copySelector": {
+  "panels/elements/ElementsTreeElement.ts | copySelector": {
     "message": "Ĉóp̂ý selector"
   },
-  "panels/elements/ElementsTreeElement.js | copyStyles": {
+  "panels/elements/ElementsTreeElement.ts | copyStyles": {
     "message": "Ĉóp̂ý ŝt́ŷĺêś"
   },
-  "panels/elements/ElementsTreeElement.js | copyXpath": {
+  "panels/elements/ElementsTreeElement.ts | copyXpath": {
     "message": "Ĉóp̂ý X̂Ṕât́ĥ"
   },
-  "panels/elements/ElementsTreeElement.js | cutElement": {
+  "panels/elements/ElementsTreeElement.ts | cutElement": {
     "message": "Ĉút̂ él̂ém̂én̂t́"
   },
-  "panels/elements/ElementsTreeElement.js | deleteElement": {
+  "panels/elements/ElementsTreeElement.ts | deleteElement": {
     "message": "D̂él̂ét̂é êĺêḿêńt̂"
   },
-  "panels/elements/ElementsTreeElement.js | disableFlexMode": {
+  "panels/elements/ElementsTreeElement.ts | disableFlexMode": {
     "message": "D̂íŝáb̂ĺê f́l̂éx̂ ḿôd́ê"
   },
-  "panels/elements/ElementsTreeElement.js | disableGridMode": {
+  "panels/elements/ElementsTreeElement.ts | disableGridMode": {
     "message": "D̂íŝáb̂ĺê ǵr̂íd̂ ḿôd́ê"
   },
-  "panels/elements/ElementsTreeElement.js | disableScrollSnap": {
+  "panels/elements/ElementsTreeElement.ts | disableScrollSnap": {
     "message": "D̂íŝáb̂ĺê śĉŕôĺl̂-śn̂áp̂ óv̂ér̂ĺâý"
   },
-  "panels/elements/ElementsTreeElement.js | duplicateElement": {
+  "panels/elements/ElementsTreeElement.ts | duplicateElement": {
     "message": "D̂úp̂ĺîćât́ê él̂ém̂én̂t́"
   },
-  "panels/elements/ElementsTreeElement.js | editAsHtml": {
+  "panels/elements/ElementsTreeElement.ts | editAsHtml": {
     "message": "Êd́ît́ âś ĤT́M̂Ĺ"
   },
-  "panels/elements/ElementsTreeElement.js | editAttribute": {
+  "panels/elements/ElementsTreeElement.ts | editAttribute": {
     "message": "Êd́ît́ ât́t̂ŕîb́ût́ê"
   },
-  "panels/elements/ElementsTreeElement.js | editText": {
+  "panels/elements/ElementsTreeElement.ts | editText": {
     "message": "Êd́ît́ t̂éx̂t́"
   },
-  "panels/elements/ElementsTreeElement.js | enableFlexMode": {
+  "panels/elements/ElementsTreeElement.ts | enableFlexMode": {
     "message": "Êńâb́l̂é f̂ĺêx́ m̂ód̂é"
   },
-  "panels/elements/ElementsTreeElement.js | enableGridMode": {
+  "panels/elements/ElementsTreeElement.ts | enableGridMode": {
     "message": "Êńâb́l̂é ĝŕîd́ m̂ód̂é"
   },
-  "panels/elements/ElementsTreeElement.js | enableScrollSnap": {
+  "panels/elements/ElementsTreeElement.ts | enableScrollSnap": {
     "message": "Êńâb́l̂é ŝćr̂ól̂ĺ-ŝńâṕ ôv́êŕl̂áŷ"
   },
-  "panels/elements/ElementsTreeElement.js | expandRecursively": {
+  "panels/elements/ElementsTreeElement.ts | expandRecursively": {
     "message": "Êx́p̂án̂d́ r̂éĉúr̂śîv́êĺŷ"
   },
-  "panels/elements/ElementsTreeElement.js | focus": {
+  "panels/elements/ElementsTreeElement.ts | focus": {
     "message": "F̂óĉúŝ"
   },
-  "panels/elements/ElementsTreeElement.js | forceState": {
+  "panels/elements/ElementsTreeElement.ts | forceState": {
     "message": "F̂ór̂ćê śt̂át̂é"
   },
-  "panels/elements/ElementsTreeElement.js | hideElement": {
+  "panels/elements/ElementsTreeElement.ts | hideElement": {
     "message": "Ĥíd̂é êĺêḿêńt̂"
   },
-  "panels/elements/ElementsTreeElement.js | pasteElement": {
+  "panels/elements/ElementsTreeElement.ts | pasteElement": {
     "message": "P̂áŝt́ê él̂ém̂én̂t́"
   },
-  "panels/elements/ElementsTreeElement.js | scrollIntoView": {
+  "panels/elements/ElementsTreeElement.ts | scrollIntoView": {
     "message": "Ŝćr̂ól̂ĺ îńt̂ó v̂íêẃ"
   },
-  "panels/elements/ElementsTreeElement.js | thisFrameWasIdentifiedAsAnAd": {
+  "panels/elements/ElementsTreeElement.ts | thisFrameWasIdentifiedAsAnAd": {
     "message": "T̂h́îś f̂ŕâḿê ẃâś îd́êńt̂íf̂íêd́ âś âń âd́ f̂ŕâḿê"
   },
-  "panels/elements/ElementsTreeElement.js | useSInTheConsoleToReferToThis": {
+  "panels/elements/ElementsTreeElement.ts | useSInTheConsoleToReferToThis": {
     "message": "Ûśê {PH1} ín̂ t́ĥé ĉón̂śôĺê t́ô ŕêf́êŕ t̂ó t̂h́îś êĺêḿêńt̂."
   },
-  "panels/elements/ElementsTreeElement.js | valueIsTooLargeToEdit": {
+  "panels/elements/ElementsTreeElement.ts | valueIsTooLargeToEdit": {
     "message": "<v̂ál̂úê íŝ t́ôó l̂ár̂ǵê t́ô éd̂ít̂>"
   },
-  "panels/elements/ElementsTreeOutline.js | adornerSettings": {
+  "panels/elements/ElementsTreeOutline.ts | adornerSettings": {
     "message": "B̂ád̂ǵê śêt́t̂ín̂ǵŝ…"
   },
-  "panels/elements/ElementsTreeOutline.js | pageDom": {
+  "panels/elements/ElementsTreeOutline.ts | pageDom": {
     "message": "P̂áĝé D̂ÓM̂"
   },
-  "panels/elements/ElementsTreeOutline.js | reveal": {
+  "panels/elements/ElementsTreeOutline.ts | reveal": {
     "message": "r̂év̂éâĺ"
   },
-  "panels/elements/ElementsTreeOutline.js | showAllNodesDMore": {
+  "panels/elements/ElementsTreeOutline.ts | showAllNodesDMore": {
     "message": "Ŝh́ôẃ Âĺl̂ Ńôd́êś ({PH1} M̂ór̂é)"
   },
-  "panels/elements/ElementsTreeOutline.js | storeAsGlobalVariable": {
+  "panels/elements/ElementsTreeOutline.ts | storeAsGlobalVariable": {
     "message": "Ŝt́ôŕê áŝ ǵl̂ób̂ál̂ v́âŕîáb̂ĺê"
   },
-  "panels/elements/EventListenersWidget.js | all": {
+  "panels/elements/EventListenersWidget.ts | all": {
     "message": "Âĺl̂"
   },
-  "panels/elements/EventListenersWidget.js | ancestors": {
+  "panels/elements/EventListenersWidget.ts | ancestors": {
     "message": "Âńĉéŝt́ôŕŝ"
   },
-  "panels/elements/EventListenersWidget.js | blocking": {
+  "panels/elements/EventListenersWidget.ts | blocking": {
     "message": "B̂ĺôćk̂ín̂ǵ"
   },
-  "panels/elements/EventListenersWidget.js | eventListenersCategory": {
+  "panels/elements/EventListenersWidget.ts | eventListenersCategory": {
     "message": "Êv́êńt̂ ĺîśt̂én̂ér̂ś ĉát̂éĝór̂ý"
   },
-  "panels/elements/EventListenersWidget.js | frameworkListeners": {
+  "panels/elements/EventListenersWidget.ts | frameworkListeners": {
     "message": "Framework l̂íŝt́êńêŕŝ"
   },
-  "panels/elements/EventListenersWidget.js | passive": {
+  "panels/elements/EventListenersWidget.ts | passive": {
     "message": "P̂áŝśîv́ê"
   },
-  "panels/elements/EventListenersWidget.js | refresh": {
+  "panels/elements/EventListenersWidget.ts | refresh": {
     "message": "R̂éf̂ŕêśĥ"
   },
-  "panels/elements/EventListenersWidget.js | resolveEventListenersBoundWith": {
+  "panels/elements/EventListenersWidget.ts | resolveEventListenersBoundWith": {
     "message": "R̂éŝól̂v́ê év̂én̂t́ l̂íŝt́êńêŕŝ b́ôún̂d́ ŵít̂h́ f̂ŕâḿêẃôŕk̂"
   },
-  "panels/elements/EventListenersWidget.js | showListenersOnTheAncestors": {
+  "panels/elements/EventListenersWidget.ts | showListenersOnTheAncestors": {
     "message": "Ŝh́ôẃ l̂íŝt́êńêŕŝ ón̂ t́ĥé âńĉéŝt́ôŕŝ"
   },
   "panels/elements/FlexboxEditor.ts | deselectButton": {
@@ -4514,124 +4514,124 @@
   "panels/elements/LayoutPane.ts | showElementInTheElementsPanel": {
     "message": "Ŝh́ôẃ êĺêḿêńt̂ ín̂ t́ĥé Êĺêḿêńt̂ś p̂án̂él̂"
   },
-  "panels/elements/MarkerDecorator.js | domBreakpoint": {
+  "panels/elements/MarkerDecorator.ts | domBreakpoint": {
     "message": "D̂ÓM̂ B́r̂éâḱp̂óîńt̂"
   },
-  "panels/elements/MarkerDecorator.js | elementIsHidden": {
+  "panels/elements/MarkerDecorator.ts | elementIsHidden": {
     "message": "Êĺêḿêńt̂ íŝ h́îd́d̂én̂"
   },
-  "panels/elements/NodeStackTraceWidget.js | noStackTraceAvailable": {
+  "panels/elements/NodeStackTraceWidget.ts | noStackTraceAvailable": {
     "message": "N̂ó ŝt́âćk̂ t́r̂áĉé âv́âíl̂áb̂ĺê"
   },
-  "panels/elements/PlatformFontsWidget.js | dGlyphs": {
+  "panels/elements/PlatformFontsWidget.ts | dGlyphs": {
     "message": "{n, plural, =1 {(# ĝĺŷṕĥ)} other {(# ǵl̂ýp̂h́ŝ)}}"
   },
-  "panels/elements/PlatformFontsWidget.js | localFile": {
+  "panels/elements/PlatformFontsWidget.ts | localFile": {
     "message": "L̂óĉál̂ f́îĺê"
   },
-  "panels/elements/PlatformFontsWidget.js | networkResource": {
+  "panels/elements/PlatformFontsWidget.ts | networkResource": {
     "message": "N̂ét̂ẃôŕk̂ ŕêśôúr̂ćê"
   },
-  "panels/elements/PlatformFontsWidget.js | renderedFonts": {
+  "panels/elements/PlatformFontsWidget.ts | renderedFonts": {
     "message": "R̂én̂d́êŕêd́ F̂ón̂t́ŝ"
   },
-  "panels/elements/StylePropertyTreeElement.js | copyAllDeclarations": {
+  "panels/elements/StylePropertyTreeElement.ts | copyAllDeclarations": {
     "message": "Ĉóp̂ý âĺl̂ d́êćl̂ár̂át̂íôńŝ"
   },
-  "panels/elements/StylePropertyTreeElement.js | copyDeclaration": {
+  "panels/elements/StylePropertyTreeElement.ts | copyDeclaration": {
     "message": "Ĉóp̂ý d̂éĉĺâŕât́îón̂"
   },
-  "panels/elements/StylePropertyTreeElement.js | copyProperty": {
+  "panels/elements/StylePropertyTreeElement.ts | copyProperty": {
     "message": "Ĉóp̂ý p̂ŕôṕêŕt̂ý"
   },
-  "panels/elements/StylePropertyTreeElement.js | copyRule": {
+  "panels/elements/StylePropertyTreeElement.ts | copyRule": {
     "message": "Ĉóp̂ý r̂úl̂é"
   },
-  "panels/elements/StylePropertyTreeElement.js | copyValue": {
+  "panels/elements/StylePropertyTreeElement.ts | copyValue": {
     "message": "Ĉóp̂ý v̂ál̂úê"
   },
-  "panels/elements/StylePropertyTreeElement.js | openColorPickerS": {
+  "panels/elements/StylePropertyTreeElement.ts | openColorPickerS": {
     "message": "Ôṕêń ĉól̂ór̂ ṕîćk̂ér̂. {PH1}"
   },
-  "panels/elements/StylePropertyTreeElement.js | revealInSourcesPanel": {
+  "panels/elements/StylePropertyTreeElement.ts | revealInSourcesPanel": {
     "message": "R̂év̂éâĺ îń Ŝóûŕĉéŝ ṕâńêĺ"
   },
-  "panels/elements/StylePropertyTreeElement.js | shiftClickToChangeColorFormat": {
+  "panels/elements/StylePropertyTreeElement.ts | shiftClickToChangeColorFormat": {
     "message": "Ŝh́îf́t̂ + Ćl̂íĉḱ t̂ó ĉh́âńĝé ĉól̂ór̂ f́ôŕm̂át̂."
   },
-  "panels/elements/StylePropertyTreeElement.js | togglePropertyAndContinueEditing": {
+  "panels/elements/StylePropertyTreeElement.ts | togglePropertyAndContinueEditing": {
     "message": "T̂óĝǵl̂é p̂ŕôṕêŕt̂ý âńd̂ ćôńt̂ín̂úê éd̂ít̂ín̂ǵ"
   },
-  "panels/elements/StylePropertyTreeElement.js | valueForSettingSSIsOutsideThe": {
+  "panels/elements/StylePropertyTreeElement.ts | valueForSettingSSIsOutsideThe": {
     "message": "V̂ál̂úê f́ôŕ ŝét̂t́îńĝ “{PH1}” {PH2} íŝ óût́ŝíd̂é t̂h́ê śûṕp̂ór̂t́êd́ r̂án̂ǵê [{PH3}, {PH4}] f́ôŕ f̂ón̂t́-f̂ám̂íl̂ý “{PH5}”."
   },
-  "panels/elements/StylePropertyTreeElement.js | viewComputedValue": {
+  "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "V̂íêẃ ĉóm̂ṕût́êd́ v̂ál̂úê"
   },
-  "panels/elements/StylesSidebarPane.js | constructedStylesheet": {
+  "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
     "message": "ĉón̂śt̂ŕûćt̂éd̂ śt̂ýl̂éŝh́êét̂"
   },
-  "panels/elements/StylesSidebarPane.js | copyAllDeclarations": {
+  "panels/elements/StylesSidebarPane.ts | copyAllDeclarations": {
     "message": "Ĉóp̂ý âĺl̂ d́êćl̂ár̂át̂íôńŝ"
   },
-  "panels/elements/StylesSidebarPane.js | copyRule": {
+  "panels/elements/StylesSidebarPane.ts | copyRule": {
     "message": "Ĉóp̂ý r̂úl̂é"
   },
-  "panels/elements/StylesSidebarPane.js | copySelector": {
+  "panels/elements/StylesSidebarPane.ts | copySelector": {
     "message": "Ĉóp̂ý selector"
   },
-  "panels/elements/StylesSidebarPane.js | filter": {
+  "panels/elements/StylesSidebarPane.ts | filter": {
     "message": "F̂íl̂t́êŕ"
   },
-  "panels/elements/StylesSidebarPane.js | filterStyles": {
+  "panels/elements/StylesSidebarPane.ts | filterStyles": {
     "message": "F̂íl̂t́êŕ Ŝt́ŷĺêś"
   },
-  "panels/elements/StylesSidebarPane.js | incrementdecrementWithMousewheelHundred": {
+  "panels/elements/StylesSidebarPane.ts | incrementdecrementWithMousewheelHundred": {
     "message": "Îńĉŕêḿêńt̂/d́êćr̂ém̂én̂t́ ŵít̂h́ m̂óûśêẃĥéêĺ ôŕ ûṕ/d̂óŵń k̂éŷś. {PH1}: ±100, Ŝh́îf́t̂: ±10, Ál̂t́: ±0.1"
   },
-  "panels/elements/StylesSidebarPane.js | incrementdecrementWithMousewheelOne": {
+  "panels/elements/StylesSidebarPane.ts | incrementdecrementWithMousewheelOne": {
     "message": "Îńĉŕêḿêńt̂/d́êćr̂ém̂én̂t́ ŵít̂h́ m̂óûśêẃĥéêĺ ôŕ ûṕ/d̂óŵń k̂éŷś. {PH1}: R̂ ±1, Śĥíf̂t́: Ĝ ±1, Ál̂t́: B̂ ±1"
   },
-  "panels/elements/StylesSidebarPane.js | inheritedFroms": {
+  "panels/elements/StylesSidebarPane.ts | inheritedFroms": {
     "message": "Îńĥér̂ít̂éd̂ f́r̂óm̂ "
   },
-  "panels/elements/StylesSidebarPane.js | injectedStylesheet": {
+  "panels/elements/StylesSidebarPane.ts | injectedStylesheet": {
     "message": "îńĵéĉt́êd́ ŝt́ŷĺêśĥéêt́"
   },
-  "panels/elements/StylesSidebarPane.js | insertStyleRuleBelow": {
+  "panels/elements/StylesSidebarPane.ts | insertStyleRuleBelow": {
     "message": "Îńŝér̂t́ Ŝt́ŷĺê Ŕûĺê B́êĺôẃ"
   },
-  "panels/elements/StylesSidebarPane.js | invalidPropertyValue": {
+  "panels/elements/StylesSidebarPane.ts | invalidPropertyValue": {
     "message": "Îńv̂ál̂íd̂ ṕr̂óp̂ér̂t́ŷ v́âĺûé"
   },
-  "panels/elements/StylesSidebarPane.js | invalidString": {
+  "panels/elements/StylesSidebarPane.ts | invalidString": {
     "message": "{PH1}, p̂ŕôṕêŕt̂ý n̂ám̂é: {PH2}, p̂ŕôṕêŕt̂ý v̂ál̂úê: {PH3}"
   },
-  "panels/elements/StylesSidebarPane.js | newStyleRule": {
+  "panels/elements/StylesSidebarPane.ts | newStyleRule": {
     "message": "N̂éŵ Śt̂ýl̂é R̂úl̂é"
   },
-  "panels/elements/StylesSidebarPane.js | noMatchingSelectorOrStyle": {
+  "panels/elements/StylesSidebarPane.ts | noMatchingSelectorOrStyle": {
     "message": "N̂ó m̂át̂ćĥín̂ǵ ŝél̂éĉt́ôŕ ôŕ ŝt́ŷĺê"
   },
-  "panels/elements/StylesSidebarPane.js | pseudoSElement": {
+  "panels/elements/StylesSidebarPane.ts | pseudoSElement": {
     "message": "P̂śêúd̂ó ::{PH1} êĺêḿêńt̂"
   },
-  "panels/elements/StylesSidebarPane.js | sattributesStyle": {
+  "panels/elements/StylesSidebarPane.ts | sattributesStyle": {
     "message": "{PH1}[Ât́t̂ŕîb́ût́êś Ŝt́ŷĺê]"
   },
-  "panels/elements/StylesSidebarPane.js | showAllPropertiesSMore": {
+  "panels/elements/StylesSidebarPane.ts | showAllPropertiesSMore": {
     "message": "Ŝh́ôẃ Âĺl̂ Ṕr̂óp̂ér̂t́îéŝ ({PH1} ḿôŕê)"
   },
-  "panels/elements/StylesSidebarPane.js | styleAttribute": {
+  "panels/elements/StylesSidebarPane.ts | styleAttribute": {
     "message": "style ât́t̂ŕîb́ût́ê"
   },
-  "panels/elements/StylesSidebarPane.js | unknownPropertyName": {
+  "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "Ûńk̂ńôẃn̂ ṕr̂óp̂ér̂t́ŷ ńâḿê"
   },
-  "panels/elements/StylesSidebarPane.js | userAgentStylesheet": {
+  "panels/elements/StylesSidebarPane.ts | userAgentStylesheet": {
     "message": "ûśêŕ âǵêńt̂ śt̂ýl̂éŝh́êét̂"
   },
-  "panels/elements/StylesSidebarPane.js | viaInspector": {
+  "panels/elements/StylesSidebarPane.ts | viaInspector": {
     "message": "v̂íâ ín̂śp̂éĉt́ôŕ"
   },
   "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {

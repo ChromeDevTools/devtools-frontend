@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Components from '../../components/components.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
@@ -13,12 +15,15 @@ const UIStrings = {
   */
   noStackTraceAvailable: 'No stack trace available',
 };
-const str_ = i18n.i18n.registerUIStrings('panels/elements/NodeStackTraceWidget.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/elements/NodeStackTraceWidget.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-/** @type {!NodeStackTraceWidget} */
-let nodeStackTraceWidgetInstance;
+let nodeStackTraceWidgetInstance: NodeStackTraceWidget;
 
 export class NodeStackTraceWidget extends UI.ThrottledWidget.ThrottledWidget {
+  _noStackTraceElement: HTMLElement;
+  _creationStackTraceElement: HTMLElement;
+  _linkifier: Components.Linkifier.Linkifier;
+
   constructor() {
     super(true /* isWebComponent */);
     this.registerRequiredCSS('panels/elements/nodeStackTraceWidget.css', {enableLegacyPatching: false});
@@ -30,11 +35,9 @@ export class NodeStackTraceWidget extends UI.ThrottledWidget.ThrottledWidget {
     this._linkifier = new Components.Linkifier.Linkifier(MaxLengthForLinks);
   }
 
-  /**
-   * @param {{forceNew: ?boolean}=} opts
-   * @return {!NodeStackTraceWidget}
-   */
-  static instance(opts = {forceNew: null}) {
+  static instance(opts: {
+    forceNew: boolean|null,
+  }|undefined = {forceNew: null}): NodeStackTraceWidget {
     const {forceNew} = opts;
     if (!nodeStackTraceWidgetInstance || forceNew) {
       nodeStackTraceWidgetInstance = new NodeStackTraceWidget();
@@ -43,27 +46,16 @@ export class NodeStackTraceWidget extends UI.ThrottledWidget.ThrottledWidget {
     return nodeStackTraceWidgetInstance;
   }
 
-  /**
-   * @override
-   */
-  wasShown() {
+  wasShown(): void {
     UI.Context.Context.instance().addFlavorChangeListener(SDK.DOMModel.DOMNode, this.update, this);
     this.update();
   }
 
-  /**
-   * @override
-   */
-  willHide() {
+  willHide(): void {
     UI.Context.Context.instance().removeFlavorChangeListener(SDK.DOMModel.DOMNode, this.update, this);
   }
 
-  /**
-   * @override
-   * @protected
-   * @return {!Promise<void>}
-   */
-  async doUpdate() {
+  async doUpdate(): Promise<void> {
     const node = UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode);
 
     if (!node) {
@@ -88,8 +80,4 @@ export class NodeStackTraceWidget extends UI.ThrottledWidget.ThrottledWidget {
   }
 }
 
-/**
- * @const
- * @type {number}
- */
 export const MaxLengthForLinks = 40;

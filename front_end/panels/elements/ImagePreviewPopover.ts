@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Components from '../../components/components.js';
 import * as SDK from '../../core/sdk/sdk.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../../ui/legacy/legacy.js';
@@ -13,12 +15,12 @@ import * as UI from '../../ui/legacy/legacy.js';
  * set the property HrefSymbol.
  */
 export class ImagePreviewPopover {
-  /**
-    * @param {!Element} container
-    * @param {function(!Event):?Element} getLinkElement
-    * @param {function(!Element):?SDK.DOMModel.DOMNode} getDOMNode
-    */
-  constructor(container, getLinkElement, getDOMNode) {
+  _getLinkElement: (arg0: Event) => Element | null;
+  _getDOMNode: (arg0: Element) => SDK.DOMModel.DOMNode | null;
+  _popover: UI.PopoverHelper.PopoverHelper;
+  constructor(
+      container: Element, getLinkElement: (arg0: Event) => Element | null,
+      getDOMNode: (arg0: Element) => SDK.DOMModel.DOMNode | null) {
     this._getLinkElement = getLinkElement;
     this._getDOMNode = getDOMNode;
     this._popover = new UI.PopoverHelper.PopoverHelper(container, this._handleRequest.bind(this));
@@ -26,11 +28,7 @@ export class ImagePreviewPopover {
     this._popover.setTimeout(0, 100);
   }
 
-  /**
-    * @param {!Event} event
-    * @return {?UI.PopoverHelper.PopoverRequest}
-    */
-  _handleRequest(event) {
+  _handleRequest(event: Event): UI.PopoverHelper.PopoverRequest|null {
     const link = this._getLinkElement(event);
     if (!link) {
       return null;
@@ -42,8 +40,8 @@ export class ImagePreviewPopover {
     return {
       box: link.boxInWindow(),
       hide: undefined,
-      show: async popover => {
-        const node = this._getDOMNode(/** @type {!Element} */ (link));
+      show: async(popover: UI.GlassPane.GlassPane): Promise<boolean> => {
+        const node = this._getDOMNode((link as Element));
         if (!node) {
           return false;
         }
@@ -54,30 +52,22 @@ export class ImagePreviewPopover {
           popover.contentElement.appendChild(preview);
         }
         return Boolean(preview);
-      }
+      },
     };
   }
 
-  hide() {
+  hide(): void {
     this._popover.hidePopover();
   }
 
-  /**
-     * @param {!Element} element
-     * @param {string} url
-     */
-  static setImageUrl(element, url) {
+  static setImageUrl(element: Element, url: string): Element {
     elementToURLMap.set(element, url);
     return element;
   }
 
-  /**
-   * @param {!Element} element
-   */
-  static getImageURL(element) {
+  static getImageURL(element: Element): string|undefined {
     return elementToURLMap.get(element);
   }
 }
 
-/** @type {!WeakMap<!Element, string>} */
-const elementToURLMap = new WeakMap();
+const elementToURLMap = new WeakMap<Element, string>();

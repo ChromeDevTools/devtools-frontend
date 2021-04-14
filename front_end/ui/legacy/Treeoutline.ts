@@ -63,6 +63,7 @@ export class TreeOutline extends Common.ObjectWrapper.ObjectWrapper {
   _useLightSelectionColor: boolean;
   _treeElementToScrollIntoView: TreeElement|null;
   _centerUponScrollIntoView: boolean;
+
   constructor() {
     super();
     this._rootElement = this._createRootElement();

@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
@@ -15,14 +17,11 @@ const UIStrings = {
   */
   node: '<node>',
 };
-const str_ = i18n.i18n.registerUIStrings('panels/elements/DOMLinkifier.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/elements/DOMLinkifier.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-/**
- * @param {!SDK.DOMModel.DOMNode} node
- * @param {!HTMLElement} parentElement
- * @param {string=} tooltipContent
- */
-export const decorateNodeLabel = function(node, parentElement, tooltipContent) {
+
+export const decorateNodeLabel = function(
+    node: SDK.DOMModel.DOMNode, parentElement: HTMLElement, tooltipContent?: string): void {
   const originalNode = node;
   const isPseudo = node.nodeType() === Node.ELEMENT_NODE && node.pseudoType();
   if (isPseudo && node.parentNode) {
@@ -49,7 +48,7 @@ export const decorateNodeLabel = function(node, parentElement, tooltipContent) {
   if (classAttribute) {
     const classes = classAttribute.split(/\s+/);
     if (classes.length) {
-      const foundClasses = new Set();
+      const foundClasses = new Set<string>();
       const classesElement = parentElement.createChild('span', 'extra node-label-class');
       for (let i = 0; i < classes.length; ++i) {
         const className = classes[i];
@@ -72,15 +71,11 @@ export const decorateNodeLabel = function(node, parentElement, tooltipContent) {
   UI.Tooltip.Tooltip.install(parentElement, tooltipContent || title);
 };
 
-/**
- * @param {?SDK.DOMModel.DOMNode} node
- * @param {!Common.Linkifier.Options=} options
- * @return {!Node}
- */
-export const linkifyNodeReference = function(node, options = {
-  tooltip: undefined,
-  preventKeyboardFocus: undefined,
-}) {
+export const linkifyNodeReference = function(
+    node: SDK.DOMModel.DOMNode|null, options: Common.Linkifier.Options|undefined = {
+      tooltip: undefined,
+      preventKeyboardFocus: undefined,
+    }): Node {
   if (!node) {
     return document.createTextNode(i18nString(UIStrings.node));
   }
@@ -89,7 +84,7 @@ export const linkifyNodeReference = function(node, options = {
   root.classList.add('monospace');
   const shadowRoot = UI.Utils.createShadowRootWithCoreStyles(
       root, {cssFile: 'panels/elements/domLinkifier.css', enableLegacyPatching: false, delegatesFocus: undefined});
-  const link = /** @type {!HTMLDivElement} */ (shadowRoot.createChild('div', 'node-link'));
+  const link = (shadowRoot.createChild('div', 'node-link') as HTMLDivElement);
 
   decorateNodeLabel(node, link, options.tooltip);
 
@@ -106,19 +101,15 @@ export const linkifyNodeReference = function(node, options = {
   return root;
 };
 
-/**
- * @param {!SDK.DOMModel.DeferredDOMNode} deferredNode
- * @param {!Common.Linkifier.Options=} options
- * @return {!Node}
- */
-export const linkifyDeferredNodeReference = function(deferredNode, options = {
-  tooltip: undefined,
-  preventKeyboardFocus: undefined,
-}) {
+export const linkifyDeferredNodeReference = function(
+    deferredNode: SDK.DOMModel.DeferredDOMNode, options: Common.Linkifier.Options|undefined = {
+      tooltip: undefined,
+      preventKeyboardFocus: undefined,
+    }): Node {
   const root = document.createElement('div');
   const shadowRoot = UI.Utils.createShadowRootWithCoreStyles(
       root, {cssFile: 'panels/elements/domLinkifier.css', enableLegacyPatching: false, delegatesFocus: undefined});
-  const link = /** @type {!HTMLDivElement} */ (shadowRoot.createChild('div', 'node-link'));
+  const link = (shadowRoot.createChild('div', 'node-link') as HTMLDivElement);
   link.createChild('slot');
   link.addEventListener('click', deferredNode.resolve.bind(deferredNode, onDeferredNodeResolved), false);
   link.addEventListener('mousedown', e => e.consume(), false);
@@ -129,30 +120,20 @@ export const linkifyDeferredNodeReference = function(deferredNode, options = {
     UI.ARIAUtils.markAsLink(link);
   }
 
-  /**
-   * @param {?SDK.DOMModel.DOMNode} node
-   */
-  function onDeferredNodeResolved(node) {
+  function onDeferredNodeResolved(node: SDK.DOMModel.DOMNode|null): void {
     Common.Revealer.reveal(node);
   }
 
   return root;
 };
 
-/**
- * @type {!Linkifier}
- */
+// @empty-line
+let linkifierInstance: Linkifier;
 
-let linkifierInstance;
-
-/**
- * @implements {Common.Linkifier.Linkifier}
- */
-export class Linkifier {
-  /**
-   * @param {{forceNew: ?boolean}} opts
-   */
-  static instance(opts = {forceNew: null}) {
+export class Linkifier implements Common.Linkifier.Linkifier {
+  static instance(opts: {
+    forceNew: boolean|null,
+  } = {forceNew: null}): Linkifier {
     const {forceNew} = opts;
     if (!linkifierInstance || forceNew) {
       linkifierInstance = new Linkifier();
@@ -160,13 +141,7 @@ export class Linkifier {
 
     return linkifierInstance;
   }
-  /**
-   * @override
-   * @param {!Object} object
-   * @param {!Common.Linkifier.Options=} options
-   * @return {!Node}
-   */
-  linkify(object, options) {
+  linkify(object: Object, options?: Common.Linkifier.Options): Node {
     if (object instanceof SDK.DOMModel.DOMNode) {
       return linkifyNodeReference(object, options);
     }

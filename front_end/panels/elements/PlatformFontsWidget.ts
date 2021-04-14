@@ -28,6 +28,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../../ui/legacy/legacy.js';
@@ -52,13 +54,15 @@ const UIStrings = {
   */
   dGlyphs: '{n, plural, =1 {(# glyph)} other {(# glyphs)}}',
 };
-const str_ = i18n.i18n.registerUIStrings('panels/elements/PlatformFontsWidget.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/elements/PlatformFontsWidget.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+
 export class PlatformFontsWidget extends UI.ThrottledWidget.ThrottledWidget {
-  /**
-   * @param {!ComputedStyleModel} sharedModel
-   */
-  constructor(sharedModel) {
+  _sharedModel: ComputedStyleModel;
+  _sectionTitle: HTMLDivElement;
+  _fontStatsSection: HTMLElement;
+
+  constructor(sharedModel: ComputedStyleModel) {
     super(true);
     this.registerRequiredCSS('panels/elements/platformFontsWidget.css', {enableLegacyPatching: true});
 
@@ -73,12 +77,9 @@ export class PlatformFontsWidget extends UI.ThrottledWidget.ThrottledWidget {
     this._fontStatsSection = this.contentElement.createChild('div', 'stats-section');
   }
 
-  /**
-   * @override
-   * @protected
-   * @return {!Promise.<?>}
-   */
-  doUpdate() {
+  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  doUpdate(): Promise<any> {
     const cssModel = this._sharedModel.cssModel();
     const node = this._sharedModel.node();
     if (!node || !cssModel) {
@@ -88,11 +89,7 @@ export class PlatformFontsWidget extends UI.ThrottledWidget.ThrottledWidget {
     return cssModel.platformFontsPromise(node.id).then(this._refreshUI.bind(this, node));
   }
 
-  /**
-   * @param {!SDK.DOMModel.DOMNode} node
-   * @param {?Array.<!Protocol.CSS.PlatformFontUsage>} platformFonts
-   */
-  _refreshUI(node, platformFonts) {
+  _refreshUI(node: SDK.DOMModel.DOMNode, platformFonts: Protocol.CSS.PlatformFontUsage[]|null): void {
     if (this._sharedModel.node() !== node) {
       return;
     }
@@ -108,6 +105,7 @@ export class PlatformFontsWidget extends UI.ThrottledWidget.ThrottledWidget {
     platformFonts.sort(function(a, b) {
       return b.glyphCount - a.glyphCount;
     });
+
     for (let i = 0; i < platformFonts.length; ++i) {
       const fontStatElement = this._fontStatsSection.createChild('div', 'font-stats-item');
 

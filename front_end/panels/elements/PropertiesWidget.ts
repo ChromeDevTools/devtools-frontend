@@ -31,16 +31,21 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Common from '../../core/common/common.js';  // eslint-disable-line no-unused-vars
 import * as Host from '../../core/host/host.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-/** @type {!PropertiesWidget} */
-let propertiesWidgetInstance;
+let propertiesWidgetInstance: PropertiesWidget;
 
 export class PropertiesWidget extends UI.ThrottledWidget.ThrottledWidget {
+  _node: SDK.DOMModel.DOMNode|null;
+  _treeOutline: ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionsTreeOutline;
+  _expandController: ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionsTreeExpandController;
+  _lastRequestedNode?: SDK.DOMModel.DOMNode;
   constructor() {
     super(true /* isWebComponent */);
     this.registerRequiredCSS('panels/elements/propertiesWidget.css', {enableLegacyPatching: false});
@@ -68,11 +73,9 @@ export class PropertiesWidget extends UI.ThrottledWidget.ThrottledWidget {
 
     this.update();
   }
-  /**
-   * @param {{forceNew: ?boolean}=} opts
-   * @return {!PropertiesWidget}
-   */
-  static instance(opts = {forceNew: null}) {
+  static instance(opts: {
+    forceNew: boolean|null,
+  }|undefined = {forceNew: null}): PropertiesWidget {
     const {forceNew} = opts;
     if (!propertiesWidgetInstance || forceNew) {
       propertiesWidgetInstance = new PropertiesWidget();
@@ -81,20 +84,12 @@ export class PropertiesWidget extends UI.ThrottledWidget.ThrottledWidget {
     return propertiesWidgetInstance;
   }
 
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  _setNode(event) {
-    this._node = /** @type {?SDK.DOMModel.DOMNode} */ (event.data);
+  _setNode(event: Common.EventTarget.EventTargetEvent): void {
+    this._node = (event.data as SDK.DOMModel.DOMNode | null);
     this.update();
   }
 
-  /**
-   * @override
-   * @protected
-   * @return {!Promise<void>}
-   */
-  async doUpdate() {
+  async doUpdate(): Promise<void> {
     if (this._lastRequestedNode) {
       this._lastRequestedNode.domModel().runtimeModel().releaseObjectGroup(_objectGroupName);
       delete this._lastRequestedNode;
@@ -138,7 +133,7 @@ export class PropertiesWidget extends UI.ThrottledWidget.ThrottledWidget {
       if (!property) {
         continue;
       }
-      let title = property.description;
+      let title: string|(string | undefined) = property.description;
       if (!title) {
         continue;
       }
@@ -152,13 +147,17 @@ export class PropertiesWidget extends UI.ThrottledWidget.ThrottledWidget {
       }
     }
 
-    /**
-     * @this {*}
-     */
-    function protoList() {
+    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    function protoList(this: any): {
+      // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      __proto__: null,
+    } {
       let proto = this;
-      /** @type {!Object<(number|string), *>} */
-      const result = {__proto__: null};
+      // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const result = {__proto__: null} as any;
       let counter = 1;
       while (proto) {
         result[counter++] = proto;
@@ -168,12 +167,8 @@ export class PropertiesWidget extends UI.ThrottledWidget.ThrottledWidget {
     }
   }
 
-  /**
-   * @param {!SDK.RemoteObject.RemoteObject} property
-   * @param {string} title
-   * @returns {!ObjectUI.ObjectPropertiesSection.RootElement}
-   */
-  _createSectionTreeElement(property, title) {
+  _createSectionTreeElement(property: SDK.RemoteObject.RemoteObject, title: string):
+      ObjectUI.ObjectPropertiesSection.RootElement {
     const titleElement = document.createElement('span');
     titleElement.classList.add('tree-element-title');
     titleElement.textContent = title;
@@ -185,15 +180,12 @@ export class PropertiesWidget extends UI.ThrottledWidget.ThrottledWidget {
     return section;
   }
 
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  _onNodeChange(event) {
+  _onNodeChange(event: Common.EventTarget.EventTargetEvent): void {
     if (!this._node) {
       return;
     }
     const data = event.data;
-    const node = /** @type {!SDK.DOMModel.DOMNode} */ (data instanceof SDK.DOMModel.DOMNode ? data : data.node);
+    const node = (data instanceof SDK.DOMModel.DOMNode ? data : data.node as SDK.DOMModel.DOMNode);
     if (this._node !== node) {
       return;
     }
@@ -201,4 +193,6 @@ export class PropertiesWidget extends UI.ThrottledWidget.ThrottledWidget {
   }
 }
 
+// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export const _objectGroupName = 'properties-sidebar-pane';

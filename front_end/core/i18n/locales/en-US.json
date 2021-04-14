@@ -4172,46 +4172,46 @@
   "panels/elements/AdornerSettingsPane.ts | settingsTitle": {
     "message": "Show badges"
   },
-  "panels/elements/ClassesPaneWidget.js | addNewClass": {
+  "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "Add new class"
   },
-  "panels/elements/ClassesPaneWidget.js | classesSAdded": {
+  "panels/elements/ClassesPaneWidget.ts | classesSAdded": {
     "message": "Classes {PH1} added"
   },
-  "panels/elements/ClassesPaneWidget.js | classSAdded": {
+  "panels/elements/ClassesPaneWidget.ts | classSAdded": {
     "message": "Class {PH1} added"
   },
-  "panels/elements/ClassesPaneWidget.js | elementClasses": {
+  "panels/elements/ClassesPaneWidget.ts | elementClasses": {
     "message": "Element Classes"
   },
-  "panels/elements/ColorSwatchPopoverIcon.js | openCubicBezierEditor": {
+  "panels/elements/ColorSwatchPopoverIcon.ts | openCubicBezierEditor": {
     "message": "Open cubic bezier editor"
   },
-  "panels/elements/ColorSwatchPopoverIcon.js | openShadowEditor": {
+  "panels/elements/ColorSwatchPopoverIcon.ts | openShadowEditor": {
     "message": "Open shadow editor"
   },
-  "panels/elements/ComputedStyleWidget.js | filter": {
+  "panels/elements/ComputedStyleWidget.ts | filter": {
     "message": "Filter"
   },
-  "panels/elements/ComputedStyleWidget.js | filterComputedStyles": {
+  "panels/elements/ComputedStyleWidget.ts | filterComputedStyles": {
     "message": "Filter Computed Styles"
   },
-  "panels/elements/ComputedStyleWidget.js | group": {
+  "panels/elements/ComputedStyleWidget.ts | group": {
     "message": "Group"
   },
-  "panels/elements/ComputedStyleWidget.js | navigateToSelectorSource": {
+  "panels/elements/ComputedStyleWidget.ts | navigateToSelectorSource": {
     "message": "Navigate to selector source"
   },
-  "panels/elements/ComputedStyleWidget.js | navigateToStyle": {
+  "panels/elements/ComputedStyleWidget.ts | navigateToStyle": {
     "message": "Navigate to style"
   },
-  "panels/elements/ComputedStyleWidget.js | noMatchingProperty": {
+  "panels/elements/ComputedStyleWidget.ts | noMatchingProperty": {
     "message": "No matching property"
   },
-  "panels/elements/ComputedStyleWidget.js | showAll": {
+  "panels/elements/ComputedStyleWidget.ts | showAll": {
     "message": "Show all"
   },
-  "panels/elements/DOMLinkifier.js | node": {
+  "panels/elements/DOMLinkifier.ts | node": {
     "message": "<node>"
   },
   "panels/elements/elements-meta.ts | captureAreaScreenshot": {
@@ -4292,190 +4292,190 @@
   "panels/elements/ElementsBreadcrumbsUtils.ts | text": {
     "message": "(text)"
   },
-  "panels/elements/ElementsPanel.js | computed": {
+  "panels/elements/ElementsPanel.ts | computed": {
     "message": "Computed"
   },
-  "panels/elements/ElementsPanel.js | elementStateS": {
+  "panels/elements/ElementsPanel.ts | elementStateS": {
     "message": "Element state: {PH1}"
   },
-  "panels/elements/ElementsPanel.js | findByStringSelectorOrXpath": {
+  "panels/elements/ElementsPanel.ts | findByStringSelectorOrXpath": {
     "message": "Find by string, selector, or XPath"
   },
-  "panels/elements/ElementsPanel.js | frame": {
+  "panels/elements/ElementsPanel.ts | frame": {
     "message": "Frame"
   },
-  "panels/elements/ElementsPanel.js | hideComputedStylesSidebar": {
+  "panels/elements/ElementsPanel.ts | hideComputedStylesSidebar": {
     "message": "Hide Computed Styles sidebar"
   },
-  "panels/elements/ElementsPanel.js | nodeCannotBeFoundInTheCurrent": {
+  "panels/elements/ElementsPanel.ts | nodeCannotBeFoundInTheCurrent": {
     "message": "Node cannot be found in the current page."
   },
-  "panels/elements/ElementsPanel.js | revealInElementsPanel": {
+  "panels/elements/ElementsPanel.ts | revealInElementsPanel": {
     "message": "Reveal in Elements panel"
   },
-  "panels/elements/ElementsPanel.js | showComputedStylesSidebar": {
+  "panels/elements/ElementsPanel.ts | showComputedStylesSidebar": {
     "message": "Show Computed Styles sidebar"
   },
-  "panels/elements/ElementsPanel.js | styles": {
+  "panels/elements/ElementsPanel.ts | styles": {
     "message": "Styles"
   },
-  "panels/elements/ElementsPanel.js | switchToAccessibilityTreeView": {
+  "panels/elements/ElementsPanel.ts | switchToAccessibilityTreeView": {
     "message": "Switch to Accessibility Tree view"
   },
-  "panels/elements/ElementsPanel.js | switchToDomTreeView": {
+  "panels/elements/ElementsPanel.ts | switchToDomTreeView": {
     "message": "Switch to DOM Tree view"
   },
-  "panels/elements/ElementsPanel.js | theDeferredDomNodeCouldNotBe": {
+  "panels/elements/ElementsPanel.ts | theDeferredDomNodeCouldNotBe": {
     "message": "The deferred DOM Node could not be resolved to a valid node."
   },
-  "panels/elements/ElementsPanel.js | theRemoteObjectCouldNotBe": {
+  "panels/elements/ElementsPanel.ts | theRemoteObjectCouldNotBe": {
     "message": "The remote object could not be resolved to a valid node."
   },
-  "panels/elements/ElementStatePaneWidget.js | forceElementState": {
+  "panels/elements/ElementStatePaneWidget.ts | forceElementState": {
     "message": "Force element state"
   },
-  "panels/elements/ElementStatePaneWidget.js | toggleElementState": {
+  "panels/elements/ElementStatePaneWidget.ts | toggleElementState": {
     "message": "Toggle Element State"
   },
-  "panels/elements/ElementsTreeElement.js | addAttribute": {
+  "panels/elements/ElementsTreeElement.ts | addAttribute": {
     "message": "Add attribute"
   },
-  "panels/elements/ElementsTreeElement.js | captureNodeScreenshot": {
+  "panels/elements/ElementsTreeElement.ts | captureNodeScreenshot": {
     "message": "Capture node screenshot"
   },
-  "panels/elements/ElementsTreeElement.js | children": {
+  "panels/elements/ElementsTreeElement.ts | children": {
     "message": "Children:"
   },
-  "panels/elements/ElementsTreeElement.js | collapseChildren": {
+  "panels/elements/ElementsTreeElement.ts | collapseChildren": {
     "message": "Collapse children"
   },
-  "panels/elements/ElementsTreeElement.js | copy": {
+  "panels/elements/ElementsTreeElement.ts | copy": {
     "message": "Copy"
   },
-  "panels/elements/ElementsTreeElement.js | copyElement": {
+  "panels/elements/ElementsTreeElement.ts | copyElement": {
     "message": "Copy element"
   },
-  "panels/elements/ElementsTreeElement.js | copyFullXpath": {
+  "panels/elements/ElementsTreeElement.ts | copyFullXpath": {
     "message": "Copy full XPath"
   },
-  "panels/elements/ElementsTreeElement.js | copyJsPath": {
+  "panels/elements/ElementsTreeElement.ts | copyJsPath": {
     "message": "Copy JS path"
   },
-  "panels/elements/ElementsTreeElement.js | copyOuterhtml": {
+  "panels/elements/ElementsTreeElement.ts | copyOuterhtml": {
     "message": "Copy outerHTML"
   },
-  "panels/elements/ElementsTreeElement.js | copySelector": {
+  "panels/elements/ElementsTreeElement.ts | copySelector": {
     "message": "Copy selector"
   },
-  "panels/elements/ElementsTreeElement.js | copyStyles": {
+  "panels/elements/ElementsTreeElement.ts | copyStyles": {
     "message": "Copy styles"
   },
-  "panels/elements/ElementsTreeElement.js | copyXpath": {
+  "panels/elements/ElementsTreeElement.ts | copyXpath": {
     "message": "Copy XPath"
   },
-  "panels/elements/ElementsTreeElement.js | cutElement": {
+  "panels/elements/ElementsTreeElement.ts | cutElement": {
     "message": "Cut element"
   },
-  "panels/elements/ElementsTreeElement.js | deleteElement": {
+  "panels/elements/ElementsTreeElement.ts | deleteElement": {
     "message": "Delete element"
   },
-  "panels/elements/ElementsTreeElement.js | disableFlexMode": {
+  "panels/elements/ElementsTreeElement.ts | disableFlexMode": {
     "message": "Disable flex mode"
   },
-  "panels/elements/ElementsTreeElement.js | disableGridMode": {
+  "panels/elements/ElementsTreeElement.ts | disableGridMode": {
     "message": "Disable grid mode"
   },
-  "panels/elements/ElementsTreeElement.js | disableScrollSnap": {
+  "panels/elements/ElementsTreeElement.ts | disableScrollSnap": {
     "message": "Disable scroll-snap overlay"
   },
-  "panels/elements/ElementsTreeElement.js | duplicateElement": {
+  "panels/elements/ElementsTreeElement.ts | duplicateElement": {
     "message": "Duplicate element"
   },
-  "panels/elements/ElementsTreeElement.js | editAsHtml": {
+  "panels/elements/ElementsTreeElement.ts | editAsHtml": {
     "message": "Edit as HTML"
   },
-  "panels/elements/ElementsTreeElement.js | editAttribute": {
+  "panels/elements/ElementsTreeElement.ts | editAttribute": {
     "message": "Edit attribute"
   },
-  "panels/elements/ElementsTreeElement.js | editText": {
+  "panels/elements/ElementsTreeElement.ts | editText": {
     "message": "Edit text"
   },
-  "panels/elements/ElementsTreeElement.js | enableFlexMode": {
+  "panels/elements/ElementsTreeElement.ts | enableFlexMode": {
     "message": "Enable flex mode"
   },
-  "panels/elements/ElementsTreeElement.js | enableGridMode": {
+  "panels/elements/ElementsTreeElement.ts | enableGridMode": {
     "message": "Enable grid mode"
   },
-  "panels/elements/ElementsTreeElement.js | enableScrollSnap": {
+  "panels/elements/ElementsTreeElement.ts | enableScrollSnap": {
     "message": "Enable scroll-snap overlay"
   },
-  "panels/elements/ElementsTreeElement.js | expandRecursively": {
+  "panels/elements/ElementsTreeElement.ts | expandRecursively": {
     "message": "Expand recursively"
   },
-  "panels/elements/ElementsTreeElement.js | focus": {
+  "panels/elements/ElementsTreeElement.ts | focus": {
     "message": "Focus"
   },
-  "panels/elements/ElementsTreeElement.js | forceState": {
+  "panels/elements/ElementsTreeElement.ts | forceState": {
     "message": "Force state"
   },
-  "panels/elements/ElementsTreeElement.js | hideElement": {
+  "panels/elements/ElementsTreeElement.ts | hideElement": {
     "message": "Hide element"
   },
-  "panels/elements/ElementsTreeElement.js | pasteElement": {
+  "panels/elements/ElementsTreeElement.ts | pasteElement": {
     "message": "Paste element"
   },
-  "panels/elements/ElementsTreeElement.js | scrollIntoView": {
+  "panels/elements/ElementsTreeElement.ts | scrollIntoView": {
     "message": "Scroll into view"
   },
-  "panels/elements/ElementsTreeElement.js | thisFrameWasIdentifiedAsAnAd": {
+  "panels/elements/ElementsTreeElement.ts | thisFrameWasIdentifiedAsAnAd": {
     "message": "This frame was identified as an ad frame"
   },
-  "panels/elements/ElementsTreeElement.js | useSInTheConsoleToReferToThis": {
+  "panels/elements/ElementsTreeElement.ts | useSInTheConsoleToReferToThis": {
     "message": "Use {PH1} in the console to refer to this element."
   },
-  "panels/elements/ElementsTreeElement.js | valueIsTooLargeToEdit": {
+  "panels/elements/ElementsTreeElement.ts | valueIsTooLargeToEdit": {
     "message": "<value is too large to edit>"
   },
-  "panels/elements/ElementsTreeOutline.js | adornerSettings": {
+  "panels/elements/ElementsTreeOutline.ts | adornerSettings": {
     "message": "Badge settings…"
   },
-  "panels/elements/ElementsTreeOutline.js | pageDom": {
+  "panels/elements/ElementsTreeOutline.ts | pageDom": {
     "message": "Page DOM"
   },
-  "panels/elements/ElementsTreeOutline.js | reveal": {
+  "panels/elements/ElementsTreeOutline.ts | reveal": {
     "message": "reveal"
   },
-  "panels/elements/ElementsTreeOutline.js | showAllNodesDMore": {
+  "panels/elements/ElementsTreeOutline.ts | showAllNodesDMore": {
     "message": "Show All Nodes ({PH1} More)"
   },
-  "panels/elements/ElementsTreeOutline.js | storeAsGlobalVariable": {
+  "panels/elements/ElementsTreeOutline.ts | storeAsGlobalVariable": {
     "message": "Store as global variable"
   },
-  "panels/elements/EventListenersWidget.js | all": {
+  "panels/elements/EventListenersWidget.ts | all": {
     "message": "All"
   },
-  "panels/elements/EventListenersWidget.js | ancestors": {
+  "panels/elements/EventListenersWidget.ts | ancestors": {
     "message": "Ancestors"
   },
-  "panels/elements/EventListenersWidget.js | blocking": {
+  "panels/elements/EventListenersWidget.ts | blocking": {
     "message": "Blocking"
   },
-  "panels/elements/EventListenersWidget.js | eventListenersCategory": {
+  "panels/elements/EventListenersWidget.ts | eventListenersCategory": {
     "message": "Event listeners category"
   },
-  "panels/elements/EventListenersWidget.js | frameworkListeners": {
+  "panels/elements/EventListenersWidget.ts | frameworkListeners": {
     "message": "Framework listeners"
   },
-  "panels/elements/EventListenersWidget.js | passive": {
+  "panels/elements/EventListenersWidget.ts | passive": {
     "message": "Passive"
   },
-  "panels/elements/EventListenersWidget.js | refresh": {
+  "panels/elements/EventListenersWidget.ts | refresh": {
     "message": "Refresh"
   },
-  "panels/elements/EventListenersWidget.js | resolveEventListenersBoundWith": {
+  "panels/elements/EventListenersWidget.ts | resolveEventListenersBoundWith": {
     "message": "Resolve event listeners bound with framework"
   },
-  "panels/elements/EventListenersWidget.js | showListenersOnTheAncestors": {
+  "panels/elements/EventListenersWidget.ts | showListenersOnTheAncestors": {
     "message": "Show listeners on the ancestors"
   },
   "panels/elements/FlexboxEditor.ts | deselectButton": {
@@ -4514,124 +4514,124 @@
   "panels/elements/LayoutPane.ts | showElementInTheElementsPanel": {
     "message": "Show element in the Elements panel"
   },
-  "panels/elements/MarkerDecorator.js | domBreakpoint": {
+  "panels/elements/MarkerDecorator.ts | domBreakpoint": {
     "message": "DOM Breakpoint"
   },
-  "panels/elements/MarkerDecorator.js | elementIsHidden": {
+  "panels/elements/MarkerDecorator.ts | elementIsHidden": {
     "message": "Element is hidden"
   },
-  "panels/elements/NodeStackTraceWidget.js | noStackTraceAvailable": {
+  "panels/elements/NodeStackTraceWidget.ts | noStackTraceAvailable": {
     "message": "No stack trace available"
   },
-  "panels/elements/PlatformFontsWidget.js | dGlyphs": {
+  "panels/elements/PlatformFontsWidget.ts | dGlyphs": {
     "message": "{n, plural, =1 {(# glyph)} other {(# glyphs)}}"
   },
-  "panels/elements/PlatformFontsWidget.js | localFile": {
+  "panels/elements/PlatformFontsWidget.ts | localFile": {
     "message": "Local file"
   },
-  "panels/elements/PlatformFontsWidget.js | networkResource": {
+  "panels/elements/PlatformFontsWidget.ts | networkResource": {
     "message": "Network resource"
   },
-  "panels/elements/PlatformFontsWidget.js | renderedFonts": {
+  "panels/elements/PlatformFontsWidget.ts | renderedFonts": {
     "message": "Rendered Fonts"
   },
-  "panels/elements/StylePropertyTreeElement.js | copyAllDeclarations": {
+  "panels/elements/StylePropertyTreeElement.ts | copyAllDeclarations": {
     "message": "Copy all declarations"
   },
-  "panels/elements/StylePropertyTreeElement.js | copyDeclaration": {
+  "panels/elements/StylePropertyTreeElement.ts | copyDeclaration": {
     "message": "Copy declaration"
   },
-  "panels/elements/StylePropertyTreeElement.js | copyProperty": {
+  "panels/elements/StylePropertyTreeElement.ts | copyProperty": {
     "message": "Copy property"
   },
-  "panels/elements/StylePropertyTreeElement.js | copyRule": {
+  "panels/elements/StylePropertyTreeElement.ts | copyRule": {
     "message": "Copy rule"
   },
-  "panels/elements/StylePropertyTreeElement.js | copyValue": {
+  "panels/elements/StylePropertyTreeElement.ts | copyValue": {
     "message": "Copy value"
   },
-  "panels/elements/StylePropertyTreeElement.js | openColorPickerS": {
+  "panels/elements/StylePropertyTreeElement.ts | openColorPickerS": {
     "message": "Open color picker. {PH1}"
   },
-  "panels/elements/StylePropertyTreeElement.js | revealInSourcesPanel": {
+  "panels/elements/StylePropertyTreeElement.ts | revealInSourcesPanel": {
     "message": "Reveal in Sources panel"
   },
-  "panels/elements/StylePropertyTreeElement.js | shiftClickToChangeColorFormat": {
+  "panels/elements/StylePropertyTreeElement.ts | shiftClickToChangeColorFormat": {
     "message": "Shift + Click to change color format."
   },
-  "panels/elements/StylePropertyTreeElement.js | togglePropertyAndContinueEditing": {
+  "panels/elements/StylePropertyTreeElement.ts | togglePropertyAndContinueEditing": {
     "message": "Toggle property and continue editing"
   },
-  "panels/elements/StylePropertyTreeElement.js | valueForSettingSSIsOutsideThe": {
+  "panels/elements/StylePropertyTreeElement.ts | valueForSettingSSIsOutsideThe": {
     "message": "Value for setting “{PH1}” {PH2} is outside the supported range [{PH3}, {PH4}] for font-family “{PH5}”."
   },
-  "panels/elements/StylePropertyTreeElement.js | viewComputedValue": {
+  "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "View computed value"
   },
-  "panels/elements/StylesSidebarPane.js | constructedStylesheet": {
+  "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
     "message": "constructed stylesheet"
   },
-  "panels/elements/StylesSidebarPane.js | copyAllDeclarations": {
+  "panels/elements/StylesSidebarPane.ts | copyAllDeclarations": {
     "message": "Copy all declarations"
   },
-  "panels/elements/StylesSidebarPane.js | copyRule": {
+  "panels/elements/StylesSidebarPane.ts | copyRule": {
     "message": "Copy rule"
   },
-  "panels/elements/StylesSidebarPane.js | copySelector": {
+  "panels/elements/StylesSidebarPane.ts | copySelector": {
     "message": "Copy selector"
   },
-  "panels/elements/StylesSidebarPane.js | filter": {
+  "panels/elements/StylesSidebarPane.ts | filter": {
     "message": "Filter"
   },
-  "panels/elements/StylesSidebarPane.js | filterStyles": {
+  "panels/elements/StylesSidebarPane.ts | filterStyles": {
     "message": "Filter Styles"
   },
-  "panels/elements/StylesSidebarPane.js | incrementdecrementWithMousewheelHundred": {
+  "panels/elements/StylesSidebarPane.ts | incrementdecrementWithMousewheelHundred": {
     "message": "Increment/decrement with mousewheel or up/down keys. {PH1}: ±100, Shift: ±10, Alt: ±0.1"
   },
-  "panels/elements/StylesSidebarPane.js | incrementdecrementWithMousewheelOne": {
+  "panels/elements/StylesSidebarPane.ts | incrementdecrementWithMousewheelOne": {
     "message": "Increment/decrement with mousewheel or up/down keys. {PH1}: R ±1, Shift: G ±1, Alt: B ±1"
   },
-  "panels/elements/StylesSidebarPane.js | inheritedFroms": {
+  "panels/elements/StylesSidebarPane.ts | inheritedFroms": {
     "message": "Inherited from "
   },
-  "panels/elements/StylesSidebarPane.js | injectedStylesheet": {
+  "panels/elements/StylesSidebarPane.ts | injectedStylesheet": {
     "message": "injected stylesheet"
   },
-  "panels/elements/StylesSidebarPane.js | insertStyleRuleBelow": {
+  "panels/elements/StylesSidebarPane.ts | insertStyleRuleBelow": {
     "message": "Insert Style Rule Below"
   },
-  "panels/elements/StylesSidebarPane.js | invalidPropertyValue": {
+  "panels/elements/StylesSidebarPane.ts | invalidPropertyValue": {
     "message": "Invalid property value"
   },
-  "panels/elements/StylesSidebarPane.js | invalidString": {
+  "panels/elements/StylesSidebarPane.ts | invalidString": {
     "message": "{PH1}, property name: {PH2}, property value: {PH3}"
   },
-  "panels/elements/StylesSidebarPane.js | newStyleRule": {
+  "panels/elements/StylesSidebarPane.ts | newStyleRule": {
     "message": "New Style Rule"
   },
-  "panels/elements/StylesSidebarPane.js | noMatchingSelectorOrStyle": {
+  "panels/elements/StylesSidebarPane.ts | noMatchingSelectorOrStyle": {
     "message": "No matching selector or style"
   },
-  "panels/elements/StylesSidebarPane.js | pseudoSElement": {
+  "panels/elements/StylesSidebarPane.ts | pseudoSElement": {
     "message": "Pseudo ::{PH1} element"
   },
-  "panels/elements/StylesSidebarPane.js | sattributesStyle": {
+  "panels/elements/StylesSidebarPane.ts | sattributesStyle": {
     "message": "{PH1}[Attributes Style]"
   },
-  "panels/elements/StylesSidebarPane.js | showAllPropertiesSMore": {
+  "panels/elements/StylesSidebarPane.ts | showAllPropertiesSMore": {
     "message": "Show All Properties ({PH1} more)"
   },
-  "panels/elements/StylesSidebarPane.js | styleAttribute": {
+  "panels/elements/StylesSidebarPane.ts | styleAttribute": {
     "message": "style attribute"
   },
-  "panels/elements/StylesSidebarPane.js | unknownPropertyName": {
+  "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "Unknown property name"
   },
-  "panels/elements/StylesSidebarPane.js | userAgentStylesheet": {
+  "panels/elements/StylesSidebarPane.ts | userAgentStylesheet": {
     "message": "user agent stylesheet"
   },
-  "panels/elements/StylesSidebarPane.js | viaInspector": {
+  "panels/elements/StylesSidebarPane.ts | viaInspector": {
     "message": "via inspector"
   },
   "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {

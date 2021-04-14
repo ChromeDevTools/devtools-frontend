@@ -28,6 +28,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Common from '../../core/common/common.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
@@ -35,16 +37,13 @@ import * as UI from '../../ui/legacy/legacy.js';
 
 import {ElementsPanel} from './ElementsPanel.js';
 
-/**
- * @type {!InspectElementModeController}
- */
-let inspectElementModeController;
+let inspectElementModeController: InspectElementModeController;
 
+export class InspectElementModeController implements SDK.SDKModel.SDKModelObserver<SDK.OverlayModel.OverlayModel> {
+  _toggleSearchAction: UI.ActionRegistration.Action|null;
+  _mode: Protocol.Overlay.InspectMode;
+  _showDetailedInspectTooltipSetting: Common.Settings.Setting<boolean>;
 
-/**
- * @implements {SDK.SDKModel.SDKModelObserver<!SDK.OverlayModel.OverlayModel>}
- */
-export class InspectElementModeController {
   constructor() {
     this._toggleSearchAction = UI.ActionRegistry.ActionRegistry.instance().action('elements.toggle-element-search');
     this._mode = Protocol.Overlay.InspectMode.None;
@@ -72,10 +71,9 @@ export class InspectElementModeController {
     }, true);
   }
 
-  /**
-   * @param {{forceNew: boolean}} opts
-   */
-  static instance({forceNew} = {forceNew: false}) {
+  static instance({forceNew}: {
+    forceNew: boolean,
+  } = {forceNew: false}): InspectElementModeController {
     if (!inspectElementModeController || forceNew) {
       inspectElementModeController = new InspectElementModeController();
     }
@@ -83,11 +81,7 @@ export class InspectElementModeController {
     return inspectElementModeController;
   }
 
-  /**
-   * @override
-   * @param {!SDK.OverlayModel.OverlayModel} overlayModel
-   */
-  modelAdded(overlayModel) {
+  modelAdded(overlayModel: SDK.OverlayModel.OverlayModel): void {
     // When DevTools are opening in the inspect element mode, the first target comes in
     // much later than the InspectorFrontendAPI.enterInspectElementMode event.
     if (this._mode === Protocol.Overlay.InspectMode.None) {
@@ -96,21 +90,14 @@ export class InspectElementModeController {
     overlayModel.setInspectMode(this._mode, this._showDetailedInspectTooltipSetting.get());
   }
 
-  /**
-   * @override
-   * @param {!SDK.OverlayModel.OverlayModel} overlayModel
-   */
-  modelRemoved(overlayModel) {
+  modelRemoved(_overlayModel: SDK.OverlayModel.OverlayModel): void {
   }
 
-  /**
-   * @return {boolean}
-   */
-  _isInInspectElementMode() {
+  _isInInspectElementMode(): boolean {
     return this._mode !== Protocol.Overlay.InspectMode.None;
   }
 
-  _toggleInspectMode() {
+  _toggleInspectMode(): void {
     let mode;
     if (this._isInInspectElementMode()) {
       mode = Protocol.Overlay.InspectMode.None;
@@ -122,14 +109,11 @@ export class InspectElementModeController {
     this._setMode(mode);
   }
 
-  _captureScreenshotMode() {
+  _captureScreenshotMode(): void {
     this._setMode(Protocol.Overlay.InspectMode.CaptureAreaScreenshot);
   }
 
-  /**
-   * @param {!Protocol.Overlay.InspectMode} mode
-   */
-  _setMode(mode) {
+  _setMode(mode: Protocol.Overlay.InspectMode): void {
     if (SDK.SDKModel.TargetManager.instance().allTargetsSuspended()) {
       return;
     }
@@ -142,7 +126,7 @@ export class InspectElementModeController {
     }
   }
 
-  _suspendStateChanged() {
+  _suspendStateChanged(): void {
     if (!SDK.SDKModel.TargetManager.instance().allTargetsSuspended()) {
       return;
     }
@@ -153,32 +137,19 @@ export class InspectElementModeController {
     }
   }
 
-  /**
-   * @param {!SDK.DOMModel.DOMNode} node
-   */
-  _inspectNode(node) {
+  _inspectNode(node: SDK.DOMModel.DOMNode): void {
     ElementsPanel.instance().revealAndSelectNode(node, true, true);
   }
 
-  _showDetailedInspectTooltipChanged() {
+  _showDetailedInspectTooltipChanged(): void {
     this._setMode(this._mode);
   }
 }
 
-/** @type {!ToggleSearchActionDelegate} */
-let toggleSearchActionDelegateInstance;
+let toggleSearchActionDelegateInstance: ToggleSearchActionDelegate;
 
-/**
- * @implements {UI.ActionRegistration.ActionDelegate}
- */
-export class ToggleSearchActionDelegate {
-  /**
-   * @override
-   * @param {!UI.Context.Context} context
-   * @param {string} actionId
-   * @return {boolean}
-   */
-  handleAction(context, actionId) {
+export class ToggleSearchActionDelegate implements UI.ActionRegistration.ActionDelegate {
+  handleAction(context: UI.Context.Context, actionId: string): boolean {
     if (Root.Runtime.Runtime.queryParam('isSharedWorker')) {
       return false;
     }
@@ -195,11 +166,9 @@ export class ToggleSearchActionDelegate {
     return true;
   }
 
-  /**
-   * @param {{forceNew: ?boolean}=} opts
-   * @return {!ToggleSearchActionDelegate}
-   */
-  static instance(opts = {forceNew: null}) {
+  static instance(opts: {
+    forceNew: boolean|null,
+  }|undefined = {forceNew: null}): ToggleSearchActionDelegate {
     const {forceNew} = opts;
     if (!toggleSearchActionDelegateInstance || forceNew) {
       toggleSearchActionDelegateInstance = new ToggleSearchActionDelegate();

@@ -5,7 +5,7 @@
 /* eslint-disable rulesdir/no_underscored_properties */
 
 import * as Diff from '../../../../diff/diff.js';
-import * as TextEditor from '../../../../text_editor/text_editor.js';  // eslint-disable-line no-unused-vars
+import * as TextEditor from '../text_editor/text_editor.js';           // eslint-disable-line no-unused-vars
 import {SourcesTextEditor} from './SourcesTextEditor.js';              // eslint-disable-line no-unused-vars
 
 export class SourceCodeDiff {

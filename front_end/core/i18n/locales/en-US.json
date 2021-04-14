@@ -9221,9 +9221,6 @@
   "sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "Refresh watch expressions"
   },
-  "text_editor/CodeMirrorTextEditor.ts | codeEditor": {
-    "message": "Code editor"
-  },
   "timeline/CountersGraph.ts | documents": {
     "message": "Documents"
   },
@@ -11059,6 +11056,9 @@
   },
   "ui/legacy/components/source_frame/XMLView.ts | find": {
     "message": "Find"
+  },
+  "ui/legacy/components/text_editor/CodeMirrorTextEditor.ts | codeEditor": {
+    "message": "Code editor"
   },
   "ui/legacy/DockController.js | close": {
     "message": "Close"

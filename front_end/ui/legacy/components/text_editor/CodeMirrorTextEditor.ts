@@ -32,12 +32,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/naming-convention */
 
-import * as Common from '../core/common/common.js';
-import * as Host from '../core/host/host.js';
-import * as i18n from '../core/i18n/i18n.js';
-import * as Platform from '../core/platform/platform.js';
-import * as TextUtils from '../models/text_utils/text_utils.js';
-import * as UI from '../ui/legacy/legacy.js';
+import * as Common from '../../../../core/common/common.js';
+import * as Host from '../../../../core/host/host.js';
+import * as i18n from '../../../../core/i18n/i18n.js';
+import * as Platform from '../../../../core/platform/platform.js';
+import * as TextUtils from '../../../../models/text_utils/text_utils.js';
+import * as UI from '../../legacy.js';
 
 import {TextEditorAutocompleteController} from './TextEditorAutocompleteController.js';
 
@@ -47,7 +47,7 @@ const UIStrings = {
   */
   codeEditor: 'Code editor',
 };
-const str_ = i18n.i18n.registerUIStrings('text_editor/CodeMirrorTextEditor.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/text_editor/CodeMirrorTextEditor.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export interface Token {
@@ -93,8 +93,8 @@ export class CodeMirrorTextEditor extends UI.Widget.VBox implements UI.TextEdito
     this._options = options;
 
     this.registerRequiredCSS('cm/codemirror.css', {enableLegacyPatching: true});
-    this.registerRequiredCSS('text_editor/cmdevtools.css', {enableLegacyPatching: false});
-    this.registerRequiredCSS('text_editor/cmdevtools.darkmode.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('ui/legacy/components/text_editor/cmdevtools.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('ui/legacy/components/text_editor/cmdevtools.darkmode.css', {enableLegacyPatching: false});
 
     const {indentWithTabs, indentUnit} = CodeMirrorTextEditor._getIndentation(
         Common.Settings.Settings.instance().moduleSetting('textEditorIndent').get());

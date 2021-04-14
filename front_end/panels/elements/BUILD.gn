@@ -68,7 +68,6 @@ devtools_module("elements") {
     "../../panels/emulation:bundle",
     "../../panels/event_listeners:bundle",
     "../../panels/mobile_throttling:bundle",
-    "../../text_editor:bundle",
     "../../third_party/lit-html:bundle",
     "../../ui/components/render_coordinator:bundle",
     "../../ui/components/survey_link:bundle",
@@ -76,6 +75,7 @@ devtools_module("elements") {
     "../../ui/legacy:bundle",
     "../../ui/legacy/components/color_picker:bundle",
     "../../ui/legacy/components/object_ui:bundle",
+    "../../ui/legacy/components/text_editor:bundle",
   ]
 
   visibility = [

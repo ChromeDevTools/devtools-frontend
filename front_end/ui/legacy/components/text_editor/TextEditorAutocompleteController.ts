@@ -5,10 +5,10 @@
 /* eslint-disable rulesdir/no_underscored_properties */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import * as Common from '../core/common/common.js';
-import * as Platform from '../core/platform/platform.js';
-import * as TextUtils from '../models/text_utils/text_utils.js';
-import * as UI from '../ui/legacy/legacy.js';
+import * as Common from '../../../../core/common/common.js';
+import * as Platform from '../../../../core/platform/platform.js';
+import * as TextUtils from '../../../../models/text_utils/text_utils.js';
+import * as UI from '../../legacy.js';
 
 import type {CodeMirrorTextEditor} from './CodeMirrorTextEditor.js';
 
@@ -59,9 +59,11 @@ export class TextEditorAutocompleteController implements UI.SuggestBox.SuggestBo
     this._tooltipGlassPane.setOutsideClickCallback(this._tooltipGlassPane.hide.bind(this._tooltipGlassPane));
     this._tooltipElement = document.createElement('div');
     this._tooltipElement.classList.add('autocomplete-tooltip');
-    const shadowRoot = UI.Utils.createShadowRootWithCoreStyles(
-        this._tooltipGlassPane.contentElement,
-        {cssFile: 'text_editor/autocompleteTooltip.css', enableLegacyPatching: false, delegatesFocus: undefined});
+    const shadowRoot = UI.Utils.createShadowRootWithCoreStyles(this._tooltipGlassPane.contentElement, {
+      cssFile: 'ui/legacy/components/text_editor/autocompleteTooltip.css',
+      enableLegacyPatching: false,
+      delegatesFocus: undefined,
+    });
     shadowRoot.appendChild(this._tooltipElement);
 
     this._queryRange = null;

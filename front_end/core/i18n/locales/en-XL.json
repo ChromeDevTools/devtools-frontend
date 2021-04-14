@@ -9221,9 +9221,6 @@
   "sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "R̂éf̂ŕêśĥ ẃât́ĉh́ êx́p̂ŕêśŝíôńŝ"
   },
-  "text_editor/CodeMirrorTextEditor.ts | codeEditor": {
-    "message": "Ĉód̂é êd́ît́ôŕ"
-  },
   "timeline/CountersGraph.ts | documents": {
     "message": "D̂óĉúm̂én̂t́ŝ"
   },
@@ -11059,6 +11056,9 @@
   },
   "ui/legacy/components/source_frame/XMLView.ts | find": {
     "message": "F̂ín̂d́"
+  },
+  "ui/legacy/components/text_editor/CodeMirrorTextEditor.ts | codeEditor": {
+    "message": "Ĉód̂é êd́ît́ôŕ"
   },
   "ui/legacy/DockController.js | close": {
     "message": "Ĉĺôśê"

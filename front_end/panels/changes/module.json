@@ -1,7 +1,7 @@
 {
   "dependencies": [
     "workspace_diff",
-    "text_editor",
+    "ui/legacy/components/text_editor",
     "models/persistence",
     "snippets",
     "ui/legacy"

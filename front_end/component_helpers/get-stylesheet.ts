@@ -121,8 +121,8 @@ export const CSS_RESOURCES_TO_LOAD_INTO_RUNTIME = [
   'panels/console/consoleSidebar.css',
   'panels/console/consoleView.css',
   'cm/codemirror.css',
-  'text_editor/autocompleteTooltip.css',
-  'text_editor/cmdevtools.css',
-  'text_editor/cmdevtools.darkmode.css',
+  'ui/legacy/components/text_editor/autocompleteTooltip.css',
+  'ui/legacy/components/text_editor/cmdevtools.css',
+  'ui/legacy/components/text_editor/cmdevtools.darkmode.css',
   'panels/application/serviceWorkerUpdateCycleView.css',
 ];

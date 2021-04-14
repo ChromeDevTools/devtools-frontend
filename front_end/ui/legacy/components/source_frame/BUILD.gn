@@ -29,9 +29,9 @@ devtools_module("source_frame") {
     "../../../../formatter:bundle",
     "../../../../models/text_utils:bundle",
     "../../../../models/workspace:bundle",
-    "../../../../text_editor:bundle",
     "../../../../ui/legacy:bundle",
     "../../../../ui/legacy/components/object_ui:bundle",
+    "../../../../ui/legacy/components/text_editor:bundle",
   ]
 }
 

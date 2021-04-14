@@ -19,8 +19,8 @@ devtools_module("changes") {
     "../../diff:bundle",
     "../../models/workspace:bundle",
     "../../snippets:bundle",
-    "../../text_editor:bundle",
     "../../ui/legacy:bundle",
+    "../../ui/legacy/components/text_editor:bundle",
     "../../workspace_diff:bundle",
   ]
 }

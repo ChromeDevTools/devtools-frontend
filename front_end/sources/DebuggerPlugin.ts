@@ -38,9 +38,9 @@ import * as SDK from '../core/sdk/sdk.js';
 import * as Bindings from '../models/bindings/bindings.js';
 import * as TextUtils from '../models/text_utils/text_utils.js';
 import * as Workspace from '../models/workspace/workspace.js';
-import * as TextEditor from '../text_editor/text_editor.js';  // eslint-disable-line no-unused-vars
 import * as ObjectUI from '../ui/legacy/components/object_ui/object_ui.js';
 import * as SourceFrame from '../ui/legacy/components/source_frame/source_frame.js';
+import * as TextEditor from '../ui/legacy/components/text_editor/text_editor.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../ui/legacy/legacy.js';
 
 import {AddSourceMapURLDialog} from './AddSourceMapURLDialog.js';

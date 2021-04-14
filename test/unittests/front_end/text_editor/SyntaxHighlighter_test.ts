@@ -4,7 +4,7 @@
 
 const {assert} = chai;
 
-import * as TextEditor from '../../../../front_end/text_editor/text_editor.js';
+import * as TextEditor from '../../../../front_end/ui/legacy/components/text_editor/text_editor.js';
 
 describe('SyntaxHighlighter', () => {
   it('can be instantiated correctly', () => {

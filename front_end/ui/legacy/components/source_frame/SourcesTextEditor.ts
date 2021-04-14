@@ -6,8 +6,8 @@
 
 import * as Common from '../../../../core/common/common.js';
 import * as TextUtils from '../../../../models/text_utils/text_utils.js';
-import * as TextEditor from '../../../../text_editor/text_editor.js';
 import * as UI from '../../legacy.js';
+import * as TextEditor from '../text_editor/text_editor.js';
 
 const whitespaceStyleInjectedSet = new WeakSet<Document>();
 

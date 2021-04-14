@@ -10,7 +10,7 @@ import * as ProtocolClientModule from '../../core/protocol_client/protocol_clien
 import * as Root from '../../core/root/root.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Workspace from '../../models/workspace/workspace.js';
-import * as TextEditor from '../../text_editor/text_editor.js';
+import * as TextEditor from '../../ui/legacy/components/text_editor/text_editor.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 /**

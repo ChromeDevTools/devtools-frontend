@@ -53,7 +53,6 @@ group("front_end") {
     "search:bundle",
     "snippets:bundle",
     "startup:bundle",
-    "text_editor:bundle",
     "theme_support:bundle",
     "third_party/lighthouse",
     "third_party/puppeteer:bundle",
@@ -62,6 +61,7 @@ group("front_end") {
     "ui/legacy/components/color_picker:bundle",
     "ui/legacy/components/cookie_table:bundle",
     "ui/legacy/components/data_grid:bundle",
+    "ui/legacy/components/text_editor:bundle",
     "wasmparser_worker:worker_entrypoint",
     "worker_main:bundle",
     "workspace_diff:bundle",
@@ -81,10 +81,10 @@ group("legacy_css") {
     "panels/emulation:legacy_css",
     "panels/help:legacy_css",
     "panels/mobile_throttling:legacy_css",
-    "text_editor:legacy_css",
     "ui/legacy:legacy_css",
     "ui/legacy/components/data_grid:legacy_css",
     "ui/legacy/components/object_ui:legacy_css",
+    "ui/legacy/components/text_editor:legacy_css",
   ]
 }
 
@@ -135,7 +135,6 @@ group("legacy_entrypoints") {
     "settings:legacy",
     "snippets:legacy",
     "sources:legacy",
-    "text_editor:legacy",
     "timeline:legacy",
     "ui/legacy:legacy",
     "ui/legacy/components/color_picker:legacy",
@@ -144,6 +143,7 @@ group("legacy_entrypoints") {
     "ui/legacy/components/object_ui:legacy",
     "ui/legacy/components/perf_ui:legacy",
     "ui/legacy/components/source_frame:legacy",
+    "ui/legacy/components/text_editor:legacy",
     "web_audio:legacy",
     "workspace_diff:legacy",
   ]

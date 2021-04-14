@@ -140,7 +140,7 @@ non_autostart_non_remote_modules = [
   "snippets/snippets_module.js",
   "ui/legacy/components/source_frame/source_frame_module.js",
   "sources/sources_module.js",
-  "text_editor/text_editor_module.js",
+  "ui/legacy/components/text_editor/text_editor_module.js",
   "timeline/timeline_module.js",
   "web_audio/web_audio_module.js",
   "webauthn/webauthn_module.js",

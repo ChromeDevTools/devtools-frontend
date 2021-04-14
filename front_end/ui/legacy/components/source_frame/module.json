@@ -1,6 +1,6 @@
 {
   "dependencies": [
-    "text_editor",
+    "ui/legacy/components/text_editor",
     "ui/legacy",
     "models/persistence",
     "ui/legacy/components/object_ui",

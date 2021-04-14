@@ -2,10 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// Imports XLink.js providing <x-link> tag as a side effect.
-import '../ui/legacy/legacy.js';
+import '../../legacy/legacy.js'; // Required for <x-link>.
 
-import * as LitHtml from '../third_party/lit-html/lit-html.js';
+import * as LitHtml from '../../../third_party/lit-html/lit-html.js';
 
 import {getMarkdownLink} from './MarkdownLinksMap.js';
 export interface MarkdownLinkData {

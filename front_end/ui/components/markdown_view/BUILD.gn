@@ -1,0 +1,36 @@
+# Copyright 2021 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("../../../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../../../../scripts/build/ninja/devtools_module.gni")
+
+devtools_module("markdown_view") {
+  sources = [
+    "MarkdownImage.ts",
+    "MarkdownImagesMap.ts",
+    "MarkdownLink.ts",
+    "MarkdownLinksMap.ts",
+    "MarkdownView.ts",
+  ]
+  deps = [
+    "../../../component_helpers:bundle",
+    "../../../core/common:bundle",
+    "../../../core/host:bundle",
+    "../../../core/platform:bundle",
+    "../../../models/text_utils:bundle",
+    "../../../render_coordinator:bundle",
+    "../../../third_party/lit-html:bundle",
+    "../../../ui/components:bundle",
+    "../../../ui/components/icon_button:bundle",
+    "../../../ui/legacy:bundle",
+  ]
+
+  visibility = [ "../../../../test/unittests/front_end/ui/components" ]
+}
+
+devtools_entrypoint("bundle") {
+  entrypoint = "markdown_view.ts"
+
+  deps = [ ":markdown_view" ]
+}

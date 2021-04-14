@@ -5,10 +5,7 @@ ts_library("issues") {
   sources = [
     "IssueAggregator_test.ts",
     "LowContrastIssuesAggregation_test.ts",
-    "MarkdownImage_test.ts",
     "MarkdownIssueDescription_test.ts",
-    "MarkdownLink_test.ts",
-    "MarkdownView_test.ts",
     "TrustedWebActivityIssuesAggregation_test.ts",
   ]
 
@@ -16,7 +13,6 @@ ts_library("issues") {
     "../../../../front_end/core/host:bundle",
     "../../../../front_end/core/sdk:bundle",
     "../../../../front_end/issues:bundle",
-    "../../../../front_end/third_party/marked:bundle",
     "../../../../front_end/ui/components:bundle",
     "../helpers",
     "../issues_manager",

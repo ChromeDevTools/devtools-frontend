@@ -4,30 +4,30 @@
 
 import * as FrontendHelpers from '../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
 import * as ComponentHelpers from '../../component_helpers/component_helpers.js';
-import * as Issues from '../../issues/issues.js';
 import * as Marked from '../../third_party/marked/marked.js';
+import * as MarkdownView from '../../ui/components/markdown_view/markdown_view.js';
 
 await ComponentHelpers.ComponentServerSetup.setup();
 await FrontendHelpers.initializeGlobalVars();
 
 // Register images in the markdown image map.
-Issues.MarkdownImagesMap.markdownImages.set('lighthouse-icon', {
-  src: 'Images/lighthouse_logo.svg',
+MarkdownView.MarkdownImagesMap.markdownImages.set('lighthouse-icon', {
+  src: '../../Images/lighthouse_logo.svg',
   width: '16px',
   height: '16px',
   isIcon: true,
 });
-Issues.MarkdownImagesMap.markdownImages.set('baseline', {
-  src: 'Images/baseline-icon.svg',
+MarkdownView.MarkdownImagesMap.markdownImages.set('baseline', {
+  src: '../../Images/baseline-icon.svg',
   width: '200px',
   height: '200px',
   isIcon: false,
 });
 
 // Register a link in the markdown link map.
-Issues.MarkdownLinksMap.markdownLinks.set('test-link', 'https://exampleLink.com/');
+MarkdownView.MarkdownLinksMap.markdownLinks.set('test-link', 'https://exampleLink.com/');
 
-const component = new Issues.MarkdownView.MarkdownView();
+const component = new MarkdownView.MarkdownView.MarkdownView();
 document.getElementById('container')?.appendChild(component);
 
 const markdownAst = Marked.Marked.lexer(`

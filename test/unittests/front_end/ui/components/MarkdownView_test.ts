@@ -2,49 +2,43 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as IssuesModule from '../../../../front_end/issues/issues.js';
-import {describeWithEnvironment} from '../helpers/EnvironmentHelpers.js';
-import * as LitHtml from '../../../../front_end/third_party/lit-html/lit-html.js';
-import * as Marked from '../../../../front_end/third_party/marked/marked.js';
-import {assertShadowRoot, renderElementIntoDOM} from '../helpers/DOMHelpers.js';
+import * as LitHtml from '../../../../../front_end/third_party/lit-html/lit-html.js';
+import * as Marked from '../../../../../front_end/third_party/marked/marked.js';
+import * as MarkdownView from '../../../../../front_end/ui/components/markdown_view/markdown_view.js';
+import {assertShadowRoot, renderElementIntoDOM} from '../../helpers/DOMHelpers.js';
 
 const {assert} = chai;
 
-describeWithEnvironment('MarkdownView', async () => {
-  let Issues: typeof IssuesModule;
-  before(async () => {
-    Issues = await import('../../../../front_end/issues/issues.js');
-  });
-
+describe('MarkdownView', async () => {
   describe('renderToken', async () => {
     it('wraps paragraph tokens in <p> tags', () => {
-      const renderResult = Issues.MarkdownView.renderToken({type: 'paragraph', tokens: []});
+      const renderResult = MarkdownView.MarkdownView.renderToken({type: 'paragraph', tokens: []});
       assert.deepStrictEqual(renderResult.strings.raw, ['<p>', '</p>']);
     });
 
     it('wraps an unordered list token in <ul> tags', () => {
-      const renderResult = Issues.MarkdownView.renderToken({type: 'list', items: []});
+      const renderResult = MarkdownView.MarkdownView.renderToken({type: 'list', items: []});
       assert.deepStrictEqual(renderResult.strings.raw, ['<ul>', '</ul>']);
     });
 
     it('wraps list items in <li> tags', () => {
-      const renderResult = Issues.MarkdownView.renderToken({type: 'list_item', tokens: []});
+      const renderResult = MarkdownView.MarkdownView.renderToken({type: 'list_item', tokens: []});
       assert.deepStrictEqual(renderResult.strings.raw, ['<li>', '</li>']);
     });
 
     it('wraps a codespan token in <code> tags', () => {
-      const renderResult = Issues.MarkdownView.renderToken({type: 'codespan', text: 'const foo = 42;'});
+      const renderResult = MarkdownView.MarkdownView.renderToken({type: 'codespan', text: 'const foo = 42;'});
       assert.deepStrictEqual(renderResult.strings.raw, ['<code>', '</code>']);
       assert.deepStrictEqual(renderResult.values, ['const foo = 42;']);
     });
 
     it('renders childless text tokens as-is', () => {
-      const renderResult = Issues.MarkdownView.renderToken({type: 'text', text: 'Simple text token'});
+      const renderResult = MarkdownView.MarkdownView.renderToken({type: 'text', text: 'Simple text token'});
       assert.deepStrictEqual(renderResult.values, ['Simple text token']);
     });
 
     it('renders nested text tokens correctly', () => {
-      const renderResult = Issues.MarkdownView.renderToken({
+      const renderResult = MarkdownView.MarkdownView.renderToken({
         type: 'text',
         text: 'This text should not be rendered. Only the subtokens!',
         tokens: [
@@ -60,42 +54,44 @@ describeWithEnvironment('MarkdownView', async () => {
     });
 
     it('throws an error for invalid or unsupported token types', () => {
-      assert.throws(() => Issues.MarkdownView.renderToken({type: 'no_way_this_is_a_valid_markdown_token'}));
+      assert.throws(() => MarkdownView.MarkdownView.renderToken({type: 'no_way_this_is_a_valid_markdown_token'}));
     });
 
     it('renders link with valid key', () => {
-      Issues.MarkdownLinksMap.markdownLinks.set('exampleLink', 'https://web.dev/');
-      const renderResult = Issues.MarkdownView.renderToken({type: 'link', text: 'learn more', href: 'exampleLink'});
+      MarkdownView.MarkdownLinksMap.markdownLinks.set('exampleLink', 'https://web.dev/');
+      const renderResult =
+          MarkdownView.MarkdownView.renderToken({type: 'link', text: 'learn more', href: 'exampleLink'});
       assert.deepStrictEqual(
           renderResult.strings.raw, ['<devtools-markdown-link .data=', '></devtools-markdown-link>']);
     });
 
     it('throws an error if invalid link key is provided', () => {
-      assert.throws(() => Issues.MarkdownLinksMap.getMarkdownLink('testErrorLink'));
+      assert.throws(() => MarkdownView.MarkdownLinksMap.getMarkdownLink('testErrorLink'));
     });
 
     it('renders icon with valid key', () => {
-      Issues.MarkdownImagesMap.markdownImages.set('testExampleImage', {
+      MarkdownView.MarkdownImagesMap.markdownImages.set('testExampleImage', {
         src: 'largeicon-phone',
         isIcon: true,
       });
-      const renderResult = Issues.MarkdownView.renderToken({type: 'image', text: 'phone', href: 'testExampleImage'});
+      const renderResult =
+          MarkdownView.MarkdownView.renderToken({type: 'image', text: 'phone', href: 'testExampleImage'});
       assert.deepStrictEqual(
           renderResult.strings.raw, ['<devtools-markdown-image .data=', '></devtools-markdown-image>']);
     });
 
     it('renders image with valid key', () => {
-      Issues.MarkdownImagesMap.markdownImages.set('exampleImage', {
+      MarkdownView.MarkdownImagesMap.markdownImages.set('exampleImage', {
         src: 'Images/phone-logo.png',
         isIcon: false,
       });
-      const renderResult = Issues.MarkdownView.renderToken({type: 'image', text: 'phone', href: 'exampleImage'});
+      const renderResult = MarkdownView.MarkdownView.renderToken({type: 'image', text: 'phone', href: 'exampleImage'});
       assert.deepStrictEqual(
           renderResult.strings.raw, ['<devtools-markdown-image .data=', '></devtools-markdown-image>']);
     });
 
     it('throws an error if invalid image key is provided', () => {
-      assert.throws(() => Issues.MarkdownImagesMap.getMarkdownImage('testErrorImageLink'));
+      assert.throws(() => MarkdownView.MarkdownImagesMap.getMarkdownImage('testErrorImageLink'));
     });
   });
 
@@ -111,7 +107,7 @@ ${paragraphText}
 
   describe('component', () => {
     it('renders basic markdown correctly', () => {
-      const component = new Issues.MarkdownView.MarkdownView();
+      const component = new MarkdownView.MarkdownView.MarkdownView();
       renderElementIntoDOM(component);
 
       component.data = {tokens: Marked.Marked.lexer(markdownString)};
@@ -129,7 +125,7 @@ ${paragraphText}
   });
 
   const renderString = (string: string, selector: 'p'|'code'): HTMLElement => {
-    const component = new Issues.MarkdownView.MarkdownView();
+    const component = new MarkdownView.MarkdownView.MarkdownView();
     renderElementIntoDOM(component);
     component.data = {tokens: Marked.Marked.lexer(string)};
     assertShadowRoot(component.shadowRoot);

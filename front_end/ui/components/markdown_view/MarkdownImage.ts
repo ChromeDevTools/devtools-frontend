@@ -1,8 +1,11 @@
 // Copyright (c) 2020 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-import * as LitHtml from '../third_party/lit-html/lit-html.js';
-import * as IconButton from '../ui/components/icon_button/icon_button.js';
+
+import '../../../ui/components/icon_button/icon_button.js'; // Required to get <devtools-icon>
+
+import * as LitHtml from '../../../third_party/lit-html/lit-html.js';
+import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 
 import {getMarkdownImage, ImageData} from './MarkdownImagesMap.js';
 

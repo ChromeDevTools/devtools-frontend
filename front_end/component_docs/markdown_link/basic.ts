@@ -4,15 +4,14 @@
 
 import * as FrontendHelpers from '../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
 import * as ComponentHelpers from '../../component_helpers/component_helpers.js';
+import * as MarkdownView from '../../ui/components/markdown_view/markdown_view.js';
 
 await ComponentHelpers.ComponentServerSetup.setup();
 await FrontendHelpers.initializeGlobalVars();
 
-const Issues = await import('../../issues/issues.js');
+MarkdownView.MarkdownLinksMap.markdownLinks.set('textLink', 'https://example.com/');
 
-Issues.MarkdownLinksMap.markdownLinks.set('textLink', 'https://example.com/');
-
-const link = new Issues.MarkdownLink.MarkdownLink();
+const link = new MarkdownView.MarkdownLink.MarkdownLink();
 document.getElementById('target')?.appendChild(link);
 link.data = {
   key: 'textLink',

@@ -8,8 +8,8 @@ ts_library("ts") {
   deps = [
     "../../../test/unittests/front_end/helpers",
     "../../component_helpers:bundle",
-    "../../issues:bundle",
     "../../third_party/marked:bundle",
+    "../../ui/components/markdown_view:bundle",
   ]
 }
 

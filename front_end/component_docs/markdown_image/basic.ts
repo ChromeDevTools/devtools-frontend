@@ -4,33 +4,33 @@
 
 import * as FrontendHelpers from '../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
 import * as ComponentHelpers from '../../component_helpers/component_helpers.js';
-import * as Issues from '../../issues/issues.js';
+import * as MarkdownView from '../../ui/components/markdown_view/markdown_view.js';
 
 await ComponentHelpers.ComponentServerSetup.setup();
 await FrontendHelpers.initializeGlobalVars();
 
 // Adding a couple image keys to the image map.
-Issues.MarkdownImagesMap.markdownImages.set('test-icon', {
-  src: 'Images/feedback_thin_16x16_icon.svg',
+MarkdownView.MarkdownImagesMap.markdownImages.set('test-icon', {
+  src: '../../Images/issue-text-icon.svg',
   isIcon: true,
   width: '16px',
   height: '16px',
 });
-Issues.MarkdownImagesMap.markdownImages.set('test-image', {
-  src: 'Images/lighthouse_logo.svg',
+MarkdownView.MarkdownImagesMap.markdownImages.set('test-image', {
+  src: '../../Images/lighthouse_logo.svg',
   width: '200px',
   height: '200px',
   isIcon: false,
 });
 
-const iconComponent = new Issues.MarkdownImage.MarkdownImage();
+const iconComponent = new MarkdownView.MarkdownImage.MarkdownImage();
 document.getElementById('icon')?.appendChild(iconComponent);
 iconComponent.data = {
   key: 'test-icon',
   title: 'Test icon title',
 };
 
-const imageComponent = new Issues.MarkdownImage.MarkdownImage();
+const imageComponent = new MarkdownView.MarkdownImage.MarkdownImage();
 document.getElementById('image')?.appendChild(imageComponent);
 imageComponent.data = {
   key: 'test-image',

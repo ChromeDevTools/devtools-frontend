@@ -5,12 +5,11 @@
 import * as Root from '../core/root/root.js';
 import * as IssuesManager from '../models/issues_manager/issues_manager.js';
 import * as Marked from '../third_party/marked/marked.js';
-
-import {MarkdownView} from './MarkdownView.js';
+import * as MarkdownView from '../ui/components/markdown_view/markdown_view.js';
 
 export interface IssueDescription {
   title: string;
-  view: MarkdownView;
+  view: MarkdownView.MarkdownView.MarkdownView;
   links: {link: string, linkTitle: string}[];
 }
 
@@ -83,7 +82,7 @@ export function createIssueDescriptionFromRawMarkdown(
     throw new Error('Markdown issue descriptions must start with a heading');
   }
 
-  const markdownComponent = new MarkdownView();
+  const markdownComponent = new MarkdownView.MarkdownView.MarkdownView();
   markdownComponent.data = {tokens: markdownAst.slice(1)};
   return {
     title,

@@ -2003,15 +2003,10 @@ export class NetworkLogView extends UI.Widget.VBox implements
 
     let inferredMethod = 'GET';
     const data = [];
-    const requestContentType = request.requestContentType();
     const formData = await request.requestFormData();
-    if (requestContentType && requestContentType.startsWith('application/x-www-form-urlencoded') && formData) {
+    if (formData) {
       // Note that formData is not necessarily urlencoded because it might for example
       // come from a fetch request made with an explicitly unencoded body.
-      data.push('--data-raw ' + escapeString(formData));
-      ignoredHeaders.add('content-length');
-      inferredMethod = 'POST';
-    } else if (formData) {
       data.push('--data-raw ' + escapeString(formData));
       ignoredHeaders.add('content-length');
       inferredMethod = 'POST';

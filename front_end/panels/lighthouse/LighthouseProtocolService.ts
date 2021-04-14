@@ -86,8 +86,8 @@ export class ProtocolService extends Common.ObjectWrapper.ObjectWrapper {
 
   private initWorker(): Promise<Worker> {
     this.lighthouseWorkerPromise = new Promise<Worker>(resolve => {
-      const worker =
-          new Worker(new URL('../../lighthouse_worker/lighthouse_worker.js', import.meta.url), {type: 'module'});
+      const worker = new Worker(
+          new URL('../../entrypoints/lighthouse_worker/lighthouse_worker.js', import.meta.url), {type: 'module'});
 
       worker.addEventListener('message', event => {
         if (event.data === 'workerReady') {

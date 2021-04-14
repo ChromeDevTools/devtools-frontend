@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Root from '../core/root/root.js';
+import * as Root from '../../core/root/root.js';
 
 function disableLoggingForTest() {
   console.log = () => undefined;  // eslint-disable-line no-console
@@ -111,7 +111,7 @@ async function fetchLocaleData(locales) {
       const localeUrl = `${remoteBase.base}third_party/lighthouse/locales/${locale}.json`;
       localeDataTextPromise = Root.Runtime.loadResourcePromise(localeUrl);
     } else {
-      const localeUrl = new URL(`../third_party/lighthouse/locales/${locale}.json`, import.meta.url);
+      const localeUrl = new URL(`../../third_party/lighthouse/locales/${locale}.json`, import.meta.url);
       localeDataTextPromise = Root.Runtime.loadResourcePromise(localeUrl.toString());
     }
 

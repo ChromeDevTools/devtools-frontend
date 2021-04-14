@@ -4,8 +4,8 @@
 
 import * as SDK from '../../../../front_end/core/sdk/sdk.js';
 import * as Resources from '../../../../front_end/panels/application/application.js';
-import * as Coordinator from '../../../../front_end/render_coordinator/render_coordinator.js';
 import * as ExpandableList from '../../../../front_end/ui/components/expandable_list/expandable_list.js';
+import * as Coordinator from '../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
 import * as ReportView from '../../../../front_end/ui/components/report_view/report_view.js';
 import {assertShadowRoot, getCleanTextContentFromElements, getElementWithinComponent, renderElementIntoDOM} from '../helpers/DOMHelpers.js';
 

@@ -3,8 +3,8 @@
 // found in the LICENSE file.
 
 import {assertNotNull} from '../../../../../front_end/core/platform/platform.js';
-import * as Coordinator from '../../../../../front_end/render_coordinator/render_coordinator.js';
 import * as DataGrid from '../../../../../front_end/ui/components/data_grid/data_grid.js';
+import * as Coordinator from '../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
 import {assertShadowRoot, dispatchClickEvent, renderElementIntoDOM} from '../../helpers/DOMHelpers.js';
 import {TEXT_NODE, withMutations} from '../../helpers/MutationHelpers.js';
 

@@ -3,8 +3,8 @@
 // found in the LICENSE file.
 
 import * as Resources from '../../../../front_end/panels/application/application.js';
-import * as Coordinator from '../../../../front_end/render_coordinator/render_coordinator.js';
 import * as DataGrid from '../../../../front_end/ui/components/data_grid/data_grid.js';
+import * as Coordinator from '../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
 import {assertElement, assertShadowRoot, getElementWithinComponent, renderElementIntoDOM} from '../helpers/DOMHelpers.js';
 import {getCellByIndexes, getValuesOfAllBodyRows} from '../ui/components/DataGridHelpers.js';
 

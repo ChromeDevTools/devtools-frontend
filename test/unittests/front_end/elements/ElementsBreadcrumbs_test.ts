@@ -7,7 +7,7 @@ import {assertElement, assertElements, assertShadowRoot, dispatchClickEvent, dou
 import {describeWithEnvironment} from '../helpers/EnvironmentHelpers.js';
 import {withNoMutations} from '../helpers/MutationHelpers.js';
 
-import * as Coordinator from '../../../../front_end/render_coordinator/render_coordinator.js';
+import * as Coordinator from '../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
 
 const {assert} = chai;
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();

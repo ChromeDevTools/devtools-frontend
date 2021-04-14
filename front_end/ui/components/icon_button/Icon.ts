@@ -2,8 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Coordinator from '../../../render_coordinator/render_coordinator.js';
 import * as LitHtml from '../../../third_party/lit-html/lit-html.js';
+import * as Coordinator from '../render_coordinator/render_coordinator.js';
 
 export interface IconWithPath {
   iconPath: string;

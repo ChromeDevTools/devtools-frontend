@@ -12,8 +12,8 @@ devtools_module("linkifier") {
   ]
   deps = [
     "../../../models/bindings:bundle",
-    "../../../render_coordinator:bundle",
     "../../../third_party/lit-html:bundle",
+    "../../../ui/components/render_coordinator:bundle",
   ]
 
   visibility = [ "../../../../test/unittests/front_end/ui/components" ]

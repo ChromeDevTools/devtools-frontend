@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 const {assert} = chai;
-import * as RenderCoordinator from '../../../../front_end/render_coordinator/render_coordinator.js';
+import * as RenderCoordinator from '../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
 
 describe('Render Coordinator', () => {
   let coordinator: RenderCoordinator.RenderCoordinator.RenderCoordinator;

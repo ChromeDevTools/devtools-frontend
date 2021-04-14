@@ -11,8 +11,8 @@ devtools_module("icon_button") {
     "IconButton.ts",
   ]
   deps = [
-    "../../../render_coordinator:bundle",
     "../../../third_party/lit-html:bundle",
+    "../../../ui/components/render_coordinator:bundle",
   ]
 
   visibility = [ "../../../../test/unittests/front_end/ui/components" ]

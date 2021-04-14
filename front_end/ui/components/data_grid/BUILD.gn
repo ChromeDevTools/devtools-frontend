@@ -20,8 +20,8 @@ devtools_module("data_grid") {
     "../../../core/host:bundle",
     "../../../core/platform:bundle",
     "../../../models/text_utils:bundle",
-    "../../../render_coordinator:bundle",
     "../../../third_party/lit-html:bundle",
+    "../../../ui/components/render_coordinator:bundle",
     "../../../ui/legacy:bundle",
   ]
 

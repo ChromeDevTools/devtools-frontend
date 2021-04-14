@@ -2,8 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Coordinator from '../../../../../front_end/render_coordinator/render_coordinator.js';
 import * as Linkifier from '../../../../../front_end/ui/components/linkifier/linkifier.js';
+import * as Coordinator from '../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 

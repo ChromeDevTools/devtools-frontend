@@ -154,6 +154,10 @@ const UIStrings = {
   /**
   *@description Text in Timeline UIUtils of the Performance panel
   */
+  computeIntersections: 'Compute Intersections',
+  /**
+  *@description Text in Timeline UIUtils of the Performance panel
+  */
   parseHtml: 'Parse HTML',
   /**
   *@description Text in Timeline UIUtils of the Performance panel
@@ -1247,6 +1251,8 @@ export class TimelineUIUtils {
     eventStyles[type.RasterTask] = new TimelineRecordStyle(i18nString(UIStrings.rasterizePaint), painting);
     eventStyles[type.ScrollLayer] = new TimelineRecordStyle(i18nString(UIStrings.scroll), rendering);
     eventStyles[type.CompositeLayers] = new TimelineRecordStyle(i18nString(UIStrings.compositeLayers), painting);
+    eventStyles[type.ComputeIntersections] =
+        new TimelineRecordStyle(i18nString(UIStrings.computeIntersections), rendering);
     eventStyles[type.ParseHTML] = new TimelineRecordStyle(i18nString(UIStrings.parseHtml), loading);
     eventStyles[type.ParseAuthorStyleSheet] = new TimelineRecordStyle(i18nString(UIStrings.parseStylesheet), loading);
     eventStyles[type.TimerInstall] = new TimelineRecordStyle(i18nString(UIStrings.installTimer), scripting);

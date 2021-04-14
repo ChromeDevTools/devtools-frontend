@@ -9698,6 +9698,9 @@
   "timeline/TimelineUIUtils.ts | compositeLayers": {
     "message": "Ĉóm̂ṕôśît́ê Ĺâýêŕŝ"
   },
+  "timeline/TimelineUIUtils.ts | computeIntersections": {
+    "message": "Ĉóm̂ṕût́ê Ín̂t́êŕŝéĉt́îón̂ś"
+  },
   "timeline/TimelineUIUtils.ts | consoleTime": {
     "message": "Ĉón̂śôĺê T́îḿê"
   },

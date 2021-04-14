@@ -7,8 +7,8 @@ import("../../../scripts/build/ninja/devtools_module.gni")
 
 devtools_module("protocol_client") {
   sources = [
-    "InspectorBackend.js",
-    "NodeURL.js",
+    "InspectorBackend.ts",
+    "NodeURL.ts",
   ]
 
   deps = [
@@ -19,13 +19,13 @@ devtools_module("protocol_client") {
 }
 
 devtools_entrypoint("bundle") {
-  entrypoint = "protocol_client.js"
+  entrypoint = "protocol_client.ts"
 
   deps = [ ":protocol_client" ]
 }
 
 devtools_entrypoint("legacy") {
-  entrypoint = "protocol_client-legacy.js"
+  entrypoint = "protocol_client-legacy.ts"
 
   deps = [ ":bundle" ]
 }

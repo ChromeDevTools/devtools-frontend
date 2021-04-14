@@ -2,21 +2,22 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
 
 export class NodeURL {
-  /**
-   * @param {!{url: string}} object
-   */
-  static patch(object) {
+  static patch(object: {
+    url: string,
+  }): void {
     process(object, '');
 
-    /**
-     * @param {!{url: string}} object
-     * @param {string} path
-     */
-    function process(object, path) {
+    function process(
+        object: {
+          url: string,
+        },
+        path: string): void {
       if (object.url && NodeURL._isPlatformPath(object.url, Host.Platform.isWin())) {
         object.url = Common.ParsedURL.ParsedURL.platformPathToURL(object.url);
       }
@@ -25,18 +26,17 @@ export class NodeURL {
         const value = entry[1];
         const entryPath = path + '.' + key;
         if (entryPath !== '.result.result.value' && value !== null && typeof value === 'object') {
-          process(/** @type {{url: string}} */ (value), entryPath);
+          process(
+              (value as {
+                url: string,
+              }),
+              entryPath);
         }
       }
     }
   }
 
-  /**
-   * @param {string} fileSystemPath
-   * @param {boolean} isWindows
-   * @return {boolean}
-   */
-  static _isPlatformPath(fileSystemPath, isWindows) {
+  static _isPlatformPath(fileSystemPath: string, isWindows: boolean): boolean {
     if (isWindows) {
       const re = /^([a-z]:[\/\\]|\\\\)/i;
       return re.test(fileSystemPath);

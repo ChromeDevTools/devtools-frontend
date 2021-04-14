@@ -28,54 +28,60 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import {NodeURL} from './NodeURL.js';
 
-/**
- * @typedef {string}
- */
 export const ProtocolError = Symbol('Protocol.Error');
+// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+// ProtocolError has previously been typed as string and needs to
+// be updated in the generated code like protocol.d.ts too.
+export type ProtocolError = string;
+
 export const DevToolsStubErrorCode = -32015;
 // TODO(dgozman): we are not reporting generic errors in tests, but we should
 // instead report them and just have some expected errors in test expectations.
+// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+// eslint-disable-next-line @typescript-eslint/naming-convention
 const _GenericError = -32000;
+// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+// eslint-disable-next-line @typescript-eslint/naming-convention
 const _ConnectionClosedErrorCode = -32001;
 
+export type Message = {
+  sessionId?: string,
+  url?: string,
+  id?: number,
+  error?: Object|null,
+  result?: Object|null,
+  method?: string,
+  params?: Array<string>,
+};
+
 export class InspectorBackend {
+  _agentPrototypes: Map<string, _AgentPrototype>;
+  _dispatcherPrototypes: Map<string, _DispatcherPrototype>;
+  _initialized: boolean;
+
   constructor() {
-    /** @type {!Map<string, !_AgentPrototype>} */
     this._agentPrototypes = new Map();
-    /** @type {!Map<string, !_DispatcherPrototype>} */
     this._dispatcherPrototypes = new Map();
     this._initialized = false;
   }
 
-  /**
-   * @param {string} error
-   * @param {!Object} messageObject
-   */
-  static reportProtocolError(error, messageObject) {
+  static reportProtocolError(error: string, messageObject: Object): void {
     console.error(error + ': ' + JSON.stringify(messageObject));
   }
 
-  /**
-   * @param {string} error
-   * @param {!Object} messageObject
-   */
-  static reportProtocolWarning(error, messageObject) {
+  static reportProtocolWarning(error: string, messageObject: Object): void {
     console.warn(error + ': ' + JSON.stringify(messageObject));
   }
 
-  /**
-   * @return {boolean}
-   */
-  isInitialized() {
+  isInitialized(): boolean {
     return this._initialized;
   }
 
-  /**
-   * @param {string} domain
-   */
-  _addAgentGetterMethodToProtocolTargetPrototype(domain) {
+  _addAgentGetterMethodToProtocolTargetPrototype(domain: string): void {
     let upperCaseLength = 0;
     while (upperCaseLength < domain.length && domain[upperCaseLength].toLowerCase() !== domain[upperCaseLength]) {
       ++upperCaseLength;
@@ -83,32 +89,21 @@ export class InspectorBackend {
 
     const methodName = domain.substr(0, upperCaseLength).toLowerCase() + domain.slice(upperCaseLength) + 'Agent';
 
-    /**
-     * @this {TargetBase}
-     */
-    function agentGetter() {
+    function agentGetter(this: TargetBase): _AgentPrototype {
       return this._agents[domain];
     }
 
     // @ts-ignore Method code generation
     TargetBase.prototype[methodName] = agentGetter;
 
-    /**
-     * @this {TargetBase}
-     * @param {!_DispatcherPrototype} dispatcher
-     */
-    function registerDispatcher(dispatcher) {
+    function registerDispatcher(this: TargetBase, dispatcher: _DispatcherPrototype): void {
       this.registerDispatcher(domain, dispatcher);
     }
 
     // @ts-ignore Method code generation
     TargetBase.prototype['register' + domain + 'Dispatcher'] = registerDispatcher;
 
-    /**
-     * @this {TargetBase}
-     * @param {!_DispatcherPrototype} dispatcher
-     */
-    function unregisterDispatcher(dispatcher) {
+    function unregisterDispatcher(this: TargetBase, dispatcher: _DispatcherPrototype): void {
       this.unregisterDispatcher(domain, dispatcher);
     }
 
@@ -116,46 +111,35 @@ export class InspectorBackend {
     TargetBase.prototype['unregister' + domain + 'Dispatcher'] = unregisterDispatcher;
   }
 
-  /**
-   * @param {string} domain
-   * @return {!_AgentPrototype}
-   */
-  _agentPrototype(domain) {
+  _agentPrototype(domain: string): _AgentPrototype {
     if (!this._agentPrototypes.has(domain)) {
       this._agentPrototypes.set(domain, new _AgentPrototype(domain));
       this._addAgentGetterMethodToProtocolTargetPrototype(domain);
     }
 
-    return /** @type {!_AgentPrototype} */ (this._agentPrototypes.get(domain));
+    return /** @type {!_AgentPrototype} */ this._agentPrototypes.get(domain) as _AgentPrototype;
   }
 
-  /**
-   * @param {string} domain
-   * @return {!_DispatcherPrototype}
-   */
-  _dispatcherPrototype(domain) {
+  _dispatcherPrototype(domain: string): _DispatcherPrototype {
     if (!this._dispatcherPrototypes.has(domain)) {
       this._dispatcherPrototypes.set(domain, new _DispatcherPrototype());
     }
-    return /** @type {!_DispatcherPrototype} */ (this._dispatcherPrototypes.get(domain));
+    return /** @type {!_DispatcherPrototype} */ this._dispatcherPrototypes.get(domain) as _DispatcherPrototype;
   }
 
-  /**
-   * @param {string} method
-   * @param {!Array.<!{name: string, type: string, optional: boolean}>} signature
-   * @param {!Array.<string>} replyArgs
-   */
-  registerCommand(method, signature, replyArgs) {
+  registerCommand(
+      method: string, signature: {
+        name: string,
+        type: string,
+        optional: boolean,
+      }[],
+      replyArgs: string[]): void {
     const domainAndMethod = method.split('.');
     this._agentPrototype(domainAndMethod[0]).registerCommand(domainAndMethod[1], signature, replyArgs);
     this._initialized = true;
   }
 
-  /**
-   * @param {string} type
-   * @param {!Object} values
-   */
-  registerEnum(type, values) {
+  registerEnum(type: string, values: Object): void {
     const domainAndName = type.split('.');
     const domain = domainAndName[0];
     // @ts-ignore Protocol global namespace pollution
@@ -169,31 +153,19 @@ export class InspectorBackend {
     this._initialized = true;
   }
 
-  /**
-   * @param {string} eventName
-   * @param {!Object} params
-   */
-  registerEvent(eventName, params) {
+  registerEvent(eventName: string, params: Object): void {
     const domain = eventName.split('.')[0];
     this._dispatcherPrototype(domain).registerEvent(eventName, params);
     this._initialized = true;
   }
 
-  /**
-   * @param {function((T|undefined)):void} clientCallback
-   * @param {string} errorPrefix
-   * @param {function(new:T,S):void=} constructor
-   * @param {T=} defaultValue
-   * @return {function(?string, S):void}
-   * @template T,S
-   */
-  wrapClientCallback(clientCallback, errorPrefix, constructor, defaultValue) {
+  wrapClientCallback<T, S>(
+      clientCallback: (arg0: (T|undefined)) => void, errorPrefix: string, constructor?: (new(arg1: S) => T),
+      defaultValue?: T): (arg0: string|null, arg1: S) => void {
     /**
-     * @param {?string} error
-     * @param {S} value
      * @template S
      */
-    function callbackWrapper(error, value) {
+    function callbackWrapper(error: string|null, value: S): void {
       if (error) {
         console.error(errorPrefix + error);
         clientCallback(defaultValue);
@@ -211,119 +183,104 @@ export class InspectorBackend {
   }
 }
 
-/** @type {function():!Connection} */
-let _factory;
+// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+// eslint-disable-next-line @typescript-eslint/naming-convention
+let _factory: () => Connection;
 
-/**
- * @interface
- */
 export class Connection {
+  _onMessage!: ((arg0: Object) => void)|null;
   constructor() {
-    /** @type {?function(!Object):void} */
-    this._onMessage;
   }
 
-  /**
-   * @param {function((!Object|string)):void} onMessage
-   */
-  setOnMessage(onMessage) {
+  setOnMessage(_onMessage: (arg0: (Object|string)) => void): void {
   }
 
-  /**
-   * @param {function(string):void} onDisconnect
-   */
-  setOnDisconnect(onDisconnect) {
+  setOnDisconnect(_onDisconnect: (arg0: string) => void): void {
   }
 
-  /**
-   * @param {string} message
-   */
-  sendRawMessage(message) {
+  sendRawMessage(_message: string): void {
   }
 
-  /**
-   * @return {!Promise<void>}
-   */
-  disconnect() {
+  disconnect(): Promise<void> {
     throw new Error('not implemented');
   }
 
-  /**
-   * @param {function():!Connection} factory
-   */
-  static setFactory(factory) {
+  static setFactory(factory: () => Connection): void {
     _factory = factory;
   }
 
-  /**
-   * @return {function():!Connection}
-   */
-  static getFactory() {
+  static getFactory(): () => Connection {
     return _factory;
   }
 }
 
-/** @typedef {function(...*):void} */
-let SendRawMessageCallback;  // eslint-disable-line no-unused-vars
+type SendRawMessageCallback = (...args: unknown[]) => void;  // eslint-disable-line no-unused-vars
 
 export const test = {
   /**
    * This will get called for every protocol message.
    * ProtocolClient.test.dumpProtocol = console.log
-   * @type {?function(string):void}
    */
-  dumpProtocol: null,
+  dumpProtocol: null as ((arg0: string) => void) | null,
 
   /**
    * Runs a function when no protocol activity is present.
    * ProtocolClient.test.deprecatedRunAfterPendingDispatches(() => console.log('done'))
-   * @type {?function(function():void=):void}
    */
-  deprecatedRunAfterPendingDispatches: null,
+  deprecatedRunAfterPendingDispatches: null as ((arg0: () => void) => void) | null,
 
   /**
    * Sends a raw message over main connection.
    * ProtocolClient.test.sendRawMessage('Page.enable', {}, console.log)
-   * @type {?function(string, ?Object, ?SendRawMessageCallback):void}
    */
-  sendRawMessage: null,
+  sendRawMessage: null as ((arg0: string, arg1: Object|null, arg2: SendRawMessageCallback) => void) | null,
 
   /**
    * Set to true to not log any errors.
    */
-  suppressRequestErrors: false,
+  suppressRequestErrors: false as boolean,
 
   /**
    * Set to get notified about any messages sent over protocol.
-   * @type {?function({domain: string, method: string, params: !Object, id: number}, ?TargetBase):void}
    */
-  onMessageSent: null,
+  onMessageSent: null as
+          ((arg0: {domain: string, method: string, params: Object, id: number}, arg1: TargetBase|null) => void) |
+      null,
 
   /**
    * Set to get notified about any messages received over protocol.
-   * @type {?function(!Object, ?TargetBase):void}
    */
-  onMessageReceived: null,
+  onMessageReceived: null as ((arg0: Object, arg1: TargetBase|null) => void) | null,
 };
 
-const LongPollingMethods = new Set(['CSS.takeComputedStyleUpdates']);
+const LongPollingMethods = new Set<string>(['CSS.takeComputedStyleUpdates']);
 
 export class SessionRouter {
-  /**
-   * @param {!Connection} connection
-   */
-  constructor(connection) {
+  _connection: Connection;
+  _lastMessageId: number;
+  _pendingResponsesCount: number;
+  _pendingLongPollingMessageIds: Set<number>;
+  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  _domainToLogger: Map<any, any>;
+  _sessions: Map<string, {
+    target: TargetBase,
+    callbacks: Map<number, _CallbackWithDebugInfo>,
+    proxyConnection: ((Connection | undefined)|null),
+  }>;
+  _pendingScripts: (() => void)[];
+
+  constructor(connection: Connection) {
     this._connection = connection;
     this._lastMessageId = 1;
     this._pendingResponsesCount = 0;
-    /** @type {!Set<number>} */
     this._pendingLongPollingMessageIds = new Set();
     this._domainToLogger = new Map();
 
-    /** @type {!Map<string, {target: !TargetBase, callbacks: !Map<number, !_CallbackWithDebugInfo>, proxyConnection: (?Connection|undefined)}>} */
     this._sessions = new Map();
 
-    /** @type {!Array<function():void>} */
     this._pendingScripts = [];
 
     test.deprecatedRunAfterPendingDispatches = this._deprecatedRunAfterPendingDispatches.bind(this);
@@ -339,12 +296,7 @@ export class SessionRouter {
     });
   }
 
-  /**
-   * @param {!TargetBase} target
-   * @param {string} sessionId
-   * @param {?Connection=} proxyConnection
-   */
-  registerSession(target, sessionId, proxyConnection) {
+  registerSession(target: TargetBase, sessionId: string, proxyConnection?: Connection|null): void {
     // Only the Audits panel uses proxy connections. If it is ever possible to have multiple active at the
     // same time, it should be tested thoroughly.
     if (proxyConnection) {
@@ -359,10 +311,7 @@ export class SessionRouter {
     this._sessions.set(sessionId, {target, callbacks: new Map(), proxyConnection});
   }
 
-  /**
-   * @param {string} sessionId
-   */
-  unregisterSession(sessionId) {
+  unregisterSession(sessionId: string): void {
     const session = this._sessions.get(sessionId);
     if (!session) {
       return;
@@ -373,11 +322,7 @@ export class SessionRouter {
     this._sessions.delete(sessionId);
   }
 
-  /**
-   * @param {string} sessionId
-   * @return {?TargetBase}
-   */
-  _getTargetBySessionId(sessionId) {
+  _getTargetBySessionId(sessionId: string): TargetBase|null {
     const session = this._sessions.get(sessionId ? sessionId : '');
     if (!session) {
       return null;
@@ -385,33 +330,24 @@ export class SessionRouter {
     return session.target;
   }
 
-  /**
-   * @return {number}
-   */
-  _nextMessageId() {
+  _nextMessageId(): number {
     return this._lastMessageId++;
   }
 
-  /**
-   * @return {!Connection}
-   */
-  connection() {
+  connection(): Connection {
     return this._connection;
   }
 
-  /**
-   * @param {string} sessionId
-   * @param {string} domain
-   * @param {string} method
-   * @param {?Object} params
-   * @param {!_Callback} callback
-   */
-  sendMessage(sessionId, domain, method, params, callback) {
-    const messageObject = {};
+  sendMessage(sessionId: string, domain: string, method: string, params: Object|null, callback: _Callback): void {
     const messageId = this._nextMessageId();
-    messageObject.id = messageId;
-    messageObject.method = method;
+    const messageObject: Message = {
+      id: messageId,
+      method: method,
+    };
+
     if (params) {
+      // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+      // @ts-expect-error
       messageObject.params = params;
     }
     if (sessionId) {
@@ -425,8 +361,7 @@ export class SessionRouter {
     if (test.onMessageSent) {
       const paramsObject = JSON.parse(JSON.stringify(params || {}));
       test.onMessageSent(
-          {domain, method, params: /** @type {!Object} */ (paramsObject), id: messageId},
-          this._getTargetBySessionId(sessionId));
+          {domain, method, params: (paramsObject as Object), id: messageId}, this._getTargetBySessionId(sessionId));
     }
 
     ++this._pendingResponsesCount;
@@ -442,33 +377,24 @@ export class SessionRouter {
     this._connection.sendRawMessage(JSON.stringify(messageObject));
   }
 
-  /**
-   * @param {string} method
-   * @param {?Object} params
-   * @param {?function(...*):void} callback
-   */
-  _sendRawMessageForTesting(method, params, callback) {
+  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  _sendRawMessageForTesting(method: string, params: Object|null, callback: ((...arg0: any[]) => void)|null): void {
     const domain = method.split('.')[0];
-    this.sendMessage('', domain, method, params, callback || (() => {}));
+    this.sendMessage('', domain, method, params, callback || ((): void => {}));
   }
 
-  /**
-   * @param {!Object|string} message
-   */
-  _onMessage(message) {
+  _onMessage(message: string|Object): void {
     if (test.dumpProtocol) {
       test.dumpProtocol('backend: ' + ((typeof message === 'string') ? message : JSON.stringify(message)));
     }
 
     if (test.onMessageReceived) {
       const messageObjectCopy = JSON.parse((typeof message === 'string') ? message : JSON.stringify(message));
-      test.onMessageReceived(
-          /** @type {!Object} */ (messageObjectCopy), this._getTargetBySessionId(messageObjectCopy.sessionId));
+      test.onMessageReceived((messageObjectCopy as Object), this._getTargetBySessionId(messageObjectCopy.sessionId));
     }
 
-    const messageObject =
-        /** @type {!{sessionId: string, url: string, id: number, error: ?Object, result: ?Object}|!{sessionId: string, url: string, method: string, params: !Array<string>}} */
-        ((typeof message === 'string') ? JSON.parse(message) : message);
+    const messageObject = ((typeof message === 'string') ? JSON.parse(message) : message as Message);
 
     // Send all messages to proxy connections.
     let suppressUnknownMessageErrors = false;
@@ -536,19 +462,18 @@ export class SessionRouter {
             messageObject);
         return;
       }
-      session.target._dispatchers[domainName].dispatch(
-          method[1], /** @type {{method: string, params: ?Array<string>}} */ (messageObject));
+      session.target._dispatchers[domainName].dispatch(method[1], (messageObject as {
+                                                         method: string,
+                                                         params: Array<string>| null,
+                                                       }));
     }
   }
 
-  _hasOutstandingNonLongPollingRequests() {
+  _hasOutstandingNonLongPollingRequests(): boolean {
     return this._pendingResponsesCount - this._pendingLongPollingMessageIds.size > 0;
   }
 
-  /**
-   * @param {function():void=} script
-   */
-  _deprecatedRunAfterPendingDispatches(script) {
+  _deprecatedRunAfterPendingDispatches(script?: (() => void)): void {
     if (script) {
       this._pendingScripts.push(script);
     }
@@ -563,7 +488,7 @@ export class SessionRouter {
     }, 0);
   }
 
-  _executeAfterPendingDispatches() {
+  _executeAfterPendingDispatches(): void {
     if (!this._hasOutstandingNonLongPollingRequests()) {
       const scripts = this._pendingScripts;
       this._pendingScripts = [];
@@ -573,40 +498,37 @@ export class SessionRouter {
     }
   }
 
-  /**
-   * @param {!_Callback} callback
-   * @param {string} method
-   */
-  static dispatchConnectionError(callback, method) {
+  static dispatchConnectionError(callback: _Callback, method: string): void {
     const error = {
       message: `Connection is closed, can\'t dispatch pending call to ${method}`,
       code: _ConnectionClosedErrorCode,
-      data: null
+      data: null,
     };
     setTimeout(() => callback(error, null), 0);
   }
 
-  /**
-   * @param {!_CallbackWithDebugInfo} callbackWithDebugInfo
-   */
-  static dispatchUnregisterSessionError({callback, method}) {
+  static dispatchUnregisterSessionError({callback, method}: _CallbackWithDebugInfo): void {
     const error = {
       message: `Session is unregistering, can\'t dispatch pending call to ${method}`,
       code: _ConnectionClosedErrorCode,
-      data: null
+      data: null,
     };
     setTimeout(() => callback(error, null), 0);
   }
 }
 
 export class TargetBase {
-  /**
-   * @param {boolean} needsNodeJSPatching
-   * @param {?TargetBase} parentTarget
-   * @param {string} sessionId
-   * @param {?Connection} connection
-   */
-  constructor(needsNodeJSPatching, parentTarget, sessionId, connection) {
+  _needsNodeJSPatching: boolean;
+  _sessionId: string;
+  _router: SessionRouter|null;
+  _agents: {
+    [x: string]: _AgentPrototype,
+  };
+  _dispatchers: {
+    [x: string]: _DispatcherPrototype,
+  };
+  constructor(
+      needsNodeJSPatching: boolean, parentTarget: TargetBase|null, sessionId: string, connection: Connection|null) {
     this._needsNodeJSPatching = needsNodeJSPatching;
     this._sessionId = sessionId;
 
@@ -614,8 +536,7 @@ export class TargetBase {
       throw new Error('Either connection or sessionId (but not both) must be supplied for a child target');
     }
 
-    /** @type {!SessionRouter} */
-    let router;
+    let router: SessionRouter;
     if (sessionId && parentTarget && parentTarget._router) {
       router = parentTarget._router;
     } else if (connection) {
@@ -624,52 +545,38 @@ export class TargetBase {
       router = new SessionRouter(_factory());
     }
 
-    /** @type {?SessionRouter} */
     this._router = router;
 
     router.registerSession(this, this._sessionId);
 
-    /** @type {!Object<string,!_AgentPrototype>} */
     this._agents = {};
     for (const [domain, agentPrototype] of inspectorBackend._agentPrototypes) {
-      this._agents[domain] = Object.create(/** @type {!_AgentPrototype} */ (agentPrototype));
+      this._agents[domain] = Object.create((agentPrototype as _AgentPrototype));
       this._agents[domain]._target = this;
     }
 
-    /** @type {!Object<string,_DispatcherPrototype>} */
     this._dispatchers = {};
     for (const [domain, dispatcherPrototype] of inspectorBackend._dispatcherPrototypes) {
-      this._dispatchers[domain] = Object.create(/** @type {!_DispatcherPrototype} */ (dispatcherPrototype));
+      this._dispatchers[domain] = Object.create((dispatcherPrototype as _DispatcherPrototype));
       this._dispatchers[domain]._dispatchers = [];
     }
   }
 
-  /**
-   * @param {string} domain
-   * @param {!Object} dispatcher
-   */
-  registerDispatcher(domain, dispatcher) {
+  registerDispatcher(domain: string, dispatcher: Object): void {
     if (!this._dispatchers[domain]) {
       return;
     }
     this._dispatchers[domain].addDomainDispatcher(dispatcher);
   }
 
-  /**
-   * @param {string} domain
-   * @param {!Object} dispatcher
-   */
-  unregisterDispatcher(domain, dispatcher) {
+  unregisterDispatcher(domain: string, dispatcher: Object): void {
     if (!this._dispatchers[domain]) {
       return;
     }
     this._dispatchers[domain].removeDomainDispatcher(dispatcher);
   }
 
-  /**
-   * @param {string} reason
-   */
-  dispose(reason) {
+  dispose(_reason: string): void {
     if (!this._router) {
       return;
     }
@@ -677,495 +584,299 @@ export class TargetBase {
     this._router = null;
   }
 
-  /**
-   * @return {boolean}
-   */
-  isDisposed() {
+  isDisposed(): boolean {
     return !this._router;
   }
 
-  markAsNodeJSForTest() {
+  markAsNodeJSForTest(): void {
     this._needsNodeJSPatching = true;
   }
 
-  /**
-   * @return {?SessionRouter}
-   */
-  router() {
+  router(): SessionRouter|null {
     return this._router;
   }
 
-
   // Agent accessors, keep alphabetically sorted.
 
-  /**
-   * @return {!ProtocolProxyApi.AccessibilityApi}
-   */
-  accessibilityAgent() {
+  accessibilityAgent(): ProtocolProxyApi.AccessibilityApi {
     throw new Error('Implemented in InspectorBackend.js');
   }
 
-  /**
-   * @return {!ProtocolProxyApi.AnimationApi}
-   */
-  animationAgent() {
+  animationAgent(): ProtocolProxyApi.AnimationApi {
     throw new Error('Implemented in InspectorBackend.js');
   }
 
-  /**
-   * @return {!ProtocolProxyApi.ApplicationCacheApi}
-   */
-  applicationCacheAgent() {
+  applicationCacheAgent(): ProtocolProxyApi.ApplicationCacheApi {
     throw new Error('Implemented in InspectorBackend.js');
   }
 
-  /**
-   * @return {!ProtocolProxyApi.AuditsApi}
-   */
-  auditsAgent() {
+  auditsAgent(): ProtocolProxyApi.AuditsApi {
     throw new Error('Implemented in InspectorBackend.js');
   }
 
-  /**
-   * @return {!ProtocolProxyApi.BackgroundServiceApi}
-   */
-  backgroundServiceAgent() {
+  backgroundServiceAgent(): ProtocolProxyApi.BackgroundServiceApi {
     throw new Error('Implemented in InspectorBackend.js');
   }
 
-  /**
-   * @return {!ProtocolProxyApi.CacheStorageApi}
-   */
-  cacheStorageAgent() {
+  cacheStorageAgent(): ProtocolProxyApi.CacheStorageApi {
     throw new Error('Implemented in InspectorBackend.js');
   }
 
-  /**
-   * @return {!ProtocolProxyApi.CSSApi}
-   */
-  cssAgent() {
+  cssAgent(): ProtocolProxyApi.CSSApi {
     throw new Error('Implemented in InspectorBackend.js');
   }
 
-  /**
-   * @return {!ProtocolProxyApi.DatabaseApi}
-   */
-  databaseAgent() {
+  databaseAgent(): ProtocolProxyApi.DatabaseApi {
     throw new Error('Implemented in InspectorBackend.js');
   }
 
-  /**
-   * @return {!ProtocolProxyApi.DebuggerApi}
-   */
-  debuggerAgent() {
+  debuggerAgent(): ProtocolProxyApi.DebuggerApi {
     throw new Error('Implemented in InspectorBackend.js');
   }
 
-  /**
-   * @return {!ProtocolProxyApi.DeviceOrientationApi}
-   */
-  deviceOrientationAgent() {
+  deviceOrientationAgent(): ProtocolProxyApi.DeviceOrientationApi {
     throw new Error('Implemented in InspectorBackend.js');
   }
 
-  /**
-   * @return {!ProtocolProxyApi.DOMApi}
-   */
-  domAgent() {
+  domAgent(): ProtocolProxyApi.DOMApi {
     throw new Error('Implemented in InspectorBackend.js');
   }
 
-  /**
-   * @return {!ProtocolProxyApi.DOMDebuggerApi}
-   */
-  domdebuggerAgent() {
+  domdebuggerAgent(): ProtocolProxyApi.DOMDebuggerApi {
     throw new Error('Implemented in InspectorBackend.js');
   }
 
-  /**
-   * @return {!ProtocolProxyApi.DOMSnapshotApi}
-   */
-  domsnapshotAgent() {
+  domsnapshotAgent(): ProtocolProxyApi.DOMSnapshotApi {
     throw new Error('Implemented in InspectorBackend.js');
   }
 
-  /**
-   * @return {!ProtocolProxyApi.DOMStorageApi}
-   */
-  domstorageAgent() {
+  domstorageAgent(): ProtocolProxyApi.DOMStorageApi {
     throw new Error('Implemented in InspectorBackend.js');
   }
 
-  /**
-   * @return {!ProtocolProxyApi.EmulationApi}
-   */
-  emulationAgent() {
+  emulationAgent(): ProtocolProxyApi.EmulationApi {
     throw new Error('Implemented in InspectorBackend.js');
   }
 
-  /**
-   * @return {!ProtocolProxyApi.HeapProfilerApi}
-   */
-  heapProfilerAgent() {
+  heapProfilerAgent(): ProtocolProxyApi.HeapProfilerApi {
     throw new Error('Implemented in InspectorBackend.js');
   }
 
-  /**
-   * @return {!ProtocolProxyApi.IndexedDBApi}
-   */
-  indexedDBAgent() {
+  indexedDBAgent(): ProtocolProxyApi.IndexedDBApi {
     throw new Error('Implemented in InspectorBackend.js');
   }
 
-  /**
-   * @return {!ProtocolProxyApi.InputApi}
-   */
-  inputAgent() {
+  inputAgent(): ProtocolProxyApi.InputApi {
     throw new Error('Implemented in InspectorBackend.js');
   }
 
-  /**
-   * @return {!ProtocolProxyApi.IOApi}
-   */
-  ioAgent() {
+  ioAgent(): ProtocolProxyApi.IOApi {
     throw new Error('Implemented in InspectorBackend.js');
   }
 
-  /**
-   * @return {!ProtocolProxyApi.InspectorApi}
-   */
-  inspectorAgent() {
+  inspectorAgent(): ProtocolProxyApi.InspectorApi {
     throw new Error('Implemented in InspectorBackend.js');
   }
 
-  /**
-   * @return {!ProtocolProxyApi.LayerTreeApi}
-   */
-  layerTreeAgent() {
+  layerTreeAgent(): ProtocolProxyApi.LayerTreeApi {
     throw new Error('Implemented in InspectorBackend.js');
   }
 
-  /**
-   * @return {!ProtocolProxyApi.LogApi}
-   */
-  logAgent() {
+  logAgent(): ProtocolProxyApi.LogApi {
     throw new Error('Implemented in InspectorBackend.js');
   }
 
-  /**
-   * @return {!ProtocolProxyApi.MediaApi}
-   */
-  mediaAgent() {
+  mediaAgent(): ProtocolProxyApi.MediaApi {
     throw new Error('Implemented in InspectorBackend.js');
   }
 
-  /**
-   * @return {!ProtocolProxyApi.MemoryApi}
-   */
-  memoryAgent() {
+  memoryAgent(): ProtocolProxyApi.MemoryApi {
     throw new Error('Implemented in InspectorBackend.js');
   }
 
-  /**
-   * @return {!ProtocolProxyApi.NetworkApi}
-   */
-  networkAgent() {
+  networkAgent(): ProtocolProxyApi.NetworkApi {
     throw new Error('Implemented in InspectorBackend.js');
   }
 
-  /**
-   * @return {!ProtocolProxyApi.OverlayApi}
-   */
-  overlayAgent() {
+  overlayAgent(): ProtocolProxyApi.OverlayApi {
     throw new Error('Implemented in InspectorBackend.js');
   }
 
-  /**
-   * @return {!ProtocolProxyApi.PageApi}
-   */
-  pageAgent() {
+  pageAgent(): ProtocolProxyApi.PageApi {
     throw new Error('Implemented in InspectorBackend.js');
   }
 
-  /**
-   * @return {!ProtocolProxyApi.ProfilerApi}
-   */
-  profilerAgent() {
+  profilerAgent(): ProtocolProxyApi.ProfilerApi {
     throw new Error('Implemented in InspectorBackend.js');
   }
 
-  /**
-   * @return {!ProtocolProxyApi.PerformanceApi}
-   */
-  performanceAgent() {
+  performanceAgent(): ProtocolProxyApi.PerformanceApi {
     throw new Error('Implemented in InspectorBackend.js');
   }
 
-  /**
-   * @return {!ProtocolProxyApi.RuntimeApi}
-   */
-  runtimeAgent() {
+  runtimeAgent(): ProtocolProxyApi.RuntimeApi {
     throw new Error('Implemented in InspectorBackend.js');
   }
 
-  /**
-   * @return {!ProtocolProxyApi.SecurityApi}
-   */
-  securityAgent() {
+  securityAgent(): ProtocolProxyApi.SecurityApi {
     throw new Error('Implemented in InspectorBackend.js');
   }
 
-  /**
-   * @return {!ProtocolProxyApi.ServiceWorkerApi}
-   */
-  serviceWorkerAgent() {
+  serviceWorkerAgent(): ProtocolProxyApi.ServiceWorkerApi {
     throw new Error('Implemented in InspectorBackend.js');
   }
 
-  /**
-   * @return {!ProtocolProxyApi.StorageApi}
-   */
-  storageAgent() {
+  storageAgent(): ProtocolProxyApi.StorageApi {
     throw new Error('Implemented in InspectorBackend.js');
   }
 
-  /**
-   * @return {!ProtocolProxyApi.TargetApi}
-   */
-  targetAgent() {
+  targetAgent(): ProtocolProxyApi.TargetApi {
     throw new Error('Implemented in InspectorBackend.js');
   }
 
-  /**
-   * @return {!ProtocolProxyApi.TracingApi}
-   */
-  tracingAgent() {
+  tracingAgent(): ProtocolProxyApi.TracingApi {
     throw new Error('Implemented in InspectorBackend.js');
   }
 
-  /**
-   * @return {!ProtocolProxyApi.WebAudioApi}
-   */
-  webAudioAgent() {
+  webAudioAgent(): ProtocolProxyApi.WebAudioApi {
     throw new Error('Implemented in InspectorBackend.js');
   }
 
-  /**
-   * @return {!ProtocolProxyApi.WebAuthnApi}
-   */
-  webAuthnAgent() {
-    throw new Error('Implemented in InspectorBackend.js');
-  }
-
-
-  // Dispatcher registration, keep alphabetically sorted.
-  /**
-   * @param {!ProtocolProxyApi.AnimationDispatcher} dispatcher
-   */
-  registerAnimationDispatcher(dispatcher) {
+  webAuthnAgent(): ProtocolProxyApi.WebAuthnApi {
     throw new Error('Implemented in InspectorBackend.js');
   }
 
-  /**
-   * @param {!ProtocolProxyApi.ApplicationCacheDispatcher} dispatcher
-   */
-  registerApplicationCacheDispatcher(dispatcher) {
+  // Dispatcher registration, keep alphabetically sorted.
+  registerAnimationDispatcher(_dispatcher: ProtocolProxyApi.AnimationDispatcher): void {
     throw new Error('Implemented in InspectorBackend.js');
   }
 
-  /**
-   * @param {!ProtocolProxyApi.AuditsDispatcher} dispatcher
-   */
-  registerAuditsDispatcher(dispatcher) {
+  registerApplicationCacheDispatcher(_dispatcher: ProtocolProxyApi.ApplicationCacheDispatcher): void {
     throw new Error('Implemented in InspectorBackend.js');
   }
 
-  /**
-   * @param {!ProtocolProxyApi.CSSDispatcher} dispatcher
-   */
-  registerCSSDispatcher(dispatcher) {
+  registerAuditsDispatcher(_dispatcher: ProtocolProxyApi.AuditsDispatcher): void {
     throw new Error('Implemented in InspectorBackend.js');
   }
 
-  /**
-   * @param {!ProtocolProxyApi.DatabaseDispatcher} dispatcher
-   */
-  registerDatabaseDispatcher(dispatcher) {
+  registerCSSDispatcher(_dispatcher: ProtocolProxyApi.CSSDispatcher): void {
     throw new Error('Implemented in InspectorBackend.js');
   }
 
-  /**
-   * @param {!ProtocolProxyApi.BackgroundServiceDispatcher} dispatcher
-   */
-  registerBackgroundServiceDispatcher(dispatcher) {
+  registerDatabaseDispatcher(_dispatcher: ProtocolProxyApi.DatabaseDispatcher): void {
     throw new Error('Implemented in InspectorBackend.js');
   }
 
-  /**
-   * @param {!ProtocolProxyApi.DebuggerDispatcher} dispatcher
-   */
-  registerDebuggerDispatcher(dispatcher) {
+  registerBackgroundServiceDispatcher(_dispatcher: ProtocolProxyApi.BackgroundServiceDispatcher): void {
     throw new Error('Implemented in InspectorBackend.js');
   }
 
-  /**
-   * @param {!ProtocolProxyApi.DebuggerDispatcher} dispatcher
-   */
-  unregisterDebuggerDispatcher(dispatcher) {
+  registerDebuggerDispatcher(_dispatcher: ProtocolProxyApi.DebuggerDispatcher): void {
     throw new Error('Implemented in InspectorBackend.js');
   }
 
-  /**
-   * @param {!ProtocolProxyApi.DOMDispatcher} dispatcher
-   */
-  registerDOMDispatcher(dispatcher) {
+  unregisterDebuggerDispatcher(_dispatcher: ProtocolProxyApi.DebuggerDispatcher): void {
     throw new Error('Implemented in InspectorBackend.js');
   }
 
-  /**
-   * @param {!ProtocolProxyApi.DOMStorageDispatcher} dispatcher
-   */
-  registerDOMStorageDispatcher(dispatcher) {
+  registerDOMDispatcher(_dispatcher: ProtocolProxyApi.DOMDispatcher): void {
     throw new Error('Implemented in InspectorBackend.js');
   }
 
-  /**
-   * @param {!ProtocolProxyApi.HeapProfilerDispatcher} dispatcher
-   */
-  registerHeapProfilerDispatcher(dispatcher) {
-    throw new Error('Implemented in InspectorBackend.js');
-  }
-  /**
-   * @param {!ProtocolProxyApi.InspectorDispatcher} dispatcher
-   */
-  registerInspectorDispatcher(dispatcher) {
-    throw new Error('Implemented in InspectorBackend.js');
-  }
-  /**
-   * @param {!ProtocolProxyApi.LayerTreeDispatcher} dispatcher
-   */
-  registerLayerTreeDispatcher(dispatcher) {
+  registerDOMStorageDispatcher(_dispatcher: ProtocolProxyApi.DOMStorageDispatcher): void {
     throw new Error('Implemented in InspectorBackend.js');
   }
 
-  /**
-   * @param {!ProtocolProxyApi.LogDispatcher} dispatcher
-   */
-  registerLogDispatcher(dispatcher) {
+  registerHeapProfilerDispatcher(_dispatcher: ProtocolProxyApi.HeapProfilerDispatcher): void {
+    throw new Error('Implemented in InspectorBackend.js');
+  }
+  registerInspectorDispatcher(_dispatcher: ProtocolProxyApi.InspectorDispatcher): void {
+    throw new Error('Implemented in InspectorBackend.js');
+  }
+  registerLayerTreeDispatcher(_dispatcher: ProtocolProxyApi.LayerTreeDispatcher): void {
     throw new Error('Implemented in InspectorBackend.js');
   }
 
-  /**
-   * @param {!ProtocolProxyApi.MediaDispatcher} dispatcher
-   */
-  registerMediaDispatcher(dispatcher) {
+  registerLogDispatcher(_dispatcher: ProtocolProxyApi.LogDispatcher): void {
     throw new Error('Implemented in InspectorBackend.js');
   }
 
-  /**
-   * @param {!ProtocolProxyApi.NetworkDispatcher} dispatcher
-   */
-  registerNetworkDispatcher(dispatcher) {
+  registerMediaDispatcher(_dispatcher: ProtocolProxyApi.MediaDispatcher): void {
     throw new Error('Implemented in InspectorBackend.js');
   }
 
-  /**
-   * @param {!ProtocolProxyApi.OverlayDispatcher} dispatcher
-   */
-  registerOverlayDispatcher(dispatcher) {
+  registerNetworkDispatcher(_dispatcher: ProtocolProxyApi.NetworkDispatcher): void {
     throw new Error('Implemented in InspectorBackend.js');
   }
 
-  /**
-   * @param {!ProtocolProxyApi.PageDispatcher} dispatcher
-   */
-  registerPageDispatcher(dispatcher) {
+  registerOverlayDispatcher(_dispatcher: ProtocolProxyApi.OverlayDispatcher): void {
     throw new Error('Implemented in InspectorBackend.js');
   }
 
-  /**
-   * @param {!ProtocolProxyApi.ProfilerDispatcher} dispatcher
-   */
-  registerProfilerDispatcher(dispatcher) {
+  registerPageDispatcher(_dispatcher: ProtocolProxyApi.PageDispatcher): void {
     throw new Error('Implemented in InspectorBackend.js');
   }
 
-  /**
-   * @param {!ProtocolProxyApi.RuntimeDispatcher} dispatcher
-   */
-  registerRuntimeDispatcher(dispatcher) {
+  registerProfilerDispatcher(_dispatcher: ProtocolProxyApi.ProfilerDispatcher): void {
     throw new Error('Implemented in InspectorBackend.js');
   }
 
-  /**
-   * @param {!ProtocolProxyApi.SecurityDispatcher} dispatcher
-   */
-  registerSecurityDispatcher(dispatcher) {
+  registerRuntimeDispatcher(_dispatcher: ProtocolProxyApi.RuntimeDispatcher): void {
     throw new Error('Implemented in InspectorBackend.js');
   }
 
-  /**
-   * @param {!ProtocolProxyApi.ServiceWorkerDispatcher} dispatcher
-   */
-  registerServiceWorkerDispatcher(dispatcher) {
+  registerSecurityDispatcher(_dispatcher: ProtocolProxyApi.SecurityDispatcher): void {
     throw new Error('Implemented in InspectorBackend.js');
   }
 
-  /**
-   * @param {!ProtocolProxyApi.StorageDispatcher} dispatcher
-   */
-  registerStorageDispatcher(dispatcher) {
+  registerServiceWorkerDispatcher(_dispatcher: ProtocolProxyApi.ServiceWorkerDispatcher): void {
     throw new Error('Implemented in InspectorBackend.js');
   }
 
-  /**
-   * @param {!ProtocolProxyApi.TargetDispatcher} dispatcher
-   */
-  registerTargetDispatcher(dispatcher) {
+  registerStorageDispatcher(_dispatcher: ProtocolProxyApi.StorageDispatcher): void {
     throw new Error('Implemented in InspectorBackend.js');
   }
 
-  /**
-   * @param {!ProtocolProxyApi.TracingDispatcher} dispatcher
-   */
-  registerTracingDispatcher(dispatcher) {
+  registerTargetDispatcher(_dispatcher: ProtocolProxyApi.TargetDispatcher): void {
     throw new Error('Implemented in InspectorBackend.js');
   }
 
-  /**
-   * @param {!ProtocolProxyApi.WebAudioDispatcher} dispatcher
-   */
-  registerWebAudioDispatcher(dispatcher) {
+  registerTracingDispatcher(_dispatcher: ProtocolProxyApi.TracingDispatcher): void {
+    throw new Error('Implemented in InspectorBackend.js');
+  }
+
+  registerWebAudioDispatcher(_dispatcher: ProtocolProxyApi.WebAudioDispatcher): void {
     throw new Error('Implemented in InspectorBackend.js');
   }
 }
 
+// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+// eslint-disable-next-line @typescript-eslint/naming-convention
 class _AgentPrototype {
-  /**
-   * @param {string} domain
-   */
-  constructor(domain) {
-    /** @type {!Object<string, !Array<string>>} */
+  _replyArgs: {
+    [x: string]: string[],
+  };
+  _domain: string;
+  _target!: TargetBase;
+  constructor(domain: string) {
     this._replyArgs = {};
     this._domain = domain;
-    /** @type {!TargetBase} */
-    this._target;
   }
 
-  /**
-   * @param {string} methodName
-   * @param {!Array.<!{name: string, type: string, optional: boolean}>} signature
-   * @param {!Array.<string>} replyArgs
-   */
-  registerCommand(methodName, signature, replyArgs) {
+  registerCommand(
+      methodName: string, signature: {
+        name: string,
+        type: string,
+        optional: boolean,
+      }[],
+      replyArgs: string[]): void {
     const domainAndMethod = this._domain + '.' + methodName;
 
-    /**
-     * @param {...*} vararg
-     * @this {_AgentPrototype}
-     * @return {!Promise.<*>}
-     */
-    function sendMessagePromise(vararg) {
+    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    function sendMessagePromise(this: _AgentPrototype, _vararg: any): Promise<any> {
       const params = Array.prototype.slice.call(arguments);
       return _AgentPrototype.prototype._sendMessageToBackendPromise.call(this, domainAndMethod, signature, params);
     }
@@ -1173,12 +884,7 @@ class _AgentPrototype {
     // @ts-ignore Method code generation
     this[methodName] = sendMessagePromise;
 
-    /**
-     * @param {!Object=} request
-     * @return {!Promise<?Object>}
-     * @this {_AgentPrototype}
-     */
-    function invoke(request = {}) {
+    function invoke(this: _AgentPrototype, request: Object|undefined = {}): Promise<Object|null> {
       return this._invoke(domainAndMethod, request);
     }
 
@@ -1188,16 +894,20 @@ class _AgentPrototype {
     this._replyArgs[domainAndMethod] = replyArgs;
   }
 
-  /**
-   * @param {string} method
-   * @param {!Array.<!{name: string, type: string, optional: boolean}>} signature
-   * @param {!Array.<*>} args
-   * @param {function(string):void} errorCallback
-   * @return {?Object}
-   */
-  _prepareParameters(method, signature, args, errorCallback) {
-    /** @type {!Object<string, *>} */
-    const params = {};
+  _prepareParameters(
+      method: string, signature: {
+        name: string,
+        type: string,
+        optional: boolean,
+      }[],
+      // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      args: any[], errorCallback: (arg0: string) => void): Object|null {
+    const params: {
+      // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      [x: string]: any,
+    } = {};
     let hasParams = false;
 
     for (const param of signature) {
@@ -1236,18 +946,19 @@ class _AgentPrototype {
     return hasParams ? params : null;
   }
 
-  /**
-   * @param {string} method
-   * @param {!Array<!{name: string, type: string, optional: boolean}>} signature
-   * @param {!Array<*>} args
-   * @return {!Promise<?>}
-   */
-  _sendMessageToBackendPromise(method, signature, args) {
+  _sendMessageToBackendPromise(
+      method: string, signature: {
+        name: string,
+        type: string,
+        optional: boolean,
+      }[],
+      // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      args: any[]): Promise<any> {
     let errorMessage;
-    /**
-     * @param {string} message
-     */
-    function onError(message) {
+    function onError(message: string): void {
       console.error(message);
       errorMessage = message;
     }
@@ -1257,11 +968,11 @@ class _AgentPrototype {
     }
 
     return new Promise(resolve => {
-      /**
-       * @param {*} error
-       * @param {*} result
-       */
-      const callback = (error, result) => {
+      // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const callback = (error: any, result: any): void => {
         if (error) {
           if (!test.suppressRequestErrors && error.code !== DevToolsStubErrorCode && error.code !== _GenericError &&
               error.code !== _ConnectionClosedErrorCode) {
@@ -1284,23 +995,17 @@ class _AgentPrototype {
     });
   }
 
-  /**
-   * @param {string} method
-   * @param {?Object} request
-   * @return {!Promise<!Object>}
-   */
-  _invoke(method, request) {
+  _invoke(method: string, request: Object|null): Promise<Object> {
     return new Promise(fulfill => {
-      /**
-       * @param {*} error
-       * @param {*} result
-       */
-      const callback = (error, result) => {
+      // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const callback = (error: any, result: any): void => {
         if (error && !test.suppressRequestErrors && error.code !== DevToolsStubErrorCode &&
             error.code !== _GenericError && error.code !== _ConnectionClosedErrorCode) {
           console.error('Request ' + method + ' failed. ' + JSON.stringify(error));
         }
-
 
         if (!result) {
           result = {};
@@ -1308,11 +1013,13 @@ class _AgentPrototype {
         if (error) {
           // TODO(crbug.com/1011811): Remove Old lookup of ProtocolError
           result[ProtocolError] = error.message;
-          result.getError = () => {
+          // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          result.getError = (): any => {
             return error.message;
           };
         } else {
-          result.getError = () => {
+          result.getError = (): undefined => {
             return undefined;
           };
         }
@@ -1328,33 +1035,30 @@ class _AgentPrototype {
   }
 }
 
+// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+// eslint-disable-next-line @typescript-eslint/naming-convention
 class _DispatcherPrototype {
+  _eventArgs: {
+    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    [x: string]: any,
+  };
+  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  _dispatchers!: any[];
   constructor() {
-    /** @type {!Object<string, *>} */
     this._eventArgs = {};
-    /** @type {!Array<*>} */
-    this._dispatchers;
   }
 
-  /**
-   * @param {string} eventName
-   * @param {!Object} params
-   */
-  registerEvent(eventName, params) {
+  registerEvent(eventName: string, params: Object): void {
     this._eventArgs[eventName] = params;
   }
 
-  /**
-   * @param {!Object} dispatcher
-   */
-  addDomainDispatcher(dispatcher) {
+  addDomainDispatcher(dispatcher: Object): void {
     this._dispatchers.push(dispatcher);
   }
 
-  /**
-   * @param {!Object} dispatcher
-   */
-  removeDomainDispatcher(dispatcher) {
+  removeDomainDispatcher(dispatcher: Object): void {
     const index = this._dispatchers.indexOf(dispatcher);
     if (index === -1) {
       return;
@@ -1362,11 +1066,14 @@ class _DispatcherPrototype {
     this._dispatchers.splice(index, 1);
   }
 
-  /**
-   * @param {string} functionName
-   * @param {!{method: string, params: ?Object.<string, *>|undefined}} messageObject
-   */
-  dispatch(functionName, messageObject) {
+  dispatch(functionName: string, messageObject: {
+    method: string,
+    params: ({
+      // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      [x: string]: any,
+    }|undefined)|null,
+  }): void {
     if (!this._dispatchers.length) {
       return;
     }
@@ -1389,18 +1096,14 @@ class _DispatcherPrototype {
   }
 }
 
-/**
- * Takes error and result.
- * @typedef {function(?Object, ?Object):void}
- */
-// @ts-ignore typedef
-export let _Callback;
-
-/**
- * Takes error and result.
- * @typedef {!{callback: function(?Object, ?Object):void, method: string}}
- */
-// @ts-ignore typedef
-export let _CallbackWithDebugInfo;
+// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+// eslint-disable-next-line @typescript-eslint/naming-convention
+export type _Callback = (arg0: Object|null, arg1: Object|null) => void;
+// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+// eslint-disable-next-line @typescript-eslint/naming-convention
+export interface _CallbackWithDebugInfo {
+  callback: (arg0: Object|null, arg1: Object|null) => void;
+  method: string;
+}
 
 export const inspectorBackend = new InspectorBackend();

@@ -481,7 +481,13 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
 
     this._messagesElement.addEventListener('contextmenu', this._handleContextMenuEvent.bind(this), false);
 
-    this._linkifier = new Components.Linkifier.Linkifier(MaxLengthForLinks);
+    // Filters need to be re-applied to a console message when the message's live location changes.
+    // All relevant live locations are created by the same linkifier, so it is enough to subscribe to
+    // the linkifiers live location change event.
+    const throttler = new Common.Throttler.Throttler(100);
+    const refilterMessages = (): Promise<void> => throttler.schedule(async () => this._onFilterChanged());
+    this._linkifier =
+        new Components.Linkifier.Linkifier(MaxLengthForLinks, /* useLinkDecorator */ undefined, refilterMessages);
 
     this._consoleMessages = [];
     this._viewMessageSymbol = Symbol('viewMessage');

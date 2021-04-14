@@ -1059,18 +1059,18 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
     this._currentGroup = this._topGroup;
     this._regexMatchRanges = [];
     this._hiddenByFilterCount = 0;
-    for (let i = 0; i < this._visibleViewMessages.length; ++i) {
-      this._visibleViewMessages[i].resetCloseGroupDecorationCount();
-      this._visibleViewMessages[i].resetIncrementRepeatCount();
+    for (const visibleViewMessage of this._visibleViewMessages) {
+      visibleViewMessage.resetCloseGroupDecorationCount();
+      visibleViewMessage.resetIncrementRepeatCount();
     }
     this._visibleViewMessages = [];
     if (this._groupSimilarSetting.get()) {
       this._addGroupableMessagesToEnd();
     } else {
-      for (let i = 0; i < this._consoleMessages.length; ++i) {
-        this._consoleMessages[i].setInSimilarGroup(false);
+      for (const consoleMessage of this._consoleMessages) {
+        consoleMessage.setInSimilarGroup(false);
         this._appendMessageToEnd(
-            this._consoleMessages[i],
+            consoleMessage,
             true /* crbug.com/1082963: prevent collapse of same messages when "Group similar" is false */);
       }
     }
@@ -1082,8 +1082,7 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
   _addGroupableMessagesToEnd(): void {
     const alreadyAdded = new Set<SDK.ConsoleModel.ConsoleMessage>();
     const processedGroupKeys = new Set<string>();
-    for (let i = 0; i < this._consoleMessages.length; ++i) {
-      const viewMessage = this._consoleMessages[i];
+    for (const viewMessage of this._consoleMessages) {
       const message = viewMessage.consoleMessage();
       if (alreadyAdded.has(message)) {
         continue;
@@ -1236,8 +1235,7 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
 
   searchCanceled(): void {
     this._cleanupAfterSearch();
-    for (let i = 0; i < this._visibleViewMessages.length; ++i) {
-      const message = this._visibleViewMessages[i];
+    for (const message of this._visibleViewMessages) {
       message.setSearchRegex(null);
     }
     this._currentMatchRangeIndex = -1;

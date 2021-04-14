@@ -42,7 +42,6 @@ async function openFileInSourceTab(fileName: string) {
 
 async function getExpandedIssuesTitle(): Promise<Set<string>> {
   const expandedIssues = new Set<string>();
-  await waitFor('.issue');
   const issues = await $$('.issue');
   for (const issue of issues) {
     const expanded = await issue.evaluate(x => x.classList.contains('expanded'));
@@ -53,6 +52,17 @@ async function getExpandedIssuesTitle(): Promise<Set<string>> {
     }
   }
   return expandedIssues;
+}
+
+async function waitForExpandedIssueTitle(issueIconComponent: puppeteer.ElementHandle<Element>): Promise<Set<string>> {
+  return await waitForFunction(async () => {
+    await click(issueIconComponent);
+    const expandedIssues = await getExpandedIssuesTitle();
+    if (expandedIssues.size) {
+      return expandedIssues;
+    }
+    return undefined;
+  });
 }
 
 describe('The row\'s icon bucket', async function() {
@@ -116,18 +126,30 @@ describe('The row\'s icon bucket', async function() {
 
   // Flaky test.
   it.skipOnPlatforms(['mac'], '[crbug.com/1184162]: should reveal Issues tab when the icon is clicked', async () => {
-    await openFileInSourceTab('trusted-type-violations-report-only.rawresponse');
+    await openFileInSourceTab('trusted-type-policy-violation-report-only.rawresponse');
+
+    const HIDE_DEBUGGER_SELECTOR = '[aria-label="Hide debugger"]';
+    const HIDE_NAVIGATOR_SELECTOR = '[aria-label="Hide navigator"]';
+    await click(HIDE_DEBUGGER_SELECTOR);
+    await click(HIDE_NAVIGATOR_SELECTOR);
+
     const bucketIssueIconComponents = await getIconComponents('text-editor-line-decoration-icon-issue');
     assert.strictEqual(bucketIssueIconComponents.length, 1);
     const issueIconComponent = bucketIssueIconComponents[0];
     await click(issueIconComponent);
 
-    const expandedIssues = await getExpandedIssuesTitle();
+    const expandedIssues = await waitForExpandedIssueTitle(issueIconComponent);
     assert.isTrue(expandedIssues.has('Trusted Type policy creation blocked by Content Security Policy'));
   });
 
   it('should reveal the Issues tab if the icon in the popover is clicked', async () => {
     await openFileInSourceTab('trusted-type-violations-report-only.rawresponse');
+
+    const HIDE_DEBUGGER_SELECTOR = '[aria-label="Hide debugger"]';
+    const HIDE_NAVIGATOR_SELECTOR = '[aria-label="Hide navigator"]';
+    await click(HIDE_DEBUGGER_SELECTOR);
+    await click(HIDE_NAVIGATOR_SELECTOR);
+
     const bucketIssueIconComponents = await getIconComponents('text-editor-line-decoration-icon-issue');
     assert.strictEqual(bucketIssueIconComponents.length, 1);
     const issueIconComponent = bucketIssueIconComponents[0];
@@ -139,7 +161,7 @@ describe('The row\'s icon bucket', async function() {
     const issueIcon = await waitFor('.text-editor-row-message-icon', rowMessage);
     await issueIcon.click();
 
-    const expandedIssues = await getExpandedIssuesTitle();
+    const expandedIssues = await waitForExpandedIssueTitle(issueIconComponent);
     assert.isTrue(expandedIssues.has(issueTitle));
   });
 });

@@ -5,11 +5,12 @@
 import * as Root from '../core/root/root.js';
 import * as IssuesManager from '../models/issues_manager/issues_manager.js';
 import * as Marked from '../third_party/marked/marked.js';
-import * as MarkdownView from '../ui/components/markdown_view/markdown_view.js';
 
 export interface IssueDescription {
   title: string;
-  view: MarkdownView.MarkdownView.MarkdownView;
+  // TODO(crbug.com/1108699): Fix types when they are available.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  markdown: any[];
   links: {link: string, linkTitle: string}[];
 }
 
@@ -18,6 +19,24 @@ export async function createIssueDescriptionFromMarkdown(description: IssuesMana
   const rawMarkdown = await getMarkdownFileContent(description.file);
   const rawMarkdownWithPlaceholdersReplaced = substitutePlaceholders(rawMarkdown, description.substitutions);
   return createIssueDescriptionFromRawMarkdown(rawMarkdownWithPlaceholdersReplaced, description);
+}
+
+/**
+ * This function is exported separately for unit testing.
+ */
+export function createIssueDescriptionFromRawMarkdown(
+    markdown: string, description: IssuesManager.Issue.MarkdownIssueDescription): IssueDescription {
+  const markdownAst = Marked.Marked.lexer(markdown);
+  const title = findTitleFromMarkdownAst(markdownAst);
+  if (!title) {
+    throw new Error('Markdown issue descriptions must start with a heading');
+  }
+
+  return {
+    title,
+    markdown: markdownAst.slice(1),
+    links: description.links,
+  };
 }
 
 async function getMarkdownFileContent(filename: string): Promise<string> {
@@ -69,26 +88,6 @@ function validatePlaceholders(placeholders: Set<string>): void {
   if (invalidPlaceholders.length > 0) {
     throw new Error(`Invalid placeholders provided in the substitutions map: ${invalidPlaceholders}`);
   }
-}
-
-/**
- * This function is exported separately for unit testing.
- */
-export function createIssueDescriptionFromRawMarkdown(
-    markdown: string, description: IssuesManager.Issue.MarkdownIssueDescription): IssueDescription {
-  const markdownAst = Marked.Marked.lexer(markdown);
-  const title = findTitleFromMarkdownAst(markdownAst);
-  if (!title) {
-    throw new Error('Markdown issue descriptions must start with a heading');
-  }
-
-  const markdownComponent = new MarkdownView.MarkdownView.MarkdownView();
-  markdownComponent.data = {tokens: markdownAst.slice(1)};
-  return {
-    title,
-    view: markdownComponent,
-    links: description.links,
-  };
 }
 
 // TODO(crbug.com/1108699): Fix types when they are available.

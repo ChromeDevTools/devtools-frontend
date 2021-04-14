@@ -15,6 +15,7 @@ import * as ConsoleCounters from '../panels/console_counters/console_counters.js
 import * as Elements from '../panels/elements/elements.js';
 import * as Network from '../panels/network/network.js';
 import * as IconButton from '../ui/components/icon_button/icon_button.js';
+import * as MarkdownView from '../ui/components/markdown_view/markdown_view.js';
 import * as UI from '../ui/legacy/legacy.js';
 
 import {AffectedBlockedByResponseView} from './AffectedBlockedByResponseView.js';
@@ -584,7 +585,9 @@ export class IssueView extends UI.TreeOutline.TreeElement {
     const messageElement = new UI.TreeOutline.TreeElement();
     messageElement.setCollapsible(false);
     messageElement.selectable = false;
-    messageElement.listItemElement.appendChild(this._description.view);
+    const markdownComponent = new MarkdownView.MarkdownView.MarkdownView();
+    markdownComponent.data = {tokens: this._description.markdown};
+    messageElement.listItemElement.appendChild(markdownComponent);
     this.appendChild(messageElement);
   }
 

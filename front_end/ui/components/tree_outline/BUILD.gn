@@ -11,9 +11,9 @@ devtools_module("tree_outline") {
     "TreeOutlineUtils.ts",
   ]
   deps = [
-    "../../../component_helpers:bundle",
     "../../../core/platform:bundle",
     "../../../third_party/lit-html:bundle",
+    "../../../ui/components/helpers:bundle",
     "../../../ui/components/render_coordinator:bundle",
   ]
 

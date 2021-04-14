@@ -2,9 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as ComponentHelpers from '../../../component_helpers/component_helpers.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as LitHtml from '../../../third_party/lit-html/lit-html.js';
+import * as ComponentHelpers from '../helpers/helpers.js';
 import * as Coordinator from '../render_coordinator/render_coordinator.js';
 
 import {findNextNodeForTreeOutlineKeyboardNavigation, getNodeChildren, getPathToTreeNode, isExpandableNode, trackDOMNodeToTreeNode, TreeNode, TreeNodeWithChildren} from './TreeOutlineUtils.js';

@@ -2,9 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../core/common/common.js';
-import * as Root from '../core/root/root.js';
-import * as ThemeSupport from '../theme_support/theme_support.js';
+import * as Common from '../../../core/common/common.js';
+import * as Root from '../../../core/root/root.js';
+import * as ThemeSupport from '../../../theme_support/theme_support.js';
 
 import {CSS_RESOURCES_TO_LOAD_INTO_RUNTIME} from './get-stylesheet.js';
 

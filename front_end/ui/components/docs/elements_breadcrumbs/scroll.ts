@@ -2,8 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as ComponentHelpers from '../../../../component_helpers/component_helpers.js';
 import * as Elements from '../../../../panels/elements/elements.js';
+import * as ComponentHelpers from '../../helpers/helpers.js';
+
 import {makeCrumb} from './helpers.js';
 
 await ComponentHelpers.ComponentServerSetup.setup();

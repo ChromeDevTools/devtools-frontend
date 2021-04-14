@@ -5,9 +5,9 @@ ts_library("test_setup") {
   sources = [ "test_setup.ts" ]
 
   deps = [
-    "../../../../front_end/component_helpers:bundle",
     "../../../../front_end/core/common:bundle",
     "../../../../front_end/theme_support:bundle",
+    "../../../../front_end/ui/components/helpers:bundle",
     "../helpers",
   ]
 }

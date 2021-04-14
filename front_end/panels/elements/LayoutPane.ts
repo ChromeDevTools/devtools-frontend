@@ -5,10 +5,10 @@
 import './NodeText.js';
 import '../../ui/components/survey_link/survey_link.js';
 
-import * as ComponentHelpers from '../../component_helpers/component_helpers.js';
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as LitHtml from '../../third_party/lit-html/lit-html.js';
+import * as ComponentHelpers from '../../ui/components/helpers/helpers.js';
 import * as SurveyLink from '../../ui/components/survey_link/survey_link.js';
 
 import {BooleanSetting, EnumSetting, LayoutElement, Setting} from './LayoutPaneUtils.js';

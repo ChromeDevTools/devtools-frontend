@@ -10,7 +10,7 @@ ts_library("ts") {
   sources = [ "simple-url.ts" ]
 
   deps = [
-    "../../../../component_helpers:bundle",
+    "../../../../ui/components/helpers:bundle",
     "../../../../ui/components/linkifier:bundle",
   ]
 }

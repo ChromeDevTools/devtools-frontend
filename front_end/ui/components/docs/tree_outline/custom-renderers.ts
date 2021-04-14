@@ -3,8 +3,8 @@
 // found in the LICENSE file.
 
 import * as FrontendHelpers from '../../../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
-import * as ComponentHelpers from '../../../../component_helpers/component_helpers.js';
 import * as LitHtml from '../../../../third_party/lit-html/lit-html.js';
+import * as ComponentHelpers from '../../helpers/helpers.js';
 import * as TreeOutline from '../../tree_outline/tree_outline.js';
 
 await ComponentHelpers.ComponentServerSetup.setup();

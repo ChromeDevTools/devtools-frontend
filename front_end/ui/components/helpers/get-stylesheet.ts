@@ -2,8 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Root from '../core/root/root.js';
-import * as ThemeSupport from '../theme_support/theme_support.js';
+import * as Root from '../../../core/root/root.js';
+import * as ThemeSupport from '../../../theme_support/theme_support.js';
 
 const sheetsCache = new Map<string, {sheets: CSSStyleSheet[], enableLegacyPatching: boolean}>();
 

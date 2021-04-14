@@ -3,8 +3,8 @@
 // found in the LICENSE file.
 
 import * as EnvironmentHelpers from '../../../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
-import * as ComponentHelpers from '../../../../component_helpers/component_helpers.js';
 import * as DataGrid from '../../data_grid/data_grid.js';
+import * as ComponentHelpers from '../../helpers/helpers.js';
 
 await EnvironmentHelpers.initializeGlobalVars();
 await ComponentHelpers.ComponentServerSetup.setup();

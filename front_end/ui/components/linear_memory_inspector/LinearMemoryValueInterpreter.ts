@@ -5,8 +5,8 @@
 import './ValueInterpreterDisplay.js';
 import './ValueInterpreterSettings.js';
 
-import * as ComponentHelpers from '../../../component_helpers/component_helpers.js';
 import * as LitHtml from '../../../third_party/lit-html/lit-html.js';
+import * as ComponentHelpers from '../helpers/helpers.js';
 import * as IconButton from '../icon_button/icon_button.js';
 
 import type {ValueDisplayData} from './ValueInterpreterDisplay.js';

@@ -15,12 +15,12 @@ devtools_module("data_grid") {
     "DataGridUtils.ts",
   ]
   deps = [
-    "../../../component_helpers:bundle",
     "../../../core/common:bundle",
     "../../../core/host:bundle",
     "../../../core/platform:bundle",
     "../../../models/text_utils:bundle",
     "../../../third_party/lit-html:bundle",
+    "../../../ui/components/helpers:bundle",
     "../../../ui/components/render_coordinator:bundle",
     "../../../ui/legacy:bundle",
   ]

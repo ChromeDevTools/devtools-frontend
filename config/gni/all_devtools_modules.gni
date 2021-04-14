@@ -8,10 +8,6 @@ generated_typescript_modules = []
 
 all_typescript_module_sources = [
   "browser_sdk/LogManager.js",
-  "component_helpers/component-server-setup.js",
-  "component_helpers/directives.js",
-  "component_helpers/get-stylesheet.js",
-  "component_helpers/set-css-property.js",
   "components/ImagePreview.js",
   "components/JSPresentationUtils.js",
   "components/Linkifier.js",
@@ -695,6 +691,10 @@ all_typescript_module_sources = [
   "ui/components/data_grid/DataGridRenderers.js",
   "ui/components/data_grid/DataGridUtils.js",
   "ui/components/expandable_list/ExpandableList.js",
+  "ui/components/helpers/component-server-setup.js",
+  "ui/components/helpers/directives.js",
+  "ui/components/helpers/get-stylesheet.js",
+  "ui/components/helpers/set-css-property.js",
   "ui/components/icon_button/Icon.js",
   "ui/components/icon_button/IconButton.js",
   "ui/components/linear_memory_inspector/LinearMemoryInspector.js",

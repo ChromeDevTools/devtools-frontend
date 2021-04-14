@@ -3,8 +3,8 @@
 // found in the LICENSE file.
 
 import * as FrontendHelpers from '../../../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
-import * as ComponentHelpers from '../../../../component_helpers/component_helpers.js';
 import * as Marked from '../../../../third_party/marked/marked.js';
+import * as ComponentHelpers from '../../helpers/helpers.js';
 import * as MarkdownView from '../../markdown_view/markdown_view.js';
 
 await ComponentHelpers.ComponentServerSetup.setup();

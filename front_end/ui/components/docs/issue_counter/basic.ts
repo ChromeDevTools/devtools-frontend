@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as FrontendHelpers from '../../../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
-import * as ComponentHelpers from '../../../../component_helpers/component_helpers.js';
+import * as ComponentHelpers from '../../helpers/helpers.js';
 import type * as ConsoleCountersModule from '../../../../panels/console_counters/console_counters.js';
 import type * as IssuesManager from '../../../../models/issues_manager/issues_manager.js';
 

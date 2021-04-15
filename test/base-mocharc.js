@@ -59,13 +59,19 @@ function createMochaConfig({suiteName, extraMochaConfig = {}}) {
     if (testSuitePath) {
       // This means we are being run with the new test runner
       /**
-     * We take the source file, change its extension to .js, and then we need to
-     * find its location in out/TARGET. To do that we can remove the
-     * ROOT_DIRECTORY part from the file path, and then prepend it with
-     * test-suite-path (which is relative to out/TARGET), to get our full path
-     * to the compiled output.
-     */
-      const renamedFile = fileName.replace(/\.ts$/, '.js').replace(ROOT_DIRECTORY, '');
+       * We take the source file, change its extension to .js, and then we need to
+       * find its location in out/TARGET. To do that we can remove the
+       * ROOT_DIRECTORY part from the file path, and then prepend it with
+       * test-suite-path (which is relative to out/TARGET), to get our full path
+       * to the compiled output.
+       * We have to split ROOT_DIRECTORY on path.sep and join with POSIX
+       * separator because even on Windows machines the results of glob.sync
+       * come back with POSIX seperators. Therefore, to be able to replace the
+       * ROOT_DIRECTORY in that path, we need it to have POSIX seperators else
+       * it won't match.
+       */
+      const rootDirectoryWithPosixSeps = ROOT_DIRECTORY.split(path.sep).join('/');
+      const renamedFile = fileName.replace(/\.ts$/, '.js').replace(rootDirectoryWithPosixSeps, '');
       generatedFile = path.join('out', target, testSuitePath, renamedFile);
 
     } else {

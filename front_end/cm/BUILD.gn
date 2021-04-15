@@ -5,7 +5,7 @@
 import("../../scripts/build/ninja/devtools_entrypoint.gni")
 
 devtools_entrypoint("cm") {
-  entrypoint = "cm.js"
+  entrypoint = "cm.ts"
 
   deps = [ "../third_party/codemirror" ]
 }

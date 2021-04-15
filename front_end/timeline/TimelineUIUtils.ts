@@ -273,8 +273,10 @@ const UIStrings = {
   */
   userTiming: 'User Timing',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   * @description Name for an event shown in the Performance panel. When a network
+   * request is about to be sent by the browser, the time is recorded and DevTools
+   * is notified that a network request will be sent momentarily.
+   */
   willSendRequest: 'Will Send Request',
   /**
   *@description Text in Timeline UIUtils of the Performance panel
@@ -410,8 +412,9 @@ const UIStrings = {
   */
   sign: 'Sign',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   * @description Noun phrase for an event of the Web Crypto API. The event is recorded when the signing process is concluded.
+   * Signature: https://developer.mozilla.org/en-US/docs/Glossary/Signature/Security
+   */
   signReply: 'Sign Reply',
   /**
   *@description Text in Timeline UIUtils of the Performance panel
@@ -504,8 +507,10 @@ const UIStrings = {
   */
   tapDown: 'Tap Down',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   * @description Noun for the cancelation of an input touch event in the Performance panel.
+   * For example this can happen when the user touches the surface with too many fingers.
+   * This is opposed to a "Touch End" event, where the user lifts the finger from the surface.
+   */
   touchCancel: 'Touch Cancel',
   /**
   *@description Noun for the end of an input touch event in the Performance panel.

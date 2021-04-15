@@ -11184,7 +11184,7 @@
     "message": "One or more settings have changed which requires a reload to take effect."
   },
   "ui/legacy/SettingsUI.ts | srequiresReload": {
-    "message": "{PH1}Requires reload"
+    "message": "*Requires reload"
   },
   "ui/legacy/SoftContextMenu.ts | checked": {
     "message": "checked"

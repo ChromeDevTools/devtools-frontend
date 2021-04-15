@@ -48,8 +48,10 @@ const UIStrings = {
   */
   syncChangesInDevtoolsWithThe: 'Sync changes in DevTools with the local filesystem',
   /**
-  *@description Text for link in the Filesystem Side View in Sources Panel
-  */
+   * @description Text for link in the Filesystem Side View in Sources Panel. Workspaces is a
+   * DevTools feature that allows editing local files inside DevTools.
+   * See: https://developer.chrome.com/docs/devtools/workspaces/
+   */
   learnMoreAboutWorkspaces: 'Learn more about Workspaces',
   /**
   *@description Text in Sources Navigator of the Sources panel

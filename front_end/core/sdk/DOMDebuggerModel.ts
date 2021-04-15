@@ -19,8 +19,11 @@ const UIStrings = {
   */
   trustedTypeViolations: 'Trusted Type Violations',
   /**
-  *@description Title for a checkbox that turns on breakpoints on Trusted Type sink violations
-  */
+   * @description Noun. Title for a checkbox that turns on breakpoints on Trusted Type sink violations.
+   * "Trusted Types" is a Web API. A "Sink" (Noun, singular) is a special function, akin to a data sink, that expects
+   * to receive data in a specific format. Should the data be in the wrong format, or something else
+   * go wrong, its called a "sink violation".
+   */
   sinkViolations: 'Sink Violations',
   /**
   *@description Title for a checkbox that turns on breakpoints on Trusted Type policy violations

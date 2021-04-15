@@ -11184,7 +11184,7 @@
     "message": "Ôńê ór̂ ḿôŕê śêt́t̂ín̂ǵŝ h́âv́ê ćĥán̂ǵêd́ ŵh́îćĥ ŕêq́ûír̂éŝ á r̂él̂óâd́ t̂ó t̂ák̂é êf́f̂éĉt́."
   },
   "ui/legacy/SettingsUI.ts | srequiresReload": {
-    "message": "{PH1}R̂éq̂úîŕêś r̂él̂óâd́"
+    "message": "*R̂éq̂úîŕêś r̂él̂óâd́"
   },
   "ui/legacy/SoftContextMenu.ts | checked": {
     "message": "ĉh́êćk̂éd̂"

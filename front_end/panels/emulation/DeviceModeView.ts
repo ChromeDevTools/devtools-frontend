@@ -20,28 +20,34 @@ const UIStrings = {
   */
   doubleclickForFullHeight: 'Double-click for full height',
   /**
-  *@description Name of a device that the user can select to emulate. Small mobile device.
-  */
+   * @description Name of a device that the user can select to emulate. Small mobile device.
+   * Translation of this phrase should be limited to 10 characters.
+   */
   mobileS: 'Mobile S',
   /**
-  *@description Name of a device that the user can select to emulate. Medium mobile device.
-  */
+   * @description Name of a device that the user can select to emulate. Medium mobile device.
+   * Translation of this phrase should be limited to 10 characters.
+   */
   mobileM: 'Mobile M',
   /**
-  *@description Name of a device that the user can select to emulate. Large mobile device.
-  */
+   * @description Name of a device that the user can select to emulate. Large mobile device.
+   * Translation of this phrase should be limited to 10 characters.
+   */
   mobileL: 'Mobile L',
   /**
-  *@description Name of a device that the user can select to emulate. Tablet device.
-  */
+   * @description Name of a device that the user can select to emulate. Tablet device.
+   * Translation of this phrase should be limited to 10 characters.
+   */
   tablet: 'Tablet',
   /**
-  *@description Name of a device that the user can select to emulate. Laptop device.
-  */
+   * @description Name of a device that the user can select to emulate. Laptop device.
+   * Translation of this phrase should be limited to 10 characters.
+   */
   laptop: 'Laptop',
   /**
-  *@description Name of a device that the user can select to emulate. Large laptop device.
-  */
+   * @description Name of a device that the user can select to emulate. Large laptop device.
+   * Translation of this phrase should be limited to 10 characters.
+   */
   laptopL: 'Laptop L',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/emulation/DeviceModeView.ts', UIStrings);

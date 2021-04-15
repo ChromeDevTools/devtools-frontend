@@ -547,8 +547,8 @@ describe('User Metrics for CSS Editors in Styles Pane', () => {
   it('click swatches and listen for events', async () => {
     await enableExperiment('fontEditor');
     const {frontend} = getBrowserAndPages();
-    await goToResource('host/css-editor.html');
     await beginCatchEvents(frontend);
+    await goToResource('host/css-editor.html');
     await waitForElementsStyleSection();
     await waitFor('.color-swatch-inner');
     await click('.color-swatch-inner');

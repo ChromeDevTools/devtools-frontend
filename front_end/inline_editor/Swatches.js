@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Common from '../core/common/common.js';
 import * as TextUtils from '../models/text_utils/text_utils.js';
 import * as UI from '../ui/legacy/legacy.js';
@@ -12,9 +10,6 @@ import {ColorSwatch} from './ColorSwatch.js';
 import {CSSShadowModel} from './CSSShadowModel.js';  // eslint-disable-line no-unused-vars
 
 export class BezierSwatch extends HTMLSpanElement {
-  _iconElement: UI.Icon.Icon;
-  _textElement: HTMLElement;
-
   constructor() {
     super();
     const root = UI.Utils.createShadowRootWithCoreStyles(
@@ -25,41 +20,52 @@ export class BezierSwatch extends HTMLSpanElement {
     root.createChild('slot');
   }
 
-  static create(): BezierSwatch {
-    let constructor: (() => Element)|((() => Element) | null) = BezierSwatch._constructor;
+  /**
+   * @return {!BezierSwatch}
+   */
+  static create() {
+    let constructor = BezierSwatch._constructor;
     if (!constructor) {
       constructor = UI.Utils.registerCustomElement('span', 'bezier-swatch', BezierSwatch);
       BezierSwatch._constructor = constructor;
     }
 
-    return constructor() as BezierSwatch;
+    return /** @type {!BezierSwatch} */ (constructor());
   }
 
-  bezierText(): string {
+  /**
+   * @return {string}
+   */
+  bezierText() {
     return this._textElement.textContent || '';
   }
 
-  setBezierText(text: string): void {
+  /**
+   * @param {string} text
+   */
+  setBezierText(text) {
     this._textElement.textContent = text;
   }
 
-  hideText(hide: boolean): void {
+  /**
+   * @param {boolean} hide
+   */
+  hideText(hide) {
     this._textElement.hidden = hide;
   }
 
-  iconElement(): HTMLSpanElement {
+  /**
+   * @return {!HTMLSpanElement}
+   */
+  iconElement() {
     return this._iconElement;
   }
-
-  static _constructor: (() => Element)|null = null;
 }
 
-export class CSSShadowSwatch extends HTMLSpanElement {
-  _iconElement: UI.Icon.Icon;
-  _contentElement: HTMLElement;
-  _colorSwatch!: ColorSwatch|null;
-  _model?: CSSShadowModel;
+/** @type {?function():!Element} */
+BezierSwatch._constructor = null;
 
+export class CSSShadowSwatch extends HTMLSpanElement {
   constructor() {
     super();
     const root = UI.Utils.createShadowRootWithCoreStyles(
@@ -68,23 +74,35 @@ export class CSSShadowSwatch extends HTMLSpanElement {
     root.appendChild(this._iconElement);
     root.createChild('slot');
     this._contentElement = this.createChild('span');
+
+    /** @type {?ColorSwatch} */
+    this._colorSwatch;
   }
 
-  static create(): CSSShadowSwatch {
-    let constructor: (() => Element)|((() => Element) | null) = CSSShadowSwatch._constructor;
+  /**
+   * @return {!CSSShadowSwatch}
+   */
+  static create() {
+    let constructor = CSSShadowSwatch._constructor;
     if (!constructor) {
       constructor = UI.Utils.registerCustomElement('span', 'css-shadow-swatch', CSSShadowSwatch);
       CSSShadowSwatch._constructor = constructor;
     }
 
-    return constructor() as CSSShadowSwatch;
+    return /** @type {!CSSShadowSwatch} */ (constructor());
   }
 
-  model(): CSSShadowModel {
-    return this._model as CSSShadowModel;
+  /**
+   * @return {!CSSShadowModel}
+   */
+  model() {
+    return /** @type {!CSSShadowModel} */ (this._model);
   }
 
-  setCSSShadow(model: CSSShadowModel): void {
+  /**
+   * @param {!CSSShadowModel} model
+   */
+  setCSSShadow(model) {
     this._model = model;
     this._contentElement.removeChildren();
     const results = TextUtils.TextUtils.Utils.splitStringByRegexes(
@@ -95,10 +113,8 @@ export class CSSShadowSwatch extends HTMLSpanElement {
         if (!this._colorSwatch) {
           this._colorSwatch = new ColorSwatch();
           const value = this._colorSwatch.createChild('span');
-          this._colorSwatch.addEventListener('format-changed', (event: Event) => {
-            // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            value.textContent = (event as any).data.text;
+          this._colorSwatch.addEventListener('format-changed', /** @param {!Event} event */ event => {
+            value.textContent = /** @type {*} */ (event).data.text;
           });
         }
 
@@ -114,17 +130,27 @@ export class CSSShadowSwatch extends HTMLSpanElement {
     }
   }
 
-  hideText(hide: boolean): void {
+  /**
+   * @param {boolean} hide
+   */
+  hideText(hide) {
     this._contentElement.hidden = hide;
   }
 
-  iconElement(): HTMLSpanElement {
+  /**
+   * @return {!HTMLSpanElement}
+   */
+  iconElement() {
     return this._iconElement;
   }
 
-  colorSwatch(): ColorSwatch|null {
+  /**
+   * @return {?ColorSwatch}
+   */
+  colorSwatch() {
     return this._colorSwatch;
   }
-
-  static _constructor: (() => Element)|null = null;
 }
+
+/** @type {?function():!Element} */
+CSSShadowSwatch._constructor = null;

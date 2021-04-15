@@ -1,6 +1,6 @@
 {
   "modules" : [
-    { "name": "screencast", "type": "autostart" }
+    { "name": "panels/screencast", "type": "autostart" }
   ],
   "extends": "devtools_app"
 }

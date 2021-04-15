@@ -7733,6 +7733,30 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | timestamp": {
     "message": "Timestamp"
   },
+  "panels/screencast/ScreencastApp.ts | toggleScreencast": {
+    "message": "Toggle screencast"
+  },
+  "panels/screencast/ScreencastView.ts | addressBar": {
+    "message": "Address bar"
+  },
+  "panels/screencast/ScreencastView.ts | back": {
+    "message": "back"
+  },
+  "panels/screencast/ScreencastView.ts | forward": {
+    "message": "forward"
+  },
+  "panels/screencast/ScreencastView.ts | profilingInProgress": {
+    "message": "Profiling in progress"
+  },
+  "panels/screencast/ScreencastView.ts | reload": {
+    "message": "reload"
+  },
+  "panels/screencast/ScreencastView.ts | screencastViewOfDebugTarget": {
+    "message": "Screencast view of debug target"
+  },
+  "panels/screencast/ScreencastView.ts | theTabIsInactive": {
+    "message": "The tab is inactive"
+  },
   "panels/search/SearchResultsPane.ts | lineS": {
     "message": "Line {PH1}"
   },
@@ -7825,30 +7849,6 @@
   },
   "recorder/RecordingFileSystem.ts | linkedToS": {
     "message": "Linked to {PH1}"
-  },
-  "screencast/ScreencastApp.ts | toggleScreencast": {
-    "message": "Toggle screencast"
-  },
-  "screencast/ScreencastView.ts | addressBar": {
-    "message": "Address bar"
-  },
-  "screencast/ScreencastView.ts | back": {
-    "message": "back"
-  },
-  "screencast/ScreencastView.ts | forward": {
-    "message": "forward"
-  },
-  "screencast/ScreencastView.ts | profilingInProgress": {
-    "message": "Profiling in progress"
-  },
-  "screencast/ScreencastView.ts | reload": {
-    "message": "reload"
-  },
-  "screencast/ScreencastView.ts | screencastViewOfDebugTarget": {
-    "message": "Screencast view of debug target"
-  },
-  "screencast/ScreencastView.ts | theTabIsInactive": {
-    "message": "The tab is inactive"
   },
   "security/security-meta.ts | security": {
     "message": "Security"

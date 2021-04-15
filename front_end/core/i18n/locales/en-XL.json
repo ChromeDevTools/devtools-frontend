@@ -7733,6 +7733,30 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | timestamp": {
     "message": "T̂ím̂éŝt́âḿp̂"
   },
+  "panels/screencast/ScreencastApp.ts | toggleScreencast": {
+    "message": "T̂óĝǵl̂é ŝćr̂éêńĉáŝt́"
+  },
+  "panels/screencast/ScreencastView.ts | addressBar": {
+    "message": "Âd́d̂ŕêśŝ b́âŕ"
+  },
+  "panels/screencast/ScreencastView.ts | back": {
+    "message": "b̂áĉḱ"
+  },
+  "panels/screencast/ScreencastView.ts | forward": {
+    "message": "f̂ór̂ẃâŕd̂"
+  },
+  "panels/screencast/ScreencastView.ts | profilingInProgress": {
+    "message": "P̂ŕôf́îĺîńĝ ín̂ ṕr̂óĝŕêśŝ"
+  },
+  "panels/screencast/ScreencastView.ts | reload": {
+    "message": "r̂él̂óâd́"
+  },
+  "panels/screencast/ScreencastView.ts | screencastViewOfDebugTarget": {
+    "message": "Ŝćr̂éêńĉáŝt́ v̂íêẃ ôf́ d̂éb̂úĝ t́âŕĝét̂"
+  },
+  "panels/screencast/ScreencastView.ts | theTabIsInactive": {
+    "message": "T̂h́ê t́âb́ îś îńâćt̂ív̂é"
+  },
   "panels/search/SearchResultsPane.ts | lineS": {
     "message": "L̂ín̂é {PH1}"
   },
@@ -7825,30 +7849,6 @@
   },
   "recorder/RecordingFileSystem.ts | linkedToS": {
     "message": "L̂ín̂ḱêd́ t̂ó {PH1}"
-  },
-  "screencast/ScreencastApp.ts | toggleScreencast": {
-    "message": "T̂óĝǵl̂é ŝćr̂éêńĉáŝt́"
-  },
-  "screencast/ScreencastView.ts | addressBar": {
-    "message": "Âd́d̂ŕêśŝ b́âŕ"
-  },
-  "screencast/ScreencastView.ts | back": {
-    "message": "b̂áĉḱ"
-  },
-  "screencast/ScreencastView.ts | forward": {
-    "message": "f̂ór̂ẃâŕd̂"
-  },
-  "screencast/ScreencastView.ts | profilingInProgress": {
-    "message": "P̂ŕôf́îĺîńĝ ín̂ ṕr̂óĝŕêśŝ"
-  },
-  "screencast/ScreencastView.ts | reload": {
-    "message": "r̂él̂óâd́"
-  },
-  "screencast/ScreencastView.ts | screencastViewOfDebugTarget": {
-    "message": "Ŝćr̂éêńĉáŝt́ v̂íêẃ ôf́ d̂éb̂úĝ t́âŕĝét̂"
-  },
-  "screencast/ScreencastView.ts | theTabIsInactive": {
-    "message": "T̂h́ê t́âb́ îś îńâćt̂ív̂é"
   },
   "security/security-meta.ts | security": {
     "message": "Ŝéĉúr̂ít̂ý"

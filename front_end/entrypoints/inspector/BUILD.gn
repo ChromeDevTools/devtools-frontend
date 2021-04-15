@@ -8,7 +8,7 @@ ts_library("inspector") {
   sources = [ "inspector.js" ]
 
   deps = [
-    "../../screencast:meta",
+    "../../panels/screencast:meta",
     "../../startup:bundle",
     "../devtools_app",
   ]

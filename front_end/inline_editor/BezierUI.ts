@@ -2,17 +2,18 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as UI from '../ui/legacy/legacy.js';
 
 export class BezierUI {
-  /**
-   * @param {number} width
-   * @param {number} height
-   * @param {number} marginTop
-   * @param {number} controlPointRadius
-   * @param {boolean} linearLine
-   */
-  constructor(width, height, marginTop, controlPointRadius, linearLine) {
+  width: number;
+  height: number;
+  marginTop: number;
+  radius: number;
+  linearLine: boolean;
+
+  constructor(width: number, height: number, marginTop: number, controlPointRadius: number, linearLine: boolean) {
     this.width = width;
     this.height = height;
     this.marginTop = marginTop;
@@ -20,20 +21,15 @@ export class BezierUI {
     this.linearLine = linearLine;
   }
 
-  /**
-   * @param {!UI.Geometry.CubicBezier} bezier
-   * @param {!Element} path
-   * @param {number} width
-   */
-  static drawVelocityChart(bezier, path, width) {
+  static drawVelocityChart(bezier: UI.Geometry.CubicBezier, path: Element, width: number): void {
     const height = Height;
-    let pathBuilder = ['M', 0, height];
+    let pathBuilder: (string|number)[]|(string | number)[] = ['M', 0, height];
     /** @const */ const sampleSize = 1 / 40;
 
     let prev = bezier.evaluateAt(0);
     for (let t = sampleSize; t < 1 + sampleSize; t += sampleSize) {
       const current = bezier.evaluateAt(t);
-      let slope = (current.y - prev.y) / (current.x - prev.x);
+      let slope: number = (current.y - prev.y) / (current.x - prev.x);
       const weightedX = prev.x * (1 - t) + current.x * t;
       slope = Math.tanh(slope / 1.5);  // Normalise slope
       pathBuilder = pathBuilder.concat(['L', (weightedX * width).toFixed(2), (height - slope * height).toFixed(2)]);
@@ -43,29 +39,15 @@ export class BezierUI {
     path.setAttribute('d', pathBuilder.join(' '));
   }
 
-  /**
-   * @return {number}
-   */
-  curveWidth() {
+  curveWidth(): number {
     return this.width - this.radius * 2;
   }
 
-  /**
-   * @return {number}
-   */
-  curveHeight() {
+  curveHeight(): number {
     return this.height - this.radius * 2 - this.marginTop * 2;
   }
 
-  /**
-   * @param {!Element} parentElement
-   * @param {string} className
-   * @param {number} x1
-   * @param {number} y1
-   * @param {number} x2
-   * @param {number} y2
-   */
-  _drawLine(parentElement, className, x1, y1, x2, y2) {
+  _drawLine(parentElement: Element, className: string, x1: number, y1: number, x2: number, y2: number): void {
     const line = UI.UIUtils.createSVGChild(parentElement, 'line', className);
     line.setAttribute('x1', String(x1 + this.radius));
     line.setAttribute('y1', String(y1 + this.radius + this.marginTop));
@@ -73,14 +55,7 @@ export class BezierUI {
     line.setAttribute('y2', String(y2 + this.radius + this.marginTop));
   }
 
-  /**
-   * @param {!Element} parentElement
-   * @param {number} startX
-   * @param {number} startY
-   * @param {number} controlX
-   * @param {number} controlY
-   */
-  _drawControlPoints(parentElement, startX, startY, controlX, controlY) {
+  _drawControlPoints(parentElement: Element, startX: number, startY: number, controlX: number, controlY: number): void {
     this._drawLine(parentElement, 'bezier-control-line', startX, startY, controlX, controlY);
     const circle = UI.UIUtils.createSVGChild(parentElement, 'circle', 'bezier-control-circle');
     circle.setAttribute('cx', String(controlX + this.radius));
@@ -88,11 +63,7 @@ export class BezierUI {
     circle.setAttribute('r', String(this.radius));
   }
 
-  /**
-   * @param {?UI.Geometry.CubicBezier} bezier
-   * @param {!Element} svg
-   */
-  drawCurve(bezier, svg) {
+  drawCurve(bezier: UI.Geometry.CubicBezier|null, svg: Element): void {
     if (!bezier) {
       return;
     }
@@ -115,7 +86,7 @@ export class BezierUI {
       new UI.Geometry.Point(
           bezier.controlPoints[1].x * width + this.radius,
           (1 - bezier.controlPoints[1].y) * height + this.radius + this.marginTop),
-      new UI.Geometry.Point(width + this.radius, this.marginTop + this.radius)
+      new UI.Geometry.Point(width + this.radius, this.marginTop + this.radius),
     ];
     curve.setAttribute(
         'd', 'M' + this.radius + ',' + (height + this.radius + this.marginTop) + ' C' + curvePoints.join(' '));

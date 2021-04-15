@@ -8,21 +8,21 @@ import("../../third_party/typescript/typescript.gni")
 
 devtools_module("inline_editor") {
   sources = [
-    "BezierEditor.js",
-    "BezierUI.js",
+    "BezierEditor.ts",
+    "BezierUI.ts",
     "CSSAngle.ts",
     "CSSAngleEditor.ts",
     "CSSAngleSwatch.ts",
     "CSSAngleUtils.ts",
-    "CSSShadowEditor.js",
-    "CSSShadowModel.js",
+    "CSSShadowEditor.ts",
+    "CSSShadowModel.ts",
     "CSSVarSwatch.ts",
     "ColorSwatch.ts",
-    "FontEditor.js",
-    "FontEditorUnitConverter.js",
-    "FontEditorUtils.js",
-    "SwatchPopoverHelper.js",
-    "Swatches.js",
+    "FontEditor.ts",
+    "FontEditorUnitConverter.ts",
+    "FontEditorUtils.ts",
+    "SwatchPopoverHelper.ts",
+    "Swatches.ts",
   ]
 
   deps = [
@@ -56,7 +56,7 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_entrypoint("legacy") {
-  entrypoint = "inline_editor-legacy.js"
+  entrypoint = "inline_editor-legacy.ts"
 
   deps = [ ":bundle" ]
 }

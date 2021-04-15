@@ -163,8 +163,14 @@ module.exports = function(config) {
 
     preprocessors: {
       '**/*.{js,mjs}': ['sourcemap'],
-      [path.join(GEN_DIRECTORY, 'front_end/!(third_party|ui/components/docs)/**/*.{js,mjs}')]:
-          [...coveragePreprocessors],
+      // We need to exclude `ui/components/docs/` from the coverage report, as it uses top-leve await,
+      // which the processor can't handle. However, minimatch patterns don't allow for exclusions of
+      // nested folders. Therefore, we have to manually exclude `ui` first, add another rule to explicitly
+      // include `ui`, but exclude `ui/components` and then a last rule to include `ui/components`, but not
+      // `ui/components/docs`.
+      [path.join(GEN_DIRECTORY, 'front_end/!(third_party|ui)/**/*.{js,mjs}')]: [...coveragePreprocessors],
+      [path.join(GEN_DIRECTORY, 'front_end/ui/!(components)/**/*.{js,mjs}')]: [...coveragePreprocessors],
+      [path.join(GEN_DIRECTORY, 'front_end/ui/components/!(docs)/**/*.{js,mjs}')]: [...coveragePreprocessors],
       [path.join(GEN_DIRECTORY, 'inspector_overlay/**/*.{js,mjs}')]: [...coveragePreprocessors],
     },
 

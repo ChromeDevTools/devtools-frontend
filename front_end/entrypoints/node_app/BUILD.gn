@@ -8,10 +8,10 @@ ts_library("node_app") {
   sources = [ "node_app.js" ]
 
   deps = [
+    "../../entrypoints/startup:bundle",
     "../../js_profiler:meta",
     "../../node_debugger:meta",
     "../../node_main:meta",
-    "../../startup:bundle",
     "../shell",
   ]
 }

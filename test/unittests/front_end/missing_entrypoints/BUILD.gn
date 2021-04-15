@@ -7,6 +7,7 @@ ts_library("missing_entrypoints") {
   deps = [
     "../../../../front_end/cm",
     "../../../../front_end/entrypoints/heap_snapshot_worker:bundle",
+    "../../../../front_end/entrypoints/startup:bundle",
     "../../../../front_end/inspector_main:bundle",
     "../../../../front_end/main:bundle",
     "../../../../front_end/models/heap_snapshot_model:bundle",
@@ -30,7 +31,6 @@ ts_library("missing_entrypoints") {
     "../../../../front_end/panels/screencast:bundle",
     "../../../../front_end/security:bundle",
     "../../../../front_end/settings:bundle",
-    "../../../../front_end/startup:bundle",
     "../../../../front_end/wasmparser_worker:bundle",
     "../../../../front_end/web_audio:bundle",
     "../../../../front_end/webauthn:bundle",

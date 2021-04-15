@@ -10,8 +10,8 @@ ts_library("js_app") {
 
   deps = [
     ":js_main",
+    "../../entrypoints/startup:bundle",
     "../../js_profiler:meta",
-    "../../startup:bundle",
     "../shell",
   ]
 }

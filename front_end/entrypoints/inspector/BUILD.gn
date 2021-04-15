@@ -8,8 +8,8 @@ ts_library("inspector") {
   sources = [ "inspector.js" ]
 
   deps = [
+    "../../entrypoints/startup:bundle",
     "../../panels/screencast:meta",
-    "../../startup:bundle",
     "../devtools_app",
   ]
 }

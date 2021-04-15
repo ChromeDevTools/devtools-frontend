@@ -8,6 +8,7 @@ ts_library("worker_app") {
   sources = [ "worker_app.js" ]
 
   deps = [
+    "../../entrypoints/startup:bundle",
     "../../issues:meta",
     "../../panels/application:meta",
     "../../panels/browser_debugger:meta",
@@ -17,7 +18,6 @@ ts_library("worker_app") {
     "../../panels/layer_viewer:meta",
     "../../panels/mobile_throttling:meta",
     "../../panels/network:meta",
-    "../../startup:bundle",
     "../../timeline:meta",
     "../shell",
   ]

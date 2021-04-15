@@ -30,7 +30,7 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as RootModule from '../core/root/root.js';
+import * as RootModule from '../../core/root/root.js';
 
 // Legacy runtime namespace definitions
 // @ts-ignore

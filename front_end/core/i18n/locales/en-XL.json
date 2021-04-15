@@ -5382,7 +5382,7 @@
     "message": "P̂úb̂ĺîśĥér̂ Ád̂ś"
   },
   "panels/lighthouse/LighthouseController.ts | resetStorageLocalstorage": {
-    "message": "R̂éŝét̂ śt̂ór̂áĝé (localStorage, IndexedDB, êt́ĉ) b́êf́ôŕê áûd́ît́îńĝ. (Ǵôód̂ f́ôŕ p̂ér̂f́ôŕm̂án̂ćê & PWA t́êśt̂ín̂ǵ)"
+    "message": "R̂éŝét̂ śt̂ór̂áĝé (cache, service workers, êt́ĉ) b́êf́ôŕê áûd́ît́îńĝ. (Ǵôód̂ f́ôŕ p̂ér̂f́ôŕm̂án̂ćê & PWA t́êśt̂ín̂ǵ)"
   },
   "panels/lighthouse/LighthouseController.ts | seo": {
     "message": "ŜÉÔ"

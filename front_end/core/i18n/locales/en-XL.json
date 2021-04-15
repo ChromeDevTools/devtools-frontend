@@ -4451,6 +4451,9 @@
   "panels/elements/ElementsTreeElement.ts | scrollIntoView": {
     "message": "Ŝćr̂ól̂ĺ îńt̂ó v̂íêẃ"
   },
+  "panels/elements/ElementsTreeElement.ts | showFrameDetails": {
+    "message": "Ŝh́ôẃ iframe d̂ét̂áîĺŝ"
+  },
   "panels/elements/ElementsTreeElement.ts | thisFrameWasIdentifiedAsAnAd": {
     "message": "T̂h́îś f̂ŕâḿê ẃâś îd́êńt̂íf̂íêd́ âś âń âd́ f̂ŕâḿê"
   },

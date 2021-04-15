@@ -562,6 +562,10 @@ export class DOMNode {
     return descendant !== null && descendant.isAncestor(this);
   }
 
+  frameOwnerFrameId(): string|null {
+    return this._frameOwnerFrameId;
+  }
+
   frameId(): string|null {
     let node: DOMNode = this.parentNode || this;
     while (!node._frameOwnerFrameId && node.parentNode) {

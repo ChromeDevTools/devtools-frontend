@@ -86,6 +86,11 @@ export class ResourcesPanel extends UI.Panel.PanelWithSidebar {
     return viewClassesToClose.some(type => view instanceof type);
   }
 
+  static async showAndGetSidebar(): Promise<ApplicationPanelSidebar> {
+    await UI.ViewManager.ViewManager.instance().showView('resources');
+    return ResourcesPanel._instance()._sidebar;
+  }
+
   focus(): void {
     this._sidebar.focus();
   }
@@ -203,13 +208,13 @@ export class ResourceRevealer implements Common.Revealer.Revealer {
 
   async reveal(resource: Object): Promise<void> {
     if (!(resource instanceof SDK.Resource.Resource)) {
-      return Promise.reject(new Error('Internal error: not a resource'));
+      throw new Error('Internal error: not a resource');
     }
-    const sidebar = ResourcesPanel._instance()._sidebar;
-    await UI.ViewManager.ViewManager.instance().showView('resources');
+    const sidebar = await ResourcesPanel.showAndGetSidebar();
     await sidebar.showResource(resource);
   }
 }
+
 let cookieReferenceRevealerInstance: CookieReferenceRevealer;
 
 export class CookieReferenceRevealer implements Common.Revealer.Revealer {
@@ -228,8 +233,7 @@ export class CookieReferenceRevealer implements Common.Revealer.Revealer {
       throw new Error('Internal error: not a cookie reference');
     }
 
-    const sidebar = ResourcesPanel._instance()._sidebar;
-    await UI.ViewManager.ViewManager.instance().showView('resources');
+    const sidebar = await ResourcesPanel.showAndGetSidebar();
     await sidebar.cookieListTreeElement.select();
 
     const contextUrl = cookie.contextUrl();
@@ -249,5 +253,28 @@ export class CookieReferenceRevealer implements Common.Revealer.Revealer {
       return true;
     }
     return false;
+  }
+}
+
+let frameDetailsRevealerInstance: FrameDetailsRevealer;
+
+export class FrameDetailsRevealer implements Common.Revealer.Revealer {
+  static instance(opts: {
+    forceNew: boolean|null,
+  } = {forceNew: null}): FrameDetailsRevealer {
+    const {forceNew} = opts;
+    if (!frameDetailsRevealerInstance || forceNew) {
+      frameDetailsRevealerInstance = new FrameDetailsRevealer();
+    }
+
+    return frameDetailsRevealerInstance;
+  }
+
+  async reveal(frame: Object): Promise<void> {
+    if (!(frame instanceof SDK.ResourceTreeModel.ResourceTreeFrame)) {
+      throw new Error('Internal error: not a frame');
+    }
+    const sidebar = await ResourcesPanel.showAndGetSidebar();
+    sidebar.showFrame(frame);
   }
 }

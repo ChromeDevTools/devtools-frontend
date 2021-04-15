@@ -625,6 +625,10 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.SDKMo
     await this._resourcesSection.revealResource(resource, line, column);
   }
 
+  showFrame(frame: SDK.ResourceTreeModel.ResourceTreeFrame): void {
+    this._resourcesSection.revealAndSelectFrame(frame);
+  }
+
   _showDatabase(database: DatabaseModelDatabase, tableName?: string): void {
     if (!database) {
       return;
@@ -1687,6 +1691,12 @@ export class ResourcesSection implements SDK.SDKModel.Observer {
     if (resourceTreeElement) {
       await resourceTreeElement.revealResource(line, column);
     }
+  }
+
+  revealAndSelectFrame(frame: SDK.ResourceTreeModel.ResourceTreeFrame): void {
+    const frameTreeElement = this._treeElementForFrameId.get(frame.id);
+    frameTreeElement?.reveal();
+    frameTreeElement?.select();
   }
 
   _frameAdded(frame: SDK.ResourceTreeModel.ResourceTreeFrame): void {

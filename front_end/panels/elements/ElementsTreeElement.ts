@@ -156,6 +156,10 @@ const UIStrings = {
   */
   captureNodeScreenshot: 'Capture node screenshot',
   /**
+  *@description Title of a context menu item. When clicked DevTools goes to the Application panel and shows this specific iframe's details
+  */
+  showFrameDetails: 'Show `iframe` details',
+  /**
   *@description Text in Elements Tree Element of the Elements panel
   */
   valueIsTooLargeToEdit: '<value is too large to edit>',
@@ -714,6 +718,15 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
         i18nString(UIStrings.captureNodeScreenshot),
         deviceModeWrapperAction.handleAction.bind(
             null, UI.Context.Context.instance(), 'emulation.capture-node-screenshot'));
+    if (this._node.frameOwnerFrameId()) {
+      contextMenu.viewSection().appendItem(i18nString(UIStrings.showFrameDetails), () => {
+        const frameOwnerFrameId = this._node.frameOwnerFrameId();
+        if (frameOwnerFrameId) {
+          const frame = SDK.FrameManager.FrameManager.instance().getFrame(frameOwnerFrameId);
+          Common.Revealer.reveal(frame);
+        }
+      });
+    }
   }
 
   _startEditing(): boolean|undefined {

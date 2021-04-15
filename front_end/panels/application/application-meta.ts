@@ -156,3 +156,16 @@ Common.Revealer.registerRevealer({
     return Resources.ResourcesPanel.CookieReferenceRevealer.instance();
   },
 });
+
+Common.Revealer.registerRevealer({
+  contextTypes() {
+    return [
+      SDK.ResourceTreeModel.ResourceTreeFrame,
+    ];
+  },
+  destination: Common.Revealer.RevealerDestination.APPLICATION_PANEL,
+  async loadRevealer() {
+    const Resources = await loadResourcesModule();
+    return Resources.ResourcesPanel.FrameDetailsRevealer.instance();
+  },
+});

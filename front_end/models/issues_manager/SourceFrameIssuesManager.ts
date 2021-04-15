@@ -60,7 +60,7 @@ export class SourceFrameIssuesManager {
   }
 
   private async getIssueTitleFromMarkdownDescription(description: MarkdownIssueDescription): Promise<string|null> {
-    const rawMarkdown = await getMarkdownFileContent(description.file);
+    const rawMarkdown = await getMarkdownFileContent(`issues/descriptions/${description.file}`);
     const markdownAst = Marked.Marked.lexer(rawMarkdown);
     return findTitleFromMarkdownAst(markdownAst);
   }

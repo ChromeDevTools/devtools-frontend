@@ -39,7 +39,7 @@ export class CorsIssue extends Issue {
     switch (this.issueDetails.corsErrorStatus.corsError) {
       case Protocol.Network.CorsError.InsecurePrivateNetwork:
         return {
-          file: 'issues/descriptions/corsInsecurePrivateNetwork.md',
+          file: 'corsInsecurePrivateNetwork.md',
           substitutions: undefined,
           links: [{
             link: 'https://web.dev/cors-rfc1918-guide',

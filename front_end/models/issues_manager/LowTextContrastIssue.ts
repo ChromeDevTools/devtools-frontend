@@ -42,7 +42,7 @@ export class LowTextContrastIssue extends Issue {
 
   getDescription(): MarkdownIssueDescription {
     return {
-      file: 'issues/descriptions/LowTextContrast.md',
+      file: 'LowTextContrast.md',
       substitutions: undefined,
       links: [
         {

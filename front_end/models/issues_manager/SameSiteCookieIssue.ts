@@ -248,7 +248,7 @@ function isSubdomainOf(subdomain: string, superdomain: string): boolean {
 }
 
 const sameSiteUnspecifiedErrorRead = {
-  file: 'issues/descriptions/SameSiteUnspecifiedTreatedAsLaxRead.md',
+  file: 'SameSiteUnspecifiedTreatedAsLaxRead.md',
   substitutions: undefined,
   links: [
     {
@@ -259,7 +259,7 @@ const sameSiteUnspecifiedErrorRead = {
 };
 
 const sameSiteUnspecifiedErrorSet = {
-  file: 'issues/descriptions/SameSiteUnspecifiedTreatedAsLaxSet.md',
+  file: 'SameSiteUnspecifiedTreatedAsLaxSet.md',
   substitutions: undefined,
   links: [
     {
@@ -270,7 +270,7 @@ const sameSiteUnspecifiedErrorSet = {
 };
 
 const sameSiteUnspecifiedWarnRead = {
-  file: 'issues/descriptions/SameSiteUnspecifiedLaxAllowUnsafeRead.md',
+  file: 'SameSiteUnspecifiedLaxAllowUnsafeRead.md',
   substitutions: undefined,
   links: [
     {
@@ -281,7 +281,7 @@ const sameSiteUnspecifiedWarnRead = {
 };
 
 const sameSiteUnspecifiedWarnSet = {
-  file: 'issues/descriptions/SameSiteUnspecifiedLaxAllowUnsafeSet.md',
+  file: 'SameSiteUnspecifiedLaxAllowUnsafeSet.md',
   substitutions: undefined,
   links: [
     {
@@ -292,7 +292,7 @@ const sameSiteUnspecifiedWarnSet = {
 };
 
 const sameSiteNoneInsecureErrorRead = {
-  file: 'issues/descriptions/SameSiteNoneInsecureErrorRead.md',
+  file: 'SameSiteNoneInsecureErrorRead.md',
   substitutions: undefined,
   links: [
     {
@@ -303,7 +303,7 @@ const sameSiteNoneInsecureErrorRead = {
 };
 
 const sameSiteNoneInsecureErrorSet = {
-  file: 'issues/descriptions/SameSiteNoneInsecureErrorSet.md',
+  file: 'SameSiteNoneInsecureErrorSet.md',
   substitutions: undefined,
   links: [
     {
@@ -314,7 +314,7 @@ const sameSiteNoneInsecureErrorSet = {
 };
 
 const sameSiteNoneInsecureWarnRead = {
-  file: 'issues/descriptions/SameSiteNoneInsecureWarnRead.md',
+  file: 'SameSiteNoneInsecureWarnRead.md',
   substitutions: undefined,
   links: [
     {
@@ -325,7 +325,7 @@ const sameSiteNoneInsecureWarnRead = {
 };
 
 const sameSiteNoneInsecureWarnSet = {
-  file: 'issues/descriptions/SameSiteNoneInsecureWarnSet.md',
+  file: 'SameSiteNoneInsecureWarnSet.md',
   substitutions: undefined,
   links: [
     {
@@ -344,7 +344,7 @@ function sameSiteWarnStrictLaxDowngradeStrict(isSecure: boolean): LazyMarkdownIs
     ['PLACEHOLDER_origin', !isSecure ? i18nLazyString(UIStrings.aSecure) : i18nLazyString(UIStrings.anInsecure)],
   ]);
   return {
-    file: 'issues/descriptions/SameSiteWarnStrictLaxDowngradeStrict.md',
+    file: 'SameSiteWarnStrictLaxDowngradeStrict.md',
     substitutions,
     links: schemefulSameSiteArticles,
   };
@@ -356,7 +356,7 @@ function sameSiteExcludeNavigationContextDowngrade(isSecure: boolean): LazyMarkd
     ['PLACEHOLDER_origin', !isSecure ? i18nLazyString(UIStrings.aSecure) : i18nLazyString(UIStrings.anInsecure)],
   ]);
   return {
-    file: 'issues/descriptions/SameSiteExcludeNavigationContextDowngrade.md',
+    file: 'SameSiteExcludeNavigationContextDowngrade.md',
     substitutions,
     links: schemefulSameSiteArticles,
   };
@@ -368,7 +368,7 @@ function sameSiteWarnCrossDowngradeRead(isSecure: boolean): LazyMarkdownIssueDes
     ['PLACEHOLDER_origin', !isSecure ? i18nLazyString(UIStrings.aSecure) : i18nLazyString(UIStrings.anInsecure)],
   ]);
   return {
-    file: 'issues/descriptions/SameSiteWarnCrossDowngradeRead.md',
+    file: 'SameSiteWarnCrossDowngradeRead.md',
     substitutions,
     links: schemefulSameSiteArticles,
   };
@@ -380,7 +380,7 @@ function sameSiteExcludeContextDowngradeRead(isSecure: boolean): LazyMarkdownIss
     ['PLACEHOLDER_origin', !isSecure ? i18nLazyString(UIStrings.aSecure) : i18nLazyString(UIStrings.anInsecure)],
   ]);
   return {
-    file: 'issues/descriptions/SameSiteExcludeContextDowngradeRead.md',
+    file: 'SameSiteExcludeContextDowngradeRead.md',
     substitutions,
     links: schemefulSameSiteArticles,
   };
@@ -392,7 +392,7 @@ function sameSiteWarnCrossDowngradeSet(isSecure: boolean): LazyMarkdownIssueDesc
     ['PLACEHOLDER_DESTINATION', !isSecure ? i18nLazyString(UIStrings.aSecure) : i18nLazyString(UIStrings.anInsecure)],
   ]);
   return {
-    file: 'issues/descriptions/SameSiteWarnCrossDowngradeSet.md',
+    file: 'SameSiteWarnCrossDowngradeSet.md',
     substitutions,
     links: schemefulSameSiteArticles,
   };
@@ -404,7 +404,7 @@ function sameSiteExcludeContextDowngradeSet(isSecure: boolean): LazyMarkdownIssu
     ['PLACEHOLDER_origin', !isSecure ? i18nLazyString(UIStrings.aSecure) : i18nLazyString(UIStrings.anInsecure)],
   ]);
   return {
-    file: 'issues/descriptions/SameSiteExcludeContextDowngradeSet.md',
+    file: 'SameSiteExcludeContextDowngradeSet.md',
     substitutions,
     links: schemefulSameSiteArticles,
   };

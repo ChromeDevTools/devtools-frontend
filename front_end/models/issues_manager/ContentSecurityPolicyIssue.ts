@@ -92,7 +92,7 @@ export class ContentSecurityPolicyIssue extends Issue {
 }
 
 const cspURLViolation = {
-  file: 'issues/descriptions/cspURLViolation.md',
+  file: 'cspURLViolation.md',
   substitutions: undefined,
   links: [{
     link: 'https://developers.google.com/web/fundamentals/security/csp#source_allowlists',
@@ -101,7 +101,7 @@ const cspURLViolation = {
 };
 
 const cspInlineViolation = {
-  file: 'issues/descriptions/cspInlineViolation.md',
+  file: 'cspInlineViolation.md',
   substitutions: undefined,
   links: [{
     link: 'https://developers.google.com/web/fundamentals/security/csp#inline_code_is_considered_harmful',
@@ -110,7 +110,7 @@ const cspInlineViolation = {
 };
 
 const cspEvalViolation = {
-  file: 'issues/descriptions/cspEvalViolation.md',
+  file: 'cspEvalViolation.md',
   substitutions: undefined,
   links: [{
     link: 'https://developers.google.com/web/fundamentals/security/csp#eval_too',
@@ -119,7 +119,7 @@ const cspEvalViolation = {
 };
 
 const cspTrustedTypesSinkViolation = {
-  file: 'issues/descriptions/cspTrustedTypesSinkViolation.md',
+  file: 'cspTrustedTypesSinkViolation.md',
   substitutions: undefined,
   links: [{
     link: 'https://web.dev/trusted-types/#fix-the-violations',
@@ -128,7 +128,7 @@ const cspTrustedTypesSinkViolation = {
 };
 
 const cspTrustedTypesPolicyViolation = {
-  file: 'issues/descriptions/cspTrustedTypesPolicyViolation.md',
+  file: 'cspTrustedTypesPolicyViolation.md',
   substitutions: undefined,
   links: [{link: 'https://web.dev/trusted-types/', linkTitle: i18nLazyString(UIStrings.trustedTypesPolicyViolation)}],
 };

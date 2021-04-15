@@ -193,6 +193,7 @@ action("generate_devtools_grd") {
       generated_applications_html + applications_js +
       non_autostart_non_remote_modules + devtools_embedder_scripts +
       optimized_emulated_device_images + copied_devtools_locale_files +
+      copied_devtools_issue_description_files +
       devtools_module_entrypoint_sources
 
   if (is_debug) {

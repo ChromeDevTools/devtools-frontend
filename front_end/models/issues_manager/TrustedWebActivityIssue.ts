@@ -64,7 +64,7 @@ export class TrustedWebActivityIssue extends Issue {
 }
 
 const twaDigitalAssetLinksFailed = {
-  file: 'issues/descriptions/TwaDigitalAssetLinksFailed.md',
+  file: 'TwaDigitalAssetLinksFailed.md',
   substitutions: undefined,
   links: [{
     link: 'https://blog.chromium.org/2020/06/changes-to-quality-criteria-for-pwas.html',
@@ -73,7 +73,7 @@ const twaDigitalAssetLinksFailed = {
 };
 
 const twaHttpError = {
-  file: 'issues/descriptions/TwaHttpError.md',
+  file: 'TwaHttpError.md',
   substitutions: undefined,
   links: [{
     link: 'https://blog.chromium.org/2020/06/changes-to-quality-criteria-for-pwas.html',
@@ -82,7 +82,7 @@ const twaHttpError = {
 };
 
 const twaPageUnavailableOffline = {
-  file: 'issues/descriptions/TwaPageUnavailableOffline.md',
+  file: 'TwaPageUnavailableOffline.md',
   substitutions: undefined,
   links: [{
     link: 'https://blog.chromium.org/2020/06/changes-to-quality-criteria-for-pwas.html',

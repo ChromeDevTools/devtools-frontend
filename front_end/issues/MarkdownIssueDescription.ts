@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Root from '../core/root/root.js';
 import * as IssuesManager from '../models/issues_manager/issues_manager.js';
 import * as Marked from '../third_party/marked/marked.js';
 
@@ -16,9 +15,22 @@ export interface IssueDescription {
 
 export async function createIssueDescriptionFromMarkdown(description: IssuesManager.Issue.MarkdownIssueDescription):
     Promise<IssueDescription> {
-  const rawMarkdown = await getMarkdownFileContent(description.file);
-  const rawMarkdownWithPlaceholdersReplaced = substitutePlaceholders(rawMarkdown, description.substitutions);
-  return createIssueDescriptionFromRawMarkdown(rawMarkdownWithPlaceholdersReplaced, description);
+  let resolve = (_: IssueDescription): void => {};
+  function reqListener(this: XMLHttpRequest): void {
+    const rawMarkdownWithPlaceholdersReplaced = substitutePlaceholders(this.responseText, description.substitutions);
+    const desc = createIssueDescriptionFromRawMarkdown(rawMarkdownWithPlaceholdersReplaced, description);
+    resolve(desc);
+  }
+  const promise = new Promise<IssueDescription>(r => {
+    resolve = r;
+  });
+  const oReq = new XMLHttpRequest();
+  oReq.addEventListener('load', reqListener);
+  const url = new URL(`descriptions/${description.file}`, import.meta.url);
+  oReq.open('GET', url.toString());
+  oReq.send();
+
+  return promise;
 }
 
 /**
@@ -37,14 +49,6 @@ export function createIssueDescriptionFromRawMarkdown(
     markdown: markdownAst.slice(1),
     links: description.links,
   };
-}
-
-async function getMarkdownFileContent(filename: string): Promise<string> {
-  const rawMarkdown = Root.Runtime.cachedResources.get(filename);
-  if (!rawMarkdown) {
-    throw new Error(`Markdown file ${filename} not found. Declare it as a resource in the module.json file`);
-  }
-  return rawMarkdown;
 }
 
 const validPlaceholderMatchPattern = /\{(PLACEHOLDER_[a-zA-Z][a-zA-Z0-9]*)\}/g;

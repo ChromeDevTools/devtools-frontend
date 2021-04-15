@@ -74,7 +74,7 @@ const issueDescriptions: Map<string, LazyMarkdownIssueDescription> = new Map([
   [
     'CrossOriginEmbedderPolicyIssue::CorpNotSameOriginAfterDefaultedToSameOriginByCoep',
     {
-      file: 'issues/descriptions/CoepCorpNotSameOriginAfterDefaultedToSameOriginByCoep.md',
+      file: 'CoepCorpNotSameOriginAfterDefaultedToSameOriginByCoep.md',
       substitutions: undefined,
       links: [
         {link: 'https://web.dev/coop-coep/', linkTitle: i18nLazyString(UIStrings.coopAndCoep)},
@@ -85,7 +85,7 @@ const issueDescriptions: Map<string, LazyMarkdownIssueDescription> = new Map([
   [
     'CrossOriginEmbedderPolicyIssue::CoepFrameResourceNeedsCoepHeader',
     {
-      file: 'issues/descriptions/CoepFrameResourceNeedsCoepHeader.md',
+      file: 'CoepFrameResourceNeedsCoepHeader.md',
       substitutions: undefined,
       links: [
         {link: 'https://web.dev/coop-coep/', linkTitle: i18nLazyString(UIStrings.coopAndCoep)},
@@ -95,7 +95,7 @@ const issueDescriptions: Map<string, LazyMarkdownIssueDescription> = new Map([
   [
     'CrossOriginEmbedderPolicyIssue::CoopSandboxedIframeCannotNavigateToCoopPage',
     {
-      file: 'issues/descriptions/CoepCoopSandboxedIframeCannotNavigateToCoopPage.md',
+      file: 'CoepCoopSandboxedIframeCannotNavigateToCoopPage.md',
       substitutions: undefined,
       links: [
         {link: 'https://web.dev/coop-coep/', linkTitle: i18nLazyString(UIStrings.coopAndCoep)},
@@ -105,7 +105,7 @@ const issueDescriptions: Map<string, LazyMarkdownIssueDescription> = new Map([
   [
     'CrossOriginEmbedderPolicyIssue::CorpNotSameSite',
     {
-      file: 'issues/descriptions/CoepCorpNotSameSite.md',
+      file: 'CoepCorpNotSameSite.md',
       substitutions: undefined,
       links: [
         {link: 'https://web.dev/coop-coep/', linkTitle: i18nLazyString(UIStrings.coopAndCoep)},
@@ -116,7 +116,7 @@ const issueDescriptions: Map<string, LazyMarkdownIssueDescription> = new Map([
   [
     'CrossOriginEmbedderPolicyIssue::CorpNotSameOrigin',
     {
-      file: 'issues/descriptions/CoepCorpNotSameOrigin.md',
+      file: 'CoepCorpNotSameOrigin.md',
       substitutions: undefined,
       links: [
         {link: 'https://web.dev/coop-coep/', linkTitle: i18nLazyString(UIStrings.coopAndCoep)},

@@ -37,6 +37,7 @@ group("front_end") {
     "formatter:bundle",
     "har_importer:bundle",
     "inline_editor:bundle",
+    "issues:descriptions",
     "legacy_test_runner",
     "models/bindings:bundle",
     "models/extensions:bundle",

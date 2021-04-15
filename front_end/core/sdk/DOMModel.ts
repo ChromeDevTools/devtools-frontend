@@ -1094,7 +1094,7 @@ export class DOMModel extends SDKModel {
   async _requestDocument(): Promise<DOMDocument|null> {
     const response = await this._agent.invoke_getDocument({});
     if (response.getError()) {
-      console.error(`DOM.getDocument error ${response.getError()}`);
+      console.error(response.getError());
       return null;
     }
     const {root: documentPayload} = response;

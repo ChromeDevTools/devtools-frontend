@@ -46,6 +46,8 @@ if (!TEST_SERVER_TYPE) {
 const ALLOWED_ASSERTION_FAILURES = [
   // Failure during shutdown. crbug.com/1145969
   'Session is unregistering, can\'t dispatch pending call to Debugger.setBlackboxPatterns',
+  // Failure during shutdown. crbug.com/1199322
+  'Session is unregistering, can\'t dispatch pending call to DOM.getDocument',
   // Expected failures in assertion_test.ts
   'expected failure 1',
   'expected failure 2',

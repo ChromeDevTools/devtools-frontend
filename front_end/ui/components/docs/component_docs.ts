@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 // Ensure all image variables are defined in the component docs.
-import '../Images/Images.js';
+import '../../../Images/Images.js';
 
 import * as CreateBreadcrumbs from './create_breadcrumbs.js';
 import * as ToggleDarkMode from './toggle_dark_mode.js';

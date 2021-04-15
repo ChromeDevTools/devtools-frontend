@@ -31,6 +31,7 @@ export const enum SectionCode {
   Element = 9, // Elements section
   Code = 10, // Function bodies (code)
   Data = 11, // Data segments
+  Event = 13, // Events
 }
 export const enum OperatorCode {
   unreachable = 0x00,
@@ -39,6 +40,11 @@ export const enum OperatorCode {
   loop = 0x03,
   if = 0x04,
   else = 0x05,
+  try = 0x06,
+  catch = 0x07,
+  throw = 0x08,
+  rethrow = 0x09,
+  unwind = 0x0a,
   end = 0x0b,
   br = 0x0c,
   br_if = 0x0d,
@@ -51,6 +57,8 @@ export const enum OperatorCode {
   call_ref = 0x14,
   return_call_ref = 0x15,
   let = 0x17,
+  delegate = 0x18,
+  catch_all = 0x19,
   drop = 0x1a,
   select = 0x1b,
   local_get = 0x20,
@@ -598,11 +606,11 @@ export const OperatorCodeNames = [
   "loop",
   "if",
   "else",
-  undefined,
-  undefined,
-  undefined,
-  undefined,
-  undefined,
+  "try",
+  "catch",
+  "throw",
+  "rethrow",
+  "unwind",
   "end",
   "br",
   "br_if",
@@ -616,8 +624,8 @@ export const OperatorCodeNames = [
   "return_call_ref",
   undefined,
   "let",
-  undefined,
-  undefined,
+  "delegate",
+  "catch_all",
   "drop",
   "select",
   undefined,
@@ -1254,6 +1262,7 @@ export const enum ExternalKind {
   Table = 1,
   Memory = 2,
   Global = 3,
+  Event = 4,
 }
 export const enum TypeKind {
   unspecified = 0,
@@ -1326,6 +1335,7 @@ export const enum NameType {
   Module = 0,
   Function = 1,
   Local = 2,
+  Event = 3,
   Type = 4,
   Table = 5,
   Memory = 6,
@@ -1355,6 +1365,7 @@ export const enum BinaryReaderState {
   ELEMENT_SECTION_ENTRY = 20,
   LINKING_SECTION_ENTRY = 21,
   START_SECTION_ENTRY = 22,
+  EVENT_SECTION_ENTRY = 23,
 
   BEGIN_INIT_EXPRESSION_BODY = 25,
   INIT_EXPRESSION_OPERATOR = 26,
@@ -1481,6 +1492,10 @@ export interface IGlobalType {
   contentType: Type;
   mutability: number;
 }
+export interface IEventType {
+  attribute: number;
+  typeIndex: number;
+}
 export interface IGlobalVariable {
   type: IGlobalType;
 }
@@ -1498,7 +1513,11 @@ export interface IDataSegment {
 export interface IDataSegmentBody {
   data: Uint8Array;
 }
-export type ImportEntryType = ITableType | IMemoryType | IGlobalType;
+export type ImportEntryType =
+  | ITableType
+  | IMemoryType
+  | IGlobalType
+  | IEventType;
 export interface IImportEntry {
   module: Uint8Array;
   field: Uint8Array;
@@ -1530,6 +1549,9 @@ export interface ILocalName {
 }
 export interface ILocalNameEntry extends INameEntry {
   funcs: ILocalName[];
+}
+export interface IEventNameEntry extends INameEntry {
+  names: INaming[];
 }
 export interface ITypeNameEntry extends INameEntry {
   names: INaming[];
@@ -1603,6 +1625,7 @@ export interface IOperatorInformation {
   refType?: number; // "HeapType" format, a.k.a. s33
   brDepth?: number;
   brTable?: Array<number>;
+  relativeDepth?: number;
   funcIndex?: number;
   typeIndex?: number;
   tableIndex?: number;
@@ -1610,6 +1633,7 @@ export interface IOperatorInformation {
   fieldIndex?: number;
   globalIndex?: number;
   segmentIndex?: number;
+  eventIndex?: number;
   destinationIndex?: number;
   memoryAddress?: IMemoryAddress;
   literal?: number | Int64 | Uint8Array;
@@ -1979,6 +2003,14 @@ export class BinaryReader {
     var mutability = this.readVarUint1();
     return { contentType: contentType, mutability: mutability };
   }
+  private readEventType(): IEventType {
+    var attribute = this.readVarUint32() >>> 0;
+    var typeIndex = this.readVarUint32() >>> 0;
+    return {
+      attribute: attribute,
+      typeIndex: typeIndex,
+    };
+  }
   private readTypeEntry() {
     if (this._sectionEntriesLeft === 0) {
       this.skipSection();
@@ -2012,7 +2044,7 @@ export class BinaryReader {
     var field = this.readStringBytes();
     var kind = this.readUint8();
     var funcTypeIndex: number;
-    var type: ITableType | IMemoryType | IGlobalType;
+    var type: ITableType | IMemoryType | IGlobalType | IEventType;
     switch (kind) {
       case ExternalKind.Function:
         funcTypeIndex = this.readVarUint32() >>> 0;
@@ -2025,6 +2057,9 @@ export class BinaryReader {
         break;
       case ExternalKind.Global:
         type = this.readGlobalType();
+        break;
+      case ExternalKind.Event:
+        type = this.readEventType();
         break;
     }
     this.result = {
@@ -2078,6 +2113,16 @@ export class BinaryReader {
     }
     this.state = BinaryReaderState.MEMORY_SECTION_ENTRY;
     this.result = this.readMemoryType();
+    this._sectionEntriesLeft--;
+    return true;
+  }
+  private readEventEntry(): boolean {
+    if (this._sectionEntriesLeft === 0) {
+      this.skipSection();
+      return this.read();
+    }
+    this.state = BinaryReaderState.EVENT_SECTION_ENTRY;
+    this.result = this.readEventType();
     this._sectionEntriesLeft--;
     return true;
   }
@@ -2267,6 +2312,7 @@ export class BinaryReader {
       | IModuleNameEntry
       | IFunctionNameEntry
       | ILocalNameEntry
+      | IEventNameEntry
       | ITypeNameEntry
       | ITableNameEntry
       | IMemoryNameEntry
@@ -2280,6 +2326,7 @@ export class BinaryReader {
         };
         break;
       case NameType.Function:
+      case NameType.Event:
       case NameType.Type:
       case NameType.Table:
       case NameType.Memory:
@@ -3023,11 +3070,13 @@ export class BinaryReader {
       refType,
       brDepth,
       brTable,
+      relativeDepth,
       funcIndex,
       typeIndex,
       tableIndex,
       localIndex,
       globalIndex,
+      eventIndex,
       memoryAddress,
       literal,
       reserved;
@@ -3059,6 +3108,7 @@ export class BinaryReader {
         case OperatorCode.block:
         case OperatorCode.loop:
         case OperatorCode.if:
+        case OperatorCode.try:
           blockType = this.readBlockType();
           break;
         case OperatorCode.br:
@@ -3082,6 +3132,14 @@ export class BinaryReader {
             }
             brTable.push(this.readVarUint32() >>> 0);
           }
+          break;
+        case OperatorCode.rethrow:
+        case OperatorCode.delegate:
+          relativeDepth = this.readVarUint32() >>> 0;
+          break;
+        case OperatorCode.catch:
+        case OperatorCode.throw:
+          eventIndex = this.readVarInt32();
           break;
         case OperatorCode.ref_null:
           refType = this.readHeapType();
@@ -3185,8 +3243,10 @@ export class BinaryReader {
         case OperatorCode.unreachable:
         case OperatorCode.nop:
         case OperatorCode.else:
+        case OperatorCode.unwind:
         case OperatorCode.end:
         case OperatorCode.return:
+        case OperatorCode.catch_all:
         case OperatorCode.drop:
         case OperatorCode.select:
         case OperatorCode.i32_eqz:
@@ -3335,12 +3395,14 @@ export class BinaryReader {
       refType,
       brDepth,
       brTable,
+      relativeDepth,
       tableIndex,
       funcIndex,
       typeIndex,
       localIndex,
       globalIndex,
       fieldIndex: undefined,
+      eventIndex,
       memoryAddress,
       literal,
       segmentIndex: undefined,
@@ -3494,6 +3556,10 @@ export class BinaryReader {
         if (!this.hasVarIntBytes()) return false;
         this._sectionEntriesLeft = this.readVarUint32() >>> 0;
         return this.readDataEntry();
+      case SectionCode.Event:
+        if (!this.hasVarIntBytes()) return false;
+        this._sectionEntriesLeft = this.readVarUint32() >>> 0;
+        return this.readEventEntry();
       case SectionCode.Custom:
         var customSectionName = bytesToString(currentSection.name);
         if (customSectionName === "name") {
@@ -3582,6 +3648,8 @@ export class BinaryReader {
         return this.readTableEntry();
       case BinaryReaderState.MEMORY_SECTION_ENTRY:
         return this.readMemoryEntry();
+      case BinaryReaderState.EVENT_SECTION_ENTRY:
+        return this.readEventEntry();
       case BinaryReaderState.GLOBAL_SECTION_ENTRY:
       case BinaryReaderState.END_GLOBAL_SECTION_ENTRY:
         return this.readGlobalEntry();

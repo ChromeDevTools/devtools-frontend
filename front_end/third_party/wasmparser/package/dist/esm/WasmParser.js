@@ -31,6 +31,7 @@ export var SectionCode;
     SectionCode[SectionCode["Element"] = 9] = "Element";
     SectionCode[SectionCode["Code"] = 10] = "Code";
     SectionCode[SectionCode["Data"] = 11] = "Data";
+    SectionCode[SectionCode["Event"] = 13] = "Event";
 })(SectionCode || (SectionCode = {}));
 export var OperatorCode;
 (function (OperatorCode) {
@@ -40,6 +41,11 @@ export var OperatorCode;
     OperatorCode[OperatorCode["loop"] = 3] = "loop";
     OperatorCode[OperatorCode["if"] = 4] = "if";
     OperatorCode[OperatorCode["else"] = 5] = "else";
+    OperatorCode[OperatorCode["try"] = 6] = "try";
+    OperatorCode[OperatorCode["catch"] = 7] = "catch";
+    OperatorCode[OperatorCode["throw"] = 8] = "throw";
+    OperatorCode[OperatorCode["rethrow"] = 9] = "rethrow";
+    OperatorCode[OperatorCode["unwind"] = 10] = "unwind";
     OperatorCode[OperatorCode["end"] = 11] = "end";
     OperatorCode[OperatorCode["br"] = 12] = "br";
     OperatorCode[OperatorCode["br_if"] = 13] = "br_if";
@@ -52,6 +58,8 @@ export var OperatorCode;
     OperatorCode[OperatorCode["call_ref"] = 20] = "call_ref";
     OperatorCode[OperatorCode["return_call_ref"] = 21] = "return_call_ref";
     OperatorCode[OperatorCode["let"] = 23] = "let";
+    OperatorCode[OperatorCode["delegate"] = 24] = "delegate";
+    OperatorCode[OperatorCode["catch_all"] = 25] = "catch_all";
     OperatorCode[OperatorCode["drop"] = 26] = "drop";
     OperatorCode[OperatorCode["select"] = 27] = "select";
     OperatorCode[OperatorCode["local_get"] = 32] = "local_get";
@@ -588,11 +596,11 @@ export const OperatorCodeNames = [
     "loop",
     "if",
     "else",
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
+    "try",
+    "catch",
+    "throw",
+    "rethrow",
+    "unwind",
     "end",
     "br",
     "br_if",
@@ -606,8 +614,8 @@ export const OperatorCodeNames = [
     "return_call_ref",
     undefined,
     "let",
-    undefined,
-    undefined,
+    "delegate",
+    "catch_all",
     "drop",
     "select",
     undefined,
@@ -1240,6 +1248,7 @@ export var ExternalKind;
     ExternalKind[ExternalKind["Table"] = 1] = "Table";
     ExternalKind[ExternalKind["Memory"] = 2] = "Memory";
     ExternalKind[ExternalKind["Global"] = 3] = "Global";
+    ExternalKind[ExternalKind["Event"] = 4] = "Event";
 })(ExternalKind || (ExternalKind = {}));
 export var TypeKind;
 (function (TypeKind) {
@@ -1312,6 +1321,7 @@ export var NameType;
     NameType[NameType["Module"] = 0] = "Module";
     NameType[NameType["Function"] = 1] = "Function";
     NameType[NameType["Local"] = 2] = "Local";
+    NameType[NameType["Event"] = 3] = "Event";
     NameType[NameType["Type"] = 4] = "Type";
     NameType[NameType["Table"] = 5] = "Table";
     NameType[NameType["Memory"] = 6] = "Memory";
@@ -1341,6 +1351,7 @@ export var BinaryReaderState;
     BinaryReaderState[BinaryReaderState["ELEMENT_SECTION_ENTRY"] = 20] = "ELEMENT_SECTION_ENTRY";
     BinaryReaderState[BinaryReaderState["LINKING_SECTION_ENTRY"] = 21] = "LINKING_SECTION_ENTRY";
     BinaryReaderState[BinaryReaderState["START_SECTION_ENTRY"] = 22] = "START_SECTION_ENTRY";
+    BinaryReaderState[BinaryReaderState["EVENT_SECTION_ENTRY"] = 23] = "EVENT_SECTION_ENTRY";
     BinaryReaderState[BinaryReaderState["BEGIN_INIT_EXPRESSION_BODY"] = 25] = "BEGIN_INIT_EXPRESSION_BODY";
     BinaryReaderState[BinaryReaderState["INIT_EXPRESSION_OPERATOR"] = 26] = "INIT_EXPRESSION_OPERATOR";
     BinaryReaderState[BinaryReaderState["END_INIT_EXPRESSION_BODY"] = 27] = "END_INIT_EXPRESSION_BODY";
@@ -1774,6 +1785,14 @@ export class BinaryReader {
         var mutability = this.readVarUint1();
         return { contentType: contentType, mutability: mutability };
     }
+    readEventType() {
+        var attribute = this.readVarUint32() >>> 0;
+        var typeIndex = this.readVarUint32() >>> 0;
+        return {
+            attribute: attribute,
+            typeIndex: typeIndex,
+        };
+    }
     readTypeEntry() {
         if (this._sectionEntriesLeft === 0) {
             this.skipSection();
@@ -1820,6 +1839,9 @@ export class BinaryReader {
                 break;
             case 3 /* Global */:
                 type = this.readGlobalType();
+                break;
+            case 4 /* Event */:
+                type = this.readEventType();
                 break;
         }
         this.result = {
@@ -1873,6 +1895,16 @@ export class BinaryReader {
         }
         this.state = 15 /* MEMORY_SECTION_ENTRY */;
         this.result = this.readMemoryType();
+        this._sectionEntriesLeft--;
+        return true;
+    }
+    readEventEntry() {
+        if (this._sectionEntriesLeft === 0) {
+            this.skipSection();
+            return this.read();
+        }
+        this.state = 23 /* EVENT_SECTION_ENTRY */;
+        this.result = this.readEventType();
         this._sectionEntriesLeft--;
         return true;
     }
@@ -2068,6 +2100,7 @@ export class BinaryReader {
                 };
                 break;
             case 1 /* Function */:
+            case 3 /* Event */:
             case 4 /* Type */:
             case 5 /* Table */:
             case 6 /* Memory */:
@@ -2791,7 +2824,7 @@ export class BinaryReader {
                 }
                 break;
         }
-        var code, blockType, refType, brDepth, brTable, funcIndex, typeIndex, tableIndex, localIndex, globalIndex, memoryAddress, literal, reserved;
+        var code, blockType, refType, brDepth, brTable, relativeDepth, funcIndex, typeIndex, tableIndex, localIndex, globalIndex, eventIndex, memoryAddress, literal, reserved;
         if (this.state === 26 /* INIT_EXPRESSION_OPERATOR */ &&
             this._sectionId === 9 /* Element */ &&
             isExternvalElementSegmentType(this._segmentType)) {
@@ -2819,6 +2852,7 @@ export class BinaryReader {
                 case 2 /* block */:
                 case 3 /* loop */:
                 case 4 /* if */:
+                case 6 /* try */:
                     blockType = this.readBlockType();
                     break;
                 case 12 /* br */:
@@ -2842,6 +2876,14 @@ export class BinaryReader {
                         }
                         brTable.push(this.readVarUint32() >>> 0);
                     }
+                    break;
+                case 9 /* rethrow */:
+                case 24 /* delegate */:
+                    relativeDepth = this.readVarUint32() >>> 0;
+                    break;
+                case 7 /* catch */:
+                case 8 /* throw */:
+                    eventIndex = this.readVarInt32();
                     break;
                 case 208 /* ref_null */:
                     refType = this.readHeapType();
@@ -2939,8 +2981,10 @@ export class BinaryReader {
                 case 0 /* unreachable */:
                 case 1 /* nop */:
                 case 5 /* else */:
+                case 10 /* unwind */:
                 case 11 /* end */:
                 case 15 /* return */:
+                case 25 /* catch_all */:
                 case 26 /* drop */:
                 case 27 /* select */:
                 case 69 /* i32_eqz */:
@@ -3089,12 +3133,14 @@ export class BinaryReader {
             refType,
             brDepth,
             brTable,
+            relativeDepth,
             tableIndex,
             funcIndex,
             typeIndex,
             localIndex,
             globalIndex,
             fieldIndex: undefined,
+            eventIndex,
             memoryAddress,
             literal,
             segmentIndex: undefined,
@@ -3261,6 +3307,11 @@ export class BinaryReader {
                     return false;
                 this._sectionEntriesLeft = this.readVarUint32() >>> 0;
                 return this.readDataEntry();
+            case 13 /* Event */:
+                if (!this.hasVarIntBytes())
+                    return false;
+                this._sectionEntriesLeft = this.readVarUint32() >>> 0;
+                return this.readEventEntry();
             case 0 /* Custom */:
                 var customSectionName = bytesToString(currentSection.name);
                 if (customSectionName === "name") {
@@ -3349,6 +3400,8 @@ export class BinaryReader {
                 return this.readTableEntry();
             case 15 /* MEMORY_SECTION_ENTRY */:
                 return this.readMemoryEntry();
+            case 23 /* EVENT_SECTION_ENTRY */:
+                return this.readEventEntry();
             case 16 /* GLOBAL_SECTION_ENTRY */:
             case 40 /* END_GLOBAL_SECTION_ENTRY */:
                 return this.readGlobalEntry();

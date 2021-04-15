@@ -11,7 +11,8 @@ export declare const enum SectionCode {
     Start = 8,
     Element = 9,
     Code = 10,
-    Data = 11
+    Data = 11,
+    Event = 13
 }
 export declare const enum OperatorCode {
     unreachable = 0,
@@ -20,6 +21,11 @@ export declare const enum OperatorCode {
     loop = 3,
     if = 4,
     else = 5,
+    try = 6,
+    catch = 7,
+    throw = 8,
+    rethrow = 9,
+    unwind = 10,
     end = 11,
     br = 12,
     br_if = 13,
@@ -32,6 +38,8 @@ export declare const enum OperatorCode {
     call_ref = 20,
     return_call_ref = 21,
     let = 23,
+    delegate = 24,
+    catch_all = 25,
     drop = 26,
     select = 27,
     local_get = 32,
@@ -565,7 +573,8 @@ export declare const enum ExternalKind {
     Function = 0,
     Table = 1,
     Memory = 2,
-    Global = 3
+    Global = 3,
+    Event = 4
 }
 export declare const enum TypeKind {
     unspecified = 0,
@@ -616,6 +625,7 @@ export declare const enum NameType {
     Module = 0,
     Function = 1,
     Local = 2,
+    Event = 3,
     Type = 4,
     Table = 5,
     Memory = 6,
@@ -644,6 +654,7 @@ export declare const enum BinaryReaderState {
     ELEMENT_SECTION_ENTRY = 20,
     LINKING_SECTION_ENTRY = 21,
     START_SECTION_ENTRY = 22,
+    EVENT_SECTION_ENTRY = 23,
     BEGIN_INIT_EXPRESSION_BODY = 25,
     INIT_EXPRESSION_OPERATOR = 26,
     END_INIT_EXPRESSION_BODY = 27,
@@ -696,6 +707,10 @@ export interface IGlobalType {
     contentType: Type;
     mutability: number;
 }
+export interface IEventType {
+    attribute: number;
+    typeIndex: number;
+}
 export interface IGlobalVariable {
     type: IGlobalType;
 }
@@ -713,7 +728,7 @@ export interface IDataSegment {
 export interface IDataSegmentBody {
     data: Uint8Array;
 }
-export declare type ImportEntryType = ITableType | IMemoryType | IGlobalType;
+export declare type ImportEntryType = ITableType | IMemoryType | IGlobalType | IEventType;
 export interface IImportEntry {
     module: Uint8Array;
     field: Uint8Array;
@@ -745,6 +760,9 @@ export interface ILocalName {
 }
 export interface ILocalNameEntry extends INameEntry {
     funcs: ILocalName[];
+}
+export interface IEventNameEntry extends INameEntry {
+    names: INaming[];
 }
 export interface ITypeNameEntry extends INameEntry {
     names: INaming[];
@@ -818,6 +836,7 @@ export interface IOperatorInformation {
     refType?: number;
     brDepth?: number;
     brTable?: Array<number>;
+    relativeDepth?: number;
     funcIndex?: number;
     typeIndex?: number;
     tableIndex?: number;
@@ -825,6 +844,7 @@ export interface IOperatorInformation {
     fieldIndex?: number;
     globalIndex?: number;
     segmentIndex?: number;
+    eventIndex?: number;
     destinationIndex?: number;
     memoryAddress?: IMemoryAddress;
     literal?: number | Int64 | Uint8Array;
@@ -887,12 +907,14 @@ export declare class BinaryReader {
     private readTableType;
     private readMemoryType;
     private readGlobalType;
+    private readEventType;
     private readTypeEntry;
     private readImportEntry;
     private readExportEntry;
     private readFunctionEntry;
     private readTableEntry;
     private readMemoryEntry;
+    private readEventEntry;
     private readGlobalEntry;
     private readElementEntry;
     private readElementEntryBody;

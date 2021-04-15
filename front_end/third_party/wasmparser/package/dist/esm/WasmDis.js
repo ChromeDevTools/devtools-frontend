@@ -228,6 +228,9 @@ export class DefaultNameResolver {
     getElementName(index, isRef) {
         return `$elem${index}`;
     }
+    getEventName(index, isRef) {
+        return `$event${index}`;
+    }
     getFunctionName(index, isImport, isRef) {
         return (isImport ? "$import" : "$func") + index;
     }
@@ -243,11 +246,12 @@ export class DefaultNameResolver {
 }
 const EMPTY_STRING_ARRAY = [];
 class DevToolsExportMetadata {
-    constructor(functionExportNames, globalExportNames, memoryExportNames, tableExportNames) {
+    constructor(functionExportNames, globalExportNames, memoryExportNames, tableExportNames, eventExportNames) {
         this._functionExportNames = functionExportNames;
         this._globalExportNames = globalExportNames;
         this._memoryExportNames = memoryExportNames;
         this._tableExportNames = tableExportNames;
+        this._eventExportNames = eventExportNames;
     }
     getFunctionExportNames(index) {
         var _a;
@@ -265,6 +269,10 @@ class DevToolsExportMetadata {
         var _a;
         return (_a = this._tableExportNames[index]) !== null && _a !== void 0 ? _a : EMPTY_STRING_ARRAY;
     }
+    getEventExportNames(index) {
+        var _a;
+        return (_a = this._eventExportNames[index]) !== null && _a !== void 0 ? _a : EMPTY_STRING_ARRAY;
+    }
 }
 export class NumericNameResolver {
     getTypeName(index, isRef) {
@@ -280,6 +288,9 @@ export class NumericNameResolver {
         return isRef ? "" + index : `(;${index};)`;
     }
     getElementName(index, isRef) {
+        return isRef ? "" + index : `(;${index};)`;
+    }
+    getEventName(index, isRef) {
         return isRef ? "" + index : `(;${index};)`;
     }
     getFunctionName(index, isImport, isRef) {
@@ -328,6 +339,7 @@ export class WasmDisassembler {
         this._importCount = 0;
         this._globalCount = 0;
         this._memoryCount = 0;
+        this._eventCount = 0;
         this._tableCount = 0;
         this._elementCount = 0;
         this._expression = [];
@@ -529,11 +541,12 @@ export class WasmDisassembler {
             this.appendBuffer(")");
         }
     }
-    useLabel(depth) {
+    // extraDepthOffset is used by "delegate" instructions.
+    useLabel(depth, extraDepthOffset = 0) {
         if (!this._backrefLabels) {
             return "" + depth;
         }
-        var i = this._backrefLabels.length - depth - 1;
+        var i = this._backrefLabels.length - depth - 1 - extraDepthOffset;
         if (i < 0) {
             return "" + depth;
         }
@@ -558,6 +571,7 @@ export class WasmDisassembler {
             case 2 /* block */:
             case 3 /* loop */:
             case 4 /* if */:
+            case 6 /* try */:
                 if (this._labelMode !== LabelMode.Depth) {
                     const backrefLabel = {
                         line: this._lines.length,
@@ -602,6 +616,19 @@ export class WasmDisassembler {
                     this.appendBuffer(" ");
                     this.appendBuffer(this.useLabel(operator.brTable[i]));
                 }
+                break;
+            case 9 /* rethrow */:
+                this.appendBuffer(" ");
+                this.appendBuffer(this.useLabel(operator.relativeDepth));
+                break;
+            case 24 /* delegate */:
+                this.appendBuffer(" ");
+                this.appendBuffer(this.useLabel(operator.relativeDepth, 1));
+                break;
+            case 7 /* catch */:
+            case 8 /* throw */:
+                var eventName = this._nameResolver.getEventName(operator.eventIndex, true);
+                this.appendBuffer(` ${eventName}`);
                 break;
             case 208 /* ref_null */:
                 this.appendBuffer(" ");
@@ -956,6 +983,7 @@ export class WasmDisassembler {
                         case 11 /* Data */:
                         case 4 /* Table */:
                         case 9 /* Element */:
+                        case 13 /* Event */:
                             this._currentSectionId = sectionInfo.id;
                             break; // reading known section;
                         default:
@@ -977,6 +1005,20 @@ export class WasmDisassembler {
                     if (memoryInfo.shared) {
                         this.appendBuffer(` shared`);
                     }
+                    this.appendBuffer(")");
+                    this.newLine();
+                    break;
+                case 23 /* EVENT_SECTION_ENTRY */:
+                    var eventInfo = reader.result;
+                    var eventIndex = this._eventCount++;
+                    var eventName = this._nameResolver.getEventName(eventIndex, false);
+                    this.appendBuffer(`  (event ${eventName}`);
+                    if (this._exportMetadata !== null) {
+                        for (const exportName of this._exportMetadata.getEventExportNames(eventIndex)) {
+                            this.appendBuffer(` (export "${exportName}")`);
+                        }
+                    }
+                    this.printFuncType(eventInfo.typeIndex);
                     this.appendBuffer(")");
                     this.newLine();
                     break;
@@ -1017,6 +1059,10 @@ export class WasmDisassembler {
                             case 3 /* Global */:
                                 var globalName = this._nameResolver.getGlobalName(exportInfo.index, true);
                                 this.appendBuffer(`(global ${globalName})`);
+                                break;
+                            case 4 /* Event */:
+                                var eventName = this._nameResolver.getEventName(exportInfo.index, true);
+                                this.appendBuffer(`(event ${eventName})`);
                                 break;
                             default:
                                 throw new Error(`Unsupported export ${exportInfo.kind}`);
@@ -1089,6 +1135,22 @@ export class WasmDisassembler {
                             this.appendBuffer(` (import `);
                             this.printImportSource(importInfo);
                             this.appendBuffer(`) ${limitsToString(tableImportInfo.limits)} ${this.typeToString(tableImportInfo.elementType)})`);
+                            break;
+                        case 4 /* Event */:
+                            var eventImportInfo = importInfo.type;
+                            var eventIndex = this._eventCount++;
+                            var eventName = this._nameResolver.getEventName(eventIndex, false);
+                            this.appendBuffer(`  (event ${eventName}`);
+                            if (this._exportMetadata !== null) {
+                                for (const exportName of this._exportMetadata.getEventExportNames(eventIndex)) {
+                                    this.appendBuffer(` (export "${exportName}")`);
+                                }
+                            }
+                            this.appendBuffer(` (import `);
+                            this.printImportSource(importInfo);
+                            this.appendBuffer(")");
+                            this.printFuncType(eventImportInfo.typeIndex);
+                            this.appendBuffer(")");
                             break;
                         default:
                             throw new Error(`NYI other import types: ${importInfo.kind}`);
@@ -1272,6 +1334,10 @@ export class WasmDisassembler {
                     switch (operator.code) {
                         case 11 /* end */:
                         case 5 /* else */:
+                        case 7 /* catch */:
+                        case 25 /* catch_all */:
+                        case 10 /* unwind */:
+                        case 24 /* delegate */:
                             this.decreaseIndent();
                             break;
                     }
@@ -1283,6 +1349,10 @@ export class WasmDisassembler {
                         case 2 /* block */:
                         case 3 /* loop */:
                         case 5 /* else */:
+                        case 6 /* try */:
+                        case 7 /* catch */:
+                        case 25 /* catch_all */:
+                        case 10 /* unwind */:
                             this.increaseIndent();
                             break;
                     }
@@ -1301,10 +1371,11 @@ export class WasmDisassembler {
 }
 const UNKNOWN_FUNCTION_PREFIX = "unknown";
 class NameSectionNameResolver extends DefaultNameResolver {
-    constructor(functionNames, localNames, typeNames, tableNames, memoryNames, globalNames, fieldNames) {
+    constructor(functionNames, localNames, eventNames, typeNames, tableNames, memoryNames, globalNames, fieldNames) {
         super();
         this._functionNames = functionNames;
         this._localNames = localNames;
+        this._eventNames = eventNames;
         this._typeNames = typeNames;
         this._tableNames = tableNames;
         this._memoryNames = memoryNames;
@@ -1335,6 +1406,12 @@ class NameSectionNameResolver extends DefaultNameResolver {
             return super.getGlobalName(index, isRef);
         return isRef ? `$${name}` : `$${name} (;${index};)`;
     }
+    getEventName(index, isRef) {
+        const name = this._eventNames[index];
+        if (!name)
+            return super.getEventName(index, isRef);
+        return isRef ? `$${name}` : `$${name} (;${index};)`;
+    }
     getFunctionName(index, isImport, isRef) {
         const name = this._functionNames[index];
         if (!name)
@@ -1361,6 +1438,7 @@ export class NameSectionReader {
         this._functionImportsCount = 0;
         this._functionNames = null;
         this._functionLocalNames = null;
+        this._eventNames = null;
         this._typeNames = null;
         this._tableNames = null;
         this._memoryNames = null;
@@ -1388,6 +1466,7 @@ export class NameSectionReader {
                     this._functionImportsCount = 0;
                     this._functionNames = [];
                     this._functionLocalNames = [];
+                    this._eventNames = [];
                     this._typeNames = [];
                     this._tableNames = [];
                     this._memoryNames = [];
@@ -1433,6 +1512,13 @@ export class NameSectionReader {
                             locals.forEach(({ index, name }) => {
                                 localNames[index] = bytesToString(name);
                             });
+                        });
+                        this._hasNames = true;
+                    }
+                    else if (nameInfo.type === 3 /* Event */) {
+                        const { names } = nameInfo;
+                        names.forEach(({ index, name }) => {
+                            this._eventNames[index] = bytesToString(name);
                         });
                         this._hasNames = true;
                     }
@@ -1507,12 +1593,12 @@ export class NameSectionReader {
             }
             usedNameAt[name] = i;
         }
-        return new NameSectionNameResolver(functionNames, this._functionLocalNames, this._typeNames, this._tableNames, this._memoryNames, this._globalNames, this._fieldNames);
+        return new NameSectionNameResolver(functionNames, this._functionLocalNames, this._eventNames, this._typeNames, this._tableNames, this._memoryNames, this._globalNames, this._fieldNames);
     }
 }
 export class DevToolsNameResolver extends NameSectionNameResolver {
-    constructor(functionNames, localNames, typeNames, tableNames, memoryNames, globalNames, fieldNames) {
-        super(functionNames, localNames, typeNames, tableNames, memoryNames, globalNames, fieldNames);
+    constructor(functionNames, localNames, eventNames, typeNames, tableNames, memoryNames, globalNames, fieldNames) {
+        super(functionNames, localNames, eventNames, typeNames, tableNames, memoryNames, globalNames, fieldNames);
     }
     getFunctionName(index, isImport, isRef) {
         const name = this._functionNames[index];
@@ -1528,8 +1614,10 @@ export class DevToolsNameGenerator {
         this._memoryImportsCount = 0;
         this._tableImportsCount = 0;
         this._globalImportsCount = 0;
+        this._eventImportsCount = 0;
         this._functionNames = null;
         this._functionLocalNames = null;
+        this._eventNames = null;
         this._memoryNames = null;
         this._typeNames = null;
         this._tableNames = null;
@@ -1539,6 +1627,7 @@ export class DevToolsNameGenerator {
         this._globalExportNames = null;
         this._memoryExportNames = null;
         this._tableExportNames = null;
+        this._eventExportNames = null;
     }
     _addExportName(exportNames, index, name) {
         const names = exportNames[index];
@@ -1581,6 +1670,7 @@ export class DevToolsNameGenerator {
                     this._memoryImportsCount = 0;
                     this._tableImportsCount = 0;
                     this._globalImportsCount = 0;
+                    this._eventImportsCount = 0;
                     this._functionNames = [];
                     this._functionLocalNames = [];
                     this._memoryNames = [];
@@ -1592,6 +1682,7 @@ export class DevToolsNameGenerator {
                     this._globalExportNames = [];
                     this._memoryExportNames = [];
                     this._tableExportNames = [];
+                    this._eventExportNames = [];
                     break;
                 case 4 /* END_SECTION */:
                     break;
@@ -1626,6 +1717,8 @@ export class DevToolsNameGenerator {
                         case 3 /* Global */:
                             this._setName(this._globalNames, this._globalImportsCount++, importName, false);
                             break;
+                        case 4 /* Event */:
+                            this._setName(this._eventNames, this._eventImportsCount++, importName, false);
                         default:
                             throw new Error(`Unsupported export ${importInfo.kind}`);
                     }
@@ -1645,6 +1738,12 @@ export class DevToolsNameGenerator {
                             locals.forEach(({ index, name }) => {
                                 localNames[index] = bytesToString(name);
                             });
+                        });
+                    }
+                    else if (nameInfo.type === 3 /* Event */) {
+                        const { names } = nameInfo;
+                        names.forEach(({ index, name }) => {
+                            this._setName(this._eventNames, index, bytesToString(name), true);
                         });
                     }
                     else if (nameInfo.type === 4 /* Type */) {
@@ -1701,6 +1800,10 @@ export class DevToolsNameGenerator {
                             this._addExportName(this._tableExportNames, exportInfo.index, exportName);
                             this._setName(this._tableNames, exportInfo.index, exportName, false);
                             break;
+                        case 4 /* Event */:
+                            this._addExportName(this._eventExportNames, exportInfo.index, exportName);
+                            this._setName(this._eventNames, exportInfo.index, exportName, false);
+                            break;
                         default:
                             throw new Error(`Unsupported export ${exportInfo.kind}`);
                     }
@@ -1711,10 +1814,10 @@ export class DevToolsNameGenerator {
         }
     }
     getExportMetadata() {
-        return new DevToolsExportMetadata(this._functionExportNames, this._globalExportNames, this._memoryExportNames, this._tableExportNames);
+        return new DevToolsExportMetadata(this._functionExportNames, this._globalExportNames, this._memoryExportNames, this._tableExportNames, this._eventExportNames);
     }
     getNameResolver() {
-        return new DevToolsNameResolver(this._functionNames, this._functionLocalNames, this._typeNames, this._tableNames, this._memoryNames, this._globalNames, this._fieldNames);
+        return new DevToolsNameResolver(this._functionNames, this._functionLocalNames, this._eventNames, this._typeNames, this._tableNames, this._memoryNames, this._globalNames, this._fieldNames);
     }
 }
 //# sourceMappingURL=WasmDis.js.map

@@ -21,6 +21,8 @@ import {
   IDataSegmentBody,
   IElementSegment,
   IElementSegmentBody,
+  IEventNameEntry,
+  IEventType,
   IExportEntry,
   IFieldNameEntry,
   IFunctionEntry,
@@ -258,6 +260,7 @@ export interface IExportMetadata {
   getGlobalExportNames(index: number): string[];
   getMemoryExportNames(index: number): string[];
   getTableExportNames(index: number): string[];
+  getEventExportNames(index: number): string[];
 }
 
 export interface INameResolver {
@@ -266,6 +269,7 @@ export interface INameResolver {
   getMemoryName(index: number, isRef: boolean): string;
   getGlobalName(index: number, isRef: boolean): string;
   getElementName(index: number, isRef: boolean): string;
+  getEventName(index: number, isRef: boolean): string;
   getFunctionName(index: number, isImport: boolean, isRef: boolean): string;
   getVariableName(funcIndex: number, index: number, isRef: boolean): string;
   getFieldName(typeIndex: number, index: number, isRef: boolean): string;
@@ -286,6 +290,9 @@ export class DefaultNameResolver implements INameResolver {
   }
   public getElementName(index: number, isRef: boolean): string {
     return `$elem${index}`;
+  }
+  public getEventName(index: number, isRef: boolean): string {
+    return `$event${index}`;
   }
   public getFunctionName(
     index: number,
@@ -320,17 +327,20 @@ class DevToolsExportMetadata implements IExportMetadata {
   private readonly _globalExportNames: string[][];
   private readonly _memoryExportNames: string[][];
   private readonly _tableExportNames: string[][];
+  private readonly _eventExportNames: string[][];
 
   constructor(
     functionExportNames: string[][],
     globalExportNames: string[][],
     memoryExportNames: string[][],
-    tableExportNames: string[][]
+    tableExportNames: string[][],
+    eventExportNames: string[][]
   ) {
     this._functionExportNames = functionExportNames;
     this._globalExportNames = globalExportNames;
     this._memoryExportNames = memoryExportNames;
     this._tableExportNames = tableExportNames;
+    this._eventExportNames = eventExportNames;
   }
 
   public getFunctionExportNames(index: number) {
@@ -348,6 +358,10 @@ class DevToolsExportMetadata implements IExportMetadata {
   public getTableExportNames(index: number) {
     return this._tableExportNames[index] ?? EMPTY_STRING_ARRAY;
   }
+
+  public getEventExportNames(index: number) {
+    return this._eventExportNames[index] ?? EMPTY_STRING_ARRAY;
+  }
 }
 
 export class NumericNameResolver implements INameResolver {
@@ -364,6 +378,9 @@ export class NumericNameResolver implements INameResolver {
     return isRef ? "" + index : `(;${index};)`;
   }
   public getElementName(index: number, isRef: boolean): string {
+    return isRef ? "" + index : `(;${index};)`;
+  }
+  public getEventName(index: number, isRef: boolean): string {
     return isRef ? "" + index : `(;${index};)`;
   }
   public getFunctionName(
@@ -421,6 +438,7 @@ export class WasmDisassembler {
   private _importCount: number;
   private _globalCount: number;
   private _memoryCount: number;
+  private _eventCount: number;
   private _tableCount: number;
   private _elementCount: number;
   private _expression: Array<IOperatorInformation>;
@@ -469,6 +487,7 @@ export class WasmDisassembler {
     this._importCount = 0;
     this._globalCount = 0;
     this._memoryCount = 0;
+    this._eventCount = 0;
     this._tableCount = 0;
     this._elementCount = 0;
     this._expression = [];
@@ -675,11 +694,12 @@ export class WasmDisassembler {
       this.appendBuffer(")");
     }
   }
-  private useLabel(depth: number): string {
+  // extraDepthOffset is used by "delegate" instructions.
+  private useLabel(depth: number, extraDepthOffset = 0): string {
     if (!this._backrefLabels) {
       return "" + depth;
     }
-    var i = this._backrefLabels.length - depth - 1;
+    var i = this._backrefLabels.length - depth - 1 - extraDepthOffset;
     if (i < 0) {
       return "" + depth;
     }
@@ -704,6 +724,7 @@ export class WasmDisassembler {
       case OperatorCode.block:
       case OperatorCode.loop:
       case OperatorCode.if:
+      case OperatorCode.try:
         if (this._labelMode !== LabelMode.Depth) {
           const backrefLabel = {
             line: this._lines.length,
@@ -750,6 +771,22 @@ export class WasmDisassembler {
           this.appendBuffer(" ");
           this.appendBuffer(this.useLabel(operator.brTable[i]));
         }
+        break;
+      case OperatorCode.rethrow:
+        this.appendBuffer(" ");
+        this.appendBuffer(this.useLabel(operator.relativeDepth));
+        break;
+      case OperatorCode.delegate:
+        this.appendBuffer(" ");
+        this.appendBuffer(this.useLabel(operator.relativeDepth, 1));
+        break;
+      case OperatorCode.catch:
+      case OperatorCode.throw:
+        var eventName = this._nameResolver.getEventName(
+          operator.eventIndex,
+          true
+        );
+        this.appendBuffer(` ${eventName}`);
         break;
       case OperatorCode.ref_null:
         this.appendBuffer(" ");
@@ -1139,6 +1176,7 @@ export class WasmDisassembler {
             case SectionCode.Data:
             case SectionCode.Table:
             case SectionCode.Element:
+            case SectionCode.Event:
               this._currentSectionId = sectionInfo.id;
               break; // reading known section;
             default:
@@ -1162,6 +1200,22 @@ export class WasmDisassembler {
           if (memoryInfo.shared) {
             this.appendBuffer(` shared`);
           }
+          this.appendBuffer(")");
+          this.newLine();
+          break;
+        case BinaryReaderState.EVENT_SECTION_ENTRY:
+          var eventInfo = <IEventType>reader.result;
+          var eventIndex = this._eventCount++;
+          var eventName = this._nameResolver.getEventName(eventIndex, false);
+          this.appendBuffer(`  (event ${eventName}`);
+          if (this._exportMetadata !== null) {
+            for (const exportName of this._exportMetadata.getEventExportNames(
+              eventIndex
+            )) {
+              this.appendBuffer(` (export "${exportName}")`);
+            }
+          }
+          this.printFuncType(eventInfo.typeIndex);
           this.appendBuffer(")");
           this.newLine();
           break;
@@ -1221,6 +1275,13 @@ export class WasmDisassembler {
                   true
                 );
                 this.appendBuffer(`(global ${globalName})`);
+                break;
+              case ExternalKind.Event:
+                var eventName = this._nameResolver.getEventName(
+                  exportInfo.index,
+                  true
+                );
+                this.appendBuffer(`(event ${eventName})`);
                 break;
               default:
                 throw new Error(`Unsupported export ${exportInfo.kind}`);
@@ -1320,6 +1381,27 @@ export class WasmDisassembler {
                   tableImportInfo.limits
                 )} ${this.typeToString(tableImportInfo.elementType)})`
               );
+              break;
+            case ExternalKind.Event:
+              var eventImportInfo = <IEventType>importInfo.type;
+              var eventIndex = this._eventCount++;
+              var eventName = this._nameResolver.getEventName(
+                eventIndex,
+                false
+              );
+              this.appendBuffer(`  (event ${eventName}`);
+              if (this._exportMetadata !== null) {
+                for (const exportName of this._exportMetadata.getEventExportNames(
+                  eventIndex
+                )) {
+                  this.appendBuffer(` (export "${exportName}")`);
+                }
+              }
+              this.appendBuffer(` (import `);
+              this.printImportSource(importInfo);
+              this.appendBuffer(")");
+              this.printFuncType(eventImportInfo.typeIndex);
+              this.appendBuffer(")");
               break;
             default:
               throw new Error(`NYI other import types: ${importInfo.kind}`);
@@ -1534,6 +1616,10 @@ export class WasmDisassembler {
           switch (operator.code) {
             case OperatorCode.end:
             case OperatorCode.else:
+            case OperatorCode.catch:
+            case OperatorCode.catch_all:
+            case OperatorCode.unwind:
+            case OperatorCode.delegate:
               this.decreaseIndent();
               break;
           }
@@ -1545,6 +1631,10 @@ export class WasmDisassembler {
             case OperatorCode.block:
             case OperatorCode.loop:
             case OperatorCode.else:
+            case OperatorCode.try:
+            case OperatorCode.catch:
+            case OperatorCode.catch_all:
+            case OperatorCode.unwind:
               this.increaseIndent();
               break;
           }
@@ -1567,6 +1657,7 @@ const UNKNOWN_FUNCTION_PREFIX = "unknown";
 class NameSectionNameResolver extends DefaultNameResolver {
   protected readonly _functionNames: string[];
   protected readonly _localNames: string[][];
+  protected readonly _eventNames: string[];
   protected readonly _typeNames: string[];
   protected readonly _tableNames: string[];
   protected readonly _memoryNames: string[];
@@ -1576,6 +1667,7 @@ class NameSectionNameResolver extends DefaultNameResolver {
   constructor(
     functionNames: string[],
     localNames: string[][],
+    eventNames: string[],
     typeNames: string[],
     tableNames: string[],
     memoryNames: string[],
@@ -1585,6 +1677,7 @@ class NameSectionNameResolver extends DefaultNameResolver {
     super();
     this._functionNames = functionNames;
     this._localNames = localNames;
+    this._eventNames = eventNames;
     this._typeNames = typeNames;
     this._tableNames = tableNames;
     this._memoryNames = memoryNames;
@@ -1613,6 +1706,12 @@ class NameSectionNameResolver extends DefaultNameResolver {
   public getGlobalName(index: number, isRef: boolean): string {
     const name = this._globalNames[index];
     if (!name) return super.getGlobalName(index, isRef);
+    return isRef ? `$${name}` : `$${name} (;${index};)`;
+  }
+
+  public getEventName(index: number, isRef: boolean): string {
+    const name = this._eventNames[index];
+    if (!name) return super.getEventName(index, isRef);
     return isRef ? `$${name}` : `$${name} (;${index};)`;
   }
 
@@ -1655,6 +1754,7 @@ export class NameSectionReader {
   private _functionImportsCount = 0;
   private _functionNames: string[] = null;
   private _functionLocalNames: string[][] = null;
+  private _eventNames: string[] = null;
   private _typeNames: string[] = null;
   private _tableNames: string[] = null;
   private _memoryNames: string[] = null;
@@ -1683,6 +1783,7 @@ export class NameSectionReader {
           this._functionImportsCount = 0;
           this._functionNames = [];
           this._functionLocalNames = [];
+          this._eventNames = [];
           this._typeNames = [];
           this._tableNames = [];
           this._memoryNames = [];
@@ -1731,6 +1832,12 @@ export class NameSectionReader {
               locals.forEach(({ index, name }) => {
                 localNames[index] = bytesToString(name);
               });
+            });
+            this._hasNames = true;
+          } else if (nameInfo.type === NameType.Event) {
+            const { names } = <IEventNameEntry>nameInfo;
+            names.forEach(({ index, name }) => {
+              this._eventNames[index] = bytesToString(name);
             });
             this._hasNames = true;
           } else if (nameInfo.type === NameType.Type) {
@@ -1807,6 +1914,7 @@ export class NameSectionReader {
     return new NameSectionNameResolver(
       functionNames,
       this._functionLocalNames,
+      this._eventNames,
       this._typeNames,
       this._tableNames,
       this._memoryNames,
@@ -1820,6 +1928,7 @@ export class DevToolsNameResolver extends NameSectionNameResolver {
   constructor(
     functionNames: string[],
     localNames: string[][],
+    eventNames: string[],
     typeNames: string[],
     tableNames: string[],
     memoryNames: string[],
@@ -1829,6 +1938,7 @@ export class DevToolsNameResolver extends NameSectionNameResolver {
     super(
       functionNames,
       localNames,
+      eventNames,
       typeNames,
       tableNames,
       memoryNames,
@@ -1854,9 +1964,11 @@ export class DevToolsNameGenerator {
   private _memoryImportsCount = 0;
   private _tableImportsCount = 0;
   private _globalImportsCount = 0;
+  private _eventImportsCount = 0;
 
   private _functionNames: string[] = null;
   private _functionLocalNames: string[][] = null;
+  private _eventNames: string[] = null;
   private _memoryNames: string[] = null;
   private _typeNames: string[] = null;
   private _tableNames: string[] = null;
@@ -1867,6 +1979,7 @@ export class DevToolsNameGenerator {
   private _globalExportNames: string[][] = null;
   private _memoryExportNames: string[][] = null;
   private _tableExportNames: string[][] = null;
+  private _eventExportNames: string[][] = null;
 
   private _addExportName(exportNames: string[][], index: number, name: string) {
     const names = exportNames[index];
@@ -1913,6 +2026,7 @@ export class DevToolsNameGenerator {
           this._memoryImportsCount = 0;
           this._tableImportsCount = 0;
           this._globalImportsCount = 0;
+          this._eventImportsCount = 0;
 
           this._functionNames = [];
           this._functionLocalNames = [];
@@ -1925,6 +2039,7 @@ export class DevToolsNameGenerator {
           this._globalExportNames = [];
           this._memoryExportNames = [];
           this._tableExportNames = [];
+          this._eventExportNames = [];
           break;
         case BinaryReaderState.END_SECTION:
           break;
@@ -1984,6 +2099,13 @@ export class DevToolsNameGenerator {
                 false
               );
               break;
+            case ExternalKind.Event:
+              this._setName(
+                this._eventNames,
+                this._eventImportsCount++,
+                importName,
+                false
+              );
             default:
               throw new Error(`Unsupported export ${importInfo.kind}`);
           }
@@ -2007,6 +2129,11 @@ export class DevToolsNameGenerator {
               locals.forEach(({ index, name }) => {
                 localNames[index] = bytesToString(name);
               });
+            });
+          } else if (nameInfo.type === NameType.Event) {
+            const { names } = <IEventNameEntry>nameInfo;
+            names.forEach(({ index, name }) => {
+              this._setName(this._eventNames, index, bytesToString(name), true);
             });
           } else if (nameInfo.type === NameType.Type) {
             const { names } = <ITypeNameEntry>nameInfo;
@@ -2104,6 +2231,19 @@ export class DevToolsNameGenerator {
                 false
               );
               break;
+            case ExternalKind.Event:
+              this._addExportName(
+                this._eventExportNames,
+                exportInfo.index,
+                exportName
+              );
+              this._setName(
+                this._eventNames,
+                exportInfo.index,
+                exportName,
+                false
+              );
+              break;
             default:
               throw new Error(`Unsupported export ${exportInfo.kind}`);
           }
@@ -2119,7 +2259,8 @@ export class DevToolsNameGenerator {
       this._functionExportNames,
       this._globalExportNames,
       this._memoryExportNames,
-      this._tableExportNames
+      this._tableExportNames,
+      this._eventExportNames
     );
   }
 
@@ -2127,6 +2268,7 @@ export class DevToolsNameGenerator {
     return new DevToolsNameResolver(
       this._functionNames,
       this._functionLocalNames,
+      this._eventNames,
       this._typeNames,
       this._tableNames,
       this._memoryNames,

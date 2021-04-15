@@ -1,3 +1,17 @@
+# [5.1.0](https://github.com/wasdk/wasmparser/compare/v5.0.2...v5.1.0) (2021-04-15)
+
+
+### Features
+
+* add support for "exception handling" proposal ([8dbd8c8](https://github.com/wasdk/wasmparser/commit/8dbd8c8964eae722f011851b35914c1c5b61f9f5))
+
+## [5.0.2](https://github.com/wasdk/wasmparser/compare/v5.0.1...v5.0.2) (2021-03-25)
+
+
+### Bug Fixes
+
+* **simd:** update wabt.js and remove/unskip simd tests ([#95](https://github.com/wasdk/wasmparser/issues/95)) ([ce582b7](https://github.com/wasdk/wasmparser/commit/ce582b7bfcce15812ac7dd37bcf5aa03933622d5))
+
 ## [5.0.1](https://github.com/wasdk/wasmparser/compare/v5.0.0...v5.0.1) (2021-03-04)
 
 

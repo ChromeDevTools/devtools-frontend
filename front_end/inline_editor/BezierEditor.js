@@ -246,8 +246,7 @@ export class BezierEditor extends UI.Widget.VBox {
 
     const keyframes = [
       {offset: 0, transform: 'translateX(0px)', easing: this._bezier.asCSSText(), opacity: 1},
-      {offset: 0.9, transform: 'translateX(218px)', opacity: 1},
-      {offset: 1, transform: 'translateX(218px)', opacity: 0}
+      {offset: 0.9, transform: 'translateX(218px)', opacity: 1}, {offset: 1, transform: 'translateX(218px)', opacity: 0}
     ];
     this._previewAnimation = this._previewElement.animate(keyframes, animationDuration);
     this._previewOnion.removeChildren();

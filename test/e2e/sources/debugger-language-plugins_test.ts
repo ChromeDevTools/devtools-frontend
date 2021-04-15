@@ -534,7 +534,8 @@ describe('The Debugger Language Plugins', async () => {
     assert.deepEqual(sourceLocations, ['unreachable.ll:6', 'unreachable.html:27', 'unreachable.html:30']);
   });
 
-  it('shows variable values with JS formatters', async () => {
+  // Skip during changes to [[Protoype]] (https://crbug.com/1197019)
+  it.skip('[crbug.com/1199243] shows variable values with JS formatters', async () => {
     const {frontend} = getBrowserAndPages();
     await frontend.evaluateHandle(
         () => globalThis.installExtensionPlugin((extensionServerClient: unknown, extensionAPI: unknown) => {

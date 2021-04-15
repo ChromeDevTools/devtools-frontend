@@ -146,7 +146,8 @@ describe('The Console Tab', async () => {
     ]);
   });
 
-  it('can show DOM interactions', async () => {
+  // Skip during changes to [[Protoype]] (https://crbug.com/1197019)
+  it.skip('[crbug.com/1199243] can show DOM interactions', async () => {
     const messages = await getConsoleMessages('dom-interactions');
 
     assert.deepEqual(messages, [

@@ -1,6 +1,5 @@
 {
   "dependencies": [
-    "components",
-    "browser_sdk"
+    "components"
   ]
 }

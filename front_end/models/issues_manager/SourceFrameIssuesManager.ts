@@ -10,9 +10,8 @@ import * as Workspace from '../../models/workspace/workspace.js';
 import * as Marked from '../../third_party/marked/marked.js';
 import {ContentSecurityPolicyIssue, trustedTypesPolicyViolationCode, trustedTypesSinkViolationCode} from './ContentSecurityPolicyIssue.js';
 import {Issue, IssueKind, MarkdownIssueDescription, toZeroBasedLocation} from './Issue.js';
-
 import * as IssuesManager from './IssuesManager.js';
-import {findTitleFromMarkdownAst, getMarkdownFileContent} from './MarkdownHelpers.js';
+import {findTitleFromMarkdownAst, getMarkdownFileContent} from './MarkdownIssueDescription.js';
 
 export class SourceFrameIssuesManager {
   private issuesManager: IssuesManager.IssuesManager;
@@ -60,7 +59,7 @@ export class SourceFrameIssuesManager {
   }
 
   private async getIssueTitleFromMarkdownDescription(description: MarkdownIssueDescription): Promise<string|null> {
-    const rawMarkdown = await getMarkdownFileContent(`issues/descriptions/${description.file}`);
+    const rawMarkdown = await getMarkdownFileContent(description.file);
     const markdownAst = Marked.Marked.lexer(rawMarkdown);
     return findTitleFromMarkdownAst(markdownAst);
   }

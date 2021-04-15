@@ -11,7 +11,6 @@ import * as UI from '../ui/legacy/legacy.js';
 import type {AggregatedIssue} from './IssueAggregator.js';
 import {Events as IssueAggregatorEvents, IssueAggregator} from './IssueAggregator.js';
 import {IssueView} from './IssueView.js';
-import {createIssueDescriptionFromMarkdown} from './MarkdownIssueDescription.js';
 
 const UIStrings = {
   /**
@@ -253,7 +252,8 @@ export class IssuesPane extends UI.Widget.VBox {
         console.warn('Could not find description for issue code:', issue.code());
         return;
       }
-      const markdownDescription = await createIssueDescriptionFromMarkdown(description);
+      const markdownDescription =
+          await IssuesManager.MarkdownIssueDescription.createIssueDescriptionFromMarkdown(description);
       issueView = new IssueView(this, issue, markdownDescription);
       this.issueViews.set(issue.code(), issueView);
       const parent = this.getIssueViewParent(issue);

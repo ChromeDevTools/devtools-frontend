@@ -2,8 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as IssuesManager from '../models/issues_manager/issues_manager.js';
-import * as Marked from '../third_party/marked/marked.js';
+import * as Marked from '../../third_party/marked/marked.js';
+import {MarkdownIssueDescription} from './Issue.js';
 
 export interface IssueDescription {
   title: string;
@@ -13,31 +13,41 @@ export interface IssueDescription {
   links: {link: string, linkTitle: string}[];
 }
 
-export async function createIssueDescriptionFromMarkdown(description: IssuesManager.Issue.MarkdownIssueDescription):
-    Promise<IssueDescription> {
-  let resolve = (_: IssueDescription): void => {};
+export async function getFileContent(url: URL): Promise<string> {
+  let resolve = (_: string): void => {};
   function reqListener(this: XMLHttpRequest): void {
-    const rawMarkdownWithPlaceholdersReplaced = substitutePlaceholders(this.responseText, description.substitutions);
-    const desc = createIssueDescriptionFromRawMarkdown(rawMarkdownWithPlaceholdersReplaced, description);
-    resolve(desc);
+    if (this.status !== 200) {
+      throw new Error(`Markdown file ${
+          url.toString()} not found. Make sure it is correctly listed in the relevant BUILD.gn files.`);
+    }
+    resolve(this.responseText);
   }
-  const promise = new Promise<IssueDescription>(r => {
+  const promise = new Promise<string>(r => {
     resolve = r;
   });
   const oReq = new XMLHttpRequest();
   oReq.addEventListener('load', reqListener);
-  const url = new URL(`descriptions/${description.file}`, import.meta.url);
   oReq.open('GET', url.toString());
   oReq.send();
-
   return promise;
+}
+
+export async function getMarkdownFileContent(filename: string): Promise<string> {
+  return getFileContent(new URL(`descriptions/${filename}`, import.meta.url));
+}
+
+export async function createIssueDescriptionFromMarkdown(description: MarkdownIssueDescription):
+    Promise<IssueDescription> {
+  const rawMarkdown = await getMarkdownFileContent(description.file);
+  const rawMarkdownWithPlaceholdersReplaced = substitutePlaceholders(rawMarkdown, description.substitutions);
+  return createIssueDescriptionFromRawMarkdown(rawMarkdownWithPlaceholdersReplaced, description);
 }
 
 /**
  * This function is exported separately for unit testing.
  */
 export function createIssueDescriptionFromRawMarkdown(
-    markdown: string, description: IssuesManager.Issue.MarkdownIssueDescription): IssueDescription {
+    markdown: string, description: MarkdownIssueDescription): IssueDescription {
   const markdownAst = Marked.Marked.lexer(markdown);
   const title = findTitleFromMarkdownAst(markdownAst);
   if (!title) {
@@ -96,7 +106,7 @@ function validatePlaceholders(placeholders: Set<string>): void {
 
 // TODO(crbug.com/1108699): Fix types when they are available.
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function findTitleFromMarkdownAst(markdownAst: any[]): string|null {
+export function findTitleFromMarkdownAst(markdownAst: any[]): string|null {
   if (markdownAst.length === 0 || markdownAst[0].type !== 'heading' || markdownAst[0].depth !== 1) {
     return null;
   }

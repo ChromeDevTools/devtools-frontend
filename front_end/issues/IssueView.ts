@@ -29,7 +29,6 @@ import {AffectedTrustedWebActivityIssueDetailsView} from './AffectedTrustedWebAc
 import {CorsIssueDetailsView} from './CorsIssueDetailsView.js';
 
 import type {AggregatedIssue} from './IssueAggregator.js';
-import type {IssueDescription} from './MarkdownIssueDescription.js';
 
 const UIStrings = {
   /**
@@ -451,13 +450,15 @@ class AffectedMixedContentView extends AffectedResourcesView {
 export class IssueView extends UI.TreeOutline.TreeElement {
   _parent: UI.Widget.VBox;
   _issue: AggregatedIssue;
-  _description: IssueDescription;
+  _description: IssuesManager.MarkdownIssueDescription.IssueDescription;
   toggleOnClick: boolean;
   affectedResources: UI.TreeOutline.TreeElement;
   _affectedResourceViews: AffectedResourcesView[];
   _aggregatedIssuesCount: HTMLElement|null;
   _hasBeenExpandedBefore: boolean;
-  constructor(parent: UI.Widget.VBox, issue: AggregatedIssue, description: IssueDescription) {
+  constructor(
+      parent: UI.Widget.VBox, issue: AggregatedIssue,
+      description: IssuesManager.MarkdownIssueDescription.IssueDescription) {
     super();
     this._parent = parent;
     this._issue = issue;

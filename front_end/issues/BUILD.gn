@@ -2,10 +2,8 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-import("../../config/gni/all_devtools_files.gni")
 import("../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../scripts/build/ninja/devtools_module.gni")
-import("../../scripts/build/ninja/devtools_pre_built.gni")
 
 devtools_module("issues") {
   sources = [
@@ -25,7 +23,6 @@ devtools_module("issues") {
     "IssueRevealer.ts",
     "IssueView.ts",
     "IssuesPane.ts",
-    "MarkdownIssueDescription.ts",
   ]
 
   deps = [
@@ -38,7 +35,6 @@ devtools_module("issues") {
     "../panels/elements:bundle",
     "../panels/network:bundle",
     "../third_party/lit-html:bundle",
-    "../third_party/marked:bundle",
     "../ui/components/data_grid:bundle",
     "../ui/components/linkifier:bundle",
     "../ui/components/markdown_view:bundle",
@@ -46,15 +42,6 @@ devtools_module("issues") {
   ]
 
   visibility = [ "../../test/unittests/front_end/issues" ]
-}
-
-devtools_pre_built("descriptions") {
-  sources = []
-  data = []
-  foreach(file, devtools_issue_description_files) {
-    sources += [ "descriptions/$file" ]
-    data += [ "$target_gen_dir/descriptions/$file" ]
-  }
 }
 
 devtools_entrypoint("bundle") {

@@ -7,12 +7,9 @@ import * as IssueAggregator from './IssueAggregator.js';
 import * as IssueRevealer from './IssueRevealer.js';
 import * as IssuesPane from './IssuesPane.js';
 
-import * as MarkdownIssueDescription from './MarkdownIssueDescription.js';
-
 export {
   CSPViolationsView,
   IssueAggregator,
   IssueRevealer,
   IssuesPane,
-  MarkdownIssueDescription,
 };

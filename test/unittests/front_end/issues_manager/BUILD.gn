@@ -5,6 +5,7 @@ ts_library("issues_manager") {
   sources = [
     "Issue_test.ts",
     "IssuesManager_test.ts",
+    "MarkdownIssueDescription_test.ts",
     "MockIssuesManager.ts",
     "MockIssuesModel.ts",
     "RelatedIssue_test.ts",

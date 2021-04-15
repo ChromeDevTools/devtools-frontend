@@ -9,8 +9,7 @@
     "ui/legacy/components/perf_ui",
     "panels/mobile_throttling",
     "panels/network",
-    "sources",
-    "browser_sdk"
+    "sources"
   ],
     "resources": [
     "appManifestView.css",

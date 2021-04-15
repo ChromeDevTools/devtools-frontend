@@ -1,6 +1,0 @@
-{
-  "resources": [
-    "../issues/descriptions/cspTrustedTypesSinkViolation.md",
-    "../issues/descriptions/cspTrustedTypesPolicyViolation.md"
-  ]
-}

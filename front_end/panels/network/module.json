@@ -1,6 +1,5 @@
 {
   "dependencies": [
-    "browser_sdk",
     "components",
     "ui/legacy/components/cookie_table",
     "ui/legacy/components/data_grid",

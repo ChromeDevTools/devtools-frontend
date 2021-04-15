@@ -5,7 +5,6 @@ ts_library("issues") {
   sources = [
     "IssueAggregator_test.ts",
     "LowContrastIssuesAggregation_test.ts",
-    "MarkdownIssueDescription_test.ts",
     "TrustedWebActivityIssuesAggregation_test.ts",
   ]
 

@@ -21,7 +21,7 @@
     { "name": "panels/profiler" },
     { "name": "panels/protocol_monitor"},
     { "name": "quick_open" },
-    { "name": "search" },
+    { "name": "panels/search" },
     { "name": "settings" },
     { "name": "snippets" },
     { "name": "ui/legacy/components/source_frame" },

@@ -50,7 +50,7 @@ devtools_module("network") {
     "../../models/workspace:bundle",
     "../../panels/elements:bundle",
     "../../panels/mobile_throttling:bundle",
-    "../../search:bundle",
+    "../../panels/search:bundle",
     "../../theme_support:bundle",
     "../../third_party/chromium/client-variations:bundle",
     "../../ui/components/expandable_list:bundle",

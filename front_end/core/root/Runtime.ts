@@ -45,6 +45,7 @@ export const mappingForLayoutTests = new Map<string, string>([
   ['panels/network', 'network'],
   ['panels/profiler', 'profiler'],
   ['panels/application', 'resources'],
+  ['panels/search', 'search'],
   ['models/persistence', 'persistence'],
   ['ui/legacy/components/inline_editor', 'inline_editor'],
   ['ui/legacy/components/data_grid', 'data_grid'],

@@ -7733,6 +7733,60 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | timestamp": {
     "message": "Timestamp"
   },
+  "panels/search/SearchResultsPane.ts | lineS": {
+    "message": "Line {PH1}"
+  },
+  "panels/search/SearchResultsPane.ts | matchesCountS": {
+    "message": "Matches Count {PH1}"
+  },
+  "panels/search/SearchResultsPane.ts | showDMore": {
+    "message": "Show {PH1} more"
+  },
+  "panels/search/SearchView.ts | clear": {
+    "message": "Clear"
+  },
+  "panels/search/SearchView.ts | foundDMatchingLinesInDFiles": {
+    "message": "Found {PH1} matching lines in {PH2} files."
+  },
+  "panels/search/SearchView.ts | foundDMatchingLinesInFile": {
+    "message": "Found {PH1} matching lines in 1 file."
+  },
+  "panels/search/SearchView.ts | foundMatchingLineInFile": {
+    "message": "Found 1 matching line in 1 file."
+  },
+  "panels/search/SearchView.ts | indexing": {
+    "message": "Indexing…"
+  },
+  "panels/search/SearchView.ts | indexingInterrupted": {
+    "message": "Indexing interrupted."
+  },
+  "panels/search/SearchView.ts | matchCase": {
+    "message": "Match Case"
+  },
+  "panels/search/SearchView.ts | noMatchesFound": {
+    "message": "No matches found."
+  },
+  "panels/search/SearchView.ts | refresh": {
+    "message": "Refresh"
+  },
+  "panels/search/SearchView.ts | search": {
+    "message": "Search"
+  },
+  "panels/search/SearchView.ts | searchFinished": {
+    "message": "Search finished."
+  },
+  "panels/search/SearchView.ts | searching": {
+    "message": "Searching…"
+  },
+  "panels/search/SearchView.ts | searchInterrupted": {
+    "message": "Search interrupted."
+  },
+  "panels/search/SearchView.ts | searchQuery": {
+    "message": "Search Query"
+  },
+  "panels/search/SearchView.ts | useRegularExpression": {
+    "message": "Use Regular Expression"
+  },
   "quick_open/CommandMenu.ts | noCommandsFound": {
     "message": "No commands found"
   },
@@ -7795,60 +7849,6 @@
   },
   "screencast/ScreencastView.ts | theTabIsInactive": {
     "message": "The tab is inactive"
-  },
-  "search/SearchResultsPane.ts | lineS": {
-    "message": "Line {PH1}"
-  },
-  "search/SearchResultsPane.ts | matchesCountS": {
-    "message": "Matches Count {PH1}"
-  },
-  "search/SearchResultsPane.ts | showDMore": {
-    "message": "Show {PH1} more"
-  },
-  "search/SearchView.ts | clear": {
-    "message": "Clear"
-  },
-  "search/SearchView.ts | foundDMatchingLinesInDFiles": {
-    "message": "Found {PH1} matching lines in {PH2} files."
-  },
-  "search/SearchView.ts | foundDMatchingLinesInFile": {
-    "message": "Found {PH1} matching lines in 1 file."
-  },
-  "search/SearchView.ts | foundMatchingLineInFile": {
-    "message": "Found 1 matching line in 1 file."
-  },
-  "search/SearchView.ts | indexing": {
-    "message": "Indexing…"
-  },
-  "search/SearchView.ts | indexingInterrupted": {
-    "message": "Indexing interrupted."
-  },
-  "search/SearchView.ts | matchCase": {
-    "message": "Match Case"
-  },
-  "search/SearchView.ts | noMatchesFound": {
-    "message": "No matches found."
-  },
-  "search/SearchView.ts | refresh": {
-    "message": "Refresh"
-  },
-  "search/SearchView.ts | search": {
-    "message": "Search"
-  },
-  "search/SearchView.ts | searchFinished": {
-    "message": "Search finished."
-  },
-  "search/SearchView.ts | searching": {
-    "message": "Searching…"
-  },
-  "search/SearchView.ts | searchInterrupted": {
-    "message": "Search interrupted."
-  },
-  "search/SearchView.ts | searchQuery": {
-    "message": "Search Query"
-  },
-  "search/SearchView.ts | useRegularExpression": {
-    "message": "Use Regular Expression"
   },
   "security/security-meta.ts | security": {
     "message": "Security"

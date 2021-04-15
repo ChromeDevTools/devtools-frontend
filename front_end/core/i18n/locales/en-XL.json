@@ -7733,6 +7733,60 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | timestamp": {
     "message": "T̂ím̂éŝt́âḿp̂"
   },
+  "panels/search/SearchResultsPane.ts | lineS": {
+    "message": "L̂ín̂é {PH1}"
+  },
+  "panels/search/SearchResultsPane.ts | matchesCountS": {
+    "message": "M̂át̂ćĥéŝ Ćôún̂t́ {PH1}"
+  },
+  "panels/search/SearchResultsPane.ts | showDMore": {
+    "message": "Ŝh́ôẃ {PH1} m̂ór̂é"
+  },
+  "panels/search/SearchView.ts | clear": {
+    "message": "Ĉĺêár̂"
+  },
+  "panels/search/SearchView.ts | foundDMatchingLinesInDFiles": {
+    "message": "F̂óûńd̂ {PH1} ḿât́ĉh́îńĝ ĺîńêś îń {PH2} f̂íl̂éŝ."
+  },
+  "panels/search/SearchView.ts | foundDMatchingLinesInFile": {
+    "message": "F̂óûńd̂ {PH1} ḿât́ĉh́îńĝ ĺîńêś îń 1 f̂íl̂é."
+  },
+  "panels/search/SearchView.ts | foundMatchingLineInFile": {
+    "message": "F̂óûńd̂ 1 ḿât́ĉh́îńĝ ĺîńê ín̂ 1 f́îĺê."
+  },
+  "panels/search/SearchView.ts | indexing": {
+    "message": "Îńd̂éx̂ín̂ǵ…"
+  },
+  "panels/search/SearchView.ts | indexingInterrupted": {
+    "message": "Îńd̂éx̂ín̂ǵ îńt̂ér̂ŕûṕt̂éd̂."
+  },
+  "panels/search/SearchView.ts | matchCase": {
+    "message": "M̂át̂ćĥ Ćâśê"
+  },
+  "panels/search/SearchView.ts | noMatchesFound": {
+    "message": "N̂ó m̂át̂ćĥéŝ f́ôún̂d́."
+  },
+  "panels/search/SearchView.ts | refresh": {
+    "message": "R̂éf̂ŕêśĥ"
+  },
+  "panels/search/SearchView.ts | search": {
+    "message": "Ŝéâŕĉh́"
+  },
+  "panels/search/SearchView.ts | searchFinished": {
+    "message": "Ŝéâŕĉh́ f̂ín̂íŝh́êd́."
+  },
+  "panels/search/SearchView.ts | searching": {
+    "message": "Ŝéâŕĉh́îńĝ…"
+  },
+  "panels/search/SearchView.ts | searchInterrupted": {
+    "message": "Ŝéâŕĉh́ îńt̂ér̂ŕûṕt̂éd̂."
+  },
+  "panels/search/SearchView.ts | searchQuery": {
+    "message": "Ŝéâŕĉh́ Q̂úêŕŷ"
+  },
+  "panels/search/SearchView.ts | useRegularExpression": {
+    "message": "Ûśê Ŕêǵûĺâŕ Êx́p̂ŕêśŝíôń"
+  },
   "quick_open/CommandMenu.ts | noCommandsFound": {
     "message": "N̂ó ĉóm̂ḿâńd̂ś f̂óûńd̂"
   },
@@ -7795,60 +7849,6 @@
   },
   "screencast/ScreencastView.ts | theTabIsInactive": {
     "message": "T̂h́ê t́âb́ îś îńâćt̂ív̂é"
-  },
-  "search/SearchResultsPane.ts | lineS": {
-    "message": "L̂ín̂é {PH1}"
-  },
-  "search/SearchResultsPane.ts | matchesCountS": {
-    "message": "M̂át̂ćĥéŝ Ćôún̂t́ {PH1}"
-  },
-  "search/SearchResultsPane.ts | showDMore": {
-    "message": "Ŝh́ôẃ {PH1} m̂ór̂é"
-  },
-  "search/SearchView.ts | clear": {
-    "message": "Ĉĺêár̂"
-  },
-  "search/SearchView.ts | foundDMatchingLinesInDFiles": {
-    "message": "F̂óûńd̂ {PH1} ḿât́ĉh́îńĝ ĺîńêś îń {PH2} f̂íl̂éŝ."
-  },
-  "search/SearchView.ts | foundDMatchingLinesInFile": {
-    "message": "F̂óûńd̂ {PH1} ḿât́ĉh́îńĝ ĺîńêś îń 1 f̂íl̂é."
-  },
-  "search/SearchView.ts | foundMatchingLineInFile": {
-    "message": "F̂óûńd̂ 1 ḿât́ĉh́îńĝ ĺîńê ín̂ 1 f́îĺê."
-  },
-  "search/SearchView.ts | indexing": {
-    "message": "Îńd̂éx̂ín̂ǵ…"
-  },
-  "search/SearchView.ts | indexingInterrupted": {
-    "message": "Îńd̂éx̂ín̂ǵ îńt̂ér̂ŕûṕt̂éd̂."
-  },
-  "search/SearchView.ts | matchCase": {
-    "message": "M̂át̂ćĥ Ćâśê"
-  },
-  "search/SearchView.ts | noMatchesFound": {
-    "message": "N̂ó m̂át̂ćĥéŝ f́ôún̂d́."
-  },
-  "search/SearchView.ts | refresh": {
-    "message": "R̂éf̂ŕêśĥ"
-  },
-  "search/SearchView.ts | search": {
-    "message": "Ŝéâŕĉh́"
-  },
-  "search/SearchView.ts | searchFinished": {
-    "message": "Ŝéâŕĉh́ f̂ín̂íŝh́êd́."
-  },
-  "search/SearchView.ts | searching": {
-    "message": "Ŝéâŕĉh́îńĝ…"
-  },
-  "search/SearchView.ts | searchInterrupted": {
-    "message": "Ŝéâŕĉh́ îńt̂ér̂ŕûṕt̂éd̂."
-  },
-  "search/SearchView.ts | searchQuery": {
-    "message": "Ŝéâŕĉh́ Q̂úêŕŷ"
-  },
-  "search/SearchView.ts | useRegularExpression": {
-    "message": "Ûśê Ŕêǵûĺâŕ Êx́p̂ŕêśŝíôń"
   },
   "security/security-meta.ts | security": {
     "message": "Ŝéĉúr̂ít̂ý"

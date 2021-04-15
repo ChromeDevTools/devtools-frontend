@@ -4,9 +4,9 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../core/common/common.js';
-import * as i18n from '../core/i18n/i18n.js';
-import * as UI from '../ui/legacy/legacy.js';
+import * as Common from '../../core/common/common.js';
+import * as i18n from '../../core/i18n/i18n.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
 import {SearchConfig, SearchResult, SearchScope} from './SearchConfig.js';  // eslint-disable-line no-unused-vars
 import {SearchResultsPane} from './SearchResultsPane.js';
@@ -76,7 +76,7 @@ const UIStrings = {
   */
   searchInterrupted: 'Search interrupted.',
 };
-const str_ = i18n.i18n.registerUIStrings('search/SearchView.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/search/SearchView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class SearchView extends UI.Widget.VBox {
@@ -110,7 +110,7 @@ export class SearchView extends UI.Widget.VBox {
   constructor(settingKey: string) {
     super(true);
     this.setMinimumSize(0, 40);
-    this.registerRequiredCSS('search/searchView.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('panels/search/searchView.css', {enableLegacyPatching: false});
 
     this._focusOnShow = false;
     this._isIndexing = false;

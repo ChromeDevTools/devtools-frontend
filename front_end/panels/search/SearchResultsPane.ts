@@ -4,12 +4,12 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Components from '../components/components.js';
-import * as Common from '../core/common/common.js';
-import * as i18n from '../core/i18n/i18n.js';
-import * as Platform from '../core/platform/platform.js';
-import * as TextUtils from '../models/text_utils/text_utils.js';
-import * as UI from '../ui/legacy/legacy.js';
+import * as Components from '../../components/components.js';
+import * as Common from '../../core/common/common.js';
+import * as i18n from '../../core/i18n/i18n.js';
+import * as Platform from '../../core/platform/platform.js';
+import * as TextUtils from '../../models/text_utils/text_utils.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
 import {SearchConfig, SearchResult} from './SearchConfig.js';  // eslint-disable-line no-unused-vars
 
@@ -30,7 +30,7 @@ const UIStrings = {
   */
   showDMore: 'Show {PH1} more',
 };
-const str_ = i18n.i18n.registerUIStrings('search/SearchResultsPane.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/search/SearchResultsPane.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class SearchResultsPane extends UI.Widget.VBox {
@@ -46,7 +46,7 @@ export class SearchResultsPane extends UI.Widget.VBox {
     this._searchResults = [];
     this._treeOutline = new UI.TreeOutline.TreeOutlineInShadow();
     this._treeOutline.hideOverflow();
-    this._treeOutline.registerRequiredCSS('search/searchResultsPane.css', {enableLegacyPatching: false});
+    this._treeOutline.registerRequiredCSS('panels/search/searchResultsPane.css', {enableLegacyPatching: false});
     this.contentElement.appendChild(this._treeOutline.element);
 
     this._matchesExpandedCount = 0;

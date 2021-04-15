@@ -667,6 +667,12 @@ export class Color {
     return new Color(rgba, Format.RGBA);
   }
 
+  blendWithAlpha(alpha: number): Color {
+    const rgba = this._rgba.slice();
+    rgba[3] *= alpha;
+    return new Color(rgba, Format.RGBA);
+  }
+
   setFormat(format: Format): void {
     this._format = format;
   }

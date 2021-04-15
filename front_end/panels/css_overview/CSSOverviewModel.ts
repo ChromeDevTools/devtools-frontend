@@ -105,6 +105,8 @@ export class CSSOverviewModel extends SDK.SDKModel.SDKModel {
         'height',
         'vertical-align',
       ],
+      includeTextColorOpacities: true,
+      includeBlendedBackgroundColors: true,
     };
 
     const formatColor = (color: Common.Color.Color): string|null => {
@@ -190,7 +192,7 @@ export class CSSOverviewModel extends SDK.SDKModel.SDKModel {
         const [backgroundColorIdx, textColorIdx, fillIdx, borderTopWidthIdx, borderTopColorIdx, borderBottomWidthIdx, borderBottomColorIdx, borderLeftWidthIdx, borderLeftColorIdx, borderRightWidthIdx, borderRightColorIdx, fontFamilyIdx, fontSizeIdx, fontWeightIdx, lineHeightIdx, positionIdx, topIdx, rightIdx, bottomIdx, leftIdx, displayIdx, widthIdx, heightIdx, verticalAlignIdx] =
             styles;
 
-        const backgroundColor = storeColor(backgroundColorIdx, nodeId, backgroundColors);
+        storeColor(backgroundColorIdx, nodeId, backgroundColors);
         const textColor = storeColor(textColorIdx, nodeId, textColors);
 
         if (isSVGNode(strings[nodeName])) {
@@ -262,15 +264,21 @@ export class CSSOverviewModel extends SDK.SDKModel.SDKModel {
           fontInfo.set(fontFamily, fontFamilyInfo);
         }
 
-        if (backgroundColor && textColor && strings[nodeName] === '#text') {
+        const blendedBackgroundColor =
+            textColor && layout.blendedBackgroundColors && layout.blendedBackgroundColors[idx] !== -1 ?
+            Common.Color.Color.parse(strings[layout.blendedBackgroundColors[idx]]) :
+            null;
+        if (textColor && blendedBackgroundColor) {
           const contrastInfo = new ColorPicker.ContrastInfo.ContrastInfo({
-            backgroundColors: [backgroundColor.asString(Common.Color.Format.HEXA) as string],
+            backgroundColors: [blendedBackgroundColor.asString(Common.Color.Format.HEXA) as string],
             computedFontSize: fontSizeIdx !== -1 ? strings[fontSizeIdx] : '',
             computedFontWeight: fontWeightIdx !== -1 ? strings[fontWeightIdx] : '',
           });
-          contrastInfo.setColor(textColor);
-          const formattedTextColor = formatColor(textColor);
-          const formattedBackgroundColor = formatColor(backgroundColor);
+          const blendedTextColor =
+              textColor.blendWithAlpha(layout.textColorOpacities ? layout.textColorOpacities[idx] : 1);
+          contrastInfo.setColor(blendedTextColor);
+          const formattedTextColor = formatColor(blendedTextColor);
+          const formattedBackgroundColor = formatColor(blendedBackgroundColor);
           const key = `${formattedTextColor}_${formattedBackgroundColor}`;
           if (Root.Runtime.experiments.isEnabled('APCA')) {
             const contrastRatio = contrastInfo.contrastRatioAPCA();
@@ -280,8 +288,8 @@ export class CSSOverviewModel extends SDK.SDKModel.SDKModel {
               const issue = {
                 nodeId,
                 contrastRatio,
-                textColor,
-                backgroundColor,
+                textColor: blendedTextColor,
+                backgroundColor: blendedBackgroundColor,
                 thresholdsViolated: {
                   aa: false,
                   aaa: false,
@@ -302,8 +310,8 @@ export class CSSOverviewModel extends SDK.SDKModel.SDKModel {
               const issue = {
                 nodeId,
                 contrastRatio,
-                textColor,
-                backgroundColor,
+                textColor: blendedTextColor,
+                backgroundColor: blendedBackgroundColor,
                 thresholdsViolated: {
                   aa: aaThreshold > contrastRatio,
                   aaa: aaaThreshold > contrastRatio,

@@ -4,8 +4,8 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../core/common/common.js';
-import * as UI from '../ui/legacy/legacy.js';
+import * as Common from '../../../../core/common/common.js';
+import * as UI from '../../legacy.js';
 
 import {ColorSwatch} from './ColorSwatch.js';
 
@@ -25,7 +25,8 @@ export class SwatchPopoverHelper extends Common.ObjectWrapper.ObjectWrapper {
   constructor() {
     super();
     this._popover = new UI.GlassPane.GlassPane();
-    this._popover.registerRequiredCSS('inline_editor/swatchPopover.css', {enableLegacyPatching: false});
+    this._popover.registerRequiredCSS(
+        'ui/legacy/components/inline_editor/swatchPopover.css', {enableLegacyPatching: false});
     this._popover.setSizeBehavior(UI.GlassPane.SizeBehavior.MeasureContent);
     this._popover.setMarginBehavior(UI.GlassPane.MarginBehavior.Arrow);
     this._popover.element.addEventListener('mousedown', e => e.consume(), false);

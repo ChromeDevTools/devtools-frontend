@@ -45,7 +45,6 @@ devtools_module("application") {
     "../../core/protocol_client:bundle",
     "../../core/root:bundle",
     "../../core/sdk:bundle",
-    "../../inline_editor:bundle",
     "../../models/bindings:bundle",
     "../../models/issues_manager:bundle",
     "../../models/text_utils:bundle",
@@ -58,6 +57,7 @@ devtools_module("application") {
     "../../ui/legacy:bundle",
     "../../ui/legacy/components/cookie_table:bundle",
     "../../ui/legacy/components/data_grid:bundle",
+    "../../ui/legacy/components/inline_editor:bundle",
     "../../ui/legacy/components/object_ui:bundle",
     "../../ui/legacy/components/source_frame:bundle",
   ]

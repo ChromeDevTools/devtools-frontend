@@ -16,10 +16,10 @@ ts_library("elements") {
   ]
 
   deps = [
-    "../../../../front_end/inline_editor:bundle",
     "../../../../front_end/panels/elements:bundle",
     "../../../../front_end/ui/components/render_coordinator:bundle",
     "../../../../front_end/ui/legacy:bundle",
+    "../../../../front_end/ui/legacy/components/inline_editor:bundle",
     "../helpers",
   ]
 }

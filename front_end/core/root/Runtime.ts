@@ -46,6 +46,7 @@ export const mappingForLayoutTests = new Map<string, string>([
   ['panels/profiler', 'profiler'],
   ['panels/application', 'resources'],
   ['models/persistence', 'persistence'],
+  ['ui/legacy/components/inline_editor', 'inline_editor'],
   ['ui/legacy/components/data_grid', 'data_grid'],
   ['ui/legacy/components/perf_ui', 'perf_ui'],
   ['ui/legacy/components/source_frame', 'source_frame'],

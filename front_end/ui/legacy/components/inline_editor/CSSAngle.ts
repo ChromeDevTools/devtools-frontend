@@ -5,7 +5,7 @@
 import './CSSAngleEditor.js';
 import './CSSAngleSwatch.js';
 
-import * as LitHtml from '../third_party/lit-html/lit-html.js';
+import * as LitHtml from '../../../../third_party/lit-html/lit-html.js';
 
 import {Angle, AngleUnit, convertAngleUnit, getNewAngleFromEvent, getNextUnit, parseText, roundAngleByUnit} from './CSSAngleUtils.js';
 

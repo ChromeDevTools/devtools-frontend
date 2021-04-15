@@ -106,7 +106,7 @@ export const CSS_RESOURCES_TO_LOAD_INTO_RUNTIME = [
   'panels/emulation/locationsSettingsTab.css',
   'panels/emulation/mediaQueryInspector.css',
   'panels/emulation/sensors.css',
-  'inline_editor/colorSwatch.css',
+  'ui/legacy/components/inline_editor/colorSwatch.css',
   'inspector_main/nodeIcon.css',
   'inspector_main/renderingOptions.css',
   'ui/legacy/components/data_grid/dataGrid.css',

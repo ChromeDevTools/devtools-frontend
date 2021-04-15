@@ -917,87 +917,6 @@
   "entrypoints/js_app/JsMain.ts | main": {
     "message": "M̂áîń"
   },
-  "inline_editor/ColorSwatch.ts | shiftclickToChangeColorFormat": {
-    "message": "Ŝh́îf́t̂-ćl̂íĉḱ t̂ó ĉh́âńĝé ĉól̂ór̂ f́ôŕm̂át̂"
-  },
-  "inline_editor/CSSShadowEditor.ts | blur": {
-    "message": "B̂ĺûŕ"
-  },
-  "inline_editor/CSSShadowEditor.ts | spread": {
-    "message": "Ŝṕr̂éâd́"
-  },
-  "inline_editor/CSSShadowEditor.ts | type": {
-    "message": "T̂ýp̂é"
-  },
-  "inline_editor/CSSShadowEditor.ts | xOffset": {
-    "message": "X̂ óf̂f́ŝét̂"
-  },
-  "inline_editor/CSSShadowEditor.ts | yOffset": {
-    "message": "Ŷ óf̂f́ŝét̂"
-  },
-  "inline_editor/CSSVarSwatch.ts | sIsNotDefined": {
-    "message": "{PH1} îś n̂ót̂ d́êf́îńêd́"
-  },
-  "inline_editor/FontEditor.ts | cssProperties": {
-    "message": "ĈŚŜ Ṕr̂óp̂ér̂t́îéŝ"
-  },
-  "inline_editor/FontEditor.ts | deleteS": {
-    "message": "D̂él̂ét̂é {PH1}"
-  },
-  "inline_editor/FontEditor.ts | fallbackS": {
-    "message": "F̂ál̂ĺb̂áĉḱ {PH1}"
-  },
-  "inline_editor/FontEditor.ts | fontFamily": {
-    "message": "F̂ón̂t́ F̂ám̂íl̂ý"
-  },
-  "inline_editor/FontEditor.ts | fontSelectorDeletedAtIndexS": {
-    "message": "F̂ón̂t́ Ŝél̂éĉt́ôŕ d̂él̂ét̂éd̂ át̂ ín̂d́êx́: {PH1}"
-  },
-  "inline_editor/FontEditor.ts | fontSize": {
-    "message": "F̂ón̂t́ Ŝíẑé"
-  },
-  "inline_editor/FontEditor.ts | fontWeight": {
-    "message": "F̂ón̂t́ Ŵéîǵĥt́"
-  },
-  "inline_editor/FontEditor.ts | lineHeight": {
-    "message": "L̂ín̂é Ĥéîǵĥt́"
-  },
-  "inline_editor/FontEditor.ts | PleaseEnterAValidValueForSText": {
-    "message": "* P̂ĺêáŝé êńt̂ér̂ á v̂ál̂íd̂ v́âĺûé f̂ór̂ {PH1} t́êx́t̂ ín̂ṕût́"
-  },
-  "inline_editor/FontEditor.ts | selectorInputMode": {
-    "message": "Ŝél̂éĉt́ôŕ Îńp̂út̂ Ḿôd́ê"
-  },
-  "inline_editor/FontEditor.ts | sKeyValueSelector": {
-    "message": "{PH1} K̂éŷ V́âĺûé Ŝél̂éĉt́ôŕ"
-  },
-  "inline_editor/FontEditor.ts | sliderInputMode": {
-    "message": "Ŝĺîd́êŕ Îńp̂út̂ Ḿôd́ê"
-  },
-  "inline_editor/FontEditor.ts | spacing": {
-    "message": "Ŝṕâćîńĝ"
-  },
-  "inline_editor/FontEditor.ts | sSliderInput": {
-    "message": "{PH1} Ŝĺîd́êŕ Îńp̂út̂"
-  },
-  "inline_editor/FontEditor.ts | sTextInput": {
-    "message": "{PH1} T̂éx̂t́ Îńp̂út̂"
-  },
-  "inline_editor/FontEditor.ts | sToggleInputType": {
-    "message": "{PH1} t̂óĝǵl̂é îńp̂út̂ t́ŷṕê"
-  },
-  "inline_editor/FontEditor.ts | sUnitInput": {
-    "message": "{PH1} Ûńît́ Îńp̂út̂"
-  },
-  "inline_editor/FontEditor.ts | thereIsNoValueToDeleteAtIndexS": {
-    "message": "T̂h́êŕê íŝ ńô v́âĺûé t̂ó d̂él̂ét̂é ât́ îńd̂éx̂: {PH1}"
-  },
-  "inline_editor/FontEditor.ts | thisPropertyIsSetToContainUnits": {
-    "message": "T̂h́îś p̂ŕôṕêŕt̂ý îś ŝét̂ t́ô ćôńt̂áîń ûńît́ŝ b́ût́ d̂óêś n̂ót̂ h́âv́ê á d̂éf̂ín̂éd̂ ćôŕr̂éŝṕôńd̂ín̂ǵ ûńît́ŝÁr̂ŕâý: {PH1}"
-  },
-  "inline_editor/FontEditor.ts | units": {
-    "message": "Ûńît́ŝ"
-  },
   "inspector_main/inspector_main-meta.ts | autoOpenDevTools": {
     "message": "Âút̂ó-ôṕêń D̂év̂T́ôól̂ś f̂ór̂ ṕôṕûṕŝ"
   },
@@ -10813,6 +10732,87 @@
   },
   "ui/legacy/components/data_grid/ViewportDataGrid.ts | collapsed": {
     "message": "ĉól̂ĺâṕŝéd̂"
+  },
+  "ui/legacy/components/inline_editor/ColorSwatch.ts | shiftclickToChangeColorFormat": {
+    "message": "Ŝh́îf́t̂-ćl̂íĉḱ t̂ó ĉh́âńĝé ĉól̂ór̂ f́ôŕm̂át̂"
+  },
+  "ui/legacy/components/inline_editor/CSSShadowEditor.ts | blur": {
+    "message": "B̂ĺûŕ"
+  },
+  "ui/legacy/components/inline_editor/CSSShadowEditor.ts | spread": {
+    "message": "Ŝṕr̂éâd́"
+  },
+  "ui/legacy/components/inline_editor/CSSShadowEditor.ts | type": {
+    "message": "T̂ýp̂é"
+  },
+  "ui/legacy/components/inline_editor/CSSShadowEditor.ts | xOffset": {
+    "message": "X̂ óf̂f́ŝét̂"
+  },
+  "ui/legacy/components/inline_editor/CSSShadowEditor.ts | yOffset": {
+    "message": "Ŷ óf̂f́ŝét̂"
+  },
+  "ui/legacy/components/inline_editor/CSSVarSwatch.ts | sIsNotDefined": {
+    "message": "{PH1} îś n̂ót̂ d́êf́îńêd́"
+  },
+  "ui/legacy/components/inline_editor/FontEditor.ts | cssProperties": {
+    "message": "ĈŚŜ Ṕr̂óp̂ér̂t́îéŝ"
+  },
+  "ui/legacy/components/inline_editor/FontEditor.ts | deleteS": {
+    "message": "D̂él̂ét̂é {PH1}"
+  },
+  "ui/legacy/components/inline_editor/FontEditor.ts | fallbackS": {
+    "message": "F̂ál̂ĺb̂áĉḱ {PH1}"
+  },
+  "ui/legacy/components/inline_editor/FontEditor.ts | fontFamily": {
+    "message": "F̂ón̂t́ F̂ám̂íl̂ý"
+  },
+  "ui/legacy/components/inline_editor/FontEditor.ts | fontSelectorDeletedAtIndexS": {
+    "message": "F̂ón̂t́ Ŝél̂éĉt́ôŕ d̂él̂ét̂éd̂ át̂ ín̂d́êx́: {PH1}"
+  },
+  "ui/legacy/components/inline_editor/FontEditor.ts | fontSize": {
+    "message": "F̂ón̂t́ Ŝíẑé"
+  },
+  "ui/legacy/components/inline_editor/FontEditor.ts | fontWeight": {
+    "message": "F̂ón̂t́ Ŵéîǵĥt́"
+  },
+  "ui/legacy/components/inline_editor/FontEditor.ts | lineHeight": {
+    "message": "L̂ín̂é Ĥéîǵĥt́"
+  },
+  "ui/legacy/components/inline_editor/FontEditor.ts | PleaseEnterAValidValueForSText": {
+    "message": "* P̂ĺêáŝé êńt̂ér̂ á v̂ál̂íd̂ v́âĺûé f̂ór̂ {PH1} t́êx́t̂ ín̂ṕût́"
+  },
+  "ui/legacy/components/inline_editor/FontEditor.ts | selectorInputMode": {
+    "message": "Ŝél̂éĉt́ôŕ Îńp̂út̂ Ḿôd́ê"
+  },
+  "ui/legacy/components/inline_editor/FontEditor.ts | sKeyValueSelector": {
+    "message": "{PH1} K̂éŷ V́âĺûé Ŝél̂éĉt́ôŕ"
+  },
+  "ui/legacy/components/inline_editor/FontEditor.ts | sliderInputMode": {
+    "message": "Ŝĺîd́êŕ Îńp̂út̂ Ḿôd́ê"
+  },
+  "ui/legacy/components/inline_editor/FontEditor.ts | spacing": {
+    "message": "Ŝṕâćîńĝ"
+  },
+  "ui/legacy/components/inline_editor/FontEditor.ts | sSliderInput": {
+    "message": "{PH1} Ŝĺîd́êŕ Îńp̂út̂"
+  },
+  "ui/legacy/components/inline_editor/FontEditor.ts | sTextInput": {
+    "message": "{PH1} T̂éx̂t́ Îńp̂út̂"
+  },
+  "ui/legacy/components/inline_editor/FontEditor.ts | sToggleInputType": {
+    "message": "{PH1} t̂óĝǵl̂é îńp̂út̂ t́ŷṕê"
+  },
+  "ui/legacy/components/inline_editor/FontEditor.ts | sUnitInput": {
+    "message": "{PH1} Ûńît́ Îńp̂út̂"
+  },
+  "ui/legacy/components/inline_editor/FontEditor.ts | thereIsNoValueToDeleteAtIndexS": {
+    "message": "T̂h́êŕê íŝ ńô v́âĺûé t̂ó d̂él̂ét̂é ât́ îńd̂éx̂: {PH1}"
+  },
+  "ui/legacy/components/inline_editor/FontEditor.ts | thisPropertyIsSetToContainUnits": {
+    "message": "T̂h́îś p̂ŕôṕêŕt̂ý îś ŝét̂ t́ô ćôńt̂áîń ûńît́ŝ b́ût́ d̂óêś n̂ót̂ h́âv́ê á d̂éf̂ín̂éd̂ ćôŕr̂éŝṕôńd̂ín̂ǵ ûńît́ŝÁr̂ŕâý: {PH1}"
+  },
+  "ui/legacy/components/inline_editor/FontEditor.ts | units": {
+    "message": "Ûńît́ŝ"
   },
   "ui/legacy/components/object_ui/CustomPreviewComponent.ts | showAsJavascriptObject": {
     "message": "Ŝh́ôẃ âś Ĵáv̂áŜćr̂íp̂t́ ôb́ĵéĉt́"

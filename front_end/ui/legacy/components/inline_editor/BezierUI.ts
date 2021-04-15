@@ -4,7 +4,7 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as UI from '../ui/legacy/legacy.js';
+import * as UI from '../../legacy.js';
 
 export class BezierUI {
   width: number;

@@ -3,7 +3,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as InlineEditor from '../../../../inline_editor/inline_editor.js';
+import * as InlineEditor from '../../../legacy/components/inline_editor/inline_editor.js';
 import * as ComponentHelpers from '../../helpers/helpers.js';
 
 const container = document.querySelector('#container');

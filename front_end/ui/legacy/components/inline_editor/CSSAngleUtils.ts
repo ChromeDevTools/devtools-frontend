@@ -2,8 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Platform from '../core/platform/platform.js';
-import * as UI from '../ui/legacy/legacy.js';
+import * as Platform from '../../../../core/platform/platform.js';
+import * as UI from '../../legacy.js';
 
 export const CSSAngleRegex = /(?<value>[+-]?\d*\.?\d+)(?<unit>deg|grad|rad|turn)/;
 

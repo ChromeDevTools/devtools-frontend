@@ -4,8 +4,8 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as SDK from '../core/sdk/sdk.js';
-import * as CssOverviewModule from '../panels/css_overview/css_overview.js';
+import * as SDK from '../../../../core/sdk/sdk.js';
+import * as CssOverviewModule from '../../../../panels/css_overview/css_overview.js';
 
 
 // The following regexes are used within in the StylesSidebarPropertyRenderer class

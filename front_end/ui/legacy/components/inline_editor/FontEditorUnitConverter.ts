@@ -4,9 +4,9 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as SDK from '../core/sdk/sdk.js';
-import * as CssOverviewModule from '../panels/css_overview/css_overview.js';
-import * as UI from '../ui/legacy/legacy.js';
+import * as SDK from '../../../../core/sdk/sdk.js';
+import * as CssOverviewModule from '../../../../panels/css_overview/css_overview.js';
+import * as UI from '../../legacy.js';
 
 const computedArrayFontSizeIndex = 6;
 

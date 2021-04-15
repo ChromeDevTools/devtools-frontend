@@ -61,7 +61,6 @@ devtools_module("elements") {
     "../../core/sdk:bundle",
     "../../formatter:bundle",
     "../../generated",
-    "../../inline_editor:bundle",
     "../../models/bindings:bundle",
     "../../models/extensions:bundle",
     "../../models/workspace:bundle",
@@ -74,6 +73,7 @@ devtools_module("elements") {
     "../../ui/components/tree_outline:bundle",
     "../../ui/legacy:bundle",
     "../../ui/legacy/components/color_picker:bundle",
+    "../../ui/legacy/components/inline_editor:bundle",
     "../../ui/legacy/components/object_ui:bundle",
     "../../ui/legacy/components/text_editor:bundle",
   ]

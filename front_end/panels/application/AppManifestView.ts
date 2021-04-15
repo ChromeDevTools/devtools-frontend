@@ -8,7 +8,7 @@ import * as Components from '../../components/components.js';
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import * as InlineEditor from '../../inline_editor/inline_editor.js';
+import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 const UIStrings = {

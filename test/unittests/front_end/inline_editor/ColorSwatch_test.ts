@@ -4,7 +4,7 @@
 
 import * as Common from '../../../../front_end/core/common/common.js';
 import {assertNotNull} from '../../../../front_end/core/platform/platform.js';
-import * as InlineEditor from '../../../../front_end/inline_editor/inline_editor.js';
+import * as InlineEditor from '../../../../front_end/ui/legacy/components/inline_editor/inline_editor.js';
 import {assertElement, assertShadowRoot, dispatchClickEvent, renderElementIntoDOM} from '../helpers/DOMHelpers.js';
 
 const {assert} = chai;

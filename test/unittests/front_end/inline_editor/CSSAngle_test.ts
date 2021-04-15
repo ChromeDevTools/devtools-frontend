@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as InlineEditor from '../../../../front_end/inline_editor/inline_editor.js';
+import * as InlineEditor from '../../../../front_end/ui/legacy/components/inline_editor/inline_editor.js';
 import {assertShadowRoot, renderElementIntoDOM} from '../helpers/DOMHelpers.js';
 
 const {assert} = chai;

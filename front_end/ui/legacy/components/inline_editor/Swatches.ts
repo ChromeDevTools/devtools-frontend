@@ -4,9 +4,9 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../core/common/common.js';
-import * as TextUtils from '../models/text_utils/text_utils.js';
-import * as UI from '../ui/legacy/legacy.js';
+import * as Common from '../../../../core/common/common.js';
+import * as TextUtils from '../../../../models/text_utils/text_utils.js';
+import * as UI from '../../legacy.js';
 
 import {ColorSwatch} from './ColorSwatch.js';
 import {CSSShadowModel} from './CSSShadowModel.js';  // eslint-disable-line no-unused-vars
@@ -17,8 +17,11 @@ export class BezierSwatch extends HTMLSpanElement {
 
   constructor() {
     super();
-    const root = UI.Utils.createShadowRootWithCoreStyles(
-        this, {cssFile: 'inline_editor/bezierSwatch.css', enableLegacyPatching: true, delegatesFocus: undefined});
+    const root = UI.Utils.createShadowRootWithCoreStyles(this, {
+      cssFile: 'ui/legacy/components/inline_editor/bezierSwatch.css',
+      enableLegacyPatching: true,
+      delegatesFocus: undefined,
+    });
     this._iconElement = UI.Icon.Icon.create('smallicon-bezier', 'bezier-swatch-icon');
     root.appendChild(this._iconElement);
     this._textElement = this.createChild('span');
@@ -62,8 +65,11 @@ export class CSSShadowSwatch extends HTMLSpanElement {
 
   constructor() {
     super();
-    const root = UI.Utils.createShadowRootWithCoreStyles(
-        this, {cssFile: 'inline_editor/cssShadowSwatch.css', enableLegacyPatching: true, delegatesFocus: undefined});
+    const root = UI.Utils.createShadowRootWithCoreStyles(this, {
+      cssFile: 'ui/legacy/components/inline_editor/cssShadowSwatch.css',
+      enableLegacyPatching: true,
+      delegatesFocus: undefined,
+    });
     this._iconElement = UI.Icon.Icon.create('smallicon-shadow', 'shadow-swatch-icon');
     root.appendChild(this._iconElement);
     root.createChild('slot');

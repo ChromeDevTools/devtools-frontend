@@ -4,10 +4,10 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as i18n from '../core/i18n/i18n.js';
-import * as SDK from '../core/sdk/sdk.js';
-import * as IconButton from '../ui/components/icon_button/icon_button.js';
-import * as UI from '../ui/legacy/legacy.js';
+import * as i18n from '../../../../core/i18n/i18n.js';
+import * as SDK from '../../../../core/sdk/sdk.js';
+import * as IconButton from '../../../components/icon_button/icon_button.js';
+import * as UI from '../../legacy.js';
 
 import * as FontEditorUnitConverter from './FontEditorUnitConverter.js';
 import * as FontEditorUtils from './FontEditorUtils.js';
@@ -112,7 +112,7 @@ const UIStrings = {
   */
   sliderInputMode: 'Slider Input Mode',
 };
-const str_ = i18n.i18n.registerUIStrings('inline_editor/FontEditor.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/inline_editor/FontEditor.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class FontEditor extends UI.Widget.VBox {
@@ -124,7 +124,7 @@ export class FontEditor extends UI.Widget.VBox {
 
   constructor(propertyMap: Map<string, string>) {
     super(true);
-    this.registerRequiredCSS('inline_editor/fontEditor.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('ui/legacy/components/inline_editor/fontEditor.css', {enableLegacyPatching: true});
     this._selectedNode = UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode);
 
     this._propertyMap = propertyMap;

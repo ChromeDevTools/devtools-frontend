@@ -5,7 +5,7 @@
 const {assert} = chai;
 
 import * as UI from '../../../../front_end/ui/legacy/legacy.js';
-import * as InlineEditor from '../../../../front_end/inline_editor/inline_editor.js';
+import * as InlineEditor from '../../../../front_end/ui/legacy/components/inline_editor/inline_editor.js';
 import {assertElement} from '../helpers/DOMHelpers.js';
 
 describe('BezierUI', () => {

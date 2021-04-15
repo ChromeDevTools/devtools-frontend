@@ -4,8 +4,8 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Platform from '../core/platform/platform.js';
-import * as UI from '../ui/legacy/legacy.js';
+import * as Platform from '../../../../core/platform/platform.js';
+import * as UI from '../../legacy.js';
 
 import {BezierUI} from './BezierUI.js';
 
@@ -30,7 +30,7 @@ export class BezierEditor extends UI.Widget.VBox {
   constructor(bezier: UI.Geometry.CubicBezier) {
     super(true);
     this._bezier = bezier;
-    this.registerRequiredCSS('inline_editor/bezierEditor.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('ui/legacy/components/inline_editor/bezierEditor.css', {enableLegacyPatching: true});
     this.contentElement.tabIndex = 0;
     this.setDefaultFocusedElement(this.contentElement);
 

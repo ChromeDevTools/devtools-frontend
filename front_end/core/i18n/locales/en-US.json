@@ -917,87 +917,6 @@
   "entrypoints/js_app/JsMain.ts | main": {
     "message": "Main"
   },
-  "inline_editor/ColorSwatch.ts | shiftclickToChangeColorFormat": {
-    "message": "Shift-click to change color format"
-  },
-  "inline_editor/CSSShadowEditor.ts | blur": {
-    "message": "Blur"
-  },
-  "inline_editor/CSSShadowEditor.ts | spread": {
-    "message": "Spread"
-  },
-  "inline_editor/CSSShadowEditor.ts | type": {
-    "message": "Type"
-  },
-  "inline_editor/CSSShadowEditor.ts | xOffset": {
-    "message": "X offset"
-  },
-  "inline_editor/CSSShadowEditor.ts | yOffset": {
-    "message": "Y offset"
-  },
-  "inline_editor/CSSVarSwatch.ts | sIsNotDefined": {
-    "message": "{PH1} is not defined"
-  },
-  "inline_editor/FontEditor.ts | cssProperties": {
-    "message": "CSS Properties"
-  },
-  "inline_editor/FontEditor.ts | deleteS": {
-    "message": "Delete {PH1}"
-  },
-  "inline_editor/FontEditor.ts | fallbackS": {
-    "message": "Fallback {PH1}"
-  },
-  "inline_editor/FontEditor.ts | fontFamily": {
-    "message": "Font Family"
-  },
-  "inline_editor/FontEditor.ts | fontSelectorDeletedAtIndexS": {
-    "message": "Font Selector deleted at index: {PH1}"
-  },
-  "inline_editor/FontEditor.ts | fontSize": {
-    "message": "Font Size"
-  },
-  "inline_editor/FontEditor.ts | fontWeight": {
-    "message": "Font Weight"
-  },
-  "inline_editor/FontEditor.ts | lineHeight": {
-    "message": "Line Height"
-  },
-  "inline_editor/FontEditor.ts | PleaseEnterAValidValueForSText": {
-    "message": "* Please enter a valid value for {PH1} text input"
-  },
-  "inline_editor/FontEditor.ts | selectorInputMode": {
-    "message": "Selector Input Mode"
-  },
-  "inline_editor/FontEditor.ts | sKeyValueSelector": {
-    "message": "{PH1} Key Value Selector"
-  },
-  "inline_editor/FontEditor.ts | sliderInputMode": {
-    "message": "Slider Input Mode"
-  },
-  "inline_editor/FontEditor.ts | spacing": {
-    "message": "Spacing"
-  },
-  "inline_editor/FontEditor.ts | sSliderInput": {
-    "message": "{PH1} Slider Input"
-  },
-  "inline_editor/FontEditor.ts | sTextInput": {
-    "message": "{PH1} Text Input"
-  },
-  "inline_editor/FontEditor.ts | sToggleInputType": {
-    "message": "{PH1} toggle input type"
-  },
-  "inline_editor/FontEditor.ts | sUnitInput": {
-    "message": "{PH1} Unit Input"
-  },
-  "inline_editor/FontEditor.ts | thereIsNoValueToDeleteAtIndexS": {
-    "message": "There is no value to delete at index: {PH1}"
-  },
-  "inline_editor/FontEditor.ts | thisPropertyIsSetToContainUnits": {
-    "message": "This property is set to contain units but does not have a defined corresponding unitsArray: {PH1}"
-  },
-  "inline_editor/FontEditor.ts | units": {
-    "message": "Units"
-  },
   "inspector_main/inspector_main-meta.ts | autoOpenDevTools": {
     "message": "Auto-open DevTools for popups"
   },
@@ -10813,6 +10732,87 @@
   },
   "ui/legacy/components/data_grid/ViewportDataGrid.ts | collapsed": {
     "message": "collapsed"
+  },
+  "ui/legacy/components/inline_editor/ColorSwatch.ts | shiftclickToChangeColorFormat": {
+    "message": "Shift-click to change color format"
+  },
+  "ui/legacy/components/inline_editor/CSSShadowEditor.ts | blur": {
+    "message": "Blur"
+  },
+  "ui/legacy/components/inline_editor/CSSShadowEditor.ts | spread": {
+    "message": "Spread"
+  },
+  "ui/legacy/components/inline_editor/CSSShadowEditor.ts | type": {
+    "message": "Type"
+  },
+  "ui/legacy/components/inline_editor/CSSShadowEditor.ts | xOffset": {
+    "message": "X offset"
+  },
+  "ui/legacy/components/inline_editor/CSSShadowEditor.ts | yOffset": {
+    "message": "Y offset"
+  },
+  "ui/legacy/components/inline_editor/CSSVarSwatch.ts | sIsNotDefined": {
+    "message": "{PH1} is not defined"
+  },
+  "ui/legacy/components/inline_editor/FontEditor.ts | cssProperties": {
+    "message": "CSS Properties"
+  },
+  "ui/legacy/components/inline_editor/FontEditor.ts | deleteS": {
+    "message": "Delete {PH1}"
+  },
+  "ui/legacy/components/inline_editor/FontEditor.ts | fallbackS": {
+    "message": "Fallback {PH1}"
+  },
+  "ui/legacy/components/inline_editor/FontEditor.ts | fontFamily": {
+    "message": "Font Family"
+  },
+  "ui/legacy/components/inline_editor/FontEditor.ts | fontSelectorDeletedAtIndexS": {
+    "message": "Font Selector deleted at index: {PH1}"
+  },
+  "ui/legacy/components/inline_editor/FontEditor.ts | fontSize": {
+    "message": "Font Size"
+  },
+  "ui/legacy/components/inline_editor/FontEditor.ts | fontWeight": {
+    "message": "Font Weight"
+  },
+  "ui/legacy/components/inline_editor/FontEditor.ts | lineHeight": {
+    "message": "Line Height"
+  },
+  "ui/legacy/components/inline_editor/FontEditor.ts | PleaseEnterAValidValueForSText": {
+    "message": "* Please enter a valid value for {PH1} text input"
+  },
+  "ui/legacy/components/inline_editor/FontEditor.ts | selectorInputMode": {
+    "message": "Selector Input Mode"
+  },
+  "ui/legacy/components/inline_editor/FontEditor.ts | sKeyValueSelector": {
+    "message": "{PH1} Key Value Selector"
+  },
+  "ui/legacy/components/inline_editor/FontEditor.ts | sliderInputMode": {
+    "message": "Slider Input Mode"
+  },
+  "ui/legacy/components/inline_editor/FontEditor.ts | spacing": {
+    "message": "Spacing"
+  },
+  "ui/legacy/components/inline_editor/FontEditor.ts | sSliderInput": {
+    "message": "{PH1} Slider Input"
+  },
+  "ui/legacy/components/inline_editor/FontEditor.ts | sTextInput": {
+    "message": "{PH1} Text Input"
+  },
+  "ui/legacy/components/inline_editor/FontEditor.ts | sToggleInputType": {
+    "message": "{PH1} toggle input type"
+  },
+  "ui/legacy/components/inline_editor/FontEditor.ts | sUnitInput": {
+    "message": "{PH1} Unit Input"
+  },
+  "ui/legacy/components/inline_editor/FontEditor.ts | thereIsNoValueToDeleteAtIndexS": {
+    "message": "There is no value to delete at index: {PH1}"
+  },
+  "ui/legacy/components/inline_editor/FontEditor.ts | thisPropertyIsSetToContainUnits": {
+    "message": "This property is set to contain units but does not have a defined corresponding unitsArray: {PH1}"
+  },
+  "ui/legacy/components/inline_editor/FontEditor.ts | units": {
+    "message": "Units"
   },
   "ui/legacy/components/object_ui/CustomPreviewComponent.ts | showAsJavascriptObject": {
     "message": "Show as JavaScript object"

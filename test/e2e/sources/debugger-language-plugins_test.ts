@@ -686,7 +686,6 @@ describe('The Debugger Language Plugins', async () => {
       'member2: TestTypeMember2',
       'recurse: 27',
       'value: 26',
-      '__proto__: Object',
     ]);
   });
 

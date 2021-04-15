@@ -211,12 +211,6 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
       propertyA: SDK.RemoteObject.RemoteObjectProperty, propertyB: SDK.RemoteObject.RemoteObjectProperty): number {
     const a = propertyA.name;
     const b = propertyB.name;
-    if (a === '__proto__') {
-      return 1;
-    }
-    if (b === '__proto__') {
-      return -1;
-    }
     if (!propertyA.enumerable && propertyB.enumerable) {
       return 1;
     }
@@ -716,17 +710,12 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
     }
 
     const tailProperties = [];
-    let protoProperty: SDK.RemoteObject.RemoteObjectProperty|null = null;
     for (let i = 0; i < properties.length; ++i) {
       const property = properties[i];
       parentMap.set(property, value);
       // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       if (!ObjectPropertiesSection._isDisplayableProperty(property, (treeNode as any).property)) {
-        continue;
-      }
-      if (property.name === '__proto__' && !property.isAccessorProperty()) {
-        protoProperty = property;
         continue;
       }
 
@@ -757,14 +746,14 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
     for (let i = 0; i < tailProperties.length; ++i) {
       treeNode.appendChild(new ObjectPropertyTreeElement(tailProperties[i], linkifier));
     }
-    if (!skipProto && protoProperty) {
-      treeNode.appendChild(new ObjectPropertyTreeElement(protoProperty, linkifier));
-    }
 
     for (const property of internalProperties) {
       parentMap.set(property, value);
       const treeElement = new ObjectPropertyTreeElement(property, linkifier);
       if (property.name === '[[Entries]]') {
+        continue;
+      }
+      if (property.name === '[[Prototype]]' && skipProto) {
         continue;
       }
       treeNode.appendChild(treeElement);
@@ -884,7 +873,7 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
     console.assert(typeof propertyValue !== 'undefined');
     const treeOutline = (this.treeOutline as ObjectPropertiesSection | null);
     const skipProto = treeOutline ? Boolean(treeOutline._skipProto) : false;
-    const targetValue = this.property.name !== '__proto__' ? propertyValue : parentMap.get(this.property);
+    const targetValue = this.property.name !== '[[Prototype]]' ? propertyValue : parentMap.get(this.property);
     if (targetValue) {
       await ObjectPropertyTreeElement._populate(
           this, propertyValue, skipProto, this._linkifier, undefined, undefined, undefined, targetValue);
@@ -975,7 +964,7 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
       this.valueElement = (document.createElement('span') as HTMLElement);
       this.valueElement.classList.add('value');
     } else if (this.property.value) {
-      const showPreview = this.property.name !== '__proto__';
+      const showPreview = this.property.name !== '[[Prototype]]';
       this.propertyValue = ObjectPropertiesSection.createPropertyValueWithCustomSupport(
           this.property.value, this.property.wasThrown, showPreview, this.listItemElement, this._linkifier);
       this.valueElement = (this.propertyValue.element as HTMLElement);

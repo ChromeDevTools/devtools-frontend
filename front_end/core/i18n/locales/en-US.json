@@ -2648,6 +2648,12 @@
   "panels/application/BackForwardCacheView.ts | mainFrame": {
     "message": "Main Frame"
   },
+  "panels/application/BackForwardCacheView.ts | normalNavigation": {
+    "message": "Normal navigation"
+  },
+  "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
+    "message": "Restored from back-forward cache"
+  },
   "panels/application/BackForwardCacheView.ts | unavailable": {
     "message": "unavailable"
   },

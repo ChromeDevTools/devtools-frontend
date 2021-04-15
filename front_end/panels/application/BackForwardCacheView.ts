@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as Platform from '../../core/platform/platform.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as LitHtml from '../../third_party/lit-html/lit-html.js';
@@ -37,6 +38,14 @@ const UIStrings = {
    * @description Status text for the status of the back-forward cache status
    */
   unknown: 'unknown',
+  /**
+   * @description Status text for the status of the back-forward cache status indicating that the back-forward cache was not used and a normal navigation occured instead.
+   */
+  normalNavigation: 'Normal navigation',
+  /**
+   * @description Status text for the status of the back-forward cache status indicating that the back-forward cache was used.
+   */
+  restoredFromBFCache: 'Restored from back-forward cache',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/application/BackForwardCacheView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -84,7 +93,18 @@ export class BackForwardCacheView extends UI.ThrottledWidget.ThrottledWidget {
       <devtools-report-key>${i18nString(UIStrings.url)}</devtools-report-key>
       <devtools-report-value>${mainFrame.url}</devtools-report-value>
       <devtools-report-key>${i18nString(UIStrings.bfcacheStatus)}</devtools-report-key>
-      <devtools-report-value>${i18nString(UIStrings.unknown)}</devtools-report-value>
+      <devtools-report-value>${
+        this.renderBackForwardCacheStatus(mainFrame.restoredFromBackForwardCache)}</devtools-report-value>
     `;
+  }
+
+  private renderBackForwardCacheStatus(status: boolean|undefined): Platform.UIString.LocalizedString {
+    switch (status) {
+      case true:
+        return i18nString(UIStrings.restoredFromBFCache);
+      case false:
+        return i18nString(UIStrings.normalNavigation);
+    }
+    return i18nString(UIStrings.unknown);
   }
 }

@@ -180,7 +180,7 @@ export class ResourceTreeModel extends SDKModel {
     return frame;
   }
 
-  _frameNavigated(framePayload: Protocol.Page.Frame): void {
+  _frameNavigated(framePayload: Protocol.Page.Frame, type: Protocol.Page.NavigationType|undefined): void {
     const sameTargetParentFrame = framePayload.parentId ? (this._frames.get(framePayload.parentId) || null) : null;
     // Do nothing unless cached resource tree is processed - it will overwrite everything.
     if (!this._cachedResourcesProcessed && sameTargetParentFrame) {
@@ -194,6 +194,9 @@ export class ResourceTreeModel extends SDKModel {
       if (!frame) {
         return;
       }
+    }
+    if (type) {
+      frame.restoredFromBackForwardCache = type === Protocol.Page.NavigationType.BackForwardCacheRestore;
     }
 
     this.dispatchEventToListeners(Events.FrameWillNavigate, frame);
@@ -217,7 +220,7 @@ export class ResourceTreeModel extends SDKModel {
   }
 
   _documentOpened(framePayload: Protocol.Page.Frame): void {
-    this._frameNavigated(framePayload);
+    this._frameNavigated(framePayload, undefined);
     const frame = this._frames.get(framePayload.id);
     if (frame && !frame._resourcesMap.get(framePayload.url)) {
       const frameResource = this._createResourceFromFramePayload(
@@ -538,6 +541,8 @@ export class ResourceTreeFrame {
   _creationStackTrace: Protocol.Runtime.StackTrace|null;
   _childFrames: Set<ResourceTreeFrame>;
   _resourcesMap: Map<string, Resource>;
+  restoredFromBackForwardCache: boolean|undefined = undefined;
+
   constructor(
       model: ResourceTreeModel, parentFrame: ResourceTreeFrame|null, frameId: string, payload: Protocol.Page.Frame|null,
       creationStackTrace: Protocol.Runtime.StackTrace|null) {
@@ -875,8 +880,8 @@ export class PageDispatcher implements ProtocolProxyApi.PageDispatcher {
     this._resourceTreeModel._frameAttached(frameId, parentFrameId, stack);
   }
 
-  frameNavigated({frame}: Protocol.Page.FrameNavigatedEvent): void {
-    this._resourceTreeModel._frameNavigated(frame);
+  frameNavigated({frame, type}: Protocol.Page.FrameNavigatedEvent): void {
+    this._resourceTreeModel._frameNavigated(frame, type);
   }
 
   documentOpened({frame}: Protocol.Page.DocumentOpenedEvent): void {

@@ -2648,6 +2648,12 @@
   "panels/application/BackForwardCacheView.ts | mainFrame": {
     "message": "M̂áîń F̂ŕâḿê"
   },
+  "panels/application/BackForwardCacheView.ts | normalNavigation": {
+    "message": "N̂ór̂ḿâĺ n̂áv̂íĝát̂íôń"
+  },
+  "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
+    "message": "R̂éŝt́ôŕêd́ f̂ŕôḿ b̂áĉḱ-f̂ór̂ẃâŕd̂ ćâćĥé"
+  },
   "panels/application/BackForwardCacheView.ts | unavailable": {
     "message": "ûńâv́âíl̂áb̂ĺê"
   },

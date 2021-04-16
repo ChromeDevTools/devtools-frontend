@@ -32,7 +32,7 @@ describe('The Application Tab', async () => {
   });
 
   // Update and reactivate when the whole FrameDetailsView is a custom component
-  it.skip('[crbug.com/1165710]: shows details for a frame when clicked on in the frame tree', async () => {
+  it('shows details for a frame when clicked on in the frame tree', async () => {
     const {target} = getBrowserAndPages();
     await navigateToApplicationTab(target, 'frame-tree');
     await click('#tab-resources');
@@ -45,6 +45,9 @@ describe('The Application Tab', async () => {
         // system-specific, so we get rid of it and only look at the (URL) text.
         fieldValues[0] = getTrailingURL(fieldValues[0]);
       }
+      if (fieldValues[9] && fieldValues[9].includes('accelerometer')) {
+        fieldValues[9] = 'accelerometer';
+      }
       const expected = [
         `https://localhost:${getTestServerPort()}/test/e2e/resources/application/frame-tree.html`,
         `https://localhost:${getTestServerPort()}`,
@@ -53,8 +56,9 @@ describe('The Application Tab', async () => {
         'No',
         'None',
         'UnsafeNone',
-        'available, transferable ⚠️ will require cross-origin isolated context in the future',
+        'unavailable requires cross-origin isolated context',
         'unavailable Learn more',
+        'accelerometer',
       ];
       return JSON.stringify(fieldValues) === JSON.stringify(expected);
     });
@@ -128,7 +132,7 @@ describe('The Application Tab', async () => {
   });
 
   // Update and reactivate when the whole FrameDetailsView is a custom component
-  it.skip('[crbug.com/1165710]: can handle when JS writes to frame', async () => {
+  it('can handle when JS writes to frame', async () => {
     const {target} = getBrowserAndPages();
     await goToResource('application/main-frame.html');
     await click('#tab-resources');
@@ -143,6 +147,9 @@ describe('The Application Tab', async () => {
         // system-specific, so we get rid of it and only look at the (URL) text.
         fieldValues[0] = getTrailingURL(fieldValues[0]);
       }
+      if (fieldValues[9] && fieldValues[9].includes('accelerometer')) {
+        fieldValues[9] = 'accelerometer';
+      }
       const expected = [
         `https://localhost:${getTestServerPort()}/test/e2e/resources/application/iframe.html`,
         `https://localhost:${getTestServerPort()}`,
@@ -151,8 +158,9 @@ describe('The Application Tab', async () => {
         'No',
         'None',
         'UnsafeNone',
-        'available, transferable ⚠️ will require cross-origin isolated context in the future',
+        'unavailable requires cross-origin isolated context',
         'unavailable Learn more',
+        'accelerometer',
       ];
       return JSON.stringify(fieldValues) === JSON.stringify(expected);
     });
@@ -177,6 +185,9 @@ describe('The Application Tab', async () => {
       if (fieldValues[0]) {
         fieldValues[0] = getTrailingURL(fieldValues[0]);
       }
+      if (fieldValues[9] && fieldValues[9].includes('accelerometer')) {
+        fieldValues[9] = 'accelerometer';
+      }
       const expected = [
         `https://localhost:${getTestServerPort()}/test/e2e/resources/application/main-frame.html`,
         `https://localhost:${getTestServerPort()}`,
@@ -185,8 +196,9 @@ describe('The Application Tab', async () => {
         'No',
         'None',
         'UnsafeNone',
-        'available, transferable ⚠️ will require cross-origin isolated context in the future',
+        'unavailable requires cross-origin isolated context',
         'unavailable Learn more',
+        'accelerometer',
       ];
       return JSON.stringify(fieldValues) === JSON.stringify(expected);
     });

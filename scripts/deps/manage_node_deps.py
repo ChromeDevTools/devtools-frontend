@@ -45,6 +45,7 @@ DEPS = {
     "@types/estree": "0.0.47",
     "@types/filesystem": "0.0.30",
     "@types/node": "14.14.37",
+    "@types/marked": "2.0.2",
     "@types/mocha": "8.2.2",
     "@types/sinon": "9.0.11",
     "@typescript-eslint/parser": "4.21.0",

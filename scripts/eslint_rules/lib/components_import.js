@@ -34,6 +34,12 @@ module.exports = {
       ImportDeclaration(node) {
         const importPath = node.source.value;
 
+        // When importing something from within the module,
+        // this rule does not apply.
+        if (importPath.startsWith('./')) {
+          return;
+        }
+
         // This is a side-effect import
         if (node.specifiers.length === 0) {
           // Add it to the list of already seen side effect imports

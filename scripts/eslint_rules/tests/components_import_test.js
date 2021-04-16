@@ -43,6 +43,10 @@ ruleTester.run('components_import', rule, {
       `,
       filename: 'front_end/panels/elements/foo.ts',
     },
+    {
+      code: 'import type * as Test from \'./Bar.js\';',
+      filename: 'front_end/ui/components/foo.ts',
+    },
   ],
 
   invalid: [
@@ -55,6 +59,16 @@ ruleTester.run('components_import', rule, {
       }],
       output: `import '../../ui/components/expandable_list/expandable_list.js';
 import type * as ExpandableList from '../../ui/components/expandable_list/expandable_list.js';`
+    },
+    {
+      code: 'import * as Test from \'../bar/bar.js\';',
+      filename: 'front_end/ui/components/foo/foo.ts',
+      errors: [{
+        message:
+            'Every component should have a corresponding side-effect import in the same file (i.e. import \'../../ui/components/...\')'
+      }],
+      output: `import '../bar/bar.js';
+import * as Test from '../bar/bar.js';`
     },
   ]
 });

@@ -8,10 +8,11 @@ import * as Bindings from '../../models/bindings/bindings.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as Marked from '../../third_party/marked/marked.js';
+
 import {ContentSecurityPolicyIssue, trustedTypesPolicyViolationCode, trustedTypesSinkViolationCode} from './ContentSecurityPolicyIssue.js';
-import {Issue, IssueKind, MarkdownIssueDescription, toZeroBasedLocation} from './Issue.js';
+import {Issue, IssueKind, toZeroBasedLocation} from './Issue.js';
 import * as IssuesManager from './IssuesManager.js';
-import {findTitleFromMarkdownAst, getMarkdownFileContent} from './MarkdownIssueDescription.js';
+import {findTitleFromMarkdownAst, getMarkdownFileContent, MarkdownIssueDescription} from './MarkdownIssueDescription.js';
 
 export class SourceFrameIssuesManager {
   private issuesManager: IssuesManager.IssuesManager;

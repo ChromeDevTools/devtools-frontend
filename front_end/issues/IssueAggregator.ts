@@ -97,7 +97,7 @@ export class AggregatedIssue extends IssuesManager.Issue.Issue {
     return this.sharedArrayBufferIssues;
   }
 
-  getDescription(): IssuesManager.Issue.MarkdownIssueDescription|null {
+  getDescription(): IssuesManager.MarkdownIssueDescription.MarkdownIssueDescription|null {
     if (this.representative) {
       return this.representative.getDescription();
     }

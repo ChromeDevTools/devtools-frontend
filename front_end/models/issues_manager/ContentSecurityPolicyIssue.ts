@@ -5,7 +5,8 @@
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as SDK from '../../core/sdk/sdk.js';
 
-import {Issue, IssueCategory, IssueKind, LazyMarkdownIssueDescription, MarkdownIssueDescription, resolveLazyDescription} from './Issue.js';
+import {Issue, IssueCategory, IssueKind} from './Issue.js';
+import {LazyMarkdownIssueDescription, MarkdownIssueDescription, resolveLazyDescription} from './MarkdownIssueDescription.js';
 
 
 const UIStrings = {
@@ -65,7 +66,11 @@ export class ContentSecurityPolicyIssue extends Issue {
   }
 
   getDescription(): MarkdownIssueDescription|null {
-    return resolveLazyDescription(issueDescriptions.get(this.issueDetails.contentSecurityPolicyViolationType));
+    const description = issueDescriptions.get(this.issueDetails.contentSecurityPolicyViolationType);
+    if (!description) {
+      return null;
+    }
+    return resolveLazyDescription(description);
   }
 
   details(): Protocol.Audits.ContentSecurityPolicyIssueDetails {

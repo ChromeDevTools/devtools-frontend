@@ -5,7 +5,8 @@
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as SDK from '../../core/sdk/sdk.js';
 
-import {Issue, IssueCategory, IssueKind, LazyMarkdownIssueDescription, MarkdownIssueDescription, resolveLazyDescription} from './Issue.js';
+import {Issue, IssueCategory, IssueKind} from './Issue.js';
+import {LazyMarkdownIssueDescription, MarkdownIssueDescription, resolveLazyDescription} from './MarkdownIssueDescription.js';
 
 
 const UIStrings = {
@@ -31,12 +32,12 @@ export class TrustedWebActivityIssue extends Issue {
     return this.issueDetails;
   }
 
-  getDescription(): MarkdownIssueDescription {
-    const description = resolveLazyDescription(issueDescriptions.get(this.issueDetails.violationType));
-    if (description) {
-      return description;
+  getDescription(): MarkdownIssueDescription|null {
+    const description = issueDescriptions.get(this.issueDetails.violationType);
+    if (!description) {
+      return null;
     }
-    throw new Error('Incorrect violationType');
+    return resolveLazyDescription(description);
   }
 
   getCategory(): IssueCategory {

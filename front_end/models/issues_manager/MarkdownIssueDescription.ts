@@ -3,8 +3,53 @@
 // found in the LICENSE file.
 
 import * as Marked from '../../third_party/marked/marked.js';
-import {MarkdownIssueDescription} from './Issue.js';
 
+
+/**
+ * The description that subclasses of `Issue` use define the issue appearance:
+ * `file` specifies the markdown file, substitutions can be used to replace
+ * placeholders with, e.g. URLs. The `links` property is used to specify the
+ * links at the bottom of the issue.
+ */
+export interface MarkdownIssueDescription {
+  file: string;
+  substitutions: Map<string, string>|undefined;
+  links: {link: string, linkTitle: string}[];
+}
+
+export interface LazyMarkdownIssueDescription {
+  file: string;
+  substitutions: Map<string, () => string>|undefined;
+  links: {link: string, linkTitle: () => string}[];
+}
+
+/**
+ * A lazy version of the description. Allows to specify a description as a
+ * constant and at the same time delays resolution of the substitutions
+ * and/or link titles to allow localization.
+ */
+export function resolveLazyDescription(lazyDescription: LazyMarkdownIssueDescription): MarkdownIssueDescription {
+  function linksMap(currentLink: {link: string, linkTitle: () => string}): {link: string, linkTitle: string} {
+    return {link: currentLink.link, linkTitle: currentLink.linkTitle()};
+  }
+
+  const substitutionMap = new Map();
+  lazyDescription.substitutions?.forEach((value, key) => {
+    substitutionMap.set(key, value());
+  });
+
+  const description = {
+    file: lazyDescription.file,
+    links: lazyDescription.links.map(linksMap),
+    substitutions: substitutionMap,
+  };
+  return description;
+}
+
+/**
+ * A loaded and parsed issue description. This is usually obtained by loading
+ * a `MarkdownIssueDescription` via `createIssueDescriptionFromMarkdown`.
+ */
 export interface IssueDescription {
   title: string;
   // TODO(crbug.com/1108699): Fix types when they are available.
@@ -14,22 +59,20 @@ export interface IssueDescription {
 }
 
 export async function getFileContent(url: URL): Promise<string> {
-  let resolve = (_: string): void => {};
-  function reqListener(this: XMLHttpRequest): void {
-    if (this.status !== 200) {
-      throw new Error(`Markdown file ${
-          url.toString()} not found. Make sure it is correctly listed in the relevant BUILD.gn files.`);
+  return new Promise((resolve, reject) => {
+    function reqListener(this: XMLHttpRequest): void {
+      if (this.status !== 200) {
+        const error = new Error(`Markdown file ${
+            url.toString()} not found. Make sure it is correctly listed in the relevant BUILD.gn files.`);
+        reject(error);
+      }
+      resolve(this.responseText);
     }
-    resolve(this.responseText);
-  }
-  const promise = new Promise<string>(r => {
-    resolve = r;
+    const oReq = new XMLHttpRequest();
+    oReq.addEventListener('load', reqListener);
+    oReq.open('GET', url.toString());
+    oReq.send();
   });
-  const oReq = new XMLHttpRequest();
-  oReq.addEventListener('load', reqListener);
-  oReq.open('GET', url.toString());
-  oReq.send();
-  return promise;
 }
 
 export async function getMarkdownFileContent(filename: string): Promise<string> {

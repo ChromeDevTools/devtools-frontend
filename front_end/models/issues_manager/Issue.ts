@@ -5,6 +5,7 @@
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import type * as SDK from '../../core/sdk/sdk.js';
+import type {MarkdownIssueDescription} from './MarkdownIssueDescription.js';
 
 // eslint-disable-next-line rulesdir/const_enum
 export enum IssueCategory {
@@ -42,38 +43,6 @@ export function unionIssueKind(a: IssueKind, b: IssueKind): IssueKind {
 
 export function getShowThirdPartyIssuesSetting(): Common.Settings.Setting<boolean> {
   return Common.Settings.Settings.instance().createSetting('showThirdPartyIssues', false);
-}
-
-export function resolveLazyDescription(lazyDescription: LazyMarkdownIssueDescription|
-                                       undefined): MarkdownIssueDescription|null {
-  function linksMap(currentLink: {link: string, linkTitle: () => string}): {link: string, linkTitle: string} {
-    return {link: currentLink.link, linkTitle: currentLink.linkTitle()};
-  }
-
-  const substitutionMap = new Map();
-  lazyDescription?.substitutions?.forEach((value, key) => {
-    substitutionMap.set(key, value());
-  });
-
-  const description =
-      Object.assign([], lazyDescription, {links: lazyDescription?.links.map(linksMap), substitutions: substitutionMap});
-
-  if (!description) {
-    return null;
-  }
-  return description;
-}
-
-export interface MarkdownIssueDescription {
-  file: string;
-  substitutions: Map<string, string>|undefined;
-  links: {link: string, linkTitle: string}[];
-}
-
-export interface LazyMarkdownIssueDescription {
-  file: string;
-  substitutions: Map<string, () => string>|undefined;
-  links: {link: string, linkTitle: () => string}[];
 }
 
 export interface AffectedElement {

@@ -52,9 +52,7 @@ export function resolveLazyDescription(lazyDescription: LazyMarkdownIssueDescrip
  */
 export interface IssueDescription {
   title: string;
-  // TODO(crbug.com/1108699): Fix types when they are available.
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  markdown: any[];
+  markdown: Marked.Marked.Token[];
   links: {link: string, linkTitle: string}[];
 }
 
@@ -147,9 +145,7 @@ function validatePlaceholders(placeholders: Set<string>): void {
   }
 }
 
-// TODO(crbug.com/1108699): Fix types when they are available.
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function findTitleFromMarkdownAst(markdownAst: any[]): string|null {
+export function findTitleFromMarkdownAst(markdownAst: Marked.Marked.Token[]): string|null {
   if (markdownAst.length === 0 || markdownAst[0].type !== 'heading' || markdownAst[0].depth !== 1) {
     return null;
   }

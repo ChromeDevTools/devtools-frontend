@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as LitHtml from '../../../third_party/lit-html/lit-html.js';
+import type * as Marked from '../../../third_party/marked/marked.js';
 
 import {MarkdownImageData} from './MarkdownImage.js';
 import {MarkdownLinkData} from './MarkdownLink.js';
@@ -11,12 +12,13 @@ const html = LitHtml.html;
 const render = LitHtml.render;
 
 export interface MarkdownViewData {
-  tokens: Object[];
+  tokens: Marked.Marked.Token[];
 }
 
 export class MarkdownView extends HTMLElement {
   private readonly shadow = this.attachShadow({mode: 'open'});
 
+  // TODO(crbug.com/1108699): Replace with `Marked.Marked.Token[]` once AST types are fixed upstream.
   private tokenData: readonly Object[] = [];
 
   set data(data: MarkdownViewData) {

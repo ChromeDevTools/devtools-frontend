@@ -6,7 +6,7 @@ import {assert} from 'chai';
 
 import {click, getBrowserAndPages, getTestServerPort, goToResource, pressKey, waitFor, waitForFunction} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {doubleClickSourceTreeItem, getCustomComponentReportValues, getFrameTreeTitles, getReportValues, getTrimmedTextContent, navigateToApplicationTab} from '../helpers/application-helpers.js';
+import {doubleClickSourceTreeItem, getFrameTreeTitles, getTrimmedTextContent, navigateToApplicationTab} from '../helpers/application-helpers.js';
 
 const TOP_FRAME_SELECTOR = '[aria-label="top"]';
 const WEB_WORKERS_SELECTOR = '[aria-label="Web Workers"]';
@@ -42,7 +42,7 @@ describe('The Application Tab', async () => {
     await doubleClickSourceTreeItem(TOP_FRAME_SELECTOR);
 
     await waitForFunction(async () => {
-      const fieldValues = await getCustomComponentReportValues();
+      const fieldValues = await getTrimmedTextContent('devtools-report-value');
       if (fieldValues[0]) {
         // This contains some CSS from the svg icon link being rendered. It's
         // system-specific, so we get rid of it and only look at the (URL) text.
@@ -102,7 +102,7 @@ describe('The Application Tab', async () => {
     pressKey('ArrowDown');
 
     await waitForFunction(async () => {
-      const fieldValues = await getReportValues();
+      const fieldValues = await getTrimmedTextContent('.report-field-value');
       const expected = [
         `https://localhost:${getTestServerPort()}/test/e2e/resources/application/iframe.html`,
         '<#document>',
@@ -125,7 +125,7 @@ describe('The Application Tab', async () => {
     pressKey('ArrowDown');
 
     await waitForFunction(async () => {
-      const fieldValues = await getReportValues();
+      const fieldValues = await getTrimmedTextContent('.report-field-value');
       const expected = [
         `https://localhost:${getTestServerPort()}/test/e2e/resources/application/dedicated-worker.js`,
         'Web Worker',
@@ -144,7 +144,7 @@ describe('The Application Tab', async () => {
     pressKey('ArrowDown');
 
     await waitForFunction(async () => {
-      const fieldValues = await getReportValues();
+      const fieldValues = await getTrimmedTextContent('.report-field-value');
       const expected = [
         `https://localhost:${getTestServerPort()}/test/e2e/resources/application/service-worker.js`,
         'Service Worker',
@@ -164,7 +164,7 @@ describe('The Application Tab', async () => {
 
     // check iframe's URL after pageload
     await waitForFunction(async () => {
-      const fieldValues = await getCustomComponentReportValues();
+      const fieldValues = await getTrimmedTextContent('devtools-report-value');
       if (fieldValues[0]) {
         // This contains some CSS from the svg icon link being rendered. It's
         // system-specific, so we get rid of it and only look at the (URL) text.
@@ -204,7 +204,7 @@ describe('The Application Tab', async () => {
     // check that iframe's URL has changed
     await doubleClickSourceTreeItem(MAIN_FRAME_SELECTOR);
     await waitForFunction(async () => {
-      const fieldValues = await getCustomComponentReportValues();
+      const fieldValues = await getTrimmedTextContent('devtools-report-value');
       if (fieldValues[0]) {
         fieldValues[0] = getTrailingURL(fieldValues[0]);
       }

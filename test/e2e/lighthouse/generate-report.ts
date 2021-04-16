@@ -10,7 +10,7 @@ import {isGenerateReportButtonDisabled, navigateToLighthouseTab} from '../helper
 
 describe('The Lighthouse Tab', async () => {
   it('shows a button to generate a new report', async () => {
-    await navigateToLighthouseTab('empty');
+    await navigateToLighthouseTab('empty.html');
 
     const disabled = await isGenerateReportButtonDisabled();
     assert.isFalse(disabled, 'The Generate Report button should not be disabled');
@@ -18,7 +18,7 @@ describe('The Lighthouse Tab', async () => {
 
   // Broken on non-debug runs
   it.skip('[crbug.com/1057948] shows generate report button even when navigating to an unreachable page', async () => {
-    await navigateToLighthouseTab('empty');
+    await navigateToLighthouseTab('empty.html');
 
     await goToResource('network/unreachable.rawresponse');
     const disabled = await isGenerateReportButtonDisabled();

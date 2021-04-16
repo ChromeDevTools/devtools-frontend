@@ -9,7 +9,7 @@ import {navigateToConsoleTab, waitForIssueButtonLabel} from '../helpers/console-
 describe('The Console Tab', async () => {
   it('shows the toolbar button for no issue correctly', async () => {
     // Navigate to page which causes no issues.
-    await goToResource('console/empty.html');
+    await goToResource('empty.html');
     await navigateToConsoleTab();
 
     await waitForIssueButtonLabel('No Issues');
@@ -33,7 +33,7 @@ describe('The Console Tab', async () => {
 
   it('updates the toolbar button correctly', async () => {
     // Navigate to page which causes no issues.
-    await goToResource('console/empty.html');
+    await goToResource('empty.html');
     await navigateToConsoleTab();
 
     await waitForIssueButtonLabel('No Issues');

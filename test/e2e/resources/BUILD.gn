@@ -2,8 +2,11 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
+import("../../../scripts/build/ninja/copy.gni")
+
 group("resources") {
   deps = [
+    ":shared",
     "animations",
     "application",
     "changes",
@@ -17,7 +20,6 @@ group("resources") {
     "inline_editor",
     "issues",
     "layers",
-    "lighthouse",
     "media",
     "memory",
     "network",
@@ -30,4 +32,8 @@ group("resources") {
     "sources",
     "webaudio",
   ]
+}
+
+copy_to_gen("shared") {
+  sources = [ "empty.html" ]
 }

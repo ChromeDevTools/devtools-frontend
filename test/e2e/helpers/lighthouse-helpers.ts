@@ -4,8 +4,8 @@
 
 import {click, goToResource, waitFor} from '../../shared/helper.js';
 
-export async function navigateToLighthouseTab(testName: string) {
-  await goToResource(`lighthouse/${testName}.html`);
+export async function navigateToLighthouseTab(path: string) {
+  await goToResource(path);
   await click('#tab-lighthouse');
   // Make sure the lighthouse start view is shown
   await waitFor('.lighthouse-start-view');

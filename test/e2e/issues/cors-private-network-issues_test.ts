@@ -10,7 +10,7 @@ import {expandIssue, expandResourceSection, extractTableFromResourceSection, get
 
 describe('Cors Private Network issue', async () => {
   beforeEach(async () => {
-    await goToResource('issues/sab-issue.html');
+    await goToResource('empty.html');
   });
 
   it('should display correct information', async () => {

@@ -10,7 +10,7 @@ import {expandIssue, extractTableFromResourceSection, getIssueByTitle, getResour
 
 describe('Trusted Web Activity issue', async () => {
   beforeEach(async () => {
-    await goToResource('issues/empty.html');
+    await goToResource('empty.html');
   });
 
   it('should display correct information for type kHttpError', async () => {

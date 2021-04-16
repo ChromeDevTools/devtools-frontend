@@ -144,7 +144,7 @@ export class RecordingSession {
     }
 
     this._scriptWriter.appendStep(step);
-    this.renderSteps();
+    await this.renderSteps();
     step.addEventListener('condition-added', () => {
       this.renderSteps();
     });
@@ -157,7 +157,7 @@ export class RecordingSession {
     const content = this._scriptWriter.getScript();
 
     this._uiSourceCode.setContent(content, false);
-    Common.Revealer.reveal(this._uiSourceCode.uiLocation(content.length), true);
+    await Common.Revealer.reveal(this._uiSourceCode.uiLocation(content.length), true);
   }
 
   async isSubmitButton(targetId: string): Promise<boolean> {

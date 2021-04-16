@@ -134,7 +134,7 @@ export class RecordingEventHandler implements ProtocolProxyApi.DebuggerDispatche
     if (!selector) {
       throw new Error('Could not find selector');
     }
-    this.appendStep(new ClickStep(context, selector));
+    await this.appendStep(new ClickStep(context, selector));
     await this.resume();
   }
 
@@ -158,7 +158,7 @@ export class RecordingEventHandler implements ProtocolProxyApi.DebuggerDispatche
       throw new Error('Could not find selector');
     }
 
-    this.appendStep(new SubmitStep(context, selector));
+    await this.appendStep(new SubmitStep(context, selector));
     await this.resume();
   }
 
@@ -190,7 +190,7 @@ export class RecordingEventHandler implements ProtocolProxyApi.DebuggerDispatche
       functionDeclaration: getValue.toString(),
       objectId: targetId,
     });
-    this.appendStep(new ChangeStep(context, selector, result.value as string));
+    await this.appendStep(new ChangeStep(context, selector, result.value as string));
     await this.resume();
   }
 
@@ -269,8 +269,8 @@ export class RecordingEventHandler implements ProtocolProxyApi.DebuggerDispatche
     });
   }
 
-  appendStep(step: Step): void {
-    this.session.appendStep(step);
+  async appendStep(step: Step): Promise<void> {
+    await this.session.appendStep(step);
     this.lastStep = step;
     if (this.lastStepTimeout) {
       window.clearTimeout(this.lastStepTimeout);

@@ -44,7 +44,395 @@ async function changeNetworkConditions(condition: string) {
 
 describe('Recorder', function() {
   // The tests in this suite are particularly slow, as they perform a lot of actions
-  this.timeout(10000);
+  this.timeout(5000);
+
+  it('should capture the initial page as a navigation step', async () => {
+    const waitForScriptToChange = getWaitForScriptToChangeFunction();
+    await enableExperiment('recorder');
+    await goToResource('recorder/recorder.html');
+
+    const {frontend} = getBrowserAndPages();
+
+    await openSourcesPanel();
+    await openRecorderSubPane();
+    await createNewRecording('New recording');
+    await frontend.click('aria/Record');
+    await frontend.waitForSelector('aria/Stop');
+    await waitForScriptToChange();
+
+    await frontend.bringToFront();
+    await frontend.waitForSelector('aria/Stop');
+    await frontend.click('aria/Stop');
+    const textContent = await getCode();
+
+    assert.strictEqual(textContent, `const puppeteer = require('puppeteer');
+
+(async () => {
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+
+    await page.goto("https://<url>/test/e2e/resources/recorder/recorder.html");
+    await browser.close();
+})();`);
+  });
+
+  it('should capture clicks on buttons', async () => {
+    const waitForScriptToChange = getWaitForScriptToChangeFunction();
+    await enableExperiment('recorder');
+    await goToResource('recorder/recorder.html');
+
+    const {frontend, target} = getBrowserAndPages();
+
+    await openSourcesPanel();
+    await openRecorderSubPane();
+    await createNewRecording('New recording');
+    await frontend.click('aria/Record');
+    await frontend.waitForSelector('aria/Stop');
+    await waitForScriptToChange();
+    await target.bringToFront();
+    await target.click('#test');
+    await waitForScriptToChange();
+
+    await frontend.bringToFront();
+    await frontend.waitForSelector('aria/Stop');
+    await frontend.click('aria/Stop');
+    const textContent = await getCode();
+
+    assert.strictEqual(textContent, `const puppeteer = require('puppeteer');
+
+(async () => {
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+
+    await page.goto("https://<url>/test/e2e/resources/recorder/recorder.html");
+    {
+        const targetPage = page;
+        const frame = targetPage.mainFrame();
+        const element = await frame.waitForSelector("aria/Test Button");
+        await element.click();
+    }
+    await browser.close();
+})();`);
+  });
+
+  it('should capture clicks on submit buttons inside of forms as submit steps', async () => {
+    const waitForScriptToChange = getWaitForScriptToChangeFunction();
+    await enableExperiment('recorder');
+    await goToResource('recorder/recorder.html');
+
+    const {frontend, target} = getBrowserAndPages();
+
+    await openSourcesPanel();
+    await openRecorderSubPane();
+    await createNewRecording('New recording');
+    await frontend.click('aria/Record');
+    await frontend.waitForSelector('aria/Stop');
+    await waitForScriptToChange();
+    await target.bringToFront();
+    await target.click('#form-button');
+    await waitForScriptToChange();
+
+    await frontend.bringToFront();
+    await frontend.waitForSelector('aria/Stop');
+    await frontend.click('aria/Stop');
+    const textContent = await getCode();
+
+    assert.strictEqual(textContent, `const puppeteer = require('puppeteer');
+
+(async () => {
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+
+    await page.goto("https://<url>/test/e2e/resources/recorder/recorder.html");
+    {
+        const targetPage = page;
+        const frame = targetPage.mainFrame();
+        const element = await frame.waitForSelector("html > body > div > form.form1");
+        await element.evaluate(form => form.submit());
+    }
+    await browser.close();
+})();`);
+  });
+
+  it('should build an aria selector for the parent element that is interactive', async () => {
+    const waitForScriptToChange = getWaitForScriptToChangeFunction();
+    await enableExperiment('recorder');
+    await goToResource('recorder/recorder.html');
+
+    const {frontend, target} = getBrowserAndPages();
+
+    await openSourcesPanel();
+    await openRecorderSubPane();
+    await createNewRecording('New recording');
+    await frontend.click('aria/Record');
+    await frontend.waitForSelector('aria/Stop');
+    await waitForScriptToChange();
+    await target.bringToFront();
+    await target.click('#span');
+    await waitForScriptToChange();
+
+    await frontend.bringToFront();
+    await frontend.waitForSelector('aria/Stop');
+    await frontend.click('aria/Stop');
+    const textContent = await getCode();
+
+    assert.strictEqual(textContent, `const puppeteer = require('puppeteer');
+
+(async () => {
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+
+    await page.goto("https://<url>/test/e2e/resources/recorder/recorder.html");
+    {
+        const targetPage = page;
+        const frame = targetPage.mainFrame();
+        const element = await frame.waitForSelector("aria/Hello World");
+        await element.click();
+    }
+    await browser.close();
+})();`);
+  });
+
+  it('should fall back to a css selector if an element does not have an accessible and interactive parent',
+     async () => {
+       const waitForScriptToChange = getWaitForScriptToChangeFunction();
+       await enableExperiment('recorder');
+       await goToResource('recorder/recorder.html');
+
+       const {frontend, target} = getBrowserAndPages();
+
+       await openSourcesPanel();
+       await openRecorderSubPane();
+       await createNewRecording('New recording');
+       await frontend.click('aria/Record');
+       await frontend.waitForSelector('aria/Stop');
+       await waitForScriptToChange();
+       await target.bringToFront();
+       await target.click('#span2');
+       await waitForScriptToChange();
+
+       await frontend.bringToFront();
+       await frontend.waitForSelector('aria/Stop');
+       await frontend.click('aria/Stop');
+       const textContent = await getCode();
+
+       assert.strictEqual(textContent, `const puppeteer = require('puppeteer');
+
+(async () => {
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+
+    await page.goto("https://<url>/test/e2e/resources/recorder/recorder.html");
+    {
+        const targetPage = page;
+        const frame = targetPage.mainFrame();
+        const element = await frame.waitForSelector("span#span2");
+        await element.click();
+    }
+    await browser.close();
+})();`);
+     });
+
+  it('should create an aria selector even if the element is within a shadow root', async () => {
+    const waitForScriptToChange = getWaitForScriptToChangeFunction();
+    await enableExperiment('recorder');
+    await goToResource('recorder/recorder.html');
+
+    const {frontend, target} = getBrowserAndPages();
+
+    await openSourcesPanel();
+    await openRecorderSubPane();
+    await createNewRecording('New recording');
+    await frontend.click('aria/Record');
+    await frontend.waitForSelector('aria/Stop');
+    await waitForScriptToChange();
+    await target.bringToFront();
+    await target.click('pierce/#inner-span');
+    await waitForScriptToChange();
+
+    await frontend.bringToFront();
+    await frontend.waitForSelector('aria/Stop');
+    await frontend.click('aria/Stop');
+    const textContent = await getCode();
+
+    assert.strictEqual(textContent, `const puppeteer = require('puppeteer');
+
+(async () => {
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+
+    await page.goto("https://<url>/test/e2e/resources/recorder/recorder.html");
+    {
+        const targetPage = page;
+        const frame = targetPage.mainFrame();
+        const element = await frame.waitForSelector("aria/Hello World");
+        await element.click();
+    }
+    await browser.close();
+})();`);
+  });
+
+  it('should record interactions with elements within iframes', async () => {
+    const waitForScriptToChange = getWaitForScriptToChangeFunction();
+    await enableExperiment('recorder');
+    await goToResource('recorder/recorder.html');
+
+    const {frontend, target} = getBrowserAndPages();
+
+    await openSourcesPanel();
+    await openRecorderSubPane();
+    await createNewRecording('New recording');
+    await frontend.click('aria/Record');
+    await frontend.waitForSelector('aria/Stop');
+    await waitForScriptToChange();
+    await target.bringToFront();
+    await target.mainFrame().childFrames()[0].click('#in-iframe');
+    await waitForScriptToChange();
+    await target.mainFrame().childFrames()[0].childFrames()[0].click('aria/Inner iframe button');
+    await waitForScriptToChange();
+
+    await frontend.bringToFront();
+    await frontend.waitForSelector('aria/Stop');
+    await frontend.click('aria/Stop');
+    const textContent = await getCode();
+
+    assert.strictEqual(textContent, `const puppeteer = require('puppeteer');
+
+(async () => {
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+
+    await page.goto("https://<url>/test/e2e/resources/recorder/recorder.html");
+    {
+        const targetPage = page;
+        const frame = targetPage.mainFrame().childFrames()[0];
+        const element = await frame.waitForSelector("aria/iframe button");
+        await element.click();
+    }
+    {
+        const targetPage = page;
+        const frame = targetPage.mainFrame().childFrames()[0].childFrames()[0];
+        const element = await frame.waitForSelector("aria/Inner iframe button");
+        await element.click();
+    }
+    await browser.close();
+})();`);
+  });
+
+  // Skipped due to flakines during creation already
+  // eslint-disable-next-line rulesdir/check_test_definitions
+  it.skip('should record interactions with popups', async () => {
+    const waitForScriptToChange = getWaitForScriptToChangeFunction();
+    await enableExperiment('recorder');
+    await goToResource('recorder/recorder.html');
+
+    const {browser, frontend, target} = getBrowserAndPages();
+
+    await openSourcesPanel();
+    await openRecorderSubPane();
+    await createNewRecording('New recording');
+    await frontend.click('aria/Record');
+    await frontend.waitForSelector('aria/Stop');
+    await waitForScriptToChange();
+    await target.bringToFront();
+    const newTargetPromise = browser.waitForTarget(t => t.url().endsWith('popup.html'));
+    await target.click('aria/Open Popup');
+    await waitForScriptToChange();
+    const newTarget = await newTargetPromise;
+    const newPage = await newTarget.page() as typeof target;
+    await newPage.waitForSelector('aria/Button in Popup');
+    await newPage.click('aria/Button in Popup');
+    await waitForScriptToChange();
+    await newPage.close();
+    await waitForScriptToChange();
+    await frontend.bringToFront();
+    await frontend.waitForSelector('aria/Stop');
+    await frontend.click('aria/Stop');
+    const textContent = await getCode();
+
+    assert.strictEqual(textContent, `const puppeteer = require('puppeteer');
+
+(async () => {
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+
+    await page.goto("https://<url>/test/e2e/resources/recorder/recorder.html");
+    {
+        const targetPage = page;
+        const frame = targetPage.mainFrame();
+        const element = await frame.waitForSelector("aria/Open Popup");
+        await element.click();
+    }
+    {
+        const target = await browser.waitForTarget(p => p.url() === "https://<url>/test/e2e/resources/recorder/popup.html");
+        const targetPage = await target.page();
+        const frame = targetPage.mainFrame();
+        const promise = targetPage.waitForNavigation();
+        const element = await frame.waitForSelector("aria/Button in Popup");
+        await element.click();
+        await promise;
+    }
+    {
+        const target = await browser.waitForTarget(p => p.url() === "https://<url>/test/e2e/resources/recorder/popup.html");
+        const targetPage = await target.page();
+        await targetPage.close();
+    }
+    await browser.close();
+})();`);
+  });
+
+  it('should wait for navigations in the generated scripts', async () => {
+    const waitForScriptToChange = getWaitForScriptToChangeFunction();
+    await enableExperiment('recorder');
+    await goToResource('recorder/recorder.html');
+
+    const {frontend, target} = getBrowserAndPages();
+
+    await openSourcesPanel();
+    await openRecorderSubPane();
+    await createNewRecording('New recording');
+    await frontend.click('aria/Record');
+    await frontend.waitForSelector('aria/Stop');
+    await waitForScriptToChange();
+    await target.bringToFront();
+    await target.click('aria/Page 2');
+    await waitForScriptToChange();
+    await target.waitForSelector('aria/Back to Page 1');
+    const promise = target.waitForNavigation();
+    await target.click('aria/Back to Page 1');
+    await promise;
+    await waitForScriptToChange();
+
+    await frontend.bringToFront();
+    await frontend.waitForSelector('aria/Stop');
+    await frontend.click('aria/Stop');
+    const textContent = await getCode();
+    assert.strictEqual(textContent, `const puppeteer = require('puppeteer');
+
+(async () => {
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+
+    await page.goto("https://<url>/test/e2e/resources/recorder/recorder.html");
+    {
+        const targetPage = page;
+        const frame = targetPage.mainFrame();
+        const promise = targetPage.waitForNavigation();
+        const element = await frame.waitForSelector("aria/Page 2");
+        await element.click();
+        await promise;
+    }
+    {
+        const targetPage = page;
+        const frame = targetPage.mainFrame();
+        const promise = targetPage.waitForNavigation();
+        const element = await frame.waitForSelector("aria/Back to Page 1");
+        await element.click();
+        await promise;
+    }
+    await browser.close();
+})();`);
+  });
 
   // Flaky test
   it.skip('[crbug.com/1173993] should record the interactions with the browser as a script', async () => {
@@ -81,16 +469,14 @@ describe('Recorder', function() {
     const iframe = await target.$('#iframe').then(x => x ? x.contentFrame() : null);
     // @ts-ignore This will not be null
     await iframe.click('#in-iframe');
+    await waitForScriptToChange();
     await target.mainFrame().childFrames()[0].childFrames()[0].click('aria/Inner iframe button');
     await waitForScriptToChange();
 
     const newTargetPromise = browser.waitForTarget(t => t.url().endsWith('popup.html'));
     await target.click('aria/Open Popup');
     const newTarget = await newTargetPromise;
-    const newPage = await newTarget.page();
-    if (!newPage) {
-      assert.fail('Could not create new page.');
-    }
+    const newPage = await newTarget.page() as typeof target;
     await newPage.waitForSelector('aria/Button in Popup');
     await newPage.click('aria/Button in Popup');
     await waitForScriptToChange();
@@ -208,11 +594,9 @@ describe('Recorder', function() {
     const {frontend, target} = getBrowserAndPages();
 
     await changeNetworkConditions('Fast 3G');
-
     await openSourcesPanel();
     await openRecorderSubPane();
     await createNewRecording('New recording');
-
     // Record
     await click('[aria-label="Record"]');
     await waitFor('[aria-label="Stop"]');
@@ -220,14 +604,13 @@ describe('Recorder', function() {
     await target.bringToFront();
     await target.click('#test');
     await waitForScriptToChange();
-
     await frontend.bringToFront();
     await changeNetworkConditions('Slow 3G');
     await openSourcesPanel();
+    await waitForScriptToChange();
     await target.bringToFront();
     await target.click('#test');
     await waitForScriptToChange();
-
     await frontend.bringToFront();
     await waitFor('[aria-label="Stop"]');
     await click('[aria-label="Stop"]');

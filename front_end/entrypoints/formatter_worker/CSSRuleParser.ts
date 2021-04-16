@@ -51,6 +51,12 @@ export function parseCSS(text: string, chunkCallback: ChunkCallback): void {
     disabledRules = disabledRules.concat(chunk.chunk);
   }
 
+  function cssTrim(tokenValue: string): string {
+    // https://drafts.csswg.org/css-syntax/#whitespace
+    const re = /^(?:\r?\n|[\t\f\r ])+|(?:\r?\n|[\t\f\r ])+$/g;
+    return tokenValue.replace(re, '');
+  }
+
   function processToken(tokenValue: string, tokenTypes: string|null, column: number, newColumn: number): void {
     const tokenType = tokenTypes ? new Set(tokenTypes.split(' ')) : UndefTokenType;
     switch (state) {
@@ -74,7 +80,7 @@ export function parseCSS(text: string, chunkCallback: ChunkCallback): void {
         break;
       case CSSParserStates.Selector:
         if (tokenValue === '{' && tokenType === UndefTokenType) {
-          rule.selectorText = rule.selectorText.trim();
+          rule.selectorText = cssTrim(rule.selectorText);
           rule.styleRange = createRange(lineNumber, newColumn);
           state = CSSParserStates.Style;
         } else {
@@ -83,7 +89,7 @@ export function parseCSS(text: string, chunkCallback: ChunkCallback): void {
         break;
       case CSSParserStates.AtRule:
         if ((tokenValue === ';' || tokenValue === '{') && tokenType === UndefTokenType) {
-          rule.atRule = rule.atRule.trim();
+          rule.atRule = cssTrim(rule.atRule);
           rules.push(rule);
           state = CSSParserStates.Initial;
         } else {

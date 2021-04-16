@@ -35,6 +35,12 @@ import * as Platform from '../../core/platform/platform.js';
 import {FormattedContentBuilder} from './FormattedContentBuilder.js';  // eslint-disable-line no-unused-vars
 import {createTokenizer} from './FormatterWorker.js';
 
+const cssTrimEnd = (tokenValue: string): string => {
+  // https://drafts.csswg.org/css-syntax/#whitespace
+  const re = /(?:\r?\n|[\t\f\r ])+$/g;
+  return tokenValue.replace(re, '');
+};
+
 export class CSSFormatter {
   _builder: FormattedContentBuilder;
   _toOffset!: number;
@@ -88,7 +94,8 @@ export class CSSFormatter {
       this._state.seenProperty = true;
     }
     this._lastLine = startLine;
-    const isWhitespace = /^\s+$/.test(token);
+    // https://drafts.csswg.org/css-syntax/#whitespace
+    const isWhitespace = /^(?:\r?\n|[\t\f\r ])+$/.test(token);
     if (isWhitespace) {
       if (!this._state.eatWhitespace) {
         this._builder.addSoftSpace();
@@ -128,7 +135,7 @@ export class CSSFormatter {
       return;
     }
 
-    this._builder.addToken(token, startPosition);
+    this._builder.addToken(cssTrimEnd(token), startPosition);
 
     if (type === 'comment' && !this._state.inPropertyValue && !this._state.seenProperty) {
       this._builder.addNewLine();

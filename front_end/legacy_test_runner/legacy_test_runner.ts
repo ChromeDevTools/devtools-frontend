@@ -10,7 +10,7 @@ import '../ui/legacy/components/color_picker/color_picker-legacy.js';
 import '../core/common/common-legacy.js';
 import '../ui/legacy/components/data_grid/data_grid-legacy.js';
 import '../panels/developer_resources/developer_resources-legacy.js';
-import '../diff/diff-legacy.js';
+import '../third_party/diff/diff-legacy.js';
 import '../panels/event_listeners/event_listeners-legacy.js';
 import '../models/extensions/extensions-legacy.js';
 import '../formatter/formatter-legacy.js';

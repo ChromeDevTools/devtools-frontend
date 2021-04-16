@@ -1,0 +1,10 @@
+Name: The Diff Match and Patch libraries offer robust algorithms to perform the operations required for synchronizing plain text.
+Short Name: diff-match-patch
+URL: https://github.com/google/diff-match-patch/tree/master/javascript
+Version: 5.60.0
+License: Apache License 2.0
+License File: LICENSE
+Security Critical: no
+
+Description:
+The Diff Match and Patch libraries offer robust algorithms to perform the operations required for synchronizing plain text.

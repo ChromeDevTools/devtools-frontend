@@ -4,7 +4,7 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Diff from '../diff/diff.js';
+import * as Diff from '../third_party/diff/diff.js';
 import * as UI from '../ui/legacy/legacy.js';  // eslint-disable-line no-unused-vars
 import {FilteredListWidget, Provider} from './FilteredListWidget.js';
 export interface QuickPickItem {

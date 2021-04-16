@@ -8,8 +8,8 @@
 
 import * as i18n from '../core/i18n/i18n.js';
 import * as Platform from '../core/platform/platform.js';
-import * as Diff from '../diff/diff.js';
 import * as TextUtils from '../models/text_utils/text_utils.js';
+import * as Diff from '../third_party/diff/diff.js';
 import * as UI from '../ui/legacy/legacy.js';
 
 const UIStrings = {

@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../core/common/common.js';
+import * as Common from '../../core/common/common.js';
 
 export const DiffWrapper = {
   charDiff: function(text1: string, text2: string, cleanup?: boolean): {0: number, 1: string}[] {

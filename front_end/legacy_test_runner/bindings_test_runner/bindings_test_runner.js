@@ -4,7 +4,7 @@
 
 import '../test_runner/test_runner.js';
 import '../../models/workspace/workspace-legacy.js';
-import '../../diff/diff-legacy.js';
+import '../../third_party/diff/diff-legacy.js';
 import '../../models/bindings/bindings-legacy.js';
 import '../../models/persistence/persistence-legacy.js';
 

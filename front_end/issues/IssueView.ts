@@ -4,6 +4,9 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
+import '../ui/components/icon_button/icon_button.js';
+import '../ui/components/markdown_view/markdown_view.js';
+
 import * as Components from '../components/components.js';
 import * as Common from '../core/common/common.js';
 import * as Host from '../core/host/host.js';

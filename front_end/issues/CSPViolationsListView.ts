@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import '../ui/components/linkifier/linkifier.js';
+import '../ui/components/data_grid/data_grid.js';
 
 import * as IssuesManager from '../models/issues_manager/issues_manager.js';
 import * as LitHtml from '../third_party/lit-html/lit-html.js';

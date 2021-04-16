@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import '../../linkifier/linkifier.js';
+
 import * as ComponentHelpers from '../../helpers/helpers.js';
 import * as Linkifier from '../../linkifier/linkifier.js';
 

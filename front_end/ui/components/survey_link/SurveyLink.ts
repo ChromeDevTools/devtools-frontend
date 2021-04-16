@@ -7,6 +7,7 @@ import type * as Host from '../../../core/host/host.js';
 import * as LitHtml from '../../../third_party/lit-html/lit-html.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 
+import '../icon_button/icon_button.js';
 import type {Icon} from '../icon_button/icon_button.js';
 
 const UIStrings = {

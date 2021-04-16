@@ -2,6 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import '../../ui/components/data_grid/data_grid.js';
+import '../../ui/components/icon_button/icon_button.js';
+
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as LitHtml from '../../third_party/lit-html/lit-html.js';

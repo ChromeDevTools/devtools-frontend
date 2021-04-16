@@ -53,7 +53,7 @@ export class ScriptFormatterEditorAction implements EditorAction {
     const uiSourceCode = (event.data as Workspace.UISourceCode.UISourceCode);
     this._updateButton(uiSourceCode);
 
-    if (this._isFormatableScript(uiSourceCode) && this._pathsToFormatOnLoad.has(uiSourceCode.url()) &&
+    if (this._isFormattableScript(uiSourceCode) && this._pathsToFormatOnLoad.has(uiSourceCode.url()) &&
         !FormatterModule.SourceFormatter.SourceFormatter.instance().hasFormatted(uiSourceCode)) {
       this._showFormatted(uiSourceCode);
     }
@@ -74,7 +74,7 @@ export class ScriptFormatterEditorAction implements EditorAction {
   }
 
   _updateButton(uiSourceCode: Workspace.UISourceCode.UISourceCode|null): void {
-    const isFormattable = this._isFormatableScript(uiSourceCode);
+    const isFormattable = this._isFormattableScript(uiSourceCode);
     this._button.element.classList.toggle('hidden', !isFormattable);
     if (uiSourceCode) {
       // We always update the title of the button, even if the {uiSourceCode} is
@@ -104,7 +104,7 @@ export class ScriptFormatterEditorAction implements EditorAction {
     return this._button;
   }
 
-  _isFormatableScript(uiSourceCode: Workspace.UISourceCode.UISourceCode|null): boolean {
+  _isFormattableScript(uiSourceCode: Workspace.UISourceCode.UISourceCode|null): boolean {
     if (!uiSourceCode) {
       return false;
     }
@@ -123,9 +123,9 @@ export class ScriptFormatterEditorAction implements EditorAction {
     return uiSourceCode.contentType().hasScripts();
   }
 
-  isCurrentUISourceCodeFormatable(): boolean {
+  isCurrentUISourceCodeFormattable(): boolean {
     const uiSourceCode = this._sourcesView.currentUISourceCode();
-    return this._isFormatableScript(uiSourceCode);
+    return this._isFormattableScript(uiSourceCode);
   }
 
   _onFormatScriptButtonClicked(_event: Common.EventTarget.EventTargetEvent): void {
@@ -134,7 +134,7 @@ export class ScriptFormatterEditorAction implements EditorAction {
 
   toggleFormatScriptSource(): void {
     const uiSourceCode = this._sourcesView.currentUISourceCode();
-    if (!uiSourceCode || !this._isFormatableScript(uiSourceCode)) {
+    if (!uiSourceCode || !this._isFormattableScript(uiSourceCode)) {
       return;
     }
     this._pathsToFormatOnLoad.add(uiSourceCode.url());

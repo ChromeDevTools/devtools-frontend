@@ -7817,343 +7817,343 @@
   "panels/search/SearchView.ts | useRegularExpression": {
     "message": "Ûśê Ŕêǵûĺâŕ Êx́p̂ŕêśŝíôń"
   },
-  "security/security-meta.ts | security": {
+  "panels/security/security-meta.ts | security": {
     "message": "Ŝéĉúr̂ít̂ý"
   },
-  "security/security-meta.ts | showSecurity": {
+  "panels/security/security-meta.ts | showSecurity": {
     "message": "Ŝh́ôẃ Ŝéĉúr̂ít̂ý"
   },
-  "security/SecurityModel.ts | cipherWithMAC": {
+  "panels/security/SecurityModel.ts | cipherWithMAC": {
     "message": "{PH1} ŵít̂h́ {PH2}"
   },
-  "security/SecurityModel.ts | keyExchangeWithGroup": {
+  "panels/security/SecurityModel.ts | keyExchangeWithGroup": {
     "message": "{PH1} ŵít̂h́ {PH2}"
   },
-  "security/SecurityModel.ts | theSecurityOfThisPageIsUnknown": {
+  "panels/security/SecurityModel.ts | theSecurityOfThisPageIsUnknown": {
     "message": "T̂h́ê śêćûŕît́ŷ óf̂ t́ĥíŝ ṕâǵê íŝ ún̂ḱn̂óŵń."
   },
-  "security/SecurityModel.ts | thisPageIsNotSecure": {
+  "panels/security/SecurityModel.ts | thisPageIsNotSecure": {
     "message": "T̂h́îś p̂áĝé îś n̂ót̂ śêćûŕê."
   },
-  "security/SecurityModel.ts | thisPageIsNotSecureBrokenHttps": {
+  "panels/security/SecurityModel.ts | thisPageIsNotSecureBrokenHttps": {
     "message": "T̂h́îś p̂áĝé îś n̂ót̂ śêćûŕê (b́r̂ók̂én̂ H́T̂T́P̂Ś)."
   },
-  "security/SecurityModel.ts | thisPageIsSecureValidHttps": {
+  "panels/security/SecurityModel.ts | thisPageIsSecureValidHttps": {
     "message": "T̂h́îś p̂áĝé îś ŝéĉúr̂é (v̂ál̂íd̂ H́T̂T́P̂Ś)."
   },
-  "security/SecurityPanel.ts | activeContentWithCertificate": {
+  "panels/security/SecurityPanel.ts | activeContentWithCertificate": {
     "message": "âćt̂ív̂é ĉón̂t́êńt̂ ẃît́ĥ ćêŕt̂íf̂íĉát̂é êŕr̂ór̂ś"
   },
-  "security/SecurityPanel.ts | activeMixedContent": {
+  "panels/security/SecurityPanel.ts | activeMixedContent": {
     "message": "âćt̂ív̂é m̂íx̂éd̂ ćôńt̂én̂t́"
   },
-  "security/SecurityPanel.ts | allResourcesOnThisPageAreServed": {
+  "panels/security/SecurityPanel.ts | allResourcesOnThisPageAreServed": {
     "message": "Âĺl̂ ŕêśôúr̂ćêś ôń t̂h́îś p̂áĝé âŕê śêŕv̂éd̂ śêćûŕêĺŷ."
   },
-  "security/SecurityPanel.ts | allServedSecurely": {
+  "panels/security/SecurityPanel.ts | allServedSecurely": {
     "message": "âĺl̂ śêŕv̂éd̂ śêćûŕêĺŷ"
   },
-  "security/SecurityPanel.ts | blockedMixedContent": {
+  "panels/security/SecurityPanel.ts | blockedMixedContent": {
     "message": "B̂ĺôćk̂éd̂ ḿîx́êd́ ĉón̂t́êńt̂"
   },
-  "security/SecurityPanel.ts | certificate": {
+  "panels/security/SecurityPanel.ts | certificate": {
     "message": "Ĉér̂t́îf́îćât́ê"
   },
-  "security/SecurityPanel.ts | certificateExpiresSoon": {
+  "panels/security/SecurityPanel.ts | certificateExpiresSoon": {
     "message": "Ĉér̂t́îf́îćât́ê éx̂ṕîŕêś ŝóôń"
   },
-  "security/SecurityPanel.ts | certificateTransparency": {
+  "panels/security/SecurityPanel.ts | certificateTransparency": {
     "message": "Ĉér̂t́îf́îćât́ê T́r̂án̂śp̂ár̂én̂ćŷ"
   },
-  "security/SecurityPanel.ts | chromeHasDeterminedThatThisSiteS": {
+  "panels/security/SecurityPanel.ts | chromeHasDeterminedThatThisSiteS": {
     "message": "Ĉh́r̂óm̂é ĥáŝ d́êt́êŕm̂ín̂éd̂ t́ĥát̂ t́ĥíŝ śît́ê ćôúl̂d́ b̂é f̂ák̂é ôŕ f̂ŕâúd̂úl̂én̂t́."
   },
-  "security/SecurityPanel.ts | cipher": {
+  "panels/security/SecurityPanel.ts | cipher": {
     "message": "Ĉíp̂h́êŕ"
   },
-  "security/SecurityPanel.ts | connection": {
+  "panels/security/SecurityPanel.ts | connection": {
     "message": "Ĉón̂ńêćt̂íôń"
   },
-  "security/SecurityPanel.ts | contentWithCertificateErrors": {
+  "panels/security/SecurityPanel.ts | contentWithCertificateErrors": {
     "message": "ĉón̂t́êńt̂ ẃît́ĥ ćêŕt̂íf̂íĉát̂é êŕr̂ór̂ś"
   },
-  "security/SecurityPanel.ts | dataWasEnteredInAFieldOnA": {
+  "panels/security/SecurityPanel.ts | dataWasEnteredInAFieldOnA": {
     "message": "D̂át̂á ŵáŝ én̂t́êŕêd́ îń â f́îél̂d́ ôń â ńôń-ŝéĉúr̂é p̂áĝé. Â ẃâŕn̂ín̂ǵ ĥáŝ b́êén̂ ád̂d́êd́ t̂ó t̂h́ê ÚR̂Ĺ b̂ár̂."
   },
-  "security/SecurityPanel.ts | flaggedByGoogleSafeBrowsing": {
+  "panels/security/SecurityPanel.ts | flaggedByGoogleSafeBrowsing": {
     "message": "F̂ĺâǵĝéd̂ b́ŷ Ǵôóĝĺê Śâf́ê B́r̂óŵśîńĝ"
   },
-  "security/SecurityPanel.ts | formFieldEditedOnANonsecurePage": {
+  "panels/security/SecurityPanel.ts | formFieldEditedOnANonsecurePage": {
     "message": "F̂ór̂ḿ f̂íêĺd̂ éd̂ít̂éd̂ ón̂ á n̂ón̂-śêćûŕê ṕâǵê"
   },
-  "security/SecurityPanel.ts | hashAlgorithm": {
+  "panels/security/SecurityPanel.ts | hashAlgorithm": {
     "message": "Ĥáŝh́ âĺĝór̂ít̂h́m̂"
   },
-  "security/SecurityPanel.ts | hideFullDetails": {
+  "panels/security/SecurityPanel.ts | hideFullDetails": {
     "message": "Ĥíd̂é f̂úl̂ĺ d̂ét̂áîĺŝ"
   },
-  "security/SecurityPanel.ts | ifYouBelieveThisIsShownIn": {
+  "panels/security/SecurityPanel.ts | ifYouBelieveThisIsShownIn": {
     "message": "Îf́ ŷóû b́êĺîév̂é t̂h́îś îś ŝh́ôẃn̂ ín̂ ér̂ŕôŕ p̂ĺêáŝé v̂íŝít̂ h́t̂t́p̂ś://b̂úĝś.ĉh́r̂óm̂íûḿ.ôŕĝ/ṕ/ĉh́r̂óm̂íûḿ/îśŝúêś/êńt̂ŕŷ?t́êḿp̂ĺât́ê=Śâf́êt́ŷ+T́îṕŝ+Áp̂ṕêál̂ś."
   },
-  "security/SecurityPanel.ts | ifYouBelieveThisIsShownInErrorSafety": {
+  "panels/security/SecurityPanel.ts | ifYouBelieveThisIsShownInErrorSafety": {
     "message": "Îf́ ŷóû b́êĺîév̂é t̂h́îś îś ŝh́ôẃn̂ ín̂ ér̂ŕôŕ p̂ĺêáŝé v̂íŝít̂ h́t̂t́p̂ś://b̂úĝś.ĉh́r̂óm̂íûḿ.ôŕĝ/ṕ/ĉh́r̂óm̂íûḿ/îśŝúêś/êńt̂ŕŷ?t́êḿp̂ĺât́ê=Śâf́êt́ŷ+T́îṕŝ+Áp̂ṕêál̂ś."
   },
-  "security/SecurityPanel.ts | info": {
+  "panels/security/SecurityPanel.ts | info": {
     "message": "Îńf̂ó"
   },
-  "security/SecurityPanel.ts | insecureSha": {
+  "panels/security/SecurityPanel.ts | insecureSha": {
     "message": "îńŝéĉúr̂é (ŜH́Â-1)"
   },
-  "security/SecurityPanel.ts | issuedAt": {
+  "panels/security/SecurityPanel.ts | issuedAt": {
     "message": "Îśŝúêd́ ât́"
   },
-  "security/SecurityPanel.ts | issuer": {
+  "panels/security/SecurityPanel.ts | issuer": {
     "message": "Îśŝúêŕ"
   },
-  "security/SecurityPanel.ts | keyExchange": {
+  "panels/security/SecurityPanel.ts | keyExchange": {
     "message": "K̂éŷ éx̂ćĥán̂ǵê"
   },
-  "security/SecurityPanel.ts | keyExchangeGroup": {
+  "panels/security/SecurityPanel.ts | keyExchangeGroup": {
     "message": "K̂éŷ éx̂ćĥán̂ǵê ǵr̂óûṕ"
   },
-  "security/SecurityPanel.ts | logId": {
+  "panels/security/SecurityPanel.ts | logId": {
     "message": "L̂óĝ ÍD̂"
   },
-  "security/SecurityPanel.ts | logName": {
+  "panels/security/SecurityPanel.ts | logName": {
     "message": "L̂óĝ ńâḿê"
   },
-  "security/SecurityPanel.ts | mainOrigin": {
+  "panels/security/SecurityPanel.ts | mainOrigin": {
     "message": "M̂áîń ôŕîǵîń"
   },
-  "security/SecurityPanel.ts | mainOriginNonsecure": {
+  "panels/security/SecurityPanel.ts | mainOriginNonsecure": {
     "message": "M̂áîń ôŕîǵîń (n̂ón̂-śêćûŕê)"
   },
-  "security/SecurityPanel.ts | mainOriginSecure": {
+  "panels/security/SecurityPanel.ts | mainOriginSecure": {
     "message": "M̂áîń ôŕîǵîń (ŝéĉúr̂é)"
   },
-  "security/SecurityPanel.ts | missing": {
+  "panels/security/SecurityPanel.ts | missing": {
     "message": "m̂íŝśîńĝ"
   },
-  "security/SecurityPanel.ts | mixedContent": {
+  "panels/security/SecurityPanel.ts | mixedContent": {
     "message": "m̂íx̂éd̂ ćôńt̂én̂t́"
   },
-  "security/SecurityPanel.ts | na": {
+  "panels/security/SecurityPanel.ts | na": {
     "message": "(n̂/á)"
   },
-  "security/SecurityPanel.ts | nonsecureForm": {
+  "panels/security/SecurityPanel.ts | nonsecureForm": {
     "message": "n̂ón̂-śêćûŕê f́ôŕm̂"
   },
-  "security/SecurityPanel.ts | nonsecureOrigins": {
+  "panels/security/SecurityPanel.ts | nonsecureOrigins": {
     "message": "N̂ón̂-śêćûŕê ór̂íĝín̂ś"
   },
-  "security/SecurityPanel.ts | noSecurityDetailsAreAvailableFor": {
+  "panels/security/SecurityPanel.ts | noSecurityDetailsAreAvailableFor": {
     "message": "N̂ó ŝéĉúr̂ít̂ý d̂ét̂áîĺŝ ár̂é âv́âíl̂áb̂ĺê f́ôŕ t̂h́îś ôŕîǵîń."
   },
-  "security/SecurityPanel.ts | noSecurityInformation": {
+  "panels/security/SecurityPanel.ts | noSecurityInformation": {
     "message": "N̂ó ŝéĉúr̂ít̂ý îńf̂ór̂ḿât́îón̂"
   },
-  "security/SecurityPanel.ts | notSecure": {
+  "panels/security/SecurityPanel.ts | notSecure": {
     "message": "N̂ót̂ śêćûŕê"
   },
-  "security/SecurityPanel.ts | notSecureBroken": {
+  "panels/security/SecurityPanel.ts | notSecureBroken": {
     "message": "N̂ót̂ śêćûŕê (b́r̂ók̂én̂)"
   },
-  "security/SecurityPanel.ts | obsoleteConnectionSettings": {
+  "panels/security/SecurityPanel.ts | obsoleteConnectionSettings": {
     "message": "ôb́ŝól̂ét̂é ĉón̂ńêćt̂íôń ŝét̂t́îńĝś"
   },
-  "security/SecurityPanel.ts | openFullCertificateDetails": {
+  "panels/security/SecurityPanel.ts | openFullCertificateDetails": {
     "message": "Ôṕêń f̂úl̂ĺ ĉér̂t́îf́îćât́ê d́êt́âíl̂ś"
   },
-  "security/SecurityPanel.ts | origin": {
+  "panels/security/SecurityPanel.ts | origin": {
     "message": "Ôŕîǵîń"
   },
-  "security/SecurityPanel.ts | overview": {
+  "panels/security/SecurityPanel.ts | overview": {
     "message": "Ôv́êŕv̂íêẃ"
   },
-  "security/SecurityPanel.ts | possibleSpoofingUrl": {
+  "panels/security/SecurityPanel.ts | possibleSpoofingUrl": {
     "message": "P̂óŝśîb́l̂é ŝṕôóf̂ín̂ǵ ÛŔL̂"
   },
-  "security/SecurityPanel.ts | protocol": {
+  "panels/security/SecurityPanel.ts | protocol": {
     "message": "P̂ŕôt́ôćôĺ"
   },
-  "security/SecurityPanel.ts | publickeypinningBypassed": {
+  "panels/security/SecurityPanel.ts | publickeypinningBypassed": {
     "message": "P̂úb̂ĺîć-K̂éŷ-Ṕîńn̂ín̂ǵ b̂ýp̂áŝśêd́"
   },
-  "security/SecurityPanel.ts | publickeypinningWasBypassedByA": {
+  "panels/security/SecurityPanel.ts | publickeypinningWasBypassedByA": {
     "message": "P̂úb̂ĺîć-K̂éŷ-Ṕîńn̂ín̂ǵ ŵáŝ b́ŷṕâśŝéd̂ b́ŷ á l̂óĉál̂ ŕôót̂ ćêŕt̂íf̂íĉát̂é."
   },
-  "security/SecurityPanel.ts | reloadThePageToRecordRequestsFor": {
+  "panels/security/SecurityPanel.ts | reloadThePageToRecordRequestsFor": {
     "message": "R̂él̂óâd́ t̂h́ê ṕâǵê t́ô ŕêćôŕd̂ ŕêq́ûéŝt́ŝ f́ôŕ ĤT́T̂Ṕ r̂éŝóûŕĉéŝ."
   },
-  "security/SecurityPanel.ts | reloadToViewDetails": {
+  "panels/security/SecurityPanel.ts | reloadToViewDetails": {
     "message": "R̂él̂óâd́ t̂ó v̂íêẃ d̂ét̂áîĺŝ"
   },
-  "security/SecurityPanel.ts | resources": {
+  "panels/security/SecurityPanel.ts | resources": {
     "message": "R̂éŝóûŕĉéŝ"
   },
-  "security/SecurityPanel.ts | rsaKeyExchangeIsObsoleteEnableAn": {
+  "panels/security/SecurityPanel.ts | rsaKeyExchangeIsObsoleteEnableAn": {
     "message": "R̂ŚÂ ḱêý êx́ĉh́âńĝé îś ôb́ŝól̂ét̂é. Êńâb́l̂é âń ÊĆD̂H́Ê-b́âśêd́ ĉíp̂h́êŕ ŝúît́ê."
   },
-  "security/SecurityPanel.ts | sct": {
+  "panels/security/SecurityPanel.ts | sct": {
     "message": "ŜĆT̂"
   },
-  "security/SecurityPanel.ts | secure": {
+  "panels/security/SecurityPanel.ts | secure": {
     "message": "Ŝéĉúr̂é"
   },
-  "security/SecurityPanel.ts | secureConnectionSettings": {
+  "panels/security/SecurityPanel.ts | secureConnectionSettings": {
     "message": "ŝéĉúr̂é ĉón̂ńêćt̂íôń ŝét̂t́îńĝś"
   },
-  "security/SecurityPanel.ts | secureOrigins": {
+  "panels/security/SecurityPanel.ts | secureOrigins": {
     "message": "Ŝéĉúr̂é ôŕîǵîńŝ"
   },
-  "security/SecurityPanel.ts | securityOverview": {
+  "panels/security/SecurityPanel.ts | securityOverview": {
     "message": "Ŝéĉúr̂ít̂ý ôv́êŕv̂íêẃ"
   },
-  "security/SecurityPanel.ts | showFullDetails": {
+  "panels/security/SecurityPanel.ts | showFullDetails": {
     "message": "Ŝh́ôẃ f̂úl̂ĺ d̂ét̂áîĺŝ"
   },
-  "security/SecurityPanel.ts | showLess": {
+  "panels/security/SecurityPanel.ts | showLess": {
     "message": "Ŝh́ôẃ l̂éŝś"
   },
-  "security/SecurityPanel.ts | showMoreSTotal": {
+  "panels/security/SecurityPanel.ts | showMoreSTotal": {
     "message": "Ŝh́ôẃ m̂ór̂é ({PH1} t̂ót̂ál̂)"
   },
-  "security/SecurityPanel.ts | signatureAlgorithm": {
+  "panels/security/SecurityPanel.ts | signatureAlgorithm": {
     "message": "Ŝíĝńât́ûŕê ál̂ǵôŕît́ĥḿ"
   },
-  "security/SecurityPanel.ts | signatureData": {
+  "panels/security/SecurityPanel.ts | signatureData": {
     "message": "Ŝíĝńât́ûŕê d́ât́â"
   },
-  "security/SecurityPanel.ts | sIsObsoleteEnableAnAesgcmbased": {
+  "panels/security/SecurityPanel.ts | sIsObsoleteEnableAnAesgcmbased": {
     "message": "{PH1} îś ôb́ŝól̂ét̂é. Êńâb́l̂é âń ÂÉŜ-ǴĈḾ-b̂áŝéd̂ ćîṕĥér̂ śûít̂é."
   },
-  "security/SecurityPanel.ts | sIsObsoleteEnableTlsOrLater": {
+  "panels/security/SecurityPanel.ts | sIsObsoleteEnableTlsOrLater": {
     "message": "{PH1} îś ôb́ŝól̂ét̂é. Êńâb́l̂é T̂ĹŜ 1.2 ór̂ ĺât́êŕ."
   },
-  "security/SecurityPanel.ts | source": {
+  "panels/security/SecurityPanel.ts | source": {
     "message": "Ŝóûŕĉé"
   },
-  "security/SecurityPanel.ts | subject": {
+  "panels/security/SecurityPanel.ts | subject": {
     "message": "Ŝúb̂j́êćt̂"
   },
-  "security/SecurityPanel.ts | subjectAlternativeNameMissing": {
+  "panels/security/SecurityPanel.ts | subjectAlternativeNameMissing": {
     "message": "Subject Alternative Name m̂íŝśîńĝ"
   },
-  "security/SecurityPanel.ts | theCertificateChainForThisSite": {
+  "panels/security/SecurityPanel.ts | theCertificateChainForThisSite": {
     "message": "T̂h́ê ćêŕt̂íf̂íĉát̂é ĉh́âín̂ f́ôŕ t̂h́îś ŝít̂é ĉón̂t́âín̂ś â ćêŕt̂íf̂íĉát̂é ŝíĝńêd́ ûśîńĝ ŚĤÁ-1."
   },
-  "security/SecurityPanel.ts | theCertificateForThisSiteDoesNot": {
+  "panels/security/SecurityPanel.ts | theCertificateForThisSiteDoesNot": {
     "message": "T̂h́ê ćêŕt̂íf̂íĉát̂é f̂ór̂ t́ĥíŝ śît́ê d́ôéŝ ńôt́ ĉón̂t́âín̂ á Subject Alternative Name êx́t̂én̂śîón̂ ćôńt̂áîńîńĝ á d̂óm̂áîń n̂ám̂é ôŕ ÎṔ âd́d̂ŕêśŝ."
   },
-  "security/SecurityPanel.ts | theCertificateForThisSiteExpires": {
+  "panels/security/SecurityPanel.ts | theCertificateForThisSiteExpires": {
     "message": "T̂h́ê ćêŕt̂íf̂íĉát̂é f̂ór̂ t́ĥíŝ śît́ê éx̂ṕîŕêś îń l̂éŝś t̂h́âń 48 ĥóûŕŝ án̂d́ n̂éêd́ŝ t́ô b́ê ŕêńêẃêd́."
   },
-  "security/SecurityPanel.ts | theConnectionToThisSiteIs": {
+  "panels/security/SecurityPanel.ts | theConnectionToThisSiteIs": {
     "message": "T̂h́ê ćôńn̂éĉt́îón̂ t́ô t́ĥíŝ śît́ê íŝ én̂ćr̂ýp̂t́êd́ âńd̂ áût́ĥén̂t́îćât́êd́ ûśîńĝ {PH1}, {PH2}, án̂d́ {PH3}."
   },
-  "security/SecurityPanel.ts | theConnectionToThisSiteIsUsingA": {
+  "panels/security/SecurityPanel.ts | theConnectionToThisSiteIsUsingA": {
     "message": "T̂h́ê ćôńn̂éĉt́îón̂ t́ô t́ĥíŝ śît́ê íŝ úŝín̂ǵ â v́âĺîd́, t̂ŕûśt̂éd̂ śêŕv̂ér̂ ćêŕt̂íf̂íĉát̂é îśŝúêd́ b̂ý {PH1}."
   },
-  "security/SecurityPanel.ts | theSecurityDetailsAboveAreFrom": {
+  "panels/security/SecurityPanel.ts | theSecurityDetailsAboveAreFrom": {
     "message": "T̂h́ê śêćûŕît́ŷ d́êt́âíl̂ś âb́ôv́ê ár̂é f̂ŕôḿ t̂h́ê f́îŕŝt́ îńŝṕêćt̂éd̂ ŕêśp̂ón̂śê."
   },
-  "security/SecurityPanel.ts | theSecurityOfThisPageIsUnknown": {
+  "panels/security/SecurityPanel.ts | theSecurityOfThisPageIsUnknown": {
     "message": "T̂h́ê śêćûŕît́ŷ óf̂ t́ĥíŝ ṕâǵê íŝ ún̂ḱn̂óŵń."
   },
-  "security/SecurityPanel.ts | theServerSignatureUsesShaWhichIs": {
+  "panels/security/SecurityPanel.ts | theServerSignatureUsesShaWhichIs": {
     "message": "T̂h́ê śêŕv̂ér̂ śîǵn̂át̂úr̂é ûśêś ŜH́Â-1, ẃĥíĉh́ îś ôb́ŝól̂ét̂é. Êńâb́l̂é â ŚĤÁ-2 ŝíĝńât́ûŕê ál̂ǵôŕît́ĥḿ îńŝt́êád̂. (Ńôt́ê t́ĥíŝ íŝ d́îf́f̂ér̂én̂t́ f̂ŕôḿ t̂h́ê śîǵn̂át̂úr̂é îń t̂h́ê ćêŕt̂íf̂íĉát̂é.)"
   },
-  "security/SecurityPanel.ts | thisIsAnErrorPage": {
+  "panels/security/SecurityPanel.ts | thisIsAnErrorPage": {
     "message": "T̂h́îś îś âń êŕr̂ór̂ ṕâǵê."
   },
-  "security/SecurityPanel.ts | thisOriginIsANonhttpsSecure": {
+  "panels/security/SecurityPanel.ts | thisOriginIsANonhttpsSecure": {
     "message": "T̂h́îś ôŕîǵîń îś â ńôń-ĤT́T̂ṔŜ śêćûŕê ór̂íĝín̂."
   },
-  "security/SecurityPanel.ts | thisPageHasANonhttpsSecureOrigin": {
+  "panels/security/SecurityPanel.ts | thisPageHasANonhttpsSecureOrigin": {
     "message": "T̂h́îś p̂áĝé ĥáŝ á n̂ón̂-H́T̂T́P̂Ś ŝéĉúr̂é ôŕîǵîń."
   },
-  "security/SecurityPanel.ts | thisPageIncludesAFormWithA": {
+  "panels/security/SecurityPanel.ts | thisPageIncludesAFormWithA": {
     "message": "T̂h́îś p̂áĝé îńĉĺûd́êś â f́ôŕm̂ ẃît́ĥ á n̂ón̂-śêćûŕê \"áĉt́îón̂\" át̂t́r̂íb̂út̂é."
   },
-  "security/SecurityPanel.ts | thisPageIncludesHttpResources": {
+  "panels/security/SecurityPanel.ts | thisPageIncludesHttpResources": {
     "message": "T̂h́îś p̂áĝé îńĉĺûd́êś ĤT́T̂Ṕ r̂éŝóûŕĉéŝ."
   },
-  "security/SecurityPanel.ts | thisPageIncludesResourcesThat": {
+  "panels/security/SecurityPanel.ts | thisPageIncludesResourcesThat": {
     "message": "T̂h́îś p̂áĝé îńĉĺûd́êś r̂éŝóûŕĉéŝ t́ĥát̂ ẃêŕê ĺôád̂éd̂ ẃît́ĥ ćêŕt̂íf̂íĉát̂é êŕr̂ór̂ś."
   },
-  "security/SecurityPanel.ts | thisPageIsDangerousFlaggedBy": {
+  "panels/security/SecurityPanel.ts | thisPageIsDangerousFlaggedBy": {
     "message": "T̂h́îś p̂áĝé îś d̂án̂ǵêŕôúŝ (f́l̂áĝǵêd́ b̂ý Ĝóôǵl̂é Ŝáf̂é B̂ŕôẃŝín̂ǵ)."
   },
-  "security/SecurityPanel.ts | thisPageIsInsecureUnencrypted": {
+  "panels/security/SecurityPanel.ts | thisPageIsInsecureUnencrypted": {
     "message": "T̂h́îś p̂áĝé îś îńŝéĉúr̂é (ûńêńĉŕŷṕt̂éd̂ H́T̂T́P̂)."
   },
-  "security/SecurityPanel.ts | thisPageIsNotSecure": {
+  "panels/security/SecurityPanel.ts | thisPageIsNotSecure": {
     "message": "T̂h́îś p̂áĝé îś n̂ót̂ śêćûŕê."
   },
-  "security/SecurityPanel.ts | thisPageIsNotSecureBrokenHttps": {
+  "panels/security/SecurityPanel.ts | thisPageIsNotSecureBrokenHttps": {
     "message": "T̂h́îś p̂áĝé îś n̂ót̂ śêćûŕê (b́r̂ók̂én̂ H́T̂T́P̂Ś)."
   },
-  "security/SecurityPanel.ts | thisPageIsSecureValidHttps": {
+  "panels/security/SecurityPanel.ts | thisPageIsSecureValidHttps": {
     "message": "T̂h́îś p̂áĝé îś ŝéĉúr̂é (v̂ál̂íd̂ H́T̂T́P̂Ś)."
   },
-  "security/SecurityPanel.ts | thisPageIsSuspicious": {
+  "panels/security/SecurityPanel.ts | thisPageIsSuspicious": {
     "message": "T̂h́îś p̂áĝé îś ŝúŝṕîćîóûś"
   },
-  "security/SecurityPanel.ts | thisPageIsSuspiciousFlaggedBy": {
+  "panels/security/SecurityPanel.ts | thisPageIsSuspiciousFlaggedBy": {
     "message": "T̂h́îś p̂áĝé îś ŝúŝṕîćîóûś (f̂ĺâǵĝéd̂ b́ŷ Ćĥŕôḿê)."
   },
-  "security/SecurityPanel.ts | thisRequestCompliesWithChromes": {
+  "panels/security/SecurityPanel.ts | thisRequestCompliesWithChromes": {
     "message": "T̂h́îś r̂éq̂úêśt̂ ćôḿp̂ĺîéŝ ẃît́ĥ Chrome'ś Ĉér̂t́îf́îćât́ê T́r̂án̂śp̂ár̂én̂ćŷ ṕôĺîćŷ."
   },
-  "security/SecurityPanel.ts | thisRequestDoesNotComplyWith": {
+  "panels/security/SecurityPanel.ts | thisRequestDoesNotComplyWith": {
     "message": "T̂h́îś r̂éq̂úêśt̂ d́ôéŝ ńôt́ ĉóm̂ṕl̂ý ŵít̂h́ Chrome'ŝ Ćêŕt̂íf̂íĉát̂é T̂ŕâńŝṕâŕêńĉý p̂ól̂íĉý."
   },
-  "security/SecurityPanel.ts | thisResponseWasLoadedFromCache": {
+  "panels/security/SecurityPanel.ts | thisResponseWasLoadedFromCache": {
     "message": "T̂h́îś r̂éŝṕôńŝé ŵáŝ ĺôád̂éd̂ f́r̂óm̂ ćâćĥé. Ŝóm̂é ŝéĉúr̂ít̂ý d̂ét̂áîĺŝ ḿîǵĥt́ b̂é m̂íŝśîńĝ."
   },
-  "security/SecurityPanel.ts | thisSiteIsMissingAValidTrusted": {
+  "panels/security/SecurityPanel.ts | thisSiteIsMissingAValidTrusted": {
     "message": "T̂h́îś ŝít̂é îś m̂íŝśîńĝ á v̂ál̂íd̂, t́r̂úŝt́êd́ ĉér̂t́îf́îćât́ê ({PH1})."
   },
-  "security/SecurityPanel.ts | thisSitesHostnameLooksSimilarToP": {
+  "panels/security/SecurityPanel.ts | thisSitesHostnameLooksSimilarToP": {
     "message": "T̂h́îś ŝít̂é'ŝ h́ôśt̂ńâḿê ĺôók̂ś ŝím̂íl̂ár̂ t́ô {PH1}. Át̂t́âćk̂ér̂ś ŝóm̂ét̂ím̂éŝ ḿîḿîć ŝít̂éŝ b́ŷ ḿâḱîńĝ śm̂ál̂ĺ, ĥár̂d́-t̂ó-ŝéê ćĥán̂ǵêś t̂ó t̂h́ê d́ôḿâín̂ ńâḿê."
   },
-  "security/SecurityPanel.ts | toCheckThisPagesStatusVisit": {
+  "panels/security/SecurityPanel.ts | toCheckThisPagesStatusVisit": {
     "message": "T̂ó ĉh́êćk̂ t́ĥíŝ ṕâǵê'ś ŝt́ât́ûś, v̂íŝít̂ ǵ.ĉó/ŝáf̂éb̂ŕôẃŝín̂ǵŝt́ât́ûś."
   },
-  "security/SecurityPanel.ts | unknownCanceled": {
+  "panels/security/SecurityPanel.ts | unknownCanceled": {
     "message": "Ûńk̂ńôẃn̂ / ćâńĉél̂éd̂"
   },
-  "security/SecurityPanel.ts | validAndTrusted": {
+  "panels/security/SecurityPanel.ts | validAndTrusted": {
     "message": "v̂ál̂íd̂ án̂d́ t̂ŕûśt̂éd̂"
   },
-  "security/SecurityPanel.ts | validationStatus": {
+  "panels/security/SecurityPanel.ts | validationStatus": {
     "message": "V̂ál̂íd̂át̂íôń ŝt́ât́ûś"
   },
-  "security/SecurityPanel.ts | validFrom": {
+  "panels/security/SecurityPanel.ts | validFrom": {
     "message": "V̂ál̂íd̂ f́r̂óm̂"
   },
-  "security/SecurityPanel.ts | validUntil": {
+  "panels/security/SecurityPanel.ts | validUntil": {
     "message": "V̂ál̂íd̂ ún̂t́îĺ"
   },
-  "security/SecurityPanel.ts | viewCertificate": {
+  "panels/security/SecurityPanel.ts | viewCertificate": {
     "message": "V̂íêẃ ĉér̂t́îf́îćât́ê"
   },
-  "security/SecurityPanel.ts | viewDRequestsInNetworkPanel": {
+  "panels/security/SecurityPanel.ts | viewDRequestsInNetworkPanel": {
     "message": "{n, plural, =1 {V̂íêẃ # r̂éq̂úêśt̂ ín̂ Ńêt́ŵór̂ḱ P̂án̂él̂} other {V́îéŵ # ŕêq́ûéŝt́ŝ ín̂ Ńêt́ŵór̂ḱ P̂án̂él̂}}"
   },
-  "security/SecurityPanel.ts | viewRequestsInNetworkPanel": {
+  "panels/security/SecurityPanel.ts | viewRequestsInNetworkPanel": {
     "message": "V̂íêẃ r̂éq̂úêśt̂ś îń N̂ét̂ẃôŕk̂ Ṕâńêĺ"
   },
-  "security/SecurityPanel.ts | youHaveRecentlyAllowedContent": {
+  "panels/security/SecurityPanel.ts | youHaveRecentlyAllowedContent": {
     "message": "Ŷóû h́âv́ê ŕêćêńt̂ĺŷ ál̂ĺôẃêd́ ĉón̂t́êńt̂ ĺôád̂éd̂ ẃît́ĥ ćêŕt̂íf̂íĉát̂é êŕr̂ór̂ś (ŝúĉh́ âś ŝćr̂íp̂t́ŝ ór̂ íf̂ŕâḿêś) t̂ó r̂ún̂ ón̂ t́ĥíŝ śît́ê."
   },
-  "security/SecurityPanel.ts | youHaveRecentlyAllowedNonsecure": {
+  "panels/security/SecurityPanel.ts | youHaveRecentlyAllowedNonsecure": {
     "message": "Ŷóû h́âv́ê ŕêćêńt̂ĺŷ ál̂ĺôẃêd́ n̂ón̂-śêćûŕê ćôńt̂én̂t́ (ŝúĉh́ âś ŝćr̂íp̂t́ŝ ór̂ íf̂ŕâḿêś) t̂ó r̂ún̂ ón̂ t́ĥíŝ śît́ê."
   },
-  "security/SecurityPanel.ts | yourConnectionToThisOriginIsNot": {
+  "panels/security/SecurityPanel.ts | yourConnectionToThisOriginIsNot": {
     "message": "Ŷóûŕ ĉón̂ńêćt̂íôń t̂ó t̂h́îś ôŕîǵîń îś n̂ót̂ śêćûŕê."
   },
-  "security/SecurityPanel.ts | yourPageRequestedNonsecure": {
+  "panels/security/SecurityPanel.ts | yourPageRequestedNonsecure": {
     "message": "Ŷóûŕ p̂áĝé r̂éq̂úêśt̂éd̂ ńôń-ŝéĉúr̂é r̂éŝóûŕĉéŝ t́ĥát̂ ẃêŕê b́l̂óĉḱêd́."
   },
   "settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {

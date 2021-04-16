@@ -4,8 +4,8 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as i18n from '../core/i18n/i18n.js';
-import * as SDK from '../core/sdk/sdk.js';
+import * as i18n from '../../core/i18n/i18n.js';
+import * as SDK from '../../core/sdk/sdk.js';
 
 const UIStrings = {
   /**
@@ -37,7 +37,7 @@ const UIStrings = {
   */
   keyExchangeWithGroup: '{PH1} with {PH2}',
 };
-const str_ = i18n.i18n.registerUIStrings('security/SecurityModel.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/security/SecurityModel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 

@@ -20,7 +20,7 @@
     { "name": "panels/network" },
     { "name": "panels/performance_monitor" },
     { "name": "panels/application" },
-    { "name": "security" },
+    { "name": "panels/security" },
     { "name": "timeline" },
     { "name": "web_audio" },
     { "name": "webauthn"},

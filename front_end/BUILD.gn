@@ -129,7 +129,7 @@ group("legacy_entrypoints") {
     "panels/network:legacy",
     "panels/profiler:legacy",
     "panels/search:legacy",
-    "security:legacy",
+    "panels/security:legacy",
     "settings:legacy",
     "snippets:legacy",
     "sources:legacy",

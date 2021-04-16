@@ -135,7 +135,7 @@ non_autostart_non_remote_modules = [
   "ui/legacy/components/quick_open/quick_open_module.js",
   "panels/application/application_module.js",
   "panels/search/search_module.js",
-  "security/security_module.js",
+  "panels/security/security_module.js",
   "settings/settings_module.js",
   "snippets/snippets_module.js",
   "ui/legacy/components/source_frame/source_frame_module.js",

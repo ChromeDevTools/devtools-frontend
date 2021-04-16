@@ -29,7 +29,7 @@ ts_library("missing_entrypoints") {
     "../../../../front_end/panels/profiler:bundle",
     "../../../../front_end/panels/protocol_monitor:bundle",
     "../../../../front_end/panels/screencast:bundle",
-    "../../../../front_end/security:bundle",
+    "../../../../front_end/panels/security:bundle",
     "../../../../front_end/settings:bundle",
     "../../../../front_end/wasmparser_worker:bundle",
     "../../../../front_end/web_audio:bundle",

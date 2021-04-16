@@ -4,12 +4,12 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../core/common/common.js';
-import * as Host from '../core/host/host.js';
-import * as i18n from '../core/i18n/i18n.js';
-import * as SDK from '../core/sdk/sdk.js';
-import * as Network from '../panels/network/network.js';
-import * as UI from '../ui/legacy/legacy.js';
+import * as Common from '../../core/common/common.js';
+import * as Host from '../../core/host/host.js';
+import * as i18n from '../../core/i18n/i18n.js';
+import * as SDK from '../../core/sdk/sdk.js';
+import * as UI from '../../ui/legacy/legacy.js';
+import * as Network from '../network/network.js';
 
 import type {PageSecurityState, PageVisibleSecurityState} from './SecurityModel.js';
 import {Events, SecurityModel, SecurityStyleExplanation, SummaryMessages} from './SecurityModel.js';
@@ -460,7 +460,7 @@ const UIStrings = {
   */
   showMoreSTotal: 'Show more ({PH1} total)',
 };
-const str_ = i18n.i18n.registerUIStrings('security/SecurityPanel.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/security/SecurityPanel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 let securityPanelInstance: SecurityPanel;
@@ -800,8 +800,8 @@ export class SecurityPanelSidebarTree extends UI.TreeOutline.TreeOutlineInShadow
   _elementsByOrigin: Map<string, SecurityPanelSidebarTreeElement>;
   constructor(mainViewElement: SecurityPanelSidebarTreeElement, showOriginInPanel: (arg0: Origin) => void) {
     super();
-    this.registerRequiredCSS('security/sidebar.css', {enableLegacyPatching: true});
-    this.registerRequiredCSS('security/lockIcon.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('panels/security/sidebar.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('panels/security/lockIcon.css', {enableLegacyPatching: false});
     this.appendChild(mainViewElement);
 
     this._showOriginInPanel = showOriginInPanel;
@@ -983,8 +983,8 @@ export class SecurityMainView extends UI.Widget.VBox {
   _securityState: Protocol.Security.SecurityState|null;
   constructor(panel: SecurityPanel) {
     super(true);
-    this.registerRequiredCSS('security/mainView.css', {enableLegacyPatching: false});
-    this.registerRequiredCSS('security/lockIcon.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('panels/security/mainView.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('panels/security/lockIcon.css', {enableLegacyPatching: false});
     this.setMinimumSize(200, 100);
 
     this.contentElement.classList.add('security-main-view');
@@ -1478,8 +1478,8 @@ export class SecurityOriginView extends UI.Widget.VBox {
     this.setMinimumSize(200, 100);
 
     this.element.classList.add('security-origin-view');
-    this.registerRequiredCSS('security/originView.css', {enableLegacyPatching: true});
-    this.registerRequiredCSS('security/lockIcon.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('panels/security/originView.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('panels/security/lockIcon.css', {enableLegacyPatching: false});
 
     const titleSection = this.element.createChild('div', 'title-section');
     const titleDiv = titleSection.createChild('div', 'title-section-header');

@@ -1709,6 +1709,12 @@
   "models/persistence/WorkspaceSettingsTab.ts | workspace": {
     "message": "Workspace"
   },
+  "models/recorder/RecordingFileSystem.ts | defaultRecordingName": {
+    "message": "Recording #{nextId}"
+  },
+  "models/recorder/RecordingFileSystem.ts | linkedToS": {
+    "message": "Linked to {PH1}"
+  },
   "models/timeline_model/TimelineIRModel.ts | twoFlingsAtTheSameTimeSVsS": {
     "message": "Two flings at the same time? {PH1} vs {PH2}"
   },
@@ -7810,12 +7816,6 @@
   },
   "panels/search/SearchView.ts | useRegularExpression": {
     "message": "Use Regular Expression"
-  },
-  "recorder/RecordingFileSystem.ts | defaultRecordingName": {
-    "message": "Recording #{nextId}"
-  },
-  "recorder/RecordingFileSystem.ts | linkedToS": {
-    "message": "Linked to {PH1}"
   },
   "security/security-meta.ts | security": {
     "message": "Security"

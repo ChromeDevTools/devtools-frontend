@@ -4,9 +4,9 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../core/common/common.js';
-import * as SDK from '../core/sdk/sdk.js';
-import type * as Workspace from '../models/workspace/workspace.js';
+import * as Common from '../../core/common/common.js';
+import * as SDK from '../../core/sdk/sdk.js';
+import type * as Workspace from '../workspace/workspace.js';
 import {RecordingEventHandler} from './RecordingEventHandler.js';
 import {RecordingScriptWriter} from './RecordingScriptWriter.js';
 import {EmulateNetworkConditions, NavigationStep, Step} from './Steps.js';

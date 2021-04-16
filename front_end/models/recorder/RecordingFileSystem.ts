@@ -4,13 +4,13 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../core/common/common.js';
-import * as i18n from '../core/i18n/i18n.js';
-import * as Platform from '../core/platform/platform.js';
-import * as Persistence from '../models/persistence/persistence.js';
+import * as Common from '../../core/common/common.js';
+import * as i18n from '../../core/i18n/i18n.js';
+import * as Platform from '../../core/platform/platform.js';
+import * as Persistence from '../persistence/persistence.js';
 
-import type * as TextUtils from '../models/text_utils/text_utils.js';
-import * as Workspace from '../models/workspace/workspace.js';
+import type * as TextUtils from '../text_utils/text_utils.js';
+import * as Workspace from '../workspace/workspace.js';
 
 const UIStrings = {
   /**
@@ -24,7 +24,7 @@ const UIStrings = {
   */
   linkedToS: 'Linked to {PH1}',
 };
-const str_ = i18n.i18n.registerUIStrings('recorder/RecordingFileSystem.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('models/recorder/RecordingFileSystem.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 function escapeRecordingName(name: string): string {

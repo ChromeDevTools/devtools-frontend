@@ -4,7 +4,7 @@
 
 const {assert} = chai;
 
-import * as Recorder from '../../../../front_end/recorder/recorder.js';
+import * as Recorder from '../../../../front_end/models/recorder/recorder.js';
 
 class TestStep extends Recorder.Steps.Step {
   constructor() {

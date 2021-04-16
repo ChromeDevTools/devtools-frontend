@@ -4,5 +4,5 @@ ts_library("recorder") {
   testonly = true
   sources = [ "recording_script_writer_test.ts" ]
 
-  deps = [ "../../../../front_end/recorder:bundle" ]
+  deps = [ "../../../../front_end/models/recorder:bundle" ]
 }

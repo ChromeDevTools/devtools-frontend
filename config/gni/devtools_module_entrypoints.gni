@@ -6,8 +6,6 @@ import("../../scripts/build/ninja/vars.gni")
 
 devtools_module_entrypoint_sources = [
   "Images/Images.js",
-  "browser_sdk/browser_sdk-meta.js",
-  "browser_sdk/browser_sdk.js",
   "cm/cm.js",
   "components/components-legacy.js",
   "components/components.js",
@@ -62,6 +60,8 @@ devtools_module_entrypoint_sources = [
   "models/issues_manager/issues_manager.js",
   "models/javascript_metadata/javascript_metadata-legacy.js",
   "models/javascript_metadata/javascript_metadata.js",
+  "models/logs/logs-meta.js",
+  "models/logs/logs.js",
   "models/persistence/persistence-legacy.js",
   "models/persistence/persistence-meta.js",
   "models/persistence/persistence.js",

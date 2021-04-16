@@ -2,8 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../core/common/common.js';
-import * as i18n from '../core/i18n/i18n.js';
+import * as Common from '../../core/common/common.js';
+import * as i18n from '../../core/i18n/i18n.js';
 
 
 const UIStrings = {
@@ -42,7 +42,7 @@ const UIStrings = {
  */
   recordNetworkLog: 'Record network log',
 };
-const str_ = i18n.i18n.registerUIStrings('browser_sdk/browser_sdk-meta.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('models/logs/logs-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 Common.Settings.registerSettingExtension({

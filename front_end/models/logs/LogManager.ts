@@ -2,10 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
-import * as Common from '../core/common/common.js';
-import * as SDK from '../core/sdk/sdk.js';
+import * as Common from '../../core/common/common.js';
+import * as SDK from '../../core/sdk/sdk.js';
 
 const modelToEventListeners = new WeakMap<SDK.LogModel.LogModel, Common.EventTarget.EventDescriptor[]>();
 
@@ -26,7 +24,7 @@ export class LogManager implements SDK.SDKModel.SDKModelObserver<SDK.LogModel.Lo
 
   modelAdded(logModel: SDK.LogModel.LogModel): void {
     const eventListeners = [];
-    eventListeners.push(logModel.addEventListener(SDK.LogModel.Events.EntryAdded, this._logEntryAdded, this));
+    eventListeners.push(logModel.addEventListener(SDK.LogModel.Events.EntryAdded, this.logEntryAdded, this));
     modelToEventListeners.set(logModel, eventListeners);
   }
 
@@ -37,7 +35,7 @@ export class LogManager implements SDK.SDKModel.SDKModelObserver<SDK.LogModel.Lo
     }
   }
 
-  _logEntryAdded(event: Common.EventTarget.EventTargetEvent): void {
+  private logEntryAdded(event: Common.EventTarget.EventTargetEvent): void {
     const data = event.data as {
       logModel: SDK.LogModel.LogModel,
       entry: Protocol.Log.LogEntry,

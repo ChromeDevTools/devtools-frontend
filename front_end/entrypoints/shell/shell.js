@@ -13,7 +13,7 @@ import '../../models/workspace/workspace-legacy.js';
 import '../../models/bindings/bindings-legacy.js';
 import '../../components/components-legacy.js';
 import '../../models/persistence/persistence-legacy.js';
-import '../../browser_sdk/browser_sdk.js';
+import '../../models/logs/logs.js';
 import '../../models/extensions/extensions-legacy.js';
 import '../../panels/console_counters/console_counters-legacy.js';
 

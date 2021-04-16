@@ -1,0 +1,28 @@
+# Copyright 2020 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("../../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../../../scripts/build/ninja/devtools_module.gni")
+
+devtools_module("logs") {
+  sources = [ "LogManager.ts" ]
+
+  deps = [
+    "../../core/common:bundle",
+    "../../core/i18n:bundle",
+    "../../core/sdk:bundle",
+  ]
+}
+
+devtools_entrypoint("bundle") {
+  entrypoint = "logs.ts"
+
+  deps = [ ":logs" ]
+}
+
+devtools_entrypoint("meta") {
+  entrypoint = "logs-meta.ts"
+
+  deps = [ ":bundle" ]
+}

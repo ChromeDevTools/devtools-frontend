@@ -12,7 +12,7 @@ import '../../ui/components/linear_memory_inspector/linear_memory_inspector-meta
 import '../../settings/settings-meta.js';
 import '../../panels/protocol_monitor/protocol_monitor-meta.js';
 import '../../models/persistence/persistence-meta.js';
-import '../../browser_sdk/browser_sdk-meta.js';
+import '../../models/logs/logs-meta.js';
 import '../../main/main-meta.js';
 import '../../ui/legacy/components/perf_ui/perf_ui-meta.js';
 import '../../ui/legacy/components/quick_open/quick_open-meta.js';

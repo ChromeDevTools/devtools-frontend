@@ -1,25 +1,4 @@
 {
-  "browser_sdk/browser_sdk-meta.ts | clear": {
-    "message": "ĉĺêár̂"
-  },
-  "browser_sdk/browser_sdk-meta.ts | doNotPreserveLogOnPageReload": {
-    "message": "D̂ó n̂ót̂ ṕr̂éŝér̂v́ê ĺôǵ ôń p̂áĝé r̂él̂óâd́ / n̂áv̂íĝát̂íôń"
-  },
-  "browser_sdk/browser_sdk-meta.ts | preserve": {
-    "message": "p̂ŕêśêŕv̂é"
-  },
-  "browser_sdk/browser_sdk-meta.ts | preserveLog": {
-    "message": "P̂ŕêśêŕv̂é l̂óĝ"
-  },
-  "browser_sdk/browser_sdk-meta.ts | preserveLogOnPageReload": {
-    "message": "P̂ŕêśêŕv̂é l̂óĝ ón̂ ṕâǵê ŕêĺôád̂ / ńâv́îǵât́îón̂"
-  },
-  "browser_sdk/browser_sdk-meta.ts | recordNetworkLog": {
-    "message": "R̂éĉór̂d́ n̂ét̂ẃôŕk̂ ĺôǵ"
-  },
-  "browser_sdk/browser_sdk-meta.ts | reset": {
-    "message": "r̂éŝét̂"
-  },
   "components/ImagePreview.ts | currentSource": {
     "message": "Ĉúr̂ŕêńt̂ śôúr̂ćê:"
   },
@@ -1600,6 +1579,27 @@
   },
   "models/issues_manager/TrustedWebActivityIssue.ts | changesToQualityCriteriaForPwas": {
     "message": "Ĉh́âńĝéŝ t́ô q́ûál̂ít̂ý ĉŕît́êŕîá f̂ór̂ ṔŴÁŝ úŝín̂ǵ T̂ŕûśt̂éd̂ Ẃêb́ Âćt̂ív̂ít̂ý"
+  },
+  "models/logs/logs-meta.ts | clear": {
+    "message": "ĉĺêár̂"
+  },
+  "models/logs/logs-meta.ts | doNotPreserveLogOnPageReload": {
+    "message": "D̂ó n̂ót̂ ṕr̂éŝér̂v́ê ĺôǵ ôń p̂áĝé r̂él̂óâd́ / n̂áv̂íĝát̂íôń"
+  },
+  "models/logs/logs-meta.ts | preserve": {
+    "message": "p̂ŕêśêŕv̂é"
+  },
+  "models/logs/logs-meta.ts | preserveLog": {
+    "message": "P̂ŕêśêŕv̂é l̂óĝ"
+  },
+  "models/logs/logs-meta.ts | preserveLogOnPageReload": {
+    "message": "P̂ŕêśêŕv̂é l̂óĝ ón̂ ṕâǵê ŕêĺôád̂ / ńâv́îǵât́îón̂"
+  },
+  "models/logs/logs-meta.ts | recordNetworkLog": {
+    "message": "R̂éĉór̂d́ n̂ét̂ẃôŕk̂ ĺôǵ"
+  },
+  "models/logs/logs-meta.ts | reset": {
+    "message": "r̂éŝét̂"
   },
   "models/persistence/Automapping.ts | theAttemptToBindSInTheWorkspace": {
     "message": "T̂h́ê át̂t́êḿp̂t́ t̂ó b̂ín̂d́ \"{PH1}\" îń t̂h́ê ẃôŕk̂śp̂áĉé f̂áîĺêd́ âś t̂h́îś ÛŔÎ íŝ ḿâĺf̂ór̂ḿêd́."

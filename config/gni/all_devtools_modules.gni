@@ -7,7 +7,6 @@ import("../../scripts/build/ninja/vars.gni")
 generated_typescript_modules = []
 
 all_typescript_module_sources = [
-  "browser_sdk/LogManager.js",
   "components/ImagePreview.js",
   "components/JSPresentationUtils.js",
   "components/Linkifier.js",
@@ -212,6 +211,7 @@ all_typescript_module_sources = [
   "models/issues_manager/TrustedWebActivityIssue.js",
   "models/javascript_metadata/JavaScriptMetadata.js",
   "models/javascript_metadata/NativeFunctions.js",
+  "models/logs/LogManager.js",
   "models/persistence/Automapping.js",
   "models/persistence/EditFileSystemView.js",
   "models/persistence/FileSystemWorkspaceBinding.js",

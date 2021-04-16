@@ -13,7 +13,6 @@ devtools_module("main") {
   ]
 
   deps = [
-    "../browser_sdk:bundle",
     "../components:bundle",
     "../core/common:bundle",
     "../core/host:bundle",
@@ -24,6 +23,7 @@ devtools_module("main") {
     "../models/bindings:bundle",
     "../models/extensions:bundle",
     "../models/issues_manager:bundle",
+    "../models/logs:bundle",
     "../models/persistence:bundle",
     "../models/recorder:bundle",
     "../models/workspace:bundle",

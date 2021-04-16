@@ -206,7 +206,6 @@ ts_library("ts_library-verification") {
   sources = [ "verification.ts" ]
 
   deps = [
-    "browser_sdk:bundle",
     "core/common:bundle",
     "core/dom_extension:bundle",
     "core/host:bundle",
@@ -214,6 +213,7 @@ ts_library("ts_library-verification") {
     "core/root:bundle",
     "core/sdk:bundle",
     "models/bindings:bundle",
+    "models/logs:bundle",
     "models/workspace:bundle",
     "ui/legacy/components/color_picker:bundle",
   ]

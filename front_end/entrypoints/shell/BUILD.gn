@@ -8,10 +8,10 @@ devtools_entrypoint("shell-meta-files") {
   entrypoint = "shell-meta-files.ts"
 
   deps = [
-    "../../browser_sdk:meta",
     "../../core/sdk:meta",
     "../../core/sdk:meta",
     "../../main:meta",
+    "../../models/logs:meta",
     "../../models/persistence:meta",
     "../../models/workspace:legacy",
     "../../panels/application:meta",

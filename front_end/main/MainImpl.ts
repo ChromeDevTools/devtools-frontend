@@ -34,7 +34,6 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as BrowserSDK from '../browser_sdk/browser_sdk.js';
 import * as Components from '../components/components.js';
 import * as Common from '../core/common/common.js';
 import * as Host from '../core/host/host.js';
@@ -46,6 +45,7 @@ import * as SDK from '../core/sdk/sdk.js';
 import * as Bindings from '../models/bindings/bindings.js';
 import * as Extensions from '../models/extensions/extensions.js';
 import * as IssuesManager from '../models/issues_manager/issues_manager.js';
+import * as Logs from '../models/logs/logs.js';
 import * as Persistence from '../models/persistence/persistence.js';
 import * as Recorder from '../models/recorder/recorder.js';
 import * as Workspace from '../models/workspace/workspace.js';
@@ -342,7 +342,7 @@ export class MainImpl {
     // These instances need to be created early so they don't miss any events about requests/issues/etc.
     SDK.NetworkLog.NetworkLog.instance();
     SDK.FrameManager.FrameManager.instance();
-    BrowserSDK.LogManager.LogManager.instance();
+    Logs.LogManager.LogManager.instance();
     IssuesManager.IssuesManager.IssuesManager.instance();
     IssuesManager.ContrastCheckTrigger.ContrastCheckTrigger.instance();
 

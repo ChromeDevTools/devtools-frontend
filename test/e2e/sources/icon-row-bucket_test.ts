@@ -115,7 +115,7 @@ describe('The row\'s icon bucket', async function() {
       const rowMessages = await getRowsText(vbox);
       issueMessages.push(...rowMessages);
     }
-    assert.deepEqual(issueMessages, expectedIssueMessages);
+    assert.deepEqual(issueMessages.sort(), expectedIssueMessages.sort());
   });
 
   it('should also mark issues in inline event handlers in HTML documents', async () => {

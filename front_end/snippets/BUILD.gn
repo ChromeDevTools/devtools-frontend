@@ -19,7 +19,7 @@ devtools_module("snippets") {
     "../models/persistence:bundle",
     "../models/text_utils:bundle",
     "../models/workspace:bundle",
-    "../quick_open:bundle",
+    "../ui/legacy/components/quick_open:bundle",
   ]
 }
 

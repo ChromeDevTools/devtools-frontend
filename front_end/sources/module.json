@@ -6,7 +6,7 @@
     "snippets",
     "models/extensions",
     "models/persistence",
-    "quick_open",
+    "ui/legacy/components/quick_open",
     "ui/legacy/components/inline_editor",
     "ui/legacy/components/color_picker",
     "panels/event_listeners",

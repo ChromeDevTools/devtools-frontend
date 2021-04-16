@@ -20,7 +20,7 @@
     { "name": "ui/legacy/components/perf_ui" },
     { "name": "panels/profiler" },
     { "name": "panels/protocol_monitor"},
-    { "name": "quick_open" },
+    { "name": "ui/legacy/components/quick_open" },
     { "name": "panels/search" },
     { "name": "settings" },
     { "name": "snippets" },

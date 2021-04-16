@@ -1,6 +1,6 @@
 {
   "dependencies": [
-    "quick_open",
+    "ui/legacy/components/quick_open",
     "models/persistence"
   ]
 }

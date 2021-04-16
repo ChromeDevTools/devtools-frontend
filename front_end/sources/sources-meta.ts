@@ -6,8 +6,8 @@ import * as Common from '../core/common/common.js';
 import * as Root from '../core/root/root.js';
 import * as SDK from '../core/sdk/sdk.js';
 import * as Workspace from '../models/workspace/workspace.js';
-import * as QuickOpen from '../quick_open/quick_open.js';
 import * as ObjectUI from '../ui/legacy/components/object_ui/object_ui.js';
+import * as QuickOpen from '../ui/legacy/components/quick_open/quick_open.js';
 import * as TextEditor from '../ui/legacy/components/text_editor/text_editor.js';
 import * as UI from '../ui/legacy/legacy.js';
 

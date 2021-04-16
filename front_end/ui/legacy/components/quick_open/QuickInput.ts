@@ -4,7 +4,7 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as i18n from '../core/i18n/i18n.js';
+import * as i18n from '../../../../core/i18n/i18n.js';
 
 import {FilteredListWidget, Provider} from './FilteredListWidget.js';
 
@@ -15,7 +15,7 @@ const UIStrings = {
   */
   pressEnterToConfirmOrEscapeTo: '{PH1} (Press \'Enter\' to confirm or \'Escape\' to cancel.)',
 };
-const str_ = i18n.i18n.registerUIStrings('quick_open/QuickInput.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/quick_open/QuickInput.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export interface QuickInputOptions {
   prompt: string;

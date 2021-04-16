@@ -5,7 +5,7 @@
 /* eslint-disable rulesdir/no_underscored_properties */
 
 import * as i18n from '../core/i18n/i18n.js';
-import * as QuickOpen from '../quick_open/quick_open.js';
+import * as QuickOpen from '../ui/legacy/components/quick_open/quick_open.js';
 import type * as Workspace from '../models/workspace/workspace.js';
 
 import {evaluateScriptSnippet, findSnippetsProject} from './ScriptSnippetFileSystem.js';

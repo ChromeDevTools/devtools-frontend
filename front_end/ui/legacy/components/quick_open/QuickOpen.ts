@@ -4,8 +4,8 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as i18n from '../core/i18n/i18n.js';
-import * as UI from '../ui/legacy/legacy.js';  // eslint-disable-line no-unused-vars
+import * as i18n from '../../../../core/i18n/i18n.js';
+import * as UI from '../../legacy.js';  // eslint-disable-line no-unused-vars
 
 import {FilteredListWidget, getRegisteredProviders, Provider} from './FilteredListWidget.js';  // eslint-disable-line no-unused-vars
 
@@ -19,7 +19,7 @@ const UIStrings = {
   */
   typeQuestionMarkToSeeAvailable: 'Type question mark to see available commands',
 };
-const str_ = i18n.i18n.registerUIStrings('quick_open/QuickOpen.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/quick_open/QuickOpen.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export const history: string[] = [];

@@ -7,7 +7,7 @@
 import * as Common from '../core/common/common.js';
 import * as i18n from '../core/i18n/i18n.js';
 import * as Workspace from '../models/workspace/workspace.js';  // eslint-disable-line no-unused-vars
-import * as QuickOpen from '../quick_open/quick_open.js';
+import * as QuickOpen from '../ui/legacy/components/quick_open/quick_open.js';
 import * as UI from '../ui/legacy/legacy.js';
 
 import {SourcesView} from './SourcesView.js';

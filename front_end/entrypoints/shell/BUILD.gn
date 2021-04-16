@@ -22,12 +22,12 @@ devtools_entrypoint("shell-meta-files") {
     "../../panels/input:meta",
     "../../panels/profiler:meta",
     "../../panels/protocol_monitor:meta",
-    "../../quick_open:meta",
     "../../settings:meta",
     "../../sources:meta",
     "../../ui/components/linear_memory_inspector:meta",
     "../../ui/legacy/components/object_ui:meta",
     "../../ui/legacy/components/perf_ui:meta",
+    "../../ui/legacy/components/quick_open:meta",
     "../../ui/legacy/components/source_frame:meta",
   ]
 }

@@ -55,6 +55,7 @@ export const mappingForLayoutTests = new Map<string, string>([
   ['ui/legacy/components/color_picker', 'color_picker'],
   ['ui/legacy/components/cookie_table', 'cookie_table'],
   ['ui/legacy/components/text_editor', 'text_editor'],
+  ['ui/legacy/components/quick_open', 'quick_open'],
 ]);
 
 export class Runtime {

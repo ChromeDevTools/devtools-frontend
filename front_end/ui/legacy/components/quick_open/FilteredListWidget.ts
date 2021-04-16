@@ -6,11 +6,11 @@
 /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as i18n from '../core/i18n/i18n.js';
-import * as Platform from '../core/platform/platform.js';
-import * as TextUtils from '../models/text_utils/text_utils.js';
-import * as Diff from '../third_party/diff/diff.js';
-import * as UI from '../ui/legacy/legacy.js';
+import * as i18n from '../../../../core/i18n/i18n.js';
+import * as Platform from '../../../../core/platform/platform.js';
+import * as TextUtils from '../../../../models/text_utils/text_utils.js';
+import * as Diff from '../../../../third_party/diff/diff.js';
+import * as UI from '../../legacy.js';
 
 const UIStrings = {
   /**
@@ -26,7 +26,7 @@ const UIStrings = {
   */
   noResultsFound: 'No results found',
 };
-const str_ = i18n.i18n.registerUIStrings('quick_open/FilteredListWidget.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/quick_open/FilteredListWidget.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class FilteredListWidget extends UI.Widget.VBox implements UI.ListControl.ListDelegate<number> {
@@ -62,7 +62,7 @@ export class FilteredListWidget extends UI.Widget.VBox implements UI.ListControl
     const listener = (this._onKeyDown.bind(this) as (arg0: Event) => void);
     this.contentElement.addEventListener('keydown', listener, true);
     UI.ARIAUtils.markAsCombobox(this.contentElement);
-    this.registerRequiredCSS('quick_open/filteredListWidget.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('ui/legacy/components/quick_open/filteredListWidget.css', {enableLegacyPatching: false});
 
     this._promptElement = this.contentElement.createChild('div', 'filtered-list-widget-input');
     UI.ARIAUtils.setAccessibleName(this._promptElement, i18nString(UIStrings.quickOpenPrompt));

@@ -1645,9 +1645,6 @@ export class NetworkLogView extends UI.Widget.VBox implements
     if (this._onlyBlockedRequestsUI.checked() && !request.wasBlocked() && !request.corsErrorStatus()) {
       return false;
     }
-    if (request.statusText === 'Service Worker Fallback Required') {
-      return false;
-    }
     for (let i = 0; i < this._filters.length; ++i) {
       if (!this._filters[i](request)) {
         return false;

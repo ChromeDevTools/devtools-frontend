@@ -7,5 +7,5 @@ import("../../../../third_party/typescript/typescript.gni")
 ts_library("har_importer") {
   testonly = true
   sources = [ "HARImporter_test.ts" ]
-  deps = [ "../../../../front_end/har_importer:bundle" ]
+  deps = [ "../../../../front_end/models/har_importer:bundle" ]
 }

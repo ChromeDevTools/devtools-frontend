@@ -4,7 +4,7 @@
 
 const {assert} = chai;
 
-import * as HARImporter from '../../../../front_end/har_importer/har_importer.js';
+import * as HARImporter from '../../../../front_end/models/har_importer/har_importer.js';
 import * as SDK from '../../../../front_end/core/sdk/sdk.js';
 
 const exampleLog = new HARImporter.HARFormat.HARLog({

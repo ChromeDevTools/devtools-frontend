@@ -14,7 +14,7 @@ import '../third_party/diff/diff-legacy.js';
 import '../panels/event_listeners/event_listeners-legacy.js';
 import '../models/extensions/extensions-legacy.js';
 import '../formatter/formatter-legacy.js';
-import '../har_importer/har_importer-legacy.js';
+import '../models/har_importer/har_importer-legacy.js';
 import '../core/host/host-legacy.js';
 import '../ui/legacy/components/inline_editor/inline_editor-legacy.js';
 import '../core/root/root-legacy.js';

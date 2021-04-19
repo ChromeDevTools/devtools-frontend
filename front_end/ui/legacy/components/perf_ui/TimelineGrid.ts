@@ -35,8 +35,8 @@
 /* eslint-disable rulesdir/no_underscored_properties */
 
 import * as Host from '../../../../core/host/host.js';
-import * as ThemeSupport from '../../../../theme_support/theme_support.js';
 import * as UI from '../../legacy.js';
+import * as ThemeSupport from '../../theme_support/theme_support.js';
 
 const labelMap = new Map<HTMLDivElement|HTMLElement, HTMLDivElement>();
 

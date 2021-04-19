@@ -24,10 +24,10 @@ devtools_module("media") {
     "../../core/host:bundle",
     "../../core/i18n:bundle",
     "../../core/sdk:bundle",
-    "../../theme_support:bundle",
     "../../ui/legacy:bundle",
     "../../ui/legacy/components/data_grid:bundle",
     "../../ui/legacy/components/perf_ui:bundle",
+    "../../ui/legacy/theme_support:bundle",
   ]
 }
 

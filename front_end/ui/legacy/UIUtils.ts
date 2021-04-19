@@ -41,7 +41,6 @@ import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
-import * as ThemeSupport from '../../theme_support/theme_support.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
 import {Dialog} from './Dialog.js';
@@ -49,6 +48,7 @@ import {Size} from './Geometry.js';
 import {GlassPane, PointerEventsBehavior, SizeBehavior} from './GlassPane.js';
 import {Icon} from './Icon.js';
 import {KeyboardShortcut} from './KeyboardShortcut.js';
+import * as ThemeSupport from './theme_support/theme_support.js';  // eslint-disable-line rulesdir/es_modules_import
 import {Toolbar, ToolbarButton} from './Toolbar.js';  // eslint-disable-line no-unused-vars
 import {Tooltip} from './Tooltip.js';
 import {TreeOutline} from './Treeoutline.js';  // eslint-disable-line no-unused-vars

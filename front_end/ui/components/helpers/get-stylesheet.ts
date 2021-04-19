@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as Root from '../../../core/root/root.js';
-import * as ThemeSupport from '../../../theme_support/theme_support.js';
+import * as ThemeSupport from '../../legacy/theme_support/theme_support.js';
 
 const sheetsCache = new Map<string, {sheets: CSSStyleSheet[], enableLegacyPatching: boolean}>();
 

@@ -37,8 +37,8 @@ import * as Platform from '../../../../core/platform/platform.js';
 import * as Root from '../../../../core/root/root.js';
 import * as SDK from '../../../../core/sdk/sdk.js';  // eslint-disable-line no-unused-vars
 import * as TimelineModel from '../../../../models/timeline_model/timeline_model.js';  // eslint-disable-line no-unused-vars
-import * as ThemeSupport from '../../../../theme_support/theme_support.js';
 import * as UI from '../../legacy.js';
+import * as ThemeSupport from '../../theme_support/theme_support.js';
 
 import {ChartViewport, ChartViewportDelegate} from './ChartViewport.js';  // eslint-disable-line no-unused-vars
 import {Calculator, TimelineGrid} from './TimelineGrid.js';               // eslint-disable-line no-unused-vars

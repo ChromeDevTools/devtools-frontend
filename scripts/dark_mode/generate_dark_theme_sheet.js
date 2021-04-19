@@ -156,7 +156,7 @@ async function generateDarkModeStyleSheet(chromeBinary, sheetFilePath) {
   }
 
   const darkModeStyles = await page.evaluate(async contents => {
-    const ThemeSupport = await import('./front_end/theme_support/theme_support.js');
+    const ThemeSupport = await import('./front_end/ui/legacy/theme_support/theme_support.js');
     const setting = {
       get() {
         return 'dark';

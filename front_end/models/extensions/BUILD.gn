@@ -27,8 +27,8 @@ devtools_module("extensions") {
     "../../models/issues_manager:bundle",
     "../../models/text_utils:bundle",
     "../../models/workspace:bundle",
-    "../../theme_support:bundle",
     "../../ui/legacy:bundle",
+    "../../ui/legacy/theme_support:bundle",
   ]
 }
 

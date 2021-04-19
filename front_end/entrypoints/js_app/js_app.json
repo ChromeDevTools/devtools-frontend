@@ -1,6 +1,6 @@
 {
   "modules" : [
-    { "name": "js_profiler" }
+    { "name": "panels/js_profiler" }
   ],
   "extends": "shell"
 }

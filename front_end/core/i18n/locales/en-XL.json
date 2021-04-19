@@ -1043,15 +1043,6 @@
   "inspector_main/RenderingOptions.ts | showsLayerBordersOrangeoliveAnd": {
     "message": "Ŝh́ôẃŝ ĺâýêŕ b̂ór̂d́êŕŝ (ór̂án̂ǵê/ól̂ív̂é) âńd̂ t́îĺêś (ĉýâń)."
   },
-  "js_profiler/js_profiler-meta.ts | profiler": {
-    "message": "P̂ŕôf́îĺêŕ"
-  },
-  "js_profiler/js_profiler-meta.ts | showProfiler": {
-    "message": "Ŝh́ôẃ P̂ŕôf́îĺêŕ"
-  },
-  "js_profiler/js_profiler-meta.ts | startStopRecording": {
-    "message": "Ŝt́âŕt̂/śt̂óp̂ ŕêćôŕd̂ín̂ǵ"
-  },
   "main/main-meta.ts | asAuthored": {
     "message": "Âś âút̂h́ôŕêd́"
   },
@@ -5149,6 +5140,15 @@
   },
   "panels/issues/IssueView.ts | warned": {
     "message": "Ŵár̂ńêd́"
+  },
+  "panels/js_profiler/js_profiler-meta.ts | profiler": {
+    "message": "P̂ŕôf́îĺêŕ"
+  },
+  "panels/js_profiler/js_profiler-meta.ts | showProfiler": {
+    "message": "Ŝh́ôẃ P̂ŕôf́îĺêŕ"
+  },
+  "panels/js_profiler/js_profiler-meta.ts | startStopRecording": {
+    "message": "Ŝt́âŕt̂/śt̂óp̂ ŕêćôŕd̂ín̂ǵ"
   },
   "panels/layer_viewer/layer_viewer-meta.ts | panOrRotateDown": {
     "message": "P̂án̂ ór̂ ŕôt́ât́ê d́ôẃn̂"

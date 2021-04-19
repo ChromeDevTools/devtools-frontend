@@ -9,9 +9,9 @@ ts_library("node_app") {
 
   deps = [
     "../../entrypoints/startup:bundle",
-    "../../js_profiler:meta",
     "../../node_debugger:meta",
     "../../node_main:meta",
+    "../../panels/js_profiler:meta",
     "../shell",
   ]
 }

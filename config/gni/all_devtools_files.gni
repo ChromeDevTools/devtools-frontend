@@ -135,7 +135,7 @@ all_devtools_files = [
   "front_end/inspector_main/renderingOptions.css",
   "front_end/entrypoints/inspector/inspector.js",
   "front_end/entrypoints/inspector/inspector.json",
-  "front_end/js_profiler/module.json",
+  "front_end/panels/js_profiler/module.json",
   "front_end/panels/layer_viewer/layerDetailsView.css",
   "front_end/panels/layer_viewer/layers3DView.css",
   "front_end/panels/layer_viewer/module.json",

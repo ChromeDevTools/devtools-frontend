@@ -2,7 +2,7 @@
   "modules" : [
     { "name": "node_main", "type": "autostart" },
     { "name": "node_debugger" },
-    { "name": "js_profiler" }
+    { "name": "panels/js_profiler" }
   ],
   "extends": "shell"
 }

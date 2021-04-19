@@ -1043,15 +1043,6 @@
   "inspector_main/RenderingOptions.ts | showsLayerBordersOrangeoliveAnd": {
     "message": "Shows layer borders (orange/olive) and tiles (cyan)."
   },
-  "js_profiler/js_profiler-meta.ts | profiler": {
-    "message": "Profiler"
-  },
-  "js_profiler/js_profiler-meta.ts | showProfiler": {
-    "message": "Show Profiler"
-  },
-  "js_profiler/js_profiler-meta.ts | startStopRecording": {
-    "message": "Start/stop recording"
-  },
   "main/main-meta.ts | asAuthored": {
     "message": "As authored"
   },
@@ -5149,6 +5140,15 @@
   },
   "panels/issues/IssueView.ts | warned": {
     "message": "Warned"
+  },
+  "panels/js_profiler/js_profiler-meta.ts | profiler": {
+    "message": "Profiler"
+  },
+  "panels/js_profiler/js_profiler-meta.ts | showProfiler": {
+    "message": "Show Profiler"
+  },
+  "panels/js_profiler/js_profiler-meta.ts | startStopRecording": {
+    "message": "Start/stop recording"
   },
   "panels/layer_viewer/layer_viewer-meta.ts | panOrRotateDown": {
     "message": "Pan or rotate down"

@@ -118,7 +118,7 @@ non_autostart_non_remote_modules = [
   "panels/help/help_module.js",
   "ui/legacy/components/inline_editor/inline_editor_module.js",
   "panels/input/input_module.js",
-  "js_profiler/js_profiler_module.js",
+  "panels/js_profiler/js_profiler_module.js",
   "panels/layer_viewer/layer_viewer_module.js",
   "panels/layers/layers_module.js",
   "panels/lighthouse/lighthouse_module.js",

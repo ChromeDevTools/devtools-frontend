@@ -30,12 +30,12 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Components from '../components/components.js';
-import * as Common from '../core/common/common.js';
-import * as Host from '../core/host/host.js';
-import * as i18n from '../core/i18n/i18n.js';
-import * as Root from '../core/root/root.js';
-import * as UI from '../ui/legacy/legacy.js';
+import * as Components from '../../components/components.js';
+import * as Common from '../../core/common/common.js';
+import * as Host from '../../core/host/host.js';
+import * as i18n from '../../core/i18n/i18n.js';
+import * as Root from '../../core/root/root.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
 import type {KeybindsSettingsTab} from './KeybindsSettingsTab.js';
 
@@ -87,7 +87,7 @@ const UIStrings = {
   */
   noResults: 'No experiments match the filter',
 };
-const str_ = i18n.i18n.registerUIStrings('settings/SettingsScreen.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/settings/SettingsScreen.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 let settingsScreenInstance: SettingsScreen;
@@ -99,7 +99,7 @@ export class SettingsScreen extends UI.Widget.VBox implements UI.View.ViewLocati
 
   private constructor() {
     super(true);
-    this.registerRequiredCSS('settings/settingsScreen.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('panels/settings/settingsScreen.css', {enableLegacyPatching: false});
 
     this.contentElement.classList.add('settings-window-main');
     this.contentElement.classList.add('vbox');
@@ -109,7 +109,7 @@ export class SettingsScreen extends UI.Widget.VBox implements UI.View.ViewLocati
         UI.Utils
             .createShadowRootWithCoreStyles(
                 settingsLabelElement,
-                {cssFile: 'settings/settingsScreen.css', enableLegacyPatching: false, delegatesFocus: undefined})
+                {cssFile: 'panels/settings/settingsScreen.css', enableLegacyPatching: false, delegatesFocus: undefined})
             .createChild('div', 'settings-window-title');
 
     UI.ARIAUtils.markAsHeading(settingsTitleElement, 1);

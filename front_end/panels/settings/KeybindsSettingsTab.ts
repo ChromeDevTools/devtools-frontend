@@ -4,11 +4,11 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../core/common/common.js';
-import * as Host from '../core/host/host.js';
-import * as i18n from '../core/i18n/i18n.js';
-import * as Root from '../core/root/root.js';
-import * as UI from '../ui/legacy/legacy.js';
+import * as Common from '../../core/common/common.js';
+import * as Host from '../../core/host/host.js';
+import * as i18n from '../../core/i18n/i18n.js';
+import * as Root from '../../core/root/root.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
 const UIStrings = {
   /**
@@ -74,7 +74,7 @@ const UIStrings = {
   */
   ResetShortcutsForAction: 'Reset shortcuts for action',
 };
-const str_ = i18n.i18n.registerUIStrings('settings/KeybindsSettingsTab.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/settings/KeybindsSettingsTab.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 let keybindsSettingsTabInstance: KeybindsSettingsTab;
@@ -85,7 +85,7 @@ export class KeybindsSettingsTab extends UI.Widget.VBox implements UI.ListContro
   _editingRow: ShortcutListItem|null;
   constructor() {
     super(true);
-    this.registerRequiredCSS('settings/keybindsSettingsTab.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('panels/settings/keybindsSettingsTab.css', {enableLegacyPatching: true});
 
     const header = this.contentElement.createChild('header');
     header.createChild('h1').textContent = i18nString(UIStrings.shortcuts);
@@ -104,7 +104,7 @@ export class KeybindsSettingsTab extends UI.Widget.VBox implements UI.ListContro
     this._list = new UI.ListControl.ListControl(this._items, this, UI.ListControl.ListMode.NonViewport);
     this._items.replaceAll(this._createListItems());
     UI.ARIAUtils.markAsList(this._list.element);
-    this.registerRequiredCSS('settings/keybindsSettingsTab.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('panels/settings/keybindsSettingsTab.css', {enableLegacyPatching: true});
     this.contentElement.appendChild(this._list.element);
     UI.ARIAUtils.setAccessibleName(this._list.element, i18nString(UIStrings.keyboardShortcutsList));
     const footer = this.contentElement.createChild('div');

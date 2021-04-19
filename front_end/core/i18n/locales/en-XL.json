@@ -8156,6 +8156,159 @@
   "panels/security/SecurityPanel.ts | yourPageRequestedNonsecure": {
     "message": "Ŷóûŕ p̂áĝé r̂éq̂úêśt̂éd̂ ńôń-ŝéĉúr̂é r̂éŝóûŕĉéŝ t́ĥát̂ ẃêŕê b́l̂óĉḱêd́."
   },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
+    "message": "Âd́d̂ f́îĺêńâḿê ṕât́t̂ér̂ń"
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | addPattern": {
+    "message": "Âd́d̂ ṕât́t̂ér̂ń..."
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | behavior": {
+    "message": "B̂éĥáv̂íôŕ"
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | debuggerWillSkipThroughThe": {
+    "message": "D̂éb̂úĝǵêŕ ŵíl̂ĺ ŝḱîṕ t̂h́r̂óûǵĥ t́ĥé ŝćr̂íp̂t́ŝ án̂d́ ŵíl̂ĺ n̂ót̂ śt̂óp̂ ón̂ éx̂ćêṕt̂íôńŝ t́ĥŕôẃn̂ b́ŷ t́ĥém̂."
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | disabled": {
+    "message": "D̂íŝáb̂ĺêd́"
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | frameworkIgnoreList": {
+    "message": "F̂ŕâḿêẃôŕk̂ Íĝńôŕê Ĺîśt̂"
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreList": {
+    "message": "Îǵn̂ór̂é L̂íŝt́"
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreListContentScripts": {
+    "message": "Âd́d̂ ćôńt̂én̂t́ ŝćr̂íp̂t́ŝ t́ô íĝńôŕê ĺîśt̂"
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreListContentScriptsExtension": {
+    "message": "Âd́d̂ ćôńt̂én̂t́ ŝćr̂íp̂t́ŝ t́ô íĝńôŕê ĺîśt̂ (éx̂t́êńŝíôń ŝćr̂íp̂t́ŝ ín̂ t́ĥé p̂áĝé)"
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreScriptsWhoseNamesMatchS": {
+    "message": "Îǵn̂ór̂é ŝćr̂íp̂t́ŝ ẃĥóŝé n̂ám̂éŝ ḿât́ĉh́ '{PH1}'"
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | noIgnoreListPatterns": {
+    "message": "N̂ó îǵn̂ór̂é l̂íŝt́ p̂át̂t́êŕn̂ś"
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | pattern": {
+    "message": "P̂át̂t́êŕn̂"
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | patternAlreadyExists": {
+    "message": "P̂át̂t́êŕn̂ ál̂ŕêád̂ý êx́îśt̂ś"
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | patternCannotBeEmpty": {
+    "message": "P̂át̂t́êŕn̂ ćâńn̂ót̂ b́ê ém̂ṕt̂ý"
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | patternMustBeAValidRegular": {
+    "message": "P̂át̂t́êŕn̂ ḿûśt̂ b́ê á v̂ál̂íd̂ ŕêǵûĺâŕ êx́p̂ŕêśŝíôń"
+  },
+  "panels/settings/KeybindsSettingsTab.ts | addAShortcut": {
+    "message": "Âd́d̂ á ŝh́ôŕt̂ćût́"
+  },
+  "panels/settings/KeybindsSettingsTab.ts | confirmChanges": {
+    "message": "Ĉón̂f́îŕm̂ ćĥán̂ǵêś"
+  },
+  "panels/settings/KeybindsSettingsTab.ts | discardChanges": {
+    "message": "D̂íŝćâŕd̂ ćĥán̂ǵêś"
+  },
+  "panels/settings/KeybindsSettingsTab.ts | editShortcut": {
+    "message": "Êd́ît́ ŝh́ôŕt̂ćût́"
+  },
+  "panels/settings/KeybindsSettingsTab.ts | FullListOfDevtoolsKeyboard": {
+    "message": "F̂úl̂ĺ l̂íŝt́ ôf́ D̂év̂T́ôól̂ś k̂éŷb́ôár̂d́ ŝh́ôŕt̂ćût́ŝ án̂d́ ĝéŝt́ûŕêś"
+  },
+  "panels/settings/KeybindsSettingsTab.ts | keyboardShortcutsList": {
+    "message": "K̂éŷb́ôár̂d́ ŝh́ôŕt̂ćût́ŝ ĺîśt̂"
+  },
+  "panels/settings/KeybindsSettingsTab.ts | matchShortcutsFromPreset": {
+    "message": "M̂át̂ćĥ śĥór̂t́ĉút̂ś f̂ŕôḿ p̂ŕêśêt́"
+  },
+  "panels/settings/KeybindsSettingsTab.ts | noShortcutForAction": {
+    "message": "N̂ó ŝh́ôŕt̂ćût́ f̂ór̂ áĉt́îón̂"
+  },
+  "panels/settings/KeybindsSettingsTab.ts | removeShortcut": {
+    "message": "R̂ém̂óv̂é ŝh́ôŕt̂ćût́"
+  },
+  "panels/settings/KeybindsSettingsTab.ts | ResetShortcutsForAction": {
+    "message": "R̂éŝét̂ śĥór̂t́ĉút̂ś f̂ór̂ áĉt́îón̂"
+  },
+  "panels/settings/KeybindsSettingsTab.ts | RestoreDefaultShortcuts": {
+    "message": "R̂éŝt́ôŕê d́êf́âúl̂t́ ŝh́ôŕt̂ćût́ŝ"
+  },
+  "panels/settings/KeybindsSettingsTab.ts | shortcutModified": {
+    "message": "Ŝh́ôŕt̂ćût́ m̂ód̂íf̂íêd́"
+  },
+  "panels/settings/KeybindsSettingsTab.ts | shortcuts": {
+    "message": "Ŝh́ôŕt̂ćût́ŝ"
+  },
+  "panels/settings/KeybindsSettingsTab.ts | shortcutsCannotContainOnly": {
+    "message": "Ŝh́ôŕt̂ćût́ŝ ćâńn̂ót̂ ćôńt̂áîń ôńl̂ý m̂ód̂íf̂íêŕ k̂éŷś."
+  },
+  "panels/settings/KeybindsSettingsTab.ts | thisShortcutIsInUseByS": {
+    "message": "T̂h́îś ŝh́ôŕt̂ćût́ îś îń ûśê b́ŷ {PH1}: {PH2}."
+  },
+  "panels/settings/settings-meta.ts | documentation": {
+    "message": "D̂óĉúm̂én̂t́ât́îón̂"
+  },
+  "panels/settings/settings-meta.ts | experiments": {
+    "message": "Êx́p̂ér̂ím̂én̂t́ŝ"
+  },
+  "panels/settings/settings-meta.ts | ignoreList": {
+    "message": "Îǵn̂ór̂é L̂íŝt́"
+  },
+  "panels/settings/settings-meta.ts | preferences": {
+    "message": "P̂ŕêf́êŕêńĉéŝ"
+  },
+  "panels/settings/settings-meta.ts | settings": {
+    "message": "Ŝét̂t́îńĝś"
+  },
+  "panels/settings/settings-meta.ts | shortcuts": {
+    "message": "Ŝh́ôŕt̂ćût́ŝ"
+  },
+  "panels/settings/settings-meta.ts | showExperiments": {
+    "message": "Ŝh́ôẃ Êx́p̂ér̂ím̂én̂t́ŝ"
+  },
+  "panels/settings/settings-meta.ts | showIgnoreList": {
+    "message": "Ŝh́ôẃ Îǵn̂ór̂é L̂íŝt́"
+  },
+  "panels/settings/settings-meta.ts | showPreferences": {
+    "message": "Ŝh́ôẃ P̂ŕêf́êŕêńĉéŝ"
+  },
+  "panels/settings/settings-meta.ts | showShortcuts": {
+    "message": "Ŝh́ôẃ Ŝh́ôŕt̂ćût́ŝ"
+  },
+  "panels/settings/SettingsScreen.ts | experiments": {
+    "message": "Êx́p̂ér̂ím̂én̂t́ŝ"
+  },
+  "panels/settings/SettingsScreen.ts | filterExperimentsLabel": {
+    "message": "F̂íl̂t́êŕ"
+  },
+  "panels/settings/SettingsScreen.ts | noResults": {
+    "message": "N̂ó êx́p̂ér̂ím̂én̂t́ŝ ḿât́ĉh́ t̂h́ê f́îĺt̂ér̂"
+  },
+  "panels/settings/SettingsScreen.ts | oneOrMoreSettingsHaveChanged": {
+    "message": "Ôńê ór̂ ḿôŕê śêt́t̂ín̂ǵŝ h́âv́ê ćĥán̂ǵêd́ ŵh́îćĥ ŕêq́ûír̂éŝ á r̂él̂óâd́ t̂ó t̂ák̂é êf́f̂éĉt́."
+  },
+  "panels/settings/SettingsScreen.ts | preferences": {
+    "message": "P̂ŕêf́êŕêńĉéŝ"
+  },
+  "panels/settings/SettingsScreen.ts | restoreDefaultsAndReload": {
+    "message": "R̂éŝt́ôŕê d́êf́âúl̂t́ŝ án̂d́ r̂él̂óâd́"
+  },
+  "panels/settings/SettingsScreen.ts | settings": {
+    "message": "Ŝét̂t́îńĝś"
+  },
+  "panels/settings/SettingsScreen.ts | shortcuts": {
+    "message": "Ŝh́ôŕt̂ćût́ŝ"
+  },
+  "panels/settings/SettingsScreen.ts | theseExperimentsAreParticularly": {
+    "message": "T̂h́êśê éx̂ṕêŕîḿêńt̂ś âŕê ṕâŕt̂íĉúl̂ár̂ĺŷ ún̂śt̂áb̂ĺê. Én̂áb̂ĺê át̂ ýôúr̂ óŵń r̂íŝḱ."
+  },
+  "panels/settings/SettingsScreen.ts | theseExperimentsCouldBeUnstable": {
+    "message": "T̂h́êśê éx̂ṕêŕîḿêńt̂ś ĉóûĺd̂ b́ê ún̂śt̂áb̂ĺê ór̂ ún̂ŕêĺîáb̂ĺê án̂d́ m̂áŷ ŕêq́ûír̂é ŷóû t́ô ŕêśt̂ár̂t́ D̂év̂T́ôól̂ś."
+  },
+  "panels/settings/SettingsScreen.ts | warning": {
+    "message": "ŴÁR̂ŃÎŃĜ:"
+  },
   "panels/snippets/ScriptSnippetFileSystem.ts | linkedTo": {
     "message": "L̂ín̂ḱêd́ t̂ó {PH1}"
   },
@@ -8962,159 +9115,6 @@
   },
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "R̂éf̂ŕêśĥ ẃât́ĉh́ êx́p̂ŕêśŝíôńŝ"
-  },
-  "settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
-    "message": "Âd́d̂ f́îĺêńâḿê ṕât́t̂ér̂ń"
-  },
-  "settings/FrameworkIgnoreListSettingsTab.ts | addPattern": {
-    "message": "Âd́d̂ ṕât́t̂ér̂ń..."
-  },
-  "settings/FrameworkIgnoreListSettingsTab.ts | behavior": {
-    "message": "B̂éĥáv̂íôŕ"
-  },
-  "settings/FrameworkIgnoreListSettingsTab.ts | debuggerWillSkipThroughThe": {
-    "message": "D̂éb̂úĝǵêŕ ŵíl̂ĺ ŝḱîṕ t̂h́r̂óûǵĥ t́ĥé ŝćr̂íp̂t́ŝ án̂d́ ŵíl̂ĺ n̂ót̂ śt̂óp̂ ón̂ éx̂ćêṕt̂íôńŝ t́ĥŕôẃn̂ b́ŷ t́ĥém̂."
-  },
-  "settings/FrameworkIgnoreListSettingsTab.ts | disabled": {
-    "message": "D̂íŝáb̂ĺêd́"
-  },
-  "settings/FrameworkIgnoreListSettingsTab.ts | frameworkIgnoreList": {
-    "message": "F̂ŕâḿêẃôŕk̂ Íĝńôŕê Ĺîśt̂"
-  },
-  "settings/FrameworkIgnoreListSettingsTab.ts | ignoreList": {
-    "message": "Îǵn̂ór̂é L̂íŝt́"
-  },
-  "settings/FrameworkIgnoreListSettingsTab.ts | ignoreListContentScripts": {
-    "message": "Âd́d̂ ćôńt̂én̂t́ ŝćr̂íp̂t́ŝ t́ô íĝńôŕê ĺîśt̂"
-  },
-  "settings/FrameworkIgnoreListSettingsTab.ts | ignoreListContentScriptsExtension": {
-    "message": "Âd́d̂ ćôńt̂én̂t́ ŝćr̂íp̂t́ŝ t́ô íĝńôŕê ĺîśt̂ (éx̂t́êńŝíôń ŝćr̂íp̂t́ŝ ín̂ t́ĥé p̂áĝé)"
-  },
-  "settings/FrameworkIgnoreListSettingsTab.ts | ignoreScriptsWhoseNamesMatchS": {
-    "message": "Îǵn̂ór̂é ŝćr̂íp̂t́ŝ ẃĥóŝé n̂ám̂éŝ ḿât́ĉh́ '{PH1}'"
-  },
-  "settings/FrameworkIgnoreListSettingsTab.ts | noIgnoreListPatterns": {
-    "message": "N̂ó îǵn̂ór̂é l̂íŝt́ p̂át̂t́êŕn̂ś"
-  },
-  "settings/FrameworkIgnoreListSettingsTab.ts | pattern": {
-    "message": "P̂át̂t́êŕn̂"
-  },
-  "settings/FrameworkIgnoreListSettingsTab.ts | patternAlreadyExists": {
-    "message": "P̂át̂t́êŕn̂ ál̂ŕêád̂ý êx́îśt̂ś"
-  },
-  "settings/FrameworkIgnoreListSettingsTab.ts | patternCannotBeEmpty": {
-    "message": "P̂át̂t́êŕn̂ ćâńn̂ót̂ b́ê ém̂ṕt̂ý"
-  },
-  "settings/FrameworkIgnoreListSettingsTab.ts | patternMustBeAValidRegular": {
-    "message": "P̂át̂t́êŕn̂ ḿûśt̂ b́ê á v̂ál̂íd̂ ŕêǵûĺâŕ êx́p̂ŕêśŝíôń"
-  },
-  "settings/KeybindsSettingsTab.ts | addAShortcut": {
-    "message": "Âd́d̂ á ŝh́ôŕt̂ćût́"
-  },
-  "settings/KeybindsSettingsTab.ts | confirmChanges": {
-    "message": "Ĉón̂f́îŕm̂ ćĥán̂ǵêś"
-  },
-  "settings/KeybindsSettingsTab.ts | discardChanges": {
-    "message": "D̂íŝćâŕd̂ ćĥán̂ǵêś"
-  },
-  "settings/KeybindsSettingsTab.ts | editShortcut": {
-    "message": "Êd́ît́ ŝh́ôŕt̂ćût́"
-  },
-  "settings/KeybindsSettingsTab.ts | FullListOfDevtoolsKeyboard": {
-    "message": "F̂úl̂ĺ l̂íŝt́ ôf́ D̂év̂T́ôól̂ś k̂éŷb́ôár̂d́ ŝh́ôŕt̂ćût́ŝ án̂d́ ĝéŝt́ûŕêś"
-  },
-  "settings/KeybindsSettingsTab.ts | keyboardShortcutsList": {
-    "message": "K̂éŷb́ôár̂d́ ŝh́ôŕt̂ćût́ŝ ĺîśt̂"
-  },
-  "settings/KeybindsSettingsTab.ts | matchShortcutsFromPreset": {
-    "message": "M̂át̂ćĥ śĥór̂t́ĉút̂ś f̂ŕôḿ p̂ŕêśêt́"
-  },
-  "settings/KeybindsSettingsTab.ts | noShortcutForAction": {
-    "message": "N̂ó ŝh́ôŕt̂ćût́ f̂ór̂ áĉt́îón̂"
-  },
-  "settings/KeybindsSettingsTab.ts | removeShortcut": {
-    "message": "R̂ém̂óv̂é ŝh́ôŕt̂ćût́"
-  },
-  "settings/KeybindsSettingsTab.ts | ResetShortcutsForAction": {
-    "message": "R̂éŝét̂ śĥór̂t́ĉút̂ś f̂ór̂ áĉt́îón̂"
-  },
-  "settings/KeybindsSettingsTab.ts | RestoreDefaultShortcuts": {
-    "message": "R̂éŝt́ôŕê d́êf́âúl̂t́ ŝh́ôŕt̂ćût́ŝ"
-  },
-  "settings/KeybindsSettingsTab.ts | shortcutModified": {
-    "message": "Ŝh́ôŕt̂ćût́ m̂ód̂íf̂íêd́"
-  },
-  "settings/KeybindsSettingsTab.ts | shortcuts": {
-    "message": "Ŝh́ôŕt̂ćût́ŝ"
-  },
-  "settings/KeybindsSettingsTab.ts | shortcutsCannotContainOnly": {
-    "message": "Ŝh́ôŕt̂ćût́ŝ ćâńn̂ót̂ ćôńt̂áîń ôńl̂ý m̂ód̂íf̂íêŕ k̂éŷś."
-  },
-  "settings/KeybindsSettingsTab.ts | thisShortcutIsInUseByS": {
-    "message": "T̂h́îś ŝh́ôŕt̂ćût́ îś îń ûśê b́ŷ {PH1}: {PH2}."
-  },
-  "settings/settings-meta.ts | documentation": {
-    "message": "D̂óĉúm̂én̂t́ât́îón̂"
-  },
-  "settings/settings-meta.ts | experiments": {
-    "message": "Êx́p̂ér̂ím̂én̂t́ŝ"
-  },
-  "settings/settings-meta.ts | ignoreList": {
-    "message": "Îǵn̂ór̂é L̂íŝt́"
-  },
-  "settings/settings-meta.ts | preferences": {
-    "message": "P̂ŕêf́êŕêńĉéŝ"
-  },
-  "settings/settings-meta.ts | settings": {
-    "message": "Ŝét̂t́îńĝś"
-  },
-  "settings/settings-meta.ts | shortcuts": {
-    "message": "Ŝh́ôŕt̂ćût́ŝ"
-  },
-  "settings/settings-meta.ts | showExperiments": {
-    "message": "Ŝh́ôẃ Êx́p̂ér̂ím̂én̂t́ŝ"
-  },
-  "settings/settings-meta.ts | showIgnoreList": {
-    "message": "Ŝh́ôẃ Îǵn̂ór̂é L̂íŝt́"
-  },
-  "settings/settings-meta.ts | showPreferences": {
-    "message": "Ŝh́ôẃ P̂ŕêf́êŕêńĉéŝ"
-  },
-  "settings/settings-meta.ts | showShortcuts": {
-    "message": "Ŝh́ôẃ Ŝh́ôŕt̂ćût́ŝ"
-  },
-  "settings/SettingsScreen.ts | experiments": {
-    "message": "Êx́p̂ér̂ím̂én̂t́ŝ"
-  },
-  "settings/SettingsScreen.ts | filterExperimentsLabel": {
-    "message": "F̂íl̂t́êŕ"
-  },
-  "settings/SettingsScreen.ts | noResults": {
-    "message": "N̂ó êx́p̂ér̂ím̂én̂t́ŝ ḿât́ĉh́ t̂h́ê f́îĺt̂ér̂"
-  },
-  "settings/SettingsScreen.ts | oneOrMoreSettingsHaveChanged": {
-    "message": "Ôńê ór̂ ḿôŕê śêt́t̂ín̂ǵŝ h́âv́ê ćĥán̂ǵêd́ ŵh́îćĥ ŕêq́ûír̂éŝ á r̂él̂óâd́ t̂ó t̂ák̂é êf́f̂éĉt́."
-  },
-  "settings/SettingsScreen.ts | preferences": {
-    "message": "P̂ŕêf́êŕêńĉéŝ"
-  },
-  "settings/SettingsScreen.ts | restoreDefaultsAndReload": {
-    "message": "R̂éŝt́ôŕê d́êf́âúl̂t́ŝ án̂d́ r̂él̂óâd́"
-  },
-  "settings/SettingsScreen.ts | settings": {
-    "message": "Ŝét̂t́îńĝś"
-  },
-  "settings/SettingsScreen.ts | shortcuts": {
-    "message": "Ŝh́ôŕt̂ćût́ŝ"
-  },
-  "settings/SettingsScreen.ts | theseExperimentsAreParticularly": {
-    "message": "T̂h́êśê éx̂ṕêŕîḿêńt̂ś âŕê ṕâŕt̂íĉúl̂ár̂ĺŷ ún̂śt̂áb̂ĺê. Én̂áb̂ĺê át̂ ýôúr̂ óŵń r̂íŝḱ."
-  },
-  "settings/SettingsScreen.ts | theseExperimentsCouldBeUnstable": {
-    "message": "T̂h́êśê éx̂ṕêŕîḿêńt̂ś ĉóûĺd̂ b́ê ún̂śt̂áb̂ĺê ór̂ ún̂ŕêĺîáb̂ĺê án̂d́ m̂áŷ ŕêq́ûír̂é ŷóû t́ô ŕêśt̂ár̂t́ D̂év̂T́ôól̂ś."
-  },
-  "settings/SettingsScreen.ts | warning": {
-    "message": "ŴÁR̂ŃÎŃĜ:"
   },
   "timeline/CountersGraph.ts | documents": {
     "message": "D̂óĉúm̂én̂t́ŝ"

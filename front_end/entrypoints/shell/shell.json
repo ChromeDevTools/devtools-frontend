@@ -22,7 +22,7 @@
     { "name": "panels/protocol_monitor"},
     { "name": "ui/legacy/components/quick_open" },
     { "name": "panels/search" },
-    { "name": "settings" },
+    { "name": "panels/settings" },
     { "name": "panels/snippets" },
     { "name": "ui/legacy/components/source_frame" },
     { "name": "panels/sources" },

@@ -4,9 +4,9 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../core/common/common.js';
-import * as i18n from '../core/i18n/i18n.js';
-import * as UI from '../ui/legacy/legacy.js';
+import * as Common from '../../core/common/common.js';
+import * as i18n from '../../core/i18n/i18n.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
 const UIStrings = {
   /**
@@ -72,7 +72,7 @@ const UIStrings = {
   */
   patternMustBeAValidRegular: 'Pattern must be a valid regular expression',
 };
-const str_ = i18n.i18n.registerUIStrings('settings/FrameworkIgnoreListSettingsTab.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/settings/FrameworkIgnoreListSettingsTab.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 let frameworkIgnoreListSettingsTabInstance: FrameworkIgnoreListSettingsTab;
@@ -86,7 +86,7 @@ export class FrameworkIgnoreListSettingsTab extends UI.Widget.VBox implements
 
   constructor() {
     super(true);
-    this.registerRequiredCSS('settings/frameworkIgnoreListSettingsTab.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('panels/settings/frameworkIgnoreListSettingsTab.css', {enableLegacyPatching: false});
 
     const header = this.contentElement.createChild('div', 'header');
     header.textContent = i18nString(UIStrings.frameworkIgnoreList);
@@ -104,7 +104,7 @@ export class FrameworkIgnoreListSettingsTab extends UI.Widget.VBox implements
 
     this._list = new UI.ListWidget.ListWidget(this);
     this._list.element.classList.add('ignore-list');
-    this._list.registerRequiredCSS('settings/frameworkIgnoreListSettingsTab.css', {enableLegacyPatching: false});
+    this._list.registerRequiredCSS('panels/settings/frameworkIgnoreListSettingsTab.css', {enableLegacyPatching: false});
 
     const placeholder = document.createElement('div');
     placeholder.classList.add('ignore-list-empty');

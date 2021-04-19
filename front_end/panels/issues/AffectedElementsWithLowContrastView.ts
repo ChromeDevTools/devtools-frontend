@@ -2,9 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as i18n from '../core/i18n/i18n.js';
-import * as Platform from '../core/platform/platform.js';
-import * as IssuesManager from '../models/issues_manager/issues_manager.js';
+import * as i18n from '../../core/i18n/i18n.js';
+import * as Platform from '../../core/platform/platform.js';
+import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 
 import {AffectedElementsView} from './AffectedElementsView.js';
 import {AggregatedIssue} from './IssueAggregator.js';
@@ -94,5 +94,5 @@ const UIStrings = {
   */
   textWeight: 'Text weight',
 };
-const str_ = i18n.i18n.registerUIStrings('issues/AffectedElementsWithLowContrastView.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/issues/AffectedElementsWithLowContrastView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

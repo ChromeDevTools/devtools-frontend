@@ -9,7 +9,6 @@ devtools_entrypoint("devtools_app-meta-files") {
 
   deps = [
     "../../inspector_main:meta",
-    "../../issues:meta",
     "../../panels/accessibility:meta",
     "../../panels/animation:meta",
     "../../panels/application:meta",
@@ -19,6 +18,7 @@ devtools_entrypoint("devtools_app-meta-files") {
     "../../panels/elements:meta",
     "../../panels/emulation:meta",
     "../../panels/help:meta",
+    "../../panels/issues:meta",
     "../../panels/layer_viewer:meta",
     "../../panels/layers:meta",
     "../../panels/lighthouse:meta",

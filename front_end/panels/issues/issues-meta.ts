@@ -2,15 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../core/common/common.js';
-import * as Root from '../core/root/root.js';
-import * as IssuesManager from '../models/issues_manager/issues_manager.js';
-import * as UI from '../ui/legacy/legacy.js';
+import * as Common from '../../core/common/common.js';
+import * as Root from '../../core/root/root.js';
+import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
 // eslint-disable-next-line rulesdir/es_modules_import
 import type * as Issues from './issues.js';
 
-import * as i18n from '../core/i18n/i18n.js';
+import * as i18n from '../../core/i18n/i18n.js';
 const UIStrings = {
   /**
   *@description Label for the issues pane
@@ -29,14 +29,14 @@ const UIStrings = {
   */
   showCspViolations: 'Show CSP Violations',
 };
-const str_ = i18n.i18n.registerUIStrings('issues/issues-meta.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/issues/issues-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 let loadedIssuesModule: (typeof Issues|undefined);
 
 async function loadIssuesModule(): Promise<typeof Issues> {
   if (!loadedIssuesModule) {
     // Side-effect import resources in module.json
-    await Root.Runtime.Runtime.instance().loadModulePromise('issues');
+    await Root.Runtime.Runtime.instance().loadModulePromise('panels/issues');
     loadedIssuesModule = await import('./issues.js');
   }
   return loadedIssuesModule;

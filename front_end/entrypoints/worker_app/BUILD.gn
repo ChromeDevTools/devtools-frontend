@@ -9,12 +9,12 @@ ts_library("worker_app") {
 
   deps = [
     "../../entrypoints/startup:bundle",
-    "../../issues:meta",
     "../../panels/application:meta",
     "../../panels/browser_debugger:meta",
     "../../panels/developer_resources:meta",
     "../../panels/elements:meta",
     "../../panels/help:meta",
+    "../../panels/issues:meta",
     "../../panels/layer_viewer:meta",
     "../../panels/mobile_throttling:meta",
     "../../panels/network:meta",

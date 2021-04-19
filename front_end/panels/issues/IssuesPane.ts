@@ -2,11 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../core/common/common.js';
-import * as i18n from '../core/i18n/i18n.js';
-import * as IssuesManager from '../models/issues_manager/issues_manager.js';
-import * as ConsoleCounters from '../panels/console_counters/console_counters.js';
-import * as UI from '../ui/legacy/legacy.js';
+import * as Common from '../../core/common/common.js';
+import * as i18n from '../../core/i18n/i18n.js';
+import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
+import * as UI from '../../ui/legacy/legacy.js';
+import * as ConsoleCounters from '../console_counters/console_counters.js';
 
 import type {AggregatedIssue} from './IssueAggregator.js';
 import {Events as IssueAggregatorEvents, IssueAggregator} from './IssueAggregator.js';
@@ -77,7 +77,7 @@ const UIStrings = {
    */
   noIssuesDetectedSoFar: 'No issues detected so far',
 };
-const str_ = i18n.i18n.registerUIStrings('issues/IssuesPane.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/issues/IssuesPane.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 class IssueCategoryView extends UI.TreeOutline.TreeElement {
@@ -151,7 +151,7 @@ export class IssuesPane extends UI.Widget.VBox {
 
   private constructor() {
     super(true);
-    this.registerRequiredCSS('issues/issuesPane.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('panels/issues/issuesPane.css', {enableLegacyPatching: false});
     this.contentElement.classList.add('issues-pane');
 
     this.categoryViews = new Map();
@@ -161,7 +161,7 @@ export class IssuesPane extends UI.Widget.VBox {
     this.createToolbars();
 
     this.issuesTree = new UI.TreeOutline.TreeOutlineInShadow();
-    this.issuesTree.registerRequiredCSS('issues/issuesTree.css', {enableLegacyPatching: false});
+    this.issuesTree.registerRequiredCSS('panels/issues/issuesTree.css', {enableLegacyPatching: false});
     this.issuesTree.setShowSelectionOnKeyboardFocus(true);
     this.issuesTree.contentElement.classList.add('issues');
     this.contentElement.appendChild(this.issuesTree.element);

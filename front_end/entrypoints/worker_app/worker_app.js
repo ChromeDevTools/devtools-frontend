@@ -6,7 +6,7 @@ import '../../panels/browser_debugger/browser_debugger-meta.js';
 import '../../panels/developer_resources/developer_resources-meta.js';
 import '../../panels/elements/elements-meta.js';
 import '../../panels/help/help-meta.js';
-import '../../issues/issues-meta.js';
+import '../../panels/issues/issues-meta.js';
 import '../../panels/layer_viewer/layer_viewer-meta.js';
 import '../../panels/mobile_throttling/mobile_throttling-meta.js';
 import '../../panels/network/network-meta.js';

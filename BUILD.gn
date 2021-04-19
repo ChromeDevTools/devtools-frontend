@@ -129,7 +129,7 @@ non_autostart_non_remote_modules = [
   "ui/legacy/components/perf_ui/perf_ui_module.js",
   "panels/performance_monitor/performance_monitor_module.js",
   "panels/profiler/profiler_module.js",
-  "issues/issues_module.js",
+  "panels/issues/issues_module.js",
   "panels/developer_resources/developer_resources_module.js",
   "panels/protocol_monitor/protocol_monitor_module.js",
   "ui/legacy/components/quick_open/quick_open_module.js",

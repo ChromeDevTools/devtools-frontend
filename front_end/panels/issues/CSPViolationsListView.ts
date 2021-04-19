@@ -2,14 +2,14 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import '../ui/components/linkifier/linkifier.js';
-import '../ui/components/data_grid/data_grid.js';
+import '../../ui/components/linkifier/linkifier.js';
+import '../../ui/components/data_grid/data_grid.js';
 
-import * as IssuesManager from '../models/issues_manager/issues_manager.js';
-import * as LitHtml from '../third_party/lit-html/lit-html.js';
-import * as DataGrid from '../ui/components/data_grid/data_grid.js';
-import * as Linkifier from '../ui/components/linkifier/linkifier.js';
-import * as UI from '../ui/legacy/legacy.js';
+import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
+import * as LitHtml from '../../third_party/lit-html/lit-html.js';
+import * as DataGrid from '../../ui/components/data_grid/data_grid.js';
+import * as Linkifier from '../../ui/components/linkifier/linkifier.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
 export class CSPViolationsListView extends UI.Widget.VBox {
   private table = new DataGrid.DataGridController.DataGridController();
@@ -19,7 +19,7 @@ export class CSPViolationsListView extends UI.Widget.VBox {
 
   constructor() {
     super(true);
-    this.registerRequiredCSS('issues/cspViolationsListView.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('panels/issues/cspViolationsListView.css', {enableLegacyPatching: false});
 
     this.table.data = {
       columns: [

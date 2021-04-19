@@ -12,7 +12,7 @@
     { "name": "ui/legacy/components/cookie_table" },
     { "name": "panels/elements" },
     { "name": "emulated_devices" },
-    { "name": "issues" },
+    { "name": "panels/issues" },
     { "name": "panels/developer_resources" },
     { "name": "panels/help" },
     { "name": "panels/layers" },

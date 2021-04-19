@@ -2,11 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Host from '../core/host/host.js';
-import * as i18n from '../core/i18n/i18n.js';
-import * as Platform from '../core/platform/platform.js';
-import * as Network from '../panels/network/network.js';
-import * as UI from '../ui/legacy/legacy.js';
+import * as Host from '../../core/host/host.js';
+import * as i18n from '../../core/i18n/i18n.js';
+import * as Platform from '../../core/platform/platform.js';
+import * as UI from '../../ui/legacy/legacy.js';
+import * as Network from '../network/network.js';
 
 import {AffectedItem, AffectedResourcesView} from './AffectedResourcesView.js';
 
@@ -31,7 +31,7 @@ const UIStrings = {
   */
   path: 'Path',
 };
-const str_ = i18n.i18n.registerUIStrings('issues/AffectedCookiesView.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/issues/AffectedCookiesView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class AffectedCookiesView extends AffectedResourcesView {

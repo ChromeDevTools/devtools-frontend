@@ -4,7 +4,7 @@
 
 const {assert} = chai;
 
-import type * as IssuesModule from '../../../../front_end/issues/issues.js';
+import type * as IssuesModule from '../../../../front_end/panels/issues/issues.js';
 import type * as IssuesManagerModule from '../../../../front_end/models/issues_manager/issues_manager.js';
 import type * as SDKModule from '../../../../front_end/core/sdk/sdk.js';
 import {describeWithEnvironment} from '../helpers/EnvironmentHelpers.js';
@@ -15,7 +15,7 @@ describeWithEnvironment('AggregatedIssue', async () => {
   let Issues: typeof IssuesModule;
   let IssuesManager: typeof IssuesManagerModule;
   before(async () => {
-    Issues = await import('../../../../front_end/issues/issues.js');
+    Issues = await import('../../../../front_end/panels/issues/issues.js');
     IssuesManager = await import('../../../../front_end/models/issues_manager/issues_manager.js');
   });
 

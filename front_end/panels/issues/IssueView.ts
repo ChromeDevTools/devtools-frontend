@@ -4,22 +4,22 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import '../ui/components/icon_button/icon_button.js';
-import '../ui/components/markdown_view/markdown_view.js';
+import '../../ui/components/icon_button/icon_button.js';
+import '../../ui/components/markdown_view/markdown_view.js';
 
-import * as Components from '../components/components.js';
-import * as Common from '../core/common/common.js';
-import * as Host from '../core/host/host.js';
-import * as i18n from '../core/i18n/i18n.js';
-import * as Platform from '../core/platform/platform.js';
-import * as SDK from '../core/sdk/sdk.js';
-import * as IssuesManager from '../models/issues_manager/issues_manager.js';
-import * as ConsoleCounters from '../panels/console_counters/console_counters.js';
-import * as Elements from '../panels/elements/elements.js';
-import * as Network from '../panels/network/network.js';
-import * as IconButton from '../ui/components/icon_button/icon_button.js';
-import * as MarkdownView from '../ui/components/markdown_view/markdown_view.js';
-import * as UI from '../ui/legacy/legacy.js';
+import * as Components from '../../components/components.js';
+import * as Common from '../../core/common/common.js';
+import * as Host from '../../core/host/host.js';
+import * as i18n from '../../core/i18n/i18n.js';
+import * as Platform from '../../core/platform/platform.js';
+import * as SDK from '../../core/sdk/sdk.js';
+import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
+import * as IconButton from '../../ui/components/icon_button/icon_button.js';
+import * as MarkdownView from '../../ui/components/markdown_view/markdown_view.js';
+import * as UI from '../../ui/legacy/legacy.js';
+import * as ConsoleCounters from '../console_counters/console_counters.js';
+import * as Elements from '../elements/elements.js';
+import * as Network from '../network/network.js';
 
 import {AffectedBlockedByResponseView} from './AffectedBlockedByResponseView.js';
 import {AffectedCookiesView} from './AffectedCookiesView.js';
@@ -109,7 +109,7 @@ const UIStrings = {
  */
   automaticallyUpgraded: 'automatically upgraded',
 };
-const str_ = i18n.i18n.registerUIStrings('issues/IssueView.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/issues/IssueView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 class AffectedDirectivesView extends AffectedResourcesView {

@@ -37,8 +37,8 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Persistence from '../../models/persistence/persistence.js';
 import * as Recorder from '../../models/recorder/recorder.js';
 import * as Workspace from '../../models/workspace/workspace.js';
-import * as Snippets from '../../snippets/snippets.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as Snippets from '../snippets/snippets.js';
 
 import {NavigatorUISourceCodeTreeNode, NavigatorView} from './NavigatorView.js';  // eslint-disable-line no-unused-vars
 

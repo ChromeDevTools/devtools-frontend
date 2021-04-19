@@ -27,7 +27,7 @@ devtools_module("main") {
     "../models/persistence:bundle",
     "../models/recorder:bundle",
     "../models/workspace:bundle",
-    "../snippets:bundle",
+    "../panels/snippets:bundle",
     "../theme_support:bundle",
     "../timeline:bundle",
     "../ui/legacy:bundle",

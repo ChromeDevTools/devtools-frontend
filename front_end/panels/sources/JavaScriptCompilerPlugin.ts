@@ -7,9 +7,9 @@
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Workspace from '../../models/workspace/workspace.js';
-import * as Snippets from '../../snippets/snippets.js';
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../../ui/legacy/legacy.js';
+import * as Snippets from '../snippets/snippets.js';
 
 import {Plugin} from './Plugin.js';
 

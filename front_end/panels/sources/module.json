@@ -3,7 +3,7 @@
     "components",
     "panels/search",
     "ui/legacy/components/source_frame",
-    "snippets",
+    "panels/snippets",
     "models/extensions",
     "models/persistence",
     "ui/legacy/components/quick_open",

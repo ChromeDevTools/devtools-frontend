@@ -8156,6 +8156,18 @@
   "panels/security/SecurityPanel.ts | yourPageRequestedNonsecure": {
     "message": "Ŷóûŕ p̂áĝé r̂éq̂úêśt̂éd̂ ńôń-ŝéĉúr̂é r̂éŝóûŕĉéŝ t́ĥát̂ ẃêŕê b́l̂óĉḱêd́."
   },
+  "panels/snippets/ScriptSnippetFileSystem.ts | linkedTo": {
+    "message": "L̂ín̂ḱêd́ t̂ó {PH1}"
+  },
+  "panels/snippets/ScriptSnippetFileSystem.ts | scriptSnippet": {
+    "message": "Ŝćr̂íp̂t́ ŝńîṕp̂ét̂ #{PH1}"
+  },
+  "panels/snippets/SnippetsQuickOpen.ts | noSnippetsFound": {
+    "message": "N̂ó ŝńîṕp̂ét̂ś f̂óûńd̂."
+  },
+  "panels/snippets/SnippetsQuickOpen.ts | runSnippet": {
+    "message": "R̂ún̂ śn̂íp̂ṕêt́"
+  },
   "panels/sources/AddSourceMapURLDialog.ts | add": {
     "message": "Âd́d̂"
   },
@@ -9103,18 +9115,6 @@
   },
   "settings/SettingsScreen.ts | warning": {
     "message": "ŴÁR̂ŃÎŃĜ:"
-  },
-  "snippets/ScriptSnippetFileSystem.ts | linkedTo": {
-    "message": "L̂ín̂ḱêd́ t̂ó {PH1}"
-  },
-  "snippets/ScriptSnippetFileSystem.ts | scriptSnippet": {
-    "message": "Ŝćr̂íp̂t́ ŝńîṕp̂ét̂ #{PH1}"
-  },
-  "snippets/SnippetsQuickOpen.ts | noSnippetsFound": {
-    "message": "N̂ó ŝńîṕp̂ét̂ś f̂óûńd̂."
-  },
-  "snippets/SnippetsQuickOpen.ts | runSnippet": {
-    "message": "R̂ún̂ śn̂íp̂ṕêt́"
   },
   "timeline/CountersGraph.ts | documents": {
     "message": "D̂óĉúm̂én̂t́ŝ"

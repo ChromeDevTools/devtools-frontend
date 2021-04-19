@@ -38,8 +38,8 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Persistence from '../../models/persistence/persistence.js';
 import * as Workspace from '../../models/workspace/workspace.js';
-import * as Snippets from '../../snippets/snippets.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as Snippets from '../snippets/snippets.js';
 
 import {SearchSourcesView} from './SearchSourcesView.js';
 

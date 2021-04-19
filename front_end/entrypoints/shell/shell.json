@@ -23,7 +23,7 @@
     { "name": "ui/legacy/components/quick_open" },
     { "name": "panels/search" },
     { "name": "settings" },
-    { "name": "snippets" },
+    { "name": "panels/snippets" },
     { "name": "ui/legacy/components/source_frame" },
     { "name": "panels/sources" },
     { "name": "ui/legacy/components/text_editor" },

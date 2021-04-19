@@ -49,7 +49,7 @@ import * as Logs from '../models/logs/logs.js';
 import * as Persistence from '../models/persistence/persistence.js';
 import * as Recorder from '../models/recorder/recorder.js';
 import * as Workspace from '../models/workspace/workspace.js';
-import * as Snippets from '../snippets/snippets.js';
+import * as Snippets from '../panels/snippets/snippets.js';
 import * as ThemeSupport from '../theme_support/theme_support.js';
 import * as Timeline from '../timeline/timeline.js';
 import * as PerfUI from '../ui/legacy/components/perf_ui/perf_ui.js';

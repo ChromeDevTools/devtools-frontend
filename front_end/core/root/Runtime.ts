@@ -47,6 +47,7 @@ export const mappingForLayoutTests = new Map<string, string>([
   ['panels/application', 'resources'],
   ['panels/search', 'search'],
   ['panels/sources', 'sources'],
+  ['panels/snippets', 'snippets'],
   ['models/persistence', 'persistence'],
   ['third_party/diff', 'diff'],
   ['ui/legacy/components/inline_editor', 'inline_editor'],

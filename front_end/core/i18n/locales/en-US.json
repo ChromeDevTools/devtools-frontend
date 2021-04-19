@@ -8156,6 +8156,18 @@
   "panels/security/SecurityPanel.ts | yourPageRequestedNonsecure": {
     "message": "Your page requested non-secure resources that were blocked."
   },
+  "panels/snippets/ScriptSnippetFileSystem.ts | linkedTo": {
+    "message": "Linked to {PH1}"
+  },
+  "panels/snippets/ScriptSnippetFileSystem.ts | scriptSnippet": {
+    "message": "Script snippet #{PH1}"
+  },
+  "panels/snippets/SnippetsQuickOpen.ts | noSnippetsFound": {
+    "message": "No snippets found."
+  },
+  "panels/snippets/SnippetsQuickOpen.ts | runSnippet": {
+    "message": "Run snippet"
+  },
   "panels/sources/AddSourceMapURLDialog.ts | add": {
     "message": "Add"
   },
@@ -9103,18 +9115,6 @@
   },
   "settings/SettingsScreen.ts | warning": {
     "message": "WARNING:"
-  },
-  "snippets/ScriptSnippetFileSystem.ts | linkedTo": {
-    "message": "Linked to {PH1}"
-  },
-  "snippets/ScriptSnippetFileSystem.ts | scriptSnippet": {
-    "message": "Script snippet #{PH1}"
-  },
-  "snippets/SnippetsQuickOpen.ts | noSnippetsFound": {
-    "message": "No snippets found."
-  },
-  "snippets/SnippetsQuickOpen.ts | runSnippet": {
-    "message": "Run snippet"
   },
   "timeline/CountersGraph.ts | documents": {
     "message": "Documents"

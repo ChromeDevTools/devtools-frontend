@@ -4,9 +4,9 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as i18n from '../core/i18n/i18n.js';
-import * as QuickOpen from '../ui/legacy/components/quick_open/quick_open.js';
-import type * as Workspace from '../models/workspace/workspace.js';
+import * as i18n from '../../core/i18n/i18n.js';
+import * as QuickOpen from '../../ui/legacy/components/quick_open/quick_open.js';
+import type * as Workspace from '../../models/workspace/workspace.js';
 
 import {evaluateScriptSnippet, findSnippetsProject} from './ScriptSnippetFileSystem.js';
 
@@ -20,7 +20,7 @@ const UIStrings = {
   */
   runSnippet: 'Run snippet',
 };
-const str_ = i18n.i18n.registerUIStrings('snippets/SnippetsQuickOpen.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/snippets/SnippetsQuickOpen.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 

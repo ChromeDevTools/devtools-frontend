@@ -534,8 +534,7 @@ describe('The Debugger Language Plugins', async () => {
     assert.deepEqual(sourceLocations, ['unreachable.ll:6', 'unreachable.html:27', 'unreachable.html:30']);
   });
 
-  // Skip during changes to [[Protoype]] (https://crbug.com/1197019)
-  it.skip('[crbug.com/1199243] shows variable values with JS formatters', async () => {
+  it('shows variable values with JS formatters', async () => {
     const {frontend} = getBrowserAndPages();
     await frontend.evaluateHandle(
         () => globalThis.installExtensionPlugin((extensionServerClient: unknown, extensionAPI: unknown) => {
@@ -649,6 +648,7 @@ describe('The Debugger Language Plugins', async () => {
                 }
 
                 const value = {value: 26, recurse: new $tag()};
+                Object.setPrototypeOf(value, null);
                 return {tag: {className: '$tag', symbol: sym}, value};
               }
 

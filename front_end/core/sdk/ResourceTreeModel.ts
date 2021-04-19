@@ -53,6 +53,7 @@ export class ResourceTreeModel extends SDKModel {
   _reloadSuspensionCount: number;
   _isInterstitialShowing: boolean;
   mainFrame: ResourceTreeFrame|null;
+  private pendingBackForwardCacheNotUsedEvents: Set<Protocol.Page.BackForwardCacheNotUsedEvent>;
 
   constructor(target: Target) {
     super(target);
@@ -65,7 +66,7 @@ export class ResourceTreeModel extends SDKModel {
     this._agent = target.pageAgent();
     this._agent.invoke_enable();
     this._securityOriginManager = (target.model(SecurityOriginManager) as SecurityOriginManager);
-
+    this.pendingBackForwardCacheNotUsedEvents = new Set<Protocol.Page.BackForwardCacheNotUsedEvent>();
     target.registerPageDispatcher(new PageDispatcher(this));
 
     this._frames = new Map();
@@ -196,7 +197,7 @@ export class ResourceTreeModel extends SDKModel {
       }
     }
     if (type) {
-      frame.restoredFromBackForwardCache = type === Protocol.Page.NavigationType.BackForwardCacheRestore;
+      frame.backForwardCacheDetails.restoredFromCache = type === Protocol.Page.NavigationType.BackForwardCacheRestore;
     }
 
     this.dispatchEventToListeners(Events.FrameWillNavigate, frame);
@@ -204,6 +205,7 @@ export class ResourceTreeModel extends SDKModel {
     this.dispatchEventToListeners(Events.FrameNavigated, frame);
 
     if (frame.isMainFrame()) {
+      this.processPendingBackForwardCacheNotUsedEvents(frame);
       this.dispatchEventToListeners(Events.MainFrameNavigated, frame);
     }
 
@@ -498,6 +500,30 @@ export class ResourceTreeModel extends SDKModel {
     const data = this._getSecurityOriginData();
     return data.mainSecurityOrigin || data.unreachableMainSecurityOrigin;
   }
+
+  onBackForwardCacheNotUsed(event: Protocol.Page.BackForwardCacheNotUsedEvent): void {
+    if (this.mainFrame && this.mainFrame.id === event.frameId && this.mainFrame.loaderId === event.loaderId) {
+      this.mainFrame.backForwardCacheDetails.restoredFromCache = false;
+      this.dispatchEventToListeners(Events.BackForwardCacheDetailsUpdated, this.mainFrame);
+    } else {
+      this.pendingBackForwardCacheNotUsedEvents.add(event);
+    }
+  }
+
+  processPendingBackForwardCacheNotUsedEvents(frame: ResourceTreeFrame): void {
+    if (!frame.isMainFrame()) {
+      return;
+    }
+    for (const event of this.pendingBackForwardCacheNotUsedEvents) {
+      if (frame.id === event.frameId && frame.loaderId === event.loaderId) {
+        frame.backForwardCacheDetails.restoredFromCache = false;
+        this.pendingBackForwardCacheNotUsedEvents.delete(event);
+        // No need to dispatch the `BackForwardCacheDetailsUpdated` event here,
+        // as this method call is followed by a `MainFrameNavigated` event.
+        return;
+      }
+    }
+  }
 }
 
 // TODO(crbug.com/1167717): Make this a const enum again
@@ -519,6 +545,7 @@ export enum Events {
   WillReloadPage = 'WillReloadPage',
   InterstitialShown = 'InterstitialShown',
   InterstitialHidden = 'InterstitialHidden',
+  BackForwardCacheDetailsUpdated = 'BackForwardCacheDetailsUpdated',
 }
 
 
@@ -541,7 +568,7 @@ export class ResourceTreeFrame {
   _creationStackTrace: Protocol.Runtime.StackTrace|null;
   _childFrames: Set<ResourceTreeFrame>;
   _resourcesMap: Map<string, Resource>;
-  restoredFromBackForwardCache: boolean|undefined = undefined;
+  backForwardCacheDetails: {restoredFromCache: boolean|undefined} = {restoredFromCache: undefined};
 
   constructor(
       model: ResourceTreeModel, parentFrame: ResourceTreeFrame|null, frameId: string, payload: Protocol.Page.Frame|null,
@@ -862,7 +889,8 @@ export class PageDispatcher implements ProtocolProxyApi.PageDispatcher {
   constructor(resourceTreeModel: ResourceTreeModel) {
     this._resourceTreeModel = resourceTreeModel;
   }
-  backForwardCacheNotUsed(_params: Protocol.Page.BackForwardCacheNotUsedEvent): void {
+  backForwardCacheNotUsed(params: Protocol.Page.BackForwardCacheNotUsedEvent): void {
+    this._resourceTreeModel.onBackForwardCacheNotUsed(params);
   }
 
   domContentEventFired({timestamp}: Protocol.Page.DomContentEventFiredEvent): void {

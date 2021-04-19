@@ -55,11 +55,13 @@ export class BackForwardCacheView extends UI.ThrottledWidget.ThrottledWidget {
   constructor() {
     super(true, 1000);
     this.getMainResourceTreeModel()?.addEventListener(
-        SDK.ResourceTreeModel.Events.MainFrameNavigated, this.onMainFrameNavigated, this);
+        SDK.ResourceTreeModel.Events.MainFrameNavigated, this.onBackForwardCacheUpdate, this);
+    this.getMainResourceTreeModel()?.addEventListener(
+        SDK.ResourceTreeModel.Events.BackForwardCacheDetailsUpdated, this.onBackForwardCacheUpdate, this);
     this.update();
   }
 
-  private onMainFrameNavigated(): void {
+  private onBackForwardCacheUpdate(): void {
     this.update();
   }
 
@@ -95,7 +97,7 @@ export class BackForwardCacheView extends UI.ThrottledWidget.ThrottledWidget {
       <devtools-report-value>${mainFrame.url}</devtools-report-value>
       <devtools-report-key>${i18nString(UIStrings.bfcacheStatus)}</devtools-report-key>
       <devtools-report-value>${
-        this.renderBackForwardCacheStatus(mainFrame.restoredFromBackForwardCache)}</devtools-report-value>
+        this.renderBackForwardCacheStatus(mainFrame.backForwardCacheDetails.restoredFromCache)}</devtools-report-value>
     `;
   }
 

@@ -33,6 +33,7 @@ group("front_end") {
     "entrypoints/shell",
     "entrypoints/startup:bundle",
     "entrypoints/toolbox",
+    "entrypoints/wasmparser_worker:worker_entrypoint",
     "entrypoints/worker_app",
     "legacy_test_runner",
     "models/bindings:bundle",
@@ -63,7 +64,6 @@ group("front_end") {
     "ui/legacy/components/inline_editor:bundle",
     "ui/legacy/components/text_editor:bundle",
     "ui/legacy/theme_support:bundle",
-    "wasmparser_worker:worker_entrypoint",
     "worker_main:bundle",
     "workspace_diff:bundle",
   ]

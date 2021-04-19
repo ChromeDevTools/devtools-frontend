@@ -357,7 +357,7 @@ export class SourceFrameImpl extends UI.View.SimpleView implements UI.Searchable
 
       if (!error && this._highlighterType === 'application/wasm') {
         const worker = Common.Worker.WorkerWrapper.fromURL(
-            new URL('../../../../wasmparser_worker/wasmparser_worker-entrypoint.js', import.meta.url));
+            new URL('../../../../entrypoints/wasmparser_worker/wasmparser_worker-entrypoint.js', import.meta.url));
         const promise = new Promise<{
           source: string,
           offsets: number[],

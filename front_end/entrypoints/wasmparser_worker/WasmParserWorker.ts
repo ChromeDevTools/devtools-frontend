@@ -30,9 +30,9 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../core/common/common.js';
-import * as WasmDis from '../third_party/wasmparser/package/dist/esm/WasmDis.js';
-import * as WasmParser from '../third_party/wasmparser/package/dist/esm/WasmParser.js';
+import * as Common from '../../core/common/common.js';
+import * as WasmDis from '../../third_party/wasmparser/package/dist/esm/WasmDis.js';
+import * as WasmParser from '../../third_party/wasmparser/package/dist/esm/WasmParser.js';
 
 export function dissambleWASM(
     params: {

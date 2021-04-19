@@ -12,6 +12,7 @@ import * as ProtocolClient from '../protocol_client/protocol_client.js';
 export interface RegistrationInfo {
   capabilities: number;
   autostart: boolean;
+  early?: boolean;
 }
 
 const registeredModels = new Map<new (arg1: Target) => SDKModel, RegistrationInfo>();
@@ -52,6 +53,9 @@ export class SDKModel extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   static register(modelClass: new(arg1: Target) => SDKModel, registrationInfo: RegistrationInfo): void {
+    if (registrationInfo.early && !registrationInfo.autostart) {
+      throw new Error(`Error registering model ${modelClass.name}: early models must be autostarted.`);
+    }
     registeredModels.set(modelClass, registrationInfo);
   }
 
@@ -127,15 +131,15 @@ export class Target extends ProtocolClient.InspectorBackend.TargetBase {
 
   createModels(required: Set<new(arg1: Target) => SDKModel>): void {
     this._creatingModels = true;
-    // TODO(dgozman): fix this in bindings layer.
-    // @ts-ignore ResourceTreeModel inherits from SDKModel introducing a cyclic dependency. Use the global for now.
-    this.model(SDK.ResourceTreeModel);
-    const registered = Array.from(SDKModel.registeredModels.keys());
-    for (const modelClass of registered) {
-      const info = (SDKModel.registeredModels.get(modelClass) as {
-        capabilities: number,
-        autostart: boolean,
-      });
+    const registeredModels = Array.from(SDKModel.registeredModels.entries());
+    // Create early models.
+    for (const [modelClass, info] of registeredModels) {
+      if (info.early) {
+        this.model(modelClass);
+      }
+    }
+    // Create autostart and required models.
+    for (const [modelClass, info] of registeredModels) {
       if (info.autostart || required.has(modelClass)) {
         this.model(modelClass);
       }

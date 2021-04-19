@@ -366,6 +366,13 @@ export namespace ProtocolMapping {
      * Fired for top level page lifecycle events such as navigation, load, paint, etc.
      */
     'Page.lifecycleEvent': [Protocol.Page.LifecycleEventEvent];
+    /**
+     * Fired for failed bfcache history navigations if BackForwardCache feature is enabled. Do
+     * not assume any ordering with the Page.frameNavigated event. This event is fired only for
+     * main-frame history navigation where the document changes (non-same-document navigations),
+     * when bfcache navigation fails.
+     */
+    'Page.backForwardCacheNotUsed': [Protocol.Page.BackForwardCacheNotUsedEvent];
     'Page.loadEventFired': [Protocol.Page.LoadEventFiredEvent];
     /**
      * Fired when same-document navigation happens, e.g. due to history API usage or anchor navigation.

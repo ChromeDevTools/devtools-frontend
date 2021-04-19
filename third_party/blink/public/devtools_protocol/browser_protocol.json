@@ -16060,6 +16060,23 @@
                     ]
                 },
                 {
+                    "name": "backForwardCacheNotUsed",
+                    "description": "Fired for failed bfcache history navigations if BackForwardCache feature is enabled. Do\nnot assume any ordering with the Page.frameNavigated event. This event is fired only for\nmain-frame history navigation where the document changes (non-same-document navigations),\nwhen bfcache navigation fails.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "loaderId",
+                            "description": "The loader id for the associated navgation.",
+                            "$ref": "Network.LoaderId"
+                        },
+                        {
+                            "name": "frameId",
+                            "description": "The frame id of the associated frame.",
+                            "$ref": "FrameId"
+                        }
+                    ]
+                },
+                {
                     "name": "loadEventFired",
                     "parameters": [
                         {
@@ -19566,6 +19583,12 @@
                         {
                             "name": "hasLargeBlob",
                             "description": "If set to true, the authenticator will support the largeBlob extension.\nhttps://w3c.github.io/webauthn#largeBlob\nDefaults to false.",
+                            "optional": true,
+                            "type": "boolean"
+                        },
+                        {
+                            "name": "hasCredBlob",
+                            "description": "If set to true, the authenticator will support the credBlob extension.\nhttps://fidoalliance.org/specs/fido-v2.1-rd-20201208/fido-client-to-authenticator-protocol-v2.1-rd-20201208.html#sctn-credBlob-extension\nDefaults to false.",
                             "optional": true,
                             "type": "boolean"
                         },

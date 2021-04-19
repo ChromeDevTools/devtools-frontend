@@ -862,6 +862,8 @@ export class PageDispatcher implements ProtocolProxyApi.PageDispatcher {
   constructor(resourceTreeModel: ResourceTreeModel) {
     this._resourceTreeModel = resourceTreeModel;
   }
+  backForwardCacheNotUsed(_params: Protocol.Page.BackForwardCacheNotUsedEvent): void {
+  }
 
   domContentEventFired({timestamp}: Protocol.Page.DomContentEventFiredEvent): void {
     this._resourceTreeModel.dispatchEventToListeners(Events.DOMContentLoaded, timestamp);

@@ -78,6 +78,9 @@ export class ScreenCaptureModel extends SDKModel implements ProtocolProxyApi.Pag
     }
   }
 
+  backForwardCacheNotUsed(_params: Protocol.Page.BackForwardCacheNotUsedEvent): void {
+  }
+
   domContentEventFired(_params: Protocol.Page.DomContentEventFiredEvent): void {
   }
 

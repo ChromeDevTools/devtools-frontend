@@ -10912,6 +10912,23 @@ declare namespace Protocol {
       timestamp: Network.MonotonicTime;
     }
 
+    /**
+     * Fired for failed bfcache history navigations if BackForwardCache feature is enabled. Do
+     * not assume any ordering with the Page.frameNavigated event. This event is fired only for
+     * main-frame history navigation where the document changes (non-same-document navigations),
+     * when bfcache navigation fails.
+     */
+    export interface BackForwardCacheNotUsedEvent {
+      /**
+       * The loader id for the associated navgation.
+       */
+      loaderId: Network.LoaderId;
+      /**
+       * The frame id of the associated frame.
+       */
+      frameId: FrameId;
+    }
+
     export interface LoadEventFiredEvent {
       timestamp: Network.MonotonicTime;
     }
@@ -13194,6 +13211,12 @@ declare namespace Protocol {
        * Defaults to false.
        */
       hasLargeBlob?: boolean;
+      /**
+       * If set to true, the authenticator will support the credBlob extension.
+       * https://fidoalliance.org/specs/fido-v2.1-rd-20201208/fido-client-to-authenticator-protocol-v2.1-rd-20201208.html#sctn-credBlob-extension
+       * Defaults to false.
+       */
+      hasCredBlob?: boolean;
       /**
        * If set to true, tests of user presence will succeed immediately.
        * Otherwise, they will not be resolved. Defaults to true.

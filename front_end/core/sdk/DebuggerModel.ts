@@ -1547,7 +1547,7 @@ export class DebuggerPausedDetails {
   }
 }
 
-SDKModel.register(DebuggerModel, Capability.JS, true);
+SDKModel.register(DebuggerModel, {capabilities: Capability.JS, autostart: true});
 
 export interface FunctionDetails {
   location: Location|null;

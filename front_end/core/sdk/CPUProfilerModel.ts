@@ -174,7 +174,7 @@ export enum Events {
   ConsoleProfileFinished = 'ConsoleProfileFinished',
 }
 
-SDKModel.register(CPUProfilerModel, Capability.JS, true);
+SDKModel.register(CPUProfilerModel, {capabilities: Capability.JS, autostart: true});
 
 export interface EventData {
   id: string;

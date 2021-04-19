@@ -85,4 +85,4 @@ const enum MetricMode {
   CumulativeCount = 'CumulativeCount',
 }
 
-SDKModel.register(PerformanceMetricsModel, Capability.DOM, false);
+SDKModel.register(PerformanceMetricsModel, {capabilities: Capability.DOM, autostart: false});

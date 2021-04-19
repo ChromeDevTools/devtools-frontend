@@ -46,4 +46,4 @@ export enum Events {
 }
 
 
-SDKModel.register(LogModel, Capability.Log, true);
+SDKModel.register(LogModel, {capabilities: Capability.Log, autostart: true});

@@ -1635,7 +1635,7 @@ export class DOMModelUndoStack {
   }
 }
 
-SDKModel.register(DOMModel, Capability.DOM, true);
+SDKModel.register(DOMModel, {capabilities: Capability.DOM, autostart: true});
 export interface Attribute {
   name: string;
   value: string;

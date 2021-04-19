@@ -527,4 +527,4 @@ export class DeviceOrientation {
   }
 }
 
-SDKModel.register(EmulationModel, Capability.Emulation, true);
+SDKModel.register(EmulationModel, {capabilities: Capability.Emulation, autostart: true});

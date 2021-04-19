@@ -618,7 +618,7 @@ export class ScreenshotCapture {
   }
 }
 
-SDK.SDKModel.SDKModel.register(AnimationModel, SDK.SDKModel.Capability.DOM, false);
+SDK.SDKModel.SDKModel.register(AnimationModel, {capabilities: SDK.SDKModel.Capability.DOM, autostart: false});
 export interface Request {
   endTime: number;
   screenshots: string[];

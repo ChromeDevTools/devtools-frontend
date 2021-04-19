@@ -121,7 +121,7 @@ class TracingDispatcher implements ProtocolProxyApi.TracingDispatcher {
   }
 }
 
-SDKModel.register(TracingManager, Capability.Tracing, false);
+SDKModel.register(TracingManager, {capabilities: Capability.Tracing, autostart: false});
 export interface EventPayload {
   cat?: string;
   pid: number;

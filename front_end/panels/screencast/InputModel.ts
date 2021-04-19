@@ -116,4 +116,4 @@ export class InputModel extends SDK.SDKModel.SDKModel {
   }
 }
 
-SDK.SDKModel.SDKModel.register(InputModel, SDK.SDKModel.Capability.Input, false);
+SDK.SDKModel.SDKModel.register(InputModel, {capabilities: SDK.SDKModel.Capability.Input, autostart: false});

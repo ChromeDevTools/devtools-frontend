@@ -620,4 +620,4 @@ class ServiceWorkerContextNamer {
   }
 }
 
-SDKModel.register(ServiceWorkerManager, Capability.ServiceWorker, true);
+SDKModel.register(ServiceWorkerManager, {capabilities: Capability.ServiceWorker, autostart: true});

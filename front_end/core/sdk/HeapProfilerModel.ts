@@ -195,4 +195,4 @@ class HeapProfilerDispatcher implements ProtocolProxyApi.HeapProfilerDispatcher 
   }
 }
 
-SDKModel.register(HeapProfilerModel, Capability.JS, false);
+SDKModel.register(HeapProfilerModel, {capabilities: Capability.JS, autostart: false});

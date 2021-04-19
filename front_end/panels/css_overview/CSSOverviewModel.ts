@@ -480,4 +480,4 @@ export class CSSOverviewModel extends SDK.SDKModel.SDKModel {
   }
 }
 
-SDK.SDKModel.SDKModel.register(CSSOverviewModel, SDK.SDKModel.Capability.DOM, false);
+SDK.SDKModel.SDKModel.register(CSSOverviewModel, {capabilities: SDK.SDKModel.Capability.DOM, autostart: false});

@@ -295,4 +295,4 @@ export class Cache {
   }
 }
 
-SDKModel.register(ServiceWorkerCacheModel, Capability.Storage, false);
+SDKModel.register(ServiceWorkerCacheModel, {capabilities: Capability.Storage, autostart: false});

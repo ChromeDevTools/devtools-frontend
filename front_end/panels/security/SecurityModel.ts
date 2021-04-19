@@ -94,7 +94,7 @@ const getOrCreateSecurityStateOrdinalMap = (): Map<Protocol.Security.SecuritySta
   return securityStateToOrdinal;
 };
 
-SDK.SDKModel.SDKModel.register(SecurityModel, SDK.SDKModel.Capability.Security, false);
+SDK.SDKModel.SDKModel.register(SecurityModel, {capabilities: SDK.SDKModel.Capability.Security, autostart: false});
 
 // TODO(crbug.com/1167717): Make this a const enum again
 // eslint-disable-next-line rulesdir/const_enum

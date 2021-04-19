@@ -144,7 +144,7 @@ export class CookieModel extends SDKModel {
   }
 }
 
-SDKModel.register(CookieModel, Capability.Network, false);
+SDKModel.register(CookieModel, {capabilities: Capability.Network, autostart: false});
 export interface BlockedReason {
   uiString: string;
   attribute: Attributes|null;

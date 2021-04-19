@@ -151,4 +151,4 @@ export class ScreenCaptureModel extends SDKModel implements ProtocolProxyApi.Pag
   }
 }
 
-SDKModel.register(ScreenCaptureModel, Capability.ScreenCapture, false);
+SDKModel.register(ScreenCaptureModel, {capabilities: Capability.ScreenCapture, autostart: false});

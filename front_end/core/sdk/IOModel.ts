@@ -75,4 +75,4 @@ export class IOModel extends SDKModel {
   }
 }
 
-SDKModel.register(IOModel, Capability.IO, true);
+SDKModel.register(IOModel, {capabilities: Capability.IO, autostart: true});

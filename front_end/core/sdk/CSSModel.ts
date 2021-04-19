@@ -844,7 +844,7 @@ export enum CSSPropertyTrackerEvents {
 }
 
 
-SDKModel.register(CSSModel, Capability.DOM, true);
+SDKModel.register(CSSModel, {capabilities: Capability.DOM, autostart: true});
 export interface ContrastInfo {
   backgroundColors: string[]|null;
   computedFontSize: string;

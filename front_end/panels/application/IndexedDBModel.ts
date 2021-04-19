@@ -414,7 +414,7 @@ export class IndexedDBModel extends SDK.SDKModel.SDKModel implements ProtocolPro
   }
 }
 
-SDK.SDKModel.SDKModel.register(IndexedDBModel, SDK.SDKModel.Capability.Storage, false);
+SDK.SDKModel.SDKModel.register(IndexedDBModel, {capabilities: SDK.SDKModel.Capability.Storage, autostart: false});
 
 // TODO(crbug.com/1167717): Make this a const enum again
 // eslint-disable-next-line rulesdir/const_enum

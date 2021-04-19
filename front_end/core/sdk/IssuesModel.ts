@@ -57,4 +57,4 @@ export const Events = {
   IssueAdded: Symbol('IssueAdded'),
 };
 
-SDKModel.register(IssuesModel, Capability.Audits, true);
+SDKModel.register(IssuesModel, {capabilities: Capability.Audits, autostart: true});

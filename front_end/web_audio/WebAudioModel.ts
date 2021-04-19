@@ -118,7 +118,7 @@ export class WebAudioModel extends SDK.SDKModel.SDKModel implements ProtocolProx
   }
 }
 
-SDK.SDKModel.SDKModel.register(WebAudioModel, SDK.SDKModel.Capability.DOM, false);
+SDK.SDKModel.SDKModel.register(WebAudioModel, {capabilities: SDK.SDKModel.Capability.DOM, autostart: false});
 
 export const enum Events {
   ContextCreated = 'ContextCreated',

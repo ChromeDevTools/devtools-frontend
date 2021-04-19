@@ -553,7 +553,7 @@ export class CoverageModel extends SDK.SDKModel.SDKModel {
   }
 }
 
-SDK.SDKModel.SDKModel.register(CoverageModel, SDK.SDKModel.Capability.None, false);
+SDK.SDKModel.SDKModel.register(CoverageModel, {capabilities: SDK.SDKModel.Capability.None, autostart: false});
 
 export class URLCoverageInfo extends Common.ObjectWrapper.ObjectWrapper {
   _url: string;

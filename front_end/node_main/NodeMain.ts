@@ -169,4 +169,4 @@ export class NodeConnection implements ProtocolClient.InspectorBackend.Connectio
   }
 }
 
-SDK.SDKModel.SDKModel.register(NodeChildTargetManager, SDK.SDKModel.Capability.Target, true);
+SDK.SDKModel.SDKModel.register(NodeChildTargetManager, {capabilities: SDK.SDKModel.Capability.Target, autostart: true});

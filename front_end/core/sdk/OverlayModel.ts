@@ -806,7 +806,7 @@ export class SourceOrderHighlighter {
   }
 }
 
-SDKModel.register(OverlayModel, Capability.DOM, true);
+SDKModel.register(OverlayModel, {capabilities: Capability.DOM, autostart: true});
 
 export interface HighlightNodeData {
   node: DOMNode;

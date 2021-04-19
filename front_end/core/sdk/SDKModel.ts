@@ -9,12 +9,12 @@ import * as Host from '../host/host.js';
 import * as Platform from '../platform/platform.js';
 import * as ProtocolClient from '../protocol_client/protocol_client.js';
 
-// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-// eslint-disable-next-line @typescript-eslint/naming-convention
-const _registeredModels = new Map<new (arg1: Target) => SDKModel, {
-  capabilities: number,
-  autostart: boolean,
-}>();
+export interface RegistrationInfo {
+  capabilities: number;
+  autostart: boolean;
+}
+
+const registeredModels = new Map<new (arg1: Target) => SDKModel, RegistrationInfo>();
 
 export class SDKModel extends Common.ObjectWrapper.ObjectWrapper {
   _target: Target;
@@ -51,12 +51,12 @@ export class SDKModel extends Common.ObjectWrapper.ObjectWrapper {
   dispose(): void {
   }
 
-  static register(modelClass: new(arg1: Target) => SDKModel, capabilities: number, autostart: boolean): void {
-    _registeredModels.set(modelClass, {capabilities, autostart});
+  static register(modelClass: new(arg1: Target) => SDKModel, registrationInfo: RegistrationInfo): void {
+    registeredModels.set(modelClass, registrationInfo);
   }
 
-  static get registeredModels(): typeof _registeredModels {
-    return _registeredModels;
+  static get registeredModels(): typeof registeredModels {
+    return registeredModels;
   }
 }
 

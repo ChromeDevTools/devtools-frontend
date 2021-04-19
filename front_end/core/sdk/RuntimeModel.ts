@@ -679,7 +679,7 @@ export class ExecutionContext {
   }
 }
 
-SDKModel.register(RuntimeModel, Capability.JS, true);
+SDKModel.register(RuntimeModel, {capabilities: Capability.JS, autostart: true});
 
 export type EvaluationResult = {
   object: RemoteObject,

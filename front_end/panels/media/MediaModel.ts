@@ -65,4 +65,4 @@ export class MediaModel extends SDK.SDKModel.SDKModel implements ProtocolProxyAp
   }
 }
 
-SDK.SDKModel.SDKModel.register(MediaModel, SDK.SDKModel.Capability.DOM, false);
+SDK.SDKModel.SDKModel.register(MediaModel, {capabilities: SDK.SDKModel.Capability.DOM, autostart: false});

@@ -58,7 +58,7 @@ export class ChildTargetManager extends SDKModel implements ProtocolProxyApi.Tar
                                      waitingForDebugger: boolean,
                                    }) => Promise<void>)): void {
     _attachCallback = attachCallback;
-    SDKModel.register(ChildTargetManager, Capability.Target, true);
+    SDKModel.register(ChildTargetManager, {capabilities: Capability.Target, autostart: true});
   }
 
   childTargets(): Target[] {

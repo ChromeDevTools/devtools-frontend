@@ -282,4 +282,4 @@ export class AccessibilityModel extends SDKModel {
   }
 }
 
-SDKModel.register(AccessibilityModel, Capability.DOM, false);
+SDKModel.register(AccessibilityModel, {capabilities: Capability.DOM, autostart: false});

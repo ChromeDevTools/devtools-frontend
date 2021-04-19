@@ -1485,7 +1485,7 @@ class RedirectExtraInfoBuilder {
   }
 }
 
-SDKModel.register(NetworkManager, Capability.Network, true);
+SDKModel.register(NetworkManager, {capabilities: Capability.Network, autostart: true});
 export interface Conditions {
   download: number;
   upload: number;

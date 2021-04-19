@@ -74,4 +74,4 @@ export class RecorderModel extends SDK.SDKModel.SDKModel {
   }
 }
 
-SDK.SDKModel.SDKModel.register(RecorderModel, SDK.SDKModel.Capability.None, false);
+SDK.SDKModel.SDKModel.register(RecorderModel, {capabilities: SDK.SDKModel.Capability.None, autostart: false});

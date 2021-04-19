@@ -1101,4 +1101,4 @@ export class DOMDebuggerManager implements SDKModelObserver<DOMDebuggerModel> {
   }
 }
 
-SDKModel.register(DOMDebuggerModel, Capability.DOM, false);
+SDKModel.register(DOMDebuggerModel, {capabilities: Capability.DOM, autostart: false});

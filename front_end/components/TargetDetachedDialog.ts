@@ -70,4 +70,5 @@ export class TargetDetachedDialog extends SDK.SDKModel.SDKModel implements Proto
   }
 }
 
-SDK.SDKModel.SDKModel.register(TargetDetachedDialog, SDK.SDKModel.Capability.Inspector, true);
+SDK.SDKModel.SDKModel.register(
+    TargetDetachedDialog, {capabilities: SDK.SDKModel.Capability.Inspector, autostart: true});

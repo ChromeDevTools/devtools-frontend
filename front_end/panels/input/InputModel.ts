@@ -189,7 +189,7 @@ const BUTTONID_TO_ACTION_NAME = new Map<number, Protocol.Input.MouseButton>([
   [4, Protocol.Input.MouseButton.Forward],
 ]);
 
-SDK.SDKModel.SDKModel.register(InputModel, SDK.SDKModel.Capability.Input, false);
+SDK.SDKModel.SDKModel.register(InputModel, {capabilities: SDK.SDKModel.Capability.Input, autostart: false});
 export interface MouseEventData {
   type: string;
   modifiers: number;

@@ -1,7 +1,7 @@
 {
   "dependencies": [
     "panels/elements",
-    "sources",
+    "panels/sources",
     "panels/console"
   ],
     "resources": [

@@ -9,7 +9,7 @@ ts_library("sources") {
   sources = [ "FilePathScoreFunction_test.ts" ]
 
   deps = [
-    "../../../../front_end/sources:bundle",
+    "../../../../front_end/panels/sources:bundle",
     "../helpers",
   ]
 }

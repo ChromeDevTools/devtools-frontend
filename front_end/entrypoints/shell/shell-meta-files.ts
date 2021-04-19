@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import '../../sources/sources-meta.js';
+import '../../panels/sources/sources-meta.js';
 import '../../panels/profiler/profiler-meta.js';
 import '../../panels/console/console-meta.js';
 import '../../panels/coverage/coverage-meta.js';

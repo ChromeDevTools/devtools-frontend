@@ -25,7 +25,7 @@
     { "name": "settings" },
     { "name": "snippets" },
     { "name": "ui/legacy/components/source_frame" },
-    { "name": "sources" },
+    { "name": "panels/sources" },
     { "name": "ui/legacy/components/text_editor" },
     { "name": "workspace_diff" }
   ]

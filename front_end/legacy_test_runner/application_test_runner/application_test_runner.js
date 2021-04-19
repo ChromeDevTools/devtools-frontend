@@ -5,7 +5,7 @@
 import '../test_runner/test_runner.js';
 import '../../panels/application/application-legacy.js';
 import '../console_test_runner/console_test_runner.js';
-import '../../sources/sources-legacy.js';
+import '../../panels/sources/sources-legacy.js';
 import '../sources_test_runner/sources_test_runner.js';
 
 import './AppcacheTestRunner.js';

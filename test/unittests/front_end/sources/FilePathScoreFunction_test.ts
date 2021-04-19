@@ -5,7 +5,7 @@
 const {assert} = chai;
 
 import {describeWithEnvironment} from '../helpers/EnvironmentHelpers.js';
-import * as Sources from '../../../../front_end/sources/sources.js';
+import * as Sources from '../../../../front_end/panels/sources/sources.js';
 
 describeWithEnvironment('FilePathScoreFunction', () => {
   describe('score', () => {

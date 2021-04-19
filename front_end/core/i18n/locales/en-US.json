@@ -8156,6 +8156,801 @@
   "panels/security/SecurityPanel.ts | yourPageRequestedNonsecure": {
     "message": "Your page requested non-secure resources that were blocked."
   },
+  "panels/sources/AddSourceMapURLDialog.ts | add": {
+    "message": "Add"
+  },
+  "panels/sources/AddSourceMapURLDialog.ts | sourceMapUrl": {
+    "message": "Source map URL: "
+  },
+  "panels/sources/BreakpointEditDialog.ts | breakpoint": {
+    "message": "Breakpoint"
+  },
+  "panels/sources/BreakpointEditDialog.ts | breakpointType": {
+    "message": "Breakpoint type"
+  },
+  "panels/sources/BreakpointEditDialog.ts | conditionalBreakpoint": {
+    "message": "Conditional breakpoint"
+  },
+  "panels/sources/BreakpointEditDialog.ts | expressionToCheckBeforePausingEg": {
+    "message": "Expression to check before pausing, e.g. x > 5"
+  },
+  "panels/sources/BreakpointEditDialog.ts | logAMessageToConsoleDoNotBreak": {
+    "message": "Log a message to Console, do not break"
+  },
+  "panels/sources/BreakpointEditDialog.ts | logMessageEgXIsX": {
+    "message": "Log message, e.g. 'x is', x"
+  },
+  "panels/sources/BreakpointEditDialog.ts | logpoint": {
+    "message": "Logpoint"
+  },
+  "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
+    "message": "Pause only when the condition is true"
+  },
+  "panels/sources/CallStackSidebarPane.ts | addAllContentScriptsToIgnoreList": {
+    "message": "Add all content scripts to ignore list"
+  },
+  "panels/sources/CallStackSidebarPane.ts | addScriptToIgnoreList": {
+    "message": "Add script to ignore list"
+  },
+  "panels/sources/CallStackSidebarPane.ts | callStack": {
+    "message": "Call Stack"
+  },
+  "panels/sources/CallStackSidebarPane.ts | copyStackTrace": {
+    "message": "Copy stack trace"
+  },
+  "panels/sources/CallStackSidebarPane.ts | notPaused": {
+    "message": "Not paused"
+  },
+  "panels/sources/CallStackSidebarPane.ts | onIgnoreList": {
+    "message": "on ignore list"
+  },
+  "panels/sources/CallStackSidebarPane.ts | removeAllContentScriptsFrom": {
+    "message": "Remove all content scripts from ignore list"
+  },
+  "panels/sources/CallStackSidebarPane.ts | removeFromIgnoreList": {
+    "message": "Remove from ignore list"
+  },
+  "panels/sources/CallStackSidebarPane.ts | restartFrame": {
+    "message": "Restart frame"
+  },
+  "panels/sources/CallStackSidebarPane.ts | showIgnorelistedFrames": {
+    "message": "Show ignore-listed frames"
+  },
+  "panels/sources/CallStackSidebarPane.ts | showMore": {
+    "message": "Show more"
+  },
+  "panels/sources/CoveragePlugin.ts | clickToShowCoveragePanel": {
+    "message": "Click to show Coverage Panel"
+  },
+  "panels/sources/CoveragePlugin.ts | coverageNa": {
+    "message": "Coverage: n/a"
+  },
+  "panels/sources/CoveragePlugin.ts | coverageS": {
+    "message": "Coverage: {PH1} %"
+  },
+  "panels/sources/CoveragePlugin.ts | showDetails": {
+    "message": "Show Details"
+  },
+  "panels/sources/CSSPlugin.ts | openColorPicker": {
+    "message": "Open color picker."
+  },
+  "panels/sources/CSSPlugin.ts | openCubicBezierEditor": {
+    "message": "Open cubic bezier editor."
+  },
+  "panels/sources/DebuggerPausedMessage.ts | attributeModifications": {
+    "message": "attribute modifications"
+  },
+  "panels/sources/DebuggerPausedMessage.ts | childSAdded": {
+    "message": "Child {PH1} added"
+  },
+  "panels/sources/DebuggerPausedMessage.ts | debuggerPaused": {
+    "message": "Debugger paused"
+  },
+  "panels/sources/DebuggerPausedMessage.ts | descendantSAdded": {
+    "message": "Descendant {PH1} added"
+  },
+  "panels/sources/DebuggerPausedMessage.ts | descendantSRemoved": {
+    "message": "Descendant {PH1} removed"
+  },
+  "panels/sources/DebuggerPausedMessage.ts | nodeRemoval": {
+    "message": "node removal"
+  },
+  "panels/sources/DebuggerPausedMessage.ts | pausedBeforePotentialOutofmemory": {
+    "message": "Paused before potential out-of-memory crash"
+  },
+  "panels/sources/DebuggerPausedMessage.ts | pausedOnAssertion": {
+    "message": "Paused on assertion"
+  },
+  "panels/sources/DebuggerPausedMessage.ts | pausedOnBreakpoint": {
+    "message": "Paused on breakpoint"
+  },
+  "panels/sources/DebuggerPausedMessage.ts | pausedOnCspViolation": {
+    "message": "Paused on CSP violation"
+  },
+  "panels/sources/DebuggerPausedMessage.ts | pausedOnDebuggedFunction": {
+    "message": "Paused on debugged function"
+  },
+  "panels/sources/DebuggerPausedMessage.ts | pausedOnEventListener": {
+    "message": "Paused on event listener"
+  },
+  "panels/sources/DebuggerPausedMessage.ts | pausedOnException": {
+    "message": "Paused on exception"
+  },
+  "panels/sources/DebuggerPausedMessage.ts | pausedOnPromiseRejection": {
+    "message": "Paused on promise rejection"
+  },
+  "panels/sources/DebuggerPausedMessage.ts | pausedOnS": {
+    "message": "Paused on {PH1}"
+  },
+  "panels/sources/DebuggerPausedMessage.ts | pausedOnXhrOrFetch": {
+    "message": "Paused on XHR or fetch"
+  },
+  "panels/sources/DebuggerPausedMessage.ts | subtreeModifications": {
+    "message": "subtree modifications"
+  },
+  "panels/sources/DebuggerPausedMessage.ts | trustedTypePolicyViolation": {
+    "message": "Trusted Type Policy Violation"
+  },
+  "panels/sources/DebuggerPausedMessage.ts | trustedTypeSinkViolation": {
+    "message": "Trusted Type Sink Violation"
+  },
+  "panels/sources/DebuggerPlugin.ts | addBreakpoint": {
+    "message": "Add breakpoint"
+  },
+  "panels/sources/DebuggerPlugin.ts | addConditionalBreakpoint": {
+    "message": "Add conditional breakpoint…"
+  },
+  "panels/sources/DebuggerPlugin.ts | addLogpoint": {
+    "message": "Add logpoint…"
+  },
+  "panels/sources/DebuggerPlugin.ts | addSourceMap": {
+    "message": "Add source map…"
+  },
+  "panels/sources/DebuggerPlugin.ts | associatedFilesAreAvailable": {
+    "message": "Associated files are available via file tree or {PH1}."
+  },
+  "panels/sources/DebuggerPlugin.ts | associatedFilesShouldBeAdded": {
+    "message": "Associated files should be added to the file tree. You can debug these resolved source files as regular JavaScript files."
+  },
+  "panels/sources/DebuggerPlugin.ts | configure": {
+    "message": "Configure"
+  },
+  "panels/sources/DebuggerPlugin.ts | disableBreakpoint": {
+    "message": "{n, plural, =1 {Disable breakpoint} other {Disable all breakpoints in line}}"
+  },
+  "panels/sources/DebuggerPlugin.ts | editBreakpoint": {
+    "message": "Edit breakpoint…"
+  },
+  "panels/sources/DebuggerPlugin.ts | enableBreakpoint": {
+    "message": "{n, plural, =1 {Enable breakpoint} other {Enable all breakpoints in line}}"
+  },
+  "panels/sources/DebuggerPlugin.ts | neverPauseHere": {
+    "message": "Never pause here"
+  },
+  "panels/sources/DebuggerPlugin.ts | prettyprint": {
+    "message": "Pretty-print"
+  },
+  "panels/sources/DebuggerPlugin.ts | prettyprintingWillFormatThisFile": {
+    "message": "Pretty-printing will format this file in a new tab where you can continue debugging. You can also pretty-print this file by clicking the {PH1} button on the bottom status bar."
+  },
+  "panels/sources/DebuggerPlugin.ts | prettyprintThisMinifiedFile": {
+    "message": "Pretty-print this minified file?"
+  },
+  "panels/sources/DebuggerPlugin.ts | removeBreakpoint": {
+    "message": "{n, plural, =1 {Remove breakpoint} other {Remove all breakpoints in line}}"
+  },
+  "panels/sources/DebuggerPlugin.ts | removeFromIgnoreList": {
+    "message": "Remove from ignore list"
+  },
+  "panels/sources/DebuggerPlugin.ts | sourceMapDetected": {
+    "message": "Source map detected."
+  },
+  "panels/sources/DebuggerPlugin.ts | sourceMapFoundButIgnoredForFile": {
+    "message": "Source map found, but ignored for file on ignore list."
+  },
+  "panels/sources/DebuggerPlugin.ts | theDebuggerWillSkipStepping": {
+    "message": "The debugger will skip stepping through this script, and will not stop on exceptions."
+  },
+  "panels/sources/DebuggerPlugin.ts | thisScriptIsOnTheDebuggersIgnore": {
+    "message": "This script is on the debugger's ignore list"
+  },
+  "panels/sources/FilteredUISourceCodeListProvider.ts | noFilesFound": {
+    "message": "No files found"
+  },
+  "panels/sources/GoToLineQuickOpen.ts | currentLineSTypeALineNumber": {
+    "message": "Current line: {PH1}. Type a line number between 1 and {PH2} to navigate to."
+  },
+  "panels/sources/GoToLineQuickOpen.ts | currentPositionXsTypeAnOffset": {
+    "message": "Current position: 0x{PH1}. Type an offset between 0x{PH2} and 0x{PH3} to navigate to."
+  },
+  "panels/sources/GoToLineQuickOpen.ts | goToLineS": {
+    "message": "Go to line {PH1}."
+  },
+  "panels/sources/GoToLineQuickOpen.ts | goToLineSAndColumnS": {
+    "message": "Go to line {PH1} and column {PH2}."
+  },
+  "panels/sources/GoToLineQuickOpen.ts | goToOffsetXs": {
+    "message": "Go to offset 0x{PH1}."
+  },
+  "panels/sources/GoToLineQuickOpen.ts | noFileSelected": {
+    "message": "No file selected."
+  },
+  "panels/sources/GoToLineQuickOpen.ts | typeANumberToGoToThatLine": {
+    "message": "Type a number to go to that line."
+  },
+  "panels/sources/GutterDiffPlugin.ts | localModifications": {
+    "message": "Local Modifications..."
+  },
+  "panels/sources/InplaceFormatterEditorAction.ts | format": {
+    "message": "Format"
+  },
+  "panels/sources/InplaceFormatterEditorAction.ts | formatS": {
+    "message": "Format {PH1}"
+  },
+  "panels/sources/JavaScriptBreakpointsSidebarPane.ts | activateBreakpoints": {
+    "message": "Activate breakpoints"
+  },
+  "panels/sources/JavaScriptBreakpointsSidebarPane.ts | checked": {
+    "message": "checked"
+  },
+  "panels/sources/JavaScriptBreakpointsSidebarPane.ts | deactivateBreakpoints": {
+    "message": "Deactivate breakpoints"
+  },
+  "panels/sources/JavaScriptBreakpointsSidebarPane.ts | disableAllBreakpoints": {
+    "message": "Disable all breakpoints"
+  },
+  "panels/sources/JavaScriptBreakpointsSidebarPane.ts | disableBreakpointsInFile": {
+    "message": "Disable breakpoints in file"
+  },
+  "panels/sources/JavaScriptBreakpointsSidebarPane.ts | enableAllBreakpoints": {
+    "message": "Enable all breakpoints"
+  },
+  "panels/sources/JavaScriptBreakpointsSidebarPane.ts | enableBreakpointsInFile": {
+    "message": "Enable breakpoints in file"
+  },
+  "panels/sources/JavaScriptBreakpointsSidebarPane.ts | mixed": {
+    "message": "mixed"
+  },
+  "panels/sources/JavaScriptBreakpointsSidebarPane.ts | noBreakpoints": {
+    "message": "No breakpoints"
+  },
+  "panels/sources/JavaScriptBreakpointsSidebarPane.ts | removeAllBreakpoints": {
+    "message": "Remove all breakpoints"
+  },
+  "panels/sources/JavaScriptBreakpointsSidebarPane.ts | removeAllBreakpointsInLine": {
+    "message": "Remove all breakpoints in line"
+  },
+  "panels/sources/JavaScriptBreakpointsSidebarPane.ts | removeBreakpoint": {
+    "message": "Remove breakpoint"
+  },
+  "panels/sources/JavaScriptBreakpointsSidebarPane.ts | removeOtherBreakpoints": {
+    "message": "Remove other breakpoints"
+  },
+  "panels/sources/JavaScriptBreakpointsSidebarPane.ts | revealLocation": {
+    "message": "Reveal location"
+  },
+  "panels/sources/JavaScriptBreakpointsSidebarPane.ts | sBreakpointHit": {
+    "message": "{PH1} breakpoint hit"
+  },
+  "panels/sources/JavaScriptBreakpointsSidebarPane.ts | unchecked": {
+    "message": "unchecked"
+  },
+  "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteAll": {
+    "message": "Are you sure you want to delete all overrides contained in this folder?"
+  },
+  "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteThis": {
+    "message": "Are you sure you want to delete this file?"
+  },
+  "panels/sources/NavigatorView.ts | areYouSureYouWantToExcludeThis": {
+    "message": "Are you sure you want to exclude this folder?"
+  },
+  "panels/sources/NavigatorView.ts | areYouSureYouWantToRemoveThis": {
+    "message": "Are you sure you want to remove this folder?"
+  },
+  "panels/sources/NavigatorView.ts | delete": {
+    "message": "Delete"
+  },
+  "panels/sources/NavigatorView.ts | deleteAllOverrides": {
+    "message": "Delete all overrides"
+  },
+  "panels/sources/NavigatorView.ts | excludeFolder": {
+    "message": "Exclude folder"
+  },
+  "panels/sources/NavigatorView.ts | makeACopy": {
+    "message": "Make a copy…"
+  },
+  "panels/sources/NavigatorView.ts | newFile": {
+    "message": "New file"
+  },
+  "panels/sources/NavigatorView.ts | noDomain": {
+    "message": "(no domain)"
+  },
+  "panels/sources/NavigatorView.ts | openFolder": {
+    "message": "Open folder"
+  },
+  "panels/sources/NavigatorView.ts | removeFolderFromWorkspace": {
+    "message": "Remove folder from workspace"
+  },
+  "panels/sources/NavigatorView.ts | rename": {
+    "message": "Rename…"
+  },
+  "panels/sources/NavigatorView.ts | searchInAllFiles": {
+    "message": "Search in all files"
+  },
+  "panels/sources/NavigatorView.ts | searchInFolder": {
+    "message": "Search in folder"
+  },
+  "panels/sources/NavigatorView.ts | sFromSourceMap": {
+    "message": "{PH1} (from source map)"
+  },
+  "panels/sources/OutlineQuickOpen.ts | noFileSelected": {
+    "message": "No file selected."
+  },
+  "panels/sources/OutlineQuickOpen.ts | noResultsFound": {
+    "message": "No results found"
+  },
+  "panels/sources/OutlineQuickOpen.ts | openAJavascriptOrCssFileToSee": {
+    "message": "Open a JavaScript or CSS file to see symbols"
+  },
+  "panels/sources/RecorderPlugin.ts | record": {
+    "message": "Record"
+  },
+  "panels/sources/ScopeChainSidebarPane.ts | closure": {
+    "message": "Closure"
+  },
+  "panels/sources/ScopeChainSidebarPane.ts | closureS": {
+    "message": "Closure ({PH1})"
+  },
+  "panels/sources/ScopeChainSidebarPane.ts | couldNotOpenLinearMemory": {
+    "message": "Could not open linear memory inspector: failed locating buffer."
+  },
+  "panels/sources/ScopeChainSidebarPane.ts | exception": {
+    "message": "Exception"
+  },
+  "panels/sources/ScopeChainSidebarPane.ts | loading": {
+    "message": "Loading..."
+  },
+  "panels/sources/ScopeChainSidebarPane.ts | notPaused": {
+    "message": "Not paused"
+  },
+  "panels/sources/ScopeChainSidebarPane.ts | noVariables": {
+    "message": "No variables"
+  },
+  "panels/sources/ScopeChainSidebarPane.ts | returnValue": {
+    "message": "Return value"
+  },
+  "panels/sources/ScopeChainSidebarPane.ts | revealInMemoryInspectorPanel": {
+    "message": "Reveal in Memory Inspector panel"
+  },
+  "panels/sources/ScriptFormatterEditorAction.ts | prettyPrint": {
+    "message": "Pretty print"
+  },
+  "panels/sources/ScriptFormatterEditorAction.ts | prettyPrintS": {
+    "message": "Pretty print {PH1}"
+  },
+  "panels/sources/ScriptOriginPlugin.ts | providedViaDebugInfoByS": {
+    "message": "(provided via debug info by {PH1})"
+  },
+  "panels/sources/ScriptOriginPlugin.ts | sourceMappedFromS": {
+    "message": "(source mapped from {PH1})"
+  },
+  "panels/sources/SnippetsPlugin.ts | ctrlenter": {
+    "message": "Ctrl+Enter"
+  },
+  "panels/sources/SnippetsPlugin.ts | enter": {
+    "message": "⌘+Enter"
+  },
+  "panels/sources/sources-meta.ts | activateBreakpoints": {
+    "message": "Activate breakpoints"
+  },
+  "panels/sources/sources-meta.ts | addFolderToWorkspace": {
+    "message": "Add folder to workspace"
+  },
+  "panels/sources/sources-meta.ts | addSelectedTextToWatches": {
+    "message": "Add selected text to watches"
+  },
+  "panels/sources/sources-meta.ts | all": {
+    "message": "All"
+  },
+  "panels/sources/sources-meta.ts | allowScrollingPastEndOfFile": {
+    "message": "Allow scrolling past end of file"
+  },
+  "panels/sources/sources-meta.ts | autocompletion": {
+    "message": "Autocompletion"
+  },
+  "panels/sources/sources-meta.ts | automaticallyRevealFilesIn": {
+    "message": "Automatically reveal files in sidebar"
+  },
+  "panels/sources/sources-meta.ts | bracketMatching": {
+    "message": "Bracket matching"
+  },
+  "panels/sources/sources-meta.ts | breakpoints": {
+    "message": "Breakpoints"
+  },
+  "panels/sources/sources-meta.ts | closeAll": {
+    "message": "Close All"
+  },
+  "panels/sources/sources-meta.ts | closeTheActiveTab": {
+    "message": "Close the active tab"
+  },
+  "panels/sources/sources-meta.ts | codeFolding": {
+    "message": "Code folding"
+  },
+  "panels/sources/sources-meta.ts | createNewSnippet": {
+    "message": "Create new snippet"
+  },
+  "panels/sources/sources-meta.ts | deactivateBreakpoints": {
+    "message": "Deactivate breakpoints"
+  },
+  "panels/sources/sources-meta.ts | decrementCssUnitByTen": {
+    "message": "Decrement CSS unit by 10"
+  },
+  "panels/sources/sources-meta.ts | detectIndentation": {
+    "message": "Detect indentation"
+  },
+  "panels/sources/sources-meta.ts | disableAutocompletion": {
+    "message": "Disable autocompletion"
+  },
+  "panels/sources/sources-meta.ts | disableBracketMatching": {
+    "message": "Disable bracket matching"
+  },
+  "panels/sources/sources-meta.ts | disableCodeFolding": {
+    "message": "Disable code folding"
+  },
+  "panels/sources/sources-meta.ts | disableCssSourceMaps": {
+    "message": "Disable CSS source maps"
+  },
+  "panels/sources/sources-meta.ts | disableJavascriptSourceMaps": {
+    "message": "Disable JavaScript source maps"
+  },
+  "panels/sources/sources-meta.ts | disableTabMovesFocus": {
+    "message": "Disable tab moves focus"
+  },
+  "panels/sources/sources-meta.ts | disallowScrollingPastEndOfFile": {
+    "message": "Disallow scrolling past end of file"
+  },
+  "panels/sources/sources-meta.ts | displayVariableValuesInlineWhile": {
+    "message": "Display variable values inline while debugging"
+  },
+  "panels/sources/sources-meta.ts | doNotAutomaticallyRevealFilesIn": {
+    "message": "Do not automatically reveal files in sidebar"
+  },
+  "panels/sources/sources-meta.ts | doNotDetectIndentation": {
+    "message": "Do not detect indentation"
+  },
+  "panels/sources/sources-meta.ts | doNotDisplayVariableValuesInline": {
+    "message": "Do not display variable values inline while debugging"
+  },
+  "panels/sources/sources-meta.ts | doNotSearchInAnonymousAndContent": {
+    "message": "Do not search in anonymous and content scripts"
+  },
+  "panels/sources/sources-meta.ts | doNotShowWhitespaceCharacters": {
+    "message": "Do not show whitespace characters"
+  },
+  "panels/sources/sources-meta.ts | enableAutocompletion": {
+    "message": "Enable autocompletion"
+  },
+  "panels/sources/sources-meta.ts | enableBracketMatching": {
+    "message": "Enable bracket matching"
+  },
+  "panels/sources/sources-meta.ts | enableCodeFolding": {
+    "message": "Enable code folding"
+  },
+  "panels/sources/sources-meta.ts | enableCssSourceMaps": {
+    "message": "Enable CSS source maps"
+  },
+  "panels/sources/sources-meta.ts | enableJavascriptSourceMaps": {
+    "message": "Enable JavaScript source maps"
+  },
+  "panels/sources/sources-meta.ts | enableTabMovesFocus": {
+    "message": "Enable tab moves focus"
+  },
+  "panels/sources/sources-meta.ts | evaluateSelectedTextInConsole": {
+    "message": "Evaluate selected text in console"
+  },
+  "panels/sources/sources-meta.ts | filesystem": {
+    "message": "Filesystem"
+  },
+  "panels/sources/sources-meta.ts | goToAFunctionDeclarationruleSet": {
+    "message": "Go to a function declaration/rule set"
+  },
+  "panels/sources/sources-meta.ts | goToLine": {
+    "message": "Go to line"
+  },
+  "panels/sources/sources-meta.ts | goToSymbol": {
+    "message": "Go to symbol"
+  },
+  "panels/sources/sources-meta.ts | incrementCssUnitByTen": {
+    "message": "Increment CSS unit by 10"
+  },
+  "panels/sources/sources-meta.ts | jumpToNextEditingLocation": {
+    "message": "Jump to next editing location"
+  },
+  "panels/sources/sources-meta.ts | jumpToPreviousEditingLocation": {
+    "message": "Jump to previous editing location"
+  },
+  "panels/sources/sources-meta.ts | nextCallFrame": {
+    "message": "Next call frame"
+  },
+  "panels/sources/sources-meta.ts | none": {
+    "message": "None"
+  },
+  "panels/sources/sources-meta.ts | openFile": {
+    "message": "Open file"
+  },
+  "panels/sources/sources-meta.ts | pauseScriptExecution": {
+    "message": "Pause script execution"
+  },
+  "panels/sources/sources-meta.ts | previousCallFrame": {
+    "message": "Previous call frame"
+  },
+  "panels/sources/sources-meta.ts | quickSource": {
+    "message": "Quick source"
+  },
+  "panels/sources/sources-meta.ts | record": {
+    "message": "Record"
+  },
+  "panels/sources/sources-meta.ts | recordings": {
+    "message": "Recordings"
+  },
+  "panels/sources/sources-meta.ts | rename": {
+    "message": "Rename"
+  },
+  "panels/sources/sources-meta.ts | resumeScriptExecution": {
+    "message": "Resume script execution"
+  },
+  "panels/sources/sources-meta.ts | runSnippet": {
+    "message": "Run snippet"
+  },
+  "panels/sources/sources-meta.ts | save": {
+    "message": "Save"
+  },
+  "panels/sources/sources-meta.ts | saveAll": {
+    "message": "Save all"
+  },
+  "panels/sources/sources-meta.ts | scope": {
+    "message": "Scope"
+  },
+  "panels/sources/sources-meta.ts | search": {
+    "message": "Search"
+  },
+  "panels/sources/sources-meta.ts | searchInAnonymousAndContent": {
+    "message": "Search in anonymous and content scripts"
+  },
+  "panels/sources/sources-meta.ts | showAllWhitespaceCharacters": {
+    "message": "Show all whitespace characters"
+  },
+  "panels/sources/sources-meta.ts | showBreakpoints": {
+    "message": "Show Breakpoints"
+  },
+  "panels/sources/sources-meta.ts | showFilesystem": {
+    "message": "Show Filesystem"
+  },
+  "panels/sources/sources-meta.ts | showQuickSource": {
+    "message": "Show Quick source"
+  },
+  "panels/sources/sources-meta.ts | showRecordings": {
+    "message": "Show Recordings"
+  },
+  "panels/sources/sources-meta.ts | showScope": {
+    "message": "Show Scope"
+  },
+  "panels/sources/sources-meta.ts | showSearch": {
+    "message": "Show Search"
+  },
+  "panels/sources/sources-meta.ts | showSnippets": {
+    "message": "Show Snippets"
+  },
+  "panels/sources/sources-meta.ts | showSources": {
+    "message": "Show Sources"
+  },
+  "panels/sources/sources-meta.ts | showThreads": {
+    "message": "Show Threads"
+  },
+  "panels/sources/sources-meta.ts | showTrailingWhitespaceCharacters": {
+    "message": "Show trailing whitespace characters"
+  },
+  "panels/sources/sources-meta.ts | showWatch": {
+    "message": "Show Watch"
+  },
+  "panels/sources/sources-meta.ts | showWhitespaceCharacters": {
+    "message": "Show whitespace characters:"
+  },
+  "panels/sources/sources-meta.ts | snippets": {
+    "message": "Snippets"
+  },
+  "panels/sources/sources-meta.ts | sources": {
+    "message": "Sources"
+  },
+  "panels/sources/sources-meta.ts | startRecording": {
+    "message": "Start Recording"
+  },
+  "panels/sources/sources-meta.ts | step": {
+    "message": "Step"
+  },
+  "panels/sources/sources-meta.ts | stepIntoNextFunctionCall": {
+    "message": "Step into next function call"
+  },
+  "panels/sources/sources-meta.ts | stepOutOfCurrentFunction": {
+    "message": "Step out of current function"
+  },
+  "panels/sources/sources-meta.ts | stepOverNextFunctionCall": {
+    "message": "Step over next function call"
+  },
+  "panels/sources/sources-meta.ts | stop": {
+    "message": "Stop"
+  },
+  "panels/sources/sources-meta.ts | switchFile": {
+    "message": "Switch file"
+  },
+  "panels/sources/sources-meta.ts | threads": {
+    "message": "Threads"
+  },
+  "panels/sources/sources-meta.ts | toggleBreakpoint": {
+    "message": "Toggle breakpoint"
+  },
+  "panels/sources/sources-meta.ts | toggleBreakpointEnabled": {
+    "message": "Toggle breakpoint enabled"
+  },
+  "panels/sources/sources-meta.ts | toggleBreakpointInputWindow": {
+    "message": "Toggle breakpoint input window"
+  },
+  "panels/sources/sources-meta.ts | trailing": {
+    "message": "Trailing"
+  },
+  "panels/sources/sources-meta.ts | watch": {
+    "message": "Watch"
+  },
+  "panels/sources/SourcesNavigator.ts | addRecording": {
+    "message": "Add recording"
+  },
+  "panels/sources/SourcesNavigator.ts | clearConfiguration": {
+    "message": "Clear configuration"
+  },
+  "panels/sources/SourcesNavigator.ts | contentScriptsServedByExtensions": {
+    "message": "Content scripts served by extensions appear here"
+  },
+  "panels/sources/SourcesNavigator.ts | createAndSaveCodeSnippetsFor": {
+    "message": "Create and save code snippets for later reuse"
+  },
+  "panels/sources/SourcesNavigator.ts | createNewSnippet": {
+    "message": "Create new snippet"
+  },
+  "panels/sources/SourcesNavigator.ts | learnMore": {
+    "message": "Learn more"
+  },
+  "panels/sources/SourcesNavigator.ts | learnMoreAboutWorkspaces": {
+    "message": "Learn more about Workspaces"
+  },
+  "panels/sources/SourcesNavigator.ts | newSnippet": {
+    "message": "New snippet"
+  },
+  "panels/sources/SourcesNavigator.ts | overridePageAssetsWithFilesFromA": {
+    "message": "Override page assets with files from a local folder"
+  },
+  "panels/sources/SourcesNavigator.ts | recordAndReplayBrowser": {
+    "message": "Record and replay browser interactions"
+  },
+  "panels/sources/SourcesNavigator.ts | remove": {
+    "message": "Remove"
+  },
+  "panels/sources/SourcesNavigator.ts | rename": {
+    "message": "Rename…"
+  },
+  "panels/sources/SourcesNavigator.ts | run": {
+    "message": "Run"
+  },
+  "panels/sources/SourcesNavigator.ts | saveAs": {
+    "message": "Save as..."
+  },
+  "panels/sources/SourcesNavigator.ts | selectFolderForOverrides": {
+    "message": "Select folder for overrides"
+  },
+  "panels/sources/SourcesNavigator.ts | syncChangesInDevtoolsWithThe": {
+    "message": "Sync changes in DevTools with the local filesystem"
+  },
+  "panels/sources/SourcesPanel.ts | continueToHere": {
+    "message": "Continue to here"
+  },
+  "panels/sources/SourcesPanel.ts | copyS": {
+    "message": "Copy {PH1}"
+  },
+  "panels/sources/SourcesPanel.ts | dontPauseOnExceptions": {
+    "message": "Don't pause on exceptions"
+  },
+  "panels/sources/SourcesPanel.ts | dropWorkspaceFolderHere": {
+    "message": "Drop workspace folder here"
+  },
+  "panels/sources/SourcesPanel.ts | groupByFolder": {
+    "message": "Group by folder"
+  },
+  "panels/sources/SourcesPanel.ts | hideDebugger": {
+    "message": "Hide debugger"
+  },
+  "panels/sources/SourcesPanel.ts | hideNavigator": {
+    "message": "Hide navigator"
+  },
+  "panels/sources/SourcesPanel.ts | moreOptions": {
+    "message": "More options"
+  },
+  "panels/sources/SourcesPanel.ts | openInSourcesPanel": {
+    "message": "Open in Sources panel"
+  },
+  "panels/sources/SourcesPanel.ts | pauseOnCaughtExceptions": {
+    "message": "Pause on caught exceptions"
+  },
+  "panels/sources/SourcesPanel.ts | pauseOnExceptions": {
+    "message": "Pause on exceptions"
+  },
+  "panels/sources/SourcesPanel.ts | resumeWithAllPausesBlockedForMs": {
+    "message": "Resume with all pauses blocked for 500 ms"
+  },
+  "panels/sources/SourcesPanel.ts | revealInSidebar": {
+    "message": "Reveal in sidebar"
+  },
+  "panels/sources/SourcesPanel.ts | showDebugger": {
+    "message": "Show debugger"
+  },
+  "panels/sources/SourcesPanel.ts | showFunctionDefinition": {
+    "message": "Show function definition"
+  },
+  "panels/sources/SourcesPanel.ts | showNavigator": {
+    "message": "Show navigator"
+  },
+  "panels/sources/SourcesPanel.ts | storeSAsGlobalVariable": {
+    "message": "Store {PH1} as global variable"
+  },
+  "panels/sources/SourcesPanel.ts | terminateCurrentJavascriptCall": {
+    "message": "Terminate current JavaScript call"
+  },
+  "panels/sources/SourcesView.ts | dropInAFolderToAddToWorkspace": {
+    "message": "Drop in a folder to add to workspace"
+  },
+  "panels/sources/SourcesView.ts | openFile": {
+    "message": "Open file"
+  },
+  "panels/sources/SourcesView.ts | runCommand": {
+    "message": "Run command"
+  },
+  "panels/sources/SourcesView.ts | sourceViewActions": {
+    "message": "Source View Actions"
+  },
+  "panels/sources/TabbedEditorContainer.ts | areYouSureYouWantToCloseUnsaved": {
+    "message": "Are you sure you want to close unsaved file: {PH1}?"
+  },
+  "panels/sources/TabbedEditorContainer.ts | changesToThisFileWereNotSavedTo": {
+    "message": "Changes to this file were not saved to file system."
+  },
+  "panels/sources/TabbedEditorContainer.ts | unableToLoadThisContent": {
+    "message": "Unable to load this content."
+  },
+  "panels/sources/ThreadsSidebarPane.ts | paused": {
+    "message": "paused"
+  },
+  "panels/sources/WatchExpressionsSidebarPane.ts | addPropertyPathToWatch": {
+    "message": "Add property path to watch"
+  },
+  "panels/sources/WatchExpressionsSidebarPane.ts | addWatchExpression": {
+    "message": "Add watch expression"
+  },
+  "panels/sources/WatchExpressionsSidebarPane.ts | copyValue": {
+    "message": "Copy value"
+  },
+  "panels/sources/WatchExpressionsSidebarPane.ts | deleteAllWatchExpressions": {
+    "message": "Delete all watch expressions"
+  },
+  "panels/sources/WatchExpressionsSidebarPane.ts | deleteWatchExpression": {
+    "message": "Delete watch expression"
+  },
+  "panels/sources/WatchExpressionsSidebarPane.ts | notAvailable": {
+    "message": "<not available>"
+  },
+  "panels/sources/WatchExpressionsSidebarPane.ts | noWatchExpressions": {
+    "message": "No watch expressions"
+  },
+  "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
+    "message": "Refresh watch expressions"
+  },
   "settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
     "message": "Add filename pattern"
   },
@@ -8320,801 +9115,6 @@
   },
   "snippets/SnippetsQuickOpen.ts | runSnippet": {
     "message": "Run snippet"
-  },
-  "sources/AddSourceMapURLDialog.ts | add": {
-    "message": "Add"
-  },
-  "sources/AddSourceMapURLDialog.ts | sourceMapUrl": {
-    "message": "Source map URL: "
-  },
-  "sources/BreakpointEditDialog.ts | breakpoint": {
-    "message": "Breakpoint"
-  },
-  "sources/BreakpointEditDialog.ts | breakpointType": {
-    "message": "Breakpoint type"
-  },
-  "sources/BreakpointEditDialog.ts | conditionalBreakpoint": {
-    "message": "Conditional breakpoint"
-  },
-  "sources/BreakpointEditDialog.ts | expressionToCheckBeforePausingEg": {
-    "message": "Expression to check before pausing, e.g. x > 5"
-  },
-  "sources/BreakpointEditDialog.ts | logAMessageToConsoleDoNotBreak": {
-    "message": "Log a message to Console, do not break"
-  },
-  "sources/BreakpointEditDialog.ts | logMessageEgXIsX": {
-    "message": "Log message, e.g. 'x is', x"
-  },
-  "sources/BreakpointEditDialog.ts | logpoint": {
-    "message": "Logpoint"
-  },
-  "sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
-    "message": "Pause only when the condition is true"
-  },
-  "sources/CallStackSidebarPane.ts | addAllContentScriptsToIgnoreList": {
-    "message": "Add all content scripts to ignore list"
-  },
-  "sources/CallStackSidebarPane.ts | addScriptToIgnoreList": {
-    "message": "Add script to ignore list"
-  },
-  "sources/CallStackSidebarPane.ts | callStack": {
-    "message": "Call Stack"
-  },
-  "sources/CallStackSidebarPane.ts | copyStackTrace": {
-    "message": "Copy stack trace"
-  },
-  "sources/CallStackSidebarPane.ts | notPaused": {
-    "message": "Not paused"
-  },
-  "sources/CallStackSidebarPane.ts | onIgnoreList": {
-    "message": "on ignore list"
-  },
-  "sources/CallStackSidebarPane.ts | removeAllContentScriptsFrom": {
-    "message": "Remove all content scripts from ignore list"
-  },
-  "sources/CallStackSidebarPane.ts | removeFromIgnoreList": {
-    "message": "Remove from ignore list"
-  },
-  "sources/CallStackSidebarPane.ts | restartFrame": {
-    "message": "Restart frame"
-  },
-  "sources/CallStackSidebarPane.ts | showIgnorelistedFrames": {
-    "message": "Show ignore-listed frames"
-  },
-  "sources/CallStackSidebarPane.ts | showMore": {
-    "message": "Show more"
-  },
-  "sources/CoveragePlugin.ts | clickToShowCoveragePanel": {
-    "message": "Click to show Coverage Panel"
-  },
-  "sources/CoveragePlugin.ts | coverageNa": {
-    "message": "Coverage: n/a"
-  },
-  "sources/CoveragePlugin.ts | coverageS": {
-    "message": "Coverage: {PH1} %"
-  },
-  "sources/CoveragePlugin.ts | showDetails": {
-    "message": "Show Details"
-  },
-  "sources/CSSPlugin.ts | openColorPicker": {
-    "message": "Open color picker."
-  },
-  "sources/CSSPlugin.ts | openCubicBezierEditor": {
-    "message": "Open cubic bezier editor."
-  },
-  "sources/DebuggerPausedMessage.ts | attributeModifications": {
-    "message": "attribute modifications"
-  },
-  "sources/DebuggerPausedMessage.ts | childSAdded": {
-    "message": "Child {PH1} added"
-  },
-  "sources/DebuggerPausedMessage.ts | debuggerPaused": {
-    "message": "Debugger paused"
-  },
-  "sources/DebuggerPausedMessage.ts | descendantSAdded": {
-    "message": "Descendant {PH1} added"
-  },
-  "sources/DebuggerPausedMessage.ts | descendantSRemoved": {
-    "message": "Descendant {PH1} removed"
-  },
-  "sources/DebuggerPausedMessage.ts | nodeRemoval": {
-    "message": "node removal"
-  },
-  "sources/DebuggerPausedMessage.ts | pausedBeforePotentialOutofmemory": {
-    "message": "Paused before potential out-of-memory crash"
-  },
-  "sources/DebuggerPausedMessage.ts | pausedOnAssertion": {
-    "message": "Paused on assertion"
-  },
-  "sources/DebuggerPausedMessage.ts | pausedOnBreakpoint": {
-    "message": "Paused on breakpoint"
-  },
-  "sources/DebuggerPausedMessage.ts | pausedOnCspViolation": {
-    "message": "Paused on CSP violation"
-  },
-  "sources/DebuggerPausedMessage.ts | pausedOnDebuggedFunction": {
-    "message": "Paused on debugged function"
-  },
-  "sources/DebuggerPausedMessage.ts | pausedOnEventListener": {
-    "message": "Paused on event listener"
-  },
-  "sources/DebuggerPausedMessage.ts | pausedOnException": {
-    "message": "Paused on exception"
-  },
-  "sources/DebuggerPausedMessage.ts | pausedOnPromiseRejection": {
-    "message": "Paused on promise rejection"
-  },
-  "sources/DebuggerPausedMessage.ts | pausedOnS": {
-    "message": "Paused on {PH1}"
-  },
-  "sources/DebuggerPausedMessage.ts | pausedOnXhrOrFetch": {
-    "message": "Paused on XHR or fetch"
-  },
-  "sources/DebuggerPausedMessage.ts | subtreeModifications": {
-    "message": "subtree modifications"
-  },
-  "sources/DebuggerPausedMessage.ts | trustedTypePolicyViolation": {
-    "message": "Trusted Type Policy Violation"
-  },
-  "sources/DebuggerPausedMessage.ts | trustedTypeSinkViolation": {
-    "message": "Trusted Type Sink Violation"
-  },
-  "sources/DebuggerPlugin.ts | addBreakpoint": {
-    "message": "Add breakpoint"
-  },
-  "sources/DebuggerPlugin.ts | addConditionalBreakpoint": {
-    "message": "Add conditional breakpoint…"
-  },
-  "sources/DebuggerPlugin.ts | addLogpoint": {
-    "message": "Add logpoint…"
-  },
-  "sources/DebuggerPlugin.ts | addSourceMap": {
-    "message": "Add source map…"
-  },
-  "sources/DebuggerPlugin.ts | associatedFilesAreAvailable": {
-    "message": "Associated files are available via file tree or {PH1}."
-  },
-  "sources/DebuggerPlugin.ts | associatedFilesShouldBeAdded": {
-    "message": "Associated files should be added to the file tree. You can debug these resolved source files as regular JavaScript files."
-  },
-  "sources/DebuggerPlugin.ts | configure": {
-    "message": "Configure"
-  },
-  "sources/DebuggerPlugin.ts | disableBreakpoint": {
-    "message": "{n, plural, =1 {Disable breakpoint} other {Disable all breakpoints in line}}"
-  },
-  "sources/DebuggerPlugin.ts | editBreakpoint": {
-    "message": "Edit breakpoint…"
-  },
-  "sources/DebuggerPlugin.ts | enableBreakpoint": {
-    "message": "{n, plural, =1 {Enable breakpoint} other {Enable all breakpoints in line}}"
-  },
-  "sources/DebuggerPlugin.ts | neverPauseHere": {
-    "message": "Never pause here"
-  },
-  "sources/DebuggerPlugin.ts | prettyprint": {
-    "message": "Pretty-print"
-  },
-  "sources/DebuggerPlugin.ts | prettyprintingWillFormatThisFile": {
-    "message": "Pretty-printing will format this file in a new tab where you can continue debugging. You can also pretty-print this file by clicking the {PH1} button on the bottom status bar."
-  },
-  "sources/DebuggerPlugin.ts | prettyprintThisMinifiedFile": {
-    "message": "Pretty-print this minified file?"
-  },
-  "sources/DebuggerPlugin.ts | removeBreakpoint": {
-    "message": "{n, plural, =1 {Remove breakpoint} other {Remove all breakpoints in line}}"
-  },
-  "sources/DebuggerPlugin.ts | removeFromIgnoreList": {
-    "message": "Remove from ignore list"
-  },
-  "sources/DebuggerPlugin.ts | sourceMapDetected": {
-    "message": "Source map detected."
-  },
-  "sources/DebuggerPlugin.ts | sourceMapFoundButIgnoredForFile": {
-    "message": "Source map found, but ignored for file on ignore list."
-  },
-  "sources/DebuggerPlugin.ts | theDebuggerWillSkipStepping": {
-    "message": "The debugger will skip stepping through this script, and will not stop on exceptions."
-  },
-  "sources/DebuggerPlugin.ts | thisScriptIsOnTheDebuggersIgnore": {
-    "message": "This script is on the debugger's ignore list"
-  },
-  "sources/FilteredUISourceCodeListProvider.ts | noFilesFound": {
-    "message": "No files found"
-  },
-  "sources/GoToLineQuickOpen.ts | currentLineSTypeALineNumber": {
-    "message": "Current line: {PH1}. Type a line number between 1 and {PH2} to navigate to."
-  },
-  "sources/GoToLineQuickOpen.ts | currentPositionXsTypeAnOffset": {
-    "message": "Current position: 0x{PH1}. Type an offset between 0x{PH2} and 0x{PH3} to navigate to."
-  },
-  "sources/GoToLineQuickOpen.ts | goToLineS": {
-    "message": "Go to line {PH1}."
-  },
-  "sources/GoToLineQuickOpen.ts | goToLineSAndColumnS": {
-    "message": "Go to line {PH1} and column {PH2}."
-  },
-  "sources/GoToLineQuickOpen.ts | goToOffsetXs": {
-    "message": "Go to offset 0x{PH1}."
-  },
-  "sources/GoToLineQuickOpen.ts | noFileSelected": {
-    "message": "No file selected."
-  },
-  "sources/GoToLineQuickOpen.ts | typeANumberToGoToThatLine": {
-    "message": "Type a number to go to that line."
-  },
-  "sources/GutterDiffPlugin.ts | localModifications": {
-    "message": "Local Modifications..."
-  },
-  "sources/InplaceFormatterEditorAction.ts | format": {
-    "message": "Format"
-  },
-  "sources/InplaceFormatterEditorAction.ts | formatS": {
-    "message": "Format {PH1}"
-  },
-  "sources/JavaScriptBreakpointsSidebarPane.ts | activateBreakpoints": {
-    "message": "Activate breakpoints"
-  },
-  "sources/JavaScriptBreakpointsSidebarPane.ts | checked": {
-    "message": "checked"
-  },
-  "sources/JavaScriptBreakpointsSidebarPane.ts | deactivateBreakpoints": {
-    "message": "Deactivate breakpoints"
-  },
-  "sources/JavaScriptBreakpointsSidebarPane.ts | disableAllBreakpoints": {
-    "message": "Disable all breakpoints"
-  },
-  "sources/JavaScriptBreakpointsSidebarPane.ts | disableBreakpointsInFile": {
-    "message": "Disable breakpoints in file"
-  },
-  "sources/JavaScriptBreakpointsSidebarPane.ts | enableAllBreakpoints": {
-    "message": "Enable all breakpoints"
-  },
-  "sources/JavaScriptBreakpointsSidebarPane.ts | enableBreakpointsInFile": {
-    "message": "Enable breakpoints in file"
-  },
-  "sources/JavaScriptBreakpointsSidebarPane.ts | mixed": {
-    "message": "mixed"
-  },
-  "sources/JavaScriptBreakpointsSidebarPane.ts | noBreakpoints": {
-    "message": "No breakpoints"
-  },
-  "sources/JavaScriptBreakpointsSidebarPane.ts | removeAllBreakpoints": {
-    "message": "Remove all breakpoints"
-  },
-  "sources/JavaScriptBreakpointsSidebarPane.ts | removeAllBreakpointsInLine": {
-    "message": "Remove all breakpoints in line"
-  },
-  "sources/JavaScriptBreakpointsSidebarPane.ts | removeBreakpoint": {
-    "message": "Remove breakpoint"
-  },
-  "sources/JavaScriptBreakpointsSidebarPane.ts | removeOtherBreakpoints": {
-    "message": "Remove other breakpoints"
-  },
-  "sources/JavaScriptBreakpointsSidebarPane.ts | revealLocation": {
-    "message": "Reveal location"
-  },
-  "sources/JavaScriptBreakpointsSidebarPane.ts | sBreakpointHit": {
-    "message": "{PH1} breakpoint hit"
-  },
-  "sources/JavaScriptBreakpointsSidebarPane.ts | unchecked": {
-    "message": "unchecked"
-  },
-  "sources/NavigatorView.ts | areYouSureYouWantToDeleteAll": {
-    "message": "Are you sure you want to delete all overrides contained in this folder?"
-  },
-  "sources/NavigatorView.ts | areYouSureYouWantToDeleteThis": {
-    "message": "Are you sure you want to delete this file?"
-  },
-  "sources/NavigatorView.ts | areYouSureYouWantToExcludeThis": {
-    "message": "Are you sure you want to exclude this folder?"
-  },
-  "sources/NavigatorView.ts | areYouSureYouWantToRemoveThis": {
-    "message": "Are you sure you want to remove this folder?"
-  },
-  "sources/NavigatorView.ts | delete": {
-    "message": "Delete"
-  },
-  "sources/NavigatorView.ts | deleteAllOverrides": {
-    "message": "Delete all overrides"
-  },
-  "sources/NavigatorView.ts | excludeFolder": {
-    "message": "Exclude folder"
-  },
-  "sources/NavigatorView.ts | makeACopy": {
-    "message": "Make a copy…"
-  },
-  "sources/NavigatorView.ts | newFile": {
-    "message": "New file"
-  },
-  "sources/NavigatorView.ts | noDomain": {
-    "message": "(no domain)"
-  },
-  "sources/NavigatorView.ts | openFolder": {
-    "message": "Open folder"
-  },
-  "sources/NavigatorView.ts | removeFolderFromWorkspace": {
-    "message": "Remove folder from workspace"
-  },
-  "sources/NavigatorView.ts | rename": {
-    "message": "Rename…"
-  },
-  "sources/NavigatorView.ts | searchInAllFiles": {
-    "message": "Search in all files"
-  },
-  "sources/NavigatorView.ts | searchInFolder": {
-    "message": "Search in folder"
-  },
-  "sources/NavigatorView.ts | sFromSourceMap": {
-    "message": "{PH1} (from source map)"
-  },
-  "sources/OutlineQuickOpen.ts | noFileSelected": {
-    "message": "No file selected."
-  },
-  "sources/OutlineQuickOpen.ts | noResultsFound": {
-    "message": "No results found"
-  },
-  "sources/OutlineQuickOpen.ts | openAJavascriptOrCssFileToSee": {
-    "message": "Open a JavaScript or CSS file to see symbols"
-  },
-  "sources/RecorderPlugin.ts | record": {
-    "message": "Record"
-  },
-  "sources/ScopeChainSidebarPane.ts | closure": {
-    "message": "Closure"
-  },
-  "sources/ScopeChainSidebarPane.ts | closureS": {
-    "message": "Closure ({PH1})"
-  },
-  "sources/ScopeChainSidebarPane.ts | couldNotOpenLinearMemory": {
-    "message": "Could not open linear memory inspector: failed locating buffer."
-  },
-  "sources/ScopeChainSidebarPane.ts | exception": {
-    "message": "Exception"
-  },
-  "sources/ScopeChainSidebarPane.ts | loading": {
-    "message": "Loading..."
-  },
-  "sources/ScopeChainSidebarPane.ts | notPaused": {
-    "message": "Not paused"
-  },
-  "sources/ScopeChainSidebarPane.ts | noVariables": {
-    "message": "No variables"
-  },
-  "sources/ScopeChainSidebarPane.ts | returnValue": {
-    "message": "Return value"
-  },
-  "sources/ScopeChainSidebarPane.ts | revealInMemoryInspectorPanel": {
-    "message": "Reveal in Memory Inspector panel"
-  },
-  "sources/ScriptFormatterEditorAction.ts | prettyPrint": {
-    "message": "Pretty print"
-  },
-  "sources/ScriptFormatterEditorAction.ts | prettyPrintS": {
-    "message": "Pretty print {PH1}"
-  },
-  "sources/ScriptOriginPlugin.ts | providedViaDebugInfoByS": {
-    "message": "(provided via debug info by {PH1})"
-  },
-  "sources/ScriptOriginPlugin.ts | sourceMappedFromS": {
-    "message": "(source mapped from {PH1})"
-  },
-  "sources/SnippetsPlugin.ts | ctrlenter": {
-    "message": "Ctrl+Enter"
-  },
-  "sources/SnippetsPlugin.ts | enter": {
-    "message": "⌘+Enter"
-  },
-  "sources/sources-meta.ts | activateBreakpoints": {
-    "message": "Activate breakpoints"
-  },
-  "sources/sources-meta.ts | addFolderToWorkspace": {
-    "message": "Add folder to workspace"
-  },
-  "sources/sources-meta.ts | addSelectedTextToWatches": {
-    "message": "Add selected text to watches"
-  },
-  "sources/sources-meta.ts | all": {
-    "message": "All"
-  },
-  "sources/sources-meta.ts | allowScrollingPastEndOfFile": {
-    "message": "Allow scrolling past end of file"
-  },
-  "sources/sources-meta.ts | autocompletion": {
-    "message": "Autocompletion"
-  },
-  "sources/sources-meta.ts | automaticallyRevealFilesIn": {
-    "message": "Automatically reveal files in sidebar"
-  },
-  "sources/sources-meta.ts | bracketMatching": {
-    "message": "Bracket matching"
-  },
-  "sources/sources-meta.ts | breakpoints": {
-    "message": "Breakpoints"
-  },
-  "sources/sources-meta.ts | closeAll": {
-    "message": "Close All"
-  },
-  "sources/sources-meta.ts | closeTheActiveTab": {
-    "message": "Close the active tab"
-  },
-  "sources/sources-meta.ts | codeFolding": {
-    "message": "Code folding"
-  },
-  "sources/sources-meta.ts | createNewSnippet": {
-    "message": "Create new snippet"
-  },
-  "sources/sources-meta.ts | deactivateBreakpoints": {
-    "message": "Deactivate breakpoints"
-  },
-  "sources/sources-meta.ts | decrementCssUnitByTen": {
-    "message": "Decrement CSS unit by 10"
-  },
-  "sources/sources-meta.ts | detectIndentation": {
-    "message": "Detect indentation"
-  },
-  "sources/sources-meta.ts | disableAutocompletion": {
-    "message": "Disable autocompletion"
-  },
-  "sources/sources-meta.ts | disableBracketMatching": {
-    "message": "Disable bracket matching"
-  },
-  "sources/sources-meta.ts | disableCodeFolding": {
-    "message": "Disable code folding"
-  },
-  "sources/sources-meta.ts | disableCssSourceMaps": {
-    "message": "Disable CSS source maps"
-  },
-  "sources/sources-meta.ts | disableJavascriptSourceMaps": {
-    "message": "Disable JavaScript source maps"
-  },
-  "sources/sources-meta.ts | disableTabMovesFocus": {
-    "message": "Disable tab moves focus"
-  },
-  "sources/sources-meta.ts | disallowScrollingPastEndOfFile": {
-    "message": "Disallow scrolling past end of file"
-  },
-  "sources/sources-meta.ts | displayVariableValuesInlineWhile": {
-    "message": "Display variable values inline while debugging"
-  },
-  "sources/sources-meta.ts | doNotAutomaticallyRevealFilesIn": {
-    "message": "Do not automatically reveal files in sidebar"
-  },
-  "sources/sources-meta.ts | doNotDetectIndentation": {
-    "message": "Do not detect indentation"
-  },
-  "sources/sources-meta.ts | doNotDisplayVariableValuesInline": {
-    "message": "Do not display variable values inline while debugging"
-  },
-  "sources/sources-meta.ts | doNotSearchInAnonymousAndContent": {
-    "message": "Do not search in anonymous and content scripts"
-  },
-  "sources/sources-meta.ts | doNotShowWhitespaceCharacters": {
-    "message": "Do not show whitespace characters"
-  },
-  "sources/sources-meta.ts | enableAutocompletion": {
-    "message": "Enable autocompletion"
-  },
-  "sources/sources-meta.ts | enableBracketMatching": {
-    "message": "Enable bracket matching"
-  },
-  "sources/sources-meta.ts | enableCodeFolding": {
-    "message": "Enable code folding"
-  },
-  "sources/sources-meta.ts | enableCssSourceMaps": {
-    "message": "Enable CSS source maps"
-  },
-  "sources/sources-meta.ts | enableJavascriptSourceMaps": {
-    "message": "Enable JavaScript source maps"
-  },
-  "sources/sources-meta.ts | enableTabMovesFocus": {
-    "message": "Enable tab moves focus"
-  },
-  "sources/sources-meta.ts | evaluateSelectedTextInConsole": {
-    "message": "Evaluate selected text in console"
-  },
-  "sources/sources-meta.ts | filesystem": {
-    "message": "Filesystem"
-  },
-  "sources/sources-meta.ts | goToAFunctionDeclarationruleSet": {
-    "message": "Go to a function declaration/rule set"
-  },
-  "sources/sources-meta.ts | goToLine": {
-    "message": "Go to line"
-  },
-  "sources/sources-meta.ts | goToSymbol": {
-    "message": "Go to symbol"
-  },
-  "sources/sources-meta.ts | incrementCssUnitByTen": {
-    "message": "Increment CSS unit by 10"
-  },
-  "sources/sources-meta.ts | jumpToNextEditingLocation": {
-    "message": "Jump to next editing location"
-  },
-  "sources/sources-meta.ts | jumpToPreviousEditingLocation": {
-    "message": "Jump to previous editing location"
-  },
-  "sources/sources-meta.ts | nextCallFrame": {
-    "message": "Next call frame"
-  },
-  "sources/sources-meta.ts | none": {
-    "message": "None"
-  },
-  "sources/sources-meta.ts | openFile": {
-    "message": "Open file"
-  },
-  "sources/sources-meta.ts | pauseScriptExecution": {
-    "message": "Pause script execution"
-  },
-  "sources/sources-meta.ts | previousCallFrame": {
-    "message": "Previous call frame"
-  },
-  "sources/sources-meta.ts | quickSource": {
-    "message": "Quick source"
-  },
-  "sources/sources-meta.ts | record": {
-    "message": "Record"
-  },
-  "sources/sources-meta.ts | recordings": {
-    "message": "Recordings"
-  },
-  "sources/sources-meta.ts | rename": {
-    "message": "Rename"
-  },
-  "sources/sources-meta.ts | resumeScriptExecution": {
-    "message": "Resume script execution"
-  },
-  "sources/sources-meta.ts | runSnippet": {
-    "message": "Run snippet"
-  },
-  "sources/sources-meta.ts | save": {
-    "message": "Save"
-  },
-  "sources/sources-meta.ts | saveAll": {
-    "message": "Save all"
-  },
-  "sources/sources-meta.ts | scope": {
-    "message": "Scope"
-  },
-  "sources/sources-meta.ts | search": {
-    "message": "Search"
-  },
-  "sources/sources-meta.ts | searchInAnonymousAndContent": {
-    "message": "Search in anonymous and content scripts"
-  },
-  "sources/sources-meta.ts | showAllWhitespaceCharacters": {
-    "message": "Show all whitespace characters"
-  },
-  "sources/sources-meta.ts | showBreakpoints": {
-    "message": "Show Breakpoints"
-  },
-  "sources/sources-meta.ts | showFilesystem": {
-    "message": "Show Filesystem"
-  },
-  "sources/sources-meta.ts | showQuickSource": {
-    "message": "Show Quick source"
-  },
-  "sources/sources-meta.ts | showRecordings": {
-    "message": "Show Recordings"
-  },
-  "sources/sources-meta.ts | showScope": {
-    "message": "Show Scope"
-  },
-  "sources/sources-meta.ts | showSearch": {
-    "message": "Show Search"
-  },
-  "sources/sources-meta.ts | showSnippets": {
-    "message": "Show Snippets"
-  },
-  "sources/sources-meta.ts | showSources": {
-    "message": "Show Sources"
-  },
-  "sources/sources-meta.ts | showThreads": {
-    "message": "Show Threads"
-  },
-  "sources/sources-meta.ts | showTrailingWhitespaceCharacters": {
-    "message": "Show trailing whitespace characters"
-  },
-  "sources/sources-meta.ts | showWatch": {
-    "message": "Show Watch"
-  },
-  "sources/sources-meta.ts | showWhitespaceCharacters": {
-    "message": "Show whitespace characters:"
-  },
-  "sources/sources-meta.ts | snippets": {
-    "message": "Snippets"
-  },
-  "sources/sources-meta.ts | sources": {
-    "message": "Sources"
-  },
-  "sources/sources-meta.ts | startRecording": {
-    "message": "Start Recording"
-  },
-  "sources/sources-meta.ts | step": {
-    "message": "Step"
-  },
-  "sources/sources-meta.ts | stepIntoNextFunctionCall": {
-    "message": "Step into next function call"
-  },
-  "sources/sources-meta.ts | stepOutOfCurrentFunction": {
-    "message": "Step out of current function"
-  },
-  "sources/sources-meta.ts | stepOverNextFunctionCall": {
-    "message": "Step over next function call"
-  },
-  "sources/sources-meta.ts | stop": {
-    "message": "Stop"
-  },
-  "sources/sources-meta.ts | switchFile": {
-    "message": "Switch file"
-  },
-  "sources/sources-meta.ts | threads": {
-    "message": "Threads"
-  },
-  "sources/sources-meta.ts | toggleBreakpoint": {
-    "message": "Toggle breakpoint"
-  },
-  "sources/sources-meta.ts | toggleBreakpointEnabled": {
-    "message": "Toggle breakpoint enabled"
-  },
-  "sources/sources-meta.ts | toggleBreakpointInputWindow": {
-    "message": "Toggle breakpoint input window"
-  },
-  "sources/sources-meta.ts | trailing": {
-    "message": "Trailing"
-  },
-  "sources/sources-meta.ts | watch": {
-    "message": "Watch"
-  },
-  "sources/SourcesNavigator.ts | addRecording": {
-    "message": "Add recording"
-  },
-  "sources/SourcesNavigator.ts | clearConfiguration": {
-    "message": "Clear configuration"
-  },
-  "sources/SourcesNavigator.ts | contentScriptsServedByExtensions": {
-    "message": "Content scripts served by extensions appear here"
-  },
-  "sources/SourcesNavigator.ts | createAndSaveCodeSnippetsFor": {
-    "message": "Create and save code snippets for later reuse"
-  },
-  "sources/SourcesNavigator.ts | createNewSnippet": {
-    "message": "Create new snippet"
-  },
-  "sources/SourcesNavigator.ts | learnMore": {
-    "message": "Learn more"
-  },
-  "sources/SourcesNavigator.ts | learnMoreAboutWorkspaces": {
-    "message": "Learn more about Workspaces"
-  },
-  "sources/SourcesNavigator.ts | newSnippet": {
-    "message": "New snippet"
-  },
-  "sources/SourcesNavigator.ts | overridePageAssetsWithFilesFromA": {
-    "message": "Override page assets with files from a local folder"
-  },
-  "sources/SourcesNavigator.ts | recordAndReplayBrowser": {
-    "message": "Record and replay browser interactions"
-  },
-  "sources/SourcesNavigator.ts | remove": {
-    "message": "Remove"
-  },
-  "sources/SourcesNavigator.ts | rename": {
-    "message": "Rename…"
-  },
-  "sources/SourcesNavigator.ts | run": {
-    "message": "Run"
-  },
-  "sources/SourcesNavigator.ts | saveAs": {
-    "message": "Save as..."
-  },
-  "sources/SourcesNavigator.ts | selectFolderForOverrides": {
-    "message": "Select folder for overrides"
-  },
-  "sources/SourcesNavigator.ts | syncChangesInDevtoolsWithThe": {
-    "message": "Sync changes in DevTools with the local filesystem"
-  },
-  "sources/SourcesPanel.ts | continueToHere": {
-    "message": "Continue to here"
-  },
-  "sources/SourcesPanel.ts | copyS": {
-    "message": "Copy {PH1}"
-  },
-  "sources/SourcesPanel.ts | dontPauseOnExceptions": {
-    "message": "Don't pause on exceptions"
-  },
-  "sources/SourcesPanel.ts | dropWorkspaceFolderHere": {
-    "message": "Drop workspace folder here"
-  },
-  "sources/SourcesPanel.ts | groupByFolder": {
-    "message": "Group by folder"
-  },
-  "sources/SourcesPanel.ts | hideDebugger": {
-    "message": "Hide debugger"
-  },
-  "sources/SourcesPanel.ts | hideNavigator": {
-    "message": "Hide navigator"
-  },
-  "sources/SourcesPanel.ts | moreOptions": {
-    "message": "More options"
-  },
-  "sources/SourcesPanel.ts | openInSourcesPanel": {
-    "message": "Open in Sources panel"
-  },
-  "sources/SourcesPanel.ts | pauseOnCaughtExceptions": {
-    "message": "Pause on caught exceptions"
-  },
-  "sources/SourcesPanel.ts | pauseOnExceptions": {
-    "message": "Pause on exceptions"
-  },
-  "sources/SourcesPanel.ts | resumeWithAllPausesBlockedForMs": {
-    "message": "Resume with all pauses blocked for 500 ms"
-  },
-  "sources/SourcesPanel.ts | revealInSidebar": {
-    "message": "Reveal in sidebar"
-  },
-  "sources/SourcesPanel.ts | showDebugger": {
-    "message": "Show debugger"
-  },
-  "sources/SourcesPanel.ts | showFunctionDefinition": {
-    "message": "Show function definition"
-  },
-  "sources/SourcesPanel.ts | showNavigator": {
-    "message": "Show navigator"
-  },
-  "sources/SourcesPanel.ts | storeSAsGlobalVariable": {
-    "message": "Store {PH1} as global variable"
-  },
-  "sources/SourcesPanel.ts | terminateCurrentJavascriptCall": {
-    "message": "Terminate current JavaScript call"
-  },
-  "sources/SourcesView.ts | dropInAFolderToAddToWorkspace": {
-    "message": "Drop in a folder to add to workspace"
-  },
-  "sources/SourcesView.ts | openFile": {
-    "message": "Open file"
-  },
-  "sources/SourcesView.ts | runCommand": {
-    "message": "Run command"
-  },
-  "sources/SourcesView.ts | sourceViewActions": {
-    "message": "Source View Actions"
-  },
-  "sources/TabbedEditorContainer.ts | areYouSureYouWantToCloseUnsaved": {
-    "message": "Are you sure you want to close unsaved file: {PH1}?"
-  },
-  "sources/TabbedEditorContainer.ts | changesToThisFileWereNotSavedTo": {
-    "message": "Changes to this file were not saved to file system."
-  },
-  "sources/TabbedEditorContainer.ts | unableToLoadThisContent": {
-    "message": "Unable to load this content."
-  },
-  "sources/ThreadsSidebarPane.ts | paused": {
-    "message": "paused"
-  },
-  "sources/WatchExpressionsSidebarPane.ts | addPropertyPathToWatch": {
-    "message": "Add property path to watch"
-  },
-  "sources/WatchExpressionsSidebarPane.ts | addWatchExpression": {
-    "message": "Add watch expression"
-  },
-  "sources/WatchExpressionsSidebarPane.ts | copyValue": {
-    "message": "Copy value"
-  },
-  "sources/WatchExpressionsSidebarPane.ts | deleteAllWatchExpressions": {
-    "message": "Delete all watch expressions"
-  },
-  "sources/WatchExpressionsSidebarPane.ts | deleteWatchExpression": {
-    "message": "Delete watch expression"
-  },
-  "sources/WatchExpressionsSidebarPane.ts | notAvailable": {
-    "message": "<not available>"
-  },
-  "sources/WatchExpressionsSidebarPane.ts | noWatchExpressions": {
-    "message": "No watch expressions"
-  },
-  "sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
-    "message": "Refresh watch expressions"
   },
   "timeline/CountersGraph.ts | documents": {
     "message": "Documents"

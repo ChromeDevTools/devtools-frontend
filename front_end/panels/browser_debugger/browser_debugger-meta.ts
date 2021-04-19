@@ -8,7 +8,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 
 // eslint-disable-next-line rulesdir/es_modules_import
 import type * as BrowserDebugger from './browser_debugger.js';
-import type * as Sources from '../../sources/sources.js';
+import type * as Sources from '../sources/sources.js';
 
 import * as i18n from '../../core/i18n/i18n.js';
 const UIStrings = {
@@ -101,7 +101,7 @@ async function loadSourcesModule(): Promise<typeof Sources> {
   if (!loadedSourcesModule) {
     // Side-effect import resources in module.json
     await Root.Runtime.Runtime.instance().loadModulePromise('sources');
-    loadedSourcesModule = await import('../../sources/sources.js');
+    loadedSourcesModule = await import('../sources/sources.js');
   }
   return loadedSourcesModule;
 }

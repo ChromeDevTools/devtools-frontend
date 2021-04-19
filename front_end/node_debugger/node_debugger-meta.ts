@@ -7,7 +7,7 @@ import * as Root from '../core/root/root.js';
 import * as UI from '../ui/legacy/legacy.js';
 
 // eslint-disable-next-line rulesdir/es_modules_import
-import type * as Sources from '../sources/sources.js';
+import type * as Sources from '../panels/sources/sources.js';
 
 const UIStrings = {
   /**
@@ -29,7 +29,7 @@ async function loadHelpModule(): Promise<typeof Sources> {
   if (!loadedSourcesModule) {
     // Side-effect import resources in module.json
     await Root.Runtime.Runtime.instance().loadModulePromise('sources');
-    loadedSourcesModule = await import('../sources/sources.js');
+    loadedSourcesModule = await import('../panels/sources/sources.js');
   }
   return loadedSourcesModule;
 }

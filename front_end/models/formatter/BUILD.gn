@@ -2,8 +2,8 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-import("../../scripts/build/ninja/devtools_entrypoint.gni")
-import("../../scripts/build/ninja/devtools_module.gni")
+import("../../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../../../scripts/build/ninja/devtools_module.gni")
 
 devtools_module("formatter") {
   sources = [
@@ -13,13 +13,13 @@ devtools_module("formatter") {
   ]
 
   deps = [
-    "../core/common:bundle",
-    "../core/platform:bundle",
-    "../core/sdk:bundle",
-    "../entrypoints/formatter_worker:formatter_actions",
-    "../models/bindings:bundle",
-    "../models/text_utils:bundle",
-    "../models/workspace:bundle",
+    "../../core/common:bundle",
+    "../../core/platform:bundle",
+    "../../core/sdk:bundle",
+    "../../entrypoints/formatter_worker:formatter_actions",
+    "../../models/bindings:bundle",
+    "../../models/text_utils:bundle",
+    "../../models/workspace:bundle",
   ]
 }
 

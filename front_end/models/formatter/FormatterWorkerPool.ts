@@ -4,8 +4,8 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../core/common/common.js';
-import * as FormatterActions from '../entrypoints/formatter_worker/FormatterActions.js';  // eslint-disable-line rulesdir/es_modules_import
+import * as Common from '../../core/common/common.js';
+import * as FormatterActions from '../../entrypoints/formatter_worker/FormatterActions.js';  // eslint-disable-line rulesdir/es_modules_import
 
 const MAX_WORKERS = Math.min(2, navigator.hardwareConcurrency - 1);
 
@@ -30,7 +30,7 @@ export class FormatterWorkerPool {
 
   _createWorker(): Common.Worker.WorkerWrapper {
     const worker = Common.Worker.WorkerWrapper.fromURL(
-        new URL('../entrypoints/formatter_worker/formatter_worker-entrypoint.js', import.meta.url));
+        new URL('../../entrypoints/formatter_worker/formatter_worker-entrypoint.js', import.meta.url));
     worker.onmessage = this._onWorkerMessage.bind(this, worker);
     worker.onerror = this._onWorkerError.bind(this, worker);
     return worker;

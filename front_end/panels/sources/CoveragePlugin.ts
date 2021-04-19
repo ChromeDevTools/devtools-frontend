@@ -6,7 +6,7 @@
 
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import * as Formatter from '../../formatter/formatter.js';
+import * as Formatter from '../../models/formatter/formatter.js';
 import * as Workspace from '../../models/workspace/workspace.js';  // eslint-disable-line no-unused-vars
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../../ui/legacy/legacy.js';

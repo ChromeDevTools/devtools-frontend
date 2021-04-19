@@ -30,8 +30,8 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../core/common/common.js';  // eslint-disable-line no-unused-vars
-import * as Platform from '../core/platform/platform.js';
+import * as Common from '../../core/common/common.js';  // eslint-disable-line no-unused-vars
+import * as Platform from '../../core/platform/platform.js';
 
 import {FormatMapping, FormatResult, formatterWorkerPool} from './FormatterWorkerPool.js';  // eslint-disable-line no-unused-vars
 

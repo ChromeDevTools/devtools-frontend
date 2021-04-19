@@ -4,10 +4,10 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../core/common/common.js';
-import * as i18n from '../core/i18n/i18n.js';
-import * as Platform from '../core/platform/platform.js';
-import * as UI from '../ui/legacy/legacy.js';
+import * as Common from '../../core/common/common.js';
+import * as i18n from '../../core/i18n/i18n.js';
+import * as Platform from '../../core/platform/platform.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
 import {PerformanceModel} from './PerformanceModel.js';  // eslint-disable-line no-unused-vars
 import {TimelineEventOverviewCPUActivity, TimelineEventOverviewFrames, TimelineEventOverviewNetwork, TimelineEventOverviewResponsiveness} from './TimelineEventOverview.js';
@@ -53,7 +53,7 @@ const UIStrings = {
   */
   selectTimelineSession: 'Select Timeline Session',
 };
-const str_ = i18n.i18n.registerUIStrings('timeline/TimelineHistoryManager.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelineHistoryManager.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class TimelineHistoryManager {
   _recordings: PerformanceModel[];
@@ -332,7 +332,7 @@ export class DropDown implements UI.ListControl.ListDelegate<PerformanceModel> {
 
     const shadowRoot = UI.Utils.createShadowRootWithCoreStyles(
         this._glassPane.contentElement,
-        {cssFile: 'timeline/timelineHistoryManager.css', enableLegacyPatching: true, delegatesFocus: undefined});
+        {cssFile: 'panels/timeline/timelineHistoryManager.css', enableLegacyPatching: true, delegatesFocus: undefined});
     const contentElement = shadowRoot.createChild('div', 'drop-down');
 
     const listModel = new UI.ListModel.ListModel<PerformanceModel>();
@@ -463,7 +463,7 @@ export class ToolbarButton extends UI.Toolbar.ToolbarItem {
     const element = document.createElement('button');
     element.classList.add('history-dropdown-button');
     super(element);
-    UI.Utils.appendStyle(this.element, 'timeline/historyToolbarButton.css', {enableLegacyPatching: true});
+    UI.Utils.appendStyle(this.element, 'panels/timeline/historyToolbarButton.css', {enableLegacyPatching: true});
     this._contentElement = this.element.createChild('span', 'content');
     const dropdownArrowIcon = UI.Icon.Icon.create('smallicon-triangle-down');
     this.element.appendChild(dropdownArrowIcon);

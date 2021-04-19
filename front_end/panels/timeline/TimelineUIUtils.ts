@@ -35,15 +35,15 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Components from '../components/components.js';
-import * as Common from '../core/common/common.js';
-import * as i18n from '../core/i18n/i18n.js';
-import * as Platform from '../core/platform/platform.js';
-import * as SDK from '../core/sdk/sdk.js';
-import * as Bindings from '../models/bindings/bindings.js';
-import * as TimelineModel from '../models/timeline_model/timeline_model.js';
-import * as PerfUI from '../ui/legacy/components/perf_ui/perf_ui.js';
-import * as UI from '../ui/legacy/legacy.js';
+import * as Components from '../../components/components.js';
+import * as Common from '../../core/common/common.js';
+import * as i18n from '../../core/i18n/i18n.js';
+import * as Platform from '../../core/platform/platform.js';
+import * as SDK from '../../core/sdk/sdk.js';
+import * as Bindings from '../../models/bindings/bindings.js';
+import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
+import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
 import {CLSRect} from './CLSLinkifier.js';
 import {TimelinePanel, TimelineSelection} from './TimelinePanel.js';
@@ -1181,7 +1181,7 @@ const UIStrings = {
   */
   sDetails: '{PH1} - Details',
 };
-const str_ = i18n.i18n.registerUIStrings('timeline/TimelineUIUtils.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelineUIUtils.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 let eventStylesMap: EventStylesMap;
@@ -2782,7 +2782,8 @@ export class TimelineUIUtils {
     }
 
     const invalidationsTreeOutline = new UI.TreeOutline.TreeOutlineInShadow();
-    invalidationsTreeOutline.registerRequiredCSS('timeline/invalidationsTree.css', {enableLegacyPatching: false});
+    invalidationsTreeOutline.registerRequiredCSS(
+        'panels/timeline/invalidationsTree.css', {enableLegacyPatching: false});
     invalidationsTreeOutline.element.classList.add('invalidations-tree');
 
     const invalidationGroups = groupInvalidationsByCause(invalidations);

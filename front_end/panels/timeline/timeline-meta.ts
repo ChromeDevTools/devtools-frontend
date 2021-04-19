@@ -2,16 +2,16 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../core/common/common.js';
-import * as Root from '../core/root/root.js';
-import * as UI from '../ui/legacy/legacy.js';
+import * as Common from '../../core/common/common.js';
+import * as Root from '../../core/root/root.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
 // eslint-disable-next-line rulesdir/es_modules_import
 import type * as Timeline from './timeline.js';
 
-import type * as Profiler from '../panels/profiler/profiler.js';
+import type * as Profiler from '../profiler/profiler.js';
 
-import * as i18n from '../core/i18n/i18n.js';
+import * as i18n from '../../core/i18n/i18n.js';
 const UIStrings = {
   /**
   *@description Text for the performance of something
@@ -78,7 +78,7 @@ const UIStrings = {
   */
   startStopRecording: 'Start/stop recording',
 };
-const str_ = i18n.i18n.registerUIStrings('timeline/timeline-meta.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/timeline/timeline-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 let loadedTimelineModule: (typeof Timeline|undefined);
 
@@ -87,7 +87,7 @@ let loadedProfilerModule: (typeof Profiler|undefined);
 async function loadTimelineModule(): Promise<typeof Timeline> {
   if (!loadedTimelineModule) {
     // Side-effect import resources in module.json
-    await Root.Runtime.Runtime.instance().loadModulePromise('timeline');
+    await Root.Runtime.Runtime.instance().loadModulePromise('panels/timeline');
     loadedTimelineModule = await import('./timeline.js');
   }
   return loadedTimelineModule;
@@ -99,14 +99,14 @@ async function loadTimelineModule(): Promise<typeof Timeline> {
 // the shell app, it cannot be registered in profiler's meta file, as profiler is
 // part of the shell app, and thus all of the extensions registered in profiler
 // belong to all apps that extend from shell.
-// Instead, we register the extensions for the js profiler tab in timeline/ and
+// Instead, we register the extensions for the js profiler tab in panels/timeline/ and
 // js_profiler/ so that the tab is available only in the apps it belongs to.
 
 async function loadProfilerModule(): Promise<typeof Profiler> {
   if (!loadedProfilerModule) {
     // Side-effect import resources in module.json
     await Root.Runtime.Runtime.instance().loadModulePromise('profiler');
-    loadedProfilerModule = await import('../panels/profiler/profiler.js');
+    loadedProfilerModule = await import('../profiler/profiler.js');
   }
   return loadedProfilerModule;
 }

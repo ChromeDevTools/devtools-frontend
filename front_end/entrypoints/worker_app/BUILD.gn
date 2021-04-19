@@ -18,7 +18,7 @@ ts_library("worker_app") {
     "../../panels/layer_viewer:meta",
     "../../panels/mobile_throttling:meta",
     "../../panels/network:meta",
-    "../../timeline:meta",
+    "../../panels/timeline:meta",
     "../shell",
   ]
 }

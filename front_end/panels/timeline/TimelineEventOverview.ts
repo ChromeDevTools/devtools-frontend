@@ -30,13 +30,13 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as i18n from '../core/i18n/i18n.js';
-import * as Platform from '../core/platform/platform.js';
-import * as SDK from '../core/sdk/sdk.js';  // eslint-disable-line no-unused-vars
-import * as TimelineModel from '../models/timeline_model/timeline_model.js';
-import * as Coverage from '../panels/coverage/coverage.js';
-import * as PerfUI from '../ui/legacy/components/perf_ui/perf_ui.js';
-import * as UI from '../ui/legacy/legacy.js';
+import * as i18n from '../../core/i18n/i18n.js';
+import * as Platform from '../../core/platform/platform.js';
+import * as SDK from '../../core/sdk/sdk.js';  // eslint-disable-line no-unused-vars
+import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
+import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
+import * as UI from '../../ui/legacy/legacy.js';
+import * as Coverage from '../coverage/coverage.js';
 
 import {PerformanceModel} from './PerformanceModel.js';  // eslint-disable-line no-unused-vars
 import {EventDispatchTypeDescriptor, TimelineCategory, TimelineUIUtils} from './TimelineUIUtils.js';  // eslint-disable-line no-unused-vars
@@ -69,7 +69,7 @@ const UIStrings = {
   */
   coverage: 'COVERAGE',
 };
-const str_ = i18n.i18n.registerUIStrings('timeline/TimelineEventOverview.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelineEventOverview.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class TimelineEventOverview extends PerfUI.TimelineOverviewPane.TimelineOverviewBase {
   _model: PerformanceModel|null;

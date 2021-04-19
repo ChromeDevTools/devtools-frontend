@@ -4,12 +4,12 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Components from '../components/components.js';
-import * as Common from '../core/common/common.js';  // eslint-disable-line no-unused-vars
-import * as i18n from '../core/i18n/i18n.js';
-import * as SDK from '../core/sdk/sdk.js';
-import * as TimelineModel from '../models/timeline_model/timeline_model.js';
-import * as UI from '../ui/legacy/legacy.js';
+import * as Components from '../../components/components.js';
+import * as Common from '../../core/common/common.js';  // eslint-disable-line no-unused-vars
+import * as i18n from '../../core/i18n/i18n.js';
+import * as SDK from '../../core/sdk/sdk.js';
+import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
 import {EventsTimelineTreeView} from './EventsTimelineTreeView.js';
 import {Events, PerformanceModel} from './PerformanceModel.js';  // eslint-disable-line no-unused-vars
@@ -65,7 +65,7 @@ const UIStrings = {
   */
   rangeSS: 'Range:  {PH1} – {PH2}',
 };
-const str_ = i18n.i18n.registerUIStrings('timeline/TimelineDetailsView.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelineDetailsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class TimelineDetailsView extends UI.Widget.VBox {
   _detailsLinkifier: Components.Linkifier.Linkifier;

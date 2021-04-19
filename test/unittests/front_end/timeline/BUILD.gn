@@ -5,7 +5,7 @@ ts_library("timeline") {
   sources = [ "WebVitalsTimeline_test.ts" ]
 
   deps = [
-    "../../../../front_end/timeline:bundle",
+    "../../../../front_end/panels/timeline:bundle",
     "../helpers",
   ]
 }

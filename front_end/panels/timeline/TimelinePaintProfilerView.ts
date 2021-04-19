@@ -4,10 +4,10 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as SDK from '../core/sdk/sdk.js';  // eslint-disable-line no-unused-vars
-import * as TimelineModel from '../models/timeline_model/timeline_model.js';
-import * as LayerViewer from '../panels/layer_viewer/layer_viewer.js';
-import * as UI from '../ui/legacy/legacy.js';
+import * as SDK from '../../core/sdk/sdk.js';  // eslint-disable-line no-unused-vars
+import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
+import * as UI from '../../ui/legacy/legacy.js';
+import * as LayerViewer from '../layer_viewer/layer_viewer.js';
 
 export class TimelinePaintProfilerView extends UI.SplitWidget.SplitWidget {
   _frameModel: TimelineModel.TimelineFrameModel.TimelineFrameModel;
@@ -155,7 +155,7 @@ export class TimelinePaintImageView extends UI.Widget.Widget {
   _maskRectangle?: Protocol.DOM.Rect|null;
   constructor() {
     super(true);
-    this.registerRequiredCSS('timeline/timelinePaintProfiler.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('panels/timeline/timelinePaintProfiler.css', {enableLegacyPatching: true});
     this.contentElement.classList.add('fill', 'paint-profiler-image-view');
     this._imageContainer = this.contentElement.createChild('div', 'paint-profiler-image-container');
     this._imageElement = (this._imageContainer.createChild('img') as HTMLImageElement);

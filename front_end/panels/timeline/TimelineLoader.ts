@@ -4,13 +4,13 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../core/common/common.js';
-import * as Host from '../core/host/host.js';
-import * as i18n from '../core/i18n/i18n.js';
-import * as SDK from '../core/sdk/sdk.js';
-import * as Bindings from '../models/bindings/bindings.js';
-import * as TextUtils from '../models/text_utils/text_utils.js';
-import * as TimelineModel from '../models/timeline_model/timeline_model.js';
+import * as Common from '../../core/common/common.js';
+import * as Host from '../../core/host/host.js';
+import * as i18n from '../../core/i18n/i18n.js';
+import * as SDK from '../../core/sdk/sdk.js';
+import * as Bindings from '../../models/bindings/bindings.js';
+import * as TextUtils from '../../models/text_utils/text_utils.js';
+import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
 
 const UIStrings = {
   /**
@@ -35,7 +35,7 @@ const UIStrings = {
   */
   malformedCpuProfileFormat: 'Malformed CPU profile format',
 };
-const str_ = i18n.i18n.registerUIStrings('timeline/TimelineLoader.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelineLoader.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class TimelineLoader implements Common.StringOutputStream.OutputStream {
   _client: Client|null;

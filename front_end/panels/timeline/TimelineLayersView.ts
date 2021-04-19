@@ -4,11 +4,11 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../core/common/common.js';                           // eslint-disable-line no-unused-vars
-import * as SDK from '../core/sdk/sdk.js';                                    // eslint-disable-line no-unused-vars
-import * as TimelineModel from '../models/timeline_model/timeline_model.js';  // eslint-disable-line no-unused-vars
-import * as LayerViewer from '../panels/layer_viewer/layer_viewer.js';
-import * as UI from '../ui/legacy/legacy.js';
+import * as Common from '../../core/common/common.js';                           // eslint-disable-line no-unused-vars
+import * as SDK from '../../core/sdk/sdk.js';                                    // eslint-disable-line no-unused-vars
+import * as TimelineModel from '../../models/timeline_model/timeline_model.js';  // eslint-disable-line no-unused-vars
+import * as UI from '../../ui/legacy/legacy.js';
+import * as LayerViewer from '../layer_viewer/layer_viewer.js';
 
 export class TimelineLayersView extends UI.SplitWidget.SplitWidget {
   _model: TimelineModel.TimelineModel.TimelineModelImpl;

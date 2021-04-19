@@ -2,7 +2,7 @@
   "dependencies": [
     "components",
     "panels/emulation",
-    "timeline",
+    "panels/timeline",
     "inspector_main",
     "ui/legacy"
   ],

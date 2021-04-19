@@ -21,7 +21,7 @@
     { "name": "panels/performance_monitor" },
     { "name": "panels/application" },
     { "name": "panels/security" },
-    { "name": "timeline" },
+    { "name": "panels/timeline" },
     { "name": "web_audio" },
     { "name": "webauthn"},
     { "name": "panels/media" }

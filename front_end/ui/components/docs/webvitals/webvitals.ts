@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as FrontendHelpers from '../../../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
-import * as Timeline from '../../../../timeline/timeline.js';
+import * as Timeline from '../../../../panels/timeline/timeline.js';
 import * as ComponentHelpers from '../../helpers/helpers.js';
 
 await FrontendHelpers.initializeGlobalVars();

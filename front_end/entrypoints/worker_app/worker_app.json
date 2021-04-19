@@ -12,7 +12,7 @@
     { "name": "panels/layer_viewer" },
     { "name": "panels/network" },
     { "name": "panels/application" },
-    { "name": "timeline" }
+    { "name": "panels/timeline" }
   ],
   "extends": "shell"
 }

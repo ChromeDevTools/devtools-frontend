@@ -4,14 +4,14 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../core/common/common.js';
-import * as Host from '../core/host/host.js';
-import * as i18n from '../core/i18n/i18n.js';
-import * as Platform from '../core/platform/platform.js';
-import * as TimelineModel from '../models/timeline_model/timeline_model.js';  // eslint-disable-line no-unused-vars
-import * as PerfUI from '../ui/legacy/components/perf_ui/perf_ui.js';
-import * as UI from '../ui/legacy/legacy.js';
-import * as ThemeSupport from '../ui/legacy/theme_support/theme_support.js';
+import * as Common from '../../core/common/common.js';
+import * as Host from '../../core/host/host.js';
+import * as i18n from '../../core/i18n/i18n.js';
+import * as Platform from '../../core/platform/platform.js';
+import * as TimelineModel from '../../models/timeline_model/timeline_model.js';  // eslint-disable-line no-unused-vars
+import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
+import * as UI from '../../ui/legacy/legacy.js';
+import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 
 import {PerformanceModel} from './PerformanceModel.js';  // eslint-disable-line no-unused-vars
 import {FlameChartStyle, Selection} from './TimelineFlameChartView.js';
@@ -24,7 +24,7 @@ const UIStrings = {
   */
   network: 'Network',
 };
-const str_ = i18n.i18n.registerUIStrings('timeline/TimelineFlameChartNetworkDataProvider.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelineFlameChartNetworkDataProvider.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.FlameChartDataProvider {
   _font: string;
@@ -291,9 +291,11 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
       return null;
     }
     const element = document.createElement('div');
-    const root = UI.Utils.createShadowRootWithCoreStyles(
-        element,
-        {cssFile: 'timeline/timelineFlamechartPopover.css', enableLegacyPatching: true, delegatesFocus: undefined});
+    const root = UI.Utils.createShadowRootWithCoreStyles(element, {
+      cssFile: 'panels/timeline/timelineFlamechartPopover.css',
+      enableLegacyPatching: true,
+      delegatesFocus: undefined,
+    });
     const contents = root.createChild('div', 'timeline-flamechart-popover');
     const startTime = request.getStartTime();
     const duration = request.endTime - startTime;

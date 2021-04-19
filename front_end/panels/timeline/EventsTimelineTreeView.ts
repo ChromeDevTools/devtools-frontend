@@ -4,12 +4,12 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../core/common/common.js';
-import * as i18n from '../core/i18n/i18n.js';
-import * as SDK from '../core/sdk/sdk.js';                                    // eslint-disable-line no-unused-vars
-import * as TimelineModel from '../models/timeline_model/timeline_model.js';  // eslint-disable-line no-unused-vars
-import * as DataGrid from '../ui/legacy/components/data_grid/data_grid.js';
-import * as UI from '../ui/legacy/legacy.js';
+import * as Common from '../../core/common/common.js';
+import * as i18n from '../../core/i18n/i18n.js';
+import * as SDK from '../../core/sdk/sdk.js';                                    // eslint-disable-line no-unused-vars
+import * as TimelineModel from '../../models/timeline_model/timeline_model.js';  // eslint-disable-line no-unused-vars
+import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
 import {Category, IsLong} from './TimelineFilters.js';
 import {TimelineModeViewDelegate, TimelineSelection} from './TimelinePanel.js';  // eslint-disable-line no-unused-vars
@@ -39,7 +39,7 @@ const UIStrings = {
   */
   all: 'All',
 };
-const str_ = i18n.i18n.registerUIStrings('timeline/EventsTimelineTreeView.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/timeline/EventsTimelineTreeView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class EventsTimelineTreeView extends TimelineTreeView {
   _filtersControl: Filters;

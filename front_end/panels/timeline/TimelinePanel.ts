@@ -35,19 +35,19 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../core/common/common.js';
-import * as Host from '../core/host/host.js';
-import * as i18n from '../core/i18n/i18n.js';
-import * as Platform from '../core/platform/platform.js';
-import * as Root from '../core/root/root.js';
-import * as SDK from '../core/sdk/sdk.js';
-import * as Bindings from '../models/bindings/bindings.js';
-import * as Extensions from '../models/extensions/extensions.js';
-import * as TimelineModel from '../models/timeline_model/timeline_model.js';
-import * as Coverage from '../panels/coverage/coverage.js';  // eslint-disable-line no-unused-vars
-import * as MobileThrottling from '../panels/mobile_throttling/mobile_throttling.js';
-import * as PerfUI from '../ui/legacy/components/perf_ui/perf_ui.js';
-import * as UI from '../ui/legacy/legacy.js';
+import * as Common from '../../core/common/common.js';
+import * as Host from '../../core/host/host.js';
+import * as i18n from '../../core/i18n/i18n.js';
+import * as Platform from '../../core/platform/platform.js';
+import * as Root from '../../core/root/root.js';
+import * as SDK from '../../core/sdk/sdk.js';
+import * as Bindings from '../../models/bindings/bindings.js';
+import * as Extensions from '../../models/extensions/extensions.js';
+import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
+import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
+import * as UI from '../../ui/legacy/legacy.js';
+import * as Coverage from '../coverage/coverage.js';  // eslint-disable-line no-unused-vars
+import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
 
 import {Events, PerformanceModel, Window} from './PerformanceModel.js';  // eslint-disable-line no-unused-vars
 import {Client, TimelineController} from './TimelineController.js';      // eslint-disable-line no-unused-vars
@@ -249,7 +249,7 @@ const UIStrings = {
   */
   ssec: '{PH1} sec',
 };
-const str_ = i18n.i18n.registerUIStrings('timeline/TimelinePanel.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelinePanel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let timelinePanelInstance: TimelinePanel;
 
@@ -312,7 +312,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   _selection?: TimelineSelection|null;
   constructor() {
     super('timeline');
-    this.registerRequiredCSS('timeline/timelinePanel.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('panels/timeline/timelinePanel.css', {enableLegacyPatching: true});
     this.element.addEventListener('contextmenu', this._contextMenu.bind(this), false);
     this._dropTarget = new UI.DropTarget.DropTarget(
         this.element, [UI.DropTarget.Type.File, UI.DropTarget.Type.URI],
@@ -1349,7 +1349,7 @@ export class StatusPane extends UI.Widget.VBox {
       },
       buttonCallback: () => (Promise<void>| void)) {
     super(true);
-    this.registerRequiredCSS('timeline/timelineStatusDialog.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('panels/timeline/timelineStatusDialog.css', {enableLegacyPatching: true});
     this.contentElement.classList.add('timeline-status-dialog');
 
     const statusLine = this.contentElement.createChild('div', 'status-dialog-line status');

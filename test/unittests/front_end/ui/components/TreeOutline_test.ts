@@ -142,6 +142,52 @@ const basicTreeData: TreeOutline.TreeOutlineUtils.TreeNode<string>[] = [
   },
 ];
 
+/*
+The structure represented by nodeAustralia is:
+
+- Australia
+  - SA
+    - Adelaide
+      - Toorak Gardens
+      - Woodville South
+      - Gawler
+  - NSW
+    - Glebe
+    - Newtown
+    - Camperdown
+*/
+
+const nodeAustralia = {
+  treeNodeData: 'Australia',
+  id: 'australia',
+  children: (): Promise<TreeOutline.TreeOutlineUtils.TreeNode<string>[]> => Promise.resolve([
+    {
+      treeNodeData: 'SA',
+      id: 'sa',
+      children: (): Promise<TreeOutline.TreeOutlineUtils.TreeNode<string>[]> => Promise.resolve([
+        {
+          treeNodeData: 'Adelaide',
+          id: 'adelaide',
+          children: (): Promise<TreeOutline.TreeOutlineUtils.TreeNode<string>[]> => Promise.resolve([
+            {treeNodeData: 'Toorak Gardens', id: 'toorak'},
+            {treeNodeData: 'Woodville South', id: 'woodville'},
+            {treeNodeData: 'Gawler', id: 'gawler'},
+          ]),
+        },
+      ]),
+    },
+    {
+      treeNodeData: 'NSW',
+      id: 'nsw',
+      children: (): Promise<TreeOutline.TreeOutlineUtils.TreeNode<string>[]> => Promise.resolve([
+        {treeNodeData: 'Glebe', id: 'glebe'},
+        {treeNodeData: 'Newtown', id: 'newtown'},
+        {treeNodeData: 'Camperdown', id: 'camperdown'},
+      ]),
+    },
+  ]),
+};
+
 const NODE_COUNT_BASIC_DATA_FULLY_EXPANDED = 15;
 const NODE_COUNT_BASIC_DATA_DEFAULT_EXPANDED = 12;
 
@@ -1164,6 +1210,58 @@ describe('TreeOutline', () => {
         const event = await itemMouseOutEvent;
         assert.deepEqual(event.data, {node: basicTreeData[0]});
       });
+    });
+  });
+
+  describe('matching on optional id parameter', () => {
+    it('expands the relevant part of the tree to reveal the given node', async () => {
+      const {component, shadowRoot} = await renderTreeOutline({
+        tree: [nodeAustralia],
+      });
+
+      // Expand to the node with the given ID, the actual data doesn't matter in this case.
+      // This means you can search the tree, without having a reference to the specific tree data,
+      // just as long as you know the id for whatever thing you are looking for.
+      await component.expandToAndSelectTreeNode({treeNodeData: 'something else', id: 'gawler'});
+      await waitForRenderedTreeNodeCount(shadowRoot, 7);
+      const visibleTree = visibleNodesToTree(shadowRoot);
+
+      // The tree is expanded down to include "Gawler" but the rest of the tree is still collapsed.
+      assert.deepEqual(visibleTree, [{
+                         renderedKey: 'Australia',
+                         children: [
+                           {
+                             renderedKey: 'SA',
+                             children: [
+                               {
+                                 renderedKey: 'Adelaide',
+                                 children: [
+                                   {renderedKey: 'Toorak Gardens'},
+                                   {renderedKey: 'Woodville South'},
+                                   {renderedKey: 'Gawler'},
+                                 ],
+                               },
+                             ],
+                           },
+                           {renderedKey: 'NSW'},
+                         ],
+                       }]);
+    });
+
+    it('focuses the given node with an id once the tree has been expanded', async () => {
+      const {component, shadowRoot} = await renderTreeOutline({
+        tree: [nodeAustralia],
+      });
+
+      await component.expandToAndSelectTreeNode({treeNodeData: 'literally anything', id: 'gawler'});
+      await waitForRenderedTreeNodeCount(shadowRoot, 7);
+      await coordinator.done();
+
+      // The tree is expanded down to include "Gawler" but the rest of the tree is still collapsed.
+      assert.strictEqual(
+          getFocusableTreeNode(shadowRoot),
+          getVisibleTreeNodeByText(shadowRoot, 'Gawler'),
+      );
     });
   });
 });

@@ -72,7 +72,7 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
    * node that we want focused but may not yet have been rendered.
    */
   private nodePendingFocus: TreeNode<TreeNodeDataType>|null = null;
-  private focusableTreeNode: TreeNode<TreeNodeDataType>|null = null;
+  private selectedTreeNode: TreeNode<TreeNodeDataType>|null = null;
   private defaultRenderer =
       (node: TreeNode<TreeNodeDataType>, _state: {isExpanded: boolean}): LitHtml.TemplateResult => {
         if (typeof node.treeNodeData !== 'string') {
@@ -126,7 +126,7 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
     this.defaultRenderer = data.defaultRenderer;
     this.treeData = data.tree;
     if (!this.hasRenderedAtLeastOnce) {
-      this.focusableTreeNode = this.treeData[0];
+      this.selectedTreeNode = this.treeData[0];
     }
     this.render();
   }
@@ -157,9 +157,9 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
       }
     });
 
-    await this.render();
     // Mark the node as pending focus so when it is rendered into the DOM we can focus it
     this.nodePendingFocus = targetTreeNode;
+    await this.render();
   }
 
   async collapseChildrenOfNode(domNode: HTMLLIElement): Promise<void> {
@@ -191,11 +191,11 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
     this.setNodeExpandedState(treeNode, false);
   }
 
-  private getFocusableTreeNode(): TreeNode<TreeNodeDataType> {
-    if (!this.focusableTreeNode) {
-      throw new Error('getFocusableNode was called but focusableNode is null');
+  private getSelectedTreeNode(): TreeNode<TreeNodeDataType> {
+    if (!this.selectedTreeNode) {
+      throw new Error('getSelectedNode was called but selectedTreeNode is null');
     }
-    return this.focusableTreeNode;
+    return this.selectedTreeNode;
   }
 
   private async fetchNodeChildren(node: TreeNodeWithChildren<TreeNodeDataType>): Promise<TreeNode<TreeNodeDataType>[]> {
@@ -250,7 +250,7 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
     if (!treeNode) {
       return;
     }
-    this.focusableTreeNode = treeNode;
+    this.selectedTreeNode = treeNode;
     await this.render();
     this.dispatchEvent(new ItemSelectedEvent(treeNode));
     coordinator.write('DOMNode focus', () => {
@@ -332,6 +332,16 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
     this.focusTreeNode(domNode);
   }
 
+  private isSelectedNode(node: TreeNode<TreeNodeDataType>): boolean {
+    if (node.id) {
+      if (this.selectedTreeNode && this.selectedTreeNode.id) {
+        return node.id === this.selectedTreeNode.id;
+      }
+    }
+
+    return node === this.selectedTreeNode;
+  }
+
   private renderNode(node: TreeNode<TreeNodeDataType>, {depth, setSize, positionInSet}: {
     depth: number,
     setSize: number,
@@ -353,11 +363,12 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
       // clang-format on
     }
 
-    const nodeIsFocusable = this.getFocusableTreeNode() === node;
+    const nodeIsFocusable = this.getSelectedTreeNode() === node;
     const tabIndex = nodeIsFocusable ? 0 : -1;
     const listItemClasses = LitHtml.Directives.classMap({
       expanded: isExpandableNode(node) && nodeIsExpanded,
       parent: isExpandableNode(node),
+      selected: this.isSelectedNode(node),
       'is-top-level': depth === 0,
     });
     const ariaExpandedAttribute =
@@ -393,7 +404,12 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
           if (!(domNode instanceof HTMLLIElement)) {
             return;
           }
-          if (node === this.nodePendingFocus) {
+
+          // If an id key was supplied for the node, match on that.
+          // Otherwise default to object equality.
+          if (node.id && this.nodePendingFocus && this.nodePendingFocus.id && node.id === this.nodePendingFocus.id) {
+            this.focusPendingNode(domNode);
+          } else if (node === this.nodePendingFocus) {
             this.focusPendingNode(domNode);
           }
         })}
@@ -508,9 +524,9 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
           outline: 0;
         }
 
-        [role="treeitem"]:focus-visible > .arrow-and-key-wrapper {
+        [role="treeitem"].selected > .arrow-and-key-wrapper {
           /* stylelint-disable-next-line color-named */
-          border-color: black;
+          background-color: var(--selection-bg-color);
         }
       </style>
       <div class="wrapping-container">

@@ -2,18 +2,18 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Components from '../components/components.js';
-import * as Common from '../core/common/common.js';
-import * as Root from '../core/root/root.js';
-import * as SDK from '../core/sdk/sdk.js';
-import * as Workspace from '../models/workspace/workspace.js';
-import * as UI from '../ui/legacy/legacy.js';
+import * as Components from '../../components/components.js';
+import * as Common from '../../core/common/common.js';
+import * as Root from '../../core/root/root.js';
+import * as SDK from '../../core/sdk/sdk.js';
+import * as Workspace from '../../models/workspace/workspace.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
 // eslint-disable-next-line rulesdir/es_modules_import
 import type * as Main from './main.js';
-import type * as InspectorMain from '../inspector_main/inspector_main.js';
+import type * as InspectorMain from '../../inspector_main/inspector_main.js';
 
-import * as i18n from '../core/i18n/i18n.js';
+import * as i18n from '../../core/i18n/i18n.js';
 const UIStrings = {
   /**
   *@description Text in Main
@@ -200,7 +200,7 @@ const UIStrings = {
   */
   devtoolsDefault: 'DevTools (Default)',
 };
-const str_ = i18n.i18n.registerUIStrings('main/main-meta.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('entrypoints/main/main-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 let loadedMainModule: (typeof Main|undefined);
 let loadedInspectorMainModule: (typeof InspectorMain|undefined);
@@ -208,7 +208,7 @@ let loadedInspectorMainModule: (typeof InspectorMain|undefined);
 async function loadMainModule(): Promise<typeof Main> {
   if (!loadedMainModule) {
     // Side-effect import resources in module.json
-    await Root.Runtime.Runtime.instance().loadModulePromise('main');
+    await Root.Runtime.Runtime.instance().loadModulePromise('entrypoints/main');
     loadedMainModule = await import('./main.js');
   }
   return loadedMainModule;
@@ -223,7 +223,7 @@ async function loadInspectorMainModule(): Promise<typeof InspectorMain> {
   if (!loadedInspectorMainModule) {
     // Side-effect import resources in module.json
     await Root.Runtime.Runtime.instance().loadModulePromise('inspector_main');
-    loadedInspectorMainModule = await import('../inspector_main/inspector_main.js');
+    loadedInspectorMainModule = await import('../../inspector_main/inspector_main.js');
   }
   return loadedInspectorMainModule;
 }

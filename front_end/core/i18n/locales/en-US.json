@@ -896,6 +896,183 @@
   "entrypoints/js_app/JsMain.ts | main": {
     "message": "Main"
   },
+  "entrypoints/main/main-meta.ts | asAuthored": {
+    "message": "As authored"
+  },
+  "entrypoints/main/main-meta.ts | auto": {
+    "message": "auto"
+  },
+  "entrypoints/main/main-meta.ts | bottom": {
+    "message": "Bottom"
+  },
+  "entrypoints/main/main-meta.ts | cancelSearch": {
+    "message": "Cancel search"
+  },
+  "entrypoints/main/main-meta.ts | colorFormat": {
+    "message": "Color format:"
+  },
+  "entrypoints/main/main-meta.ts | darkCapital": {
+    "message": "Dark"
+  },
+  "entrypoints/main/main-meta.ts | darkLower": {
+    "message": "dark"
+  },
+  "entrypoints/main/main-meta.ts | devtoolsDefault": {
+    "message": "DevTools (Default)"
+  },
+  "entrypoints/main/main-meta.ts | dockToBottom": {
+    "message": "Dock to bottom"
+  },
+  "entrypoints/main/main-meta.ts | dockToLeft": {
+    "message": "Dock to left"
+  },
+  "entrypoints/main/main-meta.ts | dockToRight": {
+    "message": "Dock to right"
+  },
+  "entrypoints/main/main-meta.ts | enableCtrlShortcutToSwitchPanels": {
+    "message": "Enable Ctrl + 1-9 shortcut to switch panels"
+  },
+  "entrypoints/main/main-meta.ts | enableShortcutToSwitchPanels": {
+    "message": "Enable ⌘ + 1-9 shortcut to switch panels"
+  },
+  "entrypoints/main/main-meta.ts | findNextResult": {
+    "message": "Find next result"
+  },
+  "entrypoints/main/main-meta.ts | findPreviousResult": {
+    "message": "Find previous result"
+  },
+  "entrypoints/main/main-meta.ts | focusDebuggee": {
+    "message": "Focus debuggee"
+  },
+  "entrypoints/main/main-meta.ts | horizontal": {
+    "message": "horizontal"
+  },
+  "entrypoints/main/main-meta.ts | left": {
+    "message": "Left"
+  },
+  "entrypoints/main/main-meta.ts | lightCapital": {
+    "message": "Light"
+  },
+  "entrypoints/main/main-meta.ts | lightLower": {
+    "message": "light"
+  },
+  "entrypoints/main/main-meta.ts | nextPanel": {
+    "message": "Next panel"
+  },
+  "entrypoints/main/main-meta.ts | panelLayout": {
+    "message": "Panel layout:"
+  },
+  "entrypoints/main/main-meta.ts | previousPanel": {
+    "message": "Previous panel"
+  },
+  "entrypoints/main/main-meta.ts | reloadDevtools": {
+    "message": "Reload DevTools"
+  },
+  "entrypoints/main/main-meta.ts | resetZoomLevel": {
+    "message": "Reset zoom level"
+  },
+  "entrypoints/main/main-meta.ts | restoreLastDockPosition": {
+    "message": "Restore last dock position"
+  },
+  "entrypoints/main/main-meta.ts | right": {
+    "message": "Right"
+  },
+  "entrypoints/main/main-meta.ts | searchInPanel": {
+    "message": "Search in panel"
+  },
+  "entrypoints/main/main-meta.ts | setColorFormatAsAuthored": {
+    "message": "Set color format as authored"
+  },
+  "entrypoints/main/main-meta.ts | setColorFormatToHex": {
+    "message": "Set color format to HEX"
+  },
+  "entrypoints/main/main-meta.ts | setColorFormatToHsl": {
+    "message": "Set color format to HSL"
+  },
+  "entrypoints/main/main-meta.ts | setColorFormatToRgb": {
+    "message": "Set color format to RGB"
+  },
+  "entrypoints/main/main-meta.ts | switchToDarkTheme": {
+    "message": "Switch to dark theme"
+  },
+  "entrypoints/main/main-meta.ts | switchToLightTheme": {
+    "message": "Switch to light theme"
+  },
+  "entrypoints/main/main-meta.ts | switchToSystemPreferredColor": {
+    "message": "Switch to system preferred color theme"
+  },
+  "entrypoints/main/main-meta.ts | systemPreference": {
+    "message": "System preference"
+  },
+  "entrypoints/main/main-meta.ts | theme": {
+    "message": "Theme:"
+  },
+  "entrypoints/main/main-meta.ts | toggleDrawer": {
+    "message": "Toggle drawer"
+  },
+  "entrypoints/main/main-meta.ts | undocked": {
+    "message": "Undocked"
+  },
+  "entrypoints/main/main-meta.ts | undockIntoSeparateWindow": {
+    "message": "Undock into separate window"
+  },
+  "entrypoints/main/main-meta.ts | useAutomaticPanelLayout": {
+    "message": "Use automatic panel layout"
+  },
+  "entrypoints/main/main-meta.ts | useHorizontalPanelLayout": {
+    "message": "Use horizontal panel layout"
+  },
+  "entrypoints/main/main-meta.ts | useVerticalPanelLayout": {
+    "message": "Use vertical panel layout"
+  },
+  "entrypoints/main/main-meta.ts | vertical": {
+    "message": "vertical"
+  },
+  "entrypoints/main/main-meta.ts | zoomIn": {
+    "message": "Zoom in"
+  },
+  "entrypoints/main/main-meta.ts | zoomOut": {
+    "message": "Zoom out"
+  },
+  "entrypoints/main/MainImpl.ts | customizeAndControlDevtools": {
+    "message": "Customize and control DevTools"
+  },
+  "entrypoints/main/MainImpl.ts | dockSide": {
+    "message": "Dock side"
+  },
+  "entrypoints/main/MainImpl.ts | dockToBottom": {
+    "message": "Dock to bottom"
+  },
+  "entrypoints/main/MainImpl.ts | dockToLeft": {
+    "message": "Dock to left"
+  },
+  "entrypoints/main/MainImpl.ts | dockToRight": {
+    "message": "Dock to right"
+  },
+  "entrypoints/main/MainImpl.ts | focusDebuggee": {
+    "message": "Focus debuggee"
+  },
+  "entrypoints/main/MainImpl.ts | help": {
+    "message": "Help"
+  },
+  "entrypoints/main/MainImpl.ts | hideConsoleDrawer": {
+    "message": "Hide console drawer"
+  },
+  "entrypoints/main/MainImpl.ts | moreTools": {
+    "message": "More tools"
+  },
+  "entrypoints/main/MainImpl.ts | placementOfDevtoolsRelativeToThe": {
+    "message": "Placement of DevTools relative to the page. ({PH1} to restore last position)"
+  },
+  "entrypoints/main/MainImpl.ts | showConsoleDrawer": {
+    "message": "Show console drawer"
+  },
+  "entrypoints/main/MainImpl.ts | theSystempreferredColorSchemeHas": {
+    "message": "The system-preferred color scheme has changed. To apply this change to DevTools, reload."
+  },
+  "entrypoints/main/MainImpl.ts | undockIntoSeparateWindow": {
+    "message": "Undock into separate window"
+  },
   "inspector_main/inspector_main-meta.ts | autoOpenDevTools": {
     "message": "Auto-open DevTools for popups"
   },
@@ -1042,183 +1219,6 @@
   },
   "inspector_main/RenderingOptions.ts | showsLayerBordersOrangeoliveAnd": {
     "message": "Shows layer borders (orange/olive) and tiles (cyan)."
-  },
-  "main/main-meta.ts | asAuthored": {
-    "message": "As authored"
-  },
-  "main/main-meta.ts | auto": {
-    "message": "auto"
-  },
-  "main/main-meta.ts | bottom": {
-    "message": "Bottom"
-  },
-  "main/main-meta.ts | cancelSearch": {
-    "message": "Cancel search"
-  },
-  "main/main-meta.ts | colorFormat": {
-    "message": "Color format:"
-  },
-  "main/main-meta.ts | darkCapital": {
-    "message": "Dark"
-  },
-  "main/main-meta.ts | darkLower": {
-    "message": "dark"
-  },
-  "main/main-meta.ts | devtoolsDefault": {
-    "message": "DevTools (Default)"
-  },
-  "main/main-meta.ts | dockToBottom": {
-    "message": "Dock to bottom"
-  },
-  "main/main-meta.ts | dockToLeft": {
-    "message": "Dock to left"
-  },
-  "main/main-meta.ts | dockToRight": {
-    "message": "Dock to right"
-  },
-  "main/main-meta.ts | enableCtrlShortcutToSwitchPanels": {
-    "message": "Enable Ctrl + 1-9 shortcut to switch panels"
-  },
-  "main/main-meta.ts | enableShortcutToSwitchPanels": {
-    "message": "Enable ⌘ + 1-9 shortcut to switch panels"
-  },
-  "main/main-meta.ts | findNextResult": {
-    "message": "Find next result"
-  },
-  "main/main-meta.ts | findPreviousResult": {
-    "message": "Find previous result"
-  },
-  "main/main-meta.ts | focusDebuggee": {
-    "message": "Focus debuggee"
-  },
-  "main/main-meta.ts | horizontal": {
-    "message": "horizontal"
-  },
-  "main/main-meta.ts | left": {
-    "message": "Left"
-  },
-  "main/main-meta.ts | lightCapital": {
-    "message": "Light"
-  },
-  "main/main-meta.ts | lightLower": {
-    "message": "light"
-  },
-  "main/main-meta.ts | nextPanel": {
-    "message": "Next panel"
-  },
-  "main/main-meta.ts | panelLayout": {
-    "message": "Panel layout:"
-  },
-  "main/main-meta.ts | previousPanel": {
-    "message": "Previous panel"
-  },
-  "main/main-meta.ts | reloadDevtools": {
-    "message": "Reload DevTools"
-  },
-  "main/main-meta.ts | resetZoomLevel": {
-    "message": "Reset zoom level"
-  },
-  "main/main-meta.ts | restoreLastDockPosition": {
-    "message": "Restore last dock position"
-  },
-  "main/main-meta.ts | right": {
-    "message": "Right"
-  },
-  "main/main-meta.ts | searchInPanel": {
-    "message": "Search in panel"
-  },
-  "main/main-meta.ts | setColorFormatAsAuthored": {
-    "message": "Set color format as authored"
-  },
-  "main/main-meta.ts | setColorFormatToHex": {
-    "message": "Set color format to HEX"
-  },
-  "main/main-meta.ts | setColorFormatToHsl": {
-    "message": "Set color format to HSL"
-  },
-  "main/main-meta.ts | setColorFormatToRgb": {
-    "message": "Set color format to RGB"
-  },
-  "main/main-meta.ts | switchToDarkTheme": {
-    "message": "Switch to dark theme"
-  },
-  "main/main-meta.ts | switchToLightTheme": {
-    "message": "Switch to light theme"
-  },
-  "main/main-meta.ts | switchToSystemPreferredColor": {
-    "message": "Switch to system preferred color theme"
-  },
-  "main/main-meta.ts | systemPreference": {
-    "message": "System preference"
-  },
-  "main/main-meta.ts | theme": {
-    "message": "Theme:"
-  },
-  "main/main-meta.ts | toggleDrawer": {
-    "message": "Toggle drawer"
-  },
-  "main/main-meta.ts | undocked": {
-    "message": "Undocked"
-  },
-  "main/main-meta.ts | undockIntoSeparateWindow": {
-    "message": "Undock into separate window"
-  },
-  "main/main-meta.ts | useAutomaticPanelLayout": {
-    "message": "Use automatic panel layout"
-  },
-  "main/main-meta.ts | useHorizontalPanelLayout": {
-    "message": "Use horizontal panel layout"
-  },
-  "main/main-meta.ts | useVerticalPanelLayout": {
-    "message": "Use vertical panel layout"
-  },
-  "main/main-meta.ts | vertical": {
-    "message": "vertical"
-  },
-  "main/main-meta.ts | zoomIn": {
-    "message": "Zoom in"
-  },
-  "main/main-meta.ts | zoomOut": {
-    "message": "Zoom out"
-  },
-  "main/MainImpl.ts | customizeAndControlDevtools": {
-    "message": "Customize and control DevTools"
-  },
-  "main/MainImpl.ts | dockSide": {
-    "message": "Dock side"
-  },
-  "main/MainImpl.ts | dockToBottom": {
-    "message": "Dock to bottom"
-  },
-  "main/MainImpl.ts | dockToLeft": {
-    "message": "Dock to left"
-  },
-  "main/MainImpl.ts | dockToRight": {
-    "message": "Dock to right"
-  },
-  "main/MainImpl.ts | focusDebuggee": {
-    "message": "Focus debuggee"
-  },
-  "main/MainImpl.ts | help": {
-    "message": "Help"
-  },
-  "main/MainImpl.ts | hideConsoleDrawer": {
-    "message": "Hide console drawer"
-  },
-  "main/MainImpl.ts | moreTools": {
-    "message": "More tools"
-  },
-  "main/MainImpl.ts | placementOfDevtoolsRelativeToThe": {
-    "message": "Placement of DevTools relative to the page. ({PH1} to restore last position)"
-  },
-  "main/MainImpl.ts | showConsoleDrawer": {
-    "message": "Show console drawer"
-  },
-  "main/MainImpl.ts | theSystempreferredColorSchemeHas": {
-    "message": "The system-preferred color scheme has changed. To apply this change to DevTools, reload."
-  },
-  "main/MainImpl.ts | undockIntoSeparateWindow": {
-    "message": "Undock into separate window"
   },
   "models/bindings/ContentProviderBasedProject.ts | unknownErrorLoadingFile": {
     "message": "Unknown error loading file"

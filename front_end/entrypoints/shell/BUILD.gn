@@ -10,7 +10,7 @@ devtools_entrypoint("shell-meta-files") {
   deps = [
     "../../core/sdk:meta",
     "../../core/sdk:meta",
-    "../../main:meta",
+    "../../entrypoints/main:meta",
     "../../models/logs:meta",
     "../../models/persistence:meta",
     "../../models/workspace:legacy",
@@ -44,8 +44,8 @@ ts_library("shell") {
     "../../core/host:legacy",
     "../../core/protocol_client:legacy",
     "../../core/sdk:legacy",
+    "../../entrypoints/main:meta",
     "../../entrypoints/startup:bundle",
-    "../../main:meta",
     "../../models/bindings:legacy",
     "../../models/extensions:legacy",
     "../../models/persistence:legacy",

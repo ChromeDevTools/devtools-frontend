@@ -2,8 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../core/common/common.js';  // eslint-disable-line no-unused-vars
-import * as UI from '../ui/legacy/legacy.js';
+import * as Common from '../../core/common/common.js';  // eslint-disable-line no-unused-vars
+import * as UI from '../../ui/legacy/legacy.js';
 
 export class SimpleApp implements Common.App.App {
   presentUI(document: Document): void {

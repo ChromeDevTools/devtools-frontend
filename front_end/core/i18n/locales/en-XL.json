@@ -896,6 +896,183 @@
   "entrypoints/js_app/JsMain.ts | main": {
     "message": "M̂áîń"
   },
+  "entrypoints/main/main-meta.ts | asAuthored": {
+    "message": "Âś âút̂h́ôŕêd́"
+  },
+  "entrypoints/main/main-meta.ts | auto": {
+    "message": "âút̂ó"
+  },
+  "entrypoints/main/main-meta.ts | bottom": {
+    "message": "B̂ót̂t́ôḿ"
+  },
+  "entrypoints/main/main-meta.ts | cancelSearch": {
+    "message": "Ĉán̂ćêĺ ŝéâŕĉh́"
+  },
+  "entrypoints/main/main-meta.ts | colorFormat": {
+    "message": "Ĉól̂ór̂ f́ôŕm̂át̂:"
+  },
+  "entrypoints/main/main-meta.ts | darkCapital": {
+    "message": "D̂ár̂ḱ"
+  },
+  "entrypoints/main/main-meta.ts | darkLower": {
+    "message": "d̂ár̂ḱ"
+  },
+  "entrypoints/main/main-meta.ts | devtoolsDefault": {
+    "message": "D̂év̂T́ôól̂ś (D̂éf̂áûĺt̂)"
+  },
+  "entrypoints/main/main-meta.ts | dockToBottom": {
+    "message": "D̂óĉḱ t̂ó b̂ót̂t́ôḿ"
+  },
+  "entrypoints/main/main-meta.ts | dockToLeft": {
+    "message": "D̂óĉḱ t̂ó l̂éf̂t́"
+  },
+  "entrypoints/main/main-meta.ts | dockToRight": {
+    "message": "D̂óĉḱ t̂ó r̂íĝh́t̂"
+  },
+  "entrypoints/main/main-meta.ts | enableCtrlShortcutToSwitchPanels": {
+    "message": "Êńâb́l̂é Ĉt́r̂ĺ + 1-9 ŝh́ôŕt̂ćût́ t̂ó ŝẃît́ĉh́ p̂án̂él̂ś"
+  },
+  "entrypoints/main/main-meta.ts | enableShortcutToSwitchPanels": {
+    "message": "Êńâb́l̂é ⌘ + 1-9 ŝh́ôŕt̂ćût́ t̂ó ŝẃît́ĉh́ p̂án̂él̂ś"
+  },
+  "entrypoints/main/main-meta.ts | findNextResult": {
+    "message": "F̂ín̂d́ n̂éx̂t́ r̂éŝúl̂t́"
+  },
+  "entrypoints/main/main-meta.ts | findPreviousResult": {
+    "message": "F̂ín̂d́ p̂ŕêv́îóûś r̂éŝúl̂t́"
+  },
+  "entrypoints/main/main-meta.ts | focusDebuggee": {
+    "message": "F̂óĉúŝ d́êb́ûǵĝéê"
+  },
+  "entrypoints/main/main-meta.ts | horizontal": {
+    "message": "ĥór̂íẑón̂t́âĺ"
+  },
+  "entrypoints/main/main-meta.ts | left": {
+    "message": "L̂éf̂t́"
+  },
+  "entrypoints/main/main-meta.ts | lightCapital": {
+    "message": "L̂íĝh́t̂"
+  },
+  "entrypoints/main/main-meta.ts | lightLower": {
+    "message": "l̂íĝh́t̂"
+  },
+  "entrypoints/main/main-meta.ts | nextPanel": {
+    "message": "N̂éx̂t́ p̂án̂él̂"
+  },
+  "entrypoints/main/main-meta.ts | panelLayout": {
+    "message": "P̂án̂él̂ ĺâýôút̂:"
+  },
+  "entrypoints/main/main-meta.ts | previousPanel": {
+    "message": "P̂ŕêv́îóûś p̂án̂él̂"
+  },
+  "entrypoints/main/main-meta.ts | reloadDevtools": {
+    "message": "R̂él̂óâd́ D̂év̂T́ôól̂ś"
+  },
+  "entrypoints/main/main-meta.ts | resetZoomLevel": {
+    "message": "R̂éŝét̂ źôóm̂ ĺêv́êĺ"
+  },
+  "entrypoints/main/main-meta.ts | restoreLastDockPosition": {
+    "message": "R̂éŝt́ôŕê ĺâśt̂ d́ôćk̂ ṕôśît́îón̂"
+  },
+  "entrypoints/main/main-meta.ts | right": {
+    "message": "R̂íĝh́t̂"
+  },
+  "entrypoints/main/main-meta.ts | searchInPanel": {
+    "message": "Ŝéâŕĉh́ îń p̂án̂él̂"
+  },
+  "entrypoints/main/main-meta.ts | setColorFormatAsAuthored": {
+    "message": "Ŝét̂ ćôĺôŕ f̂ór̂ḿât́ âś âút̂h́ôŕêd́"
+  },
+  "entrypoints/main/main-meta.ts | setColorFormatToHex": {
+    "message": "Ŝét̂ ćôĺôŕ f̂ór̂ḿât́ t̂ó ĤÉX̂"
+  },
+  "entrypoints/main/main-meta.ts | setColorFormatToHsl": {
+    "message": "Ŝét̂ ćôĺôŕ f̂ór̂ḿât́ t̂ó ĤŚL̂"
+  },
+  "entrypoints/main/main-meta.ts | setColorFormatToRgb": {
+    "message": "Ŝét̂ ćôĺôŕ f̂ór̂ḿât́ t̂ó R̂ǴB̂"
+  },
+  "entrypoints/main/main-meta.ts | switchToDarkTheme": {
+    "message": "Ŝẃît́ĉh́ t̂ó d̂ár̂ḱ t̂h́êḿê"
+  },
+  "entrypoints/main/main-meta.ts | switchToLightTheme": {
+    "message": "Ŝẃît́ĉh́ t̂ó l̂íĝh́t̂ t́ĥém̂é"
+  },
+  "entrypoints/main/main-meta.ts | switchToSystemPreferredColor": {
+    "message": "Ŝẃît́ĉh́ t̂ó ŝýŝt́êḿ p̂ŕêf́êŕr̂éd̂ ćôĺôŕ t̂h́êḿê"
+  },
+  "entrypoints/main/main-meta.ts | systemPreference": {
+    "message": "Ŝýŝt́êḿ p̂ŕêf́êŕêńĉé"
+  },
+  "entrypoints/main/main-meta.ts | theme": {
+    "message": "T̂h́êḿê:"
+  },
+  "entrypoints/main/main-meta.ts | toggleDrawer": {
+    "message": "T̂óĝǵl̂é d̂ŕâẃêŕ"
+  },
+  "entrypoints/main/main-meta.ts | undocked": {
+    "message": "Ûńd̂óĉḱêd́"
+  },
+  "entrypoints/main/main-meta.ts | undockIntoSeparateWindow": {
+    "message": "Ûńd̂óĉḱ îńt̂ó ŝép̂ár̂át̂é ŵín̂d́ôẃ"
+  },
+  "entrypoints/main/main-meta.ts | useAutomaticPanelLayout": {
+    "message": "Ûśê áût́ôḿât́îć p̂án̂él̂ ĺâýôút̂"
+  },
+  "entrypoints/main/main-meta.ts | useHorizontalPanelLayout": {
+    "message": "Ûśê h́ôŕîźôńt̂ál̂ ṕâńêĺ l̂áŷóût́"
+  },
+  "entrypoints/main/main-meta.ts | useVerticalPanelLayout": {
+    "message": "Ûśê v́êŕt̂íĉál̂ ṕâńêĺ l̂áŷóût́"
+  },
+  "entrypoints/main/main-meta.ts | vertical": {
+    "message": "v̂ér̂t́îćâĺ"
+  },
+  "entrypoints/main/main-meta.ts | zoomIn": {
+    "message": "Ẑóôḿ îń"
+  },
+  "entrypoints/main/main-meta.ts | zoomOut": {
+    "message": "Ẑóôḿ ôút̂"
+  },
+  "entrypoints/main/MainImpl.ts | customizeAndControlDevtools": {
+    "message": "Ĉúŝt́ôḿîźê án̂d́ ĉón̂t́r̂ól̂ D́êv́T̂óôĺŝ"
+  },
+  "entrypoints/main/MainImpl.ts | dockSide": {
+    "message": "D̂óĉḱ ŝíd̂é"
+  },
+  "entrypoints/main/MainImpl.ts | dockToBottom": {
+    "message": "D̂óĉḱ t̂ó b̂ót̂t́ôḿ"
+  },
+  "entrypoints/main/MainImpl.ts | dockToLeft": {
+    "message": "D̂óĉḱ t̂ó l̂éf̂t́"
+  },
+  "entrypoints/main/MainImpl.ts | dockToRight": {
+    "message": "D̂óĉḱ t̂ó r̂íĝh́t̂"
+  },
+  "entrypoints/main/MainImpl.ts | focusDebuggee": {
+    "message": "F̂óĉúŝ d́êb́ûǵĝéê"
+  },
+  "entrypoints/main/MainImpl.ts | help": {
+    "message": "Ĥél̂ṕ"
+  },
+  "entrypoints/main/MainImpl.ts | hideConsoleDrawer": {
+    "message": "Ĥíd̂é ĉón̂śôĺê d́r̂áŵér̂"
+  },
+  "entrypoints/main/MainImpl.ts | moreTools": {
+    "message": "M̂ór̂é t̂óôĺŝ"
+  },
+  "entrypoints/main/MainImpl.ts | placementOfDevtoolsRelativeToThe": {
+    "message": "P̂ĺâćêḿêńt̂ óf̂ D́êv́T̂óôĺŝ ŕêĺât́îv́ê t́ô t́ĥé p̂áĝé. ({PH1} t̂ó r̂éŝt́ôŕê ĺâśt̂ ṕôśît́îón̂)"
+  },
+  "entrypoints/main/MainImpl.ts | showConsoleDrawer": {
+    "message": "Ŝh́ôẃ ĉón̂śôĺê d́r̂áŵér̂"
+  },
+  "entrypoints/main/MainImpl.ts | theSystempreferredColorSchemeHas": {
+    "message": "T̂h́ê śŷśt̂ém̂-ṕr̂éf̂ér̂ŕêd́ ĉól̂ór̂ śĉh́êḿê h́âś ĉh́âńĝéd̂. T́ô áp̂ṕl̂ý t̂h́îś ĉh́âńĝé t̂ó D̂év̂T́ôól̂ś, r̂él̂óâd́."
+  },
+  "entrypoints/main/MainImpl.ts | undockIntoSeparateWindow": {
+    "message": "Ûńd̂óĉḱ îńt̂ó ŝép̂ár̂át̂é ŵín̂d́ôẃ"
+  },
   "inspector_main/inspector_main-meta.ts | autoOpenDevTools": {
     "message": "Âút̂ó-ôṕêń D̂év̂T́ôól̂ś f̂ór̂ ṕôṕûṕŝ"
   },
@@ -1042,183 +1219,6 @@
   },
   "inspector_main/RenderingOptions.ts | showsLayerBordersOrangeoliveAnd": {
     "message": "Ŝh́ôẃŝ ĺâýêŕ b̂ór̂d́êŕŝ (ór̂án̂ǵê/ól̂ív̂é) âńd̂ t́îĺêś (ĉýâń)."
-  },
-  "main/main-meta.ts | asAuthored": {
-    "message": "Âś âút̂h́ôŕêd́"
-  },
-  "main/main-meta.ts | auto": {
-    "message": "âút̂ó"
-  },
-  "main/main-meta.ts | bottom": {
-    "message": "B̂ót̂t́ôḿ"
-  },
-  "main/main-meta.ts | cancelSearch": {
-    "message": "Ĉán̂ćêĺ ŝéâŕĉh́"
-  },
-  "main/main-meta.ts | colorFormat": {
-    "message": "Ĉól̂ór̂ f́ôŕm̂át̂:"
-  },
-  "main/main-meta.ts | darkCapital": {
-    "message": "D̂ár̂ḱ"
-  },
-  "main/main-meta.ts | darkLower": {
-    "message": "d̂ár̂ḱ"
-  },
-  "main/main-meta.ts | devtoolsDefault": {
-    "message": "D̂év̂T́ôól̂ś (D̂éf̂áûĺt̂)"
-  },
-  "main/main-meta.ts | dockToBottom": {
-    "message": "D̂óĉḱ t̂ó b̂ót̂t́ôḿ"
-  },
-  "main/main-meta.ts | dockToLeft": {
-    "message": "D̂óĉḱ t̂ó l̂éf̂t́"
-  },
-  "main/main-meta.ts | dockToRight": {
-    "message": "D̂óĉḱ t̂ó r̂íĝh́t̂"
-  },
-  "main/main-meta.ts | enableCtrlShortcutToSwitchPanels": {
-    "message": "Êńâb́l̂é Ĉt́r̂ĺ + 1-9 ŝh́ôŕt̂ćût́ t̂ó ŝẃît́ĉh́ p̂án̂él̂ś"
-  },
-  "main/main-meta.ts | enableShortcutToSwitchPanels": {
-    "message": "Êńâb́l̂é ⌘ + 1-9 ŝh́ôŕt̂ćût́ t̂ó ŝẃît́ĉh́ p̂án̂él̂ś"
-  },
-  "main/main-meta.ts | findNextResult": {
-    "message": "F̂ín̂d́ n̂éx̂t́ r̂éŝúl̂t́"
-  },
-  "main/main-meta.ts | findPreviousResult": {
-    "message": "F̂ín̂d́ p̂ŕêv́îóûś r̂éŝúl̂t́"
-  },
-  "main/main-meta.ts | focusDebuggee": {
-    "message": "F̂óĉúŝ d́êb́ûǵĝéê"
-  },
-  "main/main-meta.ts | horizontal": {
-    "message": "ĥór̂íẑón̂t́âĺ"
-  },
-  "main/main-meta.ts | left": {
-    "message": "L̂éf̂t́"
-  },
-  "main/main-meta.ts | lightCapital": {
-    "message": "L̂íĝh́t̂"
-  },
-  "main/main-meta.ts | lightLower": {
-    "message": "l̂íĝh́t̂"
-  },
-  "main/main-meta.ts | nextPanel": {
-    "message": "N̂éx̂t́ p̂án̂él̂"
-  },
-  "main/main-meta.ts | panelLayout": {
-    "message": "P̂án̂él̂ ĺâýôút̂:"
-  },
-  "main/main-meta.ts | previousPanel": {
-    "message": "P̂ŕêv́îóûś p̂án̂él̂"
-  },
-  "main/main-meta.ts | reloadDevtools": {
-    "message": "R̂él̂óâd́ D̂év̂T́ôól̂ś"
-  },
-  "main/main-meta.ts | resetZoomLevel": {
-    "message": "R̂éŝét̂ źôóm̂ ĺêv́êĺ"
-  },
-  "main/main-meta.ts | restoreLastDockPosition": {
-    "message": "R̂éŝt́ôŕê ĺâśt̂ d́ôćk̂ ṕôśît́îón̂"
-  },
-  "main/main-meta.ts | right": {
-    "message": "R̂íĝh́t̂"
-  },
-  "main/main-meta.ts | searchInPanel": {
-    "message": "Ŝéâŕĉh́ îń p̂án̂él̂"
-  },
-  "main/main-meta.ts | setColorFormatAsAuthored": {
-    "message": "Ŝét̂ ćôĺôŕ f̂ór̂ḿât́ âś âút̂h́ôŕêd́"
-  },
-  "main/main-meta.ts | setColorFormatToHex": {
-    "message": "Ŝét̂ ćôĺôŕ f̂ór̂ḿât́ t̂ó ĤÉX̂"
-  },
-  "main/main-meta.ts | setColorFormatToHsl": {
-    "message": "Ŝét̂ ćôĺôŕ f̂ór̂ḿât́ t̂ó ĤŚL̂"
-  },
-  "main/main-meta.ts | setColorFormatToRgb": {
-    "message": "Ŝét̂ ćôĺôŕ f̂ór̂ḿât́ t̂ó R̂ǴB̂"
-  },
-  "main/main-meta.ts | switchToDarkTheme": {
-    "message": "Ŝẃît́ĉh́ t̂ó d̂ár̂ḱ t̂h́êḿê"
-  },
-  "main/main-meta.ts | switchToLightTheme": {
-    "message": "Ŝẃît́ĉh́ t̂ó l̂íĝh́t̂ t́ĥém̂é"
-  },
-  "main/main-meta.ts | switchToSystemPreferredColor": {
-    "message": "Ŝẃît́ĉh́ t̂ó ŝýŝt́êḿ p̂ŕêf́êŕr̂éd̂ ćôĺôŕ t̂h́êḿê"
-  },
-  "main/main-meta.ts | systemPreference": {
-    "message": "Ŝýŝt́êḿ p̂ŕêf́êŕêńĉé"
-  },
-  "main/main-meta.ts | theme": {
-    "message": "T̂h́êḿê:"
-  },
-  "main/main-meta.ts | toggleDrawer": {
-    "message": "T̂óĝǵl̂é d̂ŕâẃêŕ"
-  },
-  "main/main-meta.ts | undocked": {
-    "message": "Ûńd̂óĉḱêd́"
-  },
-  "main/main-meta.ts | undockIntoSeparateWindow": {
-    "message": "Ûńd̂óĉḱ îńt̂ó ŝép̂ár̂át̂é ŵín̂d́ôẃ"
-  },
-  "main/main-meta.ts | useAutomaticPanelLayout": {
-    "message": "Ûśê áût́ôḿât́îć p̂án̂él̂ ĺâýôút̂"
-  },
-  "main/main-meta.ts | useHorizontalPanelLayout": {
-    "message": "Ûśê h́ôŕîźôńt̂ál̂ ṕâńêĺ l̂áŷóût́"
-  },
-  "main/main-meta.ts | useVerticalPanelLayout": {
-    "message": "Ûśê v́êŕt̂íĉál̂ ṕâńêĺ l̂áŷóût́"
-  },
-  "main/main-meta.ts | vertical": {
-    "message": "v̂ér̂t́îćâĺ"
-  },
-  "main/main-meta.ts | zoomIn": {
-    "message": "Ẑóôḿ îń"
-  },
-  "main/main-meta.ts | zoomOut": {
-    "message": "Ẑóôḿ ôút̂"
-  },
-  "main/MainImpl.ts | customizeAndControlDevtools": {
-    "message": "Ĉúŝt́ôḿîźê án̂d́ ĉón̂t́r̂ól̂ D́êv́T̂óôĺŝ"
-  },
-  "main/MainImpl.ts | dockSide": {
-    "message": "D̂óĉḱ ŝíd̂é"
-  },
-  "main/MainImpl.ts | dockToBottom": {
-    "message": "D̂óĉḱ t̂ó b̂ót̂t́ôḿ"
-  },
-  "main/MainImpl.ts | dockToLeft": {
-    "message": "D̂óĉḱ t̂ó l̂éf̂t́"
-  },
-  "main/MainImpl.ts | dockToRight": {
-    "message": "D̂óĉḱ t̂ó r̂íĝh́t̂"
-  },
-  "main/MainImpl.ts | focusDebuggee": {
-    "message": "F̂óĉúŝ d́êb́ûǵĝéê"
-  },
-  "main/MainImpl.ts | help": {
-    "message": "Ĥél̂ṕ"
-  },
-  "main/MainImpl.ts | hideConsoleDrawer": {
-    "message": "Ĥíd̂é ĉón̂śôĺê d́r̂áŵér̂"
-  },
-  "main/MainImpl.ts | moreTools": {
-    "message": "M̂ór̂é t̂óôĺŝ"
-  },
-  "main/MainImpl.ts | placementOfDevtoolsRelativeToThe": {
-    "message": "P̂ĺâćêḿêńt̂ óf̂ D́êv́T̂óôĺŝ ŕêĺât́îv́ê t́ô t́ĥé p̂áĝé. ({PH1} t̂ó r̂éŝt́ôŕê ĺâśt̂ ṕôśît́îón̂)"
-  },
-  "main/MainImpl.ts | showConsoleDrawer": {
-    "message": "Ŝh́ôẃ ĉón̂śôĺê d́r̂áŵér̂"
-  },
-  "main/MainImpl.ts | theSystempreferredColorSchemeHas": {
-    "message": "T̂h́ê śŷśt̂ém̂-ṕr̂éf̂ér̂ŕêd́ ĉól̂ór̂ śĉh́êḿê h́âś ĉh́âńĝéd̂. T́ô áp̂ṕl̂ý t̂h́îś ĉh́âńĝé t̂ó D̂év̂T́ôól̂ś, r̂él̂óâd́."
-  },
-  "main/MainImpl.ts | undockIntoSeparateWindow": {
-    "message": "Ûńd̂óĉḱ îńt̂ó ŝép̂ár̂át̂é ŵín̂d́ôẃ"
   },
   "models/bindings/ContentProviderBasedProject.ts | unknownErrorLoadingFile": {
     "message": "Ûńk̂ńôẃn̂ ér̂ŕôŕ l̂óâd́îńĝ f́îĺê"

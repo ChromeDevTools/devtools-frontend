@@ -34,26 +34,26 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Components from '../components/components.js';
-import * as Common from '../core/common/common.js';
-import * as Host from '../core/host/host.js';
-import * as i18n from '../core/i18n/i18n.js';
-import * as Platform from '../core/platform/platform.js';
-import * as ProtocolClient from '../core/protocol_client/protocol_client.js';
-import * as Root from '../core/root/root.js';
-import * as SDK from '../core/sdk/sdk.js';
-import * as Bindings from '../models/bindings/bindings.js';
-import * as Extensions from '../models/extensions/extensions.js';
-import * as IssuesManager from '../models/issues_manager/issues_manager.js';
-import * as Logs from '../models/logs/logs.js';
-import * as Persistence from '../models/persistence/persistence.js';
-import * as Recorder from '../models/recorder/recorder.js';
-import * as Workspace from '../models/workspace/workspace.js';
-import * as Snippets from '../panels/snippets/snippets.js';
-import * as Timeline from '../panels/timeline/timeline.js';
-import * as PerfUI from '../ui/legacy/components/perf_ui/perf_ui.js';
-import * as UI from '../ui/legacy/legacy.js';
-import * as ThemeSupport from '../ui/legacy/theme_support/theme_support.js';
+import * as Components from '../../components/components.js';
+import * as Common from '../../core/common/common.js';
+import * as Host from '../../core/host/host.js';
+import * as i18n from '../../core/i18n/i18n.js';
+import * as Platform from '../../core/platform/platform.js';
+import * as ProtocolClient from '../../core/protocol_client/protocol_client.js';
+import * as Root from '../../core/root/root.js';
+import * as SDK from '../../core/sdk/sdk.js';
+import * as Bindings from '../../models/bindings/bindings.js';
+import * as Extensions from '../../models/extensions/extensions.js';
+import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
+import * as Logs from '../../models/logs/logs.js';
+import * as Persistence from '../../models/persistence/persistence.js';
+import * as Recorder from '../../models/recorder/recorder.js';
+import * as Workspace from '../../models/workspace/workspace.js';
+import * as Snippets from '../../panels/snippets/snippets.js';
+import * as Timeline from '../../panels/timeline/timeline.js';
+import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
+import * as UI from '../../ui/legacy/legacy.js';
+import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 
 import {ExecutionContextSelector} from './ExecutionContextSelector.js';
 
@@ -113,7 +113,7 @@ const UIStrings = {
   */
   help: 'Help',
 };
-const str_ = i18n.i18n.registerUIStrings('main/MainImpl.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('entrypoints/main/MainImpl.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class MainImpl {
@@ -160,7 +160,7 @@ export class MainImpl {
     const locale = i18n.i18n.registeredLocale;
     if (locale) {
       const data = await Root.Runtime.loadResourcePromise(
-          new URL(`../core/i18n/locales/${locale}.json`, import.meta.url).toString());
+          new URL(`../../core/i18n/locales/${locale}.json`, import.meta.url).toString());
       if (data) {
         const localizedStrings = JSON.parse(data);
         i18n.i18n.registerLocaleData(locale, localizedStrings);

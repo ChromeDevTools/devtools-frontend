@@ -142,7 +142,7 @@ all_devtools_files = [
   "front_end/panels/layer_viewer/paintProfiler.css",
   "front_end/legacy_test_runner/layers_test_runner/layers_test_runner.js",
   "front_end/panels/layers/module.json",
-  "front_end/main/module.json",
+  "front_end/entrypoints/main/module.json",
   "front_end/panels/media/eventDisplayTable.css",
   "front_end/panels/media/module.json",
   "front_end/panels/media/playerListView.css",

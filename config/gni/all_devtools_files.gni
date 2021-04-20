@@ -171,7 +171,6 @@ all_devtools_files = [
   "front_end/panels/network/signedExchangeInfoTree.css",
   "front_end/panels/network/signedExchangeInfoView.css",
   "front_end/panels/network/webSocketFrameView.css",
-  "front_end/node_debugger/module.json",
   "front_end/node_main/module.json",
   "front_end/node_main/nodeConnectionsPanel.css",
   "front_end/ui/legacy/components/object_ui/customPreviewComponent.css",

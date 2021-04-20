@@ -1220,6 +1220,12 @@
   "entrypoints/main/MainImpl.ts | undockIntoSeparateWindow": {
     "message": "Undock into separate window"
   },
+  "entrypoints/node_app/node_app-meta.ts | node": {
+    "message": "Node"
+  },
+  "entrypoints/node_app/node_app-meta.ts | showNode": {
+    "message": "Node"
+  },
   "entrypoints/worker_app/WorkerMain.ts | main": {
     "message": "Main"
   },
@@ -1465,12 +1471,6 @@
   },
   "models/workspace/UISourceCode.ts | thisFileWasChangedExternally": {
     "message": "This file was changed externally. Would you like to reload it?"
-  },
-  "node_debugger/node_debugger-meta.ts | node": {
-    "message": "Node"
-  },
-  "node_debugger/node_debugger-meta.ts | showNode": {
-    "message": "Node"
   },
   "node_main/node_main-meta.ts | connection": {
     "message": "Connection"

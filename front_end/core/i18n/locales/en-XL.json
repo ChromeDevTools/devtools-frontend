@@ -1220,6 +1220,12 @@
   "entrypoints/main/MainImpl.ts | undockIntoSeparateWindow": {
     "message": "Ûńd̂óĉḱ îńt̂ó ŝép̂ár̂át̂é ŵín̂d́ôẃ"
   },
+  "entrypoints/node_app/node_app-meta.ts | node": {
+    "message": "N̂ód̂é"
+  },
+  "entrypoints/node_app/node_app-meta.ts | showNode": {
+    "message": "N̂ód̂é"
+  },
   "entrypoints/worker_app/WorkerMain.ts | main": {
     "message": "M̂áîń"
   },
@@ -1465,12 +1471,6 @@
   },
   "models/workspace/UISourceCode.ts | thisFileWasChangedExternally": {
     "message": "T̂h́îś f̂íl̂é ŵáŝ ćĥán̂ǵêd́ êx́t̂ér̂ńâĺl̂ý. Ŵóûĺd̂ ýôú l̂ík̂é t̂ó r̂él̂óâd́ ît́?"
-  },
-  "node_debugger/node_debugger-meta.ts | node": {
-    "message": "N̂ód̂é"
-  },
-  "node_debugger/node_debugger-meta.ts | showNode": {
-    "message": "N̂ód̂é"
   },
   "node_main/node_main-meta.ts | connection": {
     "message": "Ĉón̂ńêćt̂íôń"

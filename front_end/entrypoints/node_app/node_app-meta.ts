@@ -2,12 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as i18n from '../core/i18n/i18n.js';
-import * as Root from '../core/root/root.js';
-import * as UI from '../ui/legacy/legacy.js';
+import * as i18n from '../../core/i18n/i18n.js';
+import * as Root from '../../core/root/root.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
 // eslint-disable-next-line rulesdir/es_modules_import
-import type * as Sources from '../panels/sources/sources.js';
+import type * as Sources from '../../panels/sources/sources.js';
 
 const UIStrings = {
   /**
@@ -20,7 +20,7 @@ const UIStrings = {
   showNode: 'Node',
 };
 
-const str_ = i18n.i18n.registerUIStrings('node_debugger/node_debugger-meta.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('entrypoints/node_app/node_app-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 let loadedSourcesModule: (typeof Sources|undefined);
@@ -29,7 +29,7 @@ async function loadHelpModule(): Promise<typeof Sources> {
   if (!loadedSourcesModule) {
     // Side-effect import resources in module.json
     await Root.Runtime.Runtime.instance().loadModulePromise('sources');
-    loadedSourcesModule = await import('../panels/sources/sources.js');
+    loadedSourcesModule = await import('../../panels/sources/sources.js');
   }
   return loadedSourcesModule;
 }

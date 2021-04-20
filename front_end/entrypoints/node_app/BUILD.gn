@@ -1,6 +1,7 @@
 # Copyright 2021 The Chromium Authors. All rights reserved.
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
+import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../third_party/typescript/typescript.gni")
 
 ts_library("node_app") {
@@ -8,10 +9,21 @@ ts_library("node_app") {
   sources = [ "node_app.js" ]
 
   deps = [
+    ":node_app-meta",
     "../../entrypoints/startup:bundle",
-    "../../node_debugger:meta",
     "../../node_main:meta",
     "../../panels/js_profiler:meta",
     "../shell",
+  ]
+}
+
+devtools_entrypoint("node_app-meta") {
+  entrypoint = "node_app-meta.ts"
+
+  deps = [
+    "../../core/i18n:bundle",
+    "../../core/root:bundle",
+    "../../panels/sources:bundle",
+    "../../ui/legacy:bundle",
   ]
 }

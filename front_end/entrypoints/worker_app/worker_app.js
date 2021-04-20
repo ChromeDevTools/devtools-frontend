@@ -12,6 +12,7 @@ import '../../panels/mobile_throttling/mobile_throttling-meta.js';
 import '../../panels/network/network-meta.js';
 import '../../panels/application/application-meta.js';
 import '../../panels/timeline/timeline-meta.js';
+import './WorkerMain.js';
 import * as Startup from '../startup/startup.js';  // eslint-disable-line rulesdir/es_modules_import
 
 Startup.RuntimeInstantiator.startApplication('worker_app');

@@ -833,7 +833,6 @@ all_typescript_module_sources = [
   "ui/legacy/utils/measured-scrollbar-width.js",
   "ui/legacy/utils/register-custom-element.js",
   "ui/legacy/utils/utils.js",
-  "worker_main/WorkerMain.js",
   "workspace_diff/WorkspaceDiff.js",
 ]
 

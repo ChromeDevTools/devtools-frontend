@@ -1220,6 +1220,9 @@
   "entrypoints/main/MainImpl.ts | undockIntoSeparateWindow": {
     "message": "Undock into separate window"
   },
+  "entrypoints/worker_app/WorkerMain.ts | main": {
+    "message": "Main"
+  },
   "models/bindings/ContentProviderBasedProject.ts | unknownErrorLoadingFile": {
     "message": "Unknown error loading file"
   },
@@ -11443,8 +11446,5 @@
   },
   "ui/legacy/ViewManager.ts | sPanel": {
     "message": "{PH1} panel"
-  },
-  "worker_main/WorkerMain.ts | main": {
-    "message": "Main"
   }
 }

@@ -202,6 +202,7 @@ grd_files_release_sources = [
   "front_end/entrypoints/toolbox/toolbox.js",
   "front_end/entrypoints/wasmparser_worker/wasmparser_worker-entrypoint.js",
   "front_end/entrypoints/wasmparser_worker/wasmparser_worker.js",
+  "front_end/entrypoints/worker_app/WorkerMain.js",
   "front_end/entrypoints/worker_app/worker_app.js",
   "front_end/inspector.html",
   "front_end/integration_test_runner.html",
@@ -456,7 +457,6 @@ grd_files_release_sources = [
   "front_end/ui/legacy/theme_support/theme_support.js",
   "front_end/ui/legacy/utils/utils.js",
   "front_end/worker_app.html",
-  "front_end/worker_main/worker_main.js",
   "front_end/workspace_diff/workspace_diff-legacy.js",
   "front_end/workspace_diff/workspace_diff.js",
   "front_end/workspace_diff/workspace_diff_module.js",
@@ -1287,7 +1287,6 @@ grd_files_debug_sources = [
   "front_end/ui/legacy/utils/inject-core-styles.js",
   "front_end/ui/legacy/utils/measured-scrollbar-width.js",
   "front_end/ui/legacy/utils/register-custom-element.js",
-  "front_end/worker_main/WorkerMain.js",
   "front_end/workspace_diff/WorkspaceDiff.js",
 ]
 

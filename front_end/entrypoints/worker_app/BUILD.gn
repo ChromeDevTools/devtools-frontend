@@ -1,6 +1,7 @@
 # Copyright 2021 The Chromium Authors. All rights reserved.
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
+import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../third_party/typescript/typescript.gni")
 
 ts_library("worker_app") {
@@ -8,6 +9,7 @@ ts_library("worker_app") {
   sources = [ "worker_app.js" ]
 
   deps = [
+    ":worker_main",
     "../../entrypoints/startup:bundle",
     "../../panels/application:meta",
     "../../panels/browser_debugger:meta",
@@ -20,5 +22,17 @@ ts_library("worker_app") {
     "../../panels/network:meta",
     "../../panels/timeline:meta",
     "../shell",
+  ]
+}
+
+devtools_entrypoint("worker_main") {
+  entrypoint = "WorkerMain.ts"
+
+  deps = [
+    "../../components:bundle",
+    "../../core/common:bundle",
+    "../../core/i18n:bundle",
+    "../../core/sdk:bundle",
+    "../../panels/mobile_throttling:bundle",
   ]
 }

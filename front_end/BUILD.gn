@@ -64,7 +64,6 @@ group("front_end") {
     "ui/legacy/components/inline_editor:bundle",
     "ui/legacy/components/text_editor:bundle",
     "ui/legacy/theme_support:bundle",
-    "worker_main:bundle",
     "workspace_diff:bundle",
   ]
 }

@@ -1220,6 +1220,9 @@
   "entrypoints/main/MainImpl.ts | undockIntoSeparateWindow": {
     "message": "Ûńd̂óĉḱ îńt̂ó ŝép̂ár̂át̂é ŵín̂d́ôẃ"
   },
+  "entrypoints/worker_app/WorkerMain.ts | main": {
+    "message": "M̂áîń"
+  },
   "models/bindings/ContentProviderBasedProject.ts | unknownErrorLoadingFile": {
     "message": "Ûńk̂ńôẃn̂ ér̂ŕôŕ l̂óâd́îńĝ f́îĺê"
   },
@@ -11443,8 +11446,5 @@
   },
   "ui/legacy/ViewManager.ts | sPanel": {
     "message": "{PH1} p̂án̂él̂"
-  },
-  "worker_main/WorkerMain.ts | main": {
-    "message": "M̂áîń"
   }
 }

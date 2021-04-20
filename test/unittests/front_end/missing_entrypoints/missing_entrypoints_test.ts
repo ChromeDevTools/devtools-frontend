@@ -39,7 +39,6 @@ describeWithEnvironment('Imports entrypoints that are yet to be tested', () => {
     await import('../../../../front_end/entrypoints/wasmparser_worker/wasmparser_worker.js');
     await import('../../../../front_end/panels/web_audio/web_audio.js');
     await import('../../../../front_end/panels/webauthn/webauthn.js');
-    await import('../../../../front_end/worker_main/worker_main.js');
   });
 
   it('imports missing entrypoints',

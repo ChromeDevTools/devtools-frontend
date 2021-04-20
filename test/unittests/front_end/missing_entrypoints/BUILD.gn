@@ -34,7 +34,6 @@ ts_library("missing_entrypoints") {
     "../../../../front_end/panels/settings:bundle",
     "../../../../front_end/panels/web_audio:bundle",
     "../../../../front_end/panels/webauthn:bundle",
-    "../../../../front_end/worker_main:bundle",
     "../helpers",
   ]
 }

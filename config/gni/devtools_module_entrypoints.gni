@@ -43,6 +43,7 @@ devtools_module_entrypoint_sources = [
   "entrypoints/toolbox/toolbox.js",
   "entrypoints/wasmparser_worker/wasmparser_worker-entrypoint.js",
   "entrypoints/wasmparser_worker/wasmparser_worker.js",
+  "entrypoints/worker_app/WorkerMain.js",
   "legacy_test_runner/legacy_test_runner.js",
   "legacy_test_runner/test_runner/test_runner.js",
   "models/bindings/bindings-legacy.js",
@@ -215,7 +216,6 @@ devtools_module_entrypoint_sources = [
   "ui/legacy/legacy.js",
   "ui/legacy/theme_support/theme_support.js",
   "ui/legacy/utils/utils.js",
-  "worker_main/worker_main.js",
   "workspace_diff/workspace_diff-legacy.js",
   "workspace_diff/workspace_diff.js",
 ]

@@ -3,7 +3,7 @@
     "components",
     "panels/emulation",
     "panels/timeline",
-    "inspector_main",
+    "entrypoints/inspector_main",
     "ui/legacy"
   ],
     "resources": [

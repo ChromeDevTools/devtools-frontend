@@ -73,7 +73,7 @@ group("legacy_css") {
   public_deps = [
     "cm:legacy_css",
     "components:legacy_css",
-    "inspector_main:legacy_css",
+    "entrypoints/inspector_main:legacy_css",
     "models/persistence:legacy_css",
     "panels/application:legacy_css",
     "panels/console:legacy_css",

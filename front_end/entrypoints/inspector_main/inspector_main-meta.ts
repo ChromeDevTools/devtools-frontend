@@ -2,10 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../core/common/common.js';
-import * as i18n from '../core/i18n/i18n.js';
-import * as Root from '../core/root/root.js';
-import * as UI from '../ui/legacy/legacy.js';
+import * as Common from '../../core/common/common.js';
+import * as i18n from '../../core/i18n/i18n.js';
+import * as Root from '../../core/root/root.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
 const UIStrings = {
   /**
@@ -99,7 +99,7 @@ const UIStrings = {
   */
   disablePaused: 'Disable paused state overlay',
 };
-const str_ = i18n.i18n.registerUIStrings('inspector_main/inspector_main-meta.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('entrypoints/inspector_main/inspector_main-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 // eslint-disable-next-line rulesdir/es_modules_import
@@ -110,7 +110,7 @@ let loadedInspectorMainModule: (typeof InspectorMain|undefined);
 async function loadInspectorMainModule(): Promise<typeof InspectorMain> {
   if (!loadedInspectorMainModule) {
     // Side-effect import resources in module.json
-    await Root.Runtime.Runtime.instance().loadModulePromise('inspector_main');
+    await Root.Runtime.Runtime.instance().loadModulePromise('entrypoints/inspector_main');
     loadedInspectorMainModule = await import('./inspector_main.js');
   }
   return loadedInspectorMainModule;

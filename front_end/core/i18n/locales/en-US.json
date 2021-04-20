@@ -893,6 +893,153 @@
   "core/sdk/SourceMapManager.ts | devtoolsFailedToLoadSourcemapS": {
     "message": "DevTools failed to load source map: {PH1}"
   },
+  "entrypoints/inspector_main/inspector_main-meta.ts | autoOpenDevTools": {
+    "message": "Auto-open DevTools for popups"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | blockAds": {
+    "message": "Block ads on this site"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | colorVisionDeficiency": {
+    "message": "color vision deficiency"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | cssMediaFeature": {
+    "message": "CSS media feature"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | cssMediaType": {
+    "message": "CSS media type"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | disablePaused": {
+    "message": "Disable paused state overlay"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | doNotAutoOpen": {
+    "message": "Do not auto-open DevTools for popups"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | forceAdBlocking": {
+    "message": "Force ad blocking on this site"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | fps": {
+    "message": "fps"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | hardReloadPage": {
+    "message": "Hard reload page"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | layout": {
+    "message": "layout"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | paint": {
+    "message": "paint"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | reloadPage": {
+    "message": "Reload page"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
+    "message": "Rendering"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
+    "message": "Show ads on this site, if allowed"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | showRendering": {
+    "message": "Show Rendering"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | visionDeficiency": {
+    "message": "vision deficiency"
+  },
+  "entrypoints/inspector_main/InspectorMain.ts | javascriptIsDisabled": {
+    "message": "JavaScript is disabled"
+  },
+  "entrypoints/inspector_main/InspectorMain.ts | main": {
+    "message": "Main"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | coreWebVitals": {
+    "message": "Core Web Vitals"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | disableAvifImageFormat": {
+    "message": "Disable AVIF image format"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | disableJpegXlImageFormat": {
+    "message": "Disable JPEG XL image format"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | disableLocalFonts": {
+    "message": "Disable local fonts"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | disablesLocalSourcesInFontface": {
+    "message": "Disables local() sources in @font-face rules. Requires a page reload to apply."
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | disableWebpImageFormat": {
+    "message": "Disable WebP image format"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | emulateAFocusedPage": {
+    "message": "Emulate a focused page"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | emulatesAFocusedPage": {
+    "message": "Emulates a focused page."
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesCssColorgamutMediaFeature": {
+    "message": "Forces CSS color-gamut media feature"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscolorschemeMedia": {
+    "message": "Forces CSS prefers-color-scheme media feature"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPrefersreduceddataMedia": {
+    "message": "Forces CSS prefers-reduced-data media feature"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPrefersreducedmotion": {
+    "message": "Forces CSS prefers-reduced-motion media feature"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesMediaTypeForTestingPrint": {
+    "message": "Forces media type for testing print and screen styles"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesVisionDeficiencyEmulation": {
+    "message": "Forces vision deficiency emulation"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | frameRenderingStats": {
+    "message": "Frame Rendering Stats"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | highlightAdFrames": {
+    "message": "Highlight ad frames"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | highlightsAreasOfThePageBlueThat": {
+    "message": "Highlights areas of the page (blue) that were shifted. May not be suitable for people prone to photosensitive epilepsy."
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | highlightsAreasOfThePageGreen": {
+    "message": "Highlights areas of the page (green) that need to be repainted. May not be suitable for people prone to photosensitive epilepsy."
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | highlightsElementsTealThatCan": {
+    "message": "Highlights elements (teal) that can slow down scrolling, including touch & wheel event handlers and other main-thread scrolling situations."
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | highlightsFramesRedDetectedToBe": {
+    "message": "Highlights frames (red) detected to be ads."
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | hittestBorders": {
+    "message": "Hit-test borders"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | layerBorders": {
+    "message": "Layer borders"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | layoutShiftRegions": {
+    "message": "Layout Shift Regions"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | paintFlashing": {
+    "message": "Paint flashing"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | plotsFrameThroughputDropped": {
+    "message": "Plots frame throughput, dropped frames distribution, and GPU memory."
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | requiresAPageReloadToApplyAnd": {
+    "message": "Requires a page reload to apply and disables caching for image requests."
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | scrollingPerformanceIssues": {
+    "message": "Scrolling performance issues"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | showsAnOverlayWithCoreWebVitals": {
+    "message": "Shows an overlay with Core Web Vitals."
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | showsBordersAroundHittestRegions": {
+    "message": "Shows borders around hit-test regions."
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | showsLayerBordersOrangeoliveAnd": {
+    "message": "Shows layer borders (orange/olive) and tiles (cyan)."
+  },
   "entrypoints/js_app/JsMain.ts | main": {
     "message": "Main"
   },
@@ -1072,153 +1219,6 @@
   },
   "entrypoints/main/MainImpl.ts | undockIntoSeparateWindow": {
     "message": "Undock into separate window"
-  },
-  "inspector_main/inspector_main-meta.ts | autoOpenDevTools": {
-    "message": "Auto-open DevTools for popups"
-  },
-  "inspector_main/inspector_main-meta.ts | blockAds": {
-    "message": "Block ads on this site"
-  },
-  "inspector_main/inspector_main-meta.ts | colorVisionDeficiency": {
-    "message": "color vision deficiency"
-  },
-  "inspector_main/inspector_main-meta.ts | cssMediaFeature": {
-    "message": "CSS media feature"
-  },
-  "inspector_main/inspector_main-meta.ts | cssMediaType": {
-    "message": "CSS media type"
-  },
-  "inspector_main/inspector_main-meta.ts | disablePaused": {
-    "message": "Disable paused state overlay"
-  },
-  "inspector_main/inspector_main-meta.ts | doNotAutoOpen": {
-    "message": "Do not auto-open DevTools for popups"
-  },
-  "inspector_main/inspector_main-meta.ts | forceAdBlocking": {
-    "message": "Force ad blocking on this site"
-  },
-  "inspector_main/inspector_main-meta.ts | fps": {
-    "message": "fps"
-  },
-  "inspector_main/inspector_main-meta.ts | hardReloadPage": {
-    "message": "Hard reload page"
-  },
-  "inspector_main/inspector_main-meta.ts | layout": {
-    "message": "layout"
-  },
-  "inspector_main/inspector_main-meta.ts | paint": {
-    "message": "paint"
-  },
-  "inspector_main/inspector_main-meta.ts | reloadPage": {
-    "message": "Reload page"
-  },
-  "inspector_main/inspector_main-meta.ts | rendering": {
-    "message": "Rendering"
-  },
-  "inspector_main/inspector_main-meta.ts | showAds": {
-    "message": "Show ads on this site, if allowed"
-  },
-  "inspector_main/inspector_main-meta.ts | showRendering": {
-    "message": "Show Rendering"
-  },
-  "inspector_main/inspector_main-meta.ts | visionDeficiency": {
-    "message": "vision deficiency"
-  },
-  "inspector_main/InspectorMain.ts | javascriptIsDisabled": {
-    "message": "JavaScript is disabled"
-  },
-  "inspector_main/InspectorMain.ts | main": {
-    "message": "Main"
-  },
-  "inspector_main/RenderingOptions.ts | coreWebVitals": {
-    "message": "Core Web Vitals"
-  },
-  "inspector_main/RenderingOptions.ts | disableAvifImageFormat": {
-    "message": "Disable AVIF image format"
-  },
-  "inspector_main/RenderingOptions.ts | disableJpegXlImageFormat": {
-    "message": "Disable JPEG XL image format"
-  },
-  "inspector_main/RenderingOptions.ts | disableLocalFonts": {
-    "message": "Disable local fonts"
-  },
-  "inspector_main/RenderingOptions.ts | disablesLocalSourcesInFontface": {
-    "message": "Disables local() sources in @font-face rules. Requires a page reload to apply."
-  },
-  "inspector_main/RenderingOptions.ts | disableWebpImageFormat": {
-    "message": "Disable WebP image format"
-  },
-  "inspector_main/RenderingOptions.ts | emulateAFocusedPage": {
-    "message": "Emulate a focused page"
-  },
-  "inspector_main/RenderingOptions.ts | emulatesAFocusedPage": {
-    "message": "Emulates a focused page."
-  },
-  "inspector_main/RenderingOptions.ts | forcesCssColorgamutMediaFeature": {
-    "message": "Forces CSS color-gamut media feature"
-  },
-  "inspector_main/RenderingOptions.ts | forcesCssPreferscolorschemeMedia": {
-    "message": "Forces CSS prefers-color-scheme media feature"
-  },
-  "inspector_main/RenderingOptions.ts | forcesCssPrefersreduceddataMedia": {
-    "message": "Forces CSS prefers-reduced-data media feature"
-  },
-  "inspector_main/RenderingOptions.ts | forcesCssPrefersreducedmotion": {
-    "message": "Forces CSS prefers-reduced-motion media feature"
-  },
-  "inspector_main/RenderingOptions.ts | forcesMediaTypeForTestingPrint": {
-    "message": "Forces media type for testing print and screen styles"
-  },
-  "inspector_main/RenderingOptions.ts | forcesVisionDeficiencyEmulation": {
-    "message": "Forces vision deficiency emulation"
-  },
-  "inspector_main/RenderingOptions.ts | frameRenderingStats": {
-    "message": "Frame Rendering Stats"
-  },
-  "inspector_main/RenderingOptions.ts | highlightAdFrames": {
-    "message": "Highlight ad frames"
-  },
-  "inspector_main/RenderingOptions.ts | highlightsAreasOfThePageBlueThat": {
-    "message": "Highlights areas of the page (blue) that were shifted. May not be suitable for people prone to photosensitive epilepsy."
-  },
-  "inspector_main/RenderingOptions.ts | highlightsAreasOfThePageGreen": {
-    "message": "Highlights areas of the page (green) that need to be repainted. May not be suitable for people prone to photosensitive epilepsy."
-  },
-  "inspector_main/RenderingOptions.ts | highlightsElementsTealThatCan": {
-    "message": "Highlights elements (teal) that can slow down scrolling, including touch & wheel event handlers and other main-thread scrolling situations."
-  },
-  "inspector_main/RenderingOptions.ts | highlightsFramesRedDetectedToBe": {
-    "message": "Highlights frames (red) detected to be ads."
-  },
-  "inspector_main/RenderingOptions.ts | hittestBorders": {
-    "message": "Hit-test borders"
-  },
-  "inspector_main/RenderingOptions.ts | layerBorders": {
-    "message": "Layer borders"
-  },
-  "inspector_main/RenderingOptions.ts | layoutShiftRegions": {
-    "message": "Layout Shift Regions"
-  },
-  "inspector_main/RenderingOptions.ts | paintFlashing": {
-    "message": "Paint flashing"
-  },
-  "inspector_main/RenderingOptions.ts | plotsFrameThroughputDropped": {
-    "message": "Plots frame throughput, dropped frames distribution, and GPU memory."
-  },
-  "inspector_main/RenderingOptions.ts | requiresAPageReloadToApplyAnd": {
-    "message": "Requires a page reload to apply and disables caching for image requests."
-  },
-  "inspector_main/RenderingOptions.ts | scrollingPerformanceIssues": {
-    "message": "Scrolling performance issues"
-  },
-  "inspector_main/RenderingOptions.ts | showsAnOverlayWithCoreWebVitals": {
-    "message": "Shows an overlay with Core Web Vitals."
-  },
-  "inspector_main/RenderingOptions.ts | showsBordersAroundHittestRegions": {
-    "message": "Shows borders around hit-test regions."
-  },
-  "inspector_main/RenderingOptions.ts | showsLayerBordersOrangeoliveAnd": {
-    "message": "Shows layer borders (orange/olive) and tiles (cyan)."
   },
   "models/bindings/ContentProviderBasedProject.ts | unknownErrorLoadingFile": {
     "message": "Unknown error loading file"

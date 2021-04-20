@@ -51,6 +51,6 @@ devtools_entrypoint("meta") {
 
   deps = [
     ":bundle",
-    "../../inspector_main:bundle",
+    "../../entrypoints/inspector_main:bundle",
   ]
 }

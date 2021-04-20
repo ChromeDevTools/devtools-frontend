@@ -11,7 +11,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 
 // eslint-disable-next-line rulesdir/es_modules_import
 import type * as Main from './main.js';
-import type * as InspectorMain from '../../inspector_main/inspector_main.js';
+import type * as InspectorMain from '../inspector_main/inspector_main.js';
 
 import * as i18n from '../../core/i18n/i18n.js';
 const UIStrings = {
@@ -223,7 +223,7 @@ async function loadInspectorMainModule(): Promise<typeof InspectorMain> {
   if (!loadedInspectorMainModule) {
     // Side-effect import resources in module.json
     await Root.Runtime.Runtime.instance().loadModulePromise('inspector_main');
-    loadedInspectorMainModule = await import('../../inspector_main/inspector_main.js');
+    loadedInspectorMainModule = await import('../inspector_main/inspector_main.js');
   }
   return loadedInspectorMainModule;
 }

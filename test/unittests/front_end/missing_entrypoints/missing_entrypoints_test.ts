@@ -21,7 +21,7 @@ describeWithEnvironment('Imports entrypoints that are yet to be tested', () => {
     await import('../../../../front_end/entrypoints/heap_snapshot_worker/heap_snapshot_worker.js');
     await import('../../../../front_end/panels/help/help.js');
     await import('../../../../front_end/panels/input/input.js');
-    await import('../../../../front_end/inspector_main/inspector_main.js');
+    await import('../../../../front_end/entrypoints/inspector_main/inspector_main.js');
     await import('../../../../front_end/models/javascript_metadata/javascript_metadata.js');
     await import('../../../../front_end/panels/layer_viewer/layer_viewer.js');
     await import('../../../../front_end/panels/layers/layers.js');

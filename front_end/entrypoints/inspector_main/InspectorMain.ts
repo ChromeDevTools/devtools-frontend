@@ -4,14 +4,14 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Components from '../components/components.js';
-import * as Common from '../core/common/common.js';
-import * as Host from '../core/host/host.js';
-import * as i18n from '../core/i18n/i18n.js';
-import * as Root from '../core/root/root.js';
-import * as SDK from '../core/sdk/sdk.js';
-import * as MobileThrottling from '../panels/mobile_throttling/mobile_throttling.js';
-import * as UI from '../ui/legacy/legacy.js';
+import * as Components from '../../components/components.js';
+import * as Common from '../../core/common/common.js';
+import * as Host from '../../core/host/host.js';
+import * as i18n from '../../core/i18n/i18n.js';
+import * as Root from '../../core/root/root.js';
+import * as SDK from '../../core/sdk/sdk.js';
+import * as MobileThrottling from '../../panels/mobile_throttling/mobile_throttling.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
 const UIStrings = {
   /**
@@ -27,7 +27,7 @@ const UIStrings = {
   */
   javascriptIsDisabled: 'JavaScript is disabled',
 };
-const str_ = i18n.i18n.registerUIStrings('inspector_main/InspectorMain.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('entrypoints/inspector_main/InspectorMain.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let inspectorMainImplInstance: InspectorMainImpl;
 
@@ -145,7 +145,8 @@ export class NodeIndicator implements UI.Toolbar.Provider {
   private constructor() {
     const element = document.createElement('div');
     const shadowRoot = UI.Utils.createShadowRootWithCoreStyles(
-        element, {cssFile: 'inspector_main/nodeIcon.css', enableLegacyPatching: false, delegatesFocus: undefined});
+        element,
+        {cssFile: 'entrypoints/inspector_main/nodeIcon.css', enableLegacyPatching: false, delegatesFocus: undefined});
     this._element = shadowRoot.createChild('div', 'node-icon');
     element.addEventListener(
         'click', () => Host.InspectorFrontendHost.InspectorFrontendHostInstance.openNodeFrontend(), false);

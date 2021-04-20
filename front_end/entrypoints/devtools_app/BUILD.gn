@@ -8,7 +8,7 @@ devtools_entrypoint("devtools_app-meta-files") {
   entrypoint = "devtools_app-meta-files.ts"
 
   deps = [
-    "../../inspector_main:meta",
+    "../../entrypoints/inspector_main:meta",
     "../../panels/accessibility:meta",
     "../../panels/animation:meta",
     "../../panels/application:meta",

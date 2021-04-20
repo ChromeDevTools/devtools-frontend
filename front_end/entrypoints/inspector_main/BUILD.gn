@@ -2,8 +2,8 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-import("../../scripts/build/ninja/devtools_entrypoint.gni")
-import("../../scripts/build/ninja/devtools_module.gni")
+import("../../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../../../scripts/build/ninja/devtools_module.gni")
 
 devtools_module("inspector_main") {
   sources = [
@@ -12,13 +12,13 @@ devtools_module("inspector_main") {
   ]
 
   deps = [
-    "../components:bundle",
-    "../core/common:bundle",
-    "../core/host:bundle",
-    "../core/i18n:bundle",
-    "../core/sdk:bundle",
-    "../panels/mobile_throttling:bundle",
-    "../ui/legacy:bundle",
+    "../../components:bundle",
+    "../../core/common:bundle",
+    "../../core/host:bundle",
+    "../../core/i18n:bundle",
+    "../../core/sdk:bundle",
+    "../../panels/mobile_throttling:bundle",
+    "../../ui/legacy:bundle",
   ]
 }
 

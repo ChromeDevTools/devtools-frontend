@@ -893,6 +893,153 @@
   "core/sdk/SourceMapManager.ts | devtoolsFailedToLoadSourcemapS": {
     "message": "D̂év̂T́ôól̂ś f̂áîĺêd́ t̂ó l̂óâd́ ŝóûŕĉé m̂áp̂: {PH1}"
   },
+  "entrypoints/inspector_main/inspector_main-meta.ts | autoOpenDevTools": {
+    "message": "Âút̂ó-ôṕêń D̂év̂T́ôól̂ś f̂ór̂ ṕôṕûṕŝ"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | blockAds": {
+    "message": "B̂ĺôćk̂ ád̂ś ôń t̂h́îś ŝít̂é"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | colorVisionDeficiency": {
+    "message": "ĉól̂ór̂ v́îśîón̂ d́êf́îćîén̂ćŷ"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | cssMediaFeature": {
+    "message": "ĈŚŜ ḿêd́îá f̂éât́ûŕê"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | cssMediaType": {
+    "message": "ĈŚŜ ḿêd́îá t̂ýp̂é"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | disablePaused": {
+    "message": "D̂íŝáb̂ĺê ṕâúŝéd̂ śt̂át̂é ôv́êŕl̂áŷ"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | doNotAutoOpen": {
+    "message": "D̂ó n̂ót̂ áût́ô-óp̂én̂ D́êv́T̂óôĺŝ f́ôŕ p̂óp̂úp̂ś"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | forceAdBlocking": {
+    "message": "F̂ór̂ćê ád̂ b́l̂óĉḱîńĝ ón̂ t́ĥíŝ śît́ê"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | fps": {
+    "message": "f̂ṕŝ"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | hardReloadPage": {
+    "message": "Ĥár̂d́ r̂él̂óâd́ p̂áĝé"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | layout": {
+    "message": "l̂áŷóût́"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | paint": {
+    "message": "p̂áîńt̂"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | reloadPage": {
+    "message": "R̂él̂óâd́ p̂áĝé"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
+    "message": "R̂én̂d́êŕîńĝ"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
+    "message": "Ŝh́ôẃ âd́ŝ ón̂ t́ĥíŝ śît́ê, íf̂ ál̂ĺôẃêd́"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | showRendering": {
+    "message": "Ŝh́ôẃ R̂én̂d́êŕîńĝ"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | visionDeficiency": {
+    "message": "v̂íŝíôń d̂éf̂íĉíêńĉý"
+  },
+  "entrypoints/inspector_main/InspectorMain.ts | javascriptIsDisabled": {
+    "message": "Ĵáv̂áŜćr̂íp̂t́ îś d̂íŝáb̂ĺêd́"
+  },
+  "entrypoints/inspector_main/InspectorMain.ts | main": {
+    "message": "M̂áîń"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | coreWebVitals": {
+    "message": "Ĉór̂é Ŵéb̂ V́ît́âĺŝ"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | disableAvifImageFormat": {
+    "message": "D̂íŝáb̂ĺê AVIF ím̂áĝé f̂ór̂ḿât́"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | disableJpegXlImageFormat": {
+    "message": "D̂íŝáb̂ĺê JPEG XL ím̂áĝé f̂ór̂ḿât́"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | disableLocalFonts": {
+    "message": "D̂íŝáb̂ĺê ĺôćâĺ f̂ón̂t́ŝ"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | disablesLocalSourcesInFontface": {
+    "message": "D̂íŝáb̂ĺêś local() ŝóûŕĉéŝ ín̂ @font-face ŕûĺêś. R̂éq̂úîŕêś â ṕâǵê ŕêĺôád̂ t́ô áp̂ṕl̂ý."
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | disableWebpImageFormat": {
+    "message": "D̂íŝáb̂ĺê WebP ím̂áĝé f̂ór̂ḿât́"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | emulateAFocusedPage": {
+    "message": "Êḿûĺât́ê á f̂óĉúŝéd̂ ṕâǵê"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | emulatesAFocusedPage": {
+    "message": "Êḿûĺât́êś â f́ôćûśêd́ p̂áĝé."
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesCssColorgamutMediaFeature": {
+    "message": "F̂ór̂ćêś ĈŚŜ color-gamut ḿêd́îá f̂éât́ûŕê"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscolorschemeMedia": {
+    "message": "F̂ór̂ćêś ĈŚŜ prefers-color-scheme ḿêd́îá f̂éât́ûŕê"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPrefersreduceddataMedia": {
+    "message": "F̂ór̂ćêś ĈŚŜ prefers-reduced-data ḿêd́îá f̂éât́ûŕê"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPrefersreducedmotion": {
+    "message": "F̂ór̂ćêś ĈŚŜ prefers-reduced-motion ḿêd́îá f̂éât́ûŕê"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesMediaTypeForTestingPrint": {
+    "message": "F̂ór̂ćêś m̂éd̂íâ t́ŷṕê f́ôŕ t̂éŝt́îńĝ ṕr̂ín̂t́ âńd̂ śĉŕêén̂ śt̂ýl̂éŝ"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesVisionDeficiencyEmulation": {
+    "message": "F̂ór̂ćêś v̂íŝíôń d̂éf̂íĉíêńĉý êḿûĺât́îón̂"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | frameRenderingStats": {
+    "message": "F̂ŕâḿê Ŕêńd̂ér̂ín̂ǵ Ŝt́ât́ŝ"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | highlightAdFrames": {
+    "message": "Ĥíĝh́l̂íĝh́t̂ ád̂ f́r̂ám̂éŝ"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | highlightsAreasOfThePageBlueThat": {
+    "message": "Ĥíĝh́l̂íĝh́t̂ś âŕêáŝ óf̂ t́ĥé p̂áĝé (b̂ĺûé) t̂h́ât́ ŵér̂é ŝh́îf́t̂éd̂. Ḿâý n̂ót̂ b́ê śûít̂áb̂ĺê f́ôŕ p̂éôṕl̂é p̂ŕôńê t́ô ṕĥót̂óŝén̂śît́îv́ê ép̂íl̂ép̂śŷ."
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | highlightsAreasOfThePageGreen": {
+    "message": "Ĥíĝh́l̂íĝh́t̂ś âŕêáŝ óf̂ t́ĥé p̂áĝé (ĝŕêén̂) t́ĥát̂ ńêéd̂ t́ô b́ê ŕêṕâín̂t́êd́. M̂áŷ ńôt́ b̂é ŝúît́âb́l̂é f̂ór̂ ṕêóp̂ĺê ṕr̂ón̂é t̂ó p̂h́ôt́ôśêńŝít̂ív̂é êṕîĺêṕŝý."
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | highlightsElementsTealThatCan": {
+    "message": "Ĥíĝh́l̂íĝh́t̂ś êĺêḿêńt̂ś (t̂éâĺ) t̂h́ât́ ĉán̂ śl̂óŵ d́ôẃn̂ śĉŕôĺl̂ín̂ǵ, îńĉĺûd́îńĝ t́ôúĉh́ & ŵh́êél̂ év̂én̂t́ ĥán̂d́l̂ér̂ś âńd̂ ót̂h́êŕ m̂áîń-t̂h́r̂éâd́ ŝćr̂ól̂ĺîńĝ śît́ûát̂íôńŝ."
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | highlightsFramesRedDetectedToBe": {
+    "message": "Ĥíĝh́l̂íĝh́t̂ś f̂ŕâḿêś (r̂éd̂) d́êt́êćt̂éd̂ t́ô b́ê ád̂ś."
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | hittestBorders": {
+    "message": "Ĥít̂-t́êśt̂ b́ôŕd̂ér̂ś"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | layerBorders": {
+    "message": "L̂áŷér̂ b́ôŕd̂ér̂ś"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | layoutShiftRegions": {
+    "message": "L̂áŷóût́ Ŝh́îf́t̂ Ŕêǵîón̂ś"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | paintFlashing": {
+    "message": "P̂áîńt̂ f́l̂áŝh́îńĝ"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | plotsFrameThroughputDropped": {
+    "message": "P̂ĺôt́ŝ f́r̂ám̂é t̂h́r̂óûǵĥṕût́, d̂ŕôṕp̂éd̂ f́r̂ám̂éŝ d́îśt̂ŕîb́ût́îón̂, án̂d́ ĜṔÛ ḿêḿôŕŷ."
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | requiresAPageReloadToApplyAnd": {
+    "message": "R̂éq̂úîŕêś â ṕâǵê ŕêĺôád̂ t́ô áp̂ṕl̂ý âńd̂ d́îśâb́l̂éŝ ćâćĥín̂ǵ f̂ór̂ ím̂áĝé r̂éq̂úêśt̂ś."
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | scrollingPerformanceIssues": {
+    "message": "Ŝćr̂ól̂ĺîńĝ ṕêŕf̂ór̂ḿâńĉé îśŝúêś"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | showsAnOverlayWithCoreWebVitals": {
+    "message": "Ŝh́ôẃŝ án̂ óv̂ér̂ĺâý ŵít̂h́ Ĉór̂é Ŵéb̂ V́ît́âĺŝ."
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | showsBordersAroundHittestRegions": {
+    "message": "Ŝh́ôẃŝ b́ôŕd̂ér̂ś âŕôún̂d́ ĥít̂-t́êśt̂ ŕêǵîón̂ś."
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | showsLayerBordersOrangeoliveAnd": {
+    "message": "Ŝh́ôẃŝ ĺâýêŕ b̂ór̂d́êŕŝ (ór̂án̂ǵê/ól̂ív̂é) âńd̂ t́îĺêś (ĉýâń)."
+  },
   "entrypoints/js_app/JsMain.ts | main": {
     "message": "M̂áîń"
   },
@@ -1072,153 +1219,6 @@
   },
   "entrypoints/main/MainImpl.ts | undockIntoSeparateWindow": {
     "message": "Ûńd̂óĉḱ îńt̂ó ŝép̂ár̂át̂é ŵín̂d́ôẃ"
-  },
-  "inspector_main/inspector_main-meta.ts | autoOpenDevTools": {
-    "message": "Âút̂ó-ôṕêń D̂év̂T́ôól̂ś f̂ór̂ ṕôṕûṕŝ"
-  },
-  "inspector_main/inspector_main-meta.ts | blockAds": {
-    "message": "B̂ĺôćk̂ ád̂ś ôń t̂h́îś ŝít̂é"
-  },
-  "inspector_main/inspector_main-meta.ts | colorVisionDeficiency": {
-    "message": "ĉól̂ór̂ v́îśîón̂ d́êf́îćîén̂ćŷ"
-  },
-  "inspector_main/inspector_main-meta.ts | cssMediaFeature": {
-    "message": "ĈŚŜ ḿêd́îá f̂éât́ûŕê"
-  },
-  "inspector_main/inspector_main-meta.ts | cssMediaType": {
-    "message": "ĈŚŜ ḿêd́îá t̂ýp̂é"
-  },
-  "inspector_main/inspector_main-meta.ts | disablePaused": {
-    "message": "D̂íŝáb̂ĺê ṕâúŝéd̂ śt̂át̂é ôv́êŕl̂áŷ"
-  },
-  "inspector_main/inspector_main-meta.ts | doNotAutoOpen": {
-    "message": "D̂ó n̂ót̂ áût́ô-óp̂én̂ D́êv́T̂óôĺŝ f́ôŕ p̂óp̂úp̂ś"
-  },
-  "inspector_main/inspector_main-meta.ts | forceAdBlocking": {
-    "message": "F̂ór̂ćê ád̂ b́l̂óĉḱîńĝ ón̂ t́ĥíŝ śît́ê"
-  },
-  "inspector_main/inspector_main-meta.ts | fps": {
-    "message": "f̂ṕŝ"
-  },
-  "inspector_main/inspector_main-meta.ts | hardReloadPage": {
-    "message": "Ĥár̂d́ r̂él̂óâd́ p̂áĝé"
-  },
-  "inspector_main/inspector_main-meta.ts | layout": {
-    "message": "l̂áŷóût́"
-  },
-  "inspector_main/inspector_main-meta.ts | paint": {
-    "message": "p̂áîńt̂"
-  },
-  "inspector_main/inspector_main-meta.ts | reloadPage": {
-    "message": "R̂él̂óâd́ p̂áĝé"
-  },
-  "inspector_main/inspector_main-meta.ts | rendering": {
-    "message": "R̂én̂d́êŕîńĝ"
-  },
-  "inspector_main/inspector_main-meta.ts | showAds": {
-    "message": "Ŝh́ôẃ âd́ŝ ón̂ t́ĥíŝ śît́ê, íf̂ ál̂ĺôẃêd́"
-  },
-  "inspector_main/inspector_main-meta.ts | showRendering": {
-    "message": "Ŝh́ôẃ R̂én̂d́êŕîńĝ"
-  },
-  "inspector_main/inspector_main-meta.ts | visionDeficiency": {
-    "message": "v̂íŝíôń d̂éf̂íĉíêńĉý"
-  },
-  "inspector_main/InspectorMain.ts | javascriptIsDisabled": {
-    "message": "Ĵáv̂áŜćr̂íp̂t́ îś d̂íŝáb̂ĺêd́"
-  },
-  "inspector_main/InspectorMain.ts | main": {
-    "message": "M̂áîń"
-  },
-  "inspector_main/RenderingOptions.ts | coreWebVitals": {
-    "message": "Ĉór̂é Ŵéb̂ V́ît́âĺŝ"
-  },
-  "inspector_main/RenderingOptions.ts | disableAvifImageFormat": {
-    "message": "D̂íŝáb̂ĺê AVIF ím̂áĝé f̂ór̂ḿât́"
-  },
-  "inspector_main/RenderingOptions.ts | disableJpegXlImageFormat": {
-    "message": "D̂íŝáb̂ĺê JPEG XL ím̂áĝé f̂ór̂ḿât́"
-  },
-  "inspector_main/RenderingOptions.ts | disableLocalFonts": {
-    "message": "D̂íŝáb̂ĺê ĺôćâĺ f̂ón̂t́ŝ"
-  },
-  "inspector_main/RenderingOptions.ts | disablesLocalSourcesInFontface": {
-    "message": "D̂íŝáb̂ĺêś local() ŝóûŕĉéŝ ín̂ @font-face ŕûĺêś. R̂éq̂úîŕêś â ṕâǵê ŕêĺôád̂ t́ô áp̂ṕl̂ý."
-  },
-  "inspector_main/RenderingOptions.ts | disableWebpImageFormat": {
-    "message": "D̂íŝáb̂ĺê WebP ím̂áĝé f̂ór̂ḿât́"
-  },
-  "inspector_main/RenderingOptions.ts | emulateAFocusedPage": {
-    "message": "Êḿûĺât́ê á f̂óĉúŝéd̂ ṕâǵê"
-  },
-  "inspector_main/RenderingOptions.ts | emulatesAFocusedPage": {
-    "message": "Êḿûĺât́êś â f́ôćûśêd́ p̂áĝé."
-  },
-  "inspector_main/RenderingOptions.ts | forcesCssColorgamutMediaFeature": {
-    "message": "F̂ór̂ćêś ĈŚŜ color-gamut ḿêd́îá f̂éât́ûŕê"
-  },
-  "inspector_main/RenderingOptions.ts | forcesCssPreferscolorschemeMedia": {
-    "message": "F̂ór̂ćêś ĈŚŜ prefers-color-scheme ḿêd́îá f̂éât́ûŕê"
-  },
-  "inspector_main/RenderingOptions.ts | forcesCssPrefersreduceddataMedia": {
-    "message": "F̂ór̂ćêś ĈŚŜ prefers-reduced-data ḿêd́îá f̂éât́ûŕê"
-  },
-  "inspector_main/RenderingOptions.ts | forcesCssPrefersreducedmotion": {
-    "message": "F̂ór̂ćêś ĈŚŜ prefers-reduced-motion ḿêd́îá f̂éât́ûŕê"
-  },
-  "inspector_main/RenderingOptions.ts | forcesMediaTypeForTestingPrint": {
-    "message": "F̂ór̂ćêś m̂éd̂íâ t́ŷṕê f́ôŕ t̂éŝt́îńĝ ṕr̂ín̂t́ âńd̂ śĉŕêén̂ śt̂ýl̂éŝ"
-  },
-  "inspector_main/RenderingOptions.ts | forcesVisionDeficiencyEmulation": {
-    "message": "F̂ór̂ćêś v̂íŝíôń d̂éf̂íĉíêńĉý êḿûĺât́îón̂"
-  },
-  "inspector_main/RenderingOptions.ts | frameRenderingStats": {
-    "message": "F̂ŕâḿê Ŕêńd̂ér̂ín̂ǵ Ŝt́ât́ŝ"
-  },
-  "inspector_main/RenderingOptions.ts | highlightAdFrames": {
-    "message": "Ĥíĝh́l̂íĝh́t̂ ád̂ f́r̂ám̂éŝ"
-  },
-  "inspector_main/RenderingOptions.ts | highlightsAreasOfThePageBlueThat": {
-    "message": "Ĥíĝh́l̂íĝh́t̂ś âŕêáŝ óf̂ t́ĥé p̂áĝé (b̂ĺûé) t̂h́ât́ ŵér̂é ŝh́îf́t̂éd̂. Ḿâý n̂ót̂ b́ê śûít̂áb̂ĺê f́ôŕ p̂éôṕl̂é p̂ŕôńê t́ô ṕĥót̂óŝén̂śît́îv́ê ép̂íl̂ép̂śŷ."
-  },
-  "inspector_main/RenderingOptions.ts | highlightsAreasOfThePageGreen": {
-    "message": "Ĥíĝh́l̂íĝh́t̂ś âŕêáŝ óf̂ t́ĥé p̂áĝé (ĝŕêén̂) t́ĥát̂ ńêéd̂ t́ô b́ê ŕêṕâín̂t́êd́. M̂áŷ ńôt́ b̂é ŝúît́âb́l̂é f̂ór̂ ṕêóp̂ĺê ṕr̂ón̂é t̂ó p̂h́ôt́ôśêńŝít̂ív̂é êṕîĺêṕŝý."
-  },
-  "inspector_main/RenderingOptions.ts | highlightsElementsTealThatCan": {
-    "message": "Ĥíĝh́l̂íĝh́t̂ś êĺêḿêńt̂ś (t̂éâĺ) t̂h́ât́ ĉán̂ śl̂óŵ d́ôẃn̂ śĉŕôĺl̂ín̂ǵ, îńĉĺûd́îńĝ t́ôúĉh́ & ŵh́êél̂ év̂én̂t́ ĥán̂d́l̂ér̂ś âńd̂ ót̂h́êŕ m̂áîń-t̂h́r̂éâd́ ŝćr̂ól̂ĺîńĝ śît́ûát̂íôńŝ."
-  },
-  "inspector_main/RenderingOptions.ts | highlightsFramesRedDetectedToBe": {
-    "message": "Ĥíĝh́l̂íĝh́t̂ś f̂ŕâḿêś (r̂éd̂) d́êt́êćt̂éd̂ t́ô b́ê ád̂ś."
-  },
-  "inspector_main/RenderingOptions.ts | hittestBorders": {
-    "message": "Ĥít̂-t́êśt̂ b́ôŕd̂ér̂ś"
-  },
-  "inspector_main/RenderingOptions.ts | layerBorders": {
-    "message": "L̂áŷér̂ b́ôŕd̂ér̂ś"
-  },
-  "inspector_main/RenderingOptions.ts | layoutShiftRegions": {
-    "message": "L̂áŷóût́ Ŝh́îf́t̂ Ŕêǵîón̂ś"
-  },
-  "inspector_main/RenderingOptions.ts | paintFlashing": {
-    "message": "P̂áîńt̂ f́l̂áŝh́îńĝ"
-  },
-  "inspector_main/RenderingOptions.ts | plotsFrameThroughputDropped": {
-    "message": "P̂ĺôt́ŝ f́r̂ám̂é t̂h́r̂óûǵĥṕût́, d̂ŕôṕp̂éd̂ f́r̂ám̂éŝ d́îśt̂ŕîb́ût́îón̂, án̂d́ ĜṔÛ ḿêḿôŕŷ."
-  },
-  "inspector_main/RenderingOptions.ts | requiresAPageReloadToApplyAnd": {
-    "message": "R̂éq̂úîŕêś â ṕâǵê ŕêĺôád̂ t́ô áp̂ṕl̂ý âńd̂ d́îśâb́l̂éŝ ćâćĥín̂ǵ f̂ór̂ ím̂áĝé r̂éq̂úêśt̂ś."
-  },
-  "inspector_main/RenderingOptions.ts | scrollingPerformanceIssues": {
-    "message": "Ŝćr̂ól̂ĺîńĝ ṕêŕf̂ór̂ḿâńĉé îśŝúêś"
-  },
-  "inspector_main/RenderingOptions.ts | showsAnOverlayWithCoreWebVitals": {
-    "message": "Ŝh́ôẃŝ án̂ óv̂ér̂ĺâý ŵít̂h́ Ĉór̂é Ŵéb̂ V́ît́âĺŝ."
-  },
-  "inspector_main/RenderingOptions.ts | showsBordersAroundHittestRegions": {
-    "message": "Ŝh́ôẃŝ b́ôŕd̂ér̂ś âŕôún̂d́ ĥít̂-t́êśt̂ ŕêǵîón̂ś."
-  },
-  "inspector_main/RenderingOptions.ts | showsLayerBordersOrangeoliveAnd": {
-    "message": "Ŝh́ôẃŝ ĺâýêŕ b̂ór̂d́êŕŝ (ór̂án̂ǵê/ól̂ív̂é) âńd̂ t́îĺêś (ĉýâń)."
   },
   "models/bindings/ContentProviderBasedProject.ts | unknownErrorLoadingFile": {
     "message": "Ûńk̂ńôẃn̂ ér̂ŕôŕ l̂óâd́îńĝ f́îĺê"

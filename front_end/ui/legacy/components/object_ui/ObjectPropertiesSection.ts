@@ -602,6 +602,7 @@ export class RootElement extends UI.TreeOutline.TreeElement {
     this.selectable = true;
     this.toggleOnClick = true;
     this.listItemElement.classList.add('object-properties-section-root-element');
+    this.listItemElement.addEventListener('contextmenu', this.onContextMenu.bind(this), false);
     this._linkifier = linkifier;
   }
 
@@ -619,6 +620,26 @@ export class RootElement extends UI.TreeOutline.TreeElement {
 
   ondblclick(_e: Event): boolean {
     return true;
+  }
+
+  private onContextMenu(event: Event): void {
+    const contextMenu = new UI.ContextMenu.ContextMenu(event);
+    contextMenu.appendApplicableItems(this);
+
+    if (this._object instanceof SDK.RemoteObject.LocalJSONObject) {
+      const {value} = this._object;
+      const propertyValue = typeof value === 'object' ? JSON.stringify(value, null, 2) : value;
+      const copyValueHandler = (): void => {
+        Host.userMetrics.actionTaken(Host.UserMetrics.Action.NetworkPanelCopyValue);
+        Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText((propertyValue as string | undefined));
+      };
+      contextMenu.clipboardSection().appendItem(i18nString(UIStrings.copyValue), copyValueHandler);
+    }
+
+    contextMenu.viewSection().appendItem(
+        i18nString(UIStrings.expandRecursively), this.expandRecursively.bind(this, Number.MAX_VALUE));
+    contextMenu.viewSection().appendItem(i18nString(UIStrings.collapseChildren), this.collapseChildren.bind(this));
+    contextMenu.show();
   }
 
   async onpopulate(): Promise<void> {

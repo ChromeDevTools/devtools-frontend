@@ -55,7 +55,7 @@ export class ScriptOriginPlugin extends Plugin {
     const pluginManager = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().pluginManager;
     if (pluginManager) {
       for (const originScript of pluginManager.scriptsForUISourceCode(this._uiSourceCode)) {
-        if (originScript.hasSourceURL) {
+        if (originScript.sourceURL) {
           const item = i18n.i18n.getFormatLocalizedString(
               str_, UIStrings.providedViaDebugInfoByS,
               {PH1: Components.Linkifier.Linkifier.linkifyURL(originScript.sourceURL)});

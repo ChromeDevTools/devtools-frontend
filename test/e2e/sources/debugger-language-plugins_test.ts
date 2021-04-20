@@ -297,6 +297,13 @@ describe('The Debugger Language Plugins', async () => {
     await openFileInSourcesPanel('wasm/global_variable.html');
     await target.evaluate('go();');
     await openFileInEditor('global_variable.ll');
+
+    const toolbar = await waitFor('.sources-toolbar');
+    const itemElements = await waitForMany('.toolbar-item', 2, toolbar);
+    const items = await Promise.all(itemElements.map(e => e.evaluate(e => e.textContent)));
+    assert.isAtLeast(
+        items.indexOf('(provided via debug info by global_variable.wasm)'), 0, 'Toolbar debug info hint not found');
+
     // Line 4 is non-breakable.
     assert.include(await getNonBreakableLines(frontend), 4);
 

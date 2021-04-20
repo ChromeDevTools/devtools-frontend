@@ -119,6 +119,71 @@ def runTscRemote(tsconfig_location, all_ts_files, rewrapper_binary,
     return process.returncode, stdout + stderr
 
 
+# To ensure that Ninja only rebuilds dependents when the actual content/public API of a TypeScript target changes,
+# we need to make sure that the config only changes when it needs to. Therefore, if the content would be equivalent
+# to what is already on disk, we don't write and allow Ninja to short-circuit if it can.
+def maybe_update_tsconfig_file(tsconfig_output_location, tsconfig):
+    old_contents = None
+    if os.path.exists(tsconfig_output_location):
+        with open(tsconfig_output_location, encoding="utf8") as fp:
+            old_contents = fp.read()
+
+    new_contents = json.dumps(tsconfig)
+    if old_contents is None or new_contents != old_contents:
+        try:
+            with open(tsconfig_output_location, 'w', encoding="utf8") as fp:
+                fp.write(new_contents)
+        except Exception as e:
+            print(
+                'Encountered error while writing generated tsconfig in location %s:'
+                % tsconfig_output_location)
+            print(e)
+            return 1
+
+    return 0
+
+
+# Obtain the timestamps and original content of any previously generated TypeScript files, if any.
+# This will be used later in `maybe_reset_timestamps_on_generated_files` to potentially reset
+# file timestamps for Ninja.
+def compute_previous_generated_file_metadata(sources,
+                                             tsconfig_output_directory):
+    gen_files = {}
+    for src_fname in sources:
+        for ext in ['.d.ts', '.js', '.map']:
+            gen_fname = os.path.basename(src_fname.replace('.ts', ext))
+            gen_path = os.path.join(tsconfig_output_directory, gen_fname)
+            if os.path.exists(gen_path):
+                mtime = os.stat(gen_path).st_mtime
+                with open(gen_path, encoding="utf8") as fp:
+                    contents = fp.read()
+                gen_files[gen_fname] = (mtime, contents)
+
+    return gen_files
+
+
+# Ninja and TypeScript use different mechanism to determine whether a file is "new". TypeScript
+# uses content-based file hashing, whereas Ninja uses file timestamps. Therefore, if we determine
+# that `tsc` actually didn't generate new file contents, we reset the timestamp to what it was
+# prior to invocation of `ts_library`. Then Ninja will determine nothing has changed and will
+# not run dependents.
+#
+# This also means that if the public API of a target changes, it does run the immediate dependents
+# of the target. However, if there is no functional change in the immediate dependents, the timestamps
+# of the immediate dependent would be properly reset and any transitive dependents would not be rerun.
+def maybe_reset_timestamps_on_generated_files(
+        previously_generated_file_metadata, tsconfig_output_directory):
+    for gen_fname in previously_generated_file_metadata:
+        gen_path = os.path.join(tsconfig_output_directory, gen_fname)
+        if os.path.exists(gen_path):
+            old_mtime, old_contents = previously_generated_file_metadata[
+                gen_fname]
+            with open(gen_path, encoding="utf8") as fp:
+                new_contents = fp.read()
+            if new_contents == old_contents:
+                os.utime(gen_path, (old_mtime, old_mtime))
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('-s', '--sources', nargs='*', help='List of TypeScript source files')
@@ -178,19 +243,17 @@ def main():
         opts.is_web_worker and ['webworker', 'webworker.iterable']
         or ['dom', 'dom.iterable'])
 
-    with open(tsconfig_output_location, 'w') as generated_tsconfig:
-        try:
-            json.dump(tsconfig, generated_tsconfig)
-        except Exception as e:
-            print('Encountered error while writing generated tsconfig in location %s:' % tsconfig_output_location)
-            print(e)
-            return 1
+    if maybe_update_tsconfig_file(tsconfig_output_location, tsconfig) == 1:
+        return 1
 
     # If there are no sources to compile, we can bail out and don't call tsc.
     # That's because tsc can successfully compile dependents solely on the
     # the tsconfig.json
     if len(sources) == 0 and not opts.verify_lib_check:
         return 0
+
+    previously_generated_file_metadata = compute_previous_generated_file_metadata(
+        sources, tsconfig_output_directory)
 
     use_remote_execution = opts.use_rbe and (opts.deps is None
                                              or len(opts.deps) == 0)
@@ -205,6 +268,10 @@ def main():
     else:
         found_errors, stderr = runTsc(
             tsconfig_location=tsconfig_output_location)
+
+    maybe_reset_timestamps_on_generated_files(
+        previously_generated_file_metadata, tsconfig_output_directory)
+
     if found_errors:
         print('')
         print('TypeScript compilation failed. Used tsconfig %s' % opts.tsconfig_output_location)

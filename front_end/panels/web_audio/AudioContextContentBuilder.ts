@@ -3,8 +3,8 @@
 // found in the LICENSE file.
 
 /* eslint-disable rulesdir/no_underscored_properties */
-import * as i18n from '../core/i18n/i18n.js';
-import * as UI from '../ui/legacy/legacy.js';
+import * as i18n from '../../core/i18n/i18n.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
 const UIStrings = {
   /**
@@ -37,7 +37,7 @@ const UIStrings = {
   */
   renderCapacity: 'Render Capacity',
 };
-const str_ = i18n.i18n.registerUIStrings('web_audio/AudioContextContentBuilder.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/web_audio/AudioContextContentBuilder.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class ContextDetailBuilder {

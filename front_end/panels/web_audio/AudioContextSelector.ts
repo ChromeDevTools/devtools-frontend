@@ -3,10 +3,10 @@
 // found in the LICENSE file.
 
 /* eslint-disable rulesdir/no_underscored_properties */
-import * as Common from '../core/common/common.js';
-import * as i18n from '../core/i18n/i18n.js';
-import * as Platform from '../core/platform/platform.js';
-import * as UI from '../ui/legacy/legacy.js';
+import * as Common from '../../core/common/common.js';
+import * as i18n from '../../core/i18n/i18n.js';
+import * as Platform from '../../core/platform/platform.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
 const UIStrings = {
   /**
@@ -19,7 +19,7 @@ const UIStrings = {
   */
   audioContextS: 'Audio context: {PH1}',
 };
-const str_ = i18n.i18n.registerUIStrings('web_audio/AudioContextSelector.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/web_audio/AudioContextSelector.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class AudioContextSelector extends Common.ObjectWrapper.ObjectWrapper implements
@@ -94,7 +94,7 @@ export class AudioContextSelector extends Common.ObjectWrapper.ObjectWrapper imp
     const element = document.createElement('div');
     const shadowRoot = UI.Utils.createShadowRootWithCoreStyles(
         element,
-        {cssFile: 'web_audio/audioContextSelector.css', enableLegacyPatching: false, delegatesFocus: undefined});
+        {cssFile: 'panels/web_audio/audioContextSelector.css', enableLegacyPatching: false, delegatesFocus: undefined});
     const title = shadowRoot.createChild('div', 'title');
     UI.UIUtils.createTextChild(title, Platform.StringUtilities.trimEndWithMaxLength(this.titleFor(item), 100));
     return element;

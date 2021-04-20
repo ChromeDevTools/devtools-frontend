@@ -21,6 +21,6 @@ import '../../panels/media/media-meta.js';
 import '../../panels/mobile_throttling/mobile_throttling-meta.js';
 import '../../panels/performance_monitor/performance_monitor-meta.js';
 import '../../panels/timeline/timeline-meta.js';
-import '../../web_audio/web_audio-meta.js';
+import '../../panels/web_audio/web_audio-meta.js';
 import '../../webauthn/webauthn-meta.js';
 import '../../panels/layer_viewer/layer_viewer-meta.js';

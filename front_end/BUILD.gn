@@ -134,6 +134,7 @@ group("legacy_entrypoints") {
     "panels/snippets:legacy",
     "panels/sources:legacy",
     "panels/timeline:legacy",
+    "panels/web_audio:legacy",
     "third_party/diff:legacy",
     "ui/legacy:legacy",
     "ui/legacy/components/color_picker:legacy",
@@ -145,7 +146,6 @@ group("legacy_entrypoints") {
     "ui/legacy/components/quick_open:legacy",
     "ui/legacy/components/source_frame:legacy",
     "ui/legacy/components/text_editor:legacy",
-    "web_audio:legacy",
     "workspace_diff:legacy",
   ]
 }

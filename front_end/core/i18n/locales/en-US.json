@@ -10427,6 +10427,45 @@
   "panels/timeline/WebVitalsTimeline.ts | poor": {
     "message": "Poor"
   },
+  "panels/web_audio/AudioContextContentBuilder.ts | callbackBufferSize": {
+    "message": "Callback Buffer Size"
+  },
+  "panels/web_audio/AudioContextContentBuilder.ts | callbackInterval": {
+    "message": "Callback Interval"
+  },
+  "panels/web_audio/AudioContextContentBuilder.ts | currentTime": {
+    "message": "Current Time"
+  },
+  "panels/web_audio/AudioContextContentBuilder.ts | maxOutputChannels": {
+    "message": "Max Output Channels"
+  },
+  "panels/web_audio/AudioContextContentBuilder.ts | renderCapacity": {
+    "message": "Render Capacity"
+  },
+  "panels/web_audio/AudioContextContentBuilder.ts | sampleRate": {
+    "message": "Sample Rate"
+  },
+  "panels/web_audio/AudioContextContentBuilder.ts | state": {
+    "message": "State"
+  },
+  "panels/web_audio/AudioContextSelector.ts | audioContextS": {
+    "message": "Audio context: {PH1}"
+  },
+  "panels/web_audio/AudioContextSelector.ts | noRecordings": {
+    "message": "(no recordings)"
+  },
+  "panels/web_audio/web_audio-meta.ts | audio": {
+    "message": "audio"
+  },
+  "panels/web_audio/web_audio-meta.ts | showWebaudio": {
+    "message": "Show WebAudio"
+  },
+  "panels/web_audio/web_audio-meta.ts | webaudio": {
+    "message": "WebAudio"
+  },
+  "panels/web_audio/WebAudioView.ts | openAPageThatUsesWebAudioApiTo": {
+    "message": "Open a page that uses Web Audio API to start monitoring."
+  },
   "ui/components/data_grid/DataGrid.ts | headerOptions": {
     "message": "Header Options"
   },
@@ -11287,45 +11326,6 @@
   },
   "ui/legacy/ViewManager.ts | sPanel": {
     "message": "{PH1} panel"
-  },
-  "web_audio/AudioContextContentBuilder.ts | callbackBufferSize": {
-    "message": "Callback Buffer Size"
-  },
-  "web_audio/AudioContextContentBuilder.ts | callbackInterval": {
-    "message": "Callback Interval"
-  },
-  "web_audio/AudioContextContentBuilder.ts | currentTime": {
-    "message": "Current Time"
-  },
-  "web_audio/AudioContextContentBuilder.ts | maxOutputChannels": {
-    "message": "Max Output Channels"
-  },
-  "web_audio/AudioContextContentBuilder.ts | renderCapacity": {
-    "message": "Render Capacity"
-  },
-  "web_audio/AudioContextContentBuilder.ts | sampleRate": {
-    "message": "Sample Rate"
-  },
-  "web_audio/AudioContextContentBuilder.ts | state": {
-    "message": "State"
-  },
-  "web_audio/AudioContextSelector.ts | audioContextS": {
-    "message": "Audio context: {PH1}"
-  },
-  "web_audio/AudioContextSelector.ts | noRecordings": {
-    "message": "(no recordings)"
-  },
-  "web_audio/web_audio-meta.ts | audio": {
-    "message": "audio"
-  },
-  "web_audio/web_audio-meta.ts | showWebaudio": {
-    "message": "Show WebAudio"
-  },
-  "web_audio/web_audio-meta.ts | webaudio": {
-    "message": "WebAudio"
-  },
-  "web_audio/WebAudioView.ts | openAPageThatUsesWebAudioApiTo": {
-    "message": "Open a page that uses Web Audio API to start monitoring."
   },
   "webauthn/webauthn-meta.ts | showWebauthn": {
     "message": "Show WebAuthn"

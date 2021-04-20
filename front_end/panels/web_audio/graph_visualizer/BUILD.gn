@@ -2,8 +2,8 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-import("../../../scripts/build/ninja/devtools_entrypoint.gni")
-import("../../../scripts/build/ninja/devtools_module.gni")
+import("../../../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../../../../scripts/build/ninja/devtools_module.gni")
 
 devtools_module("web_audio_graph_visualizer") {
   sources = [
@@ -16,9 +16,9 @@ devtools_module("web_audio_graph_visualizer") {
   ]
 
   deps = [
-    "../../core/common:bundle",
-    "../../core/platform:bundle",
-    "../../ui/legacy:bundle",
+    "../../../core/common:bundle",
+    "../../../core/platform:bundle",
+    "../../../ui/legacy:bundle",
   ]
 }
 

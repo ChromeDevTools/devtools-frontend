@@ -22,7 +22,7 @@
     { "name": "panels/application" },
     { "name": "panels/security" },
     { "name": "panels/timeline" },
-    { "name": "web_audio" },
+    { "name": "panels/web_audio" },
     { "name": "webauthn"},
     { "name": "panels/media" }
   ],

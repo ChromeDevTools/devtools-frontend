@@ -3,10 +3,10 @@
 // found in the LICENSE file.
 
 /* eslint-disable rulesdir/no_underscored_properties */
-import type * as Common from '../core/common/common.js';
-import * as i18n from '../core/i18n/i18n.js';
-import * as SDK from '../core/sdk/sdk.js';
-import * as UI from '../ui/legacy/legacy.js';
+import type * as Common from '../../core/common/common.js';
+import * as i18n from '../../core/i18n/i18n.js';
+import * as SDK from '../../core/sdk/sdk.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
 import {ContextDetailBuilder, ContextSummaryBuilder} from './AudioContextContentBuilder.js';
 import {AudioContextSelector, Events as SelectorEvents} from './AudioContextSelector.js';
@@ -19,7 +19,7 @@ const UIStrings = {
   */
   openAPageThatUsesWebAudioApiTo: 'Open a page that uses Web Audio API to start monitoring.',
 };
-const str_ = i18n.i18n.registerUIStrings('web_audio/WebAudioView.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/web_audio/WebAudioView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 
@@ -35,7 +35,7 @@ export class WebAudioView extends UI.ThrottledWidget.ThrottledWidget implements
   constructor() {
     super(true, 1000);
     this.element.classList.add('web-audio-drawer');
-    this.registerRequiredCSS('web_audio/webAudio.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('panels/web_audio/webAudio.css', {enableLegacyPatching: false});
 
     // Creates the toolbar.
     const toolbarContainer = this.contentElement.createChild('div', 'web-audio-toolbar-container vbox');

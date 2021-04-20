@@ -10427,6 +10427,45 @@
   "panels/timeline/WebVitalsTimeline.ts | poor": {
     "message": "P̂óôŕ"
   },
+  "panels/web_audio/AudioContextContentBuilder.ts | callbackBufferSize": {
+    "message": "Ĉál̂ĺb̂áĉḱ B̂úf̂f́êŕ Ŝíẑé"
+  },
+  "panels/web_audio/AudioContextContentBuilder.ts | callbackInterval": {
+    "message": "Ĉál̂ĺb̂áĉḱ Îńt̂ér̂v́âĺ"
+  },
+  "panels/web_audio/AudioContextContentBuilder.ts | currentTime": {
+    "message": "Ĉúr̂ŕêńt̂ T́îḿê"
+  },
+  "panels/web_audio/AudioContextContentBuilder.ts | maxOutputChannels": {
+    "message": "M̂áx̂ Óût́p̂út̂ Ćĥán̂ńêĺŝ"
+  },
+  "panels/web_audio/AudioContextContentBuilder.ts | renderCapacity": {
+    "message": "R̂én̂d́êŕ Ĉáp̂áĉít̂ý"
+  },
+  "panels/web_audio/AudioContextContentBuilder.ts | sampleRate": {
+    "message": "Ŝám̂ṕl̂é R̂át̂é"
+  },
+  "panels/web_audio/AudioContextContentBuilder.ts | state": {
+    "message": "Ŝt́ât́ê"
+  },
+  "panels/web_audio/AudioContextSelector.ts | audioContextS": {
+    "message": "Âúd̂íô ćôńt̂éx̂t́: {PH1}"
+  },
+  "panels/web_audio/AudioContextSelector.ts | noRecordings": {
+    "message": "(n̂ó r̂éĉór̂d́îńĝś)"
+  },
+  "panels/web_audio/web_audio-meta.ts | audio": {
+    "message": "âúd̂íô"
+  },
+  "panels/web_audio/web_audio-meta.ts | showWebaudio": {
+    "message": "Ŝh́ôẃ Ŵéb̂Áûd́îó"
+  },
+  "panels/web_audio/web_audio-meta.ts | webaudio": {
+    "message": "Ŵéb̂Áûd́îó"
+  },
+  "panels/web_audio/WebAudioView.ts | openAPageThatUsesWebAudioApiTo": {
+    "message": "Ôṕêń â ṕâǵê t́ĥát̂ úŝéŝ Ẃêb́ Âúd̂íô ÁP̂Í t̂ó ŝt́âŕt̂ ḿôńît́ôŕîńĝ."
+  },
   "ui/components/data_grid/DataGrid.ts | headerOptions": {
     "message": "Ĥéâd́êŕ Ôṕt̂íôńŝ"
   },
@@ -11287,45 +11326,6 @@
   },
   "ui/legacy/ViewManager.ts | sPanel": {
     "message": "{PH1} p̂án̂él̂"
-  },
-  "web_audio/AudioContextContentBuilder.ts | callbackBufferSize": {
-    "message": "Ĉál̂ĺb̂áĉḱ B̂úf̂f́êŕ Ŝíẑé"
-  },
-  "web_audio/AudioContextContentBuilder.ts | callbackInterval": {
-    "message": "Ĉál̂ĺb̂áĉḱ Îńt̂ér̂v́âĺ"
-  },
-  "web_audio/AudioContextContentBuilder.ts | currentTime": {
-    "message": "Ĉúr̂ŕêńt̂ T́îḿê"
-  },
-  "web_audio/AudioContextContentBuilder.ts | maxOutputChannels": {
-    "message": "M̂áx̂ Óût́p̂út̂ Ćĥán̂ńêĺŝ"
-  },
-  "web_audio/AudioContextContentBuilder.ts | renderCapacity": {
-    "message": "R̂én̂d́êŕ Ĉáp̂áĉít̂ý"
-  },
-  "web_audio/AudioContextContentBuilder.ts | sampleRate": {
-    "message": "Ŝám̂ṕl̂é R̂át̂é"
-  },
-  "web_audio/AudioContextContentBuilder.ts | state": {
-    "message": "Ŝt́ât́ê"
-  },
-  "web_audio/AudioContextSelector.ts | audioContextS": {
-    "message": "Âúd̂íô ćôńt̂éx̂t́: {PH1}"
-  },
-  "web_audio/AudioContextSelector.ts | noRecordings": {
-    "message": "(n̂ó r̂éĉór̂d́îńĝś)"
-  },
-  "web_audio/web_audio-meta.ts | audio": {
-    "message": "âúd̂íô"
-  },
-  "web_audio/web_audio-meta.ts | showWebaudio": {
-    "message": "Ŝh́ôẃ Ŵéb̂Áûd́îó"
-  },
-  "web_audio/web_audio-meta.ts | webaudio": {
-    "message": "Ŵéb̂Áûd́îó"
-  },
-  "web_audio/WebAudioView.ts | openAPageThatUsesWebAudioApiTo": {
-    "message": "Ôṕêń â ṕâǵê t́ĥát̂ úŝéŝ Ẃêb́ Âúd̂íô ÁP̂Í t̂ó ŝt́âŕt̂ ḿôńît́ôŕîńĝ."
   },
   "webauthn/webauthn-meta.ts | showWebauthn": {
     "message": "Ŝh́ôẃ Ŵéb̂Áût́ĥń"

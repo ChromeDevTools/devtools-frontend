@@ -343,14 +343,14 @@ export class SourceFrameImpl extends UI.View.SimpleView implements UI.Searchable
       progressIndicator.setTotalWork(100);
       this._progressToolbarItem.element.appendChild(progressIndicator.element);
 
-      const deferredContent = (await this._lazyContent());
+      const deferredContent = await this._lazyContent();
       let error, content;
       if (deferredContent.content === null) {
         error = deferredContent.error;
         this._rawContent = deferredContent.error;
       } else {
         content = deferredContent.content;
-        this._rawContent = deferredContent.content;
+        this._rawContent = deferredContent.isEncoded ? window.atob(deferredContent.content) : deferredContent.content;
       }
 
       progressIndicator.setWorked(1);

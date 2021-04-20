@@ -54,13 +54,7 @@ export class ResourceSourceFrame extends SourceFrameImpl {
   constructor(
       resource: TextUtils.ContentProvider.ContentProvider, autoPrettyPrint?: boolean,
       codeMirrorOptions?: UI.TextEditor.Options) {
-    super(async () => {
-      let content: string = (await resource.requestContent()).content || '';
-      if (await resource.contentEncoded()) {
-        content = window.atob(content);
-      }
-      return {content, isEncoded: false};
-    }, codeMirrorOptions);
+    super(() => resource.requestContent(), codeMirrorOptions);
     this._resource = resource;
     this.setCanPrettyPrint(this._resource.contentType().isDocumentOrScriptOrStyleSheet(), autoPrettyPrint);
   }

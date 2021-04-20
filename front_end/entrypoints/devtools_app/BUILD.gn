@@ -29,7 +29,7 @@ devtools_entrypoint("devtools_app-meta-files") {
     "../../panels/security:meta",
     "../../panels/timeline:meta",
     "../../panels/web_audio:meta",
-    "../../webauthn:meta",
+    "../../panels/webauthn:meta",
   ]
 }
 

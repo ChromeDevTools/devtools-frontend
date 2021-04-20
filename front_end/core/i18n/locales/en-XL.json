@@ -10466,6 +10466,99 @@
   "panels/web_audio/WebAudioView.ts | openAPageThatUsesWebAudioApiTo": {
     "message": "Ôṕêń â ṕâǵê t́ĥát̂ úŝéŝ Ẃêb́ Âúd̂íô ÁP̂Í t̂ó ŝt́âŕt̂ ḿôńît́ôŕîńĝ."
   },
+  "panels/webauthn/webauthn-meta.ts | showWebauthn": {
+    "message": "Ŝh́ôẃ Ŵéb̂Áût́ĥń"
+  },
+  "panels/webauthn/webauthn-meta.ts | webauthn": {
+    "message": "Ŵéb̂Áût́ĥń"
+  },
+  "panels/webauthn/WebauthnPane.ts | actions": {
+    "message": "Âćt̂íôńŝ"
+  },
+  "panels/webauthn/WebauthnPane.ts | active": {
+    "message": "Âćt̂ív̂é"
+  },
+  "panels/webauthn/WebauthnPane.ts | add": {
+    "message": "Âd́d̂"
+  },
+  "panels/webauthn/WebauthnPane.ts | addAuthenticator": {
+    "message": "Âd́d̂ áût́ĥén̂t́îćât́ôŕ"
+  },
+  "panels/webauthn/WebauthnPane.ts | authenticatorS": {
+    "message": "Âút̂h́êńt̂íĉát̂ór̂ {PH1}"
+  },
+  "panels/webauthn/WebauthnPane.ts | credentials": {
+    "message": "Ĉŕêd́êńt̂íâĺŝ"
+  },
+  "panels/webauthn/WebauthnPane.ts | editName": {
+    "message": "Êd́ît́ n̂ám̂é"
+  },
+  "panels/webauthn/WebauthnPane.ts | enableVirtualAuthenticator": {
+    "message": "Êńâb́l̂é v̂ír̂t́ûál̂ áût́ĥén̂t́îćât́ôŕ êńv̂ír̂ón̂ḿêńt̂"
+  },
+  "panels/webauthn/WebauthnPane.ts | export": {
+    "message": "Êx́p̂ór̂t́"
+  },
+  "panels/webauthn/WebauthnPane.ts | id": {
+    "message": "ÎD́"
+  },
+  "panels/webauthn/WebauthnPane.ts | isResident": {
+    "message": "Îś R̂éŝíd̂én̂t́"
+  },
+  "panels/webauthn/WebauthnPane.ts | learnMore": {
+    "message": "L̂éâŕn̂ ḿôŕê"
+  },
+  "panels/webauthn/WebauthnPane.ts | newAuthenticator": {
+    "message": "N̂éŵ áût́ĥén̂t́îćât́ôŕ"
+  },
+  "panels/webauthn/WebauthnPane.ts | no": {
+    "message": "N̂ó"
+  },
+  "panels/webauthn/WebauthnPane.ts | noCredentialsTryCallingSFromYour": {
+    "message": "N̂ó ĉŕêd́êńt̂íâĺŝ. T́r̂ý ĉál̂ĺîńĝ {PH1} f́r̂óm̂ ýôúr̂ ẃêb́ŝít̂é."
+  },
+  "panels/webauthn/WebauthnPane.ts | privateKeypem": {
+    "message": "P̂ŕîv́ât́ê ḱêý.p̂ém̂"
+  },
+  "panels/webauthn/WebauthnPane.ts | protocol": {
+    "message": "P̂ŕôt́ôćôĺ"
+  },
+  "panels/webauthn/WebauthnPane.ts | remove": {
+    "message": "R̂ém̂óv̂é"
+  },
+  "panels/webauthn/WebauthnPane.ts | rpId": {
+    "message": "R̂Ṕ ÎD́"
+  },
+  "panels/webauthn/WebauthnPane.ts | saveName": {
+    "message": "Ŝáv̂é n̂ám̂é"
+  },
+  "panels/webauthn/WebauthnPane.ts | setSAsTheActiveAuthenticator": {
+    "message": "Ŝét̂ {PH1} áŝ t́ĥé âćt̂ív̂é âút̂h́êńt̂íĉát̂ór̂"
+  },
+  "panels/webauthn/WebauthnPane.ts | signCount": {
+    "message": "Ŝíĝńât́ûŕê Ćôún̂t́"
+  },
+  "panels/webauthn/WebauthnPane.ts | supportsResidentKeys": {
+    "message": "Ŝúp̂ṕôŕt̂ś r̂éŝíd̂én̂t́ k̂éŷś"
+  },
+  "panels/webauthn/WebauthnPane.ts | supportsUserVerification": {
+    "message": "Ŝúp̂ṕôŕt̂ś ûśêŕ v̂ér̂íf̂íĉát̂íôń"
+  },
+  "panels/webauthn/WebauthnPane.ts | transport": {
+    "message": "T̂ŕâńŝṕôŕt̂"
+  },
+  "panels/webauthn/WebauthnPane.ts | userHandle": {
+    "message": "Ûśêŕ Ĥán̂d́l̂é"
+  },
+  "panels/webauthn/WebauthnPane.ts | useWebauthnForPhishingresistant": {
+    "message": "Ûśê Ẃêb́Âút̂h́n̂ f́ôŕ p̂h́îśĥín̂ǵ-r̂éŝíŝt́âńt̂ áût́ĥén̂t́îćât́îón̂"
+  },
+  "panels/webauthn/WebauthnPane.ts | uuid": {
+    "message": "ÛÚÎD́"
+  },
+  "panels/webauthn/WebauthnPane.ts | yes": {
+    "message": "Ŷéŝ"
+  },
   "ui/components/data_grid/DataGrid.ts | headerOptions": {
     "message": "Ĥéâd́êŕ Ôṕt̂íôńŝ"
   },
@@ -11326,99 +11419,6 @@
   },
   "ui/legacy/ViewManager.ts | sPanel": {
     "message": "{PH1} p̂án̂él̂"
-  },
-  "webauthn/webauthn-meta.ts | showWebauthn": {
-    "message": "Ŝh́ôẃ Ŵéb̂Áût́ĥń"
-  },
-  "webauthn/webauthn-meta.ts | webauthn": {
-    "message": "Ŵéb̂Áût́ĥń"
-  },
-  "webauthn/WebauthnPane.ts | actions": {
-    "message": "Âćt̂íôńŝ"
-  },
-  "webauthn/WebauthnPane.ts | active": {
-    "message": "Âćt̂ív̂é"
-  },
-  "webauthn/WebauthnPane.ts | add": {
-    "message": "Âd́d̂"
-  },
-  "webauthn/WebauthnPane.ts | addAuthenticator": {
-    "message": "Âd́d̂ áût́ĥén̂t́îćât́ôŕ"
-  },
-  "webauthn/WebauthnPane.ts | authenticatorS": {
-    "message": "Âút̂h́êńt̂íĉát̂ór̂ {PH1}"
-  },
-  "webauthn/WebauthnPane.ts | credentials": {
-    "message": "Ĉŕêd́êńt̂íâĺŝ"
-  },
-  "webauthn/WebauthnPane.ts | editName": {
-    "message": "Êd́ît́ n̂ám̂é"
-  },
-  "webauthn/WebauthnPane.ts | enableVirtualAuthenticator": {
-    "message": "Êńâb́l̂é v̂ír̂t́ûál̂ áût́ĥén̂t́îćât́ôŕ êńv̂ír̂ón̂ḿêńt̂"
-  },
-  "webauthn/WebauthnPane.ts | export": {
-    "message": "Êx́p̂ór̂t́"
-  },
-  "webauthn/WebauthnPane.ts | id": {
-    "message": "ÎD́"
-  },
-  "webauthn/WebauthnPane.ts | isResident": {
-    "message": "Îś R̂éŝíd̂én̂t́"
-  },
-  "webauthn/WebauthnPane.ts | learnMore": {
-    "message": "L̂éâŕn̂ ḿôŕê"
-  },
-  "webauthn/WebauthnPane.ts | newAuthenticator": {
-    "message": "N̂éŵ áût́ĥén̂t́îćât́ôŕ"
-  },
-  "webauthn/WebauthnPane.ts | no": {
-    "message": "N̂ó"
-  },
-  "webauthn/WebauthnPane.ts | noCredentialsTryCallingSFromYour": {
-    "message": "N̂ó ĉŕêd́êńt̂íâĺŝ. T́r̂ý ĉál̂ĺîńĝ {PH1} f́r̂óm̂ ýôúr̂ ẃêb́ŝít̂é."
-  },
-  "webauthn/WebauthnPane.ts | privateKeypem": {
-    "message": "P̂ŕîv́ât́ê ḱêý.p̂ém̂"
-  },
-  "webauthn/WebauthnPane.ts | protocol": {
-    "message": "P̂ŕôt́ôćôĺ"
-  },
-  "webauthn/WebauthnPane.ts | remove": {
-    "message": "R̂ém̂óv̂é"
-  },
-  "webauthn/WebauthnPane.ts | rpId": {
-    "message": "R̂Ṕ ÎD́"
-  },
-  "webauthn/WebauthnPane.ts | saveName": {
-    "message": "Ŝáv̂é n̂ám̂é"
-  },
-  "webauthn/WebauthnPane.ts | setSAsTheActiveAuthenticator": {
-    "message": "Ŝét̂ {PH1} áŝ t́ĥé âćt̂ív̂é âút̂h́êńt̂íĉát̂ór̂"
-  },
-  "webauthn/WebauthnPane.ts | signCount": {
-    "message": "Ŝíĝńât́ûŕê Ćôún̂t́"
-  },
-  "webauthn/WebauthnPane.ts | supportsResidentKeys": {
-    "message": "Ŝúp̂ṕôŕt̂ś r̂éŝíd̂én̂t́ k̂éŷś"
-  },
-  "webauthn/WebauthnPane.ts | supportsUserVerification": {
-    "message": "Ŝúp̂ṕôŕt̂ś ûśêŕ v̂ér̂íf̂íĉát̂íôń"
-  },
-  "webauthn/WebauthnPane.ts | transport": {
-    "message": "T̂ŕâńŝṕôŕt̂"
-  },
-  "webauthn/WebauthnPane.ts | userHandle": {
-    "message": "Ûśêŕ Ĥán̂d́l̂é"
-  },
-  "webauthn/WebauthnPane.ts | useWebauthnForPhishingresistant": {
-    "message": "Ûśê Ẃêb́Âút̂h́n̂ f́ôŕ p̂h́îśĥín̂ǵ-r̂éŝíŝt́âńt̂ áût́ĥén̂t́îćât́îón̂"
-  },
-  "webauthn/WebauthnPane.ts | uuid": {
-    "message": "ÛÚÎD́"
-  },
-  "webauthn/WebauthnPane.ts | yes": {
-    "message": "Ŷéŝ"
   },
   "worker_main/WorkerMain.ts | main": {
     "message": "M̂áîń"

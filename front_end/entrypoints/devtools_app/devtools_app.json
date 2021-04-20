@@ -23,7 +23,7 @@
     { "name": "panels/security" },
     { "name": "panels/timeline" },
     { "name": "panels/web_audio" },
-    { "name": "webauthn"},
+    { "name": "panels/webauthn"},
     { "name": "panels/media" }
   ],
   "extends": "shell"

@@ -10466,6 +10466,99 @@
   "panels/web_audio/WebAudioView.ts | openAPageThatUsesWebAudioApiTo": {
     "message": "Open a page that uses Web Audio API to start monitoring."
   },
+  "panels/webauthn/webauthn-meta.ts | showWebauthn": {
+    "message": "Show WebAuthn"
+  },
+  "panels/webauthn/webauthn-meta.ts | webauthn": {
+    "message": "WebAuthn"
+  },
+  "panels/webauthn/WebauthnPane.ts | actions": {
+    "message": "Actions"
+  },
+  "panels/webauthn/WebauthnPane.ts | active": {
+    "message": "Active"
+  },
+  "panels/webauthn/WebauthnPane.ts | add": {
+    "message": "Add"
+  },
+  "panels/webauthn/WebauthnPane.ts | addAuthenticator": {
+    "message": "Add authenticator"
+  },
+  "panels/webauthn/WebauthnPane.ts | authenticatorS": {
+    "message": "Authenticator {PH1}"
+  },
+  "panels/webauthn/WebauthnPane.ts | credentials": {
+    "message": "Credentials"
+  },
+  "panels/webauthn/WebauthnPane.ts | editName": {
+    "message": "Edit name"
+  },
+  "panels/webauthn/WebauthnPane.ts | enableVirtualAuthenticator": {
+    "message": "Enable virtual authenticator environment"
+  },
+  "panels/webauthn/WebauthnPane.ts | export": {
+    "message": "Export"
+  },
+  "panels/webauthn/WebauthnPane.ts | id": {
+    "message": "ID"
+  },
+  "panels/webauthn/WebauthnPane.ts | isResident": {
+    "message": "Is Resident"
+  },
+  "panels/webauthn/WebauthnPane.ts | learnMore": {
+    "message": "Learn more"
+  },
+  "panels/webauthn/WebauthnPane.ts | newAuthenticator": {
+    "message": "New authenticator"
+  },
+  "panels/webauthn/WebauthnPane.ts | no": {
+    "message": "No"
+  },
+  "panels/webauthn/WebauthnPane.ts | noCredentialsTryCallingSFromYour": {
+    "message": "No credentials. Try calling {PH1} from your website."
+  },
+  "panels/webauthn/WebauthnPane.ts | privateKeypem": {
+    "message": "Private key.pem"
+  },
+  "panels/webauthn/WebauthnPane.ts | protocol": {
+    "message": "Protocol"
+  },
+  "panels/webauthn/WebauthnPane.ts | remove": {
+    "message": "Remove"
+  },
+  "panels/webauthn/WebauthnPane.ts | rpId": {
+    "message": "RP ID"
+  },
+  "panels/webauthn/WebauthnPane.ts | saveName": {
+    "message": "Save name"
+  },
+  "panels/webauthn/WebauthnPane.ts | setSAsTheActiveAuthenticator": {
+    "message": "Set {PH1} as the active authenticator"
+  },
+  "panels/webauthn/WebauthnPane.ts | signCount": {
+    "message": "Signature Count"
+  },
+  "panels/webauthn/WebauthnPane.ts | supportsResidentKeys": {
+    "message": "Supports resident keys"
+  },
+  "panels/webauthn/WebauthnPane.ts | supportsUserVerification": {
+    "message": "Supports user verification"
+  },
+  "panels/webauthn/WebauthnPane.ts | transport": {
+    "message": "Transport"
+  },
+  "panels/webauthn/WebauthnPane.ts | userHandle": {
+    "message": "User Handle"
+  },
+  "panels/webauthn/WebauthnPane.ts | useWebauthnForPhishingresistant": {
+    "message": "Use WebAuthn for phishing-resistant authentication"
+  },
+  "panels/webauthn/WebauthnPane.ts | uuid": {
+    "message": "UUID"
+  },
+  "panels/webauthn/WebauthnPane.ts | yes": {
+    "message": "Yes"
+  },
   "ui/components/data_grid/DataGrid.ts | headerOptions": {
     "message": "Header Options"
   },
@@ -11326,99 +11419,6 @@
   },
   "ui/legacy/ViewManager.ts | sPanel": {
     "message": "{PH1} panel"
-  },
-  "webauthn/webauthn-meta.ts | showWebauthn": {
-    "message": "Show WebAuthn"
-  },
-  "webauthn/webauthn-meta.ts | webauthn": {
-    "message": "WebAuthn"
-  },
-  "webauthn/WebauthnPane.ts | actions": {
-    "message": "Actions"
-  },
-  "webauthn/WebauthnPane.ts | active": {
-    "message": "Active"
-  },
-  "webauthn/WebauthnPane.ts | add": {
-    "message": "Add"
-  },
-  "webauthn/WebauthnPane.ts | addAuthenticator": {
-    "message": "Add authenticator"
-  },
-  "webauthn/WebauthnPane.ts | authenticatorS": {
-    "message": "Authenticator {PH1}"
-  },
-  "webauthn/WebauthnPane.ts | credentials": {
-    "message": "Credentials"
-  },
-  "webauthn/WebauthnPane.ts | editName": {
-    "message": "Edit name"
-  },
-  "webauthn/WebauthnPane.ts | enableVirtualAuthenticator": {
-    "message": "Enable virtual authenticator environment"
-  },
-  "webauthn/WebauthnPane.ts | export": {
-    "message": "Export"
-  },
-  "webauthn/WebauthnPane.ts | id": {
-    "message": "ID"
-  },
-  "webauthn/WebauthnPane.ts | isResident": {
-    "message": "Is Resident"
-  },
-  "webauthn/WebauthnPane.ts | learnMore": {
-    "message": "Learn more"
-  },
-  "webauthn/WebauthnPane.ts | newAuthenticator": {
-    "message": "New authenticator"
-  },
-  "webauthn/WebauthnPane.ts | no": {
-    "message": "No"
-  },
-  "webauthn/WebauthnPane.ts | noCredentialsTryCallingSFromYour": {
-    "message": "No credentials. Try calling {PH1} from your website."
-  },
-  "webauthn/WebauthnPane.ts | privateKeypem": {
-    "message": "Private key.pem"
-  },
-  "webauthn/WebauthnPane.ts | protocol": {
-    "message": "Protocol"
-  },
-  "webauthn/WebauthnPane.ts | remove": {
-    "message": "Remove"
-  },
-  "webauthn/WebauthnPane.ts | rpId": {
-    "message": "RP ID"
-  },
-  "webauthn/WebauthnPane.ts | saveName": {
-    "message": "Save name"
-  },
-  "webauthn/WebauthnPane.ts | setSAsTheActiveAuthenticator": {
-    "message": "Set {PH1} as the active authenticator"
-  },
-  "webauthn/WebauthnPane.ts | signCount": {
-    "message": "Signature Count"
-  },
-  "webauthn/WebauthnPane.ts | supportsResidentKeys": {
-    "message": "Supports resident keys"
-  },
-  "webauthn/WebauthnPane.ts | supportsUserVerification": {
-    "message": "Supports user verification"
-  },
-  "webauthn/WebauthnPane.ts | transport": {
-    "message": "Transport"
-  },
-  "webauthn/WebauthnPane.ts | userHandle": {
-    "message": "User Handle"
-  },
-  "webauthn/WebauthnPane.ts | useWebauthnForPhishingresistant": {
-    "message": "Use WebAuthn for phishing-resistant authentication"
-  },
-  "webauthn/WebauthnPane.ts | uuid": {
-    "message": "UUID"
-  },
-  "webauthn/WebauthnPane.ts | yes": {
-    "message": "Yes"
   },
   "worker_main/WorkerMain.ts | main": {
     "message": "Main"

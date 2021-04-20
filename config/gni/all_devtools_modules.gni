@@ -556,6 +556,7 @@ all_typescript_module_sources = [
   "panels/web_audio/graph_visualizer/GraphView.js",
   "panels/web_audio/graph_visualizer/NodeRendererUtility.js",
   "panels/web_audio/graph_visualizer/NodeView.js",
+  "panels/webauthn/WebauthnPane.js",
   "third_party/acorn-loose/package/dist/acorn-loose.mjs",
   "third_party/acorn/package/dist/acorn.mjs",
   "third_party/chromium/client-variations/ClientVariations.js",
@@ -832,7 +833,6 @@ all_typescript_module_sources = [
   "ui/legacy/utils/measured-scrollbar-width.js",
   "ui/legacy/utils/register-custom-element.js",
   "ui/legacy/utils/utils.js",
-  "webauthn/WebauthnPane.js",
   "worker_main/WorkerMain.js",
   "workspace_diff/WorkspaceDiff.js",
 ]

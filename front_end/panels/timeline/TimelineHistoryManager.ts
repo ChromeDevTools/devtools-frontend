@@ -33,14 +33,16 @@ const UIStrings = {
   */
   moments: 'moments',
   /**
-  *@description Text in Timeline History Manager of the Performance panel
-  *@example {2} PH1
-  */
+   * @description Text in Timeline History Manager of the Performance panel.
+   * Placeholder is a number and the 'm' is the short form for 'minutes'.
+   * @example {2} PH1
+   */
   sM: '{PH1} m',
   /**
-  *@description Text in Timeline History Manager of the Performance panel
-  *@example {2} PH1
-  */
+   * @description Text in Timeline History Manager of the Performance panel.
+   * Placeholder is a number and the 'h' is the short form for 'hours'.
+   * @example {2} PH1
+   */
   sH: '{PH1} h',
   /**
   *@description Text in Timeline History Manager of the Performance panel

@@ -13,13 +13,19 @@ import {VBox} from './Widget.js';
 
 const UIStrings = {
   /**
-  *@description Text in a dialog box showing how to reconnect to DevTools when remote debugging has been terminated
-  */
+   * @description Text in a dialog box showing how to reconnect to DevTools when remote debugging has been terminated.
+   * "Remote debugging" here means that DevTools on a PC is inspecting a website running on an actual mobile device
+   * (see https://developer.chrome.com/docs/devtools/remote-debugging/).
+   * "Reconnect when ready", refers to the state of the mobile device. The developer first has to put the mobile
+   * device back in a state where it can be inspected, before DevTools can reconnect to it.
+   */
   reconnectWhenReadyByReopening: 'Reconnect when ready by reopening DevTools.',
   /**
-  *@description Text on a button to reconnect Devtools when remote debugging terminated
-  */
-  reconnectDevtools: 'Reconnect DevTools',
+   * @description Text on a button to reconnect Devtools when remote debugging terminated.
+   * "Remote debugging" here means that DevTools on a PC is inspecting a website running on an actual mobile device
+   * (see https://developer.chrome.com/docs/devtools/remote-debugging/).
+   */
+  reconnectDevtools: 'Reconnect `DevTools`',
 };
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/RemoteDebuggingTerminatedScreen.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

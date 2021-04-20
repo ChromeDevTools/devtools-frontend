@@ -201,8 +201,11 @@ const UIStrings = {
   */
   compileModule: 'Compile Module',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   * @description Text for an event. Shown in the timeline in the Perforamnce panel.
+   * "Module" refers to JavaScript modules: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules
+   * JavaScript modules are a way to organize JavaScript code.
+   * "Evaluate" is the phase when the JavaScript code of a module is executed.
+   */
   evaluateModule: 'Evaluate Module',
   /**
   *@description Noun indicating that a compile task (type: streaming) happened.
@@ -939,8 +942,10 @@ const UIStrings = {
   */
   invalidations: 'Invalidations',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   * @description Text in Timeline UIUtils of the Performance panel. Phrase is followed by a number of milliseconds.
+   * Some events or tasks might have been only started, but have not ended yet. Such events or tasks are considered
+   * "pending".
+   */
   pendingFor: 'Pending for',
   /**
   *@description Text for revealing an item in its destination

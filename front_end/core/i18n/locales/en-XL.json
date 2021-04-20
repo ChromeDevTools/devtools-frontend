@@ -267,7 +267,7 @@
     "message": "P̂ŕôf́îĺê '{PH1}' śt̂ár̂t́êd́."
   },
   "core/sdk/CPUProfileDataModel.ts | devtoolsCpuProfileParserIsFixing": {
-    "message": "D̂év̂T́ôól̂ś: ĈṔÛ ṕr̂óf̂íl̂é p̂ár̂śêŕ îś f̂íx̂ín̂ǵ {PH1} m̂íŝśîńĝ śâḿp̂ĺêś."
+    "message": "DevTools: CPU p̂ŕôf́îĺê ṕâŕŝér̂ íŝ f́îx́îńĝ {PH1} ḿîśŝín̂ǵ ŝám̂ṕl̂éŝ."
   },
   "core/sdk/CPUProfilerModel.ts | profileD": {
     "message": "P̂ŕôf́îĺê {PH1}"
@@ -11184,7 +11184,7 @@
     "message": "Ŝáv̂é"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectDevtools": {
-    "message": "R̂éĉón̂ńêćt̂ D́êv́T̂óôĺŝ"
+    "message": "R̂éĉón̂ńêćt̂ DevTools"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectWhenReadyByReopening": {
     "message": "R̂éĉón̂ńêćt̂ ẃĥén̂ ŕêád̂ý b̂ý r̂éôṕêńîńĝ D́êv́T̂óôĺŝ."

@@ -13,10 +13,17 @@ import {Target} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 
 const UIStrings = {
   /**
-  *@description Text in CPUProfile Data Model
-  *@example {2} PH1
-  */
-  devtoolsCpuProfileParserIsFixing: 'DevTools: CPU profile parser is fixing {PH1} missing samples.',
+   * @description Text in CPUProfile Data Model. The phrase is a warning shown to users when
+   * DevTools has received incomplete data and tries to interpolate the missing data manually.
+   * The placeholder is always a number, and references the number of data points that DevTools
+   * is trying to fix up.
+   * A sample is a single point of recorded data at a specific point in time. If many such samples
+   * are collected over a period of time, its called a "profile". In this context, "CPU profile"
+   * means collected data about the behavior of the CPU.
+   * "Parser" in this context is the piece of DevTools, that interprets the collected samples.
+   * @example {2} PH1
+   */
+  devtoolsCpuProfileParserIsFixing: '`DevTools`: `CPU` profile parser is fixing {PH1} missing samples.',
 };
 const str_ = i18n.i18n.registerUIStrings('core/sdk/CPUProfileDataModel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

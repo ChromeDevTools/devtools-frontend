@@ -78,8 +78,8 @@ const UIStrings = {
   */
   clipboard: 'Clipboard',
   /**
-  *@description Text in DOMDebugger Model
-  */
+   * @description Noun. Describes a group of DOM events (such as 'select' and 'submit') in this context.
+   */
   control: 'Control',
   /**
   *@description Text that refers to device such as a phone

@@ -18,8 +18,12 @@ import {PerformanceModel} from './PerformanceModel.js';
 
 const UIStrings = {
   /**
-  *@description Text in Timeline Controller of the Performance panel
-  */
+   * @description Text in Timeline Controller of the Performance panel.
+   * A "CPU profile" is a recorded performance measurement how a specific target behaves.
+   * "Target" in this context can mean a web page, service or normal worker.
+   * "Not available" is used as there are multiple things that can go wrong, but we do not
+   * know what exactly, just that the CPU profile was not correctly recorded.
+   */
   cpuProfileForATargetIsNot: 'CPU profile for a target is not available.',
   /**
   *@description Text in Timeline Controller of the Performance panel

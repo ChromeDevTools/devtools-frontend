@@ -1,0 +1,43 @@
+<!--
+  Copyright 2021 The Chromium Authors. All rights reserved.
+  Use of this source code is governed by a BSD-style license that can be
+  found in the LICENSE file.
+-->
+<!DOCTYPE html>
+<meta charset="utf-8">
+<script>
+  window.doCorsFetches = async function (host) {
+    const url1 = new URL("/", host);
+    try {
+      await fetch(url1.toString());
+    } catch (e) {
+    }
+
+    try {
+      await fetch(url1.toString(), {
+        method: 'POST',
+        mode: 'cors',
+        cache: 'no-cache',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ geeting: "hello" })
+      });
+    } catch (e) {
+    }
+
+    try {
+      const url2 = new URL("/invalid-preflight", host);
+      await fetch(url2.toString(), {
+        method: 'POST',
+        mode: 'cors',
+        cache: 'no-cache',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ geeting: "hello" })
+      });
+    } catch (e) {
+    }
+  }
+</script>

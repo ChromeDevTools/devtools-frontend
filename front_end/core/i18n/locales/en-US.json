@@ -1262,6 +1262,9 @@
   "models/issues_manager/ContentSecurityPolicyIssue.ts | trustedTypesPolicyViolation": {
     "message": "Trusted Types - Policy violation"
   },
+  "models/issues_manager/CorsIssue.ts | CORS": {
+    "message": "Cross-Origin Resource Sharing (CORS)"
+  },
   "models/issues_manager/CorsIssue.ts | corsForPrivateNetworksRfc": {
     "message": "CORS for private networks (RFC1918)"
   },
@@ -5000,6 +5003,9 @@
   "panels/issues/CorsIssueDetailsView.ts | blocked": {
     "message": "blocked"
   },
+  "panels/issues/CorsIssueDetailsView.ts | header": {
+    "message": "Header"
+  },
   "panels/issues/CorsIssueDetailsView.ts | initiatorAddressSpace": {
     "message": "Initiator Address"
   },
@@ -5009,8 +5015,26 @@
   "panels/issues/CorsIssueDetailsView.ts | insecure": {
     "message": "insecure"
   },
+  "panels/issues/CorsIssueDetailsView.ts | invalidValue": {
+    "message": "Invalid Value (if available)"
+  },
   "panels/issues/CorsIssueDetailsView.ts | nItems": {
     "message": "{n, plural, =1 { item} other { items}}"
+  },
+  "panels/issues/CorsIssueDetailsView.ts | preflightRequestIfProblematic": {
+    "message": "Preflight Request (if problematic)"
+  },
+  "panels/issues/CorsIssueDetailsView.ts | problem": {
+    "message": "Problem"
+  },
+  "panels/issues/CorsIssueDetailsView.ts | problemInvalidValue": {
+    "message": "Invalid Value"
+  },
+  "panels/issues/CorsIssueDetailsView.ts | problemMissingHeader": {
+    "message": "Missing Header"
+  },
+  "panels/issues/CorsIssueDetailsView.ts | problemMultipleValues": {
+    "message": "Multiple Values"
   },
   "panels/issues/CorsIssueDetailsView.ts | request": {
     "message": "Request"

@@ -51,6 +51,34 @@ const UIStrings = {
   *@description Title for a column showing the status of the initiator context. The initiator context is either secure or insecure depending on whether it was loaded via HTTP or HTTPS.
   */
   initiatorContext: 'Initiator Context',
+  /**
+  *@description Title for a column in the affected resources for a CORS issue showing a link to the associated preflight request in case the preflight request caused the issue.
+  */
+  preflightRequestIfProblematic: 'Preflight Request (if problematic)',
+  /**
+  *@description Title for a column in the affected resources for a CORS issue showing the name of the problematic HTTP response header.
+  */
+  header: 'Header',
+  /**
+  *@description Title for a column in the affected resources for a CORS issue showing the problem associated with the resource.
+  */
+  problem: 'Problem',
+  /**
+  *@description Title for a column in the affected resources for a CORS issue showing the value that was invalid and caused the problem if it is available.
+  */
+  invalidValue: 'Invalid Value (if available)',
+  /**
+  *@description Content for the problem column in the affected resources table for a CORS issue that indicates that a response header was missing.
+  */
+  problemMissingHeader: 'Missing Header',
+  /**
+  *@description Content for the problem column in the affected resources table for a CORS issue that indicates that a response header contained multiple values.
+  */
+  problemMultipleValues: 'Multiple Values',
+  /**
+  *@description Content for the problem column in the affected resources table for a CORS issue that indicates that a response header contained an invalid value.
+  */
+  problemInvalidValue: 'Invalid Value',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/issues/CorsIssueDetailsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -79,19 +107,26 @@ export class CorsIssueDetailsView extends AffectedResourcesView {
     return i18nString(UIStrings.nItems, {n: count});
   }
 
-  private appendDetails(issues: Iterable<IssuesManager.CorsIssue.CorsIssue>): void {
+  private appendDetails(issueCode: string, issues: Iterable<IssuesManager.CorsIssue.CorsIssue>): void {
     const header = document.createElement('tr');
     this.appendColumnTitle(header, i18nString(UIStrings.request));
     this.appendColumnTitle(header, i18nString(UIStrings.status));
-    this.appendColumnTitle(header, i18nString(UIStrings.resourceAddressSpace));
-    this.appendColumnTitle(header, i18nString(UIStrings.initiatorAddressSpace));
-    this.appendColumnTitle(header, i18nString(UIStrings.initiatorContext));
+    if (issueCode === IssuesManager.CorsIssue.InvalidHeaders) {
+      this.appendColumnTitle(header, i18nString(UIStrings.preflightRequestIfProblematic));
+      this.appendColumnTitle(header, i18nString(UIStrings.header));
+      this.appendColumnTitle(header, i18nString(UIStrings.problem));
+      this.appendColumnTitle(header, i18nString(UIStrings.invalidValue));
+    } else {
+      this.appendColumnTitle(header, i18nString(UIStrings.resourceAddressSpace));
+      this.appendColumnTitle(header, i18nString(UIStrings.initiatorAddressSpace));
+      this.appendColumnTitle(header, i18nString(UIStrings.initiatorContext));
+    }
 
     this.affectedResources.appendChild(header);
     let count = 0;
     for (const issue of issues) {
       count++;
-      this.appendDetail(issue);
+      this.appendDetail(issueCode, issue);
     }
     this.updateAffectedResourceCount(count);
   }
@@ -105,17 +140,62 @@ export class CorsIssueDetailsView extends AffectedResourcesView {
         element, isSecureContext ? i18nString(UIStrings.secure) : i18nString(UIStrings.insecure));
   }
 
+  private static getHeaderFromError(corsError: Protocol.Network.CorsError): string {
+    switch (corsError) {
+      case Protocol.Network.CorsError.InvalidAllowHeadersPreflightResponse:
+        return 'Access-Control-Allow-Headers';
+      case Protocol.Network.CorsError.InvalidAllowMethodsPreflightResponse:
+        return 'Access-Control-Allow-Methods';
+      case Protocol.Network.CorsError.PreflightMissingAllowOriginHeader:
+      case Protocol.Network.CorsError.PreflightMultipleAllowOriginValues:
+      case Protocol.Network.CorsError.PreflightInvalidAllowOriginValue:
+      case Protocol.Network.CorsError.MissingAllowOriginHeader:
+      case Protocol.Network.CorsError.MultipleAllowOriginValues:
+      case Protocol.Network.CorsError.InvalidAllowOriginValue:
+        return 'Access-Control-Allow-Origin';
+    }
+    throw new Error('Invalid Argument');
+  }
 
-  private appendDetail(issue: IssuesManager.CorsIssue.CorsIssue): void {
+  private static getProblemFromError(corsError: Protocol.Network.CorsErrorStatus): string {
+    switch (corsError.corsError) {
+      case Protocol.Network.CorsError.InvalidAllowHeadersPreflightResponse:
+      case Protocol.Network.CorsError.InvalidAllowMethodsPreflightResponse:
+      case Protocol.Network.CorsError.PreflightInvalidAllowOriginValue:
+      case Protocol.Network.CorsError.InvalidAllowOriginValue:
+        return i18nString(UIStrings.problemInvalidValue);
+      case Protocol.Network.CorsError.PreflightMultipleAllowOriginValues:
+      case Protocol.Network.CorsError.MultipleAllowOriginValues:
+        return i18nString(UIStrings.problemMultipleValues);
+      case Protocol.Network.CorsError.MissingAllowOriginHeader:
+      case Protocol.Network.CorsError.PreflightMissingAllowOriginHeader:
+        return i18nString(UIStrings.problemMissingHeader);
+    }
+    throw new Error('Invalid Argument');
+  }
+
+  private appendDetail(issueCode: string, issue: IssuesManager.CorsIssue.CorsIssue): void {
     const element = document.createElement('tr');
     element.classList.add('affected-resource-directive');
 
     const details = issue.details();
     element.appendChild(this.createRequestCell(details.request));
     this.appendStatus(element, details.isWarning);
-    this.appendIssueDetailCell(element, details.resourceIPAddressSpace ?? '');
-    this.appendIssueDetailCell(element, details.clientSecurityState?.initiatorIPAddressSpace ?? '');
-    this.appendSecureContextCell(element, details.clientSecurityState?.initiatorIsSecureContext);
+    const corsError = details.corsErrorStatus.corsError;
+    if (issueCode === IssuesManager.CorsIssue.InvalidHeaders) {
+      if (corsError.includes('Preflight')) {
+        element.appendChild(this.createRequestCell(details.request, {linkToPreflight: true}));
+      } else {
+        this.appendIssueDetailCell(element, '');
+      }
+      this.appendIssueDetailCell(element, CorsIssueDetailsView.getHeaderFromError(corsError), 'code-example');
+      this.appendIssueDetailCell(element, CorsIssueDetailsView.getProblemFromError(details.corsErrorStatus));
+      this.appendIssueDetailCell(element, details.corsErrorStatus.failedParameter, 'code-example');
+    } else {
+      this.appendIssueDetailCell(element, details.resourceIPAddressSpace ?? '');
+      this.appendIssueDetailCell(element, details.clientSecurityState?.initiatorIPAddressSpace ?? '');
+      this.appendSecureContextCell(element, details.clientSecurityState?.initiatorIsSecureContext);
+    }
 
 
     this.affectedResources.appendChild(element);
@@ -123,6 +203,6 @@ export class CorsIssueDetailsView extends AffectedResourcesView {
 
   update(): void {
     this.clear();
-    this.appendDetails(this.issue.getCorsIssues());
+    this.appendDetails(this.issue.code(), this.issue.getCorsIssues());
   }
 }

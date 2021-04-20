@@ -21,6 +21,10 @@ export const markdownLinks = new Map<string, string>([
     'issuesCSPWhyStrictOverAllowlist',
     'https://web.dev/strict-csp/#why-a-strict-csp-is-recommended-over-allowlist-csps',
   ],
+  [
+    'issueCorsPreflightRequest',
+    'https://web.dev/cross-origin-resource-sharing/#preflight-requests-for-complex-http-calls',
+  ],
 ]);
 
 export const getMarkdownLink = (key: string): string => {

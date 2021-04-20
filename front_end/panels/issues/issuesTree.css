@@ -307,6 +307,11 @@ ul > li.plain-enum::before {
   padding-left: 2px;
 }
 
+.code-example {
+  font-family: var(--monospace-font-family);
+  font-size: var(--monospace-font-size);
+}
+
 .affected-resource-blocked-status {
   color: var(--issue-color-red);
 }

@@ -14,16 +14,38 @@ const UIStrings = {
   *@description Label for the link for CORS private network issues
   */
   corsForPrivateNetworksRfc: 'CORS for private networks (RFC1918)',
+  /**
+  *@description Label for the link for CORS network issues
+  */
+  CORS: 'Cross-Origin Resource Sharing (`CORS`)',
 };
 const str_ = i18n.i18n.registerUIStrings('models/issues_manager/CorsIssue.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+
+export const InvalidHeaders =
+    [Protocol.Audits.InspectorIssueCode.CorsIssue, 'InvalidAccessControlAllowPreflightResponse'].join('::');
+
+function getIssueCode(issueDetails: Protocol.Audits.CorsIssueDetails): string {
+  switch (issueDetails.corsErrorStatus.corsError) {
+    case Protocol.Network.CorsError.InvalidAllowMethodsPreflightResponse:
+    case Protocol.Network.CorsError.InvalidAllowHeadersPreflightResponse:
+    case Protocol.Network.CorsError.PreflightMissingAllowOriginHeader:
+    case Protocol.Network.CorsError.PreflightMultipleAllowOriginValues:
+    case Protocol.Network.CorsError.PreflightInvalidAllowOriginValue:
+    case Protocol.Network.CorsError.MissingAllowOriginHeader:
+    case Protocol.Network.CorsError.MultipleAllowOriginValues:
+    case Protocol.Network.CorsError.InvalidAllowOriginValue:
+      return InvalidHeaders;
+    default:
+      return [Protocol.Audits.InspectorIssueCode.CorsIssue, issueDetails.corsErrorStatus.corsError].join('::');
+  }
+}
 
 export class CorsIssue extends Issue {
   private issueDetails: Protocol.Audits.CorsIssueDetails;
 
   constructor(issueDetails: Protocol.Audits.CorsIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel) {
-    const issueCode = [Protocol.Audits.InspectorIssueCode.CorsIssue, issueDetails.corsErrorStatus.corsError].join('::');
-    super(issueCode, issuesModel);
+    super(getIssueCode(issueDetails), issuesModel);
     this.issueDetails = issueDetails;
   }
 
@@ -46,7 +68,38 @@ export class CorsIssue extends Issue {
             linkTitle: i18nString(UIStrings.corsForPrivateNetworksRfc),
           }],
         };
-      default:
+      case Protocol.Network.CorsError.InvalidAllowMethodsPreflightResponse:
+      case Protocol.Network.CorsError.InvalidAllowHeadersPreflightResponse:
+      case Protocol.Network.CorsError.PreflightMissingAllowOriginHeader:
+      case Protocol.Network.CorsError.PreflightMultipleAllowOriginValues:
+      case Protocol.Network.CorsError.PreflightInvalidAllowOriginValue:
+      case Protocol.Network.CorsError.MissingAllowOriginHeader:
+      case Protocol.Network.CorsError.MultipleAllowOriginValues:
+      case Protocol.Network.CorsError.InvalidAllowOriginValue:
+        return {
+          file: 'corsInvalidHeaderValues.md',
+          substitutions: undefined,
+          links: [{
+            link: 'https://web.dev/cross-origin-resource-sharing',
+            linkTitle: i18nString(UIStrings.CORS),
+          }],
+        };
+      case Protocol.Network.CorsError.DisallowedByMode:
+      case Protocol.Network.CorsError.WildcardOriginNotAllowed:
+      case Protocol.Network.CorsError.AllowOriginMismatch:
+      case Protocol.Network.CorsError.InvalidAllowCredentials:
+      case Protocol.Network.CorsError.CorsDisabledScheme:
+      case Protocol.Network.CorsError.PreflightInvalidStatus:
+      case Protocol.Network.CorsError.PreflightDisallowedRedirect:
+      case Protocol.Network.CorsError.PreflightWildcardOriginNotAllowed:
+      case Protocol.Network.CorsError.PreflightAllowOriginMismatch:
+      case Protocol.Network.CorsError.PreflightInvalidAllowCredentials:
+      case Protocol.Network.CorsError.MethodDisallowedByPreflightResponse:
+      case Protocol.Network.CorsError.HeaderDisallowedByPreflightResponse:
+      case Protocol.Network.CorsError.RedirectContainsCredentials:
+      case Protocol.Network.CorsError.PreflightMissingAllowExternal:
+      case Protocol.Network.CorsError.PreflightInvalidAllowExternal:
+      case Protocol.Network.CorsError.InvalidResponse:
         return null;
     }
   }

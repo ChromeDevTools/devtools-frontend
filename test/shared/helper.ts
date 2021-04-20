@@ -523,3 +523,20 @@ export function assertNotNull<T>(val: T): asserts val is NonNullable<T> {
 // We export Puppeteer so other test utils can import it from here and not rely
 // on Node modules resolution to import it.
 export {getBrowserAndPages, getTestServerPort, reloadDevTools, puppeteer};
+
+export function matchArray(actual: Array<string>, expected: Array<string|RegExp>) {
+  if (actual.length !== expected.length) {
+    throw new AssertionError(`Expected [${actual.map(x => `"${x}"`).join(', ')}] to have length ${expected.length}`);
+  }
+
+  for (let i = 0; i < expected.length; ++i) {
+    const expectedItem = expected[i];
+    if (typeof expectedItem === 'string') {
+      if (actual[i] !== expectedItem) {
+        throw new AssertionError(`Expected item ${i} which was ${actual[i]} to equal ${expectedItem}`);
+      }
+    } else if (!expectedItem.test(actual[i])) {
+      throw new AssertionError(`Expected item ${i} which was ${actual[i]} to match ${expectedItem}`);
+    }
+  }
+}

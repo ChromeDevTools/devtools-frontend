@@ -223,7 +223,8 @@ export abstract class AffectedResourcesView extends UI.TreeOutline.TreeElement {
     return frameCell;
   }
 
-  protected createRequestCell(request: Protocol.Audits.AffectedRequest): HTMLElement {
+  protected createRequestCell(request: Protocol.Audits.AffectedRequest, options: {linkToPreflight?: boolean} = {}):
+      HTMLElement {
     let url = request.url;
     let filename = url ? extractShortPath(url) : '';
     const requestCell = document.createElement('td');
@@ -235,9 +236,14 @@ export abstract class AffectedResourcesView extends UI.TreeOutline.TreeElement {
 
     const requests = this.resolveRequestId(request.requestId);
     if (requests.length) {
+      const linkToPreflight = options.linkToPreflight ?? false;
       const request = requests[0];
       requestCell.onclick = (): void => {
-        Network.NetworkPanel.NetworkPanel.selectAndShowRequest(request, Network.NetworkItemView.Tabs.Headers);
+        const linkedRequest = linkToPreflight ? request.preflightRequest() : request;
+        if (!linkedRequest) {
+          return;
+        }
+        Network.NetworkPanel.NetworkPanel.selectAndShowRequest(linkedRequest, Network.NetworkItemView.Tabs.Headers);
       };
       requestCell.classList.add('link');
       icon.classList.add('link');

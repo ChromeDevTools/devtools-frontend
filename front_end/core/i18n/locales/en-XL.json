@@ -1262,6 +1262,9 @@
   "models/issues_manager/ContentSecurityPolicyIssue.ts | trustedTypesPolicyViolation": {
     "message": "T̂ŕûśt̂éd̂ T́ŷṕêś - P̂ól̂íĉý v̂íôĺât́îón̂"
   },
+  "models/issues_manager/CorsIssue.ts | CORS": {
+    "message": "Ĉŕôśŝ-Ór̂íĝín̂ Ŕêśôúr̂ćê Śĥár̂ín̂ǵ (CORS)"
+  },
   "models/issues_manager/CorsIssue.ts | corsForPrivateNetworksRfc": {
     "message": "ĈÓR̂Ś f̂ór̂ ṕr̂ív̂át̂é n̂ét̂ẃôŕk̂ś (R̂F́Ĉ1918)"
   },
@@ -5000,6 +5003,9 @@
   "panels/issues/CorsIssueDetailsView.ts | blocked": {
     "message": "b̂ĺôćk̂éd̂"
   },
+  "panels/issues/CorsIssueDetailsView.ts | header": {
+    "message": "Ĥéâd́êŕ"
+  },
   "panels/issues/CorsIssueDetailsView.ts | initiatorAddressSpace": {
     "message": "Îńît́îát̂ór̂ Ád̂d́r̂éŝś"
   },
@@ -5009,8 +5015,26 @@
   "panels/issues/CorsIssueDetailsView.ts | insecure": {
     "message": "îńŝéĉúr̂é"
   },
+  "panels/issues/CorsIssueDetailsView.ts | invalidValue": {
+    "message": "Îńv̂ál̂íd̂ V́âĺûé (îf́ âv́âíl̂áb̂ĺê)"
+  },
   "panels/issues/CorsIssueDetailsView.ts | nItems": {
     "message": "{n, plural, =1 { ît́êḿ} other { ît́êḿŝ}}"
+  },
+  "panels/issues/CorsIssueDetailsView.ts | preflightRequestIfProblematic": {
+    "message": "P̂ŕêf́l̂íĝh́t̂ Ŕêq́ûéŝt́ (îf́ p̂ŕôb́l̂ém̂át̂íĉ)"
+  },
+  "panels/issues/CorsIssueDetailsView.ts | problem": {
+    "message": "P̂ŕôb́l̂ém̂"
+  },
+  "panels/issues/CorsIssueDetailsView.ts | problemInvalidValue": {
+    "message": "Îńv̂ál̂íd̂ V́âĺûé"
+  },
+  "panels/issues/CorsIssueDetailsView.ts | problemMissingHeader": {
+    "message": "M̂íŝśîńĝ H́êád̂ér̂"
+  },
+  "panels/issues/CorsIssueDetailsView.ts | problemMultipleValues": {
+    "message": "M̂úl̂t́îṕl̂é V̂ál̂úêś"
   },
   "panels/issues/CorsIssueDetailsView.ts | request": {
     "message": "R̂éq̂úêśt̂"

@@ -27,6 +27,6 @@
     { "name": "ui/legacy/components/source_frame" },
     { "name": "panels/sources" },
     { "name": "ui/legacy/components/text_editor" },
-    { "name": "workspace_diff" }
+    { "name": "models/workspace_diff" }
   ]
 }

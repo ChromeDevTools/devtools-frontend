@@ -59,6 +59,7 @@ devtools_module("sources") {
     "../../models/recorder:bundle",
     "../../models/text_utils:bundle",
     "../../models/workspace:bundle",
+    "../../models/workspace_diff:bundle",
     "../../panels/console_counters:bundle",
     "../../panels/coverage:bundle",
     "../../panels/search:bundle",
@@ -72,7 +73,6 @@ devtools_module("sources") {
     "../../ui/legacy/components/quick_open:bundle",
     "../../ui/legacy/components/source_frame:bundle",
     "../../ui/legacy/components/text_editor:bundle",
-    "../../workspace_diff:bundle",
   ]
 }
 

@@ -52,6 +52,7 @@ export const mappingForLayoutTests = new Map<string, string>([
   ['panels/timeline', 'timeline'],
   ['panels/web_audio', 'web_audio'],
   ['models/persistence', 'persistence'],
+  ['models/workspace_diff', 'workspace_diff'],
   ['entrypoints/main', 'main'],
   ['third_party/diff', 'diff'],
   ['ui/legacy/components/inline_editor', 'inline_editor'],

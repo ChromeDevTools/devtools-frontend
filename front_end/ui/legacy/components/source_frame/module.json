@@ -4,7 +4,7 @@
     "ui/legacy",
     "models/persistence",
     "ui/legacy/components/object_ui",
-    "workspace_diff"
+    "models/workspace_diff"
   ],
     "resources": [
     "fontView.css",

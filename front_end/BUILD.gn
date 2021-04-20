@@ -48,6 +48,7 @@ group("front_end") {
     "models/text_utils:bundle",
     "models/timeline_model:bundle",
     "models/workspace:bundle",
+    "models/workspace_diff:bundle",
     "panels/event_listeners:bundle",
     "panels/screencast:bundle",
     "panels/search:bundle",
@@ -64,7 +65,6 @@ group("front_end") {
     "ui/legacy/components/inline_editor:bundle",
     "ui/legacy/components/text_editor:bundle",
     "ui/legacy/theme_support:bundle",
-    "workspace_diff:bundle",
   ]
 }
 
@@ -108,6 +108,7 @@ group("legacy_entrypoints") {
     "models/text_utils:legacy",
     "models/timeline_model:legacy",
     "models/workspace:legacy",
+    "models/workspace_diff:legacy",
     "panels/accessibility:legacy",
     "panels/animation:legacy",
     "panels/application:legacy",
@@ -145,7 +146,6 @@ group("legacy_entrypoints") {
     "ui/legacy/components/quick_open:legacy",
     "ui/legacy/components/source_frame:legacy",
     "ui/legacy/components/text_editor:legacy",
-    "workspace_diff:legacy",
   ]
 }
 

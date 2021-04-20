@@ -2,18 +2,18 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-import("../../scripts/build/ninja/devtools_entrypoint.gni")
-import("../../scripts/build/ninja/devtools_module.gni")
+import("../../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../../../scripts/build/ninja/devtools_module.gni")
 
 devtools_module("workspace_diff") {
   sources = [ "WorkspaceDiff.ts" ]
 
   deps = [
-    "../core/common:bundle",
-    "../core/host:bundle",
-    "../models/persistence:bundle",
-    "../models/workspace:bundle",
-    "../third_party/diff:bundle",
+    "../../core/common:bundle",
+    "../../core/host:bundle",
+    "../../models/persistence:bundle",
+    "../../models/workspace:bundle",
+    "../../third_party/diff:bundle",
   ]
 }
 

@@ -17,11 +17,11 @@ devtools_module("changes") {
     "../../core/common:bundle",
     "../../core/i18n:bundle",
     "../../models/workspace:bundle",
+    "../../models/workspace_diff:bundle",
     "../../panels/snippets:bundle",
     "../../third_party/diff:bundle",
     "../../ui/legacy:bundle",
     "../../ui/legacy/components/text_editor:bundle",
-    "../../workspace_diff:bundle",
   ]
 }
 

@@ -232,6 +232,7 @@ all_typescript_module_sources = [
   "models/workspace/FileManager.js",
   "models/workspace/UISourceCode.js",
   "models/workspace/WorkspaceImpl.js",
+  "models/workspace_diff/WorkspaceDiff.js",
   "node_main/NodeConnectionsPanel.js",
   "node_main/NodeMain.js",
   "panels/accessibility/ARIAAttributesView.js",
@@ -833,7 +834,6 @@ all_typescript_module_sources = [
   "ui/legacy/utils/measured-scrollbar-width.js",
   "ui/legacy/utils/register-custom-element.js",
   "ui/legacy/utils/utils.js",
-  "workspace_diff/WorkspaceDiff.js",
 ]
 
 foreach(module, all_typescript_module_sources) {

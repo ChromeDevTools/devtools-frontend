@@ -71,6 +71,8 @@ devtools_module_entrypoint_sources = [
   "models/timeline_model/timeline_model.js",
   "models/workspace/workspace-legacy.js",
   "models/workspace/workspace.js",
+  "models/workspace_diff/workspace_diff-legacy.js",
+  "models/workspace_diff/workspace_diff.js",
   "node_debugger/node_debugger-meta.js",
   "node_debugger/node_debugger.js",
   "node_main/node_main-meta.js",
@@ -216,8 +218,6 @@ devtools_module_entrypoint_sources = [
   "ui/legacy/legacy.js",
   "ui/legacy/theme_support/theme_support.js",
   "ui/legacy/utils/utils.js",
-  "workspace_diff/workspace_diff-legacy.js",
-  "workspace_diff/workspace_diff.js",
 ]
 
 generated_module_entrypoint_sources = []

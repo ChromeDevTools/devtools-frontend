@@ -9,7 +9,7 @@ import * as Diff from '../../third_party/diff/diff.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import type * as Workspace from '../../models/workspace/workspace.js';
-import * as WorkspaceDiff from '../../workspace_diff/workspace_diff.js';
+import * as WorkspaceDiff from '../../models/workspace_diff/workspace_diff.js';
 
 import {ChangesSidebar, Events} from './ChangesSidebar.js';
 import {ChangesTextEditor} from './ChangesTextEditor.js';

@@ -329,6 +329,8 @@ export enum Action {
   NetworkPanelServiceWorkerRespondWith = 51,
   NetworkPanelCopyValue = 52,
   ConsoleSidebarOpened = 53,
+  PerfPanelTraceImported = 54,
+  PerfPanelTraceExported = 55,
 }
 
 

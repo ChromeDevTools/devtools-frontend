@@ -478,9 +478,13 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
     // Load / Save
     this._loadButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.loadProfile), 'largeicon-load');
-    this._loadButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => this._selectFileToLoad());
+    this._loadButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => {
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.PerfPanelTraceImported);
+      this._selectFileToLoad();
+    });
     this._saveButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.saveProfile), 'largeicon-download');
     this._saveButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, _event => {
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.PerfPanelTraceExported);
       this._saveToFile();
     });
     this._panelToolbar.appendSeparator();
@@ -1223,6 +1227,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       return;
     }
     const item = items[0];
+    Host.userMetrics.actionTaken(Host.UserMetrics.Action.PerfPanelTraceImported);
     if (item.kind === 'string') {
       const url = dataTransfer.getData('text/uri-list');
       if (new Common.ParsedURL.ParsedURL(url).isValid) {

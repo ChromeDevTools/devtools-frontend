@@ -147,7 +147,7 @@ template("ts_library") {
         args += [
           "--use-rbe",
           "--rewrapper-binary=${rbe_bin_dir}/rewrapper",
-          "--rewrapper-cfg=${cfg_file}",
+          "--rewrapper-cfg=${rbe_cc_cfg_file}",
           "--rewrapper-exec-root=${rbe_exec_root}",
         ]
       }

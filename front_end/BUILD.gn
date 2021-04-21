@@ -16,7 +16,6 @@ group("front_end") {
     ":legacy_css",
     ":legacy_entrypoints",
     ":ts_library-verification",
-    "components:bundle",
     "core/common:bundle",
     "core/i18n:bundle",
     "core/i18n:i18n_locales",
@@ -64,6 +63,7 @@ group("front_end") {
     "ui/legacy/components/data_grid:bundle",
     "ui/legacy/components/inline_editor:bundle",
     "ui/legacy/components/text_editor:bundle",
+    "ui/legacy/components/utils:bundle",
     "ui/legacy/theme_support:bundle",
   ]
 }
@@ -71,7 +71,6 @@ group("front_end") {
 group("legacy_css") {
   public_deps = [
     "cm:legacy_css",
-    "components:legacy_css",
     "entrypoints/inspector_main:legacy_css",
     "models/persistence:legacy_css",
     "panels/application:legacy_css",
@@ -85,12 +84,12 @@ group("legacy_css") {
     "ui/legacy/components/inline_editor:legacy_css",
     "ui/legacy/components/object_ui:legacy_css",
     "ui/legacy/components/text_editor:legacy_css",
+    "ui/legacy/components/utils:legacy_css",
   ]
 }
 
 group("legacy_entrypoints") {
   public_deps = [
-    "components:legacy",
     "core/common:legacy",
     "core/host:legacy",
     "core/protocol_client:legacy",
@@ -146,6 +145,7 @@ group("legacy_entrypoints") {
     "ui/legacy/components/quick_open:legacy",
     "ui/legacy/components/source_frame:legacy",
     "ui/legacy/components/text_editor:legacy",
+    "ui/legacy/components/utils:legacy",
   ]
 }
 

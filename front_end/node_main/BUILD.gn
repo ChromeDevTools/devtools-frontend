@@ -12,13 +12,13 @@ devtools_module("node_main") {
   ]
 
   deps = [
-    "../components:bundle",
     "../core/common:bundle",
     "../core/host:bundle",
     "../core/i18n:bundle",
     "../core/protocol_client:bundle",
     "../core/sdk:bundle",
     "../ui/legacy:bundle",
+    "../ui/legacy/components/utils:bundle",
   ]
 }
 

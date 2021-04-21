@@ -8,10 +8,10 @@ ts_library("components") {
   ]
 
   deps = [
-    "../../../../front_end/components:bundle",
     "../../../../front_end/core/sdk:bundle",
     "../../../../front_end/models/bindings:bundle",
     "../../../../front_end/models/workspace:bundle",
+    "../../../../front_end/ui/legacy/components/utils:bundle",
     "../helpers",
   ]
 }

@@ -6,7 +6,7 @@ import '../test_runner/test_runner.js';
 import '../../panels/layers/layers-legacy.js';
 import '../../panels/layer_viewer/layer_viewer-legacy.js';
 import '../../panels/elements/elements-legacy.js';
-import '../../components/components-legacy.js';
+import '../../ui/legacy/components/utils/utils-legacy.js';
 
 /**
  * @fileoverview using private properties isn't a Closure violation in tests.

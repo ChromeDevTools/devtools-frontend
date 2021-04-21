@@ -1,61 +1,4 @@
 {
-  "components/ImagePreview.ts | currentSource": {
-    "message": "Ĉúr̂ŕêńt̂ śôúr̂ćê:"
-  },
-  "components/ImagePreview.ts | fileSize": {
-    "message": "F̂íl̂é ŝíẑé:"
-  },
-  "components/ImagePreview.ts | imageFromS": {
-    "message": "Îḿâǵê f́r̂óm̂ {PH1}"
-  },
-  "components/ImagePreview.ts | intrinsicAspectRatio": {
-    "message": "Îńt̂ŕîńŝíĉ áŝṕêćt̂ ŕât́îó:"
-  },
-  "components/ImagePreview.ts | intrinsicSize": {
-    "message": "Îńt̂ŕîńŝíĉ śîźê:"
-  },
-  "components/ImagePreview.ts | renderedAspectRatio": {
-    "message": "R̂én̂d́êŕêd́ âśp̂éĉt́ r̂át̂íô:"
-  },
-  "components/ImagePreview.ts | renderedSize": {
-    "message": "R̂én̂d́êŕêd́ ŝíẑé:"
-  },
-  "components/ImagePreview.ts | unknownSource": {
-    "message": "ûńk̂ńôẃn̂ śôúr̂ćê"
-  },
-  "components/JSPresentationUtils.ts | addToIgnore": {
-    "message": "Âd́d̂ śĉŕîṕt̂ t́ô íĝńôŕê ĺîśt̂"
-  },
-  "components/JSPresentationUtils.ts | removeFromIgnore": {
-    "message": "R̂ém̂óv̂é f̂ŕôḿ îǵn̂ór̂é l̂íŝt́"
-  },
-  "components/JSPresentationUtils.ts | showSMoreFrames": {
-    "message": "{n, plural, =1 {Ŝh́ôẃ # m̂ór̂é f̂ŕâḿê} other {Śĥóŵ # ḿôŕê f́r̂ám̂éŝ}}"
-  },
-  "components/JSPresentationUtils.ts | unknownSource": {
-    "message": "ûńk̂ńôẃn̂"
-  },
-  "components/Linkifier.ts | auto": {
-    "message": "âút̂ó"
-  },
-  "components/Linkifier.ts | linkHandling": {
-    "message": "L̂ín̂ḱ ĥán̂d́l̂ín̂ǵ:"
-  },
-  "components/Linkifier.ts | openUsingS": {
-    "message": "Ôṕêń ûśîńĝ {PH1}"
-  },
-  "components/Linkifier.ts | reveal": {
-    "message": "R̂év̂éâĺ"
-  },
-  "components/Linkifier.ts | revealInS": {
-    "message": "R̂év̂éâĺ îń {PH1}"
-  },
-  "components/Linkifier.ts | unknown": {
-    "message": "(ûńk̂ńôẃn̂)"
-  },
-  "components/TargetDetachedDialog.ts | websocketDisconnected": {
-    "message": "Ŵéb̂Śôćk̂ét̂ d́îśĉón̂ńêćt̂éd̂"
-  },
   "core/common/ResourceType.ts | cspviolationreport": {
     "message": "ĈŚP̂V́îól̂át̂íôńR̂ép̂ór̂t́"
   },
@@ -11230,6 +11173,63 @@
   },
   "ui/legacy/components/text_editor/CodeMirrorTextEditor.ts | codeEditor": {
     "message": "Ĉód̂é êd́ît́ôŕ"
+  },
+  "ui/legacy/components/utils/ImagePreview.ts | currentSource": {
+    "message": "Ĉúr̂ŕêńt̂ śôúr̂ćê:"
+  },
+  "ui/legacy/components/utils/ImagePreview.ts | fileSize": {
+    "message": "F̂íl̂é ŝíẑé:"
+  },
+  "ui/legacy/components/utils/ImagePreview.ts | imageFromS": {
+    "message": "Îḿâǵê f́r̂óm̂ {PH1}"
+  },
+  "ui/legacy/components/utils/ImagePreview.ts | intrinsicAspectRatio": {
+    "message": "Îńt̂ŕîńŝíĉ áŝṕêćt̂ ŕât́îó:"
+  },
+  "ui/legacy/components/utils/ImagePreview.ts | intrinsicSize": {
+    "message": "Îńt̂ŕîńŝíĉ śîźê:"
+  },
+  "ui/legacy/components/utils/ImagePreview.ts | renderedAspectRatio": {
+    "message": "R̂én̂d́êŕêd́ âśp̂éĉt́ r̂át̂íô:"
+  },
+  "ui/legacy/components/utils/ImagePreview.ts | renderedSize": {
+    "message": "R̂én̂d́êŕêd́ ŝíẑé:"
+  },
+  "ui/legacy/components/utils/ImagePreview.ts | unknownSource": {
+    "message": "ûńk̂ńôẃn̂ śôúr̂ćê"
+  },
+  "ui/legacy/components/utils/JSPresentationUtils.ts | addToIgnore": {
+    "message": "Âd́d̂ śĉŕîṕt̂ t́ô íĝńôŕê ĺîśt̂"
+  },
+  "ui/legacy/components/utils/JSPresentationUtils.ts | removeFromIgnore": {
+    "message": "R̂ém̂óv̂é f̂ŕôḿ îǵn̂ór̂é l̂íŝt́"
+  },
+  "ui/legacy/components/utils/JSPresentationUtils.ts | showSMoreFrames": {
+    "message": "{n, plural, =1 {Ŝh́ôẃ # m̂ór̂é f̂ŕâḿê} other {Śĥóŵ # ḿôŕê f́r̂ám̂éŝ}}"
+  },
+  "ui/legacy/components/utils/JSPresentationUtils.ts | unknownSource": {
+    "message": "ûńk̂ńôẃn̂"
+  },
+  "ui/legacy/components/utils/Linkifier.ts | auto": {
+    "message": "âút̂ó"
+  },
+  "ui/legacy/components/utils/Linkifier.ts | linkHandling": {
+    "message": "L̂ín̂ḱ ĥán̂d́l̂ín̂ǵ:"
+  },
+  "ui/legacy/components/utils/Linkifier.ts | openUsingS": {
+    "message": "Ôṕêń ûśîńĝ {PH1}"
+  },
+  "ui/legacy/components/utils/Linkifier.ts | reveal": {
+    "message": "R̂év̂éâĺ"
+  },
+  "ui/legacy/components/utils/Linkifier.ts | revealInS": {
+    "message": "R̂év̂éâĺ îń {PH1}"
+  },
+  "ui/legacy/components/utils/Linkifier.ts | unknown": {
+    "message": "(ûńk̂ńôẃn̂)"
+  },
+  "ui/legacy/components/utils/TargetDetachedDialog.ts | websocketDisconnected": {
+    "message": "Ŵéb̂Śôćk̂ét̂ d́îśĉón̂ńêćt̂éd̂"
   },
   "ui/legacy/DockController.ts | close": {
     "message": "Ĉĺôśê"

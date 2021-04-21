@@ -4,12 +4,12 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../core/common/common.js';
-import * as Host from '../core/host/host.js';
-import * as i18n from '../core/i18n/i18n.js';
-import * as Platform from '../core/platform/platform.js';
-import * as SDK from '../core/sdk/sdk.js';
-import * as UI from '../ui/legacy/legacy.js';
+import * as Common from '../../../../core/common/common.js';
+import * as Host from '../../../../core/host/host.js';
+import * as i18n from '../../../../core/i18n/i18n.js';
+import * as Platform from '../../../../core/platform/platform.js';
+import * as SDK from '../../../../core/sdk/sdk.js';
+import * as UI from '../../legacy.js';
 
 const UIStrings = {
   /**
@@ -47,7 +47,7 @@ const UIStrings = {
    */
   intrinsicAspectRatio: 'Intrinsic aspect ratio:',
 };
-const str_ = i18n.i18n.registerUIStrings('components/ImagePreview.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/utils/ImagePreview.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export interface PrecomputedFeatures {
@@ -103,7 +103,7 @@ export class ImagePreview {
 
     function buildContent(): void {
       const container = document.createElement('table');
-      UI.Utils.appendStyle(container, 'components/imagePreview.css', {enableLegacyPatching: false});
+      UI.Utils.appendStyle(container, 'ui/legacy/components/utils/imagePreview.css', {enableLegacyPatching: false});
       container.className = 'image-preview-container';
 
       const imageRow = (container.createChild('tr').createChild('td', 'image-container') as HTMLTableDataCellElement);

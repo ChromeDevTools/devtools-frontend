@@ -37,7 +37,6 @@ devtools_module("application") {
   ]
 
   deps = [
-    "../../components:bundle",
     "../../core/common:bundle",
     "../../core/host:bundle",
     "../../core/i18n:bundle",
@@ -60,6 +59,7 @@ devtools_module("application") {
     "../../ui/legacy/components/inline_editor:bundle",
     "../../ui/legacy/components/object_ui:bundle",
     "../../ui/legacy/components/source_frame:bundle",
+    "../../ui/legacy/components/utils:bundle",
   ]
 }
 

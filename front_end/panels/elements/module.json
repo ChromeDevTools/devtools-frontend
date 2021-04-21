@@ -1,6 +1,6 @@
 {
   "dependencies": [
-    "components",
+    "ui/legacy/components/utils",
     "models/extensions",
     "ui/legacy/components/inline_editor",
     "ui/legacy/components/color_picker",

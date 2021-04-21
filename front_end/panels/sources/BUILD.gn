@@ -45,7 +45,6 @@ devtools_module("sources") {
   ]
 
   deps = [
-    "../../components:bundle",
     "../../core/common:bundle",
     "../../core/host:bundle",
     "../../core/i18n:bundle",
@@ -73,6 +72,7 @@ devtools_module("sources") {
     "../../ui/legacy/components/quick_open:bundle",
     "../../ui/legacy/components/source_frame:bundle",
     "../../ui/legacy/components/text_editor:bundle",
+    "../../ui/legacy/components/utils:bundle",
   ]
 }
 

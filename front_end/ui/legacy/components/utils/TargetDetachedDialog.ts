@@ -4,9 +4,9 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as i18n from '../core/i18n/i18n.js';
-import * as SDK from '../core/sdk/sdk.js';
-import * as UI from '../ui/legacy/legacy.js';
+import * as i18n from '../../../../core/i18n/i18n.js';
+import * as SDK from '../../../../core/sdk/sdk.js';
+import * as UI from '../../legacy.js';
 
 const UIStrings = {
   /**
@@ -14,7 +14,7 @@ const UIStrings = {
   */
   websocketDisconnected: 'WebSocket disconnected',
 };
-const str_ = i18n.i18n.registerUIStrings('components/TargetDetachedDialog.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/utils/TargetDetachedDialog.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class TargetDetachedDialog extends SDK.SDKModel.SDKModel implements ProtocolProxyApi.InspectorDispatcher {
   _hideCrashedDialog: (() => void)|null;

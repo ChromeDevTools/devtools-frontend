@@ -7,8 +7,6 @@ import("../../scripts/build/ninja/vars.gni")
 devtools_module_entrypoint_sources = [
   "Images/Images.js",
   "cm/cm.js",
-  "components/components-legacy.js",
-  "components/components.js",
   "core/common/common-legacy.js",
   "core/common/common.js",
   "core/dom_extension/dom_extension.js",
@@ -213,6 +211,8 @@ devtools_module_entrypoint_sources = [
   "ui/legacy/components/source_frame/source_frame.js",
   "ui/legacy/components/text_editor/text_editor-legacy.js",
   "ui/legacy/components/text_editor/text_editor.js",
+  "ui/legacy/components/utils/utils-legacy.js",
+  "ui/legacy/components/utils/utils.js",
   "ui/legacy/legacy-legacy.js",
   "ui/legacy/legacy.js",
   "ui/legacy/theme_support/theme_support.js",

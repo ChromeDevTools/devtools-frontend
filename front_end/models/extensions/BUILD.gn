@@ -16,7 +16,6 @@ devtools_module("extensions") {
   ]
 
   deps = [
-    "../../components:bundle",
     "../../core/common:bundle",
     "../../core/host:bundle",
     "../../core/platform:bundle",
@@ -28,6 +27,7 @@ devtools_module("extensions") {
     "../../models/text_utils:bundle",
     "../../models/workspace:bundle",
     "../../ui/legacy:bundle",
+    "../../ui/legacy/components/utils:bundle",
     "../../ui/legacy/theme_support:bundle",
   ]
 }

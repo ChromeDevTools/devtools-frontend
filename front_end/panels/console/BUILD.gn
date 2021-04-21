@@ -19,7 +19,6 @@ devtools_module("console") {
   ]
 
   deps = [
-    "../../components:bundle",
     "../../core/common:bundle",
     "../../core/host:bundle",
     "../../core/i18n:bundle",
@@ -32,6 +31,7 @@ devtools_module("console") {
     "../../ui/legacy/components/data_grid:bundle",
     "../../ui/legacy/components/object_ui:bundle",
     "../../ui/legacy/components/text_editor:bundle",
+    "../../ui/legacy/components/utils:bundle",
     "../../ui/legacy/theme_support:bundle",
     "../console_counters:bundle",
   ]

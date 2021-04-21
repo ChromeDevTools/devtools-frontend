@@ -1,5 +1,5 @@
 {
   "dependencies": [
-    "components"
+    "ui/legacy/components/utils"
   ]
 }

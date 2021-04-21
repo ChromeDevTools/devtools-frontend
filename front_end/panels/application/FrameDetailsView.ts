@@ -18,7 +18,7 @@ import * as ReportView from '../../ui/components/report_view/report_view.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Workspace from '../../models/workspace/workspace.js';
-import * as Components from '../../components/components.js';
+import * as Components from '../../ui/legacy/components/utils/utils.js';
 
 const UIStrings = {
   /**

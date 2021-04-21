@@ -26,7 +26,6 @@ devtools_module("inline_editor") {
   ]
 
   deps = [
-    "../../../../components:bundle",
     "../../../../core/common:bundle",
     "../../../../core/i18n:bundle",
     "../../../../core/platform:bundle",
@@ -37,6 +36,7 @@ devtools_module("inline_editor") {
     "../../../../third_party/lit-html:bundle",
     "../../../../ui/components/helpers:bundle",
     "../../../../ui/legacy:bundle",
+    "../../../../ui/legacy/components/utils:bundle",
   ]
 
   visibility = [ "../../../../component_docs/*" ]

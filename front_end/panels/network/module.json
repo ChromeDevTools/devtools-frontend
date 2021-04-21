@@ -1,6 +1,6 @@
 {
   "dependencies": [
-    "components",
+    "ui/legacy/components/utils",
     "ui/legacy/components/cookie_table",
     "ui/legacy/components/data_grid",
     "panels/mobile_throttling",

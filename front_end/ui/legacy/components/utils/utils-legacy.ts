@@ -4,7 +4,7 @@
 
 // @ts-nocheck
 
-import * as ComponentsModule from './components.js';
+import * as ComponentsModule from './utils.js';
 
 self.Components = self.Components || {};
 Components = Components || {};

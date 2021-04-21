@@ -20,10 +20,10 @@ devtools_entrypoint("js_main") {
   entrypoint = "JsMain.ts"
 
   deps = [
-    "../../components:bundle",
     "../../core/common:bundle",
     "../../core/host:bundle",
     "../../core/i18n:bundle",
     "../../core/sdk:bundle",
+    "../../ui/legacy/components/utils:bundle",
   ]
 }

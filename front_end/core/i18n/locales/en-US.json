@@ -1,61 +1,4 @@
 {
-  "components/ImagePreview.ts | currentSource": {
-    "message": "Current source:"
-  },
-  "components/ImagePreview.ts | fileSize": {
-    "message": "File size:"
-  },
-  "components/ImagePreview.ts | imageFromS": {
-    "message": "Image from {PH1}"
-  },
-  "components/ImagePreview.ts | intrinsicAspectRatio": {
-    "message": "Intrinsic aspect ratio:"
-  },
-  "components/ImagePreview.ts | intrinsicSize": {
-    "message": "Intrinsic size:"
-  },
-  "components/ImagePreview.ts | renderedAspectRatio": {
-    "message": "Rendered aspect ratio:"
-  },
-  "components/ImagePreview.ts | renderedSize": {
-    "message": "Rendered size:"
-  },
-  "components/ImagePreview.ts | unknownSource": {
-    "message": "unknown source"
-  },
-  "components/JSPresentationUtils.ts | addToIgnore": {
-    "message": "Add script to ignore list"
-  },
-  "components/JSPresentationUtils.ts | removeFromIgnore": {
-    "message": "Remove from ignore list"
-  },
-  "components/JSPresentationUtils.ts | showSMoreFrames": {
-    "message": "{n, plural, =1 {Show # more frame} other {Show # more frames}}"
-  },
-  "components/JSPresentationUtils.ts | unknownSource": {
-    "message": "unknown"
-  },
-  "components/Linkifier.ts | auto": {
-    "message": "auto"
-  },
-  "components/Linkifier.ts | linkHandling": {
-    "message": "Link handling:"
-  },
-  "components/Linkifier.ts | openUsingS": {
-    "message": "Open using {PH1}"
-  },
-  "components/Linkifier.ts | reveal": {
-    "message": "Reveal"
-  },
-  "components/Linkifier.ts | revealInS": {
-    "message": "Reveal in {PH1}"
-  },
-  "components/Linkifier.ts | unknown": {
-    "message": "(unknown)"
-  },
-  "components/TargetDetachedDialog.ts | websocketDisconnected": {
-    "message": "WebSocket disconnected"
-  },
   "core/common/ResourceType.ts | cspviolationreport": {
     "message": "CSPViolationReport"
   },
@@ -11230,6 +11173,63 @@
   },
   "ui/legacy/components/text_editor/CodeMirrorTextEditor.ts | codeEditor": {
     "message": "Code editor"
+  },
+  "ui/legacy/components/utils/ImagePreview.ts | currentSource": {
+    "message": "Current source:"
+  },
+  "ui/legacy/components/utils/ImagePreview.ts | fileSize": {
+    "message": "File size:"
+  },
+  "ui/legacy/components/utils/ImagePreview.ts | imageFromS": {
+    "message": "Image from {PH1}"
+  },
+  "ui/legacy/components/utils/ImagePreview.ts | intrinsicAspectRatio": {
+    "message": "Intrinsic aspect ratio:"
+  },
+  "ui/legacy/components/utils/ImagePreview.ts | intrinsicSize": {
+    "message": "Intrinsic size:"
+  },
+  "ui/legacy/components/utils/ImagePreview.ts | renderedAspectRatio": {
+    "message": "Rendered aspect ratio:"
+  },
+  "ui/legacy/components/utils/ImagePreview.ts | renderedSize": {
+    "message": "Rendered size:"
+  },
+  "ui/legacy/components/utils/ImagePreview.ts | unknownSource": {
+    "message": "unknown source"
+  },
+  "ui/legacy/components/utils/JSPresentationUtils.ts | addToIgnore": {
+    "message": "Add script to ignore list"
+  },
+  "ui/legacy/components/utils/JSPresentationUtils.ts | removeFromIgnore": {
+    "message": "Remove from ignore list"
+  },
+  "ui/legacy/components/utils/JSPresentationUtils.ts | showSMoreFrames": {
+    "message": "{n, plural, =1 {Show # more frame} other {Show # more frames}}"
+  },
+  "ui/legacy/components/utils/JSPresentationUtils.ts | unknownSource": {
+    "message": "unknown"
+  },
+  "ui/legacy/components/utils/Linkifier.ts | auto": {
+    "message": "auto"
+  },
+  "ui/legacy/components/utils/Linkifier.ts | linkHandling": {
+    "message": "Link handling:"
+  },
+  "ui/legacy/components/utils/Linkifier.ts | openUsingS": {
+    "message": "Open using {PH1}"
+  },
+  "ui/legacy/components/utils/Linkifier.ts | reveal": {
+    "message": "Reveal"
+  },
+  "ui/legacy/components/utils/Linkifier.ts | revealInS": {
+    "message": "Reveal in {PH1}"
+  },
+  "ui/legacy/components/utils/Linkifier.ts | unknown": {
+    "message": "(unknown)"
+  },
+  "ui/legacy/components/utils/TargetDetachedDialog.ts | websocketDisconnected": {
+    "message": "WebSocket disconnected"
   },
   "ui/legacy/DockController.ts | close": {
     "message": "Close"

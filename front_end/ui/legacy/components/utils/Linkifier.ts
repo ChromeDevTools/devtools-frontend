@@ -30,14 +30,14 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../core/common/common.js';
-import * as Host from '../core/host/host.js';
-import * as i18n from '../core/i18n/i18n.js';
-import * as SDK from '../core/sdk/sdk.js';
-import * as Bindings from '../models/bindings/bindings.js';
-import * as TextUtils from '../models/text_utils/text_utils.js';
-import * as Workspace from '../models/workspace/workspace.js';  // eslint-disable-line no-unused-vars
-import * as UI from '../ui/legacy/legacy.js';
+import * as Common from '../../../../core/common/common.js';
+import * as Host from '../../../../core/host/host.js';
+import * as i18n from '../../../../core/i18n/i18n.js';
+import * as SDK from '../../../../core/sdk/sdk.js';
+import * as Bindings from '../../../../models/bindings/bindings.js';
+import * as TextUtils from '../../../../models/text_utils/text_utils.js';
+import * as Workspace from '../../../../models/workspace/workspace.js';  // eslint-disable-line no-unused-vars
+import * as UI from '../../legacy.js';
 
 const UIStrings = {
   /**
@@ -69,7 +69,7 @@ const UIStrings = {
   */
   linkHandling: 'Link handling:',
 };
-const str_ = i18n.i18n.registerUIStrings('components/Linkifier.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/utils/Linkifier.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const instances = new Set<Linkifier>();
 

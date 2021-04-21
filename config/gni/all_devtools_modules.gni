@@ -7,11 +7,6 @@ import("../../scripts/build/ninja/vars.gni")
 generated_typescript_modules = []
 
 all_typescript_module_sources = [
-  "components/ImagePreview.js",
-  "components/JSPresentationUtils.js",
-  "components/Linkifier.js",
-  "components/Reload.js",
-  "components/TargetDetachedDialog.js",
   "core/common/App.js",
   "core/common/AppProvider.js",
   "core/common/Base64.js",
@@ -827,6 +822,11 @@ all_typescript_module_sources = [
   "ui/legacy/components/text_editor/SyntaxHighlighter.js",
   "ui/legacy/components/text_editor/TextEditorAutocompleteController.js",
   "ui/legacy/components/text_editor/cm_modes.js",
+  "ui/legacy/components/utils/ImagePreview.js",
+  "ui/legacy/components/utils/JSPresentationUtils.js",
+  "ui/legacy/components/utils/Linkifier.js",
+  "ui/legacy/components/utils/Reload.js",
+  "ui/legacy/components/utils/TargetDetachedDialog.js",
   "ui/legacy/theme_support/theme_support_impl.js",
   "ui/legacy/utils/append-style.js",
   "ui/legacy/utils/create-shadow-root-with-core-styles.js",

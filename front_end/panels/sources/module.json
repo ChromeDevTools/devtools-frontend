@@ -1,6 +1,6 @@
 {
   "dependencies": [
-    "components",
+    "ui/legacy/components/utils",
     "panels/search",
     "ui/legacy/components/source_frame",
     "panels/snippets",

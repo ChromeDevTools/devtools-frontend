@@ -21,7 +21,6 @@ devtools_module("persistence") {
   ]
 
   deps = [
-    "../../components:bundle",
     "../../core/common:bundle",
     "../../core/host:bundle",
     "../../core/i18n:bundle",
@@ -31,6 +30,7 @@ devtools_module("persistence") {
     "../../models/text_utils:bundle",
     "../../models/workspace:bundle",
     "../../ui/legacy:bundle",
+    "../../ui/legacy/components/utils:bundle",
   ]
 }
 

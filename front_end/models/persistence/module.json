@@ -1,6 +1,6 @@
 {
   "dependencies": [
-    "components"
+    "ui/legacy/components/utils"
   ],
     "resources": [
     "editFileSystemView.css",

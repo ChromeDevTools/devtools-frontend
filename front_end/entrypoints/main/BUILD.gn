@@ -13,7 +13,6 @@ devtools_module("main") {
   ]
 
   deps = [
-    "../../components:bundle",
     "../../core/common:bundle",
     "../../core/host:bundle",
     "../../core/i18n:bundle",
@@ -30,6 +29,7 @@ devtools_module("main") {
     "../../panels/snippets:bundle",
     "../../panels/timeline:bundle",
     "../../ui/legacy:bundle",
+    "../../ui/legacy/components/utils:bundle",
     "../../ui/legacy/theme_support:bundle",
   ]
 }

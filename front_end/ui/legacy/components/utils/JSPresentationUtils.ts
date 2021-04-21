@@ -33,11 +33,11 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import * as Common from '../core/common/common.js';
-import * as i18n from '../core/i18n/i18n.js';
-import * as SDK from '../core/sdk/sdk.js';  // eslint-disable-line no-unused-vars
-import * as Bindings from '../models/bindings/bindings.js';
-import * as UI from '../ui/legacy/legacy.js';
+import * as Common from '../../../../core/common/common.js';
+import * as i18n from '../../../../core/i18n/i18n.js';
+import * as SDK from '../../../../core/sdk/sdk.js';  // eslint-disable-line no-unused-vars
+import * as Bindings from '../../../../models/bindings/bindings.js';
+import * as UI from '../../legacy.js';
 
 import {Linkifier} from './Linkifier.js';
 
@@ -59,7 +59,7 @@ const UIStrings = {
    */
   unknownSource: 'unknown',
 };
-const str_ = i18n.i18n.registerUIStrings('components/JSPresentationUtils.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/utils/JSPresentationUtils.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 function populateContextMenu(link: Element, event: Event): void {
@@ -201,7 +201,8 @@ export function buildStackTracePreviewContents(
   element.classList.add('monospace');
   element.style.display = 'inline-block';
   const shadowRoot = UI.Utils.createShadowRootWithCoreStyles(
-      element, {cssFile: 'components/jsUtils.css', enableLegacyPatching: false, delegatesFocus: undefined});
+      element,
+      {cssFile: 'ui/legacy/components/utils/jsUtils.css', enableLegacyPatching: false, delegatesFocus: undefined});
   const contentElement = shadowRoot.createChild('table', 'stack-preview-container');
   if (!stackTrace) {
     return {element, links: []};

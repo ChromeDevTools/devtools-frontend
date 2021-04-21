@@ -5,14 +5,13 @@
 import("../../../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../../../scripts/build/ninja/devtools_module.gni")
 
-devtools_module("object_ui") {
+devtools_module("utils") {
   sources = [
-    "CustomPreviewComponent.ts",
-    "JavaScriptAutocomplete.ts",
-    "JavaScriptREPL.ts",
-    "ObjectPopoverHelper.ts",
-    "ObjectPropertiesSection.ts",
-    "RemoteObjectPreviewFormatter.ts",
+    "ImagePreview.ts",
+    "JSPresentationUtils.ts",
+    "Linkifier.ts",
+    "Reload.ts",
+    "TargetDetachedDialog.ts",
   ]
 
   deps = [
@@ -21,38 +20,28 @@ devtools_module("object_ui") {
     "../../../../core/i18n:bundle",
     "../../../../core/platform:bundle",
     "../../../../core/sdk:bundle",
-    "../../../../models/formatter:bundle",
-    "../../../../models/javascript_metadata:bundle",
+    "../../../../models/bindings:bundle",
     "../../../../models/text_utils:bundle",
-    "../../../../ui/components/linear_memory_inspector:bundle",
+    "../../../../models/workspace:bundle",
     "../../../../ui/legacy:bundle",
-    "../../../../ui/legacy/components/utils:bundle",
   ]
 }
 
 copy_to_gen("legacy_css") {
   sources = [
-    "customPreviewComponent.css",
-    "objectPopover.css",
-    "objectPropertiesSection.css",
-    "objectValue.css",
+    "imagePreview.css",
+    "jsUtils.css",
   ]
 }
 
 devtools_entrypoint("bundle") {
-  entrypoint = "object_ui.ts"
+  entrypoint = "utils.ts"
 
-  deps = [ ":object_ui" ]
+  deps = [ ":utils" ]
 }
 
 devtools_entrypoint("legacy") {
-  entrypoint = "object_ui-legacy.ts"
-
-  deps = [ ":bundle" ]
-}
-
-devtools_entrypoint("meta") {
-  entrypoint = "object_ui-meta.ts"
+  entrypoint = "utils-legacy.ts"
 
   deps = [ ":bundle" ]
 }

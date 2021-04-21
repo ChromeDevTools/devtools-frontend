@@ -36,7 +36,6 @@ devtools_module("network") {
   ]
 
   deps = [
-    "../../components:bundle",
     "../../core/common:bundle",
     "../../core/host:bundle",
     "../../core/i18n:bundle",
@@ -59,6 +58,7 @@ devtools_module("network") {
     "../../ui/legacy/components/object_ui:bundle",
     "../../ui/legacy/components/perf_ui:bundle",
     "../../ui/legacy/components/source_frame:bundle",
+    "../../ui/legacy/components/utils:bundle",
     "../../ui/legacy/theme_support:bundle",
   ]
 }

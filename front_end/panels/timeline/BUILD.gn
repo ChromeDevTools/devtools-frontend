@@ -35,7 +35,6 @@ devtools_module("timeline") {
   ]
 
   deps = [
-    "../../components:bundle",
     "../../core/host:bundle",
     "../../core/i18n:bundle",
     "../../models/extensions:bundle",
@@ -47,6 +46,7 @@ devtools_module("timeline") {
     "../../third_party/lit-html:bundle",
     "../../ui/legacy/components/data_grid:bundle",
     "../../ui/legacy/components/perf_ui:bundle",
+    "../../ui/legacy/components/utils:bundle",
     "../../ui/legacy/theme_support:bundle",
   ]
 }

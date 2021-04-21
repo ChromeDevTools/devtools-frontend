@@ -30,10 +30,10 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Components from '../../../../components/components.js';
 import * as Platform from '../../../../core/platform/platform.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
 import * as UI from '../../legacy.js';
+import * as Components from '../utils/utils.js';
 
 import {CustomPreviewComponent} from './CustomPreviewComponent.js';
 import {ObjectPropertiesSection} from './ObjectPropertiesSection.js';

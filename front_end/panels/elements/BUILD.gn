@@ -52,7 +52,6 @@ devtools_module("elements") {
   ]
 
   deps = [
-    "../../components:bundle",
     "../../core/common:bundle",
     "../../core/i18n:bundle",
     "../../core/platform:bundle",
@@ -76,6 +75,7 @@ devtools_module("elements") {
     "../../ui/legacy/components/inline_editor:bundle",
     "../../ui/legacy/components/object_ui:bundle",
     "../../ui/legacy/components/text_editor:bundle",
+    "../../ui/legacy/components/utils:bundle",
   ]
 
   visibility = [

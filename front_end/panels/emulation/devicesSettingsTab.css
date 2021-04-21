@@ -36,8 +36,7 @@
   flex: auto 1 1;
   cursor: pointer;
   overflow: hidden;
-  color: #222; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-text-primary);
   user-select: none;
   white-space: nowrap;
   text-overflow: ellipsis;

@@ -6,21 +6,22 @@
 
 :host {
   white-space: nowrap;
+
+  --override-bezier-icon-purple: #9c27b0;
+  --override-bezier-icon-purple-hover: #800080;
 }
 
-.bezier-swatch-icon {
+[is="ui-icon"].icon-mask.bezier-swatch-icon {
   position: relative;
   margin-left: 1px;
   margin-right: 2px;
   top: 1px;
   user-select: none;
   line-height: 10px;
-  background-color: #9c27b0; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  background-color: var(--override-bezier-icon-purple);
   cursor: default;
 }
 
-.bezier-swatch-icon:hover {
-  background-color: #800080; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+[is="ui-icon"].icon-mask.bezier-swatch-icon:hover {
+  background-color: var(--override-bezier-icon-purple-hover);
 }

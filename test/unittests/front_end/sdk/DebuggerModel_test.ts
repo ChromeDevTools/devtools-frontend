@@ -5,7 +5,7 @@
 import type * as SDKModule from '../../../../front_end/core/sdk/sdk.js';
 
 import {createTarget, describeWithEnvironment} from '../helpers/EnvironmentHelpers.js';
-import {describeWithMockConnection, dispatchEvent} from '../helpers/MockConnection.js';
+import {describeWithMockConnection, dispatchEvent, setMockConnectionResponseHandler} from '../helpers/MockConnection.js';
 
 const {assert} = chai;
 
@@ -51,6 +51,24 @@ describeWithMockConnection('DebuggerModel', () => {
       assert.strictEqual(debuggerModel?.createRawLocationByURL(url, 0)?.scriptId, '1');
       assert.strictEqual(debuggerModel?.createRawLocationByURL(url, 20, 1)?.scriptId, '2');
       assert.strictEqual(debuggerModel?.createRawLocationByURL(url, 5, 5), null);
+    });
+  });
+
+  describe('setBreakpointByURL', () => {
+    it('correctly sets only a single breakpoint in Node.js internal scripts', async () => {
+      // @ts-expect-error The parameter type for the callback is wrong.
+      setMockConnectionResponseHandler('Debugger.setBreakpointByUrl', ({url}) => {
+        if (url === 'fs.js') {
+          return {breakpointId: 'fs.js:1', locations: []};
+        }
+        return {breakpointId: 'unsupported', locations: []};
+      });
+
+      const target = createTarget();
+      target.markAsNodeJSForTest();
+      const model = new SDK.DebuggerModel.DebuggerModel(target);
+      const {breakpointId} = await model.setBreakpointByURL('fs.js', 1);
+      assert.strictEqual(breakpointId, 'fs.js:1');
     });
   });
 });

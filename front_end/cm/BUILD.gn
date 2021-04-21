@@ -9,7 +9,3 @@ devtools_entrypoint("cm") {
 
   deps = [ "../third_party/codemirror" ]
 }
-
-copy_to_gen("legacy_css") {
-  sources = [ "codemirror.css" ]
-}

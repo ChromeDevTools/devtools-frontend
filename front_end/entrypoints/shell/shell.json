@@ -8,7 +8,6 @@
     { "name": "ui/legacy", "type": "autostart" },
 
     { "name": "panels/changes" },
-    { "name": "cm" },
     { "name": "ui/legacy/components/color_picker" },
     { "name": "panels/console" },
     { "name": "panels/coverage" },

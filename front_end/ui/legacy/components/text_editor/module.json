@@ -1,9 +1,9 @@
 {
   "dependencies": [
-    "cm",
     "ui/legacy"
   ],
-    "resources": [
+  "resources": [
+    "../../../../third_party/codemirror/codemirror.css",
     "autocompleteTooltip.css",
     "cmdevtools.css",
     "cmdevtools.darkmode.css"

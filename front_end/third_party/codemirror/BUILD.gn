@@ -2,6 +2,7 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
+import("../../../scripts/build/ninja/copy.gni")
 import("../../../scripts/build/ninja/devtools_pre_built.gni")
 
 devtools_pre_built("codemirror") {
@@ -64,4 +65,8 @@ devtools_pre_built("codemirror") {
     "package/mode/xml/xml.d.ts",
     "package/mode/xml/xml.js",
   ]
+}
+
+copy_to_gen("legacy_css") {
+  sources = [ "codemirror.css" ]
 }

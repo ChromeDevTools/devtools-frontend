@@ -92,7 +92,7 @@ export class CodeMirrorTextEditor extends UI.Widget.VBox implements UI.TextEdito
     super();
     this._options = options;
 
-    this.registerRequiredCSS('cm/codemirror.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('third_party/codemirror/codemirror.css', {enableLegacyPatching: true});
     this.registerRequiredCSS('ui/legacy/components/text_editor/cmdevtools.css', {enableLegacyPatching: false});
     this.registerRequiredCSS('ui/legacy/components/text_editor/cmdevtools.darkmode.css', {enableLegacyPatching: false});
 

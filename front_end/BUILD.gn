@@ -70,7 +70,6 @@ group("front_end") {
 
 group("legacy_css") {
   public_deps = [
-    "cm:legacy_css",
     "entrypoints/inspector_main:legacy_css",
     "models/persistence:legacy_css",
     "panels/application:legacy_css",
@@ -79,6 +78,7 @@ group("legacy_css") {
     "panels/emulation:legacy_css",
     "panels/help:legacy_css",
     "panels/mobile_throttling:legacy_css",
+    "third_party/codemirror:legacy_css",
     "ui/legacy:legacy_css",
     "ui/legacy/components/data_grid:legacy_css",
     "ui/legacy/components/inline_editor:legacy_css",

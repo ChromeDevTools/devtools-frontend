@@ -56,7 +56,6 @@ describeWithMockConnection('DebuggerModel', () => {
 
   describe('setBreakpointByURL', () => {
     it('correctly sets only a single breakpoint in Node.js internal scripts', async () => {
-      // @ts-expect-error The parameter type for the callback is wrong.
       setMockConnectionResponseHandler('Debugger.setBreakpointByUrl', ({url}) => {
         if (url === 'fs.js') {
           return {breakpointId: 'fs.js:1', locations: []};

@@ -12,7 +12,7 @@ import type * as SDK from '../../../../front_end/core/sdk/sdk.js';
 type ProtocolCommand = keyof ProtocolMapping.Commands;
 type ProtocolCommandParams<C extends ProtocolCommand> = ProtocolMapping.Commands[C]['paramsType'];
 type ProtocolResponse<C extends ProtocolCommand> = ProtocolMapping.Commands[C]['returnType'];
-type ProtocolCommandHandler<C extends ProtocolCommand> = (params: ProtocolCommandParams<C>) =>
+type ProtocolCommandHandler<C extends ProtocolCommand> = (...params: ProtocolCommandParams<C>) =>
     Omit<ProtocolResponse<C>, 'getError'>;
 type MessageCallback = (result: string|Object) => void;
 
@@ -41,7 +41,7 @@ export function clearAllMockConnectionResponseHandlers() {
 }
 
 export function dispatchEvent<E extends keyof ProtocolMapping.Events>(
-    target: SDK.SDKModel.Target, event: E, payload: ProtocolMapping.Events[E][0]) {
+    target: SDK.SDKModel.Target, event: E, ...payload: ProtocolMapping.Events[E]) {
   const [domain, method] = event.split('.');
   if (!target._dispatchers[domain]) {
     throw new Error(`No dispatcher for domain "${domain}" on provided target`);
@@ -52,7 +52,7 @@ export function dispatchEvent<E extends keyof ProtocolMapping.Events>(
     target._dispatchers[domain].registerEvent(method, {});
   }
 
-  target._dispatchers[domain].dispatch(method, {method, params: payload});
+  target._dispatchers[domain].dispatch(method, {method, params: payload[0]});
 }
 
 function enable({reset = true} = {}) {

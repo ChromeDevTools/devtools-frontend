@@ -58,6 +58,16 @@ export async function getCustomComponentReportValues() {
   })));
 }
 
+export async function getTrimmedTextContent(selector: string) {
+  const elements = await $$(selector);
+  return Promise.all(elements.map(element => element.evaluate(e => {
+    return (e.textContent || '')
+        .trim()
+        .replace(/\n/gm, ' ')    // replace new line character with space
+        .replace(/\s+/gm, ' ');  // replace multiple spaces with single space
+  })));
+}
+
 export async function getFrameTreeTitles() {
   const treeTitles = await $$('[aria-label="Resources Section"] ~ ol .tree-element-title');
   return Promise.all(treeTitles.map(node => node.evaluate(e => e.textContent)));

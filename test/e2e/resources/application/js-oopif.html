@@ -1,0 +1,22 @@
+<!--
+  Copyright 2020 The Chromium Authors. All rights reserved.
+  Use of this source code is governed by a BSD-style license that can be
+  found in the LICENSE file.
+-->
+
+<html>
+  <body></body>
+  <script>
+    function first() {
+      second();
+    }
+
+    function second() {
+      const iframe = document.createElement("iframe");
+      iframe.setAttribute("src", `https://devtools.oopif.test:${document.location.port}/test/e2e/resources/application/iframe.html`);
+      document.body.appendChild(iframe);
+    }
+
+    first();
+  </script>
+</html>

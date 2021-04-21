@@ -565,7 +565,8 @@ export class ResourceTreeFrame {
   _secureContextType: Protocol.Page.SecureContextType|null;
   _crossOriginIsolatedContextType: Protocol.Page.CrossOriginIsolatedContextType|null;
   _gatedAPIFeatures: Protocol.Page.GatedAPIFeatures[]|null;
-  _creationStackTrace: Protocol.Runtime.StackTrace|null;
+  private creationStackTrace: Protocol.Runtime.StackTrace|null;
+  private creationStackTraceTarget: Target|null;
   _childFrames: Set<ResourceTreeFrame>;
   _resourcesMap: Map<string, Resource>;
   backForwardCacheDetails: {restoredFromCache: boolean|undefined} = {restoredFromCache: undefined};
@@ -590,7 +591,8 @@ export class ResourceTreeFrame {
     this._crossOriginIsolatedContextType = payload && payload.crossOriginIsolatedContextType;
     this._gatedAPIFeatures = payload && payload.gatedAPIFeatures;
 
-    this._creationStackTrace = creationStackTrace;
+    this.creationStackTrace = creationStackTrace;
+    this.creationStackTraceTarget = null;
 
     this._childFrames = new Set();
 
@@ -619,6 +621,14 @@ export class ResourceTreeFrame {
 
   getGatedAPIFeatures(): Protocol.Page.GatedAPIFeatures[]|null {
     return this._gatedAPIFeatures;
+  }
+
+  getCreationStackTraceData():
+      {creationStackTrace: Protocol.Runtime.StackTrace|null, creationStackTraceTarget: Target} {
+    return {
+      creationStackTrace: this.creationStackTrace,
+      creationStackTraceTarget: this.creationStackTraceTarget || this.resourceTreeModel().target(),
+    };
   }
 
   _navigate(framePayload: Protocol.Page.Frame): void {
@@ -881,6 +891,13 @@ export class ResourceTreeFrame {
       return null;
     }
     return response.states;
+  }
+
+  setCreationStackTraceFrom(frame: ResourceTreeFrame): void {
+    if (frame.creationStackTrace) {
+      this.creationStackTrace = frame.creationStackTrace;
+      this.creationStackTraceTarget = frame.resourceTreeModel().target();
+    }
   }
 }
 

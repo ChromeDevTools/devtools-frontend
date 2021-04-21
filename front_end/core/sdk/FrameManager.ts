@@ -87,6 +87,9 @@ export class FrameManager extends Common.ObjectWrapper.ObjectWrapper implements 
     const frameData = this._frames.get(frame.id);
     // If the frame is already in the map, increase its count, otherwise add it to the map.
     if (frameData) {
+      // In order to not lose frame creation stack trace information during
+      // an OOPIF transfer we need to copy it to the new frame
+      frame.setCreationStackTraceFrom(frameData.frame);
       this._frames.set(frame.id, {frame, count: frameData.count + 1});
     } else {
       this._frames.set(frame.id, {frame, count: 1});

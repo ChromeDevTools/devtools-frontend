@@ -11,6 +11,7 @@ copy_to_gen("application") {
     "dedicated-worker.js",
     "frame-tree.html",
     "iframe.html",
+    "js-oopif.html",
     "main-frame.html",
     "main.css",
     "service-worker-network.html",

@@ -685,7 +685,8 @@ export class FrameDetailsReportView extends HTMLElement {
   }
 
   private maybeRenderCreationStacktrace(): LitHtml.TemplateResult|{} {
-    if (this.frame && this.frame._creationStackTrace) {
+    const creationStackTraceData = this.frame?.getCreationStackTraceData();
+    if (creationStackTraceData && creationStackTraceData.creationStackTrace) {
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off
       return LitHtml.html`

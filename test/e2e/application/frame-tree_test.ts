@@ -6,14 +6,17 @@ import {assert} from 'chai';
 
 import {click, getBrowserAndPages, getTestServerPort, goToResource, pressKey, waitFor, waitForFunction} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {doubleClickSourceTreeItem, getCustomComponentReportValues, getFrameTreeTitles, getReportValues, navigateToApplicationTab} from '../helpers/application-helpers.js';
+import {doubleClickSourceTreeItem, getCustomComponentReportValues, getFrameTreeTitles, getReportValues, getTrimmedTextContent, navigateToApplicationTab} from '../helpers/application-helpers.js';
 
 const TOP_FRAME_SELECTOR = '[aria-label="top"]';
 const WEB_WORKERS_SELECTOR = '[aria-label="Web Workers"]';
 const SERVICE_WORKERS_SELECTOR = '[aria-label="top"] ~ ol [aria-label="Service Workers"]';
 const OPENED_WINDOWS_SELECTOR = '[aria-label="Opened Windows"]';
-const IFRAME_SELECTOR = '[aria-label="frameId (iframe.html)"]';
+const IFRAME_FRAME_ID_SELECTOR = '[aria-label="frameId (iframe.html)"]';
 const MAIN_FRAME_SELECTOR = '[aria-label="frameId (main-frame.html)"]';
+const IFRAME_SELECTOR = '[aria-label="iframe.html"]';
+const EXPAND_STACKTRACE_BUTTON_SELECTOR = '.arrow-icon-button';
+const STACKTRACE_ROW_SELECTOR = '.stack-trace-row';
 
 const getTrailingURL = (text: string): string => {
   const match = text.match(/http.*$/);
@@ -61,6 +64,26 @@ describe('The Application Tab', async () => {
         'accelerometer',
       ];
       return JSON.stringify(fieldValues) === JSON.stringify(expected);
+    });
+  });
+
+  it('shows stack traces for OOPIF', async () => {
+    const {target} = getBrowserAndPages();
+    await navigateToApplicationTab(target, 'js-oopif');
+    await waitForFunction(async () => {
+      await target.reload();
+      await click('#tab-resources');
+      await doubleClickSourceTreeItem(TOP_FRAME_SELECTOR);
+      await doubleClickSourceTreeItem(IFRAME_SELECTOR);
+      await waitFor(EXPAND_STACKTRACE_BUTTON_SELECTOR);
+      await click(EXPAND_STACKTRACE_BUTTON_SELECTOR);
+      const stackTraceRows = await getTrimmedTextContent(STACKTRACE_ROW_SELECTOR);
+      const expected = [
+        'second @ js-oopif.html:17',
+        'first @ js-oopif.html:11',
+        '(anonymous) @ js-oopif.html:20',
+      ];
+      return JSON.stringify(stackTraceRows) === JSON.stringify(expected);
     });
   });
 
@@ -137,7 +160,7 @@ describe('The Application Tab', async () => {
     await goToResource('application/main-frame.html');
     await click('#tab-resources');
     await doubleClickSourceTreeItem(TOP_FRAME_SELECTOR);
-    await doubleClickSourceTreeItem(IFRAME_SELECTOR);
+    await doubleClickSourceTreeItem(IFRAME_FRAME_ID_SELECTOR);
 
     // check iframe's URL after pageload
     await waitForFunction(async () => {

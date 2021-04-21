@@ -37,6 +37,7 @@ class MockResourceTreeFrame {
 
   isMainFrame = () => true;
   isTopFrame = () => true;
+  setCreationStackTraceFrom = () => {};
 }
 
 describe('FrameManager', () => {

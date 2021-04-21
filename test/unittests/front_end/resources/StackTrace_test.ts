@@ -46,24 +46,27 @@ describe('StackTrace', () => {
 
   it('generates rows from stack trace data', () => {
     const frame = makeFrame({
-      _creationStackTrace: {
-        callFrames: [
-          {
-            functionName: 'function1',
-            url: 'http://www.example.com/script1.js',
-            lineNumber: 15,
-            columnNumber: 10,
-            scriptId: 'someScriptId',
-          },
-          {
-            functionName: 'function2',
-            url: 'http://www.example.com/script2.js',
-            lineNumber: 20,
-            columnNumber: 5,
-            scriptId: 'someScriptId',
-          },
-        ],
-      },
+      getCreationStackTraceData: () => ({
+        creationStackTrace: {
+          callFrames: [
+            {
+              functionName: 'function1',
+              url: 'http://www.example.com/script1.js',
+              lineNumber: 15,
+              columnNumber: 10,
+              scriptId: 'someScriptId',
+            },
+            {
+              functionName: 'function2',
+              url: 'http://www.example.com/script2.js',
+              lineNumber: 20,
+              columnNumber: 5,
+              scriptId: 'someScriptId',
+            },
+          ],
+        },
+        creationStackTraceTarget: {} as SDK.SDKModel.Target,
+      }),
     });
     const component = new Resources.StackTrace.StackTrace();
     renderElementIntoDOM(component);
@@ -89,24 +92,27 @@ describe('StackTrace', () => {
 
   it('hides hidden rows behind "show all" button', () => {
     const frame = makeFrame({
-      _creationStackTrace: {
-        callFrames: [
-          {
-            functionName: 'function1',
-            url: 'http://www.example.com/script.js',
-            lineNumber: 15,
-            columnNumber: 10,
-            scriptId: 'someScriptId',
-          },
-          {
-            functionName: 'function2',
-            url: 'http://www.example.com/hidden.js',
-            lineNumber: 20,
-            columnNumber: 5,
-            scriptId: 'someScriptId',
-          },
-        ],
-      },
+      getCreationStackTraceData: () => ({
+        creationStackTrace: {
+          callFrames: [
+            {
+              functionName: 'function1',
+              url: 'http://www.example.com/script.js',
+              lineNumber: 15,
+              columnNumber: 10,
+              scriptId: 'someScriptId',
+            },
+            {
+              functionName: 'function2',
+              url: 'http://www.example.com/hidden.js',
+              lineNumber: 20,
+              columnNumber: 5,
+              scriptId: 'someScriptId',
+            },
+          ],
+        },
+        creationStackTraceTarget: {} as SDK.SDKModel.Target,
+      }),
     });
     const component = new Resources.StackTrace.StackTrace();
     renderElementIntoDOM(component);

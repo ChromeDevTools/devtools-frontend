@@ -12,15 +12,10 @@ template("node_action") {
     script = "//third_party/node/node.py"
 
     forward_variables_from(invoker,
+                           "*",
                            [
-                             "visibility",
-                             "deps",
-                             "public_deps",
-                             "outputs",
-                             "sources",
-                             "inputs",
-                             "testonly",
-                             "data",
+                             "args",
+                             "script",
                            ])
 
     _full_script_location = devtools_location_prepend + invoker.script

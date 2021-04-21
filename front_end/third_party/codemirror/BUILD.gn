@@ -3,6 +3,7 @@
 # found in the LICENSE file.
 
 import("../../../scripts/build/ninja/copy.gni")
+import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_pre_built.gni")
 
 devtools_pre_built("codemirror") {
@@ -69,4 +70,10 @@ devtools_pre_built("codemirror") {
 
 copy_to_gen("legacy_css") {
   sources = [ "codemirror.css" ]
+}
+
+devtools_entrypoint("bundle") {
+  entrypoint = "codemirror.ts"
+
+  deps = [ ":codemirror" ]
 }

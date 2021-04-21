@@ -5,7 +5,6 @@ ts_library("missing_entrypoints") {
   sources = [ "missing_entrypoints_test.ts" ]
 
   deps = [
-    "../../../../front_end/cm",
     "../../../../front_end/entrypoints/heap_snapshot_worker:bundle",
     "../../../../front_end/entrypoints/inspector_main:bundle",
     "../../../../front_end/entrypoints/main:bundle",

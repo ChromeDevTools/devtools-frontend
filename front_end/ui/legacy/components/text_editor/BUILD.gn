@@ -14,12 +14,12 @@ devtools_module("text_editor") {
   ]
 
   deps = [
-    "../../../../cm",
     "../../../../core/common:bundle",
     "../../../../core/host:bundle",
     "../../../../core/i18n:bundle",
     "../../../../core/platform:bundle",
     "../../../../models/text_utils:bundle",
+    "../../../../third_party/codemirror:bundle",
     "../../../../ui/legacy:bundle",
   ]
 }

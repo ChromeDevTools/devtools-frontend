@@ -631,7 +631,6 @@ export class ExecutionContext {
       objectGroup: options.objectGroup,
       includeCommandLineAPI: options.includeCommandLineAPI,
       silent: options.silent,
-      uniqueContextId: this.uniqueId,
       returnByValue: options.returnByValue,
       generatePreview: options.generatePreview,
       userGesture: userGesture,
@@ -641,6 +640,9 @@ export class ExecutionContext {
       disableBreaks: options.disableBreaks,
       replMode: options.replMode,
       allowUnsafeEvalBlockedByCSP: options.allowUnsafeEvalBlockedByCSP,
+      // Old back-ends don't know about uniqueContextId (and also don't generate
+      // one), so fall back to contextId in that case (https://crbug.com/1192621).
+      ...(this.uniqueId ? {uniqueContextId: this.uniqueId} : {contextId: this.id}),
     });
 
     const error = response.getError();

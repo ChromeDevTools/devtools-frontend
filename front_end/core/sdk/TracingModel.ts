@@ -193,7 +193,12 @@ export class TracingModel {
     // We do allow records for unrelated threads to arrive out-of-order,
     // so there's a chance we're getting records from the past.
     if (timestamp && (!this._minimumRecordTime || timestamp < this._minimumRecordTime) &&
-        (payload.ph === phase.Begin || payload.ph === phase.Complete || payload.ph === phase.Instant)) {
+        (payload.ph === phase.Begin || payload.ph === phase.Complete || payload.ph === phase.Instant) &&
+        // UMA related events are ignored when calculating the minimumRecordTime because they might
+        // be related to previous navigations that happened before the current trace started and
+        // will currently not be displayed anyways.
+        // See crbug.com/1201198
+        (!payload.name.endsWith('::UMA'))) {
       this._minimumRecordTime = timestamp;
     }
 

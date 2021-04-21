@@ -195,7 +195,7 @@ export class NetworkPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
 
   constructor() {
     super('network');
-    this.registerRequiredCSS('panels/network/networkPanel.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('panels/network/networkPanel.css', {enableLegacyPatching: false});
 
     this._networkLogShowOverviewSetting =
         Common.Settings.Settings.instance().createSetting('networkLogShowOverview', true);

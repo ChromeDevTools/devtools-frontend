@@ -14,7 +14,7 @@ const UIStrings = {
   /**
   *@description Label for number of affected resources indication in issue view
   */
-  nItems: '{n, plural, =1 { item} other { items}}',
+  nRequests: '{n, plural, =1 { request} other { requests}}',
   /**
   *@description Value for the status column in SharedArrayBuffer issues
   */
@@ -89,6 +89,7 @@ export class CorsIssueDetailsView extends AffectedResourcesView {
   constructor(parentView: IssueView, issue: AggregatedIssue) {
     super(parentView);
     this.issue = issue;
+    this.affectedResourcesCountElement.classList.add('cors-issue-affected-resource-label');
   }
 
   private appendStatus(element: HTMLElement, isWarning: boolean): void {
@@ -104,7 +105,7 @@ export class CorsIssueDetailsView extends AffectedResourcesView {
   }
 
   protected getResourceName(count: number): Platform.UIString.LocalizedString {
-    return i18nString(UIStrings.nItems, {n: count});
+    return i18nString(UIStrings.nRequests, {n: count});
   }
 
   private appendDetails(issueCode: string, issues: Iterable<IssuesManager.CorsIssue.CorsIssue>): void {
@@ -116,6 +117,8 @@ export class CorsIssueDetailsView extends AffectedResourcesView {
       this.appendColumnTitle(header, i18nString(UIStrings.header));
       this.appendColumnTitle(header, i18nString(UIStrings.problem));
       this.appendColumnTitle(header, i18nString(UIStrings.invalidValue));
+    } else if (issueCode === IssuesManager.CorsIssue.WildcardOriginWithCredentials) {
+      this.appendColumnTitle(header, i18nString(UIStrings.preflightRequestIfProblematic));
     } else {
       this.appendColumnTitle(header, i18nString(UIStrings.resourceAddressSpace));
       this.appendColumnTitle(header, i18nString(UIStrings.initiatorAddressSpace));
@@ -181,6 +184,7 @@ export class CorsIssueDetailsView extends AffectedResourcesView {
     const details = issue.details();
     element.appendChild(this.createRequestCell(details.request));
     this.appendStatus(element, details.isWarning);
+
     const corsError = details.corsErrorStatus.corsError;
     if (issueCode === IssuesManager.CorsIssue.InvalidHeaders) {
       if (corsError.includes('Preflight')) {
@@ -191,6 +195,12 @@ export class CorsIssueDetailsView extends AffectedResourcesView {
       this.appendIssueDetailCell(element, CorsIssueDetailsView.getHeaderFromError(corsError), 'code-example');
       this.appendIssueDetailCell(element, CorsIssueDetailsView.getProblemFromError(details.corsErrorStatus));
       this.appendIssueDetailCell(element, details.corsErrorStatus.failedParameter, 'code-example');
+    } else if (issueCode === IssuesManager.CorsIssue.WildcardOriginWithCredentials) {
+      if (corsError.includes('Preflight')) {
+        element.appendChild(this.createRequestCell(details.request, {linkToPreflight: true}));
+      } else {
+        this.appendIssueDetailCell(element, '');
+      }
     } else {
       this.appendIssueDetailCell(element, details.resourceIPAddressSpace ?? '');
       this.appendIssueDetailCell(element, details.clientSecurityState?.initiatorIPAddressSpace ?? '');

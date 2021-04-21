@@ -58,7 +58,7 @@ export const extractShortPath = (path: string): string => {
  */
 export abstract class AffectedResourcesView extends UI.TreeOutline.TreeElement {
   private readonly parentView: IssueView;
-  private affectedResourcesCountElement: HTMLElement;
+  protected affectedResourcesCountElement: HTMLElement;
   protected affectedResources: HTMLElement;
   private affectedResourcesCount: number;
   private networkListener: Common.EventTarget.EventDescriptor|null;

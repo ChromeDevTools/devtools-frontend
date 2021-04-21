@@ -24,6 +24,8 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export const InvalidHeaders =
     [Protocol.Audits.InspectorIssueCode.CorsIssue, 'InvalidAccessControlAllowPreflightResponse'].join('::');
+export const WildcardOriginWithCredentials =
+    [Protocol.Audits.InspectorIssueCode.CorsIssue, 'WildcardOriginWithCredentials'].join('::');
 
 function getIssueCode(issueDetails: Protocol.Audits.CorsIssueDetails): string {
   switch (issueDetails.corsErrorStatus.corsError) {
@@ -36,6 +38,9 @@ function getIssueCode(issueDetails: Protocol.Audits.CorsIssueDetails): string {
     case Protocol.Network.CorsError.MultipleAllowOriginValues:
     case Protocol.Network.CorsError.InvalidAllowOriginValue:
       return InvalidHeaders;
+    case Protocol.Network.CorsError.PreflightWildcardOriginNotAllowed:
+    case Protocol.Network.CorsError.WildcardOriginNotAllowed:
+      return WildcardOriginWithCredentials;
     default:
       return [Protocol.Audits.InspectorIssueCode.CorsIssue, issueDetails.corsErrorStatus.corsError].join('::');
   }
@@ -84,14 +89,22 @@ export class CorsIssue extends Issue {
             linkTitle: i18nString(UIStrings.CORS),
           }],
         };
-      case Protocol.Network.CorsError.DisallowedByMode:
+      case Protocol.Network.CorsError.PreflightWildcardOriginNotAllowed:
       case Protocol.Network.CorsError.WildcardOriginNotAllowed:
+        return {
+          file: 'corsWildcardOriginNotAllowed.md',
+          substitutions: undefined,
+          links: [{
+            link: 'https://web.dev/cross-origin-resource-sharing',
+            linkTitle: i18nString(UIStrings.CORS),
+          }],
+        };
+      case Protocol.Network.CorsError.DisallowedByMode:
       case Protocol.Network.CorsError.AllowOriginMismatch:
       case Protocol.Network.CorsError.InvalidAllowCredentials:
       case Protocol.Network.CorsError.CorsDisabledScheme:
       case Protocol.Network.CorsError.PreflightInvalidStatus:
       case Protocol.Network.CorsError.PreflightDisallowedRedirect:
-      case Protocol.Network.CorsError.PreflightWildcardOriginNotAllowed:
       case Protocol.Network.CorsError.PreflightAllowOriginMismatch:
       case Protocol.Network.CorsError.PreflightInvalidAllowCredentials:
       case Protocol.Network.CorsError.MethodDisallowedByPreflightResponse:

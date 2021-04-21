@@ -510,9 +510,13 @@ export const getPendingEvents = function(frontend: puppeteer.Page, eventType: st
   }, eventType);
 };
 
+export const hasClass = async(element: puppeteer.ElementHandle<Element>, classname: string): Promise<boolean> => {
+  return await element.evaluate((el, classname) => el.classList.contains(classname), classname);
+};
+
 export const waitForClass = async(element: puppeteer.ElementHandle<Element>, classname: string): Promise<void> => {
   await waitForFunction(async () => {
-    return await element.evaluate((el, classname) => el.classList.contains(classname), classname);
+    return hasClass(element, classname);
   });
 };
 

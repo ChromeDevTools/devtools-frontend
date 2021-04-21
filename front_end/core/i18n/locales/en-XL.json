@@ -5021,8 +5021,8 @@
   "panels/issues/CorsIssueDetailsView.ts | invalidValue": {
     "message": "Îńv̂ál̂íd̂ V́âĺûé (îf́ âv́âíl̂áb̂ĺê)"
   },
-  "panels/issues/CorsIssueDetailsView.ts | nItems": {
-    "message": "{n, plural, =1 { ît́êḿ} other { ît́êḿŝ}}"
+  "panels/issues/CorsIssueDetailsView.ts | nRequests": {
+    "message": "{n, plural, =1 { r̂éq̂úêśt̂} other { ŕêq́ûéŝt́ŝ}}"
   },
   "panels/issues/CorsIssueDetailsView.ts | preflightRequestIfProblematic": {
     "message": "P̂ŕêf́l̂íĝh́t̂ Ŕêq́ûéŝt́ (îf́ p̂ŕôb́l̂ém̂át̂íĉ)"

@@ -5,7 +5,7 @@
 import {assert} from 'chai';
 import * as puppeteer from 'puppeteer';
 
-import {$$, click, waitFor, waitForClass, waitForFunction} from '../../shared/helper.js';
+import {$$, click, hasClass, waitFor, waitForClass, waitForFunction} from '../../shared/helper.js';
 import {openPanelViaMoreTools} from './settings-helpers';
 
 export const CATEGORY = '.issue-category';
@@ -87,9 +87,10 @@ interface IssueResourceSection {
 }
 
 export async function getResourcesElement(
-    resourceName: string, issueElement?: puppeteer.ElementHandle<Element>|undefined): Promise<IssueResourceSection> {
+    resourceName: string, issueElement?: puppeteer.ElementHandle<Element>|undefined,
+    className?: string): Promise<IssueResourceSection> {
   return await waitForFunction(async () => {
-    const elements = await $$(RESOURCES_LABEL, issueElement);
+    const elements = await $$(className ?? RESOURCES_LABEL, issueElement);
     for (const el of elements) {
       const text = await el.evaluate(el => el.textContent);
       if (text && text.includes(resourceName)) {
@@ -101,11 +102,14 @@ export async function getResourcesElement(
   });
 }
 
-export async function expandResourceSection(section: IssueResourceSection) {
+export async function ensureResourceSectionIsExpanded(section: IssueResourceSection) {
   await section.label.evaluate(el => {
     el.scrollIntoView();
   });
-  await section.label.click();
+  const isExpanded = await hasClass(section.content, 'expanded');
+  if (!isExpanded) {
+    await section.label.click();
+  }
   await waitForClass(section.content, 'expanded');
 }
 

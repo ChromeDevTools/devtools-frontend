@@ -6,7 +6,7 @@ import {assert} from 'chai';
 
 import {goToResource} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {expandIssue, expandResourceSection, extractTableFromResourceSection, getIssueByTitle, getResourcesElement, navigateToIssuesTab} from '../helpers/issues-helpers.js';
+import {ensureResourceSectionIsExpanded, expandIssue, extractTableFromResourceSection, getIssueByTitle, getResourcesElement, navigateToIssuesTab} from '../helpers/issues-helpers.js';
 
 describe('SAB issues test', async () => {
   beforeEach(async () => {
@@ -23,7 +23,7 @@ describe('SAB issues test', async () => {
       const text = await section.label.evaluate(el => el.textContent);
       // TODO(crbug.com/1189877): Remove 2nd space after fixing l10n presubmit check
       assert.strictEqual(text, '2  violations');
-      await expandResourceSection(section);
+      await ensureResourceSectionIsExpanded(section);
       const table = await extractTableFromResourceSection(section.content);
       assert.isNotNull(table);
       if (table) {

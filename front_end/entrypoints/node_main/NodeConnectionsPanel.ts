@@ -4,10 +4,10 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import type * as Common from '../core/common/common.js';
-import * as Host from '../core/host/host.js';
-import * as i18n from '../core/i18n/i18n.js';
-import * as UI from '../ui/legacy/legacy.js';
+import type * as Common from '../../core/common/common.js';
+import * as Host from '../../core/host/host.js';
+import * as i18n from '../../core/i18n/i18n.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
 const UIStrings = {
   /**
@@ -33,7 +33,7 @@ const UIStrings = {
   */
   networkAddressEgLocalhost: 'Network address (e.g. localhost:9229)',
 };
-const str_ = i18n.i18n.registerUIStrings('node_main/NodeConnectionsPanel.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('entrypoints/node_main/NodeConnectionsPanel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 let nodeConnectionsPanelInstance: NodeConnectionsPanel;
@@ -43,7 +43,7 @@ export class NodeConnectionsPanel extends UI.Panel.Panel {
   _networkDiscoveryView: NodeConnectionsView;
   private constructor() {
     super('node-connection');
-    this.registerRequiredCSS('node_main/nodeConnectionsPanel.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('entrypoints/node_main/nodeConnectionsPanel.css', {enableLegacyPatching: false});
     this.contentElement.classList.add('node-panel');
 
     const container = this.contentElement.createChild('div', 'node-panel-center');
@@ -104,7 +104,7 @@ export class NodeConnectionsView extends UI.Widget.VBox implements UI.ListWidget
         i18n.i18n.getFormatLocalizedString(str_, UIStrings.specifyNetworkEndpointAnd, {PH1: documentationLink}));
 
     this._list = new UI.ListWidget.ListWidget(this);
-    this._list.registerRequiredCSS('node_main/nodeConnectionsPanel.css', {enableLegacyPatching: false});
+    this._list.registerRequiredCSS('entrypoints/node_main/nodeConnectionsPanel.css', {enableLegacyPatching: false});
     this._list.element.classList.add('network-discovery-list');
     const placeholder = document.createElement('div');
     placeholder.classList.add('network-discovery-list-empty');

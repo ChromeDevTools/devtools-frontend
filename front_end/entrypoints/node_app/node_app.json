@@ -1,6 +1,6 @@
 {
   "modules" : [
-    { "name": "node_main", "type": "autostart" },
+    { "name": "entrypoints/node_main", "type": "autostart" },
     { "name": "panels/js_profiler" }
   ],
   "extends": "shell"

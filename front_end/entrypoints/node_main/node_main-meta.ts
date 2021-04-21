@@ -2,9 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as i18n from '../core/i18n/i18n.js';
-import * as Root from '../core/root/root.js';
-import * as UI from '../ui/legacy/legacy.js';
+import * as i18n from '../../core/i18n/i18n.js';
+import * as Root from '../../core/root/root.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
 // eslint-disable-next-line rulesdir/es_modules_import
 import type * as NodeMain from './node_main.js';
@@ -24,7 +24,7 @@ const UIStrings = {
   showConnection: 'Show Connection',
 };
 
-const str_ = i18n.i18n.registerUIStrings('node_main/node_main-meta.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('entrypoints/node_main/node_main-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 let loadedNodeMainModule: (typeof NodeMain|undefined);
@@ -32,7 +32,7 @@ let loadedNodeMainModule: (typeof NodeMain|undefined);
 async function loadNodeMainModule(): Promise<typeof NodeMain> {
   if (!loadedNodeMainModule) {
     // Side-effect import resources in module.json
-    await Root.Runtime.Runtime.instance().loadModulePromise('node_main');
+    await Root.Runtime.Runtime.instance().loadModulePromise('entrypoints/node_main');
     loadedNodeMainModule = await import('./node_main.js');
   }
   return loadedNodeMainModule;

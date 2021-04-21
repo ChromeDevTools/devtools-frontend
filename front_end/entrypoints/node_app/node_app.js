@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 import '../shell/shell.js';
 import '../../panels/js_profiler/js_profiler-meta.js';
-import '../../node_main/node_main-meta.js';
+import '../node_main/node_main-meta.js';
 import './node_app-meta.js';
 import * as Startup from '../startup/startup.js';  // eslint-disable-line rulesdir/es_modules_import
 

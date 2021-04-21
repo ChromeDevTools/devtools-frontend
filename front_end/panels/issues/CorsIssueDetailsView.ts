@@ -56,6 +56,10 @@ const UIStrings = {
   */
   preflightRequestIfProblematic: 'Preflight Request (if problematic)',
   /**
+  *@description Title for a column in the affected resources for a CORS issue showing a link to the associated preflight request.
+  */
+  preflightRequest: 'Preflight Request',
+  /**
   *@description Title for a column in the affected resources for a CORS issue showing the name of the problematic HTTP response header.
   */
   header: 'Header',
@@ -79,6 +83,14 @@ const UIStrings = {
   *@description Content for the problem column in the affected resources table for a CORS issue that indicates that a response header contained an invalid value.
   */
   problemInvalidValue: 'Invalid Value',
+  /**
+  *@description Content for the problem column in the affected resources table for a CORS issue that indicates that the response to the preflight request was a redirect.
+  */
+  preflightDisallowedRedirect: 'Response to preflight was a redirect',
+  /**
+  *@description Content for the problem column in the affected resources table for a CORS issue that indicates that the HTTP status the preflight request was not successful.
+  */
+  preflightInvalidStatus: 'HTTP status of preflight request didn\'t indicate success',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/issues/CorsIssueDetailsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -119,6 +131,9 @@ export class CorsIssueDetailsView extends AffectedResourcesView {
       this.appendColumnTitle(header, i18nString(UIStrings.invalidValue));
     } else if (issueCode === IssuesManager.CorsIssue.WildcardOriginWithCredentials) {
       this.appendColumnTitle(header, i18nString(UIStrings.preflightRequestIfProblematic));
+    } else if (issueCode === IssuesManager.CorsIssue.PreflightResponseInvalid) {
+      this.appendColumnTitle(header, i18nString(UIStrings.preflightRequest));
+      this.appendColumnTitle(header, i18nString(UIStrings.problem));
     } else {
       this.appendColumnTitle(header, i18nString(UIStrings.resourceAddressSpace));
       this.appendColumnTitle(header, i18nString(UIStrings.initiatorAddressSpace));
@@ -173,6 +188,10 @@ export class CorsIssueDetailsView extends AffectedResourcesView {
       case Protocol.Network.CorsError.MissingAllowOriginHeader:
       case Protocol.Network.CorsError.PreflightMissingAllowOriginHeader:
         return i18nString(UIStrings.problemMissingHeader);
+      case Protocol.Network.CorsError.PreflightInvalidStatus:
+        return i18nString(UIStrings.preflightInvalidStatus);
+      case Protocol.Network.CorsError.PreflightDisallowedRedirect:
+        return i18nString(UIStrings.preflightDisallowedRedirect);
     }
     throw new Error('Invalid Argument');
   }
@@ -201,6 +220,9 @@ export class CorsIssueDetailsView extends AffectedResourcesView {
       } else {
         this.appendIssueDetailCell(element, '');
       }
+    } else if (issueCode === IssuesManager.CorsIssue.PreflightResponseInvalid) {
+      element.appendChild(this.createRequestCell(details.request, {linkToPreflight: true}));
+      this.appendIssueDetailCell(element, CorsIssueDetailsView.getProblemFromError(details.corsErrorStatus));
     } else {
       this.appendIssueDetailCell(element, details.resourceIPAddressSpace ?? '');
       this.appendIssueDetailCell(element, details.clientSecurityState?.initiatorIPAddressSpace ?? '');

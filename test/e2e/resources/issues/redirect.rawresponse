@@ -1,0 +1,11 @@
+301
+date: Wed, 21 Apr 2021 08:09:10 GMT
+content-type: text/plain; charset=utf-8
+content-length: 52
+x-powered-by: Express
+access-control-allow-origin: *
+access-control-allow-headers: Content-Type, Authorization, Content-Length, X-Requested-With, x-powered-by
+location: /invalid-preflight
+vary: Accept
+
+Moved Permanently. Redirecting to /invalid-preflight

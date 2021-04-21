@@ -8,7 +8,9 @@ copy_to_gen("issues") {
   sources = [
     "corp-frame.rawresponse",
     "cors-issue.html",
+    "invalid-response-code.rawresponse",
     "origin-wildcard.rawresponse",
+    "redirect.rawresponse",
     "sab-issue.rawresponse",
   ]
 }

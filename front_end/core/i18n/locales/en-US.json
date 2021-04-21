@@ -4967,6 +4967,15 @@
   "panels/issues/CorsIssueDetailsView.ts | nRequests": {
     "message": "{n, plural, =1 { request} other { requests}}"
   },
+  "panels/issues/CorsIssueDetailsView.ts | preflightDisallowedRedirect": {
+    "message": "Response to preflight was a redirect"
+  },
+  "panels/issues/CorsIssueDetailsView.ts | preflightInvalidStatus": {
+    "message": "HTTP status of preflight request didn't indicate success"
+  },
+  "panels/issues/CorsIssueDetailsView.ts | preflightRequest": {
+    "message": "Preflight Request"
+  },
   "panels/issues/CorsIssueDetailsView.ts | preflightRequestIfProblematic": {
     "message": "Preflight Request (if problematic)"
   },

@@ -4967,6 +4967,15 @@
   "panels/issues/CorsIssueDetailsView.ts | nRequests": {
     "message": "{n, plural, =1 { r̂éq̂úêśt̂} other { ŕêq́ûéŝt́ŝ}}"
   },
+  "panels/issues/CorsIssueDetailsView.ts | preflightDisallowedRedirect": {
+    "message": "R̂éŝṕôńŝé t̂ó p̂ŕêf́l̂íĝh́t̂ ẃâś â ŕêd́îŕêćt̂"
+  },
+  "panels/issues/CorsIssueDetailsView.ts | preflightInvalidStatus": {
+    "message": "ĤT́T̂Ṕ ŝt́ât́ûś ôf́ p̂ŕêf́l̂íĝh́t̂ ŕêq́ûéŝt́ d̂íd̂ń't̂ ín̂d́îćât́ê śûćĉéŝś"
+  },
+  "panels/issues/CorsIssueDetailsView.ts | preflightRequest": {
+    "message": "P̂ŕêf́l̂íĝh́t̂ Ŕêq́ûéŝt́"
+  },
   "panels/issues/CorsIssueDetailsView.ts | preflightRequestIfProblematic": {
     "message": "P̂ŕêf́l̂íĝh́t̂ Ŕêq́ûéŝt́ (îf́ p̂ŕôb́l̂ém̂át̂íĉ)"
   },

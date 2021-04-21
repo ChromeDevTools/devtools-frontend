@@ -18,11 +18,11 @@ export class Importer {
 
     log.entries.sort((a, b) => a.startedDateTime.valueOf() - b.startedDateTime.valueOf());
 
-    const pageLoads = new Map<string, SDK.NetworkLog.PageLoad>();
+    const pageLoads = new Map<string, SDK.PageLoad.PageLoad>();
     const requests: SDK.NetworkRequest.NetworkRequest[] = [];
     for (const entry of log.entries) {
       const pageref = entry.pageref;
-      let pageLoad: SDK.NetworkLog.PageLoad|(SDK.NetworkLog.PageLoad | undefined) =
+      let pageLoad: SDK.PageLoad.PageLoad|(SDK.PageLoad.PageLoad | undefined) =
           pageref ? pageLoads.get(pageref) : undefined;
       const documentURL = pageLoad ? pageLoad.mainRequest.url() : entry.request.url;
 
@@ -56,8 +56,8 @@ export class Importer {
     return requests;
   }
 
-  static _buildPageLoad(page: HARPage, mainRequest: SDK.NetworkRequest.NetworkRequest): SDK.NetworkLog.PageLoad {
-    const pageLoad = new SDK.NetworkLog.PageLoad(mainRequest);
+  static _buildPageLoad(page: HARPage, mainRequest: SDK.NetworkRequest.NetworkRequest): SDK.PageLoad.PageLoad {
+    const pageLoad = new SDK.PageLoad.PageLoad(mainRequest);
     pageLoad.startTime = page.startedDateTime.valueOf();
     pageLoad.contentLoadTime = Number(page.pageTimings.onContentLoad) * 1000;
     pageLoad.loadTime = Number(page.pageTimings.onLoad) * 1000;
@@ -65,7 +65,7 @@ export class Importer {
   }
 
   static _fillRequestFromHAREntry(
-      request: SDK.NetworkRequest.NetworkRequest, entry: HAREntry, pageLoad: SDK.NetworkLog.PageLoad|undefined): void {
+      request: SDK.NetworkRequest.NetworkRequest, entry: HAREntry, pageLoad: SDK.PageLoad.PageLoad|undefined): void {
     // Request data.
     if (entry.request.postData) {
       request.setRequestFormData(true, entry.request.postData.text);
@@ -158,7 +158,7 @@ export class Importer {
 
   static _getResourceType(
       request: SDK.NetworkRequest.NetworkRequest, entry: HAREntry,
-      pageLoad: SDK.NetworkLog.PageLoad|undefined): Common.ResourceType.ResourceType {
+      pageLoad: SDK.PageLoad.PageLoad|undefined): Common.ResourceType.ResourceType {
     const customResourceTypeName = entry.customAsString('resourceType');
     if (customResourceTypeName) {
       const customResourceType = Common.ResourceType.ResourceType.fromName(customResourceTypeName);

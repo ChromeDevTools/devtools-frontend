@@ -843,7 +843,7 @@ export class NetworkRequestNode extends NetworkNode {
   }
 
   isNavigationRequest(): boolean {
-    const pageLoad = SDK.NetworkLog.PageLoad.forRequest(this._request);
+    const pageLoad = SDK.PageLoad.PageLoad.forRequest(this._request);
     return pageLoad ? pageLoad.mainRequest === this._request : false;
   }
 

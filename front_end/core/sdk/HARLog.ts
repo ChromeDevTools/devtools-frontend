@@ -39,8 +39,8 @@
 import * as Common from '../common/common.js';
 
 import {Cookie} from './Cookie.js';                  // eslint-disable-line no-unused-vars
-import {PageLoad} from './NetworkLog.js';            // eslint-disable-line no-unused-vars
 import {NetworkRequest} from './NetworkRequest.js';  // eslint-disable-line no-unused-vars
+import {PageLoad} from './PageLoad.js';
 
 export class HARLog {
   static pseudoWallTime(request: NetworkRequest, monotonicTime: number): Date {

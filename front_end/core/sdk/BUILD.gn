@@ -48,6 +48,7 @@ devtools_module("sdk") {
     "OverlayColorGenerator.ts",
     "OverlayModel.ts",
     "OverlayPersistentHighlighter.ts",
+    "PageLoad.ts",
     "PageResourceLoader.ts",
     "PaintProfiler.ts",
     "PerformanceMetricsModel.ts",

@@ -431,9 +431,6 @@
   "core/sdk/NetworkLog.ts | anonymous": {
     "message": "<âńôńŷḿôúŝ>"
   },
-  "core/sdk/NetworkLog.ts | considerDisablingSWhileDebugging": {
-    "message": "Ĉón̂śîd́êŕ d̂íŝáb̂ĺîńĝ {PH1} ẃĥíl̂é d̂éb̂úĝǵîńĝ. F́ôŕ m̂ór̂é îńf̂ó ŝéê: {PH2}"
-  },
   "core/sdk/NetworkManager.ts | crossoriginReadBlockingCorb": {
     "message": "Ĉŕôśŝ-Ór̂íĝín̂ Ŕêád̂ B́l̂óĉḱîńĝ (ĆÔŔB̂) b́l̂óĉḱêd́ ĉŕôśŝ-ór̂íĝín̂ ŕêśp̂ón̂śê {PH1} ẃît́ĥ ḾÎḾÊ t́ŷṕê {PH2}. Śêé ĥt́t̂ṕŝ://ẃŵẃ.ĉh́r̂óm̂éŝt́ât́ûś.ĉóm̂/f́êát̂úr̂é/5629709824032768 f̂ór̂ ḿôŕê d́êt́âíl̂ś."
   },
@@ -556,6 +553,9 @@
   },
   "core/sdk/OverlayModel.ts | pausedInDebugger": {
     "message": "P̂áûśêd́ îń d̂éb̂úĝǵêŕ"
+  },
+  "core/sdk/PageLoad.ts | considerDisablingSWhileDebugging": {
+    "message": "Ĉón̂śîd́êŕ d̂íŝáb̂ĺîńĝ {PH1} ẃĥíl̂é d̂éb̂úĝǵîńĝ. F́ôŕ m̂ór̂é îńf̂ó ŝéê: {PH2}"
   },
   "core/sdk/PageResourceLoader.ts | loadCanceledDueToLoadTimeout": {
     "message": "L̂óâd́ ĉán̂ćêĺêd́ d̂úê t́ô ĺôád̂ t́îḿêóût́"

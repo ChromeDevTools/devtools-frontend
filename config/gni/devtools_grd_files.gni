@@ -557,6 +557,7 @@ grd_files_debug_sources = [
   "front_end/core/sdk/OverlayColorGenerator.js",
   "front_end/core/sdk/OverlayModel.js",
   "front_end/core/sdk/OverlayPersistentHighlighter.js",
+  "front_end/core/sdk/PageLoad.js",
   "front_end/core/sdk/PageResourceLoader.js",
   "front_end/core/sdk/PaintProfiler.js",
   "front_end/core/sdk/PerformanceMetricsModel.js",

@@ -88,7 +88,10 @@ export const linkifyNodeReference = function(
 
   decorateNodeLabel(node, link, options.tooltip);
 
-  link.addEventListener('click', () => Common.Revealer.reveal(node, false) && false, false);
+  link.addEventListener('click', () => {
+    Common.Revealer.reveal(node, false);
+    return false;
+  }, false);
   link.addEventListener('mouseover', node.highlight.bind(node, undefined), false);
   link.addEventListener('mouseleave', () => SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight(), false);
 

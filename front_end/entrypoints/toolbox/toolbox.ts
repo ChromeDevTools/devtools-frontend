@@ -11,6 +11,7 @@ function toolboxLoaded(): void {
   if (!window.opener) {
     return;
   }
+  // @ts-ignore TypeScript doesn't know about `Emulation` on `Window`.
   const app = window.opener.Emulation.AdvancedApp._instance();
   app.toolboxLoaded(document);
 }

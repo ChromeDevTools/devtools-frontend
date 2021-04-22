@@ -233,7 +233,7 @@ export class Layers3DView extends UI.Widget.VBox implements LayerView {
     }
     if (selection.layer()) {
       const promise = selection.layer().snapshots()[0];
-      if (promise) {
+      if (promise !== undefined) {
         return promise;
       }
     }

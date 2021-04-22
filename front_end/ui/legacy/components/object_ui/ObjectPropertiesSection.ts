@@ -488,7 +488,10 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
     function didGetDetails(response: SDK.DebuggerModel.FunctionDetails|null): void {
       if (linkify && response && response.location) {
         element.classList.add('linkified');
-        element.addEventListener('click', () => Common.Revealer.reveal(response.location) && false);
+        element.addEventListener('click', () => {
+          Common.Revealer.reveal(response.location);
+          return false;
+        });
       }
 
       // The includePreview flag is false for formats such as console.dir().

@@ -191,7 +191,7 @@ export class ShortcutRegistry {
 
     if (this._activePrefixTimeout) {
       clearTimeout(this._activePrefixTimeout);
-      const handled = maybeExecuteActionForKey.call(this);
+      const handled = await maybeExecuteActionForKey.call(this);
       this._activePrefixKey = null;
       this._activePrefixTimeout = null;
       if (handled) {

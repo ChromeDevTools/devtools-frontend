@@ -185,7 +185,7 @@ export function isNumber(type: ValueType): boolean {
   }
 }
 
-export function getPointerAddress(type: ValueType, buffer: ArrayBuffer, endianness: Endianness): number|BigInt {
+export function getPointerAddress(type: ValueType, buffer: ArrayBuffer, endianness: Endianness): number|bigint {
   if (!isPointer(type)) {
     console.error(`Requesting address of a non-pointer type: ${type}.\n`);
     return NaN;

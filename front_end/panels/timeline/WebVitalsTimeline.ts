@@ -360,10 +360,12 @@ export class WebVitalsTimeline extends HTMLElement {
             <td><span class="good"></span></td>
             <td>${i18nString(UIStrings.good)}</td>
             <td>
-              < ${Number.millisToString(FCP_GOOD_TIMING)}</td> </tr> <tr>
+              ≤ ${Number.millisToString(FCP_GOOD_TIMING)}</td>
+          </tr>
+          <tr>
             <td><span class="medium"></span></td>
             <td>${i18nString(UIStrings.needsImprovement)}</td>
-            <td>${Number.millisToString(FCP_GOOD_TIMING)} - ${Number.millisToString(FCP_MEDIUM_TIMING)}</td>
+            <td></td>
           </tr>
           <tr>
             <td><span class="bad"></span></td>
@@ -386,10 +388,12 @@ export class WebVitalsTimeline extends HTMLElement {
             <td><span class="good"></span></td>
             <td>${i18nString(UIStrings.good)}</td>
             <td>
-              < ${Number.millisToString(LCP_GOOD_TIMING)}</td> </tr> <tr>
+            ≤ ${Number.millisToString(LCP_GOOD_TIMING)}</td>
+          </tr>
+          <tr>
             <td><span class="medium"></span></td>
             <td>${i18nString(UIStrings.needsImprovement)}</td>
-            <td>${Number.millisToString(LCP_GOOD_TIMING)} - ${Number.millisToString(LCP_MEDIUM_TIMING)}</td>
+            <td></td>
           </tr>
           <tr>
             <td><span class="bad"></span></td>
@@ -416,7 +420,7 @@ export class WebVitalsTimeline extends HTMLElement {
             <tr>
               <td><span class="good"></span></td>
               <td>${i18nString(UIStrings.good)}</td>
-              <td>0 - ${Number.millisToString(LONG_TASK_THRESHOLD)}</td>
+              <td>≤ ${Number.millisToString(LONG_TASK_THRESHOLD)}</td>
             </tr>
             <tr>
               <td><span class="bad"></span></td>

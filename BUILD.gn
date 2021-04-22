@@ -5,10 +5,8 @@
 import("//build/config/python.gni")
 
 import("./config/gni/all_devtools_files.gni")
-import("./config/gni/all_devtools_modules.gni")
 import("./config/gni/devtools_grd_files.gni")
 import("./config/gni/devtools_image_files.gni")
-import("./config/gni/devtools_module_entrypoints.gni")
 import("./front_end/emulated_devices/optimized/optimized_images.gni")
 import("./scripts/build/ninja/vars.gni")
 import("./third_party/blink/public/public_features.gni")
@@ -64,23 +62,7 @@ devtools_test_files = [
   "front_end/legacy_test_runner/sources_test_runner/SourcesTestRunner.js",
 ]
 
-devtools_embedder_scripts = [
-  "devtools_compatibility.js",
-  "Tests.js",
-]
-
 application_templates = [ "front_end/entrypoint_template.html" ]
-
-generated_applications_html = [
-  "devtools_app.html",
-  "inspector.html",
-  "integration_test_runner.html",
-  "js_app.html",
-  "ndb_app.html",
-  "node_app.html",
-  "toolbox.html",
-  "worker_app.html",
-]
 
 devtools_applications = [
   "devtools_app",
@@ -203,16 +185,16 @@ action("assert_grd") {
   outputs = [ "$target_gen_dir/assert_grd.stamp" ]
 }
 
+_expected_grd_files = []
+_expected_grd_files += grd_files_release_sources
+if (is_debug) {
+  _expected_grd_files += grd_files_debug_sources
+}
+
 generated_file("expected_grd_files") {
   outputs = [ "$target_gen_dir/expected_grd_files.json" ]
 
-  _expected_files = []
-  _expected_files += grd_files_release_sources
-  if (is_debug) {
-    _expected_files += grd_files_debug_sources
-  }
-
-  contents = _expected_files
+  contents = _expected_grd_files
 
   output_conversion = "json"
 }
@@ -236,53 +218,12 @@ action("generate_devtools_grd") {
 
   deps = [ ":devtools_frontend_resources" ]
 
-  _grd_files = []
-  _unique_frontend_files =
-      generated_applications_html + applications_js +
-      non_autostart_non_remote_modules + devtools_embedder_scripts +
-      optimized_emulated_device_images + copied_devtools_locale_files +
-      copied_devtools_issue_description_files +
-      devtools_module_entrypoint_sources
-
-  if (is_debug) {
-    _unique_frontend_files += all_typescript_module_sources
+  inputs = []
+  foreach(_grd_file, _expected_grd_files) {
+    inputs += [ "$target_gen_dir/$_grd_file" ]
   }
 
-  foreach(_input_file, _unique_frontend_files) {
-    _grd_files += [ "$target_gen_dir/front_end/$_input_file" ]
-  }
-
-  inputs = _grd_files + front_end_image_files
-
-  # Confirm that the files in the inputs match expectations.
-  # There is some path wrangling necessary here because some paths come with
-  # //out/{Target} at the start, others with front_end
-  _normalized_inputs = []
-  foreach(input, inputs) {
-    _normalized_inputs += [ string_replace(input, "$target_gen_dir/", "") ]
-  }
-
-  # Always assume the release files are included.
-  _expected_files = []
-  _expected_files += grd_files_release_sources
-  if (is_debug) {
-    _expected_files += grd_files_debug_sources
-  }
-
-  # Remove the inputs from the expectations, any leftovers means that not all inputs were provided.
-  _missing_files_expected = filter_exclude(_expected_files, _normalized_inputs)
-  assert(
-      _missing_files_expected == [],
-      "Files were expected that weren't found in the GRD inputs: $_missing_files_expected")
-
-  # Remove the expectations from the inputs, any leftovers means that too many files were provided.
-  _missing_files_normalized =
-      filter_exclude(_normalized_inputs, _expected_files)
-  assert(
-      _missing_files_normalized == [],
-      "Files were provided that weren't expected in the GRD inputs: $_missing_files_normalized")
-
-  response_file_contents = rebase_path(_grd_files, root_build_dir)
+  response_file_contents = rebase_path(inputs, root_build_dir)
   outfile = "$root_gen_dir/devtools/devtools_resources.grd"
   outputs = [ outfile ]
 
@@ -297,8 +238,6 @@ action("generate_devtools_grd") {
            "--relative_path_dirs",
          ] + rebase_path(relative_path_dirs, root_build_dir) +
          [
-           "--images",
-           rebase_path("front_end/Images", root_build_dir),
            "--output",
            rebase_path(outfile, root_build_dir),
          ]

@@ -2,7 +2,6 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-import("../../../config/gni/all_devtools_modules.gni")
 import("../../../third_party/typescript/typescript.gni")
 import("./copy.gni")
 import("./vars.gni")
@@ -29,17 +28,6 @@ template("devtools_module") {
   _target_outputs = get_target_outputs(_typescript_target_dep)
   _javascript_implementation_files =
       filter_include(_target_outputs + invoker.data, [ "*.js" ])
-
-  if (is_debug) {
-    _filtered_target_outputs =
-        filter_include(
-            filter_exclude(_target_outputs, generated_typescript_modules),
-            [ "*.js" ])
-
-    assert(
-        _filtered_target_outputs == [],
-        "$_filtered_target_outputs are not listed in all_typescript_module_sources")
-  }
 
   group(target_name) {
     public_deps = [ _typescript_target_dep ]

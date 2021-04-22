@@ -3,7 +3,6 @@
 # found in the LICENSE file.
 
 import("//build/toolchain/rbe.gni")
-import("../../../config/gni/devtools_module_entrypoints.gni")
 import("../../../third_party/typescript/typescript.gni")
 import("./copy.gni")
 import("./node.gni")
@@ -205,13 +204,4 @@ template("devtools_entrypoint") {
       grd_files = _target_outputs
     }
   }
-
-  _target_name = invoker.entrypoint
-  _filtered_target_outputs =
-      filter_include(
-          filter_exclude(_target_outputs, generated_module_entrypoint_sources),
-          [ "*.js" ])
-  assert(
-      _filtered_target_outputs == [],
-      "Entrypoint ($_target_name) is not listed in devtools_module_entrypoint_sources")
 }

@@ -99,18 +99,6 @@ tmp = [
 updateGNVariable('./config/gni/devtools_grd_files.gni',
                  'grd_files_debug_sources', tmp)
 
-prev = readGNVariable('./config/gni/all_devtools_modules.gni',
-                      'all_typescript_module_sources')
-tmp = [
-    'third_party/puppeteer/' + name for name in members
-    if name.startswith('package/lib/esm/') and name.endswith('.js')
-] + [
-    name for name in prev
-    if not name.startswith('third_party/puppeteer/package/lib/esm/')
-]
-updateGNVariable('./config/gni/all_devtools_modules.gni',
-                 'all_typescript_module_sources', tmp)
-
 tar.close()
 
 subprocess.check_call(['git', 'cl', 'format', '--js'],

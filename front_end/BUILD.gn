@@ -16,6 +16,8 @@ group("front_end") {
     ":legacy_css",
     ":legacy_entrypoints",
     ":ts_library-verification",
+    "Images",
+    "Images:generate_css_vars",
     "core/common:bundle",
     "core/i18n:bundle",
     "core/i18n:i18n_locales",

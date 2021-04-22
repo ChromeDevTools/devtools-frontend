@@ -177,6 +177,7 @@ all_typescript_module_sources = [
   "models/har_importer/HARFormat.js",
   "models/har_importer/HARImporter.js",
   "models/heap_snapshot_model/HeapSnapshotModel.js",
+  "models/issues_manager/AttributionReportingIssue.js",
   "models/issues_manager/ContentSecurityPolicyIssue.js",
   "models/issues_manager/ContrastCheckTrigger.js",
   "models/issues_manager/CorsIssue.js",

@@ -9,6 +9,7 @@ import("../../../scripts/build/ninja/devtools_pre_built.gni")
 
 devtools_module("issues_manager") {
   sources = [
+    "AttributionReportingIssue.ts",
     "ContentSecurityPolicyIssue.ts",
     "ContrastCheckTrigger.ts",
     "CorsIssue.ts",

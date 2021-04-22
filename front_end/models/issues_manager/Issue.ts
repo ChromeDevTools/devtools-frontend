@@ -17,6 +17,7 @@ export enum IssueCategory {
   TrustedWebActivity = 'TrustedWebActivity',
   LowTextContrast = 'LowTextContrast',
   Cors = 'Cors',
+  AttributionReporting = 'AttributionReporting',
   Other = 'Other',
 }
 

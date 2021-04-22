@@ -5021,6 +5021,9 @@
   "panels/issues/issues-meta.ts | showIssues": {
     "message": "Show Issues"
   },
+  "panels/issues/IssuesPane.ts | attributionReporting": {
+    "message": "Attribution Reporting API"
+  },
   "panels/issues/IssuesPane.ts | contentSecurityPolicy": {
     "message": "Content Security Policy"
   },

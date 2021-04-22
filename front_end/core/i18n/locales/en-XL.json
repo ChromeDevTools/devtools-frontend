@@ -5021,6 +5021,9 @@
   "panels/issues/issues-meta.ts | showIssues": {
     "message": "Ŝh́ôẃ Îśŝúêś"
   },
+  "panels/issues/IssuesPane.ts | attributionReporting": {
+    "message": "Ât́t̂ŕîb́ût́îón̂ Ŕêṕôŕt̂ín̂ǵ API"
+  },
   "panels/issues/IssuesPane.ts | contentSecurityPolicy": {
     "message": "Ĉón̂t́êńt̂ Śêćûŕît́ŷ Ṕôĺîćŷ"
   },

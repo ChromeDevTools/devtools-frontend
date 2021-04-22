@@ -205,7 +205,7 @@ generated_file("input_grd_files") {
   data_keys = [ "grd_files" ]
 
   output_conversion = "json"
-  rebase = root_gen_dir
+  rebase = target_gen_dir
 
   deps = [
     ":build_release_devtools",

@@ -992,6 +992,7 @@ declare namespace Protocol {
 
     export enum AttributionReportingIssueType {
       PermissionPolicyDisabled = 'PermissionPolicyDisabled',
+      InvalidAttributionData = 'InvalidAttributionData',
     }
 
     /**
@@ -1003,6 +1004,7 @@ declare namespace Protocol {
       frame?: AffectedFrame;
       request?: AffectedRequest;
       violatingNodeId?: DOM.BackendNodeId;
+      invalidParameter?: string;
     }
 
     /**
@@ -14420,6 +14422,10 @@ declare namespace Protocol {
        */
       reportProgress?: boolean;
       treatGlobalObjectsAsRoots?: boolean;
+      /**
+       * If true, numerical values are included in the snapshot
+       */
+      captureNumericValue?: boolean;
     }
 
     export interface TakeHeapSnapshotRequest {
@@ -14431,6 +14437,10 @@ declare namespace Protocol {
        * If true, a raw snapshot without artifical roots will be generated
        */
       treatGlobalObjectsAsRoots?: boolean;
+      /**
+       * If true, numerical values are included in the snapshot
+       */
+      captureNumericValue?: boolean;
     }
 
     export interface AddHeapSnapshotChunkEvent {

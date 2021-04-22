@@ -254,7 +254,8 @@ export function registerCommands(inspectorBackend) {
       'Audits.TwaQualityEnforcementViolationType',
       {KHttpError: 'kHttpError', KUnavailableOffline: 'kUnavailableOffline', KDigitalAssetLinks: 'kDigitalAssetLinks'});
   inspectorBackend.registerEnum(
-      'Audits.AttributionReportingIssueType', {PermissionPolicyDisabled: 'PermissionPolicyDisabled'});
+      'Audits.AttributionReportingIssueType',
+      {PermissionPolicyDisabled: 'PermissionPolicyDisabled', InvalidAttributionData: 'InvalidAttributionData'});
   inspectorBackend.registerEnum('Audits.InspectorIssueCode', {
     SameSiteCookieIssue: 'SameSiteCookieIssue',
     MixedContentIssue: 'MixedContentIssue',
@@ -2898,14 +2899,16 @@ export function registerCommands(inspectorBackend) {
       'HeapProfiler.stopTrackingHeapObjects',
       [
         {'name': 'reportProgress', 'type': 'boolean', 'optional': true},
-        {'name': 'treatGlobalObjectsAsRoots', 'type': 'boolean', 'optional': true}
+        {'name': 'treatGlobalObjectsAsRoots', 'type': 'boolean', 'optional': true},
+        {'name': 'captureNumericValue', 'type': 'boolean', 'optional': true}
       ],
       []);
   inspectorBackend.registerCommand(
       'HeapProfiler.takeHeapSnapshot',
       [
         {'name': 'reportProgress', 'type': 'boolean', 'optional': true},
-        {'name': 'treatGlobalObjectsAsRoots', 'type': 'boolean', 'optional': true}
+        {'name': 'treatGlobalObjectsAsRoots', 'type': 'boolean', 'optional': true},
+        {'name': 'captureNumericValue', 'type': 'boolean', 'optional': true}
       ],
       []);
 

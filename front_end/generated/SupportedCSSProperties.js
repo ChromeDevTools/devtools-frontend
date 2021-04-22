@@ -764,6 +764,7 @@ export const generatedProperties = [
     'keywords': ['auto', 'optimizespeed', 'crispedges', 'geometricprecision']
   },
   {'name': 'size'},
+  {'name': 'size-adjust'},
   {'name': 'source'},
   {
     'name': 'speak',

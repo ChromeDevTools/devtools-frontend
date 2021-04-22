@@ -1486,7 +1486,8 @@
                     "id": "AttributionReportingIssueType",
                     "type": "string",
                     "enum": [
-                        "PermissionPolicyDisabled"
+                        "PermissionPolicyDisabled",
+                        "InvalidAttributionData"
                     ]
                 },
                 {
@@ -1512,6 +1513,11 @@
                             "name": "violatingNodeId",
                             "optional": true,
                             "$ref": "DOM.BackendNodeId"
+                        },
+                        {
+                            "name": "invalidParameter",
+                            "optional": true,
+                            "type": "string"
                         }
                     ]
                 },
@@ -21514,6 +21520,12 @@
                             "name": "treatGlobalObjectsAsRoots",
                             "optional": true,
                             "type": "boolean"
+                        },
+                        {
+                            "name": "captureNumericValue",
+                            "description": "If true, numerical values are included in the snapshot",
+                            "optional": true,
+                            "type": "boolean"
                         }
                     ]
                 },
@@ -21529,6 +21541,12 @@
                         {
                             "name": "treatGlobalObjectsAsRoots",
                             "description": "If true, a raw snapshot without artifical roots will be generated",
+                            "optional": true,
+                            "type": "boolean"
+                        },
+                        {
+                            "name": "captureNumericValue",
+                            "description": "If true, numerical values are included in the snapshot",
                             "optional": true,
                             "type": "boolean"
                         }

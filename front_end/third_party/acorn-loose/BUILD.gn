@@ -5,6 +5,8 @@
 import("../../../scripts/build/ninja/devtools_pre_built.gni")
 
 devtools_pre_built("acorn-loose") {
+  sources_are_release = false
+
   sources = [
     "acorn-loose-tsconfig.json",
     "package/dist/acorn-loose.d.ts",

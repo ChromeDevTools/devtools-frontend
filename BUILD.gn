@@ -181,6 +181,56 @@ group("generate_devtools_inspector_overlay_resources") {
   public_deps = [ "inspector_overlay:build_inspector_overlay" ]
 }
 
+action("assert_grd") {
+  script = "scripts/build/assert_grd.py"
+
+  deps = [
+    ":expected_grd_files",
+    ":input_grd_files",
+  ]
+
+  inputs = [
+    "$target_gen_dir/expected_grd_files.json",
+    "$target_gen_dir/input_grd_files.json",
+  ]
+
+  args = [
+    rebase_path("$target_gen_dir/expected_grd_files.json", root_build_dir),
+    rebase_path("$target_gen_dir/input_grd_files.json", root_build_dir),
+    rebase_path("$target_gen_dir/assert_grd.stamp", root_build_dir),
+  ]
+
+  outputs = [ "$target_gen_dir/assert_grd.stamp" ]
+}
+
+generated_file("expected_grd_files") {
+  outputs = [ "$target_gen_dir/expected_grd_files.json" ]
+
+  _expected_files = []
+  _expected_files += grd_files_release_sources
+  if (is_debug) {
+    _expected_files += grd_files_debug_sources
+  }
+
+  contents = _expected_files
+
+  output_conversion = "json"
+}
+
+generated_file("input_grd_files") {
+  outputs = [ "$target_gen_dir/input_grd_files.json" ]
+
+  data_keys = [ "grd_files" ]
+
+  output_conversion = "json"
+  rebase = root_gen_dir
+
+  deps = [
+    ":build_release_devtools",
+    "front_end",
+  ]
+}
+
 action("generate_devtools_grd") {
   script = "scripts/build/generate_devtools_grd.py"
 
@@ -287,4 +337,8 @@ python2_action("build_release_devtools") {
            "--output_path_gen",
            rebase_path("$target_gen_dir/front_end", root_build_dir),
          ] + build_release_devtools_args
+
+  metadata = {
+    grd_files = outputs
+  }
 }

@@ -149,13 +149,16 @@ group("legacy_entrypoints") {
   ]
 }
 
+copy_to_gen("integration_test_runner-gen") {
+  sources = [ "integration_test_runner.html" ]
+}
+
 group("integration_test_runner") {
   public_deps = [ ":integration_test_runner-gen" ]
   data_deps = public_deps
-}
-
-copy_to_gen("integration_test_runner-gen") {
-  sources = [ "integration_test_runner.html" ]
+  metadata = {
+    grd_files = get_target_outputs(":integration_test_runner-gen")
+  }
 }
 
 node_action("html_entrypoints") {
@@ -179,13 +182,25 @@ node_action("html_entrypoints") {
     "$target_gen_dir/toolbox.html",
     "$target_gen_dir/worker_app.html",
   ]
+
+  metadata = {
+    grd_files = outputs
+  }
 }
 
-copy_to_gen("embedder-scripts") {
+copy_to_gen("embedder-scripts-gen") {
   sources = [
     "Tests.js",
     "devtools_compatibility.js",
   ]
+}
+
+group("embedder-scripts") {
+  public_deps = [ ":embedder-scripts-gen" ]
+  data_deps = public_deps
+  metadata = {
+    grd_files = get_target_outputs(":embedder-scripts-gen")
+  }
 }
 
 # This target is used to perform checks on all generated `.d.ts` files.

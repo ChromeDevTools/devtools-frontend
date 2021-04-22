@@ -4,11 +4,6 @@
 
 import("../../../scripts/build/ninja/copy.gni")
 
-group("bundle") {
-  public_deps = [ ":gen" ]
-  data_deps = public_deps
-}
-
 copy_to_gen("gen") {
   sources = [
     "LighthouseService.js",
@@ -16,4 +11,12 @@ copy_to_gen("gen") {
   ]
 
   deps = [ "../../third_party/lighthouse" ]
+}
+
+group("bundle") {
+  public_deps = [ ":gen" ]
+  data_deps = public_deps
+  metadata = {
+    grd_files = get_target_outputs(":gen")
+  }
 }

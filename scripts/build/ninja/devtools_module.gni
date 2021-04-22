@@ -26,9 +26,11 @@ template("devtools_module") {
 
     visibility += [ ":*" ]
   }
+  _target_outputs = get_target_outputs(_typescript_target_dep)
+  _javascript_implementation_files =
+      filter_include(_target_outputs + invoker.data, [ "*.js" ])
 
   if (is_debug) {
-    _target_outputs = get_target_outputs(_typescript_target_dep)
     _filtered_target_outputs =
         filter_include(
             filter_exclude(_target_outputs, generated_typescript_modules),
@@ -44,12 +46,13 @@ template("devtools_module") {
 
     visibility = invoker.visibility + [ ":*" ]
 
-    data = invoker.data +
-           filter_include(get_target_outputs(_typescript_target_dep),
-                          [
-                            "*.js",
-                            "*.map",
-                          ])
+    data = _javascript_implementation_files +
+           filter_include(invoker.data + _target_outputs, [ "*.map" ])
+    if (is_debug) {
+      metadata = {
+        grd_files = _javascript_implementation_files
+      }
+    }
   }
 }
 

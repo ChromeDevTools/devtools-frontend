@@ -200,6 +200,10 @@ template("devtools_entrypoint") {
     outputs = [ _generated_tsconfig_location ]
 
     data = _target_outputs
+
+    metadata = {
+      grd_files = _target_outputs
+    }
   }
 
   _target_name = invoker.entrypoint

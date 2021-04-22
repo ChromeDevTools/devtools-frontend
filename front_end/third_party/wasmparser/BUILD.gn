@@ -6,6 +6,8 @@ import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_pre_built.gni")
 
 devtools_pre_built("wasmparser") {
+  sources_are_release = false
+
   sources = [
     "package/dist/esm/WasmDis.js",
     "package/dist/esm/WasmParser.js",

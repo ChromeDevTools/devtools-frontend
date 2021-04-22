@@ -4,11 +4,14 @@
 import("../../../scripts/build/ninja/copy.gni")
 import("./optimized_images.gni")
 
+copy_to_gen("optimized_emulated_devices-gen") {
+  sources = devtools_emulated_devices_images
+}
+
 group("optimized_emulated_devices") {
   public_deps = [ ":optimized_emulated_devices-gen" ]
   data_deps = public_deps
-}
-
-copy_to_gen("optimized_emulated_devices-gen") {
-  sources = devtools_emulated_devices_images
+  metadata = {
+    grd_files = get_target_outputs(":optimized_emulated_devices-gen")
+  }
 }

@@ -6,6 +6,8 @@ import("../../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../../scripts/build/ninja/devtools_pre_built.gni")
 
 devtools_pre_built("client-variations") {
+  sources_are_release = false
+
   sources = [
     "ClientVariations.d.ts",
     "ClientVariations.js",

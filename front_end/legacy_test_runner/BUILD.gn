@@ -11,6 +11,10 @@ group("legacy_test_runner") {
   ]
 
   data = [ "$target_gen_dir/legacy_test_runner.js" ]
+
+  metadata = {
+    grd_files = data
+  }
 }
 
 ts_library("legacy_test_runner-source") {

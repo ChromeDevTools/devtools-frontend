@@ -6,6 +6,8 @@ import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_pre_built.gni")
 
 devtools_pre_built("marked") {
+  sources_are_release = false
+
   sources = [
     "marked-tsconfig.json",
     "package/lib/marked.esm.d.ts",

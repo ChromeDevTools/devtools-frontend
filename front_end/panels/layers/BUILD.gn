@@ -27,12 +27,6 @@ devtools_entrypoint("bundle") {
   deps = [ ":layers" ]
 }
 
-devtools_entrypoint("legacy") {
-  entrypoint = "layers-legacy.ts"
-
-  deps = [ ":bundle" ]
-}
-
 devtools_entrypoint("meta") {
   entrypoint = "layers-meta.ts"
 

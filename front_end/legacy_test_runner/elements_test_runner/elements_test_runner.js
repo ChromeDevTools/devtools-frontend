@@ -4,7 +4,6 @@
 
 import '../test_runner/test_runner.js';
 import '../../panels/elements/elements-legacy.js';
-import '../../panels/event_listeners/event_listeners-legacy.js';
 import '../../panels/animation/animation-legacy.js';
 
 import './ElementsTestRunner.js';

@@ -3,10 +3,11 @@
 // found in the LICENSE file.
 
 import '../test_runner/test_runner.js';
-import '../../panels/layers/layers-legacy.js';
 import '../../panels/layer_viewer/layer_viewer-legacy.js';
 import '../../panels/elements/elements-legacy.js';
 import '../../ui/legacy/components/utils/utils-legacy.js';
+
+import * as Layers from '../../panels/layers/layers.js';
 
 /**
  * @fileoverview using private properties isn't a Closure violation in tests.
@@ -15,7 +16,7 @@ self.LayersTestRunner = self.LayersTestRunner || {};
 
 LayersTestRunner.layerTreeModel = function() {
   if (!LayersTestRunner._layerTreeModel) {
-    LayersTestRunner._layerTreeModel = TestRunner.mainTarget.model(Layers.LayerTreeModel);
+    LayersTestRunner._layerTreeModel = TestRunner.mainTarget.model(Layers.LayerTreeModel.LayerTreeModel);
   }
 
   return LayersTestRunner._layerTreeModel;

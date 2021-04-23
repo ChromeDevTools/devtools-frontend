@@ -28,12 +28,6 @@ devtools_entrypoint("bundle") {
   deps = [ ":console_counters" ]
 }
 
-devtools_entrypoint("legacy") {
-  entrypoint = "console_counters-legacy.ts"
-
-  deps = [ ":bundle" ]
-}
-
 devtools_entrypoint("meta") {
   entrypoint = "console_counters-meta.ts"
 

@@ -30,12 +30,6 @@ devtools_entrypoint("bundle") {
   deps = [ ":help" ]
 }
 
-devtools_entrypoint("legacy") {
-  entrypoint = "help-legacy.ts"
-
-  deps = [ ":bundle" ]
-}
-
 devtools_entrypoint("meta") {
   entrypoint = "help-meta.ts"
 

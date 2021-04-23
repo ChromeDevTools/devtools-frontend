@@ -5,7 +5,8 @@
 import '../test_runner/test_runner.js';
 import '../../panels/console/console-legacy.js';
 import '../../ui/legacy/components/object_ui/object_ui-legacy.js';
-import '../../panels/console_counters/console_counters-legacy.js';
+
+import * as ConsoleCounters from '../../panels/console_counters/console_counters.js';
 
 /**
  * @fileoverview using private properties isn't a Closure violation in tests.
@@ -361,7 +362,7 @@ ConsoleTestRunner.dumpConsoleClassesBrief = async function() {
 };
 
 ConsoleTestRunner.dumpConsoleCounters = async function() {
-  const counter = ConsoleCounters.WarningErrorCounter._instanceForTest;
+  const counter = ConsoleCounters.WarningErrorCounter.WarningErrorCounter._instanceForTest;
   if (counter._updatingForTest) {
     await TestRunner.addSnifferPromise(counter, '_updatedForTest');
   }

@@ -8,17 +8,14 @@ import("../../../scripts/build/ninja/devtools_module.gni")
 devtools_module("startup") {
   sources = [ "RuntimeInstantiator.ts" ]
 
-  deps = [ "../../core/root:bundle" ]
+  deps = [
+    "../../core/root:bundle",
+    "../../core/root:legacy",
+  ]
 }
 
 devtools_entrypoint("bundle") {
   entrypoint = "startup.ts"
 
-  deps = [
-    ":startup",
-    "../../core/common:legacy",
-    "../../core/platform:bundle",
-    "../../core/root:legacy",
-    "../../models/text_utils:legacy",
-  ]
+  deps = [ ":startup" ]
 }

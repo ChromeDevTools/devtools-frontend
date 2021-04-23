@@ -127,6 +127,8 @@ export class NetworkConfigView extends UI.Widget.VBox {
         userAgentSetting.set(value);
         otherUserAgentElement.value = value;
         UI.Tooltip.Tooltip.install(otherUserAgentElement, value);
+        const userAgentMetadata = getUserAgentMetadata(value);
+        SDK.NetworkManager.MultitargetNetworkManager.instance().setCustomUserAgentOverride(value, userAgentMetadata);
       } else {
         otherUserAgentElement.select();
       }
@@ -201,7 +203,9 @@ export class NetworkConfigView extends UI.Widget.VBox {
       if (autoCheckbox.checked) {
         return;
       }
-      SDK.NetworkManager.MultitargetNetworkManager.instance().setCustomUserAgentOverride(customUserAgentSetting.get());
+      const customUA = customUserAgentSetting.get();
+      const userAgentMetadata = getUserAgentMetadata(customUA);
+      SDK.NetworkManager.MultitargetNetworkManager.instance().setCustomUserAgentOverride(customUA, userAgentMetadata);
     });
     const customUserAgentSelectBox = section.createChild('div', 'network-config-ua-custom');
     autoCheckbox.addEventListener('change', userAgentSelectBoxChanged);
@@ -219,7 +223,8 @@ export class NetworkConfigView extends UI.Widget.VBox {
       customSelectAndInput.input.disabled = !useCustomUA;
       customSelectAndInput.error.hidden = !useCustomUA;
       const customUA = useCustomUA ? customUserAgentSetting.get() : '';
-      SDK.NetworkManager.MultitargetNetworkManager.instance().setCustomUserAgentOverride(customUA);
+      const userAgentMetadata = useCustomUA ? getUserAgentMetadata(customUA) : null;
+      SDK.NetworkManager.MultitargetNetworkManager.instance().setCustomUserAgentOverride(customUA, userAgentMetadata);
     }
   }
 
@@ -279,6 +284,22 @@ export class NetworkConfigView extends UI.Widget.VBox {
       customAcceptedEncodingSetting.set(encodings.join(','));
     }
   }
+}
+
+function getUserAgentMetadata(userAgent: string): Protocol.Emulation.UserAgentMetadata|null {
+  for (const userAgentDescriptor of userAgentGroups) {
+    for (const userAgentVersion of userAgentDescriptor.values) {
+      if (userAgent ===
+          SDK.NetworkManager.MultitargetNetworkManager.patchUserAgentWithChromeVersion(userAgentVersion.value)) {
+        if (!userAgentVersion.metadata) {
+          return null;
+        }
+        SDK.NetworkManager.MultitargetNetworkManager.patchUserAgentMetadataWithChromeVersion(userAgentVersion.metadata);
+        return userAgentVersion.metadata;
+      }
+    }
+  }
+  return null;
 }
 
 interface UserAgentGroup {

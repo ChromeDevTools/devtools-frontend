@@ -985,7 +985,7 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
   }
 
   static getChromeVersion(): string {
-    const chromeRegex = new RegExp('(?:^|\\W)Chrome/(\\S+)');
+    const chromeRegex = /(?:^|\W)(?:Chrome|HeadlessChrome)\/(\S+)/;
     const chromeMatch = navigator.userAgent.match(chromeRegex);
     if (chromeMatch && chromeMatch.length > 1) {
       return chromeMatch[1];
@@ -994,8 +994,7 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
   }
 
   static patchUserAgentWithChromeVersion(uaString: string): string {
-    // Patches Chrome/CriOS version from user agent ("1.2.3.4" when user agent is: "Chrome/1.2.3.4").
-    // Edge also contains an appVersion which should be patched to match the Chrome major version.
+    // Patches Chrome/ChrOS version from user agent ("1.2.3.4" when user agent is: "Chrome/1.2.3.4").
     // Otherwise, ignore it. This assumes additional appVersions appear after the Chrome version.
     const chromeVersion = MultitargetNetworkManager.getChromeVersion();
     if (chromeVersion.length > 0) {
@@ -1004,6 +1003,24 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
       return Platform.StringUtilities.sprintf(uaString, chromeVersion, additionalAppVersion);
     }
     return uaString;
+  }
+
+  static patchUserAgentMetadataWithChromeVersion(userAgentMetadata: Protocol.Emulation.UserAgentMetadata): void {
+    // Patches Chrome/ChrOS version from user agent metadata ("1.2.3.4" when user agent is: "Chrome/1.2.3.4").
+    // Otherwise, ignore it. This assumes additional appVersions appear after the Chrome version.
+    if (!userAgentMetadata.brands) {
+      return;
+    }
+    const chromeVersion = MultitargetNetworkManager.getChromeVersion();
+    if (chromeVersion.length === 0) {
+      return;
+    }
+
+    for (const brand of userAgentMetadata.brands) {
+      if (brand.version.includes('%s')) {
+        brand.version = Platform.StringUtilities.sprintf(brand.version, chromeVersion);
+      }
+    }
   }
 
   modelAdded(networkManager: NetworkManager): void {
@@ -1118,9 +1135,10 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
     return this._userAgentOverride;
   }
 
-  setCustomUserAgentOverride(userAgent: string): void {
+  setCustomUserAgentOverride(
+      userAgent: string, userAgentMetadataOverride: Protocol.Emulation.UserAgentMetadata|null = null): void {
     this._customUserAgent = userAgent;
-    this._userAgentMetadataOverride = null;
+    this._userAgentMetadataOverride = userAgentMetadataOverride;
     this._updateUserAgentOverride();
   }
 

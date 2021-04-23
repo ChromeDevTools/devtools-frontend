@@ -32,8 +32,8 @@ export const OriginMismatch = [Protocol.Audits.InspectorIssueCode.CorsIssue, 'Or
 export const AllowCredentialsRequired =
     [Protocol.Audits.InspectorIssueCode.CorsIssue, 'AllowCredentialsRequired'].join('::');
 
-function getIssueCode(issueDetails: Protocol.Audits.CorsIssueDetails): string {
-  switch (issueDetails.corsErrorStatus.corsError) {
+export function getIssueCode(corsError: Protocol.Network.CorsError): string {
+  switch (corsError) {
     case Protocol.Network.CorsError.InvalidAllowMethodsPreflightResponse:
     case Protocol.Network.CorsError.InvalidAllowHeadersPreflightResponse:
     case Protocol.Network.CorsError.PreflightMissingAllowOriginHeader:
@@ -56,7 +56,7 @@ function getIssueCode(issueDetails: Protocol.Audits.CorsIssueDetails): string {
     case Protocol.Network.CorsError.PreflightInvalidAllowCredentials:
       return AllowCredentialsRequired;
     default:
-      return [Protocol.Audits.InspectorIssueCode.CorsIssue, issueDetails.corsErrorStatus.corsError].join('::');
+      return [Protocol.Audits.InspectorIssueCode.CorsIssue, corsError].join('::');
   }
 }
 
@@ -64,7 +64,7 @@ export class CorsIssue extends Issue {
   private issueDetails: Protocol.Audits.CorsIssueDetails;
 
   constructor(issueDetails: Protocol.Audits.CorsIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel) {
-    super(getIssueCode(issueDetails), issuesModel);
+    super(getIssueCode(issueDetails.corsErrorStatus.corsError), issuesModel);
     this.issueDetails = issueDetails;
   }
 
@@ -146,9 +146,17 @@ export class CorsIssue extends Issue {
             linkTitle: i18nString(UIStrings.CORS),
           }],
         };
+      case Protocol.Network.CorsError.MethodDisallowedByPreflightResponse:
+        return {
+          file: 'corsMethodDisallowedByPreflightResponse.md',
+          substitutions: undefined,
+          links: [{
+            link: 'https://web.dev/cross-origin-resource-sharing',
+            linkTitle: i18nString(UIStrings.CORS),
+          }],
+        };
       case Protocol.Network.CorsError.DisallowedByMode:
       case Protocol.Network.CorsError.CorsDisabledScheme:
-      case Protocol.Network.CorsError.MethodDisallowedByPreflightResponse:
       case Protocol.Network.CorsError.HeaderDisallowedByPreflightResponse:
       case Protocol.Network.CorsError.RedirectContainsCredentials:
       case Protocol.Network.CorsError.PreflightMissingAllowExternal:

@@ -11,6 +11,7 @@ copy_to_gen("issues") {
     "corp-frame.rawresponse",
     "cors-issue.html",
     "invalid-response-code.rawresponse",
+    "method-disallowed.rawresponse",
     "origin-wildcard.rawresponse",
     "redirect.rawresponse",
     "sab-issue.rawresponse",

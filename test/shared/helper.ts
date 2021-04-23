@@ -537,10 +537,10 @@ export function matchArray(actual: Array<string>, expected: Array<string|RegExp>
     const expectedItem = expected[i];
     if (typeof expectedItem === 'string') {
       if (actual[i] !== expectedItem) {
-        throw new AssertionError(`Expected item ${i} which was ${actual[i]} to equal ${expectedItem}`);
+        throw new AssertionError(`Expected item at position ${i} which was "${actual[i]}" to equal "${expectedItem}"`);
       }
     } else if (!expectedItem.test(actual[i])) {
-      throw new AssertionError(`Expected item ${i} which was ${actual[i]} to match ${expectedItem}`);
+      throw new AssertionError(`Expected item at position ${i} which was "${actual[i]}" to match "${expectedItem}"`);
     }
   }
 }

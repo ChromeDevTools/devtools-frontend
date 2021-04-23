@@ -99,6 +99,10 @@ const UIStrings = {
   *@description Title for a column in the affected resources for a CORS issue showing the value of the Access-Control-Allow-Credentials response header.
   */
   allowCredentialsValueFromHeader: '`Access-Control-Allow-Credentials` Header Value',
+  /**
+  *@description Title for a column in the affected resources for a CORS issue showing the request method that was disallowed.
+  */
+  disallowedRequestMethod: 'Disallowed Request Method',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/issues/CorsIssueDetailsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -149,10 +153,15 @@ export class CorsIssueDetailsView extends AffectedResourcesView {
     } else if (issueCode === IssuesManager.CorsIssue.AllowCredentialsRequired) {
       this.appendColumnTitle(header, i18nString(UIStrings.preflightRequestIfProblematic));
       this.appendColumnTitle(header, i18nString(UIStrings.allowCredentialsValueFromHeader));
-    } else {
+    } else if (issueCode === IssuesManager.CorsIssue.getIssueCode(Protocol.Network.CorsError.InsecurePrivateNetwork)) {
       this.appendColumnTitle(header, i18nString(UIStrings.resourceAddressSpace));
       this.appendColumnTitle(header, i18nString(UIStrings.initiatorAddressSpace));
       this.appendColumnTitle(header, i18nString(UIStrings.initiatorContext));
+    } else if (
+        issueCode ===
+        IssuesManager.CorsIssue.getIssueCode(Protocol.Network.CorsError.MethodDisallowedByPreflightResponse)) {
+      this.appendColumnTitle(header, i18nString(UIStrings.preflightRequest));
+      this.appendColumnTitle(header, i18nString(UIStrings.disallowedRequestMethod));
     }
 
     this.affectedResources.appendChild(header);
@@ -253,10 +262,15 @@ export class CorsIssueDetailsView extends AffectedResourcesView {
         this.appendIssueDetailCell(element, '');
       }
       this.appendIssueDetailCell(element, details.corsErrorStatus.failedParameter, 'code-example');
-    } else {
+    } else if (issueCode === IssuesManager.CorsIssue.getIssueCode(Protocol.Network.CorsError.InsecurePrivateNetwork)) {
       this.appendIssueDetailCell(element, details.resourceIPAddressSpace ?? '');
       this.appendIssueDetailCell(element, details.clientSecurityState?.initiatorIPAddressSpace ?? '');
       this.appendSecureContextCell(element, details.clientSecurityState?.initiatorIsSecureContext);
+    } else if (
+        issueCode ===
+        IssuesManager.CorsIssue.getIssueCode(Protocol.Network.CorsError.MethodDisallowedByPreflightResponse)) {
+      element.appendChild(this.createRequestCell(details.request, {linkToPreflight: true}));
+      this.appendIssueDetailCell(element, details.corsErrorStatus.failedParameter, 'code-example');
     }
 
 

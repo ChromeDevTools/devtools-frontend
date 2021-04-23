@@ -329,4 +329,49 @@ describe('CORS issues', async () => {
       }
     }
   });
+
+  it('should display CORS requests using disallowed headers with the correct affected resources', async () => {
+    await goToResource('empty.html');
+    const {target} = getBrowserAndPages();
+    await target.evaluate(async () => {
+      try {
+        // We can re-use `method-disallowed.rawresponse` for this test.
+        const url = new URL('./issues/method-disallowed.rawresponse', document.location.toString())
+                        .toString()
+                        .replace('localhost', 'devtools.oopif.test');
+        await fetch(url, {
+          headers: {'X-Foo': 'bar'},
+        });
+      } catch (e) {
+      }
+    });
+    await navigateToIssuesTab();
+    await expandIssue();
+    const issueElement = await getIssueByTitle('Ensure CORS request includes only allowed headers');
+    assert.isNotNull(issueElement);
+    if (issueElement) {
+      const section = await getResourcesElement('request', issueElement, '.cors-issue-affected-resource-label');
+      const text = await section.label.evaluate(el => el.textContent);
+      // TODO(crbug.com/1189877): Remove 2nd space after fixing l10n presubmit check
+      assert.strictEqual(text, '1  request');
+      await ensureResourceSectionIsExpanded(section);
+      const table = await extractTableFromResourceSection(section.content);
+      assert.isNotNull(table);
+      if (table) {
+        assert.strictEqual(table.length, 2);
+        assert.deepEqual(table[0], [
+          'Request',
+          'Status',
+          'Preflight Request',
+          'Disallowed Request Header',
+        ]);
+        matchArray(table[1], [
+          'method-disallowed.rawresponse',
+          'blocked',
+          'method-disallowed.rawresponse',
+          'x-foo',
+        ]);
+      }
+    }
+  });
 });

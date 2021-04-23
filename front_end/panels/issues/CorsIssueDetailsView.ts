@@ -103,6 +103,10 @@ const UIStrings = {
   *@description Title for a column in the affected resources for a CORS issue showing the request method that was disallowed.
   */
   disallowedRequestMethod: 'Disallowed Request Method',
+  /**
+  *@description Title for a column in the affected resources for a CORS issue showing the request header that was disallowed.
+  */
+  disallowedRequestHeader: 'Disallowed Request Header',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/issues/CorsIssueDetailsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -162,6 +166,11 @@ export class CorsIssueDetailsView extends AffectedResourcesView {
         IssuesManager.CorsIssue.getIssueCode(Protocol.Network.CorsError.MethodDisallowedByPreflightResponse)) {
       this.appendColumnTitle(header, i18nString(UIStrings.preflightRequest));
       this.appendColumnTitle(header, i18nString(UIStrings.disallowedRequestMethod));
+    } else if (
+        issueCode ===
+        IssuesManager.CorsIssue.getIssueCode(Protocol.Network.CorsError.HeaderDisallowedByPreflightResponse)) {
+      this.appendColumnTitle(header, i18nString(UIStrings.preflightRequest));
+      this.appendColumnTitle(header, i18nString(UIStrings.disallowedRequestHeader));
     }
 
     this.affectedResources.appendChild(header);
@@ -269,6 +278,11 @@ export class CorsIssueDetailsView extends AffectedResourcesView {
     } else if (
         issueCode ===
         IssuesManager.CorsIssue.getIssueCode(Protocol.Network.CorsError.MethodDisallowedByPreflightResponse)) {
+      element.appendChild(this.createRequestCell(details.request, {linkToPreflight: true}));
+      this.appendIssueDetailCell(element, details.corsErrorStatus.failedParameter, 'code-example');
+    } else if (
+        issueCode ===
+        IssuesManager.CorsIssue.getIssueCode(Protocol.Network.CorsError.HeaderDisallowedByPreflightResponse)) {
       element.appendChild(this.createRequestCell(details.request, {linkToPreflight: true}));
       this.appendIssueDetailCell(element, details.corsErrorStatus.failedParameter, 'code-example');
     }

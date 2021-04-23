@@ -4955,6 +4955,9 @@
   "panels/issues/CorsIssueDetailsView.ts | blocked": {
     "message": "blocked"
   },
+  "panels/issues/CorsIssueDetailsView.ts | disallowedRequestHeader": {
+    "message": "Disallowed Request Header"
+  },
   "panels/issues/CorsIssueDetailsView.ts | disallowedRequestMethod": {
     "message": "Disallowed Request Method"
   },

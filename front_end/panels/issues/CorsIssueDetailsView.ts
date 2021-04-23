@@ -91,6 +91,10 @@ const UIStrings = {
   *@description Content for the problem column in the affected resources table for a CORS issue that indicates that the HTTP status the preflight request was not successful.
   */
   preflightInvalidStatus: 'HTTP status of preflight request didn\'t indicate success',
+  /**
+  *@description Title for a column in the affected resources for a CORS issue showing the origin that was allowed according to CORS headers.
+  */
+  allowedOrigin: 'Allowed Origin (from header)',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/issues/CorsIssueDetailsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -134,6 +138,10 @@ export class CorsIssueDetailsView extends AffectedResourcesView {
     } else if (issueCode === IssuesManager.CorsIssue.PreflightResponseInvalid) {
       this.appendColumnTitle(header, i18nString(UIStrings.preflightRequest));
       this.appendColumnTitle(header, i18nString(UIStrings.problem));
+    } else if (issueCode === IssuesManager.CorsIssue.OriginMismatch) {
+      this.appendColumnTitle(header, i18nString(UIStrings.preflightRequestIfProblematic));
+      this.appendColumnTitle(header, i18nString(UIStrings.initiatorContext));
+      this.appendColumnTitle(header, i18nString(UIStrings.allowedOrigin));
     } else {
       this.appendColumnTitle(header, i18nString(UIStrings.resourceAddressSpace));
       this.appendColumnTitle(header, i18nString(UIStrings.initiatorAddressSpace));
@@ -223,6 +231,14 @@ export class CorsIssueDetailsView extends AffectedResourcesView {
     } else if (issueCode === IssuesManager.CorsIssue.PreflightResponseInvalid) {
       element.appendChild(this.createRequestCell(details.request, {linkToPreflight: true}));
       this.appendIssueDetailCell(element, CorsIssueDetailsView.getProblemFromError(details.corsErrorStatus));
+    } else if (issueCode === IssuesManager.CorsIssue.OriginMismatch) {
+      if (corsError.includes('Preflight')) {
+        element.appendChild(this.createRequestCell(details.request, {linkToPreflight: true}));
+      } else {
+        this.appendIssueDetailCell(element, '');
+      }
+      this.appendIssueDetailCell(element, details.initiatorOrigin ?? '', 'code-example');
+      this.appendIssueDetailCell(element, details.corsErrorStatus.failedParameter, 'code-example');
     } else {
       this.appendIssueDetailCell(element, details.resourceIPAddressSpace ?? '');
       this.appendIssueDetailCell(element, details.clientSecurityState?.initiatorIPAddressSpace ?? '');

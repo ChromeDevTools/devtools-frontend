@@ -4946,6 +4946,9 @@
   "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | url": {
     "message": "Url"
   },
+  "panels/issues/CorsIssueDetailsView.ts | allowedOrigin": {
+    "message": "Allowed Origin (from header)"
+  },
   "panels/issues/CorsIssueDetailsView.ts | blocked": {
     "message": "blocked"
   },

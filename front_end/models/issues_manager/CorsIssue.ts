@@ -28,6 +28,7 @@ export const WildcardOriginWithCredentials =
     [Protocol.Audits.InspectorIssueCode.CorsIssue, 'WildcardOriginWithCredentials'].join('::');
 export const PreflightResponseInvalid =
     [Protocol.Audits.InspectorIssueCode.CorsIssue, 'PreflightResponseInvalid'].join('::');
+export const OriginMismatch = [Protocol.Audits.InspectorIssueCode.CorsIssue, 'OriginMismatch'].join('::');
 
 function getIssueCode(issueDetails: Protocol.Audits.CorsIssueDetails): string {
   switch (issueDetails.corsErrorStatus.corsError) {
@@ -46,6 +47,9 @@ function getIssueCode(issueDetails: Protocol.Audits.CorsIssueDetails): string {
     case Protocol.Network.CorsError.PreflightInvalidStatus:
     case Protocol.Network.CorsError.PreflightDisallowedRedirect:
       return PreflightResponseInvalid;
+    case Protocol.Network.CorsError.AllowOriginMismatch:
+    case Protocol.Network.CorsError.PreflightAllowOriginMismatch:
+      return OriginMismatch;
     default:
       return [Protocol.Audits.InspectorIssueCode.CorsIssue, issueDetails.corsErrorStatus.corsError].join('::');
   }
@@ -114,11 +118,19 @@ export class CorsIssue extends Issue {
             linkTitle: i18nString(UIStrings.CORS),
           }],
         };
-      case Protocol.Network.CorsError.DisallowedByMode:
       case Protocol.Network.CorsError.AllowOriginMismatch:
+      case Protocol.Network.CorsError.PreflightAllowOriginMismatch:
+        return {
+          file: 'corsOriginMismatch.md',
+          substitutions: undefined,
+          links: [{
+            link: 'https://web.dev/cross-origin-resource-sharing',
+            linkTitle: i18nString(UIStrings.CORS),
+          }],
+        };
+      case Protocol.Network.CorsError.DisallowedByMode:
       case Protocol.Network.CorsError.InvalidAllowCredentials:
       case Protocol.Network.CorsError.CorsDisabledScheme:
-      case Protocol.Network.CorsError.PreflightAllowOriginMismatch:
       case Protocol.Network.CorsError.PreflightInvalidAllowCredentials:
       case Protocol.Network.CorsError.MethodDisallowedByPreflightResponse:
       case Protocol.Network.CorsError.HeaderDisallowedByPreflightResponse:

@@ -4946,6 +4946,9 @@
   "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | url": {
     "message": "Ûŕl̂"
   },
+  "panels/issues/CorsIssueDetailsView.ts | allowedOrigin": {
+    "message": "Âĺl̂óŵéd̂ Ór̂íĝín̂ (f́r̂óm̂ h́êád̂ér̂)"
+  },
   "panels/issues/CorsIssueDetailsView.ts | blocked": {
     "message": "b̂ĺôćk̂éd̂"
   },

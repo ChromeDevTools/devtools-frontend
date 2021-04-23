@@ -79,6 +79,9 @@ export class CorsIssue extends Issue {
   getDescription(): MarkdownIssueDescription|null {
     switch (this.issueDetails.corsErrorStatus.corsError) {
       case Protocol.Network.CorsError.InsecurePrivateNetwork:
+        if (this.issueDetails.clientSecurityState?.initiatorIsSecureContext) {
+          return null;
+        }
         return {
           file: 'corsInsecurePrivateNetwork.md',
           substitutions: undefined,

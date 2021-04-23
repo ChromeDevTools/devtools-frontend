@@ -112,7 +112,7 @@ export function completeTest() {
 }
 
 self.TestRunner = self.TestRunner || {};
-export function flushResults() {
+function flushResults() {
   Array.prototype.forEach.call(document.documentElement.childNodes, x => x.remove());
   const outputElement = document.createElement('div');
   // Support for svg - add to document, not body, check for style.
@@ -334,7 +334,7 @@ export function safeWrap(func, onexception) {
  * @param {function(...):Promise<*>} func
  * @return {function(...):Promise<*>}
  */
-export function safeAsyncWrap(func) {
+function safeAsyncWrap(func) {
   /**
    * @this {*}
    */
@@ -622,23 +622,6 @@ export function addStylesheetTag(path) {
         window.getComputedStyle(document.body).color;
         resolve();
       }
-      return promise;
-    })();
-  `);
-}
-
-/**
- * @param {string} path
- * @return {!Promise<*>}
- */
-export function addHTMLImport(path) {
-  return evaluateInPageAsync(`
-    (function(){
-      const link = document.createElement('link');
-      link.rel = 'import';
-      link.href = '${path}';
-      const promise = new Promise(r => link.onload = r);
-      document.body.append(link);
       return promise;
     })();
   `);
@@ -1461,7 +1444,6 @@ TestRunner.MockSetting = MockSetting;
 
 TestRunner.formatters = formatters;
 
-TestRunner.flushResults = flushResults;
 TestRunner.completeTest = completeTest;
 TestRunner.addResult = addResult;
 TestRunner.addResults = addResults;
@@ -1471,7 +1453,6 @@ TestRunner.addSnifferPromise = addSnifferPromise;
 TestRunner.showPanel = showPanel;
 TestRunner.createKeyEvent = createKeyEvent;
 TestRunner.safeWrap = safeWrap;
-TestRunner.safeAsyncWrap = safeAsyncWrap;
 TestRunner.textContentWithLineBreaks = textContentWithLineBreaks;
 TestRunner.textContentWithoutStyles = textContentWithoutStyles;
 TestRunner.evaluateInPagePromise = evaluateInPagePromise;
@@ -1483,7 +1464,6 @@ TestRunner.deprecatedRunAfterPendingDispatches = deprecatedRunAfterPendingDispat
 TestRunner.loadHTML = loadHTML;
 TestRunner.addScriptTag = addScriptTag;
 TestRunner.addStylesheetTag = addStylesheetTag;
-TestRunner.addHTMLImport = addHTMLImport;
 TestRunner.addIframe = addIframe;
 TestRunner.markStep = markStep;
 TestRunner.startDumpingProtocolMessages = startDumpingProtocolMessages;
@@ -1535,8 +1515,3 @@ TestRunner.waitForPendingLiveLocationUpdates = waitForPendingLiveLocationUpdates
 TestRunner.findLineEndingIndexes = findLineEndingIndexes;
 
 TestRunner.isScrolledToBottom = UI.UIUtils.isScrolledToBottom;
-
-/**
- * @typedef {!Object<string, string>}
- */
-TestRunner.CustomFormatters;

@@ -64,13 +64,14 @@ kGrdTemplate = '''<?xml version="1.0" encoding="UTF-8"?>
 class ParsedArgs:
 
     def __init__(self, file_list, relative_path_dirs, output_filename,
-                 compress):
+                 old_output_filename, compress):
         self.file_list = file_list
         file_list_file = open(file_list, 'r')
         file_list_contents = file_list_file.read()
         self.source_files = shlex.split(file_list_contents)
         self.relative_path_dirs = relative_path_dirs
         self.output_filename = output_filename
+        self.old_output_filename = old_output_filename
         self.compress = compress
 
 
@@ -83,11 +84,12 @@ def parse_args(argv):
     file_list_position = argv.index('--file_list')
     relative_path_dirs_position = argv.index('--relative_path_dirs')
     output_position = argv.index('--output')
+    output_old_position = argv.index('--output_old')
     file_list = argv[file_list_position + 1]
     relative_path_dirs = argv[relative_path_dirs_position + 1:output_position]
     compress = argv.count('--compress') > 0
     return ParsedArgs(file_list, relative_path_dirs, argv[output_position + 1],
-                      compress)
+                      argv[output_old_position + 1], compress)
 
 
 def make_name_from_filename(filename):
@@ -121,7 +123,7 @@ def main(argv):
     parsed_args = parse_args(argv[1:])
 
     doc = minidom.parseString(kGrdTemplate)
-    output_directory = path.dirname(parsed_args.output_filename)
+    old_output_directory = path.dirname(parsed_args.old_output_filename)
 
     written_filenames = set()
     for filename in parsed_args.source_files:
@@ -130,7 +132,8 @@ def main(argv):
         if relative_filename in written_filenames:
             raise Exception("Duplicate file detected: %s" % relative_filename)
         written_filenames.add(relative_filename)
-        target_dir = path.join(output_directory, path.dirname(relative_filename))
+        target_dir = path.join(old_output_directory,
+                               path.dirname(relative_filename))
         if not path.exists(target_dir):
             os.makedirs(target_dir)
         shutil.copy(filename, target_dir)
@@ -138,6 +141,9 @@ def main(argv):
 
     with open(parsed_args.output_filename, 'wb') as output_file:
         output_file.write(doc.toxml(encoding='UTF-8'))
+
+    with open(parsed_args.old_output_filename, 'wb') as old_output_file:
+        old_output_file.write(doc.toxml(encoding='UTF-8'))
 
 
 if __name__ == '__main__':

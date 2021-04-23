@@ -8,6 +8,7 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import * as Logs from '../../models/logs/logs.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
@@ -726,7 +727,7 @@ export class Section {
       },
     ]);
 
-    const requests = SDK.NetworkLog.NetworkLog.instance().requests();
+    const requests = Logs.NetworkLog.NetworkLog.instance().requests();
     let lastRequest: SDK.NetworkRequest.NetworkRequest|null = null;
     if (Array.isArray(requests)) {
       for (const request of requests) {

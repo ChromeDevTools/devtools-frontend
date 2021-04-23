@@ -26,6 +26,7 @@ devtools_module("console") {
     "../../core/sdk:bundle",
     "../../models/bindings:bundle",
     "../../models/issues_manager:bundle",
+    "../../models/logs:bundle",
     "../../models/text_utils:bundle",
     "../../ui/legacy:bundle",
     "../../ui/legacy/components/data_grid:bundle",

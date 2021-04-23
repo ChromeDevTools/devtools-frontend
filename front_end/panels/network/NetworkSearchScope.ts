@@ -6,7 +6,8 @@
 
 import * as Common from '../../core/common/common.js';  // eslint-disable-line no-unused-vars
 import * as i18n from '../../core/i18n/i18n.js';
-import * as SDK from '../../core/sdk/sdk.js';                        // eslint-disable-line no-unused-vars
+import * as SDK from '../../core/sdk/sdk.js';  // eslint-disable-line no-unused-vars
+import * as Logs from '../../models/logs/logs.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';  // eslint-disable-line no-unused-vars
 import * as Search from '../search/search.js';                       // eslint-disable-line no-unused-vars
 
@@ -30,7 +31,7 @@ export class NetworkSearchScope implements Search.SearchConfig.SearchScope {
       searchResultCallback: (arg0: Search.SearchConfig.SearchResult) => void,
       searchFinishedCallback: (arg0: boolean) => void): Promise<void> {
     const promises = [];
-    const requests = SDK.NetworkLog.NetworkLog.instance().requests().filter(
+    const requests = Logs.NetworkLog.NetworkLog.instance().requests().filter(
         request => searchConfig.filePathMatchesFileQuery(request.url()));
     progress.setTotalWork(requests.length);
     for (const request of requests) {

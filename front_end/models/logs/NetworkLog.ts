@@ -30,17 +30,10 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../common/common.js';
-import * as i18n from '../i18n/i18n.js';
-import * as Platform from '../platform/platform.js';
-
-import {ConsoleMessage, ConsoleModel} from './ConsoleModel.js';
-import {Events as NetworkManagerEvents, Message, NetworkManager} from './NetworkManager.js';  // eslint-disable-line no-unused-vars
-import {InitiatorType, NetworkRequest} from './NetworkRequest.js';  // eslint-disable-line no-unused-vars
-import {PageLoad} from './PageLoad.js';
-import {Events as ResourceTreeModelEvents, ResourceTreeFrame, ResourceTreeModel} from './ResourceTreeModel.js';  // eslint-disable-line no-unused-vars
-import {RuntimeModel} from './RuntimeModel.js';
-import {SDKModelObserver, TargetManager} from './SDKModel.js';  // eslint-disable-line no-unused-vars
+import * as Common from '../../core/common/common.js';
+import * as i18n from '../../core/i18n/i18n.js';
+import * as Platform from '../../core/platform/platform.js';
+import * as SDK from '../../core/sdk/sdk.js';
 
 const UIStrings = {
   /**
@@ -48,24 +41,25 @@ const UIStrings = {
   */
   anonymous: '<anonymous>',
 };
-const str_ = i18n.i18n.registerUIStrings('core/sdk/NetworkLog.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('models/logs/NetworkLog.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
 // eslint-disable-next-line @typescript-eslint/naming-convention
 let _instance: NetworkLog;
 
-export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper implements SDKModelObserver<NetworkManager> {
-  _requests: NetworkRequest[];
+export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper implements
+    SDK.SDKModel.SDKModelObserver<SDK.NetworkManager.NetworkManager> {
+  _requests: SDK.NetworkRequest.NetworkRequest[];
   _sentNetworkRequests: Protocol.Network.Request[];
   _receivedNetworkResponses: Protocol.Network.Response[];
-  _requestsSet: Set<NetworkRequest>;
-  _requestsMap: Map<string, NetworkRequest[]>;
-  _pageLoadForManager: Map<NetworkManager, PageLoad>;
+  _requestsSet: Set<SDK.NetworkRequest.NetworkRequest>;
+  _requestsMap: Map<string, SDK.NetworkRequest.NetworkRequest[]>;
+  _pageLoadForManager: Map<SDK.NetworkManager.NetworkManager, SDK.PageLoad.PageLoad>;
   _isRecording: boolean;
-  _modelListeners: WeakMap<NetworkManager, Common.EventTarget.EventDescriptor[]>;
-  _initiatorData: WeakMap<NetworkRequest, InitiatorData>;
-  _unresolvedPreflightRequests: Map<string, NetworkRequest>;
+  _modelListeners: WeakMap<SDK.NetworkManager.NetworkManager, Common.EventTarget.EventDescriptor[]>;
+  _initiatorData: WeakMap<SDK.NetworkRequest.NetworkRequest, InitiatorData>;
+  _unresolvedPreflightRequests: Map<string, SDK.NetworkRequest.NetworkRequest>;
 
   constructor() {
     super();
@@ -78,7 +72,7 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper implements SD
     this._isRecording = true;
     this._modelListeners = new WeakMap();
     this._initiatorData = new WeakMap();
-    TargetManager.instance().observeModels(NetworkManager, this);
+    SDK.SDKModel.TargetManager.instance().observeModels(SDK.NetworkManager.NetworkManager, this);
     const recordLogSetting: Common.Settings.Setting<boolean> =
         Common.Settings.Settings.instance().moduleSetting('network_log.record-log');
     recordLogSetting.addChangeListener(() => {
@@ -98,40 +92,40 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper implements SD
     return _instance;
   }
 
-  modelAdded(networkManager: NetworkManager): void {
+  modelAdded(networkManager: SDK.NetworkManager.NetworkManager): void {
     const eventListeners = [];
     eventListeners.push(
-        networkManager.addEventListener(NetworkManagerEvents.RequestStarted, this._onRequestStarted, this));
+        networkManager.addEventListener(SDK.NetworkManager.Events.RequestStarted, this._onRequestStarted, this));
     eventListeners.push(
-        networkManager.addEventListener(NetworkManagerEvents.RequestUpdated, this._onRequestUpdated, this));
+        networkManager.addEventListener(SDK.NetworkManager.Events.RequestUpdated, this._onRequestUpdated, this));
     eventListeners.push(
-        networkManager.addEventListener(NetworkManagerEvents.RequestRedirected, this._onRequestRedirect, this));
+        networkManager.addEventListener(SDK.NetworkManager.Events.RequestRedirected, this._onRequestRedirect, this));
     eventListeners.push(
-        networkManager.addEventListener(NetworkManagerEvents.RequestFinished, this._onRequestUpdated, this));
+        networkManager.addEventListener(SDK.NetworkManager.Events.RequestFinished, this._onRequestUpdated, this));
     eventListeners.push(networkManager.addEventListener(
-        NetworkManagerEvents.MessageGenerated, this._networkMessageGenerated.bind(this, networkManager)));
+        SDK.NetworkManager.Events.MessageGenerated, this._networkMessageGenerated.bind(this, networkManager)));
     eventListeners.push(
-        networkManager.addEventListener(NetworkManagerEvents.ResponseReceived, this._onResponseReceived, this));
+        networkManager.addEventListener(SDK.NetworkManager.Events.ResponseReceived, this._onResponseReceived, this));
 
-    const resourceTreeModel = networkManager.target().model(ResourceTreeModel);
+    const resourceTreeModel = networkManager.target().model(SDK.ResourceTreeModel.ResourceTreeModel);
     if (resourceTreeModel) {
       eventListeners.push(
-          resourceTreeModel.addEventListener(ResourceTreeModelEvents.WillReloadPage, this._willReloadPage, this));
+          resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.WillReloadPage, this._willReloadPage, this));
       eventListeners.push(resourceTreeModel.addEventListener(
-          ResourceTreeModelEvents.MainFrameNavigated, this._onMainFrameNavigated, this));
-      eventListeners.push(resourceTreeModel.addEventListener(ResourceTreeModelEvents.Load, this._onLoad, this));
+          SDK.ResourceTreeModel.Events.MainFrameNavigated, this._onMainFrameNavigated, this));
+      eventListeners.push(resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.Load, this._onLoad, this));
       eventListeners.push(resourceTreeModel.addEventListener(
-          ResourceTreeModelEvents.DOMContentLoaded, this._onDOMContentLoaded.bind(this, resourceTreeModel)));
+          SDK.ResourceTreeModel.Events.DOMContentLoaded, this._onDOMContentLoaded.bind(this, resourceTreeModel)));
     }
 
     this._modelListeners.set(networkManager, eventListeners);
   }
 
-  modelRemoved(networkManager: NetworkManager): void {
+  modelRemoved(networkManager: SDK.NetworkManager.NetworkManager): void {
     this._removeNetworkManagerListeners(networkManager);
   }
 
-  _removeNetworkManagerListeners(networkManager: NetworkManager): void {
+  _removeNetworkManagerListeners(networkManager: SDK.NetworkManager.NetworkManager): void {
     Common.EventTarget.EventTarget.removeEventListeners(this._modelListeners.get(networkManager) || []);
   }
 
@@ -141,14 +135,16 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper implements SD
     }
     this._isRecording = enabled;
     if (enabled) {
-      TargetManager.instance().observeModels(NetworkManager, this);
+      SDK.SDKModel.TargetManager.instance().observeModels(SDK.NetworkManager.NetworkManager, this);
     } else {
-      TargetManager.instance().unobserveModels(NetworkManager, this);
-      TargetManager.instance().models(NetworkManager).forEach(this._removeNetworkManagerListeners.bind(this));
+      SDK.SDKModel.TargetManager.instance().unobserveModels(SDK.NetworkManager.NetworkManager, this);
+      SDK.SDKModel.TargetManager.instance()
+          .models(SDK.NetworkManager.NetworkManager)
+          .forEach(this._removeNetworkManagerListeners.bind(this));
     }
   }
 
-  requestForURL(url: string): NetworkRequest|null {
+  requestForURL(url: string): SDK.NetworkRequest.NetworkRequest|null {
     return this._requests.find(request => request.url() === url) || null;
   }
 
@@ -160,31 +156,34 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper implements SD
     return this._receivedNetworkResponses.find(response => response.url === url) || null;
   }
 
-  requests(): NetworkRequest[] {
+  requests(): SDK.NetworkRequest.NetworkRequest[] {
     return this._requests;
   }
 
-  requestByManagerAndId(networkManager: NetworkManager, requestId: string): NetworkRequest|null {
+  requestByManagerAndId(networkManager: SDK.NetworkManager.NetworkManager, requestId: string):
+      SDK.NetworkRequest.NetworkRequest|null {
     // We iterate backwards because the last item will likely be the one needed for console network request lookups.
     for (let i = this._requests.length - 1; i >= 0; i--) {
       const request = this._requests[i];
-      if (requestId === request.requestId() && networkManager === NetworkManager.forRequest(request)) {
+      if (requestId === request.requestId() &&
+          networkManager === SDK.NetworkManager.NetworkManager.forRequest(request)) {
         return request;
       }
     }
     return null;
   }
 
-  _requestByManagerAndURL(networkManager: NetworkManager, url: string): NetworkRequest|null {
+  _requestByManagerAndURL(networkManager: SDK.NetworkManager.NetworkManager, url: string):
+      SDK.NetworkRequest.NetworkRequest|null {
     for (const request of this._requests) {
-      if (url === request.url() && networkManager === NetworkManager.forRequest(request)) {
+      if (url === request.url() && networkManager === SDK.NetworkManager.NetworkManager.forRequest(request)) {
         return request;
       }
     }
     return null;
   }
 
-  _initializeInitiatorSymbolIfNeeded(request: NetworkRequest): InitiatorData {
+  _initializeInitiatorSymbolIfNeeded(request: SDK.NetworkRequest.NetworkRequest): InitiatorData {
     let initiatorInfo = this._initiatorData.get(request);
     if (initiatorInfo) {
       return initiatorInfo;
@@ -198,28 +197,28 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper implements SD
     return initiatorInfo;
   }
 
-  initiatorInfoForRequest(request: NetworkRequest): _InitiatorInfo {
+  initiatorInfoForRequest(request: SDK.NetworkRequest.NetworkRequest): _InitiatorInfo {
     const initiatorInfo = this._initializeInitiatorSymbolIfNeeded(request);
     if (initiatorInfo.info) {
       return initiatorInfo.info;
     }
 
-    let type = InitiatorType.Other;
+    let type = SDK.NetworkRequest.InitiatorType.Other;
     let url = '';
     let lineNumber: number = -Infinity;
     let columnNumber: number = -Infinity;
     let scriptId: string|null = null;
     let initiatorStack: Protocol.Runtime.StackTrace|null = null;
-    let initiatorRequest: (NetworkRequest|null)|null = null;
+    let initiatorRequest: (SDK.NetworkRequest.NetworkRequest|null)|null = null;
     const initiator = request.initiator();
 
     const redirectSource = request.redirectSource();
     if (redirectSource) {
-      type = InitiatorType.Redirect;
+      type = SDK.NetworkRequest.InitiatorType.Redirect;
       url = redirectSource.url();
     } else if (initiator) {
       if (initiator.type === Protocol.Network.InitiatorType.Parser) {
-        type = InitiatorType.Parser;
+        type = SDK.NetworkRequest.InitiatorType.Parser;
         url = initiator.url ? initiator.url : url;
         lineNumber = typeof initiator.lineNumber === 'number' ? initiator.lineNumber : lineNumber;
         columnNumber = typeof initiator.columnNumber === 'number' ? initiator.columnNumber : columnNumber;
@@ -230,7 +229,7 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper implements SD
             stack = stack.parent;
             continue;
           }
-          type = InitiatorType.Script;
+          type = SDK.NetworkRequest.InitiatorType.Script;
           url = topFrame.url || i18nString(UIStrings.anonymous);
           lineNumber = topFrame.lineNumber;
           columnNumber = topFrame.columnNumber;
@@ -238,7 +237,7 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper implements SD
           break;
         }
         if (!initiator.stack && initiator.url) {
-          type = InitiatorType.Script;
+          type = SDK.NetworkRequest.InitiatorType.Script;
           url = initiator.url;
           lineNumber = initiator.lineNumber || 0;
         }
@@ -246,12 +245,12 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper implements SD
           initiatorStack = initiator.stack || null;
         }
       } else if (initiator.type === Protocol.Network.InitiatorType.Preload) {
-        type = InitiatorType.Preload;
+        type = SDK.NetworkRequest.InitiatorType.Preload;
       } else if (initiator.type === Protocol.Network.InitiatorType.Preflight) {
-        type = InitiatorType.Preflight;
+        type = SDK.NetworkRequest.InitiatorType.Preflight;
         initiatorRequest = request.preflightInitiatorRequest();
       } else if (initiator.type === Protocol.Network.InitiatorType.SignedExchange) {
-        type = InitiatorType.SignedExchange;
+        type = SDK.NetworkRequest.InitiatorType.SignedExchange;
         url = initiator.url || '';
       }
     }
@@ -260,11 +259,11 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper implements SD
     return initiatorInfo.info;
   }
 
-  initiatorGraphForRequest(request: NetworkRequest): InitiatorGraph {
-    const initiated = new Map<NetworkRequest, NetworkRequest>();
-    const networkManager = NetworkManager.forRequest(request);
+  initiatorGraphForRequest(request: SDK.NetworkRequest.NetworkRequest): InitiatorGraph {
+    const initiated = new Map<SDK.NetworkRequest.NetworkRequest, SDK.NetworkRequest.NetworkRequest>();
+    const networkManager = SDK.NetworkManager.NetworkManager.forRequest(request);
     for (const otherRequest of this._requests) {
-      const otherRequestManager = NetworkManager.forRequest(otherRequest);
+      const otherRequestManager = SDK.NetworkManager.NetworkManager.forRequest(otherRequest);
       if (networkManager === otherRequestManager && this._initiatorChain(otherRequest).has(request)) {
         // save parent request of otherRequst in order to build the initiator chain table later
         const initiatorRequest = this._initiatorRequest(otherRequest);
@@ -276,16 +275,16 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper implements SD
     return {initiators: this._initiatorChain(request), initiated: initiated};
   }
 
-  _initiatorChain(request: NetworkRequest): Set<NetworkRequest> {
+  _initiatorChain(request: SDK.NetworkRequest.NetworkRequest): Set<SDK.NetworkRequest.NetworkRequest> {
     const initiatorDataForRequest = this._initializeInitiatorSymbolIfNeeded(request);
-    let initiatorChainCache: Set<NetworkRequest>|(Set<NetworkRequest>| null) = initiatorDataForRequest.chain;
+    let initiatorChainCache = initiatorDataForRequest.chain;
     if (initiatorChainCache) {
       return initiatorChainCache;
     }
 
     initiatorChainCache = new Set();
 
-    let checkRequest: (NetworkRequest|null)|NetworkRequest = request;
+    let checkRequest: SDK.NetworkRequest.NetworkRequest|null = request;
     while (checkRequest) {
       const initiatorData = this._initializeInitiatorSymbolIfNeeded(checkRequest);
       if (initiatorData.chain) {
@@ -302,13 +301,13 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper implements SD
     return initiatorChainCache;
   }
 
-  _initiatorRequest(request: NetworkRequest): NetworkRequest|null {
+  _initiatorRequest(request: SDK.NetworkRequest.NetworkRequest): SDK.NetworkRequest.NetworkRequest|null {
     const initiatorData = this._initializeInitiatorSymbolIfNeeded(request);
     if (initiatorData.request !== undefined) {
       return initiatorData.request;
     }
     const url = this.initiatorInfoForRequest(request).url;
-    const networkManager = NetworkManager.forRequest(request);
+    const networkManager = SDK.NetworkManager.NetworkManager.forRequest(request);
     initiatorData.request = networkManager ? this._requestByManagerAndURL(networkManager, url) : null;
     return initiatorData.request;
   }
@@ -320,8 +319,8 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper implements SD
   }
 
   _onMainFrameNavigated(event: Common.EventTarget.EventTargetEvent): void {
-    const mainFrame = (event.data as ResourceTreeFrame);
-    const manager = mainFrame.resourceTreeModel().target().model(NetworkManager);
+    const mainFrame = (event.data as SDK.ResourceTreeModel.ResourceTreeFrame);
+    const manager = mainFrame.resourceTreeModel().target().model(SDK.NetworkManager.NetworkManager);
     if (!manager || mainFrame.resourceTreeModel().target().parentTarget()) {
       return;
     }
@@ -336,7 +335,8 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper implements SD
     const preserveLog = Common.Settings.Settings.instance().moduleSetting('network_log.preserve-log').get();
 
     const oldRequests = this._requests;
-    const oldManagerRequests = this._requests.filter(request => NetworkManager.forRequest(request) === manager);
+    const oldManagerRequests =
+        this._requests.filter(request => SDK.NetworkManager.NetworkManager.forRequest(request) === manager);
     const oldRequestsSet = this._requestsSet;
     this._requests = [];
     this._sentNetworkRequests = [];
@@ -347,14 +347,14 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper implements SD
     this.dispatchEventToListeners(Events.Reset, {clearIfPreserved: !preserveLog});
 
     // Preserve requests from the new session.
-    let currentPageLoad: PageLoad|null = null;
+    let currentPageLoad: SDK.PageLoad.PageLoad|null = null;
     const requestsToAdd = [];
     for (const request of oldManagerRequests) {
       if (request.loaderId !== mainFrame.loaderId) {
         continue;
       }
       if (!currentPageLoad) {
-        currentPageLoad = new PageLoad(request);
+        currentPageLoad = new SDK.PageLoad.PageLoad(request);
         let redirectSource = request.redirectSource();
         while (redirectSource) {
           requestsToAdd.push(redirectSource);
@@ -400,7 +400,7 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper implements SD
     }
   }
 
-  _addRequest(request: NetworkRequest): void {
+  _addRequest(request: SDK.NetworkRequest.NetworkRequest): void {
     this._requests.push(request);
     this._requestsSet.add(request);
     const requestList = this._requestsMap.get(request.requestId());
@@ -413,7 +413,7 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper implements SD
     this.dispatchEventToListeners(Events.RequestAdded, request);
   }
 
-  _tryResolvePreflightRequests(request: NetworkRequest): void {
+  _tryResolvePreflightRequests(request: SDK.NetworkRequest.NetworkRequest): void {
     if (request.isPreflightRequest()) {
       const initiator = request.initiator();
       if (initiator && initiator.requestId) {
@@ -441,7 +441,7 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper implements SD
     }
   }
 
-  importRequests(requests: NetworkRequest[]): void {
+  importRequests(requests: SDK.NetworkRequest.NetworkRequest[]): void {
     this.reset(true);
     this._requests = [];
     this._sentNetworkRequests = [];
@@ -455,12 +455,12 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper implements SD
   }
 
   _onRequestStarted(event: Common.EventTarget.EventTargetEvent): void {
-    const request = (event.data.request as NetworkRequest);
+    const request = (event.data.request as SDK.NetworkRequest.NetworkRequest);
     if (event.data.originalRequest) {
       this._sentNetworkRequests.push(event.data.originalRequest);
     }
     this._requestsSet.add(request);
-    const manager = NetworkManager.forRequest(request);
+    const manager = SDK.NetworkManager.NetworkManager.forRequest(request);
     const pageLoad = manager ? this._pageLoadForManager.get(manager) : null;
     if (pageLoad) {
       pageLoad.bindRequest(request);
@@ -474,7 +474,7 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper implements SD
   }
 
   _onRequestUpdated(event: Common.EventTarget.EventTargetEvent): void {
-    const request = (event.data as NetworkRequest);
+    const request = (event.data as SDK.NetworkRequest.NetworkRequest);
     if (!this._requestsSet.has(request)) {
       return;
     }
@@ -482,12 +482,13 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper implements SD
   }
 
   _onRequestRedirect(event: Common.EventTarget.EventTargetEvent): void {
-    const request = (event.data as NetworkRequest);
+    const request = (event.data as SDK.NetworkRequest.NetworkRequest);
     this._initiatorData.delete(request);
   }
 
-  _onDOMContentLoaded(resourceTreeModel: ResourceTreeModel, event: Common.EventTarget.EventTargetEvent): void {
-    const networkManager = resourceTreeModel.target().model(NetworkManager);
+  _onDOMContentLoaded(
+      resourceTreeModel: SDK.ResourceTreeModel.ResourceTreeModel, event: Common.EventTarget.EventTargetEvent): void {
+    const networkManager = resourceTreeModel.target().model(SDK.NetworkManager.NetworkManager);
     const pageLoad = networkManager ? this._pageLoadForManager.get(networkManager) : null;
     if (pageLoad) {
       pageLoad.contentLoadTime = (event.data as number);
@@ -495,7 +496,7 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper implements SD
   }
 
   _onLoad(event: Common.EventTarget.EventTargetEvent): void {
-    const networkManager = event.data.resourceTreeModel.target().model(NetworkManager);
+    const networkManager = event.data.resourceTreeModel.target().model(SDK.NetworkManager.NetworkManager);
     const pageLoad = networkManager ? this._pageLoadForManager.get(networkManager) : null;
     if (pageLoad) {
       pageLoad.loadTime = (event.data.loadTime as number);
@@ -509,7 +510,8 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper implements SD
     this._requestsSet.clear();
     this._requestsMap.clear();
     this._unresolvedPreflightRequests.clear();
-    const managers = new Set<NetworkManager>(TargetManager.instance().models(NetworkManager));
+    const managers = new Set<SDK.NetworkManager.NetworkManager>(
+        SDK.SDKModel.TargetManager.instance().models(SDK.NetworkManager.NetworkManager));
     for (const manager of this._pageLoadForManager.keys()) {
       if (!managers.has(manager)) {
         this._pageLoadForManager.delete(manager);
@@ -519,18 +521,19 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper implements SD
     this.dispatchEventToListeners(Events.Reset, {clearIfPreserved});
   }
 
-  _networkMessageGenerated(networkManager: NetworkManager, event: Common.EventTarget.EventTargetEvent): void {
-    const message = (event.data as Message);
-    const consoleMessage = new ConsoleMessage(
-        networkManager.target().model(RuntimeModel), Protocol.Log.LogEntrySource.Network,
+  _networkMessageGenerated(
+      networkManager: SDK.NetworkManager.NetworkManager, event: Common.EventTarget.EventTargetEvent): void {
+    const message = (event.data as SDK.NetworkManager.Message);
+    const consoleMessage = new SDK.ConsoleModel.ConsoleMessage(
+        networkManager.target().model(SDK.RuntimeModel.RuntimeModel), Protocol.Log.LogEntrySource.Network,
         message.warning ? Protocol.Log.LogEntryLevel.Warning : Protocol.Log.LogEntryLevel.Info, message.message);
     this.associateConsoleMessageWithRequest(consoleMessage, message.requestId);
-    ConsoleModel.instance().addMessage(consoleMessage);
+    SDK.ConsoleModel.ConsoleModel.instance().addMessage(consoleMessage);
   }
 
-  associateConsoleMessageWithRequest(consoleMessage: ConsoleMessage, requestId: string): void {
+  associateConsoleMessageWithRequest(consoleMessage: SDK.ConsoleModel.ConsoleMessage, requestId: string): void {
     const target = consoleMessage.target();
-    const networkManager = target ? target.model(NetworkManager) : null;
+    const networkManager = target ? target.model(SDK.NetworkManager.NetworkManager) : null;
     if (!networkManager) {
       return;
     }
@@ -549,16 +552,17 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper implements SD
     }
   }
 
-  static requestForConsoleMessage(consoleMessage: ConsoleMessage): NetworkRequest|null {
+  static requestForConsoleMessage(consoleMessage: SDK.ConsoleModel.ConsoleMessage): SDK.NetworkRequest.NetworkRequest
+      |null {
     return consoleMessageToRequest.get(consoleMessage) || null;
   }
 
-  requestsForId(requestId: string): NetworkRequest[] {
+  requestsForId(requestId: string): SDK.NetworkRequest.NetworkRequest[] {
     return this._requestsMap.get(requestId) || [];
   }
 }
 
-const consoleMessageToRequest = new WeakMap<ConsoleMessage, NetworkRequest>();
+const consoleMessageToRequest = new WeakMap<SDK.ConsoleModel.ConsoleMessage, SDK.NetworkRequest.NetworkRequest>();
 
 export const Events = {
   Reset: Symbol('Reset'),
@@ -568,23 +572,23 @@ export const Events = {
 
 interface InitiatorData {
   info: _InitiatorInfo|null;
-  chain: Set<NetworkRequest>|null;
-  request?: NetworkRequest|null;
+  chain: Set<SDK.NetworkRequest.NetworkRequest>|null;
+  request?: SDK.NetworkRequest.NetworkRequest|null;
 }
 
 export interface InitiatorGraph {
-  initiators: Set<NetworkRequest>;
-  initiated: Map<NetworkRequest, NetworkRequest>;
+  initiators: Set<SDK.NetworkRequest.NetworkRequest>;
+  initiated: Map<SDK.NetworkRequest.NetworkRequest, SDK.NetworkRequest.NetworkRequest>;
 }
 
 // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export interface _InitiatorInfo {
-  type: InitiatorType;
+  type: SDK.NetworkRequest.InitiatorType;
   url: string;
   lineNumber: number;
   columnNumber: number;
   scriptId: string|null;
   stack: Protocol.Runtime.StackTrace|null;
-  initiatorRequest: NetworkRequest|null;
+  initiatorRequest: SDK.NetworkRequest.NetworkRequest|null;
 }

@@ -44,6 +44,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
+import * as Logs from '../../models/logs/logs.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
@@ -770,7 +771,7 @@ export class NetworkRequestNode extends NetworkNode {
   showingInitiatorChainChanged(): void {
     const showInitiatorChain = this.showingInitiatorChain();
 
-    const initiatorGraph = SDK.NetworkLog.NetworkLog.instance().initiatorGraphForRequest(this._request);
+    const initiatorGraph = Logs.NetworkLog.NetworkLog.instance().initiatorGraphForRequest(this._request);
     for (const request of initiatorGraph.initiators) {
       if (request === this._request) {
         continue;
@@ -1155,7 +1156,7 @@ export class NetworkRequestNode extends NetworkNode {
   _renderInitiatorCell(cell: HTMLElement): void {
     this._initiatorCell = cell;
     const request = this._request;
-    const initiator = SDK.NetworkLog.NetworkLog.instance().initiatorInfoForRequest(request);
+    const initiator = Logs.NetworkLog.NetworkLog.instance().initiatorInfoForRequest(request);
 
     const timing = request.timing;
     if (timing && timing.pushStart) {

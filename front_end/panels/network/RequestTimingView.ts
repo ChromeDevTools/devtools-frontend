@@ -34,6 +34,7 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import * as Logs from '../../models/logs/logs.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
@@ -554,7 +555,7 @@ export class RequestTimingView extends UI.Widget.VBox {
     const detailsView = new UI.TreeOutline.TreeOutlineInShadow();
     fetchDetailsElement.appendChild(detailsView.element);
 
-    const origRequest = SDK.NetworkLog.NetworkLog.instance().originalRequestForURL(this._request.url());
+    const origRequest = Logs.NetworkLog.NetworkLog.instance().originalRequestForURL(this._request.url());
     if (origRequest) {
       const requestObject = SDK.RemoteObject.RemoteObject.fromLocalObject(origRequest);
       const requestTreeElement = new ObjectUI.ObjectPropertiesSection.RootElement(requestObject);
@@ -562,7 +563,7 @@ export class RequestTimingView extends UI.Widget.VBox {
       detailsView.appendChild(requestTreeElement);
     }
 
-    const response = SDK.NetworkLog.NetworkLog.instance().originalResponseForURL(this._request.url());
+    const response = Logs.NetworkLog.NetworkLog.instance().originalResponseForURL(this._request.url());
     if (response) {
       const responseObject = SDK.RemoteObject.RemoteObject.fromLocalObject(response);
       const responseTreeElement = new ObjectUI.ObjectPropertiesSection.RootElement(responseObject);

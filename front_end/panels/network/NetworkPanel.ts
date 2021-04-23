@@ -41,6 +41,7 @@ import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
+import * as Logs from '../../models/logs/logs.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
@@ -322,11 +323,11 @@ export class NetworkPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
         SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.Load, this._load, this);
     this._networkLogView.addEventListener(Events.RequestSelected, this._onRequestSelected, this);
     this._networkLogView.addEventListener(Events.RequestActivated, this._onRequestActivated, this);
-    SDK.NetworkLog.NetworkLog.instance().addEventListener(
-        SDK.NetworkLog.Events.RequestAdded, this._onUpdateRequest, this);
-    SDK.NetworkLog.NetworkLog.instance().addEventListener(
-        SDK.NetworkLog.Events.RequestUpdated, this._onUpdateRequest, this);
-    SDK.NetworkLog.NetworkLog.instance().addEventListener(SDK.NetworkLog.Events.Reset, this._onNetworkLogReset, this);
+    Logs.NetworkLog.NetworkLog.instance().addEventListener(
+        Logs.NetworkLog.Events.RequestAdded, this._onUpdateRequest, this);
+    Logs.NetworkLog.NetworkLog.instance().addEventListener(
+        Logs.NetworkLog.Events.RequestUpdated, this._onUpdateRequest, this);
+    Logs.NetworkLog.NetworkLog.instance().addEventListener(Logs.NetworkLog.Events.Reset, this._onNetworkLogReset, this);
   }
 
   static instance(opts: {
@@ -396,7 +397,7 @@ export class NetworkPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
     this._panelToolbar.appendToolbarItem(UI.Toolbar.Toolbar.createActionButton(this._toggleRecordAction));
     const clearButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.clear), 'largeicon-clear');
     clearButton.addEventListener(
-        UI.Toolbar.ToolbarButton.Events.Click, () => SDK.NetworkLog.NetworkLog.instance().reset(true), this);
+        UI.Toolbar.ToolbarButton.Events.Click, () => Logs.NetworkLog.NetworkLog.instance().reset(true), this);
     this._panelToolbar.appendToolbarItem(clearButton);
     this._panelToolbar.appendSeparator();
 

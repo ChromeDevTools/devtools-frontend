@@ -4,6 +4,7 @@
 
 import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import {NetworkLog} from './NetworkLog.js';
 
 const modelToEventListeners = new WeakMap<SDK.LogModel.LogModel, Common.EventTarget.EventDescriptor[]>();
 
@@ -48,8 +49,7 @@ export class LogManager implements SDK.SDKModel.SDKModelObserver<SDK.LogModel.Lo
         data.entry.stackTrace, data.entry.timestamp, undefined, undefined, data.entry.workerId);
 
     if (data.entry.networkRequestId) {
-      SDK.NetworkLog.NetworkLog.instance().associateConsoleMessageWithRequest(
-          consoleMessage, data.entry.networkRequestId);
+      NetworkLog.instance().associateConsoleMessageWithRequest(consoleMessage, data.entry.networkRequestId);
     }
 
     if (consoleMessage.source === SDK.ConsoleModel.MessageSource.Worker) {

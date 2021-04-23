@@ -42,7 +42,6 @@ devtools_module("sdk") {
     "IssuesModel.ts",
     "LayerTreeBase.ts",
     "LogModel.ts",
-    "NetworkLog.ts",
     "NetworkManager.ts",
     "NetworkRequest.ts",
     "OverlayColorGenerator.ts",

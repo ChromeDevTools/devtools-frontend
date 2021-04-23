@@ -43,7 +43,6 @@ import * as IsolateManager from './IsolateManager.js';
 import * as IssuesModel from './IssuesModel.js';
 import * as LayerTreeBase from './LayerTreeBase.js';
 import * as LogModel from './LogModel.js';
-import * as NetworkLog from './NetworkLog.js';
 import * as NetworkManager from './NetworkManager.js';
 import * as NetworkRequest from './NetworkRequest.js';
 import * as OverlayColorGenerator from './OverlayColorGenerator.js';
@@ -105,7 +104,6 @@ export {
   IssuesModel,
   LayerTreeBase,
   LogModel,
-  NetworkLog,
   NetworkManager,
   NetworkRequest,
   OverlayColorGenerator,

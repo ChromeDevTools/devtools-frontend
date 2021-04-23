@@ -42,6 +42,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as HARImporter from '../../models/har_importer/har_importer.js';
 import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
+import * as Logs from '../../models/logs/logs.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
@@ -499,11 +500,11 @@ export class NetworkLogView extends UI.Widget.VBox implements
         .addChangeListener(this._invalidateAllItems.bind(this, false), this);
 
     SDK.SDKModel.TargetManager.instance().observeModels(SDK.NetworkManager.NetworkManager, this);
-    SDK.NetworkLog.NetworkLog.instance().addEventListener(
-        SDK.NetworkLog.Events.RequestAdded, this._onRequestUpdated, this);
-    SDK.NetworkLog.NetworkLog.instance().addEventListener(
-        SDK.NetworkLog.Events.RequestUpdated, this._onRequestUpdated, this);
-    SDK.NetworkLog.NetworkLog.instance().addEventListener(SDK.NetworkLog.Events.Reset, this._reset, this);
+    Logs.NetworkLog.NetworkLog.instance().addEventListener(
+        Logs.NetworkLog.Events.RequestAdded, this._onRequestUpdated, this);
+    Logs.NetworkLog.NetworkLog.instance().addEventListener(
+        Logs.NetworkLog.Events.RequestUpdated, this._onRequestUpdated, this);
+    Logs.NetworkLog.NetworkLog.instance().addEventListener(Logs.NetworkLog.Events.Reset, this._reset, this);
 
     this._updateGroupByFrame();
     Common.Settings.Settings.instance()
@@ -736,7 +737,7 @@ export class NetworkLogView extends UI.Widget.VBox implements
       this._harLoadFailed(e);
       return;
     }
-    SDK.NetworkLog.NetworkLog.instance().importRequests(
+    Logs.NetworkLog.NetworkLog.instance().importRequests(
         HARImporter.HARImporter.Importer.requestsFromHARLog(harRoot.log));
   }
 
@@ -963,7 +964,7 @@ export class NetworkLogView extends UI.Widget.VBox implements
     let maxTime = -1;
 
     let nodeCount = 0;
-    for (const request of SDK.NetworkLog.NetworkLog.instance().requests()) {
+    for (const request of Logs.NetworkLog.NetworkLog.instance().requests()) {
       const node = networkRequestToNode.get(request);
       if (!node) {
         continue;
@@ -1082,7 +1083,7 @@ export class NetworkLogView extends UI.Widget.VBox implements
   }
 
   _invalidateAllItems(deferUpdate?: boolean): void {
-    this._staleRequests = new Set(SDK.NetworkLog.NetworkLog.instance().requests());
+    this._staleRequests = new Set(Logs.NetworkLog.NetworkLog.instance().requests());
     if (deferUpdate) {
       this.scheduleRefresh();
     } else {
@@ -1544,10 +1545,13 @@ export class NetworkLogView extends UI.Widget.VBox implements
   }
 
   _harRequests(): SDK.NetworkRequest.NetworkRequest[] {
-    return SDK.NetworkLog.NetworkLog.instance().requests().filter(NetworkLogView.HTTPRequestsFilter).filter(request => {
-      return request.finished ||
-          (request.resourceType() === Common.ResourceType.resourceTypes.WebSocket && request.responseReceivedTime);
-    });
+    return Logs.NetworkLog.NetworkLog.instance()
+        .requests()
+        .filter(NetworkLogView.HTTPRequestsFilter)
+        .filter(request => {
+          return request.finished ||
+              (request.resourceType() === Common.ResourceType.resourceTypes.WebSocket && request.responseReceivedTime);
+        });
   }
 
   async _copyAll(): Promise<void> {
@@ -1561,7 +1565,7 @@ export class NetworkLogView extends UI.Widget.VBox implements
   }
 
   async _copyAllCurlCommand(platform: string): Promise<void> {
-    const commands = await this._generateAllCurlCommand(SDK.NetworkLog.NetworkLog.instance().requests(), platform);
+    const commands = await this._generateAllCurlCommand(Logs.NetworkLog.NetworkLog.instance().requests(), platform);
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(commands);
   }
 
@@ -1571,7 +1575,7 @@ export class NetworkLogView extends UI.Widget.VBox implements
   }
 
   async _copyAllFetchCall(includeCookies: boolean): Promise<void> {
-    const commands = await this._generateAllFetchCall(SDK.NetworkLog.NetworkLog.instance().requests(), includeCookies);
+    const commands = await this._generateAllFetchCall(Logs.NetworkLog.NetworkLog.instance().requests(), includeCookies);
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(commands);
   }
 
@@ -1581,7 +1585,7 @@ export class NetworkLogView extends UI.Widget.VBox implements
   }
 
   async _copyAllPowerShellCommand(): Promise<void> {
-    const commands = await this._generateAllPowerShellCommand(SDK.NetworkLog.NetworkLog.instance().requests());
+    const commands = await this._generateAllPowerShellCommand(Logs.NetworkLog.NetworkLog.instance().requests());
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(commands);
   }
 

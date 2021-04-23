@@ -39,6 +39,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
+import * as Logs from '../../models/logs/logs.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
@@ -364,7 +365,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
   }
 
   _formatAsNetworkRequest(): HTMLElement|null {
-    const request = SDK.NetworkLog.NetworkLog.requestForConsoleMessage(this._message);
+    const request = Logs.NetworkLog.NetworkLog.requestForConsoleMessage(this._message);
     if (!request) {
       return null;
     }

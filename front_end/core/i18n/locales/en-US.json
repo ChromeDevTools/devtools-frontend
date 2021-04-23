@@ -371,9 +371,6 @@
   "core/sdk/DOMDebuggerModel.ts | xhr": {
     "message": "XHR"
   },
-  "core/sdk/NetworkLog.ts | anonymous": {
-    "message": "<anonymous>"
-  },
   "core/sdk/NetworkManager.ts | crossoriginReadBlockingCorb": {
     "message": "Cross-Origin Read Blocking (CORB) blocked cross-origin response {PH1} with MIME type {PH2}. See https://www.chromestatus.com/feature/5629709824032768 for more details."
   },
@@ -1303,6 +1300,9 @@
   },
   "models/logs/logs-meta.ts | reset": {
     "message": "reset"
+  },
+  "models/logs/NetworkLog.ts | anonymous": {
+    "message": "<anonymous>"
   },
   "models/persistence/Automapping.ts | theAttemptToBindSInTheWorkspace": {
     "message": "The attempt to bind \"{PH1}\" in the workspace failed as this URI is malformed."

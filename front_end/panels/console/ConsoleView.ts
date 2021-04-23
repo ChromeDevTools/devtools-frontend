@@ -40,6 +40,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
+import * as Logs from '../../models/logs/logs.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -968,7 +969,7 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
     }
 
     if (consoleMessage) {
-      const request = SDK.NetworkLog.NetworkLog.requestForConsoleMessage(consoleMessage);
+      const request = Logs.NetworkLog.NetworkLog.requestForConsoleMessage(consoleMessage);
       if (request && SDK.NetworkManager.NetworkManager.canReplayRequest(request)) {
         contextMenu.debugSection().appendItem(
             i18nString(UIStrings.replayXhr), SDK.NetworkManager.NetworkManager.replayRequest.bind(null, request));

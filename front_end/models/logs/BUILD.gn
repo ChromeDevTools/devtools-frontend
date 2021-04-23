@@ -6,7 +6,10 @@ import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_module.gni")
 
 devtools_module("logs") {
-  sources = [ "LogManager.ts" ]
+  sources = [
+    "LogManager.ts",
+    "NetworkLog.ts",
+  ]
 
   deps = [
     "../../core/common:bundle",

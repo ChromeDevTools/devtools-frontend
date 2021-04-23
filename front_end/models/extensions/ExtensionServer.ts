@@ -41,6 +41,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as _ProtocolClient from '../../core/protocol_client/protocol_client.js';  // eslint-disable-line @typescript-eslint/no-unused-vars
 import * as Root from '../../core/root/root.js';                                   // eslint-disable-line no-unused-vars
 import * as SDK from '../../core/sdk/sdk.js';
+import * as Logs from '../../models/logs/logs.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
@@ -427,7 +428,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
       return this._status.OK();
     }
 
-    const request = SDK.NetworkLog.NetworkLog.instance().requestForURL(message.url);
+    const request = Logs.NetworkLog.NetworkLog.instance().requestForURL(message.url);
     if (request) {
       Common.Revealer.reveal(request);
       return this._status.OK();
@@ -483,7 +484,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   async _onGetHAR(): Promise<SDK.HARLog.HARLogDTO> {
-    const requests = SDK.NetworkLog.NetworkLog.instance().requests();
+    const requests = Logs.NetworkLog.NetworkLog.instance().requests();
     const harLog = await SDK.HARLog.HARLog.build(requests);
     for (let i = 0; i < harLog.entries.length; ++i) {
       harLog.entries[i]._requestId = this._requestId(requests[i]);

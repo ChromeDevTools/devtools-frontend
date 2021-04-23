@@ -30,6 +30,7 @@ devtools_module("issues") {
     "../../core/i18n:bundle",
     "../../core/sdk:bundle",
     "../../models/issues_manager:bundle",
+    "../../models/logs:bundle",
     "../../panels/console_counters:bundle",
     "../../panels/elements:bundle",
     "../../panels/network:bundle",

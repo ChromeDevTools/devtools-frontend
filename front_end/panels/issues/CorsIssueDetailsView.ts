@@ -95,6 +95,10 @@ const UIStrings = {
   *@description Title for a column in the affected resources for a CORS issue showing the origin that was allowed according to CORS headers.
   */
   allowedOrigin: 'Allowed Origin (from header)',
+  /**
+  *@description Title for a column in the affected resources for a CORS issue showing the value of the Access-Control-Allow-Credentials response header.
+  */
+  allowCredentialsValueFromHeader: '`Access-Control-Allow-Credentials` Header Value',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/issues/CorsIssueDetailsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -142,6 +146,9 @@ export class CorsIssueDetailsView extends AffectedResourcesView {
       this.appendColumnTitle(header, i18nString(UIStrings.preflightRequestIfProblematic));
       this.appendColumnTitle(header, i18nString(UIStrings.initiatorContext));
       this.appendColumnTitle(header, i18nString(UIStrings.allowedOrigin));
+    } else if (issueCode === IssuesManager.CorsIssue.AllowCredentialsRequired) {
+      this.appendColumnTitle(header, i18nString(UIStrings.preflightRequestIfProblematic));
+      this.appendColumnTitle(header, i18nString(UIStrings.allowCredentialsValueFromHeader));
     } else {
       this.appendColumnTitle(header, i18nString(UIStrings.resourceAddressSpace));
       this.appendColumnTitle(header, i18nString(UIStrings.initiatorAddressSpace));
@@ -238,6 +245,13 @@ export class CorsIssueDetailsView extends AffectedResourcesView {
         this.appendIssueDetailCell(element, '');
       }
       this.appendIssueDetailCell(element, details.initiatorOrigin ?? '', 'code-example');
+      this.appendIssueDetailCell(element, details.corsErrorStatus.failedParameter, 'code-example');
+    } else if (issueCode === IssuesManager.CorsIssue.AllowCredentialsRequired) {
+      if (corsError.includes('Preflight')) {
+        element.appendChild(this.createRequestCell(details.request, {linkToPreflight: true}));
+      } else {
+        this.appendIssueDetailCell(element, '');
+      }
       this.appendIssueDetailCell(element, details.corsErrorStatus.failedParameter, 'code-example');
     } else {
       this.appendIssueDetailCell(element, details.resourceIPAddressSpace ?? '');

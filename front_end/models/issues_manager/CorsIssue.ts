@@ -29,6 +29,8 @@ export const WildcardOriginWithCredentials =
 export const PreflightResponseInvalid =
     [Protocol.Audits.InspectorIssueCode.CorsIssue, 'PreflightResponseInvalid'].join('::');
 export const OriginMismatch = [Protocol.Audits.InspectorIssueCode.CorsIssue, 'OriginMismatch'].join('::');
+export const AllowCredentialsRequired =
+    [Protocol.Audits.InspectorIssueCode.CorsIssue, 'AllowCredentialsRequired'].join('::');
 
 function getIssueCode(issueDetails: Protocol.Audits.CorsIssueDetails): string {
   switch (issueDetails.corsErrorStatus.corsError) {
@@ -50,6 +52,9 @@ function getIssueCode(issueDetails: Protocol.Audits.CorsIssueDetails): string {
     case Protocol.Network.CorsError.AllowOriginMismatch:
     case Protocol.Network.CorsError.PreflightAllowOriginMismatch:
       return OriginMismatch;
+    case Protocol.Network.CorsError.InvalidAllowCredentials:
+    case Protocol.Network.CorsError.PreflightInvalidAllowCredentials:
+      return AllowCredentialsRequired;
     default:
       return [Protocol.Audits.InspectorIssueCode.CorsIssue, issueDetails.corsErrorStatus.corsError].join('::');
   }
@@ -128,10 +133,18 @@ export class CorsIssue extends Issue {
             linkTitle: i18nString(UIStrings.CORS),
           }],
         };
-      case Protocol.Network.CorsError.DisallowedByMode:
       case Protocol.Network.CorsError.InvalidAllowCredentials:
-      case Protocol.Network.CorsError.CorsDisabledScheme:
       case Protocol.Network.CorsError.PreflightInvalidAllowCredentials:
+        return {
+          file: 'corsAllowCredentialsRequired.md',
+          substitutions: undefined,
+          links: [{
+            link: 'https://web.dev/cross-origin-resource-sharing',
+            linkTitle: i18nString(UIStrings.CORS),
+          }],
+        };
+      case Protocol.Network.CorsError.DisallowedByMode:
+      case Protocol.Network.CorsError.CorsDisabledScheme:
       case Protocol.Network.CorsError.MethodDisallowedByPreflightResponse:
       case Protocol.Network.CorsError.HeaderDisallowedByPreflightResponse:
       case Protocol.Network.CorsError.RedirectContainsCredentials:

@@ -6,6 +6,7 @@ import("../../../../scripts/build/ninja/copy.gni")
 
 copy_to_gen("issues") {
   sources = [
+    "acac-invalid.rawresponse",
     "acao-mismatch.rawresponse",
     "corp-frame.rawresponse",
     "cors-issue.html",

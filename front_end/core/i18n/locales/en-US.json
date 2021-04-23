@@ -4946,6 +4946,9 @@
   "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | url": {
     "message": "Url"
   },
+  "panels/issues/CorsIssueDetailsView.ts | allowCredentialsValueFromHeader": {
+    "message": "Access-Control-Allow-Credentials Header Value"
+  },
   "panels/issues/CorsIssueDetailsView.ts | allowedOrigin": {
     "message": "Allowed Origin (from header)"
   },

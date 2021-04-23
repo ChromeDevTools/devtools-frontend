@@ -153,7 +153,9 @@ function requestHandler(request, response) {
 
       if (isHeader) {
         const firstColon = line.indexOf(':');
-        response.setHeader(line.substring(0, firstColon), line.substring(firstColon + 1).trim());
+        let headerValue = line.substring(firstColon + 1).trim();
+        headerValue = headerValue.replace('$host_port', `${server.address().port}`);
+        response.setHeader(line.substring(0, firstColon), headerValue);
       } else {
         response.write(line);
       }

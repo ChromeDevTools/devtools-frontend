@@ -226,4 +226,61 @@ describe('CORS issues', async () => {
       }
     }
   });
+
+  it('should display invalid CORS ACAC values with the correct affected resources', async () => {
+    await goToResource('empty.html');
+    const {target} = getBrowserAndPages();
+    await target.evaluate(async () => {
+      const url = new URL('./issues/acac-invalid.rawresponse', document.location.toString())
+                      .toString()
+                      .replace('localhost', 'devtools.oopif.test');
+      try {
+        await fetch(url, {
+          method: 'POST',
+          credentials: 'include',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({geeting: 'hello'}),
+        });
+      } catch (e) {
+      }
+      try {
+        await fetch(url, {credentials: 'include'});
+      } catch (e) {
+      }
+    });
+    await navigateToIssuesTab();
+    await expandIssue();
+    const issueElement = await getIssueByTitle('Ensure CORS requests include credentials only when allowed');
+    assert.isNotNull(issueElement);
+    if (issueElement) {
+      const section = await getResourcesElement('requests', issueElement, '.cors-issue-affected-resource-label');
+      const text = await section.label.evaluate(el => el.textContent);
+      // TODO(crbug.com/1189877): Remove 2nd space after fixing l10n presubmit check
+      assert.strictEqual(text, '2  requests');
+      await ensureResourceSectionIsExpanded(section);
+      const table = await extractTableFromResourceSection(section.content);
+      assert.isNotNull(table);
+      if (table) {
+        assert.strictEqual(table.length, 3);
+        assert.deepEqual(table[0], [
+          'Request',
+          'Status',
+          'Preflight Request (if problematic)',
+          'Access-Control-Allow-Credentials Header Value',
+        ]);
+        matchArray(table[1], [
+          'acac-invalid.rawresponse',
+          'blocked',
+          'acac-invalid.rawresponse',
+          'false',
+        ]);
+        matchArray(table[2], [
+          'acac-invalid.rawresponse',
+          'blocked',
+          '',
+          'false',
+        ]);
+      }
+    }
+  });
 });

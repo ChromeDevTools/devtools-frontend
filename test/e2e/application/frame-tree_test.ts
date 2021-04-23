@@ -67,7 +67,8 @@ describe('The Application Tab', async () => {
     });
   });
 
-  it('shows stack traces for OOPIF', async () => {
+  // Flaky test
+  it.skipOnPlatforms(['mac'], '[crbug.com/1202024]: shows stack traces for OOPIF', async () => {
     const {target} = getBrowserAndPages();
     await navigateToApplicationTab(target, 'js-oopif');
     await waitForFunction(async () => {

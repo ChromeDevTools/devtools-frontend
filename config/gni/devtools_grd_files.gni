@@ -247,6 +247,7 @@ grd_files_release_sources = [
   "front_end/models/issues_manager/descriptions/corsMethodDisallowedByPreflightResponse.md",
   "front_end/models/issues_manager/descriptions/corsOriginMismatch.md",
   "front_end/models/issues_manager/descriptions/corsPreflightResponseInvalid.md",
+  "front_end/models/issues_manager/descriptions/corsRedirectContainsCredentials.md",
   "front_end/models/issues_manager/descriptions/corsWildcardOriginNotAllowed.md",
   "front_end/models/issues_manager/descriptions/cspEvalViolation.md",
   "front_end/models/issues_manager/descriptions/cspInlineViolation.md",

@@ -10,6 +10,7 @@ copy_to_gen("issues") {
     "acao-mismatch.rawresponse",
     "corp-frame.rawresponse",
     "cors-issue.html",
+    "credentialed-redirect.rawresponse",
     "invalid-response-code.rawresponse",
     "method-disallowed.rawresponse",
     "origin-wildcard.rawresponse",

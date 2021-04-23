@@ -374,4 +374,43 @@ describe('CORS issues', async () => {
       }
     }
   });
+
+  it('should display CORS requests redirecting to credentialed URLs', async () => {
+    await goToResource('empty.html');
+    const {target} = getBrowserAndPages();
+    await target.evaluate(async () => {
+      try {
+        const url = new URL('./issues/credentialed-redirect.rawresponse', document.location.toString())
+                        .toString()
+                        .replace('localhost', 'devtools.oopif.test');
+        await fetch(url);
+      } catch (e) {
+      }
+    });
+    await navigateToIssuesTab();
+    await expandIssue();
+    const issueElement =
+        await getIssueByTitle('Ensure CORS requests are not redirected to URLs containing credentials');
+    assert.isNotNull(issueElement);
+    if (issueElement) {
+      const section = await getResourcesElement('request', issueElement, '.cors-issue-affected-resource-label');
+      const text = await section.label.evaluate(el => el.textContent);
+      // TODO(crbug.com/1189877): Remove 2nd space after fixing l10n presubmit check
+      assert.strictEqual(text, '1  request');
+      await ensureResourceSectionIsExpanded(section);
+      const table = await extractTableFromResourceSection(section.content);
+      assert.isNotNull(table);
+      if (table) {
+        assert.strictEqual(table.length, 2);
+        assert.deepEqual(table[0], [
+          'Request',
+          'Status',
+        ]);
+        matchArray(table[1], [
+          'credentialed-redirect.rawresponse',
+          'blocked',
+        ]);
+      }
+    }
+  });
 });

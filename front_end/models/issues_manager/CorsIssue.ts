@@ -164,9 +164,17 @@ export class CorsIssue extends Issue {
             linkTitle: i18nString(UIStrings.CORS),
           }],
         };
+      case Protocol.Network.CorsError.RedirectContainsCredentials:
+        return {
+          file: 'corsRedirectContainsCredentials.md',
+          substitutions: undefined,
+          links: [{
+            link: 'https://web.dev/cross-origin-resource-sharing',
+            linkTitle: i18nString(UIStrings.CORS),
+          }],
+        };
       case Protocol.Network.CorsError.DisallowedByMode:
       case Protocol.Network.CorsError.CorsDisabledScheme:
-      case Protocol.Network.CorsError.RedirectContainsCredentials:
       case Protocol.Network.CorsError.PreflightMissingAllowExternal:
       case Protocol.Network.CorsError.PreflightInvalidAllowExternal:
       case Protocol.Network.CorsError.InvalidResponse:

@@ -1,0 +1,21 @@
+import("../../../../../third_party/typescript/typescript.gni")
+
+ts_library("issues_manager") {
+  testonly = true
+  sources = [
+    "Issue_test.ts",
+    "IssuesManager_test.ts",
+    "MarkdownIssueDescription_test.ts",
+    "MockIssuesManager.ts",
+    "MockIssuesModel.ts",
+    "RelatedIssue_test.ts",
+    "StubIssue.ts",
+  ]
+
+  deps = [
+    "../../../../../front_end/models/issues_manager:bundle",
+    "../../core/common",
+    "../../core/sdk",
+    "../../helpers",
+  ]
+}

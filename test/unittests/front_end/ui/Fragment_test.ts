@@ -4,7 +4,7 @@
 
 const {assert} = chai;
 
-import '../../../../front_end/core/dom_extension/DOMExtension.js';
+import '../../../../front_end/core/dom_extension/dom_extension.js';
 import * as UI from '../../../../front_end/ui/legacy/legacy.js';
 
 describe('Fragment', () => {

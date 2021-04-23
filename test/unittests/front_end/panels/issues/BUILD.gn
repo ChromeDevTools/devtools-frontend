@@ -1,0 +1,19 @@
+import("../../../../../third_party/typescript/typescript.gni")
+
+ts_library("issues") {
+  testonly = true
+  sources = [
+    "IssueAggregator_test.ts",
+    "LowContrastIssuesAggregation_test.ts",
+    "TrustedWebActivityIssuesAggregation_test.ts",
+  ]
+
+  deps = [
+    "../../../../../front_end/core/host:bundle",
+    "../../../../../front_end/core/sdk:bundle",
+    "../../../../../front_end/panels/issues:bundle",
+    "../../core/sdk",
+    "../../helpers",
+    "../../models/issues_manager",
+  ]
+}

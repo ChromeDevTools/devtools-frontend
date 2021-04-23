@@ -224,21 +224,16 @@ action("generate_devtools_grd") {
     inputs += [ "$target_gen_dir/$_grd_file" ]
   }
 
-  response_file_contents = rebase_path(inputs, root_build_dir)
+  response_file_contents = rebase_path(_expected_grd_files, "front_end")
   outfile = "$target_gen_dir/front_end/devtools_resources.grd"
   outputs = [ outfile ]
 
-  relative_path_dirs = [ "$target_gen_dir/front_end" ]
-
   args = [
-           "--file_list",
-           "{{response_file_name}}",
-           "--relative_path_dirs",
-         ] + rebase_path(relative_path_dirs, root_build_dir) +
-         [
-           "--output",
-           rebase_path(outfile, root_build_dir),
-         ]
+    "--file_list",
+    "{{response_file_name}}",
+    "--output",
+    rebase_path(outfile, root_build_dir),
+  ]
   if (!is_debug) {
     # Compression is slow, particularly in debug builds, so only compress in
     # non-debug builds.

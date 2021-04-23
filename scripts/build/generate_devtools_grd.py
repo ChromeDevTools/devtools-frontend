@@ -63,13 +63,11 @@ kGrdTemplate = '''<?xml version="1.0" encoding="UTF-8"?>
 
 class ParsedArgs:
 
-    def __init__(self, file_list, relative_path_dirs, output_filename,
-                 compress):
+    def __init__(self, file_list, output_filename, compress):
         self.file_list = file_list
         file_list_file = open(file_list, 'r')
         file_list_contents = file_list_file.read()
         self.source_files = shlex.split(file_list_contents)
-        self.relative_path_dirs = relative_path_dirs
         self.output_filename = output_filename
         self.compress = compress
 
@@ -77,17 +75,13 @@ class ParsedArgs:
 def parse_args(argv):
     # The arguments are of the format:
     #   --file_list <input_file_list>
-    #   --relative_path_dirs [ <directory> ]*
     #   --output <output_file>
     #   --compress
     file_list_position = argv.index('--file_list')
-    relative_path_dirs_position = argv.index('--relative_path_dirs')
     output_position = argv.index('--output')
     file_list = argv[file_list_position + 1]
-    relative_path_dirs = argv[relative_path_dirs_position + 1:output_position]
     compress = argv.count('--compress') > 0
-    return ParsedArgs(file_list, relative_path_dirs, argv[output_position + 1],
-                      compress)
+    return ParsedArgs(file_list, argv[output_position + 1], compress)
 
 
 def make_name_from_filename(filename):
@@ -109,14 +103,6 @@ def add_file_to_grd(grd_doc, relative_filename, compress):
     includes_node.appendChild(new_include_node)
 
 
-def build_relative_filename(relative_path_dirs, filename):
-    for relative_path_dir in relative_path_dirs:
-        index = filename.find(relative_path_dir)
-        if index == 0:
-            return filename[len(relative_path_dir) + 1:]
-    return path.basename(filename)
-
-
 def main(argv):
     parsed_args = parse_args(argv[1:])
 
@@ -124,12 +110,11 @@ def main(argv):
 
     written_filenames = set()
     for filename in parsed_args.source_files:
-        relative_filename = build_relative_filename(parsed_args.relative_path_dirs, filename)
         # Avoid writing duplicate relative filenames.
-        if relative_filename in written_filenames:
-            raise Exception("Duplicate file detected: %s" % relative_filename)
-        written_filenames.add(relative_filename)
-        add_file_to_grd(doc, relative_filename, parsed_args.compress)
+        if filename in written_filenames:
+            raise Exception("Duplicate file detected: %s" % filename)
+        written_filenames.add(filename)
+        add_file_to_grd(doc, filename, parsed_args.compress)
 
     with open(parsed_args.output_filename, 'wb') as output_file:
         output_file.write(doc.toxml(encoding='UTF-8'))

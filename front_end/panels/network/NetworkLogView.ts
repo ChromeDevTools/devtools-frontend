@@ -1555,7 +1555,7 @@ export class NetworkLogView extends UI.Widget.VBox implements
   }
 
   async _copyAll(): Promise<void> {
-    const harArchive = {log: await SDK.HARLog.HARLog.build(this._harRequests())};
+    const harArchive = {log: await HARImporter.HARLog.HARLog.build(this._harRequests())};
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(JSON.stringify(harArchive, null, 2));
   }
 

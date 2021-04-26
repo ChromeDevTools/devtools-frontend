@@ -5,6 +5,7 @@
 import '../../panels/network/network-legacy.js';
 import '../test_runner/test_runner.js';
 import '../console_test_runner/console_test_runner.js';
+import * as HARImporter from '../../models/har_importer/har_importer.js';
 import * as Logs from '../../models/logs/logs.js';
 
 /**
@@ -202,8 +203,8 @@ NetworkTestRunner.HARPropertyFormatters = {
 NetworkTestRunner.HARPropertyFormattersWithSize = JSON.parse(JSON.stringify(NetworkTestRunner.HARPropertyFormatters));
 NetworkTestRunner.HARPropertyFormattersWithSize.size = 'formatAsTypeName';
 
-NetworkTestRunner.buildHARLog = SDK.HARLog.build;
-NetworkTestRunner.buildHARLogEntry = SDK.HARLog.Entry.build;
+NetworkTestRunner.buildHARLog = HARImporter.HARLog.HARLog.build;
+NetworkTestRunner.buildHARLogEntry = HARImporter.HARLog.Entry.build;
 NetworkTestRunner.networkLog = () => Logs.NetworkLog.NetworkLog.instance();
 NetworkTestRunner.NetworkLogEvents = Logs.NetworkLog.Events;
 

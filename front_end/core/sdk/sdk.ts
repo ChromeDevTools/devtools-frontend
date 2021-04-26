@@ -36,7 +36,6 @@ import * as DOMModel from './DOMModel.js';
 import * as EmulationModel from './EmulationModel.js';
 import * as FilmStripModel from './FilmStripModel.js';
 import * as FrameManager from './FrameManager.js';
-import * as HARLog from './HARLog.js';
 import * as HeapProfilerModel from './HeapProfilerModel.js';
 import * as IOModel from './IOModel.js';
 import * as IsolateManager from './IsolateManager.js';
@@ -97,7 +96,6 @@ export {
   EmulationModel,
   FilmStripModel,
   FrameManager,
-  HARLog,
   HeapProfilerModel,
   IOModel,
   IsolateManager,

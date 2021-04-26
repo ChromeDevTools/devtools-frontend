@@ -38,6 +38,7 @@ import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import * as HarImporter from '../../models/har_importer/har_importer.js';
 
 const UIStrings = {
   /**
@@ -73,7 +74,7 @@ export class HARWriter {
 
     // Sort by issueTime because this is recorded as startedDateTime in HAR logs.
     requests.sort((reqA, reqB) => reqA.issueTime() - reqB.issueTime());
-    const harLog = await SDK.HARLog.HARLog.build(requests);
+    const harLog = await HarImporter.HARLog.HARLog.build(requests);
     const promises = [];
     for (let i = 0; i < requests.length; i++) {
       const promise = requests[i].contentData();
@@ -104,7 +105,7 @@ export class HARWriter {
       return false;
     }
 
-    function contentLoaded(entry: SDK.HARLog.EntryDTO, contentData: SDK.NetworkRequest.ContentData): void {
+    function contentLoaded(entry: HarImporter.HARLog.EntryDTO, contentData: SDK.NetworkRequest.ContentData): void {
       progress.worked();
       let encoded: true|boolean = contentData.encoded;
       if (contentData.content !== null) {

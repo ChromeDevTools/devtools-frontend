@@ -35,7 +35,6 @@ devtools_module("sdk") {
     "FilmStripModel.ts",
     "FrameAssociated.ts",
     "FrameManager.ts",
-    "HARLog.ts",
     "HeapProfilerModel.ts",
     "IOModel.ts",
     "IsolateManager.ts",

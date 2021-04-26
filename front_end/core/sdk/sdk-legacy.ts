@@ -111,12 +111,6 @@ SDK.DebuggerModel.CallFrame = SDKModule.DebuggerModel.CallFrame;
 SDK.DebuggerPausedDetails = SDKModule.DebuggerModel.DebuggerPausedDetails;
 
 /** @constructor */
-SDK.HARLog = SDKModule.HARLog.HARLog;
-
-/** @constructor */
-SDK.HARLog.Entry = SDKModule.HARLog.Entry;
-
-/** @constructor */
 SDK.HeapProfilerModel = SDKModule.HeapProfilerModel.HeapProfilerModel;
 
 /** @constructor */

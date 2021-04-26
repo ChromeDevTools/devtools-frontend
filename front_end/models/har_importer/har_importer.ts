@@ -4,8 +4,10 @@
 
 import * as HARFormat from './HARFormat.js';
 import * as HARImporter from './HARImporter.js';
+import * as HARLog from './HARLog.js';
 
 export {
   HARFormat,
   HARImporter,
+  HARLog,
 };

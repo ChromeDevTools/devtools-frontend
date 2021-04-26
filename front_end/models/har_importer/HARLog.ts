@@ -36,18 +36,15 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../common/common.js';
-
-import {Cookie} from './Cookie.js';                  // eslint-disable-line no-unused-vars
-import {NetworkRequest} from './NetworkRequest.js';  // eslint-disable-line no-unused-vars
-import {PageLoad} from './PageLoad.js';
+import * as Common from '../../core/common/common.js';
+import * as SDK from '../../core/sdk/sdk.js';
 
 export class HARLog {
-  static pseudoWallTime(request: NetworkRequest, monotonicTime: number): Date {
+  static pseudoWallTime(request: SDK.NetworkRequest.NetworkRequest, monotonicTime: number): Date {
     return new Date(request.pseudoWallTime(monotonicTime) * 1000);
   }
 
-  static async build(requests: NetworkRequest[]): Promise<HARLogDTO> {
+  static async build(requests: SDK.NetworkRequest.NetworkRequest[]): Promise<HARLogDTO> {
     const log = new HARLog();
     const entryPromises = [];
     for (const request of requests) {
@@ -63,12 +60,12 @@ export class HARLog {
     return {name: 'WebInspector', version: webKitVersion ? webKitVersion[1] : 'n/a'};
   }
 
-  _buildPages(requests: NetworkRequest[]): Page[] {
+  _buildPages(requests: SDK.NetworkRequest.NetworkRequest[]): Page[] {
     const seenIdentifiers = new Set<number>();
     const pages = [];
     for (let i = 0; i < requests.length; ++i) {
       const request = requests[i];
-      const page = PageLoad.forRequest(request);
+      const page = SDK.PageLoad.PageLoad.forRequest(request);
       if (!page || seenIdentifiers.has(page.id)) {
         continue;
       }
@@ -78,7 +75,7 @@ export class HARLog {
     return pages;
   }
 
-  _convertPage(page: PageLoad, request: NetworkRequest): Page {
+  _convertPage(page: SDK.PageLoad.PageLoad, request: SDK.NetworkRequest.NetworkRequest): Page {
     return {
       startedDateTime: HARLog.pseudoWallTime(request, page.startTime).toJSON(),
       id: 'page_' + page.id,
@@ -90,7 +87,7 @@ export class HARLog {
     };
   }
 
-  _pageEventTime(page: PageLoad, time: number): number {
+  _pageEventTime(page: SDK.PageLoad.PageLoad, time: number): number {
     const startTime = page.startTime;
     if (time === -1 || startTime === -1) {
       return -1;
@@ -100,8 +97,8 @@ export class HARLog {
 }
 
 export class Entry {
-  _request: NetworkRequest;
-  constructor(request: NetworkRequest) {
+  _request: SDK.NetworkRequest.NetworkRequest;
+  constructor(request: SDK.NetworkRequest.NetworkRequest) {
     this._request = request;
   }
 
@@ -109,7 +106,7 @@ export class Entry {
     return time === -1 ? -1 : time * 1000;
   }
 
-  static async build(request: NetworkRequest): Promise<EntryDTO> {
+  static async build(request: SDK.NetworkRequest.NetworkRequest): Promise<EntryDTO> {
     const harEntry = new Entry(request);
     let ipAddress = harEntry._request.remoteAddress();
     const portPositionInString = ipAddress.lastIndexOf(':');
@@ -173,7 +170,7 @@ export class Entry {
       delete entry.connection;
     }
 
-    const page = PageLoad.forRequest(harEntry._request);
+    const page = SDK.PageLoad.PageLoad.forRequest(harEntry._request);
     if (page) {
       entry.pageref = 'page_' + page.id;
     } else {
@@ -354,11 +351,11 @@ export class Entry {
     return url.split('#', 2)[0];
   }
 
-  _buildCookies(cookies: Cookie[]): CookieDTO[] {
+  _buildCookies(cookies: SDK.Cookie.Cookie[]): CookieDTO[] {
     return cookies.map(this._buildCookie.bind(this));
   }
 
-  _buildCookie(cookie: Cookie): CookieDTO {
+  _buildCookie(cookie: SDK.Cookie.Cookie): CookieDTO {
     const c: CookieDTO = {
       name: cookie.name(),
       value: cookie.value(),
@@ -384,7 +381,7 @@ export class Entry {
     }
 
     // As per the har spec, returns the length in bytes of the posted data.
-    // TODO(jarhar): This will be wrong if the underlying encoding is not UTF-8. NetworkRequest.requestFormData is
+    // TODO(jarhar): This will be wrong if the underlying encoding is not UTF-8. SDK.NetworkRequest.NetworkRequest.requestFormData is
     //   assumed to be UTF-8 because the backend decodes post data to a UTF-8 string regardless of the provided
     //   content-type/charset in InspectorNetworkAgent::FormDataToString
     return new TextEncoder().encode(postData).length;

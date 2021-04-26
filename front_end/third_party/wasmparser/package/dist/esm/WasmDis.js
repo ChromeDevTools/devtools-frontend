@@ -1673,6 +1673,7 @@ export class DevToolsNameGenerator {
                     this._eventImportsCount = 0;
                     this._functionNames = [];
                     this._functionLocalNames = [];
+                    this._eventNames = [];
                     this._memoryNames = [];
                     this._typeNames = [];
                     this._tableNames = [];

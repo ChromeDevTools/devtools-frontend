@@ -474,7 +474,15 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
           if (response.error || response.content === null) {
             return null;
           }
-          return response.encoded ? atob(response.content) : response.content;
+          if (response.encoded) {
+            const text = atob(response.content);
+            const data = new Uint8Array(text.length);
+            for (let i = 0; i < text.length; ++i) {
+              data[i] = text.charCodeAt(i);
+            }
+            return new TextDecoder('utf-8').decode(data);
+          }
+          return response.content;
         }));
 
     const blob = await project.requestFileBlob(fileSystemUISourceCode);

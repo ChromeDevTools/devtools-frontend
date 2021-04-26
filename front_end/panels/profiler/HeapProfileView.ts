@@ -623,7 +623,6 @@ export class NodeFormatter implements Formatter {
 export class HeapFlameChartDataProvider extends ProfileFlameChartDataProvider {
   _profile: SDK.ProfileTreeModel.ProfileTreeModel;
   _heapProfilerModel: SDK.HeapProfilerModel.HeapProfilerModel|null;
-  _entryNodes: SDK.ProfileTreeModel.ProfileNode[];
   _timelineData?: PerfUI.FlameChart.TimelineData;
 
   constructor(
@@ -631,7 +630,6 @@ export class HeapFlameChartDataProvider extends ProfileFlameChartDataProvider {
     super();
     this._profile = profile;
     this._heapProfilerModel = heapProfilerModel;
-    this._entryNodes = [];
   }
 
   minimumBoundary(): number {
@@ -680,14 +678,14 @@ export class HeapFlameChartDataProvider extends ProfileFlameChartDataProvider {
     addNode(this._profile.root);
 
     this._maxStackDepth = maxDepth + 1;
-    this._entryNodes = entryNodes;
+    this.entryNodes = entryNodes;
     this._timelineData = new PerfUI.FlameChart.TimelineData(entryLevels, entryTotalTimes, entryStartTimes, null);
 
     return this._timelineData;
   }
 
   prepareHighlightedEntryInfo(entryIndex: number): Element|null {
-    const node = this._entryNodes[entryIndex];
+    const node = this.entryNodes[entryIndex];
     if (!node) {
       return null;
     }

@@ -419,10 +419,7 @@ export class ProfileView extends UI.View.SimpleView implements UI.SearchableView
       return;
     }
     const entryIndex = event.data;
-    // TODO(crbug.com/1011811): Expose `_entryNodes` on the interface, every data provider
-    //                          implementation sets it.
-    // @ts-ignore
-    const node = this._dataProvider._entryNodes[entryIndex];
+    const node = this._dataProvider.entryNodes[entryIndex];
     const debuggerModel = this.profileHeader._debuggerModel;
     if (!node || !node.scriptId || !debuggerModel) {
       return;

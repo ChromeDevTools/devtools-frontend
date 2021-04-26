@@ -768,6 +768,9 @@ export class RowMessageBucket {
       this.textEditor.removeDecoration(this._decoration, editorLineNumber);
       this._decorationStartColumn = null;
     }
+    if (this.bookmark) {
+      this.bookmark.clear();
+    }
   }
 
   uniqueMessagesCount(): number {

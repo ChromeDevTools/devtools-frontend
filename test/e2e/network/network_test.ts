@@ -13,7 +13,7 @@ const SIMPLE_PAGE_URL = `requests.html?num=${SIMPLE_PAGE_REQUEST_NUMBER}`;
 
 async function getCategoryXHRFilter() {
   const filters = await waitFor('.filter-bitset-filter');
-  const categoryXHRFilter = await $textContent('XHR', filters);
+  const categoryXHRFilter = await $textContent('Fetch/XHR', filters);
   if (!categoryXHRFilter) {
     assert.fail('Could not find category XHR filter to click.');
   }

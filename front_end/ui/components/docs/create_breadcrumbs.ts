@@ -13,11 +13,12 @@ export function init(): void {
     .docs-breadcrumbs {
       display: flex;
       list-style: none;
-      position: absolute;
+      position: fixed;
+      background: rgb(255 255 255 / .8);
+      padding: 5px;
       bottom: 0;
       left: 10px;
       width: 300px;
-      padding: 0;
     }
 
     .docs-breadcrumbs li a {

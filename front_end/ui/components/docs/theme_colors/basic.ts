@@ -7,120 +7,85 @@ import * as ComponentHelpers from '../../helpers/helpers.js';
 
 await ComponentHelpers.ComponentServerSetup.setup();
 
-const THEME_VARIABLES_LIGHT = new Map([
-  ['--color-primary', '#1a73e8'],
-  ['--color-primary-variant', '#4285f4'],
-  ['--color-background', '#ffffff'],
-  ['--color-background-elevation-1', '#f1f3f4'],
-  ['--color-background-elevation-2', '#dee1e6'],
-  ['--color-background-highlight', '#cacdd1'],
-  ['--color-text-primary', '#202124'],
-  ['--color-text-secondary', '#5f6368'],
-  ['--color-text-disabled', '#80868b'],
-  ['--color-details-hairline', '#cacdd1'],
-  ['--color-link', '#1a73e8'],
-  ['--color-accent-red', '#d93025'],
-  ['--color-accent-green', '#188038'],
-  ['--color-syntax-1', '#c80000'],
-  ['--color-syntax-2', '#881280'],
-  ['--color-syntax-3', '#1a1aa6'],
-  ['--color-syntax-4', '#994500'],
-  ['--color-syntax-5', '#84f0ff'],
-  ['--color-syntax-6', '#236e25'],
-  ['--color-syntax-7', '#303942'],
-  ['--color-syntax-8', '#a894a6'],
+const THEME_VARIABLES_NAMES = new Set([
+  '--color-primary',
+  '--color-primary-variant',
+  '--color-background',
+  '--color-background-inverted',
+  '--color-background-opacity-50',
+  '--color-background-opacity-80',
+  '--color-background-elevation-0',
+  '--color-background-elevation-1',
+  '--color-background-elevation-2',
+  '--color-background-elevation-dark-only',
+  '--color-background-highlight',
+  '--divider-line',
+  '--color-background-hover-overlay',
+  '--color-selection-highlight',
+  '--color-selection-highlight-border',
+  '--color-match-highlight',
+  '--color-text-primary',
+  '--color-text-secondary',
+  '--color-text-secondary-selected',
+  '--color-text-disabled',
+  '--color-details-hairline',
+  '--color-details-hairline-light',
+  '--color-accent-red',
+  '--color-red',
+  '--color-accent-green',
+  '--color-green',
+  '--color-link',
+  '--color-syntax-1',
+  '--color-syntax-2',
+  '--color-syntax-3',
+  '--color-syntax-4',
+  '--color-syntax-5',
+  '--color-syntax-6',
+  '--color-syntax-7',
+  '--color-syntax-8',
+  '--drop-shadow',
+  '--drop-shadow-depth-1',
+  '--drop-shadow-depth-2',
+  '--drop-shadow-depth-3',
+  '--drop-shadow-depth-4',
+  '--drop-shadow-depth-5',
+  '--box-shadow-outline-color',
+  '--color-scrollbar-mac',
+  '--color-scrollbar-mac-hover',
+  '--color-scrollbar-other',
+  '--color-scrollbar-other-hover',
+  '--lighthouse-red',
+  '--lighthouse-orange',
+  '--lighthouse-green',
+  '--issue-color-red',
+  '--issue-color-yellow',
+  '--issue-color-blue',
+  '--input-outline',
+
 ]);
 
-const THEME_VARIABLES_DARK = new Map([
-  ['--color-primary', '#8ab4f8'],
-  ['--color-primary-variant', '#669df6'],
-  ['--color-background', '#202124'],
-  ['--color-background-elevation-1', '#292a2d'],
-  ['--color-background-elevation-2', '#35363a'],
-  ['--color-background-highlight', '#4b4c4f'],
-  ['--color-text-primary', '#e8eaed'],
-  ['--color-text-secondary', '#9aa0a6'],
-  ['--color-text-disabled', '#80868b'],
-  ['--color-details-hairline', '#494c50'],
-  ['--color-link', '#8ab4f8'],
-  ['--color-accent-red', '#f28b82'],
-  ['--color-accent-green', '#81c995'],
-  ['--color-syntax-1', '#35d4c7'],
-  ['--color-syntax-2', '#5db0d7'],
-  ['--color-syntax-3', '#f29766'],
-  ['--color-syntax-4', '#9bbbdc'],
-  ['--color-syntax-5', '#84f0ff'],
-  ['--color-syntax-6', '#898989'],
-  ['--color-syntax-7', '#cfd0d0'],
-  ['--color-syntax-8', '#5db0d7'],
-]);
+function appendStyles(mode: 'light'|'dark') {
+  const container = document.querySelector(`.${mode}-mode-container`) as HTMLElement;
+  const listItems = Array.from(THEME_VARIABLES_NAMES).map(varName => {
+    const value = getComputedStyle(container).getPropertyValue(varName);
+    if (!value) {
+      throw new Error(`Could not find value for CSS variable ${varName}.`);
+    }
+    let styles = {};
+    if (varName.includes('--box-shadow')) {
+      styles = {boxShadow: `0 0 0 1px var(${varName})`, borderBottomWidth: 0};
 
-class ThemeColors extends HTMLElement {
-  private shadow: ShadowRoot;
-  constructor() {
-    super();
-    this.shadow = this.attachShadow({mode: 'open'});
-    this.render();
-  }
+    } else if (varName.includes('--drop-shadow')) {
+      styles = {boxShadow: `var(${varName})`, borderBottomWidth: 0};
 
-  render(): void {
-    LitHtml.render(
-        // Disabled until https://crbug.com/1079231 is fixed.
-        // clang-format off
-      LitHtml.html`
-          <style>
-            ul {
-              list-style: none;
-              padding: 0;
-              width: 48%;
-            }
-
-            li {
-              line-height: 30px;
-              font-size: 18px;
-              border-bottom-width: 20px;
-              border-bottom-style: solid;
-
-              /* color is set in code */
-              margin-bottom: 20px;
-              text-align: center;
-            }
-
-            .themes {
-              display: flex;
-              justify-content: space-between;
-            }
-
-            .dark-mode {
-              background: #000;
-            }
-
-            .dark-mode code {
-              color: #fff;
-            }
-          </style>
-          <div class="themes">
-            <ul class="light-mode">
-              ${Array.from(THEME_VARIABLES_LIGHT.entries()).map(([varName, color]) => {
-                const liStyles = LitHtml.Directives.styleMap({
-                  borderBottomColor: `${color}`,
-                });
-                return LitHtml.html`<li style=${liStyles}><code>${varName}: ${color}</code></li>`;
-              })}
-            </ul>
-            <ul class="dark-mode">
-              ${Array.from(THEME_VARIABLES_DARK.entries()).map(([varName, color]) => {
-                const liStyles = LitHtml.Directives.styleMap({
-                  borderBottomColor: `${color}`,
-                });
-                return LitHtml.html`<li style=${liStyles}><code>${varName}: ${color}</code></li>`;
-              })}
-            </ul>
-          </div>
-        `,
-      this.shadow);
-    // clang-format on
-  }
+    } else {
+      styles = {borderBottomColor: `var(${varName})`};
+    }
+    const liStyles = LitHtml.Directives.styleMap(styles);
+    return LitHtml.html`<li style=${liStyles}><code>${varName}: ${value}</code></li>`;
+  });
+  LitHtml.render(LitHtml.html`${listItems}`, container);
 }
 
-customElements.define('devtools-theme-colors', ThemeColors);
+appendStyles('light');
+appendStyles('dark');

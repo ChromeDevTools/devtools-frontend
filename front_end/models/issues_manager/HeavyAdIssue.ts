@@ -38,7 +38,6 @@ export class HeavyAdIssue extends Issue {
   getDescription(): MarkdownIssueDescription {
     return {
       file: 'heavyAd.md',
-      substitutions: undefined,
       links: [
         {
           link: 'https://developers.google.com/web/updates/2020/05/heavy-ad-interventions',

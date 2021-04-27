@@ -36,7 +36,6 @@ export class SharedArrayBufferIssue extends Issue {
   getDescription(): MarkdownIssueDescription {
     return {
       file: 'sharedArrayBuffer.md',
-      substitutions: undefined,
       links: [{
         link: 'https://developer.chrome.com/blog/enabling-shared-array-buffer/',
         linkTitle: i18nString(UIStrings.enablingSharedArrayBuffer),

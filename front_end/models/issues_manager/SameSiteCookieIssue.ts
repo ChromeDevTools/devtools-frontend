@@ -253,9 +253,8 @@ function isSubdomainOf(subdomain: string, superdomain: string): boolean {
   return subdomainWithoutSuperdomian.endsWith('.');
 }
 
-const sameSiteUnspecifiedErrorRead = {
+const sameSiteUnspecifiedErrorRead: LazyMarkdownIssueDescription = {
   file: 'SameSiteUnspecifiedTreatedAsLaxRead.md',
-  substitutions: undefined,
   links: [
     {
       link: 'https://web.dev/samesite-cookies-explained/',
@@ -264,9 +263,8 @@ const sameSiteUnspecifiedErrorRead = {
   ],
 };
 
-const sameSiteUnspecifiedErrorSet = {
+const sameSiteUnspecifiedErrorSet: LazyMarkdownIssueDescription = {
   file: 'SameSiteUnspecifiedTreatedAsLaxSet.md',
-  substitutions: undefined,
   links: [
     {
       link: 'https://web.dev/samesite-cookies-explained/',
@@ -275,9 +273,8 @@ const sameSiteUnspecifiedErrorSet = {
   ],
 };
 
-const sameSiteUnspecifiedWarnRead = {
+const sameSiteUnspecifiedWarnRead: LazyMarkdownIssueDescription = {
   file: 'SameSiteUnspecifiedLaxAllowUnsafeRead.md',
-  substitutions: undefined,
   links: [
     {
       link: 'https://web.dev/samesite-cookies-explained/',
@@ -286,9 +283,8 @@ const sameSiteUnspecifiedWarnRead = {
   ],
 };
 
-const sameSiteUnspecifiedWarnSet = {
+const sameSiteUnspecifiedWarnSet: LazyMarkdownIssueDescription = {
   file: 'SameSiteUnspecifiedLaxAllowUnsafeSet.md',
-  substitutions: undefined,
   links: [
     {
       link: 'https://web.dev/samesite-cookies-explained/',
@@ -297,9 +293,8 @@ const sameSiteUnspecifiedWarnSet = {
   ],
 };
 
-const sameSiteNoneInsecureErrorRead = {
+const sameSiteNoneInsecureErrorRead: LazyMarkdownIssueDescription = {
   file: 'SameSiteNoneInsecureErrorRead.md',
-  substitutions: undefined,
   links: [
     {
       link: 'https://web.dev/samesite-cookies-explained/',
@@ -308,9 +303,8 @@ const sameSiteNoneInsecureErrorRead = {
   ],
 };
 
-const sameSiteNoneInsecureErrorSet = {
+const sameSiteNoneInsecureErrorSet: LazyMarkdownIssueDescription = {
   file: 'SameSiteNoneInsecureErrorSet.md',
-  substitutions: undefined,
   links: [
     {
       link: 'https://web.dev/samesite-cookies-explained/',
@@ -319,9 +313,8 @@ const sameSiteNoneInsecureErrorSet = {
   ],
 };
 
-const sameSiteNoneInsecureWarnRead = {
+const sameSiteNoneInsecureWarnRead: LazyMarkdownIssueDescription = {
   file: 'SameSiteNoneInsecureWarnRead.md',
-  substitutions: undefined,
   links: [
     {
       link: 'https://web.dev/samesite-cookies-explained/',
@@ -330,9 +323,8 @@ const sameSiteNoneInsecureWarnRead = {
   ],
 };
 
-const sameSiteNoneInsecureWarnSet = {
+const sameSiteNoneInsecureWarnSet: LazyMarkdownIssueDescription = {
   file: 'SameSiteNoneInsecureWarnSet.md',
-  substitutions: undefined,
   links: [
     {
       link: 'https://web.dev/samesite-cookies-explained/',

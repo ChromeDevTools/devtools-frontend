@@ -80,7 +80,6 @@ const issueDescriptions: Map<string, LazyMarkdownIssueDescription> = new Map([
     'CrossOriginEmbedderPolicyIssue::CorpNotSameOriginAfterDefaultedToSameOriginByCoep',
     {
       file: 'CoepCorpNotSameOriginAfterDefaultedToSameOriginByCoep.md',
-      substitutions: undefined,
       links: [
         {link: 'https://web.dev/coop-coep/', linkTitle: i18nLazyString(UIStrings.coopAndCoep)},
         {link: 'https://web.dev/same-site-same-origin/', linkTitle: i18nLazyString(UIStrings.samesiteAndSameorigin)},
@@ -91,7 +90,6 @@ const issueDescriptions: Map<string, LazyMarkdownIssueDescription> = new Map([
     'CrossOriginEmbedderPolicyIssue::CoepFrameResourceNeedsCoepHeader',
     {
       file: 'CoepFrameResourceNeedsCoepHeader.md',
-      substitutions: undefined,
       links: [
         {link: 'https://web.dev/coop-coep/', linkTitle: i18nLazyString(UIStrings.coopAndCoep)},
       ],
@@ -101,7 +99,6 @@ const issueDescriptions: Map<string, LazyMarkdownIssueDescription> = new Map([
     'CrossOriginEmbedderPolicyIssue::CoopSandboxedIframeCannotNavigateToCoopPage',
     {
       file: 'CoepCoopSandboxedIframeCannotNavigateToCoopPage.md',
-      substitutions: undefined,
       links: [
         {link: 'https://web.dev/coop-coep/', linkTitle: i18nLazyString(UIStrings.coopAndCoep)},
       ],
@@ -111,7 +108,6 @@ const issueDescriptions: Map<string, LazyMarkdownIssueDescription> = new Map([
     'CrossOriginEmbedderPolicyIssue::CorpNotSameSite',
     {
       file: 'CoepCorpNotSameSite.md',
-      substitutions: undefined,
       links: [
         {link: 'https://web.dev/coop-coep/', linkTitle: i18nLazyString(UIStrings.coopAndCoep)},
         {link: 'https://web.dev/same-site-same-origin/', linkTitle: i18nLazyString(UIStrings.samesiteAndSameorigin)},
@@ -122,7 +118,6 @@ const issueDescriptions: Map<string, LazyMarkdownIssueDescription> = new Map([
     'CrossOriginEmbedderPolicyIssue::CorpNotSameOrigin',
     {
       file: 'CoepCorpNotSameOrigin.md',
-      substitutions: undefined,
       links: [
         {link: 'https://web.dev/coop-coep/', linkTitle: i18nLazyString(UIStrings.coopAndCoep)},
         {link: 'https://web.dev/same-site-same-origin/', linkTitle: i18nLazyString(UIStrings.samesiteAndSameorigin)},

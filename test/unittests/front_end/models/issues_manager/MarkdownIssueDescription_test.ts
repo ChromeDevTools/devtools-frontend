@@ -11,7 +11,6 @@ describe('createIssueDescriptionFromMarkdown', async () => {
   it('only accepts Markdown where the first AST element is a heading, describing the title', () => {
     const emptyMarkdownDescription = {
       file: '<unused>',
-      substitutions: undefined,
       links: [],
     };
 
@@ -25,7 +24,6 @@ describe('createIssueDescriptionFromMarkdown', async () => {
   it('throws an error for issue description without a heading', () => {
     const emptyMarkdownDescription = {
       file: '<unused>',
-      substitutions: undefined,
       links: [],
     };
 

@@ -43,7 +43,6 @@ export class LowTextContrastIssue extends Issue {
   getDescription(): MarkdownIssueDescription {
     return {
       file: 'LowTextContrast.md',
-      substitutions: undefined,
       links: [
         {
           link: 'https://web.dev/color-and-contrast-accessibility/',

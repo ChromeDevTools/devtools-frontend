@@ -13,13 +13,13 @@ import * as Marked from '../../third_party/marked/marked.js';
  */
 export interface MarkdownIssueDescription {
   file: string;
-  substitutions: Map<string, string>|undefined;
+  substitutions?: Map<string, string>;
   links: {link: string, linkTitle: string}[];
 }
 
 export interface LazyMarkdownIssueDescription {
   file: string;
-  substitutions: Map<string, () => string>|undefined;
+  substitutions?: Map<string, () => string>;
   links: {link: string, linkTitle: () => string}[];
 }
 

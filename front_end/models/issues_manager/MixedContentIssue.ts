@@ -44,7 +44,6 @@ export class MixedContentIssue extends Issue {
   getDescription(): MarkdownIssueDescription {
     return {
       file: 'mixedContent.md',
-      substitutions: undefined,
       links:
           [{link: 'https://web.dev/what-is-mixed-content/', linkTitle: i18nString(UIStrings.preventingMixedContent)}],
     };

@@ -7,6 +7,7 @@ import '../test_runner/test_runner.js';
 import '../console_test_runner/console_test_runner.js';
 import * as HARImporter from '../../models/har_importer/har_importer.js';
 import * as Logs from '../../models/logs/logs.js';
+import * as Network from '../../panels/network/network.js';
 
 /**
  * @fileoverview using private properties isn't a Closure violation in tests.
@@ -205,6 +206,7 @@ NetworkTestRunner.HARPropertyFormattersWithSize.size = 'formatAsTypeName';
 
 NetworkTestRunner.buildHARLog = HARImporter.HARLog.HARLog.build;
 NetworkTestRunner.buildHARLogEntry = HARImporter.HARLog.Entry.build;
+NetworkTestRunner.writeHARLog = Network.HARWriter.HARWriter.write;
 NetworkTestRunner.networkLog = () => Logs.NetworkLog.NetworkLog.instance();
 NetworkTestRunner.NetworkLogEvents = Logs.NetworkLog.Events;
 

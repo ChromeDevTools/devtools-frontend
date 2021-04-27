@@ -51,18 +51,19 @@ export interface AffectedElement {
   nodeName: string;
 }
 
-export abstract class Issue extends Common.ObjectWrapper.ObjectWrapper {
-  private issueCode: string;
+export abstract class Issue<IssueCode extends string = string> extends Common.ObjectWrapper.ObjectWrapper {
+  private issueCode: IssueCode;
   private issuesModel: SDK.IssuesModel.IssuesModel|null;
 
-  constructor(code: string|{code: string, umaCode: string}, issuesModel: SDK.IssuesModel.IssuesModel|null = null) {
+  constructor(
+      code: IssueCode|{code: IssueCode, umaCode: string}, issuesModel: SDK.IssuesModel.IssuesModel|null = null) {
     super();
-    this.issueCode = typeof code === 'string' ? code : code.code;
+    this.issueCode = typeof code === 'object' ? code.code : code;
     this.issuesModel = issuesModel;
     Host.userMetrics.issueCreated(typeof code === 'string' ? code : code.umaCode);
   }
 
-  code(): string {
+  code(): IssueCode {
     return this.issueCode;
   }
 

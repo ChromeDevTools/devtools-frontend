@@ -77,7 +77,7 @@ export class AggregatedIssue extends IssuesManager.Issue.Issue {
     return this.trustedWebActivityIssues;
   }
 
-  getCorsIssues(): Iterable<IssuesManager.CorsIssue.CorsIssue> {
+  getCorsIssues(): Set<IssuesManager.CorsIssue.CorsIssue> {
     return this.corsIssues;
   }
 

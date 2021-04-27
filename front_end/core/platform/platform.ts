@@ -45,7 +45,7 @@ import * as UIString from './UIString.js';
  * (e.g. `Platform.TypeScriptUtilities.assertNotNull` causes a
  * compiler error)
  */
-export {assertNotNull} from './typescript-utilities.js';
+export {assertNotNull, assertUnhandled} from './typescript-utilities.js';
 export {assertNever, runOnWindowLoad} from './utilities.js';
 export {
   ArrayUtilities,

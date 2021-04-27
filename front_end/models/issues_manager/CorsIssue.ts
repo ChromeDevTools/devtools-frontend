@@ -22,17 +22,26 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('models/issues_manager/CorsIssue.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export const InvalidHeaders =
-    [Protocol.Audits.InspectorIssueCode.CorsIssue, 'InvalidAccessControlAllowPreflightResponse'].join('::');
-export const WildcardOriginWithCredentials =
-    [Protocol.Audits.InspectorIssueCode.CorsIssue, 'WildcardOriginWithCredentials'].join('::');
-export const PreflightResponseInvalid =
-    [Protocol.Audits.InspectorIssueCode.CorsIssue, 'PreflightResponseInvalid'].join('::');
-export const OriginMismatch = [Protocol.Audits.InspectorIssueCode.CorsIssue, 'OriginMismatch'].join('::');
-export const AllowCredentialsRequired =
-    [Protocol.Audits.InspectorIssueCode.CorsIssue, 'AllowCredentialsRequired'].join('::');
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum IssueCode {
+  InsecurePrivateNetwork = 'CorsIssue::InsecurePrivateNetwork',
+  InvalidHeaderValues = 'CorsIssue::InvalidHeaders',
+  WildcardOriginNotAllowed = 'CorsIssue::WildcardOriginWithCredentials',
+  PreflightResponseInvalid = 'CorsIssue::PreflightResponseInvalid',
+  OriginMismatch = 'CorsIssue::OriginMismatch',
+  AllowCredentialsRequired = 'CorsIssue::AllowCredentialsRequired',
+  MethodDisallowedByPreflightResponse = 'CorsIssue::MethodDisallowedByPreflightResponse',
+  HeaderDisallowedByPreflightResponse = 'CorsIssue::HeaderDisallowedByPreflightResponse',
+  RedirectContainsCredentials = 'CorsIssue::RedirectContainsCredentials',
+  DisallowedByMode = 'CorsIssue::DisallowedByMode',
+  CorsDisabledScheme = 'CorsIssue::CorsDisabledScheme',
+  PreflightMissingAllowExternal = 'CorsIssue::PreflightMissingAllowExternal',
+  PreflightInvalidAllowExternal = 'CorsIssue::PreflightInvalidAllowExternal',
+  InvalidResponse = 'CorsIssue::InvalidResponse',
+}
 
-export function getIssueCode(corsError: Protocol.Network.CorsError): string {
+export function getIssueCode(corsError: Protocol.Network.CorsError): IssueCode {
   switch (corsError) {
     case Protocol.Network.CorsError.InvalidAllowMethodsPreflightResponse:
     case Protocol.Network.CorsError.InvalidAllowHeadersPreflightResponse:
@@ -42,25 +51,41 @@ export function getIssueCode(corsError: Protocol.Network.CorsError): string {
     case Protocol.Network.CorsError.MissingAllowOriginHeader:
     case Protocol.Network.CorsError.MultipleAllowOriginValues:
     case Protocol.Network.CorsError.InvalidAllowOriginValue:
-      return InvalidHeaders;
+      return IssueCode.InvalidHeaderValues;
     case Protocol.Network.CorsError.PreflightWildcardOriginNotAllowed:
     case Protocol.Network.CorsError.WildcardOriginNotAllowed:
-      return WildcardOriginWithCredentials;
+      return IssueCode.WildcardOriginNotAllowed;
     case Protocol.Network.CorsError.PreflightInvalidStatus:
     case Protocol.Network.CorsError.PreflightDisallowedRedirect:
-      return PreflightResponseInvalid;
+      return IssueCode.PreflightResponseInvalid;
     case Protocol.Network.CorsError.AllowOriginMismatch:
     case Protocol.Network.CorsError.PreflightAllowOriginMismatch:
-      return OriginMismatch;
+      return IssueCode.OriginMismatch;
     case Protocol.Network.CorsError.InvalidAllowCredentials:
     case Protocol.Network.CorsError.PreflightInvalidAllowCredentials:
-      return AllowCredentialsRequired;
-    default:
-      return [Protocol.Audits.InspectorIssueCode.CorsIssue, corsError].join('::');
+      return IssueCode.AllowCredentialsRequired;
+    case Protocol.Network.CorsError.MethodDisallowedByPreflightResponse:
+      return IssueCode.MethodDisallowedByPreflightResponse;
+    case Protocol.Network.CorsError.HeaderDisallowedByPreflightResponse:
+      return IssueCode.HeaderDisallowedByPreflightResponse;
+    case Protocol.Network.CorsError.RedirectContainsCredentials:
+      return IssueCode.RedirectContainsCredentials;
+    case Protocol.Network.CorsError.DisallowedByMode:
+      return IssueCode.DisallowedByMode;
+    case Protocol.Network.CorsError.CorsDisabledScheme:
+      return IssueCode.CorsDisabledScheme;
+    case Protocol.Network.CorsError.PreflightMissingAllowExternal:
+      return IssueCode.PreflightMissingAllowExternal;
+    case Protocol.Network.CorsError.PreflightInvalidAllowExternal:
+      return IssueCode.PreflightInvalidAllowExternal;
+    case Protocol.Network.CorsError.InvalidResponse:
+      return IssueCode.InvalidResponse;
+    case Protocol.Network.CorsError.InsecurePrivateNetwork:
+      return IssueCode.InsecurePrivateNetwork;
   }
 }
 
-export class CorsIssue extends Issue {
+export class CorsIssue extends Issue<IssueCode> {
   private issueDetails: Protocol.Audits.CorsIssueDetails;
 
   constructor(issueDetails: Protocol.Audits.CorsIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel) {
@@ -77,8 +102,8 @@ export class CorsIssue extends Issue {
   }
 
   getDescription(): MarkdownIssueDescription|null {
-    switch (this.issueDetails.corsErrorStatus.corsError) {
-      case Protocol.Network.CorsError.InsecurePrivateNetwork:
+    switch (getIssueCode(this.issueDetails.corsErrorStatus.corsError)) {
+      case IssueCode.InsecurePrivateNetwork:
         if (this.issueDetails.clientSecurityState?.initiatorIsSecureContext) {
           return null;
         }
@@ -90,14 +115,7 @@ export class CorsIssue extends Issue {
             linkTitle: i18nString(UIStrings.corsForPrivateNetworksRfc),
           }],
         };
-      case Protocol.Network.CorsError.InvalidAllowMethodsPreflightResponse:
-      case Protocol.Network.CorsError.InvalidAllowHeadersPreflightResponse:
-      case Protocol.Network.CorsError.PreflightMissingAllowOriginHeader:
-      case Protocol.Network.CorsError.PreflightMultipleAllowOriginValues:
-      case Protocol.Network.CorsError.PreflightInvalidAllowOriginValue:
-      case Protocol.Network.CorsError.MissingAllowOriginHeader:
-      case Protocol.Network.CorsError.MultipleAllowOriginValues:
-      case Protocol.Network.CorsError.InvalidAllowOriginValue:
+      case IssueCode.InvalidHeaderValues:
         return {
           file: 'corsInvalidHeaderValues.md',
           substitutions: undefined,
@@ -106,8 +124,7 @@ export class CorsIssue extends Issue {
             linkTitle: i18nString(UIStrings.CORS),
           }],
         };
-      case Protocol.Network.CorsError.PreflightWildcardOriginNotAllowed:
-      case Protocol.Network.CorsError.WildcardOriginNotAllowed:
+      case IssueCode.WildcardOriginNotAllowed:
         return {
           file: 'corsWildcardOriginNotAllowed.md',
           substitutions: undefined,
@@ -116,8 +133,7 @@ export class CorsIssue extends Issue {
             linkTitle: i18nString(UIStrings.CORS),
           }],
         };
-      case Protocol.Network.CorsError.PreflightInvalidStatus:
-      case Protocol.Network.CorsError.PreflightDisallowedRedirect:
+      case IssueCode.PreflightResponseInvalid:
         return {
           file: 'corsPreflightResponseInvalid.md',
           substitutions: undefined,
@@ -126,8 +142,7 @@ export class CorsIssue extends Issue {
             linkTitle: i18nString(UIStrings.CORS),
           }],
         };
-      case Protocol.Network.CorsError.AllowOriginMismatch:
-      case Protocol.Network.CorsError.PreflightAllowOriginMismatch:
+      case IssueCode.OriginMismatch:
         return {
           file: 'corsOriginMismatch.md',
           substitutions: undefined,
@@ -136,8 +151,7 @@ export class CorsIssue extends Issue {
             linkTitle: i18nString(UIStrings.CORS),
           }],
         };
-      case Protocol.Network.CorsError.InvalidAllowCredentials:
-      case Protocol.Network.CorsError.PreflightInvalidAllowCredentials:
+      case IssueCode.AllowCredentialsRequired:
         return {
           file: 'corsAllowCredentialsRequired.md',
           substitutions: undefined,
@@ -146,7 +160,7 @@ export class CorsIssue extends Issue {
             linkTitle: i18nString(UIStrings.CORS),
           }],
         };
-      case Protocol.Network.CorsError.MethodDisallowedByPreflightResponse:
+      case IssueCode.MethodDisallowedByPreflightResponse:
         return {
           file: 'corsMethodDisallowedByPreflightResponse.md',
           substitutions: undefined,
@@ -155,7 +169,7 @@ export class CorsIssue extends Issue {
             linkTitle: i18nString(UIStrings.CORS),
           }],
         };
-      case Protocol.Network.CorsError.HeaderDisallowedByPreflightResponse:
+      case IssueCode.HeaderDisallowedByPreflightResponse:
         return {
           file: 'corsHeaderDisallowedByPreflightResponse.md',
           substitutions: undefined,
@@ -164,7 +178,7 @@ export class CorsIssue extends Issue {
             linkTitle: i18nString(UIStrings.CORS),
           }],
         };
-      case Protocol.Network.CorsError.RedirectContainsCredentials:
+      case IssueCode.RedirectContainsCredentials:
         return {
           file: 'corsRedirectContainsCredentials.md',
           substitutions: undefined,
@@ -173,11 +187,11 @@ export class CorsIssue extends Issue {
             linkTitle: i18nString(UIStrings.CORS),
           }],
         };
-      case Protocol.Network.CorsError.DisallowedByMode:
-      case Protocol.Network.CorsError.CorsDisabledScheme:
-      case Protocol.Network.CorsError.PreflightMissingAllowExternal:
-      case Protocol.Network.CorsError.PreflightInvalidAllowExternal:
-      case Protocol.Network.CorsError.InvalidResponse:
+      case IssueCode.DisallowedByMode:
+      case IssueCode.CorsDisabledScheme:
+      case IssueCode.PreflightMissingAllowExternal:
+      case IssueCode.PreflightInvalidAllowExternal:
+      case IssueCode.InvalidResponse:
         return null;
     }
   }

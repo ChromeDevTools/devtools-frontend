@@ -41,4 +41,6 @@ devtools_entrypoint("meta") {
   entrypoint = "layer_viewer-meta.ts"
 
   deps = [ ":bundle" ]
+
+  visibility = [ "../../entrypoints/*" ]
 }

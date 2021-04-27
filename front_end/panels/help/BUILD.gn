@@ -34,4 +34,6 @@ devtools_entrypoint("meta") {
   entrypoint = "help-meta.ts"
 
   deps = [ ":bundle" ]
+
+  visibility = [ "../../entrypoints/*" ]
 }

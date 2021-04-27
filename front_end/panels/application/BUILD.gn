@@ -84,4 +84,6 @@ devtools_entrypoint("meta") {
   entrypoint = "application-meta.ts"
 
   deps = [ ":bundle" ]
+
+  visibility = [ "../../entrypoints/*" ]
 }

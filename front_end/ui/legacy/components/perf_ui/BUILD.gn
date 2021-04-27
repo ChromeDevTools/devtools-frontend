@@ -74,4 +74,6 @@ devtools_entrypoint("meta") {
   entrypoint = "perf_ui-meta.ts"
 
   deps = [ ":bundle" ]
+
+  visibility = [ "../../../../entrypoints/*" ]
 }

@@ -43,4 +43,6 @@ devtools_entrypoint("meta") {
   entrypoint = "accessibility-meta.ts"
 
   deps = [ ":bundle" ]
+
+  visibility = [ "../../entrypoints/*" ]
 }

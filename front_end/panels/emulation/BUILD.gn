@@ -66,4 +66,6 @@ devtools_entrypoint("meta") {
   entrypoint = "emulation-meta.ts"
 
   deps = [ ":bundle" ]
+
+  visibility = [ "../../entrypoints/*" ]
 }

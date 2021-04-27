@@ -64,4 +64,6 @@ devtools_entrypoint("meta") {
   entrypoint = "source_frame-meta.ts"
 
   deps = [ ":bundle" ]
+
+  visibility = [ "../../../../entrypoints/*" ]
 }

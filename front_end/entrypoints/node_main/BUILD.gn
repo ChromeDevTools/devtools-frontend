@@ -32,4 +32,6 @@ devtools_entrypoint("meta") {
   entrypoint = "node_main-meta.ts"
 
   deps = [ ":bundle" ]
+
+  visibility = [ "../node_app/*" ]
 }

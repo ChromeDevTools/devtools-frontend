@@ -28,4 +28,6 @@ devtools_entrypoint("meta") {
   entrypoint = "logs-meta.ts"
 
   deps = [ ":bundle" ]
+
+  visibility = [ "../../entrypoints/*" ]
 }

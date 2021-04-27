@@ -41,4 +41,6 @@ devtools_entrypoint("meta") {
   entrypoint = "linear_memory_inspector-meta.ts"
 
   deps = [ ":bundle" ]
+
+  visibility = [ "../../../entrypoints/*" ]
 }

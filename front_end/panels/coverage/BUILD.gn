@@ -45,4 +45,6 @@ devtools_entrypoint("meta") {
   entrypoint = "coverage-meta.ts"
 
   deps = [ ":bundle" ]
+
+  visibility = [ "../../entrypoints/*" ]
 }

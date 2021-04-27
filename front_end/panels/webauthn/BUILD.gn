@@ -28,4 +28,6 @@ devtools_entrypoint("meta") {
   entrypoint = "webauthn-meta.ts"
 
   deps = [ ":bundle" ]
+
+  visibility = [ "../../entrypoints/*" ]
 }

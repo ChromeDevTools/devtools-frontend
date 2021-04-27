@@ -47,4 +47,6 @@ devtools_entrypoint("meta") {
     "../../core/root:bundle",
     "../../ui/legacy:bundle",
   ]
+
+  visibility = [ "../../entrypoints/*" ]
 }

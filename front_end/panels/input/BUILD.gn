@@ -32,4 +32,6 @@ devtools_entrypoint("meta") {
   entrypoint = "input-meta.ts"
 
   deps = [ ":bundle" ]
+
+  visibility = [ "../../entrypoints/*" ]
 }

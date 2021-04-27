@@ -41,4 +41,6 @@ devtools_entrypoint("meta") {
   entrypoint = "media-meta.ts"
 
   deps = [ ":bundle" ]
+
+  visibility = [ "../../entrypoints/*" ]
 }

@@ -37,4 +37,6 @@ devtools_entrypoint("meta") {
   entrypoint = "security-meta.ts"
 
   deps = [ ":bundle" ]
+
+  visibility = [ "../../entrypoints/*" ]
 }

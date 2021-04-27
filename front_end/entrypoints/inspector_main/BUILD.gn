@@ -39,4 +39,6 @@ devtools_entrypoint("meta") {
   entrypoint = "inspector_main-meta.ts"
 
   deps = [ ":bundle" ]
+
+  visibility = [ "../devtools_app/*" ]
 }

@@ -96,4 +96,6 @@ devtools_entrypoint("meta") {
     "../../core/i18n:bundle",
     "../../core/sdk:bundle",
   ]
+
+  visibility = [ "../../entrypoints/*" ]
 }

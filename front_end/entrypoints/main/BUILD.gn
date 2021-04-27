@@ -53,4 +53,6 @@ devtools_entrypoint("meta") {
     ":bundle",
     "../../entrypoints/inspector_main:bundle",
   ]
+
+  visibility = [ "../shell/*" ]
 }

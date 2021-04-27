@@ -67,4 +67,6 @@ devtools_entrypoint("meta") {
   entrypoint = "timeline-meta.ts"
 
   deps = [ ":bundle" ]
+
+  visibility = [ "../../entrypoints/*" ]
 }

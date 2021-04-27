@@ -61,6 +61,8 @@ devtools_entrypoint("legacy") {
   entrypoint = "timeline-legacy.ts"
 
   deps = [ ":bundle" ]
+
+  visibility = [ "../..:legacy_entrypoints" ]
 }
 
 devtools_entrypoint("meta") {

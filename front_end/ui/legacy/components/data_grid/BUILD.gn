@@ -53,4 +53,9 @@ devtools_entrypoint("legacy") {
   entrypoint = "data_grid-legacy.ts"
 
   deps = [ ":bundle" ]
+
+  visibility = [
+    "../../../..:legacy_entrypoints",
+    "../../../../legacy_test_runner/*",
+  ]
 }

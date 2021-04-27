@@ -35,6 +35,11 @@ devtools_entrypoint("legacy") {
   entrypoint = "animation-legacy.ts"
 
   deps = [ ":bundle" ]
+
+  visibility = [
+    "../..:legacy_entrypoints",
+    "../../legacy_test_runner/*",
+  ]
 }
 
 devtools_entrypoint("meta") {

@@ -63,4 +63,6 @@ devtools_entrypoint("legacy") {
   entrypoint = "text_editor-legacy.ts"
 
   deps = [ ":bundle" ]
+
+  visibility = [ "../../../..:legacy_entrypoints" ]
 }

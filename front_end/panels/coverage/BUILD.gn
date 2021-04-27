@@ -39,6 +39,8 @@ devtools_entrypoint("legacy") {
   entrypoint = "coverage-legacy.ts"
 
   deps = [ ":bundle" ]
+
+  visibility = [ "../..:legacy_entrypoints" ]
 }
 
 devtools_entrypoint("meta") {

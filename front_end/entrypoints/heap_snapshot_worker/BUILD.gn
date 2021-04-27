@@ -43,4 +43,6 @@ devtools_entrypoint("legacy") {
     ":worker_entrypoint",
     "../../models/heap_snapshot_model:legacy",
   ]
+
+  visibility = [ "../..:legacy_entrypoints" ]
 }

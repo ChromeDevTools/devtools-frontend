@@ -64,6 +64,8 @@ devtools_entrypoint("legacy") {
   entrypoint = "object_ui-legacy.ts"
 
   deps = [ ":bundle" ]
+
+  visibility = [ "../../../..:legacy_entrypoints" ]
 }
 
 devtools_entrypoint("meta") {

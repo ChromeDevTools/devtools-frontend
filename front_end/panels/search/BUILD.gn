@@ -32,4 +32,6 @@ devtools_entrypoint("legacy") {
   entrypoint = "search-legacy.ts"
 
   deps = [ ":bundle" ]
+
+  visibility = [ "../..:legacy_entrypoints" ]
 }

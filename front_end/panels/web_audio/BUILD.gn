@@ -32,6 +32,8 @@ devtools_entrypoint("legacy") {
   entrypoint = "web_audio-legacy.ts"
 
   deps = [ ":bundle" ]
+
+  visibility = [ "../..:legacy_entrypoints" ]
 }
 
 devtools_entrypoint("meta") {

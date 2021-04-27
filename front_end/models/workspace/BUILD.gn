@@ -31,4 +31,9 @@ devtools_entrypoint("legacy") {
   entrypoint = "workspace-legacy.ts"
 
   deps = [ ":bundle" ]
+
+  visibility = [
+    "../..:legacy_entrypoints",
+    "../../entrypoints/shell/*",
+  ]
 }

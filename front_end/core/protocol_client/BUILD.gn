@@ -28,4 +28,9 @@ devtools_entrypoint("legacy") {
   entrypoint = "protocol_client-legacy.ts"
 
   deps = [ ":bundle" ]
+
+  visibility = [
+    "../..:legacy_entrypoints",
+    "../../entrypoints/shell/*",
+  ]
 }

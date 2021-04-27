@@ -46,6 +46,8 @@ devtools_entrypoint("legacy") {
   entrypoint = "quick_open-legacy.ts"
 
   deps = [ ":bundle" ]
+
+  visibility = [ "../../../..:legacy_entrypoints" ]
 }
 
 devtools_entrypoint("meta") {

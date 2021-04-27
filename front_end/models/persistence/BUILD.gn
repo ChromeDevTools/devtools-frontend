@@ -51,6 +51,11 @@ devtools_entrypoint("legacy") {
   entrypoint = "persistence-legacy.ts"
 
   deps = [ ":bundle" ]
+
+  visibility = [
+    "../..:legacy_entrypoints",
+    "../../entrypoints/shell/*",
+  ]
 }
 
 devtools_entrypoint("meta") {

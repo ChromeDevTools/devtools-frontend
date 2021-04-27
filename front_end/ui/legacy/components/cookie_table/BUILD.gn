@@ -38,4 +38,6 @@ devtools_entrypoint("legacy") {
   entrypoint = "cookie_table-legacy.ts"
 
   deps = [ ":bundle" ]
+
+  visibility = [ "../../../..:legacy_entrypoints" ]
 }

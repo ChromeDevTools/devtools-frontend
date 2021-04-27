@@ -38,6 +38,8 @@ devtools_entrypoint("legacy") {
   entrypoint = "mobile_throttling-legacy.ts"
 
   deps = [ ":bundle" ]
+
+  visibility = [ "../..:legacy_entrypoints" ]
 }
 
 devtools_entrypoint("meta") {

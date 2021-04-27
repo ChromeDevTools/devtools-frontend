@@ -33,4 +33,6 @@ devtools_entrypoint("legacy") {
   entrypoint = "snippets-legacy.ts"
 
   deps = [ ":bundle" ]
+
+  visibility = [ "../..:legacy_entrypoints" ]
 }

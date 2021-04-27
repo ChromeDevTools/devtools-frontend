@@ -75,4 +75,9 @@ devtools_entrypoint("legacy") {
   entrypoint = "inline_editor-legacy.ts"
 
   deps = [ ":bundle" ]
+
+  visibility = [
+    "../../../..:legacy_entrypoints",
+    "../../../../legacy_test_runner/*",
+  ]
 }

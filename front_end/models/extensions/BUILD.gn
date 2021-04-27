@@ -44,4 +44,10 @@ devtools_entrypoint("legacy") {
   entrypoint = "extensions-legacy.ts"
 
   deps = [ ":bundle" ]
+
+  visibility = [
+    "../..:legacy_entrypoints",
+    "../../entrypoints/shell/*",
+    "../../legacy_test_runner/*",
+  ]
 }

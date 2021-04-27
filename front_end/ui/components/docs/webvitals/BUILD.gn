@@ -13,7 +13,6 @@ ts_library("ts") {
     "../../../../../test/unittests/front_end/helpers",
     "../../../../panels/timeline:bundle",
     "../../../../ui/components/helpers:bundle",
-    "../../../../ui/legacy:bundle",
   ]
 }
 

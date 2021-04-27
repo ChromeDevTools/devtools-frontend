@@ -203,5 +203,9 @@ template("devtools_entrypoint") {
     metadata = {
       grd_files = _target_outputs
     }
+
+    if (defined(invoker.visibility)) {
+      visibility = invoker.visibility
+    }
   }
 }

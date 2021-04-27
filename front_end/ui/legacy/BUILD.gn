@@ -122,10 +122,31 @@ copy_to_gen("legacy_css") {
   ]
 }
 
+declare_args() {
+  devtools_ui_legacy_visibility = []
+}
+
 devtools_entrypoint("bundle") {
   entrypoint = "legacy.ts"
 
   deps = [ ":ui" ]
+
+  visibility = [
+    "../../../test/unittests/front_end/*",
+    "../../entrypoints/*",
+    "../../legacy_test_runner/*",
+    "../../panels/*",
+    "./*",
+
+    # TODO(crbug.com/1202788): Remove invalid dependents
+    "../../models/extensions:*",
+    "../../models/persistence:*",
+    "../../models/recorder:*",
+    "../components/data_grid:*",
+    "../components/markdown_view:*",
+  ]
+
+  visibility += devtools_ui_legacy_visibility
 }
 
 devtools_entrypoint("legacy") {

@@ -31,8 +31,7 @@
 /* eslint-disable rulesdir/no_underscored_properties */
 
 import * as Common from '../../core/common/common.js';
-import * as WasmDis from '../../third_party/wasmparser/package/dist/esm/WasmDis.js';
-import * as WasmParser from '../../third_party/wasmparser/package/dist/esm/WasmParser.js';
+import * as WasmParser from '../../third_party/wasmparser/wasmparser.js';
 
 export function dissambleWASM(
     params: {
@@ -44,14 +43,14 @@ export function dissambleWASM(
   try {
     const dataBuffer = Common.Base64.decode(params.content);
 
-    let parser: WasmParser.BinaryReader = new WasmParser.BinaryReader();
+    let parser: WasmParser.WasmParser.BinaryReader = new WasmParser.WasmParser.BinaryReader();
     parser.setData(dataBuffer, 0, dataBuffer.byteLength);
-    const nameGenerator = new WasmDis.DevToolsNameGenerator();
+    const nameGenerator = new WasmParser.WasmDis.DevToolsNameGenerator();
     nameGenerator.read(parser);
 
     const data = new Uint8Array(dataBuffer);
-    parser = new WasmParser.BinaryReader();
-    const dis = new WasmDis.WasmDisassembler();
+    parser = new WasmParser.WasmParser.BinaryReader();
+    const dis = new WasmParser.WasmDis.WasmDisassembler();
     dis.addOffsets = true;
     dis.exportMetadata = nameGenerator.getExportMetadata();
     dis.nameResolver = nameGenerator.getNameResolver();

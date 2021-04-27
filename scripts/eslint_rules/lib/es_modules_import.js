@@ -16,8 +16,6 @@ const INSPECTOR_OVERLAY_DIRECTORY = path.join(__dirname, '..', '..', '..', 'fron
 const COMPONENT_DOCS_DIRECTORY = path.join(FRONT_END_DIRECTORY, 'ui', 'components', 'docs');
 
 const EXEMPTED_THIRD_PARTY_MODULES = new Set([
-  // wasmparser is exempt as it doesn't expose all its modules from the root file
-  path.join(FRONT_END_DIRECTORY, 'third_party', 'wasmparser'),
   // acorn is exempt as it doesn't expose all its modules from the root file
   path.join(FRONT_END_DIRECTORY, 'third_party', 'acorn'),
   // acorn-loose is exempt as it doesn't expose all its modules from the root file

@@ -9,8 +9,16 @@ devtools_pre_built("wasmparser") {
   sources_are_release = false
 
   sources = [
+    "package/dist/esm/WasmDis.d.ts",
     "package/dist/esm/WasmDis.js",
+    "package/dist/esm/WasmParser.d.ts",
     "package/dist/esm/WasmParser.js",
     "wasmparser-tsconfig.json",
   ]
+}
+
+devtools_entrypoint("bundle") {
+  entrypoint = "wasmparser.ts"
+
+  deps = [ ":wasmparser" ]
 }

@@ -10,7 +10,7 @@ devtools_module("wasmparser_worker") {
 
   deps = [
     "../../core/common:bundle",
-    "../../third_party/wasmparser",
+    "../../third_party/wasmparser:bundle",
   ]
 }
 

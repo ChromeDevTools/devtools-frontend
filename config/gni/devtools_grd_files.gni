@@ -406,6 +406,7 @@ grd_files_release_sources = [
   "front_end/third_party/lighthouse/lighthouse-dt-bundle.js",
   "front_end/third_party/lit-html/lit-html.js",
   "front_end/third_party/marked/marked.js",
+  "front_end/third_party/wasmparser/wasmparser.js",
   "front_end/toolbox.html",
   "front_end/ui/components/data_grid/data_grid.js",
   "front_end/ui/components/expandable_list/expandable_list.js",
